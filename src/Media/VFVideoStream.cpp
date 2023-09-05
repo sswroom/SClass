@@ -68,7 +68,7 @@ Media::VFVideoStream::VFVideoStream(Media::VFMediaFile *mfile)
 	this->info.storeBPP = vinfo.dwBitCount;
 	this->info.pf = Media::PixelFormatGetDef(0, vinfo.dwBitCount);
 	this->info.byteSize = 0;
-	this->info.color->SetCommonProfile(Media::ColorProfile::CPT_VUNKNOWN);
+	this->info.color.SetCommonProfile(Media::ColorProfile::CPT_VUNKNOWN);
 	this->info.atype = Media::AT_NO_ALPHA;
 	this->info.yuvType = Media::ColorProfile::YUVT_UNKNOWN;
 	this->info.ycOfst = Media::YCOFST_C_CENTER_LEFT;

@@ -169,7 +169,7 @@ void Media::Decoder::VFWDecoder::ProcVideoFrame(UInt32 frameTime, UInt32 frameNu
 			UInt32 frameRateDenorm;
 			UOSInt maxFrameSize;
 			this->GetVideoInfo(&info, &frameRateNorm, &frameRateDenorm, &maxFrameSize);
-			NEW_CLASS(img, Media::StaticImage(&info));
+			NEW_CLASS(img, Media::StaticImage(info));
 			MemCopyNO(img->data, this->frameBuff, this->maxFrameSize);
 			this->imgCb(this->imgCbData, frameTime, frameNum, img);
 			this->imgCb = 0;

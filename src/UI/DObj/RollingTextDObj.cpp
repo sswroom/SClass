@@ -298,12 +298,12 @@ void UI::DObj::RollingTextDObj::DrawObject(NotNullPtr<Media::DrawImage> dimg)
 
 		if ((h - (UOSInt)currPos) >= this->size.y)
 		{
-			dimg->DrawImagePt3(img.Ptr(), tl.ToDouble(), Math::Coord2DDbl(0, OSInt2Double(currPos)), this->size.ToDouble());
+			dimg->DrawImagePt3(img, tl.ToDouble(), Math::Coord2DDbl(0, OSInt2Double(currPos)), this->size.ToDouble());
 		}
 		else
 		{
-			dimg->DrawImagePt3(img.Ptr(), tl.ToDouble(), Math::Coord2DDbl(0, OSInt2Double(currPos)), Math::Size2DDbl(OSInt2Double(this->size.x), OSInt2Double((OSInt)h - currPos)));
-			dimg->DrawImagePt3(img.Ptr(), Math::Coord2DDbl(OSInt2Double(tl.x), OSInt2Double(tl.y + (OSInt)h - currPos)), Math::Coord2DDbl(0, 0), Math::Size2DDbl(UOSInt2Double(this->size.x), OSInt2Double(this->size.y - h + (UOSInt)currPos)));
+			dimg->DrawImagePt3(img, tl.ToDouble(), Math::Coord2DDbl(0, OSInt2Double(currPos)), Math::Size2DDbl(OSInt2Double(this->size.x), OSInt2Double((OSInt)h - currPos)));
+			dimg->DrawImagePt3(img, Math::Coord2DDbl(OSInt2Double(tl.x), OSInt2Double(tl.y + (OSInt)h - currPos)), Math::Coord2DDbl(0, 0), Math::Size2DDbl(UOSInt2Double(this->size.x), OSInt2Double(this->size.y - h + (UOSInt)currPos)));
 		}
 	}
 }

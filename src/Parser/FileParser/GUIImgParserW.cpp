@@ -117,7 +117,7 @@ IO::ParsedObject *Parser::FileParser::GUIImgParser::ParseFileHdr(NotNullPtr<IO::
 			{
 				Media::StaticImage *img;
 
-				NEW_CLASS(img, Media::StaticImage(Math::Size2D<UOSInt>(bmp->GetWidth(), bmp->GetHeight()), 0, 48, Media::PF_LE_B16G16R16, 0, 0, Media::ColorProfile::YUVT_UNKNOWN, aType, Media::YCOFST_C_CENTER_LEFT));
+				NEW_CLASS(img, Media::StaticImage(Math::Size2D<UOSInt>(bmp->GetWidth(), bmp->GetHeight()), 0, 48, Media::PF_LE_B16G16R16, 0, Media::ColorProfile(), Media::ColorProfile::YUVT_UNKNOWN, aType, Media::YCOFST_C_CENTER_LEFT));
 				UInt8 *imgSrc = (UInt8*)bmpd.Scan0;
 				UInt8 *imgDest = (UInt8*)img->data;
 				ImageCopy_ImgCopyR(imgSrc, imgDest, bmpd.Width * 6, bmpd.Height, (UOSInt)bmpd.Stride, img->GetDataBpl(), false);
@@ -148,7 +148,7 @@ IO::ParsedObject *Parser::FileParser::GUIImgParser::ParseFileHdr(NotNullPtr<IO::
 			{
 				Media::StaticImage *img;
 
-				NEW_CLASS(img, Media::StaticImage(Math::Size2D<UOSInt>(bmp->GetWidth(), bmp->GetHeight()), 0, 64, Media::PF_LE_B16G16R16A16, 0, 0, Media::ColorProfile::YUVT_UNKNOWN, aType, Media::YCOFST_C_CENTER_LEFT));
+				NEW_CLASS(img, Media::StaticImage(Math::Size2D<UOSInt>(bmp->GetWidth(), bmp->GetHeight()), 0, 64, Media::PF_LE_B16G16R16A16, 0, Media::ColorProfile(), Media::ColorProfile::YUVT_UNKNOWN, aType, Media::YCOFST_C_CENTER_LEFT));
 				UInt8 *imgSrc = (UInt8*)bmpd.Scan0;
 				UInt8 *imgDest = (UInt8*)img->data;
 				ImageCopy_ImgCopy(imgSrc, imgDest, bmpd.Width << 3, bmpd.Height, bmpd.Stride, bmpd.Width << 3);
@@ -169,7 +169,7 @@ IO::ParsedObject *Parser::FileParser::GUIImgParser::ParseFileHdr(NotNullPtr<IO::
 			if ((stat = bmp->LockBits(&rect, Gdiplus::ImageLockModeRead, PixelFormat24bppRGB, &bmpd)) == Gdiplus::Ok)
 			{
 				Media::StaticImage *img;
-				NEW_CLASS(img, Media::StaticImage(Math::Size2D<UOSInt>(bmp->GetWidth(), bmp->GetHeight()), 0, 24, Media::PF_B8G8R8, 0, 0, Media::ColorProfile::YUVT_UNKNOWN, Media::AT_ALPHA, Media::YCOFST_C_CENTER_LEFT));
+				NEW_CLASS(img, Media::StaticImage(Math::Size2D<UOSInt>(bmp->GetWidth(), bmp->GetHeight()), 0, 24, Media::PF_B8G8R8, 0, Media::ColorProfile(), Media::ColorProfile::YUVT_UNKNOWN, Media::AT_ALPHA, Media::YCOFST_C_CENTER_LEFT));
 				UInt8 *imgSrc = (UInt8*)bmpd.Scan0;
 				UInt8 *imgDest = (UInt8*)img->data;
 				ImageCopy_ImgCopyR(imgSrc, imgDest, bmpd.Width * 3, bmpd.Height, (UOSInt)bmpd.Stride, img->GetDataBpl(), false);
@@ -191,7 +191,7 @@ IO::ParsedObject *Parser::FileParser::GUIImgParser::ParseFileHdr(NotNullPtr<IO::
 			{
 				Media::StaticImage *img;
 				Gdiplus::ColorPalette *pal;
-				NEW_CLASS(img, Media::StaticImage(Math::Size2D<UOSInt>(bmp->GetWidth(), bmp->GetHeight()), 0, 8, Media::PF_PAL_8, 0, 0, Media::ColorProfile::YUVT_UNKNOWN, Media::AT_ALPHA, Media::YCOFST_C_CENTER_LEFT));
+				NEW_CLASS(img, Media::StaticImage(Math::Size2D<UOSInt>(bmp->GetWidth(), bmp->GetHeight()), 0, 8, Media::PF_PAL_8, 0, Media::ColorProfile(), Media::ColorProfile::YUVT_UNKNOWN, Media::AT_ALPHA, Media::YCOFST_C_CENTER_LEFT));
 				UInt8 *imgSrc = (UInt8*)bmpd.Scan0;
 				UInt8 *imgDest = (UInt8*)img->data;
 				ImageCopy_ImgCopyR(imgSrc, imgDest, bmpd.Width, bmpd.Height, (UOSInt)bmpd.Stride, img->GetDataBpl(), false);
@@ -212,7 +212,7 @@ IO::ParsedObject *Parser::FileParser::GUIImgParser::ParseFileHdr(NotNullPtr<IO::
 			if ((stat = bmp->LockBits(&rect, Gdiplus::ImageLockModeRead, PixelFormat32bppARGB, &bmpd)) == Gdiplus::Ok)
 			{
 				Media::StaticImage *img;
-				NEW_CLASS(img, Media::StaticImage(Math::Size2D<UOSInt>(bmp->GetWidth(), bmp->GetHeight()), 0, 32, Media::PF_B8G8R8A8, 0, 0, Media::ColorProfile::YUVT_UNKNOWN, (isImage == 2)?Media::AT_NO_ALPHA:Media::AT_ALPHA, Media::YCOFST_C_CENTER_LEFT));
+				NEW_CLASS(img, Media::StaticImage(Math::Size2D<UOSInt>(bmp->GetWidth(), bmp->GetHeight()), 0, 32, Media::PF_B8G8R8A8, 0, Media::ColorProfile(), Media::ColorProfile::YUVT_UNKNOWN, (isImage == 2)?Media::AT_NO_ALPHA:Media::AT_ALPHA, Media::YCOFST_C_CENTER_LEFT));
 				UInt8 *imgSrc = (UInt8*)bmpd.Scan0;
 				UInt8 *imgDest = (UInt8*)img->data;
 				ImageCopy_ImgCopy(imgSrc, imgDest, bmpd.Width << 2, bmpd.Height, bmpd.Stride, bmpd.Width << 2);
@@ -246,7 +246,7 @@ IO::ParsedObject *Parser::FileParser::GUIImgParser::ParseFileHdr(NotNullPtr<IO::
 				if ((stat = bmp->LockBits(&rect, Gdiplus::ImageLockModeRead, PixelFormat32bppARGB, &bmpd)) == Gdiplus::Ok)
 				{
 					Media::StaticImage *img;
-					NEW_CLASS(img, Media::StaticImage(Math::Size2D<UOSInt>(bmp->GetWidth(), bmp->GetHeight()), 0, 32, Media::PF_B8G8R8A8, 0, 0, Media::ColorProfile::YUVT_UNKNOWN, Media::AT_ALPHA, Media::YCOFST_C_CENTER_LEFT));
+					NEW_CLASS(img, Media::StaticImage(Math::Size2D<UOSInt>(bmp->GetWidth(), bmp->GetHeight()), 0, 32, Media::PF_B8G8R8A8, 0, Media::ColorProfile(), Media::ColorProfile::YUVT_UNKNOWN, Media::AT_ALPHA, Media::YCOFST_C_CENTER_LEFT));
 					UInt8 *imgSrc = (UInt8*)bmpd.Scan0;
 					UInt8 *imgDest = (UInt8*)img->data;
 					ImageCopy_ImgCopy(imgSrc, imgDest, bmpd.Width << 2, bmpd.Height, bmpd.Stride, bmpd.Width << 2);

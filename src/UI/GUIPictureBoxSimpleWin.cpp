@@ -170,9 +170,10 @@ void UI::GUIPictureBoxSimple::Deinit(void *hInst)
 
 void UI::GUIPictureBoxSimple::UpdatePreview()
 {
-	if (this->prevImageD)
+	NotNullPtr<Media::DrawImage> dimg;
+	if (dimg.Set(this->prevImageD))
 	{
-		this->eng->DeleteImage(this->prevImageD);
+		this->eng->DeleteImage(dimg);
 		this->prevImageD = 0;
 	}
 
@@ -206,9 +207,10 @@ UI::GUIPictureBoxSimple::GUIPictureBoxSimple(NotNullPtr<UI::GUICore> ui, UI::GUI
 
 UI::GUIPictureBoxSimple::~GUIPictureBoxSimple()
 {
-	if (this->prevImageD)
+	NotNullPtr<Media::DrawImage> dimg;
+	if (dimg.Set(this->prevImageD))
 	{
-		this->eng->DeleteImage(this->prevImageD);
+		this->eng->DeleteImage(dimg);
 		this->prevImageD = 0;
 	}
 	if (Sync::Interlocked::DecrementI32(useCnt) == 0)
@@ -254,14 +256,16 @@ void UI::GUIPictureBoxSimple::SetImage(Media::StaticImage *currImage)
 void UI::GUIPictureBoxSimple::SetImageDImg(Media::DrawImage *img)
 {
 	this->currImage = 0;
-	if (this->prevImageD)
+	NotNullPtr<Media::DrawImage> dimg;
+	NotNullPtr<Media::GDIImage> gimg;
+	if (dimg.Set(this->prevImageD))
 	{
-		this->eng->DeleteImage(this->prevImageD);
+		this->eng->DeleteImage(dimg);
 		this->prevImageD = 0;
 	}
-	if (img)
+	if (gimg.Set((Media::GDIImage*)img))
 	{
-		this->prevImageD = ((Media::GDIEngine*)this->eng.Ptr())->CloneImage((Media::GDIImage*)img);
+		this->prevImageD = ((Media::GDIEngine*)this->eng.Ptr())->CloneImage(gimg);
 	}
 	this->Redraw();
 }

@@ -52,7 +52,11 @@ Media::DDrawSurface::DDrawSurface(DDrawManager *mgr, void *lpDD, void *surface, 
 	this->info.par2 = 1.0;
 	this->info.hdpi = mgr->GetMonitorDPI(hMon);;
 	this->info.vdpi = this->info.hdpi;
-	this->info.color->Set(mgr->GetMonProfile(hMon));
+	NotNullPtr<const Media::ColorProfile> color;
+	if (color.Set(mgr->GetMonProfile(hMon)))
+		this->info.color.Set(color);
+	else
+		this->info.color.SetCommonProfile(Media::ColorProfile::CPT_VDISPLAY);
 	this->info.rotateType = rotateType;
 }
 

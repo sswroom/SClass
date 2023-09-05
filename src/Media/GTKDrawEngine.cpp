@@ -967,9 +967,9 @@ Bool Media::GTKDrawImage::DrawImagePt2(Media::StaticImage *img, Math::Coord2DDbl
 	return false;
 }
 
-Bool Media::GTKDrawImage::DrawImagePt3(DrawImage *img, Math::Coord2DDbl destTL, Math::Coord2DDbl srcTL, Math::Size2DDbl srcSize)
+Bool Media::GTKDrawImage::DrawImagePt3(NotNullPtr<DrawImage> img, Math::Coord2DDbl destTL, Math::Coord2DDbl srcTL, Math::Size2DDbl srcSize)
 {
-	Media::GTKDrawImage *gimg = (GTKDrawImage*)img;
+	Media::GTKDrawImage *gimg = (GTKDrawImage*)img.Ptr();
 	if (gimg->surface == 0)
 	{
 		return false;

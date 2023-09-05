@@ -138,9 +138,10 @@ void UI::GUIPictureBox::Deinit(void *hInst)
 
 void UI::GUIPictureBox::UpdatePreview()
 {
-	if (this->prevImageD)
+	NotNullPtr<Media::DrawImage> img;
+	if (img.Set(this->prevImageD))
 	{
-		this->eng->DeleteImage(this->prevImageD);
+		this->eng->DeleteImage(img);
 		this->prevImageD = 0;
 	}
 
@@ -184,17 +185,18 @@ UI::GUIPictureBox::GUIPictureBox(NotNullPtr<UI::GUICore> ui, UI::GUIClientContro
 	}
 	this->InitControl(((UI::GUICoreWin*)this->ui.Ptr())->GetHInst(), parent, CLASSNAME, (const UTF8Char*)"", style, 0, 0, 0, 200, 200);
 	Media::ColorProfile color(Media::ColorProfile::CPT_SRGB);
-	NEW_CLASS(this->resizer, Media::Resizer::LanczosResizer8_C8(4, 3, &color, &color, 0, Media::AT_NO_ALPHA));
+	NEW_CLASS(this->resizer, Media::Resizer::LanczosResizer8_C8(4, 3, color, color, 0, Media::AT_NO_ALPHA));
 	this->resizer->SetResizeAspectRatio(Media::IImgResizer::RAR_SQUAREPIXEL);
 	this->resizer->SetTargetSize(Math::Size2D<UOSInt>(200, 200));
 }
 
 UI::GUIPictureBox::~GUIPictureBox()
 {
+	NotNullPtr<Media::DrawImage> img;
 	DEL_CLASS(this->resizer);
-	if (this->prevImageD)
+	if (img.Set(this->prevImageD))
 	{
-		this->eng->DeleteImage(this->prevImageD);
+		this->eng->DeleteImage(img);
 		this->prevImageD = 0;
 	}
 	if (Sync::Interlocked::DecrementI32(useCnt) == 0)

@@ -44,7 +44,7 @@ namespace Media
 UInt32 __stdcall Media::GDIPrintDocument::PrintThread(void *userObj)
 {
 	Media::GDIPrintDocument *me = (Media::GDIPrintDocument*)userObj;
-	Media::GDIImage *img;
+	NotNullPtr<Media::GDIImage> img;
 	Bool hasMorePage;
 	DEVMODEW *devMode = (DEVMODEW*)me->devMode;
 
@@ -68,13 +68,13 @@ UInt32 __stdcall Media::GDIPrintDocument::PrintThread(void *userObj)
 		}
 		devMode->dmFields |= DM_PAPERLENGTH | DM_PAPERWIDTH | DM_ORIENTATION;
 		ResetDCW((HDC)me->hdcPrinter, devMode);
-		NEW_CLASS(img, Media::GDIImage(me->eng, Math::Coord2D<OSInt>(0, 0), Math::Size2D<UOSInt>((UOSInt)MulDiv32(MulDiv32(paperWidth, 100, devMode->dmScale), devMode->dmPrintQuality, 254), (UOSInt)MulDiv32(MulDiv32(paperHeight, 100, devMode->dmScale), devMode->dmPrintQuality, 254)), 32, 0, 0, me->hdcPrinter, Media::AT_NO_ALPHA));
+		NEW_CLASSNN(img, Media::GDIImage(me->eng, Math::Coord2D<OSInt>(0, 0), Math::Size2D<UOSInt>((UOSInt)MulDiv32(MulDiv32(paperWidth, 100, devMode->dmScale), devMode->dmPrintQuality, 254), (UOSInt)MulDiv32(MulDiv32(paperHeight, 100, devMode->dmScale), devMode->dmPrintQuality, 254)), 32, 0, 0, me->hdcPrinter, Media::AT_NO_ALPHA));
 		img->SetHDPI(devMode->dmPrintQuality);
 		img->SetVDPI(devMode->dmPrintQuality);
 		StartPage((HDC)me->hdcPrinter);
 		hasMorePage = me->hdlr->PrintPage(img);
 		EndPage((HDC)me->hdcPrinter);
-		DEL_CLASS(img);
+		img.Delete();
 		if (!hasMorePage)
 			break;
 	}

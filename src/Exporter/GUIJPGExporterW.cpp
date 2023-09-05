@@ -139,7 +139,7 @@ Bool Exporter::GUIJPGExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Te
 			}
 			if (jpgBuff[i + 1] == 0xdb)
 			{
-				const UInt8 *iccBuff = srcImg->info.color->GetRAWICC();
+				const UInt8 *iccBuff = srcImg->info.color.GetRAWICC();
 				if (iccBuff)
 				{
 					UOSInt iccLeng = ReadMUInt32(iccBuff);

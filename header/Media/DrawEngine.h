@@ -115,7 +115,7 @@ namespace Media
 		virtual Bool DrawStringRotB(Math::Coord2DDbl center, Text::CString str, DrawFont *f, DrawBrush *b, Double angleDegreeACW, UOSInt buffSize) = 0;
 		virtual Bool DrawImagePt(NotNullPtr<DrawImage> img, Math::Coord2DDbl tl) = 0;
 		virtual Bool DrawImagePt2(Media::StaticImage *img, Math::Coord2DDbl tl) = 0;
-		virtual Bool DrawImagePt3(DrawImage *img, Math::Coord2DDbl destTL, Math::Coord2DDbl srcTL, Math::Size2DDbl srcSize) = 0;
+		virtual Bool DrawImagePt3(NotNullPtr<DrawImage> img, Math::Coord2DDbl destTL, Math::Coord2DDbl srcTL, Math::Size2DDbl srcSize) = 0;
 
 		virtual DrawPen *NewPenARGB(UInt32 color, Double thick, UInt8 *pattern, UOSInt nPattern) = 0;
 		virtual DrawBrush *NewBrushARGB(UInt32 color) = 0;

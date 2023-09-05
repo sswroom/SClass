@@ -540,7 +540,7 @@ Bool Media::VectorGraph::DrawImagePt2(Media::StaticImage *img, Math::Coord2DDbl 
 	return true;
 }
 
-Bool Media::VectorGraph::DrawImagePt3(DrawImage *img, Math::Coord2DDbl destTL, Math::Coord2DDbl srcTL, Math::Size2DDbl srcSize)
+Bool Media::VectorGraph::DrawImagePt3(NotNullPtr<DrawImage> img, Math::Coord2DDbl destTL, Math::Coord2DDbl srcTL, Math::Size2DDbl srcSize)
 {
 	VectorStyles *style;
 	Media::StaticImage *stImg;
@@ -693,7 +693,7 @@ Math::Size2DDbl Media::VectorGraph::GetTextSize(DrawFont *fnt, Text::CString txt
 	{
 		Media::VectorGraph::VectorFontStyle *fntStyle = (Media::VectorGraph::VectorFontStyle*)fnt;
 		Double fntSizePt = fntStyle->GetHeightPt();
-		return Math::Size2DDbl(txt.leng * fntSizePt * 0.5, fntSizePt);
+		return Math::Size2DDbl(UOSInt2Double(txt.leng) * fntSizePt * 0.5, fntSizePt);
 	}
 }
 

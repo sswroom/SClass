@@ -122,14 +122,16 @@ void UI::GUICustomDrawVScroll::OnPaint()
 
 	RECT rc;
 	GetClientRect((HWND)this->hwnd, &rc);
-	Media::DrawImage *dimg = ((Media::GDIEngine*)this->deng.Ptr())->CreateImageScn(ps.hdc, 0, 0, rc.right - rc.left, rc.bottom - rc.top);
-	Double hdpi = this->GetHDPI();
-	Double ddpi = this->GetDDPI();
-	dimg->SetHDPI(hdpi / ddpi * 96.0);
-	dimg->SetVDPI(hdpi / ddpi * 96.0);
-	this->OnDraw(dimg);
-	this->deng->DeleteImage(dimg);
-
+	NotNullPtr<Media::DrawImage> dimg;
+	if (dimg.Set(((Media::GDIEngine*)this->deng.Ptr())->CreateImageScn(ps.hdc, 0, 0, rc.right - rc.left, rc.bottom - rc.top)))
+	{
+		Double hdpi = this->GetHDPI();
+		Double ddpi = this->GetDDPI();
+		dimg->SetHDPI(hdpi / ddpi * 96.0);
+		dimg->SetVDPI(hdpi / ddpi * 96.0);
+		this->OnDraw(dimg);
+		this->deng->DeleteImage(dimg);
+	}
 	EndPaint((HWND)this->hwnd, &ps);
 }
 

@@ -339,13 +339,17 @@ OSInt __stdcall UI::GUITextView::TFVWndProc(void *hWnd, UInt32 msg, UInt32 wPara
 		{
 			UOSInt scnW = (UInt16)LOWORD(lParam);
 			UOSInt scnH = (UInt16)HIWORD(lParam);
-			if (me->drawBuff)
+			NotNullPtr<Media::DrawImage> img;
+			if (img.Set(me->drawBuff))
 			{
-				me->deng->DeleteImage(me->drawBuff);
+				me->deng->DeleteImage(img);
 			}
 			me->drawBuff = me->deng->CreateImage32(Math::Size2D<UOSInt>(scnW, scnH), Media::AT_NO_ALPHA);
-			me->drawBuff->SetHDPI(me->GetHDPI());
-			me->drawBuff->SetVDPI(me->GetHDPI());
+			if (me->drawBuff)
+			{
+				me->drawBuff->SetHDPI(me->GetHDPI());
+				me->drawBuff->SetVDPI(me->GetHDPI());
+			}
 			me->UpdateScrollBar();
 			me->Redraw();
 		}
@@ -382,7 +386,8 @@ void UI::GUITextView::OnPaint()
 	RECT rc;
 	PAINTSTRUCT ps;
 	GetClientRect((HWND)this->hwnd, &rc);
-	if (this->drawBuff == 0)
+	NotNullPtr<Media::GDIImage> img;
+	if (!img.Set((Media::GDIImage*)this->drawBuff))
 	{	
 		BeginPaint((HWND)this->hwnd, &ps);
 		FillRect(ps.hdc, &rc, BGBRUSH);
@@ -390,9 +395,7 @@ void UI::GUITextView::OnPaint()
 		return;
 	}
 
-	this->DrawImage(this->drawBuff);
-
-	Media::GDIImage *img = (Media::GDIImage*)this->drawBuff;
+	this->DrawImage(img);
 	BeginPaint((HWND)this->hwnd, &ps);
 	BitBlt(ps.hdc, 0, 0, rc.right - rc.left, rc.bottom - rc.top, (HDC)img->hdcBmp, 0, 0, SRCCOPY);
 	EndPaint((HWND)this->hwnd, &ps);
@@ -408,21 +411,22 @@ void UI::GUITextView::UpdateScrollBar()
 
 	Math::Size2DDbl sz;
 	RECT rc;
-	if (this->drawBuff == 0)
+	NotNullPtr<Media::DrawImage> img;
+	if (!img.Set(this->drawBuff))
 	{
 		sz.y = 12;
 	}
 	else
 	{
-		Media::DrawFont *fnt = this->CreateDrawFont(this->drawBuff);
+		Media::DrawFont *fnt = this->CreateDrawFont(img);
 		if (fnt == 0)
 		{
 			sz.y = 12;
 		}
 		else
 		{
-			sz = this->drawBuff->GetTextSize(fnt, CSTR("Test"));
-			this->drawBuff->DelFont(fnt);
+			sz = img->GetTextSize(fnt, CSTR("Test"));
+			img->DelFont(fnt);
 		}
 	}
 	GetClientRect((HWND)this->hwnd, &rc);
@@ -466,16 +470,16 @@ void UI::GUITextView::SetScrollVRange(UOSInt min, UOSInt max)
 
 UInt32 UI::GUITextView::GetCharCntAtWidth(WChar *str, UOSInt strLen, UOSInt pxWidth)
 {
-	if (this->drawBuff)
+	NotNullPtr<Media::GDIImage> img;
+	if (img.Set((Media::GDIImage*)this->drawBuff))
 	{
 		SIZE sz;
-		Media::GDIFont *fnt = (Media::GDIFont*)this->CreateDrawFont(this->drawBuff);
-		Media::GDIImage *img = (Media::GDIImage*)this->drawBuff;
+		Media::GDIFont *fnt = (Media::GDIFont*)this->CreateDrawFont(img);
 		HDC hdc = (HDC)img->hdcBmp;
 		SelectObject(hdc, (HFONT)fnt->hfont);
 		Int32 textX;
 		GetTextExtentExPoint(hdc, str, (Int32)(OSInt)strLen, (int)(OSInt)pxWidth, &textX, 0, &sz);
-		this->drawBuff->DelFont(fnt);
+		img->DelFont(fnt);
 		return (UInt32)textX;
 	}
 	else
@@ -496,14 +500,15 @@ UInt32 UI::GUITextView::GetCharCntAtWidth(WChar *str, UOSInt strLen, UOSInt pxWi
 
 void UI::GUITextView::GetDrawSize(WChar *str, UOSInt strLen, UOSInt *width, UOSInt *height)
 {
-	if (this->drawBuff)
+	NotNullPtr<Media::GDIImage> img;
+	if (img.Set((Media::GDIImage*)this->drawBuff))
 	{
 		Math::Size2DDbl sz;
-		Media::DrawFont *fnt = this->CreateDrawFont(this->drawBuff);
-		sz = ((Media::GDIImage*)this->drawBuff)->GetTextSize(fnt, str, (OSInt)strLen);
+		Media::DrawFont *fnt = this->CreateDrawFont(img);
+		sz = img->GetTextSize(fnt, str, (OSInt)strLen);
 		*width = (UOSInt)Double2OSInt(sz.x);
 		*height = (UOSInt)Double2OSInt(sz.y);
-		this->drawBuff->DelFont(fnt);
+		img->DelFont(fnt);
 	}
 	else
 	{
@@ -557,9 +562,10 @@ UI::GUITextView::GUITextView(NotNullPtr<UI::GUICore> ui, UI::GUIClientControl *p
 UI::GUITextView::~GUITextView()
 {
 	KillTimer((HWND)this->hwnd, 1);
-	if (this->drawBuff)
+	NotNullPtr<Media::DrawImage> img;
+	if (img.Set(this->drawBuff))
 	{
-		this->deng->DeleteImage(this->drawBuff);
+		this->deng->DeleteImage(img);
 		this->drawBuff = 0;
 	}
 	if (Sync::Interlocked::DecrementOS(useCnt) == 0)

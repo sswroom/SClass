@@ -109,7 +109,7 @@ Bool Exporter::GUIPNGExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Te
 	pngBuff = mstm.GetBuff(&pngSize);
 	if (srcImg != 0 && pngBuff[0] == 0x89 && pngBuff[1] == 0x50 && pngBuff[2] == 0x4e && pngBuff[3] == 0x47)
 	{
-		const UInt8 *iccBuff = srcImg->info.color->GetRAWICC();
+		const UInt8 *iccBuff = srcImg->info.color.GetRAWICC();
 		if (iccBuff)
 		{
 			UInt32 chunkSize;

@@ -143,7 +143,7 @@ Bool Media::DShow::DShowVideoCapture::GetVideoInfo(Media::FrameInfo *info, UInt3
 				info->storeSize = info->dispSize;
 				info->par2 = 1;
 				info->hdpi = Math::Unit::Distance::Convert(Math::Unit::Distance::DU_INCH, Math::Unit::Distance::DU_METER, format->bmiHeader.biXPelsPerMeter);
-				info->color->SetCommonProfile(Media::ColorProfile::CPT_VUNKNOWN);
+				info->color.SetCommonProfile(Media::ColorProfile::CPT_VUNKNOWN);
 				info->yuvType = Media::ColorProfile::YUVT_UNKNOWN;
 				info->ycOfst = Media::YCOFST_C_TOP_LEFT;
 
@@ -465,7 +465,7 @@ UOSInt Media::DShow::DShowVideoCapture::GetSupportedFormats(VideoFormat *fmtArr,
 				fmtArr[outCnt].info.ftype = Media::FT_NON_INTERLACE;
 				fmtArr[outCnt].info.par2 = 1;
 				fmtArr[outCnt].info.hdpi = Math::Unit::Distance::Convert(Math::Unit::Distance::DU_INCH, Math::Unit::Distance::DU_METER, format->bmiHeader.biXPelsPerMeter);
-				fmtArr[outCnt].info.color->SetCommonProfile(Media::ColorProfile::CPT_VUNKNOWN);
+				fmtArr[outCnt].info.color.SetCommonProfile(Media::ColorProfile::CPT_VUNKNOWN);
 				fmtArr[outCnt].info.yuvType = Media::ColorProfile::YUVT_UNKNOWN;
 				fmtArr[outCnt].info.ycOfst = Media::YCOFST_C_CENTER_LEFT;
 

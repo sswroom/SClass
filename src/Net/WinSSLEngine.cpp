@@ -1360,7 +1360,7 @@ Bool Net::WinSSLEngine::ServerSetClientCA(Text::CString clientCA)
 	return false;
 }
 
-Bool Net::WinSSLEngine::ServerAddALPNSupport(Text::CString proto)
+Bool Net::WinSSLEngine::ServerAddALPNSupport(Text::CStringNN proto)
 {
 	return false;
 }
@@ -1654,7 +1654,7 @@ Crypto::Cert::X509Key *Net::WinSSLEngine::GenerateRSAKey()
 	return key;
 }
 
-Bool Net::WinSSLEngine::Signature(NotNullPtr<Crypto::Cert::X509Key> key, Crypto::Hash::HashType hashType, const UInt8 *payload, UOSInt payloadLen, UInt8 *signData, UOSInt *signLen)
+Bool Net::WinSSLEngine::Signature(NotNullPtr<Crypto::Cert::X509Key> key, Crypto::Hash::HashType hashType, const UInt8 *payload, UOSInt payloadLen, UInt8 *signData, OutParam<UOSInt> signLen)
 {
 	Crypto::Cert::X509File::KeyType keyType = key->GetKeyType();
 	if (keyType == Crypto::Cert::X509File::KeyType::RSA)
@@ -1708,7 +1708,7 @@ Bool Net::WinSSLEngine::Signature(NotNullPtr<Crypto::Cert::X509Key> key, Crypto:
 			CryptDestroyKey(hKey);
 			return false;
 		}
-		*signLen = len;
+		signLen.Set(len);
 		CryptReleaseContext(hProv, 0);
 		CryptDestroyHash(hHash);
 		CryptDestroyKey(hKey);

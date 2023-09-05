@@ -26,7 +26,7 @@ namespace Net
 		virtual Bool ServerSetCertsASN1(NotNullPtr<Crypto::Cert::X509Cert> certASN1, NotNullPtr<Crypto::Cert::X509File> keyASN1, Crypto::Cert::X509Cert *cert);
 		virtual Bool ServerSetRequireClientCert(ClientCertType cliCert);
 		virtual Bool ServerSetClientCA(Text::CString clientCA);
-		virtual Bool ServerAddALPNSupport(Text::CString proto);
+		virtual Bool ServerAddALPNSupport(Text::CStringNN proto);
 
 		virtual void ClientSetSkipCertCheck(Bool skipCertCheck);
 		virtual Bool ClientSetCertASN1(NotNullPtr<Crypto::Cert::X509Cert> certASN1, NotNullPtr<Crypto::Cert::X509File> keyASN1);
@@ -36,7 +36,7 @@ namespace Net
 		virtual UTF8Char *GetErrorDetail(UTF8Char *sbuff);
 		virtual Bool GenerateCert(Text::CString country, Text::CString company, Text::CString commonName, Crypto::Cert::X509Cert **certASN1, Crypto::Cert::X509File **keyASN1);
 		virtual Crypto::Cert::X509Key *GenerateRSAKey();
-		virtual Bool Signature(NotNullPtr<Crypto::Cert::X509Key> key, Crypto::Hash::HashType hashType, const UInt8 *payload, UOSInt payloadLen, UInt8 *signData, UOSInt *signLen);
+		virtual Bool Signature(NotNullPtr<Crypto::Cert::X509Key> key, Crypto::Hash::HashType hashType, const UInt8 *payload, UOSInt payloadLen, UInt8 *signData, OutParam<UOSInt> signLen);
 		virtual Bool SignatureVerify(NotNullPtr<Crypto::Cert::X509Key> key, Crypto::Hash::HashType hashType, const UInt8 *payload, UOSInt payloadLen, const UInt8 *signData, UOSInt signLen);
 		virtual UOSInt Encrypt(NotNullPtr<Crypto::Cert::X509Key> key, UInt8 *encData, const UInt8 *payload, UOSInt payloadLen, Crypto::Encrypt::RSACipher::Padding rsaPadding);
 		virtual UOSInt Decrypt(NotNullPtr<Crypto::Cert::X509Key> key, UInt8 *decData, const UInt8 *payload, UOSInt payloadLen, Crypto::Encrypt::RSACipher::Padding rsaPadding);

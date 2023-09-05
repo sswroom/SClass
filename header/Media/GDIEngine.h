@@ -33,8 +33,8 @@ namespace Media
 		virtual DrawImage *LoadImage(Text::CStringNN fileName);
 		virtual DrawImage *LoadImageStream(NotNullPtr<IO::SeekableStream> stm);
 		virtual DrawImage *ConvImage(Media::Image *img);
-		virtual DrawImage *CloneImage(DrawImage *img);
-		virtual Bool DeleteImage(DrawImage *img);
+		virtual DrawImage *CloneImage(NotNullPtr<DrawImage> img);
+		virtual Bool DeleteImage(NotNullPtr<DrawImage> img);
 		void *GetBlackPen();
 		void *GetWhiteBrush();
 	};
@@ -71,7 +71,7 @@ namespace Media
 	class GDIFont : public DrawFont
 	{
 	private:
-		DrawImage *img;
+		NotNullPtr<DrawImage> img;
 		void *hdc;
 		const WChar *fontName;
 		Double ptSize;
@@ -82,8 +82,8 @@ namespace Media
 		Int32 pxSize;
 		void *hfont;
 
-		GDIFont(void *hdc, const Char *fontName, Double ptSize, Media::DrawEngine::DrawFontStyle style, DrawImage *img, Int32 codePage);
-		GDIFont(void *hdc, const WChar *fontName, Double ptSize, Media::DrawEngine::DrawFontStyle style, DrawImage *img, Int32 codePage);
+		GDIFont(void *hdc, const Char *fontName, Double ptSize, Media::DrawEngine::DrawFontStyle style, NotNullPtr<DrawImage> img, Int32 codePage);
+		GDIFont(void *hdc, const WChar *fontName, Double ptSize, Media::DrawEngine::DrawFontStyle style, NotNullPtr<DrawImage> img, Int32 codePage);
 		virtual ~GDIFont();
 
 		const WChar *GetNameW();
@@ -118,7 +118,7 @@ namespace Media
 		virtual Math::Size2D<UOSInt> GetSize() const;
 		virtual UInt32 GetBitCount() const;
 		virtual NotNullPtr<const ColorProfile> GetColorProfile() const;
-		virtual void SetColorProfile(const ColorProfile *color);
+		virtual void SetColorProfile(NotNullPtr<const ColorProfile> color);
 		virtual Media::AlphaType GetAlphaType() const;
 		virtual void SetAlphaType(Media::AlphaType atype);
 		virtual Double GetHDPI() const;
@@ -152,10 +152,10 @@ namespace Media
 		virtual Bool DrawStringRotB(Math::Coord2DDbl center, NotNullPtr<Text::String> str, DrawFont *f, DrawBrush *p, Double angleDegree, UOSInt buffSize);
 		virtual Bool DrawStringRotB(Math::Coord2DDbl center, Text::CString str, DrawFont *f, DrawBrush *p, Double angleDegree, UOSInt buffSize);
 		Bool DrawStringRotBW(Math::Coord2DDbl center, const WChar *str, DrawFont *f, DrawBrush *p, Double angleDegree, UOSInt buffSize);
-		virtual Bool DrawImagePt(DrawImage *img, Math::Coord2DDbl tl);
+		virtual Bool DrawImagePt(NotNullPtr<DrawImage> img, Math::Coord2DDbl tl);
 		virtual Bool DrawImagePt2(Media::StaticImage *img, Math::Coord2DDbl tl);
-		virtual Bool DrawImagePt3(DrawImage *img, Math::Coord2DDbl destTL, Math::Coord2DDbl srcTL, Math::Size2DDbl srcSize);
-		Bool DrawImageRect(DrawImage *img, OSInt tlx, OSInt tly, OSInt brx, OSInt bry);
+		virtual Bool DrawImagePt3(NotNullPtr<DrawImage> img, Math::Coord2DDbl destTL, Math::Coord2DDbl srcTL, Math::Size2DDbl srcSize);
+		Bool DrawImageRect(NotNullPtr<DrawImage> img, OSInt tlx, OSInt tly, OSInt brx, OSInt bry);
 
 		virtual DrawPen *NewPenARGB(UInt32 color, Double thick, UInt8 *pattern, UOSInt nPattern);
 		virtual DrawBrush *NewBrushARGB(UInt32 color);

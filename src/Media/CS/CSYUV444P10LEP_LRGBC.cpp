@@ -47,7 +47,6 @@ void Media::CS::CSYUV444P10LEP_LRGBC::SetupRGB13_LR()
 	Math::Matrix3 mat5;
 	Math::Vector3 vec1;
 	Math::Vector3 vec2;
-	Math::Vector3 vec3;
 	this->srcProfile.GetPrimaries()->GetConvMatrix(mat1);
 	if (this->destProfile.GetPrimaries()->colorType == Media::ColorProfile::CT_DISPLAY)
 	{

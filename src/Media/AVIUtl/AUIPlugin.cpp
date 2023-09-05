@@ -203,38 +203,38 @@ Bool Media::AVIUtl::AUIPlugin::GetInputVideoInfo(void *hand, Media::FrameInfo *f
 	frameInfo->hdpi = 96;
 	frameInfo->ftype = Media::FT_NON_INTERLACE;
 	frameInfo->atype = Media::AT_NO_ALPHA;
-	frameInfo->color->SetCommonProfile(Media::ColorProfile::CPT_VUNKNOWN);
+	frameInfo->color.SetCommonProfile(Media::ColorProfile::CPT_VUNKNOWN);
 	frameInfo->yuvType = Media::ColorProfile::YUVT_BT601;
 	frameInfo->ycOfst = Media::YCOFST_C_CENTER_LEFT;
 
 	if (frameInfo->dispSize.x == 352 && frameInfo->dispSize.y == 240)
 	{
 		frameInfo->par2 = 1.1;
-		frameInfo->color->GetRTranParam()->Set(Media::CS::TRANT_GAMMA, 2.2);
-		frameInfo->color->GetGTranParam()->Set(Media::CS::TRANT_GAMMA, 2.2);
-		frameInfo->color->GetRTranParam()->Set(Media::CS::TRANT_GAMMA, 2.2);
+		frameInfo->color.GetRTranParam()->Set(Media::CS::TRANT_GAMMA, 2.2);
+		frameInfo->color.GetGTranParam()->Set(Media::CS::TRANT_GAMMA, 2.2);
+		frameInfo->color.GetRTranParam()->Set(Media::CS::TRANT_GAMMA, 2.2);
 	}
 	else if (frameInfo->dispSize.x == 352 && frameInfo->dispSize.y == 288)
 	{
 		frameInfo->par2 = 0.91666666666666666666666666666667;
-		frameInfo->color->GetRTranParam()->Set(Media::CS::TRANT_GAMMA, 2.2);
-		frameInfo->color->GetGTranParam()->Set(Media::CS::TRANT_GAMMA, 2.2);
-		frameInfo->color->GetRTranParam()->Set(Media::CS::TRANT_GAMMA, 2.2);
+		frameInfo->color.GetRTranParam()->Set(Media::CS::TRANT_GAMMA, 2.2);
+		frameInfo->color.GetGTranParam()->Set(Media::CS::TRANT_GAMMA, 2.2);
+		frameInfo->color.GetRTranParam()->Set(Media::CS::TRANT_GAMMA, 2.2);
 	}
 	else if (frameInfo->dispSize.x == 720 && frameInfo->dispSize.y == 480)
 	{
 		frameInfo->par2 = 1.1;
-		frameInfo->color->GetRTranParam()->Set(Media::CS::TRANT_GAMMA, 2.2);
-		frameInfo->color->GetGTranParam()->Set(Media::CS::TRANT_GAMMA, 2.2);
-		frameInfo->color->GetRTranParam()->Set(Media::CS::TRANT_GAMMA, 2.2);
+		frameInfo->color.GetRTranParam()->Set(Media::CS::TRANT_GAMMA, 2.2);
+		frameInfo->color.GetGTranParam()->Set(Media::CS::TRANT_GAMMA, 2.2);
+		frameInfo->color.GetRTranParam()->Set(Media::CS::TRANT_GAMMA, 2.2);
 		frameInfo->yuvType = Media::ColorProfile::YUVT_BT601;
 	}
 	else if (frameInfo->dispSize.x == 720 && frameInfo->dispSize.y == 576)
 	{
 		frameInfo->par2 = 0.91666666666666666666666666666667;
-		frameInfo->color->GetRTranParam()->Set(Media::CS::TRANT_GAMMA, 2.2);
-		frameInfo->color->GetGTranParam()->Set(Media::CS::TRANT_GAMMA, 2.2);
-		frameInfo->color->GetRTranParam()->Set(Media::CS::TRANT_GAMMA, 2.2);
+		frameInfo->color.GetRTranParam()->Set(Media::CS::TRANT_GAMMA, 2.2);
+		frameInfo->color.GetGTranParam()->Set(Media::CS::TRANT_GAMMA, 2.2);
+		frameInfo->color.GetRTranParam()->Set(Media::CS::TRANT_GAMMA, 2.2);
 		frameInfo->yuvType = Media::ColorProfile::YUVT_BT601;
 	}
 	*frameRateNorm = (UInt32)info.rate;

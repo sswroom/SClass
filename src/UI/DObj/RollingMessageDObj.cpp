@@ -80,6 +80,7 @@ void UI::DObj::RollingMessageDObj::DrawObject(NotNullPtr<Media::DrawImage> dimg)
 		OSInt lastPos = currPos + this->lastMsgOfst;
 		if (this->lastMessage)
 		{
+			NotNullPtr<Media::DrawImage> img;
 			if (this->lastMessage->img == 0)
 			{
 				this->lastMessage->img = this->GenerateImage(this->deng, this->lastMessage->message, this->size, dimg);
@@ -92,15 +93,15 @@ void UI::DObj::RollingMessageDObj::DrawObject(NotNullPtr<Media::DrawImage> dimg)
 				}
 				this->lastMessage = 0;
 			}
-			else
+			else if (img.Set(this->lastMessage->img))
 			{
 				OSInt ofst = 0;
-				if (this->lastMessage->img->GetWidth() > this->size.x)
-					ofst = -(OSInt)(this->lastMessage->img->GetWidth() - this->size.x);
+				if (img->GetWidth() > this->size.x)
+					ofst = -(OSInt)(img->GetWidth() - this->size.x);
 
 				OSInt drawPos = ofst - lastPos;
 				OSInt srcPos = 0;
-				Math::Size2D<UOSInt> srcSize = this->lastMessage->img->GetSize();
+				Math::Size2D<UOSInt> srcSize = img->GetSize();
 				if (drawPos < 0)
 				{
 					srcPos = -drawPos;
@@ -118,64 +119,68 @@ void UI::DObj::RollingMessageDObj::DrawObject(NotNullPtr<Media::DrawImage> dimg)
 				{
 					srcSize.x = this->size.x - (UOSInt)drawPos;
 				}
-				dimg->DrawImagePt3(this->lastMessage->img, scnPos + Math::Coord2DDbl(OSInt2Double(drawPos), UOSInt2Double(this->size.y - this->lastMessage->img->GetHeight()) * 0.5), Math::Coord2DDbl(OSInt2Double(srcPos), 0), srcSize.ToDouble());
+				dimg->DrawImagePt3(img, scnPos + Math::Coord2DDbl(OSInt2Double(drawPos), UOSInt2Double(this->size.y - img->GetHeight()) * 0.5), Math::Coord2DDbl(OSInt2Double(srcPos), 0), srcSize.ToDouble());
 			}
 		}
 		if (this->thisMessage)
 		{
+			NotNullPtr<Media::DrawImage> img;
 			if (this->thisMessage->img == 0)
 			{
 				this->thisMessage->img = this->GenerateImage(this->deng, this->thisMessage->message, this->size, dimg);
 			}
-			UOSInt w = this->thisMessage->img->GetWidth();
-			if (w < this->size.x)
-				w = this->size.x;
-
-			OSInt drawPos = (OSInt)this->size.x - currPos;
-			OSInt srcPos = 0;
-			Math::Size2D<UOSInt> srcSize = this->thisMessage->img->GetSize();
-			if (drawPos < 0)
+			if (img.Set(this->thisMessage->img))
 			{
-				srcPos = -drawPos;
-				drawPos = 0;
-				if ((UOSInt)srcPos >= srcSize.x)
+				UOSInt w = img->GetWidth();
+				if (w < this->size.x)
+					w = this->size.x;
+
+				OSInt drawPos = (OSInt)this->size.x - currPos;
+				OSInt srcPos = 0;
+				Math::Size2D<UOSInt> srcSize = img->GetSize();
+				if (drawPos < 0)
 				{
-					srcSize.x = 0;
+					srcPos = -drawPos;
+					drawPos = 0;
+					if ((UOSInt)srcPos >= srcSize.x)
+					{
+						srcSize.x = 0;
+					}
+					else
+					{
+						srcSize.x -= (UOSInt)srcPos;
+					}
+				}
+				if (drawPos + (OSInt)srcSize.x > (OSInt)this->size.x)
+				{
+					srcSize.x = this->size.x - (UOSInt)drawPos;
+				}
+				dimg->DrawImagePt3(img, scnPos + Math::Coord2DDbl(OSInt2Double(drawPos), UOSInt2Double(this->size.y - img->GetHeight()) * 0.5), Math::Coord2DDbl(OSInt2Double(srcPos), 0), srcSize.ToDouble());
+				if (currPos >= (OSInt)w)
+				{
+					this->lastMessage = this->thisMessage;
+					this->thisMessage = 0;
+					this->lastMsgOfst = 0;
+					if (this->msgMap.GetCount() == 0)
+					{
+						return;
+					}
+					while (this->nextMsgIndex >= this->msgMap.GetCount())
+					{
+						this->nextMsgIndex -= this->msgMap.GetCount();
+					}
+					this->thisMessage = this->msgMap.GetItem(this->nextMsgIndex++);
+					if (this->thisMessage->img == 0)
+					{
+						this->thisMessage->img = this->GenerateImage(this->deng, this->thisMessage->message, this->size, dimg);
+					}
+					this->startTime = currTime;
+					this->lastRollPos = 0;
 				}
 				else
 				{
-					srcSize.x -= (UOSInt)srcPos;
+					this->lastRollPos = currPos;
 				}
-			}
-			if (drawPos + (OSInt)srcSize.x > (OSInt)this->size.x)
-			{
-				srcSize.x = this->size.x - (UOSInt)drawPos;
-			}
-			dimg->DrawImagePt3(this->thisMessage->img, scnPos + Math::Coord2DDbl(OSInt2Double(drawPos), UOSInt2Double(this->size.y - this->thisMessage->img->GetHeight()) * 0.5), Math::Coord2DDbl(OSInt2Double(srcPos), 0), srcSize.ToDouble());
-			if (currPos >= (OSInt)w)
-			{
-				this->lastMessage = this->thisMessage;
-				this->thisMessage = 0;
-				this->lastMsgOfst = 0;
-				if (this->msgMap.GetCount() == 0)
-				{
-					return;
-				}
-				while (this->nextMsgIndex >= this->msgMap.GetCount())
-				{
-					this->nextMsgIndex -= this->msgMap.GetCount();
-				}
-				this->thisMessage = this->msgMap.GetItem(this->nextMsgIndex++);
-				if (this->thisMessage->img == 0)
-				{
-					this->thisMessage->img = this->GenerateImage(this->deng, this->thisMessage->message, this->size, dimg);
-				}
-				this->startTime = currTime;
-				this->lastRollPos = 0;
-			}
-			else
-			{
-				this->lastRollPos = currPos;
 			}
 		}
 		else
