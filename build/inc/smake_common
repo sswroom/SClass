@@ -1839,9 +1839,14 @@ IO/OneWireGPIO.h: ../../src/IO/OneWireGPIO.cpp
 @OneWireGPIO.o
 IO/PackageFile.h: ../../src/IO/PackageFile.cpp
 @PackageFile.o
+IO/PacketLogWriter.h:
 IO/ParsedObject.h: ../../src/IO/ParsedObject.cpp
 @ParsedObject.o
 IO/ParserBase.h:
+IO/PcapngWriter.h: ../../src/IO/PcapngWriter.cpp
+@PcapngWriter.o
+IO/PcapWriter.h: ../../src/IO/PcapWriter.cpp
+@PcapWriter.o
 IO/PrintMODBUSDevSim.h: ../../src/IO/PrintMODBUSDevSim.cpp
 @PrintMODBUSDevSim.o
 IO/ProgramLink.h: ../../src/IO/ProgramLink.cpp
@@ -4902,6 +4907,8 @@ NullWriter.o: ../../src/IO/NullWriter.cpp
 OneWireGPIO.o: ../../src/IO/OneWireGPIO.cpp
 PackageFile.o: ../../src/IO/PackageFile.cpp
 ParsedObject.o: ../../src/IO/ParsedObject.cpp
+PcapngWriter.o: ../../src/IO/PcapngWriter.cpp
+PcapWriter.o: ../../src/IO/PcapWriter.cpp
 PrintMODBUSDevSim.o: ../../src/IO/PrintMODBUSDevSim.cpp
 ProgramLink.o: ../../src/IO/ProgramLink.cpp
 RadioSignalLogger.o: ../../src/IO/RadioSignalLogger.cpp

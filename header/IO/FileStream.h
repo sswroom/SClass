@@ -47,7 +47,7 @@ namespace IO
 		void SetLength(UInt64 newLength);
 		virtual StreamType GetStreamType() const;
 
-		virtual Bool IsError();
+		virtual Bool IsError() const;
 		virtual Int32 GetErrCode();
 		void GetFileTimes(Data::DateTime *creationTime, Data::DateTime *lastAccessTime, Data::DateTime *lastWriteTime);
 		void GetFileTimes(Data::Timestamp *creationTime, Data::Timestamp *lastAccessTime, Data::Timestamp *lastWriteTime);

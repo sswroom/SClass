@@ -10,7 +10,7 @@
 #include <share.h>
 #endif
 
-IO::FileStream::FileStream(Text::String *fileName, FileMode mode, FileShare share, IO::FileStream::BufferType buffType) : IO::SeekableStream(fileName)
+IO::FileStream::FileStream(NotNullPtr<Text::String> fileName, FileMode mode, FileShare share, IO::FileStream::BufferType buffType) : IO::SeekableStream(fileName)
 {
 	handle = 0;
 #ifndef SUPPORT_SHARE
@@ -91,12 +91,12 @@ IO::FileStream::~FileStream()
 	Close();
 }
 
-Bool IO::FileStream::IsDown()
+Bool IO::FileStream::IsDown() const
 {
 	return this->handle == 0;
 }
 
-Bool IO::FileStream::IsError()
+Bool IO::FileStream::IsError() const
 {
 	return this->handle == 0;
 }
@@ -105,7 +105,7 @@ UOSInt IO::FileStream::Read(const Data::ByteArray &buff)
 {
 	if (handle == 0)
 		return 0;
-	OSInt readSize = fread(buff, 1, size, (FILE*)handle);
+	OSInt readSize = fread(buff.Ptr(), 1, buff.GetSize(), (FILE*)handle);
 	this->currPos += (UOSInt)readSize;
 	return (UOSInt)readSize;
 }
@@ -242,7 +242,7 @@ void IO::FileStream::SetFileTimes(Data::DateTime *creationTime, Data::DateTime *
 {
 }
 
-UOSInt IO::FileStream::LoadFile(Text::CString fileName, UInt8 *buff, UOSInt maxBuffSize)
+UOSInt IO::FileStream::LoadFile(Text::CStringNN fileName, UInt8 *buff, UOSInt maxBuffSize)
 {
 	IO::FileStream fs(fileName, FileMode::ReadOnly, FileShare::DenyNone, BufferType::Normal);
 	if (fs.IsError())
@@ -254,7 +254,7 @@ UOSInt IO::FileStream::LoadFile(Text::CString fileName, UInt8 *buff, UOSInt maxB
 	{
 		return 0;
 	}
-	UOSInt readSize = fs.Read(buff, maxBuffSize);
+	UOSInt readSize = fs.Read(Data::ByteArray(buff, maxBuffSize));
 	if (readSize == fileLen)
 	{
 		return readSize;

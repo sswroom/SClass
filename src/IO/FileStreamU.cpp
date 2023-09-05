@@ -110,7 +110,7 @@ Bool IO::FileStream::IsDown() const
 	return (OSInt)this->handle == 0;
 }
 
-Bool IO::FileStream::IsError()
+Bool IO::FileStream::IsError() const
 {
 	return (OSInt)this->handle == 0;
 }

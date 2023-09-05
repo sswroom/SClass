@@ -3,6 +3,8 @@
 #include "Data/ByteTool.h"
 #include "IO/FileStream.h"
 #include "IO/OS.h"
+#include "IO/PcapngWriter.h"
+#include "IO/PcapWriter.h"
 #include "IO/SystemInfo.h"
 #include "Net/RAWCapture.h"
 #include "Sync/MutexUsage.h"
@@ -17,12 +19,9 @@ void __stdcall Net::RAWCapture::DataHandler(void *userData, const UInt8 *packetD
 	me->dataSize += packetSize;
 	if (me->format == FF_PCAP)
 	{
-		Data::DateTime dt;
-		Int64 t;
-		dt.SetCurrTimeUTC();
-		t = dt.ToTicks();
-		WriteInt32(&buff[0], (Int32)(t / 1000));
-		WriteInt32(&buff[4], (Int32)((t % 1000) * 1000));
+		Data::Timestamp ts = Data::Timestamp::UtcNow();
+		WriteInt32(&buff[0], (Int32)(ts.inst.sec));
+		WriteInt32(&buff[4], (Int32)(ts.inst.nanosec / 1000));
 		WriteInt32(&buff[8], (Int32)packetSize);
 		WriteInt32(&buff[12], (Int32)packetSize);
 		me->fs->Write(buff, 16);
