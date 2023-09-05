@@ -98,7 +98,7 @@ void Media::CS::CSYUV_LRGBHQ::SetupYUV14_RGB13()
 	}
 }
 
-Media::CS::CSYUV_LRGBHQ::CSYUV_LRGBHQ(const Media::ColorProfile *srcColor, Media::ColorProfile::YUVType yuvType, Media::ColorManagerSess *colorSess) : Media::CS::CSYUV_LRGB(srcColor, yuvType, colorSess)
+Media::CS::CSYUV_LRGBHQ::CSYUV_LRGBHQ(NotNullPtr<const Media::ColorProfile> srcColor, Media::ColorProfile::YUVType yuvType, Media::ColorManagerSess *colorSess) : Media::CS::CSYUV_LRGB(srcColor, yuvType, colorSess)
 {
 	this->yuv2rgb14 = MemAlloc(Int64, 256 + 65536 * 2);
 }

@@ -73,7 +73,7 @@ void *Sync::EventPool::Wait(Int32 timeout)
 		this->mut.Lock();
 		if (this->state == 0)
 		{
-			handArr = this->handList.GetArray(&cnt);
+			handArr = this->handList.GetPtr(cnt);
 			if (cnt > MAXIMUM_WAIT_OBJECTS)
 			{
 				cnt = MAXIMUM_WAIT_OBJECTS;
