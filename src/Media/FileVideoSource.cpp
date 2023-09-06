@@ -194,7 +194,7 @@ UInt32 __stdcall Media::FileVideoSource::OutputThread(void *userObj)
 	return 0;
 }
 
-Media::FileVideoSource::FileVideoSource(NotNullPtr<IO::StreamData> data, Media::FrameInfo *frameInfo, UInt32 frameRateNorm, UInt32 frameRateDenorm, Bool timeBased)
+Media::FileVideoSource::FileVideoSource(NotNullPtr<IO::StreamData> data, NotNullPtr<const Media::FrameInfo> frameInfo, UInt32 frameRateNorm, UInt32 frameRateDenorm, Bool timeBased)
 {
 	this->frameInfo.Set(frameInfo);
 	this->data = data->GetPartialData(0, data->GetDataSize());
@@ -261,12 +261,12 @@ Text::CString Media::FileVideoSource::GetFilterName()
 	return CSTR("FileVideoSource");
 }
 
-Bool Media::FileVideoSource::GetVideoInfo(Media::FrameInfo *info, UInt32 *frameRateNorm, UInt32 *frameRateDenorm, UOSInt *maxFrameSize)
+Bool Media::FileVideoSource::GetVideoInfo(NotNullPtr<Media::FrameInfo> info, OutParam<UInt32> frameRateNorm, OutParam<UInt32> frameRateDenorm, OutParam<UOSInt> maxFrameSize)
 {
-	info->Set(&this->frameInfo);
-	*frameRateNorm = this->frameRateNorm;
-	*frameRateDenorm = this->frameRateDenorm;
-	*maxFrameSize = this->maxFrameSize;
+	info->Set(this->frameInfo);
+	frameRateNorm.Set(this->frameRateNorm);
+	frameRateDenorm.Set(this->frameRateDenorm);
+	maxFrameSize.Set(this->maxFrameSize);
 	return true;
 }
 

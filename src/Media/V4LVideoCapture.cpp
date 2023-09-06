@@ -139,7 +139,7 @@ Text::CString Media::V4LVideoCapture::GetFilterName()
 	return CSTR("V4LVideoCapture");
 }
 
-Bool Media::V4LVideoCapture::GetVideoInfo(Media::FrameInfo *info, UInt32 *frameRateNorm, UInt32 *frameRateDenorm, UOSInt *maxFrameSize)
+Bool Media::V4LVideoCapture::GetVideoInfo(NotNullPtr<Media::FrameInfo> info, OutParam<UInt32> frameRateNorm, OutParam<UInt32> frameRateDenorm, OutParam<UOSInt> maxFrameSize)
 {
 	struct v4l2_format fmt;
 	MemClear(&fmt, sizeof(fmt));
@@ -210,19 +210,19 @@ Bool Media::V4LVideoCapture::GetVideoInfo(Media::FrameInfo *info, UInt32 *frameR
 	}
 	info->yuvType = Media::ColorProfile::YUVT_BT601;
 	info->ycOfst = Media::YCOFST_C_CENTER_LEFT;
-	*maxFrameSize = fmt.fmt.pix.sizeimage;
+	maxFrameSize.Set(fmt.fmt.pix.sizeimage);
 	
 	v4l2_streamparm param;
 	MemClear(&param, sizeof(param));
 	if (ioctl(this->fd, VIDIOC_G_PARM, &param) == 0)
 	{
-		*frameRateNorm = param.parm.capture.timeperframe.denominator;
-		*frameRateDenorm = param.parm.capture.timeperframe.numerator;
+		frameRateNorm.Set(param.parm.capture.timeperframe.denominator);
+		frameRateDenorm.Set(param.parm.capture.timeperframe.numerator);
 	}
 	else
 	{
-		*frameRateNorm = 30;
-		*frameRateDenorm = 1;
+		frameRateNorm.Set(30);
+		frameRateDenorm.Set(1);
 	}
 	return true;
 }
@@ -429,7 +429,7 @@ Bool Media::V4LVideoCapture::ReadFrameBegin()
 	UOSInt frameSize;
 	UInt32 frameRateNumer;
 	UInt32 frameRateDenomin;
-	if (!this->GetVideoInfo(&this->frameInfo, &frameRateNumer, &frameRateDenomin, &frameSize))
+	if (!this->GetVideoInfo(this->frameInfo, frameRateNumer, frameRateDenomin, frameSize))
 	{
 		return false;
 	}

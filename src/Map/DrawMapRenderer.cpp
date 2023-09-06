@@ -1709,6 +1709,7 @@ void Map::DrawMapRenderer::DrawShapesPoint(Map::DrawMapRenderer::DrawEnv *denv, 
 		}
 		Media::DrawImage *dimg;
 		NotNullPtr<Media::DrawImage> gimg;
+		NotNullPtr<Media::StaticImage> simg;
 		if (this->drawType == Map::DrawMapRenderer::DT_PIXELDRAW)
 		{
 			UInt32 newW = (UInt32)Double2Int32(UOSInt2Double(img->info.dispSize.x) * denv->img->GetHDPI() / img->info.hdpi);
@@ -1716,7 +1717,8 @@ void Map::DrawMapRenderer::DrawShapesPoint(Map::DrawMapRenderer::DrawEnv *denv, 
 			if (newW > img->info.dispSize.x || newH > img->info.dispSize.y)
 			{
 				this->resizer->SetTargetSize(Math::Size2D<UOSInt>(newW, newH));
-				Media::StaticImage *img2 = this->resizer->ProcessToNew((Media::StaticImage*)img);
+				simg.Set((Media::StaticImage*)img);
+				Media::StaticImage *img2 = this->resizer->ProcessToNew(simg);
 				if (img2)
 				{
 					spotX = spotX * denv->img->GetHDPI() / img->info.hdpi;
@@ -1769,6 +1771,7 @@ void Map::DrawMapRenderer::DrawShapesPoint(Map::DrawMapRenderer::DrawEnv *denv, 
 
 		Media::DrawImage *dimg;
 		NotNullPtr<Media::DrawImage> gimg;
+		NotNullPtr<Media::StaticImage> simg;
 		if (this->drawType == Map::DrawMapRenderer::DT_PIXELDRAW)
 		{
 			UInt32 newW = (UInt32)Double2Int32(UOSInt2Double(img->info.dispSize.x) * denv->img->GetHDPI() / img->info.hdpi);
@@ -1776,7 +1779,8 @@ void Map::DrawMapRenderer::DrawShapesPoint(Map::DrawMapRenderer::DrawEnv *denv, 
 			if (newW != img->info.dispSize.x || newH != img->info.dispSize.y)
 			{
 				this->resizer->SetTargetSize(Math::Size2D<UOSInt>(newW, newH));
-				Media::StaticImage *img2 = this->resizer->ProcessToNew((Media::StaticImage*)img);
+				simg.Set((Media::StaticImage*)img);
+				Media::StaticImage *img2 = this->resizer->ProcessToNew(simg);
 				if (img2)
 				{
 					spotX = spotX * denv->img->GetHDPI() / img->info.hdpi;
@@ -2112,17 +2116,20 @@ void Map::DrawMapRenderer::DrawImageLayer(DrawEnv *denv, Map::MapDrawLayer *laye
 			scnCoords[1] = denv->view->MapXYToScnXY(mapCoords.br);
 		}
 		UInt32 imgTimeMS;
-		Media::StaticImage *simg = vimg->GetImage(scnCoords[1].x - scnCoords[0].x, scnCoords[1].y - scnCoords[0].y, &imgTimeMS);
-		DrawImageObject(denv, simg, scnCoords[0], scnCoords[1], vimg->GetSrcAlpha());
-		if (imgTimeMS != 0)
+		NotNullPtr<Media::StaticImage> simg;
+		if (simg.Set(vimg->GetImage(scnCoords[1].x - scnCoords[0].x, scnCoords[1].y - scnCoords[0].y, &imgTimeMS)))
 		{
-			if (denv->imgDurMS == 0)
+			DrawImageObject(denv, simg, scnCoords[0], scnCoords[1], vimg->GetSrcAlpha());
+			if (imgTimeMS != 0)
 			{
-				denv->imgDurMS = imgTimeMS;
-			}
-			else if (denv->imgDurMS > imgTimeMS)
-			{
-				denv->imgDurMS = imgTimeMS;
+				if (denv->imgDurMS == 0)
+				{
+					denv->imgDurMS = imgTimeMS;
+				}
+				else if (denv->imgDurMS > imgTimeMS)
+				{
+					denv->imgDurMS = imgTimeMS;
+				}
 			}
 		}
 
@@ -2131,7 +2138,7 @@ void Map::DrawMapRenderer::DrawImageLayer(DrawEnv *denv, Map::MapDrawLayer *laye
 	}
 }
 
-void Map::DrawMapRenderer::DrawImageObject(DrawEnv *denv, Media::StaticImage *img, Math::Coord2DDbl scnTL, Math::Coord2DDbl scnBR, Double srcAlpha)
+void Map::DrawMapRenderer::DrawImageObject(DrawEnv *denv, NotNullPtr<Media::StaticImage> img, Math::Coord2DDbl scnTL, Math::Coord2DDbl scnBR, Double srcAlpha)
 {
 	UOSInt imgW;
 	UOSInt imgH;
@@ -2145,7 +2152,7 @@ void Map::DrawMapRenderer::DrawImageObject(DrawEnv *denv, Media::StaticImage *im
 	dimgW = UOSInt2Double(imgW);
 	dimgH = UOSInt2Double(imgH);
 
-	if (img != 0 && scnTL.x < scnBR.x && scnTL.y < scnBR.y)
+	if (scnTL.x < scnBR.x && scnTL.y < scnBR.y)
 	{
 		if (this->drawType == DT_VECTORDRAW)
 		{
@@ -2161,8 +2168,8 @@ void Map::DrawMapRenderer::DrawImageObject(DrawEnv *denv, Media::StaticImage *im
 				img->To32bpp();
 				this->resizer->SetTargetSize(Math::Coord2D<UOSInt>::UOSIntFromDouble(scnBR) - Math::Coord2D<UOSInt>::UOSIntFromDouble(scnTL));
 				this->resizer->SetResizeAspectRatio(Media::IImgResizer::RAR_IGNOREAR);
-				Media::StaticImage *newImg = this->resizer->ProcessToNew(img);
-				if (newImg)
+				NotNullPtr<Media::StaticImage> newImg;
+				if (newImg.Set(this->resizer->ProcessToNew(img)))
 				{
 					if (srcAlpha >= 0 && srcAlpha <= 1)
 					{
@@ -2171,7 +2178,7 @@ void Map::DrawMapRenderer::DrawImageObject(DrawEnv *denv, Media::StaticImage *im
 					newImg->info.hdpi = denv->img->GetHDPI();
 					newImg->info.vdpi = denv->img->GetVDPI();
 					denv->img->DrawImagePt2(newImg, scnTL);
-					DEL_CLASS(newImg);
+					newImg.Delete();
 				}
 			}
 			else

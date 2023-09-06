@@ -303,7 +303,7 @@ Bool IO::FileStream::IsDown() const
 	return this->handle == INVALID_HANDLE_VALUE;
 }
 
-Bool IO::FileStream::IsError()
+Bool IO::FileStream::IsError() const
 {
 	return this->handle == INVALID_HANDLE_VALUE;
 }

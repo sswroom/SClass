@@ -494,7 +494,7 @@ Media::DrawImage *Media::GDIEngine::ConvImage(Media::Image *img)
 	}
 	else
 	{
-		Media::StaticImage *simg = img->CreateStaticImage();
+		NotNullPtr<Media::StaticImage> simg = img->CreateStaticImage();
 		if (simg->To32bpp())
 		{
 			UInt8 *sptr = (UInt8*)simg->data;
@@ -503,7 +503,7 @@ Media::DrawImage *Media::GDIEngine::ConvImage(Media::Image *img)
 			OSInt dbpl = (OSInt)simg->info.dispSize.x << 2;
 			ImageCopy_ImgCopy(sptr, dptr + ((UOSInt)dbpl * (simg->info.dispSize.y - 1)), simg->info.dispSize.x << 2, simg->info.dispSize.y, sbpl, -dbpl);
 		}
-		DEL_CLASS(simg);
+		simg.Delete();
 	}
 	return gimg;
 }
@@ -513,7 +513,7 @@ Media::DrawImage *Media::GDIEngine::CloneImage(NotNullPtr<Media::DrawImage> img)
 	Media::GDIImage *newImg = (Media::GDIImage*)this->CreateImage32(img->GetSize(), img->GetAlphaType());
 	if (newImg)
 	{
-		newImg->info.Set(&((Media::GDIImage*)img.Ptr())->info);
+		newImg->info.Set(((Media::GDIImage*)img.Ptr())->info);
 		if (img->GetBitCount() == 32)
 		{
 			MemCopyNO(newImg->bmpBits, ((Media::GDIImage*)img.Ptr())->bmpBits, newImg->GetWidth() * newImg->GetHeight() * 4);
@@ -1992,11 +1992,11 @@ Bool Media::GDIImage::DrawImagePt(NotNullPtr<DrawImage> img, Math::Coord2DDbl tl
 	return true;
 }
 
-Bool Media::GDIImage::DrawImagePt2(Media::StaticImage *img, Math::Coord2DDbl tl)
+Bool Media::GDIImage::DrawImagePt2(NotNullPtr<Media::StaticImage> img, Math::Coord2DDbl tl)
 {
 	if (this->IsOffScreen() && img->GetImageType() == Media::Image::ImageType::Static)
 	{
-		Media::StaticImage *simg = img;
+		Media::StaticImage *simg = img.Ptr();
 		simg->To32bpp();
 		if (simg->info.atype == Media::AT_NO_ALPHA)
 		{
@@ -2075,7 +2075,7 @@ Bool Media::GDIImage::DrawImagePt2(Media::StaticImage *img, Math::Coord2DDbl tl)
 	else
 	{
 		NotNullPtr<Media::DrawImage> dimg;
-		if (dimg.Set(this->eng->ConvImage(img)))
+		if (dimg.Set(this->eng->ConvImage(img.Ptr())))
 		{
 			DrawImagePt(dimg, tl);
 			this->eng->DeleteImage(dimg);
@@ -2646,7 +2646,7 @@ void Media::GDIImage::CopyBits(OSInt x, OSInt y, void *imgPtr, UOSInt dbpl, UOSI
 
 Media::StaticImage *Media::GDIImage::ToStaticImage() const
 {
-	return CreateStaticImage();
+	return CreateStaticImage().Ptr();
 }
 
 UOSInt Media::GDIImage::SavePng(NotNullPtr<IO::SeekableStream> stm)
@@ -2805,7 +2805,7 @@ UOSInt Media::GDIImage::SaveJPG(NotNullPtr<IO::SeekableStream> stm)
 
 Media::Image *Media::GDIImage::Clone() const
 {
-	return CreateStaticImage();
+	return CreateStaticImage().Ptr();
 }
 
 Media::Image::ImageType Media::GDIImage::GetImageType() const

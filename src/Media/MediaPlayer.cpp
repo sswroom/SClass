@@ -429,11 +429,11 @@ Bool Media::MediaPlayer::GetVideoSize(UOSInt *w, UOSInt *h)
 	{
 		if (this->currVDecoder)
 		{
-			this->currVDecoder->GetVideoInfo(&info, &tmpV, &tmpV, &vw);
+			this->currVDecoder->GetVideoInfo(info, tmpV, tmpV, vw);
 		}
 		else
 		{
-			this->currVStm->GetVideoInfo(&info, &tmpV, &tmpV, &vw);
+			this->currVStm->GetVideoInfo(info, tmpV, tmpV, vw);
 		}
 		this->currVStm->GetBorderCrop(&cropLeft, &cropTop, &cropRight, &cropBottom);
 		vw = info.dispSize.x - cropLeft - cropRight;

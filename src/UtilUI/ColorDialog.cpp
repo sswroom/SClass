@@ -787,7 +787,7 @@ void UtilUI::ColorDialog::GenMainImageInner(UInt8 *imgPtr, UOSInt startIndex, UO
 	Math::Vector3 rgbv2;
 	Math::Vector3 rgbv3;
 
-	const Media::IColorHandler::RGBPARAM2 *rgbParam = this->colorSess->GetRGBParam();
+	NotNullPtr<const Media::IColorHandler::RGBPARAM2> rgbParam = this->colorSess->GetRGBParam();
 	Double rGammaVal;
 	Double gGammaVal;
 	Double bGammaVal;
@@ -988,7 +988,7 @@ void UtilUI::ColorDialog::GenSubImage()
 	UInt8 *imgPtr = this->subImg->data;
 	UOSInt w = this->subImg->info.dispSize.x;
 	UOSInt h = this->subImg->info.dispSize.y;
-	const Media::IColorHandler::RGBPARAM2 *rgbParam = this->colorSess->GetRGBParam();
+	NotNullPtr<const Media::IColorHandler::RGBPARAM2> rgbParam = this->colorSess->GetRGBParam();
 	Double rGammaVal;
 	Double gGammaVal;
 	Double bGammaVal;
@@ -1174,7 +1174,7 @@ void UtilUI::ColorDialog::UpdateColor()
 	Math::Vector3 rgbv3;
 
 	UInt8 c[4];
-	const Media::IColorHandler::RGBPARAM2 *rgbParam = this->colorSess->GetRGBParam();
+	NotNullPtr<const Media::IColorHandler::RGBPARAM2> rgbParam = this->colorSess->GetRGBParam();
 	Double rGammaVal;
 	Double gGammaVal;
 	Double bGammaVal;
@@ -1779,11 +1779,11 @@ void UtilUI::ColorDialog::OnDisplaySizeChange(UOSInt dispWidth, UOSInt dispHeigh
 	}
 }
 
-void UtilUI::ColorDialog::YUVParamChanged(const Media::IColorHandler::YUVPARAM *yuvParam)
+void UtilUI::ColorDialog::YUVParamChanged(NotNullPtr<const Media::IColorHandler::YUVPARAM> yuvParam)
 {
 }
 
-void UtilUI::ColorDialog::RGBParamChanged(const Media::IColorHandler::RGBPARAM2 *rgbParam)
+void UtilUI::ColorDialog::RGBParamChanged(NotNullPtr<const Media::IColorHandler::RGBPARAM2> rgbParam)
 {
 	this->UpdateColor();
 	this->GenMainImage();

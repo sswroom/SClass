@@ -328,11 +328,11 @@ void Media::ABlend::AlphaBlend8_C8::PremulAlpha(UInt8 *dest, OSInt dbpl, const U
 	mutUsage.EndUse();
 }
 
-void Media::ABlend::AlphaBlend8_C8::YUVParamChanged(const Media::IColorHandler::YUVPARAM *yuvParam)
+void Media::ABlend::AlphaBlend8_C8::YUVParamChanged(NotNullPtr<const Media::IColorHandler::YUVPARAM> yuvParam)
 {
 }
 
-void Media::ABlend::AlphaBlend8_C8::RGBParamChanged(const Media::IColorHandler::RGBPARAM2 *rgbParam)
+void Media::ABlend::AlphaBlend8_C8::RGBParamChanged(NotNullPtr<const Media::IColorHandler::RGBPARAM2> rgbParam)
 {
 	if (this->lutList)
 	{

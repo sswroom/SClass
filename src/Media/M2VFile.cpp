@@ -44,7 +44,7 @@ Media::M2VFile::M2VFile(NotNullPtr<IO::StreamData> stmData) : Media::MediaFile(s
 	UInt32 frameRateNorm;
 	UInt32 frameRateDenorm;
 	Media::FrameInfo info;
-	Media::MPEGVideoParser::GetFrameInfo(this->readBuff.Ptr(), 1024, &info, &frameRateNorm, &frameRateDenorm, &this->bitRate, false);
+	Media::MPEGVideoParser::GetFrameInfo(this->readBuff.Ptr(), 1024, info, frameRateNorm, frameRateDenorm, &this->bitRate, false);
 	NEW_CLASS(this->stm, Media::M2VStreamSource(this));
 	this->stm->DetectStreamInfo(this->readBuff.Ptr(), buffSize);
 }

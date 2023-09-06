@@ -1622,16 +1622,19 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnMapMouseMove(void *userObj, Math
 					if (imgList)
 					{
 						imgList->ToStaticImage(0);
-						Media::StaticImage *img = (Media::StaticImage*)imgList->GetImage(0, 0);
-						Media::StaticImage *nimg;
-						img->To32bpp();
-						me->mapResizer->SetTargetSize(Math::Size2D<UOSInt>(320, 320));
-						me->mapResizer->SetResizeAspectRatio(Media::IImgResizer::RAR_SQUAREPIXEL);
-						nimg = me->mapResizer->ProcessToNew(img);
-						DEL_CLASS(imgList);
-						me->mapCurrFile = ufile;
-						me->mapCurrImage = me->env->GetDrawEngine()->ConvImage(nimg);
-						DEL_CLASS(nimg);
+						NotNullPtr<Media::StaticImage> img;
+						if (img.Set((Media::StaticImage*)imgList->GetImage(0, 0)))
+						{
+							Media::StaticImage *nimg;
+							img->To32bpp();
+							me->mapResizer->SetTargetSize(Math::Size2D<UOSInt>(320, 320));
+							me->mapResizer->SetResizeAspectRatio(Media::IImgResizer::RAR_SQUAREPIXEL);
+							nimg = me->mapResizer->ProcessToNew(img);
+							DEL_CLASS(imgList);
+							me->mapCurrFile = ufile;
+							me->mapCurrImage = me->env->GetDrawEngine()->ConvImage(nimg);
+							DEL_CLASS(nimg);
+						}
 						me->mcMap->Redraw();
 					}
 					else if (updated)

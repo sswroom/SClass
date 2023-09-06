@@ -91,7 +91,7 @@ void Media::Resizer::NearestNeighbourResizer64_64::Resize(const UInt8 *src, OSIn
 	NearestNeighbourResizer64_64_Resize(src, dest, dwidth, dheight, dbpl, this->xindex, this->yindex);
 }
 
-Bool Media::Resizer::NearestNeighbourResizer64_64::Resize(const Media::StaticImage *srcImg, Media::StaticImage *destImg)
+Bool Media::Resizer::NearestNeighbourResizer64_64::Resize(NotNullPtr<const Media::StaticImage> srcImg, NotNullPtr<Media::StaticImage> destImg)
 {
 	if (srcImg->info.fourcc != 0 && srcImg->info.fourcc != *(UInt32*)"DIB")
 		return false;
@@ -113,7 +113,7 @@ Bool Media::Resizer::NearestNeighbourResizer64_64::Resize(const Media::StaticIma
 	}
 }
 
-Bool Media::Resizer::NearestNeighbourResizer64_64::IsSupported(const Media::FrameInfo *srcInfo)
+Bool Media::Resizer::NearestNeighbourResizer64_64::IsSupported(NotNullPtr<const Media::FrameInfo> srcInfo)
 {
 	if (srcInfo->fourcc != 0)
 		return false;
@@ -122,11 +122,11 @@ Bool Media::Resizer::NearestNeighbourResizer64_64::IsSupported(const Media::Fram
 	return true;
 }
 
-Media::StaticImage *Media::Resizer::NearestNeighbourResizer64_64::ProcessToNewPartial(const Media::Image *srcImage, Math::Coord2DDbl srcTL, Math::Coord2DDbl srcBR)
+Media::StaticImage *Media::Resizer::NearestNeighbourResizer64_64::ProcessToNewPartial(NotNullPtr<const Media::Image> srcImage, Math::Coord2DDbl srcTL, Math::Coord2DDbl srcBR)
 {
 	Media::FrameInfo destInfo;
 	Media::StaticImage *newImage;
-	if (srcImage->GetImageType() != Media::Image::ImageType::Static || !IsSupported(&srcImage->info))
+	if (srcImage->GetImageType() != Media::Image::ImageType::Static || !IsSupported(srcImage->info))
 	{
 		return 0;
 	}
@@ -139,12 +139,12 @@ Media::StaticImage *Media::Resizer::NearestNeighbourResizer64_64::ProcessToNewPa
 	{
 		targetSize.y = (UOSInt)Double2OSInt(srcBR.y - srcTL.y);
 	}
-	CalOutputSize(&srcImage->info, targetSize, &destInfo, this->rar);
+	CalOutputSize(srcImage->info, targetSize, destInfo, this->rar);
 	destInfo.color.Set(srcImage->info.color);
 	destInfo.atype = srcImage->info.atype;
 	NEW_CLASS(newImage, Media::StaticImage(destInfo));
 	Int32 tlx = (Int32)srcTL.x;
 	Int32 tly = (Int32)srcTL.y;
-	Resize(((Media::StaticImage*)srcImage)->data + (tlx << 3) + tly * (OSInt)srcImage->GetDataBpl(), (OSInt)srcImage->GetDataBpl(), srcBR.x - srcTL.x, srcBR.y - srcTL.y, srcTL.x - tlx, srcTL.y - tly, newImage->data, (OSInt)newImage->GetDataBpl(), newImage->info.dispSize.x, newImage->info.dispSize.y);
+	Resize(((Media::StaticImage*)srcImage.Ptr())->data + (tlx << 3) + tly * (OSInt)srcImage->GetDataBpl(), (OSInt)srcImage->GetDataBpl(), srcBR.x - srcTL.x, srcBR.y - srcTL.y, srcTL.x - tlx, srcTL.y - tly, newImage->data, (OSInt)newImage->GetDataBpl(), newImage->info.dispSize.x, newImage->info.dispSize.y);
 	return newImage;
 }

@@ -23,17 +23,17 @@ namespace Media
 		virtual ~IImgResizer(){};
 
 		virtual void Resize(const UInt8 *src, OSInt sbpl, Double swidth, Double sheight, Double xOfst, Double yOfst, UInt8 *dest, OSInt dbpl, UOSInt dwidth, UOSInt dheight) = 0;
-		virtual Bool Resize(const Media::StaticImage *srcImage, Media::StaticImage *destImage) { return false;};
+		virtual Bool Resize(NotNullPtr<const Media::StaticImage> srcImage, NotNullPtr<Media::StaticImage> destImage) { return false;};
 
-		virtual Bool IsSupported(const Media::FrameInfo *srcInfo) = 0;
-		virtual Media::StaticImage *ProcessToNew(const Media::Image *srcImage);
-		virtual Media::StaticImage *ProcessToNewPartial(const Media::Image *srcImage, Math::Coord2DDbl srcTL, Math::Coord2DDbl srcBR) = 0;
+		virtual Bool IsSupported(NotNullPtr<const Media::FrameInfo> srcInfo) = 0;
+		virtual Media::StaticImage *ProcessToNew(NotNullPtr<const Media::Image> srcImage);
+		virtual Media::StaticImage *ProcessToNewPartial(NotNullPtr<const Media::Image> srcImage, Math::Coord2DDbl srcTL, Math::Coord2DDbl srcBR) = 0;
 		void SetTargetSize(Math::Size2D<UOSInt> targetSize);
 		void SetResizeAspectRatio(ResizeAspectRatio rar);
 		void SetSrcAlphaType(Media::AlphaType alphaType);
 		virtual void SetSrcRefLuminance(Double srcRefLuminance);
 
-		static void CalOutputSize(const Media::FrameInfo *srcInfo, Math::Size2D<UOSInt> targetSize, Media::FrameInfo *destInfo, ResizeAspectRatio rar);
+		static void CalOutputSize(NotNullPtr<const Media::FrameInfo> srcInfo, Math::Size2D<UOSInt> targetSize, NotNullPtr<Media::FrameInfo> destInfo, ResizeAspectRatio rar);
 	};
 }
 #endif

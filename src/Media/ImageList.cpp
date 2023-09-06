@@ -46,6 +46,13 @@ IO::ParserType Media::ImageList::GetParserType() const
 	return IO::ParserType::ImageList;
 }
 
+UOSInt Media::ImageList::AddImage(NotNullPtr<Media::Image> img, UInt32 imageDelay)
+{
+	this->imgTimes.Add(imageDelay);
+	this->imgTypeList.Add(Media::ImageList::IT_UNKNOWN);
+	return this->imgList.Add(img.Ptr());
+}
+
 UOSInt Media::ImageList::AddImage(Media::Image *img, UInt32 imageDelay)
 {
 	this->imgTimes.Add(imageDelay);
@@ -53,11 +60,18 @@ UOSInt Media::ImageList::AddImage(Media::Image *img, UInt32 imageDelay)
 	return this->imgList.Add(img);
 }
 
+void Media::ImageList::ReplaceImage(UOSInt index, NotNullPtr<Media::Image> img)
+{
+	Media::Image *oldImg = this->imgList.GetItem(index);
+	this->imgList.SetItem(index, img.Ptr());
+	SDEL_CLASS(oldImg);
+}
+
 void Media::ImageList::ReplaceImage(UOSInt index, Media::Image *img)
 {
 	Media::Image *oldImg = this->imgList.GetItem(index);
 	this->imgList.SetItem(index, img);
-	DEL_CLASS(oldImg);
+	SDEL_CLASS(oldImg);
 }
 
 Bool  Media::ImageList::RemoveImage(UOSInt index, Bool toRelease)
@@ -110,8 +124,8 @@ void Media::ImageList::ToStaticImage(UOSInt index)
 	Media::Image *img = this->imgList.GetItem(index);
 	if (img == 0 || img->GetImageType() == Media::Image::ImageType::Static)
 		return;
-	Media::StaticImage *simg = img->CreateStaticImage();
-	this->imgList.SetItem(index, simg);
+	NotNullPtr<Media::StaticImage> simg = img->CreateStaticImage();
+	this->imgList.SetItem(index, simg.Ptr());
 	DEL_CLASS(img);
 }
 

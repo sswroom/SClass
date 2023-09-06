@@ -21,7 +21,7 @@ Media::ColorConv::~ColorConv()
 	MemFree(this->rgbTable);
 }
 
-void Media::ColorConv::RGBParamChanged(const Media::IColorHandler::RGBPARAM2 *rgbParam)
+void Media::ColorConv::RGBParamChanged(NotNullPtr<const Media::IColorHandler::RGBPARAM2> rgbParam)
 {
 	Media::RGBLUTGen rgbGen(this->colorSess);
 	rgbGen.GenRGBA8_LRGBC((Int64*)this->rgbTable, this->srcColor, this->destColor.GetPrimaries(), 14);
@@ -105,7 +105,7 @@ UInt32 Media::ColorConv::ConvRGB8(UInt32 c)
 UInt32 Media::ColorConv::ConvARGB(NotNullPtr<const Media::ColorProfile> srcColor, NotNullPtr<const Media::ColorProfile> destColor, Media::ColorManagerSess *colorSess, UInt32 c)
 {
 	UInt8 buff[4];
-	const Media::IColorHandler::RGBPARAM2 *rgbParam;
+	NotNullPtr<const Media::IColorHandler::RGBPARAM2> rgbParam;
 	NotNullPtr<Media::CS::TransferParam> rTran;
 	NotNullPtr<Media::CS::TransferParam> gTran;
 	NotNullPtr<Media::CS::TransferParam> bTran;
@@ -228,7 +228,7 @@ UInt32 Media::ColorConv::ConvARGB(NotNullPtr<const Media::ColorProfile> srcColor
 
 	if (destColor->GetRTranParamRead()->GetTranType() == Media::CS::TRANT_VDISPLAY && colorSess != 0)
 	{
-		const Media::IColorHandler::RGBPARAM2 *rgbParam = colorSess->GetRGBParam();
+		NotNullPtr<const Media::IColorHandler::RGBPARAM2> rgbParam = colorSess->GetRGBParam();
 
 		rGammaVal = rgbParam->MonRGamma;
 		gGammaVal = rgbParam->MonGGamma;
@@ -249,7 +249,7 @@ UInt32 Media::ColorConv::ConvARGB(NotNullPtr<const Media::ColorProfile> srcColor
 	}
 	else if (destColor->GetRTranParamRead()->GetTranType() == Media::CS::TRANT_PDISPLAY && colorSess != 0)
 	{
-		const Media::IColorHandler::RGBPARAM2 *rgbParam = colorSess->GetRGBParam();
+		NotNullPtr<const Media::IColorHandler::RGBPARAM2> rgbParam = colorSess->GetRGBParam();
 
 		rGammaVal = rgbParam->MonRGamma;
 		gGammaVal = rgbParam->MonGGamma;

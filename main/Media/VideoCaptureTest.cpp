@@ -258,7 +258,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 
 				console->WriteLine();
 
-				if (capture->GetVideoInfo(&info, &frameRateNorm, &frameRateDenorm, &frameMaxSize))
+				if (capture->GetVideoInfo(info, frameRateNorm, frameRateDenorm, frameMaxSize))
 				{
 					sb.ClearStr();
 					sb.AppendC(UTF8STRC("Using Format: "));

@@ -139,17 +139,18 @@ void UI::GUIPictureBox::Deinit(void *hInst)
 void UI::GUIPictureBox::UpdatePreview()
 {
 	NotNullPtr<Media::DrawImage> img;
+	NotNullPtr<Media::StaticImage> simg;
 	if (img.Set(this->prevImageD))
 	{
 		this->eng->DeleteImage(img);
 		this->prevImageD = 0;
 	}
 
-	if (this->currImage)
+	if (simg.Set(this->currImage))
 	{
 		if (this->allowResize)
 		{
-			Media::StaticImage *tmpImage = resizer->ProcessToNew(this->currImage);
+			Media::StaticImage *tmpImage = resizer->ProcessToNew(simg);
 			if (tmpImage)
 			{
 				this->prevImageD = this->eng->ConvImage(tmpImage);
@@ -158,7 +159,7 @@ void UI::GUIPictureBox::UpdatePreview()
 		}
 		else
 		{
-			this->prevImageD = this->eng->ConvImage(this->currImage);
+			this->prevImageD = this->eng->ConvImage(simg.Ptr());
 		}
 	}
 	this->Redraw();

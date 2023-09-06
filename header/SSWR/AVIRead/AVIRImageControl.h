@@ -111,8 +111,8 @@ namespace SSWR
 			virtual Text::CString GetObjectClass();
 			virtual OSInt OnNotify(UInt32 code, void *lParam);
 
-			virtual void YUVParamChanged(const Media::IColorHandler::YUVPARAM *yuvParam);
-			virtual void RGBParamChanged(const Media::IColorHandler::RGBPARAM2 *rgbParam);
+			virtual void YUVParamChanged(NotNullPtr<const Media::IColorHandler::YUVPARAM> yuvParam);
+			virtual void RGBParamChanged(NotNullPtr<const Media::IColorHandler::RGBPARAM2> rgbParam);
 
 			virtual void SetDPI(Double hdpi, Double ddpi);
 

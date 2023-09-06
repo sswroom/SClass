@@ -5106,9 +5106,9 @@ void SSWR::OrganMgr::OrganEnvDB::ExportLite(const UTF8Char *folder)
 					{
 						UInt32 delay;
 						imgList->ToStaticImage(0);
-						Media::StaticImage *simg = (Media::StaticImage*)imgList->GetImage(0, &delay);
 						Media::StaticImage *newImg;
-						if (simg)
+						NotNullPtr<Media::StaticImage> simg;
+						if (simg.Set((Media::StaticImage*)imgList->GetImage(0, &delay)))
 						{
 							if (simg->info.dispSize.x > 1920 || simg->info.dispSize.y > 1920)
 							{

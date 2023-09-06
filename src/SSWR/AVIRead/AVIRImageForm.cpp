@@ -705,10 +705,10 @@ void SSWR::AVIRead::AVIRImageForm::EventMenuClicked(UInt16 cmdId)
 			Media::Image *img = this->imgList->GetImage(selInd, 0);
 			if (img)
 			{
-				Media::StaticImage *buffImg = img->CreateStaticImage();
-				Media::StaticImage *prevImg = img->CreateStaticImage();
+				NotNullPtr<Media::StaticImage> buffImg = img->CreateStaticImage();
+				NotNullPtr<Media::StaticImage> prevImg = img->CreateStaticImage();
 
-				this->pbImage->SetImage(prevImg, true);
+				this->pbImage->SetImage(prevImg.Ptr(), true);
 
 				SSWR::AVIRead::AVIRImageColorForm frm(0, this->ui, this->core, buffImg, prevImg, this->pbImage);
 				UI::GUIForm::DialogResult dr = frm.ShowDialog(this);
@@ -716,12 +716,12 @@ void SSWR::AVIRead::AVIRImageForm::EventMenuClicked(UInt16 cmdId)
 				if (dr == UI::GUIForm::DR_OK)
 				{
 					this->imgList->ReplaceImage((UOSInt)selInd, prevImg);
-					DEL_CLASS(buffImg);
+					buffImg.Delete();
 				}
 				else
 				{
-					DEL_CLASS(prevImg);
-					DEL_CLASS(buffImg);
+					prevImg.Delete();
+					buffImg.Delete();
 					this->pbImage->SetImage(img, true);
 				}
 				this->currImg = img;
@@ -743,10 +743,10 @@ void SSWR::AVIRead::AVIRImageForm::EventMenuClicked(UInt16 cmdId)
 				
 				if (valid)
 				{
-					Media::StaticImage *buffImg = img->CreateStaticImage();
-					Media::StaticImage *prevImg = img->CreateStaticImage();
+					NotNullPtr<Media::StaticImage> buffImg = img->CreateStaticImage();
+					NotNullPtr<Media::StaticImage> prevImg = img->CreateStaticImage();
 
-					this->pbImage->SetImage(prevImg, true);
+					this->pbImage->SetImage(prevImg.Ptr(), true);
 
 					SSWR::AVIRead::AVIRImageGRForm frm(0, this->ui, this->core, buffImg, prevImg, this->pbImage);
 					UI::GUIForm::DialogResult dr = frm.ShowDialog(this);
@@ -754,14 +754,14 @@ void SSWR::AVIRead::AVIRImageForm::EventMenuClicked(UInt16 cmdId)
 					if (dr == UI::GUIForm::DR_OK)
 					{
 						this->imgList->ReplaceImage((UOSInt)selInd, prevImg);
-						DEL_CLASS(buffImg);
-						img = prevImg;
-						this->pbImage->SetImage(prevImg, true);
+						buffImg.Delete();
+						img = prevImg.Ptr();
+						this->pbImage->SetImage(prevImg.Ptr(), true);
 					}
 					else
 					{
-						DEL_CLASS(prevImg);
-						DEL_CLASS(buffImg);
+						prevImg.Delete();
+						buffImg.Delete();
 						this->pbImage->SetImage(img, true);
 					}
 					this->currImg = img;
@@ -806,14 +806,14 @@ void SSWR::AVIRead::AVIRImageForm::EventMenuClicked(UInt16 cmdId)
 			Media::Image *img = this->imgList->GetImage(selInd, 0);
 			if (img)
 			{
-				Media::StaticImage *simg = img->CreateStaticImage();
+				NotNullPtr<Media::StaticImage> simg = img->CreateStaticImage();
 				simg->To32bpp();
 				if (this->currImg == img)
 				{
-					this->pbImage->SetImage(simg, true);
+					this->pbImage->SetImage(simg.Ptr(), true);
 				}
 				this->imgList->ReplaceImage(selInd, simg);
-				this->currImg = simg;
+				this->currImg = simg.Ptr();
 				this->UpdateInfo();
 			}
 		}
@@ -824,14 +824,14 @@ void SSWR::AVIRead::AVIRImageForm::EventMenuClicked(UInt16 cmdId)
 			Media::Image *img = this->imgList->GetImage(selInd, 0);
 			if (img)
 			{
-				Media::StaticImage *simg = img->CreateStaticImage();
+				NotNullPtr<Media::StaticImage> simg = img->CreateStaticImage();
 				simg->To64bpp();
 				if (this->currImg == img)
 				{
-					this->pbImage->SetImage(simg, true);
+					this->pbImage->SetImage(simg.Ptr(), true);
 				}
 				this->imgList->ReplaceImage(selInd, simg);
-				this->currImg = simg;
+				this->currImg = simg.Ptr();
 				this->UpdateInfo();
 			}
 		}
@@ -842,20 +842,20 @@ void SSWR::AVIRead::AVIRImageForm::EventMenuClicked(UInt16 cmdId)
 			Media::Image *img = this->imgList->GetImage(selInd, 0);
 			if (img)
 			{
-				Media::StaticImage *simg = img->CreateStaticImage();
+				NotNullPtr<Media::StaticImage> simg = img->CreateStaticImage();
 				if (simg->ToPal8())
 				{
 					if (this->currImg == img)
 					{
-						this->pbImage->SetImage(simg, true);
+						this->pbImage->SetImage(simg.Ptr(), true);
 					}
 					this->imgList->ReplaceImage(selInd, simg);
-					this->currImg = simg;
+					this->currImg = simg.Ptr();
 					this->UpdateInfo();
 				}
 				else
 				{
-					DEL_CLASS(simg);
+					simg.Delete();
 				}
 			}
 		}

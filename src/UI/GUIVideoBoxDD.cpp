@@ -157,7 +157,7 @@ void UI::GUIVideoBoxDD::OnSizeChanged(Bool updateScn)
 	}
 }
 
-void UI::GUIVideoBoxDD::YUVParamChanged(const Media::IColorHandler::YUVPARAM *yuvParam)
+void UI::GUIVideoBoxDD::YUVParamChanged(NotNullPtr<const Media::IColorHandler::YUVPARAM> yuvParam)
 {
 	if (this->video && this->tstats[0].csconv)
 	{
@@ -169,7 +169,7 @@ void UI::GUIVideoBoxDD::YUVParamChanged(const Media::IColorHandler::YUVPARAM *yu
 	}
 }
 
-void UI::GUIVideoBoxDD::RGBParamChanged(const Media::IColorHandler::RGBPARAM2 *rgbParam)
+void UI::GUIVideoBoxDD::RGBParamChanged(NotNullPtr<const Media::IColorHandler::RGBPARAM2> rgbParam)
 {
 	if (this->video && this->tstats[0].csconv)
 	{

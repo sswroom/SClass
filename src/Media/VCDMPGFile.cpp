@@ -384,7 +384,7 @@ Media::VCDMPGFile::VCDMPGFile(IO::ISectorData *data, UInt64 startSector, UInt64 
 					Media::FrameInfo frameInfo;
 					UInt32 frameRateNorm;
 					UInt32 frameRateDenorm;
-					if (isFrame && vstm == 0 && Media::MPEGVideoParser::GetFrameInfo(&this->readBuff[j], 2348 - j, &frameInfo, &frameRateNorm, &frameRateDenorm, 0, true))
+					if (isFrame && vstm == 0 && Media::MPEGVideoParser::GetFrameInfo(&this->readBuff[j], 2348 - j, frameInfo, frameRateNorm, frameRateDenorm, 0, true))
 					{
 						NEW_CLASS(vstm, Media::M2VStreamSource(this));
 						this->vstm->DetectStreamInfo(&this->readBuff[j], 2348 - j);

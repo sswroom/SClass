@@ -113,7 +113,7 @@ UOSInt Data::Compress::LZWDecStream::Read(const Data::ByteArray &buff)
 	{
 		return writeSize;
 	}
-	while (reader->ReadBits(&code, this->currCodeSize))
+	while (reader->ReadBits(code, this->currCodeSize))
 	{
 		if (code == this->endCode)
 		{

@@ -278,7 +278,7 @@ UInt32 __stdcall Media::M2VStreamSource::PlayThread(void *userObj)
 					UInt32 denorm;
 					UInt64 bitRate;
 
-					if (Media::MPEGVideoParser::GetFrameInfo(&me->playBuff[me->playBuffStart].frame[pictureStart], me->playBuff[me->playBuffStart].frameSize, &info, &norm, &denorm, &bitRate, true))
+					if (Media::MPEGVideoParser::GetFrameInfo(&me->playBuff[me->playBuffStart].frame[pictureStart], me->playBuff[me->playBuffStart].frameSize, info, norm, denorm, &bitRate, true))
 					{
 						if (info.par2 != me->par)
 						{
@@ -410,16 +410,15 @@ UInt32 __stdcall Media::M2VStreamSource::PlayThread(void *userObj)
 
 Media::M2VStreamSource::M2VStreamSource(Media::IStreamControl *pbc)
 {
-	NEW_CLASS(this->info, Media::FrameInfo());
-	this->info->Clear();
+	this->info.Clear();
 	this->pbc = pbc;
 	this->frameCb = 0;
 	this->frameCbData = 0;
 	this->bitRate = 1000;
 	this->finfoMode = false;
-	this->info->fourcc = (UInt32)-1;
-	this->info->dispSize = Math::Size2D<UOSInt>(0, 0);
-	this->info->storeSize = Math::Size2D<UOSInt>(0, 0);
+	this->info.fourcc = (UInt32)-1;
+	this->info.dispSize = Math::Size2D<UOSInt>(0, 0);
+	this->info.storeSize = Math::Size2D<UOSInt>(0, 0);
 	this->frameRateNorm = 0;
 	this->frameRateDenorm = 0;
 	this->maxFrameSize = 10485760;
@@ -456,7 +455,6 @@ Media::M2VStreamSource::~M2VStreamSource()
 	this->ClearPlayBuff();
 	MemFree(this->frameBuff);
 	MemFree(playBuff);
-	DEL_CLASS(this->info);
 #ifdef _DEBUG
 	SDEL_CLASS(this->debugLog);
 	SDEL_CLASS(this->debugFS);
@@ -474,12 +472,12 @@ Text::CString Media::M2VStreamSource::GetFilterName()
 	return CSTR("M2VStreamSource");
 }
 
-Bool Media::M2VStreamSource::GetVideoInfo(Media::FrameInfo *info, UInt32 *frameRateNorm, UInt32 *frameRateDenorm, UOSInt *maxFrameSize)
+Bool Media::M2VStreamSource::GetVideoInfo(NotNullPtr<Media::FrameInfo> info, OutParam<UInt32> frameRateNorm, OutParam<UInt32> frameRateDenorm, OutParam<UOSInt> maxFrameSize)
 {
 	info->Set(this->info);
-	*frameRateNorm = this->frameRateNorm;
-	*frameRateDenorm = this->frameRateDenorm;
-	*maxFrameSize = this->maxFrameSize;
+	frameRateNorm.Set(this->frameRateNorm);
+	frameRateDenorm.Set(this->frameRateDenorm);
+	maxFrameSize.Set(this->maxFrameSize);
 	info->par2 = this->par;
 	return true;
 }
@@ -629,8 +627,8 @@ UOSInt Media::M2VStreamSource::ReadNextFrame(UInt8 *frameBuff, UInt32 *frameTime
 void Media::M2VStreamSource::DetectStreamInfo(UInt8 *header, UOSInt headerSize)
 {
 	UInt64 bitRate;
-	Media::MPEGVideoParser::GetFrameInfo(header, headerSize, this->info, &this->frameRateNorm, &this->frameRateDenorm, &bitRate, false);
-	this->par = this->info->par2;
+	Media::MPEGVideoParser::GetFrameInfo(header, headerSize, this->info, this->frameRateNorm, this->frameRateDenorm, &bitRate, false);
+	this->par = this->info.par2;
 	this->bitRate = bitRate;
 }
 

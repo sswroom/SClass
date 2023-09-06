@@ -29,8 +29,8 @@ namespace SSWR
 			AVIRFontSelector(NotNullPtr<UI::GUICore> ui, UI::GUIClientControl *parent, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Map::MapEnv *env, UOSInt initFontStyle, Media::ColorManagerSess *colorSess);
 			virtual ~AVIRFontSelector();
 
-			virtual void YUVParamChanged(const Media::IColorHandler::YUVPARAM *yuvParam);
-			virtual void RGBParamChanged(const Media::IColorHandler::RGBPARAM2 *rgbParam);
+			virtual void YUVParamChanged(NotNullPtr<const Media::IColorHandler::YUVPARAM> yuvParam);
+			virtual void RGBParamChanged(NotNullPtr<const Media::IColorHandler::RGBPARAM2> rgbParam);
 
 			void SetPopupMenu(UI::GUIPopupMenu *mnuLayers);
 

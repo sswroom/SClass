@@ -86,8 +86,9 @@ UInt32 __stdcall TestThread(void *userObj)
 Double HashTestSpeed(Crypto::Hash::IHash *hash)
 {
 	UInt8 hashVal[64];
-	UInt8 *testBlock = MemAllocA(UInt8, 1048576);
+	UInt8 *testBlock = MemAllocA(UInt8, 1048576);	
 	OSInt i;
+	MemClear(testBlock, 1048576);
 	clk->Start();
 	i = 1024;
 	while (i-- > 0)

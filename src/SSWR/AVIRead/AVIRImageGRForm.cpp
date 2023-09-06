@@ -154,12 +154,12 @@ void __stdcall SSWR::AVIRead::AVIRImageGRForm::OnOKClicked(void *userObj)
 	if (me->srcImg->info.pf == Media::PF_B8G8R8A8)
 	{
 		me->grFilter->ProcessImage32(me->srcImg->data, me->destImg->data, me->srcImg->info.dispSize.x, me->srcImg->info.dispSize.y, (OSInt)(me->srcImg->info.storeSize.x * (me->srcImg->info.storeBPP >> 3)), (OSInt)(me->destImg->info.storeSize.x * (me->srcImg->info.storeBPP >> 3)));
-		me->previewCtrl->SetImage(me->destImg, true);
+		me->previewCtrl->SetImage(me->destImg.Ptr(), true);
 	}
 	else if (me->srcImg->info.pf == Media::PF_LE_B16G16R16A16)
 	{
 		me->grFilter->ProcessImage64(me->srcImg->data, me->destImg->data, me->srcImg->info.dispSize.x, me->srcImg->info.dispSize.y, (OSInt)(me->srcImg->info.storeSize.x * (me->srcImg->info.storeBPP >> 3)), (OSInt)(me->destImg->info.storeSize.x * (me->srcImg->info.storeBPP >> 3)));
-		me->previewCtrl->SetImage(me->destImg, true);
+		me->previewCtrl->SetImage(me->destImg.Ptr(), true);
 	}
 	me->SetDialogResult(UI::GUIForm::DR_OK);
 }
@@ -180,7 +180,7 @@ void SSWR::AVIRead::AVIRImageGRForm::UpdatePreview()
 	{
 		this->grFilter->ProcessImage64(this->srcPrevImg->data, this->destPrevImg->data, this->srcPrevImg->info.dispSize.x, this->srcPrevImg->info.dispSize.y, (OSInt)(this->srcPrevImg->info.storeSize.x * (this->srcPrevImg->info.storeBPP >> 3)), (OSInt)(this->destPrevImg->info.storeSize.x * (this->srcPrevImg->info.storeBPP >> 3)));
 	}
-	this->previewCtrl->SetImage(this->destPrevImg, true);
+	this->previewCtrl->SetImage(this->destPrevImg.Ptr(), true);
 }
 
 void SSWR::AVIRead::AVIRImageGRForm::UpdateLayers()
@@ -201,7 +201,7 @@ void SSWR::AVIRead::AVIRImageGRForm::UpdateLayers()
 	}
 }
 
-SSWR::AVIRead::AVIRImageGRForm::AVIRImageGRForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Media::StaticImage *srcImg, Media::StaticImage *destImg, UI::GUIPictureBoxDD *previewCtrl) : UI::GUIForm(parent, 640, 480, ui)
+SSWR::AVIRead::AVIRImageGRForm::AVIRImageGRForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<Media::StaticImage> srcImg, NotNullPtr<Media::StaticImage> destImg, UI::GUIPictureBoxDD *previewCtrl) : UI::GUIForm(parent, 640, 480, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
 	this->SetText(CSTR("GR Filter"));
@@ -212,8 +212,6 @@ SSWR::AVIRead::AVIRImageGRForm::AVIRImageGRForm(UI::GUIClientControl *parent, No
 	this->destImg = destImg;
 	this->previewCtrl = previewCtrl;
 	NEW_CLASS(this->grFilter, Media::GRFilter());
-	this->srcPrevImg = 0;
-	this->destPrevImg = 0;
 	this->srcPrevImg = this->previewCtrl->CreatePreviewImage(this->srcImg);
 	this->destPrevImg = this->srcPrevImg->CreateStaticImage();
 	this->modifying = false;
@@ -287,8 +285,8 @@ SSWR::AVIRead::AVIRImageGRForm::AVIRImageGRForm(UI::GUIClientControl *parent, No
 SSWR::AVIRead::AVIRImageGRForm::~AVIRImageGRForm()
 {
 	DEL_CLASS(this->grFilter);
-	SDEL_CLASS(this->srcPrevImg);
-	SDEL_CLASS(this->destPrevImg);
+	this->srcPrevImg.Delete();
+	this->destPrevImg.Delete();
 }
 
 void SSWR::AVIRead::AVIRImageGRForm::OnMonitorChanged()

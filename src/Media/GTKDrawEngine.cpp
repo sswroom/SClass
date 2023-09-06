@@ -125,7 +125,7 @@ Media::DrawImage *Media::GTKDrawEngine::ConvImage(Media::Image *img)
 	}
 	else
 	{
-		Media::StaticImage *simg = img->CreateStaticImage();
+		NotNullPtr<Media::StaticImage> simg = img->CreateStaticImage();
 		if (simg->To32bpp())
 		{
 			cairo_surface_flush((cairo_surface_t*)gimg->GetSurface());
@@ -143,7 +143,7 @@ Media::DrawImage *Media::GTKDrawEngine::ConvImage(Media::Image *img)
 			}
 			cairo_surface_mark_dirty((cairo_surface_t*)gimg->GetSurface());
 		}
-		DEL_CLASS(simg);
+		simg.Delete();
 	}
 	return gimg;
 }
@@ -897,12 +897,12 @@ Bool Media::GTKDrawImage::DrawImagePt(NotNullPtr<DrawImage> img, Math::Coord2DDb
 	}
 }
 
-Bool Media::GTKDrawImage::DrawImagePt2(Media::StaticImage *img, Math::Coord2DDbl tl)
+Bool Media::GTKDrawImage::DrawImagePt2(NotNullPtr<Media::StaticImage> img, Math::Coord2DDbl tl)
 {
 	if (this->surface == 0)
 	{
 		NotNullPtr<Media::DrawImage> dimg;
-		if (!dimg.Set(this->eng->ConvImage(img)))
+		if (!dimg.Set(this->eng->ConvImage(img.Ptr())))
 		{
 			return false;
 		}

@@ -168,7 +168,7 @@ void Media::Decoder::VFWDecoder::ProcVideoFrame(UInt32 frameTime, UInt32 frameNu
 			UInt32 frameRateNorm;
 			UInt32 frameRateDenorm;
 			UOSInt maxFrameSize;
-			this->GetVideoInfo(&info, &frameRateNorm, &frameRateDenorm, &maxFrameSize);
+			this->GetVideoInfo(info, frameRateNorm, frameRateDenorm, maxFrameSize);
 			NEW_CLASS(img, Media::StaticImage(info));
 			MemCopyNO(img->data, this->frameBuff, this->maxFrameSize);
 			this->imgCb(this->imgCbData, frameTime, frameNum, img);
@@ -229,7 +229,7 @@ Media::Decoder::VFWDecoder::VFWDecoder(Media::IVideoSource *sourceVideo) : Media
 	UInt32 frameRateDenorm;
 	UOSInt maxFrameSize;
 	Media::FrameInfo frameInfo;
-	if (!sourceVideo->GetVideoInfo(&frameInfo, &frameRateNorm, &frameRateDenorm, &maxFrameSize))
+	if (!sourceVideo->GetVideoInfo(frameInfo, frameRateNorm, frameRateDenorm, maxFrameSize))
 		return;
 	Data::ArrayListUInt32 fccHdlrs;
 	Data::ArrayListUInt32 outFccs;
@@ -444,16 +444,16 @@ Text::CString Media::Decoder::VFWDecoder::GetFilterName()
 	return CSTR("VFWDecoder");
 }
 
-Bool Media::Decoder::VFWDecoder::GetVideoInfo(Media::FrameInfo *info, UInt32 *frameRateNorm, UInt32 *frameRateDenorm, UOSInt *maxFrameSize)
+Bool Media::Decoder::VFWDecoder::GetVideoInfo(NotNullPtr<Media::FrameInfo> info, OutParam<UInt32> frameRateNorm, OutParam<UInt32> frameRateDenorm, OutParam<UOSInt> maxFrameSize)
 {
 	if (this->sourceVideo == 0)
 		return false;
 	if (!this->sourceVideo->GetVideoInfo(info, frameRateNorm, frameRateDenorm, maxFrameSize))
 		return false;
 	BITMAPINFOHEADER *bmih = (BITMAPINFOHEADER *)this->bmihDest;
-	*frameRateNorm = this->frameRateNorm;
-	*frameRateDenorm = this->frameRateDenorm;
-	*maxFrameSize = this->maxFrameSize;
+	frameRateNorm.Set(this->frameRateNorm);
+	frameRateDenorm.Set(this->frameRateDenorm);
+	maxFrameSize.Set(this->maxFrameSize);
 	info->storeSize.x = (UOSInt)bmih->biWidth;
 	info->storeSize.y = (UOSInt)bmih->biHeight;
 	info->dispSize = info->storeSize;

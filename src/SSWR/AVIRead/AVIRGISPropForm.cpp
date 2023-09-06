@@ -543,11 +543,11 @@ void SSWR::AVIRead::AVIRGISPropForm::OnMonitorChanged()
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 }
 
-void SSWR::AVIRead::AVIRGISPropForm::YUVParamChanged(const Media::IColorHandler::YUVPARAM *yuvParam)
+void SSWR::AVIRead::AVIRGISPropForm::YUVParamChanged(NotNullPtr<const Media::IColorHandler::YUVPARAM> yuvParam)
 {
 }
 
-void SSWR::AVIRead::AVIRGISPropForm::RGBParamChanged(const Media::IColorHandler::RGBPARAM2 *rgbParam)
+void SSWR::AVIRead::AVIRGISPropForm::RGBParamChanged(NotNullPtr<const Media::IColorHandler::RGBPARAM2> rgbParam)
 {
 	Math::Size2D<UOSInt> sz;
 	this->colorConv->RGBParamChanged(rgbParam);

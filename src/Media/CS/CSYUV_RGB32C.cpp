@@ -451,7 +451,7 @@ Media::CS::CSYUV_RGB32C::CSYUV_RGB32C(NotNullPtr<const Media::ColorProfile> srcP
 
 	if (colorSess)
 	{
-		MemCopyNO(&this->yuvParam, colorSess->GetYUVParam(), sizeof(YUVPARAM));
+		MemCopyNO(&this->yuvParam, colorSess->GetYUVParam().Ptr(), sizeof(YUVPARAM));
 		this->rgbParam.Set(colorSess->GetRGBParam());
 	}
 	else
@@ -483,13 +483,13 @@ void Media::CS::CSYUV_RGB32C::UpdateTable()
 	}
 }
 
-void Media::CS::CSYUV_RGB32C::YUVParamChanged(const Media::IColorHandler::YUVPARAM *yuv)
+void Media::CS::CSYUV_RGB32C::YUVParamChanged(NotNullPtr<const Media::IColorHandler::YUVPARAM> yuv)
 {
-	MemCopyNO(&this->yuvParam, yuv, sizeof(YUVPARAM));
+	MemCopyNO(&this->yuvParam, yuv.Ptr(), sizeof(YUVPARAM));
 	this->yuvUpdated = true;
 }
 
-void Media::CS::CSYUV_RGB32C::RGBParamChanged(const Media::IColorHandler::RGBPARAM2 *rgb)
+void Media::CS::CSYUV_RGB32C::RGBParamChanged(NotNullPtr<const Media::IColorHandler::RGBPARAM2> rgb)
 {
 	this->rgbParam.Set(rgb);
 	this->rgbUpdated = true;

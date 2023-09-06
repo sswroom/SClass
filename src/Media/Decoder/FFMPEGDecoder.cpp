@@ -563,7 +563,7 @@ Media::Decoder::FFMPEGDecoder::FFMPEGDecoder(IVideoSource *sourceVideo) : Media:
 	UInt32 frameRateNorm;
 	UInt32 frameRateDenorm;
 	UOSInt maxFrameSize;
-	sourceVideo->GetVideoInfo(&frameInfo, &frameRateNorm, &frameRateDenorm, &maxFrameSize);
+	sourceVideo->GetVideoInfo(frameInfo, frameRateNorm, frameRateDenorm, maxFrameSize);
 
 	AVCodecID codecId;
 	data->srcFCC = frameInfo.fourcc;
@@ -838,7 +838,7 @@ Media::Decoder::FFMPEGDecoder::FFMPEGDecoder(IVideoSource *sourceVideo) : Media:
 				UInt32 frameRateNorm;
 				UInt32 frameRateDenorm;
 				UOSInt maxFrameSize;
-				this->GetVideoInfo(&frinfo, &frameRateNorm, &frameRateDenorm, &maxFrameSize);
+				this->GetVideoInfo(frinfo, frameRateNorm, frameRateDenorm, maxFrameSize);
 				data->frameSize = maxFrameSize;
 				if (data->frameSize > 0)
 				{
@@ -894,7 +894,7 @@ Text::CString Media::Decoder::FFMPEGDecoder::GetFilterName()
 	return CSTR("FFMPEGDecoder");
 }
 
-Bool Media::Decoder::FFMPEGDecoder::GetVideoInfo(Media::FrameInfo *info, UInt32 *frameRateNorm, UInt32 *frameRateDenorm, UOSInt *maxFrameSize)
+Bool Media::Decoder::FFMPEGDecoder::GetVideoInfo(NotNullPtr<Media::FrameInfo> info, OutParam<UInt32> frameRateNorm, OutParam<UInt32> frameRateDenorm, OutParam<UOSInt> maxFrameSize)
 {
 	ClassData *data = this->clsData;
 	if (this->sourceVideo == 0)
@@ -1135,7 +1135,7 @@ Bool Media::Decoder::FFMPEGDecoder::GetVideoInfo(Media::FrameInfo *info, UInt32 
 		info->color.primaries.SetColorType(Media::ColorProfile::CT_VUNKNOWN);
 		break;
 	}
-	*maxFrameSize = info->byteSize;
+	maxFrameSize.Set(info->byteSize);
 	return true;
 }
 
@@ -1203,7 +1203,7 @@ Media::IVideoSource *__stdcall FFMPEGDecoder_DecodeVideo(Media::IVideoSource *so
 	UInt32 frameRateNorm;
 	UInt32 frameRateDenorm;
 	UOSInt maxFrameSize;
-	sourceVideo->GetVideoInfo(&frameInfo, &frameRateNorm, &frameRateDenorm, &maxFrameSize);
+	sourceVideo->GetVideoInfo(frameInfo, frameRateNorm, frameRateDenorm, maxFrameSize);
 	if (frameInfo.fourcc == 0 || frameInfo.fourcc == 0xFFFFFFFF)
 		return 0;
 

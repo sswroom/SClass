@@ -124,7 +124,7 @@ Bool Exporter::WebPExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text
 	}
 	else
 	{
-		Media::StaticImage *simg = img->CreateStaticImage();
+		NotNullPtr<Media::StaticImage> simg = img->CreateStaticImage();
 		simg->To32bpp();
 		UOSInt bpl = simg->GetDataBpl();
 		if (quality < 0)
@@ -135,7 +135,7 @@ Bool Exporter::WebPExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text
 		{
 			vp8len = WebPEncodeBGRA(simg->data, (int)simg->info.dispSize.x, (int)simg->info.dispSize.y, (int)bpl, (float)quality, &vp8);
 		}
-		DEL_CLASS(simg);
+		simg.Delete();
 	}
 	if (vp8)
 	{

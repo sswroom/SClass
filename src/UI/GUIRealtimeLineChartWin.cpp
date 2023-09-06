@@ -156,8 +156,8 @@ void UI::GUIRealtimeLineChart::OnPaint(NotNullPtr<Media::DrawImage> dimg)
 		mutUsage.EndUse();
 
 		dimg->DrawImagePt(img, Math::Coord2DDbl(0, 0));
+		this->eng->DeleteImage(img);
 	}
-	this->eng->DeleteImage(img);
 }
 
 void UI::GUIRealtimeLineChart::Init(void *hInst)

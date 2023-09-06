@@ -41,7 +41,7 @@ IO::BitReaderLSB::~BitReaderLSB()
 	}
 }
 
-Bool IO::BitReaderLSB::ReadBits(UInt32 *code, UOSInt bitCount)
+Bool IO::BitReaderLSB::ReadBits(OutParam<UInt32> code, UOSInt bitCount)
 {
 #ifdef _DEBUG
 	if (bitCount > 32 || bitCount <= 0)
@@ -97,7 +97,7 @@ Bool IO::BitReaderLSB::ReadBits(UInt32 *code, UOSInt bitCount)
 		retCode = ((ReadUInt32(&buff[this->currBytePos])) >> this->currBitPos) | (UInt32)(buff[this->currBytePos + 4] << (32 - this->currBitPos));
 		break;
 	}
-	*code = retCode & (UInt32)((1 << bitCount) - 1);
+	code.Set(retCode & (UInt32)((1 << bitCount) - 1));
 	this->currBytePos += bits >> 3;
 	this->currBitPos = bits & 7;
 	return true;

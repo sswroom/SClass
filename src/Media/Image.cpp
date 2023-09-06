@@ -259,10 +259,10 @@ OSInt Media::Image::GetHotSpotY() const
 	return this->hotSpotY;
 }
 
-Media::StaticImage *Media::Image::CreateStaticImage() const
+NotNullPtr<Media::StaticImage> Media::Image::CreateStaticImage() const
 {
-	Media::StaticImage *outImg;
-	NEW_CLASS(outImg, Media::StaticImage(this->info));
+	NotNullPtr<Media::StaticImage> outImg;
+	NEW_CLASSNN(outImg, Media::StaticImage(this->info));
 	if (this->exif)
 	{
 		outImg->exif = this->exif->Clone();
@@ -287,7 +287,7 @@ Media::StaticImage *Media::Image::CreateStaticImage() const
 Media::StaticImage *Media::Image::CreateSubImage(Math::RectArea<OSInt> area) const
 {
 	Media::FrameInfo frameInfo;
-	frameInfo.Set(&this->info);
+	frameInfo.Set(this->info);
 	frameInfo.dispSize = Math::Size2D<UOSInt>((UOSInt)area.GetWidth(), (UOSInt)area.GetHeight());
 	frameInfo.storeSize = frameInfo.dispSize;
 	frameInfo.byteSize = frameInfo.storeSize.CalcArea() * (frameInfo.storeBPP >> 3);

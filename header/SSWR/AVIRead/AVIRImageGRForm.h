@@ -23,10 +23,10 @@ namespace SSWR
 		private:
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 
-			Media::StaticImage *srcImg;
-			Media::StaticImage *destImg;
-			Media::StaticImage *srcPrevImg;
-			Media::StaticImage *destPrevImg;
+			NotNullPtr<Media::StaticImage> srcImg;
+			NotNullPtr<Media::StaticImage> destImg;
+			NotNullPtr<Media::StaticImage> srcPrevImg;
+			NotNullPtr<Media::StaticImage> destPrevImg;
 			UI::GUIPictureBoxDD *previewCtrl;
 			Media::GRFilter *grFilter;
 			UOSInt currLayer;
@@ -67,11 +67,11 @@ namespace SSWR
 			void UpdatePreview();
 			void UpdateLayers();
 		public:
-			AVIRImageGRForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Media::StaticImage *srcImg, Media::StaticImage *destImg, UI::GUIPictureBoxDD *previewCtrl);
+			AVIRImageGRForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<Media::StaticImage> srcImg, NotNullPtr<Media::StaticImage> destImg, UI::GUIPictureBoxDD *previewCtrl);
 			virtual ~AVIRImageGRForm();
 
 			virtual void OnMonitorChanged();
 		};
-	};
-};
+	}
+}
 #endif

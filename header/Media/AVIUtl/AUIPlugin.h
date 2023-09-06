@@ -39,7 +39,7 @@ namespace Media
 			UOSInt LoadFile(const Char *fileName, Data::ArrayList<Media::IMediaSource*> *outArr);
 
 			Bool CloseInput(void *hand);
-			Bool GetInputVideoInfo(void *hand, Media::FrameInfo *info, UInt32 *frameRateNorm, UInt32 *frameRateDenorm, UInt32 *frameCnt);
+			Bool GetInputVideoInfo(void *hand, NotNullPtr<Media::FrameInfo> info, OutParam<UInt32> frameRateNorm, OutParam<UInt32> frameRateDenorm, OutParam<UInt32> frameCnt);
 			Bool GetInputAudioInfo(void *hand, Media::AudioFormat *af, UInt32 *sampleCnt);
 			UOSInt GetVideoFrame(void *hand, UOSInt frameNum, UInt8 *buff);
 			UOSInt GetAudioData(void *hand, UOSInt startSample, UOSInt sampleLength, UInt8 *buff);

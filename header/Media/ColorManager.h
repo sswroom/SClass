@@ -37,8 +37,8 @@ namespace Media
 		Bool Load();
 		Bool Save();
 		void SetDefault();
-		const Media::IColorHandler::YUVPARAM *GetYUVParam();
-		const Media::IColorHandler::RGBPARAM2 *GetRGBParam();
+		NotNullPtr<const Media::IColorHandler::YUVPARAM> GetYUVParam();
+		NotNullPtr<const Media::IColorHandler::RGBPARAM2> GetRGBParam();
 
 		void SetMonVBright(Double newVal);
 		void SetMonPBright(Double newVal);
@@ -127,8 +127,8 @@ namespace Media
 
 		virtual void AddHandler(Media::IColorHandler *hdlr);
 		virtual void RemoveHandler(Media::IColorHandler *hdlr);
-		const Media::IColorHandler::YUVPARAM *GetYUVParam();
-		virtual const Media::IColorHandler::RGBPARAM2 *GetRGBParam();
+		NotNullPtr<const Media::IColorHandler::YUVPARAM> GetYUVParam();
+		virtual NotNullPtr<const Media::IColorHandler::RGBPARAM2> GetRGBParam();
 		virtual NotNullPtr<Media::ColorProfile> GetDefVProfile();
 		virtual NotNullPtr<Media::ColorProfile> GetDefPProfile();
 		Media::ColorProfile::YUVType GetDefYUVType();
@@ -136,8 +136,8 @@ namespace Media
 
 		void ChangeMonitor(MonitorHandle *hMon);
 
-		void RGBUpdated(const Media::IColorHandler::RGBPARAM2 *rgbParam);
-		void YUVUpdated(const Media::IColorHandler::YUVPARAM *yuvParam);
+		void RGBUpdated(NotNullPtr<const Media::IColorHandler::RGBPARAM2> rgbParam);
+		void YUVUpdated(NotNullPtr<const Media::IColorHandler::YUVPARAM> yuvParam);
 	};
 };
 #endif

@@ -134,11 +134,11 @@ void SSWR::AVIRead::AVIRGISLineForm::OnMonitorChanged()
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 }
 
-void SSWR::AVIRead::AVIRGISLineForm::YUVParamChanged(const Media::IColorHandler::YUVPARAM *yuvParam)
+void SSWR::AVIRead::AVIRGISLineForm::YUVParamChanged(NotNullPtr<const Media::IColorHandler::YUVPARAM> yuvParam)
 {
 }
 
-void SSWR::AVIRead::AVIRGISLineForm::RGBParamChanged(const Media::IColorHandler::RGBPARAM2 *rgbParam)
+void SSWR::AVIRead::AVIRGISLineForm::RGBParamChanged(NotNullPtr<const Media::IColorHandler::RGBPARAM2> rgbParam)
 {
 	this->colorConv->RGBParamChanged(rgbParam);
 	this->pbColor->SetBGColor(this->colorConv->ConvRGB8(this->lineColor));

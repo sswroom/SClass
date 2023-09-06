@@ -128,12 +128,12 @@ UOSInt Media::AVIUtl::AUIPlugin::LoadFile(const Char *fileName, Data::ArrayList<
 		return 0;
 	
 	AUIInput *input;
-	Media::FrameInfo *frameInfo;
+	NotNullPtr<Media::FrameInfo> frameInfo;
 	Media::AudioFormat *audioFormat;
 	input = MemAlloc(AUIInput, 1);
 	input->hand = hand;
 	input->useCnt = 0;
-	NEW_CLASS(frameInfo, Media::FrameInfo());
+	NEW_CLASSNN(frameInfo, Media::FrameInfo());
 	NEW_CLASS(audioFormat, Media::AudioFormat());
 
 	Media::IMediaSource *media;
@@ -141,7 +141,7 @@ UOSInt Media::AVIUtl::AUIPlugin::LoadFile(const Char *fileName, Data::ArrayList<
 	UInt32 frameRateNorm;
 	UInt32 frameRateDenorm;
 	UInt32 frameCnt;
-	if (this->GetInputVideoInfo(input->hand, frameInfo, &frameRateNorm, &frameRateDenorm, &frameCnt))
+	if (this->GetInputVideoInfo(input->hand, frameInfo, frameRateNorm, frameRateDenorm, frameCnt))
 	{
 		NEW_CLASS(media, Media::AVIUtl::AUIVideo(this->Clone(), input, frameInfo, frameRateNorm, frameRateDenorm, frameCnt));
 		outArr->Add(media);
@@ -149,7 +149,7 @@ UOSInt Media::AVIUtl::AUIPlugin::LoadFile(const Char *fileName, Data::ArrayList<
 	}
 	else
 	{
-		DEL_CLASS(frameInfo);
+		frameInfo.Delete();
 	}
 	UInt32 nSamples;
 	if (this->GetInputAudioInfo(input->hand, audioFormat, &nSamples))
@@ -181,7 +181,7 @@ Bool Media::AVIUtl::AUIPlugin::CloseInput(void *hand)
 	return pluginTab->func_close((INPUT_HANDLE)hand) == TRUE;
 }
 
-Bool Media::AVIUtl::AUIPlugin::GetInputVideoInfo(void *hand, Media::FrameInfo *frameInfo, UInt32 *frameRateNorm, UInt32 *frameRateDenorm, UInt32 *frameCnt)
+Bool Media::AVIUtl::AUIPlugin::GetInputVideoInfo(void *hand, NotNullPtr<Media::FrameInfo> frameInfo, OutParam<UInt32> frameRateNorm, OutParam<UInt32> frameRateDenorm, OutParam<UInt32> frameCnt)
 {
 	INPUT_PLUGIN_TABLE *pluginTab = (INPUT_PLUGIN_TABLE*)this->plugin->pluginTable;
 	INPUT_INFO info;
@@ -237,9 +237,9 @@ Bool Media::AVIUtl::AUIPlugin::GetInputVideoInfo(void *hand, Media::FrameInfo *f
 		frameInfo->color.GetRTranParam()->Set(Media::CS::TRANT_GAMMA, 2.2);
 		frameInfo->yuvType = Media::ColorProfile::YUVT_BT601;
 	}
-	*frameRateNorm = (UInt32)info.rate;
-	*frameRateDenorm = (UInt32)info.scale;
-	*frameCnt = (UInt32)info.n;
+	frameRateNorm.Set((UInt32)info.rate);
+	frameRateDenorm.Set((UInt32)info.scale);
+	frameCnt.Set((UInt32)info.n);
 	return true;
 }
 

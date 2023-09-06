@@ -16,6 +16,7 @@ Media::SharedImage::SharedImage(Media::SharedImage::ImageStatus *status)
 
 Media::SharedImage::SharedImage(Media::ImageList *imgList, Bool genPreview)
 {
+	NotNullPtr<Media::StaticImage> img;
 	UOSInt imgCnt = imgList->GetCount();
 	NEW_CLASS(this->imgStatus, ImageStatus());
 	this->imgStatus->imgList = imgList;
@@ -31,8 +32,7 @@ Media::SharedImage::SharedImage(Media::ImageList *imgList, Bool genPreview)
 	}
 	if (genPreview && imgCnt == 1)
 	{
-		Media::StaticImage *img = (Media::StaticImage*)imgList->GetImage(0, 0);
-		if (img->info.dispSize.x >= 640 || img->info.dispSize.y >= 640)
+		if (img.Set((Media::StaticImage*)imgList->GetImage(0, 0)) && (img->info.dispSize.x >= 640 || img->info.dispSize.y >= 640))
 		{
 			UOSInt currWidth = img->info.dispSize.x;
 			UOSInt currHeight = img->info.dispSize.y;

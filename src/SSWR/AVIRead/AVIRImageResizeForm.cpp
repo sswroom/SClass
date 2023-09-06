@@ -102,20 +102,18 @@ SSWR::AVIRead::AVIRImageResizeForm::AVIRImageResizeForm(UI::GUIClientControl *pa
 	this->SetDefaultButton(this->btnOK);
 	this->SetCancelButton(this->btnCancel);
 	this->txtOutW->Focus();
-	if (this->srcImg)
-	{
-		sptr = Text::StrUOSInt(sbuff, this->srcImg->info.dispSize.x);
-		this->txtOriW->SetText(CSTRP(sbuff, sptr));
-		this->txtOutW->SetText(CSTRP(sbuff, sptr));
-		sptr = Text::StrUOSInt(sbuff, this->srcImg->info.dispSize.y);
-		this->txtOriH->SetText(CSTRP(sbuff, sptr));
-		this->txtOutH->SetText(CSTRP(sbuff, sptr));
-	}
+
+	sptr = Text::StrUOSInt(sbuff, this->srcImg->info.dispSize.x);
+	this->txtOriW->SetText(CSTRP(sbuff, sptr));
+	this->txtOutW->SetText(CSTRP(sbuff, sptr));
+	sptr = Text::StrUOSInt(sbuff, this->srcImg->info.dispSize.y);
+	this->txtOriH->SetText(CSTRP(sbuff, sptr));
+	this->txtOutH->SetText(CSTRP(sbuff, sptr));
 }
 
 SSWR::AVIRead::AVIRImageResizeForm::~AVIRImageResizeForm()
 {
-	SDEL_CLASS(this->srcImg);
+	this->srcImg.Delete();
 }
 
 void SSWR::AVIRead::AVIRImageResizeForm::OnMonitorChanged()

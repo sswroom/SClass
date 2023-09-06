@@ -58,8 +58,8 @@ namespace Media
 			virtual void Blend(UInt8 *dest, OSInt dbpl, const UInt8 *src, OSInt sbpl, UOSInt width, UOSInt height, Media::AlphaType srcAType);
 			virtual void PremulAlpha(UInt8 *dest, OSInt dbpl, const UInt8 *src, OSInt sbpl, UOSInt width, UOSInt height);
 
-			virtual void YUVParamChanged(const Media::IColorHandler::YUVPARAM *yuvParam);
-			virtual void RGBParamChanged(const Media::IColorHandler::RGBPARAM2 *rgbParam);
+			virtual void YUVParamChanged(NotNullPtr<const Media::IColorHandler::YUVPARAM> yuvParam);
+			virtual void RGBParamChanged(NotNullPtr<const Media::IColorHandler::RGBPARAM2> rgbParam);
 		};
 	}
 }

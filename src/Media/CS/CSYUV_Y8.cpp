@@ -12,7 +12,7 @@ Media::CS::CSYUV_Y8::~CSYUV_Y8()
 {
 }
 
-void Media::CS::CSYUV_Y8::ConvertV2(UInt8 **srcPtr, UInt8 *destPtr, UOSInt dispWidth, UOSInt dispHeight, UOSInt srcStoreWidth, UOSInt srcStoreHeight, OSInt destRGBBpl, Media::FrameType ftype, Media::YCOffset ycOfst)
+void Media::CS::CSYUV_Y8::ConvertV2(UInt8 *const*srcPtr, UInt8 *destPtr, UOSInt dispWidth, UOSInt dispHeight, UOSInt srcStoreWidth, UOSInt srcStoreHeight, OSInt destRGBBpl, Media::FrameType ftype, Media::YCOffset ycOfst)
 {
 	if (this->srcFmt == *(UInt32*)"YUYV" || this->srcFmt == *(UInt32*)"YUY2")
 	{
@@ -90,12 +90,12 @@ UOSInt Media::CS::CSYUV_Y8::GetDestFrameSize(UOSInt width, UOSInt height)
 	return width * height;
 }
 
-void Media::CS::CSYUV_Y8::YUVParamChanged(const Media::IColorHandler::YUVPARAM *yuvParam)
+void Media::CS::CSYUV_Y8::YUVParamChanged(NotNullPtr<const Media::IColorHandler::YUVPARAM> yuvParam)
 {
 
 }
 
-void Media::CS::CSYUV_Y8::RGBParamChanged(const Media::IColorHandler::RGBPARAM2 *rgbParam)
+void Media::CS::CSYUV_Y8::RGBParamChanged(NotNullPtr<const Media::IColorHandler::RGBPARAM2> rgbParam)
 {
 
 }

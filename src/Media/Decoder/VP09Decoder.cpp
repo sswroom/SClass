@@ -365,7 +365,7 @@ UOSInt Media::Decoder::VP09Decoder::ReadFrame(UOSInt frameIndex, UInt8 *buff)
 	}
 }
 
-Bool Media::Decoder::VP09Decoder::GetVideoInfo(Media::FrameInfo *info, UInt32 *frameRateNorm, UInt32 *frameRateDenorm, UOSInt *maxFrameSize)
+Bool Media::Decoder::VP09Decoder::GetVideoInfo(NotNullPtr<Media::FrameInfo> info, OutParam<UInt32> frameRateNorm, OutParam<UInt32> frameRateDenorm, OutParam<UOSInt> maxFrameSize)
 {
 	return this->sourceVideo->GetVideoInfo(info, frameRateNorm, frameRateDenorm, maxFrameSize);
 }

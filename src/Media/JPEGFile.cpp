@@ -191,7 +191,7 @@ Bool Media::JPEGFile::ParseJPEGHeader(NotNullPtr<IO::StreamData> fd, Media::Imag
 						{
 							Media::ImageList *innerImgList;
 							Media::Image *innerImg;
-							Media::StaticImage *stImg;
+							NotNullPtr<Media::StaticImage> stImg;
 							{
 								IO::StmData::MemoryDataRef mfd(&tagBuff[blkOfst + 32], blkSize - 32);
 								innerImgList = (Media::ImageList*)parsers->ParseFileType(mfd, IO::ParserType::ImageList);

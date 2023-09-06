@@ -60,7 +60,7 @@ namespace Media
 		static UInt32 __stdcall PlayThread(void *userObj);
 		static UInt32 __stdcall OutputThread(void *userObj);
 	public:
-		FileVideoSource(NotNullPtr<IO::StreamData> data, Media::FrameInfo *frameInfo, UInt32 frameRateNorm, UInt32 frameRateDenorm, Bool timeBased);
+		FileVideoSource(NotNullPtr<IO::StreamData> data, NotNullPtr<const Media::FrameInfo> frameInfo, UInt32 frameRateNorm, UInt32 frameRateDenorm, Bool timeBased);
 		virtual ~FileVideoSource();
 
 		void AddNewFrame(UInt64 frameOfst, UInt32 frameSize, Bool isKey, UInt32 frameTime);
@@ -70,7 +70,7 @@ namespace Media
 		virtual UTF8Char *GetSourceName(UTF8Char *buff);
 		virtual Text::CString GetFilterName();
 
-		virtual Bool GetVideoInfo(Media::FrameInfo *info, UInt32 *frameRateNorm, UInt32 *frameRateDenorm, UOSInt *maxFrameSize);
+		virtual Bool GetVideoInfo(NotNullPtr<Media::FrameInfo> info, OutParam<UInt32> frameRateNorm, OutParam<UInt32> frameRateDenorm, OutParam<UOSInt> maxFrameSize);
 		virtual Bool Init(FrameCallback cb, FrameChangeCallback fcCb, void *userData);
 		virtual Bool Start(); //true = succeed
 		virtual void Stop();

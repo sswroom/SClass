@@ -3,7 +3,7 @@
 #include "IO/BitReaderMSB.h"
 #include "Media/MPEGVideoParser.h"
 
-Bool Media::MPEGVideoParser::GetFrameInfo(UInt8 *frame, UOSInt frameSize, Media::FrameInfo *frameInfo, UInt32 *fRateNorm, UInt32 *fRateDenorm, UInt64 *bitRate, Bool decoderFix)
+Bool Media::MPEGVideoParser::GetFrameInfo(UInt8 *frame, UOSInt frameSize, NotNullPtr<Media::FrameInfo> frameInfo, OutParam<UInt32> fRateNorm, OutParam<UInt32> fRateDenorm, UInt64 *bitRate, Bool decoderFix)
 {
 	decoderFix = false;
 	if (ReadMInt32(frame) != 0x1b3)
@@ -346,8 +346,8 @@ Bool Media::MPEGVideoParser::GetFrameInfo(UInt8 *frame, UOSInt frameSize, Media:
 		frameInfo->par2 = 0.45248868778280542986425339366516 * horizontal_size / vertical_size;
 		break;
 	}
-	*fRateNorm = frameRateNorm;
-	*fRateDenorm = frameRateDenorm;
+	fRateNorm.Set(frameRateNorm);
+	fRateDenorm.Set(frameRateDenorm);
 	if (bitRate)
 	{
 		*bitRate = bit_rate * 400ULL;
@@ -364,37 +364,37 @@ Bool Media::MPEGVideoParser::GetFrameProp(const UInt8 *frame, UOSInt frameSize, 
 	UInt32 vbv_delay;
 	UInt32 v;
 	IO::BitReaderMSB reader(&frame[4], frameSize - 4);
-	reader.ReadBits(&temporal_reference, 10);
-	reader.ReadBits(&picture_coding_type, 3);
-	reader.ReadBits(&vbv_delay, 16);
+	reader.ReadBits(temporal_reference, 10);
+	reader.ReadBits(picture_coding_type, 3);
+	reader.ReadBits(vbv_delay, 16);
 	if (picture_coding_type == 2)
 	{
-		reader.ReadBits(&v, 4);
+		reader.ReadBits(v, 4);
 	}
 	else if (picture_coding_type == 3)
 	{
-		reader.ReadBits(&v, 8);
+		reader.ReadBits(v, 8);
 	}
 	while (true)
 	{
-		if (!reader.ReadBits(&v, 1))
+		if (!reader.ReadBits(v, 1))
 			break;
 		if (v == 0)
 			break;
-		reader.ReadBits(&v, 8);
+		reader.ReadBits(v, 8);
 	}
 	reader.ByteAlign();
 
-	reader.ReadBits(&v, 32);
+	reader.ReadBits(v, 32);
 	while (v == 0 || v == 1)
 	{
 		if (v == 1)
 		{
-			reader.ReadBits(&v, 8);
+			reader.ReadBits(v, 8);
 			v = v | 0x100;
 			break;
 		}
-		if (!reader.ReadBits(&v, 8))
+		if (!reader.ReadBits(v, 8))
 		{
 			break;
 		}
@@ -423,18 +423,18 @@ Bool Media::MPEGVideoParser::GetFrameProp(const UInt8 *frame, UOSInt frameSize, 
 		prop->pictureStruct = PS_FRAME;
 		return true;
 	}
-	reader.ReadBits(&v, 4);
+	reader.ReadBits(v, 4);
 	if (v != 8)
 	{
 		return false;
 	}
-	reader.ReadBits(&v, 16);
+	reader.ReadBits(v, 16);
 	UInt32 intra_dc_precision;
 	UInt32 picture_structure;
 	UInt32 flags;
-	reader.ReadBits(&intra_dc_precision, 2);
-	reader.ReadBits(&picture_structure, 2);
-	reader.ReadBits(&flags, 10);
+	reader.ReadBits(intra_dc_precision, 2);
+	reader.ReadBits(picture_structure, 2);
+	reader.ReadBits(flags, 10);
 
 	switch (picture_coding_type)
 	{

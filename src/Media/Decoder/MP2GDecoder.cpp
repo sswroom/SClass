@@ -23,7 +23,7 @@ void Media::Decoder::MP2GDecoder::ProcVideoFrame(UInt32 frameTime, UInt32 frameN
 		UInt32 denorm;
 		UInt64 bitRate;
 
-		if (Media::MPEGVideoParser::GetFrameInfo(imgData[0], dataSize, &info, &norm, &denorm, &bitRate, true))
+		if (Media::MPEGVideoParser::GetFrameInfo(imgData[0], dataSize, info, norm, denorm, &bitRate, true))
 		{
 			if (info.par2 != this->par)
 			{
@@ -325,7 +325,7 @@ Media::Decoder::MP2GDecoder::MP2GDecoder(IVideoSource *sourceVideo, Bool toRelea
 	UOSInt size;
 	this->toRelease = toRelease;
 	this->finfoMode = false;
-	if (!sourceVideo->GetVideoInfo(&info, &this->frameRateNorm, &this->frameRateDenorm, &size))
+	if (!sourceVideo->GetVideoInfo(info, this->frameRateNorm, this->frameRateDenorm, size))
 	{
 		this->sourceVideo = 0;
 	}
@@ -387,7 +387,7 @@ void Media::Decoder::MP2GDecoder::EnumFrameInfos(FrameInfoCallback cb, void *use
 	this->finfoMode = false;
 }
 
-Bool Media::Decoder::MP2GDecoder::GetVideoInfo(Media::FrameInfo *info, UInt32 *frameRateNorm, UInt32 *frameRateDenorm, UOSInt *maxFrameSize)
+Bool Media::Decoder::MP2GDecoder::GetVideoInfo(NotNullPtr<Media::FrameInfo> info, OutParam<UInt32> frameRateNorm, OutParam<UInt32> frameRateDenorm, OutParam<UOSInt> maxFrameSize)
 {
 	if (this->sourceVideo == 0)
 		return false;

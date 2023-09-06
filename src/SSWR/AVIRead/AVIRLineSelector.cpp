@@ -161,11 +161,11 @@ SSWR::AVIRead::AVIRLineSelector::~AVIRLineSelector()
 	}
 }
 
-void SSWR::AVIRead::AVIRLineSelector::YUVParamChanged(const Media::IColorHandler::YUVPARAM *yuvParam)
+void SSWR::AVIRead::AVIRLineSelector::YUVParamChanged(NotNullPtr<const Media::IColorHandler::YUVPARAM> yuvParam)
 {
 }
 
-void SSWR::AVIRead::AVIRLineSelector::RGBParamChanged(const Media::IColorHandler::RGBPARAM2 *rgbParam)
+void SSWR::AVIRead::AVIRLineSelector::RGBParamChanged(NotNullPtr<const Media::IColorHandler::RGBPARAM2> rgbParam)
 {
 	this->colorConv->RGBParamChanged(rgbParam);
 	this->Redraw();

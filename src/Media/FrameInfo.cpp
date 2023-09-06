@@ -37,7 +37,7 @@ void Media::FrameInfo::Clear()
 	this->rotateType = Media::RotateType::None;
 }
 
-void Media::FrameInfo::Set(const FrameInfo *info)
+void Media::FrameInfo::Set(NotNullPtr<const FrameInfo> info)
 {
 	this->storeSize = info->storeSize;
 	this->dispSize = info->dispSize;

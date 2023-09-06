@@ -27,7 +27,7 @@ void Media::RGBLUTGen::SetSrcTrans(NotNullPtr<Media::CS::TransferParam> rTran, N
 		}
 		else
 		{
-			const Media::IColorHandler::RGBPARAM2 *rgbParam = this->colorSess->GetRGBParam();
+			NotNullPtr<const Media::IColorHandler::RGBPARAM2> rgbParam = this->colorSess->GetRGBParam();
 			rTran->Set(rgbParam->monProfile.GetRTranParamRead());
 			gTran->Set(rgbParam->monProfile.GetGTranParamRead());
 			bTran->Set(rgbParam->monProfile.GetBTranParamRead());
@@ -125,7 +125,7 @@ Media::CS::TransferType Media::RGBLUTGen::SetDestTrans(NotNullPtr<Media::CS::Tra
 	}
 	else if (tranType == Media::CS::TRANT_VDISPLAY || tranType == Media::CS::TRANT_PDISPLAY)
 	{
-		const Media::IColorHandler::RGBPARAM2 *rgbParam = this->colorSess->GetRGBParam();
+		NotNullPtr<const Media::IColorHandler::RGBPARAM2> rgbParam = this->colorSess->GetRGBParam();
 		rTran->Set(rgbParam->monProfile.GetRTranParamRead());
 		gTran->Set(rgbParam->monProfile.GetGTranParamRead());
 		bTran->Set(rgbParam->monProfile.GetBTranParamRead());
@@ -164,7 +164,7 @@ void Media::RGBLUTGen::GenRGB8_LRGB(UInt16 *rgbTable, NotNullPtr<const Media::Co
 
 void Media::RGBLUTGen::GenRGBA8_LRGBC(Int64 *rgbTable, NotNullPtr<const Media::ColorProfile> srcProfile, NotNullPtr<const Media::ColorProfile::ColorPrimaries> destPrimaries, Int32 nBitLRGB)
 {
-	const Media::IColorHandler::RGBPARAM2 *rgbParam;
+	NotNullPtr<const Media::IColorHandler::RGBPARAM2> rgbParam;
 	Media::CS::TransferParam rTran;
 	Media::CS::TransferParam gTran;
 	Media::CS::TransferParam bTran;
@@ -265,7 +265,7 @@ void Media::RGBLUTGen::GenRGBA8_LRGBC(Int64 *rgbTable, NotNullPtr<const Media::C
 
 void Media::RGBLUTGen::GenRGB16_LRGBC(Int64 *rgbTable, NotNullPtr<const Media::ColorProfile> srcProfile, NotNullPtr<const Media::ColorProfile::ColorPrimaries> destPrimaries, Int32 nBitLRGB)
 {
-	const Media::IColorHandler::RGBPARAM2 *rgbParam;
+	NotNullPtr<const Media::IColorHandler::RGBPARAM2> rgbParam;
 	Media::CS::TransferParam rTran;
 	Media::CS::TransferParam gTran;
 	Media::CS::TransferParam bTran;
@@ -391,7 +391,7 @@ void Media::RGBLUTGen::GenLRGB_BGRA8(UInt8 *rgbTable, NotNullPtr<const Media::Co
 
 	if (tranType == Media::CS::TRANT_VDISPLAY)
 	{
-		const Media::IColorHandler::RGBPARAM2 *rgbParam = this->colorSess->GetRGBParam();
+		NotNullPtr<const Media::IColorHandler::RGBPARAM2> rgbParam = this->colorSess->GetRGBParam();
 
 		rGammaVal = rgbParam->MonRGamma;
 		gGammaVal = rgbParam->MonGGamma;
@@ -416,7 +416,7 @@ void Media::RGBLUTGen::GenLRGB_BGRA8(UInt8 *rgbTable, NotNullPtr<const Media::Co
 	}
 	else if (tranType == Media::CS::TRANT_PDISPLAY)
 	{
-		const Media::IColorHandler::RGBPARAM2 *rgbParam = this->colorSess->GetRGBParam();
+		NotNullPtr<const Media::IColorHandler::RGBPARAM2> rgbParam = this->colorSess->GetRGBParam();
 
 		rGammaVal = rgbParam->MonRGamma;
 		gGammaVal = rgbParam->MonGGamma;
@@ -519,7 +519,7 @@ void Media::RGBLUTGen::GenLRGB_RGB16(UInt8 *rgbTable, NotNullPtr<const Media::Co
 
 	if (tranType == Media::CS::TRANT_VDISPLAY)
 	{
-		const Media::IColorHandler::RGBPARAM2 *rgbParam = this->colorSess->GetRGBParam();
+		NotNullPtr<const Media::IColorHandler::RGBPARAM2> rgbParam = this->colorSess->GetRGBParam();
 
 		rGammaVal = rgbParam->MonRGamma;
 		gGammaVal = rgbParam->MonGGamma;
@@ -544,7 +544,7 @@ void Media::RGBLUTGen::GenLRGB_RGB16(UInt8 *rgbTable, NotNullPtr<const Media::Co
 	}
 	else if (tranType == Media::CS::TRANT_PDISPLAY)
 	{
-		const Media::IColorHandler::RGBPARAM2 *rgbParam = this->colorSess->GetRGBParam();
+		NotNullPtr<const Media::IColorHandler::RGBPARAM2> rgbParam = this->colorSess->GetRGBParam();
 
 		rGammaVal = rgbParam->MonRGamma;
 		gGammaVal = rgbParam->MonGGamma;
@@ -656,7 +656,7 @@ void Media::RGBLUTGen::GenLRGB_A2B10G10R10(UInt8 *rgbTable, NotNullPtr<const Med
 
 	if (tranType == Media::CS::TRANT_VDISPLAY)
 	{
-		const Media::IColorHandler::RGBPARAM2 *rgbParam = this->colorSess->GetRGBParam();
+		NotNullPtr<const Media::IColorHandler::RGBPARAM2> rgbParam = this->colorSess->GetRGBParam();
 
 		rGammaVal = rgbParam->MonRGamma;
 		gGammaVal = rgbParam->MonGGamma;
@@ -681,7 +681,7 @@ void Media::RGBLUTGen::GenLRGB_A2B10G10R10(UInt8 *rgbTable, NotNullPtr<const Med
 	}
 	else if (tranType == Media::CS::TRANT_PDISPLAY)
 	{
-		const Media::IColorHandler::RGBPARAM2 *rgbParam = this->colorSess->GetRGBParam();
+		NotNullPtr<const Media::IColorHandler::RGBPARAM2> rgbParam = this->colorSess->GetRGBParam();
 
 		rGammaVal = rgbParam->MonRGamma;
 		gGammaVal = rgbParam->MonGGamma;
@@ -793,7 +793,7 @@ void Media::RGBLUTGen::GenLARGB_A2B10G10R10(UInt8 *rgbTable, NotNullPtr<const Me
 
 	if (tranType == Media::CS::TRANT_VDISPLAY)
 	{
-		const Media::IColorHandler::RGBPARAM2 *rgbParam = this->colorSess->GetRGBParam();
+		NotNullPtr<const Media::IColorHandler::RGBPARAM2> rgbParam = this->colorSess->GetRGBParam();
 
 		rGammaVal = rgbParam->MonRGamma;
 		gGammaVal = rgbParam->MonGGamma;
@@ -818,7 +818,7 @@ void Media::RGBLUTGen::GenLARGB_A2B10G10R10(UInt8 *rgbTable, NotNullPtr<const Me
 	}
 	else if (tranType == Media::CS::TRANT_PDISPLAY)
 	{
-		const Media::IColorHandler::RGBPARAM2 *rgbParam = this->colorSess->GetRGBParam();
+		NotNullPtr<const Media::IColorHandler::RGBPARAM2> rgbParam = this->colorSess->GetRGBParam();
 
 		rGammaVal = rgbParam->MonRGamma;
 		gGammaVal = rgbParam->MonGGamma;
@@ -936,7 +936,7 @@ void Media::RGBLUTGen::GenLARGB_B8G8R8A8(UInt8 *rgbTable, NotNullPtr<const Media
 
 	if (tranType == Media::CS::TRANT_VDISPLAY)
 	{
-		const Media::IColorHandler::RGBPARAM2 *rgbParam = this->colorSess->GetRGBParam();
+		NotNullPtr<const Media::IColorHandler::RGBPARAM2> rgbParam = this->colorSess->GetRGBParam();
 
 		rGammaVal = rgbParam->MonRGamma;
 		gGammaVal = rgbParam->MonGGamma;
@@ -961,7 +961,7 @@ void Media::RGBLUTGen::GenLARGB_B8G8R8A8(UInt8 *rgbTable, NotNullPtr<const Media
 	}
 	else if (tranType == Media::CS::TRANT_PDISPLAY)
 	{
-		const Media::IColorHandler::RGBPARAM2 *rgbParam = this->colorSess->GetRGBParam();
+		NotNullPtr<const Media::IColorHandler::RGBPARAM2> rgbParam = this->colorSess->GetRGBParam();
 
 		rGammaVal = rgbParam->MonRGamma;
 		gGammaVal = rgbParam->MonGGamma;

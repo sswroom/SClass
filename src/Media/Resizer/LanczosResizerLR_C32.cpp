@@ -1273,11 +1273,11 @@ void Media::Resizer::LanczosResizerLR_C32::Resize(const UInt8 *src, OSInt sbpl, 
 	}
 }
 
-void Media::Resizer::LanczosResizerLR_C32::YUVParamChanged(const Media::IColorHandler::YUVPARAM *yuvParam)
+void Media::Resizer::LanczosResizerLR_C32::YUVParamChanged(NotNullPtr<const Media::IColorHandler::YUVPARAM> yuvParam)
 {
 }
 
-void Media::Resizer::LanczosResizerLR_C32::RGBParamChanged(const Media::IColorHandler::RGBPARAM2 *rgbParam)
+void Media::Resizer::LanczosResizerLR_C32::RGBParamChanged(NotNullPtr<const Media::IColorHandler::RGBPARAM2> rgbParam)
 {
 	this->rgbChanged = true;
 }
@@ -1291,18 +1291,18 @@ void Media::Resizer::LanczosResizerLR_C32::SetSrcRefLuminance(Double srcRefLumin
 	}
 }
 
-Bool Media::Resizer::LanczosResizerLR_C32::IsSupported(const Media::FrameInfo *srcInfo)
+Bool Media::Resizer::LanczosResizerLR_C32::IsSupported(NotNullPtr<const Media::FrameInfo> srcInfo)
 {
 	if (srcInfo->fourcc != *(UInt32*)"LRGB")
 		return false;
 	return true;
 }
 
-Media::StaticImage *Media::Resizer::LanczosResizerLR_C32::ProcessToNewPartial(const Media::Image *srcImage, Math::Coord2DDbl srcTL, Math::Coord2DDbl srcBR)
+Media::StaticImage *Media::Resizer::LanczosResizerLR_C32::ProcessToNewPartial(NotNullPtr<const Media::Image> srcImage, Math::Coord2DDbl srcTL, Math::Coord2DDbl srcBR)
 {
 	Media::FrameInfo destInfo;
 	Media::StaticImage *img;
-	if (srcImage->GetImageType() != Media::Image::ImageType::Static || !IsSupported(&srcImage->info))
+	if (srcImage->GetImageType() != Media::Image::ImageType::Static || !IsSupported(srcImage->info))
 		return 0;
 	Math::Size2D<UOSInt> targeSize = this->targetSize;
 	if (targeSize.x == 0)
@@ -1313,7 +1313,7 @@ Media::StaticImage *Media::Resizer::LanczosResizerLR_C32::ProcessToNewPartial(co
 	{
 		targeSize.y = (UOSInt)Double2OSInt(srcBR.y - srcTL.y);//srcImage->info.height;
 	}
-	CalOutputSize(&srcImage->info, targetSize, &destInfo, rar);
+	CalOutputSize(srcImage->info, targetSize, destInfo, rar);
 	destInfo.fourcc = 0;
 	destInfo.storeBPP = 32;
 	destInfo.pf = this->pf;
@@ -1328,7 +1328,7 @@ Media::StaticImage *Media::Resizer::LanczosResizerLR_C32::ProcessToNewPartial(co
 	NEW_CLASS(img, Media::StaticImage(destInfo));
 	Int32 tlx = (Int32)srcTL.x;
 	Int32 tly = (Int32)srcTL.y;
-	Resize(((Media::StaticImage*)srcImage)->data + (OSInt)srcImage->GetDataBpl() * tly + (tlx << 3), (OSInt)srcImage->GetDataBpl(), srcBR.x - srcTL.x, srcBR.y - srcTL.y, srcTL.x - tlx, srcTL.y - tly, img->data, (OSInt)img->GetDataBpl(), destInfo.dispSize.x, destInfo.dispSize.y);
+	Resize(((Media::StaticImage*)srcImage.Ptr())->data + (OSInt)srcImage->GetDataBpl() * tly + (tlx << 3), (OSInt)srcImage->GetDataBpl(), srcBR.x - srcTL.x, srcBR.y - srcTL.y, srcTL.x - tlx, srcTL.y - tly, img->data, (OSInt)img->GetDataBpl(), destInfo.dispSize.x, destInfo.dispSize.y);
 	return img;
 }
 

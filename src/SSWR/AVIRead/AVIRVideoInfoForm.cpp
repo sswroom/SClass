@@ -94,7 +94,7 @@ void __stdcall SSWR::AVIRead::AVIRVideoInfoForm::OnStreamChg(void *userObj)
 		sb.AppendC(UTF8STRC("Stream Time = "));
 		me->AppendTime(sb, (UInt32)videoSrc->GetStreamTime());
 		sb.AppendC(UTF8STRC("\r\n"));
-		if (videoSrc->GetVideoInfo(&frameInfo, &rateNorm, &rateDenorm, &maxFrameSize))
+		if (videoSrc->GetVideoInfo(frameInfo, rateNorm, rateDenorm, maxFrameSize))
 		{
 			sb.AppendC(UTF8STRC("Frame Rate = "));
 			sb.AppendU32(rateNorm);

@@ -21,13 +21,13 @@ void __stdcall SSWR::AVIRead::AVIRImageColorForm::OnColorChg(void *userObj, UOSI
 	sptr = Text::StrConcatC(Text::StrDouble(sbuff, gvalue), UTF8STRC("%"));
 	me->lblGammaV->SetText(CSTRP(sbuff, sptr));
 
-	NotNullPtr<Media::ColorProfile> color;
+	NotNullPtr<const Media::ColorProfile> color;
 	color = me->srcImg->info.color;
-	if (color->GetRTranParam()->GetTranType() == Media::CS::TRANT_VUNKNOWN)
+	if (color->GetRTranParamRead()->GetTranType() == Media::CS::TRANT_VUNKNOWN)
 	{
 		color = me->core->GetColorMgr()->GetDefVProfile();
 	}
-	else if (color->GetRTranParam()->GetTranType() == Media::CS::TRANT_PUNKNOWN)
+	else if (color->GetRTranParamRead()->GetTranType() == Media::CS::TRANT_PUNKNOWN)
 	{
 		color = me->core->GetColorMgr()->GetDefPProfile();
 	}
@@ -36,25 +36,25 @@ void __stdcall SSWR::AVIRead::AVIRImageColorForm::OnColorChg(void *userObj, UOSI
 	me->currGVal = gvalue * 0.01;
 	me->rgbFilter->SetParameter(me->currBVal, me->currCVal, me->currGVal, color, me->srcPrevImg->info.storeBPP, me->srcPrevImg->info.pf, 0);
 	me->rgbFilter->ProcessImage(me->srcPrevImg->data, me->destPrevImg->data, me->srcPrevImg->info.dispSize.x, me->srcPrevImg->info.dispSize.y, (me->srcPrevImg->info.storeSize.x * (me->srcPrevImg->info.storeBPP >> 3)), (me->srcPrevImg->info.storeSize.x * (me->srcPrevImg->info.storeBPP >> 3)), false);
-	me->previewCtrl->SetImage(me->destPrevImg, true);
+	me->previewCtrl->SetImage(me->destPrevImg.Ptr(), true);
 }
 
 void __stdcall SSWR::AVIRead::AVIRImageColorForm::OnOKClick(void *userObj)
 {
 	SSWR::AVIRead::AVIRImageColorForm *me = (SSWR::AVIRead::AVIRImageColorForm*)userObj;
-	NotNullPtr<Media::ColorProfile> color;
+	NotNullPtr<const Media::ColorProfile> color;
 	color = me->srcImg->info.color;
-	if (color->GetRTranParam()->GetTranType() == Media::CS::TRANT_VUNKNOWN)
+	if (color->GetRTranParamRead()->GetTranType() == Media::CS::TRANT_VUNKNOWN)
 	{
 		color = me->core->GetColorMgr()->GetDefVProfile();
 	}
-	else if (color->GetRTranParam()->GetTranType() == Media::CS::TRANT_PUNKNOWN)
+	else if (color->GetRTranParamRead()->GetTranType() == Media::CS::TRANT_PUNKNOWN)
 	{
 		color = me->core->GetColorMgr()->GetDefPProfile();
 	}
 	me->rgbFilter->SetParameter(me->currBVal, me->currCVal, me->currGVal, color, me->srcImg->info.storeBPP, me->srcImg->info.pf, 0);
 	me->rgbFilter->ProcessImage(me->srcImg->data, me->destImg->data, me->srcImg->info.dispSize.x, me->srcImg->info.dispSize.y, (me->srcImg->info.storeSize.x * (me->srcImg->info.storeBPP >> 3)), (me->srcImg->info.storeSize.x * (me->srcImg->info.storeBPP >> 3)), false);
-	me->previewCtrl->SetImage(me->destImg, true);
+	me->previewCtrl->SetImage(me->destImg.Ptr(), true);
 
 	IO::Registry *reg = IO::Registry::OpenSoftware(IO::Registry::REG_USER_THIS, L"SSWR", L"AVIRead");
 	if (reg)
@@ -90,7 +90,7 @@ void __stdcall SSWR::AVIRead::AVIRImageColorForm::OnLastValueClick(void *userObj
 	}
 }
 
-SSWR::AVIRead::AVIRImageColorForm::AVIRImageColorForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Media::StaticImage *srcImg, Media::StaticImage *destImg, UI::GUIPictureBoxDD *previewCtrl) : UI::GUIForm(parent, 640, 140, ui)
+SSWR::AVIRead::AVIRImageColorForm::AVIRImageColorForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<const Media::StaticImage> srcImg, NotNullPtr<Media::StaticImage> destImg, UI::GUIPictureBoxDD *previewCtrl) : UI::GUIForm(parent, 640, 140, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
 	this->SetText(CSTR("Image Color"));
@@ -101,8 +101,6 @@ SSWR::AVIRead::AVIRImageColorForm::AVIRImageColorForm(UI::GUIClientControl *pare
 	this->destImg = destImg;
 	this->previewCtrl = previewCtrl;
 	NEW_CLASS(this->rgbFilter, Media::RGBColorFilter(this->core->GetColorMgr()));
-	this->srcPrevImg = 0;
-	this->destPrevImg = 0;
 	this->srcPrevImg = this->previewCtrl->CreatePreviewImage(this->srcImg);
 	this->destPrevImg = this->srcPrevImg->CreateStaticImage();
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
@@ -152,8 +150,8 @@ SSWR::AVIRead::AVIRImageColorForm::AVIRImageColorForm(UI::GUIClientControl *pare
 SSWR::AVIRead::AVIRImageColorForm::~AVIRImageColorForm()
 {
 	DEL_CLASS(this->rgbFilter);
-	SDEL_CLASS(this->srcPrevImg);
-	SDEL_CLASS(this->destPrevImg);
+	this->srcPrevImg.Delete();
+	this->destPrevImg.Delete();
 }
 
 void SSWR::AVIRead::AVIRImageColorForm::OnMonitorChanged()

@@ -69,7 +69,9 @@ namespace Media
 
 		virtual IO::ParserType GetParserType() const;
 
+		UOSInt AddImage(NotNullPtr<Media::Image> img, UInt32 imageDelay);
 		UOSInt AddImage(Media::Image *img, UInt32 imageDelay);
+		void ReplaceImage(UOSInt index, NotNullPtr<Media::Image> img);
 		void ReplaceImage(UOSInt index, Media::Image *img);
 		Bool RemoveImage(UOSInt index, Bool toRelease);
 		UOSInt GetCount() const;

@@ -39,7 +39,7 @@ namespace Media
 			virtual UInt32 GetFrameTime(UOSInt frameIndex);
 			virtual void EnumFrameInfos(FrameInfoCallback cb, void *userData);
 
-			virtual Bool GetVideoInfo(Media::FrameInfo *info, UInt32 *frameRateNorm, UInt32 *frameRateDenorm, UOSInt *maxFrameSize);
+			virtual Bool GetVideoInfo(NotNullPtr<Media::FrameInfo> info, OutParam<UInt32> frameRateNorm, OutParam<UInt32> frameRateDenorm, OutParam<UOSInt> maxFrameSize);
 		};
 	}
 }

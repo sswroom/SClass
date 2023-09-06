@@ -129,11 +129,11 @@ UOSInt Media::NWASource::ReadBlock(Data::ByteArray buff)
 		i = 0;
 		while (i < dSize)
 		{
-			if (!rdr.ReadBits(&aType, 3))
+			if (!rdr.ReadBits(aType, 3))
 				break;
 			if (aType == 7)
 			{
-				if (rdr.ReadBits(&v, 1))
+				if (rdr.ReadBits(v, 1))
 				{
 					if (v == 1)
 					{
@@ -142,7 +142,7 @@ UOSInt Media::NWASource::ReadBlock(Data::ByteArray buff)
 					else
 					{
 						sh = 2 + 7 + this->compLevel;
-						if (rdr.ReadBits(&v, bits8))
+						if (rdr.ReadBits(v, bits8))
 						{
 							if (v & mask81)
 								d[flipFlag] -= (Int32)((v & mask82) << sh);
@@ -163,7 +163,7 @@ UOSInt Media::NWASource::ReadBlock(Data::ByteArray buff)
 			else if (aType != 0)
 			{
 				sh = 2 + aType + this->compLevel;
-				if (rdr.ReadBits(&v, bits5))
+				if (rdr.ReadBits(v, bits5))
 				{
 					if (v & mask51)
 						d[flipFlag] -= (Int32)((v & mask52) << sh);
@@ -179,15 +179,15 @@ UOSInt Media::NWASource::ReadBlock(Data::ByteArray buff)
 			{
 				if (false)
 				{
-					if (!rdr.ReadBits(&v, 1))
+					if (!rdr.ReadBits(v, 1))
 						break;
 					if (v == 1)
 					{
-						if (!rdr.ReadBits(&v, 2))
+						if (!rdr.ReadBits(v, 2))
 							break;
 						if (v == 3)
 						{
-							if (!rdr.ReadBits(&v, 8))
+							if (!rdr.ReadBits(v, 8))
 								break;
 						}
 					}

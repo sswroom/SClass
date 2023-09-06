@@ -43,7 +43,7 @@ namespace Media
 		OSInt GetHotSpotX() const;
 		OSInt GetHotSpotY() const;
 
-		Media::StaticImage *CreateStaticImage() const;
+		NotNullPtr<Media::StaticImage> CreateStaticImage() const;
 		Media::StaticImage *CreateSubImage(Math::RectArea<OSInt> area) const;
 		Media::EXIFData *SetEXIFData(Media::EXIFData *exif);
 		void ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const;

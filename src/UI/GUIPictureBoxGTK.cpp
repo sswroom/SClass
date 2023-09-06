@@ -226,19 +226,20 @@ void UI::GUIPictureBox::UpdatePreview()
 		DEL_CLASS(data->tmpImage);
 		data->tmpImage = 0;
 	}
-	if (this->currImage)
+	NotNullPtr<Media::Image> img;
+	if (img.Set(this->currImage))
 	{
 		if (this->allowResize)
 		{
-			Media::StaticImage *tmpImage = resizer->ProcessToNew(this->currImage);
+			Media::StaticImage *tmpImage = resizer->ProcessToNew(img);
 			if (tmpImage)
 			{
 				GdkPixbuf *buf = gdk_pixbuf_new_from_data(tmpImage->data, GDK_COLORSPACE_RGB, tmpImage->info.storeBPP == 32, 8, (int)(OSInt)tmpImage->info.dispSize.x, (int)(OSInt)tmpImage->info.dispSize.y, (int)(OSInt)tmpImage->info.storeSize.x << 2, 0, 0);
 				guchar *pixels = gdk_pixbuf_get_pixels(buf);
-				ImageUtil_SwapRGB(pixels, (UInt32)gdk_pixbuf_get_rowstride(buf) / 4 * this->currImage->info.dispSize.y, 32);
-				if (this->currImage->info.atype != Media::AT_ALPHA)
+				ImageUtil_SwapRGB(pixels, (UInt32)gdk_pixbuf_get_rowstride(buf) / 4 * img->info.dispSize.y, 32);
+				if (img->info.atype != Media::AT_ALPHA)
 				{
-					ImageUtil_ImageFillAlpha32(pixels, this->currImage->info.dispSize.x, this->currImage->info.dispSize.y, (UInt32)gdk_pixbuf_get_rowstride(buf), 255);
+					ImageUtil_ImageFillAlpha32(pixels, img->info.dispSize.x, img->info.dispSize.y, (UInt32)gdk_pixbuf_get_rowstride(buf), 255);
 				}
 				data->pixbuf = buf;
 				data->tmpImage = tmpImage;
@@ -247,12 +248,12 @@ void UI::GUIPictureBox::UpdatePreview()
 		}
 		else
 		{
-			GdkPixbuf *buf = gdk_pixbuf_new_from_data(this->currImage->data, GDK_COLORSPACE_RGB, this->currImage->info.storeBPP == 32, 8, (int)(OSInt)this->currImage->info.dispSize.x, (int)(OSInt)this->currImage->info.dispSize.y, (int)(OSInt)this->currImage->info.storeSize.x << 2, 0, 0);
+			GdkPixbuf *buf = gdk_pixbuf_new_from_data(this->currImage->data, GDK_COLORSPACE_RGB, img->info.storeBPP == 32, 8, (int)(OSInt)img->info.dispSize.x, (int)(OSInt)img->info.dispSize.y, (int)(OSInt)img->info.storeSize.x << 2, 0, 0);
 			guchar *pixels = gdk_pixbuf_get_pixels(buf);
-			ImageUtil_SwapRGB(pixels, (UInt32)gdk_pixbuf_get_rowstride(buf) / 4 * this->currImage->info.dispSize.y, 32);
-			if (this->currImage->info.atype != Media::AT_ALPHA)
+			ImageUtil_SwapRGB(pixels, (UInt32)gdk_pixbuf_get_rowstride(buf) / 4 * img->info.dispSize.y, 32);
+			if (img->info.atype != Media::AT_ALPHA)
 			{
-				ImageUtil_ImageFillAlpha32(pixels, this->currImage->info.dispSize.x, this->currImage->info.dispSize.y, (UInt32)gdk_pixbuf_get_rowstride(buf), 255);
+				ImageUtil_ImageFillAlpha32(pixels, img->info.dispSize.x, img->info.dispSize.y, (UInt32)gdk_pixbuf_get_rowstride(buf), 255);
 			}
 			data->pixbuf = buf;
 			gtk_image_set_from_pixbuf((GtkImage*)data->gtkImage, buf);

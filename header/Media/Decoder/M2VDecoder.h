@@ -27,7 +27,7 @@ namespace Media
 			virtual UOSInt GetFrameSize(UOSInt frameIndex);
 			virtual UOSInt ReadFrame(UOSInt frameIndex, UInt8 *buff);
 
-			virtual Bool GetVideoInfo(Media::FrameInfo *info, UInt32 *frameRateNorm, UInt32 *frameRateDenorm, UOSInt *maxFrameSize);
+			virtual Bool GetVideoInfo(NotNullPtr<Media::FrameInfo> info, OutParam<UInt32> frameRateNorm, OutParam<UInt32> frameRateDenorm, OutParam<UOSInt> maxFrameSize);
 		};
 	}
 }

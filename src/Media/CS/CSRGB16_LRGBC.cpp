@@ -136,7 +136,7 @@ Media::CS::CSRGB16_LRGBC::~CSRGB16_LRGBC()
 	}
 }
 
-void Media::CS::CSRGB16_LRGBC::ConvertV2(UInt8 **srcPtr, UInt8 *destPtr, UOSInt dispWidth, UOSInt dispHeight, UOSInt srcStoreWidth, UOSInt srcStoreHeight, OSInt destRGBBpl, Media::FrameType ftype, Media::YCOffset ycOfst)
+void Media::CS::CSRGB16_LRGBC::ConvertV2(UInt8 *const*srcPtr, UInt8 *destPtr, UOSInt dispWidth, UOSInt dispHeight, UOSInt srcStoreWidth, UOSInt srcStoreHeight, OSInt destRGBBpl, Media::FrameType ftype, Media::YCOffset ycOfst)
 {
 	if (this->rgbUpdated)
 	{
@@ -172,11 +172,11 @@ void Media::CS::CSRGB16_LRGBC::SetPalette(UInt8 *pal)
 {
 }
 
-void Media::CS::CSRGB16_LRGBC::YUVParamChanged(const YUVPARAM *yuv)
+void Media::CS::CSRGB16_LRGBC::YUVParamChanged(NotNullPtr<const YUVPARAM> yuv)
 {
 }
 
-void Media::CS::CSRGB16_LRGBC::RGBParamChanged(const RGBPARAM2 *rgb)
+void Media::CS::CSRGB16_LRGBC::RGBParamChanged(NotNullPtr<const RGBPARAM2> rgb)
 {
 	this->rgbParam.Set(rgb);
 	this->rgbUpdated = true;

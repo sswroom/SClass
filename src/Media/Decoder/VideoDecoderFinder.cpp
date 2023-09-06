@@ -27,7 +27,7 @@ Media::IVideoSource *Media::Decoder::VideoDecoderFinder::DecodeVideo(Media::IVid
 	UInt32 frameRateNorm;
 	UInt32 frameRateDenorm;
 	UOSInt maxFrameSize;
-	vsrc->GetVideoInfo(&frameInfo, &frameRateNorm, &frameRateDenorm, &maxFrameSize);
+	vsrc->GetVideoInfo(frameInfo, frameRateNorm, frameRateDenorm, maxFrameSize);
 	if (frameInfo.fourcc == 0 || frameInfo.fourcc == 0xFFFFFFFF)
 		return 0;
 
@@ -49,7 +49,7 @@ Media::IVideoSource *Media::Decoder::VideoDecoderFinder::DecodeVideo(Media::IVid
 
 		NEW_CLASS(mp2g, Media::Decoder::MP2GDecoder(vsrc, false));
 		NEW_CLASS(decoder, Media::Decoder::VFWDecoder(mp2g));
-		if (decoder->GetVideoInfo(&decFrameInfo, &frameRateNorm, &frameRateDenorm, &maxFrameSize))
+		if (decoder->GetVideoInfo(decFrameInfo, frameRateNorm, frameRateDenorm, maxFrameSize))
 		{
 			NEW_CLASS(decChain, Media::Decoder::VDecoderChain(decoder));
 			decChain->AddDecoder(mp2g);
@@ -65,7 +65,7 @@ Media::IVideoSource *Media::Decoder::VideoDecoderFinder::DecodeVideo(Media::IVid
 
 		NEW_CLASS(m2vd, Media::Decoder::M2VDecoder(vsrc, false));
 		NEW_CLASS(decoder, Media::Decoder::VFWDecoder(m2vd));
-		if (decoder->GetVideoInfo(&decFrameInfo, &frameRateNorm, &frameRateDenorm, &maxFrameSize))
+		if (decoder->GetVideoInfo(decFrameInfo, frameRateNorm, frameRateDenorm, maxFrameSize))
 		{
 			NEW_CLASS(decChain, Media::Decoder::VDecoderChain(decoder));
 			decChain->AddDecoder(m2vd);
@@ -81,7 +81,7 @@ Media::IVideoSource *Media::Decoder::VideoDecoderFinder::DecodeVideo(Media::IVid
 
 		NEW_CLASS(ravc, Media::Decoder::RAVCDecoder(vsrc, false, false));
 		NEW_CLASS(decoder, Media::Decoder::VFWDecoder(ravc));
-		if (decoder->GetVideoInfo(&decFrameInfo, &frameRateNorm, &frameRateDenorm, &maxFrameSize))
+		if (decoder->GetVideoInfo(decFrameInfo, frameRateNorm, frameRateDenorm, maxFrameSize))
 		{
 			NEW_CLASS(decChain, Media::Decoder::VDecoderChain(decoder));
 			decChain->AddDecoder(ravc);
@@ -97,7 +97,7 @@ Media::IVideoSource *Media::Decoder::VideoDecoderFinder::DecodeVideo(Media::IVid
 
 		NEW_CLASS(rhvc, Media::Decoder::RHVCDecoder(vsrc, false));
 		NEW_CLASS(decoder, Media::Decoder::VFWDecoder(rhvc));
-		if (decoder->GetVideoInfo(&decFrameInfo, &frameRateNorm, &frameRateDenorm, &maxFrameSize))
+		if (decoder->GetVideoInfo(decFrameInfo, frameRateNorm, frameRateDenorm, maxFrameSize))
 		{
 			NEW_CLASS(decChain, Media::Decoder::VDecoderChain(decoder));
 			decChain->AddDecoder(rhvc);
@@ -108,7 +108,7 @@ Media::IVideoSource *Media::Decoder::VideoDecoderFinder::DecodeVideo(Media::IVid
 	}
 
 	NEW_CLASS(decoder, Media::Decoder::VFWDecoder(vsrc));
-	if (decoder->GetVideoInfo(&decFrameInfo, &frameRateNorm, &frameRateDenorm, &maxFrameSize))
+	if (decoder->GetVideoInfo(decFrameInfo, frameRateNorm, frameRateDenorm, maxFrameSize))
 	{
 		return decoder;
 	}

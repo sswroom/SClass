@@ -8,7 +8,7 @@ namespace IO
 	public:
 		virtual ~BitReader() {};
 
-		virtual Bool ReadBits(UInt32 *code, UOSInt bitCount) = 0;
+		virtual Bool ReadBits(OutParam<UInt32> code, UOSInt bitCount) = 0;
 		virtual Bool ByteAlign() = 0;
 		virtual UOSInt ReadBytes(UInt8 *buff, UOSInt cnt) = 0;
 	};

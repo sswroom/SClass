@@ -335,14 +335,14 @@ void Media::MonitorColorManager::SetDefault()
 	}
 }
 
-const Media::IColorHandler::YUVPARAM *Media::MonitorColorManager::GetYUVParam()
+NotNullPtr<const Media::IColorHandler::YUVPARAM> Media::MonitorColorManager::GetYUVParam()
 {
-	return &this->yuv;
+	return this->yuv;
 }
 
-const Media::IColorHandler::RGBPARAM2 *Media::MonitorColorManager::GetRGBParam()
+NotNullPtr<const Media::IColorHandler::RGBPARAM2> Media::MonitorColorManager::GetRGBParam()
 {
-	return &this->rgb;
+	return this->rgb;
 }
 
 void Media::MonitorColorManager::SetMonVBright(Double newVal)
@@ -726,7 +726,7 @@ void Media::MonitorColorManager::RGBUpdated()
 	while (i-- > 0)
 	{
 		colorSess = this->sessList.GetItem(i);
-		colorSess->RGBUpdated(&this->rgb);
+		colorSess->RGBUpdated(this->rgb);
 	}
 	mutUsage.EndUse();
 }
@@ -739,7 +739,7 @@ void Media::MonitorColorManager::YUVUpdated()
 	while (i-- > 0)
 	{
 		colorSess = this->sessList.GetItem(i);
-		colorSess->YUVUpdated(&this->yuv);
+		colorSess->YUVUpdated(this->yuv);
 	}
 	mutUsage.EndUse();
 }
@@ -948,13 +948,13 @@ void Media::ColorManagerSess::RemoveHandler(Media::IColorHandler *hdlr)
 	mutUsage.EndUse();
 }
 
-const Media::IColorHandler::YUVPARAM *Media::ColorManagerSess::GetYUVParam()
+NotNullPtr<const Media::IColorHandler::YUVPARAM> Media::ColorManagerSess::GetYUVParam()
 {
 	Sync::RWMutexUsage mutUsage(this->mut, false);
 	return this->monColor->GetYUVParam();
 }
 
-const Media::IColorHandler::RGBPARAM2 *Media::ColorManagerSess::GetRGBParam()
+NotNullPtr<const Media::IColorHandler::RGBPARAM2> Media::ColorManagerSess::GetRGBParam()
 {
 	Sync::RWMutexUsage mutUsage(this->mut, false);
 	return this->monColor->GetRGBParam();
@@ -1000,7 +1000,7 @@ void Media::ColorManagerSess::ChangeMonitor(MonitorHandle *hMon)
 	this->YUVUpdated(this->GetYUVParam());
 }
 
-void Media::ColorManagerSess::RGBUpdated(const Media::IColorHandler::RGBPARAM2 *rgbParam)
+void Media::ColorManagerSess::RGBUpdated(NotNullPtr<const Media::IColorHandler::RGBPARAM2> rgbParam)
 {
 	Sync::MutexUsage mutUsage(this->hdlrMut);
 	UOSInt i = this->hdlrs.GetCount();
@@ -1011,7 +1011,7 @@ void Media::ColorManagerSess::RGBUpdated(const Media::IColorHandler::RGBPARAM2 *
 	mutUsage.EndUse();
 }
 
-void Media::ColorManagerSess::YUVUpdated(const Media::IColorHandler::YUVPARAM *yuvParam)
+void Media::ColorManagerSess::YUVUpdated(NotNullPtr<const Media::IColorHandler::YUVPARAM> yuvParam)
 {
 	Sync::MutexUsage mutUsage(this->hdlrMut);
 	UOSInt i = this->hdlrs.GetCount();

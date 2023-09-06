@@ -37,8 +37,8 @@ namespace Media
 			virtual void UpdateTable();
 
 		public:
-			virtual void YUVParamChanged(const Media::IColorHandler::YUVPARAM *yuv);
-			virtual void RGBParamChanged(const Media::IColorHandler::RGBPARAM2 *rgb);
+			virtual void YUVParamChanged(NotNullPtr<const Media::IColorHandler::YUVPARAM> yuv);
+			virtual void RGBParamChanged(NotNullPtr<const Media::IColorHandler::RGBPARAM2> rgb);
 			virtual UOSInt GetDestFrameSize(UOSInt width, UOSInt height);
 		};
 	}

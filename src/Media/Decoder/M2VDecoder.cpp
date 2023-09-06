@@ -18,7 +18,7 @@ void Media::Decoder::M2VDecoder::ProcVideoFrame(UInt32 frameTime, UInt32 frameNu
 		UInt32 denorm;
 		UInt64 bitRate;
 
-		if (Media::MPEGVideoParser::GetFrameInfo(imgData[0], dataSize, &info, &norm, &denorm, &bitRate, true))
+		if (Media::MPEGVideoParser::GetFrameInfo(imgData[0], dataSize, info, norm, denorm, &bitRate, true))
 		{
 			if (info.par2 != this->par)
 			{
@@ -114,7 +114,7 @@ Media::Decoder::M2VDecoder::M2VDecoder(IVideoSource *sourceVideo, Bool toRelease
 	this->discTime = true;
 	this->par = 1;
 	this->toRelease = toRelease;
-	if (!sourceVideo->GetVideoInfo(&info, &frameRateNorm, &frameRateDenorm, &size))
+	if (!sourceVideo->GetVideoInfo(info, frameRateNorm, frameRateDenorm, size))
 	{
 		this->sourceVideo = 0;
 		return;
@@ -203,7 +203,7 @@ UOSInt Media::Decoder::M2VDecoder::ReadFrame(UOSInt frameIndex, UInt8 *buff)
 	return 0;
 }
 
-Bool Media::Decoder::M2VDecoder::GetVideoInfo(Media::FrameInfo *info, UInt32 *frameRateNorm, UInt32 *frameRateDenorm, UOSInt *maxFrameSize)
+Bool Media::Decoder::M2VDecoder::GetVideoInfo(NotNullPtr<Media::FrameInfo> info, OutParam<UInt32> frameRateNorm, OutParam<UInt32> frameRateDenorm, OutParam<UOSInt> maxFrameSize)
 {
 	if (this->sourceVideo == 0)
 		return false;

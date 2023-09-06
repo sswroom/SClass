@@ -121,7 +121,7 @@ heif_image *HEIFExporter_CreateImage(Media::Image *img)
 		return 0;
 	int stride;
 	uint8_t *data;
-	Media::StaticImage *simg;
+	NotNullPtr<Media::StaticImage> simg;
 	switch (img->info.pf)
 	{
 	case Media::PF_PAL_1:
@@ -147,7 +147,7 @@ heif_image *HEIFExporter_CreateImage(Media::Image *img)
 		simg->To32bpp();
 		simg->GetImageData(data, 0, 0, simg->info.dispSize.x, simg->info.dispSize.y, (UOSInt)stride, false, img->info.rotateType);
 		ImageUtil_SwapRGB(data, img->info.dispSize.x * img->info.dispSize.y, 32);
-		DEL_CLASS(simg);
+		simg.Delete();
 		break;
 	case Media::PF_B8G8R8A8:
 		heif_image_add_plane(image, heif_channel_interleaved, (int)img->info.dispSize.x, (int)img->info.dispSize.y, 8);
@@ -199,7 +199,7 @@ heif_image *HEIFExporter_CreateImage(Media::Image *img)
 		simg->To64bpp();
 		simg->GetImageData(data, 0, 0, simg->info.dispSize.x, simg->info.dispSize.y, (UOSInt)stride, false, simg->info.rotateType);
 		ImageUtil_SwapRGB(data, img->info.dispSize.x * img->info.dispSize.y, 64);
-		DEL_CLASS(simg);
+		simg.Delete();
 		break;
 	case Media::PF_LE_B16G16R16A16:
 		heif_image_add_plane(image, heif_channel_interleaved, (int)img->info.dispSize.x, (int)img->info.dispSize.y, 16);

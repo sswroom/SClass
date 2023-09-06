@@ -205,14 +205,14 @@ Bool Media::OpenCV::OCVFrameFeeder::Start()
 			MemFree(formats);
 		}
 	}
-	this->src->GetVideoInfo(&this->info, &rateNorm, &rateDenorm, &maxFrameSize);
+	this->src->GetVideoInfo(this->info, rateNorm, rateDenorm, maxFrameSize);
 	if (!Media::CS::CSConverter::IsSupported(this->info.fourcc))
 	{
 		Media::Decoder::VideoDecoderFinder decoders;
 		this->decoder = decoders.DecodeVideo(this->src);
 		if (this->decoder)
 		{
-			this->decoder->GetVideoInfo(&this->info, &rateNorm, &rateDenorm, &maxFrameSize);
+			this->decoder->GetVideoInfo(this->info, rateNorm, rateDenorm, maxFrameSize);
 		}
 	}
 	this->thisSkip = 0;

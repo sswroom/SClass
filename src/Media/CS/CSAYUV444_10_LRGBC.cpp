@@ -319,7 +319,7 @@ Media::CS::CSAYUV444_10_LRGBC::CSAYUV444_10_LRGBC(NotNullPtr<const Media::ColorP
 	this->rgbUpdated = true;
 	this->yuvUpdated = true;
 
-	MemCopyNO(&this->yuvParam, colorSess->GetYUVParam(), sizeof(YUVPARAM));
+	MemCopyNO(&this->yuvParam, colorSess->GetYUVParam().Ptr(), sizeof(YUVPARAM));
 	this->rgbParam.Set(colorSess->GetRGBParam());
 
 	this->nThread = Sync::ThreadUtil::GetThreadCnt();
@@ -394,7 +394,7 @@ Media::CS::CSAYUV444_10_LRGBC::~CSAYUV444_10_LRGBC()
 	MemFree(this->yuv2rgb);
 }
 
-void Media::CS::CSAYUV444_10_LRGBC::ConvertV2(UInt8 **srcPtr, UInt8 *destPtr, UOSInt dispWidth, UOSInt dispHeight, UOSInt srcStoreWidth, UOSInt srcStoreHeight, OSInt destRGBBpl, Media::FrameType ftype, Media::YCOffset ycOfst)
+void Media::CS::CSAYUV444_10_LRGBC::ConvertV2(UInt8 *const*srcPtr, UInt8 *destPtr, UOSInt dispWidth, UOSInt dispHeight, UOSInt srcStoreWidth, UOSInt srcStoreHeight, OSInt destRGBBpl, Media::FrameType ftype, Media::YCOffset ycOfst)
 {
 	this->UpdateTable();
 	UOSInt i = this->nThread;
@@ -439,13 +439,13 @@ void Media::CS::CSAYUV444_10_LRGBC::UpdateTable()
 	}
 }
 
-void Media::CS::CSAYUV444_10_LRGBC::YUVParamChanged(const Media::IColorHandler::YUVPARAM *yuv)
+void Media::CS::CSAYUV444_10_LRGBC::YUVParamChanged(NotNullPtr<const Media::IColorHandler::YUVPARAM> yuv)
 {
-	MemCopyNO(&this->yuvParam, yuv, sizeof(YUVPARAM));
+	MemCopyNO(&this->yuvParam, yuv.Ptr(), sizeof(YUVPARAM));
 	this->yuvUpdated = true;
 }
 
-void Media::CS::CSAYUV444_10_LRGBC::RGBParamChanged(const Media::IColorHandler::RGBPARAM2 *rgb)
+void Media::CS::CSAYUV444_10_LRGBC::RGBParamChanged(NotNullPtr<const Media::IColorHandler::RGBPARAM2> rgb)
 {
 	this->rgbParam.Set(rgb);
 	this->rgbUpdated = true;

@@ -4,7 +4,7 @@
 #include "Media/H264Parser.h"
 #include "Text/MyString.h"
 
-Bool Media::H264Parser::ParseHRDParameters(IO::BitReaderMSB *reader, H264Flags *flags)
+Bool Media::H264Parser::ParseHRDParameters(NotNullPtr<IO::BitReaderMSB> reader, H264Flags *flags)
 {
 	UInt32 cpb_cnt_minus1;
 	UInt32 bit_rate_scale;
@@ -15,21 +15,21 @@ Bool Media::H264Parser::ParseHRDParameters(IO::BitReaderMSB *reader, H264Flags *
 	UInt32 time_offset_length;
 	UInt32 v;
 	UInt32 i;
-	ParseVari(reader, &cpb_cnt_minus1);
-	reader->ReadBits(&bit_rate_scale, 4);
-	reader->ReadBits(&cpb_size_scale, 4);
+	ParseVari(reader, cpb_cnt_minus1);
+	reader->ReadBits(bit_rate_scale, 4);
+	reader->ReadBits(cpb_size_scale, 4);
 	i = 0;
 	while (i <= cpb_cnt_minus1)
 	{
-		ParseVari(reader, &v); //bit_rate_value_minus1[ SchedSelIdx ]
-		ParseVari(reader, &v); //cpb_size_value_minus1[ SchedSelIdx ]
-		reader->ReadBits(&v, 1); //cbr_flag[ SchedSelIdx ]
+		ParseVari(reader, v); //bit_rate_value_minus1[ SchedSelIdx ]
+		ParseVari(reader, v); //cpb_size_value_minus1[ SchedSelIdx ]
+		reader->ReadBits(v, 1); //cbr_flag[ SchedSelIdx ]
 		i++;
 	}
-	reader->ReadBits(&initial_cpb_removal_delay_length_minus1, 5);
-	reader->ReadBits(&cpb_removal_delay_length_minus1, 5);
-	reader->ReadBits(&dpb_output_delay_length_minus1, 5);
-	reader->ReadBits(&time_offset_length, 5);
+	reader->ReadBits(initial_cpb_removal_delay_length_minus1, 5);
+	reader->ReadBits(cpb_removal_delay_length_minus1, 5);
+	reader->ReadBits(dpb_output_delay_length_minus1, 5);
+	reader->ReadBits(time_offset_length, 5);
 	if (flags)
 	{
 		flags->initial_cpb_removal_delay_length_minus1 = initial_cpb_removal_delay_length_minus1;
@@ -39,7 +39,7 @@ Bool Media::H264Parser::ParseHRDParameters(IO::BitReaderMSB *reader, H264Flags *
 	return true;
 }
 
-Bool Media::H264Parser::ParseVUIParameters(IO::BitReaderMSB *reader, Media::FrameInfo *info, H264Flags *flags)
+Bool Media::H264Parser::ParseVUIParameters(NotNullPtr<IO::BitReaderMSB> reader, NotNullPtr<Media::FrameInfo> info, H264Flags *flags)
 {
 	UInt32 aspect_ratio_info_present_flag = 0;
 	UInt32 overscan_info_present_flag = 0;
@@ -52,13 +52,13 @@ Bool Media::H264Parser::ParseVUIParameters(IO::BitReaderMSB *reader, Media::Fram
 	UInt32 pic_struct_present_flag = 0;
 	UInt32 bitstream_restriction_flag = 0;
 	UInt32 temp;
-	reader->ReadBits(&aspect_ratio_info_present_flag, 1);
+	reader->ReadBits(aspect_ratio_info_present_flag, 1);
 	if (aspect_ratio_info_present_flag != 0)
 	{
 		UInt32 aspect_ratio_idc = 0;
 		UInt32 sarWidth;
 		UInt32 sarHeight;
-		reader->ReadBits(&aspect_ratio_idc, 8);
+		reader->ReadBits(aspect_ratio_idc, 8);
 		switch (aspect_ratio_idc)
 		{
 		case 0: //Unspecified
@@ -114,8 +114,8 @@ Bool Media::H264Parser::ParseVUIParameters(IO::BitReaderMSB *reader, Media::Fram
 		case 255:
 			sarWidth = 0;
 			sarHeight = 0;
-			reader->ReadBits(&sarWidth, 16);
-			reader->ReadBits(&sarHeight, 16);
+			reader->ReadBits(sarWidth, 16);
+			reader->ReadBits(sarHeight, 16);
 			if (sarWidth != 0 && sarHeight != 0)
 			{
 				info->par2 = sarHeight / (Double)sarWidth;
@@ -123,28 +123,28 @@ Bool Media::H264Parser::ParseVUIParameters(IO::BitReaderMSB *reader, Media::Fram
 			break;
 		}
 	}
-	reader->ReadBits(&overscan_info_present_flag, 1);
+	reader->ReadBits(overscan_info_present_flag, 1);
 	if (overscan_info_present_flag != 0)
 	{
-		reader->ReadBits(&temp, 1); //overscan_appropriate_flag
+		reader->ReadBits(temp, 1); //overscan_appropriate_flag
 	}
-	reader->ReadBits(&video_signal_type_present_flag, 1);
+	reader->ReadBits(video_signal_type_present_flag, 1);
 	if (video_signal_type_present_flag != 0)
 	{
 		UInt32 video_format;
 		UInt32 video_full_range_flag;
 		UInt32 colour_description_present_flag = 0;
-		reader->ReadBits(&video_format, 3);
-		reader->ReadBits(&video_full_range_flag, 1);
-		reader->ReadBits(&colour_description_present_flag, 1);
+		reader->ReadBits(video_format, 3);
+		reader->ReadBits(video_full_range_flag, 1);
+		reader->ReadBits(colour_description_present_flag, 1);
 		if (colour_description_present_flag != 0)
 		{
 			UInt32 colour_primaries = 0;
 			UInt32 transfer_characteristics = 0;
 			UInt32 matrix_coefficients = 0;
-			reader->ReadBits(&colour_primaries, 8);
-			reader->ReadBits(&transfer_characteristics, 8);
-			reader->ReadBits(&matrix_coefficients, 8);
+			reader->ReadBits(colour_primaries, 8);
+			reader->ReadBits(transfer_characteristics, 8);
+			reader->ReadBits(matrix_coefficients, 8);
 			switch (matrix_coefficients)
 			{
 			case 0: //GBR
@@ -250,45 +250,45 @@ Bool Media::H264Parser::ParseVUIParameters(IO::BitReaderMSB *reader, Media::Fram
 			}
 		}
 	}
-	reader->ReadBits(&chroma_loc_info_present_flag, 1);
+	reader->ReadBits(chroma_loc_info_present_flag, 1);
 	if (chroma_loc_info_present_flag != 0)
 	{
 		UInt32 chroma_sample_loc_type_top_field;
 		UInt32 chroma_sample_loc_type_bottom_field;
-		ParseVari(reader, &chroma_sample_loc_type_top_field);
-		ParseVari(reader, &chroma_sample_loc_type_bottom_field);
+		ParseVari(reader, chroma_sample_loc_type_top_field);
+		ParseVari(reader, chroma_sample_loc_type_bottom_field);
 	}
-	reader->ReadBits(&timing_info_present_flag, 1);
+	reader->ReadBits(timing_info_present_flag, 1);
 	if (timing_info_present_flag != 0)
 	{
 		if (flags)
 		{
-			reader->ReadBits(&flags->frameRateDenorm, 32); //num_units_in_tick
-			reader->ReadBits(&flags->frameRateNorm, 32); //time_scale
+			reader->ReadBits(flags->frameRateDenorm, 32); //num_units_in_tick
+			reader->ReadBits(flags->frameRateNorm, 32); //time_scale
 		}
 		else
 		{
-			reader->ReadBits(&temp, 32); //num_units_in_tick
-			reader->ReadBits(&temp, 32); //time_scale
+			reader->ReadBits(temp, 32); //num_units_in_tick
+			reader->ReadBits(temp, 32); //time_scale
 		}
-		reader->ReadBits(&temp, 1); //fixed_frame_rate_flag
+		reader->ReadBits(temp, 1); //fixed_frame_rate_flag
 	}
-	reader->ReadBits(&nal_hrd_parameters_present_flag, 1);
+	reader->ReadBits(nal_hrd_parameters_present_flag, 1);
 	if (nal_hrd_parameters_present_flag != 0)
 	{
 		ParseHRDParameters(reader, flags);
 	}
-	reader->ReadBits(&vcl_hrd_parameters_present_flag, 1);
+	reader->ReadBits(vcl_hrd_parameters_present_flag, 1);
 	if (vcl_hrd_parameters_present_flag != 0)
 	{
 		ParseHRDParameters(reader, flags);
 	}
 	if (nal_hrd_parameters_present_flag != 0 || vcl_hrd_parameters_present_flag != 0)
 	{
-		reader->ReadBits(&low_delay_hrd_flag, 1);
+		reader->ReadBits(low_delay_hrd_flag, 1);
 	}
-	reader->ReadBits(&pic_struct_present_flag, 1);
-	reader->ReadBits(&bitstream_restriction_flag, 1);
+	reader->ReadBits(pic_struct_present_flag, 1);
+	reader->ReadBits(bitstream_restriction_flag, 1);
 
 	if (flags)
 	{
@@ -301,9 +301,8 @@ Bool Media::H264Parser::ParseVUIParameters(IO::BitReaderMSB *reader, Media::Fram
 	return true;
 }
 
-Bool Media::H264Parser::GetFrameInfo(const UInt8 *frame, UOSInt frameSize, Media::FrameInfo *frameInfo, H264Flags *flags) //Bool *frameOnly, Bool *mbaff, Bool *separateColourPlane, Int32 *maxFrameNum_4, 
+Bool Media::H264Parser::GetFrameInfo(const UInt8 *frame, UOSInt frameSize, NotNullPtr<Media::FrameInfo> frameInfo, H264Flags *flags) //Bool *frameOnly, Bool *mbaff, Bool *separateColourPlane, Int32 *maxFrameNum_4, 
 {
-	IO::BitReaderMSB *reader;
 	Bool succ = false;
 	UInt8 *tmpBuff;
 	UInt8 *tmpPtr;
@@ -353,163 +352,162 @@ Bool Media::H264Parser::GetFrameInfo(const UInt8 *frame, UOSInt frameSize, Media
 		i++;
 	}
 
-
-	NEW_CLASS(reader, IO::BitReaderMSB(&tmpBuff[5], frameSize - 5));
-	reader->ReadBits(&profile_idc, 8);
-	reader->ReadBits(&temp, 8);
-	reader->ReadBits(&level_idc, 8);
-	ParseVari(reader, &seq_parameter_set_id);
-	UInt32 separate_colour_plane_flag = 0;
-
-	if (profile_idc == 100 || profile_idc == 110 || profile_idc == 122 || profile_idc == 244 || profile_idc == 44 || profile_idc == 83 || profile_idc == 86 || profile_idc == 118 || profile_idc == 128)
 	{
-		UInt32 chroma_format_idc = 0;
-		UInt32 seq_scaling_matrix_present_flag = 0;
-		j = 8;
+		IO::BitReaderMSB reader(&tmpBuff[5], frameSize - 5);
+		reader.ReadBits(profile_idc, 8);
+		reader.ReadBits(temp, 8);
+		reader.ReadBits(level_idc, 8);
+		ParseVari(reader, seq_parameter_set_id);
+		UInt32 separate_colour_plane_flag = 0;
 
-		ParseVari(reader, &chroma_format_idc);
-		if (chroma_format_idc == 3)
+		if (profile_idc == 100 || profile_idc == 110 || profile_idc == 122 || profile_idc == 244 || profile_idc == 44 || profile_idc == 83 || profile_idc == 86 || profile_idc == 118 || profile_idc == 128)
 		{
-			reader->ReadBits(&separate_colour_plane_flag, 1);
-			j = 12;
+			UInt32 chroma_format_idc = 0;
+			UInt32 seq_scaling_matrix_present_flag = 0;
+			j = 8;
+
+			ParseVari(reader, chroma_format_idc);
+			if (chroma_format_idc == 3)
+			{
+				reader.ReadBits(separate_colour_plane_flag, 1);
+				j = 12;
+			}
+			ParseVari(reader, temp); //bit_depth_luma_minus8
+			ParseVari(reader, temp); //bit_depth_chroma_minus8
+			reader.ReadBits(temp, 1); //qpprime_y_zero_transform_bypass_flag
+			reader.ReadBits(seq_scaling_matrix_present_flag, 1);
+			if (seq_scaling_matrix_present_flag == 1)
+			{
+				i = 0;
+				while (i < j)
+				{
+					temp = 0;
+					reader.ReadBits(temp, 1); //seq_scaling_list_present_flag[i]
+					if (temp == 1)
+					{
+						if (i < 6)
+						{
+							//scaling_list( ScalingList4x4[ i ], 16, UseDefaultScalingMatrix4x4Flag[ i ]);
+							UInt32 lastScale = 8;
+							UInt32 nextScale = 8;
+							k = 16;
+							while (k-- > 0)
+							{
+								if (nextScale != 0 && ParseSVari(reader, stemp))
+								{
+									nextScale = (lastScale + (UInt32)stemp + 256) & 255;
+								}
+								if (nextScale)
+								{
+									lastScale = nextScale;
+								}
+							}
+						}
+						else
+						{
+							//scaling_list( ScalingList8x8[ i − 6 ], 64, UseDefaultScalingMatrix8x8Flag[ i − 6 ]);
+							UInt32 lastScale = 8;
+							UInt32 nextScale = 8;
+							k = 64;
+							while (k-- > 0)
+							{
+								if (nextScale != 0 && ParseSVari(reader, stemp))
+								{
+									nextScale = (lastScale + (UInt32)stemp + 256) & 255;
+								}
+								if (nextScale)
+								{
+									lastScale = nextScale;
+								}
+							}
+						}
+					}
+					i++;
+				}
+			}
 		}
-		ParseVari(reader, &temp); //bit_depth_luma_minus8
-		ParseVari(reader, &temp); //bit_depth_chroma_minus8
-		reader->ReadBits(&temp, 1); //qpprime_y_zero_transform_bypass_flag
-		reader->ReadBits(&seq_scaling_matrix_present_flag, 1);
-		if (seq_scaling_matrix_present_flag == 1)
+		ParseVari(reader, temp); //log2_max_frame_num_minus4
+		if (flags)
 		{
+			flags->separateColourPlane = separate_colour_plane_flag != 0;
+			flags->maxFrameNum_4 = temp;
+		}
+		ParseVari(reader, pic_order_cnt_type);
+		if (pic_order_cnt_type == 0)
+		{
+			ParseVari(reader, temp); //log2_max_pic_order_cnt_lsb_minus4
+		}
+		else if (pic_order_cnt_type == 1)
+		{
+			reader.ReadBits(temp, 1); //delta_pic_order_always_zero_flag
+			ParseSVari(reader, stemp); //offset_for_non_ref_pic
+			ParseSVari(reader, stemp); //offset_for_top_to_bottom_field
+			ParseVari(reader, temp); //num_ref_frames_in_pic_order_cnt_cycle
+			j = temp;
 			i = 0;
 			while (i < j)
 			{
-				temp = 0;
-				reader->ReadBits(&temp, 1); //seq_scaling_list_present_flag[i]
-				if (temp == 1)
-				{
-					if (i < 6)
-					{
-						//scaling_list( ScalingList4x4[ i ], 16, UseDefaultScalingMatrix4x4Flag[ i ]);
-						UInt32 lastScale = 8;
-						UInt32 nextScale = 8;
-						k = 16;
-						while (k-- > 0)
-						{
-							if (nextScale != 0 && ParseSVari(reader, &stemp))
-							{
-								nextScale = (lastScale + (UInt32)stemp + 256) & 255;
-							}
-							if (nextScale)
-							{
-								lastScale = nextScale;
-							}
-						}
-					}
-					else
-					{
-						//scaling_list( ScalingList8x8[ i − 6 ], 64, UseDefaultScalingMatrix8x8Flag[ i − 6 ]);
-						UInt32 lastScale = 8;
-						UInt32 nextScale = 8;
-						k = 64;
-						while (k-- > 0)
-						{
-							if (nextScale != 0 && ParseSVari(reader, &stemp))
-							{
-								nextScale = (lastScale + (UInt32)stemp + 256) & 255;
-							}
-							if (nextScale)
-							{
-								lastScale = nextScale;
-							}
-						}
-					}
-				}
+				ParseSVari(reader, stemp); //offset_for_ref_frame[i]
 				i++;
 			}
 		}
-	}
-	ParseVari(reader, &temp); //log2_max_frame_num_minus4
-	if (flags)
-	{
-		flags->separateColourPlane = separate_colour_plane_flag != 0;
-		flags->maxFrameNum_4 = temp;
-	}
-	ParseVari(reader, &pic_order_cnt_type);
-	if (pic_order_cnt_type == 0)
-	{
-		ParseVari(reader, &temp); //log2_max_pic_order_cnt_lsb_minus4
-	}
-	else if (pic_order_cnt_type == 1)
-	{
-		reader->ReadBits(&temp, 1); //delta_pic_order_always_zero_flag
-		ParseSVari(reader, &stemp); //offset_for_non_ref_pic
-		ParseSVari(reader, &stemp); //offset_for_top_to_bottom_field
-		ParseVari(reader, &temp); //num_ref_frames_in_pic_order_cnt_cycle
-		j = temp;
-		i = 0;
-		while (i < j)
+		ParseVari(reader, temp); //max_num_ref_frames
+		reader.ReadBits(temp, 1); //gaps_in_frame_num_value_allowed_flag
+		if (ParseVari(reader, pic_width_in_mbs_minus1))
 		{
-			ParseSVari(reader, &stemp); //offset_for_ref_frame[i]
-			i++;
+			frameInfo->storeSize.x = ((UOSInt)pic_width_in_mbs_minus1 + 1) << 4;
+		}
+		ParseVari(reader, pic_height_in_map_units_minus1);
+		if (reader.ReadBits(frame_mbs_only_flag, 1))
+		{
+			frameInfo->storeSize.y = (2 - frame_mbs_only_flag) * ((UOSInt)pic_height_in_map_units_minus1 + 1) << 4;
+		}
+		mb_adaptive_frame_field_flag = 0;
+		if (frame_mbs_only_flag == 0)
+		{
+			reader.ReadBits(mb_adaptive_frame_field_flag, 1);
+		}
+		reader.ReadBits(temp, 1); //direct_8x8_inference_flag
+		reader.ReadBits(temp, 1); //frame_cropping_flag
+		frameInfo->dispSize = frameInfo->storeSize;
+		if (temp)
+		{
+			if (ParseVari(reader, temp))
+				frameInfo->dispSize.x -= temp;
+			if (ParseVari(reader, temp))
+				frameInfo->dispSize.x -= temp;
+			if (ParseVari(reader, temp))
+				frameInfo->dispSize.y -= temp;
+			if (ParseVari(reader, temp))
+				frameInfo->dispSize.y -= temp;
+		}
+
+		if (flags)
+		{
+			flags->frameOnly = frame_mbs_only_flag != 0;
+			flags->mbaff = mb_adaptive_frame_field_flag != 0;
+			flags->pic_struct_present_flag = false;
+			flags->nal_hrd_parameters_present_flag = false;
+			flags->vcl_hrd_parameters_present_flag = false;
+		}
+
+		reader.ReadBits(temp, 1);
+		if (temp)
+		{
+			ParseVUIParameters(reader, frameInfo, flags);
 		}
 	}
-	ParseVari(reader, &temp); //max_num_ref_frames
-	reader->ReadBits(&temp, 1); //gaps_in_frame_num_value_allowed_flag
-	if (ParseVari(reader, &pic_width_in_mbs_minus1))
-	{
-		frameInfo->storeSize.x = ((UOSInt)pic_width_in_mbs_minus1 + 1) << 4;
-	}
-	ParseVari(reader, &pic_height_in_map_units_minus1);
-	if (reader->ReadBits(&frame_mbs_only_flag, 1))
-	{
-		frameInfo->storeSize.y = (2 - frame_mbs_only_flag) * ((UOSInt)pic_height_in_map_units_minus1 + 1) << 4;
-	}
-	mb_adaptive_frame_field_flag = 0;
-	if (frame_mbs_only_flag == 0)
-	{
-		reader->ReadBits(&mb_adaptive_frame_field_flag, 1);
-	}
-	reader->ReadBits(&temp, 1); //direct_8x8_inference_flag
-	reader->ReadBits(&temp, 1); //frame_cropping_flag
-	frameInfo->dispSize = frameInfo->storeSize;
-	if (temp)
-	{
-		if (ParseVari(reader, &temp))
-			frameInfo->dispSize.x -= temp;
-		if (ParseVari(reader, &temp))
-			frameInfo->dispSize.x -= temp;
-		if (ParseVari(reader, &temp))
-			frameInfo->dispSize.y -= temp;
-		if (ParseVari(reader, &temp))
-			frameInfo->dispSize.y -= temp;
-	}
-
-	if (flags)
-	{
-		flags->frameOnly = frame_mbs_only_flag != 0;
-		flags->mbaff = mb_adaptive_frame_field_flag != 0;
-		flags->pic_struct_present_flag = false;
-		flags->nal_hrd_parameters_present_flag = false;
-		flags->vcl_hrd_parameters_present_flag = false;
-	}
-
-	reader->ReadBits(&temp, 1);
-	if (temp)
-	{
-		ParseVUIParameters(reader, frameInfo, flags);
-	}
-	
-	DEL_CLASS(reader);
 	MemFree(tmpBuff);
 	return succ;
 }
 
-Bool Media::H264Parser::ParseVari(IO::BitReaderMSB *reader, UInt32 *val)
+Bool Media::H264Parser::ParseVari(NotNullPtr<IO::BitReaderMSB> reader, OutParam<UInt32> val)
 {
 	UInt32 v;
 	UInt32 bitCnt = 0;
 	while (true)
 	{
-		if (!reader->ReadBits(&v, 1))
+		if (!reader->ReadBits(v, 1))
 			return false;
 		if (v == 1)
 			break;
@@ -517,7 +515,7 @@ Bool Media::H264Parser::ParseVari(IO::BitReaderMSB *reader, UInt32 *val)
 	}
 	if (bitCnt)
 	{
-		if (!reader->ReadBits(&v, bitCnt))
+		if (!reader->ReadBits(v, bitCnt))
 		{
 			return false;
 		}
@@ -526,23 +524,23 @@ Bool Media::H264Parser::ParseVari(IO::BitReaderMSB *reader, UInt32 *val)
 	{
 		v = 0;
 	}
-	*val = (UInt32)(1 << bitCnt) - 1 + v;
+	val.Set((UInt32)(1 << bitCnt) - 1 + v);
 	return true;
 }
 
-Bool Media::H264Parser::ParseSVari(IO::BitReaderMSB *reader, Int32 *val)
+Bool Media::H264Parser::ParseSVari(NotNullPtr<IO::BitReaderMSB> reader, OutParam<Int32> val)
 {
 	UInt32 v;
-	Bool ret = ParseVari(reader, &v);
+	Bool ret = ParseVari(reader, v);
 	if (ret)
 	{
 		if (v & 1)
 		{
-			*val = (Int32)(v >> 1);
+			val.Set((Int32)(v >> 1));
 		}
 		else
 		{
-			*val = -(Int32)(v >> 1);
+			val.Set(-(Int32)(v >> 1));
 		}
 	}
 	return ret;
@@ -643,13 +641,13 @@ UTF8Char *Media::H264Parser::GetFrameType(UTF8Char *sbuff, const UInt8 *frame, U
 		startOfst = nalList.GetItem(i);
 		if ((frame[startOfst + 4] & 0x1f) == 1 || (frame[startOfst + 4] & 0x1f) == 5)
 		{
-			IO::BitReaderMSB *reader;
 			UInt32 v;
-			NEW_CLASS(reader, IO::BitReaderMSB(&frame[startOfst + 5], endOfst - startOfst - 5));
-			ParseVari(reader, &v);
-			v = (UInt32)-1;
-			ParseVari(reader, &v);
-			DEL_CLASS(reader);
+			{
+				IO::BitReaderMSB reader(&frame[startOfst + 5], endOfst - startOfst - 5);
+				ParseVari(reader, v);
+				v = (UInt32)-1;
+				ParseVari(reader, v);
+			}
 			switch (v)
 			{
 			case 0:

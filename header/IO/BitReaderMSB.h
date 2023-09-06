@@ -19,7 +19,7 @@ namespace IO
 		BitReaderMSB(const UInt8 *buff, UOSInt buffSize);
 		virtual ~BitReaderMSB();
 
-		virtual Bool ReadBits(UInt32 *code, UOSInt bitCount);
+		virtual Bool ReadBits(OutParam<UInt32> code, UOSInt bitCount);
 		virtual Bool ByteAlign();
 		virtual UOSInt ReadBytes(UInt8 *buff, UOSInt cnt);
 	};

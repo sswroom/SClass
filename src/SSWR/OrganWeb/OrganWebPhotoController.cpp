@@ -176,6 +176,7 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhoto(NotNullPtr<Net::WebS
 			Media::ImageList *imgList;
 			Media::StaticImage *simg;
 			Media::StaticImage *lrimg;
+			NotNullPtr<Media::StaticImage> lrimgnn;
 			Media::StaticImage *dimg;
 			{
 				IO::StmData::FileData fd(sb.ToCString(), false);
@@ -183,7 +184,7 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhoto(NotNullPtr<Net::WebS
 			}
 			if (imgList)
 			{
-				simg = imgList->GetImage(0, 0)->CreateStaticImage();
+				simg = imgList->GetImage(0, 0)->CreateStaticImage().Ptr();
 				DEL_CLASS(imgList);
 				Media::ColorProfile color(Media::ColorProfile::CPT_SRGB);
 				NEW_CLASS(lrimg, Media::StaticImage(simg->info.dispSize, *(UInt32*)"LRGB", 64, Media::PF_UNKNOWN, 0, color, Media::ColorProfile::YUVT_UNKNOWN, Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
@@ -208,13 +209,13 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhoto(NotNullPtr<Net::WebS
 				mutUsage.EndUse();
 				DEL_CLASS(simg);
 
-				if (lrimg)
+				if (lrimgnn.Set(lrimg))
 				{
 					this->lrgbLimiter.LimitImageLRGB(lrimg->data, lrimg->info.dispSize.x, lrimg->info.dispSize.y);
 					Sync::MutexUsage mutUsage(this->resizerMut);
 					resizerLR->SetResizeAspectRatio(Media::IImgResizer::RAR_SQUAREPIXEL);
 					resizerLR->SetTargetSize(Math::Size2D<UOSInt>(imgWidth, imgHeight));
-					dimg = resizerLR->ProcessToNew(lrimg);
+					dimg = resizerLR->ProcessToNew(lrimgnn);
 					mutUsage.EndUse();
 					DEL_CLASS(lrimg)
 				}
@@ -432,6 +433,7 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhotoId(NotNullPtr<Net::We
 		Media::ImageList *imgList;
 		Media::StaticImage *simg;
 		Media::StaticImage *lrimg;
+		NotNullPtr<Media::StaticImage> lrimgnn;
 		Media::StaticImage *dimg;
 		{
 			IO::StmData::FileData fd({sbuff, (UOSInt)(sptr - sbuff)}, false);
@@ -439,7 +441,7 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhotoId(NotNullPtr<Net::We
 		}
 		if (imgList)
 		{
-			simg = imgList->GetImage(0, 0)->CreateStaticImage();
+			simg = imgList->GetImage(0, 0)->CreateStaticImage().Ptr();
 			DEL_CLASS(imgList);
 			Media::ColorProfile color(Media::ColorProfile::CPT_SRGB);
 			NEW_CLASS(lrimg, Media::StaticImage(simg->info.dispSize, *(UInt32*)"LRGB", 64, Media::PF_UNKNOWN, 0, color, Media::ColorProfile::YUVT_UNKNOWN, Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
@@ -465,7 +467,7 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhotoId(NotNullPtr<Net::We
 			}
 			DEL_CLASS(simg);
 
-			if (lrimg)
+			if (lrimgnn.Set(lrimg))
 			{
 				this->lrgbLimiter.LimitImageLRGB(lrimg->data, lrimg->info.dispSize.x, lrimg->info.dispSize.y);
 				if (imgWidth == GetPreviewSize() && imgHeight == GetPreviewSize())
@@ -497,7 +499,7 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhotoId(NotNullPtr<Net::We
 						y1 = userFile->cropBottom + userFile->cropTop;
 						y2 = UOSInt2Double(lrimg->info.dispSize.y);
 					}
-					dimg = resizerLR->ProcessToNewPartial(lrimg, Math::Coord2DDbl(x1, y1), Math::Coord2DDbl(x2, y2));
+					dimg = resizerLR->ProcessToNewPartial(lrimgnn, Math::Coord2DDbl(x1, y1), Math::Coord2DDbl(x2, y2));
 					mutUsage.EndUse();
 				}
 				else
@@ -505,7 +507,7 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhotoId(NotNullPtr<Net::We
 					Sync::MutexUsage mutUsage(this->resizerMut);
 					resizerLR->SetResizeAspectRatio(Media::IImgResizer::RAR_SQUAREPIXEL);
 					resizerLR->SetTargetSize(Math::Size2D<UOSInt>(imgWidth, imgHeight));
-					dimg = resizerLR->ProcessToNew(lrimg);
+					dimg = resizerLR->ProcessToNew(lrimgnn);
 					mutUsage.EndUse();
 				}
 				DEL_CLASS(lrimg)
@@ -724,6 +726,7 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhotoWId(NotNullPtr<Net::W
 			Media::ImageList *imgList;
 			Media::StaticImage *simg;
 			Media::StaticImage *lrimg;
+			NotNullPtr<Media::StaticImage> lrimgnn;
 			Media::StaticImage *dimg;
 			{
 				IO::StmData::FileData fd(CSTRP(sbuff, sptr), false);
@@ -731,7 +734,7 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhotoWId(NotNullPtr<Net::W
 			}
 			if (imgList)
 			{
-				simg = imgList->GetImage(0, 0)->CreateStaticImage();
+				simg = imgList->GetImage(0, 0)->CreateStaticImage().Ptr();
 				DEL_CLASS(imgList);
 				Media::ColorProfile color(Media::ColorProfile::CPT_SRGB);
 				NEW_CLASS(lrimg, Media::StaticImage(simg->info.dispSize, *(UInt32*)"LRGB", 64, Media::PF_UNKNOWN, 0, color, Media::ColorProfile::YUVT_UNKNOWN, Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
@@ -757,7 +760,7 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhotoWId(NotNullPtr<Net::W
 				}
 				DEL_CLASS(simg);
 
-				if (lrimg)
+				if (lrimgnn.Set(lrimg))
 				{
 					this->lrgbLimiter.LimitImageLRGB(lrimg->data, lrimg->info.dispSize.x, lrimg->info.dispSize.y);
 					if (imgWidth == GetPreviewSize() && imgHeight == GetPreviewSize())
@@ -789,7 +792,7 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhotoWId(NotNullPtr<Net::W
 							y1 = wfile->cropBottom + wfile->cropTop;
 							y2 = UOSInt2Double(lrimg->info.dispSize.y);
 						}
-						dimg = resizerLR->ProcessToNewPartial(lrimg, Math::Coord2DDbl(x1, y1), Math::Coord2DDbl(x2, y2));
+						dimg = resizerLR->ProcessToNewPartial(lrimgnn, Math::Coord2DDbl(x1, y1), Math::Coord2DDbl(x2, y2));
 						mutUsage.EndUse();
 					}
 					else
@@ -797,7 +800,7 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhotoWId(NotNullPtr<Net::W
 						Sync::MutexUsage mutUsage(this->resizerMut);
 						resizerLR->SetResizeAspectRatio(Media::IImgResizer::RAR_SQUAREPIXEL);
 						resizerLR->SetTargetSize(Math::Size2D<UOSInt>(imgWidth, imgHeight));
-						dimg = resizerLR->ProcessToNew(lrimg);
+						dimg = resizerLR->ProcessToNew(lrimgnn);
 						mutUsage.EndUse();
 					}
 					DEL_CLASS(lrimg)

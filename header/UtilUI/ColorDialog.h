@@ -162,8 +162,8 @@ namespace UtilUI
 		virtual void OnMonitorChanged();
 		virtual void OnDisplaySizeChange(UOSInt dispWidth, UOSInt dispHeight);
 
-		virtual void YUVParamChanged(const Media::IColorHandler::YUVPARAM *yuvParam);
-		virtual void RGBParamChanged(const Media::IColorHandler::RGBPARAM2 *rgbParam);
+		virtual void YUVParamChanged(NotNullPtr<const Media::IColorHandler::YUVPARAM> yuvParam);
+		virtual void RGBParamChanged(NotNullPtr<const Media::IColorHandler::RGBPARAM2> rgbParam);
 	};
 }
 #endif

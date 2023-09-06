@@ -17,10 +17,10 @@ namespace SSWR
 		private:
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 
-			Media::StaticImage *srcImg;
-			Media::StaticImage *destImg;
-			Media::StaticImage *srcPrevImg;
-			Media::StaticImage *destPrevImg;
+			NotNullPtr<const Media::StaticImage> srcImg;
+			NotNullPtr<Media::StaticImage> destImg;
+			NotNullPtr<Media::StaticImage> srcPrevImg;
+			NotNullPtr<Media::StaticImage> destPrevImg;
 			UI::GUIPictureBoxDD *previewCtrl;
 			Media::RGBColorFilter *rgbFilter;
 			Double currBVal;
@@ -45,7 +45,7 @@ namespace SSWR
 			static void __stdcall OnCancelClick(void *userObj);
 			static void __stdcall OnLastValueClick(void *userObj);
 		public:
-			AVIRImageColorForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Media::StaticImage *srcImg, Media::StaticImage *destImg, UI::GUIPictureBoxDD *previewCtrl);
+			AVIRImageColorForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<const Media::StaticImage> srcImg, NotNullPtr<Media::StaticImage> destImg, UI::GUIPictureBoxDD *previewCtrl);
 			virtual ~AVIRImageColorForm();
 
 			virtual void OnMonitorChanged();

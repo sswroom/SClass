@@ -698,7 +698,7 @@ Media::IMediaSource *Parser::FileParser::QTParser::ParseStblAtom(NotNullPtr<IO::
 							UInt32 norm;
 							UInt32 denorm;
 							UInt64 br;
-							Media::MPEGVideoParser::GetFrameInfo(&buff[atomOfst + 8], subAtomSize - 8, &frInfo, &norm, &denorm, &br, false);
+							Media::MPEGVideoParser::GetFrameInfo(&buff[atomOfst + 8], subAtomSize - 8, frInfo, norm, denorm, &br, false);
 							frInfo.fourcc = *(UInt32*)"m2v1";
 						}
 					}
@@ -1334,7 +1334,7 @@ Media::IMediaSource *Parser::FileParser::QTParser::ParseStblAtom(NotNullPtr<IO::
 			keyMap.Put(0, 1);
 
 			Media::FileVideoSource *fsrc;
-			NEW_CLASS(fsrc, Media::FileVideoSource(fd, &frInfo, frameRate, frameRateDenorm, timeScale != 0));
+			NEW_CLASS(fsrc, Media::FileVideoSource(fd, frInfo, frameRate, frameRateDenorm, timeScale != 0));
 			Data::ByteBuffer ttsBuff(ttsAtomSize);
 			Data::ByteBuffer stcBuff(stcAtomSize);
 			Data::ByteBuffer stcoBuff(stcoAtomSize);
@@ -1491,7 +1491,7 @@ Media::IMediaSource *Parser::FileParser::QTParser::ParseStblAtom(NotNullPtr<IO::
 						flags.frameRateNorm = 0;
 						flags.frameRateDenorm = 0;
 						Media::FrameInfo fInfo;
-						Media::H264Parser::GetFrameInfo(tmpBuff, (UOSInt)nSample + 4, &fInfo, &flags);
+						Media::H264Parser::GetFrameInfo(tmpBuff, (UOSInt)nSample + 4, fInfo, &flags);
 						MemFree(tmpBuff);
 						if (flags.frameRateDenorm != 0)
 						{

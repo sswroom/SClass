@@ -266,7 +266,7 @@ IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFileHdr(NotNullPtr<IO::St
 				if (innerImgList)
 				{
 					Media::Image *innerImg;
-					Media::StaticImage *innerSImg;
+					NotNullPtr<Media::StaticImage> innerSImg;
 					UInt32 imgDelay;
 					i = 0;
 					j = innerImgList->GetCount();
@@ -279,6 +279,7 @@ IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFileHdr(NotNullPtr<IO::St
 							innerSImg->SetEXIFData(exif);
 							exif = 0;
 						}
+						innerSImg.Delete();
 						i++;
 					}
 					DEL_CLASS(innerImgList);

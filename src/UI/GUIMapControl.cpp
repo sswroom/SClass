@@ -269,7 +269,7 @@ void UI::GUIMapControl::OnDraw(NotNullPtr<Media::DrawImage> img)
 
 	if (this->gZoom)
 	{
-		Media::StaticImage *drawImg = 0;
+		NotNullPtr<Media::StaticImage> drawImg;
 		Media::StaticImage *srcImg;
 		Media::Resizer::LanczosResizerH8_8 resizer(4, 3, Media::AT_NO_ALPHA);
 		Math::Size2D<UOSInt> sz;
@@ -298,7 +298,7 @@ void UI::GUIMapControl::OnDraw(NotNullPtr<Media::DrawImage> img)
 		{
 			tl = Math::Coord2DDbl(0, 0);
 			sz = this->currSize;
-			NEW_CLASS(drawImg, Media::StaticImage(this->currSize, 0, 32, Media::PF_B8G8R8A8, 0, Media::ColorProfile(), Media::ColorProfile::YUVT_BT601, Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
+			NEW_CLASSNN(drawImg, Media::StaticImage(this->currSize, 0, 32, Media::PF_B8G8R8A8, 0, Media::ColorProfile(), Media::ColorProfile::YUVT_BT601, Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
 			Double rate = (Double)this->gZoomDist / (Double)this->gZoomCurrDist;
 			Math::Size2DDbl srcSize = this->currSize.ToDouble() * rate;
 			Math::Coord2DDbl srcPos = this->gZoomPos.ToDouble() - this->gZoomCurrPos.ToDouble() * rate;
@@ -336,7 +336,7 @@ void UI::GUIMapControl::OnDraw(NotNullPtr<Media::DrawImage> img)
 			sz.x = (UOSInt)Double2OSInt(UOSInt2Double(this->currSize.x) * rate);
 			sz.y = (UOSInt)Double2OSInt(UOSInt2Double(this->currSize.y) * rate);
 			tl = this->gZoomCurrPos.ToDouble() - this->gZoomPos.ToDouble() * rate;
-			NEW_CLASS(drawImg, Media::StaticImage(this->currSize, 0, 32, Media::PF_B8G8R8A8, 0, Media::ColorProfile(), Media::ColorProfile::YUVT_BT601, Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
+			NEW_CLASSNN(drawImg, Media::StaticImage(this->currSize, 0, 32, Media::PF_B8G8R8A8, 0, Media::ColorProfile(), Media::ColorProfile::YUVT_BT601, Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
 			drawImg->info.hdpi = this->view->GetHDPI() / this->view->GetDDPI() * 96.0;
 			drawImg->info.vdpi = this->view->GetHDPI() / this->view->GetDDPI() * 96.0;
 			drawImg->info.color.Set(this->colorSess->GetRGBParam()->monProfile);
@@ -346,7 +346,7 @@ void UI::GUIMapControl::OnDraw(NotNullPtr<Media::DrawImage> img)
 		DEL_CLASS(srcImg);
 
 		img->DrawImagePt2(drawImg, tl);
-		DEL_CLASS(drawImg);
+		drawImg.Delete();
 
 
 		Media::DrawBrush *bgBrush = img->NewBrushARGB(this->bgColor);
@@ -837,11 +837,11 @@ void UI::GUIMapControl::OnSizeChanged(Bool updateScn)
 	}
 }
 
-void UI::GUIMapControl::YUVParamChanged(const Media::IColorHandler::YUVPARAM *yuvParam)
+void UI::GUIMapControl::YUVParamChanged(NotNullPtr<const Media::IColorHandler::YUVPARAM> yuvParam)
 {
 }
 
-void UI::GUIMapControl::RGBParamChanged(const Media::IColorHandler::RGBPARAM2 *rgbParam)
+void UI::GUIMapControl::RGBParamChanged(NotNullPtr<const Media::IColorHandler::RGBPARAM2> rgbParam)
 {
 	this->renderer->ColorUpdated();
 	this->SetBGColor(this->bgColor);

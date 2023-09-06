@@ -44,13 +44,13 @@ void Media::IImgResizer::SetSrcRefLuminance(Double srcRefLuminance)
 {
 }
 
-Media::StaticImage *Media::IImgResizer::ProcessToNew(const Media::Image *srcImage)
+Media::StaticImage *Media::IImgResizer::ProcessToNew(NotNullPtr<const Media::Image> srcImage)
 {
 	this->SetSrcRefLuminance(Media::CS::TransferFunc::GetRefLuminance(srcImage->info.color.rtransfer));
 	return ProcessToNewPartial(srcImage, Math::Size2DDbl(0, 0), srcImage->info.dispSize.ToDouble());
 }
 
-void Media::IImgResizer::CalOutputSize(const Media::FrameInfo *srcInfo, Math::Size2D<UOSInt> targetSize, Media::FrameInfo *destInfo, Media::IImgResizer::ResizeAspectRatio rar)
+void Media::IImgResizer::CalOutputSize(NotNullPtr<const Media::FrameInfo> srcInfo, Math::Size2D<UOSInt> targetSize, NotNullPtr<Media::FrameInfo> destInfo, Media::IImgResizer::ResizeAspectRatio rar)
 {
 	destInfo->Set(srcInfo);
 	if (targetSize.x == 0 && targetSize.y == 0)

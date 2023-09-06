@@ -14,12 +14,12 @@ namespace Media
 			CSYUV_Y8(UInt32 srcFmt);
 			virtual ~CSYUV_Y8();
 
-			virtual void ConvertV2(UInt8 **srcPtr, UInt8 *destPtr, UOSInt dispWidth, UOSInt dispHeight, UOSInt srcStoreWidth, UOSInt srcStoreHeight, OSInt destRGBBpl, Media::FrameType ftype, Media::YCOffset ycOfst);
+			virtual void ConvertV2(UInt8 *const*srcPtr, UInt8 *destPtr, UOSInt dispWidth, UOSInt dispHeight, UOSInt srcStoreWidth, UOSInt srcStoreHeight, OSInt destRGBBpl, Media::FrameType ftype, Media::YCOffset ycOfst);
 			virtual UOSInt GetSrcFrameSize(UOSInt width, UOSInt height);
 			virtual UOSInt GetDestFrameSize(UOSInt width, UOSInt height);
 
-			virtual void YUVParamChanged(const Media::IColorHandler::YUVPARAM *yuvParam);
-			virtual void RGBParamChanged(const Media::IColorHandler::RGBPARAM2 *rgbParam);
+			virtual void YUVParamChanged(NotNullPtr<const Media::IColorHandler::YUVPARAM> yuvParam);
+			virtual void RGBParamChanged(NotNullPtr<const Media::IColorHandler::RGBPARAM2> rgbParam);
 
 			static Bool IsSupported(UInt32 fmt);
 		};

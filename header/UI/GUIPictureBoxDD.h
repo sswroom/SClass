@@ -78,8 +78,8 @@ namespace UI
 		void EnableLRGBLimit(Bool enable);
 		void SetImage(Media::Image *currImage, Bool sameImg);
 
-		virtual void YUVParamChanged(const Media::IColorHandler::YUVPARAM *yuvParam);
-		virtual void RGBParamChanged(const Media::IColorHandler::RGBPARAM2 *rgbParam);
+		virtual void YUVParamChanged(NotNullPtr<const Media::IColorHandler::YUVPARAM> yuvParam);
+		virtual void RGBParamChanged(NotNullPtr<const Media::IColorHandler::RGBPARAM2> rgbParam);
 		void SetAllowEnlarge(Bool allowEnlarge);
 
 		virtual void OnSurfaceCreated();
@@ -97,7 +97,7 @@ namespace UI
 		void EventMoveToPrev();
 
 		Bool GetImageViewSize(Math::Size2D<UOSInt> *viewSize, Math::Size2D<UOSInt> imageSize);
-		Media::StaticImage *CreatePreviewImage(Media::StaticImage *image);
+		NotNullPtr<Media::StaticImage> CreatePreviewImage(NotNullPtr<const Media::StaticImage> image);
 
 		void HandleMouseDown(MouseEventHandler hdlr, void *userObj);
 		void HandleMouseMove(MouseEventHandler hdlr, void *userObj);

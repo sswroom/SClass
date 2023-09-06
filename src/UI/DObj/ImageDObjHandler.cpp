@@ -20,16 +20,23 @@ void UI::DObj::ImageDObjHandler::DrawBkg(NotNullPtr<Media::DrawImage> dimg)
 		}
 		if (this->bmpBuff == 0)
 		{
-			Media::StaticImage *simg = this->bmpBkg->ToStaticImage();
-			Media::ColorProfile srgb(Media::ColorProfile::CPT_SRGB);
-			Media::ColorProfile dispProfile(Media::ColorProfile::CPT_PDISPLAY);
-			Media::Resizer::LanczosResizer8_C8 resizer(4, 3, srgb, dispProfile, colorSess, Media::AlphaType::AT_NO_ALPHA);
-			resizer.SetTargetSize(scnSize);
-			resizer.SetResizeAspectRatio(Media::IImgResizer::RAR_KEEPAR);
-			Media::StaticImage *srimg = resizer.ProcessToNew(simg);
-			DEL_CLASS(simg);
-			this->bmpBuff = this->deng->ConvImage(srimg);
-			DEL_CLASS(srimg);
+			NotNullPtr<Media::StaticImage> simg;
+			if (simg.Set(this->bmpBkg->ToStaticImage()))
+			{
+				Media::ColorProfile srgb(Media::ColorProfile::CPT_SRGB);
+				Media::ColorProfile dispProfile(Media::ColorProfile::CPT_PDISPLAY);
+				Media::Resizer::LanczosResizer8_C8 resizer(4, 3, srgb, dispProfile, colorSess, Media::AlphaType::AT_NO_ALPHA);
+				resizer.SetTargetSize(scnSize);
+				resizer.SetResizeAspectRatio(Media::IImgResizer::RAR_KEEPAR);
+				Media::StaticImage *srimg = resizer.ProcessToNew(simg);
+				simg.Delete();
+				this->bmpBuff = this->deng->ConvImage(srimg);
+				DEL_CLASS(srimg);
+			}
+			else
+			{
+				this->bmpBuff = 0;
+			}
 		}
 		if (bmpBuff.Set(this->bmpBuff))
 		{

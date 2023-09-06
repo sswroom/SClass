@@ -33,6 +33,8 @@ public:
 		return this->p;
 	}
 
+	T operator=(T) = delete;
+
 	template <typename V> static OutParam<T> ConvertFrom(OutParam<V> p)
 	{
 		return OutParam<T>((T*)p.Ptr());

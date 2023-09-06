@@ -179,7 +179,7 @@ Media::Decoder::RHVCDecoder::RHVCDecoder(IVideoSource *sourceVideo, Bool toRelea
 	this->firstFrame = true;
 	this->discontTime = true;
 
-	if (!sourceVideo->GetVideoInfo(&info, &frameRateNorm, &frameRateDenorm, &size))
+	if (!sourceVideo->GetVideoInfo(info, frameRateNorm, frameRateDenorm, size))
 	{
 		this->sourceVideo = 0;
 		return;
@@ -229,7 +229,7 @@ Media::Decoder::RHVCDecoder::RHVCDecoder(IVideoSource *sourceVideo, Bool toRelea
 	UOSInt oriH;
 	oriW = info.dispSize.x;
 	oriH = info.dispSize.y;
-	Media::H265Parser::GetFrameInfoSPS(this->sps, this->spsSize, &info);
+	Media::H265Parser::GetFrameInfoSPS(this->sps, this->spsSize, info);
 	UOSInt cropRight = 0;
 	UOSInt cropBottom = 0;
 	if (info.dispSize.x < oriW)
@@ -395,7 +395,7 @@ UOSInt Media::Decoder::RHVCDecoder::ReadFrame(UOSInt frameIndex, UInt8 *buff)
 	return outSize;
 }
 
-Bool Media::Decoder::RHVCDecoder::GetVideoInfo(Media::FrameInfo *info, UInt32 *frameRateNorm, UInt32 *frameRateDenorm, UOSInt *maxFrameSize)
+Bool Media::Decoder::RHVCDecoder::GetVideoInfo(NotNullPtr<Media::FrameInfo> info, OutParam<UInt32> frameRateNorm, OutParam<UInt32> frameRateDenorm, OutParam<UOSInt> maxFrameSize)
 {
 	if (this->pps == 0 || this->sps == 0)
 		return false;
@@ -407,7 +407,7 @@ Bool Media::Decoder::RHVCDecoder::GetVideoInfo(Media::FrameInfo *info, UInt32 *f
 		Media::H265Parser::GetFrameInfoSPS(this->sps, this->spsSize, info);
 	}
 	info->dispSize = oriSize;
-	*maxFrameSize = this->maxFrameSize;
+	maxFrameSize.Set(this->maxFrameSize);
 	info->fourcc = ReadNUInt32((const UInt8*)"HEVC");
 
 	return true;

@@ -16,7 +16,7 @@ Media::CS::CSYUV420P8_RGB32C::~CSYUV420P8_RGB32C()
 {
 }
 
-void Media::CS::CSYUV420P8_RGB32C::ConvertV2(UInt8 **srcPtr, UInt8 *destPtr, UOSInt dispWidth, UOSInt dispHeight, UOSInt srcStoreWidth, UOSInt srcStoreHeight, OSInt destRGBBpl, Media::FrameType ftype, Media::YCOffset ycOfst)
+void Media::CS::CSYUV420P8_RGB32C::ConvertV2(UInt8 *const*srcPtr, UInt8 *destPtr, UOSInt dispWidth, UOSInt dispHeight, UOSInt srcStoreWidth, UOSInt srcStoreHeight, OSInt destRGBBpl, Media::FrameType ftype, Media::YCOffset ycOfst)
 {
 	this->UpdateTable();
 	UInt32 isLast = 1;
@@ -36,6 +36,7 @@ void Media::CS::CSYUV420P8_RGB32C::ConvertV2(UInt8 **srcPtr, UInt8 *destPtr, UOS
 	
 	if (ftype == Media::FT_MERGED_TF || ftype == Media::FT_MERGED_BF)
 	{
+		UInt8 *yStart = srcPtr[0];
 		UInt8 *uStart = srcPtr[1];
 		UInt8 *vStart = srcPtr[2];
 
@@ -46,7 +47,7 @@ void Media::CS::CSYUV420P8_RGB32C::ConvertV2(UInt8 **srcPtr, UInt8 *destPtr, UOS
 		{
 			vStart += srcStoreWidth >> 1;
 			uStart += srcStoreWidth >> 1;
-			srcPtr[0] += srcStoreWidth;
+			yStart += srcStoreWidth;
 		}
 
 		if ((ycOfst == Media::YCOFST_C_CENTER_LEFT || ycOfst == Media::YCOFST_C_CENTER_CENTER) && (srcStoreWidth & 7) == 0)
@@ -93,14 +94,14 @@ void Media::CS::CSYUV420P8_RGB32C::ConvertV2(UInt8 **srcPtr, UInt8 *destPtr, UOS
 
 				if (ftype == Media::FT_MERGED_TF)
 				{
-					stats[i].yPtr = srcPtr[0] + (srcStoreWidth * currHeight << 1);
+					stats[i].yPtr = yStart + (srcStoreWidth * currHeight << 1);
 					stats[i].uPtr = uStart;
 					stats[i].vPtr = vStart;
 					stats[i].yvParam = &this->yvParamO;
 				}
 				else
 				{
-					stats[i].yPtr = srcPtr[0] + (srcStoreWidth * (currHeight << 1));
+					stats[i].yPtr = yStart + (srcStoreWidth * (currHeight << 1));
 					stats[i].uPtr = uStart;// + (srcStoreWidth >> 1);
 					stats[i].vPtr = vStart;// + (srcStoreWidth >> 1);
 					stats[i].yvParam = &this->yvParamE;
@@ -142,7 +143,7 @@ void Media::CS::CSYUV420P8_RGB32C::ConvertV2(UInt8 **srcPtr, UInt8 *destPtr, UOS
 					isFirst = 1;
 				currHeight = MulDivUOS(i, dispHeight >> 1, nThread) & (UOSInt)~1;
 
-				stats[i].yPtr = srcPtr[0] + srcStoreWidth * (currHeight << 1);
+				stats[i].yPtr = yStart + srcStoreWidth * (currHeight << 1);
 				stats[i].yBpl = srcStoreWidth << 1;
 				stats[i].vPtr = vStart + ((srcStoreWidth * currHeight) >> 1);
 				stats[i].uPtr = uStart + ((srcStoreWidth * currHeight) >> 1);

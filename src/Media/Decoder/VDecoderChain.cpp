@@ -66,7 +66,7 @@ void Media::Decoder::VDecoderChain::EnumFrameInfos(FrameInfoCallback cb, void *u
 	this->sourceVideo->EnumFrameInfos(cb, userData);
 }
 
-Bool Media::Decoder::VDecoderChain::GetVideoInfo(Media::FrameInfo *info, UInt32 *frameRateNorm, UInt32 *frameRateDenorm, UOSInt *maxFrameSize)
+Bool Media::Decoder::VDecoderChain::GetVideoInfo(NotNullPtr<Media::FrameInfo> info, OutParam<UInt32> frameRateNorm, OutParam<UInt32> frameRateDenorm, OutParam<UOSInt> maxFrameSize)
 {
 	return this->sourceVideo->GetVideoInfo(info, frameRateNorm, frameRateDenorm, maxFrameSize);
 }

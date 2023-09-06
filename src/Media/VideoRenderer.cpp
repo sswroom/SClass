@@ -1154,7 +1154,7 @@ void __stdcall Media::VideoRenderer::OnVideoChange(Media::IVideoSource::FrameCha
 	if (fc == Media::IVideoSource::FC_PAR)
 	{
 		me->VideoBeginProc();
-		me->video->GetVideoInfo(&me->videoInfo, &frameRateNorm, &frameRateDenorm, &frameSize);
+		me->video->GetVideoInfo(me->videoInfo, frameRateNorm, frameRateDenorm, frameSize);
 		me->frameRateNorm = frameRateNorm;
 		me->frameRateDenorm = frameRateDenorm;
 		me->VideoEndProc();
@@ -1964,7 +1964,7 @@ void Media::VideoRenderer::SetVideo(Media::IVideoSource *video)
 		UInt32 frameRateNorm;
 		UInt32 frameRateDenorm;
 		UOSInt frameSize;
- 		if (!this->video->GetVideoInfo(&info, &frameRateNorm, &frameRateDenorm, &frameSize))
+ 		if (!this->video->GetVideoInfo(info, frameRateNorm, frameRateDenorm, frameSize))
 		{
 			this->video = 0;
 			this->ivtc.SetSourceVideo(0);
@@ -1974,7 +1974,7 @@ void Media::VideoRenderer::SetVideo(Media::IVideoSource *video)
 		}
 
 		this->VideoBeginLoad();
-		this->videoInfo.Set(&info);
+		this->videoInfo.Set(info);
 		this->frameRateNorm = frameRateNorm;
 		this->frameRateDenorm = frameRateDenorm;
 		if (info.fourcc == FFMT_YUV444P10LE)

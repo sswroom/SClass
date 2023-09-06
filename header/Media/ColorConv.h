@@ -16,7 +16,7 @@ namespace Media
 		ColorConv(NotNullPtr<const Media::ColorProfile> srcColor, NotNullPtr<const Media::ColorProfile> destColor, Media::ColorManagerSess *colorSess);
 		~ColorConv();
 
-		void RGBParamChanged(const Media::IColorHandler::RGBPARAM2 *rgbParam);
+		void RGBParamChanged(NotNullPtr<const Media::IColorHandler::RGBPARAM2> rgbParam);
 		UInt32 ConvRGB8(UInt32 c);
 
 

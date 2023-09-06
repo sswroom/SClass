@@ -50,14 +50,15 @@ void __stdcall SSWR::AVIRead::AVIRImageBatchForm::OnImageChanged(void *userObj, 
 		SDEL_CLASS(me->previewImage);
 		SDEL_CLASS(me->filteredImage);
 		me->dispImage = img;
-		if (img)
+		NotNullPtr<Media::StaticImage> simg;
+		if (simg.Set(img))
 		{
-			img->To32bpp();
+			simg->To32bpp();
 			Math::Size2D<UOSInt> sz = me->pbMain->GetSizeP();
 			me->resizer->SetTargetSize(sz);
-			me->resizer->SetDestProfile(img->info.color);
-			me->previewImage = me->resizer->ProcessToNew(img);
-			me->filteredImage = me->previewImage->CreateStaticImage();
+			me->resizer->SetDestProfile(simg->info.color);
+			me->previewImage = me->resizer->ProcessToNew(simg);
+			me->filteredImage = me->previewImage->CreateStaticImage().Ptr();
 			me->initPos = true;
 			me->hsbBright->SetPos((UOSInt)Double2OSInt(setting->brightness * 1000));
 			me->hsbContr->SetPos((UOSInt)Double2OSInt(setting->contrast * 100));

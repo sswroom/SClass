@@ -23,9 +23,9 @@ namespace Media
 			virtual ~NearestNeighbourResizer64_64();
 
 			virtual void Resize(const UInt8 *src, OSInt sbpl, Double swidth, Double sheight, Double xOfst, Double yOfst, UInt8 *dest, OSInt dbpl, UOSInt dwidth, UOSInt dheight);
-			virtual Bool Resize(const Media::StaticImage *srcImg, Media::StaticImage *destImg);
-			virtual Bool IsSupported(const Media::FrameInfo *srcInfo);
-			virtual Media::StaticImage *ProcessToNewPartial(const Media::Image *srcImage, Math::Coord2DDbl srcTL, Math::Coord2DDbl srcBR);
+			virtual Bool Resize(NotNullPtr<const Media::StaticImage> srcImg, NotNullPtr<Media::StaticImage> destImg);
+			virtual Bool IsSupported(NotNullPtr<const Media::FrameInfo> srcInfo);
+			virtual Media::StaticImage *ProcessToNewPartial(NotNullPtr<const Media::Image> srcImage, Math::Coord2DDbl srcTL, Math::Coord2DDbl srcBR);
 		};
 	}
 }

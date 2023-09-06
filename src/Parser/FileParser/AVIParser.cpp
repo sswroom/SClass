@@ -467,7 +467,7 @@ IO::ParsedObject *Parser::FileParser::AVIParser::ParseFileHdr(NotNullPtr<IO::Str
 				info.rotateType = Media::RotateType::None;
 
 				Media::FileVideoSource *vstm;
-				NEW_CLASS(vstm, Media::FileVideoSource(fd, &info, strl[i].strh.dwRate, strl[i].strh.dwScale, false));
+				NEW_CLASS(vstm, Media::FileVideoSource(fd, info, strl[i].strh.dwRate, strl[i].strh.dwScale, false));
 				UInt32 scale = strl[i].strh.dwScale;
 				UInt32 rate = strl[i].strh.dwRate;
 				k = (UInt32)ofsts->GetCount();

@@ -336,7 +336,7 @@ Media::CS::CSNV12_RGB32C::~CSNV12_RGB32C()
 	}
 }
 
-void Media::CS::CSNV12_RGB32C::ConvertV2(UInt8 **srcPtr, UInt8 *destPtr, UOSInt dispWidth, UOSInt dispHeight, UOSInt srcStoreWidth, UOSInt srcStoreHeight, OSInt destRGBBpl, Media::FrameType ftype, Media::YCOffset ycOfst)
+void Media::CS::CSNV12_RGB32C::ConvertV2(UInt8 *const*srcPtr, UInt8 *destPtr, UOSInt dispWidth, UOSInt dispHeight, UOSInt srcStoreWidth, UOSInt srcStoreHeight, OSInt destRGBBpl, Media::FrameType ftype, Media::YCOffset ycOfst)
 {
 	this->UpdateTable();
 	UInt32 isLast = 1;
@@ -356,7 +356,8 @@ void Media::CS::CSNV12_RGB32C::ConvertV2(UInt8 **srcPtr, UInt8 *destPtr, UOSInt 
 	
 	if (ftype == Media::FT_MERGED_TF || ftype == Media::FT_MERGED_BF)
 	{
-		UInt8 *uvStart = srcPtr[0] + srcStoreWidth * srcStoreHeight;
+		UInt8 *yStart = srcPtr[0];
+		UInt8 *uvStart = yStart + srcStoreWidth * srcStoreHeight;
 
 		if (ftype == Media::FT_MERGED_TF)
 		{
@@ -364,7 +365,7 @@ void Media::CS::CSNV12_RGB32C::ConvertV2(UInt8 **srcPtr, UInt8 *destPtr, UOSInt 
 		else
 		{
 			uvStart += srcStoreWidth;
-			srcPtr[0] += srcStoreWidth;
+			yStart += srcStoreWidth;
 		}
 
 		if ((ycOfst == Media::YCOFST_C_CENTER_LEFT || ycOfst == Media::YCOFST_C_CENTER_CENTER) && (srcStoreWidth & 7) == 0)
@@ -411,13 +412,13 @@ void Media::CS::CSNV12_RGB32C::ConvertV2(UInt8 **srcPtr, UInt8 *destPtr, UOSInt 
 
 				if (ftype == Media::FT_MERGED_TF)
 				{
-					stats[i].yPtr = srcPtr[0] + (srcStoreWidth * currHeight << 1);
+					stats[i].yPtr = yStart + (srcStoreWidth * currHeight << 1);
 					stats[i].uvPtr = uvStart;
 					stats[i].yvParam = &this->yvParamO;
 				}
 				else
 				{
-					stats[i].yPtr = srcPtr[0] + (srcStoreWidth * (currHeight << 1));
+					stats[i].yPtr = yStart + (srcStoreWidth * (currHeight << 1));
 					stats[i].uvPtr = uvStart;
 					stats[i].yvParam = &this->yvParamE;
 				}
@@ -458,7 +459,7 @@ void Media::CS::CSNV12_RGB32C::ConvertV2(UInt8 **srcPtr, UInt8 *destPtr, UOSInt 
 					isFirst = 1;
 				currHeight = MulDivUOS(i, dispHeight >> 1, nThread) & (UOSInt)~1;
 
-				stats[i].yPtr = srcPtr[0] + srcStoreWidth * (currHeight << 1);
+				stats[i].yPtr = yStart + srcStoreWidth * (currHeight << 1);
 				stats[i].yBpl = srcStoreWidth << 1;
 				stats[i].uvPtr = uvStart + (srcStoreWidth * currHeight);
 				stats[i].uvBpl = srcStoreWidth << 1;

@@ -62,7 +62,7 @@ UOSInt Media::AVIUtl::AUIVideo::GetMaxFrameSize()
 	}
 }
 
-Media::AVIUtl::AUIVideo::AUIVideo(Media::AVIUtl::AUIPlugin *plugin, Media::AVIUtl::AUIPlugin::AUIInput *input, Media::FrameInfo *frameInfo, UInt32 frameRateNorm, UInt32 frameRateDenorm, UInt32 frameCnt)
+Media::AVIUtl::AUIVideo::AUIVideo(Media::AVIUtl::AUIPlugin *plugin, Media::AVIUtl::AUIPlugin::AUIInput *input, NotNullPtr<const Media::FrameInfo> frameInfo, UInt32 frameRateNorm, UInt32 frameRateDenorm, UInt32 frameCnt)
 {
 	this->plugin = plugin;
 	this->input = input;
@@ -113,12 +113,12 @@ Text::CString Media::AVIUtl::AUIVideo::GetFilterName()
 	return CSTR("AUIVideo");
 }
 
-Bool Media::AVIUtl::AUIVideo::GetVideoInfo(Media::FrameInfo *info, UInt32 *frameRateNorm, UInt32 *frameRateDenorm, UOSInt *maxFrameSize)
+Bool Media::AVIUtl::AUIVideo::GetVideoInfo(NotNullPtr<Media::FrameInfo> info, OutParam<UInt32> frameRateNorm, OutParam<UInt32> frameRateDenorm, OutParam<UOSInt> maxFrameSize)
 {
 	info->Set(this->frameInfo);
-	*frameRateNorm = this->frameRateNorm;
-	*frameRateDenorm = this->frameRateDenorm;
-	*maxFrameSize = this->GetMaxFrameSize();
+	frameRateNorm.Set(this->frameRateNorm);
+	frameRateDenorm.Set(this->frameRateDenorm);
+	maxFrameSize.Set(this->GetMaxFrameSize());
 	return true;
 }
 

@@ -109,7 +109,7 @@ Text::CString Media::DShow::DShowVideoCapture::GetFilterName()
 	return CSTR("DShowVideoCapture");
 }
 
-Bool Media::DShow::DShowVideoCapture::GetVideoInfo(Media::FrameInfo *info, UInt32 *frameRateNorm, UInt32 *frameRateDenorm, UOSInt *maxFrameSize)
+Bool Media::DShow::DShowVideoCapture::GetVideoInfo(NotNullPtr<Media::FrameInfo> info, OutParam<UInt32> frameRateNorm, OutParam<UInt32> frameRateDenorm, OutParam<UOSInt> maxFrameSize)
 {
 	if (captureFilter == 0)
 	{
@@ -149,26 +149,26 @@ Bool Media::DShow::DShowVideoCapture::GetVideoInfo(Media::FrameInfo *info, UInt3
 
 				if ((Double2Int32(1000000000 / (Double)format->AvgTimePerFrame) % 100) == 0)
 				{
-					*frameRateNorm = (UInt32)Double2Int32(10000000 / (Double)format->AvgTimePerFrame);
-					*frameRateDenorm = 1;
+					frameRateNorm.Set((UInt32)Double2Int32(10000000 / (Double)format->AvgTimePerFrame));
+					frameRateDenorm.Set(1);
 				}
 				else if ((Double2Int32(1001000000 / (Double)format->AvgTimePerFrame) % 100) == 0)
 				{
-					*frameRateNorm = (UInt32)Double2Int32(10010000000 / (Double)format->AvgTimePerFrame);
-					*frameRateDenorm = 1001;
+					frameRateNorm.Set((UInt32)Double2Int32(10010000000 / (Double)format->AvgTimePerFrame));
+					frameRateDenorm.Set(1001);
 				}
 				else
 				{
-					*frameRateNorm = 10000000;
-					*frameRateDenorm = (UInt32)format->AvgTimePerFrame;
+					frameRateNorm.Set(10000000);
+					frameRateDenorm.Set((UInt32)format->AvgTimePerFrame);
 				}
 				if (info->byteSize == 0)
 				{
-					*maxFrameSize = MulDivUOS(info->dispSize.CalcArea(), filter->GetFrameMul(), 8);
+					maxFrameSize.Set(MulDivUOS(info->dispSize.CalcArea(), filter->GetFrameMul(), 8));
 				}
 				else
 				{
-					*maxFrameSize = info->byteSize;
+					maxFrameSize.Set(info->byteSize);
 				}
 				succ = true;
 				break;
@@ -180,7 +180,7 @@ Bool Media::DShow::DShowVideoCapture::GetVideoInfo(Media::FrameInfo *info, UInt3
 	if (!succ)
 	{
 		info->fourcc = 0;
-		*maxFrameSize = 0;
+		maxFrameSize.Set(0);
 	}
 	return succ;
 }

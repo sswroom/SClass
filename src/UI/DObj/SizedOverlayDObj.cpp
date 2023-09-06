@@ -100,25 +100,32 @@ void UI::DObj::SizedOverlayDObj::DrawObject(NotNullPtr<Media::DrawImage> dimg)
 			}
 		}
 		Sync::MutexUsage mutUsage(this->dispMut);
+		NotNullPtr<Media::StaticImage> img;
 		if (this->dispImg == 0 || this->dispFrameNum != frameNum)
 		{
 			SDEL_CLASS(this->dispImg);
 			this->imgList->ToStaticImage(frameNum);
 			this->dispFrameNum = frameNum;
-			Media::StaticImage *img = (Media::StaticImage*)this->imgList->GetImage(frameNum, 0);
-			img->To32bpp();
-			this->resizer->SetResizeAspectRatio(Media::IImgResizer::RAR_SQUAREPIXEL);
-			this->resizer->SetTargetSize(this->size);
-			this->dispImg = this->resizer->ProcessToNew(img);
-			if (this->dispImg)
+			if (img.Set((Media::StaticImage*)this->imgList->GetImage(frameNum, 0)))
 			{
-				this->drawOfst = (this->size - this->dispImg->info.dispSize).ToDouble() * 0.5;
+				img->To32bpp();
+				this->resizer->SetResizeAspectRatio(Media::IImgResizer::RAR_SQUAREPIXEL);
+				this->resizer->SetTargetSize(this->size);
+				this->dispImg = this->resizer->ProcessToNew(img);
+				if (this->dispImg)
+				{
+					this->drawOfst = (this->size - this->dispImg->info.dispSize).ToDouble() * 0.5;
+				}
+			}
+			else
+			{
+				this->dispImg = 0;
 			}
 		}
-		if (this->dispImg)
+		if (img.Set(this->dispImg))
 		{
 			Math::Coord2DDbl tl = GetCurrPos().ToDouble();
-			dimg->DrawImagePt2(this->dispImg, tl + this->drawOfst);
+			dimg->DrawImagePt2(img, tl + this->drawOfst);
 		}
 	}
 }

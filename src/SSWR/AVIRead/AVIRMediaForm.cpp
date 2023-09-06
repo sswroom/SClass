@@ -517,11 +517,11 @@ void SSWR::AVIRead::AVIRMediaForm::EventMenuClicked(UInt16 cmdId)
 
 			if (this->currDecoder)
 			{
-				this->currDecoder->GetVideoInfo(&info, &tmpV, &tmpV, &sz1.x);
+				this->currDecoder->GetVideoInfo(info, tmpV, tmpV, sz1.x);
 			}
 			else
 			{
-				this->activeVideo->GetVideoInfo(&info, &tmpV, &tmpV, &sz1.x);
+				this->activeVideo->GetVideoInfo(info, tmpV, tmpV, sz1.x);
 			}
 			this->activeVideo->GetBorderCrop(&cropLeft, &cropTop, &cropRight, &cropBottom);
 			if (this->vbdMain->IsFullScreen())

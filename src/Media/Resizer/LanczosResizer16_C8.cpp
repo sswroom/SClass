@@ -733,7 +733,7 @@ void Media::Resizer::LanczosResizer16_C8::Resize(const UInt8 *src, OSInt sbpl, D
 	}
 }
 
-Bool Media::Resizer::LanczosResizer16_C8::Resize(const Media::StaticImage *srcImg, Media::StaticImage *destImg)
+Bool Media::Resizer::LanczosResizer16_C8::Resize(NotNullPtr<const Media::StaticImage> srcImg, NotNullPtr<Media::StaticImage> destImg)
 {
 	if (srcImg->info.fourcc != 0 && srcImg->info.fourcc != *(UInt32*)"DIB")
 		return false;
@@ -757,11 +757,11 @@ Bool Media::Resizer::LanczosResizer16_C8::Resize(const Media::StaticImage *srcIm
 	}
 }
 
-void Media::Resizer::LanczosResizer16_C8::YUVParamChanged(const Media::IColorHandler::YUVPARAM *yuvParam)
+void Media::Resizer::LanczosResizer16_C8::YUVParamChanged(NotNullPtr<const Media::IColorHandler::YUVPARAM> yuvParam)
 {
 }
 
-void Media::Resizer::LanczosResizer16_C8::RGBParamChanged(const Media::IColorHandler::RGBPARAM2 *rgbParam)
+void Media::Resizer::LanczosResizer16_C8::RGBParamChanged(NotNullPtr<const Media::IColorHandler::RGBPARAM2> rgbParam)
 {
 	this->rgbChanged = true;
 }
@@ -796,7 +796,7 @@ Media::AlphaType Media::Resizer::LanczosResizer16_C8::GetDestAlphaType()
 	}
 }
 
-Bool Media::Resizer::LanczosResizer16_C8::IsSupported(const Media::FrameInfo *srcInfo)
+Bool Media::Resizer::LanczosResizer16_C8::IsSupported(NotNullPtr<const Media::FrameInfo> srcInfo)
 {
 	if (srcInfo->fourcc != 0)
 		return false;
@@ -805,11 +805,11 @@ Bool Media::Resizer::LanczosResizer16_C8::IsSupported(const Media::FrameInfo *sr
 	return true;
 }
 
-Media::StaticImage *Media::Resizer::LanczosResizer16_C8::ProcessToNewPartial(const Media::Image *srcImage, Math::Coord2DDbl srcTL, Math::Coord2DDbl srcBR)
+Media::StaticImage *Media::Resizer::LanczosResizer16_C8::ProcessToNewPartial(NotNullPtr<const Media::Image> srcImage, Math::Coord2DDbl srcTL, Math::Coord2DDbl srcBR)
 {
 	Media::FrameInfo destInfo;
 	Media::StaticImage *newImage;
-	if (srcImage->GetImageType() != Media::Image::ImageType::Static || !IsSupported(&srcImage->info))
+	if (srcImage->GetImageType() != Media::Image::ImageType::Static || !IsSupported(srcImage->info))
 	{
 		return 0;
 	}
@@ -822,7 +822,7 @@ Media::StaticImage *Media::Resizer::LanczosResizer16_C8::ProcessToNewPartial(con
 	{
 		targetSize.y = (UOSInt)Double2Int32(srcBR.y - srcTL.y);
 	}
-	CalOutputSize(&srcImage->info, targetSize, &destInfo, this->rar);
+	CalOutputSize(srcImage->info, targetSize, destInfo, this->rar);
 	destInfo.storeBPP = 32;
 	destInfo.pf = Media::PF_B8G8R8A8;
 	this->SetSrcProfile(srcImage->info.color);
@@ -838,6 +838,6 @@ Media::StaticImage *Media::Resizer::LanczosResizer16_C8::ProcessToNewPartial(con
 	NEW_CLASS(newImage, Media::StaticImage(destInfo));
 	Int32 tlx = (Int32)srcTL.x;
 	Int32 tly = (Int32)srcTL.y;
-	Resize(((Media::StaticImage*)srcImage)->data + (tlx << 2) + tly * (OSInt)srcImage->GetDataBpl(), (OSInt)srcImage->GetDataBpl(), srcBR.x - srcTL.x, srcBR.y - srcTL.y, srcTL.x - tlx, srcTL.y - tly, newImage->data, (OSInt)newImage->GetDataBpl(), newImage->info.dispSize.x, newImage->info.dispSize.y);
+	Resize(((Media::StaticImage*)srcImage.Ptr())->data + (tlx << 2) + tly * (OSInt)srcImage->GetDataBpl(), (OSInt)srcImage->GetDataBpl(), srcBR.x - srcTL.x, srcBR.y - srcTL.y, srcTL.x - tlx, srcTL.y - tly, newImage->data, (OSInt)newImage->GetDataBpl(), newImage->info.dispSize.x, newImage->info.dispSize.y);
 	return newImage;
 }

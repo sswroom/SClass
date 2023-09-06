@@ -1128,7 +1128,7 @@ void Media::Resizer::LanczosResizerH8_8::Resize(const UInt8 *src, OSInt sbpl, Do
 	}
 }
 
-Bool Media::Resizer::LanczosResizerH8_8::Resize(const Media::StaticImage *srcImg, Media::StaticImage *destImg)
+Bool Media::Resizer::LanczosResizerH8_8::Resize(NotNullPtr<const Media::StaticImage> srcImg, NotNullPtr<Media::StaticImage> destImg)
 {
 	if (srcImg->info.fourcc != 0 && srcImg->info.fourcc != *(UInt32*)"DIB")
 		return false;
@@ -1149,7 +1149,7 @@ Bool Media::Resizer::LanczosResizerH8_8::Resize(const Media::StaticImage *srcImg
 	}
 }
 
-Bool Media::Resizer::LanczosResizerH8_8::IsSupported(const Media::FrameInfo *srcInfo)
+Bool Media::Resizer::LanczosResizerH8_8::IsSupported(NotNullPtr<const Media::FrameInfo> srcInfo)
 {
 	if (srcInfo->fourcc != 0)
 		return false;
@@ -1158,11 +1158,11 @@ Bool Media::Resizer::LanczosResizerH8_8::IsSupported(const Media::FrameInfo *src
 	return true;
 }
 
-Media::StaticImage *Media::Resizer::LanczosResizerH8_8::ProcessToNewPartial(const Media::Image *srcImage, Math::Coord2DDbl srcTL, Math::Coord2DDbl srcBR)
+Media::StaticImage *Media::Resizer::LanczosResizerH8_8::ProcessToNewPartial(NotNullPtr<const Media::Image> srcImage, Math::Coord2DDbl srcTL, Math::Coord2DDbl srcBR)
 {
 	Media::FrameInfo destInfo;
 	Media::StaticImage *img;
-	if (srcImage->GetImageType() != Media::Image::ImageType::Static || !IsSupported(&srcImage->info))
+	if (srcImage->GetImageType() != Media::Image::ImageType::Static || !IsSupported(srcImage->info))
 		return 0;
 	Math::Size2D<UOSInt> targetSize = this->targetSize;
 	if (targetSize.x == 0)
@@ -1173,7 +1173,7 @@ Media::StaticImage *Media::Resizer::LanczosResizerH8_8::ProcessToNewPartial(cons
 	{
 		targetSize.y = (UOSInt)Double2OSInt(srcBR.y - srcTL.y);//srcImage->info.height;
 	}
-	CalOutputSize(&srcImage->info, targetSize, &destInfo, rar);
+	CalOutputSize(srcImage->info, targetSize, destInfo, rar);
 	NEW_CLASS(img, Media::StaticImage(destInfo));
 	if (srcImage->exif)
 	{
@@ -1181,7 +1181,7 @@ Media::StaticImage *Media::Resizer::LanczosResizerH8_8::ProcessToNewPartial(cons
 	}
 	Int32 tlx = (Int32)srcTL.x;
 	Int32 tly = (Int32)srcTL.y;
-	Resize(((Media::StaticImage*)srcImage)->data + (tlx << 2) + tly * (OSInt)srcImage->GetDataBpl(), (OSInt)srcImage->GetDataBpl(), srcBR.x - srcTL.x, srcBR.y - srcTL.y, srcTL.x - tlx, srcTL.y - tly, img->data, (OSInt)img->GetDataBpl(), img->info.dispSize.x, img->info.dispSize.y);
+	Resize(((Media::StaticImage*)srcImage.Ptr())->data + (tlx << 2) + tly * (OSInt)srcImage->GetDataBpl(), (OSInt)srcImage->GetDataBpl(), srcBR.x - srcTL.x, srcBR.y - srcTL.y, srcTL.x - tlx, srcTL.y - tly, img->data, (OSInt)img->GetDataBpl(), img->info.dispSize.x, img->info.dispSize.y);
 	if (img->exif)
 	{
 		img->exif->SetWidth((UInt32)img->info.dispSize.x);

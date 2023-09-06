@@ -22,7 +22,7 @@ namespace SSWR
 		private:
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 
-			Media::StaticImage *srcImg;
+			NotNullPtr<Media::StaticImage> srcImg;
 			Media::StaticImage *outImg;
 
 			UI::GUILabel *lblOriW;

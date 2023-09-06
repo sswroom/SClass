@@ -188,14 +188,11 @@ void SSWR::AVIRead::AVIRImageControl::InitDir()
 				mutUsage.EndUse();
 				if (imgList)
 				{
-					Media::StaticImage *simg;
-					Media::Image *img;
+					NotNullPtr<Media::StaticImage> simg;
 					imgList->ToStaticImage(0);
-					img = imgList->GetImage(0, 0);
-					simg = img->CreateStaticImage();
-					DEL_CLASS(imgList);
-					if (simg)
+					if (simg.Set((Media::StaticImage*)imgList->GetImage(0, 0)))
 					{
+						DEL_CLASS(imgList);
 						Media::StaticImage *simg2;
 						sptr2End = Text::StrConcatC(Text::StrConcatC(sptr2, sptr, (UOSInt)(sptr3 - sptr)), UTF8STRC(".png"));
 						simg->To32bpp();
@@ -210,7 +207,7 @@ void SSWR::AVIRead::AVIRImageControl::InitDir()
 							}
 							mutUsage.EndUse();
 						}
-						DEL_CLASS(simg);
+						simg.Delete();
 
 						status = MemAlloc(SSWR::AVIRead::AVIRImageControl::ImageStatus, 1);
 						status->filePath = Text::String::NewP(sbuff, sptr3);
@@ -239,6 +236,10 @@ void SSWR::AVIRead::AVIRImageControl::InitDir()
 						this->imgMap.Put(status->fileName.v, status);
 						this->imgMapUpdated = true;
 						imgMutUsage.EndUse();
+					}
+					else
+					{
+						DEL_CLASS(imgList);
 					}
 				}
 				currCnt++;
@@ -564,11 +565,11 @@ OSInt SSWR::AVIRead::AVIRImageControl::OnNotify(UInt32 code, void *lParam)
 	return 0;
 }
 
-void SSWR::AVIRead::AVIRImageControl::YUVParamChanged(const Media::IColorHandler::YUVPARAM *yuvParam)
+void SSWR::AVIRead::AVIRImageControl::YUVParamChanged(NotNullPtr<const Media::IColorHandler::YUVPARAM> yuvParam)
 {
 }
 
-void SSWR::AVIRead::AVIRImageControl::RGBParamChanged(const Media::IColorHandler::RGBPARAM2 *rgbParam)
+void SSWR::AVIRead::AVIRImageControl::RGBParamChanged(NotNullPtr<const Media::IColorHandler::RGBPARAM2> rgbParam)
 {
 	NotNullPtr<const Data::ArrayList<SSWR::AVIRead::AVIRImageControl::ImageStatus *>> imgList;
 	SSWR::AVIRead::AVIRImageControl::ImageStatus *status;
@@ -974,7 +975,7 @@ Media::StaticImage *SSWR::AVIRead::AVIRImageControl::LoadImage(const UTF8Char *f
 
 	if (imgList)
 	{
-		outImg = imgList->GetImage(0, 0)->CreateStaticImage();
+		outImg = imgList->GetImage(0, 0)->CreateStaticImage().Ptr();
 		DEL_CLASS(imgList);
 	}
 
@@ -1004,7 +1005,7 @@ Media::StaticImage *SSWR::AVIRead::AVIRImageControl::LoadOriImage(const UTF8Char
 
 	if (imgList)
 	{
-		outImg = imgList->GetImage(0, 0)->CreateStaticImage();
+		outImg = imgList->GetImage(0, 0)->CreateStaticImage().Ptr();
 		DEL_CLASS(imgList);
 	}
 	return outImg;

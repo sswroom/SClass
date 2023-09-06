@@ -106,15 +106,11 @@ void UI::DObj::OverlayDObj::DrawObject(NotNullPtr<Media::DrawImage> dimg)
 			}
 		}
 		this->imgList->ToStaticImage(frameNum);
-		Media::StaticImage *img = (Media::StaticImage*)this->imgList->GetImage(frameNum, 0);
-		if (img)
+		NotNullPtr<Media::StaticImage> img;
+		if (img.Set((Media::StaticImage*)this->imgList->GetImage(frameNum, 0)))
 		{
 			Math::Coord2DDbl tl = GetCurrPos().ToDouble();
 			dimg->DrawImagePt2(img, tl);
-		}
-		else
-		{
-			img = 0;
 		}
 	}
 }

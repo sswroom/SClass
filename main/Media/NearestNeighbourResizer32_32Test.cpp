@@ -21,7 +21,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	UOSInt sHeight = 1080;
 	UOSInt dWidth = 3840;
 	UOSInt dHeight = 2160;
-	Media::StaticImage *simg;
+	NotNullPtr<Media::StaticImage> simg;
 	Media::StaticImage *simg2;
 	Media::ColorProfile srgb(Media::ColorProfile::CPT_SRGB);
 	IO::ConsoleWriter console;
@@ -42,33 +42,41 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	resizer->SetTargetSize(Math::Size2D<UOSInt>(dWidth, dHeight));
 	resizer->SetResizeAspectRatio(Media::IImgResizer::RAR_IGNOREAR);
 
-	simg = (Media::StaticImage*)imgGen.GenerateImage(srgb, Math::Size2D<UOSInt>(sWidth, sHeight));
-	t0 = clk.GetTimeDiff();
-	clk.Start();
-	simg->To32bpp();
-//	simg->To64bpp();
-	t1 = clk.GetTimeDiff();
-	simg2 = resizer->ProcessToNew(simg);
-	SDEL_CLASS(simg2);
-	clk.Start();
-	simg2 = resizer->ProcessToNew(simg);
-	t2 = clk.GetTimeDiff();
-
-	if (simg2)
+	if (simg.Set((Media::StaticImage*)imgGen.GenerateImage(srgb, Math::Size2D<UOSInt>(sWidth, sHeight))))
 	{
-		Exporter::TIFFExporter exporter;
-		Media::ImageList *imgList;
-		NEW_CLASS(imgList, Media::ImageList(CSTR("Test.tif")));
-		imgList->AddImage(simg2, 0);
-		sptr = IO::Path::GetProcessFileName(sbuff);
-		sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("NearestNeighbourTest.tif"));
+		t0 = clk.GetTimeDiff();
+		clk.Start();
+		simg->To32bpp();
+	//	simg->To64bpp();
+		t1 = clk.GetTimeDiff();
+		simg2 = resizer->ProcessToNew(simg);
+		SDEL_CLASS(simg2);
+		clk.Start();
+		simg2 = resizer->ProcessToNew(simg);
+		t2 = clk.GetTimeDiff();
+
+		if (simg2)
 		{
-			IO::FileStream fs(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
-			exporter.ExportFile(fs, CSTRP(sbuff, sptr), imgList, 0);
+			Exporter::TIFFExporter exporter;
+			Media::ImageList *imgList;
+			NEW_CLASS(imgList, Media::ImageList(CSTR("Test.tif")));
+			imgList->AddImage(simg2, 0);
+			sptr = IO::Path::GetProcessFileName(sbuff);
+			sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("NearestNeighbourTest.tif"));
+			{
+				IO::FileStream fs(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+				exporter.ExportFile(fs, CSTRP(sbuff, sptr), imgList, 0);
+			}
+			DEL_CLASS(simg2);
 		}
-		DEL_CLASS(simg2);
+		simg.Delete();
 	}
-	DEL_CLASS(simg);
+	else
+	{
+		t0 = -1;
+		t1 = -1;
+		t2 = -1;
+	}
 	DEL_CLASS(resizer);
 	sb.AppendC(UTF8STRC("t0 = "));
 	sb.AppendDouble(t0);

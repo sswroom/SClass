@@ -25,12 +25,12 @@ namespace Media
 			UInt32 frameRateDenorm;
 		} H264Flags;
 	private:
-		static Bool ParseHRDParameters(IO::BitReaderMSB *reader, H264Flags *flags);
-		static Bool ParseVUIParameters(IO::BitReaderMSB *reader, Media::FrameInfo *info, H264Flags *flags);
+		static Bool ParseHRDParameters(NotNullPtr<IO::BitReaderMSB> reader, H264Flags *flags);
+		static Bool ParseVUIParameters(NotNullPtr<IO::BitReaderMSB> reader, NotNullPtr<Media::FrameInfo> info, H264Flags *flags);
 	public:
-		static Bool GetFrameInfo(const UInt8 *frame, UOSInt frameSize, Media::FrameInfo *info, H264Flags *flags); //Only update defined values
-		static Bool ParseVari(IO::BitReaderMSB *reader, UInt32 *val);
-		static Bool ParseSVari(IO::BitReaderMSB *reader, Int32 *val);
+		static Bool GetFrameInfo(const UInt8 *frame, UOSInt frameSize, NotNullPtr<Media::FrameInfo> info, H264Flags *flags); //Only update defined values
+		static Bool ParseVari(NotNullPtr<IO::BitReaderMSB> reader, OutParam<UInt32> val);
+		static Bool ParseSVari(NotNullPtr<IO::BitReaderMSB> reader, OutParam<Int32> val);
 		static Bool FindSPS(const UInt8 *frame, UOSInt frameSize, const UInt8 **sps, UOSInt *spsSize);
 		static Bool FindPPS(const UInt8 *frame, UOSInt frameSize, const UInt8 **pps, UOSInt *ppsSize);
 		static Bool FindNALs(const UInt8 *frame, UOSInt frameSize, Data::ArrayListUInt32 *nalList);

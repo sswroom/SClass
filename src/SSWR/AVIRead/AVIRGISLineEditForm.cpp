@@ -457,11 +457,11 @@ void SSWR::AVIRead::AVIRGISLineEditForm::OnMonitorChanged()
 	}
 }
 
-void SSWR::AVIRead::AVIRGISLineEditForm::YUVParamChanged(const Media::IColorHandler::YUVPARAM *yuvParam)
+void SSWR::AVIRead::AVIRGISLineEditForm::YUVParamChanged(NotNullPtr<const Media::IColorHandler::YUVPARAM> yuvParam)
 {
 }
 
-void SSWR::AVIRead::AVIRGISLineEditForm::RGBParamChanged(const Media::IColorHandler::RGBPARAM2 *rgbParam)
+void SSWR::AVIRead::AVIRGISLineEditForm::RGBParamChanged(NotNullPtr<const Media::IColorHandler::RGBPARAM2> rgbParam)
 {
 	if (this->currLayer)
 	{

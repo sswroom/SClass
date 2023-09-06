@@ -559,7 +559,7 @@ void UI::GUIPictureBoxDD::SetImage(Media::Image *currImage, Bool sameImg)
 	}
 }
 
-void UI::GUIPictureBoxDD::YUVParamChanged(const Media::IColorHandler::YUVPARAM *yuvParam)
+void UI::GUIPictureBoxDD::YUVParamChanged(NotNullPtr<const Media::IColorHandler::YUVPARAM> yuvParam)
 {
 	if (this->currImage && this->csconv)
 	{
@@ -612,7 +612,7 @@ void UI::GUIPictureBoxDD::YUVParamChanged(const Media::IColorHandler::YUVPARAM *
 	}
 }
 
-void UI::GUIPictureBoxDD::RGBParamChanged(const Media::IColorHandler::RGBPARAM2 *rgbParam)
+void UI::GUIPictureBoxDD::RGBParamChanged(NotNullPtr<const Media::IColorHandler::RGBPARAM2> rgbParam)
 {
 	if (this->currImage && this->csconv)
 	{
@@ -1040,9 +1040,9 @@ Bool UI::GUIPictureBoxDD::GetImageViewSize(Math::Size2D<UOSInt> *viewSize, Math:
 	return true;
 }
 
-Media::StaticImage *UI::GUIPictureBoxDD::CreatePreviewImage(Media::StaticImage *image)
+NotNullPtr<Media::StaticImage> UI::GUIPictureBoxDD::CreatePreviewImage(NotNullPtr<const Media::StaticImage> image)
 {
-	Media::StaticImage *outImage;
+	NotNullPtr<Media::StaticImage> outImage;
 	Math::Size2D<UOSInt> prevSize;
 	this->GetImageViewSize(&prevSize, image->info.dispSize);
 
@@ -1057,7 +1057,7 @@ Media::StaticImage *UI::GUIPictureBoxDD::CreatePreviewImage(Media::StaticImage *
 	NEW_CLASS(resizer, Media::Resizer::LanczosResizerLR_C32(4, 4, image->info.color, this->colorSess, Media::AT_NO_ALPHA, Media::CS::TransferFunc::GetRefLuminance(image->info.color.rtransfer), pf));
 	csConv->ConvertV2(&image->data, prevImgData, image->info.dispSize.x, image->info.dispSize.y, image->info.storeSize.x, image->info.storeSize.y, (OSInt)image->info.dispSize.x * 8, Media::FT_NON_INTERLACE, Media::YCOFST_C_TOP_LEFT);
 
-	NEW_CLASS(outImage, Media::StaticImage(image->info.dispSize, 0, 32, pf, 0, image->info.color, Media::ColorProfile::YUVT_UNKNOWN, image->info.atype, image->info.ycOfst));
+	NEW_CLASSNN(outImage, Media::StaticImage(image->info.dispSize, 0, 32, pf, 0, image->info.color, Media::ColorProfile::YUVT_UNKNOWN, image->info.atype, image->info.ycOfst));
 	resizer->Resize(prevImgData, (OSInt)image->info.dispSize.x * 8, UOSInt2Double(image->info.dispSize.x), UOSInt2Double(image->info.dispSize.y), 0, 0, outImage->data, (OSInt)outImage->GetDataBpl(), outImage->info.dispSize.x, outImage->info.dispSize.y);
 
 	DEL_CLASS(resizer);

@@ -520,7 +520,7 @@ Bool Media::VectorGraph::DrawImagePt(NotNullPtr<DrawImage> img, Math::Coord2DDbl
 	return true;
 }
 
-Bool Media::VectorGraph::DrawImagePt2(Media::StaticImage *img, Math::Coord2DDbl tl)
+Bool Media::VectorGraph::DrawImagePt2(NotNullPtr<Media::StaticImage> img, Math::Coord2DDbl tl)
 {
 	VectorStyles *style;
 	Media::SharedImage *simg;
@@ -890,18 +890,21 @@ void Media::VectorGraph::DrawTo(NotNullPtr<Media::DrawImage> dimg, UInt32 *imgDu
 			Math::RectAreaDbl bounds;
 			UInt32 thisTimeMS;
 			bounds = vimg->GetBounds();
-			Media::StaticImage *simg = vimg->GetImage(&thisTimeMS);
-			dimg->DrawImagePt2(simg, bounds.tl * scale);
-			if (imgTimeMS == 0)
+			NotNullPtr<Media::StaticImage> simg;
+			if (simg.Set(vimg->GetImage(&thisTimeMS)))
 			{
-				imgTimeMS = thisTimeMS;
-			}
-			else if (thisTimeMS == 0)
-			{
-			}
-			else if (imgTimeMS > thisTimeMS)
-			{
-				imgTimeMS = thisTimeMS;
+				dimg->DrawImagePt2(simg, bounds.tl * scale);
+				if (imgTimeMS == 0)
+				{
+					imgTimeMS = thisTimeMS;
+				}
+				else if (thisTimeMS == 0)
+				{
+				}
+				else if (imgTimeMS > thisTimeMS)
+				{
+					imgTimeMS = thisTimeMS;
+				}
 			}
 		}
 		else if (vec->GetVectorType() == Math::Geometry::Vector2D::VectorType::Ellipse)

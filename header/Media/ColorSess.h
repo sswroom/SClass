@@ -9,8 +9,8 @@ namespace Media
 	public:
 		virtual void AddHandler(Media::IColorHandler *hdlr) = 0;
 		virtual void RemoveHandler(Media::IColorHandler *hdlr) = 0;
-//		const Media::IColorHandler::YUVPARAM *GetYUVParam();
-		virtual const Media::IColorHandler::RGBPARAM2 *GetRGBParam() = 0;
+//		NotNullPtr<const Media::IColorHandler::YUVPARAM> GetYUVParam();
+		virtual NotNullPtr<const Media::IColorHandler::RGBPARAM2> GetRGBParam() = 0;
 		virtual NotNullPtr<Media::ColorProfile> GetDefVProfile() = 0;
 		virtual NotNullPtr<Media::ColorProfile> GetDefPProfile() = 0;
 //		Media::ColorProfile::YUVType GetDefYUVType();
@@ -18,8 +18,8 @@ namespace Media
 
 //		void ChangeMonitor(void *hMon);
 
-//		void RGBUpdated(const Media::IColorHandler::RGBPARAM2 *rgbParam);
-//		void YUVUpdated(const Media::IColorHandler::YUVPARAM *yuvParam);
+//		void RGBUpdated(NotNullPtr<const Media::IColorHandler::RGBPARAM2> rgbParam);
+//		void YUVUpdated(NotNullPtr<const Media::IColorHandler::YUVPARAM> yuvParam);
 	};
 };
 #endif

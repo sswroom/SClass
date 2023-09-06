@@ -93,7 +93,7 @@ namespace Media
 				this->monLuminance = 250.0;
 			}
 
-			void Set(const RGBPARAM2 *param)
+			void Set(NotNullPtr<const RGBPARAM2> param)
 			{
 				this->MonRBright = param->MonRBright;
 				this->MonRContr = param->MonRContr;
@@ -115,8 +115,8 @@ namespace Media
 			}
 		};
 	public:
-		virtual void YUVParamChanged(const Media::IColorHandler::YUVPARAM *yuvParam) = 0;
-		virtual void RGBParamChanged(const Media::IColorHandler::RGBPARAM2 *rgbParam) = 0;
+		virtual void YUVParamChanged(NotNullPtr<const Media::IColorHandler::YUVPARAM> yuvParam) = 0;
+		virtual void RGBParamChanged(NotNullPtr<const Media::IColorHandler::RGBPARAM2> rgbParam) = 0;
 	};
 }
 #endif

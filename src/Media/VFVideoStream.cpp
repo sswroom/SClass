@@ -153,12 +153,12 @@ Text::CString Media::VFVideoStream::GetFilterName()
 	return CSTR("VFVideoStream");
 }
 
-Bool Media::VFVideoStream::GetVideoInfo(Media::FrameInfo *info, UInt32 *frameRateNorm, UInt32 *frameRateDenorm, UOSInt *maxFrameSize)
+Bool Media::VFVideoStream::GetVideoInfo(NotNullPtr<Media::FrameInfo> info, OutParam<UInt32> frameRateNorm, OutParam<UInt32> frameRateDenorm, OutParam<UOSInt> maxFrameSize)
 {
-	info->Set(&this->info);
-	*maxFrameSize = this->info.storeSize.x * this->info.storeSize.y * (this->info.storeBPP >> 3);
-	*frameRateNorm = this->frameRate;
-	*frameRateDenorm = this->frameRateScale;
+	info->Set(this->info);
+	maxFrameSize.Set(this->info.storeSize.x * this->info.storeSize.y * (this->info.storeBPP >> 3));
+	frameRateNorm.Set(this->frameRate);
+	frameRateDenorm.Set(this->frameRateScale);
 	return true;
 }
 

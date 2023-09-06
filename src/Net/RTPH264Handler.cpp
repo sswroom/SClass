@@ -289,7 +289,7 @@ void Net::RTPH264Handler::SetFormat(const UTF8Char *fmtStr)
 				this->sps = MemAlloc(UInt8, spsSize);
 				MemCopyNO(this->sps, buff, this->spsSize);
 				
-				Media::H264Parser::GetFrameInfo(buff, this->spsSize, &this->frameInfo, 0);
+				Media::H264Parser::GetFrameInfo(buff, this->spsSize, this->frameInfo, 0);
 
 				txtSize = (UOSInt)(Text::StrConcat(&buff[4], sarr2[1]) - &buff[4]);
 				WriteMInt32(buff, 1);
@@ -326,14 +326,14 @@ Text::CString Net::RTPH264Handler::GetFilterName()
 	return CSTR("RTPH264Handler");
 }
 
-Bool Net::RTPH264Handler::GetVideoInfo(Media::FrameInfo *info, UInt32 *frameRateNorm, UInt32 *frameRateDenorm, UOSInt *maxFrameSize)
+Bool Net::RTPH264Handler::GetVideoInfo(NotNullPtr<Media::FrameInfo> info, OutParam<UInt32> frameRateNorm, OutParam<UInt32> frameRateDenorm, OutParam<UOSInt> maxFrameSize)
 {
 	if (this->frameInfo.dispSize.x == 0 || this->frameInfo.dispSize.y == 0)
 		return false;
-	info->Set(&this->frameInfo);
-	*frameRateNorm = 30;
-	*frameRateDenorm = 1;
-	*maxFrameSize = 90000;
+	info->Set(this->frameInfo);
+	frameRateNorm.Set(30);
+	frameRateDenorm.Set(1);
+	maxFrameSize.Set(90000);
 	return true;
 }
 

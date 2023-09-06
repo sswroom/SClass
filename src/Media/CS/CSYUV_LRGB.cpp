@@ -137,7 +137,7 @@ Media::CS::CSYUV_LRGB::CSYUV_LRGB(NotNullPtr<const Media::ColorProfile> srcColor
 	this->rgbUpdated = true;
 	this->yuvUpdated = true;
 
-	MemCopyNO(&this->yuvParam, colorSess->GetYUVParam(), sizeof(YUVPARAM));
+	MemCopyNO(&this->yuvParam, colorSess->GetYUVParam().Ptr(), sizeof(YUVPARAM));
 	this->rgbParam.Set(colorSess->GetRGBParam());
 
 	NotNullPtr<Media::ColorProfile> tranColor;
@@ -185,13 +185,13 @@ void Media::CS::CSYUV_LRGB::UpdateTable()
 	}
 }
 
-void Media::CS::CSYUV_LRGB::YUVParamChanged(const Media::IColorHandler::YUVPARAM *yuv)
+void Media::CS::CSYUV_LRGB::YUVParamChanged(NotNullPtr<const Media::IColorHandler::YUVPARAM> yuv)
 {
-	MemCopyNO(&this->yuvParam, yuv, sizeof(YUVPARAM));
+	MemCopyNO(&this->yuvParam, yuv.Ptr(), sizeof(YUVPARAM));
 	this->yuvUpdated = true;
 }
 
-void Media::CS::CSYUV_LRGB::RGBParamChanged(const Media::IColorHandler::RGBPARAM2 *rgb)
+void Media::CS::CSYUV_LRGB::RGBParamChanged(NotNullPtr<const Media::IColorHandler::RGBPARAM2> rgb)
 {
 	NotNullPtr<Media::ColorProfile> srcColor;
 	if (this->srcColor.GetRTranParam()->GetTranType() == Media::CS::TRANT_VUNKNOWN)

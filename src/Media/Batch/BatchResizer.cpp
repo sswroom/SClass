@@ -61,7 +61,8 @@ void Media::Batch::BatchResizer::ImageOutput(Media::ImageList *imgList, const UT
 	UOSInt j;
 	UOSInt k;
 	TargetParam *param;
-	Media::StaticImage *newImg;
+	NotNullPtr<Media::StaticImage> newImg;
+	Media::StaticImage *rImg;
 	Bool succ;
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
@@ -85,26 +86,28 @@ void Media::Batch::BatchResizer::ImageOutput(Media::ImageList *imgList, const UT
 		k = imgList->GetCount();
 		while (j < k)
 		{
-			newImg = (Media::StaticImage*)imgList->GetImage(j, 0);
-			if (param->sizeType == 1)
+			if (newImg.Set((Media::StaticImage*)imgList->GetImage(j, 0)))
 			{
-				resizer->SetTargetSize(Math::Size2D<UOSInt>((UInt32)Double2Int32(UOSInt2Double(newImg->info.dispSize.x * param->width) / newImg->info.hdpi),
-					(UInt32)Double2Int32(UOSInt2Double(newImg->info.dispSize.y * param->height) / newImg->info.vdpi)));
-				newImg = resizer->ProcessToNew(newImg);
-			}
-			else
-			{
-				newImg = resizer->ProcessToNew(newImg);
-			}
+				if (param->sizeType == 1)
+				{
+					resizer->SetTargetSize(Math::Size2D<UOSInt>((UInt32)Double2Int32(UOSInt2Double(newImg->info.dispSize.x * param->width) / newImg->info.hdpi),
+						(UInt32)Double2Int32(UOSInt2Double(newImg->info.dispSize.y * param->height) / newImg->info.vdpi)));
+					rImg = resizer->ProcessToNew(newImg);
+				}
+				else
+				{
+					rImg = resizer->ProcessToNew(newImg);
+				}
 
-			if (newImg == 0)
-			{
-				succ = false;
-				break;
-			}
-			else
-			{
-				newImgList.AddImage(newImg, 0);
+				if (!newImg.Set(rImg))
+				{
+					succ = false;
+					break;
+				}
+				else
+				{
+					newImgList.AddImage(newImg, 0);
+				}
 			}
 			j++;
 		}
@@ -113,10 +116,6 @@ void Media::Batch::BatchResizer::ImageOutput(Media::ImageList *imgList, const UT
 		{
 			if (this->hdlr)
 				this->hdlr->ImageOutput(&newImgList, fileId, param->targetId->v);
-		}
-		else
-		{
-			newImg = 0;
 		}
 	}
 }
