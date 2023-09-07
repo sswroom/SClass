@@ -2231,9 +2231,13 @@ IO::DeviceDB::PCIDeviceInfo IO::DeviceDB::pciList[] = {
 	{0x8086, 0xA2F0,  "High Definition Audio Controller",                                                         "Intel 200 Series Chipset Family HD Audio"},
 	{0x8086, 0xA703,  "PCI Device",                                                                               "Intel Alder Lake-S PCI-to-PCI Bridge"},
 	{0x8086, 0xA70D,  "PCI Device",                                                                               "Intel Alder Lake-S PCH PCI Express Root Port"},
+	{0x8086, 0xA71D,  "PCI Device",                                                                               "Intel Raptor Lake Dynamic Platform and Thermal Framework Processor Participant"},
+	{0x8086, 0xA74D,  "PCI Device",                                                                               "Intel Raptor Lake PCIe 4.0 Graphics Port"},
 	{0x8086, 0xA74F,  "PCI Device",                                                                               "Intel GNA Scoring Accelerator module"},
-	{0x8086, 0xA77F,  "PCI Device",                                                                               "Intel Volume Management Device NVMe RAID Controller"},
+	{0x8086, 0xA77D,  "PCI Device",                                                                               "Intel Volume Management Device NVMe RAID Controller"},
+	{0x8086, 0xA77F,  "PCI Device",                                                                               "Intel Raptor Lake Crashlog and Telemetry"},
 	{0x8086, 0xA780,  "PCI Device",                                                                               "Intel Raptor Lake-S GT1 [UHD Graphics 770]"},
+	{0x8086, 0xA7A0,  "PCI Device",                                                                               "Intel Raptor Lake-P [Iris Xe Graphics]"},
 	{0x80EE, 0xBEEF,  "VirtualBox Graphics Adapter",                                                              "VirtualBox Graphics Adapter"},
 	{0x80EE, 0xCAFE,  "VirtualBox Guest Service",                                                                 "VirtualBox Guest Service"}
 };

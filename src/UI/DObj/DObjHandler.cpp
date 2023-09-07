@@ -53,7 +53,7 @@ void UI::DObj::DObjHandler::ClearObjects()
 	this->OnObjectClear();
 }
 
-void UI::DObj::DObjHandler::AddObject(DirectObject *obj)
+void UI::DObj::DObjHandler::AddObject(NotNullPtr<DirectObject> obj)
 {
 	Sync::MutexUsage mutUsage(this->objMut);
 	this->objList.Add(obj);

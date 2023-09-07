@@ -28,5 +28,5 @@ namespace Net
 		SocketMonitor(NotNullPtr<Net::SocketFactory> sockf, Socket *soc, RAWDataHdlr hdlr, void *userData, UOSInt workerCnt);
 		~SocketMonitor();
 	};
-};
+}
 #endif

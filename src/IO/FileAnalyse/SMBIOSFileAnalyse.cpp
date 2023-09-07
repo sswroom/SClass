@@ -1045,6 +1045,86 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::SMBIOSFileAnalyse::GetFrameDetail
 		}
 		break;
 	}
+	case 29:
+	{
+		AddString(frame, 4, packBuff, carr, CSTR("Description"));
+		if (packBuff[1] > 5)
+		{
+			const Char *names29_1[] = {"Unspecified", "Other", "Unknown", "OK", "Non-critical", "Critical", "Non-recoverable"};
+			AddEnum(frame, 5, (UInt8)(packBuff[5] >> 5), carr, CSTR("Status"), names29_1, sizeof(names29_1) / sizeof(names29_1[0]));
+			const Char *names29_2[] = {"Unspecified", "Other", "Unknown", "Processor", "Disk", "Peripheral Bay", "System Management Module", "Motherboard",
+				"Memory Module", "Processor Module", "Power Unit", "Add-in Card"};
+			AddEnum(frame, 5, packBuff[5] & 0x1F, carr, CSTR("Location"), names29_2, sizeof(names29_2) / sizeof(names29_2[0]));
+		}
+		if (packBuff[1] > 7)
+		{
+			if (ReadUInt16(&packBuff[6]) == 0x8000)
+			{
+				frame->AddField(6, 2, CSTR("Maximum Value"), CSTR("Unknown"));
+			}
+			else
+			{
+				frame->AddFloat(6, 2, CSTR("Maximum Value(mA)"), ReadUInt16(&packBuff[6]));
+			}
+		}
+		if (packBuff[1] > 9)
+		{
+			if (ReadUInt16(&packBuff[8]) == 0x8000)
+			{
+				frame->AddField(8, 2, CSTR("Minimum Value"), CSTR("Unknown"));
+			}
+			else
+			{
+				frame->AddFloat(8, 2, CSTR("Minimum Value(mA)"), ReadUInt16(&packBuff[8]));
+			}
+		}
+		if (packBuff[1] > 11)
+		{
+			if (ReadUInt16(&packBuff[10]) == 0x8000)
+			{
+				frame->AddField(10, 2, CSTR("Resolution"), CSTR("Unknown"));
+			}
+			else
+			{
+				frame->AddFloat(10, 2, CSTR("Resolution(mA)"), ReadUInt16(&packBuff[10]) * 10.0);
+			}
+		}
+		if (packBuff[1] > 13)
+		{
+			if (ReadUInt16(&packBuff[12]) == 0x8000)
+			{
+				frame->AddField(12, 2, CSTR("Tolerance"), CSTR("Unknown"));
+			}
+			else
+			{
+				frame->AddFloat(12, 2, CSTR("Tolerance(mA)"), ReadUInt16(&packBuff[12]));
+			}
+		}
+		if (packBuff[1] > 15)
+		{
+			if (ReadUInt16(&packBuff[14]) == 0x8000)
+			{
+				frame->AddField(14, 2, CSTR("Accuracy"), CSTR("Unknown"));
+			}
+			else
+			{
+				frame->AddFloat(14, 2, CSTR("Accuracy(%)"), ReadUInt16(&packBuff[14]) * 0.01);
+			}
+		}
+		AddHex32(frame, 16, packBuff, carr, CSTR("OEM-defined"));
+		if (packBuff[1] > 21)
+		{
+			if (ReadUInt16(&packBuff[20]) == 0x8000)
+			{
+				frame->AddField(20, 2, CSTR("Nominal Value"), CSTR("Unknown"));
+			}
+			else
+			{
+				frame->AddFloat(20, 2, CSTR("Nominal Value(mA)"), ReadUInt16(&packBuff[20]));
+			}
+		}
+		break;
+	}
 	case 31:
 		frame->AddHexBuff(4, (UOSInt)packBuff[1] - 4, CSTR("Boot Integrity Services (BIS)"), &packBuff[4], true);
 		break;
@@ -1099,19 +1179,19 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::SMBIOSFileAnalyse::GetFrameDetail
 		AddString(frame, 10, packBuff, carr, CSTR("Model Part Number"));
 		AddString(frame, 11, packBuff, carr, CSTR("Revision Level"));
 		AddUInt16(frame, 12, packBuff, carr, CSTR("Max Power Capacity (W)"));
-		if (packBuff[1] > 13)
+		if (packBuff[1] > 15)
 		{
-			frame->AddBit(12, CSTR("power supply is hot-replaceable"), packBuff[12], 0);
-			frame->AddBit(12, CSTR("power supply is present"), packBuff[12], 1);
-			frame->AddBit(12, CSTR("power supply is unplugged from the wall"), packBuff[12], 2);
+			frame->AddBit(14, CSTR("power supply is hot-replaceable"), packBuff[14], 0);
+			frame->AddBit(14, CSTR("power supply is present"), packBuff[14], 1);
+			frame->AddBit(14, CSTR("power supply is unplugged from the wall"), packBuff[14], 2);
 			const Char *names39_1[] = {"Unspecified", "Other", "Unknown", "Manual", "Auto-switch", "Wide range", "Not applicable"};
-			AddEnum(frame, 12, (packBuff[12] >> 3) & 15, carr, CSTR("DMTF Input Voltage Range Switching"), names39_1, sizeof(names39_1) / sizeof(names39_1[0]));
+			AddEnum(frame, 14, (packBuff[14] >> 3) & 15, carr, CSTR("DMTF Input Voltage Range Switching"), names39_1, sizeof(names39_1) / sizeof(names39_1[0]));
 			const Char *names39_2[] = {"Unspecified", "Other", "Unknown", "OK", "Non-critical", "Critical"};
-			AddEnum(frame, 12, (ReadUInt16(&packBuff[12]) >> 7) & 7, carr, CSTR("Status"), names39_2, sizeof(names39_2) / sizeof(names39_2[0]));
+			AddEnum(frame, 14, (ReadUInt16(&packBuff[14]) >> 7) & 7, carr, CSTR("Status"), names39_2, sizeof(names39_2) / sizeof(names39_2[0]));
 			const Char *names39_3[] = {"Unspecified", "Other", "Unknown", "Linear", "Switching", "Battery", "UPS", "Converter", "Regulator"};
-			AddEnum(frame, 13, (packBuff[13] >> 2) & 15, carr, CSTR("DMTF Power Supply Type"), names39_3, sizeof(names39_3) / sizeof(names39_3[0]));
-			frame->AddBit(13, CSTR("Reserved"), packBuff[13], 6);
-			frame->AddBit(13, CSTR("Reserved"), packBuff[13], 7);
+			AddEnum(frame, 15, (packBuff[15] >> 2) & 15, carr, CSTR("DMTF Power Supply Type"), names39_3, sizeof(names39_3) / sizeof(names39_3[0]));
+			frame->AddBit(15, CSTR("Reserved"), packBuff[15], 6);
+			frame->AddBit(15, CSTR("Reserved"), packBuff[15], 7);
 		}
 		AddHex16(frame, 16, packBuff, carr, CSTR("Input Voltage Probe Handle"));
 		AddHex16(frame, 18, packBuff, carr, CSTR("Cooling Device Handle"));
@@ -1192,6 +1272,37 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::SMBIOSFileAnalyse::GetFrameDetail
 		if (packBuff[6] > 0)
 		{
 			frame->AddHexBuff(8, packBuff[6], CSTR("Processor-Specific Data"), &packBuff[8], true);
+		}
+		break;
+	}
+	case 45:
+	{
+		AddString(frame, 4, packBuff, carr, CSTR("Firmware Component Name"));
+		AddString(frame, 5, packBuff, carr, CSTR("Firmware Version"));
+		const Char *names45_1[] = {"Free-form string", "MAJOR.MINOR", "Hex32", "Hex64"};
+		AddEnum(frame, 6, packBuff, carr, CSTR("Version Format"), names45_1, sizeof(names45_1) / sizeof(names45_1[0]));
+		AddString(frame, 7, packBuff, carr, CSTR("Firmware ID"));
+		const Char *names45_2[] = {"Free-form string", "UEFI ESRT FwClass GUID or the UEFI Firmware Management Protocol ImageTypeId"};
+		AddEnum(frame, 8, packBuff, carr, CSTR("Firmware ID Format"), names45_2, sizeof(names45_2) / sizeof(names45_2[0]));
+		AddString(frame, 9, packBuff, carr, CSTR("Release Date"));
+		AddString(frame, 10, packBuff, carr, CSTR("Manufacturer"));
+		AddString(frame, 11, packBuff, carr, CSTR("Lowest Supported Firmware Version"));
+		AddUInt64(frame, 12, packBuff, carr, CSTR("Image Size"));
+		const Char *names45_3[] = {"Updatable", "Write-Protect", "Reserved", "Reserved", "Reserved", "Reserved", "Reserved", "Reserved"};
+		const Char *names45_4[] = {"Reserved", "Reserved", "Reserved", "Reserved", "Reserved", "Reserved", "Reserved", "Reserved"};
+		AddBits(frame, 20, packBuff, carr, names45_3);
+		AddBits(frame, 21, packBuff, carr, names45_4);
+		const Char *names45_5[] = {"Reserved", "Other", "Unknown", "Disabled", "Enabled", "Absent", "StandbyOffline", "StandbySpare", "UnavailableOffline"};
+		AddEnum(frame, 22, packBuff, carr, CSTR("State"), names45_5, sizeof(names45_5) / sizeof(names45_5[0]));
+		AddUInt8(frame, 23, packBuff, carr, CSTR("Number of Associated Components (n)"));
+		if (packBuff[1] >= 24 + packBuff[23] * 2)
+		{
+			UOSInt i = 0;
+			while (i < packBuff[23])
+			{
+				AddHex16(frame, 24 + i * 2, packBuff, carr, CSTR("Associated Component Handles"));
+				i++;
+			}
 		}
 		break;
 	}

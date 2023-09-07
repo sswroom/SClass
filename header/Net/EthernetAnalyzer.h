@@ -58,7 +58,7 @@ namespace Net
 			UInt64 othSrcCnt;
 			UInt64 othDestCnt;
 			Text::String *name;
-			Int64 packetTime[16];
+			Data::TimeInstant packetTime[16];
 			UInt64 packetDestMAC[16];
 			UInt16 packetEtherType[16];
 			UOSInt packetSize[16];

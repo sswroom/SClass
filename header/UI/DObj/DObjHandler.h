@@ -1,5 +1,6 @@
 #ifndef _SM_UI_DOBJ_DOBJHANDLER
 #define _SM_UI_DOBJ_DOBJHANDLER
+#include "Data/ArrayListNN.h"
 #include "Media/ColorManager.h"
 #include "Media/DrawEngine.h"
 #include "Sync/Mutex.h"
@@ -16,7 +17,7 @@ namespace UI
 			Media::ColorManagerSess *colorSess;
 			Sync::Mutex objMut;
 			Sync::Mutex updMut;
-			Data::ArrayList<DirectObject*> objList;
+			Data::ArrayListNN<DirectObject> objList;
 			Bool shown;
 			DirectObject *moveObj;
 			DirectObject *downObj;
@@ -31,7 +32,7 @@ namespace UI
 
 			void SetColorSess(Media::ColorManagerSess *colorSess);
 			void ClearObjects();
-			void AddObject(DirectObject *obj);
+			void AddObject(NotNullPtr<DirectObject> obj);
 			Bool Check(NotNullPtr<Media::DrawImage> dimg);
 			void DrawAll(NotNullPtr<Media::DrawImage> dimg);
 			void BeginUpdate();

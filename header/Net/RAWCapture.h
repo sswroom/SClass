@@ -1,7 +1,8 @@
 #ifndef _SM_NET_RAWCAPTURE
 #define _SM_NET_RAWCAPTURE
-#include "IO/Stream.h"
 #include "IO/FileSelector.h"
+#include "IO/PacketLogWriter.h"
+#include "IO/Stream.h"
 #include "Net/SocketMonitor.h"
 #include "Sync/Mutex.h"
 #include "Text/CString.h"
@@ -33,8 +34,7 @@ namespace Net
 	private:
 		NotNullPtr<Net::SocketFactory> sockf;
 		Net::SocketMonitor *socMon;
-		IO::Stream *fs;
-		FileFormat format;
+		IO::PacketLogWriter *writer;
 		Sync::Mutex mut;
 		UInt64 packetCnt;
 		UInt64 dataSize;

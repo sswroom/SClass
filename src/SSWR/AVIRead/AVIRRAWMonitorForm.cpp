@@ -251,7 +251,7 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnDNSReqv4SelChg(void *userObj
 			UOSInt j;
 			me->txtDNSReqv4Name->SetText(name->ToCString());
 			reqTime.ToLocalTime();
-			sptr = reqTime.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
+			sptr = reqTime.ToStringNoZone(sbuff);
 			me->txtDNSReqv4ReqTime->SetText(CSTRP(sbuff, sptr));
 			sptr = Text::StrUInt32(sbuff, ttl);
 			me->txtDNSReqv4TTL->SetText(CSTRP(sbuff, sptr));
@@ -293,7 +293,7 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnDNSReqv6SelChg(void *userObj
 			UOSInt j;
 			me->txtDNSReqv6Name->SetText(name->ToCString());
 			reqTime.ToLocalTime();
-			sptr = reqTime.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
+			sptr = reqTime.ToStringNoZone(sbuff);
 			me->txtDNSReqv6ReqTime->SetText(CSTRP(sbuff, sptr));
 			sptr = Text::StrUInt32(sbuff, ttl);
 			me->txtDNSReqv6TTL->SetText(CSTRP(sbuff, sptr));
@@ -335,7 +335,7 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnDNSReqOthSelChg(void *userOb
 			UOSInt j;
 			me->txtDNSReqOthName->SetText(name->ToCString());
 			reqTime.ToLocalTime();
-			sptr = reqTime.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
+			sptr = reqTime.ToStringNoZone(sbuff);
 			me->txtDNSReqOthReqTime->SetText(CSTRP(sbuff, sptr));
 			sptr = Text::StrUInt32(sbuff, ttl);
 			me->txtDNSReqOthTTL->SetText(CSTRP(sbuff, sptr));
@@ -1065,9 +1065,9 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnDeviceSelChg(void *userObj)
 			i = 0;
 			while (i < cnt)
 			{
-				dt.SetTicks(mac->packetTime[i]);
+				dt.SetInstant(mac->packetTime[i]);
 				dt.ToLocalTime();
-				sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
+				sptr = dt.ToStringNoZone(sbuff);
 				sb.AppendP(sbuff, sptr);
 				sb.AppendC(UTF8STRC("\r\n"));
 				sb.AppendC(UTF8STRC("Dest MAC: "));
@@ -1083,9 +1083,9 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnDeviceSelChg(void *userObj)
 			i = 0;
 			while (i < 16)
 			{
-				dt.SetTicks(mac->packetTime[(cnt + i) & 15]);
+				dt.SetInstant(mac->packetTime[(cnt + i) & 15]);
 				dt.ToLocalTime();
-				sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
+				sptr = dt.ToStringNoZone(sbuff);
 				sb.AppendP(sbuff, sptr);
 				sb.AppendC(UTF8STRC("\r\n"));
 				sb.AppendC(UTF8STRC("Dest MAC: "));

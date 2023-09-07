@@ -4144,6 +4144,140 @@ Bool IO::SMBIOS::ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const
 			}
 			sb->AppendC(UTF8STRC("\r\n"));
 			break;
+		case 45:
+			sb->AppendC(UTF8STRC("SMBIOS Type 45 - Firmware Inventory Information\r\n"));
+			sb->AppendC(UTF8STRC("Length: "));
+			sb->AppendU16(dataBuff[1]);
+			sb->AppendC(UTF8STRC("\r\n"));
+			sb->AppendC(UTF8STRC("Handle: 0x"));
+			sb->AppendHex16(ReadUInt16(&dataBuff[2]));
+			sb->AppendC(UTF8STRC("\r\n"));
+			if (dataBuff[1] >= 24)
+			{
+				sb->AppendC(UTF8STRC("Firmware Component Name: "));
+				if (carr[dataBuff[4]].leng > 0) sb->Append(carr[dataBuff[4]]);
+				sb->AppendC(UTF8STRC("\r\n"));
+				sb->AppendC(UTF8STRC("Firmware Version: "));
+				if (carr[dataBuff[5]].leng > 0) sb->Append(carr[dataBuff[5]]);
+				sb->AppendC(UTF8STRC("\r\n"));
+				sb->AppendC(UTF8STRC("Version Format: "));
+				switch (dataBuff[6])
+				{
+				case 0:
+					sb->AppendC(UTF8STRC("Free-form string"));
+					break;
+				case 1:
+					sb->AppendC(UTF8STRC("MAJOR.MINOR"));
+					break;
+				case 2:
+					sb->AppendC(UTF8STRC("Hex32"));
+					break;
+				case 3:
+					sb->AppendC(UTF8STRC("Hex64"));
+					break;
+				default:
+					if (dataBuff[6] & 0x80)
+						sb->AppendC(UTF8STRC("BIOS Vendor/OEM-specific ("));
+					else
+						sb->AppendC(UTF8STRC("Reserved ("));
+					sb->AppendU16(dataBuff[6]);
+					sb->AppendC(UTF8STRC(")"));
+					break;
+				}
+				sb->AppendC(UTF8STRC("\r\n"));
+				sb->AppendC(UTF8STRC("Firmware ID: "));
+				if (carr[dataBuff[7]].leng > 0) sb->Append(carr[dataBuff[7]]);
+				sb->AppendC(UTF8STRC("\r\n"));
+				sb->AppendC(UTF8STRC("Firmware ID Format: "));
+				switch (dataBuff[8])
+				{
+				case 0:
+					sb->AppendC(UTF8STRC("Free-form string"));
+					break;
+				case 1:
+					sb->AppendC(UTF8STRC("UEFI ESRT FwClass GUID or the UEFI Firmware Management Protocol ImageTypeId"));
+					break;
+				default:
+					if (dataBuff[8] & 0x80)
+						sb->AppendC(UTF8STRC("BIOS Vendor/OEM-specific ("));
+					else
+						sb->AppendC(UTF8STRC("Reserved ("));
+					sb->AppendU16(dataBuff[8]);
+					sb->AppendC(UTF8STRC(")"));
+					break;
+				}
+				sb->AppendC(UTF8STRC("\r\n"));
+				sb->AppendC(UTF8STRC("Release Date: "));
+				if (carr[dataBuff[9]].leng > 0) sb->Append(carr[dataBuff[9]]);
+				sb->AppendC(UTF8STRC("\r\n"));
+				sb->AppendC(UTF8STRC("Manufacturer: "));
+				if (carr[dataBuff[10]].leng > 0) sb->Append(carr[dataBuff[10]]);
+				sb->AppendC(UTF8STRC("\r\n"));
+				sb->AppendC(UTF8STRC("Lowest Supported Firmware Version: "));
+				if (carr[dataBuff[11]].leng > 0) sb->Append(carr[dataBuff[11]]);
+				sb->AppendC(UTF8STRC("\r\n"));
+				sb->AppendC(UTF8STRC("Image Size: "));
+				if (ReadInt64(&dataBuff[12]) == -1)
+					sb->AppendC(UTF8STRC("Unknown"));
+				else
+					sb->AppendU64(ReadUInt64(&dataBuff[12]));
+				sb->AppendC(UTF8STRC("\r\n"));
+				sb->AppendC(UTF8STRC("Characteristics: 0x"));
+				sb->AppendHex16(ReadUInt16(&dataBuff[20]));
+				sb->AppendC(UTF8STRC("\r\n"));
+				sb->AppendC(UTF8STRC("State: "));
+				switch (dataBuff[22])
+				{
+				case 1:
+					sb->AppendC(UTF8STRC("Other"));
+					break;
+				case 2:
+					sb->AppendC(UTF8STRC("Unknown"));
+					break;
+				case 3:
+					sb->AppendC(UTF8STRC("Disabled"));
+					break;
+				case 4:
+					sb->AppendC(UTF8STRC("Enabled"));
+					break;
+				case 5:
+					sb->AppendC(UTF8STRC("Absent"));
+					break;
+				case 6:
+					sb->AppendC(UTF8STRC("StandbyOffline"));
+					break;
+				case 7:
+					sb->AppendC(UTF8STRC("StandbySpare"));
+					break;
+				case 8:
+					sb->AppendC(UTF8STRC("UnavailableOffline"));
+					break;
+				default:
+					sb->AppendC(UTF8STRC("Unknown ("));
+					sb->AppendU16(dataBuff[22]);
+					sb->AppendC(UTF8STRC(")"));
+					break;
+				}
+				sb->AppendC(UTF8STRC("\r\n"));
+				sb->AppendC(UTF8STRC("Number of Associated Components (n): "));
+				sb->AppendU16(dataBuff[23]);
+				sb->AppendC(UTF8STRC("\r\n"));
+				if (dataBuff[1] <= 24 + dataBuff[23] * 2)
+				{
+					UOSInt i = 0;
+					while (i < dataBuff[23])
+					{
+						sb->AppendC(UTF8STRC("Associated Component Handles["));
+						sb->AppendUOSInt(i);
+						sb->AppendC(UTF8STRC("]: 0x"));
+						sb->AppendHex16(ReadUInt16(&dataBuff[24 + i * 2]));
+						sb->AppendC(UTF8STRC("\r\n"));
+						i++;
+					}
+				}
+			}
+			sb->AppendC(UTF8STRC("\r\n"));
+			break;
 		case 126:
 			sb->AppendC(UTF8STRC("SMBIOS Type 126 - Inactive\r\n"));
 			sb->AppendC(UTF8STRC("Length: "));

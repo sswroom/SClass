@@ -574,7 +574,7 @@ Bool Net::EthernetAnalyzer::PacketEthernetData(const UInt8 *packet, UOSInt packe
 	UOSInt cnt;
 	mac = this->MACGet(srcMAC);
 	cnt = (UOSInt)(mac->ipv4SrcCnt + mac->ipv6SrcCnt + mac->othSrcCnt);
-	mac->packetTime[cnt & 15] = dt.ToTicks();
+	mac->packetTime[cnt & 15] = dt.ToInstant();
 	mac->packetSize[cnt & 15] = packetSize;
 	mac->packetDestMAC[cnt & 15] = destMAC;
 	mac->packetEtherType[cnt & 15] = etherType;
