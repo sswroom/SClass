@@ -495,7 +495,7 @@ Bool Net::HTTPOSClient::Connect(Text::CStringNN url, Net::WebUtil::RequestMethod
 	return true;
 }
 
-void Net::HTTPOSClient::AddHeaderC(Text::CString name, Text::CString value)
+void Net::HTTPOSClient::AddHeaderC(Text::CStringNN name, Text::CString value)
 {
 	ClassData *data = this->clsData;
 	if (data->hRequest && !writing)

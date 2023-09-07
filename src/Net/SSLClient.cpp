@@ -11,7 +11,7 @@ Net::SSLClient::~SSLClient()
 
 }
 
-Bool Net::SSLClient::IsSSL()
+Bool Net::SSLClient::IsSSL() const
 {
 	return true;
 }

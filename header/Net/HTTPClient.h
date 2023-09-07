@@ -46,26 +46,26 @@ namespace Net
 
 		virtual Bool IsDown() const;
 		virtual Bool Connect(Text::CStringNN url, Net::WebUtil::RequestMethod method, Double *timeDNS, Double *timeConn, Bool defHeaders) = 0;
-		virtual void AddHeaderC(Text::CString name, Text::CString value) = 0;
+		virtual void AddHeaderC(Text::CStringNN name, Text::CString value) = 0;
 		virtual void EndRequest(Double *timeReq, Double *timeResp) = 0;
 		virtual void SetTimeout(Data::Duration timeout) = 0;
 		virtual IO::StreamType GetStreamType() const;
 
-		virtual Bool IsSecureConn() = 0;
+		virtual Bool IsSecureConn() const = 0;
 		virtual Bool SetClientCert(NotNullPtr<Crypto::Cert::X509Cert> cert, NotNullPtr<Crypto::Cert::X509File> key) = 0;
 		virtual const Data::ReadingList<Crypto::Cert::Certificate *> *GetServerCerts() = 0;
 
 		Bool FormBegin();
-		Bool FormAdd(Text::CString name, Text::CString value);
-		void AddTimeHeader(Text::CString name, NotNullPtr<Data::DateTime> dt);
-		void AddContentType(Text::CString contType);
+		Bool FormAdd(Text::CStringNN name, Text::CString value);
+		void AddTimeHeader(Text::CStringNN name, NotNullPtr<Data::DateTime> dt);
+		void AddContentType(Text::CStringNN contType);
 		void AddContentLength(UInt64 leng);
 
 		UOSInt GetRespHeaderCnt();
 		UTF8Char *GetRespHeader(UOSInt index, UTF8Char *buff);
-		UTF8Char *GetRespHeader(Text::CString name, UTF8Char *valueBuff);
-		Bool GetRespHeader(Text::CString name, NotNullPtr<Text::StringBuilderUTF8> sb);
-		Text::CString GetRespHeader(Text::CString name);
+		UTF8Char *GetRespHeader(Text::CStringNN name, UTF8Char *valueBuff);
+		Bool GetRespHeader(Text::CStringNN name, NotNullPtr<Text::StringBuilderUTF8> sb);
+		Text::CString GetRespHeader(Text::CStringNN name);
 		Text::String *GetRespHeader(UOSInt index);
 		UInt64 GetContentLength();
 		UInt32 GetContentCodePage();

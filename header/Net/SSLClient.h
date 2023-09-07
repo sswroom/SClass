@@ -11,7 +11,7 @@ namespace Net
 		SSLClient(NotNullPtr<Net::SocketFactory> sockf, Socket *s);
 		virtual ~SSLClient();
 
-		virtual Bool IsSSL();
+		virtual Bool IsSSL() const;
 		virtual IO::StreamType GetStreamType() const;
 		virtual Crypto::Cert::Certificate *GetRemoteCert() = 0;
 		virtual const Data::ReadingList<Crypto::Cert::Certificate *> *GetRemoteCerts() = 0;

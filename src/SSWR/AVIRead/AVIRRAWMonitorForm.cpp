@@ -1,5 +1,8 @@
 #include "Stdafx.h"
 #include "Data/ByteTool.h"
+#include "IO/Path.h"
+#include "IO/PcapngWriter.h"
+#include "IO/PcapWriter.h"
 #include "Manage/HiResClock.h"
 #include "Net/ConnectionInfo.h"
 #include "Net/MACInfo.h"
@@ -68,12 +71,26 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnPingPacket(void *userData, U
 void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnRAWData(void *userData, const UInt8 *rawData, UOSInt packetSize)
 {
 	SSWR::AVIRead::AVIRRAWMonitorForm *me = (SSWR::AVIRead::AVIRRAWMonitorForm*)userData;
+	{
+		Sync::MutexUsage mutUsage(me->plogMut);
+		if (me->plogWriter)
+		{
+			me->plogWriter->WritePacket(Data::ByteArrayR(rawData, packetSize));
+		}
+	}
 	me->analyzer->PacketEthernet(rawData, packetSize);
 }
 
 void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnIPv4Data(void *userData, const UInt8 *rawData, UOSInt packetSize)
 {
 	SSWR::AVIRead::AVIRRAWMonitorForm *me = (SSWR::AVIRead::AVIRRAWMonitorForm*)userData;
+	{
+		Sync::MutexUsage mutUsage(me->plogMut);
+		if (me->plogWriter)
+		{
+			me->plogWriter->WritePacket(Data::ByteArrayR(rawData, packetSize));
+		}
+	}
 	me->analyzer->PacketIPv4(rawData, packetSize, 0, 0);
 }
 
@@ -119,6 +136,7 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnStartClicked(void *userObj)
 		DEL_CLASS(me->socMon);
 		me->socMon = 0;
 		me->cboIP->SetEnabled(true);
+		OnPLogClicked(me);
 		return;
 	}
 
@@ -129,11 +147,13 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnStartClicked(void *userObj)
 		
 		if ((soc = me->sockf->CreateRAWSocket()) != 0)
 		{
+			me->linkType = 1;
 			NEW_CLASS(me->socMon, Net::SocketMonitor(me->sockf, soc, OnRAWData, me, 3));
 			me->cboIP->SetEnabled(false);
 		}
 		else if ((soc = me->sockf->CreateRAWIPv4Socket(ip)) != 0)
 		{
+			me->linkType = 101;
 			NEW_CLASS(me->socMon, Net::SocketMonitor(me->sockf, soc, OnIPv4Data, me, 3));
 			me->cboIP->SetEnabled(false);
 		}
@@ -142,6 +162,52 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnStartClicked(void *userObj)
 			UI::MessageDialog::ShowDialog(CSTR("Error in listening to socket"), CSTR("Error"), me);
 			return;
 		}
+	}
+}
+
+void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnPLogClicked(void *userObj)
+{
+	SSWR::AVIRead::AVIRRAWMonitorForm *me = (SSWR::AVIRead::AVIRRAWMonitorForm*)userObj;
+	UTF8Char sbuff[512];
+	UTF8Char *sptr;
+	UTF8Char *sptr2;
+	if (me->plogWriter)
+	{
+		Sync::MutexUsage mutUsage(me->plogMut);
+		DEL_CLASS(me->plogWriter);
+		me->plogWriter = 0;
+		me->txtPLog->SetText(CSTR(""));
+		me->btnPLog->SetText(CSTR("Begin Log"));
+		return;
+	}
+	if (me->socMon == 0)
+	{
+		return;
+	}
+	sptr = IO::Path::GetProcessFileName(sbuff);
+	sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("RAW"));
+	sptr2 = sptr - 3;
+	sptr = Text::StrInt64(sptr, Data::DateTimeUtil::GetCurrTimeMillis());
+	Sync::MutexUsage mutUsage(me->plogMut);
+	if (me->cboPLog->GetSelectedIndex() == 1)
+	{
+		sptr = Text::StrConcatC(sptr, UTF8STRC(".pcapng"));
+		NEW_CLASS(me->plogWriter, IO::PcapngWriter(CSTRP(sbuff, sptr), me->linkType, CSTR("AVIRead")));
+	}
+	else
+	{
+		sptr = Text::StrConcatC(sptr, UTF8STRC(".pcap"));
+		NEW_CLASS(me->plogWriter, IO::PcapWriter(CSTRP(sbuff, sptr), me->linkType));
+	}
+	if (me->plogWriter->IsError())
+	{
+		DEL_CLASS(me->plogWriter);
+		me->plogWriter = 0;
+	}
+	else
+	{
+		me->txtPLog->SetText(CSTRP(sptr2, sptr));
+		me->btnPLog->SetText(CSTR("End Log"));
 	}
 }
 
@@ -1114,6 +1180,8 @@ SSWR::AVIRead::AVIRRAWMonitorForm::AVIRRAWMonitorForm(UI::GUIClientControl *pare
 	this->adapterIP = 0;
 	this->adapterChanged = false;
 	this->dataUpdated = true;
+	this->plogWriter = 0;
+	this->linkType = 1;
 	if (analyzer)
 	{
 		this->analyzer = analyzer;
@@ -1130,7 +1198,7 @@ SSWR::AVIRead::AVIRRAWMonitorForm::AVIRRAWMonitorForm(UI::GUIClientControl *pare
 	this->tcp4synLastIndex = 0;
 
 	NEW_CLASS(this->pnlControl, UI::GUIPanel(ui, this));
-	this->pnlControl->SetRect(0, 0, 100, 55, false);
+	this->pnlControl->SetRect(0, 0, 100, 79, false);
 	this->pnlControl->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->lblInfo, UI::GUILabel(ui, this->pnlControl, CSTR("Info Port")));
 	this->lblInfo->SetRect(4, 4, 100, 23, false);
@@ -1147,6 +1215,19 @@ SSWR::AVIRead::AVIRRAWMonitorForm::AVIRRAWMonitorForm(UI::GUIClientControl *pare
 	NEW_CLASS(this->btnStart, UI::GUIButton(ui, this->pnlControl, CSTR("Start")));
 	this->btnStart->SetRect(254, 28, 75, 23, false);
 	this->btnStart->HandleButtonClick(OnStartClicked, this);
+	NEW_CLASS(this->lblPLog, UI::GUILabel(ui, this->pnlControl, CSTR("Packet Log")));
+	this->lblPLog->SetRect(4, 52, 100, 23, false);
+	NEW_CLASS(this->cboPLog, UI::GUIComboBox(ui, this->pnlControl, false));
+	this->cboPLog->SetRect(104, 52, 150, 23, false);
+	this->cboPLog->AddItem(CSTR("Pcap"), 0);	
+	this->cboPLog->AddItem(CSTR("Pcapng"), 0);	
+	this->cboPLog->SetSelectedIndex(1);
+	NEW_CLASS(this->btnPLog, UI::GUIButton(ui, this->pnlControl, CSTR("Begin Log")));
+	this->btnPLog->SetRect(254, 52, 75, 23, false);
+	this->btnPLog->HandleButtonClick(OnPLogClicked, this);
+	NEW_CLASS(this->txtPLog, UI::GUITextBox(ui, this->pnlControl, CSTR("")));
+	this->txtPLog->SetRect(334, 52, 200, 23, false);
+	this->txtPLog->SetReadOnly(true);
 	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, this));
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
 
@@ -1503,6 +1584,7 @@ SSWR::AVIRead::AVIRRAWMonitorForm::~AVIRRAWMonitorForm()
 	}
 	this->log.RemoveLogHandler(this->logger);
 	DEL_CLASS(this->logger);
+	SDEL_CLASS(this->plogWriter);
 
 	PingIPInfo *pingIPInfo;
 	UOSInt i;

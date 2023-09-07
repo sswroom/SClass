@@ -72,7 +72,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 			cli = Net::HTTPClient::CreateConnect(sockf, ssl, {url, urlLen}, Net::WebUtil::RequestMethod::HTTP_POST, false);
 			if (mime.v)
 			{
-				cli->AddContentType(mime);
+				cli->AddContentType(mime.OrEmpty());
 			}
 			cli->AddContentLength(fileSize); 
 
