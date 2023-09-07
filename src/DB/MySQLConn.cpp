@@ -23,7 +23,7 @@ void DB::MySQLConn::Connect()
 	MYSQL *mysql = mysql_init(0);
 	this->mysql = mysql;
 
-	if (mysql_real_connect((MYSQL*)this->mysql, (const Char*)STR_PTR(this->server), (const Char*)STR_PTR(this->uid), (const Char*)STR_PTR(this->pwd), (const Char*)STR_PTR(this->database), 0, 0, 0) == 0)
+	if (mysql_real_connect((MYSQL*)this->mysql, (const Char*)this->server->v, (const Char*)STR_PTR(this->uid), (const Char*)STR_PTR(this->pwd), (const Char*)STR_PTR(this->database), 0, 0, 0) == 0)
 	{
 		Text::StringBuilderUTF8 sb;
 		sb.AppendC(UTF8STRC("Error in connecting to database: "));
@@ -52,14 +52,14 @@ void DB::MySQLConn::Connect()
 	}
 }
 
-DB::MySQLConn::MySQLConn(Text::String *server, Text::String *uid, Text::String *pwd, Text::String *database, IO::LogTool *log) : DB::DBConn(CSTR("MySQLConn"))
+DB::MySQLConn::MySQLConn(NotNullPtr<Text::String> server, Text::String *uid, Text::String *pwd, Text::String *database, IO::LogTool *log) : DB::DBConn(CSTR("MySQLConn"))
 {
 	if (Sync::Interlocked::IncrementI32(useCnt) == 1)
 	{
 	}
 
 	this->mysql = 0;
-	this->server = SCOPY_STRING(server);
+	this->server = server->Clone();
 	this->uid = SCOPY_STRING(uid);
 	this->pwd = SCOPY_STRING(pwd);
 	this->database = SCOPY_STRING(database);
@@ -68,14 +68,14 @@ DB::MySQLConn::MySQLConn(Text::String *server, Text::String *uid, Text::String *
 	Connect();
 }
 
-DB::MySQLConn::MySQLConn(Text::CString server, Text::CString uid, Text::CString pwd, Text::CString database, IO::LogTool *log) : DB::DBConn(CSTR("MySQLConn"))
+DB::MySQLConn::MySQLConn(Text::CStringNN server, Text::CString uid, Text::CString pwd, Text::CString database, IO::LogTool *log) : DB::DBConn(CSTR("MySQLConn"))
 {
 	if (Sync::Interlocked::IncrementI32(useCnt) == 1)
 	{
 	}
 
 	this->mysql = 0;
-	this->server = Text::String::NewOrNull(server);
+	this->server = Text::String::New(server);
 	this->uid = Text::String::NewOrNull(uid);
 	this->pwd = Text::String::NewOrNull(pwd);
 	this->database = Text::String::NewOrNull(database);
@@ -91,7 +91,7 @@ DB::MySQLConn::MySQLConn(const WChar *server, const WChar *uid, const WChar *pwd
 	}
 
 	this->mysql = 0;
-	this->server = Text::String::NewOrNull(server);
+	this->server = Text::String::NewNotNull(server);
 	this->uid = Text::String::NewOrNull(uid);
 	this->pwd = Text::String::NewOrNull(pwd);
 	this->database = Text::String::NewOrNull(database);
@@ -103,7 +103,7 @@ DB::MySQLConn::MySQLConn(const WChar *server, const WChar *uid, const WChar *pwd
 DB::MySQLConn::~MySQLConn()
 {
 	Close();
-	SDEL_STRING(this->server);
+	this->server->Release();
 	SDEL_STRING(this->database);
 	SDEL_STRING(this->uid);
 	SDEL_STRING(this->pwd);
@@ -370,7 +370,7 @@ Bool DB::MySQLConn::IsConnError()
 	return this->mysql == 0;
 }
 
-Text::String *DB::MySQLConn::GetConnServer()
+NotNullPtr<Text::String> DB::MySQLConn::GetConnServer()
 {
 	return this->server;
 }
@@ -407,7 +407,7 @@ Text::String *DB::MySQLConn::GetConnPWD()
 	}
 }*/
 
-DB::DBTool *DB::MySQLConn::CreateDBTool(NotNullPtr<Net::SocketFactory> sockf, Text::String *serverName, Text::String *dbName, Text::String *uid, Text::String *pwd, IO::LogTool *log, Text::CString logPrefix)
+DB::DBTool *DB::MySQLConn::CreateDBTool(NotNullPtr<Net::SocketFactory> sockf, NotNullPtr<Text::String> serverName, Text::String *dbName, Text::String *uid, Text::String *pwd, IO::LogTool *log, Text::CString logPrefix)
 {
 	DB::MySQLConn *conn;
 	DB::DBTool *db;
@@ -424,7 +424,7 @@ DB::DBTool *DB::MySQLConn::CreateDBTool(NotNullPtr<Net::SocketFactory> sockf, Te
 	}
 }
 
-DB::DBTool *DB::MySQLConn::CreateDBTool(NotNullPtr<Net::SocketFactory> sockf, Text::CString serverName, Text::CString dbName, Text::CString uid, Text::CString pwd, IO::LogTool *log, Text::CString logPrefix)
+DB::DBTool *DB::MySQLConn::CreateDBTool(NotNullPtr<Net::SocketFactory> sockf, Text::CStringNN serverName, Text::CString dbName, Text::CString uid, Text::CString pwd, IO::LogTool *log, Text::CString logPrefix)
 {
 	DB::MySQLConn *conn;
 	DB::DBTool *db;

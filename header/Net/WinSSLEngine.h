@@ -30,8 +30,8 @@ namespace Net
 
 		virtual void ClientSetSkipCertCheck(Bool skipCertCheck);
 		virtual Bool ClientSetCertASN1(NotNullPtr<Crypto::Cert::X509Cert> certASN1, NotNullPtr<Crypto::Cert::X509File> keyASN1);
-		virtual Net::SSLClient *ClientConnect(Text::CString hostName, UInt16 port, ErrorType *err, Data::Duration timeout);
-		virtual Net::SSLClient *ClientInit(Socket *s, Text::CString hostName, ErrorType *err);
+		virtual Net::SSLClient *ClientConnect(Text::CStringNN hostName, UInt16 port, ErrorType *err, Data::Duration timeout);
+		virtual Net::SSLClient *ClientInit(Socket *s, Text::CStringNN hostName, ErrorType *err);
 
 		virtual UTF8Char *GetErrorDetail(UTF8Char *sbuff);
 		virtual Bool GenerateCert(Text::CString country, Text::CString company, Text::CString commonName, Crypto::Cert::X509Cert **certASN1, Crypto::Cert::X509File **keyASN1);

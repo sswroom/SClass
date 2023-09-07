@@ -18,7 +18,7 @@ namespace DB
 
 		Bool axisAware;
 		Bool isTran;
-		Text::String *server;
+		NotNullPtr<Text::String> server;
 		Text::String *database;
 		Text::String *uid;
 		Text::String *pwd;
@@ -27,8 +27,8 @@ namespace DB
 		void Connect();
 
 	public:
-		MySQLConn(Text::String *server, Text::String *uid, Text::String *pwd, Text::String *database, IO::LogTool *log);
-		MySQLConn(Text::CString server, Text::CString uid, Text::CString pwd, Text::CString database, IO::LogTool *log);
+		MySQLConn(NotNullPtr<Text::String> server, Text::String *uid, Text::String *pwd, Text::String *database, IO::LogTool *log);
+		MySQLConn(Text::CStringNN server, Text::CString uid, Text::CString pwd, Text::CString database, IO::LogTool *log);
 		MySQLConn(const WChar *server, const WChar *uid, const WChar *pwd, const WChar *database, IO::LogTool *log);
 		virtual ~MySQLConn();
 		virtual DB::SQLType GetSQLType() const;
@@ -56,14 +56,14 @@ namespace DB
 		virtual DBReader *QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListNN<Text::String> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition);
 
 		Bool IsConnError();
-		Text::String *GetConnServer();
+		NotNullPtr<Text::String> GetConnServer();
 		Text::String *GetConnDB();
 		Text::String *GetConnUID();
 		Text::String *GetConnPWD();
 
 //		static DBTool *CreateDBTool(const WChar *serverName, const WChar *dbName, const WChar *uid, const WChar *pwd, IO::LogTool *log);
-		static DBTool *CreateDBTool(NotNullPtr<Net::SocketFactory> sockf, Text::String *serverName, Text::String *dbName, Text::String *uid, Text::String *pwd, IO::LogTool *log, Text::CString logPrefix);
-		static DBTool *CreateDBTool(NotNullPtr<Net::SocketFactory> sockf, Text::CString serverName, Text::CString dbName, Text::CString uid, Text::CString pwd, IO::LogTool *log, Text::CString logPrefix);
+		static DBTool *CreateDBTool(NotNullPtr<Net::SocketFactory> sockf, NotNullPtr<Text::String> serverName, Text::String *dbName, Text::String *uid, Text::String *pwd, IO::LogTool *log, Text::CString logPrefix);
+		static DBTool *CreateDBTool(NotNullPtr<Net::SocketFactory> sockf, Text::CStringNN serverName, Text::CString dbName, Text::CString uid, Text::CString pwd, IO::LogTool *log, Text::CString logPrefix);
 //		static DBTool *CreateDBTool(const WChar *serverName, const WChar *dbName, const WChar *uid, const WChar *pwd, IO::LogTool *log, Text::CString logPrefix);
 	};
 

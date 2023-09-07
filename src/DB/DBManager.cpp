@@ -67,8 +67,7 @@ Bool DB::DBManager::GetConnStr(DB::DBTool *db, NotNullPtr<Text::StringBuilderUTF
 		{
 			DB::MySQLConn *mysql = (DB::MySQLConn*)conn;
 			connStr->AppendC(UTF8STRC("mysql:Server="));
-			s = mysql->GetConnServer();
-			connStr->Append(s);
+			connStr->Append(mysql->GetConnServer());
 			if ((s = mysql->GetConnDB()) != 0)
 			{
 				connStr->AppendC(UTF8STRC(";Database="));
@@ -268,6 +267,7 @@ DB::ReadingDB *DB::DBManager::OpenConn(Text::CString connStr, IO::LogTool *log, 
 	else if (connStr.StartsWith(UTF8STRC("mysql:")))
 	{
 		Text::StringBuilderUTF8 sb;
+		NotNullPtr<Text::String> nnserver;
 		Text::String *server = 0;
 		Text::String *uid = 0;
 		Text::String *pwd = 0;
@@ -304,7 +304,15 @@ DB::ReadingDB *DB::DBManager::OpenConn(Text::CString connStr, IO::LogTool *log, 
 				break;
 			}
 		}
-		db = DB::MySQLConn::CreateDBTool(sockf, server, schema, uid, pwd, log, DBPREFIX);
+		if (nnserver.Set(server))
+		{
+			db = DB::MySQLConn::CreateDBTool(sockf, nnserver, schema, uid, pwd, log, DBPREFIX);
+		}
+		else
+		{
+			db = 0;
+		}
+		
 		SDEL_STRING(server);
 		SDEL_STRING(uid);
 		SDEL_STRING(pwd);

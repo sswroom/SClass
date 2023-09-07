@@ -99,11 +99,11 @@ Bool Net::ConnectionInfo::SetInfo(void *info)
 	this->ent.index = inf->Index;
 	if (inf->GatewayList.IpAddress.String[0])
 	{
-		this->ent.defGW = Net::SocketUtil::GetIPAddr(Text::CString::FromPtr((const UTF8Char*)inf->GatewayList.IpAddress.String));
+		this->ent.defGW = Net::SocketUtil::GetIPAddr(Text::CStringNN::FromPtr((const UTF8Char*)inf->GatewayList.IpAddress.String));
 	}
 	if (inf->DhcpEnabled != 0)
 	{
-		this->ent.dhcpSvr = Net::SocketUtil::GetIPAddr(Text::CString::FromPtr((const UTF8Char*)inf->DhcpServer.IpAddress.String));
+		this->ent.dhcpSvr = Net::SocketUtil::GetIPAddr(Text::CStringNN::FromPtr((const UTF8Char*)inf->DhcpServer.IpAddress.String));
 		this->ent.dhcpLeaseTime = Data::Timestamp::FromEpochSec(inf->LeaseObtained, Data::DateTimeUtil::GetLocalTzQhr());
 		this->ent.dhcpLeaseExpire = Data::Timestamp::FromEpochSec(inf->LeaseExpires, Data::DateTimeUtil::GetLocalTzQhr());
 	}

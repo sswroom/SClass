@@ -1416,7 +1416,7 @@ Bool Net::WinSSLEngine::ClientSetCertASN1(NotNullPtr<Crypto::Cert::X509Cert> cer
 	return true;
 }
 
-Net::SSLClient *Net::WinSSLEngine::ClientConnect(Text::CString hostName, UInt16 port, ErrorType *err, Data::Duration timeout)
+Net::SSLClient *Net::WinSSLEngine::ClientConnect(Text::CStringNN hostName, UInt16 port, ErrorType *err, Data::Duration timeout)
 {
 	if (!this->clsData->cliInit)
 	{
@@ -1482,7 +1482,7 @@ Net::SSLClient *Net::WinSSLEngine::ClientConnect(Text::CString hostName, UInt16 
 	return 0;
 }
 
-Net::SSLClient *Net::WinSSLEngine::ClientInit(Socket *s, Text::CString hostName, ErrorType *err)
+Net::SSLClient *Net::WinSSLEngine::ClientInit(Socket *s, Text::CStringNN hostName, ErrorType *err)
 {
 	if (!this->clsData->cliInit)
 	{
