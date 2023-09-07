@@ -462,7 +462,7 @@ void Net::OpenSSLEngine::ClientSetSkipCertCheck(Bool skipCertCheck)
 }
 
 
-Net::SSLClient *Net::OpenSSLEngine::ClientConnect(Text::CString hostName, UInt16 port, ErrorType *err, Data::Duration timeout)
+Net::SSLClient *Net::OpenSSLEngine::ClientConnect(Text::CStringNN hostName, UInt16 port, ErrorType *err, Data::Duration timeout)
 {
 	Net::SocketUtil::AddressInfo addr[1];
 	UOSInt addrCnt = this->sockf->DNSResolveIPs(hostName, Data::DataArray<SocketUtil::AddressInfo>(addr, 1));
@@ -532,7 +532,7 @@ Net::SSLClient *Net::OpenSSLEngine::ClientConnect(Text::CString hostName, UInt16
 	return 0;
 }
 
-Net::SSLClient *Net::OpenSSLEngine::ClientInit(Socket *s, Text::CString hostName, ErrorType *err)
+Net::SSLClient *Net::OpenSSLEngine::ClientInit(Socket *s, Text::CStringNN hostName, ErrorType *err)
 {
 	SSL *ssl = SSL_new(this->clsData->ctx);
 	if (ssl == 0)

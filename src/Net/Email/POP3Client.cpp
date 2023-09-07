@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "Net/Email/POP3Client.h"
 
-Net::Email::POP3Client::POP3Client(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, Text::CString host, UInt16 port, Net::Email::POP3Conn::ConnType connType, IO::Writer *logWriter, Text::CString username, Text::CString password, Data::Duration timeout) : conn(sockf, ssl, host, port, connType, logWriter, timeout)
+Net::Email::POP3Client::POP3Client(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, Text::CStringNN host, UInt16 port, Net::Email::POP3Conn::ConnType connType, IO::Writer *logWriter, Text::CString username, Text::CString password, Data::Duration timeout) : conn(sockf, ssl, host, port, connType, logWriter, timeout)
 {
 	this->loggedIn = false;
 	this->msgCnt = 0;

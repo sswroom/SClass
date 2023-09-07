@@ -112,7 +112,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	}
 	else
 	{
-		NEW_CLASS(cli, Net::MySQLTCPClient(sockf, &addr, port, Text::String::OrEmpty(mysqlUser), Text::String::OrEmpty(mysqlPassword), 0));
+		NEW_CLASS(cli, Net::MySQLTCPClient(sockf, addr, port, Text::String::OrEmpty(mysqlUser), Text::String::OrEmpty(mysqlPassword), 0));
 		if (cli->IsError())
 		{
 			console.WriteLineC(UTF8STRC("Error in connecting to MySQL server"));

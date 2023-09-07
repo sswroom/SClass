@@ -40,7 +40,7 @@ Bool Net::SocketFactory::ReloadDNS()
 	return true;
 }
 
-Bool Net::SocketFactory::DNSResolveIP(Text::CString host, NotNullPtr<Net::SocketUtil::AddressInfo> addr)
+Bool Net::SocketFactory::DNSResolveIP(Text::CStringNN host, NotNullPtr<Net::SocketUtil::AddressInfo> addr)
 {
 	UTF8Char sbuff[256];
 
@@ -72,7 +72,7 @@ Bool Net::SocketFactory::DNSResolveIP(Text::CString host, NotNullPtr<Net::Socket
 	return succ;
 }
 
-UOSInt Net::SocketFactory::DNSResolveIPs(Text::CString host, Data::DataArray<Net::SocketUtil::AddressInfo> addrs)
+UOSInt Net::SocketFactory::DNSResolveIPs(Text::CStringNN host, Data::DataArray<Net::SocketUtil::AddressInfo> addrs)
 {
 	UTF8Char sbuff[256];
 
@@ -104,7 +104,7 @@ UOSInt Net::SocketFactory::DNSResolveIPs(Text::CString host, Data::DataArray<Net
 	return ret;
 }
 
-UInt32 Net::SocketFactory::DNSResolveIPv4(Text::CString host)
+UInt32 Net::SocketFactory::DNSResolveIPv4(Text::CStringNN host)
 {
 	Net::SocketUtil::AddressInfo addr;
 	UTF8Char sbuff[256];

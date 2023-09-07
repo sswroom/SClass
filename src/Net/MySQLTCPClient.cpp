@@ -2031,12 +2031,12 @@ void Net::MySQLTCPClient::SendStmtClose(UInt32 stmtId)
 	this->cli->Write(sbuff, 9);
 }
 
-Net::MySQLTCPClient::MySQLTCPClient(NotNullPtr<Net::SocketFactory> sockf, const Net::SocketUtil::AddressInfo *addr, UInt16 port, NotNullPtr<Text::String> userName, NotNullPtr<Text::String> password, Text::String *database) : DB::DBConn(CSTR("MySQLTCPClient"))
+Net::MySQLTCPClient::MySQLTCPClient(NotNullPtr<Net::SocketFactory> sockf, NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, NotNullPtr<Text::String> userName, NotNullPtr<Text::String> password, Text::String *database) : DB::DBConn(CSTR("MySQLTCPClient"))
 {
 	this->sockf = sockf;
 	this->recvRunning = false;
 	this->recvStarted = false;
-	this->addr = *addr;
+	this->addr = *addr.Ptr();
 	this->port = port;
 	this->mode = ClientMode::Handshake;
 	this->authenType = Net::MySQLUtil::AuthenType::MySQLNativePassword;
@@ -2056,12 +2056,12 @@ Net::MySQLTCPClient::MySQLTCPClient(NotNullPtr<Net::SocketFactory> sockf, const 
 	this->Reconnect();
 }
 
-Net::MySQLTCPClient::MySQLTCPClient(NotNullPtr<Net::SocketFactory> sockf, const Net::SocketUtil::AddressInfo *addr, UInt16 port, Text::CString userName, Text::CString password, Text::CString database) : DB::DBConn(CSTR("MySQLTCPClient"))
+Net::MySQLTCPClient::MySQLTCPClient(NotNullPtr<Net::SocketFactory> sockf, NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, Text::CString userName, Text::CString password, Text::CString database) : DB::DBConn(CSTR("MySQLTCPClient"))
 {
 	this->sockf = sockf;
 	this->recvRunning = false;
 	this->recvStarted = false;
-	this->addr = *addr;
+	this->addr = *addr.Ptr();
 	this->port = port;
 	this->mode = ClientMode::Handshake;
 	this->svrVer = 0;
@@ -2564,14 +2564,14 @@ UInt16 Net::MySQLTCPClient::GetDefaultPort()
 	return 3306;
 }
 
-DB::DBTool *Net::MySQLTCPClient::CreateDBTool(NotNullPtr<Net::SocketFactory> sockf, Text::String *serverName, Text::String *dbName, NotNullPtr<Text::String> uid, NotNullPtr<Text::String> pwd, IO::LogTool *log, Text::CString logPrefix)
+DB::DBTool *Net::MySQLTCPClient::CreateDBTool(NotNullPtr<Net::SocketFactory> sockf, NotNullPtr<Text::String> serverName, Text::String *dbName, NotNullPtr<Text::String> uid, NotNullPtr<Text::String> pwd, IO::LogTool *log, Text::CString logPrefix)
 {
 	Net::MySQLTCPClient *conn;
 	DB::DBTool *db;
 	Net::SocketUtil::AddressInfo addr;
 	if (sockf->DNSResolveIP(serverName->ToCString(), addr))
 	{
-		NEW_CLASS(conn, Net::MySQLTCPClient(sockf, &addr, 3306, uid, pwd, dbName));
+		NEW_CLASS(conn, Net::MySQLTCPClient(sockf, addr, 3306, uid, pwd, dbName));
 		if (conn->IsError() == 0)
 		{
 			NEW_CLASS(db, DB::DBTool(conn, true, log, logPrefix));
@@ -2589,14 +2589,14 @@ DB::DBTool *Net::MySQLTCPClient::CreateDBTool(NotNullPtr<Net::SocketFactory> soc
 	}
 }
 
-DB::DBTool *Net::MySQLTCPClient::CreateDBTool(NotNullPtr<Net::SocketFactory> sockf, Text::CString serverName, Text::CString dbName, Text::CString uid, Text::CString pwd, IO::LogTool *log, Text::CString logPrefix)
+DB::DBTool *Net::MySQLTCPClient::CreateDBTool(NotNullPtr<Net::SocketFactory> sockf, Text::CStringNN serverName, Text::CString dbName, Text::CString uid, Text::CString pwd, IO::LogTool *log, Text::CString logPrefix)
 {
 	Net::MySQLTCPClient *conn;
 	DB::DBTool *db;
 	Net::SocketUtil::AddressInfo addr;
 	if (sockf->DNSResolveIP(serverName, addr))
 	{
-		NEW_CLASS(conn, Net::MySQLTCPClient(sockf, &addr, 3306, uid, pwd, dbName));
+		NEW_CLASS(conn, Net::MySQLTCPClient(sockf, addr, 3306, uid, pwd, dbName));
 		if (conn->IsError() == 0)
 		{
 			NEW_CLASS(db, DB::DBTool(conn, true, log, logPrefix));

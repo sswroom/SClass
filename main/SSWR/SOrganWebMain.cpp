@@ -26,6 +26,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 		Net::SSLEngine *ssl = 0;
 		IO::LogTool log;
 		Text::String *s;
+		NotNullPtr<Text::String> nns;
 		Text::CString osmCacheDir;
 		UTF8Char sbuff[512];
 		UTF8Char *sptr;
@@ -87,9 +88,9 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 			{
 				db = DB::MDBFileConn::CreateDBTool(cfg->GetValue(CSTR("MDBFile")), &log, CSTR("DB: "));
 			}
-			else if (cfg->GetValue(CSTR("MySQLServer")))
+			else if (nns.Set(cfg->GetValue(CSTR("MySQLServer"))))
 			{
-				db = Net::MySQLTCPClient::CreateDBTool(sockf, cfg->GetValue(CSTR("MySQLServer")), cfg->GetValue(CSTR("MySQLDB")), Text::String::OrEmpty(cfg->GetValue(CSTR("MySQLUID"))), Text::String::OrEmpty(cfg->GetValue(CSTR("MySQLPwd"))), &log, CSTR("DB: "));
+				db = Net::MySQLTCPClient::CreateDBTool(sockf, nns, cfg->GetValue(CSTR("MySQLDB")), Text::String::OrEmpty(cfg->GetValue(CSTR("MySQLUID"))), Text::String::OrEmpty(cfg->GetValue(CSTR("MySQLPwd"))), &log, CSTR("DB: "));
 			}
 			else
 			{

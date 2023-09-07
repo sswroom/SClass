@@ -132,7 +132,7 @@ Net::Email::POP3Conn::ResultStatus Net::Email::POP3Conn::WaitForResult(UTF8Char 
 		return ResultStatus::TimedOut;
 }
 
-Net::Email::POP3Conn::POP3Conn(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, Text::CString host, UInt16 port, ConnType connType, IO::Writer *logWriter, Data::Duration timeout)
+Net::Email::POP3Conn::POP3Conn(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, Text::CStringNN host, UInt16 port, ConnType connType, IO::Writer *logWriter, Data::Duration timeout)
 {
 	this->threadStarted = false;
 	this->threadRunning = false;

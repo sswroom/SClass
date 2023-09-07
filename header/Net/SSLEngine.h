@@ -98,8 +98,8 @@ namespace Net
 		void ServerInit(Socket *s, ClientReadyHandler readyHdlr, void *userObj);
 
 		virtual Bool ClientSetCertASN1(NotNullPtr<Crypto::Cert::X509Cert> certASN1, NotNullPtr<Crypto::Cert::X509File> keyASN1) = 0;
-		virtual Net::SSLClient *ClientConnect(Text::CString hostName, UInt16 port, ErrorType *err, Data::Duration timeout) = 0;
-		virtual Net::SSLClient *ClientInit(Socket *s, Text::CString hostName, ErrorType *err) = 0;
+		virtual Net::SSLClient *ClientConnect(Text::CStringNN hostName, UInt16 port, ErrorType *err, Data::Duration timeout) = 0;
+		virtual Net::SSLClient *ClientInit(Socket *s, Text::CStringNN hostName, ErrorType *err) = 0;
 		virtual void ClientSetSkipCertCheck(Bool skipCertCheck) = 0;
 
 		virtual UTF8Char *GetErrorDetail(UTF8Char *sbuff) = 0;

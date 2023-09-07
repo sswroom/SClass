@@ -407,7 +407,7 @@ DB::ReadingDB *DB::DBManager::OpenConn(Text::CString connStr, IO::LogTool *log, 
 		NotNullPtr<Text::String> pwdStr;
 		if (uidStr.Set(uid) && pwdStr.Set(pwd))
 		{
-			NEW_CLASS(cli, Net::MySQLTCPClient(sockf, &addr, port, uidStr, pwdStr, schema));
+			NEW_CLASS(cli, Net::MySQLTCPClient(sockf, addr, port, uidStr, pwdStr, schema));
 		}
 		SDEL_STRING(uid);
 		SDEL_STRING(pwd);

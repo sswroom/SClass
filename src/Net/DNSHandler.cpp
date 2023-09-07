@@ -23,7 +23,7 @@ Net::DNSHandler::~DNSHandler()
 		}
 		else
 		{
-			this->dnsCli.FreeAnswers(&arr[i]->answers);
+			this->dnsCli.FreeAnswers(arr[i]->answers);
 		}
 		DEL_CLASS(arr[i]);
 		i++;
@@ -40,7 +40,7 @@ Net::DNSHandler::~DNSHandler()
 		}
 		else
 		{
-			this->dnsCli.FreeAnswers(&arr[i]->answers);
+			this->dnsCli.FreeAnswers(arr[i]->answers);
 		}
 		DEL_CLASS(arr[i]);
 		i++;
@@ -48,7 +48,7 @@ Net::DNSHandler::~DNSHandler()
 	MemFree(arr);
 }
 
-Bool Net::DNSHandler::GetByDomainNamev4(NotNullPtr<Net::SocketUtil::AddressInfo> addr, Text::CString domain)
+Bool Net::DNSHandler::GetByDomainNamev4(NotNullPtr<Net::SocketUtil::AddressInfo> addr, Text::CStringNN domain)
 {
 	DomainStatus *dnsStat;
 	DomainStatus *newDnsStat;
@@ -74,9 +74,9 @@ Bool Net::DNSHandler::GetByDomainNamev4(NotNullPtr<Net::SocketUtil::AddressInfo>
 				Data::ArrayList<Net::DNSClient::RequestAnswer*> ansArr;
 				mutUsage.EndUse();
 
-				j = this->dnsCli.GetByType(&ansArr, domain, 1);
+				j = this->dnsCli.GetByType(ansArr, domain, 1);
 				mutUsage.BeginUse();
-				this->dnsCli.FreeAnswers(&dnsStat->answers);
+				this->dnsCli.FreeAnswers(dnsStat->answers);
 				dnsStat->answers.Clear();
 				dnsStat->answers.AddAll(ansArr);
 				newReq = true;
@@ -104,7 +104,7 @@ Bool Net::DNSHandler::GetByDomainNamev4(NotNullPtr<Net::SocketUtil::AddressInfo>
 	NEW_CLASS(dnsStat, DomainStatus());
 	dnsStat->domain = Text::String::New(domain);
 	dnsStat->timeout = Data::Timestamp::UtcNow();
-	j = this->dnsCli.GetByType(&dnsStat->answers, domain, 1);
+	j = this->dnsCli.GetByType(dnsStat->answers, domain, 1);
 
 	Bool succ = false;
 	i = 0;
@@ -126,7 +126,7 @@ Bool Net::DNSHandler::GetByDomainNamev4(NotNullPtr<Net::SocketUtil::AddressInfo>
 	if (newDnsStat)
 	{
 		dnsStat->domain->Release();
-		this->dnsCli.FreeAnswers(&dnsStat->answers);
+		this->dnsCli.FreeAnswers(dnsStat->answers);
 		DEL_CLASS(dnsStat);
 	}
 	else
@@ -136,7 +136,7 @@ Bool Net::DNSHandler::GetByDomainNamev4(NotNullPtr<Net::SocketUtil::AddressInfo>
 	return succ;
 }
 
-Bool Net::DNSHandler::GetByDomainNamev6(NotNullPtr<Net::SocketUtil::AddressInfo> addr, Text::CString domain)
+Bool Net::DNSHandler::GetByDomainNamev6(NotNullPtr<Net::SocketUtil::AddressInfo> addr, Text::CStringNN domain)
 {
 	DomainStatus *newDnsStat;
 	DomainStatus *dnsStat;
@@ -162,9 +162,9 @@ Bool Net::DNSHandler::GetByDomainNamev6(NotNullPtr<Net::SocketUtil::AddressInfo>
 				Data::ArrayList<Net::DNSClient::RequestAnswer*> ansArr;
 				mutUsage.EndUse();
 
-				j = this->dnsCli.GetByType(&ansArr, domain, 28);
+				j = this->dnsCli.GetByType(ansArr, domain, 28);
 				mutUsage.BeginUse();
-				this->dnsCli.FreeAnswers(&dnsStat->answers);
+				this->dnsCli.FreeAnswers(dnsStat->answers);
 				dnsStat->answers.Clear();
 				dnsStat->answers.AddAll(ansArr);
 				newReq = true;
@@ -193,7 +193,7 @@ Bool Net::DNSHandler::GetByDomainNamev6(NotNullPtr<Net::SocketUtil::AddressInfo>
 	NEW_CLASS(dnsStat, DomainStatus());
 	dnsStat->domain = Text::String::New(domain);
 	dnsStat->timeout = currTime;
-	j = this->dnsCli.GetByType(&dnsStat->answers, domain, 1);
+	j = this->dnsCli.GetByType(dnsStat->answers, domain, 1);
 
 	Bool succ = false;
 	i = 0;
@@ -214,7 +214,7 @@ Bool Net::DNSHandler::GetByDomainNamev6(NotNullPtr<Net::SocketUtil::AddressInfo>
 	if (newDnsStat)
 	{
 		dnsStat->domain->Release();
-		this->dnsCli.FreeAnswers(&dnsStat->answers);
+		this->dnsCli.FreeAnswers(dnsStat->answers);
 		DEL_CLASS(dnsStat);
 	}
 	else
@@ -225,7 +225,7 @@ Bool Net::DNSHandler::GetByDomainNamev6(NotNullPtr<Net::SocketUtil::AddressInfo>
 	return succ;
 }
 
-UOSInt Net::DNSHandler::GetByDomainNamesv4(Data::DataArray<Net::SocketUtil::AddressInfo> addrs, Text::CString domain)
+UOSInt Net::DNSHandler::GetByDomainNamesv4(Data::DataArray<Net::SocketUtil::AddressInfo> addrs, Text::CStringNN domain)
 {
 	if (addrs.GetCount() == 0)
 		return 0;
@@ -255,9 +255,9 @@ UOSInt Net::DNSHandler::GetByDomainNamesv4(Data::DataArray<Net::SocketUtil::Addr
 				Data::ArrayList<Net::DNSClient::RequestAnswer*> ansArr;
 				mutUsage.EndUse();
 
-				j = this->dnsCli.GetByType(&ansArr, domain, 1);
+				j = this->dnsCli.GetByType(ansArr, domain, 1);
 				mutUsage.BeginUse();
-				this->dnsCli.FreeAnswers(&dnsStat->answers);
+				this->dnsCli.FreeAnswers(dnsStat->answers);
 				dnsStat->answers.Clear();
 				dnsStat->answers.AddAll(ansArr);
 				newReq = true;
@@ -289,7 +289,7 @@ UOSInt Net::DNSHandler::GetByDomainNamesv4(Data::DataArray<Net::SocketUtil::Addr
 	NEW_CLASS(dnsStat, DomainStatus());
 	dnsStat->domain = Text::String::New(domain);
 	dnsStat->timeout = Data::Timestamp::UtcNow();
-	j = this->dnsCli.GetByType(&dnsStat->answers, domain, 1);
+	j = this->dnsCli.GetByType(dnsStat->answers, domain, 1);
 
 	i = 0;
 	j = dnsStat->answers.GetCount();
@@ -313,7 +313,7 @@ UOSInt Net::DNSHandler::GetByDomainNamesv4(Data::DataArray<Net::SocketUtil::Addr
 	if (newDnsStat)
 	{
 		dnsStat->domain->Release();
-		this->dnsCli.FreeAnswers(&dnsStat->answers);
+		this->dnsCli.FreeAnswers(dnsStat->answers);
 		DEL_CLASS(dnsStat);
 	}
 	else
@@ -324,7 +324,7 @@ UOSInt Net::DNSHandler::GetByDomainNamesv4(Data::DataArray<Net::SocketUtil::Addr
 	return ret;
 }
 
-UOSInt Net::DNSHandler::GetByDomainNamesv6(Data::DataArray<Net::SocketUtil::AddressInfo> addrs, Text::CString domain)
+UOSInt Net::DNSHandler::GetByDomainNamesv6(Data::DataArray<Net::SocketUtil::AddressInfo> addrs, Text::CStringNN domain)
 {
 	if (addrs.GetCount() == 0)
 		return 0;
@@ -353,9 +353,9 @@ UOSInt Net::DNSHandler::GetByDomainNamesv6(Data::DataArray<Net::SocketUtil::Addr
 				Data::ArrayList<Net::DNSClient::RequestAnswer*> ansArr;
 				mutUsage.EndUse();
 
-				j = this->dnsCli.GetByType(&ansArr, domain, 28);
+				j = this->dnsCli.GetByType(ansArr, domain, 28);
 				mutUsage.BeginUse();
-				this->dnsCli.FreeAnswers(&dnsStat->answers);
+				this->dnsCli.FreeAnswers(dnsStat->answers);
 				dnsStat->answers.Clear();
 				dnsStat->answers.AddAll(ansArr);
 				newReq = true;
@@ -386,7 +386,7 @@ UOSInt Net::DNSHandler::GetByDomainNamesv6(Data::DataArray<Net::SocketUtil::Addr
 	NEW_CLASS(dnsStat, DomainStatus());
 	dnsStat->domain = Text::String::New(domain);
 	dnsStat->timeout = currTime;
-	j = this->dnsCli.GetByType(&dnsStat->answers, domain, 28);
+	j = this->dnsCli.GetByType(dnsStat->answers, domain, 28);
 
 	i = 0;
 	j = dnsStat->answers.GetCount();
@@ -408,7 +408,7 @@ UOSInt Net::DNSHandler::GetByDomainNamesv6(Data::DataArray<Net::SocketUtil::Addr
 	if (newDnsStat)
 	{
 		dnsStat->domain->Release();
-		this->dnsCli.FreeAnswers(&dnsStat->answers);
+		this->dnsCli.FreeAnswers(dnsStat->answers);
 		DEL_CLASS(dnsStat);
 	}
 	else

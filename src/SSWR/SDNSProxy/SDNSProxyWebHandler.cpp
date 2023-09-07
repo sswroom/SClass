@@ -106,7 +106,7 @@ Bool __stdcall SSWR::SDNSProxy::SDNSProxyWebHandler::ReqV4Req(SSWR::SDNSProxy::S
 		Net::DNSClient::RequestAnswer *ans;
 		Data::DateTime reqTime;
 		UInt32 ttl;
-		if (me->proxy->GetRequestInfov4(CSTRP(sbuff, sptr), &ansList, &reqTime, &ttl))
+		if (me->proxy->GetRequestInfov4(CSTRP(sbuff, sptr), ansList, reqTime, ttl))
 		{
 			sbOut.AppendC(UTF8STRC("<table border=\"1\"><tr><td>Request Name</td><td>"));
 			sbOut.AppendP(sbuff, sptr);
@@ -145,7 +145,7 @@ Bool __stdcall SSWR::SDNSProxy::SDNSProxyWebHandler::ReqV4Req(SSWR::SDNSProxy::S
 			}
 			sbOut.AppendC(UTF8STRC("</table>\r\n"));
 
-			Net::DNSClient::FreeAnswers(&ansList);
+			Net::DNSClient::FreeAnswers(ansList);
 			sbOut.AppendC(UTF8STRC("</td></tr></table>\r\n"));
 		}
 		else
@@ -207,7 +207,7 @@ Bool __stdcall SSWR::SDNSProxy::SDNSProxyWebHandler::ReqV6Req(SSWR::SDNSProxy::S
 		Net::DNSClient::RequestAnswer *ans;
 		Data::DateTime reqTime;
 		UInt32 ttl;
-		if (me->proxy->GetRequestInfov6(CSTRP(sbuff, sptr), &ansList, &reqTime, &ttl))
+		if (me->proxy->GetRequestInfov6(CSTRP(sbuff, sptr), ansList, reqTime, ttl))
 		{
 			sbOut.AppendC(UTF8STRC("<table border=\"1\"><tr><td>Request Name</td><td>"));
 			sbOut.AppendP(sbuff, sptr);
@@ -246,7 +246,7 @@ Bool __stdcall SSWR::SDNSProxy::SDNSProxyWebHandler::ReqV6Req(SSWR::SDNSProxy::S
 			}
 			sbOut.AppendC(UTF8STRC("</table>\r\n"));
 
-			Net::DNSClient::FreeAnswers(&ansList);
+			Net::DNSClient::FreeAnswers(ansList);
 			sbOut.AppendC(UTF8STRC("</table>\r\n"));
 		}
 		else
@@ -308,7 +308,7 @@ Bool __stdcall SSWR::SDNSProxy::SDNSProxyWebHandler::ReqOthReq(SSWR::SDNSProxy::
 		Net::DNSClient::RequestAnswer *ans;
 		Data::DateTime reqTime;
 		UInt32 ttl;
-		if (me->proxy->GetRequestInfoOth(CSTRP(sbuff, sptr), &ansList, &reqTime, &ttl))
+		if (me->proxy->GetRequestInfoOth(CSTRP(sbuff, sptr), ansList, reqTime, ttl))
 		{
 			sbOut.AppendC(UTF8STRC("<table border=\"1\"><tr><td>Request Name</td><td>"));
 			sbOut.AppendP(sbuff, sptr);
@@ -347,7 +347,7 @@ Bool __stdcall SSWR::SDNSProxy::SDNSProxyWebHandler::ReqOthReq(SSWR::SDNSProxy::
 			}
 			sbOut.AppendC(UTF8STRC("</table>\r\n"));
 
-			Net::DNSClient::FreeAnswers(&ansList);
+			Net::DNSClient::FreeAnswers(ansList);
 			sbOut.AppendC(UTF8STRC("</table>\r\n"));
 		}
 		else

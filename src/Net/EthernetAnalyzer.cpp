@@ -272,7 +272,7 @@ UOSInt Net::EthernetAnalyzer::DNSReqv4GetCount()
 	return this->dnsReqv4Map.GetCount();
 }
 
-Bool Net::EthernetAnalyzer::DNSReqv4GetInfo(Text::CString req, Data::ArrayList<Net::DNSClient::RequestAnswer*> *ansList, Data::DateTime *reqTime, UInt32 *ttl)
+Bool Net::EthernetAnalyzer::DNSReqv4GetInfo(Text::CString req, NotNullPtr<Data::ArrayList<Net::DNSClient::RequestAnswer*>> ansList, NotNullPtr<Data::DateTime> reqTime, OutParam<UInt32> ttl)
 {
 	Net::EthernetAnalyzer::DNSRequestResult *result;
 	Sync::MutexUsage mutUsage(this->dnsReqv4Mut);
@@ -283,7 +283,7 @@ Bool Net::EthernetAnalyzer::DNSReqv4GetInfo(Text::CString req, Data::ArrayList<N
 		Sync::MutexUsage mutUsage(result->mut);
 		Net::DNSClient::ParseAnswers(result->recBuff, result->recSize, ansList);
 		reqTime->SetInstant(result->reqTime.inst);
-		*ttl = result->ttl;
+		ttl.Set(result->ttl);
 		return true;
 	}
 	else
@@ -305,7 +305,7 @@ UOSInt Net::EthernetAnalyzer::DNSReqv6GetCount()
 	return this->dnsReqv6Map.GetCount();
 }
 
-Bool Net::EthernetAnalyzer::DNSReqv6GetInfo(Text::CString req, Data::ArrayList<Net::DNSClient::RequestAnswer*> *ansList, Data::DateTime *reqTime, UInt32 *ttl)
+Bool Net::EthernetAnalyzer::DNSReqv6GetInfo(Text::CString req, NotNullPtr<Data::ArrayList<Net::DNSClient::RequestAnswer*>> ansList, NotNullPtr<Data::DateTime> reqTime, OutParam<UInt32> ttl)
 {
 	Net::EthernetAnalyzer::DNSRequestResult *result;
 	Sync::MutexUsage mutUsage(this->dnsReqv6Mut);
@@ -316,7 +316,7 @@ Bool Net::EthernetAnalyzer::DNSReqv6GetInfo(Text::CString req, Data::ArrayList<N
 		Sync::MutexUsage mutUsage(result->mut);
 		Net::DNSClient::ParseAnswers(result->recBuff, result->recSize, ansList);
 		reqTime->SetInstant(result->reqTime.inst);
-		*ttl = result->ttl;
+		ttl.Set(result->ttl);
 		return true;
 	}
 	else
@@ -338,7 +338,7 @@ UOSInt Net::EthernetAnalyzer::DNSReqOthGetCount()
 	return this->dnsReqOthMap.GetCount();
 }
 
-Bool Net::EthernetAnalyzer::DNSReqOthGetInfo(Text::CString req, Data::ArrayList<Net::DNSClient::RequestAnswer*> *ansList, Data::DateTime *reqTime, UInt32 *ttl)
+Bool Net::EthernetAnalyzer::DNSReqOthGetInfo(Text::CString req, NotNullPtr<Data::ArrayList<Net::DNSClient::RequestAnswer*>> ansList, NotNullPtr<Data::DateTime> reqTime, OutParam<UInt32> ttl)
 {
 	Net::EthernetAnalyzer::DNSRequestResult *result;
 	Sync::MutexUsage mutUsage(this->dnsReqOthMut);
@@ -349,7 +349,7 @@ Bool Net::EthernetAnalyzer::DNSReqOthGetInfo(Text::CString req, Data::ArrayList<
 		Sync::MutexUsage mutUsage(result->mut);
 		Net::DNSClient::ParseAnswers(result->recBuff, result->recSize, ansList);
 		reqTime->SetInstant(result->reqTime.inst);
-		*ttl = result->ttl;
+		ttl.Set(result->ttl);
 		return true;
 	}
 	else
@@ -1082,7 +1082,7 @@ Bool Net::EthernetAnalyzer::PacketIPv4(const UInt8 *packet, UOSInt packetSize, U
 						{
 							Data::ArrayList<Net::DNSClient::RequestAnswer*> answers;
 							Net::DNSClient::RequestAnswer *answer;
-							Net::DNSClient::ParseAnswers(&ipData[8], ipDataSize - 8, &answers);
+							Net::DNSClient::ParseAnswers(&ipData[8], ipDataSize - 8, answers);
 							if (answers.GetCount() > 0)
 							{
 								DNSRequestResult *req;
@@ -1222,7 +1222,7 @@ Bool Net::EthernetAnalyzer::PacketIPv4(const UInt8 *packet, UOSInt packetSize, U
 										mutUsage.EndUse();
 									}
 								}
-								Net::DNSClient::FreeAnswers(&answers);
+								Net::DNSClient::FreeAnswers(answers);
 							}
 						}
 						valid = true;

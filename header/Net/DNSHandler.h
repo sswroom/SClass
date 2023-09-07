@@ -29,10 +29,10 @@ namespace Net
 		DNSHandler(NotNullPtr<Net::SocketFactory> sockf, NotNullPtr<const Net::SocketUtil::AddressInfo> serverAddr);
 		~DNSHandler();
 	
-		Bool GetByDomainNamev4(NotNullPtr<Net::SocketUtil::AddressInfo> addr, Text::CString domain);
-		Bool GetByDomainNamev6(NotNullPtr<Net::SocketUtil::AddressInfo> addr, Text::CString domain);
-		UOSInt GetByDomainNamesv4(Data::DataArray<Net::SocketUtil::AddressInfo> addrs, Text::CString domain);
-		UOSInt GetByDomainNamesv6(Data::DataArray<Net::SocketUtil::AddressInfo> addrs, Text::CString domain);
+		Bool GetByDomainNamev4(NotNullPtr<Net::SocketUtil::AddressInfo> addr, Text::CStringNN domain);
+		Bool GetByDomainNamev6(NotNullPtr<Net::SocketUtil::AddressInfo> addr, Text::CStringNN domain);
+		UOSInt GetByDomainNamesv4(Data::DataArray<Net::SocketUtil::AddressInfo> addrs, Text::CStringNN domain);
+		UOSInt GetByDomainNamesv6(Data::DataArray<Net::SocketUtil::AddressInfo> addrs, Text::CStringNN domain);
 
 		Bool AddHost(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, const UTF8Char *domain, UOSInt domainLen);
 		void UpdateDNSAddr(NotNullPtr<const Net::SocketUtil::AddressInfo> serverAddr);

@@ -280,7 +280,7 @@ Bool __stdcall Net::EthernetWebHandler::DNSReqv4Req(EthernetWebHandler *me, NotN
 			Net::DNSClient::RequestAnswer *ans;
 			Data::DateTime reqTime;
 			UInt32 ttl;
-			if (me->analyzer->DNSReqv4GetInfo(CSTRP(sbuff, sptr), &ansList, &reqTime, &ttl))
+			if (me->analyzer->DNSReqv4GetInfo(CSTRP(sbuff, sptr), ansList, reqTime, ttl))
 			{
 				sb.AppendC(UTF8STRC("<table border=\"1\"><tr><td>Request Name</td><td>"));
 				sb.AppendP(sbuff, sptr);
@@ -319,7 +319,7 @@ Bool __stdcall Net::EthernetWebHandler::DNSReqv4Req(EthernetWebHandler *me, NotN
 				}
 				sb.AppendC(UTF8STRC("</td></tr></table>\r\n"));
 
-				Net::DNSClient::FreeAnswers(&ansList);
+				Net::DNSClient::FreeAnswers(ansList);
 				sb.AppendC(UTF8STRC("</table>\r\n"));
 			}
 			else
@@ -393,7 +393,7 @@ Bool __stdcall Net::EthernetWebHandler::DNSReqv6Req(EthernetWebHandler *me, NotN
 			Net::DNSClient::RequestAnswer *ans;
 			Data::DateTime reqTime;
 			UInt32 ttl;
-			if (me->analyzer->DNSReqv6GetInfo(CSTRP(sbuff, sptr), &ansList, &reqTime, &ttl))
+			if (me->analyzer->DNSReqv6GetInfo(CSTRP(sbuff, sptr), ansList, reqTime, ttl))
 			{
 				sb.AppendC(UTF8STRC("<table border=\"1\"><tr><td>Request Name</td><td>"));
 				sb.AppendP(sbuff, sptr);
@@ -432,7 +432,7 @@ Bool __stdcall Net::EthernetWebHandler::DNSReqv6Req(EthernetWebHandler *me, NotN
 				}
 				sb.AppendC(UTF8STRC("</td></tr></table>\r\n"));
 
-				Net::DNSClient::FreeAnswers(&ansList);
+				Net::DNSClient::FreeAnswers(ansList);
 				sb.AppendC(UTF8STRC("</table>\r\n"));
 			}
 			else
@@ -506,7 +506,7 @@ Bool __stdcall Net::EthernetWebHandler::DNSReqOthReq(EthernetWebHandler *me, Not
 			Net::DNSClient::RequestAnswer *ans;
 			Data::DateTime reqTime;
 			UInt32 ttl;
-			if (me->analyzer->DNSReqOthGetInfo(CSTRP(sbuff, sptr), &ansList, &reqTime, &ttl))
+			if (me->analyzer->DNSReqOthGetInfo(CSTRP(sbuff, sptr), ansList, reqTime, ttl))
 			{
 				sb.AppendC(UTF8STRC("<table border=\"1\"><tr><td>Request Name</td><td>"));
 				sb.AppendP(sbuff, sptr);
@@ -545,7 +545,7 @@ Bool __stdcall Net::EthernetWebHandler::DNSReqOthReq(EthernetWebHandler *me, Not
 				}
 				sb.AppendC(UTF8STRC("</td></tr></table>\r\n"));
 
-				Net::DNSClient::FreeAnswers(&ansList);
+				Net::DNSClient::FreeAnswers(ansList);
 				sb.AppendC(UTF8STRC("</table>\r\n"));
 			}
 			else

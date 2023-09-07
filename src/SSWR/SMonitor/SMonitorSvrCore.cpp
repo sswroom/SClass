@@ -401,7 +401,7 @@ void __stdcall SSWR::SMonitor::SMonitorSvrCore::OnNotifyUDPPacket(NotNullPtr<con
 	{
 		if (dataSize >= 25)
 		{
-			static Text::CStringNN pwd = CSTR("sswroom");
+			Text::CStringNN pwd = me->notifyPwd->ToCString();
 			UInt32 crcVal;
 			{
 				Sync::MutexUsage mutUsage(me->notifyCRCMut);
@@ -412,7 +412,13 @@ void __stdcall SSWR::SMonitor::SMonitorSvrCore::OnNotifyUDPPacket(NotNullPtr<con
 			}
 			if (crcVal == ReadMUInt32(&buff[dataSize - 4]))
 			{
-				me->NewNotify(addr, port, Data::Timestamp(Data::TimeInstant(ReadInt64(&buff[4]), ReadUInt32(&buff[12])), 0), buff[16], ReadUInt32(&buff[17]), Text::CString(&buff[21], dataSize - 21));
+				Data::Timestamp ts = Data::Timestamp(Data::TimeInstant(ReadInt64(&buff[4]), ReadUInt32(&buff[12])), 0);
+				Data::Timestamp currTime = Data::Timestamp::UtcNow();
+				Int64 t = currTime.DiffSec(ts);
+				if (t >= -180 && t <= 180)
+				{
+					me->NewNotify(addr, port, ts, buff[16], ReadUInt32(&buff[17]), Text::CString(&buff[21], dataSize - 21));
+				}
 			}
 		}
 	}
@@ -1144,6 +1150,7 @@ SSWR::SMonitor::SMonitorSvrCore::SMonitorSvrCore(NotNullPtr<IO::Writer> writer, 
 	this->cliSvr = 0;
 	this->cliMgr = 0;
 	this->notifyUDP = 0;
+	this->notifyPwd = 0;
 	this->dataUDP = 0;
 	this->dataCRC = 0;
 	this->db = 0;
@@ -1157,6 +1164,7 @@ SSWR::SMonitor::SMonitorSvrCore::SMonitorSvrCore(NotNullPtr<IO::Writer> writer, 
 	this->initErr = false;
 
 	IO::ConfigFile *cfg = IO::IniFile::ParseProgConfig(0);
+	NotNullPtr<Text::String> nns;
 	Text::String *s;
 	Text::String *s2;
 	Text::String *s3;
@@ -1203,6 +1211,16 @@ SSWR::SMonitor::SMonitorSvrCore::SMonitorSvrCore(NotNullPtr<IO::Writer> writer, 
 			this->log.AddFileLog(sb.ToCString(), IO::LogHandler::LogType::PerDay, IO::LogHandler::LogGroup::PerMonth, IO::LogHandler::LogLevel::Raw, "yyyy-MM-dd HH:mm:ss.fff", false);
 		}
 
+		s = cfg->GetValue(CSTR("NotifyPwd"));
+		if (s)
+		{
+			this->notifyPwd = s->Clone().Ptr();
+		}
+		else
+		{
+			writer->WriteLineC(UTF8STRC("NotifyPwd not found"));
+			this->initErr = true;
+		}
 		s = cfg->GetValue(CSTR("DataDir"));
 		if (s)
 		{
@@ -1221,9 +1239,9 @@ SSWR::SMonitor::SMonitorSvrCore::SMonitorSvrCore(NotNullPtr<IO::Writer> writer, 
 
 		s = cfg->GetValue(CSTR("MySQLServer"));
 		s2 = cfg->GetValue(CSTR("MySQLDB"));
-		if (s && s2)
+		if (nns.Set(s) && s2)
 		{
-			this->db = Net::MySQLTCPClient::CreateDBTool(this->sockf, s, s2, Text::String::OrEmpty(cfg->GetValue(CSTR("UID"))), Text::String::OrEmpty(cfg->GetValue(CSTR("PWD"))), &this->log, CSTR("DB: "));
+			this->db = Net::MySQLTCPClient::CreateDBTool(this->sockf, nns, s2, Text::String::OrEmpty(cfg->GetValue(CSTR("UID"))), Text::String::OrEmpty(cfg->GetValue(CSTR("PWD"))), &this->log, CSTR("DB: "));
 			NEW_CLASS(this->dbMut, Sync::Mutex());
 			if (this->db == 0)
 			{
@@ -1239,9 +1257,9 @@ SSWR::SMonitor::SMonitorSvrCore::SMonitorSvrCore(NotNullPtr<IO::Writer> writer, 
 			s = cfg->GetValue(CSTR("DSN"));
 			s2 = cfg->GetValue(CSTR("UID"));
 			s3 = cfg->GetValue(CSTR("PWD"));
-			if (s)
+			if (nns.Set(s))
 			{
-				this->db = DB::ODBCConn::CreateDBTool(Text::String::OrEmpty(s), s2, s3, cfg->GetValue(CSTR("Schema")), &this->log, CSTR("DB: "));
+				this->db = DB::ODBCConn::CreateDBTool(nns, s2, s3, cfg->GetValue(CSTR("Schema")), &this->log, CSTR("DB: "));
 				NEW_CLASS(this->dbMut, Sync::Mutex());
 				if (this->db == 0)
 				{
@@ -1304,12 +1322,15 @@ SSWR::SMonitor::SMonitorSvrCore::SMonitorSvrCore(NotNullPtr<IO::Writer> writer, 
 					{
 						this->listener->SetAccessLog(&this->log, IO::LogHandler::LogLevel::Command);
 						this->listener->SetRequestLog(this);
-						NEW_CLASS(this->notifyUDP, Net::UDPServer(this->sockf, 0, port, CSTR("Notify"), OnNotifyUDPPacket, this, &this->log, CSTR("Not: "), 2, false));
-						if (this->notifyUDP->IsError())
+						if (this->notifyPwd)
 						{
-							writer->WriteLineC(UTF8STRC("Error in listening web(notify) port"));
-							DEL_CLASS(this->notifyUDP);
-							this->notifyUDP = 0;
+							NEW_CLASS(this->notifyUDP, Net::UDPServer(this->sockf, 0, port, CSTR("Notify"), OnNotifyUDPPacket, this, &this->log, CSTR("Not: "), 2, false));
+							if (this->notifyUDP->IsError())
+							{
+								writer->WriteLineC(UTF8STRC("Error in listening web(notify) port"));
+								DEL_CLASS(this->notifyUDP);
+								this->notifyUDP = 0;
+							}
 						}
 					}
 				}
@@ -1479,6 +1500,7 @@ SSWR::SMonitor::SMonitorSvrCore::~SMonitorSvrCore()
 	SDEL_CLASS(this->ssl);
 	this->sockf.Delete();
 	this->deng.Delete();
+	SDEL_STRING(this->notifyPwd);
 	SDEL_STRING(this->dataDir);
 }
 

@@ -46,20 +46,20 @@ namespace Net
 		DNSClient(NotNullPtr<Net::SocketFactory> sockf, NotNullPtr<const Net::SocketUtil::AddressInfo> serverAddr);
 		~DNSClient();
 
-		UOSInt GetByEmailDomainName(Data::ArrayList<RequestAnswer*> *answers, Text::CString domain);
-		UOSInt GetByDomainName(Data::ArrayList<RequestAnswer*> *answers, Text::CString domain);
-		UOSInt GetByType(Data::ArrayList<RequestAnswer*> *answers, Text::CString domain, UInt16 type);
-		UOSInt GetByIPv4Name(Data::ArrayList<RequestAnswer*> *answers, UInt32 ip);
-		UOSInt GetByAddrName(Data::ArrayList<RequestAnswer*> *answers, const Net::SocketUtil::AddressInfo *addr);
-		UOSInt GetServerName(Data::ArrayList<RequestAnswer*> *answers);
-		UOSInt GetCAARecord(Data::ArrayList<RequestAnswer*> *answers, Text::CString domain);
+		UOSInt GetByEmailDomainName(NotNullPtr<Data::ArrayList<RequestAnswer*>> answers, Text::CStringNN domain);
+		UOSInt GetByDomainName(NotNullPtr<Data::ArrayList<RequestAnswer*>> answers, Text::CStringNN domain);
+		UOSInt GetByType(NotNullPtr<Data::ArrayList<RequestAnswer*>> answers, Text::CStringNN domain, UInt16 type);
+		UOSInt GetByIPv4Name(NotNullPtr<Data::ArrayList<RequestAnswer*>> answers, UInt32 ip);
+		UOSInt GetByAddrName(NotNullPtr<Data::ArrayList<RequestAnswer*>> answers, NotNullPtr<const Net::SocketUtil::AddressInfo> addr);
+		UOSInt GetServerName(NotNullPtr<Data::ArrayList<RequestAnswer*>> answers);
+		UOSInt GetCAARecord(NotNullPtr<Data::ArrayList<RequestAnswer*>> answers, Text::CStringNN domain);
 
 		void UpdateDNSAddr(NotNullPtr<const Net::SocketUtil::AddressInfo> serverAddr);
 
 		static UOSInt ParseString(UTF8Char *sbuff, const UInt8 *buff, UOSInt stringOfst, UOSInt endOfst, UTF8Char **sbuffEndOut); //return actEndOfst
-		static UOSInt ParseAnswers(const UInt8 *buff, UOSInt dataSize, Data::ArrayList<RequestAnswer*> *answers);
+		static UOSInt ParseAnswers(const UInt8 *buff, UOSInt dataSize, NotNullPtr<Data::ArrayList<RequestAnswer*>> answers);
 		static RequestAnswer *ParseAnswer(const UInt8 *buff, UOSInt dataSize, UOSInt *index);
-		static void FreeAnswers(Data::ArrayList<RequestAnswer*> *answers);
+		static void FreeAnswers(NotNullPtr<Data::ArrayList<RequestAnswer*>> answers);
 		static void FreeAnswer(RequestAnswer *answer);
 		static UInt32 GetResponseTTL(const UInt8 *buff, UOSInt buffSize);
 		static UOSInt SkipString(const UInt8 *buff, UOSInt stringOfst, UOSInt endOfst);

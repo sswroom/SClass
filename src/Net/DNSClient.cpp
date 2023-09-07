@@ -69,17 +69,17 @@ Net::DNSClient::~DNSClient()
 	DEL_CLASS(this->svr);
 }
 
-UOSInt Net::DNSClient::GetByEmailDomainName(Data::ArrayList<RequestAnswer*> *answers, Text::CString domain)
+UOSInt Net::DNSClient::GetByEmailDomainName(NotNullPtr<Data::ArrayList<RequestAnswer*>> answers, Text::CStringNN domain)
 {
 	return GetByType(answers, domain, 15);
 }
 
-UOSInt Net::DNSClient::GetByDomainName(Data::ArrayList<RequestAnswer*> *answers, Text::CString domain)
+UOSInt Net::DNSClient::GetByDomainName(NotNullPtr<Data::ArrayList<RequestAnswer*>> answers, Text::CStringNN domain)
 {
 	return GetByType(answers, domain, 1);
 }
 
-UOSInt Net::DNSClient::GetByType(Data::ArrayList<RequestAnswer*> *answers, Text::CString domain, UInt16 reqType)
+UOSInt Net::DNSClient::GetByType(NotNullPtr<Data::ArrayList<RequestAnswer*>> answers, Text::CStringNN domain, UInt16 reqType)
 {
 	UOSInt ret = 0;
 	UInt8 buff[512];
@@ -184,7 +184,7 @@ UOSInt Net::DNSClient::GetByType(Data::ArrayList<RequestAnswer*> *answers, Text:
 	return ret;
 }
 
-UOSInt Net::DNSClient::GetByIPv4Name(Data::ArrayList<RequestAnswer*> *answers, UInt32 ip)
+UOSInt Net::DNSClient::GetByIPv4Name(NotNullPtr<Data::ArrayList<RequestAnswer*>> answers, UInt32 ip)
 {
 	UOSInt ret = 0;
 	UInt8 buff[512];
@@ -233,7 +233,7 @@ UOSInt Net::DNSClient::GetByIPv4Name(Data::ArrayList<RequestAnswer*> *answers, U
 	return ret;
 }
 
-UOSInt Net::DNSClient::GetByAddrName(Data::ArrayList<RequestAnswer*> *answers, const Net::SocketUtil::AddressInfo *addr)
+UOSInt Net::DNSClient::GetByAddrName(NotNullPtr<Data::ArrayList<RequestAnswer*>> answers, NotNullPtr<const Net::SocketUtil::AddressInfo> addr)
 {
 	UOSInt ret = 0;
 	UInt8 buff[512];
@@ -369,12 +369,12 @@ UOSInt Net::DNSClient::GetByAddrName(Data::ArrayList<RequestAnswer*> *answers, c
 	return ret;
 }
 
-UOSInt Net::DNSClient::GetServerName(Data::ArrayList<RequestAnswer*> *answers)
+UOSInt Net::DNSClient::GetServerName(NotNullPtr<Data::ArrayList<RequestAnswer*>> answers)
 {
-	return GetByAddrName(answers, &this->serverAddr);
+	return GetByAddrName(answers, this->serverAddr);
 }
 
-UOSInt Net::DNSClient::GetCAARecord(Data::ArrayList<RequestAnswer*> *answers, Text::CString domain)
+UOSInt Net::DNSClient::GetCAARecord(NotNullPtr<Data::ArrayList<RequestAnswer*>> answers, Text::CStringNN domain)
 {
 	return GetByType(answers, domain, 257);
 }
@@ -447,7 +447,7 @@ UOSInt Net::DNSClient::ParseString(UTF8Char *sbuff, const UInt8 *buff, UOSInt st
 	return i;
 }
 
-UOSInt Net::DNSClient::ParseAnswers(const UInt8 *buff, UOSInt dataSize, Data::ArrayList<RequestAnswer*> *answers)
+UOSInt Net::DNSClient::ParseAnswers(const UInt8 *buff, UOSInt dataSize, NotNullPtr<Data::ArrayList<RequestAnswer*>> answers)
 {
 	UTF8Char sbuff[512];
 	RequestAnswer *ans;
@@ -639,7 +639,7 @@ Net::DNSClient::RequestAnswer *Net::DNSClient::ParseAnswer(const UInt8 *buff, UO
 	return ans;
 }
 
-void Net::DNSClient::FreeAnswers(Data::ArrayList<RequestAnswer*> *answers)
+void Net::DNSClient::FreeAnswers(NotNullPtr<Data::ArrayList<RequestAnswer*>> answers)
 {
 	LIST_FREE_FUNC(answers, FreeAnswer);
 }

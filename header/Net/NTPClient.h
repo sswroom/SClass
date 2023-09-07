@@ -21,8 +21,8 @@ namespace Net
 		NTPClient(NotNullPtr<Net::SocketFactory> sockf, UInt16 port);
 		~NTPClient();
 
-		Bool GetServerTime(Text::CString host, UInt16 port, NotNullPtr<Data::DateTime> svrTime); //def = 123
-		Bool GetServerTime(Text::CString host, UInt16 port, OutParam<Data::Timestamp> svrTime); //def = 123
+		Bool GetServerTime(Text::CStringNN host, UInt16 port, NotNullPtr<Data::DateTime> svrTime); //def = 123
+		Bool GetServerTime(Text::CStringNN host, UInt16 port, OutParam<Data::Timestamp> svrTime); //def = 123
 		Bool GetServerTime(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, NotNullPtr<Data::DateTime> svrTime); //def = 123
 		Bool GetServerTime(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, OutParam<Data::Timestamp> svrTime); //def = 123
 

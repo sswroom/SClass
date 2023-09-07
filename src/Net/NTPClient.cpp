@@ -41,7 +41,7 @@ Net::NTPClient::~NTPClient()
 	DEL_CLASS(this->svr);
 }
 
-Bool Net::NTPClient::GetServerTime(Text::CString host, UInt16 port, NotNullPtr<Data::DateTime> svrTime)
+Bool Net::NTPClient::GetServerTime(Text::CStringNN host, UInt16 port, NotNullPtr<Data::DateTime> svrTime)
 {
 	Net::SocketUtil::AddressInfo addr;
 	if (!sockf->DNSResolveIP(host, addr))
@@ -49,7 +49,7 @@ Bool Net::NTPClient::GetServerTime(Text::CString host, UInt16 port, NotNullPtr<D
 	return GetServerTime(addr, port, svrTime);
 }
 
-Bool Net::NTPClient::GetServerTime(Text::CString host, UInt16 port, OutParam<Data::Timestamp> svrTime)
+Bool Net::NTPClient::GetServerTime(Text::CStringNN host, UInt16 port, OutParam<Data::Timestamp> svrTime)
 {
 	Net::SocketUtil::AddressInfo addr;
 	if (!sockf->DNSResolveIP(host, addr))

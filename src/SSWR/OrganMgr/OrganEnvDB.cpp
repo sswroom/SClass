@@ -52,6 +52,7 @@ SSWR::OrganMgr::OrganEnvDB::OrganEnvDB() : OrganEnv()
 		this->errType = ERR_CONFIG;
 		return;
 	}
+	NotNullPtr<Text::String> nns;
 	Text::String *cfgMySQLHost;
 	Text::String *cfgMySQLDB;
 	Text::String *cfgDSN;
@@ -86,9 +87,9 @@ SSWR::OrganMgr::OrganEnvDB::OrganEnvDB() : OrganEnv()
 		this->cfgImgDirBase->v[i - 1] = 0;
 	}
 	this->log.AddFileLog(CSTR("OrganMgr.log"), IO::LogHandler::LogType::SingleFile, IO::LogHandler::LogGroup::NoGroup, IO::LogHandler::LogLevel::Raw, 0, false);
-	if (cfgMySQLDB && cfgMySQLHost)
+	if (cfgMySQLDB && nns.Set(cfgMySQLHost))
 	{
-		this->db = Net::MySQLTCPClient::CreateDBTool(this->sockf, cfgMySQLHost, cfgMySQLDB, Text::String::OrEmpty(cfgUID), Text::String::OrEmpty(cfgPassword), &this->log, CSTR_NULL);
+		this->db = Net::MySQLTCPClient::CreateDBTool(this->sockf, nns, cfgMySQLDB, Text::String::OrEmpty(cfgUID), Text::String::OrEmpty(cfgPassword), &this->log, CSTR_NULL);
 	}
 	else if (cfgDSN)
 	{

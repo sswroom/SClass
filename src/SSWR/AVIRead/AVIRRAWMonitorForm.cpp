@@ -245,7 +245,7 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnDNSReqv4SelChg(void *userObj
 		UInt32 ttl;
 		Data::ArrayList<Net::DNSClient::RequestAnswer*> ansList;
 		Net::DNSClient::RequestAnswer *ans;
-		if (me->analyzer->DNSReqv4GetInfo(name->ToCString(), &ansList, &reqTime, &ttl))
+		if (me->analyzer->DNSReqv4GetInfo(name->ToCString(), ansList, reqTime, ttl))
 		{
 			UOSInt i;
 			UOSInt j;
@@ -287,7 +287,7 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnDNSReqv6SelChg(void *userObj
 		UInt32 ttl;
 		Data::ArrayList<Net::DNSClient::RequestAnswer*> ansList;
 		Net::DNSClient::RequestAnswer *ans;
-		if (me->analyzer->DNSReqv6GetInfo(name->ToCString(), &ansList, &reqTime, &ttl))
+		if (me->analyzer->DNSReqv6GetInfo(name->ToCString(), ansList, reqTime, ttl))
 		{
 			UOSInt i;
 			UOSInt j;
@@ -329,7 +329,7 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnDNSReqOthSelChg(void *userOb
 		UInt32 ttl;
 		Data::ArrayList<Net::DNSClient::RequestAnswer*> ansList;
 		Net::DNSClient::RequestAnswer *ans;
-		if (me->analyzer->DNSReqOthGetInfo(name->ToCString(), &ansList, &reqTime, &ttl))
+		if (me->analyzer->DNSReqOthGetInfo(name->ToCString(), ansList, reqTime, ttl))
 		{
 			UOSInt i;
 			UOSInt j;

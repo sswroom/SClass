@@ -136,7 +136,7 @@ void __stdcall Net::DNSProxy::OnDNSRequest(void *userObj, Text::CString reqName,
 				UOSInt j;
 				TargetInfo *target;
 				mutUsage.BeginUse();
-				Net::DNSClient::ParseAnswers(req->recBuff, req->recSize, &ansList);
+				Net::DNSClient::ParseAnswers(req->recBuff, req->recSize, ansList);
 				mutUsage.EndUse();
 				Net::DNSClient::RequestAnswer *ans;
 				
@@ -178,7 +178,7 @@ void __stdcall Net::DNSProxy::OnDNSRequest(void *userObj, Text::CString reqName,
 						mutUsage.EndUse();
 					}
 				}
-				Net::DNSClient::FreeAnswers(&ansList);
+				Net::DNSClient::FreeAnswers(ansList);
 			}
 		}
 	}
@@ -801,7 +801,7 @@ UOSInt Net::DNSProxy::SearchIPv4(Data::ArrayList<Text::String *> *reqList, UInt3
 		valid = false;
 		Sync::MutexUsage mutUsage(result->mut);
 		ansList.Clear();
-		Net::DNSClient::ParseAnswers(result->recBuff, result->recSize, &ansList);
+		Net::DNSClient::ParseAnswers(result->recBuff, result->recSize, ansList);
 		mutUsage.EndUse();
 		k = ansList.GetCount();
 		while (k-- > 0)
@@ -816,7 +816,7 @@ UOSInt Net::DNSProxy::SearchIPv4(Data::ArrayList<Text::String *> *reqList, UInt3
 				}
 			}
 		}
-		Net::DNSClient::FreeAnswers(&ansList);
+		Net::DNSClient::FreeAnswers(ansList);
 
 		if (valid)
 		{
@@ -829,7 +829,7 @@ UOSInt Net::DNSProxy::SearchIPv4(Data::ArrayList<Text::String *> *reqList, UInt3
 	return retCnt;
 }
 
-Bool Net::DNSProxy::GetRequestInfov4(Text::CString req, Data::ArrayList<Net::DNSClient::RequestAnswer*> *ansList, Data::DateTime *reqTime, UInt32 *ttl)
+Bool Net::DNSProxy::GetRequestInfov4(Text::CString req, NotNullPtr<Data::ArrayList<Net::DNSClient::RequestAnswer*>> ansList, NotNullPtr<Data::DateTime> reqTime, OutParam<UInt32> ttl)
 {
 	RequestResult *result;
 	Sync::MutexUsage mutUsage(this->reqv4Mut);
@@ -840,8 +840,7 @@ Bool Net::DNSProxy::GetRequestInfov4(Text::CString req, Data::ArrayList<Net::DNS
 		Sync::MutexUsage mutUsage(result->mut);
 		Net::DNSClient::ParseAnswers(result->recBuff, result->recSize, ansList);
 		reqTime->SetInstant(result->reqTime.inst);
-		*ttl = result->ttl;
-		mutUsage.EndUse();
+		ttl.Set(result->ttl);
 		return true;
 	}
 	else
@@ -850,7 +849,7 @@ Bool Net::DNSProxy::GetRequestInfov4(Text::CString req, Data::ArrayList<Net::DNS
 	}
 }
 
-Bool Net::DNSProxy::GetRequestInfov6(Text::CString req, Data::ArrayList<Net::DNSClient::RequestAnswer*> *ansList, Data::DateTime *reqTime, UInt32 *ttl)
+Bool Net::DNSProxy::GetRequestInfov6(Text::CString req, NotNullPtr<Data::ArrayList<Net::DNSClient::RequestAnswer*>> ansList, NotNullPtr<Data::DateTime> reqTime, OutParam<UInt32> ttl)
 {
 	RequestResult *result;
 	Sync::MutexUsage mutUsage(this->reqv6Mut);
@@ -861,7 +860,7 @@ Bool Net::DNSProxy::GetRequestInfov6(Text::CString req, Data::ArrayList<Net::DNS
 		Sync::MutexUsage mutUsage(result->mut);
 		Net::DNSClient::ParseAnswers(result->recBuff, result->recSize, ansList);
 		reqTime->SetInstant(result->reqTime.inst);
-		*ttl = result->ttl;
+		ttl.Set(result->ttl);
 		return true;
 	}
 	else
@@ -870,7 +869,7 @@ Bool Net::DNSProxy::GetRequestInfov6(Text::CString req, Data::ArrayList<Net::DNS
 	}
 }
 
-Bool Net::DNSProxy::GetRequestInfoOth(Text::CString req, Data::ArrayList<Net::DNSClient::RequestAnswer*> *ansList, Data::DateTime *reqTime, UInt32 *ttl)
+Bool Net::DNSProxy::GetRequestInfoOth(Text::CString req, NotNullPtr<Data::ArrayList<Net::DNSClient::RequestAnswer*>> ansList, NotNullPtr<Data::DateTime> reqTime, OutParam<UInt32> ttl)
 {
 	RequestResult *result;
 	Sync::MutexUsage mutUsage(this->reqothMut);
@@ -881,7 +880,7 @@ Bool Net::DNSProxy::GetRequestInfoOth(Text::CString req, Data::ArrayList<Net::DN
 		Sync::MutexUsage mutUsage(result->mut);
 		Net::DNSClient::ParseAnswers(result->recBuff, result->recSize, ansList);
 		reqTime->SetInstant(result->reqTime.inst);
-		*ttl = result->ttl;
+		ttl.Set(result->ttl);
 		return true;
 	}
 	else

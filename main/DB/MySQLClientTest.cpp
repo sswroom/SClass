@@ -450,10 +450,10 @@ void TestBinaryRead(DB::DBTool *db)
 
 void TempTest(NotNullPtr<Net::SocketFactory> sockf, IO::Writer *console)
 {
-	Text::CString mysqlServer;
-	Text::CString mysqlDB;
-	Text::CString mysqlUID;
-	Text::CString mysqlPWD;
+	Text::CStringNN mysqlServer;
+	Text::CStringNN mysqlDB;
+	Text::CStringNN mysqlUID;
+	Text::CStringNN mysqlPWD;
 	DB::DBTool *db;
 	IO::LogTool log;
 	mysqlServer = CSTR("192.168.0.15");
@@ -483,10 +483,10 @@ void TempTest(NotNullPtr<Net::SocketFactory> sockf, IO::Writer *console)
 
 Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 {
-	Text::CString mysqlServer;
-	Text::CString mysqlDB;
-	Text::CString mysqlUID;
-	Text::CString mysqlPWD;
+	Text::CStringNN mysqlServer;
+	Text::CStringNN mysqlDB;
+	Text::CStringNN mysqlUID;
+	Text::CStringNN mysqlPWD;
 	mysqlServer = CSTR("192.168.0.15");
 	mysqlDB = CSTR("organism");
 	mysqlUID = CSTR("organ");

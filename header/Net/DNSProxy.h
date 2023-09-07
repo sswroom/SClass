@@ -111,9 +111,9 @@ namespace Net
 		UOSInt GetReqOthList(Data::ArrayList<Text::String *> *reqList); //no need release
 		UOSInt GetTargetList(Data::ArrayList<TargetInfo*> *targetList); //no need release
 		UOSInt SearchIPv4(Data::ArrayList<Text::String *> *reqList, UInt32 ip, UInt32 mask); //no need release
-		Bool GetRequestInfov4(Text::CString req, Data::ArrayList<Net::DNSClient::RequestAnswer*> *ansList, Data::DateTime *reqTime, UInt32 *ttl);
-		Bool GetRequestInfov6(Text::CString req, Data::ArrayList<Net::DNSClient::RequestAnswer*> *ansList, Data::DateTime *reqTime, UInt32 *ttl);
-		Bool GetRequestInfoOth(Text::CString req, Data::ArrayList<Net::DNSClient::RequestAnswer*> *ansList, Data::DateTime *reqTime, UInt32 *ttl);
+		Bool GetRequestInfov4(Text::CString req, NotNullPtr<Data::ArrayList<Net::DNSClient::RequestAnswer*>> ansList, NotNullPtr<Data::DateTime> reqTime, OutParam<UInt32> ttl);
+		Bool GetRequestInfov6(Text::CString req, NotNullPtr<Data::ArrayList<Net::DNSClient::RequestAnswer*>> ansList, NotNullPtr<Data::DateTime> reqTime, OutParam<UInt32> ttl);
+		Bool GetRequestInfoOth(Text::CString req, NotNullPtr<Data::ArrayList<Net::DNSClient::RequestAnswer*>> ansList, NotNullPtr<Data::DateTime> reqTime, OutParam<UInt32> ttl);
 		UInt32 GetServerIP();
 		void SetServerIP(UInt32 serverIP);
 		void GetDNSList(Data::ArrayList<UInt32> *dnsList);

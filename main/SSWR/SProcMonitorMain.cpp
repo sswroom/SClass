@@ -1,225 +1,262 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Core/Core.h"
-#include "IO/ConsoleWriter.h"
+#include "Crypto/Hash/CRC32RC.h"
 #include "IO/FileStream.h"
 #include "IO/LogTool.h"
 #include "IO/Path.h"
-#include "Manage/ExceptionRecorder.h"
 #include "Manage/Process.h"
-#include "Sync/SimpleThread.h"
-#include "Sync/ThreadUtil.h"
+#include "Net/OSSocketFactory.h"
+#include "Net/UDPServer.h"
+#include "Sync/Thread.h"
 #include "Text/UTF8Reader.h"
 
-typedef struct
+class ProcMonitorCore
 {
-	NotNullPtr<Text::String> progName;
-	Text::String *progPath;
-	UOSInt procId;
-} ProgInfo;
-
-IO::LogTool *myLog;
-Data::ArrayList<ProgInfo*> *progList;
-Bool threadRunning;
-Bool threadToStop;
-Sync::Event *threadEvt;
-
-Bool SearchProcId(ProgInfo *prog)
-{
-	if (prog->progPath == 0)
-		return false;
-
-	UTF8Char sbuff[512];
-	UOSInt i;
-	Bool ret = false;
-	Manage::Process::ProcessInfo info;
-	i = Text::StrLastIndexOfCharC(prog->progPath->v, prog->progPath->leng, IO::Path::PATH_SEPERATOR);
-	Manage::Process::FindProcSess *sess = Manage::Process::FindProcess(prog->progPath->ToCString().Substring(i + 1));
-	if (sess)
+private:
+	struct ProgInfo
 	{
-		Text::StringBuilderUTF8 sb;
-		while (Manage::Process::FindProcessNext(sbuff, sess, &info))
+		NotNullPtr<Text::String> progName;
+		Text::String *progPath;
+		UOSInt procId;
+		Data::Timestamp lastSent;
+	};
+
+	IO::LogTool myLog;
+	Data::ArrayList<ProgInfo*> progList;
+	Net::OSSocketFactory sockf;
+	Net::UDPServer udp;
+	Crypto::Hash::CRC32RC crc;
+
+	void NotifyServer(ProgInfo *prog, UInt8 type)
+	{
+		UInt8 buff[256];
+		Text::CStringNN host = CSTR("sswroom.no-ip.org");
+		Net::SocketUtil::AddressInfo addr;
+		UTF8Char *sptr;
+
+		Data::Timestamp currTime = Data::Timestamp::UtcNow();
+		if (currTime.DiffSec(prog->lastSent) >= 60 && this->sockf.DNSResolveIP(host, addr))
 		{
-			Manage::Process proc(info.processId, false);
-			sb.ClearStr();
-			if (proc.GetTrueProgramPath(sb))
-			{
-				if (sb.Equals(prog->progPath))
-				{
-					Text::StringBuilderUTF8 sb;
-					prog->procId = info.processId;
-					ret = true;
-					sb.AppendC(UTF8STRC("Prog "));
-					sb.Append(prog->progName);
-					sb.AppendC(UTF8STRC(": Updated procId as "));
-					sb.AppendUOSInt(prog->procId);
-					myLog->LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Command);
-					break;
-				}
-			}
+			buff[0] = 'S';
+			buff[1] = 'm';
+			buff[2] = 'P';
+			buff[3] = 'M';
+			WriteInt64(&buff[4], currTime.ToUnixTimestamp());
+			WriteUInt32(&buff[12], currTime.inst.nanosec);
+			buff[16] = type;
+			WriteUInt32(&buff[17], (UInt32)prog->procId);
+			sptr = prog->progName->ConcatTo(&buff[21]);
+			crc.Clear();
+			crc.Calc(host.v, 7);
+			crc.Calc(buff, (UOSInt)(sptr - buff));
+			WriteMUInt32(sptr, crc.GetValueU32());
+			this->udp.SendTo(addr, 5080, buff, (UOSInt)(sptr - buff + 4));
 		}
-		Manage::Process::FindProcessClose(sess);
+		prog->lastSent = currTime;
 	}
-	return ret;
-}
 
-void AddProg(const UTF8Char *progName, UOSInt progNameLen, const UTF8Char *progPath, UOSInt progPathLen)
-{
-	ProgInfo *prog;
-	prog = MemAlloc(ProgInfo, 1);
-	prog->progName = Text::String::New(progName, progNameLen);
-	prog->procId = 0;
-	if (progPath)
+	Bool SearchProcId(ProgInfo *prog)
 	{
-		prog->progPath = Text::String::New(progPath, progPathLen).Ptr();
-	}
-	else
-	{
-		prog->progPath = 0;
-	}
-	progList->Add(prog);
+		if (prog->progPath == 0)
+			return false;
 
-	if (progPath)
-	{
-		SearchProcId(prog);
-	}
-}
-
-void LoadProgList()
-{
-	UTF8Char sbuff[512];
-	UTF8Char *sptr;
-	Text::PString sarr[2];
-	NotNullPtr<IO::FileStream> fs;
-	Text::UTF8Reader *reader;
-	Text::StringBuilderUTF8 sb;
-
-	IO::Path::GetProcessFileName(sbuff);
-	sptr = IO::Path::ReplaceExt(sbuff, UTF8STRC("prg"));
-	NEW_CLASSNN(fs, IO::FileStream(CSTRP(sbuff, sptr), IO::FileMode::ReadOnly, IO::FileShare::DenyAll, IO::FileStream::BufferType::Normal));
-	if (!fs->IsError())
-	{
-		NEW_CLASS(reader, Text::UTF8Reader(fs));
-		
-		while (true)
+		UTF8Char sbuff[512];
+		UOSInt i;
+		Bool ret = false;
+		Manage::Process::ProcessInfo info;
+		i = Text::StrLastIndexOfCharC(prog->progPath->v, prog->progPath->leng, IO::Path::PATH_SEPERATOR);
+		Manage::Process::FindProcSess *sess = Manage::Process::FindProcess(prog->progPath->ToCString().Substring(i + 1));
+		if (sess)
 		{
-			sb.ClearStr();
-			if (!reader->ReadLine(sb, 4096))
-				break;
-			if (Text::StrSplitP(sarr, 2, sb, ',') == 2)
+			Text::StringBuilderUTF8 sb;
+			while (Manage::Process::FindProcessNext(sbuff, sess, &info))
 			{
-				if (sarr[1].leng > 0)
+				Manage::Process proc(info.processId, false);
+				sb.ClearStr();
+				if (proc.GetTrueProgramPath(sb))
 				{
-					AddProg(sarr[0].v, sarr[0].leng, sarr[1].v, sarr[1].leng);
-				}
-				else
-				{
-					AddProg(sarr[0].v, sarr[0].leng, sarr[1].v, sarr[1].leng);
-				}
-			}
-		}
-		DEL_CLASS(reader);
-	}
-	fs.Delete();
-}
-
-void __stdcall OnTimerTick(void *userObj)
-{
-	UOSInt i;
-	ProgInfo *prog;
-	i = progList->GetCount();
-	while (i-- > 0)
-	{
-		prog = progList->GetItem(i);
-		if (prog->progPath != 0)
-		{
-			if (prog->procId != 0)
-			{
-				Manage::Process proc(prog->procId, false);
-				if (!proc.IsRunning())
-				{
-					prog->procId = 0;
-					Text::StringBuilderUTF8 sb;
-					sb.AppendC(UTF8STRC("Prog "));
-					sb.Append(prog->progName);
-					sb.AppendC(UTF8STRC(" stopped"));
-					myLog->LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Command);
-				}
-			}
-			if (prog->procId == 0)
-			{
-				if (!SearchProcId(prog))
-				{
-					Manage::Process proc(prog->progPath->v);
-					if (proc.IsRunning())
+					if (sb.Equals(prog->progPath))
 					{
-						prog->procId = proc.GetProcId();
+						prog->procId = info.processId;
+						NotifyServer(prog, 1);
 						Text::StringBuilderUTF8 sb;
+						ret = true;
 						sb.AppendC(UTF8STRC("Prog "));
 						sb.Append(prog->progName);
-						sb.AppendC(UTF8STRC(" restarted, procId = "));
+						sb.AppendC(UTF8STRC(": Updated procId as "));
 						sb.AppendUOSInt(prog->procId);
-						myLog->LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Command);
+						this->myLog.LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Command);
+						break;
+					}
+				}
+			}
+			Manage::Process::FindProcessClose(sess);
+		}
+		return ret;
+	}
+
+	void AddProg(const UTF8Char *progName, UOSInt progNameLen, const UTF8Char *progPath, UOSInt progPathLen)
+	{
+		UTF8Char sbuff[512];
+		UTF8Char *sptr;
+		ProgInfo *prog;
+		prog = MemAlloc(ProgInfo, 1);
+		prog->progName = Text::String::New(progName, progNameLen);
+		prog->procId = 0;
+		prog->lastSent = 0;
+		if (progPath)
+		{
+			sptr = IO::Path::GetProcessFileName(sbuff);
+			sptr = IO::Path::AppendPath(sbuff, sptr, Text::CString(progPath, progPathLen));
+			prog->progPath = Text::String::NewP(sbuff, sptr).Ptr();
+		}
+		else
+		{
+			prog->progPath = 0;
+		}
+		this->progList.Add(prog);
+
+		if (progPath)
+		{
+			this->SearchProcId(prog);
+		}
+	}
+
+	void LoadProgList()
+	{
+		UTF8Char sbuff[512];
+		UTF8Char *sptr;
+		Text::PString sarr[2];
+		Text::StringBuilderUTF8 sb;
+
+		IO::Path::GetProcessFileName(sbuff);
+		sptr = IO::Path::ReplaceExt(sbuff, UTF8STRC("prg"));
+		IO::FileStream fs(CSTRP(sbuff, sptr), IO::FileMode::ReadOnly, IO::FileShare::DenyAll, IO::FileStream::BufferType::Normal);
+		if (!fs.IsError())
+		{
+			Text::UTF8Reader reader(fs);
+			while (true)
+			{
+				sb.ClearStr();
+				if (!reader.ReadLine(sb, 4096))
+					break;
+				if (Text::StrSplitP(sarr, 2, sb, ',') == 2)
+				{
+					if (sarr[1].leng > 0)
+					{
+						AddProg(sarr[0].v, sarr[0].leng, sarr[1].v, sarr[1].leng);
+					}
+					else
+					{
+						AddProg(sarr[0].v, sarr[0].leng, sarr[1].v, sarr[1].leng);
 					}
 				}
 			}
 		}
 	}
-}
 
-static UInt32 __stdcall CheckThread(void *userObj)
-{
-	threadRunning = true;
-	while (!threadToStop)
+	static void __stdcall OnTimerTick(void *userObj)
 	{
-		OnTimerTick(userObj);
-		threadEvt->Wait(30000);
+		ProcMonitorCore *me = (ProcMonitorCore*)userObj;
+		UOSInt i;
+		ProgInfo *prog;
+		i = me->progList.GetCount();
+		while (i-- > 0)
+		{
+			prog = me->progList.GetItem(i);
+			if (prog->progPath != 0)
+			{
+				if (prog->procId != 0)
+				{
+					Manage::Process proc(prog->procId, false);
+					if (!proc.IsRunning())
+					{
+						prog->procId = 0;
+						Text::StringBuilderUTF8 sb;
+						sb.AppendC(UTF8STRC("Prog "));
+						sb.Append(prog->progName);
+						sb.AppendC(UTF8STRC(" stopped"));
+						me->myLog.LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Command);
+					}
+				}
+				if (prog->procId == 0)
+				{
+					if (!me->SearchProcId(prog))
+					{
+						Manage::Process proc(prog->progPath->v);
+						if (proc.IsRunning())
+						{
+							prog->procId = proc.GetProcId();
+							me->NotifyServer(prog, 0);
+							Text::StringBuilderUTF8 sb;
+							sb.AppendC(UTF8STRC("Prog "));
+							sb.Append(prog->progName);
+							sb.AppendC(UTF8STRC(" restarted, procId = "));
+							sb.AppendUOSInt(prog->procId);
+							me->myLog.LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Command);
+						}
+					}
+				}
+			}
+		}
 	}
-	threadRunning = false;
-	return 0;
-}
+
+	static void __stdcall CheckThread(NotNullPtr<Sync::Thread> thread)
+	{
+		while (!thread->IsStopping())
+		{
+			OnTimerTick(thread->GetUserObj());
+			thread->Wait(30000);
+		}
+	}
+
+	static void __stdcall OnUDPPacket(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, void *userData)
+	{
+
+	}
+
+public:
+	ProcMonitorCore() : sockf(false), udp(sockf, 0, 0, CSTR_NULL, OnUDPPacket, this, 0, CSTR(""), 1, true)
+	{
+		Text::StringBuilderUTF8 sb;
+		sb.AppendC(UTF8STRC("Log"));
+		sb.AppendChar(IO::Path::PATH_SEPERATOR, 1);
+		sb.AppendC(UTF8STRC("ProgLog"));
+		this->myLog.AddFileLog(sb.ToCString(), IO::LogHandler::LogType::PerDay, IO::LogHandler::LogGroup::PerMonth, IO::LogHandler::LogLevel::Raw, "yyyy-MM-dd HH:mm:ss.fff", false);
+		this->LoadProgList();
+	}
+
+	~ProcMonitorCore()
+	{
+		ProgInfo *prog;
+		UOSInt i = this->progList.GetCount();
+		while (i-- > 0)
+		{
+			prog = this->progList.GetItem(i);
+			SDEL_STRING(prog->progPath);
+			prog->progName->Release();
+			MemFree(prog);
+		}
+	}
+
+	void Run(NotNullPtr<Core::IProgControl> progCtrl)
+	{
+		if (this->progList.GetCount() > 0)
+		{
+			Sync::Thread chkThread(CheckThread, this, CSTR("CheckThread"));
+			chkThread.Start();
+
+			progCtrl->WaitForExit(progCtrl);
+
+			chkThread.Stop();
+		}
+	}
+};
 
 Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 {
-	Text::StringBuilderUTF8 sb;
-	sb.AppendC(UTF8STRC("Log"));
-	sb.AppendChar(IO::Path::PATH_SEPERATOR, 1);
-	sb.AppendC(UTF8STRC("ProgLog"));
-	NEW_CLASS(myLog, IO::LogTool());
-	myLog->AddFileLog(sb.ToCString(), IO::LogHandler::LogType::PerDay, IO::LogHandler::LogGroup::PerMonth, IO::LogHandler::LogLevel::Raw, "yyyy-MM-dd HH:mm:ss.fff", false);
-	NEW_CLASS(progList, Data::ArrayList<ProgInfo*>());
-
-	LoadProgList();
-
-	if (progList->GetCount() > 0)
-	{
-		NEW_CLASS(threadEvt, Sync::Event(true));
-		threadRunning = false;
-		threadToStop = false;
-		Sync::ThreadUtil::Create(CheckThread, 0);
-
-		progCtrl->WaitForExit(progCtrl);
-
-		threadToStop = true;
-		threadEvt->Set();
-		while (threadRunning)
-		{
-			Sync::SimpleThread::Sleep(1);
-		}
-		DEL_CLASS(threadEvt);
-	}
-
-
-	ProgInfo *prog;
-	UOSInt i = progList->GetCount();
-	while (i-- > 0)
-	{
-		prog = progList->GetItem(i);
-		SDEL_STRING(prog->progPath);
-		prog->progName->Release();
-		MemFree(prog);
-	}
-	DEL_CLASS(progList);
-	DEL_CLASS(myLog);
+	ProcMonitorCore core;
+	core.Run(progCtrl);
 	return 0;
 }

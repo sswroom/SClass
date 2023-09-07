@@ -152,7 +152,7 @@ SSWR::DiscDB::DiscDBEnv::DiscDBEnv()
 		else if (str.Set(cfg->GetValue(CSTR("MySQLServer"))))
 		{
 			this->db = Net::MySQLTCPClient::CreateDBTool(this->sockf,
-				str.Ptr(),
+				str,
 				Text::String::OrEmpty(cfg->GetValue(CSTR("MySQLDB"))).Ptr(),
 				Text::String::OrEmpty(cfg->GetValue(CSTR("UID"))),
 				Text::String::OrEmpty(cfg->GetValue(CSTR("PWD"))),

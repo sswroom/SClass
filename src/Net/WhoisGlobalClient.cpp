@@ -13,7 +13,7 @@ Net::WhoisGlobalClient::~WhoisGlobalClient()
 Net::WhoisRecord *Net::WhoisGlobalClient::RequestIP(UInt32 ip, Data::Duration timeout)
 {
 	UInt32 ipCmp = Net::SocketUtil::IPv4ToSortable(ip);
-	Text::CString whoisHost;
+	Text::CStringNN whoisHost;
 	Text::CString prefix = CSTR_NULL;
 	switch (ipCmp >> 24)
 	{

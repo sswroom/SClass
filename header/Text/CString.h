@@ -86,6 +86,15 @@ namespace Text
 		CStringNN(const UTF8Char *v, UOSInt leng) : CString(v, leng)
 		{
 		}
+
+		static CStringNN FromPtr(const UTF8Char *v)
+		{
+			if (v == 0)
+			{
+				return CSTR("");
+			}
+			return CStringNN(v, Text::StrCharCnt(v));
+		}
 	};
 
 	FORCEINLINE CStringNN CString::Substring(UOSInt index) const

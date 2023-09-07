@@ -52,10 +52,10 @@ void __stdcall SSWR::AVIRead::AVIRDNSClientForm::OnRequestClicked(void *userObj)
 	}
 	bestInd = (UOSInt)-1;
 	i = 0;
-	j = me->ansList->GetCount();
+	j = me->ansList.GetCount();
 	while (i < j)
 	{
-		ans = me->ansList->GetItem(i);
+		ans = me->ansList.GetItem(i);
 		if (bestInd == (UOSInt)-1 && ans->recType == 1)
 		{
 			bestInd = i;
@@ -135,7 +135,6 @@ SSWR::AVIRead::AVIRDNSClientForm::AVIRDNSClientForm(UI::GUIClientControl *parent
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 	this->sockf = core->GetSocketFactory();
-	NEW_CLASS(this->ansList, Data::ArrayList<Net::DNSClient::RequestAnswer*>());
 
 	NEW_CLASS(this->pnlRequest, UI::GUIPanel(ui, this));
 	this->pnlRequest->SetRect(0, 0, 100, 104, false);
@@ -214,7 +213,6 @@ SSWR::AVIRead::AVIRDNSClientForm::AVIRDNSClientForm(UI::GUIClientControl *parent
 SSWR::AVIRead::AVIRDNSClientForm::~AVIRDNSClientForm()
 {
 	Net::DNSClient::FreeAnswers(this->ansList);
-	DEL_CLASS(this->ansList);
 }
 
 void SSWR::AVIRead::AVIRDNSClientForm::OnMonitorChanged()

@@ -127,7 +127,7 @@ void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnTimerTick(void *userObj)
 void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnV4ReqSelChg(void *userObj)
 {
 	SSWR::AVIRead::AVIRDNSProxyForm *me = (SSWR::AVIRead::AVIRDNSProxyForm*)userObj;
-	Net::DNSClient::FreeAnswers(&me->v4ansList);
+	Net::DNSClient::FreeAnswers(me->v4ansList);
 	UOSInt i;
 	UOSInt j;
 
@@ -140,7 +140,7 @@ void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnV4ReqSelChg(void *userObj)
 		Net::DNSClient::RequestAnswer *ans;
 		Data::DateTime reqTime;
 		UInt32 ttl;
-		if (me->proxy->GetRequestInfov4(req->ToCString(), &me->v4ansList, &reqTime, &ttl))
+		if (me->proxy->GetRequestInfov4(req->ToCString(), me->v4ansList, reqTime, ttl))
 		{
 			UOSInt bestInd = (UOSInt)-1;
 			i = 0;
@@ -210,7 +210,7 @@ void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnV4AnsSelChg(void *userObj)
 void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnV6ReqSelChg(void *userObj)
 {
 	SSWR::AVIRead::AVIRDNSProxyForm *me = (SSWR::AVIRead::AVIRDNSProxyForm*)userObj;
-	Net::DNSClient::FreeAnswers(&me->v6ansList);
+	Net::DNSClient::FreeAnswers(me->v6ansList);
 	UOSInt i;
 	UOSInt j;
 
@@ -223,7 +223,7 @@ void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnV6ReqSelChg(void *userObj)
 		Net::DNSClient::RequestAnswer *ans;
 		Data::DateTime reqTime;
 		UInt32 ttl;
-		if (me->proxy->GetRequestInfov6(req->ToCString(), &me->v6ansList, &reqTime, &ttl))
+		if (me->proxy->GetRequestInfov6(req->ToCString(), me->v6ansList, reqTime, ttl))
 		{
 			UOSInt bestInd = (UOSInt)-1;
 			i = 0;
@@ -293,7 +293,7 @@ void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnV6AnsSelChg(void *userObj)
 void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnOthReqSelChg(void *userObj)
 {
 	SSWR::AVIRead::AVIRDNSProxyForm *me = (SSWR::AVIRead::AVIRDNSProxyForm*)userObj;
-	Net::DNSClient::FreeAnswers(&me->othansList);
+	Net::DNSClient::FreeAnswers(me->othansList);
 	UOSInt i;
 	UOSInt j;
 
@@ -306,7 +306,7 @@ void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnOthReqSelChg(void *userObj)
 		Net::DNSClient::RequestAnswer *ans;
 		Data::DateTime reqTime;
 		UInt32 ttl;
-		if (me->proxy->GetRequestInfoOth(req->ToCString(), &me->othansList, &reqTime, &ttl))
+		if (me->proxy->GetRequestInfoOth(req->ToCString(), me->othansList, reqTime, ttl))
 		{
 			UOSInt bestInd = (UOSInt)-1;
 			i = 0;
@@ -537,7 +537,7 @@ void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnSearchClicked(void *userObj)
 void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnSReqSelChg(void *userObj)
 {
 	SSWR::AVIRead::AVIRDNSProxyForm *me = (SSWR::AVIRead::AVIRDNSProxyForm*)userObj;
-	Net::DNSClient::FreeAnswers(&me->v4sansList);
+	Net::DNSClient::FreeAnswers(me->v4sansList);
 	UOSInt i;
 	UOSInt j;
 
@@ -550,7 +550,7 @@ void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnSReqSelChg(void *userObj)
 		Net::DNSClient::RequestAnswer *ans;
 		Data::DateTime reqTime;
 		UInt32 ttl;
-		if (me->proxy->GetRequestInfov4(req->ToCString(), &me->v4sansList, &reqTime, &ttl))
+		if (me->proxy->GetRequestInfov4(req->ToCString(), me->v4sansList, reqTime, ttl))
 		{
 			UOSInt bestInd = (UOSInt)-1;
 			i = 0;
@@ -1146,10 +1146,10 @@ SSWR::AVIRead::AVIRDNSProxyForm::~AVIRDNSProxyForm()
 	UOSInt j;
 	ClientInfo *cli;
 	DEL_CLASS(this->proxy);
-	Net::DNSClient::FreeAnswers(&this->v4ansList);
-	Net::DNSClient::FreeAnswers(&this->v6ansList);
-	Net::DNSClient::FreeAnswers(&this->othansList);
-	Net::DNSClient::FreeAnswers(&this->v4sansList);
+	Net::DNSClient::FreeAnswers(this->v4ansList);
+	Net::DNSClient::FreeAnswers(this->v6ansList);
+	Net::DNSClient::FreeAnswers(this->othansList);
+	Net::DNSClient::FreeAnswers(this->v4sansList);
 	i = this->cliInfos.GetCount();
 	while (i-- > 0)
 	{

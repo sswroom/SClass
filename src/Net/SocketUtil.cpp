@@ -397,7 +397,7 @@ Bool Net::SocketUtil::GetIPAddr(const WChar *ipName, NotNullPtr<AddressInfo> add
 	return true;
 }
 
-Bool Net::SocketUtil::GetIPAddr(Text::CString ipName, NotNullPtr<AddressInfo> addr)
+Bool Net::SocketUtil::GetIPAddr(Text::CStringNN ipName, NotNullPtr<AddressInfo> addr)
 {
 	UTF8Char sbuff[51];
 	UTF8Char *sarr[9];
@@ -559,7 +559,7 @@ UInt32 Net::SocketUtil::GetIPAddr(const WChar *ipName)
 	return *(UInt32*)ip;
 }
 
-UInt32 Net::SocketUtil::GetIPAddr(Text::CString ipName)
+UInt32 Net::SocketUtil::GetIPAddr(Text::CStringNN ipName)
 {
 	UTF8Char sbuff[32];
 	UTF8Char *sarr[4];

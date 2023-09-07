@@ -222,9 +222,9 @@ namespace Net
 		virtual Bool AdapterEnable(Text::CString adapterName, Bool enable);
 
 		Bool ReloadDNS();
-		Bool DNSResolveIP(Text::CString host, NotNullPtr<Net::SocketUtil::AddressInfo> addr);
-		UOSInt DNSResolveIPs(Text::CString host, Data::DataArray<Net::SocketUtil::AddressInfo> addrs);
-		UInt32 DNSResolveIPv4(Text::CString host);
+		Bool DNSResolveIP(Text::CStringNN host, NotNullPtr<Net::SocketUtil::AddressInfo> addr);
+		UOSInt DNSResolveIPs(Text::CStringNN host, Data::DataArray<Net::SocketUtil::AddressInfo> addrs);
+		UInt32 DNSResolveIPv4(Text::CStringNN host);
 //		Bool GetIPByHost(const WChar *host, Net::SocketUtil::AddressInfo *addr);
 //		UInt32 GetIPv4ByHost(const WChar *host);		UInt32 DNSResolveIPv4(const UTF8Char *host);
 //		UInt32 GetIPv4ByHostOS(const WChar *host
