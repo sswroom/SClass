@@ -9,27 +9,22 @@
 
 Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 {
-	SSWR::SMonitor::SMonitorSvrCore *core;
-	Manage::ExceptionRecorder *exHdlr;
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
-	IO::ConsoleWriter *console;
-
 	sptr = IO::Path::GetProcessFileName(sbuff);
 	sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("SMonitorSvrMem.log"));
 	MemSetLogFile(sbuff, (UOSInt)(sptr - sbuff));
 	sptr = IO::Path::GetProcessFileName(sbuff);
 	sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("SMonitorSvr.err"));
-	NEW_CLASS(exHdlr, Manage::ExceptionRecorder(CSTRP(sbuff, sptr), Manage::ExceptionRecorder::EA_RESTART));
-	NEW_CLASS(console, IO::ConsoleWriter());
-	NEW_CLASS(core, SSWR::SMonitor::SMonitorSvrCore(console, Media::DrawEngineFactory::CreateDrawEngine()));
-	if (!core->IsError())
+	Manage::ExceptionRecorder exHdlr(CSTRP(sbuff, sptr), Manage::ExceptionRecorder::EA_RESTART);
+	IO::ConsoleWriter console;
 	{
-		console->WriteLineC(UTF8STRC("SMonitorSvr running"));
-		progCtrl->WaitForExit(progCtrl);
+		SSWR::SMonitor::SMonitorSvrCore core(console, Media::DrawEngineFactory::CreateDrawEngine());
+		if (!core.IsError())
+		{
+			console.WriteLineC(UTF8STRC("SMonitorSvr running"));
+			progCtrl->WaitForExit(progCtrl);
+		}
 	}
-	DEL_CLASS(core);
-	DEL_CLASS(console);
-	DEL_CLASS(exHdlr);
 	return 0;
 }

@@ -613,7 +613,7 @@ Bool Net::LDAPClient::Bind(Text::CString userDN, Text::CString password)
 	pdu->EndLevel();
 
 	pdu->EndLevel();
-	buff = pdu->GetBuff(&buffSize);
+	buff = pdu->GetBuff(buffSize);
 
 	status.isFin = false;
 	status.resultCode = 0;
@@ -664,7 +664,7 @@ Bool Net::LDAPClient::Unbind()
 
 	pdu->EndLevel();
 
-	buff = pdu->GetBuff(&buffSize);
+	buff = pdu->GetBuff(buffSize);
 	valid = (this->cli->Write(buff, buffSize) == buffSize);
 	DEL_CLASS(pdu);
 	return valid;
@@ -716,7 +716,7 @@ Bool Net::LDAPClient::Search(Text::CString baseObject, ScopeType scope, DerefTyp
 
 	pdu->EndLevel();
 
-	buff = pdu->GetBuff(&buffSize);
+	buff = pdu->GetBuff(buffSize);
 
 	status.isFin = false;
 	status.resultCode = 0;

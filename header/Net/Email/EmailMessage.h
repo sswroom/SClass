@@ -44,12 +44,12 @@ namespace Net
 			UOSInt GetHeaderIndex(const UTF8Char *name, UOSInt nameLen);
 			Bool SetHeader(const UTF8Char *name, UOSInt nameLen, const UTF8Char *val, UOSInt valLen);
 			Bool AppendUTF8Header(NotNullPtr<Text::StringBuilderUTF8> sb, const UTF8Char *val, UOSInt valLen);
-			void GenMultipart(IO::Stream *stm, Text::CString boundary);
+			void GenMultipart(NotNullPtr<IO::Stream> stm, Text::CString boundary);
 
-			void WriteHeaders(IO::Stream *stm);
-			void WriteContents(IO::Stream *stm);
+			void WriteHeaders(NotNullPtr<IO::Stream> stm);
+			void WriteContents(NotNullPtr<IO::Stream> stm);
 			static UTF8Char *GenBoundary(UTF8Char *sbuff, const UInt8 *data, UOSInt dataLen);
-			static void WriteB64Data(IO::Stream *stm, const UInt8 *data, UOSInt dataSize);
+			static void WriteB64Data(NotNullPtr<IO::Stream> stm, const UInt8 *data, UOSInt dataSize);
 			static void AttachmentFree(Attachment *attachment);
 		public:
 			EmailMessage();
@@ -71,7 +71,7 @@ namespace Net
 			Bool CompletedMessage();
 			Text::String *GetFromAddr();
 			const Data::ArrayListNN<Text::String> *GetRecpList();
-			Bool WriteToStream(IO::Stream *stm);
+			Bool WriteToStream(NotNullPtr<IO::Stream> stm);
 
 			static Bool GenerateMessageID(NotNullPtr<Text::StringBuilderUTF8> sb, Text::CString fromAddr);
 		};

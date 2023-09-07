@@ -6,12 +6,15 @@
 #include "DB/ODBCConn.h"
 #include "IO/FileStream.h"
 #include "IO/IniFile.h"
+#include "IO/LogWriter.h"
 #include "IO/MemoryStream.h"
 #include "IO/Path.h"
 #include "IO/StreamWriter.h"
 #include "IO/ProtoHdlr/ProtoSMonHandler.h"
 #include "Net/MySQLTCPClient.h"
 #include "Net/OSSocketFactory.h"
+#include "Net/SSLEngineFactory.h"
+#include "Net/Email/SMTPClient.h"
 #include "Net/WebServer/HTTPDirectoryHandler.h"
 #include "Parser/FullParserList.h"
 #include "SSWR/Benchmark/BenchmarkWebHandler.h"
@@ -182,7 +185,7 @@ void __stdcall SSWR::SMonitor::SMonitorSvrCore::CheckThread(NotNullPtr<Sync::Thr
 void __stdcall SSWR::SMonitor::SMonitorSvrCore::OnDataUDPPacket(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, void *userData)
 {
 	SSWR::SMonitor::SMonitorSvrCore *me = (SSWR::SMonitor::SMonitorSvrCore*)userData;
-	SSWR::SMonitor::ISMonitorCore::DeviceInfo *devInfo;
+	NotNullPtr<SSWR::SMonitor::ISMonitorCore::DeviceInfo> devInfo;
 	if (dataSize >= 6 && buff[0] == 'S' && buff[1] == 'm')
 	{
 		UInt8 calcVal[2];
@@ -206,11 +209,13 @@ void __stdcall SSWR::SMonitor::SMonitorSvrCore::OnDataUDPPacket(NotNullPtr<const
 					if (dataSize >= 42 + 16 * nReading)
 					{
 						me->UDPSendReadingRecv(addr, port, recTime);
-						devInfo = me->DevGet(clientId, true);
-						devInfo->udpAddr = addr.Ptr()[0];
-						devInfo->udpPort = port;
+						if (devInfo.Set(me->DevGet(clientId, true)))
+						{
+							devInfo->udpAddr = addr.Ptr()[0];
+							devInfo->udpPort = port;
 
-						me->DeviceRecvReading(devInfo, recTime, nDigital, nReading, nOutput, digitalVals, (ReadingInfo*)&buff[40], profileId, *(UInt32*)addr->addr, port);
+							me->DeviceRecvReading(devInfo, recTime, nDigital, nReading, nOutput, digitalVals, (ReadingInfo*)&buff[40], profileId, *(UInt32*)addr->addr, port);
+						}
 					}
 				}
 				break;
@@ -387,9 +392,36 @@ void __stdcall SSWR::SMonitor::SMonitorSvrCore::OnDataUDPPacket(NotNullPtr<const
 	}
 }
 
+void __stdcall SSWR::SMonitor::SMonitorSvrCore::OnNotifyUDPPacket(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, void *userData)
+{
+	SSWR::SMonitor::SMonitorSvrCore *me = (SSWR::SMonitor::SMonitorSvrCore*)userData;
+	if (dataSize < 4)
+		return;
+	if (buff[0] == 'S' && buff[1] == 'm' && buff[2] == 'P' && buff[3] == 'M')
+	{
+		if (dataSize >= 25)
+		{
+			static Text::CStringNN pwd = CSTR("sswroom");
+			UInt32 crcVal;
+			{
+				Sync::MutexUsage mutUsage(me->notifyCRCMut);
+				me->notifyCRC.Clear();
+				me->notifyCRC.Calc(pwd.v, pwd.leng);
+				me->notifyCRC.Calc(buff, dataSize - 4);
+				crcVal = me->notifyCRC.GetValueU32();
+			}
+			if (crcVal == ReadMUInt32(&buff[dataSize - 4]))
+			{
+				me->NewNotify(addr, port, Data::Timestamp(Data::TimeInstant(ReadInt64(&buff[4]), ReadUInt32(&buff[12])), 0), buff[16], ReadUInt32(&buff[17]), Text::CString(&buff[21], dataSize - 21));
+			}
+		}
+	}
+}
+
 void SSWR::SMonitor::SMonitorSvrCore::DataParsed(NotNullPtr<IO::Stream> stm, void *stmObj, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize)
 {
 	DeviceInfo *dev;
+	NotNullPtr<DeviceInfo> devnn;
 	ClientStatus *status = (ClientStatus*)stmObj;
 	switch (cmdType)
 	{
@@ -457,11 +489,11 @@ void SSWR::SMonitor::SMonitorSvrCore::DataParsed(NotNullPtr<IO::Stream> stm, voi
 		}
 		break;
 	case 4:
-		if (status->dev && cmdSize >= 16)
+		if (devnn.Set(status->dev) && cmdSize >= 16)
 		{
 			if (cmdSize >= (UOSInt)(16 + cmd[12] * 16))
 			{
-				this->DeviceRecvReading(status->dev, ReadInt64(&cmd[0]), cmd[13], cmd[12], cmd[14], ReadUInt32(&cmd[8]), (ReadingInfo *)&cmd[16], 0, 0, 0);
+				this->DeviceRecvReading(devnn, ReadInt64(&cmd[0]), cmd[13], cmd[12], cmd[14], ReadUInt32(&cmd[8]), (ReadingInfo *)&cmd[16], 0, 0, 0);
 			}
 		}
 		break;
@@ -471,11 +503,11 @@ void SSWR::SMonitor::SMonitorSvrCore::DataParsed(NotNullPtr<IO::Stream> stm, voi
 			Data::DateTime dt;
 			dt.SetCurrTimeUTC();
 			Int64 cliTime = ReadInt64(&cmd[0]);
-			if (status->dev)
+			if (devnn.Set(status->dev))
 			{
-				status->dev->lastKATime = dt.ToTicks();
-				this->TCPSendKAReply(stm, cliTime, status->dev->lastKATime);
-				this->DeviceKARecv(status->dev, status->dev->lastKATime);
+				devnn->lastKATime = dt.ToTicks();
+				this->TCPSendKAReply(stm, cliTime, devnn->lastKATime);
+				this->DeviceKARecv(devnn, devnn->lastKATime);
 			}
 		}
 		break;
@@ -549,6 +581,42 @@ void SSWR::SMonitor::SMonitorSvrCore::DataParsed(NotNullPtr<IO::Stream> stm, voi
 
 void SSWR::SMonitor::SMonitorSvrCore::DataSkipped(NotNullPtr<IO::Stream> stm, void *stmObj, const UInt8 *buff, UOSInt buffSize)
 {
+}
+
+void SSWR::SMonitor::SMonitorSvrCore::NewNotify(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, Data::Timestamp ts, UInt8 type, UInt32 procId, Text::CString progName)
+{
+	UTF8Char sbuff[128];
+	UTF8Char *sptr;
+	Net::Email::EmailMessage msg;
+	Text::StringBuilderUTF8 sb;
+	sptr = Net::SocketUtil::GetAddrName(sbuff, addr);
+	sb.AppendC(UTF8STRC("Server IP: "));
+	sb.AppendP(sbuff, sptr);
+	sb.AppendC(UTF8STRC("\r\nSource Port: "));
+	sb.AppendU16(port);
+	sb.AppendC(UTF8STRC("\r\nAction Time: "));
+	sb.AppendTS(ts.ToLocalTime());
+	sb.AppendC(UTF8STRC("\r\nAction Type: "));
+	sb.Append((type == 1)?CSTR("Update"):CSTR("Start"));
+	sb.AppendC(UTF8STRC("\r\nProcess Id: "));
+	sb.AppendU32(procId);
+	sb.AppendC(UTF8STRC("\r\nProcess Name: "));
+	sb.Append(progName);
+
+	msg.SetSubject(CSTR("ProgMonitor Notification"));
+	msg.SetContent(sb.ToCString(), CSTR("text/plain"));
+	msg.AddTo(CSTR("Simon Wong"), CSTR("sswroom@yahoo.com"));
+
+	Text::CStringNN smtpFrom = CSTR("alert@caronline.hk");
+	IO::LogWriter logWriter(this->log, IO::LogHandler::LogLevel::Raw);
+	Net::Email::SMTPClient cli(this->sockf, this->ssl, CSTR("webmail.caronline.hk"), 465, Net::Email::SMTPConn::ConnType::SSL, &logWriter, 60);
+	cli.SetPlainAuth(CSTR("alert@caronline.hk"), CSTR("caronlineskypower"));
+
+	msg.SetFrom(CSTR_NULL, smtpFrom);
+	sb.ClearStr();
+	Net::Email::EmailMessage::GenerateMessageID(sb, smtpFrom);
+	msg.SetMessageId(sb.ToCString());
+	cli.Send(msg);
 }
 
 void SSWR::SMonitor::SMonitorSvrCore::TCPSendLoginReply(NotNullPtr<IO::Stream> stm, Int64 cliTime, Int64 svrTime, UInt8 status)
@@ -1066,14 +1134,16 @@ void SSWR::SMonitor::SMonitorSvrCore::UserPwdCalc(const UTF8Char *userName, cons
 	md5.GetValue(buff);
 }
 
-SSWR::SMonitor::SMonitorSvrCore::SMonitorSvrCore(IO::Writer *writer, NotNullPtr<Media::DrawEngine> deng) : protoHdlr(this), thread(CheckThread, this, CSTR("SMonitorSvrCore"))
+SSWR::SMonitor::SMonitorSvrCore::SMonitorSvrCore(NotNullPtr<IO::Writer> writer, NotNullPtr<Media::DrawEngine> deng) : protoHdlr(this), thread(CheckThread, this, CSTR("SMonitorSvrCore"))
 {
 	NEW_CLASSNN(this->sockf, Net::OSSocketFactory(true));
+	this->ssl = Net::SSLEngineFactory::Create(sockf, true);
 	NEW_CLASS(this->parsers, Parser::FullParserList());
 	this->deng = deng;
 	this->dataDir = 0;
 	this->cliSvr = 0;
 	this->cliMgr = 0;
+	this->notifyUDP = 0;
 	this->dataUDP = 0;
 	this->dataCRC = 0;
 	this->db = 0;
@@ -1234,6 +1304,13 @@ SSWR::SMonitor::SMonitorSvrCore::SMonitorSvrCore(IO::Writer *writer, NotNullPtr<
 					{
 						this->listener->SetAccessLog(&this->log, IO::LogHandler::LogLevel::Command);
 						this->listener->SetRequestLog(this);
+						NEW_CLASS(this->notifyUDP, Net::UDPServer(this->sockf, 0, port, CSTR("Notify"), OnNotifyUDPPacket, this, &this->log, CSTR("Not: "), 2, false));
+						if (this->notifyUDP->IsError())
+						{
+							writer->WriteLineC(UTF8STRC("Error in listening web(notify) port"));
+							DEL_CLASS(this->notifyUDP);
+							this->notifyUDP = 0;
+						}
 					}
 				}
 				else
@@ -1316,6 +1393,7 @@ SSWR::SMonitor::SMonitorSvrCore::~SMonitorSvrCore()
 	SDEL_CLASS(this->cliSvr);
 	SDEL_CLASS(this->cliMgr);
 	SDEL_CLASS(this->dataUDP);
+	SDEL_CLASS(this->notifyUDP);
 	SDEL_CLASS(this->listener);
 	if (this->webHdlr)
 	{
@@ -1398,6 +1476,7 @@ SSWR::SMonitor::SMonitorSvrCore::~SMonitorSvrCore()
 
 	SDEL_CLASS(this->dataCRC);
 	DEL_CLASS(this->parsers);
+	SDEL_CLASS(this->ssl);
 	this->sockf.Delete();
 	this->deng.Delete();
 	SDEL_STRING(this->dataDir);
@@ -1405,7 +1484,7 @@ SSWR::SMonitor::SMonitorSvrCore::~SMonitorSvrCore()
 
 Bool SSWR::SMonitor::SMonitorSvrCore::IsError()
 {
-	return this->cliSvr == 0 || this->db == 0 || this->listener == 0 || this->dataDir == 0 || this->initErr;
+	return this->cliSvr == 0 || this->db == 0 || this->listener == 0 || this->dataDir == 0 || this->notifyUDP == 0 || this->initErr;
 }
 
 NotNullPtr<Media::DrawEngine> SSWR::SMonitor::SMonitorSvrCore::GetDrawEngine()
@@ -1493,7 +1572,7 @@ SSWR::SMonitor::SMonitorSvrCore::DeviceInfo *SSWR::SMonitor::SMonitorSvrCore::De
 	return dev;
 }
 
-Bool SSWR::SMonitor::SMonitorSvrCore::DeviceRecvReading(DeviceInfo *dev, Int64 cliTime, UOSInt nDigitals, UOSInt nReading, UOSInt nOutput, UInt32 digitalVals, ReadingInfo *readings, Int32 profileId, UInt32 cliIP, UInt16 port)
+Bool SSWR::SMonitor::SMonitorSvrCore::DeviceRecvReading(NotNullPtr<DeviceInfo> dev, Int64 cliTime, UOSInt nDigitals, UOSInt nReading, UOSInt nOutput, UInt32 digitalVals, ReadingInfo *readings, Int32 profileId, UInt32 cliIP, UInt16 port)
 {
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
@@ -1608,7 +1687,7 @@ Bool SSWR::SMonitor::SMonitorSvrCore::DeviceRecvReading(DeviceInfo *dev, Int64 c
 	return succ;
 }
 
-Bool SSWR::SMonitor::SMonitorSvrCore::DeviceKARecv(DeviceInfo *dev, Int64 kaTime)
+Bool SSWR::SMonitor::SMonitorSvrCore::DeviceKARecv(NotNullPtr<DeviceInfo> dev, Int64 kaTime)
 {
 	Data::Timestamp ts = Data::Timestamp(kaTime, 0);
 	Bool succ = false;

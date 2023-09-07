@@ -48,7 +48,8 @@ namespace Net
 		void AppendInteger(const UInt8 *buff, UOSInt buffSize);
 
 		const UInt8 *GetItemRAW(const Char *path, UOSInt *itemLen, UOSInt *itemOfst);
-		const UInt8 *GetBuff(UOSInt *buffSize);
+		const UInt8 *GetBuff(OutParam<UOSInt> buffSize);
+		const UInt8 *GetBuff();
 		UOSInt GetBuffSize();
 		Data::ByteArrayR GetArray();
 	};

@@ -28,7 +28,7 @@ namespace Net
 			~SMTPClient();
 
 			void SetPlainAuth(Text::CString userName, Text::CString password);
-			Bool Send(Net::Email::EmailMessage *message);
+			Bool Send(NotNullPtr<Net::Email::EmailMessage> message);
 		};
 	}
 }

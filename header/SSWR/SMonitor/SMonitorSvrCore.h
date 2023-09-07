@@ -1,5 +1,6 @@
 #ifndef _SM_SSWR_SMONITOR_SMONITORSVRCORE
 #define _SM_SSWR_SMONITOR_SMONITORSVRCORE
+#include "Crypto/Hash/CRC32RC.h"
 #include "Crypto/Hash/HashCalc.h"
 #include "Data/FastMap.h"
 #include "Data/StringUTF8Map.h"
@@ -37,12 +38,16 @@ namespace SSWR
 
 		private:
 			NotNullPtr<Net::SocketFactory> sockf;
+			Net::SSLEngine *ssl;
 			IO::LogTool log;
 			Net::TCPServer *cliSvr;
 			Net::TCPClientMgr *cliMgr;
 			IO::ProtoHdlr::ProtoSMonHandler protoHdlr;
+			Net::UDPServer *notifyUDP;
 			Net::UDPServer *dataUDP;
 			Crypto::Hash::HashCalc *dataCRC;
+			Sync::Mutex notifyCRCMut;
+			Crypto::Hash::CRC32RC notifyCRC;
 			Net::WebServer::WebListener *listener;
 			Net::WebServer::HTTPDirectoryHandler *webHdlr;
 			Text::String *dataDir;
@@ -71,9 +76,12 @@ namespace SSWR
 			static void __stdcall OnServerConn(Socket *s, void *userObj);
 			static void __stdcall CheckThread(NotNullPtr<Sync::Thread> thread);
 			static void __stdcall OnDataUDPPacket(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, void *userData);
+			static void __stdcall OnNotifyUDPPacket(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, void *userData);
 
 			virtual void DataParsed(NotNullPtr<IO::Stream> stm, void *stmObj, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize);
 			virtual void DataSkipped(NotNullPtr<IO::Stream> stm, void *stmObj, const UInt8 *buff, UOSInt buffSize);
+
+			void NewNotify(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, Data::Timestamp ts, UInt8 type, UInt32 procId, Text::CString progName);
 
 			void TCPSendLoginReply(NotNullPtr<IO::Stream> stm, Int64 cliTime, Int64 svrTime, UInt8 status);
 			void TCPSendKAReply(NotNullPtr<IO::Stream> stm, Int64 cliTime, Int64 svrTime);
@@ -94,16 +102,17 @@ namespace SSWR
 			DB::DBTool *UseDB(NotNullPtr<Sync::MutexUsage> mut);
 			void UserPwdCalc(const UTF8Char *userName, const UTF8Char *pwd, UInt8 *buff);
 		public:
-			SMonitorSvrCore(IO::Writer *writer, NotNullPtr<Media::DrawEngine> deng);
+			SMonitorSvrCore(NotNullPtr<IO::Writer> writer, NotNullPtr<Media::DrawEngine> deng);
 			virtual ~SMonitorSvrCore();
 
 			Bool IsError();
 			virtual NotNullPtr<Media::DrawEngine> GetDrawEngine();
 
 			DeviceInfo *DevGet(Int64 cliId, Bool toAdd);
+			NotNullPtr<DeviceInfo> DevGetOrAdd(Int64 cliId);
 			DeviceInfo *DevAdd(Int64 cliId, Text::CString cpuName, Text::CString platformName);
-			Bool DeviceRecvReading(DeviceInfo *dev, Int64 cliTime, UOSInt nDigitals, UOSInt nReading, UOSInt nOutput, UInt32 digitalVals, ReadingInfo *readings, Int32 profileId, UInt32 cliIP, UInt16 port);
-			Bool DeviceKARecv(DeviceInfo *dev, Int64 kaTime);
+			Bool DeviceRecvReading(NotNullPtr<DeviceInfo> dev, Int64 cliTime, UOSInt nDigitals, UOSInt nReading, UOSInt nOutput, UInt32 digitalVals, ReadingInfo *readings, Int32 profileId, UInt32 cliIP, UInt16 port);
+			Bool DeviceKARecv(NotNullPtr<DeviceInfo> dev, Int64 kaTime);
 			Bool DeviceSetName(Int64 cliId, NotNullPtr<Text::String> devName);
 			Bool DeviceSetPlatform(Int64 cliId, NotNullPtr<Text::String> platformName);
 			Bool DeviceSetCPUName(Int64 cliId, NotNullPtr<Text::String> cpuName);

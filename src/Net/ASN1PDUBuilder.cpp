@@ -432,10 +432,16 @@ const UInt8 *Net::ASN1PDUBuilder::GetItemRAW(const Char *path, UOSInt *itemLen, 
 	return Net::ASN1Util::PDUGetItemRAW(&this->buff[startOfst], &this->buff[this->currOffset], path, itemLen, itemOfst);
 }
 
-const UInt8 *Net::ASN1PDUBuilder::GetBuff(UOSInt *buffSize)
+const UInt8 *Net::ASN1PDUBuilder::GetBuff(OutParam<UOSInt> buffSize)
 {
 	this->EndAll();
-	if (buffSize) *buffSize = this->currOffset;
+	buffSize.Set(this->currOffset);
+	return this->buff;
+}
+
+const UInt8 *Net::ASN1PDUBuilder::GetBuff()
+{
+	this->EndAll();
 	return this->buff;
 }
 

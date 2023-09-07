@@ -26,7 +26,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 		message.AddSignature(ssl, (Crypto::Cert::X509Cert*)parser.ParseFilePath(CSTR("/home/sswroom/Progs/VCClass/keystore/Simon_SMIME.crt")),
 			(Crypto::Cert::X509Key*)parser.ParseFilePath(CSTR("/home/sswroom/Progs/VCClass/keystore/Simon_SMIME.key")));
 		Net::Email::SMTPClient client(sockf, ssl, CSTR("127.0.0.1"), 25, Net::Email::SMTPConn::ConnType::Plain, &writer, 30000);
-		client.Send(&message);
+		client.Send(message);
 	}
 	SDEL_CLASS(ssl);
 	return 0;

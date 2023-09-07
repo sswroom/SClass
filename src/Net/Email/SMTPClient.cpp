@@ -31,14 +31,14 @@ void Net::Email::SMTPClient::SetPlainAuth(Text::CString userName, Text::CString 
 	this->authPassword = Text::String::NewOrNull(password);
 }
 
-Bool Net::Email::SMTPClient::Send(Net::Email::EmailMessage *message)
+Bool Net::Email::SMTPClient::Send(NotNullPtr<Net::Email::EmailMessage> message)
 {
 	if (!message->CompletedMessage())
 	{
 		return false;
 	}
 	IO::MemoryStream mstm;
-	if (!message->WriteToStream(&mstm))
+	if (!message->WriteToStream(mstm))
 	{
 		return false;
 	}

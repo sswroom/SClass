@@ -38,55 +38,49 @@ void __stdcall SSWR::AVIRead::AVIRSMTPClientForm::OnSendClicked(void *userObj)
 	{
 		//cli->SetPlainAuth(sb1.ToString(), sb2.ToString());
 	}
-	Net::Email::EmailMessage *msg;
-	NEW_CLASS(msg, Net::Email::EmailMessage());
+	Net::Email::EmailMessage msg;
 	sb1.ClearStr();
 	sb2.ClearStr();
 	me->txtFromAddr->GetText(sb1);
 	me->txtToAddr->GetText(sb2);
-	if (sb1.GetCharCnt() == 0 || !msg->SetFrom(CSTR_NULL, sb1.ToCString()))
+	if (sb1.GetCharCnt() == 0 || !msg.SetFrom(CSTR_NULL, sb1.ToCString()))
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Please enter valid From Address"), CSTR("SMTP Client"), me);
 		me->txtFromAddr->Focus();
-		DEL_CLASS(msg);
 		DEL_CLASS(cli);
 		return;
 	}
-	if (sb2.GetCharCnt() == 0 || !msg->AddTo(CSTR_NULL, sb2.ToCString()))
+	if (sb2.GetCharCnt() == 0 || !msg.AddTo(CSTR_NULL, sb2.ToCString()))
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Please enter valid To Address"), CSTR("SMTP Client"), me);
 		me->txtToAddr->Focus();
-		DEL_CLASS(msg);
 		DEL_CLASS(cli);
 		return;
 	}
 	sb1.ClearStr();
 	me->txtCcAddr->GetText(sb1);
-	if (sb1.GetCharCnt() > 0 && !msg->AddCc(CSTR_NULL, sb1.ToCString()))
+	if (sb1.GetCharCnt() > 0 && !msg.AddCc(CSTR_NULL, sb1.ToCString()))
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Please enter valid Cc Address"), CSTR("SMTP Client"), me);
 		me->txtCcAddr->Focus();
-		DEL_CLASS(msg);
 		DEL_CLASS(cli);
 		return;
 	}
 	sb1.ClearStr();
 	me->txtBccAddr->GetText(sb1);
-	if (sb1.GetCharCnt() > 0 && !msg->AddBcc(sb1.ToCString()))
+	if (sb1.GetCharCnt() > 0 && !msg.AddBcc(sb1.ToCString()))
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Please enter valid Cc Address"), CSTR("SMTP Client"), me);
 		me->txtBccAddr->Focus();
-		DEL_CLASS(msg);
 		DEL_CLASS(cli);
 		return;
 	}
 	sb1.ClearStr();
 	me->txtSubject->GetText(sb1);
-	if (sb1.GetCharCnt() == 0 || !msg->SetSubject(sb1.ToCString()))
+	if (sb1.GetCharCnt() == 0 || !msg.SetSubject(sb1.ToCString()))
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Please enter valid Subject"), CSTR("SMTP Client"), me);
 		me->txtSubject->Focus();
-		DEL_CLASS(msg);
 		DEL_CLASS(cli);
 		return;
 	}
@@ -96,13 +90,11 @@ void __stdcall SSWR::AVIRead::AVIRSMTPClientForm::OnSendClicked(void *userObj)
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Please enter content"), CSTR("SMTP Client"), me);
 		me->txtSubject->Focus();
-		DEL_CLASS(msg);
 		DEL_CLASS(cli);
 		return;
 	}
-	msg->SetContent(sb1.ToCString(), CSTR("text/plain; charset=UTF-8"));
+	msg.SetContent(sb1.ToCString(), CSTR("text/plain; charset=UTF-8"));
 	cli->Send(msg);
-	DEL_CLASS(msg);
 	DEL_CLASS(cli);
 	me->txtLog->SetText(sbLog.ToCString());
 }

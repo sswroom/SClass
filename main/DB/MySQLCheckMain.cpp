@@ -151,7 +151,6 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 
 			Net::SSLEngine *ssl = Net::SSLEngineFactory::Create(sockf, true);
 			Net::Email::SMTPClient *smtp;
-			Net::Email::EmailMessage *msg;
 			Data::DateTime currTime;
 			currTime.SetCurrTime();
 			NEW_CLASS(smtp, Net::Email::SMTPClient(sockf, ssl, smtpHost->ToCString(), smtpIPort, connType, writer, 30000));
@@ -159,20 +158,19 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 			{
 				smtp->SetPlainAuth(smtpUser->ToCString(), smtpPassword->ToCString());
 			}
-			NEW_CLASS(msg, Net::Email::EmailMessage());
+			Net::Email::EmailMessage msg;
 			sb.ClearStr();
 			Net::Email::EmailMessage::GenerateMessageID(sb, smtpFrom->ToCString());
-			msg->SetMessageId(sb.ToCString());
-			msg->SetFrom(CSTR_NULL, smtpFrom->ToCString());
-			msg->AddTo(CSTR_NULL, smtpTo->ToCString());
-			msg->SetSentDate(currTime);
-			msg->SetSubject(CSTR("MySQL Check Report"));
-			msg->SetContent(sbMsg.ToCString(), CSTR("text/plain"));
+			msg.SetMessageId(sb.ToCString());
+			msg.SetFrom(CSTR_NULL, smtpFrom->ToCString());
+			msg.AddTo(CSTR_NULL, smtpTo->ToCString());
+			msg.SetSentDate(currTime);
+			msg.SetSubject(CSTR("MySQL Check Report"));
+			msg.SetContent(sbMsg.ToCString(), CSTR("text/plain"));
 			if (!smtp->Send(msg))
 			{
 				retNum = 8;
 			}
-			DEL_CLASS(msg);
 			DEL_CLASS(smtp);
 			SDEL_CLASS(ssl);
 			DEL_CLASS(writer);

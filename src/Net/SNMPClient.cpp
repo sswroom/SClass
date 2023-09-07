@@ -103,7 +103,7 @@ Net::SNMPUtil::ErrorStatus Net::SNMPClient::V1GetRequestPDU(NotNullPtr<const Net
 	pdu.AppendOID(oid, oidLen);
 	pdu.AppendNull();
 	pdu.EndAll();
-	buff = pdu.GetBuff(&buffSize);
+	buff = pdu.GetBuff(buffSize);
 	this->respList = itemList;
 	this->respStatus = Net::SNMPUtil::ES_NORESP;
 	this->hasResp = false;
@@ -146,7 +146,7 @@ Net::SNMPUtil::ErrorStatus Net::SNMPClient::V1GetNextRequestPDU(NotNullPtr<const
 	pdu.AppendOID(oid, oidLen);
 	pdu.AppendNull();
 	pdu.EndAll();
-	buff = pdu.GetBuff(&buffSize);
+	buff = pdu.GetBuff(buffSize);
 	this->respList = itemList;
 	this->respStatus = Net::SNMPUtil::ES_NORESP;
 	this->hasResp = false;
@@ -236,7 +236,7 @@ UOSInt Net::SNMPClient::V1ScanGetRequest(NotNullPtr<const Net::SocketUtil::Addre
 	pdu.AppendOID(pduBuff, oidLen);
 	pdu.AppendNull();
 	pdu.EndAll();
-	buff = pdu.GetBuff(&buffSize);
+	buff = pdu.GetBuff(buffSize);
 	Sync::MutexUsage scanMutUsage(this->scanMut);
 	this->scanList = addrList;
 	scanMutUsage.EndUse();

@@ -64,7 +64,7 @@ Bool Net::Email::EmailMessage::AppendUTF8Header(NotNullPtr<Text::StringBuilderUT
 	return true;
 }
 
-void Net::Email::EmailMessage::GenMultipart(IO::Stream *stm, Text::CString boundary)
+void Net::Email::EmailMessage::GenMultipart(NotNullPtr<IO::Stream> stm, Text::CString boundary)
 {
 	stm->Write(UTF8STRC("--"));
 	stm->Write(boundary.v, boundary.leng);
@@ -175,7 +175,7 @@ void Net::Email::EmailMessage::GenMultipart(IO::Stream *stm, Text::CString bound
 	stm->Write(UTF8STRC("--\r\n"));
 }
 
-void Net::Email::EmailMessage::WriteHeaders(IO::Stream *stm)
+void Net::Email::EmailMessage::WriteHeaders(NotNullPtr<IO::Stream> stm)
 {
 	Text::String *header;
 	UOSInt i = 0;
@@ -189,25 +189,24 @@ void Net::Email::EmailMessage::WriteHeaders(IO::Stream *stm)
 	}
 }
 
-void Net::Email::EmailMessage::WriteContents(IO::Stream *stm)
+void Net::Email::EmailMessage::WriteContents(NotNullPtr<IO::Stream> stm)
 {
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
 	if (this->attachments.GetCount() > 0)
 	{
-		UOSInt len;
 		sptr = GenBoundary(sbuff, this->content, this->contentLen);
 		stm->Write(UTF8STRC("Content-Type: multipart/mixed;\r\n\tboundary=\""));
 		stm->Write(sbuff, (UOSInt)(sptr - sbuff));
 		stm->Write(UTF8STRC("\"\r\n"));
 		IO::MemoryStream mstm;
-		GenMultipart(&mstm, CSTRP(sbuff, sptr));
+		GenMultipart(mstm, CSTRP(sbuff, sptr));
 		stm->Write(UTF8STRC("Content-Length: "));
 		sptr = Text::StrUInt64(sbuff, mstm.GetLength());
 		stm->Write(sbuff, (UOSInt)(sptr - sbuff));
 		stm->Write((const UInt8*)"\r\n", 2);
 		stm->Write((const UInt8*)"\r\n", 2);
-		stm->Write(mstm.GetBuff(&len), (UOSInt)mstm.GetLength());
+		stm->Write(mstm.GetBuff(), (UOSInt)mstm.GetLength());
 	}
 	else
 	{
@@ -235,7 +234,7 @@ UTF8Char *Net::Email::EmailMessage::GenBoundary(UTF8Char *sbuff, const UInt8 *da
 	return b64.EncodeBin(sbuff, sha1Val, 20);
 }
 
-void Net::Email::EmailMessage::WriteB64Data(IO::Stream *stm, const UInt8 *data, UOSInt dataSize)
+void Net::Email::EmailMessage::WriteB64Data(NotNullPtr<IO::Stream> stm, const UInt8 *data, UOSInt dataSize)
 {
 	Text::TextBinEnc::Base64Enc b64(Text::TextBinEnc::Base64Enc::Charset::Normal, false);
 	UTF8Char sbuff[80];
@@ -540,7 +539,7 @@ const Data::ArrayListNN<Text::String> *Net::Email::EmailMessage::GetRecpList()
 	return &this->recpList;
 }
 
-Bool Net::Email::EmailMessage::WriteToStream(IO::Stream *stm)
+Bool Net::Email::EmailMessage::WriteToStream(NotNullPtr<IO::Stream> stm)
 {
 	if (!this->CompletedMessage())
 	{
@@ -551,15 +550,14 @@ Bool Net::Email::EmailMessage::WriteToStream(IO::Stream *stm)
 	if (this->signCert && signKey.Set(this->signKey))
 	{
 		IO::MemoryStream mstm;
-		this->WriteContents(&mstm);
+		this->WriteContents(mstm);
 		mstm.Write(UTF8STRC("\r\n"));
 
 		UInt8 signData[512];
 		UOSInt signLen;
 		UTF8Char sbuff[32];
 		UTF8Char *sptr;
-		UOSInt len;
-		sptr = GenBoundary(sbuff, mstm.GetBuff(&len), (UOSInt)mstm.GetLength());
+		sptr = GenBoundary(sbuff, mstm.GetBuff(), (UOSInt)mstm.GetLength());
 		stm->Write(UTF8STRC("Content-Type: multipart/signed; protocol=\"application/pkcs7-signature\";\r\n micalg=sha-256; boundary=\""));
 		stm->Write(sbuff, (UOSInt)(sptr - sbuff));
 		stm->Write(UTF8STRC("\"\r\n\r\n"));
@@ -567,7 +565,7 @@ Bool Net::Email::EmailMessage::WriteToStream(IO::Stream *stm)
 		stm->Write(UTF8STRC("\r\n\r\n--"));
 		stm->Write(sbuff, (UOSInt)(sptr - sbuff));
 		stm->Write(UTF8STRC("\r\n"));
-		stm->Write(mstm.GetBuff(&len), (UOSInt)mstm.GetLength());
+		stm->Write(mstm.GetBuff(), (UOSInt)mstm.GetLength());
 		stm->Write(UTF8STRC("\r\n\r\n--"));
 		stm->Write(sbuff, (UOSInt)(sptr - sbuff));
 		stm->Write(UTF8STRC("\r\n"));
@@ -624,7 +622,7 @@ Bool Net::Email::EmailMessage::WriteToStream(IO::Stream *stm)
 								builder.EndLevel();
 								{
 									Crypto::Hash::SHA256 sha;
-									sha.Calc(mstm.GetBuff(&len), (UOSInt)mstm.GetLength());
+									sha.Calc(mstm.GetBuff(), (UOSInt)mstm.GetLength());
 									sha.GetValue(signData);
 
 									builder.BeginSequence();
@@ -701,7 +699,7 @@ Bool Net::Email::EmailMessage::WriteToStream(IO::Stream *stm)
 			builder.EndLevel();
 		builder.EndLevel();
 		
-		WriteB64Data(stm, builder.GetBuff(&len), builder.GetBuffSize());
+		WriteB64Data(stm, builder.GetBuff(), builder.GetBuffSize());
 		stm->Write(UTF8STRC("\r\n--"));
 		stm->Write(sbuff, (UOSInt)(sptr - sbuff));
 		stm->Write(UTF8STRC("--"));
