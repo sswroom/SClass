@@ -1324,7 +1324,7 @@ SSWR::SMonitor::SMonitorSvrCore::SMonitorSvrCore(NotNullPtr<IO::Writer> writer, 
 						this->listener->SetRequestLog(this);
 						if (this->notifyPwd)
 						{
-							NEW_CLASS(this->notifyUDP, Net::UDPServer(this->sockf, 0, port, CSTR("Notify"), OnNotifyUDPPacket, this, &this->log, CSTR("Not: "), 2, false));
+							NEW_CLASS(this->notifyUDP, Net::UDPServer(this->sockf, 0, port, CSTR_NULL, OnNotifyUDPPacket, this, &this->log, CSTR("Not: "), 2, false));
 							if (this->notifyUDP->IsError())
 							{
 								writer->WriteLineC(UTF8STRC("Error in listening web(notify) port"));
