@@ -41,7 +41,7 @@ IO::ParsedObject *Parser::FileParser::M2VParser::ParseFile(NotNullPtr<IO::Stream
 	Media::FrameInfo info;
 	UInt32 frameRateNorm;
 	UInt32 frameRateDenorm;
-	if (!Media::MPEGVideoParser::GetFrameInfo(tmpBuff, readSize, &info, &frameRateNorm, &frameRateDenorm, 0, false))
+	if (!Media::MPEGVideoParser::GetFrameInfo(tmpBuff, readSize, info, frameRateNorm, frameRateDenorm, 0, false))
 		return 0;
 
 	OSInt i;
@@ -58,7 +58,7 @@ IO::ParsedObject *Parser::FileParser::M2VParser::ParseFile(NotNullPtr<IO::Stream
 	WriteMInt32((UInt8*)&hdr, 0x000001b3);
 	WriteMInt32((UInt8*)&pictureHdr, 0x00000100);
 	info.fourcc = *(Int32*)"MP2G";
-	NEW_CLASS(vSource, Media::FileVideoSource(fd, &info, frameRateNorm, frameRateDenorm, true));
+	NEW_CLASS(vSource, Media::FileVideoSource(fd, info, frameRateNorm, frameRateDenorm, true));
 
 	gopStart = 0;
 	currOfst = 3;
