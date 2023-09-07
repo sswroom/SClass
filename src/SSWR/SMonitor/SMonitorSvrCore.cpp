@@ -417,7 +417,7 @@ void __stdcall SSWR::SMonitor::SMonitorSvrCore::OnNotifyUDPPacket(NotNullPtr<con
 				Int64 t = currTime.DiffSec(ts);
 				if (t >= -180 && t <= 180)
 				{
-					me->NewNotify(addr, port, ts, buff[16], ReadUInt32(&buff[17]), Text::CString(&buff[21], dataSize - 21));
+					me->NewNotify(addr, port, ts, buff[16], ReadUInt32(&buff[17]), Text::CString(&buff[21], dataSize - 25));
 				}
 			}
 		}
