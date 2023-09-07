@@ -104,17 +104,17 @@ namespace Map
 		WebMapTileServiceSource(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, Text::EncodingFactory *encFact, Text::CString wmtsURL);
 		virtual ~WebMapTileServiceSource();
 
-		virtual Text::CString GetName();
-		virtual Bool IsError();
-		virtual TileType GetTileType();
-		virtual UOSInt GetLevelCount();
-		virtual Double GetLevelScale(UOSInt level);
-		virtual UOSInt GetNearestLevel(Double scale);
-		virtual UOSInt GetConcurrentCount();
-		virtual Bool GetBounds(Math::RectAreaDbl *bounds);
+		virtual Text::CStringNN GetName() const;
+		virtual Bool IsError() const;
+		virtual TileType GetTileType() const;
+		virtual UOSInt GetLevelCount() const;
+		virtual Double GetLevelScale(UOSInt level) const;
+		virtual UOSInt GetNearestLevel(Double scale) const;
+		virtual UOSInt GetConcurrentCount() const;
+		virtual Bool GetBounds(OutParam<Math::RectAreaDbl> bounds) const;
 		virtual Math::CoordinateSystem *GetCoordinateSystem();
-		virtual Bool IsMercatorProj();
-		virtual UOSInt GetTileSize();
+		virtual Bool IsMercatorProj() const;
+		virtual UOSInt GetTileSize() const;
 		virtual Bool CanQuery() const;
 		virtual Bool QueryInfos(Math::Coord2DDbl coord, UOSInt level, Data::ArrayList<Math::Geometry::Vector2D*> *vecList, Data::ArrayList<UOSInt> *valueOfstList, Data::ArrayListNN<Text::String> *nameList, Data::ArrayList<Text::String*> *valueList) const;
 

@@ -47,12 +47,12 @@ Text::MIMEObj::TextMIMEObj::~TextMIMEObj()
 	this->contType->Release();
 }
 
-Text::CString Text::MIMEObj::TextMIMEObj::GetClassName() const
+Text::CStringNN Text::MIMEObj::TextMIMEObj::GetClassName() const
 {
 	return CSTR("TextMIMEObj");
 }
 
-Text::CString Text::MIMEObj::TextMIMEObj::GetContentType() const
+Text::CStringNN Text::MIMEObj::TextMIMEObj::GetContentType() const
 {
 	return this->contType->ToCString();
 }

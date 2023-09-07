@@ -1219,9 +1219,9 @@ UInt32 Map::HKTrafficLayer::GetCodePage()
 	return 65001;
 }
 
-Bool Map::HKTrafficLayer::GetBounds(Math::RectAreaDbl *bounds)
+Bool Map::HKTrafficLayer::GetBounds(OutParam<Math::RectAreaDbl> bounds) const
 {
-	*bounds = Math::RectAreaDbl(Math::Coord2DDbl(this->minX, this->minY), Math::Coord2DDbl(this->maxX, this->maxY));
+	bounds.Set(Math::RectAreaDbl(Math::Coord2DDbl(this->minX, this->minY), Math::Coord2DDbl(this->maxX, this->maxY)));
 	return this->minX != 0 || this->minY != 0 || this->maxX != 0 || this->maxY != 0;
 }
 

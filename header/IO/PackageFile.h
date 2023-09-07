@@ -78,7 +78,7 @@ namespace IO
 		PackageFile(const PackageFile *pkg);
 	public:
 		PackageFile(NotNullPtr<Text::String> fileName);
-		PackageFile(Text::CString fileName);
+		PackageFile(Text::CStringNN fileName);
 		virtual ~PackageFile();
 
 		virtual IO::ParserType GetParserType() const;

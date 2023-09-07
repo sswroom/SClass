@@ -48,10 +48,10 @@ namespace Net
 		UInt64 GetPacketCnt();
 		UInt64 GetDataSize();
 
-		static Text::CString CaptureTypeGetName(CaptureType type);
+		static Text::CStringNN CaptureTypeGetName(CaptureType type);
 		static Int32 CaptureTypeGetLinkType(CaptureType type);
-		static Text::CString FileFormatGetName(FileFormat format);
-		static Text::CString FileFormatGetExt(FileFormat format);
+		static Text::CStringNN FileFormatGetName(FileFormat format);
+		static Text::CStringNN FileFormatGetExt(FileFormat format);
 		static void AddFilters(IO::FileSelector *selector);
 	};
 }

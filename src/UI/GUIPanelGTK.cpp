@@ -64,7 +64,7 @@ Math::Size2DDbl UI::GUIPanel::GetClientSize()
 	return this->GetSize();
 }
 
-Text::CString UI::GUIPanel::GetObjectClass()
+Text::CStringNN UI::GUIPanel::GetObjectClass() const
 {
 	return CSTR("Panel");
 }

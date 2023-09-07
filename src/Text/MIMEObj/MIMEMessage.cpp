@@ -39,15 +39,18 @@ Text::MIMEObj::MIMEMessage::~MIMEMessage()
 	}
 }
 
-Text::CString Text::MIMEObj::MIMEMessage::GetClassName() const
+Text::CStringNN Text::MIMEObj::MIMEMessage::GetClassName() const
 {
 	return CSTR("MIMEMessage");
 }
 
-Text::CString Text::MIMEObj::MIMEMessage::GetContentType() const
+Text::CStringNN Text::MIMEObj::MIMEMessage::GetContentType() const
 {
 	Text::String *contType = this->GetHeader(UTF8STRC("Content-Type"));
-	return STR_CSTR(contType);
+	if (contType == 0)
+		return CSTR("application/octet-stream");
+	else
+		return contType->ToCString();
 }
 
 UOSInt Text::MIMEObj::MIMEMessage::WriteStream(IO::Stream *stm) const
@@ -329,7 +332,7 @@ Bool Text::MIMEObj::MIMEMessage::ParseFromData(NotNullPtr<IO::StreamData> fd)
 		{
 			NotNullPtr<IO::StreamData> data = fd->GetPartialData(contentOfst, Text::StrToUInt64(contentLen->v));
 			Text::String *contType = this->GetHeader(UTF8STRC("Content-Type"));
-			Text::IMIMEObj *obj = Text::IMIMEObj::ParseFromData(data, STR_CSTR(contType));
+			Text::IMIMEObj *obj = Text::IMIMEObj::ParseFromData(data, contType?contType->ToCString():CSTR("application/octet-stream"));
 			data.Delete();
 			if (obj)
 			{
@@ -341,7 +344,7 @@ Bool Text::MIMEObj::MIMEMessage::ParseFromData(NotNullPtr<IO::StreamData> fd)
 	{
 		NotNullPtr<IO::StreamData> data = fd->GetPartialData(contentOfst, fd->GetDataSize() - contentOfst);
 		Text::String *contType = this->GetHeader(UTF8STRC("Content-Type"));
-		Text::IMIMEObj *obj = Text::IMIMEObj::ParseFromData(data, STR_CSTR(contType));
+		Text::IMIMEObj *obj = Text::IMIMEObj::ParseFromData(data, contType?contType->ToCString():CSTR("application/octet-stream"));
 		data.Delete();
 		if (obj)
 		{

@@ -168,7 +168,7 @@ void __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnMapTableSelChg(void *userObj)
 	{
 		me->dbLayer->SetDatabase(me->currDB, schemaName->ToCString(), tableName->ToCString(), false);
 		Math::RectAreaDbl rect;
-		if (me->dbLayer->GetBounds(&rect))
+		if (me->dbLayer->GetBounds(rect))
 		{
 			Math::Coord2DDbl center = rect.GetCenter();
 			if (center.x != 0 || center.y != 0)

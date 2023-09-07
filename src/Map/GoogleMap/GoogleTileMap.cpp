@@ -13,17 +13,17 @@ Map::GoogleMap::GoogleTileMap::~GoogleTileMap()
 {
 }
 
-Text::CString Map::GoogleMap::GoogleTileMap::GetName()
+Text::CStringNN Map::GoogleMap::GoogleTileMap::GetName() const
 {
 	return CSTR("GoogleTileMap");
 }
 
-Map::TileMap::TileType Map::GoogleMap::GoogleTileMap::GetTileType()
+Map::TileMap::TileType Map::GoogleMap::GoogleTileMap::GetTileType() const
 {
 	return Map::TileMap::TT_GOOGLE;
 }
 
-UOSInt Map::GoogleMap::GoogleTileMap::GetConcurrentCount()
+UOSInt Map::GoogleMap::GoogleTileMap::GetConcurrentCount() const
 {
 	return 2;
 }

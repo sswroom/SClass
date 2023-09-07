@@ -39,7 +39,7 @@ namespace Text
 			Data::ArrayList<DocSection*> *items;
 		public:
 			TextDocument();
-			TextDocument(Text::CString name);
+			TextDocument(Text::CStringNN name);
 			virtual ~TextDocument();
 
 			virtual IO::ParserType GetParserType() const;

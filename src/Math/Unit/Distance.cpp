@@ -56,7 +56,7 @@ Double Math::Unit::Distance::GetUnitRatio(DistanceUnit unit)
 	return 1;
 }
 
-Text::CString Math::Unit::Distance::GetUnitShortName(DistanceUnit unit)
+Text::CStringNN Math::Unit::Distance::GetUnitShortName(DistanceUnit unit)
 {
 	switch (unit)
 	{
@@ -110,7 +110,7 @@ Text::CString Math::Unit::Distance::GetUnitShortName(DistanceUnit unit)
 	return CSTR("");
 }
 
-Text::CString Math::Unit::Distance::GetUnitName(DistanceUnit unit)
+Text::CStringNN Math::Unit::Distance::GetUnitName(DistanceUnit unit)
 {
 	switch (unit)
 	{

@@ -722,7 +722,7 @@ void Exporter::CURExporter::SetCodePage(UInt32 codePage)
 {
 }
 
-Bool Exporter::CURExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text::CString fileName, IO::ParsedObject *pobj, void *param)
+Bool Exporter::CURExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text::CStringNN fileName, IO::ParsedObject *pobj, void *param)
 {
 	if (pobj->GetParserType() != IO::ParserType::ImageList)
 		return 0;

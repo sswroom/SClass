@@ -215,7 +215,7 @@ heif_image *HEIFExporter_CreateImage(Media::Image *img)
 	return image;
 }
 
-Bool Exporter::HEIFExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text::CString fileName, IO::ParsedObject *pobj, void *param)
+Bool Exporter::HEIFExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text::CStringNN fileName, IO::ParsedObject *pobj, void *param)
 {
 	if (pobj->GetParserType() != IO::ParserType::ImageList)
 		return false;

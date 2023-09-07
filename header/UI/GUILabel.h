@@ -10,11 +10,11 @@ namespace UI
 		Bool hasTextColor;
 		UInt32 textColor;
 	public:
-		GUILabel(NotNullPtr<GUICore> ui, UI::GUIClientControl *parent, Text::CString initText);
+		GUILabel(NotNullPtr<GUICore> ui, UI::GUIClientControl *parent, Text::CStringNN initText);
 		virtual ~GUILabel();
 
-		virtual void SetText(Text::CString text);
-		virtual Text::CString GetObjectClass();
+		virtual void SetText(Text::CStringNN text);
+		virtual Text::CStringNN GetObjectClass() const;
 		virtual OSInt OnNotify(UInt32 code, void *lParam);
 		Bool HasTextColor();
 		UInt32 GetTextColor();

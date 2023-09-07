@@ -18,7 +18,7 @@ namespace UI
 
 		public:
 			TreeItem(void *itemObj, NotNullPtr<Text::String> txt);
-			TreeItem(void *itemObj, Text::CString txt);
+			TreeItem(void *itemObj, Text::CStringNN txt);
 			~TreeItem();
 
 			void AddChild(TreeItem *child);
@@ -27,7 +27,7 @@ namespace UI
 			void *GetItemObj();
 			void SetHItem(void *hTreeItem);
 			void *GetHItem();
-			void SetText(Text::CString txt);
+			void SetText(Text::CStringNN txt);
 			NotNullPtr<Text::String> GetText() const;
 			UOSInt GetChildCount();
 			TreeItem *GetChild(UOSInt index);
@@ -63,7 +63,7 @@ namespace UI
 		virtual void EventDragItem(TreeItem *dragItem, TreeItem *dropItem);
 
 		TreeItem *InsertItem(TreeItem *parent, TreeItem *insertAfter, NotNullPtr<Text::String> itemText, void *itemObj);
-		TreeItem *InsertItem(TreeItem *parent, TreeItem *insertAfter, Text::CString itemText, void *itemObj);
+		TreeItem *InsertItem(TreeItem *parent, TreeItem *insertAfter, Text::CStringNN itemText, void *itemObj);
 		void *RemoveItem(TreeItem *item);
 		void ClearItems();
 		UOSInt GetRootCount();
@@ -78,7 +78,7 @@ namespace UI
 		UI::GUITreeView::TreeItem *GetHighlightItem();
 		void BeginEdit(TreeItem *item);
 
-		virtual Text::CString GetObjectClass();
+		virtual Text::CStringNN GetObjectClass() const;
 		virtual OSInt OnNotify(UInt32 code, void *lParam);
 
 		virtual void HandleSelectionChange(UI::UIEvent hdlr, void *userObj);

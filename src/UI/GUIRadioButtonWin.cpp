@@ -26,7 +26,7 @@ void UI::GUIRadioButton::ChangeSelected(Bool selVal)
 	}
 }
 
-UI::GUIRadioButton::GUIRadioButton(NotNullPtr<UI::GUICore> ui, UI::GUIClientControl *parent, Text::CString initText, Bool selected) : UI::GUIControl(ui, parent)
+UI::GUIRadioButton::GUIRadioButton(NotNullPtr<UI::GUICore> ui, UI::GUIClientControl *parent, Text::CStringNN initText, Bool selected) : UI::GUIControl(ui, parent)
 {
 	this->selected = false;
 
@@ -44,7 +44,7 @@ UI::GUIRadioButton::~GUIRadioButton()
 {
 }
 
-Text::CString UI::GUIRadioButton::GetObjectClass()
+Text::CStringNN UI::GUIRadioButton::GetObjectClass() const
 {
 	return CSTR("RadioButton");
 }

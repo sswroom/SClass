@@ -27,7 +27,7 @@ namespace SSWR
 
 			virtual void OnMonitorChanged();
 
-			void AddGroup(Text::CString grpName);
+			void AddGroup(Text::CStringNN grpName);
 			void SetCurrGroup(UOSInt currGroup);
 			UOSInt GetCurrGroup();
 		};

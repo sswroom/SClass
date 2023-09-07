@@ -32,7 +32,7 @@ namespace Parser
 			virtual IO::ParserType GetParserType();
 			virtual IO::ParsedObject *ParseFileHdr(NotNullPtr<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr);
 
-			static IO::ParsedObject *ParseStream(Text::EncodingFactory *encFact, NotNullPtr<IO::Stream> stm, Text::CString fileName, Parser::ParserList *parsers, Net::WebBrowser *browser, IO::PackageFile *pkgFile);
+			static IO::ParsedObject *ParseStream(Text::EncodingFactory *encFact, NotNullPtr<IO::Stream> stm, Text::CStringNN fileName, Parser::ParserList *parsers, Net::WebBrowser *browser, IO::PackageFile *pkgFile);
 		private:
 			static Bool ParseGPXPoint(NotNullPtr<Text::XMLReader> reader, Map::GPSTrack::GPSRecord3 *rec);
 			static Bool ParseVSProjFile(NotNullPtr<Text::XMLReader> reader, Text::VSProjContainer *container);

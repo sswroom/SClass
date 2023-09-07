@@ -290,7 +290,7 @@ void UI::GUIForm::Close()
 	this->closeHandlersObj.Clear();
 }
 
-void UI::GUIForm::SetText(Text::CString text)
+void UI::GUIForm::SetText(Text::CStringNN text)
 {
 	gtk_window_set_title((GtkWindow*)this->hwnd, (const Char*)text.v);
 }
@@ -439,7 +439,7 @@ Bool UI::GUIForm::IsChildVisible()
 	return true;
 }
 
-Text::CString UI::GUIForm::GetObjectClass()
+Text::CStringNN UI::GUIForm::GetObjectClass() const
 {
 	return CSTR("WinForm");
 }

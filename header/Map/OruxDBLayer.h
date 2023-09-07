@@ -20,14 +20,14 @@ namespace Map
 			Math::Coord2D<UInt32> max;
 		} LayerInfo;
 	private:
-		Parser::ParserList *parsers;
+		NotNullPtr<Parser::ParserList> parsers;
 		Data::FastMap<UInt32, LayerInfo*> layerMap;
 		UInt32 currLayer;
 		UInt32 tileSize;
 		DB::DBConn *db;
 
 	public:
-		OruxDBLayer(Text::CString sourceName, Text::CString layerName, Parser::ParserList *parsers);
+		OruxDBLayer(Text::CStringNN sourceName, Text::CString layerName, NotNullPtr<Parser::ParserList> parsers);
 		virtual ~OruxDBLayer();
 
 		Bool IsError();
@@ -49,7 +49,7 @@ namespace Map
 		virtual DB::DBUtil::ColType GetColumnType(UOSInt colIndex, UOSInt *colSize);
 		virtual Bool GetColumnDef(UOSInt colIndex, NotNullPtr<DB::ColDef> colDef);
 		virtual UInt32 GetCodePage();
-		virtual Bool GetBounds(Math::RectAreaDbl *bounds);
+		virtual Bool GetBounds(OutParam<Math::RectAreaDbl> bounds) const;
 
 		virtual GetObjectSess *BeginGetObject();
 		virtual void EndGetObject(GetObjectSess *session);

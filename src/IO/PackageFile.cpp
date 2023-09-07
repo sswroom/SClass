@@ -46,7 +46,7 @@ IO::PackageFile::PackageFile(NotNullPtr<Text::String> fileName) : IO::ParsedObje
 	}
 }
 
-IO::PackageFile::PackageFile(Text::CString fileName) : IO::ParsedObject(fileName)
+IO::PackageFile::PackageFile(Text::CStringNN fileName) : IO::ParsedObject(fileName)
 {
 	NEW_CLASSNN(this->items, Data::ArrayList<PackFileItem*>());
 	if (IO::Path::PATH_SEPERATOR == '\\')

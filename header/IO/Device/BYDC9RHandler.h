@@ -55,10 +55,10 @@ namespace IO
 			virtual void BatteryCharging(ChargingStatus status);
 			virtual void OKLED(Bool ledOn);
 
-			static Text::CString DoorStatusGetName(DoorStatus doorStatus);
-			static Text::CString MotorModeGetName(MotorMode motorMode);
-			static Text::CString PowerStatusGetName(PowerStatus powerStatus);
-			static Text::CString ChargingStatusGetName(ChargingStatus chargingStatus);
+			static Text::CStringNN DoorStatusGetName(DoorStatus doorStatus);
+			static Text::CStringNN MotorModeGetName(MotorMode motorMode);
+			static Text::CStringNN PowerStatusGetName(PowerStatus powerStatus);
+			static Text::CStringNN ChargingStatusGetName(ChargingStatus chargingStatus);
 		};
 	}
 }

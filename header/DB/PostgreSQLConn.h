@@ -31,7 +31,7 @@ namespace DB
 
 	public:
 		PostgreSQLConn(NotNullPtr<Text::String> server, UInt16 port, Text::String *uid, Text::String *pwd, NotNullPtr<Text::String> database, IO::LogTool *log);
-		PostgreSQLConn(Text::CString server, UInt16 port, Text::CString uid, Text::CString pwd, Text::CString database, IO::LogTool *log);
+		PostgreSQLConn(Text::CStringNN server, UInt16 port, Text::CString uid, Text::CString pwd, Text::CString database, IO::LogTool *log);
 		virtual ~PostgreSQLConn();
 		virtual DB::SQLType GetSQLType() const;
 		virtual ConnType GetConnType() const;

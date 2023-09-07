@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "Map/ILocationService.h"
 
-Text::CString Map::ILocationService::SateTypeGetName(SateType sateType)
+Text::CStringNN Map::ILocationService::SateTypeGetName(SateType sateType)
 {
 	switch (sateType)
 	{

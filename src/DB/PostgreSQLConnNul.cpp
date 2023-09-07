@@ -23,7 +23,7 @@ DB::PostgreSQLConn::PostgreSQLConn(NotNullPtr<Text::String> server, UInt16 port,
 	this->Connect();
 }
 
-DB::PostgreSQLConn::PostgreSQLConn(Text::CString server, UInt16 port, Text::CString uid, Text::CString pwd, Text::CString database, IO::LogTool *log) : DBConn(server)
+DB::PostgreSQLConn::PostgreSQLConn(Text::CStringNN server, UInt16 port, Text::CString uid, Text::CString pwd, Text::CString database, IO::LogTool *log) : DBConn(server)
 {
 	this->clsData = 0;
 	this->tzQhr = 0;

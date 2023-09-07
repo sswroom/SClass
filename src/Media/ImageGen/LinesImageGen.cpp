@@ -13,7 +13,7 @@ Media::ImageGen::LinesImageGen::~LinesImageGen()
 {
 }
 
-Text::CString Media::ImageGen::LinesImageGen::GetName()
+Text::CStringNN Media::ImageGen::LinesImageGen::GetName() const
 {
 	return CSTR("Lines Image");
 }

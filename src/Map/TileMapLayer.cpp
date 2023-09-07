@@ -313,7 +313,7 @@ Map::MapView *Map::TileMapLayer::CreateMapView(Math::Size2DDbl scnSize)
 			i++;
 		}
 		Math::RectAreaDbl bounds;
-		this->tileMap->GetBounds(&bounds);
+		this->tileMap->GetBounds(bounds);
 		Math::CoordinateSystem *csys = this->tileMap->GetCoordinateSystem();
 		NEW_CLASS(view, Map::LeveledMapView(csys && csys->IsProjected(), scnSize, bounds.GetCenter(), scales));
 		return view;
@@ -493,7 +493,7 @@ UInt32 Map::TileMapLayer::GetCodePage()
 	return 0;
 }
 
-Bool Map::TileMapLayer::GetBounds(Math::RectAreaDbl *bounds)
+Bool Map::TileMapLayer::GetBounds(OutParam<Math::RectAreaDbl> bounds) const
 {
 	return this->tileMap->GetBounds(bounds);
 }

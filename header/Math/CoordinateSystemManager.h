@@ -173,23 +173,23 @@ namespace Math
 		static Math::ProjectedCoordinateSystem *SRCreateProjCSys(UInt32 epsgId);
 		static Math::GeographicCoordinateSystem *SRCreateGeogCSys(UInt32 epsgId);
 		
-		static Math::CoordinateSystem *CreateFromName(Text::CString name);
+		static Math::CoordinateSystem *CreateFromName(Text::CStringNN name);
 
 		static const Math::CoordinateSystemManager::DatumInfo *GetDatumInfoByName(const UTF8Char *name);
 		static void FillDatumData(Math::GeographicCoordinateSystem::DatumData1 *data, const DatumInfo *datum, Text::CString name, Math::EarthEllipsoid *ee, const SpheroidInfo *spheroid);
 
 		static Math::ProjectedCoordinateSystem *CreateProjCoordinateSystemDefName(ProjCoordSysType pcst);
-		static Math::ProjectedCoordinateSystem *CreateProjCoordinateSystem(Text::CString sourceNmae, const UTF8Char *projName);
+		static Math::ProjectedCoordinateSystem *CreateProjCoordinateSystem(Text::CStringNN sourceNmae, const UTF8Char *projName);
 		static UOSInt GetProjCoordinateSystems(Data::ArrayList<ProjCoordSysType> *csysList);
 		static UOSInt GetProjCoordinateSystemNames(Data::ArrayList<const UTF8Char *> *nameList);
 		static const ProjectedCSysInfo *GetProjCoordinateSystemInfo(const UTF8Char *projName);
 
 		static Math::GeographicCoordinateSystem *CreateGeogCoordinateSystemDefName(GeoCoordSysType gcst);
-		static Math::GeographicCoordinateSystem *CreateGeogCoordinateSystem(Text::CString sourceName, const UTF8Char *geoName);
+		static Math::GeographicCoordinateSystem *CreateGeogCoordinateSystem(Text::CStringNN sourceName, const UTF8Char *geoName);
 		static UOSInt GetGeogCoordinateSystems(Data::ArrayList<GeoCoordSysType> *csysList);
 		static const GeographicCSysInfo *GetGeogCoordinateSystemInfo(const UTF8Char *geoName);
 
-		static Text::CString GeoCoordSysTypeGetName(GeoCoordSysType gcst);
+		static Text::CStringNN GeoCoordSysTypeGetName(GeoCoordSysType gcst);
 		static Text::CString ProjCoordSysTypeGetName(ProjCoordSysType pcst);
 	};
 }

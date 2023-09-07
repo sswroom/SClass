@@ -13,7 +13,7 @@ Media::ImageGen::GammaImageGen::~GammaImageGen()
 {
 }
 
-Text::CString Media::ImageGen::GammaImageGen::GetName()
+Text::CStringNN Media::ImageGen::GammaImageGen::GetName() const
 {
 	return CSTR("Gamma Test");
 }

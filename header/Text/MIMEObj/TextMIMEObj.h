@@ -21,8 +21,8 @@ namespace Text
 			TextMIMEObj(const WChar *txt, UInt32 codePage);
 			virtual ~TextMIMEObj();
 
-			virtual Text::CString GetClassName() const;
-			virtual Text::CString GetContentType() const;
+			virtual Text::CStringNN GetClassName() const;
+			virtual Text::CStringNN GetContentType() const;
 			virtual UOSInt WriteStream(IO::Stream *stm) const;
 			virtual IMIMEObj *Clone() const;
 

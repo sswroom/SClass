@@ -166,7 +166,7 @@ Net::ConnectionInfo::ConnectionStatus Net::ConnectionInfo::GetConnectionStatus()
 	return this->ent.connStatus;
 }
 
-Text::CString Net::ConnectionInfo::ConnectionTypeGetName(ConnectionType connType)
+Text::CStringNN Net::ConnectionInfo::ConnectionTypeGetName(ConnectionType connType)
 {
 	switch (connType)
 	{
@@ -188,7 +188,7 @@ Text::CString Net::ConnectionInfo::ConnectionTypeGetName(ConnectionType connType
 	}
 }
 
-Text::CString Net::ConnectionInfo::ConnectionStatusGetName(ConnectionStatus connStatus)
+Text::CStringNN Net::ConnectionInfo::ConnectionStatusGetName(ConnectionStatus connStatus)
 {
 	switch (connStatus)
 	{

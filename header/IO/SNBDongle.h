@@ -142,9 +142,9 @@ namespace IO
 		Bool SendDevTurnOff(UInt64 devId);
 		Bool SendDevGetStatus(UInt64 devId);
 
-		static Text::CString GetHandleName(HandleType handType);
-		static Text::CString GetReadingName(ReadingType readingType);
-		static Text::CString SensorTypeGetName(SensorType sensorType);
+		static Text::CStringNN GetHandleName(HandleType handType);
+		static Text::CStringNN GetReadingName(ReadingType readingType);
+		static Text::CStringNN SensorTypeGetName(SensorType sensorType);
 	};
 }
 

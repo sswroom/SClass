@@ -5225,7 +5225,7 @@ IO::JavaClass::JavaClass(NotNullPtr<Text::String> sourceName, Data::ByteArrayR b
 	this->Init(buff);
 }
 
-IO::JavaClass::JavaClass(Text::CString sourceName, Data::ByteArrayR buff) : IO::ParsedObject(sourceName)
+IO::JavaClass::JavaClass(Text::CStringNN sourceName, Data::ByteArrayR buff) : IO::ParsedObject(sourceName)
 {
 	this->Init(buff);
 }
@@ -8886,7 +8886,7 @@ IO::JavaClass *IO::JavaClass::ParseBuff(NotNullPtr<Text::String> sourceName, Dat
 	return cls;
 }
 
-IO::JavaClass *IO::JavaClass::ParseBuff(Text::CString sourceName, Data::ByteArrayR buff)
+IO::JavaClass *IO::JavaClass::ParseBuff(Text::CStringNN sourceName, Data::ByteArrayR buff)
 {
 	if (buff.GetSize() < 26)
 	{

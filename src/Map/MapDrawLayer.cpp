@@ -58,7 +58,7 @@ Map::MapDrawLayer::MapDrawLayer(NotNullPtr<Text::String> sourceName, UOSInt name
 	this->flags = 0;
 }
 
-Map::MapDrawLayer::MapDrawLayer(Text::CString sourceName, UOSInt nameCol, Text::CString layerName) : DB::ReadingDB(sourceName)//IO::ParsedObject(sourceName)
+Map::MapDrawLayer::MapDrawLayer(Text::CStringNN sourceName, UOSInt nameCol, Text::CString layerName) : DB::ReadingDB(sourceName)//IO::ParsedObject(sourceName)
 {
 	this->nameCol = nameCol;
 	this->layerName = Text::String::New(layerName).Ptr();
@@ -102,7 +102,7 @@ Map::MapView *Map::MapDrawLayer::CreateMapView(Math::Size2DDbl scnSize)
 {
 	Map::MapView *view;
 	Math::RectAreaDbl minMax;
-	this->GetBounds(&minMax);
+	this->GetBounds(minMax);
 	if (this->csys)
 	{
 		NEW_CLASS(view, Map::ScaledMapView(scnSize, minMax.GetCenter(), 10000, this->csys->IsProjected()));
@@ -238,7 +238,7 @@ Int32 Map::MapDrawLayer::CalBlockSize()
 		Int32 blkSize;
 		Data::ArrayListInt64 *idList;
 		Math::RectAreaDbl minMax;
-		this->GetBounds(&minMax);
+		this->GetBounds(minMax);
 		
 		NEW_CLASS(idList, Data::ArrayListInt64());
 		this->GetAllObjectIds(idList, 0);

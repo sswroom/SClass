@@ -245,7 +245,7 @@ void Exporter::TIFFExporter::SetCodePage(UInt32 codePage)
 {
 }
 
-Bool Exporter::TIFFExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text::CString fileName, IO::ParsedObject *pobj, void *param)
+Bool Exporter::TIFFExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text::CStringNN fileName, IO::ParsedObject *pobj, void *param)
 {
 	if (pobj->GetParserType() != IO::ParserType::ImageList)
 		return false;

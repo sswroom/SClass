@@ -40,7 +40,7 @@ Math::GeographicCoordinateSystem::GeographicCoordinateSystem(NotNullPtr<Text::St
 	this->unit = unit;
 }
 
-Math::GeographicCoordinateSystem::GeographicCoordinateSystem(Text::CString sourceName, UInt32 srid, Text::CString csysName, const DatumData1 *datum, PrimemType primem, UnitType unit) : Math::CoordinateSystem(sourceName, srid, csysName)
+Math::GeographicCoordinateSystem::GeographicCoordinateSystem(Text::CStringNN sourceName, UInt32 srid, Text::CString csysName, const DatumData1 *datum, PrimemType primem, UnitType unit) : Math::CoordinateSystem(sourceName, srid, csysName)
 {
 	this->datum.spheroid.srid = datum->spheroid.srid;
 	this->datum.spheroid.ellipsoid = datum->spheroid.ellipsoid->Clone();

@@ -63,7 +63,7 @@ namespace Text
 		Bool SearchEqual(UOSInt level, Data::ArrayList<UTF8Char*> *reqArr, Data::ArrayList<XMLNode*> *currPathArr);
 		Bool SearchEval(UOSInt level, Data::ArrayList<UTF8Char*> *reqArr, Data::ArrayList<XMLNode*> *currPathArr, XMLNode *n, const UTF8Char *nameStart, const UTF8Char *nameEnd, NotNullPtr<Text::StringBuilderUTF8> outSB);
 	public:
-		static Text::CString NodeTypeGetName(NodeType ntype);
+		static Text::CStringNN NodeTypeGetName(NodeType ntype);
 	};
 
 	class XMLAttrib : public XMLNode

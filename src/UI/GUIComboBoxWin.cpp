@@ -74,7 +74,7 @@ void UI::GUIComboBox::EventTextChanged()
 	}
 }
 
-void UI::GUIComboBox::SetText(Text::CString text)
+void UI::GUIComboBox::SetText(Text::CStringNN text)
 {
 	if (this->allowEdit)
 	{
@@ -145,7 +145,7 @@ UOSInt UI::GUIComboBox::AddItem(NotNullPtr<Text::String> itemText, void *itemObj
 	return (UOSInt)i;
 }
 
-UOSInt UI::GUIComboBox::AddItem(Text::CString itemText, void *itemObj)
+UOSInt UI::GUIComboBox::AddItem(Text::CStringNN itemText, void *itemObj)
 {
 	const WChar *wptr = Text::StrToWCharNew(itemText.v);
 	OSInt i = SendMessage((HWND)hwnd, CB_ADDSTRING, 0, (LPARAM)wptr);
@@ -175,7 +175,7 @@ UOSInt UI::GUIComboBox::InsertItem(UOSInt index, Text::String *itemText, void *i
 	return (UOSInt)i;
 }
 
-UOSInt UI::GUIComboBox::InsertItem(UOSInt index, Text::CString itemText, void *itemObj)
+UOSInt UI::GUIComboBox::InsertItem(UOSInt index, Text::CStringNN itemText, void *itemObj)
 {
 	const WChar *wptr = Text::StrToWCharNew(itemText.v);
 	OSInt i = SendMessage((HWND)hwnd, CB_INSERTSTRING, index, (LPARAM)wptr);
@@ -302,7 +302,7 @@ void UI::GUIComboBox::SetArea(Double left, Double top, Double right, Double bott
 	this->OnSizeChanged(updateScn);
 }
 
-Text::CString UI::GUIComboBox::GetObjectClass()
+Text::CStringNN UI::GUIComboBox::GetObjectClass() const
 {
 	return CSTR("ComboBox");
 }

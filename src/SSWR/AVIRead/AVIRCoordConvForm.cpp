@@ -536,7 +536,7 @@ void SSWR::AVIRead::AVIRCoordConvForm::FillCoordProj(UI::GUIComboBox *cbo)
 	Math::CoordinateSystemManager::ProjCoordSysType pcst = Math::CoordinateSystemManager::PCST_FIRST;
 	while (pcst <= Math::CoordinateSystemManager::PCST_LAST)
 	{
-		cbo->AddItem(Math::CoordinateSystemManager::ProjCoordSysTypeGetName(pcst), (void*)(OSInt)pcst);
+		cbo->AddItem(Math::CoordinateSystemManager::ProjCoordSysTypeGetName(pcst).OrEmpty(), (void*)(OSInt)pcst);
 		pcst = (Math::CoordinateSystemManager::ProjCoordSysType)(pcst + 1);
 	}
 }

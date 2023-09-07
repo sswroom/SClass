@@ -283,9 +283,9 @@ UInt32 Map::GeoPackageLayer::GetCodePage()
 	return 65001;
 }
 
-Bool Map::GeoPackageLayer::GetBounds(Math::RectAreaDbl *rect)
+Bool Map::GeoPackageLayer::GetBounds(OutParam<Math::RectAreaDbl> rect) const
 {
-	*rect = this->layerContent->bounds;
+	rect.Set(this->layerContent->bounds);
 	return true;
 }
 

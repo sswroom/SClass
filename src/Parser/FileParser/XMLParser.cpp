@@ -133,7 +133,7 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseFileHdr(NotNullPtr<IO::Str
 	return pobj;
 }
 
-IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFactory *encFact, NotNullPtr<IO::Stream> stm, Text::CString fileName, Parser::ParserList *parsers, Net::WebBrowser *browser, IO::PackageFile *pkgFile)
+IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFactory *encFact, NotNullPtr<IO::Stream> stm, Text::CStringNN fileName, Parser::ParserList *parsers, Net::WebBrowser *browser, IO::PackageFile *pkgFile)
 {
 	Text::String *nodeText;
 	Text::XMLReader reader(encFact, stm, Text::XMLReader::PM_XML);
@@ -449,11 +449,12 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 						}
 						else if (reader.GetNodeText()->Equals(UTF8STRC("MapName")))
 						{
-							if (lyr == 0)
+							NotNullPtr<Parser::ParserList> nnparsers;
+							if (lyr == 0 && nnparsers.Set(parsers))
 							{
 								Text::StringBuilderUTF8 sb;
 								reader.ReadNodeText(sb);
-								NEW_CLASS(lyr, Map::OruxDBLayer(fileName, sb.ToCString(), parsers));
+								NEW_CLASS(lyr, Map::OruxDBLayer(fileName, sb.ToCString(), nnparsers));
 								if (lyr->IsError())
 								{
 									DEL_CLASS(lyr);

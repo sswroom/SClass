@@ -143,7 +143,7 @@ void SSWR::AVIRead::AVIRBTScanLogForm::LogUIUpdate()
 			cstr = Net::PacketAnalyzerBluetooth::CompanyGetName(log->company);
 			if (cstr.v)
 			{
-				this->lvContent->SetSubItem(l, 3, cstr);
+				this->lvContent->SetSubItem(l, 3, cstr.OrEmpty());
 			}
 			else
 			{

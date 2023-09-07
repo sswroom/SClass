@@ -106,7 +106,7 @@ void SSWR::AVIRead::AVIRWifiScanForm::WifiScan()
 			this->lvWifi->SetSubItem(i, 8, CSTRP(sbuff, sptr));
 			const UInt8 *oui;
 			if ((csptr = bss->GetCountry()) != 0)
-				this->lvWifi->SetSubItem(i, 9, Text::CString::FromPtr(csptr));
+				this->lvWifi->SetSubItem(i, 9, Text::CStringNN::FromPtr(csptr));
 			oui = bss->GetChipsetOUI(0);
 			if (oui[0] != 0 || oui[1] != 0 || oui[2] != 0)
 			{

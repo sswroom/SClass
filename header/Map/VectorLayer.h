@@ -38,9 +38,9 @@ namespace Map
 		void UpdateMapRate();
 	public:
 		VectorLayer(Map::DrawLayerType layerType, NotNullPtr<Text::String> sourceName, UOSInt strCnt, const UTF8Char **colNames, Math::CoordinateSystem *csys, UOSInt nameCol, Text::String *layerName);
-		VectorLayer(Map::DrawLayerType layerType, Text::CString sourceName, UOSInt strCnt, const UTF8Char **colNames, Math::CoordinateSystem *csys, UOSInt nameCol, Text::CString layerName);
+		VectorLayer(Map::DrawLayerType layerType, Text::CStringNN sourceName, UOSInt strCnt, const UTF8Char **colNames, Math::CoordinateSystem *csys, UOSInt nameCol, Text::CString layerName);
 		VectorLayer(Map::DrawLayerType layerType, NotNullPtr<Text::String> sourceName, UOSInt strCnt, const UTF8Char **colNames, Math::CoordinateSystem *csys, DB::DBUtil::ColType *colTypes, UOSInt *colSize, UOSInt *colDP, UOSInt nameCol, Text::String *layerName);
-		VectorLayer(Map::DrawLayerType layerType, Text::CString sourceName, UOSInt strCnt, const UTF8Char **colNames, Math::CoordinateSystem *csys, DB::DBUtil::ColType *colTypes, UOSInt *colSize, UOSInt *colDP, UOSInt nameCol, Text::CString layerName);
+		VectorLayer(Map::DrawLayerType layerType, Text::CStringNN sourceName, UOSInt strCnt, const UTF8Char **colNames, Math::CoordinateSystem *csys, DB::DBUtil::ColType *colTypes, UOSInt *colSize, UOSInt *colDP, UOSInt nameCol, Text::CString layerName);
 		virtual ~VectorLayer();
 
 		virtual DrawLayerType GetLayerType();
@@ -56,7 +56,7 @@ namespace Map
 		virtual DB::DBUtil::ColType GetColumnType(UOSInt colIndex, UOSInt *colSize);
 		virtual Bool GetColumnDef(UOSInt colIndex, NotNullPtr<DB::ColDef> colDef);
 		virtual UInt32 GetCodePage();
-		virtual Bool GetBounds(Math::RectAreaDbl *rect);
+		virtual Bool GetBounds(OutParam<Math::RectAreaDbl> rect) const;
 
 		virtual GetObjectSess *BeginGetObject();
 		virtual void EndGetObject(GetObjectSess *session);

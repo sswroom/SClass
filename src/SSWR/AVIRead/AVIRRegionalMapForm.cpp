@@ -8,7 +8,7 @@ void __stdcall SSWR::AVIRead::AVIRRegionalMapForm::OnMapsSelChg(void *userObj)
 	const Map::RegionalMapSource::MapInfo *map = (const Map::RegionalMapSource::MapInfo*)me->lvMaps->GetSelectedItem();
 	if (map)
 	{
-		me->txtDesc->SetText(Text::CString(map->desc, map->descLen));
+		me->txtDesc->SetText(Text::CStringNN(map->desc, map->descLen));
 	}
 	else
 	{
@@ -54,9 +54,9 @@ SSWR::AVIRead::AVIRRegionalMapForm::AVIRRegionalMapForm(UI::GUIClientControl *pa
 	const Map::RegionalMapSource::MapInfo *maps = Map::RegionalMapSource::GetMapInfos(&j);
 	while (i < j)
 	{
-		this->lvMaps->AddItem(Text::CString(maps[i].name, maps[i].nameLen), (void*)&maps[i]);
-		this->lvMaps->SetSubItem(i, 1, Text::CString(maps[i].region, maps[i].regionLen));
-		this->lvMaps->SetSubItem(i, 2, Text::CString(maps[i].org, maps[i].orgLen));
+		this->lvMaps->AddItem(Text::CStringNN(maps[i].name, maps[i].nameLen), (void*)&maps[i]);
+		this->lvMaps->SetSubItem(i, 1, Text::CStringNN(maps[i].region, maps[i].regionLen));
+		this->lvMaps->SetSubItem(i, 2, Text::CStringNN(maps[i].org, maps[i].orgLen));
 		i++;
 	}
 }

@@ -136,7 +136,7 @@ namespace Map
 		void AddGroupUpdatedHandler(GroupItem *group, Map::MapDrawLayer::UpdatedHandler hdlr, void *obj);
 		void RemoveGroupUpdatedHandler(GroupItem *group, Map::MapDrawLayer::UpdatedHandler hdlr, void *obj);
 	public:
-		MapEnv(Text::CString fileName, UInt32 bgColor, Math::CoordinateSystem *csys);
+		MapEnv(Text::CStringNN fileName, UInt32 bgColor, Math::CoordinateSystem *csys);
 		virtual ~MapEnv();
 
 		virtual IO::ParserType GetParserType() const;

@@ -33,12 +33,12 @@ Text::MIMEObj::HTMLMIMEObj::~HTMLMIMEObj()
 	this->contType->Release();
 }
 
-Text::CString Text::MIMEObj::HTMLMIMEObj::GetClassName() const
+Text::CStringNN Text::MIMEObj::HTMLMIMEObj::GetClassName() const
 {
 	return CSTR("HTMLMIMEObj");
 }
 
-Text::CString Text::MIMEObj::HTMLMIMEObj::GetContentType() const
+Text::CStringNN Text::MIMEObj::HTMLMIMEObj::GetContentType() const
 {
 	return this->contType->ToCString();
 }

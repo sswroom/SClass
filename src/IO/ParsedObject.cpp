@@ -2,7 +2,7 @@
 #include "Text/MyString.h"
 #include "IO/ParsedObject.h"
 
-Text::CString IO::ParserTypeGetName(ParserType pt)
+Text::CStringNN IO::ParserTypeGetName(ParserType pt)
 {
 	switch (pt)
 	{
@@ -73,7 +73,7 @@ IO::ParsedObject::ParsedObject(NotNullPtr<Text::String> sourceName)
 	this->sourceName = sourceName->Clone();
 }
 
-IO::ParsedObject::ParsedObject(const Text::CString &sourceName)
+IO::ParsedObject::ParsedObject(const Text::CStringNN &sourceName)
 {
 	this->sourceName = Text::String::New(sourceName);
 }
@@ -94,7 +94,7 @@ void IO::ParsedObject::SetSourceName(NotNullPtr<Text::String> sourceName)
 	this->sourceName = sourceName->Clone();
 }
 
-void IO::ParsedObject::SetSourceName(Text::CString sourceName)
+void IO::ParsedObject::SetSourceName(Text::CStringNN sourceName)
 {
 	this->sourceName->Release();
 	this->sourceName = Text::String::New(sourceName);

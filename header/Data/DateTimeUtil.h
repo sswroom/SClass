@@ -75,7 +75,7 @@ namespace Data
 		static void Ticks2SYSTEMTIME(void *sysTime, Int64 ticks);
 		static Bool SetAsComputerTime(Int64 secs, UInt32 nanosec);
 		static Weekday WeekdayParse(Text::CString weekday);
-		static Text::CString WeekdayGetName(Weekday wd);
+		static Text::CStringNN WeekdayGetName(Weekday wd);
 	};
 }
 #endif

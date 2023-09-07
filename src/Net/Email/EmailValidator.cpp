@@ -90,7 +90,7 @@ Net::Email::EmailValidator::Status Net::Email::EmailValidator::Validate(Text::CS
 	return S_VALID;
 }
 
-Text::CString Net::Email::EmailValidator::StatusGetName(Status status)
+Text::CStringNN Net::Email::EmailValidator::StatusGetName(Status status)
 {
 	switch (status)
 	{

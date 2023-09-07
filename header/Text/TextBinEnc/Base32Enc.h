@@ -18,7 +18,7 @@ namespace Text
 			virtual UOSInt CalcBinSize(const UTF8Char *str, UOSInt strLen);
 			virtual UOSInt CalcBinSize(const WChar *sbuff);
 			virtual UOSInt DecodeBin(const UTF8Char *str, UOSInt strLen, UInt8 *dataBuff);
-			virtual Text::CString GetName();
+			virtual Text::CStringNN GetName() const;
 
 			static Bool IsValid(const UTF8Char *b32Str);
 		};

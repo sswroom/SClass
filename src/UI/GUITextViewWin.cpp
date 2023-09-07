@@ -574,7 +574,7 @@ UI::GUITextView::~GUITextView()
 	}
 }
 
-Text::CString UI::GUITextView::GetObjectClass()
+Text::CStringNN UI::GUITextView::GetObjectClass() const
 {
 	return CSTR("TextFileView");
 }

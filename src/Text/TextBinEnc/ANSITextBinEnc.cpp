@@ -10,7 +10,7 @@ Text::TextBinEnc::ANSITextBinEnc::~ANSITextBinEnc()
 {
 }
 
-Text::CString Text::TextBinEnc::ANSITextBinEnc::GetName()
+Text::CStringNN Text::TextBinEnc::ANSITextBinEnc::GetName() const
 {
 	return CSTR("ANSI Text");
 }

@@ -19,7 +19,7 @@ namespace DB
 		IO::LogTool *log;
 		Text::String *errorMsg;
 	public:
-		MongoDB(Text::CString url, Text::CString database, IO::LogTool *log);
+		MongoDB(Text::CStringNN url, Text::CString database, IO::LogTool *log);
 		virtual ~MongoDB();
 		
 		virtual UOSInt QueryTableNames(Text::CString schemaName, Data::ArrayListNN<Text::String> *names);

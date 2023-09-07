@@ -87,7 +87,7 @@ void Exporter::KMLExporter::SetEncFactory(Text::EncodingFactory *encFact)
 	this->encFact = encFact;
 }
 
-Bool Exporter::KMLExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text::CString fileName, IO::ParsedObject *pobj, void *param)
+Bool Exporter::KMLExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text::CStringNN fileName, IO::ParsedObject *pobj, void *param)
 {
 	if (pobj->GetParserType() != IO::ParserType::MapLayer)
 	{

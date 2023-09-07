@@ -192,7 +192,7 @@ Map::ESRI::ESRIMDBLayer::ESRIMDBLayer(DB::SharedDBConn *conn, UInt32 srid, NotNu
 	this->Init(conn, srid, tableName);
 }
 
-Map::ESRI::ESRIMDBLayer::ESRIMDBLayer(DB::SharedDBConn *conn, UInt32 srid, Text::CString sourceName, Text::CString tableName) : Map::MapDrawLayer(sourceName, 0, tableName)
+Map::ESRI::ESRIMDBLayer::ESRIMDBLayer(DB::SharedDBConn *conn, UInt32 srid, Text::CStringNN sourceName, Text::CString tableName) : Map::MapDrawLayer(sourceName, 0, tableName)
 {
 	this->Init(conn, srid, tableName);
 }
@@ -335,9 +335,9 @@ UInt32 Map::ESRI::ESRIMDBLayer::GetCodePage()
 	return 65001;
 }
 
-Bool Map::ESRI::ESRIMDBLayer::GetBounds(Math::RectAreaDbl *bounds)
+Bool Map::ESRI::ESRIMDBLayer::GetBounds(OutParam<Math::RectAreaDbl> bounds) const
 {
-	*bounds = Math::RectAreaDbl(this->min, this->max);
+	bounds.Set(Math::RectAreaDbl(this->min, this->max));
 	return this->min.x != 0 || this->min.y != 0 || this->max.x != 0 || this->max.y != 0;
 }
 

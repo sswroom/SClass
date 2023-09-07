@@ -66,7 +66,7 @@ IO::ParsedObject *Parser::FileParser::SPDParser::ParseFileHdr(NotNullPtr<IO::Str
 
 	Map::SPDLayer *layer;
 	sbuff[i] = 0;
-	NEW_CLASS(layer, Map::SPDLayer(Text::CString(sbuff, i)));
+	NEW_CLASS(layer, Map::SPDLayer(Text::CStringNN(sbuff, i)));
 	if (layer->IsError())
 	{
 		DEL_CLASS(layer);

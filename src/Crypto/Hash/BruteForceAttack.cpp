@@ -266,7 +266,7 @@ Bool Crypto::Hash::BruteForceAttack::Start(const UTF8Char *hashStr, UOSInt hashL
 	return true;
 }
 
-Text::CString Crypto::Hash::BruteForceAttack::CharLimitGetName(CharLimit charLimit)
+Text::CStringNN Crypto::Hash::BruteForceAttack::CharLimitGetName(CharLimit charLimit)
 {
 	switch (charLimit)
 	{

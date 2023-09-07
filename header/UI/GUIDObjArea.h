@@ -31,7 +31,7 @@ namespace UI
 
 		void SetHandler(UI::DObj::DObjHandler *dobjHdlr);
 
-		virtual Text::CString GetObjectClass();
+		virtual Text::CStringNN GetObjectClass() const;
 		virtual OSInt OnNotify(UInt32 code, void *lParam);
 
 	protected:

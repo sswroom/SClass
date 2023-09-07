@@ -357,7 +357,7 @@ Double IO::HuaweiGSMModemController::RSRQGetdBm(UInt32 rsrq)
 	return 0;
 }
 
-Text::CString IO::HuaweiGSMModemController::SIMCardTypeGetName(SIMCardType simType)
+Text::CStringNN IO::HuaweiGSMModemController::SIMCardTypeGetName(SIMCardType simType)
 {
 	switch (simType)
 	{
@@ -376,7 +376,7 @@ Text::CString IO::HuaweiGSMModemController::SIMCardTypeGetName(SIMCardType simTy
 	}
 }
 
-Text::CString IO::HuaweiGSMModemController::ServiceStatusGetName(ServiceStatus srvStatus)
+Text::CStringNN IO::HuaweiGSMModemController::ServiceStatusGetName(ServiceStatus srvStatus)
 {
 	switch (srvStatus)
 	{
@@ -395,7 +395,7 @@ Text::CString IO::HuaweiGSMModemController::ServiceStatusGetName(ServiceStatus s
 	}
 }
 
-Text::CString IO::HuaweiGSMModemController::ServiceDomainGetName(ServiceDomain srvDomain)
+Text::CStringNN IO::HuaweiGSMModemController::ServiceDomainGetName(ServiceDomain srvDomain)
 {
 	switch (srvDomain)
 	{
@@ -416,7 +416,7 @@ Text::CString IO::HuaweiGSMModemController::ServiceDomainGetName(ServiceDomain s
 	}
 }
 
-Text::CString IO::HuaweiGSMModemController::SIMStateGetName(SIMState simState)
+Text::CStringNN IO::HuaweiGSMModemController::SIMStateGetName(SIMState simState)
 {
 	switch (simState)
 	{
@@ -439,7 +439,7 @@ Text::CString IO::HuaweiGSMModemController::SIMStateGetName(SIMState simState)
 	}
 }
 
-Text::CString IO::HuaweiGSMModemController::SysModeGetName(SysMode sysMode)
+Text::CStringNN IO::HuaweiGSMModemController::SysModeGetName(SysMode sysMode)
 {
 	switch (sysMode)
 	{
@@ -462,7 +462,7 @@ Text::CString IO::HuaweiGSMModemController::SysModeGetName(SysMode sysMode)
 	}
 }
 
-Text::CString IO::HuaweiGSMModemController::SubModeGetName(SubMode submode)
+Text::CStringNN IO::HuaweiGSMModemController::SubModeGetName(SubMode submode)
 {
 	switch (submode)
 	{

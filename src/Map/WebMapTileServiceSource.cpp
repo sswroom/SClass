@@ -747,29 +747,29 @@ Map::WebMapTileServiceSource::~WebMapTileServiceSource()
 	SDEL_CLASS(this->wgs84);
 }
 
-Text::CString Map::WebMapTileServiceSource::GetName()
+Text::CStringNN Map::WebMapTileServiceSource::GetName() const
 {
 	return this->currLayer->id->ToCString();
 }
 
-Bool Map::WebMapTileServiceSource::IsError()
+Bool Map::WebMapTileServiceSource::IsError() const
 {
 	return this->layers.GetCount() == 0 || this->currLayer == 0;
 }
 
-Map::TileMap::TileType Map::WebMapTileServiceSource::GetTileType()
+Map::TileMap::TileType Map::WebMapTileServiceSource::GetTileType() const
 {
 	return Map::TileMap::TT_WMTS;
 }
 
-UOSInt Map::WebMapTileServiceSource::GetLevelCount()
+UOSInt Map::WebMapTileServiceSource::GetLevelCount() const
 {
 	if (this->currSet == 0)
 		return 0;
 	return this->currSet->tiles.GetCount();
 }
 
-Double Map::WebMapTileServiceSource::GetLevelScale(UOSInt level)
+Double Map::WebMapTileServiceSource::GetLevelScale(UOSInt level) const
 {
 	if (this->currDef == 0)
 		return 0;
@@ -782,7 +782,7 @@ Double Map::WebMapTileServiceSource::GetLevelScale(UOSInt level)
 	return tileMatrixDef->unitPerPixel / scaleDiv;
 }
 
-UOSInt Map::WebMapTileServiceSource::GetNearestLevel(Double scale)
+UOSInt Map::WebMapTileServiceSource::GetNearestLevel(Double scale) const
 {
 	if (this->currSet == 0)
 		return 0;
@@ -811,16 +811,16 @@ UOSInt Map::WebMapTileServiceSource::GetNearestLevel(Double scale)
 	return minLevel;
 }
 
-UOSInt Map::WebMapTileServiceSource::GetConcurrentCount()
+UOSInt Map::WebMapTileServiceSource::GetConcurrentCount() const
 {
 	return 2;
 }
 
-Bool Map::WebMapTileServiceSource::GetBounds(Math::RectAreaDbl *bounds)
+Bool Map::WebMapTileServiceSource::GetBounds(OutParam<Math::RectAreaDbl> bounds) const
 {
 	if (this->currSet)
 	{
-		*bounds = this->currSet->bounds;
+		bounds.Set(this->currSet->bounds);
 		return true;
 	}
 	return false;
@@ -838,12 +838,12 @@ Math::CoordinateSystem *Map::WebMapTileServiceSource::GetCoordinateSystem()
 	}
 }
 
-Bool Map::WebMapTileServiceSource::IsMercatorProj()
+Bool Map::WebMapTileServiceSource::IsMercatorProj() const
 {
 	return false;
 }
 
-UOSInt Map::WebMapTileServiceSource::GetTileSize()
+UOSInt Map::WebMapTileServiceSource::GetTileSize() const
 {
 	if (this->currDef)
 	{

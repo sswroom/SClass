@@ -39,7 +39,7 @@ namespace Crypto
 			void SetIV(const UInt8 *iv);
 		};
 
-		Text::CString ChainModeGetName(ChainMode cm);
+		Text::CStringNN ChainModeGetName(ChainMode cm);
 	}
 }
 #endif

@@ -9,7 +9,7 @@ Crypto::Cert::X509Key::X509Key(NotNullPtr<Text::String> sourceName, Data::ByteAr
 	this->keyType = keyType;
 }
 
-Crypto::Cert::X509Key::X509Key(Text::CString sourceName, Data::ByteArrayR buff, KeyType keyType) : Crypto::Cert::X509File(sourceName, buff)
+Crypto::Cert::X509Key::X509Key(Text::CStringNN sourceName, Data::ByteArrayR buff, KeyType keyType) : Crypto::Cert::X509File(sourceName, buff)
 {
 	this->keyType = keyType;
 }

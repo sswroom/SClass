@@ -13,7 +13,7 @@ Media::ImageList::ImageList(NotNullPtr<Text::String> name) : IO::ParsedObject(na
 	this->thermoPtr = 0;
 }
 
-Media::ImageList::ImageList(Text::CString fileName) : IO::ParsedObject(fileName)
+Media::ImageList::ImageList(Text::CStringNN fileName) : IO::ParsedObject(fileName)
 {
 	this->author = 0;
 	this->imgName = 0;

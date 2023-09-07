@@ -561,7 +561,7 @@ SSWR::AVIRead::AVIRGISForm *SSWR::AVIRead::AVIRCore::GetGISForm()
 	return this->gisForm;
 }
 
-Text::CString SSWR::AVIRead::AVIRCore::IOPinTypeGetName(IOPinType iopt)
+Text::CStringNN SSWR::AVIRead::AVIRCore::IOPinTypeGetName(IOPinType iopt)
 {
 	switch (iopt)
 	{

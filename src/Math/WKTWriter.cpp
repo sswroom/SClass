@@ -584,7 +584,7 @@ Math::WKTWriter::~WKTWriter()
 	SDEL_STRING(this->lastError);
 }
 
-Text::CString Math::WKTWriter::GetWriterName()
+Text::CStringNN Math::WKTWriter::GetWriterName() const
 {
 	return CSTR("Well Known Text (WKT)");
 }

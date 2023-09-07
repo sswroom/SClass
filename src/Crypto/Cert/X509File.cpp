@@ -152,7 +152,7 @@ void Crypto::Cert::X509File::AppendTBSCertificate(const UInt8 *pdu, const UInt8 
 {
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
-	Text::CString name;
+	Text::CStringNN name;
 	Char cbuff[256];
 	Char *cptr = Text::StrConcat(cbuff, path);
 	*cptr++ = '.';
@@ -3010,7 +3010,7 @@ Crypto::Cert::X509File::X509File(NotNullPtr<Text::String> sourceName, Data::Byte
 {
 }
 
-Crypto::Cert::X509File::X509File(Text::CString sourceName, Data::ByteArrayR buff) : Net::ASN1Data(sourceName, buff)
+Crypto::Cert::X509File::X509File(Text::CStringNN sourceName, Data::ByteArrayR buff) : Net::ASN1Data(sourceName, buff)
 {
 }
 
@@ -3156,7 +3156,7 @@ Crypto::Hash::HashType Crypto::Cert::X509File::GetAlgHash(AlgType algType)
 	}
 }
 
-Text::CString Crypto::Cert::X509File::FileTypeGetName(FileType fileType)
+Text::CStringNN Crypto::Cert::X509File::FileTypeGetName(FileType fileType)
 {
 	switch (fileType)
 	{
@@ -3183,7 +3183,7 @@ Text::CString Crypto::Cert::X509File::FileTypeGetName(FileType fileType)
 	}
 }
 
-Text::CString Crypto::Cert::X509File::KeyTypeGetName(KeyType keyType)
+Text::CStringNN Crypto::Cert::X509File::KeyTypeGetName(KeyType keyType)
 {
 	switch (keyType)
 	{
@@ -3205,7 +3205,7 @@ Text::CString Crypto::Cert::X509File::KeyTypeGetName(KeyType keyType)
 	}
 }
 
-Text::CString Crypto::Cert::X509File::KeyTypeGetOID(KeyType keyType)
+Text::CStringNN Crypto::Cert::X509File::KeyTypeGetOID(KeyType keyType)
 {
 	switch (keyType)
 	{
@@ -3226,7 +3226,7 @@ Text::CString Crypto::Cert::X509File::KeyTypeGetOID(KeyType keyType)
 	}
 }
 
-Text::CString Crypto::Cert::X509File::ECNameGetName(ECName ecName)
+Text::CStringNN Crypto::Cert::X509File::ECNameGetName(ECName ecName)
 {
 	switch (ecName)
 	{
@@ -3242,7 +3242,7 @@ Text::CString Crypto::Cert::X509File::ECNameGetName(ECName ecName)
 	}
 }
 
-Text::CString Crypto::Cert::X509File::ECNameGetOID(ECName ecName)
+Text::CStringNN Crypto::Cert::X509File::ECNameGetOID(ECName ecName)
 {
 	switch (ecName)
 	{
@@ -3258,7 +3258,7 @@ Text::CString Crypto::Cert::X509File::ECNameGetOID(ECName ecName)
 	}
 }
 
-Text::CString Crypto::Cert::X509File::ValidStatusGetName(ValidStatus validStatus)
+Text::CStringNN Crypto::Cert::X509File::ValidStatusGetName(ValidStatus validStatus)
 {
 	switch (validStatus)
 	{
@@ -3283,7 +3283,7 @@ Text::CString Crypto::Cert::X509File::ValidStatusGetName(ValidStatus validStatus
 	}
 }
 
-Text::CString Crypto::Cert::X509File::ValidStatusGetDesc(ValidStatus validStatus)
+Text::CStringNN Crypto::Cert::X509File::ValidStatusGetDesc(ValidStatus validStatus)
 {
 	switch (validStatus)
 	{

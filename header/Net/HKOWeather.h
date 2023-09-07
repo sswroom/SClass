@@ -199,13 +199,13 @@ namespace Net
 		WeatherSignal GetCurrentSignal();
 
 		static PSR PSRParse(Text::CString psr);
-		static Text::CString ForecastIconGetName(ForecastIcon icon);
-		static Text::CString PSRGetName(PSR psr);
+		static Text::CStringNN ForecastIconGetName(ForecastIcon icon);
+		static Text::CStringNN PSRGetName(PSR psr);
 		static WeatherWarning WeatherWarningParse(Text::CString warning);
-		static Text::CString WeatherWarningGetCode(WeatherWarning warning);
-		static Text::CString WeatherWarningGetName(WeatherWarning warning);
+		static Text::CStringNN WeatherWarningGetCode(WeatherWarning warning);
+		static Text::CStringNN WeatherWarningGetName(WeatherWarning warning);
 		static SignalAction SignalActionParse(Text::CString action);
-		static Text::CString SignalActionGetName(SignalAction action);
+		static Text::CStringNN SignalActionGetName(SignalAction action);
 	};
 }
 #endif

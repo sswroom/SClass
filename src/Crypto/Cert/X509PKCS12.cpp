@@ -7,7 +7,7 @@ Crypto::Cert::X509PKCS12::X509PKCS12(NotNullPtr<Text::String> sourceName, Data::
 
 }
 
-Crypto::Cert::X509PKCS12::X509PKCS12(Text::CString sourceName, Data::ByteArrayR buff) : Crypto::Cert::X509File(sourceName, buff)
+Crypto::Cert::X509PKCS12::X509PKCS12(Text::CStringNN sourceName, Data::ByteArrayR buff) : Crypto::Cert::X509File(sourceName, buff)
 {
 
 }

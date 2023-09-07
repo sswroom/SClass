@@ -19,13 +19,13 @@ namespace UI
 
 		static OSInt __stdcall BTNWndProc(void *hWnd, UInt32 msg, UInt32 wParam, OSInt lParam);
 	public:
-		GUIButton(NotNullPtr<GUICore> ui, UI::GUIClientControl *parent, Text::CString txt);
+		GUIButton(NotNullPtr<GUICore> ui, UI::GUIClientControl *parent, Text::CStringNN txt);
 		virtual ~GUIButton();
 
-		virtual void SetText(Text::CString text);
+		virtual void SetText(Text::CStringNN text);
 		virtual void SetFont(const UTF8Char *name, UOSInt nameLen, Double fontHeightPt, Bool isBold);
 
-		virtual Text::CString GetObjectClass();
+		virtual Text::CStringNN GetObjectClass() const;
 		virtual OSInt OnNotify(UInt32 code, void *lParam);
 		virtual void OnFocus();
 		virtual void OnFocusLost();

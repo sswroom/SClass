@@ -13,7 +13,7 @@
 #include "Media/StaticImage.h"
 #include "Text/URLString.h"
 
-Map::MapDrawLayer *Map::KMLXML::ParseKMLRoot(NotNullPtr<Text::XMLReader> reader, Text::CString fileName, Parser::ParserList *parsers, Net::WebBrowser *browser, IO::PackageFile *pkgFile)
+Map::MapDrawLayer *Map::KMLXML::ParseKMLRoot(NotNullPtr<Text::XMLReader> reader, Text::CStringNN fileName, Parser::ParserList *parsers, Net::WebBrowser *browser, IO::PackageFile *pkgFile)
 {
 	if (reader->GetNodeType() != Text::XMLNode::NodeType::Element)
 		return 0;
@@ -86,7 +86,7 @@ Map::MapDrawLayer *Map::KMLXML::ParseKMLRoot(NotNullPtr<Text::XMLReader> reader,
 }
 
 
-Map::MapDrawLayer *Map::KMLXML::ParseKMLContainer(NotNullPtr<Text::XMLReader> reader, Data::ICaseStringMap<KMLStyle*> *styles, Text::CString sourceName, Parser::ParserList *parsers, Net::WebBrowser *browser, IO::PackageFile *basePF)
+Map::MapDrawLayer *Map::KMLXML::ParseKMLContainer(NotNullPtr<Text::XMLReader> reader, Data::ICaseStringMap<KMLStyle*> *styles, Text::CStringNN sourceName, Parser::ParserList *parsers, Net::WebBrowser *browser, IO::PackageFile *basePF)
 {
 	KMLStyle *style;
 	UOSInt i;
@@ -1270,7 +1270,7 @@ void Map::KMLXML::ParseKMLPlacemarkTrack(NotNullPtr<Text::XMLReader> reader, Map
 	}
 }
 
-Map::MapDrawLayer *Map::KMLXML::ParseKMLPlacemarkLyr(NotNullPtr<Text::XMLReader> reader, Data::StringMap<KMLStyle*> *styles, Text::CString sourceName, Parser::ParserList *parsers, Net::WebBrowser *browser, IO::PackageFile *basePF)
+Map::MapDrawLayer *Map::KMLXML::ParseKMLPlacemarkLyr(NotNullPtr<Text::XMLReader> reader, Data::StringMap<KMLStyle*> *styles, Text::CStringNN sourceName, Parser::ParserList *parsers, Net::WebBrowser *browser, IO::PackageFile *basePF)
 {
 	Text::StringBuilderUTF8 lyrNameSb;
 	Text::StringBuilderUTF8 sb;

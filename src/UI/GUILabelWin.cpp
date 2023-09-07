@@ -8,7 +8,7 @@
 
 #include <windows.h>
 
-UI::GUILabel::GUILabel(NotNullPtr<UI::GUICore> ui, UI::GUIClientControl *parent, Text::CString initText) : UI::GUIControl(ui, parent)
+UI::GUILabel::GUILabel(NotNullPtr<UI::GUICore> ui, UI::GUIClientControl *parent, Text::CStringNN initText) : UI::GUIControl(ui, parent)
 {
 	this->hasTextColor = false;
 	this->textColor = 0;
@@ -24,14 +24,14 @@ UI::GUILabel::~GUILabel()
 {
 }
 
-void UI::GUILabel::SetText(Text::CString text)
+void UI::GUILabel::SetText(Text::CStringNN text)
 {
 	const WChar *wptr = Text::StrToWCharNew(text.v);
 	SetWindowTextW((HWND)this->hwnd, wptr);
 	Text::StrDelNew(wptr);
 }
 
-Text::CString UI::GUILabel::GetObjectClass()
+Text::CStringNN UI::GUILabel::GetObjectClass() const
 {
 	return CSTR("Label");
 }

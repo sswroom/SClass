@@ -657,7 +657,7 @@ void UI::GUIForm::Close()
 	DestroyWindow((HWND)hwnd);
 }
 
-void UI::GUIForm::SetText(Text::CString text)
+void UI::GUIForm::SetText(Text::CStringNN text)
 {
 	const WChar *wptr = Text::StrToWCharNew(text.v);
 	SetWindowTextW((HWND)this->hwnd, wptr);
@@ -769,7 +769,7 @@ Bool UI::GUIForm::IsChildVisible()
 	return true;
 }
 
-Text::CString UI::GUIForm::GetObjectClass()
+Text::CStringNN UI::GUIForm::GetObjectClass() const
 {
 	return CSTR("WinForm");
 }

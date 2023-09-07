@@ -38,12 +38,12 @@ namespace UI
 		GUIRealtimeLineChart(NotNullPtr<GUICore> ui, UI::GUIClientControl *parent, NotNullPtr<Media::DrawEngine> eng, UOSInt lineCnt, UOSInt sampleCnt, UInt32 updateIntervalMS);
 		virtual ~GUIRealtimeLineChart();
 
-		virtual Text::CString GetObjectClass();
+		virtual Text::CStringNN GetObjectClass() const;
 		virtual OSInt OnNotify(UInt32 code, void *lParam);
 
 		void AddSample(Double *samples);
 		void SetLineColor(UOSInt lineId, UInt32 lineColor);
-		void SetUnit(Text::CString unit);
+		void SetUnit(Text::CStringNN unit);
 		void SetBGColor(UInt32 lineColor);
 		void SetFontColor(UInt32 fontColor);
 		void ClearChart();

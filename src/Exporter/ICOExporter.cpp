@@ -60,7 +60,7 @@ void Exporter::ICOExporter::SetCodePage(UInt32 codePage)
 {
 }
 
-Bool Exporter::ICOExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text::CString fileName, IO::ParsedObject *pobj, void *param)
+Bool Exporter::ICOExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text::CStringNN fileName, IO::ParsedObject *pobj, void *param)
 {
 	if (pobj->GetParserType() != IO::ParserType::ImageList)
 		return 0;

@@ -775,7 +775,7 @@ int TDSConnMsgHdlr(DBPROCESS * dbproc, DBINT msgno, int msgstate, int severity, 
 	return 0;
 }
 
-DB::TDSConn::TDSConn(Text::CString serverHost, UInt16 port, Bool encrypt, Text::CString database, Text::CString userName, Text::CString password, IO::LogTool *log, Text::StringBuilderUTF8 *errMsg) : DBConn(serverHost)
+DB::TDSConn::TDSConn(Text::CStringNN serverHost, UInt16 port, Bool encrypt, Text::CString database, Text::CString userName, Text::CString password, IO::LogTool *log, Text::StringBuilderUTF8 *errMsg) : DBConn(serverHost)
 {
 	if (!inited)
 	{

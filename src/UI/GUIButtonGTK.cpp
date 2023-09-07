@@ -42,7 +42,7 @@ gboolean GUIButton_OnFocusLost(void *window, void *userObj)
 	return FALSE;
 }
 
-UI::GUIButton::GUIButton(NotNullPtr<UI::GUICore> ui, UI::GUIClientControl *parent, Text::CString label) : UI::GUIControl(ui, parent)
+UI::GUIButton::GUIButton(NotNullPtr<UI::GUICore> ui, UI::GUIClientControl *parent, Text::CStringNN label) : UI::GUIControl(ui, parent)
 {
 	this->hwnd = (ControlHandle*)gtk_button_new();
 	this->SetText(label);
@@ -63,7 +63,7 @@ UI::GUIButton::~GUIButton()
 {
 }
 
-void UI::GUIButton::SetText(Text::CString text)
+void UI::GUIButton::SetText(Text::CStringNN text)
 {
 	UTF8Char *cptr;
 	UTF8Char c;
@@ -115,7 +115,7 @@ void UI::GUIButton::SetFont(const UTF8Char *name, UOSInt nameLen, Double fontHei
 #endif
 }
 
-Text::CString UI::GUIButton::GetObjectClass()
+Text::CStringNN UI::GUIButton::GetObjectClass() const
 {
 	return CSTR("Button");
 }

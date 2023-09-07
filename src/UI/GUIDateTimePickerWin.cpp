@@ -41,7 +41,7 @@ UI::GUIDateTimePicker::~GUIDateTimePicker()
 	}
 }
 
-Text::CString UI::GUIDateTimePicker::GetObjectClass()
+Text::CStringNN UI::GUIDateTimePicker::GetObjectClass() const
 {
 	return CSTR("DateTimePicker");
 }

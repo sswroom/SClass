@@ -17,7 +17,7 @@ namespace DB
 	{
 	public:
 		ReadingDB(NotNullPtr<Text::String> sourceName);
-		ReadingDB(Text::CString sourceName);
+		ReadingDB(Text::CStringNN sourceName);
 		virtual ~ReadingDB();
 
 		virtual UOSInt QuerySchemaNames(Data::ArrayList<Text::String*> *names);

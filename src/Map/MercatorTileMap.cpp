@@ -64,23 +64,23 @@ Bool Map::MercatorTileMap::OptimizeToFile(Text::CStringNN fileName)
 	}
 }
 
-Bool Map::MercatorTileMap::IsError()
+Bool Map::MercatorTileMap::IsError() const
 {
 	return false;
 }
 
-UOSInt Map::MercatorTileMap::GetLevelCount()
+UOSInt Map::MercatorTileMap::GetLevelCount() const
 {
 	return this->maxLevel + 1;
 }
 
 
-Double Map::MercatorTileMap::GetLevelScale(UOSInt index)
+Double Map::MercatorTileMap::GetLevelScale(UOSInt index) const
 {
 	return 204094080000.0 / UOSInt2Double(this->tileWidth) / (Double)(1 << index);
 }
 
-UOSInt Map::MercatorTileMap::GetNearestLevel(Double scale)
+UOSInt Map::MercatorTileMap::GetNearestLevel(Double scale) const
 {
 	Int32 level = Double2Int32(Math_Log10(204094080000.0 / scale / UOSInt2Double(this->tileWidth)) / Math_Log10(2));
 	if (level < (Int32)this->minLevel)
@@ -90,10 +90,10 @@ UOSInt Map::MercatorTileMap::GetNearestLevel(Double scale)
 	return (UOSInt)level;
 }
 
-Bool Map::MercatorTileMap::GetBounds(Math::RectAreaDbl *bounds)
+Bool Map::MercatorTileMap::GetBounds(OutParam<Math::RectAreaDbl> bounds) const
 {
-	*bounds = Math::RectAreaDbl(Math::Coord2DDbl(-180, -85.051128779806592377796715521925),
-		Math::Coord2DDbl(180, 85.051128779806592377796715521925));
+	bounds.Set(Math::RectAreaDbl(Math::Coord2DDbl(-180, -85.051128779806592377796715521925),
+		Math::Coord2DDbl(180, 85.051128779806592377796715521925)));
 	return true;
 }
 
@@ -102,12 +102,12 @@ Math::CoordinateSystem *Map::MercatorTileMap::GetCoordinateSystem()
 	return this->csys;
 }
 
-Bool Map::MercatorTileMap::IsMercatorProj()
+Bool Map::MercatorTileMap::IsMercatorProj() const
 {
 	return true;
 }
 
-UOSInt Map::MercatorTileMap::GetTileSize()
+UOSInt Map::MercatorTileMap::GetTileSize() const
 {
 	return this->tileWidth;
 }

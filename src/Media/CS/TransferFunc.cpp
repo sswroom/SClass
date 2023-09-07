@@ -174,7 +174,7 @@ Bool Media::CS::TransferParam::Equals(NotNullPtr<const TransferParam> tran) cons
 }
 
 
-Text::CString Media::CS::TransferTypeGetName(Media::CS::TransferType ttype)
+Text::CStringNN Media::CS::TransferTypeGetName(Media::CS::TransferType ttype)
 {
 	switch (ttype)
 	{

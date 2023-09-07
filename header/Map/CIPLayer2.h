@@ -44,7 +44,7 @@ namespace Map
 
 		Sync::Mutex mut;
 	public:
-		CIPLayer2(Text::CString layerName);
+		CIPLayer2(Text::CStringNN layerName);
 		virtual ~CIPLayer2();
 
 		Bool IsError();
@@ -62,7 +62,7 @@ namespace Map
 		virtual Bool GetColumnDef(UOSInt colIndex, NotNullPtr<DB::ColDef> colDef);
 		virtual Int32 GetBlockSize();
 		virtual UInt32 GetCodePage();
-		virtual Bool GetBounds(Math::RectAreaDbl *bounds);
+		virtual Bool GetBounds(OutParam<Math::RectAreaDbl> bounds) const;
 
 	private:
 		CIPFileObject *GetFileObject(void *session, Int32 id);

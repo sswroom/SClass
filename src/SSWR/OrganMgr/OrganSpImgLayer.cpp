@@ -131,9 +131,9 @@ UInt32 SSWR::OrganMgr::OrganSpImgLayer::GetCodePage()
 	return 65001;
 }
 
-Bool SSWR::OrganMgr::OrganSpImgLayer::GetBounds(Math::RectAreaDbl *bounds)
+Bool SSWR::OrganMgr::OrganSpImgLayer::GetBounds(OutParam<Math::RectAreaDbl> bounds) const
 {
-	*bounds = Math::RectAreaDbl(this->min, this->max);
+	bounds.Set(Math::RectAreaDbl(this->min, this->max));
 	return this->min.x != 0 || this->min.y != 0 || this->max.x != 0 || this->max.y != 0;
 }
 

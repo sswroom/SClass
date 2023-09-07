@@ -15,7 +15,7 @@ namespace Text
 			UTF8Char *EncodeBin(UTF8Char *sbuff, const UInt8 *dataBuff, UOSInt buffSize);
 			virtual UOSInt CalcBinSize(const UTF8Char *a85Str, UOSInt strLen);
 			virtual UOSInt DecodeBin(const UTF8Char *a85Str, UOSInt strLen, UInt8 *dataBuff);
-			virtual Text::CString GetName();
+			virtual Text::CStringNN GetName() const;
 		};
 	}
 }

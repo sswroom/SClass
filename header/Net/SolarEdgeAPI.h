@@ -97,7 +97,7 @@ namespace Net
 		Bool GetSitePower(Int32 siteId, Data::Timestamp startTime, Data::Timestamp endTime, Data::ArrayList<TimedValue> *values);
 
 		static void AppendFormDate(NotNullPtr<Text::StringBuilderUTF8> sb, Data::Timestamp ts, Bool hasTime);
-		static Text::CString TimeUnitGetName(TimeUnit timeUnit);
+		static Text::CStringNN TimeUnitGetName(TimeUnit timeUnit);
 	};
 }
 #endif

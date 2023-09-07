@@ -39,17 +39,17 @@ namespace Map
 		TileMapServiceSource(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, Text::EncodingFactory *encFact, Text::CString tmsURL);
 		virtual ~TileMapServiceSource();
 
-		virtual Text::CString GetName();
-		virtual Bool IsError();
-		virtual TileType GetTileType();
-		virtual UOSInt GetLevelCount();
-		virtual Double GetLevelScale(UOSInt level);
-		virtual UOSInt GetNearestLevel(Double scale);
-		virtual UOSInt GetConcurrentCount();
-		virtual Bool GetBounds(Math::RectAreaDbl *bounds);
+		virtual Text::CStringNN GetName() const;
+		virtual Bool IsError() const;
+		virtual TileType GetTileType() const;
+		virtual UOSInt GetLevelCount() const;
+		virtual Double GetLevelScale(UOSInt level) const;
+		virtual UOSInt GetNearestLevel(Double scale) const;
+		virtual UOSInt GetConcurrentCount() const;
+		virtual Bool GetBounds(OutParam<Math::RectAreaDbl> bounds) const;
 		virtual Math::CoordinateSystem *GetCoordinateSystem();
-		virtual Bool IsMercatorProj();
-		virtual UOSInt GetTileSize();
+		virtual Bool IsMercatorProj() const;
+		virtual UOSInt GetTileSize() const;
 
 		virtual UOSInt GetTileImageIDs(UOSInt level, Math::RectAreaDbl rect, Data::ArrayList<Math::Coord2D<Int32>> *ids);
 		virtual Media::ImageList *LoadTileImage(UOSInt level, Math::Coord2D<Int32> tileId, Parser::ParserList *parsers, Math::RectAreaDbl *bounds, Bool localOnly);

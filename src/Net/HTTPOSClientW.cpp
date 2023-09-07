@@ -650,7 +650,7 @@ void Net::HTTPOSClient::SetTimeout(Data::Duration timeout)
 	}
 }
 
-Bool Net::HTTPOSClient::IsSecureConn()
+Bool Net::HTTPOSClient::IsSecureConn() const
 {
 	return this->clsData->https;
 }

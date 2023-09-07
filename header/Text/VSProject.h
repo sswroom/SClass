@@ -61,7 +61,7 @@ namespace Text
 		NotNullPtr<Text::String> projName;
 		Data::ArrayList<CodeObject*> childList;
 	public:
-		VSProject(Text::CString name, VisualStudioVersion ver);
+		VSProject(Text::CStringNN name, VisualStudioVersion ver);
 		virtual ~VSProject();
 
 		virtual ProjectType GetProjectType() const;

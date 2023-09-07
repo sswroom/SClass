@@ -11,7 +11,7 @@ Text::Doc::TextDocument::TextDocument() : IO::ParsedObject(CSTR("Untitled"))
 	SetDocumentName(CSTR("Untitled"));
 }
 
-Text::Doc::TextDocument::TextDocument(Text::CString name) : IO::ParsedObject(name)
+Text::Doc::TextDocument::TextDocument(Text::CStringNN name) : IO::ParsedObject(name)
 {
 	this->docName = 0;
 	this->pflags = (Text::Doc::TextDocument::PropertiesFlags)0;

@@ -268,7 +268,7 @@ UInt32 Map::DrawMapServiceLayer::GetCodePage()
 	return 0;
 }
 
-Bool Map::DrawMapServiceLayer::GetBounds(Math::RectAreaDbl *bounds)
+Bool Map::DrawMapServiceLayer::GetBounds(OutParam<Math::RectAreaDbl> bounds) const
 {
 	return this->mapService->GetBounds(bounds);
 }

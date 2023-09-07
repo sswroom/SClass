@@ -246,7 +246,7 @@ SSWR::OrganMgr::OrganEnv::ErrorType SSWR::OrganMgr::OrganEnv::GetErrorType()
 	return this->errType;
 }
 
-Text::CString SSWR::OrganMgr::OrganEnv::GetLang(const UTF8Char *name, UOSInt nameLen)
+Text::CStringNN SSWR::OrganMgr::OrganEnv::GetLang(const UTF8Char *name, UOSInt nameLen)
 {
 	if (this->langFile == 0)
 		return {name, nameLen};

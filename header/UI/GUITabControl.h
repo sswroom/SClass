@@ -23,17 +23,17 @@ namespace UI
 		virtual ~GUITabControl();
 
 		GUITabPage *AddTabPage(NotNullPtr<Text::String> itemText);
-		GUITabPage *AddTabPage(Text::CString itemText);
+		GUITabPage *AddTabPage(Text::CStringNN itemText);
 		void SetSelectedIndex(UOSInt index);
 		void SetSelectedPage(GUITabPage *page);
 		UOSInt GetSelectedIndex();
 		GUITabPage *GetSelectedPage();
-		void SetTabPageName(UOSInt index, Text::CString name);
+		void SetTabPageName(UOSInt index, Text::CStringNN name);
 		UTF8Char *GetTabPageName(UOSInt index, UTF8Char *buff);
 		void GetTabPageRect(OSInt *x, OSInt *y, UOSInt *w, UOSInt *h);
 		void *GetTabPageFont();
 
-		virtual Text::CString GetObjectClass();
+		virtual Text::CStringNN GetObjectClass() const;
 		virtual OSInt OnNotify(UInt32 code, void *lParam);
 		virtual void OnSizeChanged(Bool updateScn);
 		void HandleSelChanged(UIEvent hdlr, void *userObj);

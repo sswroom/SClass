@@ -12,7 +12,7 @@ namespace Crypto
 		{
 		public:
 			X509CertReq(NotNullPtr<Text::String> sourceName, Data::ByteArrayR buff);
-			X509CertReq(Text::CString sourceName, Data::ByteArrayR buff);
+			X509CertReq(Text::CStringNN sourceName, Data::ByteArrayR buff);
 			virtual ~X509CertReq();
 
 			virtual FileType GetFileType() const;

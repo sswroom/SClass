@@ -10,7 +10,7 @@ namespace Media
 		class JasperXML
 		{
 		public:
-			static Media::Jasper::JasperReport *ParseJasperReport(NotNullPtr<Text::XMLReader> reader, Text::CString fileName);
+			static Media::Jasper::JasperReport *ParseJasperReport(NotNullPtr<Text::XMLReader> reader, Text::CStringNN fileName);
 		private:
 			static Media::Jasper::JasperBand *ParseBand(NotNullPtr<Text::XMLReader> reader);
 			static Media::Jasper::JasperElement *ParseElement(NotNullPtr<Text::XMLReader> reader);

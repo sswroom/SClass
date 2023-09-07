@@ -858,7 +858,7 @@ const UInt8 *Media::ColorProfile::GetRAWICC() const
 	return this->rawICC;
 }
 
-Text::CString Media::ColorProfile::YUVTypeGetName(Media::ColorProfile::YUVType yuvType)
+Text::CStringNN Media::ColorProfile::YUVTypeGetName(Media::ColorProfile::YUVType yuvType)
 {
 	if (yuvType & Media::ColorProfile::YUVT_FLAG_YUV_0_255)
 	{
@@ -908,7 +908,7 @@ Text::CString Media::ColorProfile::YUVTypeGetName(Media::ColorProfile::YUVType y
 	}
 }
 
-Text::CString Media::ColorProfile::ColorTypeGetName(ColorType colorType)
+Text::CStringNN Media::ColorProfile::ColorTypeGetName(ColorType colorType)
 {
 	switch (colorType)
 	{
@@ -968,7 +968,7 @@ Text::CString Media::ColorProfile::ColorTypeGetName(ColorType colorType)
 	}
 }
 
-Text::CString Media::ColorProfile::CommonProfileTypeGetName(CommonProfileType cpt)
+Text::CStringNN Media::ColorProfile::CommonProfileTypeGetName(CommonProfileType cpt)
 {
 	switch (cpt)
 	{

@@ -71,7 +71,7 @@ void __stdcall SSWR::AVIRead::AVIRDWQB30Form::OnModeSettingClicked(void *userObj
 		j = cmdList.GetCount();
 		while (i < j)
 		{
-			me->cboSetCmd->AddItem(me->scanner->GetCommandName(cmdList.GetItem(i)), (void*)(OSInt)cmdList.GetItem(i));
+			me->cboSetCmd->AddItem(me->scanner->GetCommandName(cmdList.GetItem(i)).OrEmpty(), (void*)(OSInt)cmdList.GetItem(i));
 			i++;
 		}
 		if (j > 0)
@@ -145,7 +145,7 @@ void __stdcall SSWR::AVIRead::AVIRDWQB30Form::OnSetCmdSelChg(void *userObj)
 				i = me->cmdMin;
 				while (i <= me->cmdMax)
 				{
-					me->cboSetParam->AddItem(me->scanner->GetCommandParamName(dcmd, i), (void*)(OSInt)i); 
+					me->cboSetParam->AddItem(me->scanner->GetCommandParamName(dcmd, i).OrEmpty(), (void*)(OSInt)i); 
 					i++;
 				}
 			}
@@ -196,7 +196,7 @@ void __stdcall SSWR::AVIRead::AVIRDWQB30Form::OnSetCmdClicked(void *userObj)
 			}
 			else
 			{
-				me->txtSetCmd->SetText(me->scanner->GetCommandParamName(me->cmdCurr, val));
+				me->txtSetCmd->SetText(me->scanner->GetCommandParamName(me->cmdCurr, val).OrEmpty());
 			}
 		}
 		else if (me->cmdType == IO::CodeScanner::CT_SELECT_COMMAND)

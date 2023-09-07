@@ -28,28 +28,28 @@ Map::ESRI::ESRITileMap::~ESRITileMap()
 	}
 }
 
-Text::CString Map::ESRI::ESRITileMap::GetName()
+Text::CStringNN Map::ESRI::ESRITileMap::GetName() const
 {
 	return CSTR("ESRITileMap");
 }
 
-Bool Map::ESRI::ESRITileMap::IsError()
+Bool Map::ESRI::ESRITileMap::IsError() const
 {
 	return this->esriMap->IsError() || !this->esriMap->HasTile();
 }
 
-Map::TileMap::TileType Map::ESRI::ESRITileMap::GetTileType()
+Map::TileMap::TileType Map::ESRI::ESRITileMap::GetTileType() const
 {
 	return Map::TileMap::TT_ESRI;
 }
 
-UOSInt Map::ESRI::ESRITileMap::GetLevelCount()
+UOSInt Map::ESRI::ESRITileMap::GetLevelCount() const
 {
 	return this->esriMap->TileGetLevelCount();
 }
 
 
-Double Map::ESRI::ESRITileMap::GetLevelScale(UOSInt index)
+Double Map::ESRI::ESRITileMap::GetLevelScale(UOSInt index) const
 {
 	Double scaleDiv = Map::TileMapUtil::CalcScaleDiv(this->esriMap->GetCoordinateSystem());
 	Double level = this->esriMap->TileGetLevelResolution(index);
@@ -59,7 +59,7 @@ Double Map::ESRI::ESRITileMap::GetLevelScale(UOSInt index)
 	return level / scaleDiv;
 }
 
-UOSInt Map::ESRI::ESRITileMap::GetNearestLevel(Double scale)
+UOSInt Map::ESRI::ESRITileMap::GetNearestLevel(Double scale) const
 {
 	Double scaleDiv = Map::TileMapUtil::CalcScaleDiv(this->esriMap->GetCoordinateSystem());
 	Double ldiff;
@@ -84,15 +84,16 @@ UOSInt Map::ESRI::ESRITileMap::GetNearestLevel(Double scale)
 	return minInd;
 }
 
-UOSInt Map::ESRI::ESRITileMap::GetConcurrentCount()
+UOSInt Map::ESRI::ESRITileMap::GetConcurrentCount() const
 {
 	return 1;
 }
 
-Bool Map::ESRI::ESRITileMap::GetBounds(Math::RectAreaDbl *bounds)
+Bool Map::ESRI::ESRITileMap::GetBounds(OutParam<Math::RectAreaDbl> bounds) const
 {
-	*bounds = this->esriMap->GetBounds();
-	return bounds->tl.x != 0 || bounds->tl.y != 0 || bounds->br.x != 0 || bounds->br.y != 0;
+	Math::RectAreaDbl bnd;
+	bounds.Set(bnd = this->esriMap->GetBounds());
+	return bnd.tl.x != 0 || bnd.tl.y != 0 || bnd.br.x != 0 || bnd.br.y != 0;
 }
 
 Math::CoordinateSystem *Map::ESRI::ESRITileMap::GetCoordinateSystem()
@@ -100,12 +101,12 @@ Math::CoordinateSystem *Map::ESRI::ESRITileMap::GetCoordinateSystem()
 	return this->esriMap->GetCoordinateSystem();
 }
 
-Bool Map::ESRI::ESRITileMap::IsMercatorProj()
+Bool Map::ESRI::ESRITileMap::IsMercatorProj() const
 {
 	return false;
 }
 
-UOSInt Map::ESRI::ESRITileMap::GetTileSize()
+UOSInt Map::ESRI::ESRITileMap::GetTileSize() const
 {
 	return this->esriMap->TileGetWidth();
 }

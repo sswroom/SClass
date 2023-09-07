@@ -19,7 +19,7 @@
 #include "Text/MyString.h"
 #include "Text/MyStringW.h"
 
-Map::SPDLayer::SPDLayer(Text::CString layerName) : Map::MapDrawLayer(layerName, 0, CSTR_NULL)
+Map::SPDLayer::SPDLayer(Text::CStringNN layerName) : Map::MapDrawLayer(layerName, 0, CSTR_NULL)
 {
 	UTF8Char fname[256];
 	UTF8Char *sptr;
@@ -474,11 +474,11 @@ UInt32 Map::SPDLayer::GetCodePage()
 	return 0;
 }
 
-Bool Map::SPDLayer::GetBounds(Math::RectAreaDbl *bounds)
+Bool Map::SPDLayer::GetBounds(OutParam<Math::RectAreaDbl> bounds) const
 {
 	if (this->nblks == 0)
 	{
-		*bounds = Math::RectAreaDbl(0, 0, 0, 0);
+		bounds.Set(Math::RectAreaDbl(0, 0, 0, 0));
 		return false;
 	}
 	else
@@ -506,7 +506,7 @@ Bool Map::SPDLayer::GetBounds(Math::RectAreaDbl *bounds)
 				minBlk.y = this->blks[i].blk.y;
 			}
 		}
-		*bounds = Math::RectAreaDbl(minBlk.ToDouble(), maxBlk.ToDouble() + 1) * (this->blkScale / 200000.0);
+		bounds.Set(Math::RectAreaDbl(minBlk.ToDouble(), maxBlk.ToDouble() + 1) * (this->blkScale / 200000.0));
 		return true;
 	}
 }

@@ -66,7 +66,7 @@ namespace Math
 		UInt32 srid;
 
 		CoordinateSystem(NotNullPtr<Text::String> sourceName, UInt32 srid, Text::CString csysName);
-		CoordinateSystem(Text::CString sourceName, UInt32 srid, Text::CString csysName);
+		CoordinateSystem(Text::CStringNN sourceName, UInt32 srid, Text::CString csysName);
 	public:
 		virtual ~CoordinateSystem();
 

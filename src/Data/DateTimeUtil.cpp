@@ -2138,7 +2138,7 @@ Data::DateTimeUtil::Weekday Data::DateTimeUtil::WeekdayParse(Text::CString weekd
 	return Weekday::Monday;
 }
 
-Text::CString Data::DateTimeUtil::WeekdayGetName(Weekday wd)
+Text::CStringNN Data::DateTimeUtil::WeekdayGetName(Weekday wd)
 {
 	switch (wd)
 	{

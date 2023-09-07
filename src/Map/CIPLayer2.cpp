@@ -21,7 +21,7 @@
 #include "Text/MyString.h"
 #include "Text/MyStringW.h"
 
-Map::CIPLayer2::CIPLayer2(Text::CString layerName) : Map::MapDrawLayer(layerName, 0, CSTR_NULL)
+Map::CIPLayer2::CIPLayer2(Text::CStringNN layerName) : Map::MapDrawLayer(layerName, 0, CSTR_NULL)
 {
 	UTF8Char fname[256];
 	UTF8Char *sptr;
@@ -578,11 +578,11 @@ UInt32 Map::CIPLayer2::GetCodePage()
 	return 0;
 }
 
-Bool Map::CIPLayer2::GetBounds(Math::RectAreaDbl *bounds)
+Bool Map::CIPLayer2::GetBounds(OutParam<Math::RectAreaDbl> bounds) const
 {
 	if (this->nblks == 0)
 	{
-		*bounds = Math::RectAreaDbl(0, 0, 0, 0);
+		bounds.Set(Math::RectAreaDbl(0, 0, 0, 0));
 		return false;
 	}
 	else
@@ -610,7 +610,7 @@ Bool Map::CIPLayer2::GetBounds(Math::RectAreaDbl *bounds)
 				minBlk.y = this->blks[i].blk.y;
 			}
 		}
-		*bounds = Math::RectAreaDbl(minBlk.ToDouble(), maxBlk.ToDouble() + 1) * (this->blkScale / 200000.0);
+		bounds.Set(Math::RectAreaDbl(minBlk.ToDouble(), maxBlk.ToDouble() + 1) * (this->blkScale / 200000.0));
 		return true;
 	}
 }

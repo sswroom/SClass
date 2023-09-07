@@ -183,7 +183,7 @@ void Map::NetworkLinkLayer::LoadLink(LinkInfo *link)
 	}
 }
 
-Map::NetworkLinkLayer::NetworkLinkLayer(Text::CString fileName, Parser::ParserList *parsers, Net::WebBrowser *browser, Text::CString layerName) : Map::MapDrawLayer(fileName, 0, layerName)
+Map::NetworkLinkLayer::NetworkLinkLayer(Text::CStringNN fileName, Parser::ParserList *parsers, Net::WebBrowser *browser, Text::CString layerName) : Map::MapDrawLayer(fileName, 0, layerName)
 {
 	this->parsers = parsers;
 	this->browser = browser;
@@ -532,18 +532,18 @@ UInt32 Map::NetworkLinkLayer::GetCodePage()
 	return 0;
 }
 
-Bool Map::NetworkLinkLayer::GetBounds(Math::RectAreaDbl *bounds)
+Bool Map::NetworkLinkLayer::GetBounds(OutParam<Math::RectAreaDbl> bounds) const
 {
 	if (this->hasBounds)
 	{
-		*bounds = this->bounds;
+		bounds.Set(this->bounds);
 		return true;
 	}
 	Bool isFirst = true;
 	UOSInt i;
 	Math::RectAreaDbl minMax;
 	Math::RectAreaDbl thisBounds;
-	Sync::RWMutexUsage mutUsage(this->linkMut, false);
+	Sync::RWMutexUsage mutUsage(NotNullPtr<Sync::RWMutex>::ConvertFrom(NotNullPtr<const Sync::RWMutex>(this->linkMut)), false);
 	i = this->links.GetCount();
 	while (i-- > 0)
 	{
@@ -552,14 +552,14 @@ Bool Map::NetworkLinkLayer::GetBounds(Math::RectAreaDbl *bounds)
 		{
 			if (isFirst)
 			{
-				if (link->innerLayer->GetBounds(&minMax))
+				if (link->innerLayer->GetBounds(minMax))
 				{
 					isFirst = false;
 				}
 			}
 			else
 			{
-				if (link->innerLayer->GetBounds(&thisBounds))
+				if (link->innerLayer->GetBounds(thisBounds))
 				{
 					minMax = minMax.MergeArea(thisBounds);
 				}
@@ -568,12 +568,12 @@ Bool Map::NetworkLinkLayer::GetBounds(Math::RectAreaDbl *bounds)
 	}
 	if (isFirst)
 	{
-		*bounds = Math::RectAreaDbl(0, 0, 0, 0);
+		bounds.Set(Math::RectAreaDbl(0, 0, 0, 0));
 		return false;
 	}
 	else
 	{
-		*bounds = minMax;
+		bounds.Set(minMax);
 		return true;
 	}
 }

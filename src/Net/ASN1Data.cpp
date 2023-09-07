@@ -8,7 +8,7 @@ Net::ASN1Data::ASN1Data(NotNullPtr<Text::String> sourceName, Data::ByteArrayR bu
 	this->buff.CopyFrom(buff);
 }
 
-Net::ASN1Data::ASN1Data(Text::CString sourceName, Data::ByteArrayR buff) : IO::ParsedObject(sourceName), buff(buff.GetSize())
+Net::ASN1Data::ASN1Data(Text::CStringNN sourceName, Data::ByteArrayR buff) : IO::ParsedObject(sourceName), buff(buff.GetSize())
 {
 	this->buff.CopyFrom(buff);
 }

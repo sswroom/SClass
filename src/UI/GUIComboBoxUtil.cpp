@@ -30,7 +30,7 @@ void UI::GUIComboBoxUtil::AddMonthItems(UI::GUIComboBox *cbo)
 	UOSInt j = dt.GetMonth();
 	while (i < 12)
 	{
-		k = cbo->AddItem(Text::CString((const UTF8Char*)Data::DateTimeUtil::monString[i], 3), (void*)(i + 1));
+		k = cbo->AddItem(Text::CStringNN((const UTF8Char*)Data::DateTimeUtil::monString[i], 3), (void*)(i + 1));
 		i++;
 		if (i == j)
 		{

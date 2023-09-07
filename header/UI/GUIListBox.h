@@ -33,10 +33,10 @@ namespace UI
 		void EventRightClick(Math::Coord2D<OSInt> pos);
 
 		UOSInt AddItem(NotNullPtr<Text::String> itemText, void *itemObj);
-		UOSInt AddItem(Text::CString itemText, void *itemObj);
+		UOSInt AddItem(Text::CStringNN itemText, void *itemObj);
 		UOSInt AddItem(const WChar *itemText, void *itemObj);
 		UOSInt InsertItem(UOSInt index, Text::String *itemText, void *itemObj);
-		UOSInt InsertItem(UOSInt index, Text::CString itemText, void *itemObj);
+		UOSInt InsertItem(UOSInt index, Text::CStringNN itemText, void *itemObj);
 		UOSInt InsertItem(UOSInt index, const WChar *itemText, void *itemObj);
 		void *RemoveItem(UOSInt index);
 		void *GetItem(UOSInt index);
@@ -51,11 +51,11 @@ namespace UI
 		Text::String *GetSelectedItemTextNew();
 		UTF8Char *GetItemText(UTF8Char *buff, UOSInt index);
 		WChar *GetItemText(WChar *buff, UOSInt index);
-		void SetItemText(UOSInt index, Text::CString text);
+		void SetItemText(UOSInt index, Text::CStringNN text);
 		Text::String *GetItemTextNew(UOSInt index);
 		OSInt GetItemHeight();
 
-		virtual Text::CString GetObjectClass();
+		virtual Text::CStringNN GetObjectClass() const;
 		virtual OSInt OnNotify(UInt32 code, void *lParam);
 
 		virtual void HandleSelectionChange(UI::UIEvent hdlr, void *userObj);

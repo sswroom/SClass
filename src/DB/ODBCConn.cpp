@@ -353,7 +353,7 @@ Bool DB::ODBCConn::Connect(Text::CString connStr)
 	return ret;
 }
 
-DB::ODBCConn::ODBCConn(Text::CString sourceName, IO::LogTool *log) : DB::DBConn(sourceName)
+DB::ODBCConn::ODBCConn(Text::CStringNN sourceName, IO::LogTool *log) : DB::DBConn(sourceName)
 {
 	connHand = 0;
 	envHand = 0;
@@ -374,7 +374,7 @@ DB::ODBCConn::ODBCConn(Text::CString sourceName, IO::LogTool *log) : DB::DBConn(
 	this->axisAware = false;
 }
 
-DB::ODBCConn::ODBCConn(Text::CString connStr, Text::CString sourceName, IO::LogTool *log) : DB::DBConn(sourceName)
+DB::ODBCConn::ODBCConn(Text::CString connStr, Text::CStringNN sourceName, IO::LogTool *log) : DB::DBConn(sourceName)
 {
 	connHand = 0;
 	envHand = 0;
@@ -418,7 +418,7 @@ DB::ODBCConn::ODBCConn(NotNullPtr<Text::String> dsn, Text::String *uid, Text::St
 	this->Connect(this->dsn, this->uid, this->pwd, this->schema);
 }
 
-DB::ODBCConn::ODBCConn(Text::CString dsn, Text::CString uid, Text::CString pwd, Text::CString schema, IO::LogTool *log) : DB::DBConn(dsn)
+DB::ODBCConn::ODBCConn(Text::CStringNN dsn, Text::CString uid, Text::CString pwd, Text::CString schema, IO::LogTool *log) : DB::DBConn(dsn)
 {
 	this->log = log;
 	this->connStr = 0;
@@ -1190,7 +1190,7 @@ DB::DBTool *DB::ODBCConn::CreateDBTool(NotNullPtr<Text::String> dsn, Text::Strin
 	}
 }
 
-DB::DBTool *DB::ODBCConn::CreateDBTool(Text::CString dsn, Text::CString uid, Text::CString pwd, Text::CString schema, IO::LogTool *log, Text::CString logPrefix)
+DB::DBTool *DB::ODBCConn::CreateDBTool(Text::CStringNN dsn, Text::CString uid, Text::CString pwd, Text::CString schema, IO::LogTool *log, Text::CString logPrefix)
 {
 	DB::ODBCConn *conn;
 	DB::DBTool *db;

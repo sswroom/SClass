@@ -51,7 +51,7 @@ OSInt __stdcall UI::GUIGroupBox::GBWndProc(void *hWnd, UInt32 msg, UOSInt wParam
 	return 0;
 }
 
-UI::GUIGroupBox::GUIGroupBox(NotNullPtr<UI::GUICore> ui, UI::GUIClientControl *parent, Text::CString text) : UI::GUIClientControl(ui, parent)
+UI::GUIGroupBox::GUIGroupBox(NotNullPtr<UI::GUICore> ui, UI::GUIClientControl *parent, Text::CStringNN text) : UI::GUIClientControl(ui, parent)
 {
 	UInt32 style = WS_CLIPSIBLINGS | WS_CHILD | BS_GROUPBOX;
 	if (parent->IsChildVisible())
@@ -82,7 +82,7 @@ UI::GUIGroupBox::~GUIGroupBox()
 	UI::GUICoreWin::MSSetWindowObj(this->hwnd, GWLP_WNDPROC, (OSInt)this->oriWndProc);
 }
 
-Text::CString UI::GUIGroupBox::GetObjectClass()
+Text::CStringNN UI::GUIGroupBox::GetObjectClass() const
 {
 	return CSTR("GroupBox");
 }

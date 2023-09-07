@@ -65,7 +65,7 @@ namespace SSWR
 
 			virtual void OnMonitorChanged();
 
-			static Text::CString DeviceTypeGetName(DeviceType devType);
+			static Text::CStringNN DeviceTypeGetName(DeviceType devType);
 		};
 	}
 }

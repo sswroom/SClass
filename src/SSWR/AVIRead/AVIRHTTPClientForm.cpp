@@ -372,7 +372,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnViewClicked(void *userObj)
 		Text::IMIMEObj *mimeObj;
 		{
 			IO::StmData::MemoryDataRef md(buff, buffSize);
-			Text::CString contType;
+			Text::CStringNN contType;
 			if (me->respContType)
 			{
 				contType = me->respContType->ToCString();

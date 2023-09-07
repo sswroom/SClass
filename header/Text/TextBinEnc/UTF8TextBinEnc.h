@@ -11,7 +11,7 @@ namespace Text
 		public:
 			UTF8TextBinEnc();
 			virtual ~UTF8TextBinEnc();
-			virtual Text::CString GetName();
+			virtual Text::CStringNN GetName() const;
 		};
 	}
 }

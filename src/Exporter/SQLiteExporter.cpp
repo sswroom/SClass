@@ -45,7 +45,7 @@ Bool Exporter::SQLiteExporter::GetOutputName(UOSInt index, UTF8Char *nameBuff, U
 	return false;
 }
 
-Bool Exporter::SQLiteExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text::CString fileName, IO::ParsedObject *pobj, void *param)
+Bool Exporter::SQLiteExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text::CStringNN fileName, IO::ParsedObject *pobj, void *param)
 {
 	if (pobj->GetParserType() != IO::ParserType::ReadingDB)
 	{
@@ -62,7 +62,7 @@ Bool Exporter::SQLiteExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Te
 	UOSInt i;
 	UOSInt j;
 	OSInt k;
-	destDB = DB::SQLiteFile::CreateDBTool(fileName, &log, CSTR("DB: "));
+	destDB = DB::SQLiteFile::CreateDBTool(fileName.OrEmpty(), &log, CSTR("DB: "));
 	if (destDB == 0)
 		return false;
 	Bool succ = true;

@@ -12,7 +12,7 @@ namespace Media
 			GammaImageGen();
 			virtual ~GammaImageGen();
 
-			virtual Text::CString GetName();
+			virtual Text::CStringNN GetName() const;
 			virtual Media::Image *GenerateImage(NotNullPtr<const Media::ColorProfile> colorProfile, Math::Size2D<UOSInt> size);
 		};
 	}

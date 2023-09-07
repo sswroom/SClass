@@ -53,7 +53,7 @@ void Exporter::MapCSVExporter::SetCodePage(UInt32 codePage)
 	this->codePage = codePage;
 }
 
-Bool Exporter::MapCSVExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text::CString fileName, IO::ParsedObject *pobj, void *param)
+Bool Exporter::MapCSVExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text::CStringNN fileName, IO::ParsedObject *pobj, void *param)
 {
 	if (pobj->GetParserType() != IO::ParserType::MapLayer)
 	{
@@ -163,7 +163,7 @@ Bool Exporter::MapCSVExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Te
 
 		NEW_CLASS(objIds, Data::ArrayListInt64());
 		Map::GetObjectSess *sess = layer->BeginGetObject();
-		layer->GetBounds(&minMax);
+		layer->GetBounds(minMax);
 		layer->GetObjectIdsMapXY(objIds, &nameArr, minMax, true);
 		i = 0;
 		j = objIds->GetCount();

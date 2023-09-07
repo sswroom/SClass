@@ -23,7 +23,7 @@ Math::CesiumEntityWriter::~CesiumEntityWriter()
 	SDEL_STRING(this->lastError);
 }
 
-Text::CString Math::CesiumEntityWriter::GetWriterName()
+Text::CStringNN Math::CesiumEntityWriter::GetWriterName() const
 {
 	return CSTR("Cesium Entity");
 }

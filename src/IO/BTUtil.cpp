@@ -1216,7 +1216,7 @@ const IO::BTUtil::NumberMap IO::BTUtil::uuids[] = {
 	{0x1402, CSTR("HDP Sink")}
 };
 
-Text::CString IO::BTUtil::GetManufacturerName(UInt16 manuf)
+Text::CStringNN IO::BTUtil::GetManufacturerName(UInt16 manuf)
 {
 	OSInt i = 0;
 	OSInt j = (sizeof(compId) / sizeof(compId[0])) - 1;

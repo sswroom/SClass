@@ -105,7 +105,7 @@ void SSWR::AVIRead::AVIRASN1MIBForm::LoadFile(Text::CStringNN fileName)
 		const Net::ASN1OIDDB::OIDInfo *entry = Net::ASN1OIDDB::OIDGetEntry(obj->oid, obj->oidLen);
 		if (entry)
 		{
-			this->lvOID->SetSubItem(i, 1, Text::CString::FromPtr((const UTF8Char*)entry->name));
+			this->lvOID->SetSubItem(i, 1, Text::CStringNN::FromPtr((const UTF8Char*)entry->name));
 		}
 		this->lvOID->SetSubItem(i, 2, Text::String::OrEmpty(obj->objectName));
 

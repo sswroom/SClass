@@ -89,7 +89,7 @@ namespace Map
 		typedef void (__stdcall *UpdatedHandler)(void *userObj);
 
 		MapDrawLayer(NotNullPtr<Text::String> sourceName, UOSInt nameCol, Text::String *layerName);
-		MapDrawLayer(Text::CString sourceName, UOSInt nameCol, Text::CString layerName);
+		MapDrawLayer(Text::CStringNN sourceName, UOSInt nameCol, Text::CString layerName);
 		virtual ~MapDrawLayer();
 
 		virtual void SetCurrScale(Double scale);
@@ -111,7 +111,7 @@ namespace Map
 		virtual DB::DBUtil::ColType GetColumnType(UOSInt colIndex, UOSInt *colSize) = 0;
 		virtual Bool GetColumnDef(UOSInt colIndex, NotNullPtr<DB::ColDef> colDef) = 0;
 		virtual UInt32 GetCodePage() = 0;
-		virtual Bool GetBounds(Math::RectAreaDbl *rect) = 0;
+		virtual Bool GetBounds(OutParam<Math::RectAreaDbl> rect) const = 0;
 		virtual void SetDispSize(Math::Size2DDbl size, Double dpi);
 
 		virtual GetObjectSess *BeginGetObject() = 0;

@@ -30,7 +30,7 @@ namespace Media
 			virtual Media::DrawImage *GenCode(Text::CString code, UOSInt codeWidth, NotNullPtr<Media::DrawEngine> eng) = 0;
 		public:
 			static CodeImageGen *CreateGenerator(CodeType codeType);
-			static Text::CString GetCodeName(CodeType codeType);
+			static Text::CStringNN GetCodeName(CodeType codeType);
 		};
 	}
 }

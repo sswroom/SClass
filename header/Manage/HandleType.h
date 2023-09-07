@@ -37,6 +37,6 @@ namespace Manage
 		EtwRegistration
 	};
 
-	Text::CString HandleTypeGetName(HandleType handleType);
+	Text::CStringNN HandleTypeGetName(HandleType handleType);
 }
 #endif

@@ -70,7 +70,7 @@ namespace UI
 		GUIPictureBoxDD(NotNullPtr<GUICore> ui, UI::GUIClientControl *parent, Media::ColorManagerSess *colorSess, Bool allowEnlarge, Bool directMode);
 		virtual ~GUIPictureBoxDD();
 
-		virtual Text::CString GetObjectClass();
+		virtual Text::CStringNN GetObjectClass() const;
 		virtual OSInt OnNotify(UInt32 code, void *lParam);
 		virtual void ChangeMonitor(MonitorHandle *hMon);
 		virtual void SetDPI(Double hdpi, Double ddpi);

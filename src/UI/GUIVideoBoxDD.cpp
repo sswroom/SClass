@@ -128,7 +128,7 @@ UI::GUIVideoBoxDD::~GUIVideoBoxDD()
 #endif
 }
 
-Text::CString UI::GUIVideoBoxDD::GetObjectClass()
+Text::CStringNN UI::GUIVideoBoxDD::GetObjectClass() const
 {
 	return CSTR("VideoBoxDD");
 }

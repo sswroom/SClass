@@ -20,8 +20,8 @@ namespace Text
 			HTMLMIMEObj(const UInt8 *textBuff, UOSInt buffSize, UInt32 codePage);
 			virtual ~HTMLMIMEObj();
 
-			virtual Text::CString GetClassName() const;
-			virtual Text::CString GetContentType() const;
+			virtual Text::CStringNN GetClassName() const;
+			virtual Text::CStringNN GetContentType() const;
 			virtual UOSInt WriteStream(IO::Stream *stm) const;
 			virtual IMIMEObj *Clone() const;
 

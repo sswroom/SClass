@@ -437,7 +437,7 @@ Crypto::Token::JWToken *Crypto::Token::JWToken::Parse(Text::CStringNN token, Tex
 	return jwt;
 }
 
-Text::CString Crypto::Token::JWToken::PayloadName(Text::CString key)
+Text::CStringNN Crypto::Token::JWToken::PayloadName(Text::CStringNN key)
 {
 	OSInt i = 0;
 	OSInt j = (sizeof(payloadNames) / sizeof(payloadNames[0])) - 1;
@@ -457,16 +457,17 @@ Text::CString Crypto::Token::JWToken::PayloadName(Text::CString key)
 		}
 		else
 		{
-			return Text::CString(payloadNames[k].name, payloadNames[k].nameLen);
+			return Text::CStringNN(payloadNames[k].name, payloadNames[k].nameLen);
 		}
 	}
 	return key;
 }
 
-Text::CString Crypto::Token::JWToken::VerifyTypeGetName(VerifyType val)
+Text::CStringNN Crypto::Token::JWToken::VerifyTypeGetName(VerifyType val)
 {
 	switch (val)
 	{
+	default:
 	case VerifyType::Unknown:
 		return CSTR("Unknown");
 	case VerifyType::Azure:
@@ -475,7 +476,5 @@ Text::CString Crypto::Token::JWToken::VerifyTypeGetName(VerifyType val)
 		return CSTR("Password");
 	case VerifyType::Key:
 		return CSTR("Key");
-	default:
-		return CSTR_NULL;
 	}
 }

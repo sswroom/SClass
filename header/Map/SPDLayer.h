@@ -31,7 +31,7 @@ namespace Map
 		const UTF8Char *layerName;
 
 	public:
-		SPDLayer(Text::CString layerName);
+		SPDLayer(Text::CStringNN layerName);
 		virtual ~SPDLayer();
 
 		Bool IsError();
@@ -49,7 +49,7 @@ namespace Map
 		virtual Bool GetColumnDef(UOSInt colIndex, NotNullPtr<DB::ColDef> colDef);
 		virtual Int32 GetBlockSize();
 		virtual UInt32 GetCodePage();
-		virtual Bool GetBounds(Math::RectAreaDbl *bounds);
+		virtual Bool GetBounds(OutParam<Math::RectAreaDbl> bounds) const;
 
 		virtual GetObjectSess *BeginGetObject();
 		virtual void EndGetObject(GetObjectSess *session);

@@ -69,7 +69,7 @@ namespace Map
 		void LoadImage(ImageStat *stat);
 		static UInt32 __stdcall LoadThread(void *userObj);
 	public:
-		WebImageLayer(Net::WebBrowser *browser, Parser::ParserList *parsers, Text::CString sourceName, Math::CoordinateSystem *csys, Text::CString layerName);
+		WebImageLayer(Net::WebBrowser *browser, Parser::ParserList *parsers, Text::CStringNN sourceName, Math::CoordinateSystem *csys, Text::CString layerName);
 		virtual ~WebImageLayer();
 
 		virtual void SetCurrTimeTS(Int64 timeStamp);
@@ -88,7 +88,7 @@ namespace Map
 		virtual DB::DBUtil::ColType GetColumnType(UOSInt colIndex, UOSInt *colSize);
 		virtual Bool GetColumnDef(UOSInt colIndex, NotNullPtr<DB::ColDef> colDef);
 		virtual UInt32 GetCodePage();
-		virtual Bool GetBounds(Math::RectAreaDbl *bounds);
+		virtual Bool GetBounds(OutParam<Math::RectAreaDbl> bounds) const;
 
 		virtual GetObjectSess *BeginGetObject();
 		virtual void EndGetObject(GetObjectSess *session);

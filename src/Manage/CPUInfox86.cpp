@@ -613,7 +613,7 @@ Bool Manage::CPUInfo::GetCPUTCC(Double *temp)
 }
 #endif
 
-Text::CString Manage::CPUInfo::GetCacheInfo(Manage::CPUVendor::CPU_BRAND brand, UInt8 descType)
+Text::CStringNN Manage::CPUInfo::GetCacheInfo(Manage::CPUVendor::CPU_BRAND brand, UInt8 descType)
 {
 	if (brand == Manage::CPUVendor::CB_INTEL)
 	{
@@ -829,12 +829,12 @@ Text::CString Manage::CPUInfo::GetCacheInfo(Manage::CPUVendor::CPU_BRAND brand, 
 			return CSTR("128-Byte prefetching");
 		}
 	}
-	return CSTR_NULL;
+	return CSTR("Unknown");
 }
 
-Text::CString Manage::CPUInfo::GetFeatureShortName(UOSInt index)
+Text::CStringNN Manage::CPUInfo::GetFeatureShortName(UOSInt index)
 {
-	static Text::CString shortNames[64] = {
+	static Text::CStringNN shortNames[64] = {
 		CSTR("FPU"),
 		CSTR("VME"),
 		CSTR("DE"),
@@ -908,13 +908,13 @@ Text::CString Manage::CPUInfo::GetFeatureShortName(UOSInt index)
 		CSTR("Not Used")
 	};
 	if (index >= 64)
-		return CSTR_NULL;
+		return CSTR("Unknown");
 	return shortNames[index];
 }
 
-Text::CString Manage::CPUInfo::GetFeatureName(UOSInt index)
+Text::CStringNN Manage::CPUInfo::GetFeatureName(UOSInt index)
 {
-	static Text::CString names[64] = {
+	static Text::CStringNN names[64] = {
 		CSTR("Floating Point Unit On-Chip"),
 		CSTR("Virtual 8086 Mode Enhancements"),
 		CSTR("Debugging Extensions"),
@@ -988,13 +988,13 @@ Text::CString Manage::CPUInfo::GetFeatureName(UOSInt index)
 		CSTR("Not Used")
 	};
 	if (index >= 64)
-		return CSTR_NULL;
+		return CSTR("Unknown");
 	return names[index];
 }
 
-Text::CString Manage::CPUInfo::GetFeatureDesc(UOSInt index)
+Text::CStringNN Manage::CPUInfo::GetFeatureDesc(UOSInt index)
 {
-	static Text::CString desc[64] = {
+	static Text::CStringNN desc[64] = {
 		CSTR("The processor contains an x87 FPU"),
 		CSTR("Virtual 8086 mode enhancements, including CR4.VME for controlling the feature, CR4.PVI for protected mode virtual interrupts, software interrupt indirection, expansion of the TSS with the software indirection bitmap, and EFLAGS.VIF and EFLAGS.VIP flags"),
 		CSTR("Support for I/O breakpoints, including CR4.DE for controlling the feature, and optional trapping of accesses to DR4 and DR5"),
@@ -1068,7 +1068,7 @@ Text::CString Manage::CPUInfo::GetFeatureDesc(UOSInt index)
 		CSTR("Always returns 0")
 	};
 	if (index >= 64)
-		return CSTR_NULL;
+		return CSTR("Unknown");
 	return desc[index];
 }
 

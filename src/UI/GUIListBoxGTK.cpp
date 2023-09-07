@@ -165,7 +165,7 @@ UOSInt UI::GUIListBox::AddItem(NotNullPtr<Text::String> itemText, void *itemObj)
 	return ret;
 }
 
-UOSInt UI::GUIListBox::AddItem(Text::CString itemText, void *itemObj)
+UOSInt UI::GUIListBox::AddItem(Text::CStringNN itemText, void *itemObj)
 {
 	ClassData *data = this->clsData;
 	ItemData *item = MemAlloc(ItemData, 1);
@@ -251,7 +251,7 @@ UOSInt UI::GUIListBox::InsertItem(UOSInt index, Text::String *itemText, void *it
 	return (UOSInt)i;
 }
 
-UOSInt UI::GUIListBox::InsertItem(UOSInt index, Text::CString itemText, void *itemObj)
+UOSInt UI::GUIListBox::InsertItem(UOSInt index, Text::CStringNN itemText, void *itemObj)
 {
 	ClassData *data = this->clsData;
 	ItemData *item = MemAlloc(ItemData, 1);
@@ -471,7 +471,7 @@ WChar *UI::GUIListBox::GetItemText(WChar *buff, UOSInt index)
 	return Text::StrUTF8_WChar(buff, item->txt->v, 0);
 }
 
-void UI::GUIListBox::SetItemText(UOSInt index, Text::CString text)
+void UI::GUIListBox::SetItemText(UOSInt index, Text::CStringNN text)
 {
 	ItemData *item = this->items.GetItem(index);
 	if (item == 0)
@@ -494,7 +494,7 @@ OSInt UI::GUIListBox::GetItemHeight()
 	return 24;
 }
 
-Text::CString UI::GUIListBox::GetObjectClass()
+Text::CStringNN UI::GUIListBox::GetObjectClass() const
 {
 	return CSTR("ListBox");
 }

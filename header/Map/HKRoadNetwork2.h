@@ -18,7 +18,7 @@ namespace Map
 	private:
 		DB::ReadingDB *fgdb;
 	public:
-		HKRoadNetwork2(Text::CString fgdbPath, Math::ArcGISPRJParser *prjParser);
+		HKRoadNetwork2(Text::CStringNN fgdbPath, Math::ArcGISPRJParser *prjParser);
 		HKRoadNetwork2(DB::ReadingDB *fgdb);
 		~HKRoadNetwork2();
 

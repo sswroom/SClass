@@ -121,7 +121,7 @@ Bool UI::GUIListView::AddColumn(NotNullPtr<Text::String> columnName, Double colW
 	return ret;
 }
 
-Bool UI::GUIListView::AddColumn(Text::CString columnName, Double colWidth)
+Bool UI::GUIListView::AddColumn(Text::CStringNN columnName, Double colWidth)
 {
 	const WChar *wptr = Text::StrToWCharNew(columnName.v);
 	Bool ret = this->AddColumn(wptr, colWidth);
@@ -187,7 +187,7 @@ UOSInt UI::GUIListView::AddItem(NotNullPtr<Text::String> itemText, void *itemObj
 	return strLen;
 }
 
-UOSInt UI::GUIListView::AddItem(Text::CString itemText, void *itemObj)
+UOSInt UI::GUIListView::AddItem(Text::CStringNN itemText, void *itemObj)
 {
 	UOSInt strLen = Text::StrUTF8_WCharCnt(itemText.v);
 	WChar *ws = MemAlloc(WChar, strLen + 1);
@@ -216,7 +216,7 @@ UOSInt UI::GUIListView::AddItem(const WChar *itemText, void *itemObj)
 	return (UOSInt)SendMessage((HWND)this->hwnd, LVM_INSERTITEMW, 0, (LPARAM)&item);
 }
 
-UOSInt UI::GUIListView::AddItem(Text::CString itemText, void *itemObj, UOSInt imageIndex)
+UOSInt UI::GUIListView::AddItem(Text::CStringNN itemText, void *itemObj, UOSInt imageIndex)
 {
 	LVITEMW item;
 	item.iItem = (Int32)GetCount();
@@ -246,7 +246,7 @@ Bool UI::GUIListView::SetSubItem(UOSInt index, UOSInt subIndex, NotNullPtr<Text:
 	return ret;
 }
 
-Bool UI::GUIListView::SetSubItem(UOSInt index, UOSInt subIndex, Text::CString text)
+Bool UI::GUIListView::SetSubItem(UOSInt index, UOSInt subIndex, Text::CStringNN text)
 {
 	const WChar *ws = 0;
 	LVITEMW item;
@@ -301,7 +301,7 @@ Bool UI::GUIListView::GetSubItem(UOSInt index, UOSInt subIndex, NotNullPtr<Text:
 	return ret;
 }
 
-UOSInt UI::GUIListView::InsertItem(UOSInt index, Text::CString itemText, void *itemObj)
+UOSInt UI::GUIListView::InsertItem(UOSInt index, Text::CStringNN itemText, void *itemObj)
 {
 	LVITEMW item;
 	item.iItem = (Int32)index;
@@ -506,7 +506,7 @@ void UI::GUIListView::EndUpdate()
 	this->SetVisible(true);
 }
 
-Text::CString UI::GUIListView::GetObjectClass()
+Text::CStringNN UI::GUIListView::GetObjectClass() const
 {
 	return CSTR("ListView");
 }

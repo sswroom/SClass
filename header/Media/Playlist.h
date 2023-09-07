@@ -28,7 +28,7 @@ namespace Media
 		static void __stdcall OnPBEnd(void *userObj);
 		void FreeEntry(PlaylistEntry* ent);
 	public:
-		Playlist(Text::CString sourceName, Parser::ParserList *parsers);
+		Playlist(Text::CStringNN sourceName, Parser::ParserList *parsers);
 		virtual ~Playlist();
 
 		virtual IO::ParserType GetParserType() const;

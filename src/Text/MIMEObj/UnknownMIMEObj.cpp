@@ -4,7 +4,7 @@
 #include "Text/MIMEObj/MIMEMessage.h"
 #include "Text/MIMEObj/UnknownMIMEObj.h"
 
-Text::MIMEObj::UnknownMIMEObj::UnknownMIMEObj(UInt8 *dataBuff, UOSInt buffSize, Text::CString contentType) : Text::IMIMEObj(contentType)
+Text::MIMEObj::UnknownMIMEObj::UnknownMIMEObj(UInt8 *dataBuff, UOSInt buffSize, Text::CStringNN contentType) : Text::IMIMEObj(contentType)
 {
 	this->buffSize = buffSize;
 	this->dataBuff = MemAlloc(UInt8, buffSize);
@@ -45,12 +45,12 @@ Text::MIMEObj::UnknownMIMEObj::~UnknownMIMEObj()
 	this->contType->Release();
 }
 
-Text::CString Text::MIMEObj::UnknownMIMEObj::GetClassName() const
+Text::CStringNN Text::MIMEObj::UnknownMIMEObj::GetClassName() const
 {
 	return CSTR("UnknownMIMEObj");
 }
 
-Text::CString Text::MIMEObj::UnknownMIMEObj::GetContentType() const
+Text::CStringNN Text::MIMEObj::UnknownMIMEObj::GetContentType() const
 {
 	return this->contType->ToCString();
 }

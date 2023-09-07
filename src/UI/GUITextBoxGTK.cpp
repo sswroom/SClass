@@ -62,7 +62,7 @@ void GUITextBox_InitTextBox(UI::GUITextBox::ClassData *txt, Text::CString lbl, B
 	}
 }
 
-UI::GUITextBox::GUITextBox(NotNullPtr<UI::GUICore> ui, UI::GUIClientControl *parent, Text::CString initText) : UI::GUIControl(ui, parent)
+UI::GUITextBox::GUITextBox(NotNullPtr<UI::GUICore> ui, UI::GUIClientControl *parent, Text::CStringNN initText) : UI::GUIControl(ui, parent)
 {
 	this->clsData = MemAlloc(ClassData, 1);
 	GUITextBox_InitTextBox(this->clsData, initText, false, this);
@@ -71,7 +71,7 @@ UI::GUITextBox::GUITextBox(NotNullPtr<UI::GUICore> ui, UI::GUIClientControl *par
 	this->Show();
 }
 
-UI::GUITextBox::GUITextBox(NotNullPtr<UI::GUICore> ui, UI::GUIClientControl *parent, Text::CString initText, Bool isMultiline) : UI::GUIControl(ui, parent)
+UI::GUITextBox::GUITextBox(NotNullPtr<UI::GUICore> ui, UI::GUIClientControl *parent, Text::CStringNN initText, Bool isMultiline) : UI::GUIControl(ui, parent)
 {
 	this->clsData = MemAlloc(ClassData, 1);
 	GUITextBox_InitTextBox(this->clsData, initText, isMultiline, this);
@@ -168,7 +168,7 @@ void UI::GUITextBox::SetPasswordChar(WChar c)
 	}
 }
 
-void UI::GUITextBox::SetText(Text::CString lbl)
+void UI::GUITextBox::SetText(Text::CStringNN lbl)
 {
 	UOSInt lblLeng = lbl.leng;
 	if (this->clsData->multiLine)
@@ -234,7 +234,7 @@ Bool UI::GUITextBox::GetText(NotNullPtr<Text::StringBuilderUTF8> sb)
 	}
 }
 
-Text::CString UI::GUITextBox::GetObjectClass()
+Text::CStringNN UI::GUITextBox::GetObjectClass() const
 {
 	return CSTR("TextBox");
 }

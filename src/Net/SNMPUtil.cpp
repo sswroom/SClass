@@ -445,7 +445,7 @@ Net::SNMPUtil::ErrorStatus Net::SNMPUtil::PDUParseTrapMessage(const UInt8 *pdu, 
 	}
 }
 
-Text::CString Net::SNMPUtil::TypeGetName(UInt8 type)
+Text::CStringNN Net::SNMPUtil::TypeGetName(UInt8 type)
 {
 	switch (type)
 	{
@@ -585,7 +585,7 @@ void Net::SNMPUtil::FreeBindingItem(BindingItem *item)
 	MemFree(item);
 }
 
-Text::CString Net::SNMPUtil::ErrorStatusToString(ErrorStatus err)
+Text::CStringNN Net::SNMPUtil::ErrorStatusToString(ErrorStatus err)
 {
 	switch (err)
 	{

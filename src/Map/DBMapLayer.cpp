@@ -72,7 +72,7 @@ Map::DBMapLayer::DBMapLayer(NotNullPtr<Text::String> layerName) : Map::MapDrawLa
 	this->mixedData = MixedData::AllData;
 }
 
-Map::DBMapLayer::DBMapLayer(Text::CString layerName) : Map::MapDrawLayer(layerName, 0, layerName)
+Map::DBMapLayer::DBMapLayer(Text::CStringNN layerName) : Map::MapDrawLayer(layerName, 0, layerName)
 {
 	this->releaseDB = false;
 	this->db = 0;
@@ -321,10 +321,9 @@ UInt32 Map::DBMapLayer::GetCodePage()
 	return 65001;
 }
 
-Bool Map::DBMapLayer::GetBounds(Math::RectAreaDbl *rect)
+Bool Map::DBMapLayer::GetBounds(OutParam<Math::RectAreaDbl> rect) const
 {
-	rect->tl = this->min;
-	rect->br = this->max;
+	rect.Set(Math::RectAreaDbl(this->min, this->max));
 	return true;
 }
 

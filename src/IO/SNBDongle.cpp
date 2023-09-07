@@ -607,7 +607,7 @@ Bool IO::SNBDongle::SendDevGetStatus(UInt64 devId)
 	return false;
 }
 
-Text::CString IO::SNBDongle::GetHandleName(HandleType handType)
+Text::CStringNN IO::SNBDongle::GetHandleName(HandleType handType)
 {
 	switch (handType)
 	{
@@ -633,7 +633,7 @@ Text::CString IO::SNBDongle::GetHandleName(HandleType handType)
 	}
 }
 
-Text::CString IO::SNBDongle::GetReadingName(ReadingType readingType)
+Text::CStringNN IO::SNBDongle::GetReadingName(ReadingType readingType)
 {
 	switch (readingType)
 	{
@@ -685,7 +685,7 @@ Text::CString IO::SNBDongle::GetReadingName(ReadingType readingType)
 	}
 }
 
-Text::CString IO::SNBDongle::SensorTypeGetName(SensorType sensorType)
+Text::CStringNN IO::SNBDongle::SensorTypeGetName(SensorType sensorType)
 {
 	switch (sensorType)
 	{

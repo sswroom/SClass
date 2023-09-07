@@ -245,7 +245,7 @@ UOSInt Crypto::Encrypt::JasyptEncryptor::EncryptAsB64(NotNullPtr<Text::StringBui
 	return sb->GetCharCnt();
 }
 
-Text::CString Crypto::Encrypt::JasyptEncryptor::GetKeyAlgorithmName(KeyAlgorithm keyAlg)
+Text::CStringNN Crypto::Encrypt::JasyptEncryptor::KeyAlgorithmGetName(KeyAlgorithm keyAlg)
 {
 	switch (keyAlg)
 	{
@@ -256,7 +256,7 @@ Text::CString Crypto::Encrypt::JasyptEncryptor::GetKeyAlgorithmName(KeyAlgorithm
 	}
 }
 
-Text::CString Crypto::Encrypt::JasyptEncryptor::GetCipherAlgorithmName(CipherAlgorithm cipherAlg)
+Text::CStringNN Crypto::Encrypt::JasyptEncryptor::CipherAlgorithmGetName(CipherAlgorithm cipherAlg)
 {
 	switch (cipherAlg)
 	{

@@ -56,7 +56,7 @@ namespace Crypto
 			UTF8Char *GetResult(UTF8Char *resultBuff);
 			Bool Start(const UTF8Char *hashStr, UOSInt hashLen, UOSInt minLeng, UOSInt maxLeng);
 
-			static Text::CString CharLimitGetName(CharLimit charLimit);
+			static Text::CStringNN CharLimitGetName(CharLimit charLimit);
 		};
 	}
 }

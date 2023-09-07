@@ -19,7 +19,7 @@ Media::VectorDocument::VectorDocument(UInt32 srid, NotNullPtr<Media::DrawEngine>
 	this->modTimeTicks = 0;
 }
 
-Media::VectorDocument::VectorDocument(UInt32 srid, Text::CString name, NotNullPtr<Media::DrawEngine> refEng) : IO::ParsedObject(name)
+Media::VectorDocument::VectorDocument(UInt32 srid, Text::CStringNN name, NotNullPtr<Media::DrawEngine> refEng) : IO::ParsedObject(name)
 {
 	NEW_CLASS(this->items, Data::ArrayList<Media::VectorGraph*>());
 	this->currDoc = 0;

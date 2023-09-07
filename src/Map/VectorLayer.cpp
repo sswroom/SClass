@@ -201,7 +201,7 @@ Map::VectorLayer::VectorLayer(Map::DrawLayerType layerType, NotNullPtr<Text::Str
 	}
 }
 
-Map::VectorLayer::VectorLayer(Map::DrawLayerType layerType, Text::CString sourceName, UOSInt strCnt, const UTF8Char **colNames, Math::CoordinateSystem *csys, UOSInt nameCol, Text::CString layerName) : Map::MapDrawLayer(sourceName, nameCol, layerName)
+Map::VectorLayer::VectorLayer(Map::DrawLayerType layerType, Text::CStringNN sourceName, UOSInt strCnt, const UTF8Char **colNames, Math::CoordinateSystem *csys, UOSInt nameCol, Text::CString layerName) : Map::MapDrawLayer(sourceName, nameCol, layerName)
 {
 	UOSInt i;
 	this->layerType = layerType;
@@ -264,7 +264,7 @@ Map::VectorLayer::VectorLayer(Map::DrawLayerType layerType, NotNullPtr<Text::Str
 	}
 }
 
-Map::VectorLayer::VectorLayer(Map::DrawLayerType layerType, Text::CString sourceName, UOSInt strCnt, const UTF8Char **colNames, Math::CoordinateSystem *csys, DB::DBUtil::ColType *colTypes, UOSInt *colSize, UOSInt *colDP, UOSInt nameCol, Text::CString layerName) : Map::MapDrawLayer(sourceName, nameCol, layerName)
+Map::VectorLayer::VectorLayer(Map::DrawLayerType layerType, Text::CStringNN sourceName, UOSInt strCnt, const UTF8Char **colNames, Math::CoordinateSystem *csys, DB::DBUtil::ColType *colTypes, UOSInt *colSize, UOSInt *colDP, UOSInt nameCol, Text::CString layerName) : Map::MapDrawLayer(sourceName, nameCol, layerName)
 {
 	UOSInt i;
 	this->layerType = layerType;
@@ -555,9 +555,9 @@ UInt32 Map::VectorLayer::GetCodePage()
 	return 0;
 }
 
-Bool Map::VectorLayer::GetBounds(Math::RectAreaDbl *bounds)
+Bool Map::VectorLayer::GetBounds(OutParam<Math::RectAreaDbl> bounds) const
 {
-	*bounds = Math::RectAreaDbl(this->min, this->max);
+	bounds.Set(Math::RectAreaDbl(this->min, this->max));
 	return this->min.x != 0 || this->min.y != 0 || this->max.x != 0 || this->max.y != 0;
 }
 

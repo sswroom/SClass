@@ -300,7 +300,7 @@ UI::GUIVSplitter::~GUIVSplitter()
 	}
 }
 
-Text::CString UI::GUIVSplitter::GetObjectClass()
+Text::CStringNN UI::GUIVSplitter::GetObjectClass() const
 {
 	return CSTR("VSplitter");
 }

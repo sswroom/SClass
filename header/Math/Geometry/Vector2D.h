@@ -70,7 +70,7 @@ namespace Math
 			Math::Coord2DDbl GetDistanceCenter() const;
 
 			static Bool VectorTypeIsPoint(VectorType vecType);
-			static Text::CString VectorTypeGetName(VectorType vecType);
+			static Text::CStringNN VectorTypeGetName(VectorType vecType);
 		};
 	}
 }

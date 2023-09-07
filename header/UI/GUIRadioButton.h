@@ -16,10 +16,10 @@ namespace UI
 	public:
 		void ChangeSelected(Bool selVal);
 	public:
-		GUIRadioButton(NotNullPtr<GUICore> ui, UI::GUIClientControl *parent, Text::CString initText, Bool selected);
+		GUIRadioButton(NotNullPtr<GUICore> ui, UI::GUIClientControl *parent, Text::CStringNN initText, Bool selected);
 		virtual ~GUIRadioButton();
 
-		virtual Text::CString GetObjectClass();
+		virtual Text::CStringNN GetObjectClass() const;
 		virtual OSInt OnNotify(UInt32 code, void *lParam);
 
 		Bool IsSelected();

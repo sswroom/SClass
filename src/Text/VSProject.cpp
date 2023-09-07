@@ -75,7 +75,7 @@ void Text::VSContainer::AddChild(Text::CodeObject *obj)
 	this->childList.Add(obj);
 }
 
-Text::VSProject::VSProject(Text::CString name, VisualStudioVersion ver) : Text::CodeProject(name)
+Text::VSProject::VSProject(Text::CStringNN name, VisualStudioVersion ver) : Text::CodeProject(name)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;

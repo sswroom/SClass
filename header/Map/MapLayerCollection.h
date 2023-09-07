@@ -17,7 +17,7 @@ namespace Map
 		static void __stdcall InnerUpdated(void *userObj);
 	public:
 		MapLayerCollection(NotNullPtr<Text::String> sourceName, Text::String *layerName);
-		MapLayerCollection(Text::CString sourceName, Text::CString layerName);
+		MapLayerCollection(Text::CStringNN sourceName, Text::CString layerName);
 		virtual ~MapLayerCollection();
 
 		virtual UOSInt Add(Map::MapDrawLayer * val);
@@ -44,7 +44,7 @@ namespace Map
 		virtual DB::DBUtil::ColType GetColumnType(UOSInt colIndex, UOSInt *colSize);
 		virtual Bool GetColumnDef(UOSInt colIndex, NotNullPtr<DB::ColDef> colDef);
 		virtual UInt32 GetCodePage();
-		virtual Bool GetBounds(Math::RectAreaDbl *rect);
+		virtual Bool GetBounds(OutParam<Math::RectAreaDbl> rect) const;
 
 		virtual GetObjectSess *BeginGetObject();
 		virtual void EndGetObject(GetObjectSess *session);

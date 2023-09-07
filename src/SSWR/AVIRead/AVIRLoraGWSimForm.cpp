@@ -68,13 +68,13 @@ void __stdcall SSWR::AVIRead::AVIRLoraGWSimForm::OnPredefClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRLoraGWSimForm *me = (SSWR::AVIRead::AVIRLoraGWSimForm*)userObj;
 	PredefData *data = (PredefData*)me->cboPredef->GetSelectedItem();
-	if (data)
+	if (data && data->data)
 	{
 		UTF8Char sbuff[16];
 		UTF8Char *sptr;
 		sptr = Text::StrUInt16(sbuff, data->fPort);
 		me->txtFPort->SetText(CSTRP(sbuff, sptr));
-		me->txtData->SetText(Text::CString(data->data, data->dataLen));
+		me->txtData->SetText(Text::CStringNN(data->data, data->dataLen));
 	}
 }
 
@@ -273,7 +273,7 @@ SSWR::AVIRead::AVIRLoraGWSimForm::AVIRLoraGWSimForm(UI::GUIClientControl *parent
 	UOSInt j = sizeof(pdata) / sizeof(pdata[0]);
 	while (i < j)
 	{
-		this->cboPredef->AddItem(Text::CString(pdata[i].name, pdata[i].nameLen), &pdata[i]);
+		this->cboPredef->AddItem(Text::CStringNN(pdata[i].name, pdata[i].nameLen), &pdata[i]);
 		i++;
 	}
 	if (j > 0)

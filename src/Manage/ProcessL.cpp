@@ -1276,7 +1276,7 @@ Bool Manage::Process::OpenPathW(const WChar *path)
 	return ret == 0;
 }
 
-Text::CString Manage::Process::GetPriorityName(ProcessPriority priority)
+Text::CStringNN Manage::Process::GetPriorityName(ProcessPriority priority)
 {
 	switch (priority)
 	{

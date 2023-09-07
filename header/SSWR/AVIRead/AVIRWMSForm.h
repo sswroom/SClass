@@ -49,7 +49,7 @@ namespace SSWR
 
 			virtual void OnMonitorChanged();
 
-			void SetURL(Text::CString url);
+			void SetURL(Text::CStringNN url);
 			Map::DrawMapService *GetDrawMapService();
 		};
 	}

@@ -32,7 +32,7 @@ void __stdcall SSWR::AVIRead::AVIRUSBDeviceForm::OnDevicesSelChg(void *userObj)
 		me->txtProductId->SetText(CSTRP(sbuff, sptr));
 		sptr = Text::StrHexVal16(sbuff, usb->GetRevision());
 		me->txtDevice->SetText(CSTRP(sbuff, sptr));
-		me->txtDispName->SetText(usb->GetDispName());
+		me->txtDispName->SetText(usb->GetDispName().OrEmpty());
 
 		const IO::DeviceDB::USBDeviceInfo *dev;
 		dev = IO::DeviceDB::GetUSBInfo(usb->GetVendorId(), usb->GetProductId(), usb->GetRevision());
@@ -42,7 +42,7 @@ void __stdcall SSWR::AVIRead::AVIRUSBDeviceForm::OnDevicesSelChg(void *userObj)
 			Text::CString vendorName = IO::DeviceDB::GetUSBVendorName(dev->vendorId);
 			if (vendorName.v)
 			{
-				me->txtVendorName->SetText(vendorName);
+				me->txtVendorName->SetText(vendorName.OrEmpty());
 			}
 			else
 			{

@@ -29,7 +29,7 @@ namespace UI
 
 		virtual void SetArea(Double left, Double top, Double right, Double bottom, Bool updateScn);
 		virtual void SetAreaP(OSInt left, OSInt top, OSInt right, OSInt bottom, Bool updateScn);
-		virtual Text::CString GetObjectClass();
+		virtual Text::CStringNN GetObjectClass() const;
 		virtual OSInt OnNotify(UInt32 code, void *lParam);
 		virtual void UpdatePos(Bool redraw);
 		virtual void EventPosChanged();

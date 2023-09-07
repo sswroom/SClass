@@ -13,7 +13,7 @@ Media::ImageGen::RingsImageGen::~RingsImageGen()
 {
 }
 
-Text::CString Media::ImageGen::RingsImageGen::GetName()
+Text::CStringNN Media::ImageGen::RingsImageGen::GetName() const
 {
 	return CSTR("Rings Image");
 }

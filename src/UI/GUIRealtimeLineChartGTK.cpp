@@ -208,7 +208,7 @@ UI::GUIRealtimeLineChart::~GUIRealtimeLineChart()
 	MemFree(this->lineColor);
 }
 
-Text::CString UI::GUIRealtimeLineChart::GetObjectClass()
+Text::CStringNN UI::GUIRealtimeLineChart::GetObjectClass() const
 {
 	return CSTR("RealtimeLineChart");
 }
@@ -248,7 +248,7 @@ void UI::GUIRealtimeLineChart::SetLineColor(UOSInt lineId, UInt32 lineColor)
 	}
 }
 
-void UI::GUIRealtimeLineChart::SetUnit(Text::CString unit)
+void UI::GUIRealtimeLineChart::SetUnit(Text::CStringNN unit)
 {
 	SDEL_TEXT(this->unit);
 	if (unit.leng > 0)

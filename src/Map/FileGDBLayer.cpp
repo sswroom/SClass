@@ -55,7 +55,7 @@ Data::FastMap<Int32, const UTF8Char **> *Map::FileGDBLayer::ReadNameArr()
 	}
 }
 
-Map::FileGDBLayer::FileGDBLayer(DB::SharedReadingDB *conn, Text::CString sourceName, Text::CString tableName, Math::ArcGISPRJParser *prjParser) : Map::MapDrawLayer(sourceName, 0, tableName)
+Map::FileGDBLayer::FileGDBLayer(DB::SharedReadingDB *conn, Text::CStringNN sourceName, Text::CStringNN tableName, Math::ArcGISPRJParser *prjParser) : Map::MapDrawLayer(sourceName, 0, tableName)
 {
 	UInt8 *buff = 0; 
 	conn->UseObject();
@@ -302,12 +302,9 @@ UInt32 Map::FileGDBLayer::GetCodePage()
 	return 65001;
 }
 
-Bool Map::FileGDBLayer::GetBounds(Math::RectAreaDbl *rect)
+Bool Map::FileGDBLayer::GetBounds(OutParam<Math::RectAreaDbl> rect) const
 {
-	if (rect)
-	{
-		*rect = Math::RectAreaDbl(this->minPos, this->maxPos);
-	}
+	rect.Set(Math::RectAreaDbl(this->minPos, this->maxPos));
 	return !this->minPos.IsZero() || !this->maxPos.IsZero();
 }
 

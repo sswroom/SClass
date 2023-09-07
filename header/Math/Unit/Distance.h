@@ -40,8 +40,8 @@ namespace Math
 			} DistanceUnit;
 		public:
 			static Double GetUnitRatio(DistanceUnit unit);
-			static Text::CString GetUnitShortName(DistanceUnit unit);
-			static Text::CString GetUnitName(DistanceUnit unit);
+			static Text::CStringNN GetUnitShortName(DistanceUnit unit);
+			static Text::CStringNN GetUnitName(DistanceUnit unit);
 			static Double GetConvertRatio(DistanceUnit fromUnit, DistanceUnit toUnit);
 			static Double Convert(DistanceUnit fromUnit, DistanceUnit toUnit, Double fromValue);
 		};

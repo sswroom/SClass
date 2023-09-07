@@ -8,7 +8,7 @@ Crypto::Cert::X509PrivKey::X509PrivKey(NotNullPtr<Text::String> sourceName, Data
 
 }
 
-Crypto::Cert::X509PrivKey::X509PrivKey(Text::CString sourceName, Data::ByteArrayR buff) : Crypto::Cert::X509File(sourceName, buff)
+Crypto::Cert::X509PrivKey::X509PrivKey(Text::CStringNN sourceName, Data::ByteArrayR buff) : Crypto::Cert::X509File(sourceName, buff)
 {
 
 }

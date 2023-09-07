@@ -29,22 +29,14 @@ void __stdcall SSWR::AVIRead::AVIRPCIDeviceForm::OnDevicesSelChg(void *userObj)
 		me->txtVendorId->SetText(CSTRP(sbuff, sptr));
 		sptr = Text::StrHexVal16(sbuff, pci->GetProductId());
 		me->txtProductId->SetText(CSTRP(sbuff, sptr));
-		me->txtDispName->SetText(pci->GetDispName());
+		me->txtDispName->SetText(pci->GetDispName().OrEmpty());
 
 		const IO::DeviceDB::PCIDeviceInfo *dev;
 		dev = IO::DeviceDB::GetPCIInfo(pci->GetVendorId(), pci->GetProductId());
 		if (dev)
 		{
 			me->txtDBName->SetText({(const UTF8Char*)dev->productName, Text::StrCharCnt(dev->productName)});
-			Text::CString vendorName = IO::DeviceDB::GetPCIVendorName(dev->vendorId);
-			if (vendorName.v)
-			{
-				me->txtVendorName->SetText(vendorName);
-			}
-			else
-			{
-				me->txtVendorName->SetText(CSTR(""));
-			}
+			me->txtVendorName->SetText(IO::DeviceDB::GetPCIVendorName(dev->vendorId).OrEmpty());
 		}
 		else
 		{

@@ -489,7 +489,7 @@ Math::GeographicCoordinateSystem *Math::CoordinateSystemManager::SRCreateGeogCSy
 	return csys;
 }
 
-Math::CoordinateSystem *Math::CoordinateSystemManager::CreateFromName(Text::CString name)
+Math::CoordinateSystem *Math::CoordinateSystemManager::CreateFromName(Text::CStringNN name)
 {
 	if (name.StartsWith(UTF8STRC("EPSG:")))
 	{
@@ -606,10 +606,10 @@ Math::ProjectedCoordinateSystem *Math::CoordinateSystemManager::CreateProjCoordi
 	Text::CString name = Math::CoordinateSystemManager::ProjCoordSysTypeGetName(pcst);
 	if (name.v == 0)
 		return 0;
-	return CreateProjCoordinateSystem(name, name.v);
+	return CreateProjCoordinateSystem(name.OrEmpty(), name.v);
 }
 
-Math::ProjectedCoordinateSystem *Math::CoordinateSystemManager::CreateProjCoordinateSystem(Text::CString sourceName, const UTF8Char *projName)
+Math::ProjectedCoordinateSystem *Math::CoordinateSystemManager::CreateProjCoordinateSystem(Text::CStringNN sourceName, const UTF8Char *projName)
 {
 	const Math::CoordinateSystemManager::ProjectedCSysInfo *coord = GetProjCoordinateSystemInfo(projName);
 	Math::GeographicCoordinateSystem *gcs;
@@ -690,10 +690,10 @@ Math::GeographicCoordinateSystem *Math::CoordinateSystemManager::CreateGeogCoord
 	Text::CString name = Math::CoordinateSystemManager::GeoCoordSysTypeGetName(gcst);
 	if (name.v == 0)
 		return 0;
-	return CreateGeogCoordinateSystem(name, name.v);
+	return CreateGeogCoordinateSystem(name.OrEmpty(), name.v);
 }
 
-Math::GeographicCoordinateSystem *Math::CoordinateSystemManager::CreateGeogCoordinateSystem(Text::CString sourceName, const UTF8Char *geoName)
+Math::GeographicCoordinateSystem *Math::CoordinateSystemManager::CreateGeogCoordinateSystem(Text::CStringNN sourceName, const UTF8Char *geoName)
 {
 	const Math::CoordinateSystemManager::GeographicCSysInfo *coord = GetGeogCoordinateSystemInfo(geoName);
 	Math::GeographicCoordinateSystem *csys;
@@ -746,7 +746,7 @@ const Math::CoordinateSystemManager::GeographicCSysInfo *Math::CoordinateSystemM
 	return 0;
 }
 
-Text::CString Math::CoordinateSystemManager::GeoCoordSysTypeGetName(GeoCoordSysType gcst)
+Text::CStringNN Math::CoordinateSystemManager::GeoCoordSysTypeGetName(GeoCoordSysType gcst)
 {
 	switch (gcst)
 	{

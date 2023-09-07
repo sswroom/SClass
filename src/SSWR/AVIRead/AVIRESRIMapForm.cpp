@@ -42,7 +42,7 @@ void __stdcall SSWR::AVIRead::AVIRESRIMapForm::OKClicked(void *userObj)
 		MapServer *v = (MapServer*)me->cboPredefine->GetItem(i);
 		if (v)
 		{
-			NEW_CLASS(esriMap, Map::ESRI::ESRIMapServer(Text::CString(v->url, v->urlLen), me->core->GetSocketFactory(), me->ssl, false));
+			NEW_CLASS(esriMap, Map::ESRI::ESRIMapServer(Text::CStringNN(v->url, v->urlLen), me->core->GetSocketFactory(), me->ssl, false));
 		}
 		else
 		{

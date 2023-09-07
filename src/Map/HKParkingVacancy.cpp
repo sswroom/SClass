@@ -530,9 +530,9 @@ UInt32 Map::HKParkingVacancy::GetCodePage()
 	return 65001;
 }
 
-Bool Map::HKParkingVacancy::GetBounds(Math::RectAreaDbl *rect)
+Bool Map::HKParkingVacancy::GetBounds(OutParam<Math::RectAreaDbl> rect) const
 {
-	*rect = bounds;
+	rect.Set(bounds);
 	return true;
 }
 

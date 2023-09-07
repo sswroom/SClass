@@ -240,7 +240,7 @@ SSWR::AVIRead::AVIRTimedFileCopyForm::~AVIRTimedFileCopyForm()
 
 }
 
-Text::CString SSWR::AVIRead::AVIRTimedFileCopyForm::GetFormName()
+Text::CStringNN SSWR::AVIRead::AVIRTimedFileCopyForm::GetFormName() const
 {
 	return CSTR("Timed File Copy");
 }

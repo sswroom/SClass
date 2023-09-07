@@ -12,7 +12,7 @@ namespace Math
 
 	public:
 		PointMappingCoordinateSystem(NotNullPtr<Text::String> sourceName, UInt32 srid, Text::CString csysName, Math::CoordinateSystem *baseCSys);
-		PointMappingCoordinateSystem(Text::CString sourceName, UInt32 srid, Text::CString csysName, Math::CoordinateSystem *baseCSys);
+		PointMappingCoordinateSystem(Text::CStringNN sourceName, UInt32 srid, Text::CString csysName, Math::CoordinateSystem *baseCSys);
 		virtual ~PointMappingCoordinateSystem();
 
 		void AddMappingPoint(Double mapX, Double mapY, Double baseX, Double baseY);

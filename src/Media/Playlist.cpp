@@ -22,7 +22,7 @@ void Media::Playlist::FreeEntry(PlaylistEntry* ent)
 	MemFree(ent);
 }
 
-Media::Playlist::Playlist(Text::CString sourceName, Parser::ParserList *parsers) : IO::ParsedObject(sourceName)
+Media::Playlist::Playlist(Text::CStringNN sourceName, Parser::ParserList *parsers) : IO::ParsedObject(sourceName)
 {
 	this->parsers = parsers;
 	this->player = 0;

@@ -63,7 +63,7 @@ namespace Map
 		virtual NotNullPtr<Text::String> GetName() const;
 		virtual Math::CoordinateSystem *GetCoordinateSystem() const;
 		virtual Math::RectAreaDbl GetInitBounds() const;
-		virtual Bool GetBounds(Math::RectAreaDbl *bounds) const;
+		virtual Bool GetBounds(OutParam<Math::RectAreaDbl> bounds) const;
 		virtual Bool CanQuery() const;
 		virtual Bool QueryInfos(Math::Coord2DDbl coord, Math::RectAreaDbl bounds, UInt32 width, UInt32 height, Double dpi, Data::ArrayList<Math::Geometry::Vector2D*> *vecList, Data::ArrayList<UOSInt> *valueOfstList, Data::ArrayListNN<Text::String> *nameList, Data::ArrayList<Text::String*> *valueList);
 		virtual Media::ImageList *DrawMap(Math::RectAreaDbl bounds, UInt32 width, UInt32 height, Double dpi, Text::StringBuilderUTF8 *sbUrl);

@@ -206,7 +206,7 @@ UI::GUIPictureBox::~GUIPictureBox()
 	}
 }
 
-Text::CString UI::GUIPictureBox::GetObjectClass()
+Text::CStringNN UI::GUIPictureBox::GetObjectClass() const
 {
 	return CSTR("PictureBox");
 }

@@ -8,7 +8,7 @@ Crypto::Cert::X509CRL::X509CRL(NotNullPtr<Text::String> sourceName, Data::ByteAr
 
 }
 
-Crypto::Cert::X509CRL::X509CRL(Text::CString sourceName, Data::ByteArrayR buff) : Crypto::Cert::X509File(sourceName, buff)
+Crypto::Cert::X509CRL::X509CRL(Text::CStringNN sourceName, Data::ByteArrayR buff) : Crypto::Cert::X509File(sourceName, buff)
 {
 
 }

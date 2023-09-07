@@ -97,7 +97,7 @@ UInt32 SSWR::OrganMgr::OrganTimeAdjLayer::GetCodePage()
 	return 0;
 }
 
-Bool SSWR::OrganMgr::OrganTimeAdjLayer::GetBounds(Math::RectAreaDbl *bounds)
+Bool SSWR::OrganMgr::OrganTimeAdjLayer::GetBounds(OutParam<Math::RectAreaDbl> bounds) const
 {
 	return this->gpsTrk->GetBounds(bounds);
 }

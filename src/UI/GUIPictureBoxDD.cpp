@@ -403,7 +403,7 @@ UI::GUIPictureBoxDD::~GUIPictureBoxDD()
 	this->colorSess->RemoveHandler(this);
 }
 
-Text::CString UI::GUIPictureBoxDD::GetObjectClass()
+Text::CStringNN UI::GUIPictureBoxDD::GetObjectClass() const
 {
 	return CSTR("PictureBoxDD");
 }

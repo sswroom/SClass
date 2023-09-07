@@ -28,7 +28,7 @@ namespace Net
 			~EmailValidator();
 
 			Status Validate(Text::CStringNN emailAddr);
-			static Text::CString StatusGetName(Status status);
+			static Text::CStringNN StatusGetName(Status status);
 		};
 	}
 }

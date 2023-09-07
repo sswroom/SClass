@@ -61,7 +61,7 @@ Net::SSLClient *Net::OpenSSLEngine::CreateServerConn(Socket *s)
 	}
 }
 
-Net::SSLClient *Net::OpenSSLEngine::CreateClientConn(void *sslObj, Socket *s, Text::CString hostName, ErrorType *err)
+Net::SSLClient *Net::OpenSSLEngine::CreateClientConn(void *sslObj, Socket *s, Text::CStringNN hostName, ErrorType *err)
 {
 	SSL *ssl = (SSL*)sslObj;
 	this->sockf->SetNoDelay(s, true);

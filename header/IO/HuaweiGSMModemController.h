@@ -148,12 +148,12 @@ namespace IO
 		static Double SINRGetdBm(UInt32 sinr);
 		static UTF8Char *RSRQGetName(UTF8Char *sbuff, UInt32 rscq);
 		static Double RSRQGetdBm(UInt32 rscq);
-		static Text::CString SIMCardTypeGetName(SIMCardType simType);
-		static Text::CString ServiceStatusGetName(ServiceStatus srvStatus);
-		static Text::CString ServiceDomainGetName(ServiceDomain srvDomain);
-		static Text::CString SIMStateGetName(SIMState simState);
-		static Text::CString SysModeGetName(SysMode sysMode);
-		static Text::CString SubModeGetName(SubMode submode);
+		static Text::CStringNN SIMCardTypeGetName(SIMCardType simType);
+		static Text::CStringNN ServiceStatusGetName(ServiceStatus srvStatus);
+		static Text::CStringNN ServiceDomainGetName(ServiceDomain srvDomain);
+		static Text::CStringNN SIMStateGetName(SIMState simState);
+		static Text::CStringNN SysModeGetName(SysMode sysMode);
+		static Text::CStringNN SubModeGetName(SubMode submode);
 	};
 }
 #endif

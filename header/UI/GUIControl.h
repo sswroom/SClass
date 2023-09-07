@@ -251,7 +251,7 @@ namespace UI
 		virtual void *GetFont();
 		virtual void Show();
 		virtual void Close();
-		virtual void SetText(Text::CString text);
+		virtual void SetText(Text::CStringNN text);
 		virtual UTF8Char *GetText(UTF8Char *buff);
 		virtual Bool GetText(NotNullPtr<Text::StringBuilderUTF8> sb);
 		virtual void SetSize(Double width, Double height);
@@ -279,7 +279,7 @@ namespace UI
 		virtual OSInt GetScrollVPos();
 		void ScrollTo(OSInt x, OSInt y);
 
-		virtual Text::CString GetObjectClass() = 0;
+		virtual Text::CStringNN GetObjectClass() const = 0;
 		virtual OSInt OnNotify(UInt32 code, void *lParam) = 0;
 		virtual void OnSizeChanged(Bool updateScn);
 		virtual void OnPosChanged(Bool updateScn);
@@ -314,7 +314,7 @@ namespace UI
 		Media::DrawFont *CreateDrawFont(NotNullPtr<Media::DrawImage> img);
 		static UInt32 GUIKey2OSKey(GUIKey guiKey);
 		static GUIKey OSKey2GUIKey(UInt32 osKey);
-		static Text::CString GUIKeyGetName(GUIKey guiKey);
+		static Text::CStringNN GUIKeyGetName(GUIKey guiKey);
 
 		DragErrorType HandleDropEvents(GUIDropHandler *hdlr);
 

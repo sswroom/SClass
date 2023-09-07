@@ -7,7 +7,7 @@ DB::ReadingDB::ReadingDB(NotNullPtr<Text::String> sourceName) : IO::ParsedObject
 {
 }
 
-DB::ReadingDB::ReadingDB(Text::CString sourceName) : IO::ParsedObject(sourceName)
+DB::ReadingDB::ReadingDB(Text::CStringNN sourceName) : IO::ParsedObject(sourceName)
 {
 }
 

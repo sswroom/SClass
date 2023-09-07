@@ -2232,7 +2232,7 @@ UInt32 Map::MapConfig2::ToColor(const UTF8Char *str)
 	return 0xff000000 | ((v & 0xff) << 16) | (v & 0xff00) | ((v >> 16) & 0xff);
 }
 
-Map::MapDrawLayer *Map::MapConfig2::GetDrawLayer(Text::CString name, Data::ArrayList<Map::MapDrawLayer*> *layerList, IO::Writer *errWriter)
+Map::MapDrawLayer *Map::MapConfig2::GetDrawLayer(Text::CStringNN name, Data::ArrayList<Map::MapDrawLayer*> *layerList, IO::Writer *errWriter)
 {
 	Map::CIPLayer2 *cip;
 	UOSInt i = layerList->GetCount();

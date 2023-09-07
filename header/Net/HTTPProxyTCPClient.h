@@ -14,7 +14,7 @@ namespace Net
 		} PasswordType;
 
 	public:
-		HTTPProxyTCPClient(NotNullPtr<Net::SocketFactory> sockf, Text::CStringNN proxyHost, UInt16 proxyPort, PasswordType pt, const UTF8Char *userName, const UTF8Char *pwd, Text::CString destHost, UInt16 destPort);
+		HTTPProxyTCPClient(NotNullPtr<Net::SocketFactory> sockf, Text::CStringNN proxyHost, UInt16 proxyPort, PasswordType pt, const UTF8Char *userName, const UTF8Char *pwd, Text::CStringNN destHost, UInt16 destPort);
 	};
 }
 #endif

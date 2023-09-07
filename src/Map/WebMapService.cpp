@@ -451,11 +451,11 @@ Math::RectAreaDbl Map::WebMapService::GetInitBounds() const
 	return this->currCRS->bounds;
 }
 
-Bool Map::WebMapService::GetBounds(Math::RectAreaDbl *bounds) const
+Bool Map::WebMapService::GetBounds(OutParam<Math::RectAreaDbl> bounds) const
 {
 	if (this->currCRS)
 	{
-		*bounds = this->currCRS->bounds;
+		bounds.Set(this->currCRS->bounds);
 		return true;
 	}
 	return false;

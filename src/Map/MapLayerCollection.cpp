@@ -18,7 +18,7 @@ Map::MapLayerCollection::MapLayerCollection(NotNullPtr<Text::String> sourceName,
 {
 }
 
-Map::MapLayerCollection::MapLayerCollection(Text::CString sourceName, Text::CString layerName) : Map::MapDrawLayer(sourceName, 0, layerName)
+Map::MapLayerCollection::MapLayerCollection(Text::CStringNN sourceName, Text::CString layerName) : Map::MapDrawLayer(sourceName, 0, layerName)
 {
 }
 
@@ -328,7 +328,7 @@ UInt32 Map::MapLayerCollection::GetCodePage()
 	return 0;
 }
 
-Bool Map::MapLayerCollection::GetBounds(Math::RectAreaDbl *bounds)
+Bool Map::MapLayerCollection::GetBounds(OutParam<Math::RectAreaDbl> bounds) const
 {
 	Bool isFirst = true;
 	UOSInt k;
@@ -336,7 +336,7 @@ Bool Map::MapLayerCollection::GetBounds(Math::RectAreaDbl *bounds)
 	Math::RectAreaDbl minMax;
 	Math::RectAreaDbl thisBounds;
 
-	Sync::RWMutexUsage mutUsage(this->mut, false);
+	Sync::RWMutexUsage mutUsage(NotNullPtr<Sync::RWMutex>::ConvertFrom(NotNullPtr<const Sync::RWMutex>(this->mut)), false);
 	Map::MapDrawLayer *lyr;
 	k = 0;
 	l = this->layerList.GetCount();
@@ -345,14 +345,14 @@ Bool Map::MapLayerCollection::GetBounds(Math::RectAreaDbl *bounds)
 		lyr = this->layerList.GetItem(k);
 		if (isFirst)
 		{
-			if (lyr->GetBounds(&minMax))
+			if (lyr->GetBounds(minMax))
 			{
 				isFirst = false;
 			}
 		}
 		else
 		{
-			if (lyr->GetBounds(&thisBounds))
+			if (lyr->GetBounds(thisBounds))
 			{
 				minMax.tl = minMax.tl.Min(thisBounds.tl);
 				minMax.br = minMax.br.Max(thisBounds.br);
@@ -366,7 +366,7 @@ Bool Map::MapLayerCollection::GetBounds(Math::RectAreaDbl *bounds)
 	}
 	else
 	{
-		*bounds = minMax;
+		bounds.Set(minMax);
 		return true;
 	}
 }

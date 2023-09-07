@@ -24,7 +24,7 @@ Map::GPSTrack::GPSTrack(NotNullPtr<Text::String> sourceName, Bool hasAltitude, U
 	this->csys = Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::CoordinateSystemManager::GCST_WGS84);
 }
 
-Map::GPSTrack::GPSTrack(Text::CString sourceName, Bool hasAltitude, UInt32 codePage, Text::CString layerName) : Map::MapDrawLayer(sourceName, 0, layerName)
+Map::GPSTrack::GPSTrack(Text::CStringNN sourceName, Bool hasAltitude, UInt32 codePage, Text::CString layerName) : Map::MapDrawLayer(sourceName, 0, layerName)
 {
 	this->codePage = codePage;
 	this->currTrackName = 0;
@@ -327,9 +327,9 @@ UInt32 Map::GPSTrack::GetCodePage()
 	return this->codePage;
 }
 
-Bool Map::GPSTrack::GetBounds(Math::RectAreaDbl *bounds)
+Bool Map::GPSTrack::GetBounds(OutParam<Math::RectAreaDbl> bounds) const
 {
-	*bounds = Math::RectAreaDbl(Math::Coord2DDbl(minLon, minLat), Math::Coord2DDbl(maxLon, maxLat));
+	bounds.Set(Math::RectAreaDbl(Math::Coord2DDbl(minLon, minLat), Math::Coord2DDbl(maxLon, maxLat)));
 	return this->minLon != 0 || this->minLat != 0 || this->maxLon != 0 || this->maxLat != 0;
 }
 

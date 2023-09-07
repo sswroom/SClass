@@ -237,7 +237,7 @@ Net::RTSPClient::RTSPClient(const Net::RTSPClient *cli)
 	this->cliData->useCnt++;
 }
 
-Net::RTSPClient::RTSPClient(NotNullPtr<Net::SocketFactory> sockf, Text::CString host, UInt16 port, Data::Duration timeout)
+Net::RTSPClient::RTSPClient(NotNullPtr<Net::SocketFactory> sockf, Text::CStringNN host, UInt16 port, Data::Duration timeout)
 {
 	NEW_CLASS(this->cliData, ClientData());
 	this->cliData->useCnt = 1;
@@ -410,7 +410,7 @@ UTF8Char *Net::RTSPClient::SetupRTP(UTF8Char *sessIdOut, Text::CString url, Net:
 	return ret;
 }
 
-IO::ParsedObject *Net::RTSPClient::ParseURL(NotNullPtr<Net::SocketFactory> sockf, Text::CString url, Data::Duration timeout)
+IO::ParsedObject *Net::RTSPClient::ParseURL(NotNullPtr<Net::SocketFactory> sockf, Text::CStringNN url, Data::Duration timeout)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;

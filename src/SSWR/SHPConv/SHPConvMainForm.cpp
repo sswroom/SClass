@@ -21,7 +21,7 @@
 #include "UI/MessageDialog.h"
 #define LATSCALE 200000
 
-Text::CString SSWR::SHPConv::SHPConvMainForm::typeName[] = {
+Text::CStringNN SSWR::SHPConv::SHPConvMainForm::typeName[] = {
 	CSTR("Null Shape"),
 	CSTR("Point"),
 	CSTR(""),

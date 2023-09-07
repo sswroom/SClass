@@ -56,7 +56,7 @@ Math::CoordinateSystem *Math::ArcGISPRJParser::ParsePRJFile(Text::CStringNN file
 	return ParsePRJBuff(fileName, buff, buffSize, &buffSize);
 }
 
-Math::CoordinateSystem *Math::ArcGISPRJParser::ParsePRJBuff(Text::CString sourceName, UTF8Char *prjBuff, UOSInt buffSize, UOSInt *parsedSize)
+Math::CoordinateSystem *Math::ArcGISPRJParser::ParsePRJBuff(Text::CStringNN sourceName, UTF8Char *prjBuff, UOSInt buffSize, UOSInt *parsedSize)
 {
 	UOSInt i;
 	UOSInt j;

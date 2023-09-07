@@ -16,7 +16,7 @@ Text::MIMEObj::MailMessage::~MailMessage()
 {
 }
 
-Text::CString Text::MIMEObj::MailMessage::GetClassName() const
+Text::CStringNN Text::MIMEObj::MailMessage::GetClassName() const
 {
 	return CSTR("MailMessage");
 }

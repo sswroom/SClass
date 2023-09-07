@@ -38,15 +38,14 @@ void IO::VBoxVMInfo::SetStateSince(Data::Timestamp stateSince)
 	this->stateSince = stateSince;
 }
 
-Text::CString IO::VBoxVMInfo::StateGetName(State val)
+Text::CStringNN IO::VBoxVMInfo::StateGetName(State val)
 {
 	switch (val)
 	{
+	default:
 	case State::Unknown:
 		return CSTR("Unknown");
 	case State::PoweredOff:
 		return CSTR("PoweredOff");
-	default:
-		return CSTR_NULL;
 	}
 }

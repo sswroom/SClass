@@ -34,17 +34,17 @@ namespace Map
 	public:
 		virtual ~TileMap() {};
 
-		virtual Text::CString GetName() = 0;
-		virtual Bool IsError() = 0;
-		virtual TileType GetTileType() = 0;
-		virtual UOSInt GetLevelCount() = 0;
-		virtual Double GetLevelScale(UOSInt level) = 0;
-		virtual UOSInt GetNearestLevel(Double scale) = 0;
-		virtual UOSInt GetConcurrentCount() = 0;
-		virtual Bool GetBounds(Math::RectAreaDbl *bounds) = 0;
+		virtual Text::CStringNN GetName() const = 0;
+		virtual Bool IsError() const = 0;
+		virtual TileType GetTileType() const = 0;
+		virtual UOSInt GetLevelCount() const = 0;
+		virtual Double GetLevelScale(UOSInt level) const = 0;
+		virtual UOSInt GetNearestLevel(Double scale) const = 0;
+		virtual UOSInt GetConcurrentCount() const = 0;
+		virtual Bool GetBounds(OutParam<Math::RectAreaDbl> bounds) const = 0;
 		virtual Math::CoordinateSystem *GetCoordinateSystem() = 0;
-		virtual Bool IsMercatorProj() = 0;
-		virtual UOSInt GetTileSize() = 0;
+		virtual Bool IsMercatorProj() const = 0;
+		virtual UOSInt GetTileSize() const = 0;
 		virtual Bool CanQuery() const { return false; };
 		virtual Bool QueryInfos(Math::Coord2DDbl coord, UOSInt level, Data::ArrayList<Math::Geometry::Vector2D*> *vecList, Data::ArrayList<UOSInt> *valueOfstList, Data::ArrayListNN<Text::String> *nameList, Data::ArrayList<Text::String*> *valueList) const { return false; };
 		virtual void SetDispSize(Math::Size2DDbl size, Double dpi) {};

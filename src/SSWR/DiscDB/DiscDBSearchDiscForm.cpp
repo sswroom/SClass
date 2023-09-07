@@ -42,7 +42,7 @@ void __stdcall SSWR::DiscDB::DiscDBSearchDiscForm::OnSearchClicked(void *userObj
 			k = me->lvFiles->AddItem(file->fileName, 0);
 			sptr = Text::StrUInt64(sbuff, file->fileSize);
 			me->lvFiles->SetSubItem(k, 1, CSTRP(sbuff, sptr));
-			me->lvFiles->SetSubItem(k, 2, Text::CString::FromPtr(file->category));
+			me->lvFiles->SetSubItem(k, 2, Text::CStringNN::FromPtr(file->category));
 			i++;
 		}
 		me->env->FreeBurntFiles(&fileList);

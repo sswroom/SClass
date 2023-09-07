@@ -311,7 +311,7 @@ Bool SSWR::AVIRead::AVIRHexViewerForm::LoadFile(Text::CStringNN fileName, Bool d
 		Text::CString name = this->hexView->GetAnalyzerName();
 		if (name.v)
 		{
-			this->txtFileFormat->SetText(name);
+			this->txtFileFormat->SetText(name.OrEmpty());
 		}
 		else if (dynamicSize)
 		{
@@ -499,7 +499,7 @@ void SSWR::AVIRead::AVIRHexViewerForm::SetData(NotNullPtr<IO::StreamData> fd, IO
 		Text::CString name = this->hexView->GetAnalyzerName();
 		if (name.v)
 		{
-			this->txtFileFormat->SetText(name);
+			this->txtFileFormat->SetText(name.OrEmpty());
 		}
 		else
 		{

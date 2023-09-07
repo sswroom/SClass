@@ -133,7 +133,7 @@ namespace Manage
 		static Bool IsAlreadyStarted();
 		static Bool OpenPath(Text::CString path);
 		static Bool OpenPathW(const WChar *path);
-		static Text::CString GetPriorityName(ProcessPriority priority);
+		static Text::CStringNN GetPriorityName(ProcessPriority priority);
 	};
 }
 #endif

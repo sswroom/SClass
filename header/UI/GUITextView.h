@@ -48,7 +48,7 @@ namespace UI
 		GUITextView(NotNullPtr<UI::GUICore> ui, UI::GUIClientControl *parent, NotNullPtr<Media::DrawEngine> deng);
 		virtual ~GUITextView();
 
-		virtual Text::CString GetObjectClass();
+		virtual Text::CStringNN GetObjectClass() const;
 		virtual OSInt OnNotify(UInt32 code, void *lParam);
 		virtual void UpdateFont();
 		virtual OSInt GetScrollHPos();

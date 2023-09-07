@@ -121,7 +121,7 @@ namespace SSWR
 			void SetGISForm(SSWR::AVIRead::AVIRGISForm *frm);
 			SSWR::AVIRead::AVIRGISForm *GetGISForm();
 
-			static Text::CString IOPinTypeGetName(IOPinType iopt);
+			static Text::CStringNN IOPinTypeGetName(IOPinType iopt);
 		};
 	}
 }

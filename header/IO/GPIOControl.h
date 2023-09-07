@@ -37,7 +37,7 @@ namespace IO
 		Bool HasEvent(UOSInt pinNum);
 		void ClearEvent(UOSInt pinNum);
 
-		static Text::CString PinModeGetName(UOSInt pinNum, UOSInt pinMode);
+		static Text::CStringNN PinModeGetName(UOSInt pinNum, UOSInt pinMode);
 	};
 }
 #endif

@@ -46,7 +46,7 @@ namespace SSWR
 			static void __stdcall OnLogSelChg(void *userObj);
 			static void __stdcall OnFileClicked(void *userObj);
 			static void __stdcall OnLoadClicked(void *userObj);
-			static void __stdcall OnProtocolEntry(void *userObj, UInt64 fileOfst, UOSInt size, Text::CString typeName);
+			static void __stdcall OnProtocolEntry(void *userObj, UInt64 fileOfst, UOSInt size, Text::CStringNN typeName);
 			void ClearList();
 		public:
 			AVIRProtoDecForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);

@@ -21,7 +21,7 @@ namespace DB
 		Data::StringMap<DBData*> dbMap;
 		DBData *currDB;
 	public:
-		TextDB(Text::CString sourceName);
+		TextDB(Text::CStringNN sourceName);
 		virtual ~TextDB();
 
 		virtual UOSInt QueryTableNames(Text::CString schemaName, Data::ArrayListNN<Text::String> *names);

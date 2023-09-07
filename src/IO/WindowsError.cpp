@@ -33,7 +33,7 @@
 // Define the facility codes
 //
 
-Text::CString IO::WindowsError::GetString(UInt32 errorCode)
+Text::CStringNN IO::WindowsError::GetString(UInt32 errorCode)
 {
 	switch (errorCode)
 	{

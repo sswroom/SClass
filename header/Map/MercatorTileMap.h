@@ -32,14 +32,14 @@ namespace Map
 		Bool ImportTiles(IO::PackageFile *pkg);
 		Bool OptimizeToFile(Text::CStringNN fileName);
 
-		virtual Bool IsError();
-		virtual UOSInt GetLevelCount();
-		virtual Double GetLevelScale(UOSInt level);
-		virtual UOSInt GetNearestLevel(Double scale);
-		virtual Bool GetBounds(Math::RectAreaDbl *bounds);
+		virtual Bool IsError() const;
+		virtual UOSInt GetLevelCount() const;
+		virtual Double GetLevelScale(UOSInt level) const;
+		virtual UOSInt GetNearestLevel(Double scale) const;
+		virtual Bool GetBounds(OutParam<Math::RectAreaDbl> bounds) const;
 		virtual Math::CoordinateSystem *GetCoordinateSystem();
-		virtual Bool IsMercatorProj();
-		virtual UOSInt GetTileSize();
+		virtual Bool IsMercatorProj() const;
+		virtual UOSInt GetTileSize() const;
 
 		virtual UOSInt GetTileImageIDs(UOSInt level, Math::RectAreaDbl rect, Data::ArrayList<Math::Coord2D<Int32>> *ids);
 		virtual Media::ImageList *LoadTileImage(UOSInt level, Math::Coord2D<Int32> tileId, Parser::ParserList *parsers, Math::RectAreaDbl *bounds, Bool localOnly);

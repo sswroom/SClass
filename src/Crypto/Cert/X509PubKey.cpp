@@ -8,7 +8,7 @@ Crypto::Cert::X509PubKey::X509PubKey(NotNullPtr<Text::String> sourceName, Data::
 
 }
 
-Crypto::Cert::X509PubKey::X509PubKey(Text::CString sourceName, Data::ByteArrayR buff) : Crypto::Cert::X509File(sourceName, buff)
+Crypto::Cert::X509PubKey::X509PubKey(Text::CStringNN sourceName, Data::ByteArrayR buff) : Crypto::Cert::X509File(sourceName, buff)
 {
 
 }

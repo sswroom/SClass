@@ -230,7 +230,7 @@ UInt32 __stdcall Map::WebImageLayer::LoadThread(void *userObj)
 	return 0;
 }
 
-Map::WebImageLayer::WebImageLayer(Net::WebBrowser *browser, Parser::ParserList *parsers, Text::CString sourceName, Math::CoordinateSystem *csys, Text::CString layerName) : Map::MapDrawLayer(sourceName, 0, layerName)
+Map::WebImageLayer::WebImageLayer(Net::WebBrowser *browser, Parser::ParserList *parsers, Text::CStringNN sourceName, Math::CoordinateSystem *csys, Text::CString layerName) : Map::MapDrawLayer(sourceName, 0, layerName)
 {
 	this->browser = browser;
 	this->parsers = parsers;
@@ -556,9 +556,9 @@ UInt32 Map::WebImageLayer::GetCodePage()
 	return 0;
 }
 
-Bool Map::WebImageLayer::GetBounds(Math::RectAreaDbl *bounds)
+Bool Map::WebImageLayer::GetBounds(OutParam<Math::RectAreaDbl> bounds) const
 {
-	*bounds = Math::RectAreaDbl(this->min, this->max);
+	bounds.Set(Math::RectAreaDbl(this->min, this->max));
 	return this->min.x != 0 || this->min.y != 0 || this->max.x != 0 || this->max.y != 0;
 }
 

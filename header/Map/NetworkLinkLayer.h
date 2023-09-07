@@ -60,7 +60,7 @@ namespace Map
 		void CheckLinks(Bool manualRequest);
 		void LoadLink(LinkInfo *link);
 	public:
-		NetworkLinkLayer(Text::CString fileName, Parser::ParserList *parsers, Net::WebBrowser *browser, Text::CString layerName);
+		NetworkLinkLayer(Text::CStringNN fileName, Parser::ParserList *parsers, Net::WebBrowser *browser, Text::CString layerName);
 		virtual ~NetworkLinkLayer();
 
 		virtual void SetCurrScale(Double scale);
@@ -80,7 +80,7 @@ namespace Map
 		virtual DB::DBUtil::ColType GetColumnType(UOSInt colIndex, UOSInt *colSize);
 		virtual Bool GetColumnDef(UOSInt colIndex, NotNullPtr<DB::ColDef> colDef);
 		virtual UInt32 GetCodePage();
-		virtual Bool GetBounds(Math::RectAreaDbl *bounds);
+		virtual Bool GetBounds(OutParam<Math::RectAreaDbl> bounds) const;
 		virtual void SetDispSize(Math::Size2DDbl size, Double dpi);
 
 		virtual GetObjectSess *BeginGetObject();

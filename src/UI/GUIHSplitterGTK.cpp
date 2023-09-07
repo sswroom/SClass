@@ -93,7 +93,7 @@ UI::GUIHSplitter::~GUIHSplitter()
 {
 }
 
-Text::CString UI::GUIHSplitter::GetObjectClass()
+Text::CStringNN UI::GUIHSplitter::GetObjectClass() const
 {
 	return CSTR("HSplitter");
 }

@@ -13,7 +13,7 @@ Media::ImageGen::ColorImageGen::~ColorImageGen()
 {
 }
 
-Text::CString Media::ImageGen::ColorImageGen::GetName()
+Text::CStringNN Media::ImageGen::ColorImageGen::GetName() const
 {
 	return CSTR("Color Test");
 }

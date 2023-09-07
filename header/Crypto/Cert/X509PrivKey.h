@@ -11,7 +11,7 @@ namespace Crypto
 		{
 		public:
 			X509PrivKey(NotNullPtr<Text::String> sourceName, Data::ByteArrayR buff);
-			X509PrivKey(Text::CString sourceName, Data::ByteArrayR buff);
+			X509PrivKey(Text::CStringNN sourceName, Data::ByteArrayR buff);
 			virtual ~X509PrivKey();
 
 			virtual FileType GetFileType() const;

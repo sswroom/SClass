@@ -528,9 +528,9 @@ UInt32 Map::SHPData::GetCodePage()
 	return this->dbf->GetCodePage();
 }
 
-Bool Map::SHPData::GetBounds(Math::RectAreaDbl *bounds)
+Bool Map::SHPData::GetBounds(OutParam<Math::RectAreaDbl> bounds) const
 {
-	*bounds = Math::RectAreaDbl(this->min, this->max);
+	bounds.Set(Math::RectAreaDbl(this->min, this->max));
 	return this->min.x != 0 || this->min.y != 0 || this->max.x != 0 || this->max.y != 0;
 }
 

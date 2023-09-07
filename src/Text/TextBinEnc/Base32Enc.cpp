@@ -202,7 +202,7 @@ UOSInt Text::TextBinEnc::Base32Enc::DecodeBin(const UTF8Char *b64Str, UOSInt str
 	return decSize;
 }
 
-Text::CString Text::TextBinEnc::Base32Enc::GetName()
+Text::CStringNN Text::TextBinEnc::Base32Enc::GetName() const
 {
 	return CSTR("Base32");
 }

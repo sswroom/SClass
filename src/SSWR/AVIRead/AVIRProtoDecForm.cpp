@@ -94,7 +94,7 @@ void __stdcall SSWR::AVIRead::AVIRProtoDecForm::OnLoadClicked(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRProtoDecForm::OnProtocolEntry(void *userObj, UInt64 fileOfst, UOSInt size, Text::CString typeName)
+void __stdcall SSWR::AVIRead::AVIRProtoDecForm::OnProtocolEntry(void *userObj, UInt64 fileOfst, UOSInt size, Text::CStringNN typeName)
 {
 	SSWR::AVIRead::AVIRProtoDecForm *me = (SSWR::AVIRead::AVIRProtoDecForm *)userObj;
 	ProtocolItem *item;

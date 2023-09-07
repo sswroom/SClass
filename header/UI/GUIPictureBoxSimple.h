@@ -32,7 +32,7 @@ namespace UI
 		GUIPictureBoxSimple(NotNullPtr<GUICore> ui, UI::GUIClientControl *parent, NotNullPtr<Media::DrawEngine> eng, Bool hasBorder);
 		virtual ~GUIPictureBoxSimple();
 
-		virtual Text::CString GetObjectClass();
+		virtual Text::CStringNN GetObjectClass() const;
 		virtual OSInt OnNotify(UInt32 code, void *lParam);
 
 		void HandleMouseDown(MouseEventHandler hdlr, void *userObj);
@@ -43,5 +43,5 @@ namespace UI
 		void SetImageDImg(Media::DrawImage *img);
 		void SetNoBGColor(Bool noBGColor);
 	};
-};
+}
 #endif

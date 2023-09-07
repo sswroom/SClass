@@ -177,7 +177,7 @@ void SSWR::AVIRead::AVIRBluetoothLogForm::LogUIUpdate()
 				}
 				else
 				{
-					this->lvContent->SetSubItem(l, 6, cstr);
+					this->lvContent->SetSubItem(l, 6, cstr.OrEmpty());
 				}
 			}
 			sptr = Text::StrInt32(sbuff, log->measurePower);

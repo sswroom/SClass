@@ -115,7 +115,7 @@ void Map::MapEnv::RemoveGroupUpdatedHandler(Map::MapEnv::GroupItem *group, Map::
 	
 }
 
-Map::MapEnv::MapEnv(Text::CString fileName, UInt32 bgColor, Math::CoordinateSystem *csys) : IO::ParsedObject(fileName)
+Map::MapEnv::MapEnv(Text::CStringNN fileName, UInt32 bgColor, Math::CoordinateSystem *csys) : IO::ParsedObject(fileName)
 {
 	this->bgColor = bgColor;
 	this->nStr = 1000;
@@ -1463,7 +1463,7 @@ Bool Map::MapEnv::GetBounds(Map::MapEnv::GroupItem *group, Math::RectAreaDbl *bo
 	while (i < j)
 	{
 		Map::MapDrawLayer *lyr = layers.GetItem(i);
-		if (lyr->GetBounds(&thisBounds))
+		if (lyr->GetBounds(thisBounds))
 		{
 			lyrCSys = lyr->GetCoordinateSystem();
 			if (this->csys != 0 && lyrCSys != 0)

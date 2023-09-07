@@ -24,7 +24,7 @@ Math::GeoJSONWriter::~GeoJSONWriter()
 	SDEL_STRING(this->lastError);
 }
 
-Text::CString Math::GeoJSONWriter::GetWriterName()
+Text::CStringNN Math::GeoJSONWriter::GetWriterName() const
 {
 	return CSTR("GeoJSON");
 }

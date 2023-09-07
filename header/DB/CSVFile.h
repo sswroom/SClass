@@ -21,7 +21,7 @@ namespace DB
 
 	public:
 		CSVFile(NotNullPtr<Text::String> fileName, UInt32 codePage);
-		CSVFile(Text::CString fileName, UInt32 codePage);
+		CSVFile(Text::CStringNN fileName, UInt32 codePage);
 		CSVFile(NotNullPtr<IO::SeekableStream> stm, UInt32 codePage);
 		CSVFile(NotNullPtr<IO::StreamData> fd, UInt32 codePage);
 		virtual ~CSVFile();

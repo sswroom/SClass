@@ -13,7 +13,7 @@
 #include "Math/Geometry/VectorImage.h"
 #include "Media/SharedImage.h"
 
-Map::OruxDBLayer::OruxDBLayer(Text::CString sourceName, Text::CString layerName, Parser::ParserList *parsers) : Map::MapDrawLayer(sourceName, 0, layerName)
+Map::OruxDBLayer::OruxDBLayer(Text::CStringNN sourceName, Text::CString layerName, NotNullPtr<Parser::ParserList> parsers) : Map::MapDrawLayer(sourceName, 0, layerName)
 {
 	this->parsers = parsers;
 	this->currLayer = (UInt32)-1;
@@ -252,17 +252,17 @@ UInt32 Map::OruxDBLayer::GetCodePage()
 	return 0;
 }
 
-Bool Map::OruxDBLayer::GetBounds(Math::RectAreaDbl *bounds)
+Bool Map::OruxDBLayer::GetBounds(OutParam<Math::RectAreaDbl> bounds) const
 {
 	Map::OruxDBLayer::LayerInfo *lyr = this->layerMap.Get(this->currLayer);
 	if (lyr)
 	{
-		*bounds = Math::RectAreaDbl(lyr->mapMin, lyr->mapMax);
+		bounds.Set(Math::RectAreaDbl(lyr->mapMin, lyr->mapMax));
 		return lyr->mapMin.x != 0 || lyr->mapMin.y != 0 || lyr->mapMax.x != 0 || lyr->mapMax.y != 0;
 	}
 	else
 	{
-		*bounds = Math::RectAreaDbl(0, 0, 0, 0);
+		bounds.Set(Math::RectAreaDbl(0, 0, 0, 0));
 		return false;
 	}
 }

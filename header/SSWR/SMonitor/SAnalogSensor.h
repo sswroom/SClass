@@ -84,8 +84,8 @@ namespace SSWR
 			virtual Bool GetReadings(Double *values) = 0;
 			virtual SensorType GetSensorType() = 0;
 
-			static Text::CString GetReadingTypeName(ReadingType readingType);
-			static Text::CString GetSensorTypeName(SensorType sensorType);
+			static Text::CStringNN GetReadingTypeName(ReadingType readingType);
+			static Text::CStringNN GetSensorTypeName(SensorType sensorType);
 		};
 	}
 }

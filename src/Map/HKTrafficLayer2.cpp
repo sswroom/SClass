@@ -405,9 +405,9 @@ UInt32 Map::HKTrafficLayer2::GetCodePage()
 	return 65001;
 }
 
-Bool Map::HKTrafficLayer2::GetBounds(Math::RectAreaDbl *bounds)
+Bool Map::HKTrafficLayer2::GetBounds(OutParam<Math::RectAreaDbl> bounds) const
 {
-	*bounds = this->bounds;
+	bounds.Set(this->bounds);
 	return true;
 }
 

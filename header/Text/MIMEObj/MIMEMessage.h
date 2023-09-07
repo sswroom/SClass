@@ -23,8 +23,8 @@ namespace Text
 			MIMEMessage(Text::IMIMEObj *content);
 			virtual ~MIMEMessage();
 
-			virtual Text::CString GetClassName() const;
-			virtual Text::CString GetContentType() const;
+			virtual Text::CStringNN GetClassName() const;
+			virtual Text::CStringNN GetContentType() const;
 			virtual UOSInt WriteStream(IO::Stream *stm) const;
 			virtual IMIMEObj *Clone() const;
 
