@@ -38,13 +38,13 @@ namespace Map
 	private:
 		Data::ArrayList<Map::IReverseGeocoder *> revGeos;
 		UOSInt nextCoder;
-		DB::DBTool *conn;
+		NotNullPtr<DB::DBTool> conn;
 		IO::Writer *errWriter;
 		Data::BTreeMap<Text::String *> strMap;
 		Data::FastMap<UInt32, LCIDInfo *> lcidMap;
 		Sync::Mutex mut;
 	public:
-		AssistedReverseGeocoderPL(DB::DBTool *db, IO::Writer *errWriter);
+		AssistedReverseGeocoderPL(NotNullPtr<DB::DBTool> db, IO::Writer *errWriter);
 		virtual ~AssistedReverseGeocoderPL();
 
 		virtual UTF8Char *SearchName(UTF8Char *buff, UOSInt buffSize, Math::Coord2DDbl pos, UInt32 lcid);

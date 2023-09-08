@@ -1538,8 +1538,12 @@ SSWR::SMonitor::SMonitorSvrCore::DeviceInfo *SSWR::SMonitor::SMonitorSvrCore::De
 
 	Data::Timestamp ts = Data::Timestamp::UtcNow();
 	Sync::MutexUsage dbMutUsage;
-	DB::DBTool *db = this->UseDB(dbMutUsage);
-	DB::SQLBuilder sql(this->db);
+	NotNullPtr<DB::DBTool> db;
+	if (!db.Set(this->UseDB(dbMutUsage)))
+	{
+		return 0;
+	}
+	DB::SQLBuilder sql(db);
 	sql.AppendCmdC(CSTR("insert into device (id, cpuName, platformName, lastKATime, flags) values ("));
 	sql.AppendInt64(cliId);
 	sql.AppendCmdC(CSTR(", "));
@@ -1606,64 +1610,67 @@ Bool SSWR::SMonitor::SMonitorSvrCore::DeviceRecvReading(NotNullPtr<DeviceInfo> d
 	if (cliTime > dev->readingTime && cliTime < t + 300000)
 	{
 		Sync::MutexUsage dbMutUsage;
-		DB::DBTool *db = this->UseDB(dbMutUsage);
-		DB::SQLBuilder sql(this->db);
-		if (nReading > SMONITORCORE_DEVREADINGCNT)
+		NotNullPtr<DB::DBTool> db;
+		if (db.Set(this->UseDB(dbMutUsage)))
 		{
-			nReading = SMONITORCORE_DEVREADINGCNT;
-		}
-		sql.AppendCmdC(CSTR("update device set readingTime = "));
-		sql.AppendTS(Data::Timestamp(cliTime, 0));
-		sql.AppendCmdC(CSTR(", nreading = "));
-		sql.AppendInt32((Int32)nReading);
-		sql.AppendCmdC(CSTR(", ndigital = "));
-		sql.AppendInt32((Int32)nDigitals);
-		sql.AppendCmdC(CSTR(", nOutput = "));
-		sql.AppendInt32((Int32)nOutput);
-		sql.AppendCmdC(CSTR(", dsensors = "));
-		sql.AppendInt32((Int32)digitalVals);
-		i = 0;
-		while (i < nReading)
-		{
-			if (ReadInt16(&readings[i].status[6]) != 0)
+			DB::SQLBuilder sql(db);
+			if (nReading > SMONITORCORE_DEVREADINGCNT)
 			{
-				sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("reading")), i + 1);
-				sql.AppendCmdC(CSTR(", "));
-				sql.AppendCol(sbuff);
-				sql.AppendCmdC(CSTR(" = "));
-				sql.AppendDbl(readings[i].reading);
-
-				sptr = Text::StrConcatC(sptr, UTF8STRC("Status"));
-				sql.AppendCmdC(CSTR(", "));
-				sql.AppendCol(sbuff);
-				sql.AppendCmdC(CSTR(" = "));
-				sql.AppendInt64(ReadInt64(readings[i].status));
+				nReading = SMONITORCORE_DEVREADINGCNT;
 			}
-
-			i++;
-		}
-		sql.AppendCmdC(CSTR(" where id = "));
-		sql.AppendInt64(dev->cliId);
-		if (db->ExecuteNonQuery(sql.ToCString()) > 0)
-		{
-			Sync::RWMutexUsage mutUsage(dev->mut, true);
-			dev->readingTime = cliTime;
-			dev->ndigital = nDigitals;
-			dev->digitalVals = digitalVals;
-			dev->nOutput = nOutput;
-			dev->nReading = nReading;
+			sql.AppendCmdC(CSTR("update device set readingTime = "));
+			sql.AppendTS(Data::Timestamp(cliTime, 0));
+			sql.AppendCmdC(CSTR(", nreading = "));
+			sql.AppendInt32((Int32)nReading);
+			sql.AppendCmdC(CSTR(", ndigital = "));
+			sql.AppendInt32((Int32)nDigitals);
+			sql.AppendCmdC(CSTR(", nOutput = "));
+			sql.AppendInt32((Int32)nOutput);
+			sql.AppendCmdC(CSTR(", dsensors = "));
+			sql.AppendInt32((Int32)digitalVals);
 			i = 0;
 			while (i < nReading)
 			{
 				if (ReadInt16(&readings[i].status[6]) != 0)
 				{
-					MemCopyNO(&dev->readings[i], &readings[i], sizeof(ReadingInfo));
+					sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("reading")), i + 1);
+					sql.AppendCmdC(CSTR(", "));
+					sql.AppendCol(sbuff);
+					sql.AppendCmdC(CSTR(" = "));
+					sql.AppendDbl(readings[i].reading);
+
+					sptr = Text::StrConcatC(sptr, UTF8STRC("Status"));
+					sql.AppendCmdC(CSTR(", "));
+					sql.AppendCol(sbuff);
+					sql.AppendCmdC(CSTR(" = "));
+					sql.AppendInt64(ReadInt64(readings[i].status));
 				}
+
 				i++;
 			}
-			dev->valUpdated = true;
+			sql.AppendCmdC(CSTR(" where id = "));
+			sql.AppendInt64(dev->cliId);
+			if (db->ExecuteNonQuery(sql.ToCString()) > 0)
+			{
+				Sync::RWMutexUsage mutUsage(dev->mut, true);
+				dev->readingTime = cliTime;
+				dev->ndigital = nDigitals;
+				dev->digitalVals = digitalVals;
+				dev->nOutput = nOutput;
+				dev->nReading = nReading;
+				i = 0;
+				while (i < nReading)
+				{
+					if (ReadInt16(&readings[i].status[6]) != 0)
+					{
+						MemCopyNO(&dev->readings[i], &readings[i], sizeof(ReadingInfo));
+					}
+					i++;
+				}
+				dev->valUpdated = true;
+			}
+			dbMutUsage.EndUse();
 		}
-		dbMutUsage.EndUse();
 
 		DevRecord2 *rec;
 		rec = MemAlloc(DevRecord2, 1);
@@ -1715,15 +1722,18 @@ Bool SSWR::SMonitor::SMonitorSvrCore::DeviceKARecv(NotNullPtr<DeviceInfo> dev, I
 	Bool succ = false;
 
 	Sync::MutexUsage dbMutUsage;
-	DB::DBTool *db = this->UseDB(dbMutUsage);
-	DB::SQLBuilder sql(this->db);
-	sql.AppendCmdC(CSTR("update device set lastKATime = "));
-	sql.AppendTS(ts);
-	sql.AppendCmdC(CSTR(" where id = "));
-	sql.AppendInt64(dev->cliId);
-	if (db->ExecuteNonQuery(sql.ToCString()) >= 0)
+	NotNullPtr<DB::DBTool> db;
+	if (db.Set(this->UseDB(dbMutUsage)))
 	{
-		succ = true;
+		DB::SQLBuilder sql(db);
+		sql.AppendCmdC(CSTR("update device set lastKATime = "));
+		sql.AppendTS(ts);
+		sql.AppendCmdC(CSTR(" where id = "));
+		sql.AppendInt64(dev->cliId);
+		if (db->ExecuteNonQuery(sql.ToCString()) >= 0)
+		{
+			succ = true;
+		}
 	}
 	return succ;
 }
@@ -1745,18 +1755,21 @@ Bool SSWR::SMonitor::SMonitorSvrCore::DeviceSetName(Int64 cliId, NotNullPtr<Text
 	Bool succ = false;
 
 	Sync::MutexUsage dbMutUsage;
-	DB::DBTool *db = this->UseDB(dbMutUsage);
-	DB::SQLBuilder sql(this->db);
-	sql.AppendCmdC(CSTR("update device set devName = "));
-	sql.AppendStr(devName);
-	sql.AppendCmdC(CSTR(" where id = "));
-	sql.AppendInt64(dev->cliId);
-	if (db->ExecuteNonQuery(sql.ToCString()) >= 0)
+	NotNullPtr<DB::DBTool> db;
+	if (db.Set(this->UseDB(dbMutUsage)))
 	{
-		Sync::RWMutexUsage mutUsage(dev->mut, true);
-		SDEL_STRING(dev->devName);
-		dev->devName = devName->Clone().Ptr();
-		succ = true;
+		DB::SQLBuilder sql(db);
+		sql.AppendCmdC(CSTR("update device set devName = "));
+		sql.AppendStr(devName);
+		sql.AppendCmdC(CSTR(" where id = "));
+		sql.AppendInt64(dev->cliId);
+		if (db->ExecuteNonQuery(sql.ToCString()) >= 0)
+		{
+			Sync::RWMutexUsage mutUsage(dev->mut, true);
+			SDEL_STRING(dev->devName);
+			dev->devName = devName->Clone().Ptr();
+			succ = true;
+		}
 	}
 	return succ;
 }
@@ -1778,18 +1791,21 @@ Bool SSWR::SMonitor::SMonitorSvrCore::DeviceSetPlatform(Int64 cliId, NotNullPtr<
 	Bool succ = false;
 
 	Sync::MutexUsage dbMutUsage;
-	DB::DBTool *db = this->UseDB(dbMutUsage);
-	DB::SQLBuilder sql(this->db);
-	sql.AppendCmdC(CSTR("update device set platformName = "));
-	sql.AppendStr(platformName);
-	sql.AppendCmdC(CSTR(" where id = "));
-	sql.AppendInt64(dev->cliId);
-	if (db->ExecuteNonQuery(sql.ToCString()) >= 0)
+	NotNullPtr<DB::DBTool> db;
+	if (db.Set(this->UseDB(dbMutUsage)))
 	{
-		Sync::RWMutexUsage mutUsage(dev->mut, true);
-		dev->platformName->Release();
-		dev->platformName = platformName->Clone();
-		succ = true;
+		DB::SQLBuilder sql(db);
+		sql.AppendCmdC(CSTR("update device set platformName = "));
+		sql.AppendStr(platformName);
+		sql.AppendCmdC(CSTR(" where id = "));
+		sql.AppendInt64(dev->cliId);
+		if (db->ExecuteNonQuery(sql.ToCString()) >= 0)
+		{
+			Sync::RWMutexUsage mutUsage(dev->mut, true);
+			dev->platformName->Release();
+			dev->platformName = platformName->Clone();
+			succ = true;
+		}
 	}
 	return succ;
 }
@@ -1811,18 +1827,21 @@ Bool SSWR::SMonitor::SMonitorSvrCore::DeviceSetCPUName(Int64 cliId, NotNullPtr<T
 	Bool succ = false;
 
 	Sync::MutexUsage dbMutUsage;
-	DB::DBTool *db = this->UseDB(dbMutUsage);
-	DB::SQLBuilder sql(this->db);
-	sql.AppendCmdC(CSTR("update device set cpuName = "));
-	sql.AppendStr(cpuName);
-	sql.AppendCmdC(CSTR(" where id = "));
-	sql.AppendInt64(dev->cliId);
-	if (db->ExecuteNonQuery(sql.ToCString()) >= 0)
+	NotNullPtr<DB::DBTool> db;
+	if (db.Set(this->UseDB(dbMutUsage)))
 	{
-		Sync::RWMutexUsage mutUsage(dev->mut, true);
-		dev->cpuName->Release();
-		dev->cpuName = cpuName->Clone();
-		succ = true;
+		DB::SQLBuilder sql(db);
+		sql.AppendCmdC(CSTR("update device set cpuName = "));
+		sql.AppendStr(cpuName);
+		sql.AppendCmdC(CSTR(" where id = "));
+		sql.AppendInt64(dev->cliId);
+		if (db->ExecuteNonQuery(sql.ToCString()) >= 0)
+		{
+			Sync::RWMutexUsage mutUsage(dev->mut, true);
+			dev->cpuName->Release();
+			dev->cpuName = cpuName->Clone();
+			succ = true;
+		}
 	}
 	return succ;
 }
@@ -1871,19 +1890,22 @@ Bool SSWR::SMonitor::SMonitorSvrCore::DeviceSetReading(Int64 cliId, UInt32 index
 	Bool succ = false;
 
 	Sync::MutexUsage dbMutUsage;
-	DB::DBTool *db = this->UseDB(dbMutUsage);
-	DB::SQLBuilder sql(this->db);
-	sql.AppendCmdC(CSTR("update device set readingNames = "));
-	sql.AppendStrUTF8(sb.ToString());
-	sql.AppendCmdC(CSTR(" where id = "));
-	sql.AppendInt64(dev->cliId);
-	if (db->ExecuteNonQuery(sql.ToCString()) >= 0)
+	NotNullPtr<DB::DBTool> db;
+	if (db.Set(this->UseDB(dbMutUsage)))
 	{
-		Sync::RWMutexUsage mutUsage(dev->mut, true);
-		SDEL_TEXT(dev->readingNames[index]);
-		dev->readingNames[index] = Text::StrCopyNew(readingName).Ptr();
-		dev->valUpdated = true;
-		succ = true;
+		DB::SQLBuilder sql(db);
+		sql.AppendCmdC(CSTR("update device set readingNames = "));
+		sql.AppendStrUTF8(sb.ToString());
+		sql.AppendCmdC(CSTR(" where id = "));
+		sql.AppendInt64(dev->cliId);
+		if (db->ExecuteNonQuery(sql.ToCString()) >= 0)
+		{
+			Sync::RWMutexUsage mutUsage(dev->mut, true);
+			SDEL_TEXT(dev->readingNames[index]);
+			dev->readingNames[index] = Text::StrCopyNew(readingName).Ptr();
+			dev->valUpdated = true;
+			succ = true;
+		}
 	}
 	return succ;
 }
@@ -1899,17 +1921,20 @@ Bool SSWR::SMonitor::SMonitorSvrCore::DeviceSetVersion(Int64 cliId, Int64 versio
 	Bool succ = false;
 
 	Sync::MutexUsage dbMutUsage;
-	DB::DBTool *db = this->UseDB(dbMutUsage);
-	DB::SQLBuilder sql(this->db);
-	sql.AppendCmdC(CSTR("update device set version = "));
-	sql.AppendInt64(version);
-	sql.AppendCmdC(CSTR(" where id = "));
-	sql.AppendInt64(dev->cliId);
-	if (db->ExecuteNonQuery(sql.ToCString()) >= 0)
+	NotNullPtr<DB::DBTool> db;
+	if (db.Set(this->UseDB(dbMutUsage)))
 	{
-		Sync::RWMutexUsage mutUsage(dev->mut, true);
-		dev->version = version;
-		succ = true;
+		DB::SQLBuilder sql(db);
+		sql.AppendCmdC(CSTR("update device set version = "));
+		sql.AppendInt64(version);
+		sql.AppendCmdC(CSTR(" where id = "));
+		sql.AppendInt64(dev->cliId);
+		if (db->ExecuteNonQuery(sql.ToCString()) >= 0)
+		{
+			Sync::RWMutexUsage mutUsage(dev->mut, true);
+			dev->version = version;
+			succ = true;
+		}
 	}
 	return succ;
 }
@@ -1934,24 +1959,27 @@ Bool SSWR::SMonitor::SMonitorSvrCore::DeviceModify(Int64 cliId, Text::CString de
 	Bool succ = false;
 
 	Sync::MutexUsage dbMutUsage;
-	DB::DBTool *db = this->UseDB(dbMutUsage);
-	DB::SQLBuilder sql(this->db);
-	sql.AppendCmdC(CSTR("update device set devName = "));
-	sql.AppendStrC(devName);
-	sql.AppendCmdC(CSTR(", flags = "));
-	sql.AppendInt32(flags);
-	sql.AppendCmdC(CSTR(" where id = "));
-	sql.AppendInt64(dev->cliId);
-	if (db->ExecuteNonQuery(sql.ToCString()) >= 0)
+	NotNullPtr<DB::DBTool> db;
+	if (db.Set(this->UseDB(dbMutUsage)))
 	{
-		Sync::RWMutexUsage mutUsage(dev->mut, true);
-		SDEL_STRING(dev->devName);
-		if (devName.v)
+		DB::SQLBuilder sql(db);
+		sql.AppendCmdC(CSTR("update device set devName = "));
+		sql.AppendStrC(devName);
+		sql.AppendCmdC(CSTR(", flags = "));
+		sql.AppendInt32(flags);
+		sql.AppendCmdC(CSTR(" where id = "));
+		sql.AppendInt64(dev->cliId);
+		if (db->ExecuteNonQuery(sql.ToCString()) >= 0)
 		{
-			dev->devName = Text::String::New(devName).Ptr();
+			Sync::RWMutexUsage mutUsage(dev->mut, true);
+			SDEL_STRING(dev->devName);
+			if (devName.v)
+			{
+				dev->devName = Text::String::New(devName).Ptr();
+			}
+			dev->flags = flags;
+			succ = true;
 		}
-		dev->flags = flags;
-		succ = true;
 	}
 	return succ;
 }
@@ -1967,43 +1995,46 @@ Bool SSWR::SMonitor::SMonitorSvrCore::DeviceSetReadings(DeviceInfo *dev, const U
 	Bool succ = false;
 
 	Sync::MutexUsage dbMutUsage;
-	DB::DBTool *db = this->UseDB(dbMutUsage);
-	DB::SQLBuilder sql(this->db);
-	sql.AppendCmdC(CSTR("update device set readingNames = "));
-	sql.AppendStrUTF8(readings);
-	sql.AppendCmdC(CSTR(" where id = "));
-	sql.AppendInt64(dev->cliId);
-	if (db->ExecuteNonQuery(sql.ToCString()) >= 0)
+	NotNullPtr<DB::DBTool> db;
+	if (db.Set(this->UseDB(dbMutUsage)))
 	{
-		UOSInt i;
-		UOSInt j;
-		Sync::RWMutexUsage mutUsage(dev->mut, true);
-		i = SMONITORCORE_DEVREADINGCNT;
-		while (i-- > 0)
+		DB::SQLBuilder sql(db);
+		sql.AppendCmdC(CSTR("update device set readingNames = "));
+		sql.AppendStrUTF8(readings);
+		sql.AppendCmdC(CSTR(" where id = "));
+		sql.AppendInt64(dev->cliId);
+		if (db->ExecuteNonQuery(sql.ToCString()) >= 0)
 		{
-			SDEL_TEXT(dev->readingNames[i]);
-		}
-		if (readings)
-		{
-			Text::StringBuilderUTF8 sb;
-			UTF8Char *sarr[2];
-			sb.AppendSlow(readings);
-			sarr[1] = sb.v;
-			i = 0;
-			while (true)
+			UOSInt i;
+			UOSInt j;
+			Sync::RWMutexUsage mutUsage(dev->mut, true);
+			i = SMONITORCORE_DEVREADINGCNT;
+			while (i-- > 0)
 			{
-				j = Text::StrSplit(sarr, 2, sarr[1], '|');
-				if (sarr[0][0])
-				{
-					dev->readingNames[i] = Text::StrCopyNew(sarr[0]).Ptr();
-				}
-				if (j != 2)
-					break;
-				i++;
+				SDEL_TEXT(dev->readingNames[i]);
 			}
+			if (readings)
+			{
+				Text::StringBuilderUTF8 sb;
+				UTF8Char *sarr[2];
+				sb.AppendSlow(readings);
+				sarr[1] = sb.v;
+				i = 0;
+				while (true)
+				{
+					j = Text::StrSplit(sarr, 2, sarr[1], '|');
+					if (sarr[0][0])
+					{
+						dev->readingNames[i] = Text::StrCopyNew(sarr[0]).Ptr();
+					}
+					if (j != 2)
+						break;
+					i++;
+				}
+			}
+			dev->valUpdated = true;
+			succ = true;
 		}
-		dev->valUpdated = true;
-		succ = true;
 	}
 	return succ;
 }
@@ -2019,42 +2050,45 @@ Bool SSWR::SMonitor::SMonitorSvrCore::DeviceSetDigitals(DeviceInfo *dev, const U
 	Bool succ = false;
 
 	Sync::MutexUsage dbMutUsage;
-	DB::DBTool *db = this->UseDB(dbMutUsage);
-	DB::SQLBuilder sql(this->db);
-	sql.AppendCmdC(CSTR("update device set digitalNames = "));
-	sql.AppendStrUTF8(digitals);
-	sql.AppendCmdC(CSTR(" where id = "));
-	sql.AppendInt64(dev->cliId);
-	if (db->ExecuteNonQuery(sql.ToCString()) >= 0)
+	NotNullPtr<DB::DBTool> db;
+	if (db.Set(this->UseDB(dbMutUsage)))
 	{
-		UOSInt i;
-		UOSInt j;
-		Sync::RWMutexUsage mutUsage(dev->mut, true);
-		i = SMONITORCORE_DIGITALCNT;
-		while (i-- > 0)
+		DB::SQLBuilder sql(db);
+		sql.AppendCmdC(CSTR("update device set digitalNames = "));
+		sql.AppendStrUTF8(digitals);
+		sql.AppendCmdC(CSTR(" where id = "));
+		sql.AppendInt64(dev->cliId);
+		if (db->ExecuteNonQuery(sql.ToCString()) >= 0)
 		{
-			SDEL_TEXT(dev->digitalNames[i]);
-		}
-		if (digitals)
-		{
-			Text::StringBuilderUTF8 sb;
-			UTF8Char *sarr[2];
-			sb.AppendSlow(digitals);
-			sarr[1] = sb.v;
-			i = 0;
-			while (true)
+			UOSInt i;
+			UOSInt j;
+			Sync::RWMutexUsage mutUsage(dev->mut, true);
+			i = SMONITORCORE_DIGITALCNT;
+			while (i-- > 0)
 			{
-				j = Text::StrSplit(sarr, 2, sarr[1], '|');
-				if (sarr[0][0])
-				{
-					dev->digitalNames[i] = Text::StrCopyNew(sarr[0]).Ptr();
-				}
-				if (j != 2)
-					break;
-				i++;
+				SDEL_TEXT(dev->digitalNames[i]);
 			}
+			if (digitals)
+			{
+				Text::StringBuilderUTF8 sb;
+				UTF8Char *sarr[2];
+				sb.AppendSlow(digitals);
+				sarr[1] = sb.v;
+				i = 0;
+				while (true)
+				{
+					j = Text::StrSplit(sarr, 2, sarr[1], '|');
+					if (sarr[0][0])
+					{
+						dev->digitalNames[i] = Text::StrCopyNew(sarr[0]).Ptr();
+					}
+					if (j != 2)
+						break;
+					i++;
+				}
+			}
+			succ = true;
 		}
-		succ = true;
 	}
 	return succ;
 }
@@ -2206,28 +2240,30 @@ Bool SSWR::SMonitor::SMonitorSvrCore::UserAdd(const UTF8Char *userName, const UT
 	Text::StrHexBytes(sbuff, pwdBuff, 16, 0);
 
 	Sync::MutexUsage dbMutUsage;
-	DB::DBTool *db = this->UseDB(dbMutUsage);
-	DB::SQLBuilder sql(this->db);
-	sql.AppendCmdC(CSTR("insert into webuser (userName, pwd, userType) values ("));
-	sql.AppendStrUTF8(userName);
-	sql.AppendCmdC(CSTR(", "));
-	sql.AppendStrUTF8(sbuff);
-	sql.AppendCmdC(CSTR(", "));
-	sql.AppendInt32(userType);
-	sql.AppendCmdC(CSTR(")"));
-	if (db->ExecuteNonQuery(sql.ToCString()) > 0)
+	NotNullPtr<DB::DBTool> db;
+	if (db.Set(this->UseDB(dbMutUsage)))
 	{
-		NEW_CLASS(user, WebUser());
-		user->userId = db->GetLastIdentity32();
-		user->userName = Text::StrCopyNew(userName).Ptr();
-		MemCopyNO(user->md5Pwd, pwdBuff, 16);
-		user->userType = userType;
+		DB::SQLBuilder sql(db);
+		sql.AppendCmdC(CSTR("insert into webuser (userName, pwd, userType) values ("));
+		sql.AppendStrUTF8(userName);
+		sql.AppendCmdC(CSTR(", "));
+		sql.AppendStrUTF8(sbuff);
+		sql.AppendCmdC(CSTR(", "));
+		sql.AppendInt32(userType);
+		sql.AppendCmdC(CSTR(")"));
+		if (db->ExecuteNonQuery(sql.ToCString()) > 0)
+		{
+			NEW_CLASS(user, WebUser());
+			user->userId = db->GetLastIdentity32();
+			user->userName = Text::StrCopyNew(userName).Ptr();
+			MemCopyNO(user->md5Pwd, pwdBuff, 16);
+			user->userType = userType;
 
-		this->userMap.Put(user->userId, user);
-		this->userNameMap.Put(user->userName, user);
-		succ = true;
+			this->userMap.Put(user->userId, user);
+			this->userNameMap.Put(user->userName, user);
+			succ = true;
+		}
 	}
-	dbMutUsage.EndUse();
 	return succ;
 }
 
@@ -2250,18 +2286,21 @@ Bool SSWR::SMonitor::SMonitorSvrCore::UserSetPassword(Int32 userId, const UTF8Ch
 	userMutUsage.EndUse();
 
 	Sync::MutexUsage dbMutUsage;
-	DB::DBTool *db = this->UseDB(dbMutUsage);
-	DB::SQLBuilder sql(this->db);
-	sql.AppendCmdC(CSTR("update webuser set pwd = "));
-	sql.AppendStrUTF8(sbuff);
-	sql.AppendCmdC(CSTR(" where id = "));
-	sql.AppendInt32(userId);
-	if (db->ExecuteNonQuery(sql.ToCString()) >= 0)
+	NotNullPtr<DB::DBTool> db;
+	if (db.Set(this->UseDB(dbMutUsage)))
 	{
-		userMutUsage.ReplaceMutex(user->mut, true);
-		MemCopyNO(user->md5Pwd, pwdBuff, 16);
-		userMutUsage.EndUse();
-		succ = true;
+		DB::SQLBuilder sql(db);
+		sql.AppendCmdC(CSTR("update webuser set pwd = "));
+		sql.AppendStrUTF8(sbuff);
+		sql.AppendCmdC(CSTR(" where id = "));
+		sql.AppendInt32(userId);
+		if (db->ExecuteNonQuery(sql.ToCString()) >= 0)
+		{
+			userMutUsage.ReplaceMutex(user->mut, true);
+			MemCopyNO(user->md5Pwd, pwdBuff, 16);
+			userMutUsage.EndUse();
+			succ = true;
+		}
 	}
 	return succ;
 }
@@ -2461,42 +2500,44 @@ Bool SSWR::SMonitor::SMonitorSvrCore::UserAssign(Int32 userId, Data::ArrayList<I
 	}
 
 	Sync::MutexUsage dbMutUsage;
-	DB::DBTool *db = this->UseDB(dbMutUsage);
-	DB::SQLBuilder sql(this->db);
-	sql.AppendCmdC(CSTR("delete from webuser_device where webuser_id = "));
-	sql.AppendInt32(user->userId);
-	if (db->ExecuteNonQuery(sql.ToCString()) < 0)
+	NotNullPtr<DB::DBTool> db;
+	if (db.Set(this->UseDB(dbMutUsage)))
 	{
-		return false;
-	}
-	succ = true;
-	mutUsage.ReplaceMutex(user->mut, true);
-	user->devMap.Clear();
-	i = 0;
-	j = devIdList->GetCount();
-	while (i < j)
-	{
-		sql.Clear();
-		cliId = devIdList->GetItem(i);
-		sql.AppendCmdC(CSTR("insert into webuser_device (webuser_id, device_id) values ("));
+		DB::SQLBuilder sql(db);
+		sql.AppendCmdC(CSTR("delete from webuser_device where webuser_id = "));
 		sql.AppendInt32(user->userId);
-		sql.AppendCmdC(CSTR(", "));
-		sql.AppendInt64(cliId);
-		sql.AppendCmdC(CSTR(")"));
 		if (db->ExecuteNonQuery(sql.ToCString()) < 0)
 		{
-			succ = false;
-			break;
+			return false;
 		}
-		else
+		succ = true;
+		mutUsage.ReplaceMutex(user->mut, true);
+		user->devMap.Clear();
+		i = 0;
+		j = devIdList->GetCount();
+		while (i < j)
 		{
-			Sync::RWMutexUsage devMutUsage(this->devMut, false);
-			user->devMap.Put(cliId, this->devMap.Get(cliId));
-		}
+			sql.Clear();
+			cliId = devIdList->GetItem(i);
+			sql.AppendCmdC(CSTR("insert into webuser_device (webuser_id, device_id) values ("));
+			sql.AppendInt32(user->userId);
+			sql.AppendCmdC(CSTR(", "));
+			sql.AppendInt64(cliId);
+			sql.AppendCmdC(CSTR(")"));
+			if (db->ExecuteNonQuery(sql.ToCString()) < 0)
+			{
+				succ = false;
+				break;
+			}
+			else
+			{
+				Sync::RWMutexUsage devMutUsage(this->devMut, false);
+				user->devMap.Put(cliId, this->devMap.Get(cliId));
+			}
 
-		i++;
+			i++;
+		}
 	}
-	mutUsage.EndUse();
 	return succ;
 }
 

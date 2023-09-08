@@ -155,14 +155,19 @@ void __stdcall SSWR::AVIRead::AVIRDBCopyTablesForm::OnCopyClicked(void *userObj)
 		UI::MessageDialog::ShowDialog(CSTR("Error in connecting destination DB"), CSTR("Copy Tables"), me);
 		return;
 	}
-	DB::ReadingDB *destConn = destDB->GetDB();
-	DB::DBTool *destDBTool;
-	if (!destConn->IsDBTool() || !((DB::ReadingDBTool*)destConn)->CanModify())
+	NotNullPtr<DB::ReadingDB> destConn;
+	if (!destConn.Set(destDB->GetDB()))
+	{
+		UI::MessageDialog::ShowDialog(CSTR("Error in getting destination DB"), CSTR("Copy Tables"), me);
+		return;
+	}
+	NotNullPtr<DB::DBTool> destDBTool;
+	if (!destConn->IsDBTool() || !((DB::ReadingDBTool*)destConn.Ptr())->CanModify())
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Destination DB is read-onlyl"), CSTR("Copy Tables"), me);
 		return;
 	}
-	destDBTool = (DB::DBTool*)destConn;
+	destDBTool = NotNullPtr<DB::DBTool>::ConvertFrom(destConn);
 	UTF8Char destSchema[512];
 	UTF8Char *destSchemaEnd = me->cboDestSchema->GetSelectedItemText(destSchema);
 	if (destSchemaEnd == 0)

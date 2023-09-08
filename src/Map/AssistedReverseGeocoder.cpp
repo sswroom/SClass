@@ -5,7 +5,7 @@
 #include "Math/Math.h"
 #include "Sync/MutexUsage.h"
 
-Map::AssistedReverseGeocoder::AssistedReverseGeocoder(DB::DBTool *db, IO::Writer *errWriter)
+Map::AssistedReverseGeocoder::AssistedReverseGeocoder(NotNullPtr<DB::DBTool> db, IO::Writer *errWriter)
 {
 	this->conn = db;
 	this->errWriter = errWriter;
@@ -21,19 +21,13 @@ Map::AssistedReverseGeocoder::~AssistedReverseGeocoder()
 		revGeo = this->revGeos.RemoveAt(i);
 		DEL_CLASS(revGeo);
 	}
-	if (this->conn)
-	{
-		DEL_CLASS(this->conn);
-	}
+	this->conn.Delete();
 }
 
 UTF8Char *Map::AssistedReverseGeocoder::SearchName(UTF8Char *buff, UOSInt buffSize, Math::Coord2DDbl pos, UInt32 lcid)
 {
 	DB::DBReader *r;
 	UTF8Char *sptr = 0;
-	if (this->conn == 0)
-		return 0;
-
 	Int32 keyx = Double2Int32(pos.GetLon() * 5000);
 	Int32 keyy = Double2Int32(pos.GetLat() * 5000);
 	if (keyx == 0 && keyy == 0)
@@ -102,9 +96,6 @@ UTF8Char *Map::AssistedReverseGeocoder::CacheName(UTF8Char *buff, UOSInt buffSiz
 {
 	DB::DBReader *r;
 	UTF8Char *sptr = 0;
-	if (this->conn == 0)
-		return 0;
-
 	Int32 keyx = Double2Int32(pos.GetLon() * 5000);
 	Int32 keyy = Double2Int32(pos.GetLat() * 5000);
 
@@ -171,12 +162,5 @@ UTF8Char *Map::AssistedReverseGeocoder::CacheName(UTF8Char *buff, UOSInt buffSiz
 
 void Map::AssistedReverseGeocoder::AddReverseGeocoder(Map::IReverseGeocoder *revGeo)
 {
-	if (this->conn)
-	{
-		this->revGeos.Add(revGeo);
-	}
-	else
-	{
-		DEL_CLASS(revGeo);
-	}
+	this->revGeos.Add(revGeo);
 }

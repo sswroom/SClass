@@ -52,7 +52,7 @@ Bool Exporter::SQLiteExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Te
 		return false;
 	}
 	IO::Path::DeleteFile(fileName.v);
-	DB::DBTool *destDB;
+	NotNullPtr<DB::DBTool> destDB;
 	IO::LogTool log;
 	DB::ReadingDB *sDB;
 	DB::ReadingDBTool *srcDB;
@@ -62,8 +62,7 @@ Bool Exporter::SQLiteExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Te
 	UOSInt i;
 	UOSInt j;
 	OSInt k;
-	destDB = DB::SQLiteFile::CreateDBTool(fileName.OrEmpty(), &log, CSTR("DB: "));
-	if (destDB == 0)
+	if (!destDB.Set(DB::SQLiteFile::CreateDBTool(fileName.OrEmpty(), &log, CSTR("DB: "))))
 		return false;
 	Bool succ = true;
 	DB::SQLBuilder sql(destDB);
@@ -175,6 +174,6 @@ Bool Exporter::SQLiteExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Te
 
 	LIST_FREE_STRING(&tables);
 	SDEL_CLASS(srcDB);
-	DEL_CLASS(destDB);
+	destDB.Delete();
 	return succ;
 }

@@ -219,10 +219,13 @@ void SSWR::OrganWeb::OrganWebEnv::LoadGroups()
 	GroupInfo *pGroup;
 	CategoryInfo *cate;
 	UOSInt i;
-	DB::SQLBuilder sql(this->db);
+	NotNullPtr<DB::DBTool> db;
+	if (!db.Set(this->db))
+		return;
+	DB::SQLBuilder sql(db);
 	sql.AppendCmdC(CSTR("select id, group_type, eng_name, chi_name, description, parent_id, photo_group, photo_species, idKey, cate_id, flags from "));
 	sql.AppendCol((const UTF8Char*)"groups");
-	DB::DBReader *r = this->db->ExecuteReader(sql.ToCString());
+	DB::DBReader *r = db->ExecuteReader(sql.ToCString());
 	if (r != 0)
 	{
 		while (r->ReadNext())
@@ -246,7 +249,7 @@ void SSWR::OrganWeb::OrganWebEnv::LoadGroups()
 
 			this->groupMap.Put(group->id, group);
 		}
-		this->db->CloseReader(r);
+		db->CloseReader(r);
 
 		i = this->spMap.GetCount();
 		while (i-- > 0)
@@ -1214,18 +1217,21 @@ Bool SSWR::OrganWeb::OrganWebEnv::BookFileExist(BookInfo *book)
 
 Bool SSWR::OrganWeb::OrganWebEnv::BookSetPhoto(NotNullPtr<Sync::RWMutexUsage> mutUsage, Int32 bookId, Int32 userfileId)
 {
+	NotNullPtr<DB::DBTool> db;
+	if (!db.Set(this->db))
+		return false;
 	BookInfo *book = this->BookGet(mutUsage, bookId);
 	UserFileInfo *userFile = this->UserfileGet(mutUsage, userfileId);
 	if (book == 0 || userFile == 0)
 		return false;
 	mutUsage->ReplaceMutex(this->dataMut, true);
 
-	DB::SQLBuilder sql(this->db);
+	DB::SQLBuilder sql(db);
 	sql.AppendCmdC(CSTR("update book set userfile_id = "));
 	sql.AppendInt32(userfileId);
 	sql.AppendCmdC(CSTR(" where id = "));
 	sql.AppendInt32(book->id);
-	if (this->db->ExecuteNonQuery(sql.ToCString()) >= 0)
+	if (db->ExecuteNonQuery(sql.ToCString()) >= 0)
 	{
 		book->userfileId = userfileId;
 		return true;
@@ -1246,9 +1252,12 @@ SSWR::OrganWeb::BookInfo *SSWR::OrganWeb::OrganWebEnv::BookAdd(NotNullPtr<Sync::
 	{
 		return 0;
 	}
+	NotNullPtr<DB::DBTool> db;
+	if (!db.Set(this->db))
+		return 0;
 	mutUsage->ReplaceMutex(this->dataMut, true);
 
-	DB::SQLBuilder sql(this->db);
+	DB::SQLBuilder sql(db);
 	sql.AppendCmdC(CSTR("insert into book (title, dispAuthor, press, publishDate, groupId, url) values ("));
 	sql.AppendStr(title);
 	sql.AppendCmdC(CSTR(", "));
@@ -1262,11 +1271,11 @@ SSWR::OrganWeb::BookInfo *SSWR::OrganWeb::OrganWebEnv::BookAdd(NotNullPtr<Sync::
 	sql.AppendCmdC(CSTR(", "));
 	sql.AppendStr(url);
 	sql.AppendCmdC(CSTR(")"));
-	if (this->db->ExecuteNonQuery(sql.ToCString()) >= 0)
+	if (db->ExecuteNonQuery(sql.ToCString()) >= 0)
 	{
 		BookInfo *book;
 		NEW_CLASS(book, BookInfo());
-		book->id = this->db->GetLastIdentity32();
+		book->id = db->GetLastIdentity32();
 		book->title = title->Clone();
 		book->author = author->Clone();
 		book->press = press->Clone();
@@ -1293,6 +1302,9 @@ Bool SSWR::OrganWeb::OrganWebEnv::BookAddSpecies(NotNullPtr<Sync::RWMutexUsage> 
 	SpeciesInfo *species = this->SpeciesGet(mutUsage, speciesId);
 	if (species == 0)
 		return false;
+	NotNullPtr<DB::DBTool> db;
+	if (!db.Set(this->db))
+		return false;
 	UOSInt i;
 	if (!allowDuplicate)
 	{
@@ -1305,7 +1317,7 @@ Bool SSWR::OrganWeb::OrganWebEnv::BookAddSpecies(NotNullPtr<Sync::RWMutexUsage> 
 	}
 	mutUsage->ReplaceMutex(this->dataMut, true);
 
-	DB::SQLBuilder sql(this->db);
+	DB::SQLBuilder sql(db);
 	sql.AppendCmdC(CSTR("insert into species_book (species_id, book_id, dispName) values ("));
 	sql.AppendInt32(species->speciesId);
 	sql.AppendCmdC(CSTR(", "));
@@ -1313,7 +1325,7 @@ Bool SSWR::OrganWeb::OrganWebEnv::BookAddSpecies(NotNullPtr<Sync::RWMutexUsage> 
 	sql.AppendCmdC(CSTR(", "));
 	sql.AppendStr(bookspecies);
 	sql.AppendCmdC(CSTR(")"));
-	if (this->db->ExecuteNonQuery(sql.ToCString()) >= 0)
+	if (db->ExecuteNonQuery(sql.ToCString()) >= 0)
 	{
 		bookSp = MemAlloc(BookSpInfo, 1);
 		bookSp->speciesId = species->speciesId;
@@ -1417,8 +1429,11 @@ SSWR::OrganWeb::SpeciesInfo *SSWR::OrganWeb::OrganWebEnv::SpeciesGetByName(NotNu
 
 Int32 SSWR::OrganWeb::OrganWebEnv::SpeciesAdd(NotNullPtr<Sync::RWMutexUsage> mutUsage, Text::CString engName, Text::CString chiName, Text::CString sciName, Int32 groupId, Text::CString description, Text::CString dirName, Text::CString idKey, Int32 cateId)
 {
+	NotNullPtr<DB::DBTool> db;
+	if (!db.Set(this->db))
+		return 0;
 	mutUsage->ReplaceMutex(this->dataMut, true);
-	DB::SQLBuilder sql(this->db);
+	DB::SQLBuilder sql(db);
 	sql.AppendCmdC(CSTR("insert into species (eng_name, chi_name, sci_name, group_id, description, dirName, idKey, cate_id, mapColor) values ("));
 	sql.AppendStrC(engName);
 	sql.AppendCmdC(CSTR(", "));
@@ -1438,11 +1453,11 @@ Int32 SSWR::OrganWeb::OrganWebEnv::SpeciesAdd(NotNullPtr<Sync::RWMutexUsage> mut
 	sql.AppendCmdC(CSTR(", "));
 	sql.AppendInt32((Int32)0xff4040ff);
 	sql.AppendCmdC(CSTR(")"));
-	if (this->db->ExecuteNonQuery(sql.ToCString()) == 1)
+	if (db->ExecuteNonQuery(sql.ToCString()) == 1)
 	{
 		SpeciesInfo *species;
 		NEW_CLASS(species, SpeciesInfo());
-		species->speciesId = this->db->GetLastIdentity32();
+		species->speciesId = db->GetLastIdentity32();
 		species->engName = Text::String::New(engName);
 		species->chiName = Text::String::New(chiName);
 		species->sciName = Text::String::New(sciName);
@@ -1566,6 +1581,9 @@ Bool SSWR::OrganWeb::OrganWebEnv::SpeciesUpdateDefPhoto(NotNullPtr<Sync::RWMutex
 
 Bool SSWR::OrganWeb::OrganWebEnv::SpeciesSetPhotoId(NotNullPtr<Sync::RWMutexUsage> mutUsage, Int32 speciesId, Int32 photoId)
 {
+	NotNullPtr<DB::DBTool> db;
+	if (!db.Set(this->db))
+		return false;
 	mutUsage->ReplaceMutex(this->dataMut, true);
 	SpeciesInfo *species = this->spMap.Get(speciesId);
 	if (species == 0)
@@ -1574,12 +1592,12 @@ Bool SSWR::OrganWeb::OrganWebEnv::SpeciesSetPhotoId(NotNullPtr<Sync::RWMutexUsag
 	{
 		return true;
 	}
-	DB::SQLBuilder sql(this->db);
+	DB::SQLBuilder sql(db);
 	sql.AppendCmdC(CSTR("update species set photoId = "));
 	sql.AppendInt32(photoId);
 	sql.AppendCmdC(CSTR(" where id = "));
 	sql.AppendInt32(speciesId);
-	if (this->db->ExecuteNonQuery(sql.ToCString()) == 1)
+	if (db->ExecuteNonQuery(sql.ToCString()) == 1)
 	{
 		species->photoId = photoId;
 		return true;
@@ -1592,6 +1610,9 @@ Bool SSWR::OrganWeb::OrganWebEnv::SpeciesSetPhotoId(NotNullPtr<Sync::RWMutexUsag
 
 Bool SSWR::OrganWeb::OrganWebEnv::SpeciesSetPhotoWId(NotNullPtr<Sync::RWMutexUsage> mutUsage, Int32 speciesId, Int32 photoWId, Bool removePhotoId)
 {
+	NotNullPtr<DB::DBTool> db;
+	if (!db.Set(this->db))
+		return false;
 	mutUsage->ReplaceMutex(this->dataMut, true);
 	SpeciesInfo *species = this->spMap.Get(speciesId);
 	if (species == 0)
@@ -1600,7 +1621,7 @@ Bool SSWR::OrganWeb::OrganWebEnv::SpeciesSetPhotoWId(NotNullPtr<Sync::RWMutexUsa
 	{
 		return true;
 	}
-	DB::SQLBuilder sql(this->db);
+	DB::SQLBuilder sql(db);
 	sql.AppendCmdC(CSTR("update species set photoWId = "));
 	sql.AppendInt32(photoWId);
 	if (removePhotoId && species->photoId != 0)
@@ -1609,7 +1630,7 @@ Bool SSWR::OrganWeb::OrganWebEnv::SpeciesSetPhotoWId(NotNullPtr<Sync::RWMutexUsa
 	}
 	sql.AppendCmdC(CSTR(" where id = "));
 	sql.AppendInt32(speciesId);
-	if (this->db->ExecuteNonQuery(sql.ToCString()) == 1)
+	if (db->ExecuteNonQuery(sql.ToCString()) == 1)
 	{
 		species->photoWId = photoWId;
 		if (removePhotoId && species->photoId != 0)
@@ -1626,6 +1647,9 @@ Bool SSWR::OrganWeb::OrganWebEnv::SpeciesSetPhotoWId(NotNullPtr<Sync::RWMutexUsa
 
 Bool SSWR::OrganWeb::OrganWebEnv::SpeciesSetFlags(NotNullPtr<Sync::RWMutexUsage> mutUsage, Int32 speciesId, SpeciesFlags flags)
 {
+	NotNullPtr<DB::DBTool> db;
+	if (!db.Set(this->db))
+		return false;
 	mutUsage->ReplaceMutex(this->dataMut, true);
 	SpeciesInfo *species = this->spMap.Get(speciesId);
 	if (species == 0)
@@ -1634,12 +1658,12 @@ Bool SSWR::OrganWeb::OrganWebEnv::SpeciesSetFlags(NotNullPtr<Sync::RWMutexUsage>
 	{
 		return true;
 	}
-	DB::SQLBuilder sql(this->db);
+	DB::SQLBuilder sql(db);
 	sql.AppendCmdC(CSTR("update species set flags = "));
 	sql.AppendInt32(flags);
 	sql.AppendCmdC(CSTR(" where id = "));
 	sql.AppendInt32(speciesId);
-	if (this->db->ExecuteNonQuery(sql.ToCString()) == 1)
+	if (db->ExecuteNonQuery(sql.ToCString()) == 1)
 	{
 		species->flags = flags;
 		return true;
@@ -1660,14 +1684,17 @@ Bool SSWR::OrganWeb::OrganWebEnv::SpeciesMove(NotNullPtr<Sync::RWMutexUsage> mut
 	{
 		return true;
 	}
-	DB::SQLBuilder sql(this->db);
+	NotNullPtr<DB::DBTool> db;
+	if (!db.Set(this->db))
+		return false;
+	DB::SQLBuilder sql(db);
 	sql.AppendCmdC(CSTR("update species set group_id = "));
 	sql.AppendInt32(groupId);
 	sql.AppendCmdC(CSTR(", cate_id = "));
 	sql.AppendInt32(cateId);
 	sql.AppendCmdC(CSTR(" where id = "));
 	sql.AppendInt32(speciesId);
-	if (this->db->ExecuteNonQuery(sql.ToCString()) == 1)
+	if (db->ExecuteNonQuery(sql.ToCString()) == 1)
 	{
 		UOSInt totalCount = 1;
 		UOSInt photoCount = 0;
@@ -1717,7 +1744,10 @@ Bool SSWR::OrganWeb::OrganWebEnv::SpeciesModify(NotNullPtr<Sync::RWMutexUsage> m
 	SpeciesInfo *species = this->spMap.Get(speciesId);
 	if (species == 0)
 		return false;
-	DB::SQLBuilder sql(this->db);
+	NotNullPtr<DB::DBTool> db;
+	if (!db.Set(this->db))
+		return false;
+	DB::SQLBuilder sql(db);
 	sql.AppendCmdC(CSTR("update species set eng_name = "));
 	sql.AppendStrC(engName);
 	sql.AppendCmdC(CSTR(", chi_name = "));
@@ -1730,7 +1760,7 @@ Bool SSWR::OrganWeb::OrganWebEnv::SpeciesModify(NotNullPtr<Sync::RWMutexUsage> m
 	sql.AppendStrC(dirName);
 	sql.AppendCmdC(CSTR(" where id = "));
 	sql.AppendInt32(speciesId);
-	if (this->db->ExecuteNonQuery(sql.ToCString()) >= 0)
+	if (db->ExecuteNonQuery(sql.ToCString()) >= 0)
 	{
 		if (!species->sciName->Equals(sciName.v, sciName.leng))
 		{
@@ -1761,10 +1791,13 @@ Bool SSWR::OrganWeb::OrganWebEnv::SpeciesDelete(NotNullPtr<Sync::RWMutexUsage> m
 	SpeciesInfo *species = this->spMap.Get(speciesId);
 	if (species == 0 || species->books.GetCount() != 0 || species->files.GetCount() != 0 || species->wfiles.GetCount() != 0)
 		return false;
-	DB::SQLBuilder sql(this->db);
+	NotNullPtr<DB::DBTool> db;
+	if (!db.Set(this->db))
+		return false;
+	DB::SQLBuilder sql(db);
 	sql.AppendCmdC(CSTR("delete from species where id = "));
 	sql.AppendInt32(speciesId);
-	if (this->db->ExecuteNonQuery(sql.ToCString()) >= 0)
+	if (db->ExecuteNonQuery(sql.ToCString()) >= 0)
 	{
 		this->spNameMap.RemoveNN(species->sciName);
 		species->engName->Release();
@@ -1798,8 +1831,11 @@ Bool SSWR::OrganWeb::OrganWebEnv::SpeciesMerge(NotNullPtr<Sync::RWMutexUsage> mu
 	SpeciesInfo *destSpecies = this->spMap.Get(destSpeciesId);
 	if (srcSpecies == 0 || destSpecies == 0)
 		return false;
+	NotNullPtr<DB::DBTool> db;
+	if (!db.Set(this->db))
+		return false;
 	UOSInt i;
-	DB::SQLBuilder sql(this->db);
+	DB::SQLBuilder sql(db);
 	Bool hasFiles = false;
 	Bool hasWFiles = false;
 	Bool flagChg = false;
@@ -1811,7 +1847,7 @@ Bool SSWR::OrganWeb::OrganWebEnv::SpeciesMerge(NotNullPtr<Sync::RWMutexUsage> mu
 		sql.AppendInt32(destSpeciesId);
 		sql.AppendCmdC(CSTR(" where species_id = "));
 		sql.AppendInt32(srcSpeciesId);
-		if (this->db->ExecuteNonQuery(sql.ToCString()) >= 0)
+		if (db->ExecuteNonQuery(sql.ToCString()) >= 0)
 		{
 			i = srcSpecies->files.GetCount();
 			while (i-- > 0)
@@ -1839,7 +1875,7 @@ Bool SSWR::OrganWeb::OrganWebEnv::SpeciesMerge(NotNullPtr<Sync::RWMutexUsage> mu
 		sql.AppendInt32(destSpeciesId);
 		sql.AppendCmdC(CSTR(" where species_id = "));
 		sql.AppendInt32(srcSpeciesId);
-		if (this->db->ExecuteNonQuery(sql.ToCString()) >= 0)
+		if (db->ExecuteNonQuery(sql.ToCString()) >= 0)
 		{
 			destSpecies->wfiles.PutAll(srcSpecies->wfiles);
 			srcSpecies->wfiles.Clear();
@@ -1863,7 +1899,7 @@ Bool SSWR::OrganWeb::OrganWebEnv::SpeciesMerge(NotNullPtr<Sync::RWMutexUsage> mu
 		sql.AppendInt32(destSpeciesId);
 		sql.AppendCmdC(CSTR(" where species_id = "));
 		sql.AppendInt32(srcSpeciesId);
-		if (this->db->ExecuteNonQuery(sql.ToCString()) >= 0)
+		if (db->ExecuteNonQuery(sql.ToCString()) >= 0)
 		{
 			i = srcSpecies->books.GetCount();
 			while (i-- > 0)
@@ -1904,6 +1940,9 @@ Bool SSWR::OrganWeb::OrganWebEnv::SpeciesAddWebfile(NotNullPtr<Sync::RWMutexUsag
 		return false;
 	if (!sourceURL.StartsWith(UTF8STRC("http://")) && !sourceURL.StartsWith(UTF8STRC("https://")))
 		return false;
+	NotNullPtr<DB::DBTool> db;
+	if (!db.Set(this->db))
+		return false;
 	mutUsage->ReplaceMutex(this->dataMut, true);
 	SpeciesInfo *species = this->spMap.Get(speciesId);
 	if (species == 0)
@@ -1938,7 +1977,7 @@ Bool SSWR::OrganWeb::OrganWebEnv::SpeciesAddWebfile(NotNullPtr<Sync::RWMutexUsag
 		return false;
 	DEL_CLASS(imgList);
 
-	DB::SQLBuilder sql(this->db);
+	DB::SQLBuilder sql(db);
 	sql.AppendCmdC(CSTR("insert into webfile (species_id, crcVal, imgUrl, srcUrl, prevUpdated, cropLeft, cropTop, cropRight, cropBottom, location) values ("));
 	sql.AppendInt32(speciesId);
 	sql.AppendCmdC(CSTR(", "));
@@ -1960,9 +1999,9 @@ Bool SSWR::OrganWeb::OrganWebEnv::SpeciesAddWebfile(NotNullPtr<Sync::RWMutexUsag
 	sql.AppendCmdC(CSTR(", "));
 	sql.AppendStrC(location);
 	sql.AppendCmdC(CSTR(")"));
-	if (this->db->ExecuteNonQuery(sql.ToCString()) > 0)
+	if (db->ExecuteNonQuery(sql.ToCString()) > 0)
 	{
-		Int32 id = this->db->GetLastIdentity32();
+		Int32 id = db->GetLastIdentity32();
 		
 		WebFileInfo *wfile = MemAlloc(WebFileInfo, 1);
 		wfile->id = id;
@@ -2088,6 +2127,9 @@ UTF8Char *SSWR::OrganWeb::OrganWebEnv::UserfileGetPath(UTF8Char *sbuff, const Us
 
 Int32 SSWR::OrganWeb::OrganWebEnv::UserfileAdd(NotNullPtr<Sync::RWMutexUsage> mutUsage, Int32 userId, Int32 spId, Text::CStringNN fileName, const UInt8 *fileCont, UOSInt fileSize, Bool mustHaveCamera, Text::String *location)
 {
+	NotNullPtr<DB::DBTool> db;
+	if (!db.Set(this->db))
+		return 0;
 	mutUsage->ReplaceMutex(this->dataMut, true);
 	UOSInt j;
 	UOSInt i;
@@ -2295,7 +2337,7 @@ Int32 SSWR::OrganWeb::OrganWebEnv::UserfileAdd(NotNullPtr<Sync::RWMutexUsage> mu
 				}
 				if (succ)
 				{
-					DB::SQLBuilder sql(this->db);
+					DB::SQLBuilder sql(db);
 					sql.AppendCmdC(CSTR("insert into userfile (fileType, oriFileName, fileTime, lat, lon, webuser_id, species_id, captureTime, dataFileName, crcVal, rotType, camera, cropLeft, cropTop, cropRight, cropBottom, location) values ("));
 					sql.AppendInt32(fileType);
 					sql.AppendCmdC(CSTR(", "));
@@ -2338,10 +2380,10 @@ Int32 SSWR::OrganWeb::OrganWebEnv::UserfileAdd(NotNullPtr<Sync::RWMutexUsage> mu
 						sql.AppendStr(0);
 					}
 					sql.AppendCmdC(CSTR(")"));
-					if (this->db->ExecuteNonQuery(sql.ToCString()) > 0)
+					if (db->ExecuteNonQuery(sql.ToCString()) > 0)
 					{
 						userFile = MemAlloc(UserFileInfo, 1);
-						userFile->id = this->db->GetLastIdentity32();
+						userFile->id = db->GetLastIdentity32();
 						userFile->fileType = fileType;
 						userFile->oriFileName = Text::String::New(fileName);
 						userFile->fileTimeTicks = fileTime.ToTicks();
@@ -2513,7 +2555,7 @@ Int32 SSWR::OrganWeb::OrganWebEnv::UserfileAdd(NotNullPtr<Sync::RWMutexUsage> mu
 				}
 				if (succ)
 				{
-					DB::SQLBuilder sql(this->db);
+					DB::SQLBuilder sql(db);
 					sql.AppendCmdC(CSTR("insert into userfile (fileType, oriFileName, fileTime, lat, lon, webuser_id, species_id, captureTime, dataFileName, crcVal, camera, location) values ("));
 					sql.AppendInt32(fileType);
 					sql.AppendCmdC(CSTR(", "));
@@ -2545,10 +2587,10 @@ Int32 SSWR::OrganWeb::OrganWebEnv::UserfileAdd(NotNullPtr<Sync::RWMutexUsage> mu
 						sql.AppendStr(0);
 					}
 					sql.AppendCmdC(CSTR(")"));
-					if (this->db->ExecuteNonQuery(sql.ToCString()) > 0)
+					if (db->ExecuteNonQuery(sql.ToCString()) > 0)
 					{
 						userFile = MemAlloc(UserFileInfo, 1);
-						userFile->id = this->db->GetLastIdentity32();
+						userFile->id = db->GetLastIdentity32();
 						userFile->fileType = fileType;
 						userFile->oriFileName = Text::String::New(fileName);
 						userFile->fileTimeTicks = fileTime.ToTicks();
@@ -2671,6 +2713,9 @@ Int32 SSWR::OrganWeb::OrganWebEnv::UserfileAdd(NotNullPtr<Sync::RWMutexUsage> mu
 
 Bool SSWR::OrganWeb::OrganWebEnv::UserfileMove(NotNullPtr<Sync::RWMutexUsage> mutUsage, Int32 userfileId, Int32 speciesId, Int32 cateId)
 {
+	NotNullPtr<DB::DBTool> db;
+	if (!db.Set(this->db))
+		return false;
 	mutUsage->ReplaceMutex(this->dataMut, true);
 	UserFileInfo *userFile = this->userFileMap.Get(userfileId);
 	if (userFile == 0)
@@ -2687,12 +2732,12 @@ Bool SSWR::OrganWeb::OrganWebEnv::UserfileMove(NotNullPtr<Sync::RWMutexUsage> mu
 	{
 		return false;
 	}
-	DB::SQLBuilder sql(this->db);
+	DB::SQLBuilder sql(db);
 	sql.AppendCmdC(CSTR("update userfile set species_id = "));
 	sql.AppendInt32(speciesId);
 	sql.AppendCmdC(CSTR(" where id = "));
 	sql.AppendInt32(userfileId);
-	if (this->db->ExecuteNonQuery(sql.ToCString()) > 0)
+	if (db->ExecuteNonQuery(sql.ToCString()) > 0)
 	{
 		userFile->speciesId = speciesId;
 
@@ -2733,6 +2778,9 @@ Bool SSWR::OrganWeb::OrganWebEnv::UserfileMove(NotNullPtr<Sync::RWMutexUsage> mu
 
 Bool SSWR::OrganWeb::OrganWebEnv::UserfileUpdateDesc(NotNullPtr<Sync::RWMutexUsage> mutUsage, Int32 userfileId, Text::CString descr)
 {
+	NotNullPtr<DB::DBTool> db;
+	if (!db.Set(this->db))
+		return false;
 	mutUsage->ReplaceMutex(this->dataMut, true);
 	UserFileInfo *userFile = this->userFileMap.Get(userfileId);
 	if (userFile == 0)
@@ -2747,12 +2795,12 @@ Bool SSWR::OrganWeb::OrganWebEnv::UserfileUpdateDesc(NotNullPtr<Sync::RWMutexUsa
 	{
 		return true;
 	}
-	DB::SQLBuilder sql(this->db);
+	DB::SQLBuilder sql(db);
 	sql.AppendCmdC(CSTR("update userfile set descript = "));
 	sql.AppendStrC(descr);
 	sql.AppendCmdC(CSTR(" where id = "));
 	sql.AppendInt32(userfileId);
-	if (this->db->ExecuteNonQuery(sql.ToCString()) > 0)
+	if (db->ExecuteNonQuery(sql.ToCString()) > 0)
 	{
 		SDEL_STRING(userFile->descript);
 		userFile->descript = Text::String::NewOrNull(descr);
@@ -2763,6 +2811,9 @@ Bool SSWR::OrganWeb::OrganWebEnv::UserfileUpdateDesc(NotNullPtr<Sync::RWMutexUsa
 
 Bool SSWR::OrganWeb::OrganWebEnv::UserfileUpdateRotType(NotNullPtr<Sync::RWMutexUsage> mutUsage, Int32 userfileId, Int32 rotType)
 {
+	NotNullPtr<DB::DBTool> db;
+	if (!db.Set(this->db))
+		return false;
 	mutUsage->ReplaceMutex(this->dataMut, true);
 	UserFileInfo *userFile = this->userFileMap.Get(userfileId);
 	if (userFile == 0)
@@ -2777,14 +2828,14 @@ Bool SSWR::OrganWeb::OrganWebEnv::UserfileUpdateRotType(NotNullPtr<Sync::RWMutex
 	{
 		return true;
 	}
-	DB::SQLBuilder sql(this->db);
+	DB::SQLBuilder sql(db);
 	sql.AppendCmdC(CSTR("update userfile set rotType = "));
 	sql.AppendInt32(rotType);
 	sql.AppendCmdC(CSTR(", prevUpdated = "));
 	sql.AppendInt32(1);
 	sql.AppendCmdC(CSTR(" where id = "));
 	sql.AppendInt32(userfileId);
-	if (this->db->ExecuteNonQuery(sql.ToCString()) > 0)
+	if (db->ExecuteNonQuery(sql.ToCString()) > 0)
 	{
 		userFile->rotType = rotType;
 		userFile->prevUpdated = 1;
@@ -2825,12 +2876,15 @@ void SSWR::OrganWeb::OrganWebEnv::UserFilePrevUpdated(NotNullPtr<Sync::RWMutexUs
 	mutUsage->ReplaceMutex(this->dataMut, true);
 	if (userFile->prevUpdated)
 	{
-		DB::SQLBuilder sql(this->db);
+		NotNullPtr<DB::DBTool> db;
+		if (!db.Set(this->db))
+			return;
+		DB::SQLBuilder sql(db);
 		sql.AppendCmdC(CSTR("update userfile set prevUpdated = 0 where id = "));
 		sql.AppendInt32(userFile->id);
-		if (this->db->ExecuteNonQuery(sql.ToCString()) < 0)
+		if (db->ExecuteNonQuery(sql.ToCString()) < 0)
 		{
-			this->db->ExecuteNonQuery(sql.ToCString());
+			db->ExecuteNonQuery(sql.ToCString());
 		}
 		userFile->prevUpdated = 0;
 	}
@@ -2841,12 +2895,15 @@ void SSWR::OrganWeb::OrganWebEnv::WebFilePrevUpdated(NotNullPtr<Sync::RWMutexUsa
 	mutUsage->ReplaceMutex(this->dataMut, true);
 	if (wfile->prevUpdated)
 	{
-		DB::SQLBuilder sql(this->db);
+		NotNullPtr<DB::DBTool> db;
+		if (!db.Set(this->db))
+			return;
+		DB::SQLBuilder sql(db);
 		sql.AppendCmdC(CSTR("update webfile set prevUpdated = 0 where id = "));
 		sql.AppendInt32(wfile->id);
-		if (this->db->ExecuteNonQuery(sql.ToCString()) < 0)
+		if (db->ExecuteNonQuery(sql.ToCString()) < 0)
 		{
-			this->db->ExecuteNonQuery(sql.ToCString());
+			db->ExecuteNonQuery(sql.ToCString());
 		}
 		wfile->prevUpdated = 0;
 	}
@@ -2864,7 +2921,10 @@ Int32 SSWR::OrganWeb::OrganWebEnv::GroupAdd(NotNullPtr<Sync::RWMutexUsage> mutUs
 	GroupInfo *group = this->groupMap.Get(parentId);
 	if (group == 0)
 		return 0;
-	DB::SQLBuilder sql(this->db);
+	NotNullPtr<DB::DBTool> db;
+	if (!db.Set(this->db))
+		return 0;
+	DB::SQLBuilder sql(db);
 	sql.AppendCmdC(CSTR("insert into "));
 	sql.AppendCol((const UTF8Char*)"groups");
 	sql.AppendCmdC(CSTR(" (group_type, eng_name, chi_name, description, parent_id, idKey, cate_id, flags) values ("));
@@ -2884,11 +2944,11 @@ Int32 SSWR::OrganWeb::OrganWebEnv::GroupAdd(NotNullPtr<Sync::RWMutexUsage> mutUs
 	sql.AppendCmdC(CSTR(", "));
 	sql.AppendInt32(flags);
 	sql.AppendCmdC(CSTR(")"));
-	if (this->db->ExecuteNonQuery(sql.ToCString()) == 1)
+	if (db->ExecuteNonQuery(sql.ToCString()) == 1)
 	{
 		GroupInfo *newGroup;
 		NEW_CLASS(newGroup, GroupInfo());
-		newGroup->id = this->db->GetLastIdentity32();
+		newGroup->id = db->GetLastIdentity32();
 		newGroup->groupType = groupTypeId;
 		newGroup->engName = Text::String::New(engName);
 		newGroup->chiName = Text::String::New(chiName);
@@ -2918,7 +2978,10 @@ Bool SSWR::OrganWeb::OrganWebEnv::GroupModify(NotNullPtr<Sync::RWMutexUsage> mut
 	GroupInfo *group = this->groupMap.Get(id);
 	if (group == 0)
 		return false;
-	DB::SQLBuilder sql(this->db);
+	NotNullPtr<DB::DBTool> db;
+	if (!db.Set(this->db))
+		return false;
+	DB::SQLBuilder sql(db);
 	sql.AppendCmdC(CSTR("update "));
 	sql.AppendCol((const UTF8Char*)"groups");
 	sql.AppendCmdC(CSTR(" set group_type = "));
@@ -2933,7 +2996,7 @@ Bool SSWR::OrganWeb::OrganWebEnv::GroupModify(NotNullPtr<Sync::RWMutexUsage> mut
 	sql.AppendInt32(flags);
 	sql.AppendCmdC(CSTR(" where id = "));
 	sql.AppendInt32(id);
-	if (this->db->ExecuteNonQuery(sql.ToCString()) >= 0)
+	if (db->ExecuteNonQuery(sql.ToCString()) >= 0)
 	{
 		group->groupType = groupTypeId;
 		group->engName->Release();
@@ -2964,13 +3027,16 @@ Bool SSWR::OrganWeb::OrganWebEnv::GroupDelete(NotNullPtr<Sync::RWMutexUsage> mut
 		return false;
 	if (cate == 0)
 		return false;
+	NotNullPtr<DB::DBTool> db;
+	if (!db.Set(this->db))
+		return false;
 
-	DB::SQLBuilder sql(this->db);
+	DB::SQLBuilder sql(db);
 	sql.AppendCmdC(CSTR("delete from "));
 	sql.AppendCol((const UTF8Char*)"groups");
 	sql.AppendCmdC(CSTR(" where id = "));
 	sql.AppendInt32(id);
-	if (this->db->ExecuteNonQuery(sql.ToCString()) == 1)
+	if (db->ExecuteNonQuery(sql.ToCString()) == 1)
 	{
 		parentGroup->groups.Remove(group);
 		cate->groups.Remove(group);
@@ -3000,7 +3066,10 @@ Bool SSWR::OrganWeb::OrganWebEnv::GroupMove(NotNullPtr<Sync::RWMutexUsage> mutUs
 		}
 		parentGroup = this->groupMap.Get(parentGroup->parentId);
 	}
-	DB::SQLBuilder sql(this->db);
+	NotNullPtr<DB::DBTool> db;
+	if (!db.Set(this->db))
+		return false;
+	DB::SQLBuilder sql(db);
 	sql.AppendCmdC(CSTR("update "));
 	sql.AppendCol((const UTF8Char*)"groups");
 	sql.AppendCmdC(CSTR(" set parent_id = "));
@@ -3009,7 +3078,7 @@ Bool SSWR::OrganWeb::OrganWebEnv::GroupMove(NotNullPtr<Sync::RWMutexUsage> mutUs
 	sql.AppendInt32(cateId);
 	sql.AppendCmdC(CSTR(" where id = "));
 	sql.AppendInt32(groupId);
-	if (this->db->ExecuteNonQuery(sql.ToCString()) == 1)
+	if (db->ExecuteNonQuery(sql.ToCString()) == 1)
 	{
 		parentGroup = this->groupMap.Get(group->parentId);
 		if (parentGroup)
@@ -3074,15 +3143,18 @@ Bool SSWR::OrganWeb::OrganWebEnv::GroupSetPhotoSpecies(NotNullPtr<Sync::RWMutexU
 	SpeciesInfo *photoSpecies = this->spMap.Get(photoSpeciesId);
 	if (photoSpeciesId != 0 && photoSpecies == 0)
 		return false;
+	NotNullPtr<DB::DBTool> db;
+	if (!db.Set(this->db))
+		return false;
 
-	DB::SQLBuilder sql(this->db);
+	DB::SQLBuilder sql(db);
 	sql.AppendCmdC(CSTR("update "));
 	sql.AppendCol((const UTF8Char*)"groups");
 	sql.AppendCmdC(CSTR(" set photo_species = "));
 	sql.AppendInt32(photoSpeciesId);
 	sql.AppendCmdC(CSTR(" where id = "));
 	sql.AppendInt32(groupId);
-	if (this->db->ExecuteNonQuery(sql.ToCString()) >= 0)
+	if (db->ExecuteNonQuery(sql.ToCString()) >= 0)
 	{
 		group->photoSpecies = photoSpeciesId;
 		if (photoSpecies == 0)
@@ -3108,15 +3180,18 @@ Bool SSWR::OrganWeb::OrganWebEnv::GroupSetPhotoGroup(NotNullPtr<Sync::RWMutexUsa
 	GroupInfo *photoGroup = this->groupMap.Get(photoGroupId);
 	if (photoGroupId != 0 && photoGroup == 0)
 		return false;
+	NotNullPtr<DB::DBTool> db;
+	if (!db.Set(this->db))
+		return false;
 
-	DB::SQLBuilder sql(this->db);
+	DB::SQLBuilder sql(db);
 	sql.AppendCmdC(CSTR("update "));
 	sql.AppendCol((const UTF8Char*)"groups");
 	sql.AppendCmdC(CSTR(" set photo_group = "));
 	sql.AppendInt32(photoGroupId);
 	sql.AppendCmdC(CSTR(" where id = "));
 	sql.AppendInt32(groupId);
-	if (this->db->ExecuteNonQuery(sql.ToCString()) >= 0)
+	if (db->ExecuteNonQuery(sql.ToCString()) >= 0)
 	{
 		group->photoGroup = photoGroupId;
 		if (photoGroup == 0)

@@ -62,7 +62,7 @@ Bool Exporter::MDBExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text:
 	{
 		return false;
 	}
-	DB::DBTool *mdb;
+	NotNullPtr<DB::DBTool> mdb;
 	IO::LogTool log;
 	DB::ReadingDB *srcDB;
 	DB::DBReader *r;
@@ -72,8 +72,7 @@ Bool Exporter::MDBExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text:
 	UOSInt j;
 	UOSInt k;
 	UOSInt l;
-	mdb = DB::MDBFileConn::CreateDBTool(fileName, &log, CSTR("DB: "));
-	if (mdb == 0)
+	if (!mdb.Set(DB::MDBFileConn::CreateDBTool(fileName, &log, CSTR("DB: "))))
 		return false;
 	Bool succ = true;
 	DB::SQLBuilder sql(mdb);
@@ -129,7 +128,7 @@ Bool Exporter::MDBExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text:
 		i++;
 	}
 	LIST_FREE_STRING(&tables);
-	DEL_CLASS(mdb);
+	mdb.Delete();
 	return succ;
 #endif
 }

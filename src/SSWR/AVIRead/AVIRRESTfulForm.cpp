@@ -174,11 +174,15 @@ void __stdcall SSWR::AVIRead::AVIRRESTfulForm::OnLogSel(void *userObj)
 void SSWR::AVIRead::AVIRRESTfulForm::InitDB()
 {
 	Text::StringBuilderUTF8 sb;
+	NotNullPtr<DB::DBTool> db;
+	NotNullPtr<DB::DBModel> dbModel;
 	this->dbConn->GetConnName(sb);
-	NEW_CLASS(this->db, DB::DBTool(this->dbConn, false, this->log, CSTR("DB: ")));
-	NEW_CLASS(this->dbModel, DB::DBModel());
+	NEW_CLASSNN(db, DB::DBTool(this->dbConn, false, this->log, CSTR("DB: ")));
+	NEW_CLASSNN(dbModel, DB::DBModel());
+	this->db = db.Ptr();
+	this->dbModel = dbModel.Ptr();
 	this->dbModel->LoadDatabase(this->db, CSTR_NULL, CSTR_NULL);
-	NEW_CLASS(this->dbCache, DB::DBCache(this->dbModel, this->db));
+	NEW_CLASS(this->dbCache, DB::DBCache(dbModel, db));
 	this->txtDatabase->SetText(sb.ToCString());
 }
 
