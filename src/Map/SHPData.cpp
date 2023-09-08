@@ -381,18 +381,18 @@ Bool Map::SHPData::IsError()
 	return dbf == 0 ;
 }
 
-void Map::SHPData::LatLon2XY(Double lat, Double lon, Int32 *x, Int32 *y)
+void Map::SHPData::LatLon2XY(Double lat, Double lon, OutParam<Int32> x, OutParam<Int32> y)
 {
-	*x = (Int32)(lon * 200000);
-	*y = (Int32)(lat * 200000);
+	x.Set((Int32)(lon * 200000));
+	y.Set((Int32)(lat * 200000));
 }
 
-Map::DrawLayerType Map::SHPData::GetLayerType()
+Map::DrawLayerType Map::SHPData::GetLayerType() const
 {
 	return this->layerType;
 }
 
-UOSInt Map::SHPData::GetAllObjectIds(Data::ArrayListInt64 *outArr, NameArray **nameArr)
+UOSInt Map::SHPData::GetAllObjectIds(NotNullPtr<Data::ArrayListInt64> outArr, NameArray **nameArr)
 {
 	UOSInt i;
 	UOSInt j;
@@ -424,12 +424,12 @@ UOSInt Map::SHPData::GetAllObjectIds(Data::ArrayListInt64 *outArr, NameArray **n
 	}
 }
 
-UOSInt Map::SHPData::GetObjectIds(Data::ArrayListInt64 *outArr, NameArray **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
+UOSInt Map::SHPData::GetObjectIds(NotNullPtr<Data::ArrayListInt64> outArr, NameArray **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
 {
 	return GetObjectIdsMapXY(outArr, nameArr, rect.ToDouble() / mapRate, keepEmpty);
 }
 
-UOSInt Map::SHPData::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, NameArray **nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
+UOSInt Map::SHPData::GetObjectIdsMapXY(NotNullPtr<Data::ArrayListInt64> outArr, NameArray **nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
 {
 	UOSInt retCnt = 0;
 	UOSInt i = 0;
@@ -477,7 +477,7 @@ UOSInt Map::SHPData::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, NameArray *
 	}
 }
 
-Int64 Map::SHPData::GetObjectIdMax()
+Int64 Map::SHPData::GetObjectIdMax() const
 {
 	if (this->layerType == Map::DRAW_LAYER_POINT || this->layerType == Map::DRAW_LAYER_POINT3D)
 	{
@@ -503,7 +503,7 @@ UTF8Char *Map::SHPData::GetString(UTF8Char *buff, UOSInt buffSize, NameArray *na
 	return Text::StrTrimC(buff, (UOSInt)(sptr - buff));
 }
 
-UOSInt Map::SHPData::GetColumnCnt()
+UOSInt Map::SHPData::GetColumnCnt() const
 {
 	return this->dbf->GetColCount();
 }
@@ -523,7 +523,7 @@ Bool Map::SHPData::GetColumnDef(UOSInt colIndex, NotNullPtr<DB::ColDef> colDef)
 	return this->dbf->GetColumnDef(colIndex, colDef);
 }
 
-UInt32 Map::SHPData::GetCodePage()
+UInt32 Map::SHPData::GetCodePage() const
 {
 	return this->dbf->GetCodePage();
 }
@@ -654,7 +654,7 @@ void Map::SHPData::Reconnect()
 	return this->dbf->Reconnect();
 }
 
-Map::MapDrawLayer::ObjectClass Map::SHPData::GetObjectClass()
+Map::MapDrawLayer::ObjectClass Map::SHPData::GetObjectClass() const
 {
 	return Map::MapDrawLayer::OC_SHP_DATA;
 }

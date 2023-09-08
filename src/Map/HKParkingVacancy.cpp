@@ -271,12 +271,12 @@ Map::HKParkingVacancy::~HKParkingVacancy()
 	}
 }
 
-Map::DrawLayerType Map::HKParkingVacancy::GetLayerType()
+Map::DrawLayerType Map::HKParkingVacancy::GetLayerType() const
 {
 	return Map::DRAW_LAYER_POINT;
 }
 
-UOSInt Map::HKParkingVacancy::GetAllObjectIds(Data::ArrayListInt64 *outArr, NameArray **nameArr)
+UOSInt Map::HKParkingVacancy::GetAllObjectIds(NotNullPtr<Data::ArrayListInt64> outArr, NameArray **nameArr)
 {
 	UOSInt i = 0;
 	UOSInt j = this->parkingMap.GetCount();
@@ -288,12 +288,12 @@ UOSInt Map::HKParkingVacancy::GetAllObjectIds(Data::ArrayListInt64 *outArr, Name
 	return j;
 }
 
-UOSInt Map::HKParkingVacancy::GetObjectIds(Data::ArrayListInt64 *outArr, NameArray **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
+UOSInt Map::HKParkingVacancy::GetObjectIds(NotNullPtr<Data::ArrayListInt64> outArr, NameArray **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
 {
 	return GetObjectIdsMapXY(outArr, nameArr, rect.ToDouble() * mapRate, keepEmpty);
 }
 
-UOSInt Map::HKParkingVacancy::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, NameArray **nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
+UOSInt Map::HKParkingVacancy::GetObjectIdsMapXY(NotNullPtr<Data::ArrayListInt64> outArr, NameArray **nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
 {
 	ParkingInfo *parking;
 	UOSInt i = 0;
@@ -310,7 +310,7 @@ UOSInt Map::HKParkingVacancy::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, Na
 	return j;
 }
 
-Int64 Map::HKParkingVacancy::GetObjectIdMax()
+Int64 Map::HKParkingVacancy::GetObjectIdMax() const
 {
 	return (Int64)this->parkingMap.GetCount() - 1;
 }
@@ -401,7 +401,7 @@ UTF8Char *Map::HKParkingVacancy::GetString(UTF8Char *buff, UOSInt buffSize, Name
 	return 0;
 }
 
-UOSInt Map::HKParkingVacancy::GetColumnCnt()
+UOSInt Map::HKParkingVacancy::GetColumnCnt() const
 {
 	return 18;
 }
@@ -525,7 +525,7 @@ Bool Map::HKParkingVacancy::GetColumnDef(UOSInt colIndex, NotNullPtr<DB::ColDef>
 	return true;
 }
 
-UInt32 Map::HKParkingVacancy::GetCodePage()
+UInt32 Map::HKParkingVacancy::GetCodePage() const
 {
 	return 65001;
 }
@@ -558,7 +558,7 @@ Math::Geometry::Vector2D *Map::HKParkingVacancy::GetNewVectorById(GetObjectSess 
 	return 0;
 }
 
-Map::MapDrawLayer::ObjectClass Map::HKParkingVacancy::GetObjectClass()
+Map::MapDrawLayer::ObjectClass Map::HKParkingVacancy::GetObjectClass() const
 {
 	return ObjectClass::OC_OTHER;
 }

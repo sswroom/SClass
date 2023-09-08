@@ -76,7 +76,7 @@ Map::GPSTrack::~GPSTrack()
 	}
 }
 
-Map::DrawLayerType Map::GPSTrack::GetLayerType()
+Map::DrawLayerType Map::GPSTrack::GetLayerType() const
 {
 	if (this->hasAltitude)
 	{
@@ -88,7 +88,7 @@ Map::DrawLayerType Map::GPSTrack::GetLayerType()
 	}
 }
 
-UOSInt Map::GPSTrack::GetAllObjectIds(Data::ArrayListInt64 *outArr, NameArray **nameArr)
+UOSInt Map::GPSTrack::GetAllObjectIds(NotNullPtr<Data::ArrayListInt64> outArr, NameArray **nameArr)
 {
 	Sync::MutexUsage mutUsage(this->recMut);
 	UOSInt i = 0;
@@ -111,12 +111,12 @@ UOSInt Map::GPSTrack::GetAllObjectIds(Data::ArrayListInt64 *outArr, NameArray **
 	}
 }
 
-UOSInt Map::GPSTrack::GetObjectIds(Data::ArrayListInt64 *outArr, NameArray **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
+UOSInt Map::GPSTrack::GetObjectIds(NotNullPtr<Data::ArrayListInt64> outArr, NameArray **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
 {
 	return GetObjectIdsMapXY(outArr, nameArr, rect.ToDouble() / mapRate, keepEmpty);
 }
 
-UOSInt Map::GPSTrack::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, NameArray **nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
+UOSInt Map::GPSTrack::GetObjectIdsMapXY(NotNullPtr<Data::ArrayListInt64> outArr, NameArray **nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
 {
 	Sync::MutexUsage mutUsage(this->recMut);
 	rect = rect.Reorder();
@@ -145,7 +145,7 @@ UOSInt Map::GPSTrack::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, NameArray 
 	return cnt;
 }
 
-Int64 Map::GPSTrack::GetObjectIdMax()
+Int64 Map::GPSTrack::GetObjectIdMax() const
 {
 	if (this->currTimes.GetCount() > 0)
 	{
@@ -227,7 +227,7 @@ UTF8Char *Map::GPSTrack::GetString(UTF8Char *buff, UOSInt buffSize, NameArray *n
 	}
 }
 
-UOSInt Map::GPSTrack::GetColumnCnt()
+UOSInt Map::GPSTrack::GetColumnCnt() const
 {
 	return 3;
 }
@@ -322,7 +322,7 @@ Bool Map::GPSTrack::GetColumnDef(UOSInt colIndex, NotNullPtr<DB::ColDef> colDef)
 	}
 }
 
-UInt32 Map::GPSTrack::GetCodePage()
+UInt32 Map::GPSTrack::GetCodePage() const
 {
 	return this->codePage;
 }
@@ -568,7 +568,7 @@ DB::TableDef *Map::GPSTrack::GetTableDef(Text::CString schemaName, Text::CString
 	return tab;
 }
 
-Map::MapDrawLayer::ObjectClass Map::GPSTrack::GetObjectClass()
+Map::MapDrawLayer::ObjectClass Map::GPSTrack::GetObjectClass() const
 {
 	return Map::MapDrawLayer::OC_GPS_TRACK;
 }

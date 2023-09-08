@@ -213,12 +213,12 @@ Map::ESRI::ESRIMDBLayer::~ESRIMDBLayer()
 	this->tableName->Release();
 }
 
-Map::DrawLayerType Map::ESRI::ESRIMDBLayer::GetLayerType()
+Map::DrawLayerType Map::ESRI::ESRIMDBLayer::GetLayerType() const
 {
 	return this->layerType;
 }
 
-UOSInt Map::ESRI::ESRIMDBLayer::GetAllObjectIds(Data::ArrayListInt64 *outArr, NameArray **nameArr)
+UOSInt Map::ESRI::ESRIMDBLayer::GetAllObjectIds(NotNullPtr<Data::ArrayListInt64> outArr, NameArray **nameArr)
 {
 	if (nameArr)
 	{
@@ -234,12 +234,12 @@ UOSInt Map::ESRI::ESRIMDBLayer::GetAllObjectIds(Data::ArrayListInt64 *outArr, Na
 	return j;
 }
 
-UOSInt Map::ESRI::ESRIMDBLayer::GetObjectIds(Data::ArrayListInt64 *outArr, NameArray **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
+UOSInt Map::ESRI::ESRIMDBLayer::GetObjectIds(NotNullPtr<Data::ArrayListInt64> outArr, NameArray **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
 {
 	return GetObjectIdsMapXY(outArr, nameArr, rect.ToDouble() / mapRate, keepEmpty);
 }
 
-UOSInt Map::ESRI::ESRIMDBLayer::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, NameArray **nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
+UOSInt Map::ESRI::ESRIMDBLayer::GetObjectIdsMapXY(NotNullPtr<Data::ArrayListInt64> outArr, NameArray **nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
 {
 	if (nameArr)
 	{
@@ -266,7 +266,7 @@ UOSInt Map::ESRI::ESRIMDBLayer::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, 
 	return cnt;
 }
 
-Int64 Map::ESRI::ESRIMDBLayer::GetObjectIdMax()
+Int64 Map::ESRI::ESRIMDBLayer::GetObjectIdMax() const
 {
 	return this->objects.GetKey(this->objects.GetCount() - 1);
 }
@@ -305,7 +305,7 @@ UTF8Char *Map::ESRI::ESRIMDBLayer::GetString(UTF8Char *buff, UOSInt buffSize, Na
 	return Text::StrConcatS(buff, nameStrs[strIndex], buffSize);
 }
 
-UOSInt Map::ESRI::ESRIMDBLayer::GetColumnCnt()
+UOSInt Map::ESRI::ESRIMDBLayer::GetColumnCnt() const
 {
 	return this->colNames.GetCount();
 }
@@ -330,7 +330,7 @@ Bool Map::ESRI::ESRIMDBLayer::GetColumnDef(UOSInt colIndex, NotNullPtr<DB::ColDe
 	return false;
 }
 
-UInt32 Map::ESRI::ESRIMDBLayer::GetCodePage()
+UInt32 Map::ESRI::ESRIMDBLayer::GetCodePage() const
 {
 	return 65001;
 }
@@ -422,7 +422,7 @@ void Map::ESRI::ESRIMDBLayer::Reconnect()
 	this->conn->Reconnect();
 }
 
-Map::MapDrawLayer::ObjectClass Map::ESRI::ESRIMDBLayer::GetObjectClass()
+Map::MapDrawLayer::ObjectClass Map::ESRI::ESRIMDBLayer::GetObjectClass() const
 {
 	return Map::MapDrawLayer::OC_ESRI_MDB_LAYER;
 }

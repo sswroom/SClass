@@ -229,7 +229,7 @@ Bool __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnMapMouseUp(void *userObj, Mat
 			{
 				Data::ArrayListInt64 arr;
 				Map::NameArray *nameArr;
-				me->dbLayer->GetObjectIdsMapXY(&arr, &nameArr, Math::RectAreaDbl(mapPt, mapPt), true);
+				me->dbLayer->GetObjectIdsMapXY(arr, &nameArr, Math::RectAreaDbl(mapPt, mapPt), true);
 				i = 0;
 				j = me->dbLayer->GetColumnCnt();
 				while (i < j)

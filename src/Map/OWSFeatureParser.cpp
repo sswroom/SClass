@@ -122,7 +122,7 @@ Bool Map::OWSFeatureParser::ParseGML(Text::CStringNN txt, UInt32 srid, Bool swap
 			Map::MapDrawLayer *layer = (Map::MapDrawLayer*)pobj;
 			Map::NameArray *nameArr = 0;
 			Data::ArrayListInt64 idArr;
-			layer->GetAllObjectIds(&idArr, &nameArr);
+			layer->GetAllObjectIds(idArr, &nameArr);
 			if (idArr.GetCount() > 0)
 			{
 				Map::GetObjectSess *sess = layer->BeginGetObject();

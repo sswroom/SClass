@@ -354,7 +354,7 @@ Map::VectorLayer::~VectorLayer()
 	SDEL_STRING(this->tableName);
 }
 
-Map::DrawLayerType Map::VectorLayer::GetLayerType()
+Map::DrawLayerType Map::VectorLayer::GetLayerType() const
 {
 	return this->layerType;
 }
@@ -364,7 +364,7 @@ void Map::VectorLayer::SetMixedData(MixedData mixedData)
 	this->mixedData = mixedData;
 }
 
-UOSInt Map::VectorLayer::GetAllObjectIds(Data::ArrayListInt64 *outArr, NameArray **nameArr)
+UOSInt Map::VectorLayer::GetAllObjectIds(NotNullPtr<Data::ArrayListInt64> outArr, NameArray **nameArr)
 {
 	UOSInt i = 0;
 	UOSInt j = this->vectorList.GetCount();
@@ -395,12 +395,12 @@ UOSInt Map::VectorLayer::GetAllObjectIds(Data::ArrayListInt64 *outArr, NameArray
 	}
 }
 
-UOSInt Map::VectorLayer::GetObjectIds(Data::ArrayListInt64 *outArr, NameArray **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
+UOSInt Map::VectorLayer::GetObjectIds(NotNullPtr<Data::ArrayListInt64> outArr, NameArray **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
 {
 	return GetObjectIdsMapXY(outArr, nameArr, rect.ToDouble() / mapRate, keepEmpty);
 }
 
-UOSInt Map::VectorLayer::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, NameArray **nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
+UOSInt Map::VectorLayer::GetObjectIdsMapXY(NotNullPtr<Data::ArrayListInt64> outArr, NameArray **nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
 {
 	Math::RectAreaDbl vBounds;
 	UOSInt recCnt = 0;
@@ -445,7 +445,7 @@ UOSInt Map::VectorLayer::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, NameArr
 	return recCnt;
 }
 
-Int64 Map::VectorLayer::GetObjectIdMax()
+Int64 Map::VectorLayer::GetObjectIdMax() const
 {
 	return (Int64)this->vectorList.GetCount() - 1;
 }
@@ -475,7 +475,7 @@ UTF8Char *Map::VectorLayer::GetString(UTF8Char *buff, UOSInt buffSize, NameArray
 	return Text::StrConcatS(buff, strs[strIndex], buffSize);
 }
 
-UOSInt Map::VectorLayer::GetColumnCnt()
+UOSInt Map::VectorLayer::GetColumnCnt() const
 {
 	return this->strCnt;
 }
@@ -550,7 +550,7 @@ Bool Map::VectorLayer::GetColumnDef(UOSInt colIndex, NotNullPtr<DB::ColDef> colD
 	return true;
 }
 
-UInt32 Map::VectorLayer::GetCodePage()
+UInt32 Map::VectorLayer::GetCodePage() const
 {
 	return 0;
 }
@@ -607,7 +607,7 @@ UOSInt Map::VectorLayer::QueryTableNames(Text::CString schemaName, Data::ArrayLi
 	return 1;
 }
 
-Map::MapDrawLayer::ObjectClass Map::VectorLayer::GetObjectClass()
+Map::MapDrawLayer::ObjectClass Map::VectorLayer::GetObjectClass() const
 {
 	return Map::MapDrawLayer::OC_VECTOR_LAYER;
 }

@@ -95,7 +95,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISQueryForm::OnMouseUp(void *userObj, Math::C
 			Math::Geometry::Vector2D *vec = 0;
 			Data::ArrayListInt64 arr;
 			Map::NameArray *nameArr;
-			me->lyr->GetObjectIdsMapXY(&arr, &nameArr, Math::RectAreaDbl(mapPt, mapPt), true);
+			me->lyr->GetObjectIdsMapXY(arr, &nameArr, Math::RectAreaDbl(mapPt, mapPt), true);
 			j = 0;
 			k = objList.GetCount();
 			while (j < k)

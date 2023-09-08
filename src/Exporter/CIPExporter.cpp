@@ -85,21 +85,18 @@ Bool Exporter::CIPExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text:
 	{
 		return false;
 	}
-	IO::FileStream *cix;
-	IO::FileStream *cib;
-	IO::FileStream *blk;
 	fileName.ConcatTo(sbuff);
 	sptr = IO::Path::ReplaceExt(sbuff, UTF8STRC("cix"));
-	NEW_CLASS(cix, IO::FileStream(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+	IO::FileStream cix(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 	sptr = IO::Path::ReplaceExt(sbuff, UTF8STRC("ciu"));
-	NEW_CLASS(cib, IO::FileStream(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+	IO::FileStream cib(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 	sptr = IO::Path::ReplaceExt(sbuff, UTF8STRC("blk"));
-	NEW_CLASS(blk, IO::FileStream(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+	IO::FileStream blk(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 
 
-	Data::ArrayListInt64 *objIds;
-	Data::ArrayList<CIPBlock*> *blks;
-	Data::ArrayList<CIPStrRecord*> *strs;
+	Data::ArrayListInt64 objIds;
+	Data::ArrayList<CIPBlock*> blks;
+	Data::ArrayList<CIPStrRecord*> strs;
 	CIPStrRecord *strRec;
 	CIPBlock *theBlk;
 	Map::GetObjectSess *sess;
@@ -118,26 +115,23 @@ Bool Exporter::CIPExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text:
 	Int32 top;
 	Int32 right;
 	Int32 bottom;
-	NEW_CLASS(objIds, Data::ArrayListInt64());
-	NEW_CLASS(blks, Data::ArrayList<CIPBlock*>());
-	NEW_CLASS(strs, Data::ArrayList<CIPStrRecord*>());
 	layer->GetAllObjectIds(objIds, &nameArr);
 	sess = layer->BeginGetObject();
 
-	WriteUInt32(&buff[0], (UInt32)objIds->GetCount());
+	WriteUInt32(&buff[0], (UInt32)objIds.GetCount());
 	WriteInt32(&buff[4], iLayerType);
 	stm->Write(buff, 8);
-	cix->Write(buff, 4);
+	cix.Write(buff, 4);
 
 	i = 0;
-	recCnt = objIds->GetCount();
+	recCnt = objIds.GetCount();
 	while (i < recCnt)
 	{
-		Math::Geometry::Vector2D *vec = layer->GetNewVectorById(sess, objIds->GetItem(i));
+		Math::Geometry::Vector2D *vec = layer->GetNewVectorById(sess, objIds.GetItem(i));
 
 		WriteUInt32(&buff[0], (UInt32)i);
 		WriteUInt32(&buff[4], (UInt32)stmPos);
-		cix->Write(buff, 8);
+		cix.Write(buff, 8);
 
 		if (vec->GetVectorType() == Math::Geometry::Vector2D::VectorType::Point)
 		{
@@ -220,11 +214,11 @@ Bool Exporter::CIPExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text:
 				while (k <= right)
 				{
 					l = 0;
-					m = (OSInt)blks->GetCount() - 1;
+					m = (OSInt)blks.GetCount() - 1;
 					while (l <= m)
 					{
 						n = (l + m) >> 1;
-						theBlk = blks->GetItem((UOSInt)n);
+						theBlk = blks.GetItem((UOSInt)n);
 						if (theBlk->blockX > k)
 						{
 							l = n + 1;
@@ -245,7 +239,7 @@ Bool Exporter::CIPExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text:
 						{
 							strRec = MemAlloc(CIPStrRecord, 1);
 							strRec->recId = (Int32)i;
-							if (layer->GetString(sbuff, sizeof(sbuff), nameArr, objIds->GetItem(i), p->dispCol))
+							if (layer->GetString(sbuff, sizeof(sbuff), nameArr, objIds.GetItem(i), p->dispCol))
 							{
 								strRec->str = Text::StrCopyNew(sbuff).Ptr();
 							}
@@ -254,7 +248,7 @@ Bool Exporter::CIPExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text:
 								strRec->str = 0;
 							}
 							theBlk->records->Add(strRec);
-							strs->Add(strRec);
+							strs.Add(strRec);
 							l = -1;
 							break;
 						}
@@ -268,7 +262,7 @@ Bool Exporter::CIPExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text:
 
 						strRec = MemAlloc(CIPStrRecord, 1);
 						strRec->recId = (Int32)i;
-						if (layer->GetString(sbuff, sizeof(sbuff), nameArr, objIds->GetItem(i), p->dispCol))
+						if (layer->GetString(sbuff, sizeof(sbuff), nameArr, objIds.GetItem(i), p->dispCol))
 						{
 							strRec->str = Text::StrCopyNew(sbuff).Ptr();
 						}
@@ -277,9 +271,9 @@ Bool Exporter::CIPExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text:
 							strRec->str = 0;
 						}
 						theBlk->records->Add(strRec);
-						strs->Add(strRec);
+						strs.Add(strRec);
 
-						blks->Insert((UOSInt)l, theBlk);
+						blks.Insert((UOSInt)l, theBlk);
 					}
 
 					k++;
@@ -292,46 +286,46 @@ Bool Exporter::CIPExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text:
 		i++;
 	}
 
-	*(Int32*)&buff[0] = (Int32)blks->GetCount();
+	*(Int32*)&buff[0] = (Int32)blks.GetCount();
 	*(Int32*)&buff[4] = p->scale;
-	blk->Write(buff, 8);
-	cib->Write(buff, 8);
+	blk.Write(buff, 8);
+	cib.Write(buff, 8);
 	stmPos = 8;
 
 	i = 0;
-	j = blks->GetCount();
+	j = blks.GetCount();
 	while (i < j)
 	{
-		theBlk = blks->GetItem(i);
+		theBlk = blks.GetItem(i);
         *(Int32*)&buff[0] = (Int32)theBlk->records->GetCount();
         *(Int32*)&buff[4] = theBlk->blockX;
 		*(Int32*)&buff[8] = theBlk->blockY;
-		blk->Write(buff, 12);
+		blk.Write(buff, 12);
 		k = 0;
 		while (k < theBlk->records->GetCount())
 		{
-			blk->Write((UInt8*)&theBlk->records->GetItem(k)->recId, 4);
+			blk.Write((UInt8*)&theBlk->records->GetItem(k)->recId, 4);
 			k += 1;
 		}
-		cib->Write(buff, 16);
+		cib.Write(buff, 16);
 		stmPos += 16;
 		i += 1;
 	}
 
 	i = 0;
-	j = blks->GetCount();
+	j = blks.GetCount();
 	while (i < j)
 	{
-		theBlk = blks->GetItem(i);
-		cib->SeekFromBeginning(8 + i * 16);
+		theBlk = blks.GetItem(i);
+		cib.SeekFromBeginning(8 + i * 16);
 
 		*(Int32*)&buff[0] = theBlk->blockX;
 		*(Int32*)&buff[4] = theBlk->blockY;
 		*(Int32*)&buff[8] = (Int32)theBlk->records->GetCount();
 		*(Int32*)&buff[12] = (Int32)stmPos;
-		cib->Write(buff, 16);
+		cib.Write(buff, 16);
 
-		cib->SeekFromBeginning(stmPos);
+		cib.SeekFromBeginning(stmPos);
 		k = 0;
 		while (k < theBlk->records->GetCount())
 		{
@@ -340,7 +334,7 @@ Bool Exporter::CIPExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text:
 			if (strRec->str == 0)
 			{
 				buff[4] = 0;
-				cib->Write(buff, 5);
+				cib.Write(buff, 5);
 			}
 			else
 			{
@@ -350,8 +344,8 @@ Bool Exporter::CIPExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text:
 					l = 127;
 				}
 				buff[4] = (UInt8)(l << 1);
-				cib->Write(buff, 5);
-				cib->Write((UInt8*)strRec->str, l << 1);
+				cib.Write(buff, 5);
+				cib.Write((UInt8*)strRec->str, l << 1);
 			}
 
 			stmPos += (UOSInt)buff[4] + 5;
@@ -362,30 +356,23 @@ Bool Exporter::CIPExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text:
 
 	layer->EndGetObject(sess);
 	layer->ReleaseNameArr(nameArr);
-	i = blks->GetCount();
+	i = blks.GetCount();
 	while (i-- > 0)
 	{
-		theBlk = blks->GetItem(i);
+		theBlk = blks.GetItem(i);
 		DEL_CLASS(theBlk->records);
 		MemFree(theBlk);
 	}
-	i = strs->GetCount();
+	i = strs.GetCount();
 	while (i-- > 0)
 	{
-		strRec = strs->GetItem(i);
+		strRec = strs.GetItem(i);
 		if (strRec->str)
 		{
 			Text::StrDelNew(strRec->str);
 		}
 		MemFree(strRec);
 	}
-
-	DEL_CLASS(blks);
-	DEL_CLASS(strs);
-	DEL_CLASS(objIds);
-	DEL_CLASS(cix);
-	DEL_CLASS(cib);
-	DEL_CLASS(blk);
 	return true;
 }
 

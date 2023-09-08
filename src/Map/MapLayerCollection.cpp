@@ -95,7 +95,7 @@ void Map::MapLayerCollection::SetCurrTimeTS(Int64 timeStamp)
 	}
 }
 
-Int64 Map::MapLayerCollection::GetTimeStartTS()
+Int64 Map::MapLayerCollection::GetTimeStartTS() const
 {
 	Int64 timeStart = 0;
 	Int64 v;
@@ -116,7 +116,7 @@ Int64 Map::MapLayerCollection::GetTimeStartTS()
 	return timeStart;
 }
 
-Int64 Map::MapLayerCollection::GetTimeEndTS()
+Int64 Map::MapLayerCollection::GetTimeEndTS() const
 {
 	Int64 timeEnd = 0;
 	Int64 v;
@@ -137,7 +137,7 @@ Int64 Map::MapLayerCollection::GetTimeEndTS()
 	return timeEnd;
 }
 
-Map::DrawLayerType Map::MapLayerCollection::GetLayerType()
+Map::DrawLayerType Map::MapLayerCollection::GetLayerType() const
 {
 	Map::DrawLayerType lyrType = Map::DRAW_LAYER_UNKNOWN;
 	Sync::RWMutexUsage mutUsage(this->mut, false);
@@ -156,7 +156,7 @@ Map::DrawLayerType Map::MapLayerCollection::GetLayerType()
 	return lyrType;
 }
 
-UOSInt Map::MapLayerCollection::GetAllObjectIds(Data::ArrayListInt64 *outArr, NameArray **nameArr)
+UOSInt Map::MapLayerCollection::GetAllObjectIds(NotNullPtr<Data::ArrayListInt64> outArr, NameArray **nameArr)
 {
 	Map::MapDrawLayer *lyr;
 	Data::ArrayListInt64 tmpArr;
@@ -176,7 +176,7 @@ UOSInt Map::MapLayerCollection::GetAllObjectIds(Data::ArrayListInt64 *outArr, Na
 		lyr = this->layerList.GetItem(k);
 		maxId = lyr->GetObjectIdMax();
 		tmpArr.Clear();
-		m2 = lyr->GetAllObjectIds(&tmpArr, nameArr);
+		m2 = lyr->GetAllObjectIds(tmpArr, nameArr);
 		m1 = 0;
 		while (m1 < m2)
 		{
@@ -190,7 +190,7 @@ UOSInt Map::MapLayerCollection::GetAllObjectIds(Data::ArrayListInt64 *outArr, Na
 	return ret;
 }
 
-UOSInt Map::MapLayerCollection::GetObjectIds(Data::ArrayListInt64 *outArr, NameArray **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
+UOSInt Map::MapLayerCollection::GetObjectIds(NotNullPtr<Data::ArrayListInt64> outArr, NameArray **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
 {
 	Map::MapDrawLayer *lyr;
 	Data::ArrayListInt64 tmpArr;
@@ -209,7 +209,7 @@ UOSInt Map::MapLayerCollection::GetObjectIds(Data::ArrayListInt64 *outArr, NameA
 		lyr = this->layerList.GetItem(k);
 		maxId = lyr->GetObjectIdMax();
 		tmpArr.Clear();
-		m2 = lyr->GetObjectIds(&tmpArr, nameArr, mapRate, rect, keepEmpty);
+		m2 = lyr->GetObjectIds(tmpArr, nameArr, mapRate, rect, keepEmpty);
 		m1 = 0;
 		while (m1 < m2)
 		{
@@ -223,7 +223,7 @@ UOSInt Map::MapLayerCollection::GetObjectIds(Data::ArrayListInt64 *outArr, NameA
 	return ret;
 }
 
-UOSInt Map::MapLayerCollection::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, NameArray **nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
+UOSInt Map::MapLayerCollection::GetObjectIdsMapXY(NotNullPtr<Data::ArrayListInt64> outArr, NameArray **nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
 {
 	Map::MapDrawLayer *lyr;
 	Data::ArrayListInt64 tmpArr;
@@ -242,7 +242,7 @@ UOSInt Map::MapLayerCollection::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, 
 		lyr = this->layerList.GetItem(k);
 		maxId = lyr->GetObjectIdMax();
 		tmpArr.Clear();
-		m2 = lyr->GetObjectIdsMapXY(&tmpArr, nameArr, rect, keepEmpty);
+		m2 = lyr->GetObjectIdsMapXY(tmpArr, nameArr, rect, keepEmpty);
 		m1 = 0;
 		while (m1 < m2)
 		{
@@ -256,7 +256,7 @@ UOSInt Map::MapLayerCollection::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, 
 	return ret;
 }
 
-Int64 Map::MapLayerCollection::GetObjectIdMax()
+Int64 Map::MapLayerCollection::GetObjectIdMax() const
 {
 	UOSInt k;
 	UOSInt l;
@@ -303,7 +303,7 @@ UTF8Char *Map::MapLayerCollection::GetString(UTF8Char *buff, UOSInt buffSize, Na
 	return 0;
 }
 
-UOSInt Map::MapLayerCollection::GetColumnCnt()
+UOSInt Map::MapLayerCollection::GetColumnCnt() const
 {
 	return 0;
 }
@@ -323,7 +323,7 @@ Bool Map::MapLayerCollection::GetColumnDef(UOSInt colIndex, NotNullPtr<DB::ColDe
 	return false;
 }
 
-UInt32 Map::MapLayerCollection::GetCodePage()
+UInt32 Map::MapLayerCollection::GetCodePage() const
 {
 	return 0;
 }
@@ -431,7 +431,7 @@ void Map::MapLayerCollection::RemoveUpdatedHandler(UpdatedHandler hdlr, void *ob
 	}
 }
 
-Map::MapDrawLayer::ObjectClass Map::MapLayerCollection::GetObjectClass()
+Map::MapDrawLayer::ObjectClass Map::MapLayerCollection::GetObjectClass() const
 {
 	return Map::MapDrawLayer::OC_MAP_LAYER_COLL;
 }

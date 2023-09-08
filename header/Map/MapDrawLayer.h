@@ -94,23 +94,23 @@ namespace Map
 
 		virtual void SetCurrScale(Double scale);
 		virtual void SetCurrTimeTS(Int64 timeStamp);
-		virtual Int64 GetTimeStartTS();
-		virtual Int64 GetTimeEndTS();
+		virtual Int64 GetTimeStartTS() const;
+		virtual Int64 GetTimeEndTS() const;
 		virtual Map::MapView *CreateMapView(Math::Size2DDbl scnSize);
 
-		virtual DrawLayerType GetLayerType() = 0;
+		virtual DrawLayerType GetLayerType() const = 0;
 		virtual void SetMixedData(MixedData MixedData);
-		virtual UOSInt GetAllObjectIds(Data::ArrayListInt64 *outArr, NameArray **nameArr) = 0;
-		virtual UOSInt GetObjectIds(Data::ArrayListInt64 *outArr, NameArray **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty) = 0;
-		virtual UOSInt GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, NameArray **nameArr, Math::RectAreaDbl rect, Bool keepEmpty) = 0;
-		virtual Int64 GetObjectIdMax() = 0;
+		virtual UOSInt GetAllObjectIds(NotNullPtr<Data::ArrayListInt64> outArr, NameArray **nameArr) = 0;
+		virtual UOSInt GetObjectIds(NotNullPtr<Data::ArrayListInt64> outArr, NameArray **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty) = 0;
+		virtual UOSInt GetObjectIdsMapXY(NotNullPtr<Data::ArrayListInt64> outArr, NameArray **nameArr, Math::RectAreaDbl rect, Bool keepEmpty) = 0;
+		virtual Int64 GetObjectIdMax() const = 0;
 		virtual void ReleaseNameArr(NameArray *nameArr) = 0;
 		virtual UTF8Char *GetString(UTF8Char *buff, UOSInt buffSize, NameArray *nameArr, Int64 id, UOSInt strIndex) = 0;
-		virtual UOSInt GetColumnCnt() = 0;
+		virtual UOSInt GetColumnCnt() const = 0;
 		virtual UTF8Char *GetColumnName(UTF8Char *buff, UOSInt colIndex) = 0;
 		virtual DB::DBUtil::ColType GetColumnType(UOSInt colIndex, UOSInt *colSize) = 0;
 		virtual Bool GetColumnDef(UOSInt colIndex, NotNullPtr<DB::ColDef> colDef) = 0;
-		virtual UInt32 GetCodePage() = 0;
+		virtual UInt32 GetCodePage() const = 0;
 		virtual Bool GetBounds(OutParam<Math::RectAreaDbl> rect) const = 0;
 		virtual void SetDispSize(Math::Size2DDbl size, Double dpi);
 
@@ -130,7 +130,7 @@ namespace Map
 		virtual UOSInt GetNameCol();
 		virtual void SetNameCol(UOSInt nameCol);
 
-		virtual ObjectClass GetObjectClass() = 0;
+		virtual ObjectClass GetObjectClass() const = 0;
 		NotNullPtr<Text::String> GetName();
 		virtual IO::ParserType GetParserType() const;
 		virtual Math::CoordinateSystem *GetCoordinateSystem();
@@ -151,8 +151,8 @@ namespace Map
 		Map::VectorLayer *CreateEditableLayer();
 
 		Text::SearchIndexer *CreateSearchIndexer(Text::TextAnalyzer *ta, UOSInt strIndex);
-		UOSInt SearchString(Data::ArrayListString *outArr, Text::SearchIndexer *srchInd, NameArray *nameArr, const UTF8Char *srchStr, UOSInt maxResult, UOSInt strIndex);
-		void ReleaseSearchStr(Data::ArrayListString *strArr);
+		UOSInt SearchString(NotNullPtr<Data::ArrayListString> outArr, Text::SearchIndexer *srchInd, NameArray *nameArr, const UTF8Char *srchStr, UOSInt maxResult, UOSInt strIndex);
+		void ReleaseSearchStr(NotNullPtr<Data::ArrayListString> strArr);
 		Math::Geometry::Vector2D *GetVectorByStr(Text::SearchIndexer *srchInd, NameArray *nameArr, GetObjectSess *session, const UTF8Char *srchStr, UOSInt strIndex);
 
 		Bool HasLineStyle();
@@ -177,7 +177,7 @@ namespace Map
 	{
 	protected:
 		NotNullPtr<MapDrawLayer> layer;
-		Data::ArrayListInt64 *objIds; 
+		Data::ArrayListInt64 objIds; 
 		NameArray *nameArr;
 		OSInt currIndex;
 

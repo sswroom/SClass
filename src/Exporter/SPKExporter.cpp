@@ -145,7 +145,7 @@ Bool Exporter::SPKExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text:
 				yAdd = Map::OSM::OSMTileMap::Lat2TileYR(bounds.br.y, i);
 
 				objIds.Clear();
-				orux->GetAllObjectIds(&objIds, &nameArr);
+				orux->GetAllObjectIds(objIds, &nameArr);
 				k = objIds.GetCount();
 				while (k-- > 0)
 				{

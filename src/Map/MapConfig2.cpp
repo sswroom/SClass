@@ -2276,7 +2276,7 @@ void Map::MapConfig2::DrawPoints(NotNullPtr<Media::DrawImage> img, MapLayerStyle
 #endif
 	Data::ArrayListInt64 arri;
 	Math::RectAreaDbl rect = view->GetVerticalRect();
-	lyrs->lyr->GetObjectIdsMapXY(&arri, 0, rect, true);
+	lyrs->lyr->GetObjectIdsMapXY(arri, 0, rect, true);
 	if (arri.GetCount() == 0)
 	{
 		return;
@@ -2378,7 +2378,7 @@ void Map::MapConfig2::DrawString(NotNullPtr<Media::DrawImage> img, MapLayerStyle
 
 	Data::ArrayListInt64 arri;
 	Math::RectAreaDbl rect = view->GetVerticalRect();
-	lyrs->lyr->GetObjectIdsMapXY(&arri, &arr, rect, false);
+	lyrs->lyr->GetObjectIdsMapXY(arri, &arr, rect, false);
 	session = lyrs->lyr->BeginGetObject();
 	i = arri.GetCount();
 	while (i-- > 0)
@@ -4429,7 +4429,7 @@ UTF8Char *Map::MapConfig2::DrawMap(NotNullPtr<Media::DrawImage> img, Map::MapVie
 				{
 					arr.Clear();
 					Math::RectAreaDbl rect = view->GetVerticalRect();
-					lyr->GetObjectIdsMapXY(&arr, 0, rect, true);
+					lyr->GetObjectIdsMapXY(arr, 0, rect, true);
 
 					if ((i = arr.GetCount()) > 0)
 					{
@@ -4533,7 +4533,7 @@ UTF8Char *Map::MapConfig2::DrawMap(NotNullPtr<Media::DrawImage> img, Map::MapVie
 				{
 					arr.Clear();
 					Math::RectAreaDbl rect = view->GetVerticalRect();
-					lyr->GetObjectIdsMapXY(&arr, 0, rect, true);
+					lyr->GetObjectIdsMapXY(arr, 0, rect, true);
 
 					if ((i = arr.GetCount()) > 0)
 					{

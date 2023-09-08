@@ -160,7 +160,7 @@ void __stdcall SSWR::SMonitor::SMonitorSvrCore::CheckThread(NotNullPtr<Sync::Thr
 				Sync::RWMutexUsage mutUsage(dev->mut, true);
 				recList.AddAll(dev->yesterdayRecs);
 				dev->yesterdayRecs.Clear();
-				dev->yesterdayRecs.PutAll(&dev->todayRecs);
+				dev->yesterdayRecs.PutAll(dev->todayRecs);
 				dev->todayRecs.Clear();
 				j = recList.GetCount();
 				if (j > 0)

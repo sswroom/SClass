@@ -203,12 +203,12 @@ Bool Map::CIPLayer2::IsError()
 	return false;
 }
 
-Map::DrawLayerType Map::CIPLayer2::GetLayerType()
+Map::DrawLayerType Map::CIPLayer2::GetLayerType() const
 {
 	return lyrType;
 }
 
-UOSInt Map::CIPLayer2::GetAllObjectIds(Data::ArrayListInt64 *outArr, NameArray **nameArr)
+UOSInt Map::CIPLayer2::GetAllObjectIds(NotNullPtr<Data::ArrayListInt64> outArr, NameArray **nameArr)
 {
 	UOSInt textSize;
 	UOSInt i;
@@ -303,7 +303,7 @@ UOSInt Map::CIPLayer2::GetAllObjectIds(Data::ArrayListInt64 *outArr, NameArray *
 	return l;
 }
 
-UOSInt Map::CIPLayer2::GetObjectIds(Data::ArrayListInt64 *outArr, NameArray **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
+UOSInt Map::CIPLayer2::GetObjectIds(NotNullPtr<Data::ArrayListInt64> outArr, NameArray **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
 {
 	rect.tl.x = Double2Int32(rect.tl.x * 200000.0 / mapRate);
 	rect.tl.y = Double2Int32(rect.tl.y * 200000.0 / mapRate);
@@ -471,14 +471,14 @@ UOSInt Map::CIPLayer2::GetObjectIds(Data::ArrayListInt64 *outArr, NameArray **na
 	return l;
 }
 
-UOSInt Map::CIPLayer2::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, NameArray **nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
+UOSInt Map::CIPLayer2::GetObjectIdsMapXY(NotNullPtr<Data::ArrayListInt64> outArr, NameArray **nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
 {
 	rect = rect * 200000;
 	return GetObjectIds(outArr, nameArr, 200000.0, Math::RectArea<Int32>(Math::Coord2D<Int32>(Double2Int32(rect.tl.x), Double2Int32(rect.tl.y)),
 		Math::Coord2D<Int32>(Double2Int32(rect.br.x), Double2Int32(rect.br.y))), keepEmpty);
 }
 
-Int64 Map::CIPLayer2::GetObjectIdMax()
+Int64 Map::CIPLayer2::GetObjectIdMax() const
 {
 	return this->maxId;
 }
@@ -514,7 +514,7 @@ UTF8Char *Map::CIPLayer2::GetString(UTF8Char *buff, UOSInt buffSize, NameArray *
 	}
 }
 
-UOSInt Map::CIPLayer2::GetColumnCnt()
+UOSInt Map::CIPLayer2::GetColumnCnt() const
 {
 	return 1;
 }
@@ -568,12 +568,12 @@ Bool Map::CIPLayer2::GetColumnDef(UOSInt colIndex, NotNullPtr<DB::ColDef> colDef
 	return true;
 }
 
-Int32 Map::CIPLayer2::GetBlockSize()
+Int32 Map::CIPLayer2::GetBlockSize() const
 {
 	return this->blkScale;
 }
 
-UInt32 Map::CIPLayer2::GetCodePage()
+UInt32 Map::CIPLayer2::GetCodePage() const
 {
 	return 0;
 }
@@ -761,7 +761,7 @@ Math::Geometry::Vector2D *Map::CIPLayer2::GetNewVectorById(GetObjectSess *sessio
 	return 0;
 }
 
-Map::MapDrawLayer::ObjectClass Map::CIPLayer2::GetObjectClass()
+Map::MapDrawLayer::ObjectClass Map::CIPLayer2::GetObjectClass() const
 {
 	return Map::MapDrawLayer::OC_CIP_LAYER;
 }

@@ -23,7 +23,7 @@ Map::HKTDVehRestrict::HKTDVehRestrict(Map::MapDrawLayer *routeLyr, DB::DBTool *d
 		RouteInfo *route;
 		Math::Geometry::Vector2D *vec;
 
-		routeLyr->GetAllObjectIds(&idArr, &nameArr);
+		routeLyr->GetAllObjectIds(idArr, &nameArr);
 		colCnt = routeLyr->GetColumnCnt();
 		i = 0;
 		while (i < colCnt)

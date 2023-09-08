@@ -54,7 +54,7 @@ Map::OruxDBLayer::~OruxDBLayer()
 	SDEL_CLASS(this->db);
 }
 
-Bool Map::OruxDBLayer::IsError()
+Bool Map::OruxDBLayer::IsError() const
 {
 	return this->db == 0;
 }
@@ -116,12 +116,12 @@ Map::MapView *Map::OruxDBLayer::CreateMapView(Math::Size2DDbl scnSize)
 	}
 }
 
-Map::DrawLayerType Map::OruxDBLayer::GetLayerType()
+Map::DrawLayerType Map::OruxDBLayer::GetLayerType() const
 {
 	return Map::DRAW_LAYER_IMAGE;
 }
 
-UOSInt Map::OruxDBLayer::GetAllObjectIds(Data::ArrayListInt64 *outArr, NameArray **nameArr)
+UOSInt Map::OruxDBLayer::GetAllObjectIds(NotNullPtr<Data::ArrayListInt64> outArr, NameArray **nameArr)
 {
 	Map::OruxDBLayer::LayerInfo *lyr = this->layerMap.Get(this->currLayer);
 	if (lyr)
@@ -147,12 +147,12 @@ UOSInt Map::OruxDBLayer::GetAllObjectIds(Data::ArrayListInt64 *outArr, NameArray
 	}
 }
 
-UOSInt Map::OruxDBLayer::GetObjectIds(Data::ArrayListInt64 *outArr, NameArray **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
+UOSInt Map::OruxDBLayer::GetObjectIds(NotNullPtr<Data::ArrayListInt64> outArr, NameArray **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
 {
 	return GetObjectIdsMapXY(outArr, nameArr, rect.ToDouble() / mapRate, keepEmpty);
 }
 
-UOSInt Map::OruxDBLayer::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, NameArray **nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
+UOSInt Map::OruxDBLayer::GetObjectIdsMapXY(NotNullPtr<Data::ArrayListInt64> outArr, NameArray **nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
 {
 	Int32 minX;
 	Int32 minY;
@@ -205,7 +205,7 @@ UOSInt Map::OruxDBLayer::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, NameArr
 	}
 }
 
-Int64 Map::OruxDBLayer::GetObjectIdMax()
+Int64 Map::OruxDBLayer::GetObjectIdMax() const
 {
 	Map::OruxDBLayer::LayerInfo *lyr = this->layerMap.Get(this->currLayer);
 	if (lyr)
@@ -227,7 +227,7 @@ UTF8Char *Map::OruxDBLayer::GetString(UTF8Char *buff, UOSInt buffSize, NameArray
 	return 0;
 }
 
-UOSInt Map::OruxDBLayer::GetColumnCnt()
+UOSInt Map::OruxDBLayer::GetColumnCnt() const
 {
 	return 0;
 }
@@ -247,7 +247,7 @@ Bool Map::OruxDBLayer::GetColumnDef(UOSInt colIndex, NotNullPtr<DB::ColDef> colD
 	return false;
 }
 
-UInt32 Map::OruxDBLayer::GetCodePage()
+UInt32 Map::OruxDBLayer::GetCodePage() const
 {
 	return 0;
 }
@@ -366,7 +366,7 @@ void Map::OruxDBLayer::Reconnect()
 	this->db->Reconnect();
 }
 
-Map::MapDrawLayer::ObjectClass Map::OruxDBLayer::GetObjectClass()
+Map::MapDrawLayer::ObjectClass Map::OruxDBLayer::GetObjectClass() const
 {
 	return Map::MapDrawLayer::OC_ORUX_DB_LAYER;
 }

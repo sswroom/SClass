@@ -914,7 +914,7 @@ Bool Map::HKTrafficLayer::AddRoadLayer(Map::MapDrawLayer *roadLayer)
 		isFirst = true;
 	}
 	Map::GetObjectSess *sess = roadLayer->BeginGetObject();
-	roadLayer->GetAllObjectIds(&idArr, &nameArr);
+	roadLayer->GetAllObjectIds(idArr, &nameArr);
 	colCnt = roadLayer->GetColumnCnt();
 	i = 0;
 	while (i < colCnt)
@@ -1119,12 +1119,12 @@ void Map::HKTrafficLayer::ReloadData()
 	}
 }
 
-Map::DrawLayerType Map::HKTrafficLayer::GetLayerType()
+Map::DrawLayerType Map::HKTrafficLayer::GetLayerType() const
 {
 	return Map::DRAW_LAYER_POLYLINE;
 }
 
-UOSInt Map::HKTrafficLayer::GetAllObjectIds(Data::ArrayListInt64 *outArr, NameArray **nameArr)
+UOSInt Map::HKTrafficLayer::GetAllObjectIds(NotNullPtr<Data::ArrayListInt64> outArr, NameArray **nameArr)
 {
 	UOSInt ret = 0;
 	UOSInt i;
@@ -1146,12 +1146,12 @@ UOSInt Map::HKTrafficLayer::GetAllObjectIds(Data::ArrayListInt64 *outArr, NameAr
 	return ret;
 }
 
-UOSInt Map::HKTrafficLayer::GetObjectIds(Data::ArrayListInt64 *outArr, NameArray **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
+UOSInt Map::HKTrafficLayer::GetObjectIds(NotNullPtr<Data::ArrayListInt64> outArr, NameArray **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
 {
 	return GetObjectIdsMapXY(outArr, nameArr, rect.ToDouble() / mapRate, keepEmpty);
 }
 
-UOSInt Map::HKTrafficLayer::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, NameArray **nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
+UOSInt Map::HKTrafficLayer::GetObjectIdsMapXY(NotNullPtr<Data::ArrayListInt64> outArr, NameArray **nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
 {
 	UOSInt retCnt = 0;
 	RoadInfo *road;
@@ -1174,7 +1174,7 @@ UOSInt Map::HKTrafficLayer::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, Name
 	return retCnt;
 }
 
-Int64 Map::HKTrafficLayer::GetObjectIdMax()
+Int64 Map::HKTrafficLayer::GetObjectIdMax() const
 {
 	Sync::MutexUsage mutUsage(this->roadMut);
 	return this->roadMap.GetKey(this->roadMap.GetCount() - 1);
@@ -1190,7 +1190,7 @@ UTF8Char *Map::HKTrafficLayer::GetString(UTF8Char *buff, UOSInt buffSize, NameAr
 	return 0;
 }
 
-UOSInt Map::HKTrafficLayer::GetColumnCnt()
+UOSInt Map::HKTrafficLayer::GetColumnCnt() const
 {
 	////////////////////////////
 	return 0;
@@ -1214,7 +1214,7 @@ Bool Map::HKTrafficLayer::GetColumnDef(UOSInt colIndex, NotNullPtr<DB::ColDef> c
 	return false;
 }
 
-UInt32 Map::HKTrafficLayer::GetCodePage()
+UInt32 Map::HKTrafficLayer::GetCodePage() const
 {
 	return 65001;
 }
@@ -1259,7 +1259,7 @@ Math::Geometry::Vector2D *Map::HKTrafficLayer::GetNewVectorById(GetObjectSess *s
 	return vec;
 }
 
-Map::MapDrawLayer::ObjectClass Map::HKTrafficLayer::GetObjectClass()
+Map::MapDrawLayer::ObjectClass Map::HKTrafficLayer::GetObjectClass() const
 {
 	return Map::MapDrawLayer::OC_HKTRAFFIC_LAYER;
 }

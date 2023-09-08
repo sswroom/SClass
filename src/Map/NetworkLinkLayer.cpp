@@ -259,7 +259,7 @@ void Map::NetworkLinkLayer::SetCurrTimeTS(Int64 timeStamp)
 	}
 }
 
-Int64 Map::NetworkLinkLayer::GetTimeStartTS()
+Int64 Map::NetworkLinkLayer::GetTimeStartTS() const
 {
 	Bool first = true;
 	Int64 timeStart = 0;
@@ -290,7 +290,7 @@ Int64 Map::NetworkLinkLayer::GetTimeStartTS()
 	return timeStart;
 }
 
-Int64 Map::NetworkLinkLayer::GetTimeEndTS()
+Int64 Map::NetworkLinkLayer::GetTimeEndTS() const
 {
 	Bool first = true;
 	Int64 timeEnd = 0;
@@ -321,14 +321,14 @@ Int64 Map::NetworkLinkLayer::GetTimeEndTS()
 	return timeEnd;
 }
 
-Map::DrawLayerType Map::NetworkLinkLayer::GetLayerType()
+Map::DrawLayerType Map::NetworkLinkLayer::GetLayerType() const
 {
 	if (this->innerLayerType == Map::DRAW_LAYER_UNKNOWN)
 		return Map::DRAW_LAYER_MIXED;
 	return this->innerLayerType;
 }
 
-UOSInt Map::NetworkLinkLayer::GetAllObjectIds(Data::ArrayListInt64 *outArr, NameArray **nameArr)
+UOSInt Map::NetworkLinkLayer::GetAllObjectIds(NotNullPtr<Data::ArrayListInt64> outArr, NameArray **nameArr)
 {
 	UOSInt i;
 	UOSInt j;
@@ -348,7 +348,7 @@ UOSInt Map::NetworkLinkLayer::GetAllObjectIds(Data::ArrayListInt64 *outArr, Name
 		{
 			maxId = link->innerLayer->GetObjectIdMax();
 			tmpArr.Clear();
-			l = link->innerLayer->GetAllObjectIds(&tmpArr, nameArr);
+			l = link->innerLayer->GetAllObjectIds(tmpArr, nameArr);
 			k = 0;
 			while (k < l)
 			{
@@ -363,7 +363,7 @@ UOSInt Map::NetworkLinkLayer::GetAllObjectIds(Data::ArrayListInt64 *outArr, Name
 	return ret;
 }
 
-UOSInt Map::NetworkLinkLayer::GetObjectIds(Data::ArrayListInt64 *outArr, NameArray **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
+UOSInt Map::NetworkLinkLayer::GetObjectIds(NotNullPtr<Data::ArrayListInt64> outArr, NameArray **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
 {
 	{
 		Sync::MutexUsage mutUsage(this->dispMut);
@@ -395,7 +395,7 @@ UOSInt Map::NetworkLinkLayer::GetObjectIds(Data::ArrayListInt64 *outArr, NameArr
 		{
 			maxId = link->innerLayer->GetObjectIdMax();
 			tmpArr.Clear();
-			l = link->innerLayer->GetObjectIds(&tmpArr, nameArr, mapRate, rect, keepEmpty);
+			l = link->innerLayer->GetObjectIds(tmpArr, nameArr, mapRate, rect, keepEmpty);
 			k = 0;
 			while (k < l)
 			{
@@ -410,7 +410,7 @@ UOSInt Map::NetworkLinkLayer::GetObjectIds(Data::ArrayListInt64 *outArr, NameArr
 	return ret;
 }
 
-UOSInt Map::NetworkLinkLayer::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, NameArray **nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
+UOSInt Map::NetworkLinkLayer::GetObjectIdsMapXY(NotNullPtr<Data::ArrayListInt64> outArr, NameArray **nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
 {
 	{
 		Sync::MutexUsage mutUsage(this->dispMut);
@@ -441,7 +441,7 @@ UOSInt Map::NetworkLinkLayer::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, Na
 		{
 			maxId = link->innerLayer->GetObjectIdMax();
 			tmpArr.Clear();
-			l = link->innerLayer->GetObjectIdsMapXY(&tmpArr, nameArr, rect, keepEmpty);
+			l = link->innerLayer->GetObjectIdsMapXY(tmpArr, nameArr, rect, keepEmpty);
 			k = 0;
 			while (k < l)
 			{
@@ -456,7 +456,7 @@ UOSInt Map::NetworkLinkLayer::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, Na
 	return ret;
 }
 
-Int64 Map::NetworkLinkLayer::GetObjectIdMax()
+Int64 Map::NetworkLinkLayer::GetObjectIdMax() const
 {
 	UOSInt i;
 	Int64 currId = 0;
@@ -507,7 +507,7 @@ UTF8Char *Map::NetworkLinkLayer::GetString(UTF8Char *buff, UOSInt buffSize, Name
 	return 0;
 }
 
-UOSInt Map::NetworkLinkLayer::GetColumnCnt()
+UOSInt Map::NetworkLinkLayer::GetColumnCnt() const
 {
 	return 0;
 }
@@ -527,7 +527,7 @@ Bool Map::NetworkLinkLayer::GetColumnDef(UOSInt colIndex, NotNullPtr<DB::ColDef>
 	return false;
 }
 
-UInt32 Map::NetworkLinkLayer::GetCodePage()
+UInt32 Map::NetworkLinkLayer::GetCodePage() const
 {
 	return 0;
 }
@@ -649,7 +649,7 @@ Math::Geometry::Vector2D *Map::NetworkLinkLayer::GetNewVectorById(GetObjectSess 
 	return vec;
 }
 
-UOSInt Map::NetworkLinkLayer::GetNameCol()
+UOSInt Map::NetworkLinkLayer::GetNameCol() const
 {
 	return 0;
 }
@@ -657,7 +657,7 @@ void Map::NetworkLinkLayer::SetNameCol(UOSInt nameCol)
 {
 }
 
-Map::MapDrawLayer::ObjectClass Map::NetworkLinkLayer::GetObjectClass()
+Map::MapDrawLayer::ObjectClass Map::NetworkLinkLayer::GetObjectClass() const
 {
 	return Map::MapDrawLayer::OC_NETWORKLINK_LAYER;
 }

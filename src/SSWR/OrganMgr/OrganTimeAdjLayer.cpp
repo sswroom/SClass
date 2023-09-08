@@ -15,12 +15,12 @@ SSWR::OrganMgr::OrganTimeAdjLayer::~OrganTimeAdjLayer()
 	DEL_CLASS(this->cameraMap);
 }
 
-Map::DrawLayerType SSWR::OrganMgr::OrganTimeAdjLayer::GetLayerType()
+Map::DrawLayerType SSWR::OrganMgr::OrganTimeAdjLayer::GetLayerType() const
 {
 	return Map::DRAW_LAYER_POINT;
 }
 
-UOSInt SSWR::OrganMgr::OrganTimeAdjLayer::GetAllObjectIds(Data::ArrayListInt64 *outArr, Map::NameArray **nameArr)
+UOSInt SSWR::OrganMgr::OrganTimeAdjLayer::GetAllObjectIds(NotNullPtr<Data::ArrayListInt64> outArr, Map::NameArray **nameArr)
 {
 	UOSInt i = 0;
 	UOSInt j = this->userFileList->GetCount();
@@ -32,12 +32,12 @@ UOSInt SSWR::OrganMgr::OrganTimeAdjLayer::GetAllObjectIds(Data::ArrayListInt64 *
 	return j;
 }
 
-UOSInt SSWR::OrganMgr::OrganTimeAdjLayer::GetObjectIds(Data::ArrayListInt64 *outArr, Map::NameArray **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
+UOSInt SSWR::OrganMgr::OrganTimeAdjLayer::GetObjectIds(NotNullPtr<Data::ArrayListInt64> outArr, Map::NameArray **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
 {
 	return GetObjectIdsMapXY(outArr, nameArr, rect.ToDouble() / mapRate, keepEmpty);
 }
 
-UOSInt SSWR::OrganMgr::OrganTimeAdjLayer::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, Map::NameArray **nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
+UOSInt SSWR::OrganMgr::OrganTimeAdjLayer::GetObjectIdsMapXY(NotNullPtr<Data::ArrayListInt64> outArr, Map::NameArray **nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
 {
 	UOSInt cnt = 0;
 	UOSInt i;
@@ -58,7 +58,7 @@ UOSInt SSWR::OrganMgr::OrganTimeAdjLayer::GetObjectIdsMapXY(Data::ArrayListInt64
 	return cnt;
 }
 
-Int64 SSWR::OrganMgr::OrganTimeAdjLayer::GetObjectIdMax()
+Int64 SSWR::OrganMgr::OrganTimeAdjLayer::GetObjectIdMax() const
 {
 	return (Int64)userFileList->GetCount() - 1;
 }
@@ -72,7 +72,7 @@ UTF8Char *SSWR::OrganMgr::OrganTimeAdjLayer::GetString(UTF8Char *buff, UOSInt bu
 	return 0;
 }
 
-UOSInt SSWR::OrganMgr::OrganTimeAdjLayer::GetColumnCnt()
+UOSInt SSWR::OrganMgr::OrganTimeAdjLayer::GetColumnCnt() const
 {
 	return 0;
 }
@@ -92,7 +92,7 @@ Bool SSWR::OrganMgr::OrganTimeAdjLayer::GetColumnDef(UOSInt colIndex, NotNullPtr
 	return false;
 }
 
-UInt32 SSWR::OrganMgr::OrganTimeAdjLayer::GetCodePage()
+UInt32 SSWR::OrganMgr::OrganTimeAdjLayer::GetCodePage() const
 {
 	return 0;
 }
@@ -131,7 +131,7 @@ Math::Geometry::Vector2D *SSWR::OrganMgr::OrganTimeAdjLayer::GetNewVectorById(Ma
 	return pt;
 }
 
-Map::MapDrawLayer::ObjectClass SSWR::OrganMgr::OrganTimeAdjLayer::GetObjectClass()
+Map::MapDrawLayer::ObjectClass SSWR::OrganMgr::OrganTimeAdjLayer::GetObjectClass() const
 {
 	return Map::MapDrawLayer::OC_OTHER;
 }

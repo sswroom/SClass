@@ -139,7 +139,7 @@ Bool Exporter::KMLExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text:
 	writer.WriteStrC(UTF8STRC("<Style id=\"lineLabel\"><LineStyle><gx:labelVisibility>1</gx:labelVisibility></LineStyle></Style>"));
 
 	Data::ArrayListInt64 ids;
-	layer->GetAllObjectIds(&ids, &nameArr);
+	layer->GetAllObjectIds(ids, &nameArr);
 
 	sess = layer->BeginGetObject();
 	lastId = -1;

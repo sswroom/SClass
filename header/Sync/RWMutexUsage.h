@@ -7,18 +7,18 @@ namespace Sync
 	class RWMutexUsage
 	{
 	private:
-		Sync::RWMutex *mut;
+		const Sync::RWMutex *mut;
 		Bool used;
 		Bool writing;
 	public:
 		RWMutexUsage();
-		RWMutexUsage(NotNullPtr<Sync::RWMutex> mut, Bool writing);
+		RWMutexUsage(NotNullPtr<const Sync::RWMutex> mut, Bool writing);
 		~RWMutexUsage();
 
 		void BeginUse(Bool writing);
 		void EndUse();
 
-		void ReplaceMutex(NotNullPtr<Sync::RWMutex> mut, Bool writing);
+		void ReplaceMutex(NotNullPtr<const Sync::RWMutex> mut, Bool writing);
 	};
 }
 #endif

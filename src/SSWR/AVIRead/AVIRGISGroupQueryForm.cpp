@@ -133,7 +133,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISGroupQueryForm::OnMouseUp(void *userObj, Ma
 				mapLyrPos = mapEnvPos;
 			}
 			sess = lyr->BeginGetObject();
-			lyr->GetObjectIdsMapXY(&arr, &nameArr, Math::RectAreaDbl(mapLyrPos, mapLyrPos), true);
+			lyr->GetObjectIdsMapXY(arr, &nameArr, Math::RectAreaDbl(mapLyrPos, mapLyrPos), true);
 			i = 0;
 			j = lyr->GetColumnCnt();
 			while (i < j)

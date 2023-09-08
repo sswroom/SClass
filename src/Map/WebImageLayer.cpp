@@ -360,22 +360,22 @@ void Map::WebImageLayer::SetCurrTimeTS(Int64 timeStamp)
 	}
 }
 
-Int64 Map::WebImageLayer::GetTimeStartTS()
+Int64 Map::WebImageLayer::GetTimeStartTS() const
 {
 	return this->minTime;
 }
 
-Int64 Map::WebImageLayer::GetTimeEndTS()
+Int64 Map::WebImageLayer::GetTimeEndTS() const
 {
 	return this->maxTime;
 }
 
-Map::DrawLayerType Map::WebImageLayer::GetLayerType()
+Map::DrawLayerType Map::WebImageLayer::GetLayerType() const
 {
 	return Map::DRAW_LAYER_IMAGE;
 }
 
-UOSInt Map::WebImageLayer::GetAllObjectIds(Data::ArrayListInt64 *outArr, NameArray **nameArr)
+UOSInt Map::WebImageLayer::GetAllObjectIds(NotNullPtr<Data::ArrayListInt64> outArr, NameArray **nameArr)
 {
 	UOSInt retCnt = 0;
 	UOSInt i;
@@ -399,12 +399,12 @@ UOSInt Map::WebImageLayer::GetAllObjectIds(Data::ArrayListInt64 *outArr, NameArr
 	return retCnt;
 }
 
-UOSInt Map::WebImageLayer::GetObjectIds(Data::ArrayListInt64 *outArr, NameArray **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
+UOSInt Map::WebImageLayer::GetObjectIds(NotNullPtr<Data::ArrayListInt64> outArr, NameArray **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
 {
 	return GetObjectIdsMapXY(outArr, nameArr, rect.ToDouble() / mapRate, keepEmpty);
 }
 
-UOSInt Map::WebImageLayer::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, NameArray **nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
+UOSInt Map::WebImageLayer::GetObjectIdsMapXY(NotNullPtr<Data::ArrayListInt64> outArr, NameArray **nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
 {
 	UOSInt retCnt = 0;
 	ImageStat *stat;
@@ -481,7 +481,7 @@ UOSInt Map::WebImageLayer::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, NameA
 	return retCnt;
 }
 
-Int64 Map::WebImageLayer::GetObjectIdMax()
+Int64 Map::WebImageLayer::GetObjectIdMax() const
 {
 	Int64 maxId = -1;
 	Sync::RWMutexUsage loadedMutUsage(this->loadedMut, false);
@@ -512,7 +512,7 @@ UTF8Char *Map::WebImageLayer::GetString(UTF8Char *buff, UOSInt buffSize, NameArr
 	}
 }
 
-UOSInt Map::WebImageLayer::GetColumnCnt()
+UOSInt Map::WebImageLayer::GetColumnCnt() const
 {
 	return 1;
 }
@@ -551,7 +551,7 @@ Bool Map::WebImageLayer::GetColumnDef(UOSInt colIndex, NotNullPtr<DB::ColDef> co
 	return false;
 }
 
-UInt32 Map::WebImageLayer::GetCodePage()
+UInt32 Map::WebImageLayer::GetCodePage() const
 {
 	return 0;
 }
@@ -595,7 +595,7 @@ Math::Geometry::Vector2D *Map::WebImageLayer::GetNewVectorById(GetObjectSess *se
 	}
 }
 
-Map::MapDrawLayer::ObjectClass Map::WebImageLayer::GetObjectClass()
+Map::MapDrawLayer::ObjectClass Map::WebImageLayer::GetObjectClass() const
 {
 	return Map::MapDrawLayer::OC_WEB_IMAGE_LAYER;
 }

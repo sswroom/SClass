@@ -149,7 +149,7 @@ Map::SPDLayer::~SPDLayer()
 	}
 }
 
-Bool Map::SPDLayer::IsError()
+Bool Map::SPDLayer::IsError() const
 {
 	if (ofsts == 0)
 		return true;
@@ -160,12 +160,12 @@ Bool Map::SPDLayer::IsError()
 	return false;
 }
 
-Map::DrawLayerType Map::SPDLayer::GetLayerType()
+Map::DrawLayerType Map::SPDLayer::GetLayerType() const
 {
 	return lyrType;
 }
 
-UOSInt Map::SPDLayer::GetAllObjectIds(Data::ArrayListInt64 *outArr, NameArray **nameArr)
+UOSInt Map::SPDLayer::GetAllObjectIds(NotNullPtr<Data::ArrayListInt64> outArr, NameArray **nameArr)
 {
 	UOSInt textSize;
 	UOSInt i;
@@ -232,7 +232,7 @@ UOSInt Map::SPDLayer::GetAllObjectIds(Data::ArrayListInt64 *outArr, NameArray **
 	return l;
 }
 
-UOSInt Map::SPDLayer::GetObjectIds(Data::ArrayListInt64 *outArr, NameArray **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
+UOSInt Map::SPDLayer::GetObjectIds(NotNullPtr<Data::ArrayListInt64> outArr, NameArray **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
 {
 	rect.tl.x = Double2Int32(rect.tl.x * 200000.0 / mapRate);
 	rect.tl.y = Double2Int32(rect.tl.y * 200000.0 / mapRate);
@@ -368,14 +368,14 @@ UOSInt Map::SPDLayer::GetObjectIds(Data::ArrayListInt64 *outArr, NameArray **nam
 	return l;
 }
 
-UOSInt Map::SPDLayer::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, NameArray **nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
+UOSInt Map::SPDLayer::GetObjectIdsMapXY(NotNullPtr<Data::ArrayListInt64> outArr, NameArray **nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
 {
 	rect = rect * 200000;
 	return GetObjectIds(outArr, nameArr, 200000.0, Math::RectArea<Int32>(Math::Coord2D<Int32>(Double2Int32(rect.tl.x), Double2Int32(rect.tl.y)),
 		 Math::Coord2D<Int32>(Double2Int32(rect.br.x), Double2Int32(rect.br.y))), keepEmpty);
 }
 
-Int64 Map::SPDLayer::GetObjectIdMax()
+Int64 Map::SPDLayer::GetObjectIdMax() const
 {
 	return this->maxId;
 }
@@ -411,7 +411,7 @@ UTF8Char *Map::SPDLayer::GetString(UTF8Char *buff, UOSInt buffSize, NameArray *n
 	}
 }
 
-UOSInt Map::SPDLayer::GetColumnCnt()
+UOSInt Map::SPDLayer::GetColumnCnt() const
 {
 	return 1;
 }
@@ -464,12 +464,12 @@ Bool Map::SPDLayer::GetColumnDef(UOSInt colIndex, NotNullPtr<DB::ColDef> colDef)
 	return true;
 }
 
-Int32 Map::SPDLayer::GetBlockSize()
+Int32 Map::SPDLayer::GetBlockSize() const
 {
 	return this->blkScale;
 }
 
-UInt32 Map::SPDLayer::GetCodePage()
+UInt32 Map::SPDLayer::GetCodePage() const
 {
 	return 0;
 }
@@ -608,7 +608,7 @@ Math::Geometry::Vector2D *Map::SPDLayer::GetNewVectorById(Map::GetObjectSess *se
 	return ptColl;
 }
 
-Map::MapDrawLayer::ObjectClass Map::SPDLayer::GetObjectClass()
+Map::MapDrawLayer::ObjectClass Map::SPDLayer::GetObjectClass() const
 {
 	return Map::MapDrawLayer::OC_SPD_LAYER;
 }

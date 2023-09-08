@@ -1841,7 +1841,7 @@ Bool SSWR::OrganWeb::OrganWebEnv::SpeciesMerge(NotNullPtr<Sync::RWMutexUsage> mu
 		sql.AppendInt32(srcSpeciesId);
 		if (this->db->ExecuteNonQuery(sql.ToCString()) >= 0)
 		{
-			destSpecies->wfiles.PutAll(&srcSpecies->wfiles);
+			destSpecies->wfiles.PutAll(srcSpecies->wfiles);
 			srcSpecies->wfiles.Clear();
 			if ((newFlags & SF_HAS_MYPHOTO) == 0)
 			{

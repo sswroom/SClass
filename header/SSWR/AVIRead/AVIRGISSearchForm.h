@@ -24,8 +24,8 @@ namespace SSWR
 			IMapNavigator *navi;
 			Map::MapDrawLayer *layer;
 			Text::SearchIndexer *searching;
-			Data::ArrayListString *dispList;
-			Data::ArrayListInt64 *objIds;
+			Data::ArrayListString dispList;
+			Data::ArrayListInt64 objIds;
 			Map::NameArray *nameArr;
 			UOSInt strIndex;
 			Int32 flags;

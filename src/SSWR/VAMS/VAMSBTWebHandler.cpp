@@ -92,7 +92,7 @@ Bool __stdcall SSWR::VAMS::VAMSBTWebHandler::ListData(NotNullPtr<Net::WebServer:
 {
 	SSWR::VAMS::VAMSBTWebHandler *me = (SSWR::VAMS::VAMSBTWebHandler*)hdlr;
 	Data::ArrayList<Int32> progList;
-	me->btList->GetProgList(&progList);
+	me->btList->GetProgList(progList);
 	Text::StringBuilderUTF8 sb;
 	Data::DateTime dt;
 	UTF8Char sbuff[64];

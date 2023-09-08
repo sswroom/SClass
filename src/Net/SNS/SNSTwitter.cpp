@@ -113,7 +113,7 @@ Bool Net::SNS::SNSTwitter::Reload()
 	Data::ArrayList<Net::WebSite::WebSiteTwitterControl::ItemData*> itemList;
 	Data::ArrayListInt64 idList;
 	Bool changed = false;
-	this->itemMap.AddKeysTo(&idList);
+	this->itemMap.AddKeysTo(idList);
 
 	this->ctrl->GetChannelItems(this->channelId, 0, &itemList, 0);
 	UOSInt i = itemList.GetCount();

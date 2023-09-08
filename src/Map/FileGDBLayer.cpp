@@ -182,12 +182,12 @@ Map::FileGDBLayer::~FileGDBLayer()
 	this->tableName->Release();
 }
 
-Map::DrawLayerType Map::FileGDBLayer::GetLayerType()
+Map::DrawLayerType Map::FileGDBLayer::GetLayerType() const
 {
 	return this->layerType;
 }
 
-UOSInt Map::FileGDBLayer::GetAllObjectIds(Data::ArrayListInt64 *outArr, NameArray **nameArr)
+UOSInt Map::FileGDBLayer::GetAllObjectIds(NotNullPtr<Data::ArrayListInt64> outArr, NameArray **nameArr)
 {
 	if (nameArr)
 	{
@@ -203,12 +203,12 @@ UOSInt Map::FileGDBLayer::GetAllObjectIds(Data::ArrayListInt64 *outArr, NameArra
 	return j;
 }
 
-UOSInt Map::FileGDBLayer::GetObjectIds(Data::ArrayListInt64 *outArr, NameArray **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
+UOSInt Map::FileGDBLayer::GetObjectIds(NotNullPtr<Data::ArrayListInt64> outArr, NameArray **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
 {
 	return GetObjectIdsMapXY(outArr, nameArr, rect.ToDouble() / mapRate, keepEmpty);
 }
 
-UOSInt Map::FileGDBLayer::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, NameArray **nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
+UOSInt Map::FileGDBLayer::GetObjectIdsMapXY(NotNullPtr<Data::ArrayListInt64> outArr, NameArray **nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
 {
 	if (nameArr)
 	{
@@ -233,7 +233,7 @@ UOSInt Map::FileGDBLayer::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, NameAr
 	return cnt;
 }
 
-Int64 Map::FileGDBLayer::GetObjectIdMax()
+Int64 Map::FileGDBLayer::GetObjectIdMax() const
 {
 	return this->objects.GetKey(this->objects.GetCount() - 1);
 }
@@ -272,7 +272,7 @@ UTF8Char *Map::FileGDBLayer::GetString(UTF8Char *buff, UOSInt buffSize, NameArra
 	return Text::StrConcatS(buff, nameStrs[strIndex], buffSize);
 }
 
-UOSInt Map::FileGDBLayer::GetColumnCnt()
+UOSInt Map::FileGDBLayer::GetColumnCnt() const
 {
 	return this->colNames.GetCount();
 }
@@ -297,7 +297,7 @@ Bool Map::FileGDBLayer::GetColumnDef(UOSInt colIndex, NotNullPtr<DB::ColDef> col
 	return false;
 }
 
-UInt32 Map::FileGDBLayer::GetCodePage()
+UInt32 Map::FileGDBLayer::GetCodePage() const
 {
 	return 65001;
 }
@@ -391,7 +391,7 @@ void Map::FileGDBLayer::Reconnect()
 	this->conn->Reconnect();
 }
 
-Map::MapDrawLayer::ObjectClass Map::FileGDBLayer::GetObjectClass()
+Map::MapDrawLayer::ObjectClass Map::FileGDBLayer::GetObjectClass() const
 {
 	return Map::MapDrawLayer::OC_ESRI_MDB_LAYER;
 }

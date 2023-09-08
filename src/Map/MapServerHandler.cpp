@@ -77,7 +77,7 @@ Bool __stdcall Map::MapServerHandler::GetLayerDataFunc(NotNullPtr<Net::WebServer
 			NotNullPtr<Text::String> s;
 			Map::NameArray *nameArr;
 			sb.AppendUTF8Char('[');
-			layer->GetAllObjectIds(&objIds, &nameArr);
+			layer->GetAllObjectIds(objIds, &nameArr);
 			if (objIds.GetCount() > 0)
 			{
 				Math::CoordinateSystem *csys = layer->GetCoordinateSystem();
@@ -175,7 +175,7 @@ Bool __stdcall Map::MapServerHandler::GetLayerDataFunc(NotNullPtr<Net::WebServer
 			Data::ArrayListInt64 objIds;
 			Int64 objId;
 			Map::NameArray *nameArr;
-			layer->GetAllObjectIds(&objIds, &nameArr);
+			layer->GetAllObjectIds(objIds, &nameArr);
 			if (objIds.GetCount() > 0)
 			{
 				Math::CoordinateSystem *csys = layer->GetCoordinateSystem();

@@ -33,7 +33,7 @@ namespace SSWR
 			void KARecv(Int32 progId);
 			Int64 GetLastKeepAlive(Int32 progId);
 			Bool HasProg(Int32 progId);
-			UOSInt GetProgList(Data::ArrayList<Int32> *progList);
+			UOSInt GetProgList(NotNullPtr<Data::ArrayList<Int32>> progList);
 		};
 	}
 }

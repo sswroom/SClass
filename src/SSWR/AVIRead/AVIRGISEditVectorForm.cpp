@@ -67,7 +67,7 @@ SSWR::AVIRead::AVIRGISEditVectorForm::AVIRGISEditVectorForm(UI::GUIClientControl
 	UOSInt cnt = lyr->GetColumnCnt();
 	UOSInt i;
 	UOSInt j;
-	lyr->GetAllObjectIds(&objIds, &nameArr);
+	lyr->GetAllObjectIds(objIds, &nameArr);
 	if (cnt > nameCol)
 	{
 		i = 0;

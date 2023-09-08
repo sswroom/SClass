@@ -88,12 +88,12 @@ void Map::MapDrawLayer::SetCurrTimeTS(Int64 timeStamp)
 {
 }
 
-Int64 Map::MapDrawLayer::GetTimeStartTS()
+Int64 Map::MapDrawLayer::GetTimeStartTS() const
 {
 	return 0;
 }
 
-Int64 Map::MapDrawLayer::GetTimeEndTS()
+Int64 Map::MapDrawLayer::GetTimeEndTS() const
 {
 	return 0;
 }
@@ -236,14 +236,12 @@ Int32 Map::MapDrawLayer::CalBlockSize()
 	else
 	{
 		Int32 blkSize;
-		Data::ArrayListInt64 *idList;
+		Data::ArrayListInt64 idList;
 		Math::RectAreaDbl minMax;
 		this->GetBounds(minMax);
+				this->GetAllObjectIds(idList, 0);
 		
-		NEW_CLASS(idList, Data::ArrayListInt64());
-		this->GetAllObjectIds(idList, 0);
-		
-		Double tVal = minMax.GetArea() / UOSInt2Double(idList->GetCount());
+		Double tVal = minMax.GetArea() / UOSInt2Double(idList.GetCount());
 		if (minMax.br.x > 180)
 		{
 			blkSize = Double2Int32(Math_Sqrt(tVal) * 3);
@@ -268,7 +266,6 @@ Int32 Map::MapDrawLayer::CalBlockSize()
 				blkSize = 5000000;
 			}
 		}
-		DEL_CLASS(idList);
 		return blkSize;
 	}
 }
@@ -294,17 +291,16 @@ UTF8Char *Map::MapDrawLayer::GetPGLabel(UTF8Char *buff, UOSInt buffSize, Math::C
 
 	Map::GetObjectSess *sess = BeginGetObject();
 	Map::NameArray *names;
-	Data::ArrayListInt64 *arr;
+	Data::ArrayListInt64 arr;
 	Int64 lastId;
 	UOSInt i;
 	Int64 thisId;
-	NEW_CLASS(arr, Data::ArrayListInt64());
 	GetObjectIdsMapXY(arr, &names, Math::RectAreaDbl(coord, coord), false);
 	lastId = -1;
-	i = arr->GetCount();
+	i = arr.GetCount();
 	while (i-- > 0)
 	{
-		thisId = arr->GetItem(i);
+		thisId = arr.GetItem(i);
 		if (thisId != lastId)
 		{
 			lastId = thisId;
@@ -329,8 +325,6 @@ UTF8Char *Map::MapDrawLayer::GetPGLabel(UTF8Char *buff, UOSInt buffSize, Math::C
 			}
 		}
 	}
-
-	DEL_CLASS(arr);
 	ReleaseNameArr(names);
 	EndGetObject(sess);
 	return retVal;
@@ -359,7 +353,7 @@ UTF8Char *Map::MapDrawLayer::GetPLLabel(UTF8Char *buff, UOSInt buffSize, Math::C
 
 	Int32 xBlk = Double2Int32(coord.x * 200000.0 / blkSize);
 	Int32 yBlk = Double2Int32(coord.y * 200000.0 / blkSize);
-	GetObjectIds(&arr, &names, 200000.0, Math::RectArea<Int32>((xBlk - 1) * blkSize, (yBlk - 1) * blkSize, 3 * blkSize - 1, 3 * blkSize - 1), false);
+	GetObjectIds(arr, &names, 200000.0, Math::RectArea<Int32>((xBlk - 1) * blkSize, (yBlk - 1) * blkSize, 3 * blkSize - 1, 3 * blkSize - 1), false);
 	lastId = -1;
 	i = arr.GetCount();
 	while (i-- > 0)
@@ -405,8 +399,7 @@ Bool Map::MapDrawLayer::QueryInfos(Math::Coord2DDbl coord, Data::ArrayList<Math:
 
 Int64 Map::MapDrawLayer::GetNearestObjectId(GetObjectSess *session, Math::Coord2DDbl pt, Math::Coord2DDbl *nearPt)
 {
-	Data::ArrayListInt64 *objIds;
-	NEW_CLASS(objIds, Data::ArrayListInt64());
+	Data::ArrayListInt64 objIds;
 	Int32 blkSize = this->CalBlockSize();
 	if (pt.x > 180 || pt.x < -180)
 	{
@@ -417,7 +410,7 @@ Int64 Map::MapDrawLayer::GetNearestObjectId(GetObjectSess *session, Math::Coord2
 		this->GetObjectIdsMapXY(objIds, 0, Math::RectAreaDbl(pt.x - (blkSize / 200000.0), pt.y - (blkSize / 200000.0), (blkSize / 200000.0 * 2), (blkSize / 200000.0 * 2)), true);
 	}
 
-	UOSInt i = objIds->GetCount();
+	UOSInt i = objIds.GetCount();
 	Int64 nearObjId = -1;
 	Double minDist = 0x7fffffff;
 	Double dist;
@@ -426,13 +419,13 @@ Int64 Map::MapDrawLayer::GetNearestObjectId(GetObjectSess *session, Math::Coord2
 
 	while (i-- > 0)
 	{
-		Math::Geometry::Vector2D *vec = this->GetNewVectorById(session, objIds->GetItem(i));
+		Math::Geometry::Vector2D *vec = this->GetNewVectorById(session, objIds.GetItem(i));
 		if (vec)
 		{
 			dist = vec->CalSqrDistance(pt, &currPt);
 			if (dist < minDist)
 			{
-				nearObjId = objIds->GetItem(i);
+				nearObjId = objIds.GetItem(i);
 				near = currPt;
 				minDist = dist;
 			}
@@ -440,7 +433,6 @@ Int64 Map::MapDrawLayer::GetNearestObjectId(GetObjectSess *session, Math::Coord2
 		}
 	}
 
-	DEL_CLASS(objIds);
 	if (nearPt)
 	{
 		*nearPt = near;
@@ -450,8 +442,7 @@ Int64 Map::MapDrawLayer::GetNearestObjectId(GetObjectSess *session, Math::Coord2
 
 OSInt Map::MapDrawLayer::GetNearObjects(GetObjectSess *session, NotNullPtr<Data::ArrayList<ObjectInfo*>> objList, Math::Coord2DDbl pt, Double maxDist)
 {
-	Data::ArrayListInt64 *objIds;
-	NEW_CLASS(objIds, Data::ArrayListInt64());
+	Data::ArrayListInt64 objIds;
 	Int32 blkSize = this->CalBlockSize();
 	if (pt.x > 180 || pt.x < -180)
 	{
@@ -462,7 +453,7 @@ OSInt Map::MapDrawLayer::GetNearObjects(GetObjectSess *session, NotNullPtr<Data:
 		this->GetObjectIdsMapXY(objIds, 0, Math::RectAreaDbl(pt.x - (blkSize / 200000.0), pt.y - (blkSize / 200000.0), (blkSize / 200000.0 * 2), (blkSize / 200000.0 * 2)), true);
 	}
 
-	UOSInt i = objIds->GetCount();
+	UOSInt i = objIds.GetCount();
 	Int64 nearObjId = -1;
 	Double minDist = 0x7fffffff;
 	Double dist;
@@ -474,12 +465,12 @@ OSInt Map::MapDrawLayer::GetNearObjects(GetObjectSess *session, NotNullPtr<Data:
 
 	while (i-- > 0)
 	{
-		Math::Geometry::Vector2D *vec = this->GetNewVectorById(session, objIds->GetItem(i));
+		Math::Geometry::Vector2D *vec = this->GetNewVectorById(session, objIds.GetItem(i));
 		dist = vec->CalSqrDistance(pt, &currPt);
 		if (dist <= sqrMaxDist)
 		{
 			objInfo = MemAllocA(ObjectInfo, 1);
-			objInfo->objId = objIds->GetItem(i);
+			objInfo->objId = objIds.GetItem(i);
 			objInfo->objPos = currPt;
 			objInfo->objDist = Math_Sqrt(dist);
 			objList->Add(objInfo);
@@ -487,14 +478,12 @@ OSInt Map::MapDrawLayer::GetNearObjects(GetObjectSess *session, NotNullPtr<Data:
 		}
 		if (dist < minDist)
 		{
-			nearObjId = objIds->GetItem(i);
+			nearObjId = objIds.GetItem(i);
 			nearPt = currPt;
 			minDist = dist;
 		}
 		DEL_CLASS(vec);
 	}
-
-	DEL_CLASS(objIds);
 
 	if (ret > 0)
 	{
@@ -532,7 +521,7 @@ Map::VectorLayer *Map::MapDrawLayer::CreateEditableLayer()
 	UTF8Char *sptr2;
 	const UTF8Char **sptrs;
 	Map::VectorLayer *lyr;
-	Data::ArrayListInt64 *objIds;
+	Data::ArrayListInt64 objIds;
 	Math::Geometry::Vector2D *vec;
 	NameArray *nameArr;
 	GetObjectSess *sess;
@@ -540,9 +529,6 @@ Map::VectorLayer *Map::MapDrawLayer::CreateEditableLayer()
 	UOSInt j;
 	UOSInt k;
 	UOSInt l;
-
-
-	NEW_CLASS(objIds, Data::ArrayListInt64());
 
 	k = this->GetColumnCnt();
 	i = k;
@@ -571,13 +557,13 @@ Map::VectorLayer *Map::MapDrawLayer::CreateEditableLayer()
 	sess = this->BeginGetObject();
 	this->GetAllObjectIds(objIds, &nameArr);
 	i = 0;
-	j = objIds->GetCount();
+	j = objIds.GetCount();
 	while (i < j)
 	{
-		vec = this->GetNewVectorById(sess, objIds->GetItem(i));
+		vec = this->GetNewVectorById(sess, objIds.GetItem(i));
 		if (vec == 0)
 		{
-			vec = this->GetNewVectorById(sess, objIds->GetItem(i));
+			vec = this->GetNewVectorById(sess, objIds.GetItem(i));
 		}
 		if (vec)
 		{
@@ -585,7 +571,7 @@ Map::VectorLayer *Map::MapDrawLayer::CreateEditableLayer()
 			l = k;
 			while (l-- > 0)
 			{
-				sptr2 = this->GetString(sptr, 65536, nameArr, objIds->GetItem(i), l);
+				sptr2 = this->GetString(sptr, 65536, nameArr, objIds.GetItem(i), l);
 				if (sptr2)
 				{
 					sptrs[l] = sptr;
@@ -607,8 +593,6 @@ Map::VectorLayer *Map::MapDrawLayer::CreateEditableLayer()
 
 	MemFree(sptrs);
 	MemFree(sbuff);
-	DEL_CLASS(objIds);
-	
 	return lyr;
 }
 
@@ -618,31 +602,27 @@ Text::SearchIndexer *Map::MapDrawLayer::CreateSearchIndexer(Text::TextAnalyzer *
 		return 0;
 
 	Text::SearchIndexer *searching;
-	Data::ArrayListInt64 *objIds;
+	Data::ArrayListInt64 objIds;
 	NameArray *nameArr;
 	UTF8Char sbuff[256];
 	UOSInt i;
 
 	NEW_CLASS(searching, Text::SearchIndexer(ta));
-	NEW_CLASS(objIds, Data::ArrayListInt64());
 	this->GetAllObjectIds(objIds, &nameArr);
-	i = objIds->GetCount();
+	i = objIds.GetCount();
 	while (i-- > 0)
 	{
-		if (this->GetString(sbuff, sizeof(sbuff), nameArr, objIds->GetItem(i), strIndex))
+		if (this->GetString(sbuff, sizeof(sbuff), nameArr, objIds.GetItem(i), strIndex))
 		{
-			searching->IndexString(sbuff, objIds->GetItem(i));
+			searching->IndexString(sbuff, objIds.GetItem(i));
 		}
 	}
-	DEL_CLASS(objIds);
 	this->ReleaseNameArr(nameArr);
 	return searching;
 }
 
-UOSInt Map::MapDrawLayer::SearchString(Data::ArrayListString *outArr, Text::SearchIndexer *srchInd, NameArray *nameArr, const UTF8Char *srchStr, UOSInt maxResult, UOSInt strIndex)
+UOSInt Map::MapDrawLayer::SearchString(NotNullPtr<Data::ArrayListString> outArr, Text::SearchIndexer *srchInd, NameArray *nameArr, const UTF8Char *srchStr, UOSInt maxResult, UOSInt strIndex)
 {
-	Data::ArrayListInt64 *objIds;
-	NotNullPtr<Data::ArrayListICaseString> strList;
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
 	Text::PString s;
@@ -650,26 +630,26 @@ UOSInt Map::MapDrawLayer::SearchString(Data::ArrayListString *outArr, Text::Sear
 	if (maxResult <= 0)
 		return 0;
 
-	NEW_CLASS(objIds, Data::ArrayListInt64());
-	NEW_CLASSNN(strList, Data::ArrayListICaseString());
+	Data::ArrayListInt64 objIds;
+	Data::ArrayListICaseString strList;
 	srchInd->SearchString(objIds, srchStr, maxResult * 10);
 	
 	UOSInt i = 0;
-	UOSInt j = objIds->GetCount();
+	UOSInt j = objIds.GetCount();
 	OSInt k;
 	UOSInt resCnt = 0;
 	while (i < j)
 	{
-		sptr = this->GetString(sbuff, sizeof(sbuff), nameArr, objIds->GetItem(i), strIndex);
+		sptr = this->GetString(sbuff, sizeof(sbuff), nameArr, objIds.GetItem(i), strIndex);
 		if (sptr)
 		{
 			s.v = sbuff;
 			s.leng = (UOSInt)(sptr - sbuff);
 			s.Trim();
-			k = strList->SortedIndexOfPtr(s.v, s.leng);
+			k = strList.SortedIndexOfPtr(s.v, s.leng);
 			if (k < 0)
 			{
-				strList->Insert((UOSInt)~k, Text::String::New(s.v, s.leng).Ptr());
+				strList.Insert((UOSInt)~k, Text::String::New(s.v, s.leng).Ptr());
 				if (++resCnt >= maxResult)
 					break;
 			}
@@ -679,12 +659,10 @@ UOSInt Map::MapDrawLayer::SearchString(Data::ArrayListString *outArr, Text::Sear
 	}
 
 	outArr->AddAll(strList);
-	strList.Delete();
-	DEL_CLASS(objIds);
 	return resCnt;
 }
 
-void Map::MapDrawLayer::ReleaseSearchStr(Data::ArrayListString *strArr)
+void Map::MapDrawLayer::ReleaseSearchStr(NotNullPtr<Data::ArrayListString> strArr)
 {
 	LIST_FREE_STRING(strArr);
 }
@@ -692,35 +670,32 @@ void Map::MapDrawLayer::ReleaseSearchStr(Data::ArrayListString *strArr)
 Math::Geometry::Vector2D *Map::MapDrawLayer::GetVectorByStr(Text::SearchIndexer *srchInd, Map::NameArray *nameArr, Map::GetObjectSess *session, const UTF8Char *srchStr, UOSInt strIndex)
 {
 	UTF8Char sbuff[256];
-	Data::ArrayListInt64 *objIds;
 	Math::Geometry::Vector2D *vec = 0;
 
-	NEW_CLASS(objIds, Data::ArrayListInt64());
+	Data::ArrayListInt64 objIds;
 	srchInd->SearchString(objIds, srchStr, 10000);
 
 	UOSInt i = 0;
-	UOSInt j = objIds->GetCount();
+	UOSInt j = objIds.GetCount();
 	while (i < j)
 	{
-		this->GetString(sbuff, sizeof(sbuff), nameArr, objIds->GetItem(i), strIndex);
+		this->GetString(sbuff, sizeof(sbuff), nameArr, objIds.GetItem(i), strIndex);
 		Text::StrTrim(sbuff);
 		if (Text::StrCompareICase(srchStr, sbuff) == 0)
 		{
 			if (vec == 0)
 			{
-				vec = this->GetNewVectorById(session, objIds->GetItem(i));
+				vec = this->GetNewVectorById(session, objIds.GetItem(i));
 			}
 			else
 			{
-				Math::Geometry::Vector2D *tmpVec = this->GetNewVectorById(session, objIds->GetItem(i));
+				Math::Geometry::Vector2D *tmpVec = this->GetNewVectorById(session, objIds.GetItem(i));
 				vec->JoinVector(tmpVec);
 				DEL_CLASS(tmpVec);
 			}
 		}
 		i++;
 	}
-
-	DEL_CLASS(objIds);
 	return vec;
 }
 
@@ -845,28 +820,26 @@ Map::DrawLayerType Map::MapDrawLayer::VectorType2LayerType(Math::Geometry::Vecto
 
 Int64 Map::MapLayerReader::GetCurrObjId()
 {
-	return this->objIds->GetItem((UOSInt)this->currIndex);
+	return this->objIds.GetItem((UOSInt)this->currIndex);
 }
 
 Map::MapLayerReader::MapLayerReader(NotNullPtr<Map::MapDrawLayer> layer) : DB::DBReader()
 {
 	this->layer = layer;
 
-	NEW_CLASS(this->objIds, Data::ArrayListInt64());
 	this->layer->GetAllObjectIds(this->objIds, &this->nameArr);
 	this->currIndex = -1;
 }
 
 Map::MapLayerReader::~MapLayerReader()
 {
-	DEL_CLASS(this->objIds);
 	this->layer->ReleaseNameArr(this->nameArr);
 }
 
 Bool Map::MapLayerReader::ReadNext()
 {
 	this->currIndex++;
-	if ((UOSInt)this->currIndex >= this->objIds->GetCount())
+	if ((UOSInt)this->currIndex >= this->objIds.GetCount())
 		return false;
 	else
 		return true;
@@ -1033,7 +1006,7 @@ Math::Geometry::Vector2D *Map::MapLayerReader::GetVector(UOSInt colIndex)
 {
 	if (colIndex != 0)
 		return 0;
-	if ((UOSInt)this->currIndex >= this->objIds->GetCount() || this->currIndex < 0)
+	if ((UOSInt)this->currIndex >= this->objIds.GetCount() || this->currIndex < 0)
 		return 0;
 	GetObjectSess *sess = this->layer->BeginGetObject();
 	Math::Geometry::Vector2D *vec = this->layer->GetNewVectorById(sess, this->GetCurrObjId());

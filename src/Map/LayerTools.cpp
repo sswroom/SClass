@@ -34,7 +34,6 @@ Map::VectorLayer *Map::LayerTools::CombineLayers(Data::ArrayList<Map::MapDrawLay
 			return 0;
 	}
 
-	Data::ArrayListInt64 *objIds;
 	Data::ArrayListStrUTF8 names;
 	Data::ArrayListICaseStrUTF8 nameIndex;
 	Data::ArrayList<DB::DBUtil::ColType> colTypeArr;
@@ -101,7 +100,7 @@ Map::VectorLayer *Map::LayerTools::CombineLayers(Data::ArrayList<Map::MapDrawLay
 	MemFree(colTypes);
 	MemFree(colSizes);
 
-	NEW_CLASS(objIds, Data::ArrayListInt64());
+	Data::ArrayListInt64 objIds;
 	i = 0;
 	while (i < layerCnt)
 	{
@@ -136,13 +135,13 @@ Map::VectorLayer *Map::LayerTools::CombineLayers(Data::ArrayList<Map::MapDrawLay
 		Int64 id;
 
 		sptr = sbuff;
-		objIds->Clear();
+		objIds.Clear();
 		sess = lyr->BeginGetObject();
 		lyr->GetAllObjectIds(objIds, &lyrNameArr);
 		l = nameDPs.GetCount();
 		while (l-- > 0)
 		{
-			id = objIds->GetItem(l);
+			id = objIds.GetItem(l);
 			j = 0;
 			while (j < k)
 			{
@@ -166,7 +165,6 @@ Map::VectorLayer *Map::LayerTools::CombineLayers(Data::ArrayList<Map::MapDrawLay
 	}
 	MemFree(colDPs);
 	MemFree(namesArr);
-	DEL_CLASS(objIds);
 
 	i = names.GetCount();
 	while (i-- > 0)
