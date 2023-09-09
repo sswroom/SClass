@@ -59,7 +59,7 @@ namespace UI
 
 	private:
 		void UpdateSubSurface();
-		void CalDispRect(Math::RectAreaDbl *srcRect, Math::RectArea<OSInt> *destRect);
+		void CalDispRect(NotNullPtr<Math::RectAreaDbl> srcRect, NotNullPtr<Math::RectArea<OSInt>> destRect);
 		void UpdateZoomRange();
 		void UpdateMinScale();
 		void CreateResizer();

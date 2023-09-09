@@ -271,7 +271,7 @@ void Media::VectorGraph::SetVDPI(Double dpi)
 {
 }
 
-UInt8 *Media::VectorGraph::GetImgBits(Bool *revOrder)
+UInt8 *Media::VectorGraph::GetImgBits(OutParam<Bool> revOrder)
 {
 	return 0;
 }
@@ -401,7 +401,7 @@ Bool Media::VectorGraph::DrawString(Math::Coord2DDbl tl, NotNullPtr<Text::String
 	return true;
 }
 
-Bool Media::VectorGraph::DrawString(Math::Coord2DDbl tl, Text::CString str, DrawFont *f, DrawBrush *b)
+Bool Media::VectorGraph::DrawString(Math::Coord2DDbl tl, Text::CStringNN str, DrawFont *f, DrawBrush *b)
 {
 	VectorStyles *style;
 	Math::Geometry::VectorString *vstr;
@@ -429,7 +429,7 @@ Bool Media::VectorGraph::DrawStringRot(Math::Coord2DDbl center, NotNullPtr<Text:
 	return true;
 }
 
-Bool Media::VectorGraph::DrawStringRot(Math::Coord2DDbl center, Text::CString str, DrawFont *f, DrawBrush *b, Double angleDegree)
+Bool Media::VectorGraph::DrawStringRot(Math::Coord2DDbl center, Text::CStringNN str, DrawFont *f, DrawBrush *b, Double angleDegree)
 {
 	VectorStyles *style;
 	Math::Geometry::VectorString *vstr;
@@ -457,7 +457,7 @@ Bool Media::VectorGraph::DrawStringB(Math::Coord2DDbl tl, NotNullPtr<Text::Strin
 	return true;
 }
 
-Bool Media::VectorGraph::DrawStringB(Math::Coord2DDbl tl, Text::CString str, DrawFont *f, DrawBrush *b, UOSInt buffSize)
+Bool Media::VectorGraph::DrawStringB(Math::Coord2DDbl tl, Text::CStringNN str, DrawFont *f, DrawBrush *b, UOSInt buffSize)
 {
 	VectorStyles *style;
 	Math::Geometry::VectorString *vstr;
@@ -485,7 +485,7 @@ Bool Media::VectorGraph::DrawStringRotB(Math::Coord2DDbl center, NotNullPtr<Text
 	return true;
 }
 
-Bool Media::VectorGraph::DrawStringRotB(Math::Coord2DDbl center, Text::CString str, DrawFont *f, DrawBrush *b, Double angleDegree, UOSInt buffSize)
+Bool Media::VectorGraph::DrawStringRotB(Math::Coord2DDbl center, Text::CStringNN str, DrawFont *f, DrawBrush *b, Double angleDegree, UOSInt buffSize)
 {
 	VectorStyles *style;
 	Math::Geometry::VectorString *vstr;

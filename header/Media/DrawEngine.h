@@ -90,7 +90,7 @@ namespace Media
 		virtual Double GetVDPI() const = 0;
 		virtual void SetHDPI(Double dpi) = 0;
 		virtual void SetVDPI(Double dpi) = 0;
-		virtual UInt8 *GetImgBits(Bool *revOrder) = 0;
+		virtual UInt8 *GetImgBits(OutParam<Bool> revOrder) = 0;
 		virtual void GetImgBitsEnd(Bool modified) = 0;
 		virtual UOSInt GetImgBpl() const = 0;
 		virtual Media::EXIFData *GetEXIF() const = 0;
@@ -106,13 +106,13 @@ namespace Media
 		virtual Bool DrawRect(Math::Coord2DDbl tl, Math::Size2DDbl size, DrawPen *p, DrawBrush *b) = 0;
 		virtual Bool DrawEllipse(Math::Coord2DDbl tl, Math::Size2DDbl size, DrawPen *p, DrawBrush *b) = 0;
 		virtual Bool DrawString(Math::Coord2DDbl tl, NotNullPtr<Text::String> str, DrawFont *f, DrawBrush *b) = 0;
-		virtual Bool DrawString(Math::Coord2DDbl tl, Text::CString str, DrawFont *f, DrawBrush *b) = 0;
+		virtual Bool DrawString(Math::Coord2DDbl tl, Text::CStringNN str, DrawFont *f, DrawBrush *b) = 0;
 		virtual Bool DrawStringRot(Math::Coord2DDbl center, NotNullPtr<Text::String> str, DrawFont *f, DrawBrush *b, Double angleDegreeACW) = 0;
-		virtual Bool DrawStringRot(Math::Coord2DDbl center, Text::CString str, DrawFont *f, DrawBrush *b, Double angleDegreeACW) = 0;
+		virtual Bool DrawStringRot(Math::Coord2DDbl center, Text::CStringNN str, DrawFont *f, DrawBrush *b, Double angleDegreeACW) = 0;
 		virtual Bool DrawStringB(Math::Coord2DDbl tl, NotNullPtr<Text::String> str, DrawFont *f, DrawBrush *b, UOSInt buffSize) = 0;
-		virtual Bool DrawStringB(Math::Coord2DDbl tl, Text::CString str, DrawFont *f, DrawBrush *b, UOSInt buffSize) = 0;
+		virtual Bool DrawStringB(Math::Coord2DDbl tl, Text::CStringNN str, DrawFont *f, DrawBrush *b, UOSInt buffSize) = 0;
 		virtual Bool DrawStringRotB(Math::Coord2DDbl center, NotNullPtr<Text::String> str, DrawFont *f, DrawBrush *b, Double angleDegreeACW, UOSInt buffSize) = 0;
-		virtual Bool DrawStringRotB(Math::Coord2DDbl center, Text::CString str, DrawFont *f, DrawBrush *b, Double angleDegreeACW, UOSInt buffSize) = 0;
+		virtual Bool DrawStringRotB(Math::Coord2DDbl center, Text::CStringNN str, DrawFont *f, DrawBrush *b, Double angleDegreeACW, UOSInt buffSize) = 0;
 		virtual Bool DrawImagePt(NotNullPtr<DrawImage> img, Math::Coord2DDbl tl) = 0;
 		virtual Bool DrawImagePt2(NotNullPtr<Media::StaticImage> img, Math::Coord2DDbl tl) = 0;
 		virtual Bool DrawImagePt3(NotNullPtr<DrawImage> img, Math::Coord2DDbl destTL, Math::Coord2DDbl srcTL, Math::Size2DDbl srcSize) = 0;
@@ -132,7 +132,7 @@ namespace Media
 		virtual void GetStringBoundRot(Int32 *pos, Double centX, Double centY, const UTF8Char *str, DrawFont *f, Double angleDegree, OSInt *drawX, OSInt *drawY) = 0;
 		virtual void CopyBits(OSInt x, OSInt y, void *imgPtr, UOSInt bpl, UOSInt width, UOSInt height, Bool upsideDown) const = 0;
 		
-		Bool DrawStringHAlign(Math::Coord2DDbl tl, Double brx, Text::CString str, DrawFont *f, DrawBrush *b, Text::HAlignment hAlign);
+		Bool DrawStringHAlign(Math::Coord2DDbl tl, Double brx, Text::CStringNN str, DrawFont *f, DrawBrush *b, Text::HAlignment hAlign);
 		UInt32 GetPixel32(OSInt x, OSInt y);
 		void SetImageAlpha(UInt8 alpha);
 		void MulImageAlpha(Double val);

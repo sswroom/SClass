@@ -467,25 +467,25 @@ UOSInt Map::MapEnv::GetFontStyleCount() const
 	return this->fontStyles.GetCount();
 }
 
-Bool Map::MapEnv::GetFontStyle(UOSInt index, Text::String **fontName, Double *fontSizePt, Bool *bold, UInt32 *fontColor, UOSInt *buffSize, UInt32 *buffColor) const
+Bool Map::MapEnv::GetFontStyle(UOSInt index, OutParam<Text::String*> fontName, OutParam<Double> fontSizePt, OutParam<Bool> bold, OutParam<UInt32> fontColor, OutParam<UOSInt> buffSize, OutParam<UInt32> buffColor) const
 {
 	Map::MapEnv::FontStyle *style = this->fontStyles.GetItem(index);
 	if (style == 0)
 	{
-		*fontName = 0;
-		*fontSizePt = 0;
-		*bold = false;
-		*fontColor = 0xff000000;
-		*buffSize = 0;
-		*buffColor = 0xff000000;
+		fontName.Set(0);
+		fontSizePt.Set(0);
+		bold.Set(false);
+		fontColor.Set(0xff000000);
+		buffSize.Set(0);
+		buffColor.Set(0xff000000);
 		return false;
 	}
-	*fontName = style->fontName.Ptr();
-	*fontSizePt = style->fontSizePt;
-	*bold = style->bold;
-	*fontColor = style->fontColor;
-	*buffSize = style->buffSize;
-	*buffColor = style->buffColor;
+	fontName.Set(style->fontName.Ptr());
+	fontSizePt.Set(style->fontSizePt);
+	bold.Set(style->bold);
+	fontColor.Set(style->fontColor);
+	buffSize.Set(style->buffSize);
+	buffColor.Set(style->buffColor);
 	return true;
 }
 

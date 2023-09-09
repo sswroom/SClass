@@ -13,7 +13,7 @@ Math::Geometry::VectorString::VectorString(UInt32 srid, NotNullPtr<Text::String>
 	this->align = align;
 }
 
-Math::Geometry::VectorString::VectorString(UInt32 srid, Text::CString s, Math::Coord2DDbl pos, Double angleDegree, Double buffSize, Media::DrawEngine::DrawPos align) : Vector2D(srid)
+Math::Geometry::VectorString::VectorString(UInt32 srid, Text::CStringNN s, Math::Coord2DDbl pos, Double angleDegree, Double buffSize, Media::DrawEngine::DrawPos align) : Vector2D(srid)
 {
 	this->s = Text::String::New(s);
 	this->pos = pos;

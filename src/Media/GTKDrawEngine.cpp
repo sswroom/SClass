@@ -159,7 +159,7 @@ Media::DrawImage *Media::GTKDrawEngine::CloneImage(NotNullPtr<DrawImage> img)
 		Bool upsideDown;
 		UInt8 *dptr;
 		newImg = (GTKDrawImage*)this->CreateImage32(size, atype);
-		dptr = newImg->GetImgBits(&upsideDown);
+		dptr = newImg->GetImgBits(upsideDown);
 		((Media::GTKDrawImage*)img.Ptr())->CopyBits(0, 0, dptr, newImg->GetDataBpl(), size.x, size.y, upsideDown);
 		newImg->SetHDPI(img->GetHDPI());
 		newImg->SetVDPI(img->GetVDPI());
@@ -384,10 +384,10 @@ void Media::GTKDrawImage::SetVDPI(Double dpi)
 	this->info.vdpi = dpi;
 }
 
-UInt8 *Media::GTKDrawImage::GetImgBits(Bool *revOrder)
+UInt8 *Media::GTKDrawImage::GetImgBits(OutParam<Bool> revOrder)
 {
 	cairo_surface_flush((cairo_surface_t*)this->surface);
-	if (revOrder) *revOrder = false;
+	revOrder.Set(false);
 	return cairo_image_surface_get_data((cairo_surface_t*)this->surface);
 }
 
@@ -619,7 +619,7 @@ Bool Media::GTKDrawImage::DrawString(Math::Coord2DDbl tl, NotNullPtr<Text::Strin
 	return DrawString(tl, str->ToCString(), f, b);
 }
 
-Bool Media::GTKDrawImage::DrawString(Math::Coord2DDbl tl, Text::CString str, DrawFont *f, DrawBrush *b)
+Bool Media::GTKDrawImage::DrawString(Math::Coord2DDbl tl, Text::CStringNN str, DrawFont *f, DrawBrush *b)
 {
 	GTKDrawFont *font = (GTKDrawFont*)f;
 	GTKDrawBrush *brush = (GTKDrawBrush*)b;
@@ -635,7 +635,7 @@ Bool Media::GTKDrawImage::DrawStringRot(Math::Coord2DDbl center, NotNullPtr<Text
 	return DrawStringRot(center, str->ToCString(), f, b, angleDegree);
 }
 
-Bool Media::GTKDrawImage::DrawStringRot(Math::Coord2DDbl center, Text::CString str, DrawFont *f, DrawBrush *b, Double angleDegree)
+Bool Media::GTKDrawImage::DrawStringRot(Math::Coord2DDbl center, Text::CStringNN str, DrawFont *f, DrawBrush *b, Double angleDegree)
 {
 	GTKDrawFont *font = (GTKDrawFont*)f;
 	GTKDrawBrush *brush = (GTKDrawBrush*)b;
@@ -659,7 +659,7 @@ Bool Media::GTKDrawImage::DrawStringB(Math::Coord2DDbl tl, NotNullPtr<Text::Stri
 	return DrawStringB(tl, str->ToCString(), f, b, buffSize);
 }
 
-Bool Media::GTKDrawImage::DrawStringB(Math::Coord2DDbl tl, Text::CString str, DrawFont *f, DrawBrush *b, UOSInt buffSize)
+Bool Media::GTKDrawImage::DrawStringB(Math::Coord2DDbl tl, Text::CStringNN str, DrawFont *f, DrawBrush *b, UOSInt buffSize)
 {
 	OSInt px = Double2OSInt(tl.x);
 	OSInt py = Double2OSInt(tl.y);
@@ -801,7 +801,7 @@ Bool Media::GTKDrawImage::DrawStringRotB(Math::Coord2DDbl center, NotNullPtr<Tex
 	return DrawStringRotB(center, str->ToCString(), f, b, angleDegree, buffSize);
 }
 
-Bool Media::GTKDrawImage::DrawStringRotB(Math::Coord2DDbl center, Text::CString str, DrawFont *f, DrawBrush *b, Double angleDegree, UOSInt buffSize)
+Bool Media::GTKDrawImage::DrawStringRotB(Math::Coord2DDbl center, Text::CStringNN str, DrawFont *f, DrawBrush *b, Double angleDegree, UOSInt buffSize)
 {
 	printf("GTK: Draw StringRotBUTF8 (Not support)\r\n");
 	return false;
@@ -820,7 +820,7 @@ Bool Media::GTKDrawImage::DrawImagePt(NotNullPtr<DrawImage> img, Math::Coord2DDb
 		if (gimg->info.atype == Media::AT_NO_ALPHA)
 		{
 			Bool revOrder;
-			ImageUtil_ImageFillAlpha32(gimg->GetImgBits(&revOrder), gimg->GetWidth(), gimg->GetHeight(), gimg->GetImgBpl(), 0xFF);
+			ImageUtil_ImageFillAlpha32(gimg->GetImgBits(revOrder), gimg->GetWidth(), gimg->GetHeight(), gimg->GetImgBpl(), 0xFF);
 			gimg->GetImgBitsEnd(true);
 		}
 		cairo_save((cairo_t*)this->cr);
@@ -980,7 +980,7 @@ Bool Media::GTKDrawImage::DrawImagePt3(NotNullPtr<DrawImage> img, Math::Coord2DD
 		if (gimg->info.atype == Media::AT_NO_ALPHA)
 		{
 			Bool revOrder;
-			ImageUtil_ImageFillAlpha32(gimg->GetImgBits(&revOrder), gimg->GetWidth(), gimg->GetHeight(), gimg->GetImgBpl(), 0xFF);
+			ImageUtil_ImageFillAlpha32(gimg->GetImgBits(revOrder), gimg->GetWidth(), gimg->GetHeight(), gimg->GetImgBpl(), 0xFF);
 			gimg->GetImgBitsEnd(true);
 		}
 		cairo_save((cairo_t*)this->cr);
@@ -1231,7 +1231,7 @@ UOSInt Media::GTKDrawImage::SaveJPG(NotNullPtr<IO::SeekableStream> stm)
 	if (this->GetBitCount() == 32)
 	{
 		Bool revOrder;
-		UInt8 *imgPtr = this->GetImgBits(&revOrder);
+		UInt8 *imgPtr = this->GetImgBits(revOrder);
 		ImageUtil_ImageFillAlpha32(imgPtr, this->GetWidth(), this->GetHeight(), this->GetDataBpl(), 0xff);
 		this->GetImgBitsEnd(true);
 	}

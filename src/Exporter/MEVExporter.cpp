@@ -152,7 +152,7 @@ Bool Exporter::MEVExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text:
 		UInt32 buffColor;
 
 		sptr = env->GetFontStyleName(i, sbuff);
-		env->GetFontStyle(i, &fontName, &fontSize, &bold, &fontColor, &buffSize, &buffColor);
+		env->GetFontStyle(i, fontName, fontSize, bold, fontColor, buffSize, buffColor);
 
 		*(Int32*)&buff[0] = 0;
 		if (sptr)

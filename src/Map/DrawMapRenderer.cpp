@@ -625,7 +625,7 @@ Bool Map::DrawMapRenderer::AddLabel(MapLabels *labels, UOSInt maxLabel, UOSInt *
 	return false;
 }
 
-void Map::DrawMapRenderer::DrawLabels(Map::DrawMapRenderer::DrawEnv *denv)
+void Map::DrawMapRenderer::DrawLabels(NotNullPtr<Map::DrawMapRenderer::DrawEnv> denv)
 {
 	UOSInt i;
 	UOSInt j;
@@ -1304,7 +1304,7 @@ OSInt Map::DrawMapRenderer::VImgCompare(Math::Geometry::VectorImage *obj1, Math:
 	}
 }
 
-void Map::DrawMapRenderer::DrawLayers(Map::DrawMapRenderer::DrawEnv *denv, Map::MapEnv::GroupItem *group)
+void Map::DrawMapRenderer::DrawLayers(NotNullPtr<Map::DrawMapRenderer::DrawEnv> denv, Map::MapEnv::GroupItem *group)
 {
 	Map::MapEnv::LayerItem layer;
 	Map::MapEnv::MapItem *item;
@@ -1523,7 +1523,7 @@ void Map::DrawMapRenderer::DrawLayers(Map::DrawMapRenderer::DrawEnv *denv, Map::
 	mutUsage.EndUse();
 }
 
-void Map::DrawMapRenderer::DrawShapes(Map::DrawMapRenderer::DrawEnv *denv, Map::MapDrawLayer *layer, UOSInt lineStyle, UInt32 fillStyle, UOSInt lineThick, UInt32 lineColor)
+void Map::DrawMapRenderer::DrawShapes(NotNullPtr<Map::DrawMapRenderer::DrawEnv> denv, Map::MapDrawLayer *layer, UOSInt lineStyle, UInt32 fillStyle, UOSInt lineThick, UInt32 lineColor)
 {
 	UOSInt i;
 	Map::GetObjectSess *session;
@@ -1649,7 +1649,7 @@ void Map::DrawMapRenderer::DrawShapes(Map::DrawMapRenderer::DrawEnv *denv, Map::
 	}
 }
 
-void Map::DrawMapRenderer::DrawShapesPoint(Map::DrawMapRenderer::DrawEnv *denv, Map::MapDrawLayer *layer, UOSInt imgIndex)
+void Map::DrawMapRenderer::DrawShapesPoint(NotNullPtr<Map::DrawMapRenderer::DrawEnv> denv, Map::MapDrawLayer *layer, UOSInt imgIndex)
 {
 	Data::ArrayListInt64 arri;
 	Math::Geometry::Vector2D *vec;
@@ -1824,7 +1824,7 @@ void Map::DrawMapRenderer::DrawShapesPoint(Map::DrawMapRenderer::DrawEnv *denv, 
 	}
 }
 
-void Map::DrawMapRenderer::DrawLabel(DrawEnv *denv, Map::MapDrawLayer *layer, UOSInt fontStyle, UOSInt labelCol, Int32 priority, Int32 flags, UOSInt imgWidth, UOSInt imgHeight, Map::MapEnv::FontType fontType)
+void Map::DrawMapRenderer::DrawLabel(NotNullPtr<DrawEnv> denv, Map::MapDrawLayer *layer, UOSInt fontStyle, UOSInt labelCol, Int32 priority, Int32 flags, UOSInt imgWidth, UOSInt imgHeight, Map::MapEnv::FontType fontType)
 {
 	Map::NameArray *arr;
 	Data::ArrayListInt64 arri;
@@ -2037,7 +2037,7 @@ void Map::DrawMapRenderer::DrawLabel(DrawEnv *denv, Map::MapDrawLayer *layer, UO
 	layer->ReleaseNameArr(arr);
 }
 
-void Map::DrawMapRenderer::DrawImageLayer(DrawEnv *denv, Map::MapDrawLayer *layer)
+void Map::DrawMapRenderer::DrawImageLayer(NotNullPtr<DrawEnv> denv, Map::MapDrawLayer *layer)
 {
 	Math::Geometry::Vector2D *vec;
 	Math::Geometry::VectorImage *vimg;
@@ -2138,7 +2138,7 @@ void Map::DrawMapRenderer::DrawImageLayer(DrawEnv *denv, Map::MapDrawLayer *laye
 	}
 }
 
-void Map::DrawMapRenderer::DrawImageObject(DrawEnv *denv, NotNullPtr<Media::StaticImage> img, Math::Coord2DDbl scnTL, Math::Coord2DDbl scnBR, Double srcAlpha)
+void Map::DrawMapRenderer::DrawImageObject(NotNullPtr<DrawEnv> denv, NotNullPtr<Media::StaticImage> img, Math::Coord2DDbl scnTL, Math::Coord2DDbl scnBR, Double srcAlpha)
 {
 	UOSInt imgW;
 	UOSInt imgH;
@@ -2257,7 +2257,7 @@ void Map::DrawMapRenderer::DrawImageObject(DrawEnv *denv, NotNullPtr<Media::Stat
 	}
 }
 
-void Map::DrawMapRenderer::GetCharsSize(DrawEnv *denv, Math::Coord2DDbl *size, Text::CString label, Map::MapEnv::FontType fontType, UOSInt fontStyle, Double scaleW, Double scaleH)
+void Map::DrawMapRenderer::GetCharsSize(NotNullPtr<DrawEnv> denv, Math::Coord2DDbl *size, Text::CString label, Map::MapEnv::FontType fontType, UOSInt fontStyle, Double scaleW, Double scaleH)
 {
 	Math::Size2DDbl szTmp;
 	UOSInt buffSize;
@@ -2331,7 +2331,7 @@ void Map::DrawMapRenderer::GetCharsSize(DrawEnv *denv, Math::Coord2DDbl *size, T
 	size->y = maxY - minY;
 }
 
-void Map::DrawMapRenderer::DrawChars(DrawEnv *denv, Text::CString str1, Math::Coord2DDbl scnPos, Double scaleW, Double scaleH, Map::MapEnv::FontType fontType, UOSInt fontStyle, Bool isAlign)
+void Map::DrawMapRenderer::DrawChars(NotNullPtr<DrawEnv> denv, Text::CStringNN str1, Math::Coord2DDbl scnPos, Double scaleW, Double scaleH, Map::MapEnv::FontType fontType, UOSInt fontStyle, Bool isAlign)
 {
 	Math::Size2DDbl size;
 	UInt16 absH;
@@ -2534,7 +2534,7 @@ void Map::DrawMapRenderer::DrawChars(DrawEnv *denv, Text::CString str1, Math::Co
 	}
 }
 
-void Map::DrawMapRenderer::DrawCharsL(Map::DrawMapRenderer::DrawEnv *denv, Text::CString str1, Math::Coord2DDbl *mapPts, Math::Coord2D<Int32> *scnPts, UOSInt nPoints, UOSInt thisPt, Double scaleN, Double scaleD, Map::MapEnv::FontType fontType, UOSInt fontStyle, Math::RectAreaDbl *realBounds)
+void Map::DrawMapRenderer::DrawCharsL(NotNullPtr<Map::DrawMapRenderer::DrawEnv> denv, Text::CStringNN str1, Math::Coord2DDbl *mapPts, Math::Coord2D<Int32> *scnPts, UOSInt nPoints, UOSInt thisPt, Double scaleN, Double scaleD, Map::MapEnv::FontType fontType, UOSInt fontStyle, Math::RectAreaDbl *realBounds)
 {
 	UTF8Char sbuff[256];
 	str1.ConcatTo(sbuff);
@@ -3065,7 +3065,7 @@ void Map::DrawMapRenderer::DrawCharsL(Map::DrawMapRenderer::DrawEnv *denv, Text:
 	realBounds->br = max;
 }
 
-void Map::DrawMapRenderer::DrawCharsLA(DrawEnv *denv, Text::CString str1, Math::Coord2DDbl *mapPts, Math::Coord2D<Int32> *scnPts, UOSInt nPoints, UOSInt thisPt, Double scaleN, Double scaleD, Map::MapEnv::FontType fontType, UOSInt fontStyle, Math::RectAreaDbl *realBounds)
+void Map::DrawMapRenderer::DrawCharsLA(NotNullPtr<DrawEnv> denv, Text::CStringNN str1, Math::Coord2DDbl *mapPts, Math::Coord2D<Int32> *scnPts, UOSInt nPoints, UOSInt thisPt, Double scaleN, Double scaleD, Map::MapEnv::FontType fontType, UOSInt fontStyle, Math::RectAreaDbl *realBounds)
 {
 	UTF8Char sbuff[256];
 	UOSInt lblSize = str1.leng;
@@ -3686,7 +3686,7 @@ void Map::DrawMapRenderer::DrawMap(NotNullPtr<Media::DrawImage> img, Map::MapVie
 		UInt32 buffColor;
 
 		font = &denv.fontStyles[i];
-		env->GetFontStyle(i, &fontName, &fontSizePt, &bold, &fontColor, &buffSize, &buffColor);
+		env->GetFontStyle(i, fontName, fontSizePt, bold, fontColor, buffSize, buffColor);
 		font->font = img->NewFontPt(fontName->ToCString(), fontSizePt, bold?Media::DrawEngine::DFS_BOLD:Media::DrawEngine::DFS_NORMAL, 0);
 		font->fontBrush = img->NewBrushARGB(this->colorConv->ConvRGB8(fontColor));
 		font->buffSize = buffSize;
@@ -3700,8 +3700,8 @@ void Map::DrawMapRenderer::DrawMap(NotNullPtr<Media::DrawImage> img, Map::MapVie
 		}
 	}
 
-	this->DrawLayers(&denv, 0);
-	DrawLabels(&denv);
+	this->DrawLayers(denv, 0);
+	DrawLabels(denv);
 
 	i = denv.fontStyleCnt;
 	while (i-- > 0)

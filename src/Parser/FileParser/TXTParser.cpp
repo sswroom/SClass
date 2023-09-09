@@ -176,7 +176,7 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFileHdr(NotNullPtr<IO::Str
 					return 0;
 				}
 				i = Text::StrToUInt32(sarr[1].v);
-				if (env->GetFontStyle(i, &fontName, &fontSize, &bold, &fontColor, &buffSize, &buffColor))
+				if (env->GetFontStyle(i, fontName, fontSize, bold, fontColor, buffSize, buffColor))
 				{
 					addFont = 1;
 				}

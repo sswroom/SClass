@@ -59,7 +59,7 @@ void UI::DObj::VideoDObjHandler::DrawFromSurface(Media::MonitorSurface *surface,
 	{
 		Sync::MutexUsage mutUsage(this->frameMut);
 		Bool revOrder;
-		UInt8 *bits = this->frameImg->GetImgBits(&revOrder);
+		UInt8 *bits = this->frameImg->GetImgBits(revOrder);
 		if (bits)
 		{
 			surface->GetImageData(bits, 0, 0, buffSize.x, buffSize.y, this->frameImg->GetImgBpl(), revOrder, Media::RotateType::None);

@@ -796,9 +796,9 @@ void Media::GDIImage::SetVDPI(Double dpi)
 	}
 }
 
-UInt8 *Media::GDIImage::GetImgBits(Bool *revOrder)
+UInt8 *Media::GDIImage::GetImgBits(OutParam<Bool> revOrder)
 {
-	*revOrder = true;
+	revOrder.Set(true);
 	return (UInt8*)this->bmpBits;
 }
 
@@ -1331,7 +1331,7 @@ Bool Media::GDIImage::DrawString(Math::Coord2DDbl tl, NotNullPtr<Text::String> s
 	return ret;
 }
 
-Bool Media::GDIImage::DrawString(Math::Coord2DDbl tl, Text::CString str, DrawFont *f, DrawBrush *b)
+Bool Media::GDIImage::DrawString(Math::Coord2DDbl tl, Text::CStringNN str, DrawFont *f, DrawBrush *b)
 {
 	const WChar *wptr = Text::StrToWCharNew(str.v);
 	Bool ret = this->DrawStringW(tl, wptr, f, b);
@@ -1419,7 +1419,7 @@ Bool Media::GDIImage::DrawStringRot(Math::Coord2DDbl center, NotNullPtr<Text::St
 	return ret;
 }
 
-Bool Media::GDIImage::DrawStringRot(Math::Coord2DDbl center, Text::CString str, DrawFont *f, DrawBrush *b, Double angleDegree)
+Bool Media::GDIImage::DrawStringRot(Math::Coord2DDbl center, Text::CStringNN str, DrawFont *f, DrawBrush *b, Double angleDegree)
 {
 	const WChar *wptr = Text::StrToWCharNew(str.v);
 	Bool ret = this->DrawStringRotW(center, wptr, f, b, angleDegree);
@@ -1480,7 +1480,7 @@ Bool Media::GDIImage::DrawStringB(Math::Coord2DDbl tl, NotNullPtr<Text::String> 
 	return ret;
 }
 
-Bool Media::GDIImage::DrawStringB(Math::Coord2DDbl tl, Text::CString str1, DrawFont *f, DrawBrush *b, UOSInt buffSize)
+Bool Media::GDIImage::DrawStringB(Math::Coord2DDbl tl, Text::CStringNN str1, DrawFont *f, DrawBrush *b, UOSInt buffSize)
 {
 	const WChar *wptr = Text::StrToWCharNew(str1.v);
 	Bool ret = DrawStringBW(tl, wptr, f, b, buffSize);
@@ -1672,7 +1672,7 @@ Bool Media::GDIImage::DrawStringRotB(Math::Coord2DDbl center, NotNullPtr<Text::S
 	return ret;
 }
 
-Bool Media::GDIImage::DrawStringRotB(Math::Coord2DDbl center, Text::CString str1, DrawFont *f, DrawBrush *b, Double angleDegree, UOSInt buffSize)
+Bool Media::GDIImage::DrawStringRotB(Math::Coord2DDbl center, Text::CStringNN str1, DrawFont *f, DrawBrush *b, Double angleDegree, UOSInt buffSize)
 {
 	const WChar *wptr = Text::StrToWCharNew(str1.v);
 	Bool ret = this->DrawStringRotBW(center, wptr, f, b, angleDegree, buffSize);

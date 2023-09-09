@@ -276,7 +276,7 @@ void SSWR::AVIRead::AVIRImageControl::ExportQueued()
 	*sptr++ = IO::Path::PATH_SEPERATOR;
 
 	ImageStatus *status;
-	Media::StaticImage *img;
+	NotNullPtr<Media::StaticImage> img;
 	Exporter::TIFFExporter tifExporter;
 	Exporter::GUIJPGExporter jpgExporter;
 	while (this->threadCtrlCode != 2 && this->threadCtrlCode != 3)
@@ -287,10 +287,9 @@ void SSWR::AVIRead::AVIRImageControl::ExportQueued()
 		if (status == 0)
 			break;
 
-		img = this->LoadImage(status->fileName.v);
-		if (img)
+		if (img.Set(this->LoadImage(status->fileName.v)))
 		{
-			this->ApplySetting(img, img, &status->setting);
+			this->ApplySetting(img, img, status->setting);
 			sptr2 = status->fileName.ConcatTo(sptr);
 			Media::ImageList imgList(CSTRP(sbuff, sptr2));
 			imgList.AddImage(img, 0);
@@ -408,12 +407,8 @@ void SSWR::AVIRead::AVIRImageControl::EndFolder()
 	mutUsage.EndUse();
 }
 
-Bool SSWR::AVIRead::AVIRImageControl::GetCameraName(NotNullPtr<Text::StringBuilderUTF8> sb, Media::EXIFData *exif)
+Bool SSWR::AVIRead::AVIRImageControl::GetCameraName(NotNullPtr<Text::StringBuilderUTF8> sb, NotNullPtr<Media::EXIFData> exif)
 {
-	if (exif == 0)
-	{
-		return false;
-	}
 	Text::CString make = exif->GetPhotoMake();
 	Text::CString model = exif->GetPhotoModel();
 	if (make.v && model.v)
@@ -444,7 +439,7 @@ Bool SSWR::AVIRead::AVIRImageControl::GetCameraName(NotNullPtr<Text::StringBuild
 	return true;
 }
 
-Double *SSWR::AVIRead::AVIRImageControl::GetCameraGamma(Text::CString cameraName, UInt32 *gammaCnt)
+Double *SSWR::AVIRead::AVIRImageControl::GetCameraGamma(Text::CString cameraName, OutParam<UInt32> gammaCnt)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
@@ -454,7 +449,7 @@ Double *SSWR::AVIRead::AVIRImageControl::GetCameraGamma(Text::CString cameraName
 	if (camera)
 	{
 		mutUsage.EndUse();
-		*gammaCnt = camera->gammaCnt;
+		gammaCnt.Set(camera->gammaCnt);
 		return camera->gammaParam;
 	}
 	camera = MemAlloc(SSWR::AVIRead::AVIRImageControl::CameraCorr, 1);
@@ -492,7 +487,7 @@ Double *SSWR::AVIRead::AVIRImageControl::GetCameraGamma(Text::CString cameraName
 	}
 
 	mutUsage.EndUse();
-	*gammaCnt = camera->gammaCnt;
+	gammaCnt.Set(camera->gammaCnt);
 	return camera->gammaParam;
 }
 
@@ -1010,14 +1005,15 @@ Media::StaticImage *SSWR::AVIRead::AVIRImageControl::LoadOriImage(const UTF8Char
 	return outImg;
 }
 
-void SSWR::AVIRead::AVIRImageControl::ApplySetting(Media::StaticImage *srcImg, Media::StaticImage *destImg, SSWR::AVIRead::AVIRImageControl::ImageSetting *setting)
+void SSWR::AVIRead::AVIRImageControl::ApplySetting(NotNullPtr<Media::StaticImage> srcImg, NotNullPtr<Media::StaticImage> destImg, NotNullPtr<SSWR::AVIRead::AVIRImageControl::ImageSetting> setting)
 {
 	Double *gammaParam;
 	UInt32 gammaCnt;
 	Text::StringBuilderUTF8 sb;
-	if (this->GetCameraName(sb, srcImg->exif))
+	NotNullPtr<Media::EXIFData> exif;
+	if (exif.Set(srcImg->exif) && this->GetCameraName(sb, exif))
 	{
-		gammaParam = this->GetCameraGamma(sb.ToCString(), &gammaCnt);
+		gammaParam = this->GetCameraGamma(sb.ToCString(), gammaCnt);
 	}
 	else
 	{
@@ -1029,7 +1025,6 @@ void SSWR::AVIRead::AVIRImageControl::ApplySetting(Media::StaticImage *srcImg, M
 	this->filter.SetParameter((setting->brightness - 1.0) * setting->contrast, setting->contrast, setting->gamma, srcImg->info.color, srcImg->info.storeBPP, srcImg->info.pf, (setting->flags & 240) >> 4);
 	this->filter.SetGammaCorr(gammaParam, gammaCnt);
 	this->filter.ProcessImage(srcImg->data, destImg->data, srcImg->info.dispSize.x, srcImg->info.dispSize.y, (srcImg->info.storeSize.x * (srcImg->info.storeBPP >> 3)), (destImg->info.storeSize.x * (srcImg->info.storeBPP >> 3)), false);
-	mutUsage.EndUse();
 }
 
 void SSWR::AVIRead::AVIRImageControl::UpdateImgPreview(SSWR::AVIRead::AVIRImageControl::ImageStatus *img)
@@ -1040,22 +1035,22 @@ void SSWR::AVIRead::AVIRImageControl::UpdateImgPreview(SSWR::AVIRead::AVIRImageC
 	UOSInt sHeight = srcImg->GetHeight();
 	UOSInt sbpl = srcImg->GetImgBpl();
 	Bool srev;
-	UInt8 *sptr = srcImg->GetImgBits(&srev);
+	UInt8 *sptr = srcImg->GetImgBits(srev);
 	UOSInt dWidth = destImg->GetWidth();
 	UOSInt dHeight = destImg->GetHeight();
 	UOSInt dbpl = destImg->GetImgBpl();
 	Bool drev;
-	UInt8 *dptr = destImg->GetImgBits(&drev);
+	UInt8 *dptr = destImg->GetImgBits(drev);
 
 	UInt8 *tmpBuff = MemAllocA(UInt8, sHeight * (UOSInt)sbpl);
 
 	Double *gammaParam;
 	UInt32 gammaCnt;
 	Text::StringBuilderUTF8 sb;
-	Media::EXIFData *exif = srcImg->GetEXIF();
-	if (exif && this->GetCameraName(sb, exif))
+	NotNullPtr<Media::EXIFData> exif;;
+	if (exif.Set(srcImg->GetEXIF()) && this->GetCameraName(sb, exif))
 	{
-		gammaParam = this->GetCameraGamma(sb.ToCString(), &gammaCnt);
+		gammaParam = this->GetCameraGamma(sb.ToCString(), gammaCnt);
 	}
 	else
 	{
