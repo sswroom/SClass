@@ -192,7 +192,6 @@ void SSWR::AVIRead::AVIRImageControl::InitDir()
 					imgList->ToStaticImage(0);
 					if (simg.Set((Media::StaticImage*)imgList->GetImage(0, 0)))
 					{
-						DEL_CLASS(imgList);
 						Media::StaticImage *simg2;
 						sptr2End = Text::StrConcatC(Text::StrConcatC(sptr2, sptr, (UOSInt)(sptr3 - sptr)), UTF8STRC(".png"));
 						simg->To32bpp();
@@ -207,7 +206,7 @@ void SSWR::AVIRead::AVIRImageControl::InitDir()
 							}
 							mutUsage.EndUse();
 						}
-						simg.Delete();
+						DEL_CLASS(imgList);
 
 						status = MemAlloc(SSWR::AVIRead::AVIRImageControl::ImageStatus, 1);
 						status->filePath = Text::String::NewP(sbuff, sptr3);

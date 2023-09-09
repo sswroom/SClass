@@ -46,9 +46,12 @@ namespace Net
 
 			SendLogger logger;
 			void *loggerObj;
+			IO::SMTCWriter *logWriter;
 
 			SSEDisconnectHandler sseHdlr;
 			void *sseHdlrObj;
+
+			UOSInt SendData(const UInt8 *buff, UOSInt buffSize);
 		public:
 			WebConnection(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, NotNullPtr<Net::TCPClient> cli, NotNullPtr<WebListener> svr, IWebHandler *hdlr, Bool allowProxy, KeepAlive KeepAlive);
 			virtual ~WebConnection();
@@ -86,6 +89,7 @@ namespace Net
 			virtual IO::StreamType GetStreamType() const;
 
 			void SetSendLogger(SendLogger logger, void *userObj);
+			void SetLogWriter(IO::SMTCWriter *logWriter);
 		};
 	}
 }

@@ -24,6 +24,24 @@
 #define WRITE_BUFFER_SIZE MAX_CHUNK_SIZE
 #endif
 
+UOSInt Net::WebServer::WebConnection::SendData(const UInt8 *buff, UOSInt buffSize)
+{
+	if (this->logWriter) this->logWriter->TCPSend(this->cli, buff, buffSize);
+	if (this->cstm)
+	{
+		buffSize = this->cstm->Write(buff, buffSize);
+	}
+	else
+	{
+		buffSize = this->cli->Write(buff, buffSize);
+	}
+	if (this->logger)
+	{
+		this->logger(this->loggerObj, buffSize);
+	}
+	return buffSize;
+}
+
 Net::WebServer::WebConnection::WebConnection(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, NotNullPtr<Net::TCPClient> cli, NotNullPtr<WebListener> svr, IWebHandler *hdlr, Bool allowProxy, KeepAlive keepAlive) : Net::WebServer::IWebResponse(CSTR("WebConnection"))
 {
 	this->sockf = sockf;
@@ -43,6 +61,7 @@ Net::WebServer::WebConnection::WebConnection(NotNullPtr<Net::SocketFactory> sock
 	this->proxyCli = 0;
 	this->logger = 0;
 	this->loggerObj = 0;
+	this->logWriter = 0;
 	this->sseHdlr = 0;
 	this->sseHdlrObj = 0;
 	this->protoHdlr = 0;
@@ -315,18 +334,7 @@ void Net::WebServer::WebConnection::ReceivedData(const Data::ByteArrayR &buff)
 
 void Net::WebServer::WebConnection::ProxyData(const Data::ByteArrayR &buff)
 {
-	if (this->cstm)
-	{
-		this->cstm->Write(buff.Ptr(), buff.GetSize());
-	}
-	else
-	{
-		this->cli->Write(buff.Ptr(), buff.GetSize());
-	}
-	if (this->logger)
-	{
-		this->logger(this->loggerObj, buff.GetSize());
-	}
+	this->SendData(buff.Ptr(), buff.GetSize());
 }
 
 void Net::WebServer::WebConnection::EndProxyConn()
@@ -409,19 +417,7 @@ void Net::WebServer::WebConnection::SendHeaders(Net::WebServer::IWebRequest::Req
 #if defined(VERBOSE)
 	printf("WebConn: Send headers\r\n%s", buff);
 #endif
-
-	if (this->cstm)
-	{
-		this->cstm->Write(buff, (UOSInt)(sptr - (UTF8Char*)buff));
-	}
-	else
-	{
-		this->cli->Write(buff, (UOSInt)(sptr - (UTF8Char*)buff));
-	}
-	if (this->logger)
-	{
-		this->logger(this->loggerObj, (UOSInt)(sptr - (UTF8Char*)buff));
-	}
+	this->SendData(buff, (UOSInt)(sptr - (UTF8Char*)buff));
 	MemFree(buff);
 	this->respHeaderSent = true;
 }
@@ -906,10 +902,6 @@ UOSInt Net::WebServer::WebConnection::Write(const UInt8 *buff, UOSInt size)
 	}
 	if (this->respDataEnd)
 		return 0;
-	if (this->logger)
-	{
-		this->logger(this->loggerObj, size);
-	}
 	this->svr->ExtendTimeout(cli);
 	if (this->respTranEnc == 1)
 	{
@@ -937,14 +929,7 @@ UOSInt Net::WebServer::WebConnection::Write(const UInt8 *buff, UOSInt size)
 			sptr[0] = 13;
 			sptr[1] = 10;
 			sptr += 2;
-			if (this->cstm)
-			{
-				writeSize = this->cstm->Write(sbuff, (UOSInt)(sptr - sbuff));
-			}
-			else
-			{
-				writeSize = this->cli->Write(sbuff, (UOSInt)(sptr - sbuff));
-			}
+			writeSize = this->SendData(sbuff, (UOSInt)(sptr - sbuff));
 			this->respLeng += (UOSInt)(sptr - sbuff);
 			if (writeSize == 0)
 			{
@@ -960,14 +945,7 @@ UOSInt Net::WebServer::WebConnection::Write(const UInt8 *buff, UOSInt size)
 	else
 	{
 		this->respLeng += size;
-		if (this->cstm)
-		{
-			return this->cstm->Write(buff, size);
-		}
-		else
-		{
-			return this->cli->Write(buff, size);
-		}
+		return this->SendData(buff, size);
 	}
 }
 
@@ -1010,4 +988,9 @@ void Net::WebServer::WebConnection::SetSendLogger(SendLogger logger, void *userO
 {
 	this->logger = logger;
 	this->loggerObj = userObj;
+}
+
+void Net::WebServer::WebConnection::SetLogWriter(IO::SMTCWriter *logWriter)
+{
+	this->logWriter = logWriter;
 }

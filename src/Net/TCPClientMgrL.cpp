@@ -99,7 +99,7 @@ UInt32 __stdcall Net::TCPClientMgr::ClientThread(void *o)
 					TCPClientMgr_RemoveCliStat(me->cliMap, cliStat);
 					Sync::MutexUsage readMutUsage(cliStat->readMut);
 					readMutUsage.EndUse();
-					me->LogDisconnect(cliStat->cli);
+					if (me->logWriter) me->logWriter->TCPDisconnect(cliStat->cli);
 					me->evtHdlr(cliStat->cli, me->userObj, cliStat->cliData, Net::TCPClientMgr::TCP_EVENT_DISCONNECT);
 					DEL_CLASS(cliStat);
 					i--;
@@ -190,7 +190,7 @@ UInt32 __stdcall Net::TCPClientMgr::ClientThread(void *o)
 								TCPClientMgr_RemoveCliStat(me->cliMap, cliStat);
 								mutUsage.EndUse();
 
-								me->LogDisconnect(cliStat->cli);
+								if (me->logWriter) me->logWriter->TCPDisconnect(cliStat->cli);
 								me->evtHdlr(cliStat->cli, me->userObj, cliStat->cliData, Net::TCPClientMgr::TCP_EVENT_DISCONNECT);
 								DEL_CLASS(cliStat);
 							}
@@ -205,7 +205,7 @@ UInt32 __stdcall Net::TCPClientMgr::ClientThread(void *o)
 							cliStat->reading = false;
 							cliStat->lastDataTime = Data::Timestamp::UtcNow();
 							mutUsage.EndUse();
-							me->LogDataRecv(cliStat->cli, cliStat->buff, readSize);
+							if (me->logWriter) me->logWriter->TCPRecv(cliStat->cli, cliStat->buff, readSize);
 							me->evtHdlr(cliStat->cli, me->userObj, cliStat->cliData, Net::TCPClientMgr::TCP_EVENT_HASDATA);
 							cliStat->buffSize = readSize;
 							me->ProcessClient(cliStat);
@@ -216,7 +216,7 @@ UInt32 __stdcall Net::TCPClientMgr::ClientThread(void *o)
 							TCPClientMgr_RemoveCliStat(me->cliMap, cliStat);
 							mutUsage.EndUse();
 
-							me->LogDisconnect(cliStat->cli);
+							if (me->logWriter) me->logWriter->TCPDisconnect(cliStat->cli);
 							me->evtHdlr(cliStat->cli, me->userObj, cliStat->cliData, Net::TCPClientMgr::TCP_EVENT_DISCONNECT);
 							DEL_CLASS(cliStat);
 						}
@@ -319,38 +319,6 @@ void Net::TCPClientMgr::ProcessClient(Net::TCPClientMgr::TCPClientStatus *cliSta
 	}
 }
 
-void Net::TCPClientMgr::LogDisconnect(NotNullPtr<TCPClient> cli)
-{
-	if (this->logFS)
-	{
-		Data::Timestamp ts = Data::Timestamp::UtcNow();
-		UInt8 buff[21];
-		WriteInt64(&buff[0], ts.inst.sec);
-		WriteUInt32(&buff[8], ts.inst.nanosec);
-		WriteUInt64(&buff[12], cli->GetCliId());
-		buff[20] = 1;
-		Sync::MutexUsage mutUsage(this->logMut);
-		this->logFS->Write(buff, 21);
-	}
-}
-
-void Net::TCPClientMgr::LogDataRecv(NotNullPtr<TCPClient> cli, const UInt8 *data, UOSInt size)
-{
-	if (this->logFS)
-	{
-		Data::Timestamp ts = Data::Timestamp::UtcNow();
-		UInt8 buff[23];
-		WriteInt64(&buff[0], ts.inst.sec);
-		WriteUInt32(&buff[8], ts.inst.nanosec);
-		WriteUInt64(&buff[12], cli->GetCliId());
-		buff[20] = 2;
-		WriteUInt16(&buff[21], (UInt16)size);
-		Sync::MutexUsage mutUsage(this->logMut);
-		this->logFS->Write(buff, 23);
-		this->logFS->Write(data, size);
-	}
-}
-
 Net::TCPClientMgr::TCPClientMgr(Int32 timeOutSeconds, TCPClientEvent evtHdlr, TCPClientData dataHdlr, void *userObj, UOSInt workerCnt, TCPClientTimeout toHdlr)
 {
 	this->timeout = Data::Duration(timeOutSeconds, 0);
@@ -359,7 +327,7 @@ Net::TCPClientMgr::TCPClientMgr(Int32 timeOutSeconds, TCPClientEvent evtHdlr, TC
 	this->toHdlr = toHdlr;
 	this->userObj = userObj;
 	this->toStop = false;
-	this->logFS = 0;
+	this->logWriter = 0;
 	this->clientThreadRunning = false;
 	if (workerCnt <= 0)
 		workerCnt = 1;
@@ -469,15 +437,13 @@ Net::TCPClientMgr::~TCPClientMgr()
 		close(clsData->piperdfd);
 		MemFree(clsData);
 	}
-	SDEL_CLASS(this->logFS);
+	SDEL_CLASS(this->logWriter);
 }
 
 void Net::TCPClientMgr::SetLogFile(Text::CStringNN logFile)
 {
-	Sync::MutexUsage mutUsage(this->logMut);
-	SDEL_CLASS(this->logFS);
-	NEW_CLASS(this->logFS, IO::FileStream(logFile, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-	this->logFS->Write(UTF8STRC("SmTC"));
+	SDEL_CLASS(this->logWriter);
+	NEW_CLASS(this->logWriter, IO::SMTCWriter(logFile));
 }
 
 void Net::TCPClientMgr::AddClient(NotNullPtr<TCPClient> cli, void *cliData)
@@ -486,20 +452,10 @@ void Net::TCPClientMgr::AddClient(NotNullPtr<TCPClient> cli, void *cliData)
 	cli->SetNoDelay(true);
 	cli->SetTimeout(this->timeout);
 	UInt64 cliId = cli->GetCliId();
-	if (this->logFS)
-	{
-		Data::Timestamp ts = Data::Timestamp::UtcNow();
-		UInt8 buff[21];
-		WriteInt64(&buff[0], ts.inst.sec);
-		WriteUInt32(&buff[8], ts.inst.nanosec);
-		WriteUInt64(&buff[12], cliId);
-		buff[20] = 0;
-		Sync::MutexUsage mutUsage(this->logMut);
-		this->logFS->Write(buff, 21);
-	}
+	if (this->logWriter) this->logWriter->TCPConnect(cli);
 	if (cliId == 0)
 	{
-		this->LogDisconnect(cli);
+		if (this->logWriter) this->logWriter->TCPDisconnect(cli);
 		this->evtHdlr(cli, this->userObj, cliData, Net::TCPClientMgr::TCP_EVENT_DISCONNECT);
 		return;
 	}
@@ -544,19 +500,7 @@ Bool Net::TCPClientMgr::SendClientData(UInt64 cliId, const UInt8 *data, UOSInt b
 	}
 	if (cliStat)
 	{
-		if (this->logFS)
-		{
-			Data::Timestamp ts = Data::Timestamp::UtcNow();
-			UInt8 buff[23];
-			WriteInt64(&buff[0], ts.inst.sec);
-			WriteUInt32(&buff[8], ts.inst.nanosec);
-			WriteUInt64(&buff[12], cliId);
-			buff[20] = 3;
-			WriteUInt16(&buff[21], (UInt16)buffSize);
-			Sync::MutexUsage mutUsage(this->logMut);
-			this->logFS->Write(buff, 23);
-			this->logFS->Write(data, buffSize);
-		}
+		if (this->logWriter) this->logWriter->TCPSend(cliStat->cli, data, buffSize);
 		return cliStat->cli->Write(data, buffSize) == buffSize;
 	}
 	else
@@ -615,4 +559,10 @@ Net::TCPClient *Net::TCPClientMgr::GetClient(UOSInt index, void **cliData)
 		return cliStat->cli.Ptr();
 	}
 	return 0;
+}
+
+
+IO::SMTCWriter *Net::TCPClientMgr::GetLogWriter() const
+{
+	return this->logWriter;
 }

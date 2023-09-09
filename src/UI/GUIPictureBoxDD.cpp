@@ -373,6 +373,7 @@ UI::GUIPictureBoxDD::GUIPictureBoxDD(NotNullPtr<UI::GUICore> ui, UI::GUIClientCo
 	this->zoomScale = 1.0;
 	this->zoomMinScale = 1.0;
 	this->mouseDowned = false;
+	this->mouseDownPos = Math::Coord2D<OSInt>(0, 0);
 	this->curr10Bit = false;
 	this->resizer = 0;
 	this->zoomCenter = Math::Coord2DDbl(0, 0);
