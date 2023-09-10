@@ -46,6 +46,8 @@ IO/SDCardMgr.h: ../../src/IO/SDCardMgrL.cpp
 @SDCardMgr.o
 IO/SensorManager.h: ../../src/IO/SensorManagerNull.cpp
 @SensorManager.o
+IO/ServiceManager.h: ../../src/IO/ServiceManagerNull.cpp
+@ServiceManager.o
 IO/USBInfo.h: ../../src/IO/USBInfoL.cpp
 @USBInfo.o
 IO/Watchdog.h: ../../src/IO/WatchdogL.cpp
@@ -141,6 +143,7 @@ PCIInfo.o: ../../src/IO/PCIInfoL.cpp
 PowerInfo.o: ../../src/IO/PowerInfoL.cpp
 SDCardMgr.o: ../../src/IO/SDCardMgrL.cpp
 SensorManager.o: ../../src/IO/SensorManagerNull.cpp
+ServiceManager.o: ../../src/IO/ServiceManagerNull.cpp
 USBInfo.o: ../../src/IO/USBInfoL.cpp
 Watchdog.o: ../../src/IO/WatchdogL.cpp
 Computer.o: ../../src/Manage/ComputerL.cpp

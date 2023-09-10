@@ -84,9 +84,9 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 			{
 				s->ToInt32(unorganizedGroupId);
 			}
-			if (cfg->GetValue(CSTR("MDBFile")))
+			if (nns.Set(cfg->GetValue(CSTR("MDBFile"))))
 			{
-				db = DB::MDBFileConn::CreateDBTool(cfg->GetValue(CSTR("MDBFile")), &log, CSTR("DB: "));
+				db = DB::MDBFileConn::CreateDBTool(nns, &log, CSTR("DB: "));
 			}
 			else if (nns.Set(cfg->GetValue(CSTR("MySQLServer"))))
 			{

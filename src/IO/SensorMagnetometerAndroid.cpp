@@ -13,14 +13,12 @@ IO::SensorMagnetometerAndroid::~SensorMagnetometerAndroid()
 
 }
 
-Bool IO::SensorMagnetometerAndroid::ReadMagneticField(Double *x, Double *y, Double *z)
+Bool IO::SensorMagnetometerAndroid::ReadMagneticField(OutParam<Math::Vector3> mag)
 {
 	ASensorEvent sensorEvt;
 	if (!this->GetSensorEvent(&sensorEvt))
 		return false;
-	*x = sensorEvt.magnetic.x;
-	*y = sensorEvt.magnetic.y;
-	*z = sensorEvt.magnetic.z;
+	mag.Set(Math::Vector3(sensorEvt.magnetic.x, sensorEvt.magnetic.y, sensorEvt.magnetic.z));
 	return true;
 }
 
@@ -36,5 +34,5 @@ IO::SensorMagnetometer *IO::SensorMagnetometerAndroid::GetSensorMagnetometer()
 
 IO::Sensor::SensorType IO::SensorMagnetometerAndroid::GetSensorType()
 {
-	return IO::Sensor::ST_MAGNETOMETER;
+	return IO::Sensor::SensorType::Magnetometer;
 }

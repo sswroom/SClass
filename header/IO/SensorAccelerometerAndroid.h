@@ -11,7 +11,7 @@ namespace IO
 		SensorAccelerometerAndroid(void *sensor, void *sensorMgr, Int32 id);
 		virtual ~SensorAccelerometerAndroid();
 
-		virtual Bool ReadAcceleration(Double *x, Double *y, Double *z);
+		virtual Bool ReadAcceleration(OutParam<Math::Vector3> acc);
 		virtual Math::Unit::Acceleration::AccelerationUnit GetAccelerationUnit();
 		virtual SensorAccelerometer *GetSensorAccelerator();
 		virtual SensorType GetSensorType();

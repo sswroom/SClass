@@ -5,6 +5,7 @@
 #include "Media/OpenSLESRenderer.h"
 #include "Media/RefClock.h"
 #include "Sync/Event.h"
+#include "Sync/SimpleThread.h"
 #include "Sync/ThreadUtil.h"
 #include "Text/MyString.h"
 #include <SLES/OpenSLES.h>
@@ -260,11 +261,11 @@ Media::OpenSLESRenderer::OpenSLESRenderer(const UTF8Char *devName)
 	{
 		UTF8Char sbuff[16];
 		Text::StrInt32(sbuff, 0);
-		this->devName = Text::StrCopyNew(sbuff);
+		this->devName = Text::StrCopyNew(sbuff).Ptr();
 	}
 	else
 	{
-		this->devName = Text::StrCopyNew(devName);
+		this->devName = Text::StrCopyNew(devName).Ptr();
 	}
 	this->audsrc = 0;
 	this->playing = false;

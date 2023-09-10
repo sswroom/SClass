@@ -41,7 +41,7 @@ UOSInt Media::VideoCaptureMgr::GetDeviceList(Data::ArrayList<DeviceInfo *> *devL
 		devInfo->devType = 0;
 		devInfo->devId = devIdList.GetItem(i);
 		data->v4lMgr->GetDeviceName(sbuff, devInfo->devId);
-		devInfo->devName = Text::StrCopyNew(sbuff);
+		devInfo->devName = Text::StrCopyNew(sbuff).Ptr();
 		devList->Add(devInfo);
 		ret++;
 		i++;
@@ -56,7 +56,7 @@ UOSInt Media::VideoCaptureMgr::GetDeviceList(Data::ArrayList<DeviceInfo *> *devL
 		devInfo->devType = 1;
 		devInfo->devId = devIdList.GetItem(i);
 		data->androidMgr->GetDeviceName(sbuff, devInfo->devId);
-		devInfo->devName = Text::StrCopyNew(sbuff);
+		devInfo->devName = Text::StrCopyNew(sbuff).Ptr();
 		devList->Add(devInfo);
 		ret++;
 		i++;

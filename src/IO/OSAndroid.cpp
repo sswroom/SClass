@@ -20,7 +20,7 @@ UTF8Char *IO::OS::GetVersion(UTF8Char *sbuff)
 		Text::PString u8arr[2];
 		Text::PString u8arr2[2];
 		sb.ClearStr();
-		Manage::Process::ExecuteProcess(CSTR("getprop"), &sb);
+		Manage::Process::ExecuteProcess(CSTR("getprop"), sb);
 		u8arr[1] = sb;
 		NEW_CLASS(cfg, IO::ConfigFile());
 		while (1)

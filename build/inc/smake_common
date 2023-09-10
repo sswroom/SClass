@@ -2358,6 +2358,7 @@ Math/TSPFile.h: ../../src/Math/TSPFile.cpp
 Math/UTMGridConvertDbl.h: ../../src/Math/UTMGridConvertDbl.cpp
 @UTMGridConvertDbl.o
 Math/Value2D.h:
+Math/Vector3.h:
 Math/VectorTextWriter.h:
 Math/VectorTextWriterList.h: ../../src/Math/VectorTextWriterList.cpp
 @VectorTextWriterList.o

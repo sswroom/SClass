@@ -87,19 +87,19 @@ Media::DrawImage *Media::StaticEngine::ConvImage(Media::Image *img)
 	return 0;
 }
 
-Media::DrawImage *Media::StaticEngine::CloneImage(DrawImage *img)
+Media::DrawImage *Media::StaticEngine::CloneImage(NotNullPtr<DrawImage> img)
 {
-	return this->ConvImage((Media::StaticDrawImage*)img);
+	return this->ConvImage((Media::StaticDrawImage*)img.Ptr());
 }
 
-Bool Media::StaticEngine::DeleteImage(DrawImage *img)
+Bool Media::StaticEngine::DeleteImage(NotNullPtr<DrawImage> img)
 {
-	Media::StaticDrawImage *simg = (Media::StaticDrawImage*)img;
+	Media::StaticDrawImage *simg = (Media::StaticDrawImage*)img.Ptr();
 	DEL_CLASS(simg);
 	return true;
 }
 
-Media::StaticBrush::StaticBrush(Int32 color)
+Media::StaticBrush::StaticBrush(UInt32 color)
 {
 	this->color = color;
 }
@@ -108,7 +108,7 @@ Media::StaticBrush::~StaticBrush()
 {
 }
 
-Media::StaticPen::StaticPen(Int32 color, Double thick, const UInt8 *pattern, OSInt nPattern)
+Media::StaticPen::StaticPen(UInt32 color, Double thick, const UInt8 *pattern, UOSInt nPattern)
 {
 	this->color = color;
 	this->thick = thick;
@@ -138,7 +138,7 @@ Double Media::StaticPen::GetThick()
 	return this->thick;
 }
 
-Media::StaticDrawImage::StaticDrawImage(StaticEngine *eng, Math::Size2D<UOSInt> dispSize, Int32 fourcc, Int32 bpp, Media::PixelFormat pf, OSInt maxSize, const Media::ColorProfile *color, Media::ColorProfile::YUVType yuvType, Media::AlphaType atype, Media::YCOffset ycOfst) : Media::StaticImage(dispSize, fourcc, bpp, pf, maxSize, color, yuvType, atype, ycOfst)
+Media::StaticDrawImage::StaticDrawImage(StaticEngine *eng, Math::Size2D<UOSInt> dispSize, Int32 fourcc, Int32 bpp, Media::PixelFormat pf, OSInt maxSize, NotNullPtr<const Media::ColorProfile> color, Media::ColorProfile::YUVType yuvType, Media::AlphaType atype, Media::YCOffset ycOfst) : Media::StaticImage(dispSize, fourcc, bpp, pf, maxSize, color, yuvType, atype, ycOfst)
 {
 	this->eng = eng;
 }
@@ -148,37 +148,37 @@ Media::StaticDrawImage::~StaticDrawImage()
 {
 }
 
-UOSInt Media::StaticDrawImage::GetWidth()
+UOSInt Media::StaticDrawImage::GetWidth() const
 {
 	return this->info.dispSize.x;
 }
 
-UOSInt Media::StaticDrawImage::GetHeight()
+UOSInt Media::StaticDrawImage::GetHeight() const
 {
 	return this->info.dispSize.y;
 }
 
-UInt32 Media::StaticDrawImage::GetBitCount()
+UInt32 Media::StaticDrawImage::GetBitCount() const
 {
 	return this->info.storeBPP;
 }
 
-Media::ColorProfile *Media::StaticDrawImage::GetColorProfile()
+NotNullPtr<const Media::ColorProfile> Media::StaticDrawImage::GetColorProfile() const
 {
 	return this->info.color;
 }
 
-Media::AlphaType Media::StaticDrawImage::GetAlphaType()
+Media::AlphaType Media::StaticDrawImage::GetAlphaType() const
 {
 	return this->info.atype;
 }
 
-Double Media::StaticDrawImage::GetHDPI()
+Double Media::StaticDrawImage::GetHDPI() const
 {
 	return this->info.hdpi;
 }
 
-Double Media::StaticDrawImage::GetVDPI()
+Double Media::StaticDrawImage::GetVDPI() const
 {
 	return this->info.vdpi;
 }
@@ -199,21 +199,18 @@ void Media::StaticDrawImage::SetVDPI(Double dpi)
 	}
 }
 
-UInt8 *Media::StaticDrawImage::GetImgBits(Bool *revOrder)
+UInt8 *Media::StaticDrawImage::GetImgBits(OutParam<Bool> revOrder)
 {
-	if (revOrder)
-	{
-		*revOrder = false;
-	}
+	revOrder.Set(false);
 	return this->data;
 }
 
-Bool Media::StaticDrawImage::DrawImagePt(DrawImage *img, Double tlx, Double tly)
+Bool Media::StaticDrawImage::DrawImagePt(NotNullPtr<DrawImage> img, Math::Coord2DDbl tl)
 {
-	return this->DrawImagePt2((Media::StaticImage*)img, tlx, tly);
+	return this->DrawImagePt2(NotNullPtr<Media::StaticImage>::ConvertFrom(img), tl);
 }
 
-Bool Media::StaticDrawImage::DrawImagePt2(Media::StaticImage *img, Double tlx, Double tly)
+Bool Media::StaticDrawImage::DrawImagePt2(NotNullPtr<Media::StaticImage> img, Math::Coord2DDbl tl)
 {
 	if (this->info.fourcc != 0)
 	{
@@ -224,8 +221,8 @@ Bool Media::StaticDrawImage::DrawImagePt2(Media::StaticImage *img, Double tlx, D
 		img->To32bpp();
 		if (img->info.atype == Media::AT_NO_ALPHA)
 		{
-			Int32 x = Double2Int32(tlx);
-			Int32 y = Double2Int32(tly);
+			Int32 x = Double2Int32(tl.x);
+			Int32 y = Double2Int32(tl.y);
 			Int32 sx = 0;
 			Int32 sy = 0;
 			OSInt w = img->info.dispSize.x;
@@ -265,33 +262,33 @@ Bool Media::StaticDrawImage::DrawImagePt2(Media::StaticImage *img, Double tlx, D
 			OSInt dbpl = this->info.storeSize.x << 2;
 			OSInt sbpl = img->info.storeSize.x << 2;
 
-			if (tlx < 0)
+			if (tl.x < 0)
 			{
-				w += Double2Int32(tlx);
-				sbits -= Double2Int32(tlx) << 2;
-				tlx = 0;
+				w += Double2Int32(tl.x);
+				sbits -= Double2Int32(tl.x) << 2;
+				tl.x = 0;
 			}
-			if (tly < 0)
+			if (tl.y < 0)
 			{
-				h += Double2Int32(tly);
-				sbits -= Double2Int32(tly) * sbpl;
-				tly = 0;
+				h += Double2Int32(tl.y);
+				sbits -= Double2Int32(tl.y) * sbpl;
+				tl.y = 0;
 			}
 
-			if (tlx + w > this->info.dispSize.x)
+			if (tl.x + w > this->info.dispSize.x)
 			{
-				w = this->info.dispSize.x - Double2Int32(tlx);
+				w = this->info.dispSize.x - Double2Int32(tl.x);
 			}
-			if (tly + h > this->info.dispSize.y)
+			if (tl.y + h > this->info.dispSize.y)
 			{
-				h = this->info.dispSize.y - Double2Int32(tly);
+				h = this->info.dispSize.y - Double2Int32(tl.y);
 			}
 			if (w > 0 && h > 0)
 			{
 				this->eng->iab32->SetSourceProfile(img->info.color);
 				this->eng->iab32->SetDestProfile(this->info.color);
 				this->eng->iab32->SetOutputProfile(this->info.color);
-				this->eng->iab32->Blend(dbits + Double2Int32(tly) * dbpl + (Double2Int32(tlx) * 4), dbpl, sbits, sbpl, w, h, img->info.atype);
+				this->eng->iab32->Blend(dbits + Double2Int32(tl.y) * dbpl + (Double2Int32(tl.x) * 4), dbpl, sbits, sbpl, w, h, img->info.atype);
 			}
 		}
 		return true;
@@ -299,9 +296,9 @@ Bool Media::StaticDrawImage::DrawImagePt2(Media::StaticImage *img, Double tlx, D
 	return false;
 }
 
-Bool Media::StaticDrawImage::DrawImagePt3(DrawImage *img, Double destX, Double destY, Double srcX, Double srcY, Double srcW, Double srcH)
+Bool Media::StaticDrawImage::DrawImagePt3(NotNullPtr<DrawImage> img, Math::Coord2DDbl destTL, Math::Coord2DDbl srcTL, Math::Size2DDbl srcSize)
 {
-	Media::StaticDrawImage *simg = (Media::StaticDrawImage *)img;
+	Media::StaticDrawImage *simg = (Media::StaticDrawImage *)img.Ptr();
 	if (this->info.fourcc != 0)
 	{
 		return false;
@@ -311,12 +308,12 @@ Bool Media::StaticDrawImage::DrawImagePt3(DrawImage *img, Double destX, Double d
 		simg->To32bpp();
 		if (simg->info.atype == Media::AT_NO_ALPHA)
 		{
-			Int32 x = Double2Int32(destX);
-			Int32 y = Double2Int32(destY);
-			Int32 sx = Double2Int32(srcX);
-			Int32 sy = Double2Int32(srcY);
-			OSInt w = Double2Int32(srcW);
-			OSInt h = Double2Int32(srcH);
+			Int32 x = Double2Int32(destTL.x);
+			Int32 y = Double2Int32(destTL.y);
+			Int32 sx = Double2Int32(srcTL.x);
+			Int32 sy = Double2Int32(srcTL.y);
+			OSInt w = Double2Int32(srcSize.x);
+			OSInt h = Double2Int32(srcSize.y);
 			OSInt bpl = this->info.storeSize.x << 2;
 			if (x < 0)
 			{
@@ -345,12 +342,12 @@ Bool Media::StaticDrawImage::DrawImagePt3(DrawImage *img, Double destX, Double d
 		}
 		else
 		{
-			Int32 x = Double2Int32(destX);
-			Int32 y = Double2Int32(destY);
-			Int32 sx = Double2Int32(srcX);
-			Int32 sy = Double2Int32(srcY);
-			OSInt w = Double2Int32(srcW);
-			OSInt h = Double2Int32(srcH);
+			Int32 x = Double2Int32(destTL.x);
+			Int32 y = Double2Int32(destTL.y);
+			Int32 sx = Double2Int32(srcTL.x);
+			Int32 sy = Double2Int32(srcTL.y);
+			OSInt w = Double2Int32(srcSize.x);
+			OSInt h = Double2Int32(srcSize.y);
 			UInt8 *dbits = (UInt8*)this->data;
 			UInt8 *sbits = (UInt8*)simg->data;
 			OSInt dbpl = this->info.storeSize.x << 2;
@@ -389,14 +386,14 @@ Bool Media::StaticDrawImage::DrawImagePt3(DrawImage *img, Double destX, Double d
 	return false;
 }
 
-Media::DrawPen *Media::StaticDrawImage::NewPenARGB(Int32 color, Double thick, UInt8 *pattern, OSInt nPattern)
+Media::DrawPen *Media::StaticDrawImage::NewPenARGB(UInt32 color, Double thick, UInt8 *pattern, UOSInt nPattern)
 {
 	Media::StaticPen *p;
 	NEW_CLASS(p, Media::StaticPen(color, thick, pattern, nPattern));
 	return p;
 }
 
-Media::DrawBrush *Media::StaticDrawImage::NewBrushARGB(Int32 color)
+Media::DrawBrush *Media::StaticDrawImage::NewBrushARGB(UInt32 color)
 {
 	Media::StaticBrush *b;
 	NEW_CLASS(b, Media::StaticBrush(color));
@@ -415,7 +412,7 @@ void Media::StaticDrawImage::DelBrush(DrawBrush *b)
 	DEL_CLASS(brush);
 }
 
-Media::StaticImage *Media::StaticDrawImage::ToStaticImage()
+Media::StaticImage *Media::StaticDrawImage::ToStaticImage() const
 {
 	return (Media::StaticImage*)this->Clone();
 }
