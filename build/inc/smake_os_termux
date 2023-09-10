@@ -155,7 +155,7 @@ AudioDevice.o: ../../src/Media/AudioDeviceNull.cpp
 FBMonitorSurfaceMgr.o: ../../src/Media/FBMonitorSurfaceMgr_Null.cpp
 MonitorSurfaceMgrFactory.o: ../../src/Media/MonitorSurfaceMgrFactoryNull.cpp
 OCREngine.o: ../../src/Media/OCREngine.cpp
-!-llept
+!-lleptonica
 !-ltesseract
 Printer.o: ../../src/Media/PrinterNull.cpp
 ZXingWriter.o: ../../src/Media/ZXingWriter.cpp
