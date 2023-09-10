@@ -38,10 +38,16 @@ IO/I2CChannelOS.h: ../../src/IO/I2CChannelOSL.cpp
 @I2CChannelOS.o
 IO/OS.h: ../../src/IO/OSAndroid.cpp
 @OS.o
+IO/PCIInfo.h: ../../src/IO/PCIInfoL.cpp
+@PCIInfo.o
+IO/PowerInfo.h: ../../src/IO/PowerInfoL.cpp
+@PowerInfo.o
 IO/SDCardMgr.h: ../../src/IO/SDCardMgrL.cpp
 @SDCardMgr.o
 IO/SensorManager.h: ../../src/IO/SensorManagerNull.cpp
 @SensorManager.o
+IO/USBInfo.h: ../../src/IO/USBInfoL.cpp
+@USBInfo.o
 IO/Watchdog.h: ../../src/IO/WatchdogL.cpp
 @Watchdog.o
 
@@ -131,8 +137,11 @@ DebugWriter.o: ../../src/IO/DebugWriter_Null.cpp
 HIDInfo.o: ../../src/IO/HIDInfoL.cpp
 I2CChannelOS.o: ../../src/IO/I2CChannelOSL.cpp
 OS.o: ../../src/IO/OSAndroid.cpp
+PCIInfo.o: ../../src/IO/PCIInfoL.cpp
+PowerInfo.o: ../../src/IO/PowerInfoL.cpp
 SDCardMgr.o: ../../src/IO/SDCardMgrL.cpp
 SensorManager.o: ../../src/IO/SensorManagerNull.cpp
+USBInfo.o: ../../src/IO/USBInfoL.cpp
 Watchdog.o: ../../src/IO/WatchdogL.cpp
 Computer.o: ../../src/Manage/ComputerL.cpp
 ComputerUser.o: ../../src/Manage/ComputerUserL.cpp
