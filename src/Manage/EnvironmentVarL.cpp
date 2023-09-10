@@ -14,6 +14,7 @@ Manage::EnvironmentVar::EnvironmentVar()
 	UTF8Char *sptr;
 	UOSInt i;
 	UOSInt j;
+	this->envs = 0;
 	i = 0;
 	while (environ[i])
 	{
