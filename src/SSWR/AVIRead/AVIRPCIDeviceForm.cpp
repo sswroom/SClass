@@ -31,7 +31,7 @@ void __stdcall SSWR::AVIRead::AVIRPCIDeviceForm::OnDevicesSelChg(void *userObj)
 		me->txtProductId->SetText(CSTRP(sbuff, sptr));
 		me->txtDispName->SetText(pci->GetDispName().OrEmpty());
 
-		const IO::DeviceDB::PCIDeviceInfo *dev;
+		const IO::DeviceDB::DeviceInfo *dev;
 		dev = IO::DeviceDB::GetPCIInfo(pci->GetVendorId(), pci->GetProductId());
 		if (dev)
 		{

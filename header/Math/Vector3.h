@@ -28,6 +28,11 @@ namespace Math
 			return this->val[0] * val.val[0] + this->val[1] * val.val[1] + this->val[2] * val.val[2];
 		}
 
+		Vector3 operator-(const Vector3 &val) const
+		{
+			return Math::Vector3(this->val[0] - val.val[0], this->val[1] - val.val[1], this->val[2] - val.val[2]);
+		}
+
 		void Set(Double x, Double y, Double z)
 		{
 			this->val[0] = x;
@@ -45,6 +50,18 @@ namespace Math
 		Double2D GetXY() const
 		{
 			return Math::Double2D(this->val[0], this->val[1]);
+		}
+
+		Bool IsZero() const
+		{
+			return this->val[0] == 0 && this->val[1] == 0 && this->val[2] == 0;
+		}
+
+		Math::Vector3 Abs() const
+		{
+			return Math::Vector3((this->val[0] < 0)?-this->val[0]:this->val[0],
+				(this->val[1] < 0)?-this->val[1]:this->val[1],
+				(this->val[2] < 0)?-this->val[2]:this->val[2]);
 		}
 	};
 }

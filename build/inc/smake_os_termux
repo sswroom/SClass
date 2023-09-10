@@ -16,7 +16,7 @@ DB/ODBCConn.h: ../../src/DB/ODBCConnNul.cpp
 @ODBCConn.o
 DB/PostgreSQLConn.h: ../../src/DB/PostgreSQLConnNul.cpp
 @PostgreSQLConn.o
-DB/TDSConn.h: ../../src/DB/TDSConn.cpp
+DB/TDSConn.h: ../../src/DB/TDSConn_Null.cpp
 @TDSConn.o
 
 Exporter/HEIFExporter.h: ../../src/Exporter/HEIFExporter.cpp
@@ -125,8 +125,7 @@ MongoDB.o: ../../src/DB/MongoDBNull.cpp
 MySQLConn.o: ../../src/DB/MySQLConnNull.cpp
 ODBCConn.o: ../../src/DB/ODBCConnNul.cpp
 PostgreSQLConn.o: ../../src/DB/PostgreSQLConnNul.cpp
-TDSConn.o: ../../src/DB/TDSConn.cpp
-!-lsybdb
+TDSConn.o: ../../src/DB/TDSConn_Null.cpp
 HEIFExporter.o: ../../src/Exporter/HEIFExporter.cpp
 !-lheif
 WebPExporter.o: ../../src/Exporter/WebPExporter.cpp
