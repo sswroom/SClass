@@ -45,12 +45,12 @@ IO::ParserType DB::ReadingDB::GetParserType() const
 	return IO::ParserType::ReadingDB;
 }
 
-Bool DB::ReadingDB::IsFullConn()
+Bool DB::ReadingDB::IsFullConn() const
 {
 	return false;
 }
 
-Bool DB::ReadingDB::IsDBTool()
+Bool DB::ReadingDB::IsDBTool() const
 {
 	return false;
 }

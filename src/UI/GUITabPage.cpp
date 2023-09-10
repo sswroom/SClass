@@ -42,7 +42,7 @@ Bool UI::GUITabPage::IsFormFocused()
 	return this->ctrl->IsFormFocused();
 }
 
-Text::CString UI::GUITabPage::GetObjectClass()
+Text::CStringNN UI::GUITabPage::GetObjectClass() const
 {
 	return CSTR("TabPage");
 }

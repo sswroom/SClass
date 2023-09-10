@@ -108,7 +108,7 @@ namespace SSWR
 			AVIRImageControl(NotNullPtr<UI::GUICore> ui, UI::GUIClientControl *parent, NotNullPtr<SSWR::AVIRead::AVIRCore> core, UI::GUIForm *frm, Media::ColorManagerSess *colorSess);
 			virtual ~AVIRImageControl();
 
-			virtual Text::CString GetObjectClass();
+			virtual Text::CStringNN GetObjectClass() const;
 			virtual OSInt OnNotify(UInt32 code, void *lParam);
 
 			virtual void YUVParamChanged(NotNullPtr<const Media::IColorHandler::YUVPARAM> yuvParam);

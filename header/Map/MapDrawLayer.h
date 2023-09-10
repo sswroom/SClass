@@ -127,11 +127,11 @@ namespace Map
 		virtual void GetLastErrorMsg(NotNullPtr<Text::StringBuilderUTF8> str);
 		virtual void Reconnect();
 
-		virtual UOSInt GetNameCol();
+		virtual UOSInt GetNameCol() const;
 		virtual void SetNameCol(UOSInt nameCol);
 
 		virtual ObjectClass GetObjectClass() const = 0;
-		NotNullPtr<Text::String> GetName();
+		NotNullPtr<Text::String> GetName() const;
 		virtual IO::ParserType GetParserType() const;
 		virtual Math::CoordinateSystem *GetCoordinateSystem();
 		virtual void SetCoordinateSystem(Math::CoordinateSystem *csys);
@@ -139,7 +139,7 @@ namespace Map
 		Int32 CalBlockSize();
 		void SetLayerName(Text::CString name);
 
-		virtual Bool IsError();
+		virtual Bool IsError() const;
 		virtual UTF8Char *GetPGLabel(UTF8Char *buff, UOSInt buffSize, Math::Coord2DDbl coord, Math::Coord2DDbl *outCoord, UOSInt strIndex);
 		virtual UTF8Char *GetPLLabel(UTF8Char *buff, UOSInt buffSize, Math::Coord2DDbl coord, Math::Coord2DDbl *outCoord, UOSInt strIndex);
 		virtual Bool CanQuery();

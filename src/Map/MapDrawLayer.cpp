@@ -176,7 +176,7 @@ void Map::MapDrawLayer::Reconnect()
 {
 }
 
-UOSInt Map::MapDrawLayer::GetNameCol()
+UOSInt Map::MapDrawLayer::GetNameCol() const
 {
 	return this->nameCol;
 }
@@ -186,7 +186,7 @@ void Map::MapDrawLayer::SetNameCol(UOSInt nameCol)
 	this->nameCol = nameCol;
 }
 
-NotNullPtr<Text::String> Map::MapDrawLayer::GetName()
+NotNullPtr<Text::String> Map::MapDrawLayer::GetName() const
 {
 	NotNullPtr<Text::String> layerName;
 	if (layerName.Set(this->layerName) && this->layerName->leng > 0)
@@ -276,7 +276,7 @@ void Map::MapDrawLayer::SetLayerName(Text::CString name)
 	this->layerName = Text::String::New(name).Ptr();
 }
 
-Bool Map::MapDrawLayer::IsError()
+Bool Map::MapDrawLayer::IsError() const
 {
 	return false;
 }

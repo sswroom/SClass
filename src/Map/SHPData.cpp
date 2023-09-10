@@ -376,7 +376,7 @@ Map::SHPData::~SHPData()
 	SDEL_CLASS(this->recsMut);
 }
 
-Bool Map::SHPData::IsError()
+Bool Map::SHPData::IsError() const
 {
 	return dbf == 0 ;
 }

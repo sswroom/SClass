@@ -55,7 +55,7 @@ namespace DB
 		virtual void Commit(void *tran) = 0;
 		virtual void Rollback(void *tran) = 0;
 
-		virtual Bool IsFullConn();
+		virtual Bool IsFullConn() const;
 	};
 }
 #endif

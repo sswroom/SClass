@@ -710,7 +710,7 @@ DB::DBConn::DataError DB::DBConn::GetLastDataError()
 	return this->lastDataError;
 }
 
-Bool DB::DBConn::IsFullConn()
+Bool DB::DBConn::IsFullConn() const
 {
 	return true;
 }

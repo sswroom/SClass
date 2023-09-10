@@ -7,9 +7,10 @@ namespace IO
 {
 	class USBInfo
 	{
-	private:
+	public:
 		struct ClassData;
 
+	private:
 		ClassData *clsData;
 	public:
 		USBInfo(ClassData *info);

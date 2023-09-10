@@ -504,7 +504,7 @@ void DB::ReadingDBTool::Reconnect()
 	}
 }
 
-Bool DB::ReadingDBTool::IsDBTool()
+Bool DB::ReadingDBTool::IsDBTool() const
 {
 	return true;
 }

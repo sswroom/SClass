@@ -26,20 +26,14 @@ IO/Library.h: ../../src/IO/LibraryL.cpp
 @Library.o
 IO/Path.h: ../../src/IO/PathL.cpp
 @Path.o
-IO/PCIInfo.h: ../../src/IO/PCIInfoL.cpp
-@PCIInfo.o
 IO/PhysicalMem.h: ../../src/IO/PhysicalMemL.cpp
 @PhysicalMem.o
-IO/PowerInfo.h: ../../src/IO/PowerInfoL.cpp
-@PowerInfo.o
 IO/Registry.h: ../../src/IO/RegistryLinux.cpp
 @Registry.o
 IO/SerialPort.h: ../../src/IO/SerialPortL.cpp
 @SerialPort.o
 IO/SimpleFileWriter.h: ../../src/IO/SimpleFileWriterL.cpp
 @SimpleFileWriter.o
-IO/USBInfo.h: ../../src/IO/USBInfoL.cpp
-@USBInfo.o
 IO/ViewFileBuffer.h: ../../src/IO/ViewFileBufferL.cpp
 @ViewFileBuffer.o
 
@@ -125,13 +119,10 @@ FileUtil.o: ../../src/IO/FileUtilL.cpp
 Library.o: ../../src/IO/LibraryL.cpp
 !-ldl
 Path.o: ../../src/IO/PathL.cpp
-PCIInfo.o: ../../src/IO/PCIInfoL.cpp
 PhysicalMem.o: ../../src/IO/PhysicalMemL.cpp
-PowerInfo.o: ../../src/IO/PowerInfoL.cpp
 Registry.o: ../../src/IO/RegistryLinux.cpp
 SerialPort.o: ../../src/IO/SerialPortL.cpp
 SimpleFileWriter.o: ../../src/IO/SimpleFileWriterL.cpp
-USBInfo.o: ../../src/IO/USBInfoL.cpp
 ViewFileBuffer.o: ../../src/IO/ViewFileBufferL.cpp
 EnvironmentVar.o: ../../src/Manage/EnvironmentVarL.cpp
 ExceptionRecorder.o: ../../src/Manage/ExceptionRecorderL.cpp

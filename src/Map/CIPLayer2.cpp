@@ -192,7 +192,7 @@ Map::CIPLayer2::~CIPLayer2()
 	}
 }
 
-Bool Map::CIPLayer2::IsError()
+Bool Map::CIPLayer2::IsError() const
 {
 	if (ofsts == 0)
 		return true;

@@ -47,7 +47,7 @@ namespace Map
 		CIPLayer2(Text::CStringNN layerName);
 		virtual ~CIPLayer2();
 
-		Bool IsError();
+		virtual Bool IsError() const;
 
 		virtual DrawLayerType GetLayerType() const;
 		virtual UOSInt GetAllObjectIds(NotNullPtr<Data::ArrayListInt64> outArr, NameArray **nameArr);

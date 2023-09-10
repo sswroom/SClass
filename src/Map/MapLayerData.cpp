@@ -49,7 +49,7 @@ Map::MapLayerData::~MapLayerData()
 	DEL_CLASS(this->blkFileObj);
 }
 
-Bool Map::MapLayerData::IsError()
+Bool Map::MapLayerData::IsError() const
 {
 	return this->cixFile == 0 || this->ciuFile == 0 || this->cipFile == 0 || this->blkFile == 0;
 }

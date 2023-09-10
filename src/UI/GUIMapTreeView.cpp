@@ -145,7 +145,7 @@ void UI::GUIMapTreeView::EventDragItem(TreeItem *dragItem, TreeItem *dropItem)
 	}
 }
 
-Text::CString UI::GUIMapTreeView::GetObjectClass()
+Text::CStringNN UI::GUIMapTreeView::GetObjectClass() const
 {
 	return CSTR("MapTreeView");
 }

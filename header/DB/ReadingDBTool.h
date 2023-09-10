@@ -81,7 +81,7 @@ namespace DB
 		Int8 GetTzQhr() const;
 		virtual void Reconnect();
 
-		virtual Bool IsDBTool();
+		virtual Bool IsDBTool() const;
 		
 		UTF8Char *DBColUTF8(UTF8Char *sqlstr, const UTF8Char *colName);
 		UTF8Char *DBColW(UTF8Char *sqlstr, const WChar *colName);

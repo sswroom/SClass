@@ -47,13 +47,13 @@ namespace SSWR
 			UI::GUITextBox *txtVerifyStatus;
 
 			UI::GUITabPage *tpSignature;
-			UI::GUILabel *lblSignatureHash;
+/*			UI::GUILabel *lblSignatureHash;
 			UI::GUIComboBox *cboSignatureHash;
 			UI::GUILabel *lblSignaturePayloadFile;
 			UI::GUITextBox *txtSignaturePayloadFile;
 			UI::GUIButton *btnSignature;
 			UI::GUILabel *lblSiguatureValue;
-			UI::GUITextBox *txtSignatureValue;
+			UI::GUITextBox *txtSignatureValue;*/
 
 			UI::GUITabPage *tpEncrypt;
 			UI::GUILabel *lblEncryptInputType;

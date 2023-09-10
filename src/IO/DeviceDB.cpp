@@ -15,8 +15,12 @@ IO::DeviceDB::VendorInfo IO::DeviceDB::pciVendors[] = {
 	{0x1002, CSTR("Advanced Micro Devices (former ATI)")}
 };
 
-IO::DeviceDB::PCIDeviceInfo IO::DeviceDB::pciList[] = {
+IO::DeviceDB::DeviceInfo IO::DeviceDB::pciList[] = {
 	{0x1002, 0x682C,  "AMD FirePro W4100",                                                                        "AMD FirePro W4100"}
+};
+
+IO::DeviceDB::DeviceInfo IO::DeviceDB::btList[] = {
+	{0x046D, 0xB342,  "Keyboard K380",                                                                        "Logitech Keyboard K380"}
 };
 
 IO::DeviceDB::SDCardInfo IO::DeviceDB::sdCardList[] = {
@@ -1739,12 +1743,13 @@ IO::DeviceDB::VendorInfo IO::DeviceDB::pciVendors[] = {
 	{0x1B21, CSTR("ASMedia Technology Inc.")},
 	{0x1B6F, CSTR("*Etron Technology Inc.")},
 	{0x1C36, CSTR("*Annapurna Labs")},
+	{0x1D6A, CSTR("Aquantia Corp.")},
 	{0x1DA0, CSTR("3M Company")},
 	{0x8086, CSTR("Intel Corporation")},
 	{0x80EE, CSTR("VirtualBox")}
 };
 
-IO::DeviceDB::PCIDeviceInfo IO::DeviceDB::pciList[] = {
+IO::DeviceDB::DeviceInfo IO::DeviceDB::pciList[] = {
 	//VID    PID      dispName                                                                                    productName
 	{0x1002, 0x1640,  "AMD High Definition Audio Controller",                                                     "AMD Rembrandt Radeon High Definition Audio Controller"},
 	{0x1002, 0x1681,  "AMD Radeon R7 Graphics",                                                                   "AMD Rembrandt (Radeon 680M)"},
@@ -1818,6 +1823,8 @@ IO::DeviceDB::PCIDeviceInfo IO::DeviceDB::pciList[] = {
 	{0x1022, 0x9605,  "PCI Device",                                                                               "AMD RS780/RS880 PCI to PCI bridge (PCIE port 1)"},
 	{0x1022, 0x9607,  "PCI Device",                                                                               "AMD RS780/RS880 PCI to PCI bridge (PCIE port 3)"},
 	{0x106B, 0x003F,  "Apple Inc. KeyLargo/Intrepid USB",                                                         "Virtual USB Controller"},
+	{0x106B, 0x100C,  "PCI Device",                                                                               "Apple T8112 PCIe Port"},
+	{0x106B, 0x1012,  "PCI Device",                                                                               "Apple T8112 Thunderbolt Port"},
 	{0x1095, 0x3132,  "Silicon Image SiI 3132 SoftRaid 5 Controller",                                             "Silicon Image Sil3132"},
 	{0x1095, 0x3531,  "Silicon Image SiI 3531 SATA Controller",                                                   "Silicon Image Sil3531"},
 	{0x10DE, 0x0568,  "PCI Device",                                                                               "nVidia MCP78S Memory Controller"},
@@ -1903,9 +1910,11 @@ IO::DeviceDB::PCIDeviceInfo IO::DeviceDB::pciList[] = {
 	{0x14C3, 0x0801,  "Ralink PCI Device",                                                                        "Mediatek MT76x8"},
 	{0x14C3, 0x7650,  "Ralink MT7650 802.11ac Wifi",                                                              "Mediatek MT7650"},
 	{0x14C3, 0x8650,  "Ralink PCI Device",                                                                        "Mediatek MT76x8"},
-	{0x14E4, 0x169C,  "Broadcom BCM5788 Gigabit Ethernet",                                                        "Broadcom BCM5788"},
-	{0x14E4, 0x2711,  "Broadcom BCM2711 PCIe Bridge",                                                             "Broadcom BCM2711"},
-	{0x14E4, 0x4315,  "Broadcom BCM4312 802.11 b/g LP-PHY",                                                       "Broadcom BCM4312"},
+	{0x14E4, 0x169C,  "Broadcom BCM5788 Gigabit Ethernet",                                                        "Broadcom BCM5788 Ethernet Controller"},
+	{0x14E4, 0x2711,  "Broadcom BCM2711 PCIe Bridge",                                                             "Broadcom BCM2711 PCIe Bridge"},
+	{0x14E4, 0x4315,  "Broadcom BCM4312 802.11 b/g LP-PHY",                                                       "Broadcom BCM4312 Wi-Fi Controller"},
+	{0x14E4, 0x4434,  "PCI Device",                                                                               "Broadcom BCM4387 Wi-Fi Controller"},
+	{0x14E4, 0x5F72,  "PCI Device",                                                                               "Broadcom BCM4387 Bluetooth Controller"},
 	{0x168C, 0x001C,  "AR5006EG 802.11 b/g Wireless PCI Express Adapter",                                         "AR242x / AR542x Wireless Network Adapter (PCI-Express)"},
 	{0x17A0, 0x9755,  "PCI Device",                                                                               "Genesys Logic SD Host Controller (GL9755)"},
 	{0x17CB, 0x0109,  "PCI Express Root Port",                                                                    "Qualcomm SA8195P PCIe Root Complex" },
@@ -1919,6 +1928,7 @@ IO::DeviceDB::PCIDeviceInfo IO::DeviceDB::pciList[] = {
 	{0x1AF4, 0x105A,  "Virtuozzo VirtIO file system",                                                             "Virtio file system"},
 	{0x1B21, 0x0612,  "Standard SATA AHCI Controller",                                                            "ASM1062 SATA Controller"},
 	{0x1B21, 0x1080,  "PCI Standard PCI-to-PCI Bridge",                                                           "ASM1083/1085 PCIe to PCI Bridge"},
+	{0x1B21, 0x2142,  "PCI Device",                                                                               "ASM2142/ASM3142 USB 3.1 Host Controller"},
 	{0x1B6F, 0x7052,  "PCI Device",                                                                               "EJ188/EJ198 USB 3.0 Host Controller"},
 	{0x1C36, 0x0001,  "PCI Device",                                                                               "Annapurna Labs Gigabit Ethernet Controller"},
 	{0x1C36, 0x0011,  "PCI Device",                                                                               "Annapurna Labs Crypto"},
@@ -1926,6 +1936,7 @@ IO::DeviceDB::PCIDeviceInfo IO::DeviceDB::pciList[] = {
 	{0x1C36, 0x0031,  "PCI Device",                                                                               "Annapurna Labs AHCI Controller"},
 	{0x1C36, 0x8011,  "PCI Device",                                                                               "Annapurna Labs Crypto"},
 	{0x1C36, 0x8021,  "PCI Device",                                                                               "Annapurna Labs DMA Controller"},
+	{0x1D6A, 0x04C0,  "PCI Device",                                                                               "Aquantia AQC113 NBase-T/IEEE 802.3bz Ethernet Controller [AQtion]"},
 	{0x8086, 0x0150,  "PCI standard host CPU bridge",                                                             "Intel Xeon E3-1200 v2/3rd Gen Core processor DRAM Controller"},
 	{0x8086, 0x0152,  "Standard VGA Graphics Adapter",                                                            "Intel Xeon E3-1200 v2/3rd Gen Core processor Graphics Controller"},
 	{0x8086, 0x0284,  "PCI Device",                                                                               "Intel Comet Lake PCH-LP LPC Premium Controller/eSPI Controller"},
@@ -2242,6 +2253,11 @@ IO::DeviceDB::PCIDeviceInfo IO::DeviceDB::pciList[] = {
 	{0x80EE, 0xCAFE,  "VirtualBox Guest Service",                                                                 "VirtualBox Guest Service"}
 };
 
+IO::DeviceDB::DeviceInfo IO::DeviceDB::btList[] = {
+	{0x046D, 0xB342,  "Keyboard K380",                                                                            "Logitech Keyboard K380"},
+	{0x0A5C, 0x0001,  "RAPOO BT3.0 MS",                                                                           "RAPOO BT3.0 Mouse"},
+};
+
 IO::DeviceDB::SDCardInfo IO::DeviceDB::sdCardList[] = {
 	{"1B534D3030303030101229FF8200D400", "400E00325B5900001D5D7F800A400000", "Kingston microSD 4GB C4"},
 	{"02544D534433324732E0290133008B00", "400E00325B590000F2FF7F800A400000", "Kingston SD 32GB C4"},
@@ -2341,12 +2357,12 @@ const IO::DeviceDB::USBDeviceInfo *IO::DeviceDB::GetUSBInfo(UInt16 vendorId, UIn
 	return 0;
 }
 
-const IO::DeviceDB::PCIDeviceInfo *IO::DeviceDB::GetPCIInfo(UInt16 vendorId, UInt16 productId)
+const IO::DeviceDB::DeviceInfo *IO::DeviceDB::GetPCIInfo(UInt16 vendorId, UInt16 productId)
 {
 	OSInt i = 0;
 	OSInt j = (sizeof(pciList) / sizeof(pciList[0])) - 1;
 	OSInt k;
-	PCIDeviceInfo *pci;
+	DeviceInfo *pci;
 
 	while (i <= j)
 	{

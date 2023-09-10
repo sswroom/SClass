@@ -931,7 +931,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	{
 		Data::ArrayList<IO::PCIInfo*> pciList;
 		IO::PCIInfo *pci;
-		const IO::DeviceDB::PCIDeviceInfo *dev;
+		const IO::DeviceDB::DeviceInfo *dev;
 		IO::PCIInfo::GetPCIList(pciList);
 		console->WriteLine();
 		writer->WriteLine();

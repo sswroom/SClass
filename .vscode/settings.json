@@ -6,5 +6,8 @@
 		"**/build": true,
 		"**/.vscode": true,
 		"**/.vs": true
+	},
+	"files.associations": {
+		"memory": "cpp"
 	}
 }

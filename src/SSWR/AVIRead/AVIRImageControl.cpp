@@ -549,7 +549,7 @@ SSWR::AVIRead::AVIRImageControl::~AVIRImageControl()
 	this->colorSess->RemoveHandler(this);
 }
 
-Text::CString SSWR::AVIRead::AVIRImageControl::GetObjectClass()
+Text::CStringNN SSWR::AVIRead::AVIRImageControl::GetObjectClass() const
 {
 	return CSTR("AVIRImageControl");
 }

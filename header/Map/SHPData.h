@@ -43,7 +43,7 @@ namespace Map
 		SHPData(const UInt8 *hdr, NotNullPtr<IO::StreamData> data, UInt32 codePage, Math::ArcGISPRJParser *prjParser);
 		virtual ~SHPData();
 
-		Bool IsError();
+		virtual Bool IsError() const;
 		static void LatLon2XY(Double lat, Double lon, OutParam<Int32> x, OutParam<Int32> y);
 
 		virtual DrawLayerType GetLayerType() const;

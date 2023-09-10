@@ -35,8 +35,8 @@ namespace DB
 
 		virtual IO::ParserType GetParserType() const;
 
-		virtual Bool IsFullConn(); //false = read only, true = DBConn
-		virtual Bool IsDBTool(); //true = ReadingDBTool
+		virtual Bool IsFullConn() const; //false = read only, true = DBConn
+		virtual Bool IsDBTool() const; //true = ReadingDBTool
 
 		static Bool IsDBObj(IO::ParsedObject *pobj);
 	};
