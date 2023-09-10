@@ -1464,7 +1464,7 @@ Bool Media::GDIImage::DrawStringRotW(Math::Coord2DDbl center, const WChar *str, 
 	Int32 bnds[8];
 	OSInt px;
 	OSInt py;
-	GetStringBoundRotW(bnds, Double2Int32(center.x), Double2Int32(center.y), str, f, angleDegree, &px, &py);
+	GetStringBoundRotW(bnds, Double2Int32(center.x), Double2Int32(center.y), str, f, angleDegree, px, py);
 	HGDIOBJ ofont = SelectObject((HDC)this->hdcBmp, (HFONT)hfont);
 	TextOutW((HDC)this->hdcBmp, (int)px, (int)py, str, (Int32)(src - str - 1));
 	SelectObject((HDC)this->hdcBmp, ofont);
@@ -1510,7 +1510,7 @@ Bool Media::GDIImage::DrawStringBW(Math::Coord2DDbl tl, const WChar *str1, DrawF
 	Int32 maxV;
 	Int32 minV;
 
-	GetStringBoundW(bnds, px, py, str1, f, &px, &py);
+	GetStringBoundW(bnds, px, py, str1, f, px, py);
 	minV = maxV = bnds[0];
 	if (bnds[2] > maxV)
 		maxV = bnds[2];
@@ -1701,7 +1701,7 @@ Bool Media::GDIImage::DrawStringRotBW(Math::Coord2DDbl center, const WChar *str1
 	OSInt dheight;
 	Int32 maxV;
 	Int32 minV;
-	GetStringBoundRotW(bnds, center.x, center.y, str1, f, angleDegree, &px, &py);
+	GetStringBoundRotW(bnds, center.x, center.y, str1, f, angleDegree, px, py);
 	minV = maxV = bnds[0];
 	if (bnds[2] > maxV)
 		maxV = bnds[2];
@@ -2414,14 +2414,14 @@ void Media::GDIImage::SetTextAlign(Media::DrawEngine::DrawPos pos)
 	::SetTextAlign((HDC)this->hdcBmp, textAlign[pos]);
 }
 
-void Media::GDIImage::GetStringBound(Int32 *pos, OSInt centX, OSInt centY, const UTF8Char *str, DrawFont *f, OSInt *drawX, OSInt *drawY)
+void Media::GDIImage::GetStringBound(Int32 *pos, OSInt centX, OSInt centY, const UTF8Char *str, DrawFont *f, OutParam<OSInt> drawX, OutParam<OSInt> drawY)
 {
 	const WChar *wptr = Text::StrToWCharNew(str);
 	GetStringBoundW(pos, centX, centY, wptr, f, drawX, drawY);
 	Text::StrDelNew(wptr);
 }
 
-void Media::GDIImage::GetStringBoundW(Int32 *pos, OSInt centX, OSInt centY, const WChar *str, DrawFont *f, OSInt *drawX, OSInt *drawY)
+void Media::GDIImage::GetStringBoundW(Int32 *pos, OSInt centX, OSInt centY, const WChar *str, DrawFont *f, OutParam<OSInt> drawX, OutParam<OSInt> drawY)
 {
 	Math::Size2DDbl sz = GetTextSize(f, str, (OSInt)Text::StrCharCnt(str));
 	Bool isCenter = false;
@@ -2481,24 +2481,24 @@ void Media::GDIImage::GetStringBoundW(Int32 *pos, OSInt centX, OSInt centY, cons
 	pos[7] = pos[1] + Double2Int32(sz.y);
 	if (isCenter)
 	{
-		*drawX = centX;
-		*drawY = centY - Double2Int32(sz.y * 0.5);
+		drawX.Set(centX);
+		drawY.Set(centY - Double2Int32(sz.y * 0.5));
 	}
 	else
 	{
-		*drawX = centX;
-		*drawY = centY;
+		drawX.Set(centX);
+		drawY.Set(centY);
 	}
 }
 
-void Media::GDIImage::GetStringBoundRot(Int32 *pos, Double centX, Double centY, const UTF8Char *str, DrawFont *f, Double angleDegree, OSInt *drawX, OSInt *drawY)
+void Media::GDIImage::GetStringBoundRot(Int32 *pos, Double centX, Double centY, const UTF8Char *str, DrawFont *f, Double angleDegree, OutParam<OSInt> drawX, OutParam<OSInt> drawY)
 {
 	const WChar *wptr = Text::StrToWCharNew(str);
 	this->GetStringBoundRotW(pos, centX, centY, wptr, f, angleDegree, drawX, drawY);
 	Text::StrDelNew(wptr);
 }
 
-void Media::GDIImage::GetStringBoundRotW(Int32 *pos, Double centX, Double centY, const WChar *str, DrawFont *f, Double angleDegree, OSInt *drawX, OSInt *drawY)
+void Media::GDIImage::GetStringBoundRotW(Int32 *pos, Double centX, Double centY, const WChar *str, DrawFont *f, Double angleDegree, OutParam<OSInt> drawX, OutParam<OSInt> drawY)
 {
 	Math::Size2DDbl sz = GetTextSize(f, str, (OSInt)Text::StrCharCnt(str));
 	Double pts[10];
@@ -2570,8 +2570,8 @@ void Media::GDIImage::GetStringBoundRotW(Int32 *pos, Double centX, Double centY,
 		pos[5] = Double2Int32(pts[5]);
 		pos[6] = Double2Int32(pts[6]);
 		pos[7] = Double2Int32(pts[7]);
-		*drawX = Double2Int32(pts[8]);
-		*drawY = Double2Int32(pts[9]);
+		drawX.Set(Double2Int32(pts[8]));
+		drawY.Set(Double2Int32(pts[9]));
 	}
 	else
 	{
@@ -2584,8 +2584,8 @@ void Media::GDIImage::GetStringBoundRotW(Int32 *pos, Double centX, Double centY,
 		pos[5] = Double2Int32(pts[5]);
 		pos[6] = Double2Int32(pts[6]);
 		pos[7] = Double2Int32(pts[7]);
-		*drawX = Double2Int32(centX);
-		*drawY = Double2Int32(centY);
+		drawX.Set(Double2Int32(centX));
+		drawY.Set(Double2Int32(centY));
 	}
 }
 
