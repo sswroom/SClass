@@ -14,13 +14,11 @@ Math::SRWKTWriter::~SRWKTWriter()
 
 }
 
-UTF8Char *Math::SRWKTWriter::WriteCSys(Math::CoordinateSystem *csys, UTF8Char *buff, UOSInt lev, Text::LineBreakType lbt)
+UTF8Char *Math::SRWKTWriter::WriteCSys(NotNullPtr<Math::CoordinateSystem> csys, UTF8Char *buff, UOSInt lev, Text::LineBreakType lbt)
 {
-	if (csys == 0)
-		return 0;
 	if (csys->IsProjected())
 	{
-		Math::ProjectedCoordinateSystem *pcsys = (Math::ProjectedCoordinateSystem*)csys;
+		Math::ProjectedCoordinateSystem *pcsys = (Math::ProjectedCoordinateSystem*)csys.Ptr();
 		buff = Text::StrConcatC(buff, UTF8STRC("PROJCS[\""));
 		buff = pcsys->GetCSysName()->ConcatTo(buff);
 		buff = Text::StrConcatC(buff, UTF8STRC("\","));
@@ -72,12 +70,12 @@ UTF8Char *Math::SRWKTWriter::WriteCSys(Math::CoordinateSystem *csys, UTF8Char *b
 	}
 	else
 	{
-		Math::GeographicCoordinateSystem *gcsys = (Math::GeographicCoordinateSystem*)csys;
+		Math::GeographicCoordinateSystem *gcsys = (Math::GeographicCoordinateSystem*)csys.Ptr();
 		buff = Text::StrConcatC(buff, UTF8STRC("GEOGCS[\""));
 		buff = gcsys->GetCSysName()->ConcatTo(buff);
 		buff = Text::StrConcatC(buff, UTF8STRC("\","));
 		buff = WriteNextLine(buff, lev + 1, lbt);
-		const Math::GeographicCoordinateSystem::DatumData1 *datum = gcsys->GetDatum();
+		NotNullPtr<const Math::GeographicCoordinateSystem::DatumData1> datum = gcsys->GetDatum();
 		buff = WriteDatum(datum, buff, lev + 1, lbt);
 		buff = WritePrimem(buff, gcsys->GetPrimem(), lev + 1, lbt);
 		buff = WriteUnit(buff, gcsys->GetUnit(), lev + 1, lbt);
@@ -87,7 +85,7 @@ UTF8Char *Math::SRWKTWriter::WriteCSys(Math::CoordinateSystem *csys, UTF8Char *b
 	return buff;
 }
 
-UTF8Char *Math::SRWKTWriter::WriteDatum(const Math::CoordinateSystem::DatumData1 *datum, UTF8Char *buff, UOSInt lev, Text::LineBreakType lbt)
+UTF8Char *Math::SRWKTWriter::WriteDatum(NotNullPtr<const Math::CoordinateSystem::DatumData1> datum, UTF8Char *buff, UOSInt lev, Text::LineBreakType lbt)
 {
 	buff = Text::StrConcatC(buff, UTF8STRC("DATUM[\""));
 	buff = Text::StrConcatC(buff, datum->name, datum->nameLen);

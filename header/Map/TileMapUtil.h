@@ -7,7 +7,7 @@ namespace Map
 	class TileMapUtil
 	{
 	public:
-		static Double CalcScaleDiv(Math::CoordinateSystem *csys);
+		static Double CalcScaleDiv(NotNullPtr<Math::CoordinateSystem> csys);
 	};
 }
 #endif

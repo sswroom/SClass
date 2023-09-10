@@ -40,7 +40,7 @@ Map::SPDLayer::SPDLayer(Text::CStringNN layerName) : Map::MapDrawLayer(layerName
 	this->blkScale = 0;
 	this->blks = 0;
 	this->maxTextSize = 0;
-	this->csys = Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::CoordinateSystemManager::GCST_WGS84);
+	this->csys = Math::CoordinateSystemManager::CreateDefaultCsys();
 	this->lyrType = (Map::DrawLayerType)0;
 	this->layerName = Text::StrCopyNew(fname).Ptr();
 

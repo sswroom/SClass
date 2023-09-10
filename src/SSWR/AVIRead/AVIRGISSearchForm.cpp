@@ -31,9 +31,9 @@ void __stdcall SSWR::AVIRead::AVIRGISSearchForm::OnResultSelChg(void *userObj)
 
 		if (vec)
 		{
-			Math::CoordinateSystem *csys1 = me->navi->GetCoordinateSystem();
-			Math::CoordinateSystem *csys2 = me->layer->GetCoordinateSystem();
-			if (!csys1->Equals(csys2))
+			NotNullPtr<Math::CoordinateSystem> csys1;
+			NotNullPtr<Math::CoordinateSystem> csys2 = me->layer->GetCoordinateSystem();
+			if (csys1.Set(me->navi->GetCoordinateSystem()) && !csys1->Equals(csys2))
 			{
 				vec->ConvCSys(csys2, csys1);
 			}

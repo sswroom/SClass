@@ -53,7 +53,7 @@ namespace Map
 		virtual void RemoveUpdatedHandler(UpdatedHandler hdlr, void *obj);
 
 		virtual ObjectClass GetObjectClass() const;
-		virtual Math::CoordinateSystem *GetCoordinateSystem();
+		virtual NotNullPtr<Math::CoordinateSystem> GetCoordinateSystem();
 		virtual void SetCoordinateSystem(Math::CoordinateSystem *csys);
 
 		void ReleaseAll();

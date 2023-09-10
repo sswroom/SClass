@@ -52,7 +52,10 @@ Map::SHPData::SHPData(const UInt8 *shpHdr, NotNullPtr<IO::StreamData> data, UInt
 		this->SetLayerName(CSTRP(&sbuff[i + 1], sptr));
 		sptr = Text::StrConcatC(sptr, UTF8STRC(".prj"));
 	}
-	this->csys = prjParser->ParsePRJFile({sbuff, (UOSInt)(sptr - sbuff)});
+	if (!this->csys.Set(prjParser->ParsePRJFile({sbuff, (UOSInt)(sptr - sbuff)})))
+	{
+		this->csys = Math::CoordinateSystemManager::CreateDefaultCsys();	
+	}
 
 	Text::StrConcatC(&sptr[-3], UTF8STRC("dbf"));
 
@@ -549,11 +552,7 @@ Math::Geometry::Vector2D *Map::SHPData::GetNewVectorById(GetObjectSess *session,
 	UOSInt nPoint;
 	NotNullPtr<Sync::Mutex> mut;
 
-	UInt32 srid = 0;
-	if (this->csys)
-	{
-		srid = this->csys->GetSRID();
-	}
+	UInt32 srid = this->csys->GetSRID();
 	if (this->layerType == Map::DRAW_LAYER_POINT)
 	{
 		Math::Geometry::Point *pt;

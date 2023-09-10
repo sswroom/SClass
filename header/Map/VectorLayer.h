@@ -37,10 +37,10 @@ namespace Map
 		const UTF8Char **CopyStrs(Text::PString *strs);
 		void UpdateMapRate();
 	public:
-		VectorLayer(Map::DrawLayerType layerType, NotNullPtr<Text::String> sourceName, UOSInt strCnt, const UTF8Char **colNames, Math::CoordinateSystem *csys, UOSInt nameCol, Text::String *layerName);
-		VectorLayer(Map::DrawLayerType layerType, Text::CStringNN sourceName, UOSInt strCnt, const UTF8Char **colNames, Math::CoordinateSystem *csys, UOSInt nameCol, Text::CString layerName);
-		VectorLayer(Map::DrawLayerType layerType, NotNullPtr<Text::String> sourceName, UOSInt strCnt, const UTF8Char **colNames, Math::CoordinateSystem *csys, DB::DBUtil::ColType *colTypes, UOSInt *colSize, UOSInt *colDP, UOSInt nameCol, Text::String *layerName);
-		VectorLayer(Map::DrawLayerType layerType, Text::CStringNN sourceName, UOSInt strCnt, const UTF8Char **colNames, Math::CoordinateSystem *csys, DB::DBUtil::ColType *colTypes, UOSInt *colSize, UOSInt *colDP, UOSInt nameCol, Text::CString layerName);
+		VectorLayer(Map::DrawLayerType layerType, NotNullPtr<Text::String> sourceName, UOSInt strCnt, const UTF8Char **colNames, NotNullPtr<Math::CoordinateSystem> csys, UOSInt nameCol, Text::String *layerName);
+		VectorLayer(Map::DrawLayerType layerType, Text::CStringNN sourceName, UOSInt strCnt, const UTF8Char **colNames, NotNullPtr<Math::CoordinateSystem> csys, UOSInt nameCol, Text::CString layerName);
+		VectorLayer(Map::DrawLayerType layerType, NotNullPtr<Text::String> sourceName, UOSInt strCnt, const UTF8Char **colNames, NotNullPtr<Math::CoordinateSystem> csys, DB::DBUtil::ColType *colTypes, UOSInt *colSize, UOSInt *colDP, UOSInt nameCol, Text::String *layerName);
+		VectorLayer(Map::DrawLayerType layerType, Text::CStringNN sourceName, UOSInt strCnt, const UTF8Char **colNames, NotNullPtr<Math::CoordinateSystem> csys, DB::DBUtil::ColType *colTypes, UOSInt *colSize, UOSInt *colDP, UOSInt nameCol, Text::CString layerName);
 		virtual ~VectorLayer();
 
 		virtual DrawLayerType GetLayerType() const;

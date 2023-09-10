@@ -54,7 +54,7 @@ Math::EarthEllipsoid::EarthEllipsoid(Double semiMajorAxis, Double inverseFlatten
 
 Math::EarthEllipsoid::EarthEllipsoid(EarthEllipsoidType eet)
 {
-	const Math::EarthEllipsoid::EarthEllipsoidInfo *info = GetEarthInfo(eet);
+	NotNullPtr<const Math::EarthEllipsoid::EarthEllipsoidInfo> info = GetEarthInfo(eet);
 	this->eet = info->eet;
 	this->semiMajorAxis = info->semiMajorAxis;
 	this->inverseFlattening = info->inverseFlattening;
@@ -65,7 +65,7 @@ Math::EarthEllipsoid::EarthEllipsoid(EarthEllipsoidType eet)
 
 Math::EarthEllipsoid::EarthEllipsoid()
 {
-	const Math::EarthEllipsoid::EarthEllipsoidInfo *info = GetEarthInfo(Math::EarthEllipsoid::EET_OTHER);
+	NotNullPtr<const Math::EarthEllipsoid::EarthEllipsoidInfo> info = GetEarthInfo(Math::EarthEllipsoid::EET_OTHER);
 	this->eet = info->eet;
 	this->semiMajorAxis = info->semiMajorAxis;
 	this->inverseFlattening = info->inverseFlattening;
@@ -112,7 +112,7 @@ Double Math::EarthEllipsoid::CalSurfaceDistance(Double dLat1, Double dLon1, Doub
 	return d;
 }
 
-Double Math::EarthEllipsoid::CalPLDistance(Math::Geometry::Polyline *pl, Math::Unit::Distance::DistanceUnit unit) const
+Double Math::EarthEllipsoid::CalPLDistance(NotNullPtr<Math::Geometry::Polyline> pl, Math::Unit::Distance::DistanceUnit unit) const
 {
 	UOSInt nPoint;
 	UOSInt nPtOfst;
@@ -142,7 +142,7 @@ Double Math::EarthEllipsoid::CalPLDistance(Math::Geometry::Polyline *pl, Math::U
 	return totalDist;
 }
 
-Double Math::EarthEllipsoid::CalPLDistance3D(Math::Geometry::Polyline *pl, Math::Unit::Distance::DistanceUnit unit) const
+Double Math::EarthEllipsoid::CalPLDistance3D(NotNullPtr<Math::Geometry::Polyline> pl, Math::Unit::Distance::DistanceUnit unit) const
 {
 	UOSInt nPoint;
 	UOSInt nPtOfst;
@@ -201,12 +201,9 @@ Double Math::EarthEllipsoid::CalLatByDist(Double lat, Double distM) const
 	return 180.0 / Math::PI * (rlat + (distM / ((r + r2) * 0.5)));
 }
 
-Text::CString Math::EarthEllipsoid::GetName() const
+Text::CStringNN Math::EarthEllipsoid::GetName() const
 {
-	const EarthEllipsoidInfo *info = GetEarthInfo(this->eet);
-	if (info == 0)
-		return CSTR("Unknwon");
-	return info->name;
+	return GetEarthInfo(this->eet)->name;
 }
 
 void Math::EarthEllipsoid::ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const
@@ -235,32 +232,33 @@ void Math::EarthEllipsoid::operator=(const EarthEllipsoid *ellipsoid)
 	this->eet = ellipsoid->eet;
 }
 
-Math::EarthEllipsoid *Math::EarthEllipsoid::Clone() const
+NotNullPtr<Math::EarthEllipsoid> Math::EarthEllipsoid::Clone() const
 {
-	Math::EarthEllipsoid *ellipsoid;
-	NEW_CLASS(ellipsoid, Math::EarthEllipsoid(this->semiMajorAxis, this->inverseFlattening, this->eet));
+	NotNullPtr<Math::EarthEllipsoid> ellipsoid;
+	NEW_CLASSNN(ellipsoid, Math::EarthEllipsoid(this->semiMajorAxis, this->inverseFlattening, this->eet));
 	return ellipsoid;
 }
 
-void Math::EarthEllipsoid::ToCartesianCoordRad(Double rLat, Double rLon, Double h, Double *x, Double *y, Double *z) const
+Math::Vector3 Math::EarthEllipsoid::ToCartesianCoordRad(Math::Vector3 lonLatH) const
 {
-	Double cLat = Math_Cos(rLat);
-	Double sLat = Math_Sin(rLat);
-	Double cLon = Math_Cos(rLon);
-	Double sLon = Math_Sin(rLon);
+	Double cLat = Math_Cos(lonLatH.GetLat());
+	Double sLat = Math_Sin(lonLatH.GetLat());
+	Double cLon = Math_Cos(lonLatH.GetLon());
+	Double sLon = Math_Sin(lonLatH.GetLon());
 	Double e2 = this->eccentricity * this->eccentricity;
 	Double v = this->semiMajorAxis / Math_Sqrt(1 - e2 * sLat * sLat);
-	*x = (v + h) * cLat * cLon;
-	*y = (v + h) * cLat * sLon;
-	*z = ((1 - e2) * v + h) * sLat;
+	return Math::Vector3(
+		(v + lonLatH.GetH()) * cLat * cLon,
+		(v + lonLatH.GetH()) * cLat * sLon,
+		((1 - e2) * v + lonLatH.GetH()) * sLat);
 }
 
-void Math::EarthEllipsoid::FromCartesianCoordRad(Double x, Double y, Double z, Double *outLat, Double *outLon, Double *h) const
+Math::Vector3 Math::EarthEllipsoid::FromCartesianCoordRad(Math::Vector3 coord) const
 {
 	Double e2 = this->eccentricity * this->eccentricity;
-	Double rLon = Math_ArcTan2(y, x);
-	Double p = Math_Sqrt(x * x + y * y);
-	Double rLat = Math_ArcTan2(z, p * (1 - e2));
+	Double rLon = Math_ArcTan2(coord.GetY(), coord.GetX());
+	Double p = Math_Sqrt(coord.GetX() * coord.GetX() + coord.GetY() * coord.GetY());
+	Double rLat = Math_ArcTan2(coord.GetZ(), p * (1 - e2));
 	Double sLat;
 	Double thisLat;
 	Double v = 0;
@@ -269,17 +267,15 @@ void Math::EarthEllipsoid::FromCartesianCoordRad(Double x, Double y, Double z, D
 	{
 		sLat = Math_Sin(rLat);
 		v = this->semiMajorAxis / Math_Sqrt(1 - e2 * sLat * sLat);
-		thisLat = Math_ArcTan2(z + e2 * v * sLat, p);
+		thisLat = Math_ArcTan2(coord.GetZ() + e2 * v * sLat, p);
 		if (thisLat == rLat)
 			break;
 		rLat = thisLat;
 	}
-	*outLat = rLat;
-	*outLon = rLon;
-	*h = p / Math_Cos(rLat) - v;
+	return Math::Vector3(rLon, rLat, p / Math_Cos(rLat) - v);
 }
 
-const Math::EarthEllipsoid::EarthEllipsoidInfo *Math::EarthEllipsoid::GetEarthInfo(EarthEllipsoidType eet)
+NotNullPtr<const Math::EarthEllipsoid::EarthEllipsoidInfo> Math::EarthEllipsoid::GetEarthInfo(EarthEllipsoidType eet)
 {
 	OSInt i = 0;
 	OSInt j = (sizeof(refEllipsoids) / sizeof(refEllipsoids[0])) - 1;
@@ -297,8 +293,8 @@ const Math::EarthEllipsoid::EarthEllipsoidInfo *Math::EarthEllipsoid::GetEarthIn
 		}
 		else
 		{
-			return &refEllipsoids[k];
+			return refEllipsoids[k];
 		}
 	}
-	return &refEllipsoids[0];
+	return refEllipsoids[0];
 }

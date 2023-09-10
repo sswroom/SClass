@@ -431,6 +431,15 @@ Math::CoordinateSystem *Math::CoordinateSystemManager::SRCreateCSys(UInt32 epsgI
 	return 0;
 }
 
+NotNullPtr<Math::CoordinateSystem> Math::CoordinateSystemManager::SRCreateCSysOrDef(UInt32 epsgId)
+{
+	NotNullPtr<Math::CoordinateSystem> csys;
+	if (csys.Set(SRCreateCSys(epsgId)))
+		return csys;
+	else
+		return CreateDefaultCsys();
+}
+
 Math::ProjectedCoordinateSystem *Math::CoordinateSystemManager::SRCreateProjCSys(UInt32 epsgId)
 {
 	const Math::CoordinateSystemManager::ProjcsSRInfo *projcs = SRGetProjcsInfo(epsgId);
@@ -438,8 +447,8 @@ Math::ProjectedCoordinateSystem *Math::CoordinateSystemManager::SRCreateProjCSys
 	{
 		return 0;
 	}
-	Math::GeographicCoordinateSystem *gcsys = SRCreateGeogCSys(projcs->geogcsSRID);
-	if (gcsys == 0)
+	NotNullPtr<Math::GeographicCoordinateSystem> gcsys;
+	if (!gcsys.Set(SRCreateGeogCSys(projcs->geogcsSRID)))
 	{
 		return 0;
 	}
@@ -457,7 +466,7 @@ Math::ProjectedCoordinateSystem *Math::CoordinateSystemManager::SRCreateProjCSys
 		NEW_CLASS(csys, Math::Mercator1SPProjectedCoordinateSystem(CSTRP(sbuff, sptr), projcs->srid, {projcs->projName, projcs->projNameLen}, projcs->falseEasting, projcs->falseNorthing, projcs->centralMeridian, projcs->latitudeOfOrigin, projcs->scaleFactor, gcsys, projcs->unit));
 		return csys;
 	}
-	DEL_CLASS(gcsys);
+	gcsys.Delete();
 	return 0;
 }
 
@@ -484,7 +493,7 @@ Math::GeographicCoordinateSystem *Math::CoordinateSystemManager::SRCreateGeogCSy
 	sptr = Text::StrUInt32(Text::StrConcatC(sbuff, UTF8STRC("EPSG:")), epsgId);
 	Math::EarthEllipsoid ellipsoid(spheroid->eet);
 	Math::GeographicCoordinateSystem::DatumData1 data;
-	FillDatumData(&data, datum, {datum->datumName, datum->datumNameLen}, &ellipsoid, spheroid);
+	FillDatumData(data, datum, {datum->datumName, datum->datumNameLen}, ellipsoid, spheroid);
 	NEW_CLASS(csys, Math::GeographicCoordinateSystem(CSTRP(sbuff, sptr), epsgId, {geogcs->name, geogcs->nameLen}, &data, geogcs->primem, geogcs->unit));
 	return csys;
 }
@@ -547,7 +556,7 @@ const Math::CoordinateSystemManager::DatumInfo *Math::CoordinateSystemManager::G
 	return 0;
 }
 
-void Math::CoordinateSystemManager::FillDatumData(Math::GeographicCoordinateSystem::DatumData1 *data, const Math::CoordinateSystemManager::DatumInfo *datum, Text::CString name, Math::EarthEllipsoid *ee, const SpheroidInfo *spheroid)
+void Math::CoordinateSystemManager::FillDatumData(NotNullPtr<Math::GeographicCoordinateSystem::DatumData1> data, const Math::CoordinateSystemManager::DatumInfo *datum, Text::CString name, NotNullPtr<Math::EarthEllipsoid> ee, const SpheroidInfo *spheroid)
 {
 	if (datum)
 	{
@@ -612,14 +621,13 @@ Math::ProjectedCoordinateSystem *Math::CoordinateSystemManager::CreateProjCoordi
 Math::ProjectedCoordinateSystem *Math::CoordinateSystemManager::CreateProjCoordinateSystem(Text::CStringNN sourceName, const UTF8Char *projName)
 {
 	const Math::CoordinateSystemManager::ProjectedCSysInfo *coord = GetProjCoordinateSystemInfo(projName);
-	Math::GeographicCoordinateSystem *gcs;
+	NotNullPtr<Math::GeographicCoordinateSystem> gcs;
 	Math::ProjectedCoordinateSystem *csys = 0;
 	if (coord == 0)
 	{
 		return 0;
 	}
-	gcs = Math::CoordinateSystemManager::CreateGeogCoordinateSystem(sourceName, (const UTF8Char*)coord->geoName);
-	if (gcs == 0)
+	if (!gcs.Set(Math::CoordinateSystemManager::CreateGeogCoordinateSystem(sourceName, (const UTF8Char*)coord->geoName)))
 	{
 		return 0;
 	}
@@ -708,7 +716,7 @@ Math::GeographicCoordinateSystem *Math::CoordinateSystemManager::CreateGeogCoord
 	}
 	Math::EarthEllipsoid ellipsoid(coord->eet);
 	Math::GeographicCoordinateSystem::DatumData1 data;
-	FillDatumData(&data, datum, CSTR_NULL, &ellipsoid, SRGetSpheroid(datum->spheroid));
+	FillDatumData(data, datum, CSTR_NULL, ellipsoid, SRGetSpheroid(datum->spheroid));
 	NEW_CLASS(csys, Math::GeographicCoordinateSystem(sourceName, coord->srid, {coord->geoName, coord->geoNameLen}, &data, Math::GeographicCoordinateSystem::PT_GREENWICH, Math::GeographicCoordinateSystem::UT_DEGREE));
 	return csys;
 }
@@ -744,6 +752,18 @@ const Math::CoordinateSystemManager::GeographicCSysInfo *Math::CoordinateSystemM
 		}
 	}
 	return 0;
+}
+
+NotNullPtr<Math::CoordinateSystem> Math::CoordinateSystemManager::CreateDefaultCsys()
+{
+	NotNullPtr<Math::GeographicCoordinateSystem> csys;
+	const Math::CoordinateSystemManager::DatumInfo *datum = GetDatumInfoByName((const UTF8Char*)"WGS_1984");
+	Math::EarthEllipsoid ellipsoid(Math::EarthEllipsoid::EET_WGS84);
+	Math::GeographicCoordinateSystem::DatumData1 data;
+	FillDatumData(data, datum, CSTR_NULL, ellipsoid, SRGetSpheroid(datum->spheroid));
+	NEW_CLASSNN(csys, Math::GeographicCoordinateSystem(CSTR("WGS_1984"), 4326, CSTR("WGS_1984"), &data, Math::GeographicCoordinateSystem::PT_GREENWICH, Math::GeographicCoordinateSystem::UT_DEGREE));
+	return csys;
+
 }
 
 Text::CStringNN Math::CoordinateSystemManager::GeoCoordSysTypeGetName(GeoCoordSysType gcst)

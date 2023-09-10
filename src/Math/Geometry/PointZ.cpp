@@ -36,9 +36,11 @@ Bool Math::Geometry::PointZ::HasZ() const
 	return true;
 }
 
-void Math::Geometry::PointZ::ConvCSys(Math::CoordinateSystem *srcCSys, Math::CoordinateSystem *destCSys)
+void Math::Geometry::PointZ::ConvCSys(NotNullPtr<Math::CoordinateSystem> srcCSys, NotNullPtr<Math::CoordinateSystem> destCSys)
 {
-	Math::CoordinateSystem::ConvertXYZ(srcCSys, destCSys, this->pos.x, this->pos.y, this->z, &this->pos.x, &this->pos.y, &this->z);
+	Math::Vector3 tmpPos = Math::CoordinateSystem::ConvertXYZ(srcCSys, destCSys, Math::Vector3(this->pos, this->z));
+	this->pos = tmpPos.GetXY();
+	this->z = tmpPos.GetZ();
 	this->srid = destCSys->GetSRID();
 }
 

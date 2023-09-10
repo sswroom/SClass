@@ -202,9 +202,8 @@ void Map::WebMapTileServiceSource::ReadLayer(NotNullPtr<Text::XMLReader> reader)
 				TileMatrixSet *set = ReadTileMatrixSetLink(reader);
 				if (set)
 				{
-					Double tmp;
-					Math::CoordinateSystem::ConvertXYZ(this->wgs84, set->csys, layer->wgs84Bounds.tl.x, layer->wgs84Bounds.tl.y, 0, &set->bounds.tl.x, &set->bounds.tl.y, &tmp);
-					Math::CoordinateSystem::ConvertXYZ(this->wgs84, set->csys, layer->wgs84Bounds.br.x, layer->wgs84Bounds.br.y, 0, &set->bounds.br.x, &set->bounds.br.y, &tmp);
+					set->bounds.tl = Math::CoordinateSystem::ConvertXYZ(this->wgs84, set->csys, Math::Vector3(layer->wgs84Bounds.tl, 0)).GetXY();
+					set->bounds.br = Math::CoordinateSystem::ConvertXYZ(this->wgs84, set->csys, Math::Vector3(layer->wgs84Bounds.br, 0)).GetXY();
 					layer->tileMatrixes.Add(set);
 				}
 			}
@@ -292,7 +291,7 @@ Map::WebMapTileServiceSource::TileMatrixSet *Map::WebMapTileServiceSource::ReadT
 	Text::StringBuilderUTF8 sb;
 	NEW_CLASS(set, TileMatrixSet());
 	set->id = Text::String::NewEmpty();
-	set->csys = 0;
+	set->csys = Math::CoordinateSystemManager::CreateDefaultCsys();
 	while (reader->ReadNext())
 	{
 		nt = reader->GetNodeType();
@@ -421,7 +420,12 @@ Map::WebMapTileServiceSource::TileMatrixSet *Map::WebMapTileServiceSource::ReadT
 	}
 	if (set->id->leng > 0 && set->tiles.GetCount() > 0)
 	{
-		set->csys = Math::CoordinateSystemManager::CreateFromName(set->id->ToCString());
+		NotNullPtr<Math::CoordinateSystem> csys;
+		if (csys.Set(Math::CoordinateSystemManager::CreateFromName(set->id->ToCString())))
+		{
+			set->csys.Delete();
+			set->csys = csys;
+		}
 		return set;
 	}
 	else
@@ -672,7 +676,7 @@ void Map::WebMapTileServiceSource::ReleaseTileMatrixSet(TileMatrixSet *set)
 {
 	UOSInt i;
 	set->id->Release();
-	DEL_CLASS(set->csys);
+	set->csys.Delete();
 	i = set->tiles.GetCount();
 	while (i-- > 0)
 	{
@@ -718,7 +722,7 @@ Map::WebMapTileServiceSource::WebMapTileServiceSource(NotNullPtr<Net::SocketFact
 	this->currResource = 0;
 	this->currResourceInfo = 0;
 	this->currSet = 0;
-	this->wgs84 = Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::CoordinateSystemManager::GCST_WGS84);
+	this->wgs84 = Math::CoordinateSystemManager::CreateDefaultCsys();
 	this->LoadXML();
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
@@ -744,7 +748,7 @@ Map::WebMapTileServiceSource::~WebMapTileServiceSource()
 	{
 		this->ReleaseTileMatrixDefSet(this->matrixDef.GetItem(i));
 	}
-	SDEL_CLASS(this->wgs84);
+	this->wgs84.Delete();
 }
 
 Text::CStringNN Map::WebMapTileServiceSource::GetName() const
@@ -830,7 +834,7 @@ Math::CoordinateSystem *Map::WebMapTileServiceSource::GetCoordinateSystem()
 {
 	if (this->currSet)
 	{
-		return this->currSet->csys;
+		return this->currSet->csys.Ptr();
 	}
 	else
 	{

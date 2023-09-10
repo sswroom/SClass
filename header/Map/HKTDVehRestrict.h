@@ -16,7 +16,7 @@ namespace Map
 		} RouteInfo;
 	private:
 		DB::DBTool *db;
-		Math::CoordinateSystem *csys;
+		NotNullPtr<Math::CoordinateSystem> csys;
 		Data::FastMap<Int32, RouteInfo*> routeMap;
 
 	public:

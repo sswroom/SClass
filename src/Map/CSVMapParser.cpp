@@ -5,7 +5,7 @@
 #include "Math/Geometry/Point.h"
 #include "Text/UTF8Reader.h"
 
-Map::MapDrawLayer *Map::CSVMapParser::ParseAsPoint(NotNullPtr<IO::Stream> stm, UInt32 codePage, Text::CStringNN layerName, Text::CString nameCol, Text::CString latCol, Text::CString lonCol, Math::CoordinateSystem *csys)
+Map::MapDrawLayer *Map::CSVMapParser::ParseAsPoint(NotNullPtr<IO::Stream> stm, UInt32 codePage, Text::CStringNN layerName, Text::CString nameCol, Text::CString latCol, Text::CString lonCol, NotNullPtr<Math::CoordinateSystem> csys)
 {
 	Text::PString tmpArr[2];
 	const UTF8Char **tmpcArr2;
@@ -78,7 +78,7 @@ Map::MapDrawLayer *Map::CSVMapParser::ParseAsPoint(NotNullPtr<IO::Stream> stm, U
 		reader.Delete();
 		return lyr;
 	}
-	SDEL_CLASS(csys);
+	csys.Delete();
 	reader.Delete();
 	return 0;
 }

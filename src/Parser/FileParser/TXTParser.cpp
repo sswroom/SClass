@@ -498,7 +498,7 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFileHdr(NotNullPtr<IO::Str
 			lyrType = Map::DRAW_LAYER_MIXED;
 		}
 		j = Text::StrSplitP(sarr, 20, {sbuff, (UOSInt)(sptr - sbuff)}, ',');
-		NEW_CLASS(lyr, Map::VectorLayer(lyrType, fd->GetFullFileName(), j, (const UTF8Char **)sarr, Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::CoordinateSystemManager::GCST_WGS84), 2, 0));
+		NEW_CLASS(lyr, Map::VectorLayer(lyrType, fd->GetFullFileName(), j, (const UTF8Char **)sarr, Math::CoordinateSystemManager::CreateDefaultCsys(), 2, 0));
 		while ((sptr = reader.ReadLine(sbuff, 512)) != 0)
 		{
 			i = Text::StrSplitP(sarr, 20, {sbuff, (UOSInt)(sptr - sbuff)}, ',');

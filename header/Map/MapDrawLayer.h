@@ -45,7 +45,7 @@ namespace Map
 		};
 	protected:
 		UOSInt nameCol;
-		Math::CoordinateSystem *csys;
+		NotNullPtr<Math::CoordinateSystem> csys;
 		Text::String *layerName;
 
 		UInt32 pgColor;
@@ -133,7 +133,7 @@ namespace Map
 		virtual ObjectClass GetObjectClass() const = 0;
 		NotNullPtr<Text::String> GetName() const;
 		virtual IO::ParserType GetParserType() const;
-		virtual Math::CoordinateSystem *GetCoordinateSystem();
+		virtual NotNullPtr<Math::CoordinateSystem> GetCoordinateSystem();
 		virtual void SetCoordinateSystem(Math::CoordinateSystem *csys);
 
 		Int32 CalBlockSize();

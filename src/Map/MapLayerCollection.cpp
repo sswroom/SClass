@@ -436,22 +436,12 @@ Map::MapDrawLayer::ObjectClass Map::MapLayerCollection::GetObjectClass() const
 	return Map::MapDrawLayer::OC_MAP_LAYER_COLL;
 }
 
-Math::CoordinateSystem *Map::MapLayerCollection::GetCoordinateSystem()
+NotNullPtr<Math::CoordinateSystem> Map::MapLayerCollection::GetCoordinateSystem()
 {
-	Math::CoordinateSystem *csys = 0;
-	Sync::RWMutexUsage mutUsage(this->mut, false);
-	UOSInt i = 0;
-	UOSInt j = this->layerList.GetCount();
-	while (i < j)
-	{
-		csys = this->layerList.GetItem(i)->GetCoordinateSystem();
-		if (csys)
-		{
-			break;
-		}
-		i++;
-	}
-	return csys;
+	if (this->layerList.GetCount() > 0)
+		return this->layerList.GetItem(0)->GetCoordinateSystem();
+	else
+		return this->csys;
 }
 
 void Map::MapLayerCollection::SetCoordinateSystem(Math::CoordinateSystem *csys)

@@ -4,6 +4,7 @@
 #include "Math/Coord2DDbl.h"
 #include "Math/EarthEllipsoid.h"
 #include "Math/Geometry/Polyline.h"
+#include "Math/Vector3.h"
 #include "Math/Unit/Angle.h"
 #include "Math/Unit/Distance.h"
 #include "Text/CString.h"
@@ -39,7 +40,7 @@ namespace Math
 			UInt32 srid;
 			const UTF8Char *name;
 			UOSInt nameLen;
-			Math::EarthEllipsoid *ellipsoid;
+			NotNullPtr<Math::EarthEllipsoid> ellipsoid;
 		};
 		
 		typedef struct
@@ -71,24 +72,24 @@ namespace Math
 		virtual ~CoordinateSystem();
 
 		virtual Double CalSurfaceDistanceXY(Math::Coord2DDbl pos1, Math::Coord2DDbl pos2, Math::Unit::Distance::DistanceUnit unit) const = 0;
-		virtual Double CalPLDistance(Math::Geometry::Polyline *pl, Math::Unit::Distance::DistanceUnit unit) const = 0;
-		virtual Double CalPLDistance3D(Math::Geometry::Polyline *pl, Math::Unit::Distance::DistanceUnit unit) const = 0;
-		virtual CoordinateSystem *Clone() const = 0;
+		virtual Double CalPLDistance(NotNullPtr<Math::Geometry::Polyline> pl, Math::Unit::Distance::DistanceUnit unit) const = 0;
+		virtual Double CalPLDistance3D(NotNullPtr<Math::Geometry::Polyline> pl, Math::Unit::Distance::DistanceUnit unit) const = 0;
+		virtual NotNullPtr<CoordinateSystem> Clone() const = 0;
 		virtual CoordinateSystemType GetCoordSysType() const = 0;
 		virtual Bool IsProjected() const = 0;
 		virtual void ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const = 0;
 
 		virtual IO::ParserType GetParserType() const;
 
-		virtual Bool Equals(CoordinateSystem *csys) const;
+		virtual Bool Equals(NotNullPtr<const CoordinateSystem> csys) const;
 		NotNullPtr<Text::String> GetCSysName() const { return this->csysName; }
 		UInt32 GetSRID() const { return this->srid; }
-
-		static Math::Coord2DDbl Convert(Math::CoordinateSystem *srcCoord, Math::CoordinateSystem *destCoord, Math::Coord2DDbl coord);
-		static void ConvertXYZ(Math::CoordinateSystem *srcCoord, Math::CoordinateSystem *destCoord, Double srcX, Double srcY, Double srcZ, Double *destX, Double *destY, Double *destZ);
-		static void ConvertXYArray(Math::CoordinateSystem *srcCoord, Math::CoordinateSystem *destCoord, const Math::Coord2DDbl *srcArr, Math::Coord2DDbl *destArr, UOSInt nPoints);
-		static void ConvertToCartesianCoord(Math::CoordinateSystem *srcCoord, Double srcX, Double srcY, Double srcZ, Double *destX, Double *destY, Double *destZ);
-		static void DatumData1ToString(const DatumData1 *datum, NotNullPtr<Text::StringBuilderUTF8> sb);
+ 
+		static Math::Coord2DDbl Convert(NotNullPtr<const Math::CoordinateSystem> srcCoord, NotNullPtr<const Math::CoordinateSystem> destCoord, Math::Coord2DDbl coord);
+		static Math::Vector3 ConvertXYZ(NotNullPtr<const Math::CoordinateSystem> srcCoord, NotNullPtr<const Math::CoordinateSystem> destCoord, Math::Vector3 srcPos);
+		static void ConvertXYArray(NotNullPtr<const Math::CoordinateSystem> srcCoord, NotNullPtr<const Math::CoordinateSystem> destCoord, const Math::Coord2DDbl *srcArr, Math::Coord2DDbl *destArr, UOSInt nPoints);
+		static Math::Vector3 ConvertToCartesianCoord(NotNullPtr<const Math::CoordinateSystem> srcCoord, Math::Vector3 srcPos);
+		static void DatumData1ToString(NotNullPtr<const DatumData1> datum, NotNullPtr<Text::StringBuilderUTF8> sb);
 		static Text::CString CoordinateSystemTypeGetName(CoordinateSystemType csysType);
 	};
 }

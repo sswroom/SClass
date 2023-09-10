@@ -552,14 +552,14 @@ Bool Map::DBMapLayer::SetDatabase(DB::ReadingDB *db, Text::CString schemaName, T
 
 	if (layerSrid != 0)
 	{
-		if (this->csys != 0 && this->csys->GetSRID() != layerSrid)
+		if (this->csys->GetSRID() != layerSrid)
 		{
-			DEL_CLASS(this->csys);
-			this->csys = Math::CoordinateSystemManager::SRCreateCSys(layerSrid);
-		}
-		else if (this->csys == 0)
-		{
-			this->csys = Math::CoordinateSystemManager::SRCreateCSys(layerSrid);
+			NotNullPtr<Math::CoordinateSystem> csys;
+			if (csys.Set(Math::CoordinateSystemManager::SRCreateCSys(layerSrid)))
+			{
+				this->csys.Delete();
+				this->csys = csys;
+			}
 		}
 	}
 	if (this->vecMap.GetCount() > 0)

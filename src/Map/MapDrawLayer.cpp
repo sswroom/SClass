@@ -47,7 +47,6 @@ Map::MapDrawLayer::MapDrawLayer(NotNullPtr<Text::String> sourceName, UOSInt name
 {
 	this->nameCol = nameCol;
 	this->layerName = SCOPY_STRING(layerName);
-	this->csys = 0;
 
 	this->pgColor = 0;
 	this->lineColor = 0;
@@ -62,7 +61,6 @@ Map::MapDrawLayer::MapDrawLayer(Text::CStringNN sourceName, UOSInt nameCol, Text
 {
 	this->nameCol = nameCol;
 	this->layerName = Text::String::New(layerName).Ptr();
-	this->csys = 0;
 
 	this->pgColor = 0;
 	this->lineColor = 0;
@@ -75,7 +73,7 @@ Map::MapDrawLayer::MapDrawLayer(Text::CStringNN sourceName, UOSInt nameCol, Text
 
 Map::MapDrawLayer::~MapDrawLayer()
 {
-	SDEL_CLASS(this->csys);
+	this->csys.Delete();
 	SDEL_CLASS(this->iconImg);
 	SDEL_STRING(this->layerName);
 }
@@ -103,14 +101,7 @@ Map::MapView *Map::MapDrawLayer::CreateMapView(Math::Size2DDbl scnSize)
 	Map::MapView *view;
 	Math::RectAreaDbl minMax;
 	this->GetBounds(minMax);
-	if (this->csys)
-	{
-		NEW_CLASS(view, Map::ScaledMapView(scnSize, minMax.GetCenter(), 10000, this->csys->IsProjected()));
-	}
-	else
-	{
-		NEW_CLASS(view, Map::ScaledMapView(scnSize, minMax.GetCenter(), 10000, minMax.br.x > 1000));
-	}
+	NEW_CLASS(view, Map::ScaledMapView(scnSize, minMax.GetCenter(), 10000, this->csys->IsProjected()));
 	return view;
 }
 
@@ -204,15 +195,19 @@ IO::ParserType Map::MapDrawLayer::GetParserType() const
 	return IO::ParserType::MapLayer;
 }
 
-Math::CoordinateSystem *Map::MapDrawLayer::GetCoordinateSystem()
+NotNullPtr<Math::CoordinateSystem> Map::MapDrawLayer::GetCoordinateSystem()
 {
 	return this->csys;
 }
 
 void Map::MapDrawLayer::SetCoordinateSystem(Math::CoordinateSystem *csys)
 {
-	SDEL_CLASS(this->csys);
-	this->csys = csys;
+	NotNullPtr<Math::CoordinateSystem> nncsys;
+	if (nncsys.Set(csys))
+	{
+		this->csys.Delete();
+		this->csys = nncsys;
+	}
 }
 
 Int32 Map::MapDrawLayer::CalBlockSize()
@@ -547,11 +542,7 @@ Map::VectorLayer *Map::MapDrawLayer::CreateEditableLayer()
 			sptrs[i] = 0;
 		}
 	}
-	Math::CoordinateSystem *csys = 0;
-	if (this->csys)
-	{
-		csys = this->csys->Clone();
-	}
+	NotNullPtr<Math::CoordinateSystem> csys = this->csys->Clone();
 	NEW_CLASS(lyr, Map::VectorLayer(this->GetLayerType(), this->sourceName, k, (const UTF8Char**)sptrs, csys, this->GetNameCol(), this->layerName));
 
 	sess = this->BeginGetObject();
@@ -1051,7 +1042,7 @@ Bool Map::MapLayerReader::GetColDefV(UOSInt colIndex, NotNullPtr<DB::ColDef> col
 {
 	if (colIndex == 0)
 	{
-		Math::CoordinateSystem *csys = layer->GetCoordinateSystem();
+		NotNullPtr<Math::CoordinateSystem> csys = layer->GetCoordinateSystem();
 		colDef->SetColType(DB::DBUtil::CT_Vector);
 		colDef->SetColName(CSTR("Shape"));
 		switch (layer->GetLayerType())
@@ -1080,7 +1071,7 @@ Bool Map::MapLayerReader::GetColDefV(UOSInt colIndex, NotNullPtr<DB::ColDef> col
 			colDef->SetColSize((UOSInt)DB::ColDef::GeometryType::Any);
 			break;
 		}
-		colDef->SetColDP(csys?csys->GetSRID():0);
+		colDef->SetColDP(csys->GetSRID());
 		colDef->SetAttr(CSTR(""));
 		colDef->SetDefVal(CSTR_NULL);
 		colDef->SetAutoIncNone();

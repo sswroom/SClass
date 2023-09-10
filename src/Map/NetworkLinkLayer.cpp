@@ -662,9 +662,8 @@ Map::MapDrawLayer::ObjectClass Map::NetworkLinkLayer::GetObjectClass() const
 	return Map::MapDrawLayer::OC_NETWORKLINK_LAYER;
 }
 
-Math::CoordinateSystem *Map::NetworkLinkLayer::GetCoordinateSystem()
+NotNullPtr<Math::CoordinateSystem> Map::NetworkLinkLayer::GetCoordinateSystem()
 {
-	Math::CoordinateSystem *csys = 0;
 	UOSInt i;
 	Sync::RWMutexUsage mutUsage(this->linkMut, false);
 	i = this->links.GetCount();
@@ -674,18 +673,17 @@ Math::CoordinateSystem *Map::NetworkLinkLayer::GetCoordinateSystem()
 		link = this->links.GetItem(i);
 		if (link->innerLayer)
 		{
-			csys = link->innerLayer->GetCoordinateSystem();
-			if (csys)
-				break;
+			return link->innerLayer->GetCoordinateSystem();
 		}
 	}
-	if (csys == 0)
-		csys = this->csys;
-	return csys;
+	return this->csys;
 }
 
 void Map::NetworkLinkLayer::SetCoordinateSystem(Math::CoordinateSystem *csys)
 {
+	NotNullPtr<Math::CoordinateSystem> nncsys;
+	if (!nncsys.Set(csys))
+		return;
 	UOSInt i;
 	Sync::RWMutexUsage mutUsage(this->linkMut, true);
 	i = this->links.GetCount();
@@ -694,11 +692,11 @@ void Map::NetworkLinkLayer::SetCoordinateSystem(Math::CoordinateSystem *csys)
 		LinkInfo *link = this->links.GetItem(i);
 		if (link->innerLayer)
 		{
-			link->innerLayer->SetCoordinateSystem(csys->Clone());
+			link->innerLayer->SetCoordinateSystem(csys->Clone().Ptr());
 		}
 	}
-	SDEL_CLASS(this->csys);
-	this->csys = csys;
+	this->csys.Delete();;
+	this->csys = nncsys;
 }
 
 void Map::NetworkLinkLayer::AddUpdatedHandler(UpdatedHandler hdlr, void *obj)

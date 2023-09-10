@@ -25,7 +25,7 @@ namespace Math
 			virtual Bool JoinVector(Math::Geometry::Vector2D *vec);
 			virtual Bool HasZ() const;
 			virtual Bool HasM() const;
-			virtual void ConvCSys(Math::CoordinateSystem *srcCSys, Math::CoordinateSystem *destCSys);
+			virtual void ConvCSys(NotNullPtr<Math::CoordinateSystem> srcCSys, NotNullPtr<Math::CoordinateSystem> destCSys);
 			virtual Bool Equals(Vector2D *vec) const;
 			virtual Bool EqualsNearly(Vector2D *vec) const;
 

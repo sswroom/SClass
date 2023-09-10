@@ -41,7 +41,7 @@ namespace Map
 		{
 			Math::RectAreaDbl bounds;
 			NotNullPtr<Text::String> id;
-			Math::CoordinateSystem *csys;
+			NotNullPtr<Math::CoordinateSystem> csys;
 			Data::ArrayList<TileMatrix*> tiles;
 		};
 
@@ -86,7 +86,7 @@ namespace Map
 		TileMatrixDefSet *currDef;
 		ResourceURL *currResource;
 		ResourceURL *currResourceInfo;
-		Math::CoordinateSystem *wgs84;
+		NotNullPtr<Math::CoordinateSystem> wgs84;
 		Data::FastStringMap<TileMatrixDefSet*> matrixDef;
 
 		void LoadXML();

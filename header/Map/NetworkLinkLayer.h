@@ -90,7 +90,7 @@ namespace Map
 		virtual void SetNameCol(UOSInt nameCol);
 
 		virtual ObjectClass GetObjectClass() const;
-		virtual Math::CoordinateSystem *GetCoordinateSystem();
+		virtual NotNullPtr<Math::CoordinateSystem> GetCoordinateSystem();
 		virtual void SetCoordinateSystem(Math::CoordinateSystem *csys);
 
 		virtual void AddUpdatedHandler(UpdatedHandler hdlr, void *obj);

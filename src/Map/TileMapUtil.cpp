@@ -2,9 +2,9 @@
 #include "Map/TileMapUtil.h"
 #include "Math/Unit/Distance.h"
 
-Double Map::TileMapUtil::CalcScaleDiv(Math::CoordinateSystem *csys)
+Double Map::TileMapUtil::CalcScaleDiv(NotNullPtr<Math::CoordinateSystem> csys)
 {
-	if (csys == 0 || csys->IsProjected())
+	if (csys->IsProjected())
 	{
 		return Math::Unit::Distance::Convert(Math::Unit::Distance::DU_PIXEL, Math::Unit::Distance::DU_METER, 1);
 	}

@@ -39,7 +39,7 @@ namespace Map
 		NotNullPtr<Text::String> wmsURL;
 		NotNullPtr<Net::SocketFactory> sockf;
 		Net::SSLEngine *ssl;
-		Math::CoordinateSystem *envCsys;
+		NotNullPtr<Math::CoordinateSystem> envCsys;
 
 		Text::String *version;
 		Data::ArrayList<LayerInfo*> layers;
@@ -57,7 +57,7 @@ namespace Map
 		void LoadXMLLayers(NotNullPtr<Text::XMLReader> reader);
 
 	public:
-		WebMapService(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, Text::EncodingFactory *encFact, Text::CString wmsURL, Version version, Math::CoordinateSystem *envCsys);
+		WebMapService(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, Text::EncodingFactory *encFact, Text::CString wmsURL, Version version, NotNullPtr<Math::CoordinateSystem> envCsys);
 		virtual ~WebMapService();
 
 		virtual NotNullPtr<Text::String> GetName() const;

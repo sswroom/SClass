@@ -171,7 +171,37 @@ void Map::VectorLayer::UpdateMapRate()
 	}
 }
 
-Map::VectorLayer::VectorLayer(Map::DrawLayerType layerType, NotNullPtr<Text::String> sourceName, UOSInt strCnt, const UTF8Char **colNames, Math::CoordinateSystem *csys, UOSInt nameCol, Text::String *layerName) : Map::MapDrawLayer(sourceName, nameCol, layerName)
+Map::VectorLayer::VectorLayer(Map::DrawLayerType layerType, NotNullPtr<Text::String> sourceName, UOSInt strCnt, const UTF8Char **colNames, NotNullPtr<Math::CoordinateSystem> csys, UOSInt nameCol, Text::String *layerName) : Map::MapDrawLayer(sourceName, nameCol, layerName)
+{
+	UOSInt i;
+	this->layerType = layerType;
+	this->strCnt = strCnt;
+	this->csys = csys;
+	this->min = Math::Coord2DDbl(0, 0);
+	this->max = Math::Coord2DDbl(0, 0);
+	this->maxStrLen = MemAlloc(UOSInt, strCnt);
+	this->thisStrLen = 0;
+	this->colNames = MemAlloc(const UTF8Char*, strCnt);
+	this->cols = 0;
+	this->tableName = 0;
+	this->mapRate = 10000000.0;
+	this->mixedData = MixedData::AllData;
+	i = strCnt;
+	while (i-- > 0)
+	{
+		maxStrLen[i] = 0;
+		if (colNames[i])
+		{
+			this->colNames[i] = Text::StrCopyNew(colNames[i]).Ptr();
+		}
+		else
+		{
+			this->colNames[i] = 0;
+		}
+	}
+}
+
+Map::VectorLayer::VectorLayer(Map::DrawLayerType layerType, Text::CStringNN sourceName, UOSInt strCnt, const UTF8Char **colNames, NotNullPtr<Math::CoordinateSystem> csys, UOSInt nameCol, Text::CString layerName) : Map::MapDrawLayer(sourceName, nameCol, layerName)
 {
 	UOSInt i;
 	this->layerType = layerType;
@@ -201,37 +231,7 @@ Map::VectorLayer::VectorLayer(Map::DrawLayerType layerType, NotNullPtr<Text::Str
 	}
 }
 
-Map::VectorLayer::VectorLayer(Map::DrawLayerType layerType, Text::CStringNN sourceName, UOSInt strCnt, const UTF8Char **colNames, Math::CoordinateSystem *csys, UOSInt nameCol, Text::CString layerName) : Map::MapDrawLayer(sourceName, nameCol, layerName)
-{
-	UOSInt i;
-	this->layerType = layerType;
-	this->strCnt = strCnt;
-	this->csys  = csys;
-	this->min = Math::Coord2DDbl(0, 0);
-	this->max = Math::Coord2DDbl(0, 0);
-	this->maxStrLen = MemAlloc(UOSInt, strCnt);
-	this->thisStrLen = 0;
-	this->colNames = MemAlloc(const UTF8Char*, strCnt);
-	this->cols = 0;
-	this->tableName = 0;
-	this->mapRate = 10000000.0;
-	this->mixedData = MixedData::AllData;
-	i = strCnt;
-	while (i-- > 0)
-	{
-		maxStrLen[i] = 0;
-		if (colNames[i])
-		{
-			this->colNames[i] = Text::StrCopyNew(colNames[i]).Ptr();
-		}
-		else
-		{
-			this->colNames[i] = 0;
-		}
-	}
-}
-
-Map::VectorLayer::VectorLayer(Map::DrawLayerType layerType, NotNullPtr<Text::String> sourceName, UOSInt strCnt, const UTF8Char **colNames, Math::CoordinateSystem *csys, DB::DBUtil::ColType *colTypes, UOSInt *colSize, UOSInt *colDP, UOSInt nameCol, Text::String *layerName) : Map::MapDrawLayer(sourceName, nameCol, layerName)
+Map::VectorLayer::VectorLayer(Map::DrawLayerType layerType, NotNullPtr<Text::String> sourceName, UOSInt strCnt, const UTF8Char **colNames, NotNullPtr<Math::CoordinateSystem> csys, DB::DBUtil::ColType *colTypes, UOSInt *colSize, UOSInt *colDP, UOSInt nameCol, Text::String *layerName) : Map::MapDrawLayer(sourceName, nameCol, layerName)
 {
 	UOSInt i;
 	this->layerType = layerType;
@@ -264,7 +264,7 @@ Map::VectorLayer::VectorLayer(Map::DrawLayerType layerType, NotNullPtr<Text::Str
 	}
 }
 
-Map::VectorLayer::VectorLayer(Map::DrawLayerType layerType, Text::CStringNN sourceName, UOSInt strCnt, const UTF8Char **colNames, Math::CoordinateSystem *csys, DB::DBUtil::ColType *colTypes, UOSInt *colSize, UOSInt *colDP, UOSInt nameCol, Text::CString layerName) : Map::MapDrawLayer(sourceName, nameCol, layerName)
+Map::VectorLayer::VectorLayer(Map::DrawLayerType layerType, Text::CStringNN sourceName, UOSInt strCnt, const UTF8Char **colNames, NotNullPtr<Math::CoordinateSystem> csys, DB::DBUtil::ColType *colTypes, UOSInt *colSize, UOSInt *colDP, UOSInt nameCol, Text::CString layerName) : Map::MapDrawLayer(sourceName, nameCol, layerName)
 {
 	UOSInt i;
 	this->layerType = layerType;
@@ -924,30 +924,24 @@ void Map::VectorLayer::ReplaceVector(Int64 id, Math::Geometry::Vector2D *vec)
 
 void Map::VectorLayer::ConvCoordinateSystem(Math::CoordinateSystem *csys)
 {
-	if (csys == 0)
+	NotNullPtr<Math::CoordinateSystem> destCsys;
+	if (!destCsys.Set(csys))
 		return;
-	if (this->csys == 0)
+	Math::Geometry::Vector2D *v;
+	UOSInt i;
+	i = this->vectorList.GetCount();
+	while (i-- > 0)
 	{
-		this->csys = csys;
+		v = this->vectorList.GetItem(i);
+		v->ConvCSys(this->csys, destCsys);
 	}
-	else
-	{
-		Math::Geometry::Vector2D *v;
-		UOSInt i;
-		i = this->vectorList.GetCount();
-		while (i-- > 0)
-		{
-			v = this->vectorList.GetItem(i);
-			v->ConvCSys(this->csys, csys);
-		}
 
-		Math::CoordinateSystem::ConvertXYZ(this->csys, csys, this->min.x, this->min.y, 0, &this->min.x, &this->min.y, 0);
-		Math::CoordinateSystem::ConvertXYZ(this->csys, csys, this->max.x, this->max.y, 0, &this->max.x, &this->max.y, 0);
-		this->UpdateMapRate();
+	this->min = Math::CoordinateSystem::ConvertXYZ(this->csys, destCsys, Math::Vector3(this->min, 0)).GetXY();
+	this->max = Math::CoordinateSystem::ConvertXYZ(this->csys, destCsys, Math::Vector3(this->max, 0)).GetXY();
+	this->UpdateMapRate();
 
-		SDEL_CLASS(this->csys);
-		this->csys = csys;
-	}
+	this->csys.Delete();
+	this->csys = destCsys;
 }
 
 void Map::VectorLayer::SwapXY()

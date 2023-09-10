@@ -410,14 +410,11 @@ Bool Exporter::SHPExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text:
 	}
 
 	sptr = IO::Path::ReplaceExt(fileName2, UTF8STRC("prj"));
-	Math::CoordinateSystem *csys = layer->GetCoordinateSystem();
-	if (csys)
-	{
-		UTF8Char projArr[1024];
-		Math::SRESRIWKTWriter wkt;
-		UTF8Char *cptr = wkt.WriteCSys(csys, projArr, 0, Text::LineBreakType::None);
-		IO::FileStream fs(CSTRP(fileName2, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
-		fs.Write((UInt8*)projArr, (UOSInt)(cptr - projArr));
-	}
+	NotNullPtr<Math::CoordinateSystem> csys = layer->GetCoordinateSystem();
+	UTF8Char projArr[1024];
+	Math::SRESRIWKTWriter wkt;
+	UTF8Char *cptr = wkt.WriteCSys(csys, projArr, 0, Text::LineBreakType::None);
+	IO::FileStream fs(CSTRP(fileName2, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+	fs.Write((UInt8*)projArr, (UOSInt)(cptr - projArr));
 	return true;
 }

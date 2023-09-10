@@ -69,7 +69,7 @@ Math::GeographicCoordinateSystem::~GeographicCoordinateSystem()
 {
 	Text::StrDelNew(this->datum.name);
 	Text::StrDelNew(this->datum.spheroid.name);
-	DEL_CLASS(this->datum.spheroid.ellipsoid);
+	this->datum.spheroid.ellipsoid.Delete();
 }
 
 Double Math::GeographicCoordinateSystem::CalSurfaceDistanceXY(Math::Coord2DDbl pos1, Math::Coord2DDbl pos2, Math::Unit::Distance::DistanceUnit unit) const
@@ -77,20 +77,20 @@ Double Math::GeographicCoordinateSystem::CalSurfaceDistanceXY(Math::Coord2DDbl p
 	return this->datum.spheroid.ellipsoid->CalSurfaceDistance(pos1.GetLat(), pos1.GetLon(), pos2.GetLat(), pos2.GetLon(), unit);
 }
 
-Double Math::GeographicCoordinateSystem::CalPLDistance(Math::Geometry::Polyline *pl, Math::Unit::Distance::DistanceUnit unit) const
+Double Math::GeographicCoordinateSystem::CalPLDistance(NotNullPtr<Math::Geometry::Polyline> pl, Math::Unit::Distance::DistanceUnit unit) const
 {
 	return this->datum.spheroid.ellipsoid->CalPLDistance(pl, unit);
 }
 
-Double Math::GeographicCoordinateSystem::CalPLDistance3D(Math::Geometry::Polyline *pl, Math::Unit::Distance::DistanceUnit unit) const
+Double Math::GeographicCoordinateSystem::CalPLDistance3D(NotNullPtr<Math::Geometry::Polyline> pl, Math::Unit::Distance::DistanceUnit unit) const
 {
 	return this->datum.spheroid.ellipsoid->CalPLDistance3D(pl, unit);
 }
 
-Math::CoordinateSystem *Math::GeographicCoordinateSystem::Clone() const
+NotNullPtr<Math::CoordinateSystem> Math::GeographicCoordinateSystem::Clone() const
 {
-	Math::CoordinateSystem *csys;
-	NEW_CLASS(csys, Math::GeographicCoordinateSystem(this->sourceName, this->srid, this->csysName->ToCString(), &this->datum, this->primem, this->unit));
+	NotNullPtr<Math::CoordinateSystem> csys;
+	NEW_CLASSNN(csys, Math::GeographicCoordinateSystem(this->sourceName, this->srid, this->csysName->ToCString(), &this->datum, this->primem, this->unit));
 	return csys;
 }
 
@@ -113,7 +113,7 @@ void Math::GeographicCoordinateSystem::ToString(NotNullPtr<Text::StringBuilderUT
 	sb->AppendC(UTF8STRC("\r\nGeographic Name: "));
 	sb->Append(this->csysName);
 	sb->AppendC(UTF8STRC("\r\n"));
-	DatumData1ToString(&this->datum, sb);
+	DatumData1ToString(this->datum, sb);
 }
 
 Text::CString Math::GeographicCoordinateSystem::GetDatumName() const
@@ -121,9 +121,9 @@ Text::CString Math::GeographicCoordinateSystem::GetDatumName() const
 	return Text::CString(this->datum.name, this->datum.nameLen);
 }
 
-const Math::GeographicCoordinateSystem::DatumData1 *Math::GeographicCoordinateSystem::GetDatum() const
+NotNullPtr<const Math::GeographicCoordinateSystem::DatumData1> Math::GeographicCoordinateSystem::GetDatum() const
 {
-	return &this->datum;
+	return this->datum;
 }
 
 Math::CoordinateSystem::PrimemType Math::GeographicCoordinateSystem::GetPrimem() const
@@ -136,50 +136,49 @@ Math::CoordinateSystem::UnitType Math::GeographicCoordinateSystem::GetUnit() con
 	return this->unit;
 }
 
-void Math::GeographicCoordinateSystem::ToCartesianCoordRad(Double lat, Double lon, Double h, Double *x, Double *y, Double *z) const
+Math::Vector3 Math::GeographicCoordinateSystem::ToCartesianCoordRad(Math::Vector3 lonLatH) const
 {
-	Double tmpX;
-	Double tmpY;
-	Double tmpZ;
-	this->datum.spheroid.ellipsoid->ToCartesianCoordRad(lat, lon, h, &tmpX, &tmpY, &tmpZ);
+	Math::Vector3 tmpPos = this->datum.spheroid.ellipsoid->ToCartesianCoordRad(lonLatH);
 	if (this->datum.scale == 0 && this->datum.xAngle == 0 && this->datum.yAngle == 0 && this->datum.zAngle == 0)
 	{
-		*x = tmpX + datum.cX;
-		*y = tmpY + datum.cY;
-		*z = tmpZ + datum.cZ;
+		return Math::Vector3(
+			tmpPos.val[0] + datum.cX,
+			tmpPos.val[1] + datum.cY,
+			tmpPos.val[2] + datum.cZ);
 	}
 	else
 	{
-		tmpX -= this->datum.x0;
-		tmpY -= this->datum.y0;
-		tmpZ -= this->datum.z0;
+		tmpPos.val[0] -= this->datum.x0;
+		tmpPos.val[1] -= this->datum.y0;
+		tmpPos.val[2] -= this->datum.z0;
 		Double s = 1 + this->datum.scale * 0.000001;
-		*x = s * (                tmpX - datum.zAngle * tmpY + datum.yAngle * tmpZ) + datum.cX + this->datum.x0;
-		*y = s * ( datum.zAngle * tmpX +                tmpY - datum.xAngle * tmpZ) + datum.cY + this->datum.y0;
-		*z = s * (-datum.yAngle * tmpX + datum.xAngle * tmpY +                tmpZ) + datum.cZ + this->datum.z0;
+		return Math::Vector3(
+			s * (                tmpPos.val[0] - datum.zAngle * tmpPos.val[1] + datum.yAngle * tmpPos.val[2]) + datum.cX + this->datum.x0,
+			s * ( datum.zAngle * tmpPos.val[0] +                tmpPos.val[1] - datum.xAngle * tmpPos.val[2]) + datum.cY + this->datum.y0,
+			s * (-datum.yAngle * tmpPos.val[0] + datum.xAngle * tmpPos.val[1] +                tmpPos.val[2]) + datum.cZ + this->datum.z0);
 	}
 }
 
-void Math::GeographicCoordinateSystem::FromCartesianCoordRad(Double x, Double y, Double z, Double *lat, Double *lon, Double *h) const
+Math::Vector3 Math::GeographicCoordinateSystem::FromCartesianCoordRad(Math::Vector3 coord) const
 {
-	Double tmpX;
-	Double tmpY;
-	Double tmpZ;
+	Math::Vector3 tmpPos;
 	if (this->datum.scale == 0 && this->datum.xAngle == 0 && this->datum.yAngle == 0 && this->datum.zAngle == 0)
 	{
-		tmpX = x - this->datum.cX;
-		tmpY = y - this->datum.cY;
-		tmpZ = z - this->datum.cZ;
+		tmpPos = Math::Vector3(
+			coord.val[0] - this->datum.cX,
+			coord.val[1] - this->datum.cY,
+			coord.val[2] - this->datum.cZ);
 	}
 	else
 	{
-		x = x - this->datum.x0 - datum.cX;
-		y = y - this->datum.y0 - datum.cY;
-		z = z - this->datum.z0 - datum.cZ;
+		coord.val[0] = coord.val[0] - this->datum.x0 - datum.cX;
+		coord.val[1] = coord.val[1] - this->datum.y0 - datum.cY;
+		coord.val[2] = coord.val[2] - this->datum.z0 - datum.cZ;
 		Double s = 1 / (1 + this->datum.scale * 0.000001);
-		tmpX = s * (                      x + this->datum.zAngle * y - this->datum.yAngle * z) + this->datum.x0;
-		tmpY = s * (-this->datum.zAngle * x +                      y + this->datum.xAngle * z) + this->datum.y0;
-		tmpZ = s * ( this->datum.yAngle * x - this->datum.xAngle * y +                      z) + this->datum.z0;
+		tmpPos = Math::Vector3(
+			s * (                      coord.val[0] + this->datum.zAngle * coord.val[1] - this->datum.yAngle * coord.val[2]) + this->datum.x0,
+			s * (-this->datum.zAngle * coord.val[0] +                      coord.val[1] + this->datum.xAngle * coord.val[2]) + this->datum.y0,
+			s * ( this->datum.yAngle * coord.val[0] - this->datum.xAngle * coord.val[1] +                      coord.val[2]) + this->datum.z0);
 	}
-	this->datum.spheroid.ellipsoid->FromCartesianCoordRad(tmpX, tmpY, tmpZ, lat, lon, h);
+	return this->datum.spheroid.ellipsoid->FromCartesianCoordRad(tmpPos);
 }

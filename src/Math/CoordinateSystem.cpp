@@ -27,9 +27,9 @@ IO::ParserType Math::CoordinateSystem::GetParserType() const
 	return IO::ParserType::CoordinateSystem;
 }
 
-Bool Math::CoordinateSystem::Equals(Math::CoordinateSystem *csys) const
+Bool Math::CoordinateSystem::Equals(NotNullPtr<const Math::CoordinateSystem> csys) const
 {
-	if (this == csys)
+	if (this == csys.Ptr())
 		return true;
 	Math::CoordinateSystem::CoordinateSystemType cst = this->GetCoordSysType();
 	if (cst != csys->GetCoordSysType())
@@ -37,7 +37,7 @@ Bool Math::CoordinateSystem::Equals(Math::CoordinateSystem *csys) const
 	if (cst == Math::CoordinateSystem::CoordinateSystemType::Geographic)
 	{
 		Math::GeographicCoordinateSystem *gcs1 = (Math::GeographicCoordinateSystem*)this;
-		Math::GeographicCoordinateSystem *gcs2 = (Math::GeographicCoordinateSystem*)csys;
+		Math::GeographicCoordinateSystem *gcs2 = (Math::GeographicCoordinateSystem*)csys.Ptr();
 		return gcs1->GetEllipsoid()->Equals(gcs2->GetEllipsoid());
 	}
 	else if (cst == Math::CoordinateSystem::CoordinateSystemType::PointMapping)
@@ -47,66 +47,54 @@ Bool Math::CoordinateSystem::Equals(Math::CoordinateSystem *csys) const
 	else
 	{
 		Math::ProjectedCoordinateSystem *pcs1 = (Math::ProjectedCoordinateSystem*)this;
-		Math::ProjectedCoordinateSystem *pcs2 = (Math::ProjectedCoordinateSystem*)csys;
-		return pcs1->SameProjection(pcs2);
+		return pcs1->SameProjection(NotNullPtr<const Math::ProjectedCoordinateSystem>::ConvertFrom(csys));
 	}
 }
 
-Math::Coord2DDbl Math::CoordinateSystem::Convert(Math::CoordinateSystem *srcCoord, Math::CoordinateSystem *destCoord, Math::Coord2DDbl coord)
+Math::Coord2DDbl Math::CoordinateSystem::Convert(NotNullPtr<const Math::CoordinateSystem> srcCoord, NotNullPtr<const Math::CoordinateSystem> destCoord, Math::Coord2DDbl coord)
 {
-	Double x;
-	Double y;
-	ConvertXYZ(srcCoord, destCoord, coord.x, coord.y, 0, &x, &y, 0);
-	return Math::Coord2DDbl(x, y);
+	return ConvertXYZ(srcCoord, destCoord, Math::Vector3(coord, 0)).GetXY();
 }
 
-void Math::CoordinateSystem::ConvertXYZ(Math::CoordinateSystem *srcCoord, Math::CoordinateSystem *destCoord, Double srcX, Double srcY, Double srcZ, Double *destX, Double *destY, Double *destZ)
+Math::Vector3 Math::CoordinateSystem::ConvertXYZ(NotNullPtr<const Math::CoordinateSystem> srcCoord, NotNullPtr<const Math::CoordinateSystem> destCoord, Math::Vector3 srcPos)
 {
 	if (srcCoord->IsProjected())
 	{
-		Math::ProjectedCoordinateSystem *pcs = (Math::ProjectedCoordinateSystem*)srcCoord;
-		pcs->ToGeographicCoordinateDeg(srcX, srcY, &srcX, &srcY);
+		Math::ProjectedCoordinateSystem *pcs = (Math::ProjectedCoordinateSystem*)srcCoord.Ptr();
+		srcPos = Math::Vector3(pcs->ToGeographicCoordinateDeg(srcPos.GetXY()), srcPos.val[2]);
 		srcCoord = pcs->GetGeographicCoordinateSystem();
 	}
 	if (srcCoord->Equals(destCoord))
 	{
-		*destX = srcX;
-		*destY = srcY;
-		if (destZ)
-			*destZ = srcZ;
-		return;
+		return srcPos;
 	}
-	((Math::GeographicCoordinateSystem*)srcCoord)->ToCartesianCoordDeg(srcY, srcX, srcZ, &srcX, &srcY, &srcZ);
+	srcPos = ((Math::GeographicCoordinateSystem*)srcCoord.Ptr())->ToCartesianCoordDeg(srcPos);
 
 	if (destCoord->IsProjected())
 	{
-		Math::ProjectedCoordinateSystem *pcs = (Math::ProjectedCoordinateSystem*)destCoord;
-		Math::GeographicCoordinateSystem *gcs = pcs->GetGeographicCoordinateSystem();
-		gcs->FromCartesianCoordRad(srcX, srcY, srcZ, &srcY, &srcX, &srcZ);
-		pcs->FromGeographicCoordinateRad(srcX, srcY, destX, destY);
-		if (destZ)
-			*destZ = srcZ;
+		Math::ProjectedCoordinateSystem *pcs = (Math::ProjectedCoordinateSystem*)destCoord.Ptr();
+		NotNullPtr<Math::GeographicCoordinateSystem> gcs = pcs->GetGeographicCoordinateSystem();
+		srcPos = gcs->FromCartesianCoordRad(srcPos);
+		return Math::Vector3(pcs->FromGeographicCoordinateRad(srcPos.GetXY()), srcPos.GetZ());
 	}
 	else
 	{
-		Math::GeographicCoordinateSystem *gcs = (Math::GeographicCoordinateSystem*)destCoord;;
-		gcs->FromCartesianCoordDeg(srcX, srcY, srcZ, destY, destX, &srcZ);
-		if (destZ)
-			*destZ = srcZ;
+		Math::GeographicCoordinateSystem *gcs = (Math::GeographicCoordinateSystem*)destCoord.Ptr();
+		return gcs->FromCartesianCoordDeg(srcPos);
 	}
 }
 
-void Math::CoordinateSystem::ConvertXYArray(Math::CoordinateSystem *srcCoord, Math::CoordinateSystem *destCoord, const Math::Coord2DDbl *srcArr, Math::Coord2DDbl *destArr, UOSInt nPoints)
+void Math::CoordinateSystem::ConvertXYArray(NotNullPtr<const Math::CoordinateSystem> srcCoord, NotNullPtr<const Math::CoordinateSystem> destCoord, const Math::Coord2DDbl *srcArr, Math::Coord2DDbl *destArr, UOSInt nPoints)
 {
 	UOSInt i;
 	Bool srcRad = false;
 	if (srcCoord->IsProjected())
 	{
-		Math::ProjectedCoordinateSystem *pcs = (Math::ProjectedCoordinateSystem*)srcCoord;
+		Math::ProjectedCoordinateSystem *pcs = (Math::ProjectedCoordinateSystem*)srcCoord.Ptr();
 		i = nPoints;
 		while (i-- > 0)
 		{
-			pcs->ToGeographicCoordinateRad(srcArr[i].x, srcArr[i].y, &destArr[i].x, &destArr[i].y);
+			destArr[i] = pcs->ToGeographicCoordinateRad(srcArr[i]);
 		}
 		srcCoord = pcs->GetGeographicCoordinateSystem();
 		srcArr = destArr;
@@ -128,19 +116,19 @@ void Math::CoordinateSystem::ConvertXYArray(Math::CoordinateSystem *srcCoord, Ma
 		}
 		return;
 	}
-	Double tmpZ;
+	Math::Vector3 tmpPos;
 	if (destCoord->IsProjected())
 	{
-		Math::ProjectedCoordinateSystem *pcs = (Math::ProjectedCoordinateSystem*)destCoord;
-		Math::GeographicCoordinateSystem *gcs = pcs->GetGeographicCoordinateSystem();
+		Math::ProjectedCoordinateSystem *pcs = (Math::ProjectedCoordinateSystem*)destCoord.Ptr();
+		NotNullPtr<Math::GeographicCoordinateSystem> gcs = pcs->GetGeographicCoordinateSystem();
 		if (srcRad)
 		{
 			i = nPoints;
 			while (i-- > 0)
 			{
-				((Math::GeographicCoordinateSystem*)srcCoord)->ToCartesianCoordRad(srcArr[i].GetLat(), srcArr[i].GetLon(), 0, &destArr[i].x, &destArr[i].y, &tmpZ);
-				gcs->FromCartesianCoordRad(destArr[i].x, destArr[i].y, tmpZ, &destArr[i].GetLatRef(), &destArr[i].GetLonRef(), &tmpZ);
-				pcs->FromGeographicCoordinateRad(destArr[i].x, destArr[i].y, &destArr[i].x, &destArr[i].y);
+				tmpPos = ((Math::GeographicCoordinateSystem*)srcCoord.Ptr())->ToCartesianCoordRad(Math::Vector3(srcArr[i], 0));
+				tmpPos = gcs->FromCartesianCoordRad(tmpPos);
+				destArr[i] = pcs->FromGeographicCoordinateRad(tmpPos.GetXY());
 			}
 		}
 		else
@@ -148,22 +136,22 @@ void Math::CoordinateSystem::ConvertXYArray(Math::CoordinateSystem *srcCoord, Ma
 			i = nPoints;
 			while (i-- > 0)
 			{
-				((Math::GeographicCoordinateSystem*)srcCoord)->ToCartesianCoordDeg(srcArr[i].GetLat(), srcArr[i].GetLon(), 0, &destArr[i].x, &destArr[i].y, &tmpZ);
-				gcs->FromCartesianCoordRad(destArr[i].x, destArr[i].y, tmpZ, &destArr[i].GetLatRef(), &destArr[i].GetLonRef(), &tmpZ);
-				pcs->FromGeographicCoordinateRad(destArr[i].x, destArr[i].y, &destArr[i].x, &destArr[i].y);
+				tmpPos = ((Math::GeographicCoordinateSystem*)srcCoord.Ptr())->ToCartesianCoordDeg(Math::Vector3(srcArr[i], 0));
+				tmpPos = gcs->FromCartesianCoordRad(tmpPos);
+				destArr[i] = pcs->FromGeographicCoordinateRad(tmpPos.GetXY());
 			}
 		}
 	}
 	else
 	{
-		Math::GeographicCoordinateSystem *gcs = (Math::GeographicCoordinateSystem*)destCoord;;
+		Math::GeographicCoordinateSystem *gcs = (Math::GeographicCoordinateSystem*)destCoord.Ptr();
 		if (srcRad)
 		{
 			i = nPoints;
 			while (i-- > 0)
 			{
-				((Math::GeographicCoordinateSystem*)srcCoord)->ToCartesianCoordRad(srcArr[i].GetLat(), srcArr[i].GetLon(), 0, &destArr[i].x, &destArr[i].y, &tmpZ);
-				gcs->FromCartesianCoordDeg(destArr[i].x, destArr[i].y, tmpZ, &destArr[i].GetLatRef(), &destArr[i].GetLonRef(), &tmpZ);
+				tmpPos = ((Math::GeographicCoordinateSystem*)srcCoord.Ptr())->ToCartesianCoordRad(Math::Vector3(srcArr[i], 0));;
+				destArr[i] = gcs->FromCartesianCoordDeg(tmpPos).GetXY();
 			}
 		}
 		else
@@ -171,25 +159,25 @@ void Math::CoordinateSystem::ConvertXYArray(Math::CoordinateSystem *srcCoord, Ma
 			i = nPoints;
 			while (i-- > 0)
 			{
-				((Math::GeographicCoordinateSystem*)srcCoord)->ToCartesianCoordDeg(srcArr[i].GetLat(), srcArr[i].GetLon(), 0, &destArr[i].x, &destArr[i].y, &tmpZ);
-				gcs->FromCartesianCoordDeg(destArr[i].x, destArr[i].y, tmpZ, &destArr[i].GetLatRef(), &destArr[i].GetLonRef(), &tmpZ);
+				tmpPos = ((Math::GeographicCoordinateSystem*)srcCoord.Ptr())->ToCartesianCoordDeg(Math::Vector3(srcArr[i], 0));
+				destArr[i] = gcs->FromCartesianCoordDeg(tmpPos).GetXY();
 			}
 		}
 	}
 }
 
-void Math::CoordinateSystem::ConvertToCartesianCoord(Math::CoordinateSystem *srcCoord, Double srcX, Double srcY, Double srcZ, Double *destX, Double *destY, Double *destZ)
+Math::Vector3 Math::CoordinateSystem::ConvertToCartesianCoord(NotNullPtr<const Math::CoordinateSystem> srcCoord, Math::Vector3 srcPos)
 {
 	if (srcCoord->IsProjected())
 	{
-		Math::ProjectedCoordinateSystem *pcs = (Math::ProjectedCoordinateSystem*)srcCoord;
-		pcs->ToGeographicCoordinateDeg(srcX, srcY, &srcX, &srcY);
+		Math::ProjectedCoordinateSystem *pcs = (Math::ProjectedCoordinateSystem*)srcCoord.Ptr();
+		srcPos = Math::Vector3(pcs->ToGeographicCoordinateDeg(srcPos.GetXY()), srcPos.GetZ());
 		srcCoord = pcs->GetGeographicCoordinateSystem();
 	}
-	((Math::GeographicCoordinateSystem*)srcCoord)->ToCartesianCoordDeg(srcY, srcX, srcZ, destX, destY, destZ);
+	return ((Math::GeographicCoordinateSystem*)srcCoord.Ptr())->ToCartesianCoordDeg(srcPos);
 }
 
-void Math::CoordinateSystem::DatumData1ToString(const DatumData1 *datum, NotNullPtr<Text::StringBuilderUTF8> sb)
+void Math::CoordinateSystem::DatumData1ToString(NotNullPtr<const DatumData1> datum, NotNullPtr<Text::StringBuilderUTF8> sb)
 {
 	sb->AppendC(UTF8STRC("Datum Name: "));
 	sb->AppendC(datum->name, datum->nameLen);

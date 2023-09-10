@@ -1530,14 +1530,14 @@ IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFileHdr(NotNullPtr<IO::St
 			Math::Geometry::VectorImage *vimg;
 			Media::SharedImage *simg;
 			
-			Math::CoordinateSystem *csys;
+			NotNullPtr<Math::CoordinateSystem> csys;
 			if (srid == 0)
 			{
-				csys = Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::CoordinateSystemManager::GCST_WGS84);
+				csys = Math::CoordinateSystemManager::CreateDefaultCsys();
 			}
 			else
 			{
-				csys = Math::CoordinateSystemManager::SRCreateCSys(srid);
+				csys = Math::CoordinateSystemManager::SRCreateCSysOrDef(srid);
 			}
 			NEW_CLASS(lyr, Map::VectorLayer(Map::DRAW_LAYER_IMAGE, fd->GetFullName(), 0, 0, csys, 0, 0, 0, 0, 0));
 			img->To32bpp();
@@ -1606,7 +1606,7 @@ IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFileHdr(NotNullPtr<IO::St
 					Map::VectorLayer *lyr;
 					Math::Geometry::VectorImage *vimg;
 					Media::SharedImage *simg;
-					Math::CoordinateSystem *csys = Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::CoordinateSystemManager::GCST_WGS84);
+					NotNullPtr<Math::CoordinateSystem> csys = Math::CoordinateSystemManager::CreateDefaultCsys();
 					
 					NEW_CLASS(lyr, Map::VectorLayer(Map::DRAW_LAYER_IMAGE, fd->GetFullName(), 0, 0, csys, 0, 0, 0, 0, 0));
 					img->To32bpp();

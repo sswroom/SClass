@@ -99,7 +99,7 @@ Map::CIPLayer2::CIPLayer2(Text::CStringNN layerName) : Map::MapDrawLayer(layerNa
 	}
 	DEL_CLASS(file);
 
-	this->csys = Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::CoordinateSystemManager::GCST_WGS84);
+	this->csys = Math::CoordinateSystemManager::CreateDefaultCsys();
 	missFile = false;
 	if (!IsError())
 	{

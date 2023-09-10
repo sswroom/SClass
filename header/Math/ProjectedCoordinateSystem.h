@@ -7,7 +7,7 @@ namespace Math
 	class ProjectedCoordinateSystem : public CoordinateSystem
 	{
 	protected:
-		Math::GeographicCoordinateSystem *gcs;
+		NotNullPtr<Math::GeographicCoordinateSystem> gcs;
 		Double falseEasting;
 		Double falseNorthing;
 		Double rcentralMeridian;
@@ -16,24 +16,24 @@ namespace Math
 		Math::CoordinateSystem::UnitType unit;
 
 	public:
-		ProjectedCoordinateSystem(NotNullPtr<Text::String> sourceName, UInt32 srid, Text::CString csysName, Double falseEasting, Double falseNorthing, Double dcentralMeridian, Double dlatitudeOfOrigin, Double scaleFactor, Math::GeographicCoordinateSystem *gcs, Math::CoordinateSystem::UnitType unit);
-		ProjectedCoordinateSystem(Text::CStringNN sourceName, UInt32 srid, Text::CString csysName, Double falseEasting, Double falseNorthing, Double dcentralMeridian, Double dlatitudeOfOrigin, Double scaleFactor, Math::GeographicCoordinateSystem *gcs, Math::CoordinateSystem::UnitType unit);
+		ProjectedCoordinateSystem(NotNullPtr<Text::String> sourceName, UInt32 srid, Text::CString csysName, Double falseEasting, Double falseNorthing, Double dcentralMeridian, Double dlatitudeOfOrigin, Double scaleFactor, NotNullPtr<Math::GeographicCoordinateSystem> gcs, Math::CoordinateSystem::UnitType unit);
+		ProjectedCoordinateSystem(Text::CStringNN sourceName, UInt32 srid, Text::CString csysName, Double falseEasting, Double falseNorthing, Double dcentralMeridian, Double dlatitudeOfOrigin, Double scaleFactor, NotNullPtr<Math::GeographicCoordinateSystem> gcs, Math::CoordinateSystem::UnitType unit);
 		virtual ~ProjectedCoordinateSystem();
 
 		virtual Double CalSurfaceDistanceXY(Math::Coord2DDbl pos1, Math::Coord2DDbl pos2, Math::Unit::Distance::DistanceUnit unit) const;
-		virtual Double CalPLDistance(Math::Geometry::Polyline *pl, Math::Unit::Distance::DistanceUnit unit) const;
-		virtual Double CalPLDistance3D(Math::Geometry::Polyline *pl, Math::Unit::Distance::DistanceUnit unit) const;
-		virtual CoordinateSystem *Clone() const = 0;
+		virtual Double CalPLDistance(NotNullPtr<Math::Geometry::Polyline> pl, Math::Unit::Distance::DistanceUnit unit) const;
+		virtual Double CalPLDistance3D(NotNullPtr<Math::Geometry::Polyline> pl, Math::Unit::Distance::DistanceUnit unit) const;
+		virtual NotNullPtr<CoordinateSystem> Clone() const = 0;
 		virtual CoordinateSystemType GetCoordSysType() const = 0;
 		virtual Bool IsProjected() const;
 		virtual void ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const;
 
-		Math::GeographicCoordinateSystem *GetGeographicCoordinateSystem() const { return this->gcs; }
-		virtual void ToGeographicCoordinateRad(Double projX, Double projY, Double *geoX, Double *geoY) const = 0;
-		virtual void FromGeographicCoordinateRad(Double geoX, Double geoY, Double *projX, Double *projY) const = 0;
-		void ToGeographicCoordinateDeg(Double projX, Double projY, Double *geoX, Double *geoY) const { ToGeographicCoordinateRad(projX, projY, geoX, geoY); *geoX = *geoX * 180 / Math::PI; *geoY = *geoY * 180 / Math::PI; }
-		void FromGeographicCoordinateDeg(Double geoX, Double geoY, Double *projX, Double *projY) const { FromGeographicCoordinateRad(geoX * Math::PI / 180.0, geoY * Math::PI / 180.0, projX, projY); }
-		Bool SameProjection(Math::ProjectedCoordinateSystem *csys) const;
+		NotNullPtr<Math::GeographicCoordinateSystem> GetGeographicCoordinateSystem() const { return this->gcs; }
+		virtual Math::Coord2DDbl ToGeographicCoordinateRad(Math::Coord2DDbl projPos) const = 0;
+		virtual Math::Coord2DDbl FromGeographicCoordinateRad(Math::Coord2DDbl geoPos) const = 0;
+		Math::Coord2DDbl ToGeographicCoordinateDeg(Math::Coord2DDbl projPos) const { return ToGeographicCoordinateRad(projPos) * (180 / Math::PI); }
+		Math::Coord2DDbl FromGeographicCoordinateDeg(Math::Coord2DDbl geoPos) const { return FromGeographicCoordinateRad(geoPos * (Math::PI / 180.0)); }
+		Bool SameProjection(NotNullPtr<const Math::ProjectedCoordinateSystem> csys) const;
 
 		Double GetLatitudeOfOriginDegree() const { return this->rlatitudeOfOrigin * 180 / Math::PI; }
 		Double GetCentralMeridianDegree() const { return this->rcentralMeridian * 180 / Math::PI; }

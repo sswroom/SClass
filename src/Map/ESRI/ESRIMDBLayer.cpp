@@ -183,7 +183,10 @@ void Map::ESRI::ESRIMDBLayer::Init(DB::SharedDBConn *conn, UInt32 srid, Text::CS
 	}
 	mutUsage.EndUse();
 	this->currDB = 0;
-	this->csys = Math::CoordinateSystemManager::SRCreateCSys(srid);
+	if (!this->csys.Set(Math::CoordinateSystemManager::SRCreateCSys(srid)))
+	{
+		this->csys = Math::CoordinateSystemManager::CreateDefaultCsys();
+	}
 }
 
 Map::ESRI::ESRIMDBLayer::ESRIMDBLayer(DB::SharedDBConn *conn, UInt32 srid, NotNullPtr<Text::String> sourceName, Text::CString tableName) : Map::MapDrawLayer(sourceName->ToCString(), 0, tableName)

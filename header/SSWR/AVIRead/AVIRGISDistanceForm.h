@@ -30,7 +30,7 @@ namespace SSWR
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			IMapNavigator *navi;
-			Math::CoordinateSystem *csys;
+			NotNullPtr<Math::CoordinateSystem> csys;
 
 			Data::ArrayList<Double> *ptList;
 			Math::Coord2DDbl lastMapPos;

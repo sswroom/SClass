@@ -82,7 +82,7 @@ Map::HKTDVehRestrict::~HKTDVehRestrict()
 {
 	UOSInt i;
 	RouteInfo *route;
-	DEL_CLASS(this->csys);
+	this->csys.Delete();
 	DEL_CLASS(this->db);
 
 	i = this->routeMap.GetCount();

@@ -7,15 +7,15 @@ namespace Math
 	class MercatorProjectedCoordinateSystem : public ProjectedCoordinateSystem
 	{
 	public:
-		MercatorProjectedCoordinateSystem(NotNullPtr<Text::String> sourceName, UInt32 srid, Text::CString projName, Double falseEasting, Double falseNorthing, Double centralMeridian, Double latitudeOfOrigin, Double scaleFactor, Math::GeographicCoordinateSystem *gcs, UnitType unit);
-		MercatorProjectedCoordinateSystem(Text::CStringNN sourceName, UInt32 srid, Text::CString projName, Double falseEasting, Double falseNorthing, Double centralMeridian, Double latitudeOfOrigin, Double scaleFactor, Math::GeographicCoordinateSystem *gcs, UnitType unit);
+		MercatorProjectedCoordinateSystem(NotNullPtr<Text::String> sourceName, UInt32 srid, Text::CString projName, Double falseEasting, Double falseNorthing, Double centralMeridian, Double latitudeOfOrigin, Double scaleFactor, NotNullPtr<Math::GeographicCoordinateSystem> gcs, UnitType unit);
+		MercatorProjectedCoordinateSystem(Text::CStringNN sourceName, UInt32 srid, Text::CString projName, Double falseEasting, Double falseNorthing, Double centralMeridian, Double latitudeOfOrigin, Double scaleFactor, NotNullPtr<Math::GeographicCoordinateSystem> gcs, UnitType unit);
 		virtual ~MercatorProjectedCoordinateSystem();
 
-		virtual CoordinateSystem *Clone() const;
+		virtual NotNullPtr<CoordinateSystem> Clone() const;
 		virtual CoordinateSystemType GetCoordSysType() const;
 
-		virtual void ToGeographicCoordinateRad(Double projX, Double projY, Double *geoX, Double *geoY) const;
-		virtual void FromGeographicCoordinateRad(Double geoX, Double geoY, Double *projX, Double *projY) const;
+		virtual Math::Coord2DDbl ToGeographicCoordinateRad(Math::Coord2DDbl projPos) const;
+		virtual Math::Coord2DDbl FromGeographicCoordinateRad(Math::Coord2DDbl geoPos) const;
 		Double CalcM(Double rLat) const;
 	};
 }

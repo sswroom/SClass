@@ -72,7 +72,7 @@ Map::FileGDBLayer::FileGDBLayer(DB::SharedReadingDB *conn, Text::CStringNN sourc
 
 	Sync::MutexUsage mutUsage;
 	this->currDB = this->conn->UseDB(mutUsage).Ptr();
-	this->csys = Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::CoordinateSystemManager::GCST_WGS84);
+	this->csys = Math::CoordinateSystemManager::CreateDefaultCsys();
 	DB::DBReader *r = this->currDB->QueryTableData(CSTR_NULL, tableName, 0, 0, 0, 0, 0);
 	if (r)
 	{
@@ -91,6 +91,7 @@ Map::FileGDBLayer::FileGDBLayer(DB::SharedReadingDB *conn, Text::CStringNN sourc
 				if (prj && prj->v[0])
 				{
 					Math::CoordinateSystem *csys2 = 0;
+					NotNullPtr<Math::CoordinateSystem> nncsys2;
 					if (prj->StartsWith(UTF8STRC("EPSG:")))
 					{
 						csys2 = Math::CoordinateSystemManager::SRCreateCSys(Text::StrToUInt32(&prj->v[5]));
@@ -100,10 +101,10 @@ Map::FileGDBLayer::FileGDBLayer(DB::SharedReadingDB *conn, Text::CStringNN sourc
 						UOSInt tmp;
 						csys2 = prjParser->ParsePRJBuff(tableName, prj->v, prj->leng, &tmp);
 					}
-					if (csys2)
+					if (nncsys2.Set(csys2))
 					{
-						DEL_CLASS(this->csys);
-						this->csys = csys2;
+						this->csys.Delete();
+						this->csys = nncsys2;
 					}
 				}
 			}

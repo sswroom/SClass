@@ -1458,7 +1458,8 @@ Bool Map::MapEnv::GetBounds(Map::MapEnv::GroupItem *group, Math::RectAreaDbl *bo
 	UOSInt j = this->GetLayersInGroup(group, &layers);
 	Math::RectAreaDbl minMax = Math::RectAreaDbl(0, 0, 0, 0);
 	Math::RectAreaDbl thisBounds;
-	Math::CoordinateSystem *lyrCSys;
+	NotNullPtr<Math::CoordinateSystem> thisCsys;
+	NotNullPtr<Math::CoordinateSystem> lyrCSys;
 	Bool isFirst = true;
 	while (i < j)
 	{
@@ -1466,12 +1467,12 @@ Bool Map::MapEnv::GetBounds(Map::MapEnv::GroupItem *group, Math::RectAreaDbl *bo
 		if (lyr->GetBounds(thisBounds))
 		{
 			lyrCSys = lyr->GetCoordinateSystem();
-			if (this->csys != 0 && lyrCSys != 0)
+			if (thisCsys.Set(this->csys))
 			{
 				if (!this->csys->Equals(lyrCSys))
 				{
-					Math::CoordinateSystem::ConvertXYZ(lyrCSys, this->csys, thisBounds.tl.x, thisBounds.tl.y, 0, &thisBounds.tl.x, &thisBounds.tl.y, 0);
-					Math::CoordinateSystem::ConvertXYZ(lyrCSys, this->csys, thisBounds.br.x, thisBounds.br.y, 0, &thisBounds.br.x, &thisBounds.br.y, 0);
+					thisBounds.tl = Math::CoordinateSystem::ConvertXYZ(lyrCSys, thisCsys, Math::Vector3(thisBounds.tl, 0)).GetXY();
+					thisBounds.br = Math::CoordinateSystem::ConvertXYZ(lyrCSys, thisCsys, Math::Vector3(thisBounds.br, 0)).GetXY();
 				}
 			}
 			if (isFirst)

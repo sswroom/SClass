@@ -186,23 +186,27 @@ IO::ParsedObject *Parser::FileParser::OziMapParser::ParseFileHdr(NotNullPtr<IO::
 
 			if (imgList)
 			{
-				Math::PointMappingCoordinateSystem *csys = 0;
+				NotNullPtr<Math::PointMappingCoordinateSystem> csys;
 				Math::Geometry::VectorImage *vimg;
 				Media::SharedImage *shimg;
-				NEW_CLASS(csys, Math::PointMappingCoordinateSystem(fd->GetFullName(), 4326, CSTR("PointMapping"), Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::CoordinateSystemManager::GCST_WGS84)));
-				currPt = 0;
-				while (currPt < nPts)
+				NotNullPtr<Math::GeographicCoordinateSystem> gcs;
+				if (gcs.Set(Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::CoordinateSystemManager::GCST_WGS84)))
 				{
-					csys->AddMappingPoint(ptXY[(currPt << 2) + 0], ptXY[(currPt << 2) + 1], ptXY[(currPt << 2) + 2], ptXY[(currPt << 2) + 3]);
-					currPt++;
+					NEW_CLASSNN(csys, Math::PointMappingCoordinateSystem(fd->GetFullName(), 4326, CSTR("PointMapping"), gcs));
+					currPt = 0;
+					while (currPt < nPts)
+					{
+						csys->AddMappingPoint(ptXY[(currPt << 2) + 0], ptXY[(currPt << 2) + 1], ptXY[(currPt << 2) + 2], ptXY[(currPt << 2) + 3]);
+						currPt++;
+					}
+					NEW_CLASS(shimg, Media::SharedImage(imgList, true));
+					NEW_CLASS(vimg, Math::Geometry::VectorImage(csys->GetSRID(), shimg, Math::Coord2DDbl(0, 0), Math::Coord2DDbl(imgW, imgH), false, CSTRP(sbuff, sptr), 0, 0));
+					UOSInt i = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), IO::Path::PATH_SEPERATOR);
+					NotNullPtr<Text::String> s = Text::String::New(&sbuff[i + 1], (UOSInt)(sptr - &sbuff[i + 1]));
+					NEW_CLASS(lyr, Map::VectorLayer(Map::DRAW_LAYER_IMAGE, fd->GetFullName(), 0, (const UTF8Char**)0, csys, 0, s.Ptr()));
+					s->Release();
+					lyr->AddVector(vimg, (const UTF8Char**)0);
 				}
-				NEW_CLASS(shimg, Media::SharedImage(imgList, true));
-				NEW_CLASS(vimg, Math::Geometry::VectorImage(csys->GetSRID(), shimg, Math::Coord2DDbl(0, 0), Math::Coord2DDbl(imgW, imgH), false, CSTRP(sbuff, sptr), 0, 0));
-				UOSInt i = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), IO::Path::PATH_SEPERATOR);
-				NotNullPtr<Text::String> s = Text::String::New(&sbuff[i + 1], (UOSInt)(sptr - &sbuff[i + 1]));
-				NEW_CLASS(lyr, Map::VectorLayer(Map::DRAW_LAYER_IMAGE, fd->GetFullName(), 0, (const UTF8Char**)0, csys, 0, s.Ptr()));
-				s->Release();
-				lyr->AddVector(vimg, (const UTF8Char**)0);
 			}
 		}
 		if (ptXY)

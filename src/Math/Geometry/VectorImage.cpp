@@ -275,15 +275,15 @@ Bool Math::Geometry::VectorImage::HasZ() const
 	return this->hasHeight;
 }
 
-void Math::Geometry::VectorImage::ConvCSys(Math::CoordinateSystem *srcCSys, Math::CoordinateSystem *destCSys)
+void Math::Geometry::VectorImage::ConvCSys(NotNullPtr<Math::CoordinateSystem> srcCSys, NotNullPtr<Math::CoordinateSystem> destCSys)
 {
 	if (this->scnCoord)
 	{
 	}
 	else
 	{
-		Math::CoordinateSystem::ConvertXYZ(srcCSys, destCSys, tl.x, tl.y, 0, &tl.x, &tl.y, 0);
-		Math::CoordinateSystem::ConvertXYZ(srcCSys, destCSys, br.x, br.y, 0, &br.x, &br.y, 0);
+		tl = Math::CoordinateSystem::ConvertXYZ(srcCSys, destCSys, Math::Vector3(tl, 0)).GetXY();
+		br = Math::CoordinateSystem::ConvertXYZ(srcCSys, destCSys, Math::Vector3(br, 0)).GetXY();
 		this->srid = destCSys->GetSRID();
 	}
 }

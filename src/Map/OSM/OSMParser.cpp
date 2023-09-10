@@ -660,7 +660,7 @@ Map::MapDrawLayer *Map::OSM::OSMParser::ParseLayerNode(NotNullPtr<Text::XMLReade
 								{
 									colCnt = 2;
 								}
-								NEW_CLASS(layers[elemType - 1], Map::VectorLayer(Map::DRAW_LAYER_POINT, fileName, colCnt, colName, Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::CoordinateSystemManager::GCST_WGS84), 0, layerNames[elemType - 1]));
+								NEW_CLASS(layers[elemType - 1], Map::VectorLayer(Map::DRAW_LAYER_POINT, fileName, colCnt, colName, Math::CoordinateSystemManager::CreateDefaultCsys(), 0, layerNames[elemType - 1]));
 							}
 							Math::Geometry::Point *pt;
 							NEW_CLASS(pt, Math::Geometry::Point(4326, lon, lat));
@@ -1321,7 +1321,7 @@ Map::MapDrawLayer *Map::OSM::OSMParser::ParseLayerNode(NotNullPtr<Text::XMLReade
 							{
 								colCnt = 2;
 							}
-							NEW_CLASS(layers[elemType - 1], Map::VectorLayer(Map::DRAW_LAYER_POLYGON, fileName, colCnt, pgName, Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::CoordinateSystemManager::GCST_WGS84), 0, layerNames[elemType - 1]));
+							NEW_CLASS(layers[elemType - 1], Map::VectorLayer(Map::DRAW_LAYER_POLYGON, fileName, colCnt, pgName, Math::CoordinateSystemManager::CreateDefaultCsys(), 0, layerNames[elemType - 1]));
 						}
 						Math::Geometry::Polygon *pg;
 						NEW_CLASS(pg, Math::Geometry::Polygon(4326, 1, latList.GetCount(), false, false));
@@ -1342,7 +1342,7 @@ Map::MapDrawLayer *Map::OSM::OSMParser::ParseLayerNode(NotNullPtr<Text::XMLReade
 							{
 								colCnt = 2;
 							}
-							NEW_CLASS(layers[elemType - 1], Map::VectorLayer(Map::DRAW_LAYER_POLYLINE, fileName, colCnt, pgName, Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::CoordinateSystemManager::GCST_WGS84), 0, layerNames[elemType - 1]));
+							NEW_CLASS(layers[elemType - 1], Map::VectorLayer(Map::DRAW_LAYER_POLYLINE, fileName, colCnt, pgName, Math::CoordinateSystemManager::CreateDefaultCsys(), 0, layerNames[elemType - 1]));
 						}
 						Math::Geometry::LineString *pl;
 						NEW_CLASS(pl, Math::Geometry::LineString(4326, latList.GetCount(), false, false));

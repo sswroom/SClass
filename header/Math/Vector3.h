@@ -52,6 +52,41 @@ namespace Math
 			return Math::Double2D(this->val[0], this->val[1]);
 		}
 
+		Double GetX() const
+		{
+			return this->val[0];
+		}
+
+		Double GetY() const
+		{
+			return this->val[1];
+		}
+
+		Double GetZ() const
+		{
+			return this->val[2];
+		}
+
+		Double GetLat() const
+		{
+			return this->val[1];
+		}
+
+		Double GetLon() const
+		{
+			return this->val[0];
+		}
+
+		Double GetH() const
+		{
+			return this->val[2];
+		}
+
+		Math::Vector3 MulXY(Double v) const
+		{
+			return Math::Vector3(this->val[0] * v, this->val[1] * v, this->val[2]);
+		}
+
 		Bool IsZero() const
 		{
 			return this->val[0] == 0 && this->val[1] == 0 && this->val[2] == 0;
