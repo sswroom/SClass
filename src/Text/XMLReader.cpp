@@ -933,6 +933,7 @@ Bool Text::XMLReader::ReadNext()
 					UOSInt readSize = this->FillBuffer();
 					if (readSize <= 0)
 					{
+						this->nt = Text::XMLNode::NodeType::Unknown;
 						this->parseError = 24;
 						return false;
 					}
@@ -1013,6 +1014,7 @@ Bool Text::XMLReader::ReadNext()
 							}
 							else
 							{
+								this->nt = Text::XMLNode::NodeType::Unknown;
 								this->parseError = 25;
 								return false;
 							}
@@ -1046,6 +1048,7 @@ Bool Text::XMLReader::ReadNext()
 							}
 							else
 							{
+								this->nt = Text::XMLNode::NodeType::Unknown;
 								this->parseError = 26;
 								return false;
 							}
@@ -1084,6 +1087,7 @@ Bool Text::XMLReader::ReadNext()
 							}
 							else
 							{
+								this->nt = Text::XMLNode::NodeType::Unknown;
 								this->parseError = 27;
 								return false;
 							}
@@ -1108,6 +1112,7 @@ Bool Text::XMLReader::ReadNext()
 						}
 						else
 						{
+							this->nt = Text::XMLNode::NodeType::Unknown;
 							this->parseError = 28;
 							return false;
 						}
@@ -1208,6 +1213,7 @@ Bool Text::XMLReader::ReadNext()
 						UOSInt readSize = this->FillBuffer();
 						if (readSize <= 0)
 						{
+							this->nt = Text::XMLNode::NodeType::Unknown;
 							this->parseError = 40;
 							return false;
 						}
@@ -1221,6 +1227,7 @@ Bool Text::XMLReader::ReadNext()
 					}
 					else
 					{
+						this->nt = Text::XMLNode::NodeType::Unknown;
 						this->parseError = 29;
 						return false;
 					}
@@ -1282,12 +1289,14 @@ Bool Text::XMLReader::ReadNext()
 					}
 					if (this->nodeText == 0)
 					{
+						this->nt = Text::XMLNode::NodeType::Unknown;
 						this->parseError = 30;
 						return false;
 					}
 					Text::XMLAttrib *attr = this->attrList.GetItem(this->attrList.GetCount() - 1);
 					if (attr == 0)
 					{
+						this->nt = Text::XMLNode::NodeType::Unknown;
 						this->parseError = 31;
 						return false;
 					}
@@ -1297,6 +1306,7 @@ Bool Text::XMLReader::ReadNext()
 					}
 					else
 					{
+						this->nt = Text::XMLNode::NodeType::Unknown;
 						this->parseError = 32;
 						return false;
 					}
@@ -1305,6 +1315,7 @@ Bool Text::XMLReader::ReadNext()
 				{
 					if (!isEqual)
 					{
+						this->nt = Text::XMLNode::NodeType::Unknown;
 						this->parseError = 33;
 						return false;
 					}
@@ -1315,6 +1326,7 @@ Bool Text::XMLReader::ReadNext()
 				{
 					if (!isEqual)
 					{
+						this->nt = Text::XMLNode::NodeType::Unknown;
 						this->parseError = 34;
 						return false;
 					}
@@ -1328,6 +1340,7 @@ Bool Text::XMLReader::ReadNext()
 				}
 				parseOfst++;
 			}
+			this->nt = Text::XMLNode::NodeType::Unknown;
 			this->parseError = 35;
 			return false;
 		}
