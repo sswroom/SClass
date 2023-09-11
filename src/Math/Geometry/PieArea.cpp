@@ -57,9 +57,9 @@ Bool Math::Geometry::PieArea::HasZ() const
 	return false;
 }
 
-void Math::Geometry::PieArea::ConvCSys(Math::CoordinateSystem *srcCSys, Math::CoordinateSystem *destCSys)
+void Math::Geometry::PieArea::ConvCSys(NotNullPtr<Math::CoordinateSystem> srcCSys, NotNullPtr<Math::CoordinateSystem> destCSys)
 {
-	Math::CoordinateSystem::ConvertXYZ(srcCSys, destCSys, this->center.x, this->center.y, 0, &this->center.x, &this->center.y, 0);
+	this->center = Math::CoordinateSystem::ConvertXYZ(srcCSys, destCSys, Math::Vector3(this->center, 0)).GetXY();
 	this->srid = destCSys->GetSRID();
 }
 
