@@ -63,7 +63,7 @@ public:
 					if (format->bmiHeader.biCompression == csList.GetItem(i))
 					{
 						SDEL_CLASS(this->csConv);
-						this->csConv = Media::CS::CSConverter::NewConverter(format->bmiHeader.biCompression, format->bmiHeader.biBitCount, Media::PixelFormatGetDef(format->bmiHeader.biCompression, format->bmiHeader.biBitCount), &color, 0, 32, Media::PF_B8G8R8A8, &color, Media::ColorProfile::YUVT_BT709, 0);
+						this->csConv = Media::CS::CSConverter::NewConverter(format->bmiHeader.biCompression, format->bmiHeader.biBitCount, Media::PixelFormatGetDef(format->bmiHeader.biCompression, format->bmiHeader.biBitCount), color, 0, 32, Media::PF_B8G8R8A8, color, Media::ColorProfile::YUVT_BT709, 0);
 						if (this->csConv)
 						{
 							this->frameW = format->bmiHeader.biWidth;
@@ -99,7 +99,7 @@ public:
 						else
 						{
 							SDEL_CLASS(this->csConv);
-							this->csConv = Media::CS::CSConverter::NewConverter(format->bmiHeader.biCompression, format->bmiHeader.biBitCount, Media::PixelFormatGetDef(format->bmiHeader.biCompression, format->bmiHeader.biBitCount), &color, 0, 32, Media::PF_B8G8R8A8, &color, Media::ColorProfile::YUVT_BT709, 0);
+							this->csConv = Media::CS::CSConverter::NewConverter(format->bmiHeader.biCompression, format->bmiHeader.biBitCount, Media::PixelFormatGetDef(format->bmiHeader.biCompression, format->bmiHeader.biBitCount), color, 0, 32, Media::PF_B8G8R8A8, color, Media::ColorProfile::YUVT_BT709, 0);
 						}
 						if (this->csConv)
 						{
