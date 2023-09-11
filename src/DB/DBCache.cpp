@@ -63,7 +63,7 @@ DB::DBCache::TableInfo *DB::DBCache::GetTableInfo(DB::TableDef *tableDef)
 	return 0;
 }
 
-DB::DBCache::DBCache(DB::DBModel *model, DB::DBTool *db)
+DB::DBCache::DBCache(NotNullPtr<DB::DBModel> model, NotNullPtr<DB::DBTool> db)
 {
 	this->model = model;
 	this->db = db;

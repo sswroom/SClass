@@ -156,7 +156,7 @@ namespace Math
 				return this->hasM;
 			}
 
-			virtual void ConvCSys(Math::CoordinateSystem *srcCSys, Math::CoordinateSystem *destCSys)
+			virtual void ConvCSys(NotNullPtr<Math::CoordinateSystem> srcCSys, NotNullPtr<Math::CoordinateSystem> destCSys)
 			{
 				UOSInt i = this->GetCount();
 				while (i-- > 0)

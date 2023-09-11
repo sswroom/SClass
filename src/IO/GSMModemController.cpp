@@ -1600,7 +1600,7 @@ UTF8Char *IO::GSMModemController::BERGetName(UTF8Char *buff, BER ber)
 	}
 }
 
-Text::CString IO::GSMModemController::OperStatusGetName(OperStatus operStatus)
+Text::CStringNN IO::GSMModemController::OperStatusGetName(OperStatus operStatus)
 {
 	switch (operStatus)
 	{
@@ -1616,7 +1616,7 @@ Text::CString IO::GSMModemController::OperStatusGetName(OperStatus operStatus)
 	}
 }
 
-Text::CString IO::GSMModemController::SIMStatusGetName(SIMStatus simStatus)
+Text::CStringNN IO::GSMModemController::SIMStatusGetName(SIMStatus simStatus)
 {
 	switch (simStatus)
 	{
@@ -1630,7 +1630,7 @@ Text::CString IO::GSMModemController::SIMStatusGetName(SIMStatus simStatus)
 	}
 }
 
-Text::CString IO::GSMModemController::NetworkResultGetName(NetworkResult n)
+Text::CStringNN IO::GSMModemController::NetworkResultGetName(NetworkResult n)
 {
 	switch (n)
 	{
@@ -1645,7 +1645,7 @@ Text::CString IO::GSMModemController::NetworkResultGetName(NetworkResult n)
 	}
 }
 
-Text::CString IO::GSMModemController::RegisterStatusGetName(RegisterStatus stat)
+Text::CStringNN IO::GSMModemController::RegisterStatusGetName(RegisterStatus stat)
 {
 	switch (stat)
 	{
@@ -1666,7 +1666,7 @@ Text::CString IO::GSMModemController::RegisterStatusGetName(RegisterStatus stat)
 	}
 }
 
-Text::CString IO::GSMModemController::AccessTechGetName(AccessTech act)
+Text::CStringNN IO::GSMModemController::AccessTechGetName(AccessTech act)
 {
 	switch (act)
 	{

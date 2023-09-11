@@ -7,7 +7,7 @@ Crypto::Cert::X509FileList::X509FileList(NotNullPtr<Text::String> sourceName, No
 	this->fileList.Add(cert);
 }
 
-Crypto::Cert::X509FileList::X509FileList(Text::CString sourceName, NotNullPtr<Crypto::Cert::X509Cert> cert) : Crypto::Cert::X509File(sourceName, cert->GetASN1Array())
+Crypto::Cert::X509FileList::X509FileList(Text::CStringNN sourceName, NotNullPtr<Crypto::Cert::X509Cert> cert) : Crypto::Cert::X509File(sourceName, cert->GetASN1Array())
 {
 	this->fileList.Add(cert);
 }

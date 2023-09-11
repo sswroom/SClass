@@ -8,7 +8,7 @@
 
 #define GDK_VERSION_AFTER(major, minor) (GDK_MAJOR_VERSION > major || (GDK_MAJOR_VERSION == major && GDK_MINOR_VERSION >= minor))
 
-UI::GUILabel::GUILabel(NotNullPtr<UI::GUICore> ui, UI::GUIClientControl *parent, Text::CString label) : UI::GUIControl(ui, parent)
+UI::GUILabel::GUILabel(NotNullPtr<UI::GUICore> ui, UI::GUIClientControl *parent, Text::CStringNN label) : UI::GUIControl(ui, parent)
 {
 	this->hwnd = (ControlHandle*)gtk_label_new((const Char*)label.v);
 	parent->AddChild(this);
@@ -28,12 +28,12 @@ UI::GUILabel::~GUILabel()
 {
 }
 
-void UI::GUILabel::SetText(Text::CString text)
+void UI::GUILabel::SetText(Text::CStringNN text)
 {
 	gtk_label_set_text((GtkLabel*)this->hwnd, (const Char*)text.v);
 }
 
-Text::CString UI::GUILabel::GetObjectClass()
+Text::CStringNN UI::GUILabel::GetObjectClass() const
 {
 	return CSTR("Label");
 }

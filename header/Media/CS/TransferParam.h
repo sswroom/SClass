@@ -65,7 +65,7 @@ namespace Media
 			Bool Equals(NotNullPtr<const TransferParam> tran) const;
 		};
 
-		Text::CString TransferTypeGetName(Media::CS::TransferType ttype);
+		Text::CStringNN TransferTypeGetName(Media::CS::TransferType ttype);
 	}
 }
 #endif

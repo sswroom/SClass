@@ -16,7 +16,7 @@ namespace Math
 		~ArcGISPRJParser();
 
 		Math::CoordinateSystem *ParsePRJFile(Text::CStringNN fileName);
-		Math::CoordinateSystem *ParsePRJBuff(Text::CString sourceName, UTF8Char *prjBuff, UOSInt buffSize, UOSInt *parsedSize);
+		Math::CoordinateSystem *ParsePRJBuff(Text::CStringNN sourceName, UTF8Char *prjBuff, UOSInt buffSize, UOSInt *parsedSize);
 	};
 }
 #endif

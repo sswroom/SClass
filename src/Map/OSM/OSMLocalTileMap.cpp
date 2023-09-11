@@ -275,33 +275,33 @@ Map::OSM::OSMLocalTileMap::~OSMLocalTileMap()
 	DEL_CLASS(this->csys);
 }
 
-Text::CString Map::OSM::OSMLocalTileMap::GetName()
+Text::CStringNN Map::OSM::OSMLocalTileMap::GetName() const
 {
 	return CSTR("OSMLocalTileMap");
 }
 
-Bool Map::OSM::OSMLocalTileMap::IsError()
+Bool Map::OSM::OSMLocalTileMap::IsError() const
 {
 	return this->maxLevel < 0;
 }
 
-Map::TileMap::TileType Map::OSM::OSMLocalTileMap::GetTileType()
+Map::TileMap::TileType Map::OSM::OSMLocalTileMap::GetTileType() const
 {
 	return Map::TileMap::TT_OSMLOCAL;
 }
 
-UOSInt Map::OSM::OSMLocalTileMap::GetLevelCount()
+UOSInt Map::OSM::OSMLocalTileMap::GetLevelCount() const
 {
 	return this->maxLevel + 1;
 }
 
 
-Double Map::OSM::OSMLocalTileMap::GetLevelScale(UOSInt index)
+Double Map::OSM::OSMLocalTileMap::GetLevelScale(UOSInt index) const
 {
 	return 204094080000.0 / UOSInt2Double(this->tileWidth) / (1 << index);
 }
 
-UOSInt Map::OSM::OSMLocalTileMap::GetNearestLevel(Double scale)
+UOSInt Map::OSM::OSMLocalTileMap::GetNearestLevel(Double scale) const
 {
 	Int32 level = Double2Int32(Math_Log10(204094080000.0 / scale / UOSInt2Double(this->tileWidth)) / Math_Log10(2));
 	if (level < 0)
@@ -311,14 +311,14 @@ UOSInt Map::OSM::OSMLocalTileMap::GetNearestLevel(Double scale)
 	return (UOSInt)level;
 }
 
-UOSInt Map::OSM::OSMLocalTileMap::GetConcurrentCount()
+UOSInt Map::OSM::OSMLocalTileMap::GetConcurrentCount() const
 {
 	return 1;
 }
 
-Bool Map::OSM::OSMLocalTileMap::GetBounds(Math::RectAreaDbl *bounds)
+Bool Map::OSM::OSMLocalTileMap::GetBounds(OutParam<Math::RectAreaDbl> bounds) const
 {
-	*bounds = Math::RectAreaDbl(this->min, this->max);
+	bounds.Set(Math::RectAreaDbl(this->min, this->max));
 	return this->min.x != 0 || this->min.y != 0 || this->max.x != 0 || this->max.y != 0;
 }
 
@@ -327,12 +327,12 @@ Math::CoordinateSystem *Map::OSM::OSMLocalTileMap::GetCoordinateSystem()
 	return this->csys;
 }
 
-Bool Map::OSM::OSMLocalTileMap::IsMercatorProj()
+Bool Map::OSM::OSMLocalTileMap::IsMercatorProj() const
 {
 	return true;
 }
 
-UOSInt Map::OSM::OSMLocalTileMap::GetTileSize()
+UOSInt Map::OSM::OSMLocalTileMap::GetTileSize() const
 {
 	return this->tileWidth;
 }

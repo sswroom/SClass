@@ -196,14 +196,17 @@ Bool Math::Geometry::LineString::HasM() const
 	return this->mArr != 0;
 }
 
-void Math::Geometry::LineString::ConvCSys(Math::CoordinateSystem *srcCSys, Math::CoordinateSystem *destCSys)
+void Math::Geometry::LineString::ConvCSys(NotNullPtr<Math::CoordinateSystem> srcCSys, NotNullPtr<Math::CoordinateSystem> destCSys)
 {
 	if (this->zArr)
 	{
+		Math::Vector3 tmpPos;
 		UOSInt i = this->nPoint;
 		while (i-- > 0)
 		{
-			Math::CoordinateSystem::ConvertXYZ(srcCSys, destCSys, this->pointArr[i].x, this->pointArr[i].y, this->zArr[i], &this->pointArr[i].x, &this->pointArr[i].y, &this->zArr[i]);
+			tmpPos = Math::CoordinateSystem::ConvertXYZ(srcCSys, destCSys, Math::Vector3(this->pointArr[i], this->zArr[i]));
+			this->pointArr[i] = tmpPos.GetXY();
+			this->zArr[i] = tmpPos.GetZ();
 		}
 		this->srid = destCSys->GetSRID();
 	}

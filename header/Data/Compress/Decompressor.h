@@ -27,7 +27,7 @@ namespace Data
 			virtual Bool Decompress(IO::Stream *destStm, NotNullPtr<IO::StreamData> srcData) = 0;
 
 			static Data::Compress::Decompressor *CreateDecompressor(CompressMethod compMeth);
-			static Text::CString GetCompMethName(CompressMethod compMethod);
+			static Text::CStringNN GetCompMethName(CompressMethod compMethod);
 		};
 	}
 }

@@ -16,7 +16,7 @@
 #endif
 #include <odbcinst.h>
 
-DB::MDBFileConn::MDBFileConn(Text::CString fileName, IO::LogTool *log, UInt32 codePage, const WChar *uid, const WChar *pwd) : DB::ODBCConn(fileName, log)
+DB::MDBFileConn::MDBFileConn(Text::CStringNN fileName, IO::LogTool *log, UInt32 codePage, const WChar *uid, const WChar *pwd) : DB::ODBCConn(fileName, log)
 {
 	Text::StringBuilderUTF8 sb;
 	sb.AppendC(UTF8STRC("Driver={Microsoft Access Driver (*.mdb)};Dbq="));
@@ -139,7 +139,7 @@ DB::MDBFileConn::MDBFileConn(Text::CString fileName, IO::LogTool *log, UInt32 co
 	}
 }
 
-Bool DB::MDBFileConn::CreateMDBFile(Text::CString fileName)
+Bool DB::MDBFileConn::CreateMDBFile(Text::CStringNN fileName)
 {
 #if _WCHAR_SIZE == 4
 	BOOL fCreated;
@@ -188,7 +188,7 @@ Bool DB::MDBFileConn::CreateMDBFile(Text::CString fileName)
 #endif
 }
 
-DB::DBTool *DB::MDBFileConn::CreateDBTool(Text::String *fileName, IO::LogTool *log, Text::CString logPrefix)
+DB::DBTool *DB::MDBFileConn::CreateDBTool(NotNullPtr<Text::String> fileName, IO::LogTool *log, Text::CString logPrefix)
 {
 	DB::MDBFileConn *conn;
 	DB::DBTool *db;
@@ -205,7 +205,7 @@ DB::DBTool *DB::MDBFileConn::CreateDBTool(Text::String *fileName, IO::LogTool *l
 	}
 }
 
-DB::DBTool *DB::MDBFileConn::CreateDBTool(Text::CString fileName, IO::LogTool *log, Text::CString logPrefix)
+DB::DBTool *DB::MDBFileConn::CreateDBTool(Text::CStringNN fileName, IO::LogTool *log, Text::CString logPrefix)
 {
 	DB::MDBFileConn *conn;
 	DB::DBTool *db;

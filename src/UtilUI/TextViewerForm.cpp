@@ -144,14 +144,14 @@ Bool UtilUI::TextViewerForm::OpenSearch(Text::CString txt)
 	{
 		this->srchFrm->Focus();
 		if (txt.leng > 0)
-			((UtilUI::TextSearchForm*)this->srchFrm)->SetSearchText(txt);
+			((UtilUI::TextSearchForm*)this->srchFrm)->SetSearchText(txt.OrEmpty());
 	}
 	else
 	{
 		NEW_CLASS(this->srchFrm, UtilUI::TextSearchForm(0, this->ui, this->monMgr, this));
 		this->srchFrm->HandleFormClosed(OnSearchClosed, this);
 		if (txt.leng > 0)
-			((UtilUI::TextSearchForm*)this->srchFrm)->SetSearchText(txt);
+			((UtilUI::TextSearchForm*)this->srchFrm)->SetSearchText(txt.OrEmpty());
 		this->srchFrm->Show();
 	}
 	return true;

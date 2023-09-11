@@ -279,7 +279,7 @@ UI::GUICustomDrawVScroll::~GUICustomDrawVScroll()
 	MemFree(this->clsData);
 }
 
-Text::CString UI::GUICustomDrawVScroll::GetObjectClass()
+Text::CStringNN UI::GUICustomDrawVScroll::GetObjectClass() const
 {
 	return CSTR("CustomDrawVScroll");
 }

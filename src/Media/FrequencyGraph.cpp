@@ -184,7 +184,7 @@ Media::DrawImage *Media::FrequencyGraph::CreateGraph(NotNullPtr<Media::DrawEngin
 			}
 
 			Bool revOrder;
-			UInt8 *bmpBits = tmpImg->GetImgBits(&revOrder);
+			UInt8 *bmpBits = tmpImg->GetImgBits(revOrder);
 			freqs = allFreqs;
 			if (revOrder)
 			{

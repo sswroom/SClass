@@ -6,9 +6,7 @@ IO::MotionDetectorAccelerometer::MotionDetectorAccelerometer(IO::SensorAccelerom
 {
 	this->acc = acc;
 	this->toRelease = toRelease;
-	this->currX = 0;
-	this->currY = 0;
-	this->currZ = 0;
+	this->currAcc = Math::Vector3(0, 0, 0);
 	this->currMoving = false;
 }
 
@@ -22,45 +20,27 @@ IO::MotionDetectorAccelerometer::~MotionDetectorAccelerometer()
 
 Bool IO::MotionDetectorAccelerometer::UpdateStatus()
 {
-	Double thisX;
-	Double thisY;
-	Double thisZ;
-	Double diffX;
-	Double diffY;
-	Double diffZ;
-	if (!this->acc->ReadAcceleration(&thisX, &thisY, &thisZ))
+	Math::Vector3 thisAcc;
+	Math::Vector3 diff;
+	if (!this->acc->ReadAcceleration(thisAcc))
 	{
 		return false;
 	}
-	if (this->currX == 0 && this->currY == 0 && this->currZ == 0)
+	if (this->currAcc.IsZero())
 	{
-		this->currX = thisX;
-		this->currY = thisY;
-		this->currZ = thisZ;
+		this->currAcc = thisAcc;
 		this->currMoving = false;
 		return true;
 	}
-	diffX = this->currX - thisX;
-	diffY = this->currY - thisY;
-	diffZ = this->currZ - thisZ;
-	if (diffX < 0)
-		diffX = -diffX;
-	if (diffY < 0)
-		diffY = -diffY;
-	if (diffZ < 0)
-		diffZ = -diffZ;
-	this->currMoving = ((diffX + diffY + diffZ) >= 0.05);
-	this->currX = thisX;
-	this->currY = thisY;
-	this->currZ = thisZ;
+	diff = (this->currAcc - thisAcc).Abs();
+	this->currMoving = ((diff.val[0] + diff.val[1] + diff.val[2]) >= 0.05);
+	this->currAcc = thisAcc;
 	return true;
 }
 
-void IO::MotionDetectorAccelerometer::GetValues(Double *x, Double *y, Double *z)
+Math::Vector3 IO::MotionDetectorAccelerometer::GetValues() const
 {
-	*x = this->currX;
-	*y = this->currY;
-	*z = this->currZ;
+	return this->currAcc;
 }
 
 Bool IO::MotionDetectorAccelerometer::IsMovving()

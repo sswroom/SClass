@@ -111,7 +111,7 @@ void UI::GUIControl::Close()
 	gtk_widget_destroy((GtkWidget*)this->hwnd);
 }
 
-void UI::GUIControl::SetText(Text::CString text)
+void UI::GUIControl::SetText(Text::CStringNN text)
 {
 	/////////////////////////////////
 }
@@ -701,7 +701,7 @@ UI::GUIClientControl *UI::GUIControl::GetParent()
 UI::GUIForm *UI::GUIControl::GetRootForm()
 {
 	UI::GUIControl *ctrl = this;
-	Text::CString objCls;
+	Text::CStringNN objCls;
 	while (ctrl)
 	{
 		objCls = ctrl->GetObjectClass();
@@ -1335,7 +1335,7 @@ UI::GUIControl::GUIKey UI::GUIControl::OSKey2GUIKey(UInt32 osKey)
 	}
 }
 
-Text::CString UI::GUIControl::GUIKeyGetName(GUIKey guiKey)
+Text::CStringNN UI::GUIControl::GUIKeyGetName(GUIKey guiKey)
 {
 	switch (guiKey)
 	{

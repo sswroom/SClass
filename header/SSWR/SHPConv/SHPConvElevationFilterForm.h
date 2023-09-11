@@ -35,6 +35,6 @@ namespace SSWR
 			virtual void OnMonitorChanged();
 			MapFilter *GetFilter();
 		};
-	};
-};
+	}
+}
 #endif

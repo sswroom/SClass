@@ -24,8 +24,8 @@ void __stdcall SSWR::AVIRead::AVIRICCInfoForm::OnFileDrop(void *userObj, NotNull
 		}
 		else
 		{
-			Media::ICCProfile *icc = Media::ICCProfile::Parse(buff.WithSize(fileSize));
-			if (icc)
+			NotNullPtr<Media::ICCProfile> icc;
+			if (icc.Set(Media::ICCProfile::Parse(buff.WithSize(fileSize))))
 			{
 				me->SetICCProfile(icc, files[i]->ToCString());
 				break;
@@ -117,38 +117,35 @@ void SSWR::AVIRead::AVIRICCInfoForm::OnMonitorChanged()
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 }
 
-void SSWR::AVIRead::AVIRICCInfoForm::SetICCProfile(Media::ICCProfile *icc, Text::CString fileName)
+void SSWR::AVIRead::AVIRICCInfoForm::SetICCProfile(NotNullPtr<Media::ICCProfile> icc, Text::CStringNN fileName)
 {
-	if (icc)
-	{
-		SDEL_CLASS(this->icc);
+	SDEL_CLASS(this->icc);
 
-		Media::ColorProfile color;
-		Text::StringBuilderUTF8 sb;
-		icc->ToString(sb);
-		if (icc->GetColorPrimaries(color.primaries))
-		{
-			sb.AppendC(UTF8STRC("\r\n"));
-			sb.AppendC(UTF8STRC("Primaries:\r\n"));
-			sb.AppendC(UTF8STRC("Red: x = "));
-			sb.AppendDouble(color.primaries.r.x);
-			sb.AppendC(UTF8STRC(", y = "));
-			sb.AppendDouble(color.primaries.r.y);
-			sb.AppendC(UTF8STRC("\r\nGreen: x = "));
-			sb.AppendDouble(color.primaries.g.x);
-			sb.AppendC(UTF8STRC(", y = "));
-			sb.AppendDouble(color.primaries.g.y);
-			sb.AppendC(UTF8STRC("\r\nBlue: x = "));
-			sb.AppendDouble(color.primaries.b.x);
-			sb.AppendC(UTF8STRC(", y = "));
-			sb.AppendDouble(color.primaries.b.y);
-			sb.AppendC(UTF8STRC("\r\nWhite: x = "));
-			sb.AppendDouble(color.primaries.w.x);
-			sb.AppendC(UTF8STRC(", y = "));
-			sb.AppendDouble(color.primaries.w.y);
-		}
-		this->icc = icc;
-		this->txtInfo->SetText(sb.ToCString());
-		this->txtFileName->SetText(fileName);
+	Media::ColorProfile color;
+	Text::StringBuilderUTF8 sb;
+	icc->ToString(sb);
+	if (icc->GetColorPrimaries(color.primaries))
+	{
+		sb.AppendC(UTF8STRC("\r\n"));
+		sb.AppendC(UTF8STRC("Primaries:\r\n"));
+		sb.AppendC(UTF8STRC("Red: x = "));
+		sb.AppendDouble(color.primaries.r.x);
+		sb.AppendC(UTF8STRC(", y = "));
+		sb.AppendDouble(color.primaries.r.y);
+		sb.AppendC(UTF8STRC("\r\nGreen: x = "));
+		sb.AppendDouble(color.primaries.g.x);
+		sb.AppendC(UTF8STRC(", y = "));
+		sb.AppendDouble(color.primaries.g.y);
+		sb.AppendC(UTF8STRC("\r\nBlue: x = "));
+		sb.AppendDouble(color.primaries.b.x);
+		sb.AppendC(UTF8STRC(", y = "));
+		sb.AppendDouble(color.primaries.b.y);
+		sb.AppendC(UTF8STRC("\r\nWhite: x = "));
+		sb.AppendDouble(color.primaries.w.x);
+		sb.AppendC(UTF8STRC(", y = "));
+		sb.AppendDouble(color.primaries.w.y);
 	}
+	this->icc = icc.Ptr();
+	this->txtInfo->SetText(sb.ToCString());
+	this->txtFileName->SetText(fileName);
 }

@@ -14,6 +14,7 @@ void __stdcall Net::WebServer::WebListener::ClientReady(NotNullPtr<Net::TCPClien
 	{
 		Net::WebServer::WebConnection *conn;
 		NEW_CLASS(conn, Net::WebServer::WebConnection(me->sockf, me->ssl, cli, me, me->hdlr, me->allowProxy, me->keepAlive));
+		conn->SetLogWriter(me->cliMgr.GetLogWriter());
 		conn->SetSendLogger(OnDataSent, userObj);
 		me->cliMgr.AddClient(cli, conn);
 	}

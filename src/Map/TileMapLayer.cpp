@@ -89,7 +89,7 @@ void Map::TileMapLayer::AddTask(CachedImage *cimg)
 	this->threadNext = (this->threadNext + 1) % this->threadCnt;
 }
 
-void Map::TileMapLayer::CheckCache(Data::ArrayListInt64 *currIDs)
+void Map::TileMapLayer::CheckCache(NotNullPtr<Data::ArrayListInt64> currIDs)
 {
 	if (this->lastIds.GetCount() <= 0)
 		return;
@@ -313,19 +313,19 @@ Map::MapView *Map::TileMapLayer::CreateMapView(Math::Size2DDbl scnSize)
 			i++;
 		}
 		Math::RectAreaDbl bounds;
-		this->tileMap->GetBounds(&bounds);
+		this->tileMap->GetBounds(bounds);
 		Math::CoordinateSystem *csys = this->tileMap->GetCoordinateSystem();
 		NEW_CLASS(view, Map::LeveledMapView(csys && csys->IsProjected(), scnSize, bounds.GetCenter(), scales));
 		return view;
 	}
 }
 
-Map::DrawLayerType Map::TileMapLayer::GetLayerType()
+Map::DrawLayerType Map::TileMapLayer::GetLayerType() const
 {
 	return Map::DRAW_LAYER_IMAGE;
 }
 
-UOSInt Map::TileMapLayer::GetAllObjectIds(Data::ArrayListInt64 *outArr, NameArray **nameArr)
+UOSInt Map::TileMapLayer::GetAllObjectIds(NotNullPtr<Data::ArrayListInt64> outArr, NameArray **nameArr)
 {
 	UOSInt retCnt;
 	UOSInt level = this->tileMap->GetNearestLevel(scale);
@@ -348,7 +348,7 @@ UOSInt Map::TileMapLayer::GetAllObjectIds(Data::ArrayListInt64 *outArr, NameArra
 	return retCnt;
 }
 
-UOSInt Map::TileMapLayer::GetObjectIds(Data::ArrayListInt64 *outArr, NameArray **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
+UOSInt Map::TileMapLayer::GetObjectIds(NotNullPtr<Data::ArrayListInt64> outArr, NameArray **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
 {
 	UOSInt retCnt;
 	UOSInt level = this->tileMap->GetNearestLevel(scale);
@@ -372,7 +372,7 @@ UOSInt Map::TileMapLayer::GetObjectIds(Data::ArrayListInt64 *outArr, NameArray *
 	return retCnt;
 }
 
-UOSInt Map::TileMapLayer::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, NameArray **nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
+UOSInt Map::TileMapLayer::GetObjectIdsMapXY(NotNullPtr<Data::ArrayListInt64> outArr, NameArray **nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
 {
 	UOSInt retCnt;
 	UOSInt level = this->tileMap->GetNearestLevel(scale);
@@ -396,7 +396,7 @@ UOSInt Map::TileMapLayer::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, NameAr
 	return retCnt;
 }
 
-Int64 Map::TileMapLayer::GetObjectIdMax()
+Int64 Map::TileMapLayer::GetObjectIdMax() const
 {
 	return 0;
 }
@@ -429,7 +429,7 @@ UTF8Char *Map::TileMapLayer::GetString(UTF8Char *buff, UOSInt buffSize, NameArra
 	return 0;
 }
 
-UOSInt Map::TileMapLayer::GetColumnCnt()
+UOSInt Map::TileMapLayer::GetColumnCnt() const
 {
 	return 3;
 }
@@ -488,12 +488,12 @@ Bool Map::TileMapLayer::GetColumnDef(UOSInt colIndex, NotNullPtr<DB::ColDef> col
 	return false;
 }
 
-UInt32 Map::TileMapLayer::GetCodePage()
+UInt32 Map::TileMapLayer::GetCodePage() const
 {
 	return 0;
 }
 
-Bool Map::TileMapLayer::GetBounds(Math::RectAreaDbl *bounds)
+Bool Map::TileMapLayer::GetBounds(OutParam<Math::RectAreaDbl> bounds) const
 {
 	return this->tileMap->GetBounds(bounds);
 }
@@ -580,7 +580,7 @@ Math::Geometry::Vector2D *Map::TileMapLayer::GetNewVectorById(GetObjectSess *ses
 	}
 }
 
-Map::MapDrawLayer::ObjectClass Map::TileMapLayer::GetObjectClass()
+Map::MapDrawLayer::ObjectClass Map::TileMapLayer::GetObjectClass() const
 {
 	return Map::MapDrawLayer::OC_TILE_MAP_LAYER;
 }

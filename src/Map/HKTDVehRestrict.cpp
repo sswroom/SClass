@@ -23,7 +23,7 @@ Map::HKTDVehRestrict::HKTDVehRestrict(Map::MapDrawLayer *routeLyr, DB::DBTool *d
 		RouteInfo *route;
 		Math::Geometry::Vector2D *vec;
 
-		routeLyr->GetAllObjectIds(&idArr, &nameArr);
+		routeLyr->GetAllObjectIds(idArr, &nameArr);
 		colCnt = routeLyr->GetColumnCnt();
 		i = 0;
 		while (i < colCnt)
@@ -82,7 +82,7 @@ Map::HKTDVehRestrict::~HKTDVehRestrict()
 {
 	UOSInt i;
 	RouteInfo *route;
-	DEL_CLASS(this->csys);
+	this->csys.Delete();
 	DEL_CLASS(this->db);
 
 	i = this->routeMap.GetCount();

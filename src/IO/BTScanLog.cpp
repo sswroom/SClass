@@ -112,7 +112,7 @@ NotNullPtr<const Data::ReadingList<IO::BTScanLog::DevEntry*>> IO::BTScanLog::Get
 	return this->randDevs;
 }
 
-Text::CString IO::BTScanLog::RadioTypeGetName(RadioType radioType)
+Text::CStringNN IO::BTScanLog::RadioTypeGetName(RadioType radioType)
 {
 	switch (radioType)
 	{
@@ -126,7 +126,7 @@ Text::CString IO::BTScanLog::RadioTypeGetName(RadioType radioType)
 	}
 }
 
-Text::CString IO::BTScanLog::AddressTypeGetName(AddressType addrType)
+Text::CStringNN IO::BTScanLog::AddressTypeGetName(AddressType addrType)
 {
 	switch (addrType)
 	{
@@ -140,7 +140,7 @@ Text::CString IO::BTScanLog::AddressTypeGetName(AddressType addrType)
 	}
 }
 
-Text::CString IO::BTScanLog::AdvTypeGetName(AdvType advType)
+Text::CStringNN IO::BTScanLog::AdvTypeGetName(AdvType advType)
 {
 	switch (advType)
 	{

@@ -29,7 +29,7 @@ Data::Compress::Decompressor *Data::Compress::Decompressor::CreateDecompressor(D
 	return decomp;
 }
 
-Text::CString Data::Compress::Decompressor::GetCompMethName(Data::Compress::Decompressor::CompressMethod compMethod)
+Text::CStringNN Data::Compress::Decompressor::GetCompMethName(Data::Compress::Decompressor::CompressMethod compMethod)
 {
 	switch (compMethod)
 	{

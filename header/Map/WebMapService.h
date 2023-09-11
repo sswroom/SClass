@@ -39,7 +39,7 @@ namespace Map
 		NotNullPtr<Text::String> wmsURL;
 		NotNullPtr<Net::SocketFactory> sockf;
 		Net::SSLEngine *ssl;
-		Math::CoordinateSystem *envCsys;
+		NotNullPtr<Math::CoordinateSystem> envCsys;
 
 		Text::String *version;
 		Data::ArrayList<LayerInfo*> layers;
@@ -57,13 +57,13 @@ namespace Map
 		void LoadXMLLayers(NotNullPtr<Text::XMLReader> reader);
 
 	public:
-		WebMapService(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, Text::EncodingFactory *encFact, Text::CString wmsURL, Version version, Math::CoordinateSystem *envCsys);
+		WebMapService(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, Text::EncodingFactory *encFact, Text::CString wmsURL, Version version, NotNullPtr<Math::CoordinateSystem> envCsys);
 		virtual ~WebMapService();
 
 		virtual NotNullPtr<Text::String> GetName() const;
 		virtual Math::CoordinateSystem *GetCoordinateSystem() const;
 		virtual Math::RectAreaDbl GetInitBounds() const;
-		virtual Bool GetBounds(Math::RectAreaDbl *bounds) const;
+		virtual Bool GetBounds(OutParam<Math::RectAreaDbl> bounds) const;
 		virtual Bool CanQuery() const;
 		virtual Bool QueryInfos(Math::Coord2DDbl coord, Math::RectAreaDbl bounds, UInt32 width, UInt32 height, Double dpi, Data::ArrayList<Math::Geometry::Vector2D*> *vecList, Data::ArrayList<UOSInt> *valueOfstList, Data::ArrayListNN<Text::String> *nameList, Data::ArrayList<Text::String*> *valueList);
 		virtual Media::ImageList *DrawMap(Math::RectAreaDbl bounds, UInt32 width, UInt32 height, Double dpi, Text::StringBuilderUTF8 *sbUrl);

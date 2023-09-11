@@ -17,16 +17,16 @@ namespace Map
 
 			Text::String *GetNextURL();
 		public:
-			OSMTileMap(Text::CString url, Text::CString cacheDir, UOSInt maxLevel, NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl);
-			OSMTileMap(Text::CString url, IO::SPackageFile *spkg, UOSInt maxLevel, NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl);
+			OSMTileMap(Text::CStringNN url, Text::CString cacheDir, UOSInt maxLevel, NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl);
+			OSMTileMap(Text::CStringNN url, IO::SPackageFile *spkg, UOSInt maxLevel, NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl);
 			virtual ~OSMTileMap();
 
-			void AddAlternateURL(Text::CString url);
+			void AddAlternateURL(Text::CStringNN url);
 			Text::String *GetOSMURL(UOSInt index);
 
-			virtual Text::CString GetName();
-			virtual TileType GetTileType();
-			virtual UOSInt GetConcurrentCount();
+			virtual Text::CStringNN GetName() const;
+			virtual TileType GetTileType() const;
+			virtual UOSInt GetConcurrentCount() const;
 			virtual UTF8Char *GetTileImageURL(UTF8Char *sbuff, UOSInt level, Math::Coord2D<Int32> tileId);
 		};
 	}

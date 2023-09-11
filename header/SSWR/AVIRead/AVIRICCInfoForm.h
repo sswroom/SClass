@@ -34,7 +34,7 @@ namespace SSWR
 			virtual ~AVIRICCInfoForm();
 
 			virtual void OnMonitorChanged();
-			void SetICCProfile(Media::ICCProfile *icc, Text::CString fileName);
+			void SetICCProfile(NotNullPtr<Media::ICCProfile> icc, Text::CStringNN fileName);
 		};
 	}
 }

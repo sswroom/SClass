@@ -628,7 +628,7 @@ void SSWR::AVIRead::AVIRGISForm::HKOPortal(Text::CString listFile, Text::CString
 	}
 }
 
-void SSWR::AVIRead::AVIRGISForm::OpenCSV(Text::CStringNN url, UInt32 codePage, Text::CString name, Text::CString nameCol, Text::CString latCol, Text::CString lonCol)
+void SSWR::AVIRead::AVIRGISForm::OpenCSV(Text::CStringNN url, UInt32 codePage, Text::CStringNN name, Text::CString nameCol, Text::CString latCol, Text::CString lonCol)
 {
 	NotNullPtr<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(this->core->GetSocketFactory(), this->ssl, url, Net::WebUtil::RequestMethod::HTTP_GET, true);
 	if (cli->GetRespStatus() == Net::WebStatus::SC_OK)
@@ -970,7 +970,7 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 			Math::CoordinateSystem *lyrCSys;
 			UI::GUIMapTreeView::ItemIndex *ind = (UI::GUIMapTreeView::ItemIndex *)this->popNode->GetItemObj();
 			Map::MapEnv::LayerItem *lyr = (Map::MapEnv::LayerItem*)this->env->GetItem(ind->group, ind->index);
-			if (lyr->layer->GetBounds(&bounds))
+			if (lyr->layer->GetBounds(bounds))
 			{
 				Math::Coord2DDbl center = bounds.GetCenter();
 				envCSys = this->env->GetCoordinateSystem();
@@ -1648,7 +1648,7 @@ void SSWR::AVIRead::AVIRGISForm::AddLayer(Map::MapDrawLayer *layer)
 		Math::RectAreaDbl bounds;
 //		OSInt w;
 //		OSInt h;
-		layer->GetBounds(&bounds);
+		layer->GetBounds(bounds);
 //		this->mapCtrl->GetSize(&w, &h);
 //		this->mapCtrl->UpdateMapView(layer->CreateMapView(w, h));
 		this->env->AddLayer(0, layer, true);
@@ -1675,7 +1675,7 @@ void SSWR::AVIRead::AVIRGISForm::AddLayers(::Data::ArrayList<Map::MapDrawLayer*>
 	if (needPan)
 	{
 		layer = layers->GetItem(0);
-		layer->GetBounds(&bounds);
+		layer->GetBounds(bounds);
 	}
 
 	i = 0;

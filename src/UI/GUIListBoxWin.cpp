@@ -103,7 +103,7 @@ UOSInt UI::GUIListBox::AddItem(NotNullPtr<Text::String> itemText, void *itemObj)
 	return i;
 }
 
-UOSInt UI::GUIListBox::AddItem(Text::CString itemText, void *itemObj)
+UOSInt UI::GUIListBox::AddItem(Text::CStringNN itemText, void *itemObj)
 {
 	UOSInt i = Text::StrUTF8_WCharCnt(itemText.v);
 	WChar *s = MemAlloc(WChar, i + 1);
@@ -145,7 +145,7 @@ UOSInt UI::GUIListBox::InsertItem(UOSInt index, Text::String *itemText, void *it
 	return (UOSInt)i;
 }
 
-UOSInt UI::GUIListBox::InsertItem(UOSInt index, Text::CString itemText, void *itemObj)
+UOSInt UI::GUIListBox::InsertItem(UOSInt index, Text::CStringNN itemText, void *itemObj)
 {
 	const WChar *wptr = Text::StrToWCharNew(itemText.v);
 	OSInt i = SendMessage((HWND)hwnd, LB_INSERTSTRING, index, (LPARAM)wptr);
@@ -288,7 +288,7 @@ WChar *UI::GUIListBox::GetItemText(WChar *buff, UOSInt index)
 	}
 }
 
-void UI::GUIListBox::SetItemText(UOSInt index, Text::CString text)
+void UI::GUIListBox::SetItemText(UOSInt index, Text::CStringNN text)
 {
 	void *item = GetItem(index);
 	this->RemoveItem(index);
@@ -323,7 +323,7 @@ OSInt UI::GUIListBox::GetItemHeight()
 	return tm.tmHeight;
 }
 
-Text::CString UI::GUIListBox::GetObjectClass()
+Text::CStringNN UI::GUIListBox::GetObjectClass() const
 {
 	return CSTR("ListBox");
 }

@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "SSWR/SMonitor/SAnalogSensor.h"
 
-Text::CString SSWR::SMonitor::SAnalogSensor::GetReadingTypeName(ReadingType readingType)
+Text::CStringNN SSWR::SMonitor::SAnalogSensor::GetReadingTypeName(ReadingType readingType)
 {
 	switch (readingType)
 	{
@@ -93,7 +93,7 @@ Text::CString SSWR::SMonitor::SAnalogSensor::GetReadingTypeName(ReadingType read
 	}
 }
 
-Text::CString SSWR::SMonitor::SAnalogSensor::GetSensorTypeName(SensorType sensorType)
+Text::CStringNN SSWR::SMonitor::SAnalogSensor::GetSensorTypeName(SensorType sensorType)
 {
 	switch (sensorType)
 	{

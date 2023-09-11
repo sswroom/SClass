@@ -41,7 +41,7 @@ Bool Exporter::MEVExporter::GetOutputName(UOSInt index, UTF8Char *nameBuff, UTF8
 	return false;
 }
 
-Bool Exporter::MEVExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text::CString fileName, IO::ParsedObject *pobj, void *param)
+Bool Exporter::MEVExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text::CStringNN fileName, IO::ParsedObject *pobj, void *param)
 {
 	if (pobj->GetParserType() != IO::ParserType::MapEnv)
 	{
@@ -152,7 +152,7 @@ Bool Exporter::MEVExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text:
 		UInt32 buffColor;
 
 		sptr = env->GetFontStyleName(i, sbuff);
-		env->GetFontStyle(i, &fontName, &fontSize, &bold, &fontColor, &buffSize, &buffColor);
+		env->GetFontStyle(i, fontName, fontSize, bold, fontColor, buffSize, buffColor);
 
 		*(Int32*)&buff[0] = 0;
 		if (sptr)

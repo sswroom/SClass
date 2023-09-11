@@ -79,7 +79,7 @@ Text::CString Media::AndroidVideoCapture::GetFilterName()
 	return CSTR("AndroidVideoCapture");
 }
 
-Bool Media::AndroidVideoCapture::GetVideoInfo(Media::FrameInfo *info, UInt32 *frameRateNorm, UInt32 *frameRateDenorm, UOSInt *maxFrameSize)
+Bool Media::AndroidVideoCapture::GetVideoInfo(NotNullPtr<Media::FrameInfo> info, OutParam<UInt32> frameRateNorm, OutParam<UInt32> frameRateDenorm, OutParam<UOSInt> maxFrameSize)
 {
 	if (this->camWidth == 0 || this->camHeight == 0)
 		return false;
@@ -95,12 +95,12 @@ Bool Media::AndroidVideoCapture::GetVideoInfo(Media::FrameInfo *info, UInt32 *fr
 	info->vdpi = 72;
 	info->ftype = Media::FT_NON_INTERLACE;
 	info->atype = Media::AT_NO_ALPHA;
-	info->color->SetCommonProfile(Media::ColorProfile::CPT_BT709);
+	info->color.SetCommonProfile(Media::ColorProfile::CPT_BT709);
 	info->yuvType = Media::ColorProfile::YUVT_BT601;
 	info->ycOfst = Media::YCOFST_C_CENTER_LEFT;
-	*maxFrameSize = (this->camWidth * this->camHeight * info->storeBPP) >> 3;
-	*frameRateNorm = 30;
-	*frameRateDenorm = 1;
+	maxFrameSize.Set((this->camWidth * this->camHeight * info->storeBPP) >> 3);
+	frameRateNorm.Set(30);
+	frameRateDenorm.Set(1);
 	return true;
 }
 
@@ -207,10 +207,10 @@ Bool Media::AndroidVideoCapture::IsRunning()
 	return this->started;
 }
 
-void Media::AndroidVideoCapture::SetPreferSize(UOSInt width, UOSInt height, UInt32 fourcc, UInt32 bpp, UInt32 frameRateNumer, UInt32 frameRateDenom)
+void Media::AndroidVideoCapture::SetPreferSize(Math::Size2D<UOSInt> size, UInt32 fourcc, UInt32 bpp, UInt32 frameRateNumer, UInt32 frameRateDenom)
 {
-	this->camWidth = width;
-	this->camHeight = height;
+	this->camWidth = size.x;
+	this->camHeight = size.y;
 	this->camFourcc = fourcc;
 }
 
@@ -280,7 +280,7 @@ UOSInt Media::AndroidVideoCapture::GetSupportedFormats(VideoFormat *fmtArr, UOSI
 					fmtArr[ret].info.vdpi = 72;
 					fmtArr[ret].info.ftype = Media::FT_NON_INTERLACE;
 					fmtArr[ret].info.atype = Media::AT_NO_ALPHA;
-					fmtArr[ret].info.color->SetCommonProfile(Media::ColorProfile::CPT_BT709);
+					fmtArr[ret].info.color.SetCommonProfile(Media::ColorProfile::CPT_BT709);
 					fmtArr[ret].info.yuvType = Media::ColorProfile::YUVT_BT601;
 					fmtArr[ret].info.ycOfst = Media::YCOFST_C_CENTER_LEFT;
 					fmtArr[ret].frameRateNorm = 30;
@@ -391,7 +391,7 @@ Media::AndroidVideoCaptureMgr::~AndroidVideoCaptureMgr()
 	}
 }
 
-OSInt Media::AndroidVideoCaptureMgr::GetDeviceList(Data::ArrayList<UInt32> *devList)
+UOSInt Media::AndroidVideoCaptureMgr::GetDeviceList(Data::ArrayList<UInt32> *devList)
 {
 	if (this->cameraMgr && this->cameraIdList)
 	{

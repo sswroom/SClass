@@ -444,7 +444,7 @@ Bool Net::HTTPOSClient::Connect(Text::CStringNN url, Net::WebUtil::RequestMethod
 	return true;
 }
 
-void Net::HTTPOSClient::AddHeaderC(Text::CString name, Text::CString value)
+void Net::HTTPOSClient::AddHeaderC(Text::CStringNN name, Text::CString value)
 {
 	ClassData *data = this->clsData;
 	if (data->curl && !writing)
@@ -550,7 +550,7 @@ void Net::HTTPOSClient::SetTimeout(Data::Duration timeout)
 	}
 }
 
-Bool Net::HTTPOSClient::IsSecureConn()
+Bool Net::HTTPOSClient::IsSecureConn() const
 {
 	if (this->url->StartsWith(UTF8STRC("https://")))
 	{

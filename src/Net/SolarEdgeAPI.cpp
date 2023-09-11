@@ -336,7 +336,7 @@ void Net::SolarEdgeAPI::AppendFormDate(NotNullPtr<Text::StringBuilderUTF8> sb, D
 	sb->AppendP(sbuff, sptr);
 }
 
-Text::CString Net::SolarEdgeAPI::TimeUnitGetName(TimeUnit timeUnit)
+Text::CStringNN Net::SolarEdgeAPI::TimeUnitGetName(TimeUnit timeUnit)
 {
 	switch (timeUnit)
 	{

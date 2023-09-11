@@ -17,7 +17,7 @@ namespace Net
 		Data::ByteBuffer buff;
 
 		ASN1Data(NotNullPtr<Text::String> sourceName, Data::ByteArrayR buff);
-		ASN1Data(Text::CString sourceName, Data::ByteArrayR buff);
+		ASN1Data(Text::CStringNN sourceName, Data::ByteArrayR buff);
 	public:
 		virtual ~ASN1Data();
 

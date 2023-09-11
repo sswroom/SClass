@@ -6,7 +6,7 @@
 
 #include <windows.h>
 
-UI::GUICheckBox::GUICheckBox(NotNullPtr<GUICore> ui, UI::GUIClientControl *parent, Text::CString initText, Bool checked) : UI::GUIControl(ui, parent)
+UI::GUICheckBox::GUICheckBox(NotNullPtr<GUICore> ui, UI::GUIClientControl *parent, Text::CStringNN initText, Bool checked) : UI::GUIControl(ui, parent)
 {
 	this->checked = false;
 
@@ -23,12 +23,12 @@ UI::GUICheckBox::~GUICheckBox()
 {
 }
 
-void UI::GUICheckBox::SetText(Text::CString text)
+void UI::GUICheckBox::SetText(Text::CStringNN text)
 {
 	this->UI::GUIControl::SetText(text);
 }
 
-Text::CString UI::GUICheckBox::GetObjectClass()
+Text::CStringNN UI::GUICheckBox::GetObjectClass() const
 {
 	return CSTR("CheckBox");
 }

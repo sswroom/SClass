@@ -37,7 +37,7 @@ UTF8Char *Net::NetBIOSUtil::SetName(UTF8Char *nbBuff, const UTF8Char *name)
 	return nbBuff;
 }
 
-Text::CString Net::NetBIOSUtil::NameTypeGetName(UInt8 nameType)
+Text::CStringNN Net::NetBIOSUtil::NameTypeGetName(UInt8 nameType)
 {
 	switch (nameType)
 	{

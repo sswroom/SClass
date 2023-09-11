@@ -18,8 +18,8 @@ namespace DB
 			UOSInt dataCnt;
 		} TableInfo;
 	private:
-        DB::DBTool *db;
-		DB::DBModel *model;
+		NotNullPtr<DB::DBTool> db;
+		NotNullPtr<DB::DBModel> model;
 		Sync::Mutex tableMut;
 		Data::ICaseStringMap<TableInfo*> tableMap;
 		UOSInt cacheCnt;
@@ -27,7 +27,7 @@ namespace DB
 		TableInfo *GetTableInfo(Text::CString tableName);
 		TableInfo *GetTableInfo(TableDef *tableDef);
 	public:
-        DBCache(DB::DBModel *model, DB::DBTool *db);
+        DBCache(NotNullPtr<DB::DBModel> model, NotNullPtr<DB::DBTool> db);
         ~DBCache();
 
 		OSInt GetRowCount(Text::CString tableName); //-1 = table not found

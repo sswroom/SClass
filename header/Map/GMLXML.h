@@ -15,7 +15,7 @@ namespace Map
 			UInt32 srid;
 		};
 	public:
-		static Map::MapDrawLayer *ParseFeatureCollection(NotNullPtr<Text::XMLReader> reader, Text::CString fileName);
+		static Map::MapDrawLayer *ParseFeatureCollection(NotNullPtr<Text::XMLReader> reader, Text::CStringNN fileName);
 	private:
 		static Math::Geometry::Vector2D *ParseGeometry(NotNullPtr<Text::XMLReader> reader, NotNullPtr<ParseEnv> env);
 	};

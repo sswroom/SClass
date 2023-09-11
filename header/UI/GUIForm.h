@@ -97,7 +97,7 @@ namespace UI
 		void MakeActive();
 		void MakeForeground();
 		virtual void Close();
-		virtual void SetText(Text::CString text);
+		virtual void SetText(Text::CStringNN text);
 		virtual Math::Size2D<UOSInt> GetSizeP();
 		virtual void SetExitOnClose(Bool exitOnClose);
 		virtual void SetNoResize(Bool noResize);
@@ -114,7 +114,7 @@ namespace UI
 		virtual Math::Size2DDbl GetClientSize();
 		virtual Bool IsChildVisible();
 
-		virtual Text::CString GetObjectClass();
+		virtual Text::CStringNN GetObjectClass() const;
 		virtual OSInt OnNotify(UInt32 code, void *lParam);
 		virtual void OnSizeChanged(Bool updateScn);
 		virtual Bool OnPaint();

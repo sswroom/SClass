@@ -56,7 +56,7 @@ Math::CoordinateSystem *Math::ArcGISPRJParser::ParsePRJFile(Text::CStringNN file
 	return ParsePRJBuff(fileName, buff, buffSize, &buffSize);
 }
 
-Math::CoordinateSystem *Math::ArcGISPRJParser::ParsePRJBuff(Text::CString sourceName, UTF8Char *prjBuff, UOSInt buffSize, UOSInt *parsedSize)
+Math::CoordinateSystem *Math::ArcGISPRJParser::ParsePRJBuff(Text::CStringNN sourceName, UTF8Char *prjBuff, UOSInt buffSize, UOSInt *parsedSize)
 {
 	UOSInt i;
 	UOSInt j;
@@ -257,7 +257,7 @@ Math::CoordinateSystem *Math::ArcGISPRJParser::ParsePRJBuff(Text::CString source
 			const Math::CoordinateSystemManager::DatumInfo *datum = Math::CoordinateSystemManager::GetDatumInfoByName((const UTF8Char*)&prjBuff[datumOfst]);
 
 			Math::GeographicCoordinateSystem::DatumData1 data;
-			Math::CoordinateSystemManager::FillDatumData(&data, datum, {&prjBuff[datumOfst], datumLen - 2}, &ellipsoid, 0);
+			Math::CoordinateSystemManager::FillDatumData(data, datum, {&prjBuff[datumOfst], datumLen - 2}, ellipsoid, 0);
 			NEW_CLASS(csys, Math::GeographicCoordinateSystem(sourceName, srid, {&prjBuff[nameOfst], nameLen - 2}, &data, primem, unit));
 			return csys;
 		}
@@ -266,7 +266,7 @@ Math::CoordinateSystem *Math::ArcGISPRJParser::ParsePRJBuff(Text::CString source
 			Math::EarthEllipsoid ellipsoid(a, f_1, eet);
 			const Math::CoordinateSystemManager::DatumInfo *datum = Math::CoordinateSystemManager::GetDatumInfoByName((const UTF8Char*)&prjBuff[datumOfst]);
 			Math::GeographicCoordinateSystem::DatumData1 data;
-			Math::CoordinateSystemManager::FillDatumData(&data, datum, {&prjBuff[datumOfst], datumLen - 2}, &ellipsoid, 0);
+			Math::CoordinateSystemManager::FillDatumData(data, datum, {&prjBuff[datumOfst], datumLen - 2}, ellipsoid, 0);
 			NEW_CLASS(csys, Math::GeographicCoordinateSystem(sourceName, srid, {&prjBuff[nameOfst], nameLen - 2}, &data, primem, unit));
 			return csys;
 		}
@@ -451,7 +451,8 @@ Math::CoordinateSystem *Math::ArcGISPRJParser::ParsePRJBuff(Text::CString source
 				return 0;
 			}
 		}
-		if (cst == Math::CoordinateSystem::CoordinateSystemType::Geographic || falseEasting == -1 || falseNorthing == -1 || centralMeridian == -1 || scaleFactor == -1 || latitudeOfOrigin == -1 || gcs == 0)
+		NotNullPtr<Math::GeographicCoordinateSystem> nngcs;
+		if (cst == Math::CoordinateSystem::CoordinateSystemType::Geographic || falseEasting == -1 || falseNorthing == -1 || centralMeridian == -1 || scaleFactor == -1 || latitudeOfOrigin == -1 || !nngcs.Set(gcs))
 		{
 			SDEL_CLASS(gcs);
 			return 0;
@@ -463,12 +464,12 @@ Math::CoordinateSystem *Math::ArcGISPRJParser::ParsePRJBuff(Text::CString source
 		srid = this->csys.GuessSRIDProj(Text::CStringNN(&prjBuff[nameOfst], nameLen - 2));
 		if (cst == Math::CoordinateSystem::CoordinateSystemType::MercatorProjected || cst == Math::CoordinateSystem::CoordinateSystemType::GausskrugerProjected)
 		{
-			NEW_CLASS(csys, Math::MercatorProjectedCoordinateSystem(sourceName, srid, {&prjBuff[nameOfst], nameLen - 2}, falseEasting, falseNorthing, centralMeridian, latitudeOfOrigin, scaleFactor, gcs, unit));
+			NEW_CLASS(csys, Math::MercatorProjectedCoordinateSystem(sourceName, srid, {&prjBuff[nameOfst], nameLen - 2}, falseEasting, falseNorthing, centralMeridian, latitudeOfOrigin, scaleFactor, nngcs, unit));
 			return csys;
 		}
 		else if (cst == Math::CoordinateSystem::CoordinateSystemType::Mercator1SPProjected)
 		{
-			NEW_CLASS(csys, Math::Mercator1SPProjectedCoordinateSystem(sourceName, srid, {&prjBuff[nameOfst], nameLen - 2}, falseEasting, falseNorthing, centralMeridian, latitudeOfOrigin, scaleFactor, gcs, unit));
+			NEW_CLASS(csys, Math::Mercator1SPProjectedCoordinateSystem(sourceName, srid, {&prjBuff[nameOfst], nameLen - 2}, falseEasting, falseNorthing, centralMeridian, latitudeOfOrigin, scaleFactor, nngcs, unit));
 			return csys;
 		}
 		else

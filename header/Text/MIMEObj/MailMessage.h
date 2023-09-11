@@ -34,7 +34,7 @@ namespace Text
 			MailMessage();
 			virtual ~MailMessage();
 
-			virtual Text::CString GetClassName() const;
+			virtual Text::CStringNN GetClassName() const;
 			virtual IMIMEObj *Clone() const;
 
 			Bool GetDate(Data::DateTime *dt) const;

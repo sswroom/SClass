@@ -42,11 +42,11 @@ namespace Net
 		virtual Bool Recover();
 
 		virtual Bool Connect(Text::CStringNN url, Net::WebUtil::RequestMethod method, Double *timeDNS, Double *timeConn, Bool defHeaders);
-		virtual void AddHeaderC(Text::CString name, Text::CString value);
+		virtual void AddHeaderC(Text::CStringNN name, Text::CString value);
 		virtual void EndRequest(Double *timeReq, Double *timeResp);
 		virtual void SetTimeout(Data::Duration timeout);
 
-		virtual Bool IsSecureConn();
+		virtual Bool IsSecureConn() const;
 		virtual Bool SetClientCert(NotNullPtr<Crypto::Cert::X509Cert> cert, NotNullPtr<Crypto::Cert::X509File> key);
 		virtual const Data::ReadingList<Crypto::Cert::Certificate *> *GetServerCerts();
 	};

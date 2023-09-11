@@ -14,7 +14,7 @@ DB::DBConn::DBConn(NotNullPtr<Text::String> sourceName) : DB::ReadingDB(sourceNa
 	this->lastDataError = DE_NO_ERROR;
 }
 
-DB::DBConn::DBConn(Text::CString sourceName) : DB::ReadingDB(sourceName)
+DB::DBConn::DBConn(Text::CStringNN sourceName) : DB::ReadingDB(sourceName)
 {
 	this->lastDataError = DE_NO_ERROR;
 }
@@ -710,7 +710,7 @@ DB::DBConn::DataError DB::DBConn::GetLastDataError()
 	return this->lastDataError;
 }
 
-Bool DB::DBConn::IsFullConn()
+Bool DB::DBConn::IsFullConn() const
 {
 	return true;
 }

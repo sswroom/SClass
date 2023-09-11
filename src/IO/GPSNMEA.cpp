@@ -407,7 +407,7 @@ UOSInt IO::GPSNMEA::GenNMEACommand(const UTF8Char *cmd, UOSInt cmdLen, UInt8 *bu
 	return size + 5;
 }
 
-Map::GPSTrack *IO::GPSNMEA::NMEA2Track(NotNullPtr<IO::Stream> stm, Text::CString sourceName)
+Map::GPSTrack *IO::GPSNMEA::NMEA2Track(NotNullPtr<IO::Stream> stm, Text::CStringNN sourceName)
 {
 	Map::GPSTrack *trk;
 	Map::GPSTrack::GPSRecord3 record;

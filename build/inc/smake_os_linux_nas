@@ -35,6 +35,10 @@ IO/I2CChannelOS.h: ../../src/IO/I2CChannelOSL.cpp
 @I2CChannelOS.o
 IO/OS.h: ../../src/IO/OSL.cpp
 @OS.o
+IO/PCIInfo.h: ../../src/IO/PCIInfoL.cpp
+@PCIInfo.o
+IO/PowerInfo.h: ../../src/IO/PowerInfoL.cpp
+@PowerInfo.o
 IO/RAWBTMonitor.h: ../../src/IO/RAWBTMonitorLite.cpp
 @RAWBTMonitor.o
 IO/RAWBTScanner.h: ../../src/IO/RAWBTScanner.cpp
@@ -45,6 +49,8 @@ IO/SensorManager.h: ../../src/IO/SensorManagerNull.cpp
 @SensorManager.o
 IO/ServiceManager.h: ../../src/IO/ServiceManagerNull.cpp
 @ServiceManager.o
+IO/USBInfo.h: ../../src/IO/USBInfoL.cpp
+@USBInfo.o
 IO/Watchdog.h: ../../src/IO/WatchdogL.cpp
 @Watchdog.o
 
@@ -128,11 +134,14 @@ DebugWriter.o: ../../src/IO/DebugWriterL.cpp
 HIDInfo.o: ../../src/IO/HIDInfoL.cpp
 I2CChannelOS.o: ../../src/IO/I2CChannelOSL.cpp
 OS.o: ../../src/IO/OSL.cpp
+PCIInfo.o: ../../src/IO/PCIInfoL.cpp
+PowerInfo.o: ../../src/IO/PowerInfoL.cpp
 RAWBTMonitor.o: ../../src/IO/RAWBTMonitorLite.cpp
 RAWBTScanner.o: ../../src/IO/RAWBTScanner.cpp
 SDCardMgr.o: ../../src/IO/SDCardMgrL.cpp
 SensorManager.o: ../../src/IO/SensorManagerNull.cpp
 ServiceManager.o: ../../src/IO/ServiceManagerNull.cpp
+USBInfo.o: ../../src/IO/USBInfoL.cpp
 Watchdog.o: ../../src/IO/WatchdogL.cpp
 Computer.o: ../../src/Manage/ComputerL.cpp
 ComputerUser.o: ../../src/Manage/ComputerUserL.cpp

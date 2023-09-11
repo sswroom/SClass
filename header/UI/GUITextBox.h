@@ -16,8 +16,8 @@ namespace UI
 		Data::ArrayList<void *> keyDownObjs;
 
 	public:
-		GUITextBox(NotNullPtr<GUICore> ui, UI::GUIClientControl *parent, Text::CString initText);
-		GUITextBox(NotNullPtr<GUICore> ui, UI::GUIClientControl *parent, Text::CString initText, Bool isMultiline);
+		GUITextBox(NotNullPtr<GUICore> ui, UI::GUIClientControl *parent, Text::CStringNN initText);
+		GUITextBox(NotNullPtr<GUICore> ui, UI::GUIClientControl *parent, Text::CStringNN initText, Bool isMultiline);
 		virtual ~GUITextBox();
 
 		void EventTextChange();
@@ -26,10 +26,10 @@ namespace UI
 		virtual void SetReadOnly(Bool isReadOnly);
 		virtual void SetPasswordChar(UTF32Char c);
 
-		virtual void SetText(Text::CString text);
+		virtual void SetText(Text::CStringNN text);
 		virtual UTF8Char *GetText(UTF8Char *buff);
 		virtual Bool GetText(NotNullPtr<Text::StringBuilderUTF8> sb);
-		virtual Text::CString GetObjectClass();
+		virtual Text::CStringNN GetObjectClass() const;
 		virtual OSInt OnNotify(UInt32 code, void *lParam);
 
 		virtual void HandleTextChanged(UI::UIEvent hdlr, void *userObj);

@@ -14,5 +14,5 @@ IO::SensorUnknownAndroid::~SensorUnknownAndroid()
 
 IO::Sensor::SensorType IO::SensorUnknownAndroid::GetSensorType()
 {
-	return IO::Sensor::ST_UNKNOWN;
+	return IO::Sensor::SensorType::Unknown;
 }

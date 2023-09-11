@@ -100,9 +100,9 @@ namespace IO
 		NotNullPtr<const Data::ReadingList<IO::BTScanLog::DevEntry*>> GetPublicList() const;
 		NotNullPtr<const Data::ReadingList<IO::BTScanLog::DevEntry*>> GetRandomList() const;
 
-		static Text::CString RadioTypeGetName(RadioType radioType);
-		static Text::CString AddressTypeGetName(AddressType addrType);
-		static Text::CString AdvTypeGetName(AdvType advType);
+		static Text::CStringNN RadioTypeGetName(RadioType radioType);
+		static Text::CStringNN AddressTypeGetName(AddressType addrType);
+		static Text::CStringNN AdvTypeGetName(AdvType advType);
 		static Bool ParseBTRAWPacket(ScanRecord3 *rec, Int64 timeTicks, const UInt8 *buff, UOSInt buffSize);
 		static void ParseAdvisement(ScanRecord3 *rec, const UInt8 *buff, UOSInt ofst, UOSInt endOfst);
 	};

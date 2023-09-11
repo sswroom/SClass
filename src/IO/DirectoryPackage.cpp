@@ -83,7 +83,7 @@ IO::DirectoryPackage::DirectoryPackage(NotNullPtr<Text::String> dirName) : IO::P
 	this->Init();
 }
 
-IO::DirectoryPackage::DirectoryPackage(Text::CString dirName) : IO::PackageFile(dirName)
+IO::DirectoryPackage::DirectoryPackage(Text::CStringNN dirName) : IO::PackageFile(dirName)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;

@@ -8,7 +8,7 @@
 #include "Math/Geometry/Point.h"
 #include "Math/Geometry/PointZ.h"
 
-Map::MapDrawLayer *Map::GMLXML::ParseFeatureCollection(NotNullPtr<Text::XMLReader> reader, Text::CString fileName)
+Map::MapDrawLayer *Map::GMLXML::ParseFeatureCollection(NotNullPtr<Text::XMLReader> reader, Text::CStringNN fileName)
 {
 	if (reader->GetNodeType() != Text::XMLNode::NodeType::Element || !reader->GetNodeText()->EndsWith(UTF8STRC(":FeatureCollection")))
 		return 0;
@@ -141,7 +141,12 @@ Map::MapDrawLayer *Map::GMLXML::ParseFeatureCollection(NotNullPtr<Text::XMLReade
 					{
 						colCnt = nameList.GetCount();
 						ccols = nameList.Ptr();
-						NEW_CLASS(lyr, Map::VectorLayer(layerType, fileName, colCnt, ccols, env.csys, 0, CSTR_NULL));
+						NotNullPtr<Math::CoordinateSystem> csys;
+						if (!csys.Set(env.csys))
+						{
+							csys = Math::CoordinateSystemManager::CreateDefaultCsys();
+						}
+						NEW_CLASS(lyr, Map::VectorLayer(layerType, fileName, colCnt, ccols, csys, 0, CSTR_NULL));
 					}
 
 					if (colCnt == valList.GetCount())

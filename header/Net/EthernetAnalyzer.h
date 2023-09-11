@@ -192,7 +192,7 @@ namespace Net
 		void MDNSAdd(Net::DNSClient::RequestAnswer *ans);
 	public:
 		EthernetAnalyzer(IO::Writer *errWriter, AnalyzeType ctype, NotNullPtr<Text::String> name);
-		EthernetAnalyzer(IO::Writer *errWriter, AnalyzeType ctype, Text::CString name);
+		EthernetAnalyzer(IO::Writer *errWriter, AnalyzeType ctype, Text::CStringNN name);
 		virtual ~EthernetAnalyzer();
 
 		virtual IO::ParserType GetParserType() const;

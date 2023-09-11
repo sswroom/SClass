@@ -787,7 +787,7 @@ SSWR::AVIRead::AVIRGISEditImageForm::AVIRGISEditImageForm(UI::GUIClientControl *
 	UOSInt cnt = lyr->GetColumnCnt();
 	UOSInt i;
 	UOSInt j;
-	lyr->GetAllObjectIds(&objIds, &nameArr);
+	lyr->GetAllObjectIds(objIds, &nameArr);
 	if (cnt > 0)
 	{
 		i = 0;

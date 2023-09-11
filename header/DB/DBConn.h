@@ -34,7 +34,7 @@ namespace DB
 	protected:
 		DataError lastDataError;
 		DBConn(NotNullPtr<Text::String> sourceName);
-		DBConn(Text::CString sourceName);
+		DBConn(Text::CStringNN sourceName);
 	public:
 		virtual ~DBConn();
 
@@ -55,7 +55,7 @@ namespace DB
 		virtual void Commit(void *tran) = 0;
 		virtual void Rollback(void *tran) = 0;
 
-		virtual Bool IsFullConn();
+		virtual Bool IsFullConn() const;
 	};
 }
 #endif

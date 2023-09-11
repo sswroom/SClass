@@ -16,7 +16,7 @@ DB/ODBCConn.h: ../../src/DB/ODBCConnNul.cpp
 @ODBCConn.o
 DB/PostgreSQLConn.h: ../../src/DB/PostgreSQLConnNul.cpp
 @PostgreSQLConn.o
-DB/TDSConn.h: ../../src/DB/TDSConn.cpp
+DB/TDSConn.h: ../../src/DB/TDSConn_Null.cpp
 @TDSConn.o
 
 Exporter/HEIFExporter.h: ../../src/Exporter/HEIFExporter.cpp
@@ -38,10 +38,18 @@ IO/I2CChannelOS.h: ../../src/IO/I2CChannelOSL.cpp
 @I2CChannelOS.o
 IO/OS.h: ../../src/IO/OSAndroid.cpp
 @OS.o
+IO/PCIInfo.h: ../../src/IO/PCIInfoL.cpp
+@PCIInfo.o
+IO/PowerInfo.h: ../../src/IO/PowerInfoL.cpp
+@PowerInfo.o
 IO/SDCardMgr.h: ../../src/IO/SDCardMgrL.cpp
 @SDCardMgr.o
 IO/SensorManager.h: ../../src/IO/SensorManagerNull.cpp
 @SensorManager.o
+IO/ServiceManager.h: ../../src/IO/ServiceManagerNull.cpp
+@ServiceManager.o
+IO/USBInfo.h: ../../src/IO/USBInfoL.cpp
+@USBInfo.o
 IO/Watchdog.h: ../../src/IO/WatchdogL.cpp
 @Watchdog.o
 
@@ -117,8 +125,7 @@ MongoDB.o: ../../src/DB/MongoDBNull.cpp
 MySQLConn.o: ../../src/DB/MySQLConnNull.cpp
 ODBCConn.o: ../../src/DB/ODBCConnNul.cpp
 PostgreSQLConn.o: ../../src/DB/PostgreSQLConnNul.cpp
-TDSConn.o: ../../src/DB/TDSConn.cpp
-!-lsybdb
+TDSConn.o: ../../src/DB/TDSConn_Null.cpp
 HEIFExporter.o: ../../src/Exporter/HEIFExporter.cpp
 !-lheif
 WebPExporter.o: ../../src/Exporter/WebPExporter.cpp
@@ -131,8 +138,12 @@ DebugWriter.o: ../../src/IO/DebugWriter_Null.cpp
 HIDInfo.o: ../../src/IO/HIDInfoL.cpp
 I2CChannelOS.o: ../../src/IO/I2CChannelOSL.cpp
 OS.o: ../../src/IO/OSAndroid.cpp
+PCIInfo.o: ../../src/IO/PCIInfoL.cpp
+PowerInfo.o: ../../src/IO/PowerInfoL.cpp
 SDCardMgr.o: ../../src/IO/SDCardMgrL.cpp
 SensorManager.o: ../../src/IO/SensorManagerNull.cpp
+ServiceManager.o: ../../src/IO/ServiceManagerNull.cpp
+USBInfo.o: ../../src/IO/USBInfoL.cpp
 Watchdog.o: ../../src/IO/WatchdogL.cpp
 Computer.o: ../../src/Manage/ComputerL.cpp
 ComputerUser.o: ../../src/Manage/ComputerUserL.cpp
@@ -144,7 +155,7 @@ AudioDevice.o: ../../src/Media/AudioDeviceNull.cpp
 FBMonitorSurfaceMgr.o: ../../src/Media/FBMonitorSurfaceMgr_Null.cpp
 MonitorSurfaceMgrFactory.o: ../../src/Media/MonitorSurfaceMgrFactoryNull.cpp
 OCREngine.o: ../../src/Media/OCREngine.cpp
-!-llept
+!-lleptonica
 !-ltesseract
 Printer.o: ../../src/Media/PrinterNull.cpp
 ZXingWriter.o: ../../src/Media/ZXingWriter.cpp

@@ -266,7 +266,7 @@ UOSInt Text::TextBinEnc::FormEncoding::DecodeBin(const UTF8Char *str, UOSInt str
 	return retSize;
 }
 
-Text::CString Text::TextBinEnc::FormEncoding::GetName()
+Text::CStringNN Text::TextBinEnc::FormEncoding::GetName() const
 {
 	return CSTR("Form Encoding");
 }

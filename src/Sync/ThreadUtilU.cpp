@@ -217,8 +217,12 @@ Bool Sync::ThreadUtil::SetName(Text::CString name)
 {
 #if defined(__APPLE__)
 	return pthread_setname_np((const char*)name.v) == 0;
-#elif __GNUC_PREREQ(2, 12) && !defined(__UCLIBC_MAJOR__)
+#elif defined(__GNUC_PREREQ)
+#if __GNUC_PREREQ(2, 12) && !defined(__UCLIBC_MAJOR__)
 	return pthread_setname_np(pthread_self(), (const char*)name.v) == 0;
+#else
+	return false;
+#endif
 #else
 	return false;
 #endif

@@ -248,9 +248,9 @@ void UI::DObj::ButtonDObj::DrawObject(NotNullPtr<Media::DrawImage> dimg)
 				}
 	#else
 				Bool revOrder;
-				UInt8 *ptrS1 = (UInt8*)bmpS1->GetImgBits(&revOrder);
-				UInt8 *ptrS2 = (UInt8*)bmpS2->GetImgBits(&revOrder);
-				UInt8 *ptrD = (UInt8*)bmpTmp->GetImgBits(&revOrder);
+				UInt8 *ptrS1 = (UInt8*)bmpS1->GetImgBits(revOrder);
+				UInt8 *ptrS2 = (UInt8*)bmpS2->GetImgBits(revOrder);
+				UInt8 *ptrD = (UInt8*)bmpTmp->GetImgBits(revOrder);
 				UOSInt lineBytes = bmpS1->GetWidth() * 4;
 				UOSInt i;
 				UOSInt j = bmpS1->GetHeight();

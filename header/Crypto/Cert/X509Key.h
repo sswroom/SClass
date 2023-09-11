@@ -13,7 +13,7 @@ namespace Crypto
 			KeyType keyType;
 		public:
 			X509Key(NotNullPtr<Text::String> sourceName, Data::ByteArrayR buff, KeyType keyType);
-			X509Key(Text::CString sourceName, Data::ByteArrayR buff, KeyType keyType);
+			X509Key(Text::CStringNN sourceName, Data::ByteArrayR buff, KeyType keyType);
 			virtual ~X509Key();
 
 			virtual FileType GetFileType() const;

@@ -16,7 +16,7 @@ namespace DB
 		DB::SQLType sqlType;
 
 	public:
-		TDSConn(Text::CString serverHost, UInt16 port, Bool encrypt, Text::CString database, Text::CString userName, Text::CString password, IO::LogTool *log, Text::StringBuilderUTF8 *errMsg);
+		TDSConn(Text::CStringNN serverHost, UInt16 port, Bool encrypt, Text::CString database, Text::CString userName, Text::CString password, IO::LogTool *log, Text::StringBuilderUTF8 *errMsg);
 		virtual ~TDSConn();
 
 		Bool IsConnected() const;

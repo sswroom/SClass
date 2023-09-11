@@ -16,27 +16,27 @@ namespace Math
 
 	public:
 		GeographicCoordinateSystem(NotNullPtr<Text::String> sourceName, UInt32 srid, Text::CString csysName, const DatumData1 *datum, PrimemType primem, UnitType unit);
-		GeographicCoordinateSystem(Text::CString sourceName, UInt32 srid, Text::CString csysName, const DatumData1 *datum, PrimemType primem, UnitType unit);
+		GeographicCoordinateSystem(Text::CStringNN sourceName, UInt32 srid, Text::CString csysName, const DatumData1 *datum, PrimemType primem, UnitType unit);
 		virtual ~GeographicCoordinateSystem();
 
 		virtual Double CalSurfaceDistanceXY(Math::Coord2DDbl pos1, Math::Coord2DDbl pos2, Math::Unit::Distance::DistanceUnit unit) const;
-		virtual Double CalPLDistance(Math::Geometry::Polyline *pl, Math::Unit::Distance::DistanceUnit unit) const;
-		virtual Double CalPLDistance3D(Math::Geometry::Polyline *pl, Math::Unit::Distance::DistanceUnit unit) const;
-		virtual Math::CoordinateSystem *Clone() const;
+		virtual Double CalPLDistance(NotNullPtr<Math::Geometry::Polyline> pl, Math::Unit::Distance::DistanceUnit unit) const;
+		virtual Double CalPLDistance3D(NotNullPtr<Math::Geometry::Polyline> pl, Math::Unit::Distance::DistanceUnit unit) const;
+		virtual NotNullPtr<Math::CoordinateSystem> Clone() const;
 		virtual CoordinateSystemType GetCoordSysType() const;
 		virtual Bool IsProjected() const;
 		virtual void ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const;
 
-		Math::EarthEllipsoid *GetEllipsoid() const { return this->datum.spheroid.ellipsoid; }
+		NotNullPtr<Math::EarthEllipsoid> GetEllipsoid() const { return this->datum.spheroid.ellipsoid; }
 		Text::CString GetDatumName() const;
-		const DatumData1 *GetDatum() const;
+		NotNullPtr<const DatumData1> GetDatum() const;
 		PrimemType GetPrimem() const;
 		UnitType GetUnit() const;
 
-		void ToCartesianCoordRad(Double lat, Double lon, Double h, Double *x, Double *y, Double *z) const;
-		void FromCartesianCoordRad(Double x, Double y, Double z, Double *lat, Double *lon, Double *h) const;
-		void ToCartesianCoordDeg(Double dlat, Double dlon, Double h, Double *x, Double *y, Double *z) const { ToCartesianCoordRad(dlat * Math::PI / 180.0, dlon * Math::PI / 180.0, h, x, y, z); }
-		void FromCartesianCoordDeg(Double x, Double y, Double z, Double *dlat, Double *dlon, Double *h) const { FromCartesianCoordRad(x, y, z, dlat, dlon, h); *dlat = *dlat * 180.0 / Math::PI; *dlon = *dlon * 180.0 / Math::PI; }
+		Math::Vector3 ToCartesianCoordRad(Math::Vector3 lonLatH) const;
+		Math::Vector3 FromCartesianCoordRad(Math::Vector3 coord) const;
+		Math::Vector3 ToCartesianCoordDeg(Math::Vector3 lonLatH) const { return ToCartesianCoordRad(lonLatH.MulXY(Math::PI / 180.0)); }
+		Math::Vector3 FromCartesianCoordDeg(Math::Vector3 coord) const { return FromCartesianCoordRad(coord).MulXY(180.0 / Math::PI); }
 	};
 }
 #endif

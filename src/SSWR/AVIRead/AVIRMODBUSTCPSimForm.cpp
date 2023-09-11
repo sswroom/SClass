@@ -120,7 +120,7 @@ void __stdcall SSWR::AVIRead::AVIRMODBUSTCPSimForm::OnDeviceChanged(void *userOb
 		UOSInt j = me->currDev->GetValueCount();
 		while (i < j)
 		{
-			me->lvDeviceValues->AddItem(me->currDev->GetValueName(i), 0);
+			me->lvDeviceValues->AddItem(me->currDev->GetValueName(i).OrEmpty(), 0);
 			sb.ClearStr();
 			me->currDev->GetValue(i, sb);
 			me->lvDeviceValues->SetSubItem(i, 1, sb.ToCString());
@@ -255,7 +255,7 @@ void SSWR::AVIRead::AVIRMODBUSTCPSimForm::OnMonitorChanged()
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 }
 
-Text::CString SSWR::AVIRead::AVIRMODBUSTCPSimForm::DeviceTypeGetName(DeviceType devType)
+Text::CStringNN SSWR::AVIRead::AVIRMODBUSTCPSimForm::DeviceTypeGetName(DeviceType devType)
 {
 	switch (devType)
 	{

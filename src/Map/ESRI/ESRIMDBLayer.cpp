@@ -183,7 +183,10 @@ void Map::ESRI::ESRIMDBLayer::Init(DB::SharedDBConn *conn, UInt32 srid, Text::CS
 	}
 	mutUsage.EndUse();
 	this->currDB = 0;
-	this->csys = Math::CoordinateSystemManager::SRCreateCSys(srid);
+	if (!this->csys.Set(Math::CoordinateSystemManager::SRCreateCSys(srid)))
+	{
+		this->csys = Math::CoordinateSystemManager::CreateDefaultCsys();
+	}
 }
 
 Map::ESRI::ESRIMDBLayer::ESRIMDBLayer(DB::SharedDBConn *conn, UInt32 srid, NotNullPtr<Text::String> sourceName, Text::CString tableName) : Map::MapDrawLayer(sourceName->ToCString(), 0, tableName)
@@ -192,7 +195,7 @@ Map::ESRI::ESRIMDBLayer::ESRIMDBLayer(DB::SharedDBConn *conn, UInt32 srid, NotNu
 	this->Init(conn, srid, tableName);
 }
 
-Map::ESRI::ESRIMDBLayer::ESRIMDBLayer(DB::SharedDBConn *conn, UInt32 srid, Text::CString sourceName, Text::CString tableName) : Map::MapDrawLayer(sourceName, 0, tableName)
+Map::ESRI::ESRIMDBLayer::ESRIMDBLayer(DB::SharedDBConn *conn, UInt32 srid, Text::CStringNN sourceName, Text::CString tableName) : Map::MapDrawLayer(sourceName, 0, tableName)
 {
 	this->Init(conn, srid, tableName);
 }
@@ -213,12 +216,12 @@ Map::ESRI::ESRIMDBLayer::~ESRIMDBLayer()
 	this->tableName->Release();
 }
 
-Map::DrawLayerType Map::ESRI::ESRIMDBLayer::GetLayerType()
+Map::DrawLayerType Map::ESRI::ESRIMDBLayer::GetLayerType() const
 {
 	return this->layerType;
 }
 
-UOSInt Map::ESRI::ESRIMDBLayer::GetAllObjectIds(Data::ArrayListInt64 *outArr, NameArray **nameArr)
+UOSInt Map::ESRI::ESRIMDBLayer::GetAllObjectIds(NotNullPtr<Data::ArrayListInt64> outArr, NameArray **nameArr)
 {
 	if (nameArr)
 	{
@@ -234,12 +237,12 @@ UOSInt Map::ESRI::ESRIMDBLayer::GetAllObjectIds(Data::ArrayListInt64 *outArr, Na
 	return j;
 }
 
-UOSInt Map::ESRI::ESRIMDBLayer::GetObjectIds(Data::ArrayListInt64 *outArr, NameArray **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
+UOSInt Map::ESRI::ESRIMDBLayer::GetObjectIds(NotNullPtr<Data::ArrayListInt64> outArr, NameArray **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
 {
 	return GetObjectIdsMapXY(outArr, nameArr, rect.ToDouble() / mapRate, keepEmpty);
 }
 
-UOSInt Map::ESRI::ESRIMDBLayer::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, NameArray **nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
+UOSInt Map::ESRI::ESRIMDBLayer::GetObjectIdsMapXY(NotNullPtr<Data::ArrayListInt64> outArr, NameArray **nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
 {
 	if (nameArr)
 	{
@@ -266,7 +269,7 @@ UOSInt Map::ESRI::ESRIMDBLayer::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, 
 	return cnt;
 }
 
-Int64 Map::ESRI::ESRIMDBLayer::GetObjectIdMax()
+Int64 Map::ESRI::ESRIMDBLayer::GetObjectIdMax() const
 {
 	return this->objects.GetKey(this->objects.GetCount() - 1);
 }
@@ -305,7 +308,7 @@ UTF8Char *Map::ESRI::ESRIMDBLayer::GetString(UTF8Char *buff, UOSInt buffSize, Na
 	return Text::StrConcatS(buff, nameStrs[strIndex], buffSize);
 }
 
-UOSInt Map::ESRI::ESRIMDBLayer::GetColumnCnt()
+UOSInt Map::ESRI::ESRIMDBLayer::GetColumnCnt() const
 {
 	return this->colNames.GetCount();
 }
@@ -330,14 +333,14 @@ Bool Map::ESRI::ESRIMDBLayer::GetColumnDef(UOSInt colIndex, NotNullPtr<DB::ColDe
 	return false;
 }
 
-UInt32 Map::ESRI::ESRIMDBLayer::GetCodePage()
+UInt32 Map::ESRI::ESRIMDBLayer::GetCodePage() const
 {
 	return 65001;
 }
 
-Bool Map::ESRI::ESRIMDBLayer::GetBounds(Math::RectAreaDbl *bounds)
+Bool Map::ESRI::ESRIMDBLayer::GetBounds(OutParam<Math::RectAreaDbl> bounds) const
 {
-	*bounds = Math::RectAreaDbl(this->min, this->max);
+	bounds.Set(Math::RectAreaDbl(this->min, this->max));
 	return this->min.x != 0 || this->min.y != 0 || this->max.x != 0 || this->max.y != 0;
 }
 
@@ -422,7 +425,7 @@ void Map::ESRI::ESRIMDBLayer::Reconnect()
 	this->conn->Reconnect();
 }
 
-Map::MapDrawLayer::ObjectClass Map::ESRI::ESRIMDBLayer::GetObjectClass()
+Map::MapDrawLayer::ObjectClass Map::ESRI::ESRIMDBLayer::GetObjectClass() const
 {
 	return Map::MapDrawLayer::OC_ESRI_MDB_LAYER;
 }

@@ -167,7 +167,7 @@ void SSWR::AVIRead::AVIRGISFontEditForm::UpdateDisplay()
 	{
 		this->txtStyleName->SetText(CSTR(""));
 	}
-	env->GetFontStyle(this->fontStyle, &fontName, &this->currFontSizePt, &this->isBold, &this->currColor, &this->currBuffSize, &this->currBuffColor);
+	env->GetFontStyle(this->fontStyle, fontName, this->currFontSizePt, this->isBold, this->currColor, this->currBuffSize, this->currBuffColor);
 	SDEL_STRING(this->currFontName);
 	if (fontName)
 	{

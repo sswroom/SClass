@@ -115,7 +115,7 @@ void Map::MapEnv::RemoveGroupUpdatedHandler(Map::MapEnv::GroupItem *group, Map::
 	
 }
 
-Map::MapEnv::MapEnv(Text::CString fileName, UInt32 bgColor, Math::CoordinateSystem *csys) : IO::ParsedObject(fileName)
+Map::MapEnv::MapEnv(Text::CStringNN fileName, UInt32 bgColor, Math::CoordinateSystem *csys) : IO::ParsedObject(fileName)
 {
 	this->bgColor = bgColor;
 	this->nStr = 1000;
@@ -467,25 +467,25 @@ UOSInt Map::MapEnv::GetFontStyleCount() const
 	return this->fontStyles.GetCount();
 }
 
-Bool Map::MapEnv::GetFontStyle(UOSInt index, Text::String **fontName, Double *fontSizePt, Bool *bold, UInt32 *fontColor, UOSInt *buffSize, UInt32 *buffColor) const
+Bool Map::MapEnv::GetFontStyle(UOSInt index, OutParam<Text::String*> fontName, OutParam<Double> fontSizePt, OutParam<Bool> bold, OutParam<UInt32> fontColor, OutParam<UOSInt> buffSize, OutParam<UInt32> buffColor) const
 {
 	Map::MapEnv::FontStyle *style = this->fontStyles.GetItem(index);
 	if (style == 0)
 	{
-		*fontName = 0;
-		*fontSizePt = 0;
-		*bold = false;
-		*fontColor = 0xff000000;
-		*buffSize = 0;
-		*buffColor = 0xff000000;
+		fontName.Set(0);
+		fontSizePt.Set(0);
+		bold.Set(false);
+		fontColor.Set(0xff000000);
+		buffSize.Set(0);
+		buffColor.Set(0xff000000);
 		return false;
 	}
-	*fontName = style->fontName.Ptr();
-	*fontSizePt = style->fontSizePt;
-	*bold = style->bold;
-	*fontColor = style->fontColor;
-	*buffSize = style->buffSize;
-	*buffColor = style->buffColor;
+	fontName.Set(style->fontName.Ptr());
+	fontSizePt.Set(style->fontSizePt);
+	bold.Set(style->bold);
+	fontColor.Set(style->fontColor);
+	buffSize.Set(style->buffSize);
+	buffColor.Set(style->buffColor);
 	return true;
 }
 
@@ -1458,20 +1458,21 @@ Bool Map::MapEnv::GetBounds(Map::MapEnv::GroupItem *group, Math::RectAreaDbl *bo
 	UOSInt j = this->GetLayersInGroup(group, &layers);
 	Math::RectAreaDbl minMax = Math::RectAreaDbl(0, 0, 0, 0);
 	Math::RectAreaDbl thisBounds;
-	Math::CoordinateSystem *lyrCSys;
+	NotNullPtr<Math::CoordinateSystem> thisCsys;
+	NotNullPtr<Math::CoordinateSystem> lyrCSys;
 	Bool isFirst = true;
 	while (i < j)
 	{
 		Map::MapDrawLayer *lyr = layers.GetItem(i);
-		if (lyr->GetBounds(&thisBounds))
+		if (lyr->GetBounds(thisBounds))
 		{
 			lyrCSys = lyr->GetCoordinateSystem();
-			if (this->csys != 0 && lyrCSys != 0)
+			if (thisCsys.Set(this->csys))
 			{
 				if (!this->csys->Equals(lyrCSys))
 				{
-					Math::CoordinateSystem::ConvertXYZ(lyrCSys, this->csys, thisBounds.tl.x, thisBounds.tl.y, 0, &thisBounds.tl.x, &thisBounds.tl.y, 0);
-					Math::CoordinateSystem::ConvertXYZ(lyrCSys, this->csys, thisBounds.br.x, thisBounds.br.y, 0, &thisBounds.br.x, &thisBounds.br.y, 0);
+					thisBounds.tl = Math::CoordinateSystem::ConvertXYZ(lyrCSys, thisCsys, Math::Vector3(thisBounds.tl, 0)).GetXY();
+					thisBounds.br = Math::CoordinateSystem::ConvertXYZ(lyrCSys, thisCsys, Math::Vector3(thisBounds.br, 0)).GetXY();
 				}
 			}
 			if (isFirst)

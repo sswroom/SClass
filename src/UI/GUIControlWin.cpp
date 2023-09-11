@@ -180,7 +180,7 @@ void UI::GUIControl::Close()
 	DestroyWindow((HWND)hwnd);
 }
 
-void UI::GUIControl::SetText(Text::CString text)
+void UI::GUIControl::SetText(Text::CStringNN text)
 {
 	const WChar *wptr = Text::StrToWCharNew(text.v);
 	SetWindowTextW((HWND)hwnd, wptr);
@@ -1313,7 +1313,7 @@ UI::GUIControl::GUIKey UI::GUIControl::OSKey2GUIKey(UInt32 osKey)
 	}
 }
 
-Text::CString UI::GUIControl::GUIKeyGetName(GUIKey guiKey)
+Text::CStringNN UI::GUIControl::GUIKeyGetName(GUIKey guiKey)
 {
 	switch (guiKey)
 	{

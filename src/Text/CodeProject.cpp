@@ -39,7 +39,7 @@ NotNullPtr<Text::String> Text::CodeProjectCfg::GetCfgName() const
 	return this->cfgName;
 }
 
-Text::CodeProject::CodeProject(Text::CString name) : IO::ParsedObject(name)
+Text::CodeProject::CodeProject(Text::CStringNN name) : IO::ParsedObject(name)
 {
 }
 

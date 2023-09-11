@@ -3,7 +3,7 @@
 
 #include <stdio.h>
 
-Media::Jasper::JasperReport *Media::Jasper::JasperXML::ParseJasperReport(NotNullPtr<Text::XMLReader> reader, Text::CString fileName)
+Media::Jasper::JasperReport *Media::Jasper::JasperXML::ParseJasperReport(NotNullPtr<Text::XMLReader> reader, Text::CStringNN fileName)
 {
 	if (reader->GetNodeType() != Text::XMLNode::NodeType::Element || !reader->GetNodeText()->Equals(UTF8STRC("jasperReport")))
 	{

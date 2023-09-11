@@ -21,13 +21,13 @@ namespace UtilUI
 		static void __stdcall OnOKClicked(void *userObj);
 		static void __stdcall OnCancelClicked(void *userObj);
 	public:
-		TextInputDialog(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, Media::MonitorMgr *monMgr, Text::CString title, Text::CString message);
+		TextInputDialog(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, Media::MonitorMgr *monMgr, Text::CStringNN title, Text::CStringNN message);
 		virtual ~TextInputDialog();
 
 		virtual void OnShow();
 		virtual void OnMonitorChanged();
 
-		void SetInputString(Text::CString s);
+		void SetInputString(Text::CStringNN s);
 		Bool GetInputString(NotNullPtr<Text::StringBuilderUTF8> sb);
 	};
 }

@@ -11,15 +11,15 @@ Text::String *Map::OSM::OSMTileMap::GetNextURL()
 	return thisUrl;
 }
 
-Map::OSM::OSMTileMap::OSMTileMap(Text::CString url, Text::CString cacheDir, UOSInt maxLevel, NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl) : Map::MercatorTileMap(cacheDir, 0, maxLevel, sockf, ssl)
+Map::OSM::OSMTileMap::OSMTileMap(Text::CStringNN url, Text::CString cacheDir, UOSInt maxLevel, NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl) : Map::MercatorTileMap(cacheDir, 0, maxLevel, sockf, ssl)
 {
-	this->urls.Add(Text::String::New(url.v, url.leng));
+	this->urls.Add(Text::String::New(url));
 	this->urlNext = 0;
 }
 
-Map::OSM::OSMTileMap::OSMTileMap(Text::CString url, IO::SPackageFile *spkg, UOSInt maxLevel, NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl) : Map::MercatorTileMap(CSTR_NULL, 0, maxLevel, sockf, ssl)
+Map::OSM::OSMTileMap::OSMTileMap(Text::CStringNN url, IO::SPackageFile *spkg, UOSInt maxLevel, NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl) : Map::MercatorTileMap(CSTR_NULL, 0, maxLevel, sockf, ssl)
 {
-	this->urls.Add(Text::String::New(url.v, url.leng));
+	this->urls.Add(Text::String::New(url));
 	this->urlNext = 0;
 	this->SetSPackageFile(spkg);
 }
@@ -34,9 +34,9 @@ Map::OSM::OSMTileMap::~OSMTileMap()
 	}
 }
 
-void Map::OSM::OSMTileMap::AddAlternateURL(Text::CString url)
+void Map::OSM::OSMTileMap::AddAlternateURL(Text::CStringNN url)
 {
-	this->urls.Add(Text::String::New(url.v, url.leng));
+	this->urls.Add(Text::String::New(url));
 }
 
 Text::String *Map::OSM::OSMTileMap::GetOSMURL(UOSInt index)
@@ -44,17 +44,17 @@ Text::String *Map::OSM::OSMTileMap::GetOSMURL(UOSInt index)
 	return this->urls.GetItem(index);
 }
 
-Text::CString Map::OSM::OSMTileMap::GetName()
+Text::CStringNN Map::OSM::OSMTileMap::GetName() const
 {
 	return CSTR("OSMTileMap");
 }
 
-Map::TileMap::TileType Map::OSM::OSMTileMap::GetTileType()
+Map::TileMap::TileType Map::OSM::OSMTileMap::GetTileType() const
 {
 	return Map::TileMap::TT_OSM;
 }
 
-UOSInt Map::OSM::OSMTileMap::GetConcurrentCount()
+UOSInt Map::OSM::OSMTileMap::GetConcurrentCount() const
 {
 	return 2 * this->urls.GetCount();
 }

@@ -202,9 +202,8 @@ void Map::WebMapTileServiceSource::ReadLayer(NotNullPtr<Text::XMLReader> reader)
 				TileMatrixSet *set = ReadTileMatrixSetLink(reader);
 				if (set)
 				{
-					Double tmp;
-					Math::CoordinateSystem::ConvertXYZ(this->wgs84, set->csys, layer->wgs84Bounds.tl.x, layer->wgs84Bounds.tl.y, 0, &set->bounds.tl.x, &set->bounds.tl.y, &tmp);
-					Math::CoordinateSystem::ConvertXYZ(this->wgs84, set->csys, layer->wgs84Bounds.br.x, layer->wgs84Bounds.br.y, 0, &set->bounds.br.x, &set->bounds.br.y, &tmp);
+					set->bounds.tl = Math::CoordinateSystem::ConvertXYZ(this->wgs84, set->csys, Math::Vector3(layer->wgs84Bounds.tl, 0)).GetXY();
+					set->bounds.br = Math::CoordinateSystem::ConvertXYZ(this->wgs84, set->csys, Math::Vector3(layer->wgs84Bounds.br, 0)).GetXY();
 					layer->tileMatrixes.Add(set);
 				}
 			}
@@ -292,7 +291,7 @@ Map::WebMapTileServiceSource::TileMatrixSet *Map::WebMapTileServiceSource::ReadT
 	Text::StringBuilderUTF8 sb;
 	NEW_CLASS(set, TileMatrixSet());
 	set->id = Text::String::NewEmpty();
-	set->csys = 0;
+	set->csys = Math::CoordinateSystemManager::CreateDefaultCsys();
 	while (reader->ReadNext())
 	{
 		nt = reader->GetNodeType();
@@ -421,7 +420,12 @@ Map::WebMapTileServiceSource::TileMatrixSet *Map::WebMapTileServiceSource::ReadT
 	}
 	if (set->id->leng > 0 && set->tiles.GetCount() > 0)
 	{
-		set->csys = Math::CoordinateSystemManager::CreateFromName(set->id->ToCString());
+		NotNullPtr<Math::CoordinateSystem> csys;
+		if (csys.Set(Math::CoordinateSystemManager::CreateFromName(set->id->ToCString())))
+		{
+			set->csys.Delete();
+			set->csys = csys;
+		}
 		return set;
 	}
 	else
@@ -672,7 +676,7 @@ void Map::WebMapTileServiceSource::ReleaseTileMatrixSet(TileMatrixSet *set)
 {
 	UOSInt i;
 	set->id->Release();
-	DEL_CLASS(set->csys);
+	set->csys.Delete();
 	i = set->tiles.GetCount();
 	while (i-- > 0)
 	{
@@ -718,7 +722,7 @@ Map::WebMapTileServiceSource::WebMapTileServiceSource(NotNullPtr<Net::SocketFact
 	this->currResource = 0;
 	this->currResourceInfo = 0;
 	this->currSet = 0;
-	this->wgs84 = Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::CoordinateSystemManager::GCST_WGS84);
+	this->wgs84 = Math::CoordinateSystemManager::CreateDefaultCsys();
 	this->LoadXML();
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
@@ -744,32 +748,32 @@ Map::WebMapTileServiceSource::~WebMapTileServiceSource()
 	{
 		this->ReleaseTileMatrixDefSet(this->matrixDef.GetItem(i));
 	}
-	SDEL_CLASS(this->wgs84);
+	this->wgs84.Delete();
 }
 
-Text::CString Map::WebMapTileServiceSource::GetName()
+Text::CStringNN Map::WebMapTileServiceSource::GetName() const
 {
 	return this->currLayer->id->ToCString();
 }
 
-Bool Map::WebMapTileServiceSource::IsError()
+Bool Map::WebMapTileServiceSource::IsError() const
 {
 	return this->layers.GetCount() == 0 || this->currLayer == 0;
 }
 
-Map::TileMap::TileType Map::WebMapTileServiceSource::GetTileType()
+Map::TileMap::TileType Map::WebMapTileServiceSource::GetTileType() const
 {
 	return Map::TileMap::TT_WMTS;
 }
 
-UOSInt Map::WebMapTileServiceSource::GetLevelCount()
+UOSInt Map::WebMapTileServiceSource::GetLevelCount() const
 {
 	if (this->currSet == 0)
 		return 0;
 	return this->currSet->tiles.GetCount();
 }
 
-Double Map::WebMapTileServiceSource::GetLevelScale(UOSInt level)
+Double Map::WebMapTileServiceSource::GetLevelScale(UOSInt level) const
 {
 	if (this->currDef == 0)
 		return 0;
@@ -782,7 +786,7 @@ Double Map::WebMapTileServiceSource::GetLevelScale(UOSInt level)
 	return tileMatrixDef->unitPerPixel / scaleDiv;
 }
 
-UOSInt Map::WebMapTileServiceSource::GetNearestLevel(Double scale)
+UOSInt Map::WebMapTileServiceSource::GetNearestLevel(Double scale) const
 {
 	if (this->currSet == 0)
 		return 0;
@@ -811,16 +815,16 @@ UOSInt Map::WebMapTileServiceSource::GetNearestLevel(Double scale)
 	return minLevel;
 }
 
-UOSInt Map::WebMapTileServiceSource::GetConcurrentCount()
+UOSInt Map::WebMapTileServiceSource::GetConcurrentCount() const
 {
 	return 2;
 }
 
-Bool Map::WebMapTileServiceSource::GetBounds(Math::RectAreaDbl *bounds)
+Bool Map::WebMapTileServiceSource::GetBounds(OutParam<Math::RectAreaDbl> bounds) const
 {
 	if (this->currSet)
 	{
-		*bounds = this->currSet->bounds;
+		bounds.Set(this->currSet->bounds);
 		return true;
 	}
 	return false;
@@ -830,7 +834,7 @@ Math::CoordinateSystem *Map::WebMapTileServiceSource::GetCoordinateSystem()
 {
 	if (this->currSet)
 	{
-		return this->currSet->csys;
+		return this->currSet->csys.Ptr();
 	}
 	else
 	{
@@ -838,12 +842,12 @@ Math::CoordinateSystem *Map::WebMapTileServiceSource::GetCoordinateSystem()
 	}
 }
 
-Bool Map::WebMapTileServiceSource::IsMercatorProj()
+Bool Map::WebMapTileServiceSource::IsMercatorProj() const
 {
 	return false;
 }
 
-UOSInt Map::WebMapTileServiceSource::GetTileSize()
+UOSInt Map::WebMapTileServiceSource::GetTileSize() const
 {
 	if (this->currDef)
 	{

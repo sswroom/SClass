@@ -13,7 +13,7 @@ namespace Net
 		Bool skipCertCheck;
 
 		virtual Net::SSLClient *CreateServerConn(Socket *s);
-		Net::SSLClient *CreateClientConn(void *sslObj, Socket *s, Text::CString hostName, ErrorType *err);
+		Net::SSLClient *CreateClientConn(void *sslObj, Socket *s, Text::CStringNN hostName, ErrorType *err);
 
 		static Bool SetRSAPadding(void *ctx, Crypto::Encrypt::RSACipher::Padding rsaPadding);
 	public:

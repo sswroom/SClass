@@ -15,7 +15,7 @@ namespace Crypto
 
 		public:
 			X509FileList(NotNullPtr<Text::String> sourceName, NotNullPtr<Crypto::Cert::X509Cert> cert);
-			X509FileList(Text::CString sourceName, NotNullPtr<Crypto::Cert::X509Cert> cert);
+			X509FileList(Text::CStringNN sourceName, NotNullPtr<Crypto::Cert::X509Cert> cert);
 			virtual ~X509FileList();
 
 			virtual FileType GetFileType() const;

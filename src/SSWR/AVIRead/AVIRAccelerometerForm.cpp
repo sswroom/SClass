@@ -8,18 +8,16 @@ void __stdcall SSWR::AVIRead::AVIRAccelerometerForm::OnTimerTick(void *userObj)
 	SSWR::AVIRead::AVIRAccelerometerForm *me = (SSWR::AVIRead::AVIRAccelerometerForm*)userObj;
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
-	Double x;
-	Double y;
-	Double z;
+	Math::Vector3 acc;
 	if (me->motion->UpdateStatus())
 	{
-		me->motion->GetValues(&x, &y, &z);
+		acc = me->motion->GetValues();
 
-		sptr = Text::StrDouble(sbuff, x);
+		sptr = Text::StrDouble(sbuff, acc.val[0]);
 		me->txtX->SetText(CSTRP(sbuff, sptr));
-		sptr = Text::StrDouble(sbuff, y);
+		sptr = Text::StrDouble(sbuff, acc.val[1]);
 		me->txtY->SetText(CSTRP(sbuff, sptr));
-		sptr = Text::StrDouble(sbuff, z);
+		sptr = Text::StrDouble(sbuff, acc.val[2]);
 		me->txtZ->SetText(CSTRP(sbuff, sptr));
 
 		if (me->currMoving != me->motion->IsMovving())

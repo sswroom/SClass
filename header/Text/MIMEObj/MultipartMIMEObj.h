@@ -24,8 +24,8 @@ namespace Text
 			MultipartMIMEObj(Text::CString contentType, Text::CString defMsg);
 			virtual ~MultipartMIMEObj();
 
-			virtual Text::CString GetClassName() const;
-			virtual Text::CString GetContentType() const;
+			virtual Text::CStringNN GetClassName() const;
+			virtual Text::CStringNN GetContentType() const;
 			virtual UOSInt WriteStream(IO::Stream *stm) const;
 			virtual IMIMEObj *Clone() const;
 

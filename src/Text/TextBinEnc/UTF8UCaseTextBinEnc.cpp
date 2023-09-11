@@ -40,7 +40,7 @@ UOSInt Text::TextBinEnc::UTF8UCaseTextBinEnc::DecodeBin(const UTF8Char *str, UOS
 	return strLen;
 }
 
-Text::CString Text::TextBinEnc::UTF8UCaseTextBinEnc::GetName()
+Text::CStringNN Text::TextBinEnc::UTF8UCaseTextBinEnc::GetName() const
 {
 	return CSTR("UTF-8 UCase Text");
 }

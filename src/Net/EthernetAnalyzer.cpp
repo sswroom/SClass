@@ -92,7 +92,7 @@ Net::EthernetAnalyzer::EthernetAnalyzer(IO::Writer *errWriter, AnalyzeType aType
 	this->pingv4ReqObj = 0;
 }
 
-Net::EthernetAnalyzer::EthernetAnalyzer(IO::Writer *errWriter, AnalyzeType aType, Text::CString name) : IO::ParsedObject(name), tcp4synList(128)
+Net::EthernetAnalyzer::EthernetAnalyzer(IO::Writer *errWriter, AnalyzeType aType, Text::CStringNN name) : IO::ParsedObject(name), tcp4synList(128)
 {
 	this->atype = aType;
 	this->packetCnt = 0;

@@ -41,7 +41,7 @@ namespace IO
 		LastType = PDFDocument
 	};
 
-	Text::CString ParserTypeGetName(ParserType pt);
+	Text::CStringNN ParserTypeGetName(ParserType pt);
 
 	class ParsedObject
 	{
@@ -49,7 +49,7 @@ namespace IO
 		NotNullPtr<Text::String> sourceName;
 
 		ParsedObject(NotNullPtr<Text::String> sourceName);
-		ParsedObject(const Text::CString &sourceName);
+		ParsedObject(const Text::CStringNN &sourceName);
 	public:
 		virtual ~ParsedObject();
 
@@ -57,7 +57,7 @@ namespace IO
 		UTF8Char *GetSourceName(UTF8Char *oriStr) const;
 		NotNullPtr<Text::String> GetSourceNameObj() const { return this->sourceName; }
 		void SetSourceName(NotNullPtr<Text::String> sourceName);
-		void SetSourceName(Text::CString sourceName);
+		void SetSourceName(Text::CStringNN sourceName);
 	};
 }
 

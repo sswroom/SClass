@@ -136,7 +136,7 @@ namespace Map
 		void AddGroupUpdatedHandler(GroupItem *group, Map::MapDrawLayer::UpdatedHandler hdlr, void *obj);
 		void RemoveGroupUpdatedHandler(GroupItem *group, Map::MapDrawLayer::UpdatedHandler hdlr, void *obj);
 	public:
-		MapEnv(Text::CString fileName, UInt32 bgColor, Math::CoordinateSystem *csys);
+		MapEnv(Text::CStringNN fileName, UInt32 bgColor, Math::CoordinateSystem *csys);
 		virtual ~MapEnv();
 
 		virtual IO::ParserType GetParserType() const;
@@ -164,7 +164,7 @@ namespace Map
 		UTF8Char *GetFontStyleName(UOSInt index, UTF8Char *buff) const;
 		Bool RemoveFontStyle(UOSInt index);
 		UOSInt GetFontStyleCount() const;
-		Bool GetFontStyle(UOSInt index, Text::String **fontName, Double *fontSizePt, Bool *bold, UInt32 *fontColor, UOSInt *buffSize, UInt32 *buffColor) const;
+		Bool GetFontStyle(UOSInt index, OutParam<Text::String*> fontName, OutParam<Double> fontSizePt, OutParam<Bool> bold, OutParam<UInt32> fontColor, OutParam<UOSInt> buffSize, OutParam<UInt32> buffColor) const;
 		Bool ChgFontStyle(UOSInt index, Text::String *fontName, Double fontSizePt, Bool bold, UInt32 fontColor, UOSInt buffSize, UInt32 buffColor);
 
 		UOSInt AddLayer(GroupItem *group, Map::MapDrawLayer *layer, Bool needRelease);

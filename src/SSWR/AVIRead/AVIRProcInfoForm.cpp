@@ -447,7 +447,7 @@ void SSWR::AVIRead::AVIRProcInfoForm::UpdateProcHeapDetail(UInt32 heapId)
 		UOSInt i;
 		UOSInt j;
 		UOSInt k;
-		Text::CString tStr;
+		Text::CStringNN tStr;
 
 		proc.GetHeaps(&heapList, heapId, 257);
 

@@ -12,7 +12,7 @@ Media::ImageGen::Gradian32ImageGen::~Gradian32ImageGen()
 {
 }
 
-Text::CString Media::ImageGen::Gradian32ImageGen::GetName()
+Text::CStringNN Media::ImageGen::Gradian32ImageGen::GetName() const
 {
 	return CSTR("Gradian Test 32-bit");
 }

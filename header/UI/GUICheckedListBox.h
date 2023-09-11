@@ -27,7 +27,7 @@ namespace UI
 		Bool GetItemChecked(UOSInt index);
 		void SetItemChecked(UOSInt index, Bool isChecked);
 
-		virtual Text::CString GetObjectClass();
+		virtual Text::CStringNN GetObjectClass() const;
 		virtual OSInt OnNotify(UInt32 code, void *lParam);
 
 //		virtual void HandleSelectionChange(UI::UIEvent hdlr, void *userObj);

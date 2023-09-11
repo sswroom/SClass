@@ -73,6 +73,6 @@ namespace IO
 		Bool WriteFromData(NotNullPtr<IO::StreamData> data, UOSInt buffSize);
 	};
 
-	Text::CString StreamTypeGetName(StreamType st);
+	Text::CStringNN StreamTypeGetName(StreamType st);
 }
 #endif

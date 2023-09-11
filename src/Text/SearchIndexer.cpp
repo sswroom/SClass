@@ -45,7 +45,7 @@ void Text::SearchIndexer::IndexString(const UTF8Char *str, Int64 key)
 	this->ta->EndAnalyze(sess);
 }
 
-UOSInt Text::SearchIndexer::SearchString(Data::ArrayListInt64 *outArr, const UTF8Char *searchStr, UOSInt maxResults)
+UOSInt Text::SearchIndexer::SearchString(NotNullPtr<Data::ArrayListInt64> outArr, const UTF8Char *searchStr, UOSInt maxResults)
 {
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;

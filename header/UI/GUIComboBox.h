@@ -29,16 +29,16 @@ namespace UI
 		void EventSelectionChange();
 		void EventTextChanged();
 
-		virtual void SetText(Text::CString text);
+		virtual void SetText(Text::CStringNN text);
 		virtual UTF8Char *GetText(UTF8Char *buff);
 		virtual Bool GetText(NotNullPtr<Text::StringBuilderUTF8> sb);
 
 		void BeginUpdate();
 		void EndUpdate();
 		UOSInt AddItem(NotNullPtr<Text::String> itemText, void *itemObj);
-		UOSInt AddItem(Text::CString itemText, void *itemObj);
+		UOSInt AddItem(Text::CStringNN itemText, void *itemObj);
 		UOSInt InsertItem(UOSInt index, Text::String *itemText, void *itemObj);
-		UOSInt InsertItem(UOSInt index, Text::CString itemText, void *itemObj);
+		UOSInt InsertItem(UOSInt index, Text::CStringNN itemText, void *itemObj);
 		void *RemoveItem(UOSInt index);
 		void ClearItems();
 		UOSInt GetCount();
@@ -52,7 +52,7 @@ namespace UI
 		virtual Math::Size2DDbl GetSize();
 		virtual void SetArea(Double left, Double top, Double right, Double bottom, Bool updateScn);
 
-		virtual Text::CString GetObjectClass();
+		virtual Text::CStringNN GetObjectClass() const;
 		virtual OSInt OnNotify(UInt32 code, void *lParam);
 
 		virtual void HandleSelectionChange(UI::UIEvent hdlr, void *userObj);

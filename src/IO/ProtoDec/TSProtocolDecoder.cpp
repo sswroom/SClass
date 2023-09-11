@@ -16,7 +16,7 @@ IO::ProtoDec::TSProtocolDecoder::~TSProtocolDecoder()
 	MemFree(this->protoBuff);
 }
 
-Text::CString IO::ProtoDec::TSProtocolDecoder::GetName()
+Text::CStringNN IO::ProtoDec::TSProtocolDecoder::GetName() const
 {
 	return CSTR("TS");
 }

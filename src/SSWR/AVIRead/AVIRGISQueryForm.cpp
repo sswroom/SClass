@@ -26,11 +26,11 @@ Bool __stdcall SSWR::AVIRead::AVIRGISQueryForm::OnMouseUp(void *userObj, Math::C
 		UTF8Char *sptr;
 		Math::Coord2DDbl mapPt = me->navi->ScnXY2MapXY(scnPos);
 		Math::CoordinateSystem *csys = me->navi->GetCoordinateSystem();
-		Math::CoordinateSystem *lyrCSys = me->lyr->GetCoordinateSystem();
-		Double tmp;
-		if (csys && lyrCSys && !csys->Equals(lyrCSys))
+		NotNullPtr<Math::CoordinateSystem> lyrCSys = me->lyr->GetCoordinateSystem();
+		NotNullPtr<Math::CoordinateSystem> nncsys;
+		if (nncsys.Set(csys) && !csys->Equals(lyrCSys))
 		{
-			Math::CoordinateSystem::ConvertXYZ(csys, lyrCSys, mapPt.x, mapPt.y, 0, &mapPt.x, &mapPt.y, &tmp);
+			mapPt = Math::CoordinateSystem::ConvertXYZ(nncsys, lyrCSys, Math::Vector3(mapPt, 0)).GetXY();
 		}
 		me->ClearQueryResults();
 		if (me->lyr->CanQuery())
@@ -50,12 +50,12 @@ Bool __stdcall SSWR::AVIRead::AVIRGISQueryForm::OnMouseUp(void *userObj, Math::C
 				me->cboObj->SetSelectedIndex(0);
 				me->SetQueryItem(0);
 
-				if (csys && lyrCSys && !csys->Equals(lyrCSys))
+				if (nncsys.Set(csys) && !csys->Equals(lyrCSys))
 				{
 					i = me->queryVecList.GetCount();
 					while (i-- > 0)
 					{
-						me->queryVecList.GetItem(i)->ConvCSys(lyrCSys, csys);
+						me->queryVecList.GetItem(i)->ConvCSys(lyrCSys, nncsys);
 					}
 				}
 
@@ -66,9 +66,9 @@ Bool __stdcall SSWR::AVIRead::AVIRGISQueryForm::OnMouseUp(void *userObj, Math::C
 		}
 		scnPos.x += 5;
 		Math::Coord2DDbl mapPt2 = me->navi->ScnXY2MapXY(scnPos);
-		if (csys && lyrCSys && !csys->Equals(lyrCSys))
+		if (nncsys.Set(csys) && !csys->Equals(lyrCSys))
 		{
-			Math::CoordinateSystem::ConvertXYZ(csys, lyrCSys, mapPt2.x, mapPt2.y, 0, &mapPt2.x, &mapPt2.y, &tmp);
+			mapPt2 = Math::CoordinateSystem::ConvertXYZ(nncsys, lyrCSys, Math::Vector3(mapPt2, 0)).GetXY();
 		}
 		sess = me->lyr->BeginGetObject();
 		Data::ArrayList<Map::MapDrawLayer::ObjectInfo*> objList;
@@ -95,7 +95,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISQueryForm::OnMouseUp(void *userObj, Math::C
 			Math::Geometry::Vector2D *vec = 0;
 			Data::ArrayListInt64 arr;
 			Map::NameArray *nameArr;
-			me->lyr->GetObjectIdsMapXY(&arr, &nameArr, Math::RectAreaDbl(mapPt, mapPt), true);
+			me->lyr->GetObjectIdsMapXY(arr, &nameArr, Math::RectAreaDbl(mapPt, mapPt), true);
 			j = 0;
 			k = objList.GetCount();
 			while (j < k)
@@ -103,9 +103,9 @@ Bool __stdcall SSWR::AVIRead::AVIRGISQueryForm::OnMouseUp(void *userObj, Math::C
 				obj = objList.GetItem(j);
 
 				vec = me->lyr->GetNewVectorById(sess, obj->objId);
-				if (vec && csys && lyrCSys && !csys->Equals(lyrCSys))
+				if (vec && nncsys.Set(csys) && !csys->Equals(lyrCSys))
 				{
-					vec->ConvCSys(lyrCSys, csys);
+					vec->ConvCSys(lyrCSys, nncsys);
 				}
 				if (vec)
 				{

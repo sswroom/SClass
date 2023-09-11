@@ -72,7 +72,7 @@ Map::DBMapLayer::DBMapLayer(NotNullPtr<Text::String> layerName) : Map::MapDrawLa
 	this->mixedData = MixedData::AllData;
 }
 
-Map::DBMapLayer::DBMapLayer(Text::CString layerName) : Map::MapDrawLayer(layerName, 0, layerName)
+Map::DBMapLayer::DBMapLayer(Text::CStringNN layerName) : Map::MapDrawLayer(layerName, 0, layerName)
 {
 	this->releaseDB = false;
 	this->db = 0;
@@ -92,7 +92,7 @@ Map::DBMapLayer::~DBMapLayer()
 	this->ClearDB();
 }
 
-Map::DrawLayerType Map::DBMapLayer::GetLayerType()
+Map::DrawLayerType Map::DBMapLayer::GetLayerType() const
 {
 	if (this->vecCol == INVALID_INDEX && this->xCol != INVALID_INDEX && this->yCol != INVALID_INDEX)
 	{
@@ -123,7 +123,7 @@ void Map::DBMapLayer::SetMixedData(MixedData mixedData)
 	}
 }
 
-UOSInt Map::DBMapLayer::GetAllObjectIds(Data::ArrayListInt64 *outArr, NameArray **nameArr)
+UOSInt Map::DBMapLayer::GetAllObjectIds(NotNullPtr<Data::ArrayListInt64> outArr, NameArray **nameArr)
 {
 	UOSInt initCnt = outArr->GetCount();
 	if (this->mixedData != MixedData::AllData)
@@ -150,12 +150,12 @@ UOSInt Map::DBMapLayer::GetAllObjectIds(Data::ArrayListInt64 *outArr, NameArray 
 	return outArr->GetCount() - initCnt;
 }
 
-UOSInt Map::DBMapLayer::GetObjectIds(Data::ArrayListInt64 *outArr, NameArray **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
+UOSInt Map::DBMapLayer::GetObjectIds(NotNullPtr<Data::ArrayListInt64> outArr, NameArray **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
 {
 	return GetObjectIdsMapXY(outArr, nameArr, rect.ToDouble() / mapRate, keepEmpty);
 }
 
-UOSInt Map::DBMapLayer::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, NameArray **nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
+UOSInt Map::DBMapLayer::GetObjectIdsMapXY(NotNullPtr<Data::ArrayListInt64> outArr, NameArray **nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
 {
 	UOSInt initCnt = outArr->GetCount();
 	Math::Geometry::Vector2D *vec;
@@ -196,7 +196,7 @@ UOSInt Map::DBMapLayer::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, NameArra
 	return outArr->GetCount() - initCnt;
 }
 
-Int64 Map::DBMapLayer::GetObjectIdMax()
+Int64 Map::DBMapLayer::GetObjectIdMax() const
 {
 	return this->vecMap.GetKey(this->vecMap.GetCount() - 1);
 }
@@ -267,7 +267,7 @@ UTF8Char *Map::DBMapLayer::GetString(UTF8Char *buff, UOSInt buffSize, NameArray 
 	return 0;
 }
 
-UOSInt Map::DBMapLayer::GetColumnCnt()
+UOSInt Map::DBMapLayer::GetColumnCnt() const
 {
 	if (this->tabDef)
 	{
@@ -316,15 +316,14 @@ Bool Map::DBMapLayer::GetColumnDef(UOSInt colIndex, NotNullPtr<DB::ColDef> colDe
 	return false;
 }
 
-UInt32 Map::DBMapLayer::GetCodePage()
+UInt32 Map::DBMapLayer::GetCodePage() const
 {
 	return 65001;
 }
 
-Bool Map::DBMapLayer::GetBounds(Math::RectAreaDbl *rect)
+Bool Map::DBMapLayer::GetBounds(OutParam<Math::RectAreaDbl> rect) const
 {
-	rect->tl = this->min;
-	rect->br = this->max;
+	rect.Set(Math::RectAreaDbl(this->min, this->max));
 	return true;
 }
 
@@ -395,7 +394,7 @@ void Map::DBMapLayer::Reconnect()
 
 }
 
-Map::MapDrawLayer::ObjectClass Map::DBMapLayer::GetObjectClass()
+Map::MapDrawLayer::ObjectClass Map::DBMapLayer::GetObjectClass() const
 {
 	return OC_DB_MAP_LAYER;
 }
@@ -553,14 +552,14 @@ Bool Map::DBMapLayer::SetDatabase(DB::ReadingDB *db, Text::CString schemaName, T
 
 	if (layerSrid != 0)
 	{
-		if (this->csys != 0 && this->csys->GetSRID() != layerSrid)
+		if (this->csys->GetSRID() != layerSrid)
 		{
-			DEL_CLASS(this->csys);
-			this->csys = Math::CoordinateSystemManager::SRCreateCSys(layerSrid);
-		}
-		else if (this->csys == 0)
-		{
-			this->csys = Math::CoordinateSystemManager::SRCreateCSys(layerSrid);
+			NotNullPtr<Math::CoordinateSystem> csys;
+			if (csys.Set(Math::CoordinateSystemManager::SRCreateCSys(layerSrid)))
+			{
+				this->csys.Delete();
+				this->csys = csys;
+			}
 		}
 	}
 	if (this->vecMap.GetCount() > 0)

@@ -9,7 +9,7 @@
 
 #define NMEAMAXSIZE 128
 
-SSWR::AVIRead::AVIRGPSTrackerForm::DisplayOffButton::DisplayOffButton(NotNullPtr<UI::GUICore> ui, UI::GUIClientControl *parent, Text::CString txt, AVIRGPSTrackerForm *frm) : UI::GUIButton(ui, parent, txt)
+SSWR::AVIRead::AVIRGPSTrackerForm::DisplayOffButton::DisplayOffButton(NotNullPtr<UI::GUICore> ui, UI::GUIClientControl *parent, Text::CStringNN txt, AVIRGPSTrackerForm *frm) : UI::GUIButton(ui, parent, txt)
 {
 	this->frm = frm;
 }

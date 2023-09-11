@@ -116,7 +116,7 @@ UOSInt Text::TextBinEnc::CPPByteArrBinEnc::DecodeBin(const UTF8Char *str, UOSInt
 	return (UOSInt)(dataBuff - startPtr);
 }
 
-Text::CString Text::TextBinEnc::CPPByteArrBinEnc::GetName()
+Text::CStringNN Text::TextBinEnc::CPPByteArrBinEnc::GetName() const
 {
 	return CSTR("CPP Byte Arr");
 }

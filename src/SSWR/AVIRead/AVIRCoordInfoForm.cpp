@@ -67,8 +67,8 @@ void SSWR::AVIRead::AVIRCoordInfoForm::ShowInfo(const Math::CoordinateSystemMana
 	}
 	else if (srinfo->srType == Math::CoordinateSystemManager::SRT_GEOGCS || srinfo->srType == Math::CoordinateSystemManager::SRT_PROJCS)
 	{
-		Math::CoordinateSystem *csys = Math::CoordinateSystemManager::SRCreateCSys(srinfo->srid);
-		if (csys)
+		NotNullPtr<Math::CoordinateSystem> csys;
+		if (csys.Set(Math::CoordinateSystemManager::SRCreateCSys(srinfo->srid)))
 		{
 			Text::StringBuilderUTF8 sb;
 			Math::SROGCWKTWriter wkt;
@@ -76,7 +76,7 @@ void SSWR::AVIRead::AVIRCoordInfoForm::ShowInfo(const Math::CoordinateSystemMana
 			this->txtWKT->SetText(CSTRP(sbuff, sptr));
 			csys->ToString(sb);
 			this->txtDisp->SetText(sb.ToCString());
-			DEL_CLASS(csys);
+			csys.Delete();
 			return;
 		}
 	}
@@ -91,11 +91,11 @@ void SSWR::AVIRead::AVIRCoordInfoForm::ShowInfo(const Math::CoordinateSystemMana
 				Text::StringBuilderUTF8 sb;
 				Math::CoordinateSystem::DatumData1 datum;
 				Math::EarthEllipsoid ee(spheroid->eet);
-				Math::CoordinateSystemManager::FillDatumData(&datum, datumInfo, Text::CString::FromPtr((const UTF8Char*)srinfo->name), &ee, spheroid);
+				Math::CoordinateSystemManager::FillDatumData(datum, datumInfo, Text::CString::FromPtr((const UTF8Char*)srinfo->name), ee, spheroid);
 				Math::SROGCWKTWriter wkt;
-				sptr = wkt.WriteDatum(&datum, sbuff, 0, Text::LineBreakType::CRLF);
+				sptr = wkt.WriteDatum(datum, sbuff, 0, Text::LineBreakType::CRLF);
 				this->txtWKT->SetText(CSTRP(sbuff, sptr));
-				Math::CoordinateSystem::DatumData1ToString(&datum, sb);
+				Math::CoordinateSystem::DatumData1ToString(datum, sb);
 				this->txtDisp->SetText(sb.ToCString());
 				return;
 			}
@@ -112,7 +112,7 @@ void SSWR::AVIRead::AVIRCoordInfoForm::ShowInfo(const Math::CoordinateSystemMana
 			data.name = spheroid->name;
 			data.nameLen = spheroid->nameLen;
 			data.srid = spheroid->srid;
-			data.ellipsoid = &ee;
+			data.ellipsoid = ee;
 			Math::SROGCWKTWriter wkt;
 			sptr = wkt.WriteSpheroid(&data, sbuff, 0, Text::LineBreakType::CRLF);
 			this->txtWKT->SetText(CSTRP(sbuff, sptr));

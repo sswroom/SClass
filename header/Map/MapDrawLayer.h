@@ -45,7 +45,7 @@ namespace Map
 		};
 	protected:
 		UOSInt nameCol;
-		Math::CoordinateSystem *csys;
+		NotNullPtr<Math::CoordinateSystem> csys;
 		Text::String *layerName;
 
 		UInt32 pgColor;
@@ -89,29 +89,29 @@ namespace Map
 		typedef void (__stdcall *UpdatedHandler)(void *userObj);
 
 		MapDrawLayer(NotNullPtr<Text::String> sourceName, UOSInt nameCol, Text::String *layerName);
-		MapDrawLayer(Text::CString sourceName, UOSInt nameCol, Text::CString layerName);
+		MapDrawLayer(Text::CStringNN sourceName, UOSInt nameCol, Text::CString layerName);
 		virtual ~MapDrawLayer();
 
 		virtual void SetCurrScale(Double scale);
 		virtual void SetCurrTimeTS(Int64 timeStamp);
-		virtual Int64 GetTimeStartTS();
-		virtual Int64 GetTimeEndTS();
+		virtual Int64 GetTimeStartTS() const;
+		virtual Int64 GetTimeEndTS() const;
 		virtual Map::MapView *CreateMapView(Math::Size2DDbl scnSize);
 
-		virtual DrawLayerType GetLayerType() = 0;
+		virtual DrawLayerType GetLayerType() const = 0;
 		virtual void SetMixedData(MixedData MixedData);
-		virtual UOSInt GetAllObjectIds(Data::ArrayListInt64 *outArr, NameArray **nameArr) = 0;
-		virtual UOSInt GetObjectIds(Data::ArrayListInt64 *outArr, NameArray **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty) = 0;
-		virtual UOSInt GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, NameArray **nameArr, Math::RectAreaDbl rect, Bool keepEmpty) = 0;
-		virtual Int64 GetObjectIdMax() = 0;
+		virtual UOSInt GetAllObjectIds(NotNullPtr<Data::ArrayListInt64> outArr, NameArray **nameArr) = 0;
+		virtual UOSInt GetObjectIds(NotNullPtr<Data::ArrayListInt64> outArr, NameArray **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty) = 0;
+		virtual UOSInt GetObjectIdsMapXY(NotNullPtr<Data::ArrayListInt64> outArr, NameArray **nameArr, Math::RectAreaDbl rect, Bool keepEmpty) = 0;
+		virtual Int64 GetObjectIdMax() const = 0;
 		virtual void ReleaseNameArr(NameArray *nameArr) = 0;
 		virtual UTF8Char *GetString(UTF8Char *buff, UOSInt buffSize, NameArray *nameArr, Int64 id, UOSInt strIndex) = 0;
-		virtual UOSInt GetColumnCnt() = 0;
+		virtual UOSInt GetColumnCnt() const = 0;
 		virtual UTF8Char *GetColumnName(UTF8Char *buff, UOSInt colIndex) = 0;
 		virtual DB::DBUtil::ColType GetColumnType(UOSInt colIndex, UOSInt *colSize) = 0;
 		virtual Bool GetColumnDef(UOSInt colIndex, NotNullPtr<DB::ColDef> colDef) = 0;
-		virtual UInt32 GetCodePage() = 0;
-		virtual Bool GetBounds(Math::RectAreaDbl *rect) = 0;
+		virtual UInt32 GetCodePage() const = 0;
+		virtual Bool GetBounds(OutParam<Math::RectAreaDbl> rect) const = 0;
 		virtual void SetDispSize(Math::Size2DDbl size, Double dpi);
 
 		virtual GetObjectSess *BeginGetObject() = 0;
@@ -127,19 +127,19 @@ namespace Map
 		virtual void GetLastErrorMsg(NotNullPtr<Text::StringBuilderUTF8> str);
 		virtual void Reconnect();
 
-		virtual UOSInt GetNameCol();
+		virtual UOSInt GetNameCol() const;
 		virtual void SetNameCol(UOSInt nameCol);
 
-		virtual ObjectClass GetObjectClass() = 0;
-		NotNullPtr<Text::String> GetName();
+		virtual ObjectClass GetObjectClass() const = 0;
+		NotNullPtr<Text::String> GetName() const;
 		virtual IO::ParserType GetParserType() const;
-		virtual Math::CoordinateSystem *GetCoordinateSystem();
+		virtual NotNullPtr<Math::CoordinateSystem> GetCoordinateSystem();
 		virtual void SetCoordinateSystem(Math::CoordinateSystem *csys);
 
 		Int32 CalBlockSize();
 		void SetLayerName(Text::CString name);
 
-		virtual Bool IsError();
+		virtual Bool IsError() const;
 		virtual UTF8Char *GetPGLabel(UTF8Char *buff, UOSInt buffSize, Math::Coord2DDbl coord, Math::Coord2DDbl *outCoord, UOSInt strIndex);
 		virtual UTF8Char *GetPLLabel(UTF8Char *buff, UOSInt buffSize, Math::Coord2DDbl coord, Math::Coord2DDbl *outCoord, UOSInt strIndex);
 		virtual Bool CanQuery();
@@ -151,8 +151,8 @@ namespace Map
 		Map::VectorLayer *CreateEditableLayer();
 
 		Text::SearchIndexer *CreateSearchIndexer(Text::TextAnalyzer *ta, UOSInt strIndex);
-		UOSInt SearchString(Data::ArrayListString *outArr, Text::SearchIndexer *srchInd, NameArray *nameArr, const UTF8Char *srchStr, UOSInt maxResult, UOSInt strIndex);
-		void ReleaseSearchStr(Data::ArrayListString *strArr);
+		UOSInt SearchString(NotNullPtr<Data::ArrayListString> outArr, Text::SearchIndexer *srchInd, NameArray *nameArr, const UTF8Char *srchStr, UOSInt maxResult, UOSInt strIndex);
+		void ReleaseSearchStr(NotNullPtr<Data::ArrayListString> strArr);
 		Math::Geometry::Vector2D *GetVectorByStr(Text::SearchIndexer *srchInd, NameArray *nameArr, GetObjectSess *session, const UTF8Char *srchStr, UOSInt strIndex);
 
 		Bool HasLineStyle();
@@ -177,7 +177,7 @@ namespace Map
 	{
 	protected:
 		NotNullPtr<MapDrawLayer> layer;
-		Data::ArrayListInt64 *objIds; 
+		Data::ArrayListInt64 objIds; 
 		NameArray *nameArr;
 		OSInt currIndex;
 

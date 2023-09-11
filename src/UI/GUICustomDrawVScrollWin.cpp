@@ -196,7 +196,7 @@ UI::GUICustomDrawVScroll::~GUICustomDrawVScroll()
 	}
 }
 
-Text::CString UI::GUICustomDrawVScroll::GetObjectClass()
+Text::CStringNN UI::GUICustomDrawVScroll::GetObjectClass() const
 {
 	return CSTR("CustomDrawVScroll");
 }

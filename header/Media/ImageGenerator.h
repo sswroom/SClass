@@ -12,7 +12,7 @@ namespace Media
 		ImageGenerator();
 		virtual ~ImageGenerator();
 
-		virtual Text::CString GetName() = 0;
+		virtual Text::CStringNN GetName() const = 0;
 		virtual Media::Image *GenerateImage(NotNullPtr<const Media::ColorProfile> colorProfile, Math::Size2D<UOSInt> size) = 0;
 	};
 }

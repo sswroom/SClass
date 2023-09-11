@@ -170,7 +170,7 @@ UOSInt SSWR::AVIRead::AVIRBluetoothCtlForm::UpdateList(NotNullPtr<Data::FastMap<
 				Text::CString cstr = Net::PacketAnalyzerBluetooth::CompanyGetName(dev->company);
 				if (cstr.v)
 				{
-					this->lvDevices->SetSubItem(i, 10, cstr);
+					this->lvDevices->SetSubItem(i, 10, cstr.OrEmpty());
 				}
 				else
 				{

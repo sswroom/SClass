@@ -22,13 +22,13 @@ namespace Data
 		Bool ContainsKey(T key) const;
 
 		void AllocSize(UOSInt cnt);
-		UOSInt AddKeysTo(List<T> *list);
+		UOSInt AddKeysTo(NotNullPtr<List<T>> list);
 		virtual UOSInt GetCount() const;
 		virtual T GetKey(UOSInt index) const;
 		virtual V GetItem(UOSInt index) const;
 		V RemoveAt(UOSInt index);
 		virtual Bool IsEmpty() const;
-		virtual V *ToArray(UOSInt *objCnt);
+		virtual V *ToArray(OutParam<UOSInt> objCnt);
 		virtual void Clear();
 	};
 
@@ -125,7 +125,7 @@ namespace Data
 		this->values.EnsureCapacity(newSize);
 	}
 
-	template <class T, class V> UOSInt FastMap<T, V>::AddKeysTo(List<T> *list)
+	template <class T, class V> UOSInt FastMap<T, V>::AddKeysTo(NotNullPtr<List<T>> list)
 	{
 		UOSInt i = 0;
 		UOSInt j = this->values.GetCount();
@@ -162,11 +162,11 @@ namespace Data
 		return this->values.GetCount() == 0;
 	}
 
-	template <class T, class V> V *FastMap<T, V>::ToArray(UOSInt *objCnt)
+	template <class T, class V> V *FastMap<T, V>::ToArray(OutParam<UOSInt> objCnt)
 	{
 		UOSInt cnt = this->values.GetCount();
 		V *outArr = MemAlloc(V, cnt);
-		*objCnt = cnt;
+		objCnt.Set(cnt);
 		while (cnt-- > 0)
 		{
 			outArr[cnt] = this->values.GetItem(cnt).value;

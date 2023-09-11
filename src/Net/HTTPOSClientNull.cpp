@@ -68,7 +68,7 @@ Bool Net::HTTPOSClient::Connect(Text::CStringNN url, Net::WebUtil::RequestMethod
 	return false;
 }
 
-void Net::HTTPOSClient::AddHeaderC(Text::CString name, Text::CString value)
+void Net::HTTPOSClient::AddHeaderC(Text::CStringNN name, Text::CString value)
 {
 }
 
@@ -89,12 +89,12 @@ void Net::HTTPOSClient::SetTimeout(Data::Duration ms)
 {
 }
 
-Bool Net::HTTPOSClient::IsSecureConn()
+Bool Net::HTTPOSClient::IsSecureConn() const
 {
 	return false;
 }
 
-Bool Net::HTTPOSClient::SetClientCert(Crypto::Cert::X509Cert *cert, Crypto::Cert::X509File *key)
+Bool Net::HTTPOSClient::SetClientCert(NotNullPtr<Crypto::Cert::X509Cert> cert, NotNullPtr<Crypto::Cert::X509File> key)
 {
 	return false;
 }

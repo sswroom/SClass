@@ -55,7 +55,7 @@ Data::FastMap<Int32, const UTF8Char **> *Map::FileGDBLayer::ReadNameArr()
 	}
 }
 
-Map::FileGDBLayer::FileGDBLayer(DB::SharedReadingDB *conn, Text::CString sourceName, Text::CString tableName, Math::ArcGISPRJParser *prjParser) : Map::MapDrawLayer(sourceName, 0, tableName)
+Map::FileGDBLayer::FileGDBLayer(DB::SharedReadingDB *conn, Text::CStringNN sourceName, Text::CStringNN tableName, Math::ArcGISPRJParser *prjParser) : Map::MapDrawLayer(sourceName, 0, tableName)
 {
 	UInt8 *buff = 0; 
 	conn->UseObject();
@@ -72,7 +72,7 @@ Map::FileGDBLayer::FileGDBLayer(DB::SharedReadingDB *conn, Text::CString sourceN
 
 	Sync::MutexUsage mutUsage;
 	this->currDB = this->conn->UseDB(mutUsage).Ptr();
-	this->csys = Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::CoordinateSystemManager::GCST_WGS84);
+	this->csys = Math::CoordinateSystemManager::CreateDefaultCsys();
 	DB::DBReader *r = this->currDB->QueryTableData(CSTR_NULL, tableName, 0, 0, 0, 0, 0);
 	if (r)
 	{
@@ -91,6 +91,7 @@ Map::FileGDBLayer::FileGDBLayer(DB::SharedReadingDB *conn, Text::CString sourceN
 				if (prj && prj->v[0])
 				{
 					Math::CoordinateSystem *csys2 = 0;
+					NotNullPtr<Math::CoordinateSystem> nncsys2;
 					if (prj->StartsWith(UTF8STRC("EPSG:")))
 					{
 						csys2 = Math::CoordinateSystemManager::SRCreateCSys(Text::StrToUInt32(&prj->v[5]));
@@ -100,10 +101,10 @@ Map::FileGDBLayer::FileGDBLayer(DB::SharedReadingDB *conn, Text::CString sourceN
 						UOSInt tmp;
 						csys2 = prjParser->ParsePRJBuff(tableName, prj->v, prj->leng, &tmp);
 					}
-					if (csys2)
+					if (nncsys2.Set(csys2))
 					{
-						DEL_CLASS(this->csys);
-						this->csys = csys2;
+						this->csys.Delete();
+						this->csys = nncsys2;
 					}
 				}
 			}
@@ -182,12 +183,12 @@ Map::FileGDBLayer::~FileGDBLayer()
 	this->tableName->Release();
 }
 
-Map::DrawLayerType Map::FileGDBLayer::GetLayerType()
+Map::DrawLayerType Map::FileGDBLayer::GetLayerType() const
 {
 	return this->layerType;
 }
 
-UOSInt Map::FileGDBLayer::GetAllObjectIds(Data::ArrayListInt64 *outArr, NameArray **nameArr)
+UOSInt Map::FileGDBLayer::GetAllObjectIds(NotNullPtr<Data::ArrayListInt64> outArr, NameArray **nameArr)
 {
 	if (nameArr)
 	{
@@ -203,12 +204,12 @@ UOSInt Map::FileGDBLayer::GetAllObjectIds(Data::ArrayListInt64 *outArr, NameArra
 	return j;
 }
 
-UOSInt Map::FileGDBLayer::GetObjectIds(Data::ArrayListInt64 *outArr, NameArray **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
+UOSInt Map::FileGDBLayer::GetObjectIds(NotNullPtr<Data::ArrayListInt64> outArr, NameArray **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
 {
 	return GetObjectIdsMapXY(outArr, nameArr, rect.ToDouble() / mapRate, keepEmpty);
 }
 
-UOSInt Map::FileGDBLayer::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, NameArray **nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
+UOSInt Map::FileGDBLayer::GetObjectIdsMapXY(NotNullPtr<Data::ArrayListInt64> outArr, NameArray **nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
 {
 	if (nameArr)
 	{
@@ -233,7 +234,7 @@ UOSInt Map::FileGDBLayer::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, NameAr
 	return cnt;
 }
 
-Int64 Map::FileGDBLayer::GetObjectIdMax()
+Int64 Map::FileGDBLayer::GetObjectIdMax() const
 {
 	return this->objects.GetKey(this->objects.GetCount() - 1);
 }
@@ -272,7 +273,7 @@ UTF8Char *Map::FileGDBLayer::GetString(UTF8Char *buff, UOSInt buffSize, NameArra
 	return Text::StrConcatS(buff, nameStrs[strIndex], buffSize);
 }
 
-UOSInt Map::FileGDBLayer::GetColumnCnt()
+UOSInt Map::FileGDBLayer::GetColumnCnt() const
 {
 	return this->colNames.GetCount();
 }
@@ -297,17 +298,14 @@ Bool Map::FileGDBLayer::GetColumnDef(UOSInt colIndex, NotNullPtr<DB::ColDef> col
 	return false;
 }
 
-UInt32 Map::FileGDBLayer::GetCodePage()
+UInt32 Map::FileGDBLayer::GetCodePage() const
 {
 	return 65001;
 }
 
-Bool Map::FileGDBLayer::GetBounds(Math::RectAreaDbl *rect)
+Bool Map::FileGDBLayer::GetBounds(OutParam<Math::RectAreaDbl> rect) const
 {
-	if (rect)
-	{
-		*rect = Math::RectAreaDbl(this->minPos, this->maxPos);
-	}
+	rect.Set(Math::RectAreaDbl(this->minPos, this->maxPos));
 	return !this->minPos.IsZero() || !this->maxPos.IsZero();
 }
 
@@ -394,7 +392,7 @@ void Map::FileGDBLayer::Reconnect()
 	this->conn->Reconnect();
 }
 
-Map::MapDrawLayer::ObjectClass Map::FileGDBLayer::GetObjectClass()
+Map::MapDrawLayer::ObjectClass Map::FileGDBLayer::GetObjectClass() const
 {
 	return Map::MapDrawLayer::OC_ESRI_MDB_LAYER;
 }

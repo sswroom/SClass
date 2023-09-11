@@ -6,6 +6,9 @@ Crypto/Cert/TrustStore.h: ../../src/Crypto/Cert/TrustStore_Linux.cpp
 Crypto/Encrypt/RSAEnc.h: ../../src/Crypto/Encrypt/RSAEnc.cpp
 @RSAEnc.o
 
+Data/MacCore.h: ../../src/Data/MacCore.cpp
+@MacCore.o
+
 DB/MDBFileConn.h: ../../src/DB/MDBFileConn.cpp
 @MDBFileConn.o
 DB/MongoDB.h: ../../src/DB/MongoDB.cpp
@@ -38,6 +41,10 @@ IO/I2CChannelOS.h: ../../src/IO/I2CChannelOSNull.cpp
 @I2CChannelOS.o
 IO/OS.h: ../../src/IO/OSDarwin.cpp
 @OS.o
+IO/PCIInfo.h: ../../src/IO/PCIInfoMac.cpp
+@PCIInfo.o
+IO/PowerInfo.h: ../../src/IO/PowerInfoMac.cpp
+@PowerInfo.o
 IO/ProgramLinkManager.h: ../../src/IO/ProgramLinkManagerNull.cpp
 @ProgramLinkManager.o
 IO/SDCardMgr.h: ../../src/IO/SDCardMgrNull.cpp
@@ -46,6 +53,8 @@ IO/SensorManager.h: ../../src/IO/SensorManagerNull.cpp
 @SensorManager.o
 IO/ServiceManager.h: ../../src/IO/ServiceManagerNull.cpp
 @ServiceManager.o
+IO/USBInfo.h: ../../src/IO/USBInfoMac.cpp
+@USBInfo.o
 IO/Watchdog.h: ../../src/IO/WatchdogNull.cpp
 @Watchdog.o
 
@@ -110,6 +119,7 @@ CurlCert.o: ../../src/Crypto/Cert/CurlCert.cpp
 TrustStore.o: ../../src/Crypto/Cert/TrustStore_Linux.cpp
 RSAEnc.o: ../../src/Crypto/Encrypt/RSAEnc.cpp
 !-lcrypto
+MacCore.o: ../../src/Data/MacCore.cpp
 MDBFileConn.o: ../../src/DB/MDBFileConn.cpp
 !-lodbc
 !-lodbcinst
@@ -137,10 +147,13 @@ DebugWriter.o: ../../src/IO/DebugWriter_Null.cpp
 HIDInfo.o: ../../src/IO/HIDInfoNull.cpp
 I2CChannelOS.o: ../../src/IO/I2CChannelOSNull.cpp
 OS.o: ../../src/IO/OSDarwin.cpp
+PCIInfo.o: ../../src/IO/PCIInfoMac.cpp
+PowerInfo.o: ../../src/IO/PowerInfoMac.cpp
 ProgramLinkManager.o: ../../src/IO/ProgramLinkManagerNull.cpp
 SDCardMgr.o: ../../src/IO/SDCardMgrNull.cpp
 SensorManager.o: ../../src/IO/SensorManagerNull.cpp
 ServiceManager.o: ../../src/IO/ServiceManagerNull.cpp
+USBInfo.o: ../../src/IO/USBInfoMac.cpp
 Watchdog.o: ../../src/IO/WatchdogNull.cpp
 Computer.o: ../../src/Manage/ComputerL.cpp
 ComputerUser.o: ../../src/Manage/ComputerUserL.cpp

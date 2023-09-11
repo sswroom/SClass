@@ -225,7 +225,7 @@ void UI::GUIDObjArea::SetHandler(UI::DObj::DObjHandler *dobjHdlr)
 	}
 }
 
-Text::CString UI::GUIDObjArea::GetObjectClass()
+Text::CStringNN UI::GUIDObjArea::GetObjectClass() const
 {
 	return CSTR("DObjArea");
 }

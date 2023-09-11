@@ -39,7 +39,7 @@ namespace Math
 			virtual Double CalSqrDistance(Math::Coord2DDbl pt, Math::Coord2DDbl *nearPt) const;
 			virtual Bool JoinVector(Math::Geometry::Vector2D *vec);
 			virtual Bool HasZ() const;
-			virtual void ConvCSys(Math::CoordinateSystem *srcCSys, Math::CoordinateSystem *destCSys);
+			virtual void ConvCSys(NotNullPtr<Math::CoordinateSystem> srcCSys, NotNullPtr<Math::CoordinateSystem> destCSys);
 			virtual Bool Equals(Vector2D *vec) const;
 			virtual Bool EqualsNearly(Vector2D *vec) const;
 			virtual UOSInt GetCoordinates(Data::ArrayListA<Math::Coord2DDbl> *coordList) const;

@@ -9,7 +9,7 @@ Crypto::Cert::X509CertReq::X509CertReq(NotNullPtr<Text::String> sourceName, Data
 
 }
 
-Crypto::Cert::X509CertReq::X509CertReq(Text::CString sourceName, Data::ByteArrayR buff) : Crypto::Cert::X509File(sourceName, buff)
+Crypto::Cert::X509CertReq::X509CertReq(Text::CStringNN sourceName, Data::ByteArrayR buff) : Crypto::Cert::X509File(sourceName, buff)
 {
 
 }

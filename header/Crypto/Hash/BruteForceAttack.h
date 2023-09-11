@@ -38,7 +38,6 @@ namespace Crypto
 			UInt8 keyFirst;
 			Sync::Mutex keyMut;
 			UTF8Char keyBuff[64];
-			UInt8 hashBuff[64];
 			UOSInt maxLeng;
 			UInt64 testCnt;
 
@@ -56,7 +55,7 @@ namespace Crypto
 			UTF8Char *GetResult(UTF8Char *resultBuff);
 			Bool Start(const UTF8Char *hashStr, UOSInt hashLen, UOSInt minLeng, UOSInt maxLeng);
 
-			static Text::CString CharLimitGetName(CharLimit charLimit);
+			static Text::CStringNN CharLimitGetName(CharLimit charLimit);
 		};
 	}
 }

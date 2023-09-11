@@ -5,30 +5,27 @@
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
 
-Math::PointMappingCoordinateSystem::PointMappingCoordinateSystem(NotNullPtr<Text::String> sourceName, UInt32 srid, Text::CString csysName, Math::CoordinateSystem *baseCSys) : Math::CoordinateSystem(sourceName, srid, csysName)
+Math::PointMappingCoordinateSystem::PointMappingCoordinateSystem(NotNullPtr<Text::String> sourceName, UInt32 srid, Text::CString csysName, NotNullPtr<Math::CoordinateSystem> baseCSys) : Math::CoordinateSystem(sourceName, srid, csysName)
 {
 	this->baseCSys = baseCSys;
-	NEW_CLASS(this->mappingList, Data::ArrayList<Double*>());
 }
 
-Math::PointMappingCoordinateSystem::PointMappingCoordinateSystem(Text::CString sourceName, UInt32 srid, Text::CString csysName, Math::CoordinateSystem *baseCSys) : Math::CoordinateSystem(sourceName, srid, csysName)
+Math::PointMappingCoordinateSystem::PointMappingCoordinateSystem(Text::CStringNN sourceName, UInt32 srid, Text::CString csysName, NotNullPtr<Math::CoordinateSystem> baseCSys) : Math::CoordinateSystem(sourceName, srid, csysName)
 {
 	this->baseCSys = baseCSys;
-	NEW_CLASS(this->mappingList, Data::ArrayList<Double*>());
 }
 
 Math::PointMappingCoordinateSystem::~PointMappingCoordinateSystem()
 {
 	UOSInt i;
 	Double *ptItem;
-	i = this->mappingList->GetCount();
+	i = this->mappingList.GetCount();
 	while (i-- > 0)
 	{
-		ptItem = this->mappingList->GetItem(i);
+		ptItem = this->mappingList.GetItem(i);
 		MemFree(ptItem);
 	}
-	DEL_CLASS(this->mappingList);
-	DEL_CLASS(this->baseCSys);
+	this->baseCSys.Delete();
 }
 
 void Math::PointMappingCoordinateSystem::AddMappingPoint(Double mapX, Double mapY, Double baseX, Double baseY)
@@ -39,12 +36,12 @@ void Math::PointMappingCoordinateSystem::AddMappingPoint(Double mapX, Double map
 	ptItem[1] = mapY;
 	ptItem[2] = baseX;
 	ptItem[3] = baseY;
-	this->mappingList->Add(ptItem);
+	this->mappingList.Add(ptItem);
 }
 
 Math::Coord2DDbl Math::PointMappingCoordinateSystem::CalcBaseXY(Math::Coord2DDbl mapPt) const
 {
-	if (this->mappingList->GetCount() < 3)
+	if (this->mappingList.GetCount() < 3)
 	{
 		return mapPt;
 	}
@@ -61,10 +58,10 @@ Math::Coord2DDbl Math::PointMappingCoordinateSystem::CalcBaseXY(Math::Coord2DDbl
 	ptList[1] = 0;
 	ptList[2] = 0;
 	i = 0;
-	j = this->mappingList->GetCount();
+	j = this->mappingList.GetCount();
 	while (i < j)
 	{
-		ptItem = this->mappingList->GetItem(i);
+		ptItem = this->mappingList.GetItem(i);
 		dist = (ptItem[0] - mapPt.x) * (ptItem[0] - mapPt.x) + (ptItem[1] - mapPt.y) * (ptItem[1] - mapPt.y);
 		if (ptDist[0] < 0 || ptDist[0] > dist)
 		{
@@ -111,9 +108,11 @@ Double Math::PointMappingCoordinateSystem::CalSurfaceDistanceXY(Math::Coord2DDbl
 	return this->baseCSys->CalSurfaceDistanceXY(ptList[0], ptList[1], unit);
 }
 
-Double Math::PointMappingCoordinateSystem::CalPLDistance(Math::Geometry::Polyline *pl, Math::Unit::Distance::DistanceUnit unit) const
+Double Math::PointMappingCoordinateSystem::CalPLDistance(NotNullPtr<Math::Geometry::Polyline> pl, Math::Unit::Distance::DistanceUnit unit) const
 {
-	Math::Geometry::Polyline *tmpPl = (Math::Geometry::Polyline*)pl->Clone();
+	NotNullPtr<Math::Geometry::Polyline> tmpPl;
+	if (!tmpPl.Set((Math::Geometry::Polyline*)pl->Clone()))
+		return 0;
 	Double ret;
 	UOSInt i;
 	Math::Coord2DDbl *ptList = tmpPl->GetPointList(i);
@@ -122,13 +121,15 @@ Double Math::PointMappingCoordinateSystem::CalPLDistance(Math::Geometry::Polylin
 		ptList[i] = CalcBaseXY(ptList[i]);
 	}
 	ret = this->baseCSys->CalPLDistance(tmpPl, unit);
-	DEL_CLASS(tmpPl);
+	tmpPl.Delete();
 	return ret;
 }
 
-Double Math::PointMappingCoordinateSystem::CalPLDistance3D(Math::Geometry::Polyline *pl, Math::Unit::Distance::DistanceUnit unit) const
+Double Math::PointMappingCoordinateSystem::CalPLDistance3D(NotNullPtr<Math::Geometry::Polyline> pl, Math::Unit::Distance::DistanceUnit unit) const
 {
-	Math::Geometry::Polyline *tmpPl = (Math::Geometry::Polyline *)pl->Clone();
+	NotNullPtr<Math::Geometry::Polyline> tmpPl;
+	if (!tmpPl.Set((Math::Geometry::Polyline*)pl->Clone()))
+		return 0;
 	Double ret;
 	UOSInt i;
 	Math::Coord2DDbl *ptList = tmpPl->GetPointList(i);
@@ -137,22 +138,22 @@ Double Math::PointMappingCoordinateSystem::CalPLDistance3D(Math::Geometry::Polyl
 		ptList[i] = CalcBaseXY(ptList[i]);
 	}
 	ret = this->baseCSys->CalPLDistance3D(tmpPl, unit);
-	DEL_CLASS(tmpPl);
+	tmpPl.Delete();
 	return ret;
 }
 
-Math::CoordinateSystem *Math::PointMappingCoordinateSystem::Clone() const
+NotNullPtr<Math::CoordinateSystem> Math::PointMappingCoordinateSystem::Clone() const
 {
-	Math::PointMappingCoordinateSystem *csys;
+	NotNullPtr<Math::PointMappingCoordinateSystem> csys;
 	UOSInt i;
 	UOSInt j;
 	Double *ptItem;
-	NEW_CLASS(csys, Math::PointMappingCoordinateSystem(this->sourceName, this->srid, this->csysName->ToCString(), this->baseCSys->Clone()));
+	NEW_CLASSNN(csys, Math::PointMappingCoordinateSystem(this->sourceName, this->srid, this->csysName->ToCString(), this->baseCSys->Clone()));
 	i = 0;
-	j = this->mappingList->GetCount();
+	j = this->mappingList.GetCount();
 	while (i < j)
 	{
-		ptItem = this->mappingList->GetItem(i);
+		ptItem = this->mappingList.GetItem(i);
 		csys->AddMappingPoint(ptItem[0], ptItem[1], ptItem[2], ptItem[3]);
 		i++;
 	}
@@ -180,10 +181,10 @@ void Math::PointMappingCoordinateSystem::ToString(NotNullPtr<Text::StringBuilder
 	sb->Append(this->csysName);
 	sb->AppendC(UTF8STRC("\r\nPoints:"));
 	i = 0;
-	j = this->mappingList->GetCount();
+	j = this->mappingList.GetCount();
 	while (i < j)
 	{
-		ptItem = this->mappingList->GetItem(i);
+		ptItem = this->mappingList.GetItem(i);
 		sb->AppendC(UTF8STRC("\r\n"));
 		Text::SBAppendF64(sb, ptItem[0]);
 		sb->AppendC(UTF8STRC(", "));
@@ -198,24 +199,24 @@ void Math::PointMappingCoordinateSystem::ToString(NotNullPtr<Text::StringBuilder
 	this->baseCSys->ToString(sb);
 }
 
-Bool Math::PointMappingCoordinateSystem::Equals(CoordinateSystem *csys) const
+Bool Math::PointMappingCoordinateSystem::Equals(NotNullPtr<const CoordinateSystem> csys) const
 {
 	if (csys->GetCoordSysType() != Math::CoordinateSystem::CoordinateSystemType::PointMapping)
 	{
 		return false;
 	}
-	Math::PointMappingCoordinateSystem *pmcs = (Math::PointMappingCoordinateSystem*)csys;
+	const Math::PointMappingCoordinateSystem *pmcs = (const Math::PointMappingCoordinateSystem*)csys.Ptr();
 	Double *ptItem1;
 	Double *ptItem2;
 	UOSInt i;
-	UOSInt j = this->mappingList->GetCount();
-	if (pmcs->mappingList->GetCount() != j)
+	UOSInt j = this->mappingList.GetCount();
+	if (pmcs->mappingList.GetCount() != j)
 		return false;
 	i = 0;
 	while (i < j)
 	{
-		ptItem1 = this->mappingList->GetItem(i);
-		ptItem2 = pmcs->mappingList->GetItem(i);
+		ptItem1 = this->mappingList.GetItem(i);
+		ptItem2 = pmcs->mappingList.GetItem(i);
 		if (ptItem1[0] != ptItem2[0] || ptItem1[1] != ptItem2[1] || ptItem1[2] != ptItem2[2] || ptItem1[3] != ptItem2[3])
 		{
 			return false;

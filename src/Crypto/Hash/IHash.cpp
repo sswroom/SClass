@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "Crypto/Hash/IHash.h"
 
-Text::CString Crypto::Hash::HashTypeGetName(HashType hashType)
+Text::CStringNN Crypto::Hash::HashTypeGetName(HashType hashType)
 {
 	switch (hashType)
 	{

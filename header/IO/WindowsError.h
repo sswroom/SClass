@@ -7,7 +7,7 @@ namespace IO
 	class WindowsError
 	{
 	public:
-		static Text::CString GetString(UInt32 errorCode);
+		static Text::CStringNN GetString(UInt32 errorCode);
 	};
 }
 #endif

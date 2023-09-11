@@ -39,15 +39,15 @@ namespace IO
 		UInt32 osLocale;
 		UInt32 architecture;
 		UInt32 productType;
-		Data::ArrayList<ServerRole*> *serverRoles;
-		Data::ArrayList<DeviceInfo*> *deviceInfos;
-		Data::ArrayList<DriverInfo*> *driverInfos;
+		Data::ArrayList<ServerRole*> serverRoles;
+		Data::ArrayList<DeviceInfo*> deviceInfos;
+		Data::ArrayList<DriverInfo*> driverInfos;
 
 		void FreeServerRole(ServerRole *serverRole);
 		void FreeDeviceInfo(DeviceInfo *deviceInfo);
 		void FreeDriverInfo(DriverInfo *driverInfo);
 	public:
-		SystemInfoLog(Text::CString sourceName);
+		SystemInfoLog(Text::CStringNN sourceName);
 		virtual ~SystemInfoLog();
 
 		virtual IO::ParserType GetParserType() const;
@@ -63,11 +63,11 @@ namespace IO
 		void SetProductType(UInt32 productType);
 		UInt32 GetProductType() const;
 		void AddServerRole(const UTF8Char *name, const UTF8Char *data);
-		const Data::ArrayList<ServerRole*> *GetServerRoles() const;
+		NotNullPtr<const Data::ArrayList<ServerRole*>> GetServerRoles() const;
 		void AddDeviceInfo(const UTF8Char *desc, const UTF8Char *hwId, const UTF8Char *service, const UTF8Char *driver);
-		const Data::ArrayList<DeviceInfo*> *GetDeviceInfos() const;
+		NotNullPtr<const Data::ArrayList<DeviceInfo*>> GetDeviceInfos() const;
 		void AddDriverInfo(const UTF8Char *fileName, UInt64 fileSize, const UTF8Char *creationDate, const UTF8Char *version, const UTF8Char *manufacturer, const UTF8Char *productName, const UTF8Char *group, UInt32 altitude);
-		const Data::ArrayList<DriverInfo*> *GetDriverInfos() const;
+		NotNullPtr<const Data::ArrayList<DriverInfo*>> GetDriverInfos() const;
 	};
 }
 

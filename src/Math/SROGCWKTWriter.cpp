@@ -64,7 +64,7 @@ UTF8Char *Math::SROGCWKTWriter::WriteUnit(UTF8Char *buff, Math::CoordinateSystem
 	return buff;
 }
 
-UTF8Char *Math::SROGCWKTWriter::WriteProjExtra(UTF8Char *buff, Math::CoordinateSystem *pcsys, UOSInt lev, Text::LineBreakType lbt)
+UTF8Char *Math::SROGCWKTWriter::WriteProjExtra(UTF8Char *buff, NotNullPtr<Math::CoordinateSystem> pcsys, UOSInt lev, Text::LineBreakType lbt)
 {
 	*buff++ = ',';
 	buff = WriteNextLine(buff, lev, lbt);

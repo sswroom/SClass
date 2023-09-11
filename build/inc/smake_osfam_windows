@@ -26,20 +26,14 @@ IO/Library.h: ../../src/IO/LibraryW.cpp
 @Library.o
 IO/Path.h: ../../src/IO/PathW.cpp
 @Path.o
-IO/PCIInfo.h: ../../src/IO/PCIInfoW.cpp
-@PCIInfo.o
 IO/PhysicalMem.h: ../../src/IO/PhysicalMemNull.cpp
 @PhysicalMem.o
-IO/PowerInfo.h: ../../src/IO/PowerInfoW.cpp
-@PowerInfo.o
 IO/Registry.h: ../../src/IO/RegistryW.cpp
 @Registry.o
 IO/SerialPort.h: ../../src/IO/SerialPortW.cpp
 @SerialPort.o
 IO/SimpleFileWriter.h: ../../src/IO/SimpleFileWriterW.cpp
 @SimpleFileWriter.o
-IO/USBInfo.h: ../../src/IO/USBInfoW.cpp
-@USBInfo.o
 IO/ViewFileBuffer.h: ../../src/IO/ViewFileBufferW.cpp
 @ViewFileBuffer.o
 
@@ -144,13 +138,10 @@ FileUtil.o: ../../src/IO/FileUtilW.cpp
 Library.o: ../../src/IO/LibraryW.cpp
 Path.o: ../../src/IO/PathW.cpp
 !-lpsapi
-PCIInfo.o: ../../src/IO/PCIInfoW.cpp
 PhysicalMem.o: ../../src/IO/PhysicalMemW.cpp
-PowerInfo.o: ../../src/IO/PowerInfoW.cpp
 Registry.o: ../../src/IO/RegistryW.cpp
 SerialPort.o: ../../src/IO/SerialPortW.cpp
 SimpleFileWriter.o: ../../src/IO/SimpleFileWriterW.cpp
-USBInfo.o: ../../src/IO/USBInfoW.cpp
 ViewFileBuffer.o: ../../src/IO/ViewFileBufferW.cpp
 EnvironmentVar.o: ../../src/Manage/EnvironmentVarW.cpp
 ExceptionRecorder.o: ../../src/Manage/ExceptionRecorderW.cpp

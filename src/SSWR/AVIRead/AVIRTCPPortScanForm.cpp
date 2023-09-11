@@ -71,7 +71,7 @@ void __stdcall SSWR::AVIRead::AVIRTCPPortScanForm::OnTimerTick(void *userObj)
 				cstr = Net::PacketAnalyzerEthernet::TCPPortGetName(port);
 				if (cstr.v)
 				{
-					me->lvPort->SetSubItem(i, 1, cstr);
+					me->lvPort->SetSubItem(i, 1, cstr.OrEmpty());
 				}
 				i++;
 			}

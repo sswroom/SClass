@@ -155,7 +155,7 @@ namespace IO
 		void Init(Data::ByteArrayR buff);
 	public:
 		JavaClass(NotNullPtr<Text::String> sourceName, Data::ByteArrayR buff);
-		JavaClass(Text::CString sourceName, Data::ByteArrayR buff);
+		JavaClass(Text::CStringNN sourceName, Data::ByteArrayR buff);
 		virtual ~JavaClass();
 
 		virtual IO::ParserType GetParserType() const;
@@ -180,7 +180,7 @@ namespace IO
 	public:
 		static JavaClass *ParseFile(Text::CStringNN fileName);
 		static JavaClass *ParseBuff(NotNullPtr<Text::String> sourceName, Data::ByteArrayR buff);
-		static JavaClass *ParseBuff(Text::CString sourceName, Data::ByteArrayR buff);
+		static JavaClass *ParseBuff(Text::CStringNN sourceName, Data::ByteArrayR buff);
 		static Text::CString EndTypeGetName(EndType et);
 	};
 }

@@ -311,7 +311,7 @@ UI::GUIPictureBox::~GUIPictureBox()
 	MemFree(data);
 }
 
-Text::CString UI::GUIPictureBox::GetObjectClass()
+Text::CStringNN UI::GUIPictureBox::GetObjectClass() const
 {
 	return CSTR("PictureBox");
 }

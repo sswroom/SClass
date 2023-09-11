@@ -244,7 +244,7 @@ public:
 	}
 };
 
-DB::TextDB::TextDB(Text::CString sourceName) : DB::ReadingDB(sourceName)
+DB::TextDB::TextDB(Text::CStringNN sourceName) : DB::ReadingDB(sourceName)
 {
 	this->currDB = 0;
 }

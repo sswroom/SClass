@@ -36,62 +36,59 @@ OSInt Map::AssistedReverseGeocoderPL::AddressComparator::Compare(AddressEntry *a
 	}
 }
 
-Map::AssistedReverseGeocoderPL::AssistedReverseGeocoderPL(DB::DBTool *db, IO::Writer *errWriter)
+Map::AssistedReverseGeocoderPL::AssistedReverseGeocoderPL(NotNullPtr<DB::DBTool> db, IO::Writer *errWriter)
 {
 	this->conn = db;
 	this->errWriter = errWriter;
 	this->nextCoder = 0;
 
-	if (this->conn)
+	DB::DBReader *r;
+	Manage::HiResClock clk;
+	r = this->conn->ExecuteReader(CSTR("select lcid, keyx, keyy, address from addrdb")); // order by lcid, keyx, keyy
+	Double t1 = clk.GetTimeDiff();
+	if (r)
 	{
-		DB::DBReader *r;
-		Manage::HiResClock clk;
-		r = this->conn->ExecuteReader(CSTR("select lcid, keyx, keyy, address from addrdb")); // order by lcid, keyx, keyy
-		Double t1 = clk.GetTimeDiff();
-		if (r)
+		UInt32 lcid;
+		Text::String *addr;
+		LCIDInfo *lcidInfo;
+		AddressEntry *entry;
+		Text::StringBuilderUTF8 sb;
+		while (r->ReadNext())
 		{
-			UInt32 lcid;
-			Text::String *addr;
-			LCIDInfo *lcidInfo;
-			AddressEntry *entry;
-			Text::StringBuilderUTF8 sb;
-			while (r->ReadNext())
+			lcid = (UInt32)r->GetInt32(0);
+			entry = MemAlloc(AddressEntry, 1);
+			entry->keyx = r->GetInt32(1);
+			entry->keyy = r->GetInt32(2);
+			sb.ClearStr();
+			r->GetStr(3, sb);
+			addr = this->strMap.Get(sb.ToCString());
+			if (addr == 0)
 			{
-				lcid = (UInt32)r->GetInt32(0);
-				entry = MemAlloc(AddressEntry, 1);
-				entry->keyx = r->GetInt32(1);
-				entry->keyy = r->GetInt32(2);
-				sb.ClearStr();
-				r->GetStr(3, sb);
-				addr = this->strMap.Get(sb.ToCString());
-				if (addr == 0)
-				{
-					NotNullPtr<Text::String> s = Text::String::New(sb.ToCString());
-					addr = s.Ptr();
-					this->strMap.Put(s, addr);
-				}
-				entry->address = addr;
-				
-				lcidInfo = this->lcidMap.Get(lcid);
-				if (lcidInfo == 0)
-				{
-					NEW_CLASS(lcidInfo, LCIDInfo());
-					lcidInfo->lcid = lcid;
-					this->lcidMap.Put(lcid, lcidInfo);
-				}
-				lcidInfo->mainList.Add(entry);
+				NotNullPtr<Text::String> s = Text::String::New(sb.ToCString());
+				addr = s.Ptr();
+				this->strMap.Put(s, addr);
 			}
-			this->conn->CloseReader(r);
-
-			AddressComparator comparator;
-			UOSInt i = this->lcidMap.GetCount();
-			while (i-- > 0)
+			entry->address = addr;
+			
+			lcidInfo = this->lcidMap.Get(lcid);
+			if (lcidInfo == 0)
 			{
-				Data::Sort::ArtificialQuickSort::Sort(&this->lcidMap.GetItem(i)->mainList, &comparator);
+				NEW_CLASS(lcidInfo, LCIDInfo());
+				lcidInfo->lcid = lcid;
+				this->lcidMap.Put(lcid, lcidInfo);
 			}
+			lcidInfo->mainList.Add(entry);
 		}
-		printf("Time used = %lf, t1 = %lf\r\n", clk.GetTimeDiff(), t1);
+		this->conn->CloseReader(r);
+
+		AddressComparator comparator;
+		UOSInt i = this->lcidMap.GetCount();
+		while (i-- > 0)
+		{
+			Data::Sort::ArtificialQuickSort::Sort(&this->lcidMap.GetItem(i)->mainList, &comparator);
+		}
 	}
+	printf("Time used = %lf, t1 = %lf\r\n", clk.GetTimeDiff(), t1);
 }
 
 Map::AssistedReverseGeocoderPL::~AssistedReverseGeocoderPL()
@@ -105,10 +102,7 @@ Map::AssistedReverseGeocoderPL::~AssistedReverseGeocoderPL()
 		revGeo = this->revGeos.RemoveAt(i);
 		DEL_CLASS(revGeo);
 	}
-	if (this->conn)
-	{
-		DEL_CLASS(this->conn);
-	}
+	this->conn.Delete();
 	Text::String **strArr = this->strMap.ToArray(&j);
 	i = 0;
 	while (i < j)
@@ -133,9 +127,6 @@ Map::AssistedReverseGeocoderPL::~AssistedReverseGeocoderPL()
 UTF8Char *Map::AssistedReverseGeocoderPL::SearchName(UTF8Char *buff, UOSInt buffSize, Math::Coord2DDbl pos, UInt32 lcid)
 {
 	UTF8Char *sptr = 0;
-	if (this->conn == 0)
-		return 0;
-
 	Int32 keyx = Double2Int32(pos.GetLon() * 5000);
 	Int32 keyy = Double2Int32(pos.GetLat() * 5000);
 	if (keyx == 0 && keyy == 0)
@@ -222,14 +213,7 @@ UTF8Char *Map::AssistedReverseGeocoderPL::CacheName(UTF8Char *buff, UOSInt buffS
 
 void Map::AssistedReverseGeocoderPL::AddReverseGeocoder(Map::IReverseGeocoder *revGeo)
 {
-	if (this->conn)
-	{
-		this->revGeos.Add(revGeo);
-	}
-	else
-	{
-		DEL_CLASS(revGeo);
-	}
+	this->revGeos.Add(revGeo);
 }
 
 OSInt Map::AssistedReverseGeocoderPL::AddressIndexOf(Data::ArrayList<AddressEntry *> *list, Int32 keyx, Int32 keyy)

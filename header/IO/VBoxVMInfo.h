@@ -29,7 +29,7 @@ namespace IO
 		void SetState(State state);
 		void SetStateSince(Data::Timestamp stateSince);
 
-		static Text::CString StateGetName(State val);
+		static Text::CStringNN StateGetName(State val);
 	};
 }
 #endif

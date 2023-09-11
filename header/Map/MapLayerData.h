@@ -21,7 +21,7 @@ namespace Map
 		MapLayerData(Text::CStringNN filePath);
 		virtual ~MapLayerData();
 
-		virtual Bool IsError();
+		virtual Bool IsError() const;
 		virtual UTF8Char *GetPGLabel(UTF8Char *buff, UOSInt buffSize, Math::Coord2DDbl coord, Math::Coord2DDbl *outCoord, UOSInt strIndex);
 		virtual UTF8Char *GetPLLabel(UTF8Char *buff, UOSInt buffSize, Math::Coord2DDbl coord, Math::Coord2DDbl *outCoord, UOSInt strIndex);
 	};

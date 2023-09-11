@@ -185,7 +185,7 @@ void __stdcall SSWR::AVIRead::AVIRDBCheckChgForm::OnExecuteClicked(void *userObj
 	}
 }
 
-Bool SSWR::AVIRead::AVIRDBCheckChgForm::LoadCSV(Text::CString fileName)
+Bool SSWR::AVIRead::AVIRDBCheckChgForm::LoadCSV(Text::CStringNN fileName)
 {
 	Int8 csvTZ = 0;
 	if (this->chkLocalTZ->IsChecked())
@@ -579,7 +579,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::LoadCSV(Text::CString fileName)
 	return true;
 }
 
-Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(Text::CString csvFileName, DB::SQLType sqlType, Bool axisAware, SQLSession *sess)
+Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(Text::CStringNN csvFileName, DB::SQLType sqlType, Bool axisAware, SQLSession *sess)
 {
 	Int8 csvTZ = 0;
 	if (this->chkLocalTZ->IsChecked())
@@ -1575,12 +1575,12 @@ SSWR::AVIRead::AVIRDBCheckChgForm::AVIRDBCheckChgForm(UI::GUIClientControl *pare
 
 	NEW_CLASS(this->lblSchema, UI::GUILabel(ui, this, CSTR("Schema")));
 	this->lblSchema->SetRect(0, 0, 100, 23, false);
-	NEW_CLASS(this->txtSchema, UI::GUITextBox(ui, this, schema));
+	NEW_CLASS(this->txtSchema, UI::GUITextBox(ui, this, schema.OrEmpty()));
 	this->txtSchema->SetRect(100, 0, 200, 23, false);
 	this->txtSchema->SetReadOnly(true);
 	NEW_CLASS(this->lblTable, UI::GUILabel(ui, this, CSTR("Table")));
 	this->lblTable->SetRect(0, 24, 100, 23, false);
-	NEW_CLASS(this->txtTable, UI::GUITextBox(ui, this, table));
+	NEW_CLASS(this->txtTable, UI::GUITextBox(ui, this, table.OrEmpty()));
 	this->txtTable->SetRect(100, 24, 200, 23, false);
 	this->txtTable->SetReadOnly(true);
 	NEW_CLASS(this->lblKeyCol, UI::GUILabel(ui, this, CSTR("Key Column")));

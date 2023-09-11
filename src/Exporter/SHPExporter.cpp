@@ -59,7 +59,7 @@ void Exporter::SHPExporter::SetCodePage(UInt32 codePage)
 	this->codePage = codePage;
 }
 
-Bool Exporter::SHPExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text::CString fileName, IO::ParsedObject *pobj, void *param)
+Bool Exporter::SHPExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text::CStringNN fileName, IO::ParsedObject *pobj, void *param)
 {
 	UInt8 buff[256];
 	UTF8Char fileName2[256];
@@ -79,7 +79,6 @@ Bool Exporter::SHPExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text:
 	Double zMin = 0;
 	Double zMax = 0;
 	IO::FileStream *shx;
-	Data::ArrayListInt64 *objIds;
 	Map::NameArray *nameArr;
 	Map::GetObjectSess *sess;
 	if (layerType != Map::DRAW_LAYER_POINT && layerType != Map::DRAW_LAYER_POINT3D && layerType != Map::DRAW_LAYER_POLYLINE && layerType != Map::DRAW_LAYER_POLYLINE3D && layerType != Map::DRAW_LAYER_POLYGON)
@@ -97,10 +96,10 @@ Bool Exporter::SHPExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text:
 	
 	shx->Write(buff, 100);
 	stm->Write(buff, 100);
-	NEW_CLASS(objIds, Data::ArrayListInt64());
+	Data::ArrayListInt64 objIds;
 	sess = layer->BeginGetObject();
 	layer->GetAllObjectIds(objIds, &nameArr);
-	recCnt = objIds->GetCount();
+	recCnt = objIds.GetCount();
 
 	if (layerType == Map::DRAW_LAYER_POINT)
 	{
@@ -110,7 +109,7 @@ Bool Exporter::SHPExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text:
 		i = 0;
 		while (i < recCnt)
 		{
-			pt = (Math::Geometry::Point*)layer->GetNewVectorById(sess, objIds->GetItem(i));
+			pt = (Math::Geometry::Point*)layer->GetNewVectorById(sess, objIds.GetItem(i));
 			coord = pt->GetCenter();
 			if (i == 0)
 			{
@@ -147,7 +146,7 @@ Bool Exporter::SHPExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text:
 		i = 0;
 		while (i < recCnt)
 		{
-			pt = (Math::Geometry::PointZ*)layer->GetNewVectorById(sess, objIds->GetItem(i));
+			pt = (Math::Geometry::PointZ*)layer->GetNewVectorById(sess, objIds.GetItem(i));
 			pt->GetPos3D(&coord.x, &coord.y, &z);
 			if (i == 0)
 			{
@@ -201,7 +200,7 @@ Bool Exporter::SHPExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text:
 		i = 0;
 		while (i < recCnt)
 		{
-			Int64 objId = objIds->GetItem(i);
+			Int64 objId = objIds.GetItem(i);
 			pl = (Math::Geometry::Polyline*)layer->GetNewVectorById(sess, objId);
 			if (pl)
 			{
@@ -263,7 +262,7 @@ Bool Exporter::SHPExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text:
 		i = 0;
 		while (i < recCnt)
 		{
-			pl = (Math::Geometry::Polyline*)layer->GetNewVectorById(sess, objIds->GetItem(i));
+			pl = (Math::Geometry::Polyline*)layer->GetNewVectorById(sess, objIds.GetItem(i));
 			box = pl->GetBounds();
 			ptOfsts = pl->GetPtOfstList(nPtOfst);
 			points = pl->GetPointList(nPoint);
@@ -338,7 +337,7 @@ Bool Exporter::SHPExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text:
 		i = 0;
 		while (i < recCnt)
 		{
-			pg = (Math::Geometry::Polygon*)layer->GetNewVectorById(sess, objIds->GetItem(i));
+			pg = (Math::Geometry::Polygon*)layer->GetNewVectorById(sess, objIds.GetItem(i));
 			box = pg->GetBounds();
 			ptOfsts = pg->GetPtOfstList(nPtOfst);
 			points = pg->GetPointList(nPoint);
@@ -376,7 +375,6 @@ Bool Exporter::SHPExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text:
 	}
 	layer->EndGetObject(sess);
 	layer->ReleaseNameArr(nameArr);
-	DEL_CLASS(objIds);
 
 	WriteMInt32(buff, 9994);
 	*(Int32*)&buff[4] = 0;
@@ -412,14 +410,11 @@ Bool Exporter::SHPExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text:
 	}
 
 	sptr = IO::Path::ReplaceExt(fileName2, UTF8STRC("prj"));
-	Math::CoordinateSystem *csys = layer->GetCoordinateSystem();
-	if (csys)
-	{
-		UTF8Char projArr[1024];
-		Math::SRESRIWKTWriter wkt;
-		UTF8Char *cptr = wkt.WriteCSys(csys, projArr, 0, Text::LineBreakType::None);
-		IO::FileStream fs(CSTRP(fileName2, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
-		fs.Write((UInt8*)projArr, (UOSInt)(cptr - projArr));
-	}
+	NotNullPtr<Math::CoordinateSystem> csys = layer->GetCoordinateSystem();
+	UTF8Char projArr[1024];
+	Math::SRESRIWKTWriter wkt;
+	UTF8Char *cptr = wkt.WriteCSys(csys, projArr, 0, Text::LineBreakType::None);
+	IO::FileStream fs(CSTRP(fileName2, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+	fs.Write((UInt8*)projArr, (UOSInt)(cptr - projArr));
 	return true;
 }

@@ -44,7 +44,7 @@ Media::LUT::LUT(UOSInt inputCh, UOSInt inputLev, UOSInt outputCh, DataFormat fmt
 	this->Init(inputCh, inputLev, outputCh, fmt);
 }
 
-Media::LUT::LUT(UOSInt inputCh, UOSInt inputLev, UOSInt outputCh, DataFormat fmt, Text::CString sourceName) : IO::ParsedObject(sourceName)
+Media::LUT::LUT(UOSInt inputCh, UOSInt inputLev, UOSInt outputCh, DataFormat fmt, Text::CStringNN sourceName) : IO::ParsedObject(sourceName)
 {
 	this->Init(inputCh, inputLev, outputCh, fmt);
 }

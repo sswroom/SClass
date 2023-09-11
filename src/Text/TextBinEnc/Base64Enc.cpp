@@ -433,7 +433,7 @@ UOSInt Text::TextBinEnc::Base64Enc::DecodeBin(const WChar *b64Str, UInt8 *dataBu
 	return decSize;
 }
 
-Text::CString Text::TextBinEnc::Base64Enc::GetName()
+Text::CStringNN Text::TextBinEnc::Base64Enc::GetName() const
 {
 	return CSTR("Base64");
 }

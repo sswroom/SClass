@@ -31,9 +31,9 @@ void __stdcall SSWR::AVIRead::AVIRGISSearchForm::OnResultSelChg(void *userObj)
 
 		if (vec)
 		{
-			Math::CoordinateSystem *csys1 = me->navi->GetCoordinateSystem();
-			Math::CoordinateSystem *csys2 = me->layer->GetCoordinateSystem();
-			if (!csys1->Equals(csys2))
+			NotNullPtr<Math::CoordinateSystem> csys1;
+			NotNullPtr<Math::CoordinateSystem> csys2 = me->layer->GetCoordinateSystem();
+			if (csys1.Set(me->navi->GetCoordinateSystem()) && !csys1->Equals(csys2))
 			{
 				vec->ConvCSys(csys2, csys1);
 			}
@@ -49,7 +49,7 @@ void __stdcall SSWR::AVIRead::AVIRGISSearchForm::OnResultSelChg(void *userObj)
 void SSWR::AVIRead::AVIRGISSearchForm::UpdateResults()
 {
 	UOSInt i;
-	UOSInt j = this->dispList->GetCount();
+	UOSInt j = this->dispList.GetCount();
 	Text::StringBuilderUTF8 sb;
 	if (j > 100)
 	{
@@ -60,7 +60,7 @@ void SSWR::AVIRead::AVIRGISSearchForm::UpdateResults()
 	while (i < j)
 	{
 		sb.ClearStr();
-		sb.Append(this->dispList->GetItem(i));
+		sb.Append(this->dispList.GetItem(i));
 		if (this->flags & Map::MapEnv::SFLG_TRIM)
 		{
 			sb.Trim();
@@ -96,8 +96,6 @@ SSWR::AVIRead::AVIRGISSearchForm::AVIRGISSearchForm(UI::GUIClientControl *parent
 	this->lbResults->HandleSelectionChange(OnResultSelChg, this);
 
 	Map::NameArray *nameArr;
-	NEW_CLASS(this->dispList, Data::ArrayListString());
-	NEW_CLASS(this->objIds, Data::ArrayListInt64());
 	this->layer->GetAllObjectIds(this->objIds, &nameArr);
 	this->nameArr = nameArr;
 	this->UpdateResults();
@@ -107,8 +105,6 @@ SSWR::AVIRead::AVIRGISSearchForm::~AVIRGISSearchForm()
 {
 	DEL_CLASS(this->searching);
 	this->layer->ReleaseNameArr(this->nameArr);
-	DEL_CLASS(this->dispList);
-	DEL_CLASS(this->objIds);
 }
 
 void SSWR::AVIRead::AVIRGISSearchForm::OnMonitorChanged()

@@ -14,11 +14,11 @@ namespace Text
 			NotNullPtr<Text::String> contType;
 
 		public:
-			UnknownMIMEObj(UInt8 *dataBuff, UOSInt buffSize, Text::CString contentType);
+			UnknownMIMEObj(UInt8 *dataBuff, UOSInt buffSize, Text::CStringNN contentType);
 			virtual ~UnknownMIMEObj();
 
-			virtual Text::CString GetClassName() const;
-			virtual Text::CString GetContentType() const;
+			virtual Text::CStringNN GetClassName() const;
+			virtual Text::CStringNN GetContentType() const;
 			virtual UOSInt WriteStream(IO::Stream *stm) const;
 			virtual IMIMEObj *Clone() const;
 

@@ -63,7 +63,7 @@ Bool Map::MapConfig2::IsDoorNum(const UTF8Char *txt)
 	return true;
 }
 
-void Map::MapConfig2::DrawChars(NotNullPtr<Media::DrawImage> img, Text::CString str1, Math::Coord2DDbl scnPos, Double scaleW, Double scaleH, Data::ArrayList<MapFontStyle*> *fontStyle, Bool isAlign)
+void Map::MapConfig2::DrawChars(NotNullPtr<Media::DrawImage> img, Text::CStringNN str1, Math::Coord2DDbl scnPos, Double scaleW, Double scaleH, Data::ArrayList<MapFontStyle*> *fontStyle, Bool isAlign)
 {
 	UTF8Char sbuff[256];
 	str1.ConcatTo(sbuff);
@@ -398,7 +398,7 @@ void Map::MapConfig2::DrawChars(NotNullPtr<Media::DrawImage> img, Text::CString 
 	}
 }
 
-void Map::MapConfig2::DrawCharsLA(NotNullPtr<Media::DrawImage> img, Text::CString str1, Math::Coord2DDbl *mapPts, Math::Coord2D<Int32> *scnPts, UOSInt nPoints, UInt32 thisPt, Double scaleN, Double scaleD, Data::ArrayList<MapFontStyle*> *fontStyle, Math::RectAreaDbl *realBounds)
+void Map::MapConfig2::DrawCharsLA(NotNullPtr<Media::DrawImage> img, Text::CStringNN str1, Math::Coord2DDbl *mapPts, Math::Coord2D<Int32> *scnPts, UOSInt nPoints, UInt32 thisPt, Double scaleN, Double scaleD, Data::ArrayList<MapFontStyle*> *fontStyle, Math::RectAreaDbl *realBounds)
 {
 	UTF8Char sbuff[256];
 	str1.ConcatTo(sbuff);
@@ -959,7 +959,7 @@ void Map::MapConfig2::DrawCharsLA(NotNullPtr<Media::DrawImage> img, Text::CStrin
 	realBounds->br = max;
 }
 
-void Map::MapConfig2::DrawCharsLAo(NotNullPtr<Media::DrawImage> img, Text::CString str1, Double *mapPts, Math::Coord2D<Int32> *scnPts, UOSInt nPoints, UInt32 thisPt, Double scaleN, Double scaleD, Data::ArrayList<MapFontStyle*> *fontStyle)
+void Map::MapConfig2::DrawCharsLAo(NotNullPtr<Media::DrawImage> img, Text::CStringNN str1, Double *mapPts, Math::Coord2D<Int32> *scnPts, UOSInt nPoints, UInt32 thisPt, Double scaleN, Double scaleD, Data::ArrayList<MapFontStyle*> *fontStyle)
 {
 	UTF8Char sbuff[256];
 	str1.ConcatTo(sbuff);
@@ -1570,7 +1570,7 @@ void Map::MapConfig2::DrawCharsLAo(NotNullPtr<Media::DrawImage> img, Text::CStri
 	}
 }
 
-void Map::MapConfig2::DrawCharsL(NotNullPtr<Media::DrawImage> img, Text::CString str1, Math::Coord2DDbl *mapPts, Math::Coord2D<Int32> *scnPts, UOSInt nPoints, UInt32 thisPt, Double scaleN, Double scaleD, Data::ArrayList<MapFontStyle*> *fontStyle, Math::RectAreaDbl *realBounds)
+void Map::MapConfig2::DrawCharsL(NotNullPtr<Media::DrawImage> img, Text::CStringNN str1, Math::Coord2DDbl *mapPts, Math::Coord2D<Int32> *scnPts, UOSInt nPoints, UInt32 thisPt, Double scaleN, Double scaleD, Data::ArrayList<MapFontStyle*> *fontStyle, Math::RectAreaDbl *realBounds)
 {
 	UTF8Char sbuff[256];
 	str1.ConcatTo(sbuff);
@@ -2232,7 +2232,7 @@ UInt32 Map::MapConfig2::ToColor(const UTF8Char *str)
 	return 0xff000000 | ((v & 0xff) << 16) | (v & 0xff00) | ((v >> 16) & 0xff);
 }
 
-Map::MapDrawLayer *Map::MapConfig2::GetDrawLayer(Text::CString name, Data::ArrayList<Map::MapDrawLayer*> *layerList, IO::Writer *errWriter)
+Map::MapDrawLayer *Map::MapConfig2::GetDrawLayer(Text::CStringNN name, Data::ArrayList<Map::MapDrawLayer*> *layerList, IO::Writer *errWriter)
 {
 	Map::CIPLayer2 *cip;
 	UOSInt i = layerList->GetCount();
@@ -2276,7 +2276,7 @@ void Map::MapConfig2::DrawPoints(NotNullPtr<Media::DrawImage> img, MapLayerStyle
 #endif
 	Data::ArrayListInt64 arri;
 	Math::RectAreaDbl rect = view->GetVerticalRect();
-	lyrs->lyr->GetObjectIdsMapXY(&arri, 0, rect, true);
+	lyrs->lyr->GetObjectIdsMapXY(arri, 0, rect, true);
 	if (arri.GetCount() == 0)
 	{
 		return;
@@ -2293,8 +2293,8 @@ void Map::MapConfig2::DrawPoints(NotNullPtr<Media::DrawImage> img, MapLayerStyle
 		{
 			Bool revOrder;
 			Bool revOrder2;
-			UInt8 *bmpBits = gimg->GetImgBits(&revOrder);
-			UInt8 *bmpBits2 = gimg2->GetImgBits(&revOrder2);
+			UInt8 *bmpBits = gimg->GetImgBits(revOrder);
+			UInt8 *bmpBits2 = gimg2->GetImgBits(revOrder2);
 			resizer->Resize(bmpBits2, (OSInt)imgW << 2, UOSInt2Double(imgW), UOSInt2Double(imgH), 0, 0, bmpBits, Double2Int32(UOSInt2Double(imgW) * img->GetHDPI() / 96.0) << 2, (UInt32)Double2Int32(UOSInt2Double(imgW) * img->GetHDPI() / 96.0), (UInt32)Double2Int32(UOSInt2Double(imgH) * img->GetHDPI() / 96.0));
 			gimg->GetImgBitsEnd(true);
 			gimg2->GetImgBitsEnd(false);
@@ -2378,7 +2378,7 @@ void Map::MapConfig2::DrawString(NotNullPtr<Media::DrawImage> img, MapLayerStyle
 
 	Data::ArrayListInt64 arri;
 	Math::RectAreaDbl rect = view->GetVerticalRect();
-	lyrs->lyr->GetObjectIdsMapXY(&arri, &arr, rect, false);
+	lyrs->lyr->GetObjectIdsMapXY(arri, &arr, rect, false);
 	session = lyrs->lyr->BeginGetObject();
 	i = arri.GetCount();
 	while (i-- > 0)
@@ -4429,7 +4429,7 @@ UTF8Char *Map::MapConfig2::DrawMap(NotNullPtr<Media::DrawImage> img, Map::MapVie
 				{
 					arr.Clear();
 					Math::RectAreaDbl rect = view->GetVerticalRect();
-					lyr->GetObjectIdsMapXY(&arr, 0, rect, true);
+					lyr->GetObjectIdsMapXY(arr, 0, rect, true);
 
 					if ((i = arr.GetCount()) > 0)
 					{
@@ -4533,7 +4533,7 @@ UTF8Char *Map::MapConfig2::DrawMap(NotNullPtr<Media::DrawImage> img, Map::MapVie
 				{
 					arr.Clear();
 					Math::RectAreaDbl rect = view->GetVerticalRect();
-					lyr->GetObjectIdsMapXY(&arr, 0, rect, true);
+					lyr->GetObjectIdsMapXY(arr, 0, rect, true);
 
 					if ((i = arr.GetCount()) > 0)
 					{

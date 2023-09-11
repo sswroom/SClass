@@ -35,7 +35,7 @@ namespace UI
 		virtual OSInt EventBeginLabelEdit(TreeItem *item);
 		virtual OSInt EventEndLabelEdit(TreeItem *item, const UTF8Char *newLabel);
 		virtual void EventDragItem(TreeItem *dragItem, TreeItem *dropItem);
-		virtual Text::CString GetObjectClass();
+		virtual Text::CStringNN GetObjectClass() const;
 
 		void SetDragHandler(TreeDragHandler dragHdlr, void *dragObj);
 		void SetEnv(Map::MapEnv *env);

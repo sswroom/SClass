@@ -32,7 +32,7 @@ UOSInt Text::TextBinEnc::IntegerMSBEnc::DecodeBin(const UTF8Char *str, UOSInt st
 	return bint.GetBytesMSB(dataBuff, true);
 }
 
-Text::CString Text::TextBinEnc::IntegerMSBEnc::GetName()
+Text::CStringNN Text::TextBinEnc::IntegerMSBEnc::GetName() const
 {
 	return CSTR("Integer MSB");
 }

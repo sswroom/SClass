@@ -219,7 +219,7 @@ UI::GUIPictureBoxSimple::~GUIPictureBoxSimple()
 	MemFree(this->clsData);
 }
 
-Text::CString UI::GUIPictureBoxSimple::GetObjectClass()
+Text::CStringNN UI::GUIPictureBoxSimple::GetObjectClass() const
 {
 	return CSTR("PictureBoxSimple");
 }

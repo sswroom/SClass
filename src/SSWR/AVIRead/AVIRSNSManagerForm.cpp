@@ -91,7 +91,7 @@ SSWR::AVIRead::AVIRSNSManagerForm::AVIRSNSManagerForm(UI::GUIClientControl *pare
 	this->lvCurrItems->AddColumn(CSTR("Message"), 400);
 
 	UOSInt i = Net::SNS::SNSControl::ST_FIRST;
-	Text::CString cstr;
+	Text::CStringNN cstr;
 	while (i <= Net::SNS::SNSControl::ST_LAST)
 	{
 		cstr = Net::SNS::SNSControl::SNSTypeGetName((Net::SNS::SNSControl::SNSType)i);

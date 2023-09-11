@@ -94,6 +94,7 @@ IO::ParsedObject *Parser::FileParser::JSONParser::ParseJSON(Text::JSONBase *file
 		if (jbase && jbase->Equals(CSTR("FeatureCollection")))
 		{
 			Math::CoordinateSystem *csys = 0;
+			NotNullPtr<Math::CoordinateSystem> nncsys;
 			Text::JSONBase *crs = jobj->GetObjectValue(CSTR("crs"));
 			if (crs && crs->GetType() == Text::JSONType::Object)
 			{
@@ -110,6 +111,10 @@ IO::ParsedObject *Parser::FileParser::JSONParser::ParseJSON(Text::JSONBase *file
 						}
 					}
 				}
+			}
+			if (!nncsys.Set(csys))
+			{
+				nncsys = Math::CoordinateSystemManager::CreateDefaultCsys();
 			}
 
 			jbase = jobj->GetObjectValue(CSTR("features"));
@@ -150,7 +155,7 @@ IO::ParsedObject *Parser::FileParser::JSONParser::ParseJSON(Text::JSONBase *file
 						if (vec)
 						{
 							NotNullPtr<Text::String> s = Text::String::New(layerName);
-							NEW_CLASS(lyr, Map::VectorLayer(Map::DRAW_LAYER_MIXED, sourceName, colCnt, tabHdrs, csys, 0, s.Ptr()));
+							NEW_CLASS(lyr, Map::VectorLayer(Map::DRAW_LAYER_MIXED, sourceName, colCnt, tabHdrs, nncsys, 0, s.Ptr()));
 							s->Release();
 							DEL_CLASS(vec);
 						}
@@ -198,12 +203,12 @@ IO::ParsedObject *Parser::FileParser::JSONParser::ParseJSON(Text::JSONBase *file
 				}
 				else
 				{
-					SDEL_CLASS(csys);
+					nncsys.Delete();
 				}
 			}
 			else
 			{
-				SDEL_CLASS(csys);
+				nncsys.Delete();
 			}
 			return pobj;
 		}

@@ -185,7 +185,7 @@ void SSWR::AVIRead::AVIRWMSForm::OnMonitorChanged()
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 }
 
-void SSWR::AVIRead::AVIRWMSForm::SetURL(Text::CString url)
+void SSWR::AVIRead::AVIRWMSForm::SetURL(Text::CStringNN url)
 {
 	this->txtWMSURL->SetText(url);
 	OnLoadClicked(this);

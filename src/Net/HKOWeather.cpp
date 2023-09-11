@@ -474,7 +474,7 @@ Net::HKOWeather::PSR Net::HKOWeather::PSRParse(Text::CString psr)
 	return PSR::Low;
 }
 
-Text::CString Net::HKOWeather::ForecastIconGetName(ForecastIcon icon)
+Text::CStringNN Net::HKOWeather::ForecastIconGetName(ForecastIcon icon)
 {
 	switch (icon)
 	{
@@ -541,7 +541,7 @@ Text::CString Net::HKOWeather::ForecastIconGetName(ForecastIcon icon)
 	}
 }
 
-Text::CString Net::HKOWeather::PSRGetName(PSR psr)
+Text::CStringNN Net::HKOWeather::PSRGetName(PSR psr)
 {
 	switch (psr)
 	{
@@ -586,7 +586,7 @@ Net::HKOWeather::WeatherWarning Net::HKOWeather::WeatherWarningParse(Text::CStri
 	return WeatherWarning::None;
 }
 
-Text::CString Net::HKOWeather::WeatherWarningGetCode(WeatherWarning warning)
+Text::CStringNN Net::HKOWeather::WeatherWarningGetCode(WeatherWarning warning)
 {
 	switch (warning)
 	{
@@ -639,7 +639,7 @@ Text::CString Net::HKOWeather::WeatherWarningGetCode(WeatherWarning warning)
 	}
 }
 
-Text::CString Net::HKOWeather::WeatherWarningGetName(WeatherWarning warning)
+Text::CStringNN Net::HKOWeather::WeatherWarningGetName(WeatherWarning warning)
 {
 	switch (warning)
 	{
@@ -702,7 +702,7 @@ Net::HKOWeather::SignalAction Net::HKOWeather::SignalActionParse(Text::CString a
 	return SignalAction::ISSUE;
 }
 
-Text::CString Net::HKOWeather::SignalActionGetName(SignalAction action)
+Text::CStringNN Net::HKOWeather::SignalActionGetName(SignalAction action)
 {
 	switch (action)
 	{

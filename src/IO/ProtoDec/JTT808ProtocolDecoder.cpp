@@ -13,7 +13,7 @@ IO::ProtoDec::JTT808ProtocolDecoder::~JTT808ProtocolDecoder()
 {
 }
 
-Text::CString IO::ProtoDec::JTT808ProtocolDecoder::GetName()
+Text::CStringNN IO::ProtoDec::JTT808ProtocolDecoder::GetName() const
 {
 	return CSTR("JTT808");
 }

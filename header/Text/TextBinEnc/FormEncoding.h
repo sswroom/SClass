@@ -22,7 +22,7 @@ namespace Text
 			virtual UOSInt EncodeBin(NotNullPtr<Text::StringBuilderUTF8> sb, const UInt8 *dataBuff, UOSInt buffSize);
 			virtual UOSInt CalcBinSize(const UTF8Char *str, UOSInt strLen);
 			virtual UOSInt DecodeBin(const UTF8Char *str, UOSInt strLen, UInt8 *dataBuff);
-			virtual Text::CString GetName();
+			virtual Text::CStringNN GetName() const;
 		};
 
 	}

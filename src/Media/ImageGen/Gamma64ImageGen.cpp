@@ -13,7 +13,7 @@ Media::ImageGen::Gamma64ImageGen::~Gamma64ImageGen()
 {
 }
 
-Text::CString Media::ImageGen::Gamma64ImageGen::GetName()
+Text::CStringNN Media::ImageGen::Gamma64ImageGen::GetName() const
 {
 	return CSTR("Gamma Test 64-bit");
 }

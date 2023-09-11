@@ -13,12 +13,12 @@ IO::SensorPressureAndroid::~SensorPressureAndroid()
 
 }
 
-Bool IO::SensorPressureAndroid::ReadPressure(Double *pressure)
+Bool IO::SensorPressureAndroid::ReadPressure(OutParam<Double> pressure)
 {
 	ASensorEvent sensorEvt;
 	if (!this->GetSensorEvent(&sensorEvt))
 		return false;
-	*pressure = sensorEvt.pressure;
+	pressure.Set(sensorEvt.pressure);
 	return true;
 }
 
@@ -34,5 +34,5 @@ IO::SensorPressure *IO::SensorPressureAndroid::GetSensorPressure()
 
 IO::Sensor::SensorType IO::SensorPressureAndroid::GetSensorType()
 {
-	return IO::Sensor::ST_PRESSURE;
+	return IO::Sensor::SensorType::Pressure;
 }

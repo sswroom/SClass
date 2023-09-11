@@ -338,7 +338,7 @@ UI::GUICustomDraw::~GUICustomDraw()
 	MemFree(data);
 }
 
-Text::CString UI::GUICustomDraw::GetObjectClass()
+Text::CStringNN UI::GUICustomDraw::GetObjectClass() const
 {
 	return CSTR("CustomDraw");
 }

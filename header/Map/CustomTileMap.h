@@ -16,10 +16,10 @@ namespace Map
 		CustomTileMap(Text::CString url, Text::CString cacheDir, UOSInt minLevel, UOSInt maxLevel, NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl);
 		virtual ~CustomTileMap();
 
-		virtual Text::CString GetName();
-		virtual TileType GetTileType();
-		virtual UOSInt GetConcurrentCount();
-		virtual Bool GetBounds(Math::RectAreaDbl *bounds);
+		virtual Text::CStringNN GetName() const;
+		virtual TileType GetTileType() const;
+		virtual UOSInt GetConcurrentCount() const;
+		virtual Bool GetBounds(OutParam<Math::RectAreaDbl> bounds) const;
 		virtual UTF8Char *GetTileImageURL(UTF8Char *sbuff, UOSInt level, Math::Coord2D<Int32> tileId);
 
 		void SetBounds(Math::RectAreaDbl bounds);

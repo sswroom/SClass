@@ -55,8 +55,8 @@ namespace Crypto
 
 			static JWToken *Generate(JWSignature::Algorithm alg, Text::CStringNN payload, Net::SSLEngine *ssl, const UInt8 *key, UOSInt keyLeng, Crypto::Cert::X509Key::KeyType keyType);
 			static JWToken *Parse(Text::CStringNN token, Text::StringBuilderUTF8 *sbErr);
-			static Text::CString PayloadName(Text::CString key);
-			static Text::CString VerifyTypeGetName(VerifyType verifyType);
+			static Text::CStringNN PayloadName(Text::CStringNN key);
+			static Text::CStringNN VerifyTypeGetName(VerifyType verifyType);
 		};
 	}
 }

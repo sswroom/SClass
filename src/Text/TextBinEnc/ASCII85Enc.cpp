@@ -247,7 +247,7 @@ UOSInt Text::TextBinEnc::ASCII85Enc::DecodeBin(const UTF8Char *a85Str, UOSInt st
 	return (UOSInt)(destBuff - dataBuff);
 }
 
-Text::CString Text::TextBinEnc::ASCII85Enc::GetName()
+Text::CStringNN Text::TextBinEnc::ASCII85Enc::GetName() const
 {
 	return CSTR("ASCII85");
 }

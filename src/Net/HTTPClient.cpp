@@ -60,7 +60,7 @@ Bool Net::HTTPClient::FormBegin()
 	return false;
 }
 
-Bool Net::HTTPClient::FormAdd(Text::CString name, Text::CString value)
+Bool Net::HTTPClient::FormAdd(Text::CStringNN name, Text::CString value)
 {
 	if (!this->hasForm)
 	{
@@ -80,7 +80,7 @@ Bool Net::HTTPClient::FormAdd(Text::CString name, Text::CString value)
 	return true;
 }
 
-void Net::HTTPClient::AddTimeHeader(Text::CString name, NotNullPtr<Data::DateTime> dt)
+void Net::HTTPClient::AddTimeHeader(Text::CStringNN name, NotNullPtr<Data::DateTime> dt)
 {
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
@@ -88,7 +88,7 @@ void Net::HTTPClient::AddTimeHeader(Text::CString name, NotNullPtr<Data::DateTim
 	this->AddHeaderC(name, CSTRP(sbuff, sptr));
 }
 
-void Net::HTTPClient::AddContentType(Text::CString contType)
+void Net::HTTPClient::AddContentType(Text::CStringNN contType)
 {
 	this->AddHeaderC(CSTR("Content-Type"), contType);
 }
@@ -111,7 +111,7 @@ UTF8Char *Net::HTTPClient::GetRespHeader(UOSInt index, UTF8Char *buff)
 	return this->headers.GetItem(index)->ConcatTo(buff);
 }
 
-UTF8Char *Net::HTTPClient::GetRespHeader(Text::CString name, UTF8Char *valueBuff)
+UTF8Char *Net::HTTPClient::GetRespHeader(Text::CStringNN name, UTF8Char *valueBuff)
 {
 	Text::CString v = GetRespHeader(name);
 	if (v.v)
@@ -121,7 +121,7 @@ UTF8Char *Net::HTTPClient::GetRespHeader(Text::CString name, UTF8Char *valueBuff
 	return 0;
 }
 
-Bool Net::HTTPClient::GetRespHeader(Text::CString name, NotNullPtr<Text::StringBuilderUTF8> sb)
+Bool Net::HTTPClient::GetRespHeader(Text::CStringNN name, NotNullPtr<Text::StringBuilderUTF8> sb)
 {
 	Text::CString v = GetRespHeader(name);
 	if (v.v)
@@ -132,7 +132,7 @@ Bool Net::HTTPClient::GetRespHeader(Text::CString name, NotNullPtr<Text::StringB
 	return false;
 }
 
-Text::CString Net::HTTPClient::GetRespHeader(Text::CString name)
+Text::CString Net::HTTPClient::GetRespHeader(Text::CStringNN name)
 {
 	UTF8Char buff[256];
 	UTF8Char *s2;

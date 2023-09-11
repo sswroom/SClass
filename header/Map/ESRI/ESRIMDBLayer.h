@@ -31,22 +31,22 @@ namespace Map
 			void Init(DB::SharedDBConn *conn, UInt32 srid, Text::CString tableName);
 		public:
 			ESRIMDBLayer(DB::SharedDBConn *conn, UInt32 srid, NotNullPtr<Text::String> sourceName, Text::CString tableName);
-			ESRIMDBLayer(DB::SharedDBConn *conn, UInt32 srid, Text::CString sourceName, Text::CString tableName);
+			ESRIMDBLayer(DB::SharedDBConn *conn, UInt32 srid, Text::CStringNN sourceName, Text::CString tableName);
 			virtual ~ESRIMDBLayer();
 
-			virtual DrawLayerType GetLayerType();
-			virtual UOSInt GetAllObjectIds(Data::ArrayListInt64 *outArr, NameArray **nameArr);
-			virtual UOSInt GetObjectIds(Data::ArrayListInt64 *outArr, NameArray **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty);
-			virtual UOSInt GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, NameArray **nameArr, Math::RectAreaDbl rect, Bool keepEmpty);
-			virtual Int64 GetObjectIdMax();
+			virtual DrawLayerType GetLayerType() const;
+			virtual UOSInt GetAllObjectIds(NotNullPtr<Data::ArrayListInt64> outArr, NameArray **nameArr);
+			virtual UOSInt GetObjectIds(NotNullPtr<Data::ArrayListInt64> outArr, NameArray **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty);
+			virtual UOSInt GetObjectIdsMapXY(NotNullPtr<Data::ArrayListInt64> outArr, NameArray **nameArr, Math::RectAreaDbl rect, Bool keepEmpty);
+			virtual Int64 GetObjectIdMax() const;
 			virtual void ReleaseNameArr(NameArray *nameArr);
 			virtual UTF8Char *GetString(UTF8Char *buff, UOSInt buffSize, NameArray *nameArr, Int64 id, UOSInt strIndex);
-			virtual UOSInt GetColumnCnt();
+			virtual UOSInt GetColumnCnt() const;
 			virtual UTF8Char *GetColumnName(UTF8Char *buff, UOSInt colIndex);
 			virtual DB::DBUtil::ColType GetColumnType(UOSInt colIndex, UOSInt *colSize);
 			virtual Bool GetColumnDef(UOSInt colIndex, NotNullPtr<DB::ColDef> colDef);
-			virtual UInt32 GetCodePage();
-			virtual Bool GetBounds(Math::RectAreaDbl *rect);
+			virtual UInt32 GetCodePage() const;
+			virtual Bool GetBounds(OutParam<Math::RectAreaDbl> rect) const;
 
 			virtual GetObjectSess *BeginGetObject();
 			virtual void EndGetObject(GetObjectSess *session);
@@ -61,7 +61,7 @@ namespace Map
 			virtual void GetLastErrorMsg(NotNullPtr<Text::StringBuilderUTF8> str);
 			virtual void Reconnect();
 
-			virtual ObjectClass GetObjectClass();
+			virtual ObjectClass GetObjectClass() const;
 		};
 
 		class ESRIMDBReader : public DB::DBReader

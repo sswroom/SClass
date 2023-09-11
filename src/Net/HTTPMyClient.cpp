@@ -914,7 +914,7 @@ Bool Net::HTTPMyClient::Connect(Text::CStringNN url, Net::WebUtil::RequestMethod
 	return true;
 }
 
-void Net::HTTPMyClient::AddHeaderC(Text::CString name, Text::CString value)
+void Net::HTTPMyClient::AddHeaderC(Text::CStringNN name, Text::CString value)
 {
 	UInt8 buff[512];
 	UTF8Char *sptr;
@@ -1207,7 +1207,7 @@ void Net::HTTPMyClient::SetTimeout(Data::Duration timeout)
 		this->cli->SetTimeout(timeout);
 }
 
-Bool Net::HTTPMyClient::IsSecureConn()
+Bool Net::HTTPMyClient::IsSecureConn() const
 {
 	if (this->cli == 0)
 	{

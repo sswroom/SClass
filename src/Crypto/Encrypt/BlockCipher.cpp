@@ -325,7 +325,7 @@ void Crypto::Encrypt::BlockCipher::SetIV(const UInt8 *iv)
 	MemCopyNO(this->iv, iv, this->blockSize);
 }
 
-Text::CString Crypto::Encrypt::ChainModeGetName(ChainMode cm)
+Text::CStringNN Crypto::Encrypt::ChainModeGetName(ChainMode cm)
 {
 	switch (cm)
 	{

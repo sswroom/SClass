@@ -44,10 +44,10 @@ namespace Net
 		static ErrorStatus PDUParseMessage(const UInt8 *pdu, UOSInt pduSize, Int32 *reqId, Data::ArrayList<BindingItem*> *itemList);
 		static ErrorStatus PDUParseTrapMessage(const UInt8 *pdu, UOSInt pduSize, TrapInfo *trap, Data::ArrayList<BindingItem*> *itemList);
 
-		static Text::CString TypeGetName(UInt8 type);
+		static Text::CStringNN TypeGetName(UInt8 type);
 		static Bool ValueToInt32(UInt8 type, const UInt8 *pduBuff, UOSInt valLen, Int32 *outVal);
 		static void FreeBindingItem(BindingItem *item);
-		static Text::CString ErrorStatusToString(ErrorStatus err);
+		static Text::CStringNN ErrorStatusToString(ErrorStatus err);
 	};
 }
 #endif

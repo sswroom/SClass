@@ -29,7 +29,7 @@ namespace UI
 		GUIHSplitter(NotNullPtr<GUICore> ui, UI::GUIClientControl *parent, Int32 width, Bool isRight);
 		virtual ~GUIHSplitter();
 
-		virtual Text::CString GetObjectClass();
+		virtual Text::CStringNN GetObjectClass() const;
 		virtual OSInt OnNotify(UInt32 code, void *lParam);
 		void EventMouseDown(UI::GUIControl::MouseButton btn, Math::Coord2D<OSInt> pos);
 		void EventMouseUp(UI::GUIControl::MouseButton btn, Math::Coord2D<OSInt> pos);

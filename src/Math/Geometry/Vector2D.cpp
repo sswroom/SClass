@@ -62,7 +62,7 @@ Bool Math::Geometry::Vector2D::VectorTypeIsPoint(VectorType vecType)
 	return vecType == VectorType::Point || vecType == VectorType::MultiPoint;
 }
 
-Text::CString Math::Geometry::Vector2D::VectorTypeGetName(VectorType vecType)
+Text::CStringNN Math::Geometry::Vector2D::VectorTypeGetName(VectorType vecType)
 {
 	switch (vecType)
 	{

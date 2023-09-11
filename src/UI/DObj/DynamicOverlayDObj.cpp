@@ -87,9 +87,9 @@ void UI::DObj::DynamicOverlayDObj::DrawObject(Media::DrawImage *dimg)
 			{
 				bmpTmp->SetAlphaType(bmp1->GetAlphaType());
 				Bool revOrder;
-				UInt8 *ptrS1 = bmp1->GetImgBits(&revOrder);
-				UInt8 *ptrS2 = bmp2->GetImgBits(&revOrder);
-				UInt8 *ptrD = bmpTmp->GetImgBits(&revOrder);
+				UInt8 *ptrS1 = bmp1->GetImgBits(revOrder);
+				UInt8 *ptrS2 = bmp2->GetImgBits(revOrder);
+				UInt8 *ptrD = bmpTmp->GetImgBits(revOrder);
 				UOSInt lineBytes = bmp1->GetWidth() * 4;
 				UOSInt i;
 				UOSInt j = bmp1->GetHeight();

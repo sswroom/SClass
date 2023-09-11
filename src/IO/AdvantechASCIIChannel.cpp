@@ -741,7 +741,7 @@ UInt32 IO::AdvantechASCIIChannel::BaudRateGetBps(BaudRate baudRate)
 	}
 }
 
-Text::CString IO::AdvantechASCIIChannel::DataFormatGetName(DataFormat dataFormat)
+Text::CStringNN IO::AdvantechASCIIChannel::DataFormatGetName(DataFormat dataFormat)
 {
 	switch (dataFormat)
 	{
@@ -759,7 +759,7 @@ Text::CString IO::AdvantechASCIIChannel::DataFormatGetName(DataFormat dataFormat
 	}
 }
 
-Text::CString IO::AdvantechASCIIChannel::IntegrationTimeGetName(IntegrationTime intTime)
+Text::CStringNN IO::AdvantechASCIIChannel::IntegrationTimeGetName(IntegrationTime intTime)
 {
 	switch (intTime)
 	{
@@ -773,7 +773,7 @@ Text::CString IO::AdvantechASCIIChannel::IntegrationTimeGetName(IntegrationTime 
 	}
 }
 
-Text::CString IO::AdvantechASCIIChannel::TypeCodeGetName(TypeCode typeCode)
+Text::CStringNN IO::AdvantechASCIIChannel::TypeCodeGetName(TypeCode typeCode)
 {
 	switch (typeCode)
 	{
@@ -888,7 +888,7 @@ Text::CString IO::AdvantechASCIIChannel::TypeCodeGetName(TypeCode typeCode)
 	}
 }
 
-Text::CString IO::AdvantechASCIIChannel::SlewRateGetName(SlewRate slewRate)
+Text::CStringNN IO::AdvantechASCIIChannel::SlewRateGetName(SlewRate slewRate)
 {
 	switch (slewRate)
 	{

@@ -222,14 +222,14 @@ Text::MIMEObj::MultipartMIMEObj::~MultipartMIMEObj()
 	}
 }
 
-Text::CString Text::MIMEObj::MultipartMIMEObj::GetClassName() const
+Text::CStringNN Text::MIMEObj::MultipartMIMEObj::GetClassName() const
 {
 	return CSTR("MultipartMIMEObj");
 }
 
-Text::CString Text::MIMEObj::MultipartMIMEObj::GetContentType() const
+Text::CStringNN Text::MIMEObj::MultipartMIMEObj::GetContentType() const
 {
-	return {this->contentType->v, this->contentType->leng};
+	return this->contentType->ToCString();
 }
 
 UOSInt Text::MIMEObj::MultipartMIMEObj::WriteStream(IO::Stream *stm) const

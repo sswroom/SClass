@@ -213,7 +213,7 @@ namespace SSWR
 			Media::ColorManager *GetColorMgr();
 			Media::MonitorMgr *GetMonitorMgr();
 			ErrorType GetErrorType();
-			Text::CString GetLang(const UTF8Char *name, UOSInt nameLen);
+			Text::CStringNN GetLang(const UTF8Char *name, UOSInt nameLen);
 			virtual Text::String *GetCacheDir() = 0;
 			virtual Text::CString GetMapFont() = 0;
 

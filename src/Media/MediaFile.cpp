@@ -14,7 +14,7 @@ Media::MediaFile::MediaFile(NotNullPtr<Text::String> name) : IO::ParsedObject(na
 	this->releaseChapter = false;
 }
 
-Media::MediaFile::MediaFile(Text::CString name) : IO::ParsedObject(name)
+Media::MediaFile::MediaFile(Text::CStringNN name) : IO::ParsedObject(name)
 {
 	this->chapters = 0;
 	this->releaseChapter = false;

@@ -120,7 +120,7 @@ Bool Net::SNS::SNS7gogo::Reload()
 	Data::ArrayList<Net::WebSite::WebSite7gogoControl::ItemData*> itemList;
 	Data::ArrayListInt64 idList;
 	Bool changed = false;
-	this->itemMap.AddKeysTo(&idList);
+	this->itemMap.AddKeysTo(idList);
 	
 	this->ctrl->GetChannelItems(this->channelId, 0, &itemList, 0);
 	UOSInt i = itemList.GetCount();

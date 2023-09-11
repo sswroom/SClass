@@ -35,18 +35,18 @@ IO::SensorManager::~SensorManager()
 	MemFree(me);
 }
 
-OSInt IO::SensorManager::GetSensorCnt()
+UOSInt IO::SensorManager::GetSensorCnt()
 {
 	ClassData *me = (ClassData*)this->clsData;
 	return me->sensorCnt;
 }
 
-IO::Sensor::SensorType IO::SensorManager::GetSensorType(OSInt index)
+IO::Sensor::SensorType IO::SensorManager::GetSensorType(UOSInt index)
 {
 	ClassData *me = (ClassData*)this->clsData;
-	if (index < 0 || index >= me->sensorCnt)
+	if (index >= me->sensorCnt)
 	{
-		return IO::Sensor::ST_UNKNOWN;
+		return IO::Sensor::SensorType::Unknown;
 	}
 	switch (ASensor_getType(me->sensorList[index]))
 	{
@@ -54,23 +54,23 @@ IO::Sensor::SensorType IO::SensorManager::GetSensorType(OSInt index)
 #if __ANDROID_API__ > 16
 	case ASENSOR_TYPE_ACCELEROMETER_UNCALIBRATED:
 #endif
-		return IO::Sensor::ST_ACCELEROMETER;
+		return IO::Sensor::SensorType::Accelerometer;
 #if __ANDROID_API__ > 16
 	case ASENSOR_TYPE_PRESSURE:
-		return IO::Sensor::ST_PRESSURE;
+		return IO::Sensor::SensorType::Pressure;
 #endif
 	case ASENSOR_TYPE_MAGNETIC_FIELD:
 #if __ANDROID_API__ > 16
 	case ASENSOR_TYPE_MAGNETIC_FIELD_UNCALIBRATED:
 #endif
-		return IO::Sensor::ST_MAGNETOMETER;
+		return IO::Sensor::SensorType::Magnetometer;
 	default:
-		return IO::Sensor::ST_UNKNOWN;
+		return IO::Sensor::SensorType::Unknown;
 	}
 
 }
 
-IO::Sensor *IO::SensorManager::CreateSensor(OSInt index)
+IO::Sensor *IO::SensorManager::CreateSensor(UOSInt index)
 {
 	ClassData *me = (ClassData*)this->clsData;
 	if (index < 0 || index >= me->sensorCnt)
@@ -115,7 +115,7 @@ IO::Sensor *IO::SensorManager::CreateSensor(OSInt index)
 	}
 }
 
-OSInt IO::SensorManager::GetAccelerometerCnt()
+UOSInt IO::SensorManager::GetAccelerometerCnt()
 {
 	ClassData *me = (ClassData*)this->clsData;
 	if (me->mgr == 0)
@@ -125,7 +125,7 @@ OSInt IO::SensorManager::GetAccelerometerCnt()
 	OSInt i = this->GetSensorCnt();
 	while (i-- > 0)
 	{
-		if (this->GetSensorType(i) == IO::Sensor::ST_ACCELEROMETER)
+		if (this->GetSensorType(i) == IO::Sensor::SensorType::Accelerometer)
 		{
 			ret++;
 		}
@@ -133,7 +133,7 @@ OSInt IO::SensorManager::GetAccelerometerCnt()
 	return ret;
 }
 
-IO::SensorAccelerometer *IO::SensorManager::CreateAccelerometer(OSInt index)
+IO::SensorAccelerometer *IO::SensorManager::CreateAccelerometer(UOSInt index)
 {
 	IO::SensorAccelerometer *ret = 0;
 	ClassData *me = (ClassData*)this->clsData;
@@ -144,7 +144,7 @@ IO::SensorAccelerometer *IO::SensorManager::CreateAccelerometer(OSInt index)
 	OSInt j = this->GetSensorCnt();
 	while (i < j)
 	{
-		if (this->GetSensorType(i) == IO::Sensor::ST_ACCELEROMETER)
+		if (this->GetSensorType(i) == IO::Sensor::SensorType::Accelerometer)
 		{
 			if (index == 0)
 			{

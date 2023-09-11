@@ -96,7 +96,7 @@ void __stdcall SSWR::AVIRead::AVIRNetBIOSScannerForm::OnTimerTick(void *userObj)
 				{
 					if (ans->names[k].nameType == 0 && (ans->names[k].flags & 0x8000) == 0)
 					{
-						me->lvAnswers->SetSubItem(i, 3, Text::CString::FromPtr(ans->names[k].nameBuff));
+						me->lvAnswers->SetSubItem(i, 3, Text::CStringNN::FromPtr(ans->names[k].nameBuff));
 						break;
 					}
 					k++;

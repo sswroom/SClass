@@ -44,10 +44,10 @@ namespace Map
 		BingMapsTile(ImagerySet is, Text::CString key, Text::CString cacheDir, NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl);
 		virtual ~BingMapsTile();
 
-		virtual Bool IsError();
-		virtual Text::CString GetName();
-		virtual TileType GetTileType();
-		virtual UOSInt GetConcurrentCount();
+		virtual Bool IsError() const;
+		virtual Text::CStringNN GetName() const;
+		virtual TileType GetTileType() const;
+		virtual UOSInt GetConcurrentCount() const;
 		virtual void SetDispSize(Math::Size2DDbl size, Double dpi);
 		virtual UTF8Char *GetTileImageURL(UTF8Char *sbuff, UOSInt level, Math::Coord2D<Int32> imgId);
 
@@ -58,7 +58,7 @@ namespace Map
 		void SetHideLogo(Bool hideLogo);
 		
 		static void GetDefaultCacheDir(ImagerySet is, NotNullPtr<Text::StringBuilderUTF8> sb);
-		static Text::CString ImagerySetGetName(ImagerySet is);
+		static Text::CStringNN ImagerySetGetName(ImagerySet is);
 		static UTF8Char *GenQuadkey(UTF8Char *sbuff, UOSInt level, Int32 imgX, Int32 imgY);
 	};
 }

@@ -53,7 +53,7 @@ void Exporter::MapCSVExporter::SetCodePage(UInt32 codePage)
 	this->codePage = codePage;
 }
 
-Bool Exporter::MapCSVExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text::CString fileName, IO::ParsedObject *pobj, void *param)
+Bool Exporter::MapCSVExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text::CStringNN fileName, IO::ParsedObject *pobj, void *param)
 {
 	if (pobj->GetParserType() != IO::ParserType::MapLayer)
 	{
@@ -152,7 +152,6 @@ Bool Exporter::MapCSVExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Te
 		Double v;
 		Math::Coord2DDbl *points;
 		Int32 currInd = 1;
-		Data::ArrayListInt64 *objIds;
 		Map::NameArray *nameArr;
 		UOSInt i;
 		UOSInt j;
@@ -161,15 +160,15 @@ Bool Exporter::MapCSVExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Te
 
 		writer.WriteLineC(UTF8STRC("INDEX, LATITUDE, N/S, LONGITUDE, E/W"));
 
-		NEW_CLASS(objIds, Data::ArrayListInt64());
+		Data::ArrayListInt64 objIds;
 		Map::GetObjectSess *sess = layer->BeginGetObject();
-		layer->GetBounds(&minMax);
+		layer->GetBounds(minMax);
 		layer->GetObjectIdsMapXY(objIds, &nameArr, minMax, true);
 		i = 0;
-		j = objIds->GetCount();
+		j = objIds.GetCount();
 		while (i < j)
 		{
-			Math::Geometry::Polyline *pl = (Math::Geometry::Polyline*)layer->GetNewVectorById(sess, objIds->GetItem(i));
+			Math::Geometry::Polyline *pl = (Math::Geometry::Polyline*)layer->GetNewVectorById(sess, objIds.GetItem(i));
 			points = pl->GetPointList(l);
 			k = 0;
 			while (k < l)

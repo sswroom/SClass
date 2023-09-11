@@ -2,7 +2,7 @@
 #include "MyMemory.h"
 #include "Manage/OSInfo.h"
 
-Text::CString Manage::OSInfo::GetName(OSType osType)
+Text::CStringNN Manage::OSInfo::GetName(OSType osType)
 {
 	switch (osType)
 	{
@@ -38,7 +38,7 @@ Text::CString Manage::OSInfo::GetName(OSType osType)
 	}
 }
 
-Text::CString Manage::OSInfo::GetDefName(OSType osType)
+Text::CStringNN Manage::OSInfo::GetDefName(OSType osType)
 {
 	switch (osType)
 	{

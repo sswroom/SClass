@@ -18,7 +18,7 @@ namespace Math
 			Double GetZ() const;
 			void GetPos3D(Double *x, Double *y, Double *z) const;
 			virtual Bool HasZ() const;
-			virtual void ConvCSys(Math::CoordinateSystem *srcCSys, Math::CoordinateSystem *destCSys);
+			virtual void ConvCSys(NotNullPtr<Math::CoordinateSystem> srcCSys, NotNullPtr<Math::CoordinateSystem> destCSys);
 			virtual Bool Equals(Vector2D *vec) const;
 			virtual Bool EqualsNearly(Vector2D *vec) const;
 		};

@@ -77,7 +77,7 @@ IO::ParsedObject *Parser::FileParser::WPTParser::ParseFileHdr(NotNullPtr<IO::Str
 		reader.ReadLine(sbuff, 1024);
 		UTF8Char *cols[2];
 
-		NEW_CLASS(lyr, Map::VectorLayer(Map::DRAW_LAYER_POINT, fd->GetFullName(), 2, colNames, Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::CoordinateSystemManager::GCST_WGS84), colTypes, colSizes, colDPs, 0, 0));
+		NEW_CLASS(lyr, Map::VectorLayer(Map::DRAW_LAYER_POINT, fd->GetFullName(), 2, colNames, Math::CoordinateSystemManager::CreateDefaultCsys(), colTypes, colSizes, colDPs, 0, 0));
 		while (reader.ReadLine(sbuff, 1024))
 		{
 			if (Text::StrSplitTrim(tmpArr, 16, sbuff, ',') == 16)

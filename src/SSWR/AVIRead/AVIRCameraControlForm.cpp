@@ -239,7 +239,7 @@ SSWR::AVIRead::AVIRCameraControlForm::AVIRCameraControlForm(UI::GUIClientControl
 	{
 		file = fileList.GetItem(i);
 		this->lvFiles->AddItem({file->fileName, Text::StrCharCnt(file->fileName)}, file);
-		this->lvFiles->SetSubItem(i, 1, Text::CString::FromPtr(file->filePath));
+		this->lvFiles->SetSubItem(i, 1, Text::CStringNN::FromPtr(file->filePath));
 		sptr = Text::StrUInt64(sbuff, file->fileSize);
 		this->lvFiles->SetSubItem(i, 2, CSTRP(sbuff, sptr));
 		if (file->fileTimeTicks)

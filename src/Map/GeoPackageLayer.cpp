@@ -102,7 +102,7 @@ Map::GeoPackageLayer::~GeoPackageLayer()
 	}
 }
 
-Map::DrawLayerType Map::GeoPackageLayer::GetLayerType()
+Map::DrawLayerType Map::GeoPackageLayer::GetLayerType() const
 {
 	return Map::DRAW_LAYER_MIXED;	
 }
@@ -112,7 +112,7 @@ void Map::GeoPackageLayer::SetMixedData(MixedData mixedData)
 	this->mixedData = mixedData;
 }
 
-UOSInt Map::GeoPackageLayer::GetAllObjectIds(Data::ArrayListInt64 *outArr, NameArray **nameArr)
+UOSInt Map::GeoPackageLayer::GetAllObjectIds(NotNullPtr<Data::ArrayListInt64> outArr, NameArray **nameArr)
 {
 	if (nameArr) *nameArr = (NameArray*)this->StringSessCreate();
 	UOSInt i;
@@ -158,12 +158,12 @@ UOSInt Map::GeoPackageLayer::GetAllObjectIds(Data::ArrayListInt64 *outArr, NameA
 	}
 }
 
-UOSInt Map::GeoPackageLayer::GetObjectIds(Data::ArrayListInt64 *outArr, NameArray **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
+UOSInt Map::GeoPackageLayer::GetObjectIds(NotNullPtr<Data::ArrayListInt64> outArr, NameArray **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
 {
 	return GetObjectIdsMapXY(outArr, nameArr, rect.ToDouble() * mapRate, keepEmpty);
 }
 
-UOSInt Map::GeoPackageLayer::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, NameArray **nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
+UOSInt Map::GeoPackageLayer::GetObjectIdsMapXY(NotNullPtr<Data::ArrayListInt64> outArr, NameArray **nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
 {
 	if (nameArr) *nameArr = (NameArray*)this->StringSessCreate();
 	UOSInt i;
@@ -212,7 +212,7 @@ UOSInt Map::GeoPackageLayer::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, Nam
 	}
 }
 
-Int64 Map::GeoPackageLayer::GetObjectIdMax()
+Int64 Map::GeoPackageLayer::GetObjectIdMax() const
 {
 	return (Int64)(this->vecList.GetCount() - 1);
 }
@@ -239,7 +239,7 @@ UTF8Char *Map::GeoPackageLayer::GetString(UTF8Char *buff, UOSInt buffSize, NameA
 	return 0;
 }
 
-UOSInt Map::GeoPackageLayer::GetColumnCnt()
+UOSInt Map::GeoPackageLayer::GetColumnCnt() const
 {
 	if (this->tabDef == 0)	return 0;
 	return this->tabDef->GetColCnt();
@@ -278,14 +278,14 @@ Bool Map::GeoPackageLayer::GetColumnDef(UOSInt colIndex, NotNullPtr<DB::ColDef> 
 	return true;
 }
 
-UInt32 Map::GeoPackageLayer::GetCodePage()
+UInt32 Map::GeoPackageLayer::GetCodePage() const
 {
 	return 65001;
 }
 
-Bool Map::GeoPackageLayer::GetBounds(Math::RectAreaDbl *rect)
+Bool Map::GeoPackageLayer::GetBounds(OutParam<Math::RectAreaDbl> rect) const
 {
-	*rect = this->layerContent->bounds;
+	rect.Set(this->layerContent->bounds);
 	return true;
 }
 
@@ -336,7 +336,7 @@ void Map::GeoPackageLayer::Reconnect()
 	this->gpkg->Reconnect();
 }
 
-Map::MapDrawLayer::ObjectClass Map::GeoPackageLayer::GetObjectClass()
+Map::MapDrawLayer::ObjectClass Map::GeoPackageLayer::GetObjectClass() const
 {
 	return Map::MapDrawLayer::ObjectClass::OC_GEOPACKAGE;
 }

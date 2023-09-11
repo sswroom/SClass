@@ -180,7 +180,7 @@ SSWR::AVIRead::AVIRGISDistanceForm::AVIRGISDistanceForm(UI::GUIClientControl *pa
 SSWR::AVIRead::AVIRGISDistanceForm::~AVIRGISDistanceForm()
 {
 	DEL_CLASS(this->ptList);
-	DEL_CLASS(this->csys);
+	this->csys.Delete();
 	this->navi->UnhandleMapMouse(this);
 }
 

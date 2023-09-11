@@ -7,8 +7,9 @@ namespace IO
 {
 	class PCIInfo
 	{
-	private:
+	public:
 		struct ClassData;
+	private:
 		ClassData *clsData;
 	public:
 		PCIInfo(ClassData *info);

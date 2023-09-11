@@ -39,10 +39,10 @@ namespace Manage
 		Bool GetCPUTurboRatio(Int32 *ratio);
 		Bool GetCPUTCC(Double *temp);
 
-		static Text::CString GetCacheInfo(Manage::CPUVendor::CPU_BRAND brand, UInt8 descType);
-		static Text::CString GetFeatureShortName(UOSInt index);
-		static Text::CString GetFeatureName(UOSInt index);
-		static Text::CString GetFeatureDesc(UOSInt index);
+		static Text::CStringNN GetCacheInfo(Manage::CPUVendor::CPU_BRAND brand, UInt8 descType);
+		static Text::CStringNN GetFeatureShortName(UOSInt index);
+		static Text::CStringNN GetFeatureName(UOSInt index);
+		static Text::CStringNN GetFeatureDesc(UOSInt index);
 		static void AppendNameInfo10(UInt32 ecxv, UInt32 edxv, NotNullPtr<Text::StringBuilderUTF8> sb);
 		static void AppendNameInfo11(UInt32 ecxv, UInt32 edxv, NotNullPtr<Text::StringBuilderUTF8> sb);
 	};

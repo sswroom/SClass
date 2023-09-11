@@ -112,9 +112,9 @@ Int32 DB::DBQueue::SQLGetDB::GetProgId() const
 	return this->progId;
 };
 
-DB::DBQueue::DBQueue(DBTool *db, IO::LogTool *log, Text::CString name, UOSInt dbSize)
+DB::DBQueue::DBQueue(NotNullPtr<DBTool> db, IO::LogTool *log, Text::CString name, UOSInt dbSize)
 {
-	this->db1 = db;
+	this->db1 = db.Ptr();
 	this->dbSize = dbSize / 200;
 	sqlList = MemAlloc(Data::ArrayList<IDBCmd*>*, (UOSInt)DB::DBQueue::Priority::Highest + 1);
 	sqlList2 = MemAlloc(Data::ArrayList<IDBCmd**>*, (UOSInt)DB::DBQueue::Priority::Highest + 1);
@@ -135,7 +135,7 @@ DB::DBQueue::DBQueue(DBTool *db, IO::LogTool *log, Text::CString name, UOSInt db
 	this->dbList.Add(dbHdlr);
 }
 
-DB::DBQueue::DBQueue(Data::ArrayList<DBTool*> *dbs, IO::LogTool *log, NotNullPtr<Text::String> name, UOSInt dbSize)
+DB::DBQueue::DBQueue(NotNullPtr<Data::ArrayListNN<DBTool>> dbs, IO::LogTool *log, NotNullPtr<Text::String> name, UOSInt dbSize)
 {
 	this->db1 = dbs->GetItem(0);
 	this->dbSize = dbSize / 200;
@@ -153,17 +153,16 @@ DB::DBQueue::DBQueue(Data::ArrayList<DBTool*> *dbs, IO::LogTool *log, NotNullPtr
 	this->name = name->Clone();
 	this->nextDB = 0;
 	stopping = false;
-	i = 0;
-	while (i < dbs->GetCount())
+	Data::ArrayIterator<NotNullPtr<DB::DBTool>> it = dbs->Iterator();
+	while (it.HasNext())
 	{
 		DB::DBHandler *dbHdlr;
-		NEW_CLASS(dbHdlr, DB::DBHandler(this, dbs->GetItem(i)));
+		NEW_CLASS(dbHdlr, DB::DBHandler(this, it.Next()));
 		this->dbList.Add(dbHdlr);
-		i += 1;
 	}
 }
 
-DB::DBQueue::DBQueue(Data::ArrayList<DBTool*> *dbs, IO::LogTool *log, Text::CString name, UOSInt dbSize)
+DB::DBQueue::DBQueue(NotNullPtr<Data::ArrayListNN<DBTool>> dbs, IO::LogTool *log, Text::CString name, UOSInt dbSize)
 {
 	this->db1 = dbs->GetItem(0);
 	this->dbSize = dbSize / 200;
@@ -181,13 +180,12 @@ DB::DBQueue::DBQueue(Data::ArrayList<DBTool*> *dbs, IO::LogTool *log, Text::CStr
 	this->name = Text::String::New(name);
 	this->nextDB = 0;
 	stopping = false;
-	i = 0;
-	while (i < dbs->GetCount())
+	Data::ArrayIterator<NotNullPtr<DB::DBTool>> it = dbs->Iterator();
+	while (it.HasNext())
 	{
 		DB::DBHandler *dbHdlr;
-		NEW_CLASS(dbHdlr, DB::DBHandler(this, dbs->GetItem(i)));
+		NEW_CLASS(dbHdlr, DB::DBHandler(this, it.Next()));
 		this->dbList.Add(dbHdlr);
-		i += 1;
 	}
 }
 
@@ -271,7 +269,7 @@ DB::DBQueue::~DBQueue()
 	this->name->Release();
 }
 
-void DB::DBQueue::AddDB(DB::DBTool *db)
+void DB::DBQueue::AddDB(NotNullPtr<DB::DBTool> db)
 {
 	DB::DBHandler *dbHdlr;
 	NEW_CLASS(dbHdlr, DB::DBHandler(this, db));
@@ -537,7 +535,7 @@ Bool DB::DBQueue::IsExecTimeout()
 	return false;
 }
 
-DB::DBHandler::DBHandler(DB::DBQueue *dbQ, DB::DBTool *db)
+DB::DBHandler::DBHandler(DB::DBQueue *dbQ, NotNullPtr<DB::DBTool> db)
 {
 	this->processing = false;
 	this->dbQ = dbQ;
@@ -552,7 +550,7 @@ DB::DBHandler::~DBHandler()
 	{
 		Sync::SimpleThread::Sleep(10);
 	}
-	DEL_CLASS(this->db);
+	this->db.Delete();
 }
 
 UInt32 DB::DBHandler::GetDataCnt()

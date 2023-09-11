@@ -102,13 +102,13 @@ namespace SSWR
 
 			void ThreadCancelTasks();
 			void EndFolder();
-			Bool GetCameraName(NotNullPtr<Text::StringBuilderUTF8> sb, Media::EXIFData *exif);
-			Double *GetCameraGamma(Text::CString cameraName, UInt32 *gammaCnt);
+			Bool GetCameraName(NotNullPtr<Text::StringBuilderUTF8> sb, NotNullPtr<Media::EXIFData> exif);
+			Double *GetCameraGamma(Text::CString cameraName, OutParam<UInt32> gammaCnt);
 		public:
 			AVIRImageControl(NotNullPtr<UI::GUICore> ui, UI::GUIClientControl *parent, NotNullPtr<SSWR::AVIRead::AVIRCore> core, UI::GUIForm *frm, Media::ColorManagerSess *colorSess);
 			virtual ~AVIRImageControl();
 
-			virtual Text::CString GetObjectClass();
+			virtual Text::CStringNN GetObjectClass() const;
 			virtual OSInt OnNotify(UInt32 code, void *lParam);
 
 			virtual void YUVParamChanged(NotNullPtr<const Media::IColorHandler::YUVPARAM> yuvParam);
@@ -127,7 +127,7 @@ namespace SSWR
 			void SetProgressHandler(ProgressUpdated hdlr, void *userObj);
 			Media::StaticImage *LoadImage(const UTF8Char *fileName);
 			Media::StaticImage *LoadOriImage(const UTF8Char *fileName);
-			void ApplySetting(Media::StaticImage *srcImg, Media::StaticImage *destImg, ImageSetting *setting);
+			void ApplySetting(NotNullPtr<Media::StaticImage> srcImg, NotNullPtr<Media::StaticImage> destImg, NotNullPtr<ImageSetting> setting);
 			void UpdateImgPreview(ImageStatus *img);
 			void UpdateImgSetting(ImageSetting *setting);
 			Bool IsLoadingDir();

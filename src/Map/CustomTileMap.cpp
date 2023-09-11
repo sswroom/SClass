@@ -18,24 +18,24 @@ Map::CustomTileMap::~CustomTileMap()
 	this->name->Release();
 }
 
-Text::CString Map::CustomTileMap::GetName()
+Text::CStringNN Map::CustomTileMap::GetName() const
 {
 	return this->name->ToCString();
 }
 
-Map::TileMap::TileType Map::CustomTileMap::GetTileType()
+Map::TileMap::TileType Map::CustomTileMap::GetTileType() const
 {
 	return Map::TileMap::TT_CUSTOM;
 }
 
-UOSInt Map::CustomTileMap::GetConcurrentCount()
+UOSInt Map::CustomTileMap::GetConcurrentCount() const
 {
 	return this->concurrCnt;
 }
 
-Bool Map::CustomTileMap::GetBounds(Math::RectAreaDbl *bounds)
+Bool Map::CustomTileMap::GetBounds(OutParam<Math::RectAreaDbl> bounds) const
 {
-	*bounds = this->bounds;
+	bounds.Set(this->bounds);
 	return true;
 }
 

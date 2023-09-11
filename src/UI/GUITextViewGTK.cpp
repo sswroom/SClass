@@ -522,7 +522,7 @@ UI::GUITextView::~GUITextView()
 	MemFree(this->clsData);
 }
 
-Text::CString UI::GUITextView::GetObjectClass()
+Text::CStringNN UI::GUITextView::GetObjectClass() const
 {
 	return CSTR("TextView");
 }

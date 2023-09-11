@@ -9,7 +9,7 @@ namespace IO
 	public:
 		virtual ~SensorPressure() {};
 
-		virtual Bool ReadPressure(Double *pressure) = 0;
+		virtual Bool ReadPressure(OutParam<Double> pressure) = 0;
 		virtual Math::Unit::Pressure::PressureUnit GetPressureUnit() = 0;
 	};
 };

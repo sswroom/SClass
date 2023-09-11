@@ -27,8 +27,8 @@ namespace Manage
 		} OSType;
 
 	public:
-		static Text::CString GetName(OSType osType);
-		static Text::CString GetDefName(OSType osType);
+		static Text::CStringNN GetName(OSType osType);
+		static Text::CStringNN GetDefName(OSType osType);
 		static void GetCommonName(NotNullPtr<Text::StringBuilderUTF8> sb, OSType osType, Text::CString osVer);
 	};
 }

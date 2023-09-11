@@ -74,12 +74,14 @@ UOSInt Manage::ThreadInfo::GetThreadId()
 
 UTF8Char *Manage::ThreadInfo::GetName(UTF8Char *buff)
 {
+#if defined(__GNUC_PREREQ)
 #if __GNUC_PREREQ(2, 12) && !defined(__DEFINED_pid_t) && !defined(__UCLIBC_MAJOR__)
 	if (this->hand)
 	{
 		if (pthread_getname_np((pthread_t)this->hand, (char*)buff, 32) == 0)
 			return &buff[Text::StrCharCnt(buff)];
 	}
+#endif
 #endif
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;

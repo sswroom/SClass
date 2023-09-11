@@ -382,7 +382,7 @@ void Map::WebMapService::LoadXMLLayers(NotNullPtr<Text::XMLReader> reader)
 	}
 }
 
-Map::WebMapService::WebMapService(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, Text::EncodingFactory *encFact, Text::CString wmsURL, Version version, Math::CoordinateSystem *envCsys)
+Map::WebMapService::WebMapService(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, Text::EncodingFactory *encFact, Text::CString wmsURL, Version version, NotNullPtr<Math::CoordinateSystem> envCsys)
 {
 	this->sockf = sockf;
 	this->ssl = ssl;
@@ -451,11 +451,11 @@ Math::RectAreaDbl Map::WebMapService::GetInitBounds() const
 	return this->currCRS->bounds;
 }
 
-Bool Map::WebMapService::GetBounds(Math::RectAreaDbl *bounds) const
+Bool Map::WebMapService::GetBounds(OutParam<Math::RectAreaDbl> bounds) const
 {
 	if (this->currCRS)
 	{
-		*bounds = this->currCRS->bounds;
+		bounds.Set(this->currCRS->bounds);
 		return true;
 	}
 	return false;
@@ -737,40 +737,24 @@ void Map::WebMapService::SetLayer(UOSInt index)
 		while (i < j)
 		{
 			crs = layer->crsList.GetItem(i);
-			if (this->envCsys == 0)
+			csys = Math::CoordinateSystemManager::CreateFromName(crs->name->ToCString());
+			if (csys)
 			{
-				if (crs->name->StartsWith(UTF8STRC("CRS:")))
+				if (csys->Equals(this->envCsys))
 				{
-
-				}
-				else
-				{
+					DEL_CLASS(csys);
 					found = true;
 					this->currCRS = crs;
 					break;
 				}
-			}
-			else
-			{
-				csys = Math::CoordinateSystemManager::CreateFromName(crs->name->ToCString());
-				if (csys)
+				else if (csys->GetCoordSysType() == this->envCsys->GetCoordSysType())
 				{
-					if (csys->Equals(this->envCsys))
-					{
-						DEL_CLASS(csys);
-						found = true;
-						this->currCRS = crs;
-						break;
-					}
-					else if (csys->GetCoordSysType() == this->envCsys->GetCoordSysType())
-					{
-						DEL_CLASS(csys);
-						found = true;
-						this->currCRS = crs;
-						break;
-					}
 					DEL_CLASS(csys);
+					found = true;
+					this->currCRS = crs;
+					break;
 				}
+				DEL_CLASS(csys);
 			}
 			i++;
 		}

@@ -72,7 +72,7 @@ UI::GUITabPage *UI::GUITabControl::AddTabPage(NotNullPtr<Text::String> tabName)
 	return tp;
 }
 
-UI::GUITabPage *UI::GUITabControl::AddTabPage(Text::CString tabName)
+UI::GUITabPage *UI::GUITabControl::AddTabPage(Text::CStringNN tabName)
 {
 	UI::GUITabPage *tp;
 	PageInfo *page;
@@ -127,7 +127,7 @@ UI::GUITabPage *UI::GUITabControl::GetSelectedPage()
 	return this->tabPages.GetItem(this->selIndex);
 }
 
-void UI::GUITabControl::SetTabPageName(UOSInt index, Text::CString name)
+void UI::GUITabControl::SetTabPageName(UOSInt index, Text::CStringNN name)
 {
 	UI::GUITabPage *tp = this->tabPages.GetItem(index);
 	if (tp == 0)
@@ -189,7 +189,7 @@ void *UI::GUITabControl::GetTabPageFont()
 	return this->GetFont();
 }
 
-Text::CString UI::GUITabControl::GetObjectClass()
+Text::CStringNN UI::GUITabControl::GetObjectClass() const
 {
 	return CSTR("TabControl");
 }

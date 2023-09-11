@@ -49,7 +49,7 @@ void UI::DObj::RollingTextDObj::UpdateBGImg()
 			this->dimg->DelFont(f);
 
 			Bool revOrder;
-			UInt8 *bmpPtr = this->dimg->GetImgBits(&revOrder);
+			UInt8 *bmpPtr = this->dimg->GetImgBits(revOrder);
 			ImageUtil_ColorReplace32A2(bmpPtr, this->dimg->GetWidth(), this->dimg->GetHeight(), this->fontColor);
 			this->dimg->GetImgBitsEnd(true);
 			this->dimg->SetAlphaType(Media::AT_ALPHA);

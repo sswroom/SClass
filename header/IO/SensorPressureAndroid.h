@@ -11,7 +11,7 @@ namespace IO
 		SensorPressureAndroid(void *sensor, void *sensorMgr, Int32 id);
 		virtual ~SensorPressureAndroid();
 
-		virtual Bool ReadPressure(Double *pressure);
+		virtual Bool ReadPressure(OutParam<Double> pressure);
 		virtual Math::Unit::Pressure::PressureUnit GetPressureUnit();
 		virtual SensorPressure *GetSensorPressure();
 		virtual SensorType GetSensorType();

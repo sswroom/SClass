@@ -73,15 +73,15 @@ namespace DB
 		void SetFailTrigger(SQLFailedFunc trig);
 		DB::DBReader *ExecuteReader(Text::CString sqlCmd);
 		virtual void CloseReader(DB::DBReader *r);
-		DB::SQLType GetSQLType();
-		Bool IsAxisAware();
+		DB::SQLType GetSQLType() const;
+		Bool IsAxisAware() const;
 		Bool IsDataError(const UTF8Char *errCode);
 		virtual void GetLastErrorMsg(NotNullPtr<Text::StringBuilderUTF8> sb);
 		DB::DBConn *GetDBConn();
-		Int8 GetTzQhr();
+		Int8 GetTzQhr() const;
 		virtual void Reconnect();
 
-		virtual Bool IsDBTool();
+		virtual Bool IsDBTool() const;
 		
 		UTF8Char *DBColUTF8(UTF8Char *sqlstr, const UTF8Char *colName);
 		UTF8Char *DBColW(UTF8Char *sqlstr, const WChar *colName);

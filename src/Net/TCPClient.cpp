@@ -374,7 +374,7 @@ Bool Net::TCPClient::Recover()
 	return false;
 }
 
-Bool Net::TCPClient::IsSSL()
+Bool Net::TCPClient::IsSSL() const
 {
 	return false;
 }

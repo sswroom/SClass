@@ -168,14 +168,14 @@ void __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnMapTableSelChg(void *userObj)
 	{
 		me->dbLayer->SetDatabase(me->currDB, schemaName->ToCString(), tableName->ToCString(), false);
 		Math::RectAreaDbl rect;
-		if (me->dbLayer->GetBounds(&rect))
+		if (me->dbLayer->GetBounds(rect))
 		{
 			Math::Coord2DDbl center = rect.GetCenter();
 			if (center.x != 0 || center.y != 0)
 			{
-				Math::CoordinateSystem *csysLayer = me->dbLayer->GetCoordinateSystem();
-				Math::CoordinateSystem *csysEnv = me->mapEnv->GetCoordinateSystem();
-				if (csysLayer != 0 && csysEnv != 0 && !csysLayer->Equals(csysEnv))
+				NotNullPtr<Math::CoordinateSystem> csysLayer = me->dbLayer->GetCoordinateSystem();
+				NotNullPtr<Math::CoordinateSystem> csysEnv;
+				if (csysEnv.Set(me->mapEnv->GetCoordinateSystem()) && !csysLayer->Equals(csysEnv))
 				{
 					center = Math::CoordinateSystem::Convert(csysLayer, csysEnv, center);
 				}
@@ -212,12 +212,11 @@ Bool __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnMapMouseUp(void *userObj, Mat
 			UTF8Char sbuff[512];
 			UTF8Char *sptr;
 			Math::Coord2DDbl mapPt = me->mapMain->ScnXY2MapXY(scnPos);
-			Math::CoordinateSystem *csys = me->mapEnv->GetCoordinateSystem();
-			Math::CoordinateSystem *lyrCSys = me->dbLayer->GetCoordinateSystem();
-			Double tmp;
-			if (csys && lyrCSys && !csys->Equals(lyrCSys))
+			NotNullPtr<Math::CoordinateSystem> csys;
+			NotNullPtr<Math::CoordinateSystem> lyrCSys = me->dbLayer->GetCoordinateSystem();
+			if (csys.Set(me->mapEnv->GetCoordinateSystem()) && !csys->Equals(lyrCSys))
 			{
-				Math::CoordinateSystem::ConvertXYZ(csys, lyrCSys, mapPt.x, mapPt.y, 0, &mapPt.x, &mapPt.y, &tmp);
+				mapPt = Math::CoordinateSystem::ConvertXYZ(csys, lyrCSys, Math::Vector3(mapPt, 0)).GetXY();
 			}
 			sess = me->dbLayer->BeginGetObject();
 			id = me->dbLayer->GetNearestObjectId(sess, mapPt, &mapPt);
@@ -229,7 +228,7 @@ Bool __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnMapMouseUp(void *userObj, Mat
 			{
 				Data::ArrayListInt64 arr;
 				Map::NameArray *nameArr;
-				me->dbLayer->GetObjectIdsMapXY(&arr, &nameArr, Math::RectAreaDbl(mapPt, mapPt), true);
+				me->dbLayer->GetObjectIdsMapXY(arr, &nameArr, Math::RectAreaDbl(mapPt, mapPt), true);
 				i = 0;
 				j = me->dbLayer->GetColumnCnt();
 				while (i < j)

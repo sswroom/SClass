@@ -555,7 +555,7 @@ DB::ReadingDB *DB::DBManager::OpenConn(Text::CString connStr, IO::LogTool *log, 
 				break;
 			}
 		}
-		DB::TDSConn *cli;
+		DB::TDSConn *cli = 0;
 		UInt16 port = 1433;
 		if (server)
 		{
@@ -565,17 +565,18 @@ DB::ReadingDB *DB::DBManager::OpenConn(Text::CString connStr, IO::LogTool *log, 
 				Text::StrToUInt16(&server->v[i + 1], port);
 				server->TrimToLength(i);
 			}
+			NEW_CLASS(cli, DB::TDSConn(server->ToCString(), port, false, STR_CSTR(schema), STR_CSTR(uid), STR_CSTR(pwd), log, 0));
+			if (!cli->IsConnected())
+			{
+				DEL_CLASS(cli);
+				cli = 0;
+			}
 		}
-		NEW_CLASS(cli, DB::TDSConn(STR_CSTR(server), port, false, STR_CSTR(schema), STR_CSTR(uid), STR_CSTR(pwd), log, 0));
 		SDEL_STRING(server);
 		SDEL_STRING(uid);
 		SDEL_STRING(pwd);
 		SDEL_STRING(schema);
-		if (!cli->IsConnected())
-		{
-			DEL_CLASS(cli);
-		}
-		else
+		if (cli)
 		{
 			NEW_CLASS(db, DB::DBTool(cli, true, log, DBPREFIX));
 			return db;

@@ -49,7 +49,7 @@ void UI::GUICheckedListBox::SetItemChecked(UOSInt index, Bool isChecked)
 	gtk_list_store_set(data->listStore, &r->iter, 1, isChecked, -1);
 }
 
-Text::CString UI::GUICheckedListBox::GetObjectClass()
+Text::CStringNN UI::GUICheckedListBox::GetObjectClass() const
 {
 	return CSTR("CheckedListBox");
 }

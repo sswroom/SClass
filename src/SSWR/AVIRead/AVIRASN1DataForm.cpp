@@ -349,7 +349,7 @@ void __stdcall SSWR::AVIRead::AVIRASN1DataForm::OnFileDrop(void *userObj, NotNul
 	}
 	else if (tp == me->tpSignature)
 	{
-		me->txtSignaturePayloadFile->SetText(files[0]->ToCString());
+		//me->txtSignaturePayloadFile->SetText(files[0]->ToCString());
 	}
 }
 
@@ -669,6 +669,7 @@ SSWR::AVIRead::AVIRASN1DataForm::AVIRASN1DataForm(UI::GUIClientControl *parent, 
 			this->txtVerifyStatus->SetRect(104, 100, 600, 47, false);
 			this->txtVerifyStatus->SetReadOnly(true);
 		}
+		this->tpSignature = 0;
 		if (canSignature)
 		{
 /*

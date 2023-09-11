@@ -451,12 +451,12 @@ void DB::ReadingDBTool::CloseReader(DB::DBReader *r)
 	}
 }
 
-DB::SQLType DB::ReadingDBTool::GetSQLType()
+DB::SQLType DB::ReadingDBTool::GetSQLType() const
 {
 	return this->sqlType;
 }
 
-Bool DB::ReadingDBTool::IsAxisAware()
+Bool DB::ReadingDBTool::IsAxisAware() const
 {
 	return this->axisAware;
 }
@@ -484,7 +484,7 @@ DB::DBConn *DB::ReadingDBTool::GetDBConn()
 	return this->db;
 }
 
-Int8 DB::ReadingDBTool::GetTzQhr()
+Int8 DB::ReadingDBTool::GetTzQhr() const
 {
 	if (this->db)
 	{
@@ -504,7 +504,7 @@ void DB::ReadingDBTool::Reconnect()
 	}
 }
 
-Bool DB::ReadingDBTool::IsDBTool()
+Bool DB::ReadingDBTool::IsDBTool() const
 {
 	return true;
 }

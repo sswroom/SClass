@@ -38,10 +38,16 @@ IO/I2CChannelOS.h: ../../src/IO/I2CChannelOSNull.cpp
 @I2CChannelOS.o
 IO/OS.h: ../../src/IO/OSL.cpp
 @OS.o
+IO/PCIInfo.h: ../../src/IO/PCIInfoL.cpp
+@PCIInfo.o
+IO/PowerInfo.h: ../../src/IO/PowerInfoL.cpp
+@PowerInfo.o
 IO/SDCardMgr.h: ../../src/IO/SDCardMgrNull.cpp
 @SDCardMgr.o
 IO/SensorManager.h: ../../src/IO/SensorManagerNull.cpp
 @SensorManager.o
+IO/USBInfo.h: ../../src/IO/USBInfoL.cpp
+@USBInfo.o
 IO/Watchdog.h: ../../src/IO/WatchdogNull.cpp
 @Watchdog.o
 
@@ -146,6 +152,9 @@ OS.o: ../../src/IO/OSFreeBSD.cpp
 SDCardMgr.o: ../../src/IO/SDCardMgrNull.cpp
 SensorManager.o: ../../src/IO/SensorManagerNull.cpp
 SerialPort.o: ../../src/IO/SerialPortL.cpp
+PCIInfo.o: ../../src/IO/PCIInfoL.cpp
+PowerInfo.o: ../../src/IO/PowerInfoL.cpp
+USBInfo.o: ../../src/IO/USBInfoL.cpp
 Watchdog.o: ../../src/IO/WatchdogNull.cpp
 Computer.o: ../../src/Manage/ComputerL.cpp
 ComputerUser.o: ../../src/Manage/ComputerUserL.cpp

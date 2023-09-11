@@ -99,7 +99,7 @@ SSWR::AVIRead::AVIRMACManagerEntryForm::AVIRMACManagerEntryForm(UI::GUIClientCon
 	this->txtMAC->SetText(CSTRP(sbuff, sptr));
 	if (name.leng > 0)
 	{
-		this->cboName->SetText(name);
+		this->cboName->SetText(name.OrEmpty());
 		this->cboName->Focus();
 	}
 	else

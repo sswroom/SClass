@@ -56,7 +56,7 @@ namespace Math
 			virtual Bool JoinVector(Math::Geometry::Vector2D *vec) = 0;
 			virtual Bool HasZ() const { return false; };
 			virtual Bool HasM() const { return false; };
-			virtual void ConvCSys(Math::CoordinateSystem *srcCSys, Math::CoordinateSystem *destCSys) = 0;
+			virtual void ConvCSys(NotNullPtr<Math::CoordinateSystem> srcCSys, NotNullPtr<Math::CoordinateSystem> destCSys) = 0;
 			virtual Bool Equals(Vector2D *vec) const = 0;
 			virtual Bool EqualsNearly(Vector2D *vec) const = 0;
 			virtual UOSInt GetCoordinates(Data::ArrayListA<Math::Coord2DDbl> *coordList) const = 0;
@@ -70,7 +70,7 @@ namespace Math
 			Math::Coord2DDbl GetDistanceCenter() const;
 
 			static Bool VectorTypeIsPoint(VectorType vecType);
-			static Text::CString VectorTypeGetName(VectorType vecType);
+			static Text::CStringNN VectorTypeGetName(VectorType vecType);
 		};
 	}
 }

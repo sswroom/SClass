@@ -204,10 +204,10 @@ namespace IO
 		Bool ADAM4080CounterHasOverflow(UInt8 addr, UInt8 channel, Bool *overflow);
 
 		static UInt32 BaudRateGetBps(BaudRate baudRate);
-		static Text::CString DataFormatGetName(DataFormat dataFormat);
-		static Text::CString IntegrationTimeGetName(IntegrationTime intTime);
-		static Text::CString TypeCodeGetName(TypeCode typeCode);
-		static Text::CString SlewRateGetName(SlewRate slewRate);
+		static Text::CStringNN DataFormatGetName(DataFormat dataFormat);
+		static Text::CStringNN IntegrationTimeGetName(IntegrationTime intTime);
+		static Text::CStringNN TypeCodeGetName(TypeCode typeCode);
+		static Text::CStringNN SlewRateGetName(SlewRate slewRate);
 	};
 }
 #endif

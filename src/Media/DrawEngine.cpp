@@ -2,7 +2,7 @@
 #include "Media/DrawEngine.h"
 #include "Media/ImageUtil.h"
 
-Bool Media::DrawImage::DrawStringHAlign(Math::Coord2DDbl tl, Double brx, Text::CString str, DrawFont *f, DrawBrush *b, Text::HAlignment hAlign)
+Bool Media::DrawImage::DrawStringHAlign(Math::Coord2DDbl tl, Double brx, Text::CStringNN str, DrawFont *f, DrawBrush *b, Text::HAlignment hAlign)
 {
 	Math::Size2DDbl sz;
 	if (hAlign == Text::HAlignment::Right)
@@ -44,7 +44,7 @@ UInt32 Media::DrawImage::GetPixel32(OSInt x, OSInt y)
 	if (y < 0 || (UOSInt)y >= height)
 		return 0;
 	Bool revOrder;
-	UInt8 *bmpBits = this->GetImgBits(&revOrder);
+	UInt8 *bmpBits = this->GetImgBits(revOrder);
 	if (bmpBits == 0)
 		return 0;
 	if (revOrder)
@@ -69,7 +69,7 @@ UInt32 Media::DrawImage::GetPixel32(OSInt x, OSInt y)
 void Media::DrawImage::SetImageAlpha(UInt8 alpha)
 {
 	Bool revOrder;
-	UInt8 *bmpBits = this->GetImgBits(&revOrder);
+	UInt8 *bmpBits = this->GetImgBits(revOrder);
 	if (this->GetBitCount() == 32 && bmpBits && this->GetPixelFormat() == Media::PF_B8G8R8A8)
 	{
 		ImageUtil_ImageFillAlpha32(bmpBits, this->GetWidth(), this->GetHeight(), this->GetImgBpl(), alpha);
@@ -89,7 +89,7 @@ void Media::DrawImage::MulImageAlpha(Double val)
 	if (this->GetBitCount() == 32 && this->GetPixelFormat() == Media::PF_B8G8R8A8)
 	{
 		Bool revOrder;
-		UInt8 *bmpBits = this->GetImgBits(&revOrder);
+		UInt8 *bmpBits = this->GetImgBits(revOrder);
 		if (bmpBits)
 		{
 			ImageUtil_ImageAlphaMul32(bmpBits, this->GetWidth(), this->GetHeight(), this->GetImgBpl(), (UInt32)Double2Int32(val * 65536.0));

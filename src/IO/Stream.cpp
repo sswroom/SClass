@@ -102,7 +102,7 @@ Bool IO::Stream::WriteFromData(NotNullPtr<IO::StreamData> data, UOSInt buffSize)
 	return totalSize == data->GetDataSize();
 }
 
-Text::CString IO::StreamTypeGetName(StreamType st)
+Text::CStringNN IO::StreamTypeGetName(StreamType st)
 {
 	switch (st)
 	{

@@ -86,7 +86,7 @@ void Media::Batch::BatchWatermarker::ImageOutput(Media::ImageList *imgList, cons
 						gimg2->DrawString(Math::Coord2DDbl(0, 0), watermark, f, b);
 						gimg2->SetAlphaType(Media::AT_ALPHA);
 						Bool revOrder;
-						UInt8 *bmpBits = gimg2->GetImgBits(&revOrder);
+						UInt8 *bmpBits = gimg2->GetImgBits(revOrder);
 						ImageUtil_ColorReplace32A(bmpBits, iWidth, iHeight, (this->rnd.NextInt30() & 0xffffff) | 0x5f808080);
 						if (revOrder)
 						{

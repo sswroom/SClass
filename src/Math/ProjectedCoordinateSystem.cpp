@@ -6,7 +6,7 @@
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
 
-Math::ProjectedCoordinateSystem::ProjectedCoordinateSystem(NotNullPtr<Text::String> sourceName, UInt32 srid, Text::CString projName, Double falseEasting, Double falseNorthing, Double dcentralMeridian, Double dlatitudeOfOrigin, Double scaleFactor, Math::GeographicCoordinateSystem *gcs, Math::CoordinateSystem::UnitType unit) : Math::CoordinateSystem(sourceName, srid, projName)
+Math::ProjectedCoordinateSystem::ProjectedCoordinateSystem(NotNullPtr<Text::String> sourceName, UInt32 srid, Text::CString projName, Double falseEasting, Double falseNorthing, Double dcentralMeridian, Double dlatitudeOfOrigin, Double scaleFactor, NotNullPtr<Math::GeographicCoordinateSystem> gcs, Math::CoordinateSystem::UnitType unit) : Math::CoordinateSystem(sourceName, srid, projName)
 {
 	this->falseEasting = falseEasting;
 	this->falseNorthing = falseNorthing;
@@ -17,7 +17,7 @@ Math::ProjectedCoordinateSystem::ProjectedCoordinateSystem(NotNullPtr<Text::Stri
 	this->unit = unit;
 }
 
-Math::ProjectedCoordinateSystem::ProjectedCoordinateSystem(Text::CString sourceName, UInt32 srid, Text::CString projName, Double falseEasting, Double falseNorthing, Double dcentralMeridian, Double dlatitudeOfOrigin, Double scaleFactor, Math::GeographicCoordinateSystem *gcs, Math::CoordinateSystem::UnitType unit) : Math::CoordinateSystem(sourceName, srid, projName)
+Math::ProjectedCoordinateSystem::ProjectedCoordinateSystem(Text::CStringNN sourceName, UInt32 srid, Text::CString projName, Double falseEasting, Double falseNorthing, Double dcentralMeridian, Double dlatitudeOfOrigin, Double scaleFactor, NotNullPtr<Math::GeographicCoordinateSystem> gcs, Math::CoordinateSystem::UnitType unit) : Math::CoordinateSystem(sourceName, srid, projName)
 {
 	this->falseEasting = falseEasting;
 	this->falseNorthing = falseNorthing;
@@ -30,7 +30,7 @@ Math::ProjectedCoordinateSystem::ProjectedCoordinateSystem(Text::CString sourceN
 
 Math::ProjectedCoordinateSystem::~ProjectedCoordinateSystem()
 {
-	SDEL_CLASS(this->gcs);
+	this->gcs.Delete();
 }
 
 Double Math::ProjectedCoordinateSystem::CalSurfaceDistanceXY(Math::Coord2DDbl pos1, Math::Coord2DDbl pos2, Math::Unit::Distance::DistanceUnit unit) const
@@ -45,7 +45,7 @@ Double Math::ProjectedCoordinateSystem::CalSurfaceDistanceXY(Math::Coord2DDbl po
 	return d;
 }
 
-Double Math::ProjectedCoordinateSystem::CalPLDistance(Math::Geometry::Polyline *pl, Math::Unit::Distance::DistanceUnit unit) const
+Double Math::ProjectedCoordinateSystem::CalPLDistance(NotNullPtr<Math::Geometry::Polyline> pl, Math::Unit::Distance::DistanceUnit unit) const
 {
 	UOSInt nPoint;
 	UOSInt nPtOfst;
@@ -77,7 +77,7 @@ Double Math::ProjectedCoordinateSystem::CalPLDistance(Math::Geometry::Polyline *
 	return totalDist;
 }
 
-Double Math::ProjectedCoordinateSystem::CalPLDistance3D(Math::Geometry::Polyline *pl, Math::Unit::Distance::DistanceUnit unit) const
+Double Math::ProjectedCoordinateSystem::CalPLDistance3D(NotNullPtr<Math::Geometry::Polyline> pl, Math::Unit::Distance::DistanceUnit unit) const
 {
 	UOSInt nPoint;
 	UOSInt nPtOfst;
@@ -146,7 +146,7 @@ void Math::ProjectedCoordinateSystem::ToString(NotNullPtr<Text::StringBuilderUTF
 	this->gcs->ToString(sb);
 }
 
-Bool Math::ProjectedCoordinateSystem::SameProjection(Math::ProjectedCoordinateSystem *csys) const
+Bool Math::ProjectedCoordinateSystem::SameProjection(NotNullPtr<const Math::ProjectedCoordinateSystem> csys) const
 {
 	if (this->falseEasting != csys->falseEasting)
 		return false;

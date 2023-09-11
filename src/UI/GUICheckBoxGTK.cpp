@@ -11,7 +11,7 @@ void GUICheckBox_CheckedChange(GtkToggleButton *btn, gpointer data)
 	me->EventCheckedChange(me->IsChecked());
 }
 
-UI::GUICheckBox::GUICheckBox(NotNullPtr<GUICore> ui, UI::GUIClientControl *parent, Text::CString initText, Bool checked) : UI::GUIControl(ui, parent)
+UI::GUICheckBox::GUICheckBox(NotNullPtr<GUICore> ui, UI::GUIClientControl *parent, Text::CStringNN initText, Bool checked) : UI::GUIControl(ui, parent)
 {
 	this->checked = false;
 
@@ -29,7 +29,7 @@ UI::GUICheckBox::~GUICheckBox()
 {
 }
 
-void UI::GUICheckBox::SetText(Text::CString text)
+void UI::GUICheckBox::SetText(Text::CStringNN text)
 {
 	GList *children = gtk_container_get_children((GtkContainer*)this->hwnd);
 	if (children)
@@ -39,7 +39,7 @@ void UI::GUICheckBox::SetText(Text::CString text)
 	g_list_free(children);
 }
 
-Text::CString UI::GUICheckBox::GetObjectClass()
+Text::CStringNN UI::GUICheckBox::GetObjectClass() const
 {
 	return CSTR("CheckBox");
 }

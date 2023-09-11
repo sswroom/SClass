@@ -45,21 +45,21 @@ namespace UI
 		void ChangeColumnCnt(UOSInt newColCnt);
 		UOSInt GetColumnCnt();
 		Bool AddColumn(NotNullPtr<Text::String> columnName, Double colWidth);
-		Bool AddColumn(Text::CString columnName, Double colWidth);
+		Bool AddColumn(Text::CStringNN columnName, Double colWidth);
 		Bool AddColumn(const WChar *columnName, Double colWidth);
 		Bool SetColumnWidth(UOSInt index, Double colWidth);
 		Bool ClearAll();
 
 		UOSInt AddItem(NotNullPtr<Text::String> itemText, void *itemObj);
-		UOSInt AddItem(Text::CString itemText, void *itemObj);
+		UOSInt AddItem(Text::CStringNN itemText, void *itemObj);
 		UOSInt AddItem(const WChar *itemText, void *itemObj);
-		UOSInt AddItem(Text::CString itemText, void *itemObj, UOSInt imageIndex);
+		UOSInt AddItem(Text::CStringNN itemText, void *itemObj, UOSInt imageIndex);
 		Bool SetSubItem(UOSInt index, UOSInt subIndex, NotNullPtr<Text::String> text);
-		Bool SetSubItem(UOSInt index, UOSInt subIndex, Text::CString text);
+		Bool SetSubItem(UOSInt index, UOSInt subIndex, Text::CStringNN text);
 		Bool SetSubItem(UOSInt index, UOSInt subIndex, const WChar *text);
 		Bool GetSubItem(UOSInt index, UOSInt subIndex, NotNullPtr<Text::StringBuilderUTF8> sb);
-		UOSInt InsertItem(UOSInt index, Text::String *itemText, void *itemObj);
-		UOSInt InsertItem(UOSInt index, Text::CString itemText, void *itemObj);
+		UOSInt InsertItem(UOSInt index, NotNullPtr<Text::String> itemText, void *itemObj);
+		UOSInt InsertItem(UOSInt index, Text::CStringNN itemText, void *itemObj);
 		UOSInt InsertItem(UOSInt index, const WChar *itemText, void *itemObj);
 		void *RemoveItem(UOSInt index);
 		void *GetItem(UOSInt index);
@@ -84,7 +84,7 @@ namespace UI
 		void BeginUpdate();
 		void EndUpdate();
 
-		virtual Text::CString GetObjectClass();
+		virtual Text::CStringNN GetObjectClass() const;
 		virtual OSInt OnNotify(UInt32 code, void *lParam);
 		virtual void OnSizeChanged(Bool updateScn);
 		void EventSelChg();

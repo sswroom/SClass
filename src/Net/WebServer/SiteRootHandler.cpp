@@ -44,7 +44,7 @@ Net::WebServer::SiteRootHandler::SiteRootHandler(Text::CStringNN faviconPath)
 	if (!fs.IsError())
 	{
 		UInt64 leng = fs.GetLength();
-		if (leng > 0 || leng < 65536)
+		if (leng > 0 && leng < 65536)
 		{
 			this->faviconSize = (UOSInt)leng;
 			this->faviconBuff = MemAlloc(UInt8, this->faviconSize);

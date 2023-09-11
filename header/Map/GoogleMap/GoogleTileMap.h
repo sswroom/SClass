@@ -24,9 +24,9 @@ namespace Map
 			GoogleTileMap(Text::CString cacheDir, MapType mapType, NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl);
 			virtual ~GoogleTileMap();
 
-			virtual Text::CString GetName();
-			virtual TileType GetTileType();
-			virtual UOSInt GetConcurrentCount();
+			virtual Text::CStringNN GetName() const;
+			virtual TileType GetTileType() const;
+			virtual UOSInt GetConcurrentCount() const;
 			virtual UTF8Char *GetTileImageURL(UTF8Char *sbuff, UOSInt level, Math::Coord2D<Int32> tileId);
 		};
 	}

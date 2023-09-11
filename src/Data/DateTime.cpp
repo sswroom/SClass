@@ -909,7 +909,7 @@ void Data::DateTime::SetMSDOSTime(UInt16 date, UInt16 time)
 	tval->day = date & 0x1f;
 	tval->hour = (UInt8)(time >> 11);
 	tval->minute = (time >> 5) & 0x3f;
-	tval->second = (time & 0x1f) << 1;
+	tval->second = (UInt8)((time & 0x1f) << 1);
 	this->ns = 0;
 }
 

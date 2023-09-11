@@ -148,22 +148,22 @@ Map::MapView *Map::DrawMapServiceLayer::CreateMapView(Math::Size2DDbl scnSize)
 	return view;
 }
 
-Map::DrawLayerType Map::DrawMapServiceLayer::GetLayerType()
+Map::DrawLayerType Map::DrawMapServiceLayer::GetLayerType() const
 {
 	return Map::DRAW_LAYER_IMAGE;
 }
 
-UOSInt Map::DrawMapServiceLayer::GetAllObjectIds(Data::ArrayListInt64 *outArr, NameArray **nameArr)
+UOSInt Map::DrawMapServiceLayer::GetAllObjectIds(NotNullPtr<Data::ArrayListInt64> outArr, NameArray **nameArr)
 {
 	return 0;
 }
 
-UOSInt Map::DrawMapServiceLayer::GetObjectIds(Data::ArrayListInt64 *outArr, NameArray **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
+UOSInt Map::DrawMapServiceLayer::GetObjectIds(NotNullPtr<Data::ArrayListInt64> outArr, NameArray **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
 {
 	return this->GetObjectIdsMapXY(outArr, nameArr, rect.ToDouble() / mapRate, keepEmpty);
 }
 
-UOSInt Map::DrawMapServiceLayer::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, NameArray **nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
+UOSInt Map::DrawMapServiceLayer::GetObjectIdsMapXY(NotNullPtr<Data::ArrayListInt64> outArr, NameArray **nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
 {
 	Sync::MutexUsage mutUsage(this->dispMut);
 	if (this->dispBounds == rect)
@@ -197,7 +197,7 @@ UOSInt Map::DrawMapServiceLayer::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr,
 	}
 }
 
-Int64 Map::DrawMapServiceLayer::GetObjectIdMax()
+Int64 Map::DrawMapServiceLayer::GetObjectIdMax() const
 {
 	return 0;
 }
@@ -216,7 +216,7 @@ UTF8Char *Map::DrawMapServiceLayer::GetString(UTF8Char *buff, UOSInt buffSize, N
 	return 0;
 }
 
-UOSInt Map::DrawMapServiceLayer::GetColumnCnt()
+UOSInt Map::DrawMapServiceLayer::GetColumnCnt() const
 {
 	return 1;
 }
@@ -263,12 +263,12 @@ Bool Map::DrawMapServiceLayer::GetColumnDef(UOSInt colIndex, NotNullPtr<DB::ColD
 	return false;
 }
 
-UInt32 Map::DrawMapServiceLayer::GetCodePage()
+UInt32 Map::DrawMapServiceLayer::GetCodePage() const
 {
 	return 0;
 }
 
-Bool Map::DrawMapServiceLayer::GetBounds(Math::RectAreaDbl *bounds)
+Bool Map::DrawMapServiceLayer::GetBounds(OutParam<Math::RectAreaDbl> bounds) const
 {
 	return this->mapService->GetBounds(bounds);
 }
@@ -312,7 +312,7 @@ Math::Geometry::Vector2D *Map::DrawMapServiceLayer::GetNewVectorById(GetObjectSe
 	return 0;
 }
 
-Map::MapDrawLayer::ObjectClass Map::DrawMapServiceLayer::GetObjectClass()
+Map::MapDrawLayer::ObjectClass Map::DrawMapServiceLayer::GetObjectClass() const
 {
 	return Map::MapDrawLayer::OC_DRAW_MAP_SERVICE_LAYER;
 }

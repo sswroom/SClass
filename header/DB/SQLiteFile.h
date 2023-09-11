@@ -21,7 +21,7 @@ namespace DB
 		void Init();
 	public:
 		SQLiteFile(NotNullPtr<Text::String> fileName);
-		SQLiteFile(Text::CString fileName);
+		SQLiteFile(Text::CStringNN fileName);
 		virtual ~SQLiteFile();
 
 		virtual DB::SQLType GetSQLType() const;
@@ -51,7 +51,7 @@ namespace DB
 		static Math::Geometry::Vector2D *GPGeometryParse(const UInt8 *buff, UOSInt buffSize);
 		
 		static DBTool *CreateDBTool(NotNullPtr<Text::String> fileName, IO::LogTool *log, Text::CString logPrefix);
-		static DBTool *CreateDBTool(Text::CString fileName, IO::LogTool *log, Text::CString logPrefix);
+		static DBTool *CreateDBTool(Text::CStringNN fileName, IO::LogTool *log, Text::CString logPrefix);
 	};
 
 	class SQLiteReader : public DB::DBReader

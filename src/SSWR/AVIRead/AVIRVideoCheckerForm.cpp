@@ -22,7 +22,7 @@ void __stdcall SSWR::AVIRead::AVIRVideoCheckerForm::OnFileHandler(void *userObj,
 	while (i < nFiles)
 	{
 		j = files[i]->LastIndexOf(IO::Path::PATH_SEPERATOR);
-		Text::CString name = files[i]->ToCString().Substring(j + 1);
+		Text::CStringNN name = files[i]->ToCString().Substring(j + 1);
 		j = me->lvFiles->AddItem(name, 0);
 
 		file = MemAlloc(FileQueue, 1);

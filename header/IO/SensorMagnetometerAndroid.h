@@ -11,7 +11,7 @@ namespace IO
 		SensorMagnetometerAndroid(void *sensor, void *sensorMgr, Int32 id);
 		virtual ~SensorMagnetometerAndroid();
 
-		virtual Bool ReadMagneticField(Double *x, Double *y, Double *z);
+		virtual Bool ReadMagneticField(OutParam<Math::Vector3> mag);
 		virtual Math::Unit::MagneticField::MagneticFieldUnit GetMagneticFieldUnit();
 		virtual SensorMagnetometer *GetSensorMagnetometer();
 		virtual SensorType GetSensorType();

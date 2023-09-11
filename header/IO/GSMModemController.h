@@ -276,11 +276,11 @@ namespace IO
 		static Int32 RSSIGetdBm(RSSI rssi);
 		static UTF8Char *RSSIGetName(UTF8Char *buff, RSSI rssi);
 		static UTF8Char *BERGetName(UTF8Char *buff, BER ber);
-		static Text::CString OperStatusGetName(OperStatus operStatus);
-		static Text::CString SIMStatusGetName(SIMStatus simStatus);
-		static Text::CString NetworkResultGetName(NetworkResult n);
-		static Text::CString RegisterStatusGetName(RegisterStatus stat);
-		static Text::CString AccessTechGetName(AccessTech act);
+		static Text::CStringNN OperStatusGetName(OperStatus operStatus);
+		static Text::CStringNN SIMStatusGetName(SIMStatus simStatus);
+		static Text::CStringNN NetworkResultGetName(NetworkResult n);
+		static Text::CStringNN RegisterStatusGetName(RegisterStatus stat);
+		static Text::CStringNN AccessTechGetName(AccessTech act);
 	};
 }
 #endif

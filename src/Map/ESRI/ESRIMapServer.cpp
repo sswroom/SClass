@@ -356,9 +356,9 @@ Math::RectAreaDbl Map::ESRI::ESRIMapServer::GetInitBounds() const
 	return this->initBounds;
 }
 
-Bool Map::ESRI::ESRIMapServer::GetBounds(Math::RectAreaDbl *bounds) const
+Bool Map::ESRI::ESRIMapServer::GetBounds(OutParam<Math::RectAreaDbl> bounds) const
 {
-	*bounds = this->bounds;
+	bounds.Set(this->bounds);
 	return true;
 }
 

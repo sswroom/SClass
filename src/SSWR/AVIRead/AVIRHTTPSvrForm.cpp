@@ -645,12 +645,12 @@ void SSWR::AVIRead::AVIRHTTPSvrForm::SetPort(Int32 port)
 	this->txtPort->SetText(CSTRP(sbuff, sptr));
 }
 
-void SSWR::AVIRead::AVIRHTTPSvrForm::SetDocPath(Text::CString docPath)
+void SSWR::AVIRead::AVIRHTTPSvrForm::SetDocPath(Text::CStringNN docPath)
 {
 	this->txtDocDir->SetText(docPath);
 }
 
-void SSWR::AVIRead::AVIRHTTPSvrForm::SetLogPath(Text::CString logPath)
+void SSWR::AVIRead::AVIRHTTPSvrForm::SetLogPath(Text::CStringNN logPath)
 {
 	this->txtLogDir->SetText(logPath);
 }

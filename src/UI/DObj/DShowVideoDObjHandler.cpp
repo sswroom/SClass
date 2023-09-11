@@ -28,7 +28,7 @@ void __stdcall UI::DObj::DShowVideoDObjHandler::OnVideoFrame(void *userObj, UInt
 	}
 
 	Bool revOrder;
-	UInt8 *bptr = dimg->GetImgBits(&revOrder);
+	UInt8 *bptr = dimg->GetImgBits(revOrder);
 	if (bptr)
 	{
 		Sync::MutexUsage mutUsage(me->frameMut);

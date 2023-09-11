@@ -10,18 +10,18 @@ namespace Text
 	class IMIMEObj : public IO::ParsedObject
 	{
 	protected:
-		IMIMEObj(Text::CString sourceName);
+		IMIMEObj(Text::CStringNN sourceName);
 	public:
 		virtual ~IMIMEObj();
 
-		virtual Text::CString GetClassName() const = 0;
-		virtual Text::CString GetContentType() const = 0;
+		virtual Text::CStringNN GetClassName() const = 0;
+		virtual Text::CStringNN GetContentType() const = 0;
 		virtual UOSInt WriteStream(IO::Stream *stm) const = 0;
 		virtual IMIMEObj *Clone() const = 0;
 
 		virtual IO::ParserType GetParserType() const;
 
-		static Text::IMIMEObj *ParseFromData(NotNullPtr<IO::StreamData> data, Text::CString contentType);
+		static Text::IMIMEObj *ParseFromData(NotNullPtr<IO::StreamData> data, Text::CStringNN contentType);
 		static Text::IMIMEObj *ParseFromFile(Text::CStringNN fileName);
 	};
 }

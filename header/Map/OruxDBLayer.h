@@ -20,36 +20,36 @@ namespace Map
 			Math::Coord2D<UInt32> max;
 		} LayerInfo;
 	private:
-		Parser::ParserList *parsers;
+		NotNullPtr<Parser::ParserList> parsers;
 		Data::FastMap<UInt32, LayerInfo*> layerMap;
 		UInt32 currLayer;
 		UInt32 tileSize;
 		DB::DBConn *db;
 
 	public:
-		OruxDBLayer(Text::CString sourceName, Text::CString layerName, Parser::ParserList *parsers);
+		OruxDBLayer(Text::CStringNN sourceName, Text::CString layerName, NotNullPtr<Parser::ParserList> parsers);
 		virtual ~OruxDBLayer();
 
-		Bool IsError();
+		Bool IsError() const;
 		void AddLayer(UInt32 layerId, Double mapXMin, Double mapYMin, Double mapXMax, Double mapYMax, UInt32 maxX, UInt32 maxY, UInt32 tileSize);
 
 		void SetCurrLayer(UInt32 level);
 		virtual void SetCurrScale(Double scale);
 		virtual Map::MapView *CreateMapView(Math::Size2DDbl scnSize);
 
-		virtual DrawLayerType GetLayerType();
-		virtual UOSInt GetAllObjectIds(Data::ArrayListInt64 *outArr, NameArray **nameArr);
-		virtual UOSInt GetObjectIds(Data::ArrayListInt64 *outArr, NameArray **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty);
-		virtual UOSInt GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, NameArray **nameArr, Math::RectAreaDbl rect, Bool keepEmpty);
-		virtual Int64 GetObjectIdMax();
+		virtual DrawLayerType GetLayerType() const;
+		virtual UOSInt GetAllObjectIds(NotNullPtr<Data::ArrayListInt64> outArr, NameArray **nameArr);
+		virtual UOSInt GetObjectIds(NotNullPtr<Data::ArrayListInt64> outArr, NameArray **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty);
+		virtual UOSInt GetObjectIdsMapXY(NotNullPtr<Data::ArrayListInt64> outArr, NameArray **nameArr, Math::RectAreaDbl rect, Bool keepEmpty);
+		virtual Int64 GetObjectIdMax() const;
 		virtual void ReleaseNameArr(NameArray *nameArr);
 		virtual UTF8Char *GetString(UTF8Char *buff, UOSInt buffSize, NameArray *nameArr, Int64 id, UOSInt strIndex);
-		virtual UOSInt GetColumnCnt();
+		virtual UOSInt GetColumnCnt() const;
 		virtual UTF8Char *GetColumnName(UTF8Char *buff, UOSInt colIndex);
 		virtual DB::DBUtil::ColType GetColumnType(UOSInt colIndex, UOSInt *colSize);
 		virtual Bool GetColumnDef(UOSInt colIndex, NotNullPtr<DB::ColDef> colDef);
-		virtual UInt32 GetCodePage();
-		virtual Bool GetBounds(Math::RectAreaDbl *bounds);
+		virtual UInt32 GetCodePage() const;
+		virtual Bool GetBounds(OutParam<Math::RectAreaDbl> bounds) const;
 
 		virtual GetObjectSess *BeginGetObject();
 		virtual void EndGetObject(GetObjectSess *session);
@@ -62,7 +62,7 @@ namespace Map
 		virtual void GetLastErrorMsg(NotNullPtr<Text::StringBuilderUTF8> str);
 		virtual void Reconnect();
 
-		virtual ObjectClass GetObjectClass();
+		virtual ObjectClass GetObjectClass() const;
 
 		Bool GetObjectData(Int64 objectId, IO::Stream *stm, Int32 *tileX, Int32 *tileY, Int64 *modTimeTicks);
 	};

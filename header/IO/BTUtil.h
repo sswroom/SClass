@@ -11,14 +11,14 @@ namespace IO
 		typedef struct
 		{
 			UInt16 id;
-			Text::CString name;
+			Text::CStringNN name;
 		} NumberMap;
 
 	private:
 		static const NumberMap compId[];
 		static const NumberMap uuids[];
 	public:
-		static Text::CString GetManufacturerName(UInt16 manuf);
+		static Text::CStringNN GetManufacturerName(UInt16 manuf);
 		static void GetAddrText(NotNullPtr<Text::StringBuilderUTF8> sb, UInt8 *addr);
 		static UInt64 GetAddrMAC(UInt8 *addr);
 		static Text::CString GetUUIDName(UInt16 uuid);

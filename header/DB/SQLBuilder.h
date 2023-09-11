@@ -21,7 +21,7 @@ namespace DB
 
 	public:
 		SQLBuilder(DB::SQLType sqlType, Bool axisAware, Int32 tzQhr);
-		SQLBuilder(DB::ReadingDBTool *db);
+		SQLBuilder(NotNullPtr<const DB::ReadingDBTool> db);
 		~SQLBuilder();
 
 		void AppendCmdSlow(const UTF8Char *val);

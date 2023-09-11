@@ -39,7 +39,7 @@ namespace Crypto
 			Last = SHA1_SHA1
 		};
 
-		Text::CString HashTypeGetName(HashType hashType);
+		Text::CStringNN HashTypeGetName(HashType hashType);
 
 		class IHash
 		{

@@ -52,7 +52,10 @@ Map::SHPData::SHPData(const UInt8 *shpHdr, NotNullPtr<IO::StreamData> data, UInt
 		this->SetLayerName(CSTRP(&sbuff[i + 1], sptr));
 		sptr = Text::StrConcatC(sptr, UTF8STRC(".prj"));
 	}
-	this->csys = prjParser->ParsePRJFile({sbuff, (UOSInt)(sptr - sbuff)});
+	if (!this->csys.Set(prjParser->ParsePRJFile({sbuff, (UOSInt)(sptr - sbuff)})))
+	{
+		this->csys = Math::CoordinateSystemManager::CreateDefaultCsys();	
+	}
 
 	Text::StrConcatC(&sptr[-3], UTF8STRC("dbf"));
 
@@ -376,23 +379,23 @@ Map::SHPData::~SHPData()
 	SDEL_CLASS(this->recsMut);
 }
 
-Bool Map::SHPData::IsError()
+Bool Map::SHPData::IsError() const
 {
 	return dbf == 0 ;
 }
 
-void Map::SHPData::LatLon2XY(Double lat, Double lon, Int32 *x, Int32 *y)
+void Map::SHPData::LatLon2XY(Double lat, Double lon, OutParam<Int32> x, OutParam<Int32> y)
 {
-	*x = (Int32)(lon * 200000);
-	*y = (Int32)(lat * 200000);
+	x.Set((Int32)(lon * 200000));
+	y.Set((Int32)(lat * 200000));
 }
 
-Map::DrawLayerType Map::SHPData::GetLayerType()
+Map::DrawLayerType Map::SHPData::GetLayerType() const
 {
 	return this->layerType;
 }
 
-UOSInt Map::SHPData::GetAllObjectIds(Data::ArrayListInt64 *outArr, NameArray **nameArr)
+UOSInt Map::SHPData::GetAllObjectIds(NotNullPtr<Data::ArrayListInt64> outArr, NameArray **nameArr)
 {
 	UOSInt i;
 	UOSInt j;
@@ -424,12 +427,12 @@ UOSInt Map::SHPData::GetAllObjectIds(Data::ArrayListInt64 *outArr, NameArray **n
 	}
 }
 
-UOSInt Map::SHPData::GetObjectIds(Data::ArrayListInt64 *outArr, NameArray **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
+UOSInt Map::SHPData::GetObjectIds(NotNullPtr<Data::ArrayListInt64> outArr, NameArray **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
 {
 	return GetObjectIdsMapXY(outArr, nameArr, rect.ToDouble() / mapRate, keepEmpty);
 }
 
-UOSInt Map::SHPData::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, NameArray **nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
+UOSInt Map::SHPData::GetObjectIdsMapXY(NotNullPtr<Data::ArrayListInt64> outArr, NameArray **nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
 {
 	UOSInt retCnt = 0;
 	UOSInt i = 0;
@@ -477,7 +480,7 @@ UOSInt Map::SHPData::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, NameArray *
 	}
 }
 
-Int64 Map::SHPData::GetObjectIdMax()
+Int64 Map::SHPData::GetObjectIdMax() const
 {
 	if (this->layerType == Map::DRAW_LAYER_POINT || this->layerType == Map::DRAW_LAYER_POINT3D)
 	{
@@ -503,7 +506,7 @@ UTF8Char *Map::SHPData::GetString(UTF8Char *buff, UOSInt buffSize, NameArray *na
 	return Text::StrTrimC(buff, (UOSInt)(sptr - buff));
 }
 
-UOSInt Map::SHPData::GetColumnCnt()
+UOSInt Map::SHPData::GetColumnCnt() const
 {
 	return this->dbf->GetColCount();
 }
@@ -523,14 +526,14 @@ Bool Map::SHPData::GetColumnDef(UOSInt colIndex, NotNullPtr<DB::ColDef> colDef)
 	return this->dbf->GetColumnDef(colIndex, colDef);
 }
 
-UInt32 Map::SHPData::GetCodePage()
+UInt32 Map::SHPData::GetCodePage() const
 {
 	return this->dbf->GetCodePage();
 }
 
-Bool Map::SHPData::GetBounds(Math::RectAreaDbl *bounds)
+Bool Map::SHPData::GetBounds(OutParam<Math::RectAreaDbl> bounds) const
 {
-	*bounds = Math::RectAreaDbl(this->min, this->max);
+	bounds.Set(Math::RectAreaDbl(this->min, this->max));
 	return this->min.x != 0 || this->min.y != 0 || this->max.x != 0 || this->max.y != 0;
 }
 
@@ -549,11 +552,7 @@ Math::Geometry::Vector2D *Map::SHPData::GetNewVectorById(GetObjectSess *session,
 	UOSInt nPoint;
 	NotNullPtr<Sync::Mutex> mut;
 
-	UInt32 srid = 0;
-	if (this->csys)
-	{
-		srid = this->csys->GetSRID();
-	}
+	UInt32 srid = this->csys->GetSRID();
 	if (this->layerType == Map::DRAW_LAYER_POINT)
 	{
 		Math::Geometry::Point *pt;
@@ -654,7 +653,7 @@ void Map::SHPData::Reconnect()
 	return this->dbf->Reconnect();
 }
 
-Map::MapDrawLayer::ObjectClass Map::SHPData::GetObjectClass()
+Map::MapDrawLayer::ObjectClass Map::SHPData::GetObjectClass() const
 {
 	return Map::MapDrawLayer::OC_SHP_DATA;
 }

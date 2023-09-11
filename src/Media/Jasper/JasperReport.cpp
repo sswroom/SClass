@@ -25,7 +25,7 @@ Media::Jasper::JasperReport::JasperReport(NotNullPtr<Text::String> sourceName) :
 	this->InitValues();
 }
 
-Media::Jasper::JasperReport::JasperReport(Text::CString sourceName) : IO::ParsedObject(sourceName)
+Media::Jasper::JasperReport::JasperReport(Text::CStringNN sourceName) : IO::ParsedObject(sourceName)
 {
 	this->InitValues();
 }

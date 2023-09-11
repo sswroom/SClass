@@ -86,7 +86,7 @@ void __stdcall SSWR::AVIRead::AVIRRESTfulForm::OnStartClick(void *userObj)
 
 			me->lvTable->ClearItems();
 			Data::ArrayList<Text::CString> tableNames;
-			Text::CString tableName;
+			Text::CStringNN tableName;
 			UTF8Char sbuff[32];
 			UTF8Char *sptr;
 			UOSInt i;
@@ -97,7 +97,7 @@ void __stdcall SSWR::AVIRead::AVIRRESTfulForm::OnStartClick(void *userObj)
 			j = tableNames.GetCount();
 			while (i < j)
 			{
-				tableName = tableNames.GetItem(i);
+				tableName = tableNames.GetItem(i).OrEmpty();
 				k = me->lvTable->AddItem(tableName, 0);
 				sptr = Text::StrOSInt(sbuff, me->dbCache->GetRowCount(tableName));
 				me->lvTable->SetSubItem(k, 1, CSTRP(sbuff, sptr));
@@ -174,11 +174,15 @@ void __stdcall SSWR::AVIRead::AVIRRESTfulForm::OnLogSel(void *userObj)
 void SSWR::AVIRead::AVIRRESTfulForm::InitDB()
 {
 	Text::StringBuilderUTF8 sb;
+	NotNullPtr<DB::DBTool> db;
+	NotNullPtr<DB::DBModel> dbModel;
 	this->dbConn->GetConnName(sb);
-	NEW_CLASS(this->db, DB::DBTool(this->dbConn, false, this->log, CSTR("DB: ")));
-	NEW_CLASS(this->dbModel, DB::DBModel());
+	NEW_CLASSNN(db, DB::DBTool(this->dbConn, false, this->log, CSTR("DB: ")));
+	NEW_CLASSNN(dbModel, DB::DBModel());
+	this->db = db.Ptr();
+	this->dbModel = dbModel.Ptr();
 	this->dbModel->LoadDatabase(this->db, CSTR_NULL, CSTR_NULL);
-	NEW_CLASS(this->dbCache, DB::DBCache(this->dbModel, this->db));
+	NEW_CLASS(this->dbCache, DB::DBCache(dbModel, db));
 	this->txtDatabase->SetText(sb.ToCString());
 }
 

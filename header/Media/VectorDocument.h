@@ -28,7 +28,7 @@ namespace Media
 
 	public:
 		VectorDocument(UInt32 srid, NotNullPtr<Media::DrawEngine> refEng);
-		VectorDocument(UInt32 srid, Text::CString name, NotNullPtr<Media::DrawEngine> refEng);
+		VectorDocument(UInt32 srid, Text::CStringNN name, NotNullPtr<Media::DrawEngine> refEng);
 		virtual ~VectorDocument();
 
 		NotNullPtr<Media::VectorGraph> AddGraph(Double width, Double height, Math::Unit::Distance::DistanceUnit unit);

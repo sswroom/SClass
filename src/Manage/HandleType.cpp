@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "Manage/HandleType.h"
 
-Text::CString Manage::HandleTypeGetName(HandleType handleType)
+Text::CStringNN Manage::HandleTypeGetName(HandleType handleType)
 {
 	switch (handleType)
 	{

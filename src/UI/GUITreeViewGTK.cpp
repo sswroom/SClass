@@ -42,7 +42,7 @@ UI::GUITreeView::TreeItem::TreeItem(void *itemObj, NotNullPtr<Text::String> txt)
 	this->txt = txt->Clone();
 }
 
-UI::GUITreeView::TreeItem::TreeItem(void *itemObj, Text::CString txt)
+UI::GUITreeView::TreeItem::TreeItem(void *itemObj, Text::CStringNN txt)
 {
 	this->hTreeItem = 0;
 	this->itemObj = itemObj;
@@ -97,7 +97,7 @@ void *UI::GUITreeView::TreeItem::GetHItem()
 	return this->hTreeItem;
 }
 
-void UI::GUITreeView::TreeItem::SetText(Text::CString txt)
+void UI::GUITreeView::TreeItem::SetText(Text::CStringNN txt)
 {
 	if (txt.leng == 0)
 	{
@@ -239,7 +239,7 @@ UI::GUITreeView::TreeItem *UI::GUITreeView::InsertItem(TreeItem *parent, TreeIte
 	return item;
 }
 
-UI::GUITreeView::TreeItem *UI::GUITreeView::InsertItem(UI::GUITreeView::TreeItem *parent, TreeItem *insertAfter, Text::CString itemText, void *itemObj)
+UI::GUITreeView::TreeItem *UI::GUITreeView::InsertItem(UI::GUITreeView::TreeItem *parent, TreeItem *insertAfter, Text::CStringNN itemText, void *itemObj)
 {
 	ClassData *data = this->clsData;
 	TreeItem *item;
@@ -415,7 +415,7 @@ void UI::GUITreeView::BeginEdit(TreeItem *item)
 {
 }
 
-Text::CString UI::GUITreeView::GetObjectClass()
+Text::CStringNN UI::GUITreeView::GetObjectClass() const
 {
 	return CSTR("TreeView");
 }

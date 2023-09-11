@@ -70,7 +70,7 @@ UI::GUIProgressBar::~GUIProgressBar()
 	MemFree(data);
 }
 
-Text::CString UI::GUIProgressBar::GetObjectClass()
+Text::CStringNN UI::GUIProgressBar::GetObjectClass() const
 {
 	return CSTR("ProgressBar");
 }

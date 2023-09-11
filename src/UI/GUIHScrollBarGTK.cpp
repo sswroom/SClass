@@ -162,7 +162,7 @@ void UI::GUIHScrollBar::SetAreaP(OSInt left, OSInt top, OSInt right, OSInt botto
 	this->OnSizeChanged(updateScn);
 }
 
-Text::CString UI::GUIHScrollBar::GetObjectClass()
+Text::CStringNN UI::GUIHScrollBar::GetObjectClass() const
 {
 	return CSTR("HScrollBar");
 }

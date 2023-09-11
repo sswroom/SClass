@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "IO/ServiceInfo.h"
 
-Text::CString IO::ServiceInfo::ServiceStateGetName(ServiceState state)
+Text::CStringNN IO::ServiceInfo::ServiceStateGetName(ServiceState state)
 {
 	switch (state)
 	{
@@ -31,7 +31,7 @@ Text::CString IO::ServiceInfo::ServiceStateGetName(ServiceState state)
 	}
 }
 
-Text::CString IO::ServiceInfo::RunStatusGetName(RunStatus status)
+Text::CStringNN IO::ServiceInfo::RunStatusGetName(RunStatus status)
 {
 	switch (status)
 	{

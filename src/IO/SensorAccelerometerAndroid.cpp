@@ -13,20 +13,18 @@ IO::SensorAccelerometerAndroid::~SensorAccelerometerAndroid()
 
 }
 
-Bool IO::SensorAccelerometerAndroid::ReadAcceleration(Double *x, Double *y, Double *z)
+Bool IO::SensorAccelerometerAndroid::ReadAcceleration(OutParam<Math::Vector3> acc)
 {
 	ASensorEvent sensorEvt;
 	if (!this->GetSensorEvent(&sensorEvt))
 		return false;
-	*x = sensorEvt.acceleration.x;
-	*y = sensorEvt.acceleration.y;
-	*z = sensorEvt.acceleration.z;
+	acc.Set(Math::Vector3(sensorEvt.acceleration.x, sensorEvt.acceleration.y, sensorEvt.acceleration.z));
 	return true;
 }
 
 Math::Unit::Acceleration::AccelerationUnit IO::SensorAccelerometerAndroid::GetAccelerationUnit()
 {
-	return Math::Unit::Acceleration::AU_METER_PER_SECOND_SQUARED;
+	return Math::Unit::Acceleration::AccelerationUnit::MeterPerSecondSquared;
 }
 
 IO::SensorAccelerometer *IO::SensorAccelerometerAndroid::GetSensorAccelerator()
@@ -36,5 +34,5 @@ IO::SensorAccelerometer *IO::SensorAccelerometerAndroid::GetSensorAccelerator()
 
 IO::Sensor::SensorType IO::SensorAccelerometerAndroid::GetSensorType()
 {
-	return IO::Sensor::ST_ACCELEROMETER;
+	return IO::Sensor::SensorType::Accelerometer;
 }

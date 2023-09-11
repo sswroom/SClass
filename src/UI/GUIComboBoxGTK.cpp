@@ -102,7 +102,7 @@ void UI::GUIComboBox::EventTextChanged()
 	}
 }
 
-void UI::GUIComboBox::SetText(Text::CString text)
+void UI::GUIComboBox::SetText(Text::CStringNN text)
 {
 	if (this->allowEdit)
 	{
@@ -167,10 +167,10 @@ UOSInt UI::GUIComboBox::AddItem(NotNullPtr<Text::String> itemText, void *itemObj
 	return cnt;
 }
 
-UOSInt UI::GUIComboBox::AddItem(Text::CString itemText, void *itemObj)
+UOSInt UI::GUIComboBox::AddItem(Text::CStringNN itemText, void *itemObj)
 {
 	UOSInt cnt = this->itemTexts.GetCount();
-	this->itemTexts.Add(Text::String::New(itemText.v, itemText.leng));
+	this->itemTexts.Add(Text::String::New(itemText));
 	this->items.Add(itemObj);
 	if (this->clsData->model)
 	{
@@ -200,7 +200,7 @@ UOSInt UI::GUIComboBox::InsertItem(UOSInt index, Text::String *itemText, void *i
 	return index;
 }
 
-UOSInt UI::GUIComboBox::InsertItem(UOSInt index, Text::CString itemText, void *itemObj)
+UOSInt UI::GUIComboBox::InsertItem(UOSInt index, Text::CStringNN itemText, void *itemObj)
 {
 	UOSInt cnt = this->itemTexts.GetCount();
 	if (index >= cnt)
@@ -294,7 +294,7 @@ void UI::GUIComboBox::SetArea(Double left, Double top, Double right, Double bott
 		Double2Int32(bottom * this->hdpi / this->ddpi), updateScn);
 }
 
-Text::CString UI::GUIComboBox::GetObjectClass()
+Text::CStringNN UI::GUIComboBox::GetObjectClass() const
 {
 	return CSTR("ComboBox");
 }

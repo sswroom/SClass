@@ -168,7 +168,7 @@ IO::ParsedObject *Parser::FileParser::MDBParser::ParseFileHdr(NotNullPtr<IO::Str
 			
 			if (csys)
 			{
-				lyr->SetCoordinateSystem(csys->Clone());
+				lyr->SetCoordinateSystem(csys->Clone().Ptr());
 			}
 
 			lyrColl->Add(lyr);

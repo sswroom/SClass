@@ -1880,6 +1880,8 @@ IO/SMake.h: ../../src/IO/SMake.cpp
 @SMake.o
 IO/SMBIOS.h: ../../src/IO/SMBIOS.cpp
 @SMBIOS.o
+IO/SMTCWriter.h: ../../src/IO/SMTCWriter.cpp
+@SMTCWriter.o
 IO/SNBDongle.h: ../../src/IO/SNBDongle.cpp
 @SNBDongle.o
 IO/SNBProtocol.h: ../../src/IO/SNBProtocol.cpp
@@ -2356,6 +2358,7 @@ Math/TSPFile.h: ../../src/Math/TSPFile.cpp
 Math/UTMGridConvertDbl.h: ../../src/Math/UTMGridConvertDbl.cpp
 @UTMGridConvertDbl.o
 Math/Value2D.h:
+Math/Vector3.h:
 Math/VectorTextWriter.h:
 Math/VectorTextWriterList.h: ../../src/Math/VectorTextWriterList.cpp
 @VectorTextWriterList.o
@@ -4921,6 +4924,7 @@ SiLabDriver.o: ../../src/IO/SiLabDriver.cpp
 SiLabSerialPort.o: ../../src/IO/SiLabSerialPort.cpp
 SMake.o: ../../src/IO/SMake.cpp
 SMBIOS.o: ../../src/IO/SMBIOS.cpp
+SMTCWriter.o: ../../src/IO/SMTCWriter.cpp
 SNBDongle.o: ../../src/IO/SNBDongle.cpp
 SNBProtocol.o: ../../src/IO/SNBProtocol.cpp
 SPackageFile.o: ../../src/IO/SPackageFile.cpp

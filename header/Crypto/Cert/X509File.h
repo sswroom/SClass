@@ -202,7 +202,7 @@ namespace Crypto
 			static Bool AlgorithmIdentifierGet(const UInt8 *pdu, const UInt8 *pduEnd, AlgType *algType);
 
 			X509File(NotNullPtr<Text::String> sourceName, Data::ByteArrayR buff);
-			X509File(Text::CString sourceName, Data::ByteArrayR buff);
+			X509File(Text::CStringNN sourceName, Data::ByteArrayR buff);
 		public:
 			virtual ~X509File();
 
@@ -221,13 +221,13 @@ namespace Crypto
 
 			static Bool ParseDigestType(DigestInfo *digestInfo, const UInt8 *pdu, const UInt8 *pduEnd);
 			static Crypto::Hash::HashType GetAlgHash(AlgType algType);
-			static Text::CString FileTypeGetName(FileType fileType);
-			static Text::CString KeyTypeGetName(KeyType keyType);
-			static Text::CString KeyTypeGetOID(KeyType keyType);
-			static Text::CString ECNameGetName(ECName ecName);
-			static Text::CString ECNameGetOID(ECName ecName);
-			static Text::CString ValidStatusGetName(ValidStatus validStatus);
-			static Text::CString ValidStatusGetDesc(ValidStatus validStatus);
+			static Text::CStringNN FileTypeGetName(FileType fileType);
+			static Text::CStringNN KeyTypeGetName(KeyType keyType);
+			static Text::CStringNN KeyTypeGetOID(KeyType keyType);
+			static Text::CStringNN ECNameGetName(ECName ecName);
+			static Text::CStringNN ECNameGetOID(ECName ecName);
+			static Text::CStringNN ValidStatusGetName(ValidStatus validStatus);
+			static Text::CStringNN ValidStatusGetDesc(ValidStatus validStatus);
 			static Crypto::Hash::HashType HashTypeFromOID(const UInt8 *oid, UOSInt oidLen);
 			static X509File *CreateFromCerts(NotNullPtr<const Data::ReadingList<Crypto::Cert::Certificate *>> certs);
 		};

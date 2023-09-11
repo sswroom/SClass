@@ -56,7 +56,7 @@ SSWR::AVIRead::AVIRFileRenameForm::AVIRFileRenameForm(UI::GUIClientControl *pare
 	UOSInt i = this->fileName->LastIndexOf(IO::Path::PATH_SEPERATOR);
 	Text::StringBuilderUTF8 sb;
 	sb.AppendC(UTF8STRC("File rename - "));
-	Text::CString shortName = this->fileName->ToCString().Substring(i + 1);
+	Text::CStringNN shortName = this->fileName->ToCString().Substring(i + 1);
 	sb.Append(shortName);
 	this->SetText(sb.ToCString());
 

@@ -669,7 +669,7 @@ Bool Text::XMLNode::SearchEval(UOSInt level, Data::ArrayList<UTF8Char*> *reqArr,
 	}
 }
 
-Text::CString Text::XMLNode::NodeTypeGetName(NodeType ntype)
+Text::CStringNN Text::XMLNode::NodeTypeGetName(NodeType ntype)
 {
 	switch (ntype)
 	{

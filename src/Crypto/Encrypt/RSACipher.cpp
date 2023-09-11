@@ -160,7 +160,7 @@ Bool Crypto::Encrypt::RSACipher::MGF1(UInt8 *destBuff, const UInt8 *seed, UOSInt
 	return true;
 }
 
-Text::CString Crypto::Encrypt::RSACipher::PaddingGetName(Padding rsaPadding)
+Text::CStringNN Crypto::Encrypt::RSACipher::PaddingGetName(Padding rsaPadding)
 {
 	switch (rsaPadding)
 	{

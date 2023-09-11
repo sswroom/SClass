@@ -24,7 +24,7 @@ DB::CSVFile::CSVFile(NotNullPtr<Text::String> fileName, UInt32 codePage) : DB::R
 	this->nullIfEmpty = false;
 }
 
-DB::CSVFile::CSVFile(Text::CString fileName, UInt32 codePage) : DB::ReadingDB(fileName)
+DB::CSVFile::CSVFile(Text::CStringNN fileName, UInt32 codePage) : DB::ReadingDB(fileName)
 {
 	this->fileName = Text::String::New(fileName);
 	this->stm = 0;

@@ -73,7 +73,7 @@ DB::DBTool *DB::DBList::UseDB()
 	}
 }
 
-void DB::DBList::UnuseDB(DB::DBTool *db)
+void DB::DBList::UnuseDB(NotNullPtr<DB::DBTool> db)
 {
 	UOSInt i;
 	DBInfo *dbInfo;
@@ -82,7 +82,7 @@ void DB::DBList::UnuseDB(DB::DBTool *db)
 	while (i-- > 0)
 	{
 		dbInfo = this->dbList.GetItem(i);
-		if (dbInfo->db.Ptr() == db)
+		if (dbInfo->db == db)
 		{
 			dbInfo->isUsing = false;
 			this->dbEvt.Set();

@@ -37,7 +37,7 @@ OSInt __stdcall UI::GUIButton::BTNWndProc(void *hWnd, UInt32 msg, UInt32 wParam,
 	return 0;
 }
 
-UI::GUIButton::GUIButton(NotNullPtr<GUICore> ui, UI::GUIClientControl *parent, Text::CString txt) : UI::GUIControl(ui, parent)
+UI::GUIButton::GUIButton(NotNullPtr<GUICore> ui, UI::GUIClientControl *parent, Text::CStringNN txt) : UI::GUIControl(ui, parent)
 {
 	UInt32 style = WS_CHILD | WS_TABSTOP;
 	if (parent->IsChildVisible())
@@ -67,7 +67,7 @@ UI::GUIButton::~GUIButton()
 #endif
 }
 
-void UI::GUIButton::SetText(Text::CString text)
+void UI::GUIButton::SetText(Text::CStringNN text)
 {
 	const WChar *wptr = Text::StrToWCharNew(text.v);
 	SetWindowTextW((HWND)this->hwnd, wptr);
@@ -86,7 +86,7 @@ void UI::GUIButton::SetFont(const UTF8Char *name, UOSInt nameLen, Double fontHei
 	InitFont();
 }
 
-Text::CString UI::GUIButton::GetObjectClass()
+Text::CStringNN UI::GUIButton::GetObjectClass() const
 {
 	return CSTR("BUTTON");
 }

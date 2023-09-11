@@ -36,7 +36,6 @@ namespace Net
 		Text::String *username;
 		Text::String *password;
 		Bool webSocket;
-		Bool autoReconn;
 
 		static void __stdcall KAThread(NotNullPtr<Sync::Thread> thread);
 		static void __stdcall OnDisconnect(void *user);

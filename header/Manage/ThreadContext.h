@@ -40,7 +40,7 @@ namespace Manage
 
 		virtual Manage::Dasm *CreateDasm() const = 0;
 
-		static Text::CString ContextTypeGetName(ContextType contextType);
+		static Text::CStringNN ContextTypeGetName(ContextType contextType);
 	};
 }
 #endif

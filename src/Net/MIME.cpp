@@ -96,7 +96,7 @@ Net::MIME::MIMEEntry Net::MIME::mimeList[] = {
 	{UTF8STRC("zip"),  UTF8STRC("application/zip")}
 };
 
-Text::CString Net::MIME::GetMIMEFromExt(Text::CString ext)
+Text::CStringNN Net::MIME::GetMIMEFromExt(Text::CString ext)
 {
 	UTF8Char sbuff[5];
 	if (ext.leng > 4 || ext.leng < 2)
@@ -128,7 +128,7 @@ Text::CString Net::MIME::GetMIMEFromExt(Text::CString ext)
 	return CSTR("application/octet-stream");
 }
 
-Text::CString Net::MIME::GetMIMEFromFileName(const UTF8Char *fileName, UOSInt nameLen)
+Text::CStringNN Net::MIME::GetMIMEFromFileName(const UTF8Char *fileName, UOSInt nameLen)
 {
 	UOSInt i = Text::StrLastIndexOfCharC(fileName, nameLen, '.');
 	if (i == INVALID_INDEX)

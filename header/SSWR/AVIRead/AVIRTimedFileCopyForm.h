@@ -31,7 +31,7 @@ namespace SSWR
 			AVIRTimedFileCopyForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRTimedFileCopyForm();
 
-			Text::CString GetFormName();
+			Text::CStringNN GetFormName() const;
 			virtual void OnMonitorChanged();
 		};
 	}

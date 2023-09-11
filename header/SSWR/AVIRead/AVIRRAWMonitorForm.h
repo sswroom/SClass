@@ -1,7 +1,7 @@
 #ifndef _SM_SSWR_AVIREAD_AVIRRAWMONITORFORM
 #define _SM_SSWR_AVIREAD_AVIRRAWMONITORFORM
-
 #include "IO/LogTool.h"
+#include "IO/PacketLogWriter.h"
 #include "Net/EthernetAnalyzer.h"
 #include "Net/EthernetWebHandler.h"
 #include "Net/SocketMonitor.h"
@@ -54,6 +54,9 @@ namespace SSWR
 			Net::SocketMonitor *socMon;
 			Net::EthernetAnalyzer *analyzer;
 			Net::WhoisHandler whois;
+			Sync::Mutex plogMut;
+			IO::PacketLogWriter *plogWriter;
+			Int32 linkType;
 			UInt32 adapterIP;
 			Bool adapterChanged;
 			Bool dataUpdated;
@@ -73,6 +76,10 @@ namespace SSWR
 			UI::GUILabel *lblIP;
 			UI::GUIComboBox *cboIP;
 			UI::GUIButton *btnStart;
+			UI::GUILabel *lblPLog;
+			UI::GUIComboBox *cboPLog;
+			UI::GUIButton *btnPLog;
+			UI::GUITextBox *txtPLog;
 			UI::GUITabControl *tcMain;
 
 			UI::GUITabPage *tpDevice;
@@ -188,6 +195,7 @@ namespace SSWR
 			static void __stdcall OnIPv4Data(void *userData, const UInt8 *rawData, UOSInt packetSize);
 			static void __stdcall OnInfoClicked(void *userObj);
 			static void __stdcall OnStartClicked(void *userObj);
+			static void __stdcall OnPLogClicked(void *userObj);
 			static void __stdcall OnIPSelChg(void *userObj);
 			static void __stdcall OnIPTranSelChg(void *userObj);
 			static void __stdcall OnLogSelChg(void *userObj);

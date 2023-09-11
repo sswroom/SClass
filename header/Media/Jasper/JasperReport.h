@@ -48,7 +48,7 @@ namespace Media
 			void InitValues();
 		public:
 			JasperReport(NotNullPtr<Text::String> sourceName);
-			JasperReport(Text::CString sourceName);
+			JasperReport(Text::CStringNN sourceName);
 			virtual ~JasperReport();
 
 			virtual IO::ParserType GetParserType() const;

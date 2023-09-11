@@ -242,7 +242,7 @@ Map::ESRI::FileGDBTableInfo *Map::ESRI::FileGDBUtil::TableInfoClone(FileGDBTable
 	MemCopyNO(newTable, tableInfo, sizeof(FileGDBTableInfo));
 	if (tableInfo->csys)
 	{
-		newTable->csys = tableInfo->csys->Clone();
+		newTable->csys = tableInfo->csys->Clone().Ptr();
 	}
 	NEW_CLASS(newTable->fields, Data::ArrayList<FileGDBFieldInfo*>());
 	UOSInt i = 0;

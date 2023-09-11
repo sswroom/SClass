@@ -96,22 +96,22 @@ Map::BingMapsTile::~BingMapsTile()
 	LIST_FREE_STRING(&this->subdomains);
 }
 
-Bool Map::BingMapsTile::IsError()
+Bool Map::BingMapsTile::IsError() const
 {
 	return this->url == 0 || this->key == 0 || this->subdomains.GetCount() == 0;
 }
 
-Text::CString Map::BingMapsTile::GetName()
+Text::CStringNN Map::BingMapsTile::GetName() const
 {
 	return CSTR("Bing Maps");
 }
 
-Map::TileMap::TileType Map::BingMapsTile::GetTileType()
+Map::TileMap::TileType Map::BingMapsTile::GetTileType() const
 {
 	return TT_BING;
 }
 
-UOSInt Map::BingMapsTile::GetConcurrentCount()
+UOSInt Map::BingMapsTile::GetConcurrentCount() const
 {
 	return 2 * this->subdomains.GetCount();
 }
@@ -176,7 +176,7 @@ void Map::BingMapsTile::GetDefaultCacheDir(ImagerySet is, NotNullPtr<Text::Strin
 	sb->Append(ImagerySetGetName(is));
 }
 
-Text::CString Map::BingMapsTile::ImagerySetGetName(ImagerySet is)
+Text::CStringNN Map::BingMapsTile::ImagerySetGetName(ImagerySet is)
 {
 	switch (is)
 	{

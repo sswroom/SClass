@@ -931,7 +931,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	{
 		Data::ArrayList<IO::PCIInfo*> pciList;
 		IO::PCIInfo *pci;
-		const IO::DeviceDB::PCIDeviceInfo *dev;
+		const IO::DeviceDB::DeviceInfo *dev;
 		IO::PCIInfo::GetPCIList(pciList);
 		console->WriteLine();
 		writer->WriteLine();
@@ -1134,22 +1134,20 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 				case IO::Sensor::SensorType::Accelerometer:
 					if (sensor->EnableSensor())
 					{
-						Double x;
-						Double y;
-						Double z;
-						if (sensor->GetSensorAccelerator()->ReadAcceleration(&x, &y, &z))
+						Math::Vector3 acc;
+						if (sensor->GetSensorAccelerator()->ReadAcceleration(acc))
 						{
 							Math::Unit::Acceleration::AccelerationUnit aunit = sensor->GetSensorAccelerator()->GetAccelerationUnit();
 
 							sb.ClearStr();
 							sb.AppendC(UTF8STRC("Accelerometer x = "));
-							sb.AppendDouble(x);
+							sb.AppendDouble(acc.val[0]);
 							sb.Append(Math::Unit::Acceleration::GetUnitShortName(aunit));
 							sb.AppendC(UTF8STRC(", y = "));
-							sb.AppendDouble(y);
+							sb.AppendDouble(acc.val[1]);
 							sb.Append(Math::Unit::Acceleration::GetUnitShortName(aunit));
 							sb.AppendC(UTF8STRC(", z = "));
-							sb.AppendDouble(z);
+							sb.AppendDouble(acc.val[2]);
 							sb.Append(Math::Unit::Acceleration::GetUnitShortName(aunit));
 							console->WriteLineC(sb.ToString(), sb.GetLength());
 							writer->WriteLineC(sb.ToString(), sb.GetLength());
@@ -1161,7 +1159,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 					if (sensor->EnableSensor())
 					{
 						Double pressure;
-						if (sensor->GetSensorPressure()->ReadPressure(&pressure))
+						if (sensor->GetSensorPressure()->ReadPressure(pressure))
 						{
 							sb.ClearStr();
 							sb.AppendC(UTF8STRC("Pressure = "));
@@ -1176,22 +1174,20 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 				case IO::Sensor::SensorType::Magnetometer:
 					if (sensor->EnableSensor())
 					{
-						Double x;
-						Double y;
-						Double z;
-						if (sensor->GetSensorMagnetometer()->ReadMagneticField(&x, &y, &z))
+						Math::Vector3 mag;
+						if (sensor->GetSensorMagnetometer()->ReadMagneticField(mag))
 						{
 							Math::Unit::MagneticField::MagneticFieldUnit mfunit = sensor->GetSensorMagnetometer()->GetMagneticFieldUnit();
 
 							sb.ClearStr();
 							sb.AppendC(UTF8STRC("Magnetometer x = "));
-							sb.AppendDouble(x);
+							sb.AppendDouble(mag.val[0]);
 							sb.Append(Math::Unit::MagneticField::GetUnitShortName(mfunit));
 							sb.AppendC(UTF8STRC(", y = "));
-							sb.AppendDouble(y);
+							sb.AppendDouble(mag.val[1]);
 							sb.Append(Math::Unit::MagneticField::GetUnitShortName(mfunit));
 							sb.AppendC(UTF8STRC(", z = "));
-							sb.AppendDouble(z);
+							sb.AppendDouble(mag.val[2]);
 							sb.Append(Math::Unit::MagneticField::GetUnitShortName(mfunit));
 							console->WriteLineC(sb.ToString(), sb.GetLength());
 							writer->WriteLineC(sb.ToString(), sb.GetLength());

@@ -128,7 +128,7 @@ SSWR::DataSync::SyncServer::SyncServer(NotNullPtr<Net::SocketFactory> sockf, IO:
 			{
 				if (Text::StrToUInt16(sarr2[1].v, port))
 				{
-					if (port > 0 && port < 65536)
+					if (port > 0)
 					{
 						NEW_CLASS(syncCli, SyncClient(this->sockf, serverId, serverName, sarr2[0].ToCString(), port, cliTimeout));
 						this->syncCliList.Add(syncCli);

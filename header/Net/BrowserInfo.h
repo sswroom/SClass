@@ -65,8 +65,8 @@ namespace Net
 		} BrowserType;
 
 	public:
-		static Text::CString GetName(BrowserType btype);
-		static Text::CString GetDefName(BrowserType btype);
+		static Text::CStringNN GetName(BrowserType btype);
+		static Text::CStringNN GetDefName(BrowserType btype);
 	};
 }
 #endif

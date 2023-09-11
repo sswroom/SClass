@@ -2,7 +2,7 @@
 #include "MyMemory.h"
 #include "Net/BrowserInfo.h"
 
-Text::CString Net::BrowserInfo::GetName(BrowserType btype)
+Text::CStringNN Net::BrowserInfo::GetName(BrowserType btype)
 {
 	switch (btype)
 	{
@@ -112,7 +112,7 @@ Text::CString Net::BrowserInfo::GetName(BrowserType btype)
 	}
 }
 
-Text::CString Net::BrowserInfo::GetDefName(BrowserType btype)
+Text::CStringNN Net::BrowserInfo::GetDefName(BrowserType btype)
 {
 	switch (btype)
 	{

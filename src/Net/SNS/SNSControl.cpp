@@ -2,7 +2,7 @@
 #include "IO/Path.h"
 #include "Net/SNS/SNSControl.h"
 
-Text::CString Net::SNS::SNSControl::SNSTypeGetName(Net::SNS::SNSControl::SNSType snsType)
+Text::CStringNN Net::SNS::SNSControl::SNSTypeGetName(Net::SNS::SNSControl::SNSType snsType)
 {
 	switch (snsType)
 	{
@@ -20,7 +20,7 @@ Text::CString Net::SNS::SNSControl::SNSTypeGetName(Net::SNS::SNSControl::SNSType
 	}
 }
 
-Net::SNS::SNSControl::SNSType Net::SNS::SNSControl::SNSTypeFromName(Text::CString name)
+Net::SNS::SNSControl::SNSType Net::SNS::SNSControl::SNSTypeFromName(Text::CStringNN name)
 {
 	if (name.Equals(UTF8STRC("RSS")))
 	{

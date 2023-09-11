@@ -43,7 +43,7 @@ UI::GUITrackBar::~GUITrackBar()
 {
 }
 
-Text::CString UI::GUITrackBar::GetObjectClass()
+Text::CStringNN UI::GUITrackBar::GetObjectClass() const
 {
 	return CSTR("TrackBar");
 }

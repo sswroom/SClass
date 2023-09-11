@@ -34,7 +34,7 @@ namespace SSWR
 				Data::ArrayList<StrRecord*> *records;
 			} Block;
 
-			static Text::CString typeName[];
+			static Text::CStringNN typeName[];
 		private:
 			UI::GUILabel *lblDirectory;
 			UI::GUITextBox *txtDirectory;

@@ -38,7 +38,7 @@ UOSInt Text::TextBinEnc::UCS2TextBinEnc::DecodeBin(const UTF8Char *str, UOSInt s
 	return byteCnt;
 }
 
-Text::CString Text::TextBinEnc::UCS2TextBinEnc::GetName()
+Text::CStringNN Text::TextBinEnc::UCS2TextBinEnc::GetName() const
 {
 	return CSTR("Unicode Text");
 }

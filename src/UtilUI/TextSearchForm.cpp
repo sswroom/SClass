@@ -58,7 +58,7 @@ void UtilUI::TextSearchForm::OnMonitorChanged()
 	this->SetDPI(this->monMgr->GetMonitorHDPI(this->GetHMonitor()), this->monMgr->GetMonitorDDPI(this->GetHMonitor()));
 }
 
-void UtilUI::TextSearchForm::SetSearchText(Text::CString txt)
+void UtilUI::TextSearchForm::SetSearchText(Text::CStringNN txt)
 {
 	this->txtSearch->SetText(txt);
 }

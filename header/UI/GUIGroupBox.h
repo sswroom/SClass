@@ -11,14 +11,14 @@ namespace UI
 
 		static OSInt __stdcall GBWndProc(void *hWnd, UInt32 msg, UOSInt wParam, OSInt lParam);
 	public:
-		GUIGroupBox(NotNullPtr<GUICore> ui, UI::GUIClientControl *parent, Text::CString name);
+		GUIGroupBox(NotNullPtr<GUICore> ui, UI::GUIClientControl *parent, Text::CStringNN name);
 		virtual ~GUIGroupBox();
 
 		virtual Math::Coord2DDbl GetClientOfst();
 		virtual Math::Size2DDbl GetClientSize();
 		virtual Bool IsChildVisible();
 
-		virtual Text::CString GetObjectClass();
+		virtual Text::CStringNN GetObjectClass() const;
 		virtual OSInt OnNotify(UInt32 code, void *lParam);
 		virtual void OnSizeChanged(Bool updateScn);
 	};

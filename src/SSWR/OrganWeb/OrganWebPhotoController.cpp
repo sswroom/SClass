@@ -572,7 +572,7 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhotoId(NotNullPtr<Net::We
 										gimg2->SetAlphaType(Media::AT_ALPHA);
 										{
 											Bool revOrder;
-											UInt8 *bits = gimg2->GetImgBits(&revOrder);
+											UInt8 *bits = gimg2->GetImgBits(revOrder);
 											UInt32 col = (this->random.NextInt30() & 0xffffff) | 0x5f808080;
 											if (bits)
 											{

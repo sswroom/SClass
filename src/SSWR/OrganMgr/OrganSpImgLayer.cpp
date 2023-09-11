@@ -12,12 +12,12 @@ SSWR::OrganMgr::OrganSpImgLayer::~OrganSpImgLayer()
 {
 }
 
-Map::DrawLayerType SSWR::OrganMgr::OrganSpImgLayer::GetLayerType()
+Map::DrawLayerType SSWR::OrganMgr::OrganSpImgLayer::GetLayerType() const
 {
 	return Map::DRAW_LAYER_POINT;
 }
 
-UOSInt SSWR::OrganMgr::OrganSpImgLayer::GetAllObjectIds(Data::ArrayListInt64 *outArr, Map::NameArray **nameArr)
+UOSInt SSWR::OrganMgr::OrganSpImgLayer::GetAllObjectIds(NotNullPtr<Data::ArrayListInt64> outArr, Map::NameArray **nameArr)
 {
 	UOSInt i = 0;
 	UOSInt j = this->objList.GetCount();
@@ -29,12 +29,12 @@ UOSInt SSWR::OrganMgr::OrganSpImgLayer::GetAllObjectIds(Data::ArrayListInt64 *ou
 	return j;
 }
 
-UOSInt SSWR::OrganMgr::OrganSpImgLayer::GetObjectIds(Data::ArrayListInt64 *outArr, Map::NameArray **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
+UOSInt SSWR::OrganMgr::OrganSpImgLayer::GetObjectIds(NotNullPtr<Data::ArrayListInt64> outArr, Map::NameArray **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
 {
 	return GetObjectIdsMapXY(outArr, nameArr, rect.ToDouble() / mapRate, keepEmpty);
 }
 
-UOSInt SSWR::OrganMgr::OrganSpImgLayer::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, Map::NameArray **nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
+UOSInt SSWR::OrganMgr::OrganSpImgLayer::GetObjectIdsMapXY(NotNullPtr<Data::ArrayListInt64> outArr, Map::NameArray **nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
 {
 	UOSInt cnt = 0;
 	UOSInt i;
@@ -55,7 +55,7 @@ UOSInt SSWR::OrganMgr::OrganSpImgLayer::GetObjectIdsMapXY(Data::ArrayListInt64 *
 	return cnt;
 }
 
-Int64 SSWR::OrganMgr::OrganSpImgLayer::GetObjectIdMax()
+Int64 SSWR::OrganMgr::OrganSpImgLayer::GetObjectIdMax() const
 {
 	return (Int64)this->objList.GetCount() - 1;
 }
@@ -86,7 +86,7 @@ UTF8Char *SSWR::OrganMgr::OrganSpImgLayer::GetString(UTF8Char *buff, UOSInt buff
 	return 0;
 }
 
-UOSInt SSWR::OrganMgr::OrganSpImgLayer::GetColumnCnt()
+UOSInt SSWR::OrganMgr::OrganSpImgLayer::GetColumnCnt() const
 {
 	return 1;
 }
@@ -126,14 +126,14 @@ Bool SSWR::OrganMgr::OrganSpImgLayer::GetColumnDef(UOSInt colIndex, NotNullPtr<D
 	return false;
 }
 
-UInt32 SSWR::OrganMgr::OrganSpImgLayer::GetCodePage()
+UInt32 SSWR::OrganMgr::OrganSpImgLayer::GetCodePage() const
 {
 	return 65001;
 }
 
-Bool SSWR::OrganMgr::OrganSpImgLayer::GetBounds(Math::RectAreaDbl *bounds)
+Bool SSWR::OrganMgr::OrganSpImgLayer::GetBounds(OutParam<Math::RectAreaDbl> bounds) const
 {
-	*bounds = Math::RectAreaDbl(this->min, this->max);
+	bounds.Set(Math::RectAreaDbl(this->min, this->max));
 	return this->min.x != 0 || this->min.y != 0 || this->max.x != 0 || this->max.y != 0;
 }
 
@@ -159,7 +159,7 @@ Math::Geometry::Vector2D *SSWR::OrganMgr::OrganSpImgLayer::GetNewVectorById(Map:
 	return pt;
 }
 
-Map::MapDrawLayer::ObjectClass SSWR::OrganMgr::OrganSpImgLayer::GetObjectClass()
+Map::MapDrawLayer::ObjectClass SSWR::OrganMgr::OrganSpImgLayer::GetObjectClass() const
 {
 	return Map::MapDrawLayer::OC_OTHER;
 }

@@ -35,7 +35,7 @@ Media::CodeImageGen::CodeImageGen *Media::CodeImageGen::CodeImageGen::CreateGene
 	return codeImgGen;
 }
 
-Text::CString Media::CodeImageGen::CodeImageGen::GetCodeName(CodeType codeType)
+Text::CStringNN Media::CodeImageGen::CodeImageGen::GetCodeName(CodeType codeType)
 {
 	switch (codeType)
 	{

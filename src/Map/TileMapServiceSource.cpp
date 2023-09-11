@@ -338,27 +338,27 @@ Map::TileMapServiceSource::~TileMapServiceSource()
 	}
 }
 
-Text::CString Map::TileMapServiceSource::GetName()
+Text::CStringNN Map::TileMapServiceSource::GetName() const
 {
-	return STR_CSTR(this->title);
+	return this->title?this->title->ToCString():CSTR("Unknown");
 }
 
-Bool Map::TileMapServiceSource::IsError()
+Bool Map::TileMapServiceSource::IsError() const
 {
 	return this->layers.GetCount() == 0;
 }
 
-Map::TileMap::TileType Map::TileMapServiceSource::GetTileType()
+Map::TileMap::TileType Map::TileMapServiceSource::GetTileType() const
 {
 	return Map::TileMap::TT_TMS;
 }
 
-UOSInt Map::TileMapServiceSource::GetLevelCount()
+UOSInt Map::TileMapServiceSource::GetLevelCount() const
 {
 	return this->layers.GetCount();
 }
 
-Double Map::TileMapServiceSource::GetLevelScale(UOSInt level)
+Double Map::TileMapServiceSource::GetLevelScale(UOSInt level) const
 {
 	TileLayer *layer = this->layers.GetItem(level);
 	if (layer == 0)
@@ -369,7 +369,7 @@ Double Map::TileMapServiceSource::GetLevelScale(UOSInt level)
 	return layer->unitPerPixel / scaleDiv;
 }
 
-UOSInt Map::TileMapServiceSource::GetNearestLevel(Double scale)
+UOSInt Map::TileMapServiceSource::GetNearestLevel(Double scale) const
 {
 	Double minDiff = 1.0E+100;
 	UOSInt minLevel = 0;
@@ -396,14 +396,14 @@ UOSInt Map::TileMapServiceSource::GetNearestLevel(Double scale)
 	return minLevel;
 }
 
-UOSInt Map::TileMapServiceSource::GetConcurrentCount()
+UOSInt Map::TileMapServiceSource::GetConcurrentCount() const
 {
 	return this->concurrCnt;
 }
 
-Bool Map::TileMapServiceSource::GetBounds(Math::RectAreaDbl *bounds)
+Bool Map::TileMapServiceSource::GetBounds(OutParam<Math::RectAreaDbl> bounds) const
 {
-	*bounds = this->bounds;
+	bounds.Set(this->bounds);
 	return true;
 }
 
@@ -412,12 +412,12 @@ Math::CoordinateSystem *Map::TileMapServiceSource::GetCoordinateSystem()
 	return this->csys;
 }
 
-Bool Map::TileMapServiceSource::IsMercatorProj()
+Bool Map::TileMapServiceSource::IsMercatorProj() const
 {
 	return false;
 }
 
-UOSInt Map::TileMapServiceSource::GetTileSize()
+UOSInt Map::TileMapServiceSource::GetTileSize() const
 {
 	return this->tileWidth;
 }

@@ -11,8 +11,8 @@ namespace DB
 	class DBQueue
 	{
 	public:
-		typedef void (__stdcall *DBReadHdlr)(void *userData, void *userData2, DB::DBTool *db, DB::DBReader *r);
-		typedef Bool (__stdcall *DBToolHdlr)(void *userData, void *userData2, DB::DBTool *db);
+		typedef void (__stdcall *DBReadHdlr)(void *userData, void *userData2, NotNullPtr<DB::DBTool> db, DB::DBReader *r);
+		typedef Bool (__stdcall *DBToolHdlr)(void *userData, void *userData2, NotNullPtr<DB::DBTool> db);
 
 		enum class Priority
 		{
@@ -132,12 +132,12 @@ namespace DB
 		UOSInt nextDB;
 
 	public:
-		DBQueue(DBTool *db, IO::LogTool *log, Text::CString name, UOSInt dbSize);
-		DBQueue(Data::ArrayList<DBTool*> *dbs, IO::LogTool *log, NotNullPtr<Text::String> name, UOSInt dbSize);
-		DBQueue(Data::ArrayList<DBTool*> *dbs, IO::LogTool *log, Text::CString name, UOSInt dbSize);
+		DBQueue(NotNullPtr<DBTool> db, IO::LogTool *log, Text::CString name, UOSInt dbSize);
+		DBQueue(NotNullPtr<Data::ArrayListNN<DBTool>> dbs, IO::LogTool *log, NotNullPtr<Text::String> name, UOSInt dbSize);
+		DBQueue(NotNullPtr<Data::ArrayListNN<DBTool>> dbs, IO::LogTool *log, Text::CString name, UOSInt dbSize);
 		~DBQueue();
 
-		void AddDB(DB::DBTool *db);
+		void AddDB(NotNullPtr<DB::DBTool> db);
 
 		void ToStop();
 		void AddSQL(const UTF8Char *sql, UOSInt sqlLen);
@@ -166,7 +166,7 @@ namespace DB
 	{
 	private:
 		DBQueue *dbQ;
-		DBTool *db;
+		NotNullPtr<DBTool> db;
 		Sync::Event evt;
 		Sync::Mutex mut;
 		Bool running;
@@ -174,7 +174,7 @@ namespace DB
 		Data::DateTime procTime;
 
 	public:
-		DBHandler(DBQueue *dbQ, DBTool *db);
+		DBHandler(DBQueue *dbQ, NotNullPtr<DBTool> db);
 		~DBHandler();
 
 	public:

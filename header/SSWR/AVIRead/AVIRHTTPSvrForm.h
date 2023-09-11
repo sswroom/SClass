@@ -142,8 +142,8 @@ namespace SSWR
 			virtual void OnMonitorChanged();
 
 			void SetPort(Int32 port);
-			void SetDocPath(Text::CString docPath);
-			void SetLogPath(Text::CString logPath);
+			void SetDocPath(Text::CStringNN docPath);
+			void SetLogPath(Text::CStringNN logPath);
 			void SetBrowseDir(Bool browseDir);
 			void SetAllowProxy(Bool allowProxy);
 			void StartListen();

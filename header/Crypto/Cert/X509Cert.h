@@ -11,7 +11,7 @@ namespace Crypto
 		{
 		public:
 			X509Cert(NotNullPtr<Text::String> sourceName, Data::ByteArrayR buff);
-			X509Cert(Text::CString sourceName, Data::ByteArrayR buff);
+			X509Cert(Text::CStringNN sourceName, Data::ByteArrayR buff);
 			virtual ~X509Cert();
 
 			Bool GetSubjectCN(NotNullPtr<Text::StringBuilderUTF8> sb) const;

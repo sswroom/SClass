@@ -31,8 +31,8 @@ namespace IO
 			Stopping
 		};
 
-		static Text::CString ServiceStateGetName(ServiceState state);
-		static Text::CString RunStatusGetName(RunStatus status);
+		static Text::CStringNN ServiceStateGetName(ServiceState state);
+		static Text::CStringNN RunStatusGetName(RunStatus status);
 	};
 }
 #endif

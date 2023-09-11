@@ -17,7 +17,7 @@ namespace Map
 		static void __stdcall InnerUpdated(void *userObj);
 	public:
 		MapLayerCollection(NotNullPtr<Text::String> sourceName, Text::String *layerName);
-		MapLayerCollection(Text::CString sourceName, Text::CString layerName);
+		MapLayerCollection(Text::CStringNN sourceName, Text::CString layerName);
 		virtual ~MapLayerCollection();
 
 		virtual UOSInt Add(Map::MapDrawLayer * val);
@@ -29,22 +29,22 @@ namespace Map
 
 		virtual void SetCurrScale(Double scale);
 		virtual void SetCurrTimeTS(Int64 timeStamp);
-		virtual Int64 GetTimeStartTS();
-		virtual Int64 GetTimeEndTS();
+		virtual Int64 GetTimeStartTS() const;
+		virtual Int64 GetTimeEndTS() const;
 
-		virtual DrawLayerType GetLayerType();
-		virtual UOSInt GetAllObjectIds(Data::ArrayListInt64 *outArr, NameArray **nameArr);
-		virtual UOSInt GetObjectIds(Data::ArrayListInt64 *outArr, NameArray **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty);
-		virtual UOSInt GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, NameArray **nameArr, Math::RectAreaDbl rect, Bool keepEmpty);
-		virtual Int64 GetObjectIdMax();
+		virtual DrawLayerType GetLayerType() const;
+		virtual UOSInt GetAllObjectIds(NotNullPtr<Data::ArrayListInt64> outArr, NameArray **nameArr);
+		virtual UOSInt GetObjectIds(NotNullPtr<Data::ArrayListInt64> outArr, NameArray **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty);
+		virtual UOSInt GetObjectIdsMapXY(NotNullPtr<Data::ArrayListInt64> outArr, NameArray **nameArr, Math::RectAreaDbl rect, Bool keepEmpty);
+		virtual Int64 GetObjectIdMax() const;
 		virtual void ReleaseNameArr(NameArray *nameArr);
 		virtual UTF8Char *GetString(UTF8Char *buff, UOSInt buffSize, NameArray *nameArr, Int64 id, UOSInt strIndex);
-		virtual UOSInt GetColumnCnt();
+		virtual UOSInt GetColumnCnt() const;
 		virtual UTF8Char *GetColumnName(UTF8Char *buff, UOSInt colIndex);
 		virtual DB::DBUtil::ColType GetColumnType(UOSInt colIndex, UOSInt *colSize);
 		virtual Bool GetColumnDef(UOSInt colIndex, NotNullPtr<DB::ColDef> colDef);
-		virtual UInt32 GetCodePage();
-		virtual Bool GetBounds(Math::RectAreaDbl *rect);
+		virtual UInt32 GetCodePage() const;
+		virtual Bool GetBounds(OutParam<Math::RectAreaDbl> rect) const;
 
 		virtual GetObjectSess *BeginGetObject();
 		virtual void EndGetObject(GetObjectSess *session);
@@ -52,8 +52,8 @@ namespace Map
 		virtual void AddUpdatedHandler(UpdatedHandler hdlr, void *obj);
 		virtual void RemoveUpdatedHandler(UpdatedHandler hdlr, void *obj);
 
-		virtual ObjectClass GetObjectClass();
-		virtual Math::CoordinateSystem *GetCoordinateSystem();
+		virtual ObjectClass GetObjectClass() const;
+		virtual NotNullPtr<Math::CoordinateSystem> GetCoordinateSystem();
 		virtual void SetCoordinateSystem(Math::CoordinateSystem *csys);
 
 		void ReleaseAll();

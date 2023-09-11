@@ -83,8 +83,8 @@ namespace Net
 		ConnectionType GetConnectionType();
 		ConnectionStatus GetConnectionStatus();
 
-		static Text::CString ConnectionTypeGetName(ConnectionType connType);
-		static Text::CString ConnectionStatusGetName(ConnectionStatus connStatus);
+		static Text::CStringNN ConnectionTypeGetName(ConnectionType connType);
+		static Text::CStringNN ConnectionStatusGetName(ConnectionStatus connStatus);
 	};
 }
 #endif

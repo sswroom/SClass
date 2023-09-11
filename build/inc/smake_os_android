@@ -1,7 +1,7 @@
 
 Crypto/Cert/TrustStore.h: ../../src/Crypto/Cert/TrustStore_Linux.cpp
 @TrustStore.o
-Crypto/Encrypt/RSAEnc.h: ../../src/Crypto/Encrypt/RSAEnc.cpp
+Crypto/Encrypt/RSAEnc.h: ../../src/Crypto/Encrypt/RSAEncNull.cpp
 @RSAEnc.o
 
 DB/MDBFileConn.h: ../../src/DB/MDBFileConnNul.cpp
@@ -14,7 +14,7 @@ DB/ODBCConn.h: ../../src/DB/ODBCConnNul.cpp
 @ODBCConn.o
 DB/PostgreSQLConn.h: ../../src/DB/PostgreSQLConnNul.cpp
 @PostgreSQLConn.o
-DB/TDSConn.h: ../../src/DB/TDSConn.cpp
+DB/TDSConn.h: ../../src/DB/TDSConn_Null.cpp
 @TDSConn.o
 
 Exporter/HEIFExporter.h: ../../src/Exporter/HEIFExporter_Null.cpp
@@ -36,6 +36,10 @@ IO/I2CChannelOS.h: ../../src/IO/I2CChannelOSL.cpp
 @I2CChannelOS.o
 IO/OS.h: ../../src/IO/OSAndroid.cpp
 @OS.o
+IO/PCIInfo.h: ../../src/IO/PCIInfoL.cpp
+@PCIInfo.o
+IO/PowerInfo.h: ../../src/IO/PowerInfoL.cpp
+@PowerInfo.o
 IO/SDCardMgr.h: ../../src/IO/SDCardMgrL.cpp
 @SDCardMgr.o
 IO/SensorAccelerometerAndroid.h: ../../src/IO/SensorAccelerometerAndroid.cpp
@@ -50,6 +54,10 @@ IO/SensorPressureAndroid.h: ../../src/IO/SensorPressureAndroid.cpp
 @SensorPressureAndroid.o
 IO/SensorUnknownAndroid.h: ../../src/IO/SensorUnknownAndroid.cpp
 @SensorUnknownAndroid.o
+IO/ServiceManager.h: ../../src/IO/ServiceManagerNull.cpp
+@ServiceManager.o
+IO/USBInfo.h: ../../src/IO/USBInfoL.cpp
+@USBInfo.o
 IO/Watchdog.h: ../../src/IO/WatchdogL.cpp
 @Watchdog.o
 
@@ -96,7 +104,7 @@ Media/OpenCV/OCVUtil.h: ../../src/Media/OpenCV/OCVUtil.cpp
 
 Net/HTTPOSClient.h: ../../src/Net/HTTPOSClientNull.cpp
 @HTTPOSClient.o
-Net/SSLEngineFactory.h: ../../src/Net/SSLEngineFactoryOpenSSL.cpp
+Net/SSLEngineFactory.h: ../../src/Net/SSLEngineFactoryNull.cpp
 @SSLEngineFactory.o
 Net/WirelessLAN.h: ../../src/Net/WirelessLANL.cpp
 @WirelessLAN.o
@@ -120,15 +128,13 @@ Sync/ThreadUtil.h: ../../src/Sync/ThreadUtilU.cpp
 
 ConsoleStartup.o: ../../startup/LinuxConStartup.cpp
 TrustStore.o: ../../src/Crypto/Cert/TrustStore_Linux.cpp
-RSAEnc.o: ../../src/Crypto/Encrypt/RSAEnc.cpp
-!-lcrypto
+RSAEnc.o: ../../src/Crypto/Encrypt/RSAEncNull.cpp
 MDBFileConn.o: ../../src/DB/MDBFileConnNul.cpp
 MongoDB.o: ../../src/DB/MongoDBNull.cpp
 MySQLConn.o: ../../src/DB/MySQLConnNull.cpp
 ODBCConn.o: ../../src/DB/ODBCConnNul.cpp
 PostgreSQLConn.o: ../../src/DB/PostgreSQLConnNul.cpp
-TDSConn.o: ../../src/DB/TDSConn.cpp
-!-lsybdb
+TDSConn.o: ../../src/DB/TDSConn_Null.cpp
 HEIFExporter.o: ../../src/Exporter/HEIFExporter_Null.cpp
 WebPExporter.o: ../../src/Exporter/WebPExporter_Null.cpp
 BTController.o: ../../src/IO/BTControllerNull.cpp
@@ -138,6 +144,8 @@ DebugWriter.o: ../../src/IO/DebugWriter_Null.cpp
 HIDInfo.o: ../../src/IO/HIDInfoL.cpp
 I2CChannelOS.o: ../../src/IO/I2CChannelOSL.cpp
 OS.o: ../../src/IO/OSAndroid.cpp
+PCIInfo.o: ../../src/IO/PCIInfoL.cpp
+PowerInfo.o: ../../src/IO/PowerInfoL.cpp
 SDCardMgr.o: ../../src/IO/SDCardMgrL.cpp
 SensorAccelerometerAndroid.o: ../../src/IO/SensorAccelerometerAndroid.cpp
 SensorAndroid.o: ../../src/IO/SensorAndroid.cpp
@@ -146,6 +154,8 @@ SensorMagnetometerAndroid.o: ../../src/IO/SensorMagnetometerAndroid.cpp
 SensorManager.o: ../../src/IO/SensorManagerAndroid.cpp
 SensorPressureAndroid.o: ../../src/IO/SensorPressureAndroid.cpp
 SensorUnknownAndroid.o: ../../src/IO/SensorUnknownAndroid.cpp
+ServiceManager.o: ../../src/IO/ServiceManagerNull.cpp
+USBInfo.o: ../../src/IO/USBInfoL.cpp
 Watchdog.o: ../../src/IO/WatchdogL.cpp
 Computer.o: ../../src/Manage/ComputerL.cpp
 ComputerUser.o: ../../src/Manage/ComputerUserL.cpp
@@ -169,7 +179,7 @@ OCVNumPlateFinder.o: ../../src/Media/OpenCV/OCVNumPlateFinder_Null.cpp
 OCVObjectDetector.o: ../../src/Media/OpenCV/OCVObjectDetectorNull.cpp
 OCVUtil.o: ../../src/Media/OpenCV/OCVUtil.cpp
 HTTPOSClient.o: ../../src/Net/HTTPOSClientNull.cpp
-SSLEngineFactory.o: ../../src/Net/SSLEngineFactoryOpenSSL.cpp
+SSLEngineFactory.o: ../../src/Net/SSLEngineFactoryNull.cpp
 WirelessLAN.o: ../../src/Net/WirelessLANL.cpp
 WLANLinuxInterface.o: ../../src/Net/WLANLinuxInterface.cpp
 WLANLinuxMTKInterface.o: ../../src/Net/WLANLinuxMTKInterface.cpp

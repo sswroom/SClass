@@ -383,8 +383,8 @@ IO::ParsedObject *Parser::FileParser::CSVParser::ParseFileHdr(NotNullPtr<IO::Str
 				nameCol = i;
 			}
 		}
-		Math::CoordinateSystem *csys;
-		NEW_CLASS(lyr, Map::VectorLayer(Map::DRAW_LAYER_POINT, fd->GetFullName(), currCol, tmpcArr2, csys = Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::CoordinateSystemManager::GCST_WGS84), nameCol, 0));
+		NotNullPtr<Math::CoordinateSystem> csys;
+		NEW_CLASS(lyr, Map::VectorLayer(Map::DRAW_LAYER_POINT, fd->GetFullName(), currCol, tmpcArr2, csys = Math::CoordinateSystemManager::CreateDefaultCsys(), nameCol, 0));
 		
 		UTF8Char **tmpUArr2 = (UTF8Char**)tmpcArr2;
 		while (reader.ReadLine(sbuff, 1024))

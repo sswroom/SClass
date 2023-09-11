@@ -2,7 +2,7 @@
 #include "MyMemory.h"
 #include "Manage/ThreadContext.h"
 
-Text::CString Manage::ThreadContext::ContextTypeGetName(ContextType contextType)
+Text::CStringNN Manage::ThreadContext::ContextTypeGetName(ContextType contextType)
 {
 	switch (contextType)
 	{

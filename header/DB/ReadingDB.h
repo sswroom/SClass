@@ -17,7 +17,7 @@ namespace DB
 	{
 	public:
 		ReadingDB(NotNullPtr<Text::String> sourceName);
-		ReadingDB(Text::CString sourceName);
+		ReadingDB(Text::CStringNN sourceName);
 		virtual ~ReadingDB();
 
 		virtual UOSInt QuerySchemaNames(Data::ArrayList<Text::String*> *names);
@@ -35,8 +35,8 @@ namespace DB
 
 		virtual IO::ParserType GetParserType() const;
 
-		virtual Bool IsFullConn(); //false = read only, true = DBConn
-		virtual Bool IsDBTool(); //true = ReadingDBTool
+		virtual Bool IsFullConn() const; //false = read only, true = DBConn
+		virtual Bool IsDBTool() const; //true = ReadingDBTool
 
 		static Bool IsDBObj(IO::ParsedObject *pobj);
 	};

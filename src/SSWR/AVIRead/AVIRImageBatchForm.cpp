@@ -222,7 +222,9 @@ void SSWR::AVIRead::AVIRImageBatchForm::OpenFolder(NotNullPtr<Text::String> fold
 
 void SSWR::AVIRead::AVIRImageBatchForm::UpdatePreview()
 {
-	if (this->filteredImage)
+	NotNullPtr<Media::StaticImage> filteredImage;
+	NotNullPtr<Media::StaticImage> previewImage;
+	if (filteredImage.Set(this->filteredImage) && previewImage.Set(this->previewImage))
 	{
 		SSWR::AVIRead::AVIRImageControl::ImageSetting setting;
 
@@ -230,8 +232,8 @@ void SSWR::AVIRead::AVIRImageBatchForm::UpdatePreview()
 		setting.contrast = UOSInt2Double(this->hsbContr->GetPos()) * 0.01;
 		setting.gamma = UOSInt2Double(this->hsbGamma->GetPos()) * 0.01;
 		setting.flags = (Int32)(this->hsbHDRLev->GetPos() << 4);
-		this->icMain->ApplySetting(this->previewImage, this->filteredImage, &setting);
-		this->pbMain->SetImage(this->filteredImage, true);
+		this->icMain->ApplySetting(previewImage, filteredImage, setting);
+		this->pbMain->SetImage(filteredImage.Ptr(), true);
 	}
 }
 

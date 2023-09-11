@@ -10,7 +10,7 @@ namespace Crypto
 		{
 		public:
 			X509CRL(NotNullPtr<Text::String> sourceName, Data::ByteArrayR buff);
-			X509CRL(Text::CString sourceName, Data::ByteArrayR buff);
+			X509CRL(Text::CStringNN sourceName, Data::ByteArrayR buff);
 			virtual ~X509CRL();
 
 			virtual FileType GetFileType() const;

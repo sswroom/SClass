@@ -14,11 +14,11 @@ namespace UI
 		Data::ArrayList<CheckedChangeHandler> checkedChangeHdlrs;
 		Data::ArrayList<void*> checkedChangeObjs;
 	public:
-		GUICheckBox(NotNullPtr<GUICore> ui, UI::GUIClientControl *parent, Text::CString initText, Bool checked);
+		GUICheckBox(NotNullPtr<GUICore> ui, UI::GUIClientControl *parent, Text::CStringNN initText, Bool checked);
 		virtual ~GUICheckBox();
 
-		virtual void SetText(Text::CString text);
-		virtual Text::CString GetObjectClass();
+		virtual void SetText(Text::CStringNN text);
+		virtual Text::CStringNN GetObjectClass() const;
 		virtual OSInt OnNotify(UInt32 code, void *lParam);
 
 		void EventCheckedChange(Bool newState);

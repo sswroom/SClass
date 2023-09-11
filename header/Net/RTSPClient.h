@@ -45,14 +45,14 @@ namespace Net
 
 		RTSPClient(const RTSPClient *cli);
 	public:
-		RTSPClient(NotNullPtr<Net::SocketFactory> sockf, Text::CString host, UInt16 port, Data::Duration timeout);
+		RTSPClient(NotNullPtr<Net::SocketFactory> sockf, Text::CStringNN host, UInt16 port, Data::Duration timeout);
 		~RTSPClient();
 
 
 		Bool GetOptions(Text::CString url, Data::ArrayList<const UTF8Char *> *options);
 		Net::SDPFile *GetMediaInfo(Text::CString url);
 
-		static IO::ParsedObject *ParseURL(NotNullPtr<Net::SocketFactory> sockf, Text::CString url, Data::Duration timeout);
+		static IO::ParsedObject *ParseURL(NotNullPtr<Net::SocketFactory> sockf, Text::CStringNN url, Data::Duration timeout);
 
 	private:
 		UTF8Char *SetupRTP(UTF8Char *sessIdOut, Text::CString url, Net::RTPCliChannel *rtpChannel);

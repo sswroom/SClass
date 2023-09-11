@@ -305,12 +305,12 @@ void Map::HKTrafficLayer2::ReloadData()
 	}
 }
 
-Map::DrawLayerType Map::HKTrafficLayer2::GetLayerType()
+Map::DrawLayerType Map::HKTrafficLayer2::GetLayerType() const
 {
 	return Map::DRAW_LAYER_POLYLINE;
 }
 
-UOSInt Map::HKTrafficLayer2::GetAllObjectIds(Data::ArrayListInt64 *outArr, NameArray **nameArr)
+UOSInt Map::HKTrafficLayer2::GetAllObjectIds(NotNullPtr<Data::ArrayListInt64> outArr, NameArray **nameArr)
 {
 	UOSInt ret = 0;
 	UOSInt i;
@@ -332,12 +332,12 @@ UOSInt Map::HKTrafficLayer2::GetAllObjectIds(Data::ArrayListInt64 *outArr, NameA
 	return ret;
 }
 
-UOSInt Map::HKTrafficLayer2::GetObjectIds(Data::ArrayListInt64 *outArr, NameArray **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
+UOSInt Map::HKTrafficLayer2::GetObjectIds(NotNullPtr<Data::ArrayListInt64> outArr, NameArray **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
 {
 	return GetObjectIdsMapXY(outArr, nameArr, rect.ToDouble() / mapRate, keepEmpty);
 }
 
-UOSInt Map::HKTrafficLayer2::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, NameArray **nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
+UOSInt Map::HKTrafficLayer2::GetObjectIdsMapXY(NotNullPtr<Data::ArrayListInt64> outArr, NameArray **nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
 {
 	UOSInt retCnt = 0;
 	RoadInfo *road;
@@ -360,7 +360,7 @@ UOSInt Map::HKTrafficLayer2::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, Nam
 	return retCnt;
 }
 
-Int64 Map::HKTrafficLayer2::GetObjectIdMax()
+Int64 Map::HKTrafficLayer2::GetObjectIdMax() const
 {
 	Sync::MutexUsage mutUsage(this->roadMut);
 	return this->roadMap.GetKey(this->roadMap.GetCount() - 1);
@@ -376,7 +376,7 @@ UTF8Char *Map::HKTrafficLayer2::GetString(UTF8Char *buff, UOSInt buffSize, NameA
 	return 0;
 }
 
-UOSInt Map::HKTrafficLayer2::GetColumnCnt()
+UOSInt Map::HKTrafficLayer2::GetColumnCnt() const
 {
 	////////////////////////////
 	return 0;
@@ -400,14 +400,14 @@ Bool Map::HKTrafficLayer2::GetColumnDef(UOSInt colIndex, NotNullPtr<DB::ColDef> 
 	return false;
 }
 
-UInt32 Map::HKTrafficLayer2::GetCodePage()
+UInt32 Map::HKTrafficLayer2::GetCodePage() const
 {
 	return 65001;
 }
 
-Bool Map::HKTrafficLayer2::GetBounds(Math::RectAreaDbl *bounds)
+Bool Map::HKTrafficLayer2::GetBounds(OutParam<Math::RectAreaDbl> bounds) const
 {
-	*bounds = this->bounds;
+	bounds.Set(this->bounds);
 	return true;
 }
 
@@ -445,7 +445,7 @@ Math::Geometry::Vector2D *Map::HKTrafficLayer2::GetNewVectorById(GetObjectSess *
 	return vec;
 }
 
-Map::MapDrawLayer::ObjectClass Map::HKTrafficLayer2::GetObjectClass()
+Map::MapDrawLayer::ObjectClass Map::HKTrafficLayer2::GetObjectClass() const
 {
 	return Map::MapDrawLayer::OC_HKTRAFFIC_LAYER2;
 }

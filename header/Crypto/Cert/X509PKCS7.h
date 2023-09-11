@@ -11,7 +11,7 @@ namespace Crypto
 		{
 		public:
 			X509PKCS7(NotNullPtr<Text::String> sourceName, Data::ByteArrayR buff);
-			X509PKCS7(Text::CString sourceName, Data::ByteArrayR buff);
+			X509PKCS7(Text::CStringNN sourceName, Data::ByteArrayR buff);
 			virtual ~X509PKCS7();
 
 			virtual FileType GetFileType() const;

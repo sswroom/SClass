@@ -57,7 +57,7 @@ namespace IO
 		void HandleCommand(CommandHandler cmdHdlr, void *userObj);
 
 		static UOSInt GenNMEACommand(const UTF8Char *cmd, UOSInt cmdLen, UInt8 *buff);
-		static Map::GPSTrack *NMEA2Track(NotNullPtr<IO::Stream> stm, Text::CString sourceName);
+		static Map::GPSTrack *NMEA2Track(NotNullPtr<IO::Stream> stm, Text::CStringNN sourceName);
 	};
 }
 #endif

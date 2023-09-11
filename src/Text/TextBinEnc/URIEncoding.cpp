@@ -240,7 +240,7 @@ UOSInt Text::TextBinEnc::URIEncoding::DecodeBin(const UTF8Char *str, UOSInt strL
 	return retSize;
 }
 
-Text::CString Text::TextBinEnc::URIEncoding::GetName()
+Text::CStringNN Text::TextBinEnc::URIEncoding::GetName() const
 {
 	return CSTR("URI Encoding");
 }

@@ -10,7 +10,7 @@
 #include "Text/MIMEObj/MultipartMIMEObj.h"
 #include "Text/MIMEObj/UnknownMIMEObj.h"
 
-Text::IMIMEObj::IMIMEObj(Text::CString sourceName) : IO::ParsedObject(sourceName)
+Text::IMIMEObj::IMIMEObj(Text::CStringNN sourceName) : IO::ParsedObject(sourceName)
 {
 }
 
@@ -23,7 +23,7 @@ IO::ParserType Text::IMIMEObj::GetParserType() const
 	return IO::ParserType::MIMEObject;
 }
 
-Text::IMIMEObj *Text::IMIMEObj::ParseFromData(NotNullPtr<IO::StreamData> data, Text::CString contentType)
+Text::IMIMEObj *Text::IMIMEObj::ParseFromData(NotNullPtr<IO::StreamData> data, Text::CStringNN contentType)
 {
 	Text::IMIMEObj *obj;
 	UOSInt buffSize;
@@ -87,7 +87,7 @@ Text::IMIMEObj *Text::IMIMEObj::ParseFromData(NotNullPtr<IO::StreamData> data, T
 
 Text::IMIMEObj *Text::IMIMEObj::ParseFromFile(Text::CStringNN fileName)
 {
-	Text::CString contentType;
+	Text::CStringNN contentType;
 	Text::IMIMEObj *obj;
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;

@@ -42,7 +42,7 @@ namespace Net
 		virtual Int32 Flush();
 		virtual void Close();
 		virtual Bool Recover();
-		virtual Bool IsSSL();
+		virtual Bool IsSSL() const;
 		virtual IO::StreamType GetStreamType() const;
 		Bool IsClosed();
 		Bool IsSendDown();

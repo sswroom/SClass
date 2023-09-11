@@ -548,7 +548,7 @@ UOSInt Text::TextBinEnc::Punycode::DecodeBin(const UTF8Char *str, UOSInt strLen,
 	return (UOSInt)(Decode(dataBuff, str, strLen) - dataBuff);
 }
 
-Text::CString Text::TextBinEnc::Punycode::GetName()
+Text::CStringNN Text::TextBinEnc::Punycode::GetName() const
 {
 	return CSTR("Punycode");
 }

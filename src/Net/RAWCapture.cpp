@@ -94,7 +94,7 @@ UInt64 Net::RAWCapture::GetDataSize()
 	return this->dataSize;
 }
 
-Text::CString Net::RAWCapture::CaptureTypeGetName(CaptureType type)
+Text::CStringNN Net::RAWCapture::CaptureTypeGetName(CaptureType type)
 {
 	switch (type)
 	{
@@ -126,7 +126,7 @@ Int32 Net::RAWCapture::CaptureTypeGetLinkType(CaptureType type)
 	return 0;
 }
 
-Text::CString Net::RAWCapture::FileFormatGetName(FileFormat format)
+Text::CStringNN Net::RAWCapture::FileFormatGetName(FileFormat format)
 {
 	switch (format)
 	{
@@ -138,7 +138,7 @@ Text::CString Net::RAWCapture::FileFormatGetName(FileFormat format)
 	return CSTR("Unknown");
 }
 
-Text::CString Net::RAWCapture::FileFormatGetExt(FileFormat format)
+Text::CStringNN Net::RAWCapture::FileFormatGetExt(FileFormat format)
 {
 	switch (format)
 	{

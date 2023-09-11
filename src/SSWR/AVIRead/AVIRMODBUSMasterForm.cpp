@@ -529,7 +529,7 @@ void __stdcall SSWR::AVIRead::AVIRMODBUSMasterForm::OnMODBUSEntry(void *userObj,
 	me->entryList.Add(entry);
 	sptr = Text::StrUInt16(sbuff, (UInt16)regAddr);
 	me->lvDevice->SetSubItem(entry->lvIndex, 1, CSTRP(sbuff, sptr));
-	me->lvDevice->SetSubItem(entry->lvIndex, 2, name);
+	me->lvDevice->SetSubItem(entry->lvIndex, 2, entry->name);
 	me->lvDevice->SetSubItem(entry->lvIndex, 3, CSTR("-"));
 }
 
@@ -744,7 +744,7 @@ void SSWR::AVIRead::AVIRMODBUSMasterForm::OnMonitorChanged()
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 }
 
-Text::CString SSWR::AVIRead::AVIRMODBUSMasterForm::DeviceTypeGetName(DeviceType dt)
+Text::CStringNN SSWR::AVIRead::AVIRMODBUSMasterForm::DeviceTypeGetName(DeviceType dt)
 {
 	switch (dt)
 	{

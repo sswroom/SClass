@@ -161,7 +161,7 @@ Bool UI::GUIListView::AddColumn(NotNullPtr<Text::String> columnName, Double colW
 	return this->AddColumn(columnName->ToCString(), colWidth);
 }
 
-Bool UI::GUIListView::AddColumn(Text::CString columnName, Double colWidth)
+Bool UI::GUIListView::AddColumn(Text::CStringNN columnName, Double colWidth)
 {
 	GUIListViewData *data = (GUIListViewData*)this->clsData;
 	if (data->colCnt <= this->colCnt)
@@ -234,7 +234,7 @@ UOSInt UI::GUIListView::AddItem(NotNullPtr<Text::String> text, void *itemObj)
 	return ret;
 }
 
-UOSInt UI::GUIListView::AddItem(Text::CString text, void *itemObj)
+UOSInt UI::GUIListView::AddItem(Text::CStringNN text, void *itemObj)
 {
 	GUIListViewData *data = (GUIListViewData*)this->clsData;
 	MyRow *row = MemAlloc(MyRow, 1);
@@ -258,7 +258,7 @@ UOSInt UI::GUIListView::AddItem(const WChar *text, void *itemObj)
 	return ret;
 }
 
-UOSInt UI::GUIListView::AddItem(Text::CString text, void *itemObj, UOSInt imageIndex)
+UOSInt UI::GUIListView::AddItem(Text::CStringNN text, void *itemObj, UOSInt imageIndex)
 {
 	GUIListViewData *data = (GUIListViewData*)this->clsData;
 	MyRow *row = MemAlloc(MyRow, 1);
@@ -280,7 +280,7 @@ Bool UI::GUIListView::SetSubItem(UOSInt row, UOSInt col, NotNullPtr<Text::String
 	return true;
 }
 
-Bool UI::GUIListView::SetSubItem(UOSInt row, UOSInt col, Text::CString text)
+Bool UI::GUIListView::SetSubItem(UOSInt row, UOSInt col, Text::CStringNN text)
 {
 	GUIListViewData *data = (GUIListViewData*)this->clsData;
 	MyRow *r = data->rows->GetItem(row);
@@ -322,7 +322,7 @@ Bool UI::GUIListView::GetSubItem(UOSInt index, UOSInt subIndex, NotNullPtr<Text:
 	}
 }
 
-UOSInt UI::GUIListView::InsertItem(UOSInt index, Text::String *itemText, void *itemObj)
+UOSInt UI::GUIListView::InsertItem(UOSInt index, NotNullPtr<Text::String> itemText, void *itemObj)
 {
 	GUIListViewData *data = (GUIListViewData*)this->clsData;
 	MyRow *row = MemAlloc(MyRow, 1);
@@ -330,11 +330,11 @@ UOSInt UI::GUIListView::InsertItem(UOSInt index, Text::String *itemText, void *i
 	row->txt = itemText->Clone();
 	gtk_list_store_insert(data->listStore, &row->iter, (gint)index);
 	data->rows->Insert(index, row);
-	gtk_list_store_set(data->listStore, &row->iter, 0, (const Char*)itemText, -1);
+	gtk_list_store_set(data->listStore, &row->iter, 0, (const Char*)itemText->v, -1);
 	return index;
 }
 
-UOSInt UI::GUIListView::InsertItem(UOSInt index, Text::CString itemText, void *itemObj)
+UOSInt UI::GUIListView::InsertItem(UOSInt index, Text::CStringNN itemText, void *itemObj)
 {
 	GUIListViewData *data = (GUIListViewData*)this->clsData;
 	MyRow *row = MemAlloc(MyRow, 1);
@@ -587,7 +587,7 @@ void UI::GUIListView::EndUpdate()
 //	this->SetVisible(true);
 }
 
-Text::CString UI::GUIListView::GetObjectClass()
+Text::CStringNN UI::GUIListView::GetObjectClass() const
 {
 	return CSTR("ListView");
 }

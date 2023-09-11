@@ -49,7 +49,7 @@ IO::TVControl *IO::TVControl::CreateTVControl(IO::Stream *stm, TVType tvType, In
 	}
 }
 
-Text::CString IO::TVControl::GetCommandName(CommandType cmdType)
+Text::CStringNN IO::TVControl::GetCommandName(CommandType cmdType)
 {
 	switch (cmdType)
 	{

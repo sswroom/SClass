@@ -12,7 +12,7 @@ DB::SQLBuilder::SQLBuilder(DB::SQLType sqlType, Bool axisAware, Int32 tzQhr)
 	this->axisAware = axisAware;
 }
 
-DB::SQLBuilder::SQLBuilder(DB::ReadingDBTool *db)
+DB::SQLBuilder::SQLBuilder(NotNullPtr<const DB::ReadingDBTool> db)
 {
 	this->sqlType = db->GetSQLType();
 	this->tzQhr = db->GetTzQhr();

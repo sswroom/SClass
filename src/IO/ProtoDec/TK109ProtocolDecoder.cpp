@@ -13,7 +13,7 @@ IO::ProtoDec::TK109ProtocolDecoder::~TK109ProtocolDecoder()
 {
 }
 
-Text::CString IO::ProtoDec::TK109ProtocolDecoder::GetName()
+Text::CStringNN IO::ProtoDec::TK109ProtocolDecoder::GetName() const
 {
 	return CSTR("TK109");
 }

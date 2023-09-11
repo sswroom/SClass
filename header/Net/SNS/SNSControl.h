@@ -47,8 +47,8 @@ namespace Net
 			virtual Int32 GetMinIntevalMS() = 0;
 			virtual Bool Reload() = 0;
 
-			static Text::CString SNSTypeGetName(SNSType snsType);
-			static SNSType SNSTypeFromName(Text::CString name);
+			static Text::CStringNN SNSTypeGetName(SNSType snsType);
+			static SNSType SNSTypeFromName(Text::CStringNN name);
 
 			static SNSItem *CreateItem(NotNullPtr<Text::String> id, Int64 msgTime, Text::String *title, NotNullPtr<Text::String> message, Text::String *msgLink, Text::String *imgURL, Text::String *videoURL);
 			static void FreeItem(SNSItem *item);

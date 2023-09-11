@@ -167,8 +167,8 @@ void SSWR::AVIRead::AVIRCore::EndLoad()
 		AVIRead::AVIRGISForm *gisForm;
 		Map::MapEnv *env;
 		Map::MapView *view;
-		Math::CoordinateSystem *csys = this->batchLyrs->GetItem(0)->GetCoordinateSystem();
-		NEW_CLASS(env, Map::MapEnv(CSTR("Untitled"), 0xffc0c0ff, csys?(csys->Clone()):0));
+		NotNullPtr<Math::CoordinateSystem> csys = this->batchLyrs->GetItem(0)->GetCoordinateSystem();
+		NEW_CLASS(env, Map::MapEnv(CSTR("Untitled"), 0xffc0c0ff, csys->Clone().Ptr()));
 		if (this->batchLyrs->GetCount() > 0)
 		{
 			view = this->batchLyrs->GetItem(0)->CreateMapView(Math::Size2DDbl(320, 240));
@@ -489,7 +489,7 @@ Bool SSWR::AVIRead::AVIRCore::GenFontStylePreview(NotNullPtr<Media::DrawImage> i
 	UInt32 buffColor;
 	Math::Size2DDbl sz;
 
-	if (env->GetFontStyle(fontStyle, &fontName, &fontSizePt, &bold, &fontColor, &buffSize, &buffColor))
+	if (env->GetFontStyle(fontStyle, fontName, fontSizePt, bold, fontColor, buffSize, buffColor))
 	{
 		buffSize = (UOSInt)Double2Int32(UOSInt2Double(buffSize) * dpi / 96.0);
 		if ((sptr = env->GetFontStyleName(fontStyle, sbuff)) == 0)
@@ -514,7 +514,7 @@ Bool SSWR::AVIRead::AVIRCore::GenFontStylePreview(NotNullPtr<Media::DrawImage> i
 	return true;
 }
 
-Bool SSWR::AVIRead::AVIRCore::GenFontPreview(NotNullPtr<Media::DrawImage> img, NotNullPtr<Media::DrawEngine> eng, Text::CString fontName, Double fontSizePt, UInt32 fontColor, Media::ColorConv *colorConv)
+Bool SSWR::AVIRead::AVIRCore::GenFontPreview(NotNullPtr<Media::DrawImage> img, NotNullPtr<Media::DrawEngine> eng, Text::CStringNN fontName, Double fontSizePt, UInt32 fontColor, Media::ColorConv *colorConv)
 {
 	if (fontName.leng == 0)
 	{
@@ -561,7 +561,7 @@ SSWR::AVIRead::AVIRGISForm *SSWR::AVIRead::AVIRCore::GetGISForm()
 	return this->gisForm;
 }
 
-Text::CString SSWR::AVIRead::AVIRCore::IOPinTypeGetName(IOPinType iopt)
+Text::CStringNN SSWR::AVIRead::AVIRCore::IOPinTypeGetName(IOPinType iopt)
 {
 	switch (iopt)
 	{

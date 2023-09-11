@@ -116,7 +116,7 @@ void IO::Device::BYDC9RHandler::OKLED(Bool ledOn)
 {
 }
 
-Text::CString IO::Device::BYDC9RHandler::DoorStatusGetName(DoorStatus doorStatus)
+Text::CStringNN IO::Device::BYDC9RHandler::DoorStatusGetName(DoorStatus doorStatus)
 {
 	switch (doorStatus)
 	{
@@ -131,7 +131,7 @@ Text::CString IO::Device::BYDC9RHandler::DoorStatusGetName(DoorStatus doorStatus
 	}
 }
 
-Text::CString IO::Device::BYDC9RHandler::MotorModeGetName(MotorMode motorMode)
+Text::CStringNN IO::Device::BYDC9RHandler::MotorModeGetName(MotorMode motorMode)
 {
 	switch (motorMode)
 	{
@@ -148,7 +148,7 @@ Text::CString IO::Device::BYDC9RHandler::MotorModeGetName(MotorMode motorMode)
 	}
 }
 
-Text::CString IO::Device::BYDC9RHandler::PowerStatusGetName(PowerStatus powerStatus)
+Text::CStringNN IO::Device::BYDC9RHandler::PowerStatusGetName(PowerStatus powerStatus)
 {
 	switch (powerStatus)
 	{
@@ -165,7 +165,7 @@ Text::CString IO::Device::BYDC9RHandler::PowerStatusGetName(PowerStatus powerSta
 	}
 }
 
-Text::CString IO::Device::BYDC9RHandler::ChargingStatusGetName(ChargingStatus chargingStatus)
+Text::CStringNN IO::Device::BYDC9RHandler::ChargingStatusGetName(ChargingStatus chargingStatus)
 {
 	switch (chargingStatus)
 	{

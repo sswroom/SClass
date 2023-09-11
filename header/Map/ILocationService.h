@@ -42,7 +42,7 @@ namespace Map
 		virtual void ErrorRecover() = 0;
 		virtual ServiceType GetServiceType() = 0;
 
-		static Text::CString SateTypeGetName(SateType sateType);
+		static Text::CStringNN SateTypeGetName(SateType sateType);
 	};
 }
 #endif

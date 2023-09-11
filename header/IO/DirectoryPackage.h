@@ -21,7 +21,7 @@ namespace IO
 		void Init();
 	public:
 		DirectoryPackage(NotNullPtr<Text::String> dirName);
-		DirectoryPackage(Text::CString dirName);
+		DirectoryPackage(Text::CStringNN dirName);
 		virtual ~DirectoryPackage();
 
 		virtual UOSInt GetCount() const;

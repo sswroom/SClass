@@ -7,7 +7,7 @@ DB::ReadingDB::ReadingDB(NotNullPtr<Text::String> sourceName) : IO::ParsedObject
 {
 }
 
-DB::ReadingDB::ReadingDB(Text::CString sourceName) : IO::ParsedObject(sourceName)
+DB::ReadingDB::ReadingDB(Text::CStringNN sourceName) : IO::ParsedObject(sourceName)
 {
 }
 
@@ -45,12 +45,12 @@ IO::ParserType DB::ReadingDB::GetParserType() const
 	return IO::ParserType::ReadingDB;
 }
 
-Bool DB::ReadingDB::IsFullConn()
+Bool DB::ReadingDB::IsFullConn() const
 {
 	return false;
 }
 
-Bool DB::ReadingDB::IsDBTool()
+Bool DB::ReadingDB::IsDBTool() const
 {
 	return false;
 }
