@@ -198,6 +198,7 @@ namespace Media
 		static void GetYUVConstants(YUVType yuvType, Double *kr, Double *kb);
 		static void YUV2RGB(YUVType yuvType, Double y, Double u, Double v, Double *r, Double *g, Double *b);
 		static void RGB2RGB(Media::ColorProfile *srcColor, Media::ColorProfile *destColor, Double srcR, Double srcG, Double srcB, Double *destR, Double *destG, Double *destB);
+		static void GetConvMatrix(NotNullPtr<Math::Matrix3> mat, NotNullPtr<const ColorProfile::ColorPrimaries> srcColor, NotNullPtr<const ColorProfile::ColorPrimaries> destColor);
 	};
 }
 #endif

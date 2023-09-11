@@ -23,14 +23,53 @@ namespace Math
 			this->val[2] = z;
 		}
 
-		Double operator*(const Vector3 &val) const
+		Double DotProduct(const Vector3 &val) const
 		{
 			return this->val[0] * val.val[0] + this->val[1] * val.val[1] + this->val[2] * val.val[2];
+		}
+
+		Vector3 CrossProduct(const Vector3 &val) const
+		{
+			return Math::Vector3(
+				this->val[1] * val.val[2] - this->val[2] * val.val[1],
+				this->val[2] * val.val[0] - this->val[0] * val.val[2],
+				this->val[0] * val.val[1] - this->val[1] * val.val[0]
+			);
+		}
+
+		Vector3 operator+(const Vector3 &val) const
+		{
+			return Math::Vector3(this->val[0] + val.val[0], this->val[1] + val.val[1], this->val[2] + val.val[2]);
 		}
 
 		Vector3 operator-(const Vector3 &val) const
 		{
 			return Math::Vector3(this->val[0] - val.val[0], this->val[1] - val.val[1], this->val[2] - val.val[2]);
+		}
+
+		Vector3 operator+(Double val) const
+		{
+			return Math::Vector3(this->val[0] + val, this->val[1] + val, this->val[2] + val);
+		}
+
+		Vector3 operator-(Double val) const
+		{
+			return Math::Vector3(this->val[0] - val, this->val[1] - val, this->val[2] - val);
+		}
+
+		Vector3 operator*(Double val) const
+		{
+			return Math::Vector3(this->val[0] * val, this->val[1] * val, this->val[2] * val);
+		}
+
+		Vector3 operator/(Double val) const
+		{
+			return Math::Vector3(this->val[0] / val, this->val[1] / val, this->val[2] / val);
+		}
+
+		Double GetLength() const
+		{
+			return Math_Sqrt(this->val[0] * this->val[0] + this->val[1] * this->val[1] + this->val[2] * this->val[2]);
 		}
 
 		void Set(Double x, Double y, Double z)

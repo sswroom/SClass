@@ -164,7 +164,6 @@ void Media::RGBLUTGen::GenRGB8_LRGB(UInt16 *rgbTable, NotNullPtr<const Media::Co
 
 void Media::RGBLUTGen::GenRGBA8_LRGBC(Int64 *rgbTable, NotNullPtr<const Media::ColorProfile> srcProfile, NotNullPtr<const Media::ColorProfile::ColorPrimaries> destPrimaries, Int32 nBitLRGB)
 {
-	NotNullPtr<const Media::IColorHandler::RGBPARAM2> rgbParam;
 	Media::CS::TransferParam rTran;
 	Media::CS::TransferParam gTran;
 	Media::CS::TransferParam bTran;
@@ -175,51 +174,23 @@ void Media::RGBLUTGen::GenRGBA8_LRGBC(Int64 *rgbTable, NotNullPtr<const Media::C
 	Media::CS::TransferFunc *ibFunc = Media::CS::TransferFunc::CreateFunc(bTran);
 
 	Math::Matrix3 mat1;
-	Math::Matrix3 mat2;
-	Math::Matrix3 mat3;
-	Math::Matrix3 mat4;
-	Math::Matrix3 mat5;
-	Math::Vector3 vec1;
-	Math::Vector3 vec2;
-	srcProfile->primaries.GetConvMatrix(mat1);
 	if (destPrimaries->colorType == Media::ColorProfile::CT_DISPLAY)
 	{
 		if (this->colorSess)
 		{
-			rgbParam = this->colorSess->GetRGBParam();
-			Media::ColorProfile::ColorPrimaries primaries;
-			primaries.Set(rgbParam->monProfile.GetPrimariesRead());
-			primaries.GetConvMatrix(mat5);
-			vec2.Set(rgbParam->monProfile.GetPrimariesRead()->w, 1.0);
+			Media::ColorProfile::GetConvMatrix(mat1, srcProfile->primaries, this->colorSess->GetRGBParam()->monProfile.GetPrimariesRead());
 		}
 		else
 		{
-			vec2 = Media::ColorProfile::ColorPrimaries::GetWhitePointXYZ(Media::ColorProfile::WPT_D65);
+			Media::ColorProfile::ColorPrimaries prim;
+			prim.SetColorType(Media::ColorProfile::CT_SRGB);
+			Media::ColorProfile::GetConvMatrix(mat1, srcProfile->GetPrimariesRead(), prim);
 		}
 	}
 	else
 	{
-		destPrimaries->GetConvMatrix(mat5);
-		vec2.Set(destPrimaries->w, 1.0);
+		Media::ColorProfile::GetConvMatrix(mat1, srcProfile->primaries, destPrimaries);
 	}
-	mat5.Inverse();
-
-	Media::ColorProfile::ColorPrimaries::GetMatrixBradford(mat2);
-	mat3.Set(mat2);
-	mat4.SetIdentity();
-	vec2 = Media::ColorProfile::ColorPrimaries::xyYToXYZ(vec2);
-	vec1 = Media::ColorProfile::ColorPrimaries::xyYToXYZ(Math::Vector3(srcProfile->primaries.w, 1.0));
-	vec1 = mat2.Multiply(vec1);
-	vec2 = mat2.Multiply(vec2);
-	mat2.Inverse();
-	mat4.vec[0].val[0] = vec2.val[0] / vec1.val[0];
-	mat4.vec[1].val[1] = vec2.val[1] / vec1.val[1];
-	mat4.vec[2].val[2] = vec2.val[2] / vec1.val[2];
-	mat2.Multiply(mat4);
-	mat2.Multiply(mat3);
-	mat1.MyMultiply(mat2);
-
-	mat1.MyMultiply(mat5);
 
 	Double thisV;
 
@@ -265,7 +236,6 @@ void Media::RGBLUTGen::GenRGBA8_LRGBC(Int64 *rgbTable, NotNullPtr<const Media::C
 
 void Media::RGBLUTGen::GenRGB16_LRGBC(Int64 *rgbTable, NotNullPtr<const Media::ColorProfile> srcProfile, NotNullPtr<const Media::ColorProfile::ColorPrimaries> destPrimaries, Int32 nBitLRGB)
 {
-	NotNullPtr<const Media::IColorHandler::RGBPARAM2> rgbParam;
 	Media::CS::TransferParam rTran;
 	Media::CS::TransferParam gTran;
 	Media::CS::TransferParam bTran;
@@ -276,51 +246,23 @@ void Media::RGBLUTGen::GenRGB16_LRGBC(Int64 *rgbTable, NotNullPtr<const Media::C
 	Media::CS::TransferFunc *ibFunc = Media::CS::TransferFunc::CreateFunc(bTran);
 
 	Math::Matrix3 mat1;
-	Math::Matrix3 mat2;
-	Math::Matrix3 mat3;
-	Math::Matrix3 mat4;
-	Math::Matrix3 mat5;
-	Math::Vector3 vec1;
-	Math::Vector3 vec2;
-	srcProfile->GetPrimariesRead()->GetConvMatrix(mat1);
 	if (destPrimaries->colorType == Media::ColorProfile::CT_DISPLAY)
 	{
 		if (this->colorSess)
 		{
-			rgbParam = this->colorSess->GetRGBParam();
-			Media::ColorProfile::ColorPrimaries primaries;
-			primaries.Set(rgbParam->monProfile.GetPrimariesRead());
-			primaries.GetConvMatrix(mat5);
-			vec2 = Math::Vector3(rgbParam->monProfile.GetPrimariesRead()->w, 1.0);
+			Media::ColorProfile::GetConvMatrix(mat1, srcProfile->GetPrimariesRead(), this->colorSess->GetRGBParam()->monProfile.GetPrimariesRead());
 		}
 		else
 		{
-			vec2 = Media::ColorProfile::ColorPrimaries::GetWhitePointXYZ(Media::ColorProfile::WPT_D65);
+			Media::ColorProfile::ColorPrimaries prim;
+			prim.SetColorType(Media::ColorProfile::CT_SRGB);
+			Media::ColorProfile::GetConvMatrix(mat1, srcProfile->GetPrimariesRead(), prim);
 		}
 	}
 	else
 	{
-		destPrimaries->GetConvMatrix(mat5);
-		vec2.Set(destPrimaries->w, 1.0);
+		Media::ColorProfile::GetConvMatrix(mat1, srcProfile->GetPrimariesRead(), destPrimaries);
 	}
-	mat5.Inverse();
-
-	Media::ColorProfile::ColorPrimaries::GetMatrixBradford(mat2);
-	mat3.Set(mat2);
-	mat4.SetIdentity();
-	vec2 = Media::ColorProfile::ColorPrimaries::xyYToXYZ(vec2);
-	vec1 = Media::ColorProfile::ColorPrimaries::xyYToXYZ(Math::Vector3(srcProfile->GetPrimariesRead()->w, 1.0));
-	vec1 = mat2.Multiply(vec1);
-	vec2 = mat2.Multiply(vec2);
-	mat2.Inverse();
-	mat4.vec[0].val[0] = vec2.val[0] / vec1.val[0];
-	mat4.vec[1].val[1] = vec2.val[1] / vec1.val[1];
-	mat4.vec[2].val[2] = vec2.val[2] / vec1.val[2];
-	mat2.Multiply(mat4);
-	mat2.Multiply(mat3);
-	mat1.MyMultiply(mat2);
-
-	mat1.MyMultiply(mat5);
 
 	Double thisV;
 

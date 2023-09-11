@@ -41,41 +41,14 @@ void Media::CS::CSYUV444P10LEP_LRGBC::SetupRGB13_LR()
 	Media::CS::TransferFunc *gtFunc = Media::CS::TransferFunc::CreateFunc(srcColor->GetGTranParam());
 	Media::CS::TransferFunc *btFunc = Media::CS::TransferFunc::CreateFunc(srcColor->GetBTranParam());
 	Math::Matrix3 mat1;
-	Math::Matrix3 mat2;
-	Math::Matrix3 mat3;
-	Math::Matrix3 mat4;
-	Math::Matrix3 mat5;
-	Math::Vector3 vec1;
-	Math::Vector3 vec2;
-	this->srcProfile.GetPrimaries()->GetConvMatrix(mat1);
 	if (this->destProfile.GetPrimaries()->colorType == Media::ColorProfile::CT_DISPLAY)
 	{
-		this->rgbParam.monProfile.GetPrimaries()->GetConvMatrix(mat5);
-		vec2.Set(this->rgbParam.monProfile.GetPrimaries()->w, 1.0);
+		Media::ColorProfile::GetConvMatrix(mat1, this->srcProfile.GetPrimaries(), this->rgbParam.monProfile.GetPrimaries());
 	}
 	else
 	{
-		this->destProfile.GetPrimaries()->GetConvMatrix(mat5);
-		vec2.Set(this->destProfile.GetPrimaries()->w, 1.0);
+		Media::ColorProfile::GetConvMatrix(mat1, this->srcProfile.GetPrimaries(), this->destProfile.GetPrimaries());
 	}
-	mat5.Inverse();
-
-	Media::ColorProfile::ColorPrimaries::GetMatrixBradford(mat2);
-	mat3.Set(mat2);
-	mat4.SetIdentity();
-	vec2 = Media::ColorProfile::ColorPrimaries::xyYToXYZ(vec2);
-	vec1 = Media::ColorProfile::ColorPrimaries::xyYToXYZ(Math::Vector3(this->srcProfile.GetPrimaries()->w, 1.0));
-	vec1 = mat2.Multiply(vec1);
-	vec2 = mat2.Multiply(vec2);
-	mat2.Inverse();
-	mat4.vec[0].val[0] = vec2.val[0] / vec1.val[0];
-	mat4.vec[1].val[1] = vec2.val[1] / vec1.val[1];
-	mat4.vec[2].val[2] = vec2.val[2] / vec1.val[2];
-	mat2.Multiply(mat4);
-	mat2.Multiply(mat3);
-	mat1.MyMultiply(mat2);
-
-	mat1.MyMultiply(mat5);
 
 	i = 32768;
 	while (i--)

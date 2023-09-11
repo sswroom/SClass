@@ -182,49 +182,25 @@ UInt32 Media::ColorConv::ConvARGB(NotNullPtr<const Media::ColorProfile> srcColor
 	Media::CS::TransferFunc *sbFunc = Media::CS::TransferFunc::CreateFunc(bTran);
 
 	Math::Matrix3 mat1;
-	Math::Matrix3 mat2;
-	Math::Matrix3 mat3;
-	Math::Matrix3 mat4;
-	Math::Matrix3 mat5;
 	Math::Vector3 vec1;
 	Math::Vector3 vec2;
-	srcColor->GetPrimariesRead()->GetConvMatrix(mat1);
 	if (destColor->GetPrimariesRead()->colorType == Media::ColorProfile::CT_DISPLAY)
 	{
 		if (colorSess)
 		{
-			rgbParam = colorSess->GetRGBParam();
-			rgbParam->monProfile.GetPrimariesRead()->GetConvMatrix(mat5);
-			vec2.Set(rgbParam->monProfile.GetPrimariesRead()->w, 1.0);
+			Media::ColorProfile::GetConvMatrix(mat1, srcColor->GetPrimariesRead(), colorSess->GetRGBParam()->monProfile.GetPrimariesRead());
 		}
 		else
 		{
-			vec2 = Media::ColorProfile::ColorPrimaries::GetWhitePointXYZ(Media::ColorProfile::WPT_D65);
+			Media::ColorProfile::ColorPrimaries prim;
+			prim.SetColorType(Media::ColorProfile::CT_SRGB);
+			Media::ColorProfile::GetConvMatrix(mat1, srcColor->GetPrimariesRead(), prim);
 		}
 	}
 	else
 	{
-		destColor->GetPrimariesRead()->GetConvMatrix(mat5);
-		vec2.Set(destColor->GetPrimariesRead()->w, 1.0);
+		Media::ColorProfile::GetConvMatrix(mat1, srcColor->GetPrimariesRead(), destColor->GetPrimariesRead());
 	}
-	mat5.Inverse();
-
-	Media::ColorProfile::ColorPrimaries::GetMatrixBradford(mat2);
-	mat3.Set(mat2);
-	mat4.SetIdentity();
-	vec2 = Media::ColorProfile::ColorPrimaries::xyYToXYZ(vec2);
-	vec1 = Media::ColorProfile::ColorPrimaries::xyYToXYZ(Math::Vector3(srcColor->GetPrimariesRead()->w, 1.0));
-	vec1 = mat2.Multiply(vec1);
-	vec2 = mat2.Multiply(vec2);
-	mat2.Inverse();
-	mat4.vec[0].val[0] = vec2.val[0] / vec1.val[0];
-	mat4.vec[1].val[1] = vec2.val[1] / vec1.val[1];
-	mat4.vec[2].val[2] = vec2.val[2] / vec1.val[2];
-	mat2.Multiply(mat4);
-	mat2.Multiply(mat3);
-	mat1.MyMultiply(mat2);
-
-	mat1.MyMultiply(mat5);
 
 	if (destColor->GetRTranParamRead()->GetTranType() == Media::CS::TRANT_VDISPLAY && colorSess != 0)
 	{

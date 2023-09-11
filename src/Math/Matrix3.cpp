@@ -3,6 +3,13 @@
 #include "Math/Math.h"
 #include "Math/Matrix3.h"
 
+Math::Matrix3::Matrix3(Vector3 row1, Vector3 row2, Vector3 row3)
+{
+	this->vec[0] = row1;
+	this->vec[1] = row2;
+	this->vec[2] = row3;
+}
+
 Math::Matrix3::Matrix3(Double *val)
 {
 	this->vec[0].val[0] = val[0];
@@ -80,7 +87,7 @@ void Math::Matrix3::Multiply(NotNullPtr<const Matrix3> matrix)
 	this->vec[2].val[2] = tmpVec[2].val[0] * matrix->vec[0].val[2] + tmpVec[2].val[1] * matrix->vec[1].val[2] + tmpVec[2].val[2] * matrix->vec[2].val[2];
 }
 
-void Math::Matrix3::MyMultiply(NotNullPtr<const Matrix3> matrix)
+void Math::Matrix3::MultiplyBA(NotNullPtr<const Matrix3> matrix)
 {
 	Vector3 tmpVec[3];
 	tmpVec[0] = this->vec[0];
@@ -106,7 +113,7 @@ void Math::Matrix3::Multiply(Double x, Double y, Double z, OutParam<Double> outX
 
 Math::Vector3 Math::Matrix3::Multiply(const Vector3 &srcVec) const
 {
-	return Math::Vector3(this->vec[0] * srcVec, this->vec[1] * srcVec, this->vec[2] * srcVec);
+	return Math::Vector3(this->vec[0].DotProduct(srcVec), this->vec[1].DotProduct(srcVec), this->vec[2].DotProduct(srcVec));
 }
 
 void Math::Matrix3::SetIdentity()

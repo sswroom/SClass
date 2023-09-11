@@ -889,9 +889,9 @@ void UtilUI::ColorDialog::GenMainImageInner(UInt8 *imgPtr, UOSInt startIndex, UO
 	mat4.vec[2].val[2] = rgbv2.val[2] / rgbv.val[2];
 	mat2.Multiply(mat4);
 	mat2.Multiply(mat3);
-	mat1.MyMultiply(mat2);
+	mat1.MultiplyBA(mat2);
 
-	mat1.MyMultiply(mat5);
+	mat1.MultiplyBA(mat5);
 
 	Double v3R = 1 / (Double)(h - 1);
 	Double v2R = 1 / (Double)(w - 1);
@@ -1090,9 +1090,9 @@ void UtilUI::ColorDialog::GenSubImage()
 	mat4.vec[2].val[2] = rgbv2.val[2] / rgbv.val[2];
 	mat2.Multiply(mat4);
 	mat2.Multiply(mat3);
-	mat1.MyMultiply(mat2);
+	mat1.MultiplyBA(mat2);
 
-	mat1.MyMultiply(mat5);
+	mat1.MultiplyBA(mat5);
 
 	v2 = this->mainX;
 	v3 = this->mainY;
@@ -1276,9 +1276,9 @@ void UtilUI::ColorDialog::UpdateColor()
 	mat4.vec[2].val[2] = rgbv2.val[2] / rgbv.val[2];
 	mat2.Multiply(mat4);
 	mat2.Multiply(mat3);
-	mat1.MyMultiply(mat2);
+	mat1.MultiplyBA(mat2);
 
-	mat1.MyMultiply(mat5);
+	mat1.MultiplyBA(mat5);
 
 	this->XYZ2RGB(this->mainX, this->mainY, this->mainZ, &rgbv.val[0], &rgbv.val[1], &rgbv.val[2]);
 	rgbv.val[0] = srcRTran->InverseTransfer(rgbv.val[0]);

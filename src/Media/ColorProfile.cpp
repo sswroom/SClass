@@ -1095,7 +1095,7 @@ void Media::ColorProfile::RGB2RGB(Media::ColorProfile *srcColor, Media::ColorPro
 	srcColor->primaries.GetConvMatrix(mat);
 	destColor->primaries.GetConvMatrix(mat2);
 	mat2.Inverse();
-	mat.MyMultiply(mat2);
+	mat.MultiplyBA(mat2);
 	func1r = Media::CS::TransferFunc::CreateFunc(srcColor->rtransfer);
 	func1g = Media::CS::TransferFunc::CreateFunc(srcColor->gtransfer);
 	func1b = Media::CS::TransferFunc::CreateFunc(srcColor->btransfer);
@@ -1114,4 +1114,33 @@ void Media::ColorProfile::RGB2RGB(Media::ColorProfile *srcColor, Media::ColorPro
 	DEL_CLASS(func2r);
 	DEL_CLASS(func2g);
 	DEL_CLASS(func2b);
+}
+
+void Media::ColorProfile::GetConvMatrix(NotNullPtr<Math::Matrix3> mat, NotNullPtr<const ColorProfile::ColorPrimaries> srcColor, NotNullPtr<const ColorProfile::ColorPrimaries> destColor)
+{
+	Math::Matrix3 mat2;
+	Math::Matrix3 mat3;
+	Math::Matrix3 mat4;
+	Math::Matrix3 mat5;
+	Math::Vector3 vec1;
+	Math::Vector3 vec2;
+	srcColor->GetConvMatrix(mat);
+	destColor->GetConvMatrix(mat5);
+	mat5.Inverse();
+
+	Media::ColorProfile::ColorPrimaries::GetMatrixBradford(mat2);
+	mat3.Set(mat2);
+	mat4.SetIdentity();
+	vec2 = Media::ColorProfile::ColorPrimaries::xyYToXYZ(Math::Vector3(destColor->w, 1.0));
+	vec1 = Media::ColorProfile::ColorPrimaries::xyYToXYZ(Math::Vector3(srcColor->w, 1.0));
+	vec1 = mat2.Multiply(vec1);
+	vec2 = mat2.Multiply(vec2);
+	mat2.Inverse();
+	mat4.vec[0].val[0] = vec2.val[0] / vec1.val[0];
+	mat4.vec[1].val[1] = vec2.val[1] / vec1.val[1];
+	mat4.vec[2].val[2] = vec2.val[2] / vec1.val[2];
+	mat2.Multiply(mat4);
+	mat2.Multiply(mat3);
+	mat->MultiplyBA(mat2);
+	mat->MultiplyBA(mat5);
 }
