@@ -142,7 +142,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISQueryForm::OnMouseMove(void *userObj, Math:
 		NotNullPtr<Math::CoordinateSystem> csys = me->navi->GetCoordinateSystem();
 		Math::Coord2DDbl mapPos = me->navi->ScnXY2MapXY(scnPos);
 		Math::Coord2DDbl nearPos = mapPos;
-		me->currVec->CalBoundarySqrDistance(mapPos, &nearPos);
+		me->currVec->CalBoundarySqrDistance(mapPos, nearPos);
 		Double d = csys->CalSurfaceDistanceXY(mapPos, nearPos, Math::Unit::Distance::DU_METER);
 		UTF8Char sbuff[64];
 		UTF8Char *sptr;
@@ -164,11 +164,12 @@ Bool __stdcall SSWR::AVIRead::AVIRGISQueryForm::OnMouseMove(void *userObj, Math:
 void __stdcall SSWR::AVIRead::AVIRGISQueryForm::OnShapeFmtChanged(void *userObj)
 {
 	SSWR::AVIRead::AVIRGISQueryForm *me = (SSWR::AVIRead::AVIRGISQueryForm*)userObj;
-	if (me->currVec)
+	NotNullPtr<Math::Geometry::Vector2D> vec;
+	if (vec.Set(me->currVec))
 	{
 		Math::VectorTextWriter *writer = (Math::VectorTextWriter*)me->cboShapeFmt->GetSelectedItem();
 		Text::StringBuilderUTF8 sb;
-		writer->ToText(sb, me->currVec);
+		writer->ToText(sb, vec);
 		me->txtShape->SetText(sb.ToCString());
 	}
 }
@@ -225,7 +226,7 @@ void SSWR::AVIRead::AVIRGISQueryForm::ClearQueryResults()
 
 void SSWR::AVIRead::AVIRGISQueryForm::SetQueryItem(UOSInt index)
 {
-	Math::Geometry::Vector2D *vec = this->queryVecList.GetItem(index)->Clone();
+	NotNullPtr<Math::Geometry::Vector2D> vec = this->queryVecList.GetItem(index)->Clone();
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
 	UOSInt i;
@@ -282,7 +283,7 @@ void SSWR::AVIRead::AVIRGISQueryForm::SetQueryItem(UOSInt index)
 	this->txtMaxY->SetText(CSTRP(sbuff, sptr));
 
 	SDEL_CLASS(this->currVec);
-	this->currVec = vec;
+	this->currVec = vec.Ptr();
 }
 
 SSWR::AVIRead::AVIRGISQueryForm::AVIRGISQueryForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Map::MapDrawLayer *lyr, IMapNavigator *navi) : UI::GUIForm(parent, 416, 408, ui)

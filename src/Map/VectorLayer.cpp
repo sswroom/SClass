@@ -575,7 +575,7 @@ Math::Geometry::Vector2D *Map::VectorLayer::GetNewVectorById(Map::GetObjectSess 
 	Math::Geometry::Vector2D *vec = this->vectorList.GetItem((UOSInt)id);
 	if (vec)
 	{
-		return vec->Clone();
+		return vec->Clone().Ptr();
 	}
 	else
 	{

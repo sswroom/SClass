@@ -219,7 +219,7 @@ Bool Exporter::KMLExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text:
 						Math::Vector3 v;
 						if (vec->HasZ())
 						{
-							Double *alts = pl->GetZList(&nPoints);
+							Double *alts = pl->GetZList(nPoints);
 							k = 0;
 							while (k < nPoints)
 							{
@@ -262,7 +262,7 @@ Bool Exporter::KMLExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text:
 					{
 						if (vec->HasZ())
 						{
-							Double *alts = pl->GetZList(&nPoints);
+							Double *alts = pl->GetZList(nPoints);
 							k = 0;
 							while (k < nPoints)
 							{
@@ -323,7 +323,7 @@ Bool Exporter::KMLExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text:
 						Math::Vector3 v;
 						if (vec->HasZ())
 						{
-							Double *alts = pl->GetZList(&nPoints);
+							Double *alts = pl->GetZList(nPoints);
 							k = 0;
 							while (k < nPoints)
 							{
@@ -366,7 +366,7 @@ Bool Exporter::KMLExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text:
 					{
 						if (vec->HasZ())
 						{
-							Double *alts = pl->GetZList(&nPoints);
+							Double *alts = pl->GetZList(nPoints);
 							k = 0;
 							while (k < nPoints)
 							{

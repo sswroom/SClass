@@ -14,11 +14,11 @@ namespace Math
 			PointM(UInt32 srid, Double x, Double y, Double m);
 			virtual ~PointM();
 
-			virtual Vector2D *Clone() const;
+			virtual NotNullPtr<Vector2D> Clone() const;
 			Double GetM() const;
 			virtual Bool HasM() const;
-			virtual Bool Equals(Vector2D *vec) const;
-			virtual Bool EqualsNearly(Vector2D *vec) const;
+			virtual Bool Equals(NotNullPtr<const Vector2D> vec) const;
+			virtual Bool EqualsNearly(NotNullPtr<const Vector2D> vec) const;
 		};
 	}
 }

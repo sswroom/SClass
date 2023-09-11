@@ -49,17 +49,17 @@ namespace Math
 
 			virtual VectorType GetVectorType() const = 0;
 			virtual Math::Coord2DDbl GetCenter() const = 0;
-			virtual Math::Geometry::Vector2D *Clone() const = 0;
+			virtual NotNullPtr<Math::Geometry::Vector2D> Clone() const = 0;
 			virtual Math::RectAreaDbl GetBounds() const = 0;
-			virtual Double CalBoundarySqrDistance(Math::Coord2DDbl pt, Math::Coord2DDbl *nearPt) const = 0;
-			virtual Double CalSqrDistance(Math::Coord2DDbl pt, Math::Coord2DDbl *nearPt) const;
-			virtual Bool JoinVector(Math::Geometry::Vector2D *vec) = 0;
+			virtual Double CalBoundarySqrDistance(Math::Coord2DDbl pt, OutParam<Math::Coord2DDbl> nearPt) const = 0;
+			virtual Double CalSqrDistance(Math::Coord2DDbl pt, OutParam<Math::Coord2DDbl> nearPt) const;
+			virtual Bool JoinVector(NotNullPtr<const Vector2D> vec) = 0;
 			virtual Bool HasZ() const { return false; };
 			virtual Bool HasM() const { return false; };
-			virtual void ConvCSys(NotNullPtr<Math::CoordinateSystem> srcCSys, NotNullPtr<Math::CoordinateSystem> destCSys) = 0;
-			virtual Bool Equals(Vector2D *vec) const = 0;
-			virtual Bool EqualsNearly(Vector2D *vec) const = 0;
-			virtual UOSInt GetCoordinates(Data::ArrayListA<Math::Coord2DDbl> *coordList) const = 0;
+			virtual void ConvCSys(NotNullPtr<const Math::CoordinateSystem> srcCSys, NotNullPtr<const Math::CoordinateSystem> destCSys) = 0;
+			virtual Bool Equals(NotNullPtr<const Vector2D> vec) const = 0;
+			virtual Bool EqualsNearly(NotNullPtr<const Vector2D> vec) const = 0;
+			virtual UOSInt GetCoordinates(NotNullPtr<Data::ArrayListA<Math::Coord2DDbl>> coordList) const = 0;
 			virtual Bool InsideVector(Math::Coord2DDbl coord) const;
 			virtual void SwapXY() = 0;
 			virtual void MultiplyCoordinatesXY(Double v) = 0;

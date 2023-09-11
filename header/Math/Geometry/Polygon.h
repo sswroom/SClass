@@ -14,9 +14,9 @@ namespace Math
 			virtual ~Polygon();
 
 			virtual VectorType GetVectorType() const;
-			virtual Math::Geometry::Vector2D *Clone() const;
-			virtual Double CalBoundarySqrDistance(Math::Coord2DDbl pt, Math::Coord2DDbl *nearPt) const;
-			virtual Bool JoinVector(Math::Geometry::Vector2D *vec);
+			virtual NotNullPtr<Math::Geometry::Vector2D> Clone() const;
+			virtual Double CalBoundarySqrDistance(Math::Coord2DDbl pt, OutParam<Math::Coord2DDbl> nearPt) const;
+			virtual Bool JoinVector(NotNullPtr<const Math::Geometry::Vector2D> vec);
 			virtual Bool InsideVector(Math::Coord2DDbl coord) const;
 			Bool HasJunction() const;
 			void SplitByJunction(Data::ArrayList<Math::Geometry::Polygon*> *results);

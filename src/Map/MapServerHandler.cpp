@@ -214,13 +214,20 @@ Bool __stdcall Map::MapServerHandler::GetLayerDataFunc(NotNullPtr<Net::WebServer
 						k++;
 					}
 					sb.AppendC(UTF8STRC("},\"geometry\":"));
-					Math::Geometry::Vector2D *vec = layer->GetNewVectorById(sess, objId);
-					if (vec && needConv)
+					NotNullPtr<Math::Geometry::Vector2D> vec;
+					if (vec.Set(layer->GetNewVectorById(sess, objId)))
 					{
-						vec->ConvCSys(csys, wgs84);
+						if (needConv)
+						{
+							vec->ConvCSys(csys, wgs84);
+						}
+						writer.ToGeometry(sb, vec);
+						vec.Delete();
 					}
-					writer.ToGeometry(sb, vec);
-					SDEL_CLASS(vec);
+					else
+					{
+						sb.AppendC(UTF8STRC("null"));
+					}
 					sb.AppendUTF8Char('}');
 					i++;
 				}

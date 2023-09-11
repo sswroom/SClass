@@ -13,9 +13,9 @@ namespace Math
 			CompoundCurve(UInt32 srid, Bool hasZ, Bool hasM);
 			virtual ~CompoundCurve();
 
-			virtual void AddGeometry(LineString *geometry);
+			virtual void AddGeometry(NotNullPtr<LineString> geometry);
 			virtual Vector2D::VectorType GetVectorType() const;
-			virtual Vector2D *Clone() const;
+			virtual NotNullPtr<Vector2D> Clone() const;
 		};
 	}
 }

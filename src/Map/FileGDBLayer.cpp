@@ -323,7 +323,7 @@ Math::Geometry::Vector2D *Map::FileGDBLayer::GetNewVectorById(GetObjectSess *ses
 	Math::Geometry::Vector2D *vec = this->objects.Get((Int32)id);
 	if (vec)
 	{
-		return vec->Clone();
+		return vec->Clone().Ptr();
 	}
 	return 0;
 }

@@ -206,8 +206,8 @@ Math::Geometry::Vector2D *Math::WKTReader::ParseWKT(const UTF8Char *wkt)
 		MemCopyNO(ptArr, ptList.Ptr(), ptList.GetCount() * sizeof(Double));
 		if (hasM)
 		{
-			Double *zArr = pl->GetZList(&i);
-			Double *mArr = pl->GetMList(&i);
+			Double *zArr = pl->GetZList(i);
+			Double *mArr = pl->GetMList(i);
 			while (i-- > 0)
 			{
 				zArr[i] = zList.GetItem(i << 1);
@@ -216,7 +216,7 @@ Math::Geometry::Vector2D *Math::WKTReader::ParseWKT(const UTF8Char *wkt)
 		}
 		else if (hasZ)
 		{
-			Double *zArr = pl->GetZList(&i);
+			Double *zArr = pl->GetZList(i);
 			while (i-- > 0)
 			{
 				zArr[i] = zList.GetItem(i);
@@ -316,7 +316,7 @@ Math::Geometry::Vector2D *Math::WKTReader::ParseWKT(const UTF8Char *wkt)
 		MemCopyNO(ptArr, ptList.Ptr(), ptList.GetCount() * sizeof(Double));
 		if (pg->HasZ())
 		{
-			Double *zArr = pg->GetZList(&i);
+			Double *zArr = pg->GetZList(i);
 			while (i-- > 0)
 			{
 				zArr[i] = zList.GetItem(i);
@@ -427,8 +427,8 @@ Math::Geometry::Vector2D *Math::WKTReader::ParseWKT(const UTF8Char *wkt)
 		MemCopyNO(ptArr, ptList.Ptr(), ptList.GetCount() * sizeof(Double));
 		if (hasM)
 		{
-			Double *zArr = pl->GetZList(&i);
-			Double *mArr = pl->GetMList(&i);
+			Double *zArr = pl->GetZList(i);
+			Double *mArr = pl->GetMList(i);
 			while (i-- > 0)
 			{
 				zArr[i] = zList.GetItem((i << 1));
@@ -437,7 +437,7 @@ Math::Geometry::Vector2D *Math::WKTReader::ParseWKT(const UTF8Char *wkt)
 		}
 		else if (hasZ)
 		{
-			Double *zArr = pl->GetZList(&i);
+			Double *zArr = pl->GetZList(i);
 			while (i-- > 0)
 			{
 				zArr[i] = zList.GetItem(i);
@@ -542,8 +542,8 @@ Math::Geometry::Vector2D *Math::WKTReader::ParseWKT(const UTF8Char *wkt)
 					return 0;
 				}
 			}
-			Math::Geometry::Polygon *pg;
-			NEW_CLASS(pg, Math::Geometry::Polygon(this->srid, ptOfstList.GetCount(), ptList.GetCount() >> 1, zList.GetCount() == (ptList.GetCount() >> 1), false));
+			NotNullPtr<Math::Geometry::Polygon> pg;
+			NEW_CLASSNN(pg, Math::Geometry::Polygon(this->srid, ptOfstList.GetCount(), ptList.GetCount() >> 1, zList.GetCount() == (ptList.GetCount() >> 1), false));
 			UOSInt i;
 			UInt32 *ptOfstArr = pg->GetPtOfstList(i);
 			MemCopyNO(ptOfstArr, ptOfstList.Ptr(), ptOfstList.GetCount() * sizeof(UInt32));
@@ -551,7 +551,7 @@ Math::Geometry::Vector2D *Math::WKTReader::ParseWKT(const UTF8Char *wkt)
 			MemCopyNO(ptArr, ptList.Ptr(), ptList.GetCount() * sizeof(Double));
 			if (pg->HasZ())
 			{
-				Double *zArr = pg->GetZList(&i);
+				Double *zArr = pg->GetZList(i);
 				while (i-- > 0)
 				{
 					zArr[i] = zList.GetItem(i);

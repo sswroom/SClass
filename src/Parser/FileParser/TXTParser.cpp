@@ -406,7 +406,7 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFileHdr(NotNullPtr<IO::Str
 							hasPL = true;
 							NEW_CLASS(pl, Math::Geometry::LineString(srid, j, true, false));
 							ptList = pl->GetPointList(k);
-							hList = pl->GetZList(&k);
+							hList = pl->GetZList(k);
 							k = 0;
 							while (k < j)
 							{
@@ -463,7 +463,7 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFileHdr(NotNullPtr<IO::Str
 				hasPL = true;
 				NEW_CLASS(pl, Math::Geometry::LineString(srid, j, true, false));
 				ptList = pl->GetPointList(k);
-				hList = pl->GetZList(&k);
+				hList = pl->GetZList(k);
 				k = 0;
 				while (k < j)
 				{

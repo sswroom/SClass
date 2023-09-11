@@ -20,17 +20,17 @@ namespace Math
 			virtual ~LineString();
 
 			virtual VectorType GetVectorType() const;
-			virtual Math::Geometry::Vector2D *Clone() const;
-			virtual Double CalBoundarySqrDistance(Math::Coord2DDbl pt, Math::Coord2DDbl *nearPt) const;
-			virtual Bool JoinVector(Math::Geometry::Vector2D *vec);
+			virtual NotNullPtr<Math::Geometry::Vector2D> Clone() const;
+			virtual Double CalBoundarySqrDistance(Math::Coord2DDbl pt, OutParam<Math::Coord2DDbl> nearPt) const;
+			virtual Bool JoinVector(NotNullPtr<const Math::Geometry::Vector2D> vec);
 			virtual Bool HasZ() const;
 			virtual Bool HasM() const;
-			virtual void ConvCSys(NotNullPtr<Math::CoordinateSystem> srcCSys, NotNullPtr<Math::CoordinateSystem> destCSys);
-			virtual Bool Equals(Vector2D *vec) const;
-			virtual Bool EqualsNearly(Vector2D *vec) const;
+			virtual void ConvCSys(NotNullPtr<const Math::CoordinateSystem> srcCSys, NotNullPtr<const Math::CoordinateSystem> destCSys);
+			virtual Bool Equals(NotNullPtr<const Vector2D> vec) const;
+			virtual Bool EqualsNearly(NotNullPtr<const Vector2D> vec) const;
 
-			Double *GetZList(UOSInt *nPoint) const;
-			Double *GetMList(UOSInt *nPoint) const;
+			Double *GetZList(OutParam<UOSInt> nPoint) const;
+			Double *GetMList(OutParam<UOSInt> nPoint) const;
 			Math::Geometry::LineString *SplitByPoint(Math::Coord2DDbl pt);
 			OSInt GetPointNo(Math::Coord2DDbl pt, Bool *isPoint, Math::Coord2DDbl *calPt, Double *calZ, Double *calM);
 

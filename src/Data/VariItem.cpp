@@ -488,8 +488,16 @@ void Data::VariItem::GetAsString(NotNullPtr<Text::StringBuilderUTF8> sb) const
 		return;
 	case ItemType::Vector:
 		{
-			Math::WKTWriter writer;
-			writer.ToText(sb, this->val.vector);
+			NotNullPtr<Math::Geometry::Vector2D> vec;
+			if (vec.Set(this->val.vector))
+			{
+				Math::WKTWriter writer;
+				writer.ToText(sb, vec);
+			}
+			else
+			{
+				sb->AppendC(UTF8STRC("null"));
+			}
 		}
 		return;
 	case ItemType::UUID:
@@ -583,10 +591,18 @@ UTF8Char *Data::VariItem::GetAsStringS(UTF8Char *sbuff, UOSInt buffSize) const
 		}
 	case ItemType::Vector:
 		{
-			Text::StringBuilderUTF8 sb;
-			Math::WKTWriter writer;
-			writer.ToText(sb, this->val.vector);
-			return sb.ConcatToS(sbuff, buffSize);
+			NotNullPtr<Math::Geometry::Vector2D> vec;
+			if (vec.Set(this->val.vector))
+			{
+				Text::StringBuilderUTF8 sb;
+				Math::WKTWriter writer;
+				writer.ToText(sb, vec);
+				return sb.ConcatToS(sbuff, buffSize);
+			}
+			else
+			{
+				return Text::StrConcatCS(sbuff, UTF8STRC("null"), buffSize);
+			}
 		}
 	case ItemType::UUID:
 		{
@@ -670,10 +686,18 @@ Text::String *Data::VariItem::GetAsNewString() const
 		return s.Ptr();
 	case ItemType::Vector:
 		{
-			Text::StringBuilderUTF8 sb;
-			Math::WKTWriter writer;
-			writer.ToText(sb, this->val.vector);
-			return Text::String::New(sb.ToCString()).Ptr();
+			NotNullPtr<Math::Geometry::Vector2D> vec;
+			if (vec.Set(this->val.vector))
+			{
+				Text::StringBuilderUTF8 sb;
+				Math::WKTWriter writer;
+				writer.ToText(sb, vec);
+				return Text::String::New(sb.ToCString()).Ptr();
+			}
+			else
+			{
+				return 0;
+			}
 		}
 	case ItemType::UUID:
 		s = Text::String::New(48);
@@ -764,7 +788,7 @@ Math::Geometry::Vector2D *Data::VariItem::GetAsNewVector() const
 {
 	if (this->itemType == ItemType::Vector)
 	{
-		return this->val.vector->Clone();;
+		return this->val.vector->Clone().Ptr();
 	}
 	else if (this->itemType == ItemType::CStr)
 	{
@@ -1016,7 +1040,7 @@ void Data::VariItem::SetByteArr(Data::ReadonlyArray<UInt8> *arr)
 void Data::VariItem::SetVector(Math::Geometry::Vector2D *vec)
 {
 	this->FreeItem();
-	this->val.vector = vec->Clone();
+	this->val.vector = vec->Clone().Ptr();
 	this->itemType = ItemType::Vector;
 }
 
@@ -1101,7 +1125,7 @@ void Data::VariItem::Set(VariItem *item)
 		this->val.byteArr = item->val.byteArr->Clone().Ptr();
 		break;
 	case ItemType::Vector:
-		this->val.vector = item->val.vector->Clone();
+		this->val.vector = item->val.vector->Clone().Ptr();
 		break;
 	case ItemType::UUID:
 		this->val.uuid = item->val.uuid->Clone();
@@ -1168,7 +1192,7 @@ Data::VariItem *Data::VariItem::Clone() const
 		ival.byteArr = this->val.byteArr->Clone().Ptr();
 		break;
 	case ItemType::Vector:
-		ival.vector = this->val.vector->Clone();
+		ival.vector = this->val.vector->Clone().Ptr();
 		break;
 	case ItemType::UUID:
 		ival.uuid = this->val.uuid->Clone();
@@ -1247,8 +1271,16 @@ void Data::VariItem::ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const
 		return;
 	case ItemType::Vector:
 		{
-			Math::WKTWriter writer;
-			writer.ToText(sb, this->val.vector);
+			NotNullPtr<Math::Geometry::Vector2D> vec;
+			if (vec.Set(this->val.vector))
+			{
+				Math::WKTWriter writer;
+				writer.ToText(sb, vec);
+			}
+			else
+			{
+				sb->AppendC(UTF8STRC("null"));
+			}
 		}
 		return;
 	case ItemType::UUID:
@@ -1444,7 +1476,7 @@ Data::VariItem *Data::VariItem::NewVector(Math::Geometry::Vector2D *vec)
 {
 	if (vec == 0) return NewNull();
 	ItemValue ival;
-	ival.vector = vec->Clone();
+	ival.vector = vec->Clone().Ptr();
 	Data::VariItem *item;
 	NEW_CLASS(item, Data::VariItem(ItemType::Vector, ival));
 	return item;
@@ -1899,13 +1931,13 @@ Bool Data::VariItem::PtrEquals(void *ptr1, void *ptr2, ItemType itemType)
 		}
 	case ItemType::Vector:
 		{
-			Math::Geometry::Vector2D *val1 = *(Math::Geometry::Vector2D**)ptr1;
-			Math::Geometry::Vector2D *val2 = *(Math::Geometry::Vector2D**)ptr2;
-			if (val1 == val2)
+			if (ptr1 == ptr2)
 			{
 				return true;
 			}
-			if (val1 == 0 || val2 == 0)
+			NotNullPtr<Math::Geometry::Vector2D> val1;
+			NotNullPtr<Math::Geometry::Vector2D> val2;
+			if (!val1.Set(*(Math::Geometry::Vector2D**)ptr1) || !val2.Set(*(Math::Geometry::Vector2D**)ptr2))
 			{
 				return false;
 			}

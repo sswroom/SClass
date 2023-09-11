@@ -1,5 +1,6 @@
 #ifndef _SM_MATH_GEOMETRY_POINTZ
 #define _SM_MATH_GEOMETRY_POINTZ
+#include "Math/Vector3.h"
 #include "Math/Geometry/Point.h"
 
 namespace Math
@@ -14,13 +15,13 @@ namespace Math
 			PointZ(UInt32 srid, Double x, Double y, Double z);
 			virtual ~PointZ();
 
-			virtual Vector2D *Clone() const;
+			virtual NotNullPtr<Vector2D> Clone() const;
 			Double GetZ() const;
-			void GetPos3D(Double *x, Double *y, Double *z) const;
+			Math::Vector3 GetPos3D() const;
 			virtual Bool HasZ() const;
-			virtual void ConvCSys(NotNullPtr<Math::CoordinateSystem> srcCSys, NotNullPtr<Math::CoordinateSystem> destCSys);
-			virtual Bool Equals(Vector2D *vec) const;
-			virtual Bool EqualsNearly(Vector2D *vec) const;
+			virtual void ConvCSys(NotNullPtr<const Math::CoordinateSystem> srcCSys, NotNullPtr<const Math::CoordinateSystem> destCSys);
+			virtual Bool Equals(NotNullPtr<const Vector2D> vec) const;
+			virtual Bool EqualsNearly(NotNullPtr<const Vector2D> vec) const;
 		};
 	}
 }

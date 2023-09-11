@@ -1,6 +1,6 @@
 #ifndef _SM_MATH_GEOMETRY_MULTIGEOMETRY
 #define _SM_MATH_GEOMETRY_MULTIGEOMETRY
-#include "Data/ArrayList.h"
+#include "Data/ArrayListNN.h"
 #include "Math/Coord2DDbl.h"
 #include "Math/CoordinateSystem.h"
 #include "Math/Geometry/Vector2D.h"
@@ -12,7 +12,7 @@ namespace Math
 		template <class T> class MultiGeometry : public Math::Geometry::Vector2D
 		{
 		protected:
-			Data::ArrayList<T*> geometries;
+			Data::ArrayListNN<T> geometries;
 			Bool hasZ;
 			Bool hasM;
 		public:
@@ -33,7 +33,7 @@ namespace Math
 				}
 			}
 
-			virtual void AddGeometry(T *geometry)
+			virtual void AddGeometry(NotNullPtr<T> geometry)
 			{
 				this->geometries.Add(geometry);
 			}
@@ -75,22 +75,22 @@ namespace Math
 				return bounds;
 			}
 
-			virtual Double CalBoundarySqrDistance(Math::Coord2DDbl pt, Math::Coord2DDbl *nearPt) const
+			virtual Double CalBoundarySqrDistance(Math::Coord2DDbl pt, OutParam<Math::Coord2DDbl> nearPt) const
 			{
 				UOSInt j = this->geometries.GetCount();
 				if (j == 0)
 				{
-					*nearPt = Math::Coord2DDbl(0, 0);
+					nearPt.Set(Math::Coord2DDbl(0, 0));
 					return 1000000000;
 				}
 				Math::Coord2DDbl minPt;
-				Double minDist = this->geometries.GetItem(0)->CalBoundarySqrDistance(pt, &minPt);
+				Double minDist = this->geometries.GetItem(0)->CalBoundarySqrDistance(pt, minPt);
 				Math::Coord2DDbl thisPt;
 				Double thisDist;
 				UOSInt i = 1;
 				while (i < j)
 				{
-					thisDist = this->geometries.GetItem(i)->CalBoundarySqrDistance(pt, &thisPt);
+					thisDist = this->geometries.GetItem(i)->CalBoundarySqrDistance(pt, thisPt);
 					if (minDist > thisDist)
 					{
 						minDist = thisDist;
@@ -98,7 +98,7 @@ namespace Math
 					}
 					i++;
 				}
-				*nearPt = minPt;
+				nearPt.Set(minPt);
 				return minDist;
 			}
 
@@ -111,13 +111,13 @@ namespace Math
 					return 1000000000;
 				}
 				Math::Coord2DDbl minPt;
-				Double minDist = this->geometries.GetItem(0)->CalSqrDistance(pt, &minPt);
+				Double minDist = this->geometries.GetItem(0)->CalSqrDistance(pt, minPt);
 				Math::Coord2DDbl thisPt;
 				Double thisDist;
 				UOSInt i = 1;
 				while (i < j)
 				{
-					thisDist = this->geometries.GetItem(i)->CalSqrDistance(pt, &thisPt);
+					thisDist = this->geometries.GetItem(i)->CalSqrDistance(pt, thisPt);
 					if (minDist > thisDist)
 					{
 						minDist = thisDist;
@@ -129,18 +129,18 @@ namespace Math
 				return minDist;
 			}
 
-			virtual Bool JoinVector(Math::Geometry::Vector2D *vec)
+			virtual Bool JoinVector(NotNullPtr<const Math::Geometry::Vector2D> vec)
 			{
 				if (this->GetVectorType() != vec->GetVectorType())
 				{
 					return false;
 				}
-				Math::Geometry::MultiGeometry<T> *obj = (Math::Geometry::MultiGeometry<T> *)vec;
+				Math::Geometry::MultiGeometry<T> *obj = (Math::Geometry::MultiGeometry<T> *)vec.Ptr();
 				UOSInt i = 0;
 				UOSInt j = obj->GetCount();
 				while (i < j)
 				{
-					this->AddGeometry((T*)obj->GetItem(i)->Clone());
+					this->AddGeometry(NotNullPtr<T>::ConvertFrom(obj->GetItem(i)->Clone()));
 					i++;
 				}
 				return true;
@@ -156,7 +156,7 @@ namespace Math
 				return this->hasM;
 			}
 
-			virtual void ConvCSys(NotNullPtr<Math::CoordinateSystem> srcCSys, NotNullPtr<Math::CoordinateSystem> destCSys)
+			virtual void ConvCSys(NotNullPtr<const Math::CoordinateSystem> srcCSys, NotNullPtr<const Math::CoordinateSystem> destCSys)
 			{
 				UOSInt i = this->GetCount();
 				while (i-- > 0)
@@ -166,43 +166,45 @@ namespace Math
 				this->srid = destCSys->GetSRID();
 			}
 
-			virtual Bool Equals(Vector2D *vec) const
+			virtual Bool Equals(NotNullPtr<const Vector2D> vec) const
 			{
 				if (this->GetVectorType() != vec->GetVectorType())
 				{
 					return false;
 				}
-				Math::Geometry::MultiGeometry<T> *obj = (Math::Geometry::MultiGeometry<T> *)vec;
+				Math::Geometry::MultiGeometry<T> *obj = (Math::Geometry::MultiGeometry<T> *)vec.Ptr();
 				if (obj->GetCount() != this->GetCount())
 					return false;
+				NotNullPtr<Math::Geometry::Vector2D> v;
 				UOSInt i = this->GetCount();
 				while (i-- > 0)
 				{
-					if (!this->GetItem(i)->Equals(obj->GetItem(i)))
+					if (!v.Set(obj->GetItem(i)) || !this->GetItem(i)->Equals(vec))
 						return false;
 				}
 				return true;
 			}
 
-			virtual Bool EqualsNearly(Vector2D *vec) const
+			virtual Bool EqualsNearly(NotNullPtr<const Vector2D> vec) const
 			{
 				if (this->GetVectorType() != vec->GetVectorType())
 				{
 					return false;
 				}
-				Math::Geometry::MultiGeometry<T> *obj = (Math::Geometry::MultiGeometry<T> *)vec;
+				Math::Geometry::MultiGeometry<T> *obj = (Math::Geometry::MultiGeometry<T> *)vec.Ptr();
 				if (obj->GetCount() != this->GetCount())
 					return false;
+				NotNullPtr<Math::Geometry::Vector2D> v;
 				UOSInt i = this->GetCount();
 				while (i-- > 0)
 				{
-					if (!this->GetItem(i)->EqualsNearly(obj->GetItem(i)))
+					if (!v.Set(obj->GetItem(i)) || !this->GetItem(i)->EqualsNearly(v))
 						return false;
 				}
 				return true;
 			}
 
-			virtual UOSInt GetCoordinates(Data::ArrayListA<Math::Coord2DDbl> *coordList) const
+			virtual UOSInt GetCoordinates(NotNullPtr<Data::ArrayListA<Math::Coord2DDbl>> coordList) const
 			{
 				UOSInt ret = 0;
 				UOSInt i = 0;

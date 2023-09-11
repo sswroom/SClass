@@ -1365,7 +1365,7 @@ Map::MapDrawLayer *Map::KMLXML::ParseKMLPlacemarkLyr(NotNullPtr<Text::XMLReader>
 						Double *altArr;
 
 						NEW_CLASS(pl, Math::Geometry::LineString(4326, altList.GetCount(), true, false));
-						altArr = pl->GetZList(&nPoints);
+						altArr = pl->GetZList(nPoints);
 						ptArr = pl->GetPointList(nPoints);
 						i = altList.GetCount();
 						MemCopyAC(ptArr, coord.Ptr(), sizeof(Math::Coord2DDbl) * i);

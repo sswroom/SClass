@@ -341,7 +341,7 @@ Math::Geometry::Vector2D *Map::DBMapLayer::GetNewVectorById(GetObjectSess *sessi
 	Math::Geometry::Vector2D *vec = this->vecMap.Get(id);
 	if (vec)
 	{
-		return vec->Clone();
+		return vec->Clone().Ptr();
 	}
 	return 0;
 }

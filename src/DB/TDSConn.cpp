@@ -320,12 +320,12 @@ public:
 			return true;
 		case SYBGEOMETRY:
 			{
-				Math::Geometry::Vector2D *vec = this->GetVector(colIndex);
-				if (vec)
+				NotNullPtr<Math::Geometry::Vector2D> vec;
+				if (vec.Set(this->GetVector(colIndex)))
 				{
 					Math::WKTWriter wkt;
 					wkt.ToText(sb, vec);
-					DEL_CLASS(vec);
+					vec.Delete();
 				}
 			}
 			return true;
@@ -391,13 +391,13 @@ public:
 			return Text::String::NewP(sbuff, sptr).Ptr();
 		case SYBGEOMETRY:
 			{
-				Math::Geometry::Vector2D *vec = this->GetVector(colIndex);
-				if (vec)
+				NotNullPtr<Math::Geometry::Vector2D> vec;
+				if (vec.Set(this->GetVector(colIndex)))
 				{
 					Text::StringBuilderUTF8 sb;
 					Math::WKTWriter wkt;
 					wkt.ToText(sb, vec);
-					DEL_CLASS(vec);
+					vec.Delete();
 					return Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
 				}
 			}

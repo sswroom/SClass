@@ -497,12 +497,12 @@ Bool DB::SQLiteReader::GetStr(UOSInt colIndex, NotNullPtr<Text::StringBuilderUTF
 			const void *data = sqlite3_column_blob((sqlite3_stmt*)this->hStmt, (int)colIndex);
 			if (data)
 			{
-				Math::Geometry::Vector2D *vec = DB::SQLiteFile::GPGeometryParse((const UInt8 *)data, len);
-				if (vec)
+				NotNullPtr<Math::Geometry::Vector2D> vec;
+				if (vec.Set(DB::SQLiteFile::GPGeometryParse((const UInt8 *)data, len)))
 				{
 					Math::WKTWriter wkt;
 					wkt.ToText(sb, vec);
-					DEL_CLASS(vec);
+					vec.Delete();
 				}
 				else
 				{

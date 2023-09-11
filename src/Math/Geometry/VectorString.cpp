@@ -37,10 +37,10 @@ Math::Coord2DDbl Math::Geometry::VectorString::GetCenter() const
 	return this->pos;
 }
 
-Math::Geometry::Vector2D *Math::Geometry::VectorString::Clone() const
+NotNullPtr<Math::Geometry::Vector2D> Math::Geometry::VectorString::Clone() const
 {
-	Math::Geometry::VectorString *vstr;
-	NEW_CLASS(vstr, Math::Geometry::VectorString(this->srid, this->s, this->pos, this->angleDegree, this->buffSize, this->align));
+	NotNullPtr<Math::Geometry::VectorString> vstr;
+	NEW_CLASSNN(vstr, Math::Geometry::VectorString(this->srid, this->s, this->pos, this->angleDegree, this->buffSize, this->align));
 	return vstr;
 }
 
@@ -49,15 +49,15 @@ Math::RectAreaDbl Math::Geometry::VectorString::GetBounds() const
 	return Math::RectAreaDbl(this->pos, this->pos);
 }
 
-Double Math::Geometry::VectorString::CalBoundarySqrDistance(Math::Coord2DDbl pt, Math::Coord2DDbl *nearPt) const
+Double Math::Geometry::VectorString::CalBoundarySqrDistance(Math::Coord2DDbl pt, OutParam<Math::Coord2DDbl> nearPt) const
 {
 	Math::Coord2DDbl diff = pt - this->pos;
-	*nearPt = this->pos;
+	nearPt.Set(this->pos);
 	diff = diff * diff;
 	return diff.x + diff.y;
 }
 
-Bool Math::Geometry::VectorString::JoinVector(Math::Geometry::Vector2D *vec)
+Bool Math::Geometry::VectorString::JoinVector(NotNullPtr<const Math::Geometry::Vector2D> vec)
 {
 	return false;
 }
@@ -67,19 +67,19 @@ Bool Math::Geometry::VectorString::HasZ() const
 	return false;
 }
 
-void Math::Geometry::VectorString::ConvCSys(NotNullPtr<Math::CoordinateSystem> srcCSys, NotNullPtr<Math::CoordinateSystem> destCSys)
+void Math::Geometry::VectorString::ConvCSys(NotNullPtr<const Math::CoordinateSystem> srcCSys, NotNullPtr<const Math::CoordinateSystem> destCSys)
 {
 	this->pos = Math::CoordinateSystem::ConvertXYZ(srcCSys, destCSys, Math::Vector3(this->pos, 0)).GetXY();
 	this->srid = destCSys->GetSRID();
 }
 
-Bool Math::Geometry::VectorString::Equals(Math::Geometry::Vector2D *vec) const
+Bool Math::Geometry::VectorString::Equals(NotNullPtr<const Math::Geometry::Vector2D> vec) const
 {
-	if (vec == 0 || vec->GetVectorType() != VectorType::String)
+	if (vec->GetVectorType() != VectorType::String)
 	{
 		return false;
 	}
-	VectorString *vstr = (VectorString*)vec;
+	const VectorString *vstr = (const VectorString*)vec.Ptr();
 	return this->srid == vstr->srid &&
 		this->pos == vstr->pos &&
 		this->align == vstr->align &&
@@ -88,13 +88,13 @@ Bool Math::Geometry::VectorString::Equals(Math::Geometry::Vector2D *vec) const
 		this->s->Equals(vstr->s.Ptr());
 }
 
-Bool Math::Geometry::VectorString::EqualsNearly(Math::Geometry::Vector2D *vec) const
+Bool Math::Geometry::VectorString::EqualsNearly(NotNullPtr<const Math::Geometry::Vector2D> vec) const
 {
-	if (vec == 0 || vec->GetVectorType() != VectorType::String)
+	if (vec->GetVectorType() != VectorType::String)
 	{
 		return false;
 	}
-	VectorString *vstr = (VectorString*)vec;
+	const VectorString *vstr = (const VectorString*)vec.Ptr();
 	return this->srid == vstr->srid &&
 		this->pos.EqualsNearly(vstr->pos) &&
 		this->align == vstr->align &&
@@ -103,7 +103,7 @@ Bool Math::Geometry::VectorString::EqualsNearly(Math::Geometry::Vector2D *vec) c
 		this->s->Equals(vstr->s.Ptr());
 }
 
-UOSInt Math::Geometry::VectorString::GetCoordinates(Data::ArrayListA<Math::Coord2DDbl> *coordList) const
+UOSInt Math::Geometry::VectorString::GetCoordinates(NotNullPtr<Data::ArrayListA<Math::Coord2DDbl>> coordList) const
 {
 	coordList->Add(this->pos);
 	return 1;

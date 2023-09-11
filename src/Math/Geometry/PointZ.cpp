@@ -12,10 +12,10 @@ Math::Geometry::PointZ::~PointZ()
 {
 }
 
-Math::Geometry::Vector2D *Math::Geometry::PointZ::Clone() const
+NotNullPtr<Math::Geometry::Vector2D> Math::Geometry::PointZ::Clone() const
 {
-	Math::Geometry::PointZ *pt;
-	NEW_CLASS(pt, Math::Geometry::PointZ(this->srid, this->pos.x, this->pos.y, this->z));
+	NotNullPtr<Math::Geometry::PointZ> pt;
+	NEW_CLASSNN(pt, Math::Geometry::PointZ(this->srid, this->pos.x, this->pos.y, this->z));
 	return pt;
 }
 
@@ -24,11 +24,9 @@ Double Math::Geometry::PointZ::GetZ() const
 	return this->z;
 }
 
-void Math::Geometry::PointZ::GetPos3D(Double *x, Double *y, Double *z) const
+Math::Vector3 Math::Geometry::PointZ::GetPos3D() const
 {
-	*x = this->pos.x;
-	*y = this->pos.y;
-	*z = this->z;
+	return Math::Vector3(this->pos, this->z);
 }
 
 Bool Math::Geometry::PointZ::HasZ() const
@@ -36,7 +34,7 @@ Bool Math::Geometry::PointZ::HasZ() const
 	return true;
 }
 
-void Math::Geometry::PointZ::ConvCSys(NotNullPtr<Math::CoordinateSystem> srcCSys, NotNullPtr<Math::CoordinateSystem> destCSys)
+void Math::Geometry::PointZ::ConvCSys(NotNullPtr<const Math::CoordinateSystem> srcCSys, NotNullPtr<const Math::CoordinateSystem> destCSys)
 {
 	Math::Vector3 tmpPos = Math::CoordinateSystem::ConvertXYZ(srcCSys, destCSys, Math::Vector3(this->pos, this->z));
 	this->pos = tmpPos.GetXY();
@@ -44,17 +42,15 @@ void Math::Geometry::PointZ::ConvCSys(NotNullPtr<Math::CoordinateSystem> srcCSys
 	this->srid = destCSys->GetSRID();
 }
 
-Bool Math::Geometry::PointZ::Equals(Math::Geometry::Vector2D *vec) const
+Bool Math::Geometry::PointZ::Equals(NotNullPtr<const Math::Geometry::Vector2D> vec) const
 {
-	if (vec == 0)
-		return false;
 	if (vec->GetSRID() != this->srid)
 	{
 		return false;
 	}
 	if (vec->GetVectorType() == VectorType::Point && vec->HasZ())
 	{
-		Math::Geometry::PointZ *pt = (Math::Geometry::PointZ*)vec;
+		const Math::Geometry::PointZ *pt = (const Math::Geometry::PointZ*)vec.Ptr();
 		return this->pos == pt->pos && this->z == pt->z;
 	}
 	else
@@ -63,17 +59,15 @@ Bool Math::Geometry::PointZ::Equals(Math::Geometry::Vector2D *vec) const
 	}
 }
 
-Bool Math::Geometry::PointZ::EqualsNearly(Math::Geometry::Vector2D *vec) const
+Bool Math::Geometry::PointZ::EqualsNearly(NotNullPtr<const Math::Geometry::Vector2D> vec) const
 {
-	if (vec == 0)
-		return false;
 	if (vec->GetSRID() != this->srid)
 	{
 		return false;
 	}
 	if (vec->GetVectorType() == VectorType::Point && vec->HasZ() && !vec->HasM())
 	{
-		Math::Geometry::PointZ *pt = (Math::Geometry::PointZ*)vec;
+		const Math::Geometry::PointZ *pt = (const Math::Geometry::PointZ*)vec.Ptr();
 		return this->pos.EqualsNearly(pt->pos) &&
 				Math::NearlyEqualsDbl(this->z, pt->z);
 	}

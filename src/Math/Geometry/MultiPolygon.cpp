@@ -15,15 +15,15 @@ Math::Geometry::Vector2D::VectorType Math::Geometry::MultiPolygon::GetVectorType
 	return Math::Geometry::Vector2D::VectorType::MultiPolygon;
 }
 
-Math::Geometry::Vector2D *Math::Geometry::MultiPolygon::Clone() const
+NotNullPtr<Math::Geometry::Vector2D> Math::Geometry::MultiPolygon::Clone() const
 {
-	Math::Geometry::MultiPolygon *newObj;
-	NEW_CLASS(newObj, Math::Geometry::MultiPolygon(this->srid, this->hasZ, this->hasM));
+	NotNullPtr<Math::Geometry::MultiPolygon> newObj;
+	NEW_CLASSNN(newObj, Math::Geometry::MultiPolygon(this->srid, this->hasZ, this->hasM));
 	UOSInt i = 0;
 	UOSInt j = this->geometries.GetCount();
 	while (i < j)
 	{
-		newObj->AddGeometry((Math::Geometry::Polygon*)this->geometries.GetItem(i)->Clone());
+		newObj->AddGeometry(NotNullPtr<Math::Geometry::Polygon>::ConvertFrom(this->geometries.GetItem(i)->Clone()));
 		i++;
 	}
 	return newObj;

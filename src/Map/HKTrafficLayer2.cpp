@@ -428,7 +428,7 @@ Math::Geometry::Vector2D *Map::HKTrafficLayer2::GetNewVectorById(GetObjectSess *
 	road = this->roadMap.Get(id);
 	if (road && road->vec)
 	{
-		vec = road->vec->Clone();
+		vec = road->vec->Clone().Ptr();
 		if (road->speed >= SPEEDHIGH)
 		{
 			((Math::Geometry::Polyline*)vec)->SetColor(0xff00ff00);

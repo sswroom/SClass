@@ -58,10 +58,10 @@ Math::Geometry::Vector2D::VectorType Math::Geometry::LineString::GetVectorType()
 	return Math::Geometry::Vector2D::VectorType::LineString;
 }
 
-Math::Geometry::Vector2D *Math::Geometry::LineString::Clone() const
+NotNullPtr<Math::Geometry::Vector2D> Math::Geometry::LineString::Clone() const
 {
-	Math::Geometry::LineString *pl;
-	NEW_CLASS(pl, Math::Geometry::LineString(this->srid, this->nPoint, this->zArr != 0, this->mArr != 0));
+	NotNullPtr<Math::Geometry::LineString> pl;
+	NEW_CLASSNN(pl, Math::Geometry::LineString(this->srid, this->nPoint, this->zArr != 0, this->mArr != 0));
 	MemCopyAC(pl->pointArr, this->pointArr, sizeof(Math::Coord2DDbl) * nPoint);
 	if (this->zArr)
 	{	
@@ -74,7 +74,7 @@ Math::Geometry::Vector2D *Math::Geometry::LineString::Clone() const
 	return pl;
 }
 
-Double Math::Geometry::LineString::CalBoundarySqrDistance(Math::Coord2DDbl pt, Math::Coord2DDbl *nearPt) const
+Double Math::Geometry::LineString::CalBoundarySqrDistance(Math::Coord2DDbl pt, OutParam<Math::Coord2DDbl> nearPt) const
 {
 	UOSInt l;
 	Math::Coord2DDbl *points;
@@ -170,14 +170,11 @@ Double Math::Geometry::LineString::CalBoundarySqrDistance(Math::Coord2DDbl pt, M
 			calPtOut = points[l];
 		}
 	}
-	if (nearPt)
-	{
-		*nearPt = calPtOut;
-	}
+	nearPt.Set(calPtOut);
 	return dist;
 }
 
-Bool Math::Geometry::LineString::JoinVector(Math::Geometry::Vector2D *vec)
+Bool Math::Geometry::LineString::JoinVector(NotNullPtr<const Math::Geometry::Vector2D> vec)
 {
 	if (vec->GetVectorType() != Math::Geometry::Vector2D::VectorType::LineString || this->HasZ() != vec->HasZ() || this->HasM() != vec->HasM())
 	{
@@ -196,7 +193,7 @@ Bool Math::Geometry::LineString::HasM() const
 	return this->mArr != 0;
 }
 
-void Math::Geometry::LineString::ConvCSys(NotNullPtr<Math::CoordinateSystem> srcCSys, NotNullPtr<Math::CoordinateSystem> destCSys)
+void Math::Geometry::LineString::ConvCSys(NotNullPtr<const Math::CoordinateSystem> srcCSys, NotNullPtr<const Math::CoordinateSystem> destCSys)
 {
 	if (this->zArr)
 	{
@@ -217,17 +214,15 @@ void Math::Geometry::LineString::ConvCSys(NotNullPtr<Math::CoordinateSystem> src
 	}
 }
 
-Bool Math::Geometry::LineString::Equals(Vector2D *vec) const
+Bool Math::Geometry::LineString::Equals(NotNullPtr<const Vector2D> vec) const
 {
-	if (vec == 0)
-		return false;
 	if (vec->GetSRID() != this->srid)
 	{
 		return false;
 	}
 	if (vec->GetVectorType() == this->GetVectorType() && this->HasZ() == vec->HasZ() && this->HasM() == vec->HasM())
 	{
-		Math::Geometry::LineString *pl = (Math::Geometry::LineString*)vec;
+		Math::Geometry::LineString *pl = (Math::Geometry::LineString*)vec.Ptr();
 		UOSInt nPoint;
 		Math::Coord2DDbl *ptList = pl->GetPointList(nPoint);
 		Double *valArr;
@@ -275,17 +270,15 @@ Bool Math::Geometry::LineString::Equals(Vector2D *vec) const
 	}
 }
 
-Bool Math::Geometry::LineString::EqualsNearly(Vector2D *vec) const
+Bool Math::Geometry::LineString::EqualsNearly(NotNullPtr<const Vector2D> vec) const
 {
-	if (vec == 0)
-		return false;
 	if (vec->GetSRID() != this->srid)
 	{
 		return false;
 	}
 	if (vec->GetVectorType() == this->GetVectorType() && this->HasZ() == vec->HasZ() && this->HasM() == vec->HasM())
 	{
-		Math::Geometry::LineString *pl = (Math::Geometry::LineString*)vec;
+		Math::Geometry::LineString *pl = (Math::Geometry::LineString*)vec.Ptr();
 		UOSInt nPoint;
 		Math::Coord2DDbl *ptList = pl->GetPointList(nPoint);
 		Double *valArr;
@@ -333,17 +326,15 @@ Bool Math::Geometry::LineString::EqualsNearly(Vector2D *vec) const
 	}
 }
 
-Double *Math::Geometry::LineString::GetZList(UOSInt *nPoint) const
+Double *Math::Geometry::LineString::GetZList(OutParam<UOSInt> nPoint) const
 {
-	if (nPoint)
-		*nPoint = this->nPoint;
+	nPoint.Set(this->nPoint);
 	return this->zArr;
 }
 
-Double *Math::Geometry::LineString::GetMList(UOSInt *nPoint) const
+Double *Math::Geometry::LineString::GetMList(OutParam<UOSInt> nPoint) const
 {
-	if (nPoint)
-		*nPoint = this->nPoint;
+	nPoint.Set(this->nPoint);
 	return this->mArr;
 }
 
@@ -414,7 +405,7 @@ Math::Geometry::LineString *Math::Geometry::LineString::SplitByPoint(Math::Coord
 		if (oldZ)
 		{
 			l = this->nPoint;
-			newZ = newPL->GetZList(&l);
+			newZ = newPL->GetZList(l);
 			while (l-- > minId)
 			{
 				newZ[l - minId] = oldZ[l];
@@ -424,7 +415,7 @@ Math::Geometry::LineString *Math::Geometry::LineString::SplitByPoint(Math::Coord
 		if (oldM)
 		{
 			l = this->nPoint;
-			newM = newPL->GetMList(&l);
+			newM = newPL->GetMList(l);
 			while (l-- > minId)
 			{
 				newM[l - minId] = oldM[l];
@@ -486,7 +477,7 @@ Math::Geometry::LineString *Math::Geometry::LineString::SplitByPoint(Math::Coord
 
 		if (oldZ)
 		{
-			newZ = newPL->GetZList(&l);
+			newZ = newPL->GetZList(l);
 			l = this->nPoint;
 			while (--l > minId)
 			{
@@ -498,7 +489,7 @@ Math::Geometry::LineString *Math::Geometry::LineString::SplitByPoint(Math::Coord
 
 		if (oldM)
 		{
-			newM = newPL->GetMList(&l);
+			newM = newPL->GetMList(l);
 			l = this->nPoint;
 			while (--l > minId)
 			{
@@ -839,12 +830,12 @@ NotNullPtr<Math::Geometry::Polyline> Math::Geometry::LineString::CreatePolyline(
 	if (this->zArr)
 	{
 		UOSInt nPoint;
-		MemCopyNO(pl->GetZList(&nPoint), this->zArr, sizeof(Double) * this->nPoint);
+		MemCopyNO(pl->GetZList(nPoint), this->zArr, sizeof(Double) * this->nPoint);
 	}
 	if (this->mArr)
 	{
 		UOSInt nPoint;
-		MemCopyNO(pl->GetMList(&nPoint), this->mArr, sizeof(Double) * this->nPoint);
+		MemCopyNO(pl->GetMList(nPoint), this->mArr, sizeof(Double) * this->nPoint);
 	}
 	return pl;
 }

@@ -18,10 +18,10 @@ Math::Geometry::Vector2D::VectorType Math::Geometry::Polygon::GetVectorType() co
 	return Math::Geometry::Vector2D::VectorType::Polygon;
 }
 
-Math::Geometry::Vector2D *Math::Geometry::Polygon::Clone() const
+NotNullPtr<Math::Geometry::Vector2D> Math::Geometry::Polygon::Clone() const
 {
-	Math::Geometry::Polygon *pg;
-	NEW_CLASS(pg, Math::Geometry::Polygon(this->srid, this->nPtOfst, this->nPoint, this->HasZ(), this->HasM()));
+	NotNullPtr<Math::Geometry::Polygon> pg;
+	NEW_CLASSNN(pg, Math::Geometry::Polygon(this->srid, this->nPtOfst, this->nPoint, this->HasZ(), this->HasM()));
 	MemCopyNO(pg->ptOfstArr, this->ptOfstArr, sizeof(Int32) * this->nPtOfst);
 	MemCopyAC(pg->pointArr, this->pointArr, sizeof(Math::Coord2DDbl) * nPoint);
 	if (this->zArr)
@@ -35,7 +35,7 @@ Math::Geometry::Vector2D *Math::Geometry::Polygon::Clone() const
 	return pg;
 }
 
-Double Math::Geometry::Polygon::CalBoundarySqrDistance(Math::Coord2DDbl pt, Math::Coord2DDbl *nearPt) const
+Double Math::Geometry::Polygon::CalBoundarySqrDistance(Math::Coord2DDbl pt, OutParam<Math::Coord2DDbl> nearPt) const
 {
 	UOSInt k;
 	UOSInt l;
@@ -140,18 +140,15 @@ Double Math::Geometry::Polygon::CalBoundarySqrDistance(Math::Coord2DDbl pt, Math
 			calPtOut = points[k];
 		}
 	}
-	if (nearPt)
-	{
-		*nearPt = calPtOut;
-	}
+	nearPt.Set(calPtOut);
 	return dist;
 }
 
-Bool Math::Geometry::Polygon::JoinVector(Math::Geometry::Vector2D *vec)
+Bool Math::Geometry::Polygon::JoinVector(NotNullPtr<const Math::Geometry::Vector2D> vec)
 {
 	if (vec->GetVectorType() != Math::Geometry::Vector2D::VectorType::Polygon)
 		return false;
-	Math::Geometry::Polygon *pg = (Math::Geometry::Polygon*)vec;
+	Math::Geometry::Polygon *pg = (Math::Geometry::Polygon*)vec.Ptr();
 	Math::Coord2DDbl *newPoints;
 	UOSInt nPoint = this->nPoint + pg->nPoint;
 	UInt32 *newPtOfsts;
@@ -392,12 +389,12 @@ void Math::Geometry::Polygon::SplitByJunction(Data::ArrayList<Math::Geometry::Po
 		MemCopyAC(points, &this->pointArr[j], sizeof(Math::Coord2DDbl) * (i - j));
 		if (this->zArr)
 		{
-			zArr = tmpPG->GetZList(&nPoints);
+			zArr = tmpPG->GetZList(nPoints);
 			MemCopyAC(zArr, &this->zArr[j], sizeof(Double) * (i - j));
 		}
 		if (this->mArr)
 		{
-			mArr = tmpPG->GetMList(&nPoints);
+			mArr = tmpPG->GetMList(nPoints);
 			MemCopyAC(mArr, &this->mArr[j], sizeof(Double) * (i - j));
 		}
 		tmpPG->SplitByJunction(results);

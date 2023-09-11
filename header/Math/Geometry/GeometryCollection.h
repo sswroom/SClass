@@ -13,7 +13,7 @@ namespace Math
 			virtual ~GeometryCollection();
 
 			virtual Vector2D::VectorType GetVectorType() const;
-			virtual Vector2D *Clone() const;
+			virtual NotNullPtr<Vector2D> Clone() const;
 		};
 	}
 }

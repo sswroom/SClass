@@ -444,7 +444,7 @@ Math::Geometry::Vector2D *DB::SortableDBReader::GetVector(UOSInt colIndex)
 	Data::VariItem *item = this->GetItem(colIndex);
 	if (item && item->GetItemType() == Data::VariItem::ItemType::Vector)
 	{
-		return item->GetItemValue().vector->Clone();
+		return item->GetItemValue().vector->Clone().Ptr();
 	}
 	return 0;
 }

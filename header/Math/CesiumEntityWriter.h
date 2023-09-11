@@ -15,7 +15,7 @@ namespace Math
 		virtual ~CesiumEntityWriter();
 
 		virtual Text::CStringNN GetWriterName() const;
-		virtual Bool ToText(NotNullPtr<Text::StringBuilderUTF8> sb, Math::Geometry::Vector2D *vec);
+		virtual Bool ToText(NotNullPtr<Text::StringBuilderUTF8> sb, NotNullPtr<const Math::Geometry::Vector2D> vec);
 		virtual Text::String *GetLastError();
 	};
 }

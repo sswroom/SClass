@@ -165,7 +165,7 @@ Math::Geometry::Vector2D *Map::SHPUtil::ParseShpRecord(UInt32 srid, const UInt8 
 					points++;
 					buff += 16;
 				}
-				alts = pl->GetZList(&tmpV);
+				alts = pl->GetZList(tmpV);
 				while (tmpV-- > 0)
 				{
 					*alts++ = ReadDouble(&buff[0]);
@@ -220,13 +220,13 @@ Math::Geometry::Vector2D *Map::SHPUtil::ParseShpRecord(UInt32 srid, const UInt8 
 					points++;
 					buff += 16;
 				}
-				zArr = pl->GetZList(&tmpV);
+				zArr = pl->GetZList(tmpV);
 				while (tmpV-- > 0)
 				{
 					*zArr++ = ReadDouble(&buff[0]);
 					buff += 8;
 				}
-				mArr = pl->GetMList(&tmpV);
+				mArr = pl->GetMList(tmpV);
 				while (tmpV-- > 0)
 				{
 					*mArr++ = ReadDouble(&buff[0]);
@@ -273,13 +273,13 @@ Math::Geometry::Vector2D *Map::SHPUtil::ParseShpRecord(UInt32 srid, const UInt8 
 					points++;
 					buff += 16;
 				}
-				zArr = pl->GetZList(&tmpV);
+				zArr = pl->GetZList(tmpV);
 				while (tmpV-- > 0)
 				{
 					*zArr++ = ReadDouble(&buff[0]);
 					buff += 8;
 				}
-				mArr = pl->GetMList(&tmpV);
+				mArr = pl->GetMList(tmpV);
 				while (tmpV-- > 0)
 				{
 					*mArr++ = ReadDouble(&buff[0]);
@@ -327,7 +327,7 @@ Math::Geometry::Vector2D *Map::SHPUtil::ParseShpRecord(UInt32 srid, const UInt8 
 					points++;
 					buff += 16;
 				}
-				zArr = pl->GetZList(&tmpV);
+				zArr = pl->GetZList(tmpV);
 				while (tmpV-- > 0)
 				{
 					*zArr = ReadDouble(&buff[0]);
@@ -385,7 +385,7 @@ Math::Geometry::Vector2D *Map::SHPUtil::ParseShpRecord(UInt32 srid, const UInt8 
 					points++;
 					buff += 16;
 				}
-				mArr = pl->GetMList(&tmpV);
+				mArr = pl->GetMList(tmpV);
 				while (tmpV-- > 0)
 				{
 					*mArr++ = ReadDouble(&buff[0]);
@@ -431,7 +431,7 @@ Math::Geometry::Vector2D *Map::SHPUtil::ParseShpRecord(UInt32 srid, const UInt8 
 					points++;
 					buff += 16;
 				}
-				mArr = pl->GetMList(&tmpV);
+				mArr = pl->GetMList(tmpV);
 				while (tmpV-- > 0)
 				{
 					*mArr++ = ReadDouble(&buff[0]);

@@ -274,7 +274,8 @@ const Map::HKSpeedLimit::RouteInfo *Map::HKSpeedLimit::GetNearestRoute(Math::Coo
 			route = this->routeMap.Get(routeId);
 			if (route)
 			{
-				thisDist = route->vecOri->CalSqrDistance(pt, 0);
+				Math::Coord2DDbl nearPt;
+				thisDist = route->vecOri->CalSqrDistance(pt, nearPt);
 				if (thisDist < minDist)
 				{
 					minDist = thisDist;
@@ -334,7 +335,8 @@ Int32 Map::HKSpeedLimit::GetSpeedLimit(Math::Coord2DDbl pt, Double maxDistM)
 			route = this->routeMap.Get(routeId);
 			if (route && route->speedLimit > speedLimit)
 			{
-				thisDist = route->vecOri->CalSqrDistance(pt, 0);
+				Math::Coord2DDbl nearPt;
+				thisDist = route->vecOri->CalSqrDistance(pt, nearPt);
 				if (thisDist <= distComp)
 				{
 					speedLimit = route->speedLimit;

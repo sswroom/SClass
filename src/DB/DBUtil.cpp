@@ -1598,7 +1598,8 @@ UOSInt DB::DBUtil::SDBBinLeng(const UInt8 *buff, UOSInt size, DB::SQLType sqlTyp
 
 UTF8Char *DB::DBUtil::SDBVector(UTF8Char *sqlstr, Math::Geometry::Vector2D *vec, DB::SQLType sqlType, Bool axisAware)
 {
-	if (vec == 0)
+	NotNullPtr<Math::Geometry::Vector2D> nnvec;
+	if (!nnvec.Set(vec))
 	{
 		return Text::StrConcatC(sqlstr, UTF8STRC("NULL"));
 	}
@@ -1608,7 +1609,7 @@ UTF8Char *DB::DBUtil::SDBVector(UTF8Char *sqlstr, Math::Geometry::Vector2D *vec,
 		{
 			Math::Geometry::Point *pt = (Math::Geometry::Point*)vec;
 			UInt8 buff[22];
-			WriteUInt32(buff, vec->GetSRID());
+			WriteUInt32(buff, nnvec->GetSRID());
 			buff[4] = 1;
 			buff[5] = 12;
 			Math::Coord2DDbl coord = pt->GetCenter();
@@ -1626,18 +1627,18 @@ UTF8Char *DB::DBUtil::SDBVector(UTF8Char *sqlstr, Math::Geometry::Vector2D *vec,
 		Math::WKTWriter writer;
 		if (axisAware)
 		{
-			if (Math::CoordinateSystemManager::SRAxisReversed(vec->GetSRID()))
+			if (Math::CoordinateSystemManager::SRAxisReversed(nnvec->GetSRID()))
 			{
 				writer.SetReverseAxis(true);
 			}
 		}
 		Text::StringBuilderUTF8 sb;
-		if (writer.ToText(sb, vec))
+		if (writer.ToText(sb, nnvec))
 		{
 			sqlstr = Text::StrConcatC(sqlstr, UTF8STRC("ST_GeomFromText('"));
 			sqlstr = Text::StrConcatC(sqlstr, sb.ToString(), sb.GetLength());
 			sqlstr = Text::StrConcatC(sqlstr, UTF8STRC("', "));
-			sqlstr = Text::StrUInt32(sqlstr, vec->GetSRID());
+			sqlstr = Text::StrUInt32(sqlstr, nnvec->GetSRID());
 			sqlstr = Text::StrConcatC(sqlstr, UTF8STRC(")"));
 			return sqlstr;
 		}
@@ -1650,12 +1651,12 @@ UTF8Char *DB::DBUtil::SDBVector(UTF8Char *sqlstr, Math::Geometry::Vector2D *vec,
 	{
 		Math::WKTWriter writer;
 		Text::StringBuilderUTF8 sb;
-		if (writer.ToText(sb, vec))
+		if (writer.ToText(sb, nnvec))
 		{
 			sqlstr = Text::StrConcatC(sqlstr, UTF8STRC("ST_GeomFromText('"));
 			sqlstr = Text::StrConcatC(sqlstr, sb.ToString(), sb.GetLength());
 			sqlstr = Text::StrConcatC(sqlstr, UTF8STRC("', "));
-			sqlstr = Text::StrUInt32(sqlstr, vec->GetSRID());
+			sqlstr = Text::StrUInt32(sqlstr, nnvec->GetSRID());
 			sqlstr = Text::StrConcatC(sqlstr, UTF8STRC(")"));
 			return sqlstr;
 		}
@@ -1672,13 +1673,14 @@ UTF8Char *DB::DBUtil::SDBVector(UTF8Char *sqlstr, Math::Geometry::Vector2D *vec,
 
 UOSInt DB::DBUtil::SDBVectorLeng(Math::Geometry::Vector2D *vec, DB::SQLType sqlType)
 {
-	if (vec == 0)
+	NotNullPtr<Math::Geometry::Vector2D> nnvec;
+	if (!nnvec.Set(vec))
 	{
 		return 4;
 	}
 	if (sqlType == DB::SQLType::MSSQL)
 	{
-		if (vec->GetVectorType() == Math::Geometry::Vector2D::VectorType::Point)
+		if (nnvec->GetVectorType() == Math::Geometry::Vector2D::VectorType::Point)
 		{
 			return SDBBinLeng(0, 22, sqlType);
 		}
@@ -1691,11 +1693,11 @@ UOSInt DB::DBUtil::SDBVectorLeng(Math::Geometry::Vector2D *vec, DB::SQLType sqlT
 	{
 		Math::WKTWriter writer;
 		Text::StringBuilderUTF8 sb;
-		if (writer.ToText(sb, vec))
+		if (writer.ToText(sb, nnvec))
 		{
 			UOSInt ret = 21 + sb.GetLength();
 			sb.ClearStr();
-			sb.AppendU32(vec->GetSRID());
+			sb.AppendU32(nnvec->GetSRID());
 			ret += sb.GetLength();
 			return ret;
 		}
@@ -1708,11 +1710,11 @@ UOSInt DB::DBUtil::SDBVectorLeng(Math::Geometry::Vector2D *vec, DB::SQLType sqlT
 	{
 		Math::WKTWriter writer;
 		Text::StringBuilderUTF8 sb;
-		if (writer.ToText(sb, vec))
+		if (writer.ToText(sb, nnvec))
 		{
 			UOSInt ret = 21 + sb.GetLength();
 			sb.ClearStr();
-			sb.AppendU32(vec->GetSRID());
+			sb.AppendU32(nnvec->GetSRID());
 			ret += sb.GetLength();
 			return ret;
 		}

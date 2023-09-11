@@ -487,20 +487,29 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::LoadCSV(Text::CStringNN fileName)
 								break;
 							case DB::DBUtil::CT_Vector:
 								{
-									Math::Geometry::Vector2D *vec1 = r->GetVector(i);
-									Math::Geometry::Vector2D *vec2;;
-									Math::WKTReader reader(vec1->GetSRID());
-									vec2 = reader.ParseWKT(rowData[i]->v);
-									if (vec2 == 0)
+									NotNullPtr<Math::Geometry::Vector2D> vec1;
+									if (vec1.Set(r->GetVector(i)))
+									{
+										NotNullPtr<Math::Geometry::Vector2D> vec2;
+										Math::WKTReader reader(vec1->GetSRID());
+										if (!vec2.Set(reader.ParseWKT(rowData[i]->v)))
+										{
+											diff = true;
+										}
+										else
+										{
+											if (!vec1->EqualsNearly(vec2))
+											{
+												diff = true;
+											}
+											vec2.Delete();
+										}
+										vec1.Delete();
+									}
+									else
 									{
 										diff = true;
 									}
-									else if (!vec1->EqualsNearly(vec2))
-									{
-										diff = true;
-									}
-									SDEL_CLASS(vec1);
-									SDEL_CLASS(vec2);
 								}
 								break;
 							case DB::DBUtil::CT_Binary:
@@ -1194,29 +1203,34 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(Text::CStringNN csvFileName,
 								break;
 							case DB::DBUtil::CT_Vector:
 								{
-									Math::Geometry::Vector2D *vec1 = r->GetVector(i);
-									Math::Geometry::Vector2D *vec2;;
-									Math::WKTReader reader(vec1->GetSRID());
-									vec2 = reader.ParseWKT(rowData[i]->v);
-									if (vec2 == 0)
+									NotNullPtr<Math::Geometry::Vector2D> vec1;
+									NotNullPtr<Math::Geometry::Vector2D> vec2;
+									if (vec1.Set(r->GetVector(i)))
 									{
-									}
-									else if (!vec1->EqualsNearly(vec2))
-									{
-										if (diff)
+										Math::WKTReader reader(vec1->GetSRID());
+										if (!vec2.Set(reader.ParseWKT(rowData[i]->v)))
 										{
-											sql.AppendCmdC(CSTR(", "));
 										}
 										else
 										{
-											diff = true;
+											if (!vec1->EqualsNearly(vec2))
+											{
+												if (diff)
+												{
+													sql.AppendCmdC(CSTR(", "));
+												}
+												else
+												{
+													diff = true;
+												}
+												sql.AppendCol(table->GetCol(i)->GetColName()->v);
+												sql.AppendCmdC(CSTR(" = "));
+												sql.AppendVector(vec2.Ptr());
+											}
+											vec2.Delete();
 										}
-										sql.AppendCol(table->GetCol(i)->GetColName()->v);
-										sql.AppendCmdC(CSTR(" = "));
-										sql.AppendVector(vec2);
+										vec1.Delete();
 									}
-									SDEL_CLASS(vec1);
-									SDEL_CLASS(vec2);
 								}
 								break;
 							case DB::DBUtil::CT_Binary:

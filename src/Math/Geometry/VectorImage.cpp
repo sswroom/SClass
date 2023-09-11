@@ -125,16 +125,16 @@ Math::Coord2DDbl Math::Geometry::VectorImage::GetCenter() const
 	return (this->tl + this->br) * 0.5;
 }
 
-Math::Geometry::Vector2D *Math::Geometry::VectorImage::Clone() const
+NotNullPtr<Math::Geometry::Vector2D> Math::Geometry::VectorImage::Clone() const
 {
-	Math::Geometry::VectorImage *vimg;
+	NotNullPtr<Math::Geometry::VectorImage> vimg;
 	if (this->scnCoord)
 	{
-		NEW_CLASS(vimg, Math::Geometry::VectorImage(this->srid, this->img, this->tl, this->br, this->size, this->scnCoord, this->srcAddr, this->timeStart, this->timeEnd));
+		NEW_CLASSNN(vimg, Math::Geometry::VectorImage(this->srid, this->img, this->tl, this->br, this->size, this->scnCoord, this->srcAddr, this->timeStart, this->timeEnd));
 	}
 	else
 	{
-		NEW_CLASS(vimg, Math::Geometry::VectorImage(this->srid, this->img, this->tl, this->br, this->scnCoord, this->srcAddr, this->timeStart, this->timeEnd));
+		NEW_CLASSNN(vimg, Math::Geometry::VectorImage(this->srid, this->img, this->tl, this->br, this->scnCoord, this->srcAddr, this->timeStart, this->timeEnd));
 	}
 	if (this->hasHeight)
 	{
@@ -152,7 +152,7 @@ Math::RectAreaDbl Math::Geometry::VectorImage::GetBounds() const
 	return Math::RectAreaDbl(this->tl, this->br);
 }
 
-Double Math::Geometry::VectorImage::CalBoundarySqrDistance(Math::Coord2DDbl pt, Math::Coord2DDbl *nearPt) const
+Double Math::Geometry::VectorImage::CalBoundarySqrDistance(Math::Coord2DDbl pt, OutParam<Math::Coord2DDbl> nearPt) const
 {
 	Bool hCenter = false;
 	Bool vCenter = false;
@@ -220,16 +220,13 @@ Double Math::Geometry::VectorImage::CalBoundarySqrDistance(Math::Coord2DDbl pt, 
 			break;
 		}
 	}
-	if (nearPt)
-	{
-		*nearPt = near;
-	}
+	nearPt.Set(near);
 	near = pt - near;
 	near = near * near;
 	return near.x + near.y;
 }
 
-Double Math::Geometry::VectorImage::CalSqrDistance(Math::Coord2DDbl pt, Math::Coord2DDbl *nearPt) const
+Double Math::Geometry::VectorImage::CalSqrDistance(Math::Coord2DDbl pt, OutParam<Math::Coord2DDbl> nearPt) const
 {
 	Math::Coord2DDbl near;
 	if (pt.x > br.x)
@@ -256,16 +253,13 @@ Double Math::Geometry::VectorImage::CalSqrDistance(Math::Coord2DDbl pt, Math::Co
 	{
 		near.y = pt.y;
 	}
-	if (nearPt)
-	{
-		*nearPt = near;
-	}
+	nearPt.Set(near);
 	near = pt - near;
 	near = near * near;
 	return near.x + near.y;
 }
 
-Bool Math::Geometry::VectorImage::JoinVector(Math::Geometry::Vector2D *vec)
+Bool Math::Geometry::VectorImage::JoinVector(NotNullPtr<const Math::Geometry::Vector2D> vec)
 {
 	return false;
 }
@@ -275,7 +269,7 @@ Bool Math::Geometry::VectorImage::HasZ() const
 	return this->hasHeight;
 }
 
-void Math::Geometry::VectorImage::ConvCSys(NotNullPtr<Math::CoordinateSystem> srcCSys, NotNullPtr<Math::CoordinateSystem> destCSys)
+void Math::Geometry::VectorImage::ConvCSys(NotNullPtr<const Math::CoordinateSystem> srcCSys, NotNullPtr<const Math::CoordinateSystem> destCSys)
 {
 	if (this->scnCoord)
 	{
@@ -288,9 +282,9 @@ void Math::Geometry::VectorImage::ConvCSys(NotNullPtr<Math::CoordinateSystem> sr
 	}
 }
 
-Bool Math::Geometry::VectorImage::Equals(Vector2D *vec) const
+Bool Math::Geometry::VectorImage::Equals(NotNullPtr<const Vector2D> vec) const
 {
-	if (vec == 0 || vec->GetVectorType() != VectorType::Image)
+	if (vec->GetVectorType() != VectorType::Image)
 	{
 		return false;
 	}
@@ -298,9 +292,9 @@ Bool Math::Geometry::VectorImage::Equals(Vector2D *vec) const
 	return false;
 }
 
-Bool Math::Geometry::VectorImage::EqualsNearly(Vector2D *vec) const
+Bool Math::Geometry::VectorImage::EqualsNearly(NotNullPtr<const Vector2D> vec) const
 {
-	if (vec == 0 || vec->GetVectorType() != VectorType::Image)
+	if (vec->GetVectorType() != VectorType::Image)
 	{
 		return false;
 	}
@@ -308,7 +302,7 @@ Bool Math::Geometry::VectorImage::EqualsNearly(Vector2D *vec) const
 	return false;
 }
 
-UOSInt Math::Geometry::VectorImage::GetCoordinates(Data::ArrayListA<Math::Coord2DDbl> *coordList) const
+UOSInt Math::Geometry::VectorImage::GetCoordinates(NotNullPtr<Data::ArrayListA<Math::Coord2DDbl>> coordList) const
 {
 	if (this->scnCoord)
 	{

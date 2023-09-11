@@ -26,10 +26,10 @@ Math::Geometry::Vector2D::VectorType Math::Geometry::Polyline::GetVectorType() c
 	return Math::Geometry::Vector2D::VectorType::Polyline;
 }
 
-Math::Geometry::Vector2D *Math::Geometry::Polyline::Clone() const
+NotNullPtr<Math::Geometry::Vector2D> Math::Geometry::Polyline::Clone() const
 {
-	Math::Geometry::Polyline *pl;
-	NEW_CLASS(pl, Math::Geometry::Polyline(this->srid, this->nPtOfst, this->nPoint, this->HasZ(), this->HasM()));
+	NotNullPtr<Math::Geometry::Polyline> pl;
+	NEW_CLASSNN(pl, Math::Geometry::Polyline(this->srid, this->nPtOfst, this->nPoint, this->HasZ(), this->HasM()));
 	MemCopyNO(pl->ptOfstArr, this->ptOfstArr, sizeof(Int32) * this->nPtOfst);
 	MemCopyAC(pl->pointArr, this->pointArr, sizeof(Math::Coord2DDbl) * nPoint);
 	if (this->zArr)
@@ -45,7 +45,7 @@ Math::Geometry::Vector2D *Math::Geometry::Polyline::Clone() const
 	return pl;
 }
 
-Double Math::Geometry::Polyline::CalBoundarySqrDistance(Math::Coord2DDbl pt, Math::Coord2DDbl *nearPt) const
+Double Math::Geometry::Polyline::CalBoundarySqrDistance(Math::Coord2DDbl pt, OutParam<Math::Coord2DDbl> nearPt) const
 {
 	UOSInt k;
 	UOSInt l;
@@ -150,20 +150,17 @@ Double Math::Geometry::Polyline::CalBoundarySqrDistance(Math::Coord2DDbl pt, Mat
 			calPtOut = points[k];
 		}
 	}
-	if (nearPt)
-	{
-		*nearPt = calPtOut;
-	}
+	nearPt.Set(calPtOut);
 	return dist;
 }
 
-Bool Math::Geometry::Polyline::JoinVector(Math::Geometry::Vector2D *vec)
+Bool Math::Geometry::Polyline::JoinVector(NotNullPtr<const Math::Geometry::Vector2D> vec)
 {
 	if (vec->GetVectorType() != Math::Geometry::Vector2D::VectorType::Polyline || this->HasZ() != vec->HasZ() || this->HasM() != vec->HasM())
 	{
 		return false;
 	}
-	Math::Geometry::Polyline *pl = (Math::Geometry::Polyline*)vec;
+	Math::Geometry::Polyline *pl = (Math::Geometry::Polyline*)vec.Ptr();
 
 	UInt32 *newPtOfsts = MemAlloc(UInt32, this->nPtOfst + pl->nPtOfst);
 	MemCopyNO(newPtOfsts, this->ptOfstArr, this->nPtOfst * sizeof(UInt32));
@@ -311,7 +308,7 @@ Math::Geometry::Polyline *Math::Geometry::Polyline::SplitByPoint(Math::Coord2DDb
 		if (oldZ)
 		{
 			l = this->nPoint;
-			newZ = newPL->GetZList(&l);
+			newZ = newPL->GetZList(l);
 			while (l-- > minId)
 			{
 				newZ[l - minId] = oldZ[l];
@@ -321,7 +318,7 @@ Math::Geometry::Polyline *Math::Geometry::Polyline::SplitByPoint(Math::Coord2DDb
 		if (oldM)
 		{
 			l = this->nPoint;
-			newM = newPL->GetMList(&l);
+			newM = newPL->GetMList(l);
 			while (l-- > minId)
 			{
 				newM[l - minId] = oldM[l];
@@ -411,7 +408,7 @@ Math::Geometry::Polyline *Math::Geometry::Polyline::SplitByPoint(Math::Coord2DDb
 
 		if (oldZ)
 		{
-			newZ = newPL->GetZList(&l);
+			newZ = newPL->GetZList(l);
 			l = this->nPoint;
 			while (--l > minId)
 			{
@@ -423,7 +420,7 @@ Math::Geometry::Polyline *Math::Geometry::Polyline::SplitByPoint(Math::Coord2DDb
 
 		if (oldM)
 		{
-			newM = newPL->GetMList(&l);
+			newM = newPL->GetMList(l);
 			l = this->nPoint;
 			while (--l > minId)
 			{

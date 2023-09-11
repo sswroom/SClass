@@ -107,7 +107,7 @@ Math::Coord2DDbl Math::Geometry::PointOfstCollection::GetCenter() const
 	return this->pointArr[0];
 }
 
-void Math::Geometry::PointOfstCollection::ConvCSys(NotNullPtr<Math::CoordinateSystem> srcCSys, NotNullPtr<Math::CoordinateSystem> destCSys)
+void Math::Geometry::PointOfstCollection::ConvCSys(NotNullPtr<const Math::CoordinateSystem> srcCSys, NotNullPtr<const Math::CoordinateSystem> destCSys)
 {
 	if (this->zArr)
 	{
@@ -128,21 +128,19 @@ void Math::Geometry::PointOfstCollection::ConvCSys(NotNullPtr<Math::CoordinateSy
 	}
 }
 
-Bool Math::Geometry::PointOfstCollection::Equals(Math::Geometry::Vector2D *vec) const
+Bool Math::Geometry::PointOfstCollection::Equals(NotNullPtr<const Math::Geometry::Vector2D> vec) const
 {
-	if (vec == 0)
-		return false;
 	if (vec->GetSRID() != this->srid)
 	{
 		return false;
 	}
 	if (vec->GetVectorType() == this->GetVectorType() && this->HasZ() == vec->HasZ() && this->HasM() == vec->HasM())
 	{
-		Math::Geometry::PointOfstCollection *pl = (Math::Geometry::PointOfstCollection*)vec;
+		Math::Geometry::PointOfstCollection *pl = (Math::Geometry::PointOfstCollection*)vec.Ptr();
 		UOSInt nPtOfst;
 		UOSInt nPoint;
-		UInt32 *ptOfst = pl->GetPtOfstList(nPtOfst);
-		Math::Coord2DDbl *ptList = pl->GetPointList(nPoint);
+		const UInt32 *ptOfst = pl->GetPtOfstList(nPtOfst);
+		const Math::Coord2DDbl *ptList = pl->GetPointList(nPoint);
 		Double *valArr;
 		if (nPtOfst != this->nPtOfst || nPoint != this->nPoint)
 		{
@@ -196,21 +194,19 @@ Bool Math::Geometry::PointOfstCollection::Equals(Math::Geometry::Vector2D *vec) 
 	}
 }
 
-Bool Math::Geometry::PointOfstCollection::EqualsNearly(Math::Geometry::Vector2D *vec) const
+Bool Math::Geometry::PointOfstCollection::EqualsNearly(NotNullPtr<const Math::Geometry::Vector2D> vec) const
 {
-	if (vec == 0)
-		return false;
 	if (vec->GetSRID() != this->srid)
 	{
 		return false;
 	}
 	if (vec->GetVectorType() == this->GetVectorType() && this->HasZ() == vec->HasZ() && this->HasM() == vec->HasM())
 	{
-		Math::Geometry::PointOfstCollection *pl = (Math::Geometry::PointOfstCollection*)vec;
+		Math::Geometry::PointOfstCollection *pl = (Math::Geometry::PointOfstCollection*)vec.Ptr();
 		UOSInt nPtOfst;
 		UOSInt nPoint;
-		UInt32 *ptOfst = pl->GetPtOfstList(nPtOfst);
-		Math::Coord2DDbl *ptList = pl->GetPointList(nPoint);
+		const UInt32 *ptOfst = pl->GetPtOfstList(nPtOfst);
+		const Math::Coord2DDbl *ptList = pl->GetPointList(nPoint);
 		Double *valArr;
 		if (nPtOfst != this->nPtOfst || nPoint != this->nPoint)
 		{
@@ -269,9 +265,9 @@ Bool Math::Geometry::PointOfstCollection::HasZ() const
 	return this->zArr != 0;
 }
 
-Double *Math::Geometry::PointOfstCollection::GetZList(UOSInt *nPoint)
+Double *Math::Geometry::PointOfstCollection::GetZList(OutParam<UOSInt> nPoint)
 {
-	*nPoint = this->nPoint;
+	nPoint.Set(this->nPoint);
 	return this->zArr;
 }
 
@@ -280,8 +276,8 @@ Bool Math::Geometry::PointOfstCollection::HasM() const
 	return this->mArr != 0;
 }
 
-Double *Math::Geometry::PointOfstCollection::GetMList(UOSInt *nPoint)
+Double *Math::Geometry::PointOfstCollection::GetMList(OutParam<UOSInt> nPoint)
 {
-	*nPoint = this->nPoint;
+	nPoint.Set(this->nPoint);
 	return this->mArr;
 }

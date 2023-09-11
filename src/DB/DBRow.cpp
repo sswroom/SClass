@@ -163,7 +163,7 @@ Bool DB::DBRow::SetFieldVector(DB::DBRow::Field *field, Math::Geometry::Vector2D
 	}
 	else
 	{
-		field->currentData.vec = vec->Clone();
+		field->currentData.vec = vec->Clone().Ptr();
 		field->currentNull = false;
 	}
 	return true;
@@ -710,7 +710,7 @@ void DB::DBRow::ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const
 	DB::DBRow::Field *field;
 	const UInt8 *buff;
 	Math::WKTWriter wkt;
-	Math::Geometry::Vector2D *vec;
+	NotNullPtr<Math::Geometry::Vector2D> vec;
 	DataType dtype;
 	UOSInt i = 0;
 	UOSInt j = this->table->GetColCnt();
@@ -787,8 +787,10 @@ void DB::DBRow::ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const
 					}
 					break;
 				case DT_VECTOR:
-					vec = this->GetFieldVector(field);
-					wkt.ToText(sb, vec);
+					if (vec.Set(this->GetFieldVector(field)))
+					{
+						wkt.ToText(sb, vec);
+					}
 					break;
 				case DT_UNKNOWN:
 					sb->AppendC(UTF8STRC("?"));

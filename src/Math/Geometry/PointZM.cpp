@@ -11,10 +11,10 @@ Math::Geometry::PointZM::~PointZM()
 {
 }
 
-Math::Geometry::Vector2D *Math::Geometry::PointZM::Clone() const
+NotNullPtr<Math::Geometry::Vector2D> Math::Geometry::PointZM::Clone() const
 {
-	Math::Geometry::PointZM *pt;
-	NEW_CLASS(pt, Math::Geometry::PointZM(this->srid, this->pos.x, this->pos.y, this->z, this->m));
+	NotNullPtr<Math::Geometry::PointZM> pt;
+	NEW_CLASSNN(pt, Math::Geometry::PointZM(this->srid, this->pos.x, this->pos.y, this->z, this->m));
 	return pt;
 }
 
@@ -28,17 +28,15 @@ Bool Math::Geometry::PointZM::HasM() const
 	return true;
 }
 
-Bool Math::Geometry::PointZM::Equals(Math::Geometry::Vector2D *vec) const
+Bool Math::Geometry::PointZM::Equals(NotNullPtr<const Math::Geometry::Vector2D> vec) const
 {
-	if (vec == 0)
-		return false;
 	if (vec->GetSRID() != this->srid)
 	{
 		return false;
 	}
 	if (vec->GetVectorType() == VectorType::Point && vec->HasZ() && vec->HasM())
 	{
-		Math::Geometry::PointZM *pt = (Math::Geometry::PointZM*)vec;
+		const Math::Geometry::PointZM *pt = (const Math::Geometry::PointZM*)vec.Ptr();
 		return this->pos == pt->pos && this->z == pt->z && this->m == pt->m;
 	}
 	else
@@ -47,17 +45,15 @@ Bool Math::Geometry::PointZM::Equals(Math::Geometry::Vector2D *vec) const
 	}
 }
 
-Bool Math::Geometry::PointZM::EqualsNearly(Math::Geometry::Vector2D *vec) const
+Bool Math::Geometry::PointZM::EqualsNearly(NotNullPtr<const Math::Geometry::Vector2D> vec) const
 {
-	if (vec == 0)
-		return false;
 	if (vec->GetSRID() != this->srid)
 	{
 		return false;
 	}
 	if (vec->GetVectorType() == VectorType::Point && vec->HasZ() && vec->HasM())
 	{
-		Math::Geometry::PointZM *pt = (Math::Geometry::PointZM*)vec;
+		const Math::Geometry::PointZM *pt = (const Math::Geometry::PointZM*)vec.Ptr();
 		return this->pos.EqualsNearly(pt->pos) &&
 				Math::NearlyEqualsDbl(this->z, pt->z) &&
 				Math::NearlyEqualsDbl(this->m, pt->m);

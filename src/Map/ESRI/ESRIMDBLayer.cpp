@@ -357,7 +357,7 @@ Math::Geometry::Vector2D *Map::ESRI::ESRIMDBLayer::GetNewVectorById(GetObjectSes
 {
 	Math::Geometry::Vector2D *vec = this->objects.Get((Int32)id);
 	if (vec)
-		return vec->Clone();
+		return vec->Clone().Ptr();
 	return 0;
 }
 

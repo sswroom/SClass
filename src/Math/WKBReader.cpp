@@ -193,7 +193,7 @@ Math::Geometry::Vector2D *Math::WKBReader::ParseWKB(const UInt8 *wkb, UOSInt wkb
 			UOSInt i;
 			NEW_CLASS(pl, Math::Geometry::LineString(srid, numPoints, true, false));
 			Math::Coord2DDbl *points = pl->GetPointList(i);
-			Double *zArr = pl->GetZList(&i);
+			Double *zArr = pl->GetZList(i);
 			i = 0;
 			while (i < numPoints)
 			{
@@ -222,7 +222,7 @@ Math::Geometry::Vector2D *Math::WKBReader::ParseWKB(const UInt8 *wkb, UOSInt wkb
 			UOSInt i;
 			NEW_CLASS(pl, Math::Geometry::LineString(srid, numPoints, false, true));
 			Math::Coord2DDbl *points = pl->GetPointList(i);
-			Double *mArr = pl->GetMList(&i);
+			Double *mArr = pl->GetMList(i);
 			i = 0;
 			while (i < numPoints)
 			{
@@ -251,8 +251,8 @@ Math::Geometry::Vector2D *Math::WKBReader::ParseWKB(const UInt8 *wkb, UOSInt wkb
 			UOSInt i;
 			NEW_CLASS(pl, Math::Geometry::LineString(srid, numPoints, true, true));
 			Math::Coord2DDbl *points = pl->GetPointList(i);
-			Double *zArr = pl->GetZList(&i);
-			Double *mArr = pl->GetMList(&i);
+			Double *zArr = pl->GetZList(i);
+			Double *mArr = pl->GetMList(i);
 			i = 0;
 			while (i < numPoints)
 			{
@@ -368,7 +368,7 @@ Math::Geometry::Vector2D *Math::WKBReader::ParseWKB(const UInt8 *wkb, UOSInt wkb
 			NEW_CLASS(pg, Math::Geometry::Polygon(srid, numParts, points.GetCount(), true, false));
 			UInt32 *ptOfsts = pg->GetPtOfstList(j);
 			Math::Coord2DDbl *pointArr = pg->GetPointList(i);
-			Double *zArr = pg->GetZList(&i);
+			Double *zArr = pg->GetZList(i);
 			MemCopyNO(ptOfsts, parts, sizeof(UInt32) * numParts);
 			MemCopyAC(pointArr, points.Ptr(), sizeof(Math::Coord2DDbl) * points.GetCount());
 			MemCopyAC(zArr, zList.Ptr(), sizeof(Double) * points.GetCount());
@@ -426,7 +426,7 @@ Math::Geometry::Vector2D *Math::WKBReader::ParseWKB(const UInt8 *wkb, UOSInt wkb
 			NEW_CLASS(pg, Math::Geometry::Polygon(srid, numParts, points.GetCount(), false, true));
 			UInt32 *ptOfsts = pg->GetPtOfstList(j);
 			Math::Coord2DDbl *pointArr = pg->GetPointList(i);
-			Double *mArr = pg->GetMList(&i);
+			Double *mArr = pg->GetMList(i);
 			MemCopyNO(ptOfsts, parts, sizeof(UInt32) * numParts);
 			MemCopyAC(pointArr, points.Ptr(), sizeof(Math::Coord2DDbl) * points.GetCount());
 			MemCopyAC(mArr, mList.Ptr(), sizeof(Double) * points.GetCount());
@@ -486,8 +486,8 @@ Math::Geometry::Vector2D *Math::WKBReader::ParseWKB(const UInt8 *wkb, UOSInt wkb
 			NEW_CLASS(pg, Math::Geometry::Polygon(srid, numParts, points.GetCount(), true, true));
 			UInt32 *ptOfsts = pg->GetPtOfstList(j);
 			Math::Coord2DDbl *pointArr = pg->GetPointList(i);
-			Double *zArr = pg->GetZList(&i);
-			Double *mArr = pg->GetMList(&i);
+			Double *zArr = pg->GetZList(i);
+			Double *mArr = pg->GetMList(i);
 			MemCopyNO(ptOfsts, parts, sizeof(UInt32) * numParts);
 			MemCopyAC(pointArr, points.Ptr(), sizeof(Math::Coord2DDbl) * points.GetCount());
 			MemCopyAC(zArr, zList.Ptr(), sizeof(Double) * points.GetCount());
@@ -514,7 +514,7 @@ Math::Geometry::Vector2D *Math::WKBReader::ParseWKB(const UInt8 *wkb, UOSInt wkb
 			ofst += 4;
 			UOSInt thisSize;
 			UOSInt i;
-			Math::Geometry::Vector2D *vec;
+			NotNullPtr<Math::Geometry::Vector2D> vec;
 			Math::Geometry::MultiPolygon *mpg;
 			Bool hasZ;
 			Bool hasM;
@@ -533,8 +533,7 @@ Math::Geometry::Vector2D *Math::WKBReader::ParseWKB(const UInt8 *wkb, UOSInt wkb
 			i = 0;
 			while (i < nPolygon)
 			{
-				vec = this->ParseWKB(&wkb[ofst], wkbLen - ofst, &thisSize);
-				if (vec == 0)
+				if (!vec.Set(this->ParseWKB(&wkb[ofst], wkbLen - ofst, &thisSize)))
 				{
 					DEL_CLASS(mpg);
 					return 0;
@@ -542,13 +541,13 @@ Math::Geometry::Vector2D *Math::WKBReader::ParseWKB(const UInt8 *wkb, UOSInt wkb
 				else if (vec->GetVectorType() != Math::Geometry::Vector2D::VectorType::Polygon)
 				{
 					printf("WKBMultipolygon: wrong type: %d\r\n", (Int32)vec->GetVectorType());
-					DEL_CLASS(vec);
+					vec.Delete();
 					DEL_CLASS(mpg);
 					return 0;
 				}
 				else
 				{
-					mpg->AddGeometry((Math::Geometry::Polygon*)vec);
+					mpg->AddGeometry(NotNullPtr<Math::Geometry::Polygon>::ConvertFrom(vec));
 					ofst += thisSize;
 				}
 				i++;
@@ -574,7 +573,7 @@ Math::Geometry::Vector2D *Math::WKBReader::ParseWKB(const UInt8 *wkb, UOSInt wkb
 			ofst += 4;
 			UOSInt thisSize;
 			UOSInt i;
-			Math::Geometry::Vector2D *vec;
+			NotNullPtr<Math::Geometry::Vector2D> vec;
 			Math::Geometry::GeometryCollection *mpg;
 			Bool hasZ;
 			Bool hasM;
@@ -593,8 +592,7 @@ Math::Geometry::Vector2D *Math::WKBReader::ParseWKB(const UInt8 *wkb, UOSInt wkb
 			i = 0;
 			while (i < nGeometry)
 			{
-				vec = this->ParseWKB(&wkb[ofst], wkbLen - ofst, &thisSize);
-				if (vec == 0)
+				if (!vec.Set(this->ParseWKB(&wkb[ofst], wkbLen - ofst, &thisSize)))
 				{
 					DEL_CLASS(mpg);
 					return 0;
@@ -652,7 +650,7 @@ Math::Geometry::Vector2D *Math::WKBReader::ParseWKB(const UInt8 *wkb, UOSInt wkb
 			UOSInt i;
 			NEW_CLASS(pl, Math::Geometry::CircularString(srid, numPoints, true, false));
 			Math::Coord2DDbl *points = pl->GetPointList(i);
-			Double *zArr = pl->GetZList(&i);
+			Double *zArr = pl->GetZList(i);
 			i = 0;
 			while (i < numPoints)
 			{
@@ -681,7 +679,7 @@ Math::Geometry::Vector2D *Math::WKBReader::ParseWKB(const UInt8 *wkb, UOSInt wkb
 			UOSInt i;
 			NEW_CLASS(pl, Math::Geometry::CircularString(srid, numPoints, false, true));
 			Math::Coord2DDbl *points = pl->GetPointList(i);
-			Double *mArr = pl->GetMList(&i);
+			Double *mArr = pl->GetMList(i);
 			i = 0;
 			while (i < numPoints)
 			{
@@ -710,8 +708,8 @@ Math::Geometry::Vector2D *Math::WKBReader::ParseWKB(const UInt8 *wkb, UOSInt wkb
 			UOSInt i;
 			NEW_CLASS(pl, Math::Geometry::CircularString(srid, numPoints, true, true));
 			Math::Coord2DDbl *points = pl->GetPointList(i);
-			Double *zArr = pl->GetZList(&i);
-			Double *mArr = pl->GetMList(&i);
+			Double *zArr = pl->GetZList(i);
+			Double *mArr = pl->GetMList(i);
 			i = 0;
 			while (i < numPoints)
 			{
@@ -742,7 +740,7 @@ Math::Geometry::Vector2D *Math::WKBReader::ParseWKB(const UInt8 *wkb, UOSInt wkb
 			ofst += 4;
 			UOSInt thisSize;
 			UOSInt i;
-			Math::Geometry::Vector2D *vec;
+			NotNullPtr<Math::Geometry::Vector2D> vec;
 			Math::Geometry::CompoundCurve *cpl;
 			Bool hasZ;
 			Bool hasM;
@@ -761,8 +759,7 @@ Math::Geometry::Vector2D *Math::WKBReader::ParseWKB(const UInt8 *wkb, UOSInt wkb
 			i = 0;
 			while (i < nPolyline)
 			{
-				vec = this->ParseWKB(&wkb[ofst], wkbLen - ofst, &thisSize);
-				if (vec == 0)
+				if (!vec.Set(this->ParseWKB(&wkb[ofst], wkbLen - ofst, &thisSize)))
 				{
 					DEL_CLASS(cpl);
 					return 0;
@@ -772,13 +769,13 @@ Math::Geometry::Vector2D *Math::WKBReader::ParseWKB(const UInt8 *wkb, UOSInt wkb
 					Math::Geometry::Vector2D::VectorType t = vec->GetVectorType();
 					if (t == Math::Geometry::Vector2D::VectorType::CircularString || t == Math::Geometry::Vector2D::VectorType::LineString)
 					{
-						cpl->AddGeometry((Math::Geometry::LineString*)vec);
+						cpl->AddGeometry(NotNullPtr<Math::Geometry::LineString>::ConvertFrom(vec));
 						ofst += thisSize;
 					}
 					else
 					{
 						printf("WKBCurvePolyline: wrong type: %d\r\n", (Int32)vec->GetVectorType());
-						DEL_CLASS(vec);
+						vec.Delete();
 						DEL_CLASS(cpl);
 						return 0;
 					}
@@ -806,7 +803,7 @@ Math::Geometry::Vector2D *Math::WKBReader::ParseWKB(const UInt8 *wkb, UOSInt wkb
 			ofst += 4;
 			UOSInt thisSize;
 			UOSInt i;
-			Math::Geometry::Vector2D *vec;
+			NotNullPtr<Math::Geometry::Vector2D> vec;
 			Math::Geometry::CurvePolygon *cpg;
 			Bool hasZ;
 			Bool hasM;
@@ -825,8 +822,7 @@ Math::Geometry::Vector2D *Math::WKBReader::ParseWKB(const UInt8 *wkb, UOSInt wkb
 			i = 0;
 			while (i < nCPolyline)
 			{
-				vec = this->ParseWKB(&wkb[ofst], wkbLen - ofst, &thisSize);
-				if (vec == 0)
+				if (!vec.Set(this->ParseWKB(&wkb[ofst], wkbLen - ofst, &thisSize)))
 				{
 					DEL_CLASS(cpg);
 					return 0;
@@ -842,7 +838,7 @@ Math::Geometry::Vector2D *Math::WKBReader::ParseWKB(const UInt8 *wkb, UOSInt wkb
 					else
 					{
 						printf("WKBCurvePolygon: wrong type: %d\r\n", (Int32)vec->GetVectorType());
-						DEL_CLASS(vec);
+						vec.Delete();
 						DEL_CLASS(cpg);
 						return 0;
 					}
@@ -870,7 +866,7 @@ Math::Geometry::Vector2D *Math::WKBReader::ParseWKB(const UInt8 *wkb, UOSInt wkb
 			ofst += 4;
 			UOSInt thisSize;
 			UOSInt i;
-			Math::Geometry::Vector2D *vec;
+			NotNullPtr<Math::Geometry::Vector2D> vec;
 			Math::Geometry::MultiSurface *cpg;
 			Bool hasZ;
 			Bool hasM;
@@ -889,8 +885,7 @@ Math::Geometry::Vector2D *Math::WKBReader::ParseWKB(const UInt8 *wkb, UOSInt wkb
 			i = 0;
 			while (i < nCPolyline)
 			{
-				vec = this->ParseWKB(&wkb[ofst], wkbLen - ofst, &thisSize);
-				if (vec == 0)
+				if (!vec.Set(this->ParseWKB(&wkb[ofst], wkbLen - ofst, &thisSize)))
 				{
 					DEL_CLASS(cpg);
 					return 0;
@@ -906,7 +901,7 @@ Math::Geometry::Vector2D *Math::WKBReader::ParseWKB(const UInt8 *wkb, UOSInt wkb
 					else
 					{
 						printf("WKBMultiSurface: wrong type: %d\r\n", (Int32)vec->GetVectorType());
-						DEL_CLASS(vec);
+						vec.Delete();
 						DEL_CLASS(cpg);
 						return 0;
 					}

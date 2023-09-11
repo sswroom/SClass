@@ -390,7 +390,7 @@ UTF8Char *Map::HKParkingVacancy::GetString(UTF8Char *buff, UOSInt buffSize, Name
 			Math::Geometry::Point pt(4326, parking->parkingLongitude, parking->parkingLatitude);
 			Math::WKTWriter wkt;
 			Text::StringBuilderUTF8 sb;
-			wkt.ToText(sb, &pt);
+			wkt.ToText(sb, pt);
 			return sb.ConcatToS(buff, buffSize);
 		}
 	case 16:

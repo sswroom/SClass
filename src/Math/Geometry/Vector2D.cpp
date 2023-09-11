@@ -12,14 +12,11 @@ Math::Geometry::Vector2D::~Vector2D()
 
 }
 
-Double Math::Geometry::Vector2D::CalSqrDistance(Math::Coord2DDbl pt, Math::Coord2DDbl *nearPt) const
+Double Math::Geometry::Vector2D::CalSqrDistance(Math::Coord2DDbl pt, OutParam<Math::Coord2DDbl> nearPt) const
 {
 	if (this->InsideVector(pt))
 	{
-		if (nearPt)
-		{
-			*nearPt = pt;
-		}
+		nearPt.Set(pt);
 		return 0;
 	}
 	return this->CalBoundarySqrDistance(pt, nearPt);
@@ -44,7 +41,7 @@ Math::Coord2DDbl Math::Geometry::Vector2D::GetCentroid() const
 {
 	Math::Coord2DDbl sum = Math::Coord2DDbl(0, 0);
 	Data::ArrayListA<Math::Coord2DDbl> coordList;
-	UOSInt i = this->GetCoordinates(&coordList);
+	UOSInt i = this->GetCoordinates(coordList);
 	while (i-- > 0)
 	{
 		sum += coordList.GetItem(i);

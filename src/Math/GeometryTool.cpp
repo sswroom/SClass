@@ -959,7 +959,7 @@ Double Math::GeometryTool::CalcMaxDistanceFromPoint(Math::Coord2DDbl pt, Math::G
 	Math::Coord2DDbl maxPt = pt;
 	Double thisDist;
 	Data::ArrayListA<Math::Coord2DDbl> coords;
-	UOSInt i = vec->GetCoordinates(&coords);
+	UOSInt i = vec->GetCoordinates(coords);
 	while (i-- > 0)
 	{
 		thisDist = coords.GetItem(i).CalcLengTo(pt);

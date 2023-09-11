@@ -28,35 +28,27 @@ Text::CStringNN Math::CesiumEntityWriter::GetWriterName() const
 	return CSTR("Cesium Entity");
 }
 
-Bool Math::CesiumEntityWriter::ToText(NotNullPtr<Text::StringBuilderUTF8> sb, Math::Geometry::Vector2D *vec)
+Bool Math::CesiumEntityWriter::ToText(NotNullPtr<Text::StringBuilderUTF8> sb, NotNullPtr<const Math::Geometry::Vector2D> vec)
 {
-	if (vec == 0)
-	{
-		this->SetLastError(CSTR("Input vector is null"));
-		return false;
-	}
 	switch (vec->GetVectorType())
 	{
 	case Math::Geometry::Vector2D::VectorType::Point:
 		sb->AppendC(UTF8STRC("{\r\n"));
 		if (vec->HasZ())
 		{
-			Math::Geometry::PointZ *pt = (Math::Geometry::PointZ*)vec;
-			Double x;
-			Double y;
-			Double z;
-			pt->GetPos3D(&x, &y, &z);
+			Math::Geometry::PointZ *pt = (Math::Geometry::PointZ*)vec.Ptr();
+			Math::Vector3 pos = pt->GetPos3D();
 			sb->AppendC(UTF8STRC("position: Cesium.Cartesian3.fromDegrees("));
-			sb->AppendDouble(x);
+			sb->AppendDouble(pos.GetX());
 			sb->AppendC(UTF8STRC(", "));
-			sb->AppendDouble(y);
+			sb->AppendDouble(pos.GetY());
 			sb->AppendC(UTF8STRC(", "));
-			sb->AppendDouble(z);
+			sb->AppendDouble(pos.GetZ());
 			sb->AppendUTF8Char(')');
 		}
 		else
 		{
-			Math::Geometry::Point *pt = (Math::Geometry::Point*)vec;
+			Math::Geometry::Point *pt = (Math::Geometry::Point*)vec.Ptr();
 			Math::Coord2DDbl coord;
 			coord = pt->GetCenter();
 			sb->AppendC(UTF8STRC("position: Cesium.Cartesian3.fromDegrees("));
@@ -70,7 +62,7 @@ Bool Math::CesiumEntityWriter::ToText(NotNullPtr<Text::StringBuilderUTF8> sb, Ma
 	case Math::Geometry::Vector2D::VectorType::Polygon:
 		sb->AppendC(UTF8STRC("{\r\n"));
 		{
-			Math::Geometry::Polygon *pg = (Math::Geometry::Polygon*)vec;
+			Math::Geometry::Polygon *pg = (Math::Geometry::Polygon*)vec.Ptr();
 			UOSInt nPoint;
 			Math::Coord2DDbl *pointList = pg->GetPointList(nPoint);
 			UOSInt k;
@@ -94,7 +86,7 @@ Bool Math::CesiumEntityWriter::ToText(NotNullPtr<Text::StringBuilderUTF8> sb, Ma
 	case Math::Geometry::Vector2D::VectorType::Polyline:
 		sb->AppendC(UTF8STRC("{\r\n"));
 		{
-			Math::Geometry::Polyline *pl = (Math::Geometry::Polyline*)vec;
+			Math::Geometry::Polyline *pl = (Math::Geometry::Polyline*)vec.Ptr();
 			UOSInt nPoint;
 			Math::Coord2DDbl *pointList = pl->GetPointList(nPoint);
 			UOSInt k;

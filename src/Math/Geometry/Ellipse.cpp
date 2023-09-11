@@ -24,10 +24,10 @@ Math::Coord2DDbl Math::Geometry::Ellipse::GetCenter() const
 	return this->tl + (this->size * 0.5);
 }
 
-Math::Geometry::Vector2D *Math::Geometry::Ellipse::Clone() const
+NotNullPtr<Math::Geometry::Vector2D> Math::Geometry::Ellipse::Clone() const
 {
-	Math::Geometry::Ellipse *ellipse;
-	NEW_CLASS(ellipse, Math::Geometry::Ellipse(this->srid, this->tl, this->size));
+	NotNullPtr<Math::Geometry::Ellipse> ellipse;
+	NEW_CLASSNN(ellipse, Math::Geometry::Ellipse(this->srid, this->tl, this->size));
 	return ellipse;
 }
 
@@ -36,17 +36,17 @@ Math::RectAreaDbl Math::Geometry::Ellipse::GetBounds() const
 	return Math::RectAreaDbl(this->tl, this->tl + this->size);
 }
 
-Double Math::Geometry::Ellipse::CalBoundarySqrDistance(Math::Coord2DDbl pt, Math::Coord2DDbl *nearPt) const
+Double Math::Geometry::Ellipse::CalBoundarySqrDistance(Math::Coord2DDbl pt, OutParam<Math::Coord2DDbl> nearPt) const
 {
 	Math::Coord2DDbl cent = this->tl + (this->size * 0.5);
 	Double ang = Math_ArcTan2((pt.y - cent.y) * this->size.x / this->size.y, pt.x - cent.x);
 	Double sVal = Math_Sin(ang);
 	Double cVal = Math_Cos(ang);
-	*nearPt = Math::Coord2DDbl(cent.x + cVal * this->size.x * 0.5, cent.y + sVal * this->size.y * 0.5);
+	nearPt.Set(Math::Coord2DDbl(cent.x + cVal * this->size.x * 0.5, cent.y + sVal * this->size.y * 0.5));
 	return ang * 180 / Math::PI;
 }
 
-Bool Math::Geometry::Ellipse::JoinVector(Math::Geometry::Vector2D *vec)
+Bool Math::Geometry::Ellipse::JoinVector(NotNullPtr<const Math::Geometry::Vector2D> vec)
 {
 	return false;
 }
@@ -56,7 +56,7 @@ Bool Math::Geometry::Ellipse::HasZ() const
 	return false;
 }
 
-void Math::Geometry::Ellipse::ConvCSys(NotNullPtr<Math::CoordinateSystem> srcCSys, NotNullPtr<Math::CoordinateSystem> destCSys)
+void Math::Geometry::Ellipse::ConvCSys(NotNullPtr<const Math::CoordinateSystem> srcCSys, NotNullPtr<const Math::CoordinateSystem> destCSys)
 {
 	Math::Coord2DDbl br = this->tl + this->size;
 	this->tl = Math::CoordinateSystem::ConvertXYZ(srcCSys, destCSys, Math::Vector3(this->tl, 0)).GetXY();
@@ -65,25 +65,25 @@ void Math::Geometry::Ellipse::ConvCSys(NotNullPtr<Math::CoordinateSystem> srcCSy
 	this->srid = destCSys->GetSRID();
 }
 
-Bool Math::Geometry::Ellipse::Equals(Math::Geometry::Vector2D *vec) const
+Bool Math::Geometry::Ellipse::Equals(NotNullPtr<const Math::Geometry::Vector2D> vec) const
 {
-	if (vec == 0 || vec->GetVectorType() != VectorType::Ellipse)
+	if (vec->GetVectorType() != VectorType::Ellipse)
 	{
 		return false;
 	}
-	Math::Geometry::Ellipse *ellipse = (Math::Geometry::Ellipse*)vec;
+	const Math::Geometry::Ellipse *ellipse = (const Math::Geometry::Ellipse*)vec.Ptr();
 	return this->srid == ellipse->srid &&
 		this->size == ellipse->size &&
 		this->tl == ellipse->tl;
 }
 
-Bool Math::Geometry::Ellipse::EqualsNearly(Math::Geometry::Vector2D *vec) const
+Bool Math::Geometry::Ellipse::EqualsNearly(NotNullPtr<const Math::Geometry::Vector2D> vec) const
 {
-	if (vec == 0 || vec->GetVectorType() != VectorType::Ellipse)
+	if (vec->GetVectorType() != VectorType::Ellipse)
 	{
 		return false;
 	}
-	Math::Geometry::Ellipse *ellipse = (Math::Geometry::Ellipse*)vec;
+	Math::Geometry::Ellipse *ellipse = (Math::Geometry::Ellipse*)vec.Ptr();
 	return this->srid == ellipse->srid &&
 		Math::NearlyEqualsDbl(this->size.x, ellipse->size.x) &&
 		Math::NearlyEqualsDbl(this->size.y, ellipse->size.y) &&
@@ -91,7 +91,7 @@ Bool Math::Geometry::Ellipse::EqualsNearly(Math::Geometry::Vector2D *vec) const
 		Math::NearlyEqualsDbl(this->tl.y, ellipse->tl.y);
 }
 
-UOSInt Math::Geometry::Ellipse::GetCoordinates(Data::ArrayListA<Math::Coord2DDbl> *coordList) const
+UOSInt Math::Geometry::Ellipse::GetCoordinates(NotNullPtr<Data::ArrayListA<Math::Coord2DDbl>> coordList) const
 {
 	coordList->Add(Math::Coord2DDbl(this->tl.x + this->size.x * 0.5, this->tl.y));
 	coordList->Add(Math::Coord2DDbl(this->tl.x + this->size.x, this->tl.y + this->size.y * 0.5));

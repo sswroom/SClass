@@ -361,7 +361,7 @@ UTF8Char *Map::MapDrawLayer::GetPLLabel(UTF8Char *buff, UOSInt buffSize, Math::C
 			UTF8Char *sptr = this->GetString(tmpBuff, buffSize, names, thisId, strIndex);
 			if (sptr && sptr != tmpBuff)
 			{
-				thisDist = vec->CalSqrDistance(coord, &nearPt);
+				thisDist = vec->CalSqrDistance(coord, nearPt);
 				if (thisDist < dist)
 				{
 					dist = thisDist;
@@ -417,7 +417,7 @@ Int64 Map::MapDrawLayer::GetNearestObjectId(GetObjectSess *session, Math::Coord2
 		Math::Geometry::Vector2D *vec = this->GetNewVectorById(session, objIds.GetItem(i));
 		if (vec)
 		{
-			dist = vec->CalSqrDistance(pt, &currPt);
+			dist = vec->CalSqrDistance(pt, currPt);
 			if (dist < minDist)
 			{
 				nearObjId = objIds.GetItem(i);
@@ -461,7 +461,7 @@ OSInt Map::MapDrawLayer::GetNearObjects(GetObjectSess *session, NotNullPtr<Data:
 	while (i-- > 0)
 	{
 		Math::Geometry::Vector2D *vec = this->GetNewVectorById(session, objIds.GetItem(i));
-		dist = vec->CalSqrDistance(pt, &currPt);
+		dist = vec->CalSqrDistance(pt, currPt);
 		if (dist <= sqrMaxDist)
 		{
 			objInfo = MemAllocA(ObjectInfo, 1);
@@ -680,9 +680,12 @@ Math::Geometry::Vector2D *Map::MapDrawLayer::GetVectorByStr(Text::SearchIndexer 
 			}
 			else
 			{
-				Math::Geometry::Vector2D *tmpVec = this->GetNewVectorById(session, objIds.GetItem(i));
-				vec->JoinVector(tmpVec);
-				DEL_CLASS(tmpVec);
+				NotNullPtr<Math::Geometry::Vector2D> tmpVec;
+				if (tmpVec.Set(this->GetNewVectorById(session, objIds.GetItem(i))))
+				{
+					vec->JoinVector(tmpVec);
+					tmpVec.Delete();
+				}
 			}
 		}
 		i++;
@@ -869,13 +872,13 @@ WChar *Map::MapLayerReader::GetStr(UOSInt colIndex, WChar *buff)
 	UTF8Char sbuff[256];
 	if (colIndex <= 0)
 	{
-		Math::Geometry::Vector2D *vec = this->GetVector(0);
-		if (vec == 0)
+		NotNullPtr<Math::Geometry::Vector2D> vec;
+		if (!vec.Set(this->GetVector(0)))
 			return 0;
 		Math::WKTWriter writer;
 		Text::StringBuilderUTF8 sb;
 		Bool succ = writer.ToText(sb, vec);
-		DEL_CLASS(vec);
+		vec.Delete();
 		if (!succ)
 		{
 			return 0;
@@ -895,12 +898,12 @@ Bool Map::MapLayerReader::GetStr(UOSInt colIndex, NotNullPtr<Text::StringBuilder
 	UTF8Char *sptr;
 	if (colIndex <= 0)
 	{
-		Math::Geometry::Vector2D *vec = this->GetVector(0);
-		if (vec == 0)
+		NotNullPtr<Math::Geometry::Vector2D> vec;
+		if (!vec.Set(this->GetVector(0)))
 			return 0;
 		Math::WKTWriter writer;
 		Bool succ = writer.ToText(sb, vec);
-		DEL_CLASS(vec);
+		vec.Delete();
 		return succ;
 	}
 	sptr = this->layer->GetString(sbuff, sizeof(sbuff), this->nameArr, this->GetCurrObjId(), colIndex - 1);
@@ -918,13 +921,13 @@ Text::String *Map::MapLayerReader::GetNewStr(UOSInt colIndex)
 	UTF8Char *sptr;
 	if (colIndex <= 0)
 	{
-		Math::Geometry::Vector2D *vec = this->GetVector(0);
-		if (vec == 0)
+		NotNullPtr<Math::Geometry::Vector2D> vec;
+		if (!vec.Set(this->GetVector(0)))
 			return 0;
 		Math::WKTWriter writer;
 		Text::StringBuilderUTF8 sb;
 		Bool succ = writer.ToText(sb, vec);
-		DEL_CLASS(vec);
+		vec.Delete();
 		if (!succ)
 		{
 			return 0;
@@ -939,13 +942,13 @@ UTF8Char *Map::MapLayerReader::GetStr(UOSInt colIndex, UTF8Char *buff, UOSInt bu
 {
 	if (colIndex <= 0)
 	{
-		Math::Geometry::Vector2D *vec = this->GetVector(0);
-		if (vec == 0)
+		NotNullPtr<Math::Geometry::Vector2D> vec;
+		if (!vec.Set(this->GetVector(0)))
 			return 0;
 		Math::WKTWriter writer;
 		Text::StringBuilderUTF8 sb;
 		Bool succ = writer.ToText(sb, vec);
-		DEL_CLASS(vec);
+		vec.Delete();
 		if (!succ)
 		{
 			return 0;

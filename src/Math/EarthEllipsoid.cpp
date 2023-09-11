@@ -152,7 +152,7 @@ Double Math::EarthEllipsoid::CalPLDistance3D(NotNullPtr<Math::Geometry::Polyline
 	Double *alts;
 	ptOfsts = pl->GetPtOfstList(nPtOfst);
 	points = pl->GetPointList(nPoint);
-	alts = pl->GetZList(&nAlts);
+	alts = pl->GetZList(nAlts);
 	UOSInt i = nPtOfst;
 	UOSInt j = nPoint;
 	UOSInt k;

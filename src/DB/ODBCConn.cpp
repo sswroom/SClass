@@ -1924,12 +1924,12 @@ Bool DB::ODBCReader::GetStr(UOSInt colIndex, NotNullPtr<Text::StringBuilderUTF8>
 		return false;
 	case DB::DBUtil::CT_Vector:
 		{
-			Math::Geometry::Vector2D *vec = this->GetVector(colIndex);
-			if (vec)
+			NotNullPtr<Math::Geometry::Vector2D> vec;
+			if (vec.Set(this->GetVector(colIndex)))
 			{
 				Math::WKTWriter wkt;
 				wkt.ToText(sb, vec);
-				DEL_CLASS(vec);
+				vec.Delete();
 			}
 		}
 		return 0;
@@ -1991,13 +1991,13 @@ Text::String *DB::ODBCReader::GetNewStr(UOSInt colIndex)
 		return 0;
 	case DB::DBUtil::CT_Vector:
 		{
-			Math::Geometry::Vector2D *vec = this->GetVector(colIndex);
-			if (vec)
+			NotNullPtr<Math::Geometry::Vector2D> vec;
+			if (vec.Set(this->GetVector(colIndex)))
 			{
 				Text::StringBuilderUTF8 sb;
 				Math::WKTWriter wkt;
 				wkt.ToText(sb, vec);
-				DEL_CLASS(vec);
+				vec.Delete();
 				return Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
 			}
 		}
@@ -2049,13 +2049,13 @@ UTF8Char *DB::ODBCReader::GetStr(UOSInt colIndex, UTF8Char *buff, UOSInt buffSiz
 		return 0;
 	case DB::DBUtil::CT_Vector:
 		{
-			Math::Geometry::Vector2D *vec = this->GetVector(colIndex);
-			if (vec)
+			NotNullPtr<Math::Geometry::Vector2D> vec;
+			if (vec.Set(this->GetVector(colIndex)))
 			{
 				Text::StringBuilderUTF8 sb;
 				Math::WKTWriter wkt;
 				wkt.ToText(sb, vec);
-				DEL_CLASS(vec);
+				vec.Delete();
 				return Text::StrConcatC(buff, sb.ToString(), sb.GetLength());
 			}
 		}

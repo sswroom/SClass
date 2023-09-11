@@ -768,7 +768,7 @@ void Map::HKTrafficLayer::SetSpeedMap(Int32 fromId, Int32 toId, SaturationLevel 
 		CenterlineInfo *lineInfo = this->vecMap.Get(id);
 		if (lineInfo)
 		{
-			road->vec = lineInfo->pl->Clone();
+			road->vec = lineInfo->pl->Clone().Ptr();
 			Math::RectAreaDbl bounds;
 			bounds = road->vec->GetBounds();
 			road->minX = bounds.tl.x;
@@ -1242,7 +1242,7 @@ Math::Geometry::Vector2D *Map::HKTrafficLayer::GetNewVectorById(GetObjectSess *s
 	road = this->roadMap.Get(id);
 	if (road && road->vec)
 	{
-		vec = road->vec->Clone();
+		vec = road->vec->Clone().Ptr();
 		if (road->lev == Map::HKTrafficLayer::SL_GOOD)
 		{
 			((Math::Geometry::Polyline*)vec)->SetColor(0xff00ff00);

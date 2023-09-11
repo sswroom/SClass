@@ -23,7 +23,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 				Math::Geometry::Polygon *pg = (Math::Geometry::Polygon*)wktReader.ParseWKT(pgWKT.v);
 				Math::Coord2DDbl pt = Math::Coord2DDbl(114.22122894202,22.362089455590);
 				Math::Coord2DDbl nearPt;
-				pg->CalBoundarySqrDistance(pt, &nearPt);
+				pg->CalBoundarySqrDistance(pt, nearPt);
 				printf("Dist WGS84 (4326) = %lf\r\n", wgs84Csys->CalSurfaceDistanceXY(pt, nearPt, Math::Unit::Distance::DU_METER));
 
 				Math::Vector3 projPt;

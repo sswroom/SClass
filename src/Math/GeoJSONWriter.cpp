@@ -29,13 +29,8 @@ Text::CStringNN Math::GeoJSONWriter::GetWriterName() const
 	return CSTR("GeoJSON");
 }
 
-Bool Math::GeoJSONWriter::ToText(NotNullPtr<Text::StringBuilderUTF8> sb, Math::Geometry::Vector2D *vec)
+Bool Math::GeoJSONWriter::ToText(NotNullPtr<Text::StringBuilderUTF8> sb, NotNullPtr<const Math::Geometry::Vector2D> vec)
 {
-	if (vec == 0)
-	{
-		this->SetLastError(CSTR("Input vector is null"));
-		return false;
-	}
 	sb->AppendC(UTF8STRC("{\r\n"));
 	sb->AppendC(UTF8STRC("\t\"type\": \"Feature\",\r\n"));
 	switch (vec->GetVectorType())
@@ -46,20 +41,17 @@ Bool Math::GeoJSONWriter::ToText(NotNullPtr<Text::StringBuilderUTF8> sb, Math::G
 		sb->AppendC(UTF8STRC("\t\t\"coordinates\": ["));
 		if (vec->HasZ())
 		{
-			Math::Geometry::PointZ *pt = (Math::Geometry::PointZ*)vec;
-			Double x;
-			Double y;
-			Double z;
-			pt->GetPos3D(&x, &y, &z);
-			sb->AppendDouble(x);
+			Math::Geometry::PointZ *pt = (Math::Geometry::PointZ*)vec.Ptr();
+			Math::Vector3 pos = pt->GetPos3D();
+			sb->AppendDouble(pos.GetX());
 			sb->AppendC(UTF8STRC(", "));
-			sb->AppendDouble(y);
+			sb->AppendDouble(pos.GetY());
 			sb->AppendC(UTF8STRC(", "));
-			sb->AppendDouble(z);
+			sb->AppendDouble(pos.GetZ());
 		}
 		else
 		{
-			Math::Geometry::Point *pt = (Math::Geometry::Point*)vec;
+			Math::Geometry::Point *pt = (Math::Geometry::Point*)vec.Ptr();
 			Math::Coord2DDbl coord;
 			coord = pt->GetCenter();
 			sb->AppendDouble(coord.x);
@@ -74,7 +66,7 @@ Bool Math::GeoJSONWriter::ToText(NotNullPtr<Text::StringBuilderUTF8> sb, Math::G
 		sb->AppendC(UTF8STRC("\t\t\"type\": \"Polygon\",\r\n"));
 		sb->AppendC(UTF8STRC("\t\t\"coordinates\": [\r\n"));
 		{
-			Math::Geometry::Polygon *pg = (Math::Geometry::Polygon*)vec;
+			Math::Geometry::Polygon *pg = (Math::Geometry::Polygon*)vec.Ptr();
 			UOSInt nPtOfst;
 			UOSInt nPoint;
 			UInt32 *ptOfstList = pg->GetPtOfstList(nPtOfst);
@@ -134,7 +126,7 @@ Bool Math::GeoJSONWriter::ToText(NotNullPtr<Text::StringBuilderUTF8> sb, Math::G
 		break;
 	case Math::Geometry::Vector2D::VectorType::Polyline:
 		{
-			Math::Geometry::Polyline *pg = (Math::Geometry::Polyline*)vec;
+			Math::Geometry::Polyline *pg = (Math::Geometry::Polyline*)vec.Ptr();
 			UOSInt nPtOfst;
 			UOSInt nPoint;
 			UInt32 *ptOfstList = pg->GetPtOfstList(nPtOfst);
@@ -227,7 +219,7 @@ Bool Math::GeoJSONWriter::ToText(NotNullPtr<Text::StringBuilderUTF8> sb, Math::G
 		sb->AppendC(UTF8STRC("\t\t\"type\": \"MultiPolygon\",\r\n"));
 		sb->AppendC(UTF8STRC("\t\t\"coordinates\": [\r\n"));
 		{
-			Math::Geometry::MultiPolygon *mpg = (Math::Geometry::MultiPolygon*)vec;
+			Math::Geometry::MultiPolygon *mpg = (Math::Geometry::MultiPolygon*)vec.Ptr();
 			UOSInt pgIndex = 0;
 			UOSInt pgCnt = mpg->GetCount();
 			while (pgIndex < pgCnt)
@@ -332,14 +324,8 @@ Text::String *Math::GeoJSONWriter::GetLastError()
 	return this->lastError;
 }
 
-Bool Math::GeoJSONWriter::ToGeometry(NotNullPtr<Text::StringBuilderUTF8> sb, Math::Geometry::Vector2D *vec)
+Bool Math::GeoJSONWriter::ToGeometry(NotNullPtr<Text::StringBuilderUTF8> sb, NotNullPtr<const Math::Geometry::Vector2D> vec)
 {
-	if (vec == 0)
-	{
-		sb->AppendC(UTF8STRC("null"));
-		this->SetLastError(CSTR("Input vector is null"));
-		return false;
-	}
 	switch (vec->GetVectorType())
 	{
 	case Math::Geometry::Vector2D::VectorType::Point:
@@ -348,20 +334,17 @@ Bool Math::GeoJSONWriter::ToGeometry(NotNullPtr<Text::StringBuilderUTF8> sb, Mat
 		sb->AppendC(UTF8STRC("\"coordinates\":["));
 		if (vec->HasZ())
 		{
-			Math::Geometry::PointZ *pt = (Math::Geometry::PointZ*)vec;
-			Double x;
-			Double y;
-			Double z;
-			pt->GetPos3D(&x, &y, &z);
-			sb->AppendDouble(x);
+			Math::Geometry::PointZ *pt = (Math::Geometry::PointZ*)vec.Ptr();
+			Math::Vector3 pos = pt->GetPos3D();
+			sb->AppendDouble(pos.GetX());
 			sb->AppendUTF8Char(',');
-			sb->AppendDouble(y);
+			sb->AppendDouble(pos.GetY());
 			sb->AppendUTF8Char(',');
-			sb->AppendDouble(z);
+			sb->AppendDouble(pos.GetZ());
 		}
 		else
 		{
-			Math::Geometry::Point *pt = (Math::Geometry::Point*)vec;
+			Math::Geometry::Point *pt = (Math::Geometry::Point*)vec.Ptr();
 			Math::Coord2DDbl coord;
 			coord = pt->GetCenter();
 			sb->AppendDouble(coord.x);
@@ -376,7 +359,7 @@ Bool Math::GeoJSONWriter::ToGeometry(NotNullPtr<Text::StringBuilderUTF8> sb, Mat
 		sb->AppendC(UTF8STRC("\"type\":\"Polygon\","));
 		sb->AppendC(UTF8STRC("\"coordinates\":["));
 		{
-			Math::Geometry::Polygon *pg = (Math::Geometry::Polygon*)vec;
+			Math::Geometry::Polygon *pg = (Math::Geometry::Polygon*)vec.Ptr();
 			UOSInt nPtOfst;
 			UOSInt nPoint;
 			UInt32 *ptOfstList = pg->GetPtOfstList(nPtOfst);
@@ -436,7 +419,7 @@ Bool Math::GeoJSONWriter::ToGeometry(NotNullPtr<Text::StringBuilderUTF8> sb, Mat
 		return true;
 	case Math::Geometry::Vector2D::VectorType::Polyline:
 		{
-			Math::Geometry::Polyline *pg = (Math::Geometry::Polyline*)vec;
+			Math::Geometry::Polyline *pg = (Math::Geometry::Polyline*)vec.Ptr();
 			UOSInt nPtOfst;
 			UOSInt nPoint;
 			UInt32 *ptOfstList = pg->GetPtOfstList(nPtOfst);

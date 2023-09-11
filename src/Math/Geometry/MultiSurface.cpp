@@ -10,7 +10,7 @@ Math::Geometry::MultiSurface::~MultiSurface()
 {
 }
 
-void Math::Geometry::MultiSurface::AddGeometry(Vector2D *geometry)
+void Math::Geometry::MultiSurface::AddGeometry(NotNullPtr<Vector2D> geometry)
 {
 	VectorType t = geometry->GetVectorType();
 	if (t == VectorType::CurvePolygon)// || t == VectorType::LineString)
@@ -19,7 +19,7 @@ void Math::Geometry::MultiSurface::AddGeometry(Vector2D *geometry)
 	}
 	else
 	{
-		DEL_CLASS(geometry);
+		geometry.Delete();
 	}
 }
 
@@ -28,10 +28,10 @@ Math::Geometry::Vector2D::VectorType Math::Geometry::MultiSurface::GetVectorType
 	return Math::Geometry::Vector2D::VectorType::MultiSurface;
 }
 
-Math::Geometry::Vector2D *Math::Geometry::MultiSurface::Clone() const
+NotNullPtr<Math::Geometry::Vector2D> Math::Geometry::MultiSurface::Clone() const
 {
-	Math::Geometry::MultiSurface *newObj;
-	NEW_CLASS(newObj, Math::Geometry::MultiSurface(this->srid, this->hasZ, this->hasM));
+	NotNullPtr<Math::Geometry::MultiSurface> newObj;
+	NEW_CLASSNN(newObj, Math::Geometry::MultiSurface(this->srid, this->hasZ, this->hasM));
 	UOSInt i = 0;
 	UOSInt j = this->geometries.GetCount();
 	while (i < j)

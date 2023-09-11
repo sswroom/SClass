@@ -439,7 +439,7 @@ Math::Geometry::Vector2D *Map::GMLXML::ParseGeometry(NotNullPtr<Text::XMLReader>
 					{
 						NEW_CLASS(pl, Math::Geometry::LineString(env->srid, xPts.GetCount(), true, false));
 						ptList = pl->GetPointList(i);
-						hList = pl->GetZList(&i);
+						hList = pl->GetZList(i);
 						while (i-- > 0)
 						{
 							hList[i] = zPts.GetItem(i);
@@ -460,7 +460,7 @@ Math::Geometry::Vector2D *Map::GMLXML::ParseGeometry(NotNullPtr<Text::XMLReader>
 	else if (reader->GetNodeText()->Equals(UTF8STRC("gml:MultiPolygon")))
 	{
 		Math::Geometry::MultiPolygon *mpg = 0;
-		Math::Geometry::Vector2D *newVec;
+		NotNullPtr<Math::Geometry::Vector2D> newVec;
 		while (reader->ReadNext())
 		{
 			Text::XMLNode::NodeType nodeType = reader->GetNodeType();
@@ -479,8 +479,7 @@ Math::Geometry::Vector2D *Map::GMLXML::ParseGeometry(NotNullPtr<Text::XMLReader>
 					}
 					else if (nodeType == Text::XMLNode::NodeType::Element)
 					{
-						newVec = ParseGeometry(reader, env);
-						if (newVec)
+						if (newVec.Set(ParseGeometry(reader, env)))
 						{
 							if (newVec->GetVectorType() == Math::Geometry::Vector2D::VectorType::Polygon)
 							{
@@ -490,11 +489,11 @@ Math::Geometry::Vector2D *Map::GMLXML::ParseGeometry(NotNullPtr<Text::XMLReader>
 									SDEL_CLASS(vec);
 									vec = mpg;
 								}
-								mpg->AddGeometry((Math::Geometry::Polygon*)newVec);
+								mpg->AddGeometry(NotNullPtr<Math::Geometry::Polygon>::ConvertFrom(newVec));
 							}
 							else
 							{
-								DEL_CLASS(newVec);
+								newVec.Delete();
 							}
 						}
 					}
@@ -540,7 +539,7 @@ Math::Geometry::Vector2D *Map::GMLXML::ParseGeometry(NotNullPtr<Text::XMLReader>
 					}
 					if (xPts.GetCount() == zPts.GetCount())
 					{
-						Double *altList = pg->GetZList(&i);
+						Double *altList = pg->GetZList(i);
 						while (i-- > 0)
 						{
 							altList[i] = zPts.GetItem(i);

@@ -83,13 +83,13 @@ Math::RectAreaDbl Math::Geometry::PointCollection::GetBounds() const
 	return Math::RectAreaDbl(min, max);
 }
 
-void Math::Geometry::PointCollection::ConvCSys(NotNullPtr<Math::CoordinateSystem> srcCSys, NotNullPtr<Math::CoordinateSystem> destCSys)
+void Math::Geometry::PointCollection::ConvCSys(NotNullPtr<const Math::CoordinateSystem> srcCSys, NotNullPtr<const Math::CoordinateSystem> destCSys)
 {
 	Math::CoordinateSystem::ConvertXYArray(srcCSys, destCSys, this->pointArr, this->pointArr, this->nPoint);
 	this->srid = destCSys->GetSRID();
 }
 
-UOSInt Math::Geometry::PointCollection::GetCoordinates(Data::ArrayListA<Math::Coord2DDbl> *coordList) const
+UOSInt Math::Geometry::PointCollection::GetCoordinates(NotNullPtr<Data::ArrayListA<Math::Coord2DDbl>> coordList) const
 {
 	return coordList->AddRange(this->pointArr, this->nPoint);
 }

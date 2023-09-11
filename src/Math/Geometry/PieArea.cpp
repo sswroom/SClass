@@ -27,10 +27,10 @@ Math::Coord2DDbl Math::Geometry::PieArea::GetCenter() const
 	return Math::Coord2DDbl(this->center.x + r * Math_Sin(a) * 0.5, this->center.y - r * Math_Cos(a) * 0.5);
 }
 
-Math::Geometry::Vector2D *Math::Geometry::PieArea::Clone() const
+NotNullPtr<Math::Geometry::Vector2D> Math::Geometry::PieArea::Clone() const
 {
-	Math::Geometry::PieArea *pie;
-	NEW_CLASS(pie, Math::Geometry::PieArea(this->srid, this->center, this->r, this->arcAngle1, this->arcAngle2));
+	NotNullPtr<Math::Geometry::PieArea> pie;
+	NEW_CLASSNN(pie, Math::Geometry::PieArea(this->srid, this->center, this->r, this->arcAngle1, this->arcAngle2));
 	return pie;
 }
 
@@ -40,14 +40,14 @@ Math::RectAreaDbl Math::Geometry::PieArea::GetBounds() const
 	return Math::RectAreaDbl(this->center - this->r, this->center + this->r);
 }
 
-Double Math::Geometry::PieArea::CalBoundarySqrDistance(Math::Coord2DDbl pt, Math::Coord2DDbl* nearPt) const
+Double Math::Geometry::PieArea::CalBoundarySqrDistance(Math::Coord2DDbl pt, OutParam<Math::Coord2DDbl> nearPt) const
 {
 	//////////////////////////////////////////////////////////
-	*nearPt = pt;
+	nearPt.Set(pt);
 	return 0;
 }
 
-Bool Math::Geometry::PieArea::JoinVector(Math::Geometry::Vector2D *vec)
+Bool Math::Geometry::PieArea::JoinVector(NotNullPtr<const Math::Geometry::Vector2D> vec)
 {
 	return false;
 }
@@ -57,35 +57,35 @@ Bool Math::Geometry::PieArea::HasZ() const
 	return false;
 }
 
-void Math::Geometry::PieArea::ConvCSys(NotNullPtr<Math::CoordinateSystem> srcCSys, NotNullPtr<Math::CoordinateSystem> destCSys)
+void Math::Geometry::PieArea::ConvCSys(NotNullPtr<const Math::CoordinateSystem> srcCSys, NotNullPtr<const Math::CoordinateSystem> destCSys)
 {
 	this->center = Math::CoordinateSystem::ConvertXYZ(srcCSys, destCSys, Math::Vector3(this->center, 0)).GetXY();
 	this->srid = destCSys->GetSRID();
 }
 
-Bool Math::Geometry::PieArea::Equals(Vector2D *vec) const
+Bool Math::Geometry::PieArea::Equals(NotNullPtr<const Vector2D> vec) const
 {
-	if (vec == 0 || vec->GetVectorType() != Math::Geometry::Vector2D::VectorType::PieArea)
+	if (vec->GetVectorType() != Math::Geometry::Vector2D::VectorType::PieArea)
 		return false;
-	Math::Geometry::PieArea *pa = (Math::Geometry::PieArea*)vec;
+	const Math::Geometry::PieArea *pa = (const Math::Geometry::PieArea*)vec.Ptr();
 	return this->center == pa->center &&
 		this->r == pa->r &&
 		this->arcAngle1 == pa->arcAngle1 &&
 		this->arcAngle2 == pa->arcAngle2;
 }
 
-Bool Math::Geometry::PieArea::EqualsNearly(Vector2D* vec) const
+Bool Math::Geometry::PieArea::EqualsNearly(NotNullPtr<const Vector2D> vec) const
 {
-	if (vec == 0 || vec->GetVectorType() != Math::Geometry::Vector2D::VectorType::PieArea)
+	if (vec->GetVectorType() != Math::Geometry::Vector2D::VectorType::PieArea)
 		return false;
-	Math::Geometry::PieArea* pa = (Math::Geometry::PieArea*)vec;
+	const Math::Geometry::PieArea* pa = (const Math::Geometry::PieArea*)vec.Ptr();
 	return this->center.EqualsNearly(pa->center) &&
 		Math::NearlyEqualsDbl(this->r, pa->r) &&
 		Math::NearlyEqualsDbl(this->arcAngle1, pa->arcAngle1) &&
 		Math::NearlyEqualsDbl(this->arcAngle2, pa->arcAngle2);
 }
 
-UOSInt Math::Geometry::PieArea::GetCoordinates(Data::ArrayListA<Math::Coord2DDbl> *coordList) const
+UOSInt Math::Geometry::PieArea::GetCoordinates(NotNullPtr<Data::ArrayListA<Math::Coord2DDbl>> coordList) const
 {
 	coordList->Add(this->center);
 	coordList->Add(Math::Coord2DDbl(this->center.x + Math_Cos(this->arcAngle1) * r, this->center.y + Math_Sin(this->arcAngle1) * r));

@@ -15,10 +15,10 @@ Math::Geometry::Vector2D::VectorType Math::Geometry::GeometryCollection::GetVect
 	return Math::Geometry::Vector2D::VectorType::GeometryCollection;
 }
 
-Math::Geometry::Vector2D *Math::Geometry::GeometryCollection::Clone() const
+NotNullPtr<Math::Geometry::Vector2D> Math::Geometry::GeometryCollection::Clone() const
 {
-	Math::Geometry::GeometryCollection *newObj;
-	NEW_CLASS(newObj, Math::Geometry::GeometryCollection(this->srid, this->hasZ, this->hasM));
+	NotNullPtr<Math::Geometry::GeometryCollection> newObj;
+	NEW_CLASSNN(newObj, Math::Geometry::GeometryCollection(this->srid, this->hasZ, this->hasM));
 	UOSInt i = 0;
 	UOSInt j = this->geometries.GetCount();
 	while (i < j)

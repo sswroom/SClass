@@ -248,7 +248,7 @@ Math::Geometry::Vector2D* AdsbMovementstatistics::GetGeolocation() const
 void AdsbMovementstatistics::SetGeolocation(Math::Geometry::Vector2D* geolocation)
 {
 	SDEL_CLASS(this->geolocation);
-	this->geolocation = geolocation?geolocation->Clone():0;
+	this->geolocation = geolocation?geolocation->Clone().Ptr():0;
 }
 
 Bool AdsbMovementstatistics::GetInsideHkfir() const

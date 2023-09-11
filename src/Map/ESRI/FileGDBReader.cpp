@@ -420,12 +420,12 @@ Bool Map::ESRI::FileGDBReader::GetStr(UOSInt colIndex, NotNullPtr<Text::StringBu
 		return true;
 	case 7:
 		{
-			Math::Geometry::Vector2D *vec = this->GetVector(colIndex);
-			if (vec)
+			NotNullPtr<Math::Geometry::Vector2D> vec;;
+			if (vec.Set(this->GetVector(colIndex)))
 			{
 				Math::WKTWriter writer;
 				Bool succ = writer.ToText(sb, vec);
-				DEL_CLASS(vec);
+				vec.Delete();
 				return succ;
 			}
 		}
@@ -494,13 +494,13 @@ Text::String *Map::ESRI::FileGDBReader::GetNewStr(UOSInt colIndex)
 		return Text::String::NewP(sbuff, sptr).Ptr();
 	case 7:
 		{
-			Math::Geometry::Vector2D *vec = this->GetVector(colIndex);
-			if (vec)
+			NotNullPtr<Math::Geometry::Vector2D> vec;
+			if (vec.Set(this->GetVector(colIndex)))
 			{
 				Text::StringBuilderUTF8 sb;
 				Math::WKTWriter writer;
 				writer.ToText(sb, vec);
-				DEL_CLASS(vec);
+				vec.Delete();
 				return Text::String::New(sb.ToCString()).Ptr();
 			}
 		}
@@ -840,8 +840,8 @@ Math::Geometry::Vector2D *Map::ESRI::FileGDBReader::GetVector(UOSInt colIndex)
 			NEW_CLASS(pl, Math::Geometry::Polyline(srid, (UOSInt)nParts, (UOSInt)nPoints, (this->tableInfo->geometryFlags & 0x80) != 0, (this->tableInfo->geometryFlags & 0x40) != 0));
 			parts = pl->GetPtOfstList(i);
 			points = pl->GetPointList(i);
-			zArr = pl->GetZList(&i);
-			mArr = pl->GetMList(&i);
+			zArr = pl->GetZList(i);
+			mArr = pl->GetMList(i);
 			parts[0] = 0;
 			UInt32 ptOfst = 0;
 			i = 1;
@@ -925,8 +925,8 @@ Math::Geometry::Vector2D *Map::ESRI::FileGDBReader::GetVector(UOSInt colIndex)
 			UOSInt i;
 			UInt32 *parts = pg->GetPtOfstList(i);
 			Math::Coord2DDbl *points = pg->GetPointList(i);
-			Double *zArr = pg->GetZList(&i);
-			Double *mArr = pg->GetMList(&i);
+			Double *zArr = pg->GetZList(i);
+			Double *mArr = pg->GetMList(i);
 			parts[0] = 0;
 			UInt32 ptOfst = 0;
 			i = 1;
@@ -1016,8 +1016,8 @@ Math::Geometry::Vector2D *Map::ESRI::FileGDBReader::GetVector(UOSInt colIndex)
 			NEW_CLASS(pl, Math::Geometry::Polyline(srid, (UOSInt)nParts, (UOSInt)nPoints, (geometryType & 0x80000000) != 0, (geometryType & 0x40000000) != 0));
 			parts = pl->GetPtOfstList(i);
 			points = pl->GetPointList(i);
-			zArr = pl->GetZList(&i);
-			mArr = pl->GetMList(&i);
+			zArr = pl->GetZList(i);
+			mArr = pl->GetMList(i);
 			parts[0] = 0;
 			UInt32 ptOfst = 0;
 			i = 1;
@@ -1122,8 +1122,8 @@ Math::Geometry::Vector2D *Map::ESRI::FileGDBReader::GetVector(UOSInt colIndex)
 			NEW_CLASS(pg, Math::Geometry::Polygon(srid, (UOSInt)nParts, (UOSInt)nPoints, (geometryType & 0x80000000) != 0, (geometryType & 0x40000000) != 0));
 			parts = pg->GetPtOfstList(i);
 			points = pg->GetPointList(i);
-			zArr = pg->GetZList(&i);
-			mArr = pg->GetMList(&i);
+			zArr = pg->GetZList(i);
+			mArr = pg->GetMList(i);
 			parts[0] = 0;
 			UInt32 ptOfst = 0;
 			i = 1;

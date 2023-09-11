@@ -371,7 +371,7 @@ Math::Geometry::Vector2D *Map::GPSTrack::GetNewVectorById(Map::GetObjectSess *se
 
 				NEW_CLASS(pl, Math::Geometry::LineString(4326, j = this->currRecs.GetCount(), true, false));
 				ptPtr = pl->GetPointList(j);
-				altList = pl->GetZList(&j);
+				altList = pl->GetZList(j);
 				i = 0;
 				while (i < j)
 				{
@@ -435,7 +435,7 @@ Math::Geometry::Vector2D *Map::GPSTrack::GetNewVectorById(Map::GetObjectSess *se
 
 			NEW_CLASS(pl, Math::Geometry::LineString(4326, track->nRecords, true, false));
 			ptPtr = pl->GetPointList(j);
-			altList = pl->GetZList(&j);
+			altList = pl->GetZList(j);
 			i = 0;
 			while (i < j)
 			{

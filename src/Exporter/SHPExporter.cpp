@@ -141,29 +141,30 @@ Bool Exporter::SHPExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text:
 	{
 		Math::Geometry::PointZ *pt;
 		Math::Coord2DDbl coord;
-		Double z;
+		Math::Vector3 pos;
 		ilayerType = 11;
 		i = 0;
 		while (i < recCnt)
 		{
 			pt = (Math::Geometry::PointZ*)layer->GetNewVectorById(sess, objIds.GetItem(i));
-			pt->GetPos3D(&coord.x, &coord.y, &z);
+			pos = pt->GetPos3D();
+			coord = pos.GetXY();
 			if (i == 0)
 			{
 				min = max = coord;
-				zMin = zMax = z;
+				zMin = zMax = pos.GetZ();
 			}
 			else
 			{
 				min = min.Min(coord);
 				max = max.Max(coord);
-				if (z > zMax)
+				if (pos.GetZ() > zMax)
 				{
-					zMax = z;
+					zMax = pos.GetZ();
 				}
-				else if (z < zMin)
+				else if (pos.GetZ() < zMin)
 				{
-					zMin = z;
+					zMin = pos.GetZ();
 				}
 			}
 
@@ -175,7 +176,7 @@ Bool Exporter::SHPExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text:
 			*(Int32*)&buff[8] = 11;
 			*(Double*)&buff[12] = coord.x;
 			*(Double*)&buff[20] = coord.y;
-			*(Double*)&buff[28] = z;
+			*(Double*)&buff[28] = pos.GetZ();
 			*(Double*)&buff[36] = 0;
 			stm->Write(buff, 44);
 			fileSize += 44;
@@ -266,7 +267,7 @@ Bool Exporter::SHPExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text:
 			box = pl->GetBounds();
 			ptOfsts = pl->GetPtOfstList(nPtOfst);
 			points = pl->GetPointList(nPoint);
-			alts = pl->GetZList(&nPoint);
+			alts = pl->GetZList(nPoint);
 			WriteUInt32(&nvals[0], (UInt32)nPtOfst);
 			WriteUInt32(&nvals[4], (UInt32)nPoint);
 

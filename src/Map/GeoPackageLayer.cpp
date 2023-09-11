@@ -302,7 +302,7 @@ Math::Geometry::Vector2D *Map::GeoPackageLayer::GetNewVectorById(GetObjectSess *
 {
 	Math::Geometry::Vector2D *vec = this->vecList.GetItem((UOSInt)id);
 	if (vec)
-		return vec->Clone();
+		return vec->Clone().Ptr();
 	return 0;
 }
 

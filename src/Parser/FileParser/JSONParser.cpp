@@ -330,7 +330,7 @@ Math::Geometry::Vector2D *Parser::FileParser::JSONParser::ParseGeomJSON(Text::JS
 							ptArr[i].y = ptList.GetItem((i << 1) + 1);
 							i++;
 						}
-						altArr = pl->GetZList(&i);
+						altArr = pl->GetZList(i);
 						i = 0;
 						j = zList.GetCount();
 						while (i < j)
@@ -449,7 +449,7 @@ Math::Geometry::Vector2D *Parser::FileParser::JSONParser::ParseGeomJSON(Text::JS
 					}
 					if (hasAlt)
 					{
-						Double *altArr = pg->GetZList(&j);
+						Double *altArr = pg->GetZList(j);
 						i = 0;
 						while (i < j)
 						{
@@ -526,9 +526,9 @@ Math::Geometry::Vector2D *Parser::FileParser::JSONParser::ParseGeomJSON(Text::JS
 						if (ptList.GetCount() >= 4)
 						{
 							Math::Coord2DDbl *ptArr;
-							Math::Geometry::Polygon *pg;
+							NotNullPtr<Math::Geometry::Polygon> pg;
 							Bool hasZ = ptList.GetCount() == altList.GetCount() * 2;
-							NEW_CLASS(pg, Math::Geometry::Polygon(srid, partList.GetCount(), ptList.GetCount() >> 1, hasZ, false));
+							NEW_CLASSNN(pg, Math::Geometry::Polygon(srid, partList.GetCount(), ptList.GetCount() >> 1, hasZ, false));
 							UInt32 *ptOfsts = pg->GetPtOfstList(j);
 							i = 0;
 							while (i < j)
@@ -546,7 +546,7 @@ Math::Geometry::Vector2D *Parser::FileParser::JSONParser::ParseGeomJSON(Text::JS
 							}
 							if (hasZ)
 							{
-								Double *altArr = pg->GetZList(&j);
+								Double *altArr = pg->GetZList(j);
 								i = 0;
 								while (i < j)
 								{

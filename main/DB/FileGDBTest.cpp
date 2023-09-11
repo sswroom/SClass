@@ -743,7 +743,7 @@ Math::Geometry::Vector2D* Lamppost::GetShape()
 void Lamppost::SetShape(Math::Geometry::Vector2D* shape)
 {
 	SDEL_CLASS(this->shape);
-	this->shape = shape?shape->Clone():0;
+	this->shape = shape?shape->Clone().Ptr():0;
 }
 
 Text::String* Lamppost::GetShielded()
