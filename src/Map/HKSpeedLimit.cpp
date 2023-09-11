@@ -220,7 +220,7 @@ Map::HKSpeedLimit::HKSpeedLimit(Map::HKRoadNetwork2 *roadNetwork)
 
 Map::HKSpeedLimit::~HKSpeedLimit()
 {
-	DEL_CLASS(this->dataCsys);
+	this->dataCsys.Delete();
 	SDEL_CLASS(this->reqCsys);
 	UOSInt i = this->routeMap.GetCount();
 	while (i-- > 0) FreeRoute(this->routeMap.GetItem(i));
@@ -229,9 +229,10 @@ Map::HKSpeedLimit::~HKSpeedLimit()
 
 const Map::HKSpeedLimit::RouteInfo *Map::HKSpeedLimit::GetNearestRoute(Math::Coord2DDbl pt)
 {
-	if (this->reqCsys && !this->reqCsys->Equals(this->dataCsys))
+	NotNullPtr<Math::CoordinateSystem> csys;
+	if (csys.Set(this->reqCsys) && !this->reqCsys->Equals(this->dataCsys))
 	{
-		pt = Math::CoordinateSystem::Convert(this->reqCsys, this->dataCsys, pt);
+		pt = Math::CoordinateSystem::Convert(csys, this->dataCsys, pt);
 	}
 	Data::ArrayList<Int32> routeList;
 	UOSInt i;
@@ -290,10 +291,10 @@ Int32 Map::HKSpeedLimit::GetSpeedLimit(Math::Coord2DDbl pt, Double maxDistM)
 {
 	Int32 speedLimit = 50;
 	Double distComp = maxDistM * maxDistM;
-
-	if (this->reqCsys && !this->reqCsys->Equals(this->dataCsys))
+	NotNullPtr<Math::CoordinateSystem> csys;
+	if (csys.Set(this->reqCsys) && !this->reqCsys->Equals(this->dataCsys))
 	{
-		pt = Math::CoordinateSystem::Convert(this->reqCsys, this->dataCsys, pt);
+		pt = Math::CoordinateSystem::Convert(csys, this->dataCsys, pt);
 	}
 	Data::ArrayList<Int32> routeList;
 	UOSInt i;
@@ -347,10 +348,12 @@ Int32 Map::HKSpeedLimit::GetSpeedLimit(Math::Coord2DDbl pt, Double maxDistM)
 
 void Map::HKSpeedLimit::SetReqCoordinateSystem(Math::CoordinateSystem *csys)
 {
-	if (csys && (this->reqCsys == 0 || !this->reqCsys->Equals(csys)))
+	NotNullPtr<Math::CoordinateSystem> srcCsys;
+	NotNullPtr<Math::CoordinateSystem> reqCsys;
+	if (srcCsys.Set(csys) && (!reqCsys.Set(this->reqCsys) || !reqCsys->Equals(srcCsys)))
 	{
 		SDEL_CLASS(this->reqCsys);
-		this->reqCsys = csys->Clone();
+		this->reqCsys = csys->Clone().Ptr();
 	}
 
 }

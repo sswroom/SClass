@@ -31,7 +31,7 @@ namespace Map
 		NotNullPtr<Net::SocketFactory> sockf;
 		Net::SSLEngine *ssl;
 		Data::ArrayList<TileLayer*> layers;
-		Math::CoordinateSystem *csys;
+		NotNullPtr<Math::CoordinateSystem> csys;
 		UOSInt concurrCnt;
 
 		void LoadXML();
@@ -47,7 +47,7 @@ namespace Map
 		virtual UOSInt GetNearestLevel(Double scale) const;
 		virtual UOSInt GetConcurrentCount() const;
 		virtual Bool GetBounds(OutParam<Math::RectAreaDbl> bounds) const;
-		virtual Math::CoordinateSystem *GetCoordinateSystem();
+		virtual NotNullPtr<Math::CoordinateSystem> GetCoordinateSystem() const;
 		virtual Bool IsMercatorProj() const;
 		virtual UOSInt GetTileSize() const;
 

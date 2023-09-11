@@ -22,7 +22,7 @@ namespace Map
 			Net::SSLEngine *ssl;
 			Math::RectAreaDbl bounds;
 			Math::RectAreaDbl initBounds;
-			Math::CoordinateSystem *csys;
+			NotNullPtr<Math::CoordinateSystem> csys;
 			Bool noResource;
 
 			Bool supportMap;
@@ -56,7 +56,7 @@ namespace Map
 			Bool TileLoadToFile(Text::CStringNN fileName, UOSInt level, Int32 tileX, Int32 tileY) const;
 
 			virtual NotNullPtr<Text::String> GetName() const;
-			virtual Math::CoordinateSystem *GetCoordinateSystem() const;
+			virtual NotNullPtr<Math::CoordinateSystem> GetCoordinateSystem() const;
 			virtual Math::RectAreaDbl GetInitBounds() const;
 			virtual Bool GetBounds(OutParam<Math::RectAreaDbl> bounds) const;
 			virtual Bool CanQuery() const;

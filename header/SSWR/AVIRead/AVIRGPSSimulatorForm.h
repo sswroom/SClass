@@ -37,7 +37,7 @@ namespace SSWR
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			IMapNavigator *navi;
-			Math::GeographicCoordinateSystem *wgs84;
+			NotNullPtr<Math::GeographicCoordinateSystem> wgs84;
 			IO::Stream *stm;
 			Data::ArrayListA<Math::Coord2DDbl> points;
 			Math::Coord2DDbl currPos;

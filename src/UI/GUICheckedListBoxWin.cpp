@@ -23,7 +23,7 @@ void UI::GUICheckedListBox::SetItemChecked(UOSInt index, Bool isChecked)
 	ListView_SetCheckState((HWND)this->hwnd, index, isChecked?TRUE:FALSE);
 }
 
-Text::CString UI::GUICheckedListBox::GetObjectClass()
+Text::CStringNN UI::GUICheckedListBox::GetObjectClass() const
 {
 	return CSTR("CheckedListBox");
 }

@@ -832,10 +832,10 @@ Math::Geometry::Polygon *Math::Geometry::LineString::CreatePolygonByDist(Double 
 	return pg;
 }
 
-Math::Geometry::Polyline *Math::Geometry::LineString::CreatePolyline() const
+NotNullPtr<Math::Geometry::Polyline> Math::Geometry::LineString::CreatePolyline() const
 {
-	Math::Geometry::Polyline *pl;
-	NEW_CLASS(pl, Math::Geometry::Polyline(this->srid, this->pointArr, this->nPoint, this->zArr != 0, this->mArr != 0));
+	NotNullPtr<Math::Geometry::Polyline> pl;
+	NEW_CLASSNN(pl, Math::Geometry::Polyline(this->srid, this->pointArr, this->nPoint, this->zArr != 0, this->mArr != 0));
 	if (this->zArr)
 	{
 		UOSInt nPoint;

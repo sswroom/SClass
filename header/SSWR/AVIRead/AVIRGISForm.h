@@ -53,7 +53,7 @@ namespace SSWR
 			Bool scaleChanging;
 			UI::GUITreeView::TreeItem *popNode;
 			Text::TextAnalyzer ta;
-			Math::GeographicCoordinateSystem *wgs84CSys;
+			NotNullPtr<Math::GeographicCoordinateSystem> wgs84CSys;
 
 			Bool useTime;
 			Int64 currTime;
@@ -121,7 +121,7 @@ namespace SSWR
 			virtual void SetSelectedVector(Math::Geometry::Vector2D *vec);
 			virtual void SetSelectedVectors(NotNullPtr<Data::ArrayList<Math::Geometry::Vector2D*>> vecList);
 			virtual void RedrawMap();
-			virtual Math::CoordinateSystem *GetCoordinateSystem();
+			virtual NotNullPtr<Math::CoordinateSystem> GetCoordinateSystem() const;
 
 			virtual Math::Coord2DDbl ScnXY2MapXY(Math::Coord2D<OSInt> scnPos);
 			virtual Math::Coord2D<OSInt> MapXY2ScnXY(Math::Coord2DDbl mapPos);

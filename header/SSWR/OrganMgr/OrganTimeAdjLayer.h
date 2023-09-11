@@ -15,7 +15,7 @@ namespace SSWR
 		private:
 			Map::GPSTrack *gpsTrk;
 			Data::ArrayList<UserFileInfo *> *userFileList;
-			Data::StringMap<Int32> *cameraMap;
+			Data::StringMap<Int32> cameraMap;
 		public:
 			OrganTimeAdjLayer(Map::GPSTrack *gpsTrk, Data::ArrayList<UserFileInfo *> *userFileList);
 			virtual ~OrganTimeAdjLayer();

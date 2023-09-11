@@ -56,11 +56,11 @@ Bool Math::Geometry::Ellipse::HasZ() const
 	return false;
 }
 
-void Math::Geometry::Ellipse::ConvCSys(Math::CoordinateSystem *srcCSys, Math::CoordinateSystem *destCSys)
+void Math::Geometry::Ellipse::ConvCSys(NotNullPtr<Math::CoordinateSystem> srcCSys, NotNullPtr<Math::CoordinateSystem> destCSys)
 {
 	Math::Coord2DDbl br = this->tl + this->size;
-	Math::CoordinateSystem::ConvertXYZ(srcCSys, destCSys, this->tl.x, this->tl.y, 0, &this->tl.x, &this->tl.y, 0);
-	Math::CoordinateSystem::ConvertXYZ(srcCSys, destCSys, br.x, br.y, 0, &br.x, &br.y, 0);
+	this->tl = Math::CoordinateSystem::ConvertXYZ(srcCSys, destCSys, Math::Vector3(this->tl, 0)).GetXY();
+	br = Math::CoordinateSystem::ConvertXYZ(srcCSys, destCSys, Math::Vector3(br, 0)).GetXY();
 	this->size = br - this->tl;
 	this->srid = destCSys->GetSRID();
 }

@@ -280,7 +280,7 @@ IO::ParsedObject *Parser::FileParser::GUIImgParser::ParseFileHdr(NotNullPtr<IO::
 				srid = 4326;
 			}
 			
-			NEW_CLASS(lyr, Map::VectorLayer(Map::DRAW_LAYER_IMAGE, fd->GetFullName(), 0, 0, Math::CoordinateSystemManager::SRCreateCSys(srid), 0, 0, 0, 0, 0));
+			NEW_CLASS(lyr, Map::VectorLayer(Map::DRAW_LAYER_IMAGE, fd->GetFullName(), 0, 0, Math::CoordinateSystemManager::SRCreateCSysOrDef(srid), 0, 0, 0, 0, 0));
 			img->To32bpp();
 			
 			NEW_CLASS(simg, Media::SharedImage(imgList, true));
@@ -347,7 +347,7 @@ IO::ParsedObject *Parser::FileParser::GUIImgParser::ParseFileHdr(NotNullPtr<IO::
 					Math::Geometry::VectorImage *vimg;
 					Media::SharedImage *simg;
 					
-					Math::CoordinateSystem *csys = Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::CoordinateSystemManager::GCST_WGS84);
+					NotNullPtr<Math::CoordinateSystem> csys = Math::CoordinateSystemManager::CreateDefaultCsys();
 					NEW_CLASS(lyr, Map::VectorLayer(Map::DRAW_LAYER_IMAGE, fd->GetFullName(), 0, 0, csys, 0, 0, 0, 0, 0));
 					img->To32bpp();
 					NEW_CLASS(simg, Media::SharedImage(imgList, true));

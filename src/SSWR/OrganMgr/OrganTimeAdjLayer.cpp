@@ -1,4 +1,5 @@
 #include "Stdafx.h"
+#include "Math/CoordinateSystemManager.h"
 #include "Math/Math.h"
 #include "Math/Geometry/Point.h"
 #include "SSWR/OrganMgr/OrganTimeAdjLayer.h"
@@ -7,12 +8,11 @@ SSWR::OrganMgr::OrganTimeAdjLayer::OrganTimeAdjLayer(Map::GPSTrack *gpsTrk, Data
 {
 	this->gpsTrk = gpsTrk;
 	this->userFileList = userFileList;
-	NEW_CLASS(this->cameraMap, Data::StringMap<Int32>());
+	this->csys = Math::CoordinateSystemManager::CreateDefaultCsys();
 }
 
 SSWR::OrganMgr::OrganTimeAdjLayer::~OrganTimeAdjLayer()
 {
-	DEL_CLASS(this->cameraMap);
 }
 
 Map::DrawLayerType SSWR::OrganMgr::OrganTimeAdjLayer::GetLayerType() const
@@ -122,10 +122,9 @@ Math::Geometry::Vector2D *SSWR::OrganMgr::OrganTimeAdjLayer::GetNewVectorById(Ma
 	Data::Timestamp ts = ufile->fileTime;
 	if (ufile->camera)
 	{
-		ts = ts.AddSecond(this->cameraMap->Get(ufile->camera));
+		ts = ts.AddSecond(this->cameraMap.Get(ufile->camera));
 	}
-	UInt32 srid = 0;
-	if (this->csys) srid = this->csys->GetSRID();
+	UInt32 srid = this->csys->GetSRID();
 	pos = this->gpsTrk->GetPosByTime(ts);
 	NEW_CLASS(pt, Math::Geometry::Point(srid, pos));
 	return pt;
@@ -138,10 +137,10 @@ Map::MapDrawLayer::ObjectClass SSWR::OrganMgr::OrganTimeAdjLayer::GetObjectClass
 
 void SSWR::OrganMgr::OrganTimeAdjLayer::SetTimeAdj(Text::String *camera, Int32 timeAdj)
 {
-	this->cameraMap->Put(camera, timeAdj);
+	this->cameraMap.Put(camera, timeAdj);
 }
 
 void SSWR::OrganMgr::OrganTimeAdjLayer::SetTimeAdj(Text::CString camera, Int32 timeAdj)
 {
-	this->cameraMap->Put(camera, timeAdj);
+	this->cameraMap.Put(camera, timeAdj);
 }

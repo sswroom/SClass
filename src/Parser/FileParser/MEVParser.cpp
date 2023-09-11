@@ -88,7 +88,7 @@ IO::ParsedObject *Parser::FileParser::MEVParser::ParseFileHdr(NotNullPtr<IO::Str
 	fd->GetRealData(currPos, initSize, BYTEARR(buff));
 	currPos += initSize;
 	Map::MapEnv *env;
-	NEW_CLASS(env, Map::MapEnv(fd->GetFullName()->ToCString(), ReadUInt32(&buff[0]), Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::CoordinateSystemManager::GCST_WGS84)));
+	NEW_CLASS(env, Map::MapEnv(fd->GetFullName()->ToCString(), ReadUInt32(&buff[0]), Math::CoordinateSystemManager::CreateDefaultCsys()));
 	env->SetNString(ReadUInt32(&buff[4]));
 	dirCnt = ReadUInt32(&buff[16]);
 	imgFileCnt = ReadUInt32(&buff[20]);

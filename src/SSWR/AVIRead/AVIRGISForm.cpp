@@ -191,7 +191,7 @@ void __stdcall SSWR::AVIRead::AVIRGISForm::FileHandler(void *userObj, NotNullPtr
 				Media::SharedImage *simg;
 				Math::Geometry::VectorImage *vimg;
 				Media::Image *stimg;
-				NEW_CLASS(lyr, Map::VectorLayer(Map::DRAW_LAYER_IMAGE, files[i]->ToCString(), 0, 0, Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::CoordinateSystemManager::GCST_WGS84), 0, 0, 0, 0, CSTR_NULL));
+				NEW_CLASS(lyr, Map::VectorLayer(Map::DRAW_LAYER_IMAGE, files[i]->ToCString(), 0, 0, Math::CoordinateSystemManager::CreateDefaultCsys(), 0, 0, 0, 0, CSTR_NULL));
 				stimg = ((Media::ImageList*)pobj)->GetImage(0, 0);
 				Double calcImgW;
 				Double calcImgH;
@@ -262,27 +262,18 @@ void __stdcall SSWR::AVIRead::AVIRGISForm::OnMapMouseMove(void *userObj, Math::C
 {
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
-	Double lat;
-	Double lon;
+	Math::Coord2DDbl latLon;
 	AVIRead::AVIRGISForm *me = (AVIRead::AVIRGISForm*)userObj;
 	Math::Coord2DDbl mapPos = me->mapCtrl->ScnXY2MapXY(scnPos);
 
 	sptr = Text::StrDouble(Text::StrConcatC(Text::StrDouble(sbuff, mapPos.x), UTF8STRC(", ")), mapPos.y);
 	me->txtLatLon->SetText(CSTRP(sbuff, sptr));
 	
-	Math::CoordinateSystem *csys = me->env->GetCoordinateSystem();
-	if (csys)
-	{
-		Math::CoordinateSystem::ConvertXYZ(csys, me->wgs84CSys, mapPos.x, mapPos.y, 0, &lon, &lat, 0);
-	}
-	else
-	{
-		lat = mapPos.y;
-		lon = mapPos.x;
-	}
+	NotNullPtr<Math::CoordinateSystem> csys = me->env->GetCoordinateSystem();
+	latLon = Math::CoordinateSystem::ConvertXYZ(csys, me->wgs84CSys, Math::Vector3(mapPos, 0)).GetXY();
 
 	Math::UTMGridConvertDbl conv;
-	sptr = conv.WGS84_Grid(sbuff, 5, 0, 0, 0, 0, lat, lon);
+	sptr = conv.WGS84_Grid(sbuff, 5, 0, 0, 0, 0, latLon.GetLat(), latLon.GetLon());
 	me->txtUTMGrid->SetText(CSTRP(sbuff, sptr));
 
 	UOSInt i;
@@ -633,7 +624,7 @@ void SSWR::AVIRead::AVIRGISForm::OpenCSV(Text::CStringNN url, UInt32 codePage, T
 	NotNullPtr<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(this->core->GetSocketFactory(), this->ssl, url, Net::WebUtil::RequestMethod::HTTP_GET, true);
 	if (cli->GetRespStatus() == Net::WebStatus::SC_OK)
 	{
-		Map::MapDrawLayer *lyr = Map::CSVMapParser::ParseAsPoint(cli, codePage, name, nameCol, latCol, lonCol, Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::CoordinateSystemManager::GCST_WGS84));
+		Map::MapDrawLayer *lyr = Map::CSVMapParser::ParseAsPoint(cli, codePage, name, nameCol, latCol, lonCol, Math::CoordinateSystemManager::CreateDefaultCsys());
 		if (lyr)
 		{
 			this->AddLayer(lyr);
@@ -662,7 +653,7 @@ SSWR::AVIRead::AVIRGISForm::AVIRGISForm(UI::GUIClientControl *parent, NotNullPtr
 	this->pauseUpdate = false;
 	this->mapLyrUpdated = false;
 
-	this->wgs84CSys = Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::CoordinateSystemManager::GCST_WGS84);
+	this->wgs84CSys = Math::CoordinateSystemManager::CreateDefaultCsys();
 	this->UpdateTitle();
 	this->SetFont(0, 0, 8.25, false);
 
@@ -835,7 +826,7 @@ SSWR::AVIRead::AVIRGISForm::~AVIRGISForm()
 	DEL_CLASS(this->mnuGroup);
 	DEL_CLASS(this->envRenderer);
 	DEL_CLASS(this->env);
-	DEL_CLASS(this->wgs84CSys);
+	this->wgs84CSys.Delete();
 	SDEL_CLASS(this->ssl);
 	this->ClearChildren();
 	this->core->GetColorMgr()->DeleteSess(this->colorSess);
@@ -966,8 +957,8 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 	case MNU_LAYER_CENTER:
 		{
 			Math::RectAreaDbl bounds;
-			Math::CoordinateSystem *envCSys;
-			Math::CoordinateSystem *lyrCSys;
+			NotNullPtr<Math::CoordinateSystem> envCSys;
+			NotNullPtr<Math::CoordinateSystem> lyrCSys;
 			UI::GUIMapTreeView::ItemIndex *ind = (UI::GUIMapTreeView::ItemIndex *)this->popNode->GetItemObj();
 			Map::MapEnv::LayerItem *lyr = (Map::MapEnv::LayerItem*)this->env->GetItem(ind->group, ind->index);
 			if (lyr->layer->GetBounds(bounds))
@@ -975,12 +966,9 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 				Math::Coord2DDbl center = bounds.GetCenter();
 				envCSys = this->env->GetCoordinateSystem();
 				lyrCSys = lyr->layer->GetCoordinateSystem();
-				if (envCSys != 0 && lyrCSys != 0)
+				if (!envCSys->Equals(lyrCSys))
 				{
-					if (!envCSys->Equals(lyrCSys))
-					{
-						Math::CoordinateSystem::ConvertXYZ(lyrCSys, envCSys, center.x, center.y, 0, &center.x, &center.y, 0);
-					}
+					center = Math::CoordinateSystem::ConvertXYZ(lyrCSys, envCSys, Math::Vector3(center, 0)).GetXY();
 				}
 				this->mapCtrl->PanToMapXY(center);
 			}
@@ -1127,7 +1115,7 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 	case MNU_LAYER_ASSIGN_CSYS:
 		{
 			Map::MapDrawLayer *lyr = ((Map::MapEnv::LayerItem*)((UI::GUIMapTreeView::ItemIndex*)this->popNode->GetItemObj())->item)->layer;
-			AVIRGISCSysForm frm(0, this->ui, this->core, lyr->GetCoordinateSystem());
+			AVIRGISCSysForm frm(0, this->ui, this->core, lyr->GetCoordinateSystem().Ptr());
 			frm.SetText(CSTR("Assign Coordinate System"));
 			if (frm.ShowDialog(this) == UI::GUIForm::DR_OK)
 			{
@@ -1143,7 +1131,7 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 			if (lyr->GetObjectClass() == Map::MapDrawLayer::OC_VECTOR_LAYER)
 			{
 				Map::VectorLayer *vec = (Map::VectorLayer*)lyr;
-				AVIRGISCSysForm frm(0, this->ui, this->core, lyr->GetCoordinateSystem());
+				AVIRGISCSysForm frm(0, this->ui, this->core, lyr->GetCoordinateSystem().Ptr());
 				frm.SetText(CSTR("Convert Coordinate System"));
 				if (frm.ShowDialog(this) == UI::GUIForm::DR_OK)
 				{
@@ -1359,7 +1347,7 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 			if (frm.ShowDialog(this) == UI::GUIForm::DR_OK)
 			{
 				Map::VectorLayer *lyr;
-				NEW_CLASS(lyr, Map::VectorLayer(Map::DRAW_LAYER_POLYLINE, CSTR("Google Polyline"), 0, 0, Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::CoordinateSystemManager::GCST_WGS84), 0, 0, 0, 0, CSTR_NULL));
+				NEW_CLASS(lyr, Map::VectorLayer(Map::DRAW_LAYER_POLYLINE, CSTR("Google Polyline"), 0, 0, Math::CoordinateSystemManager::CreateDefaultCsys(), 0, 0, 0, 0, CSTR_NULL));
 				lyr->AddVector(frm.GetPolyline(), (const UTF8Char**)0);
 				this->AddLayer(lyr);
 			}
@@ -1801,7 +1789,7 @@ void SSWR::AVIRead::AVIRGISForm::RedrawMap()
 	}
 }
 
-Math::CoordinateSystem *SSWR::AVIRead::AVIRGISForm::GetCoordinateSystem()
+NotNullPtr<Math::CoordinateSystem> SSWR::AVIRead::AVIRGISForm::GetCoordinateSystem() const
 {
 	return this->env->GetCoordinateSystem();
 }

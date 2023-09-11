@@ -50,7 +50,7 @@ namespace Map
 		UOSInt infoType;
 
 		LayerCRS *currCRS;
-		Math::CoordinateSystem *csys;
+		NotNullPtr<Math::CoordinateSystem> csys;
 
 		void LoadXML(Version version);
 		void LoadXMLRequest(NotNullPtr<Text::XMLReader> reader);
@@ -61,7 +61,7 @@ namespace Map
 		virtual ~WebMapService();
 
 		virtual NotNullPtr<Text::String> GetName() const;
-		virtual Math::CoordinateSystem *GetCoordinateSystem() const;
+		virtual NotNullPtr<Math::CoordinateSystem> GetCoordinateSystem() const;
 		virtual Math::RectAreaDbl GetInitBounds() const;
 		virtual Bool GetBounds(OutParam<Math::RectAreaDbl> bounds) const;
 		virtual Bool CanQuery() const;

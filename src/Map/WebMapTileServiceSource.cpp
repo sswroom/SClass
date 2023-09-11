@@ -443,7 +443,7 @@ Map::WebMapTileServiceSource::TileMatrixDefSet *Map::WebMapTileServiceSource::Re
 	Text::StringBuilderUTF8 sb;
 	NEW_CLASS(set, TileMatrixDefSet());
 	set->id = 0;
-	set->csys = 0;
+	set->csys = Math::CoordinateSystemManager::CreateDefaultCsys();
 	while (reader->ReadNext())
 	{
 		nt = reader->GetNodeType();
@@ -466,8 +466,8 @@ Map::WebMapTileServiceSource::TileMatrixDefSet *Map::WebMapTileServiceSource::Re
 				reader->ReadNodeText(sb);
 				if (sb.GetLength() > 0)
 				{
-					SDEL_CLASS(set->csys);
-					set->csys = Math::CoordinateSystemManager::CreateFromName(sb.ToCString());
+					set->csys.Delete();
+					set->csys = Math::CoordinateSystemManager::CreateFromNameOrDef(sb.ToCString());
 				}
 			}
 			else if (name->Equals(UTF8STRC("TileMatrix")))
@@ -695,7 +695,7 @@ void Map::WebMapTileServiceSource::ReleaseTileMatrixDefSet(TileMatrixDefSet *set
 {
 	UOSInt i;
 	set->id->Release();
-	SDEL_CLASS(set->csys);
+	set->csys.Delete();
 	i = set->tiles.GetCount();
 	while (i-- > 0)
 	{
@@ -830,15 +830,15 @@ Bool Map::WebMapTileServiceSource::GetBounds(OutParam<Math::RectAreaDbl> bounds)
 	return false;
 }
 
-Math::CoordinateSystem *Map::WebMapTileServiceSource::GetCoordinateSystem()
+NotNullPtr<Math::CoordinateSystem> Map::WebMapTileServiceSource::GetCoordinateSystem() const
 {
 	if (this->currSet)
 	{
-		return this->currSet->csys.Ptr();
+		return this->currSet->csys;
 	}
 	else
 	{
-		return 0;
+		return this->wgs84;
 	}
 }
 

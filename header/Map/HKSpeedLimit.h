@@ -18,7 +18,7 @@ namespace Map
 			Math::Geometry::Vector2D *vecOri;
 		};
 	private:
-		Math::CoordinateSystem *dataCsys;
+		NotNullPtr<Math::CoordinateSystem> dataCsys;
 		Math::CoordinateSystem *reqCsys;
 		Data::FastMap<Int32, RouteInfo*> routeMap;
 		Math::RectAreaDbl bounds;

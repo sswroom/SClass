@@ -175,6 +175,7 @@ namespace Math
 		static Math::GeographicCoordinateSystem *SRCreateGeogCSys(UInt32 epsgId);
 		
 		static Math::CoordinateSystem *CreateFromName(Text::CStringNN name);
+		static NotNullPtr<Math::CoordinateSystem> CreateFromNameOrDef(Text::CStringNN name);
 
 		static const Math::CoordinateSystemManager::DatumInfo *GetDatumInfoByName(const UTF8Char *name);
 		static void FillDatumData(NotNullPtr<Math::GeographicCoordinateSystem::DatumData1> data, const DatumInfo *datum, Text::CString name, NotNullPtr<Math::EarthEllipsoid> ee, const SpheroidInfo *spheroid);
@@ -189,7 +190,7 @@ namespace Math
 		static Math::GeographicCoordinateSystem *CreateGeogCoordinateSystem(Text::CStringNN sourceName, const UTF8Char *geoName);
 		static UOSInt GetGeogCoordinateSystems(Data::ArrayList<GeoCoordSysType> *csysList);
 		static const GeographicCSysInfo *GetGeogCoordinateSystemInfo(const UTF8Char *geoName);
-		static NotNullPtr<Math::CoordinateSystem> CreateDefaultCsys();
+		static NotNullPtr<Math::GeographicCoordinateSystem> CreateDefaultCsys();
 
 		static Text::CStringNN GeoCoordSysTypeGetName(GeoCoordSysType gcst);
 		static Text::CString ProjCoordSysTypeGetName(ProjCoordSysType pcst);

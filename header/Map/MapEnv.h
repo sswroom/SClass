@@ -128,7 +128,7 @@ namespace Map
 		UOSInt nStr;
 		UOSInt defLineStyle;
 		UOSInt defFontStyle;
-		Math::CoordinateSystem *csys;
+		NotNullPtr<Math::CoordinateSystem> csys;
 
 	private:
 		UInt8 GetRandomColor();
@@ -136,7 +136,7 @@ namespace Map
 		void AddGroupUpdatedHandler(GroupItem *group, Map::MapDrawLayer::UpdatedHandler hdlr, void *obj);
 		void RemoveGroupUpdatedHandler(GroupItem *group, Map::MapDrawLayer::UpdatedHandler hdlr, void *obj);
 	public:
-		MapEnv(Text::CStringNN fileName, UInt32 bgColor, Math::CoordinateSystem *csys);
+		MapEnv(Text::CStringNN fileName, UInt32 bgColor, NotNullPtr<Math::CoordinateSystem> csys);
 		virtual ~MapEnv();
 
 		virtual IO::ParserType GetParserType() const;
@@ -208,7 +208,7 @@ namespace Map
 		UOSInt GetLayersInGroup(Map::MapEnv::GroupItem *group, Data::ArrayList<Map::MapDrawLayer *> *layers) const;
 		Bool GetBounds(Map::MapEnv::GroupItem *group, Math::RectAreaDbl *bounds) const;
 		Map::MapView *CreateMapView(Math::Size2DDbl scnSize) const;
-		Math::CoordinateSystem *GetCoordinateSystem() const;
+		NotNullPtr<Math::CoordinateSystem> GetCoordinateSystem() const;
 		UInt32 GetSRID() const;
 
 		void BeginUse(NotNullPtr<Sync::MutexUsage> mutUsage) const;

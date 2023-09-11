@@ -314,8 +314,8 @@ Map::MapView *Map::TileMapLayer::CreateMapView(Math::Size2DDbl scnSize)
 		}
 		Math::RectAreaDbl bounds;
 		this->tileMap->GetBounds(bounds);
-		Math::CoordinateSystem *csys = this->tileMap->GetCoordinateSystem();
-		NEW_CLASS(view, Map::LeveledMapView(csys && csys->IsProjected(), scnSize, bounds.GetCenter(), scales));
+		NotNullPtr<Math::CoordinateSystem> csys = this->tileMap->GetCoordinateSystem();
+		NEW_CLASS(view, Map::LeveledMapView(csys->IsProjected(), scnSize, bounds.GetCenter(), scales));
 		return view;
 	}
 }

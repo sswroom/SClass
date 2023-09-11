@@ -142,7 +142,7 @@ Map::OSM::OSMLocalTileMap::OSMLocalTileMap(IO::PackageFile *pkgFile)
 	this->tileHeight = 256;
 	this->min = Math::Coord2DDbl(0, 0);
 	this->max = Math::Coord2DDbl(0, 0);
-	this->csys = Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::CoordinateSystemManager::GCST_WGS84);
+	this->csys = Math::CoordinateSystemManager::CreateDefaultCsys();
 
 	UInt32 minXBlk;
 	UInt32 maxXBlk;
@@ -272,7 +272,7 @@ Map::OSM::OSMLocalTileMap::OSMLocalTileMap(IO::PackageFile *pkgFile)
 Map::OSM::OSMLocalTileMap::~OSMLocalTileMap()
 {
 	DEL_CLASS(this->pkgFile);
-	DEL_CLASS(this->csys);
+	this->csys.Delete();
 }
 
 Text::CStringNN Map::OSM::OSMLocalTileMap::GetName() const
@@ -322,7 +322,7 @@ Bool Map::OSM::OSMLocalTileMap::GetBounds(OutParam<Math::RectAreaDbl> bounds) co
 	return this->min.x != 0 || this->min.y != 0 || this->max.x != 0 || this->max.y != 0;
 }
 
-Math::CoordinateSystem *Map::OSM::OSMLocalTileMap::GetCoordinateSystem()
+NotNullPtr<Math::CoordinateSystem> Map::OSM::OSMLocalTileMap::GetCoordinateSystem() const
 {
 	return this->csys;
 }

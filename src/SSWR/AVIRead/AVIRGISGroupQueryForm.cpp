@@ -32,9 +32,8 @@ Bool __stdcall SSWR::AVIRead::AVIRGISGroupQueryForm::OnMouseUp(void *userObj, Ma
 		UTF8Char *sptr;
 		Data::ArrayList<Map::MapDrawLayer*> layers;
 		Map::MapDrawLayer *lyr;
-		Math::CoordinateSystem *csysEnv = me->navi->GetCoordinateSystem();
-		Math::CoordinateSystem *csysLyr;
-		Double zTemp;
+		NotNullPtr<Math::CoordinateSystem> csysEnv = me->navi->GetCoordinateSystem();
+		NotNullPtr<Math::CoordinateSystem> csysLyr;
 		mapEnvPos = me->navi->ScnXY2MapXY(scnPos);
 		me->env->GetLayersInGroup(me->group, &layers);
 		i = layers.GetCount();
@@ -44,9 +43,9 @@ Bool __stdcall SSWR::AVIRead::AVIRGISGroupQueryForm::OnMouseUp(void *userObj, Ma
 			sess = lyr->BeginGetObject();
 			nearPos = {0, 0};
 			csysLyr = lyr->GetCoordinateSystem();
-			if (csysEnv != 0 && csysLyr != 0 && !csysEnv->Equals(csysLyr))
+			if (!csysEnv->Equals(csysLyr))
 			{
-				Math::CoordinateSystem::ConvertXYZ(csysEnv, csysLyr, mapEnvPos.x, mapEnvPos.y, 0, &mapLyrPos.x, &mapLyrPos.y, &zTemp);
+				mapLyrPos = Math::CoordinateSystem::ConvertXYZ(csysEnv, csysLyr, Math::Vector3(mapEnvPos, 0)).GetXY();
 			}
 			else
 			{
@@ -124,9 +123,9 @@ Bool __stdcall SSWR::AVIRead::AVIRGISGroupQueryForm::OnMouseUp(void *userObj, Ma
 			Map::NameArray *nameArr;
 			me->txtLayer->SetText(lyr->GetName()->ToCString());
 			csysLyr = lyr->GetCoordinateSystem();
-			if (csysEnv != 0 && csysLyr != 0 && !csysEnv->Equals(csysLyr))
+			if (!csysEnv->Equals(csysLyr))
 			{
-				Math::CoordinateSystem::ConvertXYZ(csysEnv, csysLyr, mapEnvPos.x, mapEnvPos.y, 0, &mapLyrPos.x, &mapLyrPos.y, &zTemp);
+				mapLyrPos = Math::CoordinateSystem::ConvertXYZ(csysEnv, csysLyr, Math::Vector3(mapEnvPos, 0)).GetXY();
 			}
 			else
 			{
@@ -146,7 +145,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISGroupQueryForm::OnMouseUp(void *userObj, Ma
 				i++;
 			}
 			Math::Geometry::Vector2D *vec = lyr->GetNewVectorById(sess, id);
-			if (csysEnv != 0 && csysLyr != 0 && !csysEnv->Equals(csysLyr))
+			if (!csysEnv->Equals(csysLyr))
 			{
 				vec->ConvCSys(csysLyr, csysEnv);
 			}

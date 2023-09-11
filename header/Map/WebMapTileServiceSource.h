@@ -60,7 +60,7 @@ namespace Map
 		struct TileMatrixDefSet
 		{
 			Text::String *id;
-			Math::CoordinateSystem *csys;
+			NotNullPtr<Math::CoordinateSystem> csys;
 			Data::ArrayList<TileMatrixDef*> tiles;
 		};
 
@@ -112,7 +112,7 @@ namespace Map
 		virtual UOSInt GetNearestLevel(Double scale) const;
 		virtual UOSInt GetConcurrentCount() const;
 		virtual Bool GetBounds(OutParam<Math::RectAreaDbl> bounds) const;
-		virtual Math::CoordinateSystem *GetCoordinateSystem();
+		virtual NotNullPtr<Math::CoordinateSystem> GetCoordinateSystem() const;
 		virtual Bool IsMercatorProj() const;
 		virtual UOSInt GetTileSize() const;
 		virtual Bool CanQuery() const;

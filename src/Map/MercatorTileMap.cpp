@@ -19,14 +19,14 @@ Map::MercatorTileMap::MercatorTileMap(Text::CString cacheDir, UOSInt minLevel, U
 	this->tileHeight = 256;
 	this->minLevel = minLevel;
 	this->maxLevel = maxLevel;
-	this->csys = Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::CoordinateSystemManager::GCST_WGS84);
+	this->csys = Math::CoordinateSystemManager::CreateDefaultCsys();
 }
 
 Map::MercatorTileMap::~MercatorTileMap()
 {
 	SDEL_STRING(this->cacheDir);
 	SDEL_CLASS(this->spkg);
-	SDEL_CLASS(this->csys);
+	this->csys.Delete();
 }
 
 void Map::MercatorTileMap::SetSPackageFile(IO::SPackageFile *spkg)
@@ -97,7 +97,7 @@ Bool Map::MercatorTileMap::GetBounds(OutParam<Math::RectAreaDbl> bounds) const
 	return true;
 }
 
-Math::CoordinateSystem *Map::MercatorTileMap::GetCoordinateSystem()
+NotNullPtr<Math::CoordinateSystem> Map::MercatorTileMap::GetCoordinateSystem() const
 {
 	return this->csys;
 }

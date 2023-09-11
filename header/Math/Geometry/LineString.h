@@ -35,7 +35,7 @@ namespace Math
 			OSInt GetPointNo(Math::Coord2DDbl pt, Bool *isPoint, Math::Coord2DDbl *calPt, Double *calZ, Double *calM);
 
 			Math::Geometry::Polygon *CreatePolygonByDist(Double dist) const;
-			Math::Geometry::Polyline *CreatePolyline() const;
+			NotNullPtr<Math::Geometry::Polyline> CreatePolyline() const;
 		};
 	}
 }

@@ -21,7 +21,7 @@ namespace Map
 
 		UOSInt tileWidth;
 		UOSInt tileHeight;
-		Math::CoordinateSystem *csys;
+		NotNullPtr<Math::CoordinateSystem> csys;
 
 	public:
 		MercatorTileMap(Text::CString cacheDir, UOSInt minLevel, UOSInt maxLevel, NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl);
@@ -37,7 +37,7 @@ namespace Map
 		virtual Double GetLevelScale(UOSInt level) const;
 		virtual UOSInt GetNearestLevel(Double scale) const;
 		virtual Bool GetBounds(OutParam<Math::RectAreaDbl> bounds) const;
-		virtual Math::CoordinateSystem *GetCoordinateSystem();
+		virtual NotNullPtr<Math::CoordinateSystem> GetCoordinateSystem() const;
 		virtual Bool IsMercatorProj() const;
 		virtual UOSInt GetTileSize() const;
 

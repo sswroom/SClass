@@ -394,7 +394,7 @@ Map::WebMapService::WebMapService(NotNullPtr<Net::SocketFactory> sockf, Net::SSL
 	this->mapImageType = 0;
 	this->currCRS = 0;
 	this->layer = 0;
-	this->csys = 0;
+	this->csys = Math::CoordinateSystemManager::CreateDefaultCsys();
 	this->LoadXML(version);
 }
 
@@ -430,7 +430,7 @@ Map::WebMapService::~WebMapService()
 	}
 	this->wmsURL->Release();
 	SDEL_STRING(this->version);
-	SDEL_CLASS(this->csys);
+	this->csys.Delete();
 }
 
 NotNullPtr<Text::String> Map::WebMapService::GetName() const
@@ -441,7 +441,7 @@ NotNullPtr<Text::String> Map::WebMapService::GetName() const
 	return layer->name;
 }
 
-Math::CoordinateSystem *Map::WebMapService::GetCoordinateSystem() const
+NotNullPtr<Math::CoordinateSystem> Map::WebMapService::GetCoordinateSystem() const
 {
 	return this->csys;
 }
@@ -762,8 +762,8 @@ void Map::WebMapService::SetLayer(UOSInt index)
 		{
 			this->currCRS = layer->crsList.GetItem(0);
 		}
-		SDEL_CLASS(this->csys);
-		this->csys = Math::CoordinateSystemManager::CreateFromName(this->currCRS->name->ToCString());
+		this->csys.Delete();
+		this->csys = Math::CoordinateSystemManager::CreateFromNameOrDef(this->currCRS->name->ToCString());
 	}
 }
 
@@ -781,8 +781,8 @@ void Map::WebMapService::SetLayerCRS(UOSInt index)
 	if (layer && index < layer->crsList.GetCount())
 	{
 		this->currCRS = layer->crsList.GetItem(index);
-		SDEL_CLASS(this->csys);
-		this->csys = Math::CoordinateSystemManager::CreateFromName(this->currCRS->name->ToCString());
+		this->csys.Delete();
+		this->csys = Math::CoordinateSystemManager::CreateFromNameOrDef(this->currCRS->name->ToCString());
 	}
 }
 

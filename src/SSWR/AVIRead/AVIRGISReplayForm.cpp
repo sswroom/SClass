@@ -402,20 +402,23 @@ void SSWR::AVIRead::AVIRGISReplayForm::UpdateRecList()
 	Map::GPSTrack::GPSRecord3 *recs = this->track->GetTrack(this->currTrackId, &recCnt);
 	if (recs)
 	{
-		Math::CoordinateSystem *coord = this->track->GetCoordinateSystem();
-		Math::Geometry::LineString *pl = (Math::Geometry::LineString*)this->track->GetNewVectorById(0, (Int64)this->currTrackId);
-		Double dist;
-		Math::Geometry::Polyline *pl2 = pl->CreatePolyline();
-		if (pl->HasZ())
+		Double dist = 0;
+		NotNullPtr<Math::CoordinateSystem> coord = this->track->GetCoordinateSystem();
+		NotNullPtr<Math::Geometry::LineString> pl;
+		if (pl.Set((Math::Geometry::LineString*)this->track->GetNewVectorById(0, (Int64)this->currTrackId)))
 		{
-			dist = coord->CalPLDistance3D(pl2, Math::Unit::Distance::DU_METER);
+			NotNullPtr<Math::Geometry::Polyline> pl2 = pl->CreatePolyline();
+			if (pl->HasZ())
+			{
+				dist = coord->CalPLDistance3D(pl2, Math::Unit::Distance::DU_METER);
+			}
+			else
+			{
+				dist = coord->CalPLDistance(pl2, Math::Unit::Distance::DU_METER);
+			}
+			pl2.Delete();
+			pl.Delete();
 		}
-		else
-		{
-			dist = coord->CalPLDistance(pl2, Math::Unit::Distance::DU_METER);
-		}
-		DEL_CLASS(pl2);
-		DEL_CLASS(pl);
 		sptr = Text::StrConcatC(Text::StrDoubleFmt(Text::StrConcatC(sbuff, UTF8STRC("Distance: ")), dist, "0.0"), UTF8STRC(" m"));
 		this->lblDist->SetText(CSTRP(sbuff, sptr));
 

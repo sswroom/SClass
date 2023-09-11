@@ -146,6 +146,8 @@ void __stdcall SSWR::AVIRead::AVIRCoordConvForm::OnConvFileClicked(void *userObj
 	Parser::ParserList *parsers = me->core->GetParserList();
 	Math::CoordinateSystem *srcCoord;
 	Math::CoordinateSystem *destCoord;
+	NotNullPtr<Math::CoordinateSystem> srcCsys;
+	NotNullPtr<Math::CoordinateSystem> destCsys;
 	UOSInt i;
 
 	i = me->cboSrc->GetSelectedIndex();
@@ -296,9 +298,7 @@ void __stdcall SSWR::AVIRead::AVIRCoordConvForm::OnConvFileClicked(void *userObj
 
 	Double inX;
 	Double inY;
-	Double outX;
-	Double outY;
-	Double outZ;
+	Math::Vector3 outPos;
 	while (reader->ReadNext())
 	{
 		sptr = strBuff;
@@ -318,13 +318,13 @@ void __stdcall SSWR::AVIRead::AVIRCoordConvForm::OnConvFileClicked(void *userObj
 			i++;
 		}
 
-		if (Text::StrToDouble(sarr[xCol], inX) && Text::StrToDouble(sarr[yCol], inY))
+		if (srcCsys.Set(srcCoord) && destCsys.Set(destCoord) && Text::StrToDouble(sarr[xCol], inX) && Text::StrToDouble(sarr[yCol], inY))
 		{
-			Math::CoordinateSystem::ConvertXYZ(srcCoord, destCoord, inX, inY, 0, &outX, &outY, &outZ);
+			outPos = Math::CoordinateSystem::ConvertXYZ(srcCsys, destCsys, Math::Vector3(inX, inY, 0));
 			sarr[colCnt] = sptr;
-			sptr = Text::StrDouble(sptr, outX) + 1;
+			sptr = Text::StrDouble(sptr, outPos.GetX()) + 1;
 			sarr[colCnt + 1] = sptr;
-			sptr = Text::StrDouble(sptr, outY) + 1;
+			sptr = Text::StrDouble(sptr, outPos.GetY()) + 1;
 		}
 		else
 		{
@@ -441,11 +441,11 @@ void SSWR::AVIRead::AVIRCoordConvForm::UpdateList()
 	Double x;
 	Double y;
 	Double z;
-	Double destX;
-	Double destY;
-	Double destZ;
+	Math::Vector3 destPos;
 	Math::CoordinateSystem *srcCoord;
 	Math::CoordinateSystem *destCoord;
+	NotNullPtr<Math::CoordinateSystem> srcCsys;
+	NotNullPtr<Math::CoordinateSystem> destCsys;
 
 	i = this->cboSrc->GetSelectedIndex();
 	if (i == INVALID_INDEX)
@@ -500,17 +500,14 @@ void SSWR::AVIRead::AVIRCoordConvForm::UpdateList()
 		this->lvCoord->SetSubItem(k, 2, CSTRP(sbuff, sptr));
 		sptr = Text::StrDouble(sbuff, z);
 		this->lvCoord->SetSubItem(k, 3, CSTRP(sbuff, sptr));
-		if (srcCoord == 0 || destCoord == 0)
+		if (srcCsys.Set(srcCoord) && destCsys.Set(destCoord))
 		{
-		}
-		else
-		{
-			Math::CoordinateSystem::ConvertXYZ(srcCoord, destCoord, x, y, z, &destX, &destY, &destZ);
-			sptr = Text::StrDouble(sbuff, destX);
+			destPos = Math::CoordinateSystem::ConvertXYZ(srcCsys, destCsys, Math::Vector3(x, y, z));
+			sptr = Text::StrDouble(sbuff, destPos.GetX());
 			this->lvCoord->SetSubItem(k, 4, CSTRP(sbuff, sptr));
-			sptr = Text::StrDouble(sbuff, destY);
+			sptr = Text::StrDouble(sbuff, destPos.GetY());
 			this->lvCoord->SetSubItem(k, 5, CSTRP(sbuff, sptr));
-			sptr = Text::StrDouble(sbuff, destZ);
+			sptr = Text::StrDouble(sbuff, destPos.GetZ());
 			this->lvCoord->SetSubItem(k, 6, CSTRP(sbuff, sptr));
 		}
 		i++;

@@ -33,7 +33,7 @@ Map::ESRI::ESRIMapServer::ESRIMapServer(Text::CString url, NotNullPtr<Net::Socke
 	this->supportQuery = false;
 	this->supportData = false;
 	this->noResource = noResource;
-	this->csys = Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::CoordinateSystemManager::GCST_WGS84);
+	this->csys = Math::CoordinateSystemManager::CreateDefaultCsys();
 
 	sptr = url.ConcatTo(sbuff);
 	if (Text::StrEndsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("/MapServer")))
@@ -131,8 +131,12 @@ Map::ESRI::ESRIMapServer::ESRIMapServer(Text::CString url, NotNullPtr<Net::Socke
 					{
 						Text::JSONObject *spRef = (Text::JSONObject*)o;
 						UInt32 wkid = (UInt32)spRef->GetObjectInt32(CSTR("wkid"));
-						SDEL_CLASS(this->csys);
-						this->csys = Math::CoordinateSystemManager::SRCreateCSys(wkid);
+						NotNullPtr<Math::CoordinateSystem> csys;
+						if (csys.Set(Math::CoordinateSystemManager::SRCreateCSys(wkid)))
+						{
+							this->csys.Delete();
+							this->csys = csys;
+						}
 					}
 
 					o = jobj->GetObjectValue(CSTR("capabilities"));
@@ -205,7 +209,7 @@ Map::ESRI::ESRIMapServer::ESRIMapServer(Text::CString url, NotNullPtr<Net::Socke
 Map::ESRI::ESRIMapServer::~ESRIMapServer()
 {
 	this->url->Release();
-	SDEL_CLASS(this->csys);
+	this->csys.Delete();
 	this->name->Release();
 }
 
@@ -225,19 +229,19 @@ void Map::ESRI::ESRIMapServer::SetSRID(UInt32 srid)
 {
 	if (this->noResource)
 	{
-		Math::CoordinateSystem *csys = Math::CoordinateSystemManager::SRCreateCSys(srid);
-		if (csys)
+		NotNullPtr<Math::CoordinateSystem> csys;
+		if (csys.Set(Math::CoordinateSystemManager::SRCreateCSys(srid)))
 		{
-			SDEL_CLASS(this->csys);
+			this->csys.Delete();
 			this->csys = csys;
 			const Math::CoordinateSystemManager::SpatialRefInfo *srinfo = Math::CoordinateSystemManager::SRGetSpatialRef(srid);
 			if (csys->IsProjected())
 			{
-				Math::CoordinateSystem *wgs84Csys = Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::CoordinateSystemManager::GCST_WGS84);
+				NotNullPtr<Math::CoordinateSystem> wgs84Csys = Math::CoordinateSystemManager::CreateDefaultCsys();
 				Math::Coord2DDbl tl = Math::CoordinateSystem::Convert(wgs84Csys, csys, Math::Coord2DDbl(srinfo->minXGeo, srinfo->minYGeo));
 				Math::Coord2DDbl br = Math::CoordinateSystem::Convert(wgs84Csys, csys, Math::Coord2DDbl(srinfo->maxXGeo, srinfo->maxYGeo));
 				this->bounds = Math::RectAreaDbl(tl, br);
-				DEL_CLASS(wgs84Csys);
+				wgs84Csys.Delete();
 			}
 			else
 			{
@@ -346,7 +350,7 @@ NotNullPtr<Text::String> Map::ESRI::ESRIMapServer::GetName() const
 	return this->name;
 }
 
-Math::CoordinateSystem *Map::ESRI::ESRIMapServer::GetCoordinateSystem() const
+NotNullPtr<Math::CoordinateSystem> Map::ESRI::ESRIMapServer::GetCoordinateSystem() const
 {
 	return this->csys;
 }
@@ -480,10 +484,7 @@ Media::ImageList *Map::ESRI::ESRIMapServer::DrawMap(Math::RectAreaDbl bounds, UI
 	UInt8 dataBuff[2048];
 	UOSInt readSize;
 	UInt32 srid = 0;
-	if (this->csys)
-	{
-		srid = this->csys->GetSRID();
-	}
+	srid = this->csys->GetSRID();
 	sptr = this->url->ConcatTo(url);
 	sptr = Text::StrConcatC(sptr, UTF8STRC("/export?dpi="));
 	sptr = Text::StrDouble(sptr, dpi);

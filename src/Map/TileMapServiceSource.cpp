@@ -66,23 +66,20 @@ void Map::TileMapServiceSource::LoadXML()
 						sb.ClearStr();
 						if (reader.ReadNodeText(sb))
 						{
-							SDEL_CLASS(this->csys);
-							this->csys = Math::CoordinateSystemManager::CreateFromName(sb.ToCString());
-							if (this->csys)
+							NotNullPtr<Math::CoordinateSystem> csys;
+							if (csys.Set(Math::CoordinateSystemManager::CreateFromName(sb.ToCString())))
 							{
+								this->csys.Delete();
+								this->csys = csys;
 #if defined(VERBOSE)
 								printf("SRID = %d\r\n", this->csys->GetSRID());
 #endif
 								const Math::CoordinateSystemManager::SpatialRefInfo *srInfo = Math::CoordinateSystemManager::SRGetSpatialRef(this->csys->GetSRID());
 								if (srInfo)
 								{
-									Double x;
-									Double y;
-									Double z;
-									Math::CoordinateSystem *wgs84 = Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::CoordinateSystemManager::GCST_WGS84);
-									Math::CoordinateSystem::ConvertXYZ(wgs84, this->csys, srInfo->minXGeo, srInfo->minYGeo, 0, &x, &y, &z);
-									this->csysOrigin = Math::Coord2DDbl(x, y);
-									DEL_CLASS(wgs84);
+									NotNullPtr<Math::CoordinateSystem> wgs84 = Math::CoordinateSystemManager::CreateDefaultCsys();
+									this->csysOrigin = Math::CoordinateSystem::ConvertXYZ(wgs84, this->csys, Math::Vector3(srInfo->minXGeo, srInfo->minYGeo, 0)).GetXY();
+									wgs84.Delete();
 #if defined(VERBOSE)
 									printf("SR Origin = (%lf, %lf)\r\n", this->csysOrigin.x, this->csysOrigin.y);
 #endif
@@ -305,7 +302,7 @@ Map::TileMapServiceSource::TileMapServiceSource(NotNullPtr<Net::SocketFactory> s
 	this->csysOrigin = Math::Coord2DDbl(0, 0);
 	this->title = 0;
 	this->tileExt = 0;
-	this->csys = 0;
+	this->csys = Math::CoordinateSystemManager::CreateDefaultCsys();
 	this->tileWidth = 256;
 	this->tileHeight = 256;
 	this->concurrCnt = 2;
@@ -327,7 +324,7 @@ Map::TileMapServiceSource::~TileMapServiceSource()
 	SDEL_STRING(this->title);
 	SDEL_STRING(this->tileExt);
 	this->cacheDir->Release();
-	SDEL_CLASS(this->csys);
+	this->csys.Delete();
 	TileLayer *layer;
 	UOSInt i = this->layers.GetCount();
 	while (i-- > 0)
@@ -407,7 +404,7 @@ Bool Map::TileMapServiceSource::GetBounds(OutParam<Math::RectAreaDbl> bounds) co
 	return true;
 }
 
-Math::CoordinateSystem *Map::TileMapServiceSource::GetCoordinateSystem()
+NotNullPtr<Math::CoordinateSystem> Map::TileMapServiceSource::GetCoordinateSystem() const
 {
 	return this->csys;
 }

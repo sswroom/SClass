@@ -526,6 +526,15 @@ Math::CoordinateSystem *Math::CoordinateSystemManager::CreateFromName(Text::CStr
 	return 0;
 }
 
+NotNullPtr<Math::CoordinateSystem> Math::CoordinateSystemManager::CreateFromNameOrDef(Text::CStringNN name)
+{
+	NotNullPtr<Math::CoordinateSystem> csys;
+	if (csys.Set(CreateFromName(name)))
+		return csys;
+	else
+		return CreateDefaultCsys();
+}
+
 const Math::CoordinateSystemManager::DatumInfo *Math::CoordinateSystemManager::GetDatumInfoByName(const UTF8Char *name)
 {
 	if (name[0] == 'D' && name[1] == '_')
@@ -754,7 +763,7 @@ const Math::CoordinateSystemManager::GeographicCSysInfo *Math::CoordinateSystemM
 	return 0;
 }
 
-NotNullPtr<Math::CoordinateSystem> Math::CoordinateSystemManager::CreateDefaultCsys()
+NotNullPtr<Math::GeographicCoordinateSystem> Math::CoordinateSystemManager::CreateDefaultCsys()
 {
 	NotNullPtr<Math::GeographicCoordinateSystem> csys;
 	const Math::CoordinateSystemManager::DatumInfo *datum = GetDatumInfoByName((const UTF8Char*)"WGS_1984");

@@ -24,8 +24,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGPSSimulatorForm::OnMouseDown(void *userObj, M
 	}
 	else
 	{
-		Double z;
-		Math::CoordinateSystem::ConvertXYZ(me->navi->GetCoordinateSystem(), me->wgs84, mapPos.x, mapPos.y, 0, &pos.x, &pos.y, &z);
+		pos = Math::CoordinateSystem::ConvertXYZ(me->navi->GetCoordinateSystem(), me->wgs84, Math::Vector3(mapPos, 0)).GetXY();
 	}
 	if (me->currPos.IsZero())
 	{
@@ -279,7 +278,7 @@ SSWR::AVIRead::AVIRGPSSimulatorForm::AVIRGPSSimulatorForm(UI::GUIClientControl *
 	this->currPos = Math::Coord2DDbl(0, 0);
 	this->speed = 50;
 	this->stm = 0;
-	this->wgs84 = Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::CoordinateSystemManager::GCST_WGS84);
+	this->wgs84 = Math::CoordinateSystemManager::CreateDefaultCsys();
 
 	NEW_CLASS(this->lblStreamType, UI::GUILabel(ui, this, CSTR("Stream Type")));
 	this->lblStreamType->SetRect(4, 4, 100, 23, false);
@@ -323,7 +322,7 @@ SSWR::AVIRead::AVIRGPSSimulatorForm::AVIRGPSSimulatorForm(UI::GUIClientControl *
 SSWR::AVIRead::AVIRGPSSimulatorForm::~AVIRGPSSimulatorForm()
 {
 	SDEL_CLASS(this->stm);
-	DEL_CLASS(this->wgs84);
+	this->wgs84.Delete();
 	this->navi->HideMarker();
 	this->navi->UnhandleMapMouse(this);
 }

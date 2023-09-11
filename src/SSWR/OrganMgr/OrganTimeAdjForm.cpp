@@ -266,7 +266,7 @@ SSWR::OrganMgr::OrganTimeAdjForm::OrganTimeAdjForm(UI::GUIClientControl *parent,
 	imgList->AddImage(stimg, 0);
 	this->mapEnv->AddImage(CSTR("PointImage"), imgList);
 	NEW_CLASS(this->adjLyr, OrganTimeAdjLayer(this->gpsTrk, this->currFileList));
-	this->adjLyr->SetCoordinateSystem(this->mapEnv->GetCoordinateSystem()->Clone());
+	this->adjLyr->SetCoordinateSystem(this->mapEnv->GetCoordinateSystem()->Clone().Ptr());
 	this->mapEnv->ChgLineStyleLayer(0, 0, 0xff0000ff, 3, 0, 0);
 	i = this->mapEnv->AddLayer(0, this->mapTileLyr, true);
 	i = this->mapEnv->AddLayer(0, this->gpsTrk, false);

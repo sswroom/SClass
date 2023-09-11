@@ -15,7 +15,7 @@ namespace Map
 		virtual ~DrawMapService() {};
 
 		virtual NotNullPtr<Text::String> GetName() const = 0;
-		virtual Math::CoordinateSystem *GetCoordinateSystem() const = 0;
+		virtual NotNullPtr<Math::CoordinateSystem> GetCoordinateSystem() const = 0;
 		virtual Math::RectAreaDbl GetInitBounds() const = 0;
 		virtual Bool GetBounds(OutParam<Math::RectAreaDbl> bounds) const = 0;
 		virtual Bool CanQuery() const = 0;

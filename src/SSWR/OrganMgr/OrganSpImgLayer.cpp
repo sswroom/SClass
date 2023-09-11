@@ -1,10 +1,12 @@
 #include "Stdafx.h"
+#include "Math/CoordinateSystemManager.h"
 #include "Math/Math.h"
 #include "Math/Geometry/Point.h"
 #include "SSWR/OrganMgr/OrganSpImgLayer.h"
 
 SSWR::OrganMgr::OrganSpImgLayer::OrganSpImgLayer() : Map::MapDrawLayer(CSTR("ImageLayer"), 0, CSTR_NULL)
 {
+	this->csys = Math::CoordinateSystemManager::CreateDefaultCsys();
 	this->ClearItems();
 }
 
@@ -152,8 +154,7 @@ Math::Geometry::Vector2D *SSWR::OrganMgr::OrganSpImgLayer::GetNewVectorById(Map:
 	UserFileInfo *ufile = this->objList.GetItem((UOSInt)id);
 	if (ufile == 0)
 		return 0;
-	UInt32 srid = 0;
-	if (this->csys) srid = this->csys->GetSRID();
+	UInt32 srid = this->csys->GetSRID();
 	Math::Geometry::Point *pt;
 	NEW_CLASS(pt, Math::Geometry::Point(srid, ufile->lon, ufile->lat));
 	return pt;

@@ -42,7 +42,7 @@ namespace Map
 		virtual UOSInt GetNearestLevel(Double scale) const = 0;
 		virtual UOSInt GetConcurrentCount() const = 0;
 		virtual Bool GetBounds(OutParam<Math::RectAreaDbl> bounds) const = 0;
-		virtual Math::CoordinateSystem *GetCoordinateSystem() = 0;
+		virtual NotNullPtr<Math::CoordinateSystem> GetCoordinateSystem() const = 0;
 		virtual Bool IsMercatorProj() const = 0;
 		virtual UOSInt GetTileSize() const = 0;
 		virtual Bool CanQuery() const { return false; };

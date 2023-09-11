@@ -17,8 +17,11 @@ IO::SensorAccelerometerW::~SensorAccelerometerW()
 {
 }
 
-Bool IO::SensorAccelerometerW::ReadAcceleration(Double *x, Double *y, Double *z)
+Bool IO::SensorAccelerometerW::ReadAcceleration(OutParam<Math::Vector3> acc)
 {
+	Double retX = 0;
+	Double retY = 0;
+	Double retZ = 0;
 	ISensorDataReport *pReport;
 	HRESULT hr;
 	ISensor *pSensor = (ISensor*)this->sensor;
@@ -31,11 +34,11 @@ Bool IO::SensorAccelerometerW::ReadAcceleration(Double *x, Double *y, Double *z)
 		{
 			if (var.vt == VT_R8)
 			{
-				*x = var.dblVal;
+				retX = var.dblVal;
 			}
 			else if (var.vt == VT_R4)
 			{
-				*x = var.fltVal;
+				retX = var.fltVal;
 			}
 		}
 		else
@@ -48,11 +51,11 @@ Bool IO::SensorAccelerometerW::ReadAcceleration(Double *x, Double *y, Double *z)
 		{
 			if (var.vt == VT_R8)
 			{
-				*y = var.dblVal;
+				retY = var.dblVal;
 			}
 			else if (var.vt == VT_R4)
 			{
-				*y = var.fltVal;
+				retY = var.fltVal;
 			}
 		}
 		else
@@ -65,11 +68,11 @@ Bool IO::SensorAccelerometerW::ReadAcceleration(Double *x, Double *y, Double *z)
 		{
 			if (var.vt == VT_R8)
 			{
-				*z = var.dblVal;
+				retZ = var.dblVal;
 			}
 			else if (var.vt == VT_R4)
 			{
-				*z = var.fltVal;
+				retZ = var.fltVal;
 			}
 		}
 		else
@@ -78,6 +81,10 @@ Bool IO::SensorAccelerometerW::ReadAcceleration(Double *x, Double *y, Double *z)
 		}
 		PropVariantClear(&var);
 
+		if (ret)
+		{
+			acc.Set(Math::Vector3(retX, retY, retZ));
+		}
 		pReport->Release();
 		return ret;
 	}

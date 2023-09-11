@@ -25,7 +25,7 @@ Map::VectorLayer *Map::LayerTools::CombineLayers(Data::ArrayList<Map::MapDrawLay
 	lyr = layers->GetItem(0);
 	Map::DrawLayerType lyrType = lyr->GetLayerType();
 	sourceName = lyr->GetSourceNameObj();
-	Math::CoordinateSystem *csys = lyr->GetCoordinateSystem();
+	NotNullPtr<Math::CoordinateSystem> csys = lyr->GetCoordinateSystem();
 	i = layerCnt;
 	while (i-- > 0)
 	{

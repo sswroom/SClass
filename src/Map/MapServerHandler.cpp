@@ -46,9 +46,7 @@ Bool __stdcall Map::MapServerHandler::GetLayerDataFunc(NotNullPtr<Net::WebServer
 	Text::String *name = req->GetQueryValue(CSTR("name"));
 	Text::String *fmt = req->GetQueryValue(CSTR("fmt"));
 	Text::StringBuilderUTF8 sb;
-	Double x;
-	Double y;
-	Double z;
+	Math::Vector3 tmpPos;
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
 	Map::MapDrawLayer *layer;
@@ -80,7 +78,7 @@ Bool __stdcall Map::MapServerHandler::GetLayerDataFunc(NotNullPtr<Net::WebServer
 			layer->GetAllObjectIds(objIds, &nameArr);
 			if (objIds.GetCount() > 0)
 			{
-				Math::CoordinateSystem *csys = layer->GetCoordinateSystem();
+				NotNullPtr<Math::CoordinateSystem> csys = layer->GetCoordinateSystem();
 				Map::GetObjectSess *sess = layer->BeginGetObject();
 				i = 0;
 				j = objIds.GetCount();
@@ -128,17 +126,17 @@ Bool __stdcall Map::MapServerHandler::GetLayerDataFunc(NotNullPtr<Net::WebServer
 							Math::Coord2DDbl *pointList = pg->GetPointList(l);
 							while (k < l)
 							{
-								Math::CoordinateSystem::ConvertToCartesianCoord(csys, pointList[k].x, pointList[k].y, 0, &x, &y, &z);
+								tmpPos = Math::CoordinateSystem::ConvertToCartesianCoord(csys, Math::Vector3(pointList[k], 0));
 								if (k > 0)
 								{
 									sb.AppendC(UTF8STRC(",\r\n"));
 								}
 								sb.AppendUTF8Char('[');
-								sb.AppendDouble(x);
+								sb.AppendDouble(tmpPos.GetX());
 								sb.AppendUTF8Char(',');
-								sb.AppendDouble(y);
+								sb.AppendDouble(tmpPos.GetY());
 								sb.AppendUTF8Char(',');
-								sb.AppendDouble(z);
+								sb.AppendDouble(tmpPos.GetZ());
 								sb.AppendUTF8Char(']');
 								k++;
 							}
@@ -178,9 +176,9 @@ Bool __stdcall Map::MapServerHandler::GetLayerDataFunc(NotNullPtr<Net::WebServer
 			layer->GetAllObjectIds(objIds, &nameArr);
 			if (objIds.GetCount() > 0)
 			{
-				Math::CoordinateSystem *csys = layer->GetCoordinateSystem();
-				Math::CoordinateSystem *wgs84 = Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::CoordinateSystemManager::GCST_WGS84);
-				Bool needConv = (csys != 0) && !wgs84->Equals(csys);
+				NotNullPtr<Math::CoordinateSystem> csys = layer->GetCoordinateSystem();
+				NotNullPtr<Math::CoordinateSystem> wgs84 = Math::CoordinateSystemManager::CreateDefaultCsys();
+				Bool needConv = !wgs84->Equals(csys);
 				Map::GetObjectSess *sess = layer->BeginGetObject();
 				i = 0;
 				j = objIds.GetCount();
@@ -227,7 +225,7 @@ Bool __stdcall Map::MapServerHandler::GetLayerDataFunc(NotNullPtr<Net::WebServer
 					i++;
 				}
 				layer->EndGetObject(sess);
-				DEL_CLASS(wgs84);
+				wgs84.Delete();
 			}
 			layer->ReleaseNameArr(nameArr);
 		}
@@ -491,42 +489,40 @@ Bool Map::MapServerHandler::InSphereRange(Text::JSONBase *sphere, Double x1, Dou
 		return false;
 	}
 	Text::JSONArray *arr = (Text::JSONArray*)sphere;
-	Double lat;
-	Double lon;
-	Double h;
+	Math::Vector3 pos;
 	Double radius = arr->GetArrayDouble(3);
-	this->wgs84->FromCartesianCoordDeg(arr->GetArrayDouble(0), arr->GetArrayDouble(1), arr->GetArrayDouble(2), &lat, &lon, &h);
-	if (x1 <= lon && x2 >= lon)
+	pos = this->wgs84->FromCartesianCoordDeg(Math::Vector3(arr->GetArrayDouble(0), arr->GetArrayDouble(1), arr->GetArrayDouble(2)));
+	if (x1 <= pos.GetLon() && x2 >= pos.GetLon())
 	{
 	}
-	else if (x1 > lon)
+	else if (x1 > pos.GetLon())
 	{
-		if (this->wgs84->CalSurfaceDistanceXY(Math::Coord2DDbl(lon, lat), Math::Coord2DDbl(x1, lat), Math::Unit::Distance::DU_METER) > radius)
+		if (this->wgs84->CalSurfaceDistanceXY(pos.GetXY(), Math::Coord2DDbl(x1, pos.GetLat()), Math::Unit::Distance::DU_METER) > radius)
 		{
 			return false;
 		}
 	}
 	else
 	{
-		if (this->wgs84->CalSurfaceDistanceXY(Math::Coord2DDbl(lon, lat), Math::Coord2DDbl(x2, lat), Math::Unit::Distance::DU_METER) > radius)
+		if (this->wgs84->CalSurfaceDistanceXY(pos.GetXY(), Math::Coord2DDbl(x2, pos.GetLat()), Math::Unit::Distance::DU_METER) > radius)
 		{
 			return false;
 		}
 	}
 
-	if (y1 <= lat && y2 >= lat)
+	if (y1 <= pos.GetLat() && y2 >= pos.GetLat())
 	{
 	}
-	else if (y1 > lat)
+	else if (y1 > pos.GetLat())
 	{
-		if (this->wgs84->CalSurfaceDistanceXY(Math::Coord2DDbl(lon, lat), Math::Coord2DDbl(lon, y1), Math::Unit::Distance::DU_METER) > radius)
+		if (this->wgs84->CalSurfaceDistanceXY(pos.GetXY(), Math::Coord2DDbl(pos.GetLon(), y1), Math::Unit::Distance::DU_METER) > radius)
 		{
 			return false;
 		}
 	}
 	else
 	{
-		if (this->wgs84->CalSurfaceDistanceXY(Math::Coord2DDbl(lon, lat), Math::Coord2DDbl(lon, y2), Math::Unit::Distance::DU_METER) > radius)
+		if (this->wgs84->CalSurfaceDistanceXY(pos.GetXY(), Math::Coord2DDbl(pos.GetLon(), y2), Math::Unit::Distance::DU_METER) > radius)
 		{
 			return false;
 		}

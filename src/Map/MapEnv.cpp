@@ -115,15 +115,11 @@ void Map::MapEnv::RemoveGroupUpdatedHandler(Map::MapEnv::GroupItem *group, Map::
 	
 }
 
-Map::MapEnv::MapEnv(Text::CStringNN fileName, UInt32 bgColor, Math::CoordinateSystem *csys) : IO::ParsedObject(fileName)
+Map::MapEnv::MapEnv(Text::CStringNN fileName, UInt32 bgColor, NotNullPtr<Math::CoordinateSystem> csys) : IO::ParsedObject(fileName)
 {
 	this->bgColor = bgColor;
 	this->nStr = 1000;
 	this->csys = csys;
-	if (this->csys == 0)
-	{
-		this->csys = Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::CoordinateSystemManager::GCST_WGS84);
-	}
 	this->defFontStyle = 0;
 	this->defLineStyle = 0;
 	this->AddLineStyle();
@@ -159,7 +155,7 @@ Map::MapEnv::~MapEnv()
 	{
 		this->RemoveFontStyle(i);
 	}
-	SDEL_CLASS(this->csys);
+	this->csys.Delete();
 }
 
 IO::ParserType Map::MapEnv::GetParserType() const
@@ -1458,7 +1454,6 @@ Bool Map::MapEnv::GetBounds(Map::MapEnv::GroupItem *group, Math::RectAreaDbl *bo
 	UOSInt j = this->GetLayersInGroup(group, &layers);
 	Math::RectAreaDbl minMax = Math::RectAreaDbl(0, 0, 0, 0);
 	Math::RectAreaDbl thisBounds;
-	NotNullPtr<Math::CoordinateSystem> thisCsys;
 	NotNullPtr<Math::CoordinateSystem> lyrCSys;
 	Bool isFirst = true;
 	while (i < j)
@@ -1467,13 +1462,10 @@ Bool Map::MapEnv::GetBounds(Map::MapEnv::GroupItem *group, Math::RectAreaDbl *bo
 		if (lyr->GetBounds(thisBounds))
 		{
 			lyrCSys = lyr->GetCoordinateSystem();
-			if (thisCsys.Set(this->csys))
+			if (!this->csys->Equals(lyrCSys))
 			{
-				if (!this->csys->Equals(lyrCSys))
-				{
-					thisBounds.tl = Math::CoordinateSystem::ConvertXYZ(lyrCSys, thisCsys, Math::Vector3(thisBounds.tl, 0)).GetXY();
-					thisBounds.br = Math::CoordinateSystem::ConvertXYZ(lyrCSys, thisCsys, Math::Vector3(thisBounds.br, 0)).GetXY();
-				}
+				thisBounds.tl = Math::CoordinateSystem::ConvertXYZ(lyrCSys, this->csys, Math::Vector3(thisBounds.tl, 0)).GetXY();
+				thisBounds.br = Math::CoordinateSystem::ConvertXYZ(lyrCSys, this->csys, Math::Vector3(thisBounds.br, 0)).GetXY();
 			}
 			if (isFirst)
 			{
@@ -1499,13 +1491,7 @@ Map::MapView *Map::MapEnv::CreateMapView(Math::Size2DDbl scnSize) const
 	{
 		return baseLayer->CreateMapView(scnSize);
 	}
-	else if (csys == 0)
-	{
-		Map::MapView *view;
-		NEW_CLASS(view, Map::ScaledMapView(scnSize, Math::Coord2DDbl(114.2, 22.4), 10000, false));
-		return view;
-	}
-	else if (csys->IsProjected())
+	if (csys->IsProjected())
 	{
 		Map::MapView *view;
 		NEW_CLASS(view, Map::ScaledMapView(scnSize, Math::Coord2DDbl(835000, 820000), 10000, true));
@@ -1519,16 +1505,14 @@ Map::MapView *Map::MapEnv::CreateMapView(Math::Size2DDbl scnSize) const
 	}
 }
 
-Math::CoordinateSystem *Map::MapEnv::GetCoordinateSystem() const
+NotNullPtr<Math::CoordinateSystem> Map::MapEnv::GetCoordinateSystem() const
 {
 	return this->csys;
 }
 
 UInt32 Map::MapEnv::GetSRID() const
 {
-	if (this->csys)
-		return this->csys->GetSRID();
-	return 0;
+	return this->csys->GetSRID();
 }
 
 void Map::MapEnv::BeginUse(NotNullPtr<Sync::MutexUsage> mutUsage) const

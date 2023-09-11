@@ -36,9 +36,13 @@ DB::ReadingDB *Map::HKRoadNetwork2::GetDB()
 	return this->fgdb;
 }
 
-Math::CoordinateSystem *Map::HKRoadNetwork2::CreateCoordinateSystem()
+NotNullPtr<Math::CoordinateSystem> Map::HKRoadNetwork2::CreateCoordinateSystem()
 {
-	return Math::CoordinateSystemManager::CreateProjCoordinateSystemDefName(Math::CoordinateSystemManager::PCST_HK80);
+	NotNullPtr<Math::CoordinateSystem> csys;
+	if (csys.Set(Math::CoordinateSystemManager::CreateProjCoordinateSystemDefName(Math::CoordinateSystemManager::PCST_HK80)))
+		return csys;
+	else
+		return Math::CoordinateSystemManager::CreateDefaultCsys();
 }
 
 Map::HKSpeedLimit *Map::HKRoadNetwork2::CreateSpeedLimit()

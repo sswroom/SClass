@@ -174,8 +174,8 @@ void __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnMapTableSelChg(void *userObj)
 			if (center.x != 0 || center.y != 0)
 			{
 				NotNullPtr<Math::CoordinateSystem> csysLayer = me->dbLayer->GetCoordinateSystem();
-				NotNullPtr<Math::CoordinateSystem> csysEnv;
-				if (csysEnv.Set(me->mapEnv->GetCoordinateSystem()) && !csysLayer->Equals(csysEnv))
+				NotNullPtr<Math::CoordinateSystem> csysEnv = me->mapEnv->GetCoordinateSystem();
+				if (!csysLayer->Equals(csysEnv))
 				{
 					center = Math::CoordinateSystem::Convert(csysLayer, csysEnv, center);
 				}
@@ -212,9 +212,9 @@ Bool __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnMapMouseUp(void *userObj, Mat
 			UTF8Char sbuff[512];
 			UTF8Char *sptr;
 			Math::Coord2DDbl mapPt = me->mapMain->ScnXY2MapXY(scnPos);
-			NotNullPtr<Math::CoordinateSystem> csys;
+			NotNullPtr<Math::CoordinateSystem> csys = me->mapEnv->GetCoordinateSystem();
 			NotNullPtr<Math::CoordinateSystem> lyrCSys = me->dbLayer->GetCoordinateSystem();
-			if (csys.Set(me->mapEnv->GetCoordinateSystem()) && !csys->Equals(lyrCSys))
+			if (!csys->Equals(lyrCSys))
 			{
 				mapPt = Math::CoordinateSystem::ConvertXYZ(csys, lyrCSys, Math::Vector3(mapPt, 0)).GetXY();
 			}
@@ -999,7 +999,7 @@ SSWR::AVIRead::AVIRDBManagerForm::AVIRDBManagerForm(UI::GUIClientControl *parent
 	this->core = core;
 	this->ssl = Net::SSLEngineFactory::Create(core->GetSocketFactory(), true);
 	this->currDB = 0;
-	NEW_CLASS(this->mapEnv, Map::MapEnv(CSTR("DB"), 0xffc0c0ff, Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::CoordinateSystemManager::GCST_WGS84)));
+	NEW_CLASS(this->mapEnv, Map::MapEnv(CSTR("DB"), 0xffc0c0ff, Math::CoordinateSystemManager::CreateDefaultCsys()));
 	Map::MapDrawLayer *layer = Map::BaseMapLayer::CreateLayer(Map::BaseMapLayer::BLT_OSM_TILE, this->core->GetSocketFactory(), this->ssl, this->core->GetParserList());
 	this->mapEnv->AddLayer(0, layer, true);
 	NEW_CLASS(this->dbLayer, Map::DBMapLayer(CSTR("Database")));

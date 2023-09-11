@@ -96,7 +96,7 @@ Bool Map::ESRI::ESRITileMap::GetBounds(OutParam<Math::RectAreaDbl> bounds) const
 	return bnd.tl.x != 0 || bnd.tl.y != 0 || bnd.br.x != 0 || bnd.br.y != 0;
 }
 
-Math::CoordinateSystem *Map::ESRI::ESRITileMap::GetCoordinateSystem()
+NotNullPtr<Math::CoordinateSystem> Map::ESRI::ESRITileMap::GetCoordinateSystem() const
 {
 	return this->esriMap->GetCoordinateSystem();
 }

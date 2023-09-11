@@ -2659,7 +2659,7 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 		break;
 	case MNU_WMS:
 		{
-			SSWR::AVIRead::AVIRWMSForm frm(0, this->ui, this->core, this->ssl, 0);
+			SSWR::AVIRead::AVIRWMSForm frm(0, this->ui, this->core, this->ssl, Math::CoordinateSystemManager::CreateDefaultCsys());
 			if (frm.ShowDialog(this))
 			{
 				Map::DrawMapService *mapService = frm.GetDrawMapService();

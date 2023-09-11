@@ -25,12 +25,11 @@ Bool __stdcall SSWR::AVIRead::AVIRGISQueryForm::OnMouseUp(void *userObj, Math::C
 		UTF8Char sbuff[512];
 		UTF8Char *sptr;
 		Math::Coord2DDbl mapPt = me->navi->ScnXY2MapXY(scnPos);
-		Math::CoordinateSystem *csys = me->navi->GetCoordinateSystem();
+		NotNullPtr<Math::CoordinateSystem> csys = me->navi->GetCoordinateSystem();
 		NotNullPtr<Math::CoordinateSystem> lyrCSys = me->lyr->GetCoordinateSystem();
-		NotNullPtr<Math::CoordinateSystem> nncsys;
-		if (nncsys.Set(csys) && !csys->Equals(lyrCSys))
+		if (!csys->Equals(lyrCSys))
 		{
-			mapPt = Math::CoordinateSystem::ConvertXYZ(nncsys, lyrCSys, Math::Vector3(mapPt, 0)).GetXY();
+			mapPt = Math::CoordinateSystem::ConvertXYZ(csys, lyrCSys, Math::Vector3(mapPt, 0)).GetXY();
 		}
 		me->ClearQueryResults();
 		if (me->lyr->CanQuery())
@@ -50,12 +49,12 @@ Bool __stdcall SSWR::AVIRead::AVIRGISQueryForm::OnMouseUp(void *userObj, Math::C
 				me->cboObj->SetSelectedIndex(0);
 				me->SetQueryItem(0);
 
-				if (nncsys.Set(csys) && !csys->Equals(lyrCSys))
+				if (!csys->Equals(lyrCSys))
 				{
 					i = me->queryVecList.GetCount();
 					while (i-- > 0)
 					{
-						me->queryVecList.GetItem(i)->ConvCSys(lyrCSys, nncsys);
+						me->queryVecList.GetItem(i)->ConvCSys(lyrCSys, csys);
 					}
 				}
 
@@ -66,9 +65,9 @@ Bool __stdcall SSWR::AVIRead::AVIRGISQueryForm::OnMouseUp(void *userObj, Math::C
 		}
 		scnPos.x += 5;
 		Math::Coord2DDbl mapPt2 = me->navi->ScnXY2MapXY(scnPos);
-		if (nncsys.Set(csys) && !csys->Equals(lyrCSys))
+		if (!csys->Equals(lyrCSys))
 		{
-			mapPt2 = Math::CoordinateSystem::ConvertXYZ(nncsys, lyrCSys, Math::Vector3(mapPt2, 0)).GetXY();
+			mapPt2 = Math::CoordinateSystem::ConvertXYZ(csys, lyrCSys, Math::Vector3(mapPt2, 0)).GetXY();
 		}
 		sess = me->lyr->BeginGetObject();
 		Data::ArrayList<Map::MapDrawLayer::ObjectInfo*> objList;
@@ -103,9 +102,9 @@ Bool __stdcall SSWR::AVIRead::AVIRGISQueryForm::OnMouseUp(void *userObj, Math::C
 				obj = objList.GetItem(j);
 
 				vec = me->lyr->GetNewVectorById(sess, obj->objId);
-				if (vec && nncsys.Set(csys) && !csys->Equals(lyrCSys))
+				if (vec && !csys->Equals(lyrCSys))
 				{
-					vec->ConvCSys(lyrCSys, nncsys);
+					vec->ConvCSys(lyrCSys, csys);
 				}
 				if (vec)
 				{
@@ -140,7 +139,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISQueryForm::OnMouseMove(void *userObj, Math:
 	SSWR::AVIRead::AVIRGISQueryForm *me = (SSWR::AVIRead::AVIRGISQueryForm*)userObj;
 	if (me->currVec)
 	{
-		Math::CoordinateSystem *csys = me->navi->GetCoordinateSystem();
+		NotNullPtr<Math::CoordinateSystem> csys = me->navi->GetCoordinateSystem();
 		Math::Coord2DDbl mapPos = me->navi->ScnXY2MapXY(scnPos);
 		Math::Coord2DDbl nearPos = mapPos;
 		me->currVec->CalBoundarySqrDistance(mapPos, &nearPos);
