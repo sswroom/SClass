@@ -255,96 +255,96 @@ Double Media::CS::TransferFunc::GetTransferGamma()
 	return this->param.GetGamma();
 }
 
-const Media::CS::TransferParam *Media::CS::TransferFunc::GetTransferParam()
+NotNullPtr<const Media::CS::TransferParam> Media::CS::TransferFunc::GetTransferParam()
 {
-	return &this->param;
+	return this->param;
 }
 
-Media::CS::TransferFunc *Media::CS::TransferFunc::CreateFunc(NotNullPtr<const Media::CS::TransferParam> param)
+NotNullPtr<Media::CS::TransferFunc> Media::CS::TransferFunc::CreateFunc(NotNullPtr<const Media::CS::TransferParam> param)
 {
-	Media::CS::TransferFunc *func;
+	NotNullPtr<Media::CS::TransferFunc> func;
 	switch (param->GetTranType())
 	{
 	case Media::CS::TRANT_sRGB:
-		NEW_CLASS(func, Media::CS::TransferFuncSRGB());
+		NEW_CLASSNN(func, Media::CS::TransferFuncSRGB());
 		return func;
 	case Media::CS::TRANT_BT709:
-		NEW_CLASS(func, Media::CS::TransferFuncBT709());
+		NEW_CLASSNN(func, Media::CS::TransferFuncBT709());
 		return func;
 	case Media::CS::TRANT_GAMMA:
-		NEW_CLASS(func, Media::CS::TransferFuncCGamma(param->GetGamma()));
+		NEW_CLASSNN(func, Media::CS::TransferFuncCGamma(param->GetGamma()));
 		return func;
 	case Media::CS::TRANT_BT1361:
-		NEW_CLASS(func, Media::CS::TransferFuncBT1361());
+		NEW_CLASSNN(func, Media::CS::TransferFuncBT1361());
 		return func;
 	case Media::CS::TRANT_SMPTE240:
-		NEW_CLASS(func, Media::CS::TransferFuncSMPTE240());
+		NEW_CLASSNN(func, Media::CS::TransferFuncSMPTE240());
 		return func;
 	case Media::CS::TRANT_LINEAR:
-		NEW_CLASS(func, Media::CS::TransferFuncLinear());
+		NEW_CLASSNN(func, Media::CS::TransferFuncLinear());
 		return func;
 	case Media::CS::TRANT_LOG100:
-		NEW_CLASS(func, Media::CS::TransferFuncLog100());
+		NEW_CLASSNN(func, Media::CS::TransferFuncLog100());
 		return func;
 	case Media::CS::TRANT_LOGSQRT10:
-		NEW_CLASS(func, Media::CS::TransferFuncLogSqrt10());
+		NEW_CLASSNN(func, Media::CS::TransferFuncLogSqrt10());
 		return func;
 	case Media::CS::TRANT_NTSC:
-		NEW_CLASS(func, Media::CS::TransferFuncNTSC());
+		NEW_CLASSNN(func, Media::CS::TransferFuncNTSC());
 		return func;
 	case Media::CS::TRANT_SLOG:
-		NEW_CLASS(func, Media::CS::TransferFuncSLog());
+		NEW_CLASSNN(func, Media::CS::TransferFuncSLog());
 		return func;
 	case Media::CS::TRANT_SLOG1:
-		NEW_CLASS(func, Media::CS::TransferFuncSLog1());
+		NEW_CLASSNN(func, Media::CS::TransferFuncSLog1());
 		return func;
 	case Media::CS::TRANT_SLOG2:
-		NEW_CLASS(func, Media::CS::TransferFuncSLog2());
+		NEW_CLASSNN(func, Media::CS::TransferFuncSLog2());
 		return func;
 	case Media::CS::TRANT_SLOG3:
-		NEW_CLASS(func, Media::CS::TransferFuncSLog3());
+		NEW_CLASSNN(func, Media::CS::TransferFuncSLog3());
 		return func;
 	case Media::CS::TRANT_VLOG:
-		NEW_CLASS(func, Media::CS::TransferFuncVLog());
+		NEW_CLASSNN(func, Media::CS::TransferFuncVLog());
 		return func;
 	case Media::CS::TRANT_PROTUNE:
-		NEW_CLASS(func, Media::CS::TransferFuncProtune());
+		NEW_CLASSNN(func, Media::CS::TransferFuncProtune());
 		return func;
 	case Media::CS::TRANT_LUT:
 	{
 		NotNullPtr<const Media::LUT> lut;
 		if (lut.Set(param->GetLUTRead()))
 		{
-			NEW_CLASS(func, Media::CS::TransferFuncLUT(lut));
+			NEW_CLASSNN(func, Media::CS::TransferFuncLUT(lut));
 			return func;
 		}
 		else
 		{
-			NEW_CLASS(func, Media::CS::TransferFuncSRGB());
+			NEW_CLASSNN(func, Media::CS::TransferFuncSRGB());
 			return func;
 		}
 	}
 	case Media::CS::TRANT_BT2100:
-		NEW_CLASS(func, Media::CS::TransferFuncBT2100());
+		NEW_CLASSNN(func, Media::CS::TransferFuncBT2100());
 		return func;
 	case Media::CS::TRANT_HLG:
-		NEW_CLASS(func, Media::CS::TransferFuncHLG());
+		NEW_CLASSNN(func, Media::CS::TransferFuncHLG());
 		return func;
 	case Media::CS::TRANT_NLOG:
-		NEW_CLASS(func, Media::CS::TransferFuncNLog());
+		NEW_CLASSNN(func, Media::CS::TransferFuncNLog());
 		return func;
 	case Media::CS::TRANT_PARAM1:
-		NEW_CLASS(func, Media::CS::TransferFuncParam1(param->params));
+		NEW_CLASSNN(func, Media::CS::TransferFuncParam1(param->params));
 		return func;
 	case Media::CS::TRANT_SMPTE428:
-		NEW_CLASS(func, Media::CS::TransferFuncSMPTE428());
+		NEW_CLASSNN(func, Media::CS::TransferFuncSMPTE428());
 		return func;
 	case Media::CS::TRANT_VDISPLAY:
 	case Media::CS::TRANT_PDISPLAY:
 	case Media::CS::TRANT_VUNKNOWN:
 	case Media::CS::TRANT_PUNKNOWN:
 	default:
-		NEW_CLASS(func, Media::CS::TransferFuncSRGB());
+		NEW_CLASSNN(func, Media::CS::TransferFuncSRGB());
 		return func;
 	}
 }

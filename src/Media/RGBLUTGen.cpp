@@ -146,9 +146,9 @@ void Media::RGBLUTGen::GenRGB8_LRGB(UInt16 *rgbTable, NotNullPtr<const Media::Co
 	Media::CS::TransferParam bTran;
 	this->SetSrcTrans(rTran, gTran, bTran, srcProfile);
 	Double maxRGBVal = (1 << nBitLRGB) - 1;
-	Media::CS::TransferFunc *irFunc = Media::CS::TransferFunc::CreateFunc(rTran);
-	Media::CS::TransferFunc *igFunc = Media::CS::TransferFunc::CreateFunc(gTran);
-	Media::CS::TransferFunc *ibFunc = Media::CS::TransferFunc::CreateFunc(bTran);
+	NotNullPtr<Media::CS::TransferFunc> irFunc = Media::CS::TransferFunc::CreateFunc(rTran);
+	NotNullPtr<Media::CS::TransferFunc> igFunc = Media::CS::TransferFunc::CreateFunc(gTran);
+	NotNullPtr<Media::CS::TransferFunc> ibFunc = Media::CS::TransferFunc::CreateFunc(bTran);
 	UOSInt i;
 	i = 256;
 	while (i-- > 0)
@@ -157,9 +157,9 @@ void Media::RGBLUTGen::GenRGB8_LRGB(UInt16 *rgbTable, NotNullPtr<const Media::Co
 		rgbTable[i + 256] = (UInt16)Double2Int32(igFunc->InverseTransfer(UOSInt2Double(i) / 255.0) * maxRGBVal);
 		rgbTable[i + 512] = (UInt16)Double2Int32(ibFunc->InverseTransfer(UOSInt2Double(i) / 255.0) * maxRGBVal);
 	}
-	DEL_CLASS(irFunc);
-	DEL_CLASS(igFunc);
-	DEL_CLASS(ibFunc);
+	irFunc.Delete();
+	igFunc.Delete();
+	ibFunc.Delete();
 }
 
 void Media::RGBLUTGen::GenRGBA8_LRGBC(Int64 *rgbTable, NotNullPtr<const Media::ColorProfile> srcProfile, NotNullPtr<const Media::ColorProfile::ColorPrimaries> destPrimaries, Int32 nBitLRGB)
@@ -169,9 +169,9 @@ void Media::RGBLUTGen::GenRGBA8_LRGBC(Int64 *rgbTable, NotNullPtr<const Media::C
 	Media::CS::TransferParam bTran;
 	this->SetSrcTrans(rTran, gTran, bTran, srcProfile);
 	Double maxRGBVal = (1 << nBitLRGB) - 1;
-	Media::CS::TransferFunc *irFunc = Media::CS::TransferFunc::CreateFunc(rTran);
-	Media::CS::TransferFunc *igFunc = Media::CS::TransferFunc::CreateFunc(gTran);
-	Media::CS::TransferFunc *ibFunc = Media::CS::TransferFunc::CreateFunc(bTran);
+	NotNullPtr<Media::CS::TransferFunc> irFunc = Media::CS::TransferFunc::CreateFunc(rTran);
+	NotNullPtr<Media::CS::TransferFunc> igFunc = Media::CS::TransferFunc::CreateFunc(gTran);
+	NotNullPtr<Media::CS::TransferFunc> ibFunc = Media::CS::TransferFunc::CreateFunc(bTran);
 
 	Math::Matrix3 mat1;
 	if (destPrimaries->colorType == Media::ColorProfile::CT_DISPLAY)
@@ -229,9 +229,9 @@ void Media::RGBLUTGen::GenRGBA8_LRGBC(Int64 *rgbTable, NotNullPtr<const Media::C
 		v[3] = (Int16)Double2Int32(cV);
 		rgbTable[i + 768] = *(Int64*)&v[0];
 	}
-	DEL_CLASS(irFunc);
-	DEL_CLASS(igFunc);
-	DEL_CLASS(ibFunc);
+	irFunc.Delete();
+	igFunc.Delete();
+	ibFunc.Delete();
 }
 
 void Media::RGBLUTGen::GenRGB16_LRGBC(Int64 *rgbTable, NotNullPtr<const Media::ColorProfile> srcProfile, NotNullPtr<const Media::ColorProfile::ColorPrimaries> destPrimaries, Int32 nBitLRGB)
@@ -241,9 +241,9 @@ void Media::RGBLUTGen::GenRGB16_LRGBC(Int64 *rgbTable, NotNullPtr<const Media::C
 	Media::CS::TransferParam bTran;
 	this->SetSrcTrans(rTran, gTran, bTran, srcProfile);
 	Double maxRGBVal = (1 << nBitLRGB) - 1;
-	Media::CS::TransferFunc *irFunc = Media::CS::TransferFunc::CreateFunc(rTran);
-	Media::CS::TransferFunc *igFunc = Media::CS::TransferFunc::CreateFunc(gTran);
-	Media::CS::TransferFunc *ibFunc = Media::CS::TransferFunc::CreateFunc(bTran);
+	NotNullPtr<Media::CS::TransferFunc> irFunc = Media::CS::TransferFunc::CreateFunc(rTran);
+	NotNullPtr<Media::CS::TransferFunc> igFunc = Media::CS::TransferFunc::CreateFunc(gTran);
+	NotNullPtr<Media::CS::TransferFunc> ibFunc = Media::CS::TransferFunc::CreateFunc(bTran);
 
 	Math::Matrix3 mat1;
 	if (destPrimaries->colorType == Media::ColorProfile::CT_DISPLAY)
@@ -305,9 +305,9 @@ void Media::RGBLUTGen::GenRGB16_LRGBC(Int64 *rgbTable, NotNullPtr<const Media::C
 		v[3] = (Int16)Double2Int32(cV);
 		rgbTable[i + 196608] = *(Int64*)&v[0];
 	}
-	DEL_CLASS(ibFunc);
-	DEL_CLASS(igFunc);
-	DEL_CLASS(irFunc);
+	ibFunc.Delete();
+	igFunc.Delete();
+	irFunc.Delete();
 }
 
 void Media::RGBLUTGen::GenLRGB_BGRA8(UInt8 *rgbTable, NotNullPtr<const Media::ColorProfile> destProfile, Int32 nBitLRGB, Double srcRefLuminance)
@@ -400,9 +400,9 @@ void Media::RGBLUTGen::GenLRGB_BGRA8(UInt8 *rgbTable, NotNullPtr<const Media::Co
 
 	Int32 ibitVal = (1 << nBitLRGB) - 1;
 	Double bitVal = ibitVal;
-	Media::CS::TransferFunc *frFunc = Media::CS::TransferFunc::CreateFunc(rTran);
-	Media::CS::TransferFunc *fgFunc = Media::CS::TransferFunc::CreateFunc(gTran);
-	Media::CS::TransferFunc *fbFunc = Media::CS::TransferFunc::CreateFunc(bTran);
+	NotNullPtr<Media::CS::TransferFunc> frFunc = Media::CS::TransferFunc::CreateFunc(rTran);
+	NotNullPtr<Media::CS::TransferFunc> fgFunc = Media::CS::TransferFunc::CreateFunc(gTran);
+	NotNullPtr<Media::CS::TransferFunc> fbFunc = Media::CS::TransferFunc::CreateFunc(bTran);
 #if _OSINT_SIZE == 16
 	Int32 i;
 #else
@@ -433,9 +433,9 @@ void Media::RGBLUTGen::GenLRGB_BGRA8(UInt8 *rgbTable, NotNullPtr<const Media::Co
 		rgbTable[i + 65536] = Math::SDouble2UInt8(gV);
 		rgbTable[i + 0] = Math::SDouble2UInt8(bV);
 	}
-	DEL_CLASS(frFunc);
-	DEL_CLASS(fgFunc);
-	DEL_CLASS(fbFunc);
+	frFunc.Delete();
+	fgFunc.Delete();
+	fbFunc.Delete();
 }
 
 void Media::RGBLUTGen::GenLRGB_RGB16(UInt8 *rgbTable, NotNullPtr<const Media::ColorProfile> destProfile, Int32 nBitLRGB, Double srcRefLuminance)
@@ -526,9 +526,9 @@ void Media::RGBLUTGen::GenLRGB_RGB16(UInt8 *rgbTable, NotNullPtr<const Media::Co
 		bMul = 1.0;
 	}
 
-	Media::CS::TransferFunc *frFunc = Media::CS::TransferFunc::CreateFunc(rTran);
-	Media::CS::TransferFunc *fgFunc = Media::CS::TransferFunc::CreateFunc(gTran);
-	Media::CS::TransferFunc *fbFunc = Media::CS::TransferFunc::CreateFunc(bTran);
+	NotNullPtr<Media::CS::TransferFunc> frFunc = Media::CS::TransferFunc::CreateFunc(rTran);
+	NotNullPtr<Media::CS::TransferFunc> fgFunc = Media::CS::TransferFunc::CreateFunc(gTran);
+	NotNullPtr<Media::CS::TransferFunc> fbFunc = Media::CS::TransferFunc::CreateFunc(bTran);
 	Int32 ibitVal = (1 << nBitLRGB) - 1;
 	Double bitVal = ibitVal;
 #if _OSINT_SIZE == 16
@@ -570,9 +570,9 @@ void Media::RGBLUTGen::GenLRGB_RGB16(UInt8 *rgbTable, NotNullPtr<const Media::Co
 		else
 			*(UInt16*)&rgbTable[i * 2 + 0] = (UInt16)Double2Int32(bV);
 	}
-	DEL_CLASS(frFunc);
-	DEL_CLASS(fgFunc);
-	DEL_CLASS(fbFunc);
+	frFunc.Delete();
+	fgFunc.Delete();
+	fbFunc.Delete();
 }
 
 void Media::RGBLUTGen::GenLRGB_A2B10G10R10(UInt8 *rgbTable, NotNullPtr<const Media::ColorProfile> destProfile, Int32 nBitLRGB, Double srcRefLuminance)
@@ -663,9 +663,9 @@ void Media::RGBLUTGen::GenLRGB_A2B10G10R10(UInt8 *rgbTable, NotNullPtr<const Med
 		bMul = 1.0;
 	}
 
-	Media::CS::TransferFunc *frFunc = Media::CS::TransferFunc::CreateFunc(rTran);
-	Media::CS::TransferFunc *fgFunc = Media::CS::TransferFunc::CreateFunc(gTran);
-	Media::CS::TransferFunc *fbFunc = Media::CS::TransferFunc::CreateFunc(bTran);
+	NotNullPtr<Media::CS::TransferFunc> frFunc = Media::CS::TransferFunc::CreateFunc(rTran);
+	NotNullPtr<Media::CS::TransferFunc> fgFunc = Media::CS::TransferFunc::CreateFunc(gTran);
+	NotNullPtr<Media::CS::TransferFunc> fbFunc = Media::CS::TransferFunc::CreateFunc(bTran);
 	Int32 ibitVal = (1 << nBitLRGB) - 1;
 	Double bitVal = ibitVal;
 #if _OSINT_SIZE == 16
@@ -707,9 +707,9 @@ void Media::RGBLUTGen::GenLRGB_A2B10G10R10(UInt8 *rgbTable, NotNullPtr<const Med
 		else
 			*(UInt32*)&rgbTable[i * 4 + 0] = 0xc0000000 | (UInt32)(Double2Int32(bV) << 20);
 	}
-	DEL_CLASS(frFunc);
-	DEL_CLASS(fgFunc);
-	DEL_CLASS(fbFunc);
+	frFunc.Delete();
+	fgFunc.Delete();
+	fbFunc.Delete();
 }
 
 void Media::RGBLUTGen::GenLARGB_A2B10G10R10(UInt8 *rgbTable, NotNullPtr<const Media::ColorProfile> destProfile, Int32 nBitLRGB, Double srcRefLuminance)
@@ -800,9 +800,9 @@ void Media::RGBLUTGen::GenLARGB_A2B10G10R10(UInt8 *rgbTable, NotNullPtr<const Me
 		bMul = 1.0;
 	}
 
-	Media::CS::TransferFunc *frFunc = Media::CS::TransferFunc::CreateFunc(rTran);
-	Media::CS::TransferFunc *fgFunc = Media::CS::TransferFunc::CreateFunc(gTran);
-	Media::CS::TransferFunc *fbFunc = Media::CS::TransferFunc::CreateFunc(bTran);
+	NotNullPtr<Media::CS::TransferFunc> frFunc = Media::CS::TransferFunc::CreateFunc(rTran);
+	NotNullPtr<Media::CS::TransferFunc> fgFunc = Media::CS::TransferFunc::CreateFunc(gTran);
+	NotNullPtr<Media::CS::TransferFunc> fbFunc = Media::CS::TransferFunc::CreateFunc(bTran);
 	Int32 ibitVal = (1 << nBitLRGB) - 1;
 	Double bitVal = ibitVal;
 #if _OSINT_SIZE == 16
@@ -850,9 +850,9 @@ void Media::RGBLUTGen::GenLARGB_A2B10G10R10(UInt8 *rgbTable, NotNullPtr<const Me
 		else
 			WriteInt32(&rgbTable[i * 4 + 0], Double2Int32(bV) << 20);
 	}
-	DEL_CLASS(frFunc);
-	DEL_CLASS(fgFunc);
-	DEL_CLASS(fbFunc);
+	frFunc.Delete();
+	fgFunc.Delete();
+	fbFunc.Delete();
 }
 
 void Media::RGBLUTGen::GenLARGB_B8G8R8A8(UInt8 *rgbTable, NotNullPtr<const Media::ColorProfile> destProfile, Int32 nBitLRGB, Double srcRefLuminance)
@@ -943,9 +943,9 @@ void Media::RGBLUTGen::GenLARGB_B8G8R8A8(UInt8 *rgbTable, NotNullPtr<const Media
 		bMul = 1.0;
 	}
 
-	Media::CS::TransferFunc *frFunc = Media::CS::TransferFunc::CreateFunc(rTran);
-	Media::CS::TransferFunc *fgFunc = Media::CS::TransferFunc::CreateFunc(gTran);
-	Media::CS::TransferFunc *fbFunc = Media::CS::TransferFunc::CreateFunc(bTran);
+	NotNullPtr<Media::CS::TransferFunc> frFunc = Media::CS::TransferFunc::CreateFunc(rTran);
+	NotNullPtr<Media::CS::TransferFunc> fgFunc = Media::CS::TransferFunc::CreateFunc(gTran);
+	NotNullPtr<Media::CS::TransferFunc> fbFunc = Media::CS::TransferFunc::CreateFunc(bTran);
 	Int32 ibitVal = (1 << nBitLRGB) - 1;
 	Double bitVal = ibitVal;
 #if _OSINT_SIZE == 16
@@ -993,7 +993,7 @@ void Media::RGBLUTGen::GenLARGB_B8G8R8A8(UInt8 *rgbTable, NotNullPtr<const Media
 		else
 			WriteInt32(&rgbTable[i * 4 + 0], Double2Int32(bV));
 	}
-	DEL_CLASS(frFunc);
-	DEL_CLASS(fgFunc);
-	DEL_CLASS(fbFunc);
+	frFunc.Delete();
+	fgFunc.Delete();
+	fbFunc.Delete();
 }

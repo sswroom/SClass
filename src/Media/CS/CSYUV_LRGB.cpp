@@ -166,9 +166,9 @@ Media::CS::CSYUV_LRGB::~CSYUV_LRGB()
 {
 	MemFree(this->rgbGammaCorr);
 	MemFree(this->yuv2rgb);
-	DEL_CLASS(this->irFunc);
-	DEL_CLASS(this->igFunc);
-	DEL_CLASS(this->ibFunc);
+	this->irFunc.Delete();
+	this->igFunc.Delete();
+	this->ibFunc.Delete();
 }
 
 void Media::CS::CSYUV_LRGB::UpdateTable()
@@ -215,9 +215,9 @@ void Media::CS::CSYUV_LRGB::RGBParamChanged(NotNullPtr<const Media::IColorHandle
 		srcColor = this->srcColor;
 	}
 
-	DEL_CLASS(this->irFunc);
-	DEL_CLASS(this->igFunc);
-	DEL_CLASS(this->ibFunc);
+	this->irFunc.Delete();
+	this->igFunc.Delete();
+	this->ibFunc.Delete();
 	this->irFunc = Media::CS::TransferFunc::CreateFunc(srcColor->GetRTranParam());
 	this->igFunc = Media::CS::TransferFunc::CreateFunc(srcColor->GetGTranParam());
 	this->ibFunc = Media::CS::TransferFunc::CreateFunc(srcColor->GetBTranParam());

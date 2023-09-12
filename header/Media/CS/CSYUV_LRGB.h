@@ -12,9 +12,9 @@ namespace Media
 		protected:
 			YUVPARAM yuvParam;
 			RGBPARAM2 rgbParam;
-			TransferFunc *irFunc;
-			TransferFunc *igFunc;
-			TransferFunc *ibFunc;
+			NotNullPtr<TransferFunc> irFunc;
+			NotNullPtr<TransferFunc> igFunc;
+			NotNullPtr<TransferFunc> ibFunc;
 			Media::ColorProfile srcColor;
 			Media::ColorProfile::YUVType yuvType;
 

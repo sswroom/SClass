@@ -169,9 +169,9 @@ void Media::RGBColorFilter::SetParameter(Double brightness, Double contrast, Dou
 	}
 
 	UOSInt i;
-	Media::CS::TransferFunc *rtFunc = Media::CS::TransferFunc::CreateFunc(color->GetRTranParamRead());
-	Media::CS::TransferFunc *gtFunc = Media::CS::TransferFunc::CreateFunc(color->GetGTranParamRead());
-	Media::CS::TransferFunc *btFunc = Media::CS::TransferFunc::CreateFunc(color->GetBTranParamRead());
+	NotNullPtr<Media::CS::TransferFunc> rtFunc = Media::CS::TransferFunc::CreateFunc(color->GetRTranParamRead());
+	NotNullPtr<Media::CS::TransferFunc> gtFunc = Media::CS::TransferFunc::CreateFunc(color->GetGTranParamRead());
+	NotNullPtr<Media::CS::TransferFunc> btFunc = Media::CS::TransferFunc::CreateFunc(color->GetBTranParamRead());
 	if (bpp == 24 || bpp == 32)
 	{
 		Int16 *srcLUT;
@@ -297,9 +297,9 @@ void Media::RGBColorFilter::SetParameter(Double brightness, Double contrast, Dou
 			destLUT[i] = Math::SDouble2UInt16(rtFunc->ForwardTransfer(UOSInt2Double(i) * tmpD) * 65535.0);
 		}
 	}
-	DEL_CLASS(rtFunc);
-	DEL_CLASS(gtFunc);
-	DEL_CLASS(btFunc);
+	rtFunc.Delete();
+	gtFunc.Delete();
+	btFunc.Delete();
 }
 
 void Media::RGBColorFilter::ProcessImage(UInt8 *srcPtr, UInt8 *destPtr, UOSInt width, UOSInt height, UOSInt sbpl, UOSInt dbpl, Bool upsideDown)

@@ -391,12 +391,12 @@ Media::CS::CSYUV_RGB8::~CSYUV_RGB8()
 {
 	MemFree(this->rgbGammaCorr);
 	MemFree(this->yuv2rgb);
-	DEL_CLASS(this->irFunc);
-	DEL_CLASS(this->igFunc);
-	DEL_CLASS(this->ibFunc);
-	DEL_CLASS(this->frFunc);
-	DEL_CLASS(this->fgFunc);
-	DEL_CLASS(this->fbFunc);
+	this->irFunc.Delete();
+	this->igFunc.Delete();
+	this->ibFunc.Delete();
+	this->frFunc.Delete();
+	this->fgFunc.Delete();
+	this->fbFunc.Delete();
 }
 
 void Media::CS::CSYUV_RGB8::UpdateTable()
@@ -452,15 +452,15 @@ void Media::CS::CSYUV_RGB8::RGBParamChanged(NotNullPtr<const Media::IColorHandle
 		destColor = this->destColor;
 	}
 
-	DEL_CLASS(this->irFunc);
-	DEL_CLASS(this->igFunc);
-	DEL_CLASS(this->ibFunc);
+	this->irFunc.Delete();
+	this->igFunc.Delete();
+	this->ibFunc.Delete();
 	this->irFunc = Media::CS::TransferFunc::CreateFunc(srcColor->GetRTranParamRead());
 	this->igFunc = Media::CS::TransferFunc::CreateFunc(srcColor->GetGTranParamRead());
 	this->ibFunc = Media::CS::TransferFunc::CreateFunc(srcColor->GetBTranParamRead());
-	DEL_CLASS(this->frFunc);
-	DEL_CLASS(this->fgFunc);
-	DEL_CLASS(this->fbFunc);
+	this->frFunc.Delete();
+	this->fgFunc.Delete();
+	this->fbFunc.Delete();
 	this->frFunc = Media::CS::TransferFunc::CreateFunc(destColor->GetRTranParamRead());
 	this->fgFunc = Media::CS::TransferFunc::CreateFunc(destColor->GetGTranParamRead());
 	this->fbFunc = Media::CS::TransferFunc::CreateFunc(destColor->GetBTranParamRead());

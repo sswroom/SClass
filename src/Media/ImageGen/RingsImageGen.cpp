@@ -38,9 +38,9 @@ Media::Image *Media::ImageGen::RingsImageGen::GenerateImage(NotNullPtr<const Med
 	}
 	if (size.x < 8 || size.x < 4)
 		return 0;
-	Media::CS::TransferFunc *rfunc = Media::CS::TransferFunc::CreateFunc(colorProfile->GetRTranParamRead());
-	Media::CS::TransferFunc *gfunc = Media::CS::TransferFunc::CreateFunc(colorProfile->GetGTranParamRead());
-	Media::CS::TransferFunc *bfunc = Media::CS::TransferFunc::CreateFunc(colorProfile->GetBTranParamRead());
+	NotNullPtr<Media::CS::TransferFunc> rfunc = Media::CS::TransferFunc::CreateFunc(colorProfile->GetRTranParamRead());
+	NotNullPtr<Media::CS::TransferFunc> gfunc = Media::CS::TransferFunc::CreateFunc(colorProfile->GetGTranParamRead());
+	NotNullPtr<Media::CS::TransferFunc> bfunc = Media::CS::TransferFunc::CreateFunc(colorProfile->GetBTranParamRead());
 	NEW_CLASS(outImage, Media::StaticImage(size, 0, 64, Media::PF_LE_B16G16R16A16, 0, colorProfile, Media::ColorProfile::YUVT_UNKNOWN, Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
 
 	imgPtr2 = outImage->data;
@@ -66,8 +66,8 @@ Media::Image *Media::ImageGen::RingsImageGen::GenerateImage(NotNullPtr<const Med
 		imgPtr2 += outImage->GetDataBpl();
 		j++;
 	}
-	DEL_CLASS(bfunc);
-	DEL_CLASS(gfunc);
-	DEL_CLASS(rfunc);
+	bfunc.Delete();
+	gfunc.Delete();
+	rfunc.Delete();
 	return outImage;
 }

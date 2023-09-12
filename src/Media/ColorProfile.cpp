@@ -664,17 +664,17 @@ void Media::ColorProfile::RGB32ToXYZ(Int32 rgb, OutParam<Double> X, OutParam<Dou
 {
 	Math::Matrix3 matrix;
 	this->primaries.GetConvMatrix(matrix);
-	Media::CS::TransferFunc *rtrant = Media::CS::TransferFunc::CreateFunc(this->rtransfer);
-	Media::CS::TransferFunc *gtrant = Media::CS::TransferFunc::CreateFunc(this->gtransfer);
-	Media::CS::TransferFunc *btrant = Media::CS::TransferFunc::CreateFunc(this->btransfer);
+	NotNullPtr<Media::CS::TransferFunc> rtrant = Media::CS::TransferFunc::CreateFunc(this->rtransfer);
+	NotNullPtr<Media::CS::TransferFunc> gtrant = Media::CS::TransferFunc::CreateFunc(this->gtransfer);
+	NotNullPtr<Media::CS::TransferFunc> btrant = Media::CS::TransferFunc::CreateFunc(this->btransfer);
 	Double mul = 1 / 255.0;
 	Double r = rtrant->InverseTransfer(((rgb >> 16) & 255) * mul);
 	Double g = gtrant->InverseTransfer(((rgb >> 8) & 255) * mul);
 	Double b = btrant->InverseTransfer((rgb & 255) * mul);
 	matrix.Multiply(r, g, b, X, Y, Z);
-	DEL_CLASS(rtrant);
-	DEL_CLASS(gtrant);
-	DEL_CLASS(btrant);
+	rtrant.Delete();
+	gtrant.Delete();
+	btrant.Delete();
 }
 
 Int32 Media::ColorProfile::XYZToRGB32(Double a, Double X, Double Y, Double Z) const
@@ -686,9 +686,9 @@ Int32 Media::ColorProfile::XYZToRGB32(Double a, Double X, Double Y, Double Z) co
 	Int32 outVal;
 	Int32 iVal;
 	this->primaries.GetConvMatrix(matrix);
-	Media::CS::TransferFunc *rtrant = Media::CS::TransferFunc::CreateFunc(this->rtransfer);
-	Media::CS::TransferFunc *gtrant = Media::CS::TransferFunc::CreateFunc(this->gtransfer);
-	Media::CS::TransferFunc *btrant = Media::CS::TransferFunc::CreateFunc(this->btransfer);
+	NotNullPtr<Media::CS::TransferFunc> rtrant = Media::CS::TransferFunc::CreateFunc(this->rtransfer);
+	NotNullPtr<Media::CS::TransferFunc> gtrant = Media::CS::TransferFunc::CreateFunc(this->gtransfer);
+	NotNullPtr<Media::CS::TransferFunc> btrant = Media::CS::TransferFunc::CreateFunc(this->btransfer);
 	matrix.Inverse();
 	matrix.Multiply(X, Y, Z, R, G, B);
 	R = rtrant->ForwardTransfer(R);
@@ -720,9 +720,9 @@ Int32 Media::ColorProfile::XYZToRGB32(Double a, Double X, Double Y, Double Z) co
 	else if (iVal > 255)
 		iVal = 255;
 	outVal |= iVal << 24;
-	DEL_CLASS(rtrant);
-	DEL_CLASS(gtrant);
-	DEL_CLASS(btrant);
+	rtrant.Delete();
+	gtrant.Delete();
+	btrant.Delete();
 	return outVal;
 }
 
@@ -1081,12 +1081,12 @@ void Media::ColorProfile::YUV2RGB(YUVType yuvType, Double y, Double u, Double v,
 
 void Media::ColorProfile::RGB2RGB(Media::ColorProfile *srcColor, Media::ColorProfile *destColor, Double srcR, Double srcG, Double srcB, Double *destR, Double *destG, Double *destB)
 {
-	Media::CS::TransferFunc *func1r;
-	Media::CS::TransferFunc *func1g;
-	Media::CS::TransferFunc *func1b;
-	Media::CS::TransferFunc *func2r;
-	Media::CS::TransferFunc *func2g;
-	Media::CS::TransferFunc *func2b;
+	NotNullPtr<Media::CS::TransferFunc> func1r;
+	NotNullPtr<Media::CS::TransferFunc> func1g;
+	NotNullPtr<Media::CS::TransferFunc> func1b;
+	NotNullPtr<Media::CS::TransferFunc> func2r;
+	NotNullPtr<Media::CS::TransferFunc> func2g;
+	NotNullPtr<Media::CS::TransferFunc> func2b;
 	Math::Matrix3 mat;
 	Math::Matrix3 mat2;
 	Double v1;
@@ -1108,12 +1108,12 @@ void Media::ColorProfile::RGB2RGB(Media::ColorProfile *srcColor, Media::ColorPro
 	*destR = func2r->ForwardTransfer(mat.vec[0].val[0] * v1 + mat.vec[0].val[1] * v2 + mat.vec[0].val[2] * v3);
 	*destG = func2g->ForwardTransfer(mat.vec[1].val[0] * v1 + mat.vec[1].val[1] * v2 + mat.vec[1].val[2] * v3);
 	*destB = func2b->ForwardTransfer(mat.vec[2].val[0] * v1 + mat.vec[2].val[1] * v2 + mat.vec[2].val[2] * v3);
-	DEL_CLASS(func1r);
-	DEL_CLASS(func1g);
-	DEL_CLASS(func1b);
-	DEL_CLASS(func2r);
-	DEL_CLASS(func2g);
-	DEL_CLASS(func2b);
+	func1r.Delete();
+	func1g.Delete();
+	func1b.Delete();
+	func2r.Delete();
+	func2g.Delete();
+	func2b.Delete();
 }
 
 void Media::ColorProfile::GetConvMatrix(NotNullPtr<Math::Matrix3> mat, NotNullPtr<const ColorProfile::ColorPrimaries> srcColor, NotNullPtr<const ColorProfile::ColorPrimaries> destColor)

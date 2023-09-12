@@ -177,9 +177,9 @@ UInt32 Media::ColorConv::ConvARGB(NotNullPtr<const Media::ColorProfile> srcColor
 		NEW_CLASSNN(gTran, Media::CS::TransferParam(srcColor->GetGTranParamRead()));
 		NEW_CLASSNN(bTran, Media::CS::TransferParam(srcColor->GetBTranParamRead()));
 	}
-	Media::CS::TransferFunc *srFunc = Media::CS::TransferFunc::CreateFunc(rTran);
-	Media::CS::TransferFunc *sgFunc = Media::CS::TransferFunc::CreateFunc(gTran);
-	Media::CS::TransferFunc *sbFunc = Media::CS::TransferFunc::CreateFunc(bTran);
+	NotNullPtr<Media::CS::TransferFunc> srFunc = Media::CS::TransferFunc::CreateFunc(rTran);
+	NotNullPtr<Media::CS::TransferFunc> sgFunc = Media::CS::TransferFunc::CreateFunc(gTran);
+	NotNullPtr<Media::CS::TransferFunc> sbFunc = Media::CS::TransferFunc::CreateFunc(bTran);
 
 	Math::Matrix3 mat1;
 	Math::Vector3 vec1;
@@ -311,9 +311,9 @@ UInt32 Media::ColorConv::ConvARGB(NotNullPtr<const Media::ColorProfile> srcColor
 		}
 	}
 
-	Media::CS::TransferFunc *drFunc = Media::CS::TransferFunc::CreateFunc(rTran);
-	Media::CS::TransferFunc *dgFunc = Media::CS::TransferFunc::CreateFunc(gTran);
-	Media::CS::TransferFunc *dbFunc = Media::CS::TransferFunc::CreateFunc(bTran);
+	NotNullPtr<Media::CS::TransferFunc> drFunc = Media::CS::TransferFunc::CreateFunc(rTran);
+	NotNullPtr<Media::CS::TransferFunc> dgFunc = Media::CS::TransferFunc::CreateFunc(gTran);
+	NotNullPtr<Media::CS::TransferFunc> dbFunc = Media::CS::TransferFunc::CreateFunc(bTran);
 	*(UInt32*)buff = c;
 	vec1.Set(srFunc->InverseTransfer(buff[2] / 255.0), sgFunc->InverseTransfer(buff[1] / 255.0), sbFunc->InverseTransfer(buff[0] / 255.0));
 	vec2 = mat1.Multiply(vec1);
@@ -340,12 +340,12 @@ UInt32 Media::ColorConv::ConvARGB(NotNullPtr<const Media::ColorProfile> srcColor
 	else
 		buff[0] = (UInt8)Double2Int32(bv);
 
-	DEL_CLASS(srFunc);
-	DEL_CLASS(sgFunc);
-	DEL_CLASS(sbFunc);
-	DEL_CLASS(drFunc);
-	DEL_CLASS(dgFunc);
-	DEL_CLASS(dbFunc);
+	srFunc.Delete();
+	sgFunc.Delete();
+	sbFunc.Delete();
+	drFunc.Delete();
+	dgFunc.Delete();
+	dbFunc.Delete();
 	rTran.Delete();
 	gTran.Delete();
 	bTran.Delete();

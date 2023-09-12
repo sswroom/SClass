@@ -141,7 +141,7 @@ Media::DrawImage *Media::FrequencyGraph::CreateGraph(NotNullPtr<Media::DrawEngin
 		Double maxVal;
 		Double thisMin;
 		Media::CS::TransferParam tranParam(Media::CS::TRANT_sRGB, 2.2);
-		Media::CS::TransferFunc *trans = Media::CS::TransferFunc::CreateFunc(tranParam);
+		NotNullPtr<Media::CS::TransferFunc> trans = Media::CS::TransferFunc::CreateFunc(tranParam);
 		UOSInt sbpl;
 		UInt8 *imgPtr;
 		UInt8 v;
@@ -252,7 +252,7 @@ Media::DrawImage *Media::FrequencyGraph::CreateGraph(NotNullPtr<Media::DrawEngin
 					i++;
 				}
 			}
-			DEL_CLASS(trans);
+			trans.Delete();
 			MemFree(lut);
 
 			p = tmpImg->NewPenARGB(0xff000000, 1, 0, 0);

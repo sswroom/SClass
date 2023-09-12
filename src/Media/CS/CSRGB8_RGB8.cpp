@@ -106,12 +106,12 @@ void Media::CS::CSRGB8_RGB8::UpdateRGBTable()
 			destProfile = this->destColor;
 		}
 	}
-	Media::CS::TransferFunc *irFunc = Media::CS::TransferFunc::CreateFunc(srcProfile->GetRTranParam());
-	Media::CS::TransferFunc *igFunc = Media::CS::TransferFunc::CreateFunc(srcProfile->GetGTranParam());
-	Media::CS::TransferFunc *ibFunc = Media::CS::TransferFunc::CreateFunc(srcProfile->GetBTranParam());
-	Media::CS::TransferFunc *frFunc = Media::CS::TransferFunc::CreateFunc(destProfile->GetRTranParam());
-	Media::CS::TransferFunc *fgFunc = Media::CS::TransferFunc::CreateFunc(destProfile->GetGTranParam());
-	Media::CS::TransferFunc *fbFunc = Media::CS::TransferFunc::CreateFunc(destProfile->GetBTranParam());
+	NotNullPtr<Media::CS::TransferFunc> irFunc = Media::CS::TransferFunc::CreateFunc(srcProfile->GetRTranParam());
+	NotNullPtr<Media::CS::TransferFunc> igFunc = Media::CS::TransferFunc::CreateFunc(srcProfile->GetGTranParam());
+	NotNullPtr<Media::CS::TransferFunc> ibFunc = Media::CS::TransferFunc::CreateFunc(srcProfile->GetBTranParam());
+	NotNullPtr<Media::CS::TransferFunc> frFunc = Media::CS::TransferFunc::CreateFunc(destProfile->GetRTranParam());
+	NotNullPtr<Media::CS::TransferFunc> fgFunc = Media::CS::TransferFunc::CreateFunc(destProfile->GetGTranParam());
+	NotNullPtr<Media::CS::TransferFunc> fbFunc = Media::CS::TransferFunc::CreateFunc(destProfile->GetBTranParam());
 	OSInt i;
 
 
@@ -126,12 +126,12 @@ void Media::CS::CSRGB8_RGB8::UpdateRGBTable()
 		this->rgbTable[i + 256] = Math::SDouble2UInt8((gBright - 1.0 + Math_Pow(gv, gGammaVal) * gContr) * 255.0);
 		this->rgbTable[i + 0] = Math::SDouble2UInt8((bBright - 1.0 + Math_Pow(bv, bGammaVal) * bContr) * 255.0);
 	}
-	DEL_CLASS(irFunc);
-	DEL_CLASS(igFunc);
-	DEL_CLASS(ibFunc);
-	DEL_CLASS(frFunc);
-	DEL_CLASS(fgFunc);
-	DEL_CLASS(fbFunc);
+	irFunc.Delete();
+	igFunc.Delete();
+	ibFunc.Delete();
+	frFunc.Delete();
+	fgFunc.Delete();
+	fbFunc.Delete();
 
 	if (this->srcPal)
 	{

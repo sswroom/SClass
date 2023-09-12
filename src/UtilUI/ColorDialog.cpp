@@ -802,12 +802,12 @@ void UtilUI::ColorDialog::GenMainImageInner(UInt8 *imgPtr, UOSInt startIndex, UO
 	Double gMul;
 	Double bMul;
 
-	Media::CS::TransferFunc *dispRTran;
-	Media::CS::TransferFunc *dispGTran;
-	Media::CS::TransferFunc *dispBTran;
-	Media::CS::TransferFunc *srcRTran = Media::CS::TransferFunc::CreateFunc(this->colorProfile->GetRTranParam());
-	Media::CS::TransferFunc *srcGTran = Media::CS::TransferFunc::CreateFunc(this->colorProfile->GetGTranParam());
-	Media::CS::TransferFunc *srcBTran = Media::CS::TransferFunc::CreateFunc(this->colorProfile->GetBTranParam());
+	NotNullPtr<Media::CS::TransferFunc> dispRTran;
+	NotNullPtr<Media::CS::TransferFunc> dispGTran;
+	NotNullPtr<Media::CS::TransferFunc> dispBTran;
+	NotNullPtr<Media::CS::TransferFunc> srcRTran = Media::CS::TransferFunc::CreateFunc(this->colorProfile->GetRTranParam());
+	NotNullPtr<Media::CS::TransferFunc> srcGTran = Media::CS::TransferFunc::CreateFunc(this->colorProfile->GetGTranParam());
+	NotNullPtr<Media::CS::TransferFunc> srcBTran = Media::CS::TransferFunc::CreateFunc(this->colorProfile->GetBTranParam());
 	if (this->colorCorr == CCT_VIDEO)
 	{
 		rGammaVal = rgbParam->MonRGamma;
@@ -922,12 +922,12 @@ void UtilUI::ColorDialog::GenMainImageInner(UInt8 *imgPtr, UOSInt startIndex, UO
 		}
 		i++;
 	}
-	DEL_CLASS(srcRTran);
-	DEL_CLASS(srcGTran);
-	DEL_CLASS(srcBTran);
-	DEL_CLASS(dispRTran);
-	DEL_CLASS(dispGTran);
-	DEL_CLASS(dispBTran);
+	srcRTran.Delete();
+	srcGTran.Delete();
+	srcBTran.Delete();
+	dispRTran.Delete();
+	dispGTran.Delete();
+	dispBTran.Delete();
 }
 
 void UtilUI::ColorDialog::GenMainImage()
@@ -1003,12 +1003,12 @@ void UtilUI::ColorDialog::GenSubImage()
 	Double gMul;
 	Double bMul;
 
-	Media::CS::TransferFunc *dispRTran;
-	Media::CS::TransferFunc *dispGTran;
-	Media::CS::TransferFunc *dispBTran;
-	Media::CS::TransferFunc *srcRTran = Media::CS::TransferFunc::CreateFunc(this->colorProfile->GetRTranParam());
-	Media::CS::TransferFunc *srcGTran = Media::CS::TransferFunc::CreateFunc(this->colorProfile->GetGTranParam());
-	Media::CS::TransferFunc *srcBTran = Media::CS::TransferFunc::CreateFunc(this->colorProfile->GetBTranParam());
+	NotNullPtr<Media::CS::TransferFunc> dispRTran;
+	NotNullPtr<Media::CS::TransferFunc> dispGTran;
+	NotNullPtr<Media::CS::TransferFunc> dispBTran;
+	NotNullPtr<Media::CS::TransferFunc> srcRTran = Media::CS::TransferFunc::CreateFunc(this->colorProfile->GetRTranParam());
+	NotNullPtr<Media::CS::TransferFunc> srcGTran = Media::CS::TransferFunc::CreateFunc(this->colorProfile->GetGTranParam());
+	NotNullPtr<Media::CS::TransferFunc> srcBTran = Media::CS::TransferFunc::CreateFunc(this->colorProfile->GetBTranParam());
 	if (this->colorCorr == CCT_VIDEO)
 	{
 		rGammaVal = rgbParam->MonRGamma;
@@ -1144,12 +1144,12 @@ void UtilUI::ColorDialog::GenSubImage()
 		}
 		i++;
 	}
-	DEL_CLASS(dispRTran);
-	DEL_CLASS(dispGTran);
-	DEL_CLASS(dispBTran);
-	DEL_CLASS(srcRTran);
-	DEL_CLASS(srcGTran);
-	DEL_CLASS(srcBTran);
+	dispRTran.Delete();
+	dispGTran.Delete();
+	dispBTran.Delete();
+	srcRTran.Delete();
+	srcGTran.Delete();
+	srcBTran.Delete();
 	this->pbSub->SetImage(this->subImg);
 }
 
@@ -1189,12 +1189,12 @@ void UtilUI::ColorDialog::UpdateColor()
 	Double gMul;
 	Double bMul;
 
-	Media::CS::TransferFunc *dispRTran;
-	Media::CS::TransferFunc *dispGTran;
-	Media::CS::TransferFunc *dispBTran;
-	Media::CS::TransferFunc *srcRTran = Media::CS::TransferFunc::CreateFunc(this->colorProfile->GetRTranParam());
-	Media::CS::TransferFunc *srcGTran = Media::CS::TransferFunc::CreateFunc(this->colorProfile->GetGTranParam());
-	Media::CS::TransferFunc *srcBTran = Media::CS::TransferFunc::CreateFunc(this->colorProfile->GetBTranParam());
+	NotNullPtr<Media::CS::TransferFunc> dispRTran;
+	NotNullPtr<Media::CS::TransferFunc> dispGTran;
+	NotNullPtr<Media::CS::TransferFunc> dispBTran;
+	NotNullPtr<Media::CS::TransferFunc> srcRTran = Media::CS::TransferFunc::CreateFunc(this->colorProfile->GetRTranParam());
+	NotNullPtr<Media::CS::TransferFunc> srcGTran = Media::CS::TransferFunc::CreateFunc(this->colorProfile->GetGTranParam());
+	NotNullPtr<Media::CS::TransferFunc> srcBTran = Media::CS::TransferFunc::CreateFunc(this->colorProfile->GetBTranParam());
 	if (this->colorCorr == CCT_VIDEO)
 	{
 		rGammaVal = rgbParam->MonRGamma;
@@ -1418,12 +1418,12 @@ void UtilUI::ColorDialog::UpdateColor()
 
 	this->autoTextUpdate = false;
 
-	DEL_CLASS(dispRTran);
-	DEL_CLASS(dispGTran);
-	DEL_CLASS(dispBTran);
-	DEL_CLASS(srcRTran);
-	DEL_CLASS(srcGTran);
-	DEL_CLASS(srcBTran);
+	dispRTran.Delete();
+	dispGTran.Delete();
+	dispBTran.Delete();
+	srcRTran.Delete();
+	srcGTran.Delete();
+	srcBTran.Delete();
 }
 
 UtilUI::ColorDialog::ColorDialog(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, Media::ColorManager *colorMgr, NotNullPtr<Media::DrawEngine> eng, ColorCorrType colorCorr, NotNullPtr<const Media::ColorProfile> colorProfile, Media::MonitorMgr *monMgr) : UI::GUIForm(parent, 756, 640, ui)

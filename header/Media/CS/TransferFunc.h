@@ -20,9 +20,9 @@ namespace Media
 			virtual Double InverseTransfer(Double gammaVal) = 0;
 			TransferType GetTransferType();
 			Double GetTransferGamma();
-			const TransferParam *GetTransferParam();
+			NotNullPtr<const TransferParam> GetTransferParam();
 
-			static TransferFunc *CreateFunc(NotNullPtr<const TransferParam> param);
+			static NotNullPtr<TransferFunc> CreateFunc(NotNullPtr<const TransferParam> param);
 			static Double GetRefLuminance(NotNullPtr<const TransferParam> param);
 		};
 	}

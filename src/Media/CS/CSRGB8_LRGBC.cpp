@@ -46,9 +46,9 @@ void Media::CS::CSRGB8_LRGBC::UpdateRGBTable()
 	{
 		srcProfile = this->srcProfile;
 	}
-	Media::CS::TransferFunc *rtFunc = Media::CS::TransferFunc::CreateFunc(srcProfile->GetRTranParam());
-	Media::CS::TransferFunc *gtFunc = Media::CS::TransferFunc::CreateFunc(srcProfile->GetGTranParam());
-	Media::CS::TransferFunc *btFunc = Media::CS::TransferFunc::CreateFunc(srcProfile->GetBTranParam());
+	NotNullPtr<Media::CS::TransferFunc> rtFunc = Media::CS::TransferFunc::CreateFunc(srcProfile->GetRTranParam());
+	NotNullPtr<Media::CS::TransferFunc> gtFunc = Media::CS::TransferFunc::CreateFunc(srcProfile->GetGTranParam());
+	NotNullPtr<Media::CS::TransferFunc> btFunc = Media::CS::TransferFunc::CreateFunc(srcProfile->GetBTranParam());
 	Math::Matrix3 mat1;
 	if (this->destProfile.GetPrimaries()->colorType == Media::ColorProfile::CT_DISPLAY)
 	{
@@ -85,9 +85,9 @@ void Media::CS::CSRGB8_LRGBC::UpdateRGBTable()
 		v[3] = 0;
 		rgbGammaCorr[i + 512] = *(Int64*)&v[0];
 	}
-	DEL_CLASS(rtFunc);
-	DEL_CLASS(gtFunc);
-	DEL_CLASS(btFunc);
+	rtFunc.Delete();
+	gtFunc.Delete();
+	btFunc.Delete();
 
 	if (this->srcPal)
 	{

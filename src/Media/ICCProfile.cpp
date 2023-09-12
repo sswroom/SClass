@@ -1643,7 +1643,7 @@ Media::CS::TransferType Media::ICCProfile::FindTransferType(UOSInt colorCount, U
 		return Media::CS::TRANT_GAMMA;
 	}
 
-	Media::CS::TransferFunc **funcs = MemAlloc(Media::CS::TransferFunc*, tranCnt);
+	NotNullPtr<Media::CS::TransferFunc> *funcs = MemAlloc(NotNullPtr<Media::CS::TransferFunc>, tranCnt);
 	Double *diffSqrSum = MemAlloc(Double, tranCnt);
 	UOSInt i = tranCnt;
 	while (i-- > 0)
@@ -1680,6 +1680,7 @@ Media::CS::TransferType Media::ICCProfile::FindTransferType(UOSInt colorCount, U
 			minType = trans[i];
 			minVal = diffSqrSum[i];
 		}
+		funcs[i].Delete();
 	}
 
 	MemFree(funcs);

@@ -106,12 +106,12 @@ void Media::CS::CSRGB16_RGB8::UpdateRGBTable()
 			destProfile = this->destProfile;
 		}
 	}
-	Media::CS::TransferFunc *irFunc = Media::CS::TransferFunc::CreateFunc(srcProfile->GetRTranParam());
-	Media::CS::TransferFunc *igFunc = Media::CS::TransferFunc::CreateFunc(srcProfile->GetGTranParam());
-	Media::CS::TransferFunc *ibFunc = Media::CS::TransferFunc::CreateFunc(srcProfile->GetBTranParam());
-	Media::CS::TransferFunc *frFunc = Media::CS::TransferFunc::CreateFunc(destProfile->GetRTranParam());
-	Media::CS::TransferFunc *fgFunc = Media::CS::TransferFunc::CreateFunc(destProfile->GetGTranParam());
-	Media::CS::TransferFunc *fbFunc = Media::CS::TransferFunc::CreateFunc(destProfile->GetBTranParam());
+	NotNullPtr<Media::CS::TransferFunc> irFunc = Media::CS::TransferFunc::CreateFunc(srcProfile->GetRTranParam());
+	NotNullPtr<Media::CS::TransferFunc> igFunc = Media::CS::TransferFunc::CreateFunc(srcProfile->GetGTranParam());
+	NotNullPtr<Media::CS::TransferFunc> ibFunc = Media::CS::TransferFunc::CreateFunc(srcProfile->GetBTranParam());
+	NotNullPtr<Media::CS::TransferFunc> frFunc = Media::CS::TransferFunc::CreateFunc(destProfile->GetRTranParam());
+	NotNullPtr<Media::CS::TransferFunc> fgFunc = Media::CS::TransferFunc::CreateFunc(destProfile->GetGTranParam());
+	NotNullPtr<Media::CS::TransferFunc> fbFunc = Media::CS::TransferFunc::CreateFunc(destProfile->GetBTranParam());
 	OSInt i;
 
 	i = 65536;
@@ -143,12 +143,12 @@ void Media::CS::CSRGB16_RGB8::UpdateRGBTable()
 		else
 			this->rgbTable[i + 0] = (UInt8)Double2Int32(bV);
 	}
-	DEL_CLASS(irFunc);
-	DEL_CLASS(igFunc);
-	DEL_CLASS(ibFunc);
-	DEL_CLASS(frFunc);
-	DEL_CLASS(fgFunc);
-	DEL_CLASS(fbFunc);
+	irFunc.Delete();
+	igFunc.Delete();
+	ibFunc.Delete();
+	frFunc.Delete();
+	fgFunc.Delete();
+	fbFunc.Delete();
 }
 
 Media::CS::CSRGB16_RGB8::CSRGB16_RGB8(UOSInt srcNBits, Media::PixelFormat srcPF, UOSInt destNBits, Media::PixelFormat destPF, Bool invert, NotNullPtr<const Media::ColorProfile> srcProfile, NotNullPtr<const Media::ColorProfile> destProfile, Media::ColorManagerSess *colorSess) : Media::CS::CSConverter(colorSess), srcProfile(srcProfile), destProfile(destProfile)
