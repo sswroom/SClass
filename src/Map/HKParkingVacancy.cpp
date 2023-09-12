@@ -248,10 +248,9 @@ Map::HKParkingVacancy::HKParkingVacancy(NotNullPtr<Net::SocketFactory> sockf, Ne
 	this->sockf = sockf;
 	this->ssl = ssl;
 	this->bounds = Math::RectAreaDbl(Math::Coord2DDbl(0, 0), Math::Coord2DDbl(0, 0));
+	this->csys = Math::CoordinateSystemManager::CreateDefaultCsys();
 	this->LoadParkingInfo();
 	this->LoadVacancy();
-
-	this->SetCoordinateSystem(Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::CoordinateSystemManager::GCST_WGS84));
 	Media::StaticImage *simg = Map::MapPOI::CreateParkingPOI();
 	Media::ImageList *imgList;
 	NEW_CLASS(imgList, Media::ImageList(CSTR("ParkingPOI")));

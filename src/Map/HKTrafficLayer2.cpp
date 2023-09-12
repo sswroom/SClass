@@ -107,8 +107,8 @@ Map::HKTrafficLayer2::HKTrafficLayer2(NotNullPtr<Net::SocketFactory> sockf, Net:
 	this->encFact = encFact;
 	this->bounds = Math::RectAreaDbl(0, 0, 0, 0);
 	this->url = Text::String::New(UTF8STRC("https://resource.data.one.gov.hk/td/traffic-detectors/irnAvgSpeed-all.xml"));
-	
-	this->SetCoordinateSystem(Math::CoordinateSystemManager::CreateProjCoordinateSystemDefName(Math::CoordinateSystemManager::PCST_HK80));
+	if (!this->csys.Set(Math::CoordinateSystemManager::CreateProjCoordinateSystemDefName(Math::CoordinateSystemManager::PCST_HK80)))
+		this->csys = Math::CoordinateSystemManager::CreateDefaultCsys();
 
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
