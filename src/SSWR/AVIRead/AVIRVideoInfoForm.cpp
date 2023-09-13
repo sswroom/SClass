@@ -131,7 +131,7 @@ void __stdcall SSWR::AVIRead::AVIRVideoInfoForm::OnStreamChg(void *userObj)
 		sb.AppendC(UTF8STRC("Min Block Size = "));
 		sb.AppendUOSInt(audioSrc->GetMinBlockSize());
 		sb.AppendC(UTF8STRC("\r\n"));
-		audioSrc->GetFormat(&fmt);
+		audioSrc->GetFormat(fmt);
 		fmt.ToString(sb);
 		decStatus = me->decStatus->GetItem(i);
 		if (decStatus)
@@ -154,7 +154,7 @@ void __stdcall SSWR::AVIRead::AVIRVideoInfoForm::OnDecodeClicked(void *userObj)
 		return;
 	}
 	SSWR::AVIRead::AVIRVideoInfoForm::DecodeStatus *status;
-	Media::IMediaSource *msrc;
+	NotNullPtr<Media::IMediaSource> msrc;
 	
 	Sync::Event *evt;
 	Media::Decoder::VideoDecoderFinder *vdecoders;
@@ -167,8 +167,7 @@ void __stdcall SSWR::AVIRead::AVIRVideoInfoForm::OnDecodeClicked(void *userObj)
 	Int32 syncTime;
 	while (true)
 	{
-		msrc = me->currFile->GetStream(i, &syncTime);
-		if (msrc == 0)
+		if (!msrc.Set(me->currFile->GetStream(i, &syncTime)))
 		{
 			break;
 		}
@@ -182,7 +181,7 @@ void __stdcall SSWR::AVIRead::AVIRVideoInfoForm::OnDecodeClicked(void *userObj)
 		status->evt = evt;
 		if (msrc->GetMediaType() == Media::MEDIA_TYPE_VIDEO)
 		{
-			status->vdecoder = vdecoders->DecodeVideo((Media::IVideoSource*)msrc);
+			status->vdecoder = vdecoders->DecodeVideo(NotNullPtr<Media::IVideoSource>::ConvertFrom(msrc));
 			if (status->vdecoder)
 			{
 				status->vdecoder->Init(OnVideoFrame, OnVideoChange, status);
@@ -194,7 +193,7 @@ void __stdcall SSWR::AVIRead::AVIRVideoInfoForm::OnDecodeClicked(void *userObj)
 		}
 		else if (msrc->GetMediaType() == Media::MEDIA_TYPE_AUDIO)
 		{
-			status->adecoder = adecoders->DecodeAudio((Media::IAudioSource*)msrc);
+			status->adecoder = adecoders->DecodeAudio(NotNullPtr<Media::IAudioSource>::ConvertFrom(msrc));
 			if (status->adecoder)
 			{
 				NEW_CLASS(status->renderer, Media::NullRenderer());

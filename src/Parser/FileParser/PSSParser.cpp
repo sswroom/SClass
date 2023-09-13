@@ -64,7 +64,7 @@ IO::ParsedObject *Parser::FileParser::PSSParser::ParseFileHdr(NotNullPtr<IO::Str
 	}
 	UTF8Char *sptr;
 	Bool valid = true;
-	Media::AudioFormat *formats[4];
+	NotNullPtr<Media::AudioFormat> formats[4];
 	Int32 audDelay[4];
 	Media::FileVideoSource *vstm = 0;
 	IO::StmData::BlockStreamData *stmData[4];
@@ -154,7 +154,7 @@ IO::ParsedObject *Parser::FileParser::PSSParser::ParseFileHdr(NotNullPtr<IO::Str
 	i = 4;
 	while (i-- > 0)
 	{
-		NEW_CLASS(formats[i], Media::AudioFormat());
+		NEW_CLASSNN(formats[i], Media::AudioFormat());
 		formats[i]->formatId = 0;
 		audDelay[i] = 0;
 	}
@@ -679,17 +679,18 @@ IO::ParsedObject *Parser::FileParser::PSSParser::ParseFileHdr(NotNullPtr<IO::Str
 			{
 				DEL_CLASS(stmData[i]);
 			}
-			DEL_CLASS(formats[i]);
+			formats[i].Delete();
 		}
 		SDEL_CLASS(concatFile);
 		return 0;
 	}
 	Media::MediaFile *file;
 	NEW_CLASS(file, Media::MediaFile(fd->GetFullName()));
-	if (vstm)
+	NotNullPtr<Media::IVideoSource> nnvstm;
+	if (nnvstm.Set(vstm))
 	{
 		Media::Decoder::MP2GDecoder *mp2g;
-		NEW_CLASS(mp2g, Media::Decoder::MP2GDecoder(vstm, true));
+		NEW_CLASS(mp2g, Media::Decoder::MP2GDecoder(nnvstm, true));
 		file->AddSource(mp2g, 0);
 	}
 
@@ -758,7 +759,7 @@ IO::ParsedObject *Parser::FileParser::PSSParser::ParseFileHdr(NotNullPtr<IO::Str
 				stmFD.Delete();
 			}
 		}
-		DEL_CLASS(formats[i]);
+		formats[i].Delete();
 		i++;
 	}
 	SDEL_CLASS(concatFile);

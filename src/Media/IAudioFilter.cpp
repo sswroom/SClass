@@ -5,7 +5,7 @@
 #include "Media/IAudioFilter.h"
 #include "Text/MyString.h"
 
-Media::IAudioFilter::IAudioFilter(IAudioSource *sourceAudio)
+Media::IAudioFilter::IAudioFilter(NotNullPtr<IAudioSource> sourceAudio)
 {
 	this->sourceAudio = sourceAudio;
 }
@@ -16,90 +16,56 @@ Media::IAudioFilter::~IAudioFilter()
 
 UTF8Char *Media::IAudioFilter::GetSourceName(UTF8Char *buff)
 {
-	if (this->sourceAudio)
-        return this->sourceAudio->GetSourceName(buff);
-	return 0;
+	return this->sourceAudio->GetSourceName(buff);
 }
 
 Bool Media::IAudioFilter::CanSeek()
 {
-	if (this->sourceAudio)
-		return this->sourceAudio->CanSeek();
-	return false;
+	return this->sourceAudio->CanSeek();
 }
 
 Int32 Media::IAudioFilter::GetStreamTime()
 {
-	if (this->sourceAudio)
-		return this->sourceAudio->GetStreamTime();
-	return 0;
+	return this->sourceAudio->GetStreamTime();
 }
 
 UInt32 Media::IAudioFilter::SeekToTime(UInt32 time)
 {
-	if (this->sourceAudio)
-	{
-		return this->sourceAudio->SeekToTime(time);
-	}
-	return 0;
+	return this->sourceAudio->SeekToTime(time);
 }
 
 Bool Media::IAudioFilter::TrimStream(UInt32 trimTimeStart, UInt32 trimTimeEnd, Int32 *syncTime)
 {
-	if (this->sourceAudio)
-	{
-		return this->sourceAudio->TrimStream(trimTimeStart, trimTimeEnd, syncTime);
-	}
-	return true;
+	return this->sourceAudio->TrimStream(trimTimeStart, trimTimeEnd, syncTime);
 }
 
-void Media::IAudioFilter::GetFormat(AudioFormat *format)
+void Media::IAudioFilter::GetFormat(NotNullPtr<AudioFormat> format)
 {
-	if (this->sourceAudio)
-	{
-		this->sourceAudio->GetFormat(format);
-	}
-	else
-	{
-		format->Clear();
-	}
+	this->sourceAudio->GetFormat(format);
 }
 
 Bool Media::IAudioFilter::Start(Sync::Event *evt, UOSInt blkSize)
 {
-	if (this->sourceAudio)
-	{
-		this->sourceAudio->Start(evt, blkSize);
-		return true;
-	}
-	return false;
+	this->sourceAudio->Start(evt, blkSize);
+	return true;
 }
 
 void Media::IAudioFilter::Stop()
 {
-	if (this->sourceAudio)
-	{
-		this->sourceAudio->Stop();
-	}
+	this->sourceAudio->Stop();
 }
 
 UOSInt Media::IAudioFilter::GetMinBlockSize()
 {
-	if (this->sourceAudio)
-		return this->sourceAudio->GetMinBlockSize();
-	return 0;
+	return this->sourceAudio->GetMinBlockSize();
 }
 
 UInt32 Media::IAudioFilter::GetCurrTime()
 {
-	if (this->sourceAudio)
-		return this->sourceAudio->GetCurrTime();
-	return 0;
+	return this->sourceAudio->GetCurrTime();
 }
 
 Bool Media::IAudioFilter::IsEnd()
 {
-	if (this->sourceAudio)
-		return this->sourceAudio->IsEnd();
-	return true;
+	return this->sourceAudio->IsEnd();
 }

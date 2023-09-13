@@ -110,7 +110,7 @@ Media::AudioBlockSource *Media::BlockParser::DTSBlockParser::ParseStreamData(Not
 	format.other = 0;
 	format.intType = Media::AudioFormat::IT_NORMAL;
 
-	NEW_CLASS(audio, Media::AudioBlockSource(stmData, &format, stmData->GetFullName(), 1536));
+	NEW_CLASS(audio, Media::AudioBlockSource(stmData, format, stmData->GetFullName(), 1536));
 	while (currOfst < leng)
 	{
 		if (*(Int32*)&buff[0] != 0x180FE7F || (buff[4] & 0xfc) != 0xfc)

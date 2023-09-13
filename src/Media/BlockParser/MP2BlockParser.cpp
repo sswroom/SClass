@@ -77,7 +77,7 @@ Media::AudioBlockSource *Media::BlockParser::MP2BlockParser::ParseStreamData(Not
 	*(Int32*)&format.extra[6] = 65537;
 	*(Int16*)&format.extra[10] = 1;
 
-	NEW_CLASS(audio, Media::AudioBlockSource(stmData, &format, stmData->GetFullName(), 1152));
+	NEW_CLASS(audio, Media::AudioBlockSource(stmData, format, stmData->GetFullName(), 1152));
 	while (currOfst < leng)
 	{
 		if (buff[0] != 0xff || (buff[1] & 0xfe) != 0xfc)
@@ -108,7 +108,7 @@ Media::AudioBlockSource *Media::BlockParser::MP2BlockParser::ParseStreamData(Not
 	return audio;
 }
 
-Bool Media::BlockParser::MP2BlockParser::ParseStreamFormat(UInt8 *buff, UOSInt buffSize, Media::AudioFormat *fmt)
+Bool Media::BlockParser::MP2BlockParser::ParseStreamFormat(UInt8 *buff, UOSInt buffSize, NotNullPtr<Media::AudioFormat> fmt)
 {
 	static UInt32 bitrateL2[] = {0, 32, 48, 56, 64, 80, 96, 112, 128, 160, 192, 224, 256, 320, 384};
 	if (buff[0] != 0xff || (buff[1] & 0xfe) != 0xfc)

@@ -27,7 +27,7 @@ namespace Media
 		private:
 			void ResetStatus();
 		public:
-			AudioLevelMeter(IAudioSource *sourceAudio);
+			AudioLevelMeter(NotNullPtr<IAudioSource> sourceAudio);
 			virtual ~AudioLevelMeter();
 
 			virtual UInt32 SeekToTime(UInt32 time); //ms, ret actual time

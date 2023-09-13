@@ -25,7 +25,7 @@ namespace Media
 			UOSInt frameNum;
 		} FrameBuff;
 
-		Media::IStreamControl *pbc;
+		NotNullPtr<Media::IStreamControl> pbc;
 		FrameCallback frameCb;
 		FrameChangeCallback fcCb;
 		void *frameCbData;
@@ -72,11 +72,11 @@ namespace Media
 		void ClearPlayBuff();
 		static UInt32 __stdcall PlayThread(void *userObj);
 	public:
-		M2VStreamSource(Media::IStreamControl *pbc);
+		M2VStreamSource(NotNullPtr<Media::IStreamControl> pbc);
 		virtual ~M2VStreamSource();
 
 		virtual UTF8Char *GetSourceName(UTF8Char *buff);
-		virtual Text::CString GetFilterName();
+		virtual Text::CStringNN GetFilterName();
 
 		virtual Bool GetVideoInfo(NotNullPtr<Media::FrameInfo> info, OutParam<UInt32> frameRateNorm, OutParam<UInt32> frameRateDenorm, OutParam<UOSInt> maxFrameSize);
 		virtual Bool Init(FrameCallback cb, FrameChangeCallback fcCb, void *userData);

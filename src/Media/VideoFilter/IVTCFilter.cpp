@@ -2059,7 +2059,7 @@ Media::VideoFilter::IVTCFilter::~IVTCFilter()
 #endif
 }
 
-Text::CString Media::VideoFilter::IVTCFilter::GetFilterName()
+Text::CStringNN Media::VideoFilter::IVTCFilter::GetFilterName()
 {
 	return CSTR("IVTCFilter");
 }

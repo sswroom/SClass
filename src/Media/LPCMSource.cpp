@@ -26,7 +26,7 @@ Media::LPCMSource::LPCMSource(Text::CString name)
 	this->readOfst = 0;
 }
 
-void Media::LPCMSource::SetData(NotNullPtr<IO::StreamData> fd, UInt64 ofst, UInt64 length, Media::AudioFormat *format)
+void Media::LPCMSource::SetData(NotNullPtr<IO::StreamData> fd, UInt64 ofst, UInt64 length, NotNullPtr<const Media::AudioFormat> format)
 {
 	if (this->data)
 	{
@@ -37,7 +37,7 @@ void Media::LPCMSource::SetData(NotNullPtr<IO::StreamData> fd, UInt64 ofst, UInt
 	this->data = fd->GetPartialData(ofst, length).Ptr();
 }
 
-Media::LPCMSource::LPCMSource(NotNullPtr<IO::StreamData> fd, UInt64 ofst, UInt64 length, Media::AudioFormat *format, NotNullPtr<Text::String> name)
+Media::LPCMSource::LPCMSource(NotNullPtr<IO::StreamData> fd, UInt64 ofst, UInt64 length, NotNullPtr<const Media::AudioFormat> format, NotNullPtr<Text::String> name)
 {
 	this->format.FromAudioFormat(format);
 	this->data = fd->GetPartialData(ofst, length).Ptr();
@@ -46,7 +46,7 @@ Media::LPCMSource::LPCMSource(NotNullPtr<IO::StreamData> fd, UInt64 ofst, UInt64
 	this->readOfst = 0;
 }
 
-Media::LPCMSource::LPCMSource(NotNullPtr<IO::StreamData> fd, UInt64 ofst, UInt64 length, Media::AudioFormat *format, Text::CString name)
+Media::LPCMSource::LPCMSource(NotNullPtr<IO::StreamData> fd, UInt64 ofst, UInt64 length, NotNullPtr<const Media::AudioFormat> format, Text::CStringNN name)
 {
 	this->format.FromAudioFormat(format);
 	this->data = fd->GetPartialData(ofst, length).Ptr();
@@ -138,9 +138,9 @@ Bool Media::LPCMSource::TrimStream(UInt32 trimTimeStart, UInt32 trimTimeEnd, Int
 	return true;
 }
 
-void Media::LPCMSource::GetFormat(AudioFormat *format)
+void Media::LPCMSource::GetFormat(NotNullPtr<AudioFormat> format)
 {
-	format->FromAudioFormat(&this->format);
+	format->FromAudioFormat(this->format);
 }
 
 Bool Media::LPCMSource::Start(Sync::Event *evt, UOSInt blkSize)

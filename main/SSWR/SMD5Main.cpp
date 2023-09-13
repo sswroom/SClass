@@ -208,7 +208,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	UOSInt cmdCnt;
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
-	UTF8Char **cmdLines = progCtrl->GetCommandLines(progCtrl, &cmdCnt);
+	UTF8Char **cmdLines = progCtrl->GetCommandLines(progCtrl, cmdCnt);
 	NEW_CLASS(console, IO::ConsoleWriter());
 	showHelp = true;
 	if (cmdCnt == 2)

@@ -69,7 +69,7 @@ UInt32 __stdcall Media::KSRenderer::PlayThread(void *obj)
 	pPin = (CKsAudRenPin*)me->pPin;
 
 	me->threadInit = true;
-	me->audsrc->GetFormat(&af);
+	me->audsrc->GetFormat(af);
 	audStartTime = me->audsrc->GetCurrTime();
 	if (me->buffTime)
 	{
@@ -115,11 +115,11 @@ UInt32 __stdcall Media::KSRenderer::PlayThread(void *obj)
 	i = 0;
 	while (i < cPackets)
 	{
-		Packets[i].Header.DataUsed = (ULONG)me->audsrc->ReadBlockLPCM(Data::ByteArray((UInt8*)Packets[i].Header.Data, blkReadSize), &af);
+		Packets[i].Header.DataUsed = (ULONG)me->audsrc->ReadBlockLPCM(Data::ByteArray((UInt8*)Packets[i].Header.Data, blkReadSize), af);
 		if (Packets[i].Header.DataUsed == 0)
 		{
 			me->playEvt->Wait(500);
-			Packets[i].Header.DataUsed = (ULONG)me->audsrc->ReadBlockLPCM(Data::ByteArray((UInt8*)Packets[i].Header.Data, blkReadSize), &af);
+			Packets[i].Header.DataUsed = (ULONG)me->audsrc->ReadBlockLPCM(Data::ByteArray((UInt8*)Packets[i].Header.Data, blkReadSize), af);
 		}
 		ResetEvent(Packets[i].Signal.hEvent);
 
@@ -174,7 +174,7 @@ UInt32 __stdcall Media::KSRenderer::PlayThread(void *obj)
 			if (i < cPackets)
 			{
 				Packets[i].Header.FrameExtent = (ULONG)buffLeng;
-				Packets[i].Header.DataUsed = (ULONG)me->audsrc->ReadBlockLPCM(Data::ByteArray((UInt8*)Packets[i].Header.Data, blkReadSize), &af);
+				Packets[i].Header.DataUsed = (ULONG)me->audsrc->ReadBlockLPCM(Data::ByteArray((UInt8*)Packets[i].Header.Data, blkReadSize), af);
 				if (Packets[i].Header.DataUsed == 0)
 				{
 					buffEndCnt++;
@@ -339,7 +339,7 @@ Bool Media::KSRenderer::BindAudio(Media::IAudioSource *audsrc)
 	if (audsrc == 0 || this->pFilter == 0)
 		return false;
 	Media::AudioFormat fmt;
-	audsrc->GetFormat(&fmt);
+	audsrc->GetFormat(fmt);
 
 	if (fmt.formatId != 1)
 	{

@@ -142,7 +142,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	UOSInt argc;
 	UTF8Char **argv;
 	NEW_CLASS(console, IO::ConsoleWriter());
-	argv = progCtrl->GetCommandLines(progCtrl, &argc);
+	argv = progCtrl->GetCommandLines(progCtrl, argc);
 	if (argc <= 2)
 	{
 		console->WriteLineC(UTF8STRC("Usage: STCPSpdCli [IP] [Port]"));

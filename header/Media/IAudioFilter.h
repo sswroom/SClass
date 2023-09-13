@@ -7,10 +7,10 @@ namespace Media
 	class IAudioFilter : public IAudioSource
 	{
 	protected:
-		Media::IAudioSource *sourceAudio;
+		NotNullPtr<Media::IAudioSource> sourceAudio;
 
 	public:
-		IAudioFilter(IAudioSource *sourceAudio);
+		IAudioFilter(NotNullPtr<IAudioSource> sourceAudio);
 		virtual ~IAudioFilter();
 
 		virtual UTF8Char *GetSourceName(UTF8Char *buff);
@@ -19,7 +19,7 @@ namespace Media
 		virtual UInt32 SeekToTime(UInt32 time); //ms, ret actual time
 		virtual Bool TrimStream(UInt32 trimTimeStart, UInt32 trimTimeEnd, Int32 *syncTime);
 
-		virtual void GetFormat(AudioFormat *format);
+		virtual void GetFormat(NotNullPtr<AudioFormat> format);
 
 		virtual Bool Start(Sync::Event *evt, UOSInt blkSize);
 		virtual void Stop();

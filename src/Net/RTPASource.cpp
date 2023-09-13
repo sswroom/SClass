@@ -2,7 +2,7 @@
 #include "MyMemory.h"
 #include "Net/RTPASource.h"
 
-Net::RTPASource::RTPASource(Net::RTPCliChannel *ch, Net::RTPAPLHandler *hdlr)
+Net::RTPASource::RTPASource(NotNullPtr<Net::RTPCliChannel> ch, NotNullPtr<Net::RTPAPLHandler> hdlr)
 {
 	this->ch = ch;
 	this->hdlr = hdlr;
@@ -10,7 +10,7 @@ Net::RTPASource::RTPASource(Net::RTPCliChannel *ch, Net::RTPAPLHandler *hdlr)
 
 Net::RTPASource::~RTPASource()
 {
-	DEL_CLASS(this->ch);
+	this->ch.Delete();
 }
 
 UTF8Char *Net::RTPASource::GetSourceName(UTF8Char *buff)
@@ -38,7 +38,7 @@ Bool Net::RTPASource::TrimStream(UInt32 trimTimeStart, UInt32 trimTimeEnd, Int32
 	return false;
 }
 
-void Net::RTPASource::GetFormat(Media::AudioFormat *format)
+void Net::RTPASource::GetFormat(NotNullPtr<Media::AudioFormat> format)
 {
 	return this->hdlr->GetFormat(format);
 }

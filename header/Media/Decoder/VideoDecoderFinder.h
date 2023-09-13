@@ -13,7 +13,7 @@ namespace Media
 			VideoDecoderFinder();
 			~VideoDecoderFinder();
 
-			Media::IVideoSource *DecodeVideo(Media::IVideoSource *video);
+			Media::IVideoSource *DecodeVideo(NotNullPtr<Media::IVideoSource> video);
 		};
 	}
 }

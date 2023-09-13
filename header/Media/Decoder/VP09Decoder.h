@@ -17,15 +17,15 @@ namespace Media
 				UOSInt fullFrameSize;
 			} VP9FrameInfo;
 
-			Data::ArrayList<VP9FrameInfo*> *frameList;
+			Data::ArrayList<VP9FrameInfo*> frameList;
 			Bool finfoMode;
 
 			virtual void ProcVideoFrame(UInt32 frameTime, UInt32 frameNum, UInt8 **imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst);
 		public:
-			VP09Decoder(IVideoSource *sourceVideo, Bool toRelease);
+			VP09Decoder(NotNullPtr<IVideoSource> sourceVideo, Bool toRelease);
 			virtual ~VP09Decoder();
 
-			virtual Text::CString GetFilterName();
+			virtual Text::CStringNN GetFilterName();
 
 			virtual Bool HasFrameCount();
 			virtual UOSInt GetFrameCount();

@@ -159,7 +159,7 @@ void Media::Decoder::RHVCDecoder::ProcVideoFrame(UInt32 frameTime, UInt32 frameN
 	mutUsage.EndUse();
 }
 
-Media::Decoder::RHVCDecoder::RHVCDecoder(IVideoSource *sourceVideo, Bool toRelease) : Media::Decoder::VDecoderBase(sourceVideo)
+Media::Decoder::RHVCDecoder::RHVCDecoder(NotNullPtr<IVideoSource> sourceVideo, Bool toRelease) : Media::Decoder::VDecoderBase(sourceVideo)
 {
 	Media::FrameInfo info;
 	UOSInt size;
@@ -270,7 +270,7 @@ Media::Decoder::RHVCDecoder::~RHVCDecoder()
 	}
 }
 
-Text::CString Media::Decoder::RHVCDecoder::GetFilterName()
+Text::CStringNN Media::Decoder::RHVCDecoder::GetFilterName()
 {
 	return CSTR("RHVCDecoder");
 }

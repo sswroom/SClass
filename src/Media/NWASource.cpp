@@ -9,7 +9,7 @@
 #include "Text/MyString.h"
 #include "Sync/Event.h"
 
-Media::NWASource::NWASource(NotNullPtr<IO::StreamData> fd, UInt32 sampleCount, UInt32 blockSize, UInt32 compLevel, UInt32 nBlocks, Media::AudioFormat *format, NotNullPtr<Text::String> name) : Media::LPCMSource(fd, 0, fd->GetDataSize(), format, name)
+Media::NWASource::NWASource(NotNullPtr<IO::StreamData> fd, UInt32 sampleCount, UInt32 blockSize, UInt32 compLevel, UInt32 nBlocks, NotNullPtr<const Media::AudioFormat> format, NotNullPtr<Text::String> name) : Media::LPCMSource(fd, 0, fd->GetDataSize(), format, name)
 {
 	this->sampleCount = sampleCount;
 	this->blockSize = blockSize;
@@ -21,7 +21,7 @@ Media::NWASource::NWASource(NotNullPtr<IO::StreamData> fd, UInt32 sampleCount, U
 	fd->GetRealData(0x2c, this->nBlocks * 4, Data::ByteArray((UInt8*)this->blockOfsts, this->nBlocks * 4));
 }
 
-Media::NWASource::NWASource(NotNullPtr<IO::StreamData> fd, UInt32 sampleCount, UInt32 blockSize, UInt32 compLevel, UInt32 nBlocks, Media::AudioFormat *format, Text::CString name) : Media::LPCMSource(fd, 0, fd->GetDataSize(), format, name)
+Media::NWASource::NWASource(NotNullPtr<IO::StreamData> fd, UInt32 sampleCount, UInt32 blockSize, UInt32 compLevel, UInt32 nBlocks, NotNullPtr<const Media::AudioFormat> format, Text::CStringNN name) : Media::LPCMSource(fd, 0, fd->GetDataSize(), format, name)
 {
 	this->sampleCount = sampleCount;
 	this->blockSize = blockSize;

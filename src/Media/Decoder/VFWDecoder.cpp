@@ -164,12 +164,12 @@ void Media::Decoder::VFWDecoder::ProcVideoFrame(UInt32 frameTime, UInt32 frameNu
 		if (this->imgCb)
 		{
 			Media::FrameInfo info;
-			Media::StaticImage *img;
+			NotNullPtr<Media::StaticImage> img;
 			UInt32 frameRateNorm;
 			UInt32 frameRateDenorm;
 			UOSInt maxFrameSize;
 			this->GetVideoInfo(info, frameRateNorm, frameRateDenorm, maxFrameSize);
-			NEW_CLASS(img, Media::StaticImage(info));
+			NEW_CLASSNN(img, Media::StaticImage(info));
 			MemCopyNO(img->data, this->frameBuff, this->maxFrameSize);
 			this->imgCb(this->imgCbData, frameTime, frameNum, img);
 			this->imgCb = 0;
@@ -195,7 +195,7 @@ void Media::Decoder::VFWDecoder::ProcVideoFrame(UInt32 frameTime, UInt32 frameNu
 	}
 }
 
-Media::Decoder::VFWDecoder::VFWDecoder(Media::IVideoSource *sourceVideo) : Media::Decoder::VDecoderBase(sourceVideo)
+Media::Decoder::VFWDecoder::VFWDecoder(NotNullPtr<Media::IVideoSource> sourceVideo) : Media::Decoder::VDecoderBase(sourceVideo)
 {
 	this->sourceVideo = 0;
 	this->frameRateNorm = 0;
@@ -395,7 +395,7 @@ Media::Decoder::VFWDecoder::VFWDecoder(Media::IVideoSource *sourceVideo) : Media
 				}
 				this->hic = hic;
 				this->sourceFCC = fcc;
-				this->sourceVideo = sourceVideo;
+				this->sourceVideo = sourceVideo.Ptr();
 				this->frameBuff = MemAllocA64(UInt8, this->maxFrameSize);
 				MemClear(this->frameBuff, this->maxFrameSize);
 				return;
@@ -439,7 +439,7 @@ Bool Media::Decoder::VFWDecoder::CaptureImage(ImageCallback imgCb, void *userDat
 	return true;
 }
 
-Text::CString Media::Decoder::VFWDecoder::GetFilterName()
+Text::CStringNN Media::Decoder::VFWDecoder::GetFilterName()
 {
 	return CSTR("VFWDecoder");
 }

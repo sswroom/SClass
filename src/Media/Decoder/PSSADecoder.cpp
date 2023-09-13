@@ -5,14 +5,14 @@
 
 #define BASEVOLUME 0x4000 //0x4000
 
-Media::Decoder::PSSADecoder::PSSADecoder(Media::IAudioSource *sourceAudio)
+Media::Decoder::PSSADecoder::PSSADecoder(NotNullPtr<Media::IAudioSource> sourceAudio)
 {
 	Media::AudioFormat fmt;
 	this->sourceAudio = 0;
 	this->nChannels = 0;
 	this->readBuffSize = 0;
 	this->buffSize = 0;
-	sourceAudio->GetFormat(&fmt);
+	sourceAudio->GetFormat(fmt);
 	if (fmt.formatId != 0x2081)
 		return;
 	if (fmt.nChannels == 1)
@@ -33,7 +33,7 @@ Media::Decoder::PSSADecoder::PSSADecoder(Media::IAudioSource *sourceAudio)
 	{
 		return;
 	}
-	this->sourceAudio = sourceAudio;
+	this->sourceAudio = sourceAudio.Ptr();
 	this->readBuffSize = this->sourceAudio->GetMinBlockSize();
 	this->readBuff.ChangeSize(this->readBuffSize);
 }
@@ -42,12 +42,12 @@ Media::Decoder::PSSADecoder::~PSSADecoder()
 {
 }
 
-void Media::Decoder::PSSADecoder::GetFormat(AudioFormat *format)
+void Media::Decoder::PSSADecoder::GetFormat(NotNullPtr<AudioFormat> format)
 {
 	if (this->sourceAudio)
 	{
 		Media::AudioFormat fmt;
-		this->sourceAudio->GetFormat(&fmt);
+		this->sourceAudio->GetFormat(fmt);
 		format->formatId = 1;
 		format->bitpersample = 16;
 		format->frequency = fmt.frequency;

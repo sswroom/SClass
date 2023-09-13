@@ -40,7 +40,7 @@ namespace Media
 
 			Bool CloseInput(void *hand);
 			Bool GetInputVideoInfo(void *hand, NotNullPtr<Media::FrameInfo> info, OutParam<UInt32> frameRateNorm, OutParam<UInt32> frameRateDenorm, OutParam<UInt32> frameCnt);
-			Bool GetInputAudioInfo(void *hand, Media::AudioFormat *af, UInt32 *sampleCnt);
+			Bool GetInputAudioInfo(void *hand, NotNullPtr<Media::AudioFormat> af, OutParam<UInt32> sampleCnt);
 			UOSInt GetVideoFrame(void *hand, UOSInt frameNum, UInt8 *buff);
 			UOSInt GetAudioData(void *hand, UOSInt startSample, UOSInt sampleLength, UInt8 *buff);
 			Bool IsVideoKeyFrame(void *hand, UInt32 frameNum);

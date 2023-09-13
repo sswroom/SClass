@@ -9,10 +9,10 @@ namespace Net
 	class RTPASource : public Media::IAudioSource
 	{
 	private:
-		Net::RTPCliChannel *ch;
-		Net::RTPAPLHandler *hdlr;
+		NotNullPtr<Net::RTPCliChannel> ch;
+		NotNullPtr<Net::RTPAPLHandler> hdlr;
 	public:
-		RTPASource(Net::RTPCliChannel *ch, Net::RTPAPLHandler *hdlr);
+		RTPASource(NotNullPtr<Net::RTPCliChannel> ch, NotNullPtr<Net::RTPAPLHandler> hdlr);
 		virtual ~RTPASource();
 
 		virtual UTF8Char *GetSourceName(UTF8Char *buff);
@@ -21,7 +21,7 @@ namespace Net
 		virtual UInt32 SeekToTime(UInt32 time);
 		virtual Bool TrimStream(UInt32 trimTimeStart, UInt32 trimTimeEnd, Int32 *syncTime);
 
-		virtual void GetFormat(Media::AudioFormat *format);
+		virtual void GetFormat(NotNullPtr<Media::AudioFormat> format);
 
 		virtual Bool Start(Sync::Event *evt, UOSInt blkSize);
 		virtual void Stop();

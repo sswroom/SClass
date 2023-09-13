@@ -74,7 +74,7 @@ void Media::AudioFormat::Clear()
 	this->extra = 0;
 }
 
-void Media::AudioFormat::FromAudioFormat(Media::AudioFormat *fmt)
+void Media::AudioFormat::FromAudioFormat(NotNullPtr<const Media::AudioFormat> fmt)
 {
 	this->formatId = fmt->formatId;
 	this->nChannels = fmt->nChannels;

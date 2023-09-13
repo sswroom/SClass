@@ -9,10 +9,8 @@
 #include "Media/AudioFilter/FileMixFilter.h"
 #include "Text/MyString.h"
 
-Media::AudioFilter::FileMixFilter::FileMixFilter(IAudioSource *sourceAudio, Parser::ParserList *parsers) : Media::IAudioFilter(sourceAudio)
+Media::AudioFilter::FileMixFilter::FileMixFilter(NotNullPtr<IAudioSource> sourceAudio, Parser::ParserList *parsers) : Media::IAudioFilter(sourceAudio)
 {
-	this->sourceAudio = sourceAudio;
-	NEW_CLASS(this->format, Media::AudioFormat());
 	sourceAudio->GetFormat(this->format);
 	this->parsers = parsers;
 	this->fileSrc = 0;
@@ -26,7 +24,6 @@ Media::AudioFilter::FileMixFilter::~FileMixFilter()
 		DEL_CLASS(this->fileSrc);
 		this->fileSrc = 0;
 	}
-	DEL_CLASS(this->format);
 }
 
 void Media::AudioFilter::FileMixFilter::GetFormat(AudioFormat *format)
@@ -36,12 +33,10 @@ void Media::AudioFilter::FileMixFilter::GetFormat(AudioFormat *format)
 
 UOSInt Media::AudioFilter::FileMixFilter::ReadBlock(Data::ByteArray blk)
 {
-	if (this->sourceAudio == 0)
-		return 0;
 	UOSInt readSize = this->sourceAudio->ReadBlock(blk);
 	if (this->mixing)
 	{
-		UOSInt sampleCnt = readSize / this->format->align;
+		UOSInt sampleCnt = readSize / this->format.align;
 		UOSInt readCnt;
 		OSInt i;
 		OSInt j;
@@ -50,16 +45,16 @@ UOSInt Media::AudioFilter::FileMixFilter::ReadBlock(Data::ByteArray blk)
 		Int32 v;
 		if (this->chMix)
 		{
-			Data::ByteBuffer fileBuff(sampleCnt * this->format->bitpersample);
+			Data::ByteBuffer fileBuff(sampleCnt * this->format.bitpersample);
 			readCnt = this->fileSrc->ReadSample(this->mixOfst, sampleCnt, fileBuff);
-			if (this->format->bitpersample == 16)
+			if (this->format.bitpersample == 16)
 			{
 				i = 0;
 				j = 0;
 				k = readCnt;
 				while (k-- > 0)
 				{
-					l = this->format->nChannels;
+					l = this->format.nChannels;
 					while (l-- > 0)
 					{
 						v = ReadInt16(&blk[j]) + (Int32)ReadInt16(&fileBuff[i]);
@@ -88,13 +83,13 @@ UOSInt Media::AudioFilter::FileMixFilter::ReadBlock(Data::ByteArray blk)
 		}
 		else
 		{
-			Data::ByteBuffer fileBuff(sampleCnt * this->format->align);
+			Data::ByteBuffer fileBuff(sampleCnt * this->format.align);
 			readCnt = this->fileSrc->ReadSample(this->mixOfst, sampleCnt, fileBuff);
-			if (this->format->bitpersample == 16)
+			if (this->format.bitpersample == 16)
 			{
 				i = 0;
 				j = 0;
-				k = readCnt * this->format->nChannels;
+				k = readCnt * this->format.nChannels;
 				while (k-- > 0)
 				{
 					v = ReadInt16(&blk[j]) + (Int32)ReadInt16(&fileBuff[i]);
@@ -151,13 +146,13 @@ Bool Media::AudioFilter::FileMixFilter::LoadFile(NotNullPtr<Text::String> fileNa
 			{
 				Media::AudioFormat fmt;
 				audSrc = (Media::IAudioSource*)mediaSrc;
-				audSrc->GetFormat(&fmt);
-				if (audSrc->SupportSampleRead() && fmt.frequency == this->format->frequency && this->format->bitpersample == fmt.bitpersample)
+				audSrc->GetFormat(fmt);
+				if (audSrc->SupportSampleRead() && fmt.frequency == this->format.frequency && this->format.bitpersample == fmt.bitpersample)
 				{
-					if (this->format->nChannels == fmt.nChannels || fmt.nChannels == 1)
+					if (this->format.nChannels == fmt.nChannels || fmt.nChannels == 1)
 					{
 						found = true;
-						this->chMix = (this->format->nChannels != fmt.nChannels);
+						this->chMix = (this->format.nChannels != fmt.nChannels);
 						mf->KeepStream(i, true);
 						DEL_CLASS(mf);
 						if (this->fileSrc)

@@ -408,7 +408,7 @@ UInt32 __stdcall Media::M2VStreamSource::PlayThread(void *userObj)
 	return 1001;
 }
 
-Media::M2VStreamSource::M2VStreamSource(Media::IStreamControl *pbc)
+Media::M2VStreamSource::M2VStreamSource(NotNullPtr<Media::IStreamControl> pbc)
 {
 	this->info.Clear();
 	this->pbc = pbc;
@@ -467,7 +467,7 @@ UTF8Char *Media::M2VStreamSource::GetSourceName(UTF8Char *buff)
 	return this->pbc->GetMediaName(buff);
 }
 
-Text::CString Media::M2VStreamSource::GetFilterName()
+Text::CStringNN Media::M2VStreamSource::GetFilterName()
 {
 	return CSTR("M2VStreamSource");
 }

@@ -11,7 +11,7 @@ namespace Media
 		{
 		private:
 			Media::OpenCV::OCVObjectDetector *frameInput;
-			Media::IVideoSource *src;
+			NotNullPtr<Media::IVideoSource> src;
 			Media::IVideoSource *decoder;
 			Media::FrameInfo info;
 			OSInt frameSkip;
@@ -23,7 +23,7 @@ namespace Media
 			static void __stdcall OnFrame(UInt32 frameTime, UInt32 frameNum, UInt8 **imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, void *userData, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst);
 			static void __stdcall OnFrameChange(Media::IVideoSource::FrameChange frChg, void *userData);
 		public:
-			OCVFrameFeeder(Media::OpenCV::OCVObjectDetector *frameInput, Media::IVideoSource *src);
+			OCVFrameFeeder(Media::OpenCV::OCVObjectDetector *frameInput, NotNullPtr<Media::IVideoSource> src);
 			~OCVFrameFeeder();
 
 			Bool Start();

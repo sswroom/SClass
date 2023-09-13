@@ -46,7 +46,7 @@ namespace Media
 		typedef void (__stdcall *FrameCallback)(UInt32 frameTime, UInt32 frameNum, UInt8 **imgData, UOSInt dataSize, FrameStruct frameStruct, void *userData, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst);
 		typedef void (__stdcall *FrameChangeCallback)(FrameChange frChg, void *userData);
 		typedef Bool (__stdcall *FrameInfoCallback)(UInt32 frameTime, UOSInt frameNum, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, Media::FrameType frameType, void *userData, Media::YCOffset ycOfst); //return true to continue
-		typedef void (__stdcall *ImageCallback)(void *userData, UInt32 frameTime, UInt32 frameNum, Media::StaticImage *img);
+		typedef void (__stdcall *ImageCallback)(void *userData, UInt32 frameTime, UInt32 frameNum, NotNullPtr<Media::StaticImage> img);
 
 		IVideoSource();
 		virtual ~IVideoSource();
@@ -54,10 +54,10 @@ namespace Media
 		virtual Bool CaptureImage(ImageCallback imgCb, void *userData);
 
 		virtual UTF8Char *GetSourceName(UTF8Char *buff) = 0;
-		virtual Text::CString GetFilterName() = 0;
+		virtual Text::CStringNN GetFilterName() = 0;
 
 		virtual void SetBorderCrop(UOSInt cropLeft, UOSInt cropTop, UOSInt cropRight, UOSInt cropBottom) = 0;
-		virtual void GetBorderCrop(UOSInt *cropLeft, UOSInt *cropTop, UOSInt *cropRight, UOSInt *cropBottom) = 0;
+		virtual void GetBorderCrop(OutParam<UOSInt> cropLeft, OutParam<UOSInt> cropTop, OutParam<UOSInt> cropRight, OutParam<UOSInt> cropBottom) = 0;
 		virtual Bool GetVideoInfo(NotNullPtr<Media::FrameInfo> info, OutParam<UInt32> frameRateNorm, OutParam<UInt32> frameRateDenorm, OutParam<UOSInt> maxFrameSize) = 0;
 		virtual Bool Init(FrameCallback cb, FrameChangeCallback fcCb, void *userData) = 0;
 		virtual Bool Start() = 0; //true = succeed

@@ -387,7 +387,7 @@ UInt32 __stdcall Media::ASIOOutRenderer::PlayThread(void *obj)
 	Sync::ThreadUtil::SetPriority(Sync::ThreadUtil::TP_REALTIME);
 	ASIOBufferInfo *buffInfos = (ASIOBufferInfo *)me->bufferInfos;
 	me->threadInit = true;
-	me->audSrc->GetFormat(&fmt);
+	me->audSrc->GetFormat(fmt);
 	me->bufferIndex = 0;
 	me->bufferOfst = 0;
 	me->bufferFilled = true;
@@ -428,7 +428,7 @@ UInt32 __stdcall Media::ASIOOutRenderer::PlayThread(void *obj)
 	audStartTime = me->audSrc->GetCurrTime();
 	me->audSrc->Start(evt, nSamples * blkAlign);
 
-	me->audSrc->ReadBlockLPCM(Data::ByteArray(sampleBuff, nSamples * blkAlign), &fmt);
+	me->audSrc->ReadBlockLPCM(Data::ByteArray(sampleBuff, nSamples * blkAlign), fmt);
 	asio->start();
 	while (!me->toStop)
 	{
@@ -622,7 +622,7 @@ UInt32 __stdcall Media::ASIOOutRenderer::PlayThread(void *obj)
 				me->bufferFilled = true;
 				asio->outputReady();
 			}
-			if (me->audSrc->ReadBlockLPCM(Data::ByteArray(sampleBuff, nSamples * blkAlign), &fmt) == 0)
+			if (me->audSrc->ReadBlockLPCM(Data::ByteArray(sampleBuff, nSamples * blkAlign), fmt) == 0)
 				break;
 		}
 		me->bufferEvt->Wait();
@@ -815,7 +815,7 @@ Bool Media::ASIOOutRenderer::BindAudio(Media::IAudioSource *audsrc)
 	if (audsrc == 0)
 		return false;
 
-	audsrc->GetFormat(&format);
+	audsrc->GetFormat(format);
 	if (format.formatId != 1)
 	{
 		return false;

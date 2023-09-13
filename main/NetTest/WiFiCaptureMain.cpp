@@ -21,7 +21,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	UTF8Char *sptr;
 	
 	UOSInt argc;
-	UTF8Char **argv = progCtrl->GetCommandLines(progCtrl, &argc);
+	UTF8Char **argv = progCtrl->GetCommandLines(progCtrl, argc);
 	if (argc >= 2)
 	{
 		Text::StrToUInt16(argv[1], webPort);

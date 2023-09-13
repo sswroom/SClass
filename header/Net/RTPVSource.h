@@ -9,14 +9,14 @@ namespace Net
 	class RTPVSource : public Media::VideoSourceBase
 	{
 	private:
-		Net::RTPCliChannel *ch;
-		Net::RTPVPLHandler *hdlr;
+		NotNullPtr<Net::RTPCliChannel> ch;
+		NotNullPtr<Net::RTPVPLHandler> hdlr;
 	public:
-		RTPVSource(Net::RTPCliChannel *ch, Net::RTPVPLHandler *hdlr);
+		RTPVSource(NotNullPtr<Net::RTPCliChannel> ch, NotNullPtr<Net::RTPVPLHandler> hdlr);
 		virtual ~RTPVSource();
 
 		virtual UTF8Char *GetSourceName(UTF8Char *buff);
-		virtual Text::CString GetFilterName();
+		virtual Text::CStringNN GetFilterName();
 
 		virtual Bool GetVideoInfo(NotNullPtr<Media::FrameInfo> info, OutParam<UInt32> frameRateNorm, OutParam<UInt32> frameRateDenorm, OutParam<UOSInt> maxFrameSize);
 		virtual Bool Init(FrameCallback cb, FrameChangeCallback fcCb, void *userData);

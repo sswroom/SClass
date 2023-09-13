@@ -41,7 +41,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	UInt16 port = 1234;
 
 	UOSInt argc;
-	UTF8Char **argv = progCtrl->GetCommandLines(progCtrl, &argc);
+	UTF8Char **argv = progCtrl->GetCommandLines(progCtrl, argc);
 	if (argc >= 2)
 	{
 		Text::StrToUInt16S(argv[1], port, 0);

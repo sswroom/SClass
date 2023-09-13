@@ -64,21 +64,21 @@ void SSWR::AVIRead::AVIRAudioViewerForm::UpdateImages()
 		UOSInt channelH;
 		UOSInt lastY;
 		UOSInt thisY;
-		UOSInt align = this->format->align;
+		UOSInt align = this->format.align;
 		if (gimg.Set(this->eng->CreateImage32(sz, Media::AT_NO_ALPHA)))
 		{
-			Data::ByteBuffer buff(this->format->align * sz.x);
+			Data::ByteBuffer buff(this->format.align * sz.x);
 			i = this->audSrc->ReadSample(currSample, sz.x, buff);
 			
 			b = gimg->NewBrushARGB(0xff000000);
 			gimg->DrawRect(Math::Coord2DDbl(0, 0), sz.ToDouble(), 0, b);
 			gimg->DelBrush(b);
 
-			channelH = sz.y / this->format->nChannels / 2;
+			channelH = sz.y / this->format.nChannels / 2;
 			if (channelH > 0)
 			{
 				p = gimg->NewPenARGB(0xffffffff, 1, 0, 0);
-				if (this->format->bitpersample == 16)
+				if (this->format.bitpersample == 16)
 				{
 					if (i != sz.x)
 					{
@@ -90,10 +90,10 @@ void SSWR::AVIRead::AVIRAudioViewerForm::UpdateImages()
 							i += 2;
 						}
 					}
-					currCh = this->format->nChannels;
+					currCh = this->format.nChannels;
 					while (currCh-- > 0)
 					{
-						currY = sz.y * currCh / this->format->nChannels;
+						currY = sz.y * currCh / this->format.nChannels;
 						lastY = currY + channelH;
 						i = 0;
 						j = 2 * currCh;
@@ -108,7 +108,7 @@ void SSWR::AVIRead::AVIRAudioViewerForm::UpdateImages()
 						}
 					}
 				}
-				else if (this->format->bitpersample == 8)
+				else if (this->format.bitpersample == 8)
 				{
 				}
 				gimg->DelPen(p);
@@ -168,7 +168,7 @@ void SSWR::AVIRead::AVIRAudioViewerForm::UpdateFreqImage()
 		if (gimg.Set(this->eng->CreateImage32(sz, Media::AT_NO_ALPHA)))
 		{
 
-			Data::ByteBuffer buff(this->format->align * (FFTSAMPLE + FFTAVG - 1));
+			Data::ByteBuffer buff(this->format.align * (FFTSAMPLE + FFTAVG - 1));
 			i = this->audSrc->ReadSample(currSample - FFTSAMPLE + 1, FFTSAMPLE + FFTAVG - 1, buff);
 			
 			b = gimg->NewBrushARGB(0xff000000);
@@ -178,9 +178,9 @@ void SSWR::AVIRead::AVIRAudioViewerForm::UpdateFreqImage()
 			Double *freqData;
 			freqData = MemAlloc(Double, FFTSAMPLE);
 			i = 0;
-			while (i < this->format->nChannels)
+			while (i < this->format.nChannels)
 			{
-				Math::FFT::ForwardBits(buff.Ptr() + i * (UOSInt)(this->format->bitpersample >> 3), freqData, FFTSAMPLE, FFTAVG, this->format->bitpersample, this->format->nChannels, Math::FFT::WT_BLACKMANN_HARRIS, 1.0);
+				Math::FFT::ForwardBits(buff.Ptr() + i * (UOSInt)(this->format.bitpersample >> 3), freqData, FFTSAMPLE, FFTAVG, this->format.bitpersample, this->format.nChannels, Math::FFT::WT_BLACKMANN_HARRIS, 1.0);
 
 				if (i == 0)
 				{
@@ -248,7 +248,6 @@ SSWR::AVIRead::AVIRAudioViewerForm::AVIRAudioViewerForm(UI::GUIClientControl *pa
 	this->eng = core->GetDrawEngine();
 	this->sampleImg = 0;
 	this->fftImg = 0;
-	NEW_CLASS(this->format, Media::AudioFormat());
 	this->audSrc->GetFormat(this->format);
 
 	UI::GUIMenu *mnu;
@@ -291,7 +290,6 @@ SSWR::AVIRead::AVIRAudioViewerForm::~AVIRAudioViewerForm()
 	{
 		this->eng->DeleteImage(img);
 	}
-	DEL_CLASS(this->format);
 }
 
 void SSWR::AVIRead::AVIRAudioViewerForm::EventMenuClicked(UInt16 cmdId)

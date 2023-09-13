@@ -11,17 +11,17 @@ void Media::AudioFilter::AudioSampleRipper::ResetStatus()
 	MemClear(this->soundBuff, this->soundBuffLeng);
 	this->soundBuffOfst = 0;
 	this->changed = true;
-	mutUsage.EndUse();
 }
 
-Media::AudioFilter::AudioSampleRipper::AudioSampleRipper(Media::IAudioSource *sourceAudio, UInt32 sampleCount) : Media::IAudioFilter(sourceAudio)
+Media::AudioFilter::AudioSampleRipper::AudioSampleRipper(NotNullPtr<Media::IAudioSource> sourceAudio, UInt32 sampleCount) : Media::IAudioFilter(sourceAudio)
 {
 	Media::AudioFormat fmt;
 	this->soundBuff = 0;
-	sourceAudio->GetFormat(&fmt);
+	this->nChannel = 0;
+	this->bitCount = 0;
+	sourceAudio->GetFormat(fmt);
 	if (fmt.formatId != 0x1)
 		return;
-	this->sourceAudio = sourceAudio;
 	this->nChannel = fmt.nChannels;
 	this->bitCount = fmt.bitpersample;
 	this->soundBuffLeng = sampleCount * fmt.align;
@@ -40,19 +40,12 @@ Media::AudioFilter::AudioSampleRipper::~AudioSampleRipper()
 
 UInt32 Media::AudioFilter::AudioSampleRipper::SeekToTime(UInt32 time)
 {
-	if (this->sourceAudio)
-	{
-		this->ResetStatus();
-		return this->sourceAudio->SeekToTime(time);
-	}
-	return 0;
+	this->ResetStatus();
+	return this->sourceAudio->SeekToTime(time);
 }
 
 UOSInt Media::AudioFilter::AudioSampleRipper::ReadBlock(Data::ByteArray blk)
 {
-	if (this->sourceAudio == 0)
-		return 0;
-
 	UOSInt readSize = this->sourceAudio->ReadBlock(blk);
 	UOSInt thisSize;
 	UOSInt sizeLeft;

@@ -108,7 +108,7 @@ UTF8Char *Media::AVIUtl::AUIVideo::GetSourceName(UTF8Char *buff)
 	return 0;
 }
 
-Text::CString Media::AVIUtl::AUIVideo::GetFilterName()
+Text::CStringNN Media::AVIUtl::AUIVideo::GetFilterName()
 {
 	return CSTR("AUIVideo");
 }

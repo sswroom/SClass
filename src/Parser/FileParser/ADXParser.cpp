@@ -58,7 +58,7 @@ IO::ParsedObject *Parser::FileParser::ADXParser::ParseFileHdr(NotNullPtr<IO::Str
 
 	Media::MediaFile *vid;
 	Media::AudioFixBlockSource *src;
-	NEW_CLASS(src, Media::AudioFixBlockSource(fd, startOfst + 4, ((ReadMUInt32(&buff[8]) >> 4) + 1) * 18, &af, fd->GetFullName()));
+	NEW_CLASS(src, Media::AudioFixBlockSource(fd, startOfst + 4, ((ReadMUInt32(&buff[8]) >> 4) + 1) * 18, af, fd->GetFullName()));
 
 	NEW_CLASS(vid, Media::MediaFile(fd->GetFullName()));
 	vid->AddSource(src, 0);

@@ -330,7 +330,7 @@ Media::VCDMPGFile::VCDMPGFile(IO::ISectorData *data, UInt64 startSector, UInt64 
 							Media::MPAStreamSource *mstm = (Media::MPAStreamSource*)this->dataStms.Get(stmId);
 							if (mstm == 0)
 							{
-								NEW_CLASS(mstm, Media::MPAStreamSource(this));
+								NEW_CLASS(mstm, Media::MPAStreamSource(*this));
 								this->dataStms.Put(stmId, mstm);
 								this->audStms.Add(mstm);
 							}
@@ -386,7 +386,7 @@ Media::VCDMPGFile::VCDMPGFile(IO::ISectorData *data, UInt64 startSector, UInt64 
 					UInt32 frameRateDenorm;
 					if (isFrame && vstm == 0 && Media::MPEGVideoParser::GetFrameInfo(&this->readBuff[j], 2348 - j, frameInfo, frameRateNorm, frameRateDenorm, 0, true))
 					{
-						NEW_CLASS(vstm, Media::M2VStreamSource(this));
+						NEW_CLASS(vstm, Media::M2VStreamSource(*this));
 						this->vstm->DetectStreamInfo(&this->readBuff[j], 2348 - j);
 					}
 

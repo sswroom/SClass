@@ -3,12 +3,12 @@
 #include "Text/MyString.h"
 #include "Media/Decoder/XADecoder.h"
 
-Media::Decoder::XADecoder::XADecoder(Media::IAudioSource *sourceAudio)
+Media::Decoder::XADecoder::XADecoder(NotNullPtr<Media::IAudioSource> sourceAudio)
 {
 	Media::AudioFormat fmt;
 	this->sourceAudio = 0;
 	this->nChannels = 0;
-	sourceAudio->GetFormat(&fmt);
+	sourceAudio->GetFormat(fmt);
 	if (fmt.formatId != 0x2082)
 		return;
 	if (fmt.nChannels == 1)
@@ -27,19 +27,19 @@ Media::Decoder::XADecoder::XADecoder(Media::IAudioSource *sourceAudio)
 	{
 		return;
 	}
-	this->sourceAudio = sourceAudio;
+	this->sourceAudio = sourceAudio.Ptr();
 }
 
 Media::Decoder::XADecoder::~XADecoder()
 {
 }
 
-void Media::Decoder::XADecoder::GetFormat(AudioFormat *format)
+void Media::Decoder::XADecoder::GetFormat(NotNullPtr<AudioFormat> format)
 {
 	if (this->sourceAudio)
 	{
 		Media::AudioFormat fmt;
-		this->sourceAudio->GetFormat(&fmt);
+		this->sourceAudio->GetFormat(fmt);
 		format->formatId = 1;
 		format->bitpersample = 16;
 		format->frequency = fmt.frequency;

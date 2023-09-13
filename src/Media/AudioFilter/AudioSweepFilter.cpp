@@ -6,10 +6,10 @@
 #include "Sync/MutexUsage.h"
 #include "Text/MyString.h"
 
-Media::AudioFilter::AudioSweepFilter::AudioSweepFilter(IAudioSource *sourceAudio) : Media::IAudioFilter(sourceAudio)
+Media::AudioFilter::AudioSweepFilter::AudioSweepFilter(NotNullPtr<IAudioSource> sourceAudio) : Media::IAudioFilter(sourceAudio)
 {
 	this->sourceAudio = sourceAudio;
-	sourceAudio->GetFormat(&this->format);
+	sourceAudio->GetFormat(this->format);
 
 	this->SetVolume(1.0);
 	this->currSample = 0;
@@ -22,15 +22,13 @@ Media::AudioFilter::AudioSweepFilter::~AudioSweepFilter()
 {
 }
 
-void Media::AudioFilter::AudioSweepFilter::GetFormat(AudioFormat *format)
+void Media::AudioFilter::AudioSweepFilter::GetFormat(NotNullPtr<AudioFormat> format)
 {
-	format->FromAudioFormat(&this->format);
+	format->FromAudioFormat(this->format);
 }
 
 UOSInt Media::AudioFilter::AudioSweepFilter::ReadBlock(Data::ByteArray blk)
 {
-	if (this->sourceAudio == 0)
-		return 0;
 	UOSInt readSize = this->sourceAudio->ReadBlock(blk);
 
 	Double startFreq;

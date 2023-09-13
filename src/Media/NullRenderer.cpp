@@ -22,7 +22,7 @@ UInt32 __stdcall Media::NullRenderer::PlayThread(void *obj)
 
 	me->playing = true;
 	me->threadInit = true;
-	me->audsrc->GetFormat(&af);
+	me->audsrc->GetFormat(af);
 	if (me->buffTime)
 	{
 		buffLeng = (me->buffTime * af.frequency / 1000) * af.align;
@@ -42,7 +42,7 @@ UInt32 __stdcall Media::NullRenderer::PlayThread(void *obj)
 
 	while (!me->stopPlay)
 	{
-		readSize = me->audsrc->ReadBlockLPCM(tmpBuff, &af);
+		readSize = me->audsrc->ReadBlockLPCM(tmpBuff, af);
 		if (readSize == 0)
 		{
 			if (me->audsrc->IsEnd())
@@ -108,7 +108,7 @@ Bool Media::NullRenderer::BindAudio(Media::IAudioSource *audsrc)
 	if (audsrc == 0)
 		return false;
 
-	audsrc->GetFormat(&fmt);
+	audsrc->GetFormat(fmt);
 	if (fmt.formatId != 1 && fmt.formatId != 3)
 	{
 		return false;

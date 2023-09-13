@@ -76,9 +76,9 @@ Bool Media::SilentSource::TrimStream(UInt32 trimTimeStart, UInt32 trimTimeEnd, I
 	return true;
 }
 
-void Media::SilentSource::GetFormat(AudioFormat *format)
+void Media::SilentSource::GetFormat(NotNullPtr<AudioFormat> format)
 {
-	format->FromAudioFormat(&this->format);
+	format->FromAudioFormat(this->format);
 }
 
 Bool Media::SilentSource::Start(Sync::Event *evt, UOSInt blkSize)

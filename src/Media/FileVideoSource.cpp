@@ -256,7 +256,7 @@ UTF8Char *Media::FileVideoSource::GetSourceName(UTF8Char *buff)
 	return this->data->GetFullName()->ConcatTo(buff);
 }
 
-Text::CString Media::FileVideoSource::GetFilterName()
+Text::CStringNN Media::FileVideoSource::GetFilterName()
 {
 	return CSTR("FileVideoSource");
 }

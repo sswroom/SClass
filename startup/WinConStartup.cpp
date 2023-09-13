@@ -51,7 +51,7 @@ void __stdcall ConsoleControl_SignalExit(NotNullPtr<Core::IProgControl> progCtrl
 	ctrl->evt->Set();
 }
 
-UTF8Char **__stdcall ConsoleControl_GetCommandLines(NotNullPtr<Core::IProgControl> progCtrl, UOSInt *cmdCnt)
+UTF8Char **__stdcall ConsoleControl_GetCommandLines(NotNullPtr<Core::IProgControl> progCtrl, OutParam<UOSInt> cmdCnt)
 {
 	Core::ConsoleControl *ctrl = (Core::ConsoleControl *)progCtrl.Ptr();
 	if (ctrl->argv == 0)
@@ -68,7 +68,7 @@ UTF8Char **__stdcall ConsoleControl_GetCommandLines(NotNullPtr<Core::IProgContro
 		}
 		LocalFree(argv);
 	}
-	*cmdCnt = ctrl->argc;
+	cmdCnt.Set(ctrl->argc);
 	return ctrl->argv;
 }
 

@@ -29,7 +29,7 @@ namespace Media
 
 			static UInt32 __stdcall CaptureThread(void *userObj);
 		public:
-			AudioCaptureFilter(IAudioSource *sourceAudio);
+			AudioCaptureFilter(NotNullPtr<IAudioSource> sourceAudio);
 			virtual ~AudioCaptureFilter();
 
 			virtual UInt32 SeekToTime(UInt32 time); //ms, ret actual time

@@ -112,18 +112,39 @@ void __stdcall SSWR::AVIRead::AVIRAudioFilterForm::OnStartClicked(void *userObj)
 				me->audSrc = wiSrc;
 			}
 		}
-		if (me->audSrc)
+		NotNullPtr<Media::IAudioSource> audSrc;
+		if (audSrc.Set(me->audSrc))
 		{
-			NEW_CLASS(me->audioAmp, Media::AudioFilter::AudioAmplifier(me->audSrc));
-			NEW_CLASS(me->dtmfGen, Media::AudioFilter::DTMFGenerator(me->audioAmp));
-			NEW_CLASS(me->fileMix, Media::AudioFilter::FileMixFilter(me->dtmfGen, me->core->GetParserList()));
-			NEW_CLASS(me->sndGen, Media::AudioFilter::SoundGenerator(me->fileMix));
-			NEW_CLASS(me->sweepFilter, Media::AudioFilter::AudioSweepFilter(me->sndGen));
-			NEW_CLASS(me->volBooster, Media::AudioFilter::DynamicVolBooster(me->sweepFilter));
-			NEW_CLASS(me->dtmfDec, Media::AudioFilter::DTMFDecoder(me->volBooster, dtmfMS * frequency / 1000));
-			NEW_CLASS(me->audioRipper, Media::AudioFilter::AudioSampleRipper(me->dtmfDec, FFTSAMPLE + FFTAVG - 1));
-			NEW_CLASS(me->audioLevel, Media::AudioFilter::AudioLevelMeter(me->audioRipper));
-			NEW_CLASS(me->audioCapture, Media::AudioFilter::AudioCaptureFilter(me->audioLevel));
+			NotNullPtr<Media::AudioFilter::AudioAmplifier> audioAmp;
+			NotNullPtr<Media::AudioFilter::DTMFGenerator> dtmfGen;
+			NotNullPtr<Media::AudioFilter::FileMixFilter> fileMix;
+			NotNullPtr<Media::AudioFilter::SoundGenerator> sndGen;
+			NotNullPtr<Media::AudioFilter::AudioSweepFilter> sweepFilter;
+			NotNullPtr<Media::AudioFilter::DynamicVolBooster> volBooster;
+			NotNullPtr<Media::AudioFilter::DTMFDecoder> dtmfDec;
+			NotNullPtr<Media::AudioFilter::AudioSampleRipper> audioRipper;
+			NotNullPtr<Media::AudioFilter::AudioLevelMeter> audioLevel;
+			NotNullPtr<Media::AudioFilter::AudioCaptureFilter> audioCapture;
+			NEW_CLASSNN(audioAmp, Media::AudioFilter::AudioAmplifier(audSrc));
+			NEW_CLASSNN(dtmfGen, Media::AudioFilter::DTMFGenerator(audioAmp));
+			NEW_CLASSNN(fileMix, Media::AudioFilter::FileMixFilter(dtmfGen, me->core->GetParserList()));
+			NEW_CLASSNN(sndGen, Media::AudioFilter::SoundGenerator(fileMix));
+			NEW_CLASSNN(sweepFilter, Media::AudioFilter::AudioSweepFilter(sndGen));
+			NEW_CLASSNN(volBooster, Media::AudioFilter::DynamicVolBooster(sweepFilter));
+			NEW_CLASSNN(dtmfDec, Media::AudioFilter::DTMFDecoder(volBooster, dtmfMS * frequency / 1000));
+			NEW_CLASSNN(audioRipper, Media::AudioFilter::AudioSampleRipper(dtmfDec, FFTSAMPLE + FFTAVG - 1));
+			NEW_CLASSNN(audioLevel, Media::AudioFilter::AudioLevelMeter(audioRipper));
+			NEW_CLASSNN(audioCapture, Media::AudioFilter::AudioCaptureFilter(audioLevel));
+			me->audioAmp = audioAmp.Ptr();
+			me->dtmfGen = dtmfGen.Ptr();
+			me->fileMix = fileMix.Ptr();
+			me->sndGen = sndGen.Ptr();
+			me->sweepFilter = sweepFilter.Ptr();
+			me->volBooster = volBooster.Ptr();
+			me->dtmfDec = dtmfDec.Ptr();
+			me->audioRipper = audioRipper.Ptr();
+			me->audioLevel = audioLevel.Ptr();
+			me->audioCapture = audioCapture.Ptr();
 			me->bitCount = bitCount;
 			me->nChannels = nChannel;
 			me->sampleBuff = MemAlloc(UInt8, (FFTSAMPLE + FFTAVG - 1) * (UOSInt)me->nChannels * (UOSInt)(me->bitCount >> 3));

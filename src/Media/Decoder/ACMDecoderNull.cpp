@@ -11,7 +11,7 @@ void Media::Decoder::ACMDecoder::InitACM()
 {
 }
 
-Media::Decoder::ACMDecoder::ACMDecoder(Media::IAudioSource *sourceAudio)
+Media::Decoder::ACMDecoder::ACMDecoder(NotNullPtr<Media::IAudioSource> sourceAudio)
 {
 	this->sourceAudio = 0;
 	this->hAcmStream = 0;
@@ -21,7 +21,7 @@ Media::Decoder::ACMDecoder::ACMDecoder(Media::IAudioSource *sourceAudio)
 	this->acmInpBuff = 0;
 	this->acmOupBuff = 0;
 	this->seeked = true;
-	this->sourceAudio = sourceAudio;
+	this->sourceAudio = sourceAudio.Ptr();
 	this->srcFormatTag = 0;
 	InitACM();
 }
@@ -31,7 +31,7 @@ Media::Decoder::ACMDecoder::~ACMDecoder()
 	FreeACM();
 }
 
-void Media::Decoder::ACMDecoder::GetFormat(AudioFormat *format)
+void Media::Decoder::ACMDecoder::GetFormat(NotNullPtr<AudioFormat> format)
 {
 	format->formatId = 0;
 }

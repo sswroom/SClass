@@ -6,10 +6,9 @@
 #include "Sync/MutexUsage.h"
 #include "Text/MyString.h"
 
-Media::AudioFilter::DTMFGenerator::DTMFGenerator(IAudioSource *sourceAudio) : Media::IAudioFilter(sourceAudio)
+Media::AudioFilter::DTMFGenerator::DTMFGenerator(NotNullPtr<IAudioSource> sourceAudio) : Media::IAudioFilter(sourceAudio)
 {
-	this->sourceAudio = sourceAudio;
-	sourceAudio->GetFormat(&this->format);
+	sourceAudio->GetFormat(this->format);
 
 	this->tonesSignalSamples = 0;
 	this->tonesBreakSamples = 0;
@@ -26,15 +25,13 @@ Media::AudioFilter::DTMFGenerator::~DTMFGenerator()
 	SDEL_STRING(this->tonesVals);
 }
 
-void Media::AudioFilter::DTMFGenerator::GetFormat(AudioFormat *format)
+void Media::AudioFilter::DTMFGenerator::GetFormat(NotNullPtr<AudioFormat> format)
 {
-	format->FromAudioFormat(&this->format);
+	format->FromAudioFormat(this->format);
 }
 
 UOSInt Media::AudioFilter::DTMFGenerator::ReadBlock(Data::ByteArray blk)
 {
-	if (this->sourceAudio == 0)
-		return 0;
 	UOSInt readSize = this->sourceAudio->ReadBlock(blk);
 
 	if (this->format.bitpersample == 16)

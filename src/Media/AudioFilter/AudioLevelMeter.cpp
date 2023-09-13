@@ -24,15 +24,16 @@ void Media::AudioFilter::AudioLevelMeter::ResetStatus()
 	mutUsage.EndUse();
 }
 
-Media::AudioFilter::AudioLevelMeter::AudioLevelMeter(Media::IAudioSource *sourceAudio) : Media::IAudioFilter(sourceAudio)
+Media::AudioFilter::AudioLevelMeter::AudioLevelMeter(NotNullPtr<Media::IAudioSource> sourceAudio) : Media::IAudioFilter(sourceAudio)
 {
 	Media::AudioFormat fmt;
 	this->soundBuff = 0;
 	this->status = 0;
-	sourceAudio->GetFormat(&fmt);
+	this->nChannel = 0;
+	this->bitCount = 0;
+	sourceAudio->GetFormat(fmt);
 	if (fmt.formatId != 0x1)
 		return;
-	this->sourceAudio = sourceAudio;
 	this->nChannel = fmt.nChannels;
 	this->bitCount = fmt.bitpersample;
 	this->soundBuffLeng = (fmt.frequency / 10) * fmt.nChannels;
@@ -57,19 +58,12 @@ Media::AudioFilter::AudioLevelMeter::~AudioLevelMeter()
 
 UInt32 Media::AudioFilter::AudioLevelMeter::SeekToTime(UInt32 time)
 {
-	if (this->sourceAudio)
-	{
-		this->ResetStatus();
-		return this->sourceAudio->SeekToTime(time);
-	}
-	return 0;
+	this->ResetStatus();
+	return this->sourceAudio->SeekToTime(time);
 }
 
 UOSInt Media::AudioFilter::AudioLevelMeter::ReadBlock(Data::ByteArray blk)
 {
-	if (this->sourceAudio == 0)
-		return 0;
-
 	UOSInt readSize = this->sourceAudio->ReadBlock(blk);
 	if (this->bitCount == 16)
 	{

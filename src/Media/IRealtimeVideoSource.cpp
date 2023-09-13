@@ -21,12 +21,12 @@ void Media::IRealtimeVideoSource::SetBorderCrop(UOSInt cropLeft, UOSInt cropTop,
 	this->cropBottom = cropBottom;
 }
 
-void Media::IRealtimeVideoSource::GetBorderCrop(UOSInt *cropLeft, UOSInt *cropTop, UOSInt *cropRight, UOSInt *cropBottom)
+void Media::IRealtimeVideoSource::GetBorderCrop(OutParam<UOSInt> cropLeft, OutParam<UOSInt> cropTop, OutParam<UOSInt> cropRight, OutParam<UOSInt> cropBottom)
 {
-	*cropLeft = this->cropLeft;
-	*cropTop = this->cropTop;
-	*cropRight = this->cropRight;
-	*cropBottom = this->cropBottom;
+	cropLeft.Set(this->cropLeft);
+	cropTop.Set(this->cropTop);
+	cropRight.Set(this->cropRight);
+	cropBottom.Set(this->cropBottom);
 }
 
 Bool Media::IRealtimeVideoSource::IsVideoCapture()

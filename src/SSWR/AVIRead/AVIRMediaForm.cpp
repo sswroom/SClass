@@ -48,7 +48,7 @@ void SSWR::AVIRead::AVIRMediaForm::UpdateStreamList()
 	UOSInt j;
 	UOSInt k;
 	Media::MediaFile *mFile;
-	Media::IMediaSource *medSource;
+	NotNullPtr<Media::IMediaSource> medSource;
 	Int32 syncTime;
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
@@ -60,7 +60,7 @@ void SSWR::AVIRead::AVIRMediaForm::UpdateStreamList()
 	{
 		mFile = this->files->GetItem(i);
 		k = 0;
-		while ((medSource = mFile->GetStream(k++, &syncTime)) != 0)
+		while (medSource.Set(mFile->GetStream(k++, &syncTime)))
 		{
 			Media::MediaType mtype = medSource->GetMediaType();
 			sptr = sbuff;
@@ -68,9 +68,9 @@ void SSWR::AVIRead::AVIRMediaForm::UpdateStreamList()
 			{
 				if (this->activeVideo == 0)
 				{
-					SetActiveVideo((Media::IVideoSource*)medSource);
+					SetActiveVideo(NotNullPtr<Media::IVideoSource>::ConvertFrom(medSource));
 				}
-				if (this->activeVideo == medSource)
+				if (this->activeVideo == medSource.Ptr())
 					*sptr++ = '*';
 				Text::StrConcatC(sptr, UTF8STRC("(V)"));
 			}
@@ -78,14 +78,14 @@ void SSWR::AVIRead::AVIRMediaForm::UpdateStreamList()
 			{
 				if (this->activeAudio == 0)
 				{
-					SetActiveAudio((Media::IAudioSource*)medSource, syncTime);
+					SetActiveAudio(NotNullPtr<Media::IAudioSource>::ConvertFrom(medSource), syncTime);
 				}
-				if (this->activeAudio == medSource)
+				if (this->activeAudio == medSource.Ptr())
 					*sptr++ = '*';
 				Text::StrConcatC(sptr, UTF8STRC("(A)"));
 			}
 			sptr = medSource->GetSourceName(sptr);
-			this->lbFiles->AddItem(CSTRP(sbuff, sptr), medSource);
+			this->lbFiles->AddItem(CSTRP(sbuff, sptr), medSource.Ptr());
 		}
 		i++;
 	}
@@ -132,25 +132,25 @@ void SSWR::AVIRead::AVIRMediaForm::UpdateChapters()
 	this->UpdateMenu();
 }
 
-void SSWR::AVIRead::AVIRMediaForm::SetActiveVideo(Media::IVideoSource *video)
+void SSWR::AVIRead::AVIRMediaForm::SetActiveVideo(NotNullPtr<Media::IVideoSource> video)
 {
 	SDEL_CLASS(this->currDecoder);
 	this->currDecoder = this->decoders->DecodeVideo(video);
 	if (this->currDecoder)
 	{
-		this->activeVideo = video;
+		this->activeVideo = video.Ptr();
 		this->vbdMain->SetVideo(this->currDecoder);
 		this->clk->Stop();
 	}
 	else
 	{
-		this->activeVideo = video;
+		this->activeVideo = video.Ptr();
 		this->vbdMain->SetVideo(this->activeVideo);
 		this->clk->Stop();
 	}
 }
 
-void SSWR::AVIRead::AVIRMediaForm::SetActiveAudio(Media::IAudioSource *audio, Int32 timeDelay)
+void SSWR::AVIRead::AVIRMediaForm::SetActiveAudio(NotNullPtr<Media::IAudioSource> audio, Int32 timeDelay)
 {
 	this->core->BindAudio(0);
 	SDEL_CLASS(this->currADecoder);
@@ -158,10 +158,10 @@ void SSWR::AVIRead::AVIRMediaForm::SetActiveAudio(Media::IAudioSource *audio, In
 
 	this->vbdMain->SetTimeDelay(timeDelay);
 
-	this->audRenderer = this->core->BindAudio(audio);
+	this->audRenderer = this->core->BindAudio(audio.Ptr());
 	if (this->audRenderer)
 	{
-		this->activeAudio = audio;
+		this->activeAudio = audio.Ptr();
 		return;
 	}
 	this->currADecoder = this->adecoders->DecodeAudio(audio);
@@ -170,7 +170,7 @@ void SSWR::AVIRead::AVIRMediaForm::SetActiveAudio(Media::IAudioSource *audio, In
 		this->audRenderer = this->core->BindAudio(this->currADecoder);
 		if (this->audRenderer)
 		{
-			this->activeAudio = audio;
+			this->activeAudio = audio.Ptr();
 			return;
 		}
 		else
@@ -217,7 +217,7 @@ void __stdcall SSWR::AVIRead::AVIRMediaForm::OnFileDblClicked(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRMediaForm::VideoCropImage(void *userObj, UInt32 frameTime, UInt32 frameNum, Media::StaticImage *img)
+void __stdcall SSWR::AVIRead::AVIRMediaForm::VideoCropImage(void *userObj, UInt32 frameTime, UInt32 frameNum, NotNullPtr<Media::StaticImage> img)
 {
 	SSWR::AVIRead::AVIRMediaForm *me = (SSWR::AVIRead::AVIRMediaForm*)userObj;
 	UOSInt w = img->info.dispSize.x;
@@ -239,12 +239,12 @@ void __stdcall SSWR::AVIRead::AVIRMediaForm::VideoCropImage(void *userObj, UInt3
 	}
 	else
 	{
-		DEL_CLASS(img);
+		img.Delete();
 		return;
 	}
 
 	MediaPlayer_VideoCropImageY(yptr, w, h, ySplit, crops);
-	DEL_CLASS(img);
+	img.Delete();
 	me->currDecoder->SetBorderCrop(crops[0], crops[1], crops[2], crops[3]);
 	me->vbdMain->UpdateCrop();
 }
@@ -523,7 +523,7 @@ void SSWR::AVIRead::AVIRMediaForm::EventMenuClicked(UInt16 cmdId)
 			{
 				this->activeVideo->GetVideoInfo(info, tmpV, tmpV, sz1.x);
 			}
-			this->activeVideo->GetBorderCrop(&cropLeft, &cropTop, &cropRight, &cropBottom);
+			this->activeVideo->GetBorderCrop(cropLeft, cropTop, cropRight, cropBottom);
 			if (this->vbdMain->IsFullScreen())
 			{
 				this->vbdMain->SwitchFullScreen(false, false);

@@ -18,7 +18,7 @@ void Media::VideoFilter::AutoCropFilter::ProcessVideoFrame(UInt32 frameTime, UIn
 			UOSInt oriCropRight;
 			UOSInt oriCropBottom;
 
-			this->srcVideo->GetBorderCrop(&oriCropLeft, &oriCropTop, &oriCropRight, &oriCropBottom);
+			this->srcVideo->GetBorderCrop(oriCropLeft, oriCropTop, oriCropRight, oriCropBottom);
 			if (this->hasCrop && oriCropLeft == 0 && oriCropTop == 0 && oriCropRight == 0 && oriCropBottom == 0)
 			{
 			}
@@ -97,7 +97,7 @@ Media::VideoFilter::AutoCropFilter::~AutoCropFilter()
 {
 }
 
-Text::CString Media::VideoFilter::AutoCropFilter::GetFilterName()
+Text::CStringNN Media::VideoFilter::AutoCropFilter::GetFilterName()
 {
 	return CSTR("AutoCropFilter");
 }
@@ -107,15 +107,15 @@ void Media::VideoFilter::AutoCropFilter::SetEnabled(Bool enabled)
 	this->enabled = enabled;
 }
 
-void Media::VideoFilter::AutoCropFilter::GetBorderCrop(UOSInt *cropLeft, UOSInt *cropTop, UOSInt *cropRight, UOSInt *cropBottom)
+void Media::VideoFilter::AutoCropFilter::GetBorderCrop(OutParam<UOSInt> cropLeft, OutParam<UOSInt> cropTop, OutParam<UOSInt> cropRight, OutParam<UOSInt> cropBottom)
 {
 	Bool cropValid = true;
 	if (this->srcVideo == 0)
 	{
-		*cropLeft = 0;
-		*cropTop = 0;
-		*cropRight = 0;
-		*cropBottom = 0;
+		cropLeft.Set(0);
+		cropTop.Set(0);
+		cropRight.Set(0);
+		cropBottom.Set(0);
 		return;
 	}
 
@@ -123,7 +123,7 @@ void Media::VideoFilter::AutoCropFilter::GetBorderCrop(UOSInt *cropLeft, UOSInt 
 	UOSInt oriCropTop;
 	UOSInt oriCropRight;
 	UOSInt oriCropBottom;
-	this->srcVideo->GetBorderCrop(&oriCropLeft, &oriCropTop, &oriCropRight, &oriCropBottom);
+	this->srcVideo->GetBorderCrop(oriCropLeft, oriCropTop, oriCropRight, oriCropBottom);
 	if (!this->hasCrop || !this->enabled)
 	{
 		cropValid = false;
@@ -139,16 +139,16 @@ void Media::VideoFilter::AutoCropFilter::GetBorderCrop(UOSInt *cropLeft, UOSInt 
 
 	if (cropValid)
 	{
-		*cropLeft = oriCropLeft;
-		*cropTop = oriCropTop;
-		*cropRight = oriCropRight;
-		*cropBottom = oriCropBottom;
+		cropLeft.Set(oriCropLeft);
+		cropTop.Set(oriCropTop);
+		cropRight.Set(oriCropRight);
+		cropBottom.Set(oriCropBottom);
 	}
 	else
 	{
-		*cropLeft = 0;
-		*cropTop = 0;
-		*cropRight = 0;
-		*cropBottom = 0;
+		cropLeft.Set(0);
+		cropTop.Set(0);
+		cropRight.Set(0);
+		cropBottom.Set(0);
 	}
 }

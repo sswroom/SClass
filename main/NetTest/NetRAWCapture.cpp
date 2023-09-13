@@ -15,7 +15,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	IO::Writer *console;
 	UInt16 portNum = 8089;
 	UOSInt argc;
-	UTF8Char **argv = progCtrl->GetCommandLines(progCtrl, &argc);
+	UTF8Char **argv = progCtrl->GetCommandLines(progCtrl, argc);
 	if (argc >= 2)
 	{
 		Text::StrToUInt16(argv[1], portNum);

@@ -205,7 +205,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	UTF8Char sbuff[256];
 	UOSInt i;
 	UOSInt cmdCnt;
-	UTF8Char **args = progCtrl->GetCommandLines(progCtrl, &cmdCnt);
+	UTF8Char **args = progCtrl->GetCommandLines(progCtrl, cmdCnt);
 	Bool showHelp = false;
 
 	i = 1;

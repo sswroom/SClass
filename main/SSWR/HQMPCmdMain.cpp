@@ -11,7 +11,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 {
 	IO::ConsoleWriter console;
 	UOSInt cmdCnt;
-	UTF8Char **cmdLines = progCtrl->GetCommandLines(progCtrl, &cmdCnt);
+	UTF8Char **cmdLines = progCtrl->GetCommandLines(progCtrl, cmdCnt);
 	Media::Decoder::FFMPEGDecoder::Enable();
 
 	if (cmdCnt >= 2)

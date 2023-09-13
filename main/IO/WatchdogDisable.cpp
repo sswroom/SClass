@@ -14,7 +14,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	Int32 wdId;
 	UTF8Char **argv;
 	UOSInt argc;
-	argv = progCtrl->GetCommandLines(progCtrl, &argc);
+	argv = progCtrl->GetCommandLines(progCtrl, argc);
 	if (argc >= 2 && Text::StrToInt32(argv[1], wdId))
 	{
 		wd = IO::Watchdog::Create(wdId);

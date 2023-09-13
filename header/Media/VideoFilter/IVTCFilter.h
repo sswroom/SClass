@@ -100,7 +100,7 @@ namespace Media
 			IVTCFilter(Media::IVideoSource *srcVideo);
 			virtual ~IVTCFilter();
 
-			virtual Text::CString GetFilterName();
+			virtual Text::CStringNN GetFilterName();
 
 			void SetEnabled(Bool enabled);
 			virtual void Stop();

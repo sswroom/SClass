@@ -100,7 +100,7 @@ void __stdcall Media::MediaPlayer::OnAudioEnd(void *userObj)
 	}
 }
 
-void __stdcall Media::MediaPlayer::VideoCropImage(void *userObj, UInt32 frameTime, UInt32 frameNum, Media::StaticImage *img)
+void __stdcall Media::MediaPlayer::VideoCropImage(void *userObj, UInt32 frameTime, UInt32 frameNum, NotNullPtr<Media::StaticImage> img)
 {
 	Media::MediaPlayer *me = (Media::MediaPlayer*)userObj;
 	UOSInt w = img->info.dispSize.x;
@@ -122,11 +122,11 @@ void __stdcall Media::MediaPlayer::VideoCropImage(void *userObj, UInt32 frameTim
 	}
 	else
 	{
-		DEL_CLASS(img);
+		img.Delete();
 		return;
 	}
 	MediaPlayer_VideoCropImageY(yptr, w, h, ySplit, crops);
-	DEL_CLASS(img);
+	img.Delete();
 	me->currVDecoder->SetBorderCrop(crops[0], crops[1], crops[2], crops[3]);
 	me->vrenderer->UpdateCrop();
 }
@@ -138,7 +138,7 @@ void Media::MediaPlayer::ReleaseAudio()
 	SDEL_CLASS(this->currADecoder);
 }
 
-Bool Media::MediaPlayer::SwitchAudioSource(Media::IAudioSource *asrc, Int32 syncTime)
+Bool Media::MediaPlayer::SwitchAudioSource(NotNullPtr<Media::IAudioSource> asrc, Int32 syncTime)
 {
 	Bool ret = false;
 	if (this->audioDev == 0)
@@ -148,7 +148,7 @@ Bool Media::MediaPlayer::SwitchAudioSource(Media::IAudioSource *asrc, Int32 sync
 	if (this->arenderer)
 	{
 		this->vrenderer->SetTimeDelay(syncTime);
-		this->currAStm = asrc;
+		this->currAStm = asrc.Ptr();
 		ret = true;
 	}
 	else
@@ -159,7 +159,7 @@ Bool Media::MediaPlayer::SwitchAudioSource(Media::IAudioSource *asrc, Int32 sync
 			if ((this->arenderer = this->audioDev->BindAudio(this->currADecoder)) != 0)
 			{
 				this->vrenderer->SetTimeDelay(syncTime);
-				this->currAStm = asrc;
+				this->currAStm = asrc.Ptr();
 				ret = true;
 			}
 			else
@@ -231,30 +231,30 @@ Bool Media::MediaPlayer::LoadMedia(Media::MediaFile *file)
 	while (true)
 	{
 		Media::MediaType mt;
-		Media::IMediaSource *msrc = this->currFile->GetStream(i, &syncTime);
-		if (msrc == 0)
+		NotNullPtr<Media::IMediaSource> msrc;
+		if (!msrc.Set(this->currFile->GetStream(i, &syncTime)))
 			break;
 		mt = msrc->GetMediaType();
 		if (mt == Media::MEDIA_TYPE_VIDEO && !videoFound)
 		{
-			Media::IVideoSource *vsrc = (Media::IVideoSource*)msrc;
+			NotNullPtr<Media::IVideoSource> vsrc = NotNullPtr<Media::IVideoSource>::ConvertFrom(msrc);
 			this->currVDecoder = this->vdecoders.DecodeVideo(vsrc);
 			if (this->currVDecoder)
 			{
-				this->currVStm = vsrc;
+				this->currVStm = vsrc.Ptr();
 				this->vrenderer->SetVideo(this->currVDecoder);
 				this->clk.Stop();
 			}
 			else
 			{
-				this->currVStm = vsrc;
+				this->currVStm = vsrc.Ptr();
 				this->vrenderer->SetVideo(this->currVStm);
 				this->clk.Stop();
 			}
 		}
 		else if (mt == Media::MEDIA_TYPE_AUDIO && this->arenderer == 0)
 		{
-			this->SwitchAudioSource((Media::IAudioSource*)msrc, syncTime);
+			this->SwitchAudioSource(NotNullPtr<Media::IAudioSource>::ConvertFrom(msrc), syncTime);
 		}
 		i++;
 	}
@@ -318,15 +318,15 @@ Bool Media::MediaPlayer::SwitchAudio(UOSInt index)
 	while (true)
 	{
 		Media::MediaType mt;
-		Media::IMediaSource *msrc = this->currFile->GetStream(i, &syncTime);
-		if (msrc == 0)
+		NotNullPtr<Media::IMediaSource> msrc;
+		if (!msrc.Set(this->currFile->GetStream(i, &syncTime)))
 			break;
 		mt = msrc->GetMediaType();
 		if (mt == Media::MEDIA_TYPE_AUDIO)
 		{
 			if (index == 0)
 			{
-				return this->SwitchAudioSource((Media::IAudioSource*)msrc, syncTime);
+				return this->SwitchAudioSource(NotNullPtr<Media::IAudioSource>::ConvertFrom(msrc), syncTime);
 			}
 			index--;
 		}
@@ -435,7 +435,7 @@ Bool Media::MediaPlayer::GetVideoSize(UOSInt *w, UOSInt *h)
 		{
 			this->currVStm->GetVideoInfo(info, tmpV, tmpV, vw);
 		}
-		this->currVStm->GetBorderCrop(&cropLeft, &cropTop, &cropRight, &cropBottom);
+		this->currVStm->GetBorderCrop(cropLeft, cropTop, cropRight, cropBottom);
 		vw = info.dispSize.x - cropLeft - cropRight;
 		vh = info.dispSize.y - cropTop - cropBottom;
 		if (info.ftype == Media::FT_FIELD_BF || info.ftype == Media::FT_FIELD_TF)

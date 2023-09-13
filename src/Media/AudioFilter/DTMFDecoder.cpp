@@ -433,11 +433,11 @@ void Media::AudioFilter::DTMFDecoder::ResetStatus()
 	this->currTone = 0;
 }
 
-Media::AudioFilter::DTMFDecoder::DTMFDecoder(Media::IAudioSource *audSrc, UOSInt calcInt) : Media::IAudioFilter(audSrc), thread(CalcThread, this, CSTR("DTMFDecoder"))
+Media::AudioFilter::DTMFDecoder::DTMFDecoder(NotNullPtr<Media::IAudioSource> audSrc, UOSInt calcInt) : Media::IAudioFilter(audSrc), thread(CalcThread, this, CSTR("DTMFDecoder"))
 {
 	UOSInt i;
 	Media::AudioFormat fmt;
-	audSrc->GetFormat(&fmt);
+	audSrc->GetFormat(fmt);
 	i = 1;
 	while ((fmt.frequency * 2 / i) > 73)
 	{
@@ -469,19 +469,12 @@ Media::AudioFilter::DTMFDecoder::~DTMFDecoder()
 
 UInt32 Media::AudioFilter::DTMFDecoder::SeekToTime(UInt32 time)
 {
-	if (this->sourceAudio)
-	{
-		this->ResetStatus();
-		return this->sourceAudio->SeekToTime(time);
-	}
-	return 0;
+	this->ResetStatus();
+	return this->sourceAudio->SeekToTime(time);
 }
 
 UOSInt Media::AudioFilter::DTMFDecoder::ReadBlock(Data::ByteArray blk)
 {
-	if (this->sourceAudio == 0)
-		return 0;
-
 	UOSInt readSize = this->sourceAudio->ReadBlock(blk);
 	UOSInt sizeLeft = readSize;
 	UOSInt thisSize;

@@ -70,7 +70,7 @@ Bool Exporter::WAVExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text:
 
 	Media::IAudioSource *audio = (Media::IAudioSource*)src;
 	Media::AudioFormat format;
-	audio->GetFormat(&format);
+	audio->GetFormat(format);
 	UInt64 fileSize = 0;
 	UInt64 headerSize = 0;
 	UInt64 initPos = stm->GetPosition();

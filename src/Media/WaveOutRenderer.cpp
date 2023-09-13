@@ -119,7 +119,7 @@ UInt32 __stdcall Media::WaveOutRenderer::PlayThread(void *obj)
 
 	me->playing = true;
 	me->threadInit = true;
-	me->audsrc->GetFormat(&af);
+	me->audsrc->GetFormat(af);
 	if (me->buffTime)
 	{
 		buffLeng = (me->buffTime * af.frequency / 1000) * af.align;
@@ -136,7 +136,7 @@ UInt32 __stdcall Media::WaveOutRenderer::PlayThread(void *obj)
 
 	waveOutRestart((HWAVEOUT)me->hwo);
 	waveOutGetPosition((HWAVEOUT)me->hwo, &mmt, sizeof(mmt));
-	lastT = thisT = Media::WaveOutRenderer::GetMSFromTime(&mmt, &af);
+	lastT = thisT = Media::WaveOutRenderer::GetMSFromTime(&mmt, af);
 	refStart = thisT - audStartTime;
 	stmEnd = 0;
 
@@ -146,7 +146,7 @@ UInt32 __stdcall Media::WaveOutRenderer::PlayThread(void *obj)
 		hdrs[i].lpData = MemAlloc(CHAR, buffLeng);
 		hdrs[i].dwUser = i;
 		me->buffEmpty[i] = false;
-		hdrs[i].dwBufferLength = (DWORD)me->audsrc->ReadBlockLPCM(Data::ByteArray((UInt8*)hdrs[i].lpData, buffLeng), &af);
+		hdrs[i].dwBufferLength = (DWORD)me->audsrc->ReadBlockLPCM(Data::ByteArray((UInt8*)hdrs[i].lpData, buffLeng), af);
 
 		waveOutPrepareHeader((HWAVEOUT)me->hwo, &hdrs[i], sizeof(WAVEHDR));
 		waveOutWrite((HWAVEOUT)me->hwo, &hdrs[i], sizeof(WAVEHDR));
@@ -175,7 +175,7 @@ UInt32 __stdcall Media::WaveOutRenderer::PlayThread(void *obj)
 				}
 				else
 				{
-					hdrs[i].dwBufferLength = (DWORD)me->audsrc->ReadBlockLPCM(Data::ByteArray((UInt8*)hdrs[i].lpData, buffLeng), &af);
+					hdrs[i].dwBufferLength = (DWORD)me->audsrc->ReadBlockLPCM(Data::ByteArray((UInt8*)hdrs[i].lpData, buffLeng), af);
 					if (hdrs[i].dwBufferLength == 0)
 					{
 						hdrs[i].dwBufferLength = (DWORD)buffLeng;
@@ -188,13 +188,13 @@ UInt32 __stdcall Media::WaveOutRenderer::PlayThread(void *obj)
 				waveOutWrite((HWAVEOUT)me->hwo, &hdrs[i], sizeof(WAVEHDR));
 
 				waveOutGetPosition((HWAVEOUT)me->hwo, &mmt, sizeof(mmt));
-				thisT = Media::WaveOutRenderer::GetMSFromTime(&mmt, &af);
+				thisT = Media::WaveOutRenderer::GetMSFromTime(&mmt, af);
 				if (lastT > thisT)
 				{
 					waveOutReset((HWAVEOUT)me->hwo);
 					waveOutRestart((HWAVEOUT)me->hwo);
 					waveOutGetPosition((HWAVEOUT)me->hwo, &mmt, sizeof(mmt));
-					lastT = thisT = Media::WaveOutRenderer::GetMSFromTime(&mmt, &af);
+					lastT = thisT = Media::WaveOutRenderer::GetMSFromTime(&mmt, af);
 					refStart = thisT - me->audsrc->GetCurrTime();
 				}
 				else
@@ -230,7 +230,7 @@ UInt32 __stdcall Media::WaveOutRenderer::PlayThread(void *obj)
 	return 0;
 }
 
-UInt32 Media::WaveOutRenderer::GetMSFromTime(void *mmTime, AudioFormat *fmt)
+UInt32 Media::WaveOutRenderer::GetMSFromTime(void *mmTime, NotNullPtr<const AudioFormat> fmt)
 {
 	MMTIME *mmt = (MMTIME *)mmTime;
 	if (mmt->wType == TIME_MS)
@@ -339,7 +339,7 @@ Bool Media::WaveOutRenderer::BindAudio(Media::IAudioSource *audsrc)
 	if (audsrc == 0)
 		return false;
 
-	audsrc->GetFormat(&fmt);
+	audsrc->GetFormat(fmt);
 	if (fmt.formatId != 1 && fmt.formatId != WAVE_FORMAT_IEEE_FLOAT)
 	{
 		return false;

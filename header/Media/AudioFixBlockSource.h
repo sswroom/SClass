@@ -17,7 +17,7 @@ namespace Media
 		UInt64 readOfst;
 		Sync::Event *readEvt;
 	public:
-		AudioFixBlockSource(NotNullPtr<IO::StreamData> fd, UInt64 ofst, UInt64 length, Media::AudioFormat *format, NotNullPtr<Text::String> name);
+		AudioFixBlockSource(NotNullPtr<IO::StreamData> fd, UInt64 ofst, UInt64 length, NotNullPtr<const Media::AudioFormat> format, NotNullPtr<Text::String> name);
 		virtual ~AudioFixBlockSource();
 
 		virtual UTF8Char *GetSourceName(UTF8Char *buff);
@@ -26,7 +26,7 @@ namespace Media
 		virtual UInt32 SeekToTime(UInt32 time); //ms, ret actual time
 		virtual Bool TrimStream(UInt32 trimTimeStart, UInt32 trimTimeEnd, Int32 *syncTime);
 
-		virtual void GetFormat(AudioFormat *format);
+		virtual void GetFormat(NotNullPtr<AudioFormat> format);
 
 		virtual Bool Start(Sync::Event *evt, UOSInt blkSize);
 		virtual void Stop();

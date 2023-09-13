@@ -51,7 +51,7 @@ namespace Net
 		virtual UInt32 SeekToTime(UInt32 time); //ms, ret actual time
 		virtual Bool TrimStream(UInt32 trimTimeStart, UInt32 trimTimeEnd, Int32 *syncTime);
 
-		virtual void GetFormat(Media::AudioFormat *format);
+		virtual void GetFormat(NotNullPtr<Media::AudioFormat> format);
 
 		virtual Bool Start(Sync::Event *evt, UOSInt blkSize);
 		virtual void Stop();

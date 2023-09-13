@@ -7,7 +7,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 {
 	IO::ConsoleWriter console;
 	UOSInt argc;
-	UTF8Char **argv = progCtrl->GetCommandLines(progCtrl, &argc);
+	UTF8Char **argv = progCtrl->GetCommandLines(progCtrl, argc);
 	UOSInt i;
 	Text::StringBuilderUTF8 sb;
 	i = 0;

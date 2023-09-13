@@ -11,7 +11,7 @@ namespace Media
 		class FileMixFilter : public IAudioFilter
 		{
 		private:
-			AudioFormat *format;
+			AudioFormat format;
 			Parser::ParserList *parsers;
 			Media::IAudioSource *fileSrc;
 			Bool mixing;
@@ -19,7 +19,7 @@ namespace Media
 			Bool chMix;
 
 		public:
-			FileMixFilter(IAudioSource *sourceAudio, Parser::ParserList *parsers);
+			FileMixFilter(NotNullPtr<IAudioSource> sourceAudio, Parser::ParserList *parsers);
 			virtual ~FileMixFilter();
 
 			virtual void GetFormat(AudioFormat *format);

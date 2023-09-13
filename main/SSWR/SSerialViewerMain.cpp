@@ -48,7 +48,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	UTF8Char **argv;
 	UInt32 baudRate = 115200;
 	NEW_CLASS(console, IO::ConsoleWriter());
-	argv = progCtrl->GetCommandLines(progCtrl, &argc);
+	argv = progCtrl->GetCommandLines(progCtrl, argc);
 	if (argc <= 1)
 	{
 		console->WriteLineC(UTF8STRC("Usage: SSwerialViewer [portNo] [baudRate]"));

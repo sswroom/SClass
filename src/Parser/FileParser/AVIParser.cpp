@@ -521,7 +521,7 @@ IO::ParsedObject *Parser::FileParser::AVIParser::ParseFileHdr(NotNullPtr<IO::Str
 					}
 					else
 					{
-						NEW_CLASS(audsData, Media::AudioFrameSource(fd, &fmt, audsName));
+						NEW_CLASS(audsData, Media::AudioFrameSource(fd, fmt, audsName));
 					}
 
 					indx = (UInt8*)&strl[i].others[j + 8];
@@ -590,7 +590,7 @@ IO::ParsedObject *Parser::FileParser::AVIParser::ParseFileHdr(NotNullPtr<IO::Str
 					NotNullPtr<IO::StreamData> fd;
 					if(fmt.formatId == 1 && fd.Set(blkData))
 					{
-						NEW_CLASS(lpcmData, Media::LPCMSource(fd, 0, blkData->GetDataSize(), &fmt, audsName));
+						NEW_CLASS(lpcmData, Media::LPCMSource(fd, 0, blkData->GetDataSize(), fmt, audsName));
 						fd.Delete();
 					}
 
@@ -628,11 +628,11 @@ IO::ParsedObject *Parser::FileParser::AVIParser::ParseFileHdr(NotNullPtr<IO::Str
 							blkData.Append(base + ReadUInt32(&idx1[k + 8]) + 4, ReadUInt32(&idx1[k + 12]));
 						k += 16;
 					}
-					NEW_CLASS(lpcmData, Media::LPCMSource(blkData, 0,  blkData.GetDataSize(), &fmt, audsName));
+					NEW_CLASS(lpcmData, Media::LPCMSource(blkData, 0,  blkData.GetDataSize(), fmt, audsName));
 				}
 				else
 				{
-					NEW_CLASS(audsData, Media::AudioFrameSource(fd, &fmt, audsName));
+					NEW_CLASS(audsData, Media::AudioFrameSource(fd, fmt, audsName));
 					k = 4;
 					l = ReadUInt32(&idx1[0]);
 					cmpTmp = *(Int32*)"00wb";

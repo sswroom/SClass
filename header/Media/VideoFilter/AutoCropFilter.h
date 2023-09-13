@@ -18,11 +18,11 @@ namespace Media
 			AutoCropFilter(Media::IVideoSource *srcVideo);
 			virtual ~AutoCropFilter();
 
-			virtual Text::CString GetFilterName();
+			virtual Text::CStringNN GetFilterName();
 
 			void SetEnabled(Bool enabled);
 
-			virtual void GetBorderCrop(UOSInt *cropLeft, UOSInt *cropTop, UOSInt *cropRight, UOSInt *cropBottom);
+			virtual void GetBorderCrop(OutParam<UOSInt> cropLeft, OutParam<UOSInt> cropTop, OutParam<UOSInt> cropRight, OutParam<UOSInt> cropBottom);
 		};
 	}
 }

@@ -12,7 +12,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	Int32 pinNum;
 	Int32 val;
 	UOSInt argc;
-	UTF8Char **argv = progCtrl->GetCommandLines(progCtrl, &argc);
+	UTF8Char **argv = progCtrl->GetCommandLines(progCtrl, argc);
 	if (argc >= 3)
 	{
 		if (Text::StrToInt32(argv[1], pinNum) && Text::StrToInt32(argv[2], val))

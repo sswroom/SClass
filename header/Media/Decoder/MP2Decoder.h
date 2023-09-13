@@ -16,10 +16,10 @@ namespace Media
 
 			Sync::Event *readEvt;
 		public:
-			MP2Decoder(IAudioSource *sourceAudio);
+			MP2Decoder(NotNullPtr<IAudioSource> sourceAudio);
 			virtual ~MP2Decoder();
 
-			virtual void GetFormat(AudioFormat *format);
+			virtual void GetFormat(NotNullPtr<AudioFormat> format);
 
 			virtual UInt32 SeekToTime(UInt32 time); //ms, ret actual time
 			virtual Bool Start(Sync::Event *evt, UOSInt blkSize);

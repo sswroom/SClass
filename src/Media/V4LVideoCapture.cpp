@@ -134,7 +134,7 @@ UTF8Char *Media::V4LVideoCapture::GetSourceName(UTF8Char *buff)
 	}
 }
 
-Text::CString Media::V4LVideoCapture::GetFilterName()
+Text::CStringNN Media::V4LVideoCapture::GetFilterName()
 {
 	return CSTR("V4LVideoCapture");
 }

@@ -27,7 +27,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 		frm->SetExitOnClose(true);
 
 		UOSInt argc;
-		UTF8Char **argv = progCtrl->GetCommandLines(progCtrl, &argc);
+		UTF8Char **argv = progCtrl->GetCommandLines(progCtrl, argc);
 		while (argc-- > 1)
 		{
 			Bool succ = frm->OpenFile({argv[argc], Text::StrCharCnt(argv[argc])}, IO::ParserType::MediaFile);

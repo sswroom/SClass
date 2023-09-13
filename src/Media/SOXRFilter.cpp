@@ -16,7 +16,7 @@ struct Media::SOXRFilter::ClassData
 	UInt8 *outFloatBuff;
 };
 
-Media::SOXRFilter::SOXRFilter(Media::IAudioSource *sourceAudio, UInt32 targetFreq) : Media::IAudioFilter(sourceAudio)
+Media::SOXRFilter::SOXRFilter(NotNullPtr<Media::IAudioSource> sourceAudio, UInt32 targetFreq) : Media::IAudioFilter(sourceAudio)
 {
 	this->clsData = MemAlloc(ClassData, 1);
 	this->clsData->targetFreq = targetFreq;
@@ -26,7 +26,7 @@ Media::SOXRFilter::SOXRFilter(Media::IAudioSource *sourceAudio, UInt32 targetFre
 	this->clsData->inFloatBuff = 0;
 	this->clsData ->outFloatBuff = 0;
 	this->clsData->afmt.extra = 0;
-	sourceAudio->GetFormat(&this->clsData->afmt);
+	sourceAudio->GetFormat(this->clsData->afmt);
 	this->clsData->soxr = soxr_create(this->clsData->afmt.frequency, targetFreq, this->clsData->afmt.nChannels, &this->clsData->error, 0, 0, 0);
 }
 

@@ -30,7 +30,7 @@ namespace Media
 		~AudioFormat();
 		void FromWAVEFORMATEX(UInt8 *fmt);
 		void Clear();
-		void FromAudioFormat(Media::AudioFormat *fmt);
+		void FromAudioFormat(NotNullPtr<const Media::AudioFormat> fmt);
 		void ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const;
 
 		static Text::CString GetNameFormatId(UInt32 formatId);

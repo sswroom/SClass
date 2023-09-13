@@ -13,8 +13,8 @@ namespace Media
 			AudioDecoderFinder();
 			~AudioDecoderFinder();
 
-			Media::IAudioSource *DecodeAudio(Media::IAudioSource *audio);
+			Media::IAudioSource *DecodeAudio(NotNullPtr<Media::IAudioSource> audio);
 		};
 	}
-};
+}
 #endif

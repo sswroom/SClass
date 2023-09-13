@@ -33,8 +33,8 @@ namespace Media
 		UOSInt totalSampleCnt;
 		UInt64 totalSize;
 	public:
-		AudioFrameSource(NotNullPtr<IO::StreamData> fd, Media::AudioFormat *format, NotNullPtr<Text::String> name);
-		AudioFrameSource(NotNullPtr<IO::StreamData> fd, Media::AudioFormat *format, Text::CString name);
+		AudioFrameSource(NotNullPtr<IO::StreamData> fd, NotNullPtr<const Media::AudioFormat> format, NotNullPtr<Text::String> name);
+		AudioFrameSource(NotNullPtr<IO::StreamData> fd, NotNullPtr<const Media::AudioFormat> format, Text::CStringNN name);
 		virtual ~AudioFrameSource();
 
 		virtual UTF8Char *GetSourceName(UTF8Char *buff);
@@ -43,7 +43,7 @@ namespace Media
 		virtual UInt32 SeekToTime(UInt32 time); //ms, ret actual time
 		virtual Bool TrimStream(UInt32 trimTimeStart, UInt32 trimTimeEnd, Int32 *syncTime);
 
-		virtual void GetFormat(AudioFormat *format);
+		virtual void GetFormat(NotNullPtr<AudioFormat> format);
 
 		virtual Bool Start(Sync::Event *evt, UOSInt blkSize);
 		virtual void Stop();

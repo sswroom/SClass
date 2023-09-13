@@ -14,7 +14,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	UOSInt i;
 	UOSInt j;
 	UOSInt k;
-	UTF8Char **cmdLines = progCtrl->GetCommandLines(progCtrl, &cmdCnt);
+	UTF8Char **cmdLines = progCtrl->GetCommandLines(progCtrl, cmdCnt);
 	showHelp = true;
 	Bool asyncMode = true;
 

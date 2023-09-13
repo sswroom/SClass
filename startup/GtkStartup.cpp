@@ -18,10 +18,10 @@ void __stdcall GtkProgControl_WaitForExit(NotNullPtr<Core::IProgControl> progCtr
 {
 }
 
-UTF8Char ** __stdcall GtkProgControl_GetCommandLines(NotNullPtr<Core::IProgControl> progCtrl, UOSInt *cmdCnt)
+UTF8Char ** __stdcall GtkProgControl_GetCommandLines(NotNullPtr<Core::IProgControl> progCtrl, OutParam<UOSInt> cmdCnt)
 {
 	GtkProgControl *ctrl = (GtkProgControl*)progCtrl.Ptr();
-	*cmdCnt = ctrl->argc;
+	cmdCnt.Set(ctrl->argc);
 	return ctrl->argv;
 }
 

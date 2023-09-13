@@ -104,7 +104,7 @@ UTF8Char *Media::DShow::DShowVideoCapture::GetSourceName(UTF8Char *buff)
 	return Text::StrWChar_UTF8(buff, this->devName);
 }
 
-Text::CString Media::DShow::DShowVideoCapture::GetFilterName()
+Text::CStringNN Media::DShow::DShowVideoCapture::GetFilterName()
 {
 	return CSTR("DShowVideoCapture");
 }

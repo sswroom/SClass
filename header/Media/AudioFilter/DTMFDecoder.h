@@ -38,7 +38,7 @@ namespace Media
 			static void __stdcall CalcThread(NotNullPtr<Sync::Thread> thread);
 			void ResetStatus();
 		public:
-			DTMFDecoder(Media::IAudioSource *audSrc, UOSInt calcInt);
+			DTMFDecoder(NotNullPtr<Media::IAudioSource> audSrc, UOSInt calcInt);
 			virtual ~DTMFDecoder();
 
 			virtual UInt32 SeekToTime(UInt32 time); //ms, ret actual time

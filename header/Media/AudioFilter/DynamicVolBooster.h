@@ -25,10 +25,10 @@ namespace Media
 		private:
 			void ResetStatus();
 		public:
-			DynamicVolBooster(IAudioSource *sourceAudio);
+			DynamicVolBooster(NotNullPtr<IAudioSource> sourceAudio);
 			virtual ~DynamicVolBooster();
 
-			virtual void GetFormat(AudioFormat *format);
+			virtual void GetFormat(NotNullPtr<AudioFormat> format);
 			virtual UInt32 SeekToTime(UInt32 time); //ms, ret actual time
 			virtual UOSInt ReadBlock(Data::ByteArray blk); //ret actual block size
 

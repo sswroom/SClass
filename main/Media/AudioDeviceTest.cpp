@@ -10,11 +10,11 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 {
 	IO::ConsoleWriter console;
 	Media::AudioDevice *dev;
-	Media::SilentSource *audSrc;
+	NotNullPtr<Media::SilentSource> audSrc;
 	Media::AudioFilter::AudioSweepFilter *sweepFilter;
 	Media::IAudioRenderer *renderer;
 	NEW_CLASS(dev, Media::AudioDevice());
-	NEW_CLASS(audSrc, Media::SilentSource(48000, 2, 16, CSTR("Silent"), 0));
+	NEW_CLASSNN(audSrc, Media::SilentSource(48000, 2, 16, CSTR("Silent"), 0));
 	NEW_CLASS(sweepFilter, Media::AudioFilter::AudioSweepFilter(audSrc));
 	sweepFilter->SetVolume(0.3);
 	sweepFilter->StartSweep(10, 24000, 10);
@@ -49,7 +49,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 		console.WriteLineC(UTF8STRC("No supported audio device found"));
 	}
 	DEL_CLASS(sweepFilter);
-	DEL_CLASS(audSrc);
+	audSrc.Delete();
 	DEL_CLASS(dev);
 	return 0;
 }

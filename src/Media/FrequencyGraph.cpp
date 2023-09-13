@@ -41,7 +41,7 @@ Media::DrawImage *Media::FrequencyGraph::CreateGraph(NotNullPtr<Media::DrawEngin
 	Double dfftSize = UOSInt2Double(fftSize);
 	Media::AudioFormat fmt;
 	Math::FFTCalc fft(fftSize, wtype);
-	audio->GetFormat(&fmt);
+	audio->GetFormat(fmt);
 	if (fmt.formatId == 1)
 	{
 		UInt64 sampleCnt = (UInt64)audio->GetSampleCount();

@@ -4,7 +4,7 @@
 #include "Sync/Interlocked.h"
 #include <windows.h>
 
-Media::AVIUtl::AUIAudio::AUIAudio(Media::AVIUtl::AUIPlugin *plugin, Media::AVIUtl::AUIPlugin::AUIInput *input, Media::AudioFormat *format, UOSInt nSamples)
+Media::AVIUtl::AUIAudio::AUIAudio(Media::AVIUtl::AUIPlugin *plugin, Media::AVIUtl::AUIPlugin::AUIInput *input, NotNullPtr<Media::AudioFormat> format, UOSInt nSamples)
 {
 	this->plugin = plugin;
 	this->input = input;
@@ -21,7 +21,7 @@ Media::AVIUtl::AUIAudio::~AUIAudio()
 		MemFree(this->input);
 	}
 	DEL_CLASS(this->plugin);
-	DEL_CLASS(this->format);
+	this->format.Delete();
 }
 
 UTF8Char *Media::AVIUtl::AUIAudio::GetSourceName(UTF8Char *buff)
@@ -53,7 +53,7 @@ Bool Media::AVIUtl::AUIAudio::TrimStream(UInt32 trimTimeStart, UInt32 trimTimeEn
 	return false;
 }
 
-void Media::AVIUtl::AUIAudio::GetFormat(AudioFormat *format)
+void Media::AVIUtl::AUIAudio::GetFormat(NotNullPtr<AudioFormat> format)
 {
 	format->FromAudioFormat(this->format);
 }

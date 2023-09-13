@@ -319,7 +319,7 @@ void Media::Decoder::MP2GDecoder::ProcVideoFrame(UInt32 frameTime, UInt32 frameN
 	}
 }
 
-Media::Decoder::MP2GDecoder::MP2GDecoder(IVideoSource *sourceVideo, Bool toRelease) : VDecoderBase(sourceVideo)
+Media::Decoder::MP2GDecoder::MP2GDecoder(NotNullPtr<IVideoSource> sourceVideo, Bool toRelease) : VDecoderBase(sourceVideo)
 {
 	Media::FrameInfo info;
 	UOSInt size;
@@ -352,7 +352,7 @@ Media::Decoder::MP2GDecoder::~MP2GDecoder()
 	}
 }
 
-Text::CString Media::Decoder::MP2GDecoder::GetFilterName()
+Text::CStringNN Media::Decoder::MP2GDecoder::GetFilterName()
 {
 	return CSTR("MP2GDecoder");
 }

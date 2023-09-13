@@ -106,7 +106,7 @@ Media::VideoFilter::UVOffsetFilter::~UVOffsetFilter()
 {
 }
 
-Text::CString Media::VideoFilter::UVOffsetFilter::GetFilterName()
+Text::CStringNN Media::VideoFilter::UVOffsetFilter::GetFilterName()
 {
 	return CSTR("UVOffsetFilter");
 }

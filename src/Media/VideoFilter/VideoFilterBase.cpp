@@ -72,10 +72,17 @@ void Media::VideoFilter::VideoFilterBase::SetBorderCrop(UOSInt cropLeft, UOSInt 
 		this->srcVideo->SetBorderCrop(cropLeft, cropTop, cropRight, cropBottom);
 }
 
-void Media::VideoFilter::VideoFilterBase::GetBorderCrop(UOSInt *cropLeft, UOSInt *cropTop, UOSInt *cropRight, UOSInt *cropBottom)
+void Media::VideoFilter::VideoFilterBase::GetBorderCrop(OutParam<UOSInt> cropLeft, OutParam<UOSInt> cropTop, OutParam<UOSInt> cropRight, OutParam<UOSInt> cropBottom)
 {
 	if (this->srcVideo)
 		this->srcVideo->GetBorderCrop(cropLeft, cropTop, cropRight, cropBottom);
+	else
+	{
+		cropLeft.Set(0);
+		cropTop.Set(0);
+		cropRight.Set(0);
+		cropBottom.Set(0);
+	}
 }
 
 Bool Media::VideoFilter::VideoFilterBase::GetVideoInfo(NotNullPtr<Media::FrameInfo> info, OutParam<UInt32> frameRateNorm, OutParam<UInt32> frameRateDenorm, OutParam<UOSInt> maxFrameSize)

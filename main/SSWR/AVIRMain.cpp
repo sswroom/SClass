@@ -63,7 +63,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 		NEW_CLASS(frm, SSWR::AVIRead::AVIRBaseForm(0, ui, core));
 		frm->SetExitOnClose(true);
 		frm->Show();
-		argv = progCtrl->GetCommandLines(progCtrl, &argc);
+		argv = progCtrl->GetCommandLines(progCtrl, argc);
 		if (argc > 1)
 		{
 			core->BeginLoad();

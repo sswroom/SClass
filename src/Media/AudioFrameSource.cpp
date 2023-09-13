@@ -3,7 +3,7 @@
 #include "Text/MyString.h"
 #include "Media/AudioFrameSource.h"
 
-Media::AudioFrameSource::AudioFrameSource(NotNullPtr<IO::StreamData> fd, Media::AudioFormat *format, NotNullPtr<Text::String> name)
+Media::AudioFrameSource::AudioFrameSource(NotNullPtr<IO::StreamData> fd, NotNullPtr<const Media::AudioFormat> format, NotNullPtr<Text::String> name)
 {
 	this->format.FromAudioFormat(format);
 	if (this->format.frequency == 0)
@@ -25,7 +25,7 @@ Media::AudioFrameSource::AudioFrameSource(NotNullPtr<IO::StreamData> fd, Media::
 	this->blocks = MemAlloc(Media::AudioFrameSource::AudioFrame, this->maxBlockCnt);
 }
 
-Media::AudioFrameSource::AudioFrameSource(NotNullPtr<IO::StreamData> fd, Media::AudioFormat *format, Text::CString name)
+Media::AudioFrameSource::AudioFrameSource(NotNullPtr<IO::StreamData> fd, NotNullPtr<const Media::AudioFormat> format, Text::CStringNN name)
 {
 	this->format.FromAudioFormat(format);
 	if (this->format.frequency == 0)
@@ -107,14 +107,14 @@ Bool Media::AudioFrameSource::TrimStream(UInt32 trimTimeStart, UInt32 trimTimeEn
 	return false;
 }
 
-void Media::AudioFrameSource::GetFormat(AudioFormat *format)
+void Media::AudioFrameSource::GetFormat(NotNullPtr<AudioFormat> format)
 {
 	if (this->format.bitRate == 0)
 	{
 		this->format.bitRate = (UInt32)(this->totalSize * 8 * this->format.frequency / this->totalSampleCnt);
 	}
 
-	format->FromAudioFormat(&this->format);
+	format->FromAudioFormat(this->format);
 }
 
 Bool Media::AudioFrameSource::Start(Sync::Event *evt, UOSInt blkSize)

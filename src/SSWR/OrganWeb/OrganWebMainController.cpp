@@ -2427,7 +2427,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoDetail(NotNullPtr
 							{
 								Media::IAudioSource *asrc = (Media::IAudioSource*)msrc;
 								Media::AudioFormat format;
-								asrc->GetFormat(&format);
+								asrc->GetFormat(format);
 								sb.AppendC(UTF8STRC(" "));
 								sb.AppendU32(format.frequency);
 								sb.AppendC(UTF8STRC("Hz, "));
@@ -3293,7 +3293,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoDetailD(NotNullPt
 						{
 							Media::IAudioSource *asrc = (Media::IAudioSource*)msrc;
 							Media::AudioFormat format;
-							asrc->GetFormat(&format);
+							asrc->GetFormat(format);
 							sb.AppendC(UTF8STRC(" "));
 							sb.AppendU32(format.frequency);
 							sb.AppendC(UTF8STRC("Hz, "));

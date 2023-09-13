@@ -20,7 +20,7 @@ void Media::Decoder::VFWDecoder::ProcVideoFrame(UInt32 frameTime, UInt32 frameNu
 
 }
 
-Media::Decoder::VFWDecoder::VFWDecoder(Media::IVideoSource *sourceVideo) : Media::Decoder::VDecoderBase(sourceVideo)
+Media::Decoder::VFWDecoder::VFWDecoder(NotNullPtr<Media::IVideoSource> sourceVideo) : Media::Decoder::VDecoderBase(sourceVideo)
 {
 	this->sourceVideo = 0;
 	this->frameRateNorm = 0;
@@ -62,7 +62,7 @@ Bool Media::Decoder::VFWDecoder::CaptureImage(ImageCallback imgCb, void *userDat
 	return true;
 }
 
-Text::CString Media::Decoder::VFWDecoder::GetFilterName()
+Text::CStringNN Media::Decoder::VFWDecoder::GetFilterName()
 {
 	return CSTR("VFWDecoder");
 }

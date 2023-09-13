@@ -3,7 +3,7 @@
 #include "Text/MyString.h"
 #include "Media/AudioBlockSource.h"
 
-Media::AudioBlockSource::AudioBlockSource(NotNullPtr<IO::StreamData> fd, Media::AudioFormat *format, NotNullPtr<Text::String> name, UInt32 samplePerBlock)
+Media::AudioBlockSource::AudioBlockSource(NotNullPtr<IO::StreamData> fd, NotNullPtr<const Media::AudioFormat> format, NotNullPtr<Text::String> name, UInt32 samplePerBlock)
 {
 	this->format.FromAudioFormat(format);
 
@@ -78,9 +78,9 @@ Bool Media::AudioBlockSource::TrimStream(UInt32 trimTimeStart, UInt32 trimTimeEn
 	return false;
 }
 
-void Media::AudioBlockSource::GetFormat(AudioFormat *format)
+void Media::AudioBlockSource::GetFormat(NotNullPtr<AudioFormat> format)
 {
-	format->FromAudioFormat(&this->format);
+	format->FromAudioFormat(this->format);
 }
 
 Bool Media::AudioBlockSource::Start(Sync::Event *evt, UOSInt blkSize)

@@ -46,10 +46,10 @@ UI::GUICore *__stdcall Core::IProgControl::CreateGUICore(NotNullPtr<Core::IProgC
 	return 0;
 }
 
-UTF8Char **__stdcall LinuxProgControl_GetCommandLines(NotNullPtr<Core::IProgControl> progCtrl, UOSInt *cmdCnt)
+UTF8Char **__stdcall LinuxProgControl_GetCommandLines(NotNullPtr<Core::IProgControl> progCtrl, OutParam<UOSInt> cmdCnt)
 {
 	LinuxProgControl *ctrl = (LinuxProgControl*)progCtrl.Ptr();
-	*cmdCnt = ctrl->argc;
+	cmdCnt.Set(ctrl->argc);
 	return ctrl->argv;
 }
 

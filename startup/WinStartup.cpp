@@ -106,7 +106,7 @@ WChar **CommandLineToArgvW(const WChar *cmdLine, Int32 *argc)
 }
 #endif
 
-UTF8Char **__stdcall WinProgControl_GetCommandLines(NotNullPtr<Core::IProgControl> progCtrl, UOSInt *cmdCnt)
+UTF8Char **__stdcall WinProgControl_GetCommandLines(NotNullPtr<Core::IProgControl> progCtrl, OutParam<UOSInt> cmdCnt)
 {
 	WinProgControl *ctrl = (WinProgControl*)progCtrl.Ptr();
 	if (ctrl->argv == 0)
@@ -123,7 +123,7 @@ UTF8Char **__stdcall WinProgControl_GetCommandLines(NotNullPtr<Core::IProgContro
 		}
 		LocalFree(argv);
 	}
-	*cmdCnt = ctrl->argc;
+	cmdCnt.Set(ctrl->argc);
 	return ctrl->argv;
 }
 

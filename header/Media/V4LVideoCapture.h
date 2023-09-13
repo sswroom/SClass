@@ -27,7 +27,7 @@ namespace Media
 		virtual ~V4LVideoCapture();
 		
 		virtual UTF8Char *GetSourceName(UTF8Char *buff);
-		virtual Text::CString GetFilterName();
+		virtual Text::CStringNN GetFilterName();
 		virtual Bool GetVideoInfo(NotNullPtr<Media::FrameInfo> info, OutParam<UInt32> frameRateNorm, OutParam<UInt32> frameRateDenorm, OutParam<UOSInt> maxFrameSize);
 		virtual Bool Init(FrameCallback cb, FrameChangeCallback fcCb, void *userData);
 		virtual Bool Start();

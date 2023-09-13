@@ -6,7 +6,7 @@
 #include "Sync/MutexUsage.h"
 #include "Sync/SimpleThread.h"
 
-Media::VOBAC3StreamSource::VOBAC3StreamSource(Media::IStreamControl *pbc)
+Media::VOBAC3StreamSource::VOBAC3StreamSource(NotNullPtr<Media::IStreamControl> pbc)
 {
 	this->pbc = pbc;
 	this->fmt.formatId = 0x2000;
@@ -35,7 +35,7 @@ Bool Media::VOBAC3StreamSource::ParseHeader(UInt8 *buff, UOSInt buffSize)
 	if (this->fmt.bitRate == 0)
 	{
 		Media::BlockParser::AC3BlockParser ac3Parser;
-		ac3Parser.ParseStreamFormat(buff, buffSize, &this->fmt);
+		ac3Parser.ParseStreamFormat(buff, buffSize, this->fmt);
 		if (this->fmt.bitRate != 0)
 		{
 			this->buffSize = this->fmt.bitRate >> 2;
@@ -81,9 +81,9 @@ Bool Media::VOBAC3StreamSource::TrimStream(UInt32 trimTimeStart, UInt32 trimTime
 	return false;
 }
 
-void Media::VOBAC3StreamSource::GetFormat(Media::AudioFormat *format)
+void Media::VOBAC3StreamSource::GetFormat(NotNullPtr<Media::AudioFormat> format)
 {
-	format->FromAudioFormat(&this->fmt);
+	format->FromAudioFormat(this->fmt);
 }
 
 Bool Media::VOBAC3StreamSource::Start(Sync::Event *evt, UOSInt blkSize)

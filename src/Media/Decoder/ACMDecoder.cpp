@@ -47,7 +47,7 @@ void Media::Decoder::ACMDecoder::InitACM()
 	Media::AudioFormat format;
 	WAVEFORMATEX *fmt;
 	WAVEFORMATEX *acmFmt;
-	sourceAudio->GetFormat(&format);
+	sourceAudio->GetFormat(format);
 	fmt = (WAVEFORMATEX*)MAlloc(18 + format.extraSize);
 	fmt->wFormatTag = (WORD)format.formatId;
 	fmt->nChannels = format.nChannels;
@@ -162,9 +162,8 @@ void Media::Decoder::ACMDecoder::InitACM()
 	}
 }
 
-Media::Decoder::ACMDecoder::ACMDecoder(Media::IAudioSource *sourceAudio)
+Media::Decoder::ACMDecoder::ACMDecoder(NotNullPtr<Media::IAudioSource> sourceAudio)
 {
-	this->sourceAudio = 0;
 	this->hAcmStream = 0;
 	this->acmFmt = 0;
 	this->decFmt = 0;
@@ -172,7 +171,7 @@ Media::Decoder::ACMDecoder::ACMDecoder(Media::IAudioSource *sourceAudio)
 	this->acmInpBuff = 0;
 	this->acmOupBuff = 0;
 	this->seeked = true;
-	this->sourceAudio = sourceAudio;
+	this->sourceAudio = sourceAudio.Ptr();
 	this->srcFormatTag = 0;
 	InitACM();
 }
@@ -182,11 +181,12 @@ Media::Decoder::ACMDecoder::~ACMDecoder()
 	FreeACM();
 }
 
-void Media::Decoder::ACMDecoder::GetFormat(AudioFormat *format)
+void Media::Decoder::ACMDecoder::GetFormat(NotNullPtr<AudioFormat> format)
 {
-	if (this->decFmt)
+	NotNullPtr<Media::AudioFormat> decFmt;
+	if (decFmt.Set(this->decFmt))
 	{
-		format->FromAudioFormat(this->decFmt);
+		format->FromAudioFormat(decFmt);
 	}
 	else
 	{

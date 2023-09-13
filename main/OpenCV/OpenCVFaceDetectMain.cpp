@@ -161,7 +161,7 @@ Media::IVideoCapture *OpenCapture(UOSInt defIndex)
 
 Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 {
-	Media::IVideoCapture *capture;
+	NotNullPtr<Media::IVideoCapture> capture;
 	IO::ConsoleWriter *console;
 	UOSInt defIndex;
 	lastCnt = 0;
@@ -171,7 +171,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 
 	NEW_CLASS(console, IO::ConsoleWriter());
 	UOSInt argc;
-	UTF8Char **argv = progCtrl->GetCommandLines(progCtrl, &argc);
+	UTF8Char **argv = progCtrl->GetCommandLines(progCtrl, argc);
 	if (argc >= 2)
 	{
 		defIndex = Text::StrToUOSInt(argv[1]);
@@ -233,8 +233,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	}
 
 	console->WriteLineC(UTF8STRC("Starting OpenCVPeopleCounting"));
-	capture = OpenCapture(defIndex);
-	if (capture)
+	if (capture.Set(OpenCapture(defIndex)))
 	{
 		Text::StringBuilderUTF8 sb;
 		capture->GetInfo(sb);
@@ -266,7 +265,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 			DEL_CLASS(feeder);
 		}
 		DEL_CLASS(objDetect);
-		DEL_CLASS(capture);
+		capture.Delete();
 	}
 	else
 	{

@@ -2064,7 +2064,7 @@ void Media::VideoRenderer::UpdateCrop()
 	UOSInt cropBottom;
 	if (this->video == 0)
 		return;
-	this->video->GetBorderCrop(&cropLeft, &cropTop, &cropRight, &cropBottom);
+	this->video->GetBorderCrop(cropLeft, cropTop, cropRight, cropBottom);
 	this->cropLeft = cropLeft;
 	this->cropTop = cropTop;
 	this->cropRight = cropRight;

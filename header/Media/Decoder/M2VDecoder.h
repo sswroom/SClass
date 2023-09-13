@@ -15,10 +15,10 @@ namespace Media
 
 			virtual void ProcVideoFrame(UInt32 frameTime, UInt32 frameNum, UInt8 **imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst);
 		public:
-			M2VDecoder(IVideoSource *sourceVideo, Bool toRelease);
+			M2VDecoder(NotNullPtr<IVideoSource> sourceVideo, Bool toRelease);
 			virtual ~M2VDecoder();
 
-			virtual Text::CString GetFilterName();
+			virtual Text::CStringNN GetFilterName();
 
 			virtual Bool HasFrameCount();
 			virtual UOSInt GetFrameCount();

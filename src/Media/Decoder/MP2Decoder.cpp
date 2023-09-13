@@ -521,14 +521,14 @@ unsigned long kjmp2_decode_frame(
 }
 
 
-Media::Decoder::MP2Decoder::MP2Decoder(Media::IAudioSource *sourceAudio)
+Media::Decoder::MP2Decoder::MP2Decoder(NotNullPtr<Media::IAudioSource> sourceAudio)
 {
 	Media::AudioFormat fmt;
 	this->sourceAudio = 0;
 	this->context = 0;
 	this->totalReadSize = 0;
     this->readEvt = 0;
-	sourceAudio->GetFormat(&fmt);
+	sourceAudio->GetFormat(fmt);
     if (fmt.formatId != 0x50)
     {
         this->nChannel = 0;
@@ -538,7 +538,7 @@ Media::Decoder::MP2Decoder::MP2Decoder(Media::IAudioSource *sourceAudio)
         return;
     }
     this->nChannel = fmt.nChannels;
-	this->sourceAudio = sourceAudio;
+	this->sourceAudio = sourceAudio.Ptr();
 	this->context = MemAlloc(kjmp2_context_t, 1);
 	this->blkSize = this->sourceAudio->GetMinBlockSize();
 	kjmp2_init((kjmp2_context_t*)this->context);
@@ -552,12 +552,12 @@ Media::Decoder::MP2Decoder::~MP2Decoder()
 	}
 }
 
-void Media::Decoder::MP2Decoder::GetFormat(AudioFormat *format)
+void Media::Decoder::MP2Decoder::GetFormat(NotNullPtr<AudioFormat> format)
 {
 	if (this->sourceAudio)
 	{
 		Media::AudioFormat fmt;
-		this->sourceAudio->GetFormat(&fmt);
+		this->sourceAudio->GetFormat(fmt);
 		format->formatId = 1;
 		format->bitpersample = 16;
 		format->frequency = fmt.frequency;
@@ -622,7 +622,7 @@ UOSInt Media::Decoder::MP2Decoder::ReadBlock(Data::ByteArray blk)
 		{
 			Media::AudioFormat fmt;
 			UOSInt size;
-			this->sourceAudio->GetFormat(&fmt);
+			this->sourceAudio->GetFormat(fmt);
 			size = readSize * 8 * fmt.frequency / fmt.bitRate * fmt.nChannels;
 			blk.Clear(0, size);
 			blk += size;

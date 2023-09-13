@@ -87,7 +87,7 @@ IO::ParsedObject *Parser::FileParser::WAVParser::ParseFileHdr(NotNullPtr<IO::Str
 					af.extra = 0;
 
 					Media::LPCMSource *src;
-					NEW_CLASS(src, Media::LPCMSource(fd, currPos + 8, ReadUInt32(&chunkBuff[4]), &af, fd->GetFullName()));
+					NEW_CLASS(src, Media::LPCMSource(fd, currPos + 8, ReadUInt32(&chunkBuff[4]), af, fd->GetFullName()));
 
 					NEW_CLASS(vid, Media::MediaFile(fd->GetFullName()));
 					vid->AddSource(src, 0);
@@ -153,7 +153,7 @@ IO::ParsedObject *Parser::FileParser::WAVParser::ParseFileHdr(NotNullPtr<IO::Str
 					af.FromWAVEFORMATEX(fmt.Ptr());
 					
 					Media::AudioFixBlockSource *src;
-					NEW_CLASS(src, Media::AudioFixBlockSource(fd, currPos + 8, ReadUInt32(&chunkBuff[4]), &af, fd->GetFullName()));
+					NEW_CLASS(src, Media::AudioFixBlockSource(fd, currPos + 8, ReadUInt32(&chunkBuff[4]), af, fd->GetFullName()));
 
 					NEW_CLASS(vid, Media::MediaFile(fd->GetFullName()));
 					vid->AddSource(src, 0);

@@ -2,7 +2,7 @@
 #include "MyMemory.h"
 #include "Net/RTPVSource.h"
 
-Net::RTPVSource::RTPVSource(Net::RTPCliChannel *ch, Net::RTPVPLHandler *hdlr)
+Net::RTPVSource::RTPVSource(NotNullPtr<Net::RTPCliChannel> ch, NotNullPtr<Net::RTPVPLHandler> hdlr)
 {
 	this->ch = ch;
 	this->hdlr = hdlr;
@@ -10,7 +10,7 @@ Net::RTPVSource::RTPVSource(Net::RTPCliChannel *ch, Net::RTPVPLHandler *hdlr)
 
 Net::RTPVSource::~RTPVSource()
 {
-	DEL_CLASS(this->ch);
+	this->ch.Delete();
 }
 
 UTF8Char *Net::RTPVSource::GetSourceName(UTF8Char *buff)
@@ -18,7 +18,7 @@ UTF8Char *Net::RTPVSource::GetSourceName(UTF8Char *buff)
 	return this->hdlr->GetSourceName(buff);
 }
 
-Text::CString Net::RTPVSource::GetFilterName()
+Text::CStringNN Net::RTPVSource::GetFilterName()
 {
 	return CSTR("RTPVSource");
 }

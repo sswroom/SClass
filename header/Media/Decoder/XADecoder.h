@@ -17,10 +17,10 @@ namespace Media
 			Data::ByteBuffer readBuff;
 			Sync::Event *readEvt;
 		public:
-			XADecoder(IAudioSource *sourceAudio);
+			XADecoder(NotNullPtr<IAudioSource> sourceAudio);
 			virtual ~XADecoder();
 
-			virtual void GetFormat(AudioFormat *format);
+			virtual void GetFormat(NotNullPtr<AudioFormat> format);
 
 			virtual UInt32 SeekToTime(UInt32 time); //ms, ret actual time
 			virtual Bool Start(Sync::Event *evt, UOSInt blkSize);

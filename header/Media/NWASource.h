@@ -17,8 +17,8 @@ namespace Media
 		UInt8 *blockBuff;
 
 	public:
-		NWASource(NotNullPtr<IO::StreamData> fd, UInt32 sampleCount, UInt32 blockSize, UInt32 compLevel, UInt32 nBlocks, Media::AudioFormat *format, NotNullPtr<Text::String> name);
-		NWASource(NotNullPtr<IO::StreamData> fd, UInt32 sampleCount, UInt32 blockSize, UInt32 compLevel, UInt32 nBlocks, Media::AudioFormat *format, Text::CString name);
+		NWASource(NotNullPtr<IO::StreamData> fd, UInt32 sampleCount, UInt32 blockSize, UInt32 compLevel, UInt32 nBlocks, NotNullPtr<const Media::AudioFormat> format, NotNullPtr<Text::String> name);
+		NWASource(NotNullPtr<IO::StreamData> fd, UInt32 sampleCount, UInt32 blockSize, UInt32 compLevel, UInt32 nBlocks, NotNullPtr<const Media::AudioFormat> format, Text::CStringNN name);
 		virtual ~NWASource();
 
 		virtual Int32 GetStreamTime(); //ms

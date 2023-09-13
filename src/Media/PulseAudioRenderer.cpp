@@ -476,7 +476,7 @@ Bool Media::PulseAudioRenderer::BindAudio(Media::IAudioSource *audsrc)
 	if (audsrc == 0)
 		return false;
 
-	audsrc->GetFormat(&fmt);
+	audsrc->GetFormat(fmt);
 	if (fmt.formatId != 1 && fmt.formatId != 3)
 	{
 		return false;

@@ -447,14 +447,14 @@ Media::IVideoSource *Net::RTPCliChannel::CreateShadowVideo(UOSInt index)
 {
 	if (this->chData->mediaType != Media::MEDIA_TYPE_VIDEO)
 		return 0;
-	Net::RTPVPLHandler *hdlr = (Net::RTPVPLHandler*)this->chData->payloadMap.GetItem(index);
-	if (hdlr == 0)
+	NotNullPtr<Net::RTPVPLHandler> hdlr;
+	if (!hdlr.Set((Net::RTPVPLHandler*)this->chData->payloadMap.GetItem(index)))
 	{
 		return 0;
 	}
 	Net::RTPVSource *vSrc;
-	Net::RTPCliChannel *ch;
-	NEW_CLASS(ch, Net::RTPCliChannel(this));
+	NotNullPtr<Net::RTPCliChannel> ch;
+	NEW_CLASSNN(ch, Net::RTPCliChannel(this));
 	NEW_CLASS(vSrc, Net::RTPVSource(ch, hdlr));
 	return vSrc;
 }
@@ -463,14 +463,14 @@ Media::IAudioSource *Net::RTPCliChannel::CreateShadowAudio(UOSInt index)
 {
 	if (this->chData->mediaType != Media::MEDIA_TYPE_AUDIO)
 		return 0;
-	Net::RTPAPLHandler *hdlr = (Net::RTPAPLHandler*)this->chData->payloadMap.GetItem(index);
-	if (hdlr == 0)
+	NotNullPtr<Net::RTPAPLHandler> hdlr;
+	if (!hdlr.Set((Net::RTPAPLHandler*)this->chData->payloadMap.GetItem(index)))
 	{
 		return 0;
 	}
 	Net::RTPASource *aSrc;
-	Net::RTPCliChannel *ch;
-	NEW_CLASS(ch, Net::RTPCliChannel(this));
+	NotNullPtr<Net::RTPCliChannel> ch;
+	NEW_CLASSNN(ch, Net::RTPCliChannel(*this));
 	NEW_CLASS(aSrc, Net::RTPASource(ch, hdlr));
 	return aSrc;
 }

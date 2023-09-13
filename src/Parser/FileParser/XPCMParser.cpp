@@ -61,7 +61,7 @@ IO::ParsedObject *Parser::FileParser::XPCMParser::ParseFileHdr(NotNullPtr<IO::St
 	af.extra = 0;
 
 	Media::LPCMSource *src;
-	NEW_CLASS(src, Media::LPCMSource(fd, 28, ReadUInt32(&hdr[4]), &af, fd->GetFullName()));
+	NEW_CLASS(src, Media::LPCMSource(fd, 28, ReadUInt32(&hdr[4]), af, fd->GetFullName()));
 
 	NEW_CLASS(vid, Media::MediaFile(fd->GetFullName()));
 	vid->AddSource(src, 0);

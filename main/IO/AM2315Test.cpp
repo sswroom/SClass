@@ -22,7 +22,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	UInt16 pinNum1 = 15;
 	UInt16 pinNum2 = 14;
 	UOSInt argc;
-	UTF8Char **argv = progCtrl->GetCommandLines(progCtrl, &argc);
+	UTF8Char **argv = progCtrl->GetCommandLines(progCtrl, argc);
 	if (argc >= 3)
 	{
 		Text::StrToUInt16(argv[1], pinNum1);

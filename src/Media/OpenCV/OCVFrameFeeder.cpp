@@ -35,7 +35,7 @@ void __stdcall Media::OpenCV::OCVFrameFeeder::OnFrameChange(Media::IVideoSource:
 
 }
 
-Media::OpenCV::OCVFrameFeeder::OCVFrameFeeder(Media::OpenCV::OCVObjectDetector *frameInput, Media::IVideoSource *src)
+Media::OpenCV::OCVFrameFeeder::OCVFrameFeeder(Media::OpenCV::OCVObjectDetector *frameInput, NotNullPtr<Media::IVideoSource> src)
 {
 	this->frameInput = frameInput;
 	this->src = src;
@@ -75,7 +75,7 @@ Bool Media::OpenCV::OCVFrameFeeder::Start()
 	}
 	if (this->src->IsRealTimeSrc())
 	{
-		Media::IRealtimeVideoSource *realtimeVideo = (Media::IRealtimeVideoSource*)src;
+		Media::IRealtimeVideoSource *realtimeVideo = (Media::IRealtimeVideoSource*)src.Ptr();
 		if (realtimeVideo->IsVideoCapture())
 		{
 			Media::IVideoCapture *capture = (Media::IVideoCapture*)realtimeVideo;

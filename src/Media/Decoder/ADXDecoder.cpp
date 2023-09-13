@@ -5,12 +5,12 @@
 
 #define BASEVOLUME 0x4000 //0x4000
 
-Media::Decoder::ADXDecoder::ADXDecoder(Media::IAudioSource *sourceAudio)
+Media::Decoder::ADXDecoder::ADXDecoder(NotNullPtr<Media::IAudioSource> sourceAudio)
 {
 	Media::AudioFormat fmt;
 	this->sourceAudio = 0;
 	this->nChannels = 0;
-	sourceAudio->GetFormat(&fmt);
+	sourceAudio->GetFormat(fmt);
 	if (fmt.formatId != 0x2080)
 		return;
 	if (fmt.nChannels == 1)
@@ -29,19 +29,19 @@ Media::Decoder::ADXDecoder::ADXDecoder(Media::IAudioSource *sourceAudio)
 	{
 		return;
 	}
-	this->sourceAudio = sourceAudio;
+	this->sourceAudio = sourceAudio.Ptr();
 }
 
 Media::Decoder::ADXDecoder::~ADXDecoder()
 {
 }
 
-void Media::Decoder::ADXDecoder::GetFormat(AudioFormat *format)
+void Media::Decoder::ADXDecoder::GetFormat(NotNullPtr<AudioFormat> format)
 {
 	if (this->sourceAudio)
 	{
 		Media::AudioFormat fmt;
-		this->sourceAudio->GetFormat(&fmt);
+		this->sourceAudio->GetFormat(fmt);
 		format->formatId = 1;
 		format->bitpersample = 16;
 		format->frequency = fmt.frequency;

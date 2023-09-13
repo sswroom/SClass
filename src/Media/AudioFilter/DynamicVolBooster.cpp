@@ -18,18 +18,18 @@ void Media::AudioFilter::DynamicVolBooster::ResetStatus()
 	soundIndex = 0;
 }
 
-Media::AudioFilter::DynamicVolBooster::DynamicVolBooster(Media::IAudioSource *sourceAudio) : Media::IAudioFilter(sourceAudio)
+Media::AudioFilter::DynamicVolBooster::DynamicVolBooster(NotNullPtr<Media::IAudioSource> sourceAudio) : Media::IAudioFilter(sourceAudio)
 {
 	Media::AudioFormat fmt;
-	this->sourceAudio = 0;
 	this->soundBuff = 0;
 	this->bgLevel = 0.001;
-	sourceAudio->GetFormat(&fmt);
+	this->bitCount = 0;
+	this->nChannels = 0;
+	sourceAudio->GetFormat(fmt);
 	if (fmt.formatId != 0x1)
 		return;
 	if (fmt.bitpersample != 16 && fmt.bitpersample != 8)
 		return;
-	this->sourceAudio = sourceAudio;
 	this->soundBuffLeng = fmt.frequency >> 3;
 	this->soundBuff = MemAlloc(Int32, this->soundBuffLeng);
 	this->nChannels = fmt.nChannels;
@@ -46,44 +46,30 @@ Media::AudioFilter::DynamicVolBooster::~DynamicVolBooster()
 	}
 }
 
-void Media::AudioFilter::DynamicVolBooster::GetFormat(AudioFormat *format)
+void Media::AudioFilter::DynamicVolBooster::GetFormat(NotNullPtr<AudioFormat> format)
 {
-	if (this->sourceAudio)
-	{
-		Media::AudioFormat fmt;
-		this->sourceAudio->GetFormat(&fmt);
-		format->formatId = 1;
-		format->bitpersample = (UInt16)this->bitCount;
-		format->frequency = fmt.frequency;
-		format->nChannels = fmt.nChannels;
-		format->bitRate = fmt.frequency * fmt.nChannels * this->bitCount;
-		format->align = fmt.nChannels * this->bitCount >> 3;
-		format->other = 0;
-		format->intType = Media::AudioFormat::IT_NORMAL;
-		format->extraSize = 0;
-		format->extra = 0;
-	}
-	else
-	{
-		format->Clear();
-	}
+	Media::AudioFormat fmt;
+	this->sourceAudio->GetFormat(fmt);
+	format->formatId = 1;
+	format->bitpersample = (UInt16)this->bitCount;
+	format->frequency = fmt.frequency;
+	format->nChannels = fmt.nChannels;
+	format->bitRate = fmt.frequency * fmt.nChannels * this->bitCount;
+	format->align = fmt.nChannels * this->bitCount >> 3;
+	format->other = 0;
+	format->intType = Media::AudioFormat::IT_NORMAL;
+	format->extraSize = 0;
+	format->extra = 0;
 }
 
 UInt32 Media::AudioFilter::DynamicVolBooster::SeekToTime(UInt32 time)
 {
-	if (this->sourceAudio)
-	{
-		this->ResetStatus();
-		return this->sourceAudio->SeekToTime(time);
-	}
-	return 0;
+	this->ResetStatus();
+	return this->sourceAudio->SeekToTime(time);
 }
 
 UOSInt Media::AudioFilter::DynamicVolBooster::ReadBlock(Data::ByteArray blk)
 {
-	if (this->sourceAudio == 0)
-		return 0;
-
 	UOSInt readSize = this->sourceAudio->ReadBlock(blk);
 	if (this->enabled)
 	{

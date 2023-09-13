@@ -11,7 +11,7 @@ namespace Media
 	class VOBAC3StreamSource : public Media::IAudioSource, public Media::IMediaStream
 	{
 	private:
-		Media::IStreamControl *pbc;
+		NotNullPtr<Media::IStreamControl> pbc;
 		Media::AudioFormat fmt;
 		Sync::Event *pbEvt;
 
@@ -26,7 +26,7 @@ namespace Media
 
 
 	public:
-		VOBAC3StreamSource(Media::IStreamControl *pbc);
+		VOBAC3StreamSource(NotNullPtr<Media::IStreamControl> pbc);
 		virtual ~VOBAC3StreamSource();
 
 		Bool ParseHeader(UInt8 *buff, UOSInt buffSize);
@@ -38,7 +38,7 @@ namespace Media
 		virtual UInt32 SeekToTime(UInt32 time); //ms, ret actual time
 		virtual Bool TrimStream(UInt32 trimTimeStart, UInt32 trimTimeEnd, Int32 *syncTime);
 
-		virtual void GetFormat(AudioFormat *format);
+		virtual void GetFormat(NotNullPtr<AudioFormat> format);
 
 		virtual Bool Start(Sync::Event *evt, UOSInt blkSize);
 		virtual void Stop();

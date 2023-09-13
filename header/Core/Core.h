@@ -17,7 +17,7 @@ namespace Core
 	struct IProgControl
 	{
 		typedef void (__stdcall *WaitForExitFunc)(NotNullPtr<IProgControl> progCtrl);
-		typedef UTF8Char **(__stdcall *GetCommandLinesFunc)(NotNullPtr<IProgControl> progCtrl, UOSInt *cmdCnt);
+		typedef UTF8Char **(__stdcall *GetCommandLinesFunc)(NotNullPtr<IProgControl> progCtrl, OutParam<UOSInt> cmdCnt);
 
 		WaitForExitFunc WaitForExit;
 		WaitForExitFunc SignalExit;
@@ -26,8 +26,8 @@ namespace Core
 
 		static UI::GUICore *CreateGUICore(NotNullPtr<IProgControl> progCtrl);
 	};
-	typedef Media::IVideoSource *(__stdcall *DecodeVideoFunc)(Media::IVideoSource *video);
-	typedef Media::IAudioSource *(__stdcall *DecodeAudioFunc)(Media::IAudioSource *audio);
+	typedef Media::IVideoSource *(__stdcall *DecodeVideoFunc)(NotNullPtr<Media::IVideoSource> video);
+	typedef Media::IAudioSource *(__stdcall *DecodeAudioFunc)(NotNullPtr<Media::IAudioSource> audio);
 	typedef void (__stdcall *SimpleFunc)();
 
 	void CoreStart();
@@ -35,7 +35,7 @@ namespace Core
 	void CoreAddVideoDecFunc(DecodeVideoFunc func);
 	void CoreAddAudioDecFunc(DecodeAudioFunc func);
 	void CoreAddOnExitFunc(SimpleFunc func);
-	Media::IVideoSource *DecodeVideo(Media::IVideoSource *video);
-	Media::IAudioSource *DecodeAudio(Media::IAudioSource *audio);
+	Media::IVideoSource *DecodeVideo(NotNullPtr<Media::IVideoSource> video);
+	Media::IAudioSource *DecodeAudio(NotNullPtr<Media::IAudioSource> audio);
 }
 #endif

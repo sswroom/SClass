@@ -19,11 +19,11 @@ namespace Media
 
 			virtual void ProcVideoFrame(UInt32 frameTime, UInt32 frameNum, UInt8 **imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst);
 		public:
-			FFMPEGDecoder(IVideoSource *sourceVideo);
+			FFMPEGDecoder(NotNullPtr<IVideoSource> sourceVideo);
 			virtual ~FFMPEGDecoder();
 
 			virtual Bool CaptureImage(ImageCallback imgCb, void *userData);
-			virtual Text::CString GetFilterName();
+			virtual Text::CStringNN GetFilterName();
 
 			virtual Bool GetVideoInfo(NotNullPtr<Media::FrameInfo> info, OutParam<UInt32> frameRateNorm, OutParam<UInt32> frameRateDenorm, OutParam<UOSInt> maxFrameSize);
 			virtual void Stop();

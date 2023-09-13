@@ -591,7 +591,7 @@ Media::MPGFile::MPGFile(NotNullPtr<IO::StreamData> stmData) : Media::MediaFile(s
 							fmt.intType = Media::AudioFormat::IT_BIGENDIAN16;
 							fmt.extraSize = 0;
 							fmt.extra = 0;
-							NEW_CLASS(mstm, Media::VOBLPCMStreamSource(this, &fmt));
+							NEW_CLASS(mstm, Media::VOBLPCMStreamSource(*this, fmt));
 							this->dataStms.Put(stmType, mstm);
 							this->audStms.Add((Media::VOBLPCMStreamSource*)mstm);
 						}
@@ -607,7 +607,7 @@ Media::MPGFile::MPGFile(NotNullPtr<IO::StreamData> stmData) : Media::MediaFile(s
 						Media::VOBAC3StreamSource *mstm = (Media::VOBAC3StreamSource*)this->dataStms.Get(stmType);
 						if (mstm == 0)
 						{
-							NEW_CLASS(mstm, Media::VOBAC3StreamSource(this));
+							NEW_CLASS(mstm, Media::VOBAC3StreamSource(*this));
 							this->dataStms.Put(stmType, mstm);
 							this->audStms.Add(mstm);
 						}
@@ -712,7 +712,7 @@ Media::MPGFile::MPGFile(NotNullPtr<IO::StreamData> stmData) : Media::MediaFile(s
 						Media::MPAStreamSource *mstm = (Media::MPAStreamSource*)this->dataStms.Get(stmId);
 						if (mstm == 0)
 						{
-							NEW_CLASS(mstm, Media::MPAStreamSource(this));
+							NEW_CLASS(mstm, Media::MPAStreamSource(*this));
 							this->dataStms.Put(stmId, mstm);
 							this->audStms.Add(mstm);
 						}
@@ -784,7 +784,7 @@ Media::MPGFile::MPGFile(NotNullPtr<IO::StreamData> stmData) : Media::MediaFile(s
 				UInt32 frameRateDenorm;
 				if (isFrame && vstm == 0 && Media::MPEGVideoParser::GetFrameInfo(&this->readBuff[j + 9 + stmHdrSize], 256 - 9 - (UOSInt)stmHdrSize, info, frameRateNorm, frameRateDenorm, &this->bitRate, false))
 				{
-					NEW_CLASS(this->vstm, Media::M2VStreamSource(this));
+					NEW_CLASS(this->vstm, Media::M2VStreamSource(*this));
 					this->vstm->DetectStreamInfo(&this->readBuff[j + 9 + stmHdrSize], 256 - 9 - (UOSInt)stmHdrSize);
 				}
 			}

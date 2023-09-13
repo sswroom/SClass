@@ -69,7 +69,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	UInt32 prefFmt = 0;
 
 	UOSInt argc;
-	UTF8Char **argv = progCtrl->GetCommandLines(progCtrl, &argc);
+	UTF8Char **argv = progCtrl->GetCommandLines(progCtrl, argc);
 	if (argc >= 2)
 	{
 		widthLimit = Text::StrToUInt32(argv[1]);

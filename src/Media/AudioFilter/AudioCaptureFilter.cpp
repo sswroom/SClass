@@ -41,9 +41,8 @@ UInt32 __stdcall Media::AudioFilter::AudioCaptureFilter::CaptureThread(void *use
 	return 0;
 }
 
-Media::AudioFilter::AudioCaptureFilter::AudioCaptureFilter(Media::IAudioSource *sourceAudio) : Media::IAudioFilter(sourceAudio)
+Media::AudioFilter::AudioCaptureFilter::AudioCaptureFilter(NotNullPtr<Media::IAudioSource> sourceAudio) : Media::IAudioFilter(sourceAudio)
 {
-	this->sourceAudio = sourceAudio;
 	this->waveStm = 0;
 	this->readBuff = MemAlloc(UInt8, BUFFSIZE);
 	this->writeBuff = MemAlloc(UInt8, BUFFSIZE);
@@ -69,18 +68,11 @@ Media::AudioFilter::AudioCaptureFilter::~AudioCaptureFilter()
 
 UInt32 Media::AudioFilter::AudioCaptureFilter::SeekToTime(UInt32 time)
 {
-	if (this->sourceAudio)
-	{
-		return this->sourceAudio->SeekToTime(time);
-	}
-	return 0;
+	return this->sourceAudio->SeekToTime(time);
 }
 
 UOSInt Media::AudioFilter::AudioCaptureFilter::ReadBlock(Data::ByteArray blk)
 {
-	if (this->sourceAudio == 0)
-		return 0;
-
 	UOSInt readSize = this->sourceAudio->ReadBlock(blk);
 	Sync::MutexUsage mutUsage(this->readMut);
 	if (this->writing)
@@ -106,11 +98,9 @@ UOSInt Media::AudioFilter::AudioCaptureFilter::ReadBlock(Data::ByteArray blk)
 
 Bool Media::AudioFilter::AudioCaptureFilter::StartCapture(Text::CStringNN fileName)
 {
-	if (this->sourceAudio == 0)
-		return false;
 	this->StopCapture();
 	Media::AudioFormat format;
-	this->sourceAudio->GetFormat(&format);
+	this->sourceAudio->GetFormat(format);
 	UInt8 buff[74];
 	*(Int32*)&buff[0] = *(Int32*)"RIFF";
 	*(UInt32*)&buff[4] = 0;

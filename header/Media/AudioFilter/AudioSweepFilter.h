@@ -20,10 +20,10 @@ namespace Media
 			Double endFreq;
 
 		public:
-			AudioSweepFilter(IAudioSource *sourceAudio);
+			AudioSweepFilter(NotNullPtr<IAudioSource> sourceAudio);
 			virtual ~AudioSweepFilter();
 
-			virtual void GetFormat(AudioFormat *format);
+			virtual void GetFormat(NotNullPtr<AudioFormat> format);
 			virtual UOSInt ReadBlock(Data::ByteArray blk); //ret actual block size
 
 			void SetVolume(Double vol);

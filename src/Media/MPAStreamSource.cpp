@@ -6,7 +6,7 @@
 #include "Sync/MutexUsage.h"
 #include "Sync/SimpleThread.h"
 
-Media::MPAStreamSource::MPAStreamSource(Media::IStreamControl *pbc)
+Media::MPAStreamSource::MPAStreamSource(NotNullPtr<Media::IStreamControl> pbc)
 {
 	this->pbc = pbc;
 	this->fmt.formatId = 0;
@@ -165,9 +165,9 @@ Bool Media::MPAStreamSource::TrimStream(UInt32 trimTimeStart, UInt32 trimTimeEnd
 	return false;
 }
 
-void Media::MPAStreamSource::GetFormat(Media::AudioFormat *format)
+void Media::MPAStreamSource::GetFormat(NotNullPtr<Media::AudioFormat> format)
 {
-	format->FromAudioFormat(&this->fmt);
+	format->FromAudioFormat(this->fmt);
 }
 
 Bool Media::MPAStreamSource::Start(Sync::Event *evt, UOSInt blkSize)

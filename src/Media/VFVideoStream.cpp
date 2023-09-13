@@ -148,7 +148,7 @@ UTF8Char *Media::VFVideoStream::GetSourceName(UTF8Char *buff)
 	return Text::StrWChar_UTF8(buff, this->mfile->fileName);
 }
 
-Text::CString Media::VFVideoStream::GetFilterName()
+Text::CStringNN Media::VFVideoStream::GetFilterName()
 {
 	return CSTR("VFVideoStream");
 }

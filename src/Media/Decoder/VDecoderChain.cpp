@@ -7,9 +7,8 @@ void Media::Decoder::VDecoderChain::ProcVideoFrame(UInt32 frameTime, UInt32 fram
 	this->frameCb(frameTime, frameNum, imgData, dataSize, frameStruct, this->frameCbData, frameType, flags, ycOfst);
 }
 
-Media::Decoder::VDecoderChain::VDecoderChain(IVideoSource *sourceVideo) : Media::Decoder::VDecoderBase(sourceVideo)
+Media::Decoder::VDecoderChain::VDecoderChain(NotNullPtr<IVideoSource> sourceVideo) : Media::Decoder::VDecoderBase(sourceVideo)
 {
-	NEW_CLASS(this->srcFilters, Data::ArrayList<Media::IVideoSource*>());
 }
 
 Media::Decoder::VDecoderChain::~VDecoderChain()
@@ -18,16 +17,15 @@ Media::Decoder::VDecoderChain::~VDecoderChain()
 	{
 		DEL_CLASS(this->sourceVideo);
 	}
-	UOSInt i = this->srcFilters->GetCount();
+	UOSInt i = this->srcFilters.GetCount();
 	while (i-- > 0)
 	{
-		Media::IVideoSource *video = this->srcFilters->GetItem(i);
+		Media::IVideoSource *video = this->srcFilters.GetItem(i);
 		DEL_CLASS(video);
 	}
-	DEL_CLASS(this->srcFilters);
 }
 
-Text::CString Media::Decoder::VDecoderChain::GetFilterName()
+Text::CStringNN Media::Decoder::VDecoderChain::GetFilterName()
 {
 	if (this->sourceVideo)
 	{
@@ -36,9 +34,9 @@ Text::CString Media::Decoder::VDecoderChain::GetFilterName()
 	return CSTR("VDecoderChain");
 }
 
-void Media::Decoder::VDecoderChain::AddDecoder(Media::IVideoSource *decoder)
+void Media::Decoder::VDecoderChain::AddDecoder(NotNullPtr<Media::IVideoSource> decoder)
 {
-	this->srcFilters->Add(decoder);
+	this->srcFilters.Add(decoder.Ptr());
 }
 
 Bool Media::Decoder::VDecoderChain::CaptureImage(ImageCallback imgCb, void *userData)

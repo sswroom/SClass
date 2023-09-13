@@ -129,12 +129,12 @@ UOSInt Media::AVIUtl::AUIPlugin::LoadFile(const Char *fileName, Data::ArrayList<
 	
 	AUIInput *input;
 	NotNullPtr<Media::FrameInfo> frameInfo;
-	Media::AudioFormat *audioFormat;
+	NotNullPtr<Media::AudioFormat> audioFormat;
 	input = MemAlloc(AUIInput, 1);
 	input->hand = hand;
 	input->useCnt = 0;
 	NEW_CLASSNN(frameInfo, Media::FrameInfo());
-	NEW_CLASS(audioFormat, Media::AudioFormat());
+	NEW_CLASSNN(audioFormat, Media::AudioFormat());
 
 	Media::IMediaSource *media;
 
@@ -152,7 +152,7 @@ UOSInt Media::AVIUtl::AUIPlugin::LoadFile(const Char *fileName, Data::ArrayList<
 		frameInfo.Delete();
 	}
 	UInt32 nSamples;
-	if (this->GetInputAudioInfo(input->hand, audioFormat, &nSamples))
+	if (this->GetInputAudioInfo(input->hand, audioFormat, nSamples))
 	{
 		NEW_CLASS(media, Media::AVIUtl::AUIAudio(this->Clone(), input, audioFormat, nSamples));
 		outArr->Add(media);
@@ -160,7 +160,7 @@ UOSInt Media::AVIUtl::AUIPlugin::LoadFile(const Char *fileName, Data::ArrayList<
 	}
 	else
 	{
-		DEL_CLASS(audioFormat);
+		audioFormat.Delete();
 	}
 
 	if (input->useCnt == 0)
@@ -243,7 +243,7 @@ Bool Media::AVIUtl::AUIPlugin::GetInputVideoInfo(void *hand, NotNullPtr<Media::F
 	return true;
 }
 
-Bool Media::AVIUtl::AUIPlugin::GetInputAudioInfo(void *hand, Media::AudioFormat *af, UInt32 *nSamples)
+Bool Media::AVIUtl::AUIPlugin::GetInputAudioInfo(void *hand, NotNullPtr<Media::AudioFormat> af, OutParam<UInt32> nSamples)
 {
 	INPUT_PLUGIN_TABLE *pluginTab = (INPUT_PLUGIN_TABLE*)this->plugin->pluginTable;
 	INPUT_INFO info;
@@ -254,7 +254,7 @@ Bool Media::AVIUtl::AUIPlugin::GetInputAudioInfo(void *hand, Media::AudioFormat 
 	if ((info.flag & INPUT_INFO_FLAG_AUDIO) == 0)
 		return false;
 	af->FromWAVEFORMATEX((UInt8*)info.audio_format);
-	*nSamples = (UInt32)info.audio_n;
+	nSamples.Set((UInt32)info.audio_n);
 	return true;
 }
 

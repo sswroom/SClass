@@ -6,10 +6,9 @@
 #include "Media/AudioFilter/SoundGen/BellSoundGen.h"
 #include "Text/MyString.h"
 
-Media::AudioFilter::SoundGenerator::SoundGenerator(IAudioSource *sourceAudio) : Media::IAudioFilter(sourceAudio)
+Media::AudioFilter::SoundGenerator::SoundGenerator(NotNullPtr<IAudioSource> sourceAudio) : Media::IAudioFilter(sourceAudio)
 {
-	this->sourceAudio = sourceAudio;
-	sourceAudio->GetFormat(&this->format);
+	sourceAudio->GetFormat(this->format);
 	Media::AudioFilter::SoundGen::ISoundGen *sndGen;
 
 	NEW_CLASS(sndGen, Media::AudioFilter::SoundGen::BellSoundGen(this->format.frequency));
@@ -28,15 +27,13 @@ Media::AudioFilter::SoundGenerator::~SoundGenerator()
 	}
 }
 
-void Media::AudioFilter::SoundGenerator::GetFormat(AudioFormat *format)
+void Media::AudioFilter::SoundGenerator::GetFormat(NotNullPtr<AudioFormat> format)
 {
-	format->FromAudioFormat(&this->format);
+	format->FromAudioFormat(this->format);
 }
 
 UOSInt Media::AudioFilter::SoundGenerator::ReadBlock(Data::ByteArray blk)
 {
-	if (this->sourceAudio == 0)
-		return 0;
 	UOSInt readSize = this->sourceAudio->ReadBlock(blk);
 	Media::AudioFilter::SoundGen::ISoundGen *sndGen;
 	UOSInt sampleCnt = readSize / (this->format.align);

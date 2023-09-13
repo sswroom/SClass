@@ -79,7 +79,7 @@ Media::AudioBlockSource *Media::BlockParser::MP3BlockParser::ParseStreamData(Not
 	WriteUInt16(&format.extra[10], 0);
 	UInt32 blkCnt = 0;
 
-	NEW_CLASS(audio, Media::AudioBlockSource(stmData, &format, stmData->GetFullName(), 1152));
+	NEW_CLASS(audio, Media::AudioBlockSource(stmData, format, stmData->GetFullName(), 1152));
 	while (currOfst < leng)
 	{
 		if (buff[0] != 0xff || (buff[1] & 0xfe) != 0xfa)
@@ -112,7 +112,7 @@ Media::AudioBlockSource *Media::BlockParser::MP3BlockParser::ParseStreamData(Not
 	return audio;
 }
 
-Bool Media::BlockParser::MP3BlockParser::ParseStreamFormat(UInt8 *buff, UOSInt buffSize, Media::AudioFormat *fmt)
+Bool Media::BlockParser::MP3BlockParser::ParseStreamFormat(UInt8 *buff, UOSInt buffSize, NotNullPtr<Media::AudioFormat> fmt)
 {
 	if (buff[0] != 0xff || (buff[1] & 0xfe) != 0xfa)
 	{

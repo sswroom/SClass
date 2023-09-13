@@ -36,7 +36,7 @@ namespace SSWR
 			Media::DrawImage *fftImg;
 			UInt64 currSample;
 			UInt64 totalSample;
-			Media::AudioFormat *format;
+			Media::AudioFormat format;
 
 			static void __stdcall OnSizeChanged(void *userObj);
 			void UpdateImages();
@@ -48,6 +48,6 @@ namespace SSWR
 			virtual void EventMenuClicked(UInt16 cmdId);
 			virtual void OnMonitorChanged();
 		};
-	};
-};
+	}
+}
 #endif

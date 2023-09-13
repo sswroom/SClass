@@ -2,19 +2,19 @@
 #include "MyMemory.h"
 #include "Media/Decoder/G711muLawDecoder.h"
 
-Media::Decoder::G711muLawDecoder::G711muLawDecoder(Media::IAudioSource *sourceAudio)
+Media::Decoder::G711muLawDecoder::G711muLawDecoder(NotNullPtr<Media::IAudioSource> sourceAudio)
 {
 	Media::AudioFormat fmt;
 	this->sourceAudio = 0;
 	this->readBuff = 0;
 	this->readBuffSize = 0;
 	this->align = 0;
-	sourceAudio->GetFormat(&fmt);
+	sourceAudio->GetFormat(fmt);
 	if (fmt.formatId != 0x7)
 		return;
 	if (fmt.bitpersample != 8)
 		return;
-	this->sourceAudio = sourceAudio;
+	this->sourceAudio = sourceAudio.Ptr();
 	this->align = (UOSInt)fmt.nChannels << 1;
 }
 
@@ -27,12 +27,12 @@ Media::Decoder::G711muLawDecoder::~G711muLawDecoder()
 	}
 }
 
-void Media::Decoder::G711muLawDecoder::GetFormat(AudioFormat *format)
+void Media::Decoder::G711muLawDecoder::GetFormat(NotNullPtr<AudioFormat> format)
 {
 	if (this->sourceAudio)
 	{
 		Media::AudioFormat fmt;
-		this->sourceAudio->GetFormat(&fmt);
+		this->sourceAudio->GetFormat(fmt);
 		format->formatId = 1;
 		format->bitpersample = 16;
 		format->frequency = fmt.frequency;

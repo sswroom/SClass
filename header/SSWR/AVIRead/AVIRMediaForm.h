@@ -50,12 +50,12 @@ namespace SSWR
 
 			void UpdateStreamList();
 			void UpdateChapters();
-			void SetActiveVideo(Media::IVideoSource *video);
-			void SetActiveAudio(Media::IAudioSource *audio, Int32 timeDelay);
+			void SetActiveVideo(NotNullPtr<Media::IVideoSource> video);
+			void SetActiveAudio(NotNullPtr<Media::IAudioSource> audio, Int32 timeDelay);
 		private:
 			static Bool __stdcall OnFileRClicked(void *userObj, Math::Coord2D<OSInt> scnPos, UI::GUIControl::MouseButton btn);
 			static void __stdcall OnFileDblClicked(void *userObj);
-			static void __stdcall VideoCropImage(void *userObj, UInt32 frameTime, UInt32 frameNum, Media::StaticImage *img);
+			static void __stdcall VideoCropImage(void *userObj, UInt32 frameTime, UInt32 frameNum, NotNullPtr<Media::StaticImage> img);
 			static Bool __stdcall OnFrameTime(UInt32 frameTime, UOSInt frameNum, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, Media::FrameType frameType, void *userData, Media::YCOffset ycOfst);
 
 			void PBStart(UInt32 startTime);

@@ -321,7 +321,7 @@ UTF8Char *Net::RTPH264Handler::GetSourceName(UTF8Char *buff)
 	return Text::StrConcatC(buff, UTF8STRC("H.264 over RTP"));
 }
 
-Text::CString Net::RTPH264Handler::GetFilterName()
+Text::CStringNN Net::RTPH264Handler::GetFilterName()
 {
 	return CSTR("RTPH264Handler");
 }

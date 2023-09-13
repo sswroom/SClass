@@ -1168,11 +1168,11 @@ Media::IMediaSource *Parser::FileParser::QTParser::ParseStblAtom(NotNullPtr<IO::
 
 			if (afmt.formatId == 255 || afmt.formatId == 0x1610)
 			{
-				NEW_CLASS(asrc, Media::AACFrameSource(fd, &afmt, fd->GetFullName()));
+				NEW_CLASS(asrc, Media::AACFrameSource(fd, afmt, fd->GetFullName()));
 			}
 			else
 			{
-				NEW_CLASS(asrc, Media::AudioFrameSource(fd, &afmt, fd->GetFullName()));
+				NEW_CLASS(asrc, Media::AudioFrameSource(fd, afmt, fd->GetFullName()));
 			}
 
 //			ntts = ReadMInt32(&ttsBuff[12]);

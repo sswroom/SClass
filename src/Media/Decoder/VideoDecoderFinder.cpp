@@ -19,9 +19,9 @@ Media::Decoder::VideoDecoderFinder::~VideoDecoderFinder()
 {
 }
 
-Media::IVideoSource *Media::Decoder::VideoDecoderFinder::DecodeVideo(Media::IVideoSource *vsrc)
+Media::IVideoSource *Media::Decoder::VideoDecoderFinder::DecodeVideo(NotNullPtr<Media::IVideoSource> vsrc)
 {
-	Media::IVideoSource *decoder;
+	NotNullPtr<Media::IVideoSource> decoder;
 	Media::FrameInfo frameInfo;
 	Media::FrameInfo decFrameInfo;
 	UInt32 frameRateNorm;
@@ -37,81 +37,80 @@ Media::IVideoSource *Media::Decoder::VideoDecoderFinder::DecodeVideo(Media::IVid
 	{
 		return 0;
 	}
-	decoder = Core::DecodeVideo(vsrc);
-	if (decoder)
+	if (decoder.Set(Core::DecodeVideo(vsrc)))
 	{
-		return decoder;
+		return decoder.Ptr();
 	}
 	if (frameInfo.fourcc == *(UInt32*)"MP2G")
 	{
-		Media::Decoder::MP2GDecoder *mp2g;
+		NotNullPtr<Media::Decoder::MP2GDecoder> mp2g;
 		Media::Decoder::VDecoderChain *decChain;
 
-		NEW_CLASS(mp2g, Media::Decoder::MP2GDecoder(vsrc, false));
-		NEW_CLASS(decoder, Media::Decoder::VFWDecoder(mp2g));
+		NEW_CLASSNN(mp2g, Media::Decoder::MP2GDecoder(vsrc, false));
+		NEW_CLASSNN(decoder, Media::Decoder::VFWDecoder(mp2g));
 		if (decoder->GetVideoInfo(decFrameInfo, frameRateNorm, frameRateDenorm, maxFrameSize))
 		{
 			NEW_CLASS(decChain, Media::Decoder::VDecoderChain(decoder));
 			decChain->AddDecoder(mp2g);
 			return decChain;
 		}
-		DEL_CLASS(decoder);
-		DEL_CLASS(mp2g);
+		decoder.Delete();
+		mp2g.Delete();
 	}
 	else if (frameInfo.fourcc == *(UInt32*)"m2v1")
 	{
-		Media::Decoder::M2VDecoder *m2vd;
+		NotNullPtr<Media::Decoder::M2VDecoder> m2vd;
 		Media::Decoder::VDecoderChain *decChain;
 
-		NEW_CLASS(m2vd, Media::Decoder::M2VDecoder(vsrc, false));
-		NEW_CLASS(decoder, Media::Decoder::VFWDecoder(m2vd));
+		NEW_CLASSNN(m2vd, Media::Decoder::M2VDecoder(vsrc, false));
+		NEW_CLASSNN(decoder, Media::Decoder::VFWDecoder(m2vd));
 		if (decoder->GetVideoInfo(decFrameInfo, frameRateNorm, frameRateDenorm, maxFrameSize))
 		{
 			NEW_CLASS(decChain, Media::Decoder::VDecoderChain(decoder));
 			decChain->AddDecoder(m2vd);
 			return decChain;
 		}
-		DEL_CLASS(decoder);
-		DEL_CLASS(m2vd);
+		decoder.Delete();
+		m2vd.Delete();
 	}
 	else if (frameInfo.fourcc == *(UInt32*)"ravc")
 	{
-		Media::Decoder::RAVCDecoder *ravc;
+		NotNullPtr<Media::Decoder::RAVCDecoder> ravc;
 		Media::Decoder::VDecoderChain *decChain;
 
-		NEW_CLASS(ravc, Media::Decoder::RAVCDecoder(vsrc, false, false));
-		NEW_CLASS(decoder, Media::Decoder::VFWDecoder(ravc));
+		NEW_CLASSNN(ravc, Media::Decoder::RAVCDecoder(vsrc, false, false));
+		NEW_CLASSNN(decoder, Media::Decoder::VFWDecoder(ravc));
 		if (decoder->GetVideoInfo(decFrameInfo, frameRateNorm, frameRateDenorm, maxFrameSize))
 		{
 			NEW_CLASS(decChain, Media::Decoder::VDecoderChain(decoder));
 			decChain->AddDecoder(ravc);
 			return decChain;
 		}
-		DEL_CLASS(decoder);
-		DEL_CLASS(ravc);
+		decoder.Delete();
+		ravc.Delete();
 	}
 	else if (frameInfo.fourcc == *(UInt32*)"rhvc")
 	{
-		Media::Decoder::RHVCDecoder *rhvc;
+		NotNullPtr<Media::Decoder::RHVCDecoder> rhvc;
 		Media::Decoder::VDecoderChain *decChain;
 
-		NEW_CLASS(rhvc, Media::Decoder::RHVCDecoder(vsrc, false));
-		NEW_CLASS(decoder, Media::Decoder::VFWDecoder(rhvc));
+		NEW_CLASSNN(rhvc, Media::Decoder::RHVCDecoder(vsrc, false));
+		NEW_CLASSNN(decoder, Media::Decoder::VFWDecoder(rhvc));
 		if (decoder->GetVideoInfo(decFrameInfo, frameRateNorm, frameRateDenorm, maxFrameSize))
 		{
 			NEW_CLASS(decChain, Media::Decoder::VDecoderChain(decoder));
 			decChain->AddDecoder(rhvc);
 			return decChain;
 		}
-		DEL_CLASS(decoder);
-		DEL_CLASS(rhvc);
+		decoder.Delete();
+		rhvc.Delete();
 	}
 
-	NEW_CLASS(decoder, Media::Decoder::VFWDecoder(vsrc));
+	NEW_CLASSNN(decoder, Media::Decoder::VFWDecoder(vsrc));
 	if (decoder->GetVideoInfo(decFrameInfo, frameRateNorm, frameRateDenorm, maxFrameSize))
 	{
-		return decoder;
+		return decoder.Ptr();
 	}
-	DEL_CLASS(decoder);
+	decoder.Delete();
 	return 0;
 }

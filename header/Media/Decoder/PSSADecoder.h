@@ -20,10 +20,10 @@ namespace Media
 			UOSInt buffSize;
 			Sync::Event *readEvt;
 		public:
-			PSSADecoder(IAudioSource *sourceAudio);
+			PSSADecoder(NotNullPtr<IAudioSource> sourceAudio);
 			virtual ~PSSADecoder();
 
-			virtual void GetFormat(AudioFormat *format);
+			virtual void GetFormat(NotNullPtr<AudioFormat> format);
 
 			virtual UInt32 SeekToTime(UInt32 time); //ms, ret actual time
 			virtual Bool Start(Sync::Event *evt, UOSInt blkSize);

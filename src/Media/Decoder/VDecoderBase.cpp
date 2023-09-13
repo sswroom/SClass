@@ -15,9 +15,9 @@ void __stdcall Media::Decoder::VDecoderBase::OnVideoChange(Media::IVideoSource::
 	me->fcCb(fc, me->frameCbData);
 }
 
-Media::Decoder::VDecoderBase::VDecoderBase(IVideoSource *sourceVideo)
+Media::Decoder::VDecoderBase::VDecoderBase(NotNullPtr<IVideoSource> sourceVideo)
 {
-	this->sourceVideo = sourceVideo;
+	this->sourceVideo = sourceVideo.Ptr();
 	this->fcCb = 0;
 	this->started = false;
 }
@@ -31,7 +31,7 @@ void Media::Decoder::VDecoderBase::SetBorderCrop(UOSInt cropLeft, UOSInt cropTop
 	this->sourceVideo->SetBorderCrop(cropLeft, cropTop, cropRight, cropBottom);
 }
 
-void Media::Decoder::VDecoderBase::GetBorderCrop(UOSInt *cropLeft, UOSInt *cropTop, UOSInt *cropRight, UOSInt *cropBottom)
+void Media::Decoder::VDecoderBase::GetBorderCrop(OutParam<UOSInt> cropLeft, OutParam<UOSInt> cropTop, OutParam<UOSInt> cropRight, OutParam<UOSInt> cropBottom)
 {
 	this->sourceVideo->GetBorderCrop(cropLeft, cropTop, cropRight, cropBottom);
 }

@@ -53,7 +53,7 @@ void Media::VideoChecker::SetAllowTimeSkip(Bool allowTimeSkip)
 Bool Media::VideoChecker::IsValid(Media::MediaFile *mediaFile)
 {
 	DecodeStatus *status;
-	Media::IMediaSource *msrc;
+	NotNullPtr<Media::IMediaSource> msrc;
 	Data::ArrayList<DecodeStatus*> statusList;
 	Bool isEnd;
 	UOSInt i = 0;
@@ -62,8 +62,7 @@ Bool Media::VideoChecker::IsValid(Media::MediaFile *mediaFile)
 	UInt32 videoTime = 0;
 	while (true)
 	{
-		msrc = mediaFile->GetStream(i, &syncTime);
-		if (msrc == 0)
+		if (!msrc.Set(mediaFile->GetStream(i, &syncTime)))
 		{
 			break;
 		}
@@ -77,7 +76,7 @@ Bool Media::VideoChecker::IsValid(Media::MediaFile *mediaFile)
 		status->evt = evt;
 		if (msrc->GetMediaType() == Media::MEDIA_TYPE_VIDEO)
 		{
-			status->vdecoder = vdecoders->DecodeVideo((Media::IVideoSource*)msrc);
+			status->vdecoder = vdecoders->DecodeVideo(NotNullPtr<Media::IVideoSource>::ConvertFrom(msrc));
 			if (status->vdecoder)
 			{
 				status->vdecoder->Init(OnVideoFrame, OnVideoChange, status);
@@ -89,7 +88,7 @@ Bool Media::VideoChecker::IsValid(Media::MediaFile *mediaFile)
 		}
 		else if (msrc->GetMediaType() == Media::MEDIA_TYPE_AUDIO)
 		{
-			status->adecoder = adecoders->DecodeAudio((Media::IAudioSource*)msrc);
+			status->adecoder = adecoders->DecodeAudio(NotNullPtr<Media::IAudioSource>::ConvertFrom(msrc));
 			if (status->adecoder)
 			{
 				NEW_CLASS(status->renderer, Media::NullRenderer());
@@ -147,10 +146,12 @@ Bool Media::VideoChecker::IsValid(Media::MediaFile *mediaFile)
 		while (i-- > 0)
 		{
 			status = statusList.GetItem(i);
-			msrc = mediaFile->GetStream(i, &syncTime);
-			if (msrc->GetMediaType() == Media::MEDIA_TYPE_VIDEO)
+			if (msrc.Set(mediaFile->GetStream(i, &syncTime)))
 			{
-				videoTime = status->lastSampleTime;
+				if (msrc->GetMediaType() == Media::MEDIA_TYPE_VIDEO)
+				{
+					videoTime = status->lastSampleTime;
+				}
 			}
 		}
 
@@ -166,36 +167,42 @@ Bool Media::VideoChecker::IsValid(Media::MediaFile *mediaFile)
 			SDEL_CLASS(status->vdecoder);
 			SDEL_CLASS(status->adecoder);
 
-			msrc = mediaFile->GetStream(i, &syncTime);
-			if (msrc->GetMediaType() == Media::MEDIA_TYPE_VIDEO)
+			if (msrc.Set(mediaFile->GetStream(i, &syncTime)))
 			{
-				Media::IVideoSource *video = (Media::IVideoSource *)msrc;
-				OSInt frameDiff = (OSInt)(video->GetFrameCount() - status->sampleCnt);
-				if (frameDiff < -10 || frameDiff > 10)
+				if (msrc->GetMediaType() == Media::MEDIA_TYPE_VIDEO)
 				{
-					valid = false;
-				}
-			}
-			else if (msrc->GetMediaType() == Media::MEDIA_TYPE_AUDIO)
-			{
-				Media::IAudioSource *audio = (Media::IAudioSource *)msrc;
-				Media::AudioFormat fmt;
-				audio->GetFormat(&fmt);
-				Int64 tdiff = audio->GetStreamTime() - (Int64)(status->sampleCnt * 1000 / fmt.frequency);
-				Int64 tdiff2 = (Int64)videoTime - (Int64)(status->sampleCnt * 1000 / fmt.frequency);
-				if (this->allowTimeSkip)
-				{
-					if ((tdiff < -1000 || tdiff > 1000) && (tdiff2 < -1000 || tdiff2 > 1000))
+					Media::IVideoSource *video = (Media::IVideoSource *)msrc.Ptr();
+					OSInt frameDiff = (OSInt)(video->GetFrameCount() - status->sampleCnt);
+					if (frameDiff < -10 || frameDiff > 10)
 					{
 						valid = false;
+					}
+				}
+				else if (msrc->GetMediaType() == Media::MEDIA_TYPE_AUDIO)
+				{
+					Media::IAudioSource *audio = (Media::IAudioSource *)msrc.Ptr();
+					Media::AudioFormat fmt;
+					audio->GetFormat(fmt);
+					Int64 tdiff = audio->GetStreamTime() - (Int64)(status->sampleCnt * 1000 / fmt.frequency);
+					Int64 tdiff2 = (Int64)videoTime - (Int64)(status->sampleCnt * 1000 / fmt.frequency);
+					if (this->allowTimeSkip)
+					{
+						if ((tdiff < -1000 || tdiff > 1000) && (tdiff2 < -1000 || tdiff2 > 1000))
+						{
+							valid = false;
+						}
+					}
+					else
+					{
+						if ((tdiff < -1000 || tdiff > 1000) || (tdiff2 < -1000 || tdiff2 > 1000))
+						{
+							valid = false;
+						}
 					}
 				}
 				else
 				{
-					if ((tdiff < -1000 || tdiff > 1000) || (tdiff2 < -1000 || tdiff2 > 1000))
-					{
-						valid = false;
-					}
+					valid = false;
 				}
 			}
 			else

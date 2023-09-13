@@ -108,7 +108,7 @@ Media::AudioBlockSource *Media::BlockParser::AC3BlockParser::ParseStreamData(Not
 	format.intType = Media::AudioFormat::IT_NORMAL;
 	format.extra = 0;
 
-	NEW_CLASS(audio, Media::AudioBlockSource(stmData, &format, stmData->GetFullName(), 1536));
+	NEW_CLASS(audio, Media::AudioBlockSource(stmData, format, stmData->GetFullName(), 1536));
 	if (currOfst > 0)
 	{
 		audio->AddBlock(0, (UInt32)currOfst);
@@ -146,7 +146,7 @@ Media::AudioBlockSource *Media::BlockParser::AC3BlockParser::ParseStreamData(Not
 	return audio;
 }
 
-Bool Media::BlockParser::AC3BlockParser::ParseStreamFormat(UInt8 *buff, UOSInt buffSize, Media::AudioFormat *fmt)
+Bool Media::BlockParser::AC3BlockParser::ParseStreamFormat(UInt8 *buff, UOSInt buffSize, NotNullPtr<Media::AudioFormat> fmt)
 {
 	static UInt32 bitrate[] = {32, 40, 48, 56, 64, 80, 96, 112, 128, 160, 192, 224, 256, 320, 384, 448, 512, 576, 640};
 	while (buffSize > 6)
