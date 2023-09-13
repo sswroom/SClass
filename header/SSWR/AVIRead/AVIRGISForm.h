@@ -28,7 +28,7 @@ namespace SSWR
 			Net::SSLEngine *ssl;
 			UI::GUIForm *ctrlForm;
 			UI::GUITreeView::TreeItem *ctrlItem;
-			Media::ColorManagerSess *colorSess;
+			NotNullPtr<Media::ColorManagerSess> colorSess;
 			Data::ArrayList<UI::GUIForm *> subForms;
 			UI::GUIMapControl *mapCtrl;
 			UI::GUIMapTreeView *mapTree;

@@ -320,7 +320,7 @@ void SSWR::AVIRead::AVIRFontSelector::OnKeyDown(UInt32 keyCode)
 	}
 }
 
-SSWR::AVIRead::AVIRFontSelector::AVIRFontSelector(NotNullPtr<UI::GUICore> ui, UI::GUIClientControl *parent, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Map::MapEnv *env, UOSInt initFontStyle, Media::ColorManagerSess *colorSess) : UI::GUICustomDrawVScroll(ui, parent, core->GetDrawEngine())
+SSWR::AVIRead::AVIRFontSelector::AVIRFontSelector(NotNullPtr<UI::GUICore> ui, UI::GUIClientControl *parent, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Map::MapEnv *env, UOSInt initFontStyle, NotNullPtr<Media::ColorManagerSess> colorSess) : UI::GUICustomDrawVScroll(ui, parent, core->GetDrawEngine())
 {
 	this->core = core;
 	this->env = env;
@@ -329,11 +329,8 @@ SSWR::AVIRead::AVIRFontSelector::AVIRFontSelector(NotNullPtr<UI::GUICore> ui, UI
 	this->mnuLayers = 0;
 	Media::ColorProfile srcProfile(Media::ColorProfile::CPT_SRGB);
 	Media::ColorProfile destProfile(Media::ColorProfile::CPT_PDISPLAY);
-	NEW_CLASS(this->colorConv, Media::ColorConv(srcProfile, destProfile, this->colorSess));
-	if (this->colorSess)
-	{
-		this->colorSess->AddHandler(this);
-	}
+	NEW_CLASS(this->colorConv, Media::ColorConv(srcProfile, destProfile, this->colorSess.Ptr()));
+	this->colorSess->AddHandler(*this);
 
 	this->UpdateFontStyles();
 	this->MakeVisible(this->currFontStyle, this->currFontStyle + 1);
@@ -343,10 +340,7 @@ SSWR::AVIRead::AVIRFontSelector::AVIRFontSelector(NotNullPtr<UI::GUICore> ui, UI
 SSWR::AVIRead::AVIRFontSelector::~AVIRFontSelector()
 {
 	DEL_CLASS(this->colorConv);
-	if (this->colorSess)
-	{
-		this->colorSess->RemoveHandler(this);
-	}
+	this->colorSess->RemoveHandler(*this);
 }
 
 void SSWR::AVIRead::AVIRFontSelector::YUVParamChanged(NotNullPtr<const Media::IColorHandler::YUVPARAM> yuvParam)

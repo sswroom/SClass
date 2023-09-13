@@ -16,7 +16,7 @@ namespace SSWR
 			UI::GUIMainMenu *mnuMain;
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
-			Media::ColorManagerSess *colorSess;
+			NotNullPtr<Media::ColorManagerSess> colorSess;
 			Bool allowEnlarge;
 			Int64 imgTimeoutTick;
 			Media::ImageList *imgList;

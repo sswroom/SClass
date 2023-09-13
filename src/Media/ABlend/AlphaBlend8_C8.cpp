@@ -174,7 +174,7 @@ Media::ABlend::AlphaBlend8_C8::AlphaBlend8_C8(Media::ColorSess *colorSess, Bool 
 	this->colorSess = colorSess;
 	if (this->colorSess)
 	{
-		this->colorSess->AddHandler(this);
+		this->colorSess->AddHandler(*this);
 	}
 	if (multiProfile)
 	{
@@ -248,7 +248,7 @@ Media::ABlend::AlphaBlend8_C8::~AlphaBlend8_C8()
 	MemFree(this->stats);
 	if (this->colorSess)
 	{
-		this->colorSess->RemoveHandler(this);
+		this->colorSess->RemoveHandler(*this);
 	}
 
 	if (this->lutList)

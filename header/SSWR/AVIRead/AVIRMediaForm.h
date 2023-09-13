@@ -31,7 +31,7 @@ namespace SSWR
 			UI::GUIPopupMenu *mnuVideo;
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
-			Media::ColorManagerSess *colorSess;
+			NotNullPtr<Media::ColorManagerSess> colorSess;
 			Data::ArrayList<Media::MediaFile *> *files;
 			Media::IMediaSource *popMedia;
 

@@ -170,7 +170,7 @@ void SSWR::AVIRead::AVIRImageControl::InitDir()
 		Media::ColorProfile srcProfile(Media::ColorProfile::CPT_SRGB);
 		Media::ColorProfile destProfile(Media::ColorProfile::CPT_SRGB);
 		
-		Media::Resizer::LanczosResizer8_C8 resizer(4, 3, srcProfile, destProfile, this->colorSess, Media::AT_NO_ALPHA);
+		Media::Resizer::LanczosResizer8_C8 resizer(4, 3, srcProfile, destProfile, this->colorSess.Ptr(), Media::AT_NO_ALPHA);
 		Exporter::GUIPNGExporter exporter;
 		resizer.SetTargetSize(Math::Size2D<UOSInt>(this->previewSize, this->previewSize));
 		parsers = this->core->GetParserList();
@@ -491,19 +491,19 @@ Double *SSWR::AVIRead::AVIRImageControl::GetCameraGamma(Text::CString cameraName
 	return camera->gammaParam;
 }
 
-SSWR::AVIRead::AVIRImageControl::AVIRImageControl(NotNullPtr<UI::GUICore> ui, UI::GUIClientControl *parent, NotNullPtr<SSWR::AVIRead::AVIRCore> core, UI::GUIForm *frm, Media::ColorManagerSess *colorSess) : UI::GUICustomDrawVScroll(ui, parent, core->GetDrawEngine()), filter(core->GetColorMgr())
+SSWR::AVIRead::AVIRImageControl::AVIRImageControl(NotNullPtr<UI::GUICore> ui, UI::GUIClientControl *parent, NotNullPtr<SSWR::AVIRead::AVIRCore> core, UI::GUIForm *frm, NotNullPtr<Media::ColorManagerSess> colorSess) : UI::GUICustomDrawVScroll(ui, parent, core->GetDrawEngine()), filter(core->GetColorMgr())
 {
 	this->core = core;
 	this->folderPath = 0;
 	this->colorSess = colorSess;
-	this->colorSess->AddHandler(this);
+	this->colorSess->AddHandler(*this);
 	this->exportCurrCnt = 0;
 	this->exportFmt = EF_JPG;
 	this->keyHdlr = 0;
 	this->keyObj = 0;
 	Media::ColorProfile srcColor(Media::ColorProfile::CPT_SRGB);
 	Media::ColorProfile destColor(Media::ColorProfile::CPT_PDISPLAY);
-	NEW_CLASS(this->dispResizer, Media::Resizer::LanczosResizer8_C8(3, 3, srcColor, destColor, colorSess, Media::AT_NO_ALPHA));
+	NEW_CLASS(this->dispResizer, Media::Resizer::LanczosResizer8_C8(3, 3, srcColor, destColor, colorSess.Ptr(), Media::AT_NO_ALPHA));
 	this->imgMapUpdated = true;
 	this->imgUpdated = false;
 	this->previewSize = 160;
@@ -546,7 +546,7 @@ SSWR::AVIRead::AVIRImageControl::~AVIRImageControl()
 	}
 
 	DEL_CLASS(this->dispResizer);
-	this->colorSess->RemoveHandler(this);
+	this->colorSess->RemoveHandler(*this);
 }
 
 Text::CStringNN SSWR::AVIRead::AVIRImageControl::GetObjectClass() const

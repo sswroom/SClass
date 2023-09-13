@@ -457,7 +457,7 @@ void UI::GUIDDrawControl::EndUpdateSize()
 	this->switching = false;
 }
 
-UI::GUIDDrawControl::GUIDDrawControl(NotNullPtr<GUICore> ui, UI::GUIClientControl *parent, Bool directMode, Media::ColorManagerSess *colorSess) : UI::GUIControl(ui, parent)
+UI::GUIDDrawControl::GUIDDrawControl(NotNullPtr<GUICore> ui, UI::GUIClientControl *parent, Bool directMode, NotNullPtr<Media::ColorManagerSess> colorSess) : UI::GUIControl(ui, parent)
 {
 	this->inited = false;
 	this->primarySurface = 0;
@@ -497,7 +497,7 @@ UI::GUIDDrawControl::GUIDDrawControl(NotNullPtr<GUICore> ui, UI::GUIClientContro
 
 	this->currScnMode = SM_VFS;
 	this->surfaceMon = 0;
-	NEW_CLASS(this->surfaceMgr, Media::DDrawManager(ui->GetMonitorMgr(), colorSess));
+	NEW_CLASS(this->surfaceMgr, Media::DDrawManager(ui->GetMonitorMgr(), colorSess.Ptr()));
 	if (((Media::DDrawManager*)this->surfaceMgr)->IsError())
 	{
 	}

@@ -32,7 +32,7 @@ namespace SSWR
 			OrganTimeAdjLayer *adjLyr;
 			Map::TileMap *mapTile;
 			Map::DrawMapRenderer *mapRenderer;
-			Media::ColorManagerSess *colorSess;
+			NotNullPtr<Media::ColorManagerSess> colorSess;
 			Data::ArrayList<UserFileInfo*> *userFileList;
 			Data::ArrayList<UserFileInfo*> *currFileList;
 			Media::ImageList *dispImg;

@@ -272,7 +272,7 @@ SSWR::OrganMgr::OrganTimeAdjForm::OrganTimeAdjForm(UI::GUIClientControl *parent,
 	i = this->mapEnv->AddLayer(0, this->gpsTrk, false);
 	this->mapEnv->AddLayer(0, this->adjLyr, true);
 	Media::ColorProfile dispColor(Media::ColorProfile::CPT_PDISPLAY);
-	NEW_CLASS(this->mapRenderer, Map::DrawMapRenderer(this->env->GetDrawEngine(), this->mapEnv, dispColor, this->colorSess, Map::DrawMapRenderer::DT_PIXELDRAW));
+	NEW_CLASS(this->mapRenderer, Map::DrawMapRenderer(this->env->GetDrawEngine(), this->mapEnv, dispColor, this->colorSess.Ptr(), Map::DrawMapRenderer::DT_PIXELDRAW));
 	this->mapView = this->mapEnv->CreateMapView(Math::Size2DDbl(1024, 768));
 
 	this->env->GetUserFiles(this->userFileList, this->dataFile->startTime, this->dataFile->endTime);

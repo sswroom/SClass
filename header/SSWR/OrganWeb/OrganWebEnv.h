@@ -44,7 +44,7 @@ namespace SSWR
 			BookInfo *selectedBook;
 
 			Media::ColorManager colorMgr;
-			Media::ColorManagerSess *colorSess;
+			NotNullPtr<Media::ColorManagerSess> colorSess;
 			NotNullPtr<Media::DrawEngine> eng;
 			Map::OSM::OSMCacheHandler *osmHdlr;
 			Net::WebServer::HTTPDirectoryHandler *mapDirHdlr;
@@ -93,7 +93,7 @@ namespace SSWR
 			Bool ReloadPwdMatches(Text::String *pwd) const;
 			Text::String *GetCacheDir() const;
 			Text::String *GetDataDir() const;
-			Media::ColorManagerSess *GetColorSess() const;
+			NotNullPtr<Media::ColorManagerSess> GetColorSess() const;
 			NotNullPtr<Media::DrawEngine> GetDrawEngine() const;
 
 			void CalcGroupCount(NotNullPtr<Sync::RWMutexUsage> mutUsage, GroupInfo *group);

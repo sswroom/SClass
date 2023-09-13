@@ -1438,7 +1438,7 @@ UtilUI::ColorDialog::ColorDialog(UI::GUIClientControl *parent, NotNullPtr<UI::GU
 	this->colorMgr = colorMgr;
 	this->monMgr = monMgr;
 	this->colorSess = this->colorMgr->CreateSess(this->GetHMonitor());
-	this->colorSess->AddHandler(this);
+	this->colorSess->AddHandler(*this);
 	this->subDowned = false;
 	this->colorType = CT_RED;
 	this->autoTextUpdate = false;

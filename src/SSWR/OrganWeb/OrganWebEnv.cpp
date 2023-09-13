@@ -963,7 +963,7 @@ Text::String *SSWR::OrganWeb::OrganWebEnv::GetDataDir() const
 	return this->dataDir;
 }
 
-Media::ColorManagerSess *SSWR::OrganWeb::OrganWebEnv::GetColorSess() const
+NotNullPtr<Media::ColorManagerSess> SSWR::OrganWeb::OrganWebEnv::GetColorSess() const
 {
 	return this->colorSess;
 }

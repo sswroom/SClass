@@ -40,7 +40,7 @@ const Media::ColorProfile *Media::FBMonitorSurfaceMgr::GetMonitorColor(MonitorHa
 {
 	if (this->colorMgr)
 	{
-		Media::MonitorColorManager *monColor = this->colorMgr->GetMonColorManager(hMonitor);
+		NotNullPtr<Media::MonitorColorManager> monColor = this->colorMgr->GetMonColorManager(hMonitor);
 		return &monColor->GetRGBParam()->monProfile;
 	}
 	else if (this->colorSess)

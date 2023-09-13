@@ -19,7 +19,7 @@ namespace SSWR
 		{
 		private:
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
-			Media::ColorManagerSess *colorSess;
+			NotNullPtr<Media::ColorManagerSess> colorSess;
 			Media::CodeImageGen::CodeImageGen *codeImgGen;
 			Media::StaticImage *simg;
 

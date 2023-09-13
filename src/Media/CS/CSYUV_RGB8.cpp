@@ -301,8 +301,8 @@ Media::CS::CSYUV_RGB8::CSYUV_RGB8(NotNullPtr<const Media::ColorProfile> srcColor
 	}
 	else
 	{
-		Media::MonitorColorManager::SetDefaultYUV(&this->yuvParam);
-		Media::MonitorColorManager::SetDefaultRGB(&this->rgbParam);
+		Media::MonitorColorManager::SetDefaultYUV(this->yuvParam);
+		Media::MonitorColorManager::SetDefaultRGB(this->rgbParam);
 	}
 
 	NotNullPtr<Media::CS::TransferParam> srcRTran;

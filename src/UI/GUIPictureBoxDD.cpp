@@ -286,11 +286,11 @@ void UI::GUIPictureBoxDD::CreateResizer()
 	}
 	if (this->curr10Bit)
 	{
-		NEW_CLASS(this->resizer, Media::Resizer::LanczosResizerLR_C32(4, 3, destColor, this->colorSess, Media::AT_NO_ALPHA, refLuminance, Media::PF_LE_A2B10G10R10));
+		NEW_CLASS(this->resizer, Media::Resizer::LanczosResizerLR_C32(4, 3, destColor, this->colorSess.Ptr(), Media::AT_NO_ALPHA, refLuminance, Media::PF_LE_A2B10G10R10));
 	}
 	else
 	{
-		NEW_CLASS(this->resizer, Media::Resizer::LanczosResizerLR_C32(4, 3, destColor, this->colorSess, Media::AT_NO_ALPHA, refLuminance, this->GetPixelFormat()));
+		NEW_CLASS(this->resizer, Media::Resizer::LanczosResizerLR_C32(4, 3, destColor, this->colorSess.Ptr(), Media::AT_NO_ALPHA, refLuminance, this->GetPixelFormat()));
 	}
 }
 
@@ -357,10 +357,10 @@ void UI::GUIPictureBoxDD::OnPaint()
 	}
 }
 
-UI::GUIPictureBoxDD::GUIPictureBoxDD(NotNullPtr<UI::GUICore> ui, UI::GUIClientControl *parent, Media::ColorManagerSess *colorSess, Bool allowEnlarge, Bool directMode) : UI::GUIDDrawControl(ui, parent, directMode, colorSess)
+UI::GUIPictureBoxDD::GUIPictureBoxDD(NotNullPtr<UI::GUICore> ui, UI::GUIClientControl *parent, NotNullPtr<Media::ColorManagerSess> colorSess, Bool allowEnlarge, Bool directMode) : UI::GUIDDrawControl(ui, parent, directMode, colorSess)
 {
 	this->colorSess = colorSess;
-	this->colorSess->AddHandler(this);
+	this->colorSess->AddHandler(*this);
 	this->enableLRGBLimit = false;
 
 	this->bgBuff = 0;
@@ -401,7 +401,7 @@ UI::GUIPictureBoxDD::~GUIPictureBoxDD()
 		MemFreeA(this->bgBuff);
 		this->bgBuff = 0;
 	}
-	this->colorSess->RemoveHandler(this);
+	this->colorSess->RemoveHandler(*this);
 }
 
 Text::CStringNN UI::GUIPictureBoxDD::GetObjectClass() const
@@ -505,7 +505,7 @@ void UI::GUIPictureBoxDD::SetImage(Media::Image *currImage, Bool sameImg)
 			this->UpdateZoomRange();
 		}
 		Media::ColorProfile color(Media::ColorProfile::CPT_PDISPLAY);
-		this->csconv = Media::CS::CSConverter::NewConverter(this->currImage->info.fourcc, this->currImage->info.storeBPP, this->currImage->info.pf, this->currImage->info.color, *(UInt32*)"LRGB", 64, Media::PF_UNKNOWN, color, this->currImage->info.yuvType, this->colorSess);
+		this->csconv = Media::CS::CSConverter::NewConverter(this->currImage->info.fourcc, this->currImage->info.storeBPP, this->currImage->info.pf, this->currImage->info.color, *(UInt32*)"LRGB", 64, Media::PF_UNKNOWN, color, this->currImage->info.yuvType, this->colorSess.Ptr());
 		if (this->csconv)
 		{
 			if (this->currImage->pal)
@@ -1052,10 +1052,10 @@ NotNullPtr<Media::StaticImage> UI::GUIPictureBoxDD::CreatePreviewImage(NotNullPt
 	color.GetRTranParam()->Set(Media::CS::TRANT_LINEAR, 1.0);
 	color.GetGTranParam()->Set(Media::CS::TRANT_LINEAR, 1.0);
 	color.GetBTranParam()->Set(Media::CS::TRANT_LINEAR, 1.0);
-	Media::CS::CSConverter *csConv = Media::CS::CSConverter::NewConverter(image->info.fourcc, image->info.storeBPP, image->info.pf, image->info.color, *(UInt32*)"LRGB", 64, Media::PF_UNKNOWN, color, Media::ColorProfile::YUVT_UNKNOWN, this->colorSess);
+	Media::CS::CSConverter *csConv = Media::CS::CSConverter::NewConverter(image->info.fourcc, image->info.storeBPP, image->info.pf, image->info.color, *(UInt32*)"LRGB", 64, Media::PF_UNKNOWN, color, Media::ColorProfile::YUVT_UNKNOWN, this->colorSess.Ptr());
 	Media::Resizer::LanczosResizerLR_C32 *resizer;
 	Media::PixelFormat pf = Media::PF_B8G8R8A8;
-	NEW_CLASS(resizer, Media::Resizer::LanczosResizerLR_C32(4, 4, image->info.color, this->colorSess, Media::AT_NO_ALPHA, Media::CS::TransferFunc::GetRefLuminance(image->info.color.rtransfer), pf));
+	NEW_CLASS(resizer, Media::Resizer::LanczosResizerLR_C32(4, 4, image->info.color, this->colorSess.Ptr(), Media::AT_NO_ALPHA, Media::CS::TransferFunc::GetRefLuminance(image->info.color.rtransfer), pf));
 	csConv->ConvertV2(&image->data, prevImgData, image->info.dispSize.x, image->info.dispSize.y, image->info.storeSize.x, image->info.storeSize.y, (OSInt)image->info.dispSize.x * 8, Media::FT_NON_INTERLACE, Media::YCOFST_C_TOP_LEFT);
 
 	NEW_CLASSNN(outImage, Media::StaticImage(image->info.dispSize, 0, 32, pf, 0, image->info.color, Media::ColorProfile::YUVT_UNKNOWN, image->info.atype, image->info.ycOfst));

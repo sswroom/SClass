@@ -464,7 +464,7 @@ Media::Resizer::LanczosResizer16_C8::LanczosResizer16_C8(UOSInt hnTap, UOSInt vn
 	if (colorSess)
 	{
 		this->colorSess = colorSess;
-		this->colorSess->AddHandler(this);
+		this->colorSess->AddHandler(*this);
 	}
 	else
 	{
@@ -505,7 +505,7 @@ Media::Resizer::LanczosResizer16_C8::~LanczosResizer16_C8()
 	UOSInt i;
 	if (this->colorSess)
 	{
-		this->colorSess->RemoveHandler(this);
+		this->colorSess->RemoveHandler(*this);
 	}
 	DEL_CLASS(this->ptask);
 	i = nThread;

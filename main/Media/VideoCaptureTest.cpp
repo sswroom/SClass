@@ -52,7 +52,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 {
 	Media::VideoCaptureMgr *mgr;
 	Media::ColorManager *colorMgr;
-	Media::ColorManagerSess *colorSess;
+	NotNullPtr<Media::ColorManagerSess> colorSess;
 	Data::ArrayList<Media::VideoCaptureMgr::DeviceInfo *> devList;
 	Media::VideoCaptureMgr::DeviceInfo *devInfo;
 	UOSInt cnt;
@@ -293,11 +293,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 				sb.AppendC(UTF8STRC("Frame Delay = "));
 				sb.AppendI32(frameCnt);
 				console->WriteLineC(sb.ToString(), sb.GetLength());
-				if (colorSess)
-				{
-					console->WriteLineC(UTF8STRC("ColorSess is null"));
-				}
-				converter = Media::CS::CSConverter::NewConverter(info.fourcc, info.storeBPP, info.pf, info.color, 0, 32, Media::PF_B8G8R8A8, color, info.yuvType, colorSess);
+				converter = Media::CS::CSConverter::NewConverter(info.fourcc, info.storeBPP, info.pf, info.color, 0, 32, Media::PF_B8G8R8A8, color, info.yuvType, colorSess.Ptr());
 				if (converter == 0)
 				{
 					console->WriteLineC(UTF8STRC("Converter is null"));

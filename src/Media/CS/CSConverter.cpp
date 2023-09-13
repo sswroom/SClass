@@ -48,7 +48,7 @@ Media::CS::CSConverter::CSConverter(Media::ColorManagerSess *colorSess)
 	this->colorSess = colorSess;
 	if (this->colorSess)
 	{
-		this->colorSess->AddHandler(this);
+		this->colorSess->AddHandler(*this);
 	}
 }
 
@@ -56,7 +56,7 @@ Media::CS::CSConverter::~CSConverter()
 {
 	if (this->colorSess)
 	{
-		this->colorSess->RemoveHandler(this);
+		this->colorSess->RemoveHandler(*this);
 	}
 }
 

@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "SSWR/AVIRead/MIMEViewer/AVIRMIMETextViewer.h"
 
-SSWR::AVIRead::MIMEViewer::AVIRMIMETextViewer::AVIRMIMETextViewer(NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<UI::GUICore> ui, UI::GUIClientControl *ctrl, Media::ColorManagerSess *sess, Text::MIMEObj::TextMIMEObj *txt) : SSWR::AVIRead::MIMEViewer::AVIRMIMEViewer(core, ctrl, txt)
+SSWR::AVIRead::MIMEViewer::AVIRMIMETextViewer::AVIRMIMETextViewer(NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<UI::GUICore> ui, UI::GUIClientControl *ctrl, NotNullPtr<Media::ColorManagerSess> sess, Text::MIMEObj::TextMIMEObj *txt) : SSWR::AVIRead::MIMEViewer::AVIRMIMEViewer(core, ctrl, txt)
 {
 	this->txt = txt;
 

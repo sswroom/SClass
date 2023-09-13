@@ -63,7 +63,7 @@ Media::StaticImage *Media::ScreenCapturer::CaptureScreen(MonitorHandle *hMon)
     XImage *image = XGetImage(dis, drawable, 0, 0, (UInt32)scr->width, (UInt32)scr->height, AllPlanes, ZPixmap);
 	if (image)
 	{
-		Media::MonitorColorManager *monColor = this->colorMgr->GetMonColorManager(hMon);
+		NotNullPtr<Media::MonitorColorManager> monColor = this->colorMgr->GetMonColorManager(hMon);
 		Bool valid = true;
 		Media::FrameInfo info;
 		info.fourcc = 0;

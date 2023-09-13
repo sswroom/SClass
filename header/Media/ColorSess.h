@@ -7,8 +7,8 @@ namespace Media
 	class ColorSess
 	{
 	public:
-		virtual void AddHandler(Media::IColorHandler *hdlr) = 0;
-		virtual void RemoveHandler(Media::IColorHandler *hdlr) = 0;
+		virtual void AddHandler(NotNullPtr<Media::IColorHandler> hdlr) = 0;
+		virtual void RemoveHandler(NotNullPtr<Media::IColorHandler> hdlr) = 0;
 //		NotNullPtr<const Media::IColorHandler::YUVPARAM> GetYUVParam();
 		virtual NotNullPtr<const Media::IColorHandler::RGBPARAM2> GetRGBParam() = 0;
 		virtual NotNullPtr<Media::ColorProfile> GetDefVProfile() = 0;

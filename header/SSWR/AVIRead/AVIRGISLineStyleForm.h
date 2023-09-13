@@ -20,7 +20,7 @@ namespace SSWR
 		{
 		private:
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
-			Media::ColorManagerSess *colorSess;
+			NotNullPtr<Media::ColorManagerSess> colorSess;
 			Map::MapEnv *env;
 			NotNullPtr<Media::DrawEngine> eng;
 			UOSInt lineStyle;

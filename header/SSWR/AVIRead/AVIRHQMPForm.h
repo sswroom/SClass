@@ -33,7 +33,7 @@ namespace SSWR
 		private:
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			Net::SSLEngine *ssl;
-			Media::ColorManagerSess *colorSess;
+			NotNullPtr<Media::ColorManagerSess> colorSess;
 			Media::Playlist *playlist;
 			Media::ChapterInfo *currChapInfo;
 			Int32 uOfst;

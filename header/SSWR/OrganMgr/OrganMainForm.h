@@ -118,7 +118,7 @@ namespace SSWR
 			UI::GUIMainMenu *mnuMain;
 
 			Media::ColorManager *colorMgr;
-			Media::ColorManagerSess *colorSess;
+			NotNullPtr<Media::ColorManagerSess> colorSess;
 			OrganEnv *env;
 			OrganGroup *rootGroup;
 			UOSInt lastDirIndex;

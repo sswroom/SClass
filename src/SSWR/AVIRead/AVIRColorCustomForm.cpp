@@ -222,7 +222,7 @@ void __stdcall SSWR::AVIRead::AVIRColorCustomForm::OnCloseClicked(void *userObj)
 	me->Close();
 }
 
-SSWR::AVIRead::AVIRColorCustomForm::AVIRColorCustomForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Media::MonitorColorManager *monColor) : UI::GUIForm(parent, 640, 480, ui)
+SSWR::AVIRead::AVIRColorCustomForm::AVIRColorCustomForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<Media::MonitorColorManager> monColor) : UI::GUIForm(parent, 640, 480, ui)
 {
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;

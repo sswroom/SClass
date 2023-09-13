@@ -2521,7 +2521,7 @@ SSWR::OrganMgr::OrganMainForm::OrganMainForm(NotNullPtr<UI::GUICore> ui, UI::GUI
 	this->restoreObj = false;
 	Media::ColorProfile color(Media::ColorProfile::CPT_SRGB);
 	Media::ColorProfile color2(Media::ColorProfile::CPT_PDISPLAY);
-	NEW_CLASS(this->mapResizer, Media::Resizer::LanczosResizer8_C8(4, 3, color, color2, this->colorSess, Media::AT_NO_ALPHA));
+	NEW_CLASS(this->mapResizer, Media::Resizer::LanczosResizer8_C8(4, 3, color, color2, this->colorSess.Ptr(), Media::AT_NO_ALPHA));
 	this->mapCurrFile = 0;
 	this->mapCurrImage = 0;
 
@@ -2769,7 +2769,7 @@ SSWR::OrganMgr::OrganMainForm::OrganMainForm(NotNullPtr<UI::GUICore> ui, UI::GUI
 	this->imgFontStyle = this->mapEnv->AddFontStyle(CSTR("Temp"), this->env->GetMapFont(), 12, false, 0xff000000, 2, 0x80ffffff);
 
 	Media::ColorProfile dispColor(Media::ColorProfile::CPT_PDISPLAY);
-	NEW_CLASS(this->mapRenderer, Map::DrawMapRenderer(this->env->GetDrawEngine(), this->mapEnv, dispColor, this->colorSess, Map::DrawMapRenderer::DT_PIXELDRAW));
+	NEW_CLASS(this->mapRenderer, Map::DrawMapRenderer(this->env->GetDrawEngine(), this->mapEnv, dispColor, this->colorSess.Ptr(), Map::DrawMapRenderer::DT_PIXELDRAW));
 	this->mapView = this->mapEnv->CreateMapView(Math::Size2DDbl(1024, 768));
 	NEW_CLASS(this->mcMap, UI::GUIMapControl(ui, this->tpMap, this->env->GetDrawEngine(), 0xff000000, this->mapRenderer, this->mapView, this->colorSess));
 	this->mcMap->SetDockType(UI::GUIControl::DOCK_FILL);

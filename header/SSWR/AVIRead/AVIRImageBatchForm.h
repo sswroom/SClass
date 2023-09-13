@@ -46,7 +46,7 @@ namespace SSWR
 			UI::GUIHScrollBar *hsbHDRLev;
 			UI::GUILabel *lblHDRLevV;
 			
-			Media::ColorManagerSess *colorSess;
+			NotNullPtr<Media::ColorManagerSess> colorSess;
 			Media::Resizer::LanczosResizer8_C8 *resizer;
 			Media::StaticImage *dispImage;
 			Media::StaticImage *previewImage;

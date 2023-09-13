@@ -15,7 +15,7 @@ namespace SSWR
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			Text::IMIMEObj *obj;
 			SSWR::AVIRead::MIMEViewer::AVIRMIMEViewer *viewer;
-			Media::ColorManagerSess *sess;
+			NotNullPtr<Media::ColorManagerSess> sess;
 
 		public:
 			AVIRMIMEViewerForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Text::IMIMEObj *obj);

@@ -83,7 +83,7 @@ void UI::GUIVideoBoxDD::EndUpdateSize()
 	this->switching = false;
 }
 
-UI::GUIVideoBoxDD::GUIVideoBoxDD(NotNullPtr<UI::GUICore> ui, UI::GUIClientControl *parent, Media::ColorManagerSess *colorSess, UOSInt buffCnt, UOSInt threadCnt) : UI::GUIDDrawControl(ui, parent, false, colorSess), Media::VideoRenderer(colorSess, this->UI::GUIDDrawControl::surfaceMgr, buffCnt, threadCnt)
+UI::GUIVideoBoxDD::GUIVideoBoxDD(NotNullPtr<UI::GUICore> ui, UI::GUIClientControl *parent, NotNullPtr<Media::ColorManagerSess> colorSess, UOSInt buffCnt, UOSInt threadCnt) : UI::GUIDDrawControl(ui, parent, false, colorSess), Media::VideoRenderer(colorSess.Ptr(), this->UI::GUIDDrawControl::surfaceMgr, buffCnt, threadCnt)
 {
 	this->UpdateRefreshRate(this->GetRefreshRate());
 	this->debugLog = 0;
@@ -91,10 +91,7 @@ UI::GUIVideoBoxDD::GUIVideoBoxDD(NotNullPtr<UI::GUICore> ui, UI::GUIClientContro
 	this->debugLog2 = 0;
 	this->debugFS2 = 0;
 
-	if (this->colorSess)
-	{
-		this->colorSess->AddHandler(this);
-	}
+	this->colorSess->AddHandler(*this);
 	this->maHdlr = 0;
 	this->maHdlrObj = 0;
 	this->maDown = 0;
@@ -115,10 +112,7 @@ UI::GUIVideoBoxDD::GUIVideoBoxDD(NotNullPtr<UI::GUICore> ui, UI::GUIClientContro
 
 UI::GUIVideoBoxDD::~GUIVideoBoxDD()
 {
-	if (this->colorSess)
-	{
-		this->colorSess->RemoveHandler(this);
-	}
+	this->colorSess->RemoveHandler(*this);
 
 #ifdef _DEBUG
 	SDEL_CLASS(this->debugLog);

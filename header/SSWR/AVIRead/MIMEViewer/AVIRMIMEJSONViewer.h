@@ -19,7 +19,7 @@ namespace SSWR
 				Text::MIMEObj::UnknownMIMEObj *obj;
 
 			public:
-				AVIRMIMEJSONViewer(NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<UI::GUICore> ui, UI::GUIClientControl *ctrl, Media::ColorManagerSess *sess, Text::MIMEObj::UnknownMIMEObj *obj);
+				AVIRMIMEJSONViewer(NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<UI::GUICore> ui, UI::GUIClientControl *ctrl, NotNullPtr<Media::ColorManagerSess> sess, Text::MIMEObj::UnknownMIMEObj *obj);
 				virtual ~AVIRMIMEJSONViewer();
 			};
 		}

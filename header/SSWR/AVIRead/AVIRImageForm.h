@@ -31,7 +31,7 @@ namespace SSWR
 			UI::GUITextBox *txtInfo;
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
-			Media::ColorManagerSess *colorSess;
+			NotNullPtr<Media::ColorManagerSess> colorSess;
 			Media::ImageList *imgList;
 			Bool allowEnlarge;
 			Media::Image *currImg;

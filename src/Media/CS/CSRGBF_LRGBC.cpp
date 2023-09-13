@@ -101,7 +101,7 @@ Media::CS::CSRGBF_LRGBC::CSRGBF_LRGBC(UOSInt srcNBits, Media::PixelFormat srcPF,
 	}
 	else
 	{
-		Media::MonitorColorManager::SetDefaultRGB(&this->rgbParam);
+		Media::MonitorColorManager::SetDefaultRGB(this->rgbParam);
 	}
 	this->rgbTable = 0;
 	this->rgbUpdated = true;

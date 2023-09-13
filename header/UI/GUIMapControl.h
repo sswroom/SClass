@@ -19,7 +19,7 @@ namespace UI
 		typedef void (__stdcall *DrawHandler)(void *userObj, NotNullPtr<Media::DrawImage> dimg, OSInt xOfst, OSInt yOfst);
 	private:
 		Media::DrawImage *bgImg;
-		Media::ColorManagerSess *colorSess;
+		NotNullPtr<Media::ColorManagerSess> colorSess;
 		Map::MapView *view;
 		Map::MapEnv *mapEnv;
 		Map::DrawMapRenderer *renderer;
@@ -84,8 +84,8 @@ namespace UI
 		/*
 		view - will release
 		*/
-		GUIMapControl(NotNullPtr<GUICore> ui, UI::GUIClientControl *parent, NotNullPtr<Media::DrawEngine> eng, UInt32 bgColor, Map::DrawMapRenderer *renderer, Map::MapView *view, Media::ColorManagerSess *colorSess);
-		GUIMapControl(NotNullPtr<GUICore> ui, UI::GUIClientControl *parent, NotNullPtr<Media::DrawEngine> eng, Map::MapEnv *mapEnv, Media::ColorManagerSess *colorSess);
+		GUIMapControl(NotNullPtr<GUICore> ui, UI::GUIClientControl *parent, NotNullPtr<Media::DrawEngine> eng, UInt32 bgColor, Map::DrawMapRenderer *renderer, Map::MapView *view, NotNullPtr<Media::ColorManagerSess> colorSess);
+		GUIMapControl(NotNullPtr<GUICore> ui, UI::GUIClientControl *parent, NotNullPtr<Media::DrawEngine> eng, Map::MapEnv *mapEnv, NotNullPtr<Media::ColorManagerSess> colorSess);
 		virtual ~GUIMapControl();
 
 		virtual void OnSizeChanged(Bool updateScn);

@@ -41,7 +41,7 @@ namespace SSWR
 				SSWR::AVIRead::MIMEViewer::AVIRMIMEViewer *viewer;
 
 			public:
-				AVIRMailViewer(NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<UI::GUICore> ui, UI::GUIClientControl *ctrl, Media::ColorManagerSess *sess, Text::MIMEObj::MailMessage *mail);
+				AVIRMailViewer(NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<UI::GUICore> ui, UI::GUIClientControl *ctrl, NotNullPtr<Media::ColorManagerSess> sess, Text::MIMEObj::MailMessage *mail);
 				virtual ~AVIRMailViewer();
 			};
 		}

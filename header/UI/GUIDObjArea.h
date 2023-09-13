@@ -14,7 +14,7 @@ namespace UI
 	private:
 		NotNullPtr<Media::DrawEngine> deng;
 		Media::DrawImage *currDrawImg;
-		Media::ColorManagerSess *colorSess;
+		NotNullPtr<Media::ColorManagerSess> colorSess;
 		Bool drawUpdated;
 		Sync::Mutex dobjMut;
 		UI::DObj::DObjHandler *dobjHdlr;
@@ -26,7 +26,7 @@ namespace UI
 		static void __stdcall ProcessThread(NotNullPtr<Sync::Thread> thread);
 		static void __stdcall OnUpdateSize(void *userObj);
 	public:
-		GUIDObjArea(NotNullPtr<GUICore> ui, UI::GUIClientControl *parent, NotNullPtr<Media::DrawEngine> deng, Media::ColorManagerSess *colorSess);
+		GUIDObjArea(NotNullPtr<GUICore> ui, UI::GUIClientControl *parent, NotNullPtr<Media::DrawEngine> deng, NotNullPtr<Media::ColorManagerSess> colorSess);
 		virtual ~GUIDObjArea();
 
 		void SetHandler(UI::DObj::DObjHandler *dobjHdlr);

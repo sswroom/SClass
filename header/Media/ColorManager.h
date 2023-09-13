@@ -1,7 +1,7 @@
 #ifndef _SM_MEDIA_COLORMANAGER
 #define _SM_MEDIA_COLORMANAGER
 #include "Handles.h"
-#include "Data/ArrayList.h"
+#include "Data/ArrayListNN.h"
 #include "Data/FastStringMap.h"
 #include "Media/ColorSess.h"
 #include "Sync/Mutex.h"
@@ -22,11 +22,11 @@ namespace Media
 		Text::String *monProfileFile;
 		Bool color10Bit;
 
-		Data::ArrayList<Media::ColorManagerSess *> sessList;
+		Data::ArrayListNN<Media::ColorManagerSess> sessList;
 		Sync::Mutex sessMut;
 	public:
-		static void SetDefaultYUV(Media::IColorHandler::YUVPARAM *yuv);
-		static void SetDefaultRGB(Media::IColorHandler::RGBPARAM2 *rgb);
+		static void SetDefaultYUV(NotNullPtr<Media::IColorHandler::YUVPARAM> yuv);
+		static void SetDefaultRGB(NotNullPtr<Media::IColorHandler::RGBPARAM2> rgb);
 
 	public:
 		MonitorColorManager(Text::String *profileName);
@@ -68,8 +68,8 @@ namespace Media
 		void Set10BitColor(Bool color10Bit);
 
 
-		void AddSess(Media::ColorManagerSess *colorSess);
-		void RemoveSess(Media::ColorManagerSess *colorSess);
+		void AddSess(NotNullPtr<Media::ColorManagerSess> colorSess);
+		void RemoveSess(NotNullPtr<Media::ColorManagerSess> colorSess);
 	private:
 		Bool SetFromProfileFile(NotNullPtr<Text::String> fileName);
 		void SetOSProfile();
@@ -106,27 +106,27 @@ namespace Media
 		void SetYUVType(Media::ColorProfile::YUVType newVal);
 		Media::ColorProfile::YUVType GetDefYUVType();
 
-		MonitorColorManager *GetMonColorManager(Text::String *profileName);
-		MonitorColorManager *GetMonColorManager(MonitorHandle *hMon);
-		ColorManagerSess *CreateSess(MonitorHandle *hMon);
-		void DeleteSess(ColorManagerSess *sess);
+		NotNullPtr<MonitorColorManager> GetMonColorManager(Text::String *profileName);
+		NotNullPtr<MonitorColorManager> GetMonColorManager(MonitorHandle *hMon);
+		NotNullPtr<ColorManagerSess> CreateSess(MonitorHandle *hMon);
+		void DeleteSess(NotNullPtr<ColorManagerSess> sess);
 	};
 
 	class ColorManagerSess : public Media::ColorSess
 	{
 	private:
-		ColorManager *colorMgr;
-		MonitorColorManager *monColor;
+		NotNullPtr<ColorManager> colorMgr;
+		NotNullPtr<MonitorColorManager> monColor;
 		Sync::RWMutex mut;
-		Data::ArrayList<Media::IColorHandler *> hdlrs;
+		Data::ArrayListNN<Media::IColorHandler> hdlrs;
 		Sync::Mutex hdlrMut;
 
 	public:
-		ColorManagerSess(ColorManager *colorMgr, MonitorColorManager *monColor);
+		ColorManagerSess(NotNullPtr<ColorManager> colorMgr, NotNullPtr<MonitorColorManager> monColor);
 		virtual ~ColorManagerSess();
 
-		virtual void AddHandler(Media::IColorHandler *hdlr);
-		virtual void RemoveHandler(Media::IColorHandler *hdlr);
+		virtual void AddHandler(NotNullPtr<Media::IColorHandler> hdlr);
+		virtual void RemoveHandler(NotNullPtr<Media::IColorHandler> hdlr);
 		NotNullPtr<const Media::IColorHandler::YUVPARAM> GetYUVParam();
 		virtual NotNullPtr<const Media::IColorHandler::RGBPARAM2> GetRGBParam();
 		virtual NotNullPtr<Media::ColorProfile> GetDefVProfile();

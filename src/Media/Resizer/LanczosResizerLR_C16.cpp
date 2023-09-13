@@ -300,7 +300,7 @@ Media::Resizer::LanczosResizerLR_C16::LanczosResizerLR_C16(UOSInt hnTap, UOSInt 
 	if (colorSess)
 	{
 		this->colorSess = colorSess;
-		this->colorSess->AddHandler(this);
+		this->colorSess->AddHandler(*this);
 	}
 	else
 	{
@@ -342,7 +342,7 @@ Media::Resizer::LanczosResizerLR_C16::~LanczosResizerLR_C16()
 {
 	if (this->colorSess)
 	{
-		this->colorSess->RemoveHandler(this);
+		this->colorSess->RemoveHandler(*this);
 	}
 	DEL_CLASS(this->ptask);
 	MemFree(this->params);

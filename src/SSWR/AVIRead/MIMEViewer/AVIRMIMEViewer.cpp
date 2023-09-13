@@ -20,7 +20,7 @@ SSWR::AVIRead::MIMEViewer::AVIRMIMEViewer::~AVIRMIMEViewer()
 {
 }
 
-SSWR::AVIRead::MIMEViewer::AVIRMIMEViewer *SSWR::AVIRead::MIMEViewer::AVIRMIMEViewer::CreateViewer(NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<UI::GUICore> ui, UI::GUIClientControl *ctrl, Media::ColorManagerSess *sess, Text::IMIMEObj *obj)
+SSWR::AVIRead::MIMEViewer::AVIRMIMEViewer *SSWR::AVIRead::MIMEViewer::AVIRMIMEViewer::CreateViewer(NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<UI::GUICore> ui, UI::GUIClientControl *ctrl, NotNullPtr<Media::ColorManagerSess> sess, Text::IMIMEObj *obj)
 {
 	SSWR::AVIRead::MIMEViewer::AVIRMIMEViewer *viewer;
 	if (obj == 0)

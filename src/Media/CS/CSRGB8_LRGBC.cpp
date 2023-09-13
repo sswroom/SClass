@@ -116,7 +116,7 @@ Media::CS::CSRGB8_LRGBC::CSRGB8_LRGBC(UOSInt srcNBits, Media::PixelFormat srcPF,
 	}
 	else
 	{
-		Media::MonitorColorManager::SetDefaultRGB(&this->rgbParam);
+		Media::MonitorColorManager::SetDefaultRGB(this->rgbParam);
 	}
 	if (this->srcPF == Media::PF_PAL_1 || this->srcPF == Media::PF_PAL_2 || this->srcPF == Media::PF_PAL_4 || this->srcPF == Media::PF_PAL_8 || this->srcPF == Media::PF_PAL_W1 || this->srcPF == Media::PF_PAL_W2 || this->srcPF == Media::PF_PAL_W4 || this->srcPF == Media::PF_PAL_W8)
 	{

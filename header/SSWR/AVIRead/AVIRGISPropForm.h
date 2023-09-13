@@ -50,7 +50,7 @@ namespace SSWR
 			Media::StaticImage *imgFont;
 			Map::MapEnv *env;
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
-			Media::ColorManagerSess *colorSess;
+			NotNullPtr<Media::ColorManagerSess> colorSess;
 			Media::ColorConv *colorConv;
 			Map::MapEnv::GroupItem *group;
 			UOSInt index;

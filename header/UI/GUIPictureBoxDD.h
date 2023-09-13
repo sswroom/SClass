@@ -33,7 +33,7 @@ namespace UI
 		Math::Size2D<UOSInt> bgBuffSize;
 
 		Media::CS::CSConverter *csconv;
-		Media::ColorManagerSess *colorSess;
+		NotNullPtr<Media::ColorManagerSess> colorSess;
 		Media::Image *currImage;
 		Math::Size2D<UOSInt> currImageSize;
 		Media::IImgResizer *resizer;
@@ -67,7 +67,7 @@ namespace UI
 		void DrawFromBG();
 		virtual void OnPaint();
 	public:
-		GUIPictureBoxDD(NotNullPtr<GUICore> ui, UI::GUIClientControl *parent, Media::ColorManagerSess *colorSess, Bool allowEnlarge, Bool directMode);
+		GUIPictureBoxDD(NotNullPtr<GUICore> ui, UI::GUIClientControl *parent, NotNullPtr<Media::ColorManagerSess> colorSess, Bool allowEnlarge, Bool directMode);
 		virtual ~GUIPictureBoxDD();
 
 		virtual Text::CStringNN GetObjectClass() const;

@@ -90,7 +90,7 @@ namespace SSWR
 			Net::SSLEngine *ssl;
 			IO::LogTool log;
 			DB::ReadingDB *currDB;
-			Media::ColorManagerSess *colorSess;
+			NotNullPtr<Media::ColorManagerSess> colorSess;
 			Map::MapEnv *mapEnv;
 			Map::DBMapLayer *dbLayer;
 			Math::Coord2D<OSInt> mapDownPos;

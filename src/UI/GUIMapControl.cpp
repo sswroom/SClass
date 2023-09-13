@@ -698,13 +698,10 @@ void UI::GUIMapControl::ReleaseSelVecList()
 	this->selVecList.Clear();
 }
 
-UI::GUIMapControl::GUIMapControl(NotNullPtr<UI::GUICore> ui, UI::GUIClientControl *parent, NotNullPtr<Media::DrawEngine> eng, UInt32 bgColor, Map::DrawMapRenderer *renderer, Map::MapView *view, Media::ColorManagerSess *colorSess) : UI::GUICustomDraw(ui, parent, eng)
+UI::GUIMapControl::GUIMapControl(NotNullPtr<UI::GUICore> ui, UI::GUIClientControl *parent, NotNullPtr<Media::DrawEngine> eng, UInt32 bgColor, Map::DrawMapRenderer *renderer, Map::MapView *view, NotNullPtr<Media::ColorManagerSess> colorSess) : UI::GUICustomDraw(ui, parent, eng)
 {
 	this->colorSess = colorSess;
-	if (this->colorSess)
-	{
-		this->colorSess->AddHandler(this);
-	}
+	this->colorSess->AddHandler(*this);
 	this->currSize = Math::Size2D<UOSInt>(640, 480);
 	this->bgImg = 0;
 	this->mouseDown = false;
@@ -738,13 +735,10 @@ UI::GUIMapControl::GUIMapControl(NotNullPtr<UI::GUICore> ui, UI::GUIClientContro
 	}
 }
 
-UI::GUIMapControl::GUIMapControl(NotNullPtr<GUICore> ui, UI::GUIClientControl *parent, NotNullPtr<Media::DrawEngine> eng, Map::MapEnv *mapEnv, Media::ColorManagerSess *colorSess) : UI::GUICustomDraw(ui, parent, eng)
+UI::GUIMapControl::GUIMapControl(NotNullPtr<GUICore> ui, UI::GUIClientControl *parent, NotNullPtr<Media::DrawEngine> eng, Map::MapEnv *mapEnv, NotNullPtr<Media::ColorManagerSess> colorSess) : UI::GUICustomDraw(ui, parent, eng)
 {
 	this->colorSess = colorSess;
-	if (this->colorSess)
-	{
-		this->colorSess->AddHandler(this);
-	}
+	this->colorSess->AddHandler(*this);
 	this->currSize = Math::Size2D<UOSInt>(640, 480);
 	this->bgImg = 0;
 	this->mouseDown = false;
@@ -766,7 +760,7 @@ UI::GUIMapControl::GUIMapControl(NotNullPtr<GUICore> ui, UI::GUIClientControl *p
 	this->showMarker = false;
 	this->pauseUpdate = false;
 	Media::ColorProfile color(Media::ColorProfile::CPT_PDISPLAY);
-	NEW_CLASS(this->renderer, Map::DrawMapRenderer(this->eng, mapEnv, color, this->colorSess, Map::DrawMapRenderer::DT_PIXELDRAW));
+	NEW_CLASS(this->renderer, Map::DrawMapRenderer(this->eng, mapEnv, color, this->colorSess.Ptr(), Map::DrawMapRenderer::DT_PIXELDRAW));
 	this->releaseRenderer = true;
 
 	this->view = mapEnv->CreateMapView(Math::Size2DDbl(640, 480));
@@ -803,10 +797,7 @@ UI::GUIMapControl::~GUIMapControl()
 		DEL_CLASS(this->renderer);
 	}
 	DEL_CLASS(this->view);
-	if (this->colorSess)
-	{
-		this->colorSess->RemoveHandler(this);
-	}
+	this->colorSess->RemoveHandler(*this);
 }
 
 void UI::GUIMapControl::OnSizeChanged(Bool updateScn)
@@ -882,7 +873,7 @@ void UI::GUIMapControl::SetBGColor(UInt32 bgColor)
 	this->bgColor = bgColor;
 	Media::ColorProfile srcProfile(Media::ColorProfile::CPT_SRGB);
 	Media::ColorProfile destProfile(Media::ColorProfile::CPT_PDISPLAY);
-	this->bgDispColor = Media::ColorConv::ConvARGB(srcProfile, destProfile, this->colorSess, this->bgColor);
+	this->bgDispColor = Media::ColorConv::ConvARGB(srcProfile, destProfile, this->colorSess.Ptr(), this->bgColor);
 	if (!this->pauseUpdate)
 	{
 		this->UpdateMap();

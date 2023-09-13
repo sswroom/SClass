@@ -13,7 +13,7 @@ namespace SSWR
 		{
 		private:
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
-			Media::ColorManagerSess *colorSess;
+			NotNullPtr<Media::ColorManagerSess> colorSess;
 			Media::ColorConv *colorConv;
 			Map::MapEnv *env;
 			UOSInt currLineStyle;
@@ -27,7 +27,7 @@ namespace SSWR
 			virtual void OnKeyDown(UInt32 keyCode);
 
 		public:
-			AVIRLineSelector(NotNullPtr<UI::GUICore> ui, UI::GUIClientControl *parent, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Map::MapEnv *env, UOSInt initLineStyle, Media::ColorManagerSess *colorSess);
+			AVIRLineSelector(NotNullPtr<UI::GUICore> ui, UI::GUIClientControl *parent, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Map::MapEnv *env, UOSInt initLineStyle, NotNullPtr<Media::ColorManagerSess> colorSess);
 			virtual ~AVIRLineSelector();
 
 			virtual void YUVParamChanged(NotNullPtr<const Media::IColorHandler::YUVPARAM> yuvParam);

@@ -39,7 +39,7 @@ namespace SSWR
 		private:
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			Media::ANPR anpr;
-			Media::ColorManagerSess *colorSess;
+			NotNullPtr<Media::ColorManagerSess> colorSess;
 			Data::ArrayList<ResultInfo*> results;
 			Media::StaticImage *currImg;
 			ActionType selectMode;

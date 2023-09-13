@@ -1080,7 +1080,7 @@ Media::Resizer::LanczosResizerLR_C32::LanczosResizerLR_C32(UOSInt hnTap, UOSInt 
 	if (colorSess)
 	{
 		this->colorSess = colorSess;
-		this->colorSess->AddHandler(this);
+		this->colorSess->AddHandler(*this);
 	}
 	else
 	{
@@ -1115,7 +1115,7 @@ Media::Resizer::LanczosResizerLR_C32::~LanczosResizerLR_C32()
 {
 	if (this->colorSess)
 	{
-		this->colorSess->RemoveHandler(this);
+		this->colorSess->RemoveHandler(*this);
 	}
 
 	DestoryHori();

@@ -17,7 +17,7 @@ Media::ConsoleMediaPlayer::ConsoleMediaPlayer(Media::MonitorMgr *monMgr, Media::
 
 	if (this->surfaceMgr)
 	{
-		this->colorSess = this->colorMgr->CreateSess(this->surfaceMgr->GetMonitorHandle(0));
+		this->colorSess = this->colorMgr->CreateSess(this->surfaceMgr->GetMonitorHandle(0)).Ptr();
 		NEW_CLASS(this->renderer, Media::ConsoleVideoRenderer(this->surfaceMgr, this->colorSess));
 	}
 	else
@@ -39,9 +39,10 @@ Media::ConsoleMediaPlayer::~ConsoleMediaPlayer()
 		this->player->Close();
 	}
 	SDEL_CLASS(this->renderer);
-	if (this->colorSess)
+	NotNullPtr<Media::ColorManagerSess> colorSess;
+	if (colorSess.Set(this->colorSess))
 	{
-		this->colorMgr->DeleteSess(this->colorSess);
+		this->colorMgr->DeleteSess(colorSess);
 		this->colorSess = 0;
 	}
 	SDEL_CLASS(this->surfaceMgr);

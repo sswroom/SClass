@@ -194,10 +194,10 @@ SSWR::AVIRead::AVIRGISFontEditForm::AVIRGISFontEditForm(UI::GUIClientControl *pa
 	this->currColor = 0xff000000;
 	this->currBuffColor = 0xff000000;
 	this->colorSess = this->core->GetColorMgr()->CreateSess(this->GetHMonitor());
-	this->colorSess->AddHandler(this);
+	this->colorSess->AddHandler(*this);
 	Media::ColorProfile srcProfile(Media::ColorProfile::CPT_SRGB);
 	Media::ColorProfile destProfile(Media::ColorProfile::CPT_PDISPLAY);
-	NEW_CLASS(this->colorConv, Media::ColorConv(srcProfile, destProfile, this->colorSess));
+	NEW_CLASS(this->colorConv, Media::ColorConv(srcProfile, destProfile, this->colorSess.Ptr()));
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 	this->SetText(CSTR("Edit Font Style"));
@@ -258,7 +258,7 @@ SSWR::AVIRead::AVIRGISFontEditForm::~AVIRGISFontEditForm()
 	}
 	SDEL_STRING(this->currFontName);
 	DEL_CLASS(this->colorConv);
-	this->colorSess->RemoveHandler(this);
+	this->colorSess->RemoveHandler(*this);
 	this->ClearChildren();
 	this->core->GetColorMgr()->DeleteSess(this->colorSess);
 }

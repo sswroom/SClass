@@ -81,10 +81,10 @@ SSWR::AVIRead::AVIRGISFontForm::AVIRGISFontForm(UI::GUIClientControl *parent, No
 	this->eng = eng;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 	this->colorSess = this->core->GetColorMgr()->CreateSess(this->GetHMonitor());
-	this->colorSess->AddHandler(this);
+	this->colorSess->AddHandler(*this);
 	Media::ColorProfile srcProfile(Media::ColorProfile::CPT_SRGB);
 	Media::ColorProfile destProfile(Media::ColorProfile::CPT_PDISPLAY);
-	NEW_CLASS(this->colorConv, Media::ColorConv(srcProfile, destProfile, this->colorSess));
+	NEW_CLASS(this->colorConv, Media::ColorConv(srcProfile, destProfile, this->colorSess.Ptr()));
 	if (fontName)
 	{
 		this->fontName = fontName->Clone();
@@ -143,7 +143,7 @@ SSWR::AVIRead::AVIRGISFontForm::~AVIRGISFontForm()
 	}
 	this->fontName->Release();
 	DEL_CLASS(this->colorConv);
-	this->colorSess->RemoveHandler(this);
+	this->colorSess->RemoveHandler(*this);
 	this->ClearChildren();
 	this->core->GetColorMgr()->DeleteSess(this->colorSess);
 }

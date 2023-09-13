@@ -24,7 +24,7 @@ namespace SSWR
 		private:
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			Media::ColorManager *colorMgr;
-			Media::MonitorColorManager *monColor;
+			NotNullPtr<Media::MonitorColorManager> monColor;
 			Bool normalClose;
 			Text::String *monFileName;
 			MonitorHandle *hMon;

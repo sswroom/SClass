@@ -29,7 +29,7 @@ namespace SSWR
 			UI::GUIButton *btnFS;
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
-			Media::ColorManagerSess *colorSess;
+			NotNullPtr<Media::ColorManagerSess> colorSess;
 			Media::Playlist *playlist;
 			Media::MediaPlayer *player;
 			const WChar *currFileName;

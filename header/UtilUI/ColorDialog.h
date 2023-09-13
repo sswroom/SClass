@@ -99,7 +99,7 @@ namespace UtilUI
 		Media::StaticImage *mainImg;
 		Media::StaticImage *subImg;
 		Media::ColorManager *colorMgr;
-		Media::ColorManagerSess *colorSess;
+		NotNullPtr<Media::ColorManagerSess> colorSess;
 		Media::MonitorMgr *monMgr;
 		Bool subDowned;
 		Bool mainDowned;

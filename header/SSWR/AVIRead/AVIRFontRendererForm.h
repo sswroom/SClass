@@ -26,7 +26,7 @@ namespace SSWR
 			UI::GUIPictureBoxDD *pbChar;
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
-			Media::ColorManagerSess *colorSess;
+			NotNullPtr<Media::ColorManagerSess> colorSess;
 			Media::FontRenderer *font;
 			Media::StaticImage *currImg;
 

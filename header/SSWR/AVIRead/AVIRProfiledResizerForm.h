@@ -56,7 +56,7 @@ namespace SSWR
 			UI::GUIButton *btnProfileAdd;
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
-			Media::ColorManagerSess *colorSess;
+			NotNullPtr<Media::ColorManagerSess> colorSess;
 			Media::ProfiledResizer *resizer;
 
 			static void __stdcall OnChgClicked(void *userObj);
