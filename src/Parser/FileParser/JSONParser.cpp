@@ -142,7 +142,7 @@ IO::ParsedObject *Parser::FileParser::JSONParser::ParseJSON(Text::JSONBase *file
 					if (featType && featType->GetType() == Text::JSONType::String && featProp && featProp->GetType() == Text::JSONType::Object && featGeom && featGeom->GetType() == Text::JSONType::Object)
 					{
 						Data::ArrayList<Text::String *> colNames;
-						((Text::JSONObject*)featProp)->GetObjectNames(&colNames);
+						((Text::JSONObject*)featProp)->GetObjectNames(colNames);
 						colCnt = colNames.GetCount();
 						k = 0;
 						while (k < colCnt)
@@ -613,7 +613,7 @@ Text::JSONArray *Parser::FileParser::JSONParser::GetDataArray(Text::JSONBase *fi
 	Text::JSONObject *obj = (Text::JSONObject*)fileJSON;
 	Text::JSONBase *o;
 	Data::ArrayList<Text::String*> names;
-	obj->GetObjectNames(&names);
+	obj->GetObjectNames(names);
 	UOSInt i = names.GetCount();
 	while (i-- > 0)
 	{

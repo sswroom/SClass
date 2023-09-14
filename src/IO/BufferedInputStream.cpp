@@ -2,7 +2,7 @@
 #include "MyMemory.h"
 #include "IO/BufferedInputStream.h"
 
-IO::BufferedInputStream::BufferedInputStream(IO::SeekableStream *stm, UOSInt buffSize) : IO::SeekableStream(stm->GetSourceNameObj()), buff(buffSize)
+IO::BufferedInputStream::BufferedInputStream(NotNullPtr<IO::SeekableStream> stm, UOSInt buffSize) : IO::SeekableStream(stm->GetSourceNameObj()), buff(buffSize)
 {
 	this->stm = stm;
 	this->buffOfst = 0;

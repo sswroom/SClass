@@ -54,7 +54,7 @@ IO::ParserType IO::Stream::GetParserType() const
 	return IO::ParserType::Stream;
 }
 
-UInt64 IO::Stream::ReadToEnd(IO::Stream *stm, UOSInt buffSize)
+UInt64 IO::Stream::ReadToEnd(NotNullPtr<IO::Stream> stm, UOSInt buffSize)
 {
 	UInt64 totalSize = 0;
 	UOSInt readSize;

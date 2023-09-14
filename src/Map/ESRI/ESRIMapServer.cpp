@@ -445,7 +445,7 @@ Bool Map::ESRI::ESRIMapServer::QueryInfos(Math::Coord2DDbl coord, Math::RectArea
 									Data::ArrayList<Text::String*> attNames;
 									Text::String *name;
 									Text::StringBuilderUTF8 sb;
-									attr->GetObjectNames(&attNames);
+									attr->GetObjectNames(attNames);
 									UOSInt k = 0;
 									UOSInt l = attNames.GetCount();
 									while (k < l)

@@ -425,7 +425,7 @@ Bool Net::ACMEConn::AccountNew()
 	if (cli->GetRespStatus() == Net::WebStatus::SC_BAD_REQUEST)
 	{
 		IO::MemoryStream mstm;
-		cli->ReadToEnd(&mstm, 4096);
+		cli->ReadToEnd(mstm, 4096);
 		DEL_CLASS(cli);
 		UOSInt buffSize;
 		UInt8 *buff = mstm.GetBuff(&buffSize);
@@ -445,7 +445,7 @@ Bool Net::ACMEConn::AccountNew()
 					if (cli)
 					{
 						mstm.Clear();
-						cli->ReadToEnd(&mstm, 4096);
+						cli->ReadToEnd(mstm, 4096);
 						sb.ClearStr();
 						if (cli->GetRespStatus() == Net::WebStatus::SC_CREATED && cli->GetRespHeader(CSTR("Location"), sb))
 						{
@@ -543,7 +543,7 @@ Net::ACMEConn::Order *Net::ACMEConn::OrderNew(const UTF8Char *domainNames, UOSIn
 	{
 		Text::StringBuilderUTF8 sb;
 		IO::MemoryStream mstm;
-		cli->ReadToEnd(&mstm, 2048);
+		cli->ReadToEnd(mstm, 2048);
 		cli->GetRespHeader(CSTR("Location"), sb);
 		DEL_CLASS(cli);
 
@@ -569,7 +569,7 @@ Net::ACMEConn::Challenge *Net::ACMEConn::OrderAuthorize(NotNullPtr<Text::String>
 	{
 		cli->GetRespStatus();
 		IO::MemoryStream mstm;
-		cli->ReadToEnd(&mstm, 2048);
+		cli->ReadToEnd(mstm, 2048);
 		DEL_CLASS(cli);
 
 		Text::CString sAuthType = AuthorizeTypeGetName(authType);
@@ -651,7 +651,7 @@ Net::ACMEConn::Challenge *Net::ACMEConn::ChallengeBegin(NotNullPtr<Text::String>
 		if (cli->GetRespStatus() == Net::WebStatus::SC_OK)
 		{
 			IO::MemoryStream mstm;
-			cli->ReadToEnd(&mstm, 2048);
+			cli->ReadToEnd(mstm, 2048);
 			DEL_CLASS(cli);
 			UOSInt i;
 			const UInt8 *buff = mstm.GetBuff(&i);
@@ -674,7 +674,7 @@ Net::ACMEConn::Challenge *Net::ACMEConn::ChallengeGetStatus(NotNullPtr<Text::Str
 		if (cli->GetRespStatus() == Net::WebStatus::SC_OK)
 		{
 			IO::MemoryStream mstm;
-			cli->ReadToEnd(&mstm, 2048);
+			cli->ReadToEnd(mstm, 2048);
 			DEL_CLASS(cli);
 			UOSInt i;
 			const UInt8 *buff = mstm.GetBuff(&i);

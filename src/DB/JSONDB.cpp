@@ -288,7 +288,7 @@ DB::TableDef *DB::JSONDB::GetTableDef(Text::CString schemaName, Text::CString ta
 		Text::JSONObject *obj = (Text::JSONObject*)json;
 		Text::JSONType type;
 		NotNullPtr<DB::ColDef> col;
-		obj->GetObjectNames(&names);
+		obj->GetObjectNames(names);
 		UOSInt i = 0;
 		UOSInt j = names.GetCount();
 		while (i < j)

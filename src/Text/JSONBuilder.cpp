@@ -557,7 +557,7 @@ Bool Text::JSONBuilder::ObjectAdd(Text::JSONObject *obj)
 	if (this->currType != OT_OBJECT)
 		return false;
 	Data::ArrayList<Text::String*> names;
-	obj->GetObjectNames(&names);
+	obj->GetObjectNames(names);
 	UOSInt i = 0;
 	UOSInt j = names.GetCount();
 	Text::JSONBase *json;

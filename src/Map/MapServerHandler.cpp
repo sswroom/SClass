@@ -313,7 +313,7 @@ Bool __stdcall Map::MapServerHandler::CesiumDataFunc(NotNullPtr<Net::WebServer::
 		return true;
 	}
 	IO::MemoryStream mstm;
-	fs.ReadToEnd(&mstm, 8192);
+	fs.ReadToEnd(mstm, 8192);
 	mstm.Write((const UInt8*)"", 1);
 
 	UOSInt buffSize;

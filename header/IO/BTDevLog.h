@@ -25,7 +25,7 @@ namespace IO
 		Data::FastMap<UInt64, DevEntry*> pubDevs;
 		Data::FastMap<UInt64, DevEntry*> randDevs;
 
-		static Bool IsDefaultName(Text::String *name);
+		static Bool IsDefaultName(NotNullPtr<Text::String> name);
 		void FreeDev(DevEntry *dev);
 	public:
 		BTDevLog();

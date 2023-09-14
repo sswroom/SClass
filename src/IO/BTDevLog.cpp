@@ -6,7 +6,7 @@
 #include "Text/UTF8Reader.h"
 #include "Text/UTF8Writer.h"
 
-Bool IO::BTDevLog::IsDefaultName(Text::String *name)
+Bool IO::BTDevLog::IsDefaultName(NotNullPtr<Text::String> name)
 {
 	if (name->leng == 17)
 	{
@@ -67,11 +67,13 @@ IO::BTDevLog::DevEntry *IO::BTDevLog::AddEntry(UInt64 macInt, Text::String *name
 		{
 			log->measurePower = measurePower;
 		}
+		NotNullPtr<Text::String> name1;
+		NotNullPtr<Text::String> name2;
 		if (log->name == 0 && name != 0)
 		{
 			log->name = name->Clone().Ptr();
 		}
-		else if (log->name != 0 && name != 0 && IsDefaultName(log->name) && !IsDefaultName(name))
+		else if (name1.Set(log->name) && name2.Set(name) && IsDefaultName(name1) && !IsDefaultName(name2))
 		{
 			log->name->Release();
 			log->name = name->Clone().Ptr();

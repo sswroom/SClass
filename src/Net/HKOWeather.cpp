@@ -339,7 +339,7 @@ Bool Net::HKOWeather::GetWarningSummary(NotNullPtr<Net::SocketFactory> sockf, Ne
 		{
 			Text::JSONObject *obj = (Text::JSONObject*)json;
 			Data::ArrayList<Text::String*> objNames;
-			obj->GetObjectNames(&objNames);
+			obj->GetObjectNames(objNames);
 			Text::JSONObject *warnObj;
 			UOSInt i = 0;
 			UOSInt j = objNames.GetCount();

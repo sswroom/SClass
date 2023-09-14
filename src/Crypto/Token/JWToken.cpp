@@ -202,7 +202,7 @@ Data::StringMap<Text::String*> *Crypto::Token::JWToken::ParsePayload(NotNullPtr<
 	Text::JSONObject *payloadObj = (Text::JSONObject*)payloadJson;
 	Text::JSONBase *json;
 	Data::ArrayList<Text::String *> objNames;
-	payloadObj->GetObjectNames(&objNames);
+	payloadObj->GetObjectNames(objNames);
 	Text::String *name;
 	Bool isDefault;
 	UOSInt i = 0;

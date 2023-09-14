@@ -93,7 +93,7 @@ void __stdcall SSWR::AVIRead::AVIRASN1DataForm::OnVerifyClicked(void *userObj)
 		return;
 	}
 	IO::MemoryStream mstm;
-	fs.ReadToEnd(&mstm, 65536);
+	fs.ReadToEnd(mstm, 65536);
 	NotNullPtr<Crypto::Cert::X509Key> key;
 	if (!key.Set(me->GetNewKey()))
 	{

@@ -82,7 +82,7 @@ Bool Map::OWSFeatureParser::ParseJSON(Text::CStringNN txt, UInt32 srid, Data::Ar
 							Text::String *name;
 							Text::StringBuilderUTF8 sb;
 							Text::JSONObject *obj = (Text::JSONObject*)properties;
-							obj->GetObjectNames(&names);
+							obj->GetObjectNames(names);
 							UOSInt k = 0;
 							UOSInt l = names.GetCount();
 							while (k < l)

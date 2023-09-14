@@ -26,7 +26,6 @@ Map::CIPLayer2::CIPLayer2(Text::CStringNN layerName) : Map::MapDrawLayer(layerNa
 	UTF8Char fname[256];
 	UTF8Char *sptr;
 	UTF8Char *sptr2;
-	IO::FileStream *file;
 	IO::BufferedInputStream *bstm;
 	sptr = layerName.ConcatTo(fname);
 	if (layerName.EndsWithICase(UTF8STRC(".CIP")))
@@ -51,102 +50,106 @@ Map::CIPLayer2::CIPLayer2(Text::CStringNN layerName) : Map::MapDrawLayer(layerNa
 	this->layerName = Text::String::NewP(fname, sptr);
 
 	sptr2 = Text::StrConcatC(sptr, UTF8STRC(".blk"));
-	NEW_CLASS(file, IO::FileStream({fname, (UOSInt)(sptr2 - fname)}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-	NEW_CLASS(bstm, IO::BufferedInputStream(file, 65536));
-	if (!file->IsError())
 	{
-		bstm->Read(Data::ByteArray((UInt8*)&this->nblks, 4));
-		bstm->Read(Data::ByteArray((UInt8*)&this->blkScale, 4));
-		this->blks = MemAlloc(CIPBlock, this->nblks);
-		i = 0;
-		while (i < this->nblks)
+		IO::FileStream file({fname, (UOSInt)(sptr2 - fname)}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+		NEW_CLASS(bstm, IO::BufferedInputStream(file, 65536));
+		if (!file.IsError())
 		{
-			bstm->Read(Data::ByteArray((UInt8*)&this->blks[i], 12));
-			totalCnt += this->blks[i].objCnt;
-			this->blks[i].ids = MemAlloc(Int32, this->blks[i].objCnt);
-			bstm->Read(Data::ByteArray((UInt8*)this->blks[i].ids, this->blks[i].objCnt << 2));
-			i++;
-		}
-
-		if (true)
-		{
-			currIds = this->ids = MemAlloc(Int32, totalCnt);
+			bstm->Read(Data::ByteArray((UInt8*)&this->nblks, 4));
+			bstm->Read(Data::ByteArray((UInt8*)&this->blkScale, 4));
+			this->blks = MemAlloc(CIPBlock, this->nblks);
 			i = 0;
 			while (i < this->nblks)
 			{
-				MemCopyNO(currIds, this->blks[i].ids, this->blks[i].objCnt << 2);
-				MemFree(this->blks[i].ids);
-				this->blks[i].ids = currIds;
-				currIds += this->blks[i].objCnt;
+				bstm->Read(Data::ByteArray((UInt8*)&this->blks[i], 12));
+				totalCnt += this->blks[i].objCnt;
+				this->blks[i].ids = MemAlloc(Int32, this->blks[i].objCnt);
+				bstm->Read(Data::ByteArray((UInt8*)this->blks[i].ids, this->blks[i].objCnt << 2));
 				i++;
 			}
+
+			if (true)
+			{
+				currIds = this->ids = MemAlloc(Int32, totalCnt);
+				i = 0;
+				while (i < this->nblks)
+				{
+					MemCopyNO(currIds, this->blks[i].ids, this->blks[i].objCnt << 2);
+					MemFree(this->blks[i].ids);
+					this->blks[i].ids = currIds;
+					currIds += this->blks[i].objCnt;
+					i++;
+				}
+			}
 		}
+		else
+		{
+		}
+		DEL_CLASS(bstm);
 	}
-	else
-	{
-	}
-	DEL_CLASS(bstm);
-	DEL_CLASS(file);
 
 	sptr2 = Text::StrConcatC(sptr, UTF8STRC(".cix"));
-	NEW_CLASS(file, IO::FileStream({fname, (UOSInt)(sptr2 - fname)}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Sequential));
-	if (!file->IsError())
 	{
-		i = (UOSInt)file->GetLength();
-		this->ofsts = (UInt32*)MAlloc(i);
-		file->Read(Data::ByteArray((UInt8*)this->ofsts, i));
-		this->maxId = (OSInt)((i - 4) / 8) - 1;
+		IO::FileStream file({fname, (UOSInt)(sptr2 - fname)}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Sequential);
+		if (!file.IsError())
+		{
+			i = (UOSInt)file.GetLength();
+			this->ofsts = (UInt32*)MAlloc(i);
+			file.Read(Data::ByteArray((UInt8*)this->ofsts, i));
+			this->maxId = (OSInt)((i - 4) / 8) - 1;
+		}
 	}
-	DEL_CLASS(file);
 
 	this->csys = Math::CoordinateSystemManager::CreateDefaultCsys();
 	missFile = false;
 	if (!IsError())
 	{
 		sptr2 = Text::StrConcatC(sptr, UTF8STRC(".cip"));
-		NEW_CLASS(file, IO::FileStream({fname, (UOSInt)(sptr2 - fname)}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Sequential));
-		if (!file->IsError())
 		{
-			file->Read(Data::ByteArray((UInt8*)&i, 4));
-			file->Read(Data::ByteArray((UInt8*)&this->lyrType, 4));
-		}
-		else
-		{
-			missFile = true;
-		}
-		DEL_CLASS(file);
-
-		sptr2 = Text::StrConcatC(sptr, UTF8STRC(".ciu"));
-		NEW_CLASS(file, IO::FileStream({fname, (UOSInt)(sptr2 - fname)}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Sequential));
-		if (!file->IsError())
-		{
-			UInt32 buff[4];
-			file->Read(Data::ByteArray((UInt8*)buff, 8));
-			if (buff[0] != this->nblks)
+			IO::FileStream file({fname, (UOSInt)(sptr2 - fname)}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Sequential);
+			if (!file.IsError())
 			{
-				//DebugBreak();
+				file.Read(Data::ByteArray((UInt8*)&i, 4));
+				file.Read(Data::ByteArray((UInt8*)&this->lyrType, 4));
+			}
+			else
+			{
 				missFile = true;
 			}
-			UInt32 *tmpBuff = MemAlloc(UInt32, this->nblks * 4);
-			file->Read(Data::ByteArray((UInt8*)tmpBuff, this->nblks * 16));
-			i = 0;
-			while (i < this->nblks)
+		}
+
+		sptr2 = Text::StrConcatC(sptr, UTF8STRC(".ciu"));
+		{
+			IO::FileStream file({fname, (UOSInt)(sptr2 - fname)}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Sequential);
+			if (!file.IsError())
 			{
-				if ((Int32)tmpBuff[i * 4] != this->blks[i].blk.x || (Int32)tmpBuff[i * 4 + 1] != this->blks[i].blk.y)
+				UInt32 buff[4];
+				file.Read(Data::ByteArray((UInt8*)buff, 8));
+				if (buff[0] != this->nblks)
 				{
 					//DebugBreak();
 					missFile = true;
 				}
-				this->blks[i].sofst = tmpBuff[i * 4 + 3];
-				i++;
+				UInt32 *tmpBuff = MemAlloc(UInt32, this->nblks * 4);
+				file.Read(Data::ByteArray((UInt8*)tmpBuff, this->nblks * 16));
+				i = 0;
+				while (i < this->nblks)
+				{
+					if ((Int32)tmpBuff[i * 4] != this->blks[i].blk.x || (Int32)tmpBuff[i * 4 + 1] != this->blks[i].blk.y)
+					{
+						//DebugBreak();
+						missFile = true;
+					}
+					this->blks[i].sofst = tmpBuff[i * 4 + 3];
+					i++;
+				}
+				MemFree(tmpBuff);
 			}
-			MemFree(tmpBuff);
+			else
+			{
+				missFile = true;
+			}
 		}
-		else
-		{
-			missFile = true;
-		}
-		DEL_CLASS(file);
 	}
 }
 

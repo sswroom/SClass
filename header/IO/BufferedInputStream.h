@@ -8,14 +8,14 @@ namespace IO
 	class BufferedInputStream : public SeekableStream
 	{
 	private:
-		IO::SeekableStream *stm;
+		NotNullPtr<IO::SeekableStream> stm;
 		Data::ByteBuffer buff;
 		UOSInt buffOfst;
 		UInt64 stmPos;
 		UOSInt stmBuffSize;
 
 	public:
-		BufferedInputStream(IO::SeekableStream *stm, UOSInt buffSize);
+		BufferedInputStream(NotNullPtr<IO::SeekableStream> stm, UOSInt buffSize);
 		virtual ~BufferedInputStream();
 
 		virtual Bool IsDown() const;
