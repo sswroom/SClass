@@ -1,5 +1,6 @@
 #ifndef _SM_DB_DBCACHE
 #define _SM_DB_DBCACHE
+#include "Data/ArrayListNN.h"
 #include "Data/ICaseStringMap.h"
 #include "DB/DBModel.h"
 #include "DB/DBRow.h"
@@ -31,10 +32,10 @@ namespace DB
         ~DBCache();
 
 		OSInt GetRowCount(Text::CString tableName); //-1 = table not found
-		UOSInt QueryTableData(Data::ArrayList<DB::DBRow*> *outRows, Text::CString tableName, DB::PageRequest *page);
+		UOSInt QueryTableData(NotNullPtr<Data::ArrayListNN<DB::DBRow>> outRows, Text::CString tableName, DB::PageRequest *page);
 		DB::DBRow *GetTableItem(Text::CString tableName, Int64 pk);
-		void FreeTableData(Data::ArrayList<DB::DBRow*> *rows);
-		void FreeTableItem(DB::DBRow *row);
+		void FreeTableData(NotNullPtr<Data::ArrayListNN<DB::DBRow>> rows);
+		void FreeTableItem(NotNullPtr<DB::DBRow> row);
 
 		Bool IsTableExist(Text::CString tableName);
 	};

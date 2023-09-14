@@ -177,11 +177,12 @@ Bool __stdcall Net::WebServer::GCISNotifyHandler::NotifyFunc(NotNullPtr<Net::Web
 
 			builder.ObjectAddStr(CSTR("Status"), failed?CSTR("F"):CSTR("S"));
 			builder.ObjectBeginObject(CSTR("NotificationStatus"));
-			if (json)
+			NotNullPtr<Text::JSONBase> nnjson;
+			if (nnjson.Set(json))
 			{
-				if (json->GetType() == Text::JSONType::Object)
-					builder.ObjectAdd((Text::JSONObject*)json);
-				json->EndUse();
+				if (nnjson->GetType() == Text::JSONType::Object)
+					builder.ObjectAdd(NotNullPtr<Text::JSONObject>::ConvertFrom(nnjson));
+				nnjson->EndUse();
 			}
 			if (!failed)
 			{

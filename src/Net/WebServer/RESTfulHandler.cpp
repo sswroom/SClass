@@ -8,13 +8,14 @@
 #include "Net/WebServer/RESTfulHandler.h"
 #include "Text/JSONBuilder.h"
 
-void Net::WebServer::RESTfulHandler::BuildJSON(Text::JSONBuilder *json, DB::DBRow *row)
+void Net::WebServer::RESTfulHandler::BuildJSON(NotNullPtr<Text::JSONBuilder> json, NotNullPtr<DB::DBRow> row)
 {
 	Text::StringBuilderUTF8 sb;
 	DB::ColDef *col;
 	Data::Timestamp ts;
 	UTF8Char sbuff[64];
 	DB::DBRow::DataType dtype;
+	NotNullPtr<Math::Geometry::Vector2D> vec;
 	DB::TableDef *table = row->GetTableDef();
 	UOSInt i = 0;
 	UOSInt j = table->GetColCnt();
@@ -48,7 +49,10 @@ void Net::WebServer::RESTfulHandler::BuildJSON(Text::JSONBuilder *json, DB::DBRo
 			}
 			break;
 		case DB::DBRow::DT_VECTOR:
-			this->AppendVector(json, sb.ToCString(), row->GetValueVector(col->GetColName()->v));
+			if (vec.Set(row->GetValueVector(col->GetColName()->v)))
+				this->AppendVector(json, sb.ToCString(), vec);
+			else
+				json->ObjectAddNull(sb.ToCString());
 			break;
 		case DB::DBRow::DT_BINARY:
 		case DB::DBRow::DT_UNKNOWN:
@@ -59,7 +63,7 @@ void Net::WebServer::RESTfulHandler::BuildJSON(Text::JSONBuilder *json, DB::DBRo
 	}
 }
 
-void Net::WebServer::RESTfulHandler::AppendVector(Text::JSONBuilder *json, Text::CString name, Math::Geometry::Vector2D *vec)
+void Net::WebServer::RESTfulHandler::AppendVector(NotNullPtr<Text::JSONBuilder> json, Text::CStringNN name, NotNullPtr<Math::Geometry::Vector2D> vec)
 {
 	switch (vec->GetVectorType())
 	{
@@ -73,7 +77,7 @@ void Net::WebServer::RESTfulHandler::AppendVector(Text::JSONBuilder *json, Text:
 			UOSInt i;
 			UOSInt j;
 			UOSInt k;
-			Math::Geometry::PointOfstCollection *pg = (Math::Geometry::PointOfstCollection*)vec;
+			Math::Geometry::PointOfstCollection *pg = (Math::Geometry::PointOfstCollection*)vec.Ptr();
 			json->ObjectBeginObject(name);
 			if (vec->GetVectorType() == Math::Geometry::Vector2D::VectorType::Polygon)
 			{
@@ -117,7 +121,7 @@ void Net::WebServer::RESTfulHandler::AppendVector(Text::JSONBuilder *json, Text:
 	case Math::Geometry::Vector2D::VectorType::Point:
 		{
 			Math::Coord2DDbl coord;
-			Math::Geometry::Point *pt = (Math::Geometry::Point*)vec;
+			Math::Geometry::Point *pt = (Math::Geometry::Point*)vec.Ptr();
 			json->ObjectBeginObject(name);
 			json->ObjectAddStr(CSTR("type"), CSTR("Point"));
 			json->ObjectBeginArray(CSTR("coordinates"));
@@ -178,7 +182,7 @@ Bool Net::WebServer::RESTfulHandler::ProcessRequest(NotNullPtr<Net::WebServer::I
 		UOSInt i = subReq.IndexOf('/');
 		if (i != INVALID_INDEX)
 		{
-			DB::DBRow *row;
+			NotNullPtr<DB::DBRow> row;
 			NotNullPtr<Text::String> tableName;
 			Int64 ikey;
 			if (!Text::StrToInt64(&subReq.v[1 + i], ikey))
@@ -187,22 +191,22 @@ Bool Net::WebServer::RESTfulHandler::ProcessRequest(NotNullPtr<Net::WebServer::I
 				return true;
 			}
 			tableName = Text::String::New(subReq.v, (UOSInt)i);
-			row = this->dbCache->GetTableItem(tableName->ToCString(), ikey);
-			tableName->Release();
-			if (row == 0)
+			if (!row.Set(this->dbCache->GetTableItem(tableName->ToCString(), ikey)))
 			{
+				tableName->Release();
 				resp->SetStatusCode(Net::WebStatus::SC_NOT_FOUND);
 				resp->AddDefHeaders(req);
 				resp->AddCacheControl(0);
 				resp->AddContentLength(0);
 				return true;
 			}
+			tableName->Release();
 
 			Text::StringBuilderUTF8 sbURI;
 			Text::StringBuilderUTF8 sb;
 			{
 				Text::JSONBuilder json(sb, Text::JSONBuilder::OT_OBJECT);
-				this->BuildJSON(&json, row);
+				this->BuildJSON(json, row);
 				if (!this->noLinks)
 				{
 					sbURI.ClearStr();
@@ -241,19 +245,18 @@ Bool Net::WebServer::RESTfulHandler::ProcessRequest(NotNullPtr<Net::WebServer::I
 			{
 				DB::PageRequest *page = ParsePageReq(req);
 				Text::JSONBuilder json(sb, Text::JSONBuilder::OT_OBJECT);
-				Data::ArrayList<DB::DBRow*> rows;
-				DB::DBRow *row;
+				Data::ArrayListNN<DB::DBRow> rows;
+				NotNullPtr<DB::DBRow> row;
 				Int64 ikey;
-				this->dbCache->QueryTableData(&rows, subReq, page);
+				this->dbCache->QueryTableData(rows, subReq, page);
 				json.ObjectBeginObject(CSTR("_embedded"));
 				json.ObjectBeginArray(subReq);
-				UOSInt i = 0;
-				UOSInt j = rows.GetCount();
-				while (i < j)
+				Data::ArrayIterator<NotNullPtr<DB::DBRow>> it = rows.Iterator();
+				while (it.HasNext())
 				{
-					row = rows.GetItem(i);
+					row = it.Next();
 					json.ArrayBeginObject();
-					this->BuildJSON(&json, row);
+					this->BuildJSON(json, row);
 					if (!this->noLinks && row->GetSinglePKI64(&ikey))
 					{
 						sbURI.ClearStr();
@@ -272,9 +275,8 @@ Bool Net::WebServer::RESTfulHandler::ProcessRequest(NotNullPtr<Net::WebServer::I
 						json.ObjectEnd();
 					}
 					json.ObjectEnd();
-					i++;
 				}
-				this->dbCache->FreeTableData(&rows);
+				this->dbCache->FreeTableData(rows);
 				json.ArrayEnd();
 				json.ObjectEnd();
 

@@ -96,7 +96,7 @@ OSInt DB::DBCache::GetRowCount(Text::CString tableName)
 	}
 }
 
-UOSInt DB::DBCache::QueryTableData(Data::ArrayList<DB::DBRow*> *outRows, Text::CString tableName, DB::PageRequest *page)
+UOSInt DB::DBCache::QueryTableData(NotNullPtr<Data::ArrayListNN<DB::DBRow>> outRows, Text::CString tableName, DB::PageRequest *page)
 {
 	DB::DBCache::TableInfo *tableInfo = this->GetTableInfo(tableName);
 	if (tableInfo == 0)
@@ -107,7 +107,7 @@ UOSInt DB::DBCache::QueryTableData(Data::ArrayList<DB::DBRow*> *outRows, Text::C
 	DB::DBReader *r = this->db->ExecuteReader(sql.ToCString());
 	if (r)
 	{
-		DB::DBRow *row;
+		NotNullPtr<DB::DBRow> row;
 		UOSInt pageSkip = 0;
 		UOSInt pageSize = page->GetPageSize();
 		if (status != DB::SQLGenerator::PageStatus::Succ)
@@ -118,7 +118,7 @@ UOSInt DB::DBCache::QueryTableData(Data::ArrayList<DB::DBRow*> *outRows, Text::C
 		{
 			if (pageSkip == 0)
 			{
-				NEW_CLASS(row, DB::DBRow(tableInfo->def));
+				NEW_CLASSNN(row, DB::DBRow(tableInfo->def));
 				row->SetByReader(r, true);
 				outRows->Add(row);
 				pageSize--;
@@ -198,7 +198,7 @@ DB::DBRow *DB::DBCache::GetTableItem(Text::CString tableName, Int64 pk)
 	return row;
 }
 
-void DB::DBCache::FreeTableData(Data::ArrayList<DB::DBRow*> *rows)
+void DB::DBCache::FreeTableData(NotNullPtr<Data::ArrayListNN<DB::DBRow>> rows)
 {
 	if (rows->GetCount() > 0)
 	{
@@ -216,9 +216,9 @@ void DB::DBCache::FreeTableData(Data::ArrayList<DB::DBRow*> *rows)
 	}
 }
 
-void DB::DBCache::FreeTableItem(DB::DBRow *row)
+void DB::DBCache::FreeTableItem(NotNullPtr<DB::DBRow> row)
 {
-	DEL_CLASS(row);
+	row.Delete();
 }
 
 Bool DB::DBCache::IsTableExist(Text::CString tableName)

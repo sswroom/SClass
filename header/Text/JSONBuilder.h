@@ -20,7 +20,7 @@ namespace Text
 		ObjectType currType;
 		Bool isFirst;
 
-		void AppendStr(Text::CString val);
+		void AppendStr(Text::CStringNN val);
 		void AppendStrUTF8(const UTF8Char *val);
 		void AppendStrW(const WChar *val);
 	public:
@@ -34,25 +34,25 @@ namespace Text
 		Bool ArrayAddStr(Text::PString *val);
 		Bool ArrayAddStrUTF8(const UTF8Char *val);
 		Bool ArrayAddNull();
-		Bool ArrayAdd(Text::JSONArray *arr);
+		Bool ArrayAdd(NotNullPtr<Text::JSONArray> arr);
 		Bool ArrayBeginObject();
 		Bool ArrayBeginArray();
 		Bool ArrayEnd();
 
-		Bool ObjectAddFloat64(Text::CString name, Double val);
-		Bool ObjectAddInt32(Text::CString name, Int32 val);
-		Bool ObjectAddInt64(Text::CString name, Int64 val);
-		Bool ObjectAddUInt64(Text::CString name, UInt64 val);
-		Bool ObjectAddBool(Text::CString name, Bool val);
-		Bool ObjectAddStr(Text::CString name, Text::PString *val);
-		Bool ObjectAddStr(Text::CString name, NotNullPtr<Text::String> val);
-		Bool ObjectAddStr(Text::CString name, Text::CString val);
-		Bool ObjectAddStrUTF8(Text::CString name, const UTF8Char *val);
-		Bool ObjectAddStrW(Text::CString name, const WChar *val);
-		Bool ObjectAddNull(Text::CString name);
-		Bool ObjectAdd(Text::JSONObject *obj);
-		Bool ObjectBeginArray(Text::CString name);
-		Bool ObjectBeginObject(Text::CString name);
+		Bool ObjectAddFloat64(Text::CStringNN name, Double val);
+		Bool ObjectAddInt32(Text::CStringNN name, Int32 val);
+		Bool ObjectAddInt64(Text::CStringNN name, Int64 val);
+		Bool ObjectAddUInt64(Text::CStringNN name, UInt64 val);
+		Bool ObjectAddBool(Text::CStringNN name, Bool val);
+		Bool ObjectAddStr(Text::CStringNN name, Text::PString *val);
+		Bool ObjectAddStr(Text::CStringNN name, NotNullPtr<Text::String> val);
+		Bool ObjectAddStr(Text::CStringNN name, Text::CString val);
+		Bool ObjectAddStrUTF8(Text::CStringNN name, const UTF8Char *val);
+		Bool ObjectAddStrW(Text::CStringNN name, const WChar *val);
+		Bool ObjectAddNull(Text::CStringNN name);
+		Bool ObjectAdd(NotNullPtr<Text::JSONObject> obj);
+		Bool ObjectBeginArray(Text::CStringNN name);
+		Bool ObjectBeginObject(Text::CStringNN name);
 		Bool ObjectEnd();
 	};
 }

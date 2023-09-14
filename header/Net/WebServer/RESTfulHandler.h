@@ -15,8 +15,8 @@ namespace Net
 			DB::DBCache *dbCache;
 			Bool noLinks;
 
-			void BuildJSON(Text::JSONBuilder *json, DB::DBRow *row);
-			void AppendVector(Text::JSONBuilder *json, Text::CString name, Math::Geometry::Vector2D *vec);
+			void BuildJSON(NotNullPtr<Text::JSONBuilder> json, NotNullPtr<DB::DBRow> row);
+			void AppendVector(NotNullPtr<Text::JSONBuilder> json, Text::CStringNN name, NotNullPtr<Math::Geometry::Vector2D> vec);
 		public:
 			RESTfulHandler(DB::DBCache *dbCache);
 
