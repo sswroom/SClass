@@ -29,7 +29,7 @@ void __stdcall SSWR::AVIRead::AVIRImageForm::ImagesSelChg(void *userObj)
 {
 	SSWR::AVIRead::AVIRImageForm *me = (SSWR::AVIRead::AVIRImageForm *)userObj;
 	UOSInt selInd = me->lbImages->GetSelectedIndex();
-	Media::Image *img = me->imgList->GetImage(selInd, &me->currImgDelay);
+	Media::Image *img = me->imgList->GetImage(selInd, me->currImgDelay);
 	me->pbImage->SetImage(img, false);
 	me->currImg = img;
 	me->UpdateInfo();

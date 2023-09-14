@@ -1,6 +1,6 @@
 #ifndef _SM_OPTOUT
 #define _SM_OPTOUT
-#include <stddef.h>
+#include <cstddef>
 
 template <typename T> struct OptOut
 {
@@ -17,7 +17,7 @@ public:
 		this->p = 0;
 	}
 
-	OptOut(nullptr_t)
+	OptOut(std::nullptr_t)
 	{
 		this->p = 0;
 	}

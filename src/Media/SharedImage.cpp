@@ -91,33 +91,25 @@ Media::SharedImage *Media::SharedImage::Clone() const
 	return newImg;
 }
 
-Media::StaticImage *Media::SharedImage::GetImage(UInt32 *imgTimeMS) const
+Media::StaticImage *Media::SharedImage::GetImage(OptOut<UInt32> imgTimeMS) const
 {
 	UInt32 currDelay;
 	Media::StaticImage *img;
 	Int64 currTimeTick;
-	if (imgTimeMS == 0)
-	{
-		imgTimeMS = &currDelay;
-	}
 	if (this->imgStatus->imgDelay == 0)
 	{
-		img = (Media::StaticImage*)this->imgStatus->imgList->GetImage(this->imgStatus->imgIndex, &currDelay);
+		img = (Media::StaticImage*)this->imgStatus->imgList->GetImage(this->imgStatus->imgIndex, currDelay);
 		if (currDelay == 0)
 		{
-			*imgTimeMS = 0;
+			imgTimeMS.Set(0);
 			return img;
 		}
-		Data::DateTime dt;
-		dt.SetCurrTimeUTC();
-		this->imgStatus->lastTimeTick = dt.ToTicks();
+		this->imgStatus->lastTimeTick = Data::DateTimeUtil::GetCurrTimeMillis();
 		this->imgStatus->imgDelay = currDelay;
-		*imgTimeMS = this->imgStatus->imgDelay;
+		imgTimeMS.Set(this->imgStatus->imgDelay);
 		return img;
 	}
-	Data::DateTime dt;
-	dt.SetCurrTimeUTC();
-	currTimeTick = dt.ToTicks();
+	currTimeTick = Data::DateTimeUtil::GetCurrTimeMillis();
 	if ((currTimeTick - this->imgStatus->lastTimeTick) >= this->imgStatus->imgDelay)
 	{
 		this->imgStatus->imgIndex++;
@@ -125,21 +117,21 @@ Media::StaticImage *Media::SharedImage::GetImage(UInt32 *imgTimeMS) const
 		{
 			this->imgStatus->imgIndex = 0;
 		}
-		img = (Media::StaticImage*)this->imgStatus->imgList->GetImage(this->imgStatus->imgIndex, &currDelay);
+		img = (Media::StaticImage*)this->imgStatus->imgList->GetImage(this->imgStatus->imgIndex, currDelay);
 		this->imgStatus->lastTimeTick = currTimeTick;
 		this->imgStatus->imgDelay = currDelay;
-		*imgTimeMS = this->imgStatus->imgDelay;
+		imgTimeMS.Set(this->imgStatus->imgDelay);
 		return img;
 	}
 	else
 	{
-		img = (Media::StaticImage*)this->imgStatus->imgList->GetImage(this->imgStatus->imgIndex, &currDelay);
-		*imgTimeMS = (UInt32)(this->imgStatus->imgDelay - (UInt64)(currTimeTick - this->imgStatus->lastTimeTick));
+		img = (Media::StaticImage*)this->imgStatus->imgList->GetImage(this->imgStatus->imgIndex, currDelay);
+		imgTimeMS.Set((UInt32)(this->imgStatus->imgDelay - (UInt64)(currTimeTick - this->imgStatus->lastTimeTick)));
 		return img;
 	}
 }
 
-Media::StaticImage *Media::SharedImage::GetPrevImage(Double width, Double height, UInt32 *imgTimeMS) const
+Media::StaticImage *Media::SharedImage::GetPrevImage(Double width, Double height, OptOut<UInt32> imgTimeMS) const
 {
 	if (this->imgStatus->prevList == 0)
 	{
@@ -162,10 +154,7 @@ Media::StaticImage *Media::SharedImage::GetPrevImage(Double width, Double height
 			}
 		}
 	}
-	if (imgTimeMS)
-	{
-		*imgTimeMS = 0;
-	}
+	imgTimeMS.Set(0);
 	if (minImg)
 		return minImg;
 	return (Media::StaticImage*)this->imgStatus->imgList->GetImage(0, 0);

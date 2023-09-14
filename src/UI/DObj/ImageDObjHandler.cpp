@@ -28,10 +28,17 @@ void UI::DObj::ImageDObjHandler::DrawBkg(NotNullPtr<Media::DrawImage> dimg)
 				Media::Resizer::LanczosResizer8_C8 resizer(4, 3, srgb, dispProfile, colorSess, Media::AlphaType::AT_NO_ALPHA);
 				resizer.SetTargetSize(scnSize);
 				resizer.SetResizeAspectRatio(Media::IImgResizer::RAR_KEEPAR);
-				Media::StaticImage *srimg = resizer.ProcessToNew(simg);
-				simg.Delete();
-				this->bmpBuff = this->deng->ConvImage(srimg);
-				DEL_CLASS(srimg);
+				NotNullPtr<Media::StaticImage> srimg;
+				if (srimg.Set(resizer.ProcessToNew(simg)))
+				{
+					simg.Delete();
+					this->bmpBuff = this->deng->ConvImage(srimg);
+					srimg.Delete();
+				}
+				else
+				{
+					simg.Delete();
+				}
 			}
 			else
 			{

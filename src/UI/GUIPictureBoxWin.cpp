@@ -150,16 +150,20 @@ void UI::GUIPictureBox::UpdatePreview()
 	{
 		if (this->allowResize)
 		{
-			Media::StaticImage *tmpImage = resizer->ProcessToNew(simg);
-			if (tmpImage)
+			NotNullPtr<Media::StaticImage> tmpImage;
+			if (tmpImage.Set(resizer->ProcessToNew(simg)))
 			{
 				this->prevImageD = this->eng->ConvImage(tmpImage);
-				DEL_CLASS(tmpImage);
+				tmpImage.Delete();
+			}
+			else
+			{
+				this->prevImageD = this->eng->ConvImage(simg);
 			}
 		}
 		else
 		{
-			this->prevImageD = this->eng->ConvImage(simg.Ptr());
+			this->prevImageD = this->eng->ConvImage(simg);
 		}
 	}
 	this->Redraw();

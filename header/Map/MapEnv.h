@@ -187,7 +187,7 @@ namespace Map
 //		void *AddLayerColl(GroupItem *group, Map::MapLayerCollection *layerColl, Bool releaseColl);
 
 		UOSInt GetImageCnt() const;
-		Media::StaticImage *GetImage(UOSInt index, UInt32 *imgDurMS) const;
+		Media::StaticImage *GetImage(UOSInt index, OptOut<UInt32> imgDurMS) const;
 		OSInt AddImage(Text::CStringNN fileName, Parser::ParserList *parserList); // -1 = fail
 		UOSInt AddImage(Text::CStringNN fileName, Media::ImageList *imgList);
 		UOSInt AddImageSquare(UInt32 color, UOSInt size);

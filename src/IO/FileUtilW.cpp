@@ -185,149 +185,8 @@ typedef struct
 	UInt64 fileSize;
 } CopySess;
 
-/*Bool FileUtil_CopyFile(const WChar *file1, const WChar *file2, IO::FileUtil::FileExistAction fea, IO::ProgressHandler *progHdlr, IO::ActiveStreamReader::BottleNeckType *bnt)
+Bool IO::FileUtil::CopyFile(Text::CStringNN file1, Text::CStringNN file2, FileExistAction fea, IO::ProgressHandler *progHdlr, OptOut<IO::ActiveStreamReader::BottleNeckType> bnt)
 {
-	IO::FileStream *fs1;
-	IO::FileStream *fs2;
-	IO::ActiveStreamReader *asr;
-	if (fea == IO::FileUtil::FEA_FAIL)
-	{
-		if (IO::Path::GetPathType(file2) != IO::Path::PathType::Unknown)
-			return false;
-	}
-	NEW_CLASS(fs1, IO::FileStream(file1, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-	if (fs1->IsError())
-	{
-		DEL_CLASS(fs1);
-		return false;
-	}
-	if (fea == IO::FileUtil::FEA_CONTINUE)
-	{
-		NEW_CLASS(fs2, IO::FileStream(file2, IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer));
-	}
-	else
-	{
-		NEW_CLASS(fs2, IO::FileStream(file2, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer));
-	}
-	if (fs2->IsError())
-	{
-		DEL_CLASS(fs2);
-		DEL_CLASS(fs1);
-		return false;
-	}
-	Int64 fileSize = fs1->GetLength();
-	Int64 ramSize = 104857600;//MemGetRAMSize();
-	Int64 writeSize = 0;
-	Int64 writenSize;
-	Bool samePart = FileUtil_IsSamePartition(file1, file2);
-	UInt8 *buff;
-	if (fea == IO::FileUtil::FEA_CONTINUE)
-	{
-		Int64 destPos = fs2->GetPosition();
-		if (destPos > fileSize)
-		{
-			DEL_CLASS(fs2);
-			DEL_CLASS(fs1);
-			return false;
-		}
-		else if (destPos == fileSize)
-		{
-			DEL_CLASS(fs2);
-			DEL_CLASS(fs1);
-			return true;
-		}
-		else if (destPos > 0)
-		{
-			fileSize -= destPos;
-			fs1->SeekFromBeginning(destPos);
-		}
-	}
-
-	if (progHdlr)
-	{
-		const UTF8Char *sptr = Text::StrToUTF8New(file1);
-		progHdlr->ProgressStart(sptr, fileSize);
-		Text::StrDelNew(sptr);
-	}
-	if (fileSize < 1048576)
-	{
-		Data::Timestamp dt1;
-		Data::Timestamp dt2;
-		Data::Timestamp dt3;
-		buff = MemAlloc(UInt8, (OSInt)1048576);
-		writeSize = fs1->Read(buff, (OSInt)1048576);
-		writeSize = fs2->Write(buff, (OSInt)writeSize);
-		MemFree(buff);
-		fs1->GetFileTimes(&ts1, &ts2, &ts3);
-		fs2->SetFileTimes(ts1, ts2, ts3);
-		if (progHdlr)
-		{
-			progHdlr->ProgressUpdate(writeSize, fileSize);
-		}
-	}
-	else if (samePart)
-	{
-		Data::Timestamp ts1;
-		Data::Timestamp ts2;
-		Data::Timestamp ts3;
-		OSInt readSize;
-		OSInt thisSize;
-		if (fileSize < ramSize)
-		{
-			buff = MemAllocA(UInt8, readSize = (OSInt)fileSize);
-		}
-		else
-		{
-			buff = MemAllocA(UInt8, readSize = (OSInt)ramSize);
-		}
-		while (writeSize < fileSize)
-		{
-			if ((thisSize = fs1->Read(buff, readSize)) <= 0)
-			{
-				break;
-			}
-			writenSize = fs2->Write(buff, thisSize);
-			writeSize += writenSize;
-			if (progHdlr)
-			{
-				progHdlr->ProgressUpdate(writeSize, fileSize);
-			}
-			if (writenSize != thisSize)
-			{
-				break;
-			}
-		}
-		MemFreeA(buff);
-		fs1->GetFileTimes(&ts1, &ts2, &ts3);
-		fs2->SetFileTimes(ts1, ts2, ts3);
-	}
-	else
-	{
-		Data::Timestamp ts1;
-		Data::Timestamp ts2;
-		Data::Timestamp ts3;
-		CopySess csess;
-		csess.destStm = fs2;
-		csess.writeSize = 0;
-		csess.progHdlr = progHdlr;
-		csess.fileSize = fileSize;
-
-		NEW_CLASS(asr, IO::ActiveStreamReader(IO::FileUtil::CopyHdlr, &csess, fs1, 1048576));
-		asr->ReadStream(bnt);
-		DEL_CLASS(asr);
-		writeSize = csess.writeSize;
-		fs1->GetFileTimes(&ts1, &ts2, &ts3);
-		fs2->SetFileTimes(ts1, ts2, ts3);
-	}
-	DEL_CLASS(fs2);
-	DEL_CLASS(fs1);
-	SetFileAttributesW(file2, GetFileAttributesW(file1));
-	return writeSize == fileSize;
-}*/
-
-Bool IO::FileUtil::CopyFile(Text::CStringNN file1, Text::CStringNN file2, FileExistAction fea, IO::ProgressHandler *progHdlr, IO::ActiveStreamReader::BottleNeckType *bnt)
-{
-	IO::FileStream *fs1;
 	IO::FileStream *fs2;
 	IO::ActiveStreamReader *asr;
 	WChar wfile2[MAX_PATH];
@@ -337,131 +196,129 @@ Bool IO::FileUtil::CopyFile(Text::CStringNN file1, Text::CStringNN file2, FileEx
 		if (IO::Path::GetPathTypeW(wfile2) != IO::Path::PathType::Unknown)
 			return false;
 	}
-	NEW_CLASS(fs1, IO::FileStream(file1, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-	if (fs1->IsError())
-	{
-		DEL_CLASS(fs1);
-		return false;
-	}
-	if (fea == IO::FileUtil::FileExistAction::Continue)
-	{
-		NEW_CLASS(fs2, IO::FileStream(file2, IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer));
-	}
-	else
-	{
-		NEW_CLASS(fs2, IO::FileStream(file2, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer));
-	}
-	if (fs2->IsError())
-	{
-		DEL_CLASS(fs2);
-		DEL_CLASS(fs1);
-		return false;
-	}
-	UInt64 fileSize = fs1->GetLength();
-	UInt64 ramSize = 104857600;//MemGetRAMSize();
 	UInt64 writeSize = 0;
-	UInt64 writenSize;
-	Bool samePart = IO::FileUtil::IsSamePartition(file1.v, file2.v);
-	if (fea == IO::FileUtil::FileExistAction::Continue)
+	UInt64 fileSize;
 	{
-		UInt64 destPos = fs2->GetPosition();
-		if (destPos > fileSize)
+		IO::FileStream fs1(file1, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+		if (fs1.IsError())
 		{
-			DEL_CLASS(fs2);
-			DEL_CLASS(fs1);
 			return false;
 		}
-		else if (destPos == fileSize)
+		if (fea == IO::FileUtil::FileExistAction::Continue)
 		{
-			DEL_CLASS(fs2);
-			DEL_CLASS(fs1);
-			return true;
-		}
-		else if (destPos > 0)
-		{
-			fileSize -= destPos;
-			fs1->SeekFromBeginning(destPos);
-		}
-	}
-
-	if (progHdlr)
-	{
-		progHdlr->ProgressStart(file1, fileSize);
-	}
-	if (fileSize < 1048576)
-	{
-		Data::Timestamp ts1;
-		Data::Timestamp ts2;
-		Data::Timestamp ts3;
-		{
-			Data::ByteBuffer buff((UOSInt)1048576);
-			writeSize = fs1->Read(buff);
-			writeSize = fs2->Write(buff.Ptr(), (UOSInt)writeSize);
-		}
-		fs1->GetFileTimes(&ts1, &ts2, &ts3);
-		fs2->SetFileTimes(ts1, ts2, ts3);
-		if (progHdlr)
-		{
-			progHdlr->ProgressUpdate(writeSize, fileSize);
-		}
-	}
-	else if (samePart)
-	{
-		Data::Timestamp ts1;
-		Data::Timestamp ts2;
-		Data::Timestamp ts3;
-		UOSInt readSize;
-		UOSInt thisSize;
-		UInt8 *buff;
-		if (fileSize < ramSize)
-		{
-			buff = MemAllocA(UInt8, readSize = (UOSInt)fileSize);
+			NEW_CLASS(fs2, IO::FileStream(file2, IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer));
 		}
 		else
 		{
-			buff = MemAllocA(UInt8, readSize = (UOSInt)ramSize);
+			NEW_CLASS(fs2, IO::FileStream(file2, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer));
 		}
-		while (writeSize < fileSize)
+		if (fs2->IsError())
 		{
-			if ((thisSize = fs1->Read(Data::ByteArray(buff, readSize))) <= 0)
+			DEL_CLASS(fs2);
+			return false;
+		}
+		fileSize = fs1.GetLength();
+		UInt64 ramSize = 104857600;//MemGetRAMSize();
+		UInt64 writenSize;
+		Bool samePart = IO::FileUtil::IsSamePartition(file1.v, file2.v);
+		if (fea == IO::FileUtil::FileExistAction::Continue)
+		{
+			UInt64 destPos = fs2->GetPosition();
+			if (destPos > fileSize)
 			{
-				break;
+				DEL_CLASS(fs2);
+				return false;
 			}
-			writenSize = fs2->Write(buff, thisSize);
-			writeSize += writenSize;
+			else if (destPos == fileSize)
+			{
+				DEL_CLASS(fs2);
+				return true;
+			}
+			else if (destPos > 0)
+			{
+				fileSize -= destPos;
+				fs1.SeekFromBeginning(destPos);
+			}
+		}
+
+		if (progHdlr)
+		{
+			progHdlr->ProgressStart(file1, fileSize);
+		}
+		if (fileSize < 1048576)
+		{
+			Data::Timestamp ts1;
+			Data::Timestamp ts2;
+			Data::Timestamp ts3;
+			{
+				Data::ByteBuffer buff((UOSInt)1048576);
+				writeSize = fs1.Read(buff);
+				writeSize = fs2->Write(buff.Ptr(), (UOSInt)writeSize);
+			}
+			fs1.GetFileTimes(&ts1, &ts2, &ts3);
+			fs2->SetFileTimes(ts1, ts2, ts3);
 			if (progHdlr)
 			{
 				progHdlr->ProgressUpdate(writeSize, fileSize);
 			}
-			if (writenSize != thisSize)
-			{
-				break;
-			}
 		}
-		MemFreeA(buff);
-		fs1->GetFileTimes(&ts1, &ts2, &ts3);
-		fs2->SetFileTimes(ts1, ts2, ts3);
-	}
-	else
-	{
-		Data::Timestamp ts1;
-		Data::Timestamp ts2;
-		Data::Timestamp ts3;
-		CopySess csess;
-		csess.destStm = fs2;
-		csess.writeSize = 0;
-		csess.progHdlr = progHdlr;
-		csess.fileSize = fileSize;
+		else if (samePart)
+		{
+			Data::Timestamp ts1;
+			Data::Timestamp ts2;
+			Data::Timestamp ts3;
+			UOSInt readSize;
+			UOSInt thisSize;
+			UInt8 *buff;
+			if (fileSize < ramSize)
+			{
+				buff = MemAllocA(UInt8, readSize = (UOSInt)fileSize);
+			}
+			else
+			{
+				buff = MemAllocA(UInt8, readSize = (UOSInt)ramSize);
+			}
+			while (writeSize < fileSize)
+			{
+				if ((thisSize = fs1.Read(Data::ByteArray(buff, readSize))) <= 0)
+				{
+					break;
+				}
+				writenSize = fs2->Write(buff, thisSize);
+				writeSize += writenSize;
+				if (progHdlr)
+				{
+					progHdlr->ProgressUpdate(writeSize, fileSize);
+				}
+				if (writenSize != thisSize)
+				{
+					break;
+				}
+			}
+			MemFreeA(buff);
+			fs1.GetFileTimes(&ts1, &ts2, &ts3);
+			fs2->SetFileTimes(ts1, ts2, ts3);
+		}
+		else
+		{
+			Data::Timestamp ts1;
+			Data::Timestamp ts2;
+			Data::Timestamp ts3;
+			CopySess csess;
+			csess.destStm = fs2;
+			csess.writeSize = 0;
+			csess.progHdlr = progHdlr;
+			csess.fileSize = fileSize;
 
-		NEW_CLASS(asr, IO::ActiveStreamReader(IO::FileUtil::CopyHdlr, &csess, fs1, 1048576));
-		asr->ReadStream(bnt);
-		DEL_CLASS(asr);
-		writeSize = csess.writeSize;
-		fs1->GetFileTimes(&ts1, &ts2, &ts3);
-		fs2->SetFileTimes(ts1, ts2, ts3);
+			NEW_CLASS(asr, IO::ActiveStreamReader(IO::FileUtil::CopyHdlr, &csess, fs1, 1048576));
+			asr->ReadStream(bnt);
+			DEL_CLASS(asr);
+			writeSize = csess.writeSize;
+			fs1.GetFileTimes(&ts1, &ts2, &ts3);
+			fs2->SetFileTimes(ts1, ts2, ts3);
+		}
+		DEL_CLASS(fs2);
 	}
-	DEL_CLASS(fs2);
-	DEL_CLASS(fs1);
 	const WChar *wptr = Text::StrToWCharNew(file1.v);
 	UInt32 attr = GetFileAttributesW(wptr);
 	Text::StrDelNew(wptr);
@@ -469,74 +326,7 @@ Bool IO::FileUtil::CopyFile(Text::CStringNN file1, Text::CStringNN file2, FileEx
 	return writeSize == fileSize;
 }
 
-/*Bool FileUtil_CopyDir(const WChar *srcDir, const WChar *destDir, FileExistAction fea, IO::ProgressHandler *progHdlr, IO::ActiveStreamReader::BottleNeckType *bnt)
-{
-	WChar wbuff[512];
-	WChar dbuff[512];
-	WChar *wptr;
-	WChar *dptr;
-	IO::Path::FindFileSession *sess;
-	UInt32 attr = GetFileAttributesW(srcDir);
-	wptr = Text::StrConcat(wbuff, srcDir);
-	dptr = Text::StrConcat(dbuff, destDir);
-	IO::Path::CreateDirectory(destDir);
-	if (attr != 0xffffffff)
-		SetFileAttributesW(destDir, attr);
-	if (wptr[-1] != '\\')
-	{
-		*wptr++ = '\\';
-	}
-	if (dptr[-1] != '\\')
-	{
-		*dptr++ = '\\';
-	}
-	Text::StrConcatC(wptr, IO::Path::ALL_FiLES, IO::Path::ALL_FILES_LEN);
-	sess = IO::Path::FindFile(wbuff);
-	if (sess)
-	{
-		IO::Path::PathType pt;
-		Bool succ = true;
-		while (IO::Path::FindNextFile(wptr, sess, 0, &pt))
-		{
-			if (pt == IO::Path::PathType::File)
-			{
-				Text::StrConcat(dptr, wptr);
-				if (!CopyFile(wbuff, dbuff, fea, progHdlr, bnt))
-				{
-					succ = false;
-					break;
-				}
-			}
-			else if (pt == IO::Path::PathType::Directory)
-			{
-				if (wptr[0] == '.' && wptr[1] == 0)
-				{
-				}
-				else if (wptr[0] == '.' && wptr[1] == '.' && wptr[2] == 0)
-				{
-				}
-				else
-				{
-					Text::StrConcat(dptr, wptr);
-					if (!CopyDir(wbuff, dbuff, fea, progHdlr, bnt))
-					{
-						succ = false;
-						break;
-					}
-				}
-			}
-		}
-		IO::Path::FindFileClose(sess);
-
-		return succ;
-	}
-	else
-	{
-		return false;
-	}
-}*/
-
-Bool IO::FileUtil::CopyDir(Text::CString srcDir, Text::CString destDir, FileExistAction fea, IO::ProgressHandler *progHdlr, IO::ActiveStreamReader::BottleNeckType *bnt)
+Bool IO::FileUtil::CopyDir(Text::CString srcDir, Text::CString destDir, FileExistAction fea, IO::ProgressHandler *progHdlr, OptOut<IO::ActiveStreamReader::BottleNeckType> bnt)
 {
 	UTF8Char sbuff[512];
 	UTF8Char dbuff[512];
@@ -612,39 +402,7 @@ Bool IO::FileUtil::CopyDir(Text::CString srcDir, Text::CString destDir, FileExis
 	}
 }
 
-/*Bool FileUtil_MoveFile(const WChar *srcFile, const WChar *destFile, FileExistAction fea, IO::ProgressHandler *progHdlr, IO::ActiveStreamReader::BottleNeckType *bnt)
-{
-	Bool samePart = IsSamePartition(srcFile, destFile);
-	if (samePart)
-	{
-		BOOL retV = MoveFileW(srcFile, destFile);
-		if (retV)
-			return true;
-		else
-		{
-//			UInt32 err = GetLastError();
-			return false;
-		}
-	}
-
-	samePart = IO::FileUtil::CopyFile(srcFile, destFile, fea, progHdlr, bnt);
-	if (samePart)
-	{
-		if (DeleteFile(srcFile, true))
-			return true;
-		else
-		{
-			DeleteFile(destFile, true);
-			return false;
-		}
-	}
-	else
-	{
-		return false;
-	}
-}*/
-
-Bool IO::FileUtil::MoveFile(Text::CStringNN srcFile, Text::CStringNN destFile, FileExistAction fea, IO::ProgressHandler *progHdlr, IO::ActiveStreamReader::BottleNeckType *bnt)
+Bool IO::FileUtil::MoveFile(Text::CStringNN srcFile, Text::CStringNN destFile, FileExistAction fea, IO::ProgressHandler *progHdlr, OptOut<IO::ActiveStreamReader::BottleNeckType> bnt)
 {
 	Bool samePart = IsSamePartition(srcFile.v, destFile.v);
 	if (samePart)
@@ -680,85 +438,7 @@ Bool IO::FileUtil::MoveFile(Text::CStringNN srcFile, Text::CStringNN destFile, F
 	}
 }
 
-/*Bool FileUtil_MoveDir(const WChar *srcDir, const WChar *destDir, FileExistAction fea, IO::ProgressHandler *progHdlr, IO::ActiveStreamReader::BottleNeckType *bnt)
-{
-	WChar wbuff[512];
-	WChar dbuff[512];
-	WChar *wptr;
-	WChar *dptr;
-	IO::Path::FindFileSession *sess;
-	Bool succ;
-
-	Bool samePart = IsSamePartition(srcDir, destDir);
-	if (samePart)
-	{
-		BOOL retV = MoveFileW(srcDir, destDir);
-		if (retV)
-			return true;
-		else
-			return false;
-	}
-	IO::Path::CreateDirectory(destDir);
-	wptr = Text::StrConcat(wbuff, srcDir);
-	dptr = Text::StrConcat(dbuff, destDir);
-	if (wptr != wbuff && wptr[-1] != '\\')
-	{
-		*wptr++ = '\\';
-	}
-	if (dptr != dbuff && dptr[-1] != '\\')
-	{
-		*dptr++ = '\\';
-	}
-	Text::StrConcat(wptr, L"*.*");
-	sess = IO::Path::FindFile(wbuff);
-	succ = true;
-	if (sess)
-	{
-		IO::Path::PathType pt;
-		while (IO::Path::FindNextFile(wptr, sess, 0, &pt))
-		{
-			if (wptr[0] == '.' && wptr[1] == 0)
-			{
-			}
-			else if (wptr[0] == '.' && wptr[1] == '.' && wptr[2] == 0)
-			{
-			}
-			else
-			{
-				if (pt == IO::Path::PathType::File)
-				{
-					Text::StrConcat(dptr, wptr);
-					succ = IO::FileUtil::MoveFile(wbuff, dbuff, fea, progHdlr, bnt);
-					if (!succ)
-					{
-						break;
-					}
-				}
-				else if (pt == IO::Path::PathType::Directory)
-				{
-					Text::StrConcat(dptr, wptr);
-					succ = IO::FileUtil::MoveDir(wbuff, dbuff, fea, progHdlr, bnt);
-					if (!succ)
-					{
-						break;
-					}
-				}
-			}
-		}
-		IO::Path::FindFileClose(sess);
-		if (succ)
-		{
-			IO::Path::RemoveDirectory(srcDir);
-		}
-	}
-	else
-	{
-		succ = false;
-	}
-	return succ;
-}*/
-
-Bool IO::FileUtil::MoveDir(Text::CString srcDir, Text::CString destDir, FileExistAction fea, IO::ProgressHandler *progHdlr, IO::ActiveStreamReader::BottleNeckType *bnt)
+Bool IO::FileUtil::MoveDir(Text::CString srcDir, Text::CString destDir, FileExistAction fea, IO::ProgressHandler *progHdlr, OptOut<IO::ActiveStreamReader::BottleNeckType> bnt)
 {
 	UTF8Char sbuff[512];
 	UTF8Char dbuff[512];

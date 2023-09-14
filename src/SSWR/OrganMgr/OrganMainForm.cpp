@@ -1632,8 +1632,8 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnMapMouseMove(void *userObj, Math
 							nimg = me->mapResizer->ProcessToNew(img);
 							DEL_CLASS(imgList);
 							me->mapCurrFile = ufile;
-							me->mapCurrImage = me->env->GetDrawEngine()->ConvImage(nimg);
-							DEL_CLASS(nimg);
+							me->mapCurrImage = me->env->GetDrawEngine()->ConvImageOrNull(nimg);
+							SDEL_CLASS(nimg);
 						}
 						me->mcMap->Redraw();
 					}

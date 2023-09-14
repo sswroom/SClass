@@ -182,9 +182,8 @@ Bool __stdcall SSWR::AVIRead::AVIRGISPropForm::OnIconClicked(void *userObj, Math
 		SSWR::AVIRead::AVIRGISImageForm frm(0, me->ui, me->core, me->env, me->imgIndex);
 		if (frm.ShowDialog(me) == UI::GUIForm::DR_OK)
 		{
-			UInt32 imgDurMS;
 			me->imgIndex = frm.GetImgIndex();
-			me->pbIcon->SetImage(me->env->GetImage(me->imgIndex, &imgDurMS));
+			me->pbIcon->SetImage(me->env->GetImage(me->imgIndex, 0));
 		}
 	}
 	return false;
@@ -453,7 +452,7 @@ SSWR::AVIRead::AVIRGISPropForm::AVIRGISPropForm(UI::GUIClientControl *parent, No
 			this->lblFillStyle->SetEnabled(false);
 			if (this->imgIndex < this->env->GetImageCnt())
 			{
-				this->pbIcon->SetImage(this->env->GetImage(this->imgIndex, &imgDurMS));
+				this->pbIcon->SetImage(this->env->GetImage(this->imgIndex, imgDurMS));
 			}
 		}
 		else if (layerType == Map::DRAW_LAYER_POLYLINE || layerType == Map::DRAW_LAYER_POLYLINE3D)

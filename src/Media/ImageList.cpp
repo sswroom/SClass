@@ -91,12 +91,9 @@ UOSInt Media::ImageList::GetCount() const
 	return this->imgList.GetCount();
 }
 
-Media::Image *Media::ImageList::GetImage(UOSInt index, UInt32 *imageDelay) const
+Media::Image *Media::ImageList::GetImage(UOSInt index, OptOut<UInt32> imageDelay) const
 {
-	if (imageDelay)
-	{
-		*imageDelay = this->imgTimes.GetItem(index);
-	}
+	imageDelay.Set(this->imgTimes.GetItem(index));
 	return this->imgList.GetItem(index);
 }
 
@@ -347,7 +344,7 @@ void Media::ImageList::ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const
 	UOSInt j = this->GetCount();
 	while (i < j)
 	{
-		img = this->GetImage(i, &delay);
+		img = this->GetImage(i, delay);
 		if (img)
 		{
 			if (hasData)

@@ -1406,10 +1406,9 @@ void Map::DrawMapRenderer::DrawLayers(NotNullPtr<Map::DrawMapRenderer::DrawEnv> 
 							Media::Image *pimg = 0;
 							Double spotX;
 							Double spotY;
-							UInt32 imgDurMS = 0;
 							if (layer.layer->HasIconStyle())
 							{
-								pimg = layer.layer->GetIconStyleImg()->GetImage(&imgDurMS);
+								pimg = layer.layer->GetIconStyleImg()->GetImage(0);
 								spotX = OSInt2Double(layer.layer->GetIconStyleSpotX());
 								spotY = OSInt2Double(layer.layer->GetIconStyleSpotY());
 								if (pimg != 0 && (spotX == -1 || spotY == -1))
@@ -1420,7 +1419,7 @@ void Map::DrawMapRenderer::DrawLayers(NotNullPtr<Map::DrawMapRenderer::DrawEnv> 
 							}
 							if (pimg == 0)
 							{
-								pimg = denv->env->GetImage(layer.imgIndex, &imgDurMS);
+								pimg = denv->env->GetImage(layer.imgIndex, 0);
 								if (pimg)
 								{
 									spotX = UOSInt2Double(pimg->info.dispSize.x) * 0.5;
@@ -1665,10 +1664,11 @@ void Map::DrawMapRenderer::DrawShapesPoint(NotNullPtr<Map::DrawMapRenderer::Draw
 	UOSInt maxLabel = denv->env->GetNString();
 
 	Media::Image *img = 0;
+	NotNullPtr<Media::Image> nnimg;
 	UInt32 imgTimeMS = 0;
 	if (layer->HasIconStyle())
 	{
-		img = layer->GetIconStyleImg()->GetImage(&imgTimeMS);
+		img = layer->GetIconStyleImg()->GetImage(imgTimeMS);
 		spotX = OSInt2Double(layer->GetIconStyleSpotX());
 		spotY = OSInt2Double(layer->GetIconStyleSpotY());
 		if (img != 0 && (spotX == -1 || spotY == -1))
@@ -1677,13 +1677,13 @@ void Map::DrawMapRenderer::DrawShapesPoint(NotNullPtr<Map::DrawMapRenderer::Draw
 			spotY = UOSInt2Double(img->info.dispSize.y) * 0.5;
 		}
 	}
-	if (img == 0)
+	if (!nnimg.Set(img))
 	{
-		img = denv->env->GetImage(imgIndex, &imgTimeMS);
-		if (img == 0)
+		img = denv->env->GetImage(imgIndex, imgTimeMS);
+		if (!nnimg.Set(img))
 			return;
-		spotX = UOSInt2Double(img->info.dispSize.x) * 0.5;
-		spotY = UOSInt2Double(img->info.dispSize.y) * 0.5;
+		spotX = UOSInt2Double(nnimg->info.dispSize.x) * 0.5;
+		spotY = UOSInt2Double(nnimg->info.dispSize.y) * 0.5;
 	}
 	if (imgTimeMS != 0)
 	{
@@ -1712,33 +1712,33 @@ void Map::DrawMapRenderer::DrawShapesPoint(NotNullPtr<Map::DrawMapRenderer::Draw
 		NotNullPtr<Media::StaticImage> simg;
 		if (this->drawType == Map::DrawMapRenderer::DT_PIXELDRAW)
 		{
-			UInt32 newW = (UInt32)Double2Int32(UOSInt2Double(img->info.dispSize.x) * denv->img->GetHDPI() / img->info.hdpi);
-			UInt32 newH = (UInt32)Double2Int32(UOSInt2Double(img->info.dispSize.y) * denv->img->GetVDPI() / img->info.vdpi);
-			if (newW > img->info.dispSize.x || newH > img->info.dispSize.y)
+			UInt32 newW = (UInt32)Double2Int32(UOSInt2Double(nnimg->info.dispSize.x) * denv->img->GetHDPI() / nnimg->info.hdpi);
+			UInt32 newH = (UInt32)Double2Int32(UOSInt2Double(nnimg->info.dispSize.y) * denv->img->GetVDPI() / nnimg->info.vdpi);
+			if (newW > nnimg->info.dispSize.x || newH > nnimg->info.dispSize.y)
 			{
 				this->resizer->SetTargetSize(Math::Size2D<UOSInt>(newW, newH));
-				simg.Set((Media::StaticImage*)img);
-				Media::StaticImage *img2 = this->resizer->ProcessToNew(simg);
-				if (img2)
+				simg = NotNullPtr<Media::StaticImage>::ConvertFrom(nnimg);
+				NotNullPtr<Media::StaticImage> img2;
+				if (img2.Set(this->resizer->ProcessToNew(simg)))
 				{
-					spotX = spotX * denv->img->GetHDPI() / img->info.hdpi;
-					spotY = spotY * denv->img->GetVDPI() / img->info.vdpi;
+					spotX = spotX * denv->img->GetHDPI() / nnimg->info.hdpi;
+					spotY = spotY * denv->img->GetVDPI() / nnimg->info.vdpi;
 					dimg = this->eng->ConvImage(img2);
-					DEL_CLASS(img2);
+					img2.Delete();
 				}
 				else
 				{
-					dimg = this->eng->ConvImage(img);
+					dimg = this->eng->ConvImage(nnimg);
 				}
 			}
 			else
 			{
-				dimg = this->eng->ConvImage(img);
+				dimg = this->eng->ConvImage(nnimg);
 			}
 		}
 		else
 		{
-			dimg = this->eng->ConvImage(img);
+			dimg = this->eng->ConvImage(nnimg);
 		}
 		if (gimg.Set(dimg))
 		{
@@ -1774,33 +1774,33 @@ void Map::DrawMapRenderer::DrawShapesPoint(NotNullPtr<Map::DrawMapRenderer::Draw
 		NotNullPtr<Media::StaticImage> simg;
 		if (this->drawType == Map::DrawMapRenderer::DT_PIXELDRAW)
 		{
-			UInt32 newW = (UInt32)Double2Int32(UOSInt2Double(img->info.dispSize.x) * denv->img->GetHDPI() / img->info.hdpi);
-			UInt32 newH = (UInt32)Double2Int32(UOSInt2Double(img->info.dispSize.y) * denv->img->GetVDPI() / img->info.vdpi);
-			if (newW != img->info.dispSize.x || newH != img->info.dispSize.y)
+			UInt32 newW = (UInt32)Double2Int32(UOSInt2Double(nnimg->info.dispSize.x) * denv->img->GetHDPI() / nnimg->info.hdpi);
+			UInt32 newH = (UInt32)Double2Int32(UOSInt2Double(nnimg->info.dispSize.y) * denv->img->GetVDPI() / nnimg->info.vdpi);
+			if (newW != nnimg->info.dispSize.x || newH != nnimg->info.dispSize.y)
 			{
 				this->resizer->SetTargetSize(Math::Size2D<UOSInt>(newW, newH));
-				simg.Set((Media::StaticImage*)img);
-				Media::StaticImage *img2 = this->resizer->ProcessToNew(simg);
-				if (img2)
+				simg = NotNullPtr<Media::StaticImage>::ConvertFrom(nnimg);
+				NotNullPtr<Media::StaticImage> img2;
+				if (img2.Set(this->resizer->ProcessToNew(simg)))
 				{
-					spotX = spotX * denv->img->GetHDPI() / img->info.hdpi;
-					spotY = spotY * denv->img->GetVDPI() / img->info.vdpi;
+					spotX = spotX * denv->img->GetHDPI() / nnimg->info.hdpi;
+					spotY = spotY * denv->img->GetVDPI() / nnimg->info.vdpi;
 					dimg = this->eng->ConvImage(img2);
-					DEL_CLASS(img2);
+					img2.Delete();
 				}
 				else
 				{
-					dimg = this->eng->ConvImage(img);
+					dimg = this->eng->ConvImage(nnimg);
 				}
 			}
 			else
 			{
-				dimg = this->eng->ConvImage(img);
+				dimg = this->eng->ConvImage(nnimg);
 			}
 		}
 		else
 		{
-			dimg = this->eng->ConvImage(img);
+			dimg = this->eng->ConvImage(nnimg);
 		}
 		if (gimg.Set(dimg))
 		{
@@ -2117,7 +2117,7 @@ void Map::DrawMapRenderer::DrawImageLayer(NotNullPtr<DrawEnv> denv, Map::MapDraw
 		}
 		UInt32 imgTimeMS;
 		NotNullPtr<Media::StaticImage> simg;
-		if (simg.Set(vimg->GetImage(scnCoords[1].x - scnCoords[0].x, scnCoords[1].y - scnCoords[0].y, &imgTimeMS)))
+		if (simg.Set(vimg->GetImage(scnCoords[1].x - scnCoords[0].x, scnCoords[1].y - scnCoords[0].y, imgTimeMS)))
 		{
 			DrawImageObject(denv, simg, scnCoords[0], scnCoords[1], vimg->GetSrcAlpha());
 			if (imgTimeMS != 0)
@@ -2231,26 +2231,25 @@ void Map::DrawMapRenderer::DrawImageObject(NotNullPtr<DrawEnv> denv, NotNullPtr<
 				this->resizer->SetTargetSize(Math::Coord2D<UOSInt>::UOSIntFromDouble(scnBR) - Math::Coord2D<UOSInt>::UOSIntFromDouble(scnTL));
 				this->resizer->SetResizeAspectRatio(Media::IImgResizer::RAR_IGNOREAR);
 				img->To32bpp();
-				Media::StaticImage *newImg = 0;
+				NotNullPtr<Media::StaticImage> newImg;
 				if (cimgPt.x < cimgPt2.x && cimgPt.y < cimgPt2.y)
 				{
-					newImg = this->resizer->ProcessToNewPartial(img, cimgPt, cimgPt2);
-				}
-				if (newImg)
-				{
-					if (srcAlpha >= 0 && srcAlpha <= 1)
+					if (newImg.Set(this->resizer->ProcessToNewPartial(img, cimgPt, cimgPt2)))
 					{
-						newImg->MultiplyAlpha(srcAlpha);
+						if (srcAlpha >= 0 && srcAlpha <= 1)
+						{
+							newImg->MultiplyAlpha(srcAlpha);
+						}
+						NotNullPtr<Media::DrawImage> dimg;
+						if (dimg.Set(this->eng->ConvImage(newImg)))
+						{
+							dimg->SetHDPI(denv->img->GetHDPI());
+							dimg->SetVDPI(denv->img->GetVDPI());
+							denv->img->DrawImagePt(dimg, scnTL);
+							this->eng->DeleteImage(dimg);
+						}
+						newImg.Delete();
 					}
-					NotNullPtr<Media::DrawImage> dimg;
-					if (dimg.Set(this->eng->ConvImage(newImg)))
-					{
-						dimg->SetHDPI(denv->img->GetHDPI());
-						dimg->SetVDPI(denv->img->GetVDPI());
-						denv->img->DrawImagePt(dimg, scnTL);
-						this->eng->DeleteImage(dimg);
-					}
-					DEL_CLASS(newImg);
 				}
 			}
 		}

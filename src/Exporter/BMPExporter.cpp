@@ -24,10 +24,9 @@ IO::FileExporter::SupportType Exporter::BMPExporter::IsObjectSupported(IO::Parse
 	if (pobj->GetParserType() != IO::ParserType::ImageList)
 		return IO::FileExporter::SupportType::NotSupported;
 	Media::ImageList *imgList = (Media::ImageList*)pobj;
-	UInt32 imgTime;
 	if (imgList->GetCount() != 1)
 		return IO::FileExporter::SupportType::NotSupported;
-	Media::Image *img = imgList->GetImage(0, &imgTime);
+	Media::Image *img = imgList->GetImage(0, 0);
 	if (img->info.fourcc != 0)
 		return IO::FileExporter::SupportType::NotSupported;
 	if (img->info.pf == Media::PF_LE_A2B10G10R10)
@@ -79,8 +78,7 @@ Bool Exporter::BMPExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text:
 	if (IsObjectSupported(pobj) == SupportType::NotSupported)
 		return false;
 	Media::ImageList *imgList = (Media::ImageList*)pobj;
-	UInt32 imgTime;
-	Media::Image *img = imgList->GetImage(0, &imgTime);
+	Media::Image *img = imgList->GetImage(0, 0);
 
 	UInt8 buff[138];
 	UOSInt hdrSize = 54;

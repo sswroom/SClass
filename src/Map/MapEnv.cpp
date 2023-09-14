@@ -1041,7 +1041,7 @@ UOSInt Map::MapEnv::GetImageCnt() const
 	}
 }
 
-Media::StaticImage *Map::MapEnv::GetImage(UOSInt index, UInt32 *imgDurMS) const
+Media::StaticImage *Map::MapEnv::GetImage(UOSInt index, OptOut<UInt32> imgDurMS) const
 {
 	UOSInt i;
 	ImageInfo *imgInfo;
@@ -1054,11 +1054,9 @@ Media::StaticImage *Map::MapEnv::GetImage(UOSInt index, UInt32 *imgDurMS) const
 			if (imgInfo->isAni)
 			{
 				UInt32 imgTimeMS;
-				Data::DateTime dt;
 				Int64 currTimeTick;
 				Media::StaticImage *simg;
-				dt.SetCurrTimeUTC();
-				currTimeTick = dt.ToTicks();
+				currTimeTick = Data::DateTimeUtil::GetCurrTimeMillis();
 				if (currTimeTick >= imgInfo->aniLastTimeTick)
 				{
 					imgInfo->aniIndex++;
@@ -1066,18 +1064,15 @@ Media::StaticImage *Map::MapEnv::GetImage(UOSInt index, UInt32 *imgDurMS) const
 					{
 						imgInfo->aniIndex = 0;
 					}
-					simg = (Media::StaticImage*)imgInfo->imgs->GetImage(imgInfo->aniIndex, &imgTimeMS);
+					simg = (Media::StaticImage*)imgInfo->imgs->GetImage(imgInfo->aniIndex, imgTimeMS);
 					imgInfo->aniLastTimeTick = currTimeTick + (Int64)imgTimeMS;
 				}
 				else
 				{
-					simg = (Media::StaticImage*)imgInfo->imgs->GetImage(imgInfo->aniIndex, &imgTimeMS);
+					simg = (Media::StaticImage*)imgInfo->imgs->GetImage(imgInfo->aniIndex, 0);
 					imgTimeMS = (UInt32)(imgInfo->aniLastTimeTick - currTimeTick);
 				}
-				if (imgDurMS)
-				{
-					*imgDurMS = imgTimeMS;
-				}
+				imgDurMS.Set(imgTimeMS);
 				return simg;
 			}
 			else
@@ -1122,7 +1117,7 @@ OSInt Map::MapEnv::AddImage(Text::CStringNN fileName, Parser::ParserList *parser
 			{
 				UInt32 imgTime;
 				imgList->ToStaticImage(i);
-				((Media::StaticImage*)imgList->GetImage(i, &imgTime))->To32bpp();
+				((Media::StaticImage*)imgList->GetImage(i, imgTime))->To32bpp();
 			}
 			if (imgInfo->isAni)
 			{
@@ -1164,7 +1159,7 @@ UOSInt Map::MapEnv::AddImage(Text::CStringNN fileName, Media::ImageList *imgList
 	{
 		UInt32 imgTime;
 		imgList->ToStaticImage(i);
-		((Media::StaticImage*)imgList->GetImage(i, &imgTime))->To32bpp();
+		((Media::StaticImage*)imgList->GetImage(i, imgTime))->To32bpp();
 		if (imgTime != 0)
 		{
 			imgInfo->isAni = true;

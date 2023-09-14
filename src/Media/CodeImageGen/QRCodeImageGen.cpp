@@ -33,10 +33,10 @@ Media::DrawImage *Media::CodeImageGen::QRCodeImageGen::GenCode(Text::CString cod
 	if (code.v == 0 || code.leng == 0)
 		return 0;
 
-	Media::StaticImage *simg = Media::ZXingWriter::GenQRCode(code, Math::Size2D<UOSInt>(256, 256));
-	if (simg == 0)
+	NotNullPtr<Media::StaticImage> simg;
+	if (!simg.Set(Media::ZXingWriter::GenQRCode(code, Math::Size2D<UOSInt>(256, 256))))
 		return 0;
 	Media::DrawImage *dimg = eng->ConvImage(simg);
-	DEL_CLASS(simg);
+	simg.Delete();
 	return dimg;
 }

@@ -29,8 +29,8 @@ namespace Media
 		~SharedImage();
 
 		SharedImage *Clone() const;
-		Media::StaticImage *GetImage(UInt32 *imgTimeMS) const;
-		Media::StaticImage *GetPrevImage(Double width, Double height, UInt32 *imgTimeMS) const;
+		Media::StaticImage *GetImage(OptOut<UInt32> imgTimeMS) const;
+		Media::StaticImage *GetPrevImage(Double width, Double height, OptOut<UInt32> imgTimeMS) const;
 	};
 }
 #endif

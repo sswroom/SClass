@@ -36,7 +36,7 @@ IO::FileExporter::SupportType Exporter::ICOExporter::IsObjectSupported(IO::Parse
 	
 	while (i-- > 0)
 	{
-		img = imgList->GetImage(0, &imgTime);
+		img = imgList->GetImage(0, imgTime);
 		if (!Exporter::CURExporter::ImageSupported(img))
 		{
 			return IO::FileExporter::SupportType::NotSupported;

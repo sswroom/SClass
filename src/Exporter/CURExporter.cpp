@@ -44,7 +44,6 @@ UOSInt Exporter::CURExporter::CalcBuffSize(Media::ImageList *imgList)
 {
 	UOSInt i;
 	UOSInt j;
-	UInt32 imgDelay;
 	UOSInt imgSize;
 	UOSInt maskSize;
 	Media::Image *img;
@@ -53,7 +52,7 @@ UOSInt Exporter::CURExporter::CalcBuffSize(Media::ImageList *imgList)
 	j = imgList->GetCount();
 	while (i < j)
 	{
-		img = imgList->GetImage(i, &imgDelay);
+		img = imgList->GetImage(i, 0);
 		if (img->info.fourcc != 0)
 		{
 			return 0;
@@ -151,7 +150,6 @@ UOSInt Exporter::CURExporter::BuildBuff(UInt8 *buff, Media::ImageList *imgList, 
 	UInt8 *currPtr;
 	OSInt sbpl;
 	UInt8 *maskPtr;
-	UInt32 imgDelay;
 	UOSInt imgSize;
 	UOSInt maskSize;
 	UOSInt imgAdd;
@@ -177,7 +175,7 @@ UOSInt Exporter::CURExporter::BuildBuff(UInt8 *buff, Media::ImageList *imgList, 
 	while (i < j)
 	{
 		imgList->ToStaticImage(i);
-		img = (Media::StaticImage*)imgList->GetImage(i, &imgDelay);
+		img = (Media::StaticImage*)imgList->GetImage(i, 0);
 		if (img->info.fourcc != 0)
 		{
 			return 0;
@@ -688,7 +686,6 @@ IO::FileExporter::SupportType Exporter::CURExporter::IsObjectSupported(IO::Parse
 	if (pobj->GetParserType() != IO::ParserType::ImageList)
 		return IO::FileExporter::SupportType::NotSupported;
 	Media::ImageList *imgList = (Media::ImageList*)pobj;
-	UInt32 imgTime;
 	Media::Image *img;
 	UOSInt i = imgList->GetCount();
 	if (i <= 0)
@@ -698,7 +695,7 @@ IO::FileExporter::SupportType Exporter::CURExporter::IsObjectSupported(IO::Parse
 	
 	while (i-- > 0)
 	{
-		img = imgList->GetImage(0, &imgTime);
+		img = imgList->GetImage(0, 0);
 		if (!img->HasHotSpot() || !ImageSupported(img))
 		{
 			return IO::FileExporter::SupportType::NotSupported;

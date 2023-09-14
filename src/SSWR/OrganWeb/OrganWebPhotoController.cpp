@@ -516,29 +516,30 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhotoId(NotNullPtr<Net::We
 			{
 				dimg = 0;
 			}
-			if (dimg)
+			NotNullPtr<Media::StaticImage> nndimg;
+			if (nndimg.Set(dimg))
 			{
 				UInt8 *buff;
 				UOSInt buffSize;
-				dimg->info.color.SetRAWICC(Media::ICCProfile::GetSRGBICCData());
+				nndimg->info.color.SetRAWICC(Media::ICCProfile::GetSRGBICCData());
 
 				if (rotateType == 1)
 				{
-					dimg->RotateImage(Media::StaticImage::RotateType::CW90);
+					nndimg->RotateImage(Media::StaticImage::RotateType::CW90);
 				}
 				else if (rotateType == 2)
 				{
-					dimg->RotateImage(Media::StaticImage::RotateType::CW180);
+					nndimg->RotateImage(Media::StaticImage::RotateType::CW180);
 				}
 				else if (rotateType == 3)
 				{
-					dimg->RotateImage(Media::StaticImage::RotateType::CW270);
+					nndimg->RotateImage(Media::StaticImage::RotateType::CW270);
 				}
 
 				if (user && user->watermark->leng > 0)
 				{
 					NotNullPtr<Media::DrawImage> gimg;
-					if (gimg.Set(this->env->GetDrawEngine()->ConvImage(dimg)))
+					if (gimg.Set(this->env->GetDrawEngine()->ConvImage(nndimg)))
 					{
 						if ((cacheDir && imgWidth == GetPreviewSize() && imgHeight == GetPreviewSize()) || user != reqUser)
 						{

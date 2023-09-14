@@ -71,9 +71,9 @@ Media::DrawImage *Media::GTKDrawEngine::LoadImage(Text::CStringNN fileName)
 		return 0;
 	}
 
-	Media::Image *img = imgList->GetImage(0, 0);
 	Media::DrawImage *dimg = 0;
-	if (img)
+	NotNullPtr<Media::Image> img;
+	if (img.Set(imgList->GetImage(0, 0)))
 	{
 		dimg = this->ConvImage(img);
 	}
@@ -86,12 +86,8 @@ Media::DrawImage *Media::GTKDrawEngine::LoadImageStream(NotNullPtr<IO::SeekableS
 	return 0;
 }
 
-Media::DrawImage *Media::GTKDrawEngine::ConvImage(Media::Image *img)
+Media::DrawImage *Media::GTKDrawEngine::ConvImage(NotNullPtr<Media::Image> img)
 {
-	if (img == 0)
-	{
-		return 0;
-	}
 	if (img->info.fourcc != 0)
 	{
 		return 0; 
@@ -104,7 +100,7 @@ Media::DrawImage *Media::GTKDrawEngine::ConvImage(Media::Image *img)
 	gimg->info.color.Set(img->info.color);
 	if (img->GetImageType() == Media::Image::ImageType::Static)
 	{
-		Media::StaticImage *simg = (Media::StaticImage*)img;
+		NotNullPtr<Media::StaticImage> simg = NotNullPtr<Media::StaticImage>::ConvertFrom(img);
 		if (simg->To32bpp())
 		{
 			cairo_surface_flush((cairo_surface_t*)gimg->GetSurface());
@@ -902,7 +898,7 @@ Bool Media::GTKDrawImage::DrawImagePt2(NotNullPtr<Media::StaticImage> img, Math:
 	if (this->surface == 0)
 	{
 		NotNullPtr<Media::DrawImage> dimg;
-		if (!dimg.Set(this->eng->ConvImage(img.Ptr())))
+		if (!dimg.Set(this->eng->ConvImage(img)))
 		{
 			return false;
 		}

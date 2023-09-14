@@ -32,7 +32,7 @@ namespace Media
 		DrawImage *CreateImageScn(void *hdc, OSInt left, OSInt top, OSInt right, OSInt bottom);
 		virtual DrawImage *LoadImage(Text::CStringNN fileName);
 		virtual DrawImage *LoadImageStream(NotNullPtr<IO::SeekableStream> stm);
-		virtual DrawImage *ConvImage(Media::Image *img);
+		virtual DrawImage *ConvImage(NotNullPtr<Media::Image> img);
 		virtual DrawImage *CloneImage(NotNullPtr<DrawImage> img);
 		virtual Bool DeleteImage(NotNullPtr<DrawImage> img);
 		void *GetBlackPen();

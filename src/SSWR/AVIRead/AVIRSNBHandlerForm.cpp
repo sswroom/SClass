@@ -41,10 +41,9 @@ void __stdcall SSWR::AVIRead::AVIRSNBHandlerForm::OnTypeSelChg(void *userObj)
 	}
 	if (imgList)
 	{
-		UInt32 delay;
 		imgList->ToStaticImage(0);
 		me->simg = imgList;
-		me->pbImage->SetImage((Media::StaticImage*)imgList->GetImage(0, &delay));
+		me->pbImage->SetImage((Media::StaticImage*)imgList->GetImage(0, 0));
 	}
 }
 

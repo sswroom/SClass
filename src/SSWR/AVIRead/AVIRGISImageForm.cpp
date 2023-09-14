@@ -49,12 +49,10 @@ void SSWR::AVIRead::AVIRGISImageForm::UpdateImages()
 {
 	UOSInt i = 0;
 	UOSInt j = this->env->GetImageCnt();
-	UInt32 imgDurMS;
-
 	this->plIcons->Clear();
 	while (i < j)
 	{
-		this->plIcons->Add(this->env->GetImage(i, &imgDurMS));
+		this->plIcons->Add(this->env->GetImage(i, 0));
 		i++;
 	}
 }

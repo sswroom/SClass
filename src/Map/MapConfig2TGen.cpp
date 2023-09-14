@@ -4530,11 +4530,18 @@ Map::MapConfig2TGen::MapConfig2TGen(Text::CStringNN fileName, NotNullPtr<Media::
 							if (imgList->GetCount() > 0)
 							{
 								imgList->ToStaticImage(0);
-								Media::StaticImage *img = (Media::StaticImage*)imgList->GetImage(0, 0);
-								if (img->To32bpp())
+								NotNullPtr<Media::StaticImage> img;
+								if (img.Set((Media::StaticImage*)imgList->GetImage(0, 0)))
 								{
-									currLayer->img = this->drawEng->ConvImage(img);
-									DEL_CLASS(obj);
+									if (img->To32bpp())
+									{
+										currLayer->img = this->drawEng->ConvImage(img);
+										DEL_CLASS(obj);
+									}
+									else
+									{
+										DEL_CLASS(obj);
+									}
 								}
 								else
 								{

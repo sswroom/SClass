@@ -165,11 +165,11 @@ UOSInt UI::GUIPictureList::IndexFromPoint(Math::Coord2D<OSInt> pos)
 void UI::GUIPictureList::Add(Media::Image *img)
 {
 	NotNullPtr<Media::StaticImage> simg = img->CreateStaticImage();
-	Media::StaticImage *nsimg = this->resizer->ProcessToNew(simg);
-	if (nsimg)
+	NotNullPtr<Media::StaticImage> nsimg;
+	if (nsimg.Set(this->resizer->ProcessToNew(simg)))
 	{
 		this->imgList.Add(this->deng->ConvImage(nsimg));
-		DEL_CLASS(nsimg);
+		nsimg.Delete();
 	}
 	simg.Delete();
 }

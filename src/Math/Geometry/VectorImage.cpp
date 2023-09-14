@@ -453,12 +453,12 @@ void Math::Geometry::VectorImage::SetBounds(Double minX, Double minY, Double max
 	this->br.y = maxY;
 }
 
-Media::StaticImage *Math::Geometry::VectorImage::GetImage(UInt32 *imgTimeMS) const
+Media::StaticImage *Math::Geometry::VectorImage::GetImage(OptOut<UInt32> imgTimeMS) const
 {
 	return this->img->GetImage(imgTimeMS);
 }
 
-Media::StaticImage *Math::Geometry::VectorImage::GetImage(Double width, Double height, UInt32 *imgTimeMS) const
+Media::StaticImage *Math::Geometry::VectorImage::GetImage(Double width, Double height, OptOut<UInt32> imgTimeMS) const
 {
 	if (width < 0)
 		width = -width;

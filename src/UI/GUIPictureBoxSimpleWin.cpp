@@ -177,9 +177,10 @@ void UI::GUIPictureBoxSimple::UpdatePreview()
 		this->prevImageD = 0;
 	}
 
-	if (this->currImage)
+	NotNullPtr<Media::StaticImage> simg;
+	if (simg.Set(this->currImage))
 	{
-		this->prevImageD = this->eng->ConvImage(this->currImage);
+		this->prevImageD = this->eng->ConvImage(simg);
 	}
 	this->Redraw();
 }

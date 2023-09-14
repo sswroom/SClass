@@ -25,10 +25,9 @@ IO::FileExporter::SupportType Exporter::GIFExporter::IsObjectSupported(IO::Parse
 	if (pobj->GetParserType() != IO::ParserType::ImageList)
 		return IO::FileExporter::SupportType::NotSupported;
 	Media::ImageList *imgList = (Media::ImageList*)pobj;
-	UInt32 imgTime;
 	if (imgList->GetCount() != 1)
 		return IO::FileExporter::SupportType::NotSupported;
-	Media::Image *img = imgList->GetImage(0, &imgTime);
+	Media::Image *img = imgList->GetImage(0, 0);
 	if (img->info.fourcc != 0)
 		return IO::FileExporter::SupportType::NotSupported;
 	if (img->info.pf == Media::PF_PAL_8 || img->info.pf == Media::PF_PAL_W8)
@@ -81,8 +80,7 @@ Bool Exporter::GIFExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text:
 		return false;
 	UInt8 buff[256];
 	Media::ImageList *imgList = (Media::ImageList*)pobj;
-	UInt32 imgTime;
-	Media::Image *img = imgList->GetImage(0, &imgTime);
+	Media::Image *img = imgList->GetImage(0, 0);
 	UOSInt transparentIndex = INVALID_INDEX;
 	UOSInt i;
 	UOSInt j;

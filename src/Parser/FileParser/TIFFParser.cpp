@@ -272,7 +272,7 @@ IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFileHdr(NotNullPtr<IO::St
 					j = innerImgList->GetCount();
 					while (i < j)
 					{
-						innerImg = innerImgList->GetImage(i, &imgDelay);
+						innerImg = innerImgList->GetImage(i, imgDelay);
 						innerSImg = innerImg->CreateStaticImage();
 						if (exif)
 						{

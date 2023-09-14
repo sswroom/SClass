@@ -172,7 +172,7 @@ Bool Media::JPEGFile::ParseJPEGHeader(NotNullPtr<IO::StreamData> fd, Media::Imag
 							i = 0;
 							while (i < k)
 							{
-								innerImg = innerImgList->GetImage(i, &delay);
+								innerImg = innerImgList->GetImage(i, delay);
 								imgList->AddImage(innerImg->CreateStaticImage(), delay);
 								i++;
 							}
@@ -202,7 +202,7 @@ Bool Media::JPEGFile::ParseJPEGHeader(NotNullPtr<IO::StreamData> fd, Media::Imag
 								i = 0;
 								while (i < k)
 								{
-									innerImg = innerImgList->GetImage(i, &delay);
+									innerImg = innerImgList->GetImage(i, delay);
 									stImg = innerImg->CreateStaticImage();
 									if (stImg->info.pf == Media::PF_LE_W16)
 									{

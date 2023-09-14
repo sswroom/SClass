@@ -70,9 +70,16 @@ namespace Media
 		virtual DrawImage *CreateImage32(Math::Size2D<UOSInt> size, Media::AlphaType atype) = 0;
 		virtual DrawImage *LoadImage(Text::CStringNN fileName) = 0;
 		virtual DrawImage *LoadImageStream(NotNullPtr<IO::SeekableStream> stm) = 0;
-		virtual DrawImage *ConvImage(Media::Image *img) = 0;
+		virtual DrawImage *ConvImage(NotNullPtr<Media::Image> img) = 0;
 		virtual DrawImage *CloneImage(NotNullPtr<DrawImage> img) = 0;
 		virtual Bool DeleteImage(NotNullPtr<DrawImage> img) = 0;
+
+		DrawImage *ConvImageOrNull(Media::Image *img)
+		{
+			NotNullPtr<Media::Image> nnimg;
+			if (nnimg.Set(img)) return ConvImage(nnimg);
+			return 0;
+		}
 	};
 
 	class DrawImage

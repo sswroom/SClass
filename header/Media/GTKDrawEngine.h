@@ -20,7 +20,7 @@ namespace Media
 		NotNullPtr<DrawImage> CreateImageScn(void *cr, Math::Coord2D<OSInt> tl, Math::Coord2D<OSInt> br);
 		virtual DrawImage *LoadImage(Text::CStringNN fileName);
 		virtual DrawImage *LoadImageStream(NotNullPtr<IO::SeekableStream> stm);
-		virtual DrawImage *ConvImage(Media::Image *img);
+		virtual DrawImage *ConvImage(NotNullPtr<Media::Image> img);
 		virtual DrawImage *CloneImage(NotNullPtr<DrawImage> img);
 		virtual Bool DeleteImage(NotNullPtr<DrawImage> img);
 	};

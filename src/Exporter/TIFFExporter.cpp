@@ -182,11 +182,10 @@ IO::FileExporter::SupportType Exporter::TIFFExporter::IsObjectSupported(IO::Pars
 	if (pobj->GetParserType() != IO::ParserType::ImageList)
 		return IO::FileExporter::SupportType::NotSupported;
 	Media::ImageList *imgList = (Media::ImageList*)pobj;
-	UInt32 imgTime;
 	if (imgList->GetCount() != 1)
 		return IO::FileExporter::SupportType::NotSupported;
-	Media::Image *img = imgList->GetImage(0, &imgTime);
-	if (img->info.fourcc == 0)
+	Media::Image *img = imgList->GetImage(0, 0);
+	if (img && img->info.fourcc == 0)
 	{
 		if (img->info.pf == Media::PF_PAL_W1)
 			return IO::FileExporter::SupportType::NormalStream;
@@ -250,7 +249,6 @@ Bool Exporter::TIFFExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text
 	if (pobj->GetParserType() != IO::ParserType::ImageList)
 		return false;
 	Media::ImageList *imgList = (Media::ImageList*)pobj;
-	UInt32 imgTime;
 	UInt8 buff[54];
 
 	buff[0] = 'I';
@@ -266,7 +264,7 @@ Bool Exporter::TIFFExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text
 	i = 0;
 	while (i < j)
 	{
-		Media::Image *img = imgList->GetImage(i, &imgTime);
+		Media::Image *img = imgList->GetImage(i, 0);
 		UInt32 stripCnt = 1;
 		i++;
 

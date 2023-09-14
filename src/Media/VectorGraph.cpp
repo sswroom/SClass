@@ -891,7 +891,7 @@ void Media::VectorGraph::DrawTo(NotNullPtr<Media::DrawImage> dimg, UInt32 *imgDu
 			UInt32 thisTimeMS;
 			bounds = vimg->GetBounds();
 			NotNullPtr<Media::StaticImage> simg;
-			if (simg.Set(vimg->GetImage(&thisTimeMS)))
+			if (simg.Set(vimg->GetImage(thisTimeMS)))
 			{
 				dimg->DrawImagePt2(simg, bounds.tl * scale);
 				if (imgTimeMS == 0)

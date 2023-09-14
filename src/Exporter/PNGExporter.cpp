@@ -1377,10 +1377,9 @@ IO::FileExporter::SupportType Exporter::PNGExporter::IsObjectSupported(IO::Parse
 	if (pobj->GetParserType() != IO::ParserType::ImageList)
 		return IO::FileExporter::SupportType::NotSupported;
 	Media::ImageList *imgList = (Media::ImageList*)pobj;
-	UInt32 imgTime;
 	if (imgList->GetCount() != 1)
 		return IO::FileExporter::SupportType::NotSupported;
-	Media::Image *img = imgList->GetImage(0, &imgTime);
+	Media::Image *img = imgList->GetImage(0, 0);
 	if (img->info.fourcc != 0)
 		return IO::FileExporter::SupportType::NotSupported;
 	if (img->info.pf == Media::PF_B8G8R8)
@@ -1432,9 +1431,8 @@ Bool Exporter::PNGExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text:
 	if (IsObjectSupported(pobj) == SupportType::NotSupported)
 		return false;
 	Media::ImageList *imgList = (Media::ImageList*)pobj;
-	UInt32 imgTime;
 	imgList->ToStaticImage(0);
-	Media::StaticImage *img = (Media::StaticImage*)imgList->GetImage(0, &imgTime);
+	Media::StaticImage *img = (Media::StaticImage*)imgList->GetImage(0, 0);
 	UInt8 *tmpBuff;
 	UInt8 *tmpBuff2;
 	UInt8 *imgPtr1;

@@ -465,12 +465,8 @@ Media::DrawImage *Media::GDIEngine::LoadImageStream(NotNullPtr<IO::SeekableStrea
 	return img;
 }
 
-Media::DrawImage *Media::GDIEngine::ConvImage(Media::Image *img)
+Media::DrawImage *Media::GDIEngine::ConvImage(NotNullPtr<Media::Image> img)
 {
-	if (img == 0)
-	{
-		return 0;
-	}
 	if (img->info.fourcc != 0)
 	{
 		return 0; 
@@ -482,7 +478,7 @@ Media::DrawImage *Media::GDIEngine::ConvImage(Media::Image *img)
 	gimg->SetVDPI(img->info.vdpi);
 	if (img->GetImageType() == Media::Image::ImageType::Static)
 	{
-		Media::StaticImage *simg = (Media::StaticImage*)img;
+		NotNullPtr<Media::StaticImage> simg = NotNullPtr<Media::StaticImage>::ConvertFrom(img);
 		if (simg->To32bpp())
 		{
 			UInt8 *sptr = (UInt8*)simg->data;
@@ -2075,7 +2071,7 @@ Bool Media::GDIImage::DrawImagePt2(NotNullPtr<Media::StaticImage> img, Math::Coo
 	else
 	{
 		NotNullPtr<Media::DrawImage> dimg;
-		if (dimg.Set(this->eng->ConvImage(img.Ptr())))
+		if (dimg.Set(this->eng->ConvImage(img)))
 		{
 			DrawImagePt(dimg, tl);
 			this->eng->DeleteImage(dimg);
