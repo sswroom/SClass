@@ -110,10 +110,10 @@ namespace IO
 		virtual Data::Compress::Decompressor::CompressMethod GetItemComp(UOSInt index) const;
 		virtual PackageFile *Clone() const;
 		virtual Bool AllowWrite() const;
-		virtual Bool CopyFrom(Text::CStringNN fileName, IO::ProgressHandler *progHdlr, IO::ActiveStreamReader::BottleNeckType *bnt);
-		virtual Bool MoveFrom(Text::CStringNN fileName, IO::ProgressHandler *progHdlr, IO::ActiveStreamReader::BottleNeckType *bnt);
-		virtual Bool RetryCopyFrom(Text::CStringNN fileName, IO::ProgressHandler *progHdlr, IO::ActiveStreamReader::BottleNeckType *bnt);
-		virtual Bool RetryMoveFrom(Text::CStringNN fileName, IO::ProgressHandler *progHdlr, IO::ActiveStreamReader::BottleNeckType *bnt);
+		virtual Bool CopyFrom(Text::CStringNN fileName, IO::ProgressHandler *progHdlr, OptOut<IO::ActiveStreamReader::BottleNeckType> bnt);
+		virtual Bool MoveFrom(Text::CStringNN fileName, IO::ProgressHandler *progHdlr, OptOut<IO::ActiveStreamReader::BottleNeckType> bnt);
+		virtual Bool RetryCopyFrom(Text::CStringNN fileName, IO::ProgressHandler *progHdlr, OptOut<IO::ActiveStreamReader::BottleNeckType> bnt);
+		virtual Bool RetryMoveFrom(Text::CStringNN fileName, IO::ProgressHandler *progHdlr, OptOut<IO::ActiveStreamReader::BottleNeckType> bnt);
 		virtual Bool CopyTo(UOSInt index, Text::CString destPath, Bool fullFileName);
 		virtual IO::StreamData *OpenStreamData(Text::CString fileName) const;
 

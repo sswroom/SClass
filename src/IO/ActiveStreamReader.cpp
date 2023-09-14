@@ -7,7 +7,7 @@ UInt32 __stdcall IO::ActiveStreamReader::ReadThread(void *obj)
 {
 	IO::ActiveStreamReader *me = (IO::ActiveStreamReader *)obj;
 	Int32 i = 0;
-	BottleNeckType *bnt;
+	OptOut<BottleNeckType> bnt;
 	me->running = true;
 	while (!me->toStop)
 	{
@@ -19,9 +19,9 @@ UInt32 __stdcall IO::ActiveStreamReader::ReadThread(void *obj)
 			i = (i + 1) % ACTIVESTREAMREADER_BUFFCNT;
 		}
 		bnt = me->bnt;
-		if (bnt && me->reading)
+		if (bnt.IsNotNull() && me->reading)
 		{
-			*bnt = IO::ActiveStreamReader::BottleNeckType::Read;
+			bnt.SetNoCheck(IO::ActiveStreamReader::BottleNeckType::Read);
 		}
 		me->fullEvt.Wait(1000);
 	}
@@ -30,7 +30,7 @@ UInt32 __stdcall IO::ActiveStreamReader::ReadThread(void *obj)
 	return 0;
 }
 
-IO::ActiveStreamReader::ActiveStreamReader(DataHdlr hdlr, void *userData, IO::Stream *stm, UOSInt buffSize)
+IO::ActiveStreamReader::ActiveStreamReader(DataHdlr hdlr, void *userData, NotNullPtr<IO::Stream> stm, UOSInt buffSize)
 {
 	this->hdlr = hdlr;
 	this->stm = stm;
@@ -65,22 +65,19 @@ IO::ActiveStreamReader::~ActiveStreamReader()
 	}
 }
 
-void IO::ActiveStreamReader::ReadStream(IO::ActiveStreamReader::BottleNeckType *bnt)
+void IO::ActiveStreamReader::ReadStream(OptOut<IO::ActiveStreamReader::BottleNeckType> bnt)
 {
 	Int32 i = this->currIndex;
 	UOSInt readSize = this->buffSize;
 	UOSInt actSize;
-	IO::Stream *stm = this->stm;
+	NotNullPtr<IO::Stream> stm = this->stm;
 	this->bnt = bnt;
 	this->reading = true;
 	while (true)
 	{
 		while (this->buffs[i].buffSize)
 		{
-			if (bnt)
-			{
-				*bnt = IO::ActiveStreamReader::BottleNeckType::Write;
-			}
+			bnt.Set(IO::ActiveStreamReader::BottleNeckType::Write);
 			this->emptyEvt.Wait(1000);
 		}
 		actSize = stm->Read(Data::ByteArray(this->buffs[i].buff, readSize));

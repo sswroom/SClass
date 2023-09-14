@@ -556,22 +556,22 @@ Bool IO::PackageFile::AllowWrite() const
 	return false;
 }
 
-Bool IO::PackageFile::CopyFrom(Text::CStringNN fileName, IO::ProgressHandler *progHdlr, IO::ActiveStreamReader::BottleNeckType *bnt)
+Bool IO::PackageFile::CopyFrom(Text::CStringNN fileName, IO::ProgressHandler *progHdlr, OptOut<IO::ActiveStreamReader::BottleNeckType> bnt)
 {
 	return false;
 }
 
-Bool IO::PackageFile::MoveFrom(Text::CStringNN fileName, IO::ProgressHandler *progHdlr, IO::ActiveStreamReader::BottleNeckType *bnt)
+Bool IO::PackageFile::MoveFrom(Text::CStringNN fileName, IO::ProgressHandler *progHdlr, OptOut<IO::ActiveStreamReader::BottleNeckType> bnt)
 {
 	return false;
 }
 
-Bool IO::PackageFile::RetryCopyFrom(Text::CStringNN fileName, IO::ProgressHandler *progHdlr, IO::ActiveStreamReader::BottleNeckType *bnt)
+Bool IO::PackageFile::RetryCopyFrom(Text::CStringNN fileName, IO::ProgressHandler *progHdlr, OptOut<IO::ActiveStreamReader::BottleNeckType> bnt)
 {
 	return this->CopyFrom(fileName, progHdlr, bnt);
 }
 
-Bool IO::PackageFile::RetryMoveFrom(Text::CStringNN fileName, IO::ProgressHandler *progHdlr, IO::ActiveStreamReader::BottleNeckType *bnt)
+Bool IO::PackageFile::RetryMoveFrom(Text::CStringNN fileName, IO::ProgressHandler *progHdlr, OptOut<IO::ActiveStreamReader::BottleNeckType> bnt)
 {
 	return this->MoveFrom(fileName, progHdlr, bnt);
 }

@@ -24,7 +24,7 @@ namespace IO
 			UOSInt buffSize;
 		} ReadBuffer;
 	private:
-		IO::Stream *stm;
+		NotNullPtr<IO::Stream> stm;
 		DataHdlr hdlr;
 		UOSInt buffSize;
 
@@ -32,7 +32,7 @@ namespace IO
 		Bool toStop;
 		Int32 currIndex;
 
-		BottleNeckType *bnt;
+		OptOut<BottleNeckType> bnt;
 		Bool reading;
 
 		ReadBuffer buffs[ACTIVESTREAMREADER_BUFFCNT];
@@ -42,10 +42,10 @@ namespace IO
 
 		static UInt32 __stdcall ReadThread(void *obj);
 	public:
-		ActiveStreamReader(DataHdlr hdlr, void *userData, IO::Stream *stm, UOSInt buffSize);
+		ActiveStreamReader(DataHdlr hdlr, void *userData, NotNullPtr<IO::Stream> stm, UOSInt buffSize);
 		~ActiveStreamReader();
 
-		void ReadStream(BottleNeckType *bnt);
+		void ReadStream(OptOut<BottleNeckType> bnt);
 	};
 }
 #endif

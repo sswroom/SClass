@@ -84,7 +84,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRPackageForm::ProcessThread(void *userObj)
 			lastFound = true;
 			if (atype == AT_COPY)
 			{
-				found = me->packFile->CopyFrom(fileName, me, &me->statusBNT);
+				found = me->packFile->CopyFrom(fileName, me, me->statusBNT);
 				mutUsage.BeginUse();
 				i = me->fileNames.GetCount();
 				while (i-- > 0)
@@ -107,7 +107,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRPackageForm::ProcessThread(void *userObj)
 			}
 			else if (atype == AT_MOVE)
 			{
-				found = me->packFile->MoveFrom(fileName, me, &me->statusBNT);
+				found = me->packFile->MoveFrom(fileName, me, me->statusBNT);
 				mutUsage.BeginUse();
 				i = me->fileNames.GetCount();
 				while (i-- > 0)
@@ -130,7 +130,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRPackageForm::ProcessThread(void *userObj)
 			}
 			else if (atype == AT_RETRYCOPY)
 			{
-				found = me->packFile->RetryCopyFrom(fileName, me, &me->statusBNT);
+				found = me->packFile->RetryCopyFrom(fileName, me, me->statusBNT);
 				mutUsage.BeginUse();
 				i = me->fileNames.GetCount();
 				while (i-- > 0)
@@ -153,7 +153,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRPackageForm::ProcessThread(void *userObj)
 			}
 			else if (atype == AT_RETRYMOVE)
 			{
-				found = me->packFile->RetryCopyFrom(fileName, me, &me->statusBNT);
+				found = me->packFile->RetryCopyFrom(fileName, me, me->statusBNT);
 				mutUsage.BeginUse();
 				i = me->fileNames.GetCount();
 				while (i-- > 0)

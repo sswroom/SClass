@@ -24,7 +24,7 @@ IO::FileCheck *IO::FileCheck::CreateCheck(Text::CStringNN path, Crypto::Hash::Ha
 	IO::Path::PathType pt;
 	UInt64 fileSize;
 	ReadSess readSess;
-	IO::FileStream *fs;
+	NotNullPtr<IO::FileStream> fs;
 	IO::ActiveStreamReader *reader;
 	IO::ActiveStreamReader::BottleNeckType bnt;
 
@@ -39,11 +39,11 @@ IO::FileCheck *IO::FileCheck::CreateCheck(Text::CStringNN path, Crypto::Hash::Ha
 	{
 		NEW_CLASS(fchk, IO::FileCheck(path, chkType));
 
-		NEW_CLASS(fs, IO::FileStream(path, IO::FileMode::ReadOnly, IO::FileShare::DenyWrite, IO::FileStream::BufferType::NoBuffer));
+		NEW_CLASSNN(fs, IO::FileStream(path, IO::FileMode::ReadOnly, IO::FileShare::DenyWrite, IO::FileStream::BufferType::NoBuffer));
 		if (fs->IsError())
 		{
 			DEL_CLASS(fchk);
-			DEL_CLASS(fs);
+			fs.Delete();
 			DEL_CLASS(hash);
 			return 0;
 		}
@@ -60,7 +60,7 @@ IO::FileCheck *IO::FileCheck::CreateCheck(Text::CStringNN path, Crypto::Hash::Ha
 			}
 			hash->Clear();
 			NEW_CLASS(reader, IO::ActiveStreamReader(CheckData, &readSess, fs, 1048576));
-			reader->ReadStream(&bnt);
+			reader->ReadStream(bnt);
 			if (fileSize == readSess.readSize)
 			{
 				UOSInt i = path.LastIndexOf(IO::Path::PATH_SEPERATOR);
@@ -70,7 +70,7 @@ IO::FileCheck *IO::FileCheck::CreateCheck(Text::CStringNN path, Crypto::Hash::Ha
 			else if (!skipError)
 			{
 				DEL_CLASS(reader);
-				DEL_CLASS(fs);
+				fs.Delete();
 				if (progress)
 				{
 					progress->ProgressEnd();
@@ -80,7 +80,7 @@ IO::FileCheck *IO::FileCheck::CreateCheck(Text::CStringNN path, Crypto::Hash::Ha
 				return 0;
 			}
 			DEL_CLASS(reader);
-			DEL_CLASS(fs);
+			fs.Delete();
 			if (progress)
 			{
 				progress->ProgressEnd();
@@ -146,7 +146,7 @@ Bool IO::FileCheck::CheckDir(UTF8Char *fullPath, UTF8Char *hashPath, Crypto::Has
 	UTF8Char *sptr2;
 	IO::Path::FindFileSession *sess;
 	IO::Path::PathType pt;
-	IO::FileStream *fs;
+	NotNullPtr<IO::FileStream> fs;
 	IO::ActiveStreamReader *reader;
 	ReadSess readSess;
 	UInt64 fileSize;
@@ -176,10 +176,10 @@ Bool IO::FileCheck::CheckDir(UTF8Char *fullPath, UTF8Char *hashPath, Crypto::Has
 			}
 			else if (pt == IO::Path::PathType::File)
 			{
-				NEW_CLASS(fs, IO::FileStream({fullPath, (UOSInt)(sptr2 - fullPath)}, IO::FileMode::ReadOnly, IO::FileShare::DenyWrite, IO::FileStream::BufferType::NoBuffer));
+				NEW_CLASSNN(fs, IO::FileStream({fullPath, (UOSInt)(sptr2 - fullPath)}, IO::FileMode::ReadOnly, IO::FileShare::DenyWrite, IO::FileStream::BufferType::NoBuffer));
 				if (fs->IsError())
 				{
-					DEL_CLASS(fs);
+					fs.Delete();
 					if (!skipError)
 					{
 						IO::Path::FindFileClose(sess);
@@ -199,7 +199,7 @@ Bool IO::FileCheck::CheckDir(UTF8Char *fullPath, UTF8Char *hashPath, Crypto::Has
 					}
 					hash->Clear();
 					NEW_CLASS(reader, IO::ActiveStreamReader(CheckData, &readSess, fs, 1048576));
-					reader->ReadStream(&bnt);
+					reader->ReadStream(bnt);
 					if (fileSize == readSess.readSize)
 					{
 						hash->GetValue(hashBuff);
@@ -208,12 +208,12 @@ Bool IO::FileCheck::CheckDir(UTF8Char *fullPath, UTF8Char *hashPath, Crypto::Has
 					else if (!skipError)
 					{
 						DEL_CLASS(reader);
-						DEL_CLASS(fs);
+						fs.Delete();
 						IO::Path::FindFileClose(sess);
 						return true;
 					}
 					DEL_CLASS(reader);
-					DEL_CLASS(fs);
+					fs.Delete();
 				}
 			}
 			else
@@ -368,8 +368,8 @@ Bool IO::FileCheck::CheckEntryHash(UOSInt index, UInt8 *hashVal) const
 		fileSize = fs.GetLength();
 		readSess.fileSize = fileSize;
 		hash->Clear();
-		IO::ActiveStreamReader reader(CheckData, &readSess, &fs, 1048576);
-		reader.ReadStream(&bnt);
+		IO::ActiveStreamReader reader(CheckData, &readSess, fs, 1048576);
+		reader.ReadStream(bnt);
 		if (fileSize == readSess.readSize)
 		{
 			hash->GetValue(hashVal);

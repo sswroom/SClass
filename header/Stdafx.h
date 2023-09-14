@@ -17,5 +17,6 @@
 #include "sdefs.h"
 #include "NotNullPtr.h"
 #include "OutParam.h"
+#include "OptOut.h"
 #endif
 // TODO: reference additional headers your program requires here

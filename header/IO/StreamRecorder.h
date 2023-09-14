@@ -7,7 +7,7 @@ namespace IO
 	class StreamRecorder
 	{
 	private:
-		IO::FileStream *destStm;
+		IO::FileStream destStm;
 		UInt64 recordedLength;
 
 		static void __stdcall DataHdlr(const UInt8 *buff, UOSInt buffSize, void *userData);
@@ -15,7 +15,7 @@ namespace IO
 		StreamRecorder(Text::CStringNN destFile);
 		~StreamRecorder();
 
-		Bool AppendStream(IO::Stream *stm);
+		Bool AppendStream(NotNullPtr<IO::Stream> stm);
 		UInt64 GetRecordedLength();
 	};
 }
