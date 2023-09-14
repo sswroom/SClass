@@ -77,7 +77,7 @@ void SSWR::AVIRead::AVIRHTTPLog::LogRequest(NotNullPtr<Net::WebServer::IWebReque
 	Data::ArrayList<Text::String *> names;
 	Text::String *name;
 	Text::StringBuilderUTF8 sb;
-	req->GetHeaderNames(&names);
+	req->GetHeaderNames(names);
 	j = names.GetCount();
 	k = 0;
 	while (k < j)

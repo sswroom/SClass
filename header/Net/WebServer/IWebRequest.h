@@ -44,7 +44,7 @@ namespace Net
 			virtual Text::String *GetSHeader(Text::CStringNN name) = 0;
 			virtual UTF8Char *GetHeader(UTF8Char *sbuff, Text::CStringNN name, UOSInt buffLen) = 0;
 			virtual Bool GetHeaderC(NotNullPtr<Text::StringBuilderUTF8> sb, Text::CStringNN name) = 0;
-			virtual UOSInt GetHeaderNames(Data::ArrayList<Text::String*> *names) = 0;
+			virtual UOSInt GetHeaderNames(NotNullPtr<Data::ArrayList<Text::String*>> names) = 0;
 			Bool GetRefererDomain(NotNullPtr<Text::StringBuilderUTF8> sb);
 			Bool GetIfModifiedSince(Data::DateTime *dt);
 			Bool GetCookie(Text::CStringNN name, NotNullPtr<Text::StringBuilderUTF8> sb);
@@ -66,7 +66,7 @@ namespace Net
 			virtual Net::WebUtil::RequestMethod GetReqMethod() const = 0;
 			virtual void ParseHTTPForm() = 0;
 			virtual Text::String *GetHTTPFormStr(Text::CStringNN name) = 0;
-			virtual const UInt8 *GetHTTPFormFile(Text::CStringNN formName, UOSInt index, UTF8Char *fileName, UOSInt fileNameBuffSize, UTF8Char **fileNameEnd, UOSInt *fileSize) = 0;
+			virtual const UInt8 *GetHTTPFormFile(Text::CStringNN formName, UOSInt index, UTF8Char *fileName, UOSInt fileNameBuffSize, UTF8Char **fileNameEnd, OptOut<UOSInt> fileSize) = 0;
 			Bool GetHTTPFormInt16(Text::CStringNN name, OutParam<Int16> valOut);
 			Bool GetHTTPFormUInt16(Text::CStringNN name, OutParam<UInt16> valOut);
 			Bool GetHTTPFormInt32(Text::CStringNN name, OutParam<Int32> valOut);
@@ -77,11 +77,11 @@ namespace Net
 			virtual void GetRequestURLBase(NotNullPtr<Text::StringBuilderUTF8> sb) = 0;
 
 			virtual NotNullPtr<const Net::SocketUtil::AddressInfo> GetClientAddr() const = 0;
-			virtual Net::NetConnection *GetNetConn() const = 0;
+			virtual NotNullPtr<Net::NetConnection> GetNetConn() const = 0;
 			virtual UInt16 GetClientPort() const = 0;
 			virtual Bool IsSecure() const = 0;
 			virtual Crypto::Cert::X509Cert *GetClientCert() = 0;
-			virtual const UInt8 *GetReqData(UOSInt *dataSize) = 0;
+			virtual const UInt8 *GetReqData(OutParam<UOSInt> dataSize) = 0;
 
 			Text::CString GetReqMethodStr() const { return Net::WebUtil::RequestMethodGetName(this->GetReqMethod()); }
 			Net::BrowserInfo::BrowserType GetBrowser() { if (!this->uaParsed) this->ParseUserAgent(); return this->reqBrowser; }

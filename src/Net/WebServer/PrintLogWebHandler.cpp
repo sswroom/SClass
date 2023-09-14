@@ -28,7 +28,7 @@ void Net::WebServer::PrintLogWebHandler::WebRequest(NotNullPtr<IWebRequest> req,
 	sb.Append(Net::WebServer::IWebRequest::RequestProtocolGetName(req->GetProtocol()));
 	this->writer->WriteLineC(sb.ToString(), sb.GetLength());
 	Data::ArrayList<Text::String*> headers;
-	req->GetHeaderNames(&headers);
+	req->GetHeaderNames(headers);
 	Text::String *header;
 	UOSInt i = 0;
 	UOSInt j = headers.GetCount();

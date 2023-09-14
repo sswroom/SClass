@@ -56,7 +56,7 @@ Bool __stdcall SSWR::VAMS::VAMSBTWebHandler::LogData(NotNullPtr<Net::WebServer::
 		return true;
 	}
 	UOSInt dataSize;
-	const UInt8 *reqData =req->GetReqData(&dataSize);
+	const UInt8 *reqData = req->GetReqData(dataSize);
 	if (dataSize > 0)
 	{
 		UTF8Char sbuff[512];

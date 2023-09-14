@@ -83,7 +83,7 @@ Bool Net::WebServer::HTTPForwardHandler::ProcessRequest(NotNullPtr<Net::WebServe
 	}
 	Text::String *hdr;
 	Data::ArrayList<Text::String*> hdrNames;
-	req->GetHeaderNames(&hdrNames);
+	req->GetHeaderNames(hdrNames);
 
 	Text::String *svrHost = 0;
 	UInt16 svrPort = 0;
@@ -188,7 +188,7 @@ Bool Net::WebServer::HTTPForwardHandler::ProcessRequest(NotNullPtr<Net::WebServe
 	SDEL_TEXT(fwdPrefix);
 	SDEL_STRING(svrHost);
 
-	const UInt8 *reqData = req->GetReqData(&i);
+	const UInt8 *reqData = req->GetReqData(i);
 	Text::PString sarr[2];
 	if (reqData)
 	{

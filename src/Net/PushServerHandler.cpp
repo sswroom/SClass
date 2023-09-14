@@ -7,7 +7,7 @@ Bool __stdcall Net::PushServerHandler::SendHandler(NotNullPtr<Net::WebServer::IW
 {
 	Net::PushServerHandler *me = (Net::PushServerHandler*)svc;
 	UOSInt dataLen;
-	const UInt8 *data = req->GetReqData(&dataLen);
+	const UInt8 *data = req->GetReqData(dataLen);
 	Text::JSONBase *json = Text::JSONBase::ParseJSONBytes(data, dataLen);
 	if (json)
 	{
@@ -25,7 +25,7 @@ Bool __stdcall Net::PushServerHandler::SendBatchHandler(NotNullPtr<Net::WebServe
 {
 	Net::PushServerHandler *me = (Net::PushServerHandler*)svc;
 	UOSInt dataLen;
-	const UInt8 *data = req->GetReqData(&dataLen);
+	const UInt8 *data = req->GetReqData(dataLen);
 	Text::JSONBase *json = Text::JSONBase::ParseJSONBytes(data, dataLen);
 	if (json)
 	{
@@ -54,7 +54,7 @@ Bool __stdcall Net::PushServerHandler::SubscribeHandler(NotNullPtr<Net::WebServe
 {
 	Net::PushServerHandler *me = (Net::PushServerHandler*)svc;
 	UOSInt dataLen;
-	const UInt8 *data = req->GetReqData(&dataLen);
+	const UInt8 *data = req->GetReqData(dataLen);
 	Text::JSONBase *json = Text::JSONBase::ParseJSONBytes(data, dataLen);
 	if (json)
 	{
@@ -116,7 +116,7 @@ Bool __stdcall Net::PushServerHandler::UnsubscribeHandler(NotNullPtr<Net::WebSer
 {
 	Net::PushServerHandler *me = (Net::PushServerHandler*)svc;
 	UOSInt dataLen;
-	const UInt8 *data = req->GetReqData(&dataLen);
+	const UInt8 *data = req->GetReqData(dataLen);
 	Text::JSONBase *json = Text::JSONBase::ParseJSONBytes(data, dataLen);
 	if (json)
 	{

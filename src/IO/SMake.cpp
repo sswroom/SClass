@@ -781,7 +781,7 @@ void IO::SMake::CompileTask(void *userObj)
 	MemFree(req);
 }
 
-void IO::SMake::CompileObject(Text::CString cmd)
+void IO::SMake::CompileObject(Text::CStringNN cmd)
 {
 	CompileReq *req = MemAlloc(CompileReq, 1);
 	req->cmd = Text::String::New(cmd);
@@ -1572,7 +1572,7 @@ void IO::SMake::CleanFiles()
 	}
 }
 
-UOSInt IO::SMake::GetProgList(Data::ArrayList<Text::String*> *progList)
+UOSInt IO::SMake::GetProgList(NotNullPtr<Data::ArrayList<Text::String*>> progList)
 {
 //	Data::ArrayList<Text::String *> *names = this->progMap->GetKeys();
 	Text::String *prog;

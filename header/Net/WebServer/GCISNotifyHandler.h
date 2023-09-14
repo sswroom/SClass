@@ -12,17 +12,17 @@ namespace Net
 		class GCISNotifyHandler : public WebServiceHandler
 		{
 		public:
-			typedef void (__stdcall *MailHandler)(void *userObj, Net::NetConnection *cli, Text::MIMEObj::MailMessage *msg);
+			typedef void (__stdcall *MailHandler)(void *userObj, NotNullPtr<Net::NetConnection> cli, NotNullPtr<const Text::MIMEObj::MailMessage> msg);
 		private:
 			MailHandler hdlr;
 			void *hdlrObj;
-			IO::LogTool *log;
+			NotNullPtr<IO::LogTool> log;
 
 			static Bool __stdcall NotifyFunc(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, WebServiceHandler *me);
 			static Bool __stdcall BatchUplFunc(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, WebServiceHandler *me);
 
 		public:
-			GCISNotifyHandler(Text::CStringNN notifyPath, Text::CStringNN batchUplPath, MailHandler hdlr, void *userObj, IO::LogTool *log);
+			GCISNotifyHandler(Text::CStringNN notifyPath, Text::CStringNN batchUplPath, MailHandler hdlr, void *userObj, NotNullPtr<IO::LogTool> log);
 			virtual ~GCISNotifyHandler();
 		};
 	}

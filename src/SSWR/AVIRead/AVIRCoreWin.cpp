@@ -204,10 +204,14 @@ void SSWR::AVIRead::AVIRCoreWin::OpenObject(IO::ParsedObject *pobj)
 		break;
 	case IO::ParserType::Smake:
 		{
-			SSWR::AVIRead::AVIRSMakeForm *frm;
-			NEW_CLASS(frm, SSWR::AVIRead::AVIRSMakeForm(0, this->ui, *this, (IO::SMake*)pobj));
-			InitForm(frm);
-			frm->Show();
+			NotNullPtr<IO::SMake> smake;
+			if (smake.Set((IO::SMake*)pobj))
+			{
+				SSWR::AVIRead::AVIRSMakeForm *frm;
+				NEW_CLASS(frm, SSWR::AVIRead::AVIRSMakeForm(0, this->ui, *this, smake));
+				InitForm(frm);
+				frm->Show();
+			}
 		}
 		break;
 	case IO::ParserType::ASN1Data:

@@ -87,7 +87,7 @@ void __stdcall SSWR::AVIRead::AVIRSMakeForm::OnProgGroupSelChg(void *userObj)
 	}
 }
 
-SSWR::AVIRead::AVIRSMakeForm::AVIRSMakeForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, IO::SMake *smake) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRSMakeForm::AVIRSMakeForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<IO::SMake> smake) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
 	this->smake = smake;
@@ -153,7 +153,7 @@ SSWR::AVIRead::AVIRSMakeForm::AVIRSMakeForm(UI::GUIClientControl *parent, NotNul
 	Data::ArrayList<Text::String*> progList;
 	NotNullPtr<Text::String> progName;
 	UOSInt i = 0;
-	UOSInt j = this->smake->GetProgList(&progList);
+	UOSInt j = this->smake->GetProgList(progList);
 	while (i < j)
 	{
 		progName = Text::String::OrEmpty(progList.GetItem(i));
@@ -183,7 +183,7 @@ SSWR::AVIRead::AVIRSMakeForm::AVIRSMakeForm(UI::GUIClientControl *parent, NotNul
 
 SSWR::AVIRead::AVIRSMakeForm::~AVIRSMakeForm()
 {
-	DEL_CLASS(this->smake);
+	this->smake.Delete();
 }
 
 void SSWR::AVIRead::AVIRSMakeForm::OnMonitorChanged()

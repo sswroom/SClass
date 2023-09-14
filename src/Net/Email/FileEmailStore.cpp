@@ -170,7 +170,7 @@ Int64 Net::Email::FileEmailStore::NextEmailId()
 	return id;
 }
 
-Bool Net::Email::FileEmailStore::NewEmail(Int64 id, NotNullPtr<const Net::SocketUtil::AddressInfo> remoteAddr, Text::CString serverName, const Net::Email::SMTPServer::MailStatus *mail)
+Bool Net::Email::FileEmailStore::NewEmail(Int64 id, NotNullPtr<const Net::SocketUtil::AddressInfo> remoteAddr, Text::CStringNN serverName, NotNullPtr<const Net::Email::SMTPServer::MailStatus> mail)
 {
 	Data::DateTime currTime;
 	EmailInfo *email;
@@ -255,7 +255,7 @@ Bool Net::Email::FileEmailStore::NewEmail(Int64 id, NotNullPtr<const Net::Socket
 	return true;
 }
 
-Bool Net::Email::FileEmailStore::NewEmail(Int64 id, NotNullPtr<const Net::SocketUtil::AddressInfo> remoteAddr, Text::CString serverName, const Text::MIMEObj::MailMessage *mail)
+Bool Net::Email::FileEmailStore::NewEmail(Int64 id, NotNullPtr<const Net::SocketUtil::AddressInfo> remoteAddr, Text::CStringNN serverName, NotNullPtr<const Text::MIMEObj::MailMessage> mail)
 {
 	Data::DateTime currTime;
 	UOSInt i;

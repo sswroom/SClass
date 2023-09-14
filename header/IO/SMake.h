@@ -70,7 +70,7 @@ namespace IO
 
 		static void __stdcall CompileTask(void *userObj);
 		static void __stdcall TestTask(void *userObj);
-		void CompileObject(Text::CString cmd);
+		void CompileObject(Text::CStringNN cmd);
 		void CompileObject(NotNullPtr<Text::String> cmd);
 		Bool CompileProgInternal(NotNullPtr<const ProgramItem> prog, Bool asmListing, Bool enableTest);
 		Bool TestProg(NotNullPtr<const ProgramItem> prog, NotNullPtr<Text::StringBuilderUTF8> sb);
@@ -102,7 +102,7 @@ namespace IO
 
 		void CleanFiles();
 
-		UOSInt GetProgList(Data::ArrayList<Text::String*> *progList); //No release
+		UOSInt GetProgList(NotNullPtr<Data::ArrayList<Text::String*>> progList); //No release
 		Bool IsProgGroup(Text::CStringNN progName) const;
 		const ProgramItem *GetProgItem(Text::CStringNN progName) const;
 	};

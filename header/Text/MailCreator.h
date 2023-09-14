@@ -44,7 +44,7 @@ namespace Text
 		Bool SetContentFile(Text::CStringNN filePath);
 		void AddAttachment(Text::CStringNN fileName);
 
-		Text::MIMEObj::MailMessage *CreateMail();
+		NotNullPtr<Text::MIMEObj::MailMessage> CreateMail();
 	};
 }
 #endif

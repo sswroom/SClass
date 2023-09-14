@@ -490,10 +490,10 @@ void Text::MailCreator::AddAttachment(Text::CStringNN fileName)
 	this->attachName.Add(Text::String::New(fileName.v, fileName.leng));
 }
 
-Text::MIMEObj::MailMessage *Text::MailCreator::CreateMail()
+NotNullPtr<Text::MIMEObj::MailMessage> Text::MailCreator::CreateMail()
 {
-	Text::MIMEObj::MailMessage *msg;
-	NEW_CLASS(msg, Text::MIMEObj::MailMessage());
+	NotNullPtr<Text::MIMEObj::MailMessage> msg;
+	NEW_CLASSNN(msg, Text::MIMEObj::MailMessage());
 	if (this->from)
 	{
 		msg->AddHeader(UTF8STRC("From"), this->from->v, this->from->leng);

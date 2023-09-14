@@ -36,7 +36,7 @@ Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::UploadReq(SSWR::Benchmark::
 	{
 		UOSInt leng;
 		const UInt8 *data;
-		data = req->GetReqData(&leng);
+		data = req->GetReqData(leng);
 		if (leng <= 128 || leng >= 65536)
 		{
 			printf("leng out of range: %d\r\n", (Int32)leng);
@@ -223,7 +223,7 @@ Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::CPUInfoReq(SSWR::Benchmark:
 		{
 			req->GetHeader(fileName, CSTR("Content-Length"), 512);
 			UOSInt reqSize;
-			const UInt8 *reqData = req->GetReqData(&reqSize);
+			const UInt8 *reqData = req->GetReqData(reqSize);
 			if (reqSize > 0 && reqSize <= 128)
 			{
 				sptr = IO::Path::GetProcessFileName(path);
@@ -254,13 +254,13 @@ Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::CPUInfoReq(SSWR::Benchmark:
 			const UInt8 *fileBuff;
 			if ((fileNameEnd = req->GetQueryValueStr(CSTR("file"), fileName, 512)) != 0)
 			{
-				fileBuff = req->GetReqData(&fileSize);
+				fileBuff = req->GetReqData(fileSize);
 				Text::StrConcatC(fileName, UTF8STRC("cpuinfo"));
 			}
 			else
 			{
 				req->ParseHTTPForm();
-				fileBuff = req->GetHTTPFormFile(CSTR("uploadfile"), 0, fileName, sizeof(fileName), &fileNameEnd, &fileSize);
+				fileBuff = req->GetHTTPFormFile(CSTR("uploadfile"), 0, fileName, sizeof(fileName), &fileNameEnd, fileSize);
 			}
 			if (fileBuff == 0)
 			{

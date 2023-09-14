@@ -75,9 +75,10 @@ void __stdcall Net::Email::SMTPServer::ClientEvent(NotNullPtr<Net::TCPClient> cl
 void __stdcall Net::Email::SMTPServer::ClientData(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData, const Data::ByteArrayR &srcBuff)
 {
 	Net::Email::SMTPServer *me = (Net::Email::SMTPServer*)userObj;
-	Net::Email::SMTPServer::MailStatus *cliStatus;
+	NotNullPtr<Net::Email::SMTPServer::MailStatus> cliStatus;
 	Data::ByteArrayR buff = srcBuff;
-	cliStatus = (Net::Email::SMTPServer::MailStatus*)cliData;
+	if (!cliStatus.Set((Net::Email::SMTPServer::MailStatus*)cliData))
+		return;
 	while (buff.GetSize() > 0)
 	{
 		if (cliStatus->buffSize + buff.GetSize() > 4096)
@@ -222,7 +223,7 @@ UOSInt Net::Email::SMTPServer::WriteMessage(NotNullPtr<Net::TCPClient> cli, Int3
 	return strLen;
 }*/
 
-void Net::Email::SMTPServer::ParseCmd(NotNullPtr<Net::TCPClient> cli, Net::Email::SMTPServer::MailStatus *cliStatus, const UTF8Char *cmd, UOSInt cmdLen, Text::LineBreakType lbt)
+void Net::Email::SMTPServer::ParseCmd(NotNullPtr<Net::TCPClient> cli, NotNullPtr<Net::Email::SMTPServer::MailStatus> cliStatus, const UTF8Char *cmd, UOSInt cmdLen, Text::LineBreakType lbt)
 {
 	if (cliStatus->loginMode)
 	{
@@ -467,7 +468,7 @@ void Net::Email::SMTPServer::ParseCmd(NotNullPtr<Net::TCPClient> cli, Net::Email
 	
 }
 
-Net::Email::SMTPServer::SMTPServer(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, UInt16 port, Net::Email::SMTPConn::ConnType connType, IO::LogTool *log, Text::CString domain, Text::CString serverName, MailHandler mailHdlr, LoginHandler loginHdlr, void *userObj, Bool autoStart) : cliMgr(60, ClientEvent, ClientData, this, 4, ClientTimeout)
+Net::Email::SMTPServer::SMTPServer(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, UInt16 port, Net::Email::SMTPConn::ConnType connType, IO::LogTool *log, Text::CStringNN domain, Text::CStringNN serverName, MailHandler mailHdlr, LoginHandler loginHdlr, void *userObj, Bool autoStart) : cliMgr(60, ClientEvent, ClientData, this, 4, ClientTimeout)
 {
 	this->sockf = sockf;
 	this->ssl = ssl;

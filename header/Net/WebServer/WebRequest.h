@@ -54,7 +54,7 @@ namespace Net
 			virtual Text::String *GetSHeader(Text::CStringNN name);
 			virtual UTF8Char *GetHeader(UTF8Char *sbuff, Text::CStringNN name, UOSInt buffLen);
 			virtual Bool GetHeaderC(NotNullPtr<Text::StringBuilderUTF8> sb, Text::CStringNN name);
-			virtual UOSInt GetHeaderNames(Data::ArrayList<Text::String*> *names);
+			virtual UOSInt GetHeaderNames(NotNullPtr<Data::ArrayList<Text::String*>> names);
 			UOSInt GetHeaderCnt();
 			Text::String *GetHeaderName(UOSInt index);
 			Text::String *GetHeaderValue(UOSInt index);
@@ -66,15 +66,15 @@ namespace Net
 			virtual Net::WebUtil::RequestMethod GetReqMethod() const;
 			virtual void ParseHTTPForm();
 			virtual Text::String *GetHTTPFormStr(Text::CStringNN name);
-			virtual const UInt8 *GetHTTPFormFile(Text::CStringNN formName, UOSInt index, UTF8Char *fileName, UOSInt fileNameBuffSize, UTF8Char **fileNameEnd, UOSInt *fileSize);
+			virtual const UInt8 *GetHTTPFormFile(Text::CStringNN formName, UOSInt index, UTF8Char *fileName, UOSInt fileNameBuffSize, UTF8Char **fileNameEnd, OptOut<UOSInt> fileSize);
 			virtual void GetRequestURLBase(NotNullPtr<Text::StringBuilderUTF8> sb);
 
 			virtual NotNullPtr<const Net::SocketUtil::AddressInfo> GetClientAddr() const;
-			virtual Net::NetConnection *GetNetConn() const;
+			virtual NotNullPtr<Net::NetConnection> GetNetConn() const;
 			virtual UInt16 GetClientPort() const;
 			virtual Bool IsSecure() const;
 			virtual Crypto::Cert::X509Cert *GetClientCert();
-			virtual const UInt8 *GetReqData(UOSInt *dataSize);
+			virtual const UInt8 *GetReqData(OutParam<UOSInt> dataSize);
 
 			Bool HasData();
 			void DataStart();

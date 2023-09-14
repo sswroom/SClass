@@ -24,7 +24,7 @@ Bool __stdcall Net::WebServer::GCISNotifyHandler::NotifyFunc(NotNullPtr<Net::Web
 		{
 			Bool failed = false;
 			UOSInt dataSize;
-			const UInt8 *content = req->GetReqData(&dataSize);
+			const UInt8 *content = req->GetReqData(dataSize);
 			Text::JSONBase *json = Text::JSONBase::ParseJSONBytes(content, dataSize);
 			Text::CString resultCd = CSTR("0000");
 			Text::CString resultMsg = CSTR("Request processed successfully.");
@@ -168,9 +168,9 @@ Bool __stdcall Net::WebServer::GCISNotifyHandler::NotifyFunc(NotNullPtr<Net::Web
 				}
 				if (!failed)
 				{
-					Text::MIMEObj::MailMessage *msg = mail.CreateMail();
+					NotNullPtr<Text::MIMEObj::MailMessage> msg = mail.CreateMail();
 					me->hdlr(me->hdlrObj, req->GetNetConn(), msg);
-					DEL_CLASS(msg);
+					msg.Delete();
 				}
 				//////////////////////////////
 			}
@@ -206,7 +206,7 @@ Bool __stdcall Net::WebServer::GCISNotifyHandler::NotifyFunc(NotNullPtr<Net::Web
 Bool __stdcall Net::WebServer::GCISNotifyHandler::BatchUplFunc(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, WebServiceHandler *me)
 {
 	UOSInt size;
-	const UInt8 *data = req->GetReqData(&size);
+	const UInt8 *data = req->GetReqData(size);
 	Text::StringBuilderUTF8 sb;
 	sb.AppendC(data, size);
 	printf("%s\r\n", sb.v);
@@ -228,7 +228,7 @@ Bool __stdcall Net::WebServer::GCISNotifyHandler::BatchUplFunc(NotNullPtr<Net::W
 	return true;
 }
 
-Net::WebServer::GCISNotifyHandler::GCISNotifyHandler(Text::CStringNN notifyPath, Text::CStringNN batchUplPath, MailHandler hdlr, void *userObj, IO::LogTool *log)
+Net::WebServer::GCISNotifyHandler::GCISNotifyHandler(Text::CStringNN notifyPath, Text::CStringNN batchUplPath, MailHandler hdlr, void *userObj, NotNullPtr<IO::LogTool> log)
 {
 	this->hdlr = hdlr;
 	this->hdlrObj = userObj;

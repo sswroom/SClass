@@ -543,7 +543,7 @@ void Net::WebServer::WebConnection::ProcessResponse()
 					{
 						const UInt8 *reqBuff;
 						UOSInt reqSize;
-						reqBuff = currReq->GetReqData(&reqSize);
+						reqBuff = currReq->GetReqData(reqSize);
 						if (reqBuff && reqSize > 0)
 						{
 							httpCli->Write(reqBuff, reqSize);

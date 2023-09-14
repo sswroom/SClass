@@ -30,7 +30,7 @@ void __stdcall OnForwardRequest(void *userObj, NotNullPtr<Net::WebServer::IWebRe
 	Data::ArrayList<Text::String *> headerNames;
 	Text::String *headerName;
 	UOSInt i = 0;
-	UOSInt j = req->GetHeaderNames(&headerNames);
+	UOSInt j = req->GetHeaderNames(headerNames);
 	while (i < j)
 	{
 		headerName = headerNames.GetItem(i);

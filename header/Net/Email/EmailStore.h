@@ -41,8 +41,8 @@ namespace Net
 			UOSInt GetAllEmails(Data::ArrayList<EmailInfo*> *emailList);
 
 			virtual Int64 NextEmailId() = 0;
-			virtual Bool NewEmail(Int64 id, NotNullPtr<const Net::SocketUtil::AddressInfo> remoteAddr, Text::CString serverName, const Net::Email::SMTPServer::MailStatus *mail) = 0;
-			virtual Bool NewEmail(Int64 id, NotNullPtr<const Net::SocketUtil::AddressInfo> remoteAddr, Text::CString serverName, const Text::MIMEObj::MailMessage *mail) = 0;
+			virtual Bool NewEmail(Int64 id, NotNullPtr<const Net::SocketUtil::AddressInfo> remoteAddr, Text::CStringNN serverName, NotNullPtr<const Net::Email::SMTPServer::MailStatus> mail) = 0;
+			virtual Bool NewEmail(Int64 id, NotNullPtr<const Net::SocketUtil::AddressInfo> remoteAddr, Text::CStringNN serverName, NotNullPtr<const Text::MIMEObj::MailMessage> mail) = 0;
 			virtual IO::StreamData *OpenEmailData(Int64 id) = 0;
 			virtual const UTF8Char *GetEmailUid(Int64 id) = 0;
 			virtual UOSInt GetRcptList(Int64 id, Data::ArrayList<Text::String*> *rcptList) = 0;

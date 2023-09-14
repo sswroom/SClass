@@ -396,7 +396,7 @@ Bool Net::WebServer::WebRequest::GetHeaderC(NotNullPtr<Text::StringBuilderUTF8> 
 	return true;
 }
 
-UOSInt Net::WebServer::WebRequest::GetHeaderNames(Data::ArrayList<Text::String*> *names)
+UOSInt Net::WebServer::WebRequest::GetHeaderNames(NotNullPtr<Data::ArrayList<Text::String*>> names)
 {
 	UOSInt i = 0;
 	UOSInt j = this->headers.GetCount();
@@ -539,7 +539,7 @@ Text::String *Net::WebServer::WebRequest::GetHTTPFormStr(Text::CStringNN name)
 	return this->formMap->GetC(name);
 }
 
-const UInt8 *Net::WebServer::WebRequest::GetHTTPFormFile(Text::CStringNN formName, UOSInt index, UTF8Char *fileName, UOSInt fileNameBuffSize, UTF8Char **fileNameEnd, UOSInt *fileSize)
+const UInt8 *Net::WebServer::WebRequest::GetHTTPFormFile(Text::CStringNN formName, UOSInt index, UTF8Char *fileName, UOSInt fileNameBuffSize, UTF8Char **fileNameEnd, OptOut<UOSInt> fileSize)
 {
 	if (this->formFileList == 0)
 		return 0;
@@ -552,10 +552,7 @@ const UInt8 *Net::WebServer::WebRequest::GetHTTPFormFile(Text::CStringNN formNam
 		{
 			if (index == 0)
 			{
-				if (fileSize)
-				{
-					*fileSize = info->leng;
-				}
+				fileSize.Set(info->leng);
 				if (fileName)
 				{
 					if (fileNameEnd)
@@ -618,9 +615,9 @@ NotNullPtr<const Net::SocketUtil::AddressInfo> Net::WebServer::WebRequest::GetCl
 	return this->cliAddr;
 }
 
-Net::NetConnection *Net::WebServer::WebRequest::GetNetConn() const
+NotNullPtr<Net::NetConnection> Net::WebServer::WebRequest::GetNetConn() const
 {
-	return this->cli.Ptr();
+	return this->cli;
 }
 
 UInt16 Net::WebServer::WebRequest::GetClientPort() const
@@ -653,16 +650,16 @@ Crypto::Cert::X509Cert *Net::WebServer::WebRequest::GetClientCert()
 	return 0;
 }
 
-const UInt8 *Net::WebServer::WebRequest::GetReqData(UOSInt *dataSize)
+const UInt8 *Net::WebServer::WebRequest::GetReqData(OutParam<UOSInt> dataSize)
 {
 	if (this->reqData == 0)
 	{
-		*dataSize = 0;
+		dataSize.Set(0);
 		return 0;
 	}
 	else
 	{
-		*dataSize = this->reqCurrSize;
+		dataSize.Set(this->reqCurrSize);
 		return this->reqData;
 	}
 }

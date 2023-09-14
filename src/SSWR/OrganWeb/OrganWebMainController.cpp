@@ -3980,7 +3980,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoUpload(NotNullPtr
 	writer.WriteLineC(UTF8STRC("<tr><td>File Name</td><td>File Size</td><td>Image Size</td></tr>"));
 	while (true)
 	{
-		fileCont = req->GetHTTPFormFile(CSTR("file"), i, fileName, sizeof(fileName), &fileNameEnd, &fileSize);
+		fileCont = req->GetHTTPFormFile(CSTR("file"), i, fileName, sizeof(fileName), &fileNameEnd, fileSize);
 		if (fileCont == 0)
 		{
 			break;
@@ -4064,7 +4064,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoUpload2(NotNullPt
 
 	while (true)
 	{
-		fileCont = req->GetHTTPFormFile(CSTR("file"), i, fileName, sizeof(fileName), &fileNameEnd, &fileSize);
+		fileCont = req->GetHTTPFormFile(CSTR("file"), i, fileName, sizeof(fileName), &fileNameEnd, fileSize);
 		if (fileCont == 0)
 		{
 			break;
@@ -4111,7 +4111,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoUploadD(NotNullPt
 	Text::String *location = req->GetSHeader(CSTR("X-Location"));
 
 	UOSInt dataSize;
-	const UInt8 *imgData = req->GetReqData(&dataSize);
+	const UInt8 *imgData = req->GetReqData(dataSize);
 	if (imgData == 0 || dataSize < 100 || dataSize > 104857600)
 	{
 		resp->ResponseError(req, Net::WebStatus::SC_BAD_REQUEST);

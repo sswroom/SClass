@@ -162,7 +162,7 @@ void __stdcall SSWR::AVIRead::AVIREmailServerForm::OnGCISStartClicked(void *user
 		Crypto::Cert::X509Cert *issuerCert = Crypto::Cert::CertUtil::FindIssuer(gcisSSLCert);
 		ssl->ServerSetCertsASN1(gcisSSLCert, gcisSSLKey, issuerCert);
 		SDEL_CLASS(issuerCert);
-		NEW_CLASS(me->gcisHdlr, Net::WebServer::GCISNotifyHandler(sb.ToCString(), sb2.ToCString(), OnGCISMailReceived, me, &me->log));
+		NEW_CLASS(me->gcisHdlr, Net::WebServer::GCISNotifyHandler(sb.ToCString(), sb2.ToCString(), OnGCISMailReceived, me, me->log));
 		NEW_CLASS(me->gcisListener, Net::WebServer::WebListener(me->core->GetSocketFactory(), ssl, me->gcisHdlr, port, 60, 2, CSTR("SSWRGCIS/1.0"), false, Net::WebServer::KeepAlive::Default, true));
 		if (me->gcisListener->IsError())
 		{
@@ -228,7 +228,7 @@ void __stdcall SSWR::AVIRead::AVIREmailServerForm::OnEmailDblClicked(void *userO
 	}
 }
 
-UTF8Char *__stdcall SSWR::AVIRead::AVIREmailServerForm::OnMailReceived(UTF8Char *queryId, void *userObj, NotNullPtr<Net::TCPClient> cli, Net::Email::SMTPServer::MailStatus *mail)
+UTF8Char *__stdcall SSWR::AVIRead::AVIREmailServerForm::OnMailReceived(UTF8Char *queryId, void *userObj, NotNullPtr<Net::TCPClient> cli, NotNullPtr<const Net::Email::SMTPServer::MailStatus> mail)
 {
 	SSWR::AVIRead::AVIREmailServerForm *me = (SSWR::AVIRead::AVIREmailServerForm*)userObj;
 	UTF8Char sbuff[32];
@@ -250,7 +250,7 @@ UTF8Char *__stdcall SSWR::AVIRead::AVIREmailServerForm::OnMailReceived(UTF8Char 
 	return Text::StrInt64(queryId, id);
 }
 
-void __stdcall SSWR::AVIRead::AVIREmailServerForm::OnGCISMailReceived(void *userObj, Net::NetConnection *cli, Text::MIMEObj::MailMessage *mail)
+void __stdcall SSWR::AVIRead::AVIREmailServerForm::OnGCISMailReceived(void *userObj, NotNullPtr<Net::NetConnection> cli, NotNullPtr<const Text::MIMEObj::MailMessage> mail)
 {
 	SSWR::AVIRead::AVIREmailServerForm *me = (SSWR::AVIRead::AVIREmailServerForm*)userObj;
 	UTF8Char sbuff[32];
