@@ -369,7 +369,7 @@ IO::ParsedObject *Parser::FileParser::CSVParser::ParseFileHdr(NotNullPtr<IO::Str
 	else if (latCol != INVALID_INDEX && lonCol != INVALID_INDEX)
 	{
 		Map::VectorLayer *lyr;
-		Math::Geometry::Point *pt;
+		NotNullPtr<Math::Geometry::Point> pt;
 		UOSInt i;
 		UOSInt nameCol = 0;
 
@@ -391,7 +391,7 @@ IO::ParsedObject *Parser::FileParser::CSVParser::ParseFileHdr(NotNullPtr<IO::Str
 		{
 			if ((UOSInt)currCol == Text::StrCSVSplit(tmpUArr2, currCol + 1, sbuff))
 			{
-				NEW_CLASS(pt, Math::Geometry::Point(csys->GetSRID(), Text::StrToDouble(tmpUArr2[lonCol]), Text::StrToDouble(tmpUArr2[latCol])));
+				NEW_CLASSNN(pt, Math::Geometry::Point(csys->GetSRID(), Text::StrToDouble(tmpUArr2[lonCol]), Text::StrToDouble(tmpUArr2[latCol])));
 				lyr->AddVector(pt, (const UTF8Char**)tmpUArr2);
 			}
 		}

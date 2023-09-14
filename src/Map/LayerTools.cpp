@@ -158,7 +158,9 @@ Map::VectorLayer *Map::LayerTools::CombineLayers(Data::ArrayList<Map::MapDrawLay
 
 				j++;
 			}
-			newLyr->AddVector(lyr->GetNewVectorById(sess, id), namesArr);
+			NotNullPtr<Math::Geometry::Vector2D> vec;
+			if (vec.Set(lyr->GetNewVectorById(sess, id)))
+				newLyr->AddVector(vec, namesArr);
 		}
 		lyr->EndGetObject(sess);
 		i++;

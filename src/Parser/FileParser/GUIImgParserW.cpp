@@ -273,7 +273,7 @@ IO::ParsedObject *Parser::FileParser::GUIImgParser::ParseFileHdr(NotNullPtr<IO::
 		if (img->exif && img->exif->GetGeoBounds(img->info.dispSize, &srid, &min.x, &min.y, &max.x, &max.y))
 		{
 			Map::VectorLayer *lyr;
-			Math::Geometry::VectorImage *vimg;
+			NotNullPtr<Math::Geometry::VectorImage> vimg;
 			Media::SharedImage *simg;
 			if (srid == 0)
 			{
@@ -284,7 +284,7 @@ IO::ParsedObject *Parser::FileParser::GUIImgParser::ParseFileHdr(NotNullPtr<IO::
 			img->To32bpp();
 			
 			NEW_CLASS(simg, Media::SharedImage(imgList, true));
-			NEW_CLASS(vimg, Math::Geometry::VectorImage(srid, simg, min, max, false, fd->GetFullName().Ptr(), 0, 0));
+			NEW_CLASSNN(vimg, Math::Geometry::VectorImage(srid, simg, min, max, false, fd->GetFullName().Ptr(), 0, 0));
 			lyr->AddVector(vimg, (const UTF8Char**)0);
 			DEL_CLASS(simg);
 			
@@ -344,14 +344,14 @@ IO::ParsedObject *Parser::FileParser::GUIImgParser::ParseFileHdr(NotNullPtr<IO::
 				if (valid && rotX == 0 && rotY == 0)
 				{
 					Map::VectorLayer *lyr;
-					Math::Geometry::VectorImage *vimg;
+					NotNullPtr<Math::Geometry::VectorImage> vimg;
 					Media::SharedImage *simg;
 					
 					NotNullPtr<Math::CoordinateSystem> csys = Math::CoordinateSystemManager::CreateDefaultCsys();
 					NEW_CLASS(lyr, Map::VectorLayer(Map::DRAW_LAYER_IMAGE, fd->GetFullName(), 0, 0, csys, 0, 0, 0, 0, 0));
 					img->To32bpp();
 					NEW_CLASS(simg, Media::SharedImage(imgList, true));
-					NEW_CLASS(vimg, Math::Geometry::VectorImage(lyr->GetCoordinateSystem()->GetSRID(), simg, Math::Coord2DDbl(xCoord - xPxSize * 0.5, yCoord + yPxSize * (UOSInt2Double(img->info.dispSize.y) - 0.5)), Math::Coord2DDbl(xCoord + xPxSize * (UOSInt2Double(img->info.dispSize.x) - 0.5), yCoord - yPxSize * 0.5), false, fd->GetFullName().Ptr(), 0, 0));
+					NEW_CLASSNN(vimg, Math::Geometry::VectorImage(lyr->GetCoordinateSystem()->GetSRID(), simg, Math::Coord2DDbl(xCoord - xPxSize * 0.5, yCoord + yPxSize * (UOSInt2Double(img->info.dispSize.y) - 0.5)), Math::Coord2DDbl(xCoord + xPxSize * (UOSInt2Double(img->info.dispSize.x) - 0.5), yCoord - yPxSize * 0.5), false, fd->GetFullName().Ptr(), 0, 0));
 					lyr->AddVector(vimg, (const UTF8Char**)0);
 					DEL_CLASS(simg);
 					

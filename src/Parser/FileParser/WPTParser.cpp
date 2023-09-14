@@ -43,7 +43,7 @@ IO::ParsedObject *Parser::FileParser::WPTParser::ParseFileHdr(NotNullPtr<IO::Str
 	UTF8Char *sptr;
 	UTF8Char *tmpArr[16];
 	Map::VectorLayer *lyr = 0;
-	Math::Geometry::PointZ *pt;
+	NotNullPtr<Math::Geometry::PointZ> pt;
 	Bool valid;
 
 	if (!fd->GetFullName()->EndsWithICase(UTF8STRC("WPT")))
@@ -82,7 +82,7 @@ IO::ParsedObject *Parser::FileParser::WPTParser::ParseFileHdr(NotNullPtr<IO::Str
 		{
 			if (Text::StrSplitTrim(tmpArr, 16, sbuff, ',') == 16)
 			{
-				NEW_CLASS(pt, Math::Geometry::PointZ(4326, Text::StrToDouble(tmpArr[3]), Text::StrToDouble(tmpArr[2]), Text::StrToDouble(tmpArr[14]) / 3.2808333333333333333333333333333));
+				NEW_CLASSNN(pt, Math::Geometry::PointZ(4326, Text::StrToDouble(tmpArr[3]), Text::StrToDouble(tmpArr[2]), Text::StrToDouble(tmpArr[14]) / 3.2808333333333333333333333333333));
 				cols[0] = tmpArr[1];
 				cols[1] = tmpArr[10];
 				lyr->AddVector(pt, (const UTF8Char**)cols);

@@ -98,8 +98,8 @@ Bool __stdcall SSWR::AVIRead::AVIRGISEditImageForm::OnMouseUp(void *userObj, Mat
 		Math::Coord2DDbl pt1 = me->navi->ScnXY2MapXY(scnPos);
 
 		Map::GetObjectSess *sess = me->lyr->BeginGetObject();
-		Math::Geometry::VectorImage *img = (Math::Geometry::VectorImage*)me->lyr->GetNewVectorById(sess, me->currImage);
-		if (img)
+		NotNullPtr<Math::Geometry::VectorImage> img;
+		if (img.Set((Math::Geometry::VectorImage*)me->lyr->GetNewVectorById(sess, me->currImage)))
 		{
 			if (pt1.y > me->imgMin.y)
 			{
@@ -131,8 +131,8 @@ Bool __stdcall SSWR::AVIRead::AVIRGISEditImageForm::OnMouseUp(void *userObj, Mat
 		Math::Coord2DDbl pt1 = me->navi->ScnXY2MapXY(scnPos);
 
 		Map::GetObjectSess *sess = me->lyr->BeginGetObject();
-		Math::Geometry::VectorImage *img = (Math::Geometry::VectorImage*)me->lyr->GetNewVectorById(sess, me->currImage);
-		if (img)
+		NotNullPtr<Math::Geometry::VectorImage> img;
+		if (img.Set((Math::Geometry::VectorImage*)me->lyr->GetNewVectorById(sess, me->currImage)))
 		{
 			if (pt1.y > me->imgMin.y)
 			{
@@ -171,8 +171,8 @@ Bool __stdcall SSWR::AVIRead::AVIRGISEditImageForm::OnMouseUp(void *userObj, Mat
 		Math::Coord2DDbl pt1 = me->navi->ScnXY2MapXY(scnPos);
 
 		Map::GetObjectSess *sess = me->lyr->BeginGetObject();
-		Math::Geometry::VectorImage *img = (Math::Geometry::VectorImage*)me->lyr->GetNewVectorById(sess, me->currImage);
-		if (img)
+		NotNullPtr<Math::Geometry::VectorImage> img;
+		if (img.Set((Math::Geometry::VectorImage*)me->lyr->GetNewVectorById(sess, me->currImage)))
 		{
 			pt1.y = me->imgMin.y;
 			y2 = me->imgMax.y;
@@ -204,8 +204,8 @@ Bool __stdcall SSWR::AVIRead::AVIRGISEditImageForm::OnMouseUp(void *userObj, Mat
 		Math::Coord2DDbl pt1 = me->navi->ScnXY2MapXY(scnPos);
 
 		Map::GetObjectSess *sess = me->lyr->BeginGetObject();
-		Math::Geometry::VectorImage *img = (Math::Geometry::VectorImage*)me->lyr->GetNewVectorById(sess, me->currImage);
-		if (img)
+		NotNullPtr<Math::Geometry::VectorImage> img;
+		if (img.Set((Math::Geometry::VectorImage*)me->lyr->GetNewVectorById(sess, me->currImage)))
 		{
 			if (pt1.y < me->imgMax.y)
 			{
@@ -244,8 +244,8 @@ Bool __stdcall SSWR::AVIRead::AVIRGISEditImageForm::OnMouseUp(void *userObj, Mat
 		Math::Coord2DDbl pt1 = me->navi->ScnXY2MapXY(scnPos);
 
 		Map::GetObjectSess *sess = me->lyr->BeginGetObject();
-		Math::Geometry::VectorImage *img = (Math::Geometry::VectorImage*)me->lyr->GetNewVectorById(sess, me->currImage);
-		if (img)
+		NotNullPtr<Math::Geometry::VectorImage> img;
+		if (img.Set((Math::Geometry::VectorImage*)me->lyr->GetNewVectorById(sess, me->currImage)))
 		{
 			if (pt1.y < me->imgMax.y)
 			{
@@ -277,8 +277,8 @@ Bool __stdcall SSWR::AVIRead::AVIRGISEditImageForm::OnMouseUp(void *userObj, Mat
 		Math::Coord2DDbl pt1 = me->navi->ScnXY2MapXY(scnPos);
 
 		Map::GetObjectSess *sess = me->lyr->BeginGetObject();
-		Math::Geometry::VectorImage *img = (Math::Geometry::VectorImage*)me->lyr->GetNewVectorById(sess, me->currImage);
-		if (img)
+		NotNullPtr<Math::Geometry::VectorImage> img;
+		if (img.Set((Math::Geometry::VectorImage*)me->lyr->GetNewVectorById(sess, me->currImage)))
 		{
 			if (pt1.y < me->imgMax.y)
 			{
@@ -317,8 +317,8 @@ Bool __stdcall SSWR::AVIRead::AVIRGISEditImageForm::OnMouseUp(void *userObj, Mat
 		Math::Coord2DDbl pt1 = me->navi->ScnXY2MapXY(scnPos);
 
 		Map::GetObjectSess *sess = me->lyr->BeginGetObject();
-		Math::Geometry::VectorImage *img = (Math::Geometry::VectorImage*)me->lyr->GetNewVectorById(sess, me->currImage);
-		if (img)
+		NotNullPtr<Math::Geometry::VectorImage> img;
+		if (img.Set((Math::Geometry::VectorImage*)me->lyr->GetNewVectorById(sess, me->currImage)))
 		{
 			pt1.y = me->imgMin.y;
 			y2 = me->imgMax.y;
@@ -350,8 +350,8 @@ Bool __stdcall SSWR::AVIRead::AVIRGISEditImageForm::OnMouseUp(void *userObj, Mat
 		Math::Coord2DDbl pt1 = me->navi->ScnXY2MapXY(scnPos);
 
 		Map::GetObjectSess *sess = me->lyr->BeginGetObject();
-		Math::Geometry::VectorImage *img = (Math::Geometry::VectorImage*)me->lyr->GetNewVectorById(sess, me->currImage);
-		if (img)
+		NotNullPtr<Math::Geometry::VectorImage> img;
+		if (img.Set((Math::Geometry::VectorImage*)me->lyr->GetNewVectorById(sess, me->currImage)))
 		{
 			if (pt1.y > me->imgMin.y)
 			{
@@ -389,8 +389,8 @@ Bool __stdcall SSWR::AVIRead::AVIRGISEditImageForm::OnMouseUp(void *userObj, Mat
 		Math::Coord2DDbl pt2 = me->navi->ScnXY2MapXY(scnPos - me->downPos);
 
 		Map::GetObjectSess *sess = me->lyr->BeginGetObject();
-		Math::Geometry::VectorImage *img = (Math::Geometry::VectorImage*)me->lyr->GetNewVectorById(sess, me->currImage);
-		if (img)
+		NotNullPtr<Math::Geometry::VectorImage> img;
+		if (img.Set((Math::Geometry::VectorImage*)me->lyr->GetNewVectorById(sess, me->currImage)))
 		{
 			img->SetBounds(me->imgMin.x + pt2.x - pt1.x, me->imgMin.y + pt2.y - pt1.y, me->imgMax.x + pt2.x - pt1.x, me->imgMax.y + pt2.y - pt1.y);
 			me->lyr->ReplaceVector(me->currImage, img);

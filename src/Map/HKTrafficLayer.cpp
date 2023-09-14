@@ -1270,7 +1270,7 @@ Map::MapDrawLayer *Map::HKTrafficLayer::GetNodePoints()
 	UTF8Char sbuff[32];
 	const UTF8Char *sptr = sbuff;
 	const UTF8Char *col = (const UTF8Char*)"id";
-	Math::Geometry::Point *pt;
+	NotNullPtr<Math::Geometry::Point> pt;
 	NotNullPtr<Math::CoordinateSystem> csys;
 	if (!csys.Set(Math::CoordinateSystemManager::CreateProjCoordinateSystemDefName(Math::CoordinateSystemManager::PCST_HK80)))
 		return 0;
@@ -1279,7 +1279,7 @@ Map::MapDrawLayer *Map::HKTrafficLayer::GetNodePoints()
 	OSInt j = sizeof(nodeTable) / sizeof(nodeTable[0]);
 	while (i < j)
 	{
-		NEW_CLASS(pt, Math::Geometry::Point(2326, nodeTable[i].x, nodeTable[i].y));
+		NEW_CLASSNN(pt, Math::Geometry::Point(2326, nodeTable[i].x, nodeTable[i].y));
 		Text::StrInt32(sbuff, nodeTable[i].id);
 		layer->AddVector(pt, &sptr);
 		i++;

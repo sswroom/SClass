@@ -392,7 +392,7 @@ Bool Map::MapDrawLayer::QueryInfos(Math::Coord2DDbl coord, Data::ArrayList<Math:
 	return false;
 }
 
-Int64 Map::MapDrawLayer::GetNearestObjectId(GetObjectSess *session, Math::Coord2DDbl pt, Math::Coord2DDbl *nearPt)
+Int64 Map::MapDrawLayer::GetNearestObjectId(GetObjectSess *session, Math::Coord2DDbl pt, OptOut<Math::Coord2DDbl> nearPt)
 {
 	Data::ArrayListInt64 objIds;
 	Int32 blkSize = this->CalBlockSize();
@@ -427,11 +427,7 @@ Int64 Map::MapDrawLayer::GetNearestObjectId(GetObjectSess *session, Math::Coord2
 			DEL_CLASS(vec);
 		}
 	}
-
-	if (nearPt)
-	{
-		*nearPt = near;
-	}
+	nearPt.Set(near);
 	return nearObjId;
 }
 
@@ -518,6 +514,7 @@ Map::VectorLayer *Map::MapDrawLayer::CreateEditableLayer()
 	Map::VectorLayer *lyr;
 	Data::ArrayListInt64 objIds;
 	Math::Geometry::Vector2D *vec;
+	NotNullPtr<Math::Geometry::Vector2D> nnvec;
 	NameArray *nameArr;
 	GetObjectSess *sess;
 	UOSInt i;
@@ -556,7 +553,7 @@ Map::VectorLayer *Map::MapDrawLayer::CreateEditableLayer()
 		{
 			vec = this->GetNewVectorById(sess, objIds.GetItem(i));
 		}
-		if (vec)
+		if (nnvec.Set(vec))
 		{
 			sptr = sbuff;
 			l = k;
@@ -573,7 +570,7 @@ Map::VectorLayer *Map::MapDrawLayer::CreateEditableLayer()
 					sptrs[l] = 0;
 				}
 			}
-			if (!lyr->AddVector(vec, sptrs))
+			if (!lyr->AddVector(nnvec, sptrs))
 			{
 				DEL_CLASS(vec);
 			}

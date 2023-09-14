@@ -53,7 +53,7 @@ Map::MapDrawLayer *Map::CSVMapParser::ParseAsPoint(NotNullPtr<IO::Stream> stm, U
 	if (latIndex != INVALID_INDEX && lonIndex != INVALID_INDEX)
 	{
 		Map::VectorLayer *lyr;
-		Math::Geometry::Point *pt;
+		NotNullPtr<Math::Geometry::Point> pt;
 		UOSInt i;
 
 		tmpcArr2 = MemAlloc(const UTF8Char*, totalCnt + 1);
@@ -69,7 +69,7 @@ Map::MapDrawLayer *Map::CSVMapParser::ParseAsPoint(NotNullPtr<IO::Stream> stm, U
 		{
 			if (totalCnt == Text::StrCSVSplit(tmpUArr2, totalCnt + 1, sbuff))
 			{
-				NEW_CLASS(pt, Math::Geometry::Point(csys->GetSRID(), Text::StrToDouble(tmpUArr2[lonIndex]), Text::StrToDouble(tmpUArr2[latIndex])));
+				NEW_CLASSNN(pt, Math::Geometry::Point(csys->GetSRID(), Text::StrToDouble(tmpUArr2[lonIndex]), Text::StrToDouble(tmpUArr2[latIndex])));
 				lyr->AddVector(pt, (const UTF8Char**)tmpUArr2);
 			}
 		}		

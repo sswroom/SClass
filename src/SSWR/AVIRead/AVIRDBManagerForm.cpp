@@ -219,7 +219,7 @@ Bool __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnMapMouseUp(void *userObj, Mat
 				mapPt = Math::CoordinateSystem::ConvertXYZ(csys, lyrCSys, Math::Vector3(mapPt, 0)).GetXY();
 			}
 			sess = me->dbLayer->BeginGetObject();
-			id = me->dbLayer->GetNearestObjectId(sess, mapPt, &mapPt);
+			id = me->dbLayer->GetNearestObjectId(sess, mapPt, mapPt);
 			me->lvMapRecord->ClearItems();
 			if (id == -1)
 			{

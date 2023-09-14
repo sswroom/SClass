@@ -189,7 +189,7 @@ void __stdcall SSWR::AVIRead::AVIRGISForm::FileHandler(void *userObj, NotNullPtr
 				Math::Coord2DDbl pt2;
 				Map::VectorLayer *lyr;
 				Media::SharedImage *simg;
-				Math::Geometry::VectorImage *vimg;
+				NotNullPtr<Math::Geometry::VectorImage> vimg;
 				Media::Image *stimg;
 				NEW_CLASS(lyr, Map::VectorLayer(Map::DRAW_LAYER_IMAGE, files[i]->ToCString(), 0, 0, Math::CoordinateSystemManager::CreateDefaultCsys(), 0, 0, 0, 0, CSTR_NULL));
 				stimg = ((Media::ImageList*)pobj)->GetImage(0, 0);
@@ -232,7 +232,7 @@ void __stdcall SSWR::AVIRead::AVIRGISForm::FileHandler(void *userObj, NotNullPtr
 					pt2 = me->mapCtrl->ScnXYD2MapXY(Math::Coord2DDbl(OSInt2Double(mousePos.x) + calcImgW * 0.5, OSInt2Double(mousePos.y) + calcImgH * 0.5));
 				}
 				NEW_CLASS(simg, Media::SharedImage((Media::ImageList*)pobj, true));
-				NEW_CLASS(vimg, Math::Geometry::VectorImage(me->env->GetSRID(), simg, pt1, pt2, pt2 - pt1, false, files[i].Ptr(), 0, 0));
+				NEW_CLASSNN(vimg, Math::Geometry::VectorImage(me->env->GetSRID(), simg, pt1, pt2, pt2 - pt1, false, files[i].Ptr(), 0, 0));
 				DEL_CLASS(simg);
 				lyr->AddVector(vimg, (const UTF8Char**)0);
 				layers->Add(lyr);
@@ -1344,11 +1344,12 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 	case MNU_GOOGLE_POLYLINE:
 		{
 			SSWR::AVIRead::AVIRGooglePolylineForm frm(0, this->ui, this->core);
-			if (frm.ShowDialog(this) == UI::GUIForm::DR_OK)
+			NotNullPtr<Math::Geometry::LineString> pl;
+			if (frm.ShowDialog(this) == UI::GUIForm::DR_OK && pl.Set(frm.GetPolyline()))
 			{
 				Map::VectorLayer *lyr;
 				NEW_CLASS(lyr, Map::VectorLayer(Map::DRAW_LAYER_POLYLINE, CSTR("Google Polyline"), 0, 0, Math::CoordinateSystemManager::CreateDefaultCsys(), 0, 0, 0, 0, CSTR_NULL));
-				lyr->AddVector(frm.GetPolyline(), (const UTF8Char**)0);
+				lyr->AddVector(pl, (const UTF8Char**)0);
 				this->AddLayer(lyr);
 			}
 		}

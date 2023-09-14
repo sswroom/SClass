@@ -145,7 +145,7 @@ namespace Map
 		virtual Bool CanQuery();
 		virtual Bool QueryInfos(Math::Coord2DDbl coord, Data::ArrayList<Math::Geometry::Vector2D*> *vecList, Data::ArrayList<UOSInt> *valueOfstList, Data::ArrayListNN<Text::String> *nameList, Data::ArrayList<Text::String*> *valueList);
 
-		Int64 GetNearestObjectId(GetObjectSess *session, Math::Coord2DDbl pt, Math::Coord2DDbl *nearPt);
+		Int64 GetNearestObjectId(GetObjectSess *session, Math::Coord2DDbl pt, OptOut<Math::Coord2DDbl> nearPt);
 		OSInt GetNearObjects(GetObjectSess *session, NotNullPtr<Data::ArrayList<ObjectInfo*>> objList, Math::Coord2DDbl pt, Double maxDist); //return nearest object if no object within distance
 		void FreeObjects(NotNullPtr<Data::ArrayList<ObjectInfo*>> objList);
 		Map::VectorLayer *CreateEditableLayer();

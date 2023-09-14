@@ -612,7 +612,7 @@ Map::MapDrawLayer::ObjectClass Map::VectorLayer::GetObjectClass() const
 	return Map::MapDrawLayer::OC_VECTOR_LAYER;
 }
 
-Bool Map::VectorLayer::VectorValid(Math::Geometry::Vector2D *vec)
+Bool Map::VectorLayer::VectorValid(NotNullPtr<Math::Geometry::Vector2D> vec)
 {
 	Math::Geometry::Vector2D::VectorType vecType;
 	switch (this->layerType)
@@ -656,7 +656,7 @@ Bool Map::VectorLayer::VectorValid(Math::Geometry::Vector2D *vec)
 	return true;
 }
 
-Bool Map::VectorLayer::AddVector(Math::Geometry::Vector2D *vec, Text::String **strs)
+Bool Map::VectorLayer::AddVector(NotNullPtr<Math::Geometry::Vector2D> vec, Text::String **strs)
 {
 	if (!this->VectorValid(vec))
 		return false;
@@ -702,7 +702,7 @@ Bool Map::VectorLayer::AddVector(Math::Geometry::Vector2D *vec, Text::String **s
 	return true;
 }
 
-Bool Map::VectorLayer::AddVector(Math::Geometry::Vector2D *vec, Text::PString *strs)
+Bool Map::VectorLayer::AddVector(NotNullPtr<Math::Geometry::Vector2D> vec, Text::PString *strs)
 {
 	if (!this->VectorValid(vec))
 		return false;
@@ -748,7 +748,7 @@ Bool Map::VectorLayer::AddVector(Math::Geometry::Vector2D *vec, Text::PString *s
 	return true;
 }
 
-Bool Map::VectorLayer::AddVector(Math::Geometry::Vector2D *vec, const UTF8Char **strs)
+Bool Map::VectorLayer::AddVector(NotNullPtr<Math::Geometry::Vector2D> vec, const UTF8Char **strs)
 {
 	if (!this->VectorValid(vec))
 		return false;
@@ -800,13 +800,13 @@ Bool Map::VectorLayer::SplitPolyline(Math::Coord2DDbl pt)
 	Int64 objId;
 	if (this->layerType != Map::DRAW_LAYER_POLYLINE)
 		return false;
-	objId = this->GetNearestObjectId(0, pt, &nearPt);
+	objId = this->GetNearestObjectId(0, pt, nearPt);
 	if (objId < 0)
 		return false;
 
 	Math::Geometry::Polyline *pl = (Math::Geometry::Polyline*)this->vectorList.GetItem((UOSInt)objId);
-	Math::Geometry::Polyline *pl2;
-	if ((pl2 = pl->SplitByPoint(pt)) != 0)
+	NotNullPtr<Math::Geometry::Polyline> pl2;
+	if (pl2.Set(pl->SplitByPoint(pt)))
 	{
 		this->vectorList.Add(pl2);
 		this->strList.Add(CopyStrs(this->strList.GetItem((UOSInt)objId)));
@@ -820,7 +820,7 @@ void Map::VectorLayer::OptimizePolylinePath()
 	if (this->layerType != Map::DRAW_LAYER_POLYLINE)
 		return;
 	const UTF8Char **tmpStr;
-	Math::Geometry::Polyline *tmpPL;
+	NotNullPtr<Math::Geometry::Polyline> tmpPL;
 
 	Math::Coord2DDbl pt;
 	Math::Coord2DDbl nearPt;
@@ -846,52 +846,53 @@ void Map::VectorLayer::OptimizePolylinePath()
 		while (i-- > 0)
 		{
 			tmpStr = this->strList.RemoveAt(i);
-			tmpPL = (Math::Geometry::Polyline*)this->vectorList.RemoveAt(i);
-
-			points = tmpPL->GetPointList(nPoints);
-			pt = *points;
-			objId = this->GetNearestObjectId(0, pt, &nearPt);
-			if (objId >= 0)
+			if (tmpPL.Set((Math::Geometry::Polyline*)this->vectorList.RemoveAt(i)))
 			{
-				ix = (Int32)(pt.x * 200000.0);
-				iy = (Int32)(pt.y * 200000.0);
-				nix = (Int32)(nearPt.x * 200000.0);
-				niy = (Int32)(nearPt.y * 200000.0);
-				if (ix == nix && iy == niy)
+				points = tmpPL->GetPointList(nPoints);
+				pt = *points;
+				objId = this->GetNearestObjectId(0, pt, nearPt);
+				if (objId >= 0)
 				{
-					Math::Geometry::Polyline *pl = (Math::Geometry::Polyline*)this->vectorList.GetItem((UOSInt)objId);
-					Math::Geometry::Polyline *pl2;
-					if ((pl2 = pl->SplitByPoint(pt)) != 0)
+					ix = (Int32)(pt.x * 200000.0);
+					iy = (Int32)(pt.y * 200000.0);
+					nix = (Int32)(nearPt.x * 200000.0);
+					niy = (Int32)(nearPt.y * 200000.0);
+					if (ix == nix && iy == niy)
 					{
-						this->vectorList.Add(pl2);
-						this->strList.Add(CopyStrs(this->strList.GetItem((UOSInt)objId)));
-						found = true;
+						Math::Geometry::Polyline *pl = (Math::Geometry::Polyline*)this->vectorList.GetItem((UOSInt)objId);
+						NotNullPtr<Math::Geometry::Polyline> pl2;
+						if (pl2.Set(pl->SplitByPoint(pt)))
+						{
+							this->vectorList.Add(pl2);
+							this->strList.Add(CopyStrs(this->strList.GetItem((UOSInt)objId)));
+							found = true;
+						}
 					}
 				}
-			}
 
-			pt = points[nPoints - 1];
-			objId = this->GetNearestObjectId(0, pt, &nearPt);
-			if (objId >= 0)
-			{
-				ix = (Int32)(pt.x * 200000.0);
-				iy = (Int32)(pt.y * 200000.0);
-				nix = (Int32)(nearPt.x * 200000.0);
-				niy = (Int32)(nearPt.y * 200000.0);
-				if (ix == nix && iy == niy)
+				pt = points[nPoints - 1];
+				objId = this->GetNearestObjectId(0, pt, nearPt);
+				if (objId >= 0)
 				{
-					Math::Geometry::Polyline *pl = (Math::Geometry::Polyline*)this->vectorList.GetItem((UOSInt)objId);
-					Math::Geometry::Polyline *pl2;
-					if ((pl2 = pl->SplitByPoint(pt)) != 0)
+					ix = (Int32)(pt.x * 200000.0);
+					iy = (Int32)(pt.y * 200000.0);
+					nix = (Int32)(nearPt.x * 200000.0);
+					niy = (Int32)(nearPt.y * 200000.0);
+					if (ix == nix && iy == niy)
 					{
-						this->vectorList.Add(pl2);
-						this->strList.Add(CopyStrs(this->strList.GetItem((UOSInt)objId)));
-						found = true;
+						Math::Geometry::Polyline *pl = (Math::Geometry::Polyline*)this->vectorList.GetItem((UOSInt)objId);
+						NotNullPtr<Math::Geometry::Polyline> pl2;
+						if (pl2.Set(pl->SplitByPoint(pt)))
+						{
+							this->vectorList.Add(pl2);
+							this->strList.Add(CopyStrs(this->strList.GetItem((UOSInt)objId)));
+							found = true;
+						}
 					}
 				}
+				this->strList.Add(tmpStr);
+				this->vectorList.Add(tmpPL);
 			}
-			this->strList.Add(tmpStr);
-			this->vectorList.Add(tmpPL);
 		}
 	}
 /*(	Bool found = true;
@@ -908,7 +909,7 @@ void Map::VectorLayer::OptimizePolylinePath()
 	}*/
 }
 
-void Map::VectorLayer::ReplaceVector(Int64 id, Math::Geometry::Vector2D *vec)
+void Map::VectorLayer::ReplaceVector(Int64 id, NotNullPtr<Math::Geometry::Vector2D> vec)
 {
 	if (this->vectorList.GetCount() <= (UInt64)id)
 	{

@@ -364,6 +364,7 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFileHdr(NotNullPtr<IO::Str
 		Math::Geometry::LineString *pl;
 		Math::Geometry::PointZ *pt;
 		Math::Geometry::Vector2D *vec;
+		NotNullPtr<Math::Geometry::Vector2D> nnvec;
 		Math::Coord2DDbl *ptList;
 		Double *hList;
 
@@ -505,15 +506,14 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFileHdr(NotNullPtr<IO::Str
 			if (i == j)
 			{
 				currId = Text::StrToInt32(sarr[1].v);
-				vec = vecMap.Get(currId);
-				if (vec)
+				if (nnvec.Set(vecMap.Get(currId)))
 				{
 					while (i-- > 0)
 					{
 						csarr[i] = sarr[i].v;
 					}
 					vecUsed.Put(currId, true);
-					lyr->AddVector(vec, csarr);
+					lyr->AddVector(nnvec, csarr);
 				}
 			}
 		}

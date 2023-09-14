@@ -51,7 +51,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISGroupQueryForm::OnMouseUp(void *userObj, Ma
 			{
 				mapLyrPos = mapEnvPos;
 			}
-			id = lyr->GetNearestObjectId(sess, mapLyrPos, &nearPos);
+			id = lyr->GetNearestObjectId(sess, mapLyrPos, nearPos);
 			if (id != -1)
 			{
 				Map::DrawLayerType lyrType = lyr->GetLayerType();

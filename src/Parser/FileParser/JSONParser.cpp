@@ -133,7 +133,7 @@ IO::ParsedObject *Parser::FileParser::JSONParser::ParseJSON(Text::JSONBase *file
 				Text::JSONBase *featType;
 				Text::JSONBase *featProp;
 				Text::JSONBase *featGeom;
-				Math::Geometry::Vector2D *vec;
+				NotNullPtr<Math::Geometry::Vector2D> vec;
 				if (feature && feature->GetType() == Text::JSONType::Object)
 				{
 					featType = ((Text::JSONObject*)feature)->GetObjectValue(CSTR("type"));
@@ -151,13 +151,12 @@ IO::ParsedObject *Parser::FileParser::JSONParser::ParseJSON(Text::JSONBase *file
 							tabHdrs[k] = tabCols[k]->v;
 							k++;
 						}
-						vec = ParseGeomJSON((Text::JSONObject*)featGeom, srid);
-						if (vec)
+						if (vec.Set(ParseGeomJSON((Text::JSONObject*)featGeom, srid)))
 						{
 							NotNullPtr<Text::String> s = Text::String::New(layerName);
 							NEW_CLASS(lyr, Map::VectorLayer(Map::DRAW_LAYER_MIXED, sourceName, colCnt, tabHdrs, nncsys, 0, s.Ptr()));
 							s->Release();
-							DEL_CLASS(vec);
+							vec.Delete();
 						}
 					}
 				}
@@ -189,8 +188,7 @@ IO::ParsedObject *Parser::FileParser::JSONParser::ParseJSON(Text::JSONBase *file
 									}
 									k++;
 								}
-								vec = ParseGeomJSON((Text::JSONObject*)featGeom, srid);
-								if (vec)
+								if (vec.Set(ParseGeomJSON((Text::JSONObject*)featGeom, srid)))
 								{
 									lyr->AddVector(vec, tabVals);
 								}

@@ -1359,12 +1359,12 @@ Map::MapDrawLayer *Map::KMLXML::ParseKMLPlacemarkLyr(NotNullPtr<Text::XMLReader>
 					}
 					if (coord.GetCount() > 0)
 					{
-						Math::Geometry::LineString *pl;
+						NotNullPtr<Math::Geometry::LineString> pl;
 						UOSInt nPoints;
 						Math::Coord2DDbl *ptArr;
 						Double *altArr;
 
-						NEW_CLASS(pl, Math::Geometry::LineString(4326, altList.GetCount(), true, false));
+						NEW_CLASSNN(pl, Math::Geometry::LineString(4326, altList.GetCount(), true, false));
 						altArr = pl->GetZList(nPoints);
 						ptArr = pl->GetPointList(nPoints);
 						i = altList.GetCount();
@@ -1419,19 +1419,19 @@ Map::MapDrawLayer *Map::KMLXML::ParseKMLPlacemarkLyr(NotNullPtr<Text::XMLReader>
 					i = Text::StrSplitTrim(sarr, 4, sb.v, ',');
 					if (i == 3)
 					{
-						Math::Geometry::PointZ *pt;
+						NotNullPtr<Math::Geometry::PointZ> pt;
 						x = Text::StrToDouble(sarr[0]);
 						y = Text::StrToDouble(sarr[1]);
 						z = Text::StrToDouble(sarr[2]);
-						NEW_CLASS(pt, Math::Geometry::PointZ(4326, x, y, z));
+						NEW_CLASSNN(pt, Math::Geometry::PointZ(4326, x, y, z));
 						lyr->AddVector(pt, &lyrNameSb);
 					}
 					else if (i == 2)
 					{
-						Math::Geometry::PointZ *pt;
+						NotNullPtr<Math::Geometry::PointZ> pt;
 						x = Text::StrToDouble(sarr[0]);
 						y = Text::StrToDouble(sarr[1]);
-						NEW_CLASS(pt, Math::Geometry::PointZ(4326, x, y, 0));
+						NEW_CLASSNN(pt, Math::Geometry::PointZ(4326, x, y, 0));
 						lyr->AddVector(pt, &lyrNameSb);
 					}
 				}
@@ -1518,14 +1518,14 @@ Map::MapDrawLayer *Map::KMLXML::ParseKMLPlacemarkLyr(NotNullPtr<Text::XMLReader>
 			}
 			if (coord.GetCount() > 0)
 			{
-				Math::Geometry::Polygon *pg;
+				NotNullPtr<Math::Geometry::Polygon> pg;
 				UOSInt nPoints;
 				Math::Coord2DDbl *ptArr;
 				UInt32 *ptList;
 
 				if (altList.GetCount() > 0)
 				{
-					NEW_CLASS(pg, Math::Geometry::Polygon(4326, 2, (coord.GetCount() + altList.GetCount()) >> 1, false, false));
+					NEW_CLASSNN(pg, Math::Geometry::Polygon(4326, 2, (coord.GetCount() + altList.GetCount()) >> 1, false, false));
 					ptList = pg->GetPtOfstList(nPoints);
 					ptList[0] = 0;
 					ptList[1] = (UInt32)(coord.GetCount() >> 1);
@@ -1536,7 +1536,7 @@ Map::MapDrawLayer *Map::KMLXML::ParseKMLPlacemarkLyr(NotNullPtr<Text::XMLReader>
 				}
 				else
 				{
-					NEW_CLASS(pg, Math::Geometry::Polygon(4326, 1, coord.GetCount() >> 1, false, false));
+					NEW_CLASSNN(pg, Math::Geometry::Polygon(4326, 1, coord.GetCount() >> 1, false, false));
 					ptList = pg->GetPtOfstList(nPoints);
 					ptList[0] = 0;
 					ptArr = pg->GetPointList(nPoints);

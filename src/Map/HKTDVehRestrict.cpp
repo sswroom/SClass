@@ -160,7 +160,7 @@ Map::MapDrawLayer *Map::HKTDVehRestrict::CreateTonnesSignLayer()
 				Int32 vrId = r->GetInt32((UOSInt)vrIdCol);
 				Double maxWeight = r->GetDbl((UOSInt)maxWeightCol);
 				RouteInfo *route;
-				Math::Geometry::Point *pt;
+				NotNullPtr<Math::Geometry::Point> pt;
 				Double ptX;
 				Double ptY;
 				Double dist;
@@ -214,7 +214,7 @@ Map::MapDrawLayer *Map::HKTDVehRestrict::CreateTonnesSignLayer()
 						Text::StrDouble(strs[1], maxWeight);
 					}
 					strs[2] = sbuff;
-					NEW_CLASS(pt, Math::Geometry::Point(this->csys->GetSRID(), ptX, ptY));
+					NEW_CLASSNN(pt, Math::Geometry::Point(this->csys->GetSRID(), ptX, ptY));
 					lyr->AddVector(pt, (const UTF8Char**)strs);
 				}
 			}

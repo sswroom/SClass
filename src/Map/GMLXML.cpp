@@ -41,6 +41,7 @@ Map::MapDrawLayer *Map::GMLXML::ParseFeatureCollection(NotNullPtr<Text::XMLReade
 					tableName = Text::String::New(nodeText->ToCString().Substring(i + 1)).Ptr();
 				}
 				Math::Geometry::Vector2D *vec = 0;
+				NotNullPtr<Math::Geometry::Vector2D> nnvec;
 				while (reader->NextElement())
 				{
 					nodeText = reader->GetNodeText();
@@ -135,7 +136,7 @@ Map::MapDrawLayer *Map::GMLXML::ParseFeatureCollection(NotNullPtr<Text::XMLReade
 						}
 					}
 				}
-				if (vec)
+				if (nnvec.Set(vec))
 				{
 					if (lyr == 0)
 					{
@@ -153,7 +154,7 @@ Map::MapDrawLayer *Map::GMLXML::ParseFeatureCollection(NotNullPtr<Text::XMLReade
 					{
 						Text::String **scols;
 						scols = valList.Ptr();
-						lyr->AddVector(vec, scols);
+						lyr->AddVector(nnvec, scols);
 					}
 					else
 					{

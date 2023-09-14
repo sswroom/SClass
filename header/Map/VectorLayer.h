@@ -1,5 +1,6 @@
 #ifndef _SM_MAP_VECTORLAYER
 #define _SM_MAP_VECTORLAYER
+#include "Data/ArrayListNN.h"
 #include "Map/MapDrawLayer.h"
 #include "Text/PString.h"
 #include "Text/String.h"
@@ -22,7 +23,7 @@ namespace Map
 		UOSInt strCnt;
 		UOSInt *maxStrLen;
 		UOSInt *thisStrLen;
-		Data::ArrayList<Math::Geometry::Vector2D*> vectorList;
+		Data::ArrayListNN<Math::Geometry::Vector2D> vectorList;
 		Data::ArrayList<const UTF8Char **> strList;
 		Math::Coord2DDbl min;
 		Math::Coord2DDbl max;
@@ -66,13 +67,13 @@ namespace Map
 		virtual UOSInt QueryTableNames(Text::CString schemaName, Data::ArrayListNN<Text::String> *names);
 
 		virtual ObjectClass GetObjectClass() const;
-		Bool VectorValid(Math::Geometry::Vector2D *vec);
-		Bool AddVector(Math::Geometry::Vector2D *vec, Text::String **strs);
-		Bool AddVector(Math::Geometry::Vector2D *vec, Text::PString *strs);
-		Bool AddVector(Math::Geometry::Vector2D *vec, const UTF8Char **strs);
+		Bool VectorValid(NotNullPtr<Math::Geometry::Vector2D> vec);
+		Bool AddVector(NotNullPtr<Math::Geometry::Vector2D> vec, Text::String **strs);
+		Bool AddVector(NotNullPtr<Math::Geometry::Vector2D> vec, Text::PString *strs);
+		Bool AddVector(NotNullPtr<Math::Geometry::Vector2D> vec, const UTF8Char **strs);
 		Bool SplitPolyline(Math::Coord2DDbl pt);
 		void OptimizePolylinePath();
-		void ReplaceVector(Int64 id, Math::Geometry::Vector2D *vec);
+		void ReplaceVector(Int64 id, NotNullPtr<Math::Geometry::Vector2D> vec);
 		void ConvCoordinateSystem(Math::CoordinateSystem *csys);
 		void SwapXY();
 	};
