@@ -162,17 +162,18 @@ void __stdcall SSWR::AVIRead::AVIREmailServerForm::OnGCISStartClicked(void *user
 		Crypto::Cert::X509Cert *issuerCert = Crypto::Cert::CertUtil::FindIssuer(gcisSSLCert);
 		ssl->ServerSetCertsASN1(gcisSSLCert, gcisSSLKey, issuerCert);
 		SDEL_CLASS(issuerCert);
-		NEW_CLASS(me->gcisHdlr, Net::WebServer::GCISNotifyHandler(sb.ToCString(), sb2.ToCString(), OnGCISMailReceived, me, me->log));
-		NEW_CLASS(me->gcisListener, Net::WebServer::WebListener(me->core->GetSocketFactory(), ssl, me->gcisHdlr, port, 60, 2, CSTR("SSWRGCIS/1.0"), false, Net::WebServer::KeepAlive::Default, true));
+		NotNullPtr<Net::WebServer::GCISNotifyHandler> gcisHdlr;
+		NEW_CLASSNN(gcisHdlr, Net::WebServer::GCISNotifyHandler(sb.ToCString(), sb2.ToCString(), OnGCISMailReceived, me, me->log));
+		NEW_CLASS(me->gcisListener, Net::WebServer::WebListener(me->core->GetSocketFactory(), ssl, gcisHdlr, port, 60, 2, CSTR("SSWRGCIS/1.0"), false, Net::WebServer::KeepAlive::Default, true));
 		if (me->gcisListener->IsError())
 		{
 			DEL_CLASS(me->gcisListener);
-			DEL_CLASS(me->gcisHdlr);
+			gcisHdlr.Delete();
 			me->gcisListener = 0;
-			me->gcisHdlr = 0;
 		}
 		else
 		{
+			me->gcisHdlr = gcisHdlr.Ptr();
 			me->txtGCISPort->SetReadOnly(true);
 			me->txtGCISNotifPath->SetReadOnly(true);
 			me->txtGCISBatchUplPath->SetReadOnly(true);

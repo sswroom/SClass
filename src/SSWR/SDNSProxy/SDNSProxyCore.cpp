@@ -170,13 +170,19 @@ SSWR::SDNSProxy::SDNSProxyCore::SDNSProxyCore(IO::ConfigFile *cfg, IO::Writer *c
 		s = cfg->GetValue(CSTR("ManagePort"));
 		if (s && s->v[0] != 0 && s->ToUInt16(managePort))
 		{
-			NEW_CLASS(this->hdlr, SSWR::SDNSProxy::SDNSProxyWebHandler(this->proxy, &this->log, this));
-			NEW_CLASS(this->listener, Net::WebServer::WebListener(this->sockf, 0, this->hdlr, managePort, 60, 4, CSTR("SDNSProxy/1.0"), false, Net::WebServer::KeepAlive::Default, true));
+			NotNullPtr<SSWR::SDNSProxy::SDNSProxyWebHandler> hdlr;
+			NEW_CLASSNN(hdlr, SSWR::SDNSProxy::SDNSProxyWebHandler(this->proxy, &this->log, this));
+			NEW_CLASS(this->listener, Net::WebServer::WebListener(this->sockf, 0, hdlr, managePort, 60, 4, CSTR("SDNSProxy/1.0"), false, Net::WebServer::KeepAlive::Default, true));
 			if (this->listener->IsError())
 			{
 				console->WriteLineC(UTF8STRC("Error in listening to ManagePort"));
 				DEL_CLASS(this->listener);
 				this->listener = 0;
+				hdlr.Delete();
+			}
+			else
+			{
+				this->hdlr = hdlr.Ptr();
 			}
 		}
 		else

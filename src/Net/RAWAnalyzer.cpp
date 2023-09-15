@@ -31,19 +31,17 @@ Net::RAWAnalyzer::RAWAnalyzer(NotNullPtr<Net::SocketFactory> sockf, UInt16 infoP
 	this->sockf = sockf;
 	NEW_CLASS(this->analyzer, Net::EthernetAnalyzer(errWriter, atype, CSTR("RAWAnalyzer"))); 
 	this->listener = 0;
-	this->webHdlr = 0;
 	this->rawSock = 0;
 	this->threadCnt = 0;
 	this->threadToStop = false;
 
-	NEW_CLASS(this->webHdlr, Net::EthernetWebHandler(this->analyzer));
+	NEW_CLASSNN(this->webHdlr, Net::EthernetWebHandler(this->analyzer));
 	NEW_CLASS(this->listener, Net::WebServer::WebListener(this->sockf, 0, this->webHdlr, infoPort, 120, 8, CSTR("NetRAWCapture/1.0"), false, Net::WebServer::KeepAlive::Default, true));
 	if (this->listener->IsError())
 	{
 		DEL_CLASS(this->listener);
 		this->webHdlr->Release();
 		this->listener = 0;
-		this->webHdlr = 0;
 	}
 	else
 	{
@@ -73,11 +71,7 @@ Net::RAWAnalyzer::~RAWAnalyzer()
 	}
 
 	SDEL_CLASS(this->listener);
-	if (this->webHdlr)
-	{
-		this->webHdlr->Release();
-		this->webHdlr = 0;
-	}
+	this->webHdlr->Release();
 	DEL_CLASS(this->analyzer);
 }
 

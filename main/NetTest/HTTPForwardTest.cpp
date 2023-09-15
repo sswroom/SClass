@@ -39,9 +39,9 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 
 	if (succ)
 	{
-		Net::WebServer::HTTPForwardHandler *hdlr;
+		NotNullPtr<Net::WebServer::HTTPForwardHandler> hdlr;
 		Net::WebServer::WebListener *svr;
-		NEW_CLASS(hdlr, Net::WebServer::HTTPForwardHandler(sockf, ssl, fwdUrl, Net::WebServer::HTTPForwardHandler::ForwardType::Normal));
+		NEW_CLASSNN(hdlr, Net::WebServer::HTTPForwardHandler(sockf, ssl, fwdUrl, Net::WebServer::HTTPForwardHandler::ForwardType::Normal));
 		NEW_CLASS(svr, Net::WebServer::WebListener(sockf, ssl, hdlr, port, 120, 4, CSTR("sswr/1.0"), false, Net::WebServer::KeepAlive::Default, true));
 		if (!svr->IsError())
 		{

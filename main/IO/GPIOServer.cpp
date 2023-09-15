@@ -124,11 +124,11 @@ public:
 Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 {
 	Net::WebServer::WebListener *listener;
-	GPIOWebHandler *webHdlr;
+	NotNullPtr<GPIOWebHandler> webHdlr;
 	IO::GPIOControl *gpio;
 	Net::OSSocketFactory sockf(false);
 	NEW_CLASS(gpio, IO::GPIOControl());
-	NEW_CLASS(webHdlr, GPIOWebHandler(gpio));
+	NEW_CLASSNN(webHdlr, GPIOWebHandler(gpio));
 	NEW_CLASS(listener, Net::WebServer::WebListener(sockf, 0, webHdlr, PORT, 120, Sync::ThreadUtil::GetThreadCnt(), CSTR("GPIO/1.0"), false, Net::WebServer::KeepAlive::Default, true));
 	progCtrl->WaitForExit(progCtrl);
 	DEL_CLASS(listener);

@@ -91,9 +91,9 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 				*sptr++ = ':';
 				sptr = Text::StrUInt16(sptr, forwardPort);
 			}
-			Net::WebServer::HTTPForwardHandler *hdlr;
+			NotNullPtr<Net::WebServer::HTTPForwardHandler> hdlr;
 			Net::WebServer::WebListener *svr;
-			NEW_CLASS(hdlr, Net::WebServer::HTTPForwardHandler(sockf, 0, CSTRP(sbuff, sptr), Net::WebServer::HTTPForwardHandler::ForwardType::Normal));
+			NEW_CLASSNN(hdlr, Net::WebServer::HTTPForwardHandler(sockf, 0, CSTRP(sbuff, sptr), Net::WebServer::HTTPForwardHandler::ForwardType::Normal));
 			sptr = IO::Path::GetProcessFileName(sbuff);
 			sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("FwdLog"));
 			sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("fwdLog"));

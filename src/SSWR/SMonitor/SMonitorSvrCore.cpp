@@ -1284,13 +1284,13 @@ SSWR::SMonitor::SMonitorSvrCore::SMonitorSvrCore(NotNullPtr<IO::Writer> writer, 
 			{
 				if (s->ToUInt16(port) && port > 0)
 				{
-					Net::WebServer::HTTPDirectoryHandler *hdlr;
+					NotNullPtr<Net::WebServer::HTTPDirectoryHandler> hdlr;
 					SSWR::SMonitor::SMonitorWebHandler *shdlr;
 					Net::WebServer::HTTPDirectoryHandler *fileshdlr;
 					SSWR::Benchmark::BenchmarkWebHandler *benchhdlr;
 					SSWR::VAMS::VAMSBTWebHandler *vamsHdlr;
 					SSWR::VAMS::VAMSBTList *btList;
-					NEW_CLASS(hdlr, Net::WebServer::HTTPDirectoryHandler(Text::String::OrEmpty(s2), false, 0, false));
+					NEW_CLASSNN(hdlr, Net::WebServer::HTTPDirectoryHandler(Text::String::OrEmpty(s2), false, 0, false));
 					NEW_CLASS(shdlr, SSWR::SMonitor::SMonitorWebHandler(this));
 					NEW_CLASS(benchhdlr, SSWR::Benchmark::BenchmarkWebHandler());
 
@@ -1309,7 +1309,7 @@ SSWR::SMonitor::SMonitorSvrCore::SMonitorSvrCore(NotNullPtr<IO::Writer> writer, 
 					}
 
 					hdlr->ExpandPackageFiles(this->parsers, CSTR("*.spk"));
-					this->webHdlr = hdlr;
+					this->webHdlr = hdlr.Ptr();
 					NEW_CLASS(this->listener, Net::WebServer::WebListener(this->sockf, 0, hdlr, port, 60, 4, CSTR("SSWRServer/1.0"), false, Net::WebServer::KeepAlive::Default, false));
 					if (this->listener->IsError())
 					{

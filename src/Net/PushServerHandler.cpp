@@ -246,7 +246,7 @@ void Net::PushServerHandler::ParseJSONSend(Text::JSONBase *sendJson)
 	}
 }
 
-Net::PushServerHandler::PushServerHandler(PushManager *mgr)
+Net::PushServerHandler::PushServerHandler(NotNullPtr<PushManager> mgr)
 {
 	this->mgr = mgr;
 	

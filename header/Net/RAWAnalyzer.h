@@ -12,7 +12,7 @@ namespace Net
 	private:
 		NotNullPtr<Net::SocketFactory> sockf;
 		Net::WebServer::WebListener *listener;
-		Net::WebServer::WebStandardHandler *webHdlr;
+		NotNullPtr<Net::WebServer::WebStandardHandler> webHdlr;
 		Socket *rawSock;
 		Net::EthernetAnalyzer *analyzer;
 	

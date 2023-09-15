@@ -12,7 +12,7 @@ namespace Net
 	private:
 		NotNullPtr<Net::SocketFactory> sockf;
 		Net::WebServer::WebListener *listener;
-		PushServerHandler *webHdlr;
+		NotNullPtr<PushServerHandler> webHdlr;
 		PushManager mgr;
 
 	public:

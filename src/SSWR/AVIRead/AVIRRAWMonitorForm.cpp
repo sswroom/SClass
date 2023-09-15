@@ -114,17 +114,19 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnInfoClicked(void *userObj)
 		UI::MessageDialog::ShowDialog(CSTR("Info port is not valid"), CSTR("RAW Monitor"), me);
 		return;
 	}
-	NEW_CLASS(me->webHdlr, Net::EthernetWebHandler(me->analyzer));
-	NEW_CLASS(me->listener, Net::WebServer::WebListener(me->sockf, 0, me->webHdlr, port, 60, 3, CSTR("RAWMonitor/1.0"), false, Net::WebServer::KeepAlive::Default, true));
+	NotNullPtr<Net::EthernetWebHandler> webHdlr;
+	NEW_CLASSNN(webHdlr, Net::EthernetWebHandler(me->analyzer));
+	NEW_CLASS(me->listener, Net::WebServer::WebListener(me->sockf, 0, webHdlr, port, 60, 3, CSTR("RAWMonitor/1.0"), false, Net::WebServer::KeepAlive::Default, true));
 	if (me->listener->IsError())
 	{
 		DEL_CLASS(me->listener);
-		DEL_CLASS(me->webHdlr);
+		webHdlr.Delete();
 		me->listener = 0;
 		me->webHdlr = 0;
 		UI::MessageDialog::ShowDialog(CSTR("Error in listening to info port"), CSTR("RAW Monitor"), me);
 		return;
 	}
+	me->webHdlr = webHdlr.Ptr();
 	me->txtInfo->SetReadOnly(true);
 }
 

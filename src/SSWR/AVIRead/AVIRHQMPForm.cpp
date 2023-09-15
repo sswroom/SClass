@@ -930,8 +930,8 @@ void SSWR::AVIRead::AVIRHQMPForm::EventMenuClicked(UInt16 cmdId)
 	case MNU_FILE_HTTP_ENABLE:
 		if (this->listener == 0)
 		{
-			Media::MediaPlayerWebInterface *hdlr;
-			NEW_CLASS(hdlr, Media::MediaPlayerWebInterface(this, true));
+			NotNullPtr<Media::MediaPlayerWebInterface> hdlr;
+			NEW_CLASSNN(hdlr, Media::MediaPlayerWebInterface(this, true));
 			NEW_CLASS(this->listener, Net::WebServer::WebListener(this->core->GetSocketFactory(), 0, hdlr, 8080, 10, 2, CSTR("HQMP/1.0"), false, Net::WebServer::KeepAlive::Default, true));
 			if (this->listener->IsError())
 			{

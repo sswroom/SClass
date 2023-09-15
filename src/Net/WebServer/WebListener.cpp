@@ -103,7 +103,7 @@ void __stdcall Net::WebServer::WebListener::OnDataSent(void *userObj, UOSInt buf
 	Interlocked_AddU64(&me->status.totalWrite, buffSize);
 }
 
-Net::WebServer::WebListener::WebListener(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, IWebHandler *hdlr, UInt16 port, Int32 timeoutSeconds, UOSInt workerCnt, Text::CString svrName, Bool allowProxy, KeepAlive keepAlive, Bool autoStart) : cliMgr(timeoutSeconds, ClientEvent, ClientData, this, workerCnt, ClientTimeout)
+Net::WebServer::WebListener::WebListener(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, NotNullPtr<IWebHandler> hdlr, UInt16 port, Int32 timeoutSeconds, UOSInt workerCnt, Text::CString svrName, Bool allowProxy, KeepAlive keepAlive, Bool autoStart) : cliMgr(timeoutSeconds, ClientEvent, ClientData, this, workerCnt, ClientTimeout)
 {
 	this->hdlr = hdlr;
 
@@ -133,7 +133,7 @@ Net::WebServer::WebListener::WebListener(NotNullPtr<Net::SocketFactory> sockf, N
 	this->status.reqCnt = 0;
 	this->status.totalRead = 0;
 	this->status.totalWrite = 0;
-	NEW_CLASS(this->svr, Net::TCPServer(sockf, port, &this->log, ConnHdlr, this, CSTR("Web: "), autoStart));
+	NEW_CLASSNN(this->svr, Net::TCPServer(sockf, port, &this->log, ConnHdlr, this, CSTR("Web: "), autoStart));
 	if (this->allowProxy)
 	{
 		NEW_CLASS(this->proxyCliMgr, Net::TCPClientMgr(240, ProxyClientEvent, ProxyClientData, this, workerCnt, ProxyTimeout));
@@ -142,7 +142,7 @@ Net::WebServer::WebListener::WebListener(NotNullPtr<Net::SocketFactory> sockf, N
 
 Net::WebServer::WebListener::~WebListener()
 {
-	DEL_CLASS(this->svr);
+	this->svr.Delete();
 	this->cliMgr.CloseAll();
 	SDEL_CLASS(this->proxyCliMgr);
 	this->svrName->Release();

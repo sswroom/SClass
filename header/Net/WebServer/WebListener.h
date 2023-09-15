@@ -30,8 +30,8 @@ namespace Net
 
 			typedef void (__stdcall *TimeoutHandler)(void *userObj, Text::String *url);
 		private:
-			IWebHandler *hdlr;
-			Net::TCPServer *svr;
+			NotNullPtr<IWebHandler> hdlr;
+			NotNullPtr<Net::TCPServer> svr;
 			Net::TCPClientMgr cliMgr;
 			Net::TCPClientMgr *proxyCliMgr;
 			Net::SSLEngine *ssl;
@@ -64,7 +64,7 @@ namespace Net
 
 			static void __stdcall OnDataSent(void *userObj, UOSInt buffSize);
 		public:
-			WebListener(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, IWebHandler *hdlr, UInt16 port, Int32 timeoutSeconds, UOSInt workerCnt, Text::CString svrName, Bool allowProxy, KeepAlive keepAlive, Bool autoStart);
+			WebListener(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, NotNullPtr<IWebHandler> hdlr, UInt16 port, Int32 timeoutSeconds, UOSInt workerCnt, Text::CString svrName, Bool allowProxy, KeepAlive keepAlive, Bool autoStart);
 			~WebListener();
 
 			Bool Start();

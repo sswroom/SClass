@@ -61,7 +61,6 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	UTF8Char *sptr;
 	Net::WebServer::WebListener *svr;
 	Net::SSLEngine *ssl;
-	Net::WebServer::WebStandardHandler *hdlr;
 	Text::StringBuilderUTF8 sb;
 	UInt16 port = 0;
 	Bool succ = true;
@@ -107,8 +106,9 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 		sb.AppendC(UTF8STRC("Listening to port "));
 		sb.AppendU16(port);
 		console->WriteLineC(sb.ToString(), sb.GetLength());
+		NotNullPtr<Net::WebServer::WebStandardHandler> hdlr;
 		MyHandler *myHdlr;
-		NEW_CLASS(hdlr, Net::WebServer::HTTPDirectoryHandler(CSTR("wwwroot"), true, 0, true));
+		NEW_CLASSNN(hdlr, Net::WebServer::HTTPDirectoryHandler(CSTR("wwwroot"), true, 0, true));
 		NEW_CLASS(myHdlr, MyHandler());
 		hdlr->HandlePath(CSTR("/api"), myHdlr, true);
 		NEW_CLASS(svr, Net::WebServer::WebListener(sockf, ssl, hdlr, port, 120, 4, CSTR("sswr/1.0"), false, Net::WebServer::KeepAlive::Default, true));

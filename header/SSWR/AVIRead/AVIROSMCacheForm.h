@@ -15,8 +15,8 @@ namespace SSWR
 		{
 		private:
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
-			Net::WebServer::WebListener *listener;
-			Map::OSM::OSMCacheHandler *hdlr;
+			NotNullPtr<Net::WebServer::WebListener> listener;
+			NotNullPtr<Map::OSM::OSMCacheHandler> hdlr;
 
 			UI::GUILabel *lblReqCnt;
 			UI::GUITextBox *txtReqCnt;
@@ -31,7 +31,7 @@ namespace SSWR
 
 			static void __stdcall OnTimerTick(void *userObj);
 		public:
-			AVIROSMCacheForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Net::WebServer::WebListener *listener, Map::OSM::OSMCacheHandler *hdlr);
+			AVIROSMCacheForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<Net::WebServer::WebListener> listener, NotNullPtr<Map::OSM::OSMCacheHandler> hdlr);
 			virtual ~AVIROSMCacheForm();
 
 			virtual void OnMonitorChanged();

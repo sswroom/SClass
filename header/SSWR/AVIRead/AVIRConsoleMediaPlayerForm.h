@@ -34,7 +34,7 @@ namespace SSWR
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			Media::ConsoleMediaPlayer *player;
-			Media::MediaPlayerWebInterface *webIface;
+			NotNullPtr<Media::MediaPlayerWebInterface> webIface;
 			Net::WebServer::WebListener *listener;
 			Bool videoOpening;
 

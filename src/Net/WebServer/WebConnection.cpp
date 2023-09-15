@@ -42,7 +42,7 @@ UOSInt Net::WebServer::WebConnection::SendData(const UInt8 *buff, UOSInt buffSiz
 	return buffSize;
 }
 
-Net::WebServer::WebConnection::WebConnection(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, NotNullPtr<Net::TCPClient> cli, NotNullPtr<WebListener> svr, IWebHandler *hdlr, Bool allowProxy, KeepAlive keepAlive) : Net::WebServer::IWebResponse(CSTR("WebConnection"))
+Net::WebServer::WebConnection::WebConnection(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, NotNullPtr<Net::TCPClient> cli, NotNullPtr<WebListener> svr, NotNullPtr<IWebHandler> hdlr, Bool allowProxy, KeepAlive keepAlive) : Net::WebServer::IWebResponse(CSTR("WebConnection"))
 {
 	this->sockf = sockf;
 	this->ssl = ssl;

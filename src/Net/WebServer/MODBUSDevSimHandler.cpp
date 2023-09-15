@@ -91,7 +91,7 @@ Bool Net::WebServer::MODBUSDevSimHandler::ProcessRequest(NotNullPtr<Net::WebServ
 	return this->DoRequest(req, resp, subReq);
 }
 
-Net::WebServer::MODBUSDevSimHandler::MODBUSDevSimHandler(Net::MODBUSTCPListener *listener, IO::MODBUSDevSim *dev)
+Net::WebServer::MODBUSDevSimHandler::MODBUSDevSimHandler(NotNullPtr<Net::MODBUSTCPListener> listener, IO::MODBUSDevSim *dev)
 {
 	this->listener = listener;
 	this->dev = dev;

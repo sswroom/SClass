@@ -9,7 +9,7 @@ namespace Net
 	class PushServerHandler : public Net::WebServer::WebServiceHandler
 	{
 	private:
-		PushManager *mgr;
+		NotNullPtr<PushManager> mgr;
 
 		static Bool __stdcall SendHandler(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, WebServiceHandler *me);
 		static Bool __stdcall SendBatchHandler(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, WebServiceHandler *me);
@@ -20,7 +20,7 @@ namespace Net
 
 		void ParseJSONSend(Text::JSONBase *sendJson);
 	public:
-		PushServerHandler(PushManager *mgr);
+		PushServerHandler(NotNullPtr<PushManager> mgr);
 		virtual ~PushServerHandler();
 	};
 }

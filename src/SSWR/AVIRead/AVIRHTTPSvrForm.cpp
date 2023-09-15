@@ -187,16 +187,19 @@ void __stdcall SSWR::AVIRead::AVIRHTTPSvrForm::OnStartClick(void *userObj)
 		IO::BuildTime::GetBuildTime(&dt);
 		dt.ToUTCTime();
 		sptr = dt.ToString(Text::StrConcatC(sbuff, UTF8STRC("AVIRead/")), "yyyyMMddHHmmss");
-		NEW_CLASS(me->dirHdlr, Net::WebServer::HTTPDirectoryHandler(sb.ToCString(), me->chkAllowBrowse->IsChecked(), cacheSize, true));
-		NEW_CLASS(me->svr, Net::WebServer::WebListener(me->core->GetSocketFactory(), ssl, me->dirHdlr, port, 120, Sync::ThreadUtil::GetThreadCnt(), CSTRP(sbuff, sptr), me->chkAllowProxy->IsChecked(), (Net::WebServer::KeepAlive)(OSInt)me->cboKeepAlive->GetSelectedItem(), false));
+		NotNullPtr<Net::WebServer::HTTPDirectoryHandler> dirHdlr;
+		NEW_CLASSNN(dirHdlr, Net::WebServer::HTTPDirectoryHandler(sb.ToCString(), me->chkAllowBrowse->IsChecked(), cacheSize, true));
+		NEW_CLASS(me->svr, Net::WebServer::WebListener(me->core->GetSocketFactory(), ssl, dirHdlr, port, 120, Sync::ThreadUtil::GetThreadCnt(), CSTRP(sbuff, sptr), me->chkAllowProxy->IsChecked(), (Net::WebServer::KeepAlive)(OSInt)me->cboKeepAlive->GetSelectedItem(), false));
 		if (me->svr->IsError())
 		{
 			valid = false;
 			SDEL_CLASS(me->svr);
+			dirHdlr->Release();
 			UI::MessageDialog::ShowDialog(CSTR("Error in listening to port"), CSTR("HTTP Server"), me);
 		}
 		else
 		{
+			me->dirHdlr = dirHdlr.Ptr();
 			sb.ClearStr();
 			me->txtLogDir->GetText(sb);
 			if (sb.GetEndPtr()[-1] != IO::Path::PATH_SEPERATOR)

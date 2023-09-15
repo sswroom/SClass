@@ -184,7 +184,6 @@ SSWR::AVIRead::AVIRConsoleMediaPlayerForm::AVIRConsoleMediaPlayerForm(UI::GUICli
 
 	this->core = core;
 	this->listener = 0;
-	this->webIface = 0;
 	this->videoOpening = false;
 	NEW_CLASS(this->player, Media::ConsoleMediaPlayer(this->core->GetMonitorMgr(), this->core->GetColorMgr(), this->core->GetParserList(), this->core->GetAudioDevice()));
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
@@ -297,7 +296,7 @@ SSWR::AVIRead::AVIRConsoleMediaPlayerForm::AVIRConsoleMediaPlayerForm(UI::GUICli
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
 	UInt16 port = 8080;
-	NEW_CLASS(this->webIface, Media::MediaPlayerWebInterface(this->player, false));
+	NEW_CLASSNN(this->webIface, Media::MediaPlayerWebInterface(this->player, false));
 	while (port < 8090)
 	{
 		NEW_CLASS(this->listener, Net::WebServer::WebListener(this->core->GetSocketFactory(), 0, this->webIface, port, 10, 2, CSTR("ConsoleMediaPlayer/1.0"), false, Net::WebServer::KeepAlive::Default, true));
@@ -320,7 +319,7 @@ SSWR::AVIRead::AVIRConsoleMediaPlayerForm::AVIRConsoleMediaPlayerForm(UI::GUICli
 SSWR::AVIRead::AVIRConsoleMediaPlayerForm::~AVIRConsoleMediaPlayerForm()
 {
 	SDEL_CLASS(this->listener);
-	SDEL_CLASS(this->webIface);
+	this->webIface.Delete();
 	DEL_CLASS(this->player);
 }
 

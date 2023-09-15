@@ -227,33 +227,37 @@ void __stdcall SSWR::AVIRead::AVIRSAMLTestForm::OnStartClicked(void *userObj)
 		}
 		cfg.ssoPath = sbSSOPath.ToCString();
 
-		NEW_CLASS(me->samlHdlr, Net::WebServer::SAMLHandler(&cfg, ssl, 0));
-		if (me->samlHdlr->GetInitError() != Net::WebServer::SAMLError::None)
+		NotNullPtr<Net::WebServer::SAMLHandler> samlHdlr;
+		NEW_CLASSNN(samlHdlr, Net::WebServer::SAMLHandler(&cfg, ssl, 0));
+		if (samlHdlr->GetInitError() != Net::WebServer::SAMLError::None)
 		{
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("Error in initializing SAML: "));
-			sb.Append(Net::WebServer::SAMLErrorGetName(me->samlHdlr->GetInitError()));
+			sb.Append(Net::WebServer::SAMLErrorGetName(samlHdlr->GetInitError()));
 			UI::MessageDialog::ShowDialog(sb.ToCString(), CSTR("SAML Test"), me);
-			me->samlHdlr->Release();
+			samlHdlr->Release();
 			return;
 		}
-		me->samlHdlr->HandleRAWSAMLResponse(OnSAMLResponse, me);
-		me->samlHdlr->HandleLoginRequest(OnLoginRequest, me);
-		NEW_CLASS(me->svr, Net::WebServer::WebListener(me->core->GetSocketFactory(), ssl, me->samlHdlr, port, 120, Sync::ThreadUtil::GetThreadCnt(), CSTR("SAMLTest/1.0"), false, Net::WebServer::KeepAlive::Default, false));
+		samlHdlr->HandleRAWSAMLResponse(OnSAMLResponse, me);
+		samlHdlr->HandleLoginRequest(OnLoginRequest, me);
+		NEW_CLASS(me->svr, Net::WebServer::WebListener(me->core->GetSocketFactory(), ssl, samlHdlr, port, 120, Sync::ThreadUtil::GetThreadCnt(), CSTR("SAMLTest/1.0"), false, Net::WebServer::KeepAlive::Default, false));
 		if (me->svr->IsError())
 		{
 			SDEL_CLASS(me->svr);
+			samlHdlr->Release();
 			UI::MessageDialog::ShowDialog(CSTR("Error in listening to port"), CSTR("SAML Test"), me);
 			valid = false;
 		}
 		else if (!me->svr->Start())
 		{
 			SDEL_CLASS(me->svr);
+			samlHdlr->Release();
 			UI::MessageDialog::ShowDialog(CSTR("Error in starting HTTP Server"), CSTR("SAML Test"), me);
 			valid = false;
 		}
 		else
 		{
+			me->samlHdlr = samlHdlr.Ptr();
 			me->svr->SetAccessLog(&me->log, IO::LogHandler::LogLevel::Raw);
 		}
 	}

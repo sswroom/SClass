@@ -31,16 +31,19 @@ void __stdcall SSWR::AVIRead::AVIReGaugeSvrForm::OnStartClick(void *userObj)
 
 		if (port > 0 && port <= 65535)
 		{
-			NEW_CLASS(me->dirHdlr, Net::WebServer::EGaugeHandler());
-			me->dirHdlr->HandleEGaugeData(OnEGaugeData, me);
-			NEW_CLASS(me->svr, Net::WebServer::WebListener(me->core->GetSocketFactory(), 0, me->dirHdlr, port, 120, Sync::ThreadUtil::GetThreadCnt(), CSTR("eGauge/1.0"), false, Net::WebServer::KeepAlive::Default, false));
+			NotNullPtr<Net::WebServer::EGaugeHandler> dirHdlr;
+			NEW_CLASSNN(dirHdlr, Net::WebServer::EGaugeHandler());
+			dirHdlr->HandleEGaugeData(OnEGaugeData, me);
+			NEW_CLASS(me->svr, Net::WebServer::WebListener(me->core->GetSocketFactory(), 0, dirHdlr, port, 120, Sync::ThreadUtil::GetThreadCnt(), CSTR("eGauge/1.0"), false, Net::WebServer::KeepAlive::Default, false));
 			if (me->svr->IsError())
 			{
 				valid = false;
 				SDEL_CLASS(me->svr);
+				dirHdlr->Release();
 			}
 			else
 			{
+				me->dirHdlr = dirHdlr.Ptr();
 				NEW_CLASS(me->log, IO::LogTool());
 				me->svr->SetAccessLog(me->log, IO::LogHandler::LogLevel::Raw);
 				NEW_CLASS(me->logger, UI::ListBoxLogger(me, me->lbLog, 500, true));

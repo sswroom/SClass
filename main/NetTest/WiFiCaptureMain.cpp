@@ -13,7 +13,6 @@ Net::WiFiCapturer *capturer;
 Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 {
 	IO::ConsoleWriter console;
-	Net::WebServer::CapturerWebHandler *webHdlr;
 	Net::WebServer::WebListener *listener;
 	UInt16 webPort = 8080;
 	Manage::ExceptionRecorder *exHdlr;
@@ -38,7 +37,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	{
 		Text::StringBuilderUTF8 sb;
 		Net::OSSocketFactory sockf(true);
-		NEW_CLASS(webHdlr, Net::WebServer::CapturerWebHandler(capturer, 0, 0));
+		Net::WebServer::CapturerWebHandler webHdlr(capturer, 0, 0);
 		NEW_CLASS(listener, Net::WebServer::WebListener(sockf, 0, webHdlr, webPort, 120, 4, CSTR("WiFiCapture/1.0"), false, Net::WebServer::KeepAlive::Default, true));
 		if (listener->IsError())
 		{
@@ -61,7 +60,6 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 			}
 		}
 		DEL_CLASS(listener);
-		DEL_CLASS(webHdlr);
 	}
 
 	DEL_CLASS(capturer);

@@ -828,14 +828,16 @@ SSWR::OrganWeb::OrganWebEnv::OrganWebEnv(NotNullPtr<Net::SocketFactory> sockf, N
 	}
 	else
 	{
-		NEW_CLASS(this->webHdlr, SSWR::OrganWeb::OrganWebHandler(this, this->scnSize));
-		this->webHdlr->HandlePath(CSTR("/map"), this->mapDirHdlr, false);
-		this->webHdlr->HandlePath(CSTR("/osm"), this->osmHdlr, false);
+		NotNullPtr<SSWR::OrganWeb::OrganWebHandler> webHdlr;
+		NEW_CLASSNN(webHdlr, SSWR::OrganWeb::OrganWebHandler(this, this->scnSize));
+		webHdlr->HandlePath(CSTR("/map"), this->mapDirHdlr, false);
+		webHdlr->HandlePath(CSTR("/osm"), this->osmHdlr, false);
 
-		NEW_CLASS(this->listener, Net::WebServer::WebListener(this->sockf, 0, this->webHdlr, port, 30, 10, CSTR("OrganWeb/1.0"), false, Net::WebServer::KeepAlive::Default, true));
+		this->webHdlr = webHdlr.Ptr();
+		NEW_CLASS(this->listener, Net::WebServer::WebListener(this->sockf, 0, webHdlr, port, 30, 10, CSTR("OrganWeb/1.0"), false, Net::WebServer::KeepAlive::Default, true));
 		if (this->ssl && sslPort)
 		{
-			NEW_CLASS(this->sslListener, Net::WebServer::WebListener(this->sockf, this->ssl, this->webHdlr, sslPort, 30, 10, CSTR("OrganWeb/1.0"), false, Net::WebServer::KeepAlive::Default, true));
+			NEW_CLASS(this->sslListener, Net::WebServer::WebListener(this->sockf, this->ssl, webHdlr, sslPort, 30, 10, CSTR("OrganWeb/1.0"), false, Net::WebServer::KeepAlive::Default, true));
 		}
 		else
 		{

@@ -57,16 +57,19 @@ void __stdcall SSWR::AVIRead::AVIRRESTfulForm::OnStartClick(void *userObj)
 	me->txtPort->GetText(sb);
 	if (sb.ToUInt16(port) && port > 0 && port <= 65535)
 	{
-		NEW_CLASS(me->restHdlr, Net::WebServer::RESTfulHandler(me->dbCache));
-		NEW_CLASS(me->svr, Net::WebServer::WebListener(me->core->GetSocketFactory(), 0, me->restHdlr, port, 120, Sync::ThreadUtil::GetThreadCnt(), CSTR("sswr"), me->chkAllowProxy->IsChecked(), me->chkAllowKA->IsChecked()?Net::WebServer::KeepAlive::Always:Net::WebServer::KeepAlive::Default, false));
+		NotNullPtr<Net::WebServer::RESTfulHandler> restHdlr;
+		NEW_CLASSNN(restHdlr, Net::WebServer::RESTfulHandler(me->dbCache));
+		NEW_CLASS(me->svr, Net::WebServer::WebListener(me->core->GetSocketFactory(), 0, restHdlr, port, 120, Sync::ThreadUtil::GetThreadCnt(), CSTR("sswr"), me->chkAllowProxy->IsChecked(), me->chkAllowKA->IsChecked()?Net::WebServer::KeepAlive::Always:Net::WebServer::KeepAlive::Default, false));
 		if (me->svr->IsError())
 		{
 			valid = false;
 			SDEL_CLASS(me->svr);
+			restHdlr->Release();
 			UI::MessageDialog::ShowDialog(CSTR("Error in listening to port"), CSTR("RESTful Server"), me);
 		}
 		else
 		{
+			me->restHdlr = restHdlr.Ptr();
 			sb.ClearStr();
 			me->txtLogDir->GetText(sb);
 			if (sb.GetEndPtr()[-1] != IO::Path::PATH_SEPERATOR)
