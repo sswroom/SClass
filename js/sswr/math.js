@@ -35,6 +35,22 @@ sswr.math.roundToStr = function(n, decimalPoints)
 	}
 }
 
+sswr.math.Coord2D = function(x, y)
+{
+	this.x = x;
+	this.y = y;
+}
+
+sswr.math.Coord2D.prototype.getLat = function()
+{
+	return this.y;
+}
+
+sswr.math.Coord2D.prototype.getLon = function()
+{
+	return this.x;
+}
+
 sswr.math.geometry = new Object();
 sswr.math.geometry.Vector2D = function(srid)
 {

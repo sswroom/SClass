@@ -1379,22 +1379,22 @@ sswr.data.TimeInstant.fromTicks = function(ticks)
 
 sswr.data.TimeInstant.prototype.addDay = function(val)
 {
-	return new TimeInstant(this.sec + val * 86400, this.nanosec);
+	return new sswr.data.TimeInstant(this.sec + val * 86400, this.nanosec);
 }
 
 sswr.data.TimeInstant.prototype.addHour = function(val)
 {
-	return new TimeInstant(this.sec + val * 3600, this.nanosec);
+	return new sswr.data.TimeInstant(this.sec + val * 3600, this.nanosec);
 }
 
 sswr.data.TimeInstant.prototype.addMinute = function(val)
 {
-	return new TimeInstant(this.sec + val * 60, this.nanosec);
+	return new sswr.data.TimeInstant(this.sec + val * 60, this.nanosec);
 }
 
 sswr.data.TimeInstant.prototype.addSecond = function(val)
 {
-	return new TimeInstant(this.sec + val, this.nanosec);
+	return new sswr.data.TimeInstant(this.sec + val, this.nanosec);
 }
 
 sswr.data.TimeInstant.prototype.addMS = function(val)
@@ -1406,7 +1406,7 @@ sswr.data.TimeInstant.prototype.addMS = function(val)
 		newSec++;
 		val -= 1000000000;
 	}
-	return new TimeInstant(newSec, val);
+	return new sswr.data.TimeInstant(newSec, val);
 }
 
 sswr.data.TimeInstant.prototype.addNS = function(val)
@@ -1418,7 +1418,7 @@ sswr.data.TimeInstant.prototype.addNS = function(val)
 		newSec++;
 		val -= 1000000000;
 	}
-	return new TimeInstant(newSec, val);
+	return new sswr.data.TimeInstant(newSec, val);
 }
 
 sswr.data.TimeInstant.prototype.getMS = function()
@@ -1428,18 +1428,18 @@ sswr.data.TimeInstant.prototype.getMS = function()
 
 sswr.data.TimeInstant.prototype.clearTime = function()
 {
-	return new TimeInstant(this.sec - this.sec % 86400, 0);
+	return new sswr.data.TimeInstant(this.sec - this.sec % 86400, 0);
 }
 
 sswr.data.TimeInstant.prototype.roundToS = function()
 {
 	if (this.nanosec >= 500000000)
 	{
-		return new TimeInstant(this.sec + 1, 0);
+		return new sswr.data.TimeInstant(this.sec + 1, 0);
 	}
 	else
 	{
-		return new TimeInstant(this.sec, 0);
+		return new sswr.data.TimeInstant(this.sec, 0);
 	}
 }
 
@@ -1512,7 +1512,7 @@ sswr.data.Timestamp = function(inst, tzQhr)
 
 sswr.data.Timestamp.fromTicks = function(ticks, tzQhr)
 {
-	return new sswr.data.Timestamp(TimeInstant.fromTicks(ticks), tzQhr);
+	return new sswr.data.Timestamp(sswr.data.TimeInstant.fromTicks(ticks), tzQhr);
 }
 
 sswr.data.Timestamp.fromStr = function(str, defTzQhr)
@@ -1520,11 +1520,11 @@ sswr.data.Timestamp.fromStr = function(str, defTzQhr)
 	var tval = DateTimeUtil.string2TimeValue(str, defTzQhr);
 	if (tval == 0)
 	{
-		return new sswr.data.Timestamp(new TimeInstant(0, 0), defTzQhr);
+		return new sswr.data.Timestamp(new sswr.data.TimeInstant(0, 0), defTzQhr);
 	}
 	else
 	{
-		return new sswr.data.Timestamp(new TimeInstant(DateTimeUtil.timeValue2Secs(tval), tval.nanosec), tval.tzQhr);
+		return new sswr.data.Timestamp(new sswr.data.TimeInstant(DateTimeUtil.timeValue2Secs(tval), tval.nanosec), tval.tzQhr);
 	}
 }
 
@@ -1545,7 +1545,7 @@ sswr.data.Timestamp.fromVariTime = function(variTime)
 
 sswr.data.Timestamp.fromSecNS = function(unixTS, nanosec, tzQhr)
 {
-	return new sswr.data.Timestamp(new TimeInstant(unixTS, nanosec), tzQhr);
+	return new sswr.data.Timestamp(new sswr.data.TimeInstant(unixTS, nanosec), tzQhr);
 }
 
 sswr.data.Timestamp.fromDotNetTicks = function(ticks, tzQhr)
@@ -1555,7 +1555,7 @@ sswr.data.Timestamp.fromDotNetTicks = function(ticks, tzQhr)
 
 sswr.data.Timestamp.fromEpochSec = function(epochSec, tzQhr)
 {
-	return new sswr.data.Timestamp(new TimeInstant(epochSec, 0), tzQhr);
+	return new sswr.data.Timestamp(new sswr.data.TimeInstant(epochSec, 0), tzQhr);
 }
 
 sswr.data.Timestamp.fromEpochMS = function(epochMS, tzQhr)
@@ -1567,11 +1567,11 @@ sswr.data.Timestamp.fromEpochUS = function(epochUS, tzQhr)
 {
 	if (epochUS < 0)
 	{
-		return new sswr.data.Timestamp(new TimeInstant(Math.floor(epochUS / 1000000) - 1, (epochUS % 1000000 + 1000000) * 1000), tzQhr);
+		return new sswr.data.Timestamp(new sswr.data.TimeInstant(Math.floor(epochUS / 1000000) - 1, (epochUS % 1000000 + 1000000) * 1000), tzQhr);
 	}
 	else
 	{
-		return new sswr.data.Timestamp(new TimeInstant(Math.floor(epochUS / 1000000), (epochUS % 1000000) * 1000), tzQhr);
+		return new sswr.data.Timestamp(new sswr.data.TimeInstant(Math.floor(epochUS / 1000000), (epochUS % 1000000) * 1000), tzQhr);
 	}
 }
 
@@ -1579,17 +1579,17 @@ sswr.data.Timestamp.fromEpochNS = function(epochNS, tzQhr)
 {
 	if (epochNS < 0)
 	{
-		return new sswr.data.Timestamp(new TimeInstant(Math.floor(epochNS / 1000000000) - 1, (epochNS % 1000000000 + 1000000000)), tzQhr);
+		return new sswr.data.Timestamp(new sswr.data.TimeInstant(Math.floor(epochNS / 1000000000) - 1, (epochNS % 1000000000 + 1000000000)), tzQhr);
 	}
 	else
 	{
-		return new sswr.data.Timestamp(new TimeInstant(Math.floor(epochNS / 1000000000), (epochNS % 1000000000)), tzQhr);
+		return new sswr.data.Timestamp(new sswr.data.TimeInstant(Math.floor(epochNS / 1000000000), (epochNS % 1000000000)), tzQhr);
 	}
 }
 
 sswr.data.Timestamp.fromTimeValue = function(tval)
 {
-	return new sswr.data.Timestamp(new TimeInstant(sswr.data.DateTimeUtil.timeValue2Secs(tval), tval.nanosec), tval.tzQhr);
+	return new sswr.data.Timestamp(new sswr.data.TimeInstant(sswr.data.DateTimeUtil.timeValue2Secs(tval), tval.nanosec), tval.tzQhr);
 }
 
 sswr.data.Timestamp.fromYMDHMS = function(ymdhms, tzQhr)
@@ -1597,7 +1597,7 @@ sswr.data.Timestamp.fromYMDHMS = function(ymdhms, tzQhr)
 	var tval = sswr.data.DateTimeUtil.timeValueFromYMDHMS(ymdhms);
 	if (tval != null)
 	{
-		return new sswr.data.Timestamp(new TimeInstant(sswr.data.DateTimeUtil.timeValue2Secs(tval), 0), tzQhr);
+		return new sswr.data.Timestamp(new sswr.data.TimeInstant(sswr.data.DateTimeUtil.timeValue2Secs(tval), 0), tzQhr);
 	}
 	else
 	{
@@ -1620,14 +1620,14 @@ sswr.data.Timestamp.prototype.addMonth = function(val)
 		tval.year++;
 	}
 	tval.month = val;
-	return new sswr.data.Timestamp(new TimeInstant(sswr.data.DateTimeUtil.timeValue2Secs(tval), this.inst.nanosec), this.tzQhr);
+	return new sswr.data.Timestamp(new sswr.data.TimeInstant(sswr.data.DateTimeUtil.timeValue2Secs(tval), this.inst.nanosec), this.tzQhr);
 }
 
 sswr.data.Timestamp.prototype.addYear = function(val)
 {
 	var tval = this.toTimeValue();
 	tval.year = (tval.year + val);
-	return new sswr.data.Timestamp(new TimeInstant(sswr.data.DateTimeUtil.timeValue2Secs(tval), this.inst.nanosec), this.tzQhr);
+	return new sswr.data.Timestamp(new sswr.data.TimeInstant(sswr.data.DateTimeUtil.timeValue2Secs(tval), this.inst.nanosec), this.tzQhr);
 }
 
 sswr.data.Timestamp.prototype.addDay = function(val)
@@ -1879,5 +1879,4 @@ sswr.data.Timestamp.prototype.roundToS = function()
 	return new sswr.data.Timestamp(this.inst.roundToS(), this.tzQhr);
 }
 
-//export default sswr.data;
 export default sswr;
