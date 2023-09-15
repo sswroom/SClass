@@ -1,6 +1,5 @@
-let math = new Object();
-var sswr = new Object();
-sswr.math = math;
+import sswr from "./sswr.js";
+sswr.math = new Object();
 
 sswr.math.roundToFloat = function(n, decimalPoints)
 {
@@ -787,4 +786,4 @@ sswr.math.Spheroid = function(srid, ellipsoid, name)
 	this.name = name;
 }
 
-export default math;
+export default sswr;

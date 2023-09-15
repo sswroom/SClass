@@ -1,9 +1,6 @@
-let web = new Object();
-var sswr = new Object();
-sswr.web = web;
-
-
+import sswr from "./sswr.js";
 sswr.web = new Object();
+
 sswr.web.getRequestURLBase = function()
 {
 	var url = document.location.href;

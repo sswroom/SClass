@@ -1,11 +1,7 @@
-import math from "./math.h";
-import text from "./text.h";
-
-let cesium = new Object();
-var sswr = new Object();
-sswr.cesium = cesium;
-sswr.math = math;
-sswr.text = text;
+import sswr from "./sswr.h";
+sswr.cesium = new Object();
+//sswr.math = math;
+//sswr.text = text;
 
 sswr.cesium.screenToLatLon = function(viewer, x, y, ellipsoid)
 {
@@ -183,4 +179,4 @@ sswr.cesium.fromPolygonGraphics = function(viewer, pg)
 	return pg;
 }*/
 
-export default cesium;
+export default sswr;

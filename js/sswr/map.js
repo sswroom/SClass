@@ -1,7 +1,4 @@
-let map = new Object();
-var sswr = new Object();
-sswr.map = map;
-
+import sswr from "./sswr.js";
 sswr.map = new Object();
 sswr.map.DataFormat = new Object();
 sswr.map.DataFormat.Cesium = "cesium";
@@ -25,4 +22,4 @@ sswr.map.getLayerData = function(svcUrl, onResultFunc, layerName, dataFormat)
 	sswr.web.loadJSON(svcUrl + '/getlayerdata?name='+encodeURIComponent(layerName)+"&fmt="+encodeURIComponent(dataFormat), onResultFunc);
 }
 
-export default map;
+export default sswr;

@@ -1,6 +1,5 @@
-let data = new Object();
-var sswr = new Object();
-sswr.data = data;
+import sswr from "./sswr.js";
+sswr.data = new Object();
 
 function zpadStr(val, ndigits)
 {
@@ -1880,4 +1879,5 @@ sswr.data.Timestamp.prototype.roundToS = function()
 	return new sswr.data.Timestamp(this.inst.roundToS(), this.tzQhr);
 }
 
-export default data;
+//export default sswr.data;
+export default sswr;
