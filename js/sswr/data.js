@@ -80,6 +80,11 @@ sswr.data.toObjectString = function(o, lev)
 	}
 }
 
+sswr.data.arrayBuffer2Base64 = function(buff)
+{
+	return btoa(String.fromCharCode.apply(null, new Uint8Array(buff)));
+}
+
 sswr.data.DateTimeUtil = new Object();
 sswr.data.DateTimeUtil.monString = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 sswr.data.DateTimeUtil.monthString = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];

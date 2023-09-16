@@ -37,7 +37,8 @@ sswr.text.toJSText = function(s)
 
 sswr.text.toHTMLText = function(s)
 {
-	var out = "\"";
+	if (s == null) return "";
+	var out = "";
 	var i = 0;
 	var j = s.length;
 	var c;
@@ -72,7 +73,7 @@ sswr.text.toHTMLText = function(s)
 		}
 		i++;
 	}
-	return out + "\"";
+	return out + "";
 }
 
 export default sswr;
