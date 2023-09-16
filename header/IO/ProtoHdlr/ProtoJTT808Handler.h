@@ -10,11 +10,11 @@ namespace IO
 		class ProtoJTT808Handler : public IO::IProtocolHandler
 		{
 		private:
-			IO::IProtocolHandler::DataListener *listener;
+			NotNullPtr<IO::IProtocolHandler::DataListener> listener;
 			UInt64 devId;
 
 		public:
-			ProtoJTT808Handler(IO::IProtocolHandler::DataListener *listener, UInt64 devId);
+			ProtoJTT808Handler(NotNullPtr<IO::IProtocolHandler::DataListener> listener, UInt64 devId);
 			virtual ~ProtoJTT808Handler();
 
 			virtual void *CreateStreamData(NotNullPtr<IO::Stream> stm);

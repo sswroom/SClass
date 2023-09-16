@@ -10,10 +10,10 @@ namespace IO
 		class ProtoLSHandler : public IO::IProtocolHandler
 		{
 		private:
-			IO::IProtocolHandler::DataListener *listener;
+			NotNullPtr<IO::IProtocolHandler::DataListener> listener;
 
 		public:
-			ProtoLSHandler(IO::IProtocolHandler::DataListener *listener);
+			ProtoLSHandler(NotNullPtr<IO::IProtocolHandler::DataListener> listener);
 			virtual ~ProtoLSHandler();
 
 			virtual void *CreateStreamData(NotNullPtr<IO::Stream> stm);

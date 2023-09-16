@@ -59,7 +59,7 @@ UInt32 __stdcall IO::CortexControl::RecvThread(void *userObj)
 	return 0;
 }
 
-IO::CortexControl::CortexControl(UOSInt portNum, IO::Writer *errWriter) : protoHdlr(this)
+IO::CortexControl::CortexControl(UOSInt portNum, IO::Writer *errWriter) : protoHdlr(*this)
 {
 	this->recvRunning = false;
 	this->recvToStop = false;

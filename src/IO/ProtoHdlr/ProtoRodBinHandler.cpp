@@ -2,7 +2,7 @@
 #include "MyMemory.h"
 #include "IO/ProtoHdlr/ProtoRodBinHandler.h"
 
-IO::ProtoHdlr::ProtoRodBinHandler::ProtoRodBinHandler(IO::IProtocolHandler::DataListener *listener)
+IO::ProtoHdlr::ProtoRodBinHandler::ProtoRodBinHandler(NotNullPtr<IO::IProtocolHandler::DataListener> listener)
 {
 	this->listener = listener;
 }

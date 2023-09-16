@@ -11,12 +11,12 @@ namespace IO
 		class ProtoGPSDevInfoHandler : public IO::IProtocolHandler
 		{
 		private:
-			IO::IProtocolHandler::DataListener *listener;
+			NotNullPtr<IO::IProtocolHandler::DataListener> listener;
 			Sync::Mutex crcMut;
 			Crypto::Hash::CRC32R crc;
 
 		public:
-			ProtoGPSDevInfoHandler(IO::IProtocolHandler::DataListener *listener);
+			ProtoGPSDevInfoHandler(NotNullPtr<IO::IProtocolHandler::DataListener> listener);
 			virtual ~ProtoGPSDevInfoHandler();
 
 			virtual void *CreateStreamData(NotNullPtr<IO::Stream> stm);

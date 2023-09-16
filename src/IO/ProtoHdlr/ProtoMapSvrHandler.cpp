@@ -40,7 +40,7 @@ mcclop:
 #endif
 }
 
-IO::ProtoHdlr::ProtoMapSvrHandler::ProtoMapSvrHandler(IO::IProtocolHandler::DataListener *listener)
+IO::ProtoHdlr::ProtoMapSvrHandler::ProtoMapSvrHandler(NotNullPtr<IO::IProtocolHandler::DataListener> listener)
 {
 	this->listener = listener;
 }

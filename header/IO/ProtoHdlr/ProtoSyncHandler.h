@@ -11,11 +11,11 @@ namespace IO
 		class ProtoSyncHandler : public IO::IProtocolHandler
 		{
 		private:
-			IO::IProtocolHandler::DataListener *listener;
+			NotNullPtr<IO::IProtocolHandler::DataListener> listener;
 			Crypto::Hash::CRC32RIEEE crc;
 
 		public:
-			ProtoSyncHandler(IO::IProtocolHandler::DataListener *listener);
+			ProtoSyncHandler(NotNullPtr<IO::IProtocolHandler::DataListener> listener);
 			virtual ~ProtoSyncHandler();
 
 			virtual void *CreateStreamData(NotNullPtr<IO::Stream> stm);

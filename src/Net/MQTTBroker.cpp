@@ -951,7 +951,7 @@ void Net::MQTTBroker::StreamClosed(NotNullPtr<IO::Stream> stm, void *stmData)
 	}
 }
 
-Net::MQTTBroker::MQTTBroker(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, UInt16 port, IO::LogTool *log, Bool sysInfo, Bool autoStart) : protoHdlr(this), wsHdlr(this)
+Net::MQTTBroker::MQTTBroker(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, UInt16 port, IO::LogTool *log, Bool sysInfo, Bool autoStart) : protoHdlr(*this), wsHdlr(this)
 {
 	this->sockf = sockf;
 	this->log = log;

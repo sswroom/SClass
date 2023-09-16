@@ -5,17 +5,17 @@
 #include "IO/ProtoHdlr/ProtoDUploadHandler.h"
 #include "Sync/MutexUsage.h"
 
-IO::ProtoHdlr::ProtoDUploadHandler::ProtoDUploadHandler(IO::IProtocolHandler::DataListener *listener)
+IO::ProtoHdlr::ProtoDUploadHandler::ProtoDUploadHandler(NotNullPtr<IO::IProtocolHandler::DataListener> listener)
 {
 	this->listener = listener;
-	Crypto::Hash::CRC32R *crc;
-	NEW_CLASS(crc, Crypto::Hash::CRC32R());
-	NEW_CLASS(this->crc, Crypto::Hash::HashCalc(crc));
+	NotNullPtr<Crypto::Hash::CRC32R> crc;
+	NEW_CLASSNN(crc, Crypto::Hash::CRC32R());
+	NEW_CLASSNN(this->crc, Crypto::Hash::HashCalc(crc));
 }
 
 IO::ProtoHdlr::ProtoDUploadHandler::~ProtoDUploadHandler()
 {
-	DEL_CLASS(this->crc);
+	this->crc.Delete();
 }
 
 void *IO::ProtoHdlr::ProtoDUploadHandler::CreateStreamData(NotNullPtr<IO::Stream> stm)

@@ -10,10 +10,10 @@ namespace IO
 		class ProtoRodBinHandler : public IO::IProtocolHandler
 		{
 		private:
-			IO::IProtocolHandler::DataListener *listener;
+			NotNullPtr<IO::IProtocolHandler::DataListener> listener;
 
 		public:
-			ProtoRodBinHandler(IO::IProtocolHandler::DataListener *listener);
+			ProtoRodBinHandler(NotNullPtr<IO::IProtocolHandler::DataListener> listener);
 			virtual ~ProtoRodBinHandler();
 
 			virtual void *CreateStreamData(NotNullPtr<IO::Stream> stm);

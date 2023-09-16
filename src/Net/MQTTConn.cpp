@@ -197,7 +197,7 @@ void Net::MQTTConn::InitStream(NotNullPtr<IO::Stream> stm)
 	}
 }
 
-Net::MQTTConn::MQTTConn(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, Text::CStringNN host, UInt16 port, DisconnectHdlr discHdlr, void *discHdlrObj, Data::Duration timeout) : protoHdlr(this)
+Net::MQTTConn::MQTTConn(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, Text::CStringNN host, UInt16 port, DisconnectHdlr discHdlr, void *discHdlrObj, Data::Duration timeout) : protoHdlr(*this)
 {
 	this->recvRunning = false;
 	this->recvStarted = false;
@@ -239,7 +239,7 @@ Net::MQTTConn::MQTTConn(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ss
 	}
 }
 
-Net::MQTTConn::MQTTConn(NotNullPtr<IO::Stream> stm, DisconnectHdlr discHdlr, void *discHdlrObj) : protoHdlr(this)
+Net::MQTTConn::MQTTConn(NotNullPtr<IO::Stream> stm, DisconnectHdlr discHdlr, void *discHdlrObj) : protoHdlr(*this)
 {
 	this->recvRunning = false;
 	this->recvStarted = false;

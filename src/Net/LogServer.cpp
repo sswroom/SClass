@@ -119,7 +119,7 @@ Net::LogServer::IPStatus *Net::LogServer::GetIPStatus(NotNullPtr<const Net::Sock
 	return 0;
 }
 
-Net::LogServer::LogServer(NotNullPtr<Net::SocketFactory> sockf, UInt16 port, Text::CString logPath, IO::LogTool *svrLog, Bool redirLog, Bool autoStart) : protoHdlr(this)
+Net::LogServer::LogServer(NotNullPtr<Net::SocketFactory> sockf, UInt16 port, Text::CString logPath, IO::LogTool *svrLog, Bool redirLog, Bool autoStart) : protoHdlr(*this)
 {
 	this->sockf = sockf;
 	this->logPath = Text::String::New(logPath);

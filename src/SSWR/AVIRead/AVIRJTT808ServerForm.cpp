@@ -164,7 +164,7 @@ SSWR::AVIRead::AVIRJTT808ServerForm::AVIRJTT808ServerForm(UI::GUIClientControl *
 	this->lbLog->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lbLog->HandleSelectionChange(OnLogSelChg, this);
 
-	NEW_CLASS(this->protoHdlr, IO::ProtoHdlr::ProtoJTT808Handler(this, 0));
+	NEW_CLASS(this->protoHdlr, IO::ProtoHdlr::ProtoJTT808Handler(*this, 0));
 	NEW_CLASS(this->log, IO::LogTool());
 	NEW_CLASS(this->logger, UI::ListBoxLogger(this, this->lbLog, 100, false));
 	this->logger->SetTimeFormat("yyyy-MM-dd HH:mm:ss.fff");

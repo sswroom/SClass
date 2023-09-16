@@ -11,13 +11,13 @@ namespace IO
 		class ProtoMapSvrHandler : public IO::IProtocolHandler
 		{
 		private:
-			IO::IProtocolHandler::DataListener *listener;
+			NotNullPtr<IO::IProtocolHandler::DataListener> listener;
 			Crypto::Hash::CRC32R crc;
 			Sync::Mutex crcMut;
 		private:
 			static UInt16 CalCheck(const UInt8 *buff, Int32 sz);
 		public:
-			ProtoMapSvrHandler(IO::IProtocolHandler::DataListener *listener);
+			ProtoMapSvrHandler(NotNullPtr<IO::IProtocolHandler::DataListener> listener);
 			virtual ~ProtoMapSvrHandler();
 
 			virtual void *CreateStreamData(NotNullPtr<IO::Stream> stm);

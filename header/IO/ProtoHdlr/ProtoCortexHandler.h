@@ -9,10 +9,10 @@ namespace IO
 		class ProtoCortexHandler : public IO::IProtocolHandler
 		{
 		private:
-			IO::IProtocolHandler::DataListener *listener;
+			NotNullPtr<IO::IProtocolHandler::DataListener> listener;
 
 		public:
-			ProtoCortexHandler(IO::IProtocolHandler::DataListener *listener);
+			ProtoCortexHandler(NotNullPtr<IO::IProtocolHandler::DataListener> listener);
 			virtual ~ProtoCortexHandler();
 
 			virtual void *CreateStreamData(NotNullPtr<IO::Stream> stm);

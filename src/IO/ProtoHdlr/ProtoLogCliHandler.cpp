@@ -4,7 +4,7 @@
 #include "IO/ProtoHdlr/ProtoLogCliHandler.h"
 #include "Sync/MutexUsage.h"
 
-IO::ProtoHdlr::ProtoLogCliHandler::ProtoLogCliHandler(IO::IProtocolHandler::DataListener *listener)
+IO::ProtoHdlr::ProtoLogCliHandler::ProtoLogCliHandler(NotNullPtr<IO::IProtocolHandler::DataListener> listener)
 {
 	this->listener = listener;
 }

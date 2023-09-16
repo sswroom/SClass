@@ -4,7 +4,7 @@
 #include "IO/ProtoHdlr/ProtoGPSDevInfoHandler.h"
 #include "Sync/MutexUsage.h"
 
-IO::ProtoHdlr::ProtoGPSDevInfoHandler::ProtoGPSDevInfoHandler(IO::IProtocolHandler::DataListener *listener)
+IO::ProtoHdlr::ProtoGPSDevInfoHandler::ProtoGPSDevInfoHandler(NotNullPtr<IO::IProtocolHandler::DataListener> listener)
 {
 	this->listener = listener;
 }

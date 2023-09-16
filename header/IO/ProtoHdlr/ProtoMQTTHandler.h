@@ -10,10 +10,10 @@ namespace IO
 		class ProtoMQTTHandler : public IO::IProtocolHandler
 		{
 		private:
-			IO::IProtocolHandler::DataListener *listener;
+			NotNullPtr<IO::IProtocolHandler::DataListener> listener;
 
 		public:
-			ProtoMQTTHandler(IO::IProtocolHandler::DataListener *listener);
+			ProtoMQTTHandler(NotNullPtr<IO::IProtocolHandler::DataListener> listener);
 			virtual ~ProtoMQTTHandler();
 
 			virtual void *CreateStreamData(NotNullPtr<IO::Stream> stm);

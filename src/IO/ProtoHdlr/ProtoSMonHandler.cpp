@@ -4,17 +4,17 @@
 #include "Data/ByteTool.h"
 #include "IO/ProtoHdlr/ProtoSMonHandler.h"
 
-IO::ProtoHdlr::ProtoSMonHandler::ProtoSMonHandler(IO::IProtocolHandler::DataListener *listener)
+IO::ProtoHdlr::ProtoSMonHandler::ProtoSMonHandler(NotNullPtr<IO::IProtocolHandler::DataListener> listener)
 {
 	this->listener = listener;
-	Crypto::Hash::CRC32R *crc;
-	NEW_CLASS(crc, Crypto::Hash::CRC32R());
-	NEW_CLASS(this->crc, Crypto::Hash::HashCalc(crc));
+	NotNullPtr<Crypto::Hash::CRC32R> crc;
+	NEW_CLASSNN(crc, Crypto::Hash::CRC32R());
+	NEW_CLASSNN(this->crc, Crypto::Hash::HashCalc(crc));
 }
 
 IO::ProtoHdlr::ProtoSMonHandler::~ProtoSMonHandler()
 {
-	DEL_CLASS(this->crc);
+	this->crc.Delete();
 }
 
 void *IO::ProtoHdlr::ProtoSMonHandler::CreateStreamData(NotNullPtr<IO::Stream> stm)

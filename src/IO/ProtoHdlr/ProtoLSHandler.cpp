@@ -3,7 +3,7 @@
 #include "Crypto/Hash/CRC32R.h"
 #include "IO/ProtoHdlr/ProtoLSHandler.h"
 
-IO::ProtoHdlr::ProtoLSHandler::ProtoLSHandler(IO::IProtocolHandler::DataListener *listener)
+IO::ProtoHdlr::ProtoLSHandler::ProtoLSHandler(NotNullPtr<IO::IProtocolHandler::DataListener> listener)
 {
 	this->listener = listener;
 }

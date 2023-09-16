@@ -53,7 +53,7 @@ Net::TCPClient *Map::ReverseGeocoderServer::GetLatestClient(UOSInt retryCnt)
 	return cli;
 }
 
-Map::ReverseGeocoderServer::ReverseGeocoderServer(NotNullPtr<Net::SocketFactory> sockf, IO::LogTool *log, UInt16 port) : protocol(this)
+Map::ReverseGeocoderServer::ReverseGeocoderServer(NotNullPtr<Net::SocketFactory> sockf, IO::LogTool *log, UInt16 port) : protocol(*this)
 {
 	NEW_CLASS(this->ctrl, Net::TCPServerController(sockf, log, port, CSTR("RGS: "), 4096, this, 8, 240, true));
 }

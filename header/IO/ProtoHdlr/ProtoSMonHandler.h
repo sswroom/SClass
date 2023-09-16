@@ -11,11 +11,11 @@ namespace IO
 		class ProtoSMonHandler : public IO::IProtocolHandler
 		{
 		private:
-			IO::IProtocolHandler::DataListener *listener;
-			Crypto::Hash::HashCalc *crc;
+			NotNullPtr<IO::IProtocolHandler::DataListener> listener;
+			NotNullPtr<Crypto::Hash::HashCalc> crc;
 
 		public:
-			ProtoSMonHandler(IO::IProtocolHandler::DataListener *listener);
+			ProtoSMonHandler(NotNullPtr<IO::IProtocolHandler::DataListener> listener);
 			virtual ~ProtoSMonHandler();
 
 			virtual void *CreateStreamData(NotNullPtr<IO::Stream> stm);

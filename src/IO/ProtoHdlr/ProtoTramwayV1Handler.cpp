@@ -2,7 +2,7 @@
 #include "MyMemory.h"
 #include "IO/ProtoHdlr/ProtoTramwayV1Handler.h"
 
-IO::ProtoHdlr::ProtoTramwayV1Handler::ProtoTramwayV1Handler(IO::IProtocolHandler::DataListener *listener)
+IO::ProtoHdlr::ProtoTramwayV1Handler::ProtoTramwayV1Handler(NotNullPtr<IO::IProtocolHandler::DataListener> listener)
 {
 	this->listener = listener;
 }

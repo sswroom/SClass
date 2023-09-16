@@ -11,12 +11,12 @@ namespace IO
 		class ProtoJMVL01Handler : public IO::IProtocolHandler
 		{
 		private:
-			IO::IProtocolHandler::DataListener *listener;
+			NotNullPtr<IO::IProtocolHandler::DataListener> listener;
 			UInt64 devId;
 			Crypto::Hash::CRC16R crc;
 
 		public:
-			ProtoJMVL01Handler(IO::IProtocolHandler::DataListener *listener, UInt64 devId);
+			ProtoJMVL01Handler(NotNullPtr<IO::IProtocolHandler::DataListener> listener, UInt64 devId);
 			virtual ~ProtoJMVL01Handler();
 
 			virtual void *CreateStreamData(NotNullPtr<IO::Stream> stm);

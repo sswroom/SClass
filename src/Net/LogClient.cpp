@@ -144,7 +144,7 @@ UInt32 __stdcall Net::LogClient::SendThread(void *userObj)
 	return 0;
 }
 
-Net::LogClient::LogClient(NotNullPtr<Net::SocketFactory> sockf, const Net::SocketUtil::AddressInfo *addr, UInt16 port, Data::Duration timeout) : protoHdlr(this)
+Net::LogClient::LogClient(NotNullPtr<Net::SocketFactory> sockf, const Net::SocketUtil::AddressInfo *addr, UInt16 port, Data::Duration timeout) : protoHdlr(*this)
 {
 	this->sockf = sockf;
 	this->addr = *addr;

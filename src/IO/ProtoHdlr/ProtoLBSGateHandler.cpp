@@ -3,7 +3,7 @@
 #include "IO/ProtoHdlr/ProtoLBSGateHandler.h"
 #include "Sync/MutexUsage.h"
 
-IO::ProtoHdlr::ProtoLBSGateHandler::ProtoLBSGateHandler(IO::IProtocolHandler::DataListener *listener)
+IO::ProtoHdlr::ProtoLBSGateHandler::ProtoLBSGateHandler(NotNullPtr<IO::IProtocolHandler::DataListener> listener)
 {
 	this->listener = listener;
 }

@@ -1140,7 +1140,7 @@ void SSWR::SMonitor::SMonitorSvrCore::UserPwdCalc(const UTF8Char *userName, cons
 	md5.GetValue(buff);
 }
 
-SSWR::SMonitor::SMonitorSvrCore::SMonitorSvrCore(NotNullPtr<IO::Writer> writer, NotNullPtr<Media::DrawEngine> deng) : protoHdlr(this), thread(CheckThread, this, CSTR("SMonitorSvrCore"))
+SSWR::SMonitor::SMonitorSvrCore::SMonitorSvrCore(NotNullPtr<IO::Writer> writer, NotNullPtr<Media::DrawEngine> deng) : protoHdlr(*this), thread(CheckThread, this, CSTR("SMonitorSvrCore"))
 {
 	NEW_CLASSNN(this->sockf, Net::OSSocketFactory(true));
 	this->ssl = Net::SSLEngineFactory::Create(sockf, true);
@@ -1379,8 +1379,8 @@ SSWR::SMonitor::SMonitorSvrCore::SMonitorSvrCore(NotNullPtr<IO::Writer> writer, 
 		{
 			if (s->ToUInt16(port) && port > 0)
 			{
-				Crypto::Hash::CRC16 *crc;
-				NEW_CLASS(crc, Crypto::Hash::CRC16(Crypto::Hash::CRC16::GetPolynomialCCITT()));
+				NotNullPtr<Crypto::Hash::CRC16> crc;
+				NEW_CLASSNN(crc, Crypto::Hash::CRC16(Crypto::Hash::CRC16::GetPolynomialCCITT()));
 				NEW_CLASS(this->dataCRC, Crypto::Hash::HashCalc(crc));
 				NEW_CLASS(this->dataUDP, Net::UDPServer(this->sockf, 0, port, CSTR_NULL, OnDataUDPPacket, this, &this->log, CSTR("DUDP: "), 4, false));
 				if (this->dataUDP->IsError())

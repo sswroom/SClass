@@ -4,14 +4,14 @@
 #include "Sync/MutexUsage.h"
 #include "Text/MyString.h"
 
-Crypto::Hash::HashCalc::HashCalc(Crypto::Hash::IHash *hash)
+Crypto::Hash::HashCalc::HashCalc(NotNullPtr<Crypto::Hash::IHash> hash)
 {
 	this->hash = hash;
 }
 
 Crypto::Hash::HashCalc::~HashCalc()
 {
-	DEL_CLASS(this->hash);
+	this->hash.Delete();
 }
 
 void Crypto::Hash::HashCalc::Calc(const UInt8 *buff, UOSInt size, UInt8 *hashVal)
@@ -22,7 +22,7 @@ void Crypto::Hash::HashCalc::Calc(const UInt8 *buff, UOSInt size, UInt8 *hashVal
 	this->hash->GetValue(hashVal);
 }
 
-void Crypto::Hash::HashCalc::CalcStr(Text::CString s, UInt8 *hashVal)
+void Crypto::Hash::HashCalc::CalcStr(Text::CStringNN s, UInt8 *hashVal)
 {
 	this->Calc(s.v, s.leng, hashVal);
 }

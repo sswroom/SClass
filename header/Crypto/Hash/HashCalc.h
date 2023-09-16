@@ -11,15 +11,15 @@ namespace Crypto
 		class HashCalc
 		{
 		private:
-			Crypto::Hash::IHash *hash;
+			NotNullPtr<Crypto::Hash::IHash> hash;
 			Sync::Mutex mut;
 
 		public:
-			HashCalc(Crypto::Hash::IHash *hash); //hash will be released
+			HashCalc(NotNullPtr<Crypto::Hash::IHash> hash); //hash will be released
 			~HashCalc();
 
 			void Calc(const UInt8 *buff, UOSInt size, UInt8 *hashVal);
-			void CalcStr(Text::CString s, UInt8 *hashVal);
+			void CalcStr(Text::CStringNN s, UInt8 *hashVal);
 		};
 	}
 }

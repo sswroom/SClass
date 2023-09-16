@@ -16,10 +16,10 @@ namespace IO
 				UOSInt buffSize;
 			} ProtocolStatus;
 		private:
-			IO::IProtocolHandler::DataListener *listener;
+			NotNullPtr<IO::IProtocolHandler::DataListener> listener;
 
 		public:
-			ProtoTramwayV1Handler(IO::IProtocolHandler::DataListener *listener);
+			ProtoTramwayV1Handler(NotNullPtr<IO::IProtocolHandler::DataListener> listener);
 			virtual ~ProtoTramwayV1Handler();
 
 			virtual void *CreateStreamData(NotNullPtr<IO::Stream> stm);

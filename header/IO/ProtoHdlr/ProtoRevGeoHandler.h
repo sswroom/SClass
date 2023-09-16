@@ -11,11 +11,11 @@ namespace IO
 		class ProtoRevGeoHandler : public IO::IProtocolHandler
 		{
 		private:
-			IO::IProtocolHandler::DataListener *listener;
-			Crypto::Hash::HashCalc *crc;
+			NotNullPtr<IO::IProtocolHandler::DataListener> listener;
+			NotNullPtr<Crypto::Hash::HashCalc> crc;
 
 		public:
-			ProtoRevGeoHandler(IO::IProtocolHandler::DataListener *listener);
+			ProtoRevGeoHandler(NotNullPtr<IO::IProtocolHandler::DataListener> listener);
 			virtual ~ProtoRevGeoHandler();
 
 			virtual void *CreateStreamData(NotNullPtr<IO::Stream> stm);

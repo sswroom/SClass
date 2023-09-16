@@ -11,12 +11,12 @@ namespace IO
 		class ProtoLBSGateHandler : public IO::IProtocolHandler
 		{
 		private:
-			IO::IProtocolHandler::DataListener *listener;
+			NotNullPtr<IO::IProtocolHandler::DataListener> listener;
 			Sync::Mutex crcMut;
 			Crypto::Hash::CRC32R crc;
 
 		public:
-			ProtoLBSGateHandler(IO::IProtocolHandler::DataListener *listener);
+			ProtoLBSGateHandler(NotNullPtr<IO::IProtocolHandler::DataListener> listener);
 			virtual ~ProtoLBSGateHandler();
 
 			virtual void *CreateStreamData(NotNullPtr<IO::Stream> stm);

@@ -11,12 +11,12 @@ namespace IO
 		class ProtoLogCliHandler : public IO::IProtocolHandler
 		{
 		private:
-			IO::IProtocolHandler::DataListener *listener;
+			NotNullPtr<IO::IProtocolHandler::DataListener> listener;
 			Crypto::Hash::CRC32R crc;
 			Sync::Mutex crcMut;
 
 		public:
-			ProtoLogCliHandler(IO::IProtocolHandler::DataListener *listener);
+			ProtoLogCliHandler(NotNullPtr<IO::IProtocolHandler::DataListener> listener);
 			virtual ~ProtoLogCliHandler();
 
 			virtual void *CreateStreamData(NotNullPtr<IO::Stream> stm);

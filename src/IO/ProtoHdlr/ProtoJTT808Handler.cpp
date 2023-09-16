@@ -8,7 +8,7 @@ typedef struct
 	UInt8 devId[6];
 } JTT808StreamData;
 
-IO::ProtoHdlr::ProtoJTT808Handler::ProtoJTT808Handler(IO::IProtocolHandler::DataListener *listener, UInt64 devId)
+IO::ProtoHdlr::ProtoJTT808Handler::ProtoJTT808Handler(NotNullPtr<IO::IProtocolHandler::DataListener> listener, UInt64 devId)
 {
 	this->listener = listener;
 	this->devId = devId;
