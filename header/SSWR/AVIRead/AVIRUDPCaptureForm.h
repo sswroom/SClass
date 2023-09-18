@@ -47,7 +47,7 @@ namespace SSWR
 
 			UI::GUITabPage *tpLog;
 			UI::GUITextBox *txtLog;
-			UI::GUIListBox *lbLog;
+			NotNullPtr<UI::GUIListBox> lbLog;
 
 			UI::GUITabPage *tpPorts;
 			UI::GUIListView *lvPorts;
@@ -66,7 +66,7 @@ namespace SSWR
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			IO::LogTool log;
-			UI::ListBoxLogger *logger;
+			NotNullPtr<UI::ListBoxLogger> logger;
 			Net::UDPServer *svr;
 
 			Bool packetsChg;

@@ -1111,7 +1111,7 @@ SSWR::AVIRead::AVIRDNSProxyForm::AVIRDNSProxyForm(UI::GUIClientControl *parent, 
 	this->txtLog->SetReadOnly(true);
 	this->txtLog->SetRect(0, 0, 100, 23, false);
 	this->txtLog->SetDockType(UI::GUIControl::DOCK_BOTTOM);
-	NEW_CLASS(this->lbLog, UI::GUIListBox(ui, this->tpLog, false));
+	NEW_CLASSNN(this->lbLog, UI::GUIListBox(ui, this->tpLog, false));
 	this->lbLog->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	this->tpClient = this->tcMain->AddTabPage(CSTR("Client"));
@@ -1127,10 +1127,10 @@ SSWR::AVIRead::AVIRDNSProxyForm::AVIRDNSProxyForm(UI::GUIClientControl *parent, 
 
 	this->cliChg = false;
 
-	NEW_CLASS(this->logger, UI::ListBoxLogger(this, this->lbLog, 500, true));
+	NEW_CLASSNN(this->logger, UI::ListBoxLogger(*this, this->lbLog, 500, true));
 	this->log.AddLogHandler(this->logger, IO::LogHandler::LogLevel::Raw);
 
-	NEW_CLASS(this->proxy, Net::DNSProxy(this->core->GetSocketFactory(), true));
+	NEW_CLASS(this->proxy, Net::DNSProxy(this->core->GetSocketFactory(), true, this->log));
 	this->proxy->HandleDNSRequest(OnDNSRequest, this);
 	this->AddTimer(1000, OnTimerTick, this);
 	UInt32 svrIP = this->proxy->GetServerIP();
@@ -1162,7 +1162,7 @@ SSWR::AVIRead::AVIRDNSProxyForm::~AVIRDNSProxyForm()
 		DEL_CLASS(cli);
 	}
 	this->log.RemoveLogHandler(this->logger);
-	DEL_CLASS(this->logger);
+	this->logger.Delete();
 }
 
 void SSWR::AVIRead::AVIRDNSProxyForm::OnMonitorChanged()

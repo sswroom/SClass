@@ -200,7 +200,7 @@ SSWR::AVIRead::AVIRSNMPTrapMonitorForm::AVIRSNMPTrapMonitorForm(UI::GUIClientCon
 
 	this->AddTimer(1000, OnTimerTick, this);
 
-	NEW_CLASS(this->mon, Net::SNMPTrapMonitor(this->core->GetSocketFactory(), OnSNMPTrapPacket, this));
+	NEW_CLASS(this->mon, Net::SNMPTrapMonitor(this->core->GetSocketFactory(), OnSNMPTrapPacket, this, this->core->GetLog()));
 	if (this->mon->IsError())
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Error in starting SNMP Trap Monitor"), CSTR("Error"), this);

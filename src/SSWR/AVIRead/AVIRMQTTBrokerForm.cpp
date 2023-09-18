@@ -55,7 +55,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTBrokerForm::OnStartClicked(void *userObj)
 				ssl->ServerSetCertsASN1(sslCert, sslKey, issuerCert);
 				SDEL_CLASS(issuerCert);
 			}
-			NEW_CLASS(me->broker, Net::MQTTBroker(me->core->GetSocketFactory(), ssl, port, &me->log, true, false));
+			NEW_CLASS(me->broker, Net::MQTTBroker(me->core->GetSocketFactory(), ssl, port, me->log, true, false));
 			if (me->broker->IsError())
 			{
 				UI::MessageDialog::ShowDialog(CSTR("Error in initing server"), CSTR("Error"), me);
@@ -291,11 +291,11 @@ SSWR::AVIRead::AVIRMQTTBrokerForm::AVIRMQTTBrokerForm(UI::GUIClientControl *pare
 	this->txtLog->SetRect(0, 0, 100, 23, false);
 	this->txtLog->SetDockType(UI::GUIControl::DOCK_BOTTOM);
 	this->txtLog->SetReadOnly(true);
-	NEW_CLASS(this->lbLog, UI::GUIListBox(ui, this->tpLog, false));
+	NEW_CLASSNN(this->lbLog, UI::GUIListBox(ui, this->tpLog, false));
 	this->lbLog->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lbLog->HandleSelectionChange(OnLogSelChg, this);
 
-	NEW_CLASS(this->logger, UI::ListBoxLogger(this, this->lbLog, 100, false));
+	NEW_CLASSNN(this->logger, UI::ListBoxLogger(*this, this->lbLog, 100, false));
 	this->logger->SetTimeFormat("yyyy-MM-dd HH:mm:ss.fff");
 	this->log.AddLogHandler(this->logger, IO::LogHandler::LogLevel::Raw);
 	this->broker = 0;
@@ -306,7 +306,7 @@ SSWR::AVIRead::AVIRMQTTBrokerForm::~AVIRMQTTBrokerForm()
 {
 	this->ServerStop();
 	this->log.RemoveLogHandler(this->logger);
-	DEL_CLASS(this->logger);
+	this->logger.Delete();
 	NotNullPtr<const Data::ArrayList<SSWR::AVIRead::AVIRMQTTBrokerForm::TopicStatus*>> topicList = this->topicMap.GetValues();
 	SSWR::AVIRead::AVIRMQTTBrokerForm::TopicStatus *topic;
 	UOSInt i = topicList->GetCount();

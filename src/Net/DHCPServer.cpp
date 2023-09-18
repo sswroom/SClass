@@ -263,7 +263,7 @@ void __stdcall Net::DHCPServer::PacketHdlr(NotNullPtr<const Net::SocketUtil::Add
 	}
 }
 
-Net::DHCPServer::DHCPServer(NotNullPtr<Net::SocketFactory> sockf, UInt32 infIP, UInt32 subnet, UInt32 firstIP, UInt32 devCount, UInt32 gateway, NotNullPtr<Data::ArrayList<UInt32>> dnsList)
+Net::DHCPServer::DHCPServer(NotNullPtr<Net::SocketFactory> sockf, UInt32 infIP, UInt32 subnet, UInt32 firstIP, UInt32 devCount, UInt32 gateway, NotNullPtr<Data::ArrayList<UInt32>> dnsList, NotNullPtr<IO::LogTool> log)
 {
 	this->sockf = sockf;
 	this->svr = 0;
@@ -325,7 +325,7 @@ Net::DHCPServer::DHCPServer(NotNullPtr<Net::SocketFactory> sockf, UInt32 infIP, 
 	MemClear(this->devUsed, this->devCount);
 	Net::SocketUtil::AddressInfo addr;
 	Net::SocketUtil::SetAddrInfoV4(addr, infIP);
-	NEW_CLASS(this->svr, Net::UDPServer(this->sockf, &addr, 67, CSTR_NULL, PacketHdlr, this, 0, CSTR_NULL, 2, true));
+	NEW_CLASS(this->svr, Net::UDPServer(this->sockf, &addr, 67, CSTR_NULL, PacketHdlr, this, log, CSTR_NULL, 2, true));
 	this->svr->AddMulticastIP(0xffffffff);
 }
 

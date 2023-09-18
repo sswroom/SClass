@@ -22,7 +22,7 @@ void IO::WriterLogHandler::LogClosed()
 {
 	DEL_CLASS(this);
 }
-void IO::WriterLogHandler::LogAdded(const Data::Timestamp &time, Text::CString logMsg, LogLevel logLev)
+void IO::WriterLogHandler::LogAdded(const Data::Timestamp &time, Text::CStringNN logMsg, LogLevel logLev)
 {
 	this->writer->WriteLineCStr(logMsg);
 }

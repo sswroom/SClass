@@ -25,9 +25,9 @@ SSWR::AVIRead::AVIRPaintCntForm::AVIRPaintCntForm(UI::GUIClientControl *parent, 
 	this->dispCnt = 0;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASS(this->lblCnt, UI::GUILabel(ui, this, CSTR("Paint Cnt")));
+	NEW_CLASSNN(this->lblCnt, UI::GUILabel(ui, this, CSTR("Paint Cnt")));
 	this->lblCnt->SetRect(4, 4, 100, 23, false);
-	NEW_CLASS(this->txtCnt, UI::GUITextBox(ui, this, CSTR("0")));
+	NEW_CLASSNN(this->txtCnt, UI::GUITextBox(ui, this, CSTR("0")));
 	this->txtCnt->SetReadOnly(true);
 	this->txtCnt->SetRect(104, 4, 150, 23, false);
 

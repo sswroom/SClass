@@ -27,7 +27,7 @@ namespace SSWR
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			Net::WebServer::WebListener *svr;
 			Net::WebServer::RESTfulHandler *restHdlr;
-			IO::LogTool *log;
+			IO::LogTool log;
 			UI::ListBoxLogger *logger;
 			DB::DBConn *dbConn;
 			DB::DBTool *db;
@@ -59,7 +59,7 @@ namespace SSWR
 			UI::GUIListView *lvTable;
 
 			UI::GUITabPage *tpLog;
-			UI::GUIListBox *lbLog;
+			NotNullPtr<UI::GUIListBox> lbLog;
 			UI::GUITextBox *txtLog;
 
 		private:

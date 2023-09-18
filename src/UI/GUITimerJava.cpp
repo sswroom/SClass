@@ -17,7 +17,7 @@ JNIEXPORT void JNICALL Java_TimerListener_actionPerformed(JNIEnv *env, jobject o
 	me->OnTick();
 }
 
-UI::GUITimer::GUITimer(UI::GUICore *ui, UI::GUIForm *parent, UOSInt id, UInt32 interval, UI::UIEvent handler, void *userObj)
+UI::GUITimer::GUITimer(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIForm> parent, UOSInt id, UInt32 interval, UI::UIEvent handler, void *userObj)
 {
 	this->interval = interval;
 	this->handler = handler;

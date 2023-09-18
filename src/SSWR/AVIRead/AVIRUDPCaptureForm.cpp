@@ -30,7 +30,7 @@ void __stdcall SSWR::AVIRead::AVIRUDPCaptureForm::OnStartClicked(void *userObj)
 			UI::MessageDialog::ShowDialog(CSTR("Please enter valid port"), CSTR("Error"), me);
 			return;
 		}
-		NEW_CLASS(me->svr, Net::UDPServer(me->core->GetSocketFactory(), 0, port, CSTR_NULL, OnUDPPacket, me, &me->log, CSTR("UDP: "), 4, me->chkReuseAddr->IsChecked()));
+		NEW_CLASS(me->svr, Net::UDPServer(me->core->GetSocketFactory(), 0, port, CSTR_NULL, OnUDPPacket, me, me->log, CSTR("UDP: "), 4, me->chkReuseAddr->IsChecked()));
 		if (me->svr->IsError())
 		{
 			DEL_CLASS(me->svr);
@@ -237,7 +237,7 @@ SSWR::AVIRead::AVIRUDPCaptureForm::AVIRUDPCaptureForm(UI::GUIClientControl *pare
 	this->txtLog->SetRect(0, 0, 100, 23, false);
 	this->txtLog->SetReadOnly(true);
 	this->txtLog->SetDockType(UI::GUIControl::DOCK_BOTTOM);
-	NEW_CLASS(this->lbLog, UI::GUIListBox(ui, this->tpLog, false));
+	NEW_CLASSNN(this->lbLog, UI::GUIListBox(ui, this->tpLog, false));
 	this->lbLog->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lbLog->HandleSelectionChange(OnLogSelChg, this);
 
@@ -301,7 +301,7 @@ SSWR::AVIRead::AVIRUDPCaptureForm::AVIRUDPCaptureForm(UI::GUIClientControl *pare
 	this->lbMulticastCurr->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lbMulticastCommon->AddItem(CSTR("239.255.255.250"), (void*)"239.255.255.250");
 
-	NEW_CLASS(this->logger, UI::ListBoxLogger(this, this->lbLog, 500, true));
+	NEW_CLASSNN(this->logger, UI::ListBoxLogger(*this, this->lbLog, 500, true));
 	this->log.AddLogHandler(this->logger, IO::LogHandler::LogLevel::Raw);
 	
 	this->AddTimer(1000, OnTimerTick, this);
@@ -321,7 +321,7 @@ SSWR::AVIRead::AVIRUDPCaptureForm::~AVIRUDPCaptureForm()
 	}
 	MemFree(this->packets);
 	this->log.RemoveLogHandler(this->logger);
-	DEL_CLASS(this->logger);
+	this->logger.Delete();
 }
 
 void SSWR::AVIRead::AVIRUDPCaptureForm::OnMonitorChanged()

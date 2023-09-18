@@ -633,9 +633,16 @@ SSWR::AVIRead::AVIRMQTTExplorerForm::AVIRMQTTExplorerForm(UI::GUIClientControl *
 	NEW_CLASS(this->txtPubContent, UI::GUITextBox(ui, this->tpPublish, CSTR(""), true));
 	this->txtPubContent->SetDockType(UI::GUIControl::DOCK_FILL);
 
-	this->tpLog = this->tcDetail->AddTabPage(CSTR("Log"));
-	this->logger = UI::ListBoxLogger::CreateUI(this, this->ui, this->tpLog, 500, false);
-	this->log.AddLogHandler(this->logger, IO::LogHandler::LogLevel::Raw);
+	if (this->tpLog.Set(this->tcDetail->AddTabPage(CSTR("Log"))))
+	{
+		this->logger = UI::ListBoxLogger::CreateUI(*this, this->ui, this->tpLog, 500, false);
+		this->log.AddLogHandler(this->logger, IO::LogHandler::LogLevel::Raw);
+	}
+	else
+	{
+		this->logger = UI::ListBoxLogger::CreateUI(*this, this->ui, *this, 500, false);
+		this->log.AddLogHandler(this->logger, IO::LogHandler::LogLevel::Raw);
+	}
 
 	this->client = 0;
 
@@ -651,7 +658,7 @@ SSWR::AVIRead::AVIRMQTTExplorerForm::~AVIRMQTTExplorerForm()
 	this->ClearTopics();
 	SDEL_CLASS(this->cliCert);
 	SDEL_CLASS(this->cliKey);
-	SDEL_CLASS(this->logger);
+	this->logger.Delete();
 	NotNullPtr<Media::DrawImage> img;
 	if (img.Set(this->dispImg))
 	{

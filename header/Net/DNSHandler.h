@@ -26,7 +26,7 @@ namespace Net
 		Data::ICaseBTreeUTF8Map<DomainStatus*> reqv6Map;
 
 	public:
-		DNSHandler(NotNullPtr<Net::SocketFactory> sockf, NotNullPtr<const Net::SocketUtil::AddressInfo> serverAddr);
+		DNSHandler(NotNullPtr<Net::SocketFactory> sockf, NotNullPtr<const Net::SocketUtil::AddressInfo> serverAddr, NotNullPtr<IO::LogTool> log);
 		~DNSHandler();
 	
 		Bool GetByDomainNamev4(NotNullPtr<Net::SocketUtil::AddressInfo> addr, Text::CStringNN domain);

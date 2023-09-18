@@ -17,14 +17,14 @@ namespace DB
 			Connected
 		};
 	private:
-		IO::LogTool *log;
+		NotNullPtr<IO::LogTool> log;
 		NotNullPtr<Net::SocketFactory> sockf;
 		Parser::ParserList *parsers;
 		Text::String *connStr;
 		DB::ReadingDB *db;
 		ConnStatus status;
 
-		DBManagerCtrl(IO::LogTool *log, NotNullPtr<Net::SocketFactory> sockf, Parser::ParserList *parsers);
+		DBManagerCtrl(NotNullPtr<IO::LogTool> log, NotNullPtr<Net::SocketFactory> sockf, Parser::ParserList *parsers);
 	public:
 		~DBManagerCtrl();
 
@@ -35,10 +35,10 @@ namespace DB
 		DB::ReadingDB *GetDB();
 		void GetConnName(NotNullPtr<Text::StringBuilderUTF8> sb);
 
-		static DBManagerCtrl *Create(Text::String *connStr, IO::LogTool *log, NotNullPtr<Net::SocketFactory> sockf, Parser::ParserList *parsers);
-		static DBManagerCtrl *Create(Text::CString connStr, IO::LogTool *log, NotNullPtr<Net::SocketFactory> sockf, Parser::ParserList *parsers);
-		static DBManagerCtrl *Create(DB::DBTool *db, IO::LogTool *log, NotNullPtr<Net::SocketFactory> sockf, Parser::ParserList *parsers);
-		static DBManagerCtrl *CreateFromFile(DB::ReadingDB *db, NotNullPtr<Text::String> filePath, IO::LogTool *log, NotNullPtr<Net::SocketFactory> sockf, Parser::ParserList *parsers);
+		static DBManagerCtrl *Create(Text::String *connStr, NotNullPtr<IO::LogTool> log, NotNullPtr<Net::SocketFactory> sockf, Parser::ParserList *parsers);
+		static DBManagerCtrl *Create(Text::CString connStr, NotNullPtr<IO::LogTool> log, NotNullPtr<Net::SocketFactory> sockf, Parser::ParserList *parsers);
+		static DBManagerCtrl *Create(DB::DBTool *db, NotNullPtr<IO::LogTool> log, NotNullPtr<Net::SocketFactory> sockf, Parser::ParserList *parsers);
+		static DBManagerCtrl *CreateFromFile(DB::ReadingDB *db, NotNullPtr<Text::String> filePath, NotNullPtr<IO::LogTool> log, NotNullPtr<Net::SocketFactory> sockf, Parser::ParserList *parsers);
 	};
 }
 #endif

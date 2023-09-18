@@ -34,7 +34,7 @@ namespace Map
 
 		Net::TCPClient *GetLatestClient(UOSInt retryCnt);
 	public:
-		ReverseGeocoderServer(NotNullPtr<Net::SocketFactory> sockf, IO::LogTool *log, UInt16 port);
+		ReverseGeocoderServer(NotNullPtr<Net::SocketFactory> sockf, NotNullPtr<IO::LogTool> log, UInt16 port);
 		virtual ~ReverseGeocoderServer();
 
 		virtual UTF8Char *SearchName(UTF8Char *buff, UOSInt buffSize, Math::Coord2DDbl pos, UInt32 lcid);

@@ -18,7 +18,7 @@ namespace Net
 
 		static void __stdcall PacketHdlr(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, void *userData);
 	public:
-		NTPClient(NotNullPtr<Net::SocketFactory> sockf, UInt16 port);
+		NTPClient(NotNullPtr<Net::SocketFactory> sockf, UInt16 port, NotNullPtr<IO::LogTool> log);
 		~NTPClient();
 
 		Bool GetServerTime(Text::CStringNN host, UInt16 port, NotNullPtr<Data::DateTime> svrTime); //def = 123

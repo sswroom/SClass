@@ -28,8 +28,8 @@ namespace Game
 			~SudokuBoard();
 
 			void SetBoardNum(UOSInt xOfst, UOSInt yOfst, UInt8 number, Bool isDefault);
-			UInt8 GetBoardNum(UOSInt xOfst, UOSInt yOfst, Bool *isDefault);
-			void CopyFrom(SudokuBoard *board);
+			UInt8 GetBoardNum(UOSInt xOfst, UOSInt yOfst, OptOut<Bool> isDefault);
+			void CopyFrom(NotNullPtr<const SudokuBoard> board);
 			Bool IsFinish();
 
 			void Clear();

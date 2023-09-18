@@ -31,6 +31,7 @@ namespace Parser
 		void SetSocketFactory(NotNullPtr<Net::SocketFactory> sockf);
 		void SetSSLEngine(Net::SSLEngine *ssl);
 		void SetArcGISPRJParser(Math::ArcGISPRJParser *prjParser);
+		void SetLogTool(IO::LogTool *log);
 		void PrepareSelector(IO::FileSelector *selector, IO::ParserType t);
 		IO::ParsedObject *ParseFile(NotNullPtr<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType *t, IO::ParserType targetType);
 		IO::ParsedObject *ParseFile(NotNullPtr<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType *t);

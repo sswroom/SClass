@@ -754,7 +754,7 @@ struct DB::TDSConn::ClassData
 	Int8 tzQhr;
 
 	Text::StringBuilderUTF8 *errMsg;
-	IO::LogTool *log;
+	NotNullPtr<IO::LogTool> log;
 	NotNullPtr<Text::String> host;
 	NotNullPtr<Text::String> username;
 	NotNullPtr<Text::String> password;
@@ -775,7 +775,7 @@ int TDSConnMsgHdlr(DBPROCESS * dbproc, DBINT msgno, int msgstate, int severity, 
 	return 0;
 }
 
-DB::TDSConn::TDSConn(Text::CStringNN serverHost, UInt16 port, Bool encrypt, Text::CString database, Text::CString userName, Text::CString password, IO::LogTool *log, Text::StringBuilderUTF8 *errMsg) : DBConn(serverHost)
+DB::TDSConn::TDSConn(Text::CStringNN serverHost, UInt16 port, Bool encrypt, Text::CString database, Text::CString userName, Text::CString password, NotNullPtr<IO::LogTool> log, Text::StringBuilderUTF8 *errMsg) : DBConn(serverHost)
 {
 	if (!inited)
 	{
@@ -949,8 +949,7 @@ void DB::TDSConn::Reconnect()
 	{
 		if (this->clsData->errMsg)
 			this->clsData->errMsg->AppendC(UTF8STRC("Error in allocating login structure"));
-		if (this->clsData->log)
-			this->clsData->log->LogMessage(CSTR("TDS: Error in allocating login structure"), IO::LogHandler::LogLevel::Error);
+		this->clsData->log->LogMessage(CSTR("TDS: Error in allocating login structure"), IO::LogHandler::LogLevel::Error);
 		return;
 	}
 	DBSETLUSER(login, (const Char*)this->clsData->username->v);
@@ -969,7 +968,7 @@ void DB::TDSConn::Reconnect()
 			this->clsData->errMsg->AppendC(UTF8STRC("Error in connecting to "));
 			this->clsData->errMsg->Append(this->clsData->host);
 		}
-		if (this->clsData->log)
+		if (this->clsData->log->HasHandler())
 		{
 			Text::StringBuilderUTF8 sb;
 			sb.AppendC(UTF8STRC("TDS: Error in connecting to "));

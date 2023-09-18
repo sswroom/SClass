@@ -12,7 +12,7 @@ namespace Net
 	public:
 		NotNullPtr<Net::SocketFactory> sockf;
 		Net::UDPServer *svr;
-		IO::LogTool *log;
+		NotNullPtr<IO::LogTool> log;
 		Sync::Event readEvt;
 
 		Sync::Mutex dataMut;
@@ -24,7 +24,7 @@ namespace Net
 
 		static void __stdcall OnUDPPacket(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, void *userData);
 	public:
-		UDPServerStream(NotNullPtr<Net::SocketFactory> sockf, UInt16 port, IO::LogTool *log);
+		UDPServerStream(NotNullPtr<Net::SocketFactory> sockf, UInt16 port, NotNullPtr<IO::LogTool> log);
 		~UDPServerStream();
 
 		virtual Bool IsDown() const;

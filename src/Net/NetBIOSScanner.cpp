@@ -67,9 +67,9 @@ void Net::NetBIOSScanner::FreeAnswer(NameAnswer *ans)
 	MemFree(ans);
 }
 
-Net::NetBIOSScanner::NetBIOSScanner(NotNullPtr<Net::SocketFactory> sockf)
+Net::NetBIOSScanner::NetBIOSScanner(NotNullPtr<Net::SocketFactory> sockf, NotNullPtr<IO::LogTool> log)
 {
-	NEW_CLASS(this->svr, Net::UDPServer(sockf, 0, 0, CSTR_NULL, OnUDPPacket, this, 0, CSTR_NULL, 2, false));
+	NEW_CLASS(this->svr, Net::UDPServer(sockf, 0, 0, CSTR_NULL, OnUDPPacket, this, log, CSTR_NULL, 2, false));
 	this->hdlr = 0;
 	this->hdlrObj = 0;
 	if (!this->svr->IsError())

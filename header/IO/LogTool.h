@@ -1,6 +1,6 @@
 #ifndef _SM_IO_LOGTOOL
 #define _SM_IO_LOGTOOL
-#include "Data/ArrayList.h"
+#include "Data/ArrayListNN.h"
 #include "Data/ArrayListInt32.h"
 #include "Data/Timestamp.h"
 #include "Sync/Mutex.h"
@@ -39,7 +39,7 @@ namespace IO
 		};
 		virtual ~LogHandler(){};
 
-		virtual void LogAdded(const Data::Timestamp &logTime, Text::CString logMsg, LogLevel logLev) = 0;
+		virtual void LogAdded(const Data::Timestamp &logTime, Text::CStringNN logMsg, LogLevel logLev) = 0;
 		virtual void LogClosed() = 0;
 	};
 
@@ -47,14 +47,14 @@ namespace IO
 	{
 	public:
 		virtual ~ILogger() {};
-		virtual void LogMessage(Text::CString logMsg, LogHandler::LogLevel level) = 0;
+		virtual void LogMessage(Text::CStringNN logMsg, LogHandler::LogLevel level) = 0;
 	};
 
 	class LogTool : public ILogger
 	{
 	private:
-		Data::ArrayList<IO::LogHandler*> fileLogArr;
-		Data::ArrayList<IO::LogHandler*> hdlrArr;
+		Data::ArrayListNN<IO::LogHandler> fileLogArr;
+		Data::ArrayListNN<IO::LogHandler> hdlrArr;
 		Data::ArrayList<IO::LogHandler::LogLevel> levArr;
 		Sync::Mutex hdlrMut;
 		Bool closed;
@@ -65,9 +65,10 @@ namespace IO
 		void Close();
 		void AddFileLog(NotNullPtr<Text::String> fileName, LogHandler::LogType style, LogHandler::LogGroup groupStyle, LogHandler::LogLevel logLev, const Char *dateFormat, Bool directWrite);
 		void AddFileLog(Text::CString fileName, LogHandler::LogType style, LogHandler::LogGroup groupStyle, LogHandler::LogLevel logLev, const Char *dateFormat, Bool directWrite);
-		void AddLogHandler(LogHandler *hdlr, LogHandler::LogLevel logLev);
-		void RemoveLogHandler(LogHandler *hdlr);
-		virtual void LogMessage(Text::CString logMsg, LogHandler::LogLevel level);
+		void AddLogHandler(NotNullPtr<LogHandler> hdlr, LogHandler::LogLevel logLev);
+		void RemoveLogHandler(NotNullPtr<LogHandler> hdlr);
+		Bool HasHandler() const;
+		virtual void LogMessage(Text::CStringNN logMsg, LogHandler::LogLevel level);
 		LogHandler *GetLastFileLog();
 	};
 }

@@ -460,7 +460,7 @@ void TempTest(NotNullPtr<Net::SocketFactory> sockf, IO::Writer *console)
 	mysqlDB = CSTR("organism");
 	mysqlUID = CSTR("organ");
 	mysqlPWD = CSTR("organ");
-	db = Net::MySQLTCPClient::CreateDBTool(sockf, mysqlServer, mysqlDB, mysqlUID, mysqlPWD, &log, CSTR("DB: "));
+	db = Net::MySQLTCPClient::CreateDBTool(sockf, mysqlServer, mysqlDB, mysqlUID, mysqlPWD, log, CSTR("DB: "));
 	if (db)
 	{
 		DB::DBReader *r = db->ExecuteReader(CSTR("select id, time1, time2 from test"));
@@ -497,7 +497,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	NEW_CLASS(console, IO::ConsoleWriter());
 	Net::OSSocketFactory sockf(false);
 	TempTest(sockf, console);
-	db = Net::MySQLTCPClient::CreateDBTool(sockf, mysqlServer, mysqlDB, mysqlUID, mysqlPWD, &log, CSTR("DB: "));
+	db = Net::MySQLTCPClient::CreateDBTool(sockf, mysqlServer, mysqlDB, mysqlUID, mysqlPWD, log, CSTR("DB: "));
 	if (db)
 	{
 		TestBinaryRead(db);

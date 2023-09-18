@@ -280,7 +280,7 @@ void __stdcall Net::MySQLServer::OnClientEvent(NotNullPtr<Net::TCPClient> cli, v
 
 	if (evtType == Net::TCPClientMgr::TCP_EVENT_DISCONNECT)
 	{
-		if (me->log)
+		if (me->log->HasHandler())
 		{
 			UTF8Char sbuff[256];
 			UTF8Char *sptr;
@@ -318,7 +318,7 @@ void __stdcall Net::MySQLServer::OnClientData(NotNullPtr<Net::TCPClient> cli, vo
 		printf("Received:\r\n%s\r\n", sb.ToString());
 	}
 	#endif
-	if (me->log)
+	if (me->log->HasHandler())
 	{
 		Text::StringBuilderUTF8 sb;
 		sb.AppendC(UTF8STRC("Received "));

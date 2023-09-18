@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "DB/TDSConn.h"
 
-DB::TDSConn::TDSConn(Text::CStringNN serverHost, UInt16 port, Bool encrypt, Text::CString database, Text::CString userName, Text::CString password, IO::LogTool *log, Text::StringBuilderUTF8 *errMsg) : DBConn(serverHost)
+DB::TDSConn::TDSConn(Text::CStringNN serverHost, UInt16 port, Bool encrypt, Text::CString database, Text::CString userName, Text::CString password, NotNullPtr<IO::LogTool> log, Text::StringBuilderUTF8 *errMsg) : DBConn(serverHost)
 {
 	this->sqlType = SQLType::MSSQL;
 	this->clsData = 0;

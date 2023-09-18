@@ -19,7 +19,7 @@ public:
 	{
 	}
 
-	void LogAdded(const Data::Timestamp &logTime, Text::CString logMsg, LogLevel logLev)
+	void LogAdded(const Data::Timestamp &logTime, Text::CStringNN logMsg, LogLevel logLev)
 	{
 		console->WriteLineCStr(logMsg);
 	}
@@ -34,9 +34,9 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 {
 	Net::LogServer *svr;
 	NotNullPtr<Net::SocketFactory> sockf;
-	IO::LogTool *log;
+	IO::LogTool log;
 	Text::StringBuilderUTF8 sb;
-	MyLogHandler *logHdlr;
+	NotNullPtr<MyLogHandler> logHdlr;
 	NEW_CLASS(console, IO::ConsoleWriter());
 	UInt16 port = 1234;
 
@@ -52,9 +52,8 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	sb.AppendI32(port);
 	console->WriteLineC(sb.ToString(), sb.GetLength());
 	NEW_CLASSNN(sockf, Net::OSSocketFactory(true));
-	NEW_CLASS(log, IO::LogTool());
-	NEW_CLASS(logHdlr, MyLogHandler());
-	log->AddLogHandler(logHdlr, IO::LogHandler::LogLevel::Raw);
+	NEW_CLASSNN(logHdlr, MyLogHandler());
+	log.AddLogHandler(logHdlr, IO::LogHandler::LogLevel::Raw);
 	NEW_CLASS(svr, Net::LogServer(sockf, port, CSTR("logs"), log, true, true));
 	if (!svr->IsError())
 	{
@@ -65,8 +64,8 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 		console->WriteLineC(UTF8STRC("Error in listening port"));
 	}
 	DEL_CLASS(svr);
-	DEL_CLASS(log);
-	DEL_CLASS(logHdlr);
+	log.RemoveLogHandler(logHdlr);
+	logHdlr.Delete();
 	sockf.Delete();
 	DEL_CLASS(console);
 	return 0;

@@ -2,7 +2,7 @@
 #include "DB/DBConfig.h"
 #include "DB/MSSQLConn.h"
 
-DB::DBTool *DB::DBConfig::LoadFromConfig(NotNullPtr<Net::SocketFactory> sockf, IO::ConfigFile *cfg, IO::LogTool *log)
+DB::DBTool *DB::DBConfig::LoadFromConfig(NotNullPtr<Net::SocketFactory> sockf, IO::ConfigFile *cfg, NotNullPtr<IO::LogTool> log)
 {
 	Text::CString logPrefix = CSTR("DB: ");
 	Text::String *s = cfg->GetValue(CSTR("DBType"));

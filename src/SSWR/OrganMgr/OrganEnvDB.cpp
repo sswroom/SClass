@@ -89,11 +89,11 @@ SSWR::OrganMgr::OrganEnvDB::OrganEnvDB() : OrganEnv()
 	this->log.AddFileLog(CSTR("OrganMgr.log"), IO::LogHandler::LogType::SingleFile, IO::LogHandler::LogGroup::NoGroup, IO::LogHandler::LogLevel::Raw, 0, false);
 	if (cfgMySQLDB && nns.Set(cfgMySQLHost))
 	{
-		this->db = Net::MySQLTCPClient::CreateDBTool(this->sockf, nns, cfgMySQLDB, Text::String::OrEmpty(cfgUID), Text::String::OrEmpty(cfgPassword), &this->log, CSTR_NULL);
+		this->db = Net::MySQLTCPClient::CreateDBTool(this->sockf, nns, cfgMySQLDB, Text::String::OrEmpty(cfgUID), Text::String::OrEmpty(cfgPassword), this->log, CSTR_NULL);
 	}
 	else if (cfgDSN)
 	{
-		this->db = DB::ODBCConn::CreateDBTool(Text::String::OrEmpty(cfgDSN), cfgUID, cfgPassword, 0, &this->log, CSTR_NULL);
+		this->db = DB::ODBCConn::CreateDBTool(Text::String::OrEmpty(cfgDSN), cfgUID, cfgPassword, 0, this->log, CSTR_NULL);
 	}
 	NotNullPtr<DB::DBTool> db;
 	if (!db.Set(this->db))

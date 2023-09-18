@@ -133,7 +133,7 @@ Net::WebServer::WebListener::WebListener(NotNullPtr<Net::SocketFactory> sockf, N
 	this->status.reqCnt = 0;
 	this->status.totalRead = 0;
 	this->status.totalWrite = 0;
-	NEW_CLASSNN(this->svr, Net::TCPServer(sockf, port, &this->log, ConnHdlr, this, CSTR("Web: "), autoStart));
+	NEW_CLASSNN(this->svr, Net::TCPServer(sockf, port, this->log, ConnHdlr, this, CSTR("Web: "), autoStart));
 	if (this->allowProxy)
 	{
 		NEW_CLASS(this->proxyCliMgr, Net::TCPClientMgr(240, ProxyClientEvent, ProxyClientData, this, workerCnt, ProxyTimeout));

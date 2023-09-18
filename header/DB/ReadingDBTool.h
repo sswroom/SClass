@@ -36,7 +36,7 @@ namespace DB
 
 	protected:
 		DB::DBConn *db;
-		IO::LogTool *log;
+		NotNullPtr<IO::LogTool> log;
 		DB::DBReader *lastReader;
 		UInt32 readerCnt;
 		UInt32 readerFail;
@@ -58,7 +58,7 @@ namespace DB
 		Bool axisAware;
 
 	public:
-		static ReadingDBTool *MongoDBSource(const UTF8Char *url, IO::LogTool *log, Text::CString logPrefix);
+		static ReadingDBTool *MongoDBSource(const UTF8Char *url, NotNullPtr<IO::LogTool> log, Text::CString logPrefix);
 
 	protected:
 		void AddLogMsgC(const UTF8Char *msg, UOSInt msgLen, IO::LogHandler::LogLevel logLev);
@@ -67,7 +67,7 @@ namespace DB
 		UOSInt SplitMSSQL(UTF8Char **outStrs, UOSInt maxCnt, UTF8Char *oriStr);
 		UOSInt SplitUnkSQL(UTF8Char **outStrs, UOSInt maxCnt, UTF8Char *oriStr);
 	public:
-		ReadingDBTool(DB::DBConn *db, Bool needRelease, IO::LogTool *log, Text::CString logPrefix);
+		ReadingDBTool(DB::DBConn *db, Bool needRelease, NotNullPtr<IO::LogTool> log, Text::CString logPrefix);
 		virtual ~ReadingDBTool();
 
 		void SetFailTrigger(SQLFailedFunc trig);

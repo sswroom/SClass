@@ -123,13 +123,13 @@ Net::HKOWeather::WeatherSignal Net::HKOWeather::GetSignalSummary(NotNullPtr<Net:
 	return signal;
 }
 
-Bool Net::HKOWeather::GetCurrentTempRH(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, OutParam<Int32> temperature, OutParam<Int32> rh)
+Bool Net::HKOWeather::GetCurrentTempRH(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, OutParam<Int32> temperature, OutParam<Int32> rh, NotNullPtr<IO::LogTool> log)
 {
 	Bool succ = false;
 	Net::RSS *rss;
 	Text::CString userAgent = Net::UserAgentDB::FindUserAgent(Manage::OSInfo::OT_WINDOWS_NT64, Net::BrowserInfo::BT_FIREFOX);
 	NotNullPtr<Text::String> ua = Text::String::New(userAgent);
-	NEW_CLASS(rss, Net::RSS(CSTR("https://rss.weather.gov.hk/rss/CurrentWeather.xml"), ua.Ptr(), sockf, ssl, 30000));
+	NEW_CLASS(rss, Net::RSS(CSTR("https://rss.weather.gov.hk/rss/CurrentWeather.xml"), ua.Ptr(), sockf, ssl, 30000, log));
 	ua->Release();
 	if (!rss->IsError())
 	{
@@ -391,13 +391,13 @@ void Net::HKOWeather::FreeWarningSummary(Data::ArrayList<WarningSummary*> *warni
 	LIST_FREE_FUNC(warnings, MemFree);
 }
 
-Net::HKOWeather::HKOWeather(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, Text::EncodingFactory *encFact, UpdateHandler hdlr)
+Net::HKOWeather::HKOWeather(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, Text::EncodingFactory *encFact, UpdateHandler hdlr, NotNullPtr<IO::LogTool> log)
 {
 	this->sockf = sockf;
 	this->ssl = ssl;
 	this->encFact = encFact;
 	this->hdlr = hdlr;
-	NEW_CLASS(this->rss, Net::RSSReader(CSTR("http://rss.weather.gov.hk/rss/WeatherWarningSummary.xml"), this->sockf, this->ssl, 10, this, 30000));
+	NEW_CLASS(this->rss, Net::RSSReader(CSTR("http://rss.weather.gov.hk/rss/WeatherWarningSummary.xml"), this->sockf, this->ssl, 10, this, 30000, log));
 }
 
 Net::HKOWeather::~HKOWeather()

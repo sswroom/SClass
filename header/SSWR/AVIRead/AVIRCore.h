@@ -100,7 +100,7 @@ namespace SSWR
 
 			UInt32 GetCurrCodePage();
 			void SetCodePage(UInt32 codePage);
-			IO::LogTool *GetLog();
+			NotNullPtr<IO::LogTool> GetLog();
 			Double GetMonitorHDPI(MonitorHandle *hMonitor);
 			void SetMonitorHDPI(MonitorHandle *hMonitor, Double monitorHDPI);
 			Double GetMonitorDDPI(MonitorHandle *hMonitor);

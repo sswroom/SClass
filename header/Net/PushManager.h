@@ -58,7 +58,7 @@ namespace Net
 		Bool Send(Data::ArrayListNN<Text::String> *userNames, NotNullPtr<Text::String> message);
 		UOSInt GetUsers(Data::ArrayListNN<Text::String> *users, NotNullPtr<Sync::MutexUsage> mutUsage);
 		NotNullPtr<const Data::ReadingList<DeviceInfo2*>> GetDevices(NotNullPtr<Sync::MutexUsage> mutUsage);
-		void LogMessage(Text::CString msg, IO::LogHandler::LogLevel logLev);
+		void LogMessage(Text::CStringNN msg, IO::LogHandler::LogLevel logLev);
 
 		static Text::CString DeviceTypeGetName(DeviceType devType);
 	};

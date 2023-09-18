@@ -78,7 +78,7 @@ namespace SSWR
 			ErrorType err;
 			NotNullPtr<Net::SocketFactory> sockf;
 			DB::DBTool *db;
-			IO::LogTool *log;
+			IO::LogTool log;
 			Media::MonitorMgr *monMgr;
 			NotNullPtr<Data::FastStringMap<BurntDiscInfo*>> discMap;
 			Data::FastStringMap<DVDTypeInfo*> *dvdTypeMap;

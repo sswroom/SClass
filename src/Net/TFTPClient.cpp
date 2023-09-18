@@ -42,7 +42,7 @@ void __stdcall Net::TFTPClient::OnDataPacket(NotNullPtr<const Net::SocketUtil::A
 	}
 }
 
-Net::TFTPClient::TFTPClient(NotNullPtr<Net::SocketFactory> sockf, NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port)
+Net::TFTPClient::TFTPClient(NotNullPtr<Net::SocketFactory> sockf, NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, NotNullPtr<IO::LogTool> log)
 {
 	this->addr = addr.Ptr()[0];
 	this->port = port;
@@ -52,7 +52,7 @@ Net::TFTPClient::TFTPClient(NotNullPtr<Net::SocketFactory> sockf, NotNullPtr<con
 	this->replyRecv = false;
 	this->nextId = 0;
 	NEW_CLASS(this->evt, Sync::Event(true));
-	NEW_CLASS(this->svr, Net::UDPServer(sockf, 0, 0, CSTR_NULL, OnDataPacket, this, 0, CSTR_NULL, 2, false));
+	NEW_CLASS(this->svr, Net::UDPServer(sockf, 0, 0, CSTR_NULL, OnDataPacket, this, log, CSTR_NULL, 2, false));
 	if (this->svr->IsError())
 	{
 		SDEL_CLASS(this->svr);

@@ -439,7 +439,7 @@ SSWR::AVIRead::AVIRDBForm::AVIRDBForm(UI::GUIClientControl *parent, NotNullPtr<U
 		this->logHdlr = logHdlr;
 		this->debugWriter = console;
 #endif
-		NEW_CLASS(this->dbt, DB::ReadingDBTool((DB::DBConn*)this->db, needRelease, &this->log, CSTR("DB: ")));
+		NEW_CLASS(this->dbt, DB::ReadingDBTool((DB::DBConn*)this->db, needRelease, this->log, CSTR("DB: ")));
 	}
 
 	NEW_CLASS(this->tcDB, UI::GUITabControl(ui, this));
@@ -538,8 +538,12 @@ SSWR::AVIRead::AVIRDBForm::~AVIRDBForm()
 	{
 		DEL_CLASS(this->db);
 	}
-	this->log.RemoveLogHandler(this->logHdlr);	
-	SDEL_CLASS(this->logHdlr);
+	NotNullPtr<IO::LogHandler> logHdlr;
+	if (logHdlr.Set(this->logHdlr))
+	{
+		this->log.RemoveLogHandler(logHdlr);	
+		SDEL_CLASS(this->logHdlr);
+	}
 	SDEL_CLASS(this->debugWriter);
 }
 

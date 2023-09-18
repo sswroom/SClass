@@ -246,12 +246,13 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	UOSInt i;
 	UOSInt devCnt;
 	IO::ConsoleInput::InputReturnType irt;
+	IO::LogTool log;
 
 	NEW_CLASS(console, IO::ConsoleWriter());
 	NEW_CLASSNN(sockf, Net::OSSocketFactory(true));
 	ssl = Net::SSLEngineFactory::Create(sockf, true);
 	NEW_CLASS(encFact, Text::EncodingFactory());
-	NEW_CLASS(timeCli, Net::NTPClient(sockf, 14562));
+	NEW_CLASS(timeCli, Net::NTPClient(sockf, 14562, log));
 	NEW_CLASSNN(tmpDt, Data::DateTime());
 	devCnt = i = Media::AudioDevice::GetDeviceCount();
 	sel = MemAlloc(Text::String*, devCnt);

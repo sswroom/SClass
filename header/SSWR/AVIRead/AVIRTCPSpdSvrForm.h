@@ -20,7 +20,7 @@ namespace SSWR
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			Net::TCPServer *svr;
 			Net::TCPClientMgr *cliMgr;
-			IO::LogTool *log;
+			IO::LogTool log;
 
 			UI::GUILabel *lblPort;
 			UI::GUITextBox *txtPort;
@@ -40,6 +40,6 @@ namespace SSWR
 
 			virtual void OnMonitorChanged();
 		};
-	};
-};
+	}
+}
 #endif

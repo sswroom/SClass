@@ -43,7 +43,7 @@ namespace Net
 		void DelReq(UInt32 id);
 		UInt32 NextId();
 	public:
-		DNSClient(NotNullPtr<Net::SocketFactory> sockf, NotNullPtr<const Net::SocketUtil::AddressInfo> serverAddr);
+		DNSClient(NotNullPtr<Net::SocketFactory> sockf, NotNullPtr<const Net::SocketUtil::AddressInfo> serverAddr, NotNullPtr<IO::LogTool> log);
 		~DNSClient();
 
 		UOSInt GetByEmailDomainName(NotNullPtr<Data::ArrayList<RequestAnswer*>> answers, Text::CStringNN domain);

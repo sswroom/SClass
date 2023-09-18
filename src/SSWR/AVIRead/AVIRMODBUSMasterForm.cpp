@@ -714,10 +714,10 @@ SSWR::AVIRead::AVIRMODBUSMasterForm::AVIRMODBUSMasterForm(UI::GUIClientControl *
 	this->txtLog->SetRect(0, 0, 100, 23, false);
 	this->txtLog->SetReadOnly(true);
 	this->txtLog->SetDockType(UI::GUIControl::DOCK_BOTTOM);
-	NEW_CLASS(this->lbLog, UI::GUIListBox(ui, this->tpLog, false));
+	NEW_CLASSNN(this->lbLog, UI::GUIListBox(ui, this->tpLog, false));
 	this->lbLog->SetDockType(UI::GUIControl::DOCK_FILL);
 
-	NEW_CLASS(this->logger, UI::ListBoxLogger(this, this->lbLog, 500, false));
+	NEW_CLASSNN(this->logger, UI::ListBoxLogger(*this, this->lbLog, 500, false));
 	this->logger->SetTimeFormat("yyyy-MM-dd HH:mm:ss.fffffff");
 	this->log.AddLogHandler(this->logger, IO::LogHandler::LogLevel::Raw);
 
@@ -736,7 +736,7 @@ SSWR::AVIRead::AVIRMODBUSMasterForm::~AVIRMODBUSMasterForm()
 		MemFree(entry);
 	}
 	this->log.RemoveLogHandler(this->logger);
-	DEL_CLASS(this->logger);
+	this->logger.Delete();
 }
 
 void SSWR::AVIRead::AVIRMODBUSMasterForm::OnMonitorChanged()

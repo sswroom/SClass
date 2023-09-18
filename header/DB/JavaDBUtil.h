@@ -19,7 +19,7 @@ namespace DB
 		static void AppendFieldOrderItem(NotNullPtr<Text::StringBuilderUTF8> sb, NotNullPtr<Text::String> colName, Bool isLast);
 		
 	public:
-		static DB::DBTool *OpenJDBC(Text::String *url, Text::String *username, Text::String *password, IO::LogTool *log, NotNullPtr<Net::SocketFactory> sockf);
+		static DB::DBTool *OpenJDBC(Text::String *url, Text::String *username, Text::String *password, NotNullPtr<IO::LogTool> log, NotNullPtr<Net::SocketFactory> sockf);
 		static Bool ToJavaEntity(NotNullPtr<Text::StringBuilderUTF8> sb, Text::String *schemaName, Text::String *tableName, Text::String *databaseName, DB::ReadingDB *db);
 	};
 }

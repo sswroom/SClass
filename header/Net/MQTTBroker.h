@@ -60,7 +60,7 @@ namespace Net
 		typedef void (__stdcall *TopicUpdateHandler)(void *userObj, Text::CString topic, const UInt8 *message, UOSInt msgSize);
 	private:
 		NotNullPtr<Net::SocketFactory> sockf;
-		IO::LogTool *log;
+		NotNullPtr<IO::LogTool> log;
 		Data::ArrayList<Listener*> listeners;
 		IO::ProtoHdlr::ProtoMQTTHandler protoHdlr;
 		Net::WebServer::WebSocketHandler wsHdlr;
@@ -108,7 +108,7 @@ namespace Net
 		virtual void StreamData(NotNullPtr<IO::Stream> stm, void *stmData, const Data::ByteArrayR &buff);
 		virtual void StreamClosed(NotNullPtr<IO::Stream> stm, void *stmData);
 	public:
-		MQTTBroker(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, UInt16 port, IO::LogTool *log, Bool sysInfo, Bool autoStart);
+		MQTTBroker(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, UInt16 port, NotNullPtr<IO::LogTool> log, Bool sysInfo, Bool autoStart);
 		virtual ~MQTTBroker();
 
 		Bool AddListener(Net::SSLEngine *ssl, UInt16 port, Bool autoStart);

@@ -88,7 +88,7 @@ void __stdcall SSWR::AVIRead::AVIRSelStreamForm::OnOKClick(void *userObj)
 			if (me->chkBoardcast->IsChecked())
 			{
 				Net::TCPBoardcastStream *stm;
-				NEW_CLASS(stm, Net::TCPBoardcastStream(me->core->GetSocketFactory(), port, 0));
+				NEW_CLASS(stm, Net::TCPBoardcastStream(me->core->GetSocketFactory(), port, me->log));
 				if (stm->IsError())
 				{
 					DEL_CLASS(stm);
@@ -105,7 +105,7 @@ void __stdcall SSWR::AVIRead::AVIRSelStreamForm::OnOKClick(void *userObj)
 			else
 			{
 				Net::TCPServerStream *stm;
-				NEW_CLASS(stm, Net::TCPServerStream(me->core->GetSocketFactory(), port, 0));
+				NEW_CLASS(stm, Net::TCPServerStream(me->core->GetSocketFactory(), port, me->log));
 				if (stm->IsError())
 				{
 					DEL_CLASS(stm);
@@ -255,7 +255,7 @@ void __stdcall SSWR::AVIRead::AVIRSelStreamForm::OnOKClick(void *userObj)
 			}
 
 			Net::UDPServerStream *stm;
-			NEW_CLASS(stm, Net::UDPServerStream(me->core->GetSocketFactory(), port, 0));
+			NEW_CLASS(stm, Net::UDPServerStream(me->core->GetSocketFactory(), port, me->core->GetLog()));
 			if (stm->IsError())
 			{
 				DEL_CLASS(stm);
@@ -295,7 +295,7 @@ void __stdcall SSWR::AVIRead::AVIRSelStreamForm::OnOKClick(void *userObj)
 			}
 
 			Net::UDPServerStream *stm;
-			NEW_CLASS(stm, Net::UDPServerStream(me->core->GetSocketFactory(), 0, 0));
+			NEW_CLASS(stm, Net::UDPServerStream(me->core->GetSocketFactory(), 0, me->core->GetLog()));
 			if (stm->IsError())
 			{
 				DEL_CLASS(stm);

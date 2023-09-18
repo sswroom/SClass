@@ -46,8 +46,10 @@ void __stdcall SSWR::AVIRead::AVIReGaugeSvrForm::OnStartClick(void *userObj)
 				me->dirHdlr = dirHdlr.Ptr();
 				NEW_CLASS(me->log, IO::LogTool());
 				me->svr->SetAccessLog(me->log, IO::LogHandler::LogLevel::Raw);
-				NEW_CLASS(me->logger, UI::ListBoxLogger(me, me->lbLog, 500, true));
-				me->log->AddLogHandler(me->logger, IO::LogHandler::LogLevel::Raw);
+				NotNullPtr<UI::ListBoxLogger> logger;
+				NEW_CLASSNN(logger, UI::ListBoxLogger(*me, me->lbLog, 500, true));
+				me->logger = logger.Ptr();
+				me->log->AddLogHandler(logger, IO::LogHandler::LogLevel::Raw);
 				if (!me->svr->Start())
 				{
 					valid = false;
@@ -139,7 +141,7 @@ SSWR::AVIRead::AVIReGaugeSvrForm::AVIReGaugeSvrForm(UI::GUIClientControl *parent
 	this->txtLog->SetRect(0, 0, 100, 23, false);
 	this->txtLog->SetReadOnly(true);
 	this->txtLog->SetDockType(UI::GUIControl::DOCK_BOTTOM);
-	NEW_CLASS(this->lbLog, UI::GUIListBox(ui, this->tpLog, false));
+	NEW_CLASSNN(this->lbLog, UI::GUIListBox(ui, this->tpLog, false));
 	this->lbLog->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lbLog->HandleSelectionChange(OnLogSel, this);
 

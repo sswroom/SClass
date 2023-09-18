@@ -17,7 +17,7 @@ void __stdcall Net::SyslogServer::OnUDPPacket(NotNullPtr<const Net::SocketUtil::
 		Net::SyslogServer::IPStatus *status = me->GetIPStatus(addr);
 		Text::StringBuilderUTF8 sb;
 
-		if (me->log)
+		if (me->log->HasHandler())
 		{
 			sptr = Net::SocketUtil::GetAddrName(sbuff, addr);
 			sb.AppendP(sbuff, sptr);
@@ -73,7 +73,7 @@ Net::SyslogServer::IPStatus *Net::SyslogServer::GetIPStatus(NotNullPtr<const Net
 	return 0;
 }
 
-Net::SyslogServer::SyslogServer(NotNullPtr<Net::SocketFactory> sockf, UInt16 port, Text::CString logPath, IO::LogTool *svrLog, Bool redirLog)
+Net::SyslogServer::SyslogServer(NotNullPtr<Net::SocketFactory> sockf, UInt16 port, Text::CString logPath, NotNullPtr<IO::LogTool> svrLog, Bool redirLog)
 {
 	this->sockf = sockf;
 	this->logPath = Text::String::New(logPath);

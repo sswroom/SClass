@@ -37,7 +37,7 @@ namespace Net
 		static void __stdcall OnUDPPacket(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, void *userData);
 		static void FreeAnswer(NameAnswer *ans);
 	public:
-		NetBIOSScanner(NotNullPtr<Net::SocketFactory> sockf);
+		NetBIOSScanner(NotNullPtr<Net::SocketFactory> sockf, NotNullPtr<IO::LogTool> log);
 		~NetBIOSScanner();
 
 		Bool IsError() const;

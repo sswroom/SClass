@@ -25,7 +25,7 @@ void __stdcall Net::MQTTBroker::OnClientEvent(NotNullPtr<Net::TCPClient> cli, vo
 	ClientData *data = (ClientData*)cliData;
 	if (evtType == Net::TCPClientMgr::TCP_EVENT_DISCONNECT)
 	{
-		if (listener->me->log)
+		if (listener->me->log->HasHandler())
 		{
 			UTF8Char sbuff[256];
 			UTF8Char *sptr;
@@ -169,7 +169,7 @@ void Net::MQTTBroker::DataParsed(NotNullPtr<IO::Stream> stm, void *stmObj, Int32
 			Text::String *clientId = 0;
 			Text::String *userName = 0;
 			Text::String *password = 0;
-			if (this->log)
+			if (this->log->HasHandler())
 			{
 				UInt8 connFlags;
 				Text::StringBuilderUTF8 sb;
@@ -406,7 +406,7 @@ void Net::MQTTBroker::DataParsed(NotNullPtr<IO::Stream> stm, void *stmObj, Int32
 		}
 		break;
 	case 2: //CONNACK
-		if (this->log)
+		if (this->log->HasHandler())
 		{
 			Text::StringBuilderUTF8 sb;
 			sb.AppendC(UTF8STRC("Packet Type = CONNACK, size = "));
@@ -423,7 +423,7 @@ void Net::MQTTBroker::DataParsed(NotNullPtr<IO::Stream> stm, void *stmObj, Int32
 			const UInt8 *message;
 			UOSInt messageSize;
 			Sync::Interlocked::IncrementI64(this->infoPubRecv);
-			if (this->log)
+			if (this->log->HasHandler())
 			{
 				Text::StringBuilderUTF8 sb;
 				sb.AppendC(UTF8STRC("Packet Type = PUBLISH, Flags = 0x"));
@@ -539,7 +539,7 @@ void Net::MQTTBroker::DataParsed(NotNullPtr<IO::Stream> stm, void *stmObj, Int32
 		}
 		break;
 	case 4: //PUBACK
-		if (this->log)
+		if (this->log->HasHandler())
 		{
 			Text::StringBuilderUTF8 sb;
 			sb.AppendC(UTF8STRC("Packet Type = PUBACK, size = "));
@@ -550,7 +550,7 @@ void Net::MQTTBroker::DataParsed(NotNullPtr<IO::Stream> stm, void *stmObj, Int32
 		}
 		break;
 	case 5: //PUBREC
-		if (this->log)
+		if (this->log->HasHandler())
 		{
 			Text::StringBuilderUTF8 sb;
 			sb.AppendC(UTF8STRC("Packet Type = PUBREC, size = "));
@@ -561,7 +561,7 @@ void Net::MQTTBroker::DataParsed(NotNullPtr<IO::Stream> stm, void *stmObj, Int32
 		}
 		break;
 	case 6: //PUBREL
-		if (this->log)
+		if (this->log->HasHandler())
 		{
 			Text::StringBuilderUTF8 sb;
 			sb.AppendC(UTF8STRC("Packet Type = PUBREL, size = "));
@@ -572,7 +572,7 @@ void Net::MQTTBroker::DataParsed(NotNullPtr<IO::Stream> stm, void *stmObj, Int32
 		}
 		break;
 	case 7: //PUBCOMP
-		if (this->log)
+		if (this->log->HasHandler())
 		{
 			Text::StringBuilderUTF8 sb;
 			sb.AppendC(UTF8STRC("Packet Type = PUBCOMP, size = "));
@@ -583,7 +583,7 @@ void Net::MQTTBroker::DataParsed(NotNullPtr<IO::Stream> stm, void *stmObj, Int32
 		}
 		break;
 	case 8: //SUBSCRIBE
-		if (this->log)
+		if (this->log->HasHandler())
 		{
 			UInt16 packetId = 0;
 			Text::StringBuilderUTF8 sb;
@@ -680,7 +680,7 @@ void Net::MQTTBroker::DataParsed(NotNullPtr<IO::Stream> stm, void *stmObj, Int32
 		}
 		break;
 	case 9: //SUBACK
-		if (this->log)
+		if (this->log->HasHandler())
 		{
 			Text::StringBuilderUTF8 sb;
 			sb.AppendC(UTF8STRC("Packet Type = SUBACK, size = "));
@@ -691,7 +691,7 @@ void Net::MQTTBroker::DataParsed(NotNullPtr<IO::Stream> stm, void *stmObj, Int32
 		}
 		break;
 	case 10: //UNSUBSCRIBE
-		if (this->log)
+		if (this->log->HasHandler())
 		{
 			Text::StringBuilderUTF8 sb;
 			sb.AppendC(UTF8STRC("Packet Type = UNSUBSCRIBE, size = "));
@@ -702,7 +702,7 @@ void Net::MQTTBroker::DataParsed(NotNullPtr<IO::Stream> stm, void *stmObj, Int32
 		}
 		break;
 	case 11: //UNSUBACK
-		if (this->log)
+		if (this->log->HasHandler())
 		{
 			Text::StringBuilderUTF8 sb;
 			sb.AppendC(UTF8STRC("Packet Type = UNSUBACK, size = "));
@@ -713,7 +713,7 @@ void Net::MQTTBroker::DataParsed(NotNullPtr<IO::Stream> stm, void *stmObj, Int32
 		}
 		break;
 	case 12: //PINGREQ
-		if (this->log)
+		if (this->log->HasHandler())
 		{
 			Text::StringBuilderUTF8 sb;
 			sb.AppendC(UTF8STRC("Packet Type = PINGREQ, size = "));
@@ -727,7 +727,7 @@ void Net::MQTTBroker::DataParsed(NotNullPtr<IO::Stream> stm, void *stmObj, Int32
 		Sync::Interlocked::AddU64(this->infoTotalSent, sent);
 		break;
 	case 13: //PINGRESP
-		if (this->log)
+		if (this->log->HasHandler())
 		{
 			Text::StringBuilderUTF8 sb;
 			sb.AppendC(UTF8STRC("Packet Type = PINGRESP, size = "));
@@ -738,7 +738,7 @@ void Net::MQTTBroker::DataParsed(NotNullPtr<IO::Stream> stm, void *stmObj, Int32
 		}
 		break;
 	case 14: //DISCONNECT
-		if (this->log)
+		if (this->log->HasHandler())
 		{
 			Text::StringBuilderUTF8 sb;
 			sb.AppendC(UTF8STRC("Packet Type = DISCONNECT, size = "));
@@ -749,7 +749,7 @@ void Net::MQTTBroker::DataParsed(NotNullPtr<IO::Stream> stm, void *stmObj, Int32
 		}
 		break;
 	default:
-		if (this->log)
+		if (this->log->HasHandler())
 		{
 			Text::StringBuilderUTF8 sb;
 			sb.AppendC(UTF8STRC("Packet Type = Reserved, size = "));
@@ -893,7 +893,7 @@ void Net::MQTTBroker::StreamData(NotNullPtr<IO::Stream> stm, void *stmData, cons
 	ClientData *data = (ClientData*)stmData;
 	Sync::Interlocked::AddI64(this->infoTotalRecv, (OSInt)buff.GetSize());
 
-	if (this->log)
+	if (this->log->HasHandler())
 	{
 		Text::StringBuilderUTF8 sb;
 		sb.AppendC(UTF8STRC("Received "));
@@ -951,7 +951,7 @@ void Net::MQTTBroker::StreamClosed(NotNullPtr<IO::Stream> stm, void *stmData)
 	}
 }
 
-Net::MQTTBroker::MQTTBroker(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, UInt16 port, IO::LogTool *log, Bool sysInfo, Bool autoStart) : protoHdlr(*this), wsHdlr(this)
+Net::MQTTBroker::MQTTBroker(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, UInt16 port, NotNullPtr<IO::LogTool> log, Bool sysInfo, Bool autoStart) : protoHdlr(*this), wsHdlr(this)
 {
 	this->sockf = sockf;
 	this->log = log;

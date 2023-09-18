@@ -39,24 +39,24 @@ void __stdcall Net::DNSServer::PacketHdlr(NotNullPtr<const Net::SocketUtil::Addr
 	}
 }
 
-void Net::DNSServer::InitServer(NotNullPtr<Net::SocketFactory> sockf, UInt16 port)
+void Net::DNSServer::InitServer(NotNullPtr<Net::SocketFactory> sockf, UInt16 port, NotNullPtr<IO::LogTool> log)
 {
 	this->sockf = sockf;
 	this->reqHdlr = 0;
 	this->reqObj = 0;
 
-	NEW_CLASS(this->svr, Net::UDPServer(sockf, 0, port, CSTR_NULL, PacketHdlr, this, 0, CSTR_NULL, 4, false));
+	NEW_CLASS(this->svr, Net::UDPServer(sockf, 0, port, CSTR_NULL, PacketHdlr, this, log, CSTR_NULL, 4, false));
 	this->svr->SetBuffSize(65536);
 }
 
-Net::DNSServer::DNSServer(NotNullPtr<Net::SocketFactory> sockf, UInt16 port)
+Net::DNSServer::DNSServer(NotNullPtr<Net::SocketFactory> sockf, UInt16 port, NotNullPtr<IO::LogTool> log)
 {
-	InitServer(sockf, port);
+	InitServer(sockf, port, log);
 }
 
-Net::DNSServer::DNSServer(NotNullPtr<Net::SocketFactory> sockf)
+Net::DNSServer::DNSServer(NotNullPtr<Net::SocketFactory> sockf, NotNullPtr<IO::LogTool> log)
 {
-	InitServer(sockf, 53);
+	InitServer(sockf, 53, log);
 }
 
 Net::DNSServer::~DNSServer()

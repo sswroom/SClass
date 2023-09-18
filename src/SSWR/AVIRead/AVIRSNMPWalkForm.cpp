@@ -36,7 +36,7 @@ SSWR::AVIRead::AVIRSNMPWalkForm::AVIRSNMPWalkForm(UI::GUIClientControl *parent, 
 	this->lvResults->AddColumn(CSTR("Value"), 200);
 
 	Net::SNMPClient *cli;
-	NEW_CLASS(cli, Net::SNMPClient(this->core->GetSocketFactory()));
+	NEW_CLASS(cli, Net::SNMPClient(this->core->GetSocketFactory(), this->core->GetLog()));
 	if (!cli->IsError())
 	{
 		Data::ArrayList<Net::SNMPUtil::BindingItem*> itemList;

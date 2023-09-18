@@ -502,7 +502,7 @@ void __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnFileHandler(void *userObj, No
 		DB::ReadingDB *db = (DB::ReadingDB*)me->core->GetParserList()->ParseFileType(fd, IO::ParserType::ReadingDB);
 		if (db)
 		{
-			DB::DBManagerCtrl *ctrl = DB::DBManagerCtrl::CreateFromFile(db, files[i], &me->log, me->core->GetSocketFactory(), me->core->GetParserList());
+			DB::DBManagerCtrl *ctrl = DB::DBManagerCtrl::CreateFromFile(db, files[i], me->log, me->core->GetSocketFactory(), me->core->GetParserList());
 			me->dbList.Add(ctrl);
 			Text::StringBuilderUTF8 sb;
 			ctrl->GetConnName(sb);
@@ -1160,10 +1160,10 @@ SSWR::AVIRead::AVIRDBManagerForm::AVIRDBManagerForm(UI::GUIClientControl *parent
 	NEW_CLASS(this->txtLog, UI::GUITextBox(ui, this->tpLog, CSTR("")));
 	this->txtLog->SetRect(0, 0, 100, 23, false);
 	this->txtLog->SetDockType(UI::GUIControl::DOCK_BOTTOM);
-	NEW_CLASS(this->lbLog, UI::GUIListBox(ui, this->tpLog, false));
+	NEW_CLASSNN(this->lbLog, UI::GUIListBox(ui, this->tpLog, false));
 	this->lbLog->SetDockType(UI::GUIControl::DOCK_FILL);
 
-	NEW_CLASS(this->logger, UI::ListBoxLogger(this, this->lbLog, 100, true));
+	NEW_CLASSNN(this->logger, UI::ListBoxLogger(*this, this->lbLog, 100, true));
 	this->log.AddLogHandler(this->logger, IO::LogHandler::LogLevel::Raw);
 
 
@@ -1212,7 +1212,7 @@ SSWR::AVIRead::AVIRDBManagerForm::AVIRDBManagerForm(UI::GUIClientControl *parent
 	UTF8Char *sptr;
 	sptr = IO::Path::GetProcessFileName(sbuff);
 	sptr = IO::Path::AppendPath(sbuff, sptr, DBCONNFILE);
-	if (DB::DBManager::RestoreConn(CSTRP(sbuff, sptr), &this->dbList, &this->log, this->core->GetSocketFactory(), this->core->GetParserList()))
+	if (DB::DBManager::RestoreConn(CSTRP(sbuff, sptr), &this->dbList, this->log, this->core->GetSocketFactory(), this->core->GetParserList()))
 	{
 		Text::StringBuilderUTF8 sb;
 		DB::DBManagerCtrl *ctrl;
@@ -1239,7 +1239,7 @@ SSWR::AVIRead::AVIRDBManagerForm::~AVIRDBManagerForm()
 {
 	this->ClearChildren();
 	this->log.RemoveLogHandler(this->logger);
-	DEL_CLASS(this->logger);
+	this->logger.Delete();
 	DEL_CLASS(this->mnuTable);
 	DEL_CLASS(this->mnuSchema);
 	DEL_CLASS(this->mnuConn);
@@ -1524,8 +1524,8 @@ void SSWR::AVIRead::AVIRDBManagerForm::OnMonitorChanged()
 void SSWR::AVIRead::AVIRDBManagerForm::ConnAdd(DB::DBConn *conn)
 {
 	DB::DBTool *db;
-	NEW_CLASS(db, DB::DBTool(conn, true, &this->log, CSTR("DB: ")));
-	DB::DBManagerCtrl *ctrl = DB::DBManagerCtrl::Create(db, &this->log, this->core->GetSocketFactory(), this->core->GetParserList());
+	NEW_CLASS(db, DB::DBTool(conn, true, this->log, CSTR("DB: ")));
+	DB::DBManagerCtrl *ctrl = DB::DBManagerCtrl::Create(db, this->log, this->core->GetSocketFactory(), this->core->GetParserList());
 	this->dbList.Add(ctrl);
 	Text::StringBuilderUTF8 sb;
 	conn->GetConnName(sb);

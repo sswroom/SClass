@@ -40,7 +40,7 @@ namespace Net
 			Net::Email::SMTPConn::ConnType connType;
 			Net::TCPServer *svr;
 			Net::TCPClientMgr cliMgr;
-			IO::LogTool *log;
+			NotNullPtr<IO::LogTool> log;
 			NotNullPtr<Text::String> domain;
 			NotNullPtr<Text::String> serverName;
 
@@ -59,7 +59,7 @@ namespace Net
 			//static OSInt WriteMessage(Net::TCPClient *cli, Int32 statusCode, const Char *msg);
 			void ParseCmd(NotNullPtr<Net::TCPClient> cli, NotNullPtr<MailStatus> cliStatus, const UTF8Char *cmd, UOSInt cmdLen, Text::LineBreakType lbt);
 		public:
-			SMTPServer(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, UInt16 port, Net::Email::SMTPConn::ConnType connType, IO::LogTool *log, Text::CStringNN domain, Text::CStringNN serverName, MailHandler mailHdlr, LoginHandler loginHdlr, void *userObj, Bool autoStart);
+			SMTPServer(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, UInt16 port, Net::Email::SMTPConn::ConnType connType, NotNullPtr<IO::LogTool> log, Text::CStringNN domain, Text::CStringNN serverName, MailHandler mailHdlr, LoginHandler loginHdlr, void *userObj, Bool autoStart);
 			~SMTPServer();
 
 			Bool Start();

@@ -50,7 +50,7 @@ void __stdcall SSWR::AVIRead::AVIRLoraGWSimForm::OnStartClick(void *userObj)
 			UI::MessageDialog::ShowDialog(CSTR("Error in parsing Gateway EUI"), CSTR("LoRa Gateway Simulator"), me);
 			return;
 		}
-		NEW_CLASS(me->lora, Net::LoRaGateway(me->sockf, svrAddr, svrPort, gatewayEUI, &me->log));
+		NEW_CLASS(me->lora, Net::LoRaGateway(me->sockf, svrAddr, svrPort, gatewayEUI, me->log));
 		if (me->lora->IsError())
 		{
 			DEL_CLASS(me->lora);
@@ -262,11 +262,11 @@ SSWR::AVIRead::AVIRLoraGWSimForm::AVIRLoraGWSimForm(UI::GUIClientControl *parent
 	this->txtLog->SetRect(0, 0, 100, 23, false);
 	this->txtLog->SetReadOnly(true);
 	this->txtLog->SetDockType(UI::GUIControl::DOCK_BOTTOM);
-	NEW_CLASS(this->lbLog, UI::GUIListBox(ui, this->tpLog, false));
+	NEW_CLASSNN(this->lbLog, UI::GUIListBox(ui, this->tpLog, false));
 	this->lbLog->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lbLog->HandleSelectionChange(OnLogSelChg, this);
 
-	NEW_CLASS(this->logger, UI::ListBoxLogger(this, this->lbLog, 100, true));
+	NEW_CLASSNN(this->logger, UI::ListBoxLogger(*this, this->lbLog, 100, true));
 	this->log.AddLogHandler(this->logger, IO::LogHandler::LogLevel::Raw);
 
 	UOSInt i = 0;
@@ -286,7 +286,7 @@ SSWR::AVIRead::AVIRLoraGWSimForm::~AVIRLoraGWSimForm()
 {
 	SDEL_CLASS(this->lora);
 	this->log.RemoveLogHandler(this->logger);
-	DEL_CLASS(this->logger);
+	this->logger.Delete();
 }
 
 void SSWR::AVIRead::AVIRLoraGWSimForm::OnMonitorChanged()

@@ -114,7 +114,7 @@ void __stdcall Net::TFTPServer::OnCommandPacket(NotNullPtr<const Net::SocketUtil
 			mutUsage.EndUse();
 			me->dataSvr->SendTo(addr, port, packet, len + 4);
 			MemFree(packet);
-			if (me->log)
+			if (me->log->HasHandler())
 			{
 				sb.ClearStr();
 				sb.AppendC(UTF8STRC("Sending "));
@@ -183,7 +183,7 @@ void __stdcall Net::TFTPServer::OnCommandPacket(NotNullPtr<const Net::SocketUtil
 			WriteMInt16(&repBuff[2], 0);
 			me->dataSvr->SendTo(addr, port, repBuff, 4);
 
-			if (me->log)
+			if (me->log->HasHandler())
 			{
 				sb.ClearStr();
 				sb.AppendC(UTF8STRC("Receiving "));
@@ -246,7 +246,7 @@ void __stdcall Net::TFTPServer::OnDataPacket(NotNullPtr<const Net::SocketUtil::A
 				sess->stm->Write(&buff[4], dataSize - 4);
 				if (dataSize - 4 != sess->blockSize)
 				{
-					if (me->log)
+					if (me->log->HasHandler())
 					{
 						Text::StringBuilderUTF8 sb;
 						UOSInt i;
@@ -277,7 +277,7 @@ void __stdcall Net::TFTPServer::OnDataPacket(NotNullPtr<const Net::SocketUtil::A
 			{
 				if (sess->isLast)
 				{
-					if (me->log)
+					if (me->log->HasHandler())
 					{
 						Text::StringBuilderUTF8 sb;
 						UOSInt i;
@@ -355,7 +355,7 @@ void Net::TFTPServer::ReleaseSess(SessionInfo *sess)
 	MemFree(sess);
 }
 
-Net::TFTPServer::TFTPServer(NotNullPtr<Net::SocketFactory> sockf, UInt16 port, IO::LogTool *log, Text::CString path)
+Net::TFTPServer::TFTPServer(NotNullPtr<Net::SocketFactory> sockf, UInt16 port, NotNullPtr<IO::LogTool> log, Text::CString path)
 {
 	this->log = log;
 	this->svr = 0;

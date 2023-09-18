@@ -19,7 +19,7 @@ void __stdcall SSWR::AVIRead::AVIRWOLForm::OnSendClicked(void *userObj)
 	me->txtDeviceMac->GetText(sb);
 	if ((sb.GetLength() == 12 && Text::StrHex2BytesS(sb.ToString(), macBuff, 0) == 6) || (sb.GetLength() == 17 && Text::StrHex2BytesS(sb.ToString(), macBuff, sb.v[2]) == 6))
 	{
-		NEW_CLASS(cli, Net::WOLClient(me->core->GetSocketFactory(), ip));
+		NEW_CLASS(cli, Net::WOLClient(me->core->GetSocketFactory(), ip, me->core->GetLog()));
 		if (cli->IsError())
 		{
 			UI::MessageDialog::ShowDialog(CSTR("Error in listening to the port"), CSTR("WOL"), me);

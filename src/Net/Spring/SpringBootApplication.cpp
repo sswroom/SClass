@@ -6,9 +6,9 @@
 #include "Manage/Process.h"
 #include "Net/Spring/SpringBootApplication.h"
 
-Net::Spring::SpringBootApplication::SpringBootApplication(Text::CString appName) : consoleLog(&console)
+Net::Spring::SpringBootApplication::SpringBootApplication(Text::CString appName) : consoleLog(console)
 {
-	this->log.AddLogHandler(&this->consoleLog, IO::LogHandler::LogLevel::Raw);
+	this->log.AddLogHandler(this->consoleLog, IO::LogHandler::LogLevel::Raw);
 	this->cfg = IO::JavaProperties::ParseAppProp();
 	this->activeProfile = Text::String::New(UTF8STRC("default"));
 	if (this->cfg)

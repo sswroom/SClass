@@ -377,8 +377,8 @@ SSWR::AVIRead::AVIRSNMPManagerForm::AVIRSNMPManagerForm(UI::GUIClientControl *pa
 	this->AddTimer(1000, OnTimerTick, this);
 
 	NotNullPtr<Net::SocketFactory> sockf = this->core->GetSocketFactory();
-	NEW_CLASS(this->redir, SSWR::SMonitor::SMonitorRedir(sockf));
-	NEW_CLASS(this->mgr, Net::SNMPManager(sockf));
+	NEW_CLASS(this->redir, SSWR::SMonitor::SMonitorRedir(sockf, this->core->GetLog()));
+	NEW_CLASS(this->mgr, Net::SNMPManager(sockf, this->core->GetLog()));
 	if (this->mgr->IsError())
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Error in starting SNMP Manager"), CSTR("Error"), this);

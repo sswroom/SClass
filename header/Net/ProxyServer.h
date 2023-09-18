@@ -12,7 +12,7 @@ namespace Net
 	{
 	private:
 		NotNullPtr<Net::SocketFactory> sockf;
-		IO::LogTool *log;
+		NotNullPtr<IO::LogTool> log;
 		UInt16 port;
 		Net::TCPServer *svr;
 		Net::TCPClientMgr *cliMgr;
@@ -23,7 +23,7 @@ namespace Net
 		static void __stdcall OnClientTimeout(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData);
 
 	public:
-		ProxyServer(NotNullPtr<Net::SocketFactory> sockf, UInt16 port, IO::LogTool *log, Bool autoStart);
+		ProxyServer(NotNullPtr<Net::SocketFactory> sockf, UInt16 port, NotNullPtr<IO::LogTool> log, Bool autoStart);
 		~ProxyServer();
 
 		Bool Start();

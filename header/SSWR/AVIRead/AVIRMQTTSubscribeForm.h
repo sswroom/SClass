@@ -40,7 +40,7 @@ namespace SSWR
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			Net::MQTTConn *client;
 			IO::LogTool log;
-			UI::ListBoxLogger *logger;
+			NotNullPtr<UI::ListBoxLogger> logger;
 			Sync::Mutex topicMut;
 			Data::StringMap<TopicStatus*> topicMap;
 			Bool topicListChanged;
@@ -79,7 +79,7 @@ namespace SSWR
 			UI::GUIPictureBoxSimple *pbTopic;
 
 			UI::GUITabPage *tpLog;
-			UI::GUIListBox *lbLog;
+			NotNullPtr<UI::GUIListBox> lbLog;
 			UI::GUITextBox *txtLog;
 
 			static void __stdcall OnStartClicked(void *userObj);

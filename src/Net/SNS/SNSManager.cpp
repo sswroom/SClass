@@ -26,7 +26,7 @@ Net::SNS::SNSControl *Net::SNS::SNSManager::CreateControl(Net::SNS::SNSControl::
 	}
 	else if (type == Net::SNS::SNSControl::ST_RSS)
 	{
-		NEW_CLASS(ctrl, Net::SNS::SNSRSS(this->sockf, this->ssl, this->encFact, this->userAgent, channelId));
+		NEW_CLASS(ctrl, Net::SNS::SNSRSS(this->sockf, this->ssl, this->encFact, this->userAgent, channelId, this->log));
 	}
 	else if (type == Net::SNS::SNSControl::ST_7GOGO)
 	{
@@ -418,7 +418,7 @@ UInt32 __stdcall Net::SNS::SNSManager::ThreadProc(void *userObj)
 	return 0;
 }
 
-Net::SNS::SNSManager::SNSManager(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, Text::EncodingFactory *encFact, Text::CString userAgent, Text::CString dataPath)
+Net::SNS::SNSManager::SNSManager(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, Text::EncodingFactory *encFact, Text::CString userAgent, Text::CString dataPath, NotNullPtr<IO::LogTool> log)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
@@ -426,6 +426,7 @@ Net::SNS::SNSManager::SNSManager(NotNullPtr<Net::SocketFactory> sockf, Net::SSLE
 	this->sockf = sockf;
 	this->ssl = ssl;
 	this->encFact = encFact;
+	this->log = log;
 	this->userAgent = Text::String::NewOrNull(userAgent);
 
 	this->threadRunning = false;

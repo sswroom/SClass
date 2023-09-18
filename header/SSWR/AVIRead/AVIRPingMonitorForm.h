@@ -39,7 +39,7 @@ namespace SSWR
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			NotNullPtr<Net::SocketFactory> sockf;
 			IO::LogTool log;
-			UI::ListBoxLogger *logger;
+			NotNullPtr<UI::ListBoxLogger> logger;
 			Net::WebServer::WebListener *listener;
 			Net::EthernetWebHandler *webHdlr;
 			Net::SocketMonitor *socMon;
@@ -76,7 +76,7 @@ namespace SSWR
 
 			UI::GUITabPage *tpLog;
 			UI::GUITextBox *txtLog;
-			UI::GUIListBox *lbLog;
+			NotNullPtr<UI::GUIListBox> lbLog;
 
 			static void __stdcall OnPingPacket(void *userData, UInt32 srcIP, UInt32 destIP, UInt8 ttl, UOSInt packetSize);
 			static void __stdcall OnRAWData(void *userData, const UInt8 *rawData, UOSInt packetSize);

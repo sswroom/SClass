@@ -60,24 +60,24 @@ void SSWR::SMonitor::SMonitorRedir::CalcCRC(const UInt8 *buff, UOSInt size, UInt
 	this->dataCRC.GetValue(crcVal);
 }
 
-SSWR::SMonitor::SMonitorRedir::SMonitorRedir(NotNullPtr<Net::SocketFactory> sockf) : dataCRC(Crypto::Hash::CRC16::GetPolynomialCCITT())
+SSWR::SMonitor::SMonitorRedir::SMonitorRedir(NotNullPtr<Net::SocketFactory> sockf, NotNullPtr<IO::LogTool> log) : dataCRC(Crypto::Hash::CRC16::GetPolynomialCCITT())
 {
 	this->sockf = sockf;
 	this->hostName = Text::String::New(UTF8STRC("sswroom.no-ip.org"));
 	this->port = 5100;
 	this->recReplyHdlr = 0;
 	this->recReplyObj = 0;
-	NEW_CLASS(this->svr, Net::UDPServer(this->sockf, 0, 0, CSTR_NULL, OnDataUDPPacket, this, 0, CSTR_NULL, 2, false));
+	NEW_CLASS(this->svr, Net::UDPServer(this->sockf, 0, 0, CSTR_NULL, OnDataUDPPacket, this, log, CSTR_NULL, 2, false));
 }
 
-SSWR::SMonitor::SMonitorRedir::SMonitorRedir(NotNullPtr<Net::SocketFactory> sockf, NotNullPtr<Text::String> hostName, UInt16 port) : dataCRC(Crypto::Hash::CRC16::GetPolynomialCCITT())
+SSWR::SMonitor::SMonitorRedir::SMonitorRedir(NotNullPtr<Net::SocketFactory> sockf, NotNullPtr<Text::String> hostName, UInt16 port, NotNullPtr<IO::LogTool> log) : dataCRC(Crypto::Hash::CRC16::GetPolynomialCCITT())
 {
 	this->sockf = sockf;
 	this->hostName = hostName->Clone();
 	this->port = port;
 	this->recReplyHdlr = 0;
 	this->recReplyObj = 0;
-	NEW_CLASS(this->svr, Net::UDPServer(this->sockf, 0, 0, CSTR_NULL, OnDataUDPPacket, this, 0, CSTR_NULL, 2, false));
+	NEW_CLASS(this->svr, Net::UDPServer(this->sockf, 0, 0, CSTR_NULL, OnDataUDPPacket, this, log, CSTR_NULL, 2, false));
 }
 
 SSWR::SMonitor::SMonitorRedir::~SMonitorRedir()

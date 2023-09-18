@@ -690,23 +690,23 @@ void UI::GUIForm::SetNoResize(Bool noResize)
 	}
 }
 
-UI::GUITimer *UI::GUIForm::AddTimer(UInt32 interval, UI::UIEvent handler, void *userObj)
+NotNullPtr<UI::GUITimer> UI::GUIForm::AddTimer(UInt32 interval, UI::UIEvent handler, void *userObj)
 {
-	UI::GUITimer *tmr;
-	NEW_CLASS(tmr, UI::GUITimer(ui, this, this->nextTmrId++, interval, handler, userObj));
+	NotNullPtr<UI::GUITimer> tmr;
+	NEW_CLASSNN(tmr, UI::GUITimer(ui, *this, this->nextTmrId++, interval, handler, userObj));
 	this->timers.Add(tmr);
 	return tmr;
 }
 
-void UI::GUIForm::RemoveTimer(UI::GUITimer *tmr)
+void UI::GUIForm::RemoveTimer(NotNullPtr<UI::GUITimer> tmr)
 {
 	UOSInt i = this->timers.GetCount();
 	while (i-- > 0)
 	{
-		if (tmr == this->timers.GetItem(i))
+		if (tmr.Ptr() == this->timers.GetItem(i))
 		{
 			this->timers.RemoveAt(i);
-			DEL_CLASS(tmr);
+			tmr.Delete();
 			break;
 		}
 	}

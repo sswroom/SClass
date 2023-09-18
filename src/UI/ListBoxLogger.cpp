@@ -100,7 +100,7 @@ void __stdcall UI::ListBoxLogger::OnListBoxSelChg(void *userObj)
 	}
 }
 
-UI::ListBoxLogger::ListBoxLogger(UI::GUIForm *frm, UI::GUIListBox *lb, UOSInt maxLog, Bool reverse)
+UI::ListBoxLogger::ListBoxLogger(NotNullPtr<UI::GUIForm> frm, NotNullPtr<UI::GUIListBox> lb, UOSInt maxLog, Bool reverse)
 {
 	UOSInt i;
 	this->lb = lb;
@@ -143,7 +143,7 @@ void UI::ListBoxLogger::LogClosed()
 {
 }
 
-void UI::ListBoxLogger::LogAdded(const Data::Timestamp &logTime, Text::CString logMsg, IO::LogHandler::LogLevel logLev)
+void UI::ListBoxLogger::LogAdded(const Data::Timestamp &logTime, Text::CStringNN logMsg, IO::LogHandler::LogLevel logLev)
 {
 	Text::StringBuilderUTF8 sb;
 	UTF8Char sbuff[64];
@@ -170,7 +170,6 @@ void UI::ListBoxLogger::LogAdded(const Data::Timestamp &logTime, Text::CString l
 	}
 	this->logArr[this->logIndex] = Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
 	this->logIndex = (this->logIndex + 1) % this->maxLog;
-	mutUsage.EndUse();
 }
 
 void UI::ListBoxLogger::SetTimeFormat(const Char *timeFormat)
@@ -181,19 +180,19 @@ void UI::ListBoxLogger::SetTimeFormat(const Char *timeFormat)
 	mutUsage.EndUse();
 }
 
-UI::ListBoxLogger *UI::ListBoxLogger::CreateUI(UI::GUIForm *frm, NotNullPtr<UI::GUICore> ui, UI::GUIClientControl *ctrl, UOSInt maxLog, Bool reverse)
+NotNullPtr<UI::ListBoxLogger> UI::ListBoxLogger::CreateUI(NotNullPtr<UI::GUIForm> frm, NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIClientControl> ctrl, UOSInt maxLog, Bool reverse)
 {
-	UI::GUITextBox *txt;
-	UI::GUIListBox *lb;
-	UI::ListBoxLogger *logger;
-	NEW_CLASS(txt, UI::GUITextBox(ui, ctrl, CSTR("")));
+	NotNullPtr<UI::GUITextBox> txt;
+	NotNullPtr<UI::GUIListBox> lb;
+	NotNullPtr<UI::ListBoxLogger> logger;
+	NEW_CLASSNN(txt, UI::GUITextBox(ui, ctrl.Ptr(), CSTR("")));
 	txt->SetReadOnly(true);
 	txt->SetRect(0, 0, 100, 23, false);
 	txt->SetDockType(UI::GUIControl::DOCK_BOTTOM);
-	NEW_CLASS(lb, UI::GUIListBox(ui, ctrl, false));
+	NEW_CLASSNN(lb, UI::GUIListBox(ui, ctrl.Ptr(), false));
 	lb->SetDockType(UI::GUIControl::DOCK_FILL);
-	NEW_CLASS(logger, UI::ListBoxLogger(frm, lb, maxLog, reverse));
-	logger->txt = txt;
-	lb->HandleSelectionChange(OnListBoxSelChg, logger);
+	NEW_CLASSNN(logger, UI::ListBoxLogger(frm, lb, maxLog, reverse));
+	logger->txt = txt.Ptr();
+	lb->HandleSelectionChange(OnListBoxSelChg, logger.Ptr());
 	return logger;
 }

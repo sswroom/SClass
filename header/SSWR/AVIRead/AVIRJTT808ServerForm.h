@@ -24,11 +24,11 @@ namespace SSWR
 		{
 		private:
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
-			IO::LogTool *log;
+			IO::LogTool log;
 			Net::TCPServer *svr;
 			Net::TCPClientMgr *cliMgr;
 			IO::ProtoHdlr::ProtoJTT808Handler *protoHdlr;
-			UI::ListBoxLogger *logger;
+			NotNullPtr<UI::ListBoxLogger> logger;
 
 			UI::GUITabControl *tcMain;
 
@@ -38,7 +38,7 @@ namespace SSWR
 			UI::GUIButton *btnStart;
 
 			UI::GUITabPage *tpLog;
-			UI::GUIListBox *lbLog;
+			NotNullPtr<UI::GUIListBox> lbLog;
 			UI::GUITextBox *txtLog;
 
 			static void __stdcall OnStartClicked(void *userObj);

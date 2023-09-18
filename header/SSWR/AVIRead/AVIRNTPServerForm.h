@@ -22,8 +22,8 @@ namespace SSWR
 		private:
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			Net::NTPServer *svr;
-			IO::LogTool *log;
-			UI::ListBoxLogger *logger;
+			IO::LogTool log;
+			NotNullPtr<UI::ListBoxLogger> logger;
 
 			UI::GUITabControl *tcMain;
 
@@ -35,7 +35,7 @@ namespace SSWR
 			UI::GUIButton *btnStart;
 
 			UI::GUITabPage *tpLog;
-			UI::GUIListBox *lbLog;
+			NotNullPtr<UI::GUIListBox> lbLog;
 			UI::GUITextBox *txtLog;
 
 		private:

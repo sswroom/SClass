@@ -28,7 +28,7 @@
 
 void DB::ReadingDBTool::AddLogMsgC(const UTF8Char *msg, UOSInt msgLen, IO::LogHandler::LogLevel logLev)
 {
-	if (log)
+	if (log->HasHandler())
 	{
 		if (logPrefix)
 		{
@@ -44,7 +44,7 @@ void DB::ReadingDBTool::AddLogMsgC(const UTF8Char *msg, UOSInt msgLen, IO::LogHa
 	}
 }
 
-DB::ReadingDBTool::ReadingDBTool(DB::DBConn *db, Bool needRelease, IO::LogTool *log, Text::CString logPrefix) : ReadingDB(db->GetSourceNameObj())
+DB::ReadingDBTool::ReadingDBTool(DB::DBConn *db, Bool needRelease, NotNullPtr<IO::LogTool> log, Text::CString logPrefix) : ReadingDB(db->GetSourceNameObj())
 {
 	this->db = db;
 	this->currDBName = 0;
@@ -364,7 +364,7 @@ void DB::ReadingDBTool::SetFailTrigger(DB::ReadingDBTool::SQLFailedFunc trig)
 
 DB::DBReader *DB::ReadingDBTool::ExecuteReader(Text::CString sqlCmd)
 {
-	if (this->log)
+	if (this->log->HasHandler())
 	{
 		Text::StringBuilderUTF8 logMsg;
 		logMsg.AppendC(UTF8STRC("ExecuteReader: "));
@@ -403,7 +403,7 @@ DB::DBReader *DB::ReadingDBTool::ExecuteReader(Text::CString sqlCmd)
 	}
 	else
 	{
-		if (this->log)
+		if (this->log->HasHandler())
 		{
 			Text::StringBuilderUTF8 logMsg;
 			logMsg.AppendC(UTF8STRC("Cannot execute the sql command: "));

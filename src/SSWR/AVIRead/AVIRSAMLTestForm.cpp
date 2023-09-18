@@ -393,7 +393,6 @@ SSWR::AVIRead::AVIRSAMLTestForm::AVIRSAMLTestForm(UI::GUIClientControl *parent, 
 	this->sslCert = 0;
 	this->sslKey = 0;
 	this->svr = 0;
-	this->logger = 0;
 	this->respNew = 0;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
@@ -475,11 +474,11 @@ SSWR::AVIRead::AVIRSAMLTestForm::AVIRSAMLTestForm(UI::GUIClientControl *parent, 
 	this->txtLog->SetRect(0, 0, 100, 23, false);
 	this->txtLog->SetReadOnly(true);
 	this->txtLog->SetDockType(UI::GUIControl::DOCK_BOTTOM);
-	NEW_CLASS(this->lbLog, UI::GUIListBox(ui, this->tpLog, false));
+	NEW_CLASSNN(this->lbLog, UI::GUIListBox(ui, this->tpLog, false));
 	this->lbLog->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lbLog->HandleSelectionChange(OnLogSel, this);
 
-	NEW_CLASS(this->logger, UI::ListBoxLogger(this, this->lbLog, 500, true));
+	NEW_CLASSNN(this->logger, UI::ListBoxLogger(*this, this->lbLog, 500, true));
 	this->log.AddLogHandler(this->logger, IO::LogHandler::LogLevel::Raw);
 
 	this->HandleDropFiles(OnFormFiles, this);
@@ -495,7 +494,7 @@ SSWR::AVIRead::AVIRSAMLTestForm::~AVIRSAMLTestForm()
 		this->samlHdlr = 0;
 	}
 	this->log.RemoveLogHandler(this->logger);
-	SDEL_CLASS(this->logger);
+	this->logger.Delete();
 	SDEL_CLASS(this->ssl);
 	SDEL_CLASS(this->sslCert);
 	SDEL_CLASS(this->sslKey);

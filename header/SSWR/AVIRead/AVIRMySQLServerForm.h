@@ -23,8 +23,8 @@ namespace SSWR
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			Net::MySQLServer *svr;
 			DB::DBMS *dbms;
-			IO::LogTool *log;
-			UI::ListBoxLogger *logger;
+			IO::LogTool log;
+			NotNullPtr<UI::ListBoxLogger> logger;
 
 			UI::GUIPanel *pnlCtrl;
 			UI::GUILabel *lblPort;
@@ -43,7 +43,7 @@ namespace SSWR
 			UI::GUIButton *btnUserAdd;
 
 			UI::GUITabPage *tpLog;
-			UI::GUIListBox *lbLog;
+			NotNullPtr<UI::GUIListBox> lbLog;
 			UI::GUITextBox *txtLog;
 
 		private:

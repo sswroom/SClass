@@ -317,7 +317,7 @@ void Net::RTPCliChannel::SetPlayControl(Net::IRTPController *playCtrl)
 	this->chData->playCtrl = playCtrl;
 }
 
-Net::RTPCliChannel::RTPCliChannel(NotNullPtr<Net::SocketFactory> sockf, UInt16 port)
+Net::RTPCliChannel::RTPCliChannel(NotNullPtr<Net::SocketFactory> sockf, UInt16 port, NotNullPtr<IO::LogTool> log)
 {
 	NEW_CLASS(this->chData, ChannelData());
 	this->chData->useCnt = 1;
@@ -346,7 +346,7 @@ Net::RTPCliChannel::RTPCliChannel(NotNullPtr<Net::SocketFactory> sockf, UInt16 p
 	{
 		port = (UInt16)(port + 1);
 	}
-	NEW_CLASS(this->chData->rtpUDP, Net::UDPServer(sockf, 0, port, CSTR_NULL, PacketHdlr, this->chData, 0, CSTR_NULL, this->chData->threadCnt, false));
+	NEW_CLASS(this->chData->rtpUDP, Net::UDPServer(sockf, 0, port, CSTR_NULL, PacketHdlr, this->chData, log, CSTR_NULL, this->chData->threadCnt, false));
 	if (port == 0)
 	{
 		port = this->chData->rtpUDP->GetPort();
@@ -354,11 +354,11 @@ Net::RTPCliChannel::RTPCliChannel(NotNullPtr<Net::SocketFactory> sockf, UInt16 p
 		{
 			port = (UInt16)(port + 1);
 			DEL_CLASS(this->chData->rtpUDP);
-			NEW_CLASS(this->chData->rtpUDP, Net::UDPServer(sockf, 0, port, CSTR_NULL, PacketHdlr, this->chData, 0, CSTR_NULL, this->chData->threadCnt, false));
+			NEW_CLASS(this->chData->rtpUDP, Net::UDPServer(sockf, 0, port, CSTR_NULL, PacketHdlr, this->chData, log, CSTR_NULL, this->chData->threadCnt, false));
 		}
 	}
 	this->chData->rtpUDP->SetBuffSize(1048576);
-	NEW_CLASS(this->chData->rtcpUDP, Net::UDPServer(sockf, 0, (UInt16)(port + 1), CSTR_NULL, PacketCtrlHdlr, this->chData, 0, CSTR_NULL, 1, false));
+	NEW_CLASS(this->chData->rtcpUDP, Net::UDPServer(sockf, 0, (UInt16)(port + 1), CSTR_NULL, PacketCtrlHdlr, this->chData, log, CSTR_NULL, 1, false));
 }
 
 Net::RTPCliChannel::RTPCliChannel(Net::RTPCliChannel *ch)
@@ -566,7 +566,7 @@ Bool Net::RTPCliChannel::SetPayloadFormat(Int32 payloadType, const UTF8Char *for
 	return false;
 }
 
-Net::RTPCliChannel *Net::RTPCliChannel::CreateChannel(NotNullPtr<Net::SocketFactory> sockf, Data::ArrayList<const UTF8Char *> *sdpDesc, Text::CString ctrlURL, Net::IRTPController *playCtrl)
+Net::RTPCliChannel *Net::RTPCliChannel::CreateChannel(NotNullPtr<Net::SocketFactory> sockf, Data::ArrayList<const UTF8Char *> *sdpDesc, Text::CString ctrlURL, Net::IRTPController *playCtrl, NotNullPtr<IO::LogTool> log)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
@@ -574,7 +574,7 @@ Net::RTPCliChannel *Net::RTPCliChannel::CreateChannel(NotNullPtr<Net::SocketFact
 	Net::RTPCliChannel *ch;
 	const UTF8Char *desc;
 	UOSInt descLen;
-	NEW_CLASS(ch, Net::RTPCliChannel(sockf, 0));
+	NEW_CLASS(ch, Net::RTPCliChannel(sockf, 0, log));
 	ch->SetPlayControl(playCtrl->Clone());
 	Bool ctrlFound = false;
 	Int32 payloadType;

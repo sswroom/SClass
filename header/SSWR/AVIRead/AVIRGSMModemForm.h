@@ -30,7 +30,7 @@ namespace SSWR
 			IO::ATCommandChannel *channel;
 			IO::Stream *port;
 			IO::LogTool log;
-			UI::ListBoxLogger *logger;
+			NotNullPtr<UI::ListBoxLogger> logger;
 
 			UI::GUIPanel *pnlDevice;
 			UI::GUILabel *lblDeviceSerial;
@@ -115,7 +115,7 @@ namespace SSWR
 			UI::GUITextBox *txtATCommandRep;
 
 			UI::GUITabPage *tpLog;
-			UI::GUIListBox *lbLog;
+			NotNullPtr<UI::GUIListBox> lbLog;
 			UI::GUITextBox *txtLog;
 
 			UI::GUITabPage *tpHuawei;

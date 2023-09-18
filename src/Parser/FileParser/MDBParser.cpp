@@ -15,6 +15,7 @@
 Parser::FileParser::MDBParser::MDBParser()
 {
 	this->codePage = 0;
+	this->log = 0;
 }
 
 Parser::FileParser::MDBParser::~MDBParser()
@@ -34,6 +35,11 @@ void Parser::FileParser::MDBParser::SetCodePage(UInt32 codePage)
 void Parser::FileParser::MDBParser::SetArcGISPRJParser(Math::ArcGISPRJParser *prjParser)
 {
 	this->prjParser = prjParser;
+}
+
+void Parser::FileParser::MDBParser::SetLogTool(IO::LogTool *log)
+{
+	this->log = log;
 }
 
 void Parser::FileParser::MDBParser::PrepareSelector(IO::FileSelector *selector, IO::ParserType t)
@@ -71,7 +77,12 @@ IO::ParsedObject *Parser::FileParser::MDBParser::ParseFileHdr(NotNullPtr<IO::Str
 	}
 #ifndef _WIN32_WCE
 	NotNullPtr<DB::MDBFileConn> mdb;
-	NEW_CLASSNN(mdb, DB::MDBFileConn(fd->GetFullFileName()->ToCString(), 0, this->codePage, 0, 0));
+	NotNullPtr<IO::LogTool> log;
+	if (!log.Set(this->log))
+	{
+		return 0;
+	}
+	NEW_CLASSNN(mdb, DB::MDBFileConn(fd->GetFullFileName()->ToCString(), log, this->codePage, 0, 0));
 	if (mdb->GetConnError() != DB::ODBCConn::CE_NONE)
 	{
 		mdb.Delete();

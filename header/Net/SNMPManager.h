@@ -48,7 +48,7 @@ namespace Net
 
 		static void FreeAllItems(Data::ArrayList<Net::SNMPUtil::BindingItem*> *itemList);
 	public:
-		SNMPManager(NotNullPtr<Net::SocketFactory> sockf);
+		SNMPManager(NotNullPtr<Net::SocketFactory> sockf, NotNullPtr<IO::LogTool> log);
 		~SNMPManager();
 
 		Bool IsError();

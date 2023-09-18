@@ -140,7 +140,7 @@ SSWR::AVIRead::AVIRSNMPClientForm::AVIRSNMPClientForm(UI::GUIClientControl *pare
 
 	this->AddTimer(1000, OnTimerTick, this);
 
-	NEW_CLASS(this->cli, Net::SNMPClient(this->core->GetSocketFactory()));
+	NEW_CLASS(this->cli, Net::SNMPClient(this->core->GetSocketFactory(), this->core->GetLog()));
 	if (this->cli->IsError())
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Error in starting SNMP Client"), CSTR("Error"), this);

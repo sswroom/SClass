@@ -62,7 +62,7 @@ Bool Exporter::SQLiteExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Te
 	UOSInt i;
 	UOSInt j;
 	OSInt k;
-	if (!destDB.Set(DB::SQLiteFile::CreateDBTool(fileName.OrEmpty(), &log, CSTR("DB: "))))
+	if (!destDB.Set(DB::SQLiteFile::CreateDBTool(fileName.OrEmpty(), log, CSTR("DB: "))))
 		return false;
 	Bool succ = true;
 	DB::SQLBuilder sql(destDB);
@@ -71,7 +71,7 @@ Bool Exporter::SQLiteExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Te
 	sDB->QueryTableNames(CSTR_NULL, &tables);
 	if (sDB->IsFullConn())
 	{
-		NEW_CLASS(srcDB, DB::ReadingDBTool((DB::DBConn*)sDB, false, &log, CSTR("SDB: ")));
+		NEW_CLASS(srcDB, DB::ReadingDBTool((DB::DBConn*)sDB, false, log, CSTR("SDB: ")));
 	}
 	else
 	{

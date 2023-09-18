@@ -37,7 +37,7 @@ namespace DB
 		Text::String *pwd;
 		Text::String *schema;
 		Text::String *connStr;
-		IO::LogTool *log;
+		NotNullPtr<IO::LogTool> log;
 		Bool enableDebug;
 		Bool forceTz;
 		Int8 tzQhr;
@@ -51,11 +51,11 @@ namespace DB
 	protected:		
 		Bool Connect(NotNullPtr<Text::String> connStr);
 		Bool Connect(Text::CString connStr);
-		ODBCConn(Text::CStringNN sourceName, IO::LogTool *log);
+		ODBCConn(Text::CStringNN sourceName, NotNullPtr<IO::LogTool> log);
 	public:
-		ODBCConn(NotNullPtr<Text::String> dsn, Text::String *uid, Text::String *pwd, Text::String *schema, IO::LogTool *log);
-		ODBCConn(Text::CStringNN dsn, Text::CString uid, Text::CString pwd, Text::CString schema, IO::LogTool *log);
-		ODBCConn(Text::CString connStr, Text::CStringNN sourceName, IO::LogTool *log);
+		ODBCConn(NotNullPtr<Text::String> dsn, Text::String *uid, Text::String *pwd, Text::String *schema, NotNullPtr<IO::LogTool> log);
+		ODBCConn(Text::CStringNN dsn, Text::CString uid, Text::CString pwd, Text::CString schema, NotNullPtr<IO::LogTool> log);
+		ODBCConn(Text::CString connStr, Text::CStringNN sourceName, NotNullPtr<IO::LogTool> log);
 		virtual ~ODBCConn();
 
 		virtual DB::SQLType GetSQLType() const;
@@ -98,8 +98,8 @@ namespace DB
 
 		static UOSInt GetDriverList(Data::ArrayListNN<Text::String> *driverList);
 		static IO::ConfigFile *GetDriverInfo(Text::CString driverName);
-		static DBTool *CreateDBTool(NotNullPtr<Text::String> dsn, Text::String *uid, Text::String *pwd, Text::String *schema, IO::LogTool *log, Text::CString logPrefix);
-		static DBTool *CreateDBTool(Text::CStringNN dsn, Text::CString uid, Text::CString pwd, Text::CString schema, IO::LogTool *log, Text::CString logPrefix);
+		static DBTool *CreateDBTool(NotNullPtr<Text::String> dsn, Text::String *uid, Text::String *pwd, Text::String *schema, NotNullPtr<IO::LogTool> log, Text::CString logPrefix);
+		static DBTool *CreateDBTool(Text::CStringNN dsn, Text::CString uid, Text::CString pwd, Text::CString schema, NotNullPtr<IO::LogTool> log, Text::CString logPrefix);
 	};
 
 	class ODBCReader : public DB::DBReader

@@ -14,20 +14,21 @@ void Net::SNS::SNSRSS::CalcCRC(const UInt8 *buff, UOSInt size, UInt8 *hashVal)
 	this->crc.GetValue(hashVal);
 }
 
-Net::SNS::SNSRSS::SNSRSS(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, Text::EncodingFactory *encFact, Text::String *userAgent, Text::CString channelId)
+Net::SNS::SNSRSS::SNSRSS(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, Text::EncodingFactory *encFact, Text::String *userAgent, Text::CString channelId, NotNullPtr<IO::LogTool> log)
 {
 	this->sockf = sockf;
 	this->ssl = ssl;
 	this->encFact = encFact;
 	this->userAgent = SCOPY_STRING(userAgent);
 	this->channelId = Text::String::New(channelId);
+	this->log = log;
 	this->chDesc = 0;
 	this->timeout = 30000;
 
 	Net::RSS *rss;
 	SNSItem *snsItem;
 	Net::RSSItem *item;
-	NEW_CLASS(rss, Net::RSS(this->channelId->ToCString(), this->userAgent, this->sockf, this->ssl, this->timeout));
+	NEW_CLASS(rss, Net::RSS(this->channelId->ToCString(), this->userAgent, this->sockf, this->ssl, this->timeout, this->log));
 	if (rss->GetTitle())
 	{
 		this->chName = rss->GetTitle()->Clone();
@@ -166,7 +167,7 @@ Bool Net::SNS::SNSRSS::Reload()
 	}
 
 	Net::RSS *rss;
-	NEW_CLASS(rss, Net::RSS(this->channelId->ToCString(), this->userAgent, this->sockf, this->ssl, this->timeout));
+	NEW_CLASS(rss, Net::RSS(this->channelId->ToCString(), this->userAgent, this->sockf, this->ssl, this->timeout, this->log));
 	i = rss->GetCount();
 	Text::StringBuilderUTF8 sb;
 	Text::StringBuilderUTF8 sb2;

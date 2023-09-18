@@ -2,7 +2,7 @@
 #include "Net/DNSHandler.h"
 #include "Sync/MutexUsage.h"
 
-Net::DNSHandler::DNSHandler(NotNullPtr<Net::SocketFactory> sockf, NotNullPtr<const Net::SocketUtil::AddressInfo> serverAddr) : dnsCli(sockf, serverAddr)
+Net::DNSHandler::DNSHandler(NotNullPtr<Net::SocketFactory> sockf, NotNullPtr<const Net::SocketUtil::AddressInfo> serverAddr, NotNullPtr<IO::LogTool> log) : dnsCli(sockf, serverAddr, log)
 {
 }
 

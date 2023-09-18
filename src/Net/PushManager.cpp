@@ -320,7 +320,7 @@ NotNullPtr<const Data::ReadingList<Net::PushManager::DeviceInfo2*>> Net::PushMan
 	return this->devMap;
 }
 
-void Net::PushManager::LogMessage(Text::CString msg, IO::LogHandler::LogLevel logLev)
+void Net::PushManager::LogMessage(Text::CStringNN msg, IO::LogHandler::LogLevel logLev)
 {
 	this->log->LogMessage(msg, logLev);
 }

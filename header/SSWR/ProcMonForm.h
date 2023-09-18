@@ -28,7 +28,7 @@ namespace SSWR
 	private:
 		UI::GUITabControl *tcMain;
 		UI::GUITabPage *tpLog;
-		UI::GUIListBox *lbLog;
+		NotNullPtr<UI::GUIListBox> lbLog;
 		UI::GUITextBox *txtLog;
 
 		UI::GUITabPage *tpProg;
@@ -48,7 +48,7 @@ namespace SSWR
 
 		Data::ArrayList<ProgInfo*> *progList;
 		IO::LogTool *log;
-		UI::ListBoxLogger *logger;
+		NotNullPtr<UI::ListBoxLogger> logger;
 		Text::String *notifyCmd;
 
 		void AddProg(Text::CString progName, Text::CString progPath);

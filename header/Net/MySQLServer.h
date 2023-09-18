@@ -23,7 +23,7 @@ namespace Net
 
 	private:
 		NotNullPtr<Net::SocketFactory> sockf;
-		IO::LogTool *log;
+		NotNullPtr<IO::LogTool> log;
 		Net::TCPServer *svr;
 		DB::DBMS *dbms;
 		Net::TCPClientMgr *cliMgr;

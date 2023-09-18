@@ -189,7 +189,7 @@ void Net::LogClient::LogClosed()
 	DEL_CLASS(this);
 }
 
-void Net::LogClient::LogAdded(const Data::Timestamp &time, Text::CString logMsg, LogLevel logLev)
+void Net::LogClient::LogAdded(const Data::Timestamp &time, Text::CStringNN logMsg, LogLevel logLev)
 {
 	Sync::MutexUsage mutUsage(this->mut);
 	this->msgList.Add(Text::String::New(logMsg));

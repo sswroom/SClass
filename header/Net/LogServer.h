@@ -34,7 +34,7 @@ namespace Net
 		Net::TCPClientMgr *cliMgr;
 		NotNullPtr<Text::String> logPath;
 		IO::ProtoHdlr::ProtoLogCliHandler protoHdlr;
-		IO::LogTool *log;
+		NotNullPtr<IO::LogTool> log;
 		Bool redirLog;
 		Sync::Mutex ipMut;
 		Data::FastMap<UInt32, IPStatus*> ipMap;
@@ -48,7 +48,7 @@ namespace Net
 
 		IPStatus *GetIPStatus(NotNullPtr<const Net::SocketUtil::AddressInfo> addr);
 	public:
-		LogServer(NotNullPtr<Net::SocketFactory> sockf, UInt16 port, Text::CString logPath, IO::LogTool *svrLog, Bool redirLog, Bool autoStart);
+		LogServer(NotNullPtr<Net::SocketFactory> sockf, UInt16 port, Text::CString logPath, NotNullPtr<IO::LogTool> svrLog, Bool redirLog, Bool autoStart);
 		virtual ~LogServer();
 
 		Bool Start();

@@ -81,11 +81,11 @@ namespace SSWR
 			UI::GUIListView *lvSvrConn;
 
 			UI::GUITabPage *tpLog;
-			UI::GUIListBox *lbLog;
+			NotNullPtr<UI::GUIListBox> lbLog;
 			UI::GUITextBox *txtLog;
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
-			UI::ListBoxLogger *logger;
+			NotNullPtr<UI::ListBoxLogger> logger;
 			Data::ArrayList<DB::DBManagerCtrl*> dbList;
 			Net::SSLEngine *ssl;
 			IO::LogTool log;

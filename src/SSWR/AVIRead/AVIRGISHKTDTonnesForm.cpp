@@ -66,7 +66,7 @@ void __stdcall SSWR::AVIRead::AVIRGISHKTDTonnesForm::OnOKClicked(void *userObj)
 			IO::StmData::FileData fd(sb.ToCString(), false);
 			lyr = (Map::MapDrawLayer*)me->core->GetParserList()->ParseFileType(fd, IO::ParserType::MapLayer);
 		}
-		DB::DBTool *db = DB::MDBFileConn::CreateDBTool(sb2.ToCString(), 0, CSTR_NULL);
+		DB::DBTool *db = DB::MDBFileConn::CreateDBTool(sb2.ToCString(), me->core->GetLog(), CSTR_NULL);
 		if (lyr && db)
 		{
 			Map::DrawLayerType lyrType = lyr->GetLayerType();

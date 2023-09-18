@@ -12,9 +12,9 @@ namespace SSWR
 		class AVIRPaintCntForm : public UI::GUIForm
 		{
 		private:
-			UI::GUITimer *tmrMain;
-			UI::GUILabel *lblCnt;
-			UI::GUITextBox *txtCnt;
+			NotNullPtr<UI::GUITimer> tmrMain;
+			NotNullPtr<UI::GUILabel> lblCnt;
+			NotNullPtr<UI::GUITextBox> txtCnt;
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			Int64 paintCnt;
 			Int64 dispCnt;
@@ -27,6 +27,6 @@ namespace SSWR
 			virtual Bool OnPaint();
 			virtual void OnMonitorChanged();
 		};
-	};
-};
+	}
+}
 #endif

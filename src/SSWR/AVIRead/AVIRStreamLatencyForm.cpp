@@ -232,7 +232,7 @@ SSWR::AVIRead::AVIRStreamLatencyForm::AVIRStreamLatencyForm(UI::GUIClientControl
 	this->txtLog->SetReadOnly(true);
 	this->txtLog->SetRect(0, 0, 100, 23, false);
 	this->txtLog->SetDockType(UI::GUIControl::DOCK_BOTTOM);
-	NEW_CLASS(this->lbLog, UI::GUIListBox(ui, this->tpLog, false));
+	NEW_CLASSNN(this->lbLog, UI::GUIListBox(ui, this->tpLog, false));
 	this->lbLog->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	this->tpStatus = this->tcMain->AddTabPage(CSTR("Status"));
@@ -247,7 +247,7 @@ SSWR::AVIRead::AVIRStreamLatencyForm::AVIRStreamLatencyForm(UI::GUIClientControl
 	this->txtRecvCnt->SetRect(100, 24, 150, 23, false);
 	this->txtRecvCnt->SetReadOnly(true);
 
-	NEW_CLASS(this->logger, UI::ListBoxLogger(this, this->lbLog, 256, false));
+	NEW_CLASSNN(this->logger, UI::ListBoxLogger(*this, this->lbLog, 256, false));
 	this->log->AddLogHandler(this->logger, IO::LogHandler::LogLevel::Raw);
 
 	this->AddTimer(1000, OnTimerTick, this);
@@ -257,7 +257,7 @@ SSWR::AVIRead::AVIRStreamLatencyForm::~AVIRStreamLatencyForm()
 {
 	StopStream();
 	DEL_CLASS(this->log);
-	DEL_CLASS(this->logger);
+	this->logger.Delete();
 }
 
 void SSWR::AVIRead::AVIRStreamLatencyForm::OnMonitorChanged()

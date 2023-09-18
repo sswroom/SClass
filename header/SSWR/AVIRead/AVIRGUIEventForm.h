@@ -18,12 +18,12 @@ namespace SSWR
 		private:
 			UI::GUIPanel *pnlMain;
 			UI::GUIButton *btnDisplayOff;
-			UI::GUIListBox *lbLog;
+			NotNullPtr<UI::GUIListBox> lbLog;
 			UI::GUITextBox *txtLog;
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			IO::LogTool *log;
-			UI::ListBoxLogger *logger;
+			NotNullPtr<UI::ListBoxLogger> logger;
 
 			static void __stdcall OnLogSelChg(void *userObj);
 			static void __stdcall OnDisplayOffClicked(void *userObj);

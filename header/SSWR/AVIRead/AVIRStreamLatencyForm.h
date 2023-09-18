@@ -41,7 +41,7 @@ namespace SSWR
 
 			UI::GUITabPage *tpLog;
 			UI::GUITextBox *txtLog;
-			UI::GUIListBox *lbLog;
+			NotNullPtr<UI::GUIListBox> lbLog;
 
 			UI::GUITabPage *tpStatus;
 			UI::GUILabel *lblSentCnt;
@@ -51,7 +51,7 @@ namespace SSWR
 
 			IO::Stream *stm;
 			IO::LogTool *log;
-			UI::ListBoxLogger *logger;
+			NotNullPtr<UI::ListBoxLogger> logger;
 			Bool threadRunning;
 			Bool threadToStop;
 			Bool remoteClosed;

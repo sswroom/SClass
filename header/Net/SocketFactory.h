@@ -3,6 +3,7 @@
 #include "Data/ArrayList.h"
 #include "Data/DataArray.h"
 #include "Data/Duration.h"
+#include "IO/LogTool.h"
 #include "Net/SocketUtil.h"
 #include "Sync/Event.h"
 #include "Sync/Mutex.h"
@@ -143,6 +144,7 @@ namespace Net
 		} ErrorType;
 	private:
 		Sync::Mutex dnsMut;
+		IO::LogTool log;
 		Bool noV6DNS;
 	protected:
 		Net::DNSHandler *dnsHdlr;

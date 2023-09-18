@@ -165,6 +165,28 @@ void Parser::ParserList::SetArcGISPRJParser(Math::ArcGISPRJParser *prjParser)
 	}
 }
 
+void Parser::ParserList::SetLogTool(IO::LogTool *log)
+{
+	IO::ParserBase *parser;
+	UOSInt i;
+	UOSInt j = this->filePArr.GetCount();
+	i = 0;
+	while (i < j)
+	{
+		parser = this->filePArr.GetItem(i);
+		parser->SetLogTool(log);
+		i++;
+	}
+	i = 0;
+	j = this->objPArr.GetCount();
+	while (i < j)
+	{
+		parser = this->objPArr.GetItem(i);
+		parser->SetLogTool(log);
+		i++;
+	}
+}
+
 void Parser::ParserList::PrepareSelector(IO::FileSelector *selector, IO::ParserType t)
 {
 	IO::ParserBase *parser;

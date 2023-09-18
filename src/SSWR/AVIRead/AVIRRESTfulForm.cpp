@@ -80,11 +80,12 @@ void __stdcall SSWR::AVIRead::AVIRRESTfulForm::OnStartClick(void *userObj)
 
 			if (!me->chkSkipLog->IsChecked())
 			{
-				NEW_CLASS(me->log, IO::LogTool());
-				me->log->AddFileLog(sb.ToCString(), IO::LogHandler::LogType::PerDay, IO::LogHandler::LogGroup::PerMonth, IO::LogHandler::LogLevel::Raw, "yyyy-MM-dd HH:mm:ss.fff", false);
-				me->svr->SetAccessLog(me->log, IO::LogHandler::LogLevel::Raw);
-				NEW_CLASS(me->logger, UI::ListBoxLogger(me, me->lbLog, 500, true));
-				me->log->AddLogHandler(me->logger, IO::LogHandler::LogLevel::Raw);
+				me->log.AddFileLog(sb.ToCString(), IO::LogHandler::LogType::PerDay, IO::LogHandler::LogGroup::PerMonth, IO::LogHandler::LogLevel::Raw, "yyyy-MM-dd HH:mm:ss.fff", false);
+				me->svr->SetAccessLog(&me->log, IO::LogHandler::LogLevel::Raw);
+				NotNullPtr<UI::ListBoxLogger> logger;
+				NEW_CLASSNN(logger, UI::ListBoxLogger(*me, me->lbLog, 500, true));
+				me->logger = logger.Ptr();
+				me->log.AddLogHandler(logger, IO::LogHandler::LogLevel::Raw);
 			}
 
 			me->lvTable->ClearItems();
@@ -132,8 +133,12 @@ void __stdcall SSWR::AVIRead::AVIRRESTfulForm::OnStartClick(void *userObj)
 				me->restHdlr->Release();
 				me->restHdlr = 0;
 			}
-			SDEL_CLASS(me->log);
-			SDEL_CLASS(me->logger);
+			NotNullPtr<UI::ListBoxLogger> logger;
+			if (logger.Set(me->logger))
+			{
+				me->log.RemoveLogHandler(logger);
+				SDEL_CLASS(me->logger);
+			}
 		}
 	}
 	else
@@ -155,7 +160,6 @@ void __stdcall SSWR::AVIRead::AVIRRESTfulForm::OnStopClick(void *userObj)
 		me->restHdlr->Release();
 		me->restHdlr = 0;
 	}
-	SDEL_CLASS(me->log);
 	SDEL_CLASS(me->logger);
 	me->txtPort->SetReadOnly(false);
 	me->txtLogDir->SetReadOnly(false);
@@ -198,7 +202,6 @@ SSWR::AVIRead::AVIRRESTfulForm::AVIRRESTfulForm(UI::GUIClientControl *parent, No
 	this->SetText(CSTR("RESTful Server"));
 	this->SetFont(0, 0, 8.25, false);
 	this->svr = 0;
-	this->log = 0;
 	this->logger = 0;
 	this->db = 0;
 	this->dbConn = 0;
@@ -268,7 +271,7 @@ SSWR::AVIRead::AVIRRESTfulForm::AVIRRESTfulForm(UI::GUIClientControl *parent, No
 	this->txtLog->SetRect(0, 0, 100, 23, false);
 	this->txtLog->SetReadOnly(true);
 	this->txtLog->SetDockType(UI::GUIControl::DOCK_BOTTOM);
-	NEW_CLASS(this->lbLog, UI::GUIListBox(ui, this->tpLog, false));
+	NEW_CLASSNN(this->lbLog, UI::GUIListBox(ui, this->tpLog, false));
 	this->lbLog->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lbLog->HandleSelectionChange(OnLogSel, this);
 }
@@ -285,8 +288,12 @@ SSWR::AVIRead::AVIRRESTfulForm::~AVIRRESTfulForm()
 	SDEL_CLASS(this->dbModel);
 	SDEL_CLASS(this->db);
 	SDEL_CLASS(this->dbConn);
-	SDEL_CLASS(this->log);
-	SDEL_CLASS(this->logger);
+	NotNullPtr<UI::ListBoxLogger> logger;
+	if (logger.Set(this->logger))
+	{
+		this->log.RemoveLogHandler(logger);
+		SDEL_CLASS(this->logger);
+	}
 }
 
 void SSWR::AVIRead::AVIRRESTfulForm::OnMonitorChanged()

@@ -295,7 +295,7 @@ SSWR::ProcMonForm::ProcMonForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUIC
 	this->txtLog->SetRect(0, 0, 100, 23, false);
 	this->txtLog->SetDockType(UI::GUIControl::DOCK_BOTTOM);
 	this->txtLog->SetReadOnly(true);
-	NEW_CLASS(this->lbLog, UI::GUIListBox(ui, this->tpLog, false));
+	NEW_CLASSNN(this->lbLog, UI::GUIListBox(ui, this->tpLog, false));
 	this->lbLog->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lbLog->HandleSelectionChange(OnLogSelChg, this);
 
@@ -340,7 +340,7 @@ SSWR::ProcMonForm::ProcMonForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUIC
 	sb.AppendC(UTF8STRC("ProgLog"));
 	NEW_CLASS(this->log, IO::LogTool());
 	this->log->AddFileLog(sb.ToCString(), IO::LogHandler::LogType::PerDay, IO::LogHandler::LogGroup::PerMonth, IO::LogHandler::LogLevel::Raw, "yyyy-MM-dd HH:mm:ss.fff", false);
-	NEW_CLASS(this->logger, UI::ListBoxLogger(this, this->lbLog, 512, false));
+	NEW_CLASSNN(this->logger, UI::ListBoxLogger(*this, this->lbLog, 512, false));
 	this->log->AddLogHandler(this->logger, IO::LogHandler::LogLevel::Raw);
 	NEW_CLASS(this->progList, Data::ArrayList<ProgInfo*>());
 	this->LoadProgList();
@@ -371,6 +371,6 @@ SSWR::ProcMonForm::~ProcMonForm()
 	}
 	DEL_CLASS(this->progList);
 	DEL_CLASS(this->log);
-	DEL_CLASS(this->logger);
+	this->logger.Delete();
 	SDEL_STRING(this->notifyCmd);
 }

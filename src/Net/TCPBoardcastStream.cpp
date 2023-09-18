@@ -18,7 +18,7 @@ void __stdcall Net::TCPBoardcastStream::ConnHandler(Socket *s, void *userObj)
 		Text::StringBuilderUTF8 sb;
 		UOSInt size = me->writeBuffSize;
 		me->writeBuffSize = 0;
-		if (me->log)
+		if (me->log->HasHandler())
 		{
 			sb.AppendC(UTF8STRC("Sending to "));
 			sptr = me->sockf->GetRemoteName(sbuff, s);
@@ -52,7 +52,7 @@ void __stdcall Net::TCPBoardcastStream::ClientData(NotNullPtr<Net::TCPClient> cl
 	Text::StringBuilderUTF8 sb;
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
-	if (me->log)
+	if (me->log->HasHandler())
 	{
 		sb.AppendC(UTF8STRC("Recv from "));
 		sptr = cli->GetRemoteName(sbuff);
@@ -92,7 +92,7 @@ void __stdcall Net::TCPBoardcastStream::ClientData(NotNullPtr<Net::TCPClient> cl
 	}
 	mutUsage.EndUse();
 	
-	if (me->log)
+	if (me->log->HasHandler())
 	{
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("Recv readBuffPtr2 = "));
@@ -104,7 +104,7 @@ void __stdcall Net::TCPBoardcastStream::ClientData(NotNullPtr<Net::TCPClient> cl
 void __stdcall Net::TCPBoardcastStream::ClientTimeout(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData)
 {
 	Net::TCPBoardcastStream *me = (Net::TCPBoardcastStream*)userObj;
-	if (me->log)
+	if (me->log->HasHandler())
 	{
 		Text::StringBuilderUTF8 sb;
 		UTF8Char sbuff[32];
@@ -116,7 +116,7 @@ void __stdcall Net::TCPBoardcastStream::ClientTimeout(NotNullPtr<Net::TCPClient>
 	}
 }
 
-Net::TCPBoardcastStream::TCPBoardcastStream(NotNullPtr<Net::SocketFactory> sockf, UInt16 port, IO::LogTool *log) : IO::Stream(CSTR("Net.TCPBoardcastSream"))
+Net::TCPBoardcastStream::TCPBoardcastStream(NotNullPtr<Net::SocketFactory> sockf, UInt16 port, NotNullPtr<IO::LogTool> log) : IO::Stream(CSTR("Net.TCPBoardcastSream"))
 {
 	this->sockf = sockf;
 	this->log = log;
@@ -204,7 +204,7 @@ UOSInt Net::TCPBoardcastStream::Read(const Data::ByteArray &buff)
 		}
 	}
 	mutUsage.EndUse();
-	if (this->log)
+	if (this->log->HasHandler())
 	{
 		Text::StringBuilderUTF8 sb;
 		sb.AppendC(UTF8STRC("TBS "));
@@ -233,7 +233,7 @@ UOSInt Net::TCPBoardcastStream::Write(const UInt8 *buff, UOSInt size)
 		cli = this->cliMgr->GetClient(i, &cliData);
 		cli->Write(buff, size);
 
-		if (this->log)
+		if (this->log->HasHandler())
 		{
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("Sending to "));

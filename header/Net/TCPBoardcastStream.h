@@ -13,7 +13,7 @@ namespace Net
 		NotNullPtr<Net::SocketFactory> sockf;
 		Net::TCPServer *svr;
 		Net::TCPClientMgr *cliMgr;
-		IO::LogTool *log;
+		NotNullPtr<IO::LogTool> log;
 		Sync::Mutex readMut;
 		UInt32 readCnt;
 		UInt8 *readBuff;
@@ -27,7 +27,7 @@ namespace Net
 		static void __stdcall ClientData(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData, const Data::ByteArrayR &buff);
 		static void __stdcall ClientTimeout(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData);
 	public:
-		TCPBoardcastStream(NotNullPtr<Net::SocketFactory> sockf, UInt16 port, IO::LogTool *log);
+		TCPBoardcastStream(NotNullPtr<Net::SocketFactory> sockf, UInt16 port, NotNullPtr<IO::LogTool> log);
 		~TCPBoardcastStream();
 
 		virtual Bool IsDown() const;

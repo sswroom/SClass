@@ -78,9 +78,9 @@ namespace SSWR
 			UI::GUIListView *lvDevice;
 
 			UI::GUITabPage *tpLog;
-			UI::GUIListBox *lbLog;
+			NotNullPtr<UI::GUIListBox> lbLog;
 			UI::GUITextBox *txtLog;
-			UI::ListBoxLogger *logger;
+			NotNullPtr<UI::ListBoxLogger> logger;
 
 			static void __stdcall OnProtocolReceived(void *userObj, UInt8 cmdType, UOSInt cmdSize, UInt8 *cmd);
 			static void __stdcall OnDongleInfoClicked(void *userObj);

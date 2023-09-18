@@ -27,7 +27,7 @@ void __stdcall Net::ProxyServer::OnClientTimeout(NotNullPtr<Net::TCPClient> cli,
 {
 }
 
-Net::ProxyServer::ProxyServer(NotNullPtr<Net::SocketFactory> sockf, UInt16 port, IO::LogTool *log, Bool autoStart)
+Net::ProxyServer::ProxyServer(NotNullPtr<Net::SocketFactory> sockf, UInt16 port, NotNullPtr<IO::LogTool> log, Bool autoStart)
 {
 	this->sockf = sockf;
 	this->log = log;

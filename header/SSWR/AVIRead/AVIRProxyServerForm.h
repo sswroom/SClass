@@ -20,8 +20,8 @@ namespace SSWR
 		private:
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			NotNullPtr<Net::SocketFactory> sockf;
-			IO::LogTool *log;
-			UI::ListBoxLogger *logger;
+			IO::LogTool log;
+			NotNullPtr<UI::ListBoxLogger> logger;
 			Net::ProxyServer *svr;
 
 			UI::GUIPanel *pnlRequest;
@@ -29,7 +29,7 @@ namespace SSWR
 			UI::GUITextBox *txtPort;
 			UI::GUIButton *btnStart;
 			UI::GUITextBox *txtLog;
-			UI::GUIListBox *lbLog;
+			NotNullPtr<UI::GUIListBox> lbLog;
 
 			static void __stdcall OnStartClicked(void *userObj);
 			static void __stdcall OnLogSelChg(void *userObj);

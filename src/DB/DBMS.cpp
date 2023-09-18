@@ -1762,7 +1762,7 @@ Text::String *DB::DBMS::Evals(const UTF8Char **valPtr, DB::DBMS::SessionInfo *se
 	}
 }
 
-DB::DBMS::DBMS(Text::CString versionStr, IO::LogTool *log)
+DB::DBMS::DBMS(Text::CString versionStr, NotNullPtr<IO::LogTool> log)
 {
 	this->versionStr = Text::String::New(versionStr);
 	this->log = log;
@@ -1801,7 +1801,7 @@ NotNullPtr<Text::String> DB::DBMS::GetVersion() const
 	return this->versionStr;
 }
 
-IO::LogTool *DB::DBMS::GetLogTool()
+NotNullPtr<IO::LogTool> DB::DBMS::GetLogTool()
 {
 	return this->log;
 }

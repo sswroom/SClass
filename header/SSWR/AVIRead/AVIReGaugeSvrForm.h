@@ -41,7 +41,7 @@ namespace SSWR
 			UI::GUITabPage *tpReqText;
 			UI::GUITextBox *txtReqText;
 
-			UI::GUIListBox *lbLog;
+			NotNullPtr<UI::GUIListBox> lbLog;
 			UI::GUITextBox *txtLog;
 			UI::GUITabPage *tpLog;
 

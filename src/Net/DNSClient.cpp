@@ -55,13 +55,13 @@ UInt32 Net::DNSClient::NextId()
 	return this->lastID;
 }
 
-Net::DNSClient::DNSClient(NotNullPtr<Net::SocketFactory> sockf, NotNullPtr<const Net::SocketUtil::AddressInfo> serverAddr)
+Net::DNSClient::DNSClient(NotNullPtr<Net::SocketFactory> sockf, NotNullPtr<const Net::SocketUtil::AddressInfo> serverAddr, NotNullPtr<IO::LogTool> log)
 {
 	Data::RandomOS random;
 	this->sockf = sockf;
 	this->serverAddr = serverAddr.Ptr()[0];
 	this->lastID = random.NextInt15();
-	NEW_CLASS(this->svr, Net::UDPServer(sockf, 0, 0, CSTR_NULL, PacketHdlr, this, 0, CSTR_NULL, 1, false));
+	NEW_CLASS(this->svr, Net::UDPServer(sockf, 0, 0, CSTR_NULL, PacketHdlr, this, log, CSTR_NULL, 1, false));
 }
 
 Net::DNSClient::~DNSClient()

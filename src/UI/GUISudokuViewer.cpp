@@ -194,7 +194,7 @@ void UI::GUISudokuViewer::OnDraw(NotNullPtr<Media::DrawImage> img)
 			Math::Coord2D<UOSInt> pt;
 			Math::Coord2D<UOSInt> pt2;
 			Math::Size2DDbl sz;
-			val = this->board->GetBoardNum(i, j, &isDefault);
+			val = this->board->GetBoardNum(i, j, isDefault);
 			pt.x = tlx + 1 + MulDivUOS(size, i, 9);
 			pt.y = tly + 1 + MulDivUOS(size, j, 9);
 			pt2.x = tlx - 1 + MulDivUOS(size, i + 1, 9);

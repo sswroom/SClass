@@ -41,6 +41,7 @@ namespace SSWR
 			Bool ipListUpd;
 			Bool msgListUpd;
 			Sync::Mutex ipMut;
+			IO::LogTool log;
 			Data::FastMap<UInt32, IPLog*> ipMap;
 
 		private:

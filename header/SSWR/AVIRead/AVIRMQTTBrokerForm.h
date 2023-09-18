@@ -39,7 +39,7 @@ namespace SSWR
 			Crypto::Cert::X509File *sslKey;
 			Net::MQTTBroker *broker;
 			IO::LogTool log;
-			UI::ListBoxLogger *logger;
+			NotNullPtr<UI::ListBoxLogger> logger;
 			Data::StringMap<TopicStatus*> topicMap;
 			Sync::Mutex topicMut;
 			Bool topicListUpdated;
@@ -66,7 +66,7 @@ namespace SSWR
 			UI::GUIListView *lvTopic;
 
 			UI::GUITabPage *tpLog;
-			UI::GUIListBox *lbLog;
+			NotNullPtr<UI::GUIListBox> lbLog;
 			UI::GUITextBox *txtLog;
 
 			static void __stdcall OnStartClicked(void *userObj);

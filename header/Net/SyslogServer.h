@@ -24,7 +24,7 @@ namespace Net
 		NotNullPtr<Net::SocketFactory> sockf;
 		Net::UDPServer *svr;
 		NotNullPtr<Text::String> logPath;
-		IO::LogTool *log;
+		NotNullPtr<IO::LogTool> log;
 		Bool redirLog;
 		Sync::Mutex ipMut;
 		Data::FastMap<UInt32, IPStatus*> ipMap;
@@ -35,7 +35,7 @@ namespace Net
 
 		IPStatus *GetIPStatus(NotNullPtr<const Net::SocketUtil::AddressInfo> addr);
 	public:
-		SyslogServer(NotNullPtr<Net::SocketFactory> sockf, UInt16 port, Text::CString logPath, IO::LogTool *svrLog, Bool redirLog);
+		SyslogServer(NotNullPtr<Net::SocketFactory> sockf, UInt16 port, Text::CString logPath, NotNullPtr<IO::LogTool> svrLog, Bool redirLog);
 		~SyslogServer();
 
 		Bool IsError();

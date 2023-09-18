@@ -67,12 +67,12 @@ namespace SSWR
 
 			UI::GUITabPage *tpLog;
 			UI::GUITextBox *txtLog;
-			UI::GUIListBox *lbLog;
+			NotNullPtr<UI::GUIListBox> lbLog;
 
 			Net::Email::SMTPServer *smtpSvr;
 			Net::Email::POP3Server *pop3Svr;
 			IO::LogTool log;
-			UI::ListBoxLogger *logger;
+			NotNullPtr<UI::ListBoxLogger> logger;
 			NotNullPtr<Net::SocketFactory> sockf;
 			Net::SSLEngine *smtpSSL;
 			Crypto::Cert::X509Cert *smtpSSLCert;

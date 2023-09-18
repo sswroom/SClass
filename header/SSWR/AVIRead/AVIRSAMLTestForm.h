@@ -29,7 +29,7 @@ namespace SSWR
 			Crypto::Cert::X509Cert *sslCert;
 			Crypto::Cert::X509File *sslKey;
 			IO::LogTool log;
-			UI::ListBoxLogger *logger;
+			NotNullPtr<UI::ListBoxLogger> logger;
 			Sync::Mutex respMut;
 			Text::String *respNew;
 
@@ -71,7 +71,7 @@ namespace SSWR
 			UI::GUITextBox *txtSAMLDecrypt;
 
 			UI::GUITabPage *tpLog;
-			UI::GUIListBox *lbLog;
+			NotNullPtr<UI::GUIListBox> lbLog;
 			UI::GUITextBox *txtLog;
 
 		private:

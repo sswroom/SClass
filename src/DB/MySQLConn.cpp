@@ -52,7 +52,7 @@ void DB::MySQLConn::Connect()
 	}
 }
 
-DB::MySQLConn::MySQLConn(NotNullPtr<Text::String> server, Text::String *uid, Text::String *pwd, Text::String *database, IO::LogTool *log) : DB::DBConn(CSTR("MySQLConn"))
+DB::MySQLConn::MySQLConn(NotNullPtr<Text::String> server, Text::String *uid, Text::String *pwd, Text::String *database, NotNullPtr<IO::LogTool> log) : DB::DBConn(CSTR("MySQLConn"))
 {
 	if (Sync::Interlocked::IncrementI32(useCnt) == 1)
 	{
@@ -68,7 +68,7 @@ DB::MySQLConn::MySQLConn(NotNullPtr<Text::String> server, Text::String *uid, Tex
 	Connect();
 }
 
-DB::MySQLConn::MySQLConn(Text::CStringNN server, Text::CString uid, Text::CString pwd, Text::CString database, IO::LogTool *log) : DB::DBConn(CSTR("MySQLConn"))
+DB::MySQLConn::MySQLConn(Text::CStringNN server, Text::CString uid, Text::CString pwd, Text::CString database, NotNullPtr<IO::LogTool> log) : DB::DBConn(CSTR("MySQLConn"))
 {
 	if (Sync::Interlocked::IncrementI32(useCnt) == 1)
 	{
@@ -84,7 +84,7 @@ DB::MySQLConn::MySQLConn(Text::CStringNN server, Text::CString uid, Text::CStrin
 	Connect();
 }
 
-DB::MySQLConn::MySQLConn(const WChar *server, const WChar *uid, const WChar *pwd, const WChar *database, IO::LogTool *log) : DB::DBConn(CSTR("MySQLConn"))
+DB::MySQLConn::MySQLConn(const WChar *server, const WChar *uid, const WChar *pwd, const WChar *database, NotNullPtr<IO::LogTool> log) : DB::DBConn(CSTR("MySQLConn"))
 {
 	if (Sync::Interlocked::IncrementI32(useCnt) == 1)
 	{
@@ -407,7 +407,7 @@ Text::String *DB::MySQLConn::GetConnPWD()
 	}
 }*/
 
-DB::DBTool *DB::MySQLConn::CreateDBTool(NotNullPtr<Net::SocketFactory> sockf, NotNullPtr<Text::String> serverName, Text::String *dbName, Text::String *uid, Text::String *pwd, IO::LogTool *log, Text::CString logPrefix)
+DB::DBTool *DB::MySQLConn::CreateDBTool(NotNullPtr<Net::SocketFactory> sockf, NotNullPtr<Text::String> serverName, Text::String *dbName, Text::String *uid, Text::String *pwd, NotNullPtr<IO::LogTool> log, Text::CString logPrefix)
 {
 	DB::MySQLConn *conn;
 	DB::DBTool *db;
@@ -424,7 +424,7 @@ DB::DBTool *DB::MySQLConn::CreateDBTool(NotNullPtr<Net::SocketFactory> sockf, No
 	}
 }
 
-DB::DBTool *DB::MySQLConn::CreateDBTool(NotNullPtr<Net::SocketFactory> sockf, Text::CStringNN serverName, Text::CString dbName, Text::CString uid, Text::CString pwd, IO::LogTool *log, Text::CString logPrefix)
+DB::DBTool *DB::MySQLConn::CreateDBTool(NotNullPtr<Net::SocketFactory> sockf, Text::CStringNN serverName, Text::CString dbName, Text::CString uid, Text::CString pwd, NotNullPtr<IO::LogTool> log, Text::CString logPrefix)
 {
 	DB::MySQLConn *conn;
 	DB::DBTool *db;

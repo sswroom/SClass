@@ -53,7 +53,7 @@ Bool Net::SocketFactory::DNSResolveIP(Text::CStringNN host, NotNullPtr<Net::Sock
 	{
 		Net::SocketUtil::AddressInfo dnsAddr;
 		this->GetDefDNS(dnsAddr);
-		NEW_CLASS(this->dnsHdlr, Net::DNSHandler(*this, dnsAddr));
+		NEW_CLASS(this->dnsHdlr, Net::DNSHandler(*this, dnsAddr, this->log));
 		this->LoadHosts(this->dnsHdlr);
 	}
 	mutUsage.EndUse();
@@ -85,7 +85,7 @@ UOSInt Net::SocketFactory::DNSResolveIPs(Text::CStringNN host, Data::DataArray<N
 	{
 		Net::SocketUtil::AddressInfo dnsAddr;
 		this->GetDefDNS(dnsAddr);
-		NEW_CLASS(this->dnsHdlr, Net::DNSHandler(*this, dnsAddr));
+		NEW_CLASS(this->dnsHdlr, Net::DNSHandler(*this, dnsAddr, this->log));
 		this->LoadHosts(this->dnsHdlr);
 	}
 	mutUsage.EndUse();
@@ -120,7 +120,7 @@ UInt32 Net::SocketFactory::DNSResolveIPv4(Text::CStringNN host)
 	{
 		Net::SocketUtil::AddressInfo dnsAddr;
 		this->GetDefDNS(dnsAddr);
-		NEW_CLASS(this->dnsHdlr, Net::DNSHandler(*this, dnsAddr));
+		NEW_CLASS(this->dnsHdlr, Net::DNSHandler(*this, dnsAddr, this->log));
 		this->LoadHosts(this->dnsHdlr);
 	}
 	mutUsage.EndUse();

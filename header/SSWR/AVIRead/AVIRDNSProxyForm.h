@@ -181,7 +181,7 @@ namespace SSWR
 			UI::GUIListView *lvClient;
 
 			UI::GUITabPage *tpLog;
-			UI::GUIListBox *lbLog;
+			NotNullPtr<UI::GUIListBox> lbLog;
 			UI::GUITextBox *txtLog;
 
 			Sync::Mutex cliInfoMut;
@@ -197,7 +197,7 @@ namespace SSWR
 			Net::DNSProxy *proxy;
 			Net::WhoisHandler whois;
 			IO::LogTool log;
-			UI::ListBoxLogger *logger;
+			NotNullPtr<UI::ListBoxLogger> logger;
 
 			static void __stdcall OnTimerTick(void *userObj);
 			static void __stdcall OnV4ReqSelChg(void *userObj);

@@ -31,7 +31,7 @@ namespace SSWR
 			IO::Stream *port;
 			IO::TVControl *tvCtrl;
 			IO::LogTool *log;
-			UI::ListBoxLogger *logger;
+			NotNullPtr<UI::ListBoxLogger> logger;
 			CommandInfo *cmdInfos;
 
 			UI::GUIPanel *pnlPort;
@@ -45,7 +45,7 @@ namespace SSWR
 			UI::GUITabPage *tpControl;
 			UI::GUITabPage *tpLog;
 
-			UI::GUIListBox *lbLog;
+			NotNullPtr<UI::GUIListBox> lbLog;
 			UI::GUITextBox *txtLog;
 
 			UI::GUILabel *lblCommand;
@@ -62,6 +62,6 @@ namespace SSWR
 
 			virtual void OnMonitorChanged();
 		};
-	};
-};
+	}
+}
 #endif

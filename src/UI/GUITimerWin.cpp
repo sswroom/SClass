@@ -9,7 +9,7 @@
 
 #include <windows.h>
 
-UI::GUITimer::GUITimer(NotNullPtr<UI::GUICore> ui, UI::GUIForm *parent, UOSInt id, UInt32 interval, UI::UIEvent handler, void *userObj)
+UI::GUITimer::GUITimer(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIForm> parent, UOSInt id, UInt32 interval, UI::UIEvent handler, void *userObj)
 {
 	this->parent = parent;
 	this->id = id;

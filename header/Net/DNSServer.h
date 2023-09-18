@@ -16,10 +16,10 @@ namespace Net
 		void *reqObj;
 
 		static void __stdcall PacketHdlr(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, void *userData);
-		void InitServer(NotNullPtr<Net::SocketFactory> sockf, UInt16 port);
+		void InitServer(NotNullPtr<Net::SocketFactory> sockf, UInt16 port, NotNullPtr<IO::LogTool> log);
 	public:
-		DNSServer(NotNullPtr<Net::SocketFactory> sockf, UInt16 port);
-		DNSServer(NotNullPtr<Net::SocketFactory> sockf);
+		DNSServer(NotNullPtr<Net::SocketFactory> sockf, UInt16 port, NotNullPtr<IO::LogTool> log);
+		DNSServer(NotNullPtr<Net::SocketFactory> sockf, NotNullPtr<IO::LogTool> log);
 		~DNSServer();
 
 		Bool IsError();

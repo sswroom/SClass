@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "IO/ConsoleLogHandler.h"
 
-IO::ConsoleLogHandler::ConsoleLogHandler(IO::ConsoleWriter *console)
+IO::ConsoleLogHandler::ConsoleLogHandler(NotNullPtr<IO::ConsoleWriter> console)
 {
 	this->console = console;
 }
@@ -10,7 +10,7 @@ IO::ConsoleLogHandler::~ConsoleLogHandler()
 {
 }
 
-void IO::ConsoleLogHandler::LogAdded(const Data::Timestamp &logTime, Text::CString logMsg, LogLevel logLev)
+void IO::ConsoleLogHandler::LogAdded(const Data::Timestamp &logTime, Text::CStringNN logMsg, LogLevel logLev)
 {
 	UTF8Char sbuff[16];
 	UTF8Char *sptr;

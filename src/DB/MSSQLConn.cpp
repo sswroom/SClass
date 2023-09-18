@@ -4,7 +4,7 @@
 #include "DB/TDSConn.h"
 #include "Text/MyString.h"
 
-DB::DBConn *DB::MSSQLConn::OpenConnTCP(Text::CStringNN serverHost, UInt16 port, Bool encrypt, Text::CString database, Text::CString userName, Text::CString password, IO::LogTool *log, Text::StringBuilderUTF8 *errMsg)
+DB::DBConn *DB::MSSQLConn::OpenConnTCP(Text::CStringNN serverHost, UInt16 port, Bool encrypt, Text::CString database, Text::CString userName, Text::CString password, NotNullPtr<IO::LogTool> log, Text::StringBuilderUTF8 *errMsg)
 {
 	if (IsNative())
 	{
@@ -103,7 +103,7 @@ DB::DBConn *DB::MSSQLConn::OpenConnTCP(Text::CStringNN serverHost, UInt16 port, 
 	}
 }
 
-DB::DBTool *DB::MSSQLConn::CreateDBToolTCP(Text::CStringNN serverHost, UInt16 port, Bool encrypt, Text::CString database, Text::CString userName, Text::CString password, IO::LogTool *log, Text::CString logPrefix)
+DB::DBTool *DB::MSSQLConn::CreateDBToolTCP(Text::CStringNN serverHost, UInt16 port, Bool encrypt, Text::CString database, Text::CString userName, Text::CString password, NotNullPtr<IO::LogTool> log, Text::CString logPrefix)
 {
 	Text::StringBuilderUTF8 sb;
 	sb.Append(logPrefix);
@@ -117,10 +117,7 @@ DB::DBTool *DB::MSSQLConn::CreateDBToolTCP(Text::CStringNN serverHost, UInt16 po
 	}
 	else
 	{
-		if (log)
-		{
-			log->LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Error);
-		}
+		log->LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Error);
 		return 0;
 	}
 }

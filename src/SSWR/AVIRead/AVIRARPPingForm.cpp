@@ -159,7 +159,7 @@ SSWR::AVIRead::AVIRARPPingForm::AVIRARPPingForm(UI::GUIClientControl *parent, No
 	this->rlcPing->SetDockType(UI::GUIControl::DOCK_BOTTOM);
 	this->rlcPing->SetUnit(CSTR("ms"));
 	NEW_CLASS(this->vspPing, UI::GUIVSplitter(ui, this, 3, true));
-	NEW_CLASS(this->lbLog, UI::GUIListBox(ui, this, false));
+	NEW_CLASSNN(this->lbLog, UI::GUIListBox(ui, this, false));
 	this->lbLog->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	NEW_CLASS(this->adapters, Data::ArrayList<SSWR::AVIRead::AVIRARPPingForm::AdapterInfo*>());
@@ -202,7 +202,7 @@ SSWR::AVIRead::AVIRARPPingForm::AVIRARPPingForm(UI::GUIClientControl *parent, No
 		this->cboAdapter->SetSelectedIndex(0);
 	}
 
-	NEW_CLASS(this->logger, UI::ListBoxLogger(this, this->lbLog, 500, true));
+	NEW_CLASSNN(this->logger, UI::ListBoxLogger(*this, this->lbLog, 500, true));
 	this->log->AddLogHandler(this->logger, IO::LogHandler::LogLevel::Raw);
 	this->SetDefaultButton(this->btnPing);
 
@@ -225,7 +225,7 @@ SSWR::AVIRead::AVIRARPPingForm::~AVIRARPPingForm()
 
 	DEL_CLASS(this->clk);
 	DEL_CLASS(this->log);
-	DEL_CLASS(this->logger);
+	this->logger.Delete();
 }
 
 void SSWR::AVIRead::AVIRARPPingForm::OnMonitorChanged()

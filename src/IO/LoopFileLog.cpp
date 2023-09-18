@@ -91,7 +91,7 @@ void IO::LoopFileLog::LogClosed()
 		closed = true;
 	}
 }
-void IO::LoopFileLog::LogAdded(const Data::Timestamp &time, Text::CString logMsg, LogLevel logLev)
+void IO::LoopFileLog::LogAdded(const Data::Timestamp &time, Text::CStringNN logMsg, LogLevel logLev)
 {
 	Bool newFile = false;
 	UTF8Char buff[256];

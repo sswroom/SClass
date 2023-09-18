@@ -13,7 +13,7 @@ namespace Net
 
 		static void __stdcall PacketHdlr(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, void *userData);
 	public:
-		WOLClient(NotNullPtr<Net::SocketFactory> sockf, UInt32 adapterIP);
+		WOLClient(NotNullPtr<Net::SocketFactory> sockf, UInt32 adapterIP, NotNullPtr<IO::LogTool> log);
 		~WOLClient();
 
 		Bool IsError();

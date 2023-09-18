@@ -7,11 +7,11 @@ void __stdcall Net::WOLClient::PacketHdlr(NotNullPtr<const Net::SocketUtil::Addr
 {
 }
 
-Net::WOLClient::WOLClient(NotNullPtr<Net::SocketFactory> sockf, UInt32 adapterIP)
+Net::WOLClient::WOLClient(NotNullPtr<Net::SocketFactory> sockf, UInt32 adapterIP, NotNullPtr<IO::LogTool> log)
 {
 	this->sockf = sockf;
 	this->adapterIP = Net::SocketUtil::IPv4ToBroadcast(adapterIP);
-	NEW_CLASS(this->svr, Net::UDPServer(sockf, 0, 0, CSTR_NULL, PacketHdlr, this, 0, CSTR_NULL, 1, false));
+	NEW_CLASS(this->svr, Net::UDPServer(sockf, 0, 0, CSTR_NULL, PacketHdlr, this, log, CSTR_NULL, 1, false));
 	this->svr->SetBroadcast(true);
 }
 

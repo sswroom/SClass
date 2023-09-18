@@ -589,8 +589,7 @@ Bool Game::Sudoku::SudokuBoard::SolveLev3()
 	UOSInt i;
 	UOSInt j;
 	UInt8 k;
-	Game::Sudoku::SudokuBoard *tmpBoard;
-	NEW_CLASS(tmpBoard, Game::Sudoku::SudokuBoard());
+	Game::Sudoku::SudokuBoard tmpBoard;
 	fin = false;
 	i = 9;
 	while (i-- > 0 && !fin)
@@ -606,10 +605,10 @@ Bool Game::Sudoku::SudokuBoard::SolveLev3()
 				{
 					if (v & (16 << k))
 					{
-						tmpBoard->CopyFrom(this);
-						tmpBoard->SetBoardNum(i, j, k, false);
-						modified = tmpBoard->Solve();
-						if (modified && tmpBoard->IsFinish())
+						tmpBoard.CopyFrom(*this);
+						tmpBoard.SetBoardNum(i, j, k, false);
+						modified = tmpBoard.Solve();
+						if (modified && tmpBoard.IsFinish())
 						{
 							this->CopyFrom(tmpBoard);
 							changed = true;
@@ -621,8 +620,6 @@ Bool Game::Sudoku::SudokuBoard::SolveLev3()
 			}
 		}
 	}
-
-	DEL_CLASS(tmpBoard);
 	return changed;
 }
 
@@ -647,17 +644,14 @@ void Game::Sudoku::SudokuBoard::SetBoardNum(UOSInt xOfst, UOSInt yOfst, UInt8 nu
 	this->board[yOfst * 9 + xOfst] = v;
 }
 
-UInt8 Game::Sudoku::SudokuBoard::GetBoardNum(UOSInt xOfst, UOSInt yOfst, Bool *isDefault)
+UInt8 Game::Sudoku::SudokuBoard::GetBoardNum(UOSInt xOfst, UOSInt yOfst, OptOut<Bool> isDefault)
 {
 	UInt16 v = this->board[yOfst * 9 + xOfst];
-	if (isDefault)
-	{
-		*isDefault = (v & 16) != 0;
-	}
+	isDefault.Set((v & 16) != 0);
 	return v & 15;
 }
 
-void Game::Sudoku::SudokuBoard::CopyFrom(SudokuBoard *board)
+void Game::Sudoku::SudokuBoard::CopyFrom(NotNullPtr<const SudokuBoard> board)
 {
 	MemCopyNO(this->board, board->board, 81 * sizeof(*this->board));
 }

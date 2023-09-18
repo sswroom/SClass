@@ -45,10 +45,10 @@ SSWR::AVIRead::AVIRGUIEventForm::AVIRGUIEventForm(UI::GUIClientControl *parent, 
 	this->txtLog->SetRect(0, 0, 100, 23, false);
 	this->txtLog->SetReadOnly(true);
 	this->txtLog->SetDockType(UI::GUIControl::DOCK_BOTTOM);
-	NEW_CLASS(this->lbLog, UI::GUIListBox(ui, this, false));
+	NEW_CLASSNN(this->lbLog, UI::GUIListBox(ui, this, false));
 	this->lbLog->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lbLog->HandleSelectionChange(OnLogSelChg, this);
-	NEW_CLASS(this->logger, UI::ListBoxLogger(this, this->lbLog, 300, false));
+	NEW_CLASSNN(this->logger, UI::ListBoxLogger(*this, this->lbLog, 300, false));
 	this->logger->SetTimeFormat("yyyy-MM-dd HH:mm:ss.fff");
 	this->log->AddLogHandler(this->logger, IO::LogHandler::LogLevel::Raw);
 	this->HandleKeyDown(OnKeyDown, this);
@@ -57,7 +57,7 @@ SSWR::AVIRead::AVIRGUIEventForm::AVIRGUIEventForm(UI::GUIClientControl *parent, 
 SSWR::AVIRead::AVIRGUIEventForm::~AVIRGUIEventForm()
 {
 	DEL_CLASS(this->log);
-	DEL_CLASS(this->logger);
+	this->logger.Delete();
 }
 
 Bool SSWR::AVIRead::AVIRGUIEventForm::OnPaint()

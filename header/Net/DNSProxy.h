@@ -98,7 +98,7 @@ namespace Net
 		static UOSInt BuildEmptyReply(UInt8 *buff, UInt32 id, const UTF8Char *reqName, Int32 reqType, Int32 reqClass, Bool disableV6);
 		static UOSInt BuildAddressReply(UInt8 *buff, UInt32 id, const UTF8Char *reqName, Int32 reqClass, const Net::SocketUtil::AddressInfo *addr);
 	public:
-		DNSProxy(NotNullPtr<Net::SocketFactory> sockf, Bool analyzeTarget);
+		DNSProxy(NotNullPtr<Net::SocketFactory> sockf, Bool analyzeTarget, NotNullPtr<IO::LogTool> log);
 		~DNSProxy();
 
 		Bool IsError();

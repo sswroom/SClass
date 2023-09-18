@@ -1241,7 +1241,7 @@ SSWR::SMonitor::SMonitorSvrCore::SMonitorSvrCore(NotNullPtr<IO::Writer> writer, 
 		s2 = cfg->GetValue(CSTR("MySQLDB"));
 		if (nns.Set(s) && s2)
 		{
-			this->db = Net::MySQLTCPClient::CreateDBTool(this->sockf, nns, s2, Text::String::OrEmpty(cfg->GetValue(CSTR("UID"))), Text::String::OrEmpty(cfg->GetValue(CSTR("PWD"))), &this->log, CSTR("DB: "));
+			this->db = Net::MySQLTCPClient::CreateDBTool(this->sockf, nns, s2, Text::String::OrEmpty(cfg->GetValue(CSTR("UID"))), Text::String::OrEmpty(cfg->GetValue(CSTR("PWD"))), this->log, CSTR("DB: "));
 			NEW_CLASS(this->dbMut, Sync::Mutex());
 			if (this->db == 0)
 			{
@@ -1259,7 +1259,7 @@ SSWR::SMonitor::SMonitorSvrCore::SMonitorSvrCore(NotNullPtr<IO::Writer> writer, 
 			s3 = cfg->GetValue(CSTR("PWD"));
 			if (nns.Set(s))
 			{
-				this->db = DB::ODBCConn::CreateDBTool(nns, s2, s3, cfg->GetValue(CSTR("Schema")), &this->log, CSTR("DB: "));
+				this->db = DB::ODBCConn::CreateDBTool(nns, s2, s3, cfg->GetValue(CSTR("Schema")), this->log, CSTR("DB: "));
 				NEW_CLASS(this->dbMut, Sync::Mutex());
 				if (this->db == 0)
 				{
@@ -1324,7 +1324,7 @@ SSWR::SMonitor::SMonitorSvrCore::SMonitorSvrCore(NotNullPtr<IO::Writer> writer, 
 						this->listener->SetRequestLog(this);
 						if (this->notifyPwd)
 						{
-							NEW_CLASS(this->notifyUDP, Net::UDPServer(this->sockf, 0, port, CSTR_NULL, OnNotifyUDPPacket, this, &this->log, CSTR("Not: "), 2, false));
+							NEW_CLASS(this->notifyUDP, Net::UDPServer(this->sockf, 0, port, CSTR_NULL, OnNotifyUDPPacket, this, this->log, CSTR("Not: "), 2, false));
 							if (this->notifyUDP->IsError())
 							{
 								writer->WriteLineC(UTF8STRC("Error in listening web(notify) port"));
@@ -1355,7 +1355,7 @@ SSWR::SMonitor::SMonitorSvrCore::SMonitorSvrCore(NotNullPtr<IO::Writer> writer, 
 			if (s->ToUInt16(port) && port > 0)
 			{
 				NEW_CLASS(this->cliMgr, Net::TCPClientMgr(300, OnClientEvent, OnClientData, this, 4, OnClientTimeout));
-				NEW_CLASS(this->cliSvr, Net::TCPServer(this->sockf, port, &this->log, OnServerConn, this, CSTR("CLI: "), false));
+				NEW_CLASS(this->cliSvr, Net::TCPServer(this->sockf, port, this->log, OnServerConn, this, CSTR("CLI: "), false));
 				if (this->cliSvr->IsV4Error())
 				{
 					DEL_CLASS(this->cliSvr);
@@ -1382,7 +1382,7 @@ SSWR::SMonitor::SMonitorSvrCore::SMonitorSvrCore(NotNullPtr<IO::Writer> writer, 
 				NotNullPtr<Crypto::Hash::CRC16> crc;
 				NEW_CLASSNN(crc, Crypto::Hash::CRC16(Crypto::Hash::CRC16::GetPolynomialCCITT()));
 				NEW_CLASS(this->dataCRC, Crypto::Hash::HashCalc(crc));
-				NEW_CLASS(this->dataUDP, Net::UDPServer(this->sockf, 0, port, CSTR_NULL, OnDataUDPPacket, this, &this->log, CSTR("DUDP: "), 4, false));
+				NEW_CLASS(this->dataUDP, Net::UDPServer(this->sockf, 0, port, CSTR_NULL, OnDataUDPPacket, this, this->log, CSTR("DUDP: "), 4, false));
 				if (this->dataUDP->IsError())
 				{
 					DEL_CLASS(this->dataUDP);

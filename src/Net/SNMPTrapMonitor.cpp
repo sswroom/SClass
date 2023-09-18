@@ -30,11 +30,11 @@ void __stdcall Net::SNMPTrapMonitor::OnSNMPPacket(NotNullPtr<const Net::SocketUt
 	}
 }
 
-Net::SNMPTrapMonitor::SNMPTrapMonitor(NotNullPtr<Net::SocketFactory> sockf, SNMPTrapHandler hdlr, void *userObj)
+Net::SNMPTrapMonitor::SNMPTrapMonitor(NotNullPtr<Net::SocketFactory> sockf, SNMPTrapHandler hdlr, void *userObj, NotNullPtr<IO::LogTool> log)
 {
 	this->hdlr = hdlr;
 	this->hdlrObj = userObj;
-	NEW_CLASS(this->svr, Net::UDPServer(sockf, 0, 162, CSTR_NULL, OnSNMPPacket, this, 0, CSTR_NULL, 2, false));
+	NEW_CLASS(this->svr, Net::UDPServer(sockf, 0, 162, CSTR_NULL, OnSNMPPacket, this, log, CSTR_NULL, 2, false));
 }
 
 Net::SNMPTrapMonitor::~SNMPTrapMonitor()

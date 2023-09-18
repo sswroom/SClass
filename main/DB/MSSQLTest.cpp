@@ -595,10 +595,10 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 
 	IO::ConsoleWriter console;
 	IO::LogTool log;
-	IO::ConsoleLogHandler logHdlr(&console);
-	log.AddLogHandler(&logHdlr, IO::LogHandler::LogLevel::Raw);
+	IO::ConsoleLogHandler logHdlr(console);
+	log.AddLogHandler(logHdlr, IO::LogHandler::LogLevel::Raw);
 	DB::DBTool *db;
-	db = DB::MSSQLConn::CreateDBToolTCP(serverHost, 1433, false, database, uid, pwd, &log, CSTR("DB: "));
+	db = DB::MSSQLConn::CreateDBToolTCP(serverHost, 1433, false, database, uid, pwd, log, CSTR("DB: "));
 	if (db)
 	{
 		DB::DBReader *r = db->QueryTableData(CSTR("dbo"), CSTR("Flight_Holdings_Period"), 0, 0, 0, CSTR_NULL, 0);

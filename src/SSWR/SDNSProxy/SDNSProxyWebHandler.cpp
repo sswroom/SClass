@@ -652,7 +652,7 @@ SSWR::SDNSProxy::SDNSProxyWebHandler::SDNSProxyWebHandler(Net::DNSProxy *proxy, 
 	this->core = core;
 	NEW_CLASS(this->reqMap, Data::FastStringMap<RequestHandler>());
 	this->log = log;
-	NEW_CLASS(this->logBuff, IO::CyclicLogBuffer(LOGSIZE));
+	NEW_CLASSNN(this->logBuff, IO::CyclicLogBuffer(LOGSIZE));
 
 	this->reqMap->PutC(CSTR("/"), StatusReq);
 	this->reqMap->PutC(CSTR("/reqv4"), ReqV4Req);
@@ -670,7 +670,7 @@ SSWR::SDNSProxy::SDNSProxyWebHandler::SDNSProxyWebHandler(Net::DNSProxy *proxy, 
 SSWR::SDNSProxy::SDNSProxyWebHandler::~SDNSProxyWebHandler()
 {
 	this->log->RemoveLogHandler(this->logBuff);
-	DEL_CLASS(this->logBuff);
+	this->logBuff.Delete();
 	DEL_CLASS(this->reqMap);
 }
 

@@ -24,7 +24,7 @@ namespace Net
 		} SessionInfo;
 		
 	private:
-		IO::LogTool *log;
+		NotNullPtr<IO::LogTool> log;
 		Net::UDPServer *svr;
 		Net::UDPServer *dataSvr;
 		NotNullPtr<Text::String> path;
@@ -39,7 +39,7 @@ namespace Net
 		static UInt32 __stdcall CheckThread(void *userObj);
 		void ReleaseSess(SessionInfo *sess);
 	public:
-		TFTPServer(NotNullPtr<Net::SocketFactory> sockf, UInt16 port, IO::LogTool *log, Text::CString path);
+		TFTPServer(NotNullPtr<Net::SocketFactory> sockf, UInt16 port, NotNullPtr<IO::LogTool> log, Text::CString path);
 		~TFTPServer();
 
 		Bool IsError();

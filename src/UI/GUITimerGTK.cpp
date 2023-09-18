@@ -11,7 +11,7 @@ Int32 GUITimer_OnTick(void *userObj)
 	return 1;
 }
 
-UI::GUITimer::GUITimer(NotNullPtr<UI::GUICore> ui, UI::GUIForm *parent, UOSInt id, UInt32 interval, UI::UIEvent handler, void *userObj)
+UI::GUITimer::GUITimer(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIForm> parent, UOSInt id, UInt32 interval, UI::UIEvent handler, void *userObj)
 {
 	this->interval = interval;
 	this->handler = handler;

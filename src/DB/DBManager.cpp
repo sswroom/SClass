@@ -188,12 +188,12 @@ Bool DB::DBManager::GetConnStr(DB::DBTool *db, NotNullPtr<Text::StringBuilderUTF
 	return false;
 }
 
-DB::ReadingDB *DB::DBManager::OpenConn(Text::String *connStr, IO::LogTool *log, NotNullPtr<Net::SocketFactory> sockf, Parser::ParserList *parsers)
+DB::ReadingDB *DB::DBManager::OpenConn(Text::String *connStr, NotNullPtr<IO::LogTool> log, NotNullPtr<Net::SocketFactory> sockf, Parser::ParserList *parsers)
 {
 	return OpenConn(connStr->ToCString(), log, sockf, parsers);
 }
 
-DB::ReadingDB *DB::DBManager::OpenConn(Text::CString connStr, IO::LogTool *log, NotNullPtr<Net::SocketFactory> sockf, Parser::ParserList *parsers)
+DB::ReadingDB *DB::DBManager::OpenConn(Text::CString connStr, NotNullPtr<IO::LogTool> log, NotNullPtr<Net::SocketFactory> sockf, Parser::ParserList *parsers)
 {
 	DB::DBTool *db;
 	if (connStr.StartsWith(UTF8STRC("odbc:")))
@@ -812,7 +812,7 @@ Bool DB::DBManager::StoreConn(Text::CStringNN fileName, Data::ArrayList<DB::DBMa
 	return true;
 }
 
-Bool DB::DBManager::RestoreConn(Text::CStringNN fileName, Data::ArrayList<DB::DBManagerCtrl*> *ctrlList, IO::LogTool *log, NotNullPtr<Net::SocketFactory> sockf, Parser::ParserList *parsers)
+Bool DB::DBManager::RestoreConn(Text::CStringNN fileName, Data::ArrayList<DB::DBManagerCtrl*> *ctrlList, NotNullPtr<IO::LogTool> log, NotNullPtr<Net::SocketFactory> sockf, Parser::ParserList *parsers)
 {
 	IO::FileStream *fs;
 	NEW_CLASS(fs, IO::FileStream(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));

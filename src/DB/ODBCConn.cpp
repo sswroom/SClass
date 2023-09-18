@@ -46,7 +46,7 @@ void DB::ODBCConn::UpdateConnInfo()
 			buffSize = 0;
 		}
 	
-		if (log)
+		if (log->HasHandler())
 		{
 			Text::StringBuilderUTF8 sb;
 			sb.AppendC(UTF8STRC("Driver is "));
@@ -353,7 +353,7 @@ Bool DB::ODBCConn::Connect(Text::CString connStr)
 	return ret;
 }
 
-DB::ODBCConn::ODBCConn(Text::CStringNN sourceName, IO::LogTool *log) : DB::DBConn(sourceName)
+DB::ODBCConn::ODBCConn(Text::CStringNN sourceName, NotNullPtr<IO::LogTool> log) : DB::DBConn(sourceName)
 {
 	connHand = 0;
 	envHand = 0;
@@ -374,7 +374,7 @@ DB::ODBCConn::ODBCConn(Text::CStringNN sourceName, IO::LogTool *log) : DB::DBCon
 	this->axisAware = false;
 }
 
-DB::ODBCConn::ODBCConn(Text::CString connStr, Text::CStringNN sourceName, IO::LogTool *log) : DB::DBConn(sourceName)
+DB::ODBCConn::ODBCConn(Text::CString connStr, Text::CStringNN sourceName, NotNullPtr<IO::LogTool> log) : DB::DBConn(sourceName)
 {
 	connHand = 0;
 	envHand = 0;
@@ -398,7 +398,7 @@ DB::ODBCConn::ODBCConn(Text::CString connStr, Text::CStringNN sourceName, IO::Lo
 	s->Release();
 }
 
-DB::ODBCConn::ODBCConn(NotNullPtr<Text::String> dsn, Text::String *uid, Text::String *pwd, Text::String *schema, IO::LogTool *log) : DB::DBConn(dsn)
+DB::ODBCConn::ODBCConn(NotNullPtr<Text::String> dsn, Text::String *uid, Text::String *pwd, Text::String *schema, NotNullPtr<IO::LogTool> log) : DB::DBConn(dsn)
 {
 	this->log = log;
 	this->connStr = 0;
@@ -418,7 +418,7 @@ DB::ODBCConn::ODBCConn(NotNullPtr<Text::String> dsn, Text::String *uid, Text::St
 	this->Connect(this->dsn, this->uid, this->pwd, this->schema);
 }
 
-DB::ODBCConn::ODBCConn(Text::CStringNN dsn, Text::CString uid, Text::CString pwd, Text::CString schema, IO::LogTool *log) : DB::DBConn(dsn)
+DB::ODBCConn::ODBCConn(Text::CStringNN dsn, Text::CString uid, Text::CString pwd, Text::CString schema, NotNullPtr<IO::LogTool> log) : DB::DBConn(dsn)
 {
 	this->log = log;
 	this->connStr = 0;
@@ -1083,7 +1083,7 @@ void DB::ODBCConn::LogSQLError(void *hStmt)
 {
 	SQLWCHAR state[6];
 	SQLWCHAR errorMsg[1024];
-	if (this->log == 0)
+	if (!this->log->HasHandler())
 		return;
 	SQLINTEGER nativeError;
 	SQLSMALLINT txtSize;
@@ -1173,7 +1173,7 @@ IO::ConfigFile *DB::ODBCConn::GetDriverInfo(Text::CString driverName)
 #endif
 }
 
-DB::DBTool *DB::ODBCConn::CreateDBTool(NotNullPtr<Text::String> dsn, Text::String *uid, Text::String *pwd, Text::String *schema, IO::LogTool *log, Text::CString logPrefix)
+DB::DBTool *DB::ODBCConn::CreateDBTool(NotNullPtr<Text::String> dsn, Text::String *uid, Text::String *pwd, Text::String *schema, NotNullPtr<IO::LogTool> log, Text::CString logPrefix)
 {
 	DB::ODBCConn *conn;
 	DB::DBTool *db;
@@ -1190,7 +1190,7 @@ DB::DBTool *DB::ODBCConn::CreateDBTool(NotNullPtr<Text::String> dsn, Text::Strin
 	}
 }
 
-DB::DBTool *DB::ODBCConn::CreateDBTool(Text::CStringNN dsn, Text::CString uid, Text::CString pwd, Text::CString schema, IO::LogTool *log, Text::CString logPrefix)
+DB::DBTool *DB::ODBCConn::CreateDBTool(Text::CStringNN dsn, Text::CString uid, Text::CString pwd, Text::CString schema, NotNullPtr<IO::LogTool> log, Text::CString logPrefix)
 {
 	DB::ODBCConn *conn;
 	DB::DBTool *db;

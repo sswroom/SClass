@@ -21,7 +21,7 @@ namespace DB
 		NotNullPtr<Text::String> database;
 		Text::String *uid;
 		Text::String *pwd;
-		IO::LogTool *log;
+		NotNullPtr<IO::LogTool> log;
 		Int8 tzQhr;
 		UInt32 geometryOid;
 		UInt32 citextOid;
@@ -30,8 +30,8 @@ namespace DB
 		void InitConnection();
 
 	public:
-		PostgreSQLConn(NotNullPtr<Text::String> server, UInt16 port, Text::String *uid, Text::String *pwd, NotNullPtr<Text::String> database, IO::LogTool *log);
-		PostgreSQLConn(Text::CStringNN server, UInt16 port, Text::CString uid, Text::CString pwd, Text::CString database, IO::LogTool *log);
+		PostgreSQLConn(NotNullPtr<Text::String> server, UInt16 port, Text::String *uid, Text::String *pwd, NotNullPtr<Text::String> database, NotNullPtr<IO::LogTool> log);
+		PostgreSQLConn(Text::CStringNN server, UInt16 port, Text::CString uid, Text::CString pwd, Text::CString database, NotNullPtr<IO::LogTool> log);
 		virtual ~PostgreSQLConn();
 		virtual DB::SQLType GetSQLType() const;
 		virtual ConnType GetConnType() const;

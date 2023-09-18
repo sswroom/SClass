@@ -197,7 +197,7 @@ void DB::JavaDBUtil::AppendFieldOrderItem(NotNullPtr<Text::StringBuilderUTF8> sb
 	}
 }
 
-DB::DBTool *DB::JavaDBUtil::OpenJDBC(Text::String *url, Text::String *username, Text::String *password, IO::LogTool *log, NotNullPtr<Net::SocketFactory> sockf)
+DB::DBTool *DB::JavaDBUtil::OpenJDBC(Text::String *url, Text::String *username, Text::String *password, NotNullPtr<IO::LogTool> log, NotNullPtr<Net::SocketFactory> sockf)
 {
 	if (url == 0 || !url->StartsWith(UTF8STRC("jdbc:")))
 	{

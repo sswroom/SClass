@@ -35,6 +35,7 @@ namespace Net
 			Bool threadToStop;
 			Bool threadRunning;
 			Sync::Event threadEvt;
+			NotNullPtr<IO::LogTool> log;
 
 			Net::SNS::SNSControl *CreateControl(Net::SNS::SNSControl::SNSType type, Text::CString channelId);
 			ChannelData *ChannelInit(Net::SNS::SNSControl *ctrl);
@@ -45,7 +46,7 @@ namespace Net
 
 			static UInt32 __stdcall ThreadProc(void *userObj);
 		public:
-			SNSManager(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, Text::EncodingFactory *encFact, Text::CString userAgent, Text::CString dataPath);
+			SNSManager(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, Text::EncodingFactory *encFact, Text::CString userAgent, Text::CString dataPath, NotNullPtr<IO::LogTool> log);
 			virtual ~SNSManager();
 
 			Net::SNS::SNSControl *AddChannel(Net::SNS::SNSControl::SNSType type, Text::CString channelId);

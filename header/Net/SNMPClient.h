@@ -21,7 +21,7 @@ namespace Net
 
 		static void __stdcall OnSNMPPacket(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, void *userData);
 	public:
-		SNMPClient(NotNullPtr<Net::SocketFactory> sockf);
+		SNMPClient(NotNullPtr<Net::SocketFactory> sockf, NotNullPtr<IO::LogTool> log);
 		~SNMPClient();
 
 		Bool IsError();

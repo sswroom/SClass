@@ -32,7 +32,7 @@ void __stdcall SSWR::AVIRead::AVIRDNSClientForm::OnRequestClicked(void *userObj)
 	}
 	reqIP = Net::SocketUtil::GetIPAddr(sb.ToCString());
 
-	NEW_CLASS(dnsCli, Net::DNSClient(me->sockf, dnsAddr));
+	NEW_CLASS(dnsCli, Net::DNSClient(me->sockf, dnsAddr, me->core->GetLog()));
 	NEW_CLASS(clk, Manage::HiResClock());
 	me->lbAnswer->ClearItems();
 	Net::DNSClient::FreeAnswers(me->ansList);

@@ -53,7 +53,7 @@ void __stdcall SSWR::AVIRead::AVIRTFTPClientForm::OnRecvClick(void *userObj)
 		me->txtFileName->Focus();
 		return;
 	}
-	Net::TFTPClient cli(me->core->GetSocketFactory(), addr, port);
+	Net::TFTPClient cli(me->core->GetSocketFactory(), addr, port, me->core->GetLog());
 	if (cli.IsError())
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Error in starting client"), CSTR("TFTP Client"), me);
@@ -116,7 +116,7 @@ void __stdcall SSWR::AVIRead::AVIRTFTPClientForm::OnSendClick(void *userObj)
 	{
 		NotNullPtr<Text::String> fileName = dlg.GetFileName();
 		UOSInt i = fileName->LastIndexOf(IO::Path::PATH_SEPERATOR);
-		Net::TFTPClient cli(me->core->GetSocketFactory(), addr, port);
+		Net::TFTPClient cli(me->core->GetSocketFactory(), addr, port, me->core->GetLog());
 		if (cli.IsError())
 		{
 			UI::MessageDialog::ShowDialog(CSTR("Error in starting client"), CSTR("TFTP Client"), me);

@@ -263,7 +263,7 @@ SSWR::AVIRead::AVIRTVControlForm::AVIRTVControlForm(UI::GUIClientControl *parent
 	this->txtLog->SetReadOnly(true);
 	this->txtLog->SetRect(0, 0, 100, 23, false);
 	this->txtLog->SetDockType(UI::GUIControl::DOCK_BOTTOM);
-	NEW_CLASS(this->lbLog, UI::GUIListBox(ui, this->tpLog, false));
+	NEW_CLASSNN(this->lbLog, UI::GUIListBox(ui, this->tpLog, false));
 	this->lbLog->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	NEW_CLASS(this->lblCommand, UI::GUILabel(ui, this->tpControl, CSTR("Command")));
@@ -278,7 +278,7 @@ SSWR::AVIRead::AVIRTVControlForm::AVIRTVControlForm(UI::GUIClientControl *parent
 	this->txtCommand->SetRect(338, 8, 120, 23, false);
 	this->txtCommand->SetReadOnly(true);
 
-	NEW_CLASS(this->logger, UI::ListBoxLogger(this, this->lbLog, 300, true));
+	NEW_CLASSNN(this->logger, UI::ListBoxLogger(*this, this->lbLog, 300, true));
 	this->log->AddLogHandler(this->logger, IO::LogHandler::LogLevel::Raw);
 }
 
@@ -294,7 +294,7 @@ SSWR::AVIRead::AVIRTVControlForm::~AVIRTVControlForm()
 		this->port = 0;
 	}
 	DEL_CLASS(this->log);
-	DEL_CLASS(this->logger);
+	this->logger.Delete();
 }
 
 void SSWR::AVIRead::AVIRTVControlForm::OnMonitorChanged()

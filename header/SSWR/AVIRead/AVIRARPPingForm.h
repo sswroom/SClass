@@ -41,7 +41,7 @@ namespace SSWR
 			Bool requested;
 			Sync::Event *reqEvt;
 			IO::LogTool *log;
-			UI::ListBoxLogger *logger;
+			NotNullPtr<UI::ListBoxLogger> logger;
 			Data::ArrayList<AdapterInfo*> *adapters;
 
 			UI::GUIPanel *pnlRequest;
@@ -55,7 +55,7 @@ namespace SSWR
 			UI::GUIButton *btnPing;
 			UI::GUIRealtimeLineChart *rlcPing;
 			UI::GUIVSplitter *vspPing;
-			UI::GUIListBox *lbLog;
+			NotNullPtr<UI::GUIListBox> lbLog;
 
 			static void __stdcall OnARPHandler(const UInt8 *hwAddr, UInt32 ipAddr, void *userObj);
 			static void __stdcall OnPingClicked(void *userObj);

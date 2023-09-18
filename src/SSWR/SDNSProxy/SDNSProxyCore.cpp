@@ -86,7 +86,7 @@ SSWR::SDNSProxy::SDNSProxyCore::SDNSProxyCore(IO::ConfigFile *cfg, IO::Writer *c
 	this->lastCnt = 0;
 	this->currCnt = 0;
 
-	NEW_CLASS(this->proxy, Net::DNSProxy(this->sockf, true));
+	NEW_CLASS(this->proxy, Net::DNSProxy(this->sockf, true, this->log));
 	this->proxy->HandleDNSRequest(OnDNSRequest, this);
 
 	if (this->proxy->IsError())

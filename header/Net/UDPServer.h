@@ -38,7 +38,7 @@ namespace Net
 		UInt16 port;
 		Sync::Event ctrlEvt;
 
-		IO::LogTool *msgLog;
+		NotNullPtr<IO::LogTool> msgLog;
 		Text::String *msgPrefix;
 
 		Sync::Mutex logFileMut;
@@ -52,7 +52,7 @@ namespace Net
 		static UInt32 __stdcall DataV6Thread(void *obj);
 
 	public:
-		UDPServer(NotNullPtr<Net::SocketFactory> sockf, Net::SocketUtil::AddressInfo *bindAddr, UInt16 port, Text::CString rawLogPrefix, UDPPacketHdlr hdlr, void *userData, IO::LogTool *msgLog, Text::CString msgPrefix, UOSInt workerCnt, Bool reuseAddr);
+		UDPServer(NotNullPtr<Net::SocketFactory> sockf, Net::SocketUtil::AddressInfo *bindAddr, UInt16 port, Text::CString rawLogPrefix, UDPPacketHdlr hdlr, void *userData, NotNullPtr<IO::LogTool> msgLog, Text::CString msgPrefix, UOSInt workerCnt, Bool reuseAddr);
 		virtual ~UDPServer();
 
 		UInt16 GetPort();

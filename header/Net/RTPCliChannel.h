@@ -65,7 +65,7 @@ namespace Net
 		void SetControlURL(Text::CString url);
 		void SetPlayControl(Net::IRTPController *playCtrl);
 
-		RTPCliChannel(NotNullPtr<Net::SocketFactory> sockf, UInt16 port);
+		RTPCliChannel(NotNullPtr<Net::SocketFactory> sockf, UInt16 port, NotNullPtr<IO::LogTool> log);
 		RTPCliChannel(RTPCliChannel *ch);
 	public:
 		~RTPCliChannel();
@@ -90,7 +90,7 @@ namespace Net
 		Bool MapPayloadType(Int32 payloadType, Text::CString typ, UInt32 freq, UInt32 nChannel);
 		Bool SetPayloadFormat(Int32 paylodType, const UTF8Char *format);
 
-		static RTPCliChannel *CreateChannel(NotNullPtr<Net::SocketFactory> sockf, Data::ArrayList<const UTF8Char *> *sdpDesc, Text::CString ctrlURL, Net::IRTPController *playCtrl);
+		static RTPCliChannel *CreateChannel(NotNullPtr<Net::SocketFactory> sockf, Data::ArrayList<const UTF8Char *> *sdpDesc, Text::CString ctrlURL, Net::IRTPController *playCtrl, NotNullPtr<IO::LogTool> log);
 	};
 }
 #endif

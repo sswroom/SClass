@@ -35,7 +35,7 @@ namespace Net
 		Bool SendPullData();
 		Bool SendStatData();
 	public:
-		LoRaGateway(NotNullPtr<Net::SocketFactory> sockf, NotNullPtr<const Net::SocketUtil::AddressInfo> svrAddr, UInt16 svrPort, const UInt8 *gatewayEUI, IO::LogTool *log);
+		LoRaGateway(NotNullPtr<Net::SocketFactory> sockf, NotNullPtr<const Net::SocketUtil::AddressInfo> svrAddr, UInt16 svrPort, const UInt8 *gatewayEUI, NotNullPtr<IO::LogTool> log);
 		~LoRaGateway();
 
 		void UpdatePos(Double lat, Double lon, Int32 altitude);

@@ -633,11 +633,11 @@ Bool DB::PostgreSQLConn::Connect()
 		this->isTran = false;
 		if (PQstatus(this->clsData->conn) != CONNECTION_OK)
 		{
-			if (this->log)
+			if (this->log->HasHandler())
 			{
 				char *msg = PQerrorMessage(this->clsData->conn);
 				UOSInt msgLen = Text::StrCharCnt(msg);
-				this->log->LogMessage(Text::CString((const UTF8Char*)msg, msgLen), IO::LogHandler::LogLevel::Error);
+				this->log->LogMessage(Text::CStringNN((const UTF8Char*)msg, msgLen), IO::LogHandler::LogLevel::Error);
 #if defined(VERBOSE)
 				printf("PostgreSQL: Error, %s\r\n", msg);
 #endif
@@ -681,7 +681,7 @@ void DB::PostgreSQLConn::InitConnection()
 	}
 }
 
-DB::PostgreSQLConn::PostgreSQLConn(NotNullPtr<Text::String> server, UInt16 port, Text::String *uid, Text::String *pwd, NotNullPtr<Text::String> database, IO::LogTool *log) : DBConn(server)
+DB::PostgreSQLConn::PostgreSQLConn(NotNullPtr<Text::String> server, UInt16 port, Text::String *uid, Text::String *pwd, NotNullPtr<Text::String> database, NotNullPtr<IO::LogTool> log) : DBConn(server)
 {
 	this->clsData = MemAlloc(ClassData, 1);
 	this->clsData->conn = 0;
@@ -697,7 +697,7 @@ DB::PostgreSQLConn::PostgreSQLConn(NotNullPtr<Text::String> server, UInt16 port,
 	if (this->Connect()) this->InitConnection();
 }
 
-DB::PostgreSQLConn::PostgreSQLConn(Text::CStringNN server, UInt16 port, Text::CString uid, Text::CString pwd, Text::CString database, IO::LogTool *log) : DBConn(server)
+DB::PostgreSQLConn::PostgreSQLConn(Text::CStringNN server, UInt16 port, Text::CString uid, Text::CString pwd, Text::CString database, NotNullPtr<IO::LogTool> log) : DBConn(server)
 {
 	this->clsData = MemAlloc(ClassData, 1);
 	this->clsData->conn = 0;

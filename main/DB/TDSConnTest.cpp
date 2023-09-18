@@ -13,9 +13,9 @@
 Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 {
 	IO::ConsoleWriter console;
-	IO::ConsoleLogHandler logHdlr(&console);
+	IO::ConsoleLogHandler logHdlr(console);
 	IO::LogTool log;
-	log.AddLogHandler(&logHdlr, IO::LogHandler::LogLevel::Raw);
+	log.AddLogHandler(logHdlr, IO::LogHandler::LogLevel::Raw);
 	Text::StringBuilderUTF8 errMsg;
 	DB::DBConn *conn;
 	conn = DB::MSSQLConn::OpenConnTCP(
@@ -25,7 +25,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 		DBNAME,
 		DBUSER,
 		DBPASSWORD,
-		&log,
+		log,
 		&errMsg
 	);
 	if (conn)

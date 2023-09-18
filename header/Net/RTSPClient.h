@@ -52,7 +52,7 @@ namespace Net
 		Bool GetOptions(Text::CString url, Data::ArrayList<const UTF8Char *> *options);
 		Net::SDPFile *GetMediaInfo(Text::CString url);
 
-		static IO::ParsedObject *ParseURL(NotNullPtr<Net::SocketFactory> sockf, Text::CStringNN url, Data::Duration timeout);
+		static IO::ParsedObject *ParseURL(NotNullPtr<Net::SocketFactory> sockf, Text::CStringNN url, Data::Duration timeout, NotNullPtr<IO::LogTool> log);
 
 	private:
 		UTF8Char *SetupRTP(UTF8Char *sessIdOut, Text::CString url, Net::RTPCliChannel *rtpChannel);

@@ -302,7 +302,7 @@ void IO::MTFileLog::LogClosed()
 		this->evt.Set();
 	}
 }
-void IO::MTFileLog::LogAdded(const Data::Timestamp &time, Text::CString logMsg, LogLevel logLev)
+void IO::MTFileLog::LogAdded(const Data::Timestamp &time, Text::CStringNN logMsg, LogLevel logLev)
 {
 	if (closed)
 		return;

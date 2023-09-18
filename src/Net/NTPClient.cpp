@@ -29,11 +29,11 @@ void __stdcall Net::NTPClient::PacketHdlr(NotNullPtr<const Net::SocketUtil::Addr
 	}
 }
 
-Net::NTPClient::NTPClient(NotNullPtr<Net::SocketFactory> sockf, UInt16 port)
+Net::NTPClient::NTPClient(NotNullPtr<Net::SocketFactory> sockf, UInt16 port, NotNullPtr<IO::LogTool> log)
 {
 	this->sockf = sockf;
 	this->resultTime = 0;
-	NEW_CLASS(this->svr, Net::UDPServer(sockf, 0, port, CSTR_NULL, PacketHdlr, this, 0, CSTR_NULL, 1, false));
+	NEW_CLASS(this->svr, Net::UDPServer(sockf, 0, port, CSTR_NULL, PacketHdlr, this, log, CSTR_NULL, 1, false));
 }
 
 Net::NTPClient::~NTPClient()

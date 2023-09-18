@@ -614,7 +614,7 @@ UOSInt Net::DNSProxy::BuildAddressReply(UInt8 *buff, UInt32 id, const UTF8Char *
 	return i;
 }
 
-Net::DNSProxy::DNSProxy(NotNullPtr<Net::SocketFactory> sockf, Bool analyzeTarget)
+Net::DNSProxy::DNSProxy(NotNullPtr<Net::SocketFactory> sockf, Bool analyzeTarget, NotNullPtr<IO::LogTool> log)
 {
 	this->sockf = sockf;
 	this->disableV6 = false;
@@ -639,8 +639,8 @@ Net::DNSProxy::DNSProxy(NotNullPtr<Net::SocketFactory> sockf, Bool analyzeTarget
 	this->currServerIndex = 0;
 	this->currIPTime.SetCurrTimeUTC();
 
-	NEW_CLASS(this->cli, Net::UDPServer(this->sockf, 0, 0, CSTR_NULL, ClientPacket, this, 0, CSTR_NULL, 2, false));
-	NEW_CLASS(this->svr, Net::DNSServer(this->sockf));
+	NEW_CLASS(this->cli, Net::UDPServer(this->sockf, 0, 0, CSTR_NULL, ClientPacket, this, log, CSTR_NULL, 2, false));
+	NEW_CLASS(this->svr, Net::DNSServer(this->sockf, log));
 	this->svr->HandleRequest(OnDNSRequest, this);
 }
 

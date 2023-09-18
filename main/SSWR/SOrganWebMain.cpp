@@ -31,7 +31,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 		UTF8Char sbuff[512];
 		UTF8Char *sptr;
 		IO::WriterLogHandler printLog(&console, false);
-		log.AddLogHandler(&printLog, IO::LogHandler::LogLevel::ErrorDetail);
+		log.AddLogHandler(printLog, IO::LogHandler::LogLevel::ErrorDetail);
 
 		IO::ConfigFile *cfg = IO::IniFile::ParseProgConfig(0);
 		if (cfg == 0)
@@ -86,15 +86,15 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 			}
 			if (nns.Set(cfg->GetValue(CSTR("MDBFile"))))
 			{
-				db = DB::MDBFileConn::CreateDBTool(nns, &log, CSTR("DB: "));
+				db = DB::MDBFileConn::CreateDBTool(nns, log, CSTR("DB: "));
 			}
 			else if (nns.Set(cfg->GetValue(CSTR("MySQLServer"))))
 			{
-				db = Net::MySQLTCPClient::CreateDBTool(sockf, nns, cfg->GetValue(CSTR("MySQLDB")), Text::String::OrEmpty(cfg->GetValue(CSTR("MySQLUID"))), Text::String::OrEmpty(cfg->GetValue(CSTR("MySQLPwd"))), &log, CSTR("DB: "));
+				db = Net::MySQLTCPClient::CreateDBTool(sockf, nns, cfg->GetValue(CSTR("MySQLDB")), Text::String::OrEmpty(cfg->GetValue(CSTR("MySQLUID"))), Text::String::OrEmpty(cfg->GetValue(CSTR("MySQLPwd"))), log, CSTR("DB: "));
 			}
 			else
 			{
-				db = DB::ODBCConn::CreateDBTool(Text::String::OrEmpty(cfg->GetValue(CSTR("DBDSN"))), cfg->GetValue(CSTR("DBUID")), cfg->GetValue(CSTR("DBPwd")), cfg->GetValue(CSTR("DBSchema")), &log, CSTR("DB: "));
+				db = DB::ODBCConn::CreateDBTool(Text::String::OrEmpty(cfg->GetValue(CSTR("DBDSN"))), cfg->GetValue(CSTR("DBUID")), cfg->GetValue(CSTR("DBPwd")), cfg->GetValue(CSTR("DBSchema")), log, CSTR("DB: "));
 			}
 			UInt16 port;
 			cfg->GetValue(CSTR("SvrPort"))->ToUInt16S(port, 0);
@@ -124,7 +124,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 		}
 
 		SDEL_CLASS(ssl);
-		log.RemoveLogHandler(&printLog);
+		log.RemoveLogHandler(printLog);
 	}
 	return 0;
 }

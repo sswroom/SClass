@@ -29,7 +29,7 @@ void __stdcall SSWR::AVIRead::AVIRMODBUSTCPSimForm::OnListenClicked(void *userOb
 			UI::MessageDialog::ShowDialog(CSTR("Error in parsing port number"), CSTR("MODBUS TCP Simulator"), me);
 			return;
 		}
-		NEW_CLASS(me->listener, Net::MODBUSTCPListener(me->core->GetSocketFactory(), port, &me->log, true));
+		NEW_CLASS(me->listener, Net::MODBUSTCPListener(me->core->GetSocketFactory(), port, me->log, true));
 		if (me->listener->IsError())
 		{
 			DEL_CLASS(me->listener);

@@ -104,7 +104,7 @@ namespace DB
 		static const Char *sysVarList[];
 
 		NotNullPtr<Text::String> versionStr;
-		IO::LogTool *log;
+		NotNullPtr<IO::LogTool> log;
 		Sync::Mutex loginMut;
 		Crypto::Hash::SHA1 loginSHA1;
 		Data::FastStringMap<LoginInfo*> loginMap;
@@ -125,11 +125,11 @@ namespace DB
 
 		Text::String *Evals(const UTF8Char **valPtr, SessionInfo *sess, DB::DBMSReader *reader, UOSInt colIndex, Text::CString colName, Bool *valid);
 	public:
-		DBMS(Text::CString versionStr, IO::LogTool *log);
+		DBMS(Text::CString versionStr, NotNullPtr<IO::LogTool> log);
 		virtual ~DBMS();
 
 		NotNullPtr<Text::String> GetVersion() const;
-		IO::LogTool *GetLogTool();
+		NotNullPtr<IO::LogTool> GetLogTool();
 
 		Bool UserAdd(Int32 userId, Text::CStringNN userName, Text::CString password, Text::CString host);
 		Int32 UserLoginMySQL(Int32 sessId, Text::CStringNN userName, const UInt8 *randomData, const UInt8 *passHash, NotNullPtr<const Net::SocketUtil::AddressInfo> addr, const SessionParam *param, const UTF8Char *database);

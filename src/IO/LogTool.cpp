@@ -54,15 +54,15 @@ void IO::LogTool::AddFileLog(NotNullPtr<Text::String> fileName, LogHandler::LogT
 		return;
 	if (directWrite)
 	{
-		IO::FileLog *logs;
-		NEW_CLASS(logs, IO::FileLog(fileName, style, groupStyle, dateFormat));
+		NotNullPtr<IO::FileLog> logs;
+		NEW_CLASSNN(logs, IO::FileLog(fileName, style, groupStyle, dateFormat));
 		AddLogHandler(logs, logLev);
 		this->fileLogArr.Add(logs);
 	}
 	else
 	{
-		IO::MTFileLog *logs;
-		NEW_CLASS(logs, IO::MTFileLog(fileName, style, groupStyle, dateFormat));
+		NotNullPtr<IO::MTFileLog> logs;
+		NEW_CLASSNN(logs, IO::MTFileLog(fileName, style, groupStyle, dateFormat));
 		AddLogHandler(logs, logLev);
 		this->fileLogArr.Add(logs);
 	}
@@ -74,21 +74,21 @@ void IO::LogTool::AddFileLog(Text::CString fileName, LogHandler::LogType style, 
 		return;
 	if (directWrite)
 	{
-		IO::FileLog *logs;
-		NEW_CLASS(logs, IO::FileLog(fileName, style, groupStyle, dateFormat));
+		NotNullPtr<IO::FileLog> logs;
+		NEW_CLASSNN(logs, IO::FileLog(fileName, style, groupStyle, dateFormat));
 		AddLogHandler(logs, logLev);
 		this->fileLogArr.Add(logs);
 	}
 	else
 	{
-		IO::MTFileLog *logs;
-		NEW_CLASS(logs, IO::MTFileLog(fileName, style, groupStyle, dateFormat));
+		NotNullPtr<IO::MTFileLog> logs;
+		NEW_CLASSNN(logs, IO::MTFileLog(fileName, style, groupStyle, dateFormat));
 		AddLogHandler(logs, logLev);
 		this->fileLogArr.Add(logs);
 	}
 }
 
-void IO::LogTool::AddLogHandler(LogHandler *hdlr, IO::LogHandler::LogLevel logLev)
+void IO::LogTool::AddLogHandler(NotNullPtr<LogHandler> hdlr, IO::LogHandler::LogLevel logLev)
 {
 	if (closed)
 		return;
@@ -114,7 +114,7 @@ void IO::LogTool::AddLogHandler(LogHandler *hdlr, IO::LogHandler::LogLevel logLe
 	hdlr->LogAdded(ts, sb.ToCString(), (LogHandler::LogLevel)0);
 }
 
-void IO::LogTool::RemoveLogHandler(LogHandler *hdlr)
+void IO::LogTool::RemoveLogHandler(NotNullPtr<LogHandler> hdlr)
 {
 	if (closed)
 		return;
@@ -122,7 +122,7 @@ void IO::LogTool::RemoveLogHandler(LogHandler *hdlr)
 	UOSInt i = this->hdlrArr.GetCount();
 	while (i-- > 0)
 	{
-		if (this->hdlrArr.GetItem(i) == hdlr)
+		if (this->hdlrArr.GetItem(i) == hdlr.Ptr())
 		{
 			this->hdlrArr.RemoveAt(i);
 			this->levArr.RemoveAt(i);
@@ -131,7 +131,12 @@ void IO::LogTool::RemoveLogHandler(LogHandler *hdlr)
 	}
 }
 
-void IO::LogTool::LogMessage(Text::CString logMsg, LogHandler::LogLevel level)
+Bool IO::LogTool::HasHandler() const
+{
+	return this->hdlrArr.GetCount() > 0;
+}
+
+void IO::LogTool::LogMessage(Text::CStringNN logMsg, LogHandler::LogLevel level)
 {
 	Data::Timestamp ts = Data::Timestamp::Now();
 	Sync::MutexUsage mutUsage(this->hdlrMut);

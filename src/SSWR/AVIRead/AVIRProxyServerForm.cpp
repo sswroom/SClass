@@ -55,7 +55,6 @@ SSWR::AVIRead::AVIRProxyServerForm::AVIRProxyServerForm(UI::GUIClientControl *pa
 
 	this->core = core;
 	this->sockf = core->GetSocketFactory();
-	NEW_CLASS(this->log, IO::LogTool());
 	this->svr = 0;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
@@ -73,21 +72,21 @@ SSWR::AVIRead::AVIRProxyServerForm::AVIRProxyServerForm(UI::GUIClientControl *pa
 	this->txtLog->SetRect(0, 0, 100, 23, false);
 	this->txtLog->SetReadOnly(true);
 	this->txtLog->SetDockType(UI::GUIControl::DOCK_BOTTOM);
-	NEW_CLASS(this->lbLog, UI::GUIListBox(ui, this, false));
+	NEW_CLASSNN(this->lbLog, UI::GUIListBox(ui, this, false));
 	this->lbLog->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lbLog->HandleSelectionChange(OnLogSelChg, this);
 	
 	this->SetDefaultButton(this->btnStart);
 	this->txtPort->Focus();
-	NEW_CLASS(this->logger, UI::ListBoxLogger(this, this->lbLog, 500, true));
-	this->log->AddLogHandler(this->logger, IO::LogHandler::LogLevel::Raw);
+	NEW_CLASSNN(this->logger, UI::ListBoxLogger(*this, this->lbLog, 500, true));
+	this->log.AddLogHandler(this->logger, IO::LogHandler::LogLevel::Raw);
 }
 
 SSWR::AVIRead::AVIRProxyServerForm::~AVIRProxyServerForm()
 {
 	SDEL_CLASS(this->svr);
-	DEL_CLASS(this->logger);
-	DEL_CLASS(this->log);
+	this->log.RemoveLogHandler(this->logger);
+	this->logger.Delete();
 }
 
 void SSWR::AVIRead::AVIRProxyServerForm::OnMonitorChanged()

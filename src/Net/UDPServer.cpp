@@ -30,7 +30,7 @@ UInt32 __stdcall Net::UDPServer::DataV4Thread(void *obj)
 			if (recvSize > 0)
 			{
 				Sync::Interlocked::IncrementI32(stat->me->recvCnt);
-				if (stat->me->msgLog)
+				if (stat->me->msgLog->HasHandler())
 				{
 					if (stat->me->msgPrefix)
 						sptr = stat->me->msgPrefix->ConcatTo(sbuff);
@@ -105,7 +105,7 @@ UInt32 __stdcall Net::UDPServer::DataV6Thread(void *obj)
 			if (recvSize > 0)
 			{
 				Sync::Interlocked::IncrementI32(stat->me->recvCnt);
-				if (stat->me->msgLog)
+				if (stat->me->msgLog->HasHandler())
 				{
 					if (stat->me->msgPrefix)
 						sptr = stat->me->msgPrefix->ConcatTo(sbuff);
@@ -157,7 +157,7 @@ UInt32 __stdcall Net::UDPServer::DataV6Thread(void *obj)
 	return 0;
 }
 
-Net::UDPServer::UDPServer(NotNullPtr<Net::SocketFactory> sockf, Net::SocketUtil::AddressInfo *bindAddr, UInt16 port, Text::CString logPrefix, UDPPacketHdlr hdlr, void *userData, IO::LogTool *msgLog, Text::CString msgPrefix, UOSInt threadCnt, Bool reuseAddr)
+Net::UDPServer::UDPServer(NotNullPtr<Net::SocketFactory> sockf, Net::SocketUtil::AddressInfo *bindAddr, UInt16 port, Text::CString logPrefix, UDPPacketHdlr hdlr, void *userData, NotNullPtr<IO::LogTool> msgLog, Text::CString msgPrefix, UOSInt threadCnt, Bool reuseAddr)
 {
 	this->threadCnt = threadCnt;
 	this->v4threadStats = 0;
@@ -448,7 +448,7 @@ Bool Net::UDPServer::SendTo(NotNullPtr<const Net::SocketUtil::AddressInfo> addr,
 		mutUsage.EndUse();
 	}
 
-	if (this->msgLog)
+	if (this->msgLog->HasHandler())
 	{
 		if (msgPrefix)
 		{
@@ -472,7 +472,7 @@ Bool Net::UDPServer::SendTo(NotNullPtr<const Net::SocketUtil::AddressInfo> addr,
 		if (this->sockf->SendTo(this->socV4, buff, dataSize, addr, port) != dataSize)
 		{
 //			printf("Send error: %d\r\n", errno);
-			if (this->msgLog)
+			if (this->msgLog->HasHandler())
 			{
 				sptr = msgPrefix->ConcatTo(sbuff);
 				sptr = Text::StrConcatC(sptr, UTF8STRC("Send UDP data failed"));
@@ -488,7 +488,7 @@ Bool Net::UDPServer::SendTo(NotNullPtr<const Net::SocketUtil::AddressInfo> addr,
 	{
 		if (this->sockf->SendTo(this->socV6, buff, dataSize, addr, port) != dataSize)
 		{
-			if (this->msgLog)
+			if (this->msgLog->HasHandler())
 			{
 				sptr = msgPrefix->ConcatTo(sbuff);
 				sptr = Text::StrConcatC(sptr, UTF8STRC("Send UDP data failed"));

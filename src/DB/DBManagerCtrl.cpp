@@ -2,7 +2,7 @@
 #include "DB/DBManager.h"
 #include "DB/DBManagerCtrl.h"
 
-DB::DBManagerCtrl::DBManagerCtrl(IO::LogTool *log, NotNullPtr<Net::SocketFactory> sockf, Parser::ParserList *parsers)
+DB::DBManagerCtrl::DBManagerCtrl(NotNullPtr<IO::LogTool> log, NotNullPtr<Net::SocketFactory> sockf, Parser::ParserList *parsers)
 {
 	this->log = log;
 	this->sockf = sockf;
@@ -89,7 +89,7 @@ void DB::DBManagerCtrl::GetConnName(NotNullPtr<Text::StringBuilderUTF8> sb)
 	}
 }
 
-DB::DBManagerCtrl *DB::DBManagerCtrl::Create(Text::String *connStr, IO::LogTool *log, NotNullPtr<Net::SocketFactory> sockf, Parser::ParserList *parsers)
+DB::DBManagerCtrl *DB::DBManagerCtrl::Create(Text::String *connStr, NotNullPtr<IO::LogTool> log, NotNullPtr<Net::SocketFactory> sockf, Parser::ParserList *parsers)
 {
 	DB::DBManagerCtrl *ctrl;
 	NEW_CLASS(ctrl, DB::DBManagerCtrl(log, sockf, parsers));
@@ -97,7 +97,7 @@ DB::DBManagerCtrl *DB::DBManagerCtrl::Create(Text::String *connStr, IO::LogTool 
 	return ctrl;
 }
 
-DB::DBManagerCtrl *DB::DBManagerCtrl::Create(Text::CString connStr, IO::LogTool *log, NotNullPtr<Net::SocketFactory> sockf, Parser::ParserList *parsers)
+DB::DBManagerCtrl *DB::DBManagerCtrl::Create(Text::CString connStr, NotNullPtr<IO::LogTool> log, NotNullPtr<Net::SocketFactory> sockf, Parser::ParserList *parsers)
 {
 	DB::DBManagerCtrl *ctrl;
 	NEW_CLASS(ctrl, DB::DBManagerCtrl(log, sockf, parsers));
@@ -105,7 +105,7 @@ DB::DBManagerCtrl *DB::DBManagerCtrl::Create(Text::CString connStr, IO::LogTool 
 	return ctrl;
 }
 
-DB::DBManagerCtrl *DB::DBManagerCtrl::Create(DB::DBTool *db, IO::LogTool *log, NotNullPtr<Net::SocketFactory> sockf, Parser::ParserList *parsers)
+DB::DBManagerCtrl *DB::DBManagerCtrl::Create(DB::DBTool *db, NotNullPtr<IO::LogTool> log, NotNullPtr<Net::SocketFactory> sockf, Parser::ParserList *parsers)
 {
 	Text::StringBuilderUTF8 sb;
 	DB::DBManagerCtrl *ctrl;
@@ -119,7 +119,7 @@ DB::DBManagerCtrl *DB::DBManagerCtrl::Create(DB::DBTool *db, IO::LogTool *log, N
 	return ctrl;
 }
 
-DB::DBManagerCtrl *DB::DBManagerCtrl::CreateFromFile(DB::ReadingDB *db, NotNullPtr<Text::String> filePath, IO::LogTool *log, NotNullPtr<Net::SocketFactory> sockf, Parser::ParserList *parsers)
+DB::DBManagerCtrl *DB::DBManagerCtrl::CreateFromFile(DB::ReadingDB *db, NotNullPtr<Text::String> filePath, NotNullPtr<IO::LogTool> log, NotNullPtr<Net::SocketFactory> sockf, Parser::ParserList *parsers)
 {
 	Text::StringBuilderUTF8 sb;
 	DB::DBManagerCtrl *ctrl;

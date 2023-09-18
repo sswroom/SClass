@@ -122,7 +122,6 @@ SSWR::AVIRead::AVIRTCPSpdSvrForm::AVIRTCPSpdSvrForm(UI::GUIClientControl *parent
 	this->core = core;
 	this->svr = 0;
 	this->cliMgr = 0;
-	NEW_CLASS(this->log, IO::LogTool());
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 	NEW_CLASS(this->lblPort, UI::GUILabel(ui, this, CSTR("Port")));
@@ -150,7 +149,6 @@ SSWR::AVIRead::AVIRTCPSpdSvrForm::~AVIRTCPSpdSvrForm()
 		DEL_CLASS(this->cliMgr);
 		this->cliMgr = 0;
 	}
-	DEL_CLASS(this->log);
 }
 
 void SSWR::AVIRead::AVIRTCPSpdSvrForm::OnMonitorChanged()

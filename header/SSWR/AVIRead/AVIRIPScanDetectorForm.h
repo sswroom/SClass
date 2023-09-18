@@ -15,10 +15,10 @@ namespace SSWR
 		{
 		private:
 			UI::GUITextBox *txtLog;
-			UI::GUIListBox *lbLog;
+			NotNullPtr<UI::GUIListBox> lbLog;
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
-			UI::ListBoxLogger *logger;
+			NotNullPtr<UI::ListBoxLogger> logger;
 			IO::LogTool *log;
 			Net::IPScanDetector *ipScanDetect;
 

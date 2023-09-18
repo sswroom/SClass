@@ -69,7 +69,7 @@ namespace SSWR
 			Data::CircularByteBuff sendBuff;
 			Bool sendUpdated;
 			IO::LogTool log;
-			UI::ListBoxLogger *logger;
+			NotNullPtr<UI::ListBoxLogger> logger;
 
 			UI::GUIGroupBox *grpStream;
 			UI::GUILabel *lblStream;
@@ -135,7 +135,7 @@ namespace SSWR
 
 			UI::GUITabPage *tpLog;
 			UI::GUITextBox *txtLog;
-			UI::GUIListBox *lbLog;
+			NotNullPtr<UI::GUIListBox> lbLog;
 		private:
 			static void __stdcall OnStreamClicked(void *userObj);
 			static void __stdcall OnU8GetClicked(void *userObj);

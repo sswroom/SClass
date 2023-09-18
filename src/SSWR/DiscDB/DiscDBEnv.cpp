@@ -128,7 +128,6 @@ SSWR::DiscDB::DiscDBEnv::DiscDBEnv()
 	IO::ConfigFile *cfg;
 	this->db = 0;
 	NEW_CLASSNN(this->sockf, Net::OSSocketFactory(false));
-	NEW_CLASS(this->log, IO::LogTool());
 	NEW_CLASS(this->monMgr, Media::MonitorMgr());
 	NEW_CLASSNN(this->discMap, Data::FastStringMap<BurntDiscInfo*>());
 	NEW_CLASS(this->dvdTypeMap, Data::FastStringMap<DVDTypeInfo*>());
@@ -183,7 +182,6 @@ SSWR::DiscDB::DiscDBEnv::DiscDBEnv()
 SSWR::DiscDB::DiscDBEnv::~DiscDBEnv()
 {
 	SDEL_CLASS(this->db);
-	DEL_CLASS(this->log);
 	DEL_CLASS(this->monMgr);
 
 	UOSInt i;

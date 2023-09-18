@@ -37,7 +37,7 @@ namespace SSWR
 
 			Net::LoRaGateway *lora;
 			IO::LogTool log;
-			UI::ListBoxLogger *logger;
+			NotNullPtr<UI::ListBoxLogger> logger;
 
 			UI::GUITabControl *tcMain;
 			
@@ -74,7 +74,7 @@ namespace SSWR
 
 			UI::GUITabPage *tpLog;
 			UI::GUITextBox *txtLog;
-			UI::GUIListBox *lbLog;
+			NotNullPtr<UI::GUIListBox> lbLog;
 
 		private:
 			static void __stdcall OnStartClick(void *userObj);

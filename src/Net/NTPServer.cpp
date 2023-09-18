@@ -36,7 +36,7 @@ void __stdcall Net::NTPServer::PacketHdlr(NotNullPtr<const Net::SocketUtil::Addr
 			WriteTime(&repBuff[40], currTime + me->timeDiff);
 			me->svr->SendTo(addr, port, repBuff, 48);
 
-			if (me->log)
+			if (me->log->HasHandler())
 			{
 				Text::StringBuilderUTF8 sb;
 				UTF8Char sbuff[64];
@@ -96,18 +96,12 @@ void __stdcall Net::NTPServer::CheckThread(NotNullPtr<Sync::Thread> thread)
 			}
 			else
 			{
-				if (me->log)
-				{
-					me->log->LogMessage(CSTR("NTP: Requesting to Time Server"), IO::LogHandler::LogLevel::Error);
-				}
+				me->log->LogMessage(CSTR("NTP: Requesting to Time Server"), IO::LogHandler::LogLevel::Error);
 			}
 		}
 		else
 		{
-			if (me->log)
-			{
-				me->log->LogMessage(CSTR("NTP: Error in resolving time server"), IO::LogHandler::LogLevel::Error);
-			}
+			me->log->LogMessage(CSTR("NTP: Error in resolving time server"), IO::LogHandler::LogLevel::Error);
 		}
 		thread->Wait(60000);
 	}
@@ -116,7 +110,7 @@ void __stdcall Net::NTPServer::CheckThread(NotNullPtr<Sync::Thread> thread)
 void Net::NTPServer::InitServer(NotNullPtr<Net::SocketFactory> sockf, UInt16 port)
 {
 	Net::UDPServer *svr;
-	NEW_CLASS(svr, Net::UDPServer(sockf, 0, port, CSTR_NULL, PacketHdlr, this, 0, CSTR_NULL, 2, false));
+	NEW_CLASS(svr, Net::UDPServer(sockf, 0, port, CSTR_NULL, PacketHdlr, this, this->log, CSTR_NULL, 2, false));
 	if (svr->IsError())
 	{
 		DEL_CLASS(svr);
@@ -127,7 +121,7 @@ void Net::NTPServer::InitServer(NotNullPtr<Net::SocketFactory> sockf, UInt16 por
 	}
 }
 
-Net::NTPServer::NTPServer(NotNullPtr<Net::SocketFactory> sockf, UInt16 port, IO::LogTool *log, Text::CString timeServer) : thread(CheckThread, this, CSTR("NTPServer"))
+Net::NTPServer::NTPServer(NotNullPtr<Net::SocketFactory> sockf, UInt16 port, NotNullPtr<IO::LogTool> log, Text::CString timeServer) : thread(CheckThread, this, CSTR("NTPServer"))
 {
 	this->sockf = sockf;
 	this->svr = 0;
@@ -138,7 +132,7 @@ Net::NTPServer::NTPServer(NotNullPtr<Net::SocketFactory> sockf, UInt16 port, IO:
 	InitServer(sockf, port);
 	if (this->svr)
 	{
-		NEW_CLASS(this->cli, Net::NTPClient(this->sockf, 0));
+		NEW_CLASS(this->cli, Net::NTPClient(this->sockf, 0, this->log));
 		this->thread.Start();
 	}
 }

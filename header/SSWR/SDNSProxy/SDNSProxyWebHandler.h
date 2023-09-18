@@ -21,7 +21,7 @@ namespace SSWR
 			Net::DNSProxy *proxy;
 			IO::LogTool *log;
 			Data::FastStringMap<RequestHandler> *reqMap;
-			IO::CyclicLogBuffer *logBuff;
+			NotNullPtr<IO::CyclicLogBuffer> logBuff;
 			SDNSProxyCore *core;
 
 			static Bool __stdcall StatusReq(SSWR::SDNSProxy::SDNSProxyWebHandler *me, NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp);

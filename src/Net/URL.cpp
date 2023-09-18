@@ -7,7 +7,7 @@
 #include "Text/MyString.h"
 #include "Text/URLString.h"
 
-IO::ParsedObject *Net::URL::OpenObject(Text::CStringNN url, Text::CString userAgent, NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, Data::Duration timeout)
+IO::ParsedObject *Net::URL::OpenObject(Text::CStringNN url, Text::CString userAgent, NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, Data::Duration timeout, NotNullPtr<IO::LogTool> log)
 {
 	IO::ParsedObject *pobj;
 	UTF8Char sbuff[512];
@@ -22,7 +22,7 @@ IO::ParsedObject *Net::URL::OpenObject(Text::CStringNN url, Text::CString userAg
 			Text::CStringNN newUrl = cli->GetRespHeader(CSTR("Location")).OrEmpty();
 			if (newUrl.leng > 0 && !newUrl.Equals(url.v, url.leng) && (newUrl.StartsWith(UTF8STRC("http://")) || newUrl.StartsWith(UTF8STRC("https://"))))
 			{
-				pobj = OpenObject(newUrl, userAgent, sockf, ssl, timeout);
+				pobj = OpenObject(newUrl, userAgent, sockf, ssl, timeout, log);
 				cli.Delete();
 				return pobj;
 			}
@@ -39,7 +39,7 @@ IO::ParsedObject *Net::URL::OpenObject(Text::CStringNN url, Text::CString userAg
 			Text::CStringNN newUrl = cli->GetRespHeader(CSTR("Location")).OrEmpty();
 			if (newUrl.leng > 0 && !newUrl.Equals(url.v, url.leng) && (newUrl.StartsWith(UTF8STRC("http://")) || newUrl.StartsWith(UTF8STRC("https://"))))
 			{
-				pobj = OpenObject(newUrl, userAgent, sockf, ssl, timeout);
+				pobj = OpenObject(newUrl, userAgent, sockf, ssl, timeout, log);
 				cli.Delete();
 				return pobj;
 			}
@@ -59,7 +59,7 @@ IO::ParsedObject *Net::URL::OpenObject(Text::CStringNN url, Text::CString userAg
 	}
 	else if (url.StartsWithICase(UTF8STRC("rtsp://")))
 	{
-		pobj = Net::RTSPClient::ParseURL(sockf, url, timeout);
+		pobj = Net::RTSPClient::ParseURL(sockf, url, timeout, log);
 		return pobj;
 	}
 	return 0;

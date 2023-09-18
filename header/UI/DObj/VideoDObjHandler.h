@@ -18,7 +18,7 @@ namespace UI
 			Math::Size2D<UOSInt> videoSize;
 
 			UI::GUIForm *ownerFrm;
-			UI::GUITimer *tmr;
+			NotNullPtr<UI::GUITimer> tmr;
 			NotNullPtr<Text::String> videoFileName;
 			Sync::Mutex frameMut;
 			Media::DrawImage *frameImg;

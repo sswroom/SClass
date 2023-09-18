@@ -410,7 +410,7 @@ UTF8Char *Net::RTSPClient::SetupRTP(UTF8Char *sessIdOut, Text::CString url, Net:
 	return ret;
 }
 
-IO::ParsedObject *Net::RTSPClient::ParseURL(NotNullPtr<Net::SocketFactory> sockf, Text::CStringNN url, Data::Duration timeout)
+IO::ParsedObject *Net::RTSPClient::ParseURL(NotNullPtr<Net::SocketFactory> sockf, Text::CStringNN url, Data::Duration timeout, NotNullPtr<IO::LogTool> log)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
@@ -443,7 +443,7 @@ IO::ParsedObject *Net::RTSPClient::ParseURL(NotNullPtr<Net::SocketFactory> sockf
 			Data::ArrayList<const UTF8Char *> *mediaDesc = sdp->GetMediaDesc(i);
 			if (mediaDesc)
 			{
-				Net::RTPCliChannel *rtp = Net::RTPCliChannel::CreateChannel(sockf, mediaDesc, url, cli);
+				Net::RTPCliChannel *rtp = Net::RTPCliChannel::CreateChannel(sockf, mediaDesc, url, cli, log);
 				if (rtp)
 				{
 					chList.Add(rtp);

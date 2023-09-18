@@ -15,7 +15,7 @@ void __stdcall SSWR::AVIRead::AVIRNTPClientForm::OnGetTimeClicked(void *userObj)
 		Data::Timestamp ts;
 		UInt16 destPort = Net::NTPClient::GetDefaultPort();
 		UOSInt i;
-		NEW_CLASS(cli, Net::NTPClient(me->core->GetSocketFactory(), 0));
+		NEW_CLASS(cli, Net::NTPClient(me->core->GetSocketFactory(), 0, me->core->GetLog()));
 		i = sb.IndexOf(':');
 		if (i != INVALID_INDEX)
 		{
@@ -52,7 +52,7 @@ void __stdcall SSWR::AVIRead::AVIRNTPClientForm::OnSyncTimeClicked(void *userObj
 		Data::Timestamp ts;
 		UInt16 destPort = Net::NTPClient::GetDefaultPort();
 		UOSInt i;
-		NEW_CLASS(cli, Net::NTPClient(me->core->GetSocketFactory(), 0));
+		NEW_CLASS(cli, Net::NTPClient(me->core->GetSocketFactory(), 0, me->core->GetLog()));
 		i = sb.IndexOf(':');
 		if (i != INVALID_INDEX)
 		{

@@ -116,7 +116,7 @@ void __stdcall SSWR::AVIRead::AVIRDHCPServerForm::OnStartClicked(void *userObj)
 			dnsList.Add(tmpIP);
 		}
 
-		NEW_CLASS(me->svr, Net::DHCPServer(me->sockf, ifIp, subnet, firstIP, devCount, gateway, dnsList));
+		NEW_CLASS(me->svr, Net::DHCPServer(me->sockf, ifIp, subnet, firstIP, devCount, gateway, dnsList, me->core->GetLog()));
 		if (me->svr->IsError())
 		{
 			DEL_CLASS(me->svr);

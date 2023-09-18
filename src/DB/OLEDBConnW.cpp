@@ -42,7 +42,7 @@ DB::OLEDBConn::ProviderInfo DB::OLEDBConn::providerInfo[] = {
 
 struct DB::OLEDBConn::ClassData
 {
-	IO::LogTool *log;
+	NotNullPtr<IO::LogTool> log;
 	const WChar *connStr;
 	HRESULT ci;
 	IDataInitialize *pIDataInitialize;
@@ -70,7 +70,7 @@ struct DB::OLEDBReader::ClassData
 
 //https://github.com/StevenChangZH/OleDbVCExample/blob/master/OleDbProject/OleDbSQL.cpp
 
-DB::OLEDBConn::OLEDBConn(IO::LogTool *log) : DB::DBConn(CSTR("OLEDBConn"))
+DB::OLEDBConn::OLEDBConn(NotNullPtr<IO::LogTool> log) : DB::DBConn(CSTR("OLEDBConn"))
 {
 	ClassData *data = MemAlloc(ClassData, 1);
 	this->clsData = data;
@@ -108,7 +108,7 @@ void DB::OLEDBConn::Init(const WChar *connStr)
 	{
 		this->connErr = CE_DBINITIALIZE;
 
-		if (data->log)
+		if (data->log->HasHandler())
 		{
 			ISupportErrorInfo *pISupportErrorInfo;
 			hr = data->pIDBInitialize->QueryInterface(IID_ISupportErrorInfo, (void**)&pISupportErrorInfo);
@@ -160,7 +160,7 @@ void DB::OLEDBConn::Init(const WChar *connStr)
 	this->connErr = CE_NONE;
 }
 
-DB::OLEDBConn::OLEDBConn(const WChar *connStr, IO::LogTool *log) : DB::DBConn(CSTR("OLEDBConn"))
+DB::OLEDBConn::OLEDBConn(const WChar *connStr, NotNullPtr<IO::LogTool> log) : DB::DBConn(CSTR("OLEDBConn"))
 {
 	ClassData *data = MemAlloc(ClassData, 1);
 	this->clsData = data;

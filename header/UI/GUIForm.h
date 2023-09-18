@@ -1,5 +1,6 @@
 #ifndef _SM_UI_GUIFORM
 #define _SM_UI_GUIFORM
+#include "Data/ArrayListNN.h"
 #include "Text/String.h"
 #include "UI/GUICore.h"
 #include "UI/GUIClientControl.h"
@@ -51,7 +52,7 @@ namespace UI
 		Data::ArrayList<void*> keyDownHandlersObj;
 		Data::ArrayList<KeyEvent> keyUpHandlers;
 		Data::ArrayList<void*> keyUpHandlersObj;
-		Data::ArrayList<GUITimer*> timers;
+		Data::ArrayListNN<GUITimer> timers;
 		FormClosingEvent closingHdlr;
 		void *closingHdlrObj;
 		Bool exitOnClose;
@@ -101,8 +102,8 @@ namespace UI
 		virtual Math::Size2D<UOSInt> GetSizeP();
 		virtual void SetExitOnClose(Bool exitOnClose);
 		virtual void SetNoResize(Bool noResize);
-		virtual UI::GUITimer *AddTimer(UInt32 interval, UI::UIEvent handler, void *userObj);
-		virtual void RemoveTimer(UI::GUITimer *tmr);
+		virtual NotNullPtr<UI::GUITimer> AddTimer(UInt32 interval, UI::UIEvent handler, void *userObj);
+		virtual void RemoveTimer(NotNullPtr<UI::GUITimer> tmr);
 		virtual void SetMenu(UI::GUIMainMenu *menu);
 		virtual UI::GUIMainMenu *GetMenu();
 		virtual void UpdateMenu();

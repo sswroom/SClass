@@ -12,7 +12,7 @@ namespace Net
 	public:
 		NotNullPtr<Net::SocketFactory> sockf;
 		Net::TCPServer *svr;
-		IO::LogTool *log;
+		NotNullPtr<IO::LogTool> log;
 		Sync::Mutex readMut;
 		Sync::Mutex connMut;
 		Sync::Event readEvt;
@@ -20,7 +20,7 @@ namespace Net
 
 		static void __stdcall ConnHandler(Socket *s, void *userObj);
 	public:
-		TCPServerStream(NotNullPtr<Net::SocketFactory> sockf, UInt16 port, IO::LogTool *log);
+		TCPServerStream(NotNullPtr<Net::SocketFactory> sockf, UInt16 port, NotNullPtr<IO::LogTool> log);
 		~TCPServerStream();
 
 		virtual Bool IsDown() const;

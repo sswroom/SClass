@@ -7,14 +7,14 @@ namespace UI
 	class GUITimer
 	{
 	private:
-		UI::GUIForm *parent;
+		NotNullPtr<UI::GUIForm> parent;
 		UOSInt id;
 		UInt32 interval;
 		UI::UIEvent handler;
 		void *userObj;
 
 	public:
-		GUITimer(NotNullPtr<UI::GUICore> ui, UI::GUIForm *parent, UOSInt id, UInt32 interval, UI::UIEvent handler, void *userObj);
+		GUITimer(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIForm> parent, UOSInt id, UInt32 interval, UI::UIEvent handler, void *userObj);
 		virtual ~GUITimer();
 
 		virtual void OnTick();

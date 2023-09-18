@@ -25,7 +25,7 @@ namespace SSWR
 			NotNullPtr<Net::SocketFactory> sockf;
 			Net::SocketUtil::AddressInfo targetAddr;
 			IO::LogTool *log;
-			UI::ListBoxLogger *logger;
+			NotNullPtr<UI::ListBoxLogger> logger;
 
 			UI::GUIPanel *pnlRequest;
 			UI::GUIVSplitter *vspRequest;
@@ -36,7 +36,7 @@ namespace SSWR
 			UI::GUIButton *btnPing;
 			UI::GUIRealtimeLineChart *rlcPing;
 			UI::GUIVSplitter *vspPing;
-			UI::GUIListBox *lbLog;
+			NotNullPtr<UI::GUIListBox> lbLog;
 
 			static void __stdcall OnPingClicked(void *userObj);
 			static void __stdcall OnTimerTick(void *userObj);

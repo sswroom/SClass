@@ -9,11 +9,11 @@
 
 struct DB::OLEDBConn::ClassData
 {
-	IO::LogTool *log;
+	NotNullPtr<IO::LogTool> log;
 	const WChar *connStr;
 };
 
-DB::OLEDBConn::OLEDBConn(IO::LogTool *log) : DB::DBConn(CSTR("OLEDBConn"))
+DB::OLEDBConn::OLEDBConn(NotNullPtr<IO::LogTool> log) : DB::DBConn(CSTR("OLEDBConn"))
 {
 	ClassData *data = MemAlloc(ClassData, 1);
 	this->clsData = data;
@@ -28,7 +28,7 @@ void DB::OLEDBConn::Init(const WChar *connStr)
 	this->connErr = CE_COCREATE;
 }
 
-DB::OLEDBConn::OLEDBConn(const WChar *connStr, IO::LogTool *log) : DB::DBConn(CSTR("OLEDBConn"))
+DB::OLEDBConn::OLEDBConn(const WChar *connStr, NotNullPtr<IO::LogTool> log) : DB::DBConn(CSTR("OLEDBConn"))
 {
 	ClassData *data = MemAlloc(ClassData, 1);
 	this->clsData = data;

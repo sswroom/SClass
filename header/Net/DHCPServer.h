@@ -40,7 +40,7 @@ namespace Net
 
 		static void __stdcall PacketHdlr(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, void *userData);
 	public:
-		DHCPServer(NotNullPtr<Net::SocketFactory> sockf, UInt32 infIP, UInt32 subnet, UInt32 firstIP, UInt32 devCount, UInt32 gateway, NotNullPtr<Data::ArrayList<UInt32>> dnsList);
+		DHCPServer(NotNullPtr<Net::SocketFactory> sockf, UInt32 infIP, UInt32 subnet, UInt32 firstIP, UInt32 devCount, UInt32 gateway, NotNullPtr<Data::ArrayList<UInt32>> dnsList, NotNullPtr<IO::LogTool> log);
 		~DHCPServer();
 
 		Bool IsError() const;

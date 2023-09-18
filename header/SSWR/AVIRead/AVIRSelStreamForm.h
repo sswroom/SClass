@@ -26,6 +26,7 @@ namespace SSWR
 			IO::StreamType stmType;
 		private:
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			IO::LogTool log;
 			IO::SiLabDriver *siLabDriver;
 			Net::SSLEngine *ssl;
 			IO::DeviceManager devMgr;

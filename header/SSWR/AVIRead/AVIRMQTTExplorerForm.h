@@ -42,7 +42,7 @@ namespace SSWR
 			Net::SSLEngine *ssl;
 			Net::MQTTConn *client;
 			IO::LogTool log;
-			UI::ListBoxLogger *logger;
+			NotNullPtr<UI::ListBoxLogger> logger;
 			Sync::Mutex topicMut;
 			Data::StringMap<TopicStatus*> topicMap;
 			Bool topicListChanged;
@@ -83,7 +83,7 @@ namespace SSWR
 			UI::GUIButton *btnPublish;
 			UI::GUITextBox *txtPubContent;
 
-			UI::GUITabPage *tpLog;
+			NotNullPtr<UI::GUITabPage> tpLog;
 
 			static void __stdcall OnStartClicked(void *userObj);
 			static void __stdcall OnCliCertClicked(void *userObj);

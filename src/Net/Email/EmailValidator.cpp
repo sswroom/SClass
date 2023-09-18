@@ -2,12 +2,12 @@
 #include "Net/Email/EmailValidator.h"
 #include "Net/Email/SMTPConn.h"
 
-Net::Email::EmailValidator::EmailValidator(NotNullPtr<Net::SocketFactory> sockf)
+Net::Email::EmailValidator::EmailValidator(NotNullPtr<Net::SocketFactory> sockf, NotNullPtr<IO::LogTool> log)
 {
 	Net::SocketUtil::AddressInfo dnsAddr;
 	this->sockf = sockf;
 	this->sockf->GetDefDNS(dnsAddr);
-	NEW_CLASS(this->dnsClient, Net::DNSClient(this->sockf, dnsAddr));
+	NEW_CLASS(this->dnsClient, Net::DNSClient(this->sockf, dnsAddr, log));
 }
 
 Net::Email::EmailValidator::~EmailValidator()

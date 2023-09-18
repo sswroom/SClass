@@ -32,10 +32,7 @@ void __stdcall Net::LogServer::ClientEvent(NotNullPtr<Net::TCPClient> cli, void 
 	if (evtType == Net::TCPClientMgr::TCP_EVENT_DISCONNECT)
 	{
 		ClientStatus *cliStatus;
-		if (me->log)
-		{
-			me->log->LogMessage(CSTR("Client Disconnected"), IO::LogHandler::LogLevel::Command);
-		}
+		me->log->LogMessage(CSTR("Client Disconnected"), IO::LogHandler::LogLevel::Command);
 		cliStatus = (ClientStatus*)cliData;
 		MemFree(cliStatus->buff);
 		MemFree(cliStatus);
@@ -119,7 +116,7 @@ Net::LogServer::IPStatus *Net::LogServer::GetIPStatus(NotNullPtr<const Net::Sock
 	return 0;
 }
 
-Net::LogServer::LogServer(NotNullPtr<Net::SocketFactory> sockf, UInt16 port, Text::CString logPath, IO::LogTool *svrLog, Bool redirLog, Bool autoStart) : protoHdlr(*this)
+Net::LogServer::LogServer(NotNullPtr<Net::SocketFactory> sockf, UInt16 port, Text::CString logPath, NotNullPtr<IO::LogTool> svrLog, Bool redirLog, Bool autoStart) : protoHdlr(*this)
 {
 	this->sockf = sockf;
 	this->logPath = Text::String::New(logPath);
@@ -183,7 +180,7 @@ void Net::LogServer::DataParsed(NotNullPtr<IO::Stream> stm, void *stmObj, Int32 
 		if (this->redirLog)
 		{
 			Text::StringBuilderUTF8 sb;
-			if (this->log)
+			if (this->log->HasHandler())
 			{
 				sptr = ((Net::TCPClient *)stm.Ptr())->GetRemoteName(sbuff);
 				sb.AppendP(sbuff, sptr);

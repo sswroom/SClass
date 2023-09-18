@@ -125,7 +125,7 @@ namespace SSWR
 			UI::GUIHSplitter *hspAccess;
 			UI::GUITextBox *txtAccess;
 
-			UI::GUIListBox *lbLog;
+			NotNullPtr<UI::GUIListBox> lbLog;
 			UI::GUITextBox *txtLog;
 
 		private:

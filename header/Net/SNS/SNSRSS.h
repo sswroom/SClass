@@ -26,10 +26,11 @@ namespace Net
 			Sync::Mutex crcMut;
 			Crypto::Hash::CRC32R crc;
 			Data::Duration timeout;
+			NotNullPtr<IO::LogTool> log;			
 
 			void CalcCRC(const UInt8 *buff, UOSInt size, UInt8 *hashVal);
 		public:
-			SNSRSS(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, Text::EncodingFactory *encFact, Text::String *userAgent, Text::CString channelId);
+			SNSRSS(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, Text::EncodingFactory *encFact, Text::String *userAgent, Text::CString channelId, NotNullPtr<IO::LogTool> log);
 			virtual ~SNSRSS();
 
 			virtual Bool IsError();

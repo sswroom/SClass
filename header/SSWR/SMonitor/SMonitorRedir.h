@@ -26,8 +26,8 @@ namespace SSWR
 			static void __stdcall OnDataUDPPacket(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, void *userData);
 			void CalcCRC(const UInt8 *buff, UOSInt size, UInt8 *crcVal);
 		public:
-			SMonitorRedir(NotNullPtr<Net::SocketFactory> sockf);
-			SMonitorRedir(NotNullPtr<Net::SocketFactory> sockf, NotNullPtr<Text::String> hostName, UInt16 port);
+			SMonitorRedir(NotNullPtr<Net::SocketFactory> sockf, NotNullPtr<IO::LogTool> log);
+			SMonitorRedir(NotNullPtr<Net::SocketFactory> sockf, NotNullPtr<Text::String> hostName, UInt16 port, NotNullPtr<IO::LogTool> log);
 			~SMonitorRedir();
 
 			Bool IsError();

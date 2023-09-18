@@ -71,6 +71,7 @@ SSWR::AVIRead::AVIRCore::AVIRCore(NotNullPtr<UI::GUICore> ui) : vioPinMgr(4)
 	this->parsers->SetWebBrowser(this->browser);
 	this->parsers->SetSocketFactory(this->sockf);
 	this->parsers->SetSSLEngine(this->ssl);
+	this->parsers->SetLogTool(&this->log);
 	this->batchLyrs = 0;
 	this->batchLoad = false;
 	this->gisForm = 0;
@@ -287,9 +288,9 @@ void SSWR::AVIRead::AVIRCore::SetCodePage(UInt32 codePage)
 	this->exporters.SetCodePage(codePage);
 }
 
-IO::LogTool *SSWR::AVIRead::AVIRCore::GetLog()
+NotNullPtr<IO::LogTool> SSWR::AVIRead::AVIRCore::GetLog()
 {
-	return &this->log;
+	return this->log;
 }
 
 Double SSWR::AVIRead::AVIRCore::GetMonitorHDPI(MonitorHandle *hMonitor)

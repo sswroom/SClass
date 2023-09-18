@@ -76,7 +76,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	Int32 ret = 0;
 	Net::OSSocketFactory sockf(false);
 	IO::LogTool log;
-	Net::MODBUSTCPListener modbusListener(sockf, modbusPort, &log, false);
+	Net::MODBUSTCPListener modbusListener(sockf, modbusPort, log, false);
 	if (modbusListener.IsError())
 	{
 		console.WriteLineC(UTF8STRC("Error in listening to MODBUSPort"));

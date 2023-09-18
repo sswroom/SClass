@@ -1266,7 +1266,7 @@ SSWR::AVIRead::AVIRGSMModemForm::AVIRGSMModemForm(UI::GUIClientControl *parent, 
 	this->txtLog->SetRect(0, 0, 100, 23, false);
 	this->txtLog->SetReadOnly(true);
 	this->txtLog->SetDockType(UI::GUIControl::DOCK_BOTTOM);
-	NEW_CLASS(this->lbLog, UI::GUIListBox(ui, this->tpLog, false));
+	NEW_CLASSNN(this->lbLog, UI::GUIListBox(ui, this->tpLog, false));
 	this->lbLog->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lbLog->HandleSelectionChange(OnLogSelChg, this);
 	
@@ -1384,7 +1384,7 @@ SSWR::AVIRead::AVIRGSMModemForm::AVIRGSMModemForm(UI::GUIClientControl *parent, 
 
 	this->toStop = false;
 	this->running = false;
-	NEW_CLASS(this->logger, UI::ListBoxLogger(this, this->lbLog, 200, false));
+	NEW_CLASSNN(this->logger, UI::ListBoxLogger(*this, this->lbLog, 200, false));
 	this->log.AddLogHandler(this->logger, IO::LogHandler::LogLevel::Raw);
 
 	this->AddTimer(1000, OnTimerTick, this);
@@ -1419,7 +1419,7 @@ SSWR::AVIRead::AVIRGSMModemForm::AVIRGSMModemForm(UI::GUIClientControl *parent, 
 SSWR::AVIRead::AVIRGSMModemForm::~AVIRGSMModemForm()
 {
 	this->log.RemoveLogHandler(this->logger);
-	DEL_CLASS(this->logger);
+	this->logger.Delete();
 	this->CloseStream(false);
 
 	SDEL_STRING(this->operName);

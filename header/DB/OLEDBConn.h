@@ -32,10 +32,10 @@ namespace DB
 		ConnError connErr;
 
 	protected:
-		OLEDBConn(IO::LogTool *log);
+		OLEDBConn(NotNullPtr<IO::LogTool> log);
 		void Init(const WChar *connStr);
 	public:
-		OLEDBConn(const WChar *connStr, IO::LogTool *log);
+		OLEDBConn(const WChar *connStr, NotNullPtr<IO::LogTool> log);
 		virtual ~OLEDBConn();
 
 		virtual DB::SQLType GetSQLType() const;

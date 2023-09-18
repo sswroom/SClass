@@ -370,7 +370,7 @@ Math::Geometry::Vector2D *DB::SQLiteFile::GPGeometryParse(const UInt8 *buff, UOS
 	return reader.ParseWKB(buff + ofst, buffSize - ofst, 0);
 }
 
-DB::DBTool *DB::SQLiteFile::CreateDBTool(NotNullPtr<Text::String> fileName, IO::LogTool *log, Text::CString logPrefix)
+DB::DBTool *DB::SQLiteFile::CreateDBTool(NotNullPtr<Text::String> fileName, NotNullPtr<IO::LogTool> log, Text::CString logPrefix)
 {
 	DB::SQLiteFile *conn;
 	NEW_CLASS(conn, DB::SQLiteFile(fileName));
@@ -384,7 +384,7 @@ DB::DBTool *DB::SQLiteFile::CreateDBTool(NotNullPtr<Text::String> fileName, IO::
 	return db;
 }
 
-DB::DBTool *DB::SQLiteFile::CreateDBTool(Text::CStringNN fileName, IO::LogTool *log, Text::CString logPrefix)
+DB::DBTool *DB::SQLiteFile::CreateDBTool(Text::CStringNN fileName, NotNullPtr<IO::LogTool> log, Text::CString logPrefix)
 {
 	DB::SQLiteFile *conn;
 	NEW_CLASS(conn, DB::SQLiteFile(fileName));
