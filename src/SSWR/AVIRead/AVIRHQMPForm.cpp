@@ -197,7 +197,7 @@ void __stdcall SSWR::AVIRead::AVIRHQMPForm::OnTimerTick(void *userObj)
 		Media::VideoRenderer::RendererStatus2 dbg;
 		UInt32 currTime;
 		UInt32 v;
-		me->vbox->GetStatus(&dbg);
+		me->vbox->GetStatus(dbg);
 		sb.AppendC(UTF8STRC("Curr Time: "));
 		sb.AppendU32(dbg.currTime);
 		currTime = dbg.currTime;

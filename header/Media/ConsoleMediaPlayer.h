@@ -12,7 +12,7 @@ namespace Media
 	class ConsoleMediaPlayer : public Media::MediaPlayerInterface
 	{
 	private:
-		Media::MonitorSurfaceMgr *surfaceMgr;
+		NotNullPtr<Media::MonitorSurfaceMgr> surfaceMgr;
 		Media::ColorManager *colorMgr;
 		Media::ColorManagerSess *colorSess;
 		Media::ConsoleVideoRenderer *renderer;

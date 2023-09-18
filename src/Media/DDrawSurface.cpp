@@ -140,7 +140,7 @@ Bool Media::DDrawSurface::DrawFromBuff()
 	return hRes == DD_OK;
 }
 
-Bool Media::DDrawSurface::DrawFromSurface(Media::MonitorSurface *surface, Math::Coord2D<OSInt> destTL, Math::Size2D<UOSInt> buffSize, Bool clearScn, Bool waitForVBlank)
+Bool Media::DDrawSurface::DrawFromSurface(NotNullPtr<Media::MonitorSurface> surface, Math::Coord2D<OSInt> destTL, Math::Size2D<UOSInt> buffSize, Bool clearScn, Bool waitForVBlank)
 {
 	OSInt drawWidth = (OSInt)this->info.dispSize.x;
 	OSInt drawHeight = (OSInt)this->info.dispSize.y;
@@ -174,7 +174,7 @@ Bool Media::DDrawSurface::DrawFromSurface(Media::MonitorSurface *surface, Math::
 		rc.right = (LONG)drawWidth;
 		rc.bottom = (LONG)drawHeight;
 	}
-	if (surface && surface->info.storeBPP == this->info.storeBPP)
+	if (surface->info.storeBPP == this->info.storeBPP)
 	{
 		Bool succ = false;
 		RECT rcSrc;

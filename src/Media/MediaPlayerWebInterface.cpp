@@ -246,7 +246,7 @@ void Media::MediaPlayerWebInterface::WebRequest(NotNullPtr<Net::WebServer::IWebR
 			UInt32 v;
 
 			writer.WriteLineC(UTF8STRC("<hr/>"));
-			this->iface->GetVideoRenderer()->GetStatus(&status);
+			this->iface->GetVideoRenderer()->GetStatus(status);
 			sb.AppendC(UTF8STRC("Curr Time: "));
 			sb.AppendU32(status.currTime);
 			currTime = status.currTime;

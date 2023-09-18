@@ -50,7 +50,7 @@ void UI::DObj::VideoDObjHandler::LockUpdateSize(NotNullPtr<Sync::MutexUsage> mut
 	mutUsage->ReplaceMutex(this->frameMut);
 }
 
-void UI::DObj::VideoDObjHandler::DrawFromSurface(Media::MonitorSurface *surface, Math::Coord2D<OSInt> destTL, Math::Size2D<UOSInt> buffSize, Bool clearScn)
+void UI::DObj::VideoDObjHandler::DrawFromSurface(NotNullPtr<Media::MonitorSurface> surface, Math::Coord2D<OSInt> destTL, Math::Size2D<UOSInt> buffSize, Bool clearScn)
 {
 #if defined(VERBOSE)
 	printf("VideoDObjHandler DrawFromSurface\r\n");
@@ -69,7 +69,7 @@ void UI::DObj::VideoDObjHandler::DrawFromSurface(Media::MonitorSurface *surface,
 	}
 }
 
-UI::DObj::VideoDObjHandler::VideoDObjHandler(UI::GUIForm *ownerFrm, NotNullPtr<Media::DrawEngine> deng, NotNullPtr<Media::ColorManagerSess> colorSess, Media::MonitorSurfaceMgr *surfaceMgr, Parser::ParserList *parsers, Text::CStringNN imageFileName, Math::Coord2D<OSInt> videoTL, Math::Size2D<UOSInt> videoSize, Text::CStringNN videoFileName) : UI::DObj::ImageDObjHandler(deng, imageFileName), Media::VideoRenderer(colorSess.Ptr(), surfaceMgr, 4, 4)
+UI::DObj::VideoDObjHandler::VideoDObjHandler(UI::GUIForm *ownerFrm, NotNullPtr<Media::DrawEngine> deng, NotNullPtr<Media::ColorManagerSess> colorSess, NotNullPtr<Media::MonitorSurfaceMgr> surfaceMgr, Parser::ParserList *parsers, Text::CStringNN imageFileName, Math::Coord2D<OSInt> videoTL, Math::Size2D<UOSInt> videoSize, Text::CStringNN videoFileName) : UI::DObj::ImageDObjHandler(deng, imageFileName), Media::VideoRenderer(colorSess.Ptr(), surfaceMgr, 4, 4)
 {
 #if defined(VERBOSE)
 	printf("VideoDObjHandler init: w = %d, h = %d\r\n", (UInt32)videoSize.x, (UInt32)videoSize.y);

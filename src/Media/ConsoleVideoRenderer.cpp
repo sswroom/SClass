@@ -1,20 +1,13 @@
 #include "Stdafx.h"
 #include "Media/ConsoleVideoRenderer.h"
 
-Media::ConsoleVideoRenderer::ConsoleVideoRenderer(Media::MonitorSurfaceMgr *surfaceMgr, Media::ColorManagerSess *colorSess) : Media::VideoRenderer(colorSess, surfaceMgr, 6, 2)
+Media::ConsoleVideoRenderer::ConsoleVideoRenderer(NotNullPtr<Media::MonitorSurfaceMgr> surfaceMgr, Media::ColorManagerSess *colorSess) : Media::VideoRenderer(colorSess, surfaceMgr, 6, 2)
 {
 	this->surfaceMgr = surfaceMgr;
-	if (this->surfaceMgr)
+	this->primarySurface = this->surfaceMgr->CreatePrimarySurface(this->surfaceMgr->GetMonitorHandle(0), 0, Media::RotateType::None);
+	if (this->primarySurface)
 	{
-		this->primarySurface = this->surfaceMgr->CreatePrimarySurface(this->surfaceMgr->GetMonitorHandle(0), 0, Media::RotateType::None);
-		if (this->primarySurface)
-		{
-			this->UpdateDispInfo(this->primarySurface->info.dispSize, this->primarySurface->info.storeBPP, this->primarySurface->info.pf);
-		}
-	}
-	else
-	{
-		this->primarySurface = 0;
+		this->UpdateDispInfo(this->primarySurface->info.dispSize, this->primarySurface->info.storeBPP, this->primarySurface->info.pf);
 	}
 }
 
@@ -70,7 +63,7 @@ void Media::ConsoleVideoRenderer::LockUpdateSize(NotNullPtr<Sync::MutexUsage> mu
 	mutUsage->ReplaceMutex(this->mut);
 }
 
-void Media::ConsoleVideoRenderer::DrawFromSurface(Media::MonitorSurface *surface, Math::Coord2D<OSInt> destTL, Math::Size2D<UOSInt> buffSize, Bool clearScn)
+void Media::ConsoleVideoRenderer::DrawFromSurface(NotNullPtr<Media::MonitorSurface> surface, Math::Coord2D<OSInt> destTL, Math::Size2D<UOSInt> buffSize, Bool clearScn)
 {
 	Sync::MutexUsage mutUsage(this->mut);
 	if (this->primarySurface)

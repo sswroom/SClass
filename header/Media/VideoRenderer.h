@@ -116,7 +116,7 @@ namespace Media
 		Media::ColorManagerSess *colorSess;
 		Media::IVideoSource *video;
 		Media::FrameInfo videoInfo;
-		Media::MonitorSurfaceMgr *surfaceMgr;
+		NotNullPtr<Media::MonitorSurfaceMgr> surfaceMgr;
 		UInt32 frameRateNorm;
 		UInt32 frameRateDenorm;
 		Media::ImageCopy outputCopier;
@@ -224,9 +224,9 @@ namespace Media
 		void UpdateDispInfo(Math::Size2D<UOSInt> outputSize, UInt32 bpp, Media::PixelFormat pf);
 
 		virtual void LockUpdateSize(NotNullPtr<Sync::MutexUsage> mutUsage) = 0;
-		virtual void DrawFromSurface(Media::MonitorSurface *surface, Math::Coord2D<OSInt> destTL, Math::Size2D<UOSInt> buffSize, Bool clearScn) = 0;
+		virtual void DrawFromSurface(NotNullPtr<Media::MonitorSurface> surface, Math::Coord2D<OSInt> destTL, Math::Size2D<UOSInt> buffSize, Bool clearScn) = 0;
 	public:
-		VideoRenderer(Media::ColorManagerSess *colorSess, Media::MonitorSurfaceMgr *surfaceMgr, UOSInt buffCnt, UOSInt threadCnt);
+		VideoRenderer(Media::ColorManagerSess *colorSess, NotNullPtr<Media::MonitorSurfaceMgr> surfaceMgr, UOSInt buffCnt, UOSInt threadCnt);
 		virtual ~VideoRenderer();
 
 		void SetVideo(Media::IVideoSource *video);
@@ -261,8 +261,8 @@ namespace Media
 
 		void AddImgFilter(Media::IImgFilter *imgFilter);
 		void Snapshot();
-		void GetStatus(RendererStatus2 *status);
-		Media::MonitorSurfaceMgr* GetSurfaceMgr();
+		void GetStatus(NotNullPtr<RendererStatus2> status);
+		NotNullPtr<Media::MonitorSurfaceMgr> GetSurfaceMgr();
 	};
 }
 #endif

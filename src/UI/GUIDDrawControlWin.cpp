@@ -497,8 +497,8 @@ UI::GUIDDrawControl::GUIDDrawControl(NotNullPtr<GUICore> ui, UI::GUIClientContro
 
 	this->currScnMode = SM_VFS;
 	this->surfaceMon = 0;
-	NEW_CLASS(this->surfaceMgr, Media::DDrawManager(ui->GetMonitorMgr(), colorSess.Ptr()));
-	if (((Media::DDrawManager*)this->surfaceMgr)->IsError())
+	NEW_CLASSNN(this->surfaceMgr, Media::DDrawManager(ui->GetMonitorMgr(), colorSess.Ptr()));
+	if (((Media::DDrawManager*)this->surfaceMgr.Ptr())->IsError())
 	{
 	}
 	else
@@ -552,7 +552,7 @@ UI::GUIDDrawControl::~GUIDDrawControl()
 	this->ReleaseSurface();
 	this->ReleaseSubSurface();
 
-	DEL_CLASS(this->surfaceMgr);
+	this->surfaceMgr.Delete();
 	SDEL_CLASS(this->imgCopy);
 	if (this->debugWriter)
 	{
@@ -572,6 +572,7 @@ void UI::GUIDDrawControl::SetUserFSMode(ScreenMode fullScnMode)
 
 void UI::GUIDDrawControl::DrawToScreen()
 {
+	NotNullPtr<Media::MonitorSurface> buffSurface;
 	Sync::MutexUsage mutUsage(this->surfaceMut);
 	if (this->debugWriter)
 	{
@@ -589,9 +590,9 @@ void UI::GUIDDrawControl::DrawToScreen()
 	}
 	else if (this->currScnMode == SM_VFS)
 	{
-		if (this->primarySurface && this->buffSurface)
+		if (this->primarySurface && buffSurface.Set(this->buffSurface))
 		{
-			if (!this->primarySurface->DrawFromSurface(this->buffSurface, true))
+			if (!this->primarySurface->DrawFromSurface(buffSurface, true))
 			{
 				if (this->debugWriter)
 				{
@@ -611,18 +612,18 @@ void UI::GUIDDrawControl::DrawToScreen()
 	}
 	else if (this->currScnMode == SM_WINDOWED_DIR)
 	{
-		if (GetVisible())
+		if (GetVisible() && buffSurface.Set(this->buffSurface))
 		{
-			this->primarySurface->DrawFromSurface(this->buffSurface, true);
+			this->primarySurface->DrawFromSurface(buffSurface, true);
 		}
 	}
 	else
 	{
 		if (GetVisible())
 		{
-			if (this->primarySurface && this->buffSurface)
+			if (this->primarySurface && buffSurface.Set(this->buffSurface))
 			{
-				this->primarySurface->DrawFromSurface(this->buffSurface, true);
+				this->primarySurface->DrawFromSurface(buffSurface, true);
 			}
 			else
 			{
@@ -638,7 +639,7 @@ void UI::GUIDDrawControl::DrawToScreen()
 	}
 }
 
-void UI::GUIDDrawControl::DisplayFromSurface(Media::MonitorSurface *surface, Math::Coord2D<OSInt> tl, Math::Size2D<UOSInt> drawSize, Bool clearScn)
+void UI::GUIDDrawControl::DisplayFromSurface(NotNullPtr<Media::MonitorSurface> surface, Math::Coord2D<OSInt> tl, Math::Size2D<UOSInt> drawSize, Bool clearScn)
 {
 	if (primarySurface)
 	{
@@ -672,7 +673,7 @@ void UI::GUIDDrawControl::SwitchFullScreen(Bool fullScn, Bool vfs)
 	if (fullScn && !vfs)
 	{
 		this->BeginUpdateSize();
-		LPDIRECTDRAW7 lpDD = (LPDIRECTDRAW7)((Media::DDrawManager*)this->surfaceMgr)->GetDD7(this->GetHMonitor());
+		LPDIRECTDRAW7 lpDD = (LPDIRECTDRAW7)((Media::DDrawManager*)this->surfaceMgr.Ptr())->GetDD7(this->GetHMonitor());
 		this->currScnMode = SM_FS;
 		DDSURFACEDESC2 ddsd;
 		ddsd.dwSize = sizeof(ddsd);
@@ -811,7 +812,7 @@ Bool UI::GUIDDrawControl::IsFullScreen()
 void UI::GUIDDrawControl::ChangeMonitor(MonitorHandle *hMon)
 {
 	MONITORINFOEXW monInfo;
-	((Media::DDrawManager*)this->surfaceMgr)->ReleaseDD7(this->currMon);
+	((Media::DDrawManager*)this->surfaceMgr.Ptr())->ReleaseDD7(this->currMon);
 	this->currMon = hMon;
 	monInfo.cbSize = sizeof(monInfo);
 	::GetMonitorInfoW((HMONITOR)this->currMon, &monInfo);

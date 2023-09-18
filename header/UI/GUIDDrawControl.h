@@ -43,7 +43,7 @@ namespace UI
 	protected:
 		Math::Size2D<UOSInt> bkBuffSize;
 		Math::Size2D<UOSInt> dispSize;
-		Media::MonitorSurfaceMgr* surfaceMgr;
+		NotNullPtr<Media::MonitorSurfaceMgr> surfaceMgr;
 		Sync::Mutex surfaceMut;
 		UInt32 bitDepth;
 		OSInt scnX;
@@ -87,7 +87,7 @@ namespace UI
 
 		void SetUserFSMode(ScreenMode fullScnMode);
 		void DrawToScreen();
-		void DisplayFromSurface(Media::MonitorSurface *surface, Math::Coord2D<OSInt> tl, Math::Size2D<UOSInt> drawSize, Bool clearScn);
+		void DisplayFromSurface(NotNullPtr<Media::MonitorSurface> surface, Math::Coord2D<OSInt> tl, Math::Size2D<UOSInt> drawSize, Bool clearScn);
 		void SwitchFullScreen(Bool fullScn, Bool vfs);
 		Bool IsFullScreen();
 		virtual void ChangeMonitor(MonitorHandle *hMon);

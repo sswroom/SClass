@@ -66,7 +66,7 @@ void UI::GUIVideoBoxDD::LockUpdateSize(NotNullPtr<Sync::MutexUsage> mutUsage)
 	mutUsage->ReplaceMutex(this->surfaceMut);
 }
 
-void UI::GUIVideoBoxDD::DrawFromSurface(Media::MonitorSurface *surface, Math::Coord2D<OSInt> destTL, Math::Size2D<UOSInt> buffSize, Bool clearScn)
+void UI::GUIVideoBoxDD::DrawFromSurface(NotNullPtr<Media::MonitorSurface> surface, Math::Coord2D<OSInt> destTL, Math::Size2D<UOSInt> buffSize, Bool clearScn)
 {
 	this->DisplayFromSurface(surface, destTL, buffSize, clearScn);
 }

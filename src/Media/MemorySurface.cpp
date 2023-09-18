@@ -106,9 +106,9 @@ Bool Media::MemorySurface::DrawFromBuff()
 	return false;
 }
 
-Bool Media::MemorySurface::DrawFromSurface(Media::MonitorSurface *surface, Math::Coord2D<OSInt> destTL, Math::Size2D<UOSInt> buffSize, Bool clearScn, Bool waitForVBlank)
+Bool Media::MemorySurface::DrawFromSurface(NotNullPtr<Media::MonitorSurface> surface, Math::Coord2D<OSInt> destTL, Math::Size2D<UOSInt> buffSize, Bool clearScn, Bool waitForVBlank)
 {
-	if (surface && surface->info.storeBPP == this->info.storeBPP)
+	if (surface->info.storeBPP == this->info.storeBPP)
 	{
 		OSInt destWidth = (OSInt)this->info.dispSize.x;
 		OSInt destHeight = (OSInt)this->info.dispSize.y;

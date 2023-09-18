@@ -104,7 +104,7 @@ void SSWR::AVIRead::AVIRConsoleMediaPlayerForm::UpdateColorDisp()
 {
 	Media::VideoRenderer::RendererStatus2 status;
 	this->videoOpening = true;
-	this->player->GetVideoRenderer()->GetStatus(&status);
+	this->player->GetVideoRenderer()->GetStatus(status);
 	UOSInt i;
 	i = this->cboYUVType->GetCount();
 	while (i-- > 0)

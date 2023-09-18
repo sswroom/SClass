@@ -1491,8 +1491,9 @@ UInt32 __stdcall Media::VideoRenderer::DisplayThread(void *userObj)
 									lastH = rect.size.y;
 									me->toClear = false;
 								}
-								if (me->buffs[minIndex].destSurface)
-									me->DrawFromSurface(me->buffs[minIndex].destSurface, rect.tl, rect.size, toClear);
+								NotNullPtr<Media::MonitorSurface> surface;
+								if (surface.Set(me->buffs[minIndex].destSurface))
+									me->DrawFromSurface(surface, rect.tl, rect.size, toClear);
 							}
 							me->buffs[minIndex].isEmpty = true;
 							me->buffEvt.Set();
@@ -1730,7 +1731,7 @@ void Media::VideoRenderer::UpdateDispInfo(Math::Size2D<UOSInt> outputSize, UInt3
 	this->outputPf = pf;
 }
 
-Media::VideoRenderer::VideoRenderer(Media::ColorManagerSess *colorSess, Media::MonitorSurfaceMgr *surfaceMgr, UOSInt buffCnt, UOSInt threadCnt) : srcColor(Media::ColorProfile::CPT_VUNKNOWN), ivtc(0), uvOfst(0), autoCrop(0)
+Media::VideoRenderer::VideoRenderer(Media::ColorManagerSess *colorSess, NotNullPtr<Media::MonitorSurfaceMgr> surfaceMgr, UOSInt buffCnt, UOSInt threadCnt) : srcColor(Media::ColorProfile::CPT_VUNKNOWN), ivtc(0), uvOfst(0), autoCrop(0)
 {
 	UOSInt i;
 	this->colorSess = colorSess;
@@ -2267,7 +2268,7 @@ void Media::VideoRenderer::Snapshot()
 	}
 }
 
-void Media::VideoRenderer::GetStatus(RendererStatus2 *status)
+void Media::VideoRenderer::GetStatus(NotNullPtr<RendererStatus2> status)
 {
 	this->dispMut.LockRead();
 	if (this->dispClk && this->dispClk->Running())
@@ -2358,7 +2359,7 @@ void Media::VideoRenderer::GetStatus(RendererStatus2 *status)
 	mutUsage.EndUse();
 }
 
-Media::MonitorSurfaceMgr* Media::VideoRenderer::GetSurfaceMgr()
+NotNullPtr<Media::MonitorSurfaceMgr> Media::VideoRenderer::GetSurfaceMgr()
 {
 	return this->surfaceMgr;
 }

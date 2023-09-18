@@ -27,7 +27,7 @@ namespace Media
 		virtual void *GetHandle();
 
 		virtual Bool DrawFromBuff();
-		virtual Bool DrawFromSurface(Media::MonitorSurface *surface, Math::Coord2D<OSInt> destTL, Math::Size2D<UOSInt> buffSize, Bool clearScn, Bool waitForVBlank);
+		virtual Bool DrawFromSurface(NotNullPtr<Media::MonitorSurface> surface, Math::Coord2D<OSInt> destTL, Math::Size2D<UOSInt> buffSize, Bool clearScn, Bool waitForVBlank);
 		virtual UInt8 *LockSurface(OSInt *lineAdd);
 		virtual void UnlockSurface();
 		virtual void SetSurfaceBugMode(Bool surfaceBugMode);

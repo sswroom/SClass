@@ -83,7 +83,7 @@ UInt32 __stdcall TestThread(void *userObj)
 	return 0;
 }
 
-Double HashTestSpeed(Crypto::Hash::IHash *hash)
+Double HashTestSpeed(NotNullPtr<Crypto::Hash::IHash> hash)
 {
 	UInt8 hashVal[64];
 	UInt8 *testBlock = MemAllocA(UInt8, 1048576);	
@@ -798,12 +798,11 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 #endif
 
 #if defined(TEST_HASH)
-	Crypto::Hash::IHash *hash;
+	NotNullPtr<Crypto::Hash::IHash> hash;
 	Crypto::Hash::HashType currHash = Crypto::Hash::HashType::First;
 	while (currHash <= Crypto::Hash::HashType::Last)
 	{
-		hash = Crypto::Hash::HashCreator::CreateHash(currHash);
-		if (hash)
+		if (hash.Set(Crypto::Hash::HashCreator::CreateHash(currHash)))
 		{
 			t = HashTestSpeed(hash);
 			sptr = hash->GetName(sbuff);
@@ -816,7 +815,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 			console->WriteLineC(sb.ToString(), sb.GetLength());
 			writer->WriteLineC(sb.ToString(), sb.GetLength());
 
-			DEL_CLASS(hash);
+			hash.Delete();
 		}
 		currHash = (Crypto::Hash::HashType)((OSInt)currHash + 1);
 	}

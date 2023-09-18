@@ -443,7 +443,7 @@ UI::GUIDDrawControl::GUIDDrawControl(NotNullPtr<GUICore> ui, UI::GUIClientContro
 	this->clsData->pSurfaceUpdated = true;
 	this->clsData->drawPause = 0;
 	
-	NEW_CLASS(this->surfaceMgr, Media::FBMonitorSurfaceMgr(ui->GetMonitorMgr(), colorSess.Ptr()));
+	NEW_CLASSNN(this->surfaceMgr, Media::FBMonitorSurfaceMgr(ui->GetMonitorMgr(), colorSess.Ptr()));
 	this->inited = false;
 	this->primarySurface = 0;
 	this->buffSurface = 0;
@@ -495,7 +495,7 @@ UI::GUIDDrawControl::~GUIDDrawControl()
 		this->debugFS = 0;
 		this->debugWriter = 0;
 	}
-	DEL_CLASS(this->surfaceMgr);
+	this->surfaceMgr.Delete();
 	MemFree(this->clsData);
 }
 
@@ -506,7 +506,8 @@ void UI::GUIDDrawControl::SetUserFSMode(ScreenMode fullScnMode)
 
 void UI::GUIDDrawControl::DrawToScreen()
 {
-	if (this->primarySurface && this->buffSurface)
+	NotNullPtr<Media::MonitorSurface> buffSurface;
+	if (this->primarySurface && buffSurface.Set(this->buffSurface))
 	{
 		if (this->clsData->drawPause)
 		{
@@ -514,7 +515,7 @@ void UI::GUIDDrawControl::DrawToScreen()
 		}
 		else
 		{
-			this->primarySurface->DrawFromSurface(this->buffSurface, true);
+			this->primarySurface->DrawFromSurface(buffSurface, true);
 //			this->clsData->drawPause = 0;
 			this->clsData->drawPause = 10;
 			if (this->clsData->pSurfaceUpdated)
@@ -535,7 +536,7 @@ void UI::GUIDDrawControl::DrawToScreen()
 	}
 }
 
-void UI::GUIDDrawControl::DisplayFromSurface(Media::MonitorSurface *surface, Math::Coord2D<OSInt> tl, Math::Size2D<UOSInt> drawSize, Bool clearScn)
+void UI::GUIDDrawControl::DisplayFromSurface(NotNullPtr<Media::MonitorSurface> surface, Math::Coord2D<OSInt> tl, Math::Size2D<UOSInt> drawSize, Bool clearScn)
 {
 	Sync::MutexUsage mutUsage(this->surfaceMut);
 	if (this->primarySurface)
