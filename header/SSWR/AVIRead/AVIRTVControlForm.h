@@ -30,7 +30,7 @@ namespace SSWR
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			IO::Stream *port;
 			IO::TVControl *tvCtrl;
-			IO::LogTool *log;
+			IO::LogTool log;
 			NotNullPtr<UI::ListBoxLogger> logger;
 			CommandInfo *cmdInfos;
 

@@ -10,9 +10,8 @@ void __stdcall SSWR::AVIRead::AVIRPushServerForm::OnStartClicked(void *userObj)
 	if (me->svr)
 	{
 		DEL_CLASS(me->svr);
-		DEL_CLASS(me->log);
+		me->log.ClearHandlers();
 		me->svr = 0;
-		me->log = 0;
 		me->txtAPIKey->SetReadOnly(false);
 		me->txtPort->SetReadOnly(false);
 		return;
@@ -34,19 +33,17 @@ void __stdcall SSWR::AVIRead::AVIRPushServerForm::OnStartClicked(void *userObj)
 	}
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
-	NEW_CLASS(me->log, IO::LogTool());
 	sptr = IO::Path::GetProcessFileName(sbuff);
 	sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("log"));
 	*sptr++ = IO::Path::PATH_SEPERATOR;
 	sptr = Text::StrConcatC(sptr, UTF8STRC("PushSvr"));
-	me->log->AddFileLog(CSTRP(sbuff, sptr), IO::LogHandler::LogType::PerDay, IO::LogHandler::LogGroup::PerMonth, IO::LogHandler::LogLevel::Raw, "yyyy-MM-dd HH:mm:ss.fff", false);
+	me->log.AddFileLog(CSTRP(sbuff, sptr), IO::LogHandler::LogType::PerDay, IO::LogHandler::LogGroup::PerMonth, IO::LogHandler::LogLevel::Raw, "yyyy-MM-dd HH:mm:ss.fff", false);
 	NEW_CLASS(me->svr, Net::PushServer(me->core->GetSocketFactory(), me->ssl, port, sbAPIKey.ToCString(), me->log));
 	if (me->svr->IsError())
 	{
 		DEL_CLASS(me->svr);
-		DEL_CLASS(me->log);
 		me->svr = 0;
-		me->log = 0;
+		me->log.ClearHandlers();
 		UI::MessageDialog::ShowDialog(CSTR("Error in listening to port"), CSTR("PushServer"), me);
 		return;
 	}
@@ -80,7 +77,6 @@ SSWR::AVIRead::AVIRPushServerForm::AVIRPushServerForm(UI::GUIClientControl *pare
 SSWR::AVIRead::AVIRPushServerForm::~AVIRPushServerForm()
 {
 	SDEL_CLASS(this->svr);
-	SDEL_CLASS(this->log);
 	SDEL_CLASS(this->ssl);
 }
 

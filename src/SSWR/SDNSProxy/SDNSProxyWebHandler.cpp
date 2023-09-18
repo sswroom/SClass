@@ -637,7 +637,7 @@ Bool SSWR::SDNSProxy::SDNSProxyWebHandler::ProcessRequest(NotNullPtr<Net::WebSer
 	{
 		return true;
 	}
-	RequestHandler reqHdlr = this->reqMap->GetC(subReq);
+	RequestHandler reqHdlr = this->reqMap.GetC(subReq);
 	if (reqHdlr)
 	{
 		return reqHdlr(this, req, resp);
@@ -646,23 +646,22 @@ Bool SSWR::SDNSProxy::SDNSProxyWebHandler::ProcessRequest(NotNullPtr<Net::WebSer
 	return true;
 }
 
-SSWR::SDNSProxy::SDNSProxyWebHandler::SDNSProxyWebHandler(Net::DNSProxy *proxy, IO::LogTool *log, SDNSProxyCore *core)
+SSWR::SDNSProxy::SDNSProxyWebHandler::SDNSProxyWebHandler(Net::DNSProxy *proxy, NotNullPtr<IO::LogTool> log, SDNSProxyCore *core)
 {
 	this->proxy = proxy;
 	this->core = core;
-	NEW_CLASS(this->reqMap, Data::FastStringMap<RequestHandler>());
 	this->log = log;
 	NEW_CLASSNN(this->logBuff, IO::CyclicLogBuffer(LOGSIZE));
 
-	this->reqMap->PutC(CSTR("/"), StatusReq);
-	this->reqMap->PutC(CSTR("/reqv4"), ReqV4Req);
-	this->reqMap->PutC(CSTR("/reqv6"), ReqV6Req);
-	this->reqMap->PutC(CSTR("/reqoth"), ReqOthReq);
-	this->reqMap->PutC(CSTR("/target"), TargetReq);
-	this->reqMap->PutC(CSTR("/blacklist"), BlacklistReq);
-	this->reqMap->PutC(CSTR("/log"), LogReq);
-	this->reqMap->PutC(CSTR("/client"), ClientReq);
-	this->reqMap->PutC(CSTR("/reqpm"), ReqPerMinReq);
+	this->reqMap.PutC(CSTR("/"), StatusReq);
+	this->reqMap.PutC(CSTR("/reqv4"), ReqV4Req);
+	this->reqMap.PutC(CSTR("/reqv6"), ReqV6Req);
+	this->reqMap.PutC(CSTR("/reqoth"), ReqOthReq);
+	this->reqMap.PutC(CSTR("/target"), TargetReq);
+	this->reqMap.PutC(CSTR("/blacklist"), BlacklistReq);
+	this->reqMap.PutC(CSTR("/log"), LogReq);
+	this->reqMap.PutC(CSTR("/client"), ClientReq);
+	this->reqMap.PutC(CSTR("/reqpm"), ReqPerMinReq);
 
 	this->log->AddLogHandler(this->logBuff, IO::LogHandler::LogLevel::Raw);
 }
@@ -671,7 +670,6 @@ SSWR::SDNSProxy::SDNSProxyWebHandler::~SDNSProxyWebHandler()
 {
 	this->log->RemoveLogHandler(this->logBuff);
 	this->logBuff.Delete();
-	DEL_CLASS(this->reqMap);
 }
 
 void SSWR::SDNSProxy::SDNSProxyWebHandler::Release()

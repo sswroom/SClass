@@ -17,27 +17,8 @@
 #include "Text/StringBuilderUTF8.h"
 #include "Text/UTF8Writer.h"
 
-IO::LogTool::LogTool()
+void IO::LogTool::HandlerClose()
 {
-	closed = false;
-}
-
-IO::LogTool::~LogTool()
-{
-	Close();
-	UOSInt i = this->fileLogArr.GetCount();
-	while (i-- > 0)
-	{
-		IO::LogHandler *logHdlr = this->fileLogArr.GetItem(i);
-		DEL_CLASS(logHdlr);
-	}
-}
-
-void IO::LogTool::Close()
-{
-	if (closed)
-		return;
-	closed = true;
 	Sync::MutexUsage mutUsage(this->hdlrMut);
 	UOSInt i = this->hdlrArr.GetCount();
 	Data::Timestamp ts = Data::Timestamp::Now();
@@ -46,6 +27,24 @@ void IO::LogTool::Close()
 		this->hdlrArr.GetItem(i)->LogAdded(ts, CSTR("End logging normally"),  (IO::LogHandler::LogLevel)0);
 		this->hdlrArr.GetItem(i)->LogClosed();
 	}
+}
+
+IO::LogTool::LogTool()
+{
+	closed = false;
+}
+
+IO::LogTool::~LogTool()
+{
+	this->ClearHandlers();
+}
+
+void IO::LogTool::Close()
+{
+	if (closed)
+		return;
+	closed = true;
+	this->HandlerClose();
 }
 
 void IO::LogTool::AddFileLog(NotNullPtr<Text::String> fileName, LogHandler::LogType style, LogHandler::LogGroup groupStyle, LogHandler::LogLevel logLev, const Char *dateFormat, Bool directWrite)
@@ -134,6 +133,20 @@ void IO::LogTool::RemoveLogHandler(NotNullPtr<LogHandler> hdlr)
 Bool IO::LogTool::HasHandler() const
 {
 	return this->hdlrArr.GetCount() > 0;
+}
+
+void IO::LogTool::ClearHandlers()
+{
+	if (!this->closed)
+		this->HandlerClose();
+	this->hdlrArr.Clear();
+	UOSInt i = this->fileLogArr.GetCount();
+	while (i-- > 0)
+	{
+		IO::LogHandler *logHdlr = this->fileLogArr.GetItem(i);
+		DEL_CLASS(logHdlr);
+	}
+	this->fileLogArr.Clear();
 }
 
 void IO::LogTool::LogMessage(Text::CStringNN logMsg, LogHandler::LogLevel level)

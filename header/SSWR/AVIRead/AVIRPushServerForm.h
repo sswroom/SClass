@@ -23,7 +23,7 @@ namespace SSWR
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			Net::SSLEngine *ssl;
 			Net::PushServer *svr;
-			IO::LogTool *log;
+			IO::LogTool log;
 
 			static void __stdcall OnStartClicked(void *userObj);
 		public:

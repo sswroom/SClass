@@ -178,7 +178,7 @@ Bool IO::SerialPort::InitStream()
 	return true;
 }
 
-Bool IO::SerialPort::GetAvailablePorts(Data::ArrayList<UOSInt> *ports, Data::ArrayList<SerialPortType> *portTypes)
+Bool IO::SerialPort::GetAvailablePorts(NotNullPtr<Data::ArrayList<UOSInt>> ports, Data::ArrayList<SerialPortType> *portTypes)
 {
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;

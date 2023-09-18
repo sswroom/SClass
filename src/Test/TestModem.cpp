@@ -11,7 +11,7 @@ UOSInt Test::TestModem::ListPorts(IO::Writer *writer)
 	UOSInt i;
 	UOSInt j;
 	Data::ArrayList<IO::SerialPort::SerialPortType> portTypes;
-	IO::SerialPort::GetAvailablePorts(&ports, &portTypes);
+	IO::SerialPort::GetAvailablePorts(ports, &portTypes);
 	writer->WriteLineC(UTF8STRC("Available Serial Ports:"));
 	i = 0;
 	j = ports.GetCount();

@@ -15,7 +15,7 @@ namespace SSWR
 			UI::GUIButton *btnReload;
 
 			NotNullPtr<Net::SocketFactory> sockf;
-			IO::LogTool *log;
+			IO::LogTool log;
 			OrganWebEnv *env;
 			
 			static void __stdcall OnReloadClicked(void *userObj);

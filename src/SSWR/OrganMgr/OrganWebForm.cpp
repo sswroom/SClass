@@ -21,7 +21,6 @@ SSWR::OrganMgr::OrganWebForm::OrganWebForm(UI::GUIClientControl *parent, NotNull
 
 	this->env = 0;
 	NEW_CLASS(this->sockf, Net::OSSocketFactory(true));
-	NEW_CLASS(this->log, IO::LogTool());
 
 	IO::ConfigFile *cfg = IO::IniFile::ParseProgConfig(0);
 	if (cfg == 0)
@@ -76,7 +75,6 @@ SSWR::OrganMgr::OrganWebForm::~OrganWebForm()
 {
 	SDEL_CLASS(this->env);
 	DEL_CLASS(this->sockf);
-	DEL_CLASS(this->log);
 }
 
 Bool SSWR::OrganMgr::OrganWebForm::IsError()

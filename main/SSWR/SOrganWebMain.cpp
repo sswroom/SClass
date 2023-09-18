@@ -109,7 +109,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 				sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("OSMTile"));
 				osmCacheDir = CSTRP(sbuff, sptr);
 			}
-			SSWR::OrganWeb::OrganWebEnv env(sockf, ssl, &log, db, cfg->GetValue(CSTR("ImageDir")), port, sslPort, cfg->GetValue(CSTR("CacheDir")), cfg->GetValue(CSTR("DataDir")), scnSize, cfg->GetValue(CSTR("ReloadPwd")), unorganizedGroupId, Media::DrawEngineFactory::CreateDrawEngine(), osmCacheDir);
+			SSWR::OrganWeb::OrganWebEnv env(sockf, ssl, log, db, cfg->GetValue(CSTR("ImageDir")), port, sslPort, cfg->GetValue(CSTR("CacheDir")), cfg->GetValue(CSTR("DataDir")), scnSize, cfg->GetValue(CSTR("ReloadPwd")), unorganizedGroupId, Media::DrawEngineFactory::CreateDrawEngine(), osmCacheDir);
 			DEL_CLASS(cfg);
 
 			if (env.IsError())

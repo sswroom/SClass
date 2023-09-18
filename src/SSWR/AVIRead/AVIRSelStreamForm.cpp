@@ -459,28 +459,28 @@ SSWR::AVIRead::AVIRSelStreamForm::AVIRSelStreamForm(UI::GUIClientControl *parent
 	NEW_CLASS(this->cboSerialPort, UI::GUIComboBox(ui, this->tpSerialPort, false));
 	this->cboSerialPort->SetRect(108, 8, 100, 23, false);
 
-	Data::ArrayList<UOSInt> *ports;
-	NEW_CLASS(ports, Data::ArrayList<UOSInt>());
-	Data::ArrayList<IO::SerialPort::SerialPortType> portTypeList;
-	IO::SerialPort::GetAvailablePorts(ports, &portTypeList);
-	UOSInt currPort;
-	i = 0;
-	j = ports->GetCount();
-	while (i < j)
 	{
-		currPort = ports->GetItem(i);
-		sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("COM")), currPort);
-		sptr = Text::StrConcatC(sptr, UTF8STRC(" ("));
-		sptr = IO::SerialPort::GetPortTypeName(portTypeList.GetItem(i)).ConcatTo(sptr);
-		sptr = Text::StrConcatC(sptr, UTF8STRC(")"));
-		this->cboSerialPort->AddItem(CSTRP(sbuff, sptr), (void*)(OSInt)currPort);
-		i++;
+		Data::ArrayList<UOSInt> ports;
+		Data::ArrayList<IO::SerialPort::SerialPortType> portTypeList;
+		IO::SerialPort::GetAvailablePorts(ports, &portTypeList);
+		UOSInt currPort;
+		i = 0;
+		j = ports.GetCount();
+		while (i < j)
+		{
+			currPort = ports.GetItem(i);
+			sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("COM")), currPort);
+			sptr = Text::StrConcatC(sptr, UTF8STRC(" ("));
+			sptr = IO::SerialPort::GetPortTypeName(portTypeList.GetItem(i)).ConcatTo(sptr);
+			sptr = Text::StrConcatC(sptr, UTF8STRC(")"));
+			this->cboSerialPort->AddItem(CSTRP(sbuff, sptr), (void*)(OSInt)currPort);
+			i++;
+		}
+		if (j > 0)
+		{
+			this->cboSerialPort->SetSelectedIndex(0);
+		}
 	}
-	if (j > 0)
-	{
-		this->cboSerialPort->SetSelectedIndex(0);
-	}
-	DEL_CLASS(ports);
 	NEW_CLASS(this->lblBaudRate, UI::GUILabel(ui, this->tpSerialPort, CSTR("Baud Rate")));
 	this->lblBaudRate->SetRect(8, 32, 100, 23, false);
 	NEW_CLASS(this->txtBaudRate, UI::GUITextBox(ui, this->tpSerialPort, CSTR("115200")));

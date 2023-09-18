@@ -1391,7 +1391,7 @@ SSWR::AVIRead::AVIRGSMModemForm::AVIRGSMModemForm(UI::GUIClientControl *parent, 
 
 	Data::ArrayList<UOSInt> ports;
 	Data::ArrayList<IO::SerialPort::SerialPortType> portTypes;
-	if (IO::SerialPort::GetAvailablePorts(&ports, &portTypes))
+	if (IO::SerialPort::GetAvailablePorts(ports, &portTypes))
 	{
 		UTF8Char sbuff[256];
 		UTF8Char *sptr;

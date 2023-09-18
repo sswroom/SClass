@@ -19,8 +19,8 @@ namespace SSWR
 			typedef Bool (__stdcall *RequestHandler)(SSWR::SDNSProxy::SDNSProxyWebHandler *me, NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp);
 		private:
 			Net::DNSProxy *proxy;
-			IO::LogTool *log;
-			Data::FastStringMap<RequestHandler> *reqMap;
+			NotNullPtr<IO::LogTool> log;
+			Data::FastStringMap<RequestHandler> reqMap;
 			NotNullPtr<IO::CyclicLogBuffer> logBuff;
 			SDNSProxyCore *core;
 
@@ -41,7 +41,7 @@ namespace SSWR
 			virtual Bool ProcessRequest(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq);
 
 		public:
-			SDNSProxyWebHandler(Net::DNSProxy *proxy, IO::LogTool *log, SDNSProxyCore *core);
+			SDNSProxyWebHandler(Net::DNSProxy *proxy, NotNullPtr<IO::LogTool> log, SDNSProxyCore *core);
 			virtual ~SDNSProxyWebHandler();
 
 			virtual void Release();

@@ -59,6 +59,7 @@ namespace IO
 		Sync::Mutex hdlrMut;
 		Bool closed;
 		
+		void HandlerClose();
 	public:
 		LogTool();
 		virtual ~LogTool();
@@ -68,6 +69,7 @@ namespace IO
 		void AddLogHandler(NotNullPtr<LogHandler> hdlr, LogHandler::LogLevel logLev);
 		void RemoveLogHandler(NotNullPtr<LogHandler> hdlr);
 		Bool HasHandler() const;
+		void ClearHandlers();
 		virtual void LogMessage(Text::CStringNN logMsg, LogHandler::LogLevel level);
 		LogHandler *GetLastFileLog();
 	};

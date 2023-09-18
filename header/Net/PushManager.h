@@ -39,7 +39,7 @@ namespace Net
 		NotNullPtr<Net::SocketFactory> sockf;
 		Net::SSLEngine *ssl;
 		NotNullPtr<Text::String> fcmKey;
-		IO::LogTool *log;
+		NotNullPtr<IO::LogTool> log;
 
 		Sync::Mutex dataMut;
 		Bool loading;
@@ -50,7 +50,7 @@ namespace Net
 		void LoadData();
 		void SaveData();
 	public:
-		PushManager(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, Text::CString fcmKey, IO::LogTool *log);
+		PushManager(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, Text::CString fcmKey, NotNullPtr<IO::LogTool> log);
 		~PushManager();
 
 		Bool Subscribe(Text::CStringNN token, Text::CStringNN userName, DeviceType devType, NotNullPtr<const Net::SocketUtil::AddressInfo> remoteAddr, Text::CString devModel);

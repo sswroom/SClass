@@ -131,7 +131,7 @@ void Net::PushManager::SaveData()
 	}
 }
 
-Net::PushManager::PushManager(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, Text::CString fcmKey, IO::LogTool *log)
+Net::PushManager::PushManager(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, Text::CString fcmKey, NotNullPtr<IO::LogTool> log)
 {
 	this->sockf = sockf;
 	this->ssl = ssl;
@@ -273,8 +273,7 @@ Bool Net::PushManager::Send(Data::ArrayListNN<Text::String> *userNames, NotNullP
 	}
 	if (tokenList.GetCount() == 0)
 	{
-		if (this->log)
-			this->log->LogMessage(CSTR("Send: Device not found"), IO::LogHandler::LogLevel::Error);
+		this->log->LogMessage(CSTR("Send: Device not found"), IO::LogHandler::LogLevel::Error);
 		return false;
 	}
 	else
@@ -286,8 +285,7 @@ Bool Net::PushManager::Send(Data::ArrayListNN<Text::String> *userNames, NotNullP
 		{
 			sbResult.AppendC(UTF8STRC("Send Message result: "));
 			ret |= Net::GoogleFCM::SendMessage(this->sockf, this->ssl, this->fcmKey->ToCString(), it.Next()->ToCString(), message->ToCString(), &sbResult);
-			if (this->log)
-				this->log->LogMessage(sbResult.ToCString(), IO::LogHandler::LogLevel::Action);
+			this->log->LogMessage(sbResult.ToCString(), IO::LogHandler::LogLevel::Action);
 		}
 		LIST_FREE_STRING(&tokenList);
 		return ret;

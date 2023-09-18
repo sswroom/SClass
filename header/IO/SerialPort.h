@@ -39,7 +39,7 @@ namespace IO
 
 		Bool InitStream();
 	public:
-		static Bool GetAvailablePorts(Data::ArrayList<UOSInt> *ports, Data::ArrayList<SerialPortType> *portTypes);
+		static Bool GetAvailablePorts(NotNullPtr<Data::ArrayList<UOSInt>> ports, Data::ArrayList<SerialPortType> *portTypes);
 		static Text::CString GetPortTypeName(SerialPortType portType);
 		static UOSInt GetPortWithType(Text::CString portName);
 		static UOSInt GetUSBPort();
