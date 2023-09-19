@@ -561,7 +561,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::DoFileRequest(NotNullPtr<Net::WebServ
 			sb.Append(subReq);
 		}
 		i = Text::StrIndexOfCharC(&sb.ToString()[1], sb.GetLength() - 1, '/');
-		Text::CString dirName = sb.ToCString();
+		Text::CStringNN dirName = sb.ToCString();
 		if (i != INVALID_INDEX)
 		{
 			sb.v[i + 1] = 0;

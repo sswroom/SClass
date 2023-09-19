@@ -45,19 +45,19 @@ namespace Data
 		static Int8 localTzQhr;
 		static Bool localTzValid;
 
-		static void TimeValueSetDate(Data::DateTimeUtil::TimeValue *t, Text::PString *dateStrs);
-		static void TimeValueSetTime(Data::DateTimeUtil::TimeValue *t, Text::PString *timeStrs, UInt32 *nanosec);
+		static void TimeValueSetDate(NotNullPtr<Data::DateTimeUtil::TimeValue> t, Text::PString *dateStrs);
+		static void TimeValueSetTime(NotNullPtr<Data::DateTimeUtil::TimeValue> t, Text::PString *timeStrs, UInt32 *nanosec);
 	public:
-		static Int64 TimeValue2Secs(const TimeValue *t, Int8 tzQhr);
-		static Int64 TimeValue2Ticks(const TimeValue *t, UInt32 ns, Int8 tzQhr);
-		static void Ticks2TimeValue(Int64 ticks, TimeValue *t, Int8 tzQhr);
-		static void Secs2TimeValue(Int64 secs, TimeValue *t, Int8 tzQhr);
-		static void Instant2TimeValue(Int64 secs, UInt32 nanosec, TimeValue *t, Int8 tzQhr);
+		static Int64 TimeValue2Secs(NotNullPtr<const TimeValue> t, Int8 tzQhr);
+		static Int64 TimeValue2Ticks(NotNullPtr<const TimeValue> t, UInt32 ns, Int8 tzQhr);
+		static void Ticks2TimeValue(Int64 ticks, NotNullPtr<TimeValue> t, Int8 tzQhr);
+		static void Secs2TimeValue(Int64 secs, NotNullPtr<TimeValue> t, Int8 tzQhr);
+		static void Instant2TimeValue(Int64 secs, UInt32 nanosec, NotNullPtr<TimeValue> t, Int8 tzQhr);
 		static Weekday Ticks2Weekday(Int64 ticks, Int8 tzQhr);
 		static Weekday Instant2Weekday(Data::TimeInstant inst, Int8 tzQhr);
-		static UTF8Char *ToString(UTF8Char *sbuff, const TimeValue *tval, Int8 tzQhr, UInt32 nanosec, const UTF8Char *pattern);
-		static Bool String2TimeValue(Text::CString dateStr, TimeValue *tval, Int8 *tzQhr, UInt32 *nanosec);
-		static Bool TimeValueFromYMDHMS(Int64 ymdhms, TimeValue *tval);
+		static UTF8Char *ToString(UTF8Char *sbuff, NotNullPtr<const TimeValue> tval, Int8 tzQhr, UInt32 nanosec, const UTF8Char *pattern);
+		static Bool String2TimeValue(Text::CStringNN dateStr, NotNullPtr<TimeValue> tval, Int8 *tzQhr, UInt32 *nanosec);
+		static Bool TimeValueFromYMDHMS(Int64 ymdhms, NotNullPtr<TimeValue> tval);
 
 		static Bool IsYearLeap(UInt16 year);
 		static UInt8 ParseMonthStr(const UTF8Char *month, UOSInt monthLen);
@@ -74,7 +74,7 @@ namespace Data
 		static Int64 SYSTEMTIME2Ticks(void *sysTime);
 		static void Ticks2SYSTEMTIME(void *sysTime, Int64 ticks);
 		static Bool SetAsComputerTime(Int64 secs, UInt32 nanosec);
-		static Weekday WeekdayParse(Text::CString weekday);
+		static Weekday WeekdayParse(Text::CStringNN weekday);
 		static Text::CStringNN WeekdayGetName(Weekday wd);
 	};
 }

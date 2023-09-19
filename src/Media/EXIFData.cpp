@@ -1935,7 +1935,7 @@ Bool Media::EXIFData::GetPhotoDate(Data::DateTime *dt) const
 		{
 			if (item->type == ET_STRING)
 			{
-				dt->SetValue(Text::CString((const UTF8Char*)item->dataBuff, item->cnt - 1));
+				dt->SetValue(Text::CStringNN((const UTF8Char*)item->dataBuff, item->cnt - 1));
 				return true;
 			}
 		}
@@ -1943,7 +1943,7 @@ Bool Media::EXIFData::GetPhotoDate(Data::DateTime *dt) const
 		{
 			if (item->type == ET_STRING)
 			{
-				dt->SetValue(Text::CString((const UTF8Char*)item->dataBuff, item->cnt - 1));
+				dt->SetValue(Text::CStringNN((const UTF8Char*)item->dataBuff, item->cnt - 1));
 				return true;
 			}
 		}
@@ -1960,7 +1960,7 @@ Bool Media::EXIFData::GetPhotoDate(Data::DateTime *dt) const
 		{
 			if (item->type == ET_STRING)
 			{
-				dt->SetValue(Text::CString((const UTF8Char*)item->dataBuff, item->cnt - 1));
+				dt->SetValue(Text::CStringNN((const UTF8Char*)item->dataBuff, item->cnt - 1));
 				return true;
 			}
 		}
@@ -1977,7 +1977,7 @@ Bool Media::EXIFData::GetPhotoDate(Data::Timestamp *ts) const
 		{
 			if (item->type == ET_STRING)
 			{
-				*ts = Data::Timestamp::FromStr(Text::CString((const UTF8Char*)item->dataBuff, item->cnt - 1), Data::DateTimeUtil::GetLocalTzQhr());
+				*ts = Data::Timestamp::FromStr(Text::CStringNN((const UTF8Char*)item->dataBuff, item->cnt - 1), Data::DateTimeUtil::GetLocalTzQhr());
 				return true;
 			}
 		}
@@ -1985,7 +1985,7 @@ Bool Media::EXIFData::GetPhotoDate(Data::Timestamp *ts) const
 		{
 			if (item->type == ET_STRING)
 			{
-				*ts = Data::Timestamp::FromStr(Text::CString((const UTF8Char*)item->dataBuff, item->cnt - 1), Data::DateTimeUtil::GetLocalTzQhr());
+				*ts = Data::Timestamp::FromStr(Text::CStringNN((const UTF8Char*)item->dataBuff, item->cnt - 1), Data::DateTimeUtil::GetLocalTzQhr());
 				return true;
 			}
 		}
@@ -2002,7 +2002,7 @@ Bool Media::EXIFData::GetPhotoDate(Data::Timestamp *ts) const
 		{
 			if (item->type == ET_STRING)
 			{
-				*ts = Data::Timestamp::FromStr(Text::CString((const UTF8Char*)item->dataBuff, item->cnt - 1), Data::DateTimeUtil::GetLocalTzQhr());
+				*ts = Data::Timestamp::FromStr(Text::CStringNN((const UTF8Char*)item->dataBuff, item->cnt - 1), Data::DateTimeUtil::GetLocalTzQhr());
 				return true;
 			}
 		}

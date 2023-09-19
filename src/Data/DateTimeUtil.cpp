@@ -30,7 +30,7 @@ const Char *Data::DateTimeUtil::monthString[] = {"January", "February", "March",
 Int8 Data::DateTimeUtil::localTzQhr = 0;
 Bool Data::DateTimeUtil::localTzValid = false;
 
-void Data::DateTimeUtil::TimeValueSetDate(Data::DateTimeUtil::TimeValue *t, Text::PString *dateStrs)
+void Data::DateTimeUtil::TimeValueSetDate(NotNullPtr<Data::DateTimeUtil::TimeValue> t, Text::PString *dateStrs)
 {
 	UInt32 vals[3];
 	vals[0] = 0;
@@ -76,7 +76,7 @@ void Data::DateTimeUtil::TimeValueSetDate(Data::DateTimeUtil::TimeValue *t, Text
 	}
 }
 
-void Data::DateTimeUtil::TimeValueSetTime(Data::DateTimeUtil::TimeValue *t, Text::PString *timeStrs, UInt32 *nanosec)
+void Data::DateTimeUtil::TimeValueSetTime(NotNullPtr<Data::DateTimeUtil::TimeValue> t, Text::PString *timeStrs, UInt32 *nanosec)
 {
 	Text::PString strs[2];
 	UOSInt valTmp;
@@ -134,7 +134,7 @@ void Data::DateTimeUtil::TimeValueSetTime(Data::DateTimeUtil::TimeValue *t, Text
 	}
 }
 
-Int64 Data::DateTimeUtil::TimeValue2Secs(const TimeValue *t, Int8 tzQhr)
+Int64 Data::DateTimeUtil::TimeValue2Secs(NotNullPtr<const TimeValue> t, Int8 tzQhr)
 {
 	Int32 totalDays;
 	Int32 leapDays;
@@ -205,17 +205,17 @@ Int64 Data::DateTimeUtil::TimeValue2Secs(const TimeValue *t, Int8 tzQhr)
 	return totalDays * 86400LL + (t->second + t->minute * 60 + t->hour * 3600 - tzQhr * 900);
 }
 
-Int64 Data::DateTimeUtil::TimeValue2Ticks(const TimeValue *t, UInt32 ns, Int8 tzQhr)
+Int64 Data::DateTimeUtil::TimeValue2Ticks(NotNullPtr<const TimeValue> t, UInt32 ns, Int8 tzQhr)
 {
 	return TimeValue2Secs(t, tzQhr) * 1000LL + (ns / 1000000);
 }
 
-void Data::DateTimeUtil::Ticks2TimeValue(Int64 ticks, TimeValue *t, Int8 tzQhr)
+void Data::DateTimeUtil::Ticks2TimeValue(Int64 ticks, NotNullPtr<TimeValue> t, Int8 tzQhr)
 {
 	Secs2TimeValue(ticks / 1000, t, tzQhr);
 }
 
-void Data::DateTimeUtil::Secs2TimeValue(Int64 secs, TimeValue *t, Int8 tzQhr)
+void Data::DateTimeUtil::Secs2TimeValue(Int64 secs, NotNullPtr<TimeValue> t, Int8 tzQhr)
 {
 	secs = secs + tzQhr * 900;
 	Int32 totalDays = (Int32)(secs / 86400LL);
@@ -491,7 +491,7 @@ void Data::DateTimeUtil::Secs2TimeValue(Int64 secs, TimeValue *t, Int8 tzQhr)
 	}
 }
 
-void Data::DateTimeUtil::Instant2TimeValue(Int64 secs, UInt32 nanosec, TimeValue *t, Int8 tzQhr)
+void Data::DateTimeUtil::Instant2TimeValue(Int64 secs, UInt32 nanosec, NotNullPtr<TimeValue> t, Int8 tzQhr)
 {
 	secs = secs + tzQhr * 900;
 	Int32 totalDays = (Int32)(secs / 86400LL);
@@ -785,7 +785,7 @@ Data::DateTimeUtil::Weekday Data::DateTimeUtil::Instant2Weekday(Data::TimeInstan
 	return (Data::DateTimeUtil::Weekday)(((inst.sec + tzQhr * 900) / 86400 + 4) % 7);
 }
 
-UTF8Char *Data::DateTimeUtil::ToString(UTF8Char *sbuff, const TimeValue *tval, Int8 tzQhr, UInt32 nanosec, const UTF8Char *pattern)
+UTF8Char *Data::DateTimeUtil::ToString(UTF8Char *sbuff, NotNullPtr<const TimeValue> tval, Int8 tzQhr, UInt32 nanosec, const UTF8Char *pattern)
 {
 	while (*pattern)
 	{
@@ -1373,7 +1373,7 @@ UTF8Char *Data::DateTimeUtil::ToString(UTF8Char *sbuff, const TimeValue *tval, I
 	return sbuff;
 }
 
-Bool Data::DateTimeUtil::String2TimeValue(Text::CString dateStr, TimeValue *tval, Int8 *tzQhr, UInt32 *nanosec)
+Bool Data::DateTimeUtil::String2TimeValue(Text::CStringNN dateStr, NotNullPtr<TimeValue> tval, Int8 *tzQhr, UInt32 *nanosec)
 {
 	UTF8Char buff[64];
 	UTF8Char *longBuff = 0;
@@ -1710,7 +1710,7 @@ Bool Data::DateTimeUtil::String2TimeValue(Text::CString dateStr, TimeValue *tval
 	return succ;
 }
 
-Bool Data::DateTimeUtil::TimeValueFromYMDHMS(Int64 ymdhms, TimeValue *tval)
+Bool Data::DateTimeUtil::TimeValueFromYMDHMS(Int64 ymdhms, NotNullPtr<TimeValue> tval)
 {
 	if (ymdhms < 0)
 		return false;
@@ -1911,7 +1911,7 @@ Int64 Data::DateTimeUtil::GetCurrTimeMillis()
 	tval.hour = (UInt8)st.wHour;
 	tval.minute = (UInt8)st.wMinute;
 	tval.second = (UInt8)st.wSecond;
-	return TimeValue2Ticks(&tval, (UInt32)st.wMilliseconds * 1000000, 0);
+	return TimeValue2Ticks(tval, (UInt32)st.wMilliseconds * 1000000, 0);
 #elif !defined(CPU_AVR)
 	struct timeval tv;
 	if (gettimeofday(&tv, 0) == 0)
@@ -1989,13 +1989,13 @@ Int64 Data::DateTimeUtil::SYSTEMTIME2Ticks(void *sysTime)
 	tval.hour = (UInt8)stime->wHour;
 	tval.minute = (UInt8)stime->wMinute;
 	tval.second = (UInt8)stime->wSecond;
-	return TimeValue2Ticks(&tval, (UInt32)stime->wMilliseconds * 1000000, 0);
+	return TimeValue2Ticks(tval, (UInt32)stime->wMilliseconds * 1000000, 0);
 }
 
 void Data::DateTimeUtil::Ticks2SYSTEMTIME(void *sysTime, Int64 ticks)
 {
 	Data::DateTimeUtil::TimeValue tval;
-	Ticks2TimeValue(ticks, &tval, 0);
+	Ticks2TimeValue(ticks, tval, 0);
 	SYSTEMTIME *stime = (SYSTEMTIME*)sysTime;
 	stime->wYear = tval.year;
 	stime->wMonth = tval.month;
@@ -2015,7 +2015,7 @@ Bool Data::DateTimeUtil::SetAsComputerTime(Int64 secs, UInt32 nanosec)
 #ifdef WIN32
 	Data::DateTimeUtil::TimeValue tval;
 	SYSTEMTIME st;
-	Instant2TimeValue(secs, nanosec, &tval, 0);
+	Instant2TimeValue(secs, nanosec, tval, 0);
 	st.wYear = tval.year;
 	st.wMonth = tval.month;
 	st.wDay = tval.day;
@@ -2035,7 +2035,7 @@ Bool Data::DateTimeUtil::SetAsComputerTime(Int64 secs, UInt32 nanosec)
 #endif
 }
 
-Data::DateTimeUtil::Weekday Data::DateTimeUtil::WeekdayParse(Text::CString weekday)
+Data::DateTimeUtil::Weekday Data::DateTimeUtil::WeekdayParse(Text::CStringNN weekday)
 {
 	if (weekday.StartsWithICase(UTF8STRC("SUN")))
 	{

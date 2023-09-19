@@ -99,7 +99,7 @@ void IO::LoopFileLog::LogAdded(const Data::Timestamp &time, Text::CStringNN logM
 
 	Sync::MutexUsage mutUsage(this->mut);
 	Data::DateTimeUtil::TimeValue tval;
-	time.ToTimeValue(&tval);
+	time.ToTimeValue(tval);
 
 	if (logStyle == LogHandler::LogType::PerDay)
 	{

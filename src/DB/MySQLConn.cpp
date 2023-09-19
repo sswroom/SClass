@@ -613,7 +613,7 @@ Data::Timestamp DB::MySQLReader::GetTimestamp(UOSInt colIndex)
 	if (((MYSQL_ROW)this->row)[colIndex])
 	{
 		const UTF8Char *s = (const UTF8Char*)((MYSQL_ROW)this->row)[colIndex];
-		return Data::Timestamp(Text::CString::FromPtr(s), 0);
+		return Data::Timestamp(Text::CStringNN::FromPtr(s), 0);
 	}
 	else
 	{

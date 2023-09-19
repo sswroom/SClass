@@ -8,7 +8,7 @@
 #include "Text/StringBuilderUTF8.h"
 #include "Text/UTF8Writer.h"
 
-UTF8Char *IO::FileLog::GetNewName(UTF8Char *buff, Data::DateTimeUtil::TimeValue *time, UInt32 nanosec)
+UTF8Char *IO::FileLog::GetNewName(UTF8Char *buff, NotNullPtr<Data::DateTimeUtil::TimeValue> time, UInt32 nanosec)
 {
 	UTF8Char *currName;
 
@@ -119,8 +119,8 @@ void IO::FileLog::Init(LogType style, LogGroup groupStyle, const Char *dateForma
 
 	Data::Timestamp ts = Data::Timestamp::Now();
 	Data::DateTimeUtil::TimeValue tval;
-	Data::DateTimeUtil::Instant2TimeValue(ts.inst.sec, ts.inst.nanosec, &tval, ts.tzQhr);
-	sptr = GetNewName(buff, &tval, ts.inst.nanosec);
+	Data::DateTimeUtil::Instant2TimeValue(ts.inst.sec, ts.inst.nanosec, tval, ts.tzQhr);
+	sptr = GetNewName(buff, tval, ts.inst.nanosec);
 
 	NEW_CLASSNN(fileStm, FileStream({buff, (UOSInt)(sptr - buff)}, IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	NEW_CLASSNN(log, Text::UTF8Writer(fileStm));
@@ -170,14 +170,14 @@ void IO::FileLog::LogAdded(const Data::Timestamp &time, Text::CStringNN logMsg, 
 	UTF8Char buff[256];
 	UTF8Char *sptr;
 	Data::DateTimeUtil::TimeValue tval;
-	Data::DateTimeUtil::Instant2TimeValue(time.inst.sec, time.inst.nanosec, &tval, time.tzQhr);
+	Data::DateTimeUtil::Instant2TimeValue(time.inst.sec, time.inst.nanosec, tval, time.tzQhr);
 
 	if (logStyle == LogHandler::LogType::PerDay)
 	{
 		if (tval.day != lastVal)
 		{
 			newFile = true;
-			sptr = GetNewName(buff, &tval, time.inst.nanosec);
+			sptr = GetNewName(buff, tval, time.inst.nanosec);
 		}
 	}
 	else if (logStyle == LogHandler::LogType::PerMonth)
@@ -185,7 +185,7 @@ void IO::FileLog::LogAdded(const Data::Timestamp &time, Text::CStringNN logMsg, 
 		if (tval.month != lastVal)
 		{
 			newFile = true;
-			sptr = GetNewName(buff, &tval, time.inst.nanosec);
+			sptr = GetNewName(buff, tval, time.inst.nanosec);
 		}
 	}
 	else if (logStyle == LogHandler::LogType::PerYear)
@@ -193,7 +193,7 @@ void IO::FileLog::LogAdded(const Data::Timestamp &time, Text::CStringNN logMsg, 
 		if (tval.year != lastVal)
 		{
 			newFile = true;
-			sptr = GetNewName(buff, &tval, time.inst.nanosec);
+			sptr = GetNewName(buff, tval, time.inst.nanosec);
 		}
 	}
 	else if (logStyle == LogHandler::LogType::PerHour)
@@ -201,7 +201,7 @@ void IO::FileLog::LogAdded(const Data::Timestamp &time, Text::CStringNN logMsg, 
 		if (lastVal != (tval.day * 24 + tval.hour))
 		{
 			newFile = true;
-			sptr = GetNewName(buff, &tval, time.inst.nanosec);
+			sptr = GetNewName(buff, tval, time.inst.nanosec);
 		}
 	}
 

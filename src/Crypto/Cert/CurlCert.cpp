@@ -23,7 +23,7 @@ Data::Timestamp Crypto::Cert::CurlCert::GetNotBefore() const
 		slen = Text::StrCharCnt(slist->data);
 		if (Text::StrStartsWithC((const UTF8Char*)slist->data, slen, UTF8STRC("Start date:")))
 		{
-			return Data::Timestamp::FromStr(Text::CString((const UTF8Char*)slist->data + 11, slen - 11), Data::DateTimeUtil::GetLocalTzQhr());
+			return Data::Timestamp::FromStr(Text::CStringNN((const UTF8Char*)slist->data + 11, slen - 11), Data::DateTimeUtil::GetLocalTzQhr());
 		}
 	}
 
@@ -39,7 +39,7 @@ Data::Timestamp Crypto::Cert::CurlCert::GetNotAfter() const
 		slen = Text::StrCharCnt(slist->data);
 		if (Text::StrStartsWithC((const UTF8Char*)slist->data, slen, UTF8STRC("Expire date:")))
 		{
-			return Data::Timestamp::FromStr(Text::CString((const UTF8Char*)slist->data + 12, slen - 12), Data::DateTimeUtil::GetLocalTzQhr());
+			return Data::Timestamp::FromStr(Text::CStringNN((const UTF8Char*)slist->data + 12, slen - 12), Data::DateTimeUtil::GetLocalTzQhr());
 		}
 	}
 

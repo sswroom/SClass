@@ -539,7 +539,7 @@ Bool IO::GSMModemController::GSMGetModemTime(NotNullPtr<Data::DateTime> date)
 			UInt8 tzSign = sbuff[25];
 			sbuff[25] = 0;
 			sbuff[28] = 0;
-			date->SetValue(Text::CString(&sbuff[6], 25 - 6));
+			date->SetValue(Text::CStringNN(&sbuff[6], 25 - 6));
 			if (date->GetYear() >= 2080)
 			{
 				date->SetYear((UInt16)(date->GetYear() - 100));

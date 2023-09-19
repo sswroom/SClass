@@ -2,6 +2,7 @@
 #define _SM_DATA_TIMESTAMP
 #include "Data/DateTimeUtil.h"
 #include "Data/TimeInstant.h"
+#include <cstddef>
 
 namespace Data
 {
@@ -14,7 +15,7 @@ namespace Data
 	public:
 		Timestamp() = default;
 
-		Timestamp(UInt32 *tmp)
+		Timestamp(std::nullptr_t)
 		{
 			this->inst = Data::TimeInstant(0, 0);
 			this->tzQhr = 127;
@@ -32,18 +33,18 @@ namespace Data
 			this->tzQhr = tzQhr;
 		};
 
-		Timestamp(Text::CString dateStr, Int8 defTzQhr)
+		Timestamp(Text::CStringNN dateStr, Int8 defTzQhr)
 		{
 			Data::DateTimeUtil::TimeValue tval;
 			this->tzQhr = defTzQhr;
 			UInt32 nanosec = 0;
-			if (!Data::DateTimeUtil::String2TimeValue(dateStr, &tval, &this->tzQhr, &nanosec))
+			if (!Data::DateTimeUtil::String2TimeValue(dateStr, tval, &this->tzQhr, &nanosec))
 			{
 				this->inst = Data::TimeInstant(0, 0);
 			}
 			else
 			{
-				this->inst = Data::TimeInstant(Data::DateTimeUtil::TimeValue2Secs(&tval, this->tzQhr), nanosec);
+				this->inst = Data::TimeInstant(Data::DateTimeUtil::TimeValue2Secs(tval, this->tzQhr), nanosec);
 			}
 		}
 		
@@ -52,7 +53,7 @@ namespace Data
 		Timestamp AddMonth(OSInt val) const
 		{
 			Data::DateTimeUtil::TimeValue tval;
-			this->ToTimeValue(&tval);
+			this->ToTimeValue(tval);
 			val += tval.month;
 			while (val < 1)
 			{
@@ -65,15 +66,15 @@ namespace Data
 				tval.year++;
 			}
 			tval.month = (UInt8)val;
-			return Timestamp(Data::TimeInstant(Data::DateTimeUtil::TimeValue2Secs(&tval, this->tzQhr), this->inst.nanosec), this->tzQhr);
+			return Timestamp(Data::TimeInstant(Data::DateTimeUtil::TimeValue2Secs(tval, this->tzQhr), this->inst.nanosec), this->tzQhr);
 		}
 
 		Timestamp AddYear(OSInt val) const
 		{
 			Data::DateTimeUtil::TimeValue tval;
-			this->ToTimeValue(&tval);
+			this->ToTimeValue(tval);
 			tval.year = (UInt16)(tval.year + val);
-			return Timestamp(Data::TimeInstant(Data::DateTimeUtil::TimeValue2Secs(&tval, this->tzQhr), this->inst.nanosec), this->tzQhr);
+			return Timestamp(Data::TimeInstant(Data::DateTimeUtil::TimeValue2Secs(tval, this->tzQhr), this->inst.nanosec), this->tzQhr);
 		}
 
 		Timestamp AddDay(OSInt val) const
@@ -131,24 +132,24 @@ namespace Data
 		Timestamp ClearMonthAndDay() const
 		{
 			Data::DateTimeUtil::TimeValue tval;
-			this->ToTimeValue(&tval);
+			this->ToTimeValue(tval);
 			tval.month = 1;
 			tval.day = 1;
 			tval.hour = 0;
 			tval.minute = 0;
 			tval.second = 0;
-			return Data::Timestamp::FromTimeValue(&tval, 0, this->tzQhr);
+			return Data::Timestamp::FromTimeValue(tval, 0, this->tzQhr);
 		}
 
 		Timestamp ClearDayOfMonth() const
 		{
 			Data::DateTimeUtil::TimeValue tval;
-			this->ToTimeValue(&tval);
+			this->ToTimeValue(tval);
 			tval.day = 1;
 			tval.hour = 0;
 			tval.minute = 0;
 			tval.second = 0;
-			return Data::Timestamp::FromTimeValue(&tval, 0, this->tzQhr);
+			return Data::Timestamp::FromTimeValue(tval, 0, this->tzQhr);
 		}
 
 		Int64 GetMSPassedUTCDate() const
@@ -323,8 +324,8 @@ namespace Data
 		UTF8Char *ToString(UTF8Char *buff, const Char *pattern) const
 		{
 			Data::DateTimeUtil::TimeValue tval;
-			Data::DateTimeUtil::Instant2TimeValue(this->inst.sec, this->inst.nanosec, &tval, this->tzQhr);
-			return Data::DateTimeUtil::ToString(buff, &tval, this->tzQhr, this->inst.nanosec, (const UTF8Char*)pattern);
+			Data::DateTimeUtil::Instant2TimeValue(this->inst.sec, this->inst.nanosec, tval, this->tzQhr);
+			return Data::DateTimeUtil::ToString(buff, tval, this->tzQhr, this->inst.nanosec, (const UTF8Char*)pattern);
 		}
 		
 		Bool operator==(Timestamp dt) const
@@ -417,7 +418,7 @@ namespace Data
 		Data::DateTimeUtil::TimeValue GetTimeValue() const
 		{
 			Data::DateTimeUtil::TimeValue tv;
-			Data::DateTimeUtil::Secs2TimeValue(this->inst.sec, &tv, this->tzQhr);
+			Data::DateTimeUtil::Secs2TimeValue(this->inst.sec, tv, this->tzQhr);
 			return tv;
 		}
 
@@ -446,7 +447,7 @@ namespace Data
 			return Data::DateTimeUtil::SetAsComputerTime(this->inst.sec, this->inst.nanosec);
 		}
 
-		void ToTimeValue(Data::DateTimeUtil::TimeValue *tval) const
+		void ToTimeValue(NotNullPtr<Data::DateTimeUtil::TimeValue> tval) const
 		{
 			Data::DateTimeUtil::Instant2TimeValue(this->inst.sec, this->inst.nanosec, tval, this->tzQhr);
 		}
@@ -471,14 +472,14 @@ namespace Data
 			return Data::Timestamp(TimeInstant::FromVariTime(variTime), Data::DateTimeUtil::GetLocalTzQhr());
 		}
 
-		static Timestamp FromStr(Text::CString s, Int8 defTZQhr)
+		static Timestamp FromStr(Text::CStringNN s, Int8 defTZQhr)
 		{
 			Data::DateTimeUtil::TimeValue tv;
 			Int8 tzQhr = defTZQhr;
 			UInt32 nanosec;
-			if (Data::DateTimeUtil::String2TimeValue(s, &tv, &tzQhr, &nanosec))
+			if (Data::DateTimeUtil::String2TimeValue(s, tv, &tzQhr, &nanosec))
 			{
-				return Timestamp(TimeInstant(Data::DateTimeUtil::TimeValue2Secs(&tv, tzQhr), nanosec), tzQhr);
+				return Timestamp(TimeInstant(Data::DateTimeUtil::TimeValue2Secs(tv, tzQhr), nanosec), tzQhr);
 			}
 			else
 			{
@@ -530,7 +531,7 @@ namespace Data
 			}
 		}
 
-		static Timestamp FromTimeValue(const Data::DateTimeUtil::TimeValue *tval, UInt32 nanosec, Int8 tzQhr)
+		static Timestamp FromTimeValue(NotNullPtr<const Data::DateTimeUtil::TimeValue> tval, UInt32 nanosec, Int8 tzQhr)
 		{
 			return Timestamp(Data::TimeInstant(Data::DateTimeUtil::TimeValue2Secs(tval, tzQhr), nanosec), tzQhr);
 		}
@@ -545,9 +546,9 @@ namespace Data
 		static Timestamp FromYMDHMS(Int64 ymdhms, Int8 tzQhr)
 		{
 			Data::DateTimeUtil::TimeValue tval;
-			if (Data::DateTimeUtil::TimeValueFromYMDHMS(ymdhms, &tval))
+			if (Data::DateTimeUtil::TimeValueFromYMDHMS(ymdhms, tval))
 			{
-				return Timestamp(Data::TimeInstant(Data::DateTimeUtil::TimeValue2Secs(&tval, tzQhr), 0), tzQhr);
+				return Timestamp(Data::TimeInstant(Data::DateTimeUtil::TimeValue2Secs(tval, tzQhr), 0), tzQhr);
 			}
 			else
 			{

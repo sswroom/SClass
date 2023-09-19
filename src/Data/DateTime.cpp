@@ -25,9 +25,9 @@ typedef struct
 #include <time.h>
 #include <stdio.h>
 
-Data::DateTimeUtil::TimeValue *Data::DateTime::GetTimeValue()
+NotNullPtr<Data::DateTimeUtil::TimeValue> Data::DateTime::GetTimeValue()
 {
-	Data::DateTimeUtil::TimeValue *t = &this->val.t;
+	NotNullPtr<Data::DateTimeUtil::TimeValue> t = this->val.t;
 	switch (this->timeType)
 	{
 	case TimeType::Time:
@@ -51,7 +51,7 @@ Data::DateTimeUtil::TimeValue *Data::DateTime::GetTimeValue()
 
 void Data::DateTime::FixValues()
 {
-	Data::DateTimeUtil::TimeValue *t = GetTimeValue();
+	NotNullPtr<Data::DateTimeUtil::TimeValue> t = GetTimeValue();
 	while (this->ns >= 1000000000)
 	{
 		this->ns = (this->ns - 1000000000);
@@ -145,7 +145,7 @@ Data::DateTime::DateTime(UInt16 year, UInt8 month, UInt8 day, UInt8 hour, UInt8 
 	this->ns = (UInt32)ms * 1000000;
 }
 
-Data::DateTime::DateTime(Text::CString dateStr)
+Data::DateTime::DateTime(Text::CStringNN dateStr)
 {
 	this->timeType = TimeType::None;
 	this->ns = 0;
@@ -165,7 +165,7 @@ Data::DateTime::~DateTime()
 Bool Data::DateTime::SetAsComputerTime()
 {
 #ifdef WIN32
-	Data::DateTimeUtil::TimeValue *t = GetTimeValue();
+	NotNullPtr<Data::DateTimeUtil::TimeValue> t = GetTimeValue();
 	SYSTEMTIME st;
 	ToUTCTime();
 	st.wYear = t->year;
@@ -187,11 +187,11 @@ Bool Data::DateTime::SetAsComputerTime()
 #endif
 }
 
-Data::DateTime *Data::DateTime::SetCurrTime()
+NotNullPtr<Data::DateTime> Data::DateTime::SetCurrTime()
 {
 #if defined(_MSC_VER) || defined(__MINGW32__)
 #ifdef WIN32
-	Data::DateTimeUtil::TimeValue *t = GetTimeValue();
+	NotNullPtr<Data::DateTimeUtil::TimeValue> t = GetTimeValue();
 	SYSTEMTIME st;
 	TIME_ZONE_INFORMATION tz;
 	GetLocalTime(&st);
@@ -206,22 +206,22 @@ Data::DateTime *Data::DateTime::SetCurrTime()
 	this->ns = (UInt32)st.wMilliseconds * 1000000;
 	this->tzQhr = (Int8)(-tz.Bias / 15);
 #endif
-	return this;
+	return *this;
 #elif !defined(CPU_AVR)
 	this->SetValue(Data::TimeInstant::Now(), Data::DateTimeUtil::GetLocalTzQhr());
-	return this;
+	return *this;
 #else
-	return this;
+	return *this;
 #endif
 }
 
-Data::DateTime *Data::DateTime::SetCurrTimeUTC()
+NotNullPtr<Data::DateTime> Data::DateTime::SetCurrTimeUTC()
 {
 #if defined(_MSC_VER) || defined(__MINGW32__)
 #ifdef WIN32
 	SYSTEMTIME st;
 	GetSystemTime(&st);
-	Data::DateTimeUtil::TimeValue *tval = GetTimeValue();
+	NotNullPtr<Data::DateTimeUtil::TimeValue> tval = GetTimeValue();
 	tval->year = st.wYear;
 	tval->month = (UInt8)st.wMonth;
 	tval->day = (UInt8)st.wDay;
@@ -231,12 +231,12 @@ Data::DateTime *Data::DateTime::SetCurrTimeUTC()
 	this->ns = (UInt32)st.wMilliseconds * 1000000;
 	this->tzQhr = 0;
 #endif
-	return this;
+	return *this;
 #elif !defined(CPU_AVR)
 	this->SetValue(Data::TimeInstant::Now(), 0);
-	return this;
+	return *this;
 #else
-	return this;
+	return *this;
 #endif
 }
 
@@ -296,7 +296,7 @@ void Data::DateTime::SetValue(const Data::TimeInstant &instant, Int8 tzQhr)
 
 void Data::DateTime::SetValueNoFix(UInt16 year, UInt8 month, UInt8 day, UInt8 hour, UInt8 minute, UInt8 second, UInt16 ms, Int8 tzQhr)
 {
-	Data::DateTimeUtil::TimeValue *tval = this->GetTimeValue();
+	NotNullPtr<Data::DateTimeUtil::TimeValue> tval = this->GetTimeValue();
 	tval->year = year;
 	tval->month = month;
 	tval->day = day;
@@ -309,19 +309,19 @@ void Data::DateTime::SetValueNoFix(UInt16 year, UInt8 month, UInt8 day, UInt8 ho
 
 Bool Data::DateTime::SetValueSlow(const Char *dateStr)
 {
-	return this->SetValue(Text::CString((const UTF8Char*)dateStr, Text::StrCharCnt(dateStr)));
+	return this->SetValue(Text::CStringNN((const UTF8Char*)dateStr, Text::StrCharCnt(dateStr)));
 }
 
-Bool Data::DateTime::SetValue(Text::CString dateStr)
+Bool Data::DateTime::SetValue(Text::CStringNN dateStr)
 {
-	Data::DateTimeUtil::TimeValue *tval = this->GetTimeValue();
+	NotNullPtr<Data::DateTimeUtil::TimeValue> tval = this->GetTimeValue();
 	return Data::DateTimeUtil::String2TimeValue(dateStr, tval, &this->tzQhr, &this->ns);
 }
 
 void Data::DateTime::SetValueSYSTEMTIME(void *sysTime)
 {
 	SYSTEMTIME *stime = (SYSTEMTIME*)sysTime;
-	Data::DateTimeUtil::TimeValue *tval = this->GetTimeValue();
+	NotNullPtr<Data::DateTimeUtil::TimeValue> tval = this->GetTimeValue();
 	tval->year = stime->wYear;
 	tval->month = (UInt8)stime->wMonth;
 	tval->day = (UInt8)stime->wDay;
@@ -341,7 +341,7 @@ void Data::DateTime::SetValueFILETIME(void *fileTime)
 
 void Data::DateTime::SetValueVariTime(Double variTime)
 {
-	Data::DateTimeUtil::TimeValue *tval = this->GetTimeValue();
+	NotNullPtr<Data::DateTimeUtil::TimeValue> tval = this->GetTimeValue();
 	tval->year = 1900;
 	tval->month = 1;
 	tval->day = 1;
@@ -401,9 +401,9 @@ UInt32 Data::DateTime::GetNS()
 	return this->ns;
 }
 
-Data::DateTime *Data::DateTime::AddMonth(OSInt val)
+NotNullPtr<Data::DateTime> Data::DateTime::AddMonth(OSInt val)
 {
-	Data::DateTimeUtil::TimeValue *tval = this->GetTimeValue();
+	NotNullPtr<Data::DateTimeUtil::TimeValue> tval = this->GetTimeValue();
 	OSInt newMonth = tval->month + val;
 	while (newMonth < 1)
 	{
@@ -421,16 +421,16 @@ Data::DateTime *Data::DateTime::AddMonth(OSInt val)
 	{
 		tval->day = newDay;
 	}
-	return this;
+	return *this;
 }
 
-Data::DateTime *Data::DateTime::AddDay(OSInt val)
+NotNullPtr<Data::DateTime> Data::DateTime::AddDay(OSInt val)
 {
 	switch (this->timeType)
 	{
 	case TimeType::Time:
 		{
-			Data::DateTimeUtil::TimeValue *tval = this->GetTimeValue();
+			NotNullPtr<Data::DateTimeUtil::TimeValue> tval = this->GetTimeValue();
 			OSInt newDay = tval->day + val;
 			OSInt dayim;
 			if (newDay < 1)
@@ -468,16 +468,16 @@ Data::DateTime *Data::DateTime::AddDay(OSInt val)
 		this->val.secs += val * 86400LL;
 		break;
 	}
-	return this;
+	return *this;
 }
 
-Data::DateTime *Data::DateTime::AddHour(OSInt val)
+NotNullPtr<Data::DateTime> Data::DateTime::AddHour(OSInt val)
 {
 	switch (this->timeType)
 	{
 	case TimeType::Time:
 		{
-			Data::DateTimeUtil::TimeValue *tval = this->GetTimeValue();
+			NotNullPtr<Data::DateTimeUtil::TimeValue> tval = this->GetTimeValue();
 			OSInt day = val / 24;
 			OSInt outHour;
 			outHour = val - day * 24 + tval->hour;
@@ -505,12 +505,12 @@ Data::DateTime *Data::DateTime::AddHour(OSInt val)
 		this->timeType = TimeType::Ticks;
 		break;
 	}
-	return this;
+	return *this;
 }
 
-Data::DateTime *Data::DateTime::AddMinute(OSInt val)
+NotNullPtr<Data::DateTime> Data::DateTime::AddMinute(OSInt val)
 {
-	Data::DateTimeUtil::TimeValue *tval = this->GetTimeValue();
+	NotNullPtr<Data::DateTimeUtil::TimeValue> tval = this->GetTimeValue();
 	OSInt hours = val / 60;
 	OSInt outMin;
 	outMin = val - hours * 60 + tval->minute;
@@ -527,14 +527,14 @@ Data::DateTime *Data::DateTime::AddMinute(OSInt val)
 	tval->minute = (UInt8)outMin;
 	if (hours)
 		AddHour(hours);
-	return this;
+	return *this;
 }
 
-Data::DateTime *Data::DateTime::AddSecond(OSInt val)
+NotNullPtr<Data::DateTime> Data::DateTime::AddSecond(OSInt val)
 {
 	if (this->timeType == TimeType::Time)
 	{
-		Data::DateTimeUtil::TimeValue *tval = this->GetTimeValue();
+		NotNullPtr<Data::DateTimeUtil::TimeValue> tval = this->GetTimeValue();
 		OSInt minutes = val / 60;
 		OSInt outSec;
 		outSec = val - minutes * 60 + tval->second;
@@ -551,16 +551,16 @@ Data::DateTime *Data::DateTime::AddSecond(OSInt val)
 		tval->second = (UInt8)outSec;
 		if (minutes)
 			AddMinute(minutes);
-		return this;
+		return *this;
 	}
 	else
 	{
 		this->val.secs += (Int64)val;
-		return this;
+		return *this;
 	}
 }
 
-Data::DateTime *Data::DateTime::AddMS(OSInt val)
+NotNullPtr<Data::DateTime> Data::DateTime::AddMS(OSInt val)
 {
 	if (this->timeType == TimeType::Time)
 	{
@@ -598,12 +598,12 @@ Data::DateTime *Data::DateTime::AddMS(OSInt val)
 		this->ns = (UInt32)newNS;
 		this->val.secs += seconds;
 	}
-	return this;
+	return *this;
 }
 
 void Data::DateTime::SetDate(UInt16 year, OSInt month, OSInt day)
 {
-	Data::DateTimeUtil::TimeValue *tval = this->GetTimeValue();
+	NotNullPtr<Data::DateTimeUtil::TimeValue> tval = this->GetTimeValue();
 	tval->year = year;
 	while (month < 1)
 	{
@@ -646,25 +646,25 @@ void Data::DateTime::SetDate(UInt16 year, OSInt month, OSInt day)
 
 void Data::DateTime::SetYear(UInt16 year)
 {
-	Data::DateTimeUtil::TimeValue *tval = this->GetTimeValue();
+	NotNullPtr<Data::DateTimeUtil::TimeValue> tval = this->GetTimeValue();
 	tval->year = year;
 }
 
 void Data::DateTime::SetMonth(OSInt month)
 {
-	Data::DateTimeUtil::TimeValue *tval = this->GetTimeValue();
+	NotNullPtr<Data::DateTimeUtil::TimeValue> tval = this->GetTimeValue();
 	this->SetDate(tval->year, month, tval->day);
 }
 
 void Data::DateTime::SetDay(OSInt day)
 {
-	Data::DateTimeUtil::TimeValue *tval = this->GetTimeValue();
+	NotNullPtr<Data::DateTimeUtil::TimeValue> tval = this->GetTimeValue();
 	this->SetDate(tval->year, tval->month, day);
 }
 
 void Data::DateTime::SetHour(OSInt hour)
 {
-	Data::DateTimeUtil::TimeValue *tval = this->GetTimeValue();
+	NotNullPtr<Data::DateTimeUtil::TimeValue> tval = this->GetTimeValue();
 	OSInt d = 0;
 	if (hour < 0)
 	{
@@ -685,7 +685,7 @@ void Data::DateTime::SetHour(OSInt hour)
 
 void Data::DateTime::SetMinute(OSInt minute)
 {
-	Data::DateTimeUtil::TimeValue *tval = this->GetTimeValue();
+	NotNullPtr<Data::DateTimeUtil::TimeValue> tval = this->GetTimeValue();
 	OSInt h = 0;
 	if (minute < 0)
 	{
@@ -706,7 +706,7 @@ void Data::DateTime::SetMinute(OSInt minute)
 
 void Data::DateTime::SetSecond(OSInt second)
 {
-	Data::DateTimeUtil::TimeValue *tval = this->GetTimeValue();
+	NotNullPtr<Data::DateTimeUtil::TimeValue> tval = this->GetTimeValue();
 	OSInt m = 0;
 	if (second < 0)
 	{
@@ -740,7 +740,7 @@ void Data::DateTime::SetNS(UInt32 ns)
 
 /*void Data::DateTime::SetMS(OSInt ms)
 {
-	Data::DateTimeUtil::TimeValue *tval = this->GetTimeValue();
+	NotNullPtr<Data::DateTimeUtil::TimeValue> tval = this->GetTimeValue();
 	OSInt s = 0;
 	if (ms < 0)
 	{
@@ -761,7 +761,7 @@ void Data::DateTime::SetNS(UInt32 ns)
 
 void Data::DateTime::ClearTime()
 {
-	Data::DateTimeUtil::TimeValue *tval = this->GetTimeValue();
+	NotNullPtr<Data::DateTimeUtil::TimeValue> tval = this->GetTimeValue();
 	tval->hour = 0;
 	tval->minute = 0;
 	tval->second = 0;
@@ -770,7 +770,7 @@ void Data::DateTime::ClearTime()
 
 Int64 Data::DateTime::GetMSPassedDate()
 {
-	Data::DateTimeUtil::TimeValue *tval = this->GetTimeValue();
+	NotNullPtr<Data::DateTimeUtil::TimeValue> tval = this->GetTimeValue();
 	return (Int64)(this->ns / 1000000) + tval->second * 1000 + tval->minute * 60000 + tval->hour * 3600000;
 }
 
@@ -796,7 +796,7 @@ Data::Duration Data::DateTime::Diff(NotNullPtr<DateTime> dt)
 
 Bool Data::DateTime::IsYearLeap()
 {
-	Data::DateTimeUtil::TimeValue *tval = this->GetTimeValue();
+	NotNullPtr<Data::DateTimeUtil::TimeValue> tval = this->GetTimeValue();
 	return Data::DateTimeUtil::IsYearLeap(tval->year);
 }
 
@@ -808,7 +808,7 @@ Int64 Data::DateTime::ToTicks()
 	}
 	else if (this->timeType == TimeType::Time)
 	{
-		return Data::DateTimeUtil::TimeValue2Ticks(&this->val.t, this->ns, this->tzQhr);
+		return Data::DateTimeUtil::TimeValue2Ticks(this->val.t, this->ns, this->tzQhr);
 	}
 	else
 	{
@@ -829,7 +829,7 @@ Int64 Data::DateTime::ToUnixTimestamp()
 	}
 	else if (this->timeType == TimeType::Time)
 	{
-		return Data::DateTimeUtil::TimeValue2Secs(&this->val.t, this->tzQhr);
+		return Data::DateTimeUtil::TimeValue2Secs(this->val.t, this->tzQhr);
 	}
 	else
 	{
@@ -903,7 +903,7 @@ void Data::DateTime::SetUnixTimestamp(Int64 ticks)
 
 void Data::DateTime::SetMSDOSTime(UInt16 date, UInt16 time)
 {
-	Data::DateTimeUtil::TimeValue *tval = this->GetTimeValue();
+	NotNullPtr<Data::DateTimeUtil::TimeValue> tval = this->GetTimeValue();
 	tval->year = (UInt16)(1980 + ((date >> 9) & 0x7f));
 	tval->month = (date >> 5) & 0xf;
 	tval->day = date & 0x1f;
@@ -915,20 +915,20 @@ void Data::DateTime::SetMSDOSTime(UInt16 date, UInt16 time)
 
 UInt16 Data::DateTime::ToMSDOSDate()
 {
-	Data::DateTimeUtil::TimeValue *tval = this->GetTimeValue();
+	NotNullPtr<Data::DateTimeUtil::TimeValue> tval = this->GetTimeValue();
 	return (UInt16)((((tval->year - 1980) & 0x7f) << 9) | (tval->month << 5) | tval->day);
 }
 
 UInt16 Data::DateTime::ToMSDOSTime()
 {
-	Data::DateTimeUtil::TimeValue *tval = this->GetTimeValue();
+	NotNullPtr<Data::DateTimeUtil::TimeValue> tval = this->GetTimeValue();
 	return (UInt16)((tval->hour << 11) | (tval->minute << 5) | (tval->second >> 1));
 }
 
 void Data::DateTime::ToSYSTEMTIME(void *sysTime)
 {
 #if defined(WIN32) || defined(_WIN32_WCE)
-	Data::DateTimeUtil::TimeValue *tval = this->GetTimeValue();
+	NotNullPtr<Data::DateTimeUtil::TimeValue> tval = this->GetTimeValue();
 	SYSTEMTIME *stime = (SYSTEMTIME*)sysTime;
 	stime->wYear = tval->year;
 	stime->wMonth = tval->month;
@@ -943,7 +943,7 @@ void Data::DateTime::ToSYSTEMTIME(void *sysTime)
 
 void Data::DateTime::SetNTPTime(Int32 hiDword, Int32 loDword)
 {
-	Data::DateTimeUtil::TimeValue *tval = this->GetTimeValue();
+	NotNullPtr<Data::DateTimeUtil::TimeValue> tval = this->GetTimeValue();
 	this->ToUTCTime();
 	tval->year = 1900;
 	tval->month = 1;
@@ -1018,7 +1018,7 @@ UTF8Char *Data::DateTime::ToStringNoZone(UTF8Char *buff)
 
 UTF8Char *Data::DateTime::ToString(UTF8Char *buff, const Char *pattern)
 {
-	Data::DateTimeUtil::TimeValue *tval = this->GetTimeValue();
+	NotNullPtr<Data::DateTimeUtil::TimeValue> tval = this->GetTimeValue();
 	return Data::DateTimeUtil::ToString(buff, tval, this->tzQhr, this->ns, (const UTF8Char*)pattern);
 }
 
@@ -1053,7 +1053,7 @@ UTF8Char *Data::DateTime::ToLocalStr(UTF8Char *buff)
 {
 #if defined(WIN32) && !defined(_WIN32_WCE)
 	tm t;
-	Data::DateTimeUtil::TimeValue *tval = this->GetTimeValue();
+	NotNullPtr<Data::DateTimeUtil::TimeValue> tval = this->GetTimeValue();
 	t.tm_year = tval->year;
 	t.tm_isdst = false;
 	t.tm_mon = tval->month - 1;
@@ -1082,8 +1082,8 @@ OSInt Data::DateTime::CompareTo(NotNullPtr<Data::DateTime> dt)
 
 Int32 Data::DateTime::DateCompare(NotNullPtr<Data::DateTime> dt)
 {
-	Data::DateTimeUtil::TimeValue *tval1 = this->GetTimeValue();
-	Data::DateTimeUtil::TimeValue *tval2 = dt->GetTimeValue();
+	NotNullPtr<Data::DateTimeUtil::TimeValue> tval1 = this->GetTimeValue();
+	NotNullPtr<Data::DateTimeUtil::TimeValue> tval2 = dt->GetTimeValue();
 	if (tval1->year < tval2->year)
 		return -1;
 	else if (tval1->year > tval2->year)
@@ -1102,8 +1102,8 @@ Int32 Data::DateTime::DateCompare(NotNullPtr<Data::DateTime> dt)
 
 Bool Data::DateTime::IsSameDay(NotNullPtr<Data::DateTime> dt)
 {
-	Data::DateTimeUtil::TimeValue *tval1 = this->GetTimeValue();
-	Data::DateTimeUtil::TimeValue *tval2 = dt->GetTimeValue();
+	NotNullPtr<Data::DateTimeUtil::TimeValue> tval1 = this->GetTimeValue();
+	NotNullPtr<Data::DateTimeUtil::TimeValue> tval2 = dt->GetTimeValue();
 	return tval1->year == tval2->year && tval1->month == tval2->month && tval1->day == tval2->day;
 }
 

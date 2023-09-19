@@ -737,7 +737,7 @@ namespace Net
 					tval.hour = 0;
 					tval.minute = 0;
 					tval.second = 0;
-					return Data::Timestamp(Data::TimeInstant(Data::DateTimeUtil::TimeValue2Secs(&tval, 0), 0), 0);
+					return Data::Timestamp(Data::TimeInstant(Data::DateTimeUtil::TimeValue2Secs(tval, 0), 0), 0);
 				case 7:
 					tval.year = ReadUInt16(&this->currRow->rowBuff[col->ofst]);
 					tval.month = this->currRow->rowBuff[col->ofst + 2];
@@ -745,7 +745,7 @@ namespace Net
 					tval.hour = this->currRow->rowBuff[col->ofst + 4];
 					tval.minute = this->currRow->rowBuff[col->ofst + 5];
 					tval.second = this->currRow->rowBuff[col->ofst + 6];
-					return Data::Timestamp(Data::TimeInstant(Data::DateTimeUtil::TimeValue2Secs(&tval, 0), 0), 0);
+					return Data::Timestamp(Data::TimeInstant(Data::DateTimeUtil::TimeValue2Secs(tval, 0), 0), 0);
 				case 11:
 					tval.year = ReadUInt16(&this->currRow->rowBuff[col->ofst]);
 					tval.month = this->currRow->rowBuff[col->ofst + 2];
@@ -754,7 +754,7 @@ namespace Net
 					tval.minute = this->currRow->rowBuff[col->ofst + 5];
 					tval.second = this->currRow->rowBuff[col->ofst + 6];
 					microsec = ReadUInt32(&this->currRow->rowBuff[col->ofst + 7]);
-					return Data::Timestamp(Data::TimeInstant(Data::DateTimeUtil::TimeValue2Secs(&tval, 0), microsec * 1000), 0);
+					return Data::Timestamp(Data::TimeInstant(Data::DateTimeUtil::TimeValue2Secs(tval, 0), microsec * 1000), 0);
 				default:
 					//////////////////////////////////////
 					printf("Unknown binary date format\r\n");
@@ -911,7 +911,7 @@ namespace Net
 						tval.hour = 0;
 						tval.minute = 0;
 						tval.second = 0;
-						item->SetDate(Data::Timestamp::FromTimeValue(&tval, 0, 0));
+						item->SetDate(Data::Timestamp::FromTimeValue(tval, 0, 0));
 					}
 					return true;
 				case 7:
@@ -923,7 +923,7 @@ namespace Net
 						tval.hour = this->currRow->rowBuff[col->ofst + 4];
 						tval.minute = this->currRow->rowBuff[col->ofst + 5];
 						tval.second = this->currRow->rowBuff[col->ofst + 6];
-						item->SetDate(Data::Timestamp::FromTimeValue(&tval, 0, 0));
+						item->SetDate(Data::Timestamp::FromTimeValue(tval, 0, 0));
 					}
 					return true;
 				case 11:
@@ -937,7 +937,7 @@ namespace Net
 						tval.minute = this->currRow->rowBuff[col->ofst + 5];
 						tval.second = this->currRow->rowBuff[col->ofst + 6];
 						us = ReadUInt32(&this->currRow->rowBuff[col->ofst + 7]);
-						item->SetDate(Data::Timestamp::FromTimeValue(&tval, us * 1000, 0));
+						item->SetDate(Data::Timestamp::FromTimeValue(tval, us * 1000, 0));
 					}
 					return true;
 				default:

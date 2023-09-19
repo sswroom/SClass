@@ -85,8 +85,8 @@ IO::VBoxVMInfo *IO::VBoxManager::GetVMInfo(VMId *vm) const
 	UOSInt lineCnt;
 	Text::PString sarr[2];
 	VBoxVMInfo *info = 0;
-	Text::CString name;
-	Text::CString value;
+	Text::CStringNN name;
+	Text::CStringNN value;
 	UOSInt i;
 	sarr[1] = sbResult;
 	while (true)
@@ -114,7 +114,7 @@ IO::VBoxVMInfo *IO::VBoxManager::GetVMInfo(VMId *vm) const
 					if (value.StartsWith(UTF8STRC("powered off (since ")))
 					{
 						info->SetState(VBoxVMInfo::State::PoweredOff);
-						info->SetStateSince(Data::Timestamp::FromStr(Text::CString(&value.v[19], value.leng - 20), 0));
+						info->SetStateSince(Data::Timestamp::FromStr(Text::CStringNN(&value.v[19], value.leng - 20), 0));
 					}
 					else
 					{

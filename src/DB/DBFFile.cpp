@@ -673,7 +673,7 @@ Data::Timestamp DB::DBFReader::GetTimestamp(UOSInt colIndex)
 	buff[1] = currPtr[7];
 	buff[2] = 0;
 	tval.day = Text::StrToUInt8(buff);
-	return Data::Timestamp(Data::DateTimeUtil::TimeValue2Ticks(&tval, 0, 0), 0);
+	return Data::Timestamp(Data::DateTimeUtil::TimeValue2Ticks(tval, 0, 0), 0);
 }
 
 Double DB::DBFReader::GetDbl(UOSInt colIndex)

@@ -33,7 +33,7 @@ namespace IO
 		Bool running;
 		Bool hasNewFile;
 
-		UTF8Char *GetNewName(UTF8Char *buff, Data::DateTimeUtil::TimeValue *logTime, UInt32 nanosec, Int32 *lastVal);
+		UTF8Char *GetNewName(UTF8Char *buff, NotNullPtr<Data::DateTimeUtil::TimeValue> logTime, UInt32 nanosec, Int32 *lastVal);
 		void WriteArr(NotNullPtr<Text::String> *msgArr, Data::Timestamp *dateArr, UOSInt arrCnt);
 		static UInt32 __stdcall FileThread(void *userObj);
 		void Init(LogType style, LogGroup groupStyle, const Char *dateFormat);

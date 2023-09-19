@@ -300,7 +300,7 @@ public:
 		case 1114: //timestamp
 		case 1184: //timestamptz
 		{
-			item->SetDate(Data::Timestamp(Text::CString::FromPtr((const UTF8Char*)PQgetvalue(this->res, this->currrow, (int)colIndex)), this->tzQhr));
+			item->SetDate(Data::Timestamp(Text::CStringNN::FromPtr((const UTF8Char*)PQgetvalue(this->res, this->currrow, (int)colIndex)), this->tzQhr));
 			return true;
 		}
 		case 2950: //uuid

@@ -135,7 +135,7 @@ Bool Net::WebServer::WebStandardHandler::ProcessRequest(NotNullPtr<Net::WebServe
 	return DoRequest(req, resp, subReq);
 }
 
-void Net::WebServer::WebStandardHandler::HandlePath(Text::CString relativePath, Net::WebServer::WebStandardHandler *hdlr, Bool needRelease)
+void Net::WebServer::WebStandardHandler::HandlePath(Text::CStringNN relativePath, Net::WebServer::WebStandardHandler *hdlr, Bool needRelease)
 {
 	Net::WebServer::WebStandardHandler *subHdlr;
 	if (hdlr == 0)

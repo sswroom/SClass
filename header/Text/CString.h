@@ -58,7 +58,18 @@ namespace Text
 		}
 #endif
 
-		FORCEINLINE CStringNN Substring(UOSInt index) const;
+
+		CString Substring(UOSInt index) const
+		{
+			if (index >= this->leng)
+			{
+				return CString(this->v, 0);
+			}
+			else
+			{
+				return CString(this->v + index, this->leng - index);
+			}
+		}
 
 		CString LTrim() const
 		{
@@ -95,19 +106,31 @@ namespace Text
 			}
 			return CStringNN(v, Text::StrCharCnt(v));
 		}
-	};
 
-	FORCEINLINE CStringNN CString::Substring(UOSInt index) const
-	{
-		if (index >= this->leng)
+		CStringNN Substring(UOSInt index) const
 		{
-			return CStringNN(this->v, 0);
+			if (index >= this->leng)
+			{
+				return CStringNN(this->v, 0);
+			}
+			else
+			{
+				return CStringNN(this->v + index, this->leng - index);
+			}
 		}
-		else
+
+		CStringNN LTrim() const
 		{
-			return CStringNN(this->v + index, this->leng - index);
+			UOSInt i = 0;
+			while (i < this->leng)
+			{
+				if (this->v[i] != ' ' && this->v[i] != '\t')
+					break;
+				i++;
+			}
+			return CStringNN(this->v + i, this->leng - i);
 		}
-	}
+	};
 
 	FORCEINLINE CStringNN CString::OrEmpty() const
 	{

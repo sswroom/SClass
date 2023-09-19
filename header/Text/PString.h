@@ -25,7 +25,10 @@ namespace Text
 
 		Text::CStringNN ToCString() const
 		{
-			return Text::CStringNN(this->v, this->leng);
+			if (this->v)
+				return Text::CStringNN(this->v, this->leng);
+			else
+				return CSTR("");
 		}
 
 		Text::PString Substring(UOSInt index) const

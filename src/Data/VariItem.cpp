@@ -720,7 +720,7 @@ Data::DateTime *Data::VariItem::GetAsNewDate() const
 	{
 		NEW_CLASS(date, Data::DateTime());
 		date->ToLocalTime();
-		if (date->SetValue(Text::CString(this->val.cstr.v, this->val.cstr.leng)))
+		if (date->SetValue(Text::CStringNN(this->val.cstr.v, this->val.cstr.leng)))
 		{
 			return date;
 		}
@@ -754,7 +754,7 @@ Data::Timestamp Data::VariItem::GetAsTimestamp() const
 	{
 		Data::DateTime dt;
 		dt.ToLocalTime();
-		if (dt.SetValue(Text::CString(this->val.cstr.v, this->val.cstr.leng)))
+		if (dt.SetValue(Text::CStringNN(this->val.cstr.v, this->val.cstr.leng)))
 		{
 			return Data::Timestamp(dt.ToTicks(), dt.GetTimeZoneQHR());
 		}

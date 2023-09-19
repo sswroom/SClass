@@ -24,7 +24,7 @@ namespace Net
 
 			virtual Bool ProcessRequest(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq);
 
-			void HandlePath(Text::CString relativePath, Net::WebServer::WebStandardHandler *hdlr, Bool needRelease);
+			void HandlePath(Text::CStringNN relativePath, Net::WebServer::WebStandardHandler *hdlr, Bool needRelease);
 		};
 	}
 }

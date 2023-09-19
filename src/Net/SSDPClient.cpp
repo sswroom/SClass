@@ -85,7 +85,7 @@ void __stdcall Net::SSDPClient::OnPacketRecv(NotNullPtr<const Net::SocketUtil::A
 					if (time.leng > 0)
 					{
 						Data::DateTime dt;
-						dt.SetValue(time);
+						dt.SetValue(time.OrEmpty());
 						svc->time = dt.ToTicks();
 					}
 					else

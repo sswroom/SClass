@@ -21,7 +21,7 @@ namespace IO
 		const UTF8Char *extName;
 		Bool closed;
 
-		UTF8Char *GetNewName(UTF8Char *buff, Data::DateTimeUtil::TimeValue *logTime, UInt32 nanosec);
+		UTF8Char *GetNewName(UTF8Char *buff, NotNullPtr<Data::DateTimeUtil::TimeValue> logTime, UInt32 nanosec);
 		void Init(LogType style, LogGroup groupStyle, const Char *dateFormat);
 	public:
 		FileLog(NotNullPtr<Text::String> fileName, LogType style, LogGroup groupStyle, const Char *dateFormat);
