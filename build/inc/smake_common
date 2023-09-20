@@ -3318,6 +3318,8 @@ Net/WebServer/WebSocketServerStream.h: ../../src/Net/WebServer/WebSocketServerSt
 @WebSocketServerStream.o
 Net/WebServer/WebStandardHandler.h: ../../src/Net/WebServer/WebStandardHandler.cpp
 @WebStandardHandler.o
+Net/WebServer/WellKnownHandler.h: ../../src/Net/WebServer/WellKnownHandler.cpp
+@WellKnownHandler.o
 Net/WebSite/WebSite7gogoControl.h: ../../src/Net/WebSite/WebSite7gogoControl.cpp
 @WebSite7gogoControl.o
 Net/WebSite/WebSite48IdolControl.h: ../../src/Net/WebSite/WebSite48IdolControl.cpp
@@ -5588,6 +5590,7 @@ WebSessionUsage.o: ../../src/Net/WebServer/WebSessionUsage.cpp
 WebSocketHandler.o: ../../src/Net/WebServer/WebSocketHandler.cpp
 WebSocketServerStream.o: ../../src/Net/WebServer/WebSocketServerStream.cpp
 WebStandardHandler.o: ../../src/Net/WebServer/WebStandardHandler.cpp
+WellKnownHandler.o: ../../src/Net/WebServer/WellKnownHandler.cpp
 WebSite7gogoControl.o: ../../src/Net/WebSite/WebSite7gogoControl.cpp
 WebSite48IdolControl.o: ../../src/Net/WebSite/WebSite48IdolControl.cpp
 WebSiteInstagramControl.o: ../../src/Net/WebSite/WebSiteInstagramControl.cpp
