@@ -676,7 +676,7 @@ void *IO::RS232GPIO::BeginRead(UInt8 *buff, OSInt size, Sync::Event *evt)
 	return ret;
 }
 
-Int32 IO::RS232GPIO::EndRead(void *reqData, Bool toWait, Bool *incomplete)
+Int32 IO::RS232GPIO::EndRead(void *reqData, Bool toWait, OutParam<Bool> incomplete)
 {
 	if (incomplete)
 	{

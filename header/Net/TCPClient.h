@@ -33,7 +33,7 @@ namespace Net
 		virtual UOSInt Write(const UInt8 *buff, UOSInt size);
 
 		virtual void *BeginRead(const Data::ByteArray &buff, Sync::Event *evt);
-		virtual UOSInt EndRead(void *reqData, Bool toWait, Bool *incomplete);
+		virtual UOSInt EndRead(void *reqData, Bool toWait, OutParam<Bool> incomplete);
 		virtual void CancelRead(void *reqData);
 		virtual void *BeginWrite(const UInt8 *buff, UOSInt size, Sync::Event *evt);
 		virtual UOSInt EndWrite(void *reqData, Bool toWait);

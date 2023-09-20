@@ -42,7 +42,7 @@ UInt32 __stdcall RecvThread(void *userObj)
 		Text::StringBuilderUTF8 sb;
 		while (!threadToStop)
 		{
-			packetSize = sockf->UDPReceive(rawSock, packetBuff, 10240, addr, port, &et);
+			packetSize = sockf->UDPReceive(rawSock, packetBuff, 10240, addr, port, et);
 			if (packetSize >= 14)
 			{
 				etherType = ReadMUInt16(&packetBuff[12]);

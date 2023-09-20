@@ -439,7 +439,7 @@ void Net::OSSocketFactory::AddIPMembership(Socket *socket, UInt32 ip)
 	setsockopt((SOCKET)socket, IPPROTO_IP, IP_ADD_MEMBERSHIP, (char*)&mreq, sizeof(mreq));
 }
 
-UOSInt Net::OSSocketFactory::SendData(Socket *socket, const UInt8 *buff, UOSInt buffSize, ErrorType *et)
+UOSInt Net::OSSocketFactory::SendData(Socket *socket, const UInt8 *buff, UOSInt buffSize, OptOut<ErrorType> et)
 {
 //	return send((SOCKET)socket, (const char*)buff, (int)buffSize, 0);
 	WSABUF buf;
@@ -451,18 +451,17 @@ UOSInt Net::OSSocketFactory::SendData(Socket *socket, const UInt8 *buff, UOSInt 
 	iResult = WSASend((SOCKET)socket, &buf, 1, &sendSize, flags, 0, 0);
 	if (iResult == 0)
 	{
-		if (et)
-			*et = Net::SocketFactory::ET_NO_ERROR;
+		et.Set(Net::SocketFactory::ET_NO_ERROR);
 		return sendSize;
 	}
-	if (et)
+	if (et.IsNotNull())
 	{
-		*et = FromSystemError(WSAGetLastError());
+		et.SetNoCheck(FromSystemError(WSAGetLastError()));
 	}
 	return 0;
 }
 
-UOSInt Net::OSSocketFactory::ReceiveData(Socket *socket, UInt8 *buff, UOSInt buffSize, ErrorType *et)
+UOSInt Net::OSSocketFactory::ReceiveData(Socket *socket, UInt8 *buff, UOSInt buffSize, OptOut<ErrorType> et)
 {
 	WSABUF buf;
 	DWORD flags = 0;
@@ -473,13 +472,12 @@ UOSInt Net::OSSocketFactory::ReceiveData(Socket *socket, UInt8 *buff, UOSInt buf
 	iResult = WSARecv((SOCKET)socket, &buf, 1, &recvSize, &flags, 0, 0);
 	if (iResult == 0)
 	{
-		if (et)
-			*et = Net::SocketFactory::ET_NO_ERROR;
+		et.Set(Net::SocketFactory::ET_NO_ERROR);
 		return recvSize;
 	}
-	if (et)
+	if (et.IsNotNull())
 	{
-		*et = FromSystemError(WSAGetLastError());
+		et.SetNoCheck(FromSystemError(WSAGetLastError()));
 	}
 	return 0;
 }
@@ -493,7 +491,7 @@ typedef struct
 	Socket *s;
 } WSAOverlapped;
 
-void *Net::OSSocketFactory::BeginReceiveData(Socket *socket, UInt8 *buff, UOSInt buffSize, Sync::Event *evt, ErrorType *et)
+void *Net::OSSocketFactory::BeginReceiveData(Socket *socket, UInt8 *buff, UOSInt buffSize, Sync::Event *evt, OptOut<ErrorType> et)
 {
 	WSAOverlapped *overlapped;
 	overlapped = MemAlloc(WSAOverlapped, 1);
@@ -513,9 +511,9 @@ void *Net::OSSocketFactory::BeginReceiveData(Socket *socket, UInt8 *buff, UOSInt
 			Int32 err = WSAGetLastError();
 			if (err != WSA_IO_PENDING)
 			{
-				if (et)
+				if (et.IsNotNull())
 				{
-					*et = FromSystemError(err);
+					et.SetNoCheck(FromSystemError(err));
 				}
 				MemFree(overlapped);
 				return 0;
@@ -525,10 +523,10 @@ void *Net::OSSocketFactory::BeginReceiveData(Socket *socket, UInt8 *buff, UOSInt
 	return overlapped;
 }
 
-UOSInt Net::OSSocketFactory::EndReceiveData(void *reqData, Bool toWait, Bool *incomplete)
+UOSInt Net::OSSocketFactory::EndReceiveData(void *reqData, Bool toWait, OutParam<Bool> incomplete)
 {
 	WSAOverlapped *overlapped = (WSAOverlapped*)reqData;
-	*incomplete = false;
+	incomplete.Set(false);
 	if (overlapped == 0)
 		return 0;
 	DWORD recvSize;
@@ -543,7 +541,7 @@ UOSInt Net::OSSocketFactory::EndReceiveData(void *reqData, Bool toWait, Bool *in
 		int lastErr = WSAGetLastError();
 		if (lastErr == WSA_IO_INCOMPLETE)
 		{
-			*incomplete = true;
+			incomplete.Set(true);
 			return 0;
 		}
 		MemFree(overlapped);
@@ -562,7 +560,7 @@ void Net::OSSocketFactory::CancelReceiveData(void *reqData)
 	MemFree(overlapped);
 }
 
-UOSInt Net::OSSocketFactory::UDPReceive(Socket *socket, UInt8 *buff, UOSInt buffSize, NotNullPtr<Net::SocketUtil::AddressInfo> addr, OutParam<UInt16> port, ErrorType *et)
+UOSInt Net::OSSocketFactory::UDPReceive(Socket *socket, UInt8 *buff, UOSInt buffSize, NotNullPtr<Net::SocketUtil::AddressInfo> addr, OutParam<UInt16> port, OptOut<ErrorType> et)
 {
 	Int32 recvSize;
 	UInt8 addrBuff[28];
@@ -570,9 +568,9 @@ UOSInt Net::OSSocketFactory::UDPReceive(Socket *socket, UInt8 *buff, UOSInt buff
 	recvSize = recvfrom((SOCKET)socket, (Char*)buff, (int)buffSize, 0, (sockaddr*)addrBuff, &addrSize);
 	if (recvSize <= 0)
 	{
-		if (et)
+		if (et.IsNotNull())
 		{
-			*et = FromSystemError(WSAGetLastError());
+			et.SetNoCheck(FromSystemError(WSAGetLastError()));
 		}
 		return 0;
 	}

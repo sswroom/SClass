@@ -175,7 +175,7 @@ Socket *Net::LoggedSocketFactory::SocketAccept(Socket *socket)
 	return ret;
 }
 
-UOSInt Net::LoggedSocketFactory::SendData(Socket *socket, const UInt8 *buff, UOSInt buffSize, ErrorType *et)
+UOSInt Net::LoggedSocketFactory::SendData(Socket *socket, const UInt8 *buff, UOSInt buffSize, OptOut<ErrorType> et)
 {
 	UOSInt ret = this->sockf->SendData(socket, buff, buffSize, et);
 	Text::StringBuilderUTF8 sb;
@@ -190,7 +190,7 @@ UOSInt Net::LoggedSocketFactory::SendData(Socket *socket, const UInt8 *buff, UOS
 	return ret;
 }
 
-UOSInt Net::LoggedSocketFactory::ReceiveData(Socket *socket, UInt8 *buff, UOSInt buffSize, ErrorType *et)
+UOSInt Net::LoggedSocketFactory::ReceiveData(Socket *socket, UInt8 *buff, UOSInt buffSize, OptOut<ErrorType> et)
 {
 	UOSInt ret = this->sockf->ReceiveData(socket, buff, buffSize, et);
 	Text::StringBuilderUTF8 sb;
@@ -205,12 +205,12 @@ UOSInt Net::LoggedSocketFactory::ReceiveData(Socket *socket, UInt8 *buff, UOSInt
 	return ret;
 }
 
-void *Net::LoggedSocketFactory::BeginReceiveData(Socket *socket, UInt8 *buff, UOSInt buffSize, Sync::Event *evt, ErrorType *et)
+void *Net::LoggedSocketFactory::BeginReceiveData(Socket *socket, UInt8 *buff, UOSInt buffSize, Sync::Event *evt, OptOut<ErrorType> et)
 {
 	return this->sockf->BeginReceiveData(socket, buff, buffSize, evt, et);
 }
 
-UOSInt Net::LoggedSocketFactory::EndReceiveData(void *reqData, Bool toWait, Bool *incomplete)
+UOSInt Net::LoggedSocketFactory::EndReceiveData(void *reqData, Bool toWait, OutParam<Bool> incomplete)
 {
 	UOSInt ret = this->sockf->EndReceiveData(reqData, toWait, incomplete);
 	if (toWait || ret > 0)
@@ -233,7 +233,7 @@ void Net::LoggedSocketFactory::CancelReceiveData(void *reqData)
 	this->sockf->CancelReceiveData(reqData);
 }
 
-UOSInt Net::LoggedSocketFactory::UDPReceive(Socket *socket, UInt8 *buff, UOSInt buffSize, Net::SocketUtil::AddressInfo *addr, UInt16 *port, ErrorType *et)
+UOSInt Net::LoggedSocketFactory::UDPReceive(Socket *socket, UInt8 *buff, UOSInt buffSize, Net::SocketUtil::AddressInfo *addr, UInt16 *port, OptOut<ErrorType> et)
 {
 	UOSInt ret = this->sockf->UDPReceive(socket, buff, buffSize, addr, port, et);
 	Text::StringBuilderUTF8 sb;

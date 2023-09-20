@@ -379,24 +379,24 @@ void IO::Device::SIM7000SocketFactory::AddIPMembership(Socket *socket, UInt32 ip
 
 }
 
-UOSInt IO::Device::SIM7000SocketFactory::SendData(Socket *socket, const UInt8 *buff, UOSInt buffSize, ErrorType *et)
+UOSInt IO::Device::SIM7000SocketFactory::SendData(Socket *socket, const UInt8 *buff, UOSInt buffSize, OptOut<ErrorType> et)
 {
 	return 0;
 }
 
-UOSInt IO::Device::SIM7000SocketFactory::ReceiveData(Socket *socket, UInt8 *buff, UOSInt buffSize, ErrorType *et)
+UOSInt IO::Device::SIM7000SocketFactory::ReceiveData(Socket *socket, UInt8 *buff, UOSInt buffSize, OptOut<ErrorType> et)
 {
 	return 0;
 }
 
-void *IO::Device::SIM7000SocketFactory::BeginReceiveData(Socket *socket, UInt8 *buff, UOSInt buffSize, Sync::Event *evt, ErrorType *et)
+void *IO::Device::SIM7000SocketFactory::BeginReceiveData(Socket *socket, UInt8 *buff, UOSInt buffSize, Sync::Event *evt, OptOut<ErrorType> et)
 {
 	return 0;
 }
 
-UOSInt IO::Device::SIM7000SocketFactory::EndReceiveData(void *reqData, Bool toWait, Bool *incomplete)
+UOSInt IO::Device::SIM7000SocketFactory::EndReceiveData(void *reqData, Bool toWait, OutParam<Bool> incomplete)
 {
-	*incomplete = false;
+	incomplete.Set(false);
 	return 0;
 }
 
@@ -405,7 +405,7 @@ void IO::Device::SIM7000SocketFactory::CancelReceiveData(void *reqData)
 
 }
 
-UOSInt IO::Device::SIM7000SocketFactory::UDPReceive(Socket *socket, UInt8 *buff, UOSInt buffSize, NotNullPtr<Net::SocketUtil::AddressInfo> addr, OutParam<UInt16> port, ErrorType *et)
+UOSInt IO::Device::SIM7000SocketFactory::UDPReceive(Socket *socket, UInt8 *buff, UOSInt buffSize, NotNullPtr<Net::SocketUtil::AddressInfo> addr, OutParam<UInt16> port, OptOut<ErrorType> et)
 {
 	OSInt i = -1 + (OSInt)socket;
 	if (i < 0 || i >= 8)
@@ -439,10 +439,7 @@ UOSInt IO::Device::SIM7000SocketFactory::UDPReceive(Socket *socket, UInt8 *buff,
 		}
 		this->status[i].dataEvt.Wait(10000);
 	}
-	if (et)
-	{
-		*et = Net::SocketFactory::ET_DISCONNECT;
-	}
+	et.Set(Net::SocketFactory::ET_DISCONNECT);
 	return 0;
 }
 

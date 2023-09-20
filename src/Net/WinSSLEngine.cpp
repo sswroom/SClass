@@ -878,7 +878,7 @@ Net::SSLClient* Net::WinSSLEngine::CreateClientConn(void* sslObj, Socket* s, Tex
 #if defined(VERBOSE_CLI)
 	printf("SSL: Cli %x, SendData, size = %d\r\n", (Int32)(OSInt)s, (Int32)outputBuff[0].cbBuffer);
 #endif
-	if (this->sockf->SendData(s, (UInt8*)outputBuff[0].pvBuffer, outputBuff[0].cbBuffer, &et) != outputBuff[0].cbBuffer)
+	if (this->sockf->SendData(s, (UInt8*)outputBuff[0].pvBuffer, outputBuff[0].cbBuffer, et) != outputBuff[0].cbBuffer)
 	{
 #if defined(VERBOSE_CLI)
 		printf("SSL: Cli %x, Error in sendData, ret = %x\r\n", (Int32)(OSInt)s, (UInt32)status);
@@ -902,7 +902,7 @@ Net::SSLClient* Net::WinSSLEngine::CreateClientConn(void* sslObj, Socket* s, Tex
 	{
 		if (recvOfst == 0 || status == SEC_E_INCOMPLETE_MESSAGE)
 		{
-			recvSize = this->sockf->ReceiveData(s, &recvBuff[recvOfst], 8192 - recvOfst, &et);
+			recvSize = this->sockf->ReceiveData(s, &recvBuff[recvOfst], 8192 - recvOfst, et);
 #if defined(VERBOSE_CLI)
 			printf("SSL: Cli %x, recvData, size = %d\r\n", (Int32)(OSInt)s, (UInt32)recvSize);
 #endif
@@ -955,7 +955,7 @@ Net::SSLClient* Net::WinSSLEngine::CreateClientConn(void* sslObj, Socket* s, Tex
 			{
 				if (outputBuff[i].BufferType == SECBUFFER_TOKEN && outputBuff[i].cbBuffer > 0)
 				{
-					if (this->sockf->SendData(s, (const UInt8*)outputBuff[i].pvBuffer, outputBuff[i].cbBuffer, &et) != outputBuff[i].cbBuffer)
+					if (this->sockf->SendData(s, (const UInt8*)outputBuff[i].pvBuffer, outputBuff[i].cbBuffer, et) != outputBuff[i].cbBuffer)
 					{
 						succ = false;
 					}
@@ -1040,7 +1040,7 @@ Net::SSLClient *Net::WinSSLEngine::CreateServerConn(Socket *s)
 	UOSInt recvSize;
 	TimeStamp ts;
 	Net::SocketFactory::ErrorType et;
-	recvSize = this->sockf->ReceiveData(s, recvBuff, 2048, &et);
+	recvSize = this->sockf->ReceiveData(s, recvBuff, 2048, et);
 	if (recvSize == 0)
 	{
 #if defined(VERBOSE_SVR)
@@ -1103,7 +1103,7 @@ Net::SSLClient *Net::WinSSLEngine::CreateServerConn(Socket *s)
 	{
 		if (outputBuff[i].BufferType == SECBUFFER_TOKEN && outputBuff[i].cbBuffer > 0)
 		{
-			if (this->sockf->SendData(s, (const UInt8*)outputBuff[i].pvBuffer, outputBuff[i].cbBuffer, &et) != outputBuff[i].cbBuffer)
+			if (this->sockf->SendData(s, (const UInt8*)outputBuff[i].pvBuffer, outputBuff[i].cbBuffer, et) != outputBuff[i].cbBuffer)
 			{
 #if defined(VERBOSE_SVR)
 				dtDebug.SetCurrTime();
@@ -1136,7 +1136,7 @@ Net::SSLClient *Net::WinSSLEngine::CreateServerConn(Socket *s)
 	{
 		if (recvOfst == 0 || status == SEC_E_INCOMPLETE_MESSAGE)
 		{
-			recvSize = this->sockf->ReceiveData(s, &recvBuff[recvOfst], 2048 - recvOfst, &et);
+			recvSize = this->sockf->ReceiveData(s, &recvBuff[recvOfst], 2048 - recvOfst, et);
 			if (recvSize <= 0)
 			{
 #if defined(VERBOSE_SVR)
@@ -1194,7 +1194,7 @@ Net::SSLClient *Net::WinSSLEngine::CreateServerConn(Socket *s)
 			{
 				if (outputBuff[i].BufferType == SECBUFFER_TOKEN && outputBuff[i].cbBuffer > 0)
 				{
-					if (this->sockf->SendData(s, (const UInt8*)outputBuff[i].pvBuffer, outputBuff[i].cbBuffer, &et) != outputBuff[i].cbBuffer)
+					if (this->sockf->SendData(s, (const UInt8*)outputBuff[i].pvBuffer, outputBuff[i].cbBuffer, et) != outputBuff[i].cbBuffer)
 					{
 #if defined(VERBOSE_SVR)
 						dtDebug.SetCurrTime();

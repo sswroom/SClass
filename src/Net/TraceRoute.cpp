@@ -17,7 +17,7 @@ void __stdcall Net::TraceRoute::RecvThread(NotNullPtr<Sync::Thread> thread)
 	me->resEvt->Set();
 	while (!thread->IsStopping())
 	{
-		readSize = me->sockf->UDPReceive(me->socV4, readBuff, 4096, addr, port, &et);
+		readSize = me->sockf->UDPReceive(me->socV4, readBuff, 4096, addr, port, et);
 		if (readSize >= 36)
 		{
 			if ((readBuff[0] & 0xf0) == 0x40 && readBuff[9] == 1)

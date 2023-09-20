@@ -243,12 +243,9 @@ void *IO::RS232GPIO::BeginRead(const Data::ByteArray &buff, Sync::Event *evt)
 	return ret;
 }
 
-UOSInt IO::RS232GPIO::EndRead(void *reqData, Bool toWait, Bool *incomplete)
+UOSInt IO::RS232GPIO::EndRead(void *reqData, Bool toWait, OutParam<Bool> incomplete)
 {
-	if (incomplete)
-	{
-		*incomplete = false;
-	}
+	incomplete.Set(false);
 	return (UOSInt)reqData;
 }
 

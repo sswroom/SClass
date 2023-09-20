@@ -76,11 +76,13 @@ void *IO::StreamLogger::BeginRead(const Data::ByteArray &buff, Sync::Event *evt)
 	}
 }
 
-UOSInt IO::StreamLogger::EndRead(void *reqData, Bool toWait, Bool *incomplete)
+UOSInt IO::StreamLogger::EndRead(void *reqData, Bool toWait, OutParam<Bool> incomplete)
 {
 	MyReqData *myReqData = (MyReqData*)reqData;
-	UOSInt readCnt = this->stm->EndRead(myReqData->reqData, toWait, incomplete);
-	if (!*incomplete)
+	Bool incomp;
+	UOSInt readCnt = this->stm->EndRead(myReqData->reqData, toWait, incomp);
+	incomplete.Set(incomp);
+	if (!incomp)
 	{
 		if (readCnt > 0 && this->readLog)
 		{

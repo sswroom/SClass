@@ -162,7 +162,7 @@ void *IO::SiLabSerialPort::BeginRead(const Data::ByteArray &buff, Sync::Event *e
 	return re;
 }
 
-UOSInt IO::SiLabSerialPort::EndRead(void *reqData, Bool toWait, Bool *incomplete)
+UOSInt IO::SiLabSerialPort::EndRead(void *reqData, Bool toWait, OutParam<Bool> incomplete)
 {
 	ReadEvent *re = (ReadEvent*)reqData;
 #if defined(_WIN32) && !defined(_WIN32_WCE)
@@ -174,7 +174,7 @@ UOSInt IO::SiLabSerialPort::EndRead(void *reqData, Bool toWait, Bool *incomplete
 	return 0;
 #else
 	UInt32 retVal = re->readSize;
-	if (incomplete) *incomplete = false;
+	incomplete.Set(false);
 	MemFree(re);
 	return retVal;
 #endif

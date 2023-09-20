@@ -17,7 +17,7 @@ void __stdcall Net::SocketMonitor::DataThread(NotNullPtr<Sync::Thread> thread)
 			Net::SocketUtil::AddressInfo addr;
 			UInt16 port;
 			Net::SocketFactory::ErrorType et;
-			recvSize = me->sockf->UDPReceive(me->soc, buff, 65536, addr, port, &et);
+			recvSize = me->sockf->UDPReceive(me->soc, buff, 65536, addr, port, et);
 			Data::DateTime logTime;
 			logTime.SetCurrTimeUTC();
 			if (recvSize > 0)

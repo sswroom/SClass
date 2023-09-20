@@ -8,7 +8,7 @@
 #include <sspi.h>
 #include <schannel.h>
 
-//#define DEBUG_PRINT
+#define DEBUG_PRINT
 #if defined(DEBUG_PRINT)
 #ifdef _MSC_VER
 #include <windows.h>
@@ -142,7 +142,7 @@ UOSInt Net::WinSSLClient::Read(const Data::ByteArray &buff)
 #if defined(DEBUG_PRINT)
 			debugDt.SetCurrTime();
 			debugDt.ToString(debugBuff, "HH:mm:ss.fff");
-			printf("%s Return size1 = %d, \r\n", debugBuff, (UInt32)myBuff.GetSize());
+			printf("%s Return size1 = %d\r\n", debugBuff, (UInt32)myBuff.GetSize());
 #endif
 			return myBuff.GetSize();
 		}
@@ -152,7 +152,7 @@ UOSInt Net::WinSSLClient::Read(const Data::ByteArray &buff)
 #if defined(DEBUG_PRINT)
 		debugDt.SetCurrTime();
 		debugDt.ToString(debugBuff, "HH:mm:ss.fff");
-		printf("%s Return size0 = %d, \r\n", debugBuff, (UInt32)ret);
+		printf("%s Return size0 = %d\r\n", debugBuff, (UInt32)ret);
 #endif
 		return ret;
 	}
@@ -171,7 +171,7 @@ UOSInt Net::WinSSLClient::Read(const Data::ByteArray &buff)
 		status = DecryptMessage(&this->clsData->ctxt, &buffDesc, 0, 0);
 		while (status == SEC_E_INCOMPLETE_MESSAGE)
 		{
-			UOSInt recvSize = this->sockf->ReceiveData(this->s, &this->clsData->recvBuff[this->clsData->recvOfst], this->clsData->recvBuffSize - this->clsData->recvOfst, &et);
+			UOSInt recvSize = this->sockf->ReceiveData(this->s, &this->clsData->recvBuff[this->clsData->recvOfst], this->clsData->recvBuffSize - this->clsData->recvOfst, et);
 			if (recvSize <= 0)
 			{
 				this->flags |= 2;
@@ -227,7 +227,7 @@ UOSInt Net::WinSSLClient::Read(const Data::ByteArray &buff)
 #if defined(DEBUG_PRINT)
 						debugDt.SetCurrTime();
 						debugDt.ToString(debugBuff, "HH:mm:ss.fff");
-						printf("%s Dec size2 = %d, size = %d\r\n", debugBuff, (UInt32)buffs[i].cbBuffer, (UInt32)size);
+						printf("%s Dec size2 = %d, size = %d\r\n", debugBuff, (UInt32)buffs[i].cbBuffer, (UInt32)myBuff.GetSize());
 #endif
 						myBuff.CopyFrom(Data::ByteArrayR((UInt8*)buffs[i].pvBuffer, myBuff.GetSize()));
 						ret += myBuff.GetSize();
@@ -322,7 +322,7 @@ UOSInt Net::WinSSLClient::Write(const UInt8 *buff, UOSInt size)
 			return 0;
 		}
 		Net::SocketFactory::ErrorType et;
-		UOSInt ret = this->sockf->SendData(this->s, encBuff, (UOSInt)outputBuff[0].cbBuffer + (UOSInt)outputBuff[1].cbBuffer + outputBuff[2].cbBuffer, &et);// SSL_write(this->clsData->ssl, buff, (int)size);
+		UOSInt ret = this->sockf->SendData(this->s, encBuff, (UOSInt)outputBuff[0].cbBuffer + (UOSInt)outputBuff[1].cbBuffer + outputBuff[2].cbBuffer, et);// SSL_write(this->clsData->ssl, buff, (int)size);
 #if defined(DEBUG_PRINT)
 		debugDt.SetCurrTime();
 		debugDt.ToString(debugBuff, "HH:mm:ss.fff");
@@ -409,7 +409,7 @@ void *Net::WinSSLClient::BeginRead(const Data::ByteArray &buff, Sync::Event *evt
 	if (s == 0 || (this->flags & 6) != 0)
 		return 0;
 	Net::SocketFactory::ErrorType et;
-	void *data = sockf->BeginReceiveData(s, &this->clsData->recvBuff[this->clsData->recvOfst], this->clsData->recvBuffSize - this->clsData->recvOfst, evt, &et);
+	void *data = sockf->BeginReceiveData(s, &this->clsData->recvBuff[this->clsData->recvOfst], this->clsData->recvBuffSize - this->clsData->recvOfst, evt, et);
 	if (data == 0)
 	{
 		if (et == Net::SocketFactory::ET_SHUTDOWN)
@@ -428,11 +428,11 @@ void *Net::WinSSLClient::BeginRead(const Data::ByteArray &buff, Sync::Event *evt
 	return data;
 }
 
-UOSInt Net::WinSSLClient::EndRead(void *reqData, Bool toWait, Bool *incomplete)
+UOSInt Net::WinSSLClient::EndRead(void *reqData, Bool toWait, OutParam<Bool> incomplete)
 {
 	if (reqData == 0)
 	{
-		*incomplete = false;
+		incomplete.Set(false);
 		return 0;
 	}
 #if defined(DEBUG_PRINT)
@@ -474,13 +474,10 @@ UOSInt Net::WinSSLClient::EndRead(void *reqData, Bool toWait, Bool *incomplete)
 	Bool incomp;
 
 	status = SEC_E_INCOMPLETE_MESSAGE;
-	recvSize = sockf->EndReceiveData(reqData, toWait, &incomp);
+	recvSize = sockf->EndReceiveData(reqData, toWait, incomp);
 	if (recvSize <= 0)
 	{
-		if (incomplete)
-		{
-			*incomplete = incomp;
-		}
+		incomplete.Set(incomp);
 		if (incomp)
 		{
 			return 0;
@@ -503,31 +500,30 @@ UOSInt Net::WinSSLClient::EndRead(void *reqData, Bool toWait, Bool *incomplete)
 	status = DecryptMessage(&this->clsData->ctxt, &buffDesc, 0, 0);
 	if (status == SEC_E_INCOMPLETE_MESSAGE)
 	{
+#if defined(DEBUG_PRINT)
+		debugDt.SetCurrTime();
+		debugDt.ToString(debugBuff, "HH:mm:ss.fff");
+		printf("%s EndRead Incomplete Message, ofst = %d, toWait = %d\r\n", debugBuff, (UInt32)this->clsData->recvOfst, toWait?1:0);
+#endif
 		if (!toWait)
 		{
-			if (incomplete)
-			{
-				*incomplete = true;
-			}
+			incomplete.Set(true);
 			return 0;
 		}
 		while (status == SEC_E_INCOMPLETE_MESSAGE)
 		{
-			UOSInt recvSize = this->sockf->ReceiveData(this->s, &this->clsData->recvBuff[this->clsData->recvOfst], this->clsData->recvBuffSize - this->clsData->recvOfst, &et);
-			if (recvSize <= 0)
-			{
-				if (incomplete)
-				{
-					*incomplete = false;
-				}
-				this->flags |= 2;
-				return ret;
-			}
+			UOSInt recvSize = this->sockf->ReceiveData(this->s, &this->clsData->recvBuff[this->clsData->recvOfst], this->clsData->recvBuffSize - this->clsData->recvOfst, et);
 #if defined(DEBUG_PRINT)
 			debugDt.SetCurrTime();
 			debugDt.ToString(debugBuff, "HH:mm:ss.fff");
 			printf("%s EndRead Recv size2 = %d\r\n", debugBuff, (UInt32)recvSize);
 #endif
+			if (recvSize <= 0)
+			{
+				incomplete.Set(false);
+				this->flags |= 2;
+				return ret;
+			}
 			this->clsData->recvOfst += recvSize;
 			SecBuffer_Set(&buffs[0], SECBUFFER_DATA, this->clsData->recvBuff, (UInt32)this->clsData->recvOfst);
 			SecBuffer_Set(&buffs[1], SECBUFFER_EMPTY, 0, 0);
@@ -547,12 +543,15 @@ UOSInt Net::WinSSLClient::EndRead(void *reqData, Bool toWait, Bool *incomplete)
 		debugDt.ToString(debugBuff, "HH:mm:ss.fff");
 		printf("%s EndRead Return size2 = %d\r\n", debugBuff, (UInt32)ret);
 #endif
-		if (incomplete)
-		{
-			*incomplete = false;
-		}
+		incomplete.Set(false);
 		return ret;
 	}
+
+#if defined(DEBUG_PRINT)
+	debugDt.SetCurrTime();
+	debugDt.ToString(debugBuff, "HH:mm:ss.fff");
+	printf("%s EndRead Decrypted\r\n", debugBuff);
+#endif
 
 	this->clsData->recvOfst = 0;
 	UOSInt i = 0;
@@ -616,10 +615,7 @@ UOSInt Net::WinSSLClient::EndRead(void *reqData, Bool toWait, Bool *incomplete)
 	debugDt.ToString(debugBuff, "HH:mm:ss.fff");
 	printf("%s EndRead Return size3 = %d\r\n", debugBuff, (UInt32)ret);
 #endif
-	if (incomplete)
-	{
-		*incomplete = false;
-	}
+	incomplete.Set(false);
 	return ret;
 }
 

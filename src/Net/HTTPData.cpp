@@ -118,7 +118,7 @@ UInt32 __stdcall Net::HTTPData::LoadThread(void *userObj)
 					{
 						Bool incomplete;
 						readEvt.Wait(2000);
-						readSize = fdh->cli->EndRead(sess, false, &incomplete);
+						readSize = fdh->cli->EndRead(sess, false, incomplete);
 						if (readSize <= 0)
 						{
 							fdh->cli->Close();

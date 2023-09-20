@@ -185,13 +185,13 @@ namespace Net
 		virtual void SetBroadcast(Socket *socket, Bool val) = 0;
 		virtual void AddIPMembership(Socket *socket, UInt32 ip) = 0;
 
-		virtual UOSInt SendData(Socket *socket, const UInt8 *buff, UOSInt buffSize, ErrorType *et) = 0;
-		virtual UOSInt ReceiveData(Socket *socket, UInt8 *buff, UOSInt buffSize, ErrorType *et) = 0;
-		virtual void *BeginReceiveData(Socket *socket, UInt8 *buff, UOSInt buffSize, Sync::Event *evt, ErrorType *et) = 0;
-		virtual UOSInt EndReceiveData(void *reqData, Bool toWait, Bool *incomplete) = 0;
+		virtual UOSInt SendData(Socket *socket, const UInt8 *buff, UOSInt buffSize, OptOut<ErrorType> et) = 0;
+		virtual UOSInt ReceiveData(Socket *socket, UInt8 *buff, UOSInt buffSize, OptOut<ErrorType> et) = 0;
+		virtual void *BeginReceiveData(Socket *socket, UInt8 *buff, UOSInt buffSize, Sync::Event *evt, OptOut<ErrorType> et) = 0;
+		virtual UOSInt EndReceiveData(void *reqData, Bool toWait, OutParam<Bool> incomplete) = 0;
 		virtual void CancelReceiveData(void *reqData) = 0;
 
-		virtual UOSInt UDPReceive(Socket *socket, UInt8 *buff, UOSInt buffSize, NotNullPtr<Net::SocketUtil::AddressInfo> addr, OutParam<UInt16> port, ErrorType *et) = 0;
+		virtual UOSInt UDPReceive(Socket *socket, UInt8 *buff, UOSInt buffSize, NotNullPtr<Net::SocketUtil::AddressInfo> addr, OutParam<UInt16> port, OptOut<ErrorType> et) = 0;
 		virtual UOSInt SendTo(Socket *socket, const UInt8 *buff, UOSInt buffSize, NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port) = 0;
 		virtual UOSInt SendToIF(Socket *socket, const UInt8 *buff, UOSInt buffSize, const UTF8Char *ifName) = 0;
 

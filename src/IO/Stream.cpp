@@ -18,9 +18,9 @@ void *IO::Stream::BeginRead(const Data::ByteArray &buff, Sync::Event *evt)
 	return (void*)retVal;
 }
 
-UOSInt IO::Stream::EndRead(void *reqData, Bool toWait, Bool *incomplete)
+UOSInt IO::Stream::EndRead(void *reqData, Bool toWait, OutParam<Bool> incomplete)
 {
-	*incomplete = false;
+	incomplete.Set(false);
 	return (UOSInt)reqData;
 }
 

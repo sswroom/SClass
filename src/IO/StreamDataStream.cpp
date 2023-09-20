@@ -50,9 +50,9 @@ void *IO::StreamDataStream::BeginRead(const Data::ByteArray &buff, Sync::Event *
 	return (void*)readSize;
 }
 
-UOSInt IO::StreamDataStream::EndRead(void *reqData, Bool toWait, Bool *incomplete)
+UOSInt IO::StreamDataStream::EndRead(void *reqData, Bool toWait, OutParam<Bool> incomplete)
 {
-	if (incomplete) *incomplete = false;
+	incomplete.Set(false);
 	return (UOSInt)reqData;
 }
 

@@ -67,7 +67,7 @@ UInt32 __stdcall Net::TCPClientMgr::ClientThread(void *o)
 							{
 								Sync::SimpleThread::Sleep(1);
 							}
-							readSize = cliStat->cli->EndRead(cliStat->readReq, false, &incomplete);
+							readSize = cliStat->cli->EndRead(cliStat->readReq, false, incomplete);
 						}
 						mutUsage.EndUse();
 						if (incomplete)
@@ -79,7 +79,7 @@ UInt32 __stdcall Net::TCPClientMgr::ClientThread(void *o)
 								cliStat->cli->ShutdownSend();
 								cliStat->cli->Close();
 								Sync::SimpleThread::Sleep(1);
-								cliStat->cli->EndRead(cliStat->readReq, true, &incomplete);
+								cliStat->cli->EndRead(cliStat->readReq, true, incomplete);
 								me->cliMap.RemoveAt(i);
 								cliMutUsage.EndUse();
 

@@ -155,9 +155,9 @@ void *Net::OpenSSLClient::BeginRead(const Data::ByteArray &buff, Sync::Event *ev
 	return (void*)ret;
 }
 
-UOSInt Net::OpenSSLClient::EndRead(void *reqData, Bool toWait, Bool *incomplete)
+UOSInt Net::OpenSSLClient::EndRead(void *reqData, Bool toWait, OutParam<Bool> incomplete)
 {
-	*incomplete = false;
+	incomplete.Set(false);
 	return (UOSInt)reqData;
 }
 

@@ -97,7 +97,7 @@ UInt32 __stdcall Net::ICMPScanner::Ping2Thread(void *userObj)
 	UOSInt ipDataSize;
 	while (!me->threadToStop)
 	{
-		readSize = me->sockf->UDPReceive(me->soc, readBuff, 4096, addr, port, &et);
+		readSize = me->sockf->UDPReceive(me->soc, readBuff, 4096, addr, port, et);
 		if (readSize >= 36)
 		{
 			if ((readBuff[0] & 0xf0) == 0x40 && readBuff[9] == 1)

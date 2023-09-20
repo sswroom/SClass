@@ -451,9 +451,9 @@ void *IO::SerialPort::BeginRead(const Data::ByteArray &buff, Sync::Event *evt)
 	return 0;
 }
 
-UOSInt IO::SerialPort::EndRead(void *reqData, Bool toWait, Bool *incomplete)
+UOSInt IO::SerialPort::EndRead(void *reqData, Bool toWait, OutParam<Bool> incomplete)
 {
-	if (incomplete) *incomplete = false;
+	incomplete.Set(false);
 	return 0;
 }
 

@@ -65,12 +65,9 @@ void *IO::BufferedInputStream::BeginRead(const Data::ByteArray &buff, Sync::Even
 	return (void*)sz;
 }
 
-UOSInt IO::BufferedInputStream::EndRead(void *reqData, Bool toWait, Bool *incomplete)
+UOSInt IO::BufferedInputStream::EndRead(void *reqData, Bool toWait, OutParam<Bool> incomplete)
 {
-	if (incomplete)
-	{
-		*incomplete = false;
-	}
+	incomplete.Set(false);
 	return (UOSInt)reqData;
 }
 

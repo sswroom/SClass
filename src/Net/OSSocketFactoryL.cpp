@@ -438,7 +438,7 @@ void Net::OSSocketFactory::AddIPMembership(Socket *socket, UInt32 ip)
 	setsockopt(this->SocketGetFD(socket), IPPROTO_IP, IP_ADD_MEMBERSHIP, (char*)&mreq, sizeof(mreq));
 }
 
-UOSInt Net::OSSocketFactory::SendData(Socket *socket, const UInt8 *buff, UOSInt buffSize, ErrorType *et)
+UOSInt Net::OSSocketFactory::SendData(Socket *socket, const UInt8 *buff, UOSInt buffSize, OptOut<ErrorType> et)
 {
 	int flags = 0;
 #if defined(MSG_NOSIGNAL)
@@ -447,24 +447,24 @@ UOSInt Net::OSSocketFactory::SendData(Socket *socket, const UInt8 *buff, UOSInt 
 	OSInt ret = send(this->SocketGetFD(socket), (const char*)buff, (size_t)buffSize, flags);
 	if (ret == -1)
 	{
-		if (et)
+		if (et.IsNotNull())
 		{
 			switch (errno)
 			{
 			case ECONNRESET:
-				*et = ET_CONN_RESET;
+				et.SetNoCheck(ET_CONN_RESET);
 				break;
 			case ECONNABORTED:
-				*et = ET_CONN_ABORT;
+				et.SetNoCheck(ET_CONN_ABORT);
 				break;
 			case ENOTCONN:
-				*et = ET_DISCONNECT;
+				et.SetNoCheck(ET_DISCONNECT);
 				break;
 			case ENOBUFS:
-				*et = ET_SHUTDOWN;
+				et.SetNoCheck(ET_SHUTDOWN);
 				break;
 			default:
-				*et = ET_UNKNOWN;
+				et.SetNoCheck(ET_UNKNOWN);
 				break;
 			}
 		}
@@ -472,38 +472,35 @@ UOSInt Net::OSSocketFactory::SendData(Socket *socket, const UInt8 *buff, UOSInt 
 	}
 	else
 	{
-		if (et)
-		{
-			*et = ET_NO_ERROR;
-		}
+		et.Set(ET_NO_ERROR);
 		return (UOSInt)ret;
 	}
 }
 
-UOSInt Net::OSSocketFactory::ReceiveData(Socket *socket, UInt8 *buff, UOSInt buffSize, ErrorType *et)
+UOSInt Net::OSSocketFactory::ReceiveData(Socket *socket, UInt8 *buff, UOSInt buffSize, OptOut<ErrorType> et)
 {
 	OSInt ret = recv(this->SocketGetFD(socket), (char*)buff, (size_t)buffSize, 0);
 //	OSInt ret = read(this->SocketGetFD(socket), (char*)buff, (int)buffSize);
 	if (ret == -1)
 	{
-		if (et)
+		if (et.IsNotNull())
 		{
 			switch (errno)
 			{
 			case ECONNRESET:
-				*et = ET_CONN_RESET;
+				et.SetNoCheck(ET_CONN_RESET);
 				break;
 			case ECONNABORTED:
-				*et = ET_CONN_ABORT;
+				et.SetNoCheck(ET_CONN_ABORT);
 				break;
 			case ENOTCONN:
-				*et = ET_DISCONNECT;
+				et.SetNoCheck(ET_DISCONNECT);
 				break;
 			case ENOBUFS:
-				*et = ET_SHUTDOWN;
+				et.SetNoCheck(ET_SHUTDOWN);
 				break;
 			default:
-				*et = ET_UNKNOWN;
+				et.SetNoCheck(ET_UNKNOWN);
 				break;
 			}
 		}
@@ -511,15 +508,12 @@ UOSInt Net::OSSocketFactory::ReceiveData(Socket *socket, UInt8 *buff, UOSInt buf
 	}
 	else
 	{
-		if (et)
-		{
-			*et = ET_NO_ERROR;
-		}
+		et.Set(ET_NO_ERROR);
 		return (UOSInt)ret;
 	}
 }
 
-void *Net::OSSocketFactory::BeginReceiveData(Socket *socket, UInt8 *buff, UOSInt buffSize, Sync::Event *evt, ErrorType *et)
+void *Net::OSSocketFactory::BeginReceiveData(Socket *socket, UInt8 *buff, UOSInt buffSize, Sync::Event *evt, OptOut<ErrorType> et)
 {
 	UOSInt ret = ReceiveData(socket, buff, buffSize, et);
 	if (ret)
@@ -529,9 +523,9 @@ void *Net::OSSocketFactory::BeginReceiveData(Socket *socket, UInt8 *buff, UOSInt
 	return (void*)ret;
 }
 
-UOSInt Net::OSSocketFactory::EndReceiveData(void *reqData, Bool toWait, Bool *incomplete)
+UOSInt Net::OSSocketFactory::EndReceiveData(void *reqData, Bool toWait, OutParam<Bool> incomplete)
 {
-	*incomplete = false;
+	incomplete.Set(false);
 	return (UOSInt)reqData;
 }
 
@@ -539,7 +533,7 @@ void Net::OSSocketFactory::CancelReceiveData(void *reqData)
 {
 }
 
-UOSInt Net::OSSocketFactory::UDPReceive(Socket *socket, UInt8 *buff, UOSInt buffSize, NotNullPtr<Net::SocketUtil::AddressInfo> addr, OutParam<UInt16> port, ErrorType *et)
+UOSInt Net::OSSocketFactory::UDPReceive(Socket *socket, UInt8 *buff, UOSInt buffSize, NotNullPtr<Net::SocketUtil::AddressInfo> addr, OutParam<UInt16> port, OptOut<ErrorType> et)
 {
 	OSInt recvSize;
 	sockaddr_storage addrBuff;
@@ -550,27 +544,27 @@ UOSInt Net::OSSocketFactory::UDPReceive(Socket *socket, UInt8 *buff, UOSInt buff
 	if (recvSize <= 0)
 	{
 //		printf("UDP recv error: %d\r\n", errno);
-		if (et)
+		if (et.IsNotNull())
 		{
 			if (errno == ECONNRESET)
 			{
-				*et = ET_CONN_RESET;
+				et.SetNoCheck(ET_CONN_RESET);
 			}
 			else if (errno == ECONNRESET)
 			{
-				*et = ET_CONN_ABORT;
+				et.SetNoCheck(ET_CONN_ABORT);
 			}
 			else if (errno == ENOTCONN)
 			{
-				*et = ET_DISCONNECT;
+				et.SetNoCheck(ET_DISCONNECT);
 			}
 			else if (errno == ENOBUFS)
 			{
-				*et = ET_SHUTDOWN;
+				et.SetNoCheck(ET_SHUTDOWN);
 			}
 			else
 			{
-				*et = ET_UNKNOWN;
+				et.SetNoCheck(ET_UNKNOWN);
 			}
 		}
 		return 0;
