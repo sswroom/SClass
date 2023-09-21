@@ -87,7 +87,8 @@ namespace Net
 
 		static UInt32 __stdcall ClientThread(void *o);
 		static UInt32 __stdcall WorkerThread(void *o);
-		void ProcessClient(TCPClientStatus *cliStat);
+		void ProcessClient(NotNullPtr<TCPClientStatus> cliStat);
+		void ClientBeginRead(NotNullPtr<TCPClientStatus> cliStat);
 	public:
 		TCPClientMgr(Int32 timeOutSeconds, TCPClientEvent evtHdlr, TCPClientData dataHdlr, void *userObj, UOSInt workerCnt, TCPClientTimeout toHdlr);
 		~TCPClientMgr();

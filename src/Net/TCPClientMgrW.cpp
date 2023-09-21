@@ -26,7 +26,7 @@ UInt32 __stdcall Net::TCPClientMgr::ClientThread(void *o)
 	UOSInt i;
 	UOSInt readSize;
 	Bool found;
-	Net::TCPClientMgr::TCPClientStatus *cliStat;
+	NotNullPtr<Net::TCPClientMgr::TCPClientStatus> cliStat;
 	Sync::ThreadUtil::SetName(CSTR("TCPCliMgr"));
 	me->clientThreadRunning = true;
 	{
@@ -43,8 +43,7 @@ UInt32 __stdcall Net::TCPClientMgr::ClientThread(void *o)
 			while (i-- > 0)
 			{
 				Sync::MutexUsage cliMutUsage(me->cliMut);
-				cliStat = (Net::TCPClientMgr::TCPClientStatus*)me->cliMap.GetItem(i);
-				if (cliStat)
+				if (cliStat.Set((Net::TCPClientMgr::TCPClientStatus*)me->cliMap.GetItem(i)))
 				{
 					if (cliStat->reading)
 					{
@@ -73,7 +72,7 @@ UInt32 __stdcall Net::TCPClientMgr::ClientThread(void *o)
 						if (incomplete)
 						{
 							currTime = Data::Timestamp::UtcNow();
-							if (currTime.Diff(cliStat->lastDataTime) > cliStat->cli->GetTimeout())
+							if (true) //currTime.Diff(cliStat->lastDataTime) > cliStat->cli->GetTimeout())
 							{
 								if (me->logWriter) me->logWriter->TCPDisconnect(cliStat->cli);
 								cliStat->cli->ShutdownSend();
@@ -84,11 +83,13 @@ UInt32 __stdcall Net::TCPClientMgr::ClientThread(void *o)
 								cliMutUsage.EndUse();
 
 								me->evtHdlr(cliStat->cli, me->userObj, cliStat->cliData, Net::TCPClientMgr::TCP_EVENT_DISCONNECT);
-								DEL_CLASS(cliStat);
+								cliStat.Delete();
 							}
 							else
 							{
+								me->ClientBeginRead(cliStat);
 								cliMutUsage.EndUse();
+								found = true;
 							}
 						}
 						else if (readSize)
@@ -109,7 +110,7 @@ UInt32 __stdcall Net::TCPClientMgr::ClientThread(void *o)
 							cliMutUsage.EndUse();
 
 							me->evtHdlr(cliStat->cli, me->userObj, cliStat->cliData, Net::TCPClientMgr::TCP_EVENT_DISCONNECT);
-							DEL_CLASS(cliStat);
+							cliStat.Delete();
 						}
 					}
 					else
@@ -165,7 +166,7 @@ UInt32 __stdcall Net::TCPClientMgr::WorkerThread(void *o)
 {
 	Net::TCPClientMgr::WorkerStatus *stat = (Net::TCPClientMgr::WorkerStatus*)o;
 	Net::TCPClientMgr *me = stat->me;
-	Net::TCPClientMgr::TCPClientStatus *cliStat;
+	NotNullPtr<Net::TCPClientMgr::TCPClientStatus> cliStat;
 	UTF8Char sbuff[16];
 	UTF8Char *sptr;
 	sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("TCPCliMgr")), stat->index);
@@ -173,7 +174,7 @@ UInt32 __stdcall Net::TCPClientMgr::WorkerThread(void *o)
 	stat->state = WorkerState::Idle;
 	while (!stat->toStop)
 	{
-		while ((cliStat = me->workerTasks.Get()) != 0)
+		while (cliStat.Set(me->workerTasks.Get()))
 		{
 			stat->state = WorkerState::Processing;
 			cliStat->timeStart = Data::Timestamp::UtcNow();
@@ -181,20 +182,7 @@ UInt32 __stdcall Net::TCPClientMgr::WorkerThread(void *o)
 			cliStat->processing = true;
 			me->dataHdlr(cliStat->cli, me->userObj, cliStat->cliData, Data::ByteArrayR(cliStat->buff, cliStat->buffSize));
 			cliStat->processing = false;
-			Bool setEvt = false;
-			if (cliStat->cli->GetRecvBuffSize() > 0)
-			{
-				setEvt = true;
-			}
-
-			Sync::MutexUsage mutUsage(cliStat->readMut);
-			cliStat->readReq = cliStat->cli->BeginRead(Data::ByteArray(cliStat->buff, TCP_BUFF_SIZE), ((Sync::Event*)me->clsData));
-			cliStat->reading = true;
-			mutUsage.EndUse();
-			if (setEvt)
-			{
-				((Sync::Event*)me->clsData)->Set();
-			}
+			me->ClientBeginRead(cliStat);
 		}
 		stat->state = WorkerState::Idle;
 		stat->evt->Wait(7700);
@@ -203,9 +191,9 @@ UInt32 __stdcall Net::TCPClientMgr::WorkerThread(void *o)
 	return 0;
 }
 
-void Net::TCPClientMgr::ProcessClient(Net::TCPClientMgr::TCPClientStatus *cliStat)
+void Net::TCPClientMgr::ProcessClient(NotNullPtr<Net::TCPClientMgr::TCPClientStatus> cliStat)
 {
-	this->workerTasks.Put(cliStat);
+	this->workerTasks.Put(cliStat.Ptr());
 	UOSInt i = this->workerCnt;
 	while (i-- > 0)
 	{
@@ -214,6 +202,24 @@ void Net::TCPClientMgr::ProcessClient(Net::TCPClientMgr::TCPClientStatus *cliSta
 			this->workers[i].evt->Set();
 			return;
 		}
+	}
+}
+
+void Net::TCPClientMgr::ClientBeginRead(NotNullPtr<TCPClientStatus> cliStat)
+{
+	Bool setEvt = false;
+	if (cliStat->cli->GetRecvBuffSize() > 0)
+	{
+		setEvt = true;
+	}
+
+	Sync::MutexUsage mutUsage(cliStat->readMut);
+	cliStat->readReq = cliStat->cli->BeginRead(Data::ByteArray(cliStat->buff, TCP_BUFF_SIZE), ((Sync::Event*)this->clsData));
+	cliStat->reading = true;
+	mutUsage.EndUse();
+	if (setEvt)
+	{
+		((Sync::Event*)this->clsData)->Set();
 	}
 }
 

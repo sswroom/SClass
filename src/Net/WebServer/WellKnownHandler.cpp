@@ -1,4 +1,5 @@
 #include "Stdafx.h"
+#include "IO/Path.h"
 #include "Net/WebServer/WellKnownHandler.h"
 #include "Sync/MutexUsage.h"
 
@@ -42,6 +43,11 @@ Bool __stdcall Net::WebServer::WellKnownHandler::AddFunc(NotNullPtr<Net::WebServ
 
 Net::WebServer::WellKnownHandler::WellKnownHandler()
 {
+	UTF8Char sbuff[512];
+	UTF8Char *sptr;
+	sptr = IO::Path::GetProcessFileName(sbuff);
+	sptr = IO::Path::AppendPath(sbuff, sptr, CSTR(".well-known"));
+	this->SetRootDir(CSTRP(sbuff, sptr));
 	this->AddService(CSTR("/add"), Net::WebUtil::RequestMethod::HTTP_GET, AddFunc);
 }
 

@@ -220,6 +220,10 @@ Int64 Net::WebServer::MemoryWebSessionManager::GenSessId(NotNullPtr<Net::WebServ
 		crc.Calc(addr->addr, 16);
 		crc.GetValue(&buff[4]);
 	}
+	else
+	{
+		*(UInt32*)&buff[4] = 0;
+	}
 	dt.SetCurrTimeUTC();
 	return dt.ToTicks() + *(Int64*)buff;
 }

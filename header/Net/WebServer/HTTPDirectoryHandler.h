@@ -81,7 +81,8 @@ namespace Net
 			Bool DoFileRequest(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq);
 			IO::PackageFile *GetPackageFile(Text::CStringNN path, Bool *needRelease);
 
-			void SetRootDir(Text::String *rootDir);
+			void SetRootDir(NotNullPtr<Text::String> rootDir);
+			void SetRootDir(Text::CStringNN rootDir);
 			void SetCacheType(CacheType ctype);
 			void SetExpirePeriod(Int32 periodSec);
 			void SetAllowOrigin(Text::CString origin);

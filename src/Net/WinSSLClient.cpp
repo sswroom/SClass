@@ -8,7 +8,7 @@
 #include <sspi.h>
 #include <schannel.h>
 
-#define DEBUG_PRINT
+//#define DEBUG_PRINT
 #if defined(DEBUG_PRINT)
 #ifdef _MSC_VER
 #include <windows.h>

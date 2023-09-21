@@ -1537,11 +1537,18 @@ IO::PackageFile *Net::WebServer::HTTPDirectoryHandler::GetPackageFile(Text::CStr
 	return 0;
 }
 
-void Net::WebServer::HTTPDirectoryHandler::SetRootDir(Text::String *rootDir)
+void Net::WebServer::HTTPDirectoryHandler::SetRootDir(NotNullPtr<Text::String> rootDir)
 {
 	Sync::MutexUsage mutUsage(this->fileCacheMut);
 	this->rootDir->Release();
 	this->rootDir = rootDir->Clone();
+}
+
+void Net::WebServer::HTTPDirectoryHandler::SetRootDir(Text::CStringNN rootDir)
+{
+	Sync::MutexUsage mutUsage(this->fileCacheMut);
+	this->rootDir->Release();
+	this->rootDir = Text::String::New(rootDir);
 }
 
 void Net::WebServer::HTTPDirectoryHandler::SetCacheType(CacheType ctype)

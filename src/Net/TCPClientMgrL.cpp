@@ -30,13 +30,11 @@ struct Net::TCPClientMgr::ClassData
 	Bool hasData;
 };
 
-void TCPClientMgr_RemoveCliStat(NotNullPtr<Data::UInt64FastMap<Net::TCPClientMgr::TCPClientStatus*>> cliMap, Net::TCPClientMgr::TCPClientStatus *cliStat)
+void TCPClientMgr_RemoveCliStat(NotNullPtr<Data::UInt64FastMap<Net::TCPClientMgr::TCPClientStatus*>> cliMap, NotNullPtr<Net::TCPClientMgr::TCPClientStatus> cliStat)
 {
 	UInt64 cliId = cliStat->cli->GetCliId();
 //	printf("Removing CliId: %lld\r\n", cliId); //////////
-
-	cliStat = cliMap->Remove(cliId);
-	if (cliStat == 0)
+	if (!cliStat.Set(cliMap->Remove(cliId)))
 	{
 		printf("CliId not found\r\n");
 	}
@@ -51,7 +49,7 @@ UInt32 __stdcall Net::TCPClientMgr::ClientThread(void *o)
 	UOSInt i;
 	UOSInt readSize;
 	UInt8 tmpBuff[16];
-	Net::TCPClientMgr::TCPClientStatus *cliStat;
+	NotNullPtr<Net::TCPClientMgr::TCPClientStatus> cliStat;
 	UOSInt pollfdCap = 16;
 	struct pollfd *pollfds = MemAlloc(struct pollfd, pollfdCap);
 	Net::TCPClientMgr::TCPClientStatus **pollCli = MemAlloc(Net::TCPClientMgr::TCPClientStatus*, pollfdCap);
@@ -90,8 +88,7 @@ UInt32 __stdcall Net::TCPClientMgr::ClientThread(void *o)
 		i = 0;
 		while (i < pollCliCnt)
 		{
-			cliStat = me->cliMap.GetItem(i);
-			if (cliStat->reading)
+			if (cliStat.Set(me->cliMap.GetItem(i)) && cliStat->reading)
 			{
 				Socket *s = cliStat->cli->GetSocket();
 				if (s == 0 || cliStat->cli->IsClosed())
@@ -101,13 +98,13 @@ UInt32 __stdcall Net::TCPClientMgr::ClientThread(void *o)
 					readMutUsage.EndUse();
 					if (me->logWriter) me->logWriter->TCPDisconnect(cliStat->cli);
 					me->evtHdlr(cliStat->cli, me->userObj, cliStat->cliData, Net::TCPClientMgr::TCP_EVENT_DISCONNECT);
-					DEL_CLASS(cliStat);
+					cliStat.Delete();
 					i--;
 					pollCliCnt--;
 				}
 				else if (cliStat->reading)
 				{
-					pollCli[pollReqCnt] = cliStat;
+					pollCli[pollReqCnt] = cliStat.Ptr();
 					pollReqCnt++;
 					pollfds[pollReqCnt].fd = -1 + (int)(OSInt)s;
 					pollfds[pollReqCnt].events = POLLIN;
@@ -149,8 +146,7 @@ UInt32 __stdcall Net::TCPClientMgr::ClientThread(void *o)
 //					printf("Cli %d revents %d\r\n", i, pollfds[i + 1].revents);
 					pollfds[i + 1].revents = 0;
 					Sync::MutexUsage mutUsage(me->cliMut);
-					cliStat = pollCli[i];
-					if (cliStat && cliStat->reading)
+					if (cliStat.Set(pollCli[i]) && cliStat->reading)
 					{
 						Bool closed = false;
 						Sync::MutexUsage readMutUsage(cliStat->readMut);
@@ -192,7 +188,7 @@ UInt32 __stdcall Net::TCPClientMgr::ClientThread(void *o)
 
 								if (me->logWriter) me->logWriter->TCPDisconnect(cliStat->cli);
 								me->evtHdlr(cliStat->cli, me->userObj, cliStat->cliData, Net::TCPClientMgr::TCP_EVENT_DISCONNECT);
-								DEL_CLASS(cliStat);
+								cliStat.Delete();
 							}
 							else
 							{
@@ -218,7 +214,7 @@ UInt32 __stdcall Net::TCPClientMgr::ClientThread(void *o)
 
 							if (me->logWriter) me->logWriter->TCPDisconnect(cliStat->cli);
 							me->evtHdlr(cliStat->cli, me->userObj, cliStat->cliData, Net::TCPClientMgr::TCP_EVENT_DISCONNECT);
-							DEL_CLASS(cliStat);
+							cliStat.Delete();
 						}
 					}
 					else
@@ -301,13 +297,13 @@ UInt32 __stdcall Net::TCPClientMgr::WorkerThread(void *o)
 	return 0;
 }
 
-void Net::TCPClientMgr::ProcessClient(Net::TCPClientMgr::TCPClientStatus *cliStat)
+void Net::TCPClientMgr::ProcessClient(NotNullPtr<Net::TCPClientMgr::TCPClientStatus> cliStat)
 {
 	if (!Text::StrEqualsC(cliStat->debug, 5, UTF8STRC("debug")))
 	{
 		printf("ProcessClient: not cliStat\r\n");
 	}
-	this->workerTasks.Put(cliStat);
+	this->workerTasks.Put(cliStat.Ptr());
 	UOSInt i = this->workerCnt;
 	while (i-- > 0)
 	{
