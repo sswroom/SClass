@@ -15,7 +15,7 @@ namespace Net
 		void DeinitClient();
 		Bool InitClient(Method method, void *cred);
 		Bool InitServer(Method method, void *cred, void *hRootStore);
-		Net::SSLClient *CreateClientConn(void *sslObj, Socket *s, Text::CString hostName, ErrorType *err);
+		Net::SSLClient *CreateClientConn(void *sslObj, Socket *s, Text::CString hostName, OptOut<ErrorType> err);
 		virtual Net::SSLClient *CreateServerConn(Socket *s);
 	public:
 		WinSSLEngine(NotNullPtr<Net::SocketFactory> sockf, Method method);
@@ -25,16 +25,16 @@ namespace Net
 
 		virtual Bool ServerSetCertsASN1(NotNullPtr<Crypto::Cert::X509Cert> certASN1, NotNullPtr<Crypto::Cert::X509File> keyASN1, NotNullPtr<Data::ArrayListNN<Crypto::Cert::X509Cert>> cacerts);
 		virtual Bool ServerSetRequireClientCert(ClientCertType cliCert);
-		virtual Bool ServerSetClientCA(Text::CString clientCA);
+		virtual Bool ServerSetClientCA(Text::CStringNN clientCA);
 		virtual Bool ServerAddALPNSupport(Text::CStringNN proto);
 
 		virtual void ClientSetSkipCertCheck(Bool skipCertCheck);
 		virtual Bool ClientSetCertASN1(NotNullPtr<Crypto::Cert::X509Cert> certASN1, NotNullPtr<Crypto::Cert::X509File> keyASN1);
-		virtual Net::SSLClient *ClientConnect(Text::CStringNN hostName, UInt16 port, ErrorType *err, Data::Duration timeout);
-		virtual Net::SSLClient *ClientInit(Socket *s, Text::CStringNN hostName, ErrorType *err);
+		virtual Net::SSLClient *ClientConnect(Text::CStringNN hostName, UInt16 port, OptOut<ErrorType> err, Data::Duration timeout);
+		virtual Net::SSLClient *ClientInit(Socket *s, Text::CStringNN hostName, OptOut<ErrorType> err);
 
 		virtual UTF8Char *GetErrorDetail(UTF8Char *sbuff);
-		virtual Bool GenerateCert(Text::CString country, Text::CString company, Text::CString commonName, Crypto::Cert::X509Cert **certASN1, Crypto::Cert::X509File **keyASN1);
+		virtual Bool GenerateCert(Text::CString country, Text::CString company, Text::CStringNN commonName, OutParam<Crypto::Cert::X509Cert*> certASN1, OutParam<Crypto::Cert::X509File*> keyASN1);
 		virtual Crypto::Cert::X509Key *GenerateRSAKey();
 		virtual Bool Signature(NotNullPtr<Crypto::Cert::X509Key> key, Crypto::Hash::HashType hashType, const UInt8 *payload, UOSInt payloadLen, UInt8 *signData, OutParam<UOSInt> signLen);
 		virtual Bool SignatureVerify(NotNullPtr<Crypto::Cert::X509Key> key, Crypto::Hash::HashType hashType, const UInt8 *payload, UOSInt payloadLen, const UInt8 *signData, UOSInt signLen);

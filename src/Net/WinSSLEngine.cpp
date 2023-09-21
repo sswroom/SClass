@@ -829,7 +829,7 @@ Bool Net::WinSSLEngine::InitServer(Method method, void *cred, void *hRootStore)
 	return status == 0;
 }
 
-Net::SSLClient* Net::WinSSLEngine::CreateClientConn(void* sslObj, Socket* s, Text::CString hostName, ErrorType* err)
+Net::SSLClient* Net::WinSSLEngine::CreateClientConn(void* sslObj, Socket* s, Text::CString hostName, OptOut<ErrorType> err)
 {
 	CtxtHandle ctxt;
 	const WChar* wptr = Text::StrToWCharNew(hostName.v);
@@ -867,8 +867,7 @@ Net::SSLClient* Net::WinSSLEngine::CreateClientConn(void* sslObj, Socket* s, Tex
 		printf("SSL: Cli %x, Error in InitializeSecurityContext, ret = %x\r\n", (Int32)(OSInt)s, (UInt32)status);
 #endif
 		Text::StrDelNew(wptr);
-		if (err)
-			*err = ErrorType::InitSession;
+		err.Set(ErrorType::InitSession);
 		return 0;
 	}
 	Net::SocketFactory::ErrorType et;
@@ -883,8 +882,7 @@ Net::SSLClient* Net::WinSSLEngine::CreateClientConn(void* sslObj, Socket* s, Tex
 		DeleteSecurityContext(&ctxt);
 		FreeContextBuffer(outputBuff[0].pvBuffer);
 		Text::StrDelNew(wptr);
-		if (err)
-			*err = ErrorType::InitSession;
+		err.Set(ErrorType::InitSession);
 		return 0;
 	}
 	FreeContextBuffer(outputBuff[0].pvBuffer);
@@ -906,8 +904,7 @@ Net::SSLClient* Net::WinSSLEngine::CreateClientConn(void* sslObj, Socket* s, Tex
 			if (recvSize <= 0)
 			{
 				Text::StrDelNew(wptr);
-				if (err)
-					*err = ErrorType::InitSession;
+				err.Set(ErrorType::InitSession);
 				return 0;
 			}
 			recvOfst += recvSize;
@@ -968,8 +965,7 @@ Net::SSLClient* Net::WinSSLEngine::CreateClientConn(void* sslObj, Socket* s, Tex
 			{
 				DeleteSecurityContext(&ctxt);
 				Text::StrDelNew(wptr);
-				if (err)
-					*err = ErrorType::InitSession;
+				err.Set(ErrorType::InitSession);
 				return 0;
 			}
 			if (inputBuff[1].BufferType == SECBUFFER_EXTRA)
@@ -993,8 +989,7 @@ Net::SSLClient* Net::WinSSLEngine::CreateClientConn(void* sslObj, Socket* s, Tex
 			}
 			DeleteSecurityContext(&ctxt);
 			Text::StrDelNew(wptr);
-			if (err)
-				*err = ErrorType::InitSession;
+			err.Set(ErrorType::InitSession);
 			return 0;
 		}
 	}
@@ -1355,7 +1350,7 @@ Bool Net::WinSSLEngine::ServerSetRequireClientCert(ClientCertType cliCert)
 	return true;
 }
 
-Bool Net::WinSSLEngine::ServerSetClientCA(Text::CString clientCA)
+Bool Net::WinSSLEngine::ServerSetClientCA(Text::CStringNN clientCA)
 {
 	return false;
 }
@@ -1416,7 +1411,7 @@ Bool Net::WinSSLEngine::ClientSetCertASN1(NotNullPtr<Crypto::Cert::X509Cert> cer
 	return true;
 }
 
-Net::SSLClient *Net::WinSSLEngine::ClientConnect(Text::CStringNN hostName, UInt16 port, ErrorType *err, Data::Duration timeout)
+Net::SSLClient *Net::WinSSLEngine::ClientConnect(Text::CStringNN hostName, UInt16 port, OptOut<ErrorType> err, Data::Duration timeout)
 {
 	if (!this->clsData->cliInit)
 	{
@@ -1425,8 +1420,7 @@ Net::SSLClient *Net::WinSSLEngine::ClientConnect(Text::CStringNN hostName, UInt1
 			!this->InitClient(Method::TLSV1_1, 0) &&
 			!this->InitClient(Method::TLSV1, 0))
 		{
-			if (err)
-				*err = ErrorType::InitEnv;
+			err.Set(ErrorType::InitEnv);
 			return 0;
 		}
 		this->clsData->cliInit = true;
@@ -1437,8 +1431,7 @@ Net::SSLClient *Net::WinSSLEngine::ClientConnect(Text::CStringNN hostName, UInt1
 	Socket *s;
 	if (addrCnt == 0)
 	{
-		if (err)
-			*err = ErrorType::HostnameNotResolved;
+		err.Set(ErrorType::HostnameNotResolved);
 		return 0;
 	}
 	UOSInt addrInd = 0;
@@ -1449,8 +1442,7 @@ Net::SSLClient *Net::WinSSLEngine::ClientConnect(Text::CStringNN hostName, UInt1
 			s = this->sockf->CreateTCPSocketv4();
 			if (s == 0)
 			{
-				if (err)
-					*err = ErrorType::OutOfMemory;
+				err.Set(ErrorType::OutOfMemory);
 				return 0;
 			}
 			if (this->sockf->Connect(s, addr[addrInd], port, timeout))
@@ -1464,8 +1456,7 @@ Net::SSLClient *Net::WinSSLEngine::ClientConnect(Text::CStringNN hostName, UInt1
 			s = this->sockf->CreateTCPSocketv6();
 			if (s == 0)
 			{
-				if (err)
-					*err = ErrorType::OutOfMemory;
+				err.Set(ErrorType::OutOfMemory);
 				return 0;
 			}
 			if (this->sockf->Connect(s, addr[addrInd], port, timeout))
@@ -1476,13 +1467,11 @@ Net::SSLClient *Net::WinSSLEngine::ClientConnect(Text::CStringNN hostName, UInt1
 		}
 		addrInd++;
 	}
-
-	if (err)
-		*err = ErrorType::CannotConnect;
+	err.Set(ErrorType::CannotConnect);
 	return 0;
 }
 
-Net::SSLClient *Net::WinSSLEngine::ClientInit(Socket *s, Text::CStringNN hostName, ErrorType *err)
+Net::SSLClient *Net::WinSSLEngine::ClientInit(Socket *s, Text::CStringNN hostName, OptOut<ErrorType> err)
 {
 	if (!this->clsData->cliInit)
 	{
@@ -1504,7 +1493,7 @@ UTF8Char *Net::WinSSLEngine::GetErrorDetail(UTF8Char *sbuff)
 	return sbuff;
 }
 
-Bool Net::WinSSLEngine::GenerateCert(Text::CString country, Text::CString company, Text::CString commonName, Crypto::Cert::X509Cert **certASN1, Crypto::Cert::X509File **keyASN1)
+Bool Net::WinSSLEngine::GenerateCert(Text::CString country, Text::CString company, Text::CStringNN commonName, OutParam<Crypto::Cert::X509Cert*> certASN1, OutParam<Crypto::Cert::X509File*> keyASN1)
 {
 	HCRYPTKEY hKey;
 	HCRYPTPROV hProv;
@@ -1601,12 +1590,12 @@ Bool Net::WinSSLEngine::GenerateCert(Text::CString country, Text::CString compan
 	sb2.ClearStr();
 	sb2.Append(commonName);
 	sb2.AppendC(UTF8STRC(".crt"));
-	NEW_CLASS(*certASN1, Crypto::Cert::X509Cert(sb2.ToCString(), Data::ByteArray(pCertContext->pbCertEncoded, pCertContext->cbCertEncoded)));
+	certASN1.Set(NEW_CLASS_D(Crypto::Cert::X509Cert(sb2.ToCString(), Data::ByteArray(pCertContext->pbCertEncoded, pCertContext->cbCertEncoded))));
 	sb2.ClearStr();
 	sb2.Append(commonName);
 	sb2.AppendC(UTF8STRC(".key"));
 	NotNullPtr<Text::String> s = Text::String::New(sb2.ToString(), sb2.GetLength());
-	*keyASN1 = Crypto::Cert::X509PrivKey::CreateFromKeyBuff(Crypto::Cert::X509File::KeyType::RSA, certBuff, certBuffSize, s.Ptr());
+	keyASN1.Set(Crypto::Cert::X509PrivKey::CreateFromKeyBuff(Crypto::Cert::X509File::KeyType::RSA, certBuff, certBuffSize, s.Ptr()));
 	s->Release();
 	CertFreeCertificateContext(pCertContext);
 	//CryptReleaseContext(hCryptProvOrNCryptKey, 0);

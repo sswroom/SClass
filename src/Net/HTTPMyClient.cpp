@@ -705,7 +705,7 @@ Bool Net::HTTPMyClient::Connect(Text::CStringNN url, Net::WebUtil::RequestMethod
 			if (secure)
 			{
 				Net::SSLEngine::ErrorType err;
-				this->cli = this->ssl->ClientConnect(this->cliHost->ToCString(), port, &err, this->timeout);
+				this->cli = this->ssl->ClientConnect(this->cliHost->ToCString(), port, err, this->timeout);
 #if defined(SHOWDEBUG)
 				if (this->cli == 0)
 				{

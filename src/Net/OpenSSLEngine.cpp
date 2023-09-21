@@ -13,7 +13,7 @@
 #include <openssl/err.h>
 #include <openssl/ec.h>
 
-#define SHOW_DEBUG
+//#define SHOW_DEBUG
 #ifdef SHOW_DEBUG
 #if defined(DEBUGCON)
 #include <stdio.h>
@@ -61,7 +61,7 @@ Net::SSLClient *Net::OpenSSLEngine::CreateServerConn(Socket *s)
 	}
 }
 
-Net::SSLClient *Net::OpenSSLEngine::CreateClientConn(void *sslObj, Socket *s, Text::CStringNN hostName, ErrorType *err)
+Net::SSLClient *Net::OpenSSLEngine::CreateClientConn(void *sslObj, Socket *s, Text::CStringNN hostName, OptOut<ErrorType> err)
 {
 	SSL *ssl = (SSL*)sslObj;
 	this->sockf->SetNoDelay(s, true);
@@ -77,8 +77,7 @@ Net::SSLClient *Net::OpenSSLEngine::CreateClientConn(void *sslObj, Socket *s, Te
 		printf("SSL_connect: ret = %d, Error code = %d\r\n", ret, code);
 #endif
 		SSL_free(ssl);
-		if (err)
-			*err = ErrorType::InitSession;
+		err.Set(ErrorType::InitSession);
 		return 0;
 	}
 	if (!this->skipCertCheck)
@@ -88,8 +87,7 @@ Net::SSLClient *Net::OpenSSLEngine::CreateClientConn(void *sslObj, Socket *s, Te
 		{
 			this->sockf->DestroySocket(s);
 			SSL_free(ssl);
-			if (err)
-				*err = ErrorType::CertNotFound;
+			err.Set(ErrorType::CertNotFound);
 			return 0;
 		}
 		X509 *cert = sk_X509_value(certs, 0);
@@ -100,8 +98,7 @@ Net::SSLClient *Net::OpenSSLEngine::CreateClientConn(void *sslObj, Socket *s, Te
 		{
 			this->sockf->DestroySocket(s);
 			SSL_free(ssl);
-			if (err)
-				*err = ErrorType::CertNotFound;
+			err.Set(ErrorType::CertNotFound);
 			return 0;
 		}
 		Crypto::Cert::X509Cert *svrCert;
@@ -115,8 +112,7 @@ Net::SSLClient *Net::OpenSSLEngine::CreateClientConn(void *sslObj, Socket *s, Te
 			DEL_CLASS(svrCert);
 			this->sockf->DestroySocket(s);
 			SSL_free(ssl);
-			if (err)
-				*err = ErrorType::InvalidPeriod;
+			err.Set(ErrorType::InvalidPeriod);
 			return 0;
 		}
 		if (!svrCert->GetNotAfter(dt) || currTime > dt.ToTicks())
@@ -124,8 +120,7 @@ Net::SSLClient *Net::OpenSSLEngine::CreateClientConn(void *sslObj, Socket *s, Te
 			DEL_CLASS(svrCert);
 			this->sockf->DestroySocket(s);
 			SSL_free(ssl);
-			if (err)
-				*err = ErrorType::InvalidPeriod;
+			err.Set(ErrorType::InvalidPeriod);
 			return 0;
 		}
 		if (!svrCert->DomainValid(hostName))
@@ -133,8 +128,7 @@ Net::SSLClient *Net::OpenSSLEngine::CreateClientConn(void *sslObj, Socket *s, Te
 			DEL_CLASS(svrCert);
 			this->sockf->DestroySocket(s);
 			SSL_free(ssl);
-			if (err)
-				*err = ErrorType::InvalidName;
+			err.Set(ErrorType::InvalidName);
 			return 0;
 		}
 		if (svrCert->IsSelfSigned())
@@ -142,8 +136,7 @@ Net::SSLClient *Net::OpenSSLEngine::CreateClientConn(void *sslObj, Socket *s, Te
 			DEL_CLASS(svrCert);
 			this->sockf->DestroySocket(s);
 			SSL_free(ssl);
-			if (err)
-				*err = ErrorType::SelfSign;
+			err.Set(ErrorType::SelfSign);
 			return 0;
 		}
 		DEL_CLASS(svrCert);
@@ -375,7 +368,7 @@ Bool Net::OpenSSLEngine::ServerSetRequireClientCert(ClientCertType cliCert)
 	return true;
 }
 
-Bool Net::OpenSSLEngine::ServerSetClientCA(Text::CString clientCA)
+Bool Net::OpenSSLEngine::ServerSetClientCA(Text::CStringNN clientCA)
 {
 	if (this->clsData->ctx == 0)
 	{
@@ -466,21 +459,19 @@ void Net::OpenSSLEngine::ClientSetSkipCertCheck(Bool skipCertCheck)
 }
 
 
-Net::SSLClient *Net::OpenSSLEngine::ClientConnect(Text::CStringNN hostName, UInt16 port, ErrorType *err, Data::Duration timeout)
+Net::SSLClient *Net::OpenSSLEngine::ClientConnect(Text::CStringNN hostName, UInt16 port, OptOut<ErrorType> err, Data::Duration timeout)
 {
 	Net::SocketUtil::AddressInfo addr[1];
 	UOSInt addrCnt = this->sockf->DNSResolveIPs(hostName, Data::DataArray<SocketUtil::AddressInfo>(addr, 1));
 	if (addrCnt == 0)
 	{
-		if (err)
-			*err = ErrorType::HostnameNotResolved;
+		err.Set(ErrorType::HostnameNotResolved);
 		return 0;
 	}
 	SSL *ssl = SSL_new(this->clsData->ctx);
 	if (ssl == 0)
 	{
-		if (err)
-			*err = ErrorType::OutOfMemory;
+		err.Set(ErrorType::OutOfMemory);
 		return 0;
 	}
 	if (this->clsData->cliCert)
@@ -501,8 +492,7 @@ Net::SSLClient *Net::OpenSSLEngine::ClientConnect(Text::CStringNN hostName, UInt
 			if (s == 0)
 			{
 				SSL_free(ssl);
-				if (err)
-					*err = ErrorType::OutOfMemory;
+				err.Set(ErrorType::OutOfMemory);
 				return 0;
 			}
 			if (this->sockf->Connect(s, addr[addrInd], port, timeout))
@@ -517,8 +507,7 @@ Net::SSLClient *Net::OpenSSLEngine::ClientConnect(Text::CStringNN hostName, UInt
 			if (s == 0)
 			{
 				SSL_free(ssl);
-				if (err)
-					*err = ErrorType::OutOfMemory;
+				err.Set(ErrorType::OutOfMemory);
 				return 0;
 			}
 			if (this->sockf->Connect(s, addr[addrInd], port, timeout))
@@ -531,18 +520,16 @@ Net::SSLClient *Net::OpenSSLEngine::ClientConnect(Text::CStringNN hostName, UInt
 	}
 
 	SSL_free(ssl);
-	if (err)
-		*err = ErrorType::CannotConnect;
+	err.Set(ErrorType::CannotConnect);
 	return 0;
 }
 
-Net::SSLClient *Net::OpenSSLEngine::ClientInit(Socket *s, Text::CStringNN hostName, ErrorType *err)
+Net::SSLClient *Net::OpenSSLEngine::ClientInit(Socket *s, Text::CStringNN hostName, OptOut<ErrorType> err)
 {
 	SSL *ssl = SSL_new(this->clsData->ctx);
 	if (ssl == 0)
 	{
-		if (err)
-			*err = ErrorType::OutOfMemory;
+		err.Set(ErrorType::OutOfMemory);
 		return 0;
 	}
 	if (this->clsData->cliCert)
@@ -568,13 +555,8 @@ UTF8Char *Net::OpenSSLEngine::GetErrorDetail(UTF8Char *sbuff)
 	return &sbuff[Text::StrCharCnt(sbuff)];
 }
 
-Bool Net::OpenSSLEngine::GenerateCert(Text::CString country, Text::CString company, Text::CString commonName, Crypto::Cert::X509Cert **certASN1, Crypto::Cert::X509File **keyASN1)
+Bool Net::OpenSSLEngine::GenerateCert(Text::CString country, Text::CString company, Text::CStringNN commonName, OutParam<Crypto::Cert::X509Cert*> certASN1, OutParam<Crypto::Cert::X509File*> keyASN1)
 {
-	if (certASN1 == 0 || keyASN1 == 0)
-	{
-		return false;
-	}
-
 	Bool succ = false;
 	EVP_PKEY *pkey;
 #if defined(OSSL_DEPRECATEDIN_3_0)
@@ -639,8 +621,8 @@ Bool Net::OpenSSLEngine::GenerateCert(Text::CString country, Text::CString compa
 			succ = true;
 			pobjCert->SetSourceName(CSTR("cert.crt"));
 			pobjKey->SetSourceName(CSTR("RSAKey.key"));
-			*certASN1 = pobjCert;
-			*keyASN1 = pobjKey;
+			certASN1.Set(pobjCert);
+			keyASN1.Set(pobjKey);
 		}
 		else
 		{

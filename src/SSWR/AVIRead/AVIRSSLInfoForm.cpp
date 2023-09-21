@@ -53,7 +53,7 @@ void __stdcall SSWR::AVIRead::AVIRSSLInfoForm::OnCheckClicked(void *userObj)
 		return;
 	}
 	Net::SSLEngine::ErrorType err;
-	Net::SSLClient *cli = me->ssl->ClientInit(s, sb.ToCString(), &err);
+	Net::SSLClient *cli = me->ssl->ClientInit(s, sb.ToCString(), err);
 	if (cli == 0)
 	{
 		me->sockf->DestroySocket(s);

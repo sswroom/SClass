@@ -75,7 +75,7 @@ void __stdcall SSWR::AVIRead::AVIRSSLCertKeyForm::OnGenerateClicked(void *userOb
 	}
 	Crypto::Cert::X509Cert *certASN1;
 	Crypto::Cert::X509File *keyASN1;
-	if (me->ssl->GenerateCert(sbCountry.ToCString(), sbCompany.ToCString(), sbCommonName.ToCString(), &certASN1, &keyASN1))
+	if (me->ssl->GenerateCert(sbCountry.ToCString(), sbCompany.ToCString(), sbCommonName.ToCString(), certASN1, keyASN1))
 	{
 		SDEL_CLASS(me->cert);
 		SDEL_CLASS(me->key);

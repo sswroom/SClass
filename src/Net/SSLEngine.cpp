@@ -284,7 +284,7 @@ Crypto::Cert::CertStore *Net::SSLEngine::GetTrustStore()
 	return trustStore;
 }
 
-Text::CString Net::SSLEngine::ErrorTypeGetName(ErrorType err)
+Text::CStringNN Net::SSLEngine::ErrorTypeGetName(ErrorType err)
 {
 	switch (err)
 	{

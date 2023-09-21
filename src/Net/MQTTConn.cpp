@@ -213,12 +213,12 @@ Net::MQTTConn::MQTTConn(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ss
 	{
 		Net::SSLEngine::ErrorType err;
 		sockf->ReloadDNS();
-		if (!cli.Set(ssl->ClientConnect(host, port, &err, timeout)))
+		if (!cli.Set(ssl->ClientConnect(host, port, err, timeout)))
 		{
 			return;
 		}
 #ifdef DEBUG_PRINT
-	printf("MQTTConn: Connect to MQTTS: err = %d\r\n", (UInt32)err);
+		printf("MQTTConn: Connect to MQTTS: err = %d\r\n", (UInt32)err);
 #endif
 	}
 	else

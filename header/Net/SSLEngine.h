@@ -93,18 +93,18 @@ namespace Net
 
 		virtual Bool ServerSetCertsASN1(NotNullPtr<Crypto::Cert::X509Cert> certASN1, NotNullPtr<Crypto::Cert::X509File> keyASN1, NotNullPtr<Data::ArrayListNN<Crypto::Cert::X509Cert>> cacerts) = 0;
 		virtual Bool ServerSetRequireClientCert(ClientCertType cliCert) = 0;
-		virtual Bool ServerSetClientCA(Text::CString clientCA) = 0;
+		virtual Bool ServerSetClientCA(Text::CStringNN clientCA) = 0;
 		virtual Bool ServerAddALPNSupport(Text::CStringNN proto) = 0;
 		Bool ServerSetCerts(Text::CStringNN certFile, Text::CStringNN keyFile);
 		void ServerInit(Socket *s, ClientReadyHandler readyHdlr, void *userObj);
 
 		virtual Bool ClientSetCertASN1(NotNullPtr<Crypto::Cert::X509Cert> certASN1, NotNullPtr<Crypto::Cert::X509File> keyASN1) = 0;
-		virtual Net::SSLClient *ClientConnect(Text::CStringNN hostName, UInt16 port, ErrorType *err, Data::Duration timeout) = 0;
-		virtual Net::SSLClient *ClientInit(Socket *s, Text::CStringNN hostName, ErrorType *err) = 0;
+		virtual Net::SSLClient *ClientConnect(Text::CStringNN hostName, UInt16 port, OptOut<ErrorType> err, Data::Duration timeout) = 0;
+		virtual Net::SSLClient *ClientInit(Socket *s, Text::CStringNN hostName, OptOut<ErrorType> err) = 0;
 		virtual void ClientSetSkipCertCheck(Bool skipCertCheck) = 0;
 
 		virtual UTF8Char *GetErrorDetail(UTF8Char *sbuff) = 0;
-		virtual Bool GenerateCert(Text::CString country, Text::CString company, Text::CString commonName, Crypto::Cert::X509Cert **certASN1, Crypto::Cert::X509File **keyASN1) = 0;
+		virtual Bool GenerateCert(Text::CString country, Text::CString company, Text::CStringNN commonName, OutParam<Crypto::Cert::X509Cert*> certASN1, OutParam<Crypto::Cert::X509File*> keyASN1) = 0;
 		virtual Crypto::Cert::X509Key *GenerateRSAKey() = 0;
 		virtual Bool Signature(NotNullPtr<Crypto::Cert::X509Key> key, Crypto::Hash::HashType hashType, const UInt8 *payload, UOSInt payloadLen, UInt8 *signData, OutParam<UOSInt> signLen) = 0;
 		virtual Bool SignatureVerify(NotNullPtr<Crypto::Cert::X509Key> key, Crypto::Hash::HashType hashType, const UInt8 *payload, UOSInt payloadLen, const UInt8 *signData, UOSInt signLen) = 0;
@@ -113,7 +113,7 @@ namespace Net
 
 		Crypto::Cert::CertStore *GetTrustStore();
 
-		static Text::CString ErrorTypeGetName(ErrorType err);
+		static Text::CStringNN ErrorTypeGetName(ErrorType err);
 	};
 }
 #endif

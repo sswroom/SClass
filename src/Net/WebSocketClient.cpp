@@ -292,8 +292,7 @@ Net::WebSocketClient::WebSocketClient(NotNullPtr<Net::SocketFactory> sockf, Net:
 
 	if (ssl)
 	{
-		Net::SSLEngine::ErrorType err;
-		this->cli = ssl->ClientConnect(host, port, &err, timeout);
+		this->cli = ssl->ClientConnect(host, port, 0, timeout);
 	}
 	else
 	{
