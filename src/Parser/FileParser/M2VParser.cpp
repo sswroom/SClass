@@ -52,13 +52,13 @@ IO::ParsedObject *Parser::FileParser::M2VParser::ParseFile(NotNullPtr<IO::Stream
 	Int64 thisGop;
 	OSInt totalFrameCnt = 0;
 	Int64 currOfst;
-	Media::FileVideoSource *vSource;
+	NotNullPtr<Media::FileVideoSource> vSource;
 	Int32 hdr;
 	Int32 pictureHdr;
 	WriteMInt32((UInt8*)&hdr, 0x000001b3);
 	WriteMInt32((UInt8*)&pictureHdr, 0x00000100);
 	info.fourcc = *(Int32*)"MP2G";
-	NEW_CLASS(vSource, Media::FileVideoSource(fd, info, frameRateNorm, frameRateDenorm, true));
+	NEW_CLASSNN(vSource, Media::FileVideoSource(fd, info, frameRateNorm, frameRateDenorm, true));
 
 	gopStart = 0;
 	currOfst = 3;
@@ -67,7 +67,7 @@ IO::ParsedObject *Parser::FileParser::M2VParser::ParseFile(NotNullPtr<IO::Stream
 		readSize = fd->GetRealData(currOfst, 1021, BYTEARR(tmpBuff).SubArray(3));
 		if (readSize == 0)
 		{
-			DEL_CLASS(vSource);
+			vSource.Delete();
 			return 0;
 		}
 

@@ -14,7 +14,7 @@ namespace Net
 
 		void DeinitClient();
 		Bool InitClient(Method method, void *cred);
-		Bool InitServer(Method method, void *creds, UOSInt nCreds);
+		Bool InitServer(Method method, void *cred, void *hRootStore);
 		Net::SSLClient *CreateClientConn(void *sslObj, Socket *s, Text::CString hostName, ErrorType *err);
 		virtual Net::SSLClient *CreateServerConn(Socket *s);
 	public:

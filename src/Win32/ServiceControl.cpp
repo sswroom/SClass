@@ -12,10 +12,10 @@ void __stdcall ServiceControl_WaitForExit(NotNullPtr<Core::IProgControl> progCtr
 	}
 }
 
-UTF8Char **__stdcall ServiceControl_GetCommandLines(NotNullPtr<Core::IProgControl> progCtrl, UOSInt *cmdCnt)
+UTF8Char **__stdcall ServiceControl_GetCommandLines(NotNullPtr<Core::IProgControl> progCtrl, OutParam<UOSInt> cmdCnt)
 {
 	Win32::ServiceControl *me = (Win32::ServiceControl*)progCtrl.Ptr();
-	*cmdCnt = 1;
+	cmdCnt.Set(1);
 	return &me->argv;
 }
 

@@ -222,11 +222,7 @@ void Net::WebServer::WebConnection::ReceivedData(const Data::ByteArrayR &buff)
 						else
 						{
 							Net::WebServer::IWebRequest::RequestProtocol reqProto;
-							if (Text::StrEqualsC(sarr[2].v, sarr[2].leng, UTF8STRC("HTTP/2")))
-							{
-								reqProto = Net::WebServer::IWebRequest::RequestProtocol::HTTP2_0;
-							}
-							else if (Text::StrEqualsC(sarr[2].v, sarr[2].leng, UTF8STRC("HTTP/1.1")))
+							if (Text::StrEqualsC(sarr[2].v, sarr[2].leng, UTF8STRC("HTTP/1.1")))
 							{
 								reqProto = Net::WebServer::IWebRequest::RequestProtocol::HTTP1_1;
 							}
@@ -234,6 +230,10 @@ void Net::WebServer::WebConnection::ReceivedData(const Data::ByteArrayR &buff)
 							{
 								reqProto = Net::WebServer::IWebRequest::RequestProtocol::HTTP1_0;
 							}
+/*							else if (Text::StrEqualsC(sarr[2].v, sarr[2].leng, UTF8STRC("HTTP/2")))
+							{
+								reqProto = Net::WebServer::IWebRequest::RequestProtocol::HTTP2_0;
+							}*/
 							else
 							{
 								this->respHeaderSent = false;

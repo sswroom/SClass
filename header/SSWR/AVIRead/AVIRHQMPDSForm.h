@@ -26,7 +26,7 @@ namespace SSWR
 		private:
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			Net::SSLEngine *ssl;
-			Media::ColorManagerSess *colorSess;
+			NotNullPtr<Media::ColorManagerSess> colorSess;
 			Media::MediaPlayer *player;
 			Media::MediaFile *currFile;
 			Media::Playlist *playlist;

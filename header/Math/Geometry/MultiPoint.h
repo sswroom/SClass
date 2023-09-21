@@ -14,7 +14,7 @@ namespace Math
 			virtual ~MultiPoint();
 
 			virtual VectorType GetVectorType() const;
-			virtual Vector2D *Clone() const;
+			virtual NotNullPtr<Vector2D> Clone() const;
 		};
 	}
 }

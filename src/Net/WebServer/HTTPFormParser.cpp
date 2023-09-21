@@ -36,7 +36,7 @@ Net::WebServer::HTTPFormParser::HTTPFormParser(Net::WebServer::IWebRequest *req,
 		Text::Encoding enc(codePage);
 		Crypto::Encrypt::FormEncode formEnc;
 
-		buff = req->GetReqData(&buffSize);
+		buff = req->GetReqData(buffSize);
 		if (buff == 0)
 			return;
 		i = 0;

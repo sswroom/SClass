@@ -5,26 +5,24 @@
 #include "Media/AudioFilter/ToneGenerator.h"
 #include "Text/MyString.h"
 
-Media::AudioFilter::ToneGenerator::ToneGenerator(IAudioSource *sourceAudio) : Media::IAudioFilter(sourceAudio)
+Media::AudioFilter::ToneGenerator::ToneGenerator(NotNullPtr<IAudioSource> sourceAudio) : Media::IAudioFilter(sourceAudio)
 {
 	this->sourceAudio = sourceAudio;
 	this->instType = IT_SINCWAVE;
-	sourceAudio->GetFormat(&this->format);
+	sourceAudio->GetFormat(this->format);
 }
 
 Media::AudioFilter::ToneGenerator::~ToneGenerator()
 {
 }
 
-void Media::AudioFilter::ToneGenerator::GetFormat(AudioFormat *format)
+void Media::AudioFilter::ToneGenerator::GetFormat(NotNullPtr<AudioFormat> format)
 {
-	format->FromAudioFormat(&this->format);
+	format->FromAudioFormat(this->format);
 }
 
 UOSInt Media::AudioFilter::ToneGenerator::ReadBlock(Data::ByteArray buff)
 {
-	if (this->sourceAudio == 0)
-		return 0;
 	UOSInt readSize = this->sourceAudio->ReadBlock(buff);
 
 	if (this->format.bitpersample == 16)

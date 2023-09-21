@@ -53,7 +53,7 @@ OSInt Exporter::ANIExporter::CalcBuffSize(Media::ImageList *imgList)
 	j = imgList->GetCount();
 	while (i < j)
 	{
-		img = imgList->GetImage(i, &imgDelay);
+		img = imgList->GetImage(i, imgDelay);
 		if (img->info.fourcc != 0)
 		{
 			return 0;
@@ -172,7 +172,7 @@ OSInt Exporter::ANIExporter::BuildBuff(UInt8 *buff, Media::ImageList *imgList, B
 	while (i < j)
 	{
 		imgList->ToStaticImage(i);
-		img = (Media::StaticImage*)imgList->GetImage(i, &imgDelay);
+		img = (Media::StaticImage*)imgList->GetImage(i, imgDelay);
 		if (img->info.fourcc != 0)
 		{
 			return 0;
@@ -644,7 +644,7 @@ IO::FileExporter::SupportType Exporter::ANIExporter::IsObjectSupported(IO::Parse
 	
 	while (i-- > 0)
 	{
-		img = imgList->GetImage(0, &imgTime);
+		img = imgList->GetImage(0, imgTime);
 		if (!img->HasHotSpot() || !ImageSupported(img))
 		{
 			return IO::FileExporter::SupportType::NotSupported;

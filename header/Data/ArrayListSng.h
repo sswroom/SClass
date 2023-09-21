@@ -10,7 +10,7 @@ namespace Data
 		ArrayListSng();
 		ArrayListSng(OSInt Capacity);
 
-		virtual Data::ArrayList<Single> *Clone() const;
+		virtual NotNullPtr<Data::ArrayList<Single>> Clone() const;
 	};
 }
 #endif

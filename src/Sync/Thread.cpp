@@ -104,17 +104,17 @@ void Sync::Thread::Notify()
 
 Bool Sync::Thread::IsRunning() const
 {
-	return this->running;
+	return this->running != 0;
 }
 
 Bool Sync::Thread::IsStopping() const
 {
-	return this->stopping;
+	return this->stopping != 0;
 }
 
 Bool Sync::Thread::IsWaiting() const
 {
-	return this->waiting;
+	return this->waiting != 0;
 }
 
 void *Sync::Thread::GetUserObj() const

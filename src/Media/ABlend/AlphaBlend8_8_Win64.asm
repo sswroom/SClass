@@ -41,7 +41,7 @@ AlphaBlend8_8_DoBlend:
 iadbldstart:
 	mov rbx,0x10101010
 	pxor xmm2,xmm2
-	movd xmm4,rbx
+	movq xmm4,rbx
 	punpcklbw xmm4, xmm2
 
 	mov rsi,r8 ;src
@@ -59,11 +59,11 @@ iadbldlop2:
 	shl ebx,16
 	or rax,rbx
 
-	movd xmm0,rax
+	movq xmm0,rax
 	mov rbx,0xffffffff
 	sub rbx,rax
-	or rbx,0xff000000
-	movd xmm3,rbx
+	or ebx,0xff000000
+	movq xmm3,rbx
 
 	movd xmm1,dword [rsi]
 	punpcklbw xmm0, xmm2
@@ -102,14 +102,14 @@ iadbld4start:
 	shr qword [rsp+72],2 ;width
 	mov rbx,0x10101010
 	pxor xmm2,xmm2
-	movd xmm4,rbx
+	movq xmm4,rbx
 	punpckldq xmm4, xmm4
 	punpcklbw xmm4, xmm2
 
 	mov rbx,0xffffffff
-	movd xmm6,rbx
+	movq xmm6,rbx
 	mov rbx,0xff000000
-	movd xmm7,rbx
+	movq xmm7,rbx
 	punpckldq xmm6,xmm6
 	punpckldq xmm7,xmm7
 
@@ -152,7 +152,7 @@ iadbld4lop2:
 	movzx rax,byte [rsi+11]
 	mov ah,byte [rsi+15]
 
-	movd xmm5,rax
+	movd xmm5,eax
 	punpcklbw xmm5,xmm5
 	punpcklwd xmm5,xmm5
 
@@ -198,14 +198,14 @@ iadbld4astart:
 	shr qword [rsp+72],2 ;width
 	mov rbx,0x10101010
 	pxor xmm2,xmm2
-	movd xmm4,rbx
+	movd xmm4,ebx
 	punpckldq xmm4, xmm4
 	punpcklbw xmm4, xmm2
 
 	mov rbx,0xffffffff
-	movd xmm6,rbx
+	movd xmm6,ebx
 	mov ebx,0xff000000
-	movd xmm7,rbx
+	movd xmm7,ebx
 	punpckldq xmm6,xmm6
 	punpckldq xmm7,xmm7
 
@@ -221,7 +221,7 @@ iadbld4alop2:
 	movzx rax,byte [rsi+3]
 	mov ah,byte [rsi+7]
 
-	movd xmm0,rax
+	movd xmm0,eax
 	punpcklbw xmm0,xmm0
 	punpcklwd xmm0,xmm0
 
@@ -249,7 +249,7 @@ iadbld4alop2:
 	movzx rax,byte [rsi+11]
 	mov ah,byte [rsi+15]
 
-	movd xmm5,rax
+	movd xmm5,eax
 	punpcklbw xmm5,xmm5
 	punpcklwd xmm5,xmm5
 
@@ -320,11 +320,11 @@ AlphaBlend8_8_DoBlendPA:
 	xor rax,rax
 	mov rbx,0x10101010
 	
-	movd xmm2,rax
-	movd xmm4,rbx
+	movd xmm2,eax
+	movd xmm4,ebx
 	punpcklbw xmm4, xmm2
 	mov rax,0xffffffff
-	movd xmm5,rax
+	movd xmm5,eax
 	punpcklbw xmm5,xmm2
 	mov r10,rcx
 	mov r11,rdx
@@ -344,11 +344,11 @@ iadpabldlop2:
 	shl ebx,16
 	or rax,rbx
 
-	movd xmm0,rax
+	movd xmm0,eax
 	mov rbx,0xffffffff
 	sub rbx,rax
-	or rbx,0xff000000
-	movd xmm3,rbx
+	or ebx,0xff000000
+	movd xmm3,ebx
 
 	movd xmm1,dword [rsi]
 	punpcklbw xmm1, xmm2

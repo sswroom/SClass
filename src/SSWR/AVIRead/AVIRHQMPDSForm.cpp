@@ -152,7 +152,7 @@ void __stdcall SSWR::AVIRead::AVIRHQMPDSForm::OnTimerTick(void *userObj)
 	{
 		Text::StringBuilderUTF8 sb;
 		Media::VideoRenderer::RendererStatus2 dbg;
-		me->vbox->GetStatus(&dbg);
+		me->vbox->GetStatus(dbg);
 		sb.AppendC(UTF8STRC("Curr Time: "));
 		sb.AppendI32(dbg.currTime);
 		sb.AppendC(UTF8STRC("\r\n"));
@@ -590,7 +590,7 @@ void SSWR::AVIRead::AVIRHQMPDSForm::EventMenuClicked(UInt16 cmdId)
 				}
 				else
 				{
-					IO::ParsedObject *pobj = Net::URL::OpenObject(fname->ToCString(), CSTR("HQMP/1.0"), this->core->GetSocketFactory(), this->ssl, 15000);
+					IO::ParsedObject *pobj = Net::URL::OpenObject(fname->ToCString(), CSTR("HQMP/1.0"), this->core->GetSocketFactory(), this->ssl, 15000, this->core->GetLog());
 					if (pobj == 0)
 					{
 						UI::MessageDialog::ShowDialog(CSTR("Error in loading file"), CSTR("HQMP"), this);

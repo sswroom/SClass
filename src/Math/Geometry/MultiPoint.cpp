@@ -15,15 +15,15 @@ Math::Geometry::Vector2D::VectorType Math::Geometry::MultiPoint::GetVectorType()
 	return Math::Geometry::Vector2D::VectorType::MultiPoint;
 }
 
-Math::Geometry::Vector2D *Math::Geometry::MultiPoint::Clone() const
+NotNullPtr<Math::Geometry::Vector2D> Math::Geometry::MultiPoint::Clone() const
 {
-	Math::Geometry::MultiPoint *newObj;
-	NEW_CLASS(newObj, Math::Geometry::MultiPoint(this->srid, this->hasZ, this->hasM));
+	NotNullPtr<Math::Geometry::MultiPoint> newObj;
+	NEW_CLASSNN(newObj, Math::Geometry::MultiPoint(this->srid, this->hasZ, this->hasM));
 	UOSInt i = 0;
 	UOSInt j = this->geometries.GetCount();
 	while (i < j)
 	{
-		newObj->AddGeometry((Math::Geometry::Point*)this->geometries.GetItem(i)->Clone());
+		newObj->AddGeometry(NotNullPtr<Math::Geometry::Point>::ConvertFrom(this->geometries.GetItem(i)->Clone()));
 		i++;
 	}
 	return newObj;
