@@ -763,8 +763,10 @@ struct DB::TDSConn::ClassData
 
 int TDSConnErrHdlr(DBPROCESS * dbproc, int severity, int dberr, int oserr, char *dberrstr, char *oserrstr)
 {
+#if defined(VERBOSE)
 	printf("TDS: Error occurs, severity = %d, dberr = %d, oserr = %d, msg: %s\r\n", severity, dberr, oserr, dberrstr);
-	return 0;
+#endif
+	return INT_CONTINUE;
 }
 
 int TDSConnMsgHdlr(DBPROCESS * dbproc, DBINT msgno, int msgstate, int severity, char *msgtext, char *srvname, char *proc, int line)
@@ -772,7 +774,7 @@ int TDSConnMsgHdlr(DBPROCESS * dbproc, DBINT msgno, int msgstate, int severity, 
 #if defined(VERBOSE)
 	printf("TDS: Messages, msgno = %d, msgstate = %d, severity = %d, server = %s, msg: %s\r\n", msgno, msgstate, severity, srvname, msgtext);
 #endif
-	return 0;
+	return INT_CONTINUE;
 }
 
 DB::TDSConn::TDSConn(Text::CStringNN serverHost, UInt16 port, Bool encrypt, Text::CString database, Text::CString userName, Text::CString password, NotNullPtr<IO::LogTool> log, Text::StringBuilderUTF8 *errMsg) : DBConn(serverHost)
