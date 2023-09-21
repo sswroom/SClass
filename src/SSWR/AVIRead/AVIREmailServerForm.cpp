@@ -44,9 +44,7 @@ void __stdcall SSWR::AVIRead::AVIREmailServerForm::OnSMTPStartClicked(void *user
 		NotNullPtr<Crypto::Cert::X509File> smtpSSLKey;
 		if (smtpSSLCert.Set(me->smtpSSLCert) && smtpSSLKey.Set(me->smtpSSLKey))
 		{
-			Crypto::Cert::X509Cert *issuerCert = Crypto::Cert::CertUtil::FindIssuer(smtpSSLCert);
-			me->smtpSSL->ServerSetCertsASN1(smtpSSLCert, smtpSSLKey, issuerCert);
-			SDEL_CLASS(issuerCert);
+			me->smtpSSL->ServerSetCertsASN1(smtpSSLCert, smtpSSLKey, me->smtpCACerts);
 		}
 		Net::Email::SMTPConn::ConnType connType = (Net::Email::SMTPConn::ConnType)(OSInt)me->cboSMTPType->GetSelectedItem();
 		NEW_CLASS(me->smtpSvr, Net::Email::SMTPServer(me->sockf, me->smtpSSL, port, connType, me->log, SERVER_DOMAIN, CSTR("SSWRSMTP"), OnMailReceived, OnMailLogin, me, true));
@@ -93,9 +91,7 @@ void __stdcall SSWR::AVIRead::AVIREmailServerForm::OnPOP3StartClicked(void *user
 				return;
 			}
 			ssl = me->pop3SSL;
-			Crypto::Cert::X509Cert *issuerCert = Crypto::Cert::CertUtil::FindIssuer(pop3SSLCert);
-			ssl->ServerSetCertsASN1(pop3SSLCert, pop3SSLKey, issuerCert);
-			SDEL_CLASS(issuerCert);
+			ssl->ServerSetCertsASN1(pop3SSLCert, pop3SSLKey, me->pop3CACerts);
 		}
 		NEW_CLASS(me->pop3Svr, Net::Email::POP3Server(me->core->GetSocketFactory(), ssl, port, me->log, CSTR("Welcome to SSWR POP3 Server"), me, true));
 		if (me->pop3Svr->IsError())
@@ -160,7 +156,7 @@ void __stdcall SSWR::AVIRead::AVIREmailServerForm::OnGCISStartClicked(void *user
 		ssl = me->gcisSSL;
 		ssl->ServerSetRequireClientCert(Net::SSLEngine::ClientCertType::Optional);
 		Crypto::Cert::X509Cert *issuerCert = Crypto::Cert::CertUtil::FindIssuer(gcisSSLCert);
-		ssl->ServerSetCertsASN1(gcisSSLCert, gcisSSLKey, issuerCert);
+		ssl->ServerSetCertsASN1(gcisSSLCert, gcisSSLKey, me->gcisCACerts);
 		SDEL_CLASS(issuerCert);
 		NotNullPtr<Net::WebServer::GCISNotifyHandler> gcisHdlr;
 		NEW_CLASSNN(gcisHdlr, Net::WebServer::GCISNotifyHandler(sb.ToCString(), sb2.ToCString(), OnGCISMailReceived, me, me->log));
@@ -351,13 +347,15 @@ void __stdcall SSWR::AVIRead::AVIREmailServerForm::OnSMTPCertKeyClicked(void *us
 		UI::MessageDialog::ShowDialog(CSTR("Cannot change Cert/Key when SMTP server is started"), CSTR("SMTP Server"), me);
 		return;
 	}
-	SSWR::AVIRead::AVIRSSLCertKeyForm frm(0, me->ui, me->core, me->smtpSSL, me->smtpSSLCert, me->smtpSSLKey);
+	SSWR::AVIRead::AVIRSSLCertKeyForm frm(0, me->ui, me->core, me->smtpSSL, me->smtpSSLCert, me->smtpSSLKey, me->smtpCACerts);
 	if (frm.ShowDialog(me) == UI::GUIForm::DR_OK)
 	{
 		SDEL_CLASS(me->smtpSSLCert);
 		SDEL_CLASS(me->smtpSSLKey);
+		me->ClearSMTPCACerts();
 		me->smtpSSLCert = frm.GetCert();
 		me->smtpSSLKey = frm.GetKey();
+		frm.GetCACerts(me->smtpCACerts);
 		Text::StringBuilderUTF8 sb;
 		me->smtpSSLCert->ToShortString(sb);
 		sb.AppendC(UTF8STRC(", "));
@@ -374,13 +372,15 @@ void __stdcall SSWR::AVIRead::AVIREmailServerForm::OnPOP3CertKeyClicked(void *us
 		UI::MessageDialog::ShowDialog(CSTR("Cannot change Cert/Key when POP3 server is started"), CSTR("SMTP Server"), me);
 		return;
 	}
-	SSWR::AVIRead::AVIRSSLCertKeyForm frm(0, me->ui, me->core, me->pop3SSL, me->pop3SSLCert, me->pop3SSLKey);
+	SSWR::AVIRead::AVIRSSLCertKeyForm frm(0, me->ui, me->core, me->pop3SSL, me->pop3SSLCert, me->pop3SSLKey, me->pop3CACerts);
 	if (frm.ShowDialog(me) == UI::GUIForm::DR_OK)
 	{
 		SDEL_CLASS(me->pop3SSLCert);
 		SDEL_CLASS(me->pop3SSLKey);
+		me->ClearPOP3CACerts();
 		me->pop3SSLCert = frm.GetCert();
 		me->pop3SSLKey = frm.GetKey();
+		frm.GetCACerts(me->pop3CACerts);
 		Text::StringBuilderUTF8 sb;
 		me->pop3SSLCert->ToShortString(sb);
 		sb.AppendC(UTF8STRC(", "));
@@ -397,13 +397,15 @@ void __stdcall SSWR::AVIRead::AVIREmailServerForm::OnGCISCertKeyClicked(void *us
 		UI::MessageDialog::ShowDialog(CSTR("Cannot change Cert/Key when GCIS server is started"), CSTR("SMTP Server"), me);
 		return;
 	}
-	SSWR::AVIRead::AVIRSSLCertKeyForm frm(0, me->ui, me->core, me->gcisSSL, me->gcisSSLCert, me->gcisSSLKey);
+	SSWR::AVIRead::AVIRSSLCertKeyForm frm(0, me->ui, me->core, me->gcisSSL, me->gcisSSLCert, me->gcisSSLKey, me->gcisCACerts);
 	if (frm.ShowDialog(me) == UI::GUIForm::DR_OK)
 	{
 		SDEL_CLASS(me->gcisSSLCert);
 		SDEL_CLASS(me->gcisSSLKey);
+		me->ClearGCISCACerts();
 		me->gcisSSLCert = frm.GetCert();
 		me->gcisSSLKey = frm.GetKey();
+		frm.GetCACerts(me->gcisCACerts);
 		Text::StringBuilderUTF8 sb;
 		me->gcisSSLCert->ToShortString(sb);
 		sb.AppendC(UTF8STRC(", "));
@@ -452,6 +454,39 @@ Text::String *SSWR::AVIRead::AVIREmailServerForm::GetUserName(Int32 userId)
 {
 	Sync::MutexUsage mutUsage(this->userMut);
 	return this->userList.GetItem((UInt32)userId - 1);
+}
+
+void SSWR::AVIRead::AVIREmailServerForm::ClearSMTPCACerts()
+{
+	UOSInt i = this->smtpCACerts.GetCount();
+	while (i-- > 0)
+	{
+		Crypto::Cert::X509Cert *cert = this->smtpCACerts.GetItem(i);
+		DEL_CLASS(cert);
+	}
+	this->smtpCACerts.Clear();
+}
+
+void SSWR::AVIRead::AVIREmailServerForm::ClearPOP3CACerts()
+{
+	UOSInt i = this->pop3CACerts.GetCount();
+	while (i-- > 0)
+	{
+		Crypto::Cert::X509Cert *cert = this->pop3CACerts.GetItem(i);
+		DEL_CLASS(cert);
+	}
+	this->pop3CACerts.Clear();
+}
+
+void SSWR::AVIRead::AVIREmailServerForm::ClearGCISCACerts()
+{
+	UOSInt i = this->gcisCACerts.GetCount();
+	while (i-- > 0)
+	{
+		Crypto::Cert::X509Cert *cert = this->gcisCACerts.GetItem(i);
+		DEL_CLASS(cert);
+	}
+	this->gcisCACerts.Clear();
 }
 
 SSWR::AVIRead::AVIREmailServerForm::AVIREmailServerForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
@@ -590,12 +625,15 @@ SSWR::AVIRead::AVIREmailServerForm::~AVIREmailServerForm()
 	SDEL_CLASS(this->smtpSSL);
 	SDEL_CLASS(this->smtpSSLCert);
 	SDEL_CLASS(this->smtpSSLKey);
+	this->ClearSMTPCACerts();
 	SDEL_CLASS(this->pop3SSL);
 	SDEL_CLASS(this->pop3SSLCert);
 	SDEL_CLASS(this->pop3SSLKey);
+	this->ClearPOP3CACerts();
 	SDEL_CLASS(this->gcisSSL);
 	SDEL_CLASS(this->gcisSSLCert);
 	SDEL_CLASS(this->gcisSSLKey);
+	this->ClearGCISCACerts();
 	LIST_FREE_STRING(&this->userList);
 }
 

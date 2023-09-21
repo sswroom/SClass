@@ -27,6 +27,7 @@ namespace SSWR
 			IO::LogTool *fwdLog;
 			Crypto::Cert::X509Cert *sslCert;
 			Crypto::Cert::X509File *sslKey;
+			Data::ArrayListNN<Crypto::Cert::X509Cert> caCerts;
 
 			UI::GUILabel *lblPort;
 			UI::GUITextBox *txtPort;
@@ -48,6 +49,7 @@ namespace SSWR
 			static void __stdcall OnStartClick(void *userObj);
 			static void __stdcall OnStopClick(void *userObj);
 			static void __stdcall OnSSLCertClicked(void *userObj);
+			void ClearCACerts();
 		public:
 			AVIRHTTPForwarderForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRHTTPForwarderForm();

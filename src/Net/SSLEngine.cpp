@@ -1,6 +1,7 @@
 #include "Stdafx.h"
 #include "Crypto/Cert/CertUtil.h"
 #include "Crypto/Cert/TrustStore.h"
+#include "Crypto/Cert/X509FileList.h"
 #include "Net/SSLEngine.h"
 #include "Parser/FileParser/X509Parser.h"
 #include "Sync/Interlocked.h"
@@ -115,13 +116,47 @@ Bool Net::SSLEngine::ServerSetCerts(Text::CStringNN certFile, Text::CStringNN ke
 	Parser::FileParser::X509Parser parser;
 	NotNullPtr<Crypto::Cert::X509File> certASN1;
 	NotNullPtr<Crypto::Cert::X509File> keyASN1;
+	Data::ArrayListNN<Crypto::Cert::X509Cert> cacerts;
+	UOSInt i;
+	UOSInt j;
 	if (certFile.leng > 0)
 	{
 		if (!certASN1.Set((Crypto::Cert::X509File*)parser.ParseFilePath(certFile)))
 		{
 			return false;
 		}
-		if (certASN1->GetFileType() != Crypto::Cert::X509File::FileType::Cert)
+		if (certASN1->GetFileType() == Crypto::Cert::X509File::FileType::Cert)
+		{
+		}
+		else if (certASN1->GetFileType() == Crypto::Cert::X509File::FileType::FileList)
+		{
+			Bool found = false;
+			Crypto::Cert::X509FileList *fileList = (Crypto::Cert::X509FileList*)certASN1.Ptr();
+			Crypto::Cert::X509File *file;
+			i = 0;
+			j = fileList->GetFileCount();
+			while (i < j)
+			{
+				file = fileList->GetFile(i);
+				if (file && file->GetFileType() == Crypto::Cert::X509File::FileType::Cert)
+				{
+					if (!found)
+					{
+						found = true;
+						certASN1 = NotNullPtr<Crypto::Cert::X509File>::ConvertFrom(file->Clone());
+					}
+					else
+					{
+						cacerts.Add(NotNullPtr<Crypto::Cert::X509Cert>::ConvertFrom(file->Clone()));
+					}
+				}
+				i++;
+			}
+			DEL_CLASS(fileList);
+			if (!found)
+				return false;
+		}
+		else
 		{
 			certASN1.Delete();
 			return false;
@@ -136,18 +171,43 @@ Bool Net::SSLEngine::ServerSetCerts(Text::CStringNN certFile, Text::CStringNN ke
 		if (!keyASN1.Set((Crypto::Cert::X509File*)parser.ParseFilePath(keyFile)))
 		{
 			certASN1.Delete();
+			i = cacerts.GetCount();
+			while (i-- > 0)
+			{
+				Crypto::Cert::X509Cert *cert = cacerts.GetItem(i);
+				DEL_CLASS(cert);	
+			}
 			return false;
 		}
 	}
 	else
 	{
+		certASN1.Delete();
+		i = cacerts.GetCount();
+		while (i-- > 0)
+		{
+			Crypto::Cert::X509Cert *cert = cacerts.GetItem(i);
+			DEL_CLASS(cert);	
+		}
 		return false;
 	}
-	Crypto::Cert::X509Cert *issuerCert = Crypto::Cert::CertUtil::FindIssuer(NotNullPtr<Crypto::Cert::X509Cert>::ConvertFrom(certASN1));
-	Bool ret = this->ServerSetCertsASN1(NotNullPtr<Crypto::Cert::X509Cert>::ConvertFrom(certASN1), keyASN1, issuerCert);
-	SDEL_CLASS(issuerCert);
+	if (cacerts.GetCount() == 0)
+	{
+		NotNullPtr<Crypto::Cert::X509Cert> issuerCert;
+		if (issuerCert.Set(Crypto::Cert::CertUtil::FindIssuer(NotNullPtr<Crypto::Cert::X509Cert>::ConvertFrom(certASN1))))
+		{
+			cacerts.Add(issuerCert);
+		}		
+	}
+	Bool ret = this->ServerSetCertsASN1(NotNullPtr<Crypto::Cert::X509Cert>::ConvertFrom(certASN1), keyASN1, cacerts);
 	certASN1.Delete();
 	keyASN1.Delete();
+	i = cacerts.GetCount();
+	while (i-- > 0)
+	{
+		Crypto::Cert::X509Cert *cert = cacerts.GetItem(i);
+		DEL_CLASS(cert);	
+	}
 	return ret;
 }
 

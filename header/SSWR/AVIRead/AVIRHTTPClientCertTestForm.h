@@ -21,6 +21,7 @@ namespace SSWR
 			IO::LogTool *log;
 			Crypto::Cert::X509Cert *sslCert;
 			Crypto::Cert::X509File *sslKey;
+			Data::ArrayListNN<Crypto::Cert::X509Cert> caCerts;
 
 			UI::GUIGroupBox *grpParam;
 			UI::GUILabel *lblPort;
@@ -37,6 +38,7 @@ namespace SSWR
 			static void __stdcall OnStartClick(void *userObj);
 			static void __stdcall OnStopClick(void *userObj);
 			static void __stdcall OnSSLCertClicked(void *userObj);
+			void ClearCACerts();
 		public:
 			AVIRHTTPClientCertTestForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRHTTPClientCertTestForm();

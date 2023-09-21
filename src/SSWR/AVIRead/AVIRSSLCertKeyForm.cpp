@@ -1,4 +1,6 @@
 #include "Stdafx.h"
+#include "Crypto/Cert/CertUtil.h"
+#include "Crypto/Cert/X509FileList.h"
 #include "IO/StmData/FileData.h"
 #include "SSWR/AVIRead/AVIRSSLCertKeyForm.h"
 #include "UI/FileDialog.h"
@@ -100,37 +102,79 @@ void __stdcall SSWR::AVIRead::AVIRSSLCertKeyForm::OnFileDrop(void *userObj, NotN
 
 void SSWR::AVIRead::AVIRSSLCertKeyForm::LoadFile(Text::CStringNN fileName)
 {
-	Net::ASN1Data *asn1;
+	NotNullPtr<Net::ASN1Data> asn1;
 	{
 		IO::StmData::FileData fd(fileName, false);
-		asn1 = (Net::ASN1Data*)this->core->GetParserList()->ParseFileType(fd, IO::ParserType::ASN1Data);
-	}
-	if (asn1 == 0)
-	{
-		UI::MessageDialog::ShowDialog(CSTR("Error in parsing file"), CSTR("SSL Cert/Key"), this);
-		return;
+		if (!asn1.Set((Net::ASN1Data*)this->core->GetParserList()->ParseFileType(fd, IO::ParserType::ASN1Data)))
+		{
+			UI::MessageDialog::ShowDialog(CSTR("Error in parsing file"), CSTR("SSL Cert/Key"), this);
+			return;
+		}
 	}
 	if (asn1->GetASN1Type() != Net::ASN1Data::ASN1Type::X509)
 	{
-		DEL_CLASS(asn1);
+		asn1.Delete();
 		UI::MessageDialog::ShowDialog(CSTR("Error in parsing file"), CSTR("SSL Cert/Key"), this);
 		return;
 	}
-	Crypto::Cert::X509File *x509 = (Crypto::Cert::X509File*)asn1;
+	NotNullPtr<Crypto::Cert::X509File> x509 = NotNullPtr<Crypto::Cert::X509File>::ConvertFrom(asn1);
 	if (x509->GetFileType() == Crypto::Cert::X509File::FileType::Cert)
 	{
 		SDEL_CLASS(this->cert);
-		this->cert = (Crypto::Cert::X509Cert*)x509;
+		this->cert = (Crypto::Cert::X509Cert*)x509.Ptr();
 
 		Text::StringBuilderUTF8 sb;
 		this->cert->ToShortString(sb);
 		this->lblFileCert->SetText(sb.ToCString());
 		this->tcMain->SetSelectedPage(this->tpFile);
+
+		this->ClearCACerts();
+		NotNullPtr<Crypto::Cert::X509Cert> issuerCert;
+		if (issuerCert.Set(Crypto::Cert::CertUtil::FindIssuer(NotNullPtr<Crypto::Cert::X509Cert>::ConvertFrom(x509))))
+		{
+			this->caCerts.Add(issuerCert);
+		}		
+	}
+	else if (x509->GetFileType() == Crypto::Cert::X509File::FileType::FileList)
+	{
+		Bool found = false;
+		Crypto::Cert::X509FileList *fileList = (Crypto::Cert::X509FileList*)x509.Ptr();
+		Crypto::Cert::X509File *file;
+		UOSInt i;
+		UOSInt j;
+		i = 0;
+		j = fileList->GetFileCount();
+		while (i < j)
+		{
+			file = fileList->GetFile(i);
+			if (file && file->GetFileType() == Crypto::Cert::X509File::FileType::Cert)
+			{
+				if (!found)
+				{
+					found = true;
+					this->cert = (Crypto::Cert::X509Cert*)file->Clone().Ptr();
+					this->ClearCACerts();
+				}
+				else
+				{
+					this->caCerts.Add(NotNullPtr<Crypto::Cert::X509Cert>::ConvertFrom(file->Clone()));
+				}
+			}
+			i++;
+		}
+		DEL_CLASS(fileList);
+		if (found)
+		{
+			Text::StringBuilderUTF8 sb;
+			this->cert->ToShortString(sb);
+			this->lblFileCert->SetText(sb.ToCString());
+			this->tcMain->SetSelectedPage(this->tpFile);
+		}
 	}
 	else if (x509->GetFileType() == Crypto::Cert::X509File::FileType::PrivateKey || x509->GetFileType() == Crypto::Cert::X509File::FileType::Key)
 	{
 		SDEL_CLASS(this->key);
-		this->key = x509;
+		this->key = x509.Ptr();
 
 		Text::StringBuilderUTF8 sb;
 		this->key->ToShortString(sb);
@@ -139,11 +183,22 @@ void SSWR::AVIRead::AVIRSSLCertKeyForm::LoadFile(Text::CStringNN fileName)
 	}
 	else
 	{
-		DEL_CLASS(x509);
+		x509.Delete();
 	}
 }
 
-SSWR::AVIRead::AVIRSSLCertKeyForm::AVIRSSLCertKeyForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Net::SSLEngine *ssl, Crypto::Cert::X509Cert *cert, Crypto::Cert::X509File *key) : UI::GUIForm(parent, 456, 200, ui)
+void SSWR::AVIRead::AVIRSSLCertKeyForm::ClearCACerts()
+{
+	UOSInt i = this->caCerts.GetCount();
+	while (i-- > 0)
+	{
+		Crypto::Cert::X509Cert *cert = this->caCerts.GetItem(i);
+		DEL_CLASS(cert);
+	}
+	this->caCerts.Clear();
+}
+
+SSWR::AVIRead::AVIRSSLCertKeyForm::AVIRSSLCertKeyForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Net::SSLEngine *ssl, Crypto::Cert::X509Cert *cert, Crypto::Cert::X509File *key, NotNullPtr<Data::ArrayListNN<Crypto::Cert::X509Cert>> caCerts) : UI::GUIForm(parent, 456, 200, ui)
 {
 	this->SetText(CSTR("SSL Cert/Key"));
 	this->SetFont(0, 0, 8.25, false);
@@ -153,6 +208,13 @@ SSWR::AVIRead::AVIRSSLCertKeyForm::AVIRSSLCertKeyForm(UI::GUIClientControl *pare
 	this->ssl = ssl;
 	this->initCert = cert;
 	this->initKey = key;
+	UOSInt i = 0;
+	UOSInt j = caCerts->GetCount();
+	while (i < j)
+	{
+		this->caCerts.Add(NotNullPtr<Crypto::Cert::X509Cert>::ConvertFrom(caCerts->GetItem(i)->Clone()));
+		i++;
+	}
 	this->cert = 0;
 	this->key = 0;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
@@ -223,6 +285,7 @@ SSWR::AVIRead::AVIRSSLCertKeyForm::AVIRSSLCertKeyForm(UI::GUIClientControl *pare
 
 SSWR::AVIRead::AVIRSSLCertKeyForm::~AVIRSSLCertKeyForm()
 {
+	this->ClearCACerts();
 }
 
 void SSWR::AVIRead::AVIRSSLCertKeyForm::OnMonitorChanged()
@@ -238,4 +301,16 @@ Crypto::Cert::X509Cert *SSWR::AVIRead::AVIRSSLCertKeyForm::GetCert()
 Crypto::Cert::X509File *SSWR::AVIRead::AVIRSSLCertKeyForm::GetKey()
 {
 	return this->key;
+}
+
+UOSInt SSWR::AVIRead::AVIRSSLCertKeyForm::GetCACerts(NotNullPtr<Data::ArrayListNN<Crypto::Cert::X509Cert>> caCerts)
+{
+	UOSInt i = 0;
+	UOSInt j = this->caCerts.GetCount();
+	while (i < j)
+	{
+		caCerts->Add(NotNullPtr<Crypto::Cert::X509Cert>::ConvertFrom(this->caCerts.GetItem(i)->Clone()));
+		i++;
+	}
+	return j;
 }

@@ -22,7 +22,7 @@ namespace Net
 		
 		virtual Bool IsError();
 
-		virtual Bool ServerSetCertsASN1(NotNullPtr<Crypto::Cert::X509Cert> certASN1, NotNullPtr<Crypto::Cert::X509File> keyASN1, Crypto::Cert::X509Cert *caCert);
+		virtual Bool ServerSetCertsASN1(NotNullPtr<Crypto::Cert::X509Cert> certASN1, NotNullPtr<Crypto::Cert::X509File> keyASN1, NotNullPtr<Data::ArrayListNN<Crypto::Cert::X509Cert>> caCerts);
 		virtual Bool ServerSetRequireClientCert(ClientCertType cliCert);
 		virtual Bool ServerSetClientCA(Text::CString clientCA);
 		virtual Bool ServerAddALPNSupport(Text::CStringNN proto);

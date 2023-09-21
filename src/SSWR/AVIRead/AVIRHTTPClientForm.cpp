@@ -506,7 +506,8 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnCertClicked(void *userObj)
 void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnClientCertClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRHTTPClientForm *me = (SSWR::AVIRead::AVIRHTTPClientForm*)userObj;
-	SSWR::AVIRead::AVIRSSLCertKeyForm frm(0, me->ui, me->core, me->ssl, me->cliCert, me->cliKey);
+	Data::ArrayListNN<Crypto::Cert::X509Cert> caCerts;
+	SSWR::AVIRead::AVIRSSLCertKeyForm frm(0, me->ui, me->core, me->ssl, me->cliCert, me->cliKey, caCerts);
 	if (frm.ShowDialog(me) == UI::GUIForm::DR_OK)
 	{
 		SDEL_CLASS(me->cliCert);

@@ -1,6 +1,7 @@
 #ifndef _SM_SSWR_AVIREAD_AVIRSSLCERTKEYFORM
 #define _SM_SSWR_AVIREAD_AVIRSSLCERTKEYFORM
 #include "Crypto/Cert/X509File.h"
+#include "Data/ArrayListNN.h"
 #include "SSWR/AVIRead/AVIRCore.h"
 #include "UI/GUIButton.h"
 #include "UI/GUIForm.h"
@@ -23,6 +24,7 @@ namespace SSWR
 			Crypto::Cert::X509File *initKey;
 			Crypto::Cert::X509Cert *cert;
 			Crypto::Cert::X509File *key;
+			Data::ArrayListNN<Crypto::Cert::X509Cert> caCerts;
 
 			UI::GUIPanel *pnlCurr;
 			UI::GUILabel *lblCurrCert;
@@ -55,15 +57,16 @@ namespace SSWR
 			static void __stdcall OnFileDrop(void *userObj, NotNullPtr<Text::String> *files, UOSInt nFiles);
 
 			void LoadFile(Text::CStringNN fileName);
-
+			void ClearCACerts();
 		public:
-			AVIRSSLCertKeyForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Net::SSLEngine *ssl, Crypto::Cert::X509Cert *cert, Crypto::Cert::X509File *key);
+			AVIRSSLCertKeyForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Net::SSLEngine *ssl, Crypto::Cert::X509Cert *cert, Crypto::Cert::X509File *key, NotNullPtr<Data::ArrayListNN<Crypto::Cert::X509Cert>> caCerts);
 			virtual ~AVIRSSLCertKeyForm();
 
 			virtual void OnMonitorChanged();
 
 			Crypto::Cert::X509Cert *GetCert();
 			Crypto::Cert::X509File *GetKey();
+			UOSInt GetCACerts(NotNullPtr<Data::ArrayListNN<Crypto::Cert::X509Cert>> caCerts);
 		};
 	}
 }

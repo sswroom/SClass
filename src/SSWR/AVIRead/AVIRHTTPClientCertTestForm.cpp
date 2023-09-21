@@ -79,7 +79,8 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientCertTestForm::OnStartClick(void *use
 		me->sslKey->ToShortString(sb);
 		me->lblSSLCert->SetText(sb.ToCString());
 
-		if (!ssl->ServerSetCertsASN1(sslCert, key, 0))
+		Data::ArrayListNN<Crypto::Cert::X509Cert> caCerts;
+		if (!ssl->ServerSetCertsASN1(sslCert, key, caCerts))
 		{
 			UI::MessageDialog::ShowDialog(CSTR("Error in initializing Cert/Key"), CSTR("HTTP Client Cert Test"), me);
 			return;
@@ -87,14 +88,11 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientCertTestForm::OnStartClick(void *use
 	}
 	else
 	{
-		Crypto::Cert::X509Cert *issuerCert = Crypto::Cert::CertUtil::FindIssuer(sslCert);
-		if (!ssl->ServerSetCertsASN1(sslCert, sslKey, issuerCert))
+		if (!ssl->ServerSetCertsASN1(sslCert, sslKey, me->caCerts))
 		{
-			SDEL_CLASS(issuerCert);
 			UI::MessageDialog::ShowDialog(CSTR("Error in initializing Cert/Key"), CSTR("HTTP Client Cert Test"), me);
 			return;
 		}
-		SDEL_CLASS(issuerCert);
 	}
 	if (port > 0 && port < 65535)
 	{
@@ -151,19 +149,32 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientCertTestForm::OnStopClick(void *user
 void __stdcall SSWR::AVIRead::AVIRHTTPClientCertTestForm::OnSSLCertClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRHTTPClientCertTestForm *me = (SSWR::AVIRead::AVIRHTTPClientCertTestForm*)userObj;
-	SSWR::AVIRead::AVIRSSLCertKeyForm frm(0, me->ui, me->core, me->ssl, me->sslCert, me->sslKey);
+	SSWR::AVIRead::AVIRSSLCertKeyForm frm(0, me->ui, me->core, me->ssl, me->sslCert, me->sslKey, me->caCerts);
 	if (frm.ShowDialog(me) == UI::GUIForm::DR_OK)
 	{
 		SDEL_CLASS(me->sslCert);
 		SDEL_CLASS(me->sslKey);
+		me->ClearCACerts();
 		me->sslCert = frm.GetCert();
 		me->sslKey = frm.GetKey();
+		frm.GetCACerts(me->caCerts);
 		Text::StringBuilderUTF8 sb;
 		me->sslCert->ToShortString(sb);
 		sb.AppendC(UTF8STRC(", "));
 		me->sslKey->ToShortString(sb);
 		me->lblSSLCert->SetText(sb.ToCString());
 	}
+}
+
+void SSWR::AVIRead::AVIRHTTPClientCertTestForm::ClearCACerts()
+{
+	UOSInt i = this->caCerts.GetCount();
+	while (i-- > 0)
+	{
+		Crypto::Cert::X509Cert *cert = this->caCerts.GetItem(i);
+		DEL_CLASS(cert);
+	}
+	this->caCerts.Clear();
 }
 
 SSWR::AVIRead::AVIRHTTPClientCertTestForm::AVIRHTTPClientCertTestForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
@@ -211,6 +222,7 @@ SSWR::AVIRead::AVIRHTTPClientCertTestForm::~AVIRHTTPClientCertTestForm()
 	SDEL_CLASS(this->ssl);
 	SDEL_CLASS(this->sslCert);
 	SDEL_CLASS(this->sslKey);
+	this->ClearCACerts();
 }
 
 void SSWR::AVIRead::AVIRHTTPClientCertTestForm::OnMonitorChanged()

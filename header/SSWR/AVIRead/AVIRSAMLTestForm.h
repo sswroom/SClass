@@ -28,6 +28,7 @@ namespace SSWR
 			Net::WebServer::WebListener *svr;
 			Crypto::Cert::X509Cert *sslCert;
 			Crypto::Cert::X509File *sslKey;
+			Data::ArrayListNN<Crypto::Cert::X509Cert> caCerts;
 			IO::LogTool log;
 			NotNullPtr<UI::ListBoxLogger> logger;
 			Sync::Mutex respMut;
@@ -82,6 +83,7 @@ namespace SSWR
 			static void __stdcall OnTimerTick(void *userObj);
 			static void __stdcall OnSAMLResponse(void *userObj, Text::CString msg);
 			static Bool __stdcall OnLoginRequest(void *userObj, NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, const Net::WebServer::SAMLMessage *msg);
+			void ClearCACerts();
 		public:
 			AVIRSAMLTestForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRSAMLTestForm();

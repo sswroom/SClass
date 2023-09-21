@@ -65,6 +65,7 @@ namespace SSWR
 			UOSInt lastAccessIndex;
 			Crypto::Cert::X509Cert *sslCert;
 			Crypto::Cert::X509File *sslKey;
+			Data::ArrayListNN<Crypto::Cert::X509Cert> caCerts;
 
 			UI::GUITabControl *tcMain;
 			UI::GUITabPage *tpControl;
@@ -135,6 +136,7 @@ namespace SSWR
 			static void __stdcall OnTimerTick(void *userObj);
 			static void __stdcall OnAccessSelChg(void *userObj);
 			static void __stdcall OnSSLCertClicked(void *userObj);
+			void ClearCACerts();
 		public:
 			AVIRHTTPSvrForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRHTTPSvrForm();

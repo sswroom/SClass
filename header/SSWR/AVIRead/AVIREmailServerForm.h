@@ -77,13 +77,16 @@ namespace SSWR
 			Net::SSLEngine *smtpSSL;
 			Crypto::Cert::X509Cert *smtpSSLCert;
 			Crypto::Cert::X509File *smtpSSLKey;
+			Data::ArrayListNN<Crypto::Cert::X509Cert> smtpCACerts;
 			Net::Email::SMTPConn::ConnType smtpType;
 			Net::SSLEngine *pop3SSL;
 			Crypto::Cert::X509Cert *pop3SSLCert;
 			Crypto::Cert::X509File *pop3SSLKey;
+			Data::ArrayListNN<Crypto::Cert::X509Cert> pop3CACerts;
 			Net::SSLEngine *gcisSSL;
 			Crypto::Cert::X509Cert *gcisSSLCert;
 			Crypto::Cert::X509File *gcisSSLKey;
+			Data::ArrayListNN<Crypto::Cert::X509Cert> gcisCACerts;
 			Net::WebServer::WebListener *gcisListener;
 			Net::WebServer::GCISNotifyHandler *gcisHdlr;
 
@@ -112,6 +115,9 @@ namespace SSWR
 			static void __stdcall OnPOP3SSLChanged(void *userObj, Bool isChecked);
 
 			Text::String *GetUserName(Int32 userId);
+			void ClearSMTPCACerts();
+			void ClearPOP3CACerts();
+			void ClearGCISCACerts();
 		public:
 			AVIREmailServerForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIREmailServerForm();

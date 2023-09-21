@@ -787,29 +787,24 @@ Bool Net::WinSSLEngine::InitClient(Method method, void *cred)
 	return status == 0;
 }
 
-Bool Net::WinSSLEngine::InitServer(Method method, void *cred, void *caCred)
+Bool Net::WinSSLEngine::InitServer(Method method, void *creds, UOSInt ncred)
 {
 #if 0//defined(SCH_CREDENTIALS_VERSION)
 	SCH_CREDENTIALS credData;
 	MemClear(&credData, sizeof(credData));
 	credData.dwVersion = SCH_CREDENTIALS_VERSION;
-	credData.cCreds = 1;
-	credData.paCred = (PCCERT_CONTEXT*)&cred;
+	credData.paCred = (PCCERT_CONTEXT*)creds;
+	credData.cCreds = (DWORD)ncred;
 #else
 	SCHANNEL_CRED credData;
 	MemClear(&credData, sizeof(credData));
 	credData.dwVersion = SCHANNEL_CRED_VERSION;
 	credData.grbitEnabledProtocols = 0;// WinSSLEngine_GetProtocols(method, true);
-	credData.paCred = (PCCERT_CONTEXT*)&cred;
-	credData.cCreds = 1;
+	credData.paCred = (PCCERT_CONTEXT*)creds;
+	credData.cCreds = (DWORD)ncred;
 #endif
 	SECURITY_STATUS status;
 	TimeStamp lifetime;
-
-	if (caCred)
-	{
-		
-	}
 
 	status = AcquireCredentialsHandleW(
 		NULL,
@@ -1283,7 +1278,7 @@ Bool Net::WinSSLEngine::IsError()
 	return false;
 }
 
-Bool Net::WinSSLEngine::ServerSetCertsASN1(NotNullPtr<Crypto::Cert::X509Cert> certASN1, NotNullPtr<Crypto::Cert::X509File> keyASN1, Crypto::Cert::X509Cert *caCert)
+Bool Net::WinSSLEngine::ServerSetCertsASN1(NotNullPtr<Crypto::Cert::X509Cert> certASN1, NotNullPtr<Crypto::Cert::X509File> keyASN1, NotNullPtr<Data::ArrayListNN<Crypto::Cert::X509Cert>> cacerts)
 {
 	if (this->clsData->svrInit)
 	{
@@ -1300,11 +1295,13 @@ Bool Net::WinSSLEngine::ServerSetCertsASN1(NotNullPtr<Crypto::Cert::X509Cert> ce
 		return false;
 	}
 
-	PCCERT_CONTEXT serverCert = CertCreateCertificateContext(X509_ASN_ENCODING, certASN1->GetASN1Buff(), (DWORD)certASN1->GetASN1BuffSize());
+	UOSInt nCerts = 1;
+	PCCERT_CONTEXT certs[8];
+	certs[0] = CertCreateCertificateContext(X509_ASN_ENCODING, certASN1->GetASN1Buff(), (DWORD)certASN1->GetASN1BuffSize());
 	keyProvInfo.cProvParam = 0;
 	keyProvInfo.rgProvParam = NULL;
 	keyProvInfo.dwKeySpec = AT_KEYEXCHANGE;
-	if (!CertSetCertificateContextProperty(serverCert, CERT_KEY_PROV_INFO_PROP_ID, 0, &keyProvInfo))
+	if (!CertSetCertificateContextProperty(certs[0], CERT_KEY_PROV_INFO_PROP_ID, 0, &keyProvInfo))
 	{
 #if defined(VERBOSE_SVR)
 		printf("WinSSLEngine: CertSetCertificateContextProperty error: 0x%x\r\n", GetLastError());
@@ -1314,36 +1311,33 @@ Bool Net::WinSSLEngine::ServerSetCertsASN1(NotNullPtr<Crypto::Cert::X509Cert> ce
 	HCRYPTPROV_OR_NCRYPT_KEY_HANDLE hCryptProvOrNCryptKey = 0;
 	BOOL fCallerFreeProvOrNCryptKey = FALSE;
 	DWORD dwKeySpec;
-	if (!CryptAcquireCertificatePrivateKey(serverCert, 0, NULL, &hCryptProvOrNCryptKey, &dwKeySpec, &fCallerFreeProvOrNCryptKey))
+	if (!CryptAcquireCertificatePrivateKey(certs[0], 0, NULL, &hCryptProvOrNCryptKey, &dwKeySpec, &fCallerFreeProvOrNCryptKey))
 	{
 #if defined(VERBOSE_SVR)
 		printf("WinSSLEngine: CryptAcquireCertificatePrivateKey error: 0x%x\r\n", GetLastError());
 #endif
 	}
-	WinSSLEngine_PrintCERT_CONTEXT(serverCert);
+	WinSSLEngine_PrintCERT_CONTEXT(certs[0]);
 
-	PCCERT_CONTEXT caCertCred = 0;
-	if (caCert)
+	UOSInt i = 0;
+	UOSInt j = cacerts->GetCount();
+	while (i < j)
 	{
-		caCertCred = CertCreateCertificateContext(X509_ASN_ENCODING, caCert->GetASN1Buff(), (DWORD)caCert->GetASN1BuffSize());
+		Crypto::Cert::X509Cert *caCert = cacerts->GetItem(i);
+		certs[nCerts++] = CertCreateCertificateContext(X509_ASN_ENCODING, caCert->GetASN1Buff(), (DWORD)caCert->GetASN1BuffSize());
+		i++;
 	}
-	if (!this->InitServer(this->clsData->method, (void*)serverCert, (void*)caCertCred))
+	if (!this->InitServer(this->clsData->method, certs, nCerts))
 	{
-		CertFreeCertificateContext(serverCert);
-		if (caCertCred)
-		{
-			CertFreeCertificateContext(caCertCred);
-		}
+		while (nCerts-- > 0)
+			CertFreeCertificateContext(certs[nCerts]);
 		CryptDestroyKey(hKey);
 		CryptReleaseContext(hProv, 0);
 		return false;
 	}
 	this->clsData->svrInit = true;
-	CertFreeCertificateContext(serverCert);
-	if (caCertCred)
-	{
-		CertFreeCertificateContext(caCertCred);
-	}
+	while (nCerts-- > 0)
+		CertFreeCertificateContext(certs[nCerts]);
 	CryptDestroyKey(hKey);
 	CryptReleaseContext(hProv, 0);
 	return true;

@@ -6,6 +6,7 @@
 #include "Crypto/Cert/X509Key.h"
 #include "Crypto/Encrypt/RSACipher.h"
 #include "Crypto/Hash/IHash.h"
+#include "Data/ArrayListNN.h"
 #include "Net/SSLClient.h"
 #include "Text/CString.h"
 
@@ -90,7 +91,7 @@ namespace Net
 		
 		virtual Bool IsError() = 0;
 
-		virtual Bool ServerSetCertsASN1(NotNullPtr<Crypto::Cert::X509Cert> certASN1, NotNullPtr<Crypto::Cert::X509File> keyASN1, Crypto::Cert::X509Cert *caCert) = 0;
+		virtual Bool ServerSetCertsASN1(NotNullPtr<Crypto::Cert::X509Cert> certASN1, NotNullPtr<Crypto::Cert::X509File> keyASN1, NotNullPtr<Data::ArrayListNN<Crypto::Cert::X509Cert>> cacerts) = 0;
 		virtual Bool ServerSetRequireClientCert(ClientCertType cliCert) = 0;
 		virtual Bool ServerSetClientCA(Text::CString clientCA) = 0;
 		virtual Bool ServerAddALPNSupport(Text::CStringNN proto) = 0;

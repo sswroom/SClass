@@ -37,6 +37,7 @@ namespace SSWR
 			Net::SSLEngine *ssl;
 			Crypto::Cert::X509Cert *sslCert;
 			Crypto::Cert::X509File *sslKey;
+			Data::ArrayListNN<Crypto::Cert::X509Cert> caCerts;
 			Net::MQTTBroker *broker;
 			IO::LogTool log;
 			NotNullPtr<UI::ListBoxLogger> logger;
@@ -76,6 +77,7 @@ namespace SSWR
 			static void __stdcall OnTopicUpdate(void *userObj, Text::CString topic, const UInt8 *message, UOSInt msgSize);
 
 			void ServerStop();
+			void ClearCACerts();
 		public:
 			AVIRMQTTBrokerForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRMQTTBrokerForm();

@@ -51,9 +51,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTBrokerForm::OnStartClicked(void *userObj)
 					return;
 				}
 				ssl = me->ssl;
-				Crypto::Cert::X509Cert *issuerCert = Crypto::Cert::CertUtil::FindIssuer(sslCert);
-				ssl->ServerSetCertsASN1(sslCert, sslKey, issuerCert);
-				SDEL_CLASS(issuerCert);
+				ssl->ServerSetCertsASN1(sslCert, sslKey, me->caCerts);
 			}
 			NEW_CLASS(me->broker, Net::MQTTBroker(me->core->GetSocketFactory(), ssl, port, me->log, true, false));
 			if (me->broker->IsError())
@@ -90,13 +88,15 @@ void __stdcall SSWR::AVIRead::AVIRMQTTBrokerForm::OnSSLCertClicked(void *userObj
 		UI::MessageDialog::ShowDialog(CSTR("You cannot change cert when server is started"), CSTR("MQTT Broker"), me);
 		return;
 	}
-	SSWR::AVIRead::AVIRSSLCertKeyForm frm(0, me->ui, me->core, me->ssl, me->sslCert, me->sslKey);
+	SSWR::AVIRead::AVIRSSLCertKeyForm frm(0, me->ui, me->core, me->ssl, me->sslCert, me->sslKey, me->caCerts);
 	if (frm.ShowDialog(me) == UI::GUIForm::DR_OK)
 	{
 		SDEL_CLASS(me->sslCert);
 		SDEL_CLASS(me->sslKey);
+		me->ClearCACerts();
 		me->sslCert = frm.GetCert();
 		me->sslKey = frm.GetKey();
+		frm.GetCACerts(me->caCerts);
 		Text::StringBuilderUTF8 sb;
 		me->sslCert->ToShortString(sb);
 		sb.AppendC(UTF8STRC(", "));
@@ -231,6 +231,17 @@ void SSWR::AVIRead::AVIRMQTTBrokerForm::ServerStop()
 	}
 }
 
+void SSWR::AVIRead::AVIRMQTTBrokerForm::ClearCACerts()
+{
+	UOSInt i = this->caCerts.GetCount();
+	while (i-- > 0)
+	{
+		Crypto::Cert::X509Cert *cert = this->caCerts.GetItem(i);
+		DEL_CLASS(cert);
+	}
+	this->caCerts.Clear();
+}
+
 SSWR::AVIRead::AVIRMQTTBrokerForm::AVIRMQTTBrokerForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
@@ -320,6 +331,7 @@ SSWR::AVIRead::AVIRMQTTBrokerForm::~AVIRMQTTBrokerForm()
 	SDEL_CLASS(this->ssl);
 	SDEL_CLASS(this->sslCert);
 	SDEL_CLASS(this->sslKey);
+	this->ClearCACerts();
 }
 
 void SSWR::AVIRead::AVIRMQTTBrokerForm::OnMonitorChanged()

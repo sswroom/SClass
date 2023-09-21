@@ -14,7 +14,7 @@ namespace Net
 
 		void DeinitClient();
 		Bool InitClient(Method method, void *cred);
-		Bool InitServer(Method method, void *cred, void *caCred);
+		Bool InitServer(Method method, void *creds, UOSInt nCreds);
 		Net::SSLClient *CreateClientConn(void *sslObj, Socket *s, Text::CString hostName, ErrorType *err);
 		virtual Net::SSLClient *CreateServerConn(Socket *s);
 	public:
@@ -23,7 +23,7 @@ namespace Net
 		
 		virtual Bool IsError();
 
-		virtual Bool ServerSetCertsASN1(NotNullPtr<Crypto::Cert::X509Cert> certASN1, NotNullPtr<Crypto::Cert::X509File> keyASN1, Crypto::Cert::X509Cert *cert);
+		virtual Bool ServerSetCertsASN1(NotNullPtr<Crypto::Cert::X509Cert> certASN1, NotNullPtr<Crypto::Cert::X509File> keyASN1, NotNullPtr<Data::ArrayListNN<Crypto::Cert::X509Cert>> cacerts);
 		virtual Bool ServerSetRequireClientCert(ClientCertType cliCert);
 		virtual Bool ServerSetClientCA(Text::CString clientCA);
 		virtual Bool ServerAddALPNSupport(Text::CStringNN proto);
