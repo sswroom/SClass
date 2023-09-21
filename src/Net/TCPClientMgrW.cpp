@@ -72,7 +72,7 @@ UInt32 __stdcall Net::TCPClientMgr::ClientThread(void *o)
 						if (incomplete)
 						{
 							currTime = Data::Timestamp::UtcNow();
-							if (true) //currTime.Diff(cliStat->lastDataTime) > cliStat->cli->GetTimeout())
+							if (currTime.Diff(cliStat->lastDataTime) > cliStat->cli->GetTimeout())
 							{
 								if (me->logWriter) me->logWriter->TCPDisconnect(cliStat->cli);
 								cliStat->cli->ShutdownSend();
@@ -87,9 +87,7 @@ UInt32 __stdcall Net::TCPClientMgr::ClientThread(void *o)
 							}
 							else
 							{
-								me->ClientBeginRead(cliStat);
 								cliMutUsage.EndUse();
-								found = true;
 							}
 						}
 						else if (readSize)

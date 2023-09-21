@@ -36,6 +36,8 @@ struct Net::WinSSLClient::ClassData
 
 	UInt8 *readBuff;
 	UOSInt readSize;
+	void *readData;
+	Sync::Event *readEvt;
 	Data::ArrayList<Crypto::Cert::Certificate *> *remoteCerts;
 };
 
@@ -59,6 +61,8 @@ Net::WinSSLClient::WinSSLClient(NotNullPtr<Net::SocketFactory> sockf, Socket *s,
 	this->clsData->readBuff = 0;
 	this->clsData->readSize = 0;
 	this->clsData->remoteCerts = 0;
+	this->clsData->readData = 0;
+	this->clsData->readEvt = 0;
 
 	PCCERT_CONTEXT serverCert = 0;
 	PCCERT_CONTEXT thisCert = 0;
@@ -409,6 +413,7 @@ void *Net::WinSSLClient::BeginRead(const Data::ByteArray &buff, Sync::Event *evt
 	if (s == 0 || (this->flags & 6) != 0)
 		return 0;
 	Net::SocketFactory::ErrorType et;
+	this->clsData->readEvt = evt;
 	void *data = sockf->BeginReceiveData(s, &this->clsData->recvBuff[this->clsData->recvOfst], this->clsData->recvBuffSize - this->clsData->recvOfst, evt, et);
 	if (data == 0)
 	{
@@ -424,6 +429,10 @@ void *Net::WinSSLClient::BeginRead(const Data::ByteArray &buff, Sync::Event *evt
 		{
 			this->Close();
 		}
+	}
+	else
+	{
+		this->clsData->readData = data;
 	}
 	return data;
 }
@@ -466,6 +475,11 @@ UOSInt Net::WinSSLClient::EndRead(void *reqData, Bool toWait, OutParam<Bool> inc
 		this->clsData->decSize = 0;
 		return ret;
 	}
+	else if (this->clsData->readData == 0)
+	{
+		incomplete.Set(false);
+		return 0;
+	}
 	Net::SocketFactory::ErrorType et;
 	SecBufferDesc buffDesc;
 	SecBuffer buffs[4];
@@ -474,7 +488,7 @@ UOSInt Net::WinSSLClient::EndRead(void *reqData, Bool toWait, OutParam<Bool> inc
 	Bool incomp;
 
 	status = SEC_E_INCOMPLETE_MESSAGE;
-	recvSize = sockf->EndReceiveData(reqData, toWait, incomp);
+	recvSize = sockf->EndReceiveData(this->clsData->readData, toWait, incomp);
 	if (recvSize <= 0)
 	{
 		incomplete.Set(incomp);
@@ -482,9 +496,11 @@ UOSInt Net::WinSSLClient::EndRead(void *reqData, Bool toWait, OutParam<Bool> inc
 		{
 			return 0;
 		}
+		this->clsData->readData = 0;
 		this->flags |= 2;
 		return ret;
 	}
+	this->clsData->readData = 0;
 
 #if defined(DEBUG_PRINT)
 	debugDt.SetCurrTime();
@@ -507,6 +523,27 @@ UOSInt Net::WinSSLClient::EndRead(void *reqData, Bool toWait, OutParam<Bool> inc
 #endif
 		if (!toWait)
 		{
+			Net::SocketFactory::ErrorType et;
+			void *data = sockf->BeginReceiveData(s, &this->clsData->recvBuff[this->clsData->recvOfst], this->clsData->recvBuffSize - this->clsData->recvOfst, this->clsData->readEvt, et);
+			if (data == 0)
+			{
+				if (et == Net::SocketFactory::ET_SHUTDOWN)
+				{
+					this->flags |= 2;
+				}
+				else if (et == Net::SocketFactory::ET_DISCONNECT)
+				{
+					this->flags |= 2;
+				}
+				else
+				{
+					this->Close();
+				}
+			}
+			else
+			{
+				this->clsData->readData = data;
+			}
 			incomplete.Set(true);
 			return 0;
 		}
