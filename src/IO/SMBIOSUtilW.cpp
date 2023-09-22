@@ -40,10 +40,9 @@ IO::SMBIOS *IO::SMBIOSUtil::GetSMBIOS()
 
 	UTF8Char sbuff[128];
 	Win32::WMIQuery *db;
-	DB::DBReader *r;
+	NotNullPtr<DB::DBReader> r;
 	NEW_CLASS(db, Win32::WMIQuery(L"ROOT\\WMI"));
-	r = db->ExecuteReaderW(L"select * from MSSMBios_RawSMBiosTables");
-	if (r)
+	if (r.Set(db->ExecuteReaderW(L"select * from MSSMBios_RawSMBiosTables")))
 	{
 		UOSInt i;
 		UOSInt j;

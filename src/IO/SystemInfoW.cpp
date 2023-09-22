@@ -192,7 +192,7 @@ UOSInt IO::SystemInfo::GetRAMInfo(Data::ArrayList<RAMInfo*> *ramList)
 	RAMInfo *ram;
 	UTF8Char sbuff[128];
 	UTF8Char *sptr;
-	DB::DBReader *r;
+	NotNullPtr<DB::DBReader> r;
 	IO::SMBIOS *smbios = IO::SMBIOSUtil::GetSMBIOS();
 	if (smbios)
 	{
@@ -269,8 +269,7 @@ UOSInt IO::SystemInfo::GetRAMInfo(Data::ArrayList<RAMInfo*> *ramList)
 
 	NEW_CLASS(db, Win32::WMIQuery(L"ROOT\\CIMV2"));
 //	r = db->ExecuteReader(L"select DeviceLocator, Manufacturer, PartNumber, SerialNumber, Speed from CIM_PhysicalMemory");
-	r = db->ExecuteReaderW(L"select * from CIM_PhysicalMemory");
-	if (r)
+	if (r.Set(db->ExecuteReaderW(L"select * from CIM_PhysicalMemory")))
 	{
 		Text::StringBuilderUTF8 sb;
 		UOSInt devLocCol = (UOSInt)-1;

@@ -12,7 +12,7 @@ DB::MongoDB::~MongoDB()
 {
 }
 
-UOSInt DB::MongoDB::QueryTableNames(Text::CString schemaName, Data::ArrayListNN<Text::String> *names)
+UOSInt DB::MongoDB::QueryTableNames(Text::CString schemaName, NotNullPtr<Data::ArrayListNN<Text::String>> names)
 {
 	return 0;
 }
@@ -27,7 +27,7 @@ DB::TableDef *DB::MongoDB::GetTableDef(Text::CString schemaName, Text::CString t
 	return 0;
 }
 		
-void DB::MongoDB::CloseReader(DBReader *r)
+void DB::MongoDB::CloseReader(NotNullPtr<DBReader> r)
 {
 }
 
@@ -40,12 +40,12 @@ void DB::MongoDB::Reconnect()
 
 }
 
-UOSInt DB::MongoDB::GetDatabaseNames(Data::ArrayListNN<Text::String> *names)
+UOSInt DB::MongoDB::GetDatabaseNames(NotNullPtr<Data::ArrayListNN<Text::String>> names)
 {
 	return 0;
 }
 
-void DB::MongoDB::FreeDatabaseNames(Data::ArrayListNN<Text::String> *names)
+void DB::MongoDB::FreeDatabaseNames(NotNullPtr<Data::ArrayListNN<Text::String>> names)
 {
 }
 

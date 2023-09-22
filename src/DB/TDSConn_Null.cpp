@@ -64,17 +64,17 @@ void DB::TDSConn::Close()
 {
 }
 
-OSInt DB::TDSConn::ExecuteNonQuery(Text::CString sql)
+OSInt DB::TDSConn::ExecuteNonQuery(Text::CStringNN sql)
 {
 	return -2;
 }
 
-DB::DBReader *DB::TDSConn::ExecuteReader(Text::CString sql)
+DB::DBReader *DB::TDSConn::ExecuteReader(Text::CStringNN sql)
 {
 	return 0;
 }
 
-void DB::TDSConn::CloseReader(DBReader *r)
+void DB::TDSConn::CloseReader(NotNullPtr<DBReader> r)
 {
 }
 
@@ -104,7 +104,7 @@ void DB::TDSConn::Rollback(void *tran)
 {
 }
 
-UOSInt DB::TDSConn::QueryTableNames(Text::CString schemaName, Data::ArrayListNN<Text::String> *names)
+UOSInt DB::TDSConn::QueryTableNames(Text::CString schemaName, NotNullPtr<Data::ArrayListNN<Text::String>> names)
 {
 	return 0;
 }
