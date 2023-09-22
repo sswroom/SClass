@@ -3,7 +3,7 @@
 #include "DB/SQLGenerator.h"
 
 
-void DB::SQLGenerator::AppendColDef(DB::SQLType sqlType, DB::SQLBuilder *sql, DB::ColDef *col)
+void DB::SQLGenerator::AppendColDef(DB::SQLType sqlType, NotNullPtr<DB::SQLBuilder> sql, DB::ColDef *col)
 {
 	sql->AppendCol(col->GetColName()->v);
 	sql->AppendCmdC(CSTR(" "));
@@ -96,7 +96,7 @@ void DB::SQLGenerator::AppendColDef(DB::SQLType sqlType, DB::SQLBuilder *sql, DB
 	}
 }
 
-void DB::SQLGenerator::AppendColType(DB::SQLType sqlType, DB::SQLBuilder *sql, DB::DBUtil::ColType colType, UOSInt colSize, UOSInt colDP, Bool autoInc, Text::String *nativeType)
+void DB::SQLGenerator::AppendColType(DB::SQLType sqlType, NotNullPtr<DB::SQLBuilder> sql, DB::DBUtil::ColType colType, UOSInt colSize, UOSInt colDP, Bool autoInc, Text::String *nativeType)
 {
 	switch (sqlType)
 	{
@@ -827,7 +827,7 @@ void DB::SQLGenerator::AppendColType(DB::SQLType sqlType, DB::SQLBuilder *sql, D
 	}
 }
 
-Bool DB::SQLGenerator::GenCreateTableCmd(DB::SQLBuilder *sql, Text::CString schemaName, Text::CString tableName, DB::TableDef *tabDef, Bool multiline)
+Bool DB::SQLGenerator::GenCreateTableCmd(NotNullPtr<DB::SQLBuilder> sql, Text::CString schemaName, Text::CString tableName, NotNullPtr<DB::TableDef> tabDef, Bool multiline)
 {
 	DB::SQLType sqlType = sql->GetSQLType();
 	UOSInt i;
@@ -956,17 +956,17 @@ Bool DB::SQLGenerator::GenCreateTableCmd(DB::SQLBuilder *sql, Text::CString sche
 	return true;
 }
 
-Bool DB::SQLGenerator::GenInsertCmd(DB::SQLBuilder *sql, Text::CString schemaName, Text::CString tableName, DB::DBReader *r)
+Bool DB::SQLGenerator::GenInsertCmd(NotNullPtr<DB::SQLBuilder> sql, Text::CString schemaName, Text::CString tableName, NotNullPtr<DB::DBReader> r)
 {
 	return GenInsertCmd(sql, schemaName, tableName, 0, r);
 }
 
-Bool DB::SQLGenerator::GenInsertCmd(DB::SQLBuilder *sql, DB::TableDef *tabDef, DB::DBReader *r)
+Bool DB::SQLGenerator::GenInsertCmd(NotNullPtr<DB::SQLBuilder> sql, DB::TableDef *tabDef, NotNullPtr<DB::DBReader> r)
 {
 	return GenInsertCmd(sql, STR_CSTR(tabDef->GetSchemaName()), tabDef->GetTableName()->ToCString(), tabDef, r);
 }
 
-Bool DB::SQLGenerator::GenInsertCmd(DB::SQLBuilder *sql, Text::CString schemaName, Text::CString tableName, DB::TableDef *tabDef, DB::DBReader *r)
+Bool DB::SQLGenerator::GenInsertCmd(NotNullPtr<DB::SQLBuilder> sql, Text::CString schemaName, Text::CString tableName, DB::TableDef *tabDef, NotNullPtr<DB::DBReader> r)
 {
 	UTF8Char tmpBuff[256];
 	DB::DBUtil::ColType colType;
@@ -1112,7 +1112,7 @@ Bool DB::SQLGenerator::GenInsertCmd(DB::SQLBuilder *sql, Text::CString schemaNam
 	return true;
 }
 
-Bool DB::SQLGenerator::GenCreateDatabaseCmd(DB::SQLBuilder *sql, Text::CString databaseName, const Collation *collation)
+Bool DB::SQLGenerator::GenCreateDatabaseCmd(NotNullPtr<DB::SQLBuilder> sql, Text::CString databaseName, const Collation *collation)
 {
 	UTF8Char sbuff[128];
 	UTF8Char *sptr;
@@ -1133,35 +1133,35 @@ Bool DB::SQLGenerator::GenCreateDatabaseCmd(DB::SQLBuilder *sql, Text::CString d
 	return true;
 }
 
-Bool DB::SQLGenerator::GenDeleteDatabaseCmd(DB::SQLBuilder *sql, Text::CString databaseName)
+Bool DB::SQLGenerator::GenDeleteDatabaseCmd(NotNullPtr<DB::SQLBuilder> sql, Text::CString databaseName)
 {
 	sql->AppendCmdC(CSTR("DROP DATABASE "));
 	sql->AppendCol(databaseName.v);
 	return true;
 }
 
-Bool DB::SQLGenerator::GenCreateSchemaCmd(DB::SQLBuilder *sql, Text::CString schemaName)
+Bool DB::SQLGenerator::GenCreateSchemaCmd(NotNullPtr<DB::SQLBuilder> sql, Text::CString schemaName)
 {
 	sql->AppendCmdC(CSTR("CREATE SCHEMA "));
 	sql->AppendCol(schemaName.v);
 	return true;
 }
 
-Bool DB::SQLGenerator::GenDeleteSchemaCmd(DB::SQLBuilder *sql, Text::CString schemaName)
+Bool DB::SQLGenerator::GenDeleteSchemaCmd(NotNullPtr<DB::SQLBuilder> sql, Text::CString schemaName)
 {
 	sql->AppendCmdC(CSTR("DROP SCHEMA "));
 	sql->AppendCol(schemaName.v);
 	return true;
 }
 
-Bool DB::SQLGenerator::GenDropTableCmd(DB::SQLBuilder *sql, Text::CString tableName)
+Bool DB::SQLGenerator::GenDropTableCmd(NotNullPtr<DB::SQLBuilder> sql, Text::CString tableName)
 {
 	sql->AppendCmdC(CSTR("drop table "));
 	sql->AppendCol(tableName.v);
 	return true;
 }
 
-Bool DB::SQLGenerator::GenDeleteTableDataCmd(DB::SQLBuilder *sql, Text::CString schemaName, Text::CString tableName)
+Bool DB::SQLGenerator::GenDeleteTableDataCmd(NotNullPtr<DB::SQLBuilder> sql, Text::CString schemaName, Text::CString tableName)
 {
 	sql->AppendCmdC(CSTR("delete from "));
 	if (schemaName.leng > 0)
@@ -1173,7 +1173,7 @@ Bool DB::SQLGenerator::GenDeleteTableDataCmd(DB::SQLBuilder *sql, Text::CString 
 	return true;
 }
 
-Bool DB::SQLGenerator::GenTruncateTableCmd(DB::SQLBuilder *sql, Text::CString schemaName, Text::CString tableName)
+Bool DB::SQLGenerator::GenTruncateTableCmd(NotNullPtr<DB::SQLBuilder> sql, Text::CString schemaName, Text::CString tableName)
 {
 	sql->AppendCmdC(CSTR("truncate table "));
 	if (schemaName.leng > 0)
@@ -1185,7 +1185,7 @@ Bool DB::SQLGenerator::GenTruncateTableCmd(DB::SQLBuilder *sql, Text::CString sc
 	return true;
 }
 
-DB::SQLGenerator::PageStatus DB::SQLGenerator::GenSelectCmdPage(DB::SQLBuilder *sql, DB::TableDef *tabDef, DB::PageRequest *page)
+DB::SQLGenerator::PageStatus DB::SQLGenerator::GenSelectCmdPage(NotNullPtr<DB::SQLBuilder> sql, DB::TableDef *tabDef, DB::PageRequest *page)
 {
 	DB::SQLGenerator::PageStatus status;
 	if (page)

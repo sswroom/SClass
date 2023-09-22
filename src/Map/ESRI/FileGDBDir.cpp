@@ -28,7 +28,7 @@ Map::ESRI::FileGDBDir::~FileGDBDir()
 	LIST_FREE_FUNC(&this->tables, DEL_CLASS);
 }
 
-UOSInt Map::ESRI::FileGDBDir::QueryTableNames(Text::CString schemaName, Data::ArrayListNN<Text::String> *names)
+UOSInt Map::ESRI::FileGDBDir::QueryTableNames(Text::CString schemaName, NotNullPtr<Data::ArrayListNN<Text::String>> names)
 {
 	UOSInt i = 0;
 	UOSInt j = this->tables.GetCount();
@@ -65,17 +65,23 @@ DB::TableDef *Map::ESRI::FileGDBDir::GetTableDef(Text::CString schemaName, Text:
 		return 0;
 	}
 	DB::TableDef *tab;
-	DB::DBReader *r;
+	NotNullPtr<DB::DBReader> r;
 	NEW_CLASS(tab, DB::TableDef(schemaName, tableName));
-	r = table->OpenReader(0, 0, 0, CSTR_NULL, 0);
-	tab->ColFromReader(r);
-	this->CloseReader(r);
-	return tab;
+	if (r.Set(table->OpenReader(0, 0, 0, CSTR_NULL, 0)))
+	{
+		tab->ColFromReader(r);
+		this->CloseReader(r);
+		return tab;
+	}
+	else
+	{
+		return 0;
+	}
 }
 
-void Map::ESRI::FileGDBDir::CloseReader(DB::DBReader *r)
+void Map::ESRI::FileGDBDir::CloseReader(NotNullPtr<DB::DBReader> r)
 {
-	Map::ESRI::FileGDBReader *reader = (Map::ESRI::FileGDBReader*)r;
+	Map::ESRI::FileGDBReader *reader = (Map::ESRI::FileGDBReader*)r.Ptr();
 	DEL_CLASS(reader);
 }
 

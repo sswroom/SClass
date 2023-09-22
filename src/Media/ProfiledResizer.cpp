@@ -299,8 +299,8 @@ Bool Media::ProfiledResizer::LoadProfile(Text::CStringNN fileName)
 		NEW_CLASS(csv, DB::CSVFile(fileName, 65001));
 	}
 	csv->SetNoHeader(true);
-	DB::DBReader *r = csv->QueryTableData(CSTR_NULL, CSTR_NULL, 0, 0, 0, CSTR_NULL, 0);
-	if (r)
+	NotNullPtr<DB::DBReader> r;
+	if (r.Set(csv->QueryTableData(CSTR_NULL, CSTR_NULL, 0, 0, 0, CSTR_NULL, 0)))
 	{
 		UOSInt i;
 		while (loader->IsProcessing())

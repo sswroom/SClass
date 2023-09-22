@@ -65,7 +65,7 @@ Bool Exporter::MDBExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text:
 	NotNullPtr<DB::DBTool> mdb;
 	IO::LogTool log;
 	DB::ReadingDB *srcDB;
-	DB::DBReader *r;
+	NotNullPtr<DB::DBReader> r;
 	NotNullPtr<DB::ColDef> colDef;
 	Data::ArrayListNN<Text::String> tables;
 	UOSInt i;
@@ -78,13 +78,12 @@ Bool Exporter::MDBExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text:
 	DB::SQLBuilder sql(mdb);
 	Text::StringBuilderUTF8 sb;
 	srcDB = (DB::ReadingDB *)pobj;
-	srcDB->QueryTableNames(CSTR_NULL, &tables);
+	srcDB->QueryTableNames(CSTR_NULL, tables);
 	i = 0;
 	j = tables.GetCount();
 	while (i < j)
 	{
-		r = srcDB->QueryTableData(CSTR_NULL, tables.GetItem(i)->ToCString(), 0, 0, 0, CSTR_NULL, 0);
-		if (r)
+		if (r.Set(srcDB->QueryTableData(CSTR_NULL, tables.GetItem(i)->ToCString(), 0, 0, 0, CSTR_NULL, 0)))
 		{
 			DB::TableDef tabDef(CSTR_NULL, tables.GetItem(i)->ToCString());
 			k = 0;
@@ -97,7 +96,7 @@ Bool Exporter::MDBExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text:
 				k++;
 			}
 			sql.Clear();
-			DB::SQLGenerator::GenCreateTableCmd(&sql, CSTR_NULL, tables.GetItem(i)->ToCString(), &tabDef, false);
+			DB::SQLGenerator::GenCreateTableCmd(sql, CSTR_NULL, tables.GetItem(i)->ToCString(), tabDef, false);
 			if (mdb->ExecuteNonQuery(sql.ToCString()) <= -2)
 			{
 /*				IO::FileStream *debugFS;
@@ -114,7 +113,7 @@ Bool Exporter::MDBExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text:
 			while (r->ReadNext())
 			{
 				sql.Clear();
-				DB::SQLGenerator::GenInsertCmd(&sql, CSTR_NULL, tables.GetItem(i)->ToCString(), r);
+				DB::SQLGenerator::GenInsertCmd(sql, CSTR_NULL, tables.GetItem(i)->ToCString(), r);
 				if (mdb->ExecuteNonQuery(sql.ToCString()) <= 0)
 				{
 					sb.ClearStr();

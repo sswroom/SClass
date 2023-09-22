@@ -63,7 +63,7 @@ namespace DB
 		Text::String *defVal;
 		Text::String *attr;
 
-		static void AppendDefVal(DB::SQLBuilder *sql, Text::CString defVal, UOSInt colSize);
+		static void AppendDefVal(NotNullPtr<DB::SQLBuilder> sql, Text::CStringNN defVal, UOSInt colSize);
 	public:
 		ColDef(Text::CString colName);
 		ColDef(NotNullPtr<Text::String> colName);
@@ -82,7 +82,7 @@ namespace DB
 		Int64 GetAutoIncStep() const;
 		Text::String *GetDefVal() const;
 		Text::String *GetAttr() const;
-		Bool GetDefVal(DB::SQLBuilder *sql) const;
+		Bool GetDefVal(NotNullPtr<DB::SQLBuilder> sql) const;
 
 		void SetColName(NotNullPtr<const UTF8Char> colName);
 		void SetColName(Text::CString colName);

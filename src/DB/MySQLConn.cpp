@@ -37,8 +37,8 @@ void DB::MySQLConn::Connect()
 		log->LogMessage(CSTR("Driver is libmysql"), IO::LogHandler::LogLevel::Action);
 		mysql_set_character_set((MYSQL*)this->mysql, "utf8");
 
-		DB::DBReader *r = this->ExecuteReader(CSTR("SELECT VERSION()"));
-		if (r)
+		NotNullPtr<DB::DBReader> r;
+		if (r.Set(this->ExecuteReader(CSTR("SELECT VERSION()"))))
 		{
 			r->ReadNext();
 			Text::String *s = r->GetNewStr(0);
@@ -162,7 +162,7 @@ void DB::MySQLConn::Dispose()
 	DEL_CLASS(this);
 }
 
-OSInt DB::MySQLConn::ExecuteNonQuery(Text::CString sql)
+OSInt DB::MySQLConn::ExecuteNonQuery(Text::CStringNN sql)
 {
 	if (this->mysql == 0)
 	{
@@ -223,7 +223,7 @@ OSInt DB::MySQLConn::ExecuteNonQuery(Text::CString sql)
 	}
 }*/
 
-DB::DBReader *DB::MySQLConn::ExecuteReader(Text::CString sql)
+DB::DBReader *DB::MySQLConn::ExecuteReader(Text::CStringNN sql)
 {
 	if (this->mysql == 0)
 	{
@@ -255,9 +255,9 @@ DB::DBReader *DB::MySQLConn::ExecuteReader(Text::CString sql)
 	}
 }
 
-void DB::MySQLConn::CloseReader(DB::DBReader *r)
+void DB::MySQLConn::CloseReader(NotNullPtr<DB::DBReader> r)
 {
-	DB::MySQLReader *rdr = (DB::MySQLReader*)r;
+	DB::MySQLReader *rdr = (DB::MySQLReader*)r.Ptr();
 	DEL_CLASS(rdr);
 }
 
@@ -291,7 +291,7 @@ void DB::MySQLConn::Rollback(void *tran)
 {
 }
 
-UOSInt DB::MySQLConn::QueryTableNames(Text::CString schemaName, Data::ArrayListNN<Text::String> *names)
+UOSInt DB::MySQLConn::QueryTableNames(Text::CString schemaName, NotNullPtr<Data::ArrayListNN<Text::String>> names)
 {
 	if (schemaName.leng != 0)
 		return 0;
@@ -299,8 +299,8 @@ UOSInt DB::MySQLConn::QueryTableNames(Text::CString schemaName, Data::ArrayListN
 	UTF8Char *sptr;
 	UOSInt len;
 	UOSInt initCnt = names->GetCount();
-	DB::DBReader *rdr = this->ExecuteReader(CSTR("show tables"));
-	if (rdr)
+	NotNullPtr<DB::DBReader> rdr;
+	if (rdr.Set(this->ExecuteReader(CSTR("show tables"))))
 	{
 		while (rdr->ReadNext())
 		{

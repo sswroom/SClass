@@ -11,8 +11,8 @@ Data::FastMap<Int32, const UTF8Char **> *Map::ESRI::ESRIMDBLayer::ReadNameArr()
 	UTF8Char sbuff[512];
 	Sync::MutexUsage mutUsage;
 	this->currDB = this->conn->UseConn(mutUsage).Ptr();
-	DB::DBReader *r = this->currDB->QueryTableData(CSTR_NULL, this->tableName->ToCString(), 0, 0, 0, CSTR_NULL, 0);
-	if (r)
+	NotNullPtr<DB::DBReader> r;
+	if (r.Set(this->currDB->QueryTableData(CSTR_NULL, this->tableName->ToCString(), 0, 0, 0, CSTR_NULL, 0)))
 	{
 		Data::FastMap<Int32, const UTF8Char **> *nameArr;
 		const UTF8Char **names;
@@ -78,8 +78,8 @@ void Map::ESRI::ESRIMDBLayer::Init(DB::SharedDBConn *conn, UInt32 srid, Text::CS
 
 	Sync::MutexUsage mutUsage;
 	this->currDB = this->conn->UseConn(mutUsage).Ptr();
-	DB::DBReader *r = this->currDB->QueryTableData(CSTR_NULL, tableName, 0, 0, 0, CSTR_NULL, 0);
-	if (r)
+	NotNullPtr<DB::DBReader> r;
+	if (r.Set(this->currDB->QueryTableData(CSTR_NULL, tableName, 0, 0, 0, CSTR_NULL, 0)))
 	{
 		UOSInt i;
 		UOSInt j;
@@ -381,13 +381,14 @@ DB::DBReader *Map::ESRI::ESRIMDBLayer::QueryTableData(Text::CString schemaName, 
 {
 	NotNullPtr<Sync::MutexUsage> mutUsage;
 	NEW_CLASSNN(mutUsage, Sync::MutexUsage());
-	this->currDB = this->conn->UseConn(mutUsage).Ptr();
+	NotNullPtr<DB::DBConn> currDB = this->conn->UseConn(mutUsage);
+	this->currDB = currDB.Ptr();
 	this->lastDB = this->currDB;
-	DB::DBReader *rdr = this->currDB->QueryTableData(schemaName, tableName, columnNames, ofst, maxCnt, ordering, condition);
-	if (rdr)
+	NotNullPtr<DB::DBReader> rdr;
+	if (rdr.Set(this->currDB->QueryTableData(schemaName, tableName, columnNames, ofst, maxCnt, ordering, condition)))
 	{
 		Map::ESRI::ESRIMDBReader *r;
-		NEW_CLASS(r, Map::ESRI::ESRIMDBReader(this->currDB, rdr, mutUsage));
+		NEW_CLASS(r, Map::ESRI::ESRIMDBReader(currDB, rdr, mutUsage));
 		return r;
 	}
 	mutUsage.Delete();
@@ -430,7 +431,7 @@ Map::MapDrawLayer::ObjectClass Map::ESRI::ESRIMDBLayer::GetObjectClass() const
 	return Map::MapDrawLayer::OC_ESRI_MDB_LAYER;
 }
 
-Map::ESRI::ESRIMDBReader::ESRIMDBReader(DB::DBConn *conn, DB::DBReader *r, NotNullPtr<Sync::MutexUsage> mutUsage)
+Map::ESRI::ESRIMDBReader::ESRIMDBReader(NotNullPtr<DB::DBConn> conn, NotNullPtr<DB::DBReader> r, NotNullPtr<Sync::MutexUsage> mutUsage)
 {
 	this->conn = conn;
 	this->r = r;

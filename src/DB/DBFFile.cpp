@@ -77,7 +77,7 @@ DB::DBFFile::~DBFFile()
 	this->stmData.Delete();
 }
 
-UOSInt DB::DBFFile::QueryTableNames(Text::CString schemaName, Data::ArrayListNN<Text::String> *names)
+UOSInt DB::DBFFile::QueryTableNames(Text::CString schemaName, NotNullPtr<Data::ArrayListNN<Text::String>> names)
 {
 	if (schemaName.leng != 0)
 		return 0;
@@ -118,9 +118,9 @@ DB::TableDef *DB::DBFFile::GetTableDef(Text::CString schemaName, Text::CString t
 	return tab;
 }
 
-void DB::DBFFile::CloseReader(DBReader *r)
+void DB::DBFFile::CloseReader(NotNullPtr<DBReader> r)
 {
-	DB::DBFReader *rdr = (DB::DBFReader*)r;
+	DB::DBFReader *rdr = (DB::DBFReader*)r.Ptr();
 	DEL_CLASS(rdr);
 }
 

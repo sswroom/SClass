@@ -68,7 +68,7 @@ namespace DB
 		DBRow(TableDef *table);
 		~DBRow();
 
-		Bool SetByReader(DB::DBReader *r, Bool commit);
+		Bool SetByReader(NotNullPtr<DB::DBReader> r, Bool commit);
 
 		DB::ColDef *GetFieldType(const UTF8Char *fieldName) const;
 		DataType GetFieldDataType(const UTF8Char *fieldName) const;

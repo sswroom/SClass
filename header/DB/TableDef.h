@@ -49,9 +49,9 @@ namespace DB
 		TableDef *SetComments(const UTF8Char *comments);
 		TableDef *SetSQLType(SQLType sqlType);
 		
-		void ColFromReader(DB::DBReader *r);
-		TableDef *Clone() const;
-		Data::Class *CreateTableClass() const;
+		void ColFromReader(NotNullPtr<DB::DBReader> r);
+		NotNullPtr<TableDef> Clone() const;
+		NotNullPtr<Data::Class> CreateTableClass() const;
 	};
 }
 #endif

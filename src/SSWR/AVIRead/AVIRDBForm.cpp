@@ -61,25 +61,26 @@ void __stdcall SSWR::AVIRead::AVIRDBForm::OnTableSelChg(void *userObj)
 	
 
 	DB::TableDef *tabDef = 0;
-	DB::DBReader *r;
+	DB::DBReader *tmpr;
 	if (me->dbt)
 	{
 		tabDef = me->dbt->GetTableDef(STR_CSTR(schemaName), CSTRP(sbuff, sptr));
 
-		r = me->db->QueryTableData(STR_CSTR(schemaName), CSTRP(sbuff, sptr), 0, 0, MAX_ROW_CNT, CSTR_NULL, 0);
+		tmpr = me->db->QueryTableData(STR_CSTR(schemaName), CSTRP(sbuff, sptr), 0, 0, MAX_ROW_CNT, CSTR_NULL, 0);
 	}
 	else
 	{
 		tabDef = me->db->GetTableDef(STR_CSTR(schemaName), CSTRP(sbuff, sptr));
 
-		r = me->db->QueryTableData(STR_CSTR(schemaName), CSTRP(sbuff, sptr), 0, 0, MAX_ROW_CNT, CSTR_NULL, 0);
-		if (r && tabDef == 0)
+		tmpr = me->db->QueryTableData(STR_CSTR(schemaName), CSTRP(sbuff, sptr), 0, 0, MAX_ROW_CNT, CSTR_NULL, 0);
+		if (tmpr && tabDef == 0)
 		{
-			tabDef = r->GenTableDef(STR_CSTR(schemaName), CSTRP(sbuff, sptr));
+			tabDef = tmpr->GenTableDef(STR_CSTR(schemaName), CSTRP(sbuff, sptr));
 		}
 	}
 	SDEL_STRING(schemaName);
-	if (r)
+	NotNullPtr<DB::DBReader> r;
+	if (r.Set(tmpr))
 	{
 		me->UpdateResult(r);
 
@@ -157,8 +158,8 @@ void __stdcall SSWR::AVIRead::AVIRDBForm::OnSQLClicked(void *userObj)
 	me->txtSQL->GetText(sb);
 	if (sb.GetLength() > 0)
 	{
-		DB::DBReader *r = me->dbt->ExecuteReader(sb.ToCString());
-		if (r)
+		NotNullPtr<DB::DBReader> r;
+		if (r.Set(me->dbt->ExecuteReader(sb.ToCString())))
 		{
 			me->UpdateResult(r);
 			me->dbt->CloseReader(r);
@@ -172,7 +173,7 @@ void __stdcall SSWR::AVIRead::AVIRDBForm::OnSQLClicked(void *userObj)
 	}
 }
 
-void SSWR::AVIRead::AVIRDBForm::UpdateResult(DB::DBReader *r)
+void SSWR::AVIRead::AVIRDBForm::UpdateResult(NotNullPtr<DB::DBReader> r)
 {
 	UOSInt i;
 	UOSInt j;
@@ -256,15 +257,15 @@ Data::Class *SSWR::AVIRead::AVIRDBForm::CreateTableClass(Text::CString schemaNam
 		DB::TableDef *tab = this->dbt->GetTableDef(schemaName, tableName);
 		if (tab)
 		{
-			Data::Class *cls = tab->CreateTableClass();
+			Data::Class *cls = tab->CreateTableClass().Ptr();
 			DEL_CLASS(tab);
 			return cls;
 		}
 	}
-	DB::DBReader *r = this->db->QueryTableData(schemaName, tableName, 0, 0, 0, CSTR_NULL, 0);
-	if (r)
+	NotNullPtr<DB::DBReader> r;
+	if (r.Set(this->db->QueryTableData(schemaName, tableName, 0, 0, 0, CSTR_NULL, 0)))
 	{
-		Data::Class *cls = r->CreateClass();
+		Data::Class *cls = r->CreateClass().Ptr();
 		this->db->CloseReader(r);
 		return cls;
 	}
@@ -277,10 +278,10 @@ void SSWR::AVIRead::AVIRDBForm::CopyTableCreate(DB::SQLType sqlType, Bool axisAw
 	Text::String *schemaName = this->lbSchema->GetSelectedItemTextNew();
 	Text::String *tableName = this->lbTable->GetSelectedItemTextNew();
 	DB::SQLBuilder sql(sqlType, axisAware, 0);
-	DB::TableDef *tabDef = this->dbt->GetTableDef(STR_CSTR(schemaName), tableName->ToCString());
-	if (tabDef)
+	NotNullPtr<DB::TableDef> tabDef;
+	if (tabDef.Set(this->dbt->GetTableDef(STR_CSTR(schemaName), tableName->ToCString())))
 	{
-		if (!DB::SQLGenerator::GenCreateTableCmd(&sql, STR_CSTR(schemaName), tableName->ToCString(), tabDef, true))
+		if (!DB::SQLGenerator::GenCreateTableCmd(sql, STR_CSTR(schemaName), tableName->ToCString(), tabDef, true))
 		{
 			UI::MessageDialog::ShowDialog(CSTR("Error in generating Create SQL command"), CSTR("DB Manager"), this);
 		}
@@ -288,7 +289,7 @@ void SSWR::AVIRead::AVIRDBForm::CopyTableCreate(DB::SQLType sqlType, Bool axisAw
 		{
 			UI::Clipboard::SetString(this->GetHandle(), sql.ToCString());
 		}
-		DEL_CLASS(tabDef);
+		tabDef.Delete();
 	}
 	else
 	{
@@ -320,8 +321,8 @@ void SSWR::AVIRead::AVIRDBForm::ExportTableData(DB::SQLType sqlType, Bool axisAw
 	if (dlg.ShowDialog(this->GetHandle()))
 	{
 		DB::SQLBuilder sql(sqlType, axisAware, 0);
-		DB::DBReader *r = this->db->QueryTableData(STR_CSTR(schemaName), tableName->ToCString(), 0, 0, 0, CSTR_NULL, 0);
-		if (r == 0)
+		NotNullPtr<DB::DBReader> r;
+		if (!r.Set(this->db->QueryTableData(STR_CSTR(schemaName), tableName->ToCString(), 0, 0, 0, CSTR_NULL, 0)))
 		{
 			UI::MessageDialog::ShowDialog(CSTR("Error in reading table data"), CSTR("DB Manager"), this);
 			tableName->Release();
@@ -332,7 +333,7 @@ void SSWR::AVIRead::AVIRDBForm::ExportTableData(DB::SQLType sqlType, Bool axisAw
 		while (r->ReadNext())
 		{
 			sql.Clear();			
-			DB::SQLGenerator::GenInsertCmd(&sql, schemaName->ToCString(), tableName->ToCString(), r);
+			DB::SQLGenerator::GenInsertCmd(sql, schemaName->ToCString(), tableName->ToCString(), r);
 			sql.AppendCmdC(CSTR(";\r\n"));
 			fs.Write(sql.ToString(), sql.GetLength());
 		}
@@ -549,18 +550,18 @@ SSWR::AVIRead::AVIRDBForm::~AVIRDBForm()
 
 void SSWR::AVIRead::AVIRDBForm::UpdateSchemas()
 {
-	Data::ArrayList<Text::String*> schemaNames;
+	Data::ArrayListNN<Text::String> schemaNames;
 	UOSInt i;
 	UOSInt j;
 
 	this->lbSchema->ClearItems();
 	if (this->dbt)
 	{
-		this->dbt->QuerySchemaNames(&schemaNames);
+		this->dbt->QuerySchemaNames(schemaNames);
 	}
 	else
 	{
-		this->db->QuerySchemaNames(&schemaNames);
+		this->db->QuerySchemaNames(schemaNames);
 	}
 	if (schemaNames.GetCount() == 0)
 	{
@@ -590,11 +591,11 @@ void SSWR::AVIRead::AVIRDBForm::UpdateTables()
 	this->lbTable->ClearItems();
 	if (this->dbt)
 	{
-		this->dbt->QueryTableNames(STR_CSTR(schemaName), &tableNames);
+		this->dbt->QueryTableNames(STR_CSTR(schemaName), tableNames);
 	}
 	else
 	{
-		this->db->QueryTableNames(STR_CSTR(schemaName), &tableNames);
+		this->db->QueryTableNames(STR_CSTR(schemaName), tableNames);
 	}
 	SDEL_STRING(schemaName);
 	i = 0;

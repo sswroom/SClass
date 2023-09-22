@@ -803,8 +803,8 @@ DB::TDSConn::TDSConn(Text::CStringNN serverHost, UInt16 port, Bool encrypt, Text
 	this->Reconnect();
 	if (this->clsData->dbproc != 0)
 	{
-		DB::DBReader *r = this->ExecuteReader(CSTR("select SYSDATETIME(), GETUTCDATE()"));
-		if (r)
+		NotNullPtr<DB::DBReader> r;
+		if (r.Set(this->ExecuteReader(CSTR("select SYSDATETIME(), GETUTCDATE()"))))
 		{
 			if (r->ReadNext())
 			{
@@ -894,17 +894,17 @@ void DB::TDSConn::Close()
 	}
 }
 
-OSInt DB::TDSConn::ExecuteNonQuery(Text::CString sql)
+OSInt DB::TDSConn::ExecuteNonQuery(Text::CStringNN sql)
 {
-	DBReader *r = this->ExecuteReader(sql);
-	if (r == 0)
+	NotNullPtr<DBReader> r;
+	if (!r.Set(this->ExecuteReader(sql)))
 		return -2;
 	OSInt rows = r->GetRowChanged();
 	this->CloseReader(r);
 	return rows;
 }
 
-DB::DBReader *DB::TDSConn::ExecuteReader(Text::CString sql)
+DB::DBReader *DB::TDSConn::ExecuteReader(Text::CStringNN sql)
 {
 	if (this->clsData->dbproc == 0)
 		return 0;
@@ -925,9 +925,9 @@ DB::DBReader *DB::TDSConn::ExecuteReader(Text::CString sql)
 	return r;
 }
 
-void DB::TDSConn::CloseReader(DBReader *r)
+void DB::TDSConn::CloseReader(NotNullPtr<DBReader> r)
 {
-	TDSConnReader *reader = (TDSConnReader*)r;
+	TDSConnReader *reader = (TDSConnReader*)r.Ptr();
 	DEL_CLASS(reader);
 	this->cmdMut.Unlock();
 }
@@ -998,7 +998,7 @@ void DB::TDSConn::Rollback(void *tran)
 	///////////////////////////////////////
 }
 
-UOSInt DB::TDSConn::QueryTableNames(Text::CString schemaName, Data::ArrayListNN<Text::String> *names)
+UOSInt DB::TDSConn::QueryTableNames(Text::CString schemaName, NotNullPtr<Data::ArrayListNN<Text::String>> names)
 {
 	if (this->sqlType == DB::SQLType::MSSQL)
 	{
@@ -1013,8 +1013,8 @@ UOSInt DB::TDSConn::QueryTableNames(Text::CString schemaName, Data::ArrayListNN<
 		{
 			sql.AppendStrC(schemaName);
 		}
-		DB::DBReader *r = this->ExecuteReader(sql.ToCString());
-		if (r)
+		NotNullPtr<DB::DBReader> r;
+		if (r.Set(this->ExecuteReader(sql.ToCString())))
 		{
 			Text::StringBuilderUTF8 sb;
 			while (r->ReadNext())

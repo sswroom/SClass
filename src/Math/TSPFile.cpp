@@ -56,7 +56,7 @@ Math::TSPFile::~TSPFile()
 {
 }
 
-UOSInt Math::TSPFile::QueryTableNames(Text::CString schemaName, Data::ArrayListNN<Text::String> *names)
+UOSInt Math::TSPFile::QueryTableNames(Text::CString schemaName, NotNullPtr<Data::ArrayListNN<Text::String>> names)
 {
 	if (schemaName.leng != 0)
 		return 0;
@@ -134,9 +134,9 @@ DB::TableDef *Math::TSPFile::GetTableDef(Text::CString schemaName, Text::CString
 	return tab;
 }
 
-void Math::TSPFile::CloseReader(DB::DBReader *r)
+void Math::TSPFile::CloseReader(NotNullPtr<DB::DBReader> r)
 {
-	Math::TSPReader *reader = (Math::TSPReader*)r;
+	Math::TSPReader *reader = (Math::TSPReader*)r.Ptr();
 	DEL_CLASS(reader);
 }
 

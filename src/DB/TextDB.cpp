@@ -282,7 +282,7 @@ DB::TextDB::~TextDB()
 	}
 }
 
-UOSInt DB::TextDB::QueryTableNames(Text::CString schemaName, Data::ArrayListNN<Text::String> *names)
+UOSInt DB::TextDB::QueryTableNames(Text::CString schemaName, NotNullPtr<Data::ArrayListNN<Text::String>> names)
 {
 	NotNullPtr<Data::ArrayList<Text::String*>> keys = this->dbMap.GetKeys();
 	UOSInt i = 0;
@@ -365,9 +365,9 @@ DB::TableDef *DB::TextDB::GetTableDef(Text::CString schemaName, Text::CString ta
 	return tab;
 }
 
-void DB::TextDB::CloseReader(DBReader *r)
+void DB::TextDB::CloseReader(NotNullPtr<DBReader> r)
 {
-	TextDBReader *reader = (TextDBReader*)r;
+	TextDBReader *reader = (TextDBReader*)r.Ptr();
 	DEL_CLASS(reader);
 }
 

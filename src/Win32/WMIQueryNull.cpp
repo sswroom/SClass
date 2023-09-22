@@ -62,7 +62,7 @@ void Win32::WMIQuery::Close()
 {
 }
 
-OSInt Win32::WMIQuery::ExecuteNonQuery(Text::CString sql)
+OSInt Win32::WMIQuery::ExecuteNonQuery(Text::CStringNN sql)
 {
 	this->lastDataError = DE_CONN_ERROR;
 	return -2;
@@ -74,7 +74,7 @@ OSInt Win32::WMIQuery::ExecuteNonQueryW(const WChar *sql)
 	return -2;
 }
 
-DB::DBReader *Win32::WMIQuery::ExecuteReader(Text::CString sqlCmd)
+DB::DBReader *Win32::WMIQuery::ExecuteReader(Text::CStringNN sqlCmd)
 {
 	this->lastDataError = DE_CONN_ERROR;
 	return 0;
@@ -105,7 +105,7 @@ void Win32::WMIQuery::Rollback(void *tran)
 }
 
 
-UOSInt Win32::WMIQuery::QueryTableNames(Text::CString schemaName, Data::ArrayListNN<Text::String> *names)
+UOSInt Win32::WMIQuery::QueryTableNames(Text::CString schemaName, NotNullPtr<Data::ArrayListNN<Text::String>> names)
 {
 	if (this->pService == 0)
 	{
@@ -121,7 +121,7 @@ DB::DBReader *Win32::WMIQuery::QueryTableData(Text::CString schemaName, Text::CS
 	return this->ExecuteReaderW(wbuff);
 }
 
-void Win32::WMIQuery::CloseReader(DB::DBReader *reader)
+void Win32::WMIQuery::CloseReader(NotNullPtr<DB::DBReader> reader)
 {
 }
 

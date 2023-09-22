@@ -15,7 +15,7 @@ namespace Exporter
 		{
 			DB::ReadingDB *db;
 			UOSInt tableIndex;
-			Data::ArrayListNN<Text::String> *names;
+			Data::ArrayListNN<Text::String> names;
 		} DBParam;
 
 	private:

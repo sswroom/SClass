@@ -42,11 +42,10 @@ Map::AssistedReverseGeocoderPL::AssistedReverseGeocoderPL(NotNullPtr<DB::DBTool>
 	this->errWriter = errWriter;
 	this->nextCoder = 0;
 
-	DB::DBReader *r;
+	NotNullPtr<DB::DBReader> r;
 	Manage::HiResClock clk;
-	r = this->conn->ExecuteReader(CSTR("select lcid, keyx, keyy, address from addrdb")); // order by lcid, keyx, keyy
 	Double t1 = clk.GetTimeDiff();
-	if (r)
+	if (r.Set(this->conn->ExecuteReader(CSTR("select lcid, keyx, keyy, address from addrdb"))))// order by lcid, keyx, keyy
 	{
 		UInt32 lcid;
 		Text::String *addr;

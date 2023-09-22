@@ -229,6 +229,7 @@ UTF8Char *Map::DBMapLayer::GetString(UTF8Char *buff, UOSInt buffSize, NameArray 
 		if (narr->currId != id)
 		{
 			DB::DBReader *r;
+			NotNullPtr<DB::DBReader> nnr;
 			if (this->idCol != INVALID_INDEX)
 			{
 				Data::QueryConditions cond;
@@ -240,20 +241,20 @@ UTF8Char *Map::DBMapLayer::GetString(UTF8Char *buff, UOSInt buffSize, NameArray 
 			{
 				r = this->db->QueryTableData(STR_CSTR(this->schema), this->table->ToCString(), 0, (UOSInt)(id - 1), 1, 0, 0);
 			}
-			if (r)
+			if (nnr.Set(r))
 			{
-				if (r->ReadNext())
+				if (nnr->ReadNext())
 				{
 					UOSInt i = 0;
 					while (i < colCnt)
 					{
 						SDEL_STRING(narr->names[i]);
-						narr->names[i] = r->GetNewStr(i);
+						narr->names[i] = nnr->GetNewStr(i);
 						i++;
 					}
 					narr->currId = id;
 				}
-				db->CloseReader(r);
+				db->CloseReader(nnr);
 			}
 		}
 		if (narr->currId == id)
@@ -346,7 +347,7 @@ Math::Geometry::Vector2D *Map::DBMapLayer::GetNewVectorById(GetObjectSess *sessi
 	return 0;
 }
 
-UOSInt Map::DBMapLayer::QueryTableNames(Text::CString schemaName, Data::ArrayListNN<Text::String> *names)
+UOSInt Map::DBMapLayer::QueryTableNames(Text::CString schemaName, NotNullPtr<Data::ArrayListNN<Text::String>> names)
 {
 	if (this->db == 0)
 	{
@@ -373,7 +374,7 @@ DB::TableDef *Map::DBMapLayer::GetTableDef(Text::CString schemaName, Text::CStri
 	return 0;
 }
 
-void Map::DBMapLayer::CloseReader(DB::DBReader *r)
+void Map::DBMapLayer::CloseReader(NotNullPtr<DB::DBReader> r)
 {
 	if (this->db)
 	{
@@ -477,8 +478,8 @@ Bool Map::DBMapLayer::SetDatabase(DB::ReadingDB *db, Text::CString schemaName, T
 		return false;
 	}
 
-	DB::DBReader *r = this->db->QueryTableData(schemaName, tableName, 0, 0, 0, CSTR_NULL, 0);
-	if (r == 0)
+	NotNullPtr<DB::DBReader> r;
+	if (!r.Set(this->db->QueryTableData(schemaName, tableName, 0, 0, 0, CSTR_NULL, 0)))
 	{
 		return false;
 	}

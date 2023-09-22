@@ -71,8 +71,8 @@ namespace DB
 		virtual ~ReadingDBTool();
 
 		void SetFailTrigger(SQLFailedFunc trig);
-		DB::DBReader *ExecuteReader(Text::CString sqlCmd);
-		virtual void CloseReader(DB::DBReader *r);
+		DB::DBReader *ExecuteReader(Text::CStringNN sqlCmd);
+		virtual void CloseReader(NotNullPtr<DB::DBReader> r);
 		DB::SQLType GetSQLType() const;
 		Bool IsAxisAware() const;
 		Bool IsDataError(const UTF8Char *errCode);
@@ -99,8 +99,8 @@ namespace DB
 		UInt32 GetDataCnt();
 
 		virtual DB::DBReader *QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListNN<Text::String> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition);
-		virtual UOSInt QueryTableNames(Text::CString schemaName, Data::ArrayListNN<Text::String> *arr);
-		virtual UOSInt QuerySchemaNames(Data::ArrayList<Text::String *> *arr);
+		virtual UOSInt QueryTableNames(Text::CString schemaName, NotNullPtr<Data::ArrayListNN<Text::String>> arr);
+		virtual UOSInt QuerySchemaNames(NotNullPtr<Data::ArrayListNN<Text::String>> arr);
 		virtual DB::TableDef *GetTableDef(Text::CString schemaName, Text::CString tableName);
 
 		virtual UOSInt GetDatabaseNames(Data::ArrayListNN<Text::String> *arr);

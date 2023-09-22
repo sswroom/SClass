@@ -14,12 +14,11 @@
 
 void SSWR::DiscDB::DiscDBEnv::LoadDB()
 {
-	DB::DBReader *r;
+	NotNullPtr<DB::DBReader> r;
 	Text::StringBuilderUTF8 sb;
 	BurntDiscInfo *disc;
 	Data::DateTime dt;
-	r = this->db->ExecuteReader(CSTR("select DiscID, DiscTypeID, BurntDate, Status from BurntDisc"));
-	if (r)
+	if (r.Set(this->db->ExecuteReader(CSTR("select DiscID, DiscTypeID, BurntDate, Status from BurntDisc"))))
 	{
 		while (r->ReadNext())
 		{
@@ -40,8 +39,7 @@ void SSWR::DiscDB::DiscDBEnv::LoadDB()
 	}
 
 	DVDTypeInfo *dvdType;
-	r = this->db->ExecuteReader(CSTR("select DiscTypeID, Name, Description from DVDType"));
-	if (r)
+	if (r.Set(this->db->ExecuteReader(CSTR("select DiscTypeID, Name, Description from DVDType"))))
 	{
 		while (r->ReadNext())
 		{
@@ -55,8 +53,7 @@ void SSWR::DiscDB::DiscDBEnv::LoadDB()
 	}
 
 	CategoryInfo *cate;
-	r = this->db->ExecuteReader(CSTR("select ID, Name from Category"));
-	if (r)
+	if (r.Set(this->db->ExecuteReader(CSTR("select ID, Name from Category"))))
 	{
 		while (r->ReadNext())
 		{
@@ -69,8 +66,7 @@ void SSWR::DiscDB::DiscDBEnv::LoadDB()
 	}
 
 	DiscTypeInfo *discType;
-	r = this->db->ExecuteReader(CSTR("select DiscTypeID, Brand, Name, Speed, DVDType, MadeIn, MID, TID, Revision, QCTest, Remark from DiscType"));
-	if (r)
+	if (r.Set(this->db->ExecuteReader(CSTR("select DiscTypeID, Brand, Name, Speed, DVDType, MadeIn, MID, TID, Revision, QCTest, Remark from DiscType"))))
 	{
 		while (r->ReadNext())
 		{
@@ -106,8 +102,7 @@ void SSWR::DiscDB::DiscDBEnv::LoadDB()
 	}
 
 	DVDVideoInfo *dvdVideo;
-	r = this->db->ExecuteReader(CSTR("select VIDEOID, ANIME, SERIES, VOLUME, DISCTYPE from DVDVIDEO order by VIDEOID"));
-	if (r)
+	if (r.Set(this->db->ExecuteReader(CSTR("select VIDEOID, ANIME, SERIES, VOLUME, DISCTYPE from DVDVIDEO order by VIDEOID"))))
 	{
 		while (r->ReadNext())
 		{
@@ -348,8 +343,8 @@ UOSInt SSWR::DiscDB::DiscDBEnv::GetBurntFiles(Text::CString discId, Data::ArrayL
 	sql.AppendCmdC(CSTR("select FileID, Name, FileSize, Category, VIDEOID from BurntFile where DiscID = "));
 	sql.AppendStrUTF8(discId.v);
 	sql.AppendCmdC(CSTR(" order by FileID"));
-	DB::DBReader *r = db->ExecuteReader(sql.ToCString());
-	if (r)
+	NotNullPtr<DB::DBReader> r;
+	if (r.Set(db->ExecuteReader(sql.ToCString())))
 	{
 		Text::StringBuilderUTF8 sb;
 
@@ -615,12 +610,11 @@ Bool SSWR::DiscDB::DiscDBEnv::AddMD5(NotNullPtr<IO::StreamData> fd)
 		return false;
 	Text::StringBuilderUTF8 sb;
 	DB::SQLBuilder sql(db);
-	DB::DBReader *r;
+	NotNullPtr<DB::DBReader> r;
 	sql.Clear();
 	sql.AppendCmdC(CSTR("select Name, FileID from BurntFile where DiscID = "));
 	sql.AppendStrUTF8(sbDiscId.ToString());
-	r = db->ExecuteReader(sql.ToCString());
-	if (r)
+	if (r.Set(db->ExecuteReader(sql.ToCString())))
 	{
 		while (r->ReadNext())
 		{

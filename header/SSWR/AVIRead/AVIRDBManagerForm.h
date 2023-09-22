@@ -122,7 +122,7 @@ namespace SSWR
 			void UpdateTableList();
 			void UpdateMapTableList();
 			void UpdateTableData(Text::CString schemaName, Text::String *tableName);
-			static void UpdateResult(DB::DBReader *r, UI::GUIListView *lv);
+			static void UpdateResult(NotNullPtr<DB::DBReader> r, UI::GUIListView *lv);
 			void UpdateVariableList();
 			void UpdateSvrConnList();
 

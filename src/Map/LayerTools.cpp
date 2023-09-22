@@ -40,40 +40,42 @@ Map::VectorLayer *Map::LayerTools::CombineLayers(Data::ArrayList<Map::MapDrawLay
 	Data::ArrayList<UOSInt> nameSizes;
 	Data::ArrayList<UOSInt> nameDPs;
 	DB::ColDef colDef(CSTR_NULL);
+	NotNullPtr<DB::DBReader> r;
 
 	i = 0;
 	while (i < layerCnt)
 	{
 		lyr = layers->GetItem(i);
-		DB::DBReader *r = lyr->QueryTableData(CSTR_NULL, CSTR_NULL, 0, 0, 0, CSTR_NULL, 0);
-
-		k = r->ColCount();
-		j = 0;
-		while (j < k)
+		if (r.Set(lyr->QueryTableData(CSTR_NULL, CSTR_NULL, 0, 0, 0, CSTR_NULL, 0)))
 		{
-			lyr->GetColumnName(sbuff, j);
-			r->GetColDef(j, colDef);
-			si = nameIndex.SortedIndexOf(sbuff);
-			if (si >= 0)
+			k = r->ColCount();
+			j = 0;
+			while (j < k)
 			{
-				if (nameSizes.GetItem(i) < colDef.GetColSize())
+				lyr->GetColumnName(sbuff, j);
+				r->GetColDef(j, colDef);
+				si = nameIndex.SortedIndexOf(sbuff);
+				if (si >= 0)
 				{
-					nameSizes.SetItem(i, colDef.GetColSize());
+					if (nameSizes.GetItem(i) < colDef.GetColSize())
+					{
+						nameSizes.SetItem(i, colDef.GetColSize());
+					}
 				}
+				else
+				{
+					const UTF8Char *name = Text::StrCopyNew(sbuff).Ptr();
+					nameIndex.Insert((UOSInt)~si, name);
+					nameSizes.Insert((UOSInt)~si, colDef.GetColSize());
+					nameDPs.Insert((UOSInt)~si, colDef.GetColDP());
+					colTypeArr.Insert((UOSInt)~si, colDef.GetColType());
+					names.Add(name);
+				}
+				j++;
 			}
-			else
-			{
-				const UTF8Char *name = Text::StrCopyNew(sbuff).Ptr();
-				nameIndex.Insert((UOSInt)~si, name);
-				nameSizes.Insert((UOSInt)~si, colDef.GetColSize());
-				nameDPs.Insert((UOSInt)~si, colDef.GetColDP());
-				colTypeArr.Insert((UOSInt)~si, colDef.GetColType());
-				names.Add(name);
-			}
-			j++;
-		}
 
-		lyr->CloseReader(r);
+			lyr->CloseReader(r);
+		}
 		i++;
 	}
 

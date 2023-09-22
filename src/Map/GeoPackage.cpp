@@ -25,14 +25,14 @@ Map::GeoPackage::GeoPackage(DB::DBConn *conn)
 	this->useCnt = 1;
 	Text::String *tableName;
 	Data::ArrayListNN<Text::String> colList;
-	DB::DBReader *r;
-	Text::StringTool::SplitAsNewString(CSTR("table_name,data_type,min_x,min_y,max_x,max_y,srs_id"), ',', &colList);
-	r = this->conn->QueryTableData(CSTR_NULL, CSTR("gpkg_contents"), &colList, 0, 0, CSTR_NULL, 0);
-	LIST_FREE_STRING(&colList);
-	if (r == 0)
+	NotNullPtr<DB::DBReader> r;
+	Text::StringTool::SplitAsNewString(CSTR("table_name,data_type,min_x,min_y,max_x,max_y,srs_id"), ',', colList);
+	if (!r.Set(this->conn->QueryTableData(CSTR_NULL, CSTR("gpkg_contents"), &colList, 0, 0, CSTR_NULL, 0)))
 	{
+		LIST_FREE_STRING(&colList);
 		return;
 	}
+	LIST_FREE_STRING(&colList);
 	Text::StringBuilderUTF8 sb;
 	ContentInfo *cont;
 	while (r->ReadNext())
@@ -58,11 +58,10 @@ Map::GeoPackage::GeoPackage(DB::DBConn *conn)
 	}
 	this->conn->CloseReader(r);
 
-	Text::StringTool::SplitAsNewString(CSTR("table_name,z,m"), ',', &colList);
-	r = this->conn->QueryTableData(CSTR_NULL, CSTR("gpkg_geometry_columns"), &colList, 0, 0, CSTR_NULL, 0);
-	LIST_FREE_STRING(&colList);
-	if (r)
+	Text::StringTool::SplitAsNewString(CSTR("table_name,z,m"), ',', colList);
+	if (r.Set(this->conn->QueryTableData(CSTR_NULL, CSTR("gpkg_geometry_columns"), &colList, 0, 0, CSTR_NULL, 0)))
 	{
+		LIST_FREE_STRING(&colList);
 		while (r->ReadNext())
 		{
 			sb.ClearStr();
@@ -75,6 +74,10 @@ Map::GeoPackage::GeoPackage(DB::DBConn *conn)
 			}
 		}
 		this->conn->CloseReader(r);
+	}
+	else
+	{
+		LIST_FREE_STRING(&colList);
 	}
 }
 
@@ -91,7 +94,7 @@ NotNullPtr<Text::String> Map::GeoPackage::GetSourceNameObj()
 	return this->conn->GetSourceNameObj();
 }
 
-UOSInt Map::GeoPackage::QueryTableNames(Text::CString schemaName, Data::ArrayListNN<Text::String> *names)
+UOSInt Map::GeoPackage::QueryTableNames(Text::CString schemaName, NotNullPtr<Data::ArrayListNN<Text::String>> names)
 {
 	UOSInt i = 0;
 	UOSInt j = this->allTables.GetCount();
@@ -131,7 +134,7 @@ DB::TableDef *Map::GeoPackage::GetTableDef(Text::CString schemaName, Text::CStri
 	return tabDef;
 }
 
-void Map::GeoPackage::CloseReader(DB::DBReader *r)
+void Map::GeoPackage::CloseReader(NotNullPtr<DB::DBReader> r)
 {
 	this->conn->CloseReader(r);
 }

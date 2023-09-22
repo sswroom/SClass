@@ -2155,10 +2155,10 @@ void Net::MySQLTCPClient::Dispose()
 	this->Close();
 }
 
-OSInt Net::MySQLTCPClient::ExecuteNonQuery(Text::CString sql)
+OSInt Net::MySQLTCPClient::ExecuteNonQuery(Text::CStringNN sql)
 {
-	DB::DBReader *reader = ExecuteReaderText(sql);
-	if (reader == 0)
+	NotNullPtr<DB::DBReader> reader;
+	if (!reader.Set(ExecuteReaderText(sql)))
 	{
 		return -2;
 	}
@@ -2170,7 +2170,7 @@ OSInt Net::MySQLTCPClient::ExecuteNonQuery(Text::CString sql)
 	}
 }
 
-DB::DBReader *Net::MySQLTCPClient::ExecuteReader(Text::CString sql)
+DB::DBReader *Net::MySQLTCPClient::ExecuteReader(Text::CStringNN sql)
 {
 	if (sql.StartsWith(UTF8STRC("check table ")))
 	{
@@ -2186,7 +2186,7 @@ DB::DBReader *Net::MySQLTCPClient::ExecuteReader(Text::CString sql)
 	}
 }
 
-DB::DBReader *Net::MySQLTCPClient::ExecuteReaderText(Text::CString sql)
+DB::DBReader *Net::MySQLTCPClient::ExecuteReaderText(Text::CStringNN sql)
 {
 	if (this->cli == 0 || !this->recvRunning)
 	{
@@ -2240,7 +2240,7 @@ DB::DBReader *Net::MySQLTCPClient::ExecuteReaderText(Text::CString sql)
 	return reader;
 }
 
-DB::DBReader *Net::MySQLTCPClient::ExecuteReaderBinary(Text::CString sql)
+DB::DBReader *Net::MySQLTCPClient::ExecuteReaderBinary(Text::CStringNN sql)
 {
 	if (this->cli == 0 || !this->recvRunning)
 	{
@@ -2294,7 +2294,7 @@ DB::DBReader *Net::MySQLTCPClient::ExecuteReaderBinary(Text::CString sql)
 	return reader;
 }
 
-void Net::MySQLTCPClient::CloseReader(DB::DBReader *r)
+void Net::MySQLTCPClient::CloseReader(NotNullPtr<DB::DBReader> r)
 {
 	while (r->ReadNext())
 	{
@@ -2303,15 +2303,15 @@ void Net::MySQLTCPClient::CloseReader(DB::DBReader *r)
 	{
 		this->cmdEvt.Wait(10000);
 	}
-	if (this->cmdBinReader == (MySQLTCPBinaryReader*)r)
+	if (this->cmdBinReader == (MySQLTCPBinaryReader*)r.Ptr())
 	{
-		MySQLTCPBinaryReader *reader = (MySQLTCPBinaryReader*)r;
+		MySQLTCPBinaryReader *reader = (MySQLTCPBinaryReader*)r.Ptr();
 		DEL_CLASS(reader);
 		this->cmdBinReader = 0;
 	}
-	else if (this->cmdTCPReader == (MySQLTCPReader*)r)
+	else if (this->cmdTCPReader == (MySQLTCPReader*)r.Ptr())
 	{
-		MySQLTCPReader *reader = (MySQLTCPReader*)r;
+		MySQLTCPReader *reader = (MySQLTCPReader*)r.Ptr();
 		DEL_CLASS(reader);
 		this->cmdTCPReader = 0;
 	}
@@ -2393,7 +2393,7 @@ void Net::MySQLTCPClient::Rollback(void *tran)
 	this->ExecuteNonQuery(CSTR("ROLLBACK"));
 }
 
-UOSInt Net::MySQLTCPClient::QueryTableNames(Text::CString schemaName, Data::ArrayListNN<Text::String> *names)
+UOSInt Net::MySQLTCPClient::QueryTableNames(Text::CString schemaName, NotNullPtr<Data::ArrayListNN<Text::String>> names)
 {
 	if (schemaName.leng != 0)
 		return 0;
@@ -2401,8 +2401,8 @@ UOSInt Net::MySQLTCPClient::QueryTableNames(Text::CString schemaName, Data::Arra
 	UTF8Char *sptr;
 	UOSInt len;
 	UOSInt initCnt = names->GetCount();
-	DB::DBReader *rdr = this->ExecuteReader(CSTR("show tables"));
-	if (rdr)
+	NotNullPtr<DB::DBReader> rdr;
+	if (rdr.Set(this->ExecuteReader(CSTR("show tables"))))
 	{
 		while (rdr->ReadNext())
 		{

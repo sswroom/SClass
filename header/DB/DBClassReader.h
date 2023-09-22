@@ -8,12 +8,12 @@ namespace DB
 	template <class T> class DBClassReader
 	{
 	private:
-		DB::DBReader *reader;
+		NotNullPtr<DB::DBReader> reader;
 		Data::NamedClass<T> *cls;
 		UOSInt *colIndex;
 
 	public:
-		DBClassReader(DB::DBReader *reader, Data::NamedClass<T> *cls);
+		DBClassReader(NotNullPtr<DB::DBReader> reader, Data::NamedClass<T> *cls);
 		~DBClassReader();
 
 		Bool IsError();
@@ -23,7 +23,7 @@ namespace DB
 	};
 
 
-	template <class T> DBClassReader<T>::DBClassReader(DB::DBReader *reader, Data::NamedClass<T> *cls)
+	template <class T> DBClassReader<T>::DBClassReader(NotNullPtr<DB::DBReader> reader, Data::NamedClass<T> *cls)
 	{
 		this->reader = reader;
 		this->cls = cls;

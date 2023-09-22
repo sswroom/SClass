@@ -25,7 +25,7 @@ void DB::MySQLMaintance::RepairSchema(const UTF8Char *schema, NotNullPtr<Text::S
 		sb->AppendC(UTF8STRC("\r\n"));
 		return;
 	}
-	this->cli->QueryTableNames(CSTR_NULL, &tableNames);
+	this->cli->QueryTableNames(CSTR_NULL, tableNames);
 	Text::StringBuilderUTF8 sbDbg;
 	UOSInt i = 0;
 	UOSInt j = tableNames.GetCount();
@@ -41,8 +41,8 @@ void DB::MySQLMaintance::RepairTable(NotNullPtr<Text::String> tableName, NotNull
 	DB::SQLBuilder sql(this->cli->GetSQLType(), this->cli->IsAxisAware(), this->cli->GetTzQhr());
 	sql.AppendCmdC(CSTR("check table "));
 	sql.AppendCol(tableName->v);
-	DB::DBReader *r = this->cli->ExecuteReader(sql.ToCString());
-	if (r)
+	NotNullPtr<DB::DBReader> r;
+	if (r.Set(this->cli->ExecuteReader(sql.ToCString())))
 	{
 		UOSInt i;
 		UOSInt j = r->ColCount();

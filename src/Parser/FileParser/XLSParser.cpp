@@ -198,28 +198,33 @@ IO::ParsedObject *Parser::FileParser::XLSParser::ParseFileHdr(NotNullPtr<IO::Str
 	if (pobj && targetType == IO::ParserType::ReadingDB)
 	{
 		DB::WorkbookDB *db;
-		NEW_CLASS(db, DB::WorkbookDB((Text::SpreadSheet::Workbook*)pobj));
+		NotNullPtr<Text::SpreadSheet::Workbook> wb;
+		if (!wb.Set((Text::SpreadSheet::Workbook*)pobj))
+			return 0;
+		NEW_CLASS(db, DB::WorkbookDB(wb));
 		return db;
 	}
 	else if (pobj && (targetType == IO::ParserType::MapLayer || targetType == IO::ParserType::Unknown))
 	{
 		Map::DBMapLayer *layer;
 		DB::WorkbookDB *db;
-		Text::SpreadSheet::Workbook *wb = (Text::SpreadSheet::Workbook*)pobj;
+		NotNullPtr<Text::SpreadSheet::Workbook> wb;
+		if (!wb.Set((Text::SpreadSheet::Workbook*)pobj))
+			return 0;
 		Text::SpreadSheet::Worksheet *sheet = wb->GetItem(0);
 		if (sheet == 0)
 		{
 			if (targetType == IO::ParserType::Unknown)
 			{
-				return wb;
+				return wb.Ptr();
 			}
 			else
 			{
-				DEL_CLASS(wb);
+				wb.Delete();
 				return 0;
 			}
 		}
-		NEW_CLASS(db, DB::WorkbookDB((Text::SpreadSheet::Workbook*)pobj));
+		NEW_CLASS(db, DB::WorkbookDB(wb));
 		NEW_CLASS(layer, Map::DBMapLayer(wb->GetSourceNameObj()));
 		if (layer->SetDatabase(db, CSTR_NULL, sheet->GetName()->ToCString(), true))
 		{

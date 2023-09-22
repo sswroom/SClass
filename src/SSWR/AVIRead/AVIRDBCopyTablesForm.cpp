@@ -43,9 +43,9 @@ void __stdcall SSWR::AVIRead::AVIRDBCopyTablesForm::OnSourceDBChg(void *userObj)
 			me->txtSourceDB->SetText(CSTR(""));
 			me->txtSourceCollation->SetText(CSTR(""));
 		}
-		Data::ArrayList<Text::String*> schemaNames;
+		Data::ArrayListNN<Text::String> schemaNames;
 		NotNullPtr<Text::String> s;
-		db->QuerySchemaNames(&schemaNames);
+		db->QuerySchemaNames(schemaNames);
 		UOSInt i = 0;
 		UOSInt j = schemaNames.GetCount();
 		if (j > 0)
@@ -78,7 +78,7 @@ void __stdcall SSWR::AVIRead::AVIRDBCopyTablesForm::OnSourceSelectClicked(void *
 	if (sptr == 0)
 		return;
 	Data::ArrayListNN<Text::String> tableNames;
-	db->GetDB()->QueryTableNames(CSTRP(sbuff, sptr), &tableNames);
+	db->GetDB()->QueryTableNames(CSTRP(sbuff, sptr), tableNames);
 	if (tableNames.GetCount() == 0)
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Tables not found"), CSTR("Copy Tables"), me);
@@ -114,9 +114,9 @@ void __stdcall SSWR::AVIRead::AVIRDBCopyTablesForm::OnDestDBChg(void *userObj)
 			UI::MessageDialog::ShowDialog(CSTR("Error in connecting to database"), CSTR("Copy Tables"), me);
 			return;
 		}
-		Data::ArrayList<Text::String*> schemaNames;
+		Data::ArrayListNN<Text::String> schemaNames;
 		NotNullPtr<Text::String> s;
-		ctrl->GetDB()->QuerySchemaNames(&schemaNames);
+		ctrl->GetDB()->QuerySchemaNames(schemaNames);
 		UOSInt i = 0;
 		UOSInt j = schemaNames.GetCount();
 		if (j > 0)
@@ -181,8 +181,9 @@ void __stdcall SSWR::AVIRead::AVIRDBCopyTablesForm::OnCopyClicked(void *userObj)
 	DB::SQLBuilder sql(destDBTool);
 	Text::StringBuilderUTF8 sb;
 	DB::TableDef *tabDef;
+	NotNullPtr<DB::TableDef> nntabDef;
 	Text::String *tableName;
-	DB::DBReader *r;
+	NotNullPtr<DB::DBReader> r;
 	if (destDBTool->GetSQLType() == DB::SQLType::MySQL)
 	{
 		destDBTool->ExecuteNonQuery(CSTR("set sql_mode=CONCAT(@@Session.sql_mode,',NO_AUTO_VALUE_ON_ZERO')"));
@@ -229,7 +230,7 @@ void __stdcall SSWR::AVIRead::AVIRDBCopyTablesForm::OnCopyClicked(void *userObj)
 		tabDef = me->dataConn->GetTableDef(STR_CSTR(me->dataSchema), tableName->ToCString());
 		if (succ && destTableType == 0)
 		{
-			if (tabDef == 0)
+			if (!nntabDef.Set(tabDef))
 			{
 				me->lvData->SetSubItem(i, 1, CSTR("Error in getting table definition"));
 				succ = false;
@@ -237,7 +238,7 @@ void __stdcall SSWR::AVIRead::AVIRDBCopyTablesForm::OnCopyClicked(void *userObj)
 			else
 			{
 				sql.Clear();
-				if (!DB::SQLGenerator::GenCreateTableCmd(&sql, CSTRP(destSchema, destSchemaEnd), tableName->ToCString(), tabDef, false))
+				if (!DB::SQLGenerator::GenCreateTableCmd(sql, CSTRP(destSchema, destSchemaEnd), tableName->ToCString(), nntabDef, false))
 				{
 					me->lvData->SetSubItem(i, 1, CSTR("Error in generating create command"));
 					succ = false;
@@ -266,8 +267,7 @@ void __stdcall SSWR::AVIRead::AVIRDBCopyTablesForm::OnCopyClicked(void *userObj)
 		if (succ && copyData)
 		{
 			UOSInt rowCopied = 0;
-			r = me->dataConn->QueryTableData(STR_CSTR(me->dataSchema), tableName->ToCString(), 0, 0, 0, 0, 0);
-			if (r)
+			if (r.Set(me->dataConn->QueryTableData(STR_CSTR(me->dataSchema), tableName->ToCString(), 0, 0, 0, 0, 0)))
 			{
 				Text::StringBuilderUTF8 sbInsert;
 				UOSInt nInsert = 0;
@@ -276,9 +276,9 @@ void __stdcall SSWR::AVIRead::AVIRDBCopyTablesForm::OnCopyClicked(void *userObj)
 				{
 					sql.Clear();
 					if (tabDef)
-						DB::SQLGenerator::GenInsertCmd(&sql, CSTRP(destSchema, destSchemaEnd), tableName->ToCString(), tabDef, r);
+						DB::SQLGenerator::GenInsertCmd(sql, CSTRP(destSchema, destSchemaEnd), tableName->ToCString(), tabDef, r);
 					else
-						DB::SQLGenerator::GenInsertCmd(&sql, CSTRP(destSchema, destSchemaEnd), tableName->ToCString(), r);
+						DB::SQLGenerator::GenInsertCmd(sql, CSTRP(destSchema, destSchemaEnd), tableName->ToCString(), r);
 					UOSInt k = sql.ToCString().IndexOf(UTF8STRC(" values ("));
 					if (k == INVALID_INDEX)
 					{

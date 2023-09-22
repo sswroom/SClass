@@ -66,9 +66,9 @@ namespace DB
 		virtual void GetConnName(NotNullPtr<Text::StringBuilderUTF8> sb);
 		virtual void Close();
 		void Dispose();
-		virtual OSInt ExecuteNonQuery(Text::CString sql);
-		virtual DB::DBReader *ExecuteReader(Text::CString sql);
-		virtual void CloseReader(DB::DBReader *r);
+		virtual OSInt ExecuteNonQuery(Text::CStringNN sql);
+		virtual DB::DBReader *ExecuteReader(Text::CStringNN sql);
+		virtual void CloseReader(NotNullPtr<DB::DBReader> r);
 		virtual void GetLastErrorMsg(NotNullPtr<Text::StringBuilderUTF8> str);
 		virtual Bool IsLastDataError();
 		virtual void Reconnect();
@@ -83,7 +83,7 @@ namespace DB
 		UTF8Char *ShowTablesCmd(UTF8Char *sbuff);
 
 		DBReader *GetTablesInfo(Text::CString schemaName);
-		virtual UOSInt QueryTableNames(Text::CString schemaName, Data::ArrayListNN<Text::String> *names);
+		virtual UOSInt QueryTableNames(Text::CString schemaName, NotNullPtr<Data::ArrayListNN<Text::String>> names);
 		virtual DBReader *QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListNN<Text::String> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition);
 
 	public:

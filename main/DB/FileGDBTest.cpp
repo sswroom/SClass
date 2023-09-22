@@ -956,9 +956,8 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 		colNames.Add((const UTF8Char*)"Shape");
 		Data::QueryConditions cond;
 		cond.Int32Equals(CSTR("OBJECTID"), 40);
-		DB::DBReader *r;
-/*		r = fileGDB->QueryTableData((const UTF8Char*)"LAMPPOST", &colNames, 0, 10, (const UTF8Char*)"OBJECTID desc", 0);//&cond);
-		if (r)
+		NotNullPtr<DB::DBReader> r;
+/*		if (r.Set(fileGDB->QueryTableData((const UTF8Char*)"LAMPPOST", &colNames, 0, 10, (const UTF8Char*)"OBJECTID desc", 0)))//&cond);
 		{
 			while (r->ReadNext())
 			{
@@ -973,8 +972,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 
 		Data::NamedClass<Lamppost> *cls = Lamppost().CreateClass();
 
-		r = fileGDB->QueryTableData(CSTR_NULL, CSTR("LAMPPOST"), 0, 0, 0, CSTR_NULL, 0);
-		if (r)
+		if (r.Set(fileGDB->QueryTableData(CSTR_NULL, CSTR("LAMPPOST"), 0, 0, 0, CSTR_NULL, 0)))
 		{
 			Lamppost *lamppost;
 			UOSInt i;
@@ -1004,14 +1002,20 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 			DB::CSVFile *csv;
 			NEW_CLASS(csv, DB::CSVFile(CSTRP(sbuff, sptr), 65001));
 			csv->SetNullIfEmpty(true);
-			r = csv->QueryTableData(CSTR_NULL, CSTR("Lamppost"), 0, 0, 0, CSTR_NULL, 0);
-			clk.Start();
+			if (r.Set(csv->QueryTableData(CSTR_NULL, CSTR("Lamppost"), 0, 0, 0, CSTR_NULL, 0)))
 			{
-				DB::DBClassReader<Lamppost> reader(r, cls);
-				reader.ReadAll(&lamppostListCSV);
+				clk.Start();
+				{
+					DB::DBClassReader<Lamppost> reader(r, cls);
+					reader.ReadAll(&lamppostListCSV);
+				}
+				t3 = clk.GetTimeDiff();
+				csv->CloseReader(r);
 			}
-			t3 = clk.GetTimeDiff();
-			csv->CloseReader(r);
+			else
+			{
+				t3 = -1;
+			}
 			DEL_CLASS(csv);
 			
 			sb.ClearStr();

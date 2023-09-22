@@ -115,8 +115,8 @@ void __stdcall SSWR::AVIRead::AVIRMySQLClientForm::OnQueryClicked(void *userObj)
 	{
 		return;
 	}
-	DB::DBReader *reader = me->cli->ExecuteReader(sb.ToCString());
-	if (reader)
+	NotNullPtr<DB::DBReader> reader;
+	if (reader.Set(me->cli->ExecuteReader(sb.ToCString())))
 	{
 		me->UpdateResult(reader);
 		me->cli->CloseReader(reader);
@@ -173,7 +173,7 @@ void __stdcall SSWR::AVIRead::AVIRMySQLClientForm::OnTimerTick(void *userObj)
 }
 
 
-void SSWR::AVIRead::AVIRMySQLClientForm::UpdateResult(DB::DBReader *r)
+void SSWR::AVIRead::AVIRMySQLClientForm::UpdateResult(NotNullPtr<DB::DBReader> r)
 {
 	OSInt rowChg;
 	UOSInt i;

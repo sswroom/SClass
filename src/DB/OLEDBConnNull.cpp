@@ -77,7 +77,7 @@ void DB::OLEDBConn::Close()
 {
 }
 
-OSInt DB::OLEDBConn::ExecuteNonQuery(Text::CString sql)
+OSInt DB::OLEDBConn::ExecuteNonQuery(Text::CStringNN sql)
 {
 	this->lastDataError = DE_CONN_ERROR;
 	return -2;
@@ -173,7 +173,7 @@ void DB::OLEDBConn::Reconnect()
 {
 }
 
-UOSInt DB::OLEDBConn::QueryTableNames(Text::CString schemaName, Data::ArrayListNN<Text::String> *names)
+UOSInt DB::OLEDBConn::QueryTableNames(Text::CString schemaName, NotNullPtr<Data::ArrayListNN<Text::String>> names)
 {
 	return 0;
 }
@@ -185,7 +185,7 @@ DB::DBReader *DB::OLEDBConn::QueryTableData(Text::CString schemaName, Text::CStr
 	return ExecuteReader(CSTRP(tmpBuff, sptr));
 }
 
-DB::DBReader *DB::OLEDBConn::ExecuteReader(Text::CString sql)
+DB::DBReader *DB::OLEDBConn::ExecuteReader(Text::CStringNN sql)
 {
 	this->lastDataError = DE_CONN_ERROR;
 	return 0;
@@ -271,9 +271,9 @@ DB::DBReader *DB::OLEDBConn::ExecuteReader(Text::CString sql)
 	return r;
 }*/
 
-void DB::OLEDBConn::CloseReader(DBReader *r)
+void DB::OLEDBConn::CloseReader(NotNullPtr<DBReader> r)
 {
-	DB::OLEDBReader *reader = (DB::OLEDBReader*)r;
+	DB::OLEDBReader *reader = (DB::OLEDBReader*)r.Ptr();
 	DEL_CLASS(reader);
 }
 

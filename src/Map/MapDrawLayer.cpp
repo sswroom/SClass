@@ -122,7 +122,7 @@ void Map::MapDrawLayer::RemoveUpdatedHandler(UpdatedHandler hdlr, void *obj)
 {
 }
 
-UOSInt Map::MapDrawLayer::QueryTableNames(Text::CString schemaName, Data::ArrayListNN<Text::String> *names)
+UOSInt Map::MapDrawLayer::QueryTableNames(Text::CString schemaName, NotNullPtr<Data::ArrayListNN<Text::String>> names)
 {
 	if (schemaName.leng != 0)
 		return 0;
@@ -153,9 +153,9 @@ DB::TableDef *Map::MapDrawLayer::GetTableDef(Text::CString schemaName, Text::CSt
 	return tab;
 }
 
-void Map::MapDrawLayer::CloseReader(DB::DBReader *r)
+void Map::MapDrawLayer::CloseReader(NotNullPtr<DB::DBReader> r)
 {
-	Map::MapLayerReader *rdr = (Map::MapLayerReader*)r;
+	Map::MapLayerReader *rdr = (Map::MapLayerReader*)r.Ptr();
 	DEL_CLASS(rdr);
 }
 

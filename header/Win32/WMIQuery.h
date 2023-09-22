@@ -27,9 +27,9 @@ namespace Win32
 		virtual void ForceTz(Int8 tzQhr);
 		virtual void GetConnName(NotNullPtr<Text::StringBuilderUTF8> sb);
 		virtual void Close();
-		virtual OSInt ExecuteNonQuery(Text::CString sql);
+		virtual OSInt ExecuteNonQuery(Text::CStringNN sql);
 		OSInt ExecuteNonQueryW(const WChar *sql);
-		virtual DB::DBReader *ExecuteReader(Text::CString sql);
+		virtual DB::DBReader *ExecuteReader(Text::CStringNN sql);
 		DB::DBReader *ExecuteReaderW(const WChar *sql);
 		virtual Bool IsLastDataError();
 
@@ -37,9 +37,9 @@ namespace Win32
 		virtual void Commit(void *tran);
 		virtual void Rollback(void *tran);
 
-		virtual UOSInt QueryTableNames(Text::CString schemaName, Data::ArrayListNN<Text::String> *names);
+		virtual UOSInt QueryTableNames(Text::CString schemaName, NotNullPtr<Data::ArrayListNN<Text::String>> names);
 		virtual DB::DBReader *QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListNN<Text::String> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition);
-		virtual void CloseReader(DB::DBReader *reader);
+		virtual void CloseReader(NotNullPtr<DB::DBReader> reader);
 		virtual void GetLastErrorMsg(NotNullPtr<Text::StringBuilderUTF8> str);
 		virtual void Reconnect();
 

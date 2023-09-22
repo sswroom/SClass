@@ -91,7 +91,7 @@ namespace DB
 
 		TableDef *GenTableDef(Text::CString schemaName, Text::CString tableName);
 		Data::VariObject *CreateVariObject();
-		Data::Class *CreateClass();
+		NotNullPtr<Data::Class> CreateClass();
 	};
 }
 #endif

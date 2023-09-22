@@ -56,12 +56,11 @@ Bool Exporter::DBHTMLExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Te
 	if (param)
 	{
 		DBParam *dbParam = (DBParam*)param;
-		name = dbParam->names->GetItem(dbParam->tableIndex);
+		name = dbParam->names.GetItem(dbParam->tableIndex);
 	}
 	DB::ReadingDB *db = (DB::ReadingDB*)pobj;
-	DB::DBReader *r;
-	r = db->QueryTableData(CSTR_NULL, STR_CSTR(name), 0, 0, 0, CSTR_NULL, 0);
-	if (r == 0)
+	NotNullPtr<DB::DBReader> r;
+	if (!r.Set(db->QueryTableData(CSTR_NULL, STR_CSTR(name), 0, 0, 0, CSTR_NULL, 0)))
 	{
 		return false;
 	}
@@ -153,9 +152,9 @@ UOSInt Exporter::DBHTMLExporter::GetParamCnt()
 
 void *Exporter::DBHTMLExporter::CreateParam(IO::ParsedObject *pobj)
 {
-	DBParam *param = MemAlloc(DBParam, 1);
+	DBParam *param;
+	NEW_CLASS(param, DBParam());
 	param->db = (DB::ReadingDB *)pobj;
-	NEW_CLASS(param->names, Data::ArrayListNN<Text::String>());
 	param->db->QueryTableNames(CSTR_NULL, param->names);
 	param->tableIndex = 0;
 	return param;
@@ -164,9 +163,8 @@ void *Exporter::DBHTMLExporter::CreateParam(IO::ParsedObject *pobj)
 void Exporter::DBHTMLExporter::DeleteParam(void *param)
 {
 	DBParam *dbParam = (DBParam*)param;
-	LIST_FREE_STRING(dbParam->names);
-	DEL_CLASS(dbParam->names);
-	MemFree(dbParam);
+	LIST_FREE_STRING(&dbParam->names);
+	DEL_CLASS(dbParam);
 }
 
 Bool Exporter::DBHTMLExporter::GetParamInfo(UOSInt index, IO::FileExporter::ParamInfo *info)
@@ -230,7 +228,7 @@ UTF8Char *Exporter::DBHTMLExporter::GetParamSelItems(void *param, UOSInt index, 
 	if (index == 0)
 	{
 		DBParam *dbParam = (DBParam*)param;
-		Text::String *name = dbParam->names->GetItem(itemIndex);
+		Text::String *name = dbParam->names.GetItem(itemIndex);
 		if (name->leng > 0)
 		{
 			return name->ConcatTo(buff);

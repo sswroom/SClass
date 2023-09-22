@@ -218,8 +218,8 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::LoadCSV(Text::CStringNN fileName)
 	Text::String** rowData;
 	DB::CSVFile csv(fileName, 65001);
 	if (noHeader) csv.SetNoHeader(true);
-	DB::DBReader *r = csv.QueryTableData(CSTR_NULL, CSTR_NULL, 0, 0, 0, CSTR_NULL, 0);
-	if (r == 0)
+	NotNullPtr<DB::DBReader> r;
+	if (!r.Set(csv.QueryTableData(CSTR_NULL, CSTR_NULL, 0, 0, 0, CSTR_NULL, 0)))
 	{
 		DEL_CLASS(table);
 		UI::MessageDialog::ShowDialog(CSTR("Error in reading CSV file"), CSTR("Check Table Changes"), this);
@@ -373,8 +373,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::LoadCSV(Text::CStringNN fileName)
 
 	if (keyCol != INVALID_INDEX)
 	{
-		r = this->db->QueryTableData(this->schema, this->table, 0, 0, 0, CSTR_NULL, 0);
-		if (r == 0)
+		if (!r.Set(this->db->QueryTableData(this->schema, this->table, 0, 0, 0, CSTR_NULL, 0)))
 		{
 			UI::MessageDialog::ShowDialog(CSTR("Error in getting table data"), CSTR("Check Table Changes"), this);
 		}
@@ -660,8 +659,8 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(Text::CStringNN csvFileName,
 	{
 		csv.SetNoHeader(true);
 	}
-	DB::DBReader *r = csv.QueryTableData(CSTR_NULL, CSTR_NULL, 0, 0, 0, CSTR_NULL, 0);
-	if (r == 0)
+	NotNullPtr<DB::DBReader> r;
+	if (!r.Set(csv.QueryTableData(CSTR_NULL, CSTR_NULL, 0, 0, 0, CSTR_NULL, 0)))
 	{
 		DEL_CLASS(table);
 		UI::MessageDialog::ShowDialog(CSTR("Error in reading CSV file"), CSTR("Check Table Changes"), this);
@@ -866,8 +865,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(Text::CStringNN csvFileName,
 
 	if (keyCol != INVALID_INDEX)
 	{
-		r = this->db->QueryTableData(this->schema, this->table, 0, 0, 0, CSTR_NULL, 0);
-		if (r == 0)
+		if (!r.Set(this->db->QueryTableData(this->schema, this->table, 0, 0, 0, CSTR_NULL, 0)))
 		{
 			UI::MessageDialog::ShowDialog(CSTR("Error in getting table data"), CSTR("Check Table Changes"), this);
 		}
@@ -1370,7 +1368,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(Text::CStringNN csvFileName,
 	return succ;
 }
 
-Bool SSWR::AVIRead::AVIRDBCheckChgForm::NextSQL(Text::CString sql, SQLSession *sess)
+Bool SSWR::AVIRead::AVIRDBCheckChgForm::NextSQL(Text::CStringNN sql, SQLSession *sess)
 {
 	if (sess->mode == 0)
 	{

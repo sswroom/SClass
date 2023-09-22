@@ -27,7 +27,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	Data::ArrayListNN<Text::String> dbList;
 	UOSInt i;
 	UOSInt j;
-	j = mongoDB->GetDatabaseNames(&dbList);
+	j = mongoDB->GetDatabaseNames(dbList);
 	if (j <= 0)
 	{
 		console->WriteLineC(UTF8STRC("Error in getting Database List:"));
@@ -45,11 +45,11 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 			console->WriteLineCStr(dbList.GetItem(i)->ToCString());
 			i++;
 		}
-		mongoDB->FreeDatabaseNames(&dbList);
+		mongoDB->FreeDatabaseNames(dbList);
 	}
 	console->WriteLine();
 	console->WriteLineC(UTF8STRC("Table List:"));
-	mongoDB->QueryTableNames(CSTR_NULL, &tableList);
+	mongoDB->QueryTableNames(CSTR_NULL, tableList);
 	i = 0;
 	j = tableList.GetCount();
 	while (i < j)

@@ -40,9 +40,9 @@ namespace DB
 		virtual void GetConnName(NotNullPtr<Text::StringBuilderUTF8> sb);
 		virtual void Close();
 		virtual void Dispose();
-		virtual OSInt ExecuteNonQuery(Text::CString sql);
-		virtual DBReader *ExecuteReader(Text::CString sql);
-		virtual void CloseReader(DB::DBReader *r);
+		virtual OSInt ExecuteNonQuery(Text::CStringNN sql);
+		virtual DBReader *ExecuteReader(Text::CStringNN sql);
+		virtual void CloseReader(NotNullPtr<DB::DBReader> r);
 		virtual void GetLastErrorMsg(NotNullPtr<Text::StringBuilderUTF8> str);
 		virtual Bool IsLastDataError();
 		virtual void Reconnect();
@@ -51,8 +51,8 @@ namespace DB
 		virtual void Commit(void *tran);
 		virtual void Rollback(void *tran);
 
-		virtual UOSInt QuerySchemaNames(Data::ArrayList<Text::String*> *names);
-		virtual UOSInt QueryTableNames(Text::CString schemaName, Data::ArrayListNN<Text::String> *names);
+		virtual UOSInt QuerySchemaNames(NotNullPtr<Data::ArrayListNN<Text::String>> names);
+		virtual UOSInt QueryTableNames(Text::CString schemaName, NotNullPtr<Data::ArrayListNN<Text::String>> names);
 		virtual DBReader *QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListNN<Text::String> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition);
 
 		Bool IsConnError();

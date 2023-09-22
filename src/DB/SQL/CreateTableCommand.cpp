@@ -11,7 +11,7 @@ DB::SQL::CreateTableCommand::CreateTableCommand(DB::TableDef *tableDef, Bool toR
 	}
 	else
 	{
-		this->tableDef = tableDef->Clone();
+		this->tableDef = tableDef->Clone().Ptr();
 	}
 }
 

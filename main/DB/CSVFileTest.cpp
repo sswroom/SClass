@@ -15,24 +15,31 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 		{
 			DB::CSVFile csv(stm, 65001);
 
-			DB::DBReader *rdr = csv.QueryTableData(CSTR_NULL, CSTR_NULL, 0, 0, 0, CSTR_NULL, 0);
-			Int32 rowCnt = 0;
-			while (rdr->ReadNext())
+			NotNullPtr<DB::DBReader> rdr;
+			if (rdr.Set(csv.QueryTableData(CSTR_NULL, CSTR_NULL, 0, 0, 0, CSTR_NULL, 0)))
 			{
-	/*			if (rowCnt < 2)
+				Int32 rowCnt = 0;
+				while (rdr->ReadNext())
 				{
-					UTF8Char buff[60];
-					Int32 colCnt = rdr->ColCount();
-					while (colCnt-- > 0)
+		/*			if (rowCnt < 2)
 					{
-						rdr->GetStr(colCnt, buff, sizeof(buff));
-						printf("%d->%d = %s\r\n", rowCnt, colCnt, buff);
-					}
-				}*/
-				rowCnt++;
+						UTF8Char buff[60];
+						Int32 colCnt = rdr->ColCount();
+						while (colCnt-- > 0)
+						{
+							rdr->GetStr(colCnt, buff, sizeof(buff));
+							printf("%d->%d = %s\r\n", rowCnt, colCnt, buff);
+						}
+					}*/
+					rowCnt++;
+				}
+				printf("RowCnt = %d\r\n", rowCnt);
+				csv.CloseReader(rdr);
 			}
-			printf("RowCnt = %d\r\n", rowCnt);
-			csv.CloseReader(rdr);
+			else
+			{
+				printf("Error in reading CSV\r\n");
+			}
 		}
 	}
 	printf("Time used: %lf\r\n", clk.GetTimeDiff());

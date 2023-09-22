@@ -20,16 +20,16 @@ namespace DB
 		ReadingDB(Text::CStringNN sourceName);
 		virtual ~ReadingDB();
 
-		virtual UOSInt QuerySchemaNames(Data::ArrayList<Text::String*> *names);
-		virtual UOSInt QueryTableNames(Text::CString schemaName, Data::ArrayListNN<Text::String> *names) = 0; //Need Release
+		virtual UOSInt QuerySchemaNames(NotNullPtr<Data::ArrayListNN<Text::String>> names);
+		virtual UOSInt QueryTableNames(Text::CString schemaName, NotNullPtr<Data::ArrayListNN<Text::String>> names) = 0; //Need Release
 		virtual DBReader *QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListNN<Text::String> *colNames, UOSInt dataOfst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition) = 0;
 		virtual TableDef *GetTableDef(Text::CString schemaName, Text::CString tableName) = 0;
-		virtual void CloseReader(DBReader *r) = 0;
+		virtual void CloseReader(NotNullPtr<DBReader> r) = 0;
 		virtual void GetLastErrorMsg(NotNullPtr<Text::StringBuilderUTF8> str) = 0;
 		virtual void Reconnect() = 0;
 
-		virtual UOSInt GetDatabaseNames(Data::ArrayListNN<Text::String> *arr);
-		virtual void ReleaseDatabaseNames(Data::ArrayListNN<Text::String> *arr);
+		virtual UOSInt GetDatabaseNames(NotNullPtr<Data::ArrayListNN<Text::String>> arr);
+		virtual void ReleaseDatabaseNames(NotNullPtr<Data::ArrayListNN<Text::String>> arr);
 		virtual Bool ChangeDatabase(Text::CString databaseName);
 		virtual Text::String *GetCurrDBName();
 

@@ -191,8 +191,8 @@ void __stdcall SSWR::AVIRead::AVIRCoordConvForm::OnConvFileClicked(void *userObj
 				return;
 			}
 		}
-		DB::DBReader *reader = db->QueryTableData(CSTR_NULL, CSTR_NULL, 0, 0, 0, CSTR_NULL, 0);
-		if (reader == 0)
+		NotNullPtr<DB::DBReader> reader;
+		if (!reader.Set(db->QueryTableData(CSTR_NULL, CSTR_NULL, 0, 0, 0, CSTR_NULL, 0)))
 		{
 			UI::MessageDialog::ShowDialog(CSTR("Unsupported database format"), CSTR("Error"), me);
 			DEL_CLASS(db);

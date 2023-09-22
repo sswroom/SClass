@@ -167,7 +167,7 @@ DB::TableDef *DB::TableDef::SetSQLType(DB::SQLType sqlType)
 	return this;
 }
 
-void DB::TableDef::ColFromReader(DB::DBReader *r)
+void DB::TableDef::ColFromReader(NotNullPtr<DB::DBReader> r)
 {
 	UOSInt i = 0;
 	UOSInt j = r->ColCount();
@@ -181,10 +181,10 @@ void DB::TableDef::ColFromReader(DB::DBReader *r)
 	}
 }
 
-DB::TableDef *DB::TableDef::Clone() const
+NotNullPtr<DB::TableDef> DB::TableDef::Clone() const
 {
-	DB::TableDef *newObj;
-	NEW_CLASS(newObj, DB::TableDef(STR_CSTR(this->schemaName), this->tableName->ToCString()));
+	NotNullPtr<DB::TableDef> newObj;
+	NEW_CLASSNN(newObj, DB::TableDef(STR_CSTR(this->schemaName), this->tableName->ToCString()));
 	newObj->SetDatabaseName(STR_CSTR(this->databaseName));
 	newObj->SetEngine(STR_CSTR(this->engine));
 	newObj->SetCharset(STR_CSTR(this->charset));
@@ -201,7 +201,7 @@ DB::TableDef *DB::TableDef::Clone() const
 	return newObj;
 }
 
-Data::Class *DB::TableDef::CreateTableClass() const
+NotNullPtr<Data::Class> DB::TableDef::CreateTableClass() const
 {
 	DB::DBClassBuilder builder;
 	UOSInt i;

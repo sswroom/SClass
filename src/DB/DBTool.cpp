@@ -30,7 +30,7 @@ DB::DBTool::~DBTool()
 {
 }
 
-OSInt DB::DBTool::ExecuteNonQuery(Text::CString sqlCmd)
+OSInt DB::DBTool::ExecuteNonQuery(Text::CStringNN sqlCmd)
 {
 	{
 		Text::StringBuilderUTF8 logMsg;
@@ -119,9 +119,9 @@ Int32 DB::DBTool::GetLastIdentity32()
 {
 	if (this->sqlType == DB::SQLType::MySQL || this->sqlType == DB::SQLType::MSSQL || this->sqlType == DB::SQLType::Access || this->sqlType == DB::SQLType::MDBTools)
 	{
-		DB::DBReader *reader = this->ExecuteReader(CSTR("select @@identity"));
 		Int32 id = 0;
-		if (reader)
+		NotNullPtr<DB::DBReader> reader;
+		if (reader.Set(this->ExecuteReader(CSTR("select @@identity"))))
 		{
 			if (reader->ReadNext())
 			{
@@ -141,9 +141,9 @@ Int64 DB::DBTool::GetLastIdentity64()
 {
 	if (this->sqlType == DB::SQLType::MySQL || this->sqlType == DB::SQLType::MSSQL || this->sqlType == DB::SQLType::Access || this->sqlType == DB::SQLType::MDBTools)
 	{
-		DB::DBReader *reader = this->ExecuteReader(CSTR("select @@identity"));
 		Int64 id = 0;
-		if (reader)
+		NotNullPtr<DB::DBReader> reader;
+		if (reader.Set(this->ExecuteReader(CSTR("select @@identity"))))
 		{
 			if (reader->ReadNext())
 			{
@@ -172,7 +172,7 @@ Bool DB::DBTool::CreateDatabase(Text::CString databaseName, const Collation *col
 	case DB::SQLType::PostgreSQL:
 	{
 		DB::SQLBuilder sql(this->sqlType, this->axisAware, this->GetTzQhr());
-		DB::SQLGenerator::GenCreateDatabaseCmd(&sql, databaseName, collation);
+		DB::SQLGenerator::GenCreateDatabaseCmd(sql, databaseName, collation);
 		return this->ExecuteNonQuery(sql.ToCString()) >= -1;
 	}
 	case DB::SQLType::WBEM:
@@ -197,7 +197,7 @@ Bool DB::DBTool::DeleteDatabase(Text::CString databaseName)
 	case DB::SQLType::PostgreSQL:
 	{
 		DB::SQLBuilder sql(this->sqlType, this->axisAware, this->GetTzQhr());
-		DB::SQLGenerator::GenDeleteDatabaseCmd(&sql, databaseName);
+		DB::SQLGenerator::GenDeleteDatabaseCmd(sql, databaseName);
 		return this->ExecuteNonQuery(sql.ToCString()) >= -1;
 	}
 	case DB::SQLType::WBEM:
@@ -217,7 +217,7 @@ Bool DB::DBTool::CreateSchema(Text::CString schemaName)
 	case DB::SQLType::PostgreSQL:
 	{
 		DB::SQLBuilder sql(this->sqlType, this->axisAware, this->GetTzQhr());
-		DB::SQLGenerator::GenCreateSchemaCmd(&sql, schemaName);
+		DB::SQLGenerator::GenCreateSchemaCmd(sql, schemaName);
 		return this->ExecuteNonQuery(sql.ToCString()) >= -1;
 	}
 	case DB::SQLType::MySQL:
@@ -242,7 +242,7 @@ Bool DB::DBTool::DeleteSchema(Text::CString schemaName)
 	case DB::SQLType::PostgreSQL:
 	{
 		DB::SQLBuilder sql(this->sqlType, this->axisAware, this->GetTzQhr());
-		DB::SQLGenerator::GenDeleteSchemaCmd(&sql, schemaName);
+		DB::SQLGenerator::GenDeleteSchemaCmd(sql, schemaName);
 		return this->ExecuteNonQuery(sql.ToCString()) >= -1;
 	}
 	case DB::SQLType::MySQL:
@@ -262,13 +262,13 @@ Bool DB::DBTool::DeleteSchema(Text::CString schemaName)
 Bool DB::DBTool::DeleteTableData(Text::CString schemaName, Text::CString tableName)
 {
 	DB::SQLBuilder sql(this->sqlType, this->axisAware, this->GetTzQhr());
-	DB::SQLGenerator::GenTruncateTableCmd(&sql, schemaName, tableName);
+	DB::SQLGenerator::GenTruncateTableCmd(sql, schemaName, tableName);
 	if (this->ExecuteNonQuery(sql.ToCString()) >= -1)
 	{
 		return true;
 	}
 	sql.Clear();
-	DB::SQLGenerator::GenDeleteTableDataCmd(&sql, schemaName, tableName);
+	DB::SQLGenerator::GenDeleteTableDataCmd(sql, schemaName, tableName);
 	return this->ExecuteNonQuery(sql.ToCString()) >= -1;
 }
 
@@ -295,8 +295,8 @@ Bool DB::DBTool::KillConnection(Int32 id)
 		sql.AppendCmdC(CSTR("SELECT pg_terminate_backend("));
 		sql.AppendInt32(id);
 		sql.AppendCmdC(CSTR(")"));
-		DB::DBReader *r = this->ExecuteReader(sql.ToCString());
-		if (r)
+		NotNullPtr<DB::DBReader> r;
+		if (r.Set(this->ExecuteReader(sql.ToCString())))
 		{
 			if (r->ReadNext())
 			{

@@ -253,7 +253,7 @@ DB::JSONDB::~JSONDB()
 	this->data->EndUse();
 }
 
-UOSInt DB::JSONDB::QueryTableNames(Text::CString schemaName, Data::ArrayListNN<Text::String> *names)
+UOSInt DB::JSONDB::QueryTableNames(Text::CString schemaName, NotNullPtr<Data::ArrayListNN<Text::String>> names)
 {
 	names->Add(this->layerName->Clone());
 	return 1;
@@ -336,13 +336,10 @@ DB::TableDef *DB::JSONDB::GetTableDef(Text::CString schemaName, Text::CString ta
 	return tab;
 }
 
-void DB::JSONDB::CloseReader(DBReader *r)
+void DB::JSONDB::CloseReader(NotNullPtr<DBReader> r)
 {
-	if (r)
-	{
-		JSONDBReader *reader = (JSONDBReader*)r;
-		DEL_CLASS(reader);
-	}
+	JSONDBReader *reader = (JSONDBReader*)r.Ptr();
+	DEL_CLASS(reader);
 }
 
 void DB::JSONDB::GetLastErrorMsg(NotNullPtr<Text::StringBuilderUTF8> str)

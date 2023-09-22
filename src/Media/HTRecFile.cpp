@@ -651,7 +651,7 @@ Media::HTRecFile::~HTRecFile()
 	SDEL_TEXT(this->testName);
 }
 
-UOSInt Media::HTRecFile::QueryTableNames(Text::CString schemaName, Data::ArrayListNN<Text::String> *names)
+UOSInt Media::HTRecFile::QueryTableNames(Text::CString schemaName, NotNullPtr<Data::ArrayListNN<Text::String>> names)
 {
 	if (this->recBuff.IsNull() || schemaName.leng != 0)
 	{
@@ -715,9 +715,9 @@ DB::TableDef *Media::HTRecFile::GetTableDef(Text::CString schemaName, Text::CStr
 	return tab;
 }
 
-void Media::HTRecFile::CloseReader(DB::DBReader *r)
+void Media::HTRecFile::CloseReader(NotNullPtr<DB::DBReader> r)
 {
-	HTRecReader *reader = (HTRecReader*)r;
+	HTRecReader *reader = (HTRecReader*)r.Ptr();
 	DEL_CLASS(reader);
 }
 

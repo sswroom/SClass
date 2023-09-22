@@ -635,6 +635,7 @@ UInt32 __stdcall DB::DBHandler::ProcessSQL(void *userObj)
 						{
 							i = 3;
 							DB::DBReader *r = me->db->ExecuteReader(s->ToCString());
+							NotNullPtr<DB::DBReader> nnr;
 							while (r == 0)
 							{
 								i -= 1;
@@ -645,11 +646,11 @@ UInt32 __stdcall DB::DBHandler::ProcessSQL(void *userObj)
 								}
 								r = me->db->ExecuteReader(s->ToCString());
 							}
-							if (r)
+							if (nnr.Set(r))
 							{
 								me->dbQ->sqlCnt += 1;
 								cmd->hdlr(cmd->userData, cmd->userData2, me->db, r);
-								me->db->CloseReader(r);
+								me->db->CloseReader(nnr);
 							}
 							else
 							{
@@ -718,12 +719,13 @@ UInt32 __stdcall DB::DBHandler::ProcessSQL(void *userObj)
 							else
 							{
 								DB::DBReader *rdr = 0;
+								NotNullPtr<DB::DBReader> nnrdr;
 								i = 3;
 								while (k < grp->strs.GetCount())
 								{
 									s = Text::String::OrEmpty(grp->strs.GetItem(k));
 									rdr = me->db->ExecuteReader(s->ToCString());
-									if (rdr == 0)
+									if (!nnrdr.Set(rdr))
 									{
 										i -= 1;
 										if (i <= 0)
@@ -738,16 +740,16 @@ UInt32 __stdcall DB::DBHandler::ProcessSQL(void *userObj)
 										k += 1;
 										if (k < grp->strs.GetCount())
 										{
-											me->db->CloseReader(rdr);
+											me->db->CloseReader(nnrdr);
 										}
 									}
 								}
 								
 								me->dbQ->sqlCnt += k;
-								if (rdr)
+								if (nnrdr.Set(rdr))
 								{
 									grp->hdlr(grp->userData, grp->userData2, me->db, rdr);
-									me->db->CloseReader(rdr);
+									me->db->CloseReader(nnrdr);
 								}
 								else
 								{

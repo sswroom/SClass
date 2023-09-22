@@ -660,8 +660,8 @@ Bool DB::PostgreSQLConn::Connect()
 
 void DB::PostgreSQLConn::InitConnection()
 {
-	DB::DBReader *r = this->ExecuteReader(CSTR("select oid, typname from pg_catalog.pg_type"));
-	if (r)
+	NotNullPtr<DB::DBReader> r;
+	if (r.Set(this->ExecuteReader(CSTR("select oid, typname from pg_catalog.pg_type"))))
 	{
 		Text::StringBuilderUTF8 sb;
 		while (r->ReadNext())
@@ -767,7 +767,7 @@ void DB::PostgreSQLConn::Dispose()
 	DEL_CLASS(this);
 }
 
-OSInt DB::PostgreSQLConn::ExecuteNonQuery(Text::CString sql)
+OSInt DB::PostgreSQLConn::ExecuteNonQuery(Text::CStringNN sql)
 {
 	if (this->clsData->conn == 0)
 	{
@@ -797,7 +797,7 @@ OSInt DB::PostgreSQLConn::ExecuteNonQuery(Text::CString sql)
 	return ret;
 }
 
-DB::DBReader *DB::PostgreSQLConn::ExecuteReader(Text::CString sql)
+DB::DBReader *DB::PostgreSQLConn::ExecuteReader(Text::CStringNN sql)
 {
 	if (this->clsData->conn == 0)
 	{
@@ -820,9 +820,9 @@ DB::DBReader *DB::PostgreSQLConn::ExecuteReader(Text::CString sql)
 	return NEW_CLASS_D(PostgreSQLReader(res, this->tzQhr, this));
 }
 
-void DB::PostgreSQLConn::CloseReader(DB::DBReader *r)
+void DB::PostgreSQLConn::CloseReader(NotNullPtr<DB::DBReader> r)
 {
-	PostgreSQLReader *reader = (PostgreSQLReader*)r;
+	PostgreSQLReader *reader = (PostgreSQLReader*)r.Ptr();
 	DEL_CLASS(reader);
 }
 
@@ -878,22 +878,22 @@ void DB::PostgreSQLConn::Rollback(void *tran)
 	}
 }
 
-UOSInt DB::PostgreSQLConn::QuerySchemaNames(Data::ArrayList<Text::String*> *names)
+UOSInt DB::PostgreSQLConn::QuerySchemaNames(NotNullPtr<Data::ArrayListNN<Text::String>> names)
 {
 	UOSInt initCnt = names->GetCount();
-	DB::DBReader *r = this->ExecuteReader(CSTR("SELECT nspname FROM pg_catalog.pg_namespace"));
-	if (r)
+	NotNullPtr<DB::DBReader> r;
+	if (r.Set(this->ExecuteReader(CSTR("SELECT nspname FROM pg_catalog.pg_namespace"))))
 	{
 		while (r->ReadNext())
 		{
-			names->Add(r->GetNewStr(0));
+			names->Add(r->GetNewStrNN(0));
 		}
 		this->CloseReader(r);
 	}
 	return names->GetCount() - initCnt;
 }
 		
-UOSInt DB::PostgreSQLConn::QueryTableNames(Text::CString schemaName, Data::ArrayListNN<Text::String> *names)
+UOSInt DB::PostgreSQLConn::QueryTableNames(Text::CString schemaName, NotNullPtr<Data::ArrayListNN<Text::String>> names)
 {
 	if (schemaName.leng == 0)
 		schemaName = CSTR("public");
@@ -901,8 +901,8 @@ UOSInt DB::PostgreSQLConn::QueryTableNames(Text::CString schemaName, Data::Array
 	sql.AppendCmdC(CSTR("select tablename from pg_catalog.pg_tables where schemaname = "));
 	sql.AppendStrC(schemaName);
 	UOSInt initCnt = names->GetCount();
-	DB::DBReader *r = this->ExecuteReader(sql.ToCString());
-	if (r)
+	NotNullPtr<DB::DBReader> r;
+	if (r.Set(this->ExecuteReader(sql.ToCString())))
 	{
 		while (r->ReadNext())
 		{

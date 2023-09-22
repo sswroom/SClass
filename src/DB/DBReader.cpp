@@ -213,7 +213,7 @@ Data::VariObject *DB::DBReader::CreateVariObject()
 	return obj;
 }
 
-Data::Class *DB::DBReader::CreateClass()
+NotNullPtr<Data::Class> DB::DBReader::CreateClass()
 {
 	UTF8Char sbuff[256];
 	UOSInt i;

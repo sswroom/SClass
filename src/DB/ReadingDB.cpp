@@ -15,17 +15,17 @@ DB::ReadingDB::~ReadingDB()
 {
 }
 
-UOSInt DB::ReadingDB::QuerySchemaNames(Data::ArrayList<Text::String*> *names)
+UOSInt DB::ReadingDB::QuerySchemaNames(NotNullPtr<Data::ArrayListNN<Text::String>> names)
 {
 	return 0;
 }
 
-UOSInt DB::ReadingDB::GetDatabaseNames(Data::ArrayListNN<Text::String> *arr)
+UOSInt DB::ReadingDB::GetDatabaseNames(NotNullPtr<Data::ArrayListNN<Text::String>> arr)
 {
 	return 0;
 }
 
-void DB::ReadingDB::ReleaseDatabaseNames(Data::ArrayListNN<Text::String> *arr)
+void DB::ReadingDB::ReleaseDatabaseNames(NotNullPtr<Data::ArrayListNN<Text::String>> arr)
 {
 
 }

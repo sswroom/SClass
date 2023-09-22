@@ -250,7 +250,7 @@ Int32 SSWR::SHPConv::SHPConvMainForm::GroupConvert(Text::CStringNN sourceFile, T
 	Text::StringBuilderUTF8 sb;
 	Data::ArrayListStringNN names;
 	Int32 shpType = 0;
-	DB::DBReader *r;
+	NotNullPtr<DB::DBReader> r;
 	Text::String *s;
 
 	sb.Append(sourceFile);
@@ -260,8 +260,7 @@ Int32 SSWR::SHPConv::SHPConvMainForm::GroupConvert(Text::CStringNN sourceFile, T
 	{
 		IO::StmData::FileData fd(sb.ToCString(), false);
 		DB::DBFFile dbf(fd, (UInt32)(UOSInt)this->lstLang->GetSelectedItem());
-		r = dbf.QueryTableData(CSTR_NULL, CSTR_NULL, 0, 0, 0, CSTR_NULL, 0);
-		if (r)
+		if (r.Set(dbf.QueryTableData(CSTR_NULL, CSTR_NULL, 0, 0, 0, CSTR_NULL, 0)))
 		{
 			while (r->ReadNext())
 			{
@@ -773,9 +772,10 @@ Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(Text::CStringNN sourceFile, Tex
 			}
 
 //			tmpWriter.Close()
-			if (dbfr)
+			NotNullPtr<DB::DBReader> r;
+			if (r.Set(dbfr))
 			{
-				dbf.CloseReader(dbfr);
+				dbf.CloseReader(r);
 			}
 		}
 		else
@@ -1093,9 +1093,10 @@ Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(Text::CStringNN sourceFile, Tex
 				i++;
 			}
 
-			if (dbfr)
+			NotNullPtr<DB::DBReader> r;
+			if (r.Set(dbfr))
 			{
-				dbf.CloseReader(dbfr);
+				dbf.CloseReader(r);
 			}
 		}
 		else

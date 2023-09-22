@@ -3,7 +3,7 @@
 
 DB::DBClassBuilder::DBClassBuilder()
 {
-	NEW_CLASS(this->cls, Data::Class(0));
+	NEW_CLASSNN(this->cls, Data::Class(0));
 	this->currPos = 0;
 }
 
@@ -79,7 +79,7 @@ void DB::DBClassBuilder::AddItem(const UTF8Char *colName, DB::DBUtil::ColType co
 	}
 }
 
-Data::Class *DB::DBClassBuilder::GetResultClass()
+NotNullPtr<Data::Class> DB::DBClassBuilder::GetResultClass()
 {
 	return this->cls;
 }

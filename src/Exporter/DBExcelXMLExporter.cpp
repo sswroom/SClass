@@ -71,7 +71,7 @@ Bool Exporter::DBExcelXMLExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm
 	lineBuff2 = MemAlloc(UTF8Char, 65536);
 
 	DB::ReadingDB *db = (DB::ReadingDB*)pobj;
-	DB::DBReader *r;
+	NotNullPtr<DB::DBReader> r;
 
 	sptr = Text::StrConcatC(Text::EncodingFactory::GetInternetName(Text::StrConcatC(lineBuff1, UTF8STRC("<?xml version=\"1.0\" encoding=\"")), this->codePage), UTF8STRC("\"?>"));
 	writer.WriteLineC(lineBuff1, (UOSInt)(sptr - lineBuff1));
@@ -82,13 +82,12 @@ Bool Exporter::DBExcelXMLExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm
 	writer.WriteLineC(UTF8STRC(" xmlns:html=\"http://www.w3.org/TR/REC-html40\">"));
 
 	Data::ArrayListNN<Text::String> names;
-	tableCnt = db->QueryTableNames(CSTR_NULL, &names);
+	tableCnt = db->QueryTableNames(CSTR_NULL, names);
 	j = 0;
 	while (j < tableCnt)
 	{
 		Text::String *tableName = names.GetItem(j);
-		r = db->QueryTableData(CSTR_NULL, tableName->ToCString(), 0, 0, 0, CSTR_NULL, 0);
-		if (r)
+		if (r.Set(db->QueryTableData(CSTR_NULL, tableName->ToCString(), 0, 0, 0, CSTR_NULL, 0)))
 		{
 			UOSInt ind = tableName->LastIndexOf('\\');
 			sptr = Text::StrConcatC(Text::XML::ToAttrText(Text::StrConcatC(lineBuff1, UTF8STRC(" <Worksheet ss:Name=")), &tableName->v[ind + 1]), UTF8STRC(">"));

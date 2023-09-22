@@ -63,11 +63,11 @@ namespace Map
 	class FileGDBLReader : public DB::DBReader
 	{
 	private:
-		DB::ReadingDB *conn;
-		DB::DBReader *r;
+		NotNullPtr<DB::ReadingDB> conn;
+		NotNullPtr<DB::DBReader> r;
 		NotNullPtr<Sync::MutexUsage> mutUsage;
 	public:
-		FileGDBLReader(DB::ReadingDB *conn, DB::DBReader *r, NotNullPtr<Sync::MutexUsage> mutUsage);
+		FileGDBLReader(NotNullPtr<DB::ReadingDB> conn, NotNullPtr<DB::DBReader> r, NotNullPtr<Sync::MutexUsage> mutUsage);
 		virtual ~FileGDBLReader();
 
 		virtual Bool ReadNext();

@@ -25,7 +25,7 @@ namespace DB
 
 /*		static DBTool *NullSource(IO::LogTool *);*/
 
-		OSInt ExecuteNonQuery(Text::CString sqlCmd);
+		OSInt ExecuteNonQuery(Text::CStringNN sqlCmd);
 		void BeginTrans();
 		void EndTrans(Bool toCommit);
 		Int32 GetLastIdentity32();

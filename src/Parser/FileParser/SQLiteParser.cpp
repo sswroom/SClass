@@ -111,7 +111,7 @@ IO::ParsedObject *Parser::FileParser::SQLiteParser::ParseFileHdr(NotNullPtr<IO::
 IO::ParsedObject *Parser::FileParser::SQLiteParser::ParseAsMap(DB::DBConn *conn)
 {
 	Data::ArrayListStrFastNN tableNames;
-	conn->QueryTableNames(CSTR_NULL, &tableNames);
+	conn->QueryTableNames(CSTR_NULL, tableNames);
 	Text::StringComparatorFastNN comparator;
 	Data::Sort::ArtificialQuickSort::Sort(&tableNames, &comparator);
 	if (tableNames.SortedIndexOf(CSTR("gpkg_spatial_ref_sys")) < 0 ||

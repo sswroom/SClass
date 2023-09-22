@@ -249,7 +249,7 @@ const UTF8Char *Text::StringTool::Null2Empty(const UTF8Char *s)
 	return (const UTF8Char*)"";
 }
 
-Bool Text::StringTool::SplitAsDouble(Text::CString str, UTF8Char splitChar, Data::ArrayList<Double> *outArr)
+Bool Text::StringTool::SplitAsDouble(Text::CStringNN str, UTF8Char splitChar, NotNullPtr<Data::ArrayList<Double>> outArr)
 {
 	UTF8Char sbuff[128];
 	Double v;
@@ -277,7 +277,7 @@ Bool Text::StringTool::SplitAsDouble(Text::CString str, UTF8Char splitChar, Data
 	}
 }
 
-UOSInt Text::StringTool::SplitAsNewString(Text::CString str, UTF8Char splitChar, Data::ArrayListNN<Text::String> *outArr)
+UOSInt Text::StringTool::SplitAsNewString(Text::CStringNN str, UTF8Char splitChar, NotNullPtr<Data::ArrayListNN<Text::String>> outArr)
 {
 	UOSInt initCnt = outArr->GetCount();
 	UOSInt i = 0;

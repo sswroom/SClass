@@ -217,17 +217,17 @@ public:
 	}
 };
 
-DB::WorkbookDB::WorkbookDB(Text::SpreadSheet::Workbook *wb) : DB::ReadingDB(wb->GetSourceNameObj())
+DB::WorkbookDB::WorkbookDB(NotNullPtr<Text::SpreadSheet::Workbook> wb) : DB::ReadingDB(wb->GetSourceNameObj())
 {
 	this->wb = wb;
 }
 
 DB::WorkbookDB::~WorkbookDB()
 {
-	DEL_CLASS(this->wb);
+	this->wb.Delete();
 }
 
-UOSInt DB::WorkbookDB::QueryTableNames(Text::CString schemaName, Data::ArrayListNN<Text::String> *names)
+UOSInt DB::WorkbookDB::QueryTableNames(Text::CString schemaName, NotNullPtr<Data::ArrayListNN<Text::String>> names)
 {
 	if (schemaName.leng != 0)
 	{
@@ -294,9 +294,9 @@ DB::TableDef *DB::WorkbookDB::GetTableDef(Text::CString schemaName, Text::CStrin
 	return tabDef;
 }
 
-void DB::WorkbookDB::CloseReader(DBReader *r)
+void DB::WorkbookDB::CloseReader(NotNullPtr<DBReader> r)
 {
-	WorkbookReader *reader = (WorkbookReader*)r;
+	WorkbookReader *reader = (WorkbookReader*)r.Ptr();
 	DEL_CLASS(reader);
 }
 

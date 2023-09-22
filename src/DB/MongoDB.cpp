@@ -56,7 +56,7 @@ DB::MongoDB::~MongoDB()
 	}
 }
 
-UOSInt DB::MongoDB::QueryTableNames(Text::CString schemaName, Data::ArrayListNN<Text::String> *names)
+UOSInt DB::MongoDB::QueryTableNames(Text::CString schemaName, NotNullPtr<Data::ArrayListNN<Text::String>> names)
 {
 	if (this->database == 0 || this->client == 0 || schemaName.leng != 0)
 		return 0;
@@ -118,13 +118,10 @@ DB::TableDef *DB::MongoDB::GetTableDef(Text::CString schemaName, Text::CString t
 	return tab;
 }
 
-void DB::MongoDB::CloseReader(DBReader *r)
+void DB::MongoDB::CloseReader(NotNullPtr<DBReader> r)
 {
-	DB::MongoDBReader *reader = (DB::MongoDBReader*)r;
-	if (reader)
-	{
-		DEL_CLASS(reader);
-	}
+	DB::MongoDBReader *reader = (DB::MongoDBReader*)r.Ptr();
+	DEL_CLASS(reader);
 }
 
 void DB::MongoDB::GetLastErrorMsg(NotNullPtr<Text::StringBuilderUTF8> str)
@@ -140,7 +137,7 @@ void DB::MongoDB::Reconnect()
 
 }
 
-UOSInt DB::MongoDB::GetDatabaseNames(Data::ArrayListNN<Text::String> *names)
+UOSInt DB::MongoDB::GetDatabaseNames(NotNullPtr<Data::ArrayListNN<Text::String>> names)
 {
 	bson_error_t error;
 	SDEL_STRING(this->errorMsg);
@@ -165,7 +162,7 @@ UOSInt DB::MongoDB::GetDatabaseNames(Data::ArrayListNN<Text::String> *names)
 	}
 }
 
-void DB::MongoDB::FreeDatabaseNames(Data::ArrayListNN<Text::String> *names)
+void DB::MongoDB::FreeDatabaseNames(NotNullPtr<Data::ArrayListNN<Text::String>> names)
 {
 	UOSInt i = names->GetCount();
 	while (i-- > 0)

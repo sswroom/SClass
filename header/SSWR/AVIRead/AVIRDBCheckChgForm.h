@@ -76,7 +76,7 @@ namespace SSWR
 			static void __stdcall OnExecuteClicked(void *userObj);
 			Bool LoadCSV(Text::CStringNN fileName);
 			Bool GenerateSQL(Text::CStringNN csvFileName, DB::SQLType sqlType, Bool axisAware, SQLSession *sess);
-			Bool NextSQL(Text::CString sql, SQLSession *sess);
+			Bool NextSQL(Text::CStringNN sql, SQLSession *sess);
 			void UpdateStatus(SQLSession *sess);
 			static void __stdcall AppendCol(DB::SQLBuilder *sql, DB::DBUtil::ColType colType, Text::String *s, Int8 tzQhr);
 			Text::CString GetNullText();

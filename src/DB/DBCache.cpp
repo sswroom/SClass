@@ -25,8 +25,8 @@ DB::DBCache::TableInfo *DB::DBCache::GetTableInfo(Text::CString tableName)
 	DB::SQLBuilder sql(this->db);
 	sql.AppendCmdC(CSTR("select count(*) from "));
 	sql.AppendTableName(def);
-	DB::DBReader *r = this->db->ExecuteReader(sql.ToCString());
-	if (r)
+	NotNullPtr<DB::DBReader> r;
+	if (r.Set(this->db->ExecuteReader(sql.ToCString())))
 	{
 		if (r->ReadNext())
 		{
@@ -103,9 +103,9 @@ UOSInt DB::DBCache::QueryTableData(NotNullPtr<Data::ArrayListNN<DB::DBRow>> outR
 		return 0;
 	UOSInt ret = 0;
 	DB::SQLBuilder sql(this->db);
-	DB::SQLGenerator::PageStatus status = DB::SQLGenerator::GenSelectCmdPage(&sql, tableInfo->def, page);
-	DB::DBReader *r = this->db->ExecuteReader(sql.ToCString());
-	if (r)
+	DB::SQLGenerator::PageStatus status = DB::SQLGenerator::GenSelectCmdPage(sql, tableInfo->def, page);
+	NotNullPtr<DB::DBReader> r;
+	if (r.Set(this->db->ExecuteReader(sql.ToCString())))
 	{
 		NotNullPtr<DB::DBRow> row;
 		UOSInt pageSkip = 0;
@@ -180,13 +180,13 @@ DB::DBRow *DB::DBCache::GetTableItem(Text::CString tableName, Int64 pk)
 	}
 	DB::DBRow *row = 0;
 	DB::SQLBuilder sql(this->db);
-	DB::SQLGenerator::GenSelectCmdPage(&sql, tableInfo->def, 0);
+	DB::SQLGenerator::GenSelectCmdPage(sql, tableInfo->def, 0);
 	sql.AppendCmdC(CSTR(" where "));
 	sql.AppendCol(col->GetColName()->v);
 	sql.AppendCmdC(CSTR(" = "));
 	sql.AppendInt64(pk);
-	DB::DBReader *r = this->db->ExecuteReader(sql.ToCString());
-	if (r)
+	NotNullPtr<DB::DBReader> r;
+	if (r.Set(this->db->ExecuteReader(sql.ToCString())))
 	{
 		if (r->ReadNext())
 		{

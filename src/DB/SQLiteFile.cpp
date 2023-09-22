@@ -104,7 +104,7 @@ void DB::SQLiteFile::Close()
 	}
 }
 
-OSInt DB::SQLiteFile::ExecuteNonQuery(Text::CString sql)
+OSInt DB::SQLiteFile::ExecuteNonQuery(Text::CStringNN sql)
 {
 	OSInt chg = -2;
 	if (this->db)
@@ -141,7 +141,7 @@ OSInt DB::SQLiteFile::ExecuteNonQuery(Text::CString sql)
 	}
 }
 
-DB::DBReader *DB::SQLiteFile::ExecuteReader(Text::CString sql)
+DB::DBReader *DB::SQLiteFile::ExecuteReader(Text::CStringNN sql)
 {
 	if (this->db)
 	{
@@ -167,9 +167,9 @@ DB::DBReader *DB::SQLiteFile::ExecuteReader(Text::CString sql)
 	}
 }
 
-void DB::SQLiteFile::CloseReader(DBReader *r)
+void DB::SQLiteFile::CloseReader(NotNullPtr<DBReader> r)
 {
-	DB::SQLiteReader *rdr = (DB::SQLiteReader*)r;
+	DB::SQLiteReader *rdr = (DB::SQLiteReader*)r.Ptr();
 	DEL_CLASS(rdr);
 }
 
@@ -219,13 +219,13 @@ void DB::SQLiteFile::Rollback(void *tran)
 	ExecuteNonQuery(CSTR("end"));
 }
 
-UOSInt DB::SQLiteFile::QueryTableNames(Text::CString schemaName, Data::ArrayListNN<Text::String> *names)
+UOSInt DB::SQLiteFile::QueryTableNames(Text::CString schemaName, NotNullPtr<Data::ArrayListNN<Text::String>> names)
 {
 	if (schemaName.leng > 0)
 		return 0;
 	UOSInt initCnt = names->GetCount();
-	DB::DBReader *r = ExecuteReader(CSTR("SELECT name FROM sqlite_master WHERE type='table'"));
-	if (r)
+	NotNullPtr<DB::DBReader> r;
+	if (r.Set(ExecuteReader(CSTR("SELECT name FROM sqlite_master WHERE type='table'"))))
 	{
 		Text::StringBuilderUTF8 sb;
 		NotNullPtr<Text::String> name;

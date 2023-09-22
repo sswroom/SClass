@@ -69,8 +69,8 @@ void SSWR::OrganWeb::OrganWebEnv::LoadCategory()
 	UOSInt i;
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
-	DB::DBReader *r = this->db->ExecuteReader(CSTR("select cate_id, chi_name, dirName, srcDir, flags from category"));
-	if (r != 0)
+	NotNullPtr<DB::DBReader> r;
+	if (r.Set(this->db->ExecuteReader(CSTR("select cate_id, chi_name, dirName, srcDir, flags from category"))))
 	{
 		Text::StringBuilderUTF8 sb;
 		while (r->ReadNext())
@@ -112,8 +112,7 @@ void SSWR::OrganWeb::OrganWebEnv::LoadCategory()
 		}
 		this->db->CloseReader(r);
 	}
-	r = this->db->ExecuteReader(CSTR("select seq, eng_name, chi_name, cate_id from group_type"));
-	if (r != 0)
+	if (r.Set(this->db->ExecuteReader(CSTR("select seq, eng_name, chi_name, cate_id from group_type"))))
 	{
 		while (r->ReadNext())
 		{
@@ -143,8 +142,8 @@ void SSWR::OrganWeb::OrganWebEnv::LoadSpecies()
 	SpeciesInfo *sp;
 	WebFileInfo *wfile;
 	Text::StringBuilderUTF8 sb;
-	DB::DBReader *r = this->db->ExecuteReader(CSTR("select id, eng_name, chi_name, sci_name, group_id, description, dirName, photo, idKey, cate_id, flags, photoId, photoWId, poiImg from species"));
-	if (r != 0)
+	NotNullPtr<DB::DBReader> r;
+	if (r.Set(this->db->ExecuteReader(CSTR("select id, eng_name, chi_name, sci_name, group_id, description, dirName, photo, idKey, cate_id, flags, photoId, photoWId, poiImg from species"))))
 	{
 		while (r->ReadNext())
 		{
@@ -183,8 +182,7 @@ void SSWR::OrganWeb::OrganWebEnv::LoadSpecies()
 		}
 	}
 
-	r = this->db->ExecuteReader(CSTR("select id, species_id, crcVal, imgUrl, srcUrl, prevUpdated, cropLeft, cropTop, cropRight, cropBottom, location from webfile"));
-	if (r != 0)
+	if (r.Set(this->db->ExecuteReader(CSTR("select id, species_id, crcVal, imgUrl, srcUrl, prevUpdated, cropLeft, cropTop, cropRight, cropBottom, location from webfile"))))
 	{
 		while (r->ReadNext())
 		{
@@ -225,8 +223,8 @@ void SSWR::OrganWeb::OrganWebEnv::LoadGroups()
 	DB::SQLBuilder sql(db);
 	sql.AppendCmdC(CSTR("select id, group_type, eng_name, chi_name, description, parent_id, photo_group, photo_species, idKey, cate_id, flags from "));
 	sql.AppendCol((const UTF8Char*)"groups");
-	DB::DBReader *r = db->ExecuteReader(sql.ToCString());
-	if (r != 0)
+	NotNullPtr<DB::DBReader> r;
+	if (r.Set(db->ExecuteReader(sql.ToCString())))
 	{
 		while (r->ReadNext())
 		{
@@ -297,8 +295,8 @@ void SSWR::OrganWeb::OrganWebEnv::LoadBooks()
 	BookSpInfo *bookSp;
 	Data::DateTime dt;
 
-	DB::DBReader *r = this->db->ExecuteReader(CSTR("select id, title, dispAuthor, press, publishDate, url, userfile_id from book"));
-	if (r != 0)
+	NotNullPtr<DB::DBReader> r;
+	if (r.Set(this->db->ExecuteReader(CSTR("select id, title, dispAuthor, press, publishDate, url, userfile_id from book"))))
 	{
 		while (r->ReadNext())
 		{
@@ -316,8 +314,7 @@ void SSWR::OrganWeb::OrganWebEnv::LoadBooks()
 		this->db->CloseReader(r);
 	}
 
-	r = this->db->ExecuteReader(CSTR("select species_id, book_id, dispName from species_book"));
-	if (r != 0)
+	if (r.Set(this->db->ExecuteReader(CSTR("select species_id, book_id, dispName from species_book"))))
 	{
 		while (r->ReadNext())
 		{
@@ -344,8 +341,8 @@ void SSWR::OrganWeb::OrganWebEnv::LoadUsers(NotNullPtr<Sync::RWMutexUsage> mutUs
 	Int32 userId;
 	Text::StringBuilderUTF8 sb;
 	WebUserInfo *user;
-	DB::DBReader *r = this->db->ExecuteReader(CSTR("select id, userName, pwd, watermark, userType from webuser"));
-	if (r != 0)
+	NotNullPtr<DB::DBReader> r;
+	if (r.Set(this->db->ExecuteReader(CSTR("select id, userName, pwd, watermark, userType from webuser"))))
 	{
 		while (r->ReadNext())
 		{
@@ -379,8 +376,7 @@ void SSWR::OrganWeb::OrganWebEnv::LoadUsers(NotNullPtr<Sync::RWMutexUsage> mutUs
 		this->db->CloseReader(r);
 	}
 
-	r = this->db->ExecuteReader(CSTR("select id, fileType, oriFileName, fileTime, lat, lon, webuser_id, species_id, captureTime, dataFileName, crcVal, rotType, prevUpdated, cropLeft, cropTop, cropRight, cropBottom, descript, location from userfile"));
-	if (r != 0)
+	if (r.Set(this->db->ExecuteReader(CSTR("select id, fileType, oriFileName, fileTime, lat, lon, webuser_id, species_id, captureTime, dataFileName, crcVal, rotType, prevUpdated, cropLeft, cropTop, cropRight, cropBottom, descript, location from userfile"))))
 	{
 		UserFileInfo *userFile;
 		SpeciesInfo *species;
@@ -449,8 +445,7 @@ void SSWR::OrganWeb::OrganWebEnv::LoadUsers(NotNullPtr<Sync::RWMutexUsage> mutUs
 		}
 	}
 
-	r = this->db->ExecuteReader(CSTR("select id, fileType, startTime, endTime, oriFileName, dataFileName, webuser_id from datafile order by webuser_id, startTime"));
-	if (r != 0)
+	if (r.Set(this->db->ExecuteReader(CSTR("select id, fileType, startTime, endTime, oriFileName, dataFileName, webuser_id from datafile order by webuser_id, startTime"))))
 	{
 		DataFileInfo *dataFile;
 		user = 0;
@@ -485,8 +480,7 @@ void SSWR::OrganWeb::OrganWebEnv::LoadUsers(NotNullPtr<Sync::RWMutexUsage> mutUs
 		this->db->CloseReader(r);
 	}
 
-	r = this->db->ExecuteReader(CSTR("select fromDate, toDate, locId, cate_id, webuser_id from trip"));
-	if (r != 0)
+	if (r.Set(this->db->ExecuteReader(CSTR("select fromDate, toDate, locId, cate_id, webuser_id from trip"))))
 	{
 		Int32 cateId;
 		Int64 fromDate;
@@ -570,9 +564,9 @@ void SSWR::OrganWeb::OrganWebEnv::LoadUsers(NotNullPtr<Sync::RWMutexUsage> mutUs
 void SSWR::OrganWeb::OrganWebEnv::LoadLocations()
 {
 	LocationInfo *loc;
-	DB::DBReader *r = this->db->ExecuteReader(CSTR("select id, parentId, cname, ename, lat, lon, cate_id, locType from location"));
+	NotNullPtr<DB::DBReader> r;
 	Int32 id;
-	if (r != 0)
+	if (r.Set(this->db->ExecuteReader(CSTR("select id, parentId, cname, ename, lat, lon, cate_id, locType from location"))))
 	{
 		Text::StringBuilderUTF8 sb;
 		while (r->ReadNext())

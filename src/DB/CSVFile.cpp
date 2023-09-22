@@ -63,7 +63,7 @@ DB::CSVFile::~CSVFile()
 	}
 }
 
-UOSInt DB::CSVFile::QueryTableNames(Text::CString schemaName, Data::ArrayListNN<Text::String> *names)
+UOSInt DB::CSVFile::QueryTableNames(Text::CString schemaName, NotNullPtr<Data::ArrayListNN<Text::String>> names)
 {
 	if (schemaName.leng != 0)
 		return 0;
@@ -136,9 +136,9 @@ DB::TableDef *DB::CSVFile::GetTableDef(Text::CString schemaName, Text::CString t
 	return 0;
 }
 
-void DB::CSVFile::CloseReader(DBReader *r)
+void DB::CSVFile::CloseReader(NotNullPtr<DBReader> r)
 {
-	DB::CSVReader *rdr = (DB::CSVReader *)r;
+	DB::CSVReader *rdr = (DB::CSVReader *)r.Ptr();
 	DEL_CLASS(rdr);
 }
 

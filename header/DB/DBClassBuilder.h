@@ -8,7 +8,7 @@ namespace DB
 	class DBClassBuilder
 	{
 	private:
-		Data::Class *cls;
+		NotNullPtr<Data::Class> cls;
 		OSInt currPos;
 	public:
 		DBClassBuilder();
@@ -16,7 +16,7 @@ namespace DB
 
 		void AddItem(const UTF8Char *colName, DB::DBUtil::ColType colType);
 
-		Data::Class *GetResultClass();
+		NotNullPtr<Data::Class> GetResultClass();
 	};
 }
 #endif

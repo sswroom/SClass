@@ -57,8 +57,8 @@ void __stdcall SSWR::AVIRead::AVIRDBExportForm::OnExportClicked(void *userObj)
 			}
 			i++;
 		}
-		DB::DBReader *r = me->db->QueryTableData(me->schema, me->table, &cols, 0, 0, CSTR_NULL, 0);
-		if (r == 0)
+		NotNullPtr<DB::DBReader> r;
+		if (!r.Set(me->db->QueryTableData(me->schema, me->table, &cols, 0, 0, CSTR_NULL, 0)))
 		{
 			UI::MessageDialog::ShowDialog(CSTR("Error in reading table data"), CSTR("Export Table Data"), me);
 			return;
@@ -67,10 +67,11 @@ void __stdcall SSWR::AVIRead::AVIRDBExportForm::OnExportClicked(void *userObj)
 		while (r->ReadNext())
 		{
 			sql.Clear();			
-			DB::SQLGenerator::GenInsertCmd(&sql, sbSchema.ToCString(), sbTable.ToCString(), r);
+			DB::SQLGenerator::GenInsertCmd(sql, sbSchema.ToCString(), sbTable.ToCString(), r);
 			sql.AppendCmdC(CSTR(";\r\n"));
 			fs.Write(sql.ToString(), sql.GetLength());
 		}
+		me->db->CloseReader(r);
 		LIST_FREE_STRING(&cols);
 		me->SetDialogResult(UI::GUIForm::DR_OK);
 	}

@@ -362,7 +362,7 @@ void DB::ReadingDBTool::SetFailTrigger(DB::ReadingDBTool::SQLFailedFunc trig)
 	this->trig = trig;
 }
 
-DB::DBReader *DB::ReadingDBTool::ExecuteReader(Text::CString sqlCmd)
+DB::DBReader *DB::ReadingDBTool::ExecuteReader(Text::CStringNN sqlCmd)
 {
 	if (this->log->HasHandler())
 	{
@@ -421,11 +421,12 @@ DB::DBReader *DB::ReadingDBTool::ExecuteReader(Text::CString sqlCmd)
 		readerFail += 1;
 		if (readerFail >= 2)
 		{
-			if (lastReader)
+			NotNullPtr<DB::DBReader> r;
+			if (r.Set(lastReader))
 			{
 				AddLogMsgC(UTF8STRC("Automatically closed last reader"), IO::LogHandler::LogLevel::Action);
 
-				this->CloseReader(lastReader);
+				this->CloseReader(r);
 			}
 		}
 
@@ -441,14 +442,11 @@ DB::DBReader *DB::ReadingDBTool::ExecuteReader(Text::CString sqlCmd)
 	}
 }
 
-void DB::ReadingDBTool::CloseReader(DB::DBReader *r)
+void DB::ReadingDBTool::CloseReader(NotNullPtr<DB::DBReader> r)
 {
-	if (r)
-	{
-		this->db->CloseReader(r);
-		this->lastReader = 0;
-		this->readerCnt = 0;
-	}
+	this->db->CloseReader(r);
+	this->lastReader = 0;
+	this->readerCnt = 0;
 }
 
 DB::SQLType DB::ReadingDBTool::GetSQLType() const
@@ -633,11 +631,12 @@ DB::DBReader *DB::ReadingDBTool::QueryTableData(Text::CString schemaName, Text::
 		readerFail += 1;
 		if (readerFail >= 2)
 		{
-			if (lastReader)
+			NotNullPtr<DB::DBReader> r;
+			if (r.Set(lastReader))
 			{
 				AddLogMsgC(UTF8STRC("Automatically closed last reader"), IO::LogHandler::LogLevel::Action);
 
-				this->CloseReader(lastReader);
+				this->CloseReader(r);
 			}
 		}
 
@@ -650,7 +649,7 @@ DB::DBReader *DB::ReadingDBTool::QueryTableData(Text::CString schemaName, Text::
 	}
 }
 
-UOSInt DB::ReadingDBTool::QueryTableNames(Text::CString schemaName, Data::ArrayListNN<Text::String> *arr)
+UOSInt DB::ReadingDBTool::QueryTableNames(Text::CString schemaName, NotNullPtr<Data::ArrayListNN<Text::String>> arr)
 {
 	if (this->sqlType == DB::SQLType::MSSQL)
 	{
@@ -665,8 +664,8 @@ UOSInt DB::ReadingDBTool::QueryTableNames(Text::CString schemaName, Data::ArrayL
 		{
 			sql.AppendStrC(schemaName);
 		}
-		DB::DBReader *r = this->ExecuteReader(sql.ToCString());
-		if (r)
+		NotNullPtr<DB::DBReader> r;
+		if (r.Set(this->ExecuteReader(sql.ToCString())))
 		{
 			Text::StringBuilderUTF8 sb;
 			while (r->ReadNext())
@@ -686,8 +685,8 @@ UOSInt DB::ReadingDBTool::QueryTableNames(Text::CString schemaName, Data::ArrayL
 	{
 		if (schemaName.leng != 0)
 			return 0;
-		DB::DBReader *r = this->ExecuteReader(CSTR("show tables"));
-		if (r)
+		NotNullPtr<DB::DBReader> r;
+		if (r.Set(this->ExecuteReader(CSTR("show tables"))))
 		{
 			UOSInt ret = 0;
 			Text::StringBuilderUTF8 sb;
@@ -712,8 +711,8 @@ UOSInt DB::ReadingDBTool::QueryTableNames(Text::CString schemaName, Data::ArrayL
 	{
 		if (schemaName.leng != 0)
 			return 0;
-		DB::DBReader *r = this->ExecuteReader(CSTR("select name from sqlite_master where type = 'table'"));
-		if (r)
+		NotNullPtr<DB::DBReader> r;
+		if (r.Set(this->ExecuteReader(CSTR("select name from sqlite_master where type = 'table'"))))
 		{
 			UOSInt ret = 0;
 			Text::StringBuilderUTF8 sb;
@@ -738,8 +737,8 @@ UOSInt DB::ReadingDBTool::QueryTableNames(Text::CString schemaName, Data::ArrayL
 	{
 		if (schemaName.leng != 0)
 			return 0;
-		DB::DBReader *r = this->ExecuteReader(CSTR("select name, type from MSysObjects where type = 1"));
-		if (r)
+		NotNullPtr<DB::DBReader> r;
+		if (r.Set(this->ExecuteReader(CSTR("select name, type from MSysObjects where type = 1"))))
 		{
 			UOSInt ret = 0;
 			Text::StringBuilderUTF8 sb;
@@ -767,19 +766,18 @@ UOSInt DB::ReadingDBTool::QueryTableNames(Text::CString schemaName, Data::ArrayL
 	}
 }
 
-UOSInt DB::ReadingDBTool::QuerySchemaNames(Data::ArrayList<Text::String *> *arr)
+UOSInt DB::ReadingDBTool::QuerySchemaNames(NotNullPtr<Data::ArrayListNN<Text::String>> arr)
 {
 	if (this->sqlType == DB::SQLType::PostgreSQL)
 	{
-		DB::DBReader *r = this->ExecuteReader(CSTR("SELECT nspname FROM pg_catalog.pg_namespace"));
-		if (r)
+		NotNullPtr<DB::DBReader> r;
+		if (r.Set(this->ExecuteReader(CSTR("SELECT nspname FROM pg_catalog.pg_namespace"))))
 		{
 			UOSInt ret = 0;
-			Text::String *s;
+			NotNullPtr<Text::String> s;
 			while (r->ReadNext())
 			{
-				s = r->GetNewStr(0);
-				if (s)
+				if (s.Set(r->GetNewStr(0)))
 				{
 					arr->Add(s);
 					ret++;
@@ -795,15 +793,14 @@ UOSInt DB::ReadingDBTool::QuerySchemaNames(Data::ArrayList<Text::String *> *arr)
 	}
 	else if (this->sqlType == DB::SQLType::MSSQL)
 	{
-		DB::DBReader *r = this->ExecuteReader(CSTR("select s.name from sys.schemas s"));
-		if (r)
+		NotNullPtr<DB::DBReader> r;
+		if (r.Set(this->ExecuteReader(CSTR("select s.name from sys.schemas s"))))
 		{
 			UOSInt ret = 0;
-			Text::String *s;
+			NotNullPtr<Text::String> s;
 			while (r->ReadNext())
 			{
-				s = r->GetNewStr(0);
-				if (s)
+				if (s.Set(r->GetNewStr(0)))
 				{
 					arr->Add(s);
 					ret++;
@@ -831,12 +828,11 @@ DB::TableDef *DB::ReadingDBTool::GetTableDef(Text::CString schemaName, Text::CSt
 
 UOSInt DB::ReadingDBTool::GetDatabaseNames(Data::ArrayListNN<Text::String> *arr)
 {
+	NotNullPtr<DB::DBReader> r;
 	switch (this->sqlType)
 	{
 	case DB::SQLType::MSSQL:
-	{
-		DB::DBReader *r = this->ExecuteReader(CSTR("select name from master.dbo.sysdatabases"));
-		if (r)
+		if (r.Set(this->ExecuteReader(CSTR("select name from master.dbo.sysdatabases"))))
 		{
 			UOSInt ret = 0;
 			Text::StringBuilderUTF8 sb;
@@ -856,11 +852,8 @@ UOSInt DB::ReadingDBTool::GetDatabaseNames(Data::ArrayListNN<Text::String> *arr)
 		{
 			return 0;
 		}
-	}
 	case DB::SQLType::MySQL:
-	{
-		DB::DBReader *r = this->ExecuteReader(CSTR("show databases"));
-		if (r)
+		if (r.Set(this->ExecuteReader(CSTR("show databases"))))
 		{
 			UOSInt ret = 0;
 			Text::StringBuilderUTF8 sb;
@@ -880,7 +873,6 @@ UOSInt DB::ReadingDBTool::GetDatabaseNames(Data::ArrayListNN<Text::String> *arr)
 		{
 			return 0;
 		}
-	}
 	case DB::SQLType::SQLite:
 	{
 		Text::StringBuilderUTF8 sb;
@@ -896,9 +888,7 @@ UOSInt DB::ReadingDBTool::GetDatabaseNames(Data::ArrayListNN<Text::String> *arr)
 		return 1;
 	}
 	case DB::SQLType::PostgreSQL:
-	{
-		DB::DBReader *r = this->ExecuteReader(CSTR("SELECT datname FROM pg_database"));
-		if (r)
+		if (r.Set(this->ExecuteReader(CSTR("SELECT datname FROM pg_database"))))
 		{
 			UOSInt ret = 0;
 			Text::StringBuilderUTF8 sb;
@@ -918,7 +908,6 @@ UOSInt DB::ReadingDBTool::GetDatabaseNames(Data::ArrayListNN<Text::String> *arr)
 		{
 			return 0;
 		}
-	}
 	case DB::SQLType::Oracle:
 	case DB::SQLType::Unknown:
 	case DB::SQLType::Access:
@@ -940,8 +929,8 @@ Bool DB::ReadingDBTool::ChangeDatabase(Text::CString databaseName)
 	if (this->sqlType == DB::SQLType::MSSQL)
 	{
 		UTF8Char *sptr = this->DBColUTF8(Text::StrConcatC(sbuff, UTF8STRC("use ")), databaseName.v);
-		DB::DBReader *r = this->ExecuteReader(CSTRP(sbuff, sptr));
-		if (r)
+		NotNullPtr<DB::DBReader> r;
+		if (r.Set(this->ExecuteReader(CSTRP(sbuff, sptr))))
 		{
 			OSInt rowChg = r->GetRowChanged();
 			this->CloseReader(r);
@@ -961,8 +950,8 @@ Bool DB::ReadingDBTool::ChangeDatabase(Text::CString databaseName)
 	else if (this->sqlType == DB::SQLType::MySQL)
 	{
 		UTF8Char *sptr = this->DBColUTF8(Text::StrConcatC(sbuff, UTF8STRC("use ")), databaseName.v);
-		DB::DBReader *r = this->ExecuteReader(CSTRP(sbuff, sptr));
-		if (r)
+		NotNullPtr<DB::DBReader> r;
+		if (r.Set(this->ExecuteReader(CSTRP(sbuff, sptr))))
 		{
 			OSInt rowChg = r->GetRowChanged();
 			this->CloseReader(r);
@@ -996,8 +985,8 @@ Bool DB::ReadingDBTool::ChangeDatabase(Text::CString databaseName)
 			return false;
 		}
 		UTF8Char *sptr = this->DBStrUTF8(Text::StrConcatC(sbuff, UTF8STRC("SET search_path = ")), databaseName.v);
-		DB::DBReader *r = this->ExecuteReader(CSTRP(sbuff, sptr));
-		if (r)
+		NotNullPtr<DB::DBReader> r;
+		if (r.Set(this->ExecuteReader(CSTRP(sbuff, sptr))))
 		{
 			OSInt rowChg = r->GetRowChanged();
 			this->CloseReader(r);
@@ -1024,15 +1013,14 @@ Text::String *DB::ReadingDBTool::GetCurrDBName()
 
 Bool DB::ReadingDBTool::GetDBCollation(Text::CString databaseName, Collation *collation)
 {
-	DB::DBReader *r;
+	NotNullPtr<DB::DBReader> r;
 	if (this->sqlType == DB::SQLType::MySQL)
 	{
 		Bool succ = false;
 		DB::SQLBuilder sql(this->sqlType, this->axisAware, this->GetTzQhr());
 		sql.AppendCmdC(CSTR("select DEFAULT_COLLATION_NAME from information_schema.SCHEMATA where SCHEMA_NAME = "));
 		sql.AppendStrC(databaseName);
-		r = this->ExecuteReader(sql.ToCString());
-		if (r)
+		if (r.Set(this->ExecuteReader(sql.ToCString())))
 		{
 			if (r->ReadNext())
 			{
@@ -1053,11 +1041,10 @@ Bool DB::ReadingDBTool::GetDBCollation(Text::CString databaseName, Collation *co
 UOSInt DB::ReadingDBTool::GetVariables(Data::ArrayList<Data::TwinItem<Text::String*, Text::String*>> *vars)
 {
 	UOSInt ret = 0;
-	DB::DBReader *r;
+	NotNullPtr<DB::DBReader> r;
 	if (this->sqlType == DB::SQLType::MySQL)
 	{
-		r = this->ExecuteReader(CSTR("show variables"));
-		if (r)
+		if (r.Set(this->ExecuteReader(CSTR("show variables"))))
 		{
 			NotNullPtr<Text::String> name;
 			while (r->ReadNext())
@@ -1071,8 +1058,7 @@ UOSInt DB::ReadingDBTool::GetVariables(Data::ArrayList<Data::TwinItem<Text::Stri
 	}
 	else if (this->sqlType == DB::SQLType::MSSQL)
 	{
-		r = this->ExecuteReader(CSTR("select @@CONNECTIONS, @@CPU_BUSY, @@IDLE, @@IO_BUSY, @@PACKET_ERRORS, @@PACK_RECEIVED, @@PACK_SENT, @@TIMETICKS, @@TOTAL_ERRORS, @@TOTAL_READ, @@TOTAL_WRITE, @@DATEFIRST, @@DBTS, @@LANGID, @@LANGUAGE, @@LOCK_TIMEOUT, @@MAX_CONNECTIONS, @@MAX_PRECISION, @@NESTLEVEL, @@OPTIONS, @@REMSERVER, @@SERVERNAME, @@SERVICENAME, @@SPID, @@TEXTSIZE, @@VERSION"));
-		if (r)
+		if (r.Set(this->ExecuteReader(CSTR("select @@CONNECTIONS, @@CPU_BUSY, @@IDLE, @@IO_BUSY, @@PACKET_ERRORS, @@PACK_RECEIVED, @@PACK_SENT, @@TIMETICKS, @@TOTAL_ERRORS, @@TOTAL_READ, @@TOTAL_WRITE, @@DATEFIRST, @@DBTS, @@LANGID, @@LANGUAGE, @@LOCK_TIMEOUT, @@MAX_CONNECTIONS, @@MAX_PRECISION, @@NESTLEVEL, @@OPTIONS, @@REMSERVER, @@SERVERNAME, @@SERVICENAME, @@SPID, @@TEXTSIZE, @@VERSION"))))
 		{
 			if (r->ReadNext())
 			{
@@ -1109,8 +1095,7 @@ UOSInt DB::ReadingDBTool::GetVariables(Data::ArrayList<Data::TwinItem<Text::Stri
 	}
 	else if (this->sqlType == DB::SQLType::PostgreSQL)
 	{
-		r = this->ExecuteReader(CSTR("select name, setting from pg_Settings"));
-		if (r)
+		if (r.Set(this->ExecuteReader(CSTR("select name, setting from pg_Settings"))))
 		{
 			NotNullPtr<Text::String> name;
 			while (r->ReadNext())
@@ -1142,11 +1127,10 @@ UOSInt DB::ReadingDBTool::GetConnectionInfo(Data::ArrayList<ConnectionInfo *> *c
 {
 	UOSInt ret = 0;
 	ConnectionInfo *conn;
-	DB::DBReader *r;
+	NotNullPtr<DB::DBReader> r;
 	if (this->sqlType == DB::SQLType::MySQL)
 	{
-		r = this->ExecuteReader(CSTR("show processlist"));
-		if (r)
+		if (r.Set(this->ExecuteReader(CSTR("show processlist"))))
 		{
 			while (r->ReadNext())
 			{
@@ -1167,8 +1151,7 @@ UOSInt DB::ReadingDBTool::GetConnectionInfo(Data::ArrayList<ConnectionInfo *> *c
 	}
 	else if (this->sqlType == DB::SQLType::MSSQL)
 	{
-		r = this->ExecuteReader(CSTR("exec sp_who"));
-		if (r)
+		if (r.Set(this->ExecuteReader(CSTR("exec sp_who"))))
 		{
 			while (r->ReadNext())
 			{
@@ -1189,8 +1172,7 @@ UOSInt DB::ReadingDBTool::GetConnectionInfo(Data::ArrayList<ConnectionInfo *> *c
 	}
 	else if (this->sqlType == DB::SQLType::PostgreSQL)
 	{
-		r = this->ExecuteReader(CSTR("select pid, state, usename, client_addr, datname, wait_event, query from pg_stat_activity"));
-		if (r)
+		if (r.Set(this->ExecuteReader(CSTR("select pid, state, usename, client_addr, datname, wait_event, query from pg_stat_activity"))))
 		{
 			while (r->ReadNext())
 			{

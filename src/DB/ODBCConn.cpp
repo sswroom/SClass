@@ -112,8 +112,8 @@ void DB::ODBCConn::UpdateConnInfo()
 
 	if (this->sqlType == DB::SQLType::MSSQL)
 	{
-		DB::DBReader *r = this->ExecuteReader(CSTR("select getdate(), GETUTCDATE()"));
-		if (r)
+		NotNullPtr<DB::DBReader> r;
+		if (r.Set(this->ExecuteReader(CSTR("select getdate(), GETUTCDATE()"))))
 		{
 			r->ReadNext();
 			Data::Timestamp ts1 = r->GetTimestamp(0);
@@ -124,8 +124,8 @@ void DB::ODBCConn::UpdateConnInfo()
 	}
 	else if (this->sqlType == DB::SQLType::MySQL)
 	{
-		DB::DBReader *r = this->ExecuteReader(CSTR("SELECT VERSION()"));
-		if (r)
+		NotNullPtr<DB::DBReader> r;
+		if (r.Set(this->ExecuteReader(CSTR("SELECT VERSION()"))))
 		{
 			r->ReadNext();
 			Text::String *s = r->GetNewStr(0);
@@ -512,7 +512,7 @@ void DB::ODBCConn::Dispose()
 	delete this;
 }
 
-OSInt DB::ODBCConn::ExecuteNonQuery(Text::CString sql)
+OSInt DB::ODBCConn::ExecuteNonQuery(Text::CStringNN sql)
 {
 	if (this->connHand == 0)
 	{
@@ -623,7 +623,7 @@ OSInt DB::ODBCConn::ExecuteNonQuery(Text::CString sql)
 	return rowCnt;
 }*/
 
-DB::DBReader *DB::ODBCConn::ExecuteReader(Text::CString sql)
+DB::DBReader *DB::ODBCConn::ExecuteReader(Text::CStringNN sql)
 {
 	if (this->connHand == 0)
 	{
@@ -729,13 +729,10 @@ DB::DBReader *DB::ODBCConn::ExecuteReader(Text::CString sql)
 	return r;
 }*/
 
-void DB::ODBCConn::CloseReader(DB::DBReader *r)
+void DB::ODBCConn::CloseReader(NotNullPtr<DB::DBReader> r)
 {
-	if (r)
-	{
-		DB::ODBCReader *rdr = (DB::ODBCReader*)r;
-		DEL_CLASS(rdr);
-	}
+	DB::ODBCReader *rdr = (DB::ODBCReader*)r.Ptr();
+	DEL_CLASS(rdr);
 }
 
 void DB::ODBCConn::GetLastErrorMsg(NotNullPtr<Text::StringBuilderUTF8> str)
@@ -977,15 +974,15 @@ DB::DBReader *DB::ODBCConn::GetTablesInfo(Text::CString schemaName)
 	return r;
 }
 
-UOSInt DB::ODBCConn::QueryTableNames(Text::CString schemaName, Data::ArrayListNN<Text::String> *names)
+UOSInt DB::ODBCConn::QueryTableNames(Text::CString schemaName, NotNullPtr<Data::ArrayListNN<Text::String>> names)
 {
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
 //		ShowTablesCmd(sbuff);
 //		DB::ReadingDB::DBReader *rdr = this->ExecuteReader(sbuff);
 	UOSInt initCnt = names->GetCount();
-	DB::DBReader *rdr = this->GetTablesInfo(schemaName);
-	if (rdr)
+	NotNullPtr<DB::DBReader> rdr;
+	if (rdr.Set(this->GetTablesInfo(schemaName)))
 	{
 		sbuff[0] = 0;
 		while (rdr->ReadNext())

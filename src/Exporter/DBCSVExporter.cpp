@@ -59,9 +59,8 @@ Bool Exporter::DBCSVExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Tex
 		name = dbParam->names.GetItem(dbParam->tableIndex);
 	}
 	DB::ReadingDB *db = (DB::ReadingDB*)pobj;
-	DB::DBReader *r;
-	r = db->QueryTableData(CSTR_NULL, STR_CSTR(name), 0, 0, 0, CSTR_NULL, 0);
-	if (r == 0)
+	NotNullPtr<DB::DBReader> r;
+	if (!r.Set(db->QueryTableData(CSTR_NULL, STR_CSTR(name), 0, 0, 0, CSTR_NULL, 0)))
 	{
 		return false;
 	}
@@ -153,7 +152,7 @@ void *Exporter::DBCSVExporter::CreateParam(IO::ParsedObject *pobj)
 	DBParam *param;
 	NEW_CLASS(param, DBParam());
 	param->db = (DB::ReadingDB *)pobj;
-	param->db->QueryTableNames(CSTR_NULL, &param->names);
+	param->db->QueryTableNames(CSTR_NULL, param->names);
 	param->tableIndex = 0;
 	return param;
 }

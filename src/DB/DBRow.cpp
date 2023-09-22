@@ -346,7 +346,7 @@ DB::DBRow::~DBRow()
 	LIST_CALL_FUNC(fieldList, this->FreeField);
 }
 
-Bool DB::DBRow::SetByReader(DB::DBReader *r, Bool commit)
+Bool DB::DBRow::SetByReader(NotNullPtr<DB::DBReader> r, Bool commit)
 {
 	DB::ColDef *col;
 	DB::DBRow::Field *field;

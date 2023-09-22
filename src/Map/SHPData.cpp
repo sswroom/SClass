@@ -622,7 +622,7 @@ Math::Geometry::Vector2D *Map::SHPData::GetNewVectorById(GetObjectSess *session,
 	}
 }
 
-UOSInt Map::SHPData::QueryTableNames(Text::CString schemaName, Data::ArrayListNN<Text::String> *names)
+UOSInt Map::SHPData::QueryTableNames(Text::CString schemaName, NotNullPtr<Data::ArrayListNN<Text::String>> names)
 {
 	return this->dbf->QueryTableNames(schemaName, names);
 }
@@ -637,7 +637,7 @@ DB::TableDef *Map::SHPData::GetTableDef(Text::CString schemaName, Text::CString 
 	return this->dbf->GetTableDef(schemaName, tableName);
 }
 
-void Map::SHPData::CloseReader(DB::DBReader *r)
+void Map::SHPData::CloseReader(NotNullPtr<DB::DBReader> r)
 {
 	this->dbf->CloseReader(r);
 }

@@ -26,8 +26,9 @@ Bool Map::GeoPackageLayer::StringSessGoRow(StringSession *sess, UOSInt index)
 	}
 	else if (sess->thisId > index)
 	{
-		if (sess->r)
-			this->gpkg->CloseReader(sess->r);
+		NotNullPtr<DB::DBReader> r;
+		if (r.Set(sess->r))
+			this->gpkg->CloseReader(r);
 		sess->r = this->gpkg->QueryTableData(CSTR_NULL, this->layerContent->tableName->ToCString(), 0, index, 0, CSTR_NULL, 0);
 		if (sess->r && sess->r->ReadNext())
 		{
@@ -76,8 +77,8 @@ Map::GeoPackageLayer::GeoPackageLayer(Map::GeoPackage *gpkg, Map::GeoPackage::Co
 
 		if (this->geomCol != INVALID_INDEX)
 		{
-			DB::DBReader *r = this->gpkg->QueryTableData(CSTR_NULL, this->layerContent->tableName->ToCString(), 0, 0, 0, CSTR_NULL, 0);
-			if (r)
+			NotNullPtr<DB::DBReader> r;
+			if (r.Set(this->gpkg->QueryTableData(CSTR_NULL, this->layerContent->tableName->ToCString(), 0, 0, 0, CSTR_NULL, 0)))
 			{
 				while (r->ReadNext())
 				{
@@ -222,7 +223,8 @@ void Map::GeoPackageLayer::ReleaseNameArr(NameArray *nameArr)
 	StringSession *sess = (StringSession*)nameArr;
 	if (sess)
 	{
-		if (sess->r) this->gpkg->CloseReader(sess->r);
+		NotNullPtr<DB::DBReader> r;
+		if (r.Set(sess->r)) this->gpkg->CloseReader(r);
 		MemFree(sess);
 	}
 }
@@ -306,7 +308,7 @@ Math::Geometry::Vector2D *Map::GeoPackageLayer::GetNewVectorById(GetObjectSess *
 	return 0;
 }
 
-UOSInt Map::GeoPackageLayer::QueryTableNames(Text::CString schemaName, Data::ArrayListNN<Text::String> *names)
+UOSInt Map::GeoPackageLayer::QueryTableNames(Text::CString schemaName, NotNullPtr<Data::ArrayListNN<Text::String>> names)
 {
 	return this->gpkg->QueryTableNames(schemaName, names);
 }
@@ -321,7 +323,7 @@ DB::TableDef *Map::GeoPackageLayer::GetTableDef(Text::CString schemaName, Text::
 	return this->gpkg->GetTableDef(schemaName, tableName);
 }
 
-void Map::GeoPackageLayer::CloseReader(DB::DBReader *r)
+void Map::GeoPackageLayer::CloseReader(NotNullPtr<DB::DBReader> r)
 {
 	this->gpkg->CloseReader(r);
 }

@@ -179,13 +179,13 @@ Bool InZone(Data::ArrayList<Double> *lats, Data::ArrayList<Double> *lons, Math::
 
 Int32 InPolygonTest()
 {
-	Text::CString latStr = CSTR("22.362539668716,22.35545519929,22.354899539392,22.356447443597,22.361984037077,22.362738108049");
-	Text::CString lonStr = CSTR("114.08715410232,114.08588809966,114.09921331405,114.11195917129,114.11129398346,114.08721847534");
+	Text::CStringNN latStr = CSTR("22.362539668716,22.35545519929,22.354899539392,22.356447443597,22.361984037077,22.362738108049");
+	Text::CStringNN lonStr = CSTR("114.08715410232,114.08588809966,114.09921331405,114.11195917129,114.11129398346,114.08721847534");
 	Double lat = 22.361138;
 	Double lon = 114.09073483333;
 	Data::ArrayList<Double> lats;
 	Data::ArrayList<Double> lons;
-	if (Text::StringTool::SplitAsDouble(latStr, ',', &lats) && Text::StringTool::SplitAsDouble(lonStr, ',', &lons))
+	if (Text::StringTool::SplitAsDouble(latStr, ',', lats) && Text::StringTool::SplitAsDouble(lonStr, ',', lons))
 	{
 		printf("InPolygon = %d\r\n", InZone(&lats, &lons, Math::Coord2DDbl(lon, lat))?1:0);
 	}

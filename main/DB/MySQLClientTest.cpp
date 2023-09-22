@@ -382,8 +382,8 @@ IO::ConsoleWriter *console;
 void TextReadAll(DB::DBTool *db)
 {
 	Data::ArrayList<Userfile*> dataList;
-	DB::DBReader *r = db->QueryTableData(CSTR_NULL, CSTR("userfile"), 0, 0, 0, CSTR_NULL, 0);
-	if (r)
+	NotNullPtr<DB::DBReader> r;
+	if (r.Set(db->QueryTableData(CSTR_NULL, CSTR("userfile"), 0, 0, 0, CSTR_NULL, 0)))
 	{
 		Data::NamedClass<Userfile> *cls = Userfile().CreateClass();
 		{
@@ -412,8 +412,8 @@ void TestBinaryRead(DB::DBTool *db)
 {
 	Data::ArrayList<Userfile*> dataList;
 	Net::MySQLTCPClient *conn = (Net::MySQLTCPClient*)db->GetDBConn();
-	DB::DBReader *r = conn->ExecuteReaderBinary(CSTR("select * from userfile"));
-	if (r)
+	NotNullPtr<DB::DBReader> r;
+	if (r.Set(conn->ExecuteReaderBinary(CSTR("select * from userfile"))))
 	{
 		Data::NamedClass<Userfile> *cls = Userfile().CreateClass();
 		{
@@ -463,8 +463,8 @@ void TempTest(NotNullPtr<Net::SocketFactory> sockf, IO::Writer *console)
 	db = Net::MySQLTCPClient::CreateDBTool(sockf, mysqlServer, mysqlDB, mysqlUID, mysqlPWD, log, CSTR("DB: "));
 	if (db)
 	{
-		DB::DBReader *r = db->ExecuteReader(CSTR("select id, time1, time2 from test"));
-		if (r)
+		NotNullPtr<DB::DBReader> r;
+		if (r.Set(db->ExecuteReader(CSTR("select id, time1, time2 from test"))))
 		{
 			UTF8Char sbuff[64];
 			UTF8Char *sptr;

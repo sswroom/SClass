@@ -3,7 +3,7 @@
 #include "Text/MyString.h"
 #include "DB/ColDef.h"
 
-void DB::ColDef::AppendDefVal(DB::SQLBuilder *sql, Text::CString defVal, UOSInt colSize)
+void DB::ColDef::AppendDefVal(NotNullPtr<DB::SQLBuilder> sql, Text::CStringNN defVal, UOSInt colSize)
 {
 	if (defVal.StartsWith(UTF8STRC("b'")))
 	{
@@ -168,7 +168,7 @@ Text::String *DB::ColDef::GetAttr() const
 	return this->attr;
 }
 
-Bool DB::ColDef::GetDefVal(DB::SQLBuilder *sql) const
+Bool DB::ColDef::GetDefVal(NotNullPtr<DB::SQLBuilder> sql) const
 {
 	if (this->defVal == 0)
 		return false;

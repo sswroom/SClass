@@ -67,11 +67,11 @@ namespace Map
 		class ESRIMDBReader : public DB::DBReader
 		{
 		private:
-			DB::DBConn *conn;
-			DB::DBReader *r;
+			NotNullPtr<DB::DBConn> conn;
+			NotNullPtr<DB::DBReader> r;
 			NotNullPtr<Sync::MutexUsage> mutUsage;
 		public:
-			ESRIMDBReader(DB::DBConn *conn, DB::DBReader *r, NotNullPtr<Sync::MutexUsage> mutUsage);
+			ESRIMDBReader(NotNullPtr<DB::DBConn> conn, NotNullPtr<DB::DBReader> r, NotNullPtr<Sync::MutexUsage> mutUsage);
 			virtual ~ESRIMDBReader();
 
 			virtual Bool ReadNext();

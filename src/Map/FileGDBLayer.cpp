@@ -9,8 +9,8 @@ Data::FastMap<Int32, const UTF8Char **> *Map::FileGDBLayer::ReadNameArr()
 	UTF8Char sbuff[512];
 	Sync::MutexUsage mutUsage;
 	this->currDB = this->conn->UseDB(mutUsage).Ptr();
-	DB::DBReader *r = this->currDB->QueryTableData(CSTR_NULL, tableName->ToCString(), 0, 0, 0, 0, 0);
-	if (r)
+	NotNullPtr<DB::DBReader> r;
+	if (r.Set(this->currDB->QueryTableData(CSTR_NULL, tableName->ToCString(), 0, 0, 0, 0, 0)))
 	{
 		Data::FastMap<Int32, const UTF8Char **> *nameArr;
 		const UTF8Char **names;
@@ -73,8 +73,8 @@ Map::FileGDBLayer::FileGDBLayer(DB::SharedReadingDB *conn, Text::CStringNN sourc
 	Sync::MutexUsage mutUsage;
 	this->currDB = this->conn->UseDB(mutUsage).Ptr();
 	this->csys = Math::CoordinateSystemManager::CreateDefaultCsys();
-	DB::DBReader *r = this->currDB->QueryTableData(CSTR_NULL, tableName, 0, 0, 0, 0, 0);
-	if (r)
+	NotNullPtr<DB::DBReader> r;
+	if (r.Set(this->currDB->QueryTableData(CSTR_NULL, tableName, 0, 0, 0, 0, 0)))
 	{
 		UOSInt i;
 		UOSInt j;
@@ -348,13 +348,14 @@ DB::DBReader *Map::FileGDBLayer::QueryTableData(Text::CString schemaName, Text::
 {
 	NotNullPtr<Sync::MutexUsage> mutUsage;
 	NEW_CLASSNN(mutUsage, Sync::MutexUsage());
-	this->currDB = this->conn->UseDB(mutUsage).Ptr();
+	NotNullPtr<DB::ReadingDB> currDB = this->conn->UseDB(mutUsage);
+	this->currDB = currDB.Ptr();
 	this->lastDB = this->currDB;
-	DB::DBReader *rdr = this->currDB->QueryTableData(schemaName, tableName, columnNames, ofst, maxCnt, ordering, condition);
-	if (rdr)
+	NotNullPtr<DB::DBReader> rdr;
+	if (rdr.Set(this->currDB->QueryTableData(schemaName, tableName, columnNames, ofst, maxCnt, ordering, condition)))
 	{
 		Map::FileGDBLReader *r;
-		NEW_CLASS(r, Map::FileGDBLReader(this->currDB, rdr, mutUsage));
+		NEW_CLASS(r, Map::FileGDBLReader(currDB, rdr, mutUsage));
 		return r;
 	}
 	mutUsage.Delete();
@@ -397,7 +398,7 @@ Map::MapDrawLayer::ObjectClass Map::FileGDBLayer::GetObjectClass() const
 	return Map::MapDrawLayer::OC_ESRI_MDB_LAYER;
 }
 
-Map::FileGDBLReader::FileGDBLReader(DB::ReadingDB *conn, DB::DBReader *r, NotNullPtr<Sync::MutexUsage> mutUsage)
+Map::FileGDBLReader::FileGDBLReader(NotNullPtr<DB::ReadingDB> conn, NotNullPtr<DB::DBReader> r, NotNullPtr<Sync::MutexUsage> mutUsage)
 {
 	this->conn = conn;
 	this->r = r;

@@ -30,7 +30,7 @@ IO::FileExporter::SupportType Exporter::DBFExporter::IsObjectSupported(IO::Parse
 	DB::ReadingDB *conn = (DB::ReadingDB *)pobj;
 	UOSInt tableCnt;
 	Data::ArrayListNN<Text::String> tableNames;
-	conn->QueryTableNames(CSTR_NULL, &tableNames);
+	conn->QueryTableNames(CSTR_NULL, tableNames);
 	tableCnt = tableNames.GetCount();
 	LIST_FREE_STRING(&tableNames);
 	if (tableCnt == 1)
@@ -64,7 +64,7 @@ Bool Exporter::DBFExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text:
 	DB::ReadingDB *conn = (DB::ReadingDB *)pobj;
 	UOSInt tableCnt;
 	Data::ArrayListNN<Text::String> tableNames;
-	conn->QueryTableNames(CSTR_NULL, &tableNames);
+	conn->QueryTableNames(CSTR_NULL, tableNames);
 	tableCnt = tableNames.GetCount();
 	if (tableCnt != 1)
 	{
@@ -73,12 +73,13 @@ Bool Exporter::DBFExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text:
 	}
 	Text::String *tableName = tableNames.GetItem(0);
 
-	DB::DBReader *r = conn->QueryTableData(CSTR_NULL, tableName->ToCString(), 0, 0, 0, CSTR_NULL, 0);
-	tableName->Release();
-	if (r == 0)
+	NotNullPtr<DB::DBReader> r;
+	if (!r.Set(conn->QueryTableData(CSTR_NULL, tableName->ToCString(), 0, 0, 0, CSTR_NULL, 0)))
 	{
+		tableName->Release();
 		return false;
 	}
+	tableName->Release();
 	UOSInt nCol;
 
 	Text::String **colNames;

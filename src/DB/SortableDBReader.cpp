@@ -23,8 +23,8 @@ DB::SortableDBReader::SortableDBReader(DB::ReadingDB *db, Text::CString schemaNa
 	Data::VariObject *obj;
 	if (colNames == 0 || colNames->GetCount() == 0)
 	{
-		DB::DBReader *r = db->QueryTableData(schemaName, tableName, 0, 0, 0, CSTR_NULL, 0);
-		if (r == 0)
+		NotNullPtr<DB::DBReader> r;
+		if (!r.Set(db->QueryTableData(schemaName, tableName, 0, 0, 0, CSTR_NULL, 0)))
 		{
 			return;
 		}
@@ -86,8 +86,8 @@ DB::SortableDBReader::SortableDBReader(DB::ReadingDB *db, Text::CString schemaNa
 				i++;
 			}
 		}
-		DB::DBReader *r = db->QueryTableData(schemaName, tableName, &dbColNames, 0, 0, CSTR_NULL, 0);
-		if (r == 0)
+		NotNullPtr<DB::DBReader> r;
+		if (!r.Set(db->QueryTableData(schemaName, tableName, &dbColNames, 0, 0, CSTR_NULL, 0)))
 		{
 			return;
 		}

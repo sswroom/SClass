@@ -63,7 +63,7 @@ namespace SSWR
 			static void __stdcall OnStartClicked(void *userObj);
 			static void __stdcall OnQueryClicked(void *userObj);
 			static void __stdcall OnTimerTick(void *userObj);
-			void UpdateResult(DB::DBReader *r);
+			void UpdateResult(NotNullPtr<DB::DBReader> r);
 		public:
 			AVIRMySQLClientForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRMySQLClientForm();

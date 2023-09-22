@@ -44,17 +44,17 @@ namespace DB
 		virtual void ForceTz(Int8 tzQhr);
 		virtual void GetConnName(NotNullPtr<Text::StringBuilderUTF8> sb);
 		virtual void Close();
-		virtual OSInt ExecuteNonQuery(Text::CString sql);
+		virtual OSInt ExecuteNonQuery(Text::CStringNN sql);
 //		virtual OSInt ExecuteNonQuery(const WChar *sql);
 		virtual void GetLastErrorMsg(NotNullPtr<Text::StringBuilderUTF8> str);
 		virtual Bool IsLastDataError();
 		virtual void Reconnect();
 
-		virtual UOSInt QueryTableNames(Text::CString schemaName, Data::ArrayListNN<Text::String> *names);
+		virtual UOSInt QueryTableNames(Text::CString schemaName, NotNullPtr<Data::ArrayListNN<Text::String>> names);
 		virtual DBReader *QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListNN<Text::String> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition);
-		virtual DBReader *ExecuteReader(Text::CString sql);
+		virtual DBReader *ExecuteReader(Text::CStringNN sql);
 //		virtual DBReader *ExecuteReader(const WChar *sql);
-		virtual void CloseReader(DBReader *r);
+		virtual void CloseReader(NotNullPtr<DBReader> r);
 
 		virtual void *BeginTransaction();
 		virtual void Commit(void *tran);
