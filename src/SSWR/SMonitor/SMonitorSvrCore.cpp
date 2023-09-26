@@ -419,6 +419,14 @@ void __stdcall SSWR::SMonitor::SMonitorSvrCore::OnNotifyUDPPacket(NotNullPtr<con
 				{
 					me->NewNotify(addr, port, ts, buff[16], ReadUInt32(&buff[17]), Text::CString(&buff[21], dataSize - 25));
 				}
+				else
+				{
+					me->log.LogMessage(CSTR("Not: Time invalid"), IO::LogHandler::LogLevel::Action);
+				}
+			}
+			else
+			{
+				me->log.LogMessage(CSTR("Not: CRC invalid"), IO::LogHandler::LogLevel::Action);
 			}
 		}
 	}

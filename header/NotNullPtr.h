@@ -2,11 +2,22 @@
 #define _SM_NOTNULLPTR
 #include <stdio.h>
 
-template <typename T> struct NotNullPtr
+struct NotNullAny
+{
+protected:
+	const void *p;
+
+	NotNullAny() = default;
+public:
+	const void *Ptr()
+	{
+		return this->p;
+	}
+};
+
+template <typename T> struct NotNullPtr : public NotNullAny
 {
 private:
-	T* p;
-
 	NotNullPtr(T *p)
 	{
 		this->SetPtr(p);
@@ -31,12 +42,12 @@ public:
 
 	T *Ptr() const
 	{
-		return this->p;
+		return (T*)this->p;
 	}
 
 	T* operator->() const
 	{
-        return this->p;
+        return (T*)this->p;
     }
 
 	Bool operator==(const NotNullPtr<T> &p)
@@ -56,7 +67,7 @@ public:
 
 	void Set(const T &v)
 	{
-		*this->p = v;
+		*(T*)this->p = v;
 	}
 
 	void SetPtr(T *p)
@@ -80,13 +91,22 @@ public:
 
 	void Delete()
 	{
-		delete this->p;
+		T *p = (T*)this->p;
+		delete p;
 	}
 
 	static NotNullPtr<T> FromPtr(T *p)
 	{
 		return NotNullPtr<T>(p);
 	}
+
+	static NotNullPtr<T> ConvertFrom(NotNullAny ptr)
+	{
+		NotNullPtr<T> ret;
+		ret.p = (T*)ptr.Ptr();
+		return ret;
+	}
+
 	template <typename V> static NotNullPtr<T> ConvertFrom(NotNullPtr<V> ptr)
 	{
 		NotNullPtr<T> ret;
