@@ -62,7 +62,7 @@ Bool Net::DNSHandler::GetByDomainNamev4(NotNullPtr<Net::SocketUtil::AddressInfo>
 	{
 		if (dnsStat->timeout.IsNull())
 		{
-			addr.Set(dnsStat->addr);
+			addr.SetVal(dnsStat->addr);
 			return true;
 		}
 		else
@@ -88,7 +88,7 @@ Bool Net::DNSHandler::GetByDomainNamev4(NotNullPtr<Net::SocketUtil::AddressInfo>
 				ans = dnsStat->answers.GetItem(i);
 				if (ans->addr.addrType != Net::AddrType::Unknown && ans->recType == 1)
 				{
-					addr.Set(ans->addr);
+					addr.SetVal(ans->addr);
 					if (newReq)
 					{
 						dnsStat->timeout = currTime.AddSecond((OSInt)ans->ttl);
@@ -114,7 +114,7 @@ Bool Net::DNSHandler::GetByDomainNamev4(NotNullPtr<Net::SocketUtil::AddressInfo>
 		ans = dnsStat->answers.GetItem(i);
 		if (ans->addr.addrType != Net::AddrType::Unknown && ans->recType == 1)
 		{
-			addr.Set(ans->addr);
+			addr.SetVal(ans->addr);
 			dnsStat->timeout = dnsStat->timeout.AddSecond((OSInt)ans->ttl);
 			succ = true;
 			break;
@@ -150,7 +150,7 @@ Bool Net::DNSHandler::GetByDomainNamev6(NotNullPtr<Net::SocketUtil::AddressInfo>
 	{
 		if (dnsStat->timeout.IsNull())
 		{
-			addr.Set(dnsStat->addr);
+			addr.SetVal(dnsStat->addr);
 			return true;
 		}
 		else
@@ -176,7 +176,7 @@ Bool Net::DNSHandler::GetByDomainNamev6(NotNullPtr<Net::SocketUtil::AddressInfo>
 				ans = dnsStat->answers.GetItem(i);
 				if (ans->addr.addrType != Net::AddrType::Unknown && ans->recType == 28)
 				{
-					addr.Set(ans->addr);
+					addr.SetVal(ans->addr);
 					if (newReq)
 					{
 						dnsStat->timeout = currTime.AddSecond((OSInt)ans->ttl);
@@ -203,7 +203,7 @@ Bool Net::DNSHandler::GetByDomainNamev6(NotNullPtr<Net::SocketUtil::AddressInfo>
 		ans = dnsStat->answers.GetItem(i);
 		if (ans->addr.addrType != Net::AddrType::Unknown && ans->recType == 28)
 		{
-			addr.Set(ans->addr);
+			addr.SetVal(ans->addr);
 			dnsStat->timeout = currTime.AddSecond((OSInt)ans->ttl);
 			break;
 		}

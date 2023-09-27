@@ -65,7 +65,7 @@ public:
 		return false;
 	}
 
-	void Set(const T &v)
+	void SetVal(const T &v)
 	{
 		*(T*)this->p = v;
 	}
