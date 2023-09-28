@@ -43,10 +43,11 @@ OSInt __stdcall Map::MapDrawLayer::ObjectCompare(ObjectInfo *obj1, ObjectInfo *o
 	}
 }
 
-Map::MapDrawLayer::MapDrawLayer(NotNullPtr<Text::String> sourceName, UOSInt nameCol, Text::String *layerName) : DB::ReadingDB(sourceName)//IO::ParsedObject(sourceName)
+Map::MapDrawLayer::MapDrawLayer(NotNullPtr<Text::String> sourceName, UOSInt nameCol, Text::String *layerName, NotNullPtr<Math::CoordinateSystem> csys) : DB::ReadingDB(sourceName)//IO::ParsedObject(sourceName)
 {
 	this->nameCol = nameCol;
 	this->layerName = SCOPY_STRING(layerName);
+	this->csys = csys;
 
 	this->pgColor = 0;
 	this->lineColor = 0;
@@ -57,10 +58,11 @@ Map::MapDrawLayer::MapDrawLayer(NotNullPtr<Text::String> sourceName, UOSInt name
 	this->flags = 0;
 }
 
-Map::MapDrawLayer::MapDrawLayer(Text::CStringNN sourceName, UOSInt nameCol, Text::CString layerName) : DB::ReadingDB(sourceName)//IO::ParsedObject(sourceName)
+Map::MapDrawLayer::MapDrawLayer(Text::CStringNN sourceName, UOSInt nameCol, Text::CString layerName, NotNullPtr<Math::CoordinateSystem> csys) : DB::ReadingDB(sourceName)//IO::ParsedObject(sourceName)
 {
 	this->nameCol = nameCol;
 	this->layerName = Text::String::New(layerName).Ptr();
+	this->csys = csys;
 
 	this->pgColor = 0;
 	this->lineColor = 0;
@@ -200,14 +202,10 @@ NotNullPtr<Math::CoordinateSystem> Map::MapDrawLayer::GetCoordinateSystem()
 	return this->csys;
 }
 
-void Map::MapDrawLayer::SetCoordinateSystem(Math::CoordinateSystem *csys)
+void Map::MapDrawLayer::SetCoordinateSystem(NotNullPtr<Math::CoordinateSystem> csys)
 {
-	NotNullPtr<Math::CoordinateSystem> nncsys;
-	if (nncsys.Set(csys))
-	{
-		this->csys.Delete();
-		this->csys = nncsys;
-	}
+	this->csys.Delete();
+	this->csys = csys;
 }
 
 Int32 Map::MapDrawLayer::CalBlockSize()

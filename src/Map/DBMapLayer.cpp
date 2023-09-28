@@ -57,7 +57,7 @@ void *Map::DBMapLayer::InitNameArr()
 	return 0;
 }
 
-Map::DBMapLayer::DBMapLayer(NotNullPtr<Text::String> layerName) : Map::MapDrawLayer(layerName, 0, layerName.Ptr())
+Map::DBMapLayer::DBMapLayer(NotNullPtr<Text::String> layerName) : Map::MapDrawLayer(layerName, 0, layerName.Ptr(), Math::CoordinateSystemManager::CreateDefaultCsys())
 {
 	this->releaseDB = false;
 	this->db = 0;
@@ -72,7 +72,7 @@ Map::DBMapLayer::DBMapLayer(NotNullPtr<Text::String> layerName) : Map::MapDrawLa
 	this->mixedData = MixedData::AllData;
 }
 
-Map::DBMapLayer::DBMapLayer(Text::CStringNN layerName) : Map::MapDrawLayer(layerName, 0, layerName)
+Map::DBMapLayer::DBMapLayer(Text::CStringNN layerName) : Map::MapDrawLayer(layerName, 0, layerName, Math::CoordinateSystemManager::CreateDefaultCsys())
 {
 	this->releaseDB = false;
 	this->db = 0;
@@ -558,8 +558,7 @@ Bool Map::DBMapLayer::SetDatabase(DB::ReadingDB *db, Text::CString schemaName, T
 			NotNullPtr<Math::CoordinateSystem> csys;
 			if (csys.Set(Math::CoordinateSystemManager::SRCreateCSys(layerSrid)))
 			{
-				this->csys.Delete();
-				this->csys = csys;
+				this->SetCoordinateSystem(csys);
 			}
 		}
 	}

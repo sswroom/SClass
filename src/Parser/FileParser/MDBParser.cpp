@@ -141,7 +141,7 @@ IO::ParsedObject *Parser::FileParser::MDBParser::ParseFileHdr(NotNullPtr<IO::Str
 		Map::MapLayerCollection *lyrColl;
 		Math::CoordinateSystem *csys = 0;
 		DB::SharedDBConn *conn;
-		Map::ESRI::ESRIMDBLayer *lyr;
+		NotNullPtr<Map::ESRI::ESRIMDBLayer> lyr;
 		UInt32 srid = 0;
 
 		if (hasSpRef)
@@ -175,11 +175,11 @@ IO::ParsedObject *Parser::FileParser::MDBParser::ParseFileHdr(NotNullPtr<IO::Str
 		i = shpTables.GetCount();
 		while (i-- > 0)
 		{
-			NEW_CLASS(lyr, Map::ESRI::ESRIMDBLayer(conn, srid, fd->GetFullFileName(), shpTables.GetItem(i)->ToCString()));
+			NEW_CLASSNN(lyr, Map::ESRI::ESRIMDBLayer(conn, srid, fd->GetFullFileName(), shpTables.GetItem(i)->ToCString()));
 			
 			if (csys)
 			{
-				lyr->SetCoordinateSystem(csys->Clone().Ptr());
+				lyr->SetCoordinateSystem(csys->Clone());
 			}
 
 			lyrColl->Add(lyr);

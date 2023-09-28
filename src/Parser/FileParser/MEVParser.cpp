@@ -272,7 +272,7 @@ void Parser::FileParser::MEVParser::ReadItems(NotNullPtr<IO::StreamData> fd, Map
 			{
 				Map::MapEnv::LayerItem setting;
 				UOSInt layerId = env->AddLayer(group, layer, false);
-				env->GetLayerProp(&setting, group, layerId);
+				env->GetLayerProp(setting, group, layerId);
 
 				if (ReadUInt32(&buff[16]) == 1)
 				{
@@ -287,7 +287,7 @@ void Parser::FileParser::MEVParser::ReadItems(NotNullPtr<IO::StreamData> fd, Map
 					setting.fontStyle = ReadUInt32(&buff[20]);
 					setting.imgIndex = (UInt32)(ReadInt32(&buff[28]) - imgInfos[ReadInt32(&buff[24])].fileIndex + imgInfos[ReadInt32(&buff[24])].envIndex);
 
-					env->SetLayerProp(&setting, group, layerId);
+					env->SetLayerProp(setting, group, layerId);
 				}
 				else if (ReadUInt32(&buff[16]) == 3)
 				{
@@ -302,7 +302,7 @@ void Parser::FileParser::MEVParser::ReadItems(NotNullPtr<IO::StreamData> fd, Map
 					setting.fontStyle = ReadUInt32(&buff[20]);
 					setting.lineStyle = ReadUInt32(&buff[24]);
 
-					env->SetLayerProp(&setting, group, layerId);
+					env->SetLayerProp(setting, group, layerId);
 				}
 				else if (ReadUInt32(&buff[16]) == 5)
 				{
@@ -318,7 +318,7 @@ void Parser::FileParser::MEVParser::ReadItems(NotNullPtr<IO::StreamData> fd, Map
 					setting.lineStyle = ReadUInt32(&buff[24]);
 					setting.fillStyle = ReadUInt32(&buff[28]);
 
-					env->SetLayerProp(&setting, group, layerId);
+					env->SetLayerProp(setting, group, layerId);
 				}
 				else
 				{
@@ -331,7 +331,7 @@ void Parser::FileParser::MEVParser::ReadItems(NotNullPtr<IO::StreamData> fd, Map
 					setting.priority = ReadInt32(&buff[16]);
 					setting.fontStyle = ReadUInt32(&buff[20]);
 
-					env->SetLayerProp(&setting, group, layerId);
+					env->SetLayerProp(setting, group, layerId);
 				}
 			}
 			else

@@ -181,6 +181,7 @@ namespace Math
 		static void FillDatumData(NotNullPtr<Math::GeographicCoordinateSystem::DatumData1> data, const DatumInfo *datum, Text::CString name, NotNullPtr<Math::EarthEllipsoid> ee, const SpheroidInfo *spheroid);
 
 		static Math::ProjectedCoordinateSystem *CreateProjCoordinateSystemDefName(ProjCoordSysType pcst);
+		static NotNullPtr<Math::CoordinateSystem> CreateProjCoordinateSystemDefNameOrDef(ProjCoordSysType pcst);
 		static Math::ProjectedCoordinateSystem *CreateProjCoordinateSystem(Text::CStringNN sourceNmae, const UTF8Char *projName);
 		static UOSInt GetProjCoordinateSystems(Data::ArrayList<ProjCoordSysType> *csysList);
 		static UOSInt GetProjCoordinateSystemNames(Data::ArrayList<const UTF8Char *> *nameList);

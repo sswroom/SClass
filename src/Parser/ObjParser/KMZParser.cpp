@@ -97,24 +97,29 @@ IO::ParsedObject *Parser::ObjParser::KMZParser::ParseObject(IO::ParsedObject *po
 	else
 	{
 		Map::MapLayerCollection *mapLyrColl;
+		NotNullPtr<IO::ParsedObject> nnpobj2;
+		NotNullPtr<Map::MapDrawLayer> layer;
 		NEW_CLASS(mapLyrColl, Map::MapLayerCollection(pobj->GetSourceNameObj(), 0));
 		i = 0;
 		j = pobjList->GetCount();
 		while (i < j)
 		{
-			pobj2 = pobjList->GetItem(i);
-			if (pobj2->GetParserType() == IO::ParserType::MapLayer)
+			if (nnpobj2.Set(pobjList->GetItem(i)))
 			{
-				mapLyrColl->Add((Map::MapDrawLayer*)pobj2);
-			}
-			else
-			{
-				Map::MapLayerCollection *lyrColl = (Map::MapLayerCollection*)pobj2;
-				while (lyrColl->GetCount() > 0)
+				if (nnpobj2->GetParserType() == IO::ParserType::MapLayer)
 				{
-					mapLyrColl->Add(lyrColl->RemoveAt(0));
+					mapLyrColl->Add(NotNullPtr<Map::MapDrawLayer>::ConvertFrom(nnpobj2));
 				}
-				DEL_CLASS(pobj2);
+				else
+				{
+					Map::MapLayerCollection *lyrColl = (Map::MapLayerCollection*)nnpobj2.Ptr();
+					while (lyrColl->GetCount() > 0)
+					{
+						if (layer.Set(lyrColl->RemoveAt(0)))
+							mapLyrColl->Add(layer);
+					}
+					nnpobj2.Delete();
+				}
 			}
 			i++;
 		}

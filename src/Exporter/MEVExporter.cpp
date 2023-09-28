@@ -204,7 +204,7 @@ Bool Exporter::MEVExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text:
 			UOSInt npattern;
 			UInt8 *pattern;
 
-			env->GetLineStyleLayer(i, k, &color, &thick, &pattern, &npattern);
+			env->GetLineStyleLayer(i, k, color, thick, pattern, npattern);
 			WriteUInt32(&buff[0], color);
 			*(Int32*)&buff[4] = (Int32)thick;
 			WriteUInt32(&buff[8], (UInt32)npattern);
@@ -371,7 +371,7 @@ void Exporter::MEVExporter::WriteGroupItems(Map::MapEnv *env, Map::MapEnv::Group
 			{
 				*(Int32*)&buff[12] = -1;
 			}
-			env->GetLayerProp(&setting, group, i);
+			env->GetLayerProp(setting, group, i);
 			ltype = layer->GetLayerType();
 			*(UInt32*)&buff[16] = layer->GetCodePage();
 			WriteUInt32(&buff[24], (UInt32)setting.labelCol);

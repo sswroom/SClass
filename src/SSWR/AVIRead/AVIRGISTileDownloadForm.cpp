@@ -62,7 +62,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISTileDownloadForm::OnMouseUp(void *userObj, 
 
 		UTF8Char sbuff[32];
 		UTF8Char *sptr;
-		Map::TileMap *tileMap = me->lyr->GetTileMap();
+		NotNullPtr<Map::TileMap> tileMap = me->lyr->GetTileMap();
 		UOSInt lyrCnt = tileMap->GetLevelCount();
 		UOSInt currLyr = 0;
 		Data::ArrayList<Math::Coord2D<Int32>> imgIdList;
@@ -164,7 +164,7 @@ void __stdcall SSWR::AVIRead::AVIRGISTileDownloadForm::OnStopClicked(void *userO
 
 void SSWR::AVIRead::AVIRGISTileDownloadForm::SaveTilesDir(const UTF8Char *folderName)
 {
-	Map::TileMap *tileMap = this->lyr->GetTileMap();
+	NotNullPtr<Map::TileMap> tileMap = this->lyr->GetTileMap();
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
 	UOSInt currLyr;
@@ -250,7 +250,7 @@ void SSWR::AVIRead::AVIRGISTileDownloadForm::SaveTilesDir(const UTF8Char *folder
 
 void SSWR::AVIRead::AVIRGISTileDownloadForm::SaveTilesFile(Text::CStringNN fileName)
 {
-	Map::TileMap *tileMap = this->lyr->GetTileMap();
+	NotNullPtr<Map::TileMap> tileMap = this->lyr->GetTileMap();
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
 	UOSInt currLyr;

@@ -34,7 +34,7 @@ IO::FileExporter::SupportType Exporter::SPKExporter::IsObjectSupported(IO::Parse
 		if (oc == Map::MapDrawLayer::OC_TILE_MAP_LAYER)
 		{
 			Map::TileMapLayer *tileMapLayer = (Map::TileMapLayer*)layer;
-			Map::TileMap *tileMap = tileMapLayer->GetTileMap();
+			NotNullPtr<Map::TileMap> tileMap = tileMapLayer->GetTileMap();
 			if (tileMap->GetTileType() == Map::TileMap::TT_OSM)
 			{
 				return IO::FileExporter::SupportType::NormalStream;
@@ -82,10 +82,10 @@ Bool Exporter::SPKExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text:
 		if (oc == Map::MapDrawLayer::OC_TILE_MAP_LAYER)
 		{
 			Map::TileMapLayer *tileMapLayer = (Map::TileMapLayer*)layer;
-			Map::TileMap *tileMap = tileMapLayer->GetTileMap();
+			NotNullPtr<Map::TileMap> tileMap = tileMapLayer->GetTileMap();
 			if (tileMap->GetTileType() == Map::TileMap::TT_OSM)
 			{
-				Map::OSM::OSMTileMap *osm = (Map::OSM::OSMTileMap*)tileMap;
+				NotNullPtr<Map::OSM::OSMTileMap> osm = NotNullPtr<Map::OSM::OSMTileMap>::ConvertFrom(tileMap);
 				IO::SPackageFile *spkg;
 				UInt8 *customBuff = MemAlloc(UInt8, 2048);
 				UOSInt buffSize = 1;

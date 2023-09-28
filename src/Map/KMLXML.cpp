@@ -95,12 +95,12 @@ Map::MapDrawLayer *Map::KMLXML::ParseKMLContainer(NotNullPtr<Text::XMLReader> re
 	Data::DateTime dt;
 	UTF8Char sbuff[512];
 	UTF8Char *sbuffEnd;
-	Data::ArrayList<Map::MapDrawLayer *> layers;
+	Data::ArrayListNN<Map::MapDrawLayer> layers;
 
 	Map::WebImageLayer *imgLyr = 0;
 	Text::StringBuilderUTF8 containerNameSb;
 	containerNameSb.Append(sourceName);
-	Map::MapDrawLayer *lyr;
+	NotNullPtr<Map::MapDrawLayer> lyr;
 	i = Text::StrLastIndexOfCharC(containerNameSb.ToString(), containerNameSb.GetLength(), '/');
 	if (i != INVALID_INDEX)
 	{
@@ -119,13 +119,13 @@ Map::MapDrawLayer *Map::KMLXML::ParseKMLContainer(NotNullPtr<Text::XMLReader> re
 		{
 			if (parsers && browser)
 			{
-				Map::NetworkLinkLayer *lyr;
+				NotNullPtr<Map::NetworkLinkLayer> lyr;
 				NotNullPtr<Text::String> layerName = Text::String::NewEmpty();
 				NotNullPtr<Text::String> url = Text::String::NewEmpty();
 				NotNullPtr<Text::String> viewFormat = Text::String::NewEmpty();
 				Map::NetworkLinkLayer::RefreshMode mode = Map::NetworkLinkLayer::RefreshMode::OnInterval;
 				Int32 interval = 0;
-				NEW_CLASS(lyr, Map::NetworkLinkLayer(sourceName, parsers, browser, CSTR_NULL));
+				NEW_CLASSNN(lyr, Map::NetworkLinkLayer(sourceName, parsers, browser, CSTR_NULL));
 			
 				while (reader->NextElement())
 				{
@@ -525,8 +525,7 @@ Map::MapDrawLayer *Map::KMLXML::ParseKMLContainer(NotNullPtr<Text::XMLReader> re
 		}
 		else if (nodeName->EqualsICase(UTF8STRC("PLACEMARK")))
 		{
-			lyr = ParseKMLPlacemarkLyr(reader, styles, sourceName, parsers, browser, basePF);
-			if (lyr)
+			if (lyr.Set(ParseKMLPlacemarkLyr(reader, styles, sourceName, parsers, browser, basePF)))
 			{
 				layers.Add(lyr);
 			}
@@ -831,16 +830,14 @@ Map::MapDrawLayer *Map::KMLXML::ParseKMLContainer(NotNullPtr<Text::XMLReader> re
 		}
 		else if (nodeName->EqualsICase(UTF8STRC("FOLDER")))
 		{
-			lyr = ParseKMLContainer(reader, styles, sourceName, parsers, browser, basePF);
-			if (lyr)
+			if (lyr.Set(ParseKMLContainer(reader, styles, sourceName, parsers, browser, basePF)))
 			{
 				layers.Add(lyr);
 			}
 		}
 		else if (nodeName->EqualsICase(UTF8STRC("DOCUMENT")))
 		{
-			lyr = ParseKMLContainer(reader, styles, sourceName, parsers, browser, basePF);
-			if (lyr)
+			if (lyr.Set(ParseKMLContainer(reader, styles, sourceName, parsers, browser, basePF)))
 			{
 				layers.Add(lyr);
 			}
@@ -870,9 +867,9 @@ Map::MapDrawLayer *Map::KMLXML::ParseKMLContainer(NotNullPtr<Text::XMLReader> re
 		}
 	}
 
-	if (imgLyr)
+	if (lyr.Set(imgLyr))
 	{
-		layers.Add(imgLyr);
+		layers.Add(lyr);
 	}
 	if (layers.GetCount() <= 0)
 	{
@@ -881,14 +878,11 @@ Map::MapDrawLayer *Map::KMLXML::ParseKMLContainer(NotNullPtr<Text::XMLReader> re
 	else
 	{
 		Map::MapLayerCollection *lyrColl;
-		UOSInt j;
 		NEW_CLASS(lyrColl, Map::MapLayerCollection(sourceName, containerNameSb.ToCString()));
-		i = 0;
-		j = layers.GetCount();
-		while (i < j)
+		Data::ArrayIterator<NotNullPtr<Map::MapDrawLayer>> it = layers.Iterator();
+		while (it.HasNext())
 		{
-			lyr = layers.GetItem(i);
-			lyrColl->Add(lyr);
+			lyrColl->Add(it.Next());
 			i++;
 		}
 		return lyrColl;

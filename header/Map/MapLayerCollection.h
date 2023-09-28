@@ -10,7 +10,7 @@ namespace Map
 	{
 	private:
 		Sync::RWMutex mut;
-		Data::ArrayList<Map::MapDrawLayer *> layerList;
+		Data::ArrayListNN<Map::MapDrawLayer> layerList;
 		Data::ArrayList<Map::MapDrawLayer::UpdatedHandler> updHdlrs;
 		Data::ArrayList<void *> updObjs;
 
@@ -20,12 +20,12 @@ namespace Map
 		MapLayerCollection(Text::CStringNN sourceName, Text::CString layerName);
 		virtual ~MapLayerCollection();
 
-		virtual UOSInt Add(Map::MapDrawLayer * val);
+		virtual UOSInt Add(NotNullPtr<Map::MapDrawLayer> val);
 		virtual Map::MapDrawLayer *RemoveAt(UOSInt index);
 		virtual void Clear();
 		virtual UOSInt GetCount() const;
 		virtual Map::MapDrawLayer *GetItem(UOSInt Index);
-		virtual void SetItem(UOSInt Index, Map::MapDrawLayer *Val);
+		virtual void SetItem(UOSInt Index, NotNullPtr<Map::MapDrawLayer> val);
 
 		virtual void SetCurrScale(Double scale);
 		virtual void SetCurrTimeTS(Int64 timeStamp);
@@ -54,7 +54,7 @@ namespace Map
 
 		virtual ObjectClass GetObjectClass() const;
 		virtual NotNullPtr<Math::CoordinateSystem> GetCoordinateSystem();
-		virtual void SetCoordinateSystem(Math::CoordinateSystem *csys);
+		virtual void SetCoordinateSystem(NotNullPtr<Math::CoordinateSystem> csys);
 
 		void ReleaseAll();
 		UOSInt GetUpdatedHandlerCnt() const;

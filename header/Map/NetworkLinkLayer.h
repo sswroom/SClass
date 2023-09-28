@@ -91,7 +91,7 @@ namespace Map
 
 		virtual ObjectClass GetObjectClass() const;
 		virtual NotNullPtr<Math::CoordinateSystem> GetCoordinateSystem();
-		virtual void SetCoordinateSystem(Math::CoordinateSystem *csys);
+		virtual void SetCoordinateSystem(NotNullPtr<Math::CoordinateSystem> csys);
 
 		virtual void AddUpdatedHandler(UpdatedHandler hdlr, void *obj);
 		virtual void RemoveUpdatedHandler(UpdatedHandler hdlr, void *obj);

@@ -155,15 +155,19 @@ Map::MapLayerCollection *Map::GeoPackage::CreateLayerCollection()
 	NotNullPtr<Text::String> sourceName = this->conn->GetSourceNameObj();
 	UOSInt i = sourceName->LastIndexOf(IO::Path::PATH_SEPERATOR);
 	UOSInt j;
-	Map::GeoPackageLayer *layer;
+	NotNullPtr<Map::GeoPackageLayer> layer;
+	NotNullPtr<Map::GeoPackage::ContentInfo> contentInfo;
 	NEW_CLASS(layerColl, Map::MapLayerCollection(sourceName->ToCString(), sourceName->ToCString().Substring(i + 1)));
 	i = 0;
 	j = this->tableList.GetCount();
 	while (i < j)
 	{
-		NEW_CLASS(layer, Map::GeoPackageLayer(this, this->tableList.GetItem(i)));
-		Sync::Interlocked::IncrementU32(this->useCnt);
-		layerColl->Add(layer);
+		if (contentInfo.Set(this->tableList.GetItem(i)))
+		{
+			NEW_CLASSNN(layer, Map::GeoPackageLayer(this, contentInfo));
+			Sync::Interlocked::IncrementU32(this->useCnt);
+			layerColl->Add(layer);
+		}
 		i++;
 	}
 	return layerColl;

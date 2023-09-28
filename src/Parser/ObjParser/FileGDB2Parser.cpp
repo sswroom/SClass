@@ -86,7 +86,7 @@ IO::ParsedObject *Parser::ObjParser::FileGDB2Parser::ParseObject(IO::ParsedObjec
 				UTF8Char sbuff[512];
 				UTF8Char *sptr;
 				Map::MapLayerCollection *layerColl;
-				Map::FileGDBLayer *layer;
+				NotNullPtr<Map::FileGDBLayer> layer;
 				DB::SharedReadingDB *db;
 				UOSInt i;
 				UOSInt j;
@@ -99,7 +99,7 @@ IO::ParsedObject *Parser::ObjParser::FileGDB2Parser::ParseObject(IO::ParsedObjec
 				while (i < j)
 				{
 					layerName = layers.GetItem(i);
-					NEW_CLASS(layer, Map::FileGDBLayer(db, layerName->ToCString(), layerName->ToCString(), this->prjParser));
+					NEW_CLASSNN(layer, Map::FileGDBLayer(db, layerName->ToCString(), layerName->ToCString(), this->prjParser));
 					layerColl->Add(layer);
 					layerName->Release();
 					i++;

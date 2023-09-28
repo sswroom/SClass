@@ -244,7 +244,7 @@ SSWR::OrganMgr::OrganTimeAdjForm::OrganTimeAdjForm(UI::GUIClientControl *parent,
 
 	this->SetText(this->env->GetLang(UTF8STRC("TimeAdjTitle")));
 
-	Map::OSM::OSMTileMap *tileMap;
+	NotNullPtr<Map::OSM::OSMTileMap> tileMap;
 	Media::StaticImage *stimg;
 	Media::ImageList *imgList;
 	UOSInt i;
@@ -252,7 +252,7 @@ SSWR::OrganMgr::OrganTimeAdjForm::OrganTimeAdjForm(UI::GUIClientControl *parent,
 	OSInt k;
 
 	this->mapUpdated = false;
-	NEW_CLASS(tileMap, Map::OSM::OSMTileMap(CSTR("http://a.tile.opencyclemap.org/cycle/"), this->env->GetCacheDir()->ToCString(), 18, this->env->GetSocketFactory(), this->env->GetSSLEngine()));
+	NEW_CLASSNN(tileMap, Map::OSM::OSMTileMap(CSTR("http://a.tile.opencyclemap.org/cycle/"), this->env->GetCacheDir()->ToCString(), 18, this->env->GetSocketFactory(), this->env->GetSSLEngine()));
 	tileMap->AddAlternateURL(CSTR("http://b.tile.opencyclemap.org/cycle/"));
 	tileMap->AddAlternateURL(CSTR("http://c.tile.opencyclemap.org/cycle/"));
 	this->mapTile = tileMap;
@@ -266,7 +266,7 @@ SSWR::OrganMgr::OrganTimeAdjForm::OrganTimeAdjForm(UI::GUIClientControl *parent,
 	imgList->AddImage(stimg, 0);
 	this->mapEnv->AddImage(CSTR("PointImage"), imgList);
 	NEW_CLASS(this->adjLyr, OrganTimeAdjLayer(this->gpsTrk, this->currFileList));
-	this->adjLyr->SetCoordinateSystem(this->mapEnv->GetCoordinateSystem()->Clone().Ptr());
+	this->adjLyr->SetCoordinateSystem(this->mapEnv->GetCoordinateSystem()->Clone());
 	this->mapEnv->ChgLineStyleLayer(0, 0, 0xff0000ff, 3, 0, 0);
 	i = this->mapEnv->AddLayer(0, this->mapTileLyr, true);
 	i = this->mapEnv->AddLayer(0, this->gpsTrk, false);

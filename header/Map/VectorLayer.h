@@ -74,7 +74,7 @@ namespace Map
 		Bool SplitPolyline(Math::Coord2DDbl pt);
 		void OptimizePolylinePath();
 		void ReplaceVector(Int64 id, NotNullPtr<Math::Geometry::Vector2D> vec);
-		void ConvCoordinateSystem(Math::CoordinateSystem *csys);
+		void ConvCoordinateSystem(NotNullPtr<Math::CoordinateSystem> csys);
 		void SwapXY();
 	};
 }

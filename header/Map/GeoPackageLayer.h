@@ -15,7 +15,7 @@ namespace Map
 		};
 
 		Map::GeoPackage *gpkg;
-		Map::GeoPackage::ContentInfo *layerContent;
+		NotNullPtr<Map::GeoPackage::ContentInfo> layerContent;
 		DB::TableDef *tabDef;
 		Data::ArrayList<Math::Geometry::Vector2D*> vecList;
 		UOSInt geomCol;
@@ -24,7 +24,7 @@ namespace Map
 		StringSession *StringSessCreate();
 		Bool StringSessGoRow(StringSession *sess, UOSInt index);
 	public:
-		GeoPackageLayer(Map::GeoPackage *gpkg, Map::GeoPackage::ContentInfo *layerContent);
+		GeoPackageLayer(Map::GeoPackage *gpkg, NotNullPtr<Map::GeoPackage::ContentInfo> layerContent);
 		virtual ~GeoPackageLayer();
 
 		virtual DrawLayerType GetLayerType() const;

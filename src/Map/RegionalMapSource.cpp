@@ -275,11 +275,11 @@ Map::MapDrawLayer *Map::RegionalMapSource::OpenMap(const MapInfo *map, NotNullPt
 	{
 	case MapType::TMS:
 	{
-		Map::TileMapServiceSource *tms;
-		NEW_CLASS(tms, Map::TileMapServiceSource(sockf, ssl, encFact, Text::CString(map->url, map->urlLen)));
+		NotNullPtr<Map::TileMapServiceSource> tms;
+		NEW_CLASSNN(tms, Map::TileMapServiceSource(sockf, ssl, encFact, Text::CString(map->url, map->urlLen)));
 		if (tms->IsError())
 		{
-			DEL_CLASS(tms);
+			tms.Delete();
 			return 0;
 		}
 		if (map->mapTypeParam != 0)
@@ -312,13 +312,13 @@ Map::MapDrawLayer *Map::RegionalMapSource::OpenMap(const MapInfo *map, NotNullPt
 	{
 		UTF8Char *sptr;
 		UTF8Char sbuff[512];
-		Map::CustomTileMap *tileMap;
+		NotNullPtr<Map::CustomTileMap> tileMap;
 		sptr = IO::Path::GetProcessFileName(sbuff);
 		sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("TileMap"));
 		*sptr++ = IO::Path::PATH_SEPERATOR;
 		Crypto::Hash::CRC32RC crc;
 		sptr = Text::StrHexVal32(sptr, crc.CalcDirect(map->url, map->urlLen));
-		NEW_CLASS(tileMap, Map::CustomTileMap(Text::CString(map->url, map->urlLen), CSTRP(sbuff, sptr), map->minLevel, map->maxLevel, sockf, ssl));
+		NEW_CLASSNN(tileMap, Map::CustomTileMap(Text::CString(map->url, map->urlLen), CSTRP(sbuff, sptr), map->minLevel, map->maxLevel, sockf, ssl));
 		tileMap->SetName(Text::CString(map->name, map->nameLen));
 		tileMap->SetBounds(Math::RectAreaDbl(Math::Coord2DDbl(map->boundsX1, map->boundsY1), Math::Coord2DDbl(map->boundsX2, map->boundsY2)));
 		NEW_CLASS(layer, Map::TileMapLayer(tileMap, parsers));

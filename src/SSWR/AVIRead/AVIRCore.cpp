@@ -446,7 +446,7 @@ Bool SSWR::AVIRead::AVIRCore::GenLineStylePreview(NotNullPtr<Media::DrawImage> i
 	UInt8 *pattern;
 	UOSInt npattern;
 
-	while (env->GetLineStyleLayer(lineStyle, layerId++, &color, &thick, &pattern, &npattern))
+	while (env->GetLineStyleLayer(lineStyle, layerId++, color, thick, pattern, npattern))
 	{
 		p = img->NewPenARGB(colorConv->ConvRGB8(color), UOSInt2Double(thick) * dpi / 96.0, pattern, npattern);
 		img->DrawLine(0, UOSInt2Double(size.y >> 1), UOSInt2Double(size.x), UOSInt2Double(size.y >> 1), p);

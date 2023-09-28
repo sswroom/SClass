@@ -27,7 +27,7 @@ namespace SSWR
 				Sync::Mutex *pkgMut;
 				IO::SPackageFile *spkg;
 				const UTF8Char *folderName;
-				Map::TileMap *tileMap;
+				NotNullPtr<Map::TileMap> tileMap;
 			};
 		private:
 			UI::GUIButton *btnArea;

@@ -230,11 +230,10 @@ UInt32 __stdcall Map::WebImageLayer::LoadThread(void *userObj)
 	return 0;
 }
 
-Map::WebImageLayer::WebImageLayer(Net::WebBrowser *browser, Parser::ParserList *parsers, Text::CStringNN sourceName, NotNullPtr<Math::CoordinateSystem> csys, Text::CString layerName) : Map::MapDrawLayer(sourceName, 0, layerName)
+Map::WebImageLayer::WebImageLayer(Net::WebBrowser *browser, Parser::ParserList *parsers, Text::CStringNN sourceName, NotNullPtr<Math::CoordinateSystem> csys, Text::CString layerName) : Map::MapDrawLayer(sourceName, 0, layerName, csys)
 {
 	this->browser = browser;
 	this->parsers = parsers;
-	this->csys = csys;
 	this->nextId = 0;
 	this->boundsExists = false;
 	this->min = Math::Coord2DDbl(0, 0);

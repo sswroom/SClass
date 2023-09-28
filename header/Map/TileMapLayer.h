@@ -32,7 +32,7 @@ namespace Map
 		} ThreadStat;
 
 	private:
-		Map::TileMap *tileMap;
+		NotNullPtr<Map::TileMap> tileMap;
 		Double scale;
 		Parser::ParserList *parsers;
 
@@ -60,7 +60,7 @@ namespace Map
 		void AddTask(CachedImage *cimg);
 		void CheckCache(NotNullPtr<Data::ArrayListInt64> currIDs);
 	public:
-		TileMapLayer(Map::TileMap *tileMap, Parser::ParserList *parsers);
+		TileMapLayer(NotNullPtr<Map::TileMap> tileMap, Parser::ParserList *parsers);
 		virtual ~TileMapLayer();
 
 		virtual void SetCurrScale(Double scale);
@@ -93,7 +93,7 @@ namespace Map
 		virtual void RemoveUpdatedHandler(UpdatedHandler hdlr, void *obj);
 		Bool IsCaching(UOSInt level, Int64 imgId);
 		void WaitCache();
-		Map::TileMap *GetTileMap();
+		NotNullPtr<Map::TileMap> GetTileMap();
 	};
 }
 #endif

@@ -414,6 +414,20 @@ DB::ColDef::GeometryType DB::ColDef::GeometryTypeAdjust(GeometryType geomType, B
 				return GeometryType::PathM;
 			else
 				return GeometryType::Path;
+	case GeometryType::MultiPolygon:
+	case GeometryType::MultiPolygonZ:
+	case GeometryType::MultiPolygonZM:
+	case GeometryType::MultiPolygonM:
+		if (hasZ)
+			if (hasM)
+				return GeometryType::MultiPolygonZM;
+			else
+				return GeometryType::MultiPolygonZ;
+		else
+			if (hasM)
+				return GeometryType::MultiPolygonM;
+			else
+				return GeometryType::MultiPolygon;
 	}
 }
 
@@ -480,5 +494,13 @@ Text::CString DB::ColDef::GeometryTypeGetName(GeometryType geomType)
 		return CSTR("PathZM");
 	case GeometryType::PathM:
 		return CSTR("PathM");
+	case GeometryType::MultiPolygon:
+		return CSTR("MultiPolygon");
+	case GeometryType::MultiPolygonZ:
+		return CSTR("MultiPolygonZ");
+	case GeometryType::MultiPolygonZM:
+		return CSTR("MultiPolygonZM");
+	case GeometryType::MultiPolygonM:
+		return CSTR("MultiPolygonM");
 	}
 }

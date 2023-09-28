@@ -243,12 +243,11 @@ void Map::HKParkingVacancy::ParkingInfoFree(ParkingInfo *parking)
 	MemFree(parking);
 }
 
-Map::HKParkingVacancy::HKParkingVacancy(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl) : Map::MapDrawLayer(CSTR("HKParkingVacancy"), 16, CSTR("HKParkingVacancy"))
+Map::HKParkingVacancy::HKParkingVacancy(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl) : Map::MapDrawLayer(CSTR("HKParkingVacancy"), 16, CSTR("HKParkingVacancy"), Math::CoordinateSystemManager::CreateDefaultCsys())
 {
 	this->sockf = sockf;
 	this->ssl = ssl;
 	this->bounds = Math::RectAreaDbl(Math::Coord2DDbl(0, 0), Math::Coord2DDbl(0, 0));
-	this->csys = Math::CoordinateSystemManager::CreateDefaultCsys();
 	this->LoadParkingInfo();
 	this->LoadVacancy();
 	Media::StaticImage *simg = Map::MapPOI::CreateParkingPOI();

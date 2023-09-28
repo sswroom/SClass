@@ -928,7 +928,7 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 	UTF8Char sbuff2[16];
 	UTF8Char *sptr;
 	UTF8Char *sptr2;
-	Map::TileMap *tileMap;
+	NotNullPtr<Map::TileMap> tileMap;
 	Map::MapDrawLayer *mapLyr;
 
 	switch (cmdId)
@@ -1085,7 +1085,7 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 				Map::ESRI::ESRIMapServer *esriMap = dlg.GetSelectedMap();
 				if (esriMap->HasTile())
 				{
-					Map::ESRI::ESRITileMap *map;
+					NotNullPtr<Map::ESRI::ESRITileMap> map;
 					NotNullPtr<Text::String> url = esriMap->GetURL();
 					crc.Calc((UInt8*)url->v, url->leng);
 					crc.GetValue(crcVal);
@@ -1094,7 +1094,7 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 					sptr = IO::Path::AppendPath(sbuff, sptr, CSTRP(sbuff2, sptr2));
 					*sptr++ = (UTF8Char)IO::Path::PATH_SEPERATOR;
 					*sptr = 0;
-					NEW_CLASS(map, Map::ESRI::ESRITileMap(esriMap, true, CSTRP(sbuff, sptr)));
+					NEW_CLASSNN(map, Map::ESRI::ESRITileMap(esriMap, true, CSTRP(sbuff, sptr)));
 					NEW_CLASS(mapLyr, Map::TileMapLayer(map, this->core->GetParserList()));
 					this->core->OpenObject(mapLyr);
 				}
@@ -1585,7 +1585,7 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 	case MNU_TEST:
 		sptr = IO::Path::GetProcessFileName(sbuff);
 		sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("OSMCacheTest"));
-		NEW_CLASS(tileMap, Map::OSM::OSMTileMap(CSTR("http://127.0.0.1/"), {sbuff, (UOSInt)(sptr - sbuff)}, 18, this->core->GetSocketFactory(), this->ssl));
+		NEW_CLASSNN(tileMap, Map::OSM::OSMTileMap(CSTR("http://127.0.0.1/"), {sbuff, (UOSInt)(sptr - sbuff)}, 18, this->core->GetSocketFactory(), this->ssl));
 		NEW_CLASS(mapLyr, Map::TileMapLayer(tileMap, this->core->GetParserList()));
 		this->core->OpenObject(mapLyr);
 		break;
@@ -1610,7 +1610,7 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 			{
 				IO::DirectoryPackage *pkg;
 				NEW_CLASS(pkg, IO::DirectoryPackage(dlg.GetFolder()));
-				NEW_CLASS(tileMap, Map::OSM::OSMLocalTileMap(pkg));
+				NEW_CLASSNN(tileMap, Map::OSM::OSMLocalTileMap(pkg));
 				NEW_CLASS(mapLyr, Map::TileMapLayer(tileMap, this->core->GetParserList()));
 				this->core->OpenObject(mapLyr);
 			}
@@ -1630,7 +1630,7 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 				}
 				if (pkg)
 				{
-					NEW_CLASS(tileMap, Map::OSM::OSMLocalTileMap(pkg));
+					NEW_CLASSNN(tileMap, Map::OSM::OSMLocalTileMap(pkg));
 					NEW_CLASS(mapLyr, Map::TileMapLayer(tileMap, parsers));
 					this->core->OpenObject(mapLyr);
 				}
@@ -2631,10 +2631,13 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 			SSWR::AVIRead::AVIRTMSForm frm(0, this->ui, this->core, this->ssl);
 			if (frm.ShowDialog(this))
 			{
-				Map::TileMap *tile = frm.GetTileMap();
-				Map::TileMapLayer *layer;
-				NEW_CLASS(layer, Map::TileMapLayer(tile, this->core->GetParserList()));
-				this->core->OpenObject(layer);
+				NotNullPtr<Map::TileMap> tile;
+				if (tile.Set(frm.GetTileMap()))
+				{
+					Map::TileMapLayer *layer;
+					NEW_CLASS(layer, Map::TileMapLayer(tile, this->core->GetParserList()));
+					this->core->OpenObject(layer);
+				}
 			}
 		}
 		break;
@@ -2650,10 +2653,13 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 			SSWR::AVIRead::AVIRWMTSForm frm(0, this->ui, this->core, this->ssl);
 			if (frm.ShowDialog(this))
 			{
-				Map::TileMap *tile = frm.GetTileMap();
-				Map::TileMapLayer *layer;
-				NEW_CLASS(layer, Map::TileMapLayer(tile, this->core->GetParserList()));
-				this->core->OpenObject(layer);
+				NotNullPtr<Map::TileMap> tile;
+				if (tile.Set(frm.GetTileMap()))
+				{
+					Map::TileMapLayer *layer;
+					NEW_CLASS(layer, Map::TileMapLayer(tile, this->core->GetParserList()));
+					this->core->OpenObject(layer);
+				}
 			}
 		}
 		break;
@@ -2683,10 +2689,13 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 			SSWR::AVIRead::AVIRCustomTileMapForm frm(0, this->ui, this->core, this->ssl);
 			if (frm.ShowDialog(this))
 			{
-				Map::TileMap *tile = frm.GetTileMap();
-				Map::TileMapLayer *layer;
-				NEW_CLASS(layer, Map::TileMapLayer(tile, this->core->GetParserList()));
-				this->core->OpenObject(layer);
+				NotNullPtr<Map::TileMap> tile;
+				if (tile.Set(frm.GetTileMap()))
+				{
+					Map::TileMapLayer *layer;
+					NEW_CLASS(layer, Map::TileMapLayer(tile, this->core->GetParserList()));
+					this->core->OpenObject(layer);
+				}
 			}
 		}
 		break;
@@ -2704,10 +2713,13 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 			SSWR::AVIRead::AVIRBingMapsForm frm(0, this->ui, this->core, this->ssl);
 			if (frm.ShowDialog(this))
 			{
-				Map::TileMap *tile = frm.GetTileMap();
-				Map::TileMapLayer *layer;
-				NEW_CLASS(layer, Map::TileMapLayer(tile, this->core->GetParserList()));
-				this->core->OpenObject(layer);
+				NotNullPtr<Map::TileMap> tile;
+				if (tile.Set(frm.GetTileMap()))
+				{
+					Map::TileMapLayer *layer;
+					NEW_CLASS(layer, Map::TileMapLayer(tile, this->core->GetParserList()));
+					this->core->OpenObject(layer);
+				}
 			}
 		}
 		break;

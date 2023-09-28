@@ -847,7 +847,7 @@ IO::Stream *Map::HKTrafficLayer::OpenURLStream()
 	}
 }
 
-Map::HKTrafficLayer::HKTrafficLayer(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, Text::EncodingFactory *encFact) : Map::MapDrawLayer(CSTR("HKTraffic"), 0, CSTR("HKTraffic"))
+Map::HKTrafficLayer::HKTrafficLayer(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, Text::EncodingFactory *encFact) : Map::MapDrawLayer(CSTR("HKTraffic"), 0, CSTR("HKTraffic"), Math::CoordinateSystemManager::CreateProjCoordinateSystemDefNameOrDef(Math::CoordinateSystemManager::PCST_HK80))
 {
 	this->sockf = sockf;
 	this->ssl = ssl;
@@ -857,8 +857,6 @@ Map::HKTrafficLayer::HKTrafficLayer(NotNullPtr<Net::SocketFactory> sockf, Net::S
 	this->maxX = 0;
 	this->maxY = 0;
 	this->url = Text::String::New(UTF8STRC("https://resource.data.one.gov.hk/td/speedmap.xml"));
-	if (!this->csys.Set(Math::CoordinateSystemManager::CreateProjCoordinateSystemDefName(Math::CoordinateSystemManager::PCST_HK80)))
-		this->csys = Math::CoordinateSystemManager::CreateDefaultCsys();
 }
 
 Map::HKTrafficLayer::~HKTrafficLayer()

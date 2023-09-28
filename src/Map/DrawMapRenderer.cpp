@@ -1324,7 +1324,7 @@ void Map::DrawMapRenderer::DrawLayers(NotNullPtr<Map::DrawMapRenderer::DrawEnv> 
 		else if (item->itemType == Map::MapEnv::IT_LAYER)
 		{
 			Double scale = denv->view->GetMapScale();
-			if (denv->env->GetLayerProp(&layer, group, i))
+			if (denv->env->GetLayerProp(layer, group, i))
 			{
 				if (layer.minScale <= scale && layer.maxScale >= scale)
 				{
@@ -1553,7 +1553,7 @@ void Map::DrawMapRenderer::DrawShapes(NotNullPtr<Map::DrawMapRenderer::DrawEnv> 
 			UInt8 *pattern;
 			UOSInt npattern;
 			Bool found;
-			found = denv->env->GetLineStyleLayer(lineStyle, layerId++, &color, &thick, &pattern, &npattern);
+			found = denv->env->GetLineStyleLayer(lineStyle, layerId++, color, thick, pattern, npattern);
 			if (!found)
 			{
 				thick = lineThick;
@@ -1583,7 +1583,7 @@ void Map::DrawMapRenderer::DrawShapes(NotNullPtr<Map::DrawMapRenderer::DrawEnv> 
 
 			if (found)
 			{
-				while (denv->env->GetLineStyleLayer(lineStyle, layerId++, &color, &thick, &pattern, &npattern))
+				while (denv->env->GetLineStyleLayer(lineStyle, layerId++, color, thick, pattern, npattern))
 				{
 					p = denv->img->NewPenARGB(this->colorConv->ConvRGB8(color), UOSInt2Double(thick) * denv->img->GetHDPI() / 96.0, pattern, npattern);
 					this->mapSch.DrawNextType(p, 0);
@@ -1608,7 +1608,7 @@ void Map::DrawMapRenderer::DrawShapes(NotNullPtr<Map::DrawMapRenderer::DrawEnv> 
 			UInt8 *pattern;
 			UOSInt npattern;
 			Bool found;
-			found = denv->env->GetLineStyleLayer(lineStyle, layerId++, &color, &thick, &pattern, &npattern);
+			found = denv->env->GetLineStyleLayer(lineStyle, layerId++, color, thick, pattern, npattern);
 			if (!found)
 			{
 				thick = lineThick;
@@ -1637,7 +1637,7 @@ void Map::DrawMapRenderer::DrawShapes(NotNullPtr<Map::DrawMapRenderer::DrawEnv> 
 
 			if (found)
 			{
-				while (denv->env->GetLineStyleLayer(lineStyle, layerId++, &color, &thick, &pattern, &npattern))
+				while (denv->env->GetLineStyleLayer(lineStyle, layerId++, color, thick, pattern, npattern))
 				{
 					p = denv->img->NewPenARGB(this->colorConv->ConvRGB8(color), UOSInt2Double(thick) * denv->img->GetHDPI() / 96.0, pattern, npattern);
 					this->mapSch.DrawNextType(p, 0);

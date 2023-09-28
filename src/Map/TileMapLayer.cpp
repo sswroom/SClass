@@ -155,7 +155,7 @@ void Map::TileMapLayer::CheckCache(NotNullPtr<Data::ArrayListInt64> currIDs)
 	idleMutUsage.EndUse();
 }
 
-Map::TileMapLayer::TileMapLayer(Map::TileMap *tileMap, Parser::ParserList *parsers) : Map::MapDrawLayer(tileMap->GetName(), 0, CSTR_NULL)
+Map::TileMapLayer::TileMapLayer(NotNullPtr<Map::TileMap> tileMap, Parser::ParserList *parsers) : Map::MapDrawLayer(tileMap->GetName(), 0, CSTR_NULL, tileMap->GetCoordinateSystem()->Clone())
 {
 	this->parsers = parsers;
 	this->tileMap = tileMap;
@@ -163,7 +163,6 @@ Map::TileMapLayer::TileMapLayer(Map::TileMap *tileMap, Parser::ParserList *parse
 
 	this->lastLevel = (UOSInt)-1;
 	this->threadNext = 0;
-	this->csys = tileMap->GetCoordinateSystem()->Clone();
 
 	UOSInt i;
 	this->threadCnt = this->tileMap->GetConcurrentCount();
@@ -254,7 +253,7 @@ Map::TileMapLayer::~TileMapLayer()
 		}
 		MemFreeA(cimg);
 	}
-	DEL_CLASS(this->tileMap);
+	this->tileMap.Delete();
 }
 
 void Map::TileMapLayer::SetCurrScale(Double scale)
@@ -662,7 +661,7 @@ void Map::TileMapLayer::WaitCache()
 	}
 }
 
-Map::TileMap *Map::TileMapLayer::GetTileMap()
+NotNullPtr<Map::TileMap> Map::TileMapLayer::GetTileMap()
 {
 	return this->tileMap;
 }

@@ -88,8 +88,8 @@ namespace Map
 
 		typedef void (__stdcall *UpdatedHandler)(void *userObj);
 
-		MapDrawLayer(NotNullPtr<Text::String> sourceName, UOSInt nameCol, Text::String *layerName);
-		MapDrawLayer(Text::CStringNN sourceName, UOSInt nameCol, Text::CString layerName);
+		MapDrawLayer(NotNullPtr<Text::String> sourceName, UOSInt nameCol, Text::String *layerName, NotNullPtr<Math::CoordinateSystem> csys);
+		MapDrawLayer(Text::CStringNN sourceName, UOSInt nameCol, Text::CString layerName, NotNullPtr<Math::CoordinateSystem> csys);
 		virtual ~MapDrawLayer();
 
 		virtual void SetCurrScale(Double scale);
@@ -134,7 +134,7 @@ namespace Map
 		NotNullPtr<Text::String> GetName() const;
 		virtual IO::ParserType GetParserType() const;
 		virtual NotNullPtr<Math::CoordinateSystem> GetCoordinateSystem();
-		virtual void SetCoordinateSystem(Math::CoordinateSystem *csys);
+		virtual void SetCoordinateSystem(NotNullPtr<Math::CoordinateSystem> csys);
 
 		Int32 CalBlockSize();
 		void SetLayerName(Text::CString name);

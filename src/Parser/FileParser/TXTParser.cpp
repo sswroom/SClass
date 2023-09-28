@@ -229,12 +229,12 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFileHdr(NotNullPtr<IO::Str
 				{
 					i = env->AddLayer(currGroup, lyr, false);
 
-					if (env->GetLayerProp(&setting, currGroup, i))
+					if (env->GetLayerProp(setting, currGroup, i))
 					{
 						setting.minScale = Text::StrToInt32(sarr[2].v);
 						setting.maxScale = Text::StrToInt32(sarr[3].v);
 						setting.lineStyle = Text::StrToUInt32(sarr[4].v);
-						env->SetLayerProp(&setting, currGroup, i);
+						env->SetLayerProp(setting, currGroup, i);
 					}
 				}
 			}
@@ -254,13 +254,13 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFileHdr(NotNullPtr<IO::Str
 				{
 					i = env->AddLayer(currGroup, lyr, false);
 
-					if (env->GetLayerProp(&setting, currGroup, i))
+					if (env->GetLayerProp(setting, currGroup, i))
 					{
 						setting.minScale = Text::StrToUInt32(sarr[2].v);
 						setting.maxScale = Text::StrToUInt32(sarr[3].v);
 						setting.lineStyle = Text::StrToUInt32(sarr[4].v);
 						setting.fillStyle = ToColor(Text::StrHex2UInt32C(sarr[5].v));
-						env->SetLayerProp(&setting, currGroup, i);
+						env->SetLayerProp(setting, currGroup, i);
 					}
 				}
 
@@ -280,7 +280,7 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFileHdr(NotNullPtr<IO::Str
 				{
 					i = env->AddLayer(currGroup, lyr, false);
 
-					if (env->GetLayerProp(&setting, currGroup, i))
+					if (env->GetLayerProp(setting, currGroup, i))
 					{
 						setting.minScale = Text::StrToInt32(sarr[2].v);
 						setting.maxScale = Text::StrToInt32(sarr[3].v);
@@ -300,7 +300,7 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFileHdr(NotNullPtr<IO::Str
 						{
 							setting.flags |= Map::MapEnv::SFLG_ALIGN;
 						}
-						env->SetLayerProp(&setting, currGroup, i);
+						env->SetLayerProp(setting, currGroup, i);
 					}
 				}
 			}
@@ -323,12 +323,12 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFileHdr(NotNullPtr<IO::Str
 				{
 					i = env->AddLayer(currGroup, lyr, false);
 
-					if (env->GetLayerProp(&setting, currGroup, i))
+					if (env->GetLayerProp(setting, currGroup, i))
 					{
 						setting.minScale = Text::StrToInt32(sarr[2].v);
 						setting.maxScale = Text::StrToInt32(sarr[3].v);
 						setting.imgIndex = (UOSInt)si;
-						env->SetLayerProp(&setting, currGroup, i);
+						env->SetLayerProp(setting, currGroup, i);
 					}
 				}
 			}

@@ -374,7 +374,7 @@ SSWR::AVIRead::AVIRGISLineEditForm::AVIRGISLineEditForm(UI::GUIClientControl *pa
 		UOSInt thick;
 		UInt8 *pattern = 0;
 		UOSInt npattern;
-		this->env->GetLineStyleLayer(this->lineStyle, i, &color, &thick, &pattern, &npattern);
+		this->env->GetLineStyleLayer(this->lineStyle, i, color, thick, pattern, npattern);
 
 		lyr = MemAlloc(LineLayer, 1);
 		lyr->color = color;

@@ -147,7 +147,7 @@ namespace SSWR
 			Map::MapView *mapView;
 			Map::MapEnv *mapEnv;
 			Map::TileMapLayer *mapTileLyr;
-			Map::TileMap *mapTile;
+			NotNullPtr<Map::TileMap> mapTile;
 			Bool mapUpdated;
 			Data::FastMap<UInt32, OrganSpImgLayer*> mapImgLyrs;
 			UOSInt imgFontStyle;

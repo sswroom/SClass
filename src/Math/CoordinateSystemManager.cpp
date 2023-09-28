@@ -627,6 +627,14 @@ Math::ProjectedCoordinateSystem *Math::CoordinateSystemManager::CreateProjCoordi
 	return CreateProjCoordinateSystem(name.OrEmpty(), name.v);
 }
 
+NotNullPtr<Math::CoordinateSystem> Math::CoordinateSystemManager::CreateProjCoordinateSystemDefNameOrDef(ProjCoordSysType pcst)
+{
+	NotNullPtr<Math::CoordinateSystem> csys;
+	if (!csys.Set(CreateProjCoordinateSystemDefName(pcst)))
+		csys = CreateDefaultCsys();
+	return csys;
+}
+
 Math::ProjectedCoordinateSystem *Math::CoordinateSystemManager::CreateProjCoordinateSystem(Text::CStringNN sourceName, const UTF8Char *projName)
 {
 	const Math::CoordinateSystemManager::ProjectedCSysInfo *coord = GetProjCoordinateSystemInfo(projName);

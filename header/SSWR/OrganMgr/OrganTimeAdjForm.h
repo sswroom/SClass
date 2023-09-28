@@ -30,7 +30,7 @@ namespace SSWR
 			Map::MapView *mapView;
 			Map::TileMapLayer *mapTileLyr;
 			OrganTimeAdjLayer *adjLyr;
-			Map::TileMap *mapTile;
+			NotNullPtr<Map::TileMap> mapTile;
 			Map::DrawMapRenderer *mapRenderer;
 			NotNullPtr<Media::ColorManagerSess> colorSess;
 			Data::ArrayList<UserFileInfo*> *userFileList;

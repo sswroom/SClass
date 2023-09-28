@@ -53,14 +53,13 @@ Bool Map::GeoPackageLayer::StringSessGoRow(StringSession *sess, UOSInt index)
 	}
 }
 
-Map::GeoPackageLayer::GeoPackageLayer(Map::GeoPackage *gpkg, Map::GeoPackage::ContentInfo *layerContent) : Map::MapDrawLayer(gpkg->GetSourceNameObj(), 0, layerContent->tableName.Ptr())
+Map::GeoPackageLayer::GeoPackageLayer(Map::GeoPackage *gpkg, NotNullPtr<Map::GeoPackage::ContentInfo> layerContent) : Map::MapDrawLayer(gpkg->GetSourceNameObj(), 0, layerContent->tableName.Ptr(), Math::CoordinateSystemManager::SRCreateCSysOrDef((UInt32)this->layerContent->srsId))
 {
 	this->gpkg = gpkg;
 	this->layerContent = layerContent;
 	this->tabDef = this->gpkg->GetTableDef(CSTR_NULL, layerContent->tableName->ToCString());
 	this->geomCol = INVALID_INDEX;
 	this->mixedData = MixedData::AllData;
-	this->SetCoordinateSystem(Math::CoordinateSystemManager::SRCreateCSys((UInt32)this->layerContent->srsId));
 	if (this->tabDef)
 	{
 		DB::ColDef *col;

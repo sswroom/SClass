@@ -41,7 +41,7 @@ IO::FileExporter::SupportType Exporter::OruxMapExporter::IsObjectSupported(IO::P
 	Map::MapDrawLayer *layer = (Map::MapDrawLayer *)pobj;
 	if (layer->GetObjectClass() == Map::MapDrawLayer::OC_TILE_MAP_LAYER)
 	{
-		Map::TileMap *tileMap = ((Map::TileMapLayer*)layer)->GetTileMap();
+		NotNullPtr<Map::TileMap> tileMap = ((Map::TileMapLayer*)layer)->GetTileMap();
 		Map::TileMap::TileType ttype = tileMap->GetTileType();
 		if (ttype == Map::TileMap::TT_OSMLOCAL)
 		{
@@ -49,7 +49,7 @@ IO::FileExporter::SupportType Exporter::OruxMapExporter::IsObjectSupported(IO::P
 		}
 		else if (ttype == Map::TileMap::TT_OSM)
 		{
-			Map::OSM::OSMTileMap *osm = (Map::OSM::OSMTileMap*)tileMap;
+			NotNullPtr<Map::OSM::OSMTileMap> osm = NotNullPtr<Map::OSM::OSMTileMap>::ConvertFrom(tileMap);
 			if (osm->HasSPackageFile())
 			{
 				return IO::FileExporter::SupportType::MultiFiles;
@@ -85,7 +85,7 @@ Bool Exporter::OruxMapExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, T
 	{
 		return false;
 	}
-	Map::TileMap *tileMap = ((Map::TileMapLayer*)layer)->GetTileMap();
+	NotNullPtr<Map::TileMap> tileMap = ((Map::TileMapLayer*)layer)->GetTileMap();
 	Map::TileMap::TileType ttype = tileMap->GetTileType();
 	Text::UTF8Writer *writer;
 	UOSInt i;
@@ -146,7 +146,7 @@ Bool Exporter::OruxMapExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, T
 				db->ExecuteNonQuery(sql.ToCString());
 			}
 			succ = true;
-			Map::OSM::OSMLocalTileMap *osm = (Map::OSM::OSMLocalTileMap*)tileMap;
+			NotNullPtr<Map::OSM::OSMLocalTileMap> osm = NotNullPtr<Map::OSM::OSMLocalTileMap>::ConvertFrom(tileMap);
 			NEW_CLASS(writer, Text::UTF8Writer(stm));
 			writer->WriteStrC(UTF8STRC("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"));
 			writer->WriteStrC(UTF8STRC("<OruxTracker xmlns=\"http://oruxtracker.com/app/res/calibration\"\n"));
@@ -292,7 +292,7 @@ Bool Exporter::OruxMapExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, T
 	}
 	else if (ttype == Map::TileMap::TT_OSM)
 	{
-		Map::OSM::OSMTileMap *osm = (Map::OSM::OSMTileMap*)tileMap;
+		NotNullPtr<Map::OSM::OSMTileMap> osm = NotNullPtr<Map::OSM::OSMTileMap>::ConvertFrom(tileMap);
 		if (!osm->HasSPackageFile())
 		{
 			return false;

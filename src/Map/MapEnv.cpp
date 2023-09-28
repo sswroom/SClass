@@ -374,7 +374,7 @@ UOSInt Map::MapEnv::GetLineStyleCount() const
 	return this->lineStyles.GetCount();
 }
 
-Bool Map::MapEnv::GetLineStyleLayer(UOSInt index, UOSInt layerId, UInt32 *color, UOSInt *thick, UInt8 **pattern, UOSInt *npattern) const
+Bool Map::MapEnv::GetLineStyleLayer(UOSInt index, UOSInt layerId, OutParam<UInt32> color, OutParam<UOSInt> thick, OutParam<UInt8*> pattern, OutParam<UOSInt> npattern) const
 {
 	UOSInt cnt = this->lineStyles.GetCount();
 	if (index >= cnt)
@@ -389,10 +389,10 @@ Bool Map::MapEnv::GetLineStyleLayer(UOSInt index, UOSInt layerId, UInt32 *color,
 		return false;
 	}
 	layer = style->layers.GetItem(layerId);
-	*color = layer->color;
-	*thick = layer->thick;
-	*pattern = layer->pattern;
-	*npattern = layer->npattern;
+	color.Set(layer->color);
+	thick.Set(layer->thick);
+	pattern.Set(layer->pattern);
+	npattern.Set(layer->npattern);
 	return true;
 }
 
@@ -857,7 +857,7 @@ Bool Map::MapEnv::GetGroupHide(Map::MapEnv::GroupItem *group) const
 	return group->groupHide;
 }
 
-Bool Map::MapEnv::GetLayerProp(Map::MapEnv::LayerItem *setting, Map::MapEnv::GroupItem *group, UOSInt index) const
+Bool Map::MapEnv::GetLayerProp(NotNullPtr<Map::MapEnv::LayerItem> setting, Map::MapEnv::GroupItem *group, UOSInt index) const
 {
 	Map::MapEnv::MapItem *item;
 	if (group == 0)
@@ -872,7 +872,7 @@ Bool Map::MapEnv::GetLayerProp(Map::MapEnv::LayerItem *setting, Map::MapEnv::Gro
 	{
 		if (item->itemType == Map::MapEnv::IT_LAYER)
 		{
-			MemCopyNO(setting, item, sizeof(Map::MapEnv::LayerItem));
+			MemCopyNO(setting.Ptr(), item, sizeof(Map::MapEnv::LayerItem));
 			return true;
 		}
 		else if (item->itemType == Map::MapEnv::IT_GROUP)
@@ -890,7 +890,7 @@ Bool Map::MapEnv::GetLayerProp(Map::MapEnv::LayerItem *setting, Map::MapEnv::Gro
 	}
 }
 
-Bool Map::MapEnv::SetLayerProp(Map::MapEnv::LayerItem *setting, Map::MapEnv::GroupItem *group, UOSInt index)
+Bool Map::MapEnv::SetLayerProp(NotNullPtr<Map::MapEnv::LayerItem> setting, Map::MapEnv::GroupItem *group, UOSInt index)
 {
 	Sync::MutexUsage mutUsage(this->mut);
 	Map::MapEnv::MapItem *item;

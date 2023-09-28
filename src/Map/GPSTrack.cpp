@@ -13,7 +13,7 @@
 #include "Text/MyStringFloat.h"
 #include "Text/MyStringW.h"
 
-Map::GPSTrack::GPSTrack(NotNullPtr<Text::String> sourceName, Bool hasAltitude, UInt32 codePage, Text::String *layerName) : Map::MapDrawLayer(sourceName, 0, layerName)
+Map::GPSTrack::GPSTrack(NotNullPtr<Text::String> sourceName, Bool hasAltitude, UInt32 codePage, Text::String *layerName) : Map::MapDrawLayer(sourceName, 0, layerName, Math::CoordinateSystemManager::CreateDefaultCsys())
 {
 	this->codePage = codePage;
 	this->currTrackName = 0;
@@ -21,10 +21,9 @@ Map::GPSTrack::GPSTrack(NotNullPtr<Text::String> sourceName, Bool hasAltitude, U
 	this->tmpRecord = 0;
 	this->maxLat = this->minLat = this->maxLon = this->minLon = 0;
 	this->hasAltitude = hasAltitude;
-	this->csys = Math::CoordinateSystemManager::CreateDefaultCsys();
 }
 
-Map::GPSTrack::GPSTrack(Text::CStringNN sourceName, Bool hasAltitude, UInt32 codePage, Text::CString layerName) : Map::MapDrawLayer(sourceName, 0, layerName)
+Map::GPSTrack::GPSTrack(Text::CStringNN sourceName, Bool hasAltitude, UInt32 codePage, Text::CString layerName) : Map::MapDrawLayer(sourceName, 0, layerName, Math::CoordinateSystemManager::CreateDefaultCsys())
 {
 	this->codePage = codePage;
 	this->currTrackName = 0;
@@ -32,7 +31,6 @@ Map::GPSTrack::GPSTrack(Text::CStringNN sourceName, Bool hasAltitude, UInt32 cod
 	this->tmpRecord = 0;
 	this->maxLat = this->minLat = this->maxLon = this->minLon = 0;
 	this->hasAltitude = hasAltitude;
-	this->csys = Math::CoordinateSystemManager::CreateDefaultCsys();
 }
 
 Map::GPSTrack::~GPSTrack()

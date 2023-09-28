@@ -17,7 +17,7 @@ void __stdcall SSWR::AVIRead::AVIRGISPropForm::OnOKClicked(void *userObj)
 	Map::MapEnv::LayerItem setting;
 	UTF8Char sbuff[16];
 	UTF8Char *sptr;
-	if (me->env->GetLayerProp(&setting, me->group, me->index))
+	if (me->env->GetLayerProp(setting, me->group, me->index))
 	{
 		setting.labelCol = (UOSInt)me->cboColName->GetSelectedIndex();
 		setting.flags = Map::MapEnv::SFLG_NONE;
@@ -71,7 +71,7 @@ void __stdcall SSWR::AVIRead::AVIRGISPropForm::OnOKClicked(void *userObj)
 		setting.fontSizePt = me->fontSizePt;
 		setting.fontColor = me->fontColor;
 		setting.imgIndex = me->imgIndex;
-		if (me->env->SetLayerProp(&setting, me->group, me->index))
+		if (me->env->SetLayerProp(setting, me->group, me->index))
 		{
 			me->SetDialogResult(UI::GUIForm::DR_OK);
 		}
@@ -361,7 +361,7 @@ SSWR::AVIRead::AVIRGISPropForm::AVIRGISPropForm(UI::GUIClientControl *parent, No
 	Map::MapEnv::LayerItem *lyr;
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
-	if (this->env->GetLayerProp(&setting, this->group, this->index))
+	if (this->env->GetLayerProp(setting, this->group, this->index))
 	{
 		lyr = (Map::MapEnv::LayerItem*)this->env->GetItem(this->group, this->index);
 		UOSInt j = lyr->layer->GetColumnCnt();

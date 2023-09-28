@@ -1374,13 +1374,14 @@ Map::MapDrawLayer *Map::OSM::OSMParser::ParseLayerNode(NotNullPtr<Text::XMLReade
 		MemFree(nodeMap.GetItem(i));
 	}
 	Map::MapLayerCollection *layerList;
+	NotNullPtr<Map::MapDrawLayer> layer;
 	NEW_CLASS(layerList, Map::MapLayerCollection(fileName, CSTR("OSM")));
 	i = 0;
 	while (i < OSMTYPECNT)
 	{
-		if (layers[i])
+		if (layer.Set(layers[i]))
 		{
-			layerList->Add(layers[i]);
+			layerList->Add(layer);
 		}
 		i++;
 	}

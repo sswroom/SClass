@@ -668,6 +668,15 @@ DB::TableDef *DB::DBConn::GetTableDef(Text::CString schemaName, Text::CString ta
 							else
 								col->SetColSize((UOSInt)DB::ColDef::GeometryType::Polygon);
 						}
+						else if (t->Equals(UTF8STRC("MULTIPOLYGON")))
+						{
+							if (dimension == 3)
+								col->SetColSize((UOSInt)DB::ColDef::GeometryType::MultiPolygonZ);
+							else if (dimension == 4)
+								col->SetColSize((UOSInt)DB::ColDef::GeometryType::MultiPolygonZM);
+							else
+								col->SetColSize((UOSInt)DB::ColDef::GeometryType::MultiPolygon);
+						}
 						else
 						{
 							printf("DBConn Postgresql: Unsupported type %s\r\n", t->v);

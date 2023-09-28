@@ -43,6 +43,6 @@ namespace SSWR
 
 			Math::CoordinateSystem *GetCSys();
 		};
-	};
-};
+	}
+}
 #endif

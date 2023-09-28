@@ -1004,9 +1004,9 @@ SSWR::AVIRead::AVIRDBManagerForm::AVIRDBManagerForm(UI::GUIClientControl *parent
 	NEW_CLASS(this->dbLayer, Map::DBMapLayer(CSTR("Database")));
 	UOSInt i = this->mapEnv->AddLayer(0, this->dbLayer, true);
 	Map::MapEnv::LayerItem settings;
-	this->mapEnv->GetLayerProp(&settings, 0, i);
+	this->mapEnv->GetLayerProp(settings, 0, i);
 	settings.fillStyle = 0xc0ff905b;
-	this->mapEnv->SetLayerProp(&settings, 0, i);
+	this->mapEnv->SetLayerProp(settings, 0, i);
 	layer->AddUpdatedHandler(OnLayerUpdated, this);
 	this->colorSess = core->GetColorMgr()->CreateSess(this->GetHMonitor());
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));

@@ -13,7 +13,7 @@
 #include "Sync/MutexUsage.h"
 #include "Text/MyString.h"
 
-Map::SHPData::SHPData(const UInt8 *shpHdr, NotNullPtr<IO::StreamData> data, UInt32 codePage, Math::ArcGISPRJParser *prjParser) : Map::MapDrawLayer(data->GetFullName(), 0, 0)
+Map::SHPData::SHPData(const UInt8 *shpHdr, NotNullPtr<IO::StreamData> data, UInt32 codePage, Math::ArcGISPRJParser *prjParser) : Map::MapDrawLayer(data->GetFullName(), 0, 0, Math::CoordinateSystemManager::CreateDefaultCsys())
 {
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
@@ -52,9 +52,10 @@ Map::SHPData::SHPData(const UInt8 *shpHdr, NotNullPtr<IO::StreamData> data, UInt
 		this->SetLayerName(CSTRP(&sbuff[i + 1], sptr));
 		sptr = Text::StrConcatC(sptr, UTF8STRC(".prj"));
 	}
-	if (!this->csys.Set(prjParser->ParsePRJFile({sbuff, (UOSInt)(sptr - sbuff)})))
+	NotNullPtr<Math::CoordinateSystem> csys;
+	if (csys.Set(prjParser->ParsePRJFile({sbuff, (UOSInt)(sptr - sbuff)})))
 	{
-		this->csys = Math::CoordinateSystemManager::CreateDefaultCsys();	
+		this->SetCoordinateSystem(csys);	
 	}
 
 	Text::StrConcatC(&sptr[-3], UTF8STRC("dbf"));

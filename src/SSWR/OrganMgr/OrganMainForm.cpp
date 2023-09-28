@@ -2474,19 +2474,19 @@ SSWR::OrganMgr::OrganSpImgLayer *SSWR::OrganMgr::OrganMainForm::GetImgLayer(UInt
 	Media::ColorProfile srcColor(Media::ColorProfile::CPT_SRGB);
 	NEW_CLASS(lyr, OrganSpImgLayer());
 	NEW_CLASS(stimg, Media::StaticImage(Math::Size2D<UOSInt>(7, 7), 0, 32, Media::PF_B8G8R8A8, 0, srcColor, Media::ColorProfile::YUVT_UNKNOWN, Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
-	lyr->SetCoordinateSystem(this->mapEnv->GetCoordinateSystem()->Clone().Ptr());
+	lyr->SetCoordinateSystem(this->mapEnv->GetCoordinateSystem()->Clone());
 	stimg->FillColor(mapColor);
 	NEW_CLASS(imgList, Media::ImageList(CSTR("PointImage")));
 	imgList->AddImage(stimg, 0);
 	sptr = Text::StrHexVal32(Text::StrConcatC(sbuff, UTF8STRC("Image")), mapColor);
 	imgInd = this->mapEnv->AddImage(CSTRP(sbuff, sptr), imgList);
 	lyrInd = this->mapEnv->AddLayer(0, lyr, true);
-	this->mapEnv->GetLayerProp(&sett, 0, lyrInd);
+	this->mapEnv->GetLayerProp(sett, 0, lyrInd);
 	sett.fontStyle = this->imgFontStyle;
 	sett.labelCol = 0;
 	sett.flags |= 3;
 	sett.imgIndex = imgInd;
-	this->mapEnv->SetLayerProp(&sett, 0, lyrInd);
+	this->mapEnv->SetLayerProp(sett, 0, lyrInd);
 	this->mapImgLyrs.Put(mapColor, lyr);
 	return lyr;
 }
@@ -2757,8 +2757,8 @@ SSWR::OrganMgr::OrganMainForm::OrganMainForm(NotNullPtr<UI::GUICore> ui, UI::GUI
 	this->txtMapPos->SetDockType(UI::GUIControl::DOCK_RIGHT);
 	this->txtMapPos->SetReadOnly(true);
 
-	Map::OSM::OSMTileMap *tileMap;
-	NEW_CLASS(tileMap, Map::OSM::OSMTileMap(CSTR("http://a.tile.opencyclemap.org/cycle/"), this->env->GetCacheDir()->ToCString(), 18, this->env->GetSocketFactory(), this->env->GetSSLEngine()));
+	NotNullPtr<Map::OSM::OSMTileMap> tileMap;
+	NEW_CLASSNN(tileMap, Map::OSM::OSMTileMap(CSTR("http://a.tile.opencyclemap.org/cycle/"), this->env->GetCacheDir()->ToCString(), 18, this->env->GetSocketFactory(), this->env->GetSSLEngine()));
 	tileMap->AddAlternateURL(CSTR("http://b.tile.opencyclemap.org/cycle/"));
 	tileMap->AddAlternateURL(CSTR("http://c.tile.opencyclemap.org/cycle/"));
 	this->mapTile = tileMap;

@@ -13,7 +13,7 @@
 #include "Math/Geometry/VectorImage.h"
 #include "Media/SharedImage.h"
 
-Map::OruxDBLayer::OruxDBLayer(Text::CStringNN sourceName, Text::CString layerName, NotNullPtr<Parser::ParserList> parsers) : Map::MapDrawLayer(sourceName, 0, layerName)
+Map::OruxDBLayer::OruxDBLayer(Text::CStringNN sourceName, Text::CString layerName, NotNullPtr<Parser::ParserList> parsers) : Map::MapDrawLayer(sourceName, 0, layerName, Math::CoordinateSystemManager::CreateDefaultCsys())
 {
 	this->parsers = parsers;
 	this->currLayer = (UInt32)-1;
@@ -38,7 +38,6 @@ Map::OruxDBLayer::OruxDBLayer(Text::CStringNN sourceName, Text::CString layerNam
 			}
 		}
 	}
-	this->SetCoordinateSystem(Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::CoordinateSystemManager::GCST_WGS84));
 }
 
 Map::OruxDBLayer::~OruxDBLayer()

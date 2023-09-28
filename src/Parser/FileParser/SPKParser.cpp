@@ -94,13 +94,13 @@ IO::ParsedObject *Parser::FileParser::SPKParser::ParseFileHdr(NotNullPtr<IO::Str
 		{
 			Data::ByteBuffer customBuff(customSize);
 			IO::SPackageFile *spkg;
-			Map::OSM::OSMTileMap *tileMap;
+			NotNullPtr<Map::OSM::OSMTileMap> tileMap;
 			fd->GetRealData(i + 8, customSize, customBuff);
 			MemCopyNO(srcPath, &customBuff[2], customBuff[1]);
 			srcPath[customBuff[1]] = 0;
 			j = 2 + (UOSInt)customBuff[1];
 			NEW_CLASS(spkg, IO::SPackageFile(fd->GetFullFileName()->ToCString()));
-			NEW_CLASS(tileMap, Map::OSM::OSMTileMap({srcPath, customBuff[1]}, spkg, 18, sockf, this->ssl));
+			NEW_CLASSNN(tileMap, Map::OSM::OSMTileMap({srcPath, customBuff[1]}, spkg, 18, sockf, this->ssl));
 			i = 1;
 			while (i < customBuff[0])
 			{

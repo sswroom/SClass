@@ -92,10 +92,9 @@ void Map::DrawMapServiceLayer::ClearDisp()
 	}
 }
 
-Map::DrawMapServiceLayer::DrawMapServiceLayer(Map::DrawMapService *mapService) : Map::MapDrawLayer(mapService->GetName(), 0, 0)
+Map::DrawMapServiceLayer::DrawMapServiceLayer(Map::DrawMapService *mapService) : Map::MapDrawLayer(mapService->GetName(), 0, 0, mapService->GetCoordinateSystem()->Clone())
 {
 	this->mapService = mapService;
-	this->csys = mapService->GetCoordinateSystem()->Clone();
 	this->dispBounds = mapService->GetInitBounds();
 	this->dispSize = Math::Size2DDbl(640, 480);
 	this->dispDPI = 96.0;

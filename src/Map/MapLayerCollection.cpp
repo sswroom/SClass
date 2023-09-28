@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "Map/MapLayerCollection.h"
+#include "Math/CoordinateSystemManager.h"
 #include "Sync/RWMutexUsage.h"
 
 void __stdcall Map::MapLayerCollection::InnerUpdated(void *userObj)
@@ -14,11 +15,11 @@ void __stdcall Map::MapLayerCollection::InnerUpdated(void *userObj)
 	}
 }
 
-Map::MapLayerCollection::MapLayerCollection(NotNullPtr<Text::String> sourceName, Text::String *layerName) : Map::MapDrawLayer(sourceName, 0, layerName)
+Map::MapLayerCollection::MapLayerCollection(NotNullPtr<Text::String> sourceName, Text::String *layerName) : Map::MapDrawLayer(sourceName, 0, layerName, Math::CoordinateSystemManager::CreateDefaultCsys())
 {
 }
 
-Map::MapLayerCollection::MapLayerCollection(Text::CStringNN sourceName, Text::CString layerName) : Map::MapDrawLayer(sourceName, 0, layerName)
+Map::MapLayerCollection::MapLayerCollection(Text::CStringNN sourceName, Text::CString layerName) : Map::MapDrawLayer(sourceName, 0, layerName, Math::CoordinateSystemManager::CreateDefaultCsys())
 {
 }
 
@@ -27,7 +28,7 @@ Map::MapLayerCollection::~MapLayerCollection()
 	this->ReleaseAll();
 }
 
-UOSInt Map::MapLayerCollection::Add(Map::MapDrawLayer * val)
+UOSInt Map::MapLayerCollection::Add(NotNullPtr<Map::MapDrawLayer> val)
 {
 	val->AddUpdatedHandler(InnerUpdated, this);
 	Sync::RWMutexUsage mutUsage(this->mut, true);
@@ -69,10 +70,10 @@ Map::MapDrawLayer *Map::MapLayerCollection::GetItem(UOSInt Index)
 	return this->layerList.GetItem(Index);
 }
 
-void Map::MapLayerCollection::SetItem(UOSInt Index, Map::MapDrawLayer *Val)
+void Map::MapLayerCollection::SetItem(UOSInt Index, NotNullPtr<Map::MapDrawLayer> val)
 {
 	Sync::RWMutexUsage mutUsage(this->mut, true);
-	this->layerList.SetItem(Index, Val);
+	this->layerList.SetItem(Index, val);
 }
 
 void Map::MapLayerCollection::SetCurrScale(Double scale)
@@ -444,14 +445,16 @@ NotNullPtr<Math::CoordinateSystem> Map::MapLayerCollection::GetCoordinateSystem(
 		return this->csys;
 }
 
-void Map::MapLayerCollection::SetCoordinateSystem(Math::CoordinateSystem *csys)
+void Map::MapLayerCollection::SetCoordinateSystem(NotNullPtr<Math::CoordinateSystem> csys)
 {
 	Sync::RWMutexUsage mutUsage(this->mut, false);
 	UOSInt i = this->layerList.GetCount();
 	while (i-- > 0)
 	{
-		this->layerList.GetItem(i)->SetCoordinateSystem(csys);
+		this->layerList.GetItem(i)->SetCoordinateSystem(csys->Clone());
 	}
+	this->csys.Delete();
+	this->csys = csys;
 }
 
 void Map::MapLayerCollection::ReleaseAll()

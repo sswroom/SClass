@@ -1,6 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Map/NetworkLinkLayer.h"
+#include "Math/CoordinateSystemManager.h"
 #include "Sync/MutexUsage.h"
 #include "Sync/RWMutexUsage.h"
 #include "Sync/SimpleThread.h"
@@ -183,7 +184,7 @@ void Map::NetworkLinkLayer::LoadLink(LinkInfo *link)
 	}
 }
 
-Map::NetworkLinkLayer::NetworkLinkLayer(Text::CStringNN fileName, Parser::ParserList *parsers, Net::WebBrowser *browser, Text::CString layerName) : Map::MapDrawLayer(fileName, 0, layerName)
+Map::NetworkLinkLayer::NetworkLinkLayer(Text::CStringNN fileName, Parser::ParserList *parsers, Net::WebBrowser *browser, Text::CString layerName) : Map::MapDrawLayer(fileName, 0, layerName, Math::CoordinateSystemManager::CreateDefaultCsys())
 {
 	this->parsers = parsers;
 	this->browser = browser;
@@ -679,11 +680,8 @@ NotNullPtr<Math::CoordinateSystem> Map::NetworkLinkLayer::GetCoordinateSystem()
 	return this->csys;
 }
 
-void Map::NetworkLinkLayer::SetCoordinateSystem(Math::CoordinateSystem *csys)
+void Map::NetworkLinkLayer::SetCoordinateSystem(NotNullPtr<Math::CoordinateSystem> csys)
 {
-	NotNullPtr<Math::CoordinateSystem> nncsys;
-	if (!nncsys.Set(csys))
-		return;
 	UOSInt i;
 	Sync::RWMutexUsage mutUsage(this->linkMut, true);
 	i = this->links.GetCount();
@@ -692,11 +690,11 @@ void Map::NetworkLinkLayer::SetCoordinateSystem(Math::CoordinateSystem *csys)
 		LinkInfo *link = this->links.GetItem(i);
 		if (link->innerLayer)
 		{
-			link->innerLayer->SetCoordinateSystem(csys->Clone().Ptr());
+			link->innerLayer->SetCoordinateSystem(csys->Clone());
 		}
 	}
 	this->csys.Delete();;
-	this->csys = nncsys;
+	this->csys = csys;
 }
 
 void Map::NetworkLinkLayer::AddUpdatedHandler(UpdatedHandler hdlr, void *obj)

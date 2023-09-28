@@ -365,10 +365,10 @@ void __stdcall SSWR::AVIRead::AVIRGISForm::OnTreeRightClick(void *userObj)
 			if (((Map::MapEnv::LayerItem*)ind->item)->layer->GetObjectClass() == Map::MapDrawLayer::OC_TILE_MAP_LAYER)
 			{
 				Map::TileMapLayer *layer = (Map::TileMapLayer*)((Map::MapEnv::LayerItem*)ind->item)->layer;
-				Map::TileMap *tileMap = layer->GetTileMap();
+				NotNullPtr<Map::TileMap> tileMap = layer->GetTileMap();
 				if (tileMap->GetTileType() == Map::TileMap::TT_OSM)
 				{
-					Map::OSM::OSMTileMap *osm = (Map::OSM::OSMTileMap*)tileMap;
+					NotNullPtr<Map::OSM::OSMTileMap> osm = NotNullPtr<Map::OSM::OSMTileMap>::ConvertFrom(tileMap);
 					canImport = osm->HasSPackageFile();
 				}
 			}
@@ -838,6 +838,7 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 	UTF8Char *sptr;
 	UTF8Char sbuff2[32];
 	UTF8Char *sptr2;
+	NotNullPtr<Math::CoordinateSystem> csys;
 	switch (cmdId)
 	{
 	case MNU_SAVE:
@@ -997,7 +998,7 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 		{
 			UI::GUIMapTreeView::ItemIndex *ind = (UI::GUIMapTreeView::ItemIndex *)this->popNode->GetItemObj();
 			Map::MapEnv::LayerItem setting;
-			this->env->GetLayerProp(&setting, ind->group, ind->index);
+			this->env->GetLayerProp(setting, ind->group, ind->index);
 			Map::MapEnv::LayerItem *layer = (Map::MapEnv::LayerItem*)ind->item;
 			Text::SearchIndexer *searching = layer->layer->CreateSearchIndexer(&this->ta, setting.labelCol);
 			if (searching)
@@ -1117,9 +1118,9 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 			Map::MapDrawLayer *lyr = ((Map::MapEnv::LayerItem*)((UI::GUIMapTreeView::ItemIndex*)this->popNode->GetItemObj())->item)->layer;
 			AVIRGISCSysForm frm(0, this->ui, this->core, lyr->GetCoordinateSystem().Ptr());
 			frm.SetText(CSTR("Assign Coordinate System"));
-			if (frm.ShowDialog(this) == UI::GUIForm::DR_OK)
+			if (frm.ShowDialog(this) == UI::GUIForm::DR_OK && csys.Set(frm.GetCSys()))
 			{
-				lyr->SetCoordinateSystem(frm.GetCSys());
+				lyr->SetCoordinateSystem(csys);
 				this->mapCtrl->UpdateMap();
 				this->mapCtrl->Redraw();
 			}
@@ -1133,9 +1134,9 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 				Map::VectorLayer *vec = (Map::VectorLayer*)lyr;
 				AVIRGISCSysForm frm(0, this->ui, this->core, lyr->GetCoordinateSystem().Ptr());
 				frm.SetText(CSTR("Convert Coordinate System"));
-				if (frm.ShowDialog(this) == UI::GUIForm::DR_OK)
+				if (frm.ShowDialog(this) == UI::GUIForm::DR_OK && csys.Set(frm.GetCSys()))
 				{
-					vec->ConvCoordinateSystem(frm.GetCSys());
+					vec->ConvCoordinateSystem(csys);
 					this->mapCtrl->UpdateMap();
 					this->mapCtrl->Redraw();
 				}
@@ -1167,10 +1168,10 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 			if (lyr->GetObjectClass() == Map::MapDrawLayer::OC_TILE_MAP_LAYER)
 			{
 				Map::TileMapLayer *layer = (Map::TileMapLayer*)lyr;
-				Map::TileMap *tileMap = layer->GetTileMap();
+				NotNullPtr<Map::TileMap> tileMap = layer->GetTileMap();
 				if (tileMap->GetTileType() == Map::TileMap::TT_OSM)
 				{
-					Map::OSM::OSMTileMap *osm = (Map::OSM::OSMTileMap*)tileMap;
+					NotNullPtr<Map::OSM::OSMTileMap> osm = NotNullPtr<Map::OSM::OSMTileMap>::ConvertFrom(tileMap);
 					if (osm->HasSPackageFile())
 					{
 						UI::FileDialog dlg(L"SSWR", L"AVIRead", L"GISImportTiles", false);
@@ -1196,10 +1197,10 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 			if (lyr->GetObjectClass() == Map::MapDrawLayer::OC_TILE_MAP_LAYER)
 			{
 				Map::TileMapLayer *layer = (Map::TileMapLayer*)lyr;
-				Map::TileMap *tileMap = layer->GetTileMap();
+				NotNullPtr<Map::TileMap> tileMap = layer->GetTileMap();
 				if (tileMap->GetTileType() == Map::TileMap::TT_OSM)
 				{
-					Map::OSM::OSMTileMap *osm = (Map::OSM::OSMTileMap*)tileMap;
+					NotNullPtr<Map::OSM::OSMTileMap> osm = NotNullPtr<Map::OSM::OSMTileMap>::ConvertFrom(tileMap);
 					if (osm->HasSPackageFile())
 					{
 						UI::FileDialog dlg(L"SSWR", L"AVIRead", L"GISOptimizeFile", true);
@@ -1511,10 +1512,13 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 			SSWR::AVIRead::AVIRTMSForm frm(0, this->ui, this->core, this->ssl);
 			if (frm.ShowDialog(this) == UI::GUIForm::DR_OK)
 			{
-				Map::TileMap *tileMap = frm.GetTileMap();
-				Map::TileMapLayer *layer;
-				NEW_CLASS(layer, Map::TileMapLayer(tileMap, this->core->GetParserList()));
-				this->AddLayer(layer);
+				NotNullPtr<Map::TileMap> tileMap;
+				if (tileMap.Set(frm.GetTileMap()))
+				{
+					Map::TileMapLayer *layer;
+					NEW_CLASS(layer, Map::TileMapLayer(tileMap, this->core->GetParserList()));
+					this->AddLayer(layer);
+				}
 			}
 			break;
 		}
@@ -1523,10 +1527,13 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 			SSWR::AVIRead::AVIRWMTSForm frm(0, this->ui, this->core, this->ssl);
 			if (frm.ShowDialog(this) == UI::GUIForm::DR_OK)
 			{
-				Map::TileMap *tileMap = frm.GetTileMap();
-				Map::TileMapLayer *layer;
-				NEW_CLASS(layer, Map::TileMapLayer(tileMap, this->core->GetParserList()));
-				this->AddLayer(layer);
+				NotNullPtr<Map::TileMap> tileMap;
+				if (tileMap.Set(frm.GetTileMap()))
+				{
+					Map::TileMapLayer *layer;
+					NEW_CLASS(layer, Map::TileMapLayer(tileMap, this->core->GetParserList()));
+					this->AddLayer(layer);
+				}
 			}
 			break;
 		}
@@ -1566,7 +1573,7 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 				Map::MapDrawLayer *mapLyr;
 				if (esriMap->HasTile())
 				{
-					Map::ESRI::ESRITileMap *map;
+					NotNullPtr<Map::ESRI::ESRITileMap> map;
 					NotNullPtr<Text::String> url = esriMap->GetURL();
 					crc.Calc((UInt8*)url->v, url->leng);
 					crc.GetValue(crcVal);
@@ -1575,7 +1582,7 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 					sptr = IO::Path::AppendPath(sbuff, sptr, CSTRP(sbuff2, sptr2));
 					*sptr++ = (UTF8Char)IO::Path::PATH_SEPERATOR;
 					*sptr = 0;
-					NEW_CLASS(map, Map::ESRI::ESRITileMap(esriMap, true, CSTRP(sbuff, sptr)));
+					NEW_CLASSNN(map, Map::ESRI::ESRITileMap(esriMap, true, CSTRP(sbuff, sptr)));
 					NEW_CLASS(mapLyr, Map::TileMapLayer(map, this->core->GetParserList()));
 					this->AddLayer(mapLyr);
 				}

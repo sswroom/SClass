@@ -155,7 +155,7 @@ namespace Map
 		Bool RemoveLineStyleLayer(UOSInt index, UOSInt layerId);
 		Bool RemoveLineStyle(UOSInt index);
 		UOSInt GetLineStyleCount() const;
-		Bool GetLineStyleLayer(UOSInt index, UOSInt layerId, UInt32 *color, UOSInt *thick, UInt8 **pattern, UOSInt *npattern) const;
+		Bool GetLineStyleLayer(UOSInt index, UOSInt layerId, OutParam<UInt32> color, OutParam<UOSInt> thick, OutParam<UInt8*> pattern, OutParam<UOSInt> npattern) const;
 		UOSInt GetLineStyleLayerCnt(UOSInt index) const;
 
 		//-1 = error
@@ -180,8 +180,8 @@ namespace Map
 		void SetGroupName(GroupItem *group, Text::CString name);
 		void SetGroupHide(GroupItem *group, Bool isHide);
 		Bool GetGroupHide(GroupItem *group) const;
-		Bool GetLayerProp(LayerItem *setting, GroupItem *group, UOSInt index) const;
-		Bool SetLayerProp(LayerItem *setting, GroupItem *group, UOSInt index);
+		Bool GetLayerProp(NotNullPtr<LayerItem> setting, GroupItem *group, UOSInt index) const;
+		Bool SetLayerProp(NotNullPtr<LayerItem> setting, GroupItem *group, UOSInt index);
 		UOSInt GetNString() const;
 		void SetNString(UOSInt nStr);
 //		void *AddLayerColl(GroupItem *group, Map::MapLayerCollection *layerColl, Bool releaseColl);

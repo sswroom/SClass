@@ -47,7 +47,11 @@ namespace DB
 			Path,
 			PathZ,
 			PathZM,
-			PathM
+			PathM,
+			MultiPolygon,
+			MultiPolygonZ,
+			MultiPolygonZM,
+			MultiPolygonM
 		};
 	private:
 		NotNullPtr<Text::String> colName;

@@ -19,7 +19,7 @@
 #include "Text/MyString.h"
 #include "Text/MyStringW.h"
 
-Map::SPDLayer::SPDLayer(Text::CStringNN layerName) : Map::MapDrawLayer(layerName, 0, CSTR_NULL)
+Map::SPDLayer::SPDLayer(Text::CStringNN layerName) : Map::MapDrawLayer(layerName, 0, CSTR_NULL, Math::CoordinateSystemManager::CreateDefaultCsys())
 {
 	UTF8Char fname[256];
 	UTF8Char *sptr;
@@ -39,7 +39,6 @@ Map::SPDLayer::SPDLayer(Text::CStringNN layerName) : Map::MapDrawLayer(layerName
 	this->blkScale = 0;
 	this->blks = 0;
 	this->maxTextSize = 0;
-	this->csys = Math::CoordinateSystemManager::CreateDefaultCsys();
 	this->lyrType = (Map::DrawLayerType)0;
 	this->layerName = Text::StrCopyNew(fname).Ptr();
 

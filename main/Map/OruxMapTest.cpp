@@ -13,7 +13,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	Text::CStringNN destFile = CSTR("/media/sswroom/Extreme SSD/Map/Temp/Temp.otrk2.xml");
 	Parser::ParserList *parsers;
 	IO::PackageFile *pkg;
-	Map::OSM::OSMLocalTileMap *tileMap;
+	NotNullPtr<Map::OSM::OSMLocalTileMap> tileMap;
 	Map::TileMapLayer *mapLyr;
 	NEW_CLASS(parsers, Parser::FullParserList());
 
@@ -23,7 +23,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	}
 	if (pkg)
 	{
-		NEW_CLASS(tileMap, Map::OSM::OSMLocalTileMap(pkg));
+		NEW_CLASSNN(tileMap, Map::OSM::OSMLocalTileMap(pkg));
 		NEW_CLASS(mapLyr, Map::TileMapLayer(tileMap, parsers));
 		Exporter::OruxMapExporter exporter;
 		exporter.ExportNewFile(destFile, mapLyr, 0);

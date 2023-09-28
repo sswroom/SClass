@@ -55,7 +55,7 @@ Data::FastMap<Int32, const UTF8Char **> *Map::FileGDBLayer::ReadNameArr()
 	}
 }
 
-Map::FileGDBLayer::FileGDBLayer(DB::SharedReadingDB *conn, Text::CStringNN sourceName, Text::CStringNN tableName, Math::ArcGISPRJParser *prjParser) : Map::MapDrawLayer(sourceName, 0, tableName)
+Map::FileGDBLayer::FileGDBLayer(DB::SharedReadingDB *conn, Text::CStringNN sourceName, Text::CStringNN tableName, Math::ArcGISPRJParser *prjParser) : Map::MapDrawLayer(sourceName, 0, tableName, Math::CoordinateSystemManager::CreateDefaultCsys())
 {
 	UInt8 *buff = 0; 
 	conn->UseObject();
@@ -72,7 +72,6 @@ Map::FileGDBLayer::FileGDBLayer(DB::SharedReadingDB *conn, Text::CStringNN sourc
 
 	Sync::MutexUsage mutUsage;
 	this->currDB = this->conn->UseDB(mutUsage).Ptr();
-	this->csys = Math::CoordinateSystemManager::CreateDefaultCsys();
 	NotNullPtr<DB::DBReader> r;
 	if (r.Set(this->currDB->QueryTableData(CSTR_NULL, tableName, 0, 0, 0, 0, 0)))
 	{

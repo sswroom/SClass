@@ -171,12 +171,11 @@ void Map::VectorLayer::UpdateMapRate()
 	}
 }
 
-Map::VectorLayer::VectorLayer(Map::DrawLayerType layerType, NotNullPtr<Text::String> sourceName, UOSInt strCnt, const UTF8Char **colNames, NotNullPtr<Math::CoordinateSystem> csys, UOSInt nameCol, Text::String *layerName) : Map::MapDrawLayer(sourceName, nameCol, layerName)
+Map::VectorLayer::VectorLayer(Map::DrawLayerType layerType, NotNullPtr<Text::String> sourceName, UOSInt strCnt, const UTF8Char **colNames, NotNullPtr<Math::CoordinateSystem> csys, UOSInt nameCol, Text::String *layerName) : Map::MapDrawLayer(sourceName, nameCol, layerName, csys)
 {
 	UOSInt i;
 	this->layerType = layerType;
 	this->strCnt = strCnt;
-	this->csys = csys;
 	this->min = Math::Coord2DDbl(0, 0);
 	this->max = Math::Coord2DDbl(0, 0);
 	this->maxStrLen = MemAlloc(UOSInt, strCnt);
@@ -201,12 +200,11 @@ Map::VectorLayer::VectorLayer(Map::DrawLayerType layerType, NotNullPtr<Text::Str
 	}
 }
 
-Map::VectorLayer::VectorLayer(Map::DrawLayerType layerType, Text::CStringNN sourceName, UOSInt strCnt, const UTF8Char **colNames, NotNullPtr<Math::CoordinateSystem> csys, UOSInt nameCol, Text::CString layerName) : Map::MapDrawLayer(sourceName, nameCol, layerName)
+Map::VectorLayer::VectorLayer(Map::DrawLayerType layerType, Text::CStringNN sourceName, UOSInt strCnt, const UTF8Char **colNames, NotNullPtr<Math::CoordinateSystem> csys, UOSInt nameCol, Text::CString layerName) : Map::MapDrawLayer(sourceName, nameCol, layerName, csys)
 {
 	UOSInt i;
 	this->layerType = layerType;
 	this->strCnt = strCnt;
-	this->csys  = csys;
 	this->min = Math::Coord2DDbl(0, 0);
 	this->max = Math::Coord2DDbl(0, 0);
 	this->maxStrLen = MemAlloc(UOSInt, strCnt);
@@ -231,12 +229,11 @@ Map::VectorLayer::VectorLayer(Map::DrawLayerType layerType, Text::CStringNN sour
 	}
 }
 
-Map::VectorLayer::VectorLayer(Map::DrawLayerType layerType, NotNullPtr<Text::String> sourceName, UOSInt strCnt, const UTF8Char **colNames, NotNullPtr<Math::CoordinateSystem> csys, DB::DBUtil::ColType *colTypes, UOSInt *colSize, UOSInt *colDP, UOSInt nameCol, Text::String *layerName) : Map::MapDrawLayer(sourceName, nameCol, layerName)
+Map::VectorLayer::VectorLayer(Map::DrawLayerType layerType, NotNullPtr<Text::String> sourceName, UOSInt strCnt, const UTF8Char **colNames, NotNullPtr<Math::CoordinateSystem> csys, DB::DBUtil::ColType *colTypes, UOSInt *colSize, UOSInt *colDP, UOSInt nameCol, Text::String *layerName) : Map::MapDrawLayer(sourceName, nameCol, layerName, csys)
 {
 	UOSInt i;
 	this->layerType = layerType;
 	this->strCnt = strCnt;
-	this->csys = csys;
 	this->min = Math::Coord2DDbl(0, 0);
 	this->max = Math::Coord2DDbl(0, 0);
 	this->maxStrLen = MemAlloc(UOSInt, strCnt);
@@ -264,12 +261,11 @@ Map::VectorLayer::VectorLayer(Map::DrawLayerType layerType, NotNullPtr<Text::Str
 	}
 }
 
-Map::VectorLayer::VectorLayer(Map::DrawLayerType layerType, Text::CStringNN sourceName, UOSInt strCnt, const UTF8Char **colNames, NotNullPtr<Math::CoordinateSystem> csys, DB::DBUtil::ColType *colTypes, UOSInt *colSize, UOSInt *colDP, UOSInt nameCol, Text::CString layerName) : Map::MapDrawLayer(sourceName, nameCol, layerName)
+Map::VectorLayer::VectorLayer(Map::DrawLayerType layerType, Text::CStringNN sourceName, UOSInt strCnt, const UTF8Char **colNames, NotNullPtr<Math::CoordinateSystem> csys, DB::DBUtil::ColType *colTypes, UOSInt *colSize, UOSInt *colDP, UOSInt nameCol, Text::CString layerName) : Map::MapDrawLayer(sourceName, nameCol, layerName, csys)
 {
 	UOSInt i;
 	this->layerType = layerType;
 	this->strCnt = strCnt;
-	this->csys = csys;
 	this->min = Math::Coord2DDbl(0, 0);
 	this->max = Math::Coord2DDbl(0, 0);
 	this->maxStrLen = MemAlloc(UOSInt, strCnt);
@@ -923,11 +919,8 @@ void Map::VectorLayer::ReplaceVector(Int64 id, NotNullPtr<Math::Geometry::Vector
 	}
 }
 
-void Map::VectorLayer::ConvCoordinateSystem(Math::CoordinateSystem *csys)
+void Map::VectorLayer::ConvCoordinateSystem(NotNullPtr<Math::CoordinateSystem> destCsys)
 {
-	NotNullPtr<Math::CoordinateSystem> destCsys;
-	if (!destCsys.Set(csys))
-		return;
 	Math::Geometry::Vector2D *v;
 	UOSInt i;
 	i = this->vectorList.GetCount();
