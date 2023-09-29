@@ -270,7 +270,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::IndexReq(SSWR::SMonitor::SMon
 	}
 
 	DEL_CLASS(writer);
-	buff = mstm.GetBuff(&buffSize);
+	buff = mstm.GetBuff(buffSize);
 	resp->AddDefHeaders(req);
 	resp->AddContentType(CSTR("text/html"));
 	resp->AddContentLength(buffSize);
@@ -346,7 +346,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::LoginReq(SSWR::SMonitor::SMon
 	writer->WriteLineC(UTF8STRC("</center></td></tr></table></body>"));
 	writer->WriteLineC(UTF8STRC("</html>"));
 	DEL_CLASS(writer);
-	buff = mstm.GetBuff(&buffSize);
+	buff = mstm.GetBuff(buffSize);
 	resp->AddDefHeaders(req);
 	resp->AddContentType(CSTR("text/html"));
 	resp->AddContentLength(buffSize);
@@ -524,7 +524,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReq(SSWR::SMonitor::SMo
 	sess->EndUse();
 
 	DEL_CLASS(writer);
-	buff = mstm.GetBuff(&buffSize);
+	buff = mstm.GetBuff(buffSize);
 	resp->AddDefHeaders(req);
 	resp->AddContentType(CSTR("text/html"));
 	resp->AddContentLength(buffSize);
@@ -644,7 +644,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceEditReq(SSWR::SMonitor:
 	sess->EndUse();
 
 	DEL_CLASS(writer);
-	buff = mstm.GetBuff(&buffSize);
+	buff = mstm.GetBuff(buffSize);
 	resp->AddDefHeaders(req);
 	resp->AddContentType(CSTR("text/html"));
 	resp->AddContentLength(buffSize);
@@ -786,7 +786,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingReq(SSWR::SMonit
 	sess->EndUse();
 
 	DEL_CLASS(writer);
-	buff = mstm.GetBuff(&buffSize);
+	buff = mstm.GetBuff(buffSize);
 	resp->AddDefHeaders(req);
 	resp->AddContentType(CSTR("text/html"));
 	resp->AddContentLength(buffSize);
@@ -911,7 +911,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceDigitalsReq(SSWR::SMoni
 	sess->EndUse();
 
 	DEL_CLASS(writer);
-	buff = mstm.GetBuff(&buffSize);
+	buff = mstm.GetBuff(buffSize);
 	resp->AddDefHeaders(req);
 	resp->AddContentType(CSTR("text/html"));
 	resp->AddContentLength(buffSize);
@@ -1015,7 +1015,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingImgReq(SSWR::SMo
 	mstm = dev->imgCaches.Get((sensorId << 16) + (readingId << 8) + (readingType));
 	if (mstm)
 	{
-		buff = mstm->GetBuff(&buffSize);
+		buff = mstm->GetBuff(buffSize);
 		resp->AddDefHeaders(req);
 		resp->AddContentType(CSTR("image/png"));
 		resp->AddContentLength(buffSize);
@@ -1439,7 +1439,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingImgReq(SSWR::SMo
 		DEL_CLASS(exporter);
 		DEL_CLASS(imgList);
 
-		buff = nnmstm->GetBuff(&buffSize);
+		buff = nnmstm->GetBuff(buffSize);
 		resp->AddDefHeaders(req);
 		resp->AddContentType(CSTR("image/png"));
 		resp->AddContentLength(buffSize);
@@ -1568,7 +1568,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DevicePastDataReq(SSWR::SMoni
 	}
 
 	DEL_CLASS(writer);
-	buff = mstm.GetBuff(&buffSize);
+	buff = mstm.GetBuff(buffSize);
 	resp->AddDefHeaders(req);
 	resp->AddContentType(CSTR("text/html"));
 	resp->AddContentLength(buffSize);
@@ -1791,7 +1791,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DevicePastDataImgReq(SSWR::SM
 		DEL_CLASS(exporter);
 		DEL_CLASS(imgList);
 
-		buff = mstm.GetBuff(&buffSize);
+		buff = mstm.GetBuff(buffSize);
 		resp->AddDefHeaders(req);
 		resp->AddContentType(CSTR("image/png"));
 		resp->AddContentLength(buffSize);
@@ -1880,7 +1880,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::UserPasswordReq(SSWR::SMonito
 	sess->EndUse();
 
 	DEL_CLASS(writer);
-	buff = mstm.GetBuff(&buffSize);
+	buff = mstm.GetBuff(buffSize);
 	resp->AddDefHeaders(req);
 	resp->AddContentType(CSTR("text/html"));
 	resp->AddContentLength(buffSize);
@@ -1948,7 +1948,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::UsersReq(SSWR::SMonitor::SMon
 	sess->EndUse();
 
 	DEL_CLASS(writer);
-	buff = mstm.GetBuff(&buffSize);
+	buff = mstm.GetBuff(buffSize);
 	resp->AddDefHeaders(req);
 	resp->AddContentType(CSTR("text/html"));
 	resp->AddContentLength(buffSize);
@@ -2013,7 +2013,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::UserAddReq(SSWR::SMonitor::SM
 	sess->EndUse();
 
 	DEL_CLASS(writer);
-	buff = mstm.GetBuff(&buffSize);
+	buff = mstm.GetBuff(buffSize);
 	resp->AddDefHeaders(req);
 	resp->AddContentType(CSTR("text/html"));
 	resp->AddContentLength(buffSize);
@@ -2152,7 +2152,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::UserAssignReq(SSWR::SMonitor:
 	sess->EndUse();
 
 	DEL_CLASS(writer);
-	buff = mstm.GetBuff(&buffSize);
+	buff = mstm.GetBuff(buffSize);
 	resp->AddDefHeaders(req);
 	resp->AddContentType(CSTR("text/html"));
 	resp->AddContentLength(buffSize);

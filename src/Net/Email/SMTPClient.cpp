@@ -77,7 +77,7 @@ Bool Net::Email::SMTPClient::Send(NotNullPtr<Net::Email::EmailMessage> message)
 		}
 		i++;
 	}
-	const UInt8 *content = mstm.GetBuff(&i);
+	const UInt8 *content = mstm.GetBuff(i);
 	Bool succ = conn.SendData(content, i);
 	conn.SendQuit();
 	return succ;

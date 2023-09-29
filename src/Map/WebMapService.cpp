@@ -666,8 +666,7 @@ Media::ImageList *Map::WebMapService::DrawMap(Math::RectAreaDbl bounds, UInt32 w
 		{
 			mstm.Write(dataBuff, readSize);
 		}
-		UOSInt size;
-		IO::StmData::MemoryDataRef mdr(mstm.GetBuff(&size), (UOSInt)mstm.GetLength());
+		IO::StmData::MemoryDataRef mdr(mstm.GetBuff(), (UOSInt)mstm.GetLength());
 		if (imgFormat->StartsWith(UTF8STRC("image/png")))
 		{
 			Parser::FileParser::PNGParser parser;

@@ -140,7 +140,7 @@ void Media::MediaPlayerWebInterface::BrowseRequest(NotNullPtr<Net::WebServer::IW
 
 	resp->AddDefHeaders(req);
 	resp->AddHeader(CSTR("Cache-Control"), CSTR("no-cache"));
-	buff = mstm.GetBuff(&size);
+	buff = mstm.GetBuff(size);
 	resp->AddContentLength(size);
 	resp->AddContentType(CSTR("text/html; charset=UTF-8"));
 	resp->Write(buff, size);
@@ -416,7 +416,7 @@ void Media::MediaPlayerWebInterface::WebRequest(NotNullPtr<Net::WebServer::IWebR
 
 	resp->AddDefHeaders(req);
 	resp->AddHeader(CSTR("Cache-Control"), CSTR("no-cache"));
-	buff = mstm.GetBuff(&size);
+	buff = mstm.GetBuff(size);
 	resp->AddContentLength(size);
 	resp->AddContentType(CSTR("text/html; charset=UTF-8"));
 	resp->Write(buff, size);

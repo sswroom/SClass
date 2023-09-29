@@ -167,7 +167,7 @@ Bool Exporter::GIFExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text:
 		lzw->Write(imgData, img->info.dispSize.CalcArea());
 		MemFree(imgData);
 		DEL_CLASS(lzw);
-		imgData = mstm.GetBuff(&imgSize);
+		imgData = mstm.GetBuff(imgSize);
 		i = 0;
 		while (i < imgSize)
 		{

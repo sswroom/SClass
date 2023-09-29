@@ -67,7 +67,7 @@ SSWR::AVIRead::MIMEViewer::AVIRMultipartViewer::AVIRMultipartViewer(NotNullPtr<S
 							{
 								Crypto::Hash::IHash *hash = Crypto::Hash::HashCreator::CreateHash(hashType);
 								UOSInt buffSize;
-								const UInt8 *dataBuff = mstm.GetBuff(&buffSize);
+								const UInt8 *dataBuff = mstm.GetBuff(buffSize);
 								if (buffSize > 2 && dataBuff[buffSize - 2] == 13 && dataBuff[buffSize - 1] == 10)
 								{
 									buffSize -= 2;

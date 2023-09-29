@@ -386,7 +386,7 @@ IO::SPackageFile::~SPackageFile()
 		this->writeMode = true;
 		this->stm->SeekFromBeginning(this->currOfst);
 	}
-	buff = this->mstm.GetBuff(&buffSize);
+	buff = this->mstm.GetBuff(buffSize);
 	if (this->flags & 2)
 	{
 		if (buffSize > 16)
@@ -578,7 +578,7 @@ Bool IO::SPackageFile::Commit()
 	UInt8 hdr[16];
 	Bool succ = false;
 	Sync::MutexUsage mutUsage(this->mut);
-	buff = this->mstm.GetBuff(&buffSize);
+	buff = this->mstm.GetBuff(buffSize);
 	if (this->flags & 2)
 	{
 		if (buffSize > 16)

@@ -65,7 +65,7 @@ void __stdcall SSWR::AVIRead::AVIRTFTPClientForm::OnRecvClick(void *userObj)
 		{
 			UInt8 *buff;
 			UOSInt buffSize;
-			buff = mstm.GetBuff(&buffSize);
+			buff = mstm.GetBuff(buffSize);
 			IO::FileStream fs(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 			if (fs.IsError())
 			{

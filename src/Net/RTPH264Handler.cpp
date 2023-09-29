@@ -76,7 +76,7 @@ void Net::RTPH264Handler::MediaDataReceived(UInt8 *buff, UOSInt dataSize, UInt32
 		WriteMInt32(tmpBuff, 1);
 		this->mstm.Write(tmpBuff,4);
 		this->mstm.Write(buff, dataSize);
-		frameBuff = this->mstm.GetBuff(&frameSize);
+		frameBuff = this->mstm.GetBuff(frameSize);
 		if (this->cb)
 		{
 			this->cb(ts / 90, this->frameNum++, &frameBuff, frameSize, Media::IVideoSource::FS_P, this->cbData, Media::FT_NON_INTERLACE, (Media::IVideoSource::FrameFlag)(this->firstFrame?Media::IVideoSource::FF_DISCONTTIME:0), Media::YCOFST_C_CENTER_LEFT);
@@ -97,7 +97,7 @@ void Net::RTPH264Handler::MediaDataReceived(UInt8 *buff, UOSInt dataSize, UInt32
 		WriteMInt32(tmpBuff, 1);
 		this->mstm.Write(tmpBuff,4);
 		this->mstm.Write(buff, dataSize);
-		frameBuff = this->mstm.GetBuff(&frameSize);
+		frameBuff = this->mstm.GetBuff(frameSize);
 		if (this->cb)
 		{
 			this->cb(ts / 90, this->frameNum++, &frameBuff, frameSize, Media::IVideoSource::FS_I, this->cbData, Media::FT_NON_INTERLACE, Media::IVideoSource::FF_NONE, Media::YCOFST_C_CENTER_LEFT);
@@ -139,7 +139,7 @@ void Net::RTPH264Handler::MediaDataReceived(UInt8 *buff, UOSInt dataSize, UInt32
 			}
 			i += frameSize + 2;
 		}
-		frameBuff = this->mstm.GetBuff(&frameSize);
+		frameBuff = this->mstm.GetBuff(frameSize);
 		if (this->cb)
 		{
 			this->cb(ts / 90, this->frameNum++, &frameBuff, frameSize, this->isKey?Media::IVideoSource::FS_I:Media::IVideoSource::FS_P, this->cbData, Media::FT_NON_INTERLACE, Media::IVideoSource::FF_NONE, Media::YCOFST_C_CENTER_LEFT);
@@ -182,7 +182,7 @@ void Net::RTPH264Handler::MediaDataReceived(UInt8 *buff, UOSInt dataSize, UInt32
 			{
 				missSeq = true;
 
-				frameBuff = this->mstm.GetBuff(&frameSize);
+				frameBuff = this->mstm.GetBuff(frameSize);
 				if (this->cb)
 				{
 					this->cb(ts / 90, this->frameNum++, &frameBuff, frameSize, this->isKey?(Media::IVideoSource::FS_I):(Media::IVideoSource::FS_P), this->cbData, Media::FT_NON_INTERLACE, (this->isKey && this->firstFrame)?(Media::IVideoSource::FF_DISCONTTIME):Media::IVideoSource::FF_NONE, Media::YCOFST_C_CENTER_LEFT);
@@ -230,7 +230,7 @@ void Net::RTPH264Handler::MediaDataReceived(UInt8 *buff, UOSInt dataSize, UInt32
 			{
 				missSeq = true;
 
-				frameBuff = this->mstm.GetBuff(&frameSize);
+				frameBuff = this->mstm.GetBuff(frameSize);
 				if (this->cb)
 				{
 					this->cb(ts / 90, this->frameNum++, &frameBuff, frameSize, this->isKey?(Media::IVideoSource::FS_I):(Media::IVideoSource::FS_P), this->cbData, Media::FT_NON_INTERLACE, (this->isKey && this->firstFrame)?Media::IVideoSource::FF_DISCONTTIME:Media::IVideoSource::FF_NONE, Media::YCOFST_C_CENTER_LEFT);

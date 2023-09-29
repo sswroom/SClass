@@ -496,7 +496,7 @@ void Net::HTTPOSClient::EndRequest(Double *timeReq, Double *timeResp)
 		this->writing = true;
 
 		UOSInt reqSize;
-		UInt8 *reqBuff = this->reqMstm->GetBuff(&reqSize);
+		UInt8 *reqBuff = this->reqMstm->GetBuff(reqSize);
 
 		if (this->clsData->headers)
 		{

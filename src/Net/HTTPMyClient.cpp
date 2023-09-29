@@ -990,7 +990,7 @@ void Net::HTTPMyClient::EndRequest(Double *timeReq, Double *timeResp)
 		UOSInt reqSize;
 		UOSInt writeSize = 0;
 		UOSInt currSize = 0;
-		UInt8 *reqBuff = this->reqMstm.GetBuff(&reqSize);
+		UInt8 *reqBuff = this->reqMstm.GetBuff(reqSize);
 		while (writeSize < reqSize)
 		{
 			currSize = this->cli->Write(&reqBuff[writeSize], reqSize - writeSize);

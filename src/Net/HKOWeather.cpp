@@ -96,7 +96,7 @@ Net::HKOWeather::WeatherSignal Net::HKOWeather::GetSignalSummary(NotNullPtr<Net:
 	}
 	cli.Delete();
 
-	mbuff = mstm.GetBuff(&i);
+	mbuff = mstm.GetBuff(i);
 	Text::XMLDocument doc;
 	doc.ParseBuff(encFact, mbuff, i);
 	Text::XMLNode **nodes = doc.SearchNode(CSTR("/rss/channel/item/description"), &i);

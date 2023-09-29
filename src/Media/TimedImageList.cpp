@@ -114,7 +114,7 @@ Media::TimedImageList::~TimedImageList()
 		{
 			UOSInt indexSize;
 			UInt8 *indexBuff;
-			indexBuff = this->indexStm.GetBuff(&indexSize);
+			indexBuff = this->indexStm.GetBuff(indexSize);
 			this->fs->Write(indexBuff, indexSize);
 
 			this->fs->SeekFromBeginning(0);

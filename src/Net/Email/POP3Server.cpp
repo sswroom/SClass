@@ -308,7 +308,7 @@ void Net::Email::POP3Server::ParseCmd(NotNullPtr<Net::TCPClient> cli, MailStatus
 					WriteMessage(cli, true, UTF8STRC("Content follows"));
 					UOSInt buffSize;
 					UInt8 *buff;
-					buff = mstm.GetBuff(&buffSize);
+					buff = mstm.GetBuff(buffSize);
 					cli->Write(buff, buffSize);
 					if (this->rawLog)
 					{

@@ -17,7 +17,7 @@ namespace IO
 		virtual ~MemoryStream();
 
 		UInt8 *GetBuff();
-		UInt8 *GetBuff(UOSInt *buffSize);
+		UInt8 *GetBuff(OutParam<UOSInt> buffSize);
 		Data::ByteArray GetArray() const;
 
 		virtual Bool IsDown() const;

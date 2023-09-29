@@ -2802,7 +2802,7 @@ IO::ParsedObject *Parser::FileParser::PNGParser::ParseFileHdr(NotNullPtr<IO::Str
 				if (mstm)
 				{
 					UOSInt dataSize;
-					UInt8 *dataBuff = mstm->GetBuff(&dataSize);
+					UInt8 *dataBuff = mstm->GetBuff(dataSize);
 					if (dataSize == imgSize || imgSize != 0)
 					{
 						ParseImage(bitDepth, colorType, dataBuff, info, imgList, imgDelay, imgX, imgY, imgW, imgH, interlaceMeth, palette);
@@ -2916,7 +2916,7 @@ IO::ParsedObject *Parser::FileParser::PNGParser::ParseFileHdr(NotNullPtr<IO::Str
 			{
 				wcstm->Flush();
 				UOSInt dataSize;
-				UInt8 *dataBuff = mstm->GetBuff(&dataSize);
+				UInt8 *dataBuff = mstm->GetBuff(dataSize);
 				if (dataSize == imgSize || imgSize != 0)
 				{
 					ParseImage(bitDepth, colorType, dataBuff, info, imgList, imgDelay, imgX, imgY, imgW, imgH, interlaceMeth, palette);
@@ -2935,7 +2935,7 @@ IO::ParsedObject *Parser::FileParser::PNGParser::ParseFileHdr(NotNullPtr<IO::Str
 	{
 		wcstm->Flush();
 		UOSInt dataSize;
-		UInt8 *dataBuff = mstm->GetBuff(&dataSize);
+		UInt8 *dataBuff = mstm->GetBuff(dataSize);
 		if (dataSize == imgSize || imgSize != 0)
 		{
 			ParseImage(bitDepth, colorType, dataBuff, info, imgList, imgDelay, imgX, imgY, imgW, imgH, interlaceMeth, palette);

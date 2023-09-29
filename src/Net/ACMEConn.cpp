@@ -284,7 +284,7 @@ Net::ACMEConn::ACMEConn(NotNullPtr<Net::SocketFactory> sockf, Text::CStringNN se
 		}
 		if (mstm.GetLength() > 32)
 		{
-			UInt8 *jsonBuff = mstm.GetBuff(&recvSize);
+			UInt8 *jsonBuff = mstm.GetBuff(recvSize);
 			Text::String *s;
 			Text::JSONBase *json = Text::JSONBase::ParseJSONBytes(jsonBuff, recvSize);
 			if (json)
@@ -428,7 +428,7 @@ Bool Net::ACMEConn::AccountNew()
 		cli->ReadToEnd(mstm, 4096);
 		DEL_CLASS(cli);
 		UOSInt buffSize;
-		UInt8 *buff = mstm.GetBuff(&buffSize);
+		UInt8 *buff = mstm.GetBuff(buffSize);
 		Text::JSONBase *base = Text::JSONBase::ParseJSONBytes(buff, buffSize);
 		if (base != 0)
 		{
@@ -547,7 +547,7 @@ Net::ACMEConn::Order *Net::ACMEConn::OrderNew(const UTF8Char *domainNames, UOSIn
 		cli->GetRespHeader(CSTR("Location"), sb);
 		DEL_CLASS(cli);
 
-		const UInt8 *replyBuff = mstm.GetBuff(&i);
+		const UInt8 *replyBuff = mstm.GetBuff(i);
 		Order *order = this->OrderParse(replyBuff, i);
 		if (order && sb.GetLength() > 0)
 		{
@@ -580,7 +580,7 @@ Net::ACMEConn::Challenge *Net::ACMEConn::OrderAuthorize(NotNullPtr<Text::String>
 		UOSInt i;
 		UOSInt j;
 		Text::String *s;
-		const UInt8 *authBuff = mstm.GetBuff(&i);
+		const UInt8 *authBuff = mstm.GetBuff(i);
 		Text::JSONBase *json = Text::JSONBase::ParseJSONBytes(authBuff, i);
 		if (json == 0)
 		{
@@ -654,7 +654,7 @@ Net::ACMEConn::Challenge *Net::ACMEConn::ChallengeBegin(NotNullPtr<Text::String>
 			cli->ReadToEnd(mstm, 2048);
 			DEL_CLASS(cli);
 			UOSInt i;
-			const UInt8 *buff = mstm.GetBuff(&i);
+			const UInt8 *buff = mstm.GetBuff(i);
 			return ChallengeParse(buff, i);
 		}
 		else
@@ -677,7 +677,7 @@ Net::ACMEConn::Challenge *Net::ACMEConn::ChallengeGetStatus(NotNullPtr<Text::Str
 			cli->ReadToEnd(mstm, 2048);
 			DEL_CLASS(cli);
 			UOSInt i;
-			const UInt8 *buff = mstm.GetBuff(&i);
+			const UInt8 *buff = mstm.GetBuff(i);
 			return ChallengeParse(buff, i);
 		}
 		else

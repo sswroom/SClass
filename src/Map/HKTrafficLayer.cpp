@@ -1022,7 +1022,7 @@ void Map::HKTrafficLayer::ReloadData()
 				break;
 			mstm.Write(buff, readSize);
 		}
-		const UInt8 *xmlBuff = mstm.GetBuff(&readSize);
+		const UInt8 *xmlBuff = mstm.GetBuff(readSize);
 		Text::XMLNode *node1;
 		Text::XMLNode *node2;
 		Text::XMLNode *node3;

@@ -98,7 +98,7 @@ private:
 	{
 		mstm->Write((const UInt8*)"", 1);
 		UOSInt i;
-		const UInt8 *buff = mstm->GetBuff(&i);
+		const UInt8 *buff = mstm->GetBuff(i);
 		Text::JSONBase *json = Text::JSONBase::ParseJSONStr(Text::CStringNN(buff, i - 1));
 		if (json)
 		{
@@ -140,7 +140,7 @@ private:
 				if (tmpSb->Equals(UTF8STRC("gzip")))
 				{
 					UOSInt respSize;
-					const UInt8 *respData = mstm->GetBuff(&respSize);
+					const UInt8 *respData = mstm->GetBuff(respSize);
 					if (respSize > 16 && respData[0] == 0x1F && respData[1] == 0x8B && respData[2] == 0x8)
 					{
 						IO::MemoryStream *mstm2;

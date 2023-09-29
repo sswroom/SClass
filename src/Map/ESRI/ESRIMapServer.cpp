@@ -70,7 +70,7 @@ Map::ESRI::ESRIMapServer::ESRIMapServer(Text::CString url, NotNullPtr<Net::Socke
 		cli.Delete();
 
 
-		UInt8 *jsonBuff = mstm.GetBuff(&readSize);
+		UInt8 *jsonBuff = mstm.GetBuff(readSize);
 		if (jsonBuff && readSize > 0)
 		{
 			Text::StringBuilderUTF8 sb;
@@ -413,7 +413,7 @@ Bool Map::ESRI::ESRIMapServer::QueryInfos(Math::Coord2DDbl coord, Math::RectArea
 		}
 
 		mstm.Write((const UInt8*)"", 1);
-		UInt8 *buff = mstm.GetBuff(&readSize);
+		UInt8 *buff = mstm.GetBuff(readSize);
 		Text::JSONBase *json = Text::JSONBase::ParseJSONStr(Text::CStringNN(buff, readSize - 1));
 		if (json)
 		{
@@ -523,8 +523,7 @@ Media::ImageList *Map::ESRI::ESRIMapServer::DrawMap(Math::RectAreaDbl bounds, UI
 			mstm.Write(dataBuff, readSize);
 		}
 		Parser::FileParser::PNGParser parser;
-		UOSInt size;
-		IO::StmData::MemoryDataRef mdr(mstm.GetBuff(&size), (UOSInt)mstm.GetLength());
+		IO::StmData::MemoryDataRef mdr(mstm.GetBuff(), (UOSInt)mstm.GetLength());
 		ret = (Media::ImageList*)parser.ParseFile(mdr, 0, IO::ParserType::ImageList);
 	}
 	cli.Delete();

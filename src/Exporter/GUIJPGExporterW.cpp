@@ -103,7 +103,7 @@ Bool Exporter::GUIJPGExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Te
 		imgList = (Media::ImageList*)pobj;
 		srcImg = imgList->GetImage(0, 0);
 	}
-	jpgBuff = mstm.GetBuff(&jpgSize);
+	jpgBuff = mstm.GetBuff(jpgSize);
 	if (srcImg != 0 && srcImg->exif != 0 && jpgBuff[0] == 0xff && jpgBuff[1] == 0xd8)
 	{
 		UOSInt i;

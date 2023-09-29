@@ -7,7 +7,7 @@
 #include "Media/ImageUtil.h"
 #include "Text/MyString.h"
 
-void Exporter::TIFFExporter::GenSubExifBuff(IO::SeekableStream *stm, UInt64 buffOfst, Media::EXIFData *exif)
+void Exporter::TIFFExporter::GenSubExifBuff(NotNullPtr<IO::SeekableStream> stm, UInt64 buffOfst, Media::EXIFData *exif)
 {
 	UInt64 currOfst = buffOfst;
 	Data::ArrayListUInt32 ids;
@@ -122,8 +122,8 @@ void Exporter::TIFFExporter::GenSubExifBuff(IO::SeekableStream *stm, UInt64 buff
 				IO::MemoryStream mstm;
 				UOSInt buffSize;
 				UInt8 *mbuff;
-				GenSubExifBuff(&mstm, currOfst, ((Media::EXIFData*)exifItem->dataBuff));
-				mbuff = mstm.GetBuff(&buffSize);
+				GenSubExifBuff(mstm, currOfst, ((Media::EXIFData*)exifItem->dataBuff));
+				mbuff = mstm.GetBuff(buffSize);
 				WriteUInt32(&ifd[10 + i * 12], (UInt32)currOfst);
 				stm->Write(mbuff, buffSize);
 				currOfst += buffSize;
@@ -835,8 +835,8 @@ Bool Exporter::TIFFExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text
 					IO::MemoryStream mstm;
 					UOSInt buffSize;
 					UInt8 *mbuff;
-					GenSubExifBuff(&mstm, currOfst, ((Media::EXIFData*)exifItem->dataBuff));
-					mbuff = mstm.GetBuff(&buffSize);
+					GenSubExifBuff(mstm, currOfst, ((Media::EXIFData*)exifItem->dataBuff));
+					mbuff = mstm.GetBuff(buffSize);
 					WriteUInt32(&ifd[10 + k * 12], (UInt32)currOfst);
 					stm->Write(mbuff, buffSize);
 					currOfst += buffSize;

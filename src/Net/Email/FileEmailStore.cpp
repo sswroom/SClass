@@ -243,7 +243,7 @@ Bool Net::Email::FileEmailStore::NewEmail(Int64 id, NotNullPtr<const Net::Socket
 		UOSInt buffSize;
 		UInt8 *buff;
 		IO::FileStream fs(file->fileName, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
-		buff = mail->dataStm->GetBuff(&buffSize);
+		buff = mail->dataStm->GetBuff(buffSize);
 		fs.Write(sb.ToString(), sb.GetLength());
 		fs.Write(buff, buffSize);
 	}

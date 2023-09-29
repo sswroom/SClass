@@ -41,9 +41,9 @@ UInt8 *IO::MemoryStream::GetBuff()
 	return this->buff.GetPtr();
 }
 
-UInt8 *IO::MemoryStream::GetBuff(UOSInt *buffSize)
+UInt8 *IO::MemoryStream::GetBuff(OutParam<UOSInt> buffSize)
 {
-	*buffSize = currSize;
+	buffSize.Set(this->currSize);
 	return this->buff.GetPtr();
 }
 

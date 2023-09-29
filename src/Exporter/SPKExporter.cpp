@@ -158,7 +158,7 @@ Bool Exporter::SPKExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text:
 						*sptr++ = IO::Path::PATH_SEPERATOR;
 						sptr = Text::StrInt32(sptr, tileY + yAdd);
 						sptr = Text::StrConcatC(sptr, UTF8STRC(".png"));
-						fileBuff = mstm.GetBuff(&fileSize);
+						fileBuff = mstm.GetBuff(fileSize);
 						spkg->AddFile(fileBuff, fileSize, CSTRP(sbuff, sptr), Data::Timestamp(modTimeTicks, 0));
 					}
 				}

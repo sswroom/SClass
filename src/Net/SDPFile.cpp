@@ -474,7 +474,7 @@ Bool Net::SDPFile::BuildBuff()
 	}
 	UOSInt buffSize;
 	UInt8 *buff;
-	buff = mstm.GetBuff(&buffSize);
+	buff = mstm.GetBuff(buffSize);
 	if (this->buff)
 	{
 		MemFree(this->buff);

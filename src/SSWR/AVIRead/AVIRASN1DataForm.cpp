@@ -100,9 +100,8 @@ void __stdcall SSWR::AVIRead::AVIRASN1DataForm::OnVerifyClicked(void *userObj)
 		UI::MessageDialog::ShowDialog(CSTR("Error in extracting key"), CSTR("Verify Signature"), me);
 		return;
 	}
-	UOSInt buffSize;
 	Net::SSLEngine *ssl = Net::SSLEngineFactory::Create(me->core->GetSocketFactory(), true);
-	if (ssl->SignatureVerify(key, (Crypto::Hash::HashType)(OSInt)me->cboVerifyHash->GetSelectedItem(), mstm.GetBuff(&buffSize), (UOSInt)mstm.GetLength(), signBuff, signLen))
+	if (ssl->SignatureVerify(key, (Crypto::Hash::HashType)(OSInt)me->cboVerifyHash->GetSelectedItem(), mstm.GetBuff(), (UOSInt)mstm.GetLength(), signBuff, signLen))
 	{
 		me->txtVerifyStatus->SetText(CSTR("Valid"));
 	}

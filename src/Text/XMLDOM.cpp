@@ -1385,7 +1385,7 @@ Bool Text::XMLDocument::ParseStream(Text::EncodingFactory *encFact, IO::Stream *
 		mstm.Write(buff, buffSize);
 	}
 
-	mbuff = mstm.GetBuff(&buffSize);
+	mbuff = mstm.GetBuff(buffSize);
 	parseRes = this->ParseBuff(encFact, mbuff, buffSize);
 	return parseRes;
 }

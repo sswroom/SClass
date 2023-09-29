@@ -324,7 +324,7 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhoto(NotNullPtr<Net::WebS
 						if (cacheDir && imgWidth == GetPreviewSize() && imgHeight == GetPreviewSize() && mstm.GetLength() > 0)
 						{
 							IO::FileStream fs({sbuff, (UOSInt)(sptrEnd - sbuff)}, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
-							buff = mstm.GetBuff(&buffSize);
+							buff = mstm.GetBuff(buffSize);
 							fs.Write(buff, buffSize);
 						}
 					}
@@ -603,7 +603,7 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhotoId(NotNullPtr<Net::We
 						if (cacheDir && imgWidth == GetPreviewSize() && imgHeight == GetPreviewSize())
 						{
 							IO::FileStream fs({sbuff2, (UOSInt)(sptr2 - sbuff2)}, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
-							buff = mstm.GetBuff(&buffSize);
+							buff = mstm.GetBuff(buffSize);
 							fs.Write(buff, buffSize);
 							if (userFile->prevUpdated)
 							{
@@ -635,7 +635,7 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhotoId(NotNullPtr<Net::We
 					if (cacheDir && imgWidth == GetPreviewSize() && imgHeight == GetPreviewSize())
 					{
 						IO::FileStream fs({sbuff2, (UOSInt)(sptr2 - sbuff2)}, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
-						buff = mstm.GetBuff(&buffSize);
+						buff = mstm.GetBuff(buffSize);
 						fs.Write(buff, buffSize);
 						if (userFile->prevUpdated)
 						{
@@ -843,7 +843,7 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhotoWId(NotNullPtr<Net::W
 					if (cacheDir && imgWidth == GetPreviewSize() && imgHeight == GetPreviewSize())
 					{
 						IO::FileStream fs({sbuff2, (UOSInt)(sptr2 - sbuff2)}, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
-						buff = mstm.GetBuff(&buffSize);
+						buff = mstm.GetBuff(buffSize);
 						fs.Write(buff, buffSize);
 						if (wfile->prevUpdated)
 						{

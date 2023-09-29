@@ -749,7 +749,7 @@ UOSInt Net::WebServer::WebRequest::DataPut(const UInt8 *data, UOSInt dataSize)
 		{
 			if (this->reqData[i] == 13 && this->reqData[i + 1] == 10)
 			{
-				UInt8 *buff = this->chunkMStm->GetBuff(&this->reqDataSize);
+				UInt8 *buff = this->chunkMStm->GetBuff(this->reqDataSize);
 				MemFree(this->reqData);
 				this->reqData = MemAlloc(UInt8, this->reqDataSize);
 				MemCopyNO(this->reqData, buff, this->reqDataSize);
@@ -784,7 +784,7 @@ UOSInt Net::WebServer::WebRequest::DataPut(const UInt8 *data, UOSInt dataSize)
 						}
 						else
 						{
-							UInt8 *buff = this->chunkMStm->GetBuff(&this->reqDataSize);
+							UInt8 *buff = this->chunkMStm->GetBuff(this->reqDataSize);
 							MemFree(this->reqData);
 							this->reqData = MemAlloc(UInt8, this->reqDataSize);
 							MemCopyNO(this->reqData, buff, this->reqDataSize);

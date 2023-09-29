@@ -306,7 +306,7 @@ Bool Net::RTSPClient::GetOptions(Text::CString url, Data::ArrayList<const UTF8Ch
 			writer.WriteLineC(UTF8STRC("User-Agent: RTSPClient"));
 			writer.WriteLine();
 		}
-		buff = stm.GetBuff(&buffSize);
+		buff = stm.GetBuff(buffSize);
 		this->SendData(buff, buffSize);
 	}
 
@@ -355,7 +355,7 @@ Net::SDPFile *Net::RTSPClient::GetMediaInfo(Text::CString url)
 			writer.WriteLineC(UTF8STRC("Content-Type: application/sdp"));
 			writer.WriteLine();
 		}
-		buff = stm.GetBuff(&buffSize);
+		buff = stm.GetBuff(buffSize);
 		this->SendData(buff, buffSize);
 	}
 
@@ -395,7 +395,7 @@ UTF8Char *Net::RTSPClient::SetupRTP(UTF8Char *sessIdOut, Text::CString url, Net:
 			writer.WriteLineC(sbuff, (UOSInt)(sptr - sbuff));
 			writer.WriteLine();
 		}
-		buff = stm.GetBuff(&buffSize);
+		buff = stm.GetBuff(buffSize);
 		this->SendData(buff, buffSize);
 	}
 
@@ -519,7 +519,7 @@ Bool Net::RTSPClient::Play(Text::CString url, Text::CString sessId)
 			writer.WriteLine(sessId);
 			writer.WriteLine();
 		}
-		buff = stm.GetBuff(&buffSize);
+		buff = stm.GetBuff(buffSize);
 		this->SendData(buff, buffSize);
 	}
 
@@ -558,7 +558,7 @@ Bool Net::RTSPClient::Close(Text::CString url, Text::CString sessId)
 			writer.WriteLine(sessId);
 			writer.WriteLine();
 		}
-		buff = stm.GetBuff(&buffSize);
+		buff = stm.GetBuff(buffSize);
 		this->SendData(buff, buffSize);
 	}
 
