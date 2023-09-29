@@ -20,7 +20,7 @@ namespace Data
 			struct ClassData;
 			ClassData *clsData;
 		public:
-			DeflateStream(IO::Stream *srcStm, UInt64 srcLeng, Crypto::Hash::IHash *hash, CompLevel level, Bool hasHeader);
+			DeflateStream(NotNullPtr<IO::Stream> srcStm, UInt64 srcLeng, Crypto::Hash::IHash *hash, CompLevel level, Bool hasHeader);
 			virtual ~DeflateStream();
 
 			virtual Bool IsDown() const;

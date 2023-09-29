@@ -851,7 +851,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::DoFileRequest(NotNullPtr<Net::WebServ
 			}
 			else
 			{
-				Net::WebServer::HTTPServerUtil::SendContent(req, resp, mime, sizeLeft, &fs);
+				Net::WebServer::HTTPServerUtil::SendContent(req, resp, mime, sizeLeft, fs);
 			}
 			return true;
 		}
@@ -1415,7 +1415,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::DoFileRequest(NotNullPtr<Net::WebServ
 			readSize = fs.Read(BYTEARR(buff));
 			if (readSize == 0)
 			{
-				Net::WebServer::HTTPServerUtil::SendContent(req, resp, mime, sizeLeft, &fs);
+				Net::WebServer::HTTPServerUtil::SendContent(req, resp, mime, sizeLeft, fs);
 			}
 			else
 			{
@@ -1426,7 +1426,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::DoFileRequest(NotNullPtr<Net::WebServ
 					readSize = fs.Read(BYTEARR(buff));
 				}
 				mstm.SeekFromBeginning(0);
-				Net::WebServer::HTTPServerUtil::SendContent(req, resp, mime, sizeLeft, &mstm);
+				Net::WebServer::HTTPServerUtil::SendContent(req, resp, mime, sizeLeft, mstm);
 			}
 		}
 		else if (!partial && sizeLeft < this->fileCacheSize)
@@ -1460,7 +1460,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::DoFileRequest(NotNullPtr<Net::WebServ
 		}
 		else
 		{
-			Net::WebServer::HTTPServerUtil::SendContent(req, resp, mime, sizeLeft, &fs);
+			Net::WebServer::HTTPServerUtil::SendContent(req, resp, mime, sizeLeft, fs);
 		}
 		return true;
 	}

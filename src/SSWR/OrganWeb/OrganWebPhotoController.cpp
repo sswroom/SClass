@@ -319,7 +319,7 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhoto(NotNullPtr<Net::WebS
 						exporter.SetParamInt32(param, 0, 95);
 						exporter.ExportFile(mstm, CSTR(""), &nimgList, param);
 						exporter.DeleteParam(param);
-						ResponseMstm(req, resp, &mstm, CSTR("image/jpeg"));
+						ResponseMstm(req, resp, mstm, CSTR("image/jpeg"));
 
 						if (cacheDir && imgWidth == GetPreviewSize() && imgHeight == GetPreviewSize() && mstm.GetLength() > 0)
 						{
@@ -598,7 +598,7 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhotoId(NotNullPtr<Net::We
 
 						IO::MemoryStream mstm;
 						gimg->SaveJPG(mstm);
-						ResponseMstm(req, resp, &mstm, CSTR("image/jpeg"));
+						ResponseMstm(req, resp, mstm, CSTR("image/jpeg"));
 
 						if (cacheDir && imgWidth == GetPreviewSize() && imgHeight == GetPreviewSize())
 						{
@@ -630,7 +630,7 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhotoId(NotNullPtr<Net::We
 					exporter.SetParamInt32(param, 0, 95);
 					exporter.ExportFile(mstm, CSTR(""), &nimgList, param);
 					exporter.DeleteParam(param);
-					ResponseMstm(req, resp, &mstm, CSTR("image/jpeg"));
+					ResponseMstm(req, resp, mstm, CSTR("image/jpeg"));
 
 					if (cacheDir && imgWidth == GetPreviewSize() && imgHeight == GetPreviewSize())
 					{
@@ -838,7 +838,7 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhotoWId(NotNullPtr<Net::W
 					exporter.SetParamInt32(param, 0, 95);
 					exporter.ExportFile(mstm, CSTR(""), &nimgList, param);
 					exporter.DeleteParam(param);
-					ResponseMstm(req, resp, &mstm, CSTR("image/jpeg"));
+					ResponseMstm(req, resp, mstm, CSTR("image/jpeg"));
 
 					if (cacheDir && imgWidth == GetPreviewSize() && imgHeight == GetPreviewSize())
 					{

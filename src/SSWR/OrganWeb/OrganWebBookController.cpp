@@ -158,7 +158,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebBookController::SvcBookList(NotNullPtr<Ne
 
 		me->WriteFooter(&writer);
 		mutUsage.EndUse();
-		ResponseMstm(req, resp, &mstm, CSTR("text/html"));
+		ResponseMstm(req, resp, mstm, CSTR("text/html"));
 		return true;
 	}
 	else
@@ -400,7 +400,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebBookController::SvcBook(NotNullPtr<Net::W
 
 		me->WriteFooter(&writer);
 		mutUsage.EndUse();
-		ResponseMstm(req, resp, &mstm, CSTR("text/html"));
+		ResponseMstm(req, resp, mstm, CSTR("text/html"));
 		return true;
 	}
 	else
@@ -693,7 +693,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebBookController::SvcBookPhoto(NotNullPtr<N
 
 		me->WriteFooter(&writer);
 		mutUsage.EndUse();
-		ResponseMstm(req, resp, &mstm, CSTR("text/html"));
+		ResponseMstm(req, resp, mstm, CSTR("text/html"));
 		return true;
 	}
 	else
@@ -862,7 +862,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebBookController::SvcBookAdd(NotNullPtr<Net
 
 		me->WriteFooter(&writer);
 		mutUsage.EndUse();
-		ResponseMstm(req, resp, &mstm, CSTR("text/html"));
+		ResponseMstm(req, resp, mstm, CSTR("text/html"));
 		return true;
 	}
 	else

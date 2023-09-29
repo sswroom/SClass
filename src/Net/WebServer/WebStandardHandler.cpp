@@ -119,7 +119,7 @@ void Net::WebServer::WebStandardHandler::WebRequest(NotNullPtr<Net::WebServer::I
 				writer.WriteLineC(UTF8STRC("</body></html>"));
 				resp->AddContentType(CSTR("text/html"));
 				mstm.SeekFromBeginning(0);
-				Net::WebServer::HTTPServerUtil::SendContent(req, resp, CSTR("text/html"), mstm.GetLength(), &mstm);
+				Net::WebServer::HTTPServerUtil::SendContent(req, resp, CSTR("text/html"), mstm.GetLength(), mstm);
 			}
 		}
 	}

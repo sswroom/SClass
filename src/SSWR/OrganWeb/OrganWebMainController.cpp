@@ -512,7 +512,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcGroup(NotNullPtr<Net::
 
 		me->WriteFooter(&writer);
 		mutUsage.EndUse();
-		ResponseMstm(req, resp, &mstm, CSTR("text/html"));
+		ResponseMstm(req, resp, mstm, CSTR("text/html"));
 		return true;
 	}
 	else
@@ -822,7 +822,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcGroupMod(NotNullPtr<Ne
 		writer.WriteLineC(UTF8STRC("</table></form>"));
 		me->WriteFooter(&writer);
 		mutUsage.EndUse();
-		ResponseMstm(req, resp, &mstm, CSTR("text/html"));
+		ResponseMstm(req, resp, mstm, CSTR("text/html"));
 		return true;
 	}
 	else
@@ -1627,7 +1627,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSpecies(NotNullPtr<Net
 
 		me->WriteFooter(&writer);
 		mutUsage.EndUse();
-		ResponseMstm(req, resp, &mstm, CSTR("text/html"));
+		ResponseMstm(req, resp, mstm, CSTR("text/html"));
 		return true;
 	}
 	else
@@ -1920,7 +1920,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSpeciesMod(NotNullPtr<
 		writer.WriteLineC(UTF8STRC("</table></form>"));
 		me->WriteFooter(&writer);
 		mutUsage.EndUse();
-		ResponseMstm(req, resp, &mstm, CSTR("text/html"));
+		ResponseMstm(req, resp, mstm, CSTR("text/html"));
 		return true;
 	}
 	else
@@ -2119,7 +2119,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcList(NotNullPtr<Net::W
 
 		me->WriteFooter(&writer);
 		mutUsage.EndUse();
-		ResponseMstm(req, resp, &mstm, CSTR("text/html"));
+		ResponseMstm(req, resp, mstm, CSTR("text/html"));
 		return true;
 	}
 	else
@@ -2550,7 +2550,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoDetail(NotNullPtr
 
 				me->WriteFooter(&writer);
 				mutUsage.EndUse();
-				ResponseMstm(req, resp, &mstm, CSTR("text/html"));
+				ResponseMstm(req, resp, mstm, CSTR("text/html"));
 				return true;
 			}
 			else
@@ -2774,7 +2774,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoDetail(NotNullPtr
 
 				me->WriteFooter(&writer);
 				mutUsage.EndUse();
-				ResponseMstm(req, resp, &mstm, CSTR("text/html"));
+				ResponseMstm(req, resp, mstm, CSTR("text/html"));
 				return true;
 			}
 			else
@@ -2939,7 +2939,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoDetail(NotNullPtr
 
 					me->WriteFooter(&writer);
 					mutUsage.EndUse();
-					ResponseMstm(req, resp, &mstm, CSTR("text/html"));
+					ResponseMstm(req, resp, mstm, CSTR("text/html"));
 
 					srcURL->Release();
 					imgURL->Release();
@@ -3138,7 +3138,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoDetail(NotNullPtr
 
 					me->WriteFooter(&writer);
 					mutUsage.EndUse();
-					ResponseMstm(req, resp, &mstm, CSTR("text/html"));
+					ResponseMstm(req, resp, mstm, CSTR("text/html"));
 
 					LIST_FREE_STRING(&fileNameList);
 					return true;
@@ -3381,7 +3381,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoDetailD(NotNullPt
 
 			me->WriteFooter(&writer);
 			mutUsage.EndUse();
-			ResponseMstm(req, resp, &mstm, CSTR("text/html"));
+			ResponseMstm(req, resp, mstm, CSTR("text/html"));
 			return true;
 		}
 		else
@@ -3689,7 +3689,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoYear(NotNullPtr<N
 		mutUsage.EndUse();
 
 		me->WriteFooter(&writer);
-		ResponseMstm(req, resp, &mstm, CSTR("text/html"));
+		ResponseMstm(req, resp, mstm, CSTR("text/html"));
 		return true;
 	}
 	else
@@ -3939,7 +3939,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoDay(NotNullPtr<Ne
 		mutUsage.EndUse();
 
 		me->WriteFooter(&writer);
-		ResponseMstm(req, resp, &mstm, CSTR("text/html"));
+		ResponseMstm(req, resp, mstm, CSTR("text/html"));
 		return true;
 	}
 	else
@@ -4037,7 +4037,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoUpload(NotNullPtr
 	writer.WriteLineC(UTF8STRC("</table>"));
 	me->WriteFooter(&writer);
 
-	ResponseMstm(req, resp, &mstm, CSTR("text/html"));
+	ResponseMstm(req, resp, mstm, CSTR("text/html"));
 	return true;
 }
 
@@ -4086,7 +4086,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoUpload2(NotNullPt
 	{
 		mstm.Write((const UInt8*)"fail", 4);
 	}
-	ResponseMstm(req, resp, &mstm, CSTR("text/plain"));
+	ResponseMstm(req, resp, mstm, CSTR("text/plain"));
 	return true;
 }
 
@@ -4322,7 +4322,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSearchInside(NotNullPt
 
 		me->WriteFooter(&writer);
 		mutUsage.EndUse();
-		ResponseMstm(req, resp, &mstm, CSTR("text/html"));
+		ResponseMstm(req, resp, mstm, CSTR("text/html"));
 		return true;
 	}
 	else
@@ -4497,7 +4497,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSearchInsideMoreS(NotN
 
 		me->WriteFooter(&writer);
 		mutUsage.EndUse();
-		ResponseMstm(req, resp, &mstm, CSTR("text/html"));
+		ResponseMstm(req, resp, mstm, CSTR("text/html"));
 		return true;
 	}
 	else
@@ -4672,7 +4672,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSearchInsideMoreG(NotN
 
 		me->WriteFooter(&writer);
 		mutUsage.EndUse();
-		ResponseMstm(req, resp, &mstm, CSTR("text/html"));
+		ResponseMstm(req, resp, mstm, CSTR("text/html"));
 		return true;
 	}
 	else
@@ -4735,7 +4735,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcLogin(NotNullPtr<Net::
 				writer.WriteLineC(UTF8STRC("Login succeeded"));
 
 				me->WriteFooter(&writer);
-				ResponseMstm(req, resp, &mstm, CSTR("text/html"));
+				ResponseMstm(req, resp, mstm, CSTR("text/html"));
 				return true;
 			}
 			env.user = 0;
@@ -4756,7 +4756,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcLogin(NotNullPtr<Net::
 	mutUsage.EndUse();
 
 	me->WriteFooter(&writer);
-	ResponseMstm(req, resp, &mstm, CSTR("text/html"));
+	ResponseMstm(req, resp, mstm, CSTR("text/html"));
 	return true;
 }
 
@@ -4818,7 +4818,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcReload(NotNullPtr<Net:
 		}
 
 		me->WriteFooter(&writer);
-		ResponseMstm(req, resp, &mstm, CSTR("text/html"));
+		ResponseMstm(req, resp, mstm, CSTR("text/html"));
 		return true;
 	}
 	else
@@ -4874,7 +4874,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcRestart(NotNullPtr<Net
 		}
 
 		me->WriteFooter(&writer);
-		ResponseMstm(req, resp, &mstm, CSTR("text/html"));
+		ResponseMstm(req, resp, mstm, CSTR("text/html"));
 		return true;
 	}
 	else
@@ -5034,7 +5034,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcIndex(NotNullPtr<Net::
 	mutUsage.EndUse();
 
 	me->WriteFooter(&writer);
-	ResponseMstm(req, resp, &mstm, CSTR("text/html"));
+	ResponseMstm(req, resp, mstm, CSTR("text/html"));
 	return true;
 }
 
@@ -5117,7 +5117,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcCate(NotNullPtr<Net::W
 		writer.WriteLineC(UTF8STRC("</a>"));
 		me->WriteFooter(&writer);
 		mutUsage.EndUse();
-		ResponseMstm(req, resp, &mstm, CSTR("text/html"));
+		ResponseMstm(req, resp, mstm, CSTR("text/html"));
 		return true;
 	}
 	else

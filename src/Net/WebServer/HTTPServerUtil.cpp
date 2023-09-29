@@ -82,7 +82,7 @@ Bool Net::WebServer::HTTPServerUtil::MIMEToCompress(Text::CString umime)
 	return false;
 }
 
-Bool Net::WebServer::HTTPServerUtil::SendContent(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CString mime, UInt64 contLeng, IO::Stream *fs)
+Bool Net::WebServer::HTTPServerUtil::SendContent(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CString mime, UInt64 contLeng, NotNullPtr<IO::Stream> fs)
 {
 	UOSInt i;
 	UOSInt j;
@@ -230,7 +230,7 @@ Bool Net::WebServer::HTTPServerUtil::SendContent(NotNullPtr<Net::WebServer::IWeb
 					crc.Calc(buff, (UOSInt)contLeng);
 
 					IO::MemoryReadingStream mstm(buff, (UOSInt)contLeng);
-					Data::Compress::DeflateStream dstm(&mstm, contLeng, 0, compLevel, false);
+					Data::Compress::DeflateStream dstm(mstm, contLeng, 0, compLevel, false);
 					UOSInt readSize;
 					while ((readSize = dstm.Read(BYTEARR(compBuff))) != 0)
 					{
@@ -250,7 +250,7 @@ Bool Net::WebServer::HTTPServerUtil::SendContent(NotNullPtr<Net::WebServer::IWeb
 						resp->AddHeader(CSTR("Transfer-Encoding"), CSTR("chunked"));
 
 						IO::MemoryReadingStream mstm(buff, (UOSInt)contLeng);
-						Data::Compress::DeflateStream dstm(&mstm, contLeng, 0, compLevel, true);
+						Data::Compress::DeflateStream dstm(mstm, contLeng, 0, compLevel, true);
 						UOSInt readSize;
 						while ((readSize = dstm.Read(BYTEARR(compBuff))) != 0)
 						{
@@ -404,7 +404,7 @@ Bool Net::WebServer::HTTPServerUtil::ResponseFile(NotNullPtr<Net::WebServer::IWe
 		readSize = fs.Read(BYTEARR(buff));
 		if (readSize == 0)
 		{
-			Net::WebServer::HTTPServerUtil::SendContent(req, resp, mime, sizeLeft, &fs);
+			Net::WebServer::HTTPServerUtil::SendContent(req, resp, mime, sizeLeft, fs);
 		}
 		else
 		{
@@ -415,12 +415,12 @@ Bool Net::WebServer::HTTPServerUtil::ResponseFile(NotNullPtr<Net::WebServer::IWe
 				readSize = fs.Read(BYTEARR(buff));
 			}
 			mstm.SeekFromBeginning(0);
-			Net::WebServer::HTTPServerUtil::SendContent(req, resp, mime, sizeLeft, &mstm);
+			Net::WebServer::HTTPServerUtil::SendContent(req, resp, mime, sizeLeft, mstm);
 		}
 	}
 	else
 	{
-		Net::WebServer::HTTPServerUtil::SendContent(req, resp, mime, sizeLeft, &fs);
+		Net::WebServer::HTTPServerUtil::SendContent(req, resp, mime, sizeLeft, fs);
 	}
 	return true;
 }
