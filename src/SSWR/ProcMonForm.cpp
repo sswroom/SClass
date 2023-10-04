@@ -34,15 +34,16 @@ void SSWR::ProcMonForm::AddProg(Text::CString progName, Text::CString progPath)
 
 Bool SSWR::ProcMonForm::SearchProcId(SSWR::ProcMonForm::ProgInfo *prog)
 {
-	if (prog->progPath == 0)
+	NotNullPtr<Text::String> progPath;
+	if (!progPath.Set(prog->progPath))
 		return false;
 
 	UTF8Char sbuff[512];
 	UOSInt i;
 	Bool ret = false;
 	Manage::Process::ProcessInfo info;
-	i = prog->progPath->LastIndexOf(IO::Path::PATH_SEPERATOR);
-	Manage::Process::FindProcSess *sess = Manage::Process::FindProcess(prog->progPath->ToCString().Substring(i + 1));
+	i = progPath->LastIndexOf(IO::Path::PATH_SEPERATOR);
+	Manage::Process::FindProcSess *sess = Manage::Process::FindProcess(progPath->ToCString().Substring(i + 1));
 	if (sess)
 	{
 		Text::StringBuilderUTF8 sb;
@@ -52,7 +53,7 @@ Bool SSWR::ProcMonForm::SearchProcId(SSWR::ProcMonForm::ProgInfo *prog)
 			sb.ClearStr();
 			if (proc.GetFilename(sb))
 			{
-				if (sb.Equals(prog->progPath))
+				if (sb.Equals(progPath))
 				{
 					Text::StringBuilderUTF8 sb;
 					prog->procId = info.processId;

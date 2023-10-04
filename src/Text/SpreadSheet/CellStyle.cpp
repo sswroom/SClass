@@ -1,6 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Text/MyString.h"
+#include "Text/StringTool.h"
 #include "Text/SpreadSheet/CellStyle.h"
 
 Text::SpreadSheet::CellStyle::BorderStyle::BorderStyle(UInt32 borderColor, BorderType borderType)
@@ -126,11 +127,8 @@ Bool Text::SpreadSheet::CellStyle::Equals(const CellStyle *style) const
 		return false;
 	if (style->fillPattern != this->fillPattern)
 		return false;
-	if (this->dataFormat != style->dataFormat)
-	{
-		if (this->dataFormat == 0 || style->dataFormat == 0 || !this->dataFormat->Equals(style->dataFormat))
-			return false;
-	}
+	if (!Text::StringTool::Equals(this->dataFormat, style->dataFormat))
+		return false;
 	if (style->protection != this->protection)
 		return false;
 	return true;

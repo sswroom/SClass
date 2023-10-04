@@ -8,7 +8,7 @@
 #include "Parser/FileParser/X509Parser.h"
 #include "Text/StringTool.h"
 
-Bool Crypto::Cert::CertUtil::AppendNames(NotNullPtr<Net::ASN1PDUBuilder> builder, const CertNames *names)
+Bool Crypto::Cert::CertUtil::AppendNames(NotNullPtr<Net::ASN1PDUBuilder> builder, NotNullPtr<const CertNames> names)
 {
 	Bool found = false;
 	builder->BeginSequence();
@@ -119,7 +119,7 @@ Bool Crypto::Cert::CertUtil::AppendPublicKey(NotNullPtr<Net::ASN1PDUBuilder> bui
 	return false;
 }
 
-Bool Crypto::Cert::CertUtil::AppendExtensions(NotNullPtr<Net::ASN1PDUBuilder> builder, const CertExtensions *ext)
+Bool Crypto::Cert::CertUtil::AppendExtensions(NotNullPtr<Net::ASN1PDUBuilder> builder, NotNullPtr<const CertExtensions> ext)
 {
 	Bool found = false;
 	if (ext->subjectAltName && ext->subjectAltName->GetCount() > 0)
@@ -289,7 +289,7 @@ Bool Crypto::Cert::CertUtil::AppendSign(NotNullPtr<Net::ASN1PDUBuilder> builder,
 {
 	UOSInt itemLen;
 	UOSInt itemOfst;
-	const UInt8 *item = builder->GetItemRAW("1", &itemLen, &itemOfst);
+	const UInt8 *item = builder->GetItemRAW("1", itemLen, itemOfst);
 	if (item == 0)
 	{
 		return 0;
@@ -315,8 +315,9 @@ Bool Crypto::Cert::CertUtil::AppendSign(NotNullPtr<Net::ASN1PDUBuilder> builder,
 	}
 }
 
-Crypto::Cert::X509CertReq *Crypto::Cert::CertUtil::CertReqCreate(Net::SSLEngine *ssl, const CertNames *names, NotNullPtr<Crypto::Cert::X509Key> key, const CertExtensions *ext)
+Crypto::Cert::X509CertReq *Crypto::Cert::CertUtil::CertReqCreate(Net::SSLEngine *ssl, NotNullPtr<const CertNames> names, NotNullPtr<Crypto::Cert::X509Key> key, const CertExtensions *ext)
 {
+	NotNullPtr<const CertExtensions> nnext;
 	Net::ASN1PDUBuilder builder;
 	builder.BeginSequence();
 
@@ -325,12 +326,12 @@ Crypto::Cert::X509CertReq *Crypto::Cert::CertUtil::CertReqCreate(Net::SSLEngine 
 	if (!AppendNames(builder, names)) return 0;
 	if (!AppendPublicKey(builder, key)) return 0;
 	builder.BeginOther(0xA0);
-	if (ext)
+	if (nnext.Set(ext))
 	{
 		builder.BeginSequence();
 		builder.AppendOIDString(UTF8STRC("1.2.840.113549.1.9.14"));
 		builder.BeginSet();
-		AppendExtensions(builder, ext);
+		AppendExtensions(builder, nnext);
 		builder.EndLevel();
 		builder.EndLevel();
 	}
@@ -348,8 +349,9 @@ Crypto::Cert::X509CertReq *Crypto::Cert::CertUtil::CertReqCreate(Net::SSLEngine 
 	return csr;
 }
 
-Crypto::Cert::X509Cert *Crypto::Cert::CertUtil::SelfSignedCertCreate(Net::SSLEngine *ssl, const CertNames *names, NotNullPtr<Crypto::Cert::X509Key> key, UOSInt validDays, const CertExtensions *ext)
+Crypto::Cert::X509Cert *Crypto::Cert::CertUtil::SelfSignedCertCreate(Net::SSLEngine *ssl, NotNullPtr<const CertNames> names, NotNullPtr<Crypto::Cert::X509Key> key, UOSInt validDays, const CertExtensions *ext)
 {
+	NotNullPtr<const CertExtensions> nnext;
 	Data::RandomBytesGenerator rndBytes;
 	Net::ASN1PDUBuilder builder;
 	Data::DateTime dt;
@@ -386,9 +388,9 @@ Crypto::Cert::X509Cert *Crypto::Cert::CertUtil::SelfSignedCertCreate(Net::SSLEng
 	if (!AppendNames(builder, names)) return 0;
 	if (!AppendPublicKey(builder, key)) return 0;
 	builder.BeginOther(Net::ASN1Util::IT_CONTEXT_SPECIFIC_3);
-	if (ext)
+	if (nnext.Set(ext))
 	{
-		AppendExtensions(builder, ext);
+		AppendExtensions(builder, nnext);
 	}
 	builder.EndLevel();
 	builder.EndLevel();
@@ -442,16 +444,16 @@ Crypto::Cert::X509Cert *Crypto::Cert::CertUtil::IssueCert(Net::SSLEngine *ssl, C
 	builder.EndLevel();
 
 	MemClear(&names, sizeof(names));
-	if (!caCert->GetSubjNames(&names))
+	if (!caCert->GetSubjNames(names))
 	{
 		return 0;
 	}
-	if (!AppendNames(builder, &names))
+	if (!AppendNames(builder, names))
 	{
-		Crypto::Cert::CertNames::FreeNames(&names);
+		Crypto::Cert::CertNames::FreeNames(names);
  		return 0;
 	}
-	Crypto::Cert::CertNames::FreeNames(&names);
+	Crypto::Cert::CertNames::FreeNames(names);
 	dt.SetCurrTimeUTC();
 	builder.BeginSequence();
 	builder.AppendUTCTime(dt);
@@ -460,17 +462,17 @@ Crypto::Cert::X509Cert *Crypto::Cert::CertUtil::IssueCert(Net::SSLEngine *ssl, C
 	builder.EndLevel();
 
 	MemClear(&names, sizeof(names));
-	if (!csr->GetNames(&names))
+	if (!csr->GetNames(names))
 	{
 		return 0;
 	}
-	if (!AppendNames(builder, &names))
+	if (!AppendNames(builder, names))
 	{
-		Crypto::Cert::CertNames::FreeNames(&names);
+		Crypto::Cert::CertNames::FreeNames(names);
  		return 0;
 	}
 	sbFileName.Append(names.commonName);
-	Crypto::Cert::CertNames::FreeNames(&names);
+	Crypto::Cert::CertNames::FreeNames(names);
 	NotNullPtr<Crypto::Cert::X509Key> pubKey;;
 	if (!pubKey.Set(csr->GetNewPublicKey()))
 	{
@@ -485,11 +487,11 @@ Crypto::Cert::X509Cert *Crypto::Cert::CertUtil::IssueCert(Net::SSLEngine *ssl, C
 	builder.BeginOther(Net::ASN1Util::IT_CONTEXT_SPECIFIC_3);
 	Crypto::Cert::CertExtensions ext;
 	MemClear(&ext, sizeof(ext));
-	csr->GetExtensions(&ext);
+	csr->GetExtensions(ext);
 	ext.useAuthKeyId = caKey->GetKeyId(BYTEARR(ext.authKeyId));
 	ext.useSubjKeyId = csr->GetKeyId(BYTEARR(ext.subjKeyId));
-	AppendExtensions(builder, &ext);
-	Crypto::Cert::CertExtensions::FreeExtensions(&ext);
+	AppendExtensions(builder, ext);
+	Crypto::Cert::CertExtensions::FreeExtensions(ext);
 	builder.EndLevel();
 	builder.EndLevel();
 
@@ -511,30 +513,30 @@ Crypto::Cert::X509Cert *Crypto::Cert::CertUtil::FindIssuer(NotNullPtr<Crypto::Ce
 	
 	Crypto::Cert::CertExtensions ext;
 	MemClear(&ext, sizeof(ext));
-	if (!cert->GetExtensions(&ext))
+	if (!cert->GetExtensions(ext))
 	{
 		return 0;
 	}
 	if (!ext.useAuthKeyId)
 	{
-		Crypto::Cert::CertExtensions::FreeExtensions(&ext);
+		Crypto::Cert::CertExtensions::FreeExtensions(ext);
 		return 0;
 	}
 	sptr = cert->GetSourceNameObj()->ConcatTo(sbuff);
 	UOSInt i = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), IO::Path::PATH_SEPERATOR);
 	if (i == INVALID_INDEX)
 	{
-		Crypto::Cert::CertExtensions::FreeExtensions(&ext);
+		Crypto::Cert::CertExtensions::FreeExtensions(ext);
 		return 0;
 	}
 	if (!cert->GetKeyId(BYTEARR(keyId)))
 	{
-		Crypto::Cert::CertExtensions::FreeExtensions(&ext);
+		Crypto::Cert::CertExtensions::FreeExtensions(ext);
 		return 0;
 	}
 	if (BytesEquals(keyId, ext.authKeyId, 20))
 	{
-		Crypto::Cert::CertExtensions::FreeExtensions(&ext);
+		Crypto::Cert::CertExtensions::FreeExtensions(ext);
 		return 0;
 	}
 	sptr = &sbuff[i + 1];
@@ -573,7 +575,7 @@ Crypto::Cert::X509Cert *Crypto::Cert::CertUtil::FindIssuer(NotNullPtr<Crypto::Ce
 							}
 							else
 							{
-								Crypto::Cert::CertExtensions::FreeExtensions(&ext);
+								Crypto::Cert::CertExtensions::FreeExtensions(ext);
 								IO::Path::FindFileClose(sess);
 								return srchCert;
 							}
@@ -585,6 +587,6 @@ Crypto::Cert::X509Cert *Crypto::Cert::CertUtil::FindIssuer(NotNullPtr<Crypto::Ce
 		IO::Path::FindFileClose(sess);
 	}
 
-	Crypto::Cert::CertExtensions::FreeExtensions(&ext);
+	Crypto::Cert::CertExtensions::FreeExtensions(ext);
 	return 0;
 }

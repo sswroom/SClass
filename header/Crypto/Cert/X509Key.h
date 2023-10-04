@@ -29,17 +29,17 @@ namespace Crypto
 			Crypto::Cert::X509Key *CreatePublicKey() const;
 			Bool GetKeyId(const Data::ByteArray &keyId) const; //20 bytes
 
-			const UInt8 *GetRSAModulus(UOSInt *size) const;
-			const UInt8 *GetRSAPublicExponent(UOSInt *size) const;
-			const UInt8 *GetRSAPrivateExponent(UOSInt *size) const;
-			const UInt8 *GetRSAPrime1(UOSInt *size) const;
-			const UInt8 *GetRSAPrime2(UOSInt *size) const;
-			const UInt8 *GetRSAExponent1(UOSInt *size) const;
-			const UInt8 *GetRSAExponent2(UOSInt *size) const;
-			const UInt8 *GetRSACoefficient(UOSInt *size) const;
+			const UInt8 *GetRSAModulus(OptOut<UOSInt> size) const;
+			const UInt8 *GetRSAPublicExponent(OptOut<UOSInt> size) const;
+			const UInt8 *GetRSAPrivateExponent(OptOut<UOSInt> size) const;
+			const UInt8 *GetRSAPrime1(OptOut<UOSInt> size) const;
+			const UInt8 *GetRSAPrime2(OptOut<UOSInt> size) const;
+			const UInt8 *GetRSAExponent1(OptOut<UOSInt> size) const;
+			const UInt8 *GetRSAExponent2(OptOut<UOSInt> size) const;
+			const UInt8 *GetRSACoefficient(OptOut<UOSInt> size) const;
 
-			const UInt8 *GetECPrivate(UOSInt *size) const;
-			const UInt8 *GetECPublic(UOSInt *size) const;
+			const UInt8 *GetECPrivate(OptOut<UOSInt> size) const;
+			const UInt8 *GetECPublic(OptOut<UOSInt> size) const;
 			ECName GetECName() const;
 
 			static X509Key *FromECPublicKey(const UInt8 *buff, UOSInt buffSize, const UInt8 *paramOID, UOSInt oidLen);

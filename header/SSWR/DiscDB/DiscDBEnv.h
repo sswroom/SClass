@@ -40,7 +40,7 @@ namespace SSWR
 
 			typedef struct
 			{
-				Text::String *id;
+				NotNullPtr<Text::String> id;
 				NotNullPtr<Text::String> name;
 			} CategoryInfo;
 

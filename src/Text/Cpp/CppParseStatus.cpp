@@ -211,7 +211,7 @@ Bool Text::Cpp::CppParseStatus::AddDef(Text::CStringNN defName, Text::CString de
 			Text::StringBuilderUTF8 sb;
 			sb.Append(defVal);
 			sb.Trim();
-			return sb.Equals(defInfo->defineVal);
+			return defInfo->defineVal->Equals(sb);
 		}
 	}
 	else

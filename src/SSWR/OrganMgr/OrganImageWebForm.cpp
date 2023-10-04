@@ -69,7 +69,7 @@ SSWR::OrganMgr::OrganImageWebForm::OrganImageWebForm(UI::GUIClientControl *paren
 	this->btnCancel->SetRect(200, 120, 75, 23, false);
 	this->btnCancel->HandleButtonClick(OnCancelClicked, this);
 
-	if (wfile == 0 || wfile->srcUrl->Equals(wfile->imgUrl.Ptr()) || wfile->srcUrl->Equals(UTF8STRC("chrome://browser/content/browser.xhtml")))
+	if (wfile == 0 || wfile->srcUrl->Equals(wfile->imgUrl) || wfile->srcUrl->Equals(UTF8STRC("chrome://browser/content/browser.xhtml")))
 	{
 		this->txtSourceURL->Focus();
 		this->txtSourceURL->SelectAll();

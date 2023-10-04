@@ -42,16 +42,16 @@ void __stdcall SSWR::AVIRead::AVIRCertUtilForm::OnFileDrop(void *userObj, NotNul
 					case Crypto::Cert::X509File::FileType::Cert:
 						cert = (Crypto::Cert::X509Cert*)x509;
 						MemClear(&names, sizeof(names));
-						if (cert->GetSubjNames(&names))
+						if (cert->GetSubjNames(names))
 						{
-							me->UpdateNames(&names);
-							Crypto::Cert::CertNames::FreeNames(&names);
+							me->DisplayNames(names);
+							Crypto::Cert::CertNames::FreeNames(names);
 						}
 						MemClear(&exts, sizeof(exts));
-						if (cert->GetExtensions(&exts))
+						if (cert->GetExtensions(exts))
 						{
-							me->UpdateExtensions(&exts);
-							Crypto::Cert::CertExtensions::FreeExtensions(&exts);
+							me->DisplayExtensions(exts);
+							Crypto::Cert::CertExtensions::FreeExtensions(exts);
 						}
 						else
 						{
@@ -62,16 +62,16 @@ void __stdcall SSWR::AVIRead::AVIRCertUtilForm::OnFileDrop(void *userObj, NotNul
 					case Crypto::Cert::X509File::FileType::CertRequest:
 						csr = (Crypto::Cert::X509CertReq*)x509;
 						MemClear(&names, sizeof(names));
-						if (csr->GetNames(&names))
+						if (csr->GetNames(names))
 						{
-							me->UpdateNames(&names);
-							Crypto::Cert::CertNames::FreeNames(&names);
+							me->DisplayNames(names);
+							Crypto::Cert::CertNames::FreeNames(names);
 						}
 						MemClear(&exts, sizeof(exts));
-						if (csr->GetExtensions(&exts))
+						if (csr->GetExtensions(exts))
 						{
-							me->UpdateExtensions(&exts);
-							Crypto::Cert::CertExtensions::FreeExtensions(&exts);
+							me->DisplayExtensions(exts);
+							Crypto::Cert::CertExtensions::FreeExtensions(exts);
 						}
 						else
 						{
@@ -85,7 +85,7 @@ void __stdcall SSWR::AVIRead::AVIRCertUtilForm::OnFileDrop(void *userObj, NotNul
 						{
 							SDEL_CLASS(me->key);
 							me->key = key;
-							me->UpdateKeyDetail();
+							me->DisplayKeyDetail();
 						}
 						else
 						{
@@ -99,23 +99,23 @@ void __stdcall SSWR::AVIRead::AVIRCertUtilForm::OnFileDrop(void *userObj, NotNul
 						{
 							SDEL_CLASS(me->key);
 							me->key = key;
-							me->UpdateKeyDetail();
+							me->DisplayKeyDetail();
 						}
 						DEL_CLASS(x509);
 						break;
 					case Crypto::Cert::X509File::FileType::FileList:
 						cert = (Crypto::Cert::X509Cert*)((Crypto::Cert::X509FileList*)x509)->GetFile(0);
 						MemClear(&names, sizeof(names));
-						if (cert->GetSubjNames(&names))
+						if (cert->GetSubjNames(names))
 						{
-							me->UpdateNames(&names);
-							Crypto::Cert::CertNames::FreeNames(&names);
+							me->DisplayNames(names);
+							Crypto::Cert::CertNames::FreeNames(names);
 						}
 						MemClear(&exts, sizeof(exts));
-						if (cert->GetExtensions(&exts))
+						if (cert->GetExtensions(exts))
 						{
-							me->UpdateExtensions(&exts);
-							Crypto::Cert::CertExtensions::FreeExtensions(&exts);
+							me->DisplayExtensions(exts);
+							Crypto::Cert::CertExtensions::FreeExtensions(exts);
 						}
 						else
 						{
@@ -161,7 +161,7 @@ void __stdcall SSWR::AVIRead::AVIRCertUtilForm::OnKeyGenerateClicked(void *userO
 		{
 			SDEL_CLASS(me->key);
 			me->key = key;
-			me->UpdateKeyDetail();
+			me->DisplayKeyDetail();
 		}
 	}
 }
@@ -228,11 +228,11 @@ void __stdcall SSWR::AVIRead::AVIRCertUtilForm::OnCSRGenerateClicked(void *userO
 	Crypto::Cert::X509CertReq *csr;
 	if (me->sanList->GetCount() > 0 || ext.caCert || ext.digitalSign)
 	{
-		csr = Crypto::Cert::CertUtil::CertReqCreate(me->ssl, &names, key, &ext);
+		csr = Crypto::Cert::CertUtil::CertReqCreate(me->ssl, names, key, &ext);
 	}
 	else
 	{
-		csr = Crypto::Cert::CertUtil::CertReqCreate(me->ssl, &names, key, 0);
+		csr = Crypto::Cert::CertUtil::CertReqCreate(me->ssl, names, key, 0);
 	}
 	if (csr)
 	{
@@ -242,7 +242,7 @@ void __stdcall SSWR::AVIRead::AVIRCertUtilForm::OnCSRGenerateClicked(void *userO
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Error in creating cert request"), CSTR("Cert Util"), me);
 	}
-	Crypto::Cert::CertNames::FreeNames(&names);
+	Crypto::Cert::CertNames::FreeNames(names);
 }
 
 void __stdcall SSWR::AVIRead::AVIRCertUtilForm::OnSelfSignedCertClicked(void *userObj)
@@ -277,7 +277,7 @@ void __stdcall SSWR::AVIRead::AVIRCertUtilForm::OnSelfSignedCertClicked(void *us
 	me->key->GetKeyId(BYTEARR(ext.authKeyId));
 	ext.caCert = me->chkCACert->IsChecked();
 	ext.digitalSign = me->chkDigitalSign->IsChecked();
-	Crypto::Cert::X509Cert *cert = Crypto::Cert::CertUtil::SelfSignedCertCreate(me->ssl, &names, key, validDays, &ext);
+	Crypto::Cert::X509Cert *cert = Crypto::Cert::CertUtil::SelfSignedCertCreate(me->ssl, names, key, validDays, &ext);
 	if (cert)
 	{
 		me->core->OpenObject(cert);
@@ -286,7 +286,7 @@ void __stdcall SSWR::AVIRead::AVIRCertUtilForm::OnSelfSignedCertClicked(void *us
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Error in creating self-signed certificate"), CSTR("Cert Util"), me);
 	}
-	Crypto::Cert::CertNames::FreeNames(&names);
+	Crypto::Cert::CertNames::FreeNames(names);
 }
 
 Bool SSWR::AVIRead::AVIRCertUtilForm::GetNames(Crypto::Cert::CertNames *names)
@@ -356,7 +356,7 @@ Bool SSWR::AVIRead::AVIRCertUtilForm::GetNames(Crypto::Cert::CertNames *names)
 	return true;
 }
 
-void SSWR::AVIRead::AVIRCertUtilForm::UpdateKeyDetail()
+void SSWR::AVIRead::AVIRCertUtilForm::DisplayKeyDetail()
 {
 	if (this->key == 0)
 	{
@@ -379,7 +379,7 @@ void SSWR::AVIRead::AVIRCertUtilForm::UpdateKeyDetail()
 	}
 }
 
-void SSWR::AVIRead::AVIRCertUtilForm::UpdateNames(Crypto::Cert::CertNames *names)
+void SSWR::AVIRead::AVIRCertUtilForm::DisplayNames(NotNullPtr<Crypto::Cert::CertNames> names)
 {
 	this->txtCountryName->SetText(Text::String::OrEmpty(names->countryName)->ToCString());
 	this->txtStateOrProvinceName->SetText(Text::String::OrEmpty(names->stateOrProvinceName)->ToCString());
@@ -390,7 +390,7 @@ void SSWR::AVIRead::AVIRCertUtilForm::UpdateNames(Crypto::Cert::CertNames *names
 	this->txtEmailAddress->SetText(Text::String::OrEmpty(names->emailAddress)->ToCString());
 }
 
-void SSWR::AVIRead::AVIRCertUtilForm::UpdateExtensions(Crypto::Cert::CertExtensions *exts)
+void SSWR::AVIRead::AVIRCertUtilForm::DisplayExtensions(NotNullPtr<Crypto::Cert::CertExtensions> exts)
 {
 	this->ClearExtensions();
 	if (exts->subjectAltName)

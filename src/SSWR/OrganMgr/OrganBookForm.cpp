@@ -1,6 +1,7 @@
 ﻿#include "Stdafx.h"
 #include "Data/Sort/ArtificialQuickSortFunc.h"
 #include "SSWR/OrganMgr/OrganBookForm.h"
+#include "Text/StringTool.h"
 #include "UI/Clipboard.h"
 #include "UI/MessageDialog.h"
 
@@ -22,10 +23,10 @@ OSInt __stdcall SSWR::OrganMgr::BookArrayList::CompareBook(OrganBook *book1, Org
 	OSInt ret = book1->GetPublishDate().CompareTo(book2->GetPublishDate());
 	if (ret == 0)
 	{
-		ret = book1->GetDispAuthor()->CompareToICase(book2->GetDispAuthor());
+		ret = Text::StringTool::CompareICase(book1->GetDispAuthor(), book2->GetDispAuthor());
 		if (ret == 0)
 		{
-			ret = book1->GetTitle()->CompareToICase(book2->GetTitle());
+			ret = Text::StringTool::CompareICase(book1->GetTitle(), book2->GetTitle());
 		}
 	}
 	return ret;

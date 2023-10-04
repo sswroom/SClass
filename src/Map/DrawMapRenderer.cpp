@@ -109,7 +109,7 @@ Bool Map::DrawMapRenderer::AddLabel(MapLabels *labels, UOSInt maxLabel, UOSInt *
 		{
 			if (recType == labels[i].layerType)
 			{
-				if (label.Equals(labels[i].label))
+				if (labels[i].label->Equals(label))
 				{
 					found = 1;
 
@@ -294,7 +294,7 @@ Bool Map::DrawMapRenderer::AddLabel(MapLabels *labels, UOSInt maxLabel, UOSInt *
 		{
 			if (recType == labels[i].layerType)
 			{
-				if (label.Equals(labels[i].label))
+				if (labels[i].label->Equals(label))
 				{
 					found++;
 					if (totalSize == 0)
@@ -474,7 +474,7 @@ Bool Map::DrawMapRenderer::AddLabel(MapLabels *labels, UOSInt maxLabel, UOSInt *
 			{
 				if (recType == labels[i].layerType)
 				{
-					if (label.Equals(labels[i].label))
+					if (labels[i].label->Equals(label))
 					{
 						found = 1;
 						break;
@@ -745,10 +745,10 @@ void Map::DrawMapRenderer::DrawLabels(NotNullPtr<Map::DrawMapRenderer::DrawEnv> 
 			}
 			else if (denv->labels[i].layerType == Map::DRAW_LAYER_POLYLINE || denv->labels[i].layerType == Map::DRAW_LAYER_POLYLINE3D)
 			{
-
-				if (lastLbl)
+				NotNullPtr<Text::String> nnlastLbl;
+				if (nnlastLbl.Set(lastLbl))
 				{
-					if (!lastLbl->Equals(denv->labels[i].label))
+					if (!denv->labels[i].label->Equals(nnlastLbl))
 					{
 						thisCnt = 0;
 					}
@@ -3677,7 +3677,7 @@ void Map::DrawMapRenderer::DrawMap(NotNullPtr<Media::DrawImage> img, Map::MapVie
 	i = denv.fontStyleCnt;
 	while (i-- > 0)
 	{
-		Text::String *fontName;
+		NotNullPtr<Text::String> fontName;
 		Double fontSizePt;
 		Bool bold;
 		UInt32 fontColor;
@@ -3685,16 +3685,25 @@ void Map::DrawMapRenderer::DrawMap(NotNullPtr<Media::DrawImage> img, Map::MapVie
 		UInt32 buffColor;
 
 		font = &denv.fontStyles[i];
-		env->GetFontStyle(i, fontName, fontSizePt, bold, fontColor, buffSize, buffColor);
-		font->font = img->NewFontPt(fontName->ToCString(), fontSizePt, bold?Media::DrawEngine::DFS_BOLD:Media::DrawEngine::DFS_NORMAL, 0);
-		font->fontBrush = img->NewBrushARGB(this->colorConv->ConvRGB8(fontColor));
-		font->buffSize = buffSize;
-		if (buffSize > 0)
+		if (env->GetFontStyle(i, fontName, fontSizePt, bold, fontColor, buffSize, buffColor))
 		{
-			font->buffBrush = img->NewBrushARGB(this->colorConv->ConvRGB8(buffColor));
+			font->font = img->NewFontPt(fontName->ToCString(), fontSizePt, bold?Media::DrawEngine::DFS_BOLD:Media::DrawEngine::DFS_NORMAL, 0);
+			font->fontBrush = img->NewBrushARGB(this->colorConv->ConvRGB8(fontColor));
+			font->buffSize = buffSize;
+			if (buffSize > 0)
+			{
+				font->buffBrush = img->NewBrushARGB(this->colorConv->ConvRGB8(buffColor));
+			}
+			else
+			{
+				font->buffBrush = 0;
+			}
 		}
 		else
 		{
+			font->font = 0;
+			font->fontBrush = 0;
+			font->buffSize = 0;
 			font->buffBrush = 0;
 		}
 	}

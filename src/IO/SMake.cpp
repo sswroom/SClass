@@ -552,13 +552,14 @@ Bool IO::SMake::ParseSource(Data::FastStringMap<Int32> *objList, Data::FastStrin
 						}
 						else
 						{
+							NotNullPtr<Text::String> debugObj;
 							procList->PutNN(prog->name, 1);
 
 							Data::ArrayIterator<NotNullPtr<Text::String>> it = prog->subItems.Iterator();
 							while (it.HasNext())
 							{
 								NotNullPtr<Text::String> subItem = it.Next();
-								if (this->debugObj && this->messageWriter && subItem->Equals(this->debugObj))
+								if (debugObj.Set(this->debugObj) && this->messageWriter && subItem->Equals(debugObj))
 								{
 									Text::StringBuilderUTF8 sb2;
 									sb2.Append(debugObj);
@@ -573,7 +574,7 @@ Bool IO::SMake::ParseSource(Data::FastStringMap<Int32> *objList, Data::FastStrin
 							{
 								libList->PutNN(it.Next(), 1);
 							}
-							if (this->debugObj && this->messageWriter && prog->name->Equals(this->debugObj))
+							if (debugObj.Set(this->debugObj) && this->messageWriter && prog->name->Equals(debugObj))
 							{
 								Text::StringBuilderUTF8 sb2;
 								sb2.Append(debugObj);
@@ -695,6 +696,7 @@ Bool IO::SMake::ParseHeader(Data::FastStringMap<Int32> *objList, Data::FastStrin
 Bool IO::SMake::ParseProgInternal(Data::FastStringMap<Int32> *objList, Data::FastStringMap<Int32> *libList, Data::FastStringMap<Int32> *procList, Data::ArrayListStringNN *headerList, Int64 *latestTime, Bool *progGroup, NotNullPtr<const ProgramItem> prog, NotNullPtr<Text::StringBuilderUTF8> tmpSb)
 {
 	NotNullPtr<Text::String> subItem;
+	NotNullPtr<Text::String> debugObj;
 	IO::SMake::ProgramItem *subProg;
 	Int64 thisTime;
 	*latestTime = 0;
@@ -707,7 +709,7 @@ Bool IO::SMake::ParseProgInternal(Data::FastStringMap<Int32> *objList, Data::Fas
 		{
 			*progGroup = false;
 		}
-		if (this->debugObj && this->messageWriter && subItem->Equals(this->debugObj))
+		if (debugObj.Set(this->debugObj) && this->messageWriter && subItem->Equals(debugObj))
 		{
 			tmpSb->ClearStr();
 			tmpSb->Append(debugObj);

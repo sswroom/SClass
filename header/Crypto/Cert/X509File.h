@@ -25,7 +25,7 @@ namespace Crypto
 			Text::String *commonName;
 			Text::String *emailAddress;
 
-			static void FreeNames(CertNames *names);
+			static void FreeNames(NotNullPtr<CertNames> names);
 		};
 
 		struct DigestInfo
@@ -47,7 +47,7 @@ namespace Crypto
 			Bool caCert;
 			Int32 caCertPathLen;
 
-			static void FreeExtensions(CertExtensions *ext);
+			static void FreeExtensions(NotNullPtr<CertExtensions> ext);
 		};
 		class Certificate;
 		class CertStore;
@@ -190,8 +190,8 @@ namespace Crypto
 			static UTF8Char *NameGetByOID(const UInt8 *pdu, const UInt8 *pduEnd, const UTF8Char *oidText, UOSInt oidTextLen, UTF8Char *sbuff);
 			static Bool NameGetCN(const UInt8 *pdu, const UInt8 *pduEnd, NotNullPtr<Text::StringBuilderUTF8> sb);
 			static UTF8Char *NameGetCN(const UInt8 *pdu, const UInt8 *pduEnd, UTF8Char *sbuff);
-			static Bool NamesGet(const UInt8 *pdu, const UInt8 *pduEnd, CertNames *names);
-			static Bool ExtensionsGet(const UInt8 *pdu, const UInt8 *pduEnd, CertExtensions *ext);
+			static Bool NamesGet(const UInt8 *pdu, const UInt8 *pduEnd, NotNullPtr<CertNames> names);
+			static Bool ExtensionsGet(const UInt8 *pdu, const UInt8 *pduEnd, NotNullPtr<CertExtensions> ext);
 			static UOSInt ExtensionsGetCRLDistributionPoints(const UInt8 *pdu, const UInt8 *pduEnd, Data::ArrayList<Text::CString> *crlDistributionPoints);
 			static UOSInt DistributionPointAdd(const UInt8 *pdu, const UInt8 *pduEnd, Data::ArrayList<Text::CString> *crlDistributionPoints);
 			static Crypto::Cert::X509Key *PublicKeyGetNew(const UInt8 *pdu, const UInt8 *pduEnd);

@@ -28,6 +28,7 @@
 #include "Text/Encoding.h"
 #include "Text/MyString.h"
 #include "Text/MyStringW.h"
+#include "Text/StringTool.h"
 
 #ifdef _WIN32_WCE
 #define MulDiv(x,y,z) ((x) * (y) / (z))
@@ -2620,7 +2621,7 @@ Bool Map::MapConfig2::AddLabel(MapLabels2 *labels, UInt32 maxLabel, UInt32 *labe
 		{
 			if (recType == labels[i].shapeType)
 			{
-				if (labelt.Equals(labels[i].label))
+				if (labels[i].label->Equals(labelt))
 				{
 					found = 1;
 
@@ -2796,7 +2797,7 @@ Bool Map::MapConfig2::AddLabel(MapLabels2 *labels, UInt32 maxLabel, UInt32 *labe
 		{
 			if (recType == labels[i].shapeType)
 			{
-				if (labelt.Equals(labels[i].label))
+				if (labels[i].label->Equals(labelt))
 				{
 					found++;
 					if (totalSize == 0)
@@ -2973,7 +2974,7 @@ Bool Map::MapConfig2::AddLabel(MapLabels2 *labels, UInt32 maxLabel, UInt32 *labe
 			{
 				if (recType == labels[i].shapeType)
 				{
-					if (labelt.Equals(labels[i].label))
+					if (labels[i].label->Equals(labelt))
 					{
 						found = 1;
 						break;
@@ -3296,7 +3297,7 @@ void Map::MapConfig2::DrawLabels(NotNullPtr<Media::DrawImage> img, MapLabels2 *l
 
 				if (lastLbl)
 				{
-					if (!lastLbl->Equals(labels[i].label))
+					if (!Text::StringTool::Equals(lastLbl, labels[i].label))
 					{
 						thisCnt = 0;
 					}

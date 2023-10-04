@@ -294,3 +294,41 @@ UOSInt Text::StringTool::SplitAsNewString(Text::CStringNN str, UTF8Char splitCha
 		i = j + 1;
 	}
 }
+
+Bool Text::StringTool::Equals(Text::String *s1, Text::String *s2)
+{
+	if (s1 == s2)
+		return true;
+	NotNullPtr<Text::String> str2;
+	if (s1 == 0)
+		return false;
+	if (!str2.Set(s2))
+		return false;
+	return s1->Equals(str2);
+}
+
+OSInt Text::StringTool::Compare(Text::String *s1, Text::String *s2)
+{
+	if (s1 == s2)
+		return 0;
+	NotNullPtr<Text::String> str1;
+	NotNullPtr<Text::String> str2;
+	if (!str1.Set(s1))
+		return -1;
+	if (!str2.Set(s2))
+		return 1;
+	return str1->CompareTo(str2);
+}
+
+OSInt Text::StringTool::CompareICase(Text::String *s1, Text::String *s2)
+{
+	if (s1 == s2)
+		return 0;
+	NotNullPtr<Text::String> str1;
+	NotNullPtr<Text::String> str2;
+	if (!str1.Set(s1))
+		return -1;
+	if (!str2.Set(s2))
+		return 1;
+	return str1->CompareToICase(str2);
+}

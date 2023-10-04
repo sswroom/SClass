@@ -713,12 +713,9 @@ Bool Net::ASN1Util::PDUDSizeEnd(const UInt8 *pdu, const UInt8 *pduEnd, const UIn
 	return true;
 }
 
-const UInt8 *Net::ASN1Util::PDUGetItemRAW(const UInt8 *pdu, const UInt8 *pduEnd, const Char *cpath, UOSInt *len, UOSInt *itemOfst)
+const UInt8 *Net::ASN1Util::PDUGetItemRAW(const UInt8 *pdu, const UInt8 *pduEnd, const Char *cpath, OptOut<UOSInt> len, OutParam<UOSInt> itemOfst)
 {
-	if (len)
-	{
-		*len = 0;
-	}
+	len.Set(0);
 	UTF8Char sbuff[11];
 	const UTF8Char *path = (const UTF8Char*)cpath;
 	UInt32 itemLen;
@@ -775,26 +772,23 @@ const UInt8 *Net::ASN1Util::PDUGetItemRAW(const UInt8 *pdu, const UInt8 *pduEnd,
 			{
 				if (pdu[1] == 0x80)
 				{
-					if (itemOfst)
-						*itemOfst = ofst;
-					if (len)
+					itemOfst.Set(ofst);
+					if (len.IsNotNull())
 					{
 						const UInt8 *pduNext;
 						if (!PDUDSizeEnd(&pdu[ofst], pduEnd, &pduNext))
 						{
 							return 0;
 						}
-						*len = (UOSInt)(pduNext - &pdu[ofst]);
+						len.SetNoCheck((UOSInt)(pduNext - &pdu[ofst]));
 					}
 					return pdu;
 
 				}
 				else
 				{
-					if (itemOfst)
-						*itemOfst = ofst;
-					if (len)
-						*len = itemLen;
+					itemOfst.Set(ofst);
+					len.Set(itemLen);
 					return pdu;
 				}
 			}
@@ -822,29 +816,23 @@ const UInt8 *Net::ASN1Util::PDUGetItemRAW(const UInt8 *pdu, const UInt8 *pduEnd,
 	return 0;
 }
 
-const UInt8 *Net::ASN1Util::PDUGetItem(const UInt8 *pdu, const UInt8 *pduEnd, const Char *path, UOSInt *len, ItemType *itemType)
+const UInt8 *Net::ASN1Util::PDUGetItem(const UInt8 *pdu, const UInt8 *pduEnd, const Char *path, OptOut<UOSInt> len, OptOut<ItemType> itemType)
 {
-	if (itemType)
-	{
-		*itemType = IT_UNKNOWN;
-	}
+	itemType.Set(IT_UNKNOWN);
 	UOSInt itemOfst;
-	pdu = PDUGetItemRAW(pdu, pduEnd, path, len, &itemOfst);
+	pdu = PDUGetItemRAW(pdu, pduEnd, path, len, itemOfst);
 	if (pdu == 0)
 	{
 		return 0;
 	}
-	if (itemType)
-	{
-		*itemType = (ItemType)pdu[0];
-	}
+	itemType.Set((ItemType)pdu[0]);
 	return &pdu[itemOfst];
 }
 
 Net::ASN1Util::ItemType Net::ASN1Util::PDUGetItemType(const UInt8 *pdu, const UInt8 *pduEnd, const Char *path)
 {
 	Net::ASN1Util::ItemType itemType;
-	PDUGetItem(pdu, pduEnd, path, 0, &itemType);
+	PDUGetItem(pdu, pduEnd, path, 0, itemType);
 	return itemType;
 }
 

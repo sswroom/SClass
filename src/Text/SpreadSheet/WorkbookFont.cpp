@@ -1,6 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Text/MyString.h"
+#include "Text/StringTool.h"
 #include "Text/SpreadSheet/WorkbookFont.h"
 
 Text::SpreadSheet::WorkbookFont::WorkbookFont()
@@ -113,12 +114,8 @@ Text::SpreadSheet::WorkbookFont *Text::SpreadSheet::WorkbookFont::Clone() const
 
 Bool Text::SpreadSheet::WorkbookFont::Equals(WorkbookFont *font) const
 {
-	if (this->name != font->name)
-	{
-		if (this->name == 0 || font->name == 0 || !this->name->Equals(font->name))
-			return false;
-	}
-	return this->size == font->size &&
+	return Text::StringTool::Equals(this->name, font->name) &&
+		this->size == font->size &&
 		this->bold == font->bold &&
 		this->italic == font->italic &&
 		this->underline == font->underline &&

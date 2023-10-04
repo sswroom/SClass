@@ -944,9 +944,9 @@ Bool SSWR::OrganWeb::OrganWebEnv::HasReloadPwd() const
 	return this->reloadPwd != 0;
 }
 
-Bool SSWR::OrganWeb::OrganWebEnv::ReloadPwdMatches(Text::String *pwd) const
+Bool SSWR::OrganWeb::OrganWebEnv::ReloadPwdMatches(NotNullPtr<Text::String> pwd) const
 {
-	return this->reloadPwd->Equals(pwd);
+	return this->reloadPwd != 0 && this->reloadPwd->Equals(pwd);
 }
 
 Text::String *SSWR::OrganWeb::OrganWebEnv::GetCacheDir() const

@@ -418,7 +418,7 @@ void Net::ASN1PDUBuilder::AppendInteger(const UInt8 *buff, UOSInt buffSize)
 	this->AppendOther(2, buff, buffSize);
 }
 
-const UInt8 *Net::ASN1PDUBuilder::GetItemRAW(const Char *path, UOSInt *itemLen, UOSInt *itemOfst)
+const UInt8 *Net::ASN1PDUBuilder::GetItemRAW(const Char *path, OptOut<UOSInt> itemLen, OutParam<UOSInt> itemOfst)
 {
 	UOSInt startOfst;
 	if (this->currLev > 0)

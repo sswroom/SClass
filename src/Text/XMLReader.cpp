@@ -877,7 +877,8 @@ Bool Text::XMLReader::ReadNext()
 							return false;
 						}
 					}
-					if (this->nodeText == 0)
+					NotNullPtr<Text::String> nodeText;
+					if (!nodeText.Set(this->nodeText))
 					{
 						this->parseError = 20;
 						return false;
@@ -888,12 +889,12 @@ Bool Text::XMLReader::ReadNext()
 						this->parseError = 21;
 						return false;
 					}
-					if (this->pathList.GetItem(this->pathList.GetCount() - 1)->Equals(this->nodeText))
+					if (this->pathList.GetItem(this->pathList.GetCount() - 1)->Equals(nodeText))
 					{
 						this->pathList.RemoveAt(this->pathList.GetCount() - 1)->Release();
 						return true;
 					}
-					else if (this->mode == Text::XMLReader::PM_HTML && this->pathList.GetCount() >= 2 && this->pathList.GetItem(this->pathList.GetCount() - 2)->Equals(this->nodeText))
+					else if (this->mode == Text::XMLReader::PM_HTML && this->pathList.GetCount() >= 2 && this->pathList.GetItem(this->pathList.GetCount() - 2)->Equals(nodeText))
 					{
 						this->pathList.RemoveAt(this->pathList.GetCount() - 1)->Release();
 						this->pathList.RemoveAt(this->pathList.GetCount() - 1)->Release();

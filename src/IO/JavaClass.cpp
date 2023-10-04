@@ -6328,7 +6328,7 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 				env->stacks->Pop();
 				env->stacks->Pop();
 
-				if (nameStr->StartsWith(UTF8STRC("new ")) && env->stacks->GetCount() > 0 && env->stacks->GetItem(env->stacks->GetCount()- 1)->StartsWith(nameStr))
+				if (nameStr->StartsWith(UTF8STRC("new ")) && env->stacks->GetCount() > 0 && env->stacks->GetItem(env->stacks->GetCount()- 1)->StartsWith(nameStr->ToCString()))
 				{
 					Text::String *arrStr = env->stacks->RemoveAt(env->stacks->GetCount()- 1);
 					sbTmp.ClearStr();
@@ -6397,7 +6397,7 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 				env->stacks->Pop();
 				env->stacks->Pop();
 
-				if (nameStr->StartsWith(UTF8STRC("new ")) && env->stacks->GetCount() > 0 && env->stacks->GetItem(env->stacks->GetCount()- 1)->StartsWith(nameStr))
+				if (nameStr->StartsWith(UTF8STRC("new ")) && env->stacks->GetCount() > 0 && env->stacks->GetItem(env->stacks->GetCount()- 1)->StartsWith(nameStr->ToCString()))
 				{
 					Text::String *arrStr = env->stacks->RemoveAt(env->stacks->GetCount()- 1);
 					sbTmp.ClearStr();
@@ -7960,6 +7960,7 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 			}
 			else
 			{
+				NotNullPtr<Text::String> nns;
 				Bool isInit = false;
 				sbTmp2.ClearStr();
 				if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("<init>")))
@@ -8009,7 +8010,7 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 					env->stacks->Add(Text::String::New(sbTmp2.ToString(), sbTmp2.GetLength()));
 					env->stackTypes->Add(Text::String::NewNotNullSlow(typeBuff));
 				}
-				else if (isInit && env->stacks->GetCount() > 0 && sbTmp2.StartsWith(env->stacks->GetItem(env->stacks->GetCount() - 1)))
+				else if (isInit && nns.Set(env->stacks->GetLast()) && sbTmp2.StartsWith(nns))
 				{
 					env->stacks->Pop()->Release();
 					env->stacks->Add(Text::String::New(sbTmp2.ToString(), sbTmp2.GetLength()));

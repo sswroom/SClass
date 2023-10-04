@@ -21,7 +21,15 @@ NotNullPtr<Data::ArrayList<Text::String*>> Data::ArrayListICaseString::Clone() c
 
 OSInt Data::ArrayListICaseString::Compare(Text::String* obj1, Text::String* obj2) const
 {
-	return obj1->CompareToICase(obj2);
+	if (obj1 == obj2)
+		return 0;
+	NotNullPtr<Text::String> s1;
+	NotNullPtr<Text::String> s2;
+	if (!s1.Set(obj1))
+		return -1;
+	if (!s2.Set(obj2))
+		return 1;
+	return s1->CompareToICase(s2);
 }
 
 OSInt Data::ArrayListICaseString::SortedIndexOfPtr(const UTF8Char *val, UOSInt len) const

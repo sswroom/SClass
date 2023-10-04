@@ -26,7 +26,7 @@ void __stdcall SSWR::AVIRead::AVIRFileRenameForm::OnRenameClicked(void *userObj)
 		sbPath.AppendUTF8Char('.');
 		sbPath.Append(sbExt);
 	}
-	if (sbPath.Equals(me->fileName.Ptr()))
+	if (sbPath.Equals(me->fileName))
 	{
 		UI::MessageDialog::ShowDialog(CSTR("File name not changed"), CSTR("File Rename"), me);
 		return;

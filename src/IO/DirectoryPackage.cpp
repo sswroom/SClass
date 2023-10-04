@@ -428,7 +428,7 @@ typedef struct
 
 OSInt __stdcall DirectoryPackage_Compare(DirFile *obj1, DirFile *obj2)
 {
-	return obj1->name->CompareTo(obj2->name.Ptr());
+	return obj1->name->CompareTo(obj2->name);
 }
 
 Bool IO::DirectoryPackage::Sort()

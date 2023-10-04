@@ -27,14 +27,14 @@ void Crypto::Cert::X509PrivKey::ToShortName(NotNullPtr<Text::StringBuilderUTF8> 
 {
 	UOSInt oidLen;
 	Net::ASN1Util::ItemType itemType;
-	const UInt8 *oidPDU = Net::ASN1Util::PDUGetItem(this->buff.Ptr(), this->buff.PtrEnd(), "1.2.1", &oidLen, &itemType);
+	const UInt8 *oidPDU = Net::ASN1Util::PDUGetItem(this->buff.Ptr(), this->buff.PtrEnd(), "1.2.1", oidLen, itemType);
 	if (oidPDU == 0 || itemType != Net::ASN1Util::IT_OID)
 	{
 		return;
 	}
 	KeyType keyType = KeyTypeFromOID(oidPDU, oidLen, false);
 	UOSInt keyLen;
-	const UInt8 *keyPDU = Net::ASN1Util::PDUGetItem(this->buff.Ptr(), this->buff.PtrEnd(), "1.3", &keyLen, &itemType);
+	const UInt8 *keyPDU = Net::ASN1Util::PDUGetItem(this->buff.Ptr(), this->buff.PtrEnd(), "1.3", keyLen, itemType);
 	if (keyPDU && itemType == Net::ASN1Util::IT_OCTET_STRING)
 	{
 		sb->Append(KeyTypeGetName(keyType));
@@ -68,7 +68,7 @@ Crypto::Cert::X509File::KeyType Crypto::Cert::X509PrivKey::GetKeyType() const
 {
 	Net::ASN1Util::ItemType itemType;
 	UOSInt keyTypeLen;
-	const UInt8 *keyTypeOID = Net::ASN1Util::PDUGetItem(this->buff.Ptr(), this->buff.PtrEnd(), "1.2.1", &keyTypeLen, &itemType);
+	const UInt8 *keyTypeOID = Net::ASN1Util::PDUGetItem(this->buff.Ptr(), this->buff.PtrEnd(), "1.2.1", keyTypeLen, itemType);
 	if (keyTypeOID != 0)
 	{
 		return KeyTypeFromOID(keyTypeOID, keyTypeLen, false);
@@ -85,7 +85,7 @@ Crypto::Cert::X509Key *Crypto::Cert::X509PrivKey::CreateKey() const
 	}
 	Net::ASN1Util::ItemType itemType;
 	UOSInt keyDataLen;
-	const UInt8 *keyData = Net::ASN1Util::PDUGetItem(this->buff.Ptr(), this->buff.PtrEnd(), "1.3", &keyDataLen, &itemType);
+	const UInt8 *keyData = Net::ASN1Util::PDUGetItem(this->buff.Ptr(), this->buff.PtrEnd(), "1.3", keyDataLen, itemType);
 	if (keyData != 0)
 	{
 		Crypto::Cert::X509Key *key;
@@ -137,9 +137,9 @@ Crypto::Cert::X509PrivKey *Crypto::Cert::X509PrivKey::CreateFromKey(NotNullPtr<C
 		keyPDU.BeginOther(4);
 		keyPDU.BeginSequence();
 		keyPDU.AppendInt32(1);
-		keyBuff = key->GetECPrivate(&keyBuffLen);
+		keyBuff = key->GetECPrivate(keyBuffLen);
 		keyPDU.AppendOctetStringC(keyBuff, keyBuffLen);
-		keyBuff = key->GetECPublic(&keyBuffLen);
+		keyBuff = key->GetECPublic(keyBuffLen);
 		if (keyBuff)
 		{
 			keyPDU.BeginContentSpecific(1);

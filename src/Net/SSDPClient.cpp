@@ -96,7 +96,7 @@ void __stdcall Net::SSDPClient::OnPacketRecv(NotNullPtr<const Net::SocketUtil::A
 					svc->opt = Text::String::NewOrNull(opt);
 					svc->server = Text::String::NewOrNull(server);
 					svc->st = Text::String::NewOrNull(st);
-					svc->usn = Text::String::NewOrNull(usn);
+					svc->usn = Text::String::New(usn);
 					svc->userAgent = Text::String::NewOrNull(userAgent);
 					dev->services.Add(svc);
 				}
@@ -111,7 +111,7 @@ void Net::SSDPClient::SSDPServiceFree(SSDPService *svc)
 	SDEL_STRING(svc->opt);
 	SDEL_STRING(svc->server);
 	SDEL_STRING(svc->st);
-	SDEL_STRING(svc->usn);
+	svc->usn->Release();
 	SDEL_STRING(svc->userAgent);
 	MemFree(svc);
 }

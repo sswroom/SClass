@@ -6,6 +6,7 @@
 #include "Text/MyStringFloat.h"
 #include "Text/MyStringW.h"
 #include "Text/StringBuilderUTF8.h"
+#include "Text/StringTool.h"
 
 Text::JSONBase::JSONBase()
 {
@@ -1134,19 +1135,7 @@ Bool Text::JSONString::Identical(NotNullPtr<Text::JSONBase> obj)
 {
 	if (obj->GetType() != Text::JSONType::String)
 		return false;
-	Text::String *cs = ((Text::JSONString*)obj.Ptr())->GetValue();
-	if (this->val == 0)
-	{
-		return cs == 0;
-	}
-	else if (cs == 0)
-	{
-		return false;
-	}
-	else
-	{
-		return cs->Equals(this->val);
-	}
+	return Text::StringTool::Equals(((Text::JSONString*)obj.Ptr())->GetValue(), this->val);
 }
 
 void Text::JSONString::ToString(NotNullPtr<Text::StringBuilderUTF8> sb)

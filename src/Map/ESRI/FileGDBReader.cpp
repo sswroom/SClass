@@ -59,18 +59,21 @@ Map::ESRI::FileGDBReader::FileGDBReader(NotNullPtr<IO::StreamData> fd, UInt64 of
 		NEW_CLASS(this->columnIndices, Data::ArrayList<UOSInt>());
 		UOSInt i = 0;
 		UOSInt j = columnNames->GetCount();
-		UOSInt k;
+		UOSInt k = 0;
 		while (i < j)
 		{
-			Text::String *name = columnNames->GetItem(i);
 			Bool found = false;
-			k = this->tableInfo->fields->GetCount();
-			while (k-- > 0)
+			NotNullPtr<Text::String> name;
+			if (name.Set(columnNames->GetItem(i)))
 			{
-				if (this->tableInfo->fields->GetItem(k)->name->Equals(name))
+				k = this->tableInfo->fields->GetCount();
+				while (k-- > 0)
 				{
-					found = true;
-					break;
+					if (this->tableInfo->fields->GetItem(k)->name->Equals(name))
+					{
+						found = true;
+						break;
+					}
 				}
 			}
 			if (!found)

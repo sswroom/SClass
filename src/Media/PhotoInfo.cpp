@@ -199,7 +199,8 @@ void Media::PhotoInfo::ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const
 {
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
-	if (this->make == 0)
+	NotNullPtr<Text::String> make;
+	if (!make.Set(this->make))
 	{
 		if (this->model == 0)
 		{
@@ -214,15 +215,15 @@ void Media::PhotoInfo::ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const
 	{
 		if (this->model == 0)
 		{
-			sb->Append(this->make);
+			sb->Append(make);
 		}
-		else if (this->model->StartsWith(this->make))
+		else if (this->model->StartsWith(make))
 		{
 			sb->Append(this->model);
 		}
 		else
 		{
-			sb->Append(this->make);
+			sb->Append(make);
 			sb->AppendC(UTF8STRC(" "));
 			sb->Append(this->model);
 		}

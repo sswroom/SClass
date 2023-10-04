@@ -55,7 +55,7 @@ void Crypto::Cert::X509Key::ToString(NotNullPtr<Text::StringBuilderUTF8> sb) con
 	{
 		const UInt8 *buff;
 		UOSInt buffSize;
-		buff = this->GetRSAModulus(&buffSize);
+		buff = this->GetRSAModulus(buffSize);
 		if (buff)
 		{
 			if (found) sb->AppendLB(Text::LineBreakType::CRLF);
@@ -65,7 +65,7 @@ void Crypto::Cert::X509Key::ToString(NotNullPtr<Text::StringBuilderUTF8> sb) con
 			sb->AppendC(UTF8STRC("RSA.Modulus = "));
 			sb->AppendHexBuff(buff, buffSize, ' ', Text::LineBreakType::None);
 		}
-		buff = this->GetRSAPublicExponent(&buffSize);
+		buff = this->GetRSAPublicExponent(buffSize);
 		if (buff)
 		{
 			if (found) sb->AppendLB(Text::LineBreakType::CRLF);
@@ -75,7 +75,7 @@ void Crypto::Cert::X509Key::ToString(NotNullPtr<Text::StringBuilderUTF8> sb) con
 			sb->AppendC(UTF8STRC("RSA.Public Exponent = "));
 			sb->AppendHexBuff(buff, buffSize, ' ', Text::LineBreakType::None);
 		}
-		buff = this->GetRSAPrivateExponent(&buffSize);
+		buff = this->GetRSAPrivateExponent(buffSize);
 		if (buff)
 		{
 			if (found) sb->AppendLB(Text::LineBreakType::CRLF);
@@ -85,7 +85,7 @@ void Crypto::Cert::X509Key::ToString(NotNullPtr<Text::StringBuilderUTF8> sb) con
 			sb->AppendC(UTF8STRC("RSA.Private Exponent = "));
 			sb->AppendHexBuff(buff, buffSize, ' ', Text::LineBreakType::None);
 		}
-		buff = this->GetRSAPrime1(&buffSize);
+		buff = this->GetRSAPrime1(buffSize);
 		if (buff)
 		{
 			if (found) sb->AppendLB(Text::LineBreakType::CRLF);
@@ -95,7 +95,7 @@ void Crypto::Cert::X509Key::ToString(NotNullPtr<Text::StringBuilderUTF8> sb) con
 			sb->AppendC(UTF8STRC("RSA.Prime1 = "));
 			sb->AppendHexBuff(buff, buffSize, ' ', Text::LineBreakType::None);
 		}
-		buff = this->GetRSAPrime2(&buffSize);
+		buff = this->GetRSAPrime2(buffSize);
 		if (buff)
 		{
 			if (found) sb->AppendLB(Text::LineBreakType::CRLF);
@@ -105,7 +105,7 @@ void Crypto::Cert::X509Key::ToString(NotNullPtr<Text::StringBuilderUTF8> sb) con
 			sb->AppendC(UTF8STRC("RSA.Prime2 = "));
 			sb->AppendHexBuff(buff, buffSize, ' ', Text::LineBreakType::None);
 		}
-		buff = this->GetRSAExponent1(&buffSize);
+		buff = this->GetRSAExponent1(buffSize);
 		if (buff)
 		{
 			if (found) sb->AppendLB(Text::LineBreakType::CRLF);
@@ -115,7 +115,7 @@ void Crypto::Cert::X509Key::ToString(NotNullPtr<Text::StringBuilderUTF8> sb) con
 			sb->AppendC(UTF8STRC("RSA.Exponent1 = "));
 			sb->AppendHexBuff(buff, buffSize, ' ', Text::LineBreakType::None);
 		}
-		buff = this->GetRSAExponent2(&buffSize);
+		buff = this->GetRSAExponent2(buffSize);
 		if (buff)
 		{
 			if (found) sb->AppendLB(Text::LineBreakType::CRLF);
@@ -125,7 +125,7 @@ void Crypto::Cert::X509Key::ToString(NotNullPtr<Text::StringBuilderUTF8> sb) con
 			sb->AppendC(UTF8STRC("RSA.Exponent2 = "));
 			sb->AppendHexBuff(buff, buffSize, ' ', Text::LineBreakType::None);
 		}
-		buff = this->GetRSACoefficient(&buffSize);
+		buff = this->GetRSACoefficient(buffSize);
 		if (buff)
 		{
 			if (found) sb->AppendLB(Text::LineBreakType::CRLF);
@@ -140,7 +140,7 @@ void Crypto::Cert::X509Key::ToString(NotNullPtr<Text::StringBuilderUTF8> sb) con
 	{
 		const UInt8 *buff;
 		UOSInt buffSize;
-		buff = this->GetRSAModulus(&buffSize);
+		buff = this->GetRSAModulus(buffSize);
 		if (buff)
 		{
 			if (found) sb->AppendLB(Text::LineBreakType::CRLF);
@@ -150,7 +150,7 @@ void Crypto::Cert::X509Key::ToString(NotNullPtr<Text::StringBuilderUTF8> sb) con
 			sb->AppendC(UTF8STRC("RSA.Modulus = "));
 			sb->AppendHexBuff(buff, buffSize, ' ', Text::LineBreakType::None);
 		}
-		buff = this->GetRSAPublicExponent(&buffSize);
+		buff = this->GetRSAPublicExponent(buffSize);
 		if (buff)
 		{
 			if (found) sb->AppendLB(Text::LineBreakType::CRLF);
@@ -173,7 +173,7 @@ void Crypto::Cert::X509Key::ToString(NotNullPtr<Text::StringBuilderUTF8> sb) con
 		sb->AppendC(UTF8STRC("EC.Name = "));
 		sb->Append(ECNameGetName(ecName));
 
-		buff = this->GetECPublic(&buffSize);
+		buff = this->GetECPublic(buffSize);
 		if (buff)
 		{
 			if (found) sb->AppendLB(Text::LineBreakType::CRLF);
@@ -196,7 +196,7 @@ void Crypto::Cert::X509Key::ToString(NotNullPtr<Text::StringBuilderUTF8> sb) con
 		sb->AppendC(UTF8STRC("EC.Name = "));
 		sb->Append(ECNameGetName(ecName));
 
-		buff = this->GetECPrivate(&buffSize);
+		buff = this->GetECPrivate(buffSize);
 		if (buff)
 		{
 			if (found) sb->AppendLB(Text::LineBreakType::CRLF);
@@ -206,7 +206,7 @@ void Crypto::Cert::X509Key::ToString(NotNullPtr<Text::StringBuilderUTF8> sb) con
 			sb->AppendC(UTF8STRC("EC.Private = "));
 			sb->AppendHexBuff(buff, buffSize, ' ', Text::LineBreakType::None);
 		}
-		buff = this->GetECPublic(&buffSize);
+		buff = this->GetECPublic(buffSize);
 		if (buff)
 		{
 			if (found) sb->AppendLB(Text::LineBreakType::CRLF);
@@ -269,9 +269,9 @@ Crypto::Cert::X509Key *Crypto::Cert::X509Key::CreatePublicKey() const
 		UOSInt buffSize;
 		const UInt8 *buff;
 		builder.BeginSequence();
-		if ((buff = this->GetRSAModulus(&buffSize)) == 0) return 0;
+		if ((buff = this->GetRSAModulus(buffSize)) == 0) return 0;
 		builder.AppendOther(Net::ASN1Util::IT_INTEGER, buff, buffSize);
-		if ((buff = this->GetRSAPublicExponent(&buffSize)) == 0) return 0;
+		if ((buff = this->GetRSAPublicExponent(buffSize)) == 0) return 0;
 		builder.AppendOther(Net::ASN1Util::IT_INTEGER, buff, buffSize);
 		builder.EndLevel();
 		Crypto::Cert::X509Key *key;
@@ -306,7 +306,7 @@ Bool Crypto::Cert::X509Key::GetKeyId(const Data::ByteArray &keyId) const
 	return false;
 }
 
-const UInt8 *Crypto::Cert::X509Key::GetRSAModulus(UOSInt *size) const
+const UInt8 *Crypto::Cert::X509Key::GetRSAModulus(OptOut<UOSInt> size) const
 {
 	if (this->keyType == KeyType::RSA)
 	{
@@ -322,7 +322,7 @@ const UInt8 *Crypto::Cert::X509Key::GetRSAModulus(UOSInt *size) const
 	}
 }
 
-const UInt8 *Crypto::Cert::X509Key::GetRSAPublicExponent(UOSInt *size) const
+const UInt8 *Crypto::Cert::X509Key::GetRSAPublicExponent(OptOut<UOSInt> size) const
 {
 	if (this->keyType == KeyType::RSA)
 	{
@@ -338,43 +338,43 @@ const UInt8 *Crypto::Cert::X509Key::GetRSAPublicExponent(UOSInt *size) const
 	}
 }
 
-const UInt8 *Crypto::Cert::X509Key::GetRSAPrivateExponent(UOSInt *size) const
+const UInt8 *Crypto::Cert::X509Key::GetRSAPrivateExponent(OptOut<UOSInt> size) const
 {
 	if (this->keyType != KeyType::RSA) return 0;
 	return Net::ASN1Util::PDUGetItem(this->buff.Ptr(), this->buff.PtrEnd(), "1.4", size, 0);
 }
 
-const UInt8 *Crypto::Cert::X509Key::GetRSAPrime1(UOSInt *size) const
+const UInt8 *Crypto::Cert::X509Key::GetRSAPrime1(OptOut<UOSInt> size) const
 {
 	if (this->keyType != KeyType::RSA) return 0;
 	return Net::ASN1Util::PDUGetItem(this->buff.Ptr(), this->buff.PtrEnd(), "1.5", size, 0);
 }
 
-const UInt8 *Crypto::Cert::X509Key::GetRSAPrime2(UOSInt *size) const
+const UInt8 *Crypto::Cert::X509Key::GetRSAPrime2(OptOut<UOSInt> size) const
 {
 	if (this->keyType != KeyType::RSA) return 0;
 	return Net::ASN1Util::PDUGetItem(this->buff.Ptr(), this->buff.PtrEnd(), "1.6", size, 0);
 }
 
-const UInt8 *Crypto::Cert::X509Key::GetRSAExponent1(UOSInt *size) const
+const UInt8 *Crypto::Cert::X509Key::GetRSAExponent1(OptOut<UOSInt> size) const
 {
 	if (this->keyType != KeyType::RSA) return 0;
 	return Net::ASN1Util::PDUGetItem(this->buff.Ptr(), this->buff.PtrEnd(), "1.7", size, 0);
 }
 
-const UInt8 *Crypto::Cert::X509Key::GetRSAExponent2(UOSInt *size) const
+const UInt8 *Crypto::Cert::X509Key::GetRSAExponent2(OptOut<UOSInt> size) const
 {
 	if (this->keyType != KeyType::RSA) return 0;
 	return Net::ASN1Util::PDUGetItem(this->buff.Ptr(), this->buff.PtrEnd(), "1.8", size, 0);
 }
 
-const UInt8 *Crypto::Cert::X509Key::GetRSACoefficient(UOSInt *size) const
+const UInt8 *Crypto::Cert::X509Key::GetRSACoefficient(OptOut<UOSInt> size) const
 {
 	if (this->keyType != KeyType::RSA) return 0;
 	return Net::ASN1Util::PDUGetItem(this->buff.Ptr(), this->buff.PtrEnd(), "1.9", size, 0);
 }
 
-const UInt8 *Crypto::Cert::X509Key::GetECPrivate(UOSInt *size) const
+const UInt8 *Crypto::Cert::X509Key::GetECPrivate(OptOut<UOSInt> size) const
 {
 	if (this->keyType == KeyType::ECDSA)
 	{
@@ -385,41 +385,41 @@ const UInt8 *Crypto::Cert::X509Key::GetECPrivate(UOSInt *size) const
 		return 0;
 	}
 }
-const UInt8 *Crypto::Cert::X509Key::GetECPublic(UOSInt *size) const
+const UInt8 *Crypto::Cert::X509Key::GetECPublic(OptOut<UOSInt> size) const
 {
 	Net::ASN1Util::ItemType itemType;
 	UOSInt itemLen;
 	const UInt8 *itemPDU;
 	if (this->keyType == KeyType::ECPublic)
 	{
-		itemPDU = Net::ASN1Util::PDUGetItem(this->buff.Ptr(), this->buff.PtrEnd(), "1.2", &itemLen, &itemType);
+		itemPDU = Net::ASN1Util::PDUGetItem(this->buff.Ptr(), this->buff.PtrEnd(), "1.2", itemLen, itemType);
 		if (itemPDU != 0 && itemType == Net::ASN1Util::IT_BIT_STRING)
 		{
-			*size = itemLen - 1;
+			size.Set(itemLen - 1);
 			return itemPDU + 1;
 		}
 		return 0;
 	}
 	else if (this->keyType == KeyType::ECDSA)
 	{
-		itemPDU = Net::ASN1Util::PDUGetItem(this->buff.Ptr(), this->buff.PtrEnd(), "1.3", &itemLen, &itemType);
+		itemPDU = Net::ASN1Util::PDUGetItem(this->buff.Ptr(), this->buff.PtrEnd(), "1.3", itemLen, itemType);
 		if (itemPDU != 0 && itemType == Net::ASN1Util::IT_CONTEXT_SPECIFIC_1)
 		{
-			itemPDU = Net::ASN1Util::PDUGetItem(itemPDU, itemPDU + itemLen, "1", &itemLen, &itemType);
+			itemPDU = Net::ASN1Util::PDUGetItem(itemPDU, itemPDU + itemLen, "1", itemLen, itemType);
 			if (itemPDU != 0 && itemType == Net::ASN1Util::IT_BIT_STRING)
 			{
-				*size = itemLen - 1;
+				size.Set(itemLen - 1);
 				return itemPDU + 1;
 			}
 			return 0;
 		}
-		itemPDU = Net::ASN1Util::PDUGetItem(this->buff.Ptr(), this->buff.PtrEnd(), "1.4", &itemLen, &itemType);
+		itemPDU = Net::ASN1Util::PDUGetItem(this->buff.Ptr(), this->buff.PtrEnd(), "1.4", itemLen, itemType);
 		if (itemPDU != 0 && itemType == Net::ASN1Util::IT_CONTEXT_SPECIFIC_1)
 		{
-			itemPDU = Net::ASN1Util::PDUGetItem(itemPDU, itemPDU + itemLen, "1", &itemLen, &itemType);
+			itemPDU = Net::ASN1Util::PDUGetItem(itemPDU, itemPDU + itemLen, "1", itemLen, itemType);
 			if (itemPDU != 0 && itemType == Net::ASN1Util::IT_BIT_STRING)
 			{
-				*size = itemLen - 1;
+				size.Set(itemLen - 1);
 				return itemPDU + 1;
 			}
 			return 0;
@@ -438,7 +438,7 @@ Crypto::Cert::X509File::ECName Crypto::Cert::X509Key::GetECName() const
 	{
 		Net::ASN1Util::ItemType itemType;
 		UOSInt size;
-		const UInt8 *itemPDU = Net::ASN1Util::PDUGetItem(this->buff.Ptr(), this->buff.PtrEnd(), "1.1.2", &size, &itemType);
+		const UInt8 *itemPDU = Net::ASN1Util::PDUGetItem(this->buff.Ptr(), this->buff.PtrEnd(), "1.1.2", size, itemType);
 		if (itemPDU != 0 && itemType == Net::ASN1Util::IT_OID)
 		{
 			return ECNameFromOID(itemPDU, size);
@@ -448,10 +448,10 @@ Crypto::Cert::X509File::ECName Crypto::Cert::X509Key::GetECName() const
 	{
 		Net::ASN1Util::ItemType itemType;
 		UOSInt size;
-		const UInt8 *itemPDU = Net::ASN1Util::PDUGetItem(this->buff.Ptr(), this->buff.PtrEnd(), "1.3", &size, &itemType);
+		const UInt8 *itemPDU = Net::ASN1Util::PDUGetItem(this->buff.Ptr(), this->buff.PtrEnd(), "1.3", size, itemType);
 		if (itemPDU != 0 && itemType == Net::ASN1Util::IT_CONTEXT_SPECIFIC_0)
 		{
-			itemPDU = Net::ASN1Util::PDUGetItem(itemPDU, itemPDU + size, "1", &size, &itemType);
+			itemPDU = Net::ASN1Util::PDUGetItem(itemPDU, itemPDU + size, "1", size, itemType);
 			if (itemPDU != 0 && itemType == Net::ASN1Util::IT_OID)
 			{
 				return ECNameFromOID(itemPDU, size);

@@ -30,9 +30,9 @@ namespace Crypto
 			virtual X509Cert *CreateX509Cert() const;
 			virtual void ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const;
 
-			Bool GetIssuerNames(CertNames *names) const;
-			Bool GetSubjNames(CertNames *names) const;
-			Bool GetExtensions(CertExtensions *ext) const;
+			Bool GetIssuerNames(NotNullPtr<CertNames> names) const;
+			Bool GetSubjNames(NotNullPtr<CertNames> names) const;
+			Bool GetExtensions(NotNullPtr<CertExtensions> ext) const;
 			Crypto::Cert::X509Key *GetNewPublicKey() const;
 			Bool GetKeyId(const Data::ByteArray &keyId) const; //20 bytes
 			Bool GetNotBefore(NotNullPtr<Data::DateTime> dt) const;

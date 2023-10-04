@@ -92,16 +92,19 @@ void __stdcall Net::DNSProxy::OnDNSRequest(void *userObj, Text::CString reqName,
 			i = me->blackList.GetCount();
 			while (i-- > 0)
 			{
-				Text::String *blName = me->blackList.GetItem(i);
-				if (reqName.Equals(blName))
+				NotNullPtr<Text::String> blName;
+				if (blName.Set(me->blackList.GetItem(i)))
 				{
-					req->status = NS_BLOCKED;
-					break;
-				}
-				else if (reqName.EndsWith(blName->v, blName->leng) && reqName.v[reqName.leng - blName->leng] == '.')
-				{
-					req->status = NS_BLOCKED;
-					break;
+					if (reqName.Equals(blName))
+					{
+						req->status = NS_BLOCKED;
+						break;
+					}
+					else if (reqName.EndsWith(blName->v, blName->leng) && reqName.v[reqName.leng - blName->leng] == '.')
+					{
+						req->status = NS_BLOCKED;
+						break;
+					}
 				}
 			}
 			blackListMutUsage.EndUse();

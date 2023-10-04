@@ -13,6 +13,7 @@
 #include "Sync/RWMutexUsage.h"
 #include "Text/MyString.h"
 #include "Text/MyStringW.h"
+#include "Text/StringTool.h"
 #if defined(_WIN32) || defined(WIN64)
 #include <windows.h>
 #endif
@@ -989,7 +990,7 @@ void Media::ColorManagerSess::ChangeMonitor(MonitorHandle *hMon)
 	if (monName == 0)
 		return;
 	this->mut.LockWrite();
-	if (monName->Equals(this->monColor->GetProfileName()))
+	if (Text::StringTool::Equals(monName, this->monColor->GetProfileName()))
 	{
 		this->mut.UnlockWrite();
 		return;

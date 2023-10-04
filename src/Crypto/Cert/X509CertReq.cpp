@@ -28,7 +28,7 @@ void Crypto::Cert::X509CertReq::ToShortName(NotNullPtr<Text::StringBuilderUTF8> 
 {
 	UOSInt len = 0;
 	Net::ASN1Util::ItemType itemType = Net::ASN1Util::IT_UNKNOWN;
-	const UInt8 *tmpBuff = Net::ASN1Util::PDUGetItem(this->buff.Ptr(), this->buff.PtrEnd(), "1.1.2", &len, &itemType);
+	const UInt8 *tmpBuff = Net::ASN1Util::PDUGetItem(this->buff.Ptr(), this->buff.PtrEnd(), "1.1.2", len, itemType);
 	if (tmpBuff != 0 && itemType == Net::ASN1Util::IT_SEQUENCE)
 	{
 		NameGetCN(tmpBuff, tmpBuff + len, sb);
@@ -79,11 +79,11 @@ void Crypto::Cert::X509CertReq::ToString(NotNullPtr<Text::StringBuilderUTF8> sb)
 	}
 }
 
-Bool Crypto::Cert::X509CertReq::GetNames(CertNames *names) const
+Bool Crypto::Cert::X509CertReq::GetNames(NotNullPtr<CertNames> names) const
 {
 	UOSInt itemLen;
 	Net::ASN1Util::ItemType itemType;
-	const UInt8 *namesPDU = Net::ASN1Util::PDUGetItem(this->buff.Ptr(), this->buff.PtrEnd(), "1.1.2", &itemLen, &itemType);
+	const UInt8 *namesPDU = Net::ASN1Util::PDUGetItem(this->buff.Ptr(), this->buff.PtrEnd(), "1.1.2", itemLen, itemType);
 	if (namesPDU)
 	{
 		return NamesGet(namesPDU, namesPDU + itemLen, names);
@@ -91,19 +91,19 @@ Bool Crypto::Cert::X509CertReq::GetNames(CertNames *names) const
 	return false;
 }
 
-Bool Crypto::Cert::X509CertReq::GetExtensions(CertExtensions *ext) const
+Bool Crypto::Cert::X509CertReq::GetExtensions(NotNullPtr<CertExtensions> ext) const
 {
 	UOSInt itemLen;
 	Net::ASN1Util::ItemType itemType;
-	const UInt8 *extPDU = Net::ASN1Util::PDUGetItem(this->buff.Ptr(), this->buff.PtrEnd(), "1.1.4.1", &itemLen, &itemType);
+	const UInt8 *extPDU = Net::ASN1Util::PDUGetItem(this->buff.Ptr(), this->buff.PtrEnd(), "1.1.4.1", itemLen, itemType);
 	if (extPDU && itemType == Net::ASN1Util::IT_SEQUENCE)
 	{
 		UOSInt oidLen;
-		const UInt8 *oid = Net::ASN1Util::PDUGetItem(extPDU, extPDU + itemLen, "1", &oidLen, &itemType);
+		const UInt8 *oid = Net::ASN1Util::PDUGetItem(extPDU, extPDU + itemLen, "1", oidLen, itemType);
 		if (oid && Net::ASN1Util::OIDEqualsText(oid, oidLen, UTF8STRC("1.2.840.113549.1.9.14"))) //extensionRequest
 		{
 			UOSInt extSeqSize;
-			const UInt8 *extSeq = Net::ASN1Util::PDUGetItem(extPDU, extPDU + itemLen, "2.1", &extSeqSize, &itemType);
+			const UInt8 *extSeq = Net::ASN1Util::PDUGetItem(extPDU, extPDU + itemLen, "2.1", extSeqSize, itemType);
 			if (extSeq && itemType == Net::ASN1Util::IT_SEQUENCE)
 			{
 				return ExtensionsGet(extSeq, extSeq + extSeqSize, ext);
@@ -117,7 +117,7 @@ Crypto::Cert::X509Key *Crypto::Cert::X509CertReq::GetNewPublicKey() const
 {
 	UOSInt itemLen;
 	Net::ASN1Util::ItemType itemType;
-	const UInt8 *keyPDU = Net::ASN1Util::PDUGetItem(this->buff.Ptr(), this->buff.PtrEnd(), "1.1.3", &itemLen, &itemType);
+	const UInt8 *keyPDU = Net::ASN1Util::PDUGetItem(this->buff.Ptr(), this->buff.PtrEnd(), "1.1.3", itemLen, itemType);
 	if (keyPDU)
 	{
 		return PublicKeyGetNew(keyPDU, keyPDU + itemLen);

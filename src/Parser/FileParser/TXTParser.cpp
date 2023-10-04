@@ -160,7 +160,7 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFileHdr(NotNullPtr<IO::Str
 			}
 			else if (Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("5,")))
 			{
-				Text::String *fontName;
+				NotNullPtr<Text::String> fontName;
 				Text::CString pfontName;
 				Double fontSize;
 				Bool bold;

@@ -32,8 +32,8 @@ Text::String *Net::ACMEConn::JWK(Crypto::Cert::X509Key *key, Crypto::Token::JWSi
 		{
 			UOSInt mSize;
 			UOSInt eSize;
-			const UInt8 *m = key->GetRSAModulus(&mSize);
-			const UInt8 *e = key->GetRSAPublicExponent(&eSize);
+			const UInt8 *m = key->GetRSAModulus(mSize);
+			const UInt8 *e = key->GetRSAPublicExponent(eSize);
 			if (m == 0 || e == 0)
 			{
 				return 0;

@@ -18,7 +18,7 @@ namespace Net
 			Text::String *opt;
 			Text::String *server;
 			Text::String *st;
-			Text::String *usn;
+			NotNullPtr<Text::String> usn;
 			Text::String *userAgent;
 		};
 

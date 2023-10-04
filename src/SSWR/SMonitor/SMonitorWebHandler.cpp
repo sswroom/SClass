@@ -54,9 +54,9 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::IndexReq(SSWR::SMonitor::SMon
 		if (req->GetReqMethod() == Net::WebUtil::RequestMethod::HTTP_POST)
 		{
 			req->ParseHTTPForm();
-			Text::String *pwd = req->GetHTTPFormStr(CSTR("password"));
-			Text::String *retype = req->GetHTTPFormStr(CSTR("password"));
-			if (pwd && retype)
+			NotNullPtr<Text::String> pwd;
+			NotNullPtr<Text::String> retype;
+			if (pwd.Set(req->GetHTTPFormStr(CSTR("password"))) && retype.Set(req->GetHTTPFormStr(CSTR("retype"))))
 			{
 				if (pwd->leng >= 3 && pwd->Equals(retype))
 				{
@@ -1820,13 +1820,13 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::UserPasswordReq(SSWR::SMonito
 	if (req->GetReqMethod() == Net::WebUtil::RequestMethod::HTTP_POST)
 	{
 		req->ParseHTTPForm();
-		Text::String *pwd = req->GetHTTPFormStr(CSTR("password"));
-		Text::String *retype = req->GetHTTPFormStr(CSTR("retype"));
-		if (pwd == 0 || pwd->v[0] == 0)
+		NotNullPtr<Text::String> pwd;
+		NotNullPtr<Text::String> retype;
+		if (!pwd.Set(req->GetHTTPFormStr(CSTR("password"))) || pwd->v[0] == 0)
 		{
 			msg = CSTR("Password is empty");
 		}
-		else if (retype == 0 || retype->v[0] == 0)
+		else if (!retype.Set(req->GetHTTPFormStr(CSTR("retype"))) || retype->v[0] == 0)
 		{
 			msg = CSTR("Retype is empty");
 		}

@@ -44,12 +44,12 @@ void __stdcall SSWR::AVIRead::AVIRCAUtilForm::OnFileDrop(void *userObj, NotNullP
 					case Crypto::Cert::X509File::FileType::Cert:
 						cert = (Crypto::Cert::X509Cert*)x509;
 						MemClear(&names, sizeof(names));
-						if (cert->GetSubjNames(&names))
+						if (cert->GetSubjNames(names))
 						{
 							SDEL_CLASS(me->caCert);
 							me->caCert = cert;
 							me->txtCACert->SetText(names.commonName->ToCString());
-							Crypto::Cert::CertNames::FreeNames(&names);
+							Crypto::Cert::CertNames::FreeNames(names);
 							if (key.Set(me->key))
 							{
 								if (!me->caCert->IsSignatureKey(me->ssl, key))
@@ -68,17 +68,17 @@ void __stdcall SSWR::AVIRead::AVIRCAUtilForm::OnFileDrop(void *userObj, NotNullP
 					case Crypto::Cert::X509File::FileType::CertRequest:
 						csr = (Crypto::Cert::X509CertReq*)x509;
 						MemClear(&names, sizeof(names));
-						if (csr->GetNames(&names))
+						if (csr->GetNames(names))
 						{
 							SDEL_CLASS(me->csr);
 							me->csr = csr;
-							me->UpdateNames(&names);
+							me->DisplayNames(names);
 							me->txtCSR->SetText(names.commonName->ToCString());
-							Crypto::Cert::CertNames::FreeNames(&names);
+							Crypto::Cert::CertNames::FreeNames(names);
 
 							me->lbSAN->ClearItems();
 							MemClear(&exts, sizeof(exts));
-							if (csr->GetExtensions(&exts))
+							if (csr->GetExtensions(exts))
 							{
 								if (exts.subjectAltName)
 								{
@@ -90,7 +90,7 @@ void __stdcall SSWR::AVIRead::AVIRCAUtilForm::OnFileDrop(void *userObj, NotNullP
 										j++;
 									}
 								}
-								Crypto::Cert::CertExtensions::FreeExtensions(&exts);
+								Crypto::Cert::CertExtensions::FreeExtensions(exts);
 							}
 						}
 						else
@@ -112,7 +112,7 @@ void __stdcall SSWR::AVIRead::AVIRCAUtilForm::OnFileDrop(void *userObj, NotNullP
 								{
 									SDEL_CLASS(me->key);
 									me->key = key.Ptr();
-									me->UpdateKeyDetail();
+									me->DisplayKeyDetail();
 								}
 							}
 							else
@@ -127,19 +127,19 @@ void __stdcall SSWR::AVIRead::AVIRCAUtilForm::OnFileDrop(void *userObj, NotNullP
 						{
 							SDEL_CLASS(me->key);
 							me->key = key.Ptr();
-							me->UpdateKeyDetail();
+							me->DisplayKeyDetail();
 						}
 						DEL_CLASS(x509);
 						break;
 					case Crypto::Cert::X509File::FileType::FileList:
 						cert = (Crypto::Cert::X509Cert*)((Crypto::Cert::X509FileList*)x509)->GetFile(0);
 						MemClear(&names, sizeof(names));
-						if (cert->GetSubjNames(&names))
+						if (cert->GetSubjNames(names))
 						{
 							SDEL_CLASS(me->caCert);
 							me->caCert = (Crypto::Cert::X509Cert*)cert->Clone().Ptr();
 							me->txtCACert->SetText(names.commonName->ToCString());
-							Crypto::Cert::CertNames::FreeNames(&names);
+							Crypto::Cert::CertNames::FreeNames(names);
 							if (key.Set(me->key))
 							{
 								if (!me->caCert->IsSignatureKey(me->ssl, key))
@@ -245,7 +245,7 @@ void __stdcall SSWR::AVIRead::AVIRCAUtilForm::OnIssueClicked(void *userObj)
 	}
 }
 
-void SSWR::AVIRead::AVIRCAUtilForm::UpdateKeyDetail()
+void SSWR::AVIRead::AVIRCAUtilForm::DisplayKeyDetail()
 {
 	if (this->key == 0)
 	{
@@ -262,7 +262,7 @@ void SSWR::AVIRead::AVIRCAUtilForm::UpdateKeyDetail()
 	}
 }
 
-void SSWR::AVIRead::AVIRCAUtilForm::UpdateNames(Crypto::Cert::CertNames *names)
+void SSWR::AVIRead::AVIRCAUtilForm::DisplayNames(NotNullPtr<Crypto::Cert::CertNames> names)
 {
 	this->txtCountryName->SetText(Text::String::OrEmpty(names->countryName)->ToCString());
 	this->txtStateOrProvinceName->SetText(Text::String::OrEmpty(names->stateOrProvinceName)->ToCString());

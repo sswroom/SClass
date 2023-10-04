@@ -56,8 +56,8 @@ namespace Net
 		static Bool PDUToString(const UInt8 *pdu, const UInt8 *pduEnd, NotNullPtr<Text::StringBuilderUTF8> sb, UOSInt level, const UInt8 **pduNext);
 
 		static Bool PDUDSizeEnd(const UInt8 *pdu, const UInt8 *pduEnd, const UInt8 **pduNext);
-		static const UInt8 *PDUGetItemRAW(const UInt8 *pdu, const UInt8 *pduEnd, const Char *path, UOSInt *len, UOSInt *itemOfst);
-		static const UInt8 *PDUGetItem(const UInt8 *pdu, const UInt8 *pduEnd, const Char *path, UOSInt *len, ItemType *itemType);
+		static const UInt8 *PDUGetItemRAW(const UInt8 *pdu, const UInt8 *pduEnd, const Char *path, OptOut<UOSInt> len, OutParam<UOSInt> itemOfst);
+		static const UInt8 *PDUGetItem(const UInt8 *pdu, const UInt8 *pduEnd, const Char *path, OptOut<UOSInt> len, OptOut<ItemType> itemType);
 		static ItemType PDUGetItemType(const UInt8 *pdu, const UInt8 *pduEnd, const Char *path);
 		static UOSInt PDUCountItem(const UInt8 *pdu, const UInt8 *pduEnd, const Char *path);
 		static Bool PDUIsValid(const UInt8 *pdu, const UInt8 *pduEnd);

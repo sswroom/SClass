@@ -757,7 +757,7 @@ EVP_PKEY *OpenSSLEngine_LoadKey(NotNullPtr<Crypto::Cert::X509Key> key, Bool priv
 		printf("%s\r\n", sb.ToString());
 		Crypto::Cert::X509File::ECName ecName = key->GetECName();
 		UOSInt keyLen;
-		const UInt8 *keyPtr = key->GetECPublic(&keyLen);
+		const UInt8 *keyPtr = key->GetECPublic(keyLen);
 		if (ecName == Crypto::Cert::X509File::ECName::Unknown)
 		{
 #ifdef SHOW_DEBUG

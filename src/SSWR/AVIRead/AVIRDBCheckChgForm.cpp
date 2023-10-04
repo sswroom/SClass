@@ -261,17 +261,22 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::LoadDataFile(Text::CStringNN fileName)
 	this->cboDataTable->ClearItems();
 	if (tableNames.GetCount() > 0)
 	{
+		UOSInt tableIndex = 0;
 		Text::String *name;
 		UOSInt i = 0;
 		UOSInt j = tableNames.GetCount();
 		while (i < j)
 		{
 			name = tableNames.GetItem(i);
+			if (name->EqualsICase(this->table))
+			{
+				tableIndex = i;
+			}
 			this->cboDataTable->AddItem(name->ToCString(), 0);
 			name->Release();
 			i++;
 		}
-		this->cboDataTable->SetSelectedIndex(0);
+		this->cboDataTable->SetSelectedIndex(tableIndex);
 	}
 	return true;
 }
@@ -1663,7 +1668,7 @@ Text::CString SSWR::AVIRead::AVIRDBCheckChgForm::GetNullText()
 	}
 }
 
-SSWR::AVIRead::AVIRDBCheckChgForm::AVIRDBCheckChgForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, DB::ReadingDB *db, Text::CString schema, Text::CString table) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRDBCheckChgForm::AVIRDBCheckChgForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, DB::ReadingDB *db, Text::CString schema, Text::CStringNN table) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
 	this->SetText(CSTR("Check Table Changes"));

@@ -527,7 +527,7 @@ OSInt __stdcall Net::WebServer::CapturerWebHandler::WiFiLogRSSICompare(Net::WiFi
 		}
 		else
 		{
-			return obj1->ssid->CompareTo(obj2->ssid.Ptr());
+			return obj1->ssid->CompareTo(obj2->ssid);
 		}
 	}
 	else if (obj1->lastRSSI == 0)

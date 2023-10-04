@@ -58,7 +58,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 
 	NEW_CLASS(ext.subjectAltName, Data::ArrayListNN<Text::String>());
 	ext.subjectAltName->Add(Text::String::New(UTF8STRC("sswroom.no-ip.org")));
-	Crypto::Cert::X509CertReq *csr = Crypto::Cert::CertUtil::CertReqCreate(ssl, &names, key, &ext);
+	Crypto::Cert::X509CertReq *csr = Crypto::Cert::CertUtil::CertReqCreate(ssl, names, key, &ext);
 	if (csr)
 	{
 		sptr = IO::Path::GetProcessFileName(sbuff);
@@ -72,7 +72,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	}
 	LIST_FREE_STRING(ext.subjectAltName);
 	DEL_CLASS(ext.subjectAltName);
-	Crypto::Cert::CertNames::FreeNames(&names);
+	Crypto::Cert::CertNames::FreeNames(names);
 	key.Delete();
 	SDEL_CLASS(ssl);
 	return 0;

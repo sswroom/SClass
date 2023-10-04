@@ -85,7 +85,7 @@ Bool Math::Geometry::VectorString::Equals(NotNullPtr<const Math::Geometry::Vecto
 		this->align == vstr->align &&
 		this->angleDegree == vstr->angleDegree &&
 		this->buffSize == vstr->buffSize &&
-		this->s->Equals(vstr->s.Ptr());
+		this->s->Equals(vstr->s);
 }
 
 Bool Math::Geometry::VectorString::EqualsNearly(NotNullPtr<const Math::Geometry::Vector2D> vec) const
@@ -100,7 +100,7 @@ Bool Math::Geometry::VectorString::EqualsNearly(NotNullPtr<const Math::Geometry:
 		this->align == vstr->align &&
 		Math::NearlyEqualsDbl(this->angleDegree, vstr->angleDegree) &&
 		this->buffSize == vstr->buffSize &&
-		this->s->Equals(vstr->s.Ptr());
+		this->s->Equals(vstr->s);
 }
 
 UOSInt Math::Geometry::VectorString::GetCoordinates(NotNullPtr<Data::ArrayListA<Math::Coord2DDbl>> coordList) const

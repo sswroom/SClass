@@ -29,6 +29,7 @@
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
 #include "Text/MyStringW.h"
+#include "Text/StringTool.h"
 #include "Text/UTF8Writer.h"
 
 #define SFLG_ROTATE 1
@@ -2769,7 +2770,7 @@ Bool Map::MapConfig2TGen::AddLabel(MapLabels2 *labels, UOSInt maxLabel, UOSInt *
 		{
 			if (recType == labels[i].shapeType)
 			{
-				if (labelt.Equals(labels[i].label))
+				if (labels[i].label->Equals(labelt))
 				{
 					found = 1;
 
@@ -2956,7 +2957,7 @@ Bool Map::MapConfig2TGen::AddLabel(MapLabels2 *labels, UOSInt maxLabel, UOSInt *
 		{
 			if (recType == labels[i].shapeType)
 			{
-				if (labelt.Equals(labels[i].label))
+				if (labels[i].label->Equals(labelt))
 				{
 					found++;
 					if (totalSize == 0)
@@ -3137,7 +3138,7 @@ Bool Map::MapConfig2TGen::AddLabel(MapLabels2 *labels, UOSInt maxLabel, UOSInt *
 			{
 				if (recType == labels[i].shapeType)
 				{
-					if (labelt.Equals(labels[i].label))
+					if (labels[i].label->Equals(labelt))
 					{
 						found = 1;
 						break;
@@ -3466,7 +3467,7 @@ void Map::MapConfig2TGen::DrawLabels(NotNullPtr<Media::DrawImage> img, MapLabels
 
 				if (lastLbl)
 				{
-					if (!lastLbl->Equals(labels[i].label))
+					if (!Text::StringTool::Equals(lastLbl, labels[i].label))
 					{
 						thisCnt = 0;
 					}

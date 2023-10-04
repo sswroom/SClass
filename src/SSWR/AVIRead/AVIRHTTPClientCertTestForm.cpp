@@ -64,8 +64,8 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientCertTestForm::OnStartClick(void *use
 		key->GetKeyId(BYTEARR(ext.subjKeyId));
 		ext.useAuthKeyId = true;
 		key->GetKeyId(BYTEARR(ext.authKeyId));
-		me->sslCert = Crypto::Cert::CertUtil::SelfSignedCertCreate(ssl, &names, key, 30, &ext);
-		Crypto::Cert::CertNames::FreeNames(&names);
+		me->sslCert = Crypto::Cert::CertUtil::SelfSignedCertCreate(ssl, names, key, 30, &ext);
+		Crypto::Cert::CertNames::FreeNames(names);
 		LIST_FREE_STRING(&sanList);
 		if (!sslCert.Set(me->sslCert))
 		{

@@ -58,9 +58,9 @@ void SSWR::DiscDB::DiscDBEnv::LoadDB()
 		while (r->ReadNext())
 		{
 			cate = MemAlloc(CategoryInfo, 1);
-			cate->id = r->GetNewStr(0);
+			cate->id = r->GetNewStrNN(0);
 			cate->name = Text::String::OrEmpty(r->GetNewStr(1));
-			this->cateMap->Put(cate->id, cate);
+			this->cateMap->PutNN(cate->id, cate);
 		}
 		this->db->CloseReader(r);
 	}
@@ -400,7 +400,7 @@ Bool SSWR::DiscDB::DiscDBEnv::ModifyDVDType(Text::CStringNN discTypeID, Text::CS
 	DVDTypeInfo *dvdType = this->dvdTypeMap->GetC(discTypeID);
 	if (dvdType == 0)
 		return false;
-	if (name.Equals(dvdType->name.Ptr()) && desc.Equals(dvdType->description.Ptr()))
+	if (name.Equals(dvdType->name) && desc.Equals(dvdType->description))
 	{
 		return true;
 	}

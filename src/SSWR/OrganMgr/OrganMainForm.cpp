@@ -27,6 +27,7 @@
 #include "SSWR/OrganMgr/OrganUserForm.h"
 #include "Text/MyStringW.h"
 #include "Text/StringBuilderUTF8.h"
+#include "Text/StringTool.h"
 #include "Text/UTF8Reader.h"
 #include "UI/Clipboard.h"
 #include "UI/FileDialog.h"
@@ -122,7 +123,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnGroupAddClicked(void *userObj)
 				if (gi->GetItemType() == OrganGroupItem::IT_GROUP)
 				{
 					grp = (OrganGroup*)gi;
-					if (newGrp->GetEName()->Equals(grp->GetEName()))
+					if (Text::StringTool::Equals(newGrp->GetEName(), grp->GetEName()))
 					{
 						if (grp->GetGroupId() > matchGrpId)
 						{
@@ -640,7 +641,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnImgDblClicked(void *userObj)
 					{
 						Text::String *sURL = frm.GetSrcURL();
 						Text::String *location = frm.GetLocation();
-						if (!wfile->srcUrl->Equals(sURL) || !wfile->location->Equals(location))
+						if (!Text::StringTool::Equals(wfile->srcUrl.Ptr(), sURL) || !Text::StringTool::Equals(wfile->location.Ptr(), location))
 						{
 							OrganGroupItem *item = ((OrganGroupItem*)me->lbObj->GetSelectedItem());
 							me->env->UpdateSpeciesWebFile((OrganSpecies*)item, wfile, sURL, location);
@@ -998,7 +999,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnSpAddClicked(void *userObj)
 					if (gi->GetItemType() == OrganGroupItem::IT_SPECIES)
 					{
 						sp2 = (OrganSpecies*)gi;
-						if (sp->GetSName()->Equals(sp2->GetSName()))
+						if (Text::StringTool::Equals(sp->GetSName(), sp2->GetSName()))
 						{
 							if (sp2->GetSpeciesId() > matchSpId)
 							{
@@ -1854,14 +1855,14 @@ void SSWR::OrganMgr::OrganMainForm::UpdateDir()
 				{
 					if (this->inputMode == IM_SPECIES)
 					{
-						if (((OrganSpecies*)item)->GetSName()->Equals(this->initSelObj))
+						if (Text::StringTool::Equals(((OrganSpecies*)item)->GetSName(), this->initSelObj))
 						{
 							this->lbObj->SetSelectedIndex(k);
 						}
 					}
 					else if (this->inputMode == IM_GROUP)
 					{
-						if (((OrganGroup*)item)->GetEName()->Equals(this->initSelObj))
+						if (Text::StringTool::Equals(((OrganGroup*)item)->GetEName(), this->initSelObj))
 						{
 							this->lbObj->SetSelectedIndex(k);
 						}
@@ -1974,7 +1975,7 @@ void SSWR::OrganMgr::OrganMainForm::UpdateImgDir()
 			{
 				imgItem = this->imgItems.GetItem(i);
 				this->lbImage->AddItem(imgItem->GetDispName()->ToCString(), imgItem);
-				if (this->initSelImg && imgItem->GetDispName()->Equals(this->initSelImg))
+				if (this->initSelImg && Text::StringTool::Equals(imgItem->GetDispName(), this->initSelImg))
 				{
 					initSel = i;
 				}
@@ -2064,7 +2065,7 @@ void SSWR::OrganMgr::OrganMainForm::UpdateImgDir()
 
 				this->lbImage->AddItem(CSTRP(sbuff, sptr), imgItem);
 
-				if (this->initSelImg && imgItem->GetDispName()->Equals(this->initSelImg))
+				if (this->initSelImg && Text::StringTool::Equals(imgItem->GetDispName(), this->initSelImg))
 				{
 					initSel = i;
 				}

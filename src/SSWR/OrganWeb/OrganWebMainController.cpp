@@ -568,6 +568,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcGroupMod(NotNullPtr<Ne
 
 		Text::StringBuilderUTF8 msg;
 		Text::String *ename = 0;
+		NotNullPtr<Text::String> nnename;
 		Text::String *cname = 0;
 		Text::String *descr = 0;
 		GroupFlags groupFlags = GF_NONE;
@@ -596,7 +597,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcGroupMod(NotNullPtr<Ne
 			{
 				groupFlags = (GroupFlags)(groupFlags | GF_ADMIN_ONLY);
 			}
-			if (task != 0 && cname != 0 && req->GetHTTPFormInt32(CSTR("groupType"), groupTypeId) && ename != 0 && descr != 0 && ename->v[0] != 0 && cname->v[0] != 0)
+			if (task != 0 && cname != 0 && req->GetHTTPFormInt32(CSTR("groupType"), groupTypeId) && nnename.Set(ename) && descr != 0 && ename->v[0] != 0 && cname->v[0] != 0)
 			{
 				if (task->Equals(UTF8STRC("new")))
 				{
@@ -605,7 +606,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcGroupMod(NotNullPtr<Ne
 					i = group->groups.GetCount();
 					while (i-- > 0)
 					{
-						if (group->groups.GetItem(i)->engName->Equals(ename))
+						if (group->groups.GetItem(i)->engName->Equals(nnename))
 						{
 							found = true;
 							break;
@@ -642,7 +643,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcGroupMod(NotNullPtr<Ne
 					i = group->groups.GetCount();
 					while (i-- > 0)
 					{
-						if (group->groups.GetItem(i) != modGroup && group->groups.GetItem(i)->engName->Equals(ename))
+						if (group->groups.GetItem(i) != modGroup && group->groups.GetItem(i)->engName->Equals(nnename))
 						{
 							found = true;
 							break;
@@ -1742,7 +1743,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSpeciesMod(NotNullPtr<
 				}
 				else if (task->Equals(UTF8STRC("modify")) && species != 0)
 				{
-					Bool nameChg = !species->sciName->Equals(sname);
+					Bool nameChg = !sname->Equals(species->sciName);
 					sb.ClearStr();
 					if (nameChg && me->env->SpeciesGetByName(mutUsage, sname) != 0)
 					{
@@ -4790,10 +4791,9 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcReload(NotNullPtr<Net:
 		Bool showPwd = true;
 		if (req->GetReqMethod() == Net::WebUtil::RequestMethod::HTTP_POST)
 		{
-			Text::String *pwd;
+			NotNullPtr<Text::String> pwd;
 			req->ParseHTTPForm();
-			pwd = req->GetHTTPFormStr(CSTR("pwd"));
-			if (pwd)
+			if (pwd.Set(req->GetHTTPFormStr(CSTR("pwd"))))
 			{
 				if (me->env->ReloadPwdMatches(pwd))
 				{
@@ -4847,10 +4847,9 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcRestart(NotNullPtr<Net
 		Bool showPwd = true;;
 		if (req->GetReqMethod() == Net::WebUtil::RequestMethod::HTTP_POST)
 		{
-			Text::String *pwd;
+			NotNullPtr<Text::String> pwd;
 			req->ParseHTTPForm();
-			pwd = req->GetHTTPFormStr(CSTR("pwd"));
-			if (pwd)
+			if (pwd.Set(req->GetHTTPFormStr(CSTR("pwd"))))
 			{
 				if (me->env->ReloadPwdMatches(pwd))
 				{

@@ -27,14 +27,14 @@ void Crypto::Cert::X509CRL::ToShortName(NotNullPtr<Text::StringBuilderUTF8> sb) 
 {
 	UOSInt len = 0;
 	Net::ASN1Util::ItemType itemType = Net::ASN1Util::IT_UNKNOWN;
-	const UInt8 *tmpBuff = Net::ASN1Util::PDUGetItem(this->buff.Ptr(), this->buff.PtrEnd(), "1.1.3", &len, &itemType);
+	const UInt8 *tmpBuff = Net::ASN1Util::PDUGetItem(this->buff.Ptr(), this->buff.PtrEnd(), "1.1.3", len, itemType);
 	if (tmpBuff != 0 && itemType == Net::ASN1Util::IT_SEQUENCE)
 	{
 		NameGetCN(tmpBuff, tmpBuff + len, sb);
 	}
 	else
 	{
-		tmpBuff = Net::ASN1Util::PDUGetItem(this->buff.Ptr(), this->buff.PtrEnd(), "1.1.2", &len, &itemType);
+		tmpBuff = Net::ASN1Util::PDUGetItem(this->buff.Ptr(), this->buff.PtrEnd(), "1.1.2", len, itemType);
 		if (tmpBuff != 0 && itemType == Net::ASN1Util::IT_SEQUENCE)
 		{
 			NameGetCN(tmpBuff, tmpBuff + len, sb);
@@ -119,7 +119,7 @@ Bool Crypto::Cert::X509CRL::HasVersion() const
 {
 	UOSInt itemLen;
 	Net::ASN1Util::ItemType itemType;
-	if (Net::ASN1Util::PDUGetItem(this->buff.Ptr(), this->buff.PtrEnd(), "1.1.1", &itemLen, &itemType) != 0 && itemType == Net::ASN1Util::IT_INTEGER)
+	if (Net::ASN1Util::PDUGetItem(this->buff.Ptr(), this->buff.PtrEnd(), "1.1.1", itemLen, itemType) != 0 && itemType == Net::ASN1Util::IT_INTEGER)
 	{
 		return true;
 	}
@@ -133,11 +133,11 @@ Bool Crypto::Cert::X509CRL::GetIssuerCN(NotNullPtr<Text::StringBuilderUTF8> sb) 
 	const UInt8 *tmpBuff;
 	if (this->HasVersion())
 	{
-		tmpBuff = Net::ASN1Util::PDUGetItem(this->buff.Ptr(), this->buff.PtrEnd(), "1.1.3", &len, &itemType);
+		tmpBuff = Net::ASN1Util::PDUGetItem(this->buff.Ptr(), this->buff.PtrEnd(), "1.1.3", len, itemType);
 	}
 	else
 	{
-		tmpBuff = Net::ASN1Util::PDUGetItem(this->buff.Ptr(), this->buff.PtrEnd(), "1.1.2", &len, &itemType);
+		tmpBuff = Net::ASN1Util::PDUGetItem(this->buff.Ptr(), this->buff.PtrEnd(), "1.1.2", len, itemType);
 	}
 	if (tmpBuff != 0 && itemType == Net::ASN1Util::IT_SEQUENCE)
 	{
@@ -156,11 +156,11 @@ Bool Crypto::Cert::X509CRL::GetThisUpdate(NotNullPtr<Data::DateTime> dt) const
 	const UInt8 *itemPDU;
 	if (this->HasVersion())
 	{
-		itemPDU = Net::ASN1Util::PDUGetItem(this->buff.Ptr(), this->buff.PtrEnd(), "1.1.4", &itemLen, &itemType);
+		itemPDU = Net::ASN1Util::PDUGetItem(this->buff.Ptr(), this->buff.PtrEnd(), "1.1.4", itemLen, itemType);
 	}
 	else
 	{
-		itemPDU = Net::ASN1Util::PDUGetItem(this->buff.Ptr(), this->buff.PtrEnd(), "1.1.3", &itemLen, &itemType);
+		itemPDU = Net::ASN1Util::PDUGetItem(this->buff.Ptr(), this->buff.PtrEnd(), "1.1.3", itemLen, itemType);
 	}
 	if (itemPDU != 0 && (itemType == Net::ASN1Util::IT_UTCTIME || itemType == Net::ASN1Util::IT_GENERALIZEDTIME))
 	{
@@ -179,11 +179,11 @@ Bool Crypto::Cert::X509CRL::GetNextUpdate(NotNullPtr<Data::DateTime> dt) const
 	const UInt8 *itemPDU;
 	if (this->HasVersion())
 	{
-		itemPDU = Net::ASN1Util::PDUGetItem(this->buff.Ptr(), this->buff.PtrEnd(), "1.1.5", &itemLen, &itemType);
+		itemPDU = Net::ASN1Util::PDUGetItem(this->buff.Ptr(), this->buff.PtrEnd(), "1.1.5", itemLen, itemType);
 	}
 	else
 	{
-		itemPDU = Net::ASN1Util::PDUGetItem(this->buff.Ptr(), this->buff.PtrEnd(), "1.1.4", &itemLen, &itemType);
+		itemPDU = Net::ASN1Util::PDUGetItem(this->buff.Ptr(), this->buff.PtrEnd(), "1.1.4", itemLen, itemType);
 	}
 	if (itemPDU != 0 && (itemType == Net::ASN1Util::IT_UTCTIME || itemType == Net::ASN1Util::IT_GENERALIZEDTIME))
 	{
@@ -208,12 +208,12 @@ Bool Crypto::Cert::X509CRL::IsRevoked(NotNullPtr<Crypto::Cert::X509Cert> cert) c
 	UOSInt i;
 	if (this->HasVersion())
 	{
-		itemPDU = Net::ASN1Util::PDUGetItem(this->buff.Ptr(), this->buff.PtrEnd(), "1.1.5", &itemLen, &itemType);
+		itemPDU = Net::ASN1Util::PDUGetItem(this->buff.Ptr(), this->buff.PtrEnd(), "1.1.5", itemLen, itemType);
 		i = 5;
 	}
 	else
 	{
-		itemPDU = Net::ASN1Util::PDUGetItem(this->buff.Ptr(), this->buff.PtrEnd(), "1.1.4", &itemLen, &itemType);
+		itemPDU = Net::ASN1Util::PDUGetItem(this->buff.Ptr(), this->buff.PtrEnd(), "1.1.4", itemLen, itemType);
 		i = 4;
 	}
 	if (itemPDU == 0)
@@ -224,7 +224,7 @@ Bool Crypto::Cert::X509CRL::IsRevoked(NotNullPtr<Crypto::Cert::X509Cert> cert) c
 	{
 		i++;
 		Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("1.1.")), i);
-		itemPDU = Net::ASN1Util::PDUGetItem(this->buff.Ptr(), this->buff.PtrEnd(), (const Char*)sbuff, &itemLen, &itemType);
+		itemPDU = Net::ASN1Util::PDUGetItem(this->buff.Ptr(), this->buff.PtrEnd(), (const Char*)sbuff, itemLen, itemType);
 		if (itemPDU == 0 || itemType != Net::ASN1Util::IT_SEQUENCE)
 		{
 			return false;
@@ -236,7 +236,7 @@ Bool Crypto::Cert::X509CRL::IsRevoked(NotNullPtr<Crypto::Cert::X509Cert> cert) c
 		const UInt8 *subitemPDU;
 		UOSInt subitemLen;
 		Text::StrConcatC(Text::StrUOSInt(sbuff, ++i), UTF8STRC(".1"));
-		subitemPDU = Net::ASN1Util::PDUGetItem(itemPDU, itemPDU + itemLen, (const Char*)sbuff, &subitemLen, &itemType);
+		subitemPDU = Net::ASN1Util::PDUGetItem(itemPDU, itemPDU + itemLen, (const Char*)sbuff, subitemLen, itemType);
 		if (subitemPDU == 0)
 			break;
 		if (itemType == Net::ASN1Util::IT_INTEGER && Text::StrEqualsC(subitemPDU, subitemLen, sn, snLen))

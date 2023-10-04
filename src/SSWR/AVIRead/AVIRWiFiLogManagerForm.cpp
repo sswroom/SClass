@@ -157,6 +157,7 @@ void SSWR::AVIRead::AVIRWiFiLogManagerForm::LogUIUpdate()
 	UOSInt cnt;
 	UOSInt recCnt = 0;
 	Bool valid;
+	NotNullPtr<Text::String> filterText;
 	this->lvContent->ClearItems();
 	i = 0;
 	j = logList->GetCount();
@@ -169,18 +170,18 @@ void SSWR::AVIRead::AVIRWiFiLogManagerForm::LogUIUpdate()
 		{
 			valid = false;
 		}
-		else if (this->filterText)
+		else if (filterText.Set(this->filterText))
 		{
 			valid = false;
-			if (log->ssid->IndexOfICase(this->filterText) != INVALID_INDEX)
+			if (log->ssid->IndexOfICase(filterText) != INVALID_INDEX)
 			{
 				valid = true;
 			}
-			else if (log->manuf && log->manuf->IndexOfICase(this->filterText) != INVALID_INDEX)
+			else if (log->manuf && log->manuf->IndexOfICase(filterText) != INVALID_INDEX)
 			{
 				valid = true;
 			}
-			else if (entry && Text::StrIndexOfICase(entry->name, this->filterText->v) != INVALID_INDEX)
+			else if (entry && Text::StrIndexOfICase(entry->name, filterText->v) != INVALID_INDEX)
 			{
 				valid = true;
 			}
@@ -189,7 +190,7 @@ void SSWR::AVIRead::AVIRWiFiLogManagerForm::LogUIUpdate()
 				if (!valid && (log->ouis[0][0] != 0 || log->ouis[0][1] != 0 || log->ouis[0][2] != 0))
 				{
 					entry2 = this->macList->GetEntryOUI(log->ouis[0]);
-					if (entry2 && Text::StrIndexOfICase(entry2->name, this->filterText->v) != INVALID_INDEX)
+					if (entry2 && Text::StrIndexOfICase(entry2->name, filterText->v) != INVALID_INDEX)
 					{
 						valid = true;
 					}
@@ -197,7 +198,7 @@ void SSWR::AVIRead::AVIRWiFiLogManagerForm::LogUIUpdate()
 				if (!valid && (log->ouis[1][0] != 0 || log->ouis[1][1] != 0 || log->ouis[1][2] != 0))
 				{
 					entry2 = this->macList->GetEntryOUI(log->ouis[1]);
-					if (entry2 && Text::StrIndexOfICase(entry2->name, this->filterText->v) != INVALID_INDEX)
+					if (entry2 && Text::StrIndexOfICase(entry2->name, filterText->v) != INVALID_INDEX)
 					{
 						valid = true;
 					}
@@ -205,7 +206,7 @@ void SSWR::AVIRead::AVIRWiFiLogManagerForm::LogUIUpdate()
 				if (!valid && (log->ouis[2][0] != 0 || log->ouis[2][1] != 0 || log->ouis[2][2] != 0))
 				{
 					entry2 = this->macList->GetEntryOUI(log->ouis[2]);
-					if (entry2 && Text::StrIndexOfICase(entry2->name, this->filterText->v) != INVALID_INDEX)
+					if (entry2 && Text::StrIndexOfICase(entry2->name, filterText->v) != INVALID_INDEX)
 					{
 						valid = true;
 					}

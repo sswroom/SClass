@@ -1092,7 +1092,7 @@ SSWR::AVIRead::AVIRHTTPClientForm::HTTPCookie *SSWR::AVIRead::AVIRHTTPClientForm
 		while (j-- > 0)
 		{
 			cookie = this->cookieList.GetItem(j);
-			eq = cookie->domain->Equals(domain, (UOSInt)(domainEnd - domain)) && cookie->secure == secure && cookie->name->Equals(cookieName.Ptr());
+			eq = cookie->domain->Equals(domain, (UOSInt)(domainEnd - domain)) && cookie->secure == secure && cookie->name->Equals(cookieName);
 			if (cookie->path == 0)
 			{
 				eq = eq && (path[0] == 0);

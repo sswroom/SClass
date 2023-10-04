@@ -893,5 +893,5 @@ OSInt SSWR::OrganWeb::OrganWebBookController::Compare(BookInfo *a, BookInfo *b) 
 	else if (a->publishDate < b->publishDate)
 		return -1;
 	else
-		return a->title->CompareTo(b->title.Ptr());
+		return a->title->CompareTo(b->title);
 }

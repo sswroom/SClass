@@ -58,8 +58,8 @@ namespace SSWR
 			static void __stdcall OnCSRViewClicked(void *userObj);
 			static void __stdcall OnIssueClicked(void *userObj);
 
-			void UpdateKeyDetail();
-			void UpdateNames(Crypto::Cert::CertNames *names);
+			void DisplayKeyDetail();
+			void DisplayNames(NotNullPtr<Crypto::Cert::CertNames> names);
 		public:
 			AVIRCAUtilForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRCAUtilForm();

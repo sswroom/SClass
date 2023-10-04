@@ -32,6 +32,7 @@
 #include "Text/MyString.h"
 #include "Text/MyStringW.h"
 #include "Text/StringBuilderUTF8.h"
+#include "Text/StringTool.h"
 #include "Text/UTF8Reader.h"
 #include "Text/UTF8Writer.h"
 #include "Text/XML.h"
@@ -2089,7 +2090,7 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesWeb
 		imgItem = imgItems->GetItem(i);
 		if (imgItem->GetFileType() == OrganImageItem::FileType::Webimage || imgItem->GetFileType() == OrganImageItem::FileType::WebFile)
 		{
-			if (imgItem->GetImgURL()->Equals(imgURL.Ptr()))
+			if (imgItem->GetImgURL()->Equals(imgURL))
 			{
 				found = true;
 			}
@@ -2231,7 +2232,7 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesWeb
 		imgItem = imgItems->GetItem(i);
 		if (imgItem->GetFileType() == OrganImageItem::FileType::Webimage || imgItem->GetFileType() == OrganImageItem::FileType::WebFile)
 		{
-			if (imgItem->GetImgURL()->Equals(imgURL))
+			if (Text::StringTool::Equals(imgItem->GetImgURL(), imgURL))
 			{
 				found = true;
 			}

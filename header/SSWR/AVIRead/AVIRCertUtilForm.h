@@ -67,9 +67,9 @@ namespace SSWR
 			static void __stdcall OnSelfSignedCertClicked(void *userObj);
 
 			Bool GetNames(Crypto::Cert::CertNames *names);
-			void UpdateKeyDetail();
-			void UpdateNames(Crypto::Cert::CertNames *names);
-			void UpdateExtensions(Crypto::Cert::CertExtensions *exts);
+			void DisplayKeyDetail();
+			void DisplayNames(NotNullPtr<Crypto::Cert::CertNames> names);
+			void DisplayExtensions(NotNullPtr<Crypto::Cert::CertExtensions> exts);
 			void ClearExtensions();
 		public:
 			AVIRCertUtilForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);

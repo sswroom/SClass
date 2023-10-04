@@ -482,7 +482,7 @@ Bool SSWR::AVIRead::AVIRCore::GenFontStylePreview(NotNullPtr<Media::DrawImage> i
 	img->DrawRect(Math::Coord2DDbl(0, 0), size.ToDouble(), 0, b);
 	img->DelBrush(b);
 
-	Text::String *fontName;
+	NotNullPtr<Text::String> fontName;
 	Double fontSizePt;
 	Bool bold;
 	UInt32 fontColor;

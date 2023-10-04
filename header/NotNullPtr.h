@@ -2,12 +2,12 @@
 #define _SM_NOTNULLPTR
 #include <stdio.h>
 
-struct NotNullAny
+struct NotNullPtrAny
 {
 protected:
 	const void *p;
 
-	NotNullAny() = default;
+	NotNullPtrAny() = default;
 public:
 	const void *Ptr()
 	{
@@ -15,7 +15,7 @@ public:
 	}
 };
 
-template <typename T> struct NotNullPtr : public NotNullAny
+template <typename T> struct NotNullPtr : public NotNullPtrAny
 {
 private:
 	NotNullPtr(T *p)
@@ -100,7 +100,7 @@ public:
 		return NotNullPtr<T>(p);
 	}
 
-	static NotNullPtr<T> ConvertFrom(NotNullAny ptr)
+	static NotNullPtr<T> ConvertFrom(NotNullPtrAny ptr)
 	{
 		NotNullPtr<T> ret;
 		ret.p = (T*)ptr.Ptr();

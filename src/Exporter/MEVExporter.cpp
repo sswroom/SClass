@@ -144,7 +144,7 @@ Bool Exporter::MEVExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text:
 	j = env->GetFontStyleCount();
 	while (i < j)
 	{
-		Text::String *fontName;
+		NotNullPtr<Text::String> fontName;
 		Double fontSize;
 		Bool bold;
 		UInt32 fontColor;
@@ -152,7 +152,10 @@ Bool Exporter::MEVExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text:
 		UInt32 buffColor;
 
 		sptr = env->GetFontStyleName(i, sbuff);
-		env->GetFontStyle(i, fontName, fontSize, bold, fontColor, buffSize, buffColor);
+		if (!env->GetFontStyle(i, fontName, fontSize, bold, fontColor, buffSize, buffColor))
+		{
+			fontName = Text::String::NewEmpty();
+		}
 
 		*(Int32*)&buff[0] = 0;
 		if (sptr)
@@ -164,7 +167,7 @@ Bool Exporter::MEVExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text:
 			*(Int32*)&buff[4] = 0;
 		}
 		*(Int32*)&buff[8] = 0;
-		WriteUInt32(&buff[12], AddString(&strArr, fontName, stmPos + 8));
+		WriteUInt32(&buff[12], AddString(&strArr, fontName.Ptr(), stmPos + 8));
 		*(Int32*)&buff[16] = Double2Int32(fontSize / 0.75);
 		*(Int32*)&buff[20] = bold?1:0;
 		WriteUInt32(&buff[24], fontColor);

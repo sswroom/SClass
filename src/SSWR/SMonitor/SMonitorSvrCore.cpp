@@ -1752,7 +1752,7 @@ Bool SSWR::SMonitor::SMonitorSvrCore::DeviceSetName(Int64 cliId, NotNullPtr<Text
 	if (devName->leng == 0)
 		return false;
 	Sync::RWMutexUsage devMutUsage(dev->mut, false);
-	if (dev->devName && dev->devName->Equals(devName.Ptr()))
+	if (dev->devName && dev->devName->Equals(devName))
 	{
 		return true;
 	}
@@ -1788,7 +1788,7 @@ Bool SSWR::SMonitor::SMonitorSvrCore::DeviceSetPlatform(Int64 cliId, NotNullPtr<
 	if (platformName->leng == 0)
 		return false;
 	Sync::RWMutexUsage devMutUsage(dev->mut, false);
-	if (dev->platformName->Equals(platformName.Ptr()))
+	if (dev->platformName->Equals(platformName))
 	{
 		return true;
 	}
@@ -1824,7 +1824,7 @@ Bool SSWR::SMonitor::SMonitorSvrCore::DeviceSetCPUName(Int64 cliId, NotNullPtr<T
 	if (cpuName->leng == 0)
 		return false;
 	Sync::RWMutexUsage devMutUsage(dev->mut, false);
-	if (dev->cpuName->Equals(cpuName.Ptr()))
+	if (dev->cpuName->Equals(cpuName))
 	{
 		return true;
 	}

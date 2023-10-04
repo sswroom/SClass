@@ -22,8 +22,8 @@ namespace Crypto
 			virtual NotNullPtr<ASN1Data> Clone() const;
 			virtual void ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const;
 
-			Bool GetNames(CertNames *names) const;
-			Bool GetExtensions(CertExtensions *ext) const;
+			Bool GetNames(NotNullPtr<CertNames> names) const;
+			Bool GetExtensions(NotNullPtr<CertExtensions> ext) const;
 			Crypto::Cert::X509Key *GetNewPublicKey() const;
 			Bool GetKeyId(const Data::ByteArray &keyId) const; //20 bytes
 		};

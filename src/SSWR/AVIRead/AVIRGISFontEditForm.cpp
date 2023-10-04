@@ -86,14 +86,15 @@ void __stdcall SSWR::AVIRead::AVIRGISFontEditForm::OKClicked(void *userObj)
 	SSWR::AVIRead::AVIRGISFontEditForm *me = (SSWR::AVIRead::AVIRGISFontEditForm *)userObj;
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
-	if (me->fontStyle < 0)
+	NotNullPtr<Text::String> currFontName;
+	if (me->fontStyle < 0 || !currFontName.Set(me->currFontName))
 		return;
 	if ((sptr = me->txtStyleName->GetText(sbuff)) != 0 && sbuff[0] != 0)
 	{
 		me->env->SetFontStyleName(me->fontStyle, CSTRP(sbuff, sptr));
 	}
 
-	me->env->ChgFontStyle(me->fontStyle, me->currFontName, me->currFontSizePt, me->isBold, me->currColor, me->currBuffSize, me->currBuffColor);
+	me->env->ChgFontStyle(me->fontStyle, currFontName, me->currFontSizePt, me->isBold, me->currColor, me->currBuffSize, me->currBuffColor);
 	me->SetDialogResult(UI::GUIForm::DR_OK);
 }
 
@@ -158,7 +159,7 @@ void SSWR::AVIRead::AVIRGISFontEditForm::UpdateDisplay()
 {
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
-	Text::String *fontName;
+	NotNullPtr<Text::String> fontName;
 	if ((sptr = env->GetFontStyleName(this->fontStyle, sbuff)) != 0)
 	{
 		this->txtStyleName->SetText(CSTRP(sbuff, sptr));
@@ -167,9 +168,8 @@ void SSWR::AVIRead::AVIRGISFontEditForm::UpdateDisplay()
 	{
 		this->txtStyleName->SetText(CSTR(""));
 	}
-	env->GetFontStyle(this->fontStyle, fontName, this->currFontSizePt, this->isBold, this->currColor, this->currBuffSize, this->currBuffColor);
 	SDEL_STRING(this->currFontName);
-	if (fontName)
+	if (env->GetFontStyle(this->fontStyle, fontName, this->currFontSizePt, this->isBold, this->currColor, this->currBuffSize, this->currBuffColor))
 	{
 		this->currFontName = fontName->Clone().Ptr();
 		this->txtFontName->SetText(this->currFontName->ToCString());

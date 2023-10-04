@@ -4,6 +4,7 @@
 #include "Data/ArrayListInt64.h"
 #include "Data/Comparator.h"
 #include "Data/FastMap.h"
+#include "Data/Timestamp.h"
 #include "Text/String.h"
 
 namespace SSWR
@@ -281,6 +282,7 @@ namespace SSWR
 			{
 				Bool aDesc = false;
 				Bool bDesc = false;
+				NotNullPtr<Text::String> bStr;
 				if (env->user != 0)
 				{
 					if (a->descript != 0 && a->descript->leng > 0 && (env->user->userType == 0 || a->webuserId == env->user->id))
@@ -288,9 +290,9 @@ namespace SSWR
 					if (b->descript != 0 && b->descript->leng > 0 && (env->user->userType == 0 || b->webuserId == env->user->id))
 						bDesc = true;
 				}
-				if (aDesc && bDesc)
+				if (aDesc && bDesc && bStr.Set(b->descript))
 				{
-					OSInt ret = a->descript->CompareTo(b->descript);
+					OSInt ret = a->descript->CompareTo(bStr);
 					if (ret != 0)
 						return ret;
 				}

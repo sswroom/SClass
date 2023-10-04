@@ -201,7 +201,7 @@ IO::ParsedObject *Parser::FileParser::CSVParser::ParseFileHdr(NotNullPtr<IO::Str
 			
 			while (true)
 			{
-				if (lastTime == 0 || !lastTime->Equals(&sarr[1]))
+				if (lastTime == 0 || !lastTime->Equals(sarr[1]))
 				{
 					SDEL_STRING(lastTime);
 					lastTime = Text::String::New(sarr[1].ToCString()).Ptr();

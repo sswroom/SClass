@@ -483,7 +483,7 @@ namespace Data
 	{
 		if (this->rootNode == 0)
 			return 0;
-		if (this->rootNode->nodeStr->Equals(key.Ptr()))
+		if (this->rootNode->nodeStr->Equals(key))
 		{
 			T nodeVal = this->rootNode->nodeVal;
 			this->rootNode = RemoveNode(this->rootNode);

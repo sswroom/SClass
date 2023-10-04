@@ -42,6 +42,7 @@ namespace Data
 		UOSInt RemoveRange(UOSInt index, UOSInt cnt);
 		virtual NotNullPtr<T> *GetPtr(OutParam<UOSInt> arraySize) const;
 		virtual NotNullPtr<T> *Ptr() const;
+		T *GetLast();
 		T *Pop();
 		ArrayListNN<T> &operator =(const ArrayListNN<T> &v);
 	};
@@ -345,6 +346,12 @@ namespace Data
 	template <class T> NotNullPtr<T>* ArrayListNN<T>::Ptr() const
 	{
 		return this->arr;
+	}
+
+	template <class T> T *ArrayListNN<T>::GetLast()
+	{
+		if (this->objCnt == 0) return 0;
+		return arr[this->objCnt - 1].Ptr();
 	}
 
 	template <class T> T *ArrayListNN<T>::Pop()

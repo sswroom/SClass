@@ -58,15 +58,16 @@ private:
 
 	Bool SearchProcId(ProgInfo *prog)
 	{
-		if (prog->progPath == 0)
+		NotNullPtr<Text::String> progPath;
+		if (!progPath.Set(prog->progPath))
 			return false;
 
 		UTF8Char sbuff[512];
 		UOSInt i;
 		Bool ret = false;
 		Manage::Process::ProcessInfo info;
-		i = Text::StrLastIndexOfCharC(prog->progPath->v, prog->progPath->leng, IO::Path::PATH_SEPERATOR);
-		Manage::Process::FindProcSess *sess = Manage::Process::FindProcess(prog->progPath->ToCString().Substring(i + 1));
+		i = Text::StrLastIndexOfCharC(progPath->v, progPath->leng, IO::Path::PATH_SEPERATOR);
+		Manage::Process::FindProcSess *sess = Manage::Process::FindProcess(progPath->ToCString().Substring(i + 1));
 		if (sess)
 		{
 			Text::StringBuilderUTF8 sb;
@@ -76,7 +77,7 @@ private:
 				sb.ClearStr();
 				if (proc.GetTrueProgramPath(sb))
 				{
-					if (sb.Equals(prog->progPath))
+					if (sb.Equals(progPath))
 					{
 						prog->procId = info.processId;
 						NotifyServer(prog, 1);

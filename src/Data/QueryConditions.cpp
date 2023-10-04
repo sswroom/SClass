@@ -747,7 +747,7 @@ Bool Data::QueryConditions::StringEqualsCondition::TestValid(Data::VariItem *ite
 	switch (item->GetItemType())
 	{
 	case Data::VariItem::ItemType::Str:
-		return item->GetItemValue().str->Equals(this->val.Ptr());
+		return item->GetItemValue().str->Equals(this->val);
 	case Data::VariItem::ItemType::CStr:
 	{
 		Data::VariItem::ItemValue ival = item->GetItemValue();

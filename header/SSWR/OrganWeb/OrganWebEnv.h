@@ -90,7 +90,7 @@ namespace SSWR
 
 			IO::ParsedObject *ParseFileType(NotNullPtr<IO::StreamData> fd, IO::ParserType targetType);
 			Bool HasReloadPwd() const;
-			Bool ReloadPwdMatches(Text::String *pwd) const;
+			Bool ReloadPwdMatches(NotNullPtr<Text::String> pwd) const;
 			Text::String *GetCacheDir() const;
 			Text::String *GetDataDir() const;
 			NotNullPtr<Media::ColorManagerSess> GetColorSess() const;

@@ -81,7 +81,7 @@ void __stdcall SSWR::AVIRead::AVIRSDCardForm::OnDevicesSelChg(void *userObj)
 
 OSInt __stdcall SSWR::AVIRead::AVIRSDCardForm::ItemCompare(IO::SDCardInfo *item1, IO::SDCardInfo *item2)
 {
-	return item1->GetName()->CompareTo(item1->GetName().Ptr());
+	return item1->GetName()->CompareTo(item1->GetName());
 }
 
 SSWR::AVIRead::AVIRSDCardForm::AVIRSDCardForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)

@@ -73,7 +73,7 @@ void __stdcall SSWR::AVIRead::AVIRSSDPClientForm::OnServiceSelChg(void *userObj)
 		{
 			me->txtDate->SetText(CSTR("-"));
 		}
-		me->txtUSN->SetText(Text::String::OrEmpty(svc->usn)->ToCString());
+		me->txtUSN->SetText(svc->usn->ToCString());
 		me->txtST->SetText(svc->st->ToCString());
 		me->txtServer->SetText(Text::String::OrEmpty(svc->server)->ToCString());
 		me->txtOpt->SetText(Text::String::OrEmpty(svc->opt)->ToCString());

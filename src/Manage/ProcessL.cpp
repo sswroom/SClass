@@ -1051,7 +1051,8 @@ UTF8Char *Manage::Process::FindProcessNext(UTF8Char *processNameBuff, Manage::Pr
 					while (reader.ReadLine(sb, 512))
 					{
 					}
-					if (fpsess->procName == 0 || sb.Equals(fpsess->procName) || sb.StartsWith(UTF8STRC("memcheck-")) || sb.StartsWith(UTF8STRC("callgrind-")))
+					NotNullPtr<Text::String> procName;
+					if (!procName.Set(fpsess->procName) || sb.Equals(procName) || sb.StartsWith(UTF8STRC("memcheck-")) || sb.StartsWith(UTF8STRC("callgrind-")))
 					{
 						found = true;
 					}
@@ -1118,7 +1119,8 @@ WChar *Manage::Process::FindProcessNextW(WChar *processNameBuff, Manage::Process
 					while (reader.ReadLine(sb, 512))
 					{
 					}
-					if (fpsess->procName == 0 || sb.Equals(fpsess->procName))
+					NotNullPtr<Text::String> procName;
+					if (!procName.Set(fpsess->procName) || sb.Equals(procName))
 					{
 						found = true;
 					}
