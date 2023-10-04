@@ -36,7 +36,7 @@ void Parser::FileParser::MEVParser::SetMapManager(Map::MapManager *mapMgr)
 	this->mapMgr = mapMgr;
 }
 
-void Parser::FileParser::MEVParser::PrepareSelector(IO::FileSelector *selector, IO::ParserType t)
+void Parser::FileParser::MEVParser::PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::MapEnv)
 	{

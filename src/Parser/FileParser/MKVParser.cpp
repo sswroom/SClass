@@ -19,7 +19,7 @@ Int32 Parser::FileParser::MKVParser::GetName()
 	return *(Int32*)"MKVP";
 }
 
-void Parser::FileParser::MKVParser::PrepareSelector(IO::FileSelector *selector, IO::ParserType t)
+void Parser::FileParser::MKVParser::PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::MediaFile)
 	{

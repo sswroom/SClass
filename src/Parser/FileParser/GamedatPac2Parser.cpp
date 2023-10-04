@@ -20,7 +20,7 @@ Int32 Parser::FileParser::GamedatPac2Parser::GetName()
 	return *(Int32*)"GDAT";
 }
 
-void Parser::FileParser::GamedatPac2Parser::PrepareSelector(IO::FileSelector *selector, IO::ParserType t)
+void Parser::FileParser::GamedatPac2Parser::PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::PackageFile)
 	{

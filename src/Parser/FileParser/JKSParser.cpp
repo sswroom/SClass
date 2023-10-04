@@ -22,7 +22,7 @@ Int32 Parser::FileParser::JKSParser::GetName()
 	return *(Int32*)"JKSP";
 }
 
-void Parser::FileParser::JKSParser::PrepareSelector(IO::FileSelector *selector, IO::ParserType t)
+void Parser::FileParser::JKSParser::PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::SectorData)
 	{

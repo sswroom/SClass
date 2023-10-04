@@ -19,7 +19,7 @@ Int32 Parser::FileParser::IPACParser::GetName()
 	return *(Int32*)"IPAC";
 }
 
-void Parser::FileParser::IPACParser::PrepareSelector(IO::FileSelector *selector, IO::ParserType t)
+void Parser::FileParser::IPACParser::PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::PackageFile)
 	{

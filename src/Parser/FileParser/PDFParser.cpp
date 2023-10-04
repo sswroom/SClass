@@ -831,7 +831,7 @@ Int32 Parser::FileParser::PDFParser::GetName()
 	return *(Int32*)"PDFP";
 }
 
-void Parser::FileParser::PDFParser::PrepareSelector(IO::FileSelector *selector, IO::ParserType t)
+void Parser::FileParser::PDFParser::PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::PDFDocument)
 	{

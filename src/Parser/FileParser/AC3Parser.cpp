@@ -18,7 +18,7 @@ Int32 Parser::FileParser::AC3Parser::GetName()
 	return *(Int32*)"AC3P";
 }
 
-void Parser::FileParser::AC3Parser::PrepareSelector(IO::FileSelector *selector, IO::ParserType t)
+void Parser::FileParser::AC3Parser::PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::MediaFile)
 	{

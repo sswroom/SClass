@@ -18,7 +18,7 @@ Int32 Parser::FileParser::CIPParser::GetName()
 	return *(Int32*)"CIPP";
 }
 
-void Parser::FileParser::CIPParser::PrepareSelector(IO::FileSelector *selector, IO::ParserType t)
+void Parser::FileParser::CIPParser::PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::MapLayer)
 	{

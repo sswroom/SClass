@@ -26,7 +26,7 @@ Int32 Parser::FileParser::TGAParser::GetName()
 	return *(Int32*)"TGAP";
 }
 
-void Parser::FileParser::TGAParser::PrepareSelector(IO::FileSelector *selector, IO::ParserType t)
+void Parser::FileParser::TGAParser::PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::ImageList)
 	{

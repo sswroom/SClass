@@ -24,7 +24,7 @@ Int32 Parser::FileParser::XLSParser::GetName()
 	return *(Int32*)"XLSP";
 }
 
-void Parser::FileParser::XLSParser::PrepareSelector(IO::FileSelector *selector, IO::ParserType t)
+void Parser::FileParser::XLSParser::PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::Workbook)
 	{

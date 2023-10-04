@@ -1367,7 +1367,7 @@ Int32 Parser::FileParser::ELFParser::GetName()
 	return *(Int32*)"ELFP";
 }
 
-void Parser::FileParser::ELFParser::PrepareSelector(IO::FileSelector *selector, IO::ParserType t)
+void Parser::FileParser::ELFParser::PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::EXEFile)
 	{

@@ -17,7 +17,7 @@ Int32 Parser::FileParser::HTRecParser::GetName()
 	return *(Int32*)"HTRP";
 }
 
-void Parser::FileParser::HTRecParser::PrepareSelector(IO::FileSelector *selector, IO::ParserType t)
+void Parser::FileParser::HTRecParser::PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::ReadingDB)
 	{

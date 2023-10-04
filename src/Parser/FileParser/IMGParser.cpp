@@ -16,7 +16,7 @@ Int32 Parser::FileParser::IMGParser::GetName()
 	return *(Int32*)"IMGP";
 }
 
-void Parser::FileParser::IMGParser::PrepareSelector(IO::FileSelector *selector, IO::ParserType t)
+void Parser::FileParser::IMGParser::PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::SectorData)
 	{

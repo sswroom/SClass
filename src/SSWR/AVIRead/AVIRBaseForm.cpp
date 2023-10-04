@@ -1620,7 +1620,7 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 		{
 			Parser::ParserList *parsers = this->core->GetParserList();
 			UI::FileDialog dlg(L"SSWR", L"AVIRead", L"OSMLocalFile", false);
-			parsers->PrepareSelector(&dlg, IO::ParserType::PackageFile);
+			parsers->PrepareSelector(dlg, IO::ParserType::PackageFile);
 			if (dlg.ShowDialog(this->GetHandle()))
 			{
 				IO::PackageFile *pkg;

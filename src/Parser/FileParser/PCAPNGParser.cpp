@@ -22,7 +22,7 @@ Int32 Parser::FileParser::PCAPNGParser::GetName()
 	return *(Int32*)"PCAN";
 }
 
-void Parser::FileParser::PCAPNGParser::PrepareSelector(IO::FileSelector *selector, IO::ParserType t)
+void Parser::FileParser::PCAPNGParser::PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::EthernetAnalyzer)
 	{

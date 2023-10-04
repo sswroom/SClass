@@ -27,7 +27,7 @@ Int32 Parser::FileParser::GIFParser::GetName()
 	return *(Int32*)"GIFP";
 }
 
-void Parser::FileParser::GIFParser::PrepareSelector(IO::FileSelector *selector, IO::ParserType t)
+void Parser::FileParser::GIFParser::PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::ImageList)
 	{

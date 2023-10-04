@@ -16,7 +16,7 @@ Int32 Parser::FileParser::UDPParser::GetName()
 	return *(Int32*)"UDPP";
 }
 
-void Parser::FileParser::UDPParser::PrepareSelector(IO::FileSelector *selector, IO::ParserType t)
+void Parser::FileParser::UDPParser::PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::LogFile)
 	{

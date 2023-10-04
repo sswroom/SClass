@@ -20,7 +20,7 @@ Int32 Parser::FileParser::MajiroArcParser::GetName()
 	return *(Int32*)"MARC";
 }
 
-void Parser::FileParser::MajiroArcParser::PrepareSelector(IO::FileSelector *selector, IO::ParserType t)
+void Parser::FileParser::MajiroArcParser::PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::PackageFile)
 	{

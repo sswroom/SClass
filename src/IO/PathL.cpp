@@ -46,7 +46,7 @@ WChar *IO::Path::GetTempFileW(WChar *buff, const WChar *fileName)
 	return Text::StrConcat(Text::StrConcat(buff, L"/tmp/"), fileName);
 }
 
-Bool IO::Path::IsDirectoryExist(Text::CString dir)
+Bool IO::Path::IsDirectoryExist(Text::CStringNN dir)
 {
 	return GetPathType(dir) == PathType::Directory;
 }
@@ -571,7 +571,7 @@ void IO::Path::FindFileClose(IO::Path::FindFileSession *sess)
 	MemFree(sess);
 }
 
-IO::Path::PathType IO::Path::GetPathType(Text::CString path)
+IO::Path::PathType IO::Path::GetPathType(Text::CStringNN path)
 {
 #if defined(__USE_LARGEFILE64)
 	struct stat64 s;

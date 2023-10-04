@@ -20,7 +20,7 @@ Int32 Parser::FileParser::DShowParser::GetName()
 	return *(Int32*)"DSHO";
 }
 
-void Parser::FileParser::DShowParser::PrepareSelector(IO::FileSelector *selector, IO::ParserType t)
+void Parser::FileParser::DShowParser::PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::MediaFile)
 	{

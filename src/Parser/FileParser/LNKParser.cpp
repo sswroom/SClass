@@ -16,7 +16,7 @@ Int32 Parser::FileParser::LNKParser::GetName()
 	return *(Int32*)"LNKP";
 }
 
-void Parser::FileParser::LNKParser::PrepareSelector(IO::FileSelector *selector, IO::ParserType t)
+void Parser::FileParser::LNKParser::PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::PackageFile)
 	{

@@ -17,7 +17,7 @@ Int32 Parser::FileParser::SMakeParser::GetName()
 	return *(Int32*)"TXTP";
 }
 
-void Parser::FileParser::SMakeParser::PrepareSelector(IO::FileSelector *selector, IO::ParserType t)
+void Parser::FileParser::SMakeParser::PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::Smake)
 	{

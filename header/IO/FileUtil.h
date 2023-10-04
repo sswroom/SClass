@@ -16,7 +16,7 @@ namespace IO
 			Continue
 		};
 	public:
-		static Bool DeleteFile(Text::CString file, Bool deleteRdonlyFile);
+		static Bool DeleteFile(Text::CStringNN file, Bool deleteRdonlyFile);
 //		static Bool DeleteFile(const WChar *file, Bool deleteRdonlyFile);
 		static Bool RenameFile(const UTF8Char *srcFile, const UTF8Char *destFile);
 //		static Bool RenameFile(const WChar *srcFile, const WChar *destFile);

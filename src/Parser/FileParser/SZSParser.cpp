@@ -21,7 +21,7 @@ Int32 Parser::FileParser::SZSParser::GetName()
 	return *(Int32*)"SZSP";
 }
 
-void Parser::FileParser::SZSParser::PrepareSelector(IO::FileSelector *selector, IO::ParserType t)
+void Parser::FileParser::SZSParser::PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::PackageFile)
 	{

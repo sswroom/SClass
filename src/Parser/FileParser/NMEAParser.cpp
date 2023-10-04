@@ -17,7 +17,7 @@ Int32 Parser::FileParser::NMEAParser::GetName()
 	return *(Int32*)"NMEA";
 }
 
-void Parser::FileParser::NMEAParser::PrepareSelector(IO::FileSelector *selector, IO::ParserType t)
+void Parser::FileParser::NMEAParser::PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::MapLayer)
 	{

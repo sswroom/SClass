@@ -19,7 +19,7 @@ Int32 Parser::FileParser::GZIPParser::GetName()
 	return *(Int32*)"GZIP";
 }
 
-void Parser::FileParser::GZIPParser::PrepareSelector(IO::FileSelector *selector, IO::ParserType t)
+void Parser::FileParser::GZIPParser::PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::PackageFile)
 	{

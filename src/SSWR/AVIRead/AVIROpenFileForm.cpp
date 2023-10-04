@@ -14,7 +14,7 @@ void __stdcall SSWR::AVIRead::AVIROpenFileForm::OnBrowseClicked(void *userObj)
 	{
 		dlg.SetFileName(sb.ToCString());
 	}
-	me->core->GetParserList()->PrepareSelector(&dlg, me->t);
+	me->core->GetParserList()->PrepareSelector(dlg, me->t);
 	if (dlg.ShowDialog(me->GetHandle()))
 	{
 		me->txtName->SetText(dlg.GetFileName()->ToCString());

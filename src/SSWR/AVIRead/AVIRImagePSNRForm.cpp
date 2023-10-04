@@ -15,7 +15,7 @@ void __stdcall SSWR::AVIRead::AVIRImagePSNRForm::OnOriFileClicked(void *userObj)
 	Text::StringBuilderUTF8 sb;
 	me->txtOriFile->GetText(sb);
 	UI::FileDialog dlg(L"SSWR", L"AVIRead", L"ImagePSNRO", false);
-	me->core->GetParserList()->PrepareSelector(&dlg, IO::ParserType::ImageList);
+	me->core->GetParserList()->PrepareSelector(dlg, IO::ParserType::ImageList);
 	if (sb.GetLength() > 0)
 	{
 		dlg.SetFileName(sb.ToCString());
@@ -32,7 +32,7 @@ void __stdcall SSWR::AVIRead::AVIRImagePSNRForm::OnLossyFileClicked(void *userOb
 	Text::StringBuilderUTF8 sb;
 	me->txtLossyFile->GetText(sb);
 	UI::FileDialog dlg(L"SSWR", L"AVIRead", L"ImagePSNRL", false);
-	me->core->GetParserList()->PrepareSelector(&dlg, IO::ParserType::ImageList);
+	me->core->GetParserList()->PrepareSelector(dlg, IO::ParserType::ImageList);
 	if (sb.GetLength() > 0)
 	{
 		dlg.SetFileName(sb.ToCString());

@@ -102,7 +102,7 @@ void Parser::FileParser::AVIParser::SetCodePage(UInt32 codePage)
 	this->codePage = codePage;
 }
 
-void Parser::FileParser::AVIParser::PrepareSelector(IO::FileSelector *selector, IO::ParserType t)
+void Parser::FileParser::AVIParser::PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::MediaFile)
 	{

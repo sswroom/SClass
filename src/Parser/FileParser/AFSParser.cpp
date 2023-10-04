@@ -20,7 +20,7 @@ Int32 Parser::FileParser::AFSParser::GetName()
 	return *(Int32*)"AFSP";
 }
 
-void Parser::FileParser::AFSParser::PrepareSelector(IO::FileSelector *selector, IO::ParserType t)
+void Parser::FileParser::AFSParser::PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::PackageFile)
 	{

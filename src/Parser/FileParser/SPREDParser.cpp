@@ -20,7 +20,7 @@ Int32 Parser::FileParser::SPREDParser::GetName()
 	return *(Int32*)"SRED";
 }
 
-void Parser::FileParser::SPREDParser::PrepareSelector(IO::FileSelector *selector, IO::ParserType t)
+void Parser::FileParser::SPREDParser::PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::MapLayer)
 	{

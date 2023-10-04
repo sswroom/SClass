@@ -23,7 +23,7 @@ Int32 Parser::FileParser::EVTXParser::GetName()
 	return *(Int32*)"EVTX";
 }
 
-void Parser::FileParser::EVTXParser::PrepareSelector(IO::FileSelector *selector, IO::ParserType t)
+void Parser::FileParser::EVTXParser::PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::LogFile)
 	{

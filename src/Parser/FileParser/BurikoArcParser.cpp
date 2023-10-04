@@ -20,7 +20,7 @@ Int32 Parser::FileParser::BurikoArcParser::GetName()
 	return *(Int32*)"BARC";
 }
 
-void Parser::FileParser::BurikoArcParser::PrepareSelector(IO::FileSelector *selector, IO::ParserType t)
+void Parser::FileParser::BurikoArcParser::PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::PackageFile)
 	{

@@ -18,7 +18,7 @@ Int32 Parser::ObjParser::MPGXAParser::GetName()
 	return *(Int32*)"MPGX";
 }
 
-void Parser::ObjParser::MPGXAParser::PrepareSelector(IO::FileSelector *selector, IO::ParserType t)
+void Parser::ObjParser::MPGXAParser::PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::MediaFile)
 	{

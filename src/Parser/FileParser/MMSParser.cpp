@@ -18,7 +18,7 @@ Int32 Parser::FileParser::MMSParser::GetName()
 	return *(Int32*)"MMSP";
 }
 
-void Parser::FileParser::MMSParser::PrepareSelector(IO::FileSelector *selector, IO::ParserType t)
+void Parser::FileParser::MMSParser::PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::PackageFile)
 	{

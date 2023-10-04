@@ -20,7 +20,7 @@ namespace Crypto
 			virtual ~CertStore();
 
 			NotNullPtr<CertStore> Clone() const;
-			Bool LoadDir(Text::CString certsDir);
+			Bool LoadDir(Text::CStringNN certsDir);
 			Bool LoadJavaCACerts(Text::CStringNN jksPath);
 			void AddCert(NotNullPtr<Crypto::Cert::X509Cert> cert);
 			void FromPackageFile(IO::PackageFile *pkg);

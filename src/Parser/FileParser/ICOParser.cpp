@@ -21,7 +21,7 @@ Int32 Parser::FileParser::ICOParser::GetName()
 	return *(Int32*)"ICOP";
 }
 
-void Parser::FileParser::ICOParser::PrepareSelector(IO::FileSelector *selector, IO::ParserType t)
+void Parser::FileParser::ICOParser::PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::ImageList)
 	{

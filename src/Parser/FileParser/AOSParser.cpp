@@ -21,7 +21,7 @@ Int32 Parser::FileParser::AOSParser::GetName()
 	return *(Int32*)"AOSP";
 }
 
-void Parser::FileParser::AOSParser::PrepareSelector(IO::FileSelector *selector, IO::ParserType t)
+void Parser::FileParser::AOSParser::PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::PackageFile)
 	{

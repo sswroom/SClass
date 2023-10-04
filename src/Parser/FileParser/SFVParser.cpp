@@ -20,7 +20,7 @@ Int32 Parser::FileParser::SFVParser::GetName()
 	return *(Int32*)"SFVP";
 }
 
-void Parser::FileParser::SFVParser::PrepareSelector(IO::FileSelector *selector, IO::ParserType t)
+void Parser::FileParser::SFVParser::PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::FileCheck)
 	{

@@ -21,7 +21,7 @@ Int32 Parser::FileParser::M2VParser::GetName()
 	return *(Int32*)"M2VP";
 }
 
-void Parser::FileParser::M2VParser::PrepareSelector(IO::FileSelector *selector, IO::ParserType t)
+void Parser::FileParser::M2VParser::PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::MediaFile)
 	{

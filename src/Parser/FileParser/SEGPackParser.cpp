@@ -20,7 +20,7 @@ Int32 Parser::FileParser::SEGPackParser::GetName()
 	return *(Int32*)"SEGP";
 }
 
-void Parser::FileParser::SEGPackParser::PrepareSelector(IO::FileSelector *selector, IO::ParserType t)
+void Parser::FileParser::SEGPackParser::PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::PackageFile)
 	{

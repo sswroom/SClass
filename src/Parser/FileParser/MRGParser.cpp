@@ -18,7 +18,7 @@ Int32 Parser::FileParser::MRGParser::GetName()
 	return *(Int32*)"MRGP";
 }
 
-void Parser::FileParser::MRGParser::PrepareSelector(IO::FileSelector *selector, IO::ParserType t)
+void Parser::FileParser::MRGParser::PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::PackageFile)
 	{

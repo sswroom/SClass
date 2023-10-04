@@ -48,7 +48,7 @@ void Parser::FileParser::TIFFParser::SetParserList(Parser::ParserList *parsers)
 	this->parsers = parsers;
 }
 
-void Parser::FileParser::TIFFParser::PrepareSelector(IO::FileSelector *selector, IO::ParserType t)
+void Parser::FileParser::TIFFParser::PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::ImageList)
 	{

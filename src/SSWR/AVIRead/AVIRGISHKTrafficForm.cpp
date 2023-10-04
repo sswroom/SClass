@@ -18,7 +18,7 @@ void __stdcall SSWR::AVIRead::AVIRGISHKTrafficForm::OnRoadCenterlineClicked(void
 		dlg.SetFileName(sb.ToCString());
 	}
 	dlg.SetAllowMultiSel(false);
-	me->core->GetParserList()->PrepareSelector(&dlg, IO::ParserType::MapLayer);
+	me->core->GetParserList()->PrepareSelector(dlg, IO::ParserType::MapLayer);
 	if (dlg.ShowDialog(me->GetHandle()))
 	{
 		me->txtRoadCenterline->SetText(dlg.GetFileName()->ToCString());

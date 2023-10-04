@@ -19,7 +19,7 @@ Int32 Parser::FileParser::MAIPackParser::GetName()
 	return *(Int32*)"MAIP";
 }
 
-void Parser::FileParser::MAIPackParser::PrepareSelector(IO::FileSelector *selector, IO::ParserType t)
+void Parser::FileParser::MAIPackParser::PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::PackageFile)
 	{

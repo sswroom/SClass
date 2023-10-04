@@ -38,7 +38,7 @@ Int32 Parser::FileParser::RAR5Parser::GetName()
 	return *(Int32*)"RAR5";
 }
 
-void Parser::FileParser::RAR5Parser::PrepareSelector(IO::FileSelector *selector, IO::ParserType t)
+void Parser::FileParser::RAR5Parser::PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::PackageFile)
 	{

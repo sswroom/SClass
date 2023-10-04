@@ -20,7 +20,7 @@ Int32 Parser::FileParser::NOAParser::GetName()
 	return *(Int32*)"NOAP";
 }
 
-void Parser::FileParser::NOAParser::PrepareSelector(IO::FileSelector *selector, IO::ParserType t)
+void Parser::FileParser::NOAParser::PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::PackageFile)
 	{

@@ -16,7 +16,7 @@ Int32 Parser::FileParser::TSPParser::GetName()
 	return *(Int32*)"TSPP";
 }
 
-void Parser::FileParser::TSPParser::PrepareSelector(IO::FileSelector *selector, IO::ParserType t)
+void Parser::FileParser::TSPParser::PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::ReadingDB)
 	{

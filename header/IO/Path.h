@@ -22,7 +22,7 @@ namespace IO
 
 		static UTF8Char *GetTempFile(UTF8Char *buff, const UTF8Char *fileName, UOSInt fileNameLen);
 		static WChar *GetTempFileW(WChar *buff, const WChar *fileName);
-		static Bool IsDirectoryExist(Text::CString dir);
+		static Bool IsDirectoryExist(Text::CStringNN dir);
 		static Bool IsDirectoryExistW(const WChar *dir);
 		static Bool CreateDirectory(Text::CString dir);
 		static Bool CreateDirectoryW(const WChar *dir);
@@ -49,7 +49,7 @@ namespace IO
 		static UTF8Char *FindNextFile(UTF8Char *buff, FindFileSession *session, Data::Timestamp *modTime, IO::Path::PathType *pt, UInt64 *fileSize);
 		static WChar *FindNextFileW(WChar *buff, FindFileSession *session, Data::Timestamp *modTime, IO::Path::PathType *pt, UInt64 *fileSize);
 		static void FindFileClose(FindFileSession *session);
-		static PathType GetPathType(Text::CString path);
+		static PathType GetPathType(Text::CStringNN path);
 		static PathType GetPathTypeW(const WChar *path);
 		static Bool PathExists(const UTF8Char *path, UOSInt pathLen);
 		static Bool PathExistsW(const WChar *path);

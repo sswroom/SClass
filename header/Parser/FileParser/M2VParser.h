@@ -13,7 +13,7 @@ namespace Parser
 			virtual ~M2VParser();
 
 			virtual Int32 GetName();
-			virtual void PrepareSelector(IO::FileSelector *selector, IO::ParserType t);
+			virtual void PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t);
 			virtual IO::ParserType GetParserType();
 			virtual IO::ParsedObject *ParseFile(NotNullPtr<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType);
 		};

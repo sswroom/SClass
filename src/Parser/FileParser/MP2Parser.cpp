@@ -18,7 +18,7 @@ Int32 Parser::FileParser::MP2Parser::GetName()
 	return *(Int32*)"MP2P";
 }
 
-void Parser::FileParser::MP2Parser::PrepareSelector(IO::FileSelector *selector, IO::ParserType t)
+void Parser::FileParser::MP2Parser::PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::MediaFile)
 	{

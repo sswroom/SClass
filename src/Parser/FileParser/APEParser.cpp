@@ -18,7 +18,7 @@ Int32 Parser::FileParser::APEParser::GetName()
 	return *(Int32*)"APEP";
 }
 
-void Parser::FileParser::APEParser::PrepareSelector(IO::FileSelector *selector, IO::ParserType t)
+void Parser::FileParser::APEParser::PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::MediaFile)
 	{

@@ -40,7 +40,7 @@ NotNullPtr<Crypto::Cert::CertStore> Crypto::Cert::CertStore::Clone() const
 	return newStore;
 }
 
-Bool Crypto::Cert::CertStore::LoadDir(Text::CString certsDir)
+Bool Crypto::Cert::CertStore::LoadDir(Text::CStringNN certsDir)
 {
 	if (IO::Path::GetPathType(certsDir) != IO::Path::PathType::Directory)
 	{

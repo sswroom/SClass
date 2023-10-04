@@ -20,7 +20,7 @@ Int32 Parser::FileParser::BurikoPackFileParser::GetName()
 	return *(Int32*)"BPAC";
 }
 
-void Parser::FileParser::BurikoPackFileParser::PrepareSelector(IO::FileSelector *selector, IO::ParserType t)
+void Parser::FileParser::BurikoPackFileParser::PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::PackageFile)
 	{

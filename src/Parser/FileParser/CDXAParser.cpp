@@ -21,7 +21,7 @@ void Parser::FileParser::CDXAParser::SetParserList(Parser::ParserList *parsers)
 	this->parsers = parsers;
 }
 
-void Parser::FileParser::CDXAParser::PrepareSelector(IO::FileSelector *selector, IO::ParserType t)
+void Parser::FileParser::CDXAParser::PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::SectorData)
 	{

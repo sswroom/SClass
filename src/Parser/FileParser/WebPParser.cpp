@@ -29,7 +29,7 @@ Int32 Parser::FileParser::WebPParser::GetName()
 	return *(Int32*)"WEBP";
 }
 
-void Parser::FileParser::WebPParser::PrepareSelector(IO::FileSelector *selector, IO::ParserType t)
+void Parser::FileParser::WebPParser::PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::ImageList)
 	{

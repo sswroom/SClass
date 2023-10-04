@@ -42,7 +42,7 @@ void Parser::FileParser::MDBParser::SetLogTool(IO::LogTool *log)
 	this->log = log;
 }
 
-void Parser::FileParser::MDBParser::PrepareSelector(IO::FileSelector *selector, IO::ParserType t)
+void Parser::FileParser::MDBParser::PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::ReadingDB || t == IO::ParserType::MapLayer)
 	{

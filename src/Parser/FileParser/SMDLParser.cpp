@@ -209,7 +209,7 @@ Int32 Parser::FileParser::SMDLParser::GetName()
 	return *(Int32*)"SMDL";
 }
 
-void Parser::FileParser::SMDLParser::PrepareSelector(IO::FileSelector *selector, IO::ParserType t)
+void Parser::FileParser::SMDLParser::PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::MapLayer)
 	{

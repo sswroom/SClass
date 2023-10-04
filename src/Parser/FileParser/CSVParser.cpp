@@ -31,7 +31,7 @@ void Parser::FileParser::CSVParser::SetCodePage(UInt32 codePage)
 	this->codePage = codePage;
 }
 
-void Parser::FileParser::CSVParser::PrepareSelector(IO::FileSelector *selector, IO::ParserType t)
+void Parser::FileParser::CSVParser::PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::MapLayer || t == IO::ParserType::ReadingDB)
 	{

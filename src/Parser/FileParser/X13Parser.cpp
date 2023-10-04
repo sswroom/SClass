@@ -20,7 +20,7 @@ Int32 Parser::FileParser::X13Parser::GetName()
 	return *(Int32*)"X13P";
 }
 
-void Parser::FileParser::X13Parser::PrepareSelector(IO::FileSelector *selector, IO::ParserType t)
+void Parser::FileParser::X13Parser::PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::MapLayer)
 	{

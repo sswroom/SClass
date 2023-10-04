@@ -56,7 +56,7 @@ void Parser::FileParser::GUIImgParser::SetParserList(Parser::ParserList *parsers
 	this->parsers = parsers;
 }
 
-void Parser::FileParser::GUIImgParser::PrepareSelector(IO::FileSelector *selector, IO::ParserType t)
+void Parser::FileParser::GUIImgParser::PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::ImageList)
 	{
@@ -381,7 +381,7 @@ void Parser::FileParser::GUIImgParser::SetParserList(Parser::ParserList *parsers
 {
 }
 
-void Parser::FileParser::GUIImgParser::PrepareSelector(IO::FileSelector *selector, IO::ParserType t)
+void Parser::FileParser::GUIImgParser::PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t)
 {
 }
 

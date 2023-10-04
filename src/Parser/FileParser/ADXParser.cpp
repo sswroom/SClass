@@ -23,7 +23,7 @@ IO::ParserType Parser::FileParser::ADXParser::GetParserType()
 	return IO::ParserType::MediaFile;
 }
 
-void Parser::FileParser::ADXParser::PrepareSelector(IO::FileSelector *selector, IO::ParserType t)
+void Parser::FileParser::ADXParser::PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::MediaFile)
 	{

@@ -23,7 +23,7 @@ void Parser::ObjParser::ITMParser::SetParserList(Parser::ParserList *parsers)
 	this->parsers = parsers;
 }
 
-void Parser::ObjParser::ITMParser::PrepareSelector(IO::FileSelector *selector, IO::ParserType t)
+void Parser::ObjParser::ITMParser::PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::ReadingDB)
 	{

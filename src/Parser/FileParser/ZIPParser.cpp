@@ -50,7 +50,7 @@ void Parser::FileParser::ZIPParser::SetEncFactory(Text::EncodingFactory *encFact
 	this->encFact = encFact;
 }
 
-void Parser::FileParser::ZIPParser::PrepareSelector(IO::FileSelector *selector, IO::ParserType t)
+void Parser::FileParser::ZIPParser::PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::PackageFile)
 	{

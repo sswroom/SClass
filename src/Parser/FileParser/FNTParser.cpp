@@ -22,7 +22,7 @@ Int32 Parser::FileParser::FNTParser::GetName()
 	return *(Int32*)"FNTP";
 }
 
-void Parser::FileParser::FNTParser::PrepareSelector(IO::FileSelector *selector, IO::ParserType t)
+void Parser::FileParser::FNTParser::PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::FontRenderer)
 	{

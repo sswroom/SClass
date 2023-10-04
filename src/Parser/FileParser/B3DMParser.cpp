@@ -17,7 +17,7 @@ Int32 Parser::FileParser::B3DMParser::GetName()
 	return *(Int32*)"B3DM";
 }
 
-void Parser::FileParser::B3DMParser::PrepareSelector(IO::FileSelector *selector, IO::ParserType t)
+void Parser::FileParser::B3DMParser::PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::PackageFile)
 	{

@@ -22,7 +22,7 @@ Int32 Parser::FileParser::NS2Parser::GetName()
 	return *(Int32*)"NS2P";
 }
 
-void Parser::FileParser::NS2Parser::PrepareSelector(IO::FileSelector *selector, IO::ParserType t)
+void Parser::FileParser::NS2Parser::PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::PackageFile)
 	{

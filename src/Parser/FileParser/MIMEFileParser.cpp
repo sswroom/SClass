@@ -19,7 +19,7 @@ Int32 Parser::FileParser::MIMEFileParser::GetName()
 	return *(Int32*)"MIME";
 }
 
-void Parser::FileParser::MIMEFileParser::PrepareSelector(IO::FileSelector *selector, IO::ParserType t)
+void Parser::FileParser::MIMEFileParser::PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::MIMEObject)
 	{

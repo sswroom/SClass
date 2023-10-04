@@ -29,7 +29,7 @@ Int32 Parser::FileParser::PSSParser::GetName()
 	return *(Int32*)"PSSP";
 }
 
-void Parser::FileParser::PSSParser::PrepareSelector(IO::FileSelector *selector, IO::ParserType t)
+void Parser::FileParser::PSSParser::PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::MediaFile)
 	{

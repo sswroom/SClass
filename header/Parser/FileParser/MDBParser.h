@@ -21,7 +21,7 @@ namespace Parser
 			virtual Int32 GetName();
 			virtual void SetArcGISPRJParser(Math::ArcGISPRJParser *prjParser);
 			virtual void SetLogTool(IO::LogTool *log);
-			virtual void PrepareSelector(IO::FileSelector *selector, IO::ParserType t);
+			virtual void PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t);
 			virtual IO::ParserType GetParserType();
 			virtual IO::ParsedObject *ParseFileHdr(NotNullPtr<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr);
 		};

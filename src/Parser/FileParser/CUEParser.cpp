@@ -27,7 +27,7 @@ void Parser::FileParser::CUEParser::SetParserList(Parser::ParserList *parsers)
 	this->parsers = parsers;
 }
 
-void Parser::FileParser::CUEParser::PrepareSelector(IO::FileSelector *selector, IO::ParserType t)
+void Parser::FileParser::CUEParser::PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::MediaFile)
 	{

@@ -18,7 +18,7 @@ Int32 Parser::FileParser::ASN1Parser::GetName()
 	return *(Int32*)"ASN1";
 }
 
-void Parser::FileParser::ASN1Parser::PrepareSelector(IO::FileSelector *selector, IO::ParserType t)
+void Parser::FileParser::ASN1Parser::PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::ASN1Data)
 	{

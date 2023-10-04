@@ -20,7 +20,7 @@ Int32 Parser::FileParser::IS2Parser::GetName()
 	return *(Int32*)"IS2P";
 }
 
-void Parser::FileParser::IS2Parser::PrepareSelector(IO::FileSelector *selector, IO::ParserType t)
+void Parser::FileParser::IS2Parser::PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::ImageList)
 	{

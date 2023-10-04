@@ -32,7 +32,7 @@ Int32 Parser::FileParser::WAVParser::GetName()
 	return *(Int32*)"WAVP";
 }
 
-void Parser::FileParser::WAVParser::PrepareSelector(IO::FileSelector *selector, IO::ParserType t)
+void Parser::FileParser::WAVParser::PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::MediaFile)
 	{

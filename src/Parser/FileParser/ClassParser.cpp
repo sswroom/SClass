@@ -18,7 +18,7 @@ Int32 Parser::FileParser::ClassParser::GetName()
 	return *(Int32*)"JCLS";
 }
 
-void Parser::FileParser::ClassParser::PrepareSelector(IO::FileSelector *selector, IO::ParserType t)
+void Parser::FileParser::ClassParser::PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::JavaClass)
 	{

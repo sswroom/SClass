@@ -20,7 +20,7 @@ Int32 Parser::FileParser::PACParser::GetName()
 	return *(Int32*)"PACP";
 }
 
-void Parser::FileParser::PACParser::PrepareSelector(IO::FileSelector *selector, IO::ParserType t)
+void Parser::FileParser::PACParser::PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::PackageFile)
 	{

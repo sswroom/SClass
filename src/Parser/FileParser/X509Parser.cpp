@@ -31,7 +31,7 @@ Int32 Parser::FileParser::X509Parser::GetName()
 	return *(Int32*)"X509";
 }
 
-void Parser::FileParser::X509Parser::PrepareSelector(IO::FileSelector *selector, IO::ParserType t)
+void Parser::FileParser::X509Parser::PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::ASN1Data)
 	{

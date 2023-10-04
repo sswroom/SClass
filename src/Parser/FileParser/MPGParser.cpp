@@ -20,7 +20,7 @@ Int32 Parser::FileParser::MPGParser::GetName()
 	return *(Int32*)"MPGP";
 }
 
-void Parser::FileParser::MPGParser::PrepareSelector(IO::FileSelector *selector, IO::ParserType t)
+void Parser::FileParser::MPGParser::PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::MediaFile)
 	{

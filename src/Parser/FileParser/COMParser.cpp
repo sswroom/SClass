@@ -18,7 +18,7 @@ Int32 Parser::FileParser::COMParser::GetName()
 	return *(Int32*)"COMP";
 }
 
-void Parser::FileParser::COMParser::PrepareSelector(IO::FileSelector *selector, IO::ParserType t)
+void Parser::FileParser::COMParser::PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::EXEFile)
 	{

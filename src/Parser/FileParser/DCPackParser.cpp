@@ -19,7 +19,7 @@ Int32 Parser::FileParser::DCPackParser::GetName()
 	return *(Int32*)"DCPP";
 }
 
-void Parser::FileParser::DCPackParser::PrepareSelector(IO::FileSelector *selector, IO::ParserType t)
+void Parser::FileParser::DCPackParser::PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::PackageFile)
 	{

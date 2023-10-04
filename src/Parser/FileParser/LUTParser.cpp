@@ -18,7 +18,7 @@ Int32 Parser::FileParser::LUTParser::GetName()
 	return *(Int32*)"LUTP";
 }
 
-void Parser::FileParser::LUTParser::PrepareSelector(IO::FileSelector *selector, IO::ParserType t)
+void Parser::FileParser::LUTParser::PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::LUT)
 	{

@@ -23,7 +23,7 @@ Int32 Parser::FileParser::PCXParser::GetName()
 	return *(Int32*)"PCXP";
 }
 
-void Parser::FileParser::PCXParser::PrepareSelector(IO::FileSelector *selector, IO::ParserType t)
+void Parser::FileParser::PCXParser::PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::ImageList)
 	{

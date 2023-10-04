@@ -20,7 +20,7 @@ Int32 Parser::FileParser::CABParser::GetName()
 	return *(Int32*)"CABP";
 }
 
-void Parser::FileParser::CABParser::PrepareSelector(IO::FileSelector *selector, IO::ParserType t)
+void Parser::FileParser::CABParser::PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::PackageFile)
 	{

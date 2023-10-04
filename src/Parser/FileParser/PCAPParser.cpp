@@ -20,7 +20,7 @@ Int32 Parser::FileParser::PCAPParser::GetName()
 	return *(Int32*)"PCAP";
 }
 
-void Parser::FileParser::PCAPParser::PrepareSelector(IO::FileSelector *selector, IO::ParserType t)
+void Parser::FileParser::PCAPParser::PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::EthernetAnalyzer)
 	{

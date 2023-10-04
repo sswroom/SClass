@@ -20,7 +20,7 @@ Int32 Parser::FileParser::TILParser::GetName()
 	return *(Int32*)"TILP";
 }
 
-void Parser::FileParser::TILParser::PrepareSelector(IO::FileSelector *selector, IO::ParserType t)
+void Parser::FileParser::TILParser::PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::PackageFile)
 	{

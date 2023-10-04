@@ -22,7 +22,7 @@ Int32 Parser::FileParser::PLTParser::GetName()
 	return *(Int32*)"PLTP";
 }
 
-void Parser::FileParser::PLTParser::PrepareSelector(IO::FileSelector *selector, IO::ParserType t)
+void Parser::FileParser::PLTParser::PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::MapLayer)
 	{

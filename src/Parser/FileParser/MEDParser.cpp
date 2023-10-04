@@ -20,7 +20,7 @@ Int32 Parser::FileParser::MEDParser::GetName()
 	return *(Int32*)"MEDP";
 }
 
-void Parser::FileParser::MEDParser::PrepareSelector(IO::FileSelector *selector, IO::ParserType t)
+void Parser::FileParser::MEDParser::PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::PackageFile)
 	{

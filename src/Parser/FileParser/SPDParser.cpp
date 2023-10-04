@@ -18,7 +18,7 @@ Int32 Parser::FileParser::SPDParser::GetName()
 	return *(Int32*)"SPDP";
 }
 
-void Parser::FileParser::SPDParser::PrepareSelector(IO::FileSelector *selector, IO::ParserType t)
+void Parser::FileParser::SPDParser::PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::MapLayer)
 	{

@@ -26,7 +26,7 @@ void Parser::ObjParser::FileGDB2Parser::SetArcGISPRJParser(Math::ArcGISPRJParser
 	this->prjParser = prjParser;
 }
 
-void Parser::ObjParser::FileGDB2Parser::PrepareSelector(IO::FileSelector *selector, IO::ParserType t)
+void Parser::ObjParser::FileGDB2Parser::PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::ReadingDB || t == IO::ParserType::Unknown)
 	{

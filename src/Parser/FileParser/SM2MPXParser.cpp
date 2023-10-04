@@ -19,7 +19,7 @@ Int32 Parser::FileParser::SM2MPXParser::GetName()
 	return *(Int32*)"SM2M";
 }
 
-void Parser::FileParser::SM2MPXParser::PrepareSelector(IO::FileSelector *selector, IO::ParserType t)
+void Parser::FileParser::SM2MPXParser::PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::PackageFile)
 	{

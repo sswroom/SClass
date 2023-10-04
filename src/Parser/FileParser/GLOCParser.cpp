@@ -243,7 +243,7 @@ Int32 Parser::FileParser::GLOCParser::GetName()
 	return *(Int32*)"GLOC";
 }
 
-void Parser::FileParser::GLOCParser::PrepareSelector(IO::FileSelector *selector, IO::ParserType t)
+void Parser::FileParser::GLOCParser::PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::MapLayer)
 	{

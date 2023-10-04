@@ -24,7 +24,7 @@ Int32 Parser::FileParser::WPTParser::GetName()
 	return *(Int32*)"WPTP";
 }
 
-void Parser::FileParser::WPTParser::PrepareSelector(IO::FileSelector *selector, IO::ParserType t)
+void Parser::FileParser::WPTParser::PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::MapLayer)
 	{

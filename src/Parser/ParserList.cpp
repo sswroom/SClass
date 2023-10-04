@@ -187,7 +187,7 @@ void Parser::ParserList::SetLogTool(IO::LogTool *log)
 	}
 }
 
-void Parser::ParserList::PrepareSelector(IO::FileSelector *selector, IO::ParserType t)
+void Parser::ParserList::PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t)
 {
 	IO::ParserBase *parser;
 	UOSInt i;

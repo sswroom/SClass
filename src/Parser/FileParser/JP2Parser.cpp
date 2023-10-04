@@ -24,7 +24,7 @@ Int32 Parser::FileParser::JP2Parser::GetName()
 	return *(Int32*)"JP2P";
 }
 
-void Parser::FileParser::JP2Parser::PrepareSelector(IO::FileSelector *selector, IO::ParserType t)
+void Parser::FileParser::JP2Parser::PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::MapLayer)
 	{

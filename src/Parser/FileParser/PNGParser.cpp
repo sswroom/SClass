@@ -2559,7 +2559,7 @@ Int32 Parser::FileParser::PNGParser::GetName()
 	return *(Int32*)"PNGP";
 }
 
-void Parser::FileParser::PNGParser::PrepareSelector(IO::FileSelector *selector, IO::ParserType t)
+void Parser::FileParser::PNGParser::PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::ImageList)
 	{

@@ -20,7 +20,7 @@ Int32 Parser::FileParser::BSAParser::GetName()
 	return *(Int32*)"BSAP";
 }
 
-void Parser::FileParser::BSAParser::PrepareSelector(IO::FileSelector *selector, IO::ParserType t)
+void Parser::FileParser::BSAParser::PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::PackageFile)
 	{

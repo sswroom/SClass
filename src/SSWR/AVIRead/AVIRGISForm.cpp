@@ -1175,7 +1175,7 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 					if (osm->HasSPackageFile())
 					{
 						UI::FileDialog dlg(L"SSWR", L"AVIRead", L"GISImportTiles", false);
-						this->core->GetParserList()->PrepareSelector(&dlg, IO::ParserType::PackageFile);
+						this->core->GetParserList()->PrepareSelector(dlg, IO::ParserType::PackageFile);
 						if (dlg.ShowDialog(this->GetHandle()))
 						{
 							IO::StmData::FileData fd(dlg.GetFileName(), false);

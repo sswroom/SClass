@@ -27,7 +27,7 @@ Int32 Parser::FileParser::XPCMParser::GetName()
 	return *(Int32*)"XPCM";
 }
 
-void Parser::FileParser::XPCMParser::PrepareSelector(IO::FileSelector *selector, IO::ParserType t)
+void Parser::FileParser::XPCMParser::PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::MediaFile)
 	{

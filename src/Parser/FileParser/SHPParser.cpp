@@ -28,7 +28,7 @@ void Parser::FileParser::SHPParser::SetArcGISPRJParser(Math::ArcGISPRJParser *pr
 	this->prjParser = prjParser;
 }
 
-void Parser::FileParser::SHPParser::PrepareSelector(IO::FileSelector *selector, IO::ParserType t)
+void Parser::FileParser::SHPParser::PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::MapLayer)
 	{

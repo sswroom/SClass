@@ -48,7 +48,7 @@ void Parser::FileParser::TXTParser::SetMapManager(Map::MapManager *mapMgr)
 	this->mapMgr = mapMgr;
 }
 
-void Parser::FileParser::TXTParser::PrepareSelector(IO::FileSelector *selector, IO::ParserType t)
+void Parser::FileParser::TXTParser::PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::MapEnv)
 	{

@@ -23,7 +23,7 @@ namespace Parser
 			virtual void SetWebBrowser(Net::WebBrowser *browser);
 			virtual void SetParserList(Parser::ParserList *parsers);
 			virtual void SetEncFactory(Text::EncodingFactory *encFact);
-			virtual void PrepareSelector(IO::FileSelector *selector, IO::ParserType t);
+			virtual void PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t);
 			virtual IO::ParserType GetParserType();
 			virtual IO::ParsedObject *ParseFileHdr(NotNullPtr<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr);
 

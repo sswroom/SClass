@@ -18,7 +18,7 @@ Int32 Parser::FileParser::MTKGPSParser::GetName()
 	return *(Int32*)"MTKG";
 }
 
-void Parser::FileParser::MTKGPSParser::PrepareSelector(IO::FileSelector *selector, IO::ParserType t)
+void Parser::FileParser::MTKGPSParser::PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::MapLayer)
 	{

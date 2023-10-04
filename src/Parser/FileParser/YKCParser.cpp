@@ -20,7 +20,7 @@ Int32 Parser::FileParser::YKCParser::GetName()
 	return *(Int32*)"YKCP";
 }
 
-void Parser::FileParser::YKCParser::PrepareSelector(IO::FileSelector *selector, IO::ParserType t)
+void Parser::FileParser::YKCParser::PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::PackageFile)
 	{

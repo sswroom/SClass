@@ -24,7 +24,7 @@ void Parser::ObjParser::KMZParser::SetParserList(Parser::ParserList *parsers)
 	this->parsers = parsers;
 }
 
-void Parser::ObjParser::KMZParser::PrepareSelector(IO::FileSelector *selector, IO::ParserType t)
+void Parser::ObjParser::KMZParser::PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::MapLayer)
 	{

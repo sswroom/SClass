@@ -30,7 +30,7 @@ Int32 Parser::FileParser::JSONParser::GetName()
 	return *(Int32*)"JSON";
 }
 
-void Parser::FileParser::JSONParser::PrepareSelector(IO::FileSelector *selector, IO::ParserType t)
+void Parser::FileParser::JSONParser::PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::MapLayer)
 	{

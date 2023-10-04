@@ -20,7 +20,7 @@ Int32 Parser::FileParser::TsuyoshiArcParser::GetName()
 	return *(Int32*)"TARC";
 }
 
-void Parser::FileParser::TsuyoshiArcParser::PrepareSelector(IO::FileSelector *selector, IO::ParserType t)
+void Parser::FileParser::TsuyoshiArcParser::PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::PackageFile)
 	{

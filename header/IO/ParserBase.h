@@ -47,7 +47,7 @@ namespace IO
 		virtual void SetSSLEngine(Net::SSLEngine *ssl) {};
 		virtual void SetArcGISPRJParser(Math::ArcGISPRJParser *prjParser) {};
 		virtual void SetLogTool(IO::LogTool *log) {};
-		virtual void PrepareSelector(IO::FileSelector *selector, IO::ParserType t) = 0;
+		virtual void PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t) = 0;
 		virtual IO::ParserType GetParserType() = 0;
 	};
 }

@@ -18,7 +18,7 @@ Int32 Parser::FileParser::VFPParser::GetName()
 	return *(Int32*)"VFPP";
 }
 
-void Parser::FileParser::VFPParser::PrepareSelector(IO::FileSelector *selector, IO::ParserType t)
+void Parser::FileParser::VFPParser::PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::MediaFile)
 	{

@@ -24,7 +24,7 @@ namespace Parser
 			virtual ~DBMapParser();
 
 			virtual Int32 GetName();
-			virtual void PrepareSelector(IO::FileSelector *selector, IO::ParserType t);
+			virtual void PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t);
 			virtual IO::ParserType GetParserType();
 			virtual IO::ParsedObject *ParseObject(IO::ParsedObject *pobj, IO::PackageFile *pkgFile, IO::ParserType targetType);
 		};

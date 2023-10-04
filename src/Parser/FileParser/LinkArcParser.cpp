@@ -20,7 +20,7 @@ Int32 Parser::FileParser::LinkArcParser::GetName()
 	return *(Int32*)"LARC";
 }
 
-void Parser::FileParser::LinkArcParser::PrepareSelector(IO::FileSelector *selector, IO::ParserType t)
+void Parser::FileParser::LinkArcParser::PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::PackageFile)
 	{

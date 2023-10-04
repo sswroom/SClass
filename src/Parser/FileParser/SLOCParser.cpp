@@ -196,7 +196,7 @@ Int32 Parser::FileParser::SLOCParser::GetName()
 	return *(Int32*)"SLOC";
 }
 
-void Parser::FileParser::SLOCParser::PrepareSelector(IO::FileSelector *selector, IO::ParserType t)
+void Parser::FileParser::SLOCParser::PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::MapLayer)
 	{

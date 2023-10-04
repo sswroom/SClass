@@ -20,7 +20,7 @@ Int32 Parser::FileParser::PAC2Parser::GetName()
 	return *(Int32*)"PAC2";
 }
 
-void Parser::FileParser::PAC2Parser::PrepareSelector(IO::FileSelector *selector, IO::ParserType t)
+void Parser::FileParser::PAC2Parser::PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::PackageFile)
 	{

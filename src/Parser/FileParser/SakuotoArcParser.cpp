@@ -20,7 +20,7 @@ Int32 Parser::FileParser::SakuotoArcParser::GetName()
 	return *(Int32*)"SARC";
 }
 
-void Parser::FileParser::SakuotoArcParser::PrepareSelector(IO::FileSelector *selector, IO::ParserType t)
+void Parser::FileParser::SakuotoArcParser::PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::PackageFile)
 	{

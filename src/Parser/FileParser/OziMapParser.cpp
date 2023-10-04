@@ -35,7 +35,7 @@ void Parser::FileParser::OziMapParser::SetParserList(Parser::ParserList *parsers
 	this->parsers = parsers;
 }
 
-void Parser::FileParser::OziMapParser::PrepareSelector(IO::FileSelector *selector, IO::ParserType t)
+void Parser::FileParser::OziMapParser::PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::MapLayer)
 	{

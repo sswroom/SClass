@@ -19,7 +19,7 @@ Int32 Parser::FileParser::MLHParser::GetName()
 	return *(Int32*)"MLHP";
 }
 
-void Parser::FileParser::MLHParser::PrepareSelector(IO::FileSelector *selector, IO::ParserType t)
+void Parser::FileParser::MLHParser::PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::PackageFile)
 	{

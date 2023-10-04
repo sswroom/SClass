@@ -41,7 +41,7 @@ void Parser::FileParser::SPKParser::SetSSLEngine(Net::SSLEngine *ssl)
 	this->ssl = ssl;
 }
 
-void Parser::FileParser::SPKParser::PrepareSelector(IO::FileSelector *selector, IO::ParserType t)
+void Parser::FileParser::SPKParser::PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::PackageFile)
 	{

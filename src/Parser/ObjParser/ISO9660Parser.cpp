@@ -22,7 +22,7 @@ Int32 Parser::ObjParser::ISO9660Parser::GetName()
 	return *(Int32*)"ISO9";
 }
 
-void Parser::ObjParser::ISO9660Parser::PrepareSelector(IO::FileSelector *selector, IO::ParserType t)
+void Parser::ObjParser::ISO9660Parser::PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::PackageFile)
 	{

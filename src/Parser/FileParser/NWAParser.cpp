@@ -24,7 +24,7 @@ Int32 Parser::FileParser::NWAParser::GetName()
 	return *(Int32*)"NWAP";
 }
 
-void Parser::FileParser::NWAParser::PrepareSelector(IO::FileSelector *selector, IO::ParserType t)
+void Parser::FileParser::NWAParser::PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::MediaFile)
 	{

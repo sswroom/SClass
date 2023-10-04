@@ -21,7 +21,7 @@ Int32 Parser::FileParser::EXEParser::GetName()
 	return *(Int32*)"EXEP";
 }
 
-void Parser::FileParser::EXEParser::PrepareSelector(IO::FileSelector *selector, IO::ParserType t)
+void Parser::FileParser::EXEParser::PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::EXEFile)
 	{

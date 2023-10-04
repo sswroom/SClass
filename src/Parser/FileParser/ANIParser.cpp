@@ -19,7 +19,7 @@ Int32 Parser::FileParser::ANIParser::GetName()
 	return *(Int32*)"ANIP";
 }
 
-void Parser::FileParser::ANIParser::PrepareSelector(IO::FileSelector *selector, IO::ParserType t)
+void Parser::FileParser::ANIParser::PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::ImageList)
 	{

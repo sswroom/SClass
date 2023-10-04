@@ -170,7 +170,7 @@ void __stdcall SSWR::AVIRead::AVIRCoordConvForm::OnConvFileClicked(void *userObj
 	DB::ReadingDB *db = 0;
 	{
 		UI::FileDialog dlg(L"SSWR", L"AVIRead", L"CoordConvFile", false);
-		parsers->PrepareSelector(&dlg, IO::ParserType::ReadingDB);
+		parsers->PrepareSelector(dlg, IO::ParserType::ReadingDB);
 		if (!dlg.ShowDialog(me->GetHandle()))
 		{
 			return;

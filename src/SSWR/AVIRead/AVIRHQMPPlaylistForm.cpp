@@ -39,7 +39,7 @@ void __stdcall SSWR::AVIRead::AVIRHQMPPlaylistForm::OnAddClicked(void *userObj)
 	UOSInt j;
 	UI::FileDialog dlg(L"SSWR", L"AVIRead", L"HQMPPlaylist", false);
 	dlg.SetAllowMultiSel(true);
-	me->core->GetParserList()->PrepareSelector(&dlg, IO::ParserType::MediaFile);
+	me->core->GetParserList()->PrepareSelector(dlg, IO::ParserType::MediaFile);
 	if (dlg.ShowDialog(me->GetHandle()) == UI::GUIForm::DR_OK)
 	{
 		i = 0;

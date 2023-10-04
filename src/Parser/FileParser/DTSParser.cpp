@@ -18,7 +18,7 @@ Int32 Parser::FileParser::DTSParser::GetName()
 	return *(Int32*)"DTSP";
 }
 
-void Parser::FileParser::DTSParser::PrepareSelector(IO::FileSelector *selector, IO::ParserType t)
+void Parser::FileParser::DTSParser::PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::MediaFile)
 	{

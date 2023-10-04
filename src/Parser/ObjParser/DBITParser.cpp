@@ -18,7 +18,7 @@ Int32 Parser::ObjParser::DBITParser::GetName()
 	return *(Int32*)"DBIT";
 }
 
-void Parser::ObjParser::DBITParser::PrepareSelector(IO::FileSelector *selector, IO::ParserType t)
+void Parser::ObjParser::DBITParser::PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::MapLayer)
 	{

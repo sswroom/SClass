@@ -1,12 +1,15 @@
 #ifndef _SM_SSWR_AVIREAD_AVIRDBCHECKCHGFORM
 #define _SM_SSWR_AVIREAD_AVIRDBCHECKCHGFORM
+#include "DB/DBConn.h"
 #include "DB/ReadingDB.h"
+#include "DB/SQLBuilder.h"
 #include "IO/Stream.h"
 #include "SSWR/AVIRead/AVIRCore.h"
 #include "UI/GUIButton.h"
 #include "UI/GUICheckBox.h"
 #include "UI/GUIComboBox.h"
 #include "UI/GUIForm.h"
+#include "UI/GUIGroupBox.h"
 #include "UI/GUILabel.h"
 #include "UI/GUITextBox.h"
 
@@ -29,53 +32,65 @@ namespace SSWR
 				DB::DBConn *db;
 			};
 		private:
-			UI::GUILabel *lblSchema;
-			UI::GUITextBox *txtSchema;
-			UI::GUILabel *lblTable;
-			UI::GUITextBox *txtTable;
-			UI::GUILabel *lblKeyCol;
-			UI::GUIComboBox *cboKeyCol;
-			UI::GUILabel *lblNullCol;
-			UI::GUIComboBox *cboNullCol;
-			UI::GUICheckBox *chkNoHeader;
-			UI::GUICheckBox *chkLocalTZ;
-			UI::GUILabel *lblCSV;
-			UI::GUITextBox *txtCSV;
-			UI::GUIButton *btnBrowse;
-			UI::GUILabel *lblCSVRow;
-			UI::GUITextBox *txtCSVRow;
-			UI::GUILabel *lblNoChg;
-			UI::GUITextBox *txtNoChg;
-			UI::GUILabel *lblUpdated;
-			UI::GUITextBox *txtUpdated;
-			UI::GUILabel *lblNewRow;
-			UI::GUITextBox *txtNewRow;
-			UI::GUILabel *lblDeletedRow;
-			UI::GUITextBox *txtDeletedRow;
+			NotNullPtr<UI::GUILabel> lblSchema;
+			NotNullPtr<UI::GUITextBox> txtSchema;
+			NotNullPtr<UI::GUILabel> lblTable;
+			NotNullPtr<UI::GUITextBox> txtTable;
+			NotNullPtr<UI::GUICheckBox> chkNoHeader;
+			NotNullPtr<UI::GUICheckBox> chkLocalTZ;
 
-			UI::GUILabel *lblDBType;
-			UI::GUIComboBox *cboDBType;
-			UI::GUICheckBox *chkAxisAware;
-			UI::GUICheckBox *chkMultiRow;
-			UI::GUIButton *btnSQL;
-			UI::GUIButton *btnExecute;
+			NotNullPtr<UI::GUIGroupBox> grpData;
+			NotNullPtr<UI::GUILabel> lblDataFile;
+			NotNullPtr<UI::GUITextBox> txtDataFile;
+			NotNullPtr<UI::GUIButton> btnDataFile;
+			NotNullPtr<UI::GUILabel> lblDataTable;
+			NotNullPtr<UI::GUIComboBox> cboDataTable;
+			NotNullPtr<UI::GUILabel> lblKeyCol;
+			NotNullPtr<UI::GUIComboBox> cboKeyCol;
+			NotNullPtr<UI::GUILabel> lblNullCol;
+			NotNullPtr<UI::GUIComboBox> cboNullCol;
+			NotNullPtr<UI::GUIButton> btnDataCheck;
 
-			UI::GUILabel *lblStatTime;
-			UI::GUITextBox *txtStatTime;
-			UI::GUILabel *lblStatus;
-			UI::GUITextBox *txtStatus;
+			NotNullPtr<UI::GUILabel> lblCSVRow;
+			NotNullPtr<UI::GUITextBox> txtCSVRow;
+			NotNullPtr<UI::GUILabel> lblNoChg;
+			NotNullPtr<UI::GUITextBox> txtNoChg;
+			NotNullPtr<UI::GUILabel> lblUpdated;
+			NotNullPtr<UI::GUITextBox> txtUpdated;
+			NotNullPtr<UI::GUILabel> lblNewRow;
+			NotNullPtr<UI::GUITextBox> txtNewRow;
+			NotNullPtr<UI::GUILabel> lblDeletedRow;
+			NotNullPtr<UI::GUITextBox> txtDeletedRow;
+
+			NotNullPtr<UI::GUILabel> lblDBType;
+			NotNullPtr<UI::GUIComboBox> cboDBType;
+			NotNullPtr<UI::GUICheckBox> chkAxisAware;
+			NotNullPtr<UI::GUICheckBox> chkMultiRow;
+			NotNullPtr<UI::GUIButton> btnSQL;
+			NotNullPtr<UI::GUIButton> btnExecute;
+
+			NotNullPtr<UI::GUILabel> lblStatTime;
+			NotNullPtr<UI::GUITextBox> txtStatTime;
+			NotNullPtr<UI::GUILabel> lblStatus;
+			NotNullPtr<UI::GUITextBox> txtStatus;
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			DB::ReadingDB *db;
 			Text::CString schema;
 			Text::CString table;
 
-			static void __stdcall OnBrowseClk(void *userObj);
+			DB::ReadingDB *dataFile;
+			Bool dataFileNoHeader;
+			Int8 dataFileTz;
+
+			static void __stdcall OnDataFileClk(void *userObj);
 			static void __stdcall OnFiles(void *userObj, NotNullPtr<Text::String> *files, UOSInt nFiles);
+			static void __stdcall OnDataCheckClk(void *userObj);
 			static void __stdcall OnSQLClicked(void *userObj);
 			static void __stdcall OnExecuteClicked(void *userObj);
-			Bool LoadCSV(Text::CStringNN fileName);
-			Bool GenerateSQL(Text::CStringNN csvFileName, DB::SQLType sqlType, Bool axisAware, SQLSession *sess);
+			Bool LoadDataFile(Text::CStringNN fileName);
+			Bool CheckDataFile();
+			Bool GenerateSQL(DB::SQLType sqlType, Bool axisAware, SQLSession *sess);
 			Bool NextSQL(Text::CStringNN sql, SQLSession *sess);
 			void UpdateStatus(SQLSession *sess);
 			static void __stdcall AppendCol(DB::SQLBuilder *sql, DB::DBUtil::ColType colType, Text::String *s, Int8 tzQhr);

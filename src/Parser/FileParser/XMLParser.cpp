@@ -55,7 +55,7 @@ void Parser::FileParser::XMLParser::SetEncFactory(Text::EncodingFactory *encFact
 	this->encFact = encFact;
 }
 
-void Parser::FileParser::XMLParser::PrepareSelector(IO::FileSelector *selector, IO::ParserType t)
+void Parser::FileParser::XMLParser::PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::MapLayer)
 	{

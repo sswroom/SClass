@@ -91,7 +91,7 @@ IO::MinizZIP::~MinizZIP()
 	}
 }
 
-Bool IO::MinizZIP::AddFile(Text::CString sourceFile)
+Bool IO::MinizZIP::AddFile(Text::CStringNN sourceFile)
 {
 	mz_zip_archive *zip = (mz_zip_archive *)this->hand;
 	IO::Path::PathType pt;

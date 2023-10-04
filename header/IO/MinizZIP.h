@@ -19,7 +19,7 @@ namespace IO
 		MinizZIP(const UTF8Char *zipFile);
 		~MinizZIP();
 
-		Bool AddFile(Text::CString sourceFile);
+		Bool AddFile(Text::CStringNN sourceFile);
 		Bool AddFiles(Data::ArrayList<Text::String *> *files);
 		Bool AddContent(const UInt8 *content, UOSInt contLeng, const UTF8Char *fileName);
 	};
