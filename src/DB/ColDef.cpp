@@ -190,6 +190,15 @@ Bool DB::ColDef::GetDefVal(NotNullPtr<DB::SQLBuilder> sql) const
 	return true;
 }
 
+DB::ColDef::GeometryType DB::ColDef::GetGeometryType() const
+{
+	return (DB::ColDef::GeometryType)this->colSize;
+}
+
+UInt32 DB::ColDef::GetGeometrySRID() const
+{
+	return (UInt32)this->colDP;
+}
 
 void DB::ColDef::SetColName(NotNullPtr<const UTF8Char> colName)
 {

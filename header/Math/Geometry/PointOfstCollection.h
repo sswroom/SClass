@@ -20,8 +20,7 @@ namespace Math
 			UInt32 *GetPtOfstList(OutParam<UOSInt> nPtOfst) { nPtOfst.Set(this->nPtOfst); return this->ptOfstArr; }
 			virtual Math::Coord2DDbl GetCenter() const;
 			virtual void ConvCSys(NotNullPtr<const Math::CoordinateSystem> srcCSys, NotNullPtr<const Math::CoordinateSystem> destCSys);
-			virtual Bool Equals(NotNullPtr<const Vector2D> vec) const;
-			virtual Bool EqualsNearly(NotNullPtr<const Vector2D> vec) const;
+			virtual Bool Equals(NotNullPtr<const Vector2D> vec, Bool sameTypeOnly, Bool nearlyVal) const;
 			virtual Bool HasZ() const;
 			Double *GetZList(OutParam<UOSInt> nPoint);
 			virtual Bool HasM() const;

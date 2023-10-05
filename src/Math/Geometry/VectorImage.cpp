@@ -282,17 +282,7 @@ void Math::Geometry::VectorImage::ConvCSys(NotNullPtr<const Math::CoordinateSyst
 	}
 }
 
-Bool Math::Geometry::VectorImage::Equals(NotNullPtr<const Vector2D> vec) const
-{
-	if (vec->GetVectorType() != VectorType::Image)
-	{
-		return false;
-	}
-//	Math::VectorImage *img = (Math::VectorImage*)vec;
-	return false;
-}
-
-Bool Math::Geometry::VectorImage::EqualsNearly(NotNullPtr<const Vector2D> vec) const
+Bool Math::Geometry::VectorImage::Equals(NotNullPtr<const Vector2D> vec, Bool sameTypeOnly, Bool nearlyVal) const
 {
 	if (vec->GetVectorType() != VectorType::Image)
 	{

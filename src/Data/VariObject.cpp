@@ -2,10 +2,12 @@
 #include "Data/VariObject.h"
 #include "Text/JSText.h"
 
-void Data::VariObject::SetItem(const UTF8Char *name, Data::VariItem *item)
+void Data::VariObject::SetItem(const UTF8Char *name, NotNullPtr<Data::VariItem> item)
 {
-	item = this->items.Put(name, item);
-	SDEL_CLASS(item);
+	if (item.Set(this->items.Put(name, item.Ptr())))
+	{
+		item.Delete();
+	}
 }
 
 Data::VariObject::VariObject(NameType nameType)

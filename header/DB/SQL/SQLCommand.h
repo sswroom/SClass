@@ -15,7 +15,6 @@ namespace DB
 				CT_CREATE_TABLE
 			} CommandType;
 		private:
-			static const UTF8Char *ParseNextWord(const UTF8Char *sql, NotNullPtr<Text::StringBuilderUTF8> sb, DB::SQLType sqlType);
 			static Bool IsPunctuation(const UTF8Char *s);
 		public:
 			virtual ~SQLCommand() {};

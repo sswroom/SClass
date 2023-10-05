@@ -57,15 +57,14 @@ namespace Math
 			virtual Bool HasZ() const { return false; };
 			virtual Bool HasM() const { return false; };
 			virtual void ConvCSys(NotNullPtr<const Math::CoordinateSystem> srcCSys, NotNullPtr<const Math::CoordinateSystem> destCSys) = 0;
-			virtual Bool Equals(NotNullPtr<const Vector2D> vec) const = 0;
-			virtual Bool EqualsNearly(NotNullPtr<const Vector2D> vec) const = 0;
+			virtual Bool Equals(NotNullPtr<const Vector2D> vec, Bool sameTypeOnly, Bool nearlyVal) const = 0;
 			virtual UOSInt GetCoordinates(NotNullPtr<Data::ArrayListA<Math::Coord2DDbl>> coordList) const = 0;
 			virtual Bool InsideVector(Math::Coord2DDbl coord) const;
 			virtual void SwapXY() = 0;
 			virtual void MultiplyCoordinatesXY(Double v) = 0;
 
 			UInt32 GetSRID() const;
-			void SetSRID(UInt32 srid);
+			virtual void SetSRID(UInt32 srid);
 			Math::Coord2DDbl GetCentroid() const;
 			Math::Coord2DDbl GetDistanceCenter() const;
 

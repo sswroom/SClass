@@ -20,7 +20,7 @@ DB::SortableDBReader::SortableDBReader(DB::ReadingDB *db, Text::CString schemaNa
 	UOSInt i;
 	UOSInt j;
 	DB::ColDef colDef(CSTR_NULL);
-	Data::VariObject *obj;
+	NotNullPtr<Data::VariObject> obj;
 	if (colNames == 0 || colNames->GetCount() == 0)
 	{
 		NotNullPtr<DB::DBReader> r;
@@ -41,8 +41,7 @@ DB::SortableDBReader::SortableDBReader(DB::ReadingDB *db, Text::CString schemaNa
 		}
 		while (r->ReadNext())
 		{
-			obj = r->CreateVariObject();
-			if (obj)
+			if (obj.Set(r->CreateVariObject()))
 			{
 				if (condition == 0 || condition->IsValid(obj))
 				{
@@ -50,7 +49,7 @@ DB::SortableDBReader::SortableDBReader(DB::ReadingDB *db, Text::CString schemaNa
 				}
 				else
 				{
-					DEL_CLASS(obj);
+					obj.Delete();
 				}
 			}
 		}
@@ -73,7 +72,7 @@ DB::SortableDBReader::SortableDBReader(DB::ReadingDB *db, Text::CString schemaNa
 		if (condition)
 		{
 			Data::ArrayListNN<Text::String> condColNames;
-			condition->GetFieldList(&condColNames);
+			condition->GetFieldList(condColNames);
 			i = 0;
 			j = condColNames.GetCount();
 			while (i < j)
@@ -105,8 +104,7 @@ DB::SortableDBReader::SortableDBReader(DB::ReadingDB *db, Text::CString schemaNa
 		}
 		while (r->ReadNext())
 		{
-			obj = r->CreateVariObject();
-			if (obj)
+			if (obj.Set(r->CreateVariObject()))
 			{
 				if (condition == 0 || condition->IsValid(obj))
 				{
@@ -114,7 +112,7 @@ DB::SortableDBReader::SortableDBReader(DB::ReadingDB *db, Text::CString schemaNa
 				}
 				else
 				{
-					DEL_CLASS(obj);
+					obj.Delete();
 				}
 			}
 		}
@@ -154,8 +152,8 @@ DB::SortableDBReader::SortableDBReader(DB::ReadingDB *db, Text::CString schemaNa
 			dataOfst = this->objList.GetCount();
 			while (dataOfst-- > 0)
 			{
-				obj = this->objList.GetItem(dataOfst);
-				DEL_CLASS(obj);
+				if (obj.Set(this->objList.GetItem(dataOfst)))
+					obj.Delete();
 			}
 			this->objList.Clear();
 		}
@@ -164,8 +162,8 @@ DB::SortableDBReader::SortableDBReader(DB::ReadingDB *db, Text::CString schemaNa
 			i = dataOfst;
 			while (i-- > 0)
 			{
-				obj = this->objList.GetItem(i);
-				DEL_CLASS(obj);
+				if (obj.Set(this->objList.GetItem(i)))
+					obj.Delete();
 			}
 			this->objList.RemoveRange(0, dataOfst);
 		}
@@ -175,8 +173,8 @@ DB::SortableDBReader::SortableDBReader(DB::ReadingDB *db, Text::CString schemaNa
 		i = this->objList.GetCount();
 		while (i-- > maxCnt)
 		{
-			obj = this->objList.RemoveAt(i);
-			DEL_CLASS(obj);
+			if (obj.Set(this->objList.RemoveAt(i)))
+				obj.Delete();
 		}
 	}
 }

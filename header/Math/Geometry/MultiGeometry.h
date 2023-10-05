@@ -166,10 +166,14 @@ namespace Math
 				this->srid = destCSys->GetSRID();
 			}
 
-			virtual Bool Equals(NotNullPtr<const Vector2D> vec) const
+			virtual Bool Equals(NotNullPtr<const Vector2D> vec, Bool sameTypeOnly, Bool nearlyVal) const
 			{
 				if (this->GetVectorType() != vec->GetVectorType())
 				{
+					if (!sameTypeOnly && this->geometries.GetCount() == 1)
+					{
+						return this->geometries.GetItem(0)->Equals(vec, sameTypeOnly, nearlyVal);
+					}
 					return false;
 				}
 				Math::Geometry::MultiGeometry<T> *obj = (Math::Geometry::MultiGeometry<T> *)vec.Ptr();
@@ -179,26 +183,7 @@ namespace Math
 				UOSInt i = this->GetCount();
 				while (i-- > 0)
 				{
-					if (!v.Set(obj->GetItem(i)) || !this->GetItem(i)->Equals(vec))
-						return false;
-				}
-				return true;
-			}
-
-			virtual Bool EqualsNearly(NotNullPtr<const Vector2D> vec) const
-			{
-				if (this->GetVectorType() != vec->GetVectorType())
-				{
-					return false;
-				}
-				Math::Geometry::MultiGeometry<T> *obj = (Math::Geometry::MultiGeometry<T> *)vec.Ptr();
-				if (obj->GetCount() != this->GetCount())
-					return false;
-				NotNullPtr<Math::Geometry::Vector2D> v;
-				UOSInt i = this->GetCount();
-				while (i-- > 0)
-				{
-					if (!v.Set(obj->GetItem(i)) || !this->GetItem(i)->EqualsNearly(v))
+					if (!v.Set(obj->GetItem(i)) || !this->GetItem(i)->Equals(v, sameTypeOnly, nearlyVal))
 						return false;
 				}
 				return true;
@@ -245,6 +230,16 @@ namespace Math
 				while (i-- > 0)
 				{
 					this->GetItem(i)->MultiplyCoordinatesXY(v);
+				}
+			}
+
+			virtual void SetSRID(UInt32 srid)
+			{
+				this->srid = srid;
+				UOSInt i = this->GetCount();
+				while (i-- > 0)
+				{
+					this->GetItem(i)->SetSRID(srid);
 				}
 			}
 		};

@@ -38,7 +38,7 @@ Data::FieldComparator::~FieldComparator()
 	LIST_FREE_STRING(&this->fieldNames);
 }
 
-OSInt Data::FieldComparator::Compare(VariObject *a, VariObject *b) const
+OSInt Data::FieldComparator::Compare(NotNullPtr<VariObject> a, NotNullPtr<VariObject> b) const
 {
 	UOSInt i = 0;
 	UOSInt j = this->fieldNames.GetCount();

@@ -1613,6 +1613,8 @@ DB/SQL/CreateTableCommand.h: ../../src/DB/SQL/CreateTableCommand.cpp
 @CreateTableCommand.o
 DB/SQL/SQLCommand.h: ../../src/DB/SQL/SQLCommand.cpp
 @SQLCommand.o
+DB/SQL/SQLUtil.h: ../../src/DB/SQL/SQLUtil.cpp
+@SQLUtil.o
 
 Exporter/BMPExporter.h: ../../src/Exporter/BMPExporter.cpp
 @BMPExporter.o
@@ -4808,6 +4810,7 @@ TextDB.o: ../../src/DB/TextDB.cpp
 WorkbookDB.o: ../../src/DB/WorkbookDB.cpp
 CreateTableCommand.o: ../../src/DB/SQL/CreateTableCommand.cpp
 SQLCommand.o: ../../src/DB/SQL/SQLCommand.cpp
+SQLUtil.o: ../../src/DB/SQL/SQLUtil.cpp
 BMPExporter.o: ../../src/Exporter/BMPExporter.cpp
 CIPExporter.o: ../../src/Exporter/CIPExporter.cpp
 CURExporter.o: ../../src/Exporter/CURExporter.cpp

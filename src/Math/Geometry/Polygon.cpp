@@ -3,7 +3,7 @@
 #include "Data/ArrayListDbl.h"
 #include "Data/ArrayListInt32.h"
 #include "Math/CoordinateSystem.h"
-#include "Math/Geometry/Polygon.h"
+#include "Math/Geometry/MultiPolygon.h"
 
 Math::Geometry::Polygon::Polygon(UInt32 srid, UOSInt nPtOfst, UOSInt nPoint, Bool hasZ, Bool hasM) : Math::Geometry::PointOfstCollection(srid, nPtOfst, nPoint, 0, hasZ, hasM)
 {
@@ -502,4 +502,44 @@ void Math::Geometry::Polygon::SplitByJunction(Data::ArrayList<Math::Geometry::Po
 	DEL_CLASS(junctionX);
 
 	results->Add(this);
+}
+
+NotNullPtr<Math::Geometry::MultiPolygon> Math::Geometry::Polygon::CreateMultiPolygon() const
+{
+	NotNullPtr<Math::Geometry::MultiPolygon> mpg;
+	NEW_CLASSNN(mpg, Math::Geometry::MultiPolygon(this->srid, this->HasZ(), this->HasM()));
+	if (this->nPtOfst <= 1)
+	{
+		mpg->AddGeometry(this->Clone());
+		return mpg;
+	}
+	NotNullPtr<Math::Geometry::Polygon> pg;
+	UOSInt i = 0;
+	UOSInt j = 0;
+	UOSInt k;
+	while (i < this->nPtOfst)
+	{
+		i++;
+		if (i >= this->nPtOfst)
+		{
+			k = this->nPoint;
+		}
+		else
+		{
+			k = this->ptOfstArr[i];
+		}
+		NEW_CLASSNN(pg, Math::Geometry::Polygon(this->srid, 1, k - j, this->HasZ(), this->HasM()));
+		MemCopyAC(pg->pointArr, &this->pointArr[j], sizeof(this->pointArr[0]) * (k - j));
+		if (this->zArr)
+		{
+			MemCopyNO(pg->zArr, &this->zArr[j], sizeof(this->zArr[0]) * (k - j));
+		}
+		if (this->mArr)
+		{
+			MemCopyNO(pg->mArr, &this->mArr[j], sizeof(this->mArr[0]) * (k - j));
+		}
+		mpg->AddGeometry(pg);
+		j = k;
+	}
+	return mpg;
 }

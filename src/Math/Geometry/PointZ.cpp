@@ -42,7 +42,7 @@ void Math::Geometry::PointZ::ConvCSys(NotNullPtr<const Math::CoordinateSystem> s
 	this->srid = destCSys->GetSRID();
 }
 
-Bool Math::Geometry::PointZ::Equals(NotNullPtr<const Math::Geometry::Vector2D> vec) const
+Bool Math::Geometry::PointZ::Equals(NotNullPtr<const Math::Geometry::Vector2D> vec, Bool sameTypeOnly, Bool nearlyVal) const
 {
 	if (vec->GetSRID() != this->srid)
 	{
@@ -51,7 +51,11 @@ Bool Math::Geometry::PointZ::Equals(NotNullPtr<const Math::Geometry::Vector2D> v
 	if (vec->GetVectorType() == VectorType::Point && vec->HasZ())
 	{
 		const Math::Geometry::PointZ *pt = (const Math::Geometry::PointZ*)vec.Ptr();
-		return this->pos == pt->pos && this->z == pt->z;
+		if (nearlyVal)
+			return this->pos.EqualsNearly(pt->pos) &&
+					Math::NearlyEqualsDbl(this->z, pt->z);
+		else
+			return this->pos == pt->pos && this->z == pt->z;
 	}
 	else
 	{
@@ -59,20 +63,3 @@ Bool Math::Geometry::PointZ::Equals(NotNullPtr<const Math::Geometry::Vector2D> v
 	}
 }
 
-Bool Math::Geometry::PointZ::EqualsNearly(NotNullPtr<const Math::Geometry::Vector2D> vec) const
-{
-	if (vec->GetSRID() != this->srid)
-	{
-		return false;
-	}
-	if (vec->GetVectorType() == VectorType::Point && vec->HasZ() && !vec->HasM())
-	{
-		const Math::Geometry::PointZ *pt = (const Math::Geometry::PointZ*)vec.Ptr();
-		return this->pos.EqualsNearly(pt->pos) &&
-				Math::NearlyEqualsDbl(this->z, pt->z);
-	}
-	else
-	{
-		return false;
-	}
-}

@@ -19,7 +19,7 @@ namespace Data
 		Data::StringUTF8Map<Data::VariItem*> items;
 		NameType nameType;
 
-		void SetItem(const UTF8Char *name, Data::VariItem *item);
+		void SetItem(const UTF8Char *name, NotNullPtr<Data::VariItem> item);
 	public:
 		VariObject(NameType nameType);
 		~VariObject();

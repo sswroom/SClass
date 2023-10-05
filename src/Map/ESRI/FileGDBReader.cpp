@@ -5,6 +5,7 @@
 #include "Map/ESRI/FileGDBReader.h"
 #include "Math/Math.h"
 #include "Math/WKTWriter.h"
+#include "Math/Geometry/MultiPolygon.h"
 #include "Math/Geometry/PointM.h"
 #include "Math/Geometry/PointZM.h"
 #include "Text/MyStringFloat.h"
@@ -132,7 +133,7 @@ Bool Map::ESRI::FileGDBReader::ReadNext()
 				{
 					return false;
 				}
-				if (conditions && !conditions->IsValid(this))
+				if (conditions && !conditions->IsValid(*this))
 				{
 				}
 				else
@@ -178,7 +179,7 @@ Bool Map::ESRI::FileGDBReader::ReadNext()
 				return false;
 			}
 			this->objectId++;
-			if (conditions && !conditions->IsValid(this))
+			if (conditions && !conditions->IsValid(*this))
 			{
 			}
 			else
@@ -237,7 +238,7 @@ Bool Map::ESRI::FileGDBReader::ReadNext()
 				rowOfst += 8;
 				break;
 			case 4:
-				rowOfst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, rowOfst, &v);
+				rowOfst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, rowOfst, v);
 				if (rowOfst + v > this->rowSize)
 				{
 					return false;
@@ -250,11 +251,11 @@ Bool Map::ESRI::FileGDBReader::ReadNext()
 			case 6:
 				break;
 			case 7:
-				rowOfst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, rowOfst, &v);
+				rowOfst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, rowOfst, v);
 				rowOfst += (UOSInt)v;
 				break;
 			case 8:
-				rowOfst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, rowOfst, &v);
+				rowOfst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, rowOfst, v);
 				rowOfst += (UOSInt)v;
 				break;
 			case 9:
@@ -265,7 +266,7 @@ Bool Map::ESRI::FileGDBReader::ReadNext()
 				rowOfst += 16;
 				break;
 			case 12:
-				rowOfst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, rowOfst, &v);
+				rowOfst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, rowOfst, v);
 				rowOfst += (UOSInt)v;
 				break;
 			}
@@ -323,7 +324,7 @@ Int32 Map::ESRI::FileGDBReader::GetInt32(UOSInt colIndex)
 		{
 			UInt64 v;
 			Text::StringBuilderUTF8 sb;
-			UOSInt ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, this->fieldOfst[fieldIndex], &v);
+			UOSInt ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, this->fieldOfst[fieldIndex], v);
 			sb.AppendC(&this->rowData[ofst], (UOSInt)v);
 			return sb.ToInt32();
 		}
@@ -362,7 +363,7 @@ Int64 Map::ESRI::FileGDBReader::GetInt64(UOSInt colIndex)
 		{
 			UInt64 v;
 			Text::StringBuilderUTF8 sb;
-			UOSInt ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, this->fieldOfst[fieldIndex], &v);
+			UOSInt ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, this->fieldOfst[fieldIndex], v);
 			sb.AppendC(&this->rowData[ofst], (UOSInt)v);
 			return sb.ToInt64();
 		}
@@ -410,7 +411,7 @@ Bool Map::ESRI::FileGDBReader::GetStr(UOSInt colIndex, NotNullPtr<Text::StringBu
 		return true;
 	case 12:
 	case 4:
-		ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, this->fieldOfst[fieldIndex], &v);
+		ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, this->fieldOfst[fieldIndex], v);
 		sb->AppendC(&this->rowData[ofst], (UOSInt)v);
 		return true;
 	case 5:
@@ -485,7 +486,7 @@ Text::String *Map::ESRI::FileGDBReader::GetNewStr(UOSInt colIndex)
 		return Text::String::NewP(sbuff, sptr).Ptr();
 	case 12:
 	case 4:
-		ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, this->fieldOfst[fieldIndex], &v);
+		ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, this->fieldOfst[fieldIndex], v);
 		return Text::String::New(&this->rowData[ofst], (UOSInt)v).Ptr();
 	case 5:
 		{
@@ -565,7 +566,7 @@ Data::Timestamp Map::ESRI::FileGDBReader::GetTimestamp(UOSInt colIndex)
 		{
 			UInt64 v;
 			Text::StringBuilderUTF8 sb;
-			UOSInt ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, this->fieldOfst[fieldIndex], &v);
+			UOSInt ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, this->fieldOfst[fieldIndex], v);
 			sb.AppendC(&this->rowData[ofst], (UOSInt)v);
 			return Data::Timestamp::FromStr(sb.ToCString(), 0);
 		}
@@ -604,7 +605,7 @@ Double Map::ESRI::FileGDBReader::GetDbl(UOSInt colIndex)
 		{
 			UInt64 v;
 			Text::StringBuilderUTF8 sb;
-			UOSInt ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, this->fieldOfst[fieldIndex], &v);
+			UOSInt ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, this->fieldOfst[fieldIndex], v);
 			sb.AppendC(&this->rowData[ofst], (UOSInt)v);
 			return sb.ToDouble();
 		}
@@ -642,17 +643,17 @@ UOSInt Map::ESRI::FileGDBReader::GetBinarySize(UOSInt colIndex)
 		return 8;
 	case 12:
 	case 4:
-		Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, this->fieldOfst[fieldIndex], &v);
+		Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, this->fieldOfst[fieldIndex], v);
 		return (UOSInt)v;
 	case 5:
 		return 8;
 	case 6:
 		return 4;
 	case 7:
-		Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, this->fieldOfst[fieldIndex], &v);
+		Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, this->fieldOfst[fieldIndex], v);
 		return (UOSInt)v;
 	case 8:
-		Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, this->fieldOfst[fieldIndex], &v);
+		Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, this->fieldOfst[fieldIndex], v);
 		return (UOSInt)v;
 	case 10:
 	case 11:
@@ -691,7 +692,7 @@ UOSInt Map::ESRI::FileGDBReader::GetBinary(UOSInt colIndex, UInt8 *buff)
 		return 8;
 	case 12:
 	case 4:
-		ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, this->fieldOfst[fieldIndex], &v);
+		ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, this->fieldOfst[fieldIndex], v);
 		MemCopyNO(buff, &this->rowData[ofst], (UOSInt)v);
 		return (UOSInt)v;
 	case 5:
@@ -701,11 +702,11 @@ UOSInt Map::ESRI::FileGDBReader::GetBinary(UOSInt colIndex, UInt8 *buff)
 		MemCopyNO(buff, &this->objectId, 4);
 		return 4;
 	case 7:
-		ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, this->fieldOfst[fieldIndex], &v);
+		ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, this->fieldOfst[fieldIndex], v);
 		MemCopyNO(buff, &this->rowData[ofst], (UOSInt)v);
 		return (UOSInt)v;
 	case 8:
-		ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, this->fieldOfst[fieldIndex], &v);
+		ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, this->fieldOfst[fieldIndex], v);
 		MemCopyNO(buff, &this->rowData[ofst], (UOSInt)v);
 		return (UOSInt)v;
 	case 10:
@@ -735,8 +736,8 @@ Math::Geometry::Vector2D *Map::ESRI::FileGDBReader::GetVector(UOSInt colIndex)
 	UInt64 geometryLen;
 	UInt64 geometryType;
 	UOSInt ofst;
-	ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, this->fieldOfst[fieldIndex], &geometryLen);
-	ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, ofst, &geometryType);
+	ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, this->fieldOfst[fieldIndex], geometryLen);
+	ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, ofst, geometryType);
 	Double x;
 	Double y;
 	Double z = 0;
@@ -764,18 +765,18 @@ Math::Geometry::Vector2D *Map::ESRI::FileGDBReader::GetVector(UOSInt colIndex)
 	case 9: //SHPT_POINTZ
 	case 11: //SHPT_POINTZM
 	case 21: //SHPT_POINTM
-		ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, ofst, &v);
+		ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, ofst, v);
 		x = UInt64_Double(v - 1) / this->tableInfo->xyScale + this->tableInfo->xOrigin;
-		ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, ofst, &v);
+		ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, ofst, v);
 		y = UInt64_Double(v - 1) / this->tableInfo->xyScale + this->tableInfo->yOrigin;
 		if (this->tableInfo->geometryFlags & 0x80)
 		{
-			ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, ofst, &v);
+			ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, ofst, v);
 			z = UInt64_Double(v - 1) / this->tableInfo->zScale + this->tableInfo->zOrigin;
 		}
 		if (this->tableInfo->geometryFlags & 0x40)
 		{
-			ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, ofst, &v);
+			ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, ofst, v);
 			m = UInt64_Double(v - 1) / this->tableInfo->mScale + this->tableInfo->mOrigin;
 		}
 		srid = 0;
@@ -823,12 +824,12 @@ Math::Geometry::Vector2D *Map::ESRI::FileGDBReader::GetVector(UOSInt colIndex)
 		{
 			UInt64 nPoints;
 			UInt64 nParts;
-			ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, ofst, &nPoints);
-			ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, ofst, &nParts);
-			ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, ofst, &v); //xmin
-			ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, ofst, &v); //ymin
-			ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, ofst, &v); //xmax
-			ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, ofst, &v); //ymax
+			ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, ofst, nPoints);
+			ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, ofst, nParts);
+			ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, ofst, v); //xmin
+			ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, ofst, v); //ymin
+			ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, ofst, v); //xmax
+			ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, ofst, v); //ymax
 			Math::Geometry::Polyline *pl;
 			srid = 0;
 			if (this->tableInfo->csys)
@@ -850,7 +851,7 @@ Math::Geometry::Vector2D *Map::ESRI::FileGDBReader::GetVector(UOSInt colIndex)
 			i = 1;
 			while (i < nParts)
 			{
-				ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, ofst, &v);
+				ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, ofst, v);
 				ptOfst += (UInt32)v;
 				parts[i] = ptOfst;
 				i++;
@@ -861,10 +862,10 @@ Math::Geometry::Vector2D *Map::ESRI::FileGDBReader::GetVector(UOSInt colIndex)
 			i = 0;
 			while (i < nPoints)
 			{
-				ofst = Map::ESRI::FileGDBUtil::ReadVarInt(this->rowData, ofst, &iv);
+				ofst = Map::ESRI::FileGDBUtil::ReadVarInt(this->rowData, ofst, iv);
 				dx += (OSInt)iv;
 				x = Int64_Double(dx) / this->tableInfo->xyScale + this->tableInfo->xOrigin;
-				ofst = Map::ESRI::FileGDBUtil::ReadVarInt(this->rowData, ofst, &iv);
+				ofst = Map::ESRI::FileGDBUtil::ReadVarInt(this->rowData, ofst, iv);
 				dy += (OSInt)iv;
 				y = Int64_Double(dy) / this->tableInfo->xyScale + this->tableInfo->yOrigin;
 				points[i].x = x;
@@ -877,7 +878,7 @@ Math::Geometry::Vector2D *Map::ESRI::FileGDBReader::GetVector(UOSInt colIndex)
 				i = 0;
 				while (i < nPoints)
 				{
-					ofst = Map::ESRI::FileGDBUtil::ReadVarInt(this->rowData, ofst, &iv);
+					ofst = Map::ESRI::FileGDBUtil::ReadVarInt(this->rowData, ofst, iv);
 					dx += (OSInt)iv;
 					z = Int64_Double(dx) / this->tableInfo->zScale + this->tableInfo->zOrigin;
 					zArr[i] = z;
@@ -890,7 +891,7 @@ Math::Geometry::Vector2D *Map::ESRI::FileGDBReader::GetVector(UOSInt colIndex)
 				i = 0;
 				while (i < nPoints)
 				{
-					ofst = Map::ESRI::FileGDBUtil::ReadVarInt(this->rowData, ofst, &iv);
+					ofst = Map::ESRI::FileGDBUtil::ReadVarInt(this->rowData, ofst, iv);
 					dx += (OSInt)iv;
 					m = Int64_Double(dx) / this->tableInfo->mScale + this->tableInfo->mOrigin;
 					mArr[i] = m;
@@ -912,12 +913,12 @@ Math::Geometry::Vector2D *Map::ESRI::FileGDBReader::GetVector(UOSInt colIndex)
 		{
 			UInt64 nPoints;
 			UInt64 nParts;
-			ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, ofst, &nPoints);
-			ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, ofst, &nParts);
-			ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, ofst, &v); //xmin
-			ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, ofst, &v); //ymin
-			ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, ofst, &v); //xmax
-			ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, ofst, &v); //ymax
+			ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, ofst, nPoints);
+			ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, ofst, nParts);
+			ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, ofst, v); //xmin
+			ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, ofst, v); //ymin
+			ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, ofst, v); //xmax
+			ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, ofst, v); //ymax
 			Math::Geometry::Polygon *pg;
 			srid = 0;
 			if (this->tableInfo->csys)
@@ -935,7 +936,7 @@ Math::Geometry::Vector2D *Map::ESRI::FileGDBReader::GetVector(UOSInt colIndex)
 			i = 1;
 			while (i < nParts)
 			{
-				ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, ofst, &v);
+				ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, ofst, v);
 				ptOfst += (UInt32)v;
 				parts[i] = ptOfst;
 				i++;
@@ -946,10 +947,10 @@ Math::Geometry::Vector2D *Map::ESRI::FileGDBReader::GetVector(UOSInt colIndex)
 			i = 0;
 			while (i < nPoints)
 			{
-				ofst = Map::ESRI::FileGDBUtil::ReadVarInt(this->rowData, ofst, &iv);
+				ofst = Map::ESRI::FileGDBUtil::ReadVarInt(this->rowData, ofst, iv);
 				dx += (OSInt)iv;
 				x = Int64_Double(dx) / this->tableInfo->xyScale + this->tableInfo->xOrigin;
-				ofst = Map::ESRI::FileGDBUtil::ReadVarInt(this->rowData, ofst, &iv);
+				ofst = Map::ESRI::FileGDBUtil::ReadVarInt(this->rowData, ofst, iv);
 				dy += (OSInt)iv;
 				y = Int64_Double(dy) / this->tableInfo->xyScale + this->tableInfo->yOrigin;
 				points[i].x = x;
@@ -962,7 +963,7 @@ Math::Geometry::Vector2D *Map::ESRI::FileGDBReader::GetVector(UOSInt colIndex)
 				i = 0;
 				while (i < nPoints)
 				{
-					ofst = Map::ESRI::FileGDBUtil::ReadVarInt(this->rowData, ofst, &iv);
+					ofst = Map::ESRI::FileGDBUtil::ReadVarInt(this->rowData, ofst, iv);
 					dx += (OSInt)iv;
 					z = Int64_Double(dx) / this->tableInfo->zScale + this->tableInfo->zOrigin;
 					zArr[i] = z;
@@ -975,14 +976,16 @@ Math::Geometry::Vector2D *Map::ESRI::FileGDBReader::GetVector(UOSInt colIndex)
 				i = 0;
 				while (i < nPoints)
 				{
-					ofst = Map::ESRI::FileGDBUtil::ReadVarInt(this->rowData, ofst, &iv);
+					ofst = Map::ESRI::FileGDBUtil::ReadVarInt(this->rowData, ofst, iv);
 					dx += (OSInt)iv;
 					m = Int64_Double(dx) / this->tableInfo->mScale + this->tableInfo->mOrigin;
 					mArr[i] = m;
 					i++;
 				}
 			}
-			return pg;
+			NotNullPtr<Math::Geometry::MultiPolygon> mpg = pg->CreateMultiPolygon();
+			DEL_CLASS(pg);
+			return mpg.Ptr();
 		}
 		break;
 	case 50: //SHPT_GENERALPOLYLINE
@@ -995,16 +998,16 @@ Math::Geometry::Vector2D *Map::ESRI::FileGDBReader::GetVector(UOSInt colIndex)
 			UInt64 nPoints;
 			UInt64 nParts;
 			UInt64 nCurves = 0;
-			ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, ofst, &nPoints);
-			ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, ofst, &nParts);
+			ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, ofst, nPoints);
+			ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, ofst, nParts);
 			if (geometryType & 0x20000000)
 			{
-				ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, ofst, &nCurves);
+				ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, ofst, nCurves);
 			}
-			ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, ofst, &v); //xmin
-			ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, ofst, &v); //ymin
-			ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, ofst, &v); //xmax
-			ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, ofst, &v); //ymax
+			ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, ofst, v); //xmin
+			ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, ofst, v); //ymin
+			ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, ofst, v); //xmax
+			ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, ofst, v); //ymax
 			Math::Geometry::Polyline *pl;
 			srid = 0;
 			UOSInt i;
@@ -1026,7 +1029,7 @@ Math::Geometry::Vector2D *Map::ESRI::FileGDBReader::GetVector(UOSInt colIndex)
 			i = 1;
 			while (i < nParts)
 			{
-				ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, ofst, &v);
+				ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, ofst, v);
 				ptOfst += (UInt32)v;
 				parts[i] = ptOfst;
 				i++;
@@ -1050,10 +1053,10 @@ Math::Geometry::Vector2D *Map::ESRI::FileGDBReader::GetVector(UOSInt colIndex)
 				}
 				while (j < k)
 				{
-					ofst = Map::ESRI::FileGDBUtil::ReadVarInt(this->rowData, ofst, &iv);
+					ofst = Map::ESRI::FileGDBUtil::ReadVarInt(this->rowData, ofst, iv);
 					dx += (OSInt)iv;
 					x = OSInt2Double(dx) / this->tableInfo->xyScale + this->tableInfo->xOrigin;
-					ofst = Map::ESRI::FileGDBUtil::ReadVarInt(this->rowData, ofst, &iv);
+					ofst = Map::ESRI::FileGDBUtil::ReadVarInt(this->rowData, ofst, iv);
 					dy += (OSInt)iv;
 					y = OSInt2Double(dy) / this->tableInfo->xyScale + this->tableInfo->yOrigin;
 					points[j].x = x;
@@ -1066,7 +1069,7 @@ Math::Geometry::Vector2D *Map::ESRI::FileGDBReader::GetVector(UOSInt colIndex)
 					j = parts[i];
 					while (j < k)
 					{
-						ofst = Map::ESRI::FileGDBUtil::ReadVarInt(this->rowData, ofst, &iv);
+						ofst = Map::ESRI::FileGDBUtil::ReadVarInt(this->rowData, ofst, iv);
 						dx += (OSInt)iv;
 						z = OSInt2Double(dx) / this->tableInfo->zScale + this->tableInfo->zOrigin;
 						zArr[j] = z;
@@ -1079,7 +1082,7 @@ Math::Geometry::Vector2D *Map::ESRI::FileGDBReader::GetVector(UOSInt colIndex)
 					j = parts[i];
 					while (j < k)
 					{
-						ofst = Map::ESRI::FileGDBUtil::ReadVarInt(this->rowData, ofst, &iv);
+						ofst = Map::ESRI::FileGDBUtil::ReadVarInt(this->rowData, ofst, iv);
 						dx += (OSInt)iv;
 						m = OSInt2Double(dx) / this->tableInfo->mScale + this->tableInfo->mOrigin;
 						mArr[j] = m;
@@ -1101,16 +1104,16 @@ Math::Geometry::Vector2D *Map::ESRI::FileGDBReader::GetVector(UOSInt colIndex)
 			UInt64 nPoints;
 			UInt64 nParts;
 			UInt64 nCurves = 0;
-			ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, ofst, &nPoints);
-			ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, ofst, &nParts);
+			ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, ofst, nPoints);
+			ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, ofst, nParts);
 			if (geometryType & 0x20000000)
 			{
-				ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, ofst, &nCurves);
+				ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, ofst, nCurves);
 			}
-			ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, ofst, &v); //xmin
-			ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, ofst, &v); //ymin
-			ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, ofst, &v); //xmax
-			ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, ofst, &v); //ymax
+			ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, ofst, v); //xmin
+			ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, ofst, v); //ymin
+			ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, ofst, v); //xmax
+			ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, ofst, v); //ymax
 			Math::Geometry::Polygon *pg;
 			srid = 0;
 			UOSInt i;
@@ -1132,7 +1135,7 @@ Math::Geometry::Vector2D *Map::ESRI::FileGDBReader::GetVector(UOSInt colIndex)
 			i = 1;
 			while (i < nParts)
 			{
-				ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, ofst, &v);
+				ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, ofst, v);
 				ptOfst += (UInt32)v;
 				parts[i] = ptOfst;
 				i++;
@@ -1156,10 +1159,10 @@ Math::Geometry::Vector2D *Map::ESRI::FileGDBReader::GetVector(UOSInt colIndex)
 				}
 				while (j < k)
 				{
-					ofst = Map::ESRI::FileGDBUtil::ReadVarInt(this->rowData, ofst, &iv);
+					ofst = Map::ESRI::FileGDBUtil::ReadVarInt(this->rowData, ofst, iv);
 					dx += (OSInt)iv;
 					x = OSInt2Double(dx) / this->tableInfo->xyScale + this->tableInfo->xOrigin;
-					ofst = Map::ESRI::FileGDBUtil::ReadVarInt(this->rowData, ofst, &iv);
+					ofst = Map::ESRI::FileGDBUtil::ReadVarInt(this->rowData, ofst, iv);
 					dy += (OSInt)iv;
 					y = OSInt2Double(dy) / this->tableInfo->xyScale + this->tableInfo->yOrigin;
 					points[j].x = x;
@@ -1172,7 +1175,7 @@ Math::Geometry::Vector2D *Map::ESRI::FileGDBReader::GetVector(UOSInt colIndex)
 					j = parts[i];
 					while (j < k)
 					{
-						ofst = Map::ESRI::FileGDBUtil::ReadVarInt(this->rowData, ofst, &iv);
+						ofst = Map::ESRI::FileGDBUtil::ReadVarInt(this->rowData, ofst, iv);
 						dx += (OSInt)iv;
 						z = OSInt2Double(dx) / this->tableInfo->zScale + this->tableInfo->zOrigin;
 						zArr[j] = z;
@@ -1185,7 +1188,7 @@ Math::Geometry::Vector2D *Map::ESRI::FileGDBReader::GetVector(UOSInt colIndex)
 					j = parts[i];
 					while (j < k)
 					{
-						ofst = Map::ESRI::FileGDBUtil::ReadVarInt(this->rowData, ofst, &iv);
+						ofst = Map::ESRI::FileGDBUtil::ReadVarInt(this->rowData, ofst, iv);
 						dx += (OSInt)iv;
 						m = OSInt2Double(dx) / this->tableInfo->mScale + this->tableInfo->mOrigin;
 						mArr[j] = m;
@@ -1258,7 +1261,7 @@ Bool Map::ESRI::FileGDBReader::GetVariItem(UOSInt colIndex, NotNullPtr<Data::Var
 		return true;
 	case 12:
 	case 4:
-		ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, this->fieldOfst[fieldIndex], &v);
+		ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, this->fieldOfst[fieldIndex], v);
 		{
 			NotNullPtr<Text::String> s = Text::String::New(&this->rowData[ofst], (UOSInt)v);
 			item->SetStr(s);
@@ -1286,7 +1289,7 @@ Bool Map::ESRI::FileGDBReader::GetVariItem(UOSInt colIndex, NotNullPtr<Data::Var
 		}
 	case 8:
 		{
-			ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, this->fieldOfst[fieldIndex], &v);
+			ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, this->fieldOfst[fieldIndex], v);
 			item->SetByteArr(&this->rowData[ofst], (UOSInt)v);
 			return true;
 		}
@@ -1303,7 +1306,7 @@ Bool Map::ESRI::FileGDBReader::GetVariItem(UOSInt colIndex, NotNullPtr<Data::Var
 	return true;
 }
 
-Data::VariItem *Map::ESRI::FileGDBReader::GetNewItem(const UTF8Char *name)
+NotNullPtr<Data::VariItem> Map::ESRI::FileGDBReader::GetNewItem(const UTF8Char *name)
 {
 	UOSInt colIndex = INVALID_INDEX;
 	UOSInt fieldIndex = INVALID_INDEX;
@@ -1358,7 +1361,7 @@ Data::VariItem *Map::ESRI::FileGDBReader::GetNewItem(const UTF8Char *name)
 		return Data::VariItem::NewF64(ReadDouble(&this->rowData[this->fieldOfst[fieldIndex]]));
 	case 12:
 	case 4:
-		ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, this->fieldOfst[fieldIndex], &v);
+		ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, this->fieldOfst[fieldIndex], v);
 		{
 			Text::StringBuilderUTF8 sb;
 			sb.AppendC(&this->rowData[ofst], (UOSInt)v);
@@ -1375,7 +1378,7 @@ Data::VariItem *Map::ESRI::FileGDBReader::GetNewItem(const UTF8Char *name)
 			Math::Geometry::Vector2D *vec = this->GetVector(colIndex);
 			if (vec)
 			{
-				Data::VariItem *item = Data::VariItem::NewVector(vec);
+				NotNullPtr<Data::VariItem> item = Data::VariItem::NewVector(vec);
 				DEL_CLASS(vec);
 				return item;
 			}
@@ -1386,7 +1389,7 @@ Data::VariItem *Map::ESRI::FileGDBReader::GetNewItem(const UTF8Char *name)
 			UOSInt size = this->GetBinarySize(colIndex);
 			UInt8 *binBuff = MemAlloc(UInt8, size);
 			this->GetBinary(colIndex, binBuff);
-			Data::VariItem *item = Data::VariItem::NewByteArr(binBuff, size);
+			NotNullPtr<Data::VariItem> item = Data::VariItem::NewByteArr(binBuff, size);
 			MemFree(binBuff);
 			return item;
 		}

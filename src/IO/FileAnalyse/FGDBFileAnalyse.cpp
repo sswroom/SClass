@@ -398,7 +398,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::FGDBFileAnalyse::GetFrameDetail(U
 					}
 					else if (field->fieldType == 4) //String
 					{
-						ofst2 = Map::ESRI::FileGDBUtil::ReadVarUInt(tagData, ofst, &v);
+						ofst2 = Map::ESRI::FileGDBUtil::ReadVarUInt(tagData, ofst, v);
 						frame->AddUInt(ofst, ofst2 - ofst, CSTR("String Length"), (UOSInt)v);
 						ofst = ofst2;
 						if (ofst + v > tag->size)
@@ -426,12 +426,12 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::FGDBFileAnalyse::GetFrameDetail(U
 					else if (field->fieldType == 7) //Geometry
 					{
 						UInt64 geometryLen;
-						ofst2 = Map::ESRI::FileGDBUtil::ReadVarUInt(tagData, ofst, &geometryLen);
+						ofst2 = Map::ESRI::FileGDBUtil::ReadVarUInt(tagData, ofst, geometryLen);
 						UOSInt endOfst = ofst2 + (UOSInt)geometryLen;
 						frame->AddUInt(ofst, ofst2 - ofst, CSTR("Len"), (UOSInt)geometryLen);
 						ofst = ofst2;
 						UInt64 geometryType;
-						ofst2 = Map::ESRI::FileGDBUtil::ReadVarUInt(tagData, ofst, &geometryType);
+						ofst2 = Map::ESRI::FileGDBUtil::ReadVarUInt(tagData, ofst, geometryType);
 						frame->AddHex64V(ofst, ofst2 - ofst, CSTR("GeometryType"), geometryType);
 						ofst = ofst2;
 
@@ -441,23 +441,23 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::FGDBFileAnalyse::GetFrameDetail(U
 						case 9:
 						case 11:
 						case 21:
-							ofst2 = Map::ESRI::FileGDBUtil::ReadVarUInt(tagData, ofst, &v);
+							ofst2 = Map::ESRI::FileGDBUtil::ReadVarUInt(tagData, ofst, v);
 							frame->AddUInt(ofst, ofst2 - ofst, CSTR("X_Raw"), (UOSInt)v);
 							frame->AddFloat(ofst, ofst2 - ofst, CSTR("X"), UOSInt2Double(v - 1) / this->tableInfo->xyScale + this->tableInfo->xOrigin);
 							ofst = ofst2;
-							ofst2 = Map::ESRI::FileGDBUtil::ReadVarUInt(tagData, ofst, &v);
+							ofst2 = Map::ESRI::FileGDBUtil::ReadVarUInt(tagData, ofst, v);
 							frame->AddUInt(ofst, ofst2 - ofst, CSTR("Y_Raw"), (UOSInt)v);
 							frame->AddFloat(ofst, ofst2 - ofst, CSTR("Y"), UOSInt2Double(v - 1) / this->tableInfo->xyScale + this->tableInfo->yOrigin);
 							ofst = ofst2;
 							if (this->tableInfo->geometryFlags & 0x80)
 							{
-								ofst2 = Map::ESRI::FileGDBUtil::ReadVarUInt(tagData, ofst, &v);
+								ofst2 = Map::ESRI::FileGDBUtil::ReadVarUInt(tagData, ofst, v);
 								frame->AddFloat(ofst, ofst2 - ofst, CSTR("Z"), UOSInt2Double(v - 1) / this->tableInfo->zScale + this->tableInfo->zOrigin);
 								ofst = ofst2;
 							}
 							if (this->tableInfo->geometryFlags & 0x40)
 							{
-								ofst2 = Map::ESRI::FileGDBUtil::ReadVarUInt(tagData, ofst, &v);
+								ofst2 = Map::ESRI::FileGDBUtil::ReadVarUInt(tagData, ofst, v);
 								frame->AddFloat(ofst, ofst2 - ofst, CSTR("M"), UOSInt2Double(v - 1) / this->tableInfo->mScale + this->tableInfo->mOrigin);
 								ofst = ofst2;
 							}
@@ -480,34 +480,34 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::FGDBFileAnalyse::GetFrameDetail(U
 							{
 								UInt64 nPoints;
 								UInt64 nParts;
-								ofst2 = Map::ESRI::FileGDBUtil::ReadVarUInt(tagData, ofst, &nPoints);
+								ofst2 = Map::ESRI::FileGDBUtil::ReadVarUInt(tagData, ofst, nPoints);
 								frame->AddUInt(ofst, ofst2 - ofst, CSTR("Number of Points"), (UOSInt)nPoints);
 								ofst = ofst2;
-								ofst2 = Map::ESRI::FileGDBUtil::ReadVarUInt(tagData, ofst, &nParts);
+								ofst2 = Map::ESRI::FileGDBUtil::ReadVarUInt(tagData, ofst, nParts);
 								frame->AddUInt(ofst, ofst2 - ofst, CSTR("Number of Parts"), (UOSInt)nParts);
 								ofst = ofst2;
 								Double xMin;
 								Double yMin;
-								ofst2 = Map::ESRI::FileGDBUtil::ReadVarUInt(tagData, ofst, &v);
+								ofst2 = Map::ESRI::FileGDBUtil::ReadVarUInt(tagData, ofst, v);
 								frame->AddUInt(ofst, ofst2 - ofst, CSTR("XMin_RAW"), (UOSInt)v);
 								frame->AddFloat(ofst, ofst2 - ofst, CSTR("XMin"), xMin = UOSInt2Double(v) / this->tableInfo->xyScale + this->tableInfo->xOrigin);
 								ofst = ofst2;
-								ofst2 = Map::ESRI::FileGDBUtil::ReadVarUInt(tagData, ofst, &v);
+								ofst2 = Map::ESRI::FileGDBUtil::ReadVarUInt(tagData, ofst, v);
 								frame->AddUInt(ofst, ofst2 - ofst, CSTR("YMin_RAW"), (UOSInt)v);
 								frame->AddFloat(ofst, ofst2 - ofst, CSTR("YMin"), yMin = UOSInt2Double(v) / this->tableInfo->xyScale + this->tableInfo->yOrigin);
 								ofst = ofst2;
-								ofst2 = Map::ESRI::FileGDBUtil::ReadVarUInt(tagData, ofst, &v);
+								ofst2 = Map::ESRI::FileGDBUtil::ReadVarUInt(tagData, ofst, v);
 								frame->AddUInt(ofst, ofst2 - ofst, CSTR("XMax_RAW"), (UOSInt)v);
 								frame->AddFloat(ofst, ofst2 - ofst, CSTR("XMax"), UOSInt2Double(v) / this->tableInfo->xyScale + xMin);
 								ofst = ofst2;
-								ofst2 = Map::ESRI::FileGDBUtil::ReadVarUInt(tagData, ofst, &v);
+								ofst2 = Map::ESRI::FileGDBUtil::ReadVarUInt(tagData, ofst, v);
 								frame->AddUInt(ofst, ofst2 - ofst, CSTR("YMax_RAW"), (UOSInt)v);
 								frame->AddFloat(ofst, ofst2 - ofst, CSTR("YMax"), UOSInt2Double(v) / this->tableInfo->xyScale + yMin);
 								ofst = ofst2;
 								UOSInt tmpI = 1;
 								while (tmpI < nParts)
 								{
-									ofst2 = Map::ESRI::FileGDBUtil::ReadVarUInt(tagData, ofst, &v);
+									ofst2 = Map::ESRI::FileGDBUtil::ReadVarUInt(tagData, ofst, v);
 									frame->AddUInt(ofst, ofst2 - ofst, CSTR("Number of points in part"), (UOSInt)v);
 									ofst = ofst2;
 									tmpI++;
@@ -518,11 +518,11 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::FGDBFileAnalyse::GetFrameDetail(U
 								tmpI = 0;
 								while (tmpI < nPoints)
 								{
-									ofst2 = Map::ESRI::FileGDBUtil::ReadVarInt(tagData, ofst, &iv);
+									ofst2 = Map::ESRI::FileGDBUtil::ReadVarInt(tagData, ofst, iv);
 									dx += diffMul * (OSInt)iv;
 									frame->AddFloat(ofst, ofst2 - ofst, CSTR("X"), OSInt2Double(dx) / this->tableInfo->xyScale + this->tableInfo->xOrigin);
 									ofst = ofst2;
-									ofst2 = Map::ESRI::FileGDBUtil::ReadVarInt(tagData, ofst, &iv);
+									ofst2 = Map::ESRI::FileGDBUtil::ReadVarInt(tagData, ofst, iv);
 									dy += diffMul * (OSInt)iv;
 									frame->AddFloat(ofst, ofst2 - ofst, CSTR("Y"), OSInt2Double(dy) / this->tableInfo->xyScale + this->tableInfo->yOrigin);
 									ofst = ofst2;
@@ -534,7 +534,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::FGDBFileAnalyse::GetFrameDetail(U
 									tmpI = 0;
 									while (tmpI < nPoints)
 									{
-										ofst2 = Map::ESRI::FileGDBUtil::ReadVarInt(tagData, ofst, &iv);
+										ofst2 = Map::ESRI::FileGDBUtil::ReadVarInt(tagData, ofst, iv);
 										dx += diffMul * (OSInt)iv;
 										frame->AddFloat(ofst, ofst2 - ofst, CSTR("Z"), OSInt2Double(dx) / this->tableInfo->zScale + this->tableInfo->zOrigin);
 										ofst = ofst2;
@@ -547,7 +547,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::FGDBFileAnalyse::GetFrameDetail(U
 									tmpI = 0;
 									while (tmpI < nPoints)
 									{
-										ofst2 = Map::ESRI::FileGDBUtil::ReadVarInt(tagData, ofst, &iv);
+										ofst2 = Map::ESRI::FileGDBUtil::ReadVarInt(tagData, ofst, iv);
 										dx += diffMul * (OSInt)iv;
 										frame->AddFloat(ofst, ofst2 - ofst, CSTR("M"), OSInt2Double(dx) / this->tableInfo->mScale + this->tableInfo->mOrigin);
 										ofst = ofst2;
@@ -567,33 +567,33 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::FGDBFileAnalyse::GetFrameDetail(U
 								UInt64 nPoints;
 								UInt64 nParts;
 								UInt64 nCurves = 0;
-								ofst2 = Map::ESRI::FileGDBUtil::ReadVarUInt(tagData, ofst, &nPoints);
+								ofst2 = Map::ESRI::FileGDBUtil::ReadVarUInt(tagData, ofst, nPoints);
 								frame->AddUInt(ofst, ofst2 - ofst, CSTR("Number of Points"), (UOSInt)nPoints);
 								ofst = ofst2;
-								ofst2 = Map::ESRI::FileGDBUtil::ReadVarUInt(tagData, ofst, &nParts);
+								ofst2 = Map::ESRI::FileGDBUtil::ReadVarUInt(tagData, ofst, nParts);
 								frame->AddUInt(ofst, ofst2 - ofst, CSTR("Number of Parts"), (UOSInt)nParts);
 								ofst = ofst2;
 								if (geometryType & 0x20000000)
 								{
-									ofst2 = Map::ESRI::FileGDBUtil::ReadVarUInt(tagData, ofst, &nCurves);
+									ofst2 = Map::ESRI::FileGDBUtil::ReadVarUInt(tagData, ofst, nCurves);
 									frame->AddUInt(ofst, ofst2 - ofst, CSTR("Number of Curve"), (UOSInt)nCurves);
 									ofst = ofst2;
 								}
 								Double xMin;
 								Double yMin;
-								ofst2 = Map::ESRI::FileGDBUtil::ReadVarUInt(tagData, ofst, &v);
+								ofst2 = Map::ESRI::FileGDBUtil::ReadVarUInt(tagData, ofst, v);
 								frame->AddUInt(ofst, ofst2 - ofst, CSTR("XMin_RAW"), (UOSInt)v);
 								frame->AddFloat(ofst, ofst2 - ofst, CSTR("XMin"), xMin = UOSInt2Double(v) / this->tableInfo->xyScale + this->tableInfo->xOrigin);
 								ofst = ofst2;
-								ofst2 = Map::ESRI::FileGDBUtil::ReadVarUInt(tagData, ofst, &v);
+								ofst2 = Map::ESRI::FileGDBUtil::ReadVarUInt(tagData, ofst, v);
 								frame->AddUInt(ofst, ofst2 - ofst, CSTR("YMin_RAW"), (UOSInt)v);
 								frame->AddFloat(ofst, ofst2 - ofst, CSTR("YMin"), yMin = UOSInt2Double(v) / this->tableInfo->xyScale + this->tableInfo->yOrigin);
 								ofst = ofst2;
-								ofst2 = Map::ESRI::FileGDBUtil::ReadVarUInt(tagData, ofst, &v);
+								ofst2 = Map::ESRI::FileGDBUtil::ReadVarUInt(tagData, ofst, v);
 								frame->AddUInt(ofst, ofst2 - ofst, CSTR("XMax_RAW"), (UOSInt)v);
 								frame->AddFloat(ofst, ofst2 - ofst, CSTR("XMax"), UOSInt2Double(v) / this->tableInfo->xyScale + xMin);
 								ofst = ofst2;
-								ofst2 = Map::ESRI::FileGDBUtil::ReadVarUInt(tagData, ofst, &v);
+								ofst2 = Map::ESRI::FileGDBUtil::ReadVarUInt(tagData, ofst, v);
 								frame->AddUInt(ofst, ofst2 - ofst, CSTR("YMax_RAW"), (UOSInt)v);
 								frame->AddFloat(ofst, ofst2 - ofst, CSTR("YMax"), UOSInt2Double(v) / this->tableInfo->xyScale + yMin);
 								ofst = ofst2;
@@ -602,7 +602,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::FGDBFileAnalyse::GetFrameDetail(U
 								UOSInt tmpI = 0;
 								while (tmpI < nParts - 1)
 								{
-									ofst2 = Map::ESRI::FileGDBUtil::ReadVarUInt(tagData, ofst, &parts[tmpI]);
+									ofst2 = Map::ESRI::FileGDBUtil::ReadVarUInt(tagData, ofst, parts[tmpI]);
 									frame->AddUInt(ofst, ofst2 - ofst, CSTR("Number of points in part"), (UOSInt)parts[tmpI]);
 									parts[nParts - 1] -= parts[tmpI];
 									ofst = ofst2;
@@ -618,12 +618,12 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::FGDBFileAnalyse::GetFrameDetail(U
 									tmpJ = (UOSInt)parts[tmpI];
 									while (tmpJ-- > 0)
 									{
-										ofst2 = Map::ESRI::FileGDBUtil::ReadVarInt(tagData, ofst, &iv);
+										ofst2 = Map::ESRI::FileGDBUtil::ReadVarInt(tagData, ofst, iv);
 										frame->AddInt(ofst, ofst2 - ofst, CSTR("X_RAW"), (OSInt)iv);
 										dx -= (OSInt)iv;
 										frame->AddFloat(ofst, ofst2 - ofst, CSTR("X"), OSInt2Double(dx) / this->tableInfo->xyScale + this->tableInfo->xOrigin);
 										ofst = ofst2;
-										ofst2 = Map::ESRI::FileGDBUtil::ReadVarInt(tagData, ofst, &iv);
+										ofst2 = Map::ESRI::FileGDBUtil::ReadVarInt(tagData, ofst, iv);
 										frame->AddInt(ofst, ofst2 - ofst, CSTR("Y_RAW"), (OSInt)iv);
 										dy -= (OSInt)iv;
 										frame->AddFloat(ofst, ofst2 - ofst, CSTR("Y"), OSInt2Double(dy) / this->tableInfo->xyScale + this->tableInfo->yOrigin);
@@ -635,7 +635,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::FGDBFileAnalyse::GetFrameDetail(U
 										tmpJ = (UOSInt)parts[tmpI];
 										while (tmpJ-- > 0)
 										{
-											ofst2 = Map::ESRI::FileGDBUtil::ReadVarInt(tagData, ofst, &iv);
+											ofst2 = Map::ESRI::FileGDBUtil::ReadVarInt(tagData, ofst, iv);
 											dx -= (OSInt)iv;
 											frame->AddFloat(ofst, ofst2 - ofst, CSTR("Z"), OSInt2Double(dx) / this->tableInfo->zScale + this->tableInfo->zOrigin);
 											ofst = ofst2;
@@ -647,7 +647,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::FGDBFileAnalyse::GetFrameDetail(U
 										tmpJ = (UOSInt)parts[tmpI];
 										while (tmpJ-- > 0)
 										{
-											ofst2 = Map::ESRI::FileGDBUtil::ReadVarInt(tagData, ofst, &iv);
+											ofst2 = Map::ESRI::FileGDBUtil::ReadVarInt(tagData, ofst, iv);
 											dx -= (OSInt)iv;
 											frame->AddFloat(ofst, ofst2 - ofst, CSTR("M"), OSInt2Double(dx) / this->tableInfo->mScale + this->tableInfo->mOrigin);
 											ofst = ofst2;
@@ -663,7 +663,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::FGDBFileAnalyse::GetFrameDetail(U
 					}
 					else if (field->fieldType == 8) //Binary
 					{
-						ofst2 = Map::ESRI::FileGDBUtil::ReadVarUInt(tagData, ofst, &v);
+						ofst2 = Map::ESRI::FileGDBUtil::ReadVarUInt(tagData, ofst, v);
 						frame->AddUInt(ofst, ofst2 - ofst, CSTR("Size"), (UOSInt)v);
 						ofst = ofst2;
 						frame->AddHexBuff(ofst, (UOSInt)v, field->name->ToCString(), &tagData[ofst], true);
@@ -678,7 +678,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::FGDBFileAnalyse::GetFrameDetail(U
 					}
 					else if (field->fieldType == 12) //XML
 					{
-						ofst2 = Map::ESRI::FileGDBUtil::ReadVarUInt(tagData, ofst, &v);
+						ofst2 = Map::ESRI::FileGDBUtil::ReadVarUInt(tagData, ofst, v);
 						frame->AddUInt(ofst, ofst2 - ofst, CSTR("Size"), (UOSInt)v);
 						ofst = ofst2;
 						frame->AddStrC(ofst, (UOSInt)v, field->name->ToCString(), &tagData[ofst]);

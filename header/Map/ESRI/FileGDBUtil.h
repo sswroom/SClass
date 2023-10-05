@@ -63,13 +63,13 @@ namespace Map
 			static void FreeTableInfo(FileGDBTableInfo *tableInfo);
 			static FileGDBFieldInfo *FieldInfoClone(FileGDBFieldInfo *tableInfo);
 			static FileGDBTableInfo *TableInfoClone(FileGDBTableInfo *tableInfo);
-			static UOSInt ReadVarUInt(const UInt8 *buff, UOSInt ofst, UInt64 *val);
-			static UOSInt ReadVarInt(const UInt8 *buff, UOSInt ofst, Int64 *val);
-			static UOSInt ReadVarUInt(Data::ByteArrayR buff, UOSInt ofst, UInt64 *val);
-			static UOSInt ReadVarInt(Data::ByteArrayR buff, UOSInt ofst, Int64 *val);
+			static UOSInt ReadVarUInt(const UInt8 *buff, UOSInt ofst, OutParam<UInt64> val);
+			static UOSInt ReadVarInt(const UInt8 *buff, UOSInt ofst, OutParam<Int64> val);
+			static UOSInt ReadVarUInt(Data::ByteArrayR buff, UOSInt ofst, OutParam<UInt64> val);
+			static UOSInt ReadVarInt(Data::ByteArrayR buff, UOSInt ofst, OutParam<Int64> val);
 
-			static Text::CString GeometryTypeGetName(UInt8 t);
-			static Text::CString FieldTypeGetName(UInt8 t);
+			static Text::CStringNN GeometryTypeGetName(UInt8 t);
+			static Text::CStringNN FieldTypeGetName(UInt8 t);
 		};
 	}
 }

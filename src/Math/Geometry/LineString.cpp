@@ -214,7 +214,7 @@ void Math::Geometry::LineString::ConvCSys(NotNullPtr<const Math::CoordinateSyste
 	}
 }
 
-Bool Math::Geometry::LineString::Equals(NotNullPtr<const Vector2D> vec) const
+Bool Math::Geometry::LineString::Equals(NotNullPtr<const Vector2D> vec, Bool sameTypeOnly, Bool nearlyVal) const
 {
 	if (vec->GetSRID() != this->srid)
 	{
@@ -230,91 +230,74 @@ Bool Math::Geometry::LineString::Equals(NotNullPtr<const Vector2D> vec) const
 		{
 			return false;
 		}
-		UOSInt i = nPoint;
-		while (i-- > 0)
+		UOSInt i;
+		if (nearlyVal)
 		{
-			if (ptList[i] != this->pointArr[i])
-			{
-				return false;
-			}
-		}
-		if (this->zArr)
-		{
-			valArr = pl->zArr;
 			i = nPoint;
 			while (i-- > 0)
 			{
-				if (valArr[i] != this->zArr[i])
+				if (!ptList[i].EqualsNearly(this->pointArr[i]))
 				{
 					return false;
 				}
 			}
+			if (this->zArr)
+			{
+				valArr = pl->zArr;
+				i = nPoint;
+				while (i-- > 0)
+				{
+					if (!Math::NearlyEqualsDbl(valArr[i], this->zArr[i]))
+					{
+						return false;
+					}
+				}
+			}
+			if (this->mArr)
+			{
+				valArr = pl->mArr;
+				i = nPoint;
+				while (i-- > 0)
+				{
+					if (!Math::NearlyEqualsDbl(valArr[i], this->mArr[i]))
+					{
+						return false;
+					}
+				}
+			}
 		}
-		if (this->mArr)
+		else
 		{
-			valArr = pl->mArr;
 			i = nPoint;
 			while (i-- > 0)
 			{
-				if (valArr[i] != this->mArr[i])
+				if (ptList[i] != this->pointArr[i])
 				{
 					return false;
 				}
 			}
-		}
-		return true;
-	}
-	else
-	{
-		return false;
-	}
-}
-
-Bool Math::Geometry::LineString::EqualsNearly(NotNullPtr<const Vector2D> vec) const
-{
-	if (vec->GetSRID() != this->srid)
-	{
-		return false;
-	}
-	if (vec->GetVectorType() == this->GetVectorType() && this->HasZ() == vec->HasZ() && this->HasM() == vec->HasM())
-	{
-		Math::Geometry::LineString *pl = (Math::Geometry::LineString*)vec.Ptr();
-		UOSInt nPoint;
-		Math::Coord2DDbl *ptList = pl->GetPointList(nPoint);
-		Double *valArr;
-		if (nPoint != this->nPoint)
-		{
-			return false;
-		}
-		UOSInt i = nPoint;
-		while (i-- > 0)
-		{
-			if (!ptList[i].EqualsNearly(this->pointArr[i]))
+			if (this->zArr)
 			{
-				return false;
-			}
-		}
-		if (this->zArr)
-		{
-			valArr = pl->zArr;
-			i = nPoint;
-			while (i-- > 0)
-			{
-				if (!Math::NearlyEqualsDbl(valArr[i], this->zArr[i]))
+				valArr = pl->zArr;
+				i = nPoint;
+				while (i-- > 0)
 				{
-					return false;
+					if (valArr[i] != this->zArr[i])
+					{
+						return false;
+					}
 				}
 			}
-		}
-		if (this->mArr)
-		{
-			valArr = pl->mArr;
-			i = nPoint;
-			while (i-- > 0)
+			if (this->mArr)
 			{
-				if (!Math::NearlyEqualsDbl(valArr[i], this->mArr[i]))
+				valArr = pl->mArr;
+				i = nPoint;
+				while (i-- > 0)
 				{
-					return false;
+					if (valArr[i] != this->mArr[i])
+					{
+						return false;
+					}
 				}
 			}
 		}

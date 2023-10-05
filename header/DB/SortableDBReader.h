@@ -11,7 +11,7 @@ namespace DB
 	{
 	private:
 		UOSInt currIndex;
-		Data::ArrayList<Data::VariObject*> objList;
+		Data::ArrayListNN<Data::VariObject> objList;
 		Data::ArrayListNN<DB::ColDef> cols;
 
 		Data::VariItem *GetItem(UOSInt colIndex);

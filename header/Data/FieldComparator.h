@@ -9,7 +9,7 @@
 
 namespace Data
 {
-	class FieldComparator : public Comparator<Data::VariObject*>
+	class FieldComparator : public Comparator<NotNullPtr<Data::VariObject>>
 	{
 	private:
 		Data::ArrayListNN<Text::String> fieldNames;
@@ -18,7 +18,7 @@ namespace Data
 		FieldComparator(Text::CString compareConds);
 		virtual ~FieldComparator();
 
-		virtual OSInt Compare(VariObject *a, VariObject *b) const;
+		virtual OSInt Compare(NotNullPtr<VariObject> a, NotNullPtr<VariObject> b) const;
 		Bool IsValid();
 		Bool ToOrderClause(NotNullPtr<Text::StringBuilderUTF8> sb, DB::SQLType sqlType);
 

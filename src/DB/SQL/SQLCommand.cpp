@@ -2,58 +2,11 @@
 #include "MyMemory.h"
 #include "DB/SQL/CreateTableCommand.h"
 #include "DB/SQL/SQLCommand.h"
+#include "DB/SQL/SQLUtil.h"
 #include "Text/CharUtil.h"
 #include "Text/StringBuilderUTF8.h"
 
 #include <stdio.h>
-
-const UTF8Char *DB::SQL::SQLCommand::ParseNextWord(const UTF8Char *sql, NotNullPtr<Text::StringBuilderUTF8> sb, DB::SQLType sqlType)
-{
-	sb->ClearStr();
-	const UTF8Char *strStart = 0;
-	UTF8Char c;
-	while (true)
-	{
-		c = *sql++;
-		if (c == 0)
-		{
-			sql--;
-			if (strStart)
-			{
-				sb->AppendSlow(strStart);
-			}
-			return sql;
-		}
-		else if (c == ' ' || c == '\t' || c == '\r' || c == '\n')
-		{
-			if (strStart)
-			{
-				sb->AppendC(strStart, (UOSInt)(sql - strStart - 1));
-				return sql;
-			}
-		}
-		else if (c == '(' || c == ')' || c == ',')
-		{
-			if (strStart)
-			{
-				sb->AppendC(strStart, (UOSInt)(sql - strStart - 1));
-				return sql - 1;
-			}
-			else
-			{
-				sb->AppendUTF8Char(c);
-				return sql;
-			}
-		}
-		else
-		{
-			if (strStart == 0)
-			{
-				strStart = sql - 1;
-			}
-		}
-	}
-}
 
 Bool DB::SQL::SQLCommand::IsPunctuation(const UTF8Char *s)
 {
@@ -65,19 +18,19 @@ DB::SQL::SQLCommand *DB::SQL::SQLCommand::Parse(const UTF8Char *sql, DB::SQLType
 	printf("SQLCommand: Cmd: %s\r\n", sql);
 	DB::SQL::SQLCommand *cmd = 0;
 	Text::StringBuilderUTF8 sb;
-	sql = ParseNextWord(sql, sb, sqlType);
+	sql = SQLUtil::ParseNextWord(sql, sb, sqlType);
 	if (sb.EqualsICase(UTF8STRC("CREATE")))
 	{
 		Bool isVirtual = false;
-		sql = ParseNextWord(sql, sb, sqlType);
+		sql = SQLUtil::ParseNextWord(sql, sb, sqlType);
 		if (sb.EqualsICase(UTF8STRC("VIRTUAL")))
 		{
 			isVirtual = true;
-			sql = ParseNextWord(sql, sb, sqlType);
+			sql = SQLUtil::ParseNextWord(sql, sb, sqlType);
 		}
 		if (sb.EqualsICase(UTF8STRC("TABLE")))
 		{
-			sql = ParseNextWord(sql, sb, sqlType);
+			sql = SQLUtil::ParseNextWord(sql, sb, sqlType);
 			if (sb.GetLength() == 0)
 			{
 				printf("SQLCommand: Missing table name\r\n");
@@ -98,12 +51,12 @@ DB::SQL::SQLCommand *DB::SQL::SQLCommand::Parse(const UTF8Char *sql, DB::SQLType
 				{
 					NEW_CLASS(tab, DB::TableDef(CSTR_NULL, sb.ToCString()));
 				}
-				sql = ParseNextWord(sql, sb, sqlType);
+				sql = SQLUtil::ParseNextWord(sql, sb, sqlType);
 				if (sb.Equals(UTF8STRC("(")))
 				{
 					while (true)
 					{
-						sql = ParseNextWord(sql, sb, sqlType);
+						sql = SQLUtil::ParseNextWord(sql, sb, sqlType);
 						if (sb.GetLength() == 0)
 						{
 							printf("SQLCommand: Expected column name\r\n");
@@ -116,19 +69,19 @@ DB::SQL::SQLCommand *DB::SQL::SQLCommand::Parse(const UTF8Char *sql, DB::SQLType
 						}
 						if (sb.EqualsICase(UTF8STRC("PRIMARY")) && sqlType == DB::SQLType::SQLite)
 						{
-							sql = ParseNextWord(sql, sb, sqlType);
+							sql = SQLUtil::ParseNextWord(sql, sb, sqlType);
 							if (!sb.EqualsICase(UTF8STRC("KEY")))
 							{
 								printf("SQLCommand: Expected key after primary, now is %s\r\n", sb.ToString());
 								break;
 							}
-							sql = ParseNextWord(sql, sb, sqlType);
+							sql = SQLUtil::ParseNextWord(sql, sb, sqlType);
 							if (!sb.Equals(UTF8STRC("(")))
 							{
 								printf("SQLCommand: Expected '(' after primary key, now is %s\r\n", sb.ToString());
 								break;
 							}
-							sql = ParseNextWord(sql, sb, sqlType);
+							sql = SQLUtil::ParseNextWord(sql, sb, sqlType);
 							Bool err = false;
 							UOSInt i;
 							while (true)
@@ -150,14 +103,14 @@ DB::SQL::SQLCommand *DB::SQL::SQLCommand::Parse(const UTF8Char *sql, DB::SQLType
 										break;
 									}
 								}
-								sql = ParseNextWord(sql, sb, sqlType);
+								sql = SQLUtil::ParseNextWord(sql, sb, sqlType);
 								if (sb.Equals(UTF8STRC(",")))
 								{
-									sql = ParseNextWord(sql, sb, sqlType);
+									sql = SQLUtil::ParseNextWord(sql, sb, sqlType);
 								}
 								else if (sb.Equals(UTF8STRC(")")))
 								{
-									sql = ParseNextWord(sql, sb, sqlType);
+									sql = SQLUtil::ParseNextWord(sql, sb, sqlType);
 									break;
 								}
 								else
@@ -191,7 +144,7 @@ DB::SQL::SQLCommand *DB::SQL::SQLCommand::Parse(const UTF8Char *sql, DB::SQLType
 							UOSInt brkCnt = 0;
 							while (true)
 							{
-								sql = ParseNextWord(sql, sb, sqlType);
+								sql = SQLUtil::ParseNextWord(sql, sb, sqlType);
 								if (sql == 0)
 								{
 									break;
@@ -234,7 +187,7 @@ DB::SQL::SQLCommand *DB::SQL::SQLCommand::Parse(const UTF8Char *sql, DB::SQLType
 							{
 								NEW_CLASSNN(col, DB::ColDef(sb.ToCString()));
 							}
-							sql = ParseNextWord(sql, sb, sqlType);
+							sql = SQLUtil::ParseNextWord(sql, sb, sqlType);
 							if (sqlType == DB::SQLType::SQLite && (sb.Equals(UTF8STRC(",")) || sb.Equals(UTF8STRC(")"))))
 							{
 
@@ -260,11 +213,11 @@ DB::SQL::SQLCommand *DB::SQL::SQLCommand::Parse(const UTF8Char *sql, DB::SQLType
 								col->SetColType(colType);
 								col->SetColSize(colSize);
 								col->SetColDP(colDP);
-								sql = ParseNextWord(sql, sb, sqlType);
+								sql = SQLUtil::ParseNextWord(sql, sb, sqlType);
 							}
 							if (sb.Equals(UTF8STRC("(")))
 							{
-								sql = ParseNextWord(sql, sb, sqlType);
+								sql = SQLUtil::ParseNextWord(sql, sb, sqlType);
 								if (!sb.ToUOSInt(colSize))
 								{
 									printf("SQLCommand: Unexpected column size: %s\r\n", sb.ToString());
@@ -272,10 +225,10 @@ DB::SQL::SQLCommand *DB::SQL::SQLCommand::Parse(const UTF8Char *sql, DB::SQLType
 									break;
 								}
 								col->SetColSize(colSize);
-								sql = ParseNextWord(sql, sb, sqlType);
+								sql = SQLUtil::ParseNextWord(sql, sb, sqlType);
 								if (sb.Equals(UTF8STRC(",")))
 								{
-									sql = ParseNextWord(sql, sb, sqlType);
+									sql = SQLUtil::ParseNextWord(sql, sb, sqlType);
 									if (!sb.ToUOSInt(colSize))
 									{
 										printf("SQLCommand: Unexpected column dp: %s\r\n", sb.ToString());
@@ -283,7 +236,7 @@ DB::SQL::SQLCommand *DB::SQL::SQLCommand::Parse(const UTF8Char *sql, DB::SQLType
 										break;
 									}
 									col->SetColDP(colSize);
-									sql = ParseNextWord(sql, sb, sqlType);
+									sql = SQLUtil::ParseNextWord(sql, sb, sqlType);
 								}
 								if (!sb.Equals(UTF8STRC(")")))
 								{
@@ -291,7 +244,7 @@ DB::SQL::SQLCommand *DB::SQL::SQLCommand::Parse(const UTF8Char *sql, DB::SQLType
 									col.Delete();
 									break;
 								}
-								sql = ParseNextWord(sql, sb, sqlType);
+								sql = SQLUtil::ParseNextWord(sql, sb, sqlType);
 							}
 
 							Bool err = false;
@@ -299,29 +252,29 @@ DB::SQL::SQLCommand *DB::SQL::SQLCommand::Parse(const UTF8Char *sql, DB::SQLType
 							{
 								if (sb.EqualsICase(UTF8STRC("CONSTRAINT")))
 								{
-									sql = ParseNextWord(sql, sb, sqlType);
+									sql = SQLUtil::ParseNextWord(sql, sb, sqlType);
 									if (sb.GetLength() == 0 || IsPunctuation(sb.ToString()))
 									{
 										printf("SQLCommand: Unexpected constraint name: %s\r\n", sb.ToString());
 										err = true;
 										break;
 									}
-									sql = ParseNextWord(sql, sb, sqlType);
+									sql = SQLUtil::ParseNextWord(sql, sb, sqlType);
 								}
 								else if (sb.EqualsICase(UTF8STRC("PRIMARY")))
 								{
-									sql = ParseNextWord(sql, sb, sqlType);
+									sql = SQLUtil::ParseNextWord(sql, sb, sqlType);
 									if (sb.EqualsICase(UTF8STRC("KEY")))
 									{
 										col->SetPK(true);
-										sql = ParseNextWord(sql, sb, sqlType);
+										sql = SQLUtil::ParseNextWord(sql, sb, sqlType);
 										if (sb.EqualsICase(UTF8STRC("ASC")))
 										{
-											sql = ParseNextWord(sql, sb, sqlType);
+											sql = SQLUtil::ParseNextWord(sql, sb, sqlType);
 										}
 										else if (sb.EqualsICase(UTF8STRC("DESC")))
 										{
-											sql = ParseNextWord(sql, sb, sqlType);
+											sql = SQLUtil::ParseNextWord(sql, sb, sqlType);
 										}
 									}
 									else
@@ -334,19 +287,19 @@ DB::SQL::SQLCommand *DB::SQL::SQLCommand::Parse(const UTF8Char *sql, DB::SQLType
 								else if (sb.EqualsICase(UTF8STRC("autoincrement")))
 								{
 									col->SetAutoInc(DB::ColDef::AutoIncType::Default, 1, 1);
-									sql = ParseNextWord(sql, sb, sqlType);
+									sql = SQLUtil::ParseNextWord(sql, sb, sqlType);
 								}
 								else if (sb.EqualsICase(UTF8STRC("UNIQUE")))
 								{
-									sql = ParseNextWord(sql, sb, sqlType);
+									sql = SQLUtil::ParseNextWord(sql, sb, sqlType);
 								}
 								else if (sb.EqualsICase(UTF8STRC("NOT")))
 								{
-									sql = ParseNextWord(sql, sb, sqlType);
+									sql = SQLUtil::ParseNextWord(sql, sb, sqlType);
 									if (sb.EqualsICase(UTF8STRC("NULL")))
 									{
 										col->SetNotNull(true);
-										sql = ParseNextWord(sql, sb, sqlType);
+										sql = SQLUtil::ParseNextWord(sql, sb, sqlType);
 									}
 									else
 									{
@@ -357,14 +310,14 @@ DB::SQL::SQLCommand *DB::SQL::SQLCommand::Parse(const UTF8Char *sql, DB::SQLType
 								}
 								else if (sb.EqualsICase(UTF8STRC("default")))
 								{
-									sql = ParseNextWord(sql, sb, sqlType);
+									sql = SQLUtil::ParseNextWord(sql, sb, sqlType);
 									if (sb.Equals(UTF8STRC("(")))
 									{
 										Text::StringBuilderUTF8 sbDef;
 										UOSInt brkCnt = 1;
 										while (true)
 										{
-											sql = ParseNextWord(sql, sb, sqlType);
+											sql = SQLUtil::ParseNextWord(sql, sb, sqlType);
 											if (sb.GetLength() == 0)
 											{
 												printf("SQLCommand: Unexpected default value: %s\r\n", sb.ToString());
@@ -395,7 +348,7 @@ DB::SQL::SQLCommand *DB::SQL::SQLCommand::Parse(const UTF8Char *sql, DB::SQLType
 										{
 											break;
 										}
-										sql = ParseNextWord(sql, sb, sqlType);
+										sql = SQLUtil::ParseNextWord(sql, sb, sqlType);
 									}
 									else if (sb.GetLength() == 0 || IsPunctuation(sb.ToString()))
 									{
@@ -406,7 +359,7 @@ DB::SQL::SQLCommand *DB::SQL::SQLCommand::Parse(const UTF8Char *sql, DB::SQLType
 									else
 									{
 										col->SetDefVal(sb.ToCString());
-										sql = ParseNextWord(sql, sb, sqlType);
+										sql = SQLUtil::ParseNextWord(sql, sb, sqlType);
 									}
 								}
 								else if (sb.Equals(UTF8STRC(",")))

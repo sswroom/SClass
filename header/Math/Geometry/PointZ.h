@@ -20,8 +20,7 @@ namespace Math
 			Math::Vector3 GetPos3D() const;
 			virtual Bool HasZ() const;
 			virtual void ConvCSys(NotNullPtr<const Math::CoordinateSystem> srcCSys, NotNullPtr<const Math::CoordinateSystem> destCSys);
-			virtual Bool Equals(NotNullPtr<const Vector2D> vec) const;
-			virtual Bool EqualsNearly(NotNullPtr<const Vector2D> vec) const;
+			virtual Bool Equals(NotNullPtr<const Vector2D> vec, Bool sameTypeOnly, Bool nearlyVal) const;
 		};
 	}
 }

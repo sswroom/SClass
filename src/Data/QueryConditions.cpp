@@ -4,7 +4,7 @@
 #include "Text/StringBuilderUTF8.h"
 #include "Text/StringTool.h"
 
-Data::QueryConditions::FieldCondition::FieldCondition(Text::CString fieldName)
+Data::QueryConditions::FieldCondition::FieldCondition(Text::CStringNN fieldName)
 {
 	this->fieldName = Text::String::New(fieldName);
 }
@@ -19,25 +19,28 @@ Data::QueryConditions::FieldCondition::~FieldCondition()
 	this->fieldName->Release();
 }
 
-Bool Data::QueryConditions::FieldCondition::IsValid(Data::VariObject *obj)
+Bool Data::QueryConditions::FieldCondition::IsValid(NotNullPtr<Data::VariObject> obj)
 {
-	return this->TestValid(obj->GetItem(this->fieldName->v));
+	NotNullPtr<Data::VariItem> item;
+	if (!item.Set(obj->GetItem(this->fieldName->v)))
+		return false;
+	return this->TestValid(item);
 }
 
-Bool Data::QueryConditions::FieldCondition::IsValid(Data::ObjectGetter *getter)
+Bool Data::QueryConditions::FieldCondition::IsValid(NotNullPtr<Data::ObjectGetter> getter)
 {
-	Data::VariItem *item = getter->GetNewItem(this->fieldName->v);
+	NotNullPtr<Data::VariItem> item = getter->GetNewItem(this->fieldName->v);
 	Bool ret = this->TestValid(item);
-	SDEL_CLASS(item);
+	item.Delete();
 	return ret;
 }
 
-void Data::QueryConditions::FieldCondition::GetFieldList(Data::ArrayListNN<Text::String> *fieldList)
+void Data::QueryConditions::FieldCondition::GetFieldList(NotNullPtr<Data::ArrayListNN<Text::String>> fieldList)
 {
 	fieldList->Add(this->fieldName);
 }
 
-Data::QueryConditions::TimeBetweenCondition::TimeBetweenCondition(Text::CString fieldName, const Data::Timestamp &t1, const Data::Timestamp &t2) : FieldCondition(fieldName)
+Data::QueryConditions::TimeBetweenCondition::TimeBetweenCondition(Text::CStringNN fieldName, const Data::Timestamp &t1, const Data::Timestamp &t2) : FieldCondition(fieldName)
 {
 	this->t1 = t1;
 	this->t2 = t2;
@@ -67,9 +70,8 @@ Bool Data::QueryConditions::TimeBetweenCondition::ToWhereClause(NotNullPtr<Text:
 	return true;
 }
 
-Bool Data::QueryConditions::TimeBetweenCondition::TestValid(Data::VariItem *item)
+Bool Data::QueryConditions::TimeBetweenCondition::TestValid(NotNullPtr<Data::VariItem> item)
 {
-	if (item == 0) return false;
 	switch (item->GetItemType())
 	{
 	case Data::VariItem::ItemType::Timestamp:
@@ -100,7 +102,7 @@ Bool Data::QueryConditions::TimeBetweenCondition::TestValid(Data::VariItem *item
 	}
 }
 
-Data::QueryConditions::Int32Condition::Int32Condition(Text::CString fieldName, Int32 val, CompareCondition cond) : FieldCondition(fieldName)
+Data::QueryConditions::Int32Condition::Int32Condition(Text::CStringNN fieldName, Int32 val, CompareCondition cond) : FieldCondition(fieldName)
 {
 	this->val = val;
 	this->cond = cond;
@@ -126,9 +128,8 @@ Bool Data::QueryConditions::Int32Condition::ToWhereClause(NotNullPtr<Text::Strin
 	return true;
 }
 
-Bool Data::QueryConditions::Int32Condition::TestValid(Data::VariItem *item)
+Bool Data::QueryConditions::Int32Condition::TestValid(NotNullPtr<Data::VariItem> item)
 {
-	if (item == 0) return false;
 	Int64 iVal;
 	switch (item->GetItemType())
 	{
@@ -207,7 +208,7 @@ Data::QueryConditions::CompareCondition Data::QueryConditions::Int32Condition::G
 	return this->cond;
 }
 
-Data::QueryConditions::Int32InCondition::Int32InCondition(Text::CString fieldName, NotNullPtr<Data::ArrayList<Int32>> val) : FieldCondition(fieldName)
+Data::QueryConditions::Int32InCondition::Int32InCondition(Text::CStringNN fieldName, NotNullPtr<Data::ArrayList<Int32>> val) : FieldCondition(fieldName)
 {
 	this->vals.AddAll(val);
 }
@@ -240,9 +241,8 @@ Bool Data::QueryConditions::Int32InCondition::ToWhereClause(NotNullPtr<Text::Str
 	}
 }
 
-Bool Data::QueryConditions::Int32InCondition::TestValid(Data::VariItem *item)
+Bool Data::QueryConditions::Int32InCondition::TestValid(NotNullPtr<Data::VariItem> item)
 {
-	if (item == 0) return false;
 	Int64 iVal;
 	switch (item->GetItemType())
 	{
@@ -299,7 +299,7 @@ Bool Data::QueryConditions::Int32InCondition::TestValid(Data::VariItem *item)
 	return false;
 }
 
-Data::QueryConditions::Int64Condition::Int64Condition(Text::CString fieldName, Int64 val, CompareCondition cond) : FieldCondition(fieldName)
+Data::QueryConditions::Int64Condition::Int64Condition(Text::CStringNN fieldName, Int64 val, CompareCondition cond) : FieldCondition(fieldName)
 {
 	this->val = val;
 	this->cond = cond;
@@ -325,9 +325,8 @@ Bool Data::QueryConditions::Int64Condition::ToWhereClause(NotNullPtr<Text::Strin
 	return true;
 }
 
-Bool Data::QueryConditions::Int64Condition::TestValid(Data::VariItem *item)
+Bool Data::QueryConditions::Int64Condition::TestValid(NotNullPtr<Data::VariItem> item)
 {
-	if (item == 0) return false;
 	Int64 iVal;
 	switch (item->GetItemType())
 	{
@@ -406,7 +405,7 @@ Data::QueryConditions::CompareCondition Data::QueryConditions::Int64Condition::G
 	return this->cond;
 }
 
-Data::QueryConditions::DoubleCondition::DoubleCondition(Text::CString fieldName, Double val, CompareCondition cond) : FieldCondition(fieldName)
+Data::QueryConditions::DoubleCondition::DoubleCondition(Text::CStringNN fieldName, Double val, CompareCondition cond) : FieldCondition(fieldName)
 {
 	this->val = val;
 	this->cond = cond;
@@ -432,9 +431,8 @@ Bool Data::QueryConditions::DoubleCondition::ToWhereClause(NotNullPtr<Text::Stri
 	return true;
 }
 
-Bool Data::QueryConditions::DoubleCondition::TestValid(Data::VariItem *item)
+Bool Data::QueryConditions::DoubleCondition::TestValid(NotNullPtr<Data::VariItem> item)
 {
-	if (item == 0) return false;
 	Double dVal;
 	switch (item->GetItemType())
 	{
@@ -498,7 +496,7 @@ Bool Data::QueryConditions::DoubleCondition::TestValid(Data::VariItem *item)
 	return false;
 }
 
-Data::QueryConditions::StringInCondition::StringInCondition(Text::CString fieldName, Data::ArrayList<const UTF8Char*> *val) : FieldCondition(fieldName)
+Data::QueryConditions::StringInCondition::StringInCondition(Text::CStringNN fieldName, Data::ArrayList<const UTF8Char*> *val) : FieldCondition(fieldName)
 {
 	UOSInt i = 0;
 	UOSInt j = val->GetCount();
@@ -576,9 +574,8 @@ Bool Data::QueryConditions::StringInCondition::ToWhereClause(NotNullPtr<Text::St
 	}
 }
 
-Bool Data::QueryConditions::StringInCondition::TestValid(Data::VariItem *item)
+Bool Data::QueryConditions::StringInCondition::TestValid(NotNullPtr<Data::VariItem> item)
 {
-	if (item == 0) return false;
 	const UTF8Char *csptr;
 	UOSInt i;
 	switch (item->GetItemType())
@@ -627,7 +624,7 @@ Bool Data::QueryConditions::StringInCondition::TestValid(Data::VariItem *item)
 	}
 }
 
-Data::QueryConditions::StringContainsCondition::StringContainsCondition(Text::CString fieldName, const UTF8Char *val) : FieldCondition(fieldName)
+Data::QueryConditions::StringContainsCondition::StringContainsCondition(Text::CStringNN fieldName, const UTF8Char *val) : FieldCondition(fieldName)
 {
 	this->val = Text::String::NewNotNullSlow(val);
 }
@@ -669,9 +666,8 @@ Bool Data::QueryConditions::StringContainsCondition::ToWhereClause(NotNullPtr<Te
 	return true;
 }
 
-Bool Data::QueryConditions::StringContainsCondition::TestValid(Data::VariItem *item)
+Bool Data::QueryConditions::StringContainsCondition::TestValid(NotNullPtr<Data::VariItem> item)
 {
-	if (item == 0) return false;
 	switch (item->GetItemType())
 	{
 	case Data::VariItem::ItemType::Str:
@@ -703,7 +699,7 @@ Bool Data::QueryConditions::StringContainsCondition::TestValid(Data::VariItem *i
 	}
 }
 
-Data::QueryConditions::StringEqualsCondition::StringEqualsCondition(Text::CString fieldName, Text::CString val) : FieldCondition(fieldName)
+Data::QueryConditions::StringEqualsCondition::StringEqualsCondition(Text::CStringNN fieldName, Text::CString val) : FieldCondition(fieldName)
 {
 	this->val = Text::String::New(val);
 }
@@ -741,9 +737,8 @@ Bool Data::QueryConditions::StringEqualsCondition::ToWhereClause(NotNullPtr<Text
 	return true;
 }
 
-Bool Data::QueryConditions::StringEqualsCondition::TestValid(Data::VariItem *item)
+Bool Data::QueryConditions::StringEqualsCondition::TestValid(NotNullPtr<Data::VariItem> item)
 {
-	if (item == 0) return false;
 	switch (item->GetItemType())
 	{
 	case Data::VariItem::ItemType::Str:
@@ -775,7 +770,7 @@ Bool Data::QueryConditions::StringEqualsCondition::TestValid(Data::VariItem *ite
 	}
 }
 
-Data::QueryConditions::BooleanCondition::BooleanCondition(Text::CString fieldName, Bool val) : FieldCondition(fieldName)
+Data::QueryConditions::BooleanCondition::BooleanCondition(Text::CStringNN fieldName, Bool val) : FieldCondition(fieldName)
 {
 	this->val = val;
 }
@@ -802,9 +797,8 @@ Bool Data::QueryConditions::BooleanCondition::ToWhereClause(NotNullPtr<Text::Str
 	return true;
 }
 
-Bool Data::QueryConditions::BooleanCondition::TestValid(Data::VariItem *item)
+Bool Data::QueryConditions::BooleanCondition::TestValid(NotNullPtr<Data::VariItem> item)
 {
-	if (item == 0) return false;
 	Bool bVal;
 	switch (item->GetItemType())
 	{
@@ -855,7 +849,7 @@ Bool Data::QueryConditions::BooleanCondition::TestValid(Data::VariItem *item)
 	return bVal == this->val;
 }
 
-Data::QueryConditions::NotNullCondition::NotNullCondition(Text::CString fieldName) : FieldCondition(fieldName)
+Data::QueryConditions::NotNullCondition::NotNullCondition(Text::CStringNN fieldName) : FieldCondition(fieldName)
 {
 }
 
@@ -878,9 +872,8 @@ Bool Data::QueryConditions::NotNullCondition::ToWhereClause(NotNullPtr<Text::Str
 	return true;
 }
 
-Bool Data::QueryConditions::NotNullCondition::TestValid(Data::VariItem *item)
+Bool Data::QueryConditions::NotNullCondition::TestValid(NotNullPtr<Data::VariItem> item)
 {
-	if (item == 0) return false;
 	switch (item->GetItemType())
 	{
 	case Data::VariItem::ItemType::F32:
@@ -908,14 +901,14 @@ Bool Data::QueryConditions::NotNullCondition::TestValid(Data::VariItem *item)
 	}
 }
 
-Data::QueryConditions::InnerCondition::InnerCondition(QueryConditions *innerCond)
+Data::QueryConditions::InnerCondition::InnerCondition(NotNullPtr<QueryConditions> innerCond)
 {
 	this->innerCond = innerCond;
 }
 
 Data::QueryConditions::InnerCondition::~InnerCondition()
 {
-	DEL_CLASS(this->innerCond);
+	this->innerCond.Delete();
 }
 
 Data::QueryConditions::ConditionType Data::QueryConditions::InnerCondition::GetType()
@@ -941,22 +934,22 @@ Bool Data::QueryConditions::InnerCondition::ToWhereClause(NotNullPtr<Text::Strin
 	}
 }
 
-Bool Data::QueryConditions::InnerCondition::IsValid(Data::VariObject *obj)
+Bool Data::QueryConditions::InnerCondition::IsValid(NotNullPtr<Data::VariObject> obj)
 {
 	return this->innerCond->IsValid(obj);
 }
 
-Bool Data::QueryConditions::InnerCondition::IsValid(Data::ObjectGetter *getter)
+Bool Data::QueryConditions::InnerCondition::IsValid(NotNullPtr<Data::ObjectGetter> getter)
 {
 	return this->innerCond->IsValid(getter);
 }
 
-void Data::QueryConditions::InnerCondition::GetFieldList(Data::ArrayListNN<Text::String> *fieldList)
+void Data::QueryConditions::InnerCondition::GetFieldList(NotNullPtr<Data::ArrayListNN<Text::String>> fieldList)
 {
 	this->innerCond->GetFieldList(fieldList);	
 }
 
-Data::QueryConditions *Data::QueryConditions::InnerCondition::GetConditions()
+NotNullPtr<Data::QueryConditions> Data::QueryConditions::InnerCondition::GetConditions()
 {
 	return this->innerCond;
 }
@@ -980,17 +973,17 @@ Bool Data::QueryConditions::OrCondition::ToWhereClause(NotNullPtr<Text::StringBu
 	return true;
 }
 
-Bool Data::QueryConditions::OrCondition::IsValid(Data::VariObject *obj)
+Bool Data::QueryConditions::OrCondition::IsValid(NotNullPtr<Data::VariObject> obj)
 {
 	return true;
 }
 
-Bool Data::QueryConditions::OrCondition::IsValid(Data::ObjectGetter *getter)
+Bool Data::QueryConditions::OrCondition::IsValid(NotNullPtr<Data::ObjectGetter> getter)
 {
 	return true;
 }
 
-void Data::QueryConditions::OrCondition::GetFieldList(Data::ArrayListNN<Text::String> *fieldList)
+void Data::QueryConditions::OrCondition::GetFieldList(NotNullPtr<Data::ArrayListNN<Text::String>> fieldList)
 {
 }
 
@@ -1003,14 +996,14 @@ Data::QueryConditions::~QueryConditions()
 	LIST_FREE_FUNC(&this->conditionList, DEL_CLASS);
 }
 
-Bool Data::QueryConditions::IsValid(Data::VariObject *obj)
+Bool Data::QueryConditions::IsValid(NotNullPtr<Data::VariObject> obj)
 {
-	return ObjectValid(obj, &this->conditionList);
+	return ObjectValid(obj, this->conditionList);
 }
 
-Bool Data::QueryConditions::IsValid(Data::ObjectGetter *getter)
+Bool Data::QueryConditions::IsValid(NotNullPtr<Data::ObjectGetter> getter)
 {
-	return ObjectValid(getter, &this->conditionList);
+	return ObjectValid(getter, this->conditionList);
 }
 
 Bool Data::QueryConditions::ToWhereClause(NotNullPtr<Text::StringBuilderUTF8> sb, DB::SQLType sqlType, Int8 tzQhr, UOSInt maxDBItem, Data::ArrayList<Condition*> *clientConditions)
@@ -1121,12 +1114,12 @@ Data::QueryConditions::Condition *Data::QueryConditions::GetItem(UOSInt index)
 	return this->conditionList.GetItem(index);
 }
 
-Data::ArrayList<Data::QueryConditions::Condition*> *Data::QueryConditions::GetList()
+NotNullPtr<Data::ArrayListNN<Data::QueryConditions::Condition>> Data::QueryConditions::GetList()
 {
-	return &this->conditionList;
+	return this->conditionList;
 }
 
-void Data::QueryConditions::GetFieldList(Data::ArrayListNN<Text::String> *fieldList)
+void Data::QueryConditions::GetFieldList(NotNullPtr<Data::ArrayListNN<Text::String>> fieldList)
 {
 	UOSInt i = 0;
 	UOSInt j = this->conditionList.GetCount();
@@ -1137,85 +1130,111 @@ void Data::QueryConditions::GetFieldList(Data::ArrayListNN<Text::String> *fieldL
 	}
 }
 
-Data::QueryConditions *Data::QueryConditions::TimeBetween(Text::CString fieldName, const Data::Timestamp &t1, const Data::Timestamp &t2)
+NotNullPtr<Data::QueryConditions> Data::QueryConditions::TimeBetween(Text::CStringNN fieldName, const Data::Timestamp &t1, const Data::Timestamp &t2)
 {
-	this->conditionList.Add(NEW_CLASS_D(TimeBetweenCondition(fieldName, t1, t2)));
-	return this;
+	NotNullPtr<TimeBetweenCondition> cond;
+	NEW_CLASSNN(cond, TimeBetweenCondition(fieldName, t1, t2));
+	this->conditionList.Add(cond);
+	return *this;
 }
 
-Data::QueryConditions *Data::QueryConditions::Or()
+NotNullPtr<Data::QueryConditions> Data::QueryConditions::Or()
 {
-	this->conditionList.Add(NEW_CLASS_D(OrCondition()));
-	return this;
+	NotNullPtr<OrCondition> cond;
+	NEW_CLASSNN(cond, OrCondition());
+	this->conditionList.Add(cond);
+	return *this;
 }
 
-Data::QueryConditions *Data::QueryConditions::InnerCond(QueryConditions *cond)
+NotNullPtr<Data::QueryConditions> Data::QueryConditions::InnerCond(NotNullPtr<QueryConditions> innerCond)
 {
-	this->conditionList.Add(NEW_CLASS_D(InnerCondition(cond)));
-	return this;
+	NotNullPtr<InnerCondition> cond;
+	NEW_CLASSNN(cond, InnerCondition(innerCond));
+	this->conditionList.Add(cond);
+	return *this;
 }
 
-Data::QueryConditions *Data::QueryConditions::Int32Equals(Text::CString fieldName, Int32 val)
+NotNullPtr<Data::QueryConditions> Data::QueryConditions::Int32Equals(Text::CStringNN fieldName, Int32 val)
 {
-	this->conditionList.Add(NEW_CLASS_D(Int32Condition(fieldName, val, CompareCondition::Equal)));
-	return this;
+	NotNullPtr<Int32Condition> cond;
+	NEW_CLASSNN(cond, Int32Condition(fieldName, val, CompareCondition::Equal));
+	this->conditionList.Add(cond);
+	return *this;
 }
 
-Data::QueryConditions *Data::QueryConditions::Int32In(Text::CString fieldName, NotNullPtr<Data::ArrayList<Int32>> vals)
+NotNullPtr<Data::QueryConditions> Data::QueryConditions::Int32In(Text::CStringNN fieldName, NotNullPtr<Data::ArrayList<Int32>> vals)
 {
-	this->conditionList.Add(NEW_CLASS_D(Int32InCondition(fieldName, vals)));
-	return this;
+	NotNullPtr<Int32InCondition> cond;
+	NEW_CLASSNN(cond, Int32InCondition(fieldName, vals));
+	this->conditionList.Add(cond);
+	return *this;
 }
 
-Data::QueryConditions *Data::QueryConditions::Int64Equals(Text::CString fieldName, Int64 val)
+NotNullPtr<Data::QueryConditions> Data::QueryConditions::Int64Equals(Text::CStringNN fieldName, Int64 val)
 {
-	this->conditionList.Add(NEW_CLASS_D(Int64Condition(fieldName, val, CompareCondition::Equal)));
-	return this;
+	NotNullPtr<Int64Condition> cond;
+	NEW_CLASSNN(cond, Int64Condition(fieldName, val, CompareCondition::Equal));
+	this->conditionList.Add(cond);
+	return *this;
 }
 
-Data::QueryConditions *Data::QueryConditions::DoubleGE(Text::CString fieldName, Double val)
+NotNullPtr<Data::QueryConditions> Data::QueryConditions::DoubleGE(Text::CStringNN fieldName, Double val)
 {
-	this->conditionList.Add(NEW_CLASS_D(DoubleCondition(fieldName, val, CompareCondition::GreaterOrEqual)));
-	return this;
+	NotNullPtr<DoubleCondition> cond;
+	NEW_CLASSNN(cond, DoubleCondition(fieldName, val, CompareCondition::GreaterOrEqual));
+	this->conditionList.Add(cond);
+	return *this;
 }
 
-Data::QueryConditions *Data::QueryConditions::DoubleLE(Text::CString fieldName, Double val)
+NotNullPtr<Data::QueryConditions> Data::QueryConditions::DoubleLE(Text::CStringNN fieldName, Double val)
 {
-	this->conditionList.Add(NEW_CLASS_D(DoubleCondition(fieldName, val, CompareCondition::GreaterOrEqual)));
-	return this;
+	NotNullPtr<DoubleCondition> cond;
+	NEW_CLASSNN(cond, DoubleCondition(fieldName, val, CompareCondition::GreaterOrEqual));
+	this->conditionList.Add(cond);
+	return *this;
 }
 
-Data::QueryConditions *Data::QueryConditions::StrIn(Text::CString fieldName, Data::ArrayList<const UTF8Char*> *vals)
+NotNullPtr<Data::QueryConditions> Data::QueryConditions::StrIn(Text::CStringNN fieldName, Data::ArrayList<const UTF8Char*> *vals)
 {
-	this->conditionList.Add(NEW_CLASS_D(StringInCondition(fieldName, vals)));
-	return this;
+	NotNullPtr<StringInCondition> cond;
+	NEW_CLASSNN(cond, StringInCondition(fieldName, vals));
+	this->conditionList.Add(cond);
+	return *this;
 }
 
-Data::QueryConditions *Data::QueryConditions::StrContains(Text::CString fieldName, const UTF8Char *val)
+NotNullPtr<Data::QueryConditions> Data::QueryConditions::StrContains(Text::CStringNN fieldName, const UTF8Char *val)
 {
-	this->conditionList.Add(NEW_CLASS_D(StringContainsCondition(fieldName, val)));
-	return this;
+	NotNullPtr<StringContainsCondition> cond;
+	NEW_CLASSNN(cond, StringContainsCondition(fieldName, val));
+	this->conditionList.Add(cond);
+	return *this;
 }
 
-Data::QueryConditions *Data::QueryConditions::StrEquals(Text::CString fieldName, Text::CString val)
+NotNullPtr<Data::QueryConditions> Data::QueryConditions::StrEquals(Text::CStringNN fieldName, Text::CString val)
 {
-	this->conditionList.Add(NEW_CLASS_D(StringEqualsCondition(fieldName, val)));
-	return this;
+	NotNullPtr<StringEqualsCondition> cond;
+	NEW_CLASSNN(cond, StringEqualsCondition(fieldName, val));
+	this->conditionList.Add(cond);
+	return *this;
 }
 
-Data::QueryConditions *Data::QueryConditions::BoolEquals(Text::CString fieldName, Bool val)
+NotNullPtr<Data::QueryConditions> Data::QueryConditions::BoolEquals(Text::CStringNN fieldName, Bool val)
 {
-	this->conditionList.Add(NEW_CLASS_D(BooleanCondition(fieldName, val)));
-	return this;
+	NotNullPtr<BooleanCondition> cond;
+	NEW_CLASSNN(cond, BooleanCondition(fieldName, val));
+	this->conditionList.Add(cond);
+	return *this;
 }
 
-Data::QueryConditions *Data::QueryConditions::NotNull(Text::CString fieldName)
+NotNullPtr<Data::QueryConditions> Data::QueryConditions::NotNull(Text::CStringNN fieldName)
 {
-	this->conditionList.Add(NEW_CLASS_D(NotNullCondition(fieldName)));
-	return this;
+	NotNullPtr<NotNullCondition> cond;
+	NEW_CLASSNN(cond, NotNullCondition(fieldName));
+	this->conditionList.Add(cond);
+	return *this;
 }
 
-Text::CString Data::QueryConditions::CompareConditionGetStr(CompareCondition cond)
+Text::CStringNN Data::QueryConditions::CompareConditionGetStr(CompareCondition cond)
 {
 	switch (cond)
 	{
@@ -1235,7 +1254,7 @@ Text::CString Data::QueryConditions::CompareConditionGetStr(CompareCondition con
 	return CSTR("");
 }
 
-Bool Data::QueryConditions::ObjectValid(Data::VariObject *obj, Data::ArrayList<Condition*> *conditionList)
+Bool Data::QueryConditions::ObjectValid(NotNullPtr<Data::VariObject> obj, NotNullPtr<Data::ArrayListNN<Condition>> conditionList)
 {
 	Bool ret = true;
 	Condition *cond;
@@ -1259,15 +1278,14 @@ Bool Data::QueryConditions::ObjectValid(Data::VariObject *obj, Data::ArrayList<C
 	return ret;
 }
 
-Bool Data::QueryConditions::ObjectValid(Data::ObjectGetter *getter, Data::ArrayList<Condition*> *conditionList)
+Bool Data::QueryConditions::ObjectValid(NotNullPtr<Data::ObjectGetter> getter, NotNullPtr<Data::ArrayListNN<Condition>> conditionList)
 {
 	Bool ret = true;
-	Condition *cond;
-	UOSInt i = 0;
-	UOSInt j = conditionList->GetCount();
-	while (i < j)
+	NotNullPtr<Condition> cond;
+	Data::ArrayIterator<NotNullPtr<Condition>> it = conditionList->Iterator();
+	while (it.HasNext())
 	{
-		cond = conditionList->GetItem(i);
+		cond = it.Next();
 		if (cond->GetType() == ConditionType::Or)
 		{
 			if (ret)
@@ -1278,7 +1296,6 @@ Bool Data::QueryConditions::ObjectValid(Data::ObjectGetter *getter, Data::ArrayL
 		{
 			ret = ret && cond->IsValid(getter);
 		}
-		i++;
 	}
 	return ret;
 }

@@ -255,7 +255,7 @@ Map::ESRI::FileGDBTableInfo *Map::ESRI::FileGDBUtil::TableInfoClone(FileGDBTable
 	return newTable;
 }
 
-UOSInt Map::ESRI::FileGDBUtil::ReadVarUInt(const UInt8 *buff, UOSInt ofst, UInt64 *val)
+UOSInt Map::ESRI::FileGDBUtil::ReadVarUInt(const UInt8 *buff, UOSInt ofst, OutParam<UInt64> val)
 {
 	UInt64 v = 0;
 	UOSInt i = 0;
@@ -271,11 +271,11 @@ UOSInt Map::ESRI::FileGDBUtil::ReadVarUInt(const UInt8 *buff, UOSInt ofst, UInt6
 		}
 		i += 7;
 	}
-	*val = v;
+	val.Set(v);
 	return ofst;
 }
 
-UOSInt Map::ESRI::FileGDBUtil::ReadVarInt(const UInt8 *buff, UOSInt ofst, Int64 *val)
+UOSInt Map::ESRI::FileGDBUtil::ReadVarInt(const UInt8 *buff, UOSInt ofst, OutParam<Int64> val)
 {
 	Bool sign = (buff[ofst] & 0x40) != 0;
 	Int64 v = 0;
@@ -294,16 +294,16 @@ UOSInt Map::ESRI::FileGDBUtil::ReadVarInt(const UInt8 *buff, UOSInt ofst, Int64 
 	}
 	if (sign)
 	{
-		*val = -v;
+		val.Set(-v);
 	}
 	else
 	{
-		*val = v;
+		val.Set(v);
 	}
 	return ofst;
 }
 
-UOSInt Map::ESRI::FileGDBUtil::ReadVarUInt(Data::ByteArrayR buff, UOSInt ofst, UInt64 *val)
+UOSInt Map::ESRI::FileGDBUtil::ReadVarUInt(Data::ByteArrayR buff, UOSInt ofst, OutParam<UInt64> val)
 {
 	UInt64 v = 0;
 	UOSInt i = 0;
@@ -319,11 +319,11 @@ UOSInt Map::ESRI::FileGDBUtil::ReadVarUInt(Data::ByteArrayR buff, UOSInt ofst, U
 		}
 		i += 7;
 	}
-	*val = v;
+	val.Set(v);
 	return ofst;
 }
 
-UOSInt Map::ESRI::FileGDBUtil::ReadVarInt(Data::ByteArrayR buff, UOSInt ofst, Int64 *val)
+UOSInt Map::ESRI::FileGDBUtil::ReadVarInt(Data::ByteArrayR buff, UOSInt ofst, OutParam<Int64> val)
 {
 	Bool sign = (buff[ofst] & 0x40) != 0;
 	Int64 v = 0;
@@ -342,16 +342,16 @@ UOSInt Map::ESRI::FileGDBUtil::ReadVarInt(Data::ByteArrayR buff, UOSInt ofst, In
 	}
 	if (sign)
 	{
-		*val = -v;
+		val.Set(-v);
 	}
 	else
 	{
-		*val = v;
+		val.Set(v);
 	}
 	return ofst;
 }
 
-Text::CString Map::ESRI::FileGDBUtil::GeometryTypeGetName(UInt8 t)
+Text::CStringNN Map::ESRI::FileGDBUtil::GeometryTypeGetName(UInt8 t)
 {
 	switch (t)
 	{
@@ -400,7 +400,7 @@ Text::CString Map::ESRI::FileGDBUtil::GeometryTypeGetName(UInt8 t)
 	}
 }
 
-Text::CString Map::ESRI::FileGDBUtil::FieldTypeGetName(UInt8 t)
+Text::CStringNN Map::ESRI::FileGDBUtil::FieldTypeGetName(UInt8 t)
 {
 	switch (t)
 	{

@@ -87,6 +87,8 @@ namespace DB
 		Text::String *GetDefVal() const;
 		Text::String *GetAttr() const;
 		Bool GetDefVal(NotNullPtr<DB::SQLBuilder> sql) const;
+		DB::ColDef::GeometryType GetGeometryType() const;
+		UInt32 GetGeometrySRID() const;
 
 		void SetColName(NotNullPtr<const UTF8Char> colName);
 		void SetColName(Text::CString colName);

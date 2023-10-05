@@ -142,7 +142,7 @@ Data::VariItem *Data::Class::GetNewValue(UOSInt index, void *obj)
 		return 0;
 	}
 	void *valPtr = (void*)(field->ofst + (UInt8*)obj);
-	return Data::VariItem::NewFromPtr(valPtr, field->itemType);
+	return Data::VariItem::NewFromPtr(valPtr, field->itemType).Ptr();
 }
 
 Bool Data::Class::GetValue(Data::VariItem *itm, UOSInt index, void *obj)

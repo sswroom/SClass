@@ -297,6 +297,18 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::CheckDataFile()
 		UI::MessageDialog::ShowDialog(CSTR("Error in getting table name"), CSTR("Check Table Changes"), this);
 		return false;
 	}
+	Text::StringBuilderUTF8 sbIgnore;
+	UOSInt nIgnore;
+	Text::PString ignoreArr[10];
+	this->txtIgnoreCol->GetText(sbIgnore);
+	if (sbIgnore.GetLength() > 0)
+	{
+		nIgnore = Text::StrSplitTrimP(ignoreArr, 10, sbIgnore, ',');
+	}
+	else
+	{
+		nIgnore = 0;
+	}
 	DB::TableDef *table = this->db->GetTableDef(this->schema, this->table);
 	if (table == 0)
 	{
@@ -335,16 +347,28 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::CheckDataFile()
 			found = false;
 			if (sptr)
 			{
-				i = 0;
-				while (i < j)
+				i = nIgnore;
+				while (i-- > 0)
 				{
-					if (table->GetCol(i)->GetColName()->EqualsICase(sbuff, (UOSInt)(sptr - sbuff)))
+					if (ignoreArr[i].EqualsICase(sbuff, (UOSInt)(sptr - sbuff)))
 					{
 						found = true;
-						colInd.SetItem(i, k);
 						break;
 					}
-					i++;
+				}
+				if (!found)
+				{
+					i = 0;
+					while (i < j)
+					{
+						if (table->GetCol(i)->GetColName()->EqualsICase(sbuff, (UOSInt)(sptr - sbuff)))
+						{
+							found = true;
+							colInd.SetItem(i, k);
+							break;
+						}
+						i++;
+					}
 				}
 			}
 			if (!found)
@@ -545,7 +569,8 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::CheckDataFile()
 						}
 						else
 						{
-							switch (table->GetCol(i)->GetColType())
+							DB::ColDef *col = table->GetCol(i);
+							switch (col->GetColType())
 							{
 							case DB::DBUtil::CT_VarUTF8Char:
 							case DB::DBUtil::CT_VarUTF16Char:
@@ -624,6 +649,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::CheckDataFile()
 									NotNullPtr<Math::Geometry::Vector2D> vec1;
 									if (vec1.Set(r->GetVector(i)))
 									{
+										vec1->SetSRID(col->GetGeometrySRID());
 										NotNullPtr<Math::Geometry::Vector2D> vec2;
 										Math::WKTReader reader(vec1->GetSRID());
 										if (!vec2.Set(reader.ParseWKT(rowData[i]->v)))
@@ -632,7 +658,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::CheckDataFile()
 										}
 										else
 										{
-											if (!vec1->EqualsNearly(vec2))
+											if (!vec1->Equals(vec2, false, true))
 											{
 												diff = true;
 											}
@@ -737,6 +763,18 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool ax
 		UI::MessageDialog::ShowDialog(CSTR("Error in getting table name"), CSTR("Check Table Changes"), this);
 		return false;
 	}
+	Text::StringBuilderUTF8 sbIgnore;
+	UOSInt nIgnore;
+	Text::PString ignoreArr[10];
+	this->txtIgnoreCol->GetText(sbIgnore);
+	if (sbIgnore.GetLength() > 0)
+	{
+		nIgnore = Text::StrSplitTrimP(ignoreArr, 10, sbIgnore, ',');
+	}
+	else
+	{
+		nIgnore = 0;
+	}
 	DB::TableDef *table = this->db->GetTableDef(this->schema, this->table);
 	if (table == 0)
 	{
@@ -811,16 +849,28 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool ax
 			sptr = r->GetName(k, sbuff);
 			if (sptr)
 			{
-				i = 0;
-				while (i < j)
+				i = nIgnore;
+				while (i-- > 0)
 				{
-					if (table->GetCol(i)->GetColName()->EqualsICase(sbuff, (UOSInt)(sptr - sbuff)))
+					if (ignoreArr[i].EqualsICase(sbuff, (UOSInt)(sptr - sbuff)))
 					{
 						found = true;
-						colInd.SetItem(i, k);
 						break;
 					}
-					i++;
+				}
+				if (!found)
+				{
+					i = 0;
+					while (i < j)
+					{
+						if (table->GetCol(i)->GetColName()->EqualsICase(sbuff, (UOSInt)(sptr - sbuff)))
+						{
+							found = true;
+							colInd.SetItem(i, k);
+							break;
+						}
+						i++;
+					}
 				}
 			}
 			if (!found)
@@ -1238,7 +1288,8 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool ax
 						}
 						else
 						{
-							switch (table->GetCol(i)->GetColType())
+							DB::ColDef *col = table->GetCol(i);
+							switch (col->GetColType())
 							{
 							case DB::DBUtil::CT_VarUTF8Char:
 							case DB::DBUtil::CT_VarUTF16Char:
@@ -1378,13 +1429,14 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool ax
 									NotNullPtr<Math::Geometry::Vector2D> vec2;
 									if (vec1.Set(r->GetVector(i)))
 									{
+										vec1->SetSRID(col->GetGeometrySRID());
 										Math::WKTReader reader(vec1->GetSRID());
 										if (!vec2.Set(reader.ParseWKT(rowData[i]->v)))
 										{
 										}
 										else
 										{
-											if (!vec1->EqualsNearly(vec2))
+											if (!vec1->Equals(vec2, false, true))
 											{
 												if (diff)
 												{
@@ -1769,8 +1821,12 @@ SSWR::AVIRead::AVIRDBCheckChgForm::AVIRDBCheckChgForm(UI::GUIClientControl *pare
 	NEW_CLASSNN(this->txtTable, UI::GUITextBox(ui, this, table.OrEmpty()));
 	this->txtTable->SetRect(100, 24, 200, 23, false);
 	this->txtTable->SetReadOnly(true);
+	NEW_CLASSNN(this->lblSrcFilter, UI::GUILabel(ui, this, CSTR("Source Filter")));
+	this->lblSrcFilter->SetRect(0, 48, 100, 23, false);
+	NEW_CLASSNN(this->txtSrcFilter, UI::GUITextBox(ui, this, CSTR("")));
+	this->txtSrcFilter->SetRect(100, 48, 200, 23, false);
 	NEW_CLASSNN(this->grpData, UI::GUIGroupBox(ui, this, CSTR("Data Source")));
-	this->grpData->SetRect(0, 48, 800, 168, false);
+	this->grpData->SetRect(0, 72, 800, 192, false);
 	NEW_CLASSNN(this->chkNoHeader, UI::GUICheckBox(ui, this->grpData.Ptr(), CSTR("CSV No Header"), false));
 	this->chkNoHeader->SetRect(100, 0, 200, 23, false);
 	NEW_CLASSNN(this->chkLocalTZ, UI::GUICheckBox(ui, this->grpData.Ptr(), CSTR("Local Timezone"), false));
@@ -1799,39 +1855,43 @@ SSWR::AVIRead::AVIRDBCheckChgForm::AVIRDBCheckChgForm(UI::GUIClientControl *pare
 	this->cboNullCol->AddItem(CSTR("\"NULL\""), 0);
 	this->cboNullCol->AddItem(CSTR("\"null\""), 0);
 	this->cboNullCol->SetSelectedIndex(0);
+	NEW_CLASSNN(this->lblIgnoreCol, UI::GUILabel(ui, this->grpData.Ptr(), CSTR("Ignore Columns")));
+	this->lblIgnoreCol->SetRect(0, 120, 100, 23, false);
+	NEW_CLASSNN(this->txtIgnoreCol, UI::GUITextBox(ui, this->grpData.Ptr(), CSTR("")));
+	this->txtIgnoreCol->SetRect(100, 120, 300, 23, false);
 	NEW_CLASSNN(this->btnDataCheck, UI::GUIButton(ui, this->grpData.Ptr(), CSTR("Check")));
-	this->btnDataCheck->SetRect(100, 120, 75, 23, false);
+	this->btnDataCheck->SetRect(100, 144, 75, 23, false);
 	this->btnDataCheck->HandleButtonClick(OnDataCheckClk, this);
 	NEW_CLASSNN(this->lblDataFileRow, UI::GUILabel(ui, this, CSTR("Data Rows")));
-	this->lblDataFileRow->SetRect(0, 240, 100, 23, false);
+	this->lblDataFileRow->SetRect(0, 264, 100, 23, false);
 	NEW_CLASSNN(this->txtDataFileRow, UI::GUITextBox(ui, this, CSTR("0")));
-	this->txtDataFileRow->SetRect(100, 240, 200, 23, false);
+	this->txtDataFileRow->SetRect(100, 264, 200, 23, false);
 	this->txtDataFileRow->SetReadOnly(true);
 	NEW_CLASSNN(this->lblNoChg, UI::GUILabel(ui, this, CSTR("No Changes")));
-	this->lblNoChg->SetRect(0, 264, 100, 23, false);
+	this->lblNoChg->SetRect(0, 288, 100, 23, false);
 	NEW_CLASSNN(this->txtNoChg, UI::GUITextBox(ui, this, CSTR("0")));
-	this->txtNoChg->SetRect(100, 264, 200, 23, false);
+	this->txtNoChg->SetRect(100, 288, 200, 23, false);
 	this->txtNoChg->SetReadOnly(true);
 	NEW_CLASSNN(this->lblUpdated, UI::GUILabel(ui, this, CSTR("Updated rows")));
-	this->lblUpdated->SetRect(0, 288, 100, 23, false);
+	this->lblUpdated->SetRect(0, 312, 100, 23, false);
 	NEW_CLASSNN(this->txtUpdated, UI::GUITextBox(ui, this, CSTR("0")));
-	this->txtUpdated->SetRect(100, 288, 200, 23, false);
+	this->txtUpdated->SetRect(100, 312, 200, 23, false);
 	this->txtUpdated->SetReadOnly(true);
 	NEW_CLASSNN(this->lblNewRow, UI::GUILabel(ui, this, CSTR("New rows")));
-	this->lblNewRow->SetRect(0, 312, 100, 23, false);
+	this->lblNewRow->SetRect(0, 336, 100, 23, false);
 	NEW_CLASSNN(this->txtNewRow, UI::GUITextBox(ui, this, CSTR("0")));
-	this->txtNewRow->SetRect(100, 312, 200, 23, false);
+	this->txtNewRow->SetRect(100, 336, 200, 23, false);
 	this->txtNewRow->SetReadOnly(true);
 	NEW_CLASSNN(this->lblDeletedRow, UI::GUILabel(ui, this, CSTR("Deleted rows")));
-	this->lblDeletedRow->SetRect(0, 336, 100, 23, false);
+	this->lblDeletedRow->SetRect(0, 360, 100, 23, false);
 	NEW_CLASSNN(this->txtDeletedRow, UI::GUITextBox(ui, this, CSTR("0")));
-	this->txtDeletedRow->SetRect(100, 336, 200, 23, false);
+	this->txtDeletedRow->SetRect(100, 360, 200, 23, false);
 	this->txtDeletedRow->SetReadOnly(true);
 
 	NEW_CLASSNN(this->lblDBType, UI::GUILabel(ui, this, CSTR("SQL Type")));
-	this->lblDBType->SetRect(0, 384, 100, 23, false);
+	this->lblDBType->SetRect(0, 408, 100, 23, false);
 	NEW_CLASSNN(this->cboDBType, UI::GUIComboBox(ui, this, false));
-	this->cboDBType->SetRect(100, 384, 200, 23, false);
+	this->cboDBType->SetRect(100, 408, 200, 23, false);
 	this->cboDBType->AddItem(CSTR("MySQL"), (void*)DB::SQLType::MySQL);
 	this->cboDBType->AddItem(CSTR("SQL Server"), (void*)DB::SQLType::MSSQL);
 	this->cboDBType->AddItem(CSTR("PostgreSQL"), (void*)DB::SQLType::PostgreSQL);
@@ -1855,24 +1915,24 @@ SSWR::AVIRead::AVIRDBCheckChgForm::AVIRDBCheckChgForm(UI::GUIClientControl *pare
 	else
 		this->cboDBType->SetSelectedIndex(0);
 	NEW_CLASSNN(this->chkAxisAware, UI::GUICheckBox(ui, this, CSTR("Axis-Aware (MySQL >=8)"), false));
-	this->chkAxisAware->SetRect(300, 384, 150, 23, false);
+	this->chkAxisAware->SetRect(300, 408, 150, 23, false);
 	NEW_CLASSNN(this->chkMultiRow, UI::GUICheckBox(ui, this, CSTR("Multi-Row Insert"), true));
-	this->chkMultiRow->SetRect(100, 408, 150, 23, false);
+	this->chkMultiRow->SetRect(100, 432, 150, 23, false);
 	NEW_CLASSNN(this->btnSQL, UI::GUIButton(ui, this, CSTR("Generate SQL")));
-	this->btnSQL->SetRect(100, 432, 75, 23, false);
+	this->btnSQL->SetRect(100, 456, 75, 23, false);
 	this->btnSQL->HandleButtonClick(OnSQLClicked, this);
 	NEW_CLASSNN(this->btnExecute, UI::GUIButton(ui, this, CSTR("Execute SQL")));
-	this->btnExecute->SetRect(180, 432, 75, 23, false);
+	this->btnExecute->SetRect(180, 456, 75, 23, false);
 	this->btnExecute->HandleButtonClick(OnExecuteClicked, this);
 	NEW_CLASSNN(this->lblStatTime, UI::GUILabel(ui, this, CSTR("Time Used")));
-	this->lblStatTime->SetRect(0, 456, 100, 23, false);
+	this->lblStatTime->SetRect(0, 480, 100, 23, false);
 	NEW_CLASSNN(this->txtStatTime, UI::GUITextBox(ui, this, CSTR("")));
-	this->txtStatTime->SetRect(100, 456, 150, 23 ,false);
+	this->txtStatTime->SetRect(100, 480, 150, 23 ,false);
 	this->txtStatTime->SetReadOnly(true);
 	NEW_CLASSNN(this->lblStatus, UI::GUILabel(ui, this, CSTR("Status")));
-	this->lblStatus->SetRect(0, 480, 100, 23, false);
+	this->lblStatus->SetRect(0, 504, 100, 23, false);
 	NEW_CLASSNN(this->txtStatus, UI::GUITextBox(ui, this, CSTR("")));
-	this->txtStatus->SetRect(100, 480, 300, 23 ,false);
+	this->txtStatus->SetRect(100, 504, 300, 23 ,false);
 	this->txtStatus->SetReadOnly(true);
 
 	this->HandleDropFiles(OnFiles, this);

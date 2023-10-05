@@ -73,34 +73,27 @@ void Math::Geometry::VectorString::ConvCSys(NotNullPtr<const Math::CoordinateSys
 	this->srid = destCSys->GetSRID();
 }
 
-Bool Math::Geometry::VectorString::Equals(NotNullPtr<const Math::Geometry::Vector2D> vec) const
+Bool Math::Geometry::VectorString::Equals(NotNullPtr<const Math::Geometry::Vector2D> vec, Bool sameTypeOnly, Bool nearlyVal) const
 {
 	if (vec->GetVectorType() != VectorType::String)
 	{
 		return false;
 	}
 	const VectorString *vstr = (const VectorString*)vec.Ptr();
-	return this->srid == vstr->srid &&
-		this->pos == vstr->pos &&
-		this->align == vstr->align &&
-		this->angleDegree == vstr->angleDegree &&
-		this->buffSize == vstr->buffSize &&
-		this->s->Equals(vstr->s);
-}
-
-Bool Math::Geometry::VectorString::EqualsNearly(NotNullPtr<const Math::Geometry::Vector2D> vec) const
-{
-	if (vec->GetVectorType() != VectorType::String)
-	{
-		return false;
-	}
-	const VectorString *vstr = (const VectorString*)vec.Ptr();
-	return this->srid == vstr->srid &&
-		this->pos.EqualsNearly(vstr->pos) &&
-		this->align == vstr->align &&
-		Math::NearlyEqualsDbl(this->angleDegree, vstr->angleDegree) &&
-		this->buffSize == vstr->buffSize &&
-		this->s->Equals(vstr->s);
+	if (nearlyVal)
+		return this->srid == vstr->srid &&
+			this->pos.EqualsNearly(vstr->pos) &&
+			this->align == vstr->align &&
+			Math::NearlyEqualsDbl(this->angleDegree, vstr->angleDegree) &&
+			this->buffSize == vstr->buffSize &&
+			this->s->Equals(vstr->s);
+	else
+		return this->srid == vstr->srid &&
+			this->pos == vstr->pos &&
+			this->align == vstr->align &&
+			this->angleDegree == vstr->angleDegree &&
+			this->buffSize == vstr->buffSize &&
+			this->s->Equals(vstr->s);
 }
 
 UOSInt Math::Geometry::VectorString::GetCoordinates(NotNullPtr<Data::ArrayListA<Math::Coord2DDbl>> coordList) const

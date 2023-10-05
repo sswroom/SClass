@@ -1263,228 +1263,228 @@ void Data::VariItem::ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const
 	}
 }
 
-Data::VariItem *Data::VariItem::NewNull()
+NotNullPtr<Data::VariItem> Data::VariItem::NewNull()
 {
 	ItemValue ival;
 	ival.str = 0;
-	Data::VariItem *item;
-	NEW_CLASS(item, Data::VariItem(ItemType::Null, ival));
+	NotNullPtr<Data::VariItem> item;
+	NEW_CLASSNN(item, Data::VariItem(ItemType::Null, ival));
 	return item;
 }
 
-Data::VariItem *Data::VariItem::NewStrSlow(const UTF8Char *str)
+NotNullPtr<Data::VariItem> Data::VariItem::NewStrSlow(const UTF8Char *str)
 {
 	if (str == 0) return NewNull();
 	ItemValue ival;
 	ival.cstr.v = str;
 	ival.cstr.leng = Text::StrCharCnt(str);
-	Data::VariItem *item;
-	NEW_CLASS(item, Data::VariItem(ItemType::CStr, ival));
+	NotNullPtr<Data::VariItem> item;
+	NEW_CLASSNN(item, Data::VariItem(ItemType::CStr, ival));
 	return item;
 }
 
-Data::VariItem *Data::VariItem::NewStr(Text::CString str)
+NotNullPtr<Data::VariItem> Data::VariItem::NewStr(Text::CString str)
 {
 	if (str.v == 0) return NewNull();
 	ItemValue ival;
 	ival.cstr.v = str.v;
 	ival.cstr.leng = str.leng;
-	Data::VariItem *item;
-	NEW_CLASS(item, Data::VariItem(ItemType::CStr, ival));
+	NotNullPtr<Data::VariItem> item;
+	NEW_CLASSNN(item, Data::VariItem(ItemType::CStr, ival));
 	return item;
 }
 
-Data::VariItem *Data::VariItem::NewStr(Text::String *str)
+NotNullPtr<Data::VariItem> Data::VariItem::NewStr(Text::String *str)
 {
 	if (str == 0) return NewNull();
 	ItemValue ival;
 	ival.str = str->Clone().Ptr();
-	Data::VariItem *item;
-	NEW_CLASS(item, Data::VariItem(ItemType::Str, ival));
+	NotNullPtr<Data::VariItem> item;
+	NEW_CLASSNN(item, Data::VariItem(ItemType::Str, ival));
 	return item;
 }
 
-Data::VariItem *Data::VariItem::NewDate(Data::DateTime *dt)
+NotNullPtr<Data::VariItem> Data::VariItem::NewDate(Data::DateTime *dt)
 {
 	if (dt == 0) return NewNull();
 	ItemValue ival;
 	ival.ts = Data::Timestamp(dt->ToTicks(), dt->GetTimeZoneQHR());
-	Data::VariItem *item;
-	NEW_CLASS(item, Data::VariItem(ItemType::Timestamp, ival));
+	NotNullPtr<Data::VariItem> item;
+	NEW_CLASSNN(item, Data::VariItem(ItemType::Timestamp, ival));
 	return item;
 }
 
-Data::VariItem *Data::VariItem::NewTS(const Data::Timestamp &ts)
+NotNullPtr<Data::VariItem> Data::VariItem::NewTS(const Data::Timestamp &ts)
 {
 	ItemValue ival;
 	ival.ts = ts;
-	Data::VariItem *item;
-	NEW_CLASS(item, Data::VariItem(ItemType::Timestamp, ival));
+	NotNullPtr<Data::VariItem> item;
+	NEW_CLASSNN(item, Data::VariItem(ItemType::Timestamp, ival));
 	return item;
 }
 
-Data::VariItem *Data::VariItem::NewF32(Single val)
+NotNullPtr<Data::VariItem> Data::VariItem::NewF32(Single val)
 {
 	ItemValue ival;
 	ival.f32 = val;
-	Data::VariItem *item;
-	NEW_CLASS(item, Data::VariItem(ItemType::F32, ival));
+	NotNullPtr<Data::VariItem> item;
+	NEW_CLASSNN(item, Data::VariItem(ItemType::F32, ival));
 	return item;
 }
 
-Data::VariItem *Data::VariItem::NewF64(Double val)
+NotNullPtr<Data::VariItem> Data::VariItem::NewF64(Double val)
 {
 	ItemValue ival;
 	ival.f64 = val;
-	Data::VariItem *item;
-	NEW_CLASS(item, Data::VariItem(ItemType::F64, ival));
+	NotNullPtr<Data::VariItem> item;
+	NEW_CLASSNN(item, Data::VariItem(ItemType::F64, ival));
 	return item;
 }
 
-Data::VariItem *Data::VariItem::NewI8(Int8 val)
+NotNullPtr<Data::VariItem> Data::VariItem::NewI8(Int8 val)
 {
 	ItemValue ival;
 	ival.i8 = val;
-	Data::VariItem *item;
-	NEW_CLASS(item, Data::VariItem(ItemType::I8, ival));
+	NotNullPtr<Data::VariItem> item;
+	NEW_CLASSNN(item, Data::VariItem(ItemType::I8, ival));
 	return item;
 }
 
-Data::VariItem *Data::VariItem::NewU8(UInt8 val)
+NotNullPtr<Data::VariItem> Data::VariItem::NewU8(UInt8 val)
 {
 	ItemValue ival;
 	ival.u8 = val;
-	Data::VariItem *item;
-	NEW_CLASS(item, Data::VariItem(ItemType::U8, ival));
+	NotNullPtr<Data::VariItem> item;
+	NEW_CLASSNN(item, Data::VariItem(ItemType::U8, ival));
 	return item;
 }
 
-Data::VariItem *Data::VariItem::NewI16(Int16 val)
+NotNullPtr<Data::VariItem> Data::VariItem::NewI16(Int16 val)
 {
 	ItemValue ival;
 	ival.i16 = val;
-	Data::VariItem *item;
-	NEW_CLASS(item, Data::VariItem(ItemType::I16, ival));
+	NotNullPtr<Data::VariItem> item;
+	NEW_CLASSNN(item, Data::VariItem(ItemType::I16, ival));
 	return item;
 }
 
-Data::VariItem *Data::VariItem::NewU16(UInt16 val)
+NotNullPtr<Data::VariItem> Data::VariItem::NewU16(UInt16 val)
 {
 	ItemValue ival;
 	ival.u16 = val;
-	Data::VariItem *item;
-	NEW_CLASS(item, Data::VariItem(ItemType::U16, ival));
+	NotNullPtr<Data::VariItem> item;
+	NEW_CLASSNN(item, Data::VariItem(ItemType::U16, ival));
 	return item;
 }
 
-Data::VariItem *Data::VariItem::NewI32(Int32 val)
+NotNullPtr<Data::VariItem> Data::VariItem::NewI32(Int32 val)
 {
 	ItemValue ival;
 	ival.i32 = val;
-	Data::VariItem *item;
-	NEW_CLASS(item, Data::VariItem(ItemType::I32, ival));
+	NotNullPtr<Data::VariItem> item;
+	NEW_CLASSNN(item, Data::VariItem(ItemType::I32, ival));
 	return item;
 }
 
-Data::VariItem *Data::VariItem::NewU32(UInt32 val)
+NotNullPtr<Data::VariItem> Data::VariItem::NewU32(UInt32 val)
 {
 	ItemValue ival;
 	ival.u32 = val;
-	Data::VariItem *item;
-	NEW_CLASS(item, Data::VariItem(ItemType::U32, ival));
+	NotNullPtr<Data::VariItem> item;
+	NEW_CLASSNN(item, Data::VariItem(ItemType::U32, ival));
 	return item;
 }
 
-Data::VariItem *Data::VariItem::NewI64(Int64 val)
+NotNullPtr<Data::VariItem> Data::VariItem::NewI64(Int64 val)
 {
 	ItemValue ival;
 	ival.i64 = val;
-	Data::VariItem *item;
-	NEW_CLASS(item, Data::VariItem(ItemType::I64, ival));
+	NotNullPtr<Data::VariItem> item;
+	NEW_CLASSNN(item, Data::VariItem(ItemType::I64, ival));
 	return item;
 }
 
-Data::VariItem *Data::VariItem::NewU64(UInt64 val)
+NotNullPtr<Data::VariItem> Data::VariItem::NewU64(UInt64 val)
 {
 	ItemValue ival;
 	ival.u64 = val;
-	Data::VariItem *item;
-	NEW_CLASS(item, Data::VariItem(ItemType::U64, ival));
+	NotNullPtr<Data::VariItem> item;
+	NEW_CLASSNN(item, Data::VariItem(ItemType::U64, ival));
 	return item;
 }
 
-Data::VariItem *Data::VariItem::NewBool(Bool val)
+NotNullPtr<Data::VariItem> Data::VariItem::NewBool(Bool val)
 {
 	ItemValue ival;
 	ival.boolean = val;
-	Data::VariItem *item;
-	NEW_CLASS(item, Data::VariItem(ItemType::BOOL, ival));
+	NotNullPtr<Data::VariItem> item;
+	NEW_CLASSNN(item, Data::VariItem(ItemType::BOOL, ival));
 	return item;
 }
 
-Data::VariItem *Data::VariItem::NewByteArr(const UInt8 *arr, UOSInt cnt)
+NotNullPtr<Data::VariItem> Data::VariItem::NewByteArr(const UInt8 *arr, UOSInt cnt)
 {
 	if (arr == 0) return NewNull();
 	ItemValue ival;
 	NEW_CLASS(ival.byteArr, Data::ReadonlyArray<UInt8>(arr, cnt));
-	Data::VariItem *item;
-	NEW_CLASS(item, Data::VariItem(ItemType::ByteArr, ival));
+	NotNullPtr<Data::VariItem> item;
+	NEW_CLASSNN(item, Data::VariItem(ItemType::ByteArr, ival));
 	return item;
 }
 
-Data::VariItem *Data::VariItem::NewByteArr(Data::ReadonlyArray<UInt8> *arr)
+NotNullPtr<Data::VariItem> Data::VariItem::NewByteArr(Data::ReadonlyArray<UInt8> *arr)
 {
 	if (arr == 0) return NewNull();
 	ItemValue ival;
 	ival.byteArr = arr->Clone().Ptr();
-	Data::VariItem *item;
-	NEW_CLASS(item, Data::VariItem(ItemType::ByteArr, ival));
+	NotNullPtr<Data::VariItem> item;
+	NEW_CLASSNN(item, Data::VariItem(ItemType::ByteArr, ival));
 	return item;
 }
 
-Data::VariItem *Data::VariItem::NewVector(Math::Geometry::Vector2D *vec)
+NotNullPtr<Data::VariItem> Data::VariItem::NewVector(Math::Geometry::Vector2D *vec)
 {
 	if (vec == 0) return NewNull();
 	ItemValue ival;
 	ival.vector = vec->Clone();
-	Data::VariItem *item;
-	NEW_CLASS(item, Data::VariItem(ItemType::Vector, ival));
+	NotNullPtr<Data::VariItem> item;
+	NEW_CLASSNN(item, Data::VariItem(ItemType::Vector, ival));
 	return item;
 }
 
-Data::VariItem *Data::VariItem::NewUUID(Data::UUID *uuid)
+NotNullPtr<Data::VariItem> Data::VariItem::NewUUID(Data::UUID *uuid)
 {
 	if (uuid == 0) return NewNull();
 	ItemValue ival;
 	ival.uuid = uuid->Clone();
-	Data::VariItem *item;
-	NEW_CLASS(item, Data::VariItem(ItemType::UUID, ival));
+	NotNullPtr<Data::VariItem> item;
+	NEW_CLASSNN(item, Data::VariItem(ItemType::UUID, ival));
 	return item;
 }
 
-Data::VariItem *Data::VariItem::NewVectorDirect(Math::Geometry::Vector2D *vec)
+NotNullPtr<Data::VariItem> Data::VariItem::NewVectorDirect(Math::Geometry::Vector2D *vec)
 {
 	NotNullPtr<Math::Geometry::Vector2D> nnvec;
 	if (!nnvec.Set(vec)) return NewNull();
 	ItemValue ival;
 	ival.vector = nnvec;
-	Data::VariItem *item;
-	NEW_CLASS(item, Data::VariItem(ItemType::Vector, ival));
+	NotNullPtr<Data::VariItem> item;
+	NEW_CLASSNN(item, Data::VariItem(ItemType::Vector, ival));
 	return item;
 }
 
-Data::VariItem *Data::VariItem::NewUUIDDirect(Data::UUID *uuid)
+NotNullPtr<Data::VariItem> Data::VariItem::NewUUIDDirect(Data::UUID *uuid)
 {
 	NotNullPtr<Data::UUID> nnuuid;
 	if (!nnuuid.Set(uuid)) return NewNull();
 	ItemValue ival;
 	ival.uuid = nnuuid;
-	Data::VariItem *item;
-	NEW_CLASS(item, Data::VariItem(ItemType::UUID, ival));
+	NotNullPtr<Data::VariItem> item;
+	NEW_CLASSNN(item, Data::VariItem(ItemType::UUID, ival));
 	return item;
 }
 
-Data::VariItem *Data::VariItem::NewFromPtr(void *ptr, ItemType itemType)
+NotNullPtr<Data::VariItem> Data::VariItem::NewFromPtr(void *ptr, ItemType itemType)
 {
 	switch (itemType)
 	{
@@ -1526,7 +1526,7 @@ Data::VariItem *Data::VariItem::NewFromPtr(void *ptr, ItemType itemType)
 		return NewUUID(*(Data::UUID**)ptr);
 	case ItemType::Unknown:
 	default:
-		return 0;
+		return NewNull();
 	}
 }
 
@@ -1922,7 +1922,7 @@ Bool Data::VariItem::PtrEquals(void *ptr1, void *ptr2, ItemType itemType)
 			{
 				return false;
 			}
-			return val1->Equals(val2);
+			return val1->Equals(val2, true, false);
 		}
 	case ItemType::UUID:
 		{

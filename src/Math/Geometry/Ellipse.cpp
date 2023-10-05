@@ -65,30 +65,23 @@ void Math::Geometry::Ellipse::ConvCSys(NotNullPtr<const Math::CoordinateSystem> 
 	this->srid = destCSys->GetSRID();
 }
 
-Bool Math::Geometry::Ellipse::Equals(NotNullPtr<const Math::Geometry::Vector2D> vec) const
+Bool Math::Geometry::Ellipse::Equals(NotNullPtr<const Math::Geometry::Vector2D> vec, Bool sameTypeOnly, Bool nearlyVal) const
 {
 	if (vec->GetVectorType() != VectorType::Ellipse)
 	{
 		return false;
 	}
 	const Math::Geometry::Ellipse *ellipse = (const Math::Geometry::Ellipse*)vec.Ptr();
-	return this->srid == ellipse->srid &&
-		this->size == ellipse->size &&
-		this->tl == ellipse->tl;
-}
-
-Bool Math::Geometry::Ellipse::EqualsNearly(NotNullPtr<const Math::Geometry::Vector2D> vec) const
-{
-	if (vec->GetVectorType() != VectorType::Ellipse)
-	{
-		return false;
-	}
-	Math::Geometry::Ellipse *ellipse = (Math::Geometry::Ellipse*)vec.Ptr();
-	return this->srid == ellipse->srid &&
-		Math::NearlyEqualsDbl(this->size.x, ellipse->size.x) &&
-		Math::NearlyEqualsDbl(this->size.y, ellipse->size.y) &&
-		Math::NearlyEqualsDbl(this->tl.x, ellipse->tl.x) &&
-		Math::NearlyEqualsDbl(this->tl.y, ellipse->tl.y);
+	if (nearlyVal)
+		return this->srid == ellipse->srid &&
+			Math::NearlyEqualsDbl(this->size.x, ellipse->size.x) &&
+			Math::NearlyEqualsDbl(this->size.y, ellipse->size.y) &&
+			Math::NearlyEqualsDbl(this->tl.x, ellipse->tl.x) &&
+			Math::NearlyEqualsDbl(this->tl.y, ellipse->tl.y);
+	else
+		return this->srid == ellipse->srid &&
+			this->size == ellipse->size &&
+			this->tl == ellipse->tl;
 }
 
 UOSInt Math::Geometry::Ellipse::GetCoordinates(NotNullPtr<Data::ArrayListA<Math::Coord2DDbl>> coordList) const

@@ -7,6 +7,7 @@ namespace Math
 {
 	namespace Geometry
 	{
+		class MultiPolygon;
 		class Polygon : public Math::Geometry::PointOfstCollection
 		{
 		public:
@@ -20,6 +21,7 @@ namespace Math
 			virtual Bool InsideVector(Math::Coord2DDbl coord) const;
 			Bool HasJunction() const;
 			void SplitByJunction(Data::ArrayList<Math::Geometry::Polygon*> *results);
+			NotNullPtr<Math::Geometry::MultiPolygon> CreateMultiPolygon() const;
 		};
 	}
 }

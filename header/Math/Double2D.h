@@ -56,6 +56,11 @@ namespace Math
 			return (this->x < v.x) && (this->y < v.y);
 		}
 
+		Bool Equals(const Double2D &v) const
+		{
+			return this->x == v.x && this->y == v.y;
+		}
+
 		Bool EqualsNearly(const Double2D &v) const
 		{
 			return Math::NearlyEqualsDbl(this->x, v.x) && Math::NearlyEqualsDbl(this->y, v.y);

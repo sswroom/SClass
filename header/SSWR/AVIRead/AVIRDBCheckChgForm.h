@@ -36,10 +36,12 @@ namespace SSWR
 			NotNullPtr<UI::GUITextBox> txtSchema;
 			NotNullPtr<UI::GUILabel> lblTable;
 			NotNullPtr<UI::GUITextBox> txtTable;
-			NotNullPtr<UI::GUICheckBox> chkNoHeader;
-			NotNullPtr<UI::GUICheckBox> chkLocalTZ;
+			NotNullPtr<UI::GUILabel> lblSrcFilter;
+			NotNullPtr<UI::GUITextBox> txtSrcFilter;
 
 			NotNullPtr<UI::GUIGroupBox> grpData;
+			NotNullPtr<UI::GUICheckBox> chkNoHeader;
+			NotNullPtr<UI::GUICheckBox> chkLocalTZ;
 			NotNullPtr<UI::GUILabel> lblDataFile;
 			NotNullPtr<UI::GUITextBox> txtDataFile;
 			NotNullPtr<UI::GUIButton> btnDataFile;
@@ -49,6 +51,8 @@ namespace SSWR
 			NotNullPtr<UI::GUIComboBox> cboKeyCol;
 			NotNullPtr<UI::GUILabel> lblNullCol;
 			NotNullPtr<UI::GUIComboBox> cboNullCol;
+			NotNullPtr<UI::GUILabel> lblIgnoreCol;
+			NotNullPtr<UI::GUITextBox> txtIgnoreCol;
 			NotNullPtr<UI::GUIButton> btnDataCheck;
 
 			NotNullPtr<UI::GUILabel> lblDataFileRow;

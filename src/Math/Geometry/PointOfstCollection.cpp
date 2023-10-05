@@ -128,7 +128,7 @@ void Math::Geometry::PointOfstCollection::ConvCSys(NotNullPtr<const Math::Coordi
 	}
 }
 
-Bool Math::Geometry::PointOfstCollection::Equals(NotNullPtr<const Math::Geometry::Vector2D> vec) const
+Bool Math::Geometry::PointOfstCollection::Equals(NotNullPtr<const Math::Geometry::Vector2D> vec, Bool sameTypeOnly, Bool nearlyVal) const
 {
 	if (vec->GetSRID() != this->srid)
 	{
@@ -154,101 +154,73 @@ Bool Math::Geometry::PointOfstCollection::Equals(NotNullPtr<const Math::Geometry
 				return false;
 			}
 		}
-		i = nPoint;
-		while (i-- > 0)
+		if (nearlyVal)
 		{
-			if (ptList[i] != this->pointArr[i])
-			{
-				return false;
-			}
-		}
-		if (this->zArr)
-		{
-			valArr = pl->zArr;
 			i = nPoint;
 			while (i-- > 0)
 			{
-				if (valArr[i] != this->zArr[i])
+				if (!ptList[i].EqualsNearly(this->pointArr[i]))
 				{
 					return false;
 				}
 			}
+			if (this->zArr)
+			{
+				valArr = pl->zArr;
+				i = nPoint;
+				while (i-- > 0)
+				{
+					if (!Math::NearlyEqualsDbl(valArr[i], this->zArr[i]))
+					{
+						return false;
+					}
+				}
+			}
+			if (this->mArr)
+			{
+				valArr = pl->mArr;
+				i = nPoint;
+				while (i-- > 0)
+				{
+					if (!Math::NearlyEqualsDbl(valArr[i], this->mArr[i]))
+					{
+						return false;
+					}
+				}
+			}
 		}
-		if (this->mArr)
+		else
 		{
-			valArr = pl->mArr;
 			i = nPoint;
 			while (i-- > 0)
 			{
-				if (valArr[i] != this->mArr[i])
+				if (ptList[i] != this->pointArr[i])
 				{
 					return false;
 				}
 			}
-		}
-		return true;
-	}
-	else
-	{
-		return false;
-	}
-}
-
-Bool Math::Geometry::PointOfstCollection::EqualsNearly(NotNullPtr<const Math::Geometry::Vector2D> vec) const
-{
-	if (vec->GetSRID() != this->srid)
-	{
-		return false;
-	}
-	if (vec->GetVectorType() == this->GetVectorType() && this->HasZ() == vec->HasZ() && this->HasM() == vec->HasM())
-	{
-		Math::Geometry::PointOfstCollection *pl = (Math::Geometry::PointOfstCollection*)vec.Ptr();
-		UOSInt nPtOfst;
-		UOSInt nPoint;
-		const UInt32 *ptOfst = pl->GetPtOfstList(nPtOfst);
-		const Math::Coord2DDbl *ptList = pl->GetPointList(nPoint);
-		Double *valArr;
-		if (nPtOfst != this->nPtOfst || nPoint != this->nPoint)
-		{
-			return false;
-		}
-		UOSInt i = nPtOfst;
-		while (i-- > 0)
-		{
-			if (ptOfst[i] != this->ptOfstArr[i])
+			if (this->zArr)
 			{
-				return false;
-			}
-		}
-		i = nPoint;
-		while (i-- > 0)
-		{
-			if (!ptList[i].EqualsNearly(this->pointArr[i]))
-			{
-				return false;
-			}
-		}
-		if (this->zArr)
-		{
-			valArr = pl->zArr;
-			i = nPoint;
-			while (i-- > 0)
-			{
-				if (!Math::NearlyEqualsDbl(valArr[i], this->zArr[i]))
+				valArr = pl->zArr;
+				i = nPoint;
+				while (i-- > 0)
 				{
-					return false;
+					if (valArr[i] != this->zArr[i])
+					{
+						return false;
+					}
 				}
 			}
-		}
-		if (this->mArr)
-		{
-			valArr = pl->mArr;
-			i = nPoint;
-			while (i-- > 0)
+			if (this->mArr)
 			{
-				if (!Math::NearlyEqualsDbl(valArr[i], this->mArr[i]))
+				valArr = pl->mArr;
+				i = nPoint;
+				while (i-- > 0)
 				{
-					return false;
+					if (valArr[i] != this->mArr[i])
+					{
+						return false;
+					}
 				}
 			}
 		}
