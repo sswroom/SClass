@@ -186,7 +186,7 @@ template <class T> void DB::DBDataFile<T>::AddRecord(T *obj)
 	l = this->cls->GetFieldCount();
 	while (k < l)
 	{
-		cls->GetValue(&item, k, obj);
+		cls->GetValue(item, k, obj);
 		switch (colTypes[k])
 		{
 		case Data::VariItem::ItemType::F32:

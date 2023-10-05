@@ -46,7 +46,7 @@ namespace Data
 		Text::String *GetFieldName(UOSInt index);
 		Data::VariItem::ItemType GetFieldType(UOSInt index);
 		Data::VariItem *GetNewValue(UOSInt index, void *obj);
-		Bool GetValue(Data::VariItem *itm, UOSInt index, void *obj);
+		Bool GetValue(NotNullPtr<Data::VariItem> itm, UOSInt index, void *obj);
 		Bool SetField(void *obj, UOSInt index, NotNullPtr<Data::VariItem> item);
 		Bool SetFieldClearItem(void *obj, UOSInt index, NotNullPtr<Data::VariItem> item);
 		Bool Equals(void *obj1, void *obj2);

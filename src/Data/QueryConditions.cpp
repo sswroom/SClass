@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "Data/QueryConditions.h"
+#include "DB/SQL/SQLUtil.h"
 #include "Text/MyStringFloat.h"
 #include "Text/StringBuilderUTF8.h"
 #include "Text/StringTool.h"
@@ -496,7 +497,7 @@ Bool Data::QueryConditions::DoubleCondition::TestValid(NotNullPtr<Data::VariItem
 	return false;
 }
 
-Data::QueryConditions::StringInCondition::StringInCondition(Text::CStringNN fieldName, Data::ArrayList<const UTF8Char*> *val) : FieldCondition(fieldName)
+Data::QueryConditions::StringInCondition::StringInCondition(Text::CStringNN fieldName, NotNullPtr<Data::ArrayList<const UTF8Char*>> val) : FieldCondition(fieldName)
 {
 	UOSInt i = 0;
 	UOSInt j = val->GetCount();
@@ -1194,7 +1195,7 @@ NotNullPtr<Data::QueryConditions> Data::QueryConditions::DoubleLE(Text::CStringN
 	return *this;
 }
 
-NotNullPtr<Data::QueryConditions> Data::QueryConditions::StrIn(Text::CStringNN fieldName, Data::ArrayList<const UTF8Char*> *vals)
+NotNullPtr<Data::QueryConditions> Data::QueryConditions::StrIn(Text::CStringNN fieldName, NotNullPtr<Data::ArrayList<const UTF8Char*>> vals)
 {
 	NotNullPtr<StringInCondition> cond;
 	NEW_CLASSNN(cond, StringInCondition(fieldName, vals));
@@ -1298,4 +1299,117 @@ Bool Data::QueryConditions::ObjectValid(NotNullPtr<Data::ObjectGetter> getter, N
 		}
 	}
 	return ret;
+}
+
+Data::QueryConditions *Data::QueryConditions::ParseStr(Text::CStringNN s, DB::SQLType sqlType)
+{
+	Text::StringBuilderUTF8 sb;
+	Text::StringBuilderUTF8 sbField;
+	const UTF8Char *sql = s.v;
+	NotNullPtr<Data::VariItem> item;
+	Data::QueryConditions *cond;
+	UOSInt i;
+	UOSInt j;
+	NEW_CLASS(cond, Data::QueryConditions());
+	while (true)
+	{
+		sql = DB::SQL::SQLUtil::ParseNextWord(sql, sbField, sqlType);
+		if (sbField.leng == 0)
+		{
+			DEL_CLASS(cond);
+			return 0;
+		}
+		sql = DB::SQL::SQLUtil::ParseNextWord(sql, sb, sqlType);
+		if (sb.EqualsICase(UTF8STRC("in")))
+		{
+			sql = DB::SQL::SQLUtil::ParseNextWord(sql, sb, sqlType);
+			if (!sb.Equals(UTF8STRC("(")))
+			{
+				DEL_CLASS(cond);
+				return 0;
+			}
+			Data::ArrayListNN<Data::VariItem> items;
+			while (true)
+			{
+				sql = DB::SQL::SQLUtil::ParseNextWord(sql, sb, sqlType);
+				if (!item.Set(DB::SQL::SQLUtil::ParseValue(sb.ToCString(), sqlType)))
+				{
+					items.FreeAll();
+					DEL_CLASS(cond);
+					return 0;
+				}
+				items.Add(item);
+				sql = DB::SQL::SQLUtil::ParseNextWord(sql, sb, sqlType);
+				if (sb.Equals(UTF8STRC(")")))
+				{
+					Data::VariItem::ItemType itemType = item->GetItemType();
+					if (itemType == Data::VariItem::ItemType::Str)
+					{
+						Data::ArrayList<const UTF8Char*> vals;
+						i = 0;
+						j = items.GetCount();
+						while (i < j)
+						{
+							if (items.GetItem(i)->GetItemType() != itemType)
+							{
+								items.FreeAll();
+								DEL_CLASS(cond);
+								return 0;
+							}
+							vals.Add(items.GetItem(i)->GetItemValue().str->v);
+							i++;
+						}
+						cond->StrIn(sbField.ToCString(), vals);
+						items.FreeAll();
+						break;
+					}
+					else
+					{
+						items.FreeAll();
+						DEL_CLASS(cond);
+						return 0;
+					}
+				}
+				else if (sb.Equals(UTF8STRC(",")))
+				{
+				}
+				else
+				{
+					items.FreeAll();
+					DEL_CLASS(cond);
+					return 0;
+				}
+			}
+		}
+		else if (sb.Equals(UTF8STRC("=")))
+		{
+			sql = DB::SQL::SQLUtil::ParseNextWord(sql, sb, sqlType);
+			if (!item.Set(DB::SQL::SQLUtil::ParseValue(sb.ToCString(), sqlType)))
+			{
+				DEL_CLASS(cond);
+				return 0;
+			}
+			Data::VariItem::ItemType itemType = item->GetItemType();
+			if (itemType == Data::VariItem::ItemType::Str)
+			{
+				cond->StrEquals(sbField.ToCString(), item->GetItemValue().str->ToCString());
+			}
+		}
+		else
+		{
+			DEL_CLASS(cond);
+			return 0;
+		}
+		sql = DB::SQL::SQLUtil::ParseNextWord(sql, sb, sqlType);
+		if (sb.GetLength() == 0)
+		{
+			return cond;
+		}
+		else
+		{
+			DEL_CLASS(cond);
+			return 0;
+		}
+	}
+	return 0;
 }

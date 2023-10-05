@@ -145,7 +145,7 @@ Data::VariItem *Data::Class::GetNewValue(UOSInt index, void *obj)
 	return Data::VariItem::NewFromPtr(valPtr, field->itemType).Ptr();
 }
 
-Bool Data::Class::GetValue(Data::VariItem *itm, UOSInt index, void *obj)
+Bool Data::Class::GetValue(NotNullPtr<Data::VariItem> itm, UOSInt index, void *obj)
 {
 	FieldInfo *field = this->fields.GetItem(index);
 	if (field == 0)

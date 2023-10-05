@@ -1530,7 +1530,7 @@ NotNullPtr<Data::VariItem> Data::VariItem::NewFromPtr(void *ptr, ItemType itemTy
 	}
 }
 
-void Data::VariItem::SetFromPtr(Data::VariItem *item, void *ptr, ItemType itemType)
+void Data::VariItem::SetFromPtr(NotNullPtr<Data::VariItem> item, void *ptr, ItemType itemType)
 {
 	if (!ptr == 0)
 	{

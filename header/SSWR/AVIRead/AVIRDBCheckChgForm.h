@@ -99,6 +99,7 @@ namespace SSWR
 			void UpdateStatus(SQLSession *sess);
 			static void __stdcall AppendCol(DB::SQLBuilder *sql, DB::DBUtil::ColType colType, Text::String *s, Int8 tzQhr);
 			Text::CString GetNullText();
+			DB::SQLType GetDBSQLType();
 		public:
 			AVIRDBCheckChgForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, DB::ReadingDB *db, Text::CString schema, Text::CStringNN table);
 			virtual ~AVIRDBCheckChgForm();

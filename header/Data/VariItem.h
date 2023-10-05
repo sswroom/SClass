@@ -200,7 +200,7 @@ namespace Data
 		static NotNullPtr<VariItem> NewUUIDDirect(Data::UUID *uuid);
 		static NotNullPtr<VariItem> NewFromPtr(void *ptr, ItemType itemType);
 		
-		static void SetFromPtr(VariItem *item, void *ptr, ItemType itemType);
+		static void SetFromPtr(NotNullPtr<VariItem> item, void *ptr, ItemType itemType);
 		static void SetPtr(void *ptr, ItemType itemType, NotNullPtr<VariItem> item);
 		static void SetPtrAndNotKeep(void *ptr, ItemType itemType, NotNullPtr<VariItem> item);
 		static Bool PtrEquals(void *ptr1, void *ptr2, ItemType itemType);

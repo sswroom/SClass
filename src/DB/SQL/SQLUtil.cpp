@@ -5,6 +5,8 @@ const UTF8Char *DB::SQL::SQLUtil::ParseNextWord(const UTF8Char *sql, NotNullPtr<
 {
 	sb->ClearStr();
 	const UTF8Char *strStart = 0;
+	UTF8Char endChar = 0;
+	UTF8Char escChar = 0;
 	UTF8Char c;
 	while (true)
 	{
@@ -14,9 +16,31 @@ const UTF8Char *DB::SQL::SQLUtil::ParseNextWord(const UTF8Char *sql, NotNullPtr<
 			sql--;
 			if (strStart)
 			{
-				sb->AppendSlow(strStart);
+				sb->AppendP(strStart, sql);
 			}
 			return sql;
+		}
+		else if (endChar != 0)
+		{
+			if (c == endChar)
+			{
+				if (escChar == endChar && *sql == escChar)
+				{
+					sql++;
+				}
+				else
+				{
+					sb->AppendP(strStart, sql);
+					return sql;
+				}
+			}
+			else if (c == escChar)
+			{
+				if (*sql != 0)
+				{
+					sql++;
+				}
+			}
 		}
 		else if (c == ' ' || c == '\t' || c == '\r' || c == '\n')
 		{
@@ -26,7 +50,7 @@ const UTF8Char *DB::SQL::SQLUtil::ParseNextWord(const UTF8Char *sql, NotNullPtr<
 				return sql;
 			}
 		}
-		else if (c == '(' || c == ')' || c == ',')
+		else if (c == '(' || c == ')' || c == ',' || c == '=')
 		{
 			if (strStart)
 			{
@@ -44,7 +68,45 @@ const UTF8Char *DB::SQL::SQLUtil::ParseNextWord(const UTF8Char *sql, NotNullPtr<
 			if (strStart == 0)
 			{
 				strStart = sql - 1;
+				if (c == '\'')
+				{
+					endChar = '\'';
+					if (sqlType == DB::SQLType::MySQL)
+					{
+						escChar = '\\';
+					}
+				}
+				else if (c == '[' && sqlType == DB::SQLType::MSSQL)
+				{
+					endChar = ']';
+				}
+				else if (c == '`' && sqlType == DB::SQLType::MySQL)
+				{
+					endChar = '`';
+				}
+				else if (c == 'N' && sqlType == DB::SQLType::MSSQL && *sql == '\'')
+				{
+					sql++;
+					endChar = '\'';
+				}
+				else if (c == '\"' && sqlType == DB::SQLType::PostgreSQL)
+				{
+					endChar = '\"';
+				}
 			}
 		}
 	}
+}
+
+Data::VariItem *DB::SQL::SQLUtil::ParseValue(Text::CStringNN val, DB::SQLType sqlType)
+{
+	NotNullPtr<Data::VariItem> item;
+	if (val.leng > 1 && val.v[0] == '\'' && val.v[val.leng - 1] == '\'')
+	{
+		NotNullPtr<Text::String> s = Text::String::New(val.v + 1, val.leng - 2);
+		item = Data::VariItem::NewStr(s.Ptr());
+		s->Release();
+		return item.Ptr();
+	}
+	return 0;
 }

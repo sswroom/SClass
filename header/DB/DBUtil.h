@@ -165,7 +165,7 @@ template <class T> Bool DB::DBUtil::SaveCSV(IO::Stream *stm, Data::ArrayList<T*>
 			{
 				sb.AppendUTF8Char(',');
 			}
-			cls->GetValue(&itm, i, o);
+			cls->GetValue(itm, i, o);
 			Data::VariItem::ItemType itmType = itm.GetItemType();
 			if (itmType == Data::VariItem::ItemType::Null)
 			{

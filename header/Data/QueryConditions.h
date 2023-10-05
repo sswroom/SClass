@@ -154,7 +154,7 @@ namespace Data
 			Data::ArrayList<const UTF8Char*> vals;
 
 		public:
-			StringInCondition(Text::CStringNN fieldName, Data::ArrayList<const UTF8Char*> *val);
+			StringInCondition(Text::CStringNN fieldName, NotNullPtr<Data::ArrayList<const UTF8Char*>> val);
 			virtual ~StringInCondition();
 
 			virtual ConditionType GetType();
@@ -268,7 +268,7 @@ namespace Data
 		NotNullPtr<QueryConditions> Int32In(Text::CStringNN fieldName, NotNullPtr<Data::ArrayList<Int32>> val);
 		NotNullPtr<QueryConditions> DoubleGE(Text::CStringNN fieldName, Double val);
 		NotNullPtr<QueryConditions> DoubleLE(Text::CStringNN fieldName, Double val);
-		NotNullPtr<QueryConditions> StrIn(Text::CStringNN fieldName, Data::ArrayList<const UTF8Char*> *vals);
+		NotNullPtr<QueryConditions> StrIn(Text::CStringNN fieldName, NotNullPtr<Data::ArrayList<const UTF8Char*>> vals);
 		NotNullPtr<QueryConditions> StrContains(Text::CStringNN fieldName, const UTF8Char *val);
 		NotNullPtr<QueryConditions> StrEquals(Text::CStringNN fieldName, Text::CString val);
 		NotNullPtr<QueryConditions> BoolEquals(Text::CStringNN fieldName, Bool val);
@@ -277,6 +277,7 @@ namespace Data
 		static Text::CStringNN CompareConditionGetStr(CompareCondition cond);
 		static Bool ObjectValid(NotNullPtr<Data::VariObject> obj, NotNullPtr<Data::ArrayListNN<Condition>> conditionList);
 		static Bool ObjectValid(NotNullPtr<Data::ObjectGetter> getter, NotNullPtr<Data::ArrayListNN<Condition>> conditionList);
+		static QueryConditions *ParseStr(Text::CStringNN s, DB::SQLType sqlType);
 	};
 }
 #endif

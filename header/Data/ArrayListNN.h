@@ -45,6 +45,7 @@ namespace Data
 		T *GetLast();
 		T *Pop();
 		ArrayListNN<T> &operator =(const ArrayListNN<T> &v);
+		void FreeAll();
 	};
 
 
@@ -368,6 +369,16 @@ namespace Data
 		this->EnsureCapacity(v.capacity);
 		this->AddAll(&v);
 		return *this;
+	}
+
+	template <class T> void ArrayListNN<T>::FreeAll()
+	{
+		UOSInt i = this->objCnt;
+		while (i-- > 0)
+		{
+			this->arr[i].Delete();
+		}
+		this->objCnt = 0;
 	}
 }
 
