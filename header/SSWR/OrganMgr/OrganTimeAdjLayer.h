@@ -29,7 +29,7 @@ namespace SSWR
 			virtual UTF8Char *GetString(UTF8Char *buff, UOSInt buffSize, Map::NameArray *nameArr, Int64 id, UOSInt strIndex);
 			virtual UOSInt GetColumnCnt() const;
 			virtual UTF8Char *GetColumnName(UTF8Char *buff, UOSInt colIndex);
-			virtual DB::DBUtil::ColType GetColumnType(UOSInt colIndex, UOSInt *colSize);
+			virtual DB::DBUtil::ColType GetColumnType(UOSInt colIndex, OptOut<UOSInt> colSize);
 			virtual Bool GetColumnDef(UOSInt colIndex, NotNullPtr<DB::ColDef> colDef);
 			virtual UInt32 GetCodePage() const;
 			virtual Bool GetBounds(OutParam<Math::RectAreaDbl> bounds) const;

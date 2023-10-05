@@ -174,7 +174,15 @@ OSInt Data::DataComparer::Compare(Math::Geometry::Vector2D *val1, Math::Geometry
 
 OSInt Data::DataComparer::Compare(Data::UUID *val1, Data::UUID *val2)
 {
-	return val1->CompareTo(val2);
+	if (val1 == val2)
+		return 0;
+	NotNullPtr<Data::UUID> uuid1;
+	NotNullPtr<Data::UUID> uuid2;
+	if (!uuid1.Set(val1))
+		return -1;
+	else if (!uuid2.Set(val2))
+		return 1;
+	return uuid1->CompareTo(uuid2);
 }
 
 OSInt Data::DataComparer::Compare(Text::CString val1, Text::CString val2)

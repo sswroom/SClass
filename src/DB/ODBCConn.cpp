@@ -2309,12 +2309,12 @@ Math::Geometry::Vector2D *DB::ODBCReader::GetVector(UOSInt colIndex)
 	return 0;
 }
 
-Bool DB::ODBCReader::GetUUID(UOSInt colIndex, Data::UUID *uuid)
+Bool DB::ODBCReader::GetUUID(UOSInt colIndex, NotNullPtr<Data::UUID> uuid)
 {
 	return false;
 }
 
-Bool DB::ODBCReader::GetVariItem(UOSInt colIndex, Data::VariItem *item)
+Bool DB::ODBCReader::GetVariItem(UOSInt colIndex, NotNullPtr<Data::VariItem> item)
 {
 	if (colIndex >= this->colCnt)
 		return false;
@@ -2378,9 +2378,14 @@ Bool DB::ODBCReader::GetVariItem(UOSInt colIndex, Data::VariItem *item)
 			UOSInt dataSize = (UOSInt)this->colDatas[colIndex].dataVal;
 			UInt8 *buffPtr = (UInt8*)this->colDatas[colIndex].colData;
 			UInt32 srId;
-			Math::Geometry::Vector2D *vec = Math::MSGeography::ParseBinary(buffPtr, dataSize, &srId);
-			item->SetVectorDirect(vec);
-			return vec != 0;
+			NotNullPtr<Math::Geometry::Vector2D> vec;
+			if (vec.Set(Math::MSGeography::ParseBinary(buffPtr, dataSize, &srId)))
+			{
+				item->SetVectorDirect(vec);
+				return true;
+			}
+			item->SetNull();
+			return false;
 		}
 		return false;
 	case DB::DBUtil::CT_Binary:
@@ -2412,14 +2417,11 @@ Bool DB::ODBCReader::IsNull(UOSInt colIndex)
 	return this->colDatas[colIndex].isNull;
 }
 
-DB::DBUtil::ColType DB::ODBCReader::GetColType(UOSInt colIndex, UOSInt *colSize)
+DB::DBUtil::ColType DB::ODBCReader::GetColType(UOSInt colIndex, OptOut<UOSInt> colSize)
 {
 	if (colIndex >= this->colCnt)
 		return DB::DBUtil::CT_Unknown;
-	if (colSize)
-	{
-		*colSize = this->colDatas[colIndex].colSize;
-	}
+	colSize.Set(this->colDatas[colIndex].colSize);
 	return this->colDatas[colIndex].colType;
 }
 

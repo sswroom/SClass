@@ -477,7 +477,7 @@ Math::Geometry::Vector2D *Math::TSPReader::GetVector(UOSInt colIndex)
 	return pt;
 }
 
-Bool Math::TSPReader::GetUUID(UOSInt colIndex, Data::UUID *uuid)
+Bool Math::TSPReader::GetUUID(UOSInt colIndex, NotNullPtr<Data::UUID> uuid)
 {
 	return false;
 }
@@ -495,21 +495,18 @@ Bool Math::TSPReader::IsNull(UOSInt colIndex)
 	return false;
 }
 
-DB::DBUtil::ColType Math::TSPReader::GetColType(UOSInt colIndex, UOSInt *colSize)
+DB::DBUtil::ColType Math::TSPReader::GetColType(UOSInt colIndex, OptOut<UOSInt> colSize)
 {
 	switch (colIndex)
 	{
 	case 0:
-		if (colSize)
-			*colSize = 11;
+		colSize.Set(11);
 		return DB::DBUtil::CT_Int32;
 	case 1:
-		if (colSize)
-			*colSize = 0x7fffffff;
+		colSize.Set(0x7fffffff);
 		return DB::DBUtil::CT_Vector;
 	case 2:
-		if (colSize)
-			*colSize = 18;
+		colSize.Set(18);
 		return DB::DBUtil::CT_DateTime;
 	case 3:
 	case 4:
@@ -520,10 +517,7 @@ DB::DBUtil::ColType Math::TSPReader::GetColType(UOSInt colIndex, UOSInt *colSize
 	case 9:
 	case 10:
 	case 11:
-		if (colSize)
-		{
-			*colSize = 33;
-		}
+		colSize.Set(33);
 		return DB::DBUtil::CT_Double;
 	default:
 		return DB::DBUtil::CT_Unknown;
@@ -731,7 +725,7 @@ Math::Geometry::Vector2D *Math::TSPHReader::GetVector(UOSInt colIndex)
 	return 0;
 }
 
-Bool Math::TSPHReader::GetUUID(UOSInt colIndex, Data::UUID *uuid)
+Bool Math::TSPHReader::GetUUID(UOSInt colIndex, NotNullPtr<Data::UUID> uuid)
 {
 	return false;
 }
@@ -749,7 +743,7 @@ Bool Math::TSPHReader::IsNull(UOSInt colIndex)
 	return false;
 }
 
-DB::DBUtil::ColType Math::TSPHReader::GetColType(UOSInt colIndex, UOSInt *colSize)
+DB::DBUtil::ColType Math::TSPHReader::GetColType(UOSInt colIndex, OptOut<UOSInt> colSize)
 {
 	switch (colIndex)
 	{
@@ -761,10 +755,7 @@ DB::DBUtil::ColType Math::TSPHReader::GetColType(UOSInt colIndex, UOSInt *colSiz
 	case 5:
 	case 6:
 	case 7:
-		if (colSize)
-		{
-			*colSize = 33;
-		}
+		colSize.Set(33);
 		return DB::DBUtil::CT_Double;
 	default:
 		return DB::DBUtil::CT_Unknown;

@@ -236,7 +236,7 @@ UTF8Char *Map::OruxDBLayer::GetColumnName(UTF8Char *buff, UOSInt colIndex)
 	return 0;
 }
 
-DB::DBUtil::ColType Map::OruxDBLayer::GetColumnType(UOSInt colIndex, UOSInt *colSize)
+DB::DBUtil::ColType Map::OruxDBLayer::GetColumnType(UOSInt colIndex, OptOut<UOSInt> colSize)
 {
 	return DB::DBUtil::CT_Unknown;
 }

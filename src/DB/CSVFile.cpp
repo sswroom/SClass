@@ -846,12 +846,12 @@ Math::Geometry::Vector2D *DB::CSVReader::GetVector(UOSInt colIndex)
 	return 0;
 }
 
-Bool DB::CSVReader::GetUUID(UOSInt colIndex, Data::UUID *uuid)
+Bool DB::CSVReader::GetUUID(UOSInt colIndex, NotNullPtr<Data::UUID> uuid)
 {
 	return false;
 }
 
-Bool DB::CSVReader::GetVariItem(UOSInt colIndex, Data::VariItem *item)
+Bool DB::CSVReader::GetVariItem(UOSInt colIndex, NotNullPtr<Data::VariItem> item)
 {
 	if (colIndex >= nCol)
 	{
@@ -930,10 +930,11 @@ Bool DB::CSVReader::IsNull(UOSInt colIndex)
 	return false;
 }
 
-DB::DBUtil::ColType DB::CSVReader::GetColType(UOSInt colIndex, UOSInt *colSize)
+DB::DBUtil::ColType DB::CSVReader::GetColType(UOSInt colIndex, OptOut<UOSInt> colSize)
 {
 	if (colIndex >= nHdr)
 		return DB::DBUtil::CT_Unknown;
+	colSize.Set(0xffffffff);
 	return DB::DBUtil::CT_VarUTF8Char;
 }
 

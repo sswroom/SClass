@@ -274,7 +274,7 @@ Bool Map::MapDrawLayer::IsError() const
 	return false;
 }
 
-UTF8Char *Map::MapDrawLayer::GetPGLabel(UTF8Char *buff, UOSInt buffSize, Math::Coord2DDbl coord, Math::Coord2DDbl *outCoord, UOSInt strIndex)
+UTF8Char *Map::MapDrawLayer::GetPGLabel(UTF8Char *buff, UOSInt buffSize, Math::Coord2DDbl coord, OptOut<Math::Coord2DDbl> outCoord, UOSInt strIndex)
 {
 	UTF8Char *retVal = 0;
 
@@ -308,7 +308,7 @@ UTF8Char *Map::MapDrawLayer::GetPGLabel(UTF8Char *buff, UOSInt buffSize, Math::C
 						retVal = this->GetString(buff, buffSize, names, lastId, strIndex);
 						if (buff != retVal)
 						{
-							*outCoord = coord;
+							outCoord.Set(coord);
 							DEL_CLASS(vec);
 							break;
 						}
@@ -323,7 +323,7 @@ UTF8Char *Map::MapDrawLayer::GetPGLabel(UTF8Char *buff, UOSInt buffSize, Math::C
 	return retVal;
 }
 
-UTF8Char *Map::MapDrawLayer::GetPLLabel(UTF8Char *buff, UOSInt buffSize, Math::Coord2DDbl coord, Math::Coord2DDbl *outCoord, UOSInt strIndex)
+UTF8Char *Map::MapDrawLayer::GetPLLabel(UTF8Char *buff, UOSInt buffSize, Math::Coord2DDbl coord, OutParam<Math::Coord2DDbl> outCoord, UOSInt strIndex)
 {
 	UTF8Char *retVal = 0;
 	UTF8Char *tmpBuff;
@@ -364,10 +364,7 @@ UTF8Char *Map::MapDrawLayer::GetPLLabel(UTF8Char *buff, UOSInt buffSize, Math::C
 				{
 					dist = thisDist;
 					retVal = Text::StrConcat(buff, tmpBuff);
-					if (outCoord)
-					{
-						*outCoord = nearPt;
-					}
+					outCoord.Set(nearPt);
 				}
 			}
 			DEL_CLASS(vec);
@@ -1004,7 +1001,7 @@ Math::Geometry::Vector2D *Map::MapLayerReader::GetVector(UOSInt colIndex)
 
 }
 
-Bool Map::MapLayerReader::GetUUID(UOSInt colIndex, Data::UUID *uuid)
+Bool Map::MapLayerReader::GetUUID(UOSInt colIndex, NotNullPtr<Data::UUID> uuid)
 {
 	return false;
 }
@@ -1024,7 +1021,7 @@ UTF8Char *Map::MapLayerReader::GetName(UOSInt colIndex, UTF8Char *buff)
 	return this->layer->GetColumnName(buff, colIndex - 1);
 }
 
-DB::DBUtil::ColType Map::MapLayerReader::GetColType(UOSInt colIndex, UOSInt *colSize)
+DB::DBUtil::ColType Map::MapLayerReader::GetColType(UOSInt colIndex, OptOut<UOSInt> colSize)
 {
 	if (colIndex == 0)
 		return DB::DBUtil::CT_Vector;

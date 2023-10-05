@@ -681,7 +681,7 @@ Math::Geometry::Vector2D *DB::MySQLReader::GetVector(UOSInt colIndex)
 	return 0;
 }
 
-Bool DB::MySQLReader::GetUUID(UOSInt colIndex, Data::UUID *uuid)
+Bool DB::MySQLReader::GetUUID(UOSInt colIndex, NotNullPtr<Data::UUID> uuid)
 {
 	return false;
 }
@@ -716,13 +716,14 @@ Bool DB::MySQLReader::IsNull(UOSInt colIndex)
 	}
 }
 
-DB::DBUtil::ColType DB::MySQLReader::GetColType(UOSInt colIndex, UOSInt *colSize)
+DB::DBUtil::ColType DB::MySQLReader::GetColType(UOSInt colIndex, OptOut<UOSInt> colSize)
 {
 	if (this->row == 0)
 		return DB::DBUtil::CT_Unknown;
 	if (colIndex >= this->colCount)
 		return DB::DBUtil::CT_Unknown;
 	MYSQL_FIELD *field = mysql_fetch_field_direct((MYSQL_RES*)this->result, (UInt32)colIndex);
+	colSize.Set(field->length);
 	return ToColType(field->type, field->flags, field->length);
 }
 

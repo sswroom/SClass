@@ -817,7 +817,7 @@ Math::Geometry::Vector2D *Win32::WMIReader::GetVector(UOSInt colIndex)
 	return 0;
 }
 
-Bool Win32::WMIReader::GetUUID(UOSInt colIndex, Data::UUID *uuid)
+Bool Win32::WMIReader::GetUUID(UOSInt colIndex, NotNullPtr<Data::UUID> uuid)
 {
 	return false;
 }
@@ -859,13 +859,13 @@ UTF8Char *Win32::WMIReader::GetName(UOSInt colIndex, UTF8Char *buff)
 	return Text::StrWChar_UTF8(buff, col->name);
 }
 
-DB::DBUtil::ColType Win32::WMIReader::GetColType(UOSInt colIndex, UOSInt *colSize)
+DB::DBUtil::ColType Win32::WMIReader::GetColType(UOSInt colIndex, OptOut<UOSInt> colSize)
 {
 	WMIColumn *col = this->columns->GetItem(colIndex);
 	if (col == 0)
 		return DB::DBUtil::CT_Unknown;
 
-	*colSize = 0;
+	colSize.Set(0);
 	switch (col->colType)
 	{
 	case CIM_SINT8:
@@ -891,7 +891,7 @@ DB::DBUtil::ColType Win32::WMIReader::GetColType(UOSInt colIndex, UOSInt *colSiz
 	case CIM_BOOLEAN:
 		return DB::DBUtil::CT_Bool;
 	case CIM_STRING:
-		*colSize = 1024;
+		colSize.Set(1024);
 		return DB::DBUtil::CT_VarUTF16Char;
 	case CIM_DATETIME:
 		return DB::DBUtil::CT_DateTime;

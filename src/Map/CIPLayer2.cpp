@@ -534,22 +534,16 @@ UTF8Char *Map::CIPLayer2::GetColumnName(UTF8Char *buff, UOSInt colIndex)
 }
 
 
-DB::DBUtil::ColType Map::CIPLayer2::GetColumnType(UOSInt colIndex, UOSInt *colSize)
+DB::DBUtil::ColType Map::CIPLayer2::GetColumnType(UOSInt colIndex, OptOut<UOSInt> colSize)
 {
 	if (colIndex == 0)
 	{
-		if (colSize)
-		{
-			*colSize = this->maxTextSize;
-		}
+		colSize.Set(this->maxTextSize);
 		return DB::DBUtil::CT_VarUTF8Char;
 	}
 	else
 	{
-		if (colSize)
-		{
-			*colSize = 0;
-		}
+		colSize.Set(0);
 		return DB::DBUtil::CT_Unknown;
 	}
 }

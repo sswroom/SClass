@@ -93,7 +93,7 @@ namespace Map
 		virtual UTF8Char *GetString(UTF8Char *buff, UOSInt buffSize, NameArray *nameArr, Int64 id, UOSInt strIndex);
 		virtual UOSInt GetColumnCnt() const;
 		virtual UTF8Char *GetColumnName(UTF8Char *buff, UOSInt colIndex);
-		virtual DB::DBUtil::ColType GetColumnType(UOSInt colIndex, UOSInt *colSize);
+		virtual DB::DBUtil::ColType GetColumnType(UOSInt colIndex, OptOut<UOSInt> colSize);
 		virtual Bool GetColumnDef(UOSInt colIndex, NotNullPtr<DB::ColDef> colDef);
 		virtual UInt32 GetCodePage() const;
 		virtual Bool GetBounds(OutParam<Math::RectAreaDbl> rect) const;
@@ -170,11 +170,11 @@ namespace Map
 		virtual UOSInt GetBinarySize(UOSInt colIndex);
 		virtual UOSInt GetBinary(UOSInt colIndex, UInt8 *buff);
 		virtual Math::Geometry::Vector2D *GetVector(UOSInt colIndex);
-		virtual Bool GetUUID(UOSInt colIndex, Data::UUID *uuid);
+		virtual Bool GetUUID(UOSInt colIndex, NotNullPtr<Data::UUID> uuid);
 
 		virtual UTF8Char *GetName(UOSInt colIndex, UTF8Char *buff);
 		virtual Bool IsNull(UOSInt colIndex);
-		virtual DB::DBUtil::ColType GetColType(UOSInt colIndex, UOSInt *colSize);
+		virtual DB::DBUtil::ColType GetColType(UOSInt colIndex, OptOut<UOSInt> colSize);
 		virtual Bool GetColDef(UOSInt colIndex, NotNullPtr<DB::ColDef> colDef);
 
 		static Text::CString GetName(UOSInt colIndex, Bool hasAltitude);

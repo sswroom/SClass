@@ -19,7 +19,7 @@ namespace Media
 			AUIManager();
 			~AUIManager();
 			UOSInt LoadFile(const UTF8Char *fileName, Data::ArrayList<Media::IMediaSource*> *outArr);
-			void PrepareSelector(IO::FileSelector *selector);
+			void PrepareSelector(NotNullPtr<IO::FileSelector> selector);
 		};
 	}
 }

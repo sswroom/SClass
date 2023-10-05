@@ -292,7 +292,7 @@ namespace DB
 			return 0;
 		}
 
-		virtual Bool GetUUID(UOSInt colIndex, Data::UUID *uuid)
+		virtual Bool GetUUID(UOSInt colIndex, NotNullPtr<Data::UUID> uuid)
 		{
 			return false;
 		}
@@ -324,12 +324,13 @@ namespace DB
 
 		}
 
-		virtual DB::DBUtil::ColType GetColType(UOSInt colIndex, UOSInt *colSize)
+		virtual DB::DBUtil::ColType GetColType(UOSInt colIndex, OptOut<UOSInt> colSize)
 		{
 			if (this->rowChanged != -1)
 				return DB::DBUtil::CT_Unknown;
 			if (colIndex >= this->colCount)
 				return DB::DBUtil::CT_Unknown;
+			colSize.Set(256);
 			return this->colTypes[colIndex];
 		}
 

@@ -59,7 +59,7 @@ WChar *IO::Path::GetTempFileW(WChar *buff, const WChar *fileName)
 	return Text::StrConcat(Text::StrConcat(buff, tmpBuff), fileName);
 }
 
-Bool IO::Path::IsDirectoryExist(Text::CString dir)
+Bool IO::Path::IsDirectoryExist(Text::CStringNN dir)
 {
 	WChar wbuff[256];
 	UInt32 ret;
@@ -916,7 +916,7 @@ void IO::Path::FindFileClose(IO::Path::FindFileSession *sess)
 	MemFree(sess);
 }
 
-IO::Path::PathType IO::Path::GetPathType(Text::CString path)
+IO::Path::PathType IO::Path::GetPathType(Text::CStringNN path)
 {
 	WChar wbuff[256];
 	

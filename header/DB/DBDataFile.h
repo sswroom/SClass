@@ -299,7 +299,7 @@ template <class T> void DB::DBDataFile<T>::AddRecord(T *obj)
 			}
 			else
 			{
-				Data::UUID *uuid = item.GetItemValue().uuid;
+				NotNullPtr<Data::UUID> uuid = item.GetItemValue().uuid;
 				uuid->GetValue(&this->recordBuff[m]);
 				m += 16;
 			}
@@ -446,57 +446,57 @@ template <class T> Bool DB::DBDataFile<T>::LoadFile(Text::CStringNN fileName, Da
 						{
 						case Data::VariItem::ItemType::F32:
 							item.SetF32(ReadFloat(&buff[m2]));
-							cls->SetField(obj, k, &item);
+							cls->SetField(obj, k, item);
 							m2 += 4;
 							break;
 						case Data::VariItem::ItemType::F64:
 							item.SetF64(ReadDouble(&buff[m2]));
-							cls->SetField(obj, k, &item);
+							cls->SetField(obj, k, item);
 							m2 += 8;
 							break;
 						case Data::VariItem::ItemType::I8:
 							item.SetI8((Int8)buff[m2]);
-							cls->SetField(obj, k, &item);
+							cls->SetField(obj, k, item);
 							m2 += 1;
 							break;
 						case Data::VariItem::ItemType::U8:
 							item.SetU8(buff[m2]);
-							cls->SetField(obj, k, &item);
+							cls->SetField(obj, k, item);
 							m2 += 1;
 							break;
 						case Data::VariItem::ItemType::I16:
 							item.SetI16(ReadInt16(&buff[m2]));
-							cls->SetField(obj, k, &item);
+							cls->SetField(obj, k, item);
 							m2 += 2;
 							break;
 						case Data::VariItem::ItemType::U16:
 							item.SetU16(ReadUInt16(&buff[m2]));
-							cls->SetField(obj, k, &item);
+							cls->SetField(obj, k, item);
 							m2 += 2;
 							break;
 						case Data::VariItem::ItemType::I32:
 							item.SetI32(ReadInt32(&buff[m2]));
-							cls->SetField(obj, k, &item);
+							cls->SetField(obj, k, item);
 							m2 += 4;
 							break;
 						case Data::VariItem::ItemType::U32:
 							item.SetU32(ReadUInt32(&buff[m2]));
-							cls->SetField(obj, k, &item);
+							cls->SetField(obj, k, item);
 							m2 += 4;
 							break;
 						case Data::VariItem::ItemType::I64:
 							item.SetI64(ReadInt64(&buff[m2]));
-							cls->SetField(obj, k, &item);
+							cls->SetField(obj, k, item);
 							m2 += 8;
 							break;
 						case Data::VariItem::ItemType::U64:
 							item.SetU64(ReadUInt64(&buff[m2]));
-							cls->SetField(obj, k, &item);
+							cls->SetField(obj, k, item);
 							m2 += 8;
 							break;
 						case Data::VariItem::ItemType::BOOL:
 							item.SetBool(buff[m2] != 0);
-							cls->SetField(obj, k, &item);
+							cls->SetField(obj, k, item);
 							m2 += 1;
 							break;
 						case Data::VariItem::ItemType::Str:
@@ -511,7 +511,7 @@ template <class T> Bool DB::DBDataFile<T>::LoadFile(Text::CStringNN fileName, Da
 								NotNullPtr<Text::String> s = Text::String::New(&buff[m2], m3);
 								item.SetStr(s);
 								s->Release();
-								cls->SetField(obj, k, &item);
+								cls->SetField(obj, k, item);
 								m2 += m3;
 							}
 							break;
@@ -524,7 +524,7 @@ template <class T> Bool DB::DBDataFile<T>::LoadFile(Text::CStringNN fileName, Da
 								else
 								{
 									item.SetDate(Data::Timestamp(ticks, 0));
-									cls->SetFieldClearItem(obj, k, &item);
+									cls->SetFieldClearItem(obj, k, item);
 								}
 								m2 += 8;
 							}
@@ -538,7 +538,7 @@ template <class T> Bool DB::DBDataFile<T>::LoadFile(Text::CStringNN fileName, Da
 							{
 								m2 = ReadInt(buff, m2, &m3);
 								item.SetByteArr(&buff[m2], m3);
-								cls->SetFieldClearItem(obj, k, &item);
+								cls->SetFieldClearItem(obj, k, item);
 								m2 += m3;
 							}
 							break;
@@ -547,10 +547,10 @@ template <class T> Bool DB::DBDataFile<T>::LoadFile(Text::CStringNN fileName, Da
 							break;
 						case Data::VariItem::ItemType::UUID:
 							{
-								Data::UUID *uuid;
-								NEW_CLASS(uuid, Data::UUID(&buff[m2]));
+								NotNullPtr<Data::UUID> uuid;
+								NEW_CLASSNN(uuid, Data::UUID(&buff[m2]));
 								item.SetUUIDDirect(uuid);
-								cls->SetFieldClearItem(obj, k, &item);
+								cls->SetFieldClearItem(obj, k, item);
 								m2 += 16;
 							}
 							break;

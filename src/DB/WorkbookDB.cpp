@@ -161,12 +161,12 @@ public:
 		return 0;
 	}
 
-	virtual Bool GetUUID(UOSInt colIndex, Data::UUID *uuid)
+	virtual Bool GetUUID(UOSInt colIndex, NotNullPtr<Data::UUID> uuid)
 	{
 		return false;
 	}
 
-	virtual Bool GetVariItem(UOSInt colIndex, Data::VariItem *item)
+	virtual Bool GetVariItem(UOSInt colIndex, NotNullPtr<Data::VariItem> item)
 	{
 		const Text::SpreadSheet::Worksheet::CellData *cell = this->sheet->GetCellDataRead(this->currIndex, colIndex);
 		if (cell == 0 || cell->cellValue == 0)
@@ -196,11 +196,13 @@ public:
 		return 0;
 	}
 
-	virtual DB::DBUtil::ColType GetColType(UOSInt colIndex, UOSInt *colSize)
+	virtual DB::DBUtil::ColType GetColType(UOSInt colIndex, OptOut<UOSInt> colSize)
 	{
 		if (colIndex < this->tabDef->GetColCnt())
 		{
-			return this->tabDef->GetCol(colIndex)->GetColType();
+			DB::ColDef *colDef = this->tabDef->GetCol(colIndex);
+			colSize.Set(colDef->GetColSize());
+			return colDef->GetColType();
 		}
 		return DB::DBUtil::ColType::CT_Unknown;
 	}

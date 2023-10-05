@@ -290,13 +290,14 @@ UTF8Char *Map::DBMapLayer::GetColumnName(UTF8Char *buff, UOSInt colIndex)
 	return 0;
 }
 
-DB::DBUtil::ColType Map::DBMapLayer::GetColumnType(UOSInt colIndex, UOSInt *colSize)
+DB::DBUtil::ColType Map::DBMapLayer::GetColumnType(UOSInt colIndex, OptOut<UOSInt> colSize)
 {
 	if (this->tabDef)
 	{
 		DB::ColDef *col = this->tabDef->GetCol(colIndex);
 		if (col)
 		{
+			colSize.Set(col->GetColSize());
 			return col->GetColType();
 		}
 	}

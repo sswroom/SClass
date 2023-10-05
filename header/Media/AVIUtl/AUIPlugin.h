@@ -45,7 +45,7 @@ namespace Media
 			UOSInt GetAudioData(void *hand, UOSInt startSample, UOSInt sampleLength, UInt8 *buff);
 			Bool IsVideoKeyFrame(void *hand, UInt32 frameNum);
 			Bool ConfigInput(void *hInst, void *hWnd);
-			void PrepareSelector(IO::FileSelector *selector);
+			void PrepareSelector(NotNullPtr<IO::FileSelector> selector);
 
 			static AUIPlugin *LoadPlugin(const WChar *fileName);
 		};

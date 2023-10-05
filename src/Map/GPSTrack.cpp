@@ -250,30 +250,21 @@ UTF8Char *Map::GPSTrack::GetColumnName(UTF8Char *buff, UOSInt colIndex)
 	}
 }
 
-DB::DBUtil::ColType Map::GPSTrack::GetColumnType(UOSInt colIndex, UOSInt *colSize)
+DB::DBUtil::ColType Map::GPSTrack::GetColumnType(UOSInt colIndex, OptOut<UOSInt> colSize)
 {
 	if (colIndex == 0)
 	{
-		if (colSize)
-		{
-			*colSize = 256;
-		}
+		colSize.Set(256);
 		return DB::DBUtil::CT_VarUTF8Char;
 	}
 	else if (colIndex == 1 || colIndex == 2)
 	{
-		if (colSize)
-		{
-			*colSize = 3;
-		}
+		colSize.Set(3);
 		return DB::DBUtil::CT_DateTime;
 	}
 	else
 	{
-		if (colSize)
-		{
-			*colSize = 0;
-		}
+		colSize.Set(0);
 		return DB::DBUtil::CT_Unknown;
 	}
 }
@@ -1348,7 +1339,7 @@ Math::Geometry::Vector2D *Map::GPSDataReader::GetVector(UOSInt colIndex)
 	return pt;
 }
 
-Bool Map::GPSDataReader::GetUUID(UOSInt colIndex, Data::UUID *uuid)
+Bool Map::GPSDataReader::GetUUID(UOSInt colIndex, NotNullPtr<Data::UUID> uuid)
 {
 	return false;
 }
@@ -1372,45 +1363,62 @@ Bool Map::GPSDataReader::IsNull(UOSInt colIndex)
 	return false;
 }
 
-DB::DBUtil::ColType Map::GPSDataReader::GetColType(UOSInt colIndex, UOSInt *colSize)
+DB::DBUtil::ColType Map::GPSDataReader::GetColType(UOSInt colIndex, OptOut<UOSInt> colSize)
 {
 	switch (colIndex)
 	{
 	case 0:
+		colSize.Set(33);
 		return DB::DBUtil::CT_DateTime;
 	case 1:
+		colSize.Set(0x7fffffff);
 		return DB::DBUtil::CT_Vector;
 	case 2:
+		colSize.Set(33);
 		return DB::DBUtil::CT_Double;
 	case 3:
+		colSize.Set(33);
 		return DB::DBUtil::CT_Double;
 	case 4:
+		colSize.Set(33);
 		return DB::DBUtil::CT_Double;
 	case 5:
+		colSize.Set(33);
 		return DB::DBUtil::CT_Double;
 	case 6:
+		colSize.Set(11);
 		return DB::DBUtil::CT_Int32;
 	case 7:
+		colSize.Set(11);
 		return DB::DBUtil::CT_Int32;
 	case 8:
+		colSize.Set(11);
 		return DB::DBUtil::CT_Int32;
 	case 9:
+		colSize.Set(11);
 		return DB::DBUtil::CT_Int32;
 	case 10:
+		colSize.Set(11);
 		return DB::DBUtil::CT_Int32;
 	case 11:
+		colSize.Set(11);
 		return DB::DBUtil::CT_Int32;
 	case 12:
+		colSize.Set(11);
 		return DB::DBUtil::CT_Int32;
 	case 13:
+		colSize.Set(11);
 		return DB::DBUtil::CT_Int32;
 	case 14:
+		colSize.Set(11);
 		return DB::DBUtil::CT_Int32;
 	case 15:
+		colSize.Set(11);
 		return DB::DBUtil::CT_Int32;
 	case 16:
 		if (this->gps->GetHasAltitude())
 		{
+			colSize.Set(33);
 			return DB::DBUtil::CT_Double;
 		}
 		else

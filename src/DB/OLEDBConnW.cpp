@@ -1617,7 +1617,7 @@ Math::Geometry::Vector2D *DB::OLEDBReader::GetVector(UOSInt colIndex)
 	return 0;
 }
 
-Bool DB::OLEDBReader::GetUUID(UOSInt colIndex, Data::UUID *uuid)
+Bool DB::OLEDBReader::GetUUID(UOSInt colIndex, NotNullPtr<Data::UUID> uuid)
 {
 	return false;
 }
@@ -1641,19 +1641,15 @@ Bool DB::OLEDBReader::IsNull(UOSInt colIndex)
 	return *status == DBSTATUS_S_ISNULL;
 }
 
-DB::DBUtil::ColType DB::OLEDBReader::GetColType(UOSInt colIndex, UOSInt *colSize)
+DB::DBUtil::ColType DB::OLEDBReader::GetColType(UOSInt colIndex, OptOut<UOSInt> colSize)
 {
 	ClassData *data = this->clsData;
 	if (data->dbColInfo == 0 || colIndex >= data->nCols)
 	{
-		if (colSize)
-			*colSize = 0;
+		colSize.Set(0);
 		return DB::DBUtil::CT_Unknown;
 	}
-	if (colSize)
-	{
-		*colSize = data->dbColInfo[colIndex].ulColumnSize;
-	}
+	colSize.Set(data->dbColInfo[colIndex].ulColumnSize);
 	return DBType2ColType(data->dbColInfo[colIndex].wType);
 }
 

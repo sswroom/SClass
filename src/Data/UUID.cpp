@@ -12,7 +12,7 @@ Data::UUID::UUID(const UInt8 *buff)
 	this->SetValue(buff);
 }
 
-Data::UUID::UUID(Text::CString str)
+Data::UUID::UUID(Text::CStringNN str)
 {
 	this->SetValue(str);
 }
@@ -26,12 +26,12 @@ void Data::UUID::SetValue(const UInt8 *buff)
 	MemCopyNO(this->data, buff, 16);
 }
 
-void Data::UUID::SetValue(UUID *uuid)
+void Data::UUID::SetValue(NotNullPtr<UUID> uuid)
 {
 	MemCopyNO(this->data, uuid->data, 16);
 }
 
-void Data::UUID::SetValue(Text::CString str)
+void Data::UUID::SetValue(Text::CStringNN str)
 {
 	if (str.leng == 38 && str.v[0] == '{' && str.v[37] == '}')
 	{
@@ -61,7 +61,7 @@ UOSInt Data::UUID::GetValue(UInt8 *buff) const
 	return 16;
 }
 
-OSInt Data::UUID::CompareTo(UUID *uuid) const
+OSInt Data::UUID::CompareTo(NotNullPtr<UUID> uuid) const
 {
 	UInt32 v1 = ReadUInt32(&this->data[0]);
 	UInt32 v2 = ReadUInt32(&uuid->data[0]);
@@ -175,15 +175,15 @@ UTF8Char *Data::UUID::ToString(UTF8Char *sbuff) const
 	return sbuff;
 }
 
-Data::UUID *Data::UUID::Clone() const
+NotNullPtr<Data::UUID> Data::UUID::Clone() const
 {
-	return NEW_CLASS_D(Data::UUID(this->data));	
+	NotNullPtr<Data::UUID> ret;
+	NEW_CLASSNN(ret, Data::UUID(this->data));
+	return ret;	
 }
 
-Bool Data::UUID::Equals(UUID *uuid) const
+Bool Data::UUID::Equals(NotNullPtr<UUID> uuid) const
 {
-	if (uuid == 0)
-		return false;
 	UOSInt i = 16;
 	while (i-- > 0)
 	{

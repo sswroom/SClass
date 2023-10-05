@@ -21,7 +21,7 @@
 #undef CopyFile
 #undef RemoveDirectory
 
-Bool IO::FileUtil::DeleteFile(Text::CString file, Bool deleteRdonlyFile)
+Bool IO::FileUtil::DeleteFile(Text::CStringNN file, Bool deleteRdonlyFile)
 {
 	IO::Path::PathType pt = IO::Path::GetPathType(file);
 	if (pt == IO::Path::PathType::Directory)

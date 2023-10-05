@@ -523,14 +523,11 @@ UTF8Char *Map::WebImageLayer::GetColumnName(UTF8Char *buff, UOSInt colIndex)
 	return Text::StrConcatC(buff, UTF8STRC("Name"));
 }
 
-DB::DBUtil::ColType Map::WebImageLayer::GetColumnType(UOSInt colIndex, UOSInt *colSize)
+DB::DBUtil::ColType Map::WebImageLayer::GetColumnType(UOSInt colIndex, OptOut<UOSInt> colSize)
 {
 	if (colIndex == 0)
 	{
-		if (colSize)
-		{
-			*colSize = 256;
-		}
+		colSize.Set(256);
 		return DB::DBUtil::CT_VarUTF8Char;
 	}
 	return DB::DBUtil::CT_Unknown;

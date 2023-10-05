@@ -210,20 +210,14 @@ UTF8Char *DB::DBFFile::GetColumnName(UOSInt colIndex, UTF8Char *buff)
 	return this->cols[colIndex].name->ConcatTo(buff);
 }
 
-DB::DBUtil::ColType DB::DBFFile::GetColumnType(UOSInt colIndex, UOSInt *colSize)
+DB::DBUtil::ColType DB::DBFFile::GetColumnType(UOSInt colIndex, OptOut<UOSInt> colSize)
 {
 	if (colIndex >= this->colCnt)
 	{
-		if (colSize)
-		{
-			*colSize = 0;
-		}
-		return DB::DBUtil::CT_VarUTF8Char;
+		colSize.Set(0);
+		return DB::DBUtil::CT_Unknown;
 	}
-	if (colSize)
-	{
-		*colSize = cols[colIndex].colSize;
-	}
+	colSize.Set(cols[colIndex].colSize);
 	if (cols[colIndex].type == 'D')
 	{
 		return DB::DBUtil::CT_Date;
@@ -739,7 +733,7 @@ Math::Geometry::Vector2D *DB::DBFReader::GetVector(UOSInt colIndex)
 	return 0;
 }
 
-Bool DB::DBFReader::GetUUID(UOSInt colIndex, Data::UUID *uuid)
+Bool DB::DBFReader::GetUUID(UOSInt colIndex, NotNullPtr<Data::UUID> uuid)
 {
 	return false;
 }
@@ -781,7 +775,7 @@ UTF8Char *DB::DBFReader::GetName(UOSInt colIndex, UTF8Char *buff)
 	return this->cols[colIndex].name->ConcatTo(buff);
 }
 
-DB::DBUtil::ColType DB::DBFReader::GetColType(UOSInt colIndex, UOSInt *colSize)
+DB::DBUtil::ColType DB::DBFReader::GetColType(UOSInt colIndex, OptOut<UOSInt> colSize)
 {
 	return this->dbf->GetColumnType(colIndex, colSize);
 }

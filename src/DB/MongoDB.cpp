@@ -340,7 +340,7 @@ Math::Geometry::Vector2D *DB::MongoDBReader::GetVector(UOSInt colIndex)
 	return 0;
 }
 
-Bool DB::MongoDBReader::GetUUID(UOSInt colIndex, Data::UUID *uuid)
+Bool DB::MongoDBReader::GetUUID(UOSInt colIndex, NotNullPtr<Data::UUID> uuid)
 {
 	return false;
 }
@@ -369,10 +369,11 @@ Bool DB::MongoDBReader::IsNull(UOSInt colIndex)
 	return false;
 }
 
-DB::DBUtil::ColType DB::MongoDBReader::GetColType(UOSInt colIndex, UOSInt *colSize)
+DB::DBUtil::ColType DB::MongoDBReader::GetColType(UOSInt colIndex, OptOut<UOSInt> colSize)
 {
 	if (colIndex != 0)
 		return DB::DBUtil::CT_Unknown;
+	colSize.Set(0xffffffff);
 	return DB::DBUtil::CT_VarUTF8Char;
 }
 

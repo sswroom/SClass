@@ -101,14 +101,11 @@ UTF8Char *SSWR::OrganMgr::OrganSpImgLayer::GetColumnName(UTF8Char *buff, UOSInt 
 	return 0;
 }
 
-DB::DBUtil::ColType SSWR::OrganMgr::OrganSpImgLayer::GetColumnType(UOSInt colIndex, UOSInt *colSize)
+DB::DBUtil::ColType SSWR::OrganMgr::OrganSpImgLayer::GetColumnType(UOSInt colIndex, OptOut<UOSInt> colSize)
 {
 	if (colIndex == 0)
 	{
-		if (colSize)
-		{
-			*colSize = 256;
-		}
+		colSize.Set(256);
 		return DB::DBUtil::CT_VarUTF8Char;
 	}
 	return DB::DBUtil::CT_Unknown;

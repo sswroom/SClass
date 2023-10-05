@@ -255,7 +255,7 @@ public:
 	virtual Int32 GetInt32(UOSInt colIndex)
 	{
 		Data::VariItem item;
-		if (this->GetVariItem(colIndex, &item))
+		if (this->GetVariItem(colIndex, item))
 			return item.GetAsI32();
 		return 0;
 	}
@@ -263,7 +263,7 @@ public:
 	virtual Int64 GetInt64(UOSInt colIndex)
 	{
 		Data::VariItem item;
-		if (this->GetVariItem(colIndex, &item))
+		if (this->GetVariItem(colIndex, item))
 			return item.GetAsI64();
 		return 0;
 	}
@@ -332,7 +332,7 @@ public:
 		case SYBUUID:
 		{
 			Data::UUID uuid;
-			this->GetUUID(colIndex, &uuid);
+			this->GetUUID(colIndex, uuid);
 			uuid.ToString(sb);
 			return true;
 		}
@@ -405,7 +405,7 @@ public:
 		case SYBUUID:
 		{
 			Data::UUID uuid;
-			this->GetUUID(colIndex, &uuid);
+			this->GetUUID(colIndex, uuid);
 			sptr = uuid.ToString(sbuff);
 			return Text::String::NewP(sbuff, sptr).Ptr();
 		}
@@ -458,7 +458,7 @@ public:
 		case SYBUUID:
 		{
 			Data::UUID uuid;
-			this->GetUUID(colIndex, &uuid);
+			this->GetUUID(colIndex, uuid);
 			return uuid.ToString(buff);
 		}
 		case SYBGEOMETRY:
@@ -509,7 +509,7 @@ public:
 	virtual Double GetDbl(UOSInt colIndex)
 	{
 		Data::VariItem item;
-		if (this->GetVariItem(colIndex, &item))
+		if (this->GetVariItem(colIndex, item))
 			return item.GetAsF64();
 		return 0;
 	}
@@ -517,7 +517,7 @@ public:
 	virtual Bool GetBool(UOSInt colIndex)
 	{
 		Data::VariItem item;
-		if (this->GetVariItem(colIndex, &item))
+		if (this->GetVariItem(colIndex, item))
 			return item.GetAsBool();
 		return 0;
 	}
@@ -567,7 +567,7 @@ public:
 		return Math::MSGeography::ParseBinary(buffPtr, dataSize, &srId);
 	}
 
-	virtual Bool GetUUID(UOSInt colIndex, Data::UUID *uuid)
+	virtual Bool GetUUID(UOSInt colIndex, NotNullPtr<Data::UUID> uuid)
 	{
 		if (colIndex >= this->nCols)
 			return false;
@@ -581,7 +581,7 @@ public:
 		return true;
 	}
 
-	virtual Bool GetVariItem(UOSInt colIndex, Data::VariItem *item)
+	virtual Bool GetVariItem(UOSInt colIndex, NotNullPtr<Data::VariItem> item)
 	{
 		if (colIndex >= this->nCols)
 			return false;
@@ -664,8 +664,8 @@ public:
 		}
 		case SYBUUID:
 		{
-			Data::UUID *uuid;
-			NEW_CLASS(uuid, Data::UUID(dbdata(this->dbproc, (int)colIndex + 1)));
+			NotNullPtr<Data::UUID> uuid;
+			NEW_CLASSNN(uuid, Data::UUID(dbdata(this->dbproc, (int)colIndex + 1)));
 			item->SetUUIDDirect(uuid);
 			return true;
 		}
@@ -689,12 +689,11 @@ public:
 		return Text::StrConcat(buff, (const UTF8Char*)this->cols[colIndex].name);
 	}
 
-	virtual DB::DBUtil::ColType GetColType(UOSInt colIndex, UOSInt *colSize)
+	virtual DB::DBUtil::ColType GetColType(UOSInt colIndex, OptOut<UOSInt> colSize)
 	{
 		if (colIndex >= this->nCols)
 			return DB::DBUtil::ColType::CT_Unknown;
-		if (colSize)
-			*colSize = (UInt32)this->cols[colIndex].size;
+		colSize.Set((UInt32)this->cols[colIndex].size);
 		switch (this->cols[colIndex].type)
 		{
 		case SYBBIT:

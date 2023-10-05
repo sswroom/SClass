@@ -230,12 +230,12 @@ UTF8Char *Map::DrawMapServiceLayer::GetColumnName(UTF8Char *buff, UOSInt colInde
 	return 0;
 }
 
-DB::DBUtil::ColType Map::DrawMapServiceLayer::GetColumnType(UOSInt colIndex, UOSInt *colSize)
+DB::DBUtil::ColType Map::DrawMapServiceLayer::GetColumnType(UOSInt colIndex, OptOut<UOSInt> colSize)
 {
 	switch (colIndex)
 	{
 	case 0:
-		if (colSize) *colSize = 20;
+		colSize.Set(20);
 		return DB::DBUtil::CT_Int64;
 	}
 	return DB::DBUtil::CT_Unknown;
@@ -252,7 +252,7 @@ Bool Map::DrawMapServiceLayer::GetColumnDef(UOSInt colIndex, NotNullPtr<DB::ColD
 		colDef->SetPK(true);
 		sptr = this->GetColumnName(sbuff, colIndex);
 		colDef->SetColName(CSTRP(sbuff, sptr));
-		colDef->SetColType(this->GetColumnType(colIndex, &colSize));
+		colDef->SetColType(this->GetColumnType(colIndex, colSize));
 		colDef->SetColSize(colSize);
 		colDef->SetColDP(0);
 		colDef->SetNotNull(true);

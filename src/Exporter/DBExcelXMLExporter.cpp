@@ -122,7 +122,7 @@ Bool Exporter::DBExcelXMLExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm
 				while (i < colCnt)
 				{
 					UOSInt colSize;
-					DB::DBUtil::ColType ct = r->GetColType(i, &colSize);
+					DB::DBUtil::ColType ct = r->GetColType(i, colSize);
 					switch (ct)
 					{
 					case DB::DBUtil::CT_Date:

@@ -219,7 +219,7 @@ Int32 Map::MapSearch::SearchNames(UTF8Char *buff, Text::PString *outArrs, Math::
 			else if (lyr->searchType == 1)
 			{
 				Math::Coord2DDbl posout;
-				if ((sptrtmp = lyr->mapLayer->GetPLLabel(sbufftmp, sizeof(sbufftmp), pos, &posout, lyr->strIndex)) != 0)
+				if ((sptrtmp = lyr->mapLayer->GetPLLabel(sbufftmp, sizeof(sbufftmp), pos, posout, lyr->strIndex)) != 0)
 				{
 					Math::Coord2DDbl tmp = posout - pos;
 					tmp = tmp * tmp;

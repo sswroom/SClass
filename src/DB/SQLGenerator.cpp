@@ -1034,7 +1034,7 @@ Bool DB::SQLGenerator::GenInsertCmd(NotNullPtr<DB::SQLBuilder> sql, Text::CStrin
 			Math::Geometry::Vector2D *vec;
 			UInt8 *binBuff;
 			UOSInt colSize;
-			colType = r->GetColType(i, &colSize);
+			colType = r->GetColType(i, colSize);
 			switch (colType)
 			{
 			case DB::DBUtil::CT_Bool:

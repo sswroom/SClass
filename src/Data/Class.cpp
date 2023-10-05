@@ -157,7 +157,7 @@ Bool Data::Class::GetValue(Data::VariItem *itm, UOSInt index, void *obj)
 	return true;
 }
 
-Bool Data::Class::SetField(void *obj, UOSInt index, Data::VariItem *item)
+Bool Data::Class::SetField(void *obj, UOSInt index, NotNullPtr<Data::VariItem> item)
 {
 	FieldInfo *field = this->fields.GetItem(index);
 	if (field == 0)
@@ -169,7 +169,7 @@ Bool Data::Class::SetField(void *obj, UOSInt index, Data::VariItem *item)
 	return true;
 }
 
-Bool Data::Class::SetFieldClearItem(void *obj, UOSInt index, Data::VariItem *item)
+Bool Data::Class::SetFieldClearItem(void *obj, UOSInt index, NotNullPtr<Data::VariItem> item)
 {
 	FieldInfo *field = this->fields.GetItem(index);
 	if (field == 0)

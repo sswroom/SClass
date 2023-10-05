@@ -449,7 +449,7 @@ Math::Geometry::Vector2D *DB::SortableDBReader::GetVector(UOSInt colIndex)
 	return 0;
 }
 
-Bool DB::SortableDBReader::GetUUID(UOSInt colIndex, Data::UUID *uuid)
+Bool DB::SortableDBReader::GetUUID(UOSInt colIndex, NotNullPtr<Data::UUID> uuid)
 {
 	Data::VariItem *item = this->GetItem(colIndex);
 	if (item && item->GetItemType() == Data::VariItem::ItemType::UUID)
@@ -460,7 +460,7 @@ Bool DB::SortableDBReader::GetUUID(UOSInt colIndex, Data::UUID *uuid)
 	return false;
 }
 
-Bool DB::SortableDBReader::GetVariItem(UOSInt colIndex, Data::VariItem *item)
+Bool DB::SortableDBReader::GetVariItem(UOSInt colIndex, NotNullPtr<Data::VariItem> item)
 {
 	Data::VariItem *dataItem = this->GetItem(colIndex);
 	if (dataItem)
@@ -492,11 +492,12 @@ UTF8Char *DB::SortableDBReader::GetName(UOSInt colIndex, UTF8Char *buff)
 	return 0;
 }
 
-DB::DBUtil::ColType DB::SortableDBReader::GetColType(UOSInt colIndex, UOSInt *colSize)
+DB::DBUtil::ColType DB::SortableDBReader::GetColType(UOSInt colIndex, OptOut<UOSInt> colSize)
 {
 	DB::ColDef *col = this->cols.GetItem(colIndex);
 	if (col)
 	{
+		colSize.Set(col->GetColSize());
 		return col->GetColType();
 	}
 	return DB::DBUtil::CT_Unknown;

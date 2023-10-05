@@ -1201,7 +1201,7 @@ Math::Geometry::Vector2D *Map::ESRI::FileGDBReader::GetVector(UOSInt colIndex)
 	return 0;
 }
 
-Bool Map::ESRI::FileGDBReader::GetUUID(UOSInt colIndex, Data::UUID *uuid)
+Bool Map::ESRI::FileGDBReader::GetUUID(UOSInt colIndex, NotNullPtr<Data::UUID> uuid)
 {
 	UOSInt fieldIndex = this->GetFieldIndex(colIndex);
 	if (this->rowData.IsNull())
@@ -1223,7 +1223,7 @@ Bool Map::ESRI::FileGDBReader::GetUUID(UOSInt colIndex, Data::UUID *uuid)
 	return false;
 }
 
-Bool Map::ESRI::FileGDBReader::GetVariItem(UOSInt colIndex, Data::VariItem *item)
+Bool Map::ESRI::FileGDBReader::GetVariItem(UOSInt colIndex, NotNullPtr<Data::VariItem> item)
 {
 	UOSInt fieldIndex = this->GetFieldIndex(colIndex);
 	if (this->rowData.IsNull())
@@ -1275,8 +1275,8 @@ Bool Map::ESRI::FileGDBReader::GetVariItem(UOSInt colIndex, Data::VariItem *item
 		return true;
 	case 7:
 		{
-			Math::Geometry::Vector2D *vec = this->GetVector(colIndex);
-			if (vec)
+			NotNullPtr<Math::Geometry::Vector2D> vec;
+			if (vec.Set(this->GetVector(colIndex)))
 			{
 				item->SetVectorDirect(vec);
 				return true;
@@ -1293,8 +1293,8 @@ Bool Map::ESRI::FileGDBReader::GetVariItem(UOSInt colIndex, Data::VariItem *item
 	case 10:
 	case 11:
 		{
-			Data::UUID *uuid;
-			NEW_CLASS(uuid, Data::UUID(&this->rowData[this->fieldOfst[fieldIndex]]));
+			NotNullPtr<Data::UUID> uuid;
+			NEW_CLASSNN(uuid, Data::UUID(&this->rowData[this->fieldOfst[fieldIndex]]));
 			item->SetUUIDDirect(uuid);
 			return true;
 		}
@@ -1421,14 +1421,13 @@ UTF8Char *Map::ESRI::FileGDBReader::GetName(UOSInt colIndex, UTF8Char *buff)
 	return 0;
 }
 
-DB::DBUtil::ColType Map::ESRI::FileGDBReader::GetColType(UOSInt colIndex, UOSInt *colSize)
+DB::DBUtil::ColType Map::ESRI::FileGDBReader::GetColType(UOSInt colIndex, OptOut<UOSInt> colSize)
 {
 	UOSInt fieldIndex = this->GetFieldIndex(colIndex);
 	Map::ESRI::FileGDBFieldInfo *field = this->tableInfo->fields->GetItem(fieldIndex);
 	if (field)
 	{
-		if (colSize)
-			*colSize = field->fieldSize;
+		colSize.Set(field->fieldSize);
 		switch (field->fieldType)
 		{
 		case 0:
@@ -1477,7 +1476,7 @@ Bool Map::ESRI::FileGDBReader::GetColDef(UOSInt colIndex, NotNullPtr<DB::ColDef>
 	UOSInt colSize;
 	colDef->SetColName(field->name);
 	colDef->SetColSize(field->fieldSize);
-	colDef->SetColType(this->GetColType(colIndex, &colSize));
+	colDef->SetColType(this->GetColType(colIndex, colSize));
 	if (colDef->GetColType() == DB::DBUtil::CT_DateTime)
 	{
 		colDef->SetColSize(0);

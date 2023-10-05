@@ -517,7 +517,7 @@ UTF8Char *Map::SHPData::GetColumnName(UTF8Char *buff, UOSInt colIndex)
 	return this->dbf->GetColumnName(colIndex, buff);
 }
 
-DB::DBUtil::ColType Map::SHPData::GetColumnType(UOSInt colIndex, UOSInt *colSize)
+DB::DBUtil::ColType Map::SHPData::GetColumnType(UOSInt colIndex, OptOut<UOSInt> colSize)
 {
 	return this->dbf->GetColumnType(colIndex, colSize);
 }

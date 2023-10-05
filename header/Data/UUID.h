@@ -12,14 +12,14 @@ namespace Data
 	public:
 		UUID();
 		UUID(const UInt8 *buff);
-		UUID(Text::CString str);
+		UUID(Text::CStringNN str);
 		~UUID();
 
 		void SetValue(const UInt8 *buff);
-		void SetValue(UUID *uuid);
-		void SetValue(Text::CString str);
+		void SetValue(NotNullPtr<UUID> uuid);
+		void SetValue(Text::CStringNN str);
 		UOSInt GetValue(UInt8 *buff) const;
-		OSInt CompareTo(UUID *uuid) const;
+		OSInt CompareTo(NotNullPtr<UUID> uuid) const;
 
 		UInt32 GetTimeLow() const;
 		UInt16 GetTimeMid() const;
@@ -30,8 +30,8 @@ namespace Data
 
 		void ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const;
 		UTF8Char *ToString(UTF8Char *sbuff) const;
-		UUID *Clone() const;
-		Bool Equals(UUID *uuid) const;
+		NotNullPtr<UUID> Clone() const;
+		Bool Equals(NotNullPtr<UUID> uuid) const;
 	};
 }
 #endif

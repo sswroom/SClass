@@ -53,8 +53,8 @@ namespace Data
 			UInt64 u64;
 			Bool boolean;
 			Data::ReadonlyArray<UInt8> *byteArr;
-			Math::Geometry::Vector2D *vector;
-			Data::UUID *uuid;
+			NotNullPtr<Math::Geometry::Vector2D> vector;
+			NotNullPtr<Data::UUID> uuid;
 			struct { const UTF8Char *v; UOSInt leng; } cstr;
 			UInt8 buff[16];
 
@@ -89,11 +89,11 @@ namespace Data
 				}
 				else if (this->itemType == ItemType::Vector)
 				{
-					DEL_CLASS(this->val.vector);
+					this->val.vector.Delete();
 				}
 				else
 				{
-					DEL_CLASS(this->val.uuid);
+					this->val.uuid.Delete();
 				}
 			}
 			this->itemType = ItemType::Unknown;
@@ -166,13 +166,13 @@ namespace Data
 		void SetBool(Bool val);
 		void SetByteArr(const UInt8 *arr, UOSInt cnt);
 		void SetByteArr(Data::ReadonlyArray<UInt8> *arr);
-		void SetVector(Math::Geometry::Vector2D *vec);
-		void SetUUID(Data::UUID *uuid);
-		void SetVectorDirect(Math::Geometry::Vector2D *vec);
-		void SetUUIDDirect(Data::UUID *uuid);
-		void Set(VariItem *item);
+		void SetVector(NotNullPtr<Math::Geometry::Vector2D> vec);
+		void SetUUID(NotNullPtr<Data::UUID> uuid);
+		void SetVectorDirect(NotNullPtr<Math::Geometry::Vector2D> vec);
+		void SetUUIDDirect(NotNullPtr<Data::UUID> uuid);
+		void Set(NotNullPtr<VariItem> item);
 
-		VariItem *Clone() const;
+		NotNullPtr<VariItem> Clone() const;
 		void ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const;
 
 		static VariItem *NewNull();
@@ -201,8 +201,8 @@ namespace Data
 		static VariItem *NewFromPtr(void *ptr, ItemType itemType);
 		
 		static void SetFromPtr(VariItem *item, void *ptr, ItemType itemType);
-		static void SetPtr(void *ptr, ItemType itemType, VariItem *item);
-		static void SetPtrAndNotKeep(void *ptr, ItemType itemType, VariItem *item);
+		static void SetPtr(void *ptr, ItemType itemType, NotNullPtr<VariItem> item);
+		static void SetPtrAndNotKeep(void *ptr, ItemType itemType, NotNullPtr<VariItem> item);
 		static Bool PtrEquals(void *ptr1, void *ptr2, ItemType itemType);
 
 		static UOSInt GetItemSize(ItemType itemType);

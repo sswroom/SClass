@@ -99,7 +99,7 @@ Bool Exporter::DBPListExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, T
 			sptr2 = Text::StrConcatC(Text::XML::ToXMLText(Text::StrConcatC(lineBuff2, UTF8STRC("        <key>")), lineBuff1), UTF8STRC("</key>"));
 			writer->WriteLineC(lineBuff2, (UOSInt)(sptr2 - lineBuff2));
 
-			DB::DBUtil::ColType ct = r->GetColType(i, &colSize);
+			DB::DBUtil::ColType ct = r->GetColType(i, colSize);
 			switch (ct)
 			{
 			case DB::DBUtil::CT_DateTimeTZ:

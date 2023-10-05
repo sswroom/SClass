@@ -77,21 +77,21 @@ public:
 	virtual Int32 GetInt32(UOSInt colIndex)
 	{
 		Data::VariItem item;
-		this->GetVariItem(colIndex, &item);
+		this->GetVariItem(colIndex, item);
 		return item.GetAsI32();
 	}
 
 	virtual Int64 GetInt64(UOSInt colIndex)
 	{
 		Data::VariItem item;
-		this->GetVariItem(colIndex, &item);
+		this->GetVariItem(colIndex, item);
 		return item.GetAsI64();
 	}
 
 	virtual WChar *GetStr(UOSInt colIndex, WChar *buff)
 	{
 		Data::VariItem item;
-		this->GetVariItem(colIndex, &item);
+		this->GetVariItem(colIndex, item);
 		if (item.GetItemType() == Data::VariItem::ItemType::Null)
 		{
 			return 0;
@@ -113,7 +113,7 @@ public:
 	virtual Bool GetStr(UOSInt colIndex, NotNullPtr<Text::StringBuilderUTF8> sb)
 	{
 		Data::VariItem item;
-		this->GetVariItem(colIndex, &item);
+		this->GetVariItem(colIndex, item);
 		if (item.GetItemType() == Data::VariItem::ItemType::Null)
 		{
 			return false;
@@ -128,21 +128,21 @@ public:
 	virtual Text::String *GetNewStr(UOSInt colIndex)
 	{
 		Data::VariItem item;
-		this->GetVariItem(colIndex, &item);
+		this->GetVariItem(colIndex, item);
 		return item.GetAsNewString();
 	}
 
 	virtual UTF8Char *GetStr(UOSInt colIndex, UTF8Char *buff, UOSInt buffSize)
 	{
 		Data::VariItem item;
-		this->GetVariItem(colIndex, &item);
+		this->GetVariItem(colIndex, item);
 		return item.GetAsStringS(buff, buffSize);
 	}
 
 	virtual Data::Timestamp GetTimestamp(UOSInt colIndex)
 	{
 		Data::VariItem item;
-		if (!this->GetVariItem(colIndex, &item))
+		if (!this->GetVariItem(colIndex, item))
 		{
 			return Data::Timestamp(0);
 		}
@@ -156,21 +156,21 @@ public:
 	virtual Double GetDbl(UOSInt colIndex)
 	{
 		Data::VariItem item;
-		this->GetVariItem(colIndex, &item);
+		this->GetVariItem(colIndex, item);
 		return item.GetAsF64();
 	}
 
 	virtual Bool GetBool(UOSInt colIndex)
 	{
 		Data::VariItem item;
-		this->GetVariItem(colIndex, &item);
+		this->GetVariItem(colIndex, item);
 		return item.GetAsBool();
 	}
 
 	virtual UOSInt GetBinarySize(UOSInt colIndex)
 	{
 		Data::VariItem item;
-		this->GetVariItem(colIndex, &item);
+		this->GetVariItem(colIndex, item);
 		Data::ReadonlyArray<UInt8> *arr = item.GetAndRemoveByteArr();
 		if (arr)
 		{
@@ -184,7 +184,7 @@ public:
 	virtual UOSInt GetBinary(UOSInt colIndex, UInt8 *buff)
 	{
 		Data::VariItem item;
-		this->GetVariItem(colIndex, &item);
+		this->GetVariItem(colIndex, item);
 		Data::ReadonlyArray<UInt8> *arr = item.GetAndRemoveByteArr();
 		if (arr)
 		{
@@ -199,18 +199,18 @@ public:
 	virtual Math::Geometry::Vector2D *GetVector(UOSInt colIndex)
 	{
 		Data::VariItem item;
-		this->GetVariItem(colIndex, &item);
+		this->GetVariItem(colIndex, item);
 		return item.GetAndRemoveVector();
 	}
 
-	virtual Bool GetUUID(UOSInt colIndex, Data::UUID *uuid)
+	virtual Bool GetUUID(UOSInt colIndex, NotNullPtr<Data::UUID> uuid)
 	{
 		Data::VariItem item;
-		this->GetVariItem(colIndex, &item);
+		this->GetVariItem(colIndex, item);
 		return item.GetAndRemoveUUID();
 	}
 
-	virtual Bool GetVariItem(UOSInt colIndex, Data::VariItem *item)
+	virtual Bool GetVariItem(UOSInt colIndex, NotNullPtr<Data::VariItem> item)
 	{
 		if (this->currrow < 0 || this->currrow >= this->nrow)
 		{
@@ -237,15 +237,16 @@ public:
 			UInt8 *wkb = MemAlloc(UInt8, sb.GetLength() >> 1);
 			UOSInt wkbLen = sb.Hex2Bytes(wkb);
 			Math::WKBReader reader(0);
-			Math::Geometry::Vector2D *vec = reader.ParseWKB(wkb, wkbLen, 0);
-			MemFree(wkb);
-			if (vec)
+			NotNullPtr<Math::Geometry::Vector2D> vec;
+			if (vec.Set(reader.ParseWKB(wkb, wkbLen, 0)))
 			{
+				MemFree(wkb);
 				item->SetVectorDirect(vec);
 				return true;
 			}
 			else
 			{
+				MemFree(wkb);
 				return false;
 			}
 		}
@@ -305,8 +306,8 @@ public:
 		}
 		case 2950: //uuid
 		{
-			Data::UUID *uuid;
-			NEW_CLASS(uuid, Data::UUID(Text::CString::FromPtr((const UTF8Char*)PQgetvalue(this->res, this->currrow, (int)colIndex))));
+			NotNullPtr<Data::UUID> uuid;
+			NEW_CLASSNN(uuid, Data::UUID(Text::CStringNN::FromPtr((const UTF8Char*)PQgetvalue(this->res, this->currrow, (int)colIndex))));
 			item->SetUUIDDirect(uuid);
 			return true;
 		}
@@ -472,8 +473,8 @@ public:
 			{
 				return false;
 			}
-			Math::Geometry::Point *pt;
-			NEW_CLASS(pt, Math::Geometry::Point(0, sarr[0].ToDouble(), sarr[1].ToDouble()));
+			NotNullPtr<Math::Geometry::Point> pt;
+			NEW_CLASSNN(pt, Math::Geometry::Point(0, sarr[0].ToDouble(), sarr[1].ToDouble()));
 			item->SetVectorDirect(pt);
 			return true;
 		}
@@ -557,7 +558,7 @@ public:
 	virtual Bool IsNull(UOSInt colIndex)
 	{
 		Data::VariItem item;
-		if (!this->GetVariItem(colIndex, &item))
+		if (!this->GetVariItem(colIndex, item))
 		{
 			return false;
 		}
@@ -574,9 +575,21 @@ public:
 		return 0;
 	}
 
-	virtual DB::DBUtil::ColType GetColType(UOSInt colIndex, UOSInt *colSize)
+	virtual DB::DBUtil::ColType GetColType(UOSInt colIndex, OptOut<UOSInt> colSize)
 	{
 		Oid oid = PQftype(this->res, (int)colIndex);
+		if (colSize.IsNotNull())
+		{
+			int len = PQfsize(this->res, (int)colIndex);
+			if (len < 0)
+			{
+				colSize.SetNoCheck(65535);
+			}
+			else
+			{
+				colSize.SetNoCheck((UOSInt)len);
+			}
+		}
 		return this->conn->DBType2ColType(oid);
 	}
 

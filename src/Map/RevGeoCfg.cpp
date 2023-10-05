@@ -105,7 +105,7 @@ UTF8Char *Map::RevGeoCfg::GetStreetName(UTF8Char *buff, UOSInt buffSize, Math::C
 			layer = layers->GetItem(j);
 			if (layer->searchType == 1)
 			{
-				if (layer->data->GetPLLabel(sbuff, sizeof(sbuff), pos, &posOut, layer->strIndex))
+				if (layer->data->GetPLLabel(sbuff, sizeof(sbuff), pos, posOut, layer->strIndex))
 				{
 					posOut = posOut - pos;
 					posOut = posOut * posOut;
@@ -135,7 +135,7 @@ UTF8Char *Map::RevGeoCfg::GetStreetName(UTF8Char *buff, UOSInt buffSize, Math::C
 			}
 			else if (layer->searchType == 2)
 			{
-				if (layer->data->GetPGLabel(sbuff, sizeof(sbuff), pos, 0, layer->strIndex))
+				if (layer->data->GetPGLabel(sbuff, sizeof(sbuff), pos, posOut, layer->strIndex))
 				{
 					if (minDist < 0)
 					{

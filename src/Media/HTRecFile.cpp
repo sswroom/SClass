@@ -427,7 +427,7 @@ Math::Geometry::Vector2D *Media::HTRecFile::HTRecReader::GetVector(UOSInt colInd
 	return 0;
 }
 
-Bool Media::HTRecFile::HTRecReader::GetUUID(UOSInt colIndex, Data::UUID *uuid)
+Bool Media::HTRecFile::HTRecReader::GetUUID(UOSInt colIndex, NotNullPtr<Data::UUID> uuid)
 {
 	return false;
 }
@@ -445,17 +445,17 @@ Bool Media::HTRecFile::HTRecReader::IsNull(UOSInt colIndex)
 	return false;
 }
 
-DB::DBUtil::ColType Media::HTRecFile::HTRecReader::GetColType(UOSInt colIndex, UOSInt *colSize)
+DB::DBUtil::ColType Media::HTRecFile::HTRecReader::GetColType(UOSInt colIndex, OptOut<UOSInt> colSize)
 {
 	if (this->setting)
 	{
 		switch (colIndex)
 		{
 		case 0:
-			*colSize = 32;
+			colSize.Set(32);
 			return DB::DBUtil::CT_VarUTF8Char;
 		case 1:
-			*colSize = 32;
+			colSize.Set(32);
 			return DB::DBUtil::CT_VarUTF8Char;
 		}
 	}
@@ -464,16 +464,16 @@ DB::DBUtil::ColType Media::HTRecFile::HTRecReader::GetColType(UOSInt colIndex, U
 		switch (colIndex)
 		{
 		case 0:
-			*colSize = 11;
+			colSize.Set(11);
 			return DB::DBUtil::CT_Int32;
 		case 1:
-			*colSize = 0;
+			colSize.Set(0);
 			return DB::DBUtil::CT_DateTime;
 		case 2:
-			*colSize = 32;
+			colSize.Set(32);
 			return DB::DBUtil::CT_Double;
 		case 3:
-			*colSize = 32;
+			colSize.Set(32);
 			return DB::DBUtil::CT_Double;
 		}
 	}

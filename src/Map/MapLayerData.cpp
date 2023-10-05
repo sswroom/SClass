@@ -54,7 +54,7 @@ Bool Map::MapLayerData::IsError() const
 	return this->cixFile == 0 || this->ciuFile == 0 || this->cipFile == 0 || this->blkFile == 0;
 }
 
-UTF8Char *Map::MapLayerData::GetPGLabel(UTF8Char *buff, UOSInt buffSize, Math::Coord2DDbl coord, Math::Coord2DDbl *outCoord, UOSInt strIndex)
+UTF8Char *Map::MapLayerData::GetPGLabel(UTF8Char *buff, UOSInt buffSize, Math::Coord2DDbl coord, OptOut<Math::Coord2DDbl> outCoord, UOSInt strIndex)
 {
 	Math::Coord2DDbl mapPos = coord * 200000.0;
 	Int32 blkx;
@@ -205,7 +205,7 @@ UTF8Char *Map::MapLayerData::GetPGLabel(UTF8Char *buff, UOSInt buffSize, Math::C
 					{
 						buff = Text::StrUTF16_UTF8C(buff, (UTF16Char*)&strRec[5], (UOSInt)strRec[4] >> 1);
 						*buff = 0;
-						if (outCoord) *outCoord = coord;
+						outCoord.Set(coord);
 						return buff;
 					}
 				}
@@ -219,7 +219,7 @@ UTF8Char *Map::MapLayerData::GetPGLabel(UTF8Char *buff, UOSInt buffSize, Math::C
 	return 0;
 }
 
-UTF8Char *Map::MapLayerData::GetPLLabel(UTF8Char *sbuff, UOSInt sbuffSize, Math::Coord2DDbl coord, Math::Coord2DDbl *outCoord, UOSInt strIndex)
+UTF8Char *Map::MapLayerData::GetPLLabel(UTF8Char *sbuff, UOSInt sbuffSize, Math::Coord2DDbl coord, OutParam<Math::Coord2DDbl> outCoord, UOSInt strIndex)
 {
 	Math::Coord2DDbl mapPos = coord * 200000.0;
 	Int32 blkCnt;
@@ -429,10 +429,7 @@ UTF8Char *Map::MapLayerData::GetPLLabel(UTF8Char *sbuff, UOSInt sbuffSize, Math:
 					foundRec = 1;
 					buffSize = Text::StrUTF16_UTF8C(sbuff, (UTF16Char*)&strRec[5], (UOSInt)strRec[4] >> 1) - sbuff;
 					sbuff[buffSize] = 0;
-					if (outCoord)
-					{
-						*outCoord = Math::Coord2DDbl(calPtX / 200000.0, calPtY / 200000.0);
-					}
+					outCoord.Set(Math::Coord2DDbl(calPtX / 200000.0, calPtY / 200000.0));
 				}
 			}
 		}

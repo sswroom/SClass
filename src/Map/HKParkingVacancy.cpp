@@ -449,27 +449,27 @@ UTF8Char *Map::HKParkingVacancy::GetColumnName(UTF8Char *buff, UOSInt colIndex)
 	}
 }
 
-DB::DBUtil::ColType Map::HKParkingVacancy::GetColumnType(UOSInt colIndex, UOSInt *colSize)
+DB::DBUtil::ColType Map::HKParkingVacancy::GetColumnType(UOSInt colIndex, OptOut<UOSInt> colSize)
 {
 	if (colIndex < 13)
 	{
-		*colSize = 256;
+		colSize.Set(256);
 		return DB::DBUtil::CT_VarUTF32Char;
 	}
 	switch (colIndex)
 	{
 	case 13:
 	case 14:
-		*colSize = 0;
+		colSize.Set(32);
 		return DB::DBUtil::CT_Double;
 	case 15:
-		*colSize = 0;
+		colSize.Set(0x7fffffff);
 		return DB::DBUtil::CT_Vector;
 	case 16:
-		*colSize = 11;
+		colSize.Set(11);
 		return DB::DBUtil::CT_Int32;
 	case 17:
-		*colSize = 0;
+		colSize.Set(33);
 		return DB::DBUtil::CT_DateTime;
 	}
 	return DB::DBUtil::CT_Unknown;

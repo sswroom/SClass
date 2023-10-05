@@ -319,7 +319,7 @@ UTF8Char *Map::ESRI::ESRIMDBLayer::GetColumnName(UTF8Char *buff, UOSInt colIndex
 	return 0;
 }
 
-DB::DBUtil::ColType Map::ESRI::ESRIMDBLayer::GetColumnType(UOSInt colIndex, UOSInt *colSize)
+DB::DBUtil::ColType Map::ESRI::ESRIMDBLayer::GetColumnType(UOSInt colIndex, OptOut<UOSInt> colSize)
 {
 	return DB::DBUtil::CT_Unknown;
 }
@@ -515,7 +515,7 @@ Math::Geometry::Vector2D *Map::ESRI::ESRIMDBReader::GetVector(UOSInt colIndex)
 	return this->r->GetVector(colIndex);
 }
 
-Bool Map::ESRI::ESRIMDBReader::GetUUID(UOSInt colIndex, Data::UUID *uuid)
+Bool Map::ESRI::ESRIMDBReader::GetUUID(UOSInt colIndex, NotNullPtr<Data::UUID> uuid)
 {
 	return this->r->GetUUID(colIndex, uuid);
 }
@@ -530,7 +530,7 @@ UTF8Char *Map::ESRI::ESRIMDBReader::GetName(UOSInt colIndex, UTF8Char *buff)
 	return this->r->GetName((colIndex > 0)?(colIndex + 1):colIndex, buff);
 }
 
-DB::DBUtil::ColType Map::ESRI::ESRIMDBReader::GetColType(UOSInt colIndex, UOSInt *colSize)
+DB::DBUtil::ColType Map::ESRI::ESRIMDBReader::GetColType(UOSInt colIndex, OptOut<UOSInt> colSize)
 {
 	return this->r->GetColType((colIndex > 0)?(colIndex + 1):colIndex, colSize);
 }

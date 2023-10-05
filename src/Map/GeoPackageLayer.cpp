@@ -256,15 +256,14 @@ UTF8Char *Map::GeoPackageLayer::GetColumnName(UTF8Char *buff, UOSInt colIndex)
 	return col->GetColName()->ConcatTo(buff);
 }
 
-DB::DBUtil::ColType Map::GeoPackageLayer::GetColumnType(UOSInt colIndex, UOSInt *colSize)
+DB::DBUtil::ColType Map::GeoPackageLayer::GetColumnType(UOSInt colIndex, OptOut<UOSInt> colSize)
 {
 	if (this->tabDef == 0)
 		return DB::DBUtil::CT_Unknown;
 	DB::ColDef *col = this->tabDef->GetCol(colIndex);
 	if (col == 0)
 		return DB::DBUtil::CT_Unknown;
-	if (colSize)
-		*colSize = col->GetColSize();
+	colSize.Set(col->GetColSize());
 	return col->GetColType();
 }
 

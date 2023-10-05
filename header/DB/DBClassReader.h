@@ -94,8 +94,8 @@ namespace DB
 			UOSInt j = this->cls->GetFieldCount();
 			while (i < j)
 			{
-				this->reader->GetVariItem(this->colIndex[i], &item);
-				this->cls->SetFieldClearItem(o, i, &item);
+				this->reader->GetVariItem(this->colIndex[i], item);
+				this->cls->SetFieldClearItem(o, i, item);
 				i++;
 			}
 			return o;
@@ -112,8 +112,8 @@ namespace DB
 			UOSInt j = this->cls->GetFieldCount();
 			while (i < j)
 			{
-				this->reader->GetVariItem(this->colIndex[i], &item);
-				this->cls->SetFieldClearItem(obj, i, &item);
+				this->reader->GetVariItem(this->colIndex[i], item);
+				this->cls->SetFieldClearItem(obj, i, item);
 				i++;
 			}
 			return true;

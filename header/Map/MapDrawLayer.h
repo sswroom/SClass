@@ -108,7 +108,7 @@ namespace Map
 		virtual UTF8Char *GetString(UTF8Char *buff, UOSInt buffSize, NameArray *nameArr, Int64 id, UOSInt strIndex) = 0;
 		virtual UOSInt GetColumnCnt() const = 0;
 		virtual UTF8Char *GetColumnName(UTF8Char *buff, UOSInt colIndex) = 0;
-		virtual DB::DBUtil::ColType GetColumnType(UOSInt colIndex, UOSInt *colSize) = 0;
+		virtual DB::DBUtil::ColType GetColumnType(UOSInt colIndex, OptOut<UOSInt> colSize) = 0;
 		virtual Bool GetColumnDef(UOSInt colIndex, NotNullPtr<DB::ColDef> colDef) = 0;
 		virtual UInt32 GetCodePage() const = 0;
 		virtual Bool GetBounds(OutParam<Math::RectAreaDbl> rect) const = 0;
@@ -140,8 +140,8 @@ namespace Map
 		void SetLayerName(Text::CString name);
 
 		virtual Bool IsError() const;
-		virtual UTF8Char *GetPGLabel(UTF8Char *buff, UOSInt buffSize, Math::Coord2DDbl coord, Math::Coord2DDbl *outCoord, UOSInt strIndex);
-		virtual UTF8Char *GetPLLabel(UTF8Char *buff, UOSInt buffSize, Math::Coord2DDbl coord, Math::Coord2DDbl *outCoord, UOSInt strIndex);
+		virtual UTF8Char *GetPGLabel(UTF8Char *buff, UOSInt buffSize, Math::Coord2DDbl coord, OptOut<Math::Coord2DDbl> outCoord, UOSInt strIndex);
+		virtual UTF8Char *GetPLLabel(UTF8Char *buff, UOSInt buffSize, Math::Coord2DDbl coord, OutParam<Math::Coord2DDbl> outCoord, UOSInt strIndex);
 		virtual Bool CanQuery();
 		virtual Bool QueryInfos(Math::Coord2DDbl coord, Data::ArrayList<Math::Geometry::Vector2D*> *vecList, Data::ArrayList<UOSInt> *valueOfstList, Data::ArrayListNN<Text::String> *nameList, Data::ArrayList<Text::String*> *valueList);
 
@@ -202,11 +202,11 @@ namespace Map
 		virtual UOSInt GetBinarySize(UOSInt colIndex);
 		virtual UOSInt GetBinary(UOSInt colIndex, UInt8 *buff);
 		virtual Math::Geometry::Vector2D *GetVector(UOSInt colIndex);
-		virtual Bool GetUUID(UOSInt colIndex, Data::UUID *uuid);
+		virtual Bool GetUUID(UOSInt colIndex, NotNullPtr<Data::UUID> uuid);
 
 		virtual Bool IsNull(UOSInt colIndex);
 		virtual UTF8Char *GetName(UOSInt colIndex, UTF8Char *buff);
-		virtual DB::DBUtil::ColType GetColType(UOSInt colIndex, UOSInt *colSize);
+		virtual DB::DBUtil::ColType GetColType(UOSInt colIndex, OptOut<UOSInt> colSize);
 		virtual Bool GetColDef(UOSInt colIndex, NotNullPtr<DB::ColDef> colDef);
 
 		static Bool GetColDefV(UOSInt colIndex, NotNullPtr<DB::ColDef> colDef, NotNullPtr<Map::MapDrawLayer> layer);

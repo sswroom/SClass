@@ -81,7 +81,7 @@ UTF8Char *SSWR::OrganMgr::OrganTimeAdjLayer::GetColumnName(UTF8Char *buff, UOSIn
 	return 0;
 }
 
-DB::DBUtil::ColType SSWR::OrganMgr::OrganTimeAdjLayer::GetColumnType(UOSInt colIndex, UOSInt *colSize)
+DB::DBUtil::ColType SSWR::OrganMgr::OrganTimeAdjLayer::GetColumnType(UOSInt colIndex, OptOut<UOSInt> colSize)
 {
 	return DB::DBUtil::CT_Unknown;
 }

@@ -181,7 +181,7 @@ public:
 		return 0;
 	}
 
-	virtual Bool GetUUID(UOSInt colIndex, Data::UUID *uuid)
+	virtual Bool GetUUID(UOSInt colIndex, NotNullPtr<Data::UUID> uuid)
 	{
 		return false;
 	}
@@ -207,14 +207,11 @@ public:
 		return 0;
 	}
 
-	virtual DB::DBUtil::ColType GetColType(UOSInt colIndex, UOSInt *colSize)
+	virtual DB::DBUtil::ColType GetColType(UOSInt colIndex, OptOut<UOSInt> colSize)
 	{
 		if (colIndex >= this->data->colList.GetCount())
 			return DB::DBUtil::CT_Unknown;
-		if (colSize)
-		{
-			*colSize = 256;
-		}
+		colSize.Set(256);
 		return DB::DBUtil::CT_VarUTF8Char;
 	}
 

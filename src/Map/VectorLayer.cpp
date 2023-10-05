@@ -488,19 +488,19 @@ UTF8Char *Map::VectorLayer::GetColumnName(UTF8Char *buff, UOSInt colIndex)
 }
 
 
-DB::DBUtil::ColType Map::VectorLayer::GetColumnType(UOSInt colIndex, UOSInt *colSize)
+DB::DBUtil::ColType Map::VectorLayer::GetColumnType(UOSInt colIndex, OptOut<UOSInt> colSize)
 {
 	if (colIndex >= this->strCnt)
 		return DB::DBUtil::CT_Unknown;
-	if (colSize)
+	if (colSize.IsNotNull())
 	{
 		if (this->cols)
 		{
-			*colSize = this->cols[colIndex].colSize;
+			colSize.SetNoCheck(this->cols[colIndex].colSize);
 		}
 		else
 		{
-			*colSize = this->maxStrLen[colIndex];
+			colSize.SetNoCheck(this->maxStrLen[colIndex]);
 		}
 	}
 	if (this->cols)

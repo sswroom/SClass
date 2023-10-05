@@ -611,7 +611,7 @@ UOSInt DB::SQLiteReader::GetBinary(UOSInt colIndex, UInt8 *buff)
 	}
 }
 
-Bool DB::SQLiteReader::GetUUID(UOSInt colIndex, Data::UUID *uuid)
+Bool DB::SQLiteReader::GetUUID(UOSInt colIndex, NotNullPtr<Data::UUID> uuid)
 {
 	return false;
 }
@@ -629,33 +629,29 @@ Bool DB::SQLiteReader::IsNull(UOSInt colIndex)
 	return sqlite3_column_type((sqlite3_stmt*)this->hStmt, (int)colIndex) == SQLITE_NULL;
 }
 
-DB::DBUtil::ColType DB::SQLiteReader::GetColType(UOSInt colIndex, UOSInt *colSize)
+DB::DBUtil::ColType DB::SQLiteReader::GetColType(UOSInt colIndex, OptOut<UOSInt> colSize)
 {
 	if (colIndex >= this->colCnt)
 		return DB::DBUtil::CT_Unknown;
 	DB::DBUtil::ColType colType = this->colTypes[colIndex];;
 	if (colType == DB::DBUtil::CT_Int32)
 	{
-		if (colSize)
-			*colSize = 4;
+		colSize.Set(4);
 		return DB::DBUtil::CT_Int32;
 	}
 	else if (colType == DB::DBUtil::CT_Double)
 	{
-		if (colSize)
-			*colSize = 8;
+		colSize.Set(8);
 		return DB::DBUtil::CT_Double;
 	}
 	else if (colType == DB::DBUtil::CT_VarUTF8Char)
 	{
-		if (colSize)
-			*colSize = GetBinarySize(colIndex);
+		colSize.Set(GetBinarySize(colIndex));
 		return DB::DBUtil::CT_VarUTF8Char;
 	}
 	else if (colType == DB::DBUtil::CT_Binary)
 	{
-		if (colSize)
-			*colSize = GetBinarySize(colIndex);
+		colSize.Set(GetBinarySize(colIndex));
 		return DB::DBUtil::CT_Binary;
 	}
 	else
@@ -673,7 +669,7 @@ Bool DB::SQLiteReader::GetColDef(UOSInt colIndex, NotNullPtr<DB::ColDef> colDef)
 	if (!colName.Set((const UTF8Char*)name))
 		return false;
 	colDef->SetColName(colName);
-	colType = GetColType(colIndex, &colSize);
+	colType = GetColType(colIndex, colSize);
 	colDef->SetColType(colType);
 	colDef->SetColSize(colSize);
 	if (colType == DB::DBUtil::CT_Double)

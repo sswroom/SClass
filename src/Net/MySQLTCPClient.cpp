@@ -298,7 +298,7 @@ namespace Net
 			return 0;
 		}
 
-		virtual Bool GetUUID(UOSInt colIndex, Data::UUID *uuid)
+		virtual Bool GetUUID(UOSInt colIndex, NotNullPtr<Data::UUID> uuid)
 		{
 			/////////////////////////////
 			return false;
@@ -327,12 +327,12 @@ namespace Net
 			return 0;
 		}
 
-		virtual DB::DBUtil::ColType GetColType(UOSInt colIndex, UOSInt *colSize)
+		virtual DB::DBUtil::ColType GetColType(UOSInt colIndex, OptOut<UOSInt> colSize)
 		{
 			ColumnDef *col = this->cols.GetItem(colIndex);
 			if (col)
 			{
-				*colSize = col->colLen;
+				colSize.Set(col->colLen);
 				return col->dbColType;
 			}
 			return DB::DBUtil::CT_Unknown;
@@ -515,10 +515,7 @@ namespace Net
 		virtual ~MySQLTCPBinaryReader()
 		{
 			ColumnDef *col;
-			while (this->ReadNext())
-			{
-
-			}
+			this->WaitForDataEnd();
 			UOSInt i = this->cols.GetCount();
 			while (i-- > 0)
 			{
@@ -556,6 +553,14 @@ namespace Net
 			{
 				MemFree(this->colTypes);
 				this->colTypes = 0;
+			}
+		}
+
+		void WaitForDataEnd()
+		{
+			while (this->ReadNext())
+			{
+
 			}
 		}
 
@@ -617,7 +622,7 @@ namespace Net
 		virtual Int32 GetInt32(UOSInt colIndex)
 		{
 			Data::VariItem item;
-			if (!this->GetVariItem(colIndex, &item))
+			if (!this->GetVariItem(colIndex, item))
 			{
 				return 0;
 			}
@@ -627,7 +632,7 @@ namespace Net
 		virtual Int64 GetInt64(UOSInt colIndex)
 		{
 			Data::VariItem item;
-			if (!this->GetVariItem(colIndex, &item))
+			if (!this->GetVariItem(colIndex, item))
 			{
 				return 0;
 			}
@@ -637,7 +642,7 @@ namespace Net
 		virtual WChar *GetStr(UOSInt colIndex, WChar *buff)
 		{
 			Data::VariItem item;
-			if (!this->GetVariItem(colIndex, &item))
+			if (!this->GetVariItem(colIndex, item))
 			{
 				return 0;
 			}
@@ -654,7 +659,7 @@ namespace Net
 		virtual Bool GetStr(UOSInt colIndex, NotNullPtr<Text::StringBuilderUTF8> sb)
 		{
 			Data::VariItem item;
-			if (!this->GetVariItem(colIndex, &item))
+			if (!this->GetVariItem(colIndex, item))
 			{
 				return false;
 			}
@@ -670,7 +675,7 @@ namespace Net
 		virtual Text::String *GetNewStr(UOSInt colIndex)
 		{
 			Data::VariItem item;
-			if (!this->GetVariItem(colIndex, &item))
+			if (!this->GetVariItem(colIndex, item))
 			{
 				return 0;
 			}
@@ -694,7 +699,7 @@ namespace Net
 		virtual UTF8Char *GetStr(UOSInt colIndex, UTF8Char *buff, UOSInt buffSize)
 		{
 			Data::VariItem item;
-			if (!this->GetVariItem(colIndex, &item))
+			if (!this->GetVariItem(colIndex, item))
 			{
 				return 0;
 			}
@@ -770,7 +775,7 @@ namespace Net
 		virtual Double GetDbl(UOSInt colIndex)
 		{
 			Data::VariItem item;
-			if (!this->GetVariItem(colIndex, &item))
+			if (!this->GetVariItem(colIndex, item))
 			{
 				return 0;
 			}
@@ -780,7 +785,7 @@ namespace Net
 		virtual Bool GetBool(UOSInt colIndex)
 		{
 			Data::VariItem item;
-			if (!this->GetVariItem(colIndex, &item))
+			if (!this->GetVariItem(colIndex, item))
 			{
 				return 0;
 			}
@@ -818,31 +823,31 @@ namespace Net
 		virtual Math::Geometry::Vector2D *GetVector(UOSInt colIndex)
 		{
 			Data::VariItem item;
-			if (!this->GetVariItem(colIndex, &item))
+			if (!this->GetVariItem(colIndex, item))
 			{
 				return 0;
 			}
 			return item.GetAndRemoveVector();
 		}
 
-		virtual Bool GetUUID(UOSInt colIndex, Data::UUID *uuid)
+		virtual Bool GetUUID(UOSInt colIndex, NotNullPtr<Data::UUID> uuid)
 		{
 			Data::VariItem item;
-			if (!this->GetVariItem(colIndex, &item))
+			if (!this->GetVariItem(colIndex, item))
 			{
 				return false;
 			}
-			Data::UUID *itemUUID = item.GetAndRemoveUUID();
-			if (itemUUID == 0)
+			NotNullPtr<Data::UUID> itemUUID;
+			if (!itemUUID.Set(item.GetAndRemoveUUID()))
 			{
 				return false;
 			}
 			uuid->SetValue(itemUUID);
-			DEL_CLASS(itemUUID);
+			itemUUID.Delete();
 			return true;
 		}
 
-		virtual Bool GetVariItem(UOSInt colIndex, Data::VariItem *item)
+		virtual Bool GetVariItem(UOSInt colIndex, NotNullPtr<Data::VariItem> item)
 		{
 			if (this->currRow == 0 || colIndex >= this->colCount)
 			{
@@ -1002,8 +1007,8 @@ namespace Net
 				if (col->len > 4)
 				{
 					Math::WKBReader wkb(ReadUInt32(&this->currRow->rowBuff[col->ofst]));
-					Math::Geometry::Vector2D *vec = wkb.ParseWKB(&this->currRow->rowBuff[col->ofst + 4], col->len - 4, 0);
-					if (vec)
+					NotNullPtr<Math::Geometry::Vector2D> vec;
+					if (vec.Set(wkb.ParseWKB(&this->currRow->rowBuff[col->ofst + 4], col->len - 4, 0)))
 					{
 						item->SetVectorDirect(vec);
 						return true;
@@ -1063,12 +1068,12 @@ namespace Net
 			return 0;
 		}
 
-		virtual DB::DBUtil::ColType GetColType(UOSInt colIndex, UOSInt *colSize)
+		virtual DB::DBUtil::ColType GetColType(UOSInt colIndex, OptOut<UOSInt> colSize)
 		{
 			ColumnDef *col = this->cols.GetItem(colIndex);
 			if (col)
 			{
-				*colSize = col->colLen;
+				colSize.Set(col->colLen);
 				return col->dbColType;
 			}
 			return DB::DBUtil::CT_Unknown;
@@ -1092,6 +1097,11 @@ namespace Net
 		{
 			this->rowChanged = (OSInt)val;
 			this->nextRowReady[0] = true;
+		}
+
+		Bool IsDataEnd()
+		{
+			return this->nextRow[0] == 0 && this->nextRowReady[0];
 		}
 
 		void AddColumnDef41(const UInt8 *colDef, UOSInt buffSize)
@@ -1142,6 +1152,8 @@ namespace Net
 		void AddRowData(const UInt8 *rowData, UOSInt dataSize)
 		{
 			RowData *row;
+			if (this->IsDataEnd())
+				return;
 			if (this->preparingRow == 0)
 			{
 				row = this->preparingRow = MemAlloc(RowData, 1);
@@ -1309,7 +1321,7 @@ namespace Net
 
 		void EndData()
 		{
-			if (this->nextRow[0] == 0 && this->nextRowReady[0])
+			if (this->IsDataEnd())
 			{
 				return;
 			}
@@ -1855,8 +1867,8 @@ UInt32 __stdcall Net::MySQLTCPClient::RecvThread(void *userObj)
 								if (me->cmdBinReader)
 								{
 									me->SendStmtClose(me->cmdBinReader->GetStmtId());
-									me->cmdResultType = CmdResultType::ResultEnd;
 									me->cmdBinReader->EndData();
+									me->cmdResultType = CmdResultType::ResultEnd;
 									me->cmdEvt.Set();
 								}
 								else
@@ -2306,14 +2318,14 @@ void Net::MySQLTCPClient::CloseReader(NotNullPtr<DB::DBReader> r)
 	if (this->cmdBinReader == (MySQLTCPBinaryReader*)r.Ptr())
 	{
 		MySQLTCPBinaryReader *reader = (MySQLTCPBinaryReader*)r.Ptr();
-		DEL_CLASS(reader);
 		this->cmdBinReader = 0;
+		DEL_CLASS(reader);
 	}
 	else if (this->cmdTCPReader == (MySQLTCPReader*)r.Ptr())
 	{
 		MySQLTCPReader *reader = (MySQLTCPReader*)r.Ptr();
-		DEL_CLASS(reader);
 		this->cmdTCPReader = 0;
+		DEL_CLASS(reader);
 	}
 }
 

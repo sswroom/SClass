@@ -488,16 +488,8 @@ void Data::VariItem::GetAsString(NotNullPtr<Text::StringBuilderUTF8> sb) const
 		return;
 	case ItemType::Vector:
 		{
-			NotNullPtr<Math::Geometry::Vector2D> vec;
-			if (vec.Set(this->val.vector))
-			{
-				Math::WKTWriter writer;
-				writer.ToText(sb, vec);
-			}
-			else
-			{
-				sb->AppendC(UTF8STRC("null"));
-			}
+			Math::WKTWriter writer;
+			writer.ToText(sb, this->val.vector);
 		}
 		return;
 	case ItemType::UUID:
@@ -591,18 +583,10 @@ UTF8Char *Data::VariItem::GetAsStringS(UTF8Char *sbuff, UOSInt buffSize) const
 		}
 	case ItemType::Vector:
 		{
-			NotNullPtr<Math::Geometry::Vector2D> vec;
-			if (vec.Set(this->val.vector))
-			{
-				Text::StringBuilderUTF8 sb;
-				Math::WKTWriter writer;
-				writer.ToText(sb, vec);
-				return sb.ConcatToS(sbuff, buffSize);
-			}
-			else
-			{
-				return Text::StrConcatCS(sbuff, UTF8STRC("null"), buffSize);
-			}
+			Text::StringBuilderUTF8 sb;
+			Math::WKTWriter writer;
+			writer.ToText(sb, this->val.vector);
+			return sb.ConcatToS(sbuff, buffSize);
 		}
 	case ItemType::UUID:
 		{
@@ -686,18 +670,10 @@ Text::String *Data::VariItem::GetAsNewString() const
 		return s.Ptr();
 	case ItemType::Vector:
 		{
-			NotNullPtr<Math::Geometry::Vector2D> vec;
-			if (vec.Set(this->val.vector))
-			{
-				Text::StringBuilderUTF8 sb;
-				Math::WKTWriter writer;
-				writer.ToText(sb, vec);
-				return Text::String::New(sb.ToCString()).Ptr();
-			}
-			else
-			{
-				return 0;
-			}
+			Text::StringBuilderUTF8 sb;
+			Math::WKTWriter writer;
+			writer.ToText(sb, this->val.vector);
+			return Text::String::New(sb.ToCString()).Ptr();
 		}
 	case ItemType::UUID:
 		s = Text::String::New(48);
@@ -807,7 +783,7 @@ Data::UUID *Data::VariItem::GetAsNewUUID() const
 {
 	if (this->itemType != ItemType::UUID)
 		return 0;
-	return this->val.uuid->Clone();
+	return this->val.uuid->Clone().Ptr();
 }
 
 Data::ReadonlyArray<UInt8> *Data::VariItem::GetAndRemoveByteArr()
@@ -823,7 +799,7 @@ Math::Geometry::Vector2D *Data::VariItem::GetAndRemoveVector()
 	if (this->itemType != ItemType::Vector)
 		return 0;
 	this->itemType = ItemType::Null;
-	return this->val.vector;
+	return this->val.vector.Ptr();
 }
 
 Data::UUID *Data::VariItem::GetAndRemoveUUID()
@@ -831,7 +807,7 @@ Data::UUID *Data::VariItem::GetAndRemoveUUID()
 	if (this->itemType != ItemType::UUID)
 		return 0;
 	this->itemType = ItemType::Null;
-	return this->val.uuid;
+	return this->val.uuid.Ptr();
 }
 
 void *Data::VariItem::GetAsUnk() const
@@ -1037,35 +1013,35 @@ void Data::VariItem::SetByteArr(Data::ReadonlyArray<UInt8> *arr)
 	this->itemType = ItemType::ByteArr;
 }
 
-void Data::VariItem::SetVector(Math::Geometry::Vector2D *vec)
+void Data::VariItem::SetVector(NotNullPtr<Math::Geometry::Vector2D> vec)
 {
 	this->FreeItem();
-	this->val.vector = vec->Clone().Ptr();
+	this->val.vector = vec->Clone();
 	this->itemType = ItemType::Vector;
 }
 
-void Data::VariItem::SetUUID(Data::UUID *uuid)
+void Data::VariItem::SetUUID(NotNullPtr<Data::UUID> uuid)
 {
 	this->FreeItem();
 	this->val.uuid = uuid->Clone();
 	this->itemType = ItemType::UUID;
 }
 
-void Data::VariItem::SetVectorDirect(Math::Geometry::Vector2D *vec)
+void Data::VariItem::SetVectorDirect(NotNullPtr<Math::Geometry::Vector2D> vec)
 {
 	this->FreeItem();
 	this->val.vector = vec;
 	this->itemType = ItemType::Vector;
 }
 
-void Data::VariItem::SetUUIDDirect(Data::UUID *uuid)
+void Data::VariItem::SetUUIDDirect(NotNullPtr<Data::UUID> uuid)
 {
 	this->FreeItem();
 	this->val.uuid = uuid;
 	this->itemType = ItemType::UUID;
 }
 
-void Data::VariItem::Set(VariItem *item)
+void Data::VariItem::Set(NotNullPtr<VariItem> item)
 {
 	this->FreeItem();
 	this->itemType = item->itemType;
@@ -1125,7 +1101,7 @@ void Data::VariItem::Set(VariItem *item)
 		this->val.byteArr = item->val.byteArr->Clone().Ptr();
 		break;
 	case ItemType::Vector:
-		this->val.vector = item->val.vector->Clone().Ptr();
+		this->val.vector = item->val.vector->Clone();
 		break;
 	case ItemType::UUID:
 		this->val.uuid = item->val.uuid->Clone();
@@ -1133,7 +1109,7 @@ void Data::VariItem::Set(VariItem *item)
 	}
 }
 
-Data::VariItem *Data::VariItem::Clone() const
+NotNullPtr<Data::VariItem> Data::VariItem::Clone() const
 {
 	ItemValue ival;
 	switch (this->itemType)
@@ -1192,13 +1168,15 @@ Data::VariItem *Data::VariItem::Clone() const
 		ival.byteArr = this->val.byteArr->Clone().Ptr();
 		break;
 	case ItemType::Vector:
-		ival.vector = this->val.vector->Clone().Ptr();
+		ival.vector = this->val.vector->Clone();
 		break;
 	case ItemType::UUID:
 		ival.uuid = this->val.uuid->Clone();
 		break;
 	}
-	return NEW_CLASS_D(VariItem(this->itemType, ival));
+	NotNullPtr<VariItem> ret;
+	NEW_CLASSNN(ret, VariItem(this->itemType, ival));
+	return ret;
 }
 
 void Data::VariItem::ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const
@@ -1271,16 +1249,8 @@ void Data::VariItem::ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const
 		return;
 	case ItemType::Vector:
 		{
-			NotNullPtr<Math::Geometry::Vector2D> vec;
-			if (vec.Set(this->val.vector))
-			{
-				Math::WKTWriter writer;
-				writer.ToText(sb, vec);
-			}
-			else
-			{
-				sb->AppendC(UTF8STRC("null"));
-			}
+			Math::WKTWriter writer;
+			writer.ToText(sb, this->val.vector);
 		}
 		return;
 	case ItemType::UUID:
@@ -1476,7 +1446,7 @@ Data::VariItem *Data::VariItem::NewVector(Math::Geometry::Vector2D *vec)
 {
 	if (vec == 0) return NewNull();
 	ItemValue ival;
-	ival.vector = vec->Clone().Ptr();
+	ival.vector = vec->Clone();
 	Data::VariItem *item;
 	NEW_CLASS(item, Data::VariItem(ItemType::Vector, ival));
 	return item;
@@ -1494,9 +1464,10 @@ Data::VariItem *Data::VariItem::NewUUID(Data::UUID *uuid)
 
 Data::VariItem *Data::VariItem::NewVectorDirect(Math::Geometry::Vector2D *vec)
 {
-	if (vec == 0) return NewNull();
+	NotNullPtr<Math::Geometry::Vector2D> nnvec;
+	if (!nnvec.Set(vec)) return NewNull();
 	ItemValue ival;
-	ival.vector = vec;
+	ival.vector = nnvec;
 	Data::VariItem *item;
 	NEW_CLASS(item, Data::VariItem(ItemType::Vector, ival));
 	return item;
@@ -1504,9 +1475,10 @@ Data::VariItem *Data::VariItem::NewVectorDirect(Math::Geometry::Vector2D *vec)
 
 Data::VariItem *Data::VariItem::NewUUIDDirect(Data::UUID *uuid)
 {
-	if (uuid == 0) return NewNull();
+	NotNullPtr<Data::UUID> nnuuid;
+	if (!nnuuid.Set(uuid)) return NewNull();
 	ItemValue ival;
-	ival.uuid = uuid;
+	ival.uuid = nnuuid;
 	Data::VariItem *item;
 	NEW_CLASS(item, Data::VariItem(ItemType::UUID, ival));
 	return item;
@@ -1560,6 +1532,11 @@ Data::VariItem *Data::VariItem::NewFromPtr(void *ptr, ItemType itemType)
 
 void Data::VariItem::SetFromPtr(Data::VariItem *item, void *ptr, ItemType itemType)
 {
+	if (!ptr == 0)
+	{
+		item->SetNull();
+		return;
+	}
 	switch (itemType)
 	{
 	case ItemType::F32:
@@ -1614,10 +1591,10 @@ void Data::VariItem::SetFromPtr(Data::VariItem *item, void *ptr, ItemType itemTy
 		item->SetByteArr(*(Data::ReadonlyArray<UInt8>**)ptr);
 		return;
 	case ItemType::Vector:
-		item->SetVector(*(Math::Geometry::Vector2D**)ptr);
+		item->SetVector(*(NotNullPtr<Math::Geometry::Vector2D>*)ptr);
 		return;
 	case ItemType::UUID:
-		item->SetUUID(*(Data::UUID**)ptr);
+		item->SetUUID(*(NotNullPtr<Data::UUID>*)ptr);
 		return;
 	case ItemType::Unknown:
 	default:
@@ -1625,7 +1602,7 @@ void Data::VariItem::SetFromPtr(Data::VariItem *item, void *ptr, ItemType itemTy
 	}
 }
 
-void Data::VariItem::SetPtr(void *ptr, ItemType itemType, VariItem *item)
+void Data::VariItem::SetPtr(void *ptr, ItemType itemType, NotNullPtr<VariItem> item)
 {
 	switch (itemType)
 	{
@@ -1732,7 +1709,7 @@ void Data::VariItem::SetPtr(void *ptr, ItemType itemType, VariItem *item)
 }
 
 
-void Data::VariItem::SetPtrAndNotKeep(void *ptr, ItemType itemType, VariItem *item)
+void Data::VariItem::SetPtrAndNotKeep(void *ptr, ItemType itemType, NotNullPtr<VariItem> item)
 {
 	switch (itemType)
 	{
@@ -1861,6 +1838,10 @@ void Data::VariItem::SetPtrAndNotKeep(void *ptr, ItemType itemType, VariItem *it
 
 Bool Data::VariItem::PtrEquals(void *ptr1, void *ptr2, ItemType itemType)
 {
+	if (ptr1 == ptr2)
+		return true;
+	if (ptr1 == 0 || ptr2 == 0)
+		return false;
 	switch (itemType)
 	{
 	case ItemType::F32:
@@ -1945,13 +1926,9 @@ Bool Data::VariItem::PtrEquals(void *ptr1, void *ptr2, ItemType itemType)
 		}
 	case ItemType::UUID:
 		{
-			Data::UUID *val1 = *(Data::UUID**)ptr1;
-			Data::UUID *val2 = *(Data::UUID**)ptr2;
-			if (val1 == val2)
-			{
-				return true;
-			}
-			if (val1 == 0 || val2 == 0)
+			NotNullPtr<Data::UUID> val1;
+			NotNullPtr<Data::UUID> val2;
+			if (!val1.Set(*(Data::UUID**)ptr1) || !val2.Set(*(Data::UUID**)ptr2))
 			{
 				return false;
 			}

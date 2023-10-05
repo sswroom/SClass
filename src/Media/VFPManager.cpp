@@ -167,7 +167,7 @@ void Media::VFPManager::Release()
 	}
 }
 
-void Media::VFPManager::PrepareSelector(IO::FileSelector *selector)
+void Media::VFPManager::PrepareSelector(NotNullPtr<IO::FileSelector> selector)
 {
 	VFPluginFile *plugin;
 	VF_GetPluginInfo GetInfo;

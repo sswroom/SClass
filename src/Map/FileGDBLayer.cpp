@@ -287,7 +287,7 @@ UTF8Char *Map::FileGDBLayer::GetColumnName(UTF8Char *buff, UOSInt colIndex)
 	return 0;
 }
 
-DB::DBUtil::ColType Map::FileGDBLayer::GetColumnType(UOSInt colIndex, UOSInt *colSize)
+DB::DBUtil::ColType Map::FileGDBLayer::GetColumnType(UOSInt colIndex, OptOut<UOSInt> colSize)
 {
 	return DB::DBUtil::CT_Unknown;
 }
@@ -485,7 +485,7 @@ Math::Geometry::Vector2D *Map::FileGDBLReader::GetVector(UOSInt colIndex)
 	return this->r->GetVector(colIndex);
 }
 
-Bool Map::FileGDBLReader::GetUUID(UOSInt colIndex, Data::UUID *uuid)
+Bool Map::FileGDBLReader::GetUUID(UOSInt colIndex, NotNullPtr<Data::UUID> uuid)
 {
 	return this->r->GetUUID(colIndex, uuid);
 }
@@ -500,7 +500,7 @@ UTF8Char *Map::FileGDBLReader::GetName(UOSInt colIndex, UTF8Char *buff)
 	return this->r->GetName((colIndex > 0)?(colIndex + 1):colIndex, buff);
 }
 
-DB::DBUtil::ColType Map::FileGDBLReader::GetColType(UOSInt colIndex, UOSInt *colSize)
+DB::DBUtil::ColType Map::FileGDBLReader::GetColType(UOSInt colIndex, OptOut<UOSInt> colSize)
 {
 	return this->r->GetColType((colIndex > 0)?(colIndex + 1):colIndex, colSize);
 }

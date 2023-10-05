@@ -13,6 +13,16 @@ public:
 	{
 		return this->p;
 	}
+
+	Bool Set(const void *p)
+	{
+		if (p)
+		{
+			this->p = p;
+			return true;
+		}
+		return false;
+	}
 };
 
 template <typename T> struct NotNullPtr : public NotNullPtrAny

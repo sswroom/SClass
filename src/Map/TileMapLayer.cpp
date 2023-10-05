@@ -447,18 +447,18 @@ UTF8Char *Map::TileMapLayer::GetColumnName(UTF8Char *buff, UOSInt colIndex)
 	return 0;
 }
 
-DB::DBUtil::ColType Map::TileMapLayer::GetColumnType(UOSInt colIndex, UOSInt *colSize)
+DB::DBUtil::ColType Map::TileMapLayer::GetColumnType(UOSInt colIndex, OptOut<UOSInt> colSize)
 {
 	switch (colIndex)
 	{
 	case 0:
-		if (colSize) *colSize = 20;
+		colSize.Set(20);
 		return DB::DBUtil::CT_Int64;
 	case 1:
-		if (colSize) *colSize = 10;
+		colSize.Set(10);
 		return DB::DBUtil::CT_UInt32;
 	case 2:
-		if (colSize) *colSize = 512;
+		colSize.Set(512);
 		return DB::DBUtil::CT_VarUTF8Char;
 	}
 	return DB::DBUtil::CT_Unknown;
@@ -477,7 +477,7 @@ Bool Map::TileMapLayer::GetColumnDef(UOSInt colIndex, NotNullPtr<DB::ColDef> col
 	case 2:
 		sptr = this->GetColumnName(sbuff, colIndex);
 		colDef->SetColName(CSTRP(sbuff, sptr));
-		colDef->SetColType(this->GetColumnType(colIndex, &colSize));
+		colDef->SetColType(this->GetColumnType(colIndex, colSize));
 		colDef->SetColSize(colSize);
 		colDef->SetColDP(0);
 		colDef->SetNotNull(true);

@@ -5,7 +5,7 @@
 #include "DB/TableDef.h"
 #include "Text/MyString.h"
 
-Bool DB::DBReader::GetVariItem(UOSInt colIndex, Data::VariItem *item)
+Bool DB::DBReader::GetVariItem(UOSInt colIndex, NotNullPtr<Data::VariItem> item)
 {
 	if (colIndex >= this->ColCount())
 	{
@@ -17,7 +17,7 @@ Bool DB::DBReader::GetVariItem(UOSInt colIndex, Data::VariItem *item)
 		return true;
 	}
 	UOSInt size;
-	switch (this->GetColType(colIndex, &size))
+	switch (this->GetColType(colIndex, size))
 	{
 	case DB::DBUtil::CT_UTF8Char:
 	case DB::DBUtil::CT_UTF16Char:
@@ -80,12 +80,22 @@ Bool DB::DBReader::GetVariItem(UOSInt colIndex, Data::VariItem *item)
 		}
 		break;
 	case DB::DBUtil::CT_Vector:
-		item->SetVectorDirect(this->GetVector(colIndex));
-		return true;
+		{
+			NotNullPtr<Math::Geometry::Vector2D> vec;
+			if (vec.Set(this->GetVector(colIndex)))
+			{
+				item->SetVectorDirect(vec);
+			}
+			else
+			{
+				item->SetNull();
+			}
+			return true;
+		}
 	case DB::DBUtil::CT_UUID:
 		{
-			Data::UUID *uuid;
-			NEW_CLASS(uuid, Data::UUID());
+			NotNullPtr<Data::UUID> uuid;
+			NEW_CLASSNN(uuid, Data::UUID());
 			this->GetUUID(colIndex, uuid);
 			item->SetUUIDDirect(uuid);
 			return true;
@@ -138,7 +148,7 @@ Data::VariObject *DB::DBReader::CreateVariObject()
 		}
 		else
 		{
-			ctype = this->GetColType(i, &size);
+			ctype = this->GetColType(i, size);
 			switch (ctype)
 			{
 			case DB::DBUtil::CT_UTF8Char:
@@ -199,7 +209,7 @@ Data::VariObject *DB::DBReader::CreateVariObject()
 			case DB::DBUtil::CT_UUID:
 				{
 					Data::UUID uuid;
-					this->GetUUID(i, &uuid);
+					this->GetUUID(i, uuid);
 					obj->SetItemUUID(sbuff, &uuid);
 				}
 				break;
@@ -225,7 +235,7 @@ NotNullPtr<Data::Class> DB::DBReader::CreateClass()
 	while (i < j)
 	{
 		this->GetName(i, sbuff);
-		builder.AddItem(sbuff, this->GetColType(i, &size));
+		builder.AddItem(sbuff, this->GetColType(i, size));
 		i++;
 	}
 	return builder.GetResultClass();
