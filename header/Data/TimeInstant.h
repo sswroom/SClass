@@ -288,7 +288,7 @@ namespace Data
 		static TimeInstant Now()
 		{
 			UInt32 nanosec;
-			Int64 secs = Data::DateTimeUtil::GetCurrTimeSecHighP(&nanosec);
+			Int64 secs = Data::DateTimeUtil::GetCurrTimeSecHighP(nanosec);
 			return TimeInstant(secs, nanosec);
 		}
 

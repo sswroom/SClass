@@ -316,7 +316,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::PNGFileAnalyse::GetFrameDetail(UO
 	IO::FileAnalyse::PNGFileAnalyse::PNGTag *tag = this->tags.GetItem(index);
 	if (tag == 0)
 		return 0;
-	NEW_CLASS(frame, IO::FileAnalyse::FrameDetail(tag->ofst, (UInt32)tag->size));
+	NEW_CLASS(frame, IO::FileAnalyse::FrameDetail(tag->ofst, tag->size));
 	sptr = Text::StrUOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"Tag"), index);
 	frame->AddHeader(CSTRP(sbuff, sptr));
 	frame->AddUInt(0, 4, CSTR("Size"), tag->size - 12);

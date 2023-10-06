@@ -396,7 +396,7 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhotoId(NotNullPtr<Net::We
 		if (imgWidth == GetPreviewSize() && imgHeight == GetPreviewSize() && userFile->prevUpdated == 0)
 		{
 			Data::DateTime dt2;
-			Data::DateTime dt3;
+			Data::Timestamp dt3;
 			if (req->GetIfModifiedSince(&dt2) && IO::Path::GetFileTime(sbuff2, &dt3, 0, 0))
 			{
 				Int64 tdiff = dt2.ToTicks() - dt3.ToTicks();

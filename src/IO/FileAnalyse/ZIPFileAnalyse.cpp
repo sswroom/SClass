@@ -104,6 +104,7 @@ UOSInt IO::FileAnalyse::ZIPFileAnalyse::ParseCentDir(const UInt8 *buff, UOSInt b
 	UInt16 commentLen;
 	UInt32 recType;
 	IO::FileAnalyse::ZIPFileAnalyse::ZIPRecord *rec;
+	UInt8 headerBuff[30];
 	UOSInt i;
 	i = 0;
 	while (i < buffSize)
@@ -160,17 +161,22 @@ UOSInt IO::FileAnalyse::ZIPFileAnalyse::ParseCentDir(const UInt8 *buff, UOSInt b
 				j += 4 + (UOSInt)extraSize;
 			}
 		}
+		this->fd->GetRealData(ofst, 30, BYTEARR(headerBuff));
+		UOSInt extraSize = ReadUInt16(&headerBuff[28]);
 		rec = MemAlloc(ZIPRecord, 1);
 		rec->tagType = 0x504B0304;
 		rec->ofst = ofst;
-		rec->size = 30 + (UOSInt)fnameLen;
+		rec->size = 30 + extraSize + (UOSInt)fnameLen;
 		this->tags.Add(rec);
 
-		rec = MemAlloc(ZIPRecord, 1);
-		rec->tagType = 0;
-		rec->ofst = ofst + 30 + fnameLen;
-		rec->size = compSize;
-		this->tags.Add(rec);
+		if (compSize > 0)
+		{
+			rec = MemAlloc(ZIPRecord, 1);
+			rec->tagType = 0;
+			rec->ofst = ofst + 30 + extraSize + fnameLen;
+			rec->size = compSize;
+			this->tags.Add(rec);
+		}
 
 		i += 46 + (UOSInt)fnameLen + extraLen + commentLen;
 	}
@@ -452,6 +458,70 @@ void __stdcall IO::FileAnalyse::ZIPFileAnalyse::ParseThread(NotNullPtr<Sync::Thr
 	}
 }
 
+void IO::FileAnalyse::ZIPFileAnalyse::ParseExtraTag(IO::FileAnalyse::FrameDetail *frame,Data::ByteArrayR tagData, UOSInt extraStart, UOSInt extraLen, UOSInt tagSize, UInt32 compSize, UInt32 uncompSize, UInt32 ofst)
+{
+	if (tagSize < extraStart + extraLen)
+	{
+		extraLen = tagSize - extraStart;
+	}
+	UInt16 extraTag;
+	UInt16 extraSize;
+	UOSInt j = 0;
+	UOSInt k;
+	UOSInt l;
+	while (j + 4 <= extraLen)
+	{
+		extraTag = ReadUInt16(&tagData[extraStart + j]);
+		extraSize = ReadUInt16(&tagData[extraStart + j + 2]);
+		frame->AddUInt(extraStart + j, 2, CSTR("Extra Tag"), extraTag);
+		frame->AddUInt(extraStart + j + 2, 2, CSTR("Extra Size"), extraSize);
+		if (extraTag == 1)
+		{
+			k = extraStart + j + 4;
+			if (uncompSize == 0xffffffff)
+			{
+				frame->AddUInt64(k, CSTR("Original Size"), ReadUInt64(&tagData[k]));
+				k += 8;
+			}
+			if (compSize == 0xffffffff)
+			{
+				frame->AddUInt64(k, CSTR("Compressed Size"), ReadUInt64(&tagData[k]));
+				k += 8;
+			}
+			if (ofst == 0xffffffff)
+			{
+				frame->AddUInt64(k, CSTR("Relative Header Offset"), ReadUInt64(&tagData[k]));
+				k += 8;
+			}
+		}
+		else if (extraTag == 10)
+		{
+			UInt16 ntfsTag;
+			UInt16 ntfsSize;
+			k = extraStart + j + 4;
+			l = k + extraSize;
+			frame->AddUInt(k, 4, CSTR("Reserved"), ReadUInt32(&tagData[k]));
+			k += 4;
+			while (k + 4 <= l)
+			{
+				ntfsTag = ReadUInt16(&tagData[k]);
+				ntfsSize = ReadUInt16(&tagData[k + 2]);
+				frame->AddUInt(k, 2, CSTR("NTFS attribute tag"), ntfsTag);
+				frame->AddUInt(k + 2, 2, CSTR("Size of attribute"), ntfsSize);
+				k += 4;
+				if (ntfsTag == 1 && ntfsSize == 24)
+				{
+					frame->AddUInt64(k, CSTR("File last modification time"), ReadUInt64(&tagData[k]));
+					frame->AddUInt64(k + 8, CSTR("File last access time"), ReadUInt64(&tagData[k + 8]));
+					frame->AddUInt64(k + 16, CSTR("File creation time"), ReadUInt64(&tagData[k + 16]));
+				}
+				k += ntfsSize;
+			}
+		}
+		j += 4 + (UOSInt)extraSize;
+	}
+}
+
 IO::FileAnalyse::ZIPFileAnalyse::ZIPFileAnalyse(NotNullPtr<IO::StreamData> fd) : thread(ParseThread, this, CSTR("ZIPFileAnalyse"))
 {
 	UInt8 buff[256];
@@ -541,7 +611,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::ZIPFileAnalyse::GetFrameDetail(UO
 	if (tag == 0)
 		return 0;
 	
-	NEW_CLASS(frame, IO::FileAnalyse::FrameDetail(tag->ofst, (UInt32)tag->size));
+	NEW_CLASS(frame, IO::FileAnalyse::FrameDetail(tag->ofst, tag->size));
 	sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("Packet ")), index);
 	frame->AddHeader(CSTRP(sbuff, sptr));
 
@@ -569,11 +639,16 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::ZIPFileAnalyse::GetFrameDetail(UO
 		frame->AddUInt(10, 2, CSTR("File last modification time"), ReadUInt16(&tagData[10]));
 		frame->AddUInt(12, 2, CSTR("File last modification date"), ReadUInt16(&tagData[12]));
 		frame->AddHex32(14, CSTR("CRC-32 of uncompressed data"), ReadUInt32(&tagData[14]));
-		frame->AddUInt(18, 4, CSTR("Compressed size"), ReadUInt32(&tagData[18]));
-		frame->AddUInt(22, 4, CSTR("Uncompressed size"), ReadUInt32(&tagData[22]));
-		frame->AddUInt(26, 2, CSTR("File name length"), ReadUInt16(&tagData[26]));
-		frame->AddUInt(28, 2, CSTR("Extra field length"), ReadUInt16(&tagData[28]));
-		frame->AddStrC(30, ReadUInt16(&tagData[26]), CSTR("File name"), &tagData[30]);
+		frame->AddUInt(18, 4, CSTR("Compressed size"), compSize = ReadUInt32(&tagData[18]));
+		frame->AddUInt(22, 4, CSTR("Uncompressed size"), uncompSize = ReadUInt32(&tagData[22]));
+		frame->AddUInt(26, 2, CSTR("File name length"), fnameLen = ReadUInt16(&tagData[26]));
+		frame->AddUInt(28, 2, CSTR("Extra field length"), extraLen = ReadUInt16(&tagData[28]));
+		frame->AddStrC(30, fnameLen, CSTR("File name"), &tagData[30]);
+		if (extraLen)
+		{
+			i = 30 + fnameLen;
+			ParseExtraTag(frame, tagData, i, extraLen, tag->size, compSize, uncompSize, 0);
+		}
 		break;
 	case 0x504B0102:
 		frame->AddUInt(4, 2, CSTR("Version made by"), ReadUInt16(&tagData[4]));
@@ -620,62 +695,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::ZIPFileAnalyse::GetFrameDetail(UO
 		i = 46 + (UOSInt)fnameLen;
 		if (extraLen)
 		{
-			UInt16 extraTag;
-			UInt16 extraSize;
-			UOSInt j = 0;
-			UOSInt k;
-			UOSInt l;
-			while (j + 4 <= extraLen)
-			{
-				extraTag = ReadUInt16(&tagData[i + j]);
-				extraSize = ReadUInt16(&tagData[i + j + 2]);
-				frame->AddUInt(i + j, 2, CSTR("Extra Tag"), extraTag);
-				frame->AddUInt(i + j + 2, 2, CSTR("Extra Size"), extraSize);
-				if (extraTag == 1)
-				{
-					k = i + j + 4;
-					if (uncompSize == 0xffffffff)
-					{
-						frame->AddUInt64(k, CSTR("Original Size"), ReadUInt64(&tagData[k]));
-						k += 8;
-					}
-					if (compSize == 0xffffffff)
-					{
-						frame->AddUInt64(k, CSTR("Compressed Size"), ReadUInt64(&tagData[k]));
-						k += 8;
-					}
-					if (ofst == 0xffffffff)
-					{
-						frame->AddUInt64(k, CSTR("Relative Header Offset"), ReadUInt64(&tagData[k]));
-						k += 8;
-					}
-				}
-				else if (extraTag == 10)
-				{
-					UInt16 ntfsTag;
-					UInt16 ntfsSize;
-					k = i + j + 4;
-					l = k + extraSize;
-					frame->AddUInt(k, 4, CSTR("Reserved"), ReadUInt32(&tagData[k]));
-					k += 4;
-					while (k + 4 <= l)
-					{
-						ntfsTag = ReadUInt16(&tagData[k]);
-						ntfsSize = ReadUInt16(&tagData[k + 2]);
-						frame->AddUInt(k, 2, CSTR("NTFS attribute tag"), ntfsTag);
-						frame->AddUInt(k + 2, 2, CSTR("Size of attribute"), ntfsSize);
-						k += 4;
-						if (ntfsTag == 1 && ntfsSize == 24)
-						{
-							frame->AddUInt64(k, CSTR("File last modification time"), ReadUInt64(&tagData[k]));
-							frame->AddUInt64(k + 8, CSTR("File last access time"), ReadUInt64(&tagData[k + 8]));
-							frame->AddUInt64(k + 16, CSTR("File creation time"), ReadUInt64(&tagData[k + 16]));
-						}
-						k += ntfsSize;
-					}
-				}
-				j += 4 + (UOSInt)extraSize;
-			}
+			ParseExtraTag(frame, tagData, i, extraLen, tag->size, compSize, uncompSize, ofst);
 			i += extraLen;
 		}
 		if (commentLen)

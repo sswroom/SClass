@@ -11,13 +11,40 @@ namespace IO
 {
 	class DirectoryPackage : public IO::PackageFile
 	{
+	public:
+		struct FileItem
+		{
+			NotNullPtr<Text::String> fileName;
+			UInt64 fileSize;
+			Data::Timestamp modTime;
+			Data::Timestamp accTime;
+			Data::Timestamp createTime;
+
+			FileItem() = default;
+
+			FileItem(std::nullptr_t)
+			{
+				fileName = Text::String::NewEmpty();
+				fileSize = 0;
+				modTime = 0;
+				accTime = 0;
+				createTime = 0;
+			}
+
+			Bool operator==(const FileItem &item)
+			{
+				return fileSize == item.fileSize &&
+					modTime == item.modTime &&
+					accTime == item.accTime &&
+					createTime == item.createTime &&
+					fileName->Equals(item.fileName);
+			}
+		};
 	private:
-		Data::ArrayListNN<Text::String> files;
-		Data::ArrayListUInt64 fileSizes;
-		Data::ArrayList<Data::Timestamp> fileTimes;
+		Data::ArrayList<FileItem> files;
 		NotNullPtr<Text::String> dirName;
 
-		void AddFile(Text::CString fileName);
+		void AddFile(Text::CStringNN fileName);
 		void Init();
 	public:
 		DirectoryPackage(NotNullPtr<Text::String> dirName);
@@ -29,8 +56,10 @@ namespace IO
 		virtual UTF8Char *GetItemName(UTF8Char *sbuff, UOSInt index) const;
 		virtual IO::StreamData *GetItemStmDataNew(UOSInt index) const;
 		virtual IO::PackageFile *GetItemPackNew(UOSInt index) const;
-		virtual IO::ParsedObject *GetItemPObj(UOSInt index, Bool *needRelease) const;
+		virtual IO::ParsedObject *GetItemPObj(UOSInt index, OutParam<Bool> needRelease) const;
 		virtual Data::Timestamp GetItemModTime(UOSInt index) const;
+		virtual Data::Timestamp GetItemAccTime(UOSInt index) const;
+		virtual Data::Timestamp GetItemCreateTime(UOSInt index) const;
 		virtual UInt64 GetItemStoreSize(UOSInt index) const;
 		virtual UInt64 GetItemSize(UOSInt index) const;
 		virtual UOSInt GetItemIndex(Text::CString name) const;

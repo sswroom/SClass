@@ -268,6 +268,8 @@ IO::ParsedObject *Parser::FileParser::ZIPParser::ParseFileHdr(NotNullPtr<IO::Str
 	//			UInt64 decompSize = ReadUInt32(&buff[22]);
 				UInt16 modTime = ReadUInt16(&buff[10]);
 				UInt16 modDate = ReadUInt16(&buff[12]);
+				Data::Timestamp accTime = 0;
+				Data::Timestamp createTime = 0;
 				dt.ToLocalTime();
 				dt.SetMSDOSTime(modDate, modTime);
 				UOSInt extraStart = 30 + fnameSize;
@@ -289,6 +291,12 @@ IO::ParsedObject *Parser::FileParser::ZIPParser::ParseFileHdr(NotNullPtr<IO::Str
 							dataSize = ReadUInt64(&buff[extraStart + 4]);
 	//						decompSize = ReadUInt64(&buff[extraStart + 12]);
 						}
+					}
+					else if (extraHdr == 10 && extraData >= 32 && ReadUInt16(&buff[extraStart + 8]) == 1)
+					{
+						dt.SetValueFILETIME(&buff[extraStart + 12]);
+						accTime = Data::Timestamp::FromFILETIME(&buff[extraStart + 20], Data::DateTimeUtil::GetLocalTzQhr());
+						createTime = Data::Timestamp::FromFILETIME(&buff[extraStart + 28], Data::DateTimeUtil::GetLocalTzQhr());
 					}
 					else
 					{
@@ -320,7 +328,7 @@ IO::ParsedObject *Parser::FileParser::ZIPParser::ParseFileHdr(NotNullPtr<IO::Str
 							if (pf3 == 0)
 							{
 								NEW_CLASS(pf3, IO::PackageFile(sb.ToCString()));
-								pf2->AddPack(pf3, {sptr, i}, Data::Timestamp(dt.ToTicks(), dt.GetTimeZoneQHR()));
+								pf2->AddPack(pf3, {sptr, i}, Data::Timestamp(dt.ToInstant(), dt.GetTimeZoneQHR()), accTime, createTime);
 							}
 							pf2 = pf3;
 							sptr = &sptr[i + 1];
@@ -333,7 +341,7 @@ IO::ParsedObject *Parser::FileParser::ZIPParser::ParseFileHdr(NotNullPtr<IO::Str
 							if (pf3 == 0)
 							{
 								NEW_CLASS(pf3, IO::PackageFile(sb.ToCString()));
-								pf2->AddPack(pf3, CSTRP(sptr, sptrEnd), Data::Timestamp(dt.ToTicks(), dt.GetTimeZoneQHR()));
+								pf2->AddPack(pf3, CSTRP(sptr, sptrEnd), Data::Timestamp(dt.ToInstant(), dt.GetTimeZoneQHR()), accTime, createTime);
 							}
 							break;
 						}
@@ -366,7 +374,7 @@ IO::ParsedObject *Parser::FileParser::ZIPParser::ParseFileHdr(NotNullPtr<IO::Str
 							if (pf3 == 0)
 							{
 								NEW_CLASS(pf3, IO::PackageFile(sb.ToCString()));
-								pf2->AddPack(pf3, {sptr, i}, Data::Timestamp(dt.ToTicks(), dt.GetTimeZoneQHR()));
+								pf2->AddPack(pf3, {sptr, i}, Data::Timestamp(dt.ToInstant(), dt.GetTimeZoneQHR()), accTime, createTime);
 							}
 							pf2 = pf3;
 							sptr = &sptr[i + 1];
@@ -379,7 +387,7 @@ IO::ParsedObject *Parser::FileParser::ZIPParser::ParseFileHdr(NotNullPtr<IO::Str
 
 					if (compMeth == 0)
 					{
-						pf2->AddData(fd, currOfst + 30 + fnameSize + extraSize, dataSize, CSTRP(sptr, sptrEnd), Data::Timestamp(dt.ToTicks(), dt.GetTimeZoneQHR()));
+						pf2->AddData(fd, currOfst + 30 + fnameSize + extraSize, dataSize, CSTRP(sptr, sptrEnd), Data::Timestamp(dt.ToInstant(), dt.GetTimeZoneQHR()), accTime, createTime);
 					}
 					else
 					{
@@ -416,7 +424,7 @@ IO::ParsedObject *Parser::FileParser::ZIPParser::ParseFileHdr(NotNullPtr<IO::Str
 							}
 							compInfo.decSize = ReadUInt32(&buff[22]);
 						}
-						pf2->AddCompData(fd, currOfst + 30 + fnameSize + extraSize, dataSize, &compInfo, CSTRP(sptr, sptrEnd), Data::Timestamp(dt.ToTicks(), dt.GetTimeZoneQHR()));
+						pf2->AddCompData(fd, currOfst + 30 + fnameSize + extraSize, dataSize, &compInfo, CSTRP(sptr, sptrEnd), Data::Timestamp(dt.ToInstant(), dt.GetTimeZoneQHR()), accTime, createTime);
 					}
 					currOfst += 30 + fnameSize + extraSize + dataSize;
 				}
@@ -515,6 +523,8 @@ UOSInt Parser::FileParser::ZIPParser::ParseCentDir(IO::PackageFile *pf, Text::En
 	UInt16 extraLen;
 	UInt16 commentLen;
 	UInt32 recType;
+	Data::Timestamp accTime;
+	Data::Timestamp createTime;
 	UOSInt i;
 	UOSInt j;
 	i = 0;
@@ -539,6 +549,8 @@ UOSInt Parser::FileParser::ZIPParser::ParseCentDir(IO::PackageFile *pf, Text::En
 		ofst = ReadUInt32(&buff[i + 42]);
 		dt.ToLocalTime();
 		dt.SetMSDOSTime(ReadUInt16(&buff[i + 14]), ReadUInt16(&buff[i + 12]));
+		accTime = 0;
+		createTime = 0;
 
 		if (i + 46 + (UOSInt)fnameLen + extraLen + commentLen > buff.GetSize())
 		{
@@ -577,6 +589,12 @@ UOSInt Parser::FileParser::ZIPParser::ParseCentDir(IO::PackageFile *pf, Text::En
 				{
 					dt.SetUnixTimestamp(ReadUInt32(&extraBuff[j + 5]));
 				}
+				else if (extraTag == 10 && extraSize >= 32 && ReadUInt16(&extraBuff[j + 8]) == 1)
+				{
+					dt.SetValueFILETIME(&extraBuff[j + 12]);
+					accTime = Data::Timestamp::FromFILETIME(&extraBuff[j + 20], Data::DateTimeUtil::GetLocalTzQhr());
+					createTime = Data::Timestamp::FromFILETIME(&extraBuff[j + 20], Data::DateTimeUtil::GetLocalTzQhr());
+				}
 				j += 4 + (UOSInt)extraSize;
 			}
 		}
@@ -604,7 +622,7 @@ UOSInt Parser::FileParser::ZIPParser::ParseCentDir(IO::PackageFile *pf, Text::En
 					if (pf3 == 0)
 					{
 						NEW_CLASS(pf3, IO::PackageFile(CSTRP(sbuff, &sptr[j])));
-						pf2->AddPack(pf3, {sptr, j}, Data::Timestamp(dt.ToTicks(), dt.GetTimeZoneQHR()));
+						pf2->AddPack(pf3, {sptr, j}, Data::Timestamp(dt.ToInstant(), dt.GetTimeZoneQHR()), accTime, createTime);
 					}
 					pf2 = pf3;
 					sptr[j] = '/';
@@ -616,7 +634,7 @@ UOSInt Parser::FileParser::ZIPParser::ParseCentDir(IO::PackageFile *pf, Text::En
 					if (pf3 == 0)
 					{
 						NEW_CLASS(pf3, IO::PackageFile(CSTRP(sbuff, sptrEnd)));
-						pf2->AddPack(pf3, CSTRP(sptr, sptrEnd), Data::Timestamp(dt.ToTicks(), dt.GetTimeZoneQHR()));
+						pf2->AddPack(pf3, CSTRP(sptr, sptrEnd), Data::Timestamp(dt.ToInstant(), dt.GetTimeZoneQHR()), accTime, createTime);
 					}
 					break;
 				}
@@ -637,7 +655,7 @@ UOSInt Parser::FileParser::ZIPParser::ParseCentDir(IO::PackageFile *pf, Text::En
 					if (pf3 == 0)
 					{
 						NEW_CLASS(pf3, IO::PackageFile(CSTRP(sbuff, &sptr[j])));
-						pf2->AddPack(pf3, {sptr, j}, Data::Timestamp(dt.ToTicks(), dt.GetTimeZoneQHR()));
+						pf2->AddPack(pf3, {sptr, j}, Data::Timestamp(dt.ToInstant(), dt.GetTimeZoneQHR()), accTime, createTime);
 					}
 					pf2 = pf3;
 					sptr[j] = '/';
@@ -651,7 +669,7 @@ UOSInt Parser::FileParser::ZIPParser::ParseCentDir(IO::PackageFile *pf, Text::En
 
 			if (compMeth == 0)
 			{
-				pf2->AddData(fd, ofst + 30 + fnameLen, compSize, CSTRP(sptr, sptrEnd), Data::Timestamp(dt.ToTicks(), dt.GetTimeZoneQHR()));
+				pf2->AddData(fd, ofst + 30 + fnameLen, compSize, CSTRP(sptr, sptrEnd), Data::Timestamp(dt.ToInstant(), dt.GetTimeZoneQHR()), accTime, createTime);
 			}
 			else
 			{
@@ -669,7 +687,7 @@ UOSInt Parser::FileParser::ZIPParser::ParseCentDir(IO::PackageFile *pf, Text::En
 					compInfo.compMethod = Data::Compress::Decompressor::CM_UNKNOWN;
 				}
 				compInfo.decSize = uncompSize;
-				pf2->AddCompData(fd, ofst + 30 + fnameLen, compSize, &compInfo, CSTRP(sptr, sptrEnd), Data::Timestamp(dt.ToTicks(), dt.GetTimeZoneQHR()));
+				pf2->AddCompData(fd, ofst + 30 + fnameLen, compSize, &compInfo, CSTRP(sptr, sptrEnd), Data::Timestamp(dt.ToInstant(), dt.GetTimeZoneQHR()), accTime, createTime);
 			}
 		}
 

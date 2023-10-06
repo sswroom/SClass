@@ -557,7 +557,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::RAR5FileAnalyse::GetFrameDetail(U
 	if (pack == 0)
 		return 0;
 
-	NEW_CLASS(frame, IO::FileAnalyse::FrameDetail(pack->fileOfst, (UInt32)(pack->headerSize + pack->dataSize)));
+	NEW_CLASS(frame, IO::FileAnalyse::FrameDetail(pack->fileOfst, (pack->headerSize + pack->dataSize)));
 	Data::ByteBuffer packBuff(pack->headerSize);
 	this->fd->GetRealData(pack->fileOfst, pack->headerSize, packBuff);
 	frame->AddHex32(0, CSTR("Block CRC"), ReadUInt32(&packBuff[0]));

@@ -79,7 +79,7 @@ IO::ParsedObject *Parser::FileParser::GamedatPac2Parser::ParseFileHdr(NotNullPtr
 			return 0;
 		}
 		sptr = enc.UTF8FromBytes(fileName, &recBuff[i * 32], 32, 0);
-		pf->AddData(fd, fileOfst + (UInt64)dataOfst, fileSize, CSTRP(fileName, sptr), Data::Timestamp(0));
+		pf->AddData(fd, fileOfst + (UInt64)dataOfst, fileSize, CSTRP(fileName, sptr), 0, 0, 0);
 
 		nextOfst = fileOfst + fileSize;
 		i++;

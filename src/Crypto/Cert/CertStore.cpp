@@ -145,7 +145,7 @@ void Crypto::Cert::CertStore::FromPackageFile(IO::PackageFile *pkg)
 	while (i < j)
 	{
 		Bool needRelease;
-		IO::ParsedObject *pobj = pkg->GetItemPObj(i, &needRelease);
+		IO::ParsedObject *pobj = pkg->GetItemPObj(i, needRelease);
 		if (pobj && pobj->GetParserType() == IO::ParserType::ASN1Data)
 		{
 			Net::ASN1Data *asn1 = (Net::ASN1Data*)pobj;

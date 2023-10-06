@@ -329,7 +329,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::FLVFileAnalyse::GetFrameDetail(UO
 	Text::CString vName;
 	if (index == 0)
 	{
-		NEW_CLASS(frame, IO::FileAnalyse::FrameDetail(0, (UInt32)this->hdrSize));
+		NEW_CLASS(frame, IO::FileAnalyse::FrameDetail(0, this->hdrSize));
 		this->fd->GetRealData(0, this->hdrSize, BYTEARR(buff));
 		sptr = Text::StrConcatC(sbuff, buff, 3);
 		frame->AddField(0, 3, CSTR("Magic"), CSTRP(sbuff, sptr));
@@ -353,7 +353,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::FLVFileAnalyse::GetFrameDetail(UO
 	if (tag == 0)
 		return 0;
 	
-	NEW_CLASS(frame, IO::FileAnalyse::FrameDetail(tag->ofst, (UInt32)tag->size));
+	NEW_CLASS(frame, IO::FileAnalyse::FrameDetail(tag->ofst, tag->size));
 	sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("Tag")), index);
 	frame->AddHeader(CSTRP(sbuff, sptr));
 

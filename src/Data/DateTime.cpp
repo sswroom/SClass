@@ -315,10 +315,10 @@ Bool Data::DateTime::SetValueSlow(const Char *dateStr)
 Bool Data::DateTime::SetValue(Text::CStringNN dateStr)
 {
 	NotNullPtr<Data::DateTimeUtil::TimeValue> tval = this->GetTimeValue();
-	return Data::DateTimeUtil::String2TimeValue(dateStr, tval, &this->tzQhr, &this->ns);
+	return Data::DateTimeUtil::String2TimeValue(dateStr, tval, this->tzQhr, this->tzQhr, this->ns);
 }
 
-void Data::DateTime::SetValueSYSTEMTIME(void *sysTime)
+void Data::DateTime::SetValueSYSTEMTIME(const void *sysTime)
 {
 	SYSTEMTIME *stime = (SYSTEMTIME*)sysTime;
 	NotNullPtr<Data::DateTimeUtil::TimeValue> tval = this->GetTimeValue();
@@ -332,10 +332,10 @@ void Data::DateTime::SetValueSYSTEMTIME(void *sysTime)
 	this->tzQhr = 0;
 }
 
-void Data::DateTime::SetValueFILETIME(void *fileTime)
+void Data::DateTime::SetValueFILETIME(const void *fileTime)
 {
 	UInt32 nanosecs;
-	Int64 secs = Data::DateTimeUtil::FILETIME2Secs(fileTime, &nanosecs);
+	Int64 secs = Data::DateTimeUtil::FILETIME2Secs(fileTime, nanosecs);
 	this->SetInstant(Data::TimeInstant(secs, nanosecs));
 }
 

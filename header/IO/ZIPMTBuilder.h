@@ -31,7 +31,9 @@ namespace IO
 			NotNullPtr<Text::String> fileName;
 			UInt8 *fileBuff;
 			UOSInt fileSize;
-			Int64 fileTimeTicks;
+			Data::Timestamp lastModTime;
+			Data::Timestamp lastAccessTime;
+			Data::Timestamp createTime;
 			Data::Compress::Inflate::CompressionLevel compLevel;
 		};
 	private:
@@ -49,8 +51,9 @@ namespace IO
 		ZIPMTBuilder(NotNullPtr<IO::SeekableStream> stm);
 		~ZIPMTBuilder();
 
-		Bool AddFile(Text::CString fileName, IO::SeekableStream *stm, Int64 fileTimeTicks, Data::Compress::Inflate::CompressionLevel compLevel);
-		Bool AddFile(Text::CString fileName, NotNullPtr<IO::StreamData> fd, Int64 fileTimeTicks, Data::Compress::Inflate::CompressionLevel compLevel);
+		Bool AddFile(Text::CStringNN fileName, NotNullPtr<IO::SeekableStream> stm, Data::Timestamp lastModTime, Data::Timestamp lastAccessTime, Data::Timestamp createTime, Data::Compress::Inflate::CompressionLevel compLevel);
+		Bool AddFile(Text::CStringNN fileName, NotNullPtr<IO::StreamData> fd, Data::Timestamp lastModTime, Data::Timestamp lastAccessTime, Data::Timestamp createTime, Data::Compress::Inflate::CompressionLevel compLevel);
+		Bool AddDir(Text::CStringNN dirName, Data::Timestamp lastModTime, Data::Timestamp lastAccessTime, Data::Timestamp createTime);
 	};
 }
 #endif

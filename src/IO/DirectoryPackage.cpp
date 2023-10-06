@@ -8,7 +8,7 @@
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
 
-void IO::DirectoryPackage::AddFile(Text::CString fileName)
+void IO::DirectoryPackage::AddFile(Text::CStringNN fileName)
 {
 	UTF8Char sbuff[512];
 	IO::Path::FindFileSession *sess = IO::Path::FindFile(fileName);
@@ -17,11 +17,16 @@ void IO::DirectoryPackage::AddFile(Text::CString fileName)
 		Data::Timestamp ts;
 		UInt64 fileSize;
 		IO::Path::PathType pt;
+		FileItem item;
 		if (IO::Path::FindNextFile(sbuff, sess, &ts, &pt, &fileSize))
 		{
-			this->files.Add(Text::String::New(fileName));
-			this->fileSizes.Add(fileSize);
-			this->fileTimes.Add(ts);
+			item.fileName = Text::String::New(fileName);
+			item.fileSize = fileSize;
+			item.modTime = ts;
+			item.accTime = 0;
+			item.createTime = 0;
+			IO::Path::GetFileTime(fileName.v, &item.modTime, &item.accTime, &item.createTime);
+			this->files.Add(item);
 		}
 		IO::Path::FindFileClose(sess);
 	}
@@ -35,6 +40,7 @@ void IO::DirectoryPackage::Init()
 	UTF8Char *sptr2;
 	IO::Path::PathType pt;
 	UInt64 fileSize;
+	FileItem item;
 	IO::Path::FindFileSession *sess;
 	if (this->dirName->leng > 0)
 	{
@@ -57,9 +63,13 @@ void IO::DirectoryPackage::Init()
 				}
 				else
 				{
-					this->files.Add(Text::String::New(sbuff, (UOSInt)(sptr2 - sbuff)));
-					this->fileSizes.Add(fileSize);
-					this->fileTimes.Add(ts);
+					item.fileName = Text::String::New(sbuff, (UOSInt)(sptr2 - sbuff));
+					item.fileSize = fileSize;
+					item.modTime = ts;
+					item.accTime = 0;
+					item.createTime = 0;
+					IO::Path::GetFileTime(sbuff, &item.modTime, &item.accTime, &item.createTime);
+					this->files.Add(item);
 				}
 			}
 			IO::Path::FindFileClose(sess);
@@ -105,7 +115,7 @@ IO::DirectoryPackage::~DirectoryPackage()
 	i = this->files.GetCount();
 	while (i-- > 0)
 	{
-		this->files.GetItem(i)->Release();
+		this->files.GetItem(i).fileName->Release();
 	}
 	this->dirName->Release();
 }
@@ -117,9 +127,9 @@ UOSInt IO::DirectoryPackage::GetCount() const
 
 IO::PackageFile::PackObjectType IO::DirectoryPackage::GetItemType(UOSInt index) const
 {
-	Text::String *fileName = this->files.GetItem(index);
-	if (fileName == 0)
+	if (this->files.GetCount() <= index)
 		return IO::PackageFile::PackObjectType::Unknown;
+	NotNullPtr<Text::String> fileName = this->files.GetItem(index).fileName;
 	IO::Path::PathType pt = IO::Path::GetPathType(fileName->ToCString());
 	if (pt == IO::Path::PathType::File)
 	{
@@ -137,19 +147,19 @@ IO::PackageFile::PackObjectType IO::DirectoryPackage::GetItemType(UOSInt index) 
 
 UTF8Char *IO::DirectoryPackage::GetItemName(UTF8Char *sbuff, UOSInt index) const
 {
-	Text::String *fileName = this->files.GetItem(index);
 	UOSInt i;
-	if (fileName == 0)
+	if (this->files.GetCount() <= index)
 		return 0;
+	NotNullPtr<Text::String> fileName = this->files.GetItem(index).fileName;
 	i = fileName->LastIndexOf(IO::Path::PATH_SEPERATOR);
 	return Text::StrConcat(sbuff, &fileName->v[i + 1]);
 }
 
 IO::StreamData *IO::DirectoryPackage::GetItemStmDataNew(UOSInt index) const
 {
-	NotNullPtr<Text::String> fileName;
-	if (!fileName.Set(this->files.GetItem(index)))
+	if (this->files.GetCount() <= index)
 		return 0;
+	NotNullPtr<Text::String> fileName = this->files.GetItem(index).fileName;
 	IO::Path::PathType pt = IO::Path::GetPathType(fileName->ToCString());
 	if (pt == IO::Path::PathType::File)
 	{
@@ -165,9 +175,9 @@ IO::StreamData *IO::DirectoryPackage::GetItemStmDataNew(UOSInt index) const
 
 IO::PackageFile *IO::DirectoryPackage::GetItemPackNew(UOSInt index) const
 {
-	NotNullPtr<Text::String> fileName;
-	if (!fileName.Set(this->files.GetItem(index)))
+	if (this->files.GetCount() <= index)
 		return 0;
+	NotNullPtr<Text::String> fileName = this->files.GetItem(index).fileName;
 	IO::Path::PathType pt = IO::Path::GetPathType(fileName->ToCString());
 	if (pt == IO::Path::PathType::Directory)
 	{
@@ -181,25 +191,35 @@ IO::PackageFile *IO::DirectoryPackage::GetItemPackNew(UOSInt index) const
 	}
 }
 
-IO::ParsedObject *IO::DirectoryPackage::GetItemPObj(UOSInt index, Bool *needRelease) const
+IO::ParsedObject *IO::DirectoryPackage::GetItemPObj(UOSInt index, OutParam<Bool> needRelease) const
 {
-	*needRelease = true;
+	needRelease.Set(true);
 	return GetItemPackNew(index);
 }
 
 Data::Timestamp IO::DirectoryPackage::GetItemModTime(UOSInt index) const
 {
-	return this->fileTimes.GetItem(index);
+	return this->files.GetItem(index).modTime;
+}
+
+Data::Timestamp IO::DirectoryPackage::GetItemAccTime(UOSInt index) const
+{
+	return this->files.GetItem(index).accTime;
+}
+
+Data::Timestamp IO::DirectoryPackage::GetItemCreateTime(UOSInt index) const
+{
+	return this->files.GetItem(index).createTime;
 }
 
 UInt64 IO::DirectoryPackage::GetItemStoreSize(UOSInt index) const
 {
-	return this->fileSizes.GetItem(index);
+	return this->files.GetItem(index).fileSize;
 }
 
 UInt64 IO::DirectoryPackage::GetItemSize(UOSInt index) const
 {
-	return this->fileSizes.GetItem(index);
+	return this->files.GetItem(index).fileSize;
 }
 
 UOSInt IO::DirectoryPackage::GetItemIndex(Text::CString name) const
@@ -208,14 +228,11 @@ UOSInt IO::DirectoryPackage::GetItemIndex(Text::CString name) const
 	UOSInt i;
 	while (j-- > 0)
 	{
-		Text::String *fileName = this->files.GetItem(j);
-		if (fileName)
+		NotNullPtr<Text::String> fileName = this->files.GetItem(j).fileName;
+		i = fileName->LastIndexOf(IO::Path::PATH_SEPERATOR);
+		if (name.Equals(&fileName->v[i + 1], fileName->leng - i - 1))
 		{
-			i = fileName->LastIndexOf(IO::Path::PATH_SEPERATOR);
-			if (name.Equals(&fileName->v[i + 1], fileName->leng - i - 1))
-			{
-				return j;
-			}
+			return j;
 		}
 	}
 	return INVALID_INDEX;
@@ -419,47 +436,33 @@ Bool IO::DirectoryPackage::RetryMoveFrom(Text::CStringNN fileName, IO::ProgressH
 	return false;
 }
 
-typedef struct
+OSInt __stdcall DirectoryPackage_Compare(IO::DirectoryPackage::FileItem obj1, IO::DirectoryPackage::FileItem obj2)
 {
-	NotNullPtr<Text::String> name;
-	UInt64 fileSize;
-	Data::Timestamp fileTime;
-} DirFile;
-
-OSInt __stdcall DirectoryPackage_Compare(DirFile *obj1, DirFile *obj2)
-{
-	return obj1->name->CompareTo(obj2->name);
+	return obj1.fileName->CompareTo(obj2.fileName);
 }
 
 Bool IO::DirectoryPackage::Sort()
 {
 	UOSInt i;
 	UOSInt j;
-	DirFile *df;
-	DirFile **arr;
+	FileItem df;
+	FileItem *arr;
 	i = 0;
 	j = this->files.GetCount();
 	if (j <= 0)
 		return true;
-	arr = MemAlloc(DirFile*, j);
+	arr = MemAlloc(FileItem, j);
 	while (i < j)
 	{
-		df = MemAlloc(DirFile, 1);
-		df->name = NotNullPtr<Text::String>::FromPtr(this->files.GetItem(i));
-		df->fileSize = this->fileSizes.GetItem(i);
-		df->fileTime = this->fileTimes.GetItem(i);
-		arr[i] = df;
+		arr[i] = this->files.GetItem(i);
 		i++;
 	}
-	Data::Sort::ArtificialQuickSortFunc<DirFile*>::Sort(arr, DirectoryPackage_Compare, 0, (OSInt)j - 1);
+	Data::Sort::ArtificialQuickSortFunc<FileItem>::Sort(arr, DirectoryPackage_Compare, 0, (OSInt)j - 1);
 	i = 0;
 	while (i < j)
 	{
 		df = arr[i];
-		this->files.SetItem(i, df->name);
-		this->fileSizes.SetItem(i, df->fileSize);
-		this->fileTimes.SetItem(i, df->fileTime);
-		MemFree(df);
+		this->files.SetItem(i, df);
 		i++;
 	}
 	MemFree(arr);

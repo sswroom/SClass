@@ -303,7 +303,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::PCapFileAnalyse::GetFrameDetail(U
 	ofst = this->ofstList.GetItem(index - 1);
 	size = this->sizeList.GetItem(index - 1);
 	mutUsage.EndUse();
-	NEW_CLASS(frame, IO::FileAnalyse::FrameDetail(ofst, (UInt32)size));
+	NEW_CLASS(frame, IO::FileAnalyse::FrameDetail(ofst, size));
 	fd->GetRealData(ofst, (UOSInt)size, this->packetBuff);
 	sptr = Text::StrUInt64(Text::StrConcatC(sbuff, UTF8STRC("TotalSize=")), size);
 	frame->AddHeader(CSTRP(sbuff, sptr));

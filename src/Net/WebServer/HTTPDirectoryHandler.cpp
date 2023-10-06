@@ -580,7 +580,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::DoFileRequest(NotNullPtr<Net::WebServ
 				sptr = packageFile->GetItemName(sbuff, 0);
 				if (dirName.Substring(1).Equals(sbuff, (UOSInt)(sptr - sbuff)))
 				{
-					packageFile = (IO::PackageFile*)packageFile->GetItemPObj(0, &needRelease);
+					packageFile = (IO::PackageFile*)packageFile->GetItemPObj(0, needRelease);
 				}
 			}
 
@@ -1467,7 +1467,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::DoFileRequest(NotNullPtr<Net::WebServ
 	return false;
 }
 
-IO::PackageFile *Net::WebServer::HTTPDirectoryHandler::GetPackageFile(Text::CStringNN path, Bool *needRelease)
+IO::PackageFile *Net::WebServer::HTTPDirectoryHandler::GetPackageFile(Text::CStringNN path, OutParam<Bool> needRelease)
 {
 	if (path.StartsWith('/'))
 	{
@@ -1498,7 +1498,7 @@ IO::PackageFile *Net::WebServer::HTTPDirectoryHandler::GetPackageFile(Text::CStr
 		if (pkgInfo)
 		{
 			IO::PackageFile *packageFile = pkgInfo->packageFile;
-			*needRelease = false;
+			needRelease.Set(false);
 			if (packageFile->GetCount() == 1 && packageFile->GetItemType(0) == IO::PackageFile::PackObjectType::PackageFileType)
 			{
 				sptr = packageFile->GetItemName(sbuff, 0);
@@ -1529,11 +1529,11 @@ IO::PackageFile *Net::WebServer::HTTPDirectoryHandler::GetPackageFile(Text::CStr
 	if (pt == IO::Path::PathType::Directory)
 	{
 		IO::DirectoryPackage *dpkg;
-		*needRelease = true;
+		needRelease.Set(true);
 		NEW_CLASS(dpkg, IO::DirectoryPackage(sb.ToCString()));
 		return dpkg;
 	}
-	*needRelease = false;
+	needRelease.Set(false);
 	return 0;
 }
 

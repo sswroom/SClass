@@ -2,6 +2,7 @@
 #define _SM_IO_ZIPBUILDER
 #include "Crypto/Hash/CRC32RIEEE.h"
 #include "Data/ArrayList.h"
+#include "Data/Timestamp.h"
 #include "Data/Compress/Inflate.h"
 #include "IO/SeekableStream.h"
 #include "Sync/Mutex.h"
@@ -15,10 +16,12 @@ namespace IO
 		{
 			NotNullPtr<Text::String> fileName;
 			UInt64 fileOfst;
-			Int64 fileTimeTicks;
+			Data::Timestamp fileModTime;
+			Data::Timestamp fileCreateTime;
+			Data::Timestamp fileAccessTime;
 			UInt32 crcVal;
-			UOSInt uncompSize;
-			UOSInt compSize;
+			UInt64 uncompSize;
+			UInt64 compSize;
 			UInt16 compMeth;
 		} FileInfo;
 		
@@ -34,7 +37,8 @@ namespace IO
 		ZIPBuilder(NotNullPtr<IO::SeekableStream> stm);
 		~ZIPBuilder();
 
-		Bool AddFile(Text::CString fileName, const UInt8 *fileContent, UOSInt fileSize, Int64 fileTimeTicks, Data::Compress::Inflate::CompressionLevel compLevel);
+		Bool AddFile(Text::CStringNN fileName, const UInt8 *fileContent, UOSInt fileSize, Data::Timestamp lastModTime, Data::Timestamp lastAccessTime, Data::Timestamp createTime, Data::Compress::Inflate::CompressionLevel compLevel);
+		Bool AddDir(Text::CStringNN dirName, Data::Timestamp lastModTime, Data::Timestamp lastAccessTime, Data::Timestamp createTime);
 	};
 }
 #endif

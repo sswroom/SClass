@@ -76,7 +76,7 @@ void Data::DateTimeUtil::TimeValueSetDate(NotNullPtr<Data::DateTimeUtil::TimeVal
 	}
 }
 
-void Data::DateTimeUtil::TimeValueSetTime(NotNullPtr<Data::DateTimeUtil::TimeValue> t, Text::PString *timeStrs, UInt32 *nanosec)
+void Data::DateTimeUtil::TimeValueSetTime(NotNullPtr<Data::DateTimeUtil::TimeValue> t, Text::PString *timeStrs, OutParam<UInt32> nanosec)
 {
 	Text::PString strs[2];
 	UOSInt valTmp;
@@ -87,49 +87,45 @@ void Data::DateTimeUtil::TimeValueSetTime(NotNullPtr<Data::DateTimeUtil::TimeVal
 	if (valTmp == 1)
 	{
 		t->second = (UInt8)Text::StrToUInt32(strs[0].v);
-		if (nanosec)
-			*nanosec = 0;
+		nanosec.Set(0);
 	}
 	else
 	{
 		t->second = (UInt8)Text::StrToUInt32(strs[0].v);
 		valTmp = strs[1].leng;
-		if (nanosec)
+		switch (strs[1].leng)
 		{
-			switch (strs[1].leng)
-			{
-			case 0:
-				*nanosec = 0;
-				break;
-			case 1:
-				*nanosec = Text::StrToUInt32(strs[1].v) * 100000000;
-				break;
-			case 2:
-				*nanosec = Text::StrToUInt32(strs[1].v) * 10000000;
-				break;
-			case 3:
-				*nanosec = Text::StrToUInt32(strs[1].v) * 1000000;
-				break;
-			case 4:
-				*nanosec = Text::StrToUInt32(strs[1].v) * 100000;
-				break;
-			case 5:
-				*nanosec = Text::StrToUInt32(strs[1].v) * 10000;
-				break;
-			case 6:
-				*nanosec = Text::StrToUInt32(strs[1].v) * 1000;
-				break;
-			case 7:
-				*nanosec = Text::StrToUInt32(strs[1].v) * 100;
-				break;
-			case 8:
-				*nanosec = Text::StrToUInt32(strs[1].v) * 10;
-				break;
-			default:
-				strs[1].v[9] = 0;
-				*nanosec = Text::StrToUInt32(strs[1].v);
-				break;
-			}
+		case 0:
+			nanosec.Set(0);
+			break;
+		case 1:
+			nanosec.Set(Text::StrToUInt32(strs[1].v) * 100000000);
+			break;
+		case 2:
+			nanosec.Set(Text::StrToUInt32(strs[1].v) * 10000000);
+			break;
+		case 3:
+			nanosec.Set(Text::StrToUInt32(strs[1].v) * 1000000);
+			break;
+		case 4:
+			nanosec.Set(Text::StrToUInt32(strs[1].v) * 100000);
+			break;
+		case 5:
+			nanosec.Set(Text::StrToUInt32(strs[1].v) * 10000);
+			break;
+		case 6:
+			nanosec.Set(Text::StrToUInt32(strs[1].v) * 1000);
+			break;
+		case 7:
+			nanosec.Set(Text::StrToUInt32(strs[1].v) * 100);
+			break;
+		case 8:
+			nanosec.Set(Text::StrToUInt32(strs[1].v) * 10);
+			break;
+		default:
+			strs[1].v[9] = 0;
+			nanosec.Set(Text::StrToUInt32(strs[1].v));
+			break;
 		}
 	}
 }
@@ -1373,7 +1369,7 @@ UTF8Char *Data::DateTimeUtil::ToString(UTF8Char *sbuff, NotNullPtr<const TimeVal
 	return sbuff;
 }
 
-Bool Data::DateTimeUtil::String2TimeValue(Text::CStringNN dateStr, NotNullPtr<TimeValue> tval, Int8 *tzQhr, UInt32 *nanosec)
+Bool Data::DateTimeUtil::String2TimeValue(Text::CStringNN dateStr, NotNullPtr<TimeValue> tval, Int8 defTzQhr, OutParam<Int8> outTzQhr, OutParam<UInt32> nanosec)
 {
 	UTF8Char buff[64];
 	UTF8Char *longBuff = 0;
@@ -1420,14 +1416,7 @@ Bool Data::DateTimeUtil::String2TimeValue(Text::CStringNN dateStr, NotNullPtr<Ti
 		}
 		else
 		{
-			if (nanosec)
-			{
-				Secs2TimeValue(GetCurrTimeSecHighP(nanosec), tval, *tzQhr);
-			}
-			else
-			{
-				Ticks2TimeValue(GetCurrTimeMillis(), tval, *tzQhr);
-			}
+			Secs2TimeValue(GetCurrTimeSecHighP(nanosec), tval, defTzQhr);
 			dateSucc = false;
 		}
 		UOSInt i = strs2[1].IndexOf('-');
@@ -1454,22 +1443,22 @@ Bool Data::DateTimeUtil::String2TimeValue(Text::CStringNN dateStr, NotNullPtr<Ti
 				min = min + Text::StrToUInt32(&strs2[1].v[i + 1]) * 60;
 				if (c == '-')
 				{
-					*tzQhr = (Int8)(-(Int32)min / 15);
+					outTzQhr.Set((Int8)(-(Int32)min / 15));
 				}
 				else
 				{
-					*tzQhr = (Int8)(min / 15);
+					outTzQhr.Set((Int8)(min / 15));
 				}
 			}
 			else if (tzlen == 2)
 			{
 				if (c == '-')
 				{
-					*tzQhr = (Int8)-(Text::StrToInt32(&strs2[1].v[i + 1]) * 4);
+					outTzQhr.Set((Int8)-(Text::StrToInt32(&strs2[1].v[i + 1]) * 4));
 				}
 				else
 				{
-					*tzQhr = (Int8)(Text::StrToUInt32(&strs2[1].v[i + 1]) * 4);
+					outTzQhr.Set((Int8)(Text::StrToUInt32(&strs2[1].v[i + 1]) * 4));
 				}
 			}
 			strs2[1].leng = i;
@@ -1488,10 +1477,7 @@ Bool Data::DateTimeUtil::String2TimeValue(Text::CStringNN dateStr, NotNullPtr<Ti
 			tval->hour = 0;
 			tval->minute = 0;
 			tval->second = 0;
-			if (nanosec)
-			{
-				*nanosec = 0;
-			}
+			nanosec.Set(0);
 			if (!dateSucc)
 			{
 				succ = false;
@@ -1506,8 +1492,7 @@ Bool Data::DateTimeUtil::String2TimeValue(Text::CStringNN dateStr, NotNullPtr<Ti
 			tval->hour = 0;
 			tval->minute = 0;
 			tval->second = 0;
-			if (nanosec)
-				*nanosec = 0;
+			nanosec.Set(0);
 		}
 		else if (Text::StrSplitP(strs, 3, strs2[0], '/') == 3)
 		{
@@ -1515,15 +1500,13 @@ Bool Data::DateTimeUtil::String2TimeValue(Text::CStringNN dateStr, NotNullPtr<Ti
 			tval->hour = 0;
 			tval->minute = 0;
 			tval->second = 0;
-			if (nanosec)
-				*nanosec = 0;
+			nanosec.Set(0);
 		}
 		else if (Text::StrSplitP(strs, 3, strs2[0], ':') == 3)
 		{
-			if (nanosec)
-				Secs2TimeValue(GetCurrTimeSecHighP(nanosec), tval, *tzQhr);
-			else
-				Ticks2TimeValue(GetCurrTimeMillis(), tval, *tzQhr);
+			Secs2TimeValue(GetCurrTimeSecHighP(nanosec), tval, defTzQhr);
+//			else
+//				Ticks2TimeValue(GetCurrTimeMillis(), tval, *tzQhr);
 			TimeValueSetTime(tval, strs, nanosec);
 		}
 		else
@@ -1576,7 +1559,7 @@ Bool Data::DateTimeUtil::String2TimeValue(Text::CStringNN dateStr, NotNullPtr<Ti
 		{
 			if (strs2[4].Equals(UTF8STRC("GMT")))
 			{
-				*tzQhr = 0;
+				outTzQhr.Set(0);
 			}
 			else if (strs2[4].leng == 5)
 			{
@@ -1592,11 +1575,11 @@ Bool Data::DateTimeUtil::String2TimeValue(Text::CStringNN dateStr, NotNullPtr<Ti
 				min = min + Text::StrToInt32(&strs2[4].v[1]) * 60;
 				if (strs2[4].v[0] == '-')
 				{
-					*tzQhr = (Int8)(-min / 15);
+					outTzQhr.Set((Int8)(-min / 15));
 				}
 				else
 				{
-					*tzQhr = (Int8)(min / 15);
+					outTzQhr.Set((Int8)(min / 15));
 				}
 			}
 		}
@@ -1609,7 +1592,7 @@ Bool Data::DateTimeUtil::String2TimeValue(Text::CStringNN dateStr, NotNullPtr<Ti
 		tval->hour = 0;
 		tval->minute = 0;
 		tval->second = 0;
-		*tzQhr = 0;
+		outTzQhr.Set(0);
 
 		UOSInt j = 0;
 		UOSInt i;
@@ -1630,26 +1613,26 @@ Bool Data::DateTimeUtil::String2TimeValue(Text::CStringNN dateStr, NotNullPtr<Ti
 				{
 					if (Text::StrSplitP(strs, 3, strs2[j], ':') == 2)
 					{
-						*tzQhr = (Int8)(-(Int32)((Text::StrToUInt32(&strs[0].v[1]) << 2) + (Text::StrToUInt32(strs[1].v) / 15)));
+						outTzQhr.Set((Int8)(-(Int32)((Text::StrToUInt32(&strs[0].v[1]) << 2) + (Text::StrToUInt32(strs[1].v) / 15))));
 					}
 					else if (strs2[j].leng == 5)
 					{
-						*tzQhr = (Int8)(Text::StrToUInt32(&strs2[j].v[3]) / 15);
+						Int8 tzQhr = (Int8)(Text::StrToUInt32(&strs2[j].v[3]) / 15);
 						strs2[j].v[3] = 0;
-						*tzQhr = (Int8)(-(*tzQhr + (Int32)(Text::StrToUInt32(&strs2[j].v[1]) << 2)));
+						outTzQhr.Set((Int8)(-(tzQhr + (Int32)(Text::StrToUInt32(&strs2[j].v[1]) << 2))));
 					}
 				}
 				else if (strs2[j].v[0] == '+')
 				{
 					if (Text::StrSplitP(strs, 3, strs2[j], ':') == 2)
 					{
-						*tzQhr = (Int8)((Text::StrToUInt32(&strs[0].v[1]) << 2) + (Text::StrToUInt32(strs[1].v) / 15));
+						outTzQhr.Set((Int8)((Text::StrToUInt32(&strs[0].v[1]) << 2) + (Text::StrToUInt32(strs[1].v) / 15)));
 					}
 					else if (strs2[j].leng == 5)
 					{
-						*tzQhr = (Int8)(Text::StrToUInt32(&strs2[j].v[3]) / 15);
+						Int8 tzQhr = (Int8)(Text::StrToUInt32(&strs2[j].v[3]) / 15);
 						strs2[j].v[3] = 0;
-						*tzQhr = (Int8)(*tzQhr + (Int32)(Text::StrToUInt32(&strs2[j].v[1]) << 2));
+						outTzQhr.Set((Int8)(tzQhr + (Int32)(Text::StrToUInt32(&strs2[j].v[1]) << 2)));
 					}
 				}
 				else
@@ -1668,7 +1651,7 @@ Bool Data::DateTimeUtil::String2TimeValue(Text::CStringNN dateStr, NotNullPtr<Ti
 					}
 					else if (strs2[j].Equals(UTF8STRC("HKT")))
 					{
-						*tzQhr = 32;
+						outTzQhr.Set(32);
 					}
 					else
 					{
@@ -1929,7 +1912,7 @@ Int64 Data::DateTimeUtil::GetCurrTimeMillis()
 #endif
 }
 
-Int64 Data::DateTimeUtil::GetCurrTimeSecHighP(UInt32 *nanosec)
+Int64 Data::DateTimeUtil::GetCurrTimeSecHighP(OutParam<UInt32> nanosec)
 {
 #if defined(_WIN32_WCE)
 	TimeValue tval;
@@ -1942,7 +1925,7 @@ Int64 Data::DateTimeUtil::GetCurrTimeSecHighP(UInt32 *nanosec)
 	tval.minute = (UInt8)st.wMinute;
 	tval.second = (UInt8)st.wSecond;
 	tval.ms = st.wMilliseconds;
-	*nanosec = (UInt32)st.wMilliseconds * 1000000;
+	nanosec.Set((UInt32)st.wMilliseconds * 1000000);
 	return TimeValue2Ticks(&tval, 0) / 1000LL;
 #elif defined(_WIN32)
 	FILETIME fileTime;
@@ -1951,24 +1934,25 @@ Int64 Data::DateTimeUtil::GetCurrTimeSecHighP(UInt32 *nanosec)
 #elif !defined(CPU_AVR)
 	struct timespec ts;
 	clock_gettime(CLOCK_REALTIME, &ts);
-	*nanosec = (UInt32)ts.tv_nsec;
+	nanosec.Set((UInt32)ts.tv_nsec);
 	return (Int64)ts.tv_sec;
 #else
+	nanosec.Set(0);
 	return 0;
 #endif
 }
 
-Int64 Data::DateTimeUtil::FILETIME2Secs(void *fileTime, UInt32 *nanosec)
+Int64 Data::DateTimeUtil::FILETIME2Secs(const void *fileTime, OutParam<UInt32> nanosec)
 {
 	Int64 t = ReadInt64((const UInt8*)fileTime) - 116444736000000000LL;
 	if (t < 0)
 	{
-		*nanosec = (UInt32)(t % 10000000 + 10000000) * 100;
+		nanosec.Set((UInt32)(t % 10000000 + 10000000) * 100);
 		return t / 10000000 - 1;
 	}
 	else
 	{
-		*nanosec = (UInt32)(t % 10000000) * 100;
+		nanosec.Set((UInt32)(t % 10000000) * 100);
 		return t / 10000000;
 	}
 }

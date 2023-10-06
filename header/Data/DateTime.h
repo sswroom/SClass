@@ -58,8 +58,8 @@ namespace Data
 		void SetValueNoFix(UInt16 year, UInt8 month, UInt8 day, UInt8 hour, UInt8 minute, UInt8 second, UInt16 ms, Int8 tzQhr);
 		Bool SetValueSlow(const Char *dateStr);
 		Bool SetValue(Text::CStringNN dateStr);
-		void SetValueSYSTEMTIME(void *sysTime);
-		void SetValueFILETIME(void *fileTime);
+		void SetValueSYSTEMTIME(const void *sysTime);
+		void SetValueFILETIME(const void *fileTime);
 		void SetValueVariTime(Double variTime);
 
 		UInt16 GetYear();

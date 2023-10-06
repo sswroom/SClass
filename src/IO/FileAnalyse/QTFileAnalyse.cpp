@@ -880,7 +880,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::QTFileAnalyse::GetFrameDetail(UOS
 	if (pack == 0)
 		return 0;
 
-	NEW_CLASS(frame, IO::FileAnalyse::FrameDetail(pack->fileOfst, (UInt32)pack->packSize));
+	NEW_CLASS(frame, IO::FileAnalyse::FrameDetail(pack->fileOfst, pack->packSize));
 	frame->AddStrS(0, 4, CSTR("Type"), (const UTF8Char*)&pack->packType);
 	if (pack->packSize >= 0x100000000)
 	{

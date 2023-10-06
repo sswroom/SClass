@@ -42,6 +42,8 @@ namespace IO
 		PackItemType itemType;
 		CompressInfo *compInfo;
 		Data::Timestamp modTime;
+		Data::Timestamp accTime;
+		Data::Timestamp createTime;
 		Int32 useCnt;
 	};
 
@@ -83,10 +85,10 @@ namespace IO
 
 		virtual IO::ParserType GetParserType() const;
 
-		void AddData(NotNullPtr<StreamData> fd, UInt64 ofst, UInt64 length, Text::CString name, const Data::Timestamp &modTime);
-		void AddObject(IO::ParsedObject *pobj, Text::CString name, const Data::Timestamp &modTime);
-		void AddCompData(NotNullPtr<StreamData> fd, UInt64 ofst, UInt64 length, PackFileItem::CompressInfo *compInfo, Text::CString name, const Data::Timestamp &modTime);
-		void AddPack(IO::PackageFile *pkg, Text::CString name, const Data::Timestamp &modTime);
+		void AddData(NotNullPtr<StreamData> fd, UInt64 ofst, UInt64 length, Text::CString name, const Data::Timestamp &modTime, const Data::Timestamp &accTime, const Data::Timestamp &createTime);
+		void AddObject(IO::ParsedObject *pobj, Text::CString name, const Data::Timestamp &modTime, const Data::Timestamp &accTime, const Data::Timestamp &createTime);
+		void AddCompData(NotNullPtr<StreamData> fd, UInt64 ofst, UInt64 length, PackFileItem::CompressInfo *compInfo, Text::CString name, const Data::Timestamp &modTime, const Data::Timestamp &accTime, const Data::Timestamp &createTime);
+		void AddPack(IO::PackageFile *pkg, Text::CString name, const Data::Timestamp &modTime, const Data::Timestamp &accTime, const Data::Timestamp &createTime);
 		IO::PackageFile *GetPackFile(Text::CStringNN name) const;
 		Bool UpdateCompInfo(const UTF8Char *name, NotNullPtr<IO::StreamData> fd, UInt64 ofst, Int32 crc, UOSInt compSize, UInt32 decSize);
 
@@ -101,8 +103,10 @@ namespace IO
 		virtual IO::StreamData *GetItemStmDataNew(UOSInt index) const;
 		IO::StreamData *GetItemStmDataNew(const UTF8Char* name, UOSInt nameLen) const;
 		virtual IO::PackageFile *GetItemPackNew(UOSInt index) const;
-		virtual IO::ParsedObject *GetItemPObj(UOSInt index, Bool *needRelease) const;
+		virtual IO::ParsedObject *GetItemPObj(UOSInt index, OutParam<Bool> needRelease) const;
 		virtual Data::Timestamp GetItemModTime(UOSInt index) const;
+		virtual Data::Timestamp GetItemAccTime(UOSInt index) const;
+		virtual Data::Timestamp GetItemCreateTime(UOSInt index) const;
 		virtual UInt64 GetItemStoreSize(UOSInt index) const;
 		virtual UInt64 GetItemSize(UOSInt index) const;
 		virtual UOSInt GetItemIndex(Text::CString name) const;

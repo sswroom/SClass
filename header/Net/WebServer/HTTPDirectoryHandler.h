@@ -79,7 +79,7 @@ namespace Net
 			virtual Bool ProcessRequest(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq);
 
 			Bool DoFileRequest(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq);
-			IO::PackageFile *GetPackageFile(Text::CStringNN path, Bool *needRelease);
+			IO::PackageFile *GetPackageFile(Text::CStringNN path, OutParam<Bool> needRelease);
 
 			void SetRootDir(NotNullPtr<Text::String> rootDir);
 			void SetRootDir(Text::CStringNN rootDir);

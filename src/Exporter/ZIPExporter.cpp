@@ -63,7 +63,7 @@ Bool Exporter::ZIPExporter::ExportPackage(IO::ZIPMTBuilder *zip, UTF8Char *buffS
 		{
 			if (fd.Set(pkg->GetItemStmDataNew(i)))
 			{
-				if (!zip->AddFile(CSTRP(buffStart, sptr), fd, pkg->GetItemModTime(i).ToTicks(), Data::Compress::Inflate::CompressionLevel::BestCompression))
+				if (!zip->AddFile(CSTRP(buffStart, sptr), fd, pkg->GetItemModTime(i), pkg->GetItemAccTime(i), pkg->GetItemCreateTime(i), Data::Compress::Inflate::CompressionLevel::BestCompression))
 				{
 					fd.Delete();
 					return false;
@@ -74,6 +74,8 @@ Bool Exporter::ZIPExporter::ExportPackage(IO::ZIPMTBuilder *zip, UTF8Char *buffS
 		else if (itemType == IO::PackageFile::PackObjectType::PackageFileType)
 		{
 			*sptr++ = '/';
+			*sptr = 0;
+			zip->AddDir(CSTRP(buffStart, sptr), pkg->GetItemModTime(i), pkg->GetItemAccTime(i), pkg->GetItemCreateTime(i));
 			IO::PackageFile *innerPkg = pkg->GetItemPackNew(i);
 			if (!this->ExportPackage(zip, buffStart, sptr, innerPkg))
 			{

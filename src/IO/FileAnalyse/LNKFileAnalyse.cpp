@@ -199,7 +199,7 @@ IO::FileAnalyse::FrameDetail* IO::FileAnalyse::LNKFileAnalyse::GetFrameDetail(UO
 	if (tag == 0)
 		return 0;
 
-	NEW_CLASS(frame, IO::FileAnalyse::FrameDetail(tag->ofst, (UInt32)tag->size));
+	NEW_CLASS(frame, IO::FileAnalyse::FrameDetail(tag->ofst, tag->size));
 	sptr = TagTypeGetName(tag->tagType).ConcatTo(Text::StrConcatC(sbuff, UTF8STRC("Type=")));
 	frame->AddHeader(CSTRP(sbuff, sptr));
 

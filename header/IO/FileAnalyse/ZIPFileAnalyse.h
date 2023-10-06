@@ -32,6 +32,7 @@ namespace IO
 			UOSInt ParseCentDir(const UInt8 *buff, UOSInt buffSize, UInt64 ofst);
 			UOSInt AddCentDir(const UInt8 *buff, UOSInt buffSize, UInt64 ofst);
 			static void __stdcall ParseThread(NotNullPtr<Sync::Thread> thread);
+			static void ParseExtraTag(IO::FileAnalyse::FrameDetail *frame, Data::ByteArrayR tagData, UOSInt extraStart, UOSInt extraLen, UOSInt tagSize, UInt32 compSize, UInt32 uncompSize, UInt32 ofst);
 		public:
 			ZIPFileAnalyse(NotNullPtr<IO::StreamData> fd);
 			virtual ~ZIPFileAnalyse();

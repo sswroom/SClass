@@ -735,7 +735,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::EBMLFileAnalyse::GetFrameDetail(U
 		return 0;
 
 	IO::FileAnalyse::FrameDetail *frame;
-	NEW_CLASS(frame, IO::FileAnalyse::FrameDetail(pack->fileOfst, (UInt32)pack->packSize));
+	NEW_CLASS(frame, IO::FileAnalyse::FrameDetail(pack->fileOfst, pack->packSize));
 	UInt64 eleId;
 	UInt32 intSize;
 	ReadInt(pack->packType, &eleId, &intSize);

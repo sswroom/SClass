@@ -196,7 +196,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::TIFFFileAnalyse::GetFrameDetail(U
 	if (pack == 0)
 		return 0;
 
-	NEW_CLASS(frame, IO::FileAnalyse::FrameDetail(pack->fileOfst, (UInt32)pack->packSize));
+	NEW_CLASS(frame, IO::FileAnalyse::FrameDetail(pack->fileOfst, pack->packSize));
 	switch (pack->packType)
 	{
 	case PT_HEADER:

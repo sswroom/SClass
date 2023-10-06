@@ -374,7 +374,7 @@ void __stdcall SSWR::AVIRead::AVIRPackageForm::LVDblClick(void *userObj, UOSInt 
 	else if (pot == IO::PackageFile::PackObjectType::ParsedObject)
 	{
 		Bool needRelease;
-		IO::ParsedObject *pobj = me->packFile->GetItemPObj(index, &needRelease);
+		IO::ParsedObject *pobj = me->packFile->GetItemPObj(index, needRelease);
 		if (pobj)
 		{
 			if (!needRelease)

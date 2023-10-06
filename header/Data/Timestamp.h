@@ -38,7 +38,7 @@ namespace Data
 			Data::DateTimeUtil::TimeValue tval;
 			this->tzQhr = defTzQhr;
 			UInt32 nanosec = 0;
-			if (!Data::DateTimeUtil::String2TimeValue(dateStr, tval, &this->tzQhr, &nanosec))
+			if (!Data::DateTimeUtil::String2TimeValue(dateStr, tval, defTzQhr, this->tzQhr, nanosec))
 			{
 				this->inst = Data::TimeInstant(0, 0);
 			}
@@ -477,7 +477,7 @@ namespace Data
 			Data::DateTimeUtil::TimeValue tv;
 			Int8 tzQhr = defTZQhr;
 			UInt32 nanosec;
-			if (Data::DateTimeUtil::String2TimeValue(s, tv, &tzQhr, &nanosec))
+			if (Data::DateTimeUtil::String2TimeValue(s, tv, defTZQhr, tzQhr, nanosec))
 			{
 				return Timestamp(TimeInstant(Data::DateTimeUtil::TimeValue2Secs(tv, tzQhr), nanosec), tzQhr);
 			}
@@ -536,10 +536,22 @@ namespace Data
 			return Timestamp(Data::TimeInstant(Data::DateTimeUtil::TimeValue2Secs(tval, tzQhr), nanosec), tzQhr);
 		}
 
-		static Timestamp FromFILETIME(void* filetime, Int8 tzQhr)
+		static Timestamp FromTimeValue(UInt16 year, UInt8 month, UInt8 day, UInt8 hour, UInt8 minute, UInt8 second, UInt32 nanosec, Int8 tzQhr)
+		{
+			Data::DateTimeUtil::TimeValue tval;
+			tval.year = year;
+			tval.month = month;
+			tval.day = day;
+			tval.hour = hour;
+			tval.minute = minute;
+			tval.second = second;
+			return Timestamp(Data::TimeInstant(Data::DateTimeUtil::TimeValue2Secs(tval, tzQhr), nanosec), tzQhr);
+		}
+
+		static Timestamp FromFILETIME(const void* filetime, Int8 tzQhr)
 		{
 			UInt32 nanosec;
-			Int64 secs = Data::DateTimeUtil::FILETIME2Secs(filetime, &nanosec);
+			Int64 secs = Data::DateTimeUtil::FILETIME2Secs(filetime, nanosec);
 			return Data::Timestamp(Data::TimeInstant(secs, nanosec), tzQhr);
 		}
 

@@ -46,7 +46,7 @@ namespace Data
 		static Bool localTzValid;
 
 		static void TimeValueSetDate(NotNullPtr<Data::DateTimeUtil::TimeValue> t, Text::PString *dateStrs);
-		static void TimeValueSetTime(NotNullPtr<Data::DateTimeUtil::TimeValue> t, Text::PString *timeStrs, UInt32 *nanosec);
+		static void TimeValueSetTime(NotNullPtr<Data::DateTimeUtil::TimeValue> t, Text::PString *timeStrs, OutParam<UInt32> nanosec);
 	public:
 		static Int64 TimeValue2Secs(NotNullPtr<const TimeValue> t, Int8 tzQhr);
 		static Int64 TimeValue2Ticks(NotNullPtr<const TimeValue> t, UInt32 ns, Int8 tzQhr);
@@ -56,7 +56,7 @@ namespace Data
 		static Weekday Ticks2Weekday(Int64 ticks, Int8 tzQhr);
 		static Weekday Instant2Weekday(Data::TimeInstant inst, Int8 tzQhr);
 		static UTF8Char *ToString(UTF8Char *sbuff, NotNullPtr<const TimeValue> tval, Int8 tzQhr, UInt32 nanosec, const UTF8Char *pattern);
-		static Bool String2TimeValue(Text::CStringNN dateStr, NotNullPtr<TimeValue> tval, Int8 *tzQhr, UInt32 *nanosec);
+		static Bool String2TimeValue(Text::CStringNN dateStr, NotNullPtr<TimeValue> tval, Int8 defTzQhr, OutParam<Int8> outTzQhr, OutParam<UInt32> nanosec);
 		static Bool TimeValueFromYMDHMS(Int64 ymdhms, NotNullPtr<TimeValue> tval);
 
 		static Bool IsYearLeap(UInt16 year);
@@ -68,8 +68,8 @@ namespace Data
 		static UInt8 DayInMonth(UInt16 year, UInt8 month);
 		static Int8 GetLocalTzQhr();
 		static Int64 GetCurrTimeMillis();
-		static Int64 GetCurrTimeSecHighP(UInt32 *nanosec);
-		static Int64 FILETIME2Secs(void *fileTime, UInt32 *nanosec);
+		static Int64 GetCurrTimeSecHighP(OutParam<UInt32> nanosec);
+		static Int64 FILETIME2Secs(const void *fileTime, OutParam<UInt32> nanosec);
 		static void Secs2FILETIME(Int64 secs, UInt32 nanosec, void *fileTime);
 		static Int64 SYSTEMTIME2Ticks(void *sysTime);
 		static void Ticks2SYSTEMTIME(void *sysTime, Int64 ticks);

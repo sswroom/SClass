@@ -954,7 +954,7 @@ UTF8Char *IO::Path::GetUserHome(UTF8Char *buff)
 	return 0;
 }
 
-Bool IO::Path::GetFileTime(const UTF8Char *path, Data::DateTime *modTime, Data::DateTime *createTime, Data::DateTime *accessTime)
+Bool IO::Path::GetFileTime(const UTF8Char *path, Data::Timestamp *modTime, Data::Timestamp *createTime, Data::Timestamp *accessTime)
 {
 #if defined(__USE_LARGEFILE64)
 	struct stat64 s;
@@ -967,15 +967,15 @@ Bool IO::Path::GetFileTime(const UTF8Char *path, Data::DateTime *modTime, Data::
 		return false;
 	if (modTime)
 	{
-		modTime->SetUnixTimestamp(s.st_mtime);
+		*modTime = Data::Timestamp(Data::TimeInstant(s.st_mtim.tv_sec, (UInt32)s.st_mtim.tv_nsec), Data::DateTimeUtil::GetLocalTzQhr());
 	}
 	if (createTime)
 	{
-		createTime->SetUnixTimestamp(s.st_ctime);
+		*createTime = Data::Timestamp(Data::TimeInstant(s.st_ctim.tv_sec, (UInt32)s.st_ctim.tv_nsec), Data::DateTimeUtil::GetLocalTzQhr());
 	}
 	if (accessTime)
 	{
-		accessTime->SetUnixTimestamp(s.st_atime);
+		*accessTime = Data::Timestamp(Data::TimeInstant(s.st_atim.tv_sec, (UInt32)s.st_atim.tv_nsec), Data::DateTimeUtil::GetLocalTzQhr());
 	}
 	return true;
 }

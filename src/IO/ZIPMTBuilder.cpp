@@ -11,7 +11,7 @@ void __stdcall IO::ZIPMTBuilder::ThreadProc(NotNullPtr<Sync::Thread> thread)
 		task = (FileTask*)me->taskList.Get();
 		if (task)
 		{
-			me->zip.AddFile(task->fileName->ToCString(), task->fileBuff, task->fileSize, task->fileTimeTicks, task->compLevel);
+			me->zip.AddFile(task->fileName->ToCString(), task->fileBuff, task->fileSize, task->lastModTime, task->lastAccessTime, task->createTime, task->compLevel);
 			FreeTask(task);			
 			me->mainEvt.Set();
 		}
@@ -25,7 +25,7 @@ void __stdcall IO::ZIPMTBuilder::ThreadProc(NotNullPtr<Sync::Thread> thread)
 		task = (FileTask*)me->taskList.Get();
 		if (task == 0)
 			break;
-		me->zip.AddFile(task->fileName->ToCString(), task->fileBuff, task->fileSize, task->fileTimeTicks, task->compLevel);
+		me->zip.AddFile(task->fileName->ToCString(), task->fileBuff, task->fileSize, task->lastModTime, task->lastAccessTime, task->createTime, task->compLevel);
 		FreeTask(task);			
 	}
 	me->mainEvt.Set();
@@ -89,7 +89,7 @@ IO::ZIPMTBuilder::~ZIPMTBuilder()
 	MemFree(this->threads);
 }
 
-Bool IO::ZIPMTBuilder::AddFile(Text::CString fileName, IO::SeekableStream *stm, Int64 fileTimeTicks, Data::Compress::Inflate::CompressionLevel compLevel)
+Bool IO::ZIPMTBuilder::AddFile(Text::CStringNN fileName, NotNullPtr<IO::SeekableStream> stm, Data::Timestamp lastModTime, Data::Timestamp lastAccessTime, Data::Timestamp createTime, Data::Compress::Inflate::CompressionLevel compLevel)
 {
 	FileTask *task = MemAlloc(FileTask, 1);
 	task->fileSize = (UOSInt)stm->GetLength();
@@ -109,13 +109,15 @@ Bool IO::ZIPMTBuilder::AddFile(Text::CString fileName, IO::SeekableStream *stm, 
 		totalSize += readSize;
 	}
 	task->fileName = Text::String::New(fileName);
-	task->fileTimeTicks = fileTimeTicks;
+	task->lastModTime = lastModTime;
+	task->lastAccessTime = lastAccessTime;
+	task->createTime = createTime;
 	task->compLevel = compLevel;
 	this->AddTask(task);
 	return true;
 }
 
-Bool IO::ZIPMTBuilder::AddFile(Text::CString fileName, NotNullPtr<IO::StreamData> fd, Int64 fileTimeTicks, Data::Compress::Inflate::CompressionLevel compLevel)
+Bool IO::ZIPMTBuilder::AddFile(Text::CStringNN fileName, NotNullPtr<IO::StreamData> fd, Data::Timestamp lastModTime, Data::Timestamp lastAccessTime, Data::Timestamp createTime, Data::Compress::Inflate::CompressionLevel compLevel)
 {
 	FileTask *task = MemAlloc(FileTask, 1);
 	task->fileSize = (UOSInt)fd->GetDataSize();
@@ -127,8 +129,15 @@ Bool IO::ZIPMTBuilder::AddFile(Text::CString fileName, NotNullPtr<IO::StreamData
 		return false;
 	}
 	task->fileName = Text::String::New(fileName);
-	task->fileTimeTicks = fileTimeTicks;
+	task->lastModTime = lastModTime;
+	task->lastAccessTime = lastAccessTime;
+	task->createTime = createTime;
 	task->compLevel = compLevel;
 	this->AddTask(task);
 	return true;
+}
+
+Bool IO::ZIPMTBuilder::AddDir(Text::CStringNN dirName, Data::Timestamp lastModTime, Data::Timestamp lastAccessTime, Data::Timestamp createTime)
+{
+	return this->zip.AddDir(dirName, lastModTime, lastAccessTime, createTime);
 }

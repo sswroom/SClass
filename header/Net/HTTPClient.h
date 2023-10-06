@@ -58,6 +58,7 @@ namespace Net
 		Bool FormBegin();
 		Bool FormAdd(Text::CStringNN name, Text::CString value);
 		void AddTimeHeader(Text::CStringNN name, NotNullPtr<Data::DateTime> dt);
+		void AddTimeHeader(Text::CStringNN name, Data::Timestamp ts);
 		void AddContentType(Text::CStringNN contType);
 		void AddContentLength(UInt64 leng);
 
@@ -70,6 +71,7 @@ namespace Net
 		UInt64 GetContentLength();
 		UInt32 GetContentCodePage();
 		Bool GetLastModified(NotNullPtr<Data::DateTime> dt);
+		Bool GetLastModified(OutParam<Data::Timestamp> ts);
 		Bool GetServerDate(NotNullPtr<Data::DateTime> dt);
 		Text::CString GetTransferEncoding();
 		Text::CString GetContentType();
@@ -84,7 +86,8 @@ namespace Net
 		Bool ReadAllContent(NotNullPtr<IO::Stream> outStm, UOSInt buffSize, UInt64 maxSize);
 		Bool ReadAllContent(NotNullPtr<Text::StringBuilderUTF8> sb, UOSInt buffSize, UInt64 maxSize);
 
-		static void ParseDateStr(NotNullPtr<Data::DateTime> dt, Text::CString dateStr);
+		static void ParseDateStr(NotNullPtr<Data::DateTime> dt, Text::CStringNN dateStr);
+		static Data::Timestamp ParseDateStr(Text::CStringNN dateStr);
 		static NotNullPtr<Net::HTTPClient> CreateClient(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, Text::CString userAgent, Bool kaConn, Bool isSecure);
 		static NotNullPtr<Net::HTTPClient> CreateConnect(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, Text::CStringNN url, Net::WebUtil::RequestMethod method, Bool kaConn);
 		static Bool IsHTTPURL(Text::CStringNN url);

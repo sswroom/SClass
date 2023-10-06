@@ -66,7 +66,7 @@ IO::ParsedObject *Parser::FileParser::NFPParser::ParseFileHdr(NotNullPtr<IO::Str
 	while (i < fileCnt)
 	{
 		sptr = enc.UTF8FromBytes(sbuff, fileInfo[i].fileName, 12, 0);
-		pf->AddData(fd, fileInfo[i].startOfst, fileInfo[i].fileSize, CSTRP(sbuff, sptr), Data::Timestamp(0));
+		pf->AddData(fd, fileInfo[i].startOfst, fileInfo[i].fileSize, CSTRP(sbuff, sptr), 0, 0, 0);
 		i++;
 	}
 	MemFree(fileInfo);

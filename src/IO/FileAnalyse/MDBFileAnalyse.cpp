@@ -142,7 +142,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::MDBFileAnalyse::GetFrameDetail(UO
 	if (pack == 0)
 		return 0;
 
-	NEW_CLASS(frame, IO::FileAnalyse::FrameDetail(pack->fileOfst, (UInt32)pack->packSize));
+	NEW_CLASS(frame, IO::FileAnalyse::FrameDetail(pack->fileOfst, pack->packSize));
 	this->fd->GetRealData(pack->fileOfst, pack->packSize, BYTEARR(packBuff));
 	frame->AddHex16(0, CSTR("Frame Type"), ReadUInt16(&packBuff[0]));
 	frame->AddUInt(2, 2, CSTR("Free Space"), ReadUInt16(&packBuff[2]));

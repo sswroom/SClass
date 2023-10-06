@@ -11,8 +11,8 @@ void IO::FileAnalyse::FrameDetail::FreeFieldInfo(FieldInfo *field)
 void IO::FileAnalyse::FrameDetail::AddFieldInfo(UOSInt ofst, UOSInt size, Text::CString name, Text::CString value, FieldType fieldType)
 {
 	FieldInfo *field = MemAlloc(FieldInfo, 1);
-	field->ofst = (UInt32)ofst;
-	field->size = (UInt32)size;
+	field->ofst = ofst;
+	field->size = size;
 	field->name = Text::String::New(name);
 	field->value = Text::String::New(value);
 	field->fieldType = fieldType;
@@ -70,27 +70,27 @@ void IO::FileAnalyse::FrameDetail::AddHeader(Text::CString header)
 	this->headers.Add(Text::String::New(header));
 }
 
-void IO::FileAnalyse::FrameDetail::AddField(UOSInt ofst, UOSInt size, Text::CString name, Text::CString value)
+void IO::FileAnalyse::FrameDetail::AddField(UInt64 ofst, UInt64 size, Text::CString name, Text::CString value)
 {
 	this->AddFieldInfo(ofst, size, name, value, FT_FIELD);
 }
 
-void IO::FileAnalyse::FrameDetail::AddSubfield(UOSInt ofst, UOSInt size, Text::CString name, Text::CString value)
+void IO::FileAnalyse::FrameDetail::AddSubfield(UInt64 ofst, UInt64 size, Text::CString name, Text::CString value)
 {
 	this->AddFieldInfo(ofst, size, name, value, FT_SUBFIELD);
 }
 
-void IO::FileAnalyse::FrameDetail::AddFieldSeperstor(UOSInt ofst, Text::CString name)
+void IO::FileAnalyse::FrameDetail::AddFieldSeperstor(UInt64 ofst, Text::CString name)
 {
 	this->AddFieldInfo(ofst, 0, name, CSTR_NULL, FT_SEPERATOR);
 }
 
-void IO::FileAnalyse::FrameDetail::AddText(UOSInt ofst, Text::CString name)
+void IO::FileAnalyse::FrameDetail::AddText(UInt64 ofst, Text::CString name)
 {
 	this->AddFieldInfo(ofst, 0, name, CSTR_NULL, FT_TEXT);
 }
 
-void IO::FileAnalyse::FrameDetail::AddSubframe(UOSInt ofst, UOSInt size)
+void IO::FileAnalyse::FrameDetail::AddSubframe(UInt64 ofst, UInt64 size)
 {
 	this->AddFieldInfo(ofst, size, CSTR("Subframe"), CSTR_NULL, FT_SUBFRAME);
 }

@@ -96,7 +96,7 @@ IO::ParserType IO::PackageFile::GetParserType() const
 	return IO::ParserType::PackageFile;
 }
 
-void IO::PackageFile::AddData(NotNullPtr<IO::StreamData> fd, UInt64 ofst, UInt64 length, Text::CString name, const Data::Timestamp &modTime)
+void IO::PackageFile::AddData(NotNullPtr<IO::StreamData> fd, UInt64 ofst, UInt64 length, Text::CString name, const Data::Timestamp &modTime, const Data::Timestamp &accTime, const Data::Timestamp &createTime)
 {
 	PackFileItem *item;
 	item = MemAlloc(PackFileItem, 1);
@@ -106,12 +106,14 @@ void IO::PackageFile::AddData(NotNullPtr<IO::StreamData> fd, UInt64 ofst, UInt64
 	item->pobj = 0;
 	item->compInfo = 0;
 	item->modTime = modTime;
+	item->accTime = accTime;
+	item->createTime = createTime;
 	item->useCnt = 1;
 	this->items->Add(item);
 	this->namedItems->PutNN(item->name, item);
 }
 
-void IO::PackageFile::AddObject(IO::ParsedObject *pobj, Text::CString name, const Data::Timestamp &modTime)
+void IO::PackageFile::AddObject(IO::ParsedObject *pobj, Text::CString name, const Data::Timestamp &modTime, const Data::Timestamp &accTime, const Data::Timestamp &createTime)
 {
 	PackFileItem *item;
 	item = MemAlloc(PackFileItem, 1);
@@ -128,12 +130,14 @@ void IO::PackageFile::AddObject(IO::ParsedObject *pobj, Text::CString name, cons
 	item->pobj = pobj;
 	item->compInfo = 0;
 	item->modTime = modTime;
+	item->accTime = accTime;
+	item->createTime = createTime;
 	item->useCnt = 1;
 	this->items->Add(item);
 	this->namedItems->PutNN(item->name, item);
 }
 
-void IO::PackageFile::AddCompData(NotNullPtr<IO::StreamData> fd, UInt64 ofst, UInt64 length, IO::PackFileItem::CompressInfo *compInfo, Text::CString name, const Data::Timestamp &modTime)
+void IO::PackageFile::AddCompData(NotNullPtr<IO::StreamData> fd, UInt64 ofst, UInt64 length, IO::PackFileItem::CompressInfo *compInfo, Text::CString name, const Data::Timestamp &modTime, const Data::Timestamp &accTime, const Data::Timestamp &createTime)
 {
 	PackFileItem *item;
 	item = MemAlloc(PackFileItem, 1);
@@ -149,12 +153,14 @@ void IO::PackageFile::AddCompData(NotNullPtr<IO::StreamData> fd, UInt64 ofst, UI
 		MemCopyNO(item->compInfo->compExtras, compInfo->compExtras, compInfo->compExtraSize);
 	}
 	item->modTime = modTime;
+	item->accTime = accTime;
+	item->createTime = createTime;
 	item->useCnt = 1;
 	this->items->Add(item);
 	this->namedItems->PutNN(item->name, item);
 }
 
-void IO::PackageFile::AddPack(IO::PackageFile *pkg, Text::CString name, const Data::Timestamp &modTime)
+void IO::PackageFile::AddPack(IO::PackageFile *pkg, Text::CString name, const Data::Timestamp &modTime, const Data::Timestamp &accTime, const Data::Timestamp &createTime)
 {
 	PackFileItem *item;
 	item = MemAlloc(PackFileItem, 1);
@@ -164,6 +170,8 @@ void IO::PackageFile::AddPack(IO::PackageFile *pkg, Text::CString name, const Da
 	item->pobj = pkg;
 	item->compInfo = 0;
 	item->modTime = modTime;
+	item->accTime = accTime;
+	item->createTime = createTime;
 	item->useCnt = 1;
 	this->items->Add(item);
 	this->pkgFiles.PutNN(item->name, item);
@@ -425,10 +433,10 @@ IO::PackageFile *IO::PackageFile::GetItemPackNew(UOSInt index) const
 	return GetPItemPackNew(item);
 }
 
-IO::ParsedObject *IO::PackageFile::GetItemPObj(UOSInt index, Bool *needRelease) const
+IO::ParsedObject *IO::PackageFile::GetItemPObj(UOSInt index, OutParam<Bool> needRelease) const
 {
 	IO::PackFileItem *item = this->items->GetItem(index);
-	*needRelease = false;
+	needRelease.Set(false);
 	if (item != 0)
 	{
 		if (item->itemType == IO::PackFileItem::PackItemType::ParsedObject)
@@ -452,6 +460,26 @@ Data::Timestamp IO::PackageFile::GetItemModTime(UOSInt index) const
 	if (item != 0)
 	{
 		return item->modTime;
+	}
+	return Data::Timestamp(0);
+}
+
+Data::Timestamp IO::PackageFile::GetItemAccTime(UOSInt index) const
+{
+	IO::PackFileItem *item = this->items->GetItem(index);
+	if (item != 0)
+	{
+		return item->accTime;
+	}
+	return Data::Timestamp(0);
+}
+
+Data::Timestamp IO::PackageFile::GetItemCreateTime(UOSInt index) const
+{
+	IO::PackFileItem *item = this->items->GetItem(index);
+	if (item != 0)
+	{
+		return item->createTime;
 	}
 	return Data::Timestamp(0);
 }
