@@ -85,7 +85,7 @@ IO::ParsedObject *Parser::FileParser::NS2Parser::ParseFileHdr(NotNullPtr<IO::Str
 			break;
 		sptr = enc.UTF8FromBytes(sbuff, &hdrBuff[j], i - j, 0);
 		fileSize = ReadUInt32(&hdrBuff[i + 1]);
-		pf->AddData(fd, fileOfst, fileSize, CSTRP(sbuff, sptr), 0, 0, 0);
+		pf->AddData(fd, fileOfst, fileSize, CSTRP(sbuff, sptr), 0, 0, 0, 0);
 		fileOfst += fileSize;
 		i += 5;
 	}

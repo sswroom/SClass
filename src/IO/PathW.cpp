@@ -1224,32 +1224,43 @@ UTF8Char *IO::Path::GetUserHome(UTF8Char *buff)
 	return buff;
 }
 
-Bool IO::Path::GetFileTime(const UTF8Char *path, Data::DateTime *modTime, Data::DateTime *createTime, Data::DateTime *accessTime)
+Bool IO::Path::GetFileTime(const UTF8Char *path, Data::Timestamp *modTime, Data::Timestamp *createTime, Data::Timestamp *accessTime)
 {
 	WIN32_FIND_DATAW fd;
 	const WChar *wptr = Text::StrToWCharNew(path);
 	HANDLE hand = FindFirstFileW(wptr, &fd);
 	Text::StrDelNew(wptr);
-	SYSTEMTIME sysTime;
 	if (hand == INVALID_HANDLE_VALUE)
 		return false;
 	FindClose(hand);
 	if (modTime)
 	{
-		FileTimeToSystemTime(&fd.ftLastWriteTime, &sysTime);
-		modTime->SetValueSYSTEMTIME(&sysTime);
+		*modTime = Data::Timestamp::FromFILETIME(&fd.ftLastWriteTime, Data::DateTimeUtil::GetLocalTzQhr());
 	}
 	if (createTime)
 	{
-		FileTimeToSystemTime(&fd.ftCreationTime, &sysTime);
-		createTime->SetValueSYSTEMTIME(&sysTime);
+		*createTime = Data::Timestamp::FromFILETIME(&fd.ftCreationTime, Data::DateTimeUtil::GetLocalTzQhr());
 	}
 	if (accessTime)
 	{
-		FileTimeToSystemTime(&fd.ftLastAccessTime, &sysTime);
-		accessTime->SetValueSYSTEMTIME(&sysTime);
+		*accessTime = Data::Timestamp::FromFILETIME(&fd.ftLastAccessTime, Data::DateTimeUtil::GetLocalTzQhr());
 	}
 	return true;
+}
+
+UInt32 IO::Path::GetFileUnixAttr(Text::CStringNN path)
+{
+	const WChar *wptr = Text::StrToWCharNew(path.v);
+	DWORD attr = GetFileAttributesW(wptr);
+	Text::StrDelNew(wptr);
+	if (attr == INVALID_FILE_ATTRIBUTES)
+		return 0;
+	UInt32 unixAttr = 0x124;
+	if ((attr & FILE_ATTRIBUTE_READONLY) == 0)
+		unixAttr |= 0x92;
+	if (attr & FILE_ATTRIBUTE_DIRECTORY)
+		unixAttr |= 0x4000 | 0x49;
+	return unixAttr;
 }
 
 Data::Timestamp IO::Path::GetModifyTime(const UTF8Char *path)

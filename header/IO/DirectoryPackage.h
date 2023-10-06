@@ -19,6 +19,7 @@ namespace IO
 			Data::Timestamp modTime;
 			Data::Timestamp accTime;
 			Data::Timestamp createTime;
+			UInt32 unixAttr;
 
 			FileItem() = default;
 
@@ -29,6 +30,7 @@ namespace IO
 				modTime = 0;
 				accTime = 0;
 				createTime = 0;
+				unixAttr = 0;
 			}
 
 			Bool operator==(const FileItem &item)
@@ -37,6 +39,7 @@ namespace IO
 					modTime == item.modTime &&
 					accTime == item.accTime &&
 					createTime == item.createTime &&
+					unixAttr == item.unixAttr &&
 					fileName->Equals(item.fileName);
 			}
 		};
@@ -60,6 +63,7 @@ namespace IO
 		virtual Data::Timestamp GetItemModTime(UOSInt index) const;
 		virtual Data::Timestamp GetItemAccTime(UOSInt index) const;
 		virtual Data::Timestamp GetItemCreateTime(UOSInt index) const;
+		virtual UInt32 GetItemUnixAttr(UOSInt index) const;
 		virtual UInt64 GetItemStoreSize(UOSInt index) const;
 		virtual UInt64 GetItemSize(UOSInt index) const;
 		virtual UOSInt GetItemIndex(Text::CString name) const;

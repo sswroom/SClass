@@ -96,7 +96,7 @@ IO::ParserType IO::PackageFile::GetParserType() const
 	return IO::ParserType::PackageFile;
 }
 
-void IO::PackageFile::AddData(NotNullPtr<IO::StreamData> fd, UInt64 ofst, UInt64 length, Text::CString name, const Data::Timestamp &modTime, const Data::Timestamp &accTime, const Data::Timestamp &createTime)
+void IO::PackageFile::AddData(NotNullPtr<IO::StreamData> fd, UInt64 ofst, UInt64 length, Text::CString name, const Data::Timestamp &modTime, const Data::Timestamp &accTime, const Data::Timestamp &createTime, UInt32 unixAttr)
 {
 	PackFileItem *item;
 	item = MemAlloc(PackFileItem, 1);
@@ -108,12 +108,13 @@ void IO::PackageFile::AddData(NotNullPtr<IO::StreamData> fd, UInt64 ofst, UInt64
 	item->modTime = modTime;
 	item->accTime = accTime;
 	item->createTime = createTime;
+	item->unixAttr = unixAttr;
 	item->useCnt = 1;
 	this->items->Add(item);
 	this->namedItems->PutNN(item->name, item);
 }
 
-void IO::PackageFile::AddObject(IO::ParsedObject *pobj, Text::CString name, const Data::Timestamp &modTime, const Data::Timestamp &accTime, const Data::Timestamp &createTime)
+void IO::PackageFile::AddObject(IO::ParsedObject *pobj, Text::CString name, const Data::Timestamp &modTime, const Data::Timestamp &accTime, const Data::Timestamp &createTime, UInt32 unixAttr)
 {
 	PackFileItem *item;
 	item = MemAlloc(PackFileItem, 1);
@@ -132,12 +133,13 @@ void IO::PackageFile::AddObject(IO::ParsedObject *pobj, Text::CString name, cons
 	item->modTime = modTime;
 	item->accTime = accTime;
 	item->createTime = createTime;
+	item->unixAttr = unixAttr;
 	item->useCnt = 1;
 	this->items->Add(item);
 	this->namedItems->PutNN(item->name, item);
 }
 
-void IO::PackageFile::AddCompData(NotNullPtr<IO::StreamData> fd, UInt64 ofst, UInt64 length, IO::PackFileItem::CompressInfo *compInfo, Text::CString name, const Data::Timestamp &modTime, const Data::Timestamp &accTime, const Data::Timestamp &createTime)
+void IO::PackageFile::AddCompData(NotNullPtr<IO::StreamData> fd, UInt64 ofst, UInt64 length, IO::PackFileItem::CompressInfo *compInfo, Text::CString name, const Data::Timestamp &modTime, const Data::Timestamp &accTime, const Data::Timestamp &createTime, UInt32 unixAttr)
 {
 	PackFileItem *item;
 	item = MemAlloc(PackFileItem, 1);
@@ -155,12 +157,13 @@ void IO::PackageFile::AddCompData(NotNullPtr<IO::StreamData> fd, UInt64 ofst, UI
 	item->modTime = modTime;
 	item->accTime = accTime;
 	item->createTime = createTime;
+	item->unixAttr = unixAttr;
 	item->useCnt = 1;
 	this->items->Add(item);
 	this->namedItems->PutNN(item->name, item);
 }
 
-void IO::PackageFile::AddPack(IO::PackageFile *pkg, Text::CString name, const Data::Timestamp &modTime, const Data::Timestamp &accTime, const Data::Timestamp &createTime)
+void IO::PackageFile::AddPack(IO::PackageFile *pkg, Text::CString name, const Data::Timestamp &modTime, const Data::Timestamp &accTime, const Data::Timestamp &createTime, UInt32 unixAttr)
 {
 	PackFileItem *item;
 	item = MemAlloc(PackFileItem, 1);
@@ -172,6 +175,7 @@ void IO::PackageFile::AddPack(IO::PackageFile *pkg, Text::CString name, const Da
 	item->modTime = modTime;
 	item->accTime = accTime;
 	item->createTime = createTime;
+	item->unixAttr = unixAttr;
 	item->useCnt = 1;
 	this->items->Add(item);
 	this->pkgFiles.PutNN(item->name, item);
@@ -482,6 +486,16 @@ Data::Timestamp IO::PackageFile::GetItemCreateTime(UOSInt index) const
 		return item->createTime;
 	}
 	return Data::Timestamp(0);
+}
+
+UInt32 IO::PackageFile::GetItemUnixAttr(UOSInt index) const
+{
+	IO::PackFileItem *item = this->items->GetItem(index);
+	if (item != 0)
+	{
+		return item->unixAttr;
+	}
+	return 0;
 }
 
 UInt64 IO::PackageFile::GetItemStoreSize(UOSInt index) const

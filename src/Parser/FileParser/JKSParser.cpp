@@ -93,7 +93,7 @@ IO::ParsedObject *Parser::FileParser::JKSParser::ParseFileHdr(NotNullPtr<IO::Str
 		s->Release();
 		if (cert)
 		{
-			pkg->AddObject(cert, Text::CString(&buff[6], aliasLen), Data::Timestamp(ts, 0), 0, 0);
+			pkg->AddObject(cert, Text::CString(&buff[6], aliasLen), Data::Timestamp(ts, 0), 0, 0, 0);
 		}
 		else
 		{

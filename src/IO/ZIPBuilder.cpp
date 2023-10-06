@@ -7,12 +7,13 @@
 #include "IO/ZIPBuilder.h"
 #include "Sync/MutexUsage.h"
 #include "Text/MyString.h"
-
-IO::ZIPBuilder::ZIPBuilder(NotNullPtr<IO::SeekableStream> stm)
+#define ZIPVER 63
+IO::ZIPBuilder::ZIPBuilder(NotNullPtr<IO::SeekableStream> stm, ZIPOS os)
 {
 	this->stm = stm;
 	this->baseOfst = this->stm->GetPosition();
 	this->currOfst = 0;
+	this->osType = os;
 }
 
 IO::ZIPBuilder::~ZIPBuilder()
@@ -24,15 +25,17 @@ IO::ZIPBuilder::~ZIPBuilder()
 	UOSInt cdLen = 0;
 	UOSInt i = 0;
 	UOSInt j = this->files.GetCount();
-	UInt16 minVer;
+	UInt8 minVer;
 	while (i < j)
 	{
 		file = this->files.GetItem(i);
-		minVer = 788;
+		minVer = 20;
 		dt.SetValue(file->fileModTime.inst, file->fileModTime.tzQhr);
 		WriteUInt32(&hdrBuff[0], 0x02014b50);
-		WriteUInt16(&hdrBuff[4], 831);
-		WriteUInt16(&hdrBuff[8], 0x800);
+		hdrBuff[4] = ZIPVER;
+		hdrBuff[5] = (UInt8)this->osType;
+		hdrBuff[7] = (UInt8)this->osType;
+		WriteUInt16(&hdrBuff[8], 0); //General purpose flag
 		WriteUInt16(&hdrBuff[10], file->compMeth);
 		WriteUInt16(&hdrBuff[12], dt.ToMSDOSTime());
 		WriteUInt16(&hdrBuff[14], dt.ToMSDOSDate());
@@ -44,7 +47,7 @@ IO::ZIPBuilder::~ZIPBuilder()
 		WriteUInt16(&hdrBuff[32], 0); //File comment length
 		WriteUInt16(&hdrBuff[34], 0); //Disk number where file starts
 		WriteUInt16(&hdrBuff[36], 0); //Internal file attributes
-		WriteUInt32(&hdrBuff[38], 0); //External file attributes
+		WriteUInt32(&hdrBuff[38], file->fileAttr); //External file attributes
 		WriteUInt32(&hdrBuff[42], (UInt32)file->fileOfst);
 		MemCopyNO(&hdrBuff[46], file->fileName->v, file->fileName->leng);
 		hdrLen = 46 + file->fileName->leng;
@@ -77,12 +80,20 @@ IO::ZIPBuilder::~ZIPBuilder()
 		#endif
 		if (!file->fileModTime.IsNull() && !file->fileAccessTime.IsNull() && !file->fileCreateTime.IsNull())
 		{
-			if (minVer < 813)
-				minVer = 813;
-			
+			if (minVer < 45)
+				minVer = 45;
+			WriteUInt16(&hdrBuff[hdrLen], 10);
+			WriteUInt16(&hdrBuff[hdrLen + 2], 32);
+			WriteUInt32(&hdrBuff[hdrLen + 4], 0);
+			WriteUInt16(&hdrBuff[hdrLen + 8], 1);
+			WriteUInt16(&hdrBuff[hdrLen + 10], 24);
+			file->fileModTime.ToFILETIME(&hdrBuff[hdrLen + 12]);
+			file->fileAccessTime.ToFILETIME(&hdrBuff[hdrLen + 20]);
+			file->fileCreateTime.ToFILETIME(&hdrBuff[hdrLen + 28]);
+			hdrLen += 36;
 		}
-		WriteUInt16(&hdrBuff[28], hdrLen - 46 - file->fileName->leng);
-		WriteUInt16(&hdrBuff[6], minVer);
+		WriteUInt16(&hdrBuff[30], hdrLen - 46 - file->fileName->leng);
+		hdrBuff[6] = minVer;
 
 		this->stm->Write(hdrBuff, hdrLen);
 		cdLen += hdrLen;
@@ -96,7 +107,7 @@ IO::ZIPBuilder::~ZIPBuilder()
 		UInt64 cdOfst = this->stm->GetPosition();
 		WriteUInt32(&hdrBuff[0], 0x06064b50); //Record Type (Zip64 End of central directory record)
 		WriteUInt64(&hdrBuff[4], 44); //Size of zip64 end of central directory record
-		WriteUInt16(&hdrBuff[12], 45); //Version made by
+		WriteUInt16(&hdrBuff[12], ZIPVER); //Version made by
 		WriteUInt16(&hdrBuff[14], 45); //Version needed to extract
 		WriteUInt32(&hdrBuff[16], 0); //Number of this disk
 		WriteUInt32(&hdrBuff[20], 0); //Number of the disk with the start of the central directory
@@ -136,7 +147,7 @@ IO::ZIPBuilder::~ZIPBuilder()
 	}
 }
 
-Bool IO::ZIPBuilder::AddFile(Text::CStringNN fileName, const UInt8 *fileContent, UOSInt fileSize, Data::Timestamp lastModTime, Data::Timestamp lastAccessTime, Data::Timestamp createTime, Data::Compress::Inflate::CompressionLevel compLevel)
+Bool IO::ZIPBuilder::AddFile(Text::CStringNN fileName, const UInt8 *fileContent, UOSInt fileSize, Data::Timestamp lastModTime, Data::Timestamp lastAccessTime, Data::Timestamp createTime, Data::Compress::Inflate::CompressionLevel compLevel, UInt32 unixAttr)
 {
 	UInt8 hdrBuff[512];
 	UOSInt hdrLen;
@@ -153,8 +164,9 @@ Bool IO::ZIPBuilder::AddFile(Text::CStringNN fileName, const UInt8 *fileContent,
 	UInt32 crcVal = this->crc.CalcDirect(fileContent, fileSize);
 	Data::DateTime dt(lastModTime.inst, lastModTime.tzQhr);
 	WriteUInt32(&hdrBuff[0], 0x04034b50);
-	WriteUInt16(&hdrBuff[4], 20);
-	WriteUInt16(&hdrBuff[6], 0x800);
+	hdrBuff[4] = 20; //Verison (2.0)
+	hdrBuff[5] = (UInt8)this->osType;
+	WriteUInt16(&hdrBuff[6], 0);
 	WriteUInt16(&hdrBuff[8], 0x8);
 	WriteUInt16(&hdrBuff[10], dt.ToMSDOSTime());
 	WriteUInt16(&hdrBuff[12], dt.ToMSDOSDate());
@@ -194,6 +206,25 @@ Bool IO::ZIPBuilder::AddFile(Text::CStringNN fileName, const UInt8 *fileContent,
 	file->uncompSize = fileSize;
 	file->compMeth = 8;
 	file->compSize = compSize;
+	if (this->osType == IO::ZIPOS::UNIX)
+	{
+		file->fileAttr = unixAttr << 16;
+	}
+	else if (unixAttr == 0)
+	{
+		file->fileAttr = 0;
+	}
+	else
+	{
+		if (unixAttr & 0x200)
+		{
+			file->fileAttr = 0;
+		}
+		else
+		{
+			file->fileAttr = 1;
+		}
+	}
 	Sync::MutexUsage mutUsage(this->mut);
 	file->fileOfst = this->currOfst;
 	this->files.Add(file);
@@ -221,18 +252,19 @@ Bool IO::ZIPBuilder::AddFile(Text::CStringNN fileName, const UInt8 *fileContent,
 	return succ;
 }
 
-Bool IO::ZIPBuilder::AddDir(Text::CStringNN dirName, Data::Timestamp lastModTime, Data::Timestamp lastAccessTime, Data::Timestamp createTime)
+Bool IO::ZIPBuilder::AddDir(Text::CStringNN dirName, Data::Timestamp lastModTime, Data::Timestamp lastAccessTime, Data::Timestamp createTime, UInt32 unixAttr)
 {
-	if (dirName.EndsWith('/'))
+	if (!dirName.EndsWith('/'))
 		return false;
 
 	UInt8 hdrBuff[512];
 	UOSInt hdrLen;
 	Data::DateTime dt(lastModTime.inst, lastModTime.tzQhr);
 	WriteUInt32(&hdrBuff[0], 0x04034b50);
-	WriteUInt16(&hdrBuff[4], 20);
-	WriteUInt16(&hdrBuff[6], 0x800);
-	WriteUInt16(&hdrBuff[8], 0x8);
+	hdrBuff[4] = 45;
+	hdrBuff[5] = (UInt8)this->osType;
+	WriteUInt16(&hdrBuff[6], 0);
+	WriteUInt16(&hdrBuff[8], 0);
 	WriteUInt16(&hdrBuff[10], dt.ToMSDOSTime());
 	WriteUInt16(&hdrBuff[12], dt.ToMSDOSDate());
 	WriteUInt32(&hdrBuff[14], 0);
@@ -253,6 +285,25 @@ Bool IO::ZIPBuilder::AddDir(Text::CStringNN dirName, Data::Timestamp lastModTime
 	file->uncompSize = 0;
 	file->compMeth = 0;
 	file->compSize = 0;
+	if (this->osType == IO::ZIPOS::UNIX)
+	{
+		file->fileAttr = (unixAttr << 16) | 0x10;
+	}
+	else if (unixAttr == 0)
+	{
+		file->fileAttr = 0x10;
+	}
+	else
+	{
+		if (unixAttr & 0x200)
+		{
+			file->fileAttr = 0x10;
+		}
+		else
+		{
+			file->fileAttr = 0x11;
+		}
+	}
 	Sync::MutexUsage mutUsage(this->mut);
 	file->fileOfst = this->currOfst;
 	this->files.Add(file);

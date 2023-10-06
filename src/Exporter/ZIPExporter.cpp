@@ -42,7 +42,7 @@ Bool Exporter::ZIPExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text:
 		return false;
 	}
 	UTF8Char sbuff[512];
-	IO::ZIPMTBuilder zip(stm);
+	IO::ZIPMTBuilder zip(stm, IO::ZIPOS::UNIX);
 	return this->ExportPackage(&zip, sbuff, sbuff, (IO::PackageFile*)pobj);
 }
 
@@ -63,7 +63,7 @@ Bool Exporter::ZIPExporter::ExportPackage(IO::ZIPMTBuilder *zip, UTF8Char *buffS
 		{
 			if (fd.Set(pkg->GetItemStmDataNew(i)))
 			{
-				if (!zip->AddFile(CSTRP(buffStart, sptr), fd, pkg->GetItemModTime(i), pkg->GetItemAccTime(i), pkg->GetItemCreateTime(i), Data::Compress::Inflate::CompressionLevel::BestCompression))
+				if (!zip->AddFile(CSTRP(buffStart, sptr), fd, pkg->GetItemModTime(i), pkg->GetItemAccTime(i), pkg->GetItemCreateTime(i), Data::Compress::Inflate::CompressionLevel::BestCompression, pkg->GetItemUnixAttr(i)))
 				{
 					fd.Delete();
 					return false;
@@ -75,7 +75,7 @@ Bool Exporter::ZIPExporter::ExportPackage(IO::ZIPMTBuilder *zip, UTF8Char *buffS
 		{
 			*sptr++ = '/';
 			*sptr = 0;
-			zip->AddDir(CSTRP(buffStart, sptr), pkg->GetItemModTime(i), pkg->GetItemAccTime(i), pkg->GetItemCreateTime(i));
+			zip->AddDir(CSTRP(buffStart, sptr), pkg->GetItemModTime(i), pkg->GetItemAccTime(i), pkg->GetItemCreateTime(i), pkg->GetItemUnixAttr(i));
 			IO::PackageFile *innerPkg = pkg->GetItemPackNew(i);
 			if (!this->ExportPackage(zip, buffStart, sptr, innerPkg))
 			{

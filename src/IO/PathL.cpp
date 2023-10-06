@@ -965,6 +965,20 @@ Bool IO::Path::GetFileTime(const UTF8Char *path, Data::Timestamp *modTime, Data:
 #endif
 	if (status != 0)
 		return false;
+#if defined(__APPLE__)
+	if (modTime)
+	{
+		*modTime = Data::Timestamp(Data::TimeInstant(s.st_mtimespec.tv_sec, (UInt32)s.st_mtimespec.tv_nsec), Data::DateTimeUtil::GetLocalTzQhr());
+	}
+	if (createTime)
+	{
+		*createTime = Data::Timestamp(Data::TimeInstant(s.st_ctimespec.tv_sec, (UInt32)s.st_ctimespec.tv_nsec), Data::DateTimeUtil::GetLocalTzQhr());
+	}
+	if (accessTime)
+	{
+		*accessTime = Data::Timestamp(Data::TimeInstant(s.st_atimespec.tv_sec, (UInt32)s.st_atimespec.tv_nsec), Data::DateTimeUtil::GetLocalTzQhr());
+	}
+#else
 	if (modTime)
 	{
 		*modTime = Data::Timestamp(Data::TimeInstant(s.st_mtim.tv_sec, (UInt32)s.st_mtim.tv_nsec), Data::DateTimeUtil::GetLocalTzQhr());
@@ -977,6 +991,7 @@ Bool IO::Path::GetFileTime(const UTF8Char *path, Data::Timestamp *modTime, Data:
 	{
 		*accessTime = Data::Timestamp(Data::TimeInstant(s.st_atim.tv_sec, (UInt32)s.st_atim.tv_nsec), Data::DateTimeUtil::GetLocalTzQhr());
 	}
+#endif
 	return true;
 }
 
@@ -996,6 +1011,20 @@ Data::Timestamp IO::Path::GetModifyTime(const UTF8Char *path)
 #else
 	return Data::Timestamp::FromSecNS(s.st_mtim.tv_sec, (UInt32)s.st_mtim.tv_nsec, 0);
 #endif
+}
+
+UInt32 IO::Path::GetFileUnixAttr(Text::CStringNN path)
+{
+#if defined(__USE_LARGEFILE64)
+	struct stat64 s;
+	int status = lstat64((const Char*)path.v, &s);
+#else
+	struct stat s;
+	int status = lstat((const Char*)path.v, &s);
+#endif
+	if (status != 0)
+		return 0;
+	return s.st_mode;
 }
 
 UTF8Char *IO::Path::GetCurrDirectory(UTF8Char *buff)

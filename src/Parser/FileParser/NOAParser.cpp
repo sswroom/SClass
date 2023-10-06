@@ -87,7 +87,7 @@ IO::ParsedObject *Parser::FileParser::NOAParser::ParseFileHdr(NotNullPtr<IO::Str
 		fnameSize = ReadUInt32(&recBuff[j + 36]);
 		dt.SetValue(ReadUInt16(&recBuff[j + 30]), recBuff[j + 29], recBuff[j + 28], recBuff[j + 26], recBuff[j + 25], recBuff[j + 24], 0, 36);
 		sptr = enc.UTF8FromBytes(fileName, &recBuff[j + 40], fnameSize, 0);
-		pf->AddData(fd, fileOfst + (UInt64)dataOfst, fileSize, CSTRP(fileName, sptr), Data::Timestamp(dt.ToTicks(), 0), 0, 0);
+		pf->AddData(fd, fileOfst + (UInt64)dataOfst, fileSize, CSTRP(fileName, sptr), Data::Timestamp(dt.ToInstant(), 0), 0, 0, 0);
 
 		i++;
 		j += 40 + fnameSize;

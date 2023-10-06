@@ -114,7 +114,7 @@ UOSInt IO::FileAnalyse::ZIPFileAnalyse::ParseCentDir(const UInt8 *buff, UOSInt b
 			return i;
 		}
 		recType = ReadMUInt32(&buff[i]);
-		if (recType != 0x504B0102)
+		if (recType != 0x504B0102 || this->thread.IsStopping())
 		{
 			break;
 		}

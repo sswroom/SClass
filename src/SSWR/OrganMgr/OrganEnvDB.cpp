@@ -779,7 +779,7 @@ UOSInt SSWR::OrganMgr::OrganEnvDB::GetSpeciesImages(Data::ArrayList<OrganImageIt
 						dt.ToLocalTime();
 						if (exif->GetPhotoDate(&dt))
 						{
-							imgItem->SetPhotoDate(Data::Timestamp(dt.ToTicks(), dt.GetTimeZoneQHR()));
+							imgItem->SetPhotoDate(Data::Timestamp(dt.ToInstant(), dt.GetTimeZoneQHR()));
 						}
 						DEL_CLASS(exif);
 					}
@@ -806,7 +806,7 @@ UOSInt SSWR::OrganMgr::OrganEnvDB::GetSpeciesImages(Data::ArrayList<OrganImageIt
 						Data::DateTime dt;
 						if (exif->GetPhotoDate(&dt))
 						{
-							imgItem->SetPhotoDate(Data::Timestamp(dt.ToTicks(), dt.GetTimeZoneQHR()));
+							imgItem->SetPhotoDate(Data::Timestamp(dt.ToInstant(), dt.GetTimeZoneQHR()));
 						}
 						DEL_CLASS(exif);
 					}

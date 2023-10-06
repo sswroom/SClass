@@ -26,6 +26,7 @@ void IO::DirectoryPackage::AddFile(Text::CStringNN fileName)
 			item.accTime = 0;
 			item.createTime = 0;
 			IO::Path::GetFileTime(fileName.v, &item.modTime, &item.accTime, &item.createTime);
+			item.unixAttr = IO::Path::GetFileUnixAttr(fileName);
 			this->files.Add(item);
 		}
 		IO::Path::FindFileClose(sess);
@@ -69,6 +70,7 @@ void IO::DirectoryPackage::Init()
 					item.accTime = 0;
 					item.createTime = 0;
 					IO::Path::GetFileTime(sbuff, &item.modTime, &item.accTime, &item.createTime);
+					item.unixAttr = IO::Path::GetFileUnixAttr(CSTRP(sbuff, sptr2));
 					this->files.Add(item);
 				}
 			}
@@ -210,6 +212,11 @@ Data::Timestamp IO::DirectoryPackage::GetItemAccTime(UOSInt index) const
 Data::Timestamp IO::DirectoryPackage::GetItemCreateTime(UOSInt index) const
 {
 	return this->files.GetItem(index).createTime;
+}
+
+UInt32 IO::DirectoryPackage::GetItemUnixAttr(UOSInt index) const
+{
+	return this->files.GetItem(index).unixAttr;
 }
 
 UInt64 IO::DirectoryPackage::GetItemStoreSize(UOSInt index) const

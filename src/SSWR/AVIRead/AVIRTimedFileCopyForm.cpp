@@ -74,7 +74,7 @@ void __stdcall SSWR::AVIRead::AVIRTimedFileCopyForm::OnStartClicked(void *userOb
 		}
 		else
 		{
-			IO::ZIPMTBuilder zip(fs);
+			IO::ZIPMTBuilder zip(fs, IO::ZIPOS::UNIX);
 			sptr = Text::StrConcatC(sbuff, sb.ToString(), sb.GetLength());
 			if (sptr[-1] != IO::Path::PATH_SEPERATOR)
 			{
@@ -97,6 +97,7 @@ Bool SSWR::AVIRead::AVIRTimedFileCopyForm::CopyToZip(IO::ZIPMTBuilder *zip, cons
 	Data::Timestamp modTime;
 	Data::Timestamp accTime;
 	Data::Timestamp createTime;
+	UInt32 unixAttr;
 	sptr = Text::StrConcatC(pathEnd, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
 	sess = IO::Path::FindFile(CSTRP(buffStart, sptr));
 	if (sess)
@@ -136,7 +137,8 @@ Bool SSWR::AVIRead::AVIRTimedFileCopyForm::CopyToZip(IO::ZIPMTBuilder *zip, cons
 								createTime = 0;
 								accTime = 0;
 								fs.GetFileTimes(&createTime, &accTime, &modTime);
-								succ = zip->AddFile(CSTRP(pathBase, sptr), fs, modTime, accTime, createTime, Data::Compress::Inflate::CompressionLevel::BestCompression);
+								unixAttr = IO::Path::GetFileUnixAttr(CSTRP(buffStart, sptr));
+								succ = zip->AddFile(CSTRP(pathBase, sptr), fs, modTime, accTime, createTime, Data::Compress::Inflate::CompressionLevel::BestCompression, unixAttr);
 
 /*								UInt8 *fileBuff;
 								UInt64 fileLeng = fs.GetLength();
@@ -201,9 +203,10 @@ Bool SSWR::AVIRead::AVIRTimedFileCopyForm::CopyToZip(IO::ZIPMTBuilder *zip, cons
 						createTime = 0;
 						accTime = 0;
 						IO::Path::GetFileTime(buffStart, &modTime, &createTime, &accTime);
+						unixAttr = IO::Path::GetFileUnixAttr(CSTRP(buffStart, sptr));
 						*sptr++ = IO::Path::PATH_SEPERATOR;
 						*sptr = 0;
-						zip->AddDir(CSTRP(pathBase, sptr), modTime, createTime, accTime);
+						zip->AddDir(CSTRP(pathBase, sptr), modTime, createTime, accTime, unixAttr);
 						if (!this->CopyToZip(zip, buffStart, pathBase, sptr, startTime, endTime, false))
 						{
 							return false;

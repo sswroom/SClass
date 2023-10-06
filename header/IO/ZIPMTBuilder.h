@@ -35,6 +35,7 @@ namespace IO
 			Data::Timestamp lastAccessTime;
 			Data::Timestamp createTime;
 			Data::Compress::Inflate::CompressionLevel compLevel;
+			UInt32 unixAttr;
 		};
 	private:
 		ZIPBuilder zip;
@@ -48,12 +49,12 @@ namespace IO
 		static void FreeTask(FileTask *task);
 		void AddTask(FileTask *task);
 	public:
-		ZIPMTBuilder(NotNullPtr<IO::SeekableStream> stm);
+		ZIPMTBuilder(NotNullPtr<IO::SeekableStream> stm, IO::ZIPOS os);
 		~ZIPMTBuilder();
 
-		Bool AddFile(Text::CStringNN fileName, NotNullPtr<IO::SeekableStream> stm, Data::Timestamp lastModTime, Data::Timestamp lastAccessTime, Data::Timestamp createTime, Data::Compress::Inflate::CompressionLevel compLevel);
-		Bool AddFile(Text::CStringNN fileName, NotNullPtr<IO::StreamData> fd, Data::Timestamp lastModTime, Data::Timestamp lastAccessTime, Data::Timestamp createTime, Data::Compress::Inflate::CompressionLevel compLevel);
-		Bool AddDir(Text::CStringNN dirName, Data::Timestamp lastModTime, Data::Timestamp lastAccessTime, Data::Timestamp createTime);
+		Bool AddFile(Text::CStringNN fileName, NotNullPtr<IO::SeekableStream> stm, Data::Timestamp lastModTime, Data::Timestamp lastAccessTime, Data::Timestamp createTime, Data::Compress::Inflate::CompressionLevel compLevel, UInt32 unixAttr);
+		Bool AddFile(Text::CStringNN fileName, NotNullPtr<IO::StreamData> fd, Data::Timestamp lastModTime, Data::Timestamp lastAccessTime, Data::Timestamp createTime, Data::Compress::Inflate::CompressionLevel compLevel, UInt32 unixAttr);
+		Bool AddDir(Text::CStringNN dirName, Data::Timestamp lastModTime, Data::Timestamp lastAccessTime, Data::Timestamp createTime, UInt32 unixAttr);
 	};
 }
 #endif

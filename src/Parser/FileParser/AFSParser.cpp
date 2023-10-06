@@ -75,7 +75,7 @@ IO::ParsedObject *Parser::FileParser::AFSParser::ParseFileHdr(NotNullPtr<IO::Str
 			DEL_CLASS(pf);
 			return 0;
 		}
-		pf->AddData(fd, ofst, leng, {sbuff, 8}, 0, 0, 0);
+		pf->AddData(fd, ofst, leng, {sbuff, 8}, 0, 0, 0, 0);
 		i++;
 	}
 	return pf;

@@ -732,7 +732,7 @@ Data::Timestamp Data::VariItem::GetAsTimestamp() const
 		dt.ToLocalTime();
 		if (dt.SetValue(Text::CStringNN(this->val.cstr.v, this->val.cstr.leng)))
 		{
-			return Data::Timestamp(dt.ToTicks(), dt.GetTimeZoneQHR());
+			return Data::Timestamp(dt.ToInstant(), dt.GetTimeZoneQHR());
 		}
 		return Data::Timestamp(0);
 	}
@@ -742,7 +742,7 @@ Data::Timestamp Data::VariItem::GetAsTimestamp() const
 		dt.ToLocalTime();
 		if (dt.SetValue(this->val.str->ToCString()))
 		{
-			return Data::Timestamp(dt.ToTicks(), dt.GetTimeZoneQHR());
+			return Data::Timestamp(dt.ToInstant(), dt.GetTimeZoneQHR());
 		}
 		return Data::Timestamp(0);
 	}

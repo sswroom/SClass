@@ -44,6 +44,7 @@ namespace IO
 		Data::Timestamp modTime;
 		Data::Timestamp accTime;
 		Data::Timestamp createTime;
+		UInt32 unixAttr;
 		Int32 useCnt;
 	};
 
@@ -85,10 +86,10 @@ namespace IO
 
 		virtual IO::ParserType GetParserType() const;
 
-		void AddData(NotNullPtr<StreamData> fd, UInt64 ofst, UInt64 length, Text::CString name, const Data::Timestamp &modTime, const Data::Timestamp &accTime, const Data::Timestamp &createTime);
-		void AddObject(IO::ParsedObject *pobj, Text::CString name, const Data::Timestamp &modTime, const Data::Timestamp &accTime, const Data::Timestamp &createTime);
-		void AddCompData(NotNullPtr<StreamData> fd, UInt64 ofst, UInt64 length, PackFileItem::CompressInfo *compInfo, Text::CString name, const Data::Timestamp &modTime, const Data::Timestamp &accTime, const Data::Timestamp &createTime);
-		void AddPack(IO::PackageFile *pkg, Text::CString name, const Data::Timestamp &modTime, const Data::Timestamp &accTime, const Data::Timestamp &createTime);
+		void AddData(NotNullPtr<StreamData> fd, UInt64 ofst, UInt64 length, Text::CString name, const Data::Timestamp &modTime, const Data::Timestamp &accTime, const Data::Timestamp &createTime, UInt32 unixAttr);
+		void AddObject(IO::ParsedObject *pobj, Text::CString name, const Data::Timestamp &modTime, const Data::Timestamp &accTime, const Data::Timestamp &createTime, UInt32 unixAttr);
+		void AddCompData(NotNullPtr<StreamData> fd, UInt64 ofst, UInt64 length, PackFileItem::CompressInfo *compInfo, Text::CString name, const Data::Timestamp &modTime, const Data::Timestamp &accTime, const Data::Timestamp &createTime, UInt32 unixAttr);
+		void AddPack(IO::PackageFile *pkg, Text::CString name, const Data::Timestamp &modTime, const Data::Timestamp &accTime, const Data::Timestamp &createTime, UInt32 unixAttr);
 		IO::PackageFile *GetPackFile(Text::CStringNN name) const;
 		Bool UpdateCompInfo(const UTF8Char *name, NotNullPtr<IO::StreamData> fd, UInt64 ofst, Int32 crc, UOSInt compSize, UInt32 decSize);
 
@@ -107,6 +108,7 @@ namespace IO
 		virtual Data::Timestamp GetItemModTime(UOSInt index) const;
 		virtual Data::Timestamp GetItemAccTime(UOSInt index) const;
 		virtual Data::Timestamp GetItemCreateTime(UOSInt index) const;
+		virtual UInt32 GetItemUnixAttr(UOSInt index) const;
 		virtual UInt64 GetItemStoreSize(UOSInt index) const;
 		virtual UInt64 GetItemSize(UOSInt index) const;
 		virtual UOSInt GetItemIndex(Text::CString name) const;
