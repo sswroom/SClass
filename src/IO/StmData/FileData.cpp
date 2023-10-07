@@ -131,19 +131,21 @@ UOSInt IO::StmData::FileData::GetRealData(UInt64 offset, UOSInt length, Data::By
 		}
 		fdh->seekCnt++;
 	}
+	UOSInt totalRead = 0;
 	UOSInt byteRead;
-	if (length < dataLength - offset)
-		byteRead = fdh->file->Read(buffer.SubArray(0, length));
-	else
-		byteRead = fdh->file->Read(buffer.SubArray(0, (UOSInt) (dataLength - offset)));
-	if (byteRead == 0)
+	if (length > dataLength - offset)
+		length = dataLength - offset;
+	while (totalRead < length)
 	{
-		mutUsage.EndUse();
-		return 0;
+		byteRead = fdh->file->Read(buffer.SubArray(totalRead, length - totalRead));
+		if (byteRead == 0)
+		{
+			return totalRead;
+		}
+		totalRead += byteRead;
+		fdh->currentOffset += byteRead;
 	}
-	fdh->currentOffset += byteRead;
-	mutUsage.EndUse();
-	return byteRead;
+	return totalRead;
 }
 
 UInt64 IO::StmData::FileData::GetDataSize()

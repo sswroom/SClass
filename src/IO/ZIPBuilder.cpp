@@ -8,6 +8,11 @@
 #include "Sync/MutexUsage.h"
 #include "Text/MyString.h"
 #define ZIPVER 63
+#define VERBOSE 1
+#if defined(VERBOSE)
+#include <stdio.h>
+#endif
+
 IO::ZIPBuilder::ZIPBuilder(NotNullPtr<IO::SeekableStream> stm, ZIPOS os)
 {
 	this->stm = stm;
@@ -52,23 +57,23 @@ IO::ZIPBuilder::~ZIPBuilder()
 		MemCopyNO(&hdrBuff[46], file->fileName->v, file->fileName->leng);
 		hdrLen = 46 + file->fileName->leng;
 		#if _OSINT_SIZE > 32
-		if (file->compSize >= 0x100000000LL || file->fileOfst >= 0x100000000LL || file->uncompSize >= 0x100000000LL)
+		if (file->compSize >= 0xFFFFFFFFLL || file->fileOfst >= 0xFFFFFFFFLL || file->uncompSize >= 0xFFFFFFFFLL)
 		{
 			UOSInt len = 0;
 			WriteUInt16(&hdrBuff[hdrLen], 1);
-			if (file->uncompSize >= 0x100000000LL)
+			if (file->uncompSize >= 0xFFFFFFFFLL)
 			{
 				WriteUInt64(&hdrBuff[hdrLen + 4 + len], file->uncompSize);
 				WriteUInt32(&hdrBuff[24], 0xffffffff);
 				len += 8;
 			}
-			if (file->uncompSize >= 0x100000000LL)
+			if (file->compSize >= 0xFFFFFFFFLL)
 			{
 				WriteUInt64(&hdrBuff[hdrLen + 4 + len], file->compSize);
 				WriteUInt32(&hdrBuff[20], 0xffffffff);
 				len += 8;
 			}
-			if (file->uncompSize >= 0x100000000LL)
+			if (file->fileOfst >= 0xFFFFFFFFLL)
 			{
 				WriteUInt64(&hdrBuff[hdrLen + 4 + len], file->fileOfst);
 				WriteUInt32(&hdrBuff[42], 0xffffffff);
@@ -95,14 +100,14 @@ IO::ZIPBuilder::~ZIPBuilder()
 		WriteUInt16(&hdrBuff[30], hdrLen - 46 - file->fileName->leng);
 		hdrBuff[6] = minVer;
 
-		this->stm->Write(hdrBuff, hdrLen);
+		this->stm->WriteCont(hdrBuff, hdrLen);
 		cdLen += hdrLen;
 
 		file->fileName->Release();
 		MemFree(file);
 		i++;
 	}
-	if (this->currOfst >= 0xffffffff)
+	if (this->currOfst >= 0xffffffff || j >= 0xffff)
 	{
 		UInt64 cdOfst = this->stm->GetPosition();
 		WriteUInt32(&hdrBuff[0], 0x06064b50); //Record Type (Zip64 End of central directory record)
@@ -113,25 +118,33 @@ IO::ZIPBuilder::~ZIPBuilder()
 		WriteUInt32(&hdrBuff[20], 0); //Number of the disk with the start of the central directory
 		WriteUInt64(&hdrBuff[24], j); //Total number of entries in the central directory on this disk
 		WriteUInt64(&hdrBuff[32], j); //Total number of entries in the central directory
-		WriteUInt32(&hdrBuff[40], (UInt32)cdLen); //Size of central directory
-		WriteUInt32(&hdrBuff[48], (UInt32)this->currOfst); //Offset of start of central directory with respect to the starting disk number
-		this->stm->Write(hdrBuff, 56);
+		WriteUInt64(&hdrBuff[40], cdLen); //Size of central directory
+		WriteUInt64(&hdrBuff[48], this->currOfst); //Offset of start of central directory with respect to the starting disk number
+		this->stm->WriteCont(hdrBuff, 56);
 
 		WriteUInt32(&hdrBuff[0], 0x07064b50); //Record Type (Zip64 end of central directory locator)
 		WriteUInt32(&hdrBuff[4], 0); //Number of the disk with the start of the zip64 end of central directory
 		WriteUInt64(&hdrBuff[8], cdOfst); //Relative offset of the zip64 end of central directory record
 		WriteUInt32(&hdrBuff[16], 1); //Total number of disks
-		this->stm->Write(hdrBuff, 20);
+		this->stm->WriteCont(hdrBuff, 20);
 
 		WriteUInt32(&hdrBuff[0], 0x06054b50); //Record Type (End of central directory record)
 		WriteUInt16(&hdrBuff[4], 0); //Number of this disk
 		WriteUInt16(&hdrBuff[6], 0); //Disk where central directory starts
-		WriteUInt16(&hdrBuff[8], j); //Number of central directory of this disk
-		WriteUInt16(&hdrBuff[10], j); //Total number of central directory records
+		if (j >= 0xffff)
+		{
+			WriteUInt16(&hdrBuff[8], 0xffff); //Number of central directory of this disk
+			WriteUInt16(&hdrBuff[10], 0xffff); //Total number of central directory records
+		}
+		else
+		{
+			WriteUInt16(&hdrBuff[8], j); //Number of central directory of this disk
+			WriteUInt16(&hdrBuff[10], j); //Total number of central directory records
+		}
 		WriteUInt32(&hdrBuff[12], (UInt32)cdLen); //Size of central directory
 		WriteUInt32(&hdrBuff[16], 0xffffffff); //Offset of start of central directory
 		WriteUInt16(&hdrBuff[20], 0); //Comment Length
-		this->stm->Write(hdrBuff, 22);
+		this->stm->WriteCont(hdrBuff, 22);
 	}
 	else
 	{
@@ -143,7 +156,7 @@ IO::ZIPBuilder::~ZIPBuilder()
 		WriteUInt32(&hdrBuff[12], (UInt32)cdLen); //Size of central directory
 		WriteUInt32(&hdrBuff[16], (UInt32)this->currOfst); //Offset of start of central directory
 		WriteUInt16(&hdrBuff[20], 0); //Comment Length
-		this->stm->Write(hdrBuff, 22);
+		this->stm->WriteCont(hdrBuff, 22);
 	}
 }
 
@@ -177,23 +190,21 @@ Bool IO::ZIPBuilder::AddFile(Text::CStringNN fileName, const UInt8 *fileContent,
 	WriteUInt16(&hdrBuff[28], 0);
 	MemCopyNO(&hdrBuff[30], fileName.v, fileName.leng);
 	hdrLen = 30 + fileName.leng;
-	#if _OSINT_SIZE > 32
-	if (compSize >= 0x100000000LL || fileSize >= 0x100000000LL)
+	if (compSize >= 0xFFFFFFFFLL || fileSize >= 0xFFFFFFFFLL)
 	{
 		WriteUInt16(&hdrBuff[28], 20);
 		WriteUInt16(&hdrBuff[hdrLen], 1);
 		WriteUInt16(&hdrBuff[hdrLen + 2], 16);
-		WriteUInt64(&hdrBuff[hdrLen + 4], compSize);
-		WriteUInt64(&hdrBuff[hdrLen + 12], fileSize);
+		WriteUInt64(&hdrBuff[hdrLen + 4], fileSize);
+		WriteUInt64(&hdrBuff[hdrLen + 12], compSize);
 		if (compSize >= fileSize)
 		{
-			WriteUInt64(&hdrBuff[hdrLen + 4], fileSize);
+			WriteUInt64(&hdrBuff[hdrLen + 12], fileSize);
 		}
 		WriteUInt32(&hdrBuff[18], 0xffffffff);
 		WriteUInt32(&hdrBuff[22], 0xffffffff);
 		hdrLen += 20;
 	}
-	#endif
 
 	IO::ZIPBuilder::FileInfo *file;
 	Bool succ = false;
@@ -235,17 +246,29 @@ Bool IO::ZIPBuilder::AddFile(Text::CStringNN fileName, const UInt8 *fileContent,
 		WriteInt32(&hdrBuff[18], (Int32)fileSize);
 		file->compMeth = 0;
 		file->compSize = fileSize;
-		writeSize = this->stm->Write(hdrBuff, hdrLen);
-		writeSize += this->stm->Write(fileContent, fileSize);
+		writeSize = this->stm->WriteCont(hdrBuff, hdrLen);
+		writeSize += this->stm->WriteCont(fileContent, fileSize);
 		this->currOfst += writeSize;
+#if defined(VERBOSE)
+		if (writeSize != (hdrLen + fileSize))
+		{
+			printf("Error in writing file uncomp: hdrLen = %d, fileSize = %lld, writeSize = %lld\r\n", (UInt32)hdrLen, (UInt64)fileSize, (UInt64)writeSize);
+		}
+#endif
 		succ = writeSize == (hdrLen + fileSize);
 	}
 	else
 	{
 		UOSInt writeSize;
-		writeSize = this->stm->Write(hdrBuff, hdrLen);
-		writeSize += this->stm->Write(outBuff, compSize);
+		writeSize = this->stm->WriteCont(hdrBuff, hdrLen);
+		writeSize += this->stm->WriteCont(outBuff, compSize);
 		this->currOfst += writeSize;
+#if defined(VERBOSE)
+		if (writeSize != (hdrLen + compSize))
+		{
+			printf("Error in writing file uncomp: hdrLen = %d, fileSize = %lld, compSize = %lld, writeSize = %lld\r\n", (UInt32)hdrLen, (UInt64)fileSize, (UInt64)compSize, (UInt64)writeSize);
+		}
+#endif
 		succ = writeSize == (hdrLen + compSize);
 	}
 	MemFree(outBuff);
@@ -308,7 +331,89 @@ Bool IO::ZIPBuilder::AddDir(Text::CStringNN dirName, Data::Timestamp lastModTime
 	file->fileOfst = this->currOfst;
 	this->files.Add(file);
 	UOSInt writeSize;
-	writeSize = this->stm->Write(hdrBuff, hdrLen);
+	writeSize = this->stm->WriteCont(hdrBuff, hdrLen);
 	this->currOfst += writeSize;
+#if defined(VERBOSE)
+	if (writeSize != hdrLen)
+	{
+		printf("Error in writing dir header: hdrLen = %d, writeSize = %lld\r\n", (UInt32)hdrLen, (UInt64)writeSize);
+	}
+#endif
 	return writeSize == hdrLen;
+}
+
+Bool IO::ZIPBuilder::AddDeflate(Text::CStringNN fileName, Data::ByteArrayR buff, UInt64 decSize, UInt32 crcVal, Data::Timestamp lastModTime, Data::Timestamp lastAccessTime, Data::Timestamp createTime, UInt32 unixAttr)
+{
+	UInt8 hdrBuff[512];
+	UOSInt hdrLen;
+	Data::DateTime dt(lastModTime.inst, lastModTime.tzQhr);
+	WriteUInt32(&hdrBuff[0], 0x04034b50);
+	hdrBuff[4] = 20; //Verison (2.0)
+	hdrBuff[5] = (UInt8)this->osType;
+	WriteUInt16(&hdrBuff[6], 0);
+	WriteUInt16(&hdrBuff[8], 0x8);
+	WriteUInt16(&hdrBuff[10], dt.ToMSDOSTime());
+	WriteUInt16(&hdrBuff[12], dt.ToMSDOSDate());
+	WriteUInt32(&hdrBuff[14], crcVal);
+	WriteUInt32(&hdrBuff[18], (UInt32)buff.GetSize());
+	WriteUInt32(&hdrBuff[22], (UInt32)decSize);
+	WriteUInt16(&hdrBuff[26], (UInt32)fileName.leng);
+	WriteUInt16(&hdrBuff[28], 0);
+	MemCopyNO(&hdrBuff[30], fileName.v, fileName.leng);
+	hdrLen = 30 + fileName.leng;
+	if (buff.GetSize() >= 0xFFFFFFFFLL || decSize >= 0xFFFFFFFFLL)
+	{
+		WriteUInt16(&hdrBuff[28], 20);
+		WriteUInt16(&hdrBuff[hdrLen], 1);
+		WriteUInt16(&hdrBuff[hdrLen + 2], 16);
+		WriteUInt64(&hdrBuff[hdrLen + 4], decSize);
+		WriteUInt64(&hdrBuff[hdrLen + 12], buff.GetSize());
+		WriteUInt32(&hdrBuff[18], 0xffffffff);
+		WriteUInt32(&hdrBuff[22], 0xffffffff);
+		hdrLen += 20;
+	}
+
+	IO::ZIPBuilder::FileInfo *file;
+	file = MemAlloc(IO::ZIPBuilder::FileInfo, 1);
+	file->fileName = Text::String::New(fileName);
+	file->fileModTime = lastModTime;
+	file->fileCreateTime = createTime;
+	file->fileAccessTime = lastAccessTime;
+	file->crcVal = crcVal;
+	file->uncompSize = decSize;
+	file->compMeth = 8;
+	file->compSize = buff.GetSize();
+	if (this->osType == IO::ZIPOS::UNIX)
+	{
+		file->fileAttr = unixAttr << 16;
+	}
+	else if (unixAttr == 0)
+	{
+		file->fileAttr = 0;
+	}
+	else
+	{
+		if (unixAttr & 0x200)
+		{
+			file->fileAttr = 0;
+		}
+		else
+		{
+			file->fileAttr = 1;
+		}
+	}
+	Sync::MutexUsage mutUsage(this->mut);
+	file->fileOfst = this->currOfst;
+	this->files.Add(file);
+	UOSInt writeSize;
+	writeSize = this->stm->WriteCont(hdrBuff, hdrLen);
+	writeSize += this->stm->WriteCont(buff.Ptr(), buff.GetSize());
+	this->currOfst += writeSize;
+#if defined(VERBOSE)
+	if (writeSize != (hdrLen + buff.GetSize()))
+	{
+		printf("Error in writing deflate data: hdrLen = %d, buffSize = %lld, writeSize = %lld\r\n", (UInt32)hdrLen, (UInt64)buff.GetSize(), (UInt64)writeSize);
+	}
+#endif
+	return writeSize == (hdrLen + buff.GetSize());
 }

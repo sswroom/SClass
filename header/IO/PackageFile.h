@@ -94,6 +94,7 @@ namespace IO
 		Bool UpdateCompInfo(const UTF8Char *name, NotNullPtr<IO::StreamData> fd, UInt64 ofst, Int32 crc, UOSInt compSize, UInt32 decSize);
 
 		virtual const PackFileItem *GetPackFileItem(const UTF8Char *name) const;
+		virtual const PackFileItem *GetPackFileItem(UOSInt index) const;
 		virtual PackObjectType GetPItemType(const PackFileItem *itemObj) const;
 		virtual IO::StreamData *GetPItemStmDataNew(const PackFileItem *itemObj) const;
 		virtual IO::PackageFile *GetPItemPackNew(const PackFileItem *itemObj) const;

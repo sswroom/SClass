@@ -258,6 +258,11 @@ const IO::PackFileItem *IO::PackageFile::GetPackFileItem(const UTF8Char *name) c
 	return 0;
 }
 
+const IO::PackFileItem *IO::PackageFile::GetPackFileItem(UOSInt index) const
+{
+	return this->items->GetItem(index);
+}
+
 IO::PackageFile::PackObjectType IO::PackageFile::GetPItemType(const PackFileItem *itemObj) const
 {
 	if (itemObj == 0)

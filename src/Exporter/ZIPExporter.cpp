@@ -1,6 +1,12 @@
 #include "Stdafx.h"
+#include "Data/ByteBuffer.h"
 #include "Exporter/ZIPExporter.h"
 #include "IO/PackageFile.h"
+
+#define VERBOSE 1
+#if defined(VERBOSE)
+#include <stdio.h>
+#endif
 
 Exporter::ZIPExporter::ZIPExporter()
 {
@@ -61,7 +67,25 @@ Bool Exporter::ZIPExporter::ExportPackage(IO::ZIPMTBuilder *zip, UTF8Char *buffS
 		sptr = pkg->GetItemName(buffEnd, i);
 		if (itemType == IO::PackageFile::PackObjectType::StreamData)
 		{
-			if (fd.Set(pkg->GetItemStmDataNew(i)))
+			const IO::PackFileItem *pitem = pkg->GetPackFileItem(i);
+			if (pitem && pitem->itemType == IO::PackFileItem::PackItemType::Compressed && pitem->compInfo->compMethod == Data::Compress::Decompressor::CM_DEFLATE)
+			{
+				UInt64 dataSize = pitem->fd->GetDataSize();
+				UOSInt readSize;
+				Data::ByteBuffer buff((UOSInt)dataSize);
+				if ((readSize = pitem->fd->GetRealData(0, (UOSInt)dataSize, buff)) != dataSize)
+				{
+#if defined(VERBOSE)
+					printf("ZIPExp: Error in reading compressed data: dataSize = %lld, readSize = %lld, fileName = %s\r\n", dataSize, (UInt64)readSize, pitem->name->v);
+#endif
+					return false;
+				}
+				if (!zip->AddDeflate(CSTRP(buffStart, sptr), buff, pitem->compInfo->decSize, ReadMUInt32(pitem->compInfo->checkBytes), pitem->modTime, pitem->accTime, pitem->createTime, pitem->unixAttr))
+				{
+					return false;
+				}
+			}
+			else if (fd.Set(pkg->GetItemStmDataNew(i)))
 			{
 				if (!zip->AddFile(CSTRP(buffStart, sptr), fd, pkg->GetItemModTime(i), pkg->GetItemAccTime(i), pkg->GetItemCreateTime(i), Data::Compress::Inflate::CompressionLevel::BestCompression, pkg->GetItemUnixAttr(i)))
 				{

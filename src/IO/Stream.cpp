@@ -102,6 +102,20 @@ Bool IO::Stream::WriteFromData(NotNullPtr<IO::StreamData> data, UOSInt buffSize)
 	return totalSize == data->GetDataSize();
 }
 
+UOSInt IO::Stream::WriteCont(const UInt8 *buff, UOSInt size)
+{
+	UOSInt totalWrite = 0;
+	UOSInt writeSize;
+	while (totalWrite < size)
+	{
+		writeSize = this->Write(&buff[totalWrite], size - totalWrite);
+		if (writeSize == 0)
+			return totalWrite;
+		totalWrite += writeSize;
+	}
+	return totalWrite;
+}
+
 Text::CStringNN IO::StreamTypeGetName(StreamType st)
 {
 	switch (st)

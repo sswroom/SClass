@@ -1,7 +1,10 @@
 #include "Stdafx.h"
 #include "IO/ZIPMTBuilder.h"
 #include "Sync/ThreadUtil.h"
-
+#define VERBOSE 1
+#if defined(VERBOSE)
+#include <stdio.h>
+#endif
 void __stdcall IO::ZIPMTBuilder::ThreadProc(NotNullPtr<Sync::Thread> thread)
 {
 	IO::ZIPMTBuilder *me = (IO::ZIPMTBuilder*)thread->GetUserObj();
@@ -102,6 +105,9 @@ Bool IO::ZIPMTBuilder::AddFile(Text::CStringNN fileName, NotNullPtr<IO::Seekable
 		readSize = stm->Read(Data::ByteArray(&task->fileBuff[totalSize], task->fileSize - totalSize));
 		if (readSize == 0)
 		{
+#if defined(VERBOSE)
+			printf("Error in reading file from stream: file size = %lld, total read = %lld\r\n", (UInt64)task->fileSize, (UInt64)totalSize);
+#endif
 			MemFree(task->fileBuff);
 			MemFree(task);
 			return false;
@@ -120,11 +126,15 @@ Bool IO::ZIPMTBuilder::AddFile(Text::CStringNN fileName, NotNullPtr<IO::Seekable
 
 Bool IO::ZIPMTBuilder::AddFile(Text::CStringNN fileName, NotNullPtr<IO::StreamData> fd, Data::Timestamp lastModTime, Data::Timestamp lastAccessTime, Data::Timestamp createTime, Data::Compress::Inflate::CompressionLevel compLevel, UInt32 unixAttr)
 {
+	UOSInt readSize;
 	FileTask *task = MemAlloc(FileTask, 1);
 	task->fileSize = (UOSInt)fd->GetDataSize();
 	task->fileBuff = MemAlloc(UInt8, (UOSInt)task->fileSize);
-	if (fd->GetRealData(0, (UOSInt)task->fileSize, Data::ByteArray(task->fileBuff, task->fileSize)) != task->fileSize)
+	if ((readSize = fd->GetRealData(0, (UOSInt)task->fileSize, Data::ByteArray(task->fileBuff, task->fileSize))) != task->fileSize)
 	{
+#if defined(VERBOSE)
+		printf("Error in reading file from file data: file size = %lld, total read = %lld, fileName = %s\r\n", (UInt64)task->fileSize, (UInt64)readSize, fileName.v);
+#endif
 		MemFree(task->fileBuff);
 		MemFree(task);
 		return false;
@@ -142,4 +152,9 @@ Bool IO::ZIPMTBuilder::AddFile(Text::CStringNN fileName, NotNullPtr<IO::StreamDa
 Bool IO::ZIPMTBuilder::AddDir(Text::CStringNN dirName, Data::Timestamp lastModTime, Data::Timestamp lastAccessTime, Data::Timestamp createTime, UInt32 unixAttr)
 {
 	return this->zip.AddDir(dirName, lastModTime, lastAccessTime, createTime, unixAttr);
+}
+
+Bool IO::ZIPMTBuilder::AddDeflate(Text::CStringNN fileName, Data::ByteArrayR buff, UInt64 decSize, UInt32 crcVal, Data::Timestamp lastModTime, Data::Timestamp lastAccessTime, Data::Timestamp createTime, UInt32 unixAttr)
+{
+	return this->zip.AddDeflate(fileName, buff, decSize, crcVal, lastModTime, lastAccessTime, createTime, unixAttr);	
 }

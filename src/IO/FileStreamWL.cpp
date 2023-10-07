@@ -139,9 +139,9 @@ UOSInt IO::FileStream::Write(const UInt8 *buff, UOSInt size)
 {
 	if ((Int32)handle == -1)
 		return 0;
-	OSInt readSize = _write((Int32)handle, buff, (UInt32)size);
-	this->currPos += (UOSInt)readSize;
-	return (UOSInt)readSize;
+	OSInt writeSize = _write((Int32)handle, buff, (UInt32)size);
+	this->currPos += (UOSInt)writeSize;
+	return (UOSInt)writeSize;
 }
 
 Int32 IO::FileStream::Flush()

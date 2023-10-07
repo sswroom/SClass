@@ -19,6 +19,7 @@ namespace IO
 				UInt32 tagType;
 				UInt64 ofst;
 				UInt64 size;
+				Text::String *fileName;
 			};
 		private:
 			IO::StreamData *fd;
