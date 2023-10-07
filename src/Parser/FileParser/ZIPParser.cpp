@@ -682,10 +682,18 @@ UOSInt Parser::FileParser::ZIPParser::ParseCentDir(IO::PackageFile *pf, Text::En
 					break;
 				}
 			}
-
+			UOSInt hdrLen = 30 + fnameLen;
+			if (compSize >= 0xffffffffLL || uncompSize >= 0xffffffffLL)
+			{
+				hdrLen += 4;
+				if (compSize >= 0xffffffffLL)
+					hdrLen += 8;
+				if (uncompSize >= 0xffffffffLL)
+					hdrLen += 8;
+			}
 			if (compMeth == 0)
 			{
-				pf2->AddData(fd, ofst + 30 + fnameLen, compSize, CSTRP(sptr, sptrEnd), Data::Timestamp(dt.ToInstant(), dt.GetTimeZoneQHR()), accTime, createTime, unixAttr);
+				pf2->AddData(fd, ofst + hdrLen, compSize, CSTRP(sptr, sptrEnd), Data::Timestamp(dt.ToInstant(), dt.GetTimeZoneQHR()), accTime, createTime, unixAttr);
 			}
 			else
 			{
@@ -703,7 +711,7 @@ UOSInt Parser::FileParser::ZIPParser::ParseCentDir(IO::PackageFile *pf, Text::En
 					compInfo.compMethod = Data::Compress::Decompressor::CM_UNKNOWN;
 				}
 				compInfo.decSize = uncompSize;
-				pf2->AddCompData(fd, ofst + 30 + fnameLen, compSize, &compInfo, CSTRP(sptr, sptrEnd), Data::Timestamp(dt.ToInstant(), dt.GetTimeZoneQHR()), accTime, createTime, unixAttr);
+				pf2->AddCompData(fd, ofst + hdrLen, compSize, &compInfo, CSTRP(sptr, sptrEnd), Data::Timestamp(dt.ToInstant(), dt.GetTimeZoneQHR()), accTime, createTime, unixAttr);
 			}
 		}
 

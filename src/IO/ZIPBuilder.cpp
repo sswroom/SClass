@@ -192,18 +192,30 @@ Bool IO::ZIPBuilder::AddFile(Text::CStringNN fileName, const UInt8 *fileContent,
 	hdrLen = 30 + fileName.leng;
 	if (compSize >= 0xFFFFFFFFLL || fileSize >= 0xFFFFFFFFLL)
 	{
-		WriteUInt16(&hdrBuff[28], 20);
+		UOSInt len = 4;
 		WriteUInt16(&hdrBuff[hdrLen], 1);
-		WriteUInt16(&hdrBuff[hdrLen + 2], 16);
-		WriteUInt64(&hdrBuff[hdrLen + 4], fileSize);
-		WriteUInt64(&hdrBuff[hdrLen + 12], compSize);
-		if (compSize >= fileSize)
+		if (fileSize >= 0xffffffffLL)
 		{
-			WriteUInt64(&hdrBuff[hdrLen + 12], fileSize);
+			WriteUInt64(&hdrBuff[hdrLen + len], fileSize);
+			WriteUInt32(&hdrBuff[22], 0xffffffff);
+			len += 8;
 		}
-		WriteUInt32(&hdrBuff[18], 0xffffffff);
-		WriteUInt32(&hdrBuff[22], 0xffffffff);
-		hdrLen += 20;
+		if (compSize >= 0xffffffffLL)
+		{
+			if (compSize >= fileSize)
+			{
+				WriteUInt64(&hdrBuff[hdrLen + len], fileSize);
+			}
+			else
+			{
+				WriteUInt64(&hdrBuff[hdrLen + len], compSize);
+			}
+			WriteUInt32(&hdrBuff[18], 0xffffffff);
+			len += 8;
+		}
+		WriteUInt16(&hdrBuff[28], len);
+		WriteUInt16(&hdrBuff[hdrLen + 2], len - 4);
+		hdrLen += len;
 	}
 
 	IO::ZIPBuilder::FileInfo *file;
@@ -363,14 +375,23 @@ Bool IO::ZIPBuilder::AddDeflate(Text::CStringNN fileName, Data::ByteArrayR buff,
 	hdrLen = 30 + fileName.leng;
 	if (buff.GetSize() >= 0xFFFFFFFFLL || decSize >= 0xFFFFFFFFLL)
 	{
-		WriteUInt16(&hdrBuff[28], 20);
+		UOSInt len = 4;
 		WriteUInt16(&hdrBuff[hdrLen], 1);
-		WriteUInt16(&hdrBuff[hdrLen + 2], 16);
-		WriteUInt64(&hdrBuff[hdrLen + 4], decSize);
-		WriteUInt64(&hdrBuff[hdrLen + 12], buff.GetSize());
-		WriteUInt32(&hdrBuff[18], 0xffffffff);
-		WriteUInt32(&hdrBuff[22], 0xffffffff);
-		hdrLen += 20;
+		if (decSize >= 0xffffffffLL)
+		{
+			WriteUInt64(&hdrBuff[hdrLen + len], decSize);
+			WriteUInt32(&hdrBuff[22], 0xffffffff);
+			len += 8;
+		}
+		if (buff.GetSize() >= 0xffffffff)
+		{
+			WriteUInt64(&hdrBuff[hdrLen + len], buff.GetSize());
+			WriteUInt32(&hdrBuff[18], 0xffffffff);
+			len += 8;
+		}
+		WriteUInt16(&hdrBuff[28], len);
+		WriteUInt16(&hdrBuff[hdrLen + 2], len - 4);
+		hdrLen += len;
 	}
 
 	IO::ZIPBuilder::FileInfo *file;
