@@ -102,6 +102,21 @@ void Text::JSONBuilder::AppendStrW(const WChar *val)
 	this->sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
 }
 
+void Text::JSONBuilder::AppendTSStr(Data::Timestamp ts)
+{
+	UTF8Char sbuff[64];
+	UTF8Char *sptr;
+	if (ts.IsNull())
+	{
+		this->sb.AppendC(UTF8STRC("null"));
+	}
+	else
+	{
+		sptr = ts.ToString(sbuff);
+		this->AppendStr(CSTRP(sbuff, sptr));
+	}
+}
+
 Text::JSONBuilder::JSONBuilder(ObjectType rootType)
 {
 	this->currType = rootType;
@@ -533,16 +548,8 @@ Bool Text::JSONBuilder::ObjectAddTSStr(Text::CStringNN name, Data::Timestamp ts)
 		this->sb.AppendC(UTF8STRC(","));
 	}
 	this->AppendStr(name);
-	if (ts.IsNull())
-	{
-		this->sb.AppendC(UTF8STRC(":null"));
-	}
-	else
-	{
-		this->sb.AppendC(UTF8STRC(":\""));
-		this->sb.AppendTS(ts);
-		this->sb.AppendUTF8Char('\"');
-	}
+	this->sb.AppendUTF8Char(':');
+	this->AppendTSStr(ts);
 	return true;
 }
 

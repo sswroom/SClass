@@ -236,7 +236,7 @@ sswr.data.DateTimeUtil.timeValue2Secs = function(tval)
 	case 4:
 		totalDays += 31;
 	case 3:
-		if (isYearLeap(tval.year))
+		if (sswr.data.DateTimeUtil.isYearLeap(tval.year))
 			totalDays += 29;
 		else
 			totalDays += 28;
@@ -911,6 +911,8 @@ sswr.data.DateTimeUtil.string2TimeValue = function(dateStr, tzQhr)
 {
 	if (dateStr.length < 4)
 		return null;
+	if (tzQhr == null)
+		tzQhr = sswr.data.DateTimeUtil.getLocalTzQhr();
 	var tval = new Object();
 	tval.nanosec = 0;
 	tval.tzQhr = tzQhr;
@@ -1522,14 +1524,14 @@ sswr.data.Timestamp.fromTicks = function(ticks, tzQhr)
 
 sswr.data.Timestamp.fromStr = function(str, defTzQhr)
 {
-	var tval = DateTimeUtil.string2TimeValue(str, defTzQhr);
+	var tval = sswr.data.DateTimeUtil.string2TimeValue(str, defTzQhr);
 	if (tval == 0)
 	{
 		return new sswr.data.Timestamp(new sswr.data.TimeInstant(0, 0), defTzQhr);
 	}
 	else
 	{
-		return new sswr.data.Timestamp(new sswr.data.TimeInstant(DateTimeUtil.timeValue2Secs(tval), tval.nanosec), tval.tzQhr);
+		return new sswr.data.Timestamp(new sswr.data.TimeInstant(sswr.data.DateTimeUtil.timeValue2Secs(tval), tval.nanosec), tval.tzQhr);
 	}
 }
 

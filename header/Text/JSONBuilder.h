@@ -24,6 +24,7 @@ namespace Text
 		void AppendStr(Text::CStringNN val);
 		void AppendStrUTF8(const UTF8Char *val);
 		void AppendStrW(const WChar *val);
+		void AppendTSStr(Data::Timestamp ts);
 	public:
 		JSONBuilder(ObjectType rootType);
 		~JSONBuilder();

@@ -143,7 +143,7 @@ DB::SortableDBReader::SortableDBReader(DB::ReadingDB *db, Text::CString schemaNa
 	if (ordering.leng > 0)
 	{
 		Data::FieldComparator comparator(ordering);
-		Data::Sort::ArtificialQuickSort::Sort(this->objList.Ptr(), &comparator, 0, (OSInt)this->objList.GetCount() - 1);
+		Data::Sort::ArtificialQuickSort::Sort(&this->objList, &comparator);
 	}
 	if (dataOfst > 0)
 	{

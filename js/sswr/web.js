@@ -40,4 +40,4 @@ sswr.web.loadJSON = function(url, onResultFunc)
 	xmlhttp.send();
 }
 
-export default web;
+export default sswr;
