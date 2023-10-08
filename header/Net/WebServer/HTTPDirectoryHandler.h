@@ -71,7 +71,7 @@ namespace Net
 			void StatSave(StatInfo *stat);
 		public:
 			HTTPDirectoryHandler(NotNullPtr<Text::String> rootDir, Bool allowBrowsing, UInt64 fileCacheSize, Bool allowUpload);
-			HTTPDirectoryHandler(Text::CString rootDir, Bool allowBrowsing, UInt64 fileCacheSize, Bool allowUpload);
+			HTTPDirectoryHandler(Text::CStringNN rootDir, Bool allowBrowsing, UInt64 fileCacheSize, Bool allowUpload);
 
 		protected:
 			virtual ~HTTPDirectoryHandler();

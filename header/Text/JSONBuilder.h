@@ -12,10 +12,11 @@ namespace Text
 		typedef enum
 		{
 			OT_OBJECT,
-			OT_ARRAY
+			OT_ARRAY,
+			OT_END
 		} ObjectType;
 	private:
-		NotNullPtr<Text::StringBuilderUTF8> sb;
+		Text::StringBuilderUTF8 sb;
 		Data::ArrayList<ObjectType> objTypes;
 		ObjectType currType;
 		Bool isFirst;
@@ -24,7 +25,7 @@ namespace Text
 		void AppendStrUTF8(const UTF8Char *val);
 		void AppendStrW(const WChar *val);
 	public:
-		JSONBuilder(NotNullPtr<Text::StringBuilderUTF8> sb, ObjectType rootType);
+		JSONBuilder(ObjectType rootType);
 		~JSONBuilder();
 
 		Bool ArrayAddInt32(Int32 val);
@@ -49,11 +50,14 @@ namespace Text
 		Bool ObjectAddStr(Text::CStringNN name, Text::CString val);
 		Bool ObjectAddStrUTF8(Text::CStringNN name, const UTF8Char *val);
 		Bool ObjectAddStrW(Text::CStringNN name, const WChar *val);
+		Bool ObjectAddTSStr(Text::CStringNN name, Data::Timestamp ts);
 		Bool ObjectAddNull(Text::CStringNN name);
 		Bool ObjectAdd(NotNullPtr<Text::JSONObject> obj);
 		Bool ObjectBeginArray(Text::CStringNN name);
 		Bool ObjectBeginObject(Text::CStringNN name);
 		Bool ObjectEnd();
+
+		Text::CStringNN Build();
 	};
 }
 #endif

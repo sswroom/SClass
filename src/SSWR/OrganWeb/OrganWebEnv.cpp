@@ -799,12 +799,12 @@ SSWR::OrganWeb::OrganWebEnv::OrganWebEnv(NotNullPtr<Net::SocketFactory> sockf, N
 	this->colorSess = this->colorMgr.CreateSess(0);
 	this->eng = eng;
 
-	NEW_CLASS(this->osmHdlr, Map::OSM::OSMCacheHandler(CSTR("http://a.tile.openstreetmap.org/"), osmCachePath, 18, this->sockf, this->ssl));
+	NEW_CLASSNN(this->osmHdlr, Map::OSM::OSMCacheHandler(CSTR("http://a.tile.openstreetmap.org/"), osmCachePath, 18, this->sockf, this->ssl));
 	this->osmHdlr->AddAlternateURL(CSTR("http://b.tile.openstreetmap.org/"));
 	this->osmHdlr->AddAlternateURL(CSTR("http://c.tile.openstreetmap.org/"));
 	sptr = IO::Path::GetProcessFileName(sbuff);
 	sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("Map"));
-	NEW_CLASS(this->mapDirHdlr, Net::WebServer::HTTPDirectoryHandler(CSTRP(sbuff, sptr), false, 0, false));
+	NEW_CLASSNN(this->mapDirHdlr, Net::WebServer::HTTPDirectoryHandler(CSTRP(sbuff, sptr), false, 0, false));
 
 	this->db = db;
 	if (this->db == 0)
@@ -854,7 +854,7 @@ SSWR::OrganWeb::OrganWebEnv::~OrganWebEnv()
 	SDEL_CLASS(this->sslListener);
 	SDEL_CLASS(this->webHdlr);
 	SDEL_CLASS(this->db);
-	DEL_CLASS(this->osmHdlr);
+	this->osmHdlr.Delete();
 	this->mapDirHdlr->Release();
 
 	FreeGroups();

@@ -13,7 +13,7 @@
 
 Data::Compress::DeflateStream::CompLevel Net::WebServer::HTTPServerUtil::compLevel = Data::Compress::DeflateStream::CompLevel::MaxSpeed;
 
-Bool Net::WebServer::HTTPServerUtil::MIMEToCompress(Text::CString umime)
+Bool Net::WebServer::HTTPServerUtil::MIMEToCompress(Text::CStringNN umime)
 {
 	if (umime.StartsWith(UTF8STRC("application/")))
 	{
@@ -82,7 +82,7 @@ Bool Net::WebServer::HTTPServerUtil::MIMEToCompress(Text::CString umime)
 	return false;
 }
 
-Bool Net::WebServer::HTTPServerUtil::SendContent(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CString mime, UInt64 contLeng, NotNullPtr<IO::Stream> fs)
+Bool Net::WebServer::HTTPServerUtil::SendContent(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN mime, UInt64 contLeng, NotNullPtr<IO::Stream> fs)
 {
 	UOSInt i;
 	UOSInt j;
@@ -189,7 +189,7 @@ Bool Net::WebServer::HTTPServerUtil::SendContent(NotNullPtr<Net::WebServer::IWeb
 	return succ;
 }
 
-Bool Net::WebServer::HTTPServerUtil::SendContent(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CString mime, UInt64 contLeng, const UInt8 *buff)
+Bool Net::WebServer::HTTPServerUtil::SendContent(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN mime, UInt64 contLeng, const UInt8 *buff)
 {
 	UOSInt i;
 	UOSInt j;
@@ -272,7 +272,7 @@ Bool Net::WebServer::HTTPServerUtil::SendContent(NotNullPtr<Net::WebServer::IWeb
 	return succ;
 }
 
-Bool Net::WebServer::HTTPServerUtil::SendContent(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CString mime, Text::CString cont)
+Bool Net::WebServer::HTTPServerUtil::SendContent(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN mime, Text::CStringNN cont)
 {
 	return SendContent(req, resp, mime, cont.leng, cont.v);
 }
@@ -281,7 +281,7 @@ Bool Net::WebServer::HTTPServerUtil::ResponseFile(NotNullPtr<Net::WebServer::IWe
 {
 	Text::StringBuilderUTF8 sb2;
 	Data::DateTime t;
-	Text::CString mime;
+	Text::CStringNN mime;
 	UInt64 sizeLeft;
 	UInt8 sbuff[32];
 	UTF8Char *sptr;

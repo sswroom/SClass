@@ -18,7 +18,7 @@ namespace Net
 			virtual Bool ProcessRequest(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq);
 		public:
 			WebControllerHandler();
-			WebControllerHandler(Text::CString rootDir);
+			WebControllerHandler(Text::CStringNN rootDir);
 
 			void AddController(WebController *ctrl);
 		};

@@ -61,6 +61,7 @@ namespace Net
 		void AddTimeHeader(Text::CStringNN name, Data::Timestamp ts);
 		void AddContentType(Text::CStringNN contType);
 		void AddContentLength(UInt64 leng);
+		Bool WriteContent(Text::CStringNN contType, Text::CStringNN content);
 
 		UOSInt GetRespHeaderCnt();
 		UTF8Char *GetRespHeader(UOSInt index, UTF8Char *buff);

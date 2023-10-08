@@ -30,54 +30,51 @@ Crypto::Token::JWTHandler::~JWTHandler()
 
 Bool Crypto::Token::JWTHandler::Generate(NotNullPtr<Text::StringBuilderUTF8> sb, Data::StringMap<const UTF8Char*> *payload, JWTParam *param)
 {
-	Text::StringBuilderUTF8 sbJson;
 	NotNullPtr<Data::ArrayList<Text::String*>> keys = payload->GetKeys();
 	Text::String *key;
 	UOSInt i;
 	UOSInt j;
+	Text::JSONBuilder json(Text::JSONBuilder::OT_OBJECT);
+	i = 0;
+	j = keys->GetCount();
+	while (i < j)
 	{
-		Text::JSONBuilder json(sbJson, Text::JSONBuilder::OT_OBJECT);
-		i = 0;
-		j = keys->GetCount();
-		while (i < j)
+		key = keys->GetItem(i);
+		json.ObjectAddStrUTF8(key->ToCString(), payload->Get(key));
+		i++;
+	}
+	if (param != 0)
+	{
+		if (param->GetIssuer() != 0)
 		{
-			key = keys->GetItem(i);
-			json.ObjectAddStrUTF8(key->ToCString(), payload->Get(key));
-			i++;
+			json.ObjectAddStr(CSTR("iss"), param->GetIssuer());
 		}
-		if (param != 0)
+		if (param->GetSubject() != 0)
 		{
-			if (param->GetIssuer() != 0)
-			{
-				json.ObjectAddStr(CSTR("iss"), param->GetIssuer());
-			}
-			if (param->GetSubject() != 0)
-			{
-				json.ObjectAddStr(CSTR("sub"), param->GetSubject());
-			}
-			if (param->GetAudience() != 0)
-			{
-				json.ObjectAddStr(CSTR("aud"), param->GetAudience());
-			}
-			if (param->GetExpirationTime() != 0)
-			{
-				json.ObjectAddInt64(CSTR("exp"), param->GetExpirationTime());
-			}
-			if (param->GetNotBefore() != 0)
-			{
-				json.ObjectAddInt64(CSTR("nbf"), param->GetNotBefore());
-			}
-			if (param->GetIssuedAt() != 0)
-			{
-				json.ObjectAddInt64(CSTR("iat"), param->GetIssuedAt());
-			}
-			if (param->GetJWTId() != 0)
-			{
-				json.ObjectAddStr(CSTR("jti"), param->GetJWTId());
-			}
+			json.ObjectAddStr(CSTR("sub"), param->GetSubject());
+		}
+		if (param->GetAudience() != 0)
+		{
+			json.ObjectAddStr(CSTR("aud"), param->GetAudience());
+		}
+		if (param->GetExpirationTime() != 0)
+		{
+			json.ObjectAddInt64(CSTR("exp"), param->GetExpirationTime());
+		}
+		if (param->GetNotBefore() != 0)
+		{
+			json.ObjectAddInt64(CSTR("nbf"), param->GetNotBefore());
+		}
+		if (param->GetIssuedAt() != 0)
+		{
+			json.ObjectAddInt64(CSTR("iat"), param->GetIssuedAt());
+		}
+		if (param->GetJWTId() != 0)
+		{
+			json.ObjectAddStr(CSTR("jti"), param->GetJWTId());
 		}
 	}
-	Crypto::Token::JWToken *token = Crypto::Token::JWToken::Generate(alg, sbJson.ToCString(), this->ssl, this->key, this->keyLeng, this->keyType);
+	Crypto::Token::JWToken *token = Crypto::Token::JWToken::Generate(alg, json.Build(), this->ssl, this->key, this->keyLeng, this->keyType);
 	if (token == 0)
 	{
 		return false;

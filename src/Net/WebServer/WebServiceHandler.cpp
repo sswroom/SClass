@@ -71,7 +71,7 @@ Net::WebServer::WebServiceHandler::WebServiceHandler() : HTTPDirectoryHandler(CS
 {
 }
 
-Net::WebServer::WebServiceHandler::WebServiceHandler(Text::CString rootDir) : HTTPDirectoryHandler(rootDir, false, 0, false)
+Net::WebServer::WebServiceHandler::WebServiceHandler(Text::CStringNN rootDir) : HTTPDirectoryHandler(rootDir, false, 0, false)
 {
 }
 

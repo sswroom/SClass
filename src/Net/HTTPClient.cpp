@@ -109,6 +109,13 @@ void Net::HTTPClient::AddContentLength(UInt64 leng)
 	this->AddHeaderC(CSTR("Content-Length"), CSTRP(sbuff, sptr));
 }
 
+Bool Net::HTTPClient::WriteContent(Text::CStringNN contType, Text::CStringNN content)
+{
+	this->AddContentType(contType);
+	this->AddContentLength(content.leng);
+	return this->Write(content.v, content.leng) == content.leng;
+}
+
 UOSInt Net::HTTPClient::GetRespHeaderCnt()
 {
 	return this->headers.GetCount();

@@ -29,7 +29,7 @@ namespace Text
 
 			HTMLBodyBuilder *StartBody(Text::CString onLoadScript);
 
-			Text::CString Build();
+			Text::CStringNN Build();
 
 			static Text::CString DocTypeGetText(DocType docType);
 		};

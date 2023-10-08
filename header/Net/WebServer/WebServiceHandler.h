@@ -26,7 +26,7 @@ namespace Net
 			virtual Bool ProcessRequest(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq);
 		public:
 			WebServiceHandler();
-			WebServiceHandler(Text::CString rootDir);
+			WebServiceHandler(Text::CStringNN rootDir);
 
 			void AddService(Text::CStringNN svcPath, Net::WebUtil::RequestMethod reqMeth, ServiceFunc func);
 		};

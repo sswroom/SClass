@@ -38,7 +38,7 @@ Net::WebServer::WebControllerHandler::WebControllerHandler() : HTTPDirectoryHand
 {
 }
 
-Net::WebServer::WebControllerHandler::WebControllerHandler(Text::CString rootDir) : HTTPDirectoryHandler(rootDir, false, 0, false)
+Net::WebServer::WebControllerHandler::WebControllerHandler(Text::CStringNN rootDir) : HTTPDirectoryHandler(rootDir, false, 0, false)
 {
 }
 

@@ -20,19 +20,17 @@ Bool Net::GoogleFCM::SendMessage(NotNullPtr<Net::SocketFactory> sockf, Net::SSLE
 	sb.Append(apiKey);
 	cli->AddHeaderC(CSTR("Authorization"), sb.ToCString());
 
-	sb.ClearStr();
-	{
-		Text::JSONBuilder json(sb, Text::JSONBuilder::OT_OBJECT);
-		json.ObjectBeginArray(CSTR("registration_ids"));
-		json.ArrayAddStrUTF8(devToken.v);
-		json.ArrayEnd();
-		json.ObjectAddStr(CSTR("collapse_key"), CSTR("optional"));
-		json.ObjectBeginObject(CSTR("data"));
-		json.ObjectAddStr(CSTR("message"), message);
-		json.ObjectEnd();
-	}
-	cli->AddContentLength(sb.leng);
-	cli->Write(sb.v, sb.leng);
+	Text::JSONBuilder json(Text::JSONBuilder::OT_OBJECT);
+	json.ObjectBeginArray(CSTR("registration_ids"));
+	json.ArrayAddStrUTF8(devToken.v);
+	json.ArrayEnd();
+	json.ObjectAddStr(CSTR("collapse_key"), CSTR("optional"));
+	json.ObjectBeginObject(CSTR("data"));
+	json.ObjectAddStr(CSTR("message"), message);
+	json.ObjectEnd();
+	Text::CStringNN j = json.Build();
+	cli->AddContentLength(j.leng);
+	cli->Write(j.v, j.leng);
 	Net::WebStatus::StatusCode status = cli->GetRespStatus();
 	Bool succ = false;
 	if (status == Net::WebStatus::SC_OK)
@@ -97,25 +95,23 @@ Bool Net::GoogleFCM::SendMessages(NotNullPtr<Net::SocketFactory> sockf, Net::SSL
 	sb.Append(apiKey);
 	cli->AddHeaderC(CSTR("Authorization"), sb.ToCString());
 
-	sb.ClearStr();
+	Text::JSONBuilder json(Text::JSONBuilder::OT_OBJECT);
+	json.ObjectBeginArray(CSTR("registration_ids"));
+	UOSInt i = 0;
+	UOSInt j = devTokens->GetCount();
+	while (i < j)
 	{
-		Text::JSONBuilder json(sb, Text::JSONBuilder::OT_OBJECT);
-		json.ObjectBeginArray(CSTR("registration_ids"));
-		UOSInt i = 0;
-		UOSInt j = devTokens->GetCount();
-		while (i < j)
-		{
-			json.ArrayAddStr(devTokens->GetItem(i));
-			i++;
-		}
-		json.ArrayEnd();
-		json.ObjectAddStr(CSTR("collapse_key"), CSTR("optional"));
-		json.ObjectBeginObject(CSTR("data"));
-		json.ObjectAddStr(CSTR("message"), message);
-		json.ObjectEnd();
+		json.ArrayAddStr(devTokens->GetItem(i));
+		i++;
 	}
-	cli->AddContentLength(sb.leng);
-	cli->Write(sb.v, sb.leng);
+	json.ArrayEnd();
+	json.ObjectAddStr(CSTR("collapse_key"), CSTR("optional"));
+	json.ObjectBeginObject(CSTR("data"));
+	json.ObjectAddStr(CSTR("message"), message);
+	json.ObjectEnd();
+	Text::CStringNN js = json.Build();
+	cli->AddContentLength(js.leng);
+	cli->Write(js.v, js.leng);
 	Net::WebStatus::StatusCode status = cli->GetRespStatus();
 	Bool succ = false;
 	if (status == Net::WebStatus::SC_OK)

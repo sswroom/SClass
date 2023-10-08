@@ -575,7 +575,7 @@ void Net::WebServer::WebConnection::ProcessResponse()
 							}
 							else
 							{
-								this->AddHeader(Text::CString(sbuffHdr, k), CSTRP(&sbuffHdr[k + 2], hdrPtr));
+								this->AddHeader(Text::CStringNN(sbuffHdr, k), CSTRP(&sbuffHdr[k + 2], hdrPtr));
 							}
 						}
 						else
@@ -743,7 +743,7 @@ Int32 Net::WebServer::WebConnection::GetStatusCode()
 	return this->respStatus;
 }
 
-Bool Net::WebServer::WebConnection::AddHeader(Text::CString name, Text::CString value)
+Bool Net::WebServer::WebConnection::AddHeader(Text::CStringNN name, Text::CStringNN value)
 {
 	if (this->respHeaderSent)
 		return false;

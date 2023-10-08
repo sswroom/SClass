@@ -1,5 +1,6 @@
 #ifndef _SM_NET_WEBSERVER_WEBSTANDARDHANDLER
 #define _SM_NET_WEBSERVER_WEBSTANDARDHANDLER
+#include "Data/ArrayListNN.h"
 #include "Data/FastStringMap.h"
 #include "Net/WebServer/IWebHandler.h"
 
@@ -11,7 +12,7 @@ namespace Net
 		{
 		protected:
 			Data::FastStringMap<Net::WebServer::WebStandardHandler *> hdlrs;
-			Data::ArrayList<Net::WebServer::WebStandardHandler*> relHdlrs;
+			Data::ArrayListNN<Net::WebServer::WebStandardHandler> relHdlrs;
 
 		protected:
 			virtual ~WebStandardHandler();
@@ -24,7 +25,7 @@ namespace Net
 
 			virtual Bool ProcessRequest(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq);
 
-			void HandlePath(Text::CStringNN relativePath, Net::WebServer::WebStandardHandler *hdlr, Bool needRelease);
+			void HandlePath(Text::CStringNN relativePath, NotNullPtr<Net::WebServer::WebStandardHandler> hdlr, Bool needRelease);
 		};
 	}
 }

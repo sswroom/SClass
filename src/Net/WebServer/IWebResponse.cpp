@@ -45,7 +45,7 @@ Bool Net::WebServer::IWebResponse::ResponseError(NotNullPtr<Net::WebServer::IWeb
 	return true;
 }
 
-Bool Net::WebServer::IWebResponse::RedirectURL(NotNullPtr<Net::WebServer::IWebRequest> req, Text::CString url, OSInt cacheAge)
+Bool Net::WebServer::IWebResponse::RedirectURL(NotNullPtr<Net::WebServer::IWebRequest> req, Text::CStringNN url, OSInt cacheAge)
 {
 	this->AddDefHeaders(req);
 	this->SetStatusCode(Net::WebStatus::SC_MOVED_TEMPORARILY);
@@ -55,7 +55,7 @@ Bool Net::WebServer::IWebResponse::RedirectURL(NotNullPtr<Net::WebServer::IWebRe
 	return true;
 }
 
-Bool Net::WebServer::IWebResponse::VirtualRedirectURL(NotNullPtr<Net::WebServer::IWebRequest> req, Text::CString url, OSInt cacheAge)
+Bool Net::WebServer::IWebResponse::VirtualRedirectURL(NotNullPtr<Net::WebServer::IWebRequest> req, Text::CStringNN url, OSInt cacheAge)
 {
 	this->AddDefHeaders(req);
 	this->AddCacheControl(cacheAge);
@@ -85,27 +85,20 @@ Bool Net::WebServer::IWebResponse::ResponseNotModified(NotNullPtr<Net::WebServer
 	return true;
 }
 
-Bool Net::WebServer::IWebResponse::ResponseText(Text::CString txt)
+Bool Net::WebServer::IWebResponse::ResponseText(Text::CStringNN txt)
 {
-	return ResponseText(txt, CSTR_NULL);
+	return ResponseText(txt, CSTR("text/plain"));
 }
 
-Bool Net::WebServer::IWebResponse::ResponseText(Text::CString txt, Text::CString contentType)
+Bool Net::WebServer::IWebResponse::ResponseText(Text::CStringNN txt, Text::CStringNN contentType)
 {
 	this->AddContentLength(txt.leng);
-	if (contentType.v == 0)
-	{
-		this->AddContentType(CSTR("text/plain"));
-	}
-	else
-	{
-		this->AddContentType(contentType);
-	}
+	this->AddContentType(contentType);
 	this->Write(txt.v, txt.leng);
 	return true;
 }
 
-Bool Net::WebServer::IWebResponse::ResponseJSONStr(NotNullPtr<Net::WebServer::IWebRequest> req, OSInt cacheAge, Text::CString json)
+Bool Net::WebServer::IWebResponse::ResponseJSONStr(NotNullPtr<Net::WebServer::IWebRequest> req, OSInt cacheAge, Text::CStringNN json)
 {
 	this->AddDefHeaders(req);
 	this->AddCacheControl(cacheAge);

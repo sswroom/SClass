@@ -203,36 +203,27 @@ Bool Net::WebServer::RESTfulHandler::ProcessRequest(NotNullPtr<Net::WebServer::I
 			tableName->Release();
 
 			Text::StringBuilderUTF8 sbURI;
-			Text::StringBuilderUTF8 sb;
+			Text::JSONBuilder json(Text::JSONBuilder::OT_OBJECT);
+			this->BuildJSON(json, row);
+			if (!this->noLinks)
 			{
-				Text::JSONBuilder json(sb, Text::JSONBuilder::OT_OBJECT);
-				this->BuildJSON(json, row);
-				if (!this->noLinks)
-				{
-					sbURI.ClearStr();
-					req->GetRequestURLBase(sbURI);
-					sptr = req->GetRequestPath(sbuff, sizeof(sbuff));
-					sbURI.AppendP(sbuff, sptr);
-					json.ObjectBeginObject(CSTR("_links"));
-					json.ObjectBeginObject(CSTR("self"));
-					json.ObjectAddStr(CSTR("href"), sbURI.ToCString());
-					json.ObjectEnd();
-					json.ObjectEnd();
-				}
+				sbURI.ClearStr();
+				req->GetRequestURLBase(sbURI);
+				sptr = req->GetRequestPath(sbuff, sizeof(sbuff));
+				sbURI.AppendP(sbuff, sptr);
+				json.ObjectBeginObject(CSTR("_links"));
+				json.ObjectBeginObject(CSTR("self"));
+				json.ObjectAddStr(CSTR("href"), sbURI.ToCString());
+				json.ObjectEnd();
 				json.ObjectEnd();
 			}
+			json.ObjectEnd();
 			this->dbCache->FreeTableItem(row);
-			resp->AddDefHeaders(req);
-			resp->AddCacheControl(0);
-			resp->AddContentType(CSTR("application/json"));
-			resp->AddContentLength(sb.GetLength());
-			resp->Write(sb.ToString(), sb.GetLength());
+			resp->ResponseJSONStr(req, 0, json.Build());
 			return true;
 		}
 		else
 		{
-			Text::StringBuilderUTF8 sbURI;
-			Text::StringBuilderUTF8 sb;
 			if (!this->dbCache->IsTableExist(subReq))
 			{
 				resp->SetStatusCode(Net::WebStatus::SC_NOT_FOUND);
@@ -243,8 +234,10 @@ Bool Net::WebServer::RESTfulHandler::ProcessRequest(NotNullPtr<Net::WebServer::I
 			}
 			else
 			{
+				Text::StringBuilderUTF8 sbURI;
+				Text::StringBuilderUTF8 sb;
 				DB::PageRequest *page = ParsePageReq(req);
-				Text::JSONBuilder json(sb, Text::JSONBuilder::OT_OBJECT);
+				Text::JSONBuilder json(Text::JSONBuilder::OT_OBJECT);
 				Data::ArrayListNN<DB::DBRow> rows;
 				NotNullPtr<DB::DBRow> row;
 				Int64 ikey;
@@ -344,13 +337,8 @@ Bool Net::WebServer::RESTfulHandler::ProcessRequest(NotNullPtr<Net::WebServer::I
 
 				json.ObjectEnd();
 				DEL_CLASS(page);
+				return resp->ResponseJSONStr(req, 0, json.Build());
 			}
-			resp->AddDefHeaders(req);
-			resp->AddCacheControl(0);
-			resp->AddContentType(CSTR("application/json"));
-			resp->AddContentLength(sb.GetLength());
-			resp->Write(sb.ToString(), sb.GetLength());
-			return true;
 		}
 	}
 	else if (req->GetReqMethod() == Net::WebUtil::RequestMethod::HTTP_POST)

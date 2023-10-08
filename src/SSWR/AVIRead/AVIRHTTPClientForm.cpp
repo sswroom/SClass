@@ -237,18 +237,16 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnRequestClicked(void *userObj
 		UOSInt i = 0;
 		UOSInt j = me->params.GetCount();
 		SSWR::AVIRead::AVIRHTTPClientForm::ParamValue *param;
-		Text::StringBuilderUTF8 sb2;
+		Text::JSONBuilder json(Text::JSONBuilder::OT_OBJECT);
+		while (i < j)
 		{
-			Text::JSONBuilder json(sb2, Text::JSONBuilder::OT_OBJECT);
-			while (i < j)
-			{
-				param = me->params.GetItem(i);
-				json.ObjectAddStrUTF8(param->name->ToCString(), param->value->v);
-				i++;
-			}
+			param = me->params.GetItem(i);
+			json.ObjectAddStrUTF8(param->name->ToCString(), param->value->v);
+			i++;
 		}
-		me->reqBody = Text::StrCopyNew(sb2.ToString()).Ptr();
-		me->reqBodyLen = sb2.GetCharCnt();
+		Text::CStringNN js = json.Build();
+		me->reqBody = Text::StrCopyNew(js.v).Ptr();
+		me->reqBodyLen = js.leng;
 		me->reqBodyType = Text::String::New(UTF8STRC("application/json")).Ptr();
 	}
 	else

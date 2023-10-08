@@ -107,9 +107,9 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 		sb.AppendU16(port);
 		console->WriteLineC(sb.ToString(), sb.GetLength());
 		NotNullPtr<Net::WebServer::WebStandardHandler> hdlr;
-		MyHandler *myHdlr;
+		NotNullPtr<MyHandler> myHdlr;
 		NEW_CLASSNN(hdlr, Net::WebServer::HTTPDirectoryHandler(CSTR("wwwroot"), true, 0, true));
-		NEW_CLASS(myHdlr, MyHandler());
+		NEW_CLASSNN(myHdlr, MyHandler());
 		hdlr->HandlePath(CSTR("/api"), myHdlr, true);
 		NEW_CLASS(svr, Net::WebServer::WebListener(sockf, ssl, hdlr, port, 120, 4, CSTR("sswr/1.0"), false, Net::WebServer::KeepAlive::Default, true));
 		if (!svr->IsError())

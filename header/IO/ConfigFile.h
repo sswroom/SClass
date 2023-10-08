@@ -25,11 +25,13 @@ namespace IO
 		Bool SetValue(Text::String *category, NotNullPtr<Text::String> name, Text::String *value);
 		Bool SetValue(Text::CString category, Text::CString name, Text::CString value);
 		Bool RemoveValue(Text::CString category, Text::CString name);
-		UOSInt GetCateCount();
+		UOSInt GetCateCount() const;
 		UOSInt GetCateList(Data::ArrayListNN<Text::String> *cateList, Bool withEmpty);
 		UOSInt GetKeys(Text::String *category, Data::ArrayListNN<Text::String> *keyList);
 		UOSInt GetKeys(Text::CString category, Data::ArrayListNN<Text::String> *keyList);
-		Bool HasCategory(Text::CString category);
+		UOSInt GetCount(Text::CString category) const;
+		Text::String *GetKey(Text::CString category, UOSInt index) const;
+		Bool HasCategory(Text::CString category) const;
 		IO::ConfigFile *CloneCate(Text::CString category);
 
 		void MergeConfig(IO::ConfigFile *cfg);

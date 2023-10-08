@@ -35,7 +35,7 @@ Bool Net::WebServer::WebSocketHandler::ProcessRequest(NotNullPtr<Net::WebServer:
 	}
 	Text::StringBuilderUTF8 sb;
 	sb.Append(secWebSocketProtocol);
-	Text::CString protocol = CSTR_NULL;
+	Text::CStringNN protocol = CSTR("");
 	Text::PString parr[2];
 	UOSInt nStrs;
 	parr[1] = sb;

@@ -1290,26 +1290,26 @@ SSWR::SMonitor::SMonitorSvrCore::SMonitorSvrCore(NotNullPtr<IO::Writer> writer, 
 				if (s->ToUInt16(port) && port > 0)
 				{
 					NotNullPtr<Net::WebServer::HTTPDirectoryHandler> hdlr;
-					SSWR::SMonitor::SMonitorWebHandler *shdlr;
-					Net::WebServer::HTTPDirectoryHandler *fileshdlr;
-					SSWR::Benchmark::BenchmarkWebHandler *benchhdlr;
-					SSWR::VAMS::VAMSBTWebHandler *vamsHdlr;
+					NotNullPtr<SSWR::SMonitor::SMonitorWebHandler> shdlr;
+					NotNullPtr<Net::WebServer::HTTPDirectoryHandler> fileshdlr;
+					NotNullPtr<SSWR::Benchmark::BenchmarkWebHandler> benchhdlr;
+					NotNullPtr<SSWR::VAMS::VAMSBTWebHandler> vamsHdlr;
 					SSWR::VAMS::VAMSBTList *btList;
 					NEW_CLASSNN(hdlr, Net::WebServer::HTTPDirectoryHandler(Text::String::OrEmpty(s2), false, 0, false));
-					NEW_CLASS(shdlr, SSWR::SMonitor::SMonitorWebHandler(this));
-					NEW_CLASS(benchhdlr, SSWR::Benchmark::BenchmarkWebHandler());
+					NEW_CLASSNN(shdlr, SSWR::SMonitor::SMonitorWebHandler(this));
+					NEW_CLASSNN(benchhdlr, SSWR::Benchmark::BenchmarkWebHandler());
 
 					sb.ClearStr();
 					IO::Path::GetProcessFileName(sb);
 					IO::Path::AppendPath(sb, UTF8STRC("files"));
-					NEW_CLASS(fileshdlr, Net::WebServer::HTTPDirectoryHandler(sb.ToCString(), false, 0, false));
+					NEW_CLASSNN(fileshdlr, Net::WebServer::HTTPDirectoryHandler(sb.ToCString(), false, 0, false));
 					shdlr->HandlePath(CSTR("/files"), fileshdlr, true);
 					hdlr->HandlePath(CSTR("/monitor"), shdlr, true);
 					hdlr->HandlePath(CSTR("/benchmark"), benchhdlr, true);
 					if ((s = cfg->GetValue(CSTR("VAMSLogPath"))) != 0)
 					{
 						NEW_CLASS(btList, SSWR::VAMS::VAMSBTList());
-						NEW_CLASS(vamsHdlr, SSWR::VAMS::VAMSBTWebHandler(Text::String::OrEmpty(s), btList));
+						NEW_CLASSNN(vamsHdlr, SSWR::VAMS::VAMSBTWebHandler(Text::String::OrEmpty(s), btList));
 						hdlr->HandlePath(CSTR("/vams"), vamsHdlr, true);
 					}
 

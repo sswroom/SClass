@@ -54,7 +54,7 @@ Net::WebServer::IWebSession *SSWR::OrganWeb::OrganWebController::ParseRequestEnv
 	return 0;
 }
 
-void SSWR::OrganWeb::OrganWebController::ResponseMstm(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, NotNullPtr<IO::MemoryStream> mstm, Text::CString contType)
+void SSWR::OrganWeb::OrganWebController::ResponseMstm(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, NotNullPtr<IO::MemoryStream> mstm, Text::CStringNN contType)
 {
 	resp->AddDefHeaders(req);
 	resp->AddContentType(contType);

@@ -138,29 +138,20 @@ Bool __stdcall Net::PushServerHandler::UnsubscribeHandler(NotNullPtr<Net::WebSer
 Bool __stdcall Net::PushServerHandler::UsersHandler(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, WebServiceHandler *svc)
 {
 	Net::PushServerHandler *me = (Net::PushServerHandler*)svc;
-	Text::StringBuilderUTF8 sb;
+	Text::JSONBuilder json(Text::JSONBuilder::OT_OBJECT);
+	json.ObjectBeginArray(CSTR("users"));
+	Sync::MutexUsage mutUsage;
+	Data::ArrayListNN<Text::String> userList;
+	UOSInt i = 0;
+	UOSInt j = me->mgr->GetUsers(&userList, mutUsage);
+	while (i < j)
 	{
-		Text::JSONBuilder json(sb, Text::JSONBuilder::OT_OBJECT);
-		json.ObjectBeginArray(CSTR("users"));
-		Sync::MutexUsage mutUsage;
-		Data::ArrayListNN<Text::String> userList;
-		UOSInt i = 0;
-		UOSInt j = me->mgr->GetUsers(&userList, mutUsage);
-		while (i < j)
-		{
-			json.ArrayAddStr(userList.GetItem(i));
-			i++;
-		}
-		json.ArrayEnd();
-		json.ObjectEnd();
+		json.ArrayAddStr(userList.GetItem(i));
+		i++;
 	}
-
-	resp->AddDefHeaders(req);
-	resp->AddCacheControl(0);
-	resp->AddContentType(CSTR("application/json"));
-	resp->AddContentLength(sb.leng);
-	resp->Write(sb.v, sb.leng);
-	return true;
+	json.ArrayEnd();
+	json.ObjectEnd();
+	return resp->ResponseJSONStr(req, 0, json.Build());
 }
 
 Bool __stdcall Net::PushServerHandler::ListDevicesHandler(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, WebServiceHandler *svc)

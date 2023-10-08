@@ -20,7 +20,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	Net::WebServer::WebListener *svr;
 	Text::StringBuilderUTF8 sb;
 	UInt16 port;
-	Text::CString path;
+	Text::CStringNN path;
 
 #if defined(DEBUGCON)
 	path = CSTR("/");

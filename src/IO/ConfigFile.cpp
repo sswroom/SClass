@@ -145,7 +145,7 @@ Bool IO::ConfigFile::RemoveValue(Text::CString category, Text::CString name)
 	return true;
 }
 
-UOSInt IO::ConfigFile::GetCateCount()
+UOSInt IO::ConfigFile::GetCateCount() const
 {
 	return this->cfgVals.GetCount();
 }
@@ -199,7 +199,25 @@ UOSInt IO::ConfigFile::GetKeys(Text::CString category, Data::ArrayListNN<Text::S
 	return cnt;
 }
 
-Bool IO::ConfigFile::HasCategory(Text::CString category)
+UOSInt IO::ConfigFile::GetCount(Text::CString category) const
+{
+	Data::FastStringMap<Text::String*> *cate = this->cfgVals.GetC(category.OrEmpty());
+	if (cate == 0)
+		return 0;
+	else
+		return cate->GetCount();
+}
+
+Text::String *IO::ConfigFile::GetKey(Text::CString category, UOSInt index) const
+{
+	Data::FastStringMap<Text::String*> *cate = this->cfgVals.GetC(category.OrEmpty());
+	if (cate == 0)
+		return 0;
+	else
+		return cate->GetKey(index);
+}
+
+Bool IO::ConfigFile::HasCategory(Text::CString category) const
 {
 	return this->cfgVals.GetC(category.OrEmpty()) != 0;
 }

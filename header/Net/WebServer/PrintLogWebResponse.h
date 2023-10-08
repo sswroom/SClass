@@ -21,7 +21,7 @@ namespace Net
 			virtual void EnableWriteBuffer();
 			virtual Bool SetStatusCode(Net::WebStatus::StatusCode code);
 			virtual Int32 GetStatusCode();
-			virtual Bool AddHeader(Text::CString name, Text::CString value);
+			virtual Bool AddHeader(Text::CStringNN name, Text::CStringNN value);
 			virtual Bool AddDefHeaders(NotNullPtr<Net::WebServer::IWebRequest> req);
 			virtual UInt64 GetRespLength();
 			virtual void ShutdownSend();

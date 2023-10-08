@@ -38,7 +38,7 @@ namespace Net
 			virtual void EnableWriteBuffer() = 0;
 			virtual Bool SetStatusCode(Net::WebStatus::StatusCode code) = 0;
 			virtual Int32 GetStatusCode() = 0;
-			virtual Bool AddHeader(Text::CString name, Text::CString value) = 0;
+			virtual Bool AddHeader(Text::CStringNN name, Text::CStringNN value) = 0;
 			virtual Bool AddDefHeaders(NotNullPtr<Net::WebServer::IWebRequest> req) = 0;
 			virtual UInt64 GetRespLength() = 0;
 			virtual void ShutdownSend() = 0;
@@ -48,14 +48,14 @@ namespace Net
 			virtual Text::CString GetRespHeaders() = 0;
 
 			Bool ResponseError(NotNullPtr<Net::WebServer::IWebRequest> req, Net::WebStatus::StatusCode code);
-			Bool RedirectURL(NotNullPtr<Net::WebServer::IWebRequest> req, Text::CString url, OSInt cacheAge);
-			Bool VirtualRedirectURL(NotNullPtr<Net::WebServer::IWebRequest> req, Text::CString url, OSInt cacheAge);
+			Bool RedirectURL(NotNullPtr<Net::WebServer::IWebRequest> req, Text::CStringNN url, OSInt cacheAge);
+			Bool VirtualRedirectURL(NotNullPtr<Net::WebServer::IWebRequest> req, Text::CStringNN url, OSInt cacheAge);
 			Bool ResponseNotModified(NotNullPtr<Net::WebServer::IWebRequest> req, OSInt cacheAge);
-			Bool ResponseText(Text::CString txt);
-			Bool ResponseText(Text::CString txt, Text::CString contentType);
-			Bool ResponseJSONStr(NotNullPtr<Net::WebServer::IWebRequest> req, OSInt cacheAge, Text::CString json);
+			Bool ResponseText(Text::CStringNN txt);
+			Bool ResponseText(Text::CStringNN txt, Text::CStringNN contentType);
+			Bool ResponseJSONStr(NotNullPtr<Net::WebServer::IWebRequest> req, OSInt cacheAge, Text::CStringNN json);
 
-			Bool AddHeaderS(Text::CString name, NotNullPtr<Text::String> value)
+			Bool AddHeaderS(Text::CStringNN name, NotNullPtr<Text::String> value)
 			{
 				return AddHeader(name, value->ToCString());
 			}
@@ -80,14 +80,14 @@ namespace Net
 				return true;
 			}
 
-			Bool AddTimeHeader(Text::CString name, NotNullPtr<Data::DateTime> dt)
+			Bool AddTimeHeader(Text::CStringNN name, NotNullPtr<Data::DateTime> dt)
 			{
 				UTF8Char sbuff[256];
 				UTF8Char *sptr = Net::WebUtil::Date2Str(sbuff, dt);
 				return this->AddHeader(name, CSTRP(sbuff, sptr));
 			}
 
-			Bool AddTimeHeader(Text::CString name, const Data::Timestamp &ts)
+			Bool AddTimeHeader(Text::CStringNN name, const Data::Timestamp &ts)
 			{
 				UTF8Char sbuff[256];
 				UTF8Char *sptr = Net::WebUtil::Date2Str(sbuff, ts);
@@ -129,7 +129,7 @@ namespace Net
 				return this->AddHeader(CSTR("Content-Length"), CSTRP(sbuff, sptr));
 			}
 
-			Bool AddContentType(Text::CString contentType)
+			Bool AddContentType(Text::CStringNN contentType)
 			{
 				return this->AddHeader(CSTR("Content-Type"), contentType);
 			}
@@ -162,7 +162,7 @@ namespace Net
 				return this->AddTimeHeader(CSTR("Last-Modified"), ts);
 			}
 
-			Bool AddServer(Text::CString server)
+			Bool AddServer(Text::CStringNN server)
 			{
 				return this->AddHeader(CSTR("Server"), server);
 			}

@@ -41,7 +41,7 @@ Int32 Net::WebServer::PrintLogWebResponse::GetStatusCode()
 	return this->resp->GetStatusCode();
 }
 
-Bool Net::WebServer::PrintLogWebResponse::AddHeader(Text::CString name, Text::CString value)
+Bool Net::WebServer::PrintLogWebResponse::AddHeader(Text::CStringNN name, Text::CStringNN value)
 {
 	if (this->resp->AddHeader(name, value))
 	{

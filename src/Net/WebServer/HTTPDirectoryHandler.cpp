@@ -261,7 +261,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ResponsePackageFileItem(NotNullPtr<Ne
 	UTF8Char *sptr;
 	UInt8 compBuff[10];
 	sptr = IO::Path::GetFileExt(sbuff, pitem->name->v, pitem->name->leng);
-	Text::CString mime = Net::MIME::GetMIMEFromExt(CSTRP(sbuff, sptr));
+	Text::CStringNN mime = Net::MIME::GetMIMEFromExt(CSTRP(sbuff, sptr));
 
 	if (pitem->itemType == IO::PackFileItem::PackItemType::Compressed && pitem->compInfo->compMethod == Data::Compress::Decompressor::CM_DEFLATE)
 	{
@@ -458,7 +458,7 @@ Net::WebServer::HTTPDirectoryHandler::HTTPDirectoryHandler(NotNullPtr<Text::Stri
 	this->statMut = 0;
 }
 
-Net::WebServer::HTTPDirectoryHandler::HTTPDirectoryHandler(Text::CString rootDir, Bool allowBrowsing, UInt64 fileCacheSize, Bool allowUpload)
+Net::WebServer::HTTPDirectoryHandler::HTTPDirectoryHandler(Text::CStringNN rootDir, Bool allowBrowsing, UInt64 fileCacheSize, Bool allowUpload)
 {
 	this->rootDir = Text::String::New(rootDir);
 	this->allowBrowsing = allowBrowsing;
@@ -540,7 +540,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::DoFileRequest(NotNullPtr<Net::WebServ
 	UTF8Char *sptr3;
 	UTF8Char *sptr4;
 	//Data::DateTime t;
-	Text::CString mime;
+	Text::CStringNN mime;
 	NotNullPtr<Sync::RWMutex> packageMut;
 	UOSInt i;
 	if (req->GetProtocol() != Net::WebServer::IWebRequest::RequestProtocol::HTTP1_0 && req->GetProtocol() != Net::WebServer::IWebRequest::RequestProtocol::HTTP1_1)

@@ -43,7 +43,7 @@ Text::Builder::HTMLBodyBuilder *Text::Builder::HTMLDocumentBuilder::StartBody(Te
 	return this->bodyBuilder;
 }
 
-Text::CString Text::Builder::HTMLDocumentBuilder::Build()
+Text::CStringNN Text::Builder::HTMLDocumentBuilder::Build()
 {
 	if (this->headerBuilder)
 	{

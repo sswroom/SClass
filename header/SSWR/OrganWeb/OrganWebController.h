@@ -25,7 +25,7 @@ namespace SSWR
 			static UOSInt GetPerPage(Bool isMobile);
 			Net::WebServer::IWebSession *ParseRequestEnv(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, RequestEnv *env, Bool keepSess);
 
-			static void ResponseMstm(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, NotNullPtr<IO::MemoryStream> mstm, Text::CString contType);
+			static void ResponseMstm(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, NotNullPtr<IO::MemoryStream> mstm, Text::CStringNN contType);
 
 			void WriteHeaderPart1(IO::Writer *writer, const UTF8Char *title, Bool isMobile);
 			void WriteHeaderPart2(IO::Writer *writer, WebUserInfo *user, const UTF8Char *onLoadFunc);

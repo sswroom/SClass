@@ -46,8 +46,8 @@ namespace SSWR
 			Media::ColorManager colorMgr;
 			NotNullPtr<Media::ColorManagerSess> colorSess;
 			NotNullPtr<Media::DrawEngine> eng;
-			Map::OSM::OSMCacheHandler *osmHdlr;
-			Net::WebServer::HTTPDirectoryHandler *mapDirHdlr;
+			NotNullPtr<Map::OSM::OSMCacheHandler> osmHdlr;
+			NotNullPtr<Net::WebServer::HTTPDirectoryHandler> mapDirHdlr;
 			SSWR::OrganWeb::OrganWebHandler *webHdlr;
 
 			Data::FastStringMap<CategoryInfo*> cateSMap;
