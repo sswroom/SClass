@@ -1,5 +1,4 @@
-import sswr from "./sswr.js";
-sswr.data = new Object();
+var data = {};
 
 function zpadStr(val, ndigits)
 {
@@ -9,17 +8,17 @@ function zpadStr(val, ndigits)
 	return s;
 }
 
-sswr.data.isArray = function(o)
+data.isArray = function(o)
 {
 	return o != null && o.constructor === Array;
 }
 
-sswr.data.isObject = function(o)
+data.isObject = function(o)
 {
 	return o != null && (typeof o) == "object";
 }
 
-sswr.data.toObjectString = function(o, lev)
+data.toObjectString = function(o, lev)
 {
 	if (lev && lev > 8)
 	{
@@ -37,13 +36,13 @@ sswr.data.toObjectString = function(o, lev)
 	var t = typeof o;
 	var out;
 	var name;
-	if (sswr.data.isArray(o))
+	if (data.isArray(o))
 	{
 		out = new Array();
 		out.push("[");
 		for (name in o)
 		{
-			out.push(sswr.data.toObjectString(o[name], nextLev));
+			out.push(data.toObjectString(o[name], nextLev));
 			out.push(",");
 		}
 		out.pop();
@@ -56,9 +55,9 @@ sswr.data.toObjectString = function(o, lev)
 		out.push("{");
 		for (name in o)
 		{
-			out.push(sswr.text.toJSText(name));
+			out.push(text.toJSText(name));
 			out.push(":");
-			out.push(sswr.data.toObjectString(o[name], nextLev));
+			out.push(data.toObjectString(o[name], nextLev));
 			out.push(",");
 		}
 		out.pop();
@@ -71,7 +70,7 @@ sswr.data.toObjectString = function(o, lev)
 	}
 	else if (t == "string")
 	{
-		return sswr.text.toJSText(o);
+		return text.toJSText(o);
 	}
 	else
 	{
@@ -80,15 +79,15 @@ sswr.data.toObjectString = function(o, lev)
 	}
 }
 
-sswr.data.arrayBuffer2Base64 = function(buff)
+data.arrayBuffer2Base64 = function(buff)
 {
 	return btoa(String.fromCharCode.apply(null, new Uint8Array(buff)));
 }
 
-sswr.data.DateTimeUtil = new Object();
-sswr.data.DateTimeUtil.monString = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-sswr.data.DateTimeUtil.monthString = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-sswr.data.DateTimeUtil.timeValueSetDate = function(t, dateStrs)
+data.DateTimeUtil = new Object();
+data.DateTimeUtil.monString = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+data.DateTimeUtil.monthString = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+data.DateTimeUtil.timeValueSetDate = function(t, dateStrs)
 {
 	var vals0 = dateStrs[0] - 0;
 	var vals1 = dateStrs[1] - 0;
@@ -130,7 +129,7 @@ sswr.data.DateTimeUtil.timeValueSetDate = function(t, dateStrs)
 	}
 }
 
-sswr.data.DateTimeUtil.timeValueSetTime = function(t, timeStrs)
+data.DateTimeUtil.timeValueSetTime = function(t, timeStrs)
 {
 	var strs;
 
@@ -181,7 +180,7 @@ sswr.data.DateTimeUtil.timeValueSetTime = function(t, timeStrs)
 	}
 }
 
-sswr.data.DateTimeUtil.timeValue2Secs = function(tval)
+data.DateTimeUtil.timeValue2Secs = function(tval)
 {
 	var totalDays;
 	var leapDays;
@@ -236,7 +235,7 @@ sswr.data.DateTimeUtil.timeValue2Secs = function(tval)
 	case 4:
 		totalDays += 31;
 	case 3:
-		if (sswr.data.DateTimeUtil.isYearLeap(tval.year))
+		if (data.DateTimeUtil.isYearLeap(tval.year))
 			totalDays += 29;
 		else
 			totalDays += 28;
@@ -252,23 +251,23 @@ sswr.data.DateTimeUtil.timeValue2Secs = function(tval)
 	return totalDays * 86400 + (tval.second + tval.minute * 60 + tval.hour * 3600 - tval.tzQhr * 900);
 }
 
-sswr.data.DateTimeUtil.timeValue2Ticks = function(t)
+data.DateTimeUtil.timeValue2Ticks = function(t)
 {
-	return sswr.data.DateTimeUtil.timeValue2Secs(t) * 1000 + Math.floor(t.nanosec / 1000000);
+	return data.DateTimeUtil.timeValue2Secs(t) * 1000 + Math.floor(t.nanosec / 1000000);
 }
 
-sswr.data.DateTimeUtil.ticks2TimeValue = function(ticks, tzQhr)
+data.DateTimeUtil.ticks2TimeValue = function(ticks, tzQhr)
 {
 	var t = Secs2TimeValue(ticks / 1000, tzQhr);
 	t.nanosec = (ticks % 1000) * 1000000;
 	return t;
 }
 
-sswr.data.DateTimeUtil.secs2TimeValue = function(secs, tzQhr)
+data.DateTimeUtil.secs2TimeValue = function(secs, tzQhr)
 {
-	return sswr.data.DateTimeUtil.instant2TimeValue(secs, 0, tzQhr);
+	return data.DateTimeUtil.instant2TimeValue(secs, 0, tzQhr);
 }
-sswr.data.DateTimeUtil.instant2TimeValue = function(secs, nanosec, tzQhr)
+data.DateTimeUtil.instant2TimeValue = function(secs, nanosec, tzQhr)
 {
 	secs = secs + tzQhr * 900;
 	var totalDays = Math.floor(secs / 86400);
@@ -302,7 +301,7 @@ sswr.data.DateTimeUtil.instant2TimeValue = function(secs, nanosec, tzQhr)
 		while (totalDays < 0)
 		{
 			t.year--;
-			if (sswr.data.DateTimeUtil.isYearLeap(t.year))
+			if (data.DateTimeUtil.isYearLeap(t.year))
 			{
 				totalDays += 366;
 			}
@@ -319,7 +318,7 @@ sswr.data.DateTimeUtil.instant2TimeValue = function(secs, nanosec, tzQhr)
 			t.year = 1970;
 			while (true)
 			{
-				if (sswr.data.DateTimeUtil.isYearLeap(t.year))
+				if (data.DateTimeUtil.isYearLeap(t.year))
 				{
 					if (totalDays < 366)
 					{
@@ -359,7 +358,7 @@ sswr.data.DateTimeUtil.instant2TimeValue = function(secs, nanosec, tzQhr)
 		}
 	}
 
-	if (sswr.data.DateTimeUtil.isYearLeap(t.year))
+	if (data.DateTimeUtil.isYearLeap(t.year))
 	{
 		if (totalDays < 121)
 		{
@@ -548,7 +547,7 @@ sswr.data.DateTimeUtil.instant2TimeValue = function(secs, nanosec, tzQhr)
 	return t;
 }
 
-sswr.data.DateTimeUtil.toString = function(tval, pattern)
+data.DateTimeUtil.toString = function(tval, pattern)
 {
 	var output = new Array();
 	var i = 0;
@@ -789,12 +788,12 @@ sswr.data.DateTimeUtil.toString = function(tval, pattern)
 			}
 			else if (pattern[3] != 'M')
 			{
-				output.push(sswr.data.DateTimeUtil.monString[tval.month - 1]);
+				output.push(data.DateTimeUtil.monString[tval.month - 1]);
 				i += 3;
 			}
 			else
 			{
-				output.push(sswr.data.DateTimeUtil.monthString[tval.month - 1]);
+				output.push(data.DateTimeUtil.monthString[tval.month - 1]);
 				i += 4;
 				while (i < pattern.length && pattern.charAt(i) == 'M')
 					i++;
@@ -907,12 +906,12 @@ sswr.data.DateTimeUtil.toString = function(tval, pattern)
 	return output.join("");
 }
 
-sswr.data.DateTimeUtil.string2TimeValue = function(dateStr, tzQhr)
+data.DateTimeUtil.string2TimeValue = function(dateStr, tzQhr)
 {
 	if (dateStr.length < 4)
 		return null;
 	if (tzQhr == null)
-		tzQhr = sswr.data.DateTimeUtil.getLocalTzQhr();
+		tzQhr = data.DateTimeUtil.getLocalTzQhr();
 	var tval = new Object();
 	tval.nanosec = 0;
 	tval.tzQhr = tzQhr;
@@ -935,19 +934,19 @@ sswr.data.DateTimeUtil.string2TimeValue = function(dateStr, tzQhr)
 		var dateSucc = true;
 		if ((strs = strs2[0].split('-')).length == 3)
 		{
-			sswr.data.DateTimeUtil.timeValueSetDate(tval, strs);
+			data.DateTimeUtil.timeValueSetDate(tval, strs);
 		}
 		else if ((strs = strs2[0].split('/')).length == 3)
 		{
-			sswr.data.DateTimeUtil.timeValueSetDate(tval, strs);
+			data.DateTimeUtil.timeValueSetDate(tval, strs);
 		}
 		else if ((strs = strs2[0].split(':')).length == 3)
 		{
-			sswr.data.DateTimeUtil.timeValueSetDate(tval, strs);
+			data.DateTimeUtil.timeValueSetDate(tval, strs);
 		}
 		else
 		{
-			tval = sswr.data.DateTimeUtil.ticks2TimeValue(new Date().getTime(), tzQhr);
+			tval = data.DateTimeUtil.ticks2TimeValue(new Date().getTime(), tzQhr);
 			dateSucc = false;
 		}
 		var i = strs2[1].indexOf('-');
@@ -1000,7 +999,7 @@ sswr.data.DateTimeUtil.string2TimeValue = function(dateStr, tzQhr)
 				tval.tzQhr = 0;
 				strs[2] = strs[2].substr(0, strs[2].length - 1);
 			}
-			sswr.data.DateTimeUtil.timeValueSetTime(tval, strs);
+			data.DateTimeUtil.timeValueSetTime(tval, strs);
 		}
 		else
 		{
@@ -1018,7 +1017,7 @@ sswr.data.DateTimeUtil.string2TimeValue = function(dateStr, tzQhr)
 	{
 		if ((strs = strs2[0].split('-')).length == 3)
 		{
-			sswr.data.DateTimeUtil.timeValueSetDate(tval, strs);
+			data.DateTimeUtil.timeValueSetDate(tval, strs);
 			tval.hour = 0;
 			tval.minute = 0;
 			tval.second = 0;
@@ -1026,7 +1025,7 @@ sswr.data.DateTimeUtil.string2TimeValue = function(dateStr, tzQhr)
 		}
 		else if ((strs = strs2[0].split('/')).length == 3)
 		{
-			sswr.data.DateTimeUtil.timeValueSetDate(tval, strs);
+			data.DateTimeUtil.timeValueSetDate(tval, strs);
 			tval.hour = 0;
 			tval.minute = 0;
 			tval.second = 0;
@@ -1034,8 +1033,8 @@ sswr.data.DateTimeUtil.string2TimeValue = function(dateStr, tzQhr)
 		}
 		else if ((strs = strs2[0].split(':')).length == 3)
 		{
-			tval = sswr.data.DateTimeUtil.ticks2TimeValue(new Date().getTime(), tzQhr);
-			sswr.data.DateTimeUtil.timeValueSetTime(tval, strs);
+			tval = data.DateTimeUtil.ticks2TimeValue(new Date().getTime(), tzQhr);
+			data.DateTimeUtil.timeValueSetTime(tval, strs);
 		}
 		else
 		{
@@ -1052,19 +1051,19 @@ sswr.data.DateTimeUtil.string2TimeValue = function(dateStr, tzQhr)
 		if (len1 == 3 && len2 <= 2 && len3 == 4)
 		{
 			tval.year = strs2[2] - 0;
-			tval.month = sswr.data.DateTimeUtil.parseMonthStr(strs2[0]);
+			tval.month = data.DateTimeUtil.parseMonthStr(strs2[0]);
 			tval.day = strs2[1] - 0;
 		}
 		else if (len1 <= 2 && len2 == 3 && len3 == 4)
 		{
 			tval.year = strs2[2] - 0;
-			tval.month = sswr.data.DateTimeUtil.parseMonthStr(strs2[1]);
+			tval.month = data.DateTimeUtil.parseMonthStr(strs2[1]);
 			tval.day = strs2[0] - 0;
 		}
 		else if (len1 == 3 && len2 <= 2 && len4 == 4)
 		{
 			tval.year = strs2[3] - 0;
-			tval.month = sswr.data.DateTimeUtil.parseMonthStr(strs2[0]);
+			tval.month = data.DateTimeUtil.parseMonthStr(strs2[0]);
 			tval.day = strs2[1] - 0;
 			timeStr = strs2[2];
 		}
@@ -1074,7 +1073,7 @@ sswr.data.DateTimeUtil.string2TimeValue = function(dateStr, tzQhr)
 		}
 		if ((strs = timeStr.split(':')).length == 3)
 		{
-			sswr.data.DateTimeUtil.timeValueSetTime(tval, strs);
+			data.DateTimeUtil.timeValueSetTime(tval, strs);
 		}
 		else
 		{
@@ -1125,7 +1124,7 @@ sswr.data.DateTimeUtil.string2TimeValue = function(dateStr, tzQhr)
 		{
 			if ((strs = strs2[j].split(':')).length == 3)
 			{
-				sswr.data.DateTimeUtil.timeValueSetTime(tval, strs, nanosec);
+				data.DateTimeUtil.timeValueSetTime(tval, strs);
 			}
 			else
 			{
@@ -1162,12 +1161,12 @@ sswr.data.DateTimeUtil.string2TimeValue = function(dateStr, tzQhr)
 					{
 						if ((strs = strs2[j].split('/')).length == 3)
 						{
-							sswr.data.DateTimeUtil.timeValueSetDate(tval, strs);
+							data.DateTimeUtil.timeValueSetDate(tval, strs);
 						}
 					}
 					else if ((strs = strs2[j].split('-')).length == 3)
 					{
-						sswr.data.DateTimeUtil.timeValueSetDate(tval, strs);
+						data.DateTimeUtil.timeValueSetDate(tval, strs);
 					}
 					else if (strs2[j] == "HKT")
 					{
@@ -1178,7 +1177,7 @@ sswr.data.DateTimeUtil.string2TimeValue = function(dateStr, tzQhr)
 						i = strs2[j] - 0;
 						if (isNaN(i))
 						{
-							i = sswr.data.DateTimeUtil.parseMonthStr(strs2[j]);
+							i = data.DateTimeUtil.parseMonthStr(strs2[j]);
 							if (i > 0)
 							{
 								tval.month = i;
@@ -1201,12 +1200,12 @@ sswr.data.DateTimeUtil.string2TimeValue = function(dateStr, tzQhr)
 	return tval;
 }
 
-sswr.data.DateTimeUtil.isYearLeap = function(year)
+data.DateTimeUtil.isYearLeap = function(year)
 {
 	return ((year & 3) == 0) && ((year % 100) != 0 || (year % 400) == 0);
 }
 
-sswr.data.DateTimeUtil.parseMonthStr = function(month)
+data.DateTimeUtil.parseMonthStr = function(month)
 {
 	if (month.length < 3)
 		return 0;
@@ -1262,18 +1261,18 @@ sswr.data.DateTimeUtil.parseMonthStr = function(month)
 	return 0;
 }
 
-sswr.data.DateTimeUtil.getLocalTzQhr = function()
+data.DateTimeUtil.getLocalTzQhr = function()
 {
 	return new Date().getTimezoneOffset() / -15;
 }
 
-sswr.data.Duration = function(seconds, nanosec)
+data.Duration = function(seconds, nanosec)
 {
 	this.seconds = seconds;
 	this.nanosec = nanosec;
 }
 
-sswr.data.Duration.fromTicks = function(ticks)
+data.Duration.fromTicks = function(ticks)
 {
 	if (ticks < 0)
 	{
@@ -1292,7 +1291,7 @@ sswr.data.Duration.fromTicks = function(ticks)
 	}
 }
 
-sswr.data.Duration.fromUs = function(us)
+data.Duration.fromUs = function(us)
 {
 	if (us < 0)
 	{
@@ -1309,43 +1308,43 @@ sswr.data.Duration.fromUs = function(us)
 	}
 }
 
-sswr.data.Duration.prototype.getSeconds = function()
+data.Duration.prototype.getSeconds = function()
 {
 	return this.seconds;
 }
 
-sswr.data.Duration.prototype.getNS = function()
+data.Duration.prototype.getNS = function()
 {
 	return this.ns;
 }
 
-sswr.data.Duration.prototype.getTotalMS = function()
+data.Duration.prototype.getTotalMS = function()
 {
 	return this.seconds * 1000 + Math.floor(this.ns / 1000000);
 }
 
-sswr.data.Duration.prototype.getTotalSec = function()
+data.Duration.prototype.getTotalSec = function()
 {
 	return this.seconds + (this.ns * 0.000000001);
 }
 
-sswr.data.Duration.prototype.notZero = function()
+data.Duration.prototype.notZero = function()
 {
 	return this.seconds != 0 || this.ns != 0;
 }
 
-sswr.data.Duration.prototype.isZero = function()
+data.Duration.prototype.isZero = function()
 {
 	return this.seconds == 0 && this.ns == 0;
 }
 
-sswr.data.TimeInstant = function(sec, nanosec)
+data.TimeInstant = function(sec, nanosec)
 {
 	this.sec = sec;
 	this.nanosec = nanosec;
 }
 
-sswr.data.TimeInstant.now = function()
+data.TimeInstant.now = function()
 {
 	if (window.performance)
 	{
@@ -1355,56 +1354,56 @@ sswr.data.TimeInstant.now = function()
 		var ns = (t1 / 1000) - Math.floor(t1 / 1000) + (t2 / 1000) - Math.floor(t2 / 1000);
 		if (ns >= 1)
 			ns -= 1;
-		return new sswr.data.TimeInstant(secs, Math.round(ns * 1000000000));
+		return new data.TimeInstant(secs, Math.round(ns * 1000000000));
 	}
 	else
 	{
-		return sswr.data.TimeInstant.fromTicks(Date.now());
+		return data.TimeInstant.fromTicks(Date.now());
 	}
 }
 
-sswr.data.TimeInstant.fromVariTime = function(variTime)
+data.TimeInstant.fromVariTime = function(variTime)
 {
 	var days = Math.floor(variTime);
 	var ds = (variTime - days);
 	var s = Math.floor(ds * 86400);
-	return new sswr.data.TimeInstant((days - 25569) * 86400000 + Math.floor(ds * 86400000), ((ds * 86400 - s) * 1000000000));
+	return new data.TimeInstant((days - 25569) * 86400000 + Math.floor(ds * 86400000), ((ds * 86400 - s) * 1000000000));
 }
 
-sswr.data.TimeInstant.fromTicks = function(ticks)
+data.TimeInstant.fromTicks = function(ticks)
 {
 	var ms = (ticks % 1000);
 	if (ms < 0)
 	{
-		return new sswr.data.TimeInstant(Math.floor(ticks / 1000) - 1, (ms + 1000) * 1000000);
+		return new data.TimeInstant(Math.floor(ticks / 1000) - 1, (ms + 1000) * 1000000);
 	}
 	else
 	{
-		return new sswr.data.TimeInstant(Math.floor(ticks / 1000), ms * 1000000);
+		return new data.TimeInstant(Math.floor(ticks / 1000), ms * 1000000);
 	}
 }
 
-sswr.data.TimeInstant.prototype.addDay = function(val)
+data.TimeInstant.prototype.addDay = function(val)
 {
-	return new sswr.data.TimeInstant(this.sec + val * 86400, this.nanosec);
+	return new data.TimeInstant(this.sec + val * 86400, this.nanosec);
 }
 
-sswr.data.TimeInstant.prototype.addHour = function(val)
+data.TimeInstant.prototype.addHour = function(val)
 {
-	return new sswr.data.TimeInstant(this.sec + val * 3600, this.nanosec);
+	return new data.TimeInstant(this.sec + val * 3600, this.nanosec);
 }
 
-sswr.data.TimeInstant.prototype.addMinute = function(val)
+data.TimeInstant.prototype.addMinute = function(val)
 {
-	return new sswr.data.TimeInstant(this.sec + val * 60, this.nanosec);
+	return new data.TimeInstant(this.sec + val * 60, this.nanosec);
 }
 
-sswr.data.TimeInstant.prototype.addSecond = function(val)
+data.TimeInstant.prototype.addSecond = function(val)
 {
-	return new sswr.data.TimeInstant(this.sec + val, this.nanosec);
+	return new data.TimeInstant(this.sec + val, this.nanosec);
 }
 
-sswr.data.TimeInstant.prototype.addMS = function(val)
+data.TimeInstant.prototype.addMS = function(val)
 {
 	var newSec = this.sec + Math.floor(val / 1000);
 	val = (val % 1000) * 1000000 + this.nanosec;
@@ -1413,10 +1412,10 @@ sswr.data.TimeInstant.prototype.addMS = function(val)
 		newSec++;
 		val -= 1000000000;
 	}
-	return new sswr.data.TimeInstant(newSec, val);
+	return new data.TimeInstant(newSec, val);
 }
 
-sswr.data.TimeInstant.prototype.addNS = function(val)
+data.TimeInstant.prototype.addNS = function(val)
 {
 	var newSec = this.sec + Math.floor(val / 1000000000);
 	val = val % 1000000000 + this.nanosec;
@@ -1425,52 +1424,52 @@ sswr.data.TimeInstant.prototype.addNS = function(val)
 		newSec++;
 		val -= 1000000000;
 	}
-	return new sswr.data.TimeInstant(newSec, val);
+	return new data.TimeInstant(newSec, val);
 }
 
-sswr.data.TimeInstant.prototype.getMS = function()
+data.TimeInstant.prototype.getMS = function()
 {
 	return Math.floor(this.nanosec / 1000000);
 }
 
-sswr.data.TimeInstant.prototype.clearTime = function()
+data.TimeInstant.prototype.clearTime = function()
 {
-	return new sswr.data.TimeInstant(this.sec - this.sec % 86400, 0);
+	return new data.TimeInstant(this.sec - this.sec % 86400, 0);
 }
 
-sswr.data.TimeInstant.prototype.roundToS = function()
+data.TimeInstant.prototype.roundToS = function()
 {
 	if (this.nanosec >= 500000000)
 	{
-		return new sswr.data.TimeInstant(this.sec + 1, 0);
+		return new data.TimeInstant(this.sec + 1, 0);
 	}
 	else
 	{
-		return new sswr.data.TimeInstant(this.sec, 0);
+		return new data.TimeInstant(this.sec, 0);
 	}
 }
 
-sswr.data.TimeInstant.prototype.getMSPassedDate = function()
+data.TimeInstant.prototype.getMSPassedDate = function()
 {
 	return (this.sec % 86400) * 1000 + Math.floor(this.nanosec / 1000000);
 }
 
-sswr.data.TimeInstant.prototype.diffMS = function(ts)
+data.TimeInstant.prototype.diffMS = function(ts)
 {
 	return (this.sec - ts.sec) * 1000 + Math.floor((this.nanosec / 1000000) - (ts.nanosec / 1000000));
 }
 
-sswr.data.TimeInstant.prototype.diffSec = function(ts)
+data.TimeInstant.prototype.diffSec = function(ts)
 {
 	return this.sec - ts.sec;
 }
 
-sswr.data.TimeInstant.prototype.diffSecDbl = function(ts)
+data.TimeInstant.prototype.diffSecDbl = function(ts)
 {
 	return (this.sec - ts.sec) + (this.nanosec - ts.nanosec) / 1000000000.0;
 }
 
-sswr.data.TimeInstant.prototype.diff = function(ts)
+data.TimeInstant.prototype.diff = function(ts)
 {
 	var secs = this.sec - ts.sec;
 	var ns1 = this.nanosec;
@@ -1481,130 +1480,130 @@ sswr.data.TimeInstant.prototype.diff = function(ts)
 		return new Duration(secs - 1, 1000000000 + ns1 - ns2);
 }
 
-sswr.data.TimeInstant.prototype.toTicks = function()
+data.TimeInstant.prototype.toTicks = function()
 {
 	return this.sec * 1000 + Math.floor(this.nanosec / 1000000);
 }
 
-sswr.data.TimeInstant.prototype.toDotNetTicks = function()
+data.TimeInstant.prototype.toDotNetTicks = function()
 {
 	return this.sec * 10000000 + 621355968000000000 + Math.floor(this.nanosec / 100);
 }
 
-sswr.data.TimeInstant.prototype.toUnixTimestamp = function()
+data.TimeInstant.prototype.toUnixTimestamp = function()
 {
 	return this.sec;
 }
 
-sswr.data.TimeInstant.prototype.toEpochSec = function()
+data.TimeInstant.prototype.toEpochSec = function()
 {
 	return this.sec;
 }
 
-sswr.data.TimeInstant.prototype.toEpochMS = function()
+data.TimeInstant.prototype.toEpochMS = function()
 {
 	return this.sec * 1000 + Math.floor(this.nanosec / 1000000);
 }
 
-sswr.data.TimeInstant.prototype.toEpochNS = function()
+data.TimeInstant.prototype.toEpochNS = function()
 {
 	return this.sec * 1000000000 + this.nanosec;
 }
 
-sswr.data.Timestamp = function(inst, tzQhr)
+data.Timestamp = function(inst, tzQhr)
 {
 	this.inst = inst;
 	this.tzQhr = tzQhr;
 }
 
-sswr.data.Timestamp.fromTicks = function(ticks, tzQhr)
+data.Timestamp.fromTicks = function(ticks, tzQhr)
 {
-	return new sswr.data.Timestamp(sswr.data.TimeInstant.fromTicks(ticks), tzQhr);
+	return new data.Timestamp(data.TimeInstant.fromTicks(ticks), tzQhr);
 }
 
-sswr.data.Timestamp.fromStr = function(str, defTzQhr)
+data.Timestamp.fromStr = function(str, defTzQhr)
 {
-	var tval = sswr.data.DateTimeUtil.string2TimeValue(str, defTzQhr);
+	var tval = data.DateTimeUtil.string2TimeValue(str, defTzQhr);
 	if (tval == 0)
 	{
-		return new sswr.data.Timestamp(new sswr.data.TimeInstant(0, 0), defTzQhr);
+		return new data.Timestamp(new data.TimeInstant(0, 0), defTzQhr);
 	}
 	else
 	{
-		return new sswr.data.Timestamp(new sswr.data.TimeInstant(sswr.data.DateTimeUtil.timeValue2Secs(tval), tval.nanosec), tval.tzQhr);
+		return new data.Timestamp(new data.TimeInstant(data.DateTimeUtil.timeValue2Secs(tval), tval.nanosec), tval.tzQhr);
 	}
 }
 
-sswr.data.Timestamp.now = function()
+data.Timestamp.now = function()
 {
-	return new sswr.data.Timestamp(sswr.data.TimeInstant.now(), sswr.data.DateTimeUtil.getLocalTzQhr());
+	return new data.Timestamp(data.TimeInstant.now(), data.DateTimeUtil.getLocalTzQhr());
 }
 
-sswr.data.Timestamp.utcNow = function()
+data.Timestamp.utcNow = function()
 {
-	return new sswr.data.Timestamp(sswr.data.TimeInstant.now(), 0);
+	return new data.Timestamp(data.TimeInstant.now(), 0);
 }
 
-sswr.data.Timestamp.fromVariTime = function(variTime)
+data.Timestamp.fromVariTime = function(variTime)
 {
-	return new sswr.data.Timestamp(sswr.data.TimeInstant.fromVariTime(variTime), sswr.data.DateTimeUtil.getLocalTzQhr());
+	return new data.Timestamp(data.TimeInstant.fromVariTime(variTime), data.DateTimeUtil.getLocalTzQhr());
 }
 
-sswr.data.Timestamp.fromSecNS = function(unixTS, nanosec, tzQhr)
+data.Timestamp.fromSecNS = function(unixTS, nanosec, tzQhr)
 {
-	return new sswr.data.Timestamp(new sswr.data.TimeInstant(unixTS, nanosec), tzQhr);
+	return new data.Timestamp(new data.TimeInstant(unixTS, nanosec), tzQhr);
 }
 
-sswr.data.Timestamp.fromDotNetTicks = function(ticks, tzQhr)
+data.Timestamp.fromDotNetTicks = function(ticks, tzQhr)
 {
-	return new sswr.data.Timestamp(sswr.data.TimeInstant.fromDotNetTicks(ticks), tzQhr);
+	return new data.Timestamp(data.TimeInstant.fromDotNetTicks(ticks), tzQhr);
 }
 
-sswr.data.Timestamp.fromEpochSec = function(epochSec, tzQhr)
+data.Timestamp.fromEpochSec = function(epochSec, tzQhr)
 {
-	return new sswr.data.Timestamp(new sswr.data.TimeInstant(epochSec, 0), tzQhr);
+	return new data.Timestamp(new data.TimeInstant(epochSec, 0), tzQhr);
 }
 
-sswr.data.Timestamp.fromEpochMS = function(epochMS, tzQhr)
+data.Timestamp.fromEpochMS = function(epochMS, tzQhr)
 {
-	return new sswr.data.Timestamp(epochMS, tzQhr);
+	return new data.Timestamp(epochMS, tzQhr);
 }
 
-sswr.data.Timestamp.fromEpochUS = function(epochUS, tzQhr)
+data.Timestamp.fromEpochUS = function(epochUS, tzQhr)
 {
 	if (epochUS < 0)
 	{
-		return new sswr.data.Timestamp(new sswr.data.TimeInstant(Math.floor(epochUS / 1000000) - 1, (epochUS % 1000000 + 1000000) * 1000), tzQhr);
+		return new data.Timestamp(new data.TimeInstant(Math.floor(epochUS / 1000000) - 1, (epochUS % 1000000 + 1000000) * 1000), tzQhr);
 	}
 	else
 	{
-		return new sswr.data.Timestamp(new sswr.data.TimeInstant(Math.floor(epochUS / 1000000), (epochUS % 1000000) * 1000), tzQhr);
+		return new data.Timestamp(new data.TimeInstant(Math.floor(epochUS / 1000000), (epochUS % 1000000) * 1000), tzQhr);
 	}
 }
 
-sswr.data.Timestamp.fromEpochNS = function(epochNS, tzQhr)
+data.Timestamp.fromEpochNS = function(epochNS, tzQhr)
 {
 	if (epochNS < 0)
 	{
-		return new sswr.data.Timestamp(new sswr.data.TimeInstant(Math.floor(epochNS / 1000000000) - 1, (epochNS % 1000000000 + 1000000000)), tzQhr);
+		return new data.Timestamp(new data.TimeInstant(Math.floor(epochNS / 1000000000) - 1, (epochNS % 1000000000 + 1000000000)), tzQhr);
 	}
 	else
 	{
-		return new sswr.data.Timestamp(new sswr.data.TimeInstant(Math.floor(epochNS / 1000000000), (epochNS % 1000000000)), tzQhr);
+		return new data.Timestamp(new data.TimeInstant(Math.floor(epochNS / 1000000000), (epochNS % 1000000000)), tzQhr);
 	}
 }
 
-sswr.data.Timestamp.fromTimeValue = function(tval)
+data.Timestamp.fromTimeValue = function(tval)
 {
-	return new sswr.data.Timestamp(new sswr.data.TimeInstant(sswr.data.DateTimeUtil.timeValue2Secs(tval), tval.nanosec), tval.tzQhr);
+	return new data.Timestamp(new data.TimeInstant(data.DateTimeUtil.timeValue2Secs(tval), tval.nanosec), tval.tzQhr);
 }
 
-sswr.data.Timestamp.fromYMDHMS = function(ymdhms, tzQhr)
+data.Timestamp.fromYMDHMS = function(ymdhms, tzQhr)
 {
-	var tval = sswr.data.DateTimeUtil.timeValueFromYMDHMS(ymdhms);
+	var tval = data.DateTimeUtil.timeValueFromYMDHMS(ymdhms);
 	if (tval != null)
 	{
-		return new sswr.data.Timestamp(new sswr.data.TimeInstant(sswr.data.DateTimeUtil.timeValue2Secs(tval), 0), tzQhr);
+		return new data.Timestamp(new data.TimeInstant(data.DateTimeUtil.timeValue2Secs(tval), 0), tzQhr);
 	}
 	else
 	{
@@ -1612,7 +1611,7 @@ sswr.data.Timestamp.fromYMDHMS = function(ymdhms, tzQhr)
 	}
 }
 
-sswr.data.Timestamp.prototype.addMonth = function(val)
+data.Timestamp.prototype.addMonth = function(val)
 {
 	var tval = this.toTimeValue();
 	val += tval.month;
@@ -1627,64 +1626,64 @@ sswr.data.Timestamp.prototype.addMonth = function(val)
 		tval.year++;
 	}
 	tval.month = val;
-	return new sswr.data.Timestamp(new sswr.data.TimeInstant(sswr.data.DateTimeUtil.timeValue2Secs(tval), this.inst.nanosec), this.tzQhr);
+	return new data.Timestamp(new data.TimeInstant(data.DateTimeUtil.timeValue2Secs(tval), this.inst.nanosec), this.tzQhr);
 }
 
-sswr.data.Timestamp.prototype.addYear = function(val)
+data.Timestamp.prototype.addYear = function(val)
 {
 	var tval = this.toTimeValue();
 	tval.year = (tval.year + val);
-	return new sswr.data.Timestamp(new sswr.data.TimeInstant(sswr.data.DateTimeUtil.timeValue2Secs(tval), this.inst.nanosec), this.tzQhr);
+	return new data.Timestamp(new data.TimeInstant(data.DateTimeUtil.timeValue2Secs(tval), this.inst.nanosec), this.tzQhr);
 }
 
-sswr.data.Timestamp.prototype.addDay = function(val)
+data.Timestamp.prototype.addDay = function(val)
 {
-	return new sswr.data.Timestamp(this.inst.addDay(val), this.tzQhr);
+	return new data.Timestamp(this.inst.addDay(val), this.tzQhr);
 }
 
-sswr.data.Timestamp.prototype.addHour = function(val)
+data.Timestamp.prototype.addHour = function(val)
 {
-	return new sswr.data.Timestamp(this.inst.addHour(val), this.tzQhr);
+	return new data.Timestamp(this.inst.addHour(val), this.tzQhr);
 }
 
-sswr.data.Timestamp.prototype.addMinute = function(val)
+data.Timestamp.prototype.addMinute = function(val)
 {
-	return new sswr.data.Timestamp(this.inst.addMinute(val), this.tzQhr);
+	return new data.Timestamp(this.inst.addMinute(val), this.tzQhr);
 }
 
-sswr.data.Timestamp.prototype.addSecond = function(val)
+data.Timestamp.prototype.addSecond = function(val)
 {
 	var sec = Math.floor(val);
 	var ns = Math.floor((val - sec) * 1000000000);
-	return new sswr.data.Timestamp(this.inst.addSecond(sec).addNS(ns), this.tzQhr);
+	return new data.Timestamp(this.inst.addSecond(sec).addNS(ns), this.tzQhr);
 }
 
-sswr.data.Timestamp.prototype.addMS = function(val)
+data.Timestamp.prototype.addMS = function(val)
 {
-	return new sswr.data.Timestamp(this.inst.addMS(val), this.tzQhr);
+	return new data.Timestamp(this.inst.addMS(val), this.tzQhr);
 }
 
-sswr.data.Timestamp.prototype.addNS = function(val)
+data.Timestamp.prototype.addNS = function(val)
 {
-	return new sswr.data.Timestamp(this.inst.addNS(val), this.tzQhr);
+	return new data.Timestamp(this.inst.addNS(val), this.tzQhr);
 }
 
-sswr.data.Timestamp.prototype.getMS = function()
+data.Timestamp.prototype.getMS = function()
 {
 	return this.inst.GetMS();
 }
 
-sswr.data.Timestamp.prototype.clearTimeUTC = function()
+data.Timestamp.prototype.clearTimeUTC = function()
 {
-	return new sswr.data.Timestamp(this.inst.clearTime(), this.tzQhr);
+	return new data.Timestamp(this.inst.clearTime(), this.tzQhr);
 }
 
-sswr.data.Timestamp.prototype.clearTimeLocal = function()
+data.Timestamp.prototype.clearTimeLocal = function()
 {
-	return new sswr.data.Timestamp(this.inst.addMinute(this.tzQhr * 15).clearTime().addMinute(this.tzQhr * -15), this.tzQhr);
+	return new data.Timestamp(this.inst.addMinute(this.tzQhr * 15).clearTime().addMinute(this.tzQhr * -15), this.tzQhr);
 }
 
-sswr.data.Timestamp.prototype.clearMonthAndDay = function()
+data.Timestamp.prototype.clearMonthAndDay = function()
 {
 	var tval = this.toTimeValue();
 	tval.month = 1;
@@ -1693,10 +1692,10 @@ sswr.data.Timestamp.prototype.clearMonthAndDay = function()
 	tval.minute = 0;
 	tval.second = 0;
 	tval.nanosec = 0;
-	return sswr.data.Timestamp.fromTimeValue(tval);
+	return data.Timestamp.fromTimeValue(tval);
 }
 
-sswr.data.Timestamp.prototype.clearDayOfMonth = function()
+data.Timestamp.prototype.clearDayOfMonth = function()
 {
 	var tval = this.toTimeValue();
 	tval.day = 1;
@@ -1704,70 +1703,70 @@ sswr.data.Timestamp.prototype.clearDayOfMonth = function()
 	tval.minute = 0;
 	tval.second = 0;
 	tval.nanosec = 0;
-	return sswr.data.Timestamp.fromTimeValue(tval);
+	return data.Timestamp.fromTimeValue(tval);
 }
 
-sswr.data.Timestamp.prototype.getMSPassedUTCDate = function()
+data.Timestamp.prototype.getMSPassedUTCDate = function()
 {
 	return this.inst.getMSPassedDate();
 }
 
-sswr.data.Timestamp.prototype.getMSPassedLocalDate = function()
+data.Timestamp.prototype.getMSPassedLocalDate = function()
 {
 	return this.inst.addSecond(this.tzQhr * 900).getMSPassedDate();
 }
 
-sswr.data.Timestamp.prototype.diffSec = function(ts)
+data.Timestamp.prototype.diffSec = function(ts)
 {
 	return this.inst.diffSec(ts.inst);
 }
 
-sswr.data.Timestamp.prototype.diffMS = function(ts)
+data.Timestamp.prototype.diffMS = function(ts)
 {
 	return this.inst.diffMS(ts.inst);
 }
 
-sswr.data.Timestamp.prototype.diffSecDbl = function(ts)
+data.Timestamp.prototype.diffSecDbl = function(ts)
 {
 	return this.inst.diffSecDbl(ts.inst);
 }
 
-sswr.data.Timestamp.prototype.diff = function(ts)
+data.Timestamp.prototype.diff = function(ts)
 {
 	return this.inst.diff(ts.inst);
 }
 
-sswr.data.Timestamp.prototype.toTicks = function()
+data.Timestamp.prototype.toTicks = function()
 {
 	return this.inst.toTicks();
 }
 
-sswr.data.Timestamp.prototype.toDotNetTicks = function()
+data.Timestamp.prototype.toDotNetTicks = function()
 {
 	return this.inst.toDotNetTicks();
 }
 
-sswr.data.Timestamp.prototype.toUnixTimestamp = function()
+data.Timestamp.prototype.toUnixTimestamp = function()
 {
 	return this.inst.toUnixTimestamp();
 }
 
-sswr.data.Timestamp.prototype.toEpochSec = function()
+data.Timestamp.prototype.toEpochSec = function()
 {
 	return this.inst.toEpochSec();
 }
 
-sswr.data.Timestamp.prototype.toEpochMS = function()
+data.Timestamp.prototype.toEpochMS = function()
 {
 	return this.inst.toEpochMS();
 }
 
-sswr.data.Timestamp.prototype.toEpochNS = function()
+data.Timestamp.prototype.toEpochNS = function()
 {
 	return this.inst.toEpochNS();
 }
 
-sswr.data.Timestamp.prototype.toString = function(pattern)
+data.Timestamp.prototype.toString = function(pattern)
 {
 	if (pattern == null)
 	{
@@ -1788,11 +1787,11 @@ sswr.data.Timestamp.prototype.toString = function(pattern)
 			pattern = "yyyy-MM-dd HH:mm:ss.fffffffff zzzz";
 		}
 	}
-	var tval = sswr.data.DateTimeUtil.instant2TimeValue(this.inst.sec, this.inst.nanosec, this.tzQhr);
-	return sswr.data.DateTimeUtil.toString(tval, pattern);
+	var tval = data.DateTimeUtil.instant2TimeValue(this.inst.sec, this.inst.nanosec, this.tzQhr);
+	return data.DateTimeUtil.toString(tval, pattern);
 }
 
-sswr.data.Timestamp.prototype.toStringISO8601 = function()
+data.Timestamp.prototype.toStringISO8601 = function()
 {
 	if (this.inst.nanosec == 0)
 	{
@@ -1812,7 +1811,7 @@ sswr.data.Timestamp.prototype.toStringISO8601 = function()
 	}
 }
 
-sswr.data.Timestamp.prototype.toStringNoZone = function()
+data.Timestamp.prototype.toStringNoZone = function()
 {
 	if (this.inst.nanosec == 0)
 	{
@@ -1839,26 +1838,26 @@ sswr.data.Timestamp.prototype.toStringNoZone = function()
 	}
 }
 
-sswr.data.Timestamp.prototype.toUTCTime = function()
+data.Timestamp.prototype.toUTCTime = function()
 {
-	return new sswr.data.Timestamp(this.inst, 0);
+	return new data.Timestamp(this.inst, 0);
 }
 
-sswr.data.Timestamp.prototype.toLocalTime = function()
+data.Timestamp.prototype.toLocalTime = function()
 {
-	return new sswr.data.Timestamp(this.inst, sswr.data.DateTimeUtil.getLocalTzQhr());
+	return new data.Timestamp(this.inst, data.DateTimeUtil.getLocalTzQhr());
 }
 
-sswr.data.Timestamp.prototype.convertTimeZoneQHR = function(tzQhr)
+data.Timestamp.prototype.convertTimeZoneQHR = function(tzQhr)
 {
-	return new sswr.data.Timestamp(this.inst, tzQhr);
+	return new data.Timestamp(this.inst, tzQhr);
 }
 
-sswr.data.Timestamp.prototype.setTimeZoneQHR = function(tzQhr)
+data.Timestamp.prototype.setTimeZoneQHR = function(tzQhr)
 {
 	if (this.tzQhr != tzQhr)
 	{
-		return new sswr.data.Timestamp(this.inst.addSecond((this.tzQhr - tzQhr) * (15 * 60)), tzQhr);
+		return new data.Timestamp(this.inst.addSecond((this.tzQhr - tzQhr) * (15 * 60)), tzQhr);
 	}
 	else
 	{
@@ -1866,24 +1865,24 @@ sswr.data.Timestamp.prototype.setTimeZoneQHR = function(tzQhr)
 	}
 }
 
-sswr.data.Timestamp.prototype.getTimeZoneQHR = function()
+data.Timestamp.prototype.getTimeZoneQHR = function()
 {
 	return this.tzQhr;
 }
 
-sswr.data.Timestamp.prototype.sameDate = function(ts)
+data.Timestamp.prototype.sameDate = function(ts)
 {
 	return this.inst.sameDate(ts.inst);
 }
 
-sswr.data.Timestamp.prototype.toTimeValue = function()
+data.Timestamp.prototype.toTimeValue = function()
 {
-	return sswr.data.DateTimeUtil.instant2TimeValue(this.inst.sec, this.inst.nanosec, this.tzQhr);
+	return data.DateTimeUtil.instant2TimeValue(this.inst.sec, this.inst.nanosec, this.tzQhr);
 }
 
-sswr.data.Timestamp.prototype.roundToS = function()
+data.Timestamp.prototype.roundToS = function()
 {
-	return new sswr.data.Timestamp(this.inst.roundToS(), this.tzQhr);
+	return new data.Timestamp(this.inst.roundToS(), this.tzQhr);
 }
 
-export default sswr;
+export default data;

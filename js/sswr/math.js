@@ -1,7 +1,6 @@
-import sswr from "./sswr.js";
-sswr.math = new Object();
+var math = {};
 
-sswr.math.roundToFloat = function(n, decimalPoints)
+math.roundToFloat = function(n, decimalPoints)
 {
 	if (decimalPoints === undefined) {
 		decimalPoints = 0;
@@ -12,7 +11,7 @@ sswr.math.roundToFloat = function(n, decimalPoints)
 	return Math.round(n) / multiplicator;
 }
 
-sswr.math.roundToStr = function(n, decimalPoints)
+math.roundToStr = function(n, decimalPoints)
 {
 	if (decimalPoints === undefined) {
 		decimalPoints = 0;
@@ -35,36 +34,36 @@ sswr.math.roundToStr = function(n, decimalPoints)
 	}
 }
 
-sswr.math.Coord2D = function(x, y)
+math.Coord2D = function(x, y)
 {
 	this.x = x;
 	this.y = y;
 }
 
-sswr.math.Coord2D.prototype.getLat = function()
+math.Coord2D.prototype.getLat = function()
 {
 	return this.y;
 }
 
-sswr.math.Coord2D.prototype.getLon = function()
+math.Coord2D.prototype.getLon = function()
 {
 	return this.x;
 }
 
-sswr.math.geometry = new Object();
-sswr.math.geometry.Vector2D = function(srid)
+math.geometry = new Object();
+math.geometry.Vector2D = function(srid)
 {
 	this.srid = srid;
 }
 
-sswr.math.geometry.MultiGeometry = function(srid)
+math.geometry.MultiGeometry = function(srid)
 {
-	sswr.math.geometry.Vector2D.call(this, srid);
+	math.geometry.Vector2D.call(this, srid);
 	this.coordinates = new Array();
 }
-sswr.math.geometry.MultiGeometry.prototype = Object.create(sswr.math.geometry.Vector2D.prototype);
+math.geometry.MultiGeometry.prototype = Object.create(math.geometry.Vector2D.prototype);
 
-sswr.math.geometry.MultiGeometry.prototype.calBoundaryPoint = function(x, y)
+math.geometry.MultiGeometry.prototype.calBoundaryPoint = function(x, y)
 {
 	var minObj = null;
 	var thisObj;
@@ -80,7 +79,7 @@ sswr.math.geometry.MultiGeometry.prototype.calBoundaryPoint = function(x, y)
 	return minObj;
 }
 
-sswr.math.geometry.MultiGeometry.prototype.insideVector = function(x, y)
+math.geometry.MultiGeometry.prototype.insideVector = function(x, y)
 {
 	var i = this.coordinates.length;
 	while (i-- > 0)
@@ -93,29 +92,29 @@ sswr.math.geometry.MultiGeometry.prototype.insideVector = function(x, y)
 	return false;
 }
 
-sswr.math.geometry.MultiPolygon = function(srid, coordinates)
+math.geometry.MultiPolygon = function(srid, coordinates)
 {
-	sswr.math.geometry.MultiGeometry.call(this, srid);
+	math.geometry.MultiGeometry.call(this, srid);
 	this.type = "MultiPolygon";
 	var i = 0;
 	var j = coordinates.length;
 	while (i < j)
 	{
-		this.coordinates.push(new sswr.math.geometry.Polygon(srid, coordinates[i]));
+		this.coordinates.push(new math.geometry.Polygon(srid, coordinates[i]));
 		i++;
 	}
 }
-sswr.math.geometry.MultiPolygon.prototype = Object.create(sswr.math.geometry.MultiGeometry.prototype);
+math.geometry.MultiPolygon.prototype = Object.create(math.geometry.MultiGeometry.prototype);
 
-sswr.math.geometry.Polygon = function(srid, coordinates)
+math.geometry.Polygon = function(srid, coordinates)
 {
-	sswr.math.geometry.Vector2D.call(this, srid);
+	math.geometry.Vector2D.call(this, srid);
 	this.type = "Polygon";
 	this.coordinates = coordinates;
 }
-sswr.math.geometry.Polygon.prototype = Object.create(sswr.math.geometry.Vector2D.prototype);
+math.geometry.Polygon.prototype = Object.create(math.geometry.Vector2D.prototype);
 
-sswr.math.geometry.Polygon.prototype.calBoundaryPoint = function(x, y)
+math.geometry.Polygon.prototype.calBoundaryPoint = function(x, y)
 {
 	var k;
 	var l;
@@ -238,7 +237,7 @@ sswr.math.geometry.Polygon.prototype.calBoundaryPoint = function(x, y)
 	return ret;
 }
 
-sswr.math.geometry.Polygon.prototype.insideVector = function(x, y)
+math.geometry.Polygon.prototype.insideVector = function(x, y)
 {
 	var thisX;
 	var thisY;
@@ -301,9 +300,9 @@ sswr.math.geometry.Polygon.prototype.insideVector = function(x, y)
 	return (leftCnt & 1) != 0;	
 }
 
-sswr.math.unit = new Object();
-sswr.math.unit.Angle = new Object();
-sswr.math.unit.Angle.AngleUnit = {
+math.unit = new Object();
+math.unit.Angle = new Object();
+math.unit.Angle.AngleUnit = {
 	RADIAN: 1,
 	GRADIAN: 2,
 	TURN: 3,
@@ -314,32 +313,32 @@ sswr.math.unit.Angle.AngleUnit = {
 	MICROARCSECOND: 8
 };
 
-sswr.math.unit.Angle.getUnitRatio = function(unit)
+math.unit.Angle.getUnitRatio = function(unit)
 {
 	switch (unit)
 	{
-	case sswr.math.unit.Angle.AngleUnit.RADIAN:
+	case math.unit.Angle.AngleUnit.RADIAN:
 		return 1;
-	case sswr.math.unit.Angle.AngleUnit.GRADIAN:
+	case math.unit.Angle.AngleUnit.GRADIAN:
 		return Math.PI / 200.0;
-	case sswr.math.unit.Angle.AngleUnit.TURN:
+	case math.unit.Angle.AngleUnit.TURN:
 		return Math.PI * 2.0;
-	case sswr.math.unit.Angle.AngleUnit.DEGREE:
+	case math.unit.Angle.AngleUnit.DEGREE:
 		return Math.PI / 180.0;
-	case sswr.math.unit.Angle.AngleUnit.ARCMINUTE:
+	case math.unit.Angle.AngleUnit.ARCMINUTE:
 		return Math.PI / 10800.0;
-	case sswr.math.unit.Angle.AngleUnit.ARCSECOND:
+	case math.unit.Angle.AngleUnit.ARCSECOND:
 		return Math.PI / 648000.0;
-	case sswr.math.unit.Angle.AngleUnit.MILLIARCSECOND:
+	case math.unit.Angle.AngleUnit.MILLIARCSECOND:
 		return Math.PI / 648000000.0;
-	case sswr.math.unit.Angle.AngleUnit.MICROARCSECOND:
+	case math.unit.Angle.AngleUnit.MICROARCSECOND:
 		return Math.PI / 648000000000.0;
 	}
 	return 1;
 }
 
-sswr.math.unit.Distance = new Object();
-sswr.math.unit.Distance.DistanceUnit = {
+math.unit.Distance = new Object();
+math.unit.Distance.DistanceUnit = {
 	METER: 0,
 	CENTIMETER: 1,
 	MILLIMETER: 2,
@@ -365,72 +364,72 @@ sswr.math.unit.Distance.DistanceUnit = {
 	TWIP: 22
 };
 
-sswr.math.unit.Distance.getUnitRatio = function(unit)
+math.unit.Distance.getUnitRatio = function(unit)
 {
 	switch (unit)
 	{
-	case sswr.math.unit.Distance.DistanceUnit.METER:
+	case math.unit.Distance.DistanceUnit.METER:
 		return 1.0;
-	case sswr.math.unit.Distance.DistanceUnit.CENTIMETER:
+	case math.unit.Distance.DistanceUnit.CENTIMETER:
 		return 0.01;
-	case sswr.math.unit.Distance.DistanceUnit.MILLIMETER:
+	case math.unit.Distance.DistanceUnit.MILLIMETER:
 		return 0.001;
-	case sswr.math.unit.Distance.DistanceUnit.MICROMETER:
+	case math.unit.Distance.DistanceUnit.MICROMETER:
 		return 0.000001;
-	case sswr.math.unit.Distance.DistanceUnit.NANOMETER:
+	case math.unit.Distance.DistanceUnit.NANOMETER:
 		return 0.000000001;
-	case sswr.math.unit.Distance.DistanceUnit.PICOMETER:
+	case math.unit.Distance.DistanceUnit.PICOMETER:
 		return 0.000000000001;
-	case sswr.math.unit.Distance.DistanceUnit.KILOMETER:
+	case math.unit.Distance.DistanceUnit.KILOMETER:
 		return 1000.0;
-	case sswr.math.unit.Distance.DistanceUnit.INCH:
+	case math.unit.Distance.DistanceUnit.INCH:
 		return 0.0254;
-	case sswr.math.unit.Distance.DistanceUnit.FOOT:
+	case math.unit.Distance.DistanceUnit.FOOT:
 		return 0.0254 * 12.0;
-	case sswr.math.unit.Distance.DistanceUnit.YARD:
+	case math.unit.Distance.DistanceUnit.YARD:
 		return 0.0254 * 36.0;
-	case sswr.math.unit.Distance.DistanceUnit.MILE:
+	case math.unit.Distance.DistanceUnit.MILE:
 		return 0.0254 * 12.0 * 5280;
-	case sswr.math.unit.Distance.DistanceUnit.NAUTICAL_MILE:
+	case math.unit.Distance.DistanceUnit.NAUTICAL_MILE:
 		return 1852.0;
-	case sswr.math.unit.Distance.DistanceUnit.AU:
+	case math.unit.Distance.DistanceUnit.AU:
 		return 149597870700.0;
-	case sswr.math.unit.Distance.DistanceUnit.LIGHTSECOND:
+	case math.unit.Distance.DistanceUnit.LIGHTSECOND:
 		return 299792458.0;
-	case sswr.math.unit.Distance.DistanceUnit.LIGHTMINUTE:
+	case math.unit.Distance.DistanceUnit.LIGHTMINUTE:
 		return 17987547480.0;
-	case sswr.math.unit.Distance.DistanceUnit.LIGHTHOUR:
+	case math.unit.Distance.DistanceUnit.LIGHTHOUR:
 		return 299792458.0 * 3600.0;
-	case sswr.math.unit.Distance.DistanceUnit.LIGHTDAY:
+	case math.unit.Distance.DistanceUnit.LIGHTDAY:
 		return 299792458.0 * 86400.0;
-	case sswr.math.unit.Distance.DistanceUnit.LIGHTWEEK:
+	case math.unit.Distance.DistanceUnit.LIGHTWEEK:
 		return 299792458.0 * 604800.0;
-	case sswr.math.unit.Distance.DistanceUnit.LIGHTYEAR:
+	case math.unit.Distance.DistanceUnit.LIGHTYEAR:
 		return 299792458.0 * 31557600.0;
-	case sswr.math.unit.Distance.DistanceUnit.EMU:
+	case math.unit.Distance.DistanceUnit.EMU:
 		return 1 / 36000000.0;
-	case sswr.math.unit.Distance.DistanceUnit.POINT:
+	case math.unit.Distance.DistanceUnit.POINT:
 		return 0.0254 / 72.0;
-	case sswr.math.unit.Distance.DistanceUnit.PIXEL:
+	case math.unit.Distance.DistanceUnit.PIXEL:
 		return 0.0254 / 96.0;
-	case sswr.math.unit.Distance.DistanceUnit.TWIP:
+	case math.unit.Distance.DistanceUnit.TWIP:
 		return 0.0254 / 1440.0;
 	}
 	return 1;
 }
 
-sswr.math.unit.Distance.convert = function(fromUnit, toUnit, fromValue)
+math.unit.Distance.convert = function(fromUnit, toUnit, fromValue)
 {
-	return fromValue * sswr.math.unit.Distance.getUnitRatio(fromUnit) / sswr.math.unit.Distance.getUnitRatio(toUnit);
+	return fromValue * math.unit.Distance.getUnitRatio(fromUnit) / math.unit.Distance.getUnitRatio(toUnit);
 }
 
-sswr.math.CoordinateSystem = function(srid, csysName)
+math.CoordinateSystem = function(srid, csysName)
 {
 	this.srid = srid;
 	this.csysName = csysName;
 }
 
-sswr.math.CoordinateSystem.prototype.CoordinateSystemType = {
+math.CoordinateSystem.prototype.CoordinateSystemType = {
 	Geographic: 0,
 	MercatorProjected: 1,
 	Mercator1SPProjected: 2,
@@ -438,43 +437,43 @@ sswr.math.CoordinateSystem.prototype.CoordinateSystemType = {
 	GausskrugerProjected: 4
 };
 
-sswr.math.CoordinateSystemManager = new Object();
-sswr.math.CoordinateSystemManager.srCreateGeogCSys = function(srid, datumSrid, name)
+math.CoordinateSystemManager = new Object();
+math.CoordinateSystemManager.srCreateGeogCSys = function(srid, datumSrid, name)
 {
 	var data = this.srGetDatumData(datumSrid);
 	if (data == null)
 	{
 		return null;
 	}
-	return new sswr.math.GeographicCoordinateSystem(srid, name, data);
+	return new math.GeographicCoordinateSystem(srid, name, data);
 }
 
-sswr.math.CoordinateSystemManager.srCreateProjCSys = function(srid, geogcsSrid, csysType, projName, falseEasting, falseNorthing, centralMeridian, latitudeOfOrigin, scaleFactor)
+math.CoordinateSystemManager.srCreateProjCSys = function(srid, geogcsSrid, csysType, projName, falseEasting, falseNorthing, centralMeridian, latitudeOfOrigin, scaleFactor)
 {
 	var gcsys = this.srCreateGeogCSys(geogcsSrid);
 	if (gcsys == null)
 		return null;
-	if (csysType == sswr.math.CoordinateSystem.CoordinateSystemType.MercatorProjected || csysType == sswr.math.CoordinateSystem.CoordinateSystemType.GausskrugerProjected)
+	if (csysType == math.CoordinateSystem.CoordinateSystemType.MercatorProjected || csysType == math.CoordinateSystem.CoordinateSystemType.GausskrugerProjected)
 	{
-		return new sswr.math.MercatorProjectedCoordinateSystem(srid, projName, falseEasting, falseNorthing, centralMeridian, latitudeOfOrigin, scaleFactor, gcsys);
+		return new math.MercatorProjectedCoordinateSystem(srid, projName, falseEasting, falseNorthing, centralMeridian, latitudeOfOrigin, scaleFactor, gcsys);
 	}
-	else if (csysType == sswr.math.CoordinateSystem.CoordinateSystemType.Mercator1SPProjected)
+	else if (csysType == math.CoordinateSystem.CoordinateSystemType.Mercator1SPProjected)
 	{
-		return new sswr.math.Mercator1SPProjectedCoordinateSystem(srid, projName, falseEasting, falseNorthing, centralMeridian, latitudeOfOrigin, scaleFactor, gcsys);
+		return new math.Mercator1SPProjectedCoordinateSystem(srid, projName, falseEasting, falseNorthing, centralMeridian, latitudeOfOrigin, scaleFactor, gcsys);
 	}
 	return null;
 }
 
-sswr.math.CoordinateSystemManager.srCreateCsys = function(srid)
+math.CoordinateSystemManager.srCreateCsys = function(srid)
 {
 	switch (srid)
 	{
 	case 2326:
 	case 102140:
-		return this.srCreateProjCSys(srid, 4611, sswr.math.CoordinateSystem.CoordinateSystemType.MercatorProjected, "Hong Kong 1980 Grid System", 836694.05, 819069.80, 114.17855555555555555555555555556, 22.312133333333333333333333333333, 1);
+		return this.srCreateProjCSys(srid, 4611, math.CoordinateSystem.CoordinateSystemType.MercatorProjected, "Hong Kong 1980 Grid System", 836694.05, 819069.80, 114.17855555555555555555555555556, 22.312133333333333333333333333333, 1);
 	case 3857:
 	case 900913:
-		return this.srCreateProjCSys(srid, 4326, sswr.math.CoordinateSystem.CoordinateSystemType.Mercator1SPProjected, "WGS 84 / Pseudo-Mercator", 0, 0, 0, 0, 1);
+		return this.srCreateProjCSys(srid, 4326, math.CoordinateSystem.CoordinateSystemType.Mercator1SPProjected, "WGS 84 / Pseudo-Mercator", 0, 0, 0, 0, 1);
 	case 4326:
 		return this.srCreateGeogCSys(srid, 6326, "WGS 84");
 	case 4611:
@@ -484,40 +483,40 @@ sswr.math.CoordinateSystemManager.srCreateCsys = function(srid)
 	}
 }
 
-sswr.math.CoordinateSystemManager.srGetDatumData = function(srid)
+math.CoordinateSystemManager.srGetDatumData = function(srid)
 {
 	switch (srid)
 	{
 	case 6326:
-		return new sswr.math.DatumData(6326, this.srGetSpheroid(7030), "WGS_1984", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, sswr.math.unit.Angle.AngleUnit.RADIAN);
+		return new math.DatumData(6326, this.srGetSpheroid(7030), "WGS_1984", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, math.unit.Angle.AngleUnit.RADIAN);
 	case 6600:
-		return new sswr.math.DatumData(6600, this.srGetSpheroid(7012), "Anguilla_1957", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, sswr.math.unit.Angle.AngleUnit.RADIAN);
+		return new math.DatumData(6600, this.srGetSpheroid(7012), "Anguilla_1957", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, math.unit.Angle.AngleUnit.RADIAN);
 	case 6601:
-		return new sswr.math.DatumData(6601, this.srGetSpheroid(7012), "Antigua_1943", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, sswr.math.unit.Angle.AngleUnit.RADIAN);
+		return new math.DatumData(6601, this.srGetSpheroid(7012), "Antigua_1943", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, math.unit.Angle.AngleUnit.RADIAN);
 	case 6602:
-		return new sswr.math.DatumData(6602, this.srGetSpheroid(7012), "Dominica_1945", 0, 0, 0, 725, 685, 536, 0, 0, 0, 0, sswr.math.unit.Angle.AngleUnit.ARCSECOND);
+		return new math.DatumData(6602, this.srGetSpheroid(7012), "Dominica_1945", 0, 0, 0, 725, 685, 536, 0, 0, 0, 0, math.unit.Angle.AngleUnit.ARCSECOND);
 	case 6603:
-		return new sswr.math.DatumData(6603, this.srGetSpheroid(7012), "Grenada_1953", 0, 0, 0, 72, 213.7, 93, 0, 0, 0, 0, sswr.math.unit.Angle.AngleUnit.ARCSECOND);
+		return new math.DatumData(6603, this.srGetSpheroid(7012), "Grenada_1953", 0, 0, 0, 72, 213.7, 93, 0, 0, 0, 0, math.unit.Angle.AngleUnit.ARCSECOND);
 	case 6611:
-		return new sswr.math.DatumData(6611, this.srGetSpheroid(7022), "Hong_Kong_1980", 0, 0, 0, -162.619, -276.959, -161.764, 0.067753, -2.24365, -1.15883, -1.09425, sswr.math.unit.Angle.AngleUnit.ARCSECOND);
+		return new math.DatumData(6611, this.srGetSpheroid(7022), "Hong_Kong_1980", 0, 0, 0, -162.619, -276.959, -161.764, 0.067753, -2.24365, -1.15883, -1.09425, math.unit.Angle.AngleUnit.ARCSECOND);
 	}
 	return null;
 }
 
-sswr.math.CoordinateSystemManager.srGetSpheroid = function(srid)
+math.CoordinateSystemManager.srGetSpheroid = function(srid)
 {
 	switch (srid)
 	{
 	case 7012:
-		return new sswr.math.Spheroid(7012, new sswr.math.EarthEllipsoid(null, null, sswr.math.EarthEllipsoid.EarthEllipsoidType.CLARKE1880), "Clarke 1880 (RGS)");
+		return new math.Spheroid(7012, new math.EarthEllipsoid(null, null, math.EarthEllipsoid.EarthEllipsoidType.CLARKE1880), "Clarke 1880 (RGS)");
 	case 7022:
-		return new sswr.math.Spheroid(7022, new sswr.math.EarthEllipsoid(null, null, sswr.math.EarthEllipsoid.EarthEllipsoidType.INTL1924),   "International 1924");
+		return new math.Spheroid(7022, new math.EarthEllipsoid(null, null, math.EarthEllipsoid.EarthEllipsoidType.INTL1924),   "International 1924");
 	case 7030:
-		return new sswr.math.Spheroid(7030, new sswr.math.EarthEllipsoid(null, null, sswr.math.EarthEllipsoid.EarthEllipsoidType.WGS84),      "WGS 84");
+		return new math.Spheroid(7030, new math.EarthEllipsoid(null, null, math.EarthEllipsoid.EarthEllipsoidType.WGS84),      "WGS 84");
 	}
 }
 
-sswr.math.DatumData = function(srid, spheroid, name, x0, y0, z0, cX, cY, cZ, xAngle, yAngle, zAngle, scale, aunit)
+math.DatumData = function(srid, spheroid, name, x0, y0, z0, cX, cY, cZ, xAngle, yAngle, zAngle, scale, aunit)
 {
 	this.srid = srid;
 	this.spheroid = spheroid;
@@ -528,15 +527,15 @@ sswr.math.DatumData = function(srid, spheroid, name, x0, y0, z0, cX, cY, cZ, xAn
 	this.cX = cX;
 	this.cY = cY;
 	this.cZ = cZ;
-	var aratio = sswr.math.unit.Angle.getUnitRatio(aunit);
+	var aratio = math.unit.Angle.getUnitRatio(aunit);
 	this.xAngle = xAngle * aratio;
 	this.yAngle = yAngle * aratio;
 	this.zAngle = zAngle * aratio;
 	this.scale = scale;
-	this.aunit = sswr.math.unit.Angle.AngleUnit.RADIAN;
+	this.aunit = math.unit.Angle.AngleUnit.RADIAN;
 }
 
-sswr.math.EarthEllipsoid = function(semiMajorAxis, inverseFlattening, eet)
+math.EarthEllipsoid = function(semiMajorAxis, inverseFlattening, eet)
 {
 	this.eet = eet;
 	if (semiMajorAxis == null || inverseFlattening == null)
@@ -553,7 +552,7 @@ sswr.math.EarthEllipsoid = function(semiMajorAxis, inverseFlattening, eet)
 	this.eccentricity = Math.sqrt(2 * f - f * f);
 }
 
-sswr.math.EarthEllipsoid.EarthEllipsoidType = {
+math.EarthEllipsoid.EarthEllipsoidType = {
 	OTHER: 0,
 	PLESSIS: 1,
 	EVEREST1830: 2,
@@ -582,7 +581,7 @@ sswr.math.EarthEllipsoid.EarthEllipsoidType = {
 	IERS2003: 25
 };
 
-sswr.math.EarthEllipsoid.prototype.calSurfaceDistance = function(dLat1, dLon1, dLat2, dLon2, unit)
+math.EarthEllipsoid.prototype.calSurfaceDistance = function(dLat1, dLon1, dLat2, dLon2, unit)
 {
 	var r;
 	var rLat1;
@@ -604,9 +603,9 @@ sswr.math.EarthEllipsoid.prototype.calSurfaceDistance = function(dLat1, dLon1, d
 	var d = Math.acos(cLat1 * Math.cos(rLon1) * cLat2 * Math.cos(rLon2) + cLat1 * Math.sin(rLon1) * cLat2 * Math.sin(rLon2) + Math.sin(rLat1) * Math.sin(rLat2)) * r;
 	if (d > 0 || d < 0)
 	{
-		if (unit != null && unit != sswr.math.unit.Distance.DistanceUnit.METER)
+		if (unit != null && unit != math.unit.Distance.DistanceUnit.METER)
 		{
-			d = sswr.math.unit.Distance.convert(sswr.math.unit.Distance.DistanceUnit.METER, unit, d);
+			d = math.unit.Distance.convert(math.unit.Distance.DistanceUnit.METER, unit, d);
 		}
 	}
 	else if (d != 0)
@@ -616,145 +615,145 @@ sswr.math.EarthEllipsoid.prototype.calSurfaceDistance = function(dLat1, dLon1, d
 	return d;	
 }
 
-sswr.math.EarthEllipsoid.prototype.getSemiMinorAxis = function()
+math.EarthEllipsoid.prototype.getSemiMinorAxis = function()
 {
 	return this.semiMinorAxis;
 }
 
-sswr.math.EarthEllipsoid.prototype.initEarthInfo = function(eet)
+math.EarthEllipsoid.prototype.initEarthInfo = function(eet)
 {
 	switch (eet)
 	{
 	default:
-	case sswr.math.EarthEllipsoid.EarthEllipsoidType.OTHER:
+	case math.EarthEllipsoid.EarthEllipsoidType.OTHER:
 		this.semiMajorAxis = 6378137.0;
 		this.inverseFlattening = 191.0;
 		return;
-	case sswr.math.EarthEllipsoid.EarthEllipsoidType.PLESSIS:
+	case math.EarthEllipsoid.EarthEllipsoidType.PLESSIS:
 		this.semiMajorAxis = 6376523.0;
 		this.inverseFlattening = 308.64;
 		return;
-	case sswr.math.EarthEllipsoid.EarthEllipsoidType.EVEREST1830:
+	case math.EarthEllipsoid.EarthEllipsoidType.EVEREST1830:
 		this.semiMajorAxis = 6377299.365;
 		this.inverseFlattening = 300.80172554;
 		return;
-	case sswr.math.EarthEllipsoid.EarthEllipsoidType.EVEREST1830M:
+	case math.EarthEllipsoid.EarthEllipsoidType.EVEREST1830M:
 		this.semiMajorAxis = 6377304.063;
 		this.inverseFlattening = 300.8017;
 		return;
-	case sswr.math.EarthEllipsoid.EarthEllipsoidType.EVEREST1830N:
+	case math.EarthEllipsoid.EarthEllipsoidType.EVEREST1830N:
 		this.semiMajorAxis = 6377298.556;
 		this.inverseFlattening = 300.8017;
 		return;
-	case sswr.math.EarthEllipsoid.EarthEllipsoidType.AIRY1830:
+	case math.EarthEllipsoid.EarthEllipsoidType.AIRY1830:
 		this.semiMajorAxis = 6377563.396;
 		this.inverseFlattening = 299.3249646;
 		return;
-	case sswr.math.EarthEllipsoid.EarthEllipsoidType.AIRY1830M:
+	case math.EarthEllipsoid.EarthEllipsoidType.AIRY1830M:
 		this.semiMajorAxis = 6377340.189;
 		this.inverseFlattening = 299.32495141450600500090538973015;
 		return;
-	case sswr.math.EarthEllipsoid.EarthEllipsoidType.BESSEL1841:
+	case math.EarthEllipsoid.EarthEllipsoidType.BESSEL1841:
 		this.semiMajorAxis = 6377397.155;
 		this.inverseFlattening = 299.1528128;
 		return;
-	case sswr.math.EarthEllipsoid.EarthEllipsoidType.CLARKE1866:
+	case math.EarthEllipsoid.EarthEllipsoidType.CLARKE1866:
 		this.semiMajorAxis = 6378206.4;
 		this.inverseFlattening = 294.9786982;
 		return;
-	case sswr.math.EarthEllipsoid.EarthEllipsoidType.CLARKE1878:
+	case math.EarthEllipsoid.EarthEllipsoidType.CLARKE1878:
 		this.semiMajorAxis = 6378190.0;
 		this.inverseFlattening = 293.4659980;
 		return;
-	case sswr.math.EarthEllipsoid.EarthEllipsoidType.CLARKE1880:
+	case math.EarthEllipsoid.EarthEllipsoidType.CLARKE1880:
 		this.semiMajorAxis = 6378249.145;
 		this.inverseFlattening = 293.465;
 		return;
-	case sswr.math.EarthEllipsoid.EarthEllipsoidType.HELMERT1906:
+	case math.EarthEllipsoid.EarthEllipsoidType.HELMERT1906:
 		this.semiMajorAxis = 6378200.0;
 		this.inverseFlattening = 298.3;
 		return;
-	case sswr.math.EarthEllipsoid.EarthEllipsoidType.HAYFORD1910:
+	case math.EarthEllipsoid.EarthEllipsoidType.HAYFORD1910:
 		this.semiMajorAxis = 6378388.0;
 		this.inverseFlattening = 297.0;
 		return;
-	case sswr.math.EarthEllipsoid.EarthEllipsoidType.INTL1924:
+	case math.EarthEllipsoid.EarthEllipsoidType.INTL1924:
 		this.semiMajorAxis = 6378388.0;
 		this.inverseFlattening = 297.0;
 		return;
-	case sswr.math.EarthEllipsoid.EarthEllipsoidType.KRASSOVSKY1940:
+	case math.EarthEllipsoid.EarthEllipsoidType.KRASSOVSKY1940:
 		this.semiMajorAxis = 6378245.0;
 		this.inverseFlattening = 298.3;
 		return;
-	case sswr.math.EarthEllipsoid.EarthEllipsoidType.WGS66:
+	case math.EarthEllipsoid.EarthEllipsoidType.WGS66:
 		this.semiMajorAxis = 6378145.0;
 		this.inverseFlattening = 298.25;
 		return;
-	case sswr.math.EarthEllipsoid.EarthEllipsoidType.AUSTRALIAN1966:
+	case math.EarthEllipsoid.EarthEllipsoidType.AUSTRALIAN1966:
 		this.semiMajorAxis = 6378160.0;
 		this.inverseFlattening = 298.25;
 		return;
-	case sswr.math.EarthEllipsoid.EarthEllipsoidType.NEWINTL1967:
+	case math.EarthEllipsoid.EarthEllipsoidType.NEWINTL1967:
 		this.semiMajorAxis = 6378157.5;
 		this.inverseFlattening = 298.24961539;
 		return;
-	case sswr.math.EarthEllipsoid.EarthEllipsoidType.GPS67:
+	case math.EarthEllipsoid.EarthEllipsoidType.GPS67:
 		this.semiMajorAxis = 6378160.0;
 		this.inverseFlattening = 298.247167427;
 		return;
-	case sswr.math.EarthEllipsoid.EarthEllipsoidType.SAM1969:
+	case math.EarthEllipsoid.EarthEllipsoidType.SAM1969:
 		this.semiMajorAxis = 6378160.0;
 		this.inverseFlattening = 298.25;
 		return;
-	case sswr.math.EarthEllipsoid.EarthEllipsoidType.WGS72:
+	case math.EarthEllipsoid.EarthEllipsoidType.WGS72:
 		this.semiMajorAxis = 6378135.0;
 		this.inverseFlattening = 298.26;
 		return;
-	case sswr.math.EarthEllipsoid.EarthEllipsoidType.GRS80:
+	case math.EarthEllipsoid.EarthEllipsoidType.GRS80:
 		this.semiMajorAxis = 6378137.0;
 		this.inverseFlattening = 298.257222101;
 		return;
-	case sswr.math.EarthEllipsoid.EarthEllipsoidType.WGS84:
+	case math.EarthEllipsoid.EarthEllipsoidType.WGS84:
 		this.semiMajorAxis = 6378137.0;
 		this.inverseFlattening = 298.257223563;
 		return;
-	case sswr.math.EarthEllipsoid.EarthEllipsoidType.WGS84_OGC:
+	case math.EarthEllipsoid.EarthEllipsoidType.WGS84_OGC:
 		this.semiMajorAxis = 6378137.0;
 		this.inverseFlattening = 298.257222932867;
 		return;
-	case sswr.math.EarthEllipsoid.EarthEllipsoidType.IERS1989:
+	case math.EarthEllipsoid.EarthEllipsoidType.IERS1989:
 		this.semiMajorAxis = 6378136.0;
 		this.inverseFlattening = 298.257;
 		return;
-	case sswr.math.EarthEllipsoid.EarthEllipsoidType.IERS2003:
+	case math.EarthEllipsoid.EarthEllipsoidType.IERS2003:
 		this.semiMajorAxis = 6378136.6;
 		this.inverseFlattening = 298.25642;
 		return;
 	}
 }
 
-sswr.math.GeographicCoordinateSystem = function(srid, csysName, datumData)
+math.GeographicCoordinateSystem = function(srid, csysName, datumData)
 {
-	sswr.math.CoordinateSystem.call(this, srid, csysName);
+	math.CoordinateSystem.call(this, srid, csysName);
 	this.datum = datumData;
 }
-sswr.math.GeographicCoordinateSystem.prototype = Object.create(sswr.math.CoordinateSystem.prototype);
+math.GeographicCoordinateSystem.prototype = Object.create(math.CoordinateSystem.prototype);
 
-sswr.math.GeographicCoordinateSystem.prototype.calcSurfaceDistance = function(x1, y1, x2, y2, unit)
+math.GeographicCoordinateSystem.prototype.calcSurfaceDistance = function(x1, y1, x2, y2, unit)
 {
 	return this.datum.spheroid.ellipsoid.calSurfaceDistance(y1, x1, y2, x2, unit);
 }
 
-sswr.math.GeoJSON = new Object();
-sswr.math.GeoJSON.parseGeometry = function(srid, geometry)
+math.GeoJSON = new Object();
+math.GeoJSON.parseGeometry = function(srid, geometry)
 {
 	if (geometry.type == "Polygon")
 	{
-		return new sswr.math.geometry.Polygon(srid, geometry.coordinates);
+		return new math.geometry.Polygon(srid, geometry.coordinates);
 	}
 	else if (geometry.type == "MultiPolygon")
 	{
-		return new sswr.math.geometry.MultiPolygon(srid, geometry.coordinates);
+		return new math.geometry.MultiPolygon(srid, geometry.coordinates);
 	}
 	else
 	{
@@ -763,9 +762,9 @@ sswr.math.GeoJSON.parseGeometry = function(srid, geometry)
 	return null;
 }
 
-sswr.math.ProjectedCoordinateSystem = function(srid, csysName, falseEasting, falseNorthing, dcentralMeridian, dlatitudeOfOrigin, scaleFactor, gcs)
+math.ProjectedCoordinateSystem = function(srid, csysName, falseEasting, falseNorthing, dcentralMeridian, dlatitudeOfOrigin, scaleFactor, gcs)
 {
-	sswr.math.CoordinateSystem.call(this, srid, csysName);
+	math.CoordinateSystem.call(this, srid, csysName);
 	this.falseEasting = falseEasting;
 	this.falseNorthing = falseNorthing;
 	this.rcentralMeridian = dcentralMeridian * Math.PI / 180;
@@ -773,33 +772,33 @@ sswr.math.ProjectedCoordinateSystem = function(srid, csysName, falseEasting, fal
 	this.scaleFactor = scaleFactor;
 	this.gcs = gcs;
 }
-sswr.math.ProjectedCoordinateSystem.prototype = Object.create(sswr.math.CoordinateSystem.prototype);
+math.ProjectedCoordinateSystem.prototype = Object.create(math.CoordinateSystem.prototype);
 
-sswr.math.ProjectedCoordinateSystem.prototype.calcSurfaceDistance = function(x1, y1, x2, y2, unit)
+math.ProjectedCoordinateSystem.prototype.calcSurfaceDistance = function(x1, y1, x2, y2, unit)
 {
 	var diffX = x2 - x1;
 	var diffY = y2 - y1;
 	diffX = diffX * diffX;
 	diffY = diffY * diffY;
 	var d = Math.sqrt(diffX + diffY);
-	if (unit != sswr.math.unit.Distance.DistanceUnit.METER)
+	if (unit != math.unit.Distance.DistanceUnit.METER)
 	{
-		d = sswr.math.unit.Distance.convert(sswr.math.unit.Distance.DistanceUnit.METER, unit, d);
+		d = math.unit.Distance.convert(math.unit.Distance.DistanceUnit.METER, unit, d);
 	}
 	return d;
 }
 
-sswr.math.MercatorProjectedCoordinateSystem = function(srid, csysName, falseEasting, falseNorthing, dcentralMeridian, dlatitudeOfOrigin, scaleFactor, gcs)
+math.MercatorProjectedCoordinateSystem = function(srid, csysName, falseEasting, falseNorthing, dcentralMeridian, dlatitudeOfOrigin, scaleFactor, gcs)
 {
-	sswr.math.ProjectedCoordinateSystem.call(this, srid, csysName, falseEasting, falseNorthing, dcentralMeridian, dlatitudeOfOrigin, scaleFactor, gcs);
+	math.ProjectedCoordinateSystem.call(this, srid, csysName, falseEasting, falseNorthing, dcentralMeridian, dlatitudeOfOrigin, scaleFactor, gcs);
 }
-sswr.math.MercatorProjectedCoordinateSystem.prototype = Object.create(sswr.math.ProjectedCoordinateSystem.prototype);
+math.MercatorProjectedCoordinateSystem.prototype = Object.create(math.ProjectedCoordinateSystem.prototype);
 
-sswr.math.Spheroid = function(srid, ellipsoid, name)
+math.Spheroid = function(srid, ellipsoid, name)
 {
 	this.srid = srid;
 	this.ellipsoid = ellipsoid;
 	this.name = name;
 }
 
-export default sswr;
+export default math;

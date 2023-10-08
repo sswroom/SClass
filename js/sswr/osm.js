@@ -1,29 +1,28 @@
-import sswr from "./sswr.js";
-import "./math.js";
-sswr.osm = new Object();
+import math from "./math.js";
+var osm = {};
 
-sswr.osm.lon2PixelX = function(lon, level, tileSize)
+osm.lon2PixelX = function(lon, level, tileSize)
 {
 	return ((lon + 180.0) / 360.0 * (1 << level)) * tileSize;
 }
 
-sswr.osm.lat2PixelY = function(lat, level, tileSize)
+osm.lat2PixelY = function(lat, level, tileSize)
 {
 	return ((1.0 - Math.log(Math.tan(lat * Math.PI / 180.0) + 1.0 / Math.cos(lat * Math.PI / 180.0)) / Math.PI) / 2.0 * (1 << level)) * tileSize;
 }
 
-sswr.osm.pixelX2Lon = function(x, level, tileSize)
+osm.pixelX2Lon = function(x, level, tileSize)
 {
 	return x / tileSize * 360.0 / (1 << level) - 180;
 }
 
-sswr.osm.pixelY2Lat = function(y, level, tileSize)
+osm.pixelY2Lat = function(y, level, tileSize)
 {
 	var n = Math.PI - 2.0 * Math.PI * y / tileSize / (1 << level);
 	return 180.0 / Math.PI * Math.atan(0.5 * (Math.exp(n) - Math.exp(-n)));
 }
 
-sswr.osm.tileUrls = function(osmUrl, minCoord, maxCoord, minLev, maxLev)
+osm.tileUrls = function(osmUrl, minCoord, maxCoord, minLev, maxLev)
 {
     var tileSize = 256;
     var ret = new Array();
@@ -36,10 +35,10 @@ sswr.osm.tileUrls = function(osmUrl, minCoord, maxCoord, minLev, maxLev)
     var url;
     while (minLev <= maxLev)
     {
-        minX = Math.floor(sswr.osm.lon2PixelX(minCoord.x, minLev, tileSize) / tileSize);
-        minY = Math.floor(sswr.osm.lat2PixelY(maxCoord.y, minLev, tileSize) / tileSize);
-        maxX = Math.floor(sswr.osm.lon2PixelX(maxCoord.x, minLev, tileSize) / tileSize);
-        maxY = Math.floor(sswr.osm.lat2PixelY(minCoord.y, minLev, tileSize) / tileSize);
+        minX = Math.floor(osm.lon2PixelX(minCoord.x, minLev, tileSize) / tileSize);
+        minY = Math.floor(osm.lat2PixelY(maxCoord.y, minLev, tileSize) / tileSize);
+        maxX = Math.floor(osm.lon2PixelX(maxCoord.x, minLev, tileSize) / tileSize);
+        maxY = Math.floor(osm.lat2PixelY(minCoord.y, minLev, tileSize) / tileSize);
         j = minY;
         while (j <= maxY)
         {
@@ -57,4 +56,4 @@ sswr.osm.tileUrls = function(osmUrl, minCoord, maxCoord, minLev, maxLev)
     return ret;
 }
 
-export default sswr;
+export default osm;

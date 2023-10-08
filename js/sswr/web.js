@@ -1,7 +1,6 @@
-import sswr from "./sswr.js";
-sswr.web = new Object();
+var web = {};
 
-sswr.web.getRequestURLBase = function()
+web.getRequestURLBase = function()
 {
 	var url = document.location.href;
 	var i = url.indexOf("://");
@@ -16,7 +15,7 @@ sswr.web.getRequestURLBase = function()
 	}
 }
 
-sswr.web.getParameterByName = function(name)
+web.getParameterByName = function(name)
 {
 	var url = window.location.href;
 	name = name.replace(/[[\]]/g, '\\$&');
@@ -27,7 +26,7 @@ sswr.web.getParameterByName = function(name)
     return decodeURIComponent(results[2].replace(/\+/g, ' '));
 }
 
-sswr.web.loadJSON = function(url, onResultFunc)
+web.loadJSON = function(url, onResultFunc)
 {
 	var xmlhttp = new XMLHttpRequest();
 	xmlhttp.onreadystatechange = function() {
@@ -40,4 +39,4 @@ sswr.web.loadJSON = function(url, onResultFunc)
 	xmlhttp.send();
 }
 
-export default sswr;
+export default web;

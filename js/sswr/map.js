@@ -1,25 +1,26 @@
-import sswr from "./sswr.js";
-sswr.map = new Object();
-sswr.map.DataFormat = new Object();
-sswr.map.DataFormat.Cesium = "cesium";
-sswr.map.DataFormat.WKT = "wkt";
-sswr.map.DataFormat.GeoJSON = "geojson";
+import math from "./math.js";
 
-sswr.map.calcDistance = function(srid, geom, x, y)
+var map = {};
+map.DataFormat = {};
+map.DataFormat.Cesium = "cesium";
+map.DataFormat.WKT = "wkt";
+map.DataFormat.GeoJSON = "geojson";
+
+map.calcDistance = function(srid, geom, x, y)
 {
 	var pt = geom.calBoundaryPoint(x, y);
-	var csys = sswr.math.CoordinateSystemManager.srCreateCsys(srid);
-	return csys.calcSurfaceDistance(x, y, pt.x, pt.y, sswr.math.unit.Distance.DistanceUnit.METER);
+	var csys = math.CoordinateSystemManager.srCreateCsys(srid);
+	return csys.calcSurfaceDistance(x, y, pt.x, pt.y, math.unit.Distance.DistanceUnit.METER);
 }
 
-sswr.map.getLayers = function(svcUrl, onResultFunc)
+map.getLayers = function(svcUrl, onResultFunc)
 {
-	sswr.web.loadJSON(svcUrl + '/getlayers', onResultFunc);
+	web.loadJSON(svcUrl + '/getlayers', onResultFunc);
 }
 
-sswr.map.getLayerData = function(svcUrl, onResultFunc, layerName, dataFormat)
+map.getLayerData = function(svcUrl, onResultFunc, layerName, dataFormat)
 {
-	sswr.web.loadJSON(svcUrl + '/getlayerdata?name='+encodeURIComponent(layerName)+"&fmt="+encodeURIComponent(dataFormat), onResultFunc);
+	web.loadJSON(svcUrl + '/getlayerdata?name='+encodeURIComponent(layerName)+"&fmt="+encodeURIComponent(dataFormat), onResultFunc);
 }
 
-export default sswr;
+export default map;

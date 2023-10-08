@@ -1,9 +1,6 @@
-import sswr from "./sswr.h";
-sswr.cesium = new Object();
-//sswr.math = math;
-//sswr.text = text;
+var cesium = {};
 
-sswr.cesium.screenToLatLon = function(viewer, x, y, ellipsoid)
+cesium.screenToLatLon = function(viewer, x, y, ellipsoid)
 {
 	var pos = new Cesium.Cartesian2(x, y);
 	if (ellipsoid == null)
@@ -20,7 +17,7 @@ sswr.cesium.screenToLatLon = function(viewer, x, y, ellipsoid)
 	}
 }
 
-sswr.cesium.fromCXYZArray = function(arr)
+cesium.fromCXYZArray = function(arr)
 {
 	var ret = new Array();
 	var i = 0;
@@ -33,7 +30,7 @@ sswr.cesium.fromCXYZArray = function(arr)
 	return ret;
 }
 
-sswr.cesium.toCartesian3Arr = function(coords)
+cesium.toCartesian3Arr = function(coords)
 {
 	var arr = new Array();
 	var i = 0;
@@ -57,7 +54,7 @@ sswr.cesium.toCartesian3Arr = function(coords)
 	return arr;
 }
 
-sswr.cesium.newObjFromGeoJSON = function(geoJSON)
+cesium.newObjFromGeoJSON = function(geoJSON)
 {
 	var o = new Object();
 	o.id = geoJSON.id;
@@ -66,13 +63,13 @@ sswr.cesium.newObjFromGeoJSON = function(geoJSON)
 	var props = new Array();
 	for (n in geoJSON.properties)
 	{
-		props.push(sswr.text.toHTMLText(n)+": "+sswr.text.toHTMLText(geoJSON.properties[n]));
+		props.push(text.toHTMLText(n)+": "+text.toHTMLText(geoJSON.properties[n]));
 	}
 	o.description = props.join("<br/>");
 	return o;
 }
 
-sswr.cesium.addGeoJSON = function(viewer, geoJSON, color, extSize)
+cesium.addGeoJSON = function(viewer, geoJSON, color, extSize)
 {
 	var oColor = color.darken(0.5, new Cesium.Color());
 	if (geoJSON.type == "FeatureCollection")
@@ -81,7 +78,7 @@ sswr.cesium.addGeoJSON = function(viewer, geoJSON, color, extSize)
 		var j = geoJSON.features.length;
 		while (i < j)
 		{
-			sswr.cesium.addGeoJSON(viewer, geoJSON.features[i], color, extSize);			
+			cesium.addGeoJSON(viewer, geoJSON.features[i], color, extSize);			
 			i++;
 		}
 	}
@@ -97,10 +94,10 @@ sswr.cesium.addGeoJSON = function(viewer, geoJSON, color, extSize)
 				var j = coordinates.length;
 				while (i < j)
 				{
-					o = sswr.cesium.newObjFromGeoJSON(geoJSON);
+					o = cesium.newObjFromGeoJSON(geoJSON);
 					o.id = o.id + "_" + i;
 					o.polygon = new Object();
-					o.polygon.hierarchy = sswr.cesium.toCartesian3Arr(coordinates[i]);
+					o.polygon.hierarchy = cesium.toCartesian3Arr(coordinates[i]);
 					o.polygon.height = -extSize;
 					o.polygon.heightReference = Cesium.HeightReference.RELATIVE_TO_GROUND;
 					o.polygon.extrudedHeight = 10 + extSize;
@@ -118,7 +115,7 @@ sswr.cesium.addGeoJSON = function(viewer, geoJSON, color, extSize)
 	}
 }
 
-sswr.cesium.fromCartesian3Array = function(viewer, arr)
+cesium.fromCartesian3Array = function(viewer, arr)
 {
 	var coordinates = new Array();
 	var points;
@@ -138,22 +135,22 @@ sswr.cesium.fromCartesian3Array = function(viewer, arr)
 	return coordinates;
 }
 
-sswr.cesium.fromPolygonGraphics = function(viewer, pg)
+cesium.fromPolygonGraphics = function(viewer, pg)
 {
 	var coordinates = new Array();
 	var hierarchy = pg.hierarchy.getValue();
-	coordinates.push(sswr.cesium.fromCartesian3Array(viewer, hierarchy.positions));
+	coordinates.push(cesium.fromCartesian3Array(viewer, hierarchy.positions));
 	var i = 0;
 	var j =hierarchy.holes.length;
 	while (i < j)
 	{
-		coordinates.push(sswr.cesium.fromCartesian3Array(viewer, hierarchy.holes[i].positions));
+		coordinates.push(cesium.fromCartesian3Array(viewer, hierarchy.holes[i].positions));
 		i++;
 	}
-	return new sswr.math.geometry.Polygon(4326, coordinates);
+	return new math.geometry.Polygon(4326, coordinates);
 }
 
-/*sswr.cesium.createPolygon = function(viewer, lats, lons, height)
+/*cesium.createPolygon = function(viewer, lats, lons, height)
 {
 	if (lats.length != lons.length)
 	{
@@ -179,4 +176,4 @@ sswr.cesium.fromPolygonGraphics = function(viewer, pg)
 	return pg;
 }*/
 
-export default sswr;
+export default cesium;

@@ -1,7 +1,6 @@
-import sswr from "./sswr.js";
-sswr.text = new Object();
+var text = {};
 
-sswr.text.toJSText = function(s)
+text.toJSText = function(s)
 {
 	var out = "\"";
 	var i = 0;
@@ -35,7 +34,7 @@ sswr.text.toJSText = function(s)
 	return out + "\"";
 }
 
-sswr.text.toHTMLText = function(s)
+text.toHTMLText = function(s)
 {
 	if (s == null) return "";
 	var out = "";
@@ -76,4 +75,4 @@ sswr.text.toHTMLText = function(s)
 	return out + "";
 }
 
-export default sswr;
+export default text;
