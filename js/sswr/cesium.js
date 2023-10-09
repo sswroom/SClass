@@ -1,179 +1,179 @@
-var cesium = {};
-
-cesium.screenToLatLon = function(viewer, x, y, ellipsoid)
-{
-	var pos = new Cesium.Cartesian2(x, y);
-	if (ellipsoid == null)
-		ellipsoid = viewer.scene.globe.ellipsoid;
-	var cartesian = viewer.camera.pickEllipsoid(pos, ellipsoid);
-	if (cartesian)
+var cesium = {
+	screenToLatLon: function(viewer, x, y, ellipsoid)
 	{
-		var cartographic = ellipsoid.cartesianToCartographic(cartesian);
-		return {"lat":cartographic.latitude * 180 / Math.PI,"lon":cartographic.longitude * 180 / Math.PI};
-	}
-	else
-	{
-		return {"lat":null,"lon":null};
-	}
-}
-
-cesium.fromCXYZArray = function(arr)
-{
-	var ret = new Array();
-	var i = 0;
-	var j = arr.length;
-	while (i < j)
-	{
-		ret.push(Cesium.Cartesian3.fromArray(arr[i]));
-		i++;
-	}
-	return ret;
-}
-
-cesium.toCartesian3Arr = function(coords)
-{
-	var arr = new Array();
-	var i = 0;
-	var j = coords.length;
-	if (coords[0].length == 3)
-	{
-		while (i < j)
+		var pos = new Cesium.Cartesian2(x, y);
+		if (ellipsoid == null)
+			ellipsoid = viewer.scene.globe.ellipsoid;
+		var cartesian = viewer.camera.pickEllipsoid(pos, ellipsoid);
+		if (cartesian)
 		{
-			arr.push(Cesium.Cartesian3.fromDegrees(coords[i][0], coords[i][1], coords[i][2]));
-			i++;
+			var cartographic = ellipsoid.cartesianToCartographic(cartesian);
+			return {"lat":cartographic.latitude * 180 / Math.PI,"lon":cartographic.longitude * 180 / Math.PI};
 		}
-	}
-	else
-	{
-		while (i < j)
+		else
 		{
-			arr.push(Cesium.Cartesian3.fromDegrees(coords[i][0], coords[i][1]));
-			i++;
+			return {"lat":null,"lon":null};
 		}
-	}
-	return arr;
-}
-
-cesium.newObjFromGeoJSON = function(geoJSON)
-{
-	var o = new Object();
-	o.id = geoJSON.id;
-	o.name = geoJSON.id;
-	var n;
-	var props = new Array();
-	for (n in geoJSON.properties)
+	},
+	
+	fromCXYZArray: function(arr)
 	{
-		props.push(text.toHTMLText(n)+": "+text.toHTMLText(geoJSON.properties[n]));
-	}
-	o.description = props.join("<br/>");
-	return o;
-}
-
-cesium.addGeoJSON = function(viewer, geoJSON, color, extSize)
-{
-	var oColor = color.darken(0.5, new Cesium.Color());
-	if (geoJSON.type == "FeatureCollection")
-	{
+		var ret = new Array();
 		var i = 0;
-		var j = geoJSON.features.length;
+		var j = arr.length;
 		while (i < j)
 		{
-			cesium.addGeoJSON(viewer, geoJSON.features[i], color, extSize);			
+			ret.push(Cesium.Cartesian3.fromArray(arr[i]));
 			i++;
 		}
-	}
-	else if (geoJSON.type == "Feature")
+		return ret;
+	},
+	
+	toCartesian3Arr: function(coords)
 	{
-		var o;
-		if (geoJSON.geometry != null)
+		var arr = new Array();
+		var i = 0;
+		var j = coords.length;
+		if (coords[0].length == 3)
 		{
-			if (geoJSON.geometry.type == "Polygon")
+			while (i < j)
 			{
-				var coordinates = geoJSON.geometry.coordinates;
-				var i = 0;
-				var j = coordinates.length;
-				while (i < j)
+				arr.push(Cesium.Cartesian3.fromDegrees(coords[i][0], coords[i][1], coords[i][2]));
+				i++;
+			}
+		}
+		else
+		{
+			while (i < j)
+			{
+				arr.push(Cesium.Cartesian3.fromDegrees(coords[i][0], coords[i][1]));
+				i++;
+			}
+		}
+		return arr;
+	},
+	
+	newObjFromGeoJSON: function(geoJSON)
+	{
+		var o = new Object();
+		o.id = geoJSON.id;
+		o.name = geoJSON.id;
+		var n;
+		var props = new Array();
+		for (n in geoJSON.properties)
+		{
+			props.push(text.toHTMLText(n)+": "+text.toHTMLText(geoJSON.properties[n]));
+		}
+		o.description = props.join("<br/>");
+		return o;
+	},
+	
+	addGeoJSON: function(viewer, geoJSON, color, extSize)
+	{
+		var oColor = color.darken(0.5, new Cesium.Color());
+		if (geoJSON.type == "FeatureCollection")
+		{
+			var i = 0;
+			var j = geoJSON.features.length;
+			while (i < j)
+			{
+				cesium.addGeoJSON(viewer, geoJSON.features[i], color, extSize);			
+				i++;
+			}
+		}
+		else if (geoJSON.type == "Feature")
+		{
+			var o;
+			if (geoJSON.geometry != null)
+			{
+				if (geoJSON.geometry.type == "Polygon")
 				{
-					o = cesium.newObjFromGeoJSON(geoJSON);
-					o.id = o.id + "_" + i;
-					o.polygon = new Object();
-					o.polygon.hierarchy = cesium.toCartesian3Arr(coordinates[i]);
-					o.polygon.height = -extSize;
-					o.polygon.heightReference = Cesium.HeightReference.RELATIVE_TO_GROUND;
-					o.polygon.extrudedHeight = 10 + extSize;
-					o.polygon.extrudedHeightReference = Cesium.HeightReference.RELATIVE_TO_GROUND;
-					o.polygon.material = color;
-					o.polygon.outline = true;
-					o.polygon.outlineColor = oColor;
-					o.polygon.closeTop = false;
-					o.polygon.closeBottom = false;
-					viewer.entities.add(o);
-					i++;
+					var coordinates = geoJSON.geometry.coordinates;
+					var i = 0;
+					var j = coordinates.length;
+					while (i < j)
+					{
+						o = cesium.newObjFromGeoJSON(geoJSON);
+						o.id = o.id + "_" + i;
+						o.polygon = new Object();
+						o.polygon.hierarchy = cesium.toCartesian3Arr(coordinates[i]);
+						o.polygon.height = -extSize;
+						o.polygon.heightReference = Cesium.HeightReference.RELATIVE_TO_GROUND;
+						o.polygon.extrudedHeight = 10 + extSize;
+						o.polygon.extrudedHeightReference = Cesium.HeightReference.RELATIVE_TO_GROUND;
+						o.polygon.material = color;
+						o.polygon.outline = true;
+						o.polygon.outlineColor = oColor;
+						o.polygon.closeTop = false;
+						o.polygon.closeBottom = false;
+						viewer.entities.add(o);
+						i++;
+					}
 				}
 			}
 		}
-	}
-}
-
-cesium.fromCartesian3Array = function(viewer, arr)
-{
-	var coordinates = new Array();
-	var points;
-	var ellipsoid = viewer.scene.globe.ellipsoid;
-	var cartoArr = ellipsoid.cartesianArrayToCartographicArray(arr);
-	var i = 0;
-	var j = cartoArr.length;
-	while (i < j)
-	{
-		points = new Array();
-		points.push(cartoArr[i].longitude * 180 / Math.PI);
-		points.push(cartoArr[i].latitude * 180 / Math.PI);
-		points.push(cartoArr[i].height);
-		coordinates.push(points);
-		i++;
-	}
-	return coordinates;
-}
-
-cesium.fromPolygonGraphics = function(viewer, pg)
-{
-	var coordinates = new Array();
-	var hierarchy = pg.hierarchy.getValue();
-	coordinates.push(cesium.fromCartesian3Array(viewer, hierarchy.positions));
-	var i = 0;
-	var j =hierarchy.holes.length;
-	while (i < j)
-	{
-		coordinates.push(cesium.fromCartesian3Array(viewer, hierarchy.holes[i].positions));
-		i++;
-	}
-	return new math.geometry.Polygon(4326, coordinates);
-}
-
-/*cesium.createPolygon = function(viewer, lats, lons, height)
-{
-	if (lats.length != lons.length)
-	{
-		return null;
-	}
-	if (height == null)
-	{
-		height = 0;
-	}
-	var ellipsoid = viewer.scene.globe.ellipsoid;
-	var o = new Object();
-	o.positions = new Array();
-	var i = 0;
-	var j = lats.length;
-	while (i < j)
-	{
-		o.positions.push(ellipsoid.cartographicToCartesian(new Cesium.Cartographic(lons[i] * Math.PI / 180, lats[i] * Math.PI / 180, height)));
-		i++;
-	}
-	o.positions.push(ellipsoid.cartographicToCartesian(new Cesium.Cartographic(lons[0] * Math.PI / 180, lats[0] * Math.PI / 180, height)));
+	},
 	
-	var pg = new Cesium.PolygonGraphics(o);
-	return pg;
-}*/
+	fromCartesian3Array: function(viewer, arr)
+	{
+		var coordinates = new Array();
+		var points;
+		var ellipsoid = viewer.scene.globe.ellipsoid;
+		var cartoArr = ellipsoid.cartesianArrayToCartographicArray(arr);
+		var i = 0;
+		var j = cartoArr.length;
+		while (i < j)
+		{
+			points = new Array();
+			points.push(cartoArr[i].longitude * 180 / Math.PI);
+			points.push(cartoArr[i].latitude * 180 / Math.PI);
+			points.push(cartoArr[i].height);
+			coordinates.push(points);
+			i++;
+		}
+		return coordinates;
+	},
+	
+	fromPolygonGraphics: function(viewer, pg)
+	{
+		var coordinates = new Array();
+		var hierarchy = pg.hierarchy.getValue();
+		coordinates.push(cesium.fromCartesian3Array(viewer, hierarchy.positions));
+		var i = 0;
+		var j =hierarchy.holes.length;
+		while (i < j)
+		{
+			coordinates.push(cesium.fromCartesian3Array(viewer, hierarchy.holes[i].positions));
+			i++;
+		}
+		return new math.geometry.Polygon(4326, coordinates);
+	}
+	
+	/*createPolygon: function(viewer, lats, lons, height)
+	{
+		if (lats.length != lons.length)
+		{
+			return null;
+		}
+		if (height == null)
+		{
+			height = 0;
+		}
+		var ellipsoid = viewer.scene.globe.ellipsoid;
+		var o = new Object();
+		o.positions = new Array();
+		var i = 0;
+		var j = lats.length;
+		while (i < j)
+		{
+			o.positions.push(ellipsoid.cartographicToCartesian(new Cesium.Cartographic(lons[i] * Math.PI / 180, lats[i] * Math.PI / 180, height)));
+			i++;
+		}
+		o.positions.push(ellipsoid.cartographicToCartesian(new Cesium.Cartographic(lons[0] * Math.PI / 180, lats[0] * Math.PI / 180, height)));
+		
+		var pg = new Cesium.PolygonGraphics(o);
+		return pg;
+	}*/
+};
 
 export default cesium;
