@@ -1,6 +1,6 @@
-import CoordinateSystem from "./CoordinateSystem";
-import GeographicCoordinateSystem from "./GeographicCoordinateSystem";
-import unit from "./unit";
+import CoordinateSystem from "./CoordinateSystem.js";
+import GeographicCoordinateSystem from "./GeographicCoordinateSystem.js";
+import unit from "./unit.js";
 
 var ProjectedCoordinateSystem = function(srid, csysName, falseEasting, falseNorthing, dcentralMeridian, dlatitudeOfOrigin, scaleFactor, gcs)
 {

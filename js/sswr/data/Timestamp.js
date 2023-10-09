@@ -1,5 +1,5 @@
-import DateTimeUtil from "./DateTimeUtil";
-import TimeInstant from "./TimeInstant";
+import DateTimeUtil from "./DateTimeUtil.js";
+import TimeInstant from "./TimeInstant.js";
 
 var Timestamp = function(inst, tzQhr)
 {

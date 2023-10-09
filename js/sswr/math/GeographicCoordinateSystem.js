@@ -1,5 +1,5 @@
-import CoordinateSystem from "./CoordinateSystem";
-import DatumData from "./DatumData";
+import CoordinateSystem from "./CoordinateSystem.js";
+import DatumData from "./DatumData.js";
 var GeographicCoordinateSystem = function(srid, csysName, datumData)
 {
 	CoordinateSystem.call(this, srid, csysName);

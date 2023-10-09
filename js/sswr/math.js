@@ -1,14 +1,14 @@
-import geometry from "./math/geometry";
-import unit from "./math/unit";
-import Coord2D from "./math/Coord2D";
-import CoordinateSystem from "./math/CoordinateSystem";
-import CoordinateSystemManager from "./math/CoordinateSystemManager";
-import DatumData from "./math/DatumData";
-import EarthEllipsoid from "./math/EarthEllipsoid";
-import GeographicCoordinateSystem from "./math/GeographicCoordinateSystem";
-import MercatorProjectedCoordinateSystem from "./math/MercatorProjectedCoordinateSystem";
-import ProjectedCoordinateSystem from "./math/ProjectedCoordinateSystem";
-import Spheroid from "./math/Spheroid";
+import geometry from "./math/geometry.js";
+import unit from "./math/unit.js";
+import Coord2D from "./math/Coord2D.js";
+import CoordinateSystem from "./math/CoordinateSystem.js";
+import CoordinateSystemManager from "./math/CoordinateSystemManager.js";
+import DatumData from "./math/DatumData.js";
+import EarthEllipsoid from "./math/EarthEllipsoid.js";
+import GeographicCoordinateSystem from "./math/GeographicCoordinateSystem.js";
+import MercatorProjectedCoordinateSystem from "./math/MercatorProjectedCoordinateSystem.js";
+import ProjectedCoordinateSystem from "./math/ProjectedCoordinateSystem.js";
+import Spheroid from "./math/Spheroid.js";
 
 var math = {
 	roundToFloat: function(n, decimalPoints)

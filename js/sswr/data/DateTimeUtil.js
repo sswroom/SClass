@@ -1,3 +1,11 @@
+function zpadStr(val, ndigits)
+{
+	var s = "" + val;
+	while (s.length < ndigits)
+		s = "0"+s;
+	return s;
+}
+
 var DateTimeUtil = {
 	monString: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
 	monthString: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
@@ -1181,3 +1189,4 @@ var DateTimeUtil = {
 		return new Date().getTimezoneOffset() / -15;
 	}
 };
+export default DateTimeUtil;

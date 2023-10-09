@@ -1,7 +1,7 @@
-import CoordinateSystem from "./CoordinateSystem";
-import EarthEllipsoid from "./EarthEllipsoid";
-import unit from "./unit";
-import Spheroid from "./Spheroid";
+import CoordinateSystem from "./CoordinateSystem.js";
+import EarthEllipsoid from "./EarthEllipsoid.js";
+import unit from "./unit.js";
+import Spheroid from "./Spheroid.js";
 
 var CoordinateSystemManager = {
 	srCreateGeogCSys: function(srid, datumSrid, name)

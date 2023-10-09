@@ -1,4 +1,4 @@
-import unit from "./unit";
+import unit from "./unit.js";
 var EarthEllipsoid = function(semiMajorAxis, inverseFlattening, eet)
 {
 	this.eet = eet;

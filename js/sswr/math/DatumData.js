@@ -1,4 +1,4 @@
-import unit from "./unit";
+import unit from "./unit.js";
 var DatumData = function(srid, spheroid, name, x0, y0, z0, cX, cY, cZ, xAngle, yAngle, zAngle, scale, aunit)
 {
 	this.srid = srid;

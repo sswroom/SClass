@@ -1,15 +1,7 @@
-import DateTimeUtil from "./data/DateTimeUtil";
-import Duration from "./data/Duration";
-import TimeInstant from "./Data/TimeInstant";
-import Timestamp from "./data/Timestamp";
-
-function zpadStr(val, ndigits)
-{
-	var s = "" + val;
-	while (s.length < ndigits)
-		s = "0"+s;
-	return s;
-}
+import DateTimeUtil from "./data/DateTimeUtil.js";
+import Duration from "./data/Duration.js";
+import TimeInstant from "./data/TimeInstant.js";
+import Timestamp from "./data/Timestamp.js";
 
 var data = {
 	isArray: function(o)
