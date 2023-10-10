@@ -126,6 +126,10 @@ IO::FileAnalyse::IFileAnalyse *IO::FileAnalyse::IFileAnalyse::AnalyseFile(NotNul
 	{
 		NEW_CLASS(analyse, IO::FileAnalyse::JMVL01FileAnalyse(fd));
 	}
+	else if (buffSize >= 18 && buff[0] == 0x78 && buff[1] == 0x78 && buff[2] == 0x0D && buff[3] == 0x01 && buff[16] == 13 && buff[17] == 10)
+	{
+		NEW_CLASS(analyse, IO::FileAnalyse::JMVL01FileAnalyse(fd));
+	}
 	else if (buffSize >= 100 && ReadMInt32(buff) == 9994 && ReadInt32(&buff[28]) == 1000 && (ReadMUInt32(&buff[24]) << 1) == fd->GetDataSize())
 	{
 		NEW_CLASS(analyse, IO::FileAnalyse::SHPFileAnalyse(fd));

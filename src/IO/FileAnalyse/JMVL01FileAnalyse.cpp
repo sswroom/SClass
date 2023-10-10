@@ -11,10 +11,24 @@ Text::CString IO::FileAnalyse::JMVL01FileAnalyse::GetTagName(UInt8 tagType)
 	{
 	case 0x01:
 		return CSTR("Login information");
+	case 0x12:
+		return CSTR("Positioning Data");
 	case 0x13:
 		return CSTR("Status information");
+	case 0x15:
+		return CSTR("Online command response");
+	case 0x16:
+		return CSTR("Alarm Data");
+	case 0x17:
+		return CSTR("LBS Address Query Packet");
+	case 0x18:
+		return CSTR("LBS Multiple Base Station Extended Information Packet");
+	case 0x1A:
+		return CSTR("GPS Address Query Packet");
 	case 0x80:
 		return CSTR("Command sent by server to the terminal");
+	case 0x8A:
+		return CSTR("Time Calibration Packet");
 	case 0x94:
 		return CSTR("Information transmission packet");
 	case 0x95:
@@ -75,7 +89,13 @@ IO::FileAnalyse::JMVL01FileAnalyse::JMVL01FileAnalyse(NotNullPtr<IO::StreamData>
 	this->fd = 0;
 	this->pauseParsing = false;
 	fd->GetRealData(0, 256, BYTEARR(buff));
-	if (buff[0] != 0x78 || buff[1] != 0x78 || buff[2] != 0x11 || buff[3] != 0x01 || buff[20] != 13 || buff[21] != 10)
+	if (buff[0] == 0x78 && buff[1] == 0x78 && buff[2] == 0x11 && buff[3] == 0x01 && buff[20] == 13 && buff[21] == 10)
+	{
+	}
+	else if (buff[0] == 0x78 && buff[1] == 0x78 && buff[2] == 0xd && buff[3] == 0x01 && buff[16] == 13 && buff[17] == 10)
+	{
+	}
+	else
 	{
 		return;
 	}
@@ -183,28 +203,78 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::JMVL01FileAnalyse::GetFrameDetail
 	switch (tagData[currOfst])
 	{
 	case 0x01: //Login information
-		if (frameSize == 17)
+		if (frameSize == 13 || frameSize == 17)
 		{
 			frame->AddHex64(currOfst + 1, CSTR("IMEI"), ReadMUInt64(&tagData[currOfst + 1]));
-			frame->AddHex16(currOfst + 9, CSTR("Type identification code"), ReadMUInt16(&tagData[currOfst + 9]));
-			UOSInt tz = (UOSInt)ReadMUInt16(&tagData[currOfst + 11]) >> 4;
-			if (tagData[currOfst + 12] & 8)
+			if (frameSize == 17)
 			{
-				sptr = Text::StrConcatC(sbuff, UTF8STRC("GMT-"));
+				frame->AddHex16(currOfst + 9, CSTR("Type identification code"), ReadMUInt16(&tagData[currOfst + 9]));
+				UOSInt tz = (UOSInt)ReadMUInt16(&tagData[currOfst + 11]) >> 4;
+				if (tagData[currOfst + 12] & 8)
+				{
+					sptr = Text::StrConcatC(sbuff, UTF8STRC("GMT-"));
+				}
+				else
+				{
+					sptr = Text::StrConcatC(sbuff, UTF8STRC("GMT+"));
+				}
+				sptr = Text::StrUOSInt(sptr, tz / 100);
+				*sptr++ = ':';
+				tz = (tz % 100) * 3 / 5;
+				if (tz < 10)
+				{
+					*sptr++ = '0';
+				}
+				sptr = Text::StrUOSInt(sptr, (tz % 100) * 3 / 5);
+				frame->AddField(currOfst + 11, 2, CSTR("Time Zone"), CSTRP(sbuff, sptr));
+			}
+			parsed = true;
+		}
+		break;
+	case 0x12: //GPS Position
+		if (frameSize == 31)
+		{
+			Data::DateTime dt;
+			dt.SetValue((UInt16)(2000 + tagData[currOfst + 1]), tagData[currOfst + 2], tagData[currOfst + 3], tagData[currOfst + 4], tagData[currOfst + 5], tagData[currOfst + 6], 0, 0);
+			sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss");
+			frame->AddField(currOfst + 1, 6, CSTR("Date Time"), CSTRP(sbuff, sptr));
+			frame->AddUInt(currOfst + 7, 1, CSTR("Length of GPS information"), (UOSInt)tagData[currOfst + 7] >> 4);
+			frame->AddUInt(currOfst + 7, 1, CSTR("Quantity of positioning satellites"), tagData[currOfst + 7] & 15);
+			Double lat = ReadMUInt32(&tagData[currOfst + 8]) / 1800000.0;
+			Double lon = ReadMUInt32(&tagData[currOfst + 12]) / 1800000.0;
+			if ((tagData[currOfst + 17] & 4) == 0)
+			{
+				lat = -lat;
+			}
+			if (tagData[currOfst + 17] & 8)
+			{
+				lon = -lon;
+			}
+			sptr = Text::StrDouble(sbuff, lat);
+			frame->AddField(currOfst + 8, 4, CSTR("Latitude"), CSTRP(sbuff, sptr));
+			sptr = Text::StrDouble(sbuff, lon);
+			frame->AddField(currOfst + 12, 4, CSTR("Longitude"), CSTRP(sbuff, sptr));
+			frame->AddUInt(currOfst + 16, 1, CSTR("Speed (km/h)"), tagData[currOfst + 16]);
+			frame->AddUInt(currOfst + 17, 2, CSTR("Course"), ReadMUInt16(&tagData[currOfst + 17]) & 0x3FF);
+			frame->AddUInt(currOfst + 17, 1, CSTR("GPS differential positioning"), (tagData[currOfst + 17] & 0x20) >> 5);
+			frame->AddUInt(currOfst + 17, 1, CSTR("GPS having been positioning"), (tagData[currOfst + 17] & 0x10) >> 4);
+			frame->AddUInt(currOfst + 17, 1, CSTR("West Longitude"), (tagData[currOfst + 17] & 0x8) >> 3);
+			frame->AddUInt(currOfst + 17, 1, CSTR("North Latitude"), (tagData[currOfst + 17] & 0x4) >> 2);
+			frame->AddUInt(currOfst + 19, 2, CSTR("MCC"), ReadMUInt16(&tagData[currOfst + 19]) & 0x7fff);
+
+			UOSInt i;
+			if (tagData[currOfst + 19] & 0x80)
+			{
+				frame->AddUInt(currOfst + 21, 2, CSTR("MNC"), ReadMUInt16(&tagData[currOfst + 21]));
+				i = currOfst + 23;
 			}
 			else
 			{
-				sptr = Text::StrConcatC(sbuff, UTF8STRC("GMT+"));
+				frame->AddUInt(currOfst + 21, 1, CSTR("MNC"), tagData[currOfst + 21]);
+				i = currOfst + 22;
 			}
-			sptr = Text::StrUOSInt(sptr, tz / 100);
-			*sptr++ = ':';
-			tz = (tz % 100) * 3 / 5;
-			if (tz < 10)
-			{
-				*sptr++ = '0';
-			}
-			sptr = Text::StrUOSInt(sptr, (tz % 100) * 3 / 5);
-			frame->AddField(currOfst + 11, 2, CSTR("Time Zone"), CSTRP(sbuff, sptr));
+			frame->AddUInt(i, 2, CSTR("LAC"), ReadMUInt16(&tagData[i]));
+			frame->AddUInt(i + 2, 3, CSTR("Cell ID"), ReadMUInt24(&tagData[i + 2]));
 			parsed = true;
 		}
 		break;
@@ -283,7 +353,6 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::JMVL01FileAnalyse::GetFrameDetail
 			parsed = false;
 		}
 		break;
-		break;
 	case 0xA4: //Multi-fence alarm packet
 		break;
 	case 0XC3: //WiFi information collection package
@@ -292,7 +361,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::JMVL01FileAnalyse::GetFrameDetail
 	///////////////////////////////////
 	if (!parsed)
 	{
-		frame->AddHexBuff(currOfst + 1, frameSize - 5, CSTR("Packet Data"), &tagData[currOfst + 1], true);
+//		frame->AddHexBuff(currOfst + 1, frameSize - 5, CSTR("Packet Data"), &tagData[currOfst + 1], true);
 	}
 	frame->AddUInt(currOfst + frameSize - 4, 2, CSTR("Information Serial Number"), ReadMUInt16(&tagData[currOfst + frameSize - 4]));
 	frame->AddHex16(currOfst + frameSize - 2, CSTR("Error Check"), ReadMUInt16(&tagData[currOfst + frameSize - 2]));
