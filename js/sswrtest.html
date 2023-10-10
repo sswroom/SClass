@@ -1,38 +1,10 @@
 <!DOCTYPE html>
 <html>
 	<head><title>Testing</title>
-		<script type="module">
-			import math from "./sswr/math.js";
-			import data from "./sswr/data.js";
-			import web from "./sswr/web.js";
-			function burialSiteReceived(result)
-			{
-				var pg = math.GeoJSON.parseGeometry(4326, result.features[0].geometry);
-				var x = 114.22122894202;
-				var y = 22.362089455590;
-				console.log("Distance = "+map.calcDistance(4326, pg, x, y) + ", "+pg.insideVector(x, y));
-			}
-
-			window.geomDistTest = function()
-			{
-				web.loadJSON('http://192.168.1.113:8765/geoserver/main/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=main%3Ahad_burial_site&outputFormat=application%2Fjson&CQL_FILTER=site_code=%27ND-FL-14C%27', burialSiteReceived);
-			}
-
-			window.roundTest = function()
-			{
-				var temp = [22.450865, 114.220012];
-				console.log(math.roundToStr(22.450865, 5))
-				console.log(math.roundToFloat(temp[0], 5))
-				console.log(math.roundToFloat(89.687835, 5));
-				console.log(math.roundToStr(89.687835, 5));
-				console.log(math.roundToStr(0.000005, 5));
-				console.log(math.roundToStr(0.000004, 5));
-				console.log(data.Timestamp.utcNow().toStringISO8601());
-				console.log(performance.now());
-			}
+		<script type="module" src="test.js">
 		</script>
 	</head>
-	<body onload="roundTest()">
+	<body>
 
 	</body>
 </html>

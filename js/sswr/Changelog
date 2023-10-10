@@ -1,0 +1,15 @@
+1.2.1
+-Merge Individual class js into namespace js
+-Added all declaration files
+
+1.2.0
+-Change syntax to follow standard rule for import (see README.md)
+
+1.1.0
+-Change syntax to use correct better namespace in module
+
+1.0.1
+-Fix some bugs on Timestamp
+
+1.0.0
+-Initial Version

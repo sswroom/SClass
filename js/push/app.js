@@ -1,5 +1,5 @@
-import '../sswr/data.js';
-import '../sswr/text.js';
+import * as data from '../sswr/data.js';
+import * as text from '../sswr/text.js';
 
 window.appLoaded = function()
 {
@@ -50,9 +50,9 @@ window.registerClicked = function()
 			registration.pushManager.subscribe(options).then(
 				(pushSubscription) => {
 					var d = document.getElementById("message");
-					d.innerHTML = "<br/>Endpoint: "+sswr.text.toHTMLText(pushSubscription.endpoint)+
-					"<br/>Key: "+sswr.data.arrayBuffer2Base64(pushSubscription.getKey("p256dh"))+
-					"<br/>Auth: "+sswr.data.arrayBuffer2Base64(pushSubscription.getKey("auth"))+
+					d.innerHTML = "<br/>Endpoint: "+text.toHTMLText(pushSubscription.endpoint)+
+					"<br/>Key: "+data.arrayBuffer2Base64(pushSubscription.getKey("p256dh"))+
+					"<br/>Auth: "+data.arrayBuffer2Base64(pushSubscription.getKey("auth"))+
 					"<br/>Exp Time: "+pushSubscription.expirationTime;
 				},
 				(error) => {

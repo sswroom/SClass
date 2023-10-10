@@ -1,78 +1,74 @@
-var text = {
-	toJSText: function(s)
+export function toJSText(s)
+{
+	var out = "\"";
+	var i = 0;
+	var j = s.length;
+	var c;
+	while (i < j)
 	{
-		var out = "\"";
-		var i = 0;
-		var j = s.length;
-		var c;
-		while (i < j)
+		c = s.charAt(i);
+		if (c == '\\')
 		{
-			c = s.charAt(i);
-			if (c == '\\')
-			{
-				out += "\\\\";
-			}
-			else if (c == "\"")
-			{
-				out += "\\\"";
-			}
-			else if (c == "\r")
-			{
-				out += "\\r";
-			}
-			else if (c == "\n")
-			{
-				out += "\\n";
-			}
-			else
-			{
-				out += c;
-			}
-			i++;
+			out += "\\\\";
 		}
-		return out + "\"";
-	},
-	
-	toHTMLText: function(s)
-	{
-		if (s == null) return "";
-		var out = "";
-		var i = 0;
-		var j = s.length;
-		var c;
-		while (i < j)
+		else if (c == "\"")
 		{
-			c = s.charAt(i);
-			switch (c)
-			{
-			case '&':
-				out += '&#38;';
-				break;
-			case '<':
-				out += '&lt;';
-				break;
-			case '>':
-				out += '&gt;';
-				break;
-			case '\'':
-				out += '&#39;';
-				break;
-			case '"':
-				out += '&quot;';
-				break;
-			case '\r':
-				break;
-			case '\n':
-				out += '<br/>';
-				break;
-			default:
-				out += c;
-				break;
-			}
-			i++;
+			out += "\\\"";
 		}
-		return out + "";
+		else if (c == "\r")
+		{
+			out += "\\r";
+		}
+		else if (c == "\n")
+		{
+			out += "\\n";
+		}
+		else
+		{
+			out += c;
+		}
+		i++;
 	}
-};
-
-export default text;
+	return out + "\"";
+}
+	
+export function toHTMLText(s)
+{
+	if (s == null) return "";
+	var out = "";
+	var i = 0;
+	var j = s.length;
+	var c;
+	while (i < j)
+	{
+		c = s.charAt(i);
+		switch (c)
+		{
+		case '&':
+			out += '&#38;';
+			break;
+		case '<':
+			out += '&lt;';
+			break;
+		case '>':
+			out += '&gt;';
+			break;
+		case '\'':
+			out += '&#39;';
+			break;
+		case '"':
+			out += '&quot;';
+			break;
+		case '\r':
+			break;
+		case '\n':
+			out += '<br/>';
+			break;
+		default:
+			out += c;
+			break;
+		}
+		i++;
+	}
+	return out + "";
+}
