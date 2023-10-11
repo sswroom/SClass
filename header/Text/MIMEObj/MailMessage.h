@@ -41,8 +41,8 @@ namespace Text
 			UTF8Char *GetFromAddr(UTF8Char *sbuff) const;
 			UTF8Char *GetSubject(UTF8Char *sbuff) const;
 			UTF8Char *GetReplyTo(UTF8Char *sbuff) const;
-			UOSInt GetRecpList(Data::ArrayList<MailAddress*> *recpList) const;
-			void FreeRecpList(Data::ArrayList<MailAddress*> *recpList) const;
+			UOSInt GetRecpList(NotNullPtr<Data::ArrayList<MailAddress*>> recpList) const;
+			void FreeRecpList(NotNullPtr<Data::ArrayList<MailAddress*>> recpList) const;
 
 			Text::MIMEObj::TextMIMEObj *GetContentText() const;
 			Text::IMIMEObj *GetContentMajor() const;
@@ -53,7 +53,7 @@ namespace Text
 			static MailMessage *ParseFile(NotNullPtr<IO::StreamData> fd);
 
 		private:
-			UOSInt ParseAddrList(const UTF8Char *hdr, UOSInt hdrLen, Data::ArrayList<MailAddress*> *recpList, AddressType type) const;
+			UOSInt ParseAddrList(const UTF8Char *hdr, UOSInt hdrLen, NotNullPtr<Data::ArrayList<MailAddress*>> recpList, AddressType type) const;
 		};
 	}
 }

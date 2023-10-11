@@ -79,7 +79,7 @@ SSWR::AVIRead::MIMEViewer::AVIRMailViewer::AVIRMailViewer(NotNullPtr<SSWR::AVIRe
 	UOSInt i;
 	UOSInt j;
 	UOSInt k;
-	this->mail->GetRecpList(&addrList);
+	this->mail->GetRecpList(addrList);
 	i = 0;
 	j = addrList.GetCount();
 	while (i < j)
@@ -104,7 +104,7 @@ SSWR::AVIRead::MIMEViewer::AVIRMailViewer::AVIRMailViewer(NotNullPtr<SSWR::AVIRe
 		this->lvRecp->SetSubItem(k, 2, addr->address);
 		i++;
 	}
-	this->mail->FreeRecpList(&addrList);
+	this->mail->FreeRecpList(addrList);
 	i = 0;
 	j = this->mail->GetHeaderCount();
 	while (i < j)

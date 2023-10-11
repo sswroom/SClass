@@ -144,9 +144,9 @@ OSInt Data::FieldComparator::Compare(VariItem *a, VariItem *b)
 			return Data::DataComparer::Compare(arrA->GetArray(), arrA->GetCount(), arrB->GetArray(), arrB->GetCount());
 		}
 		case Data::VariItem::ItemType::Vector:
-			return Data::DataComparer::Compare(a->GetItemValue().vector, b->GetItemValue().vector);
+			return Data::DataComparer::Compare(a->GetItemValue().vector.Ptr(), b->GetItemValue().vector.Ptr());
 		case Data::VariItem::ItemType::UUID:
-			return Data::DataComparer::Compare(a->GetItemValue().uuid, b->GetItemValue().uuid);
+			return Data::DataComparer::Compare(a->GetItemValue().uuid.Ptr(), b->GetItemValue().uuid.Ptr());
 		}
 		return 0;
 	}

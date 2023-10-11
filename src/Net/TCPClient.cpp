@@ -424,7 +424,8 @@ UInt64 Net::TCPClient::GetCliId()
 
 UTF8Char *Net::TCPClient::GetRemoteName(UTF8Char *buff) const
 {
-	if (this->flags & 4)
+	UTF8Char *sptr;
+	if ((this->flags & 4) || (sptr = this->sockf->GetRemoteName(buff, this->s)) == 0)
 	{
 		UInt32 ip;
 		UInt16 port;
@@ -433,7 +434,7 @@ UTF8Char *Net::TCPClient::GetRemoteName(UTF8Char *buff) const
 	}
 	else
 	{
-		return this->sockf->GetRemoteName(buff, this->s);
+		return sptr;
 	}
 }
 

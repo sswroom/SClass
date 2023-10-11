@@ -74,7 +74,7 @@ UTF8Char *Text::MIMEObj::MailMessage::GetReplyTo(UTF8Char *sbuff) const
 	return ParseHeaderStr(sbuff, hdr->v);
 }
 
-UOSInt Text::MIMEObj::MailMessage::GetRecpList(Data::ArrayList<MailAddress*> *recpList) const
+UOSInt Text::MIMEObj::MailMessage::GetRecpList(NotNullPtr<Data::ArrayList<MailAddress*>> recpList) const
 {
 	UOSInt i = 0;
 	Text::String *hdr = GetHeader(UTF8STRC("To"));
@@ -86,7 +86,7 @@ UOSInt Text::MIMEObj::MailMessage::GetRecpList(Data::ArrayList<MailAddress*> *re
 	return i;
 }
 
-void Text::MIMEObj::MailMessage::FreeRecpList(Data::ArrayList<MailAddress*> *recpList) const
+void Text::MIMEObj::MailMessage::FreeRecpList(NotNullPtr<Data::ArrayList<MailAddress*>> recpList) const
 {
 	MailAddress *addr;
 	UOSInt i;
@@ -245,7 +245,7 @@ Text::MIMEObj::MailMessage *Text::MIMEObj::MailMessage::ParseFile(NotNullPtr<IO:
 	return mail;
 }
 
-UOSInt Text::MIMEObj::MailMessage::ParseAddrList(const UTF8Char *hdr, UOSInt hdrLen, Data::ArrayList<MailAddress*> *recpList, AddressType type) const
+UOSInt Text::MIMEObj::MailMessage::ParseAddrList(const UTF8Char *hdr, UOSInt hdrLen, NotNullPtr<Data::ArrayList<MailAddress*>> recpList, AddressType type) const
 {
 	UTF8Char *sbuff;
 	UTF8Char *sptr;

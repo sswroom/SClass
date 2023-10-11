@@ -510,7 +510,7 @@ NotNullPtr<Math::Geometry::MultiPolygon> Math::Geometry::Polygon::CreateMultiPol
 	NEW_CLASSNN(mpg, Math::Geometry::MultiPolygon(this->srid, this->HasZ(), this->HasM()));
 	if (this->nPtOfst <= 1)
 	{
-		mpg->AddGeometry(this->Clone());
+		mpg->AddGeometry(NotNullPtr<Math::Geometry::Polygon>::ConvertFrom(this->Clone()));
 		return mpg;
 	}
 	NotNullPtr<Math::Geometry::Polygon> pg;

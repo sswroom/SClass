@@ -255,7 +255,10 @@ void __stdcall SSWR::AVIRead::AVIREmailServerForm::OnGCISMailReceived(void *user
 	Text::StringBuilderUTF8 sb;
 	sb.AppendC(UTF8STRC("Received email from "));
 	sptr = cli->GetRemoteName(sbuff);
-	sb.AppendP(sbuff, sptr);
+	if (sptr)
+	{
+		sb.AppendP(sbuff, sptr);
+	}
 	Int64 id = me->store->NextEmailId();
 	sb.AppendC(UTF8STRC(", id = "));
 	sb.AppendI64(id);

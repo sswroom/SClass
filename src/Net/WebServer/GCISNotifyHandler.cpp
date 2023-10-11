@@ -169,6 +169,7 @@ Bool __stdcall Net::WebServer::GCISNotifyHandler::NotifyFunc(NotNullPtr<Net::Web
 				NotNullPtr<Text::MIMEObj::MailMessage> msg = mail.CreateMail();
 				me->hdlr(me->hdlrObj, req->GetNetConn(), msg);
 				msg.Delete();
+				me->log->LogMessage(CSTR("Message created"), IO::LogHandler::LogLevel::Action);
 			}
 			//////////////////////////////
 		}

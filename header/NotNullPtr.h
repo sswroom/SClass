@@ -2,31 +2,10 @@
 #define _SM_NOTNULLPTR
 #include <stdio.h>
 
-struct NotNullPtrAny
+template <typename T> struct NotNullPtr
 {
-protected:
-	const void *p;
-
-	NotNullPtrAny() = default;
-public:
-	const void *Ptr()
-	{
-		return this->p;
-	}
-
-	Bool Set(const void *p)
-	{
-		if (p)
-		{
-			this->p = p;
-			return true;
-		}
-		return false;
-	}
-};
-
-template <typename T> struct NotNullPtr : public NotNullPtrAny
-{
+private:
+	T *p;
 private:
 	NotNullPtr(T *p)
 	{
@@ -108,13 +87,6 @@ public:
 	static NotNullPtr<T> FromPtr(T *p)
 	{
 		return NotNullPtr<T>(p);
-	}
-
-	static NotNullPtr<T> ConvertFrom(NotNullPtrAny ptr)
-	{
-		NotNullPtr<T> ret;
-		ret.p = (T*)ptr.Ptr();
-		return ret;
 	}
 
 	template <typename V> static NotNullPtr<T> ConvertFrom(NotNullPtr<V> ptr)

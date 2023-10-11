@@ -291,7 +291,7 @@ Bool Net::Email::FileEmailStore::NewEmail(Int64 id, NotNullPtr<const Net::Socket
 	sb.AppendC(UTF8STRC("\r\n"));
 
 	Data::ArrayList<Text::MIMEObj::MailMessage::MailAddress*> recpList;
-	mail->GetRecpList(&recpList);
+	mail->GetRecpList(recpList);
 	i = 0;
 	j = recpList.GetCount();
 	while (i < j)
@@ -318,6 +318,7 @@ Bool Net::Email::FileEmailStore::NewEmail(Int64 id, NotNullPtr<const Net::Socket
 
 		i++;
 	}
+	mail->FreeRecpList(recpList);
 	UInt64 fileSize = sb.GetLength();
 	{
 		IO::FileStream fs(file->fileName, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);

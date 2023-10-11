@@ -172,7 +172,7 @@ OSInt Data::DataComparer::Compare(Math::Geometry::Vector2D *val1, Math::Geometry
 	}
 }
 
-OSInt Data::DataComparer::Compare(Data::UUID *val1, Data::UUID *val2)
+OSInt Data::DataComparer::Compare(Data::UUID* val1, Data::UUID *val2)
 {
 	if (val1 == val2)
 		return 0;
