@@ -3,6 +3,7 @@
 #include "Crypto/Cert/X509Cert.h"
 #include "Net/SocketFactory.h"
 #include "Net/SSLEngine.h"
+#include "Text/JSONBuilder.h"
 
 namespace Net
 {
@@ -21,7 +22,9 @@ namespace Net
 			GCISClient(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, Text::CStringNN notifyURL, NotNullPtr<Crypto::Cert::X509Cert> cert, NotNullPtr<Crypto::Cert::X509File> key);
 			~GCISClient();
 
-			Bool SendMessage(Bool internalChannel, Text::CString charset, Text::CStringNN contentType, Text::CStringNN subject, Data::ByteArrayR content, Text::CStringNN toList, Text::CString ccList, Text::StringBuilderUTF8 *sbError);
+			Bool SendMessage(Bool intranetChannel, Text::CString charset, Text::CStringNN contentType, Text::CStringNN subject, Text::CStringNN content, Text::CStringNN toList, Text::CString ccList, Text::CString bccList, Text::StringBuilderUTF8 *sbError);
+		private:
+			static void ParseEmailAddresses(NotNullPtr<Text::JSONBuilder> builder, Text::CStringNN toList, Text::CString ccList, Text::CString bccList);
 		};
 	}
 }
