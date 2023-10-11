@@ -1,42 +1,38 @@
-var web = {
-	getRequestURLBase: function()
+export function getRequestURLBase()
+{
+	var url = document.location.href;
+	var i = url.indexOf("://");
+	var j = url.indexOf("/", i + 3);
+	if (j >= 0)
 	{
-		var url = document.location.href;
-		var i = url.indexOf("://");
-		var j = url.indexOf("/", i + 3);
-		if (j >= 0)
-		{
-			return url.substring(0, j);
-		}
-		else
-		{
-			return url;
-		}
-	},
-	
-	getParameterByName: function(name)
-	{
-		var url = window.location.href;
-		name = name.replace(/[[\]]/g, '\\$&');
-		var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
-			results = regex.exec(url);
-		if (!results) return null;
-		if (!results[2]) return '';
-		return decodeURIComponent(results[2].replace(/\+/g, ' '));
-	},
-	
-	loadJSON: function(url, onResultFunc)
-	{
-		var xmlhttp = new XMLHttpRequest();
-		xmlhttp.onreadystatechange = function() {
-			if (this.readyState == 4 && this.status == 200)
-			{
-				onResultFunc(JSON.parse(this.responseText));
-			}
-		};
-		xmlhttp.open("GET", url, true);
-		xmlhttp.send();
+		return url.substring(0, j);
 	}
-};
-
-export default web;
+	else
+	{
+		return url;
+	}
+}
+	
+export function getParameterByName(name)
+{
+	var url = window.location.href;
+	name = name.replace(/[[\]]/g, '\\$&');
+	var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
+		results = regex.exec(url);
+	if (!results) return null;
+	if (!results[2]) return '';
+	return decodeURIComponent(results[2].replace(/\+/g, ' '));
+}
+	
+export function loadJSON(url, onResultFunc)
+{
+	var xmlhttp = new XMLHttpRequest();
+	xmlhttp.onreadystatechange = function() {
+		if (this.readyState == 4 && this.status == 200)
+		{
+			onResultFunc(JSON.parse(this.responseText));
+		}
+	};
+	xmlhttp.open("GET", url, true);
+	xmlhttp.send();
+}

@@ -55,8 +55,8 @@ namespace Net
 			EmailMessage();
 			~EmailMessage();
 			
-			Bool SetSubject(Text::CString subject);
-			Bool SetContent(Text::CString content, Text::CString contentType);
+			Bool SetSubject(Text::CStringNN subject);
+			Bool SetContent(Text::CStringNN content, Text::CStringNN contentType);
 			Bool SetSentDate(NotNullPtr<Data::DateTime> dt);
 			Bool SetMessageId(Text::CString msgId);
 			Bool SetFrom(Text::CString name, Text::CString addr);
@@ -70,7 +70,7 @@ namespace Net
 
 			Bool CompletedMessage();
 			Text::String *GetFromAddr();
-			const Data::ArrayListNN<Text::String> *GetRecpList();
+			NotNullPtr<const Data::ArrayListNN<Text::String>> GetRecpList();
 			Bool WriteToStream(NotNullPtr<IO::Stream> stm);
 
 			static Bool GenerateMessageID(NotNullPtr<Text::StringBuilderUTF8> sb, Text::CString fromAddr);

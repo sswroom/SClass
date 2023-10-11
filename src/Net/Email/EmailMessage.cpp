@@ -293,7 +293,7 @@ Net::Email::EmailMessage::~EmailMessage()
 	SDEL_CLASS(this->signKey);
 }
 
-Bool Net::Email::EmailMessage::SetSubject(Text::CString subject)
+Bool Net::Email::EmailMessage::SetSubject(Text::CStringNN subject)
 {
 	if (Text::StringTool::IsNonASCII(subject.v))
 	{
@@ -308,7 +308,7 @@ Bool Net::Email::EmailMessage::SetSubject(Text::CString subject)
 	return true;
 }
 
-Bool Net::Email::EmailMessage::SetContent(Text::CString content, Text::CString contentType)
+Bool Net::Email::EmailMessage::SetContent(Text::CStringNN content, Text::CStringNN contentType)
 {
 	SDEL_STRING(this->contentType);
 	this->contentType = Text::String::New(contentType).Ptr();
@@ -534,9 +534,9 @@ Text::String *Net::Email::EmailMessage::GetFromAddr()
 	return this->fromAddr;
 }
 
-const Data::ArrayListNN<Text::String> *Net::Email::EmailMessage::GetRecpList()
+NotNullPtr<const Data::ArrayListNN<Text::String>> Net::Email::EmailMessage::GetRecpList()
 {
-	return &this->recpList;
+	return this->recpList;
 }
 
 Bool Net::Email::EmailMessage::WriteToStream(NotNullPtr<IO::Stream> stm)

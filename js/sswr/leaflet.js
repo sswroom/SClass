@@ -1,8 +1,6 @@
-import math from "./math.js";
-var leaflet = {
-	fromLatLon: function(latLon)
-	{
-		return new math.Coord2D(latLon.lng, latLon.lat);
-	}
-};
-export default leaflet;
+import { Coord2D } from "./math.js";
+
+export function fromLatLon(latLon)
+{
+	return new Coord2D(latLon.lng, latLon.lat);
+}
