@@ -10,7 +10,7 @@
 #include "Map/OSM/OSMCacheHandler.h"
 #include "Media/ColorManager.h"
 #include "Net/SocketFactory.h"
-#include "Net/WebServer/HTTPDirectoryHandler.h"
+#include "Net/WebServer/NodeModuleHandler.h"
 #include "Net/WebServer/WebListener.h"
 #include "Parser/FullParserList.h"
 #include "SSWR/OrganWeb/OrganWebCommon.h"
@@ -47,7 +47,7 @@ namespace SSWR
 			NotNullPtr<Media::ColorManagerSess> colorSess;
 			NotNullPtr<Media::DrawEngine> eng;
 			NotNullPtr<Map::OSM::OSMCacheHandler> osmHdlr;
-			NotNullPtr<Net::WebServer::HTTPDirectoryHandler> mapDirHdlr;
+			NotNullPtr<Net::WebServer::NodeModuleHandler> nodeHdlr;
 			SSWR::OrganWeb::OrganWebHandler *webHdlr;
 
 			Data::FastStringMap<CategoryInfo*> cateSMap;

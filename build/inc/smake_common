@@ -3289,6 +3289,8 @@ Net/WebServer/MemoryWebSessionManager.h: ../../src/Net/WebServer/MemoryWebSessio
 @MemoryWebSessionManager.o
 Net/WebServer/MODBUSDevSimHandler.h: ../../src/Net/WebServer/MODBUSDevSimHandler.cpp
 @MODBUSDevSimHandler.o
+Net/WebServer/NodeModuleHandler.h: ../../src/Net/WebServer/NodeModuleHandler.cpp
+@NodeModuleHandler.o
 Net/WebServer/OAuth2Handler.h: ../../src/Net/WebServer/OAuth2Handler.cpp
 @OAuth2Handler.o
 Net/WebServer/PrintLogWebHandler.h: ../../src/Net/WebServer/PrintLogWebHandler.cpp
@@ -5582,6 +5584,7 @@ IWebSessionManager.o: ../../src/Net/WebServer/IWebSessionManager.cpp
 MemoryWebSession.o: ../../src/Net/WebServer/MemoryWebSession.cpp
 MemoryWebSessionManager.o: ../../src/Net/WebServer/MemoryWebSessionManager.cpp
 MODBUSDevSimHandler.o: ../../src/Net/WebServer/MODBUSDevSimHandler.cpp
+NodeModuleHandler.o: ../../src/Net/WebServer/NodeModuleHandler.cpp
 OAuth2Handler.o: ../../src/Net/WebServer/OAuth2Handler.cpp
 PrintLogWebHandler.o: ../../src/Net/WebServer/PrintLogWebHandler.cpp
 PrintLogWebResponse.o: ../../src/Net/WebServer/PrintLogWebResponse.cpp

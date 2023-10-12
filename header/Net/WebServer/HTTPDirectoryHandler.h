@@ -75,6 +75,7 @@ namespace Net
 
 		protected:
 			virtual ~HTTPDirectoryHandler();
+			virtual Bool FileValid(Text::CStringNN subReq);
 		public:
 			virtual Bool ProcessRequest(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq);
 

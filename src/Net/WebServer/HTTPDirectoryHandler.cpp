@@ -520,6 +520,11 @@ Net::WebServer::HTTPDirectoryHandler::~HTTPDirectoryHandler()
 	}
 }
 
+Bool Net::WebServer::HTTPDirectoryHandler::FileValid(Text::CStringNN subReq)
+{
+	return true;
+}
+
 Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq)
 {
 	if (this->DoRequest(req, resp, subReq))
@@ -545,8 +550,11 @@ Bool Net::WebServer::HTTPDirectoryHandler::DoFileRequest(NotNullPtr<Net::WebServ
 	UOSInt i;
 	if (req->GetProtocol() != Net::WebServer::IWebRequest::RequestProtocol::HTTP1_0 && req->GetProtocol() != Net::WebServer::IWebRequest::RequestProtocol::HTTP1_1)
 	{
-		resp->ResponseError(req, Net::WebStatus::SC_METHOD_NOT_ALLOWED);
-		return true;
+		return resp->ResponseError(req, Net::WebStatus::SC_METHOD_NOT_ALLOWED);
+	}
+	if (!this->FileValid(subReq))
+	{
+		return resp->ResponseError(req, Net::WebStatus::SC_FORBIDDEN);
 	}
 	if (this->packageMap && packageMut.Set(this->packageMut))
 	{

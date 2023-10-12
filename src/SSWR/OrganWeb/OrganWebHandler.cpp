@@ -29,7 +29,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebHandler::OnSessionCheck(Net::WebServer::I
 	return false;
 }
 
-SSWR::OrganWeb::OrganWebHandler::OrganWebHandler(OrganWebEnv *env, UInt32 scnSize)
+SSWR::OrganWeb::OrganWebHandler::OrganWebHandler(OrganWebEnv *env, UInt32 scnSize, Text::CStringNN rootDir) : WebControllerHandler(rootDir)
 {
 	this->env = env;
 	this->scnSize = scnSize;

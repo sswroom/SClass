@@ -27,7 +27,7 @@ namespace SSWR
 			static Bool __stdcall OnSessionCheck(Net::WebServer::IWebSession* sess, void *userObj);
 
 		public:
-			OrganWebHandler(OrganWebEnv *env, UInt32 scnSize);
+			OrganWebHandler(OrganWebEnv *env, UInt32 scnSize, Text::CStringNN rootDir);
 			virtual ~OrganWebHandler();
 		};
 	}

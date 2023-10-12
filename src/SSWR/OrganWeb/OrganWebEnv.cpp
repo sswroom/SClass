@@ -803,8 +803,8 @@ SSWR::OrganWeb::OrganWebEnv::OrganWebEnv(NotNullPtr<Net::SocketFactory> sockf, N
 	this->osmHdlr->AddAlternateURL(CSTR("http://b.tile.openstreetmap.org/"));
 	this->osmHdlr->AddAlternateURL(CSTR("http://c.tile.openstreetmap.org/"));
 	sptr = IO::Path::GetProcessFileName(sbuff);
-	sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("Map"));
-	NEW_CLASSNN(this->mapDirHdlr, Net::WebServer::HTTPDirectoryHandler(CSTRP(sbuff, sptr), false, 0, false));
+	sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("node_modules"));
+	NEW_CLASSNN(this->nodeHdlr, Net::WebServer::NodeModuleHandler(CSTRP(sbuff, sptr), 0));
 
 	this->db = db;
 	if (this->db == 0)
@@ -823,8 +823,10 @@ SSWR::OrganWeb::OrganWebEnv::OrganWebEnv(NotNullPtr<Net::SocketFactory> sockf, N
 	else
 	{
 		NotNullPtr<SSWR::OrganWeb::OrganWebHandler> webHdlr;
-		NEW_CLASSNN(webHdlr, SSWR::OrganWeb::OrganWebHandler(this, this->scnSize));
-		webHdlr->HandlePath(CSTR("/map"), this->mapDirHdlr, false);
+		sptr = IO::Path::GetProcessFileName(sbuff);
+		sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("web"));
+		NEW_CLASSNN(webHdlr, SSWR::OrganWeb::OrganWebHandler(this, this->scnSize, CSTRP(sbuff, sptr)));
+		webHdlr->HandlePath(CSTR("/js"), this->nodeHdlr, false);
 		webHdlr->HandlePath(CSTR("/osm"), this->osmHdlr, false);
 
 		this->webHdlr = webHdlr.Ptr();
@@ -855,7 +857,7 @@ SSWR::OrganWeb::OrganWebEnv::~OrganWebEnv()
 	SDEL_CLASS(this->webHdlr);
 	SDEL_CLASS(this->db);
 	this->osmHdlr.Delete();
-	this->mapDirHdlr->Release();
+	this->nodeHdlr->Release();
 
 	FreeGroups();
 	FreeSpecies();
