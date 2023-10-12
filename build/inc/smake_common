@@ -3232,6 +3232,8 @@ Net/Email/EmailValidator.h: ../../src/Net/Email/EmailValidator.cpp
 @EmailValidator.o
 Net/Email/FileEmailStore.h: ../../src/Net/Email/FileEmailStore.cpp
 @FileEmailStore.o
+Net/Email/GCISClient.h: ../../src/Net/Email/GCISClient.cpp
+@GCISClient.o
 Net/Email/MailController.h:
 Net/Email/POP3Client.h: ../../src/Net/Email/POP3Client.cpp
 @POP3Client.o
@@ -3741,6 +3743,8 @@ SSWR/AVIRead/AVIRFontSelector.h: ../../src/SSWR/AVIRead/AVIRFontSelector.cpp
 @AVIRFontSelector.o
 SSWR/AVIRead/AVIRFunctionInfoForm.h: ../../src/SSWR/AVIRead/AVIRFunctionInfoForm.cpp
 @AVIRFunctionInfoForm.o
+SSWR/AVIRead/AVIRGCISClientForm.h: ../../src/SSWR/AVIRead/AVIRGCISClientForm.cpp
+@AVIRGCISClientForm.o
 SSWR/AVIRead/AVIRGenImageForm.h: ../../src/SSWR/AVIRead/AVIRGenImageForm.cpp
 @AVIRGenImageForm.o
 SSWR/AVIRead/AVIRGISCombineForm.h: ../../src/SSWR/AVIRead/AVIRGISCombineForm.cpp
@@ -5552,6 +5556,7 @@ EmailStore.o: ../../src/Net/Email/EmailStore.cpp
 EmailUtil.o: ../../src/Net/Email/EmailUtil.cpp
 EmailValidator.o: ../../src/Net/Email/EmailValidator.cpp
 FileEmailStore.o: ../../src/Net/Email/FileEmailStore.cpp
+GCISClient.o: ../../src/Net/Email/GCISClient.cpp
 POP3Client.o: ../../src/Net/Email/POP3Client.cpp
 POP3Conn.o: ../../src/Net/Email/POP3Conn.cpp
 POP3Server.o: ../../src/Net/Email/POP3Server.cpp
@@ -5801,6 +5806,7 @@ AVIRFileTextEncryptForm.o: ../../src/SSWR/AVIRead/AVIRFileTextEncryptForm.cpp
 AVIRFontRendererForm.o: ../../src/SSWR/AVIRead/AVIRFontRendererForm.cpp
 AVIRFontSelector.o: ../../src/SSWR/AVIRead/AVIRFontSelector.cpp
 AVIRFunctionInfoForm.o: ../../src/SSWR/AVIRead/AVIRFunctionInfoForm.cpp
+AVIRGCISClientForm.o: ../../src/SSWR/AVIRead/AVIRGCISClientForm.cpp
 AVIRGenImageForm.o: ../../src/SSWR/AVIRead/AVIRGenImageForm.cpp
 AVIRGISCombineForm.o: ../../src/SSWR/AVIRead/AVIRGISCombineForm.cpp
 AVIRGISCSysForm.o: ../../src/SSWR/AVIRead/AVIRGISCSysForm.cpp

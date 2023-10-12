@@ -93,6 +93,7 @@
 #include "SSWR/AVIRead/AVIRFileSearchForm.h"
 #include "SSWR/AVIRead/AVIRFileSizePackForm.h"
 #include "SSWR/AVIRead/AVIRFileTextEncryptForm.h"
+#include "SSWR/AVIRead/AVIRGCISClientForm.h"
 #include "SSWR/AVIRead/AVIRGenImageForm.h"
 #include "SSWR/AVIRead/AVIRGLBViewerForm.h"
 #include "SSWR/AVIRead/AVIRGoogleTileMapForm.h"
@@ -501,7 +502,8 @@ typedef enum
 	MNU_MQTT_PUBLISH_TEST,
 	MNU_FILE_SEARCH,
 	MNU_VBOX_MANAGER,
-	MNU_JWT_PARSER
+	MNU_JWT_PARSER,
+	MNU_GCIS_CLIENT
 } MenuItems;
 
 void __stdcall SSWR::AVIRead::AVIRBaseForm::FileHandler(void *userObj, NotNullPtr<Text::String> *files, UOSInt nFiles)
@@ -763,6 +765,7 @@ SSWR::AVIRead::AVIRBaseForm::AVIRBaseForm(UI::GUIClientControl *parent, NotNullP
 	mnu2->AddItem(CSTR("Email Server"), MNU_EMAILSERVER, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu2->AddItem(CSTR("Email Address Validator"), MNU_EMAIL_ADDR_VALID, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu2->AddItem(CSTR("SMTP Client"), MNU_SMTP_CLIENT, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu2->AddItem(CSTR("GCIS Client"), MNU_GCIS_CLIENT, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu2 = mnu->AddSubMenu(CSTR("NetBIOS"));
 	mnu2->AddItem(CSTR("NetBIOS Scanner"), MNU_NETBIOS_SCANNER, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu2 = mnu->AddSubMenu(CSTR("LoRa"));
@@ -2881,6 +2884,13 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 		{
 			SSWR::AVIRead::AVIRJWTParserForm *frm;
 			NEW_CLASS(frm, SSWR::AVIRead::AVIRJWTParserForm(0, this->ui, this->core));
+			this->core->ShowForm(frm);
+		}
+		break;
+	case MNU_GCIS_CLIENT:
+		{
+			SSWR::AVIRead::AVIRGCISClientForm *frm;
+			NEW_CLASS(frm, SSWR::AVIRead::AVIRGCISClientForm(0, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
