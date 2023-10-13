@@ -236,18 +236,38 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnRequestClicked(void *userObj
 	{
 		UOSInt i = 0;
 		UOSInt j = me->params.GetCount();
-		SSWR::AVIRead::AVIRHTTPClientForm::ParamValue *param;
-		Text::JSONBuilder json(Text::JSONBuilder::OT_OBJECT);
-		while (i < j)
+		if (j > 0)
 		{
-			param = me->params.GetItem(i);
-			json.ObjectAddStrUTF8(param->name->ToCString(), param->value->v);
-			i++;
+			SSWR::AVIRead::AVIRHTTPClientForm::ParamValue *param;
+			Text::JSONBuilder json(Text::JSONBuilder::OT_OBJECT);
+			while (i < j)
+			{
+				param = me->params.GetItem(i);
+				json.ObjectAddStrUTF8(param->name->ToCString(), param->value->v);
+				i++;
+			}
+			Text::CStringNN js = json.Build();
+			me->reqBody = Text::StrCopyNew(js.v).Ptr();
+			me->reqBodyLen = js.leng;
+			me->reqBodyType = Text::String::New(UTF8STRC("application/json")).Ptr();
 		}
-		Text::CStringNN js = json.Build();
-		me->reqBody = Text::StrCopyNew(js.v).Ptr();
-		me->reqBodyLen = js.leng;
-		me->reqBodyType = Text::String::New(UTF8STRC("application/json")).Ptr();
+		else
+		{
+			Text::StringBuilderUTF8 sb;
+			me->txtDataStr->GetText(sb);
+			if (sb.GetLength() > 0 && ((sb.StartsWith('{') && sb.EndsWith('}')) || (sb.StartsWith('[') && sb.EndsWith(']'))))
+			{
+				me->reqBody = Text::StrCopyNew(sb.v).Ptr();
+				me->reqBodyLen = sb.leng;
+				me->reqBodyType = Text::String::New(UTF8STRC("application/json")).Ptr();
+			}
+			else
+			{
+				me->reqBody = Text::StrCopyNew((const UTF8Char*)"{}").Ptr();
+				me->reqBodyLen = 2;
+				me->reqBodyType = Text::String::New(UTF8STRC("application/json")).Ptr();
+			}
+		}
 	}
 	else
 	{

@@ -62,7 +62,7 @@ Bool __stdcall Net::WebServer::GCISNotifyHandler::NotifyFunc(NotNullPtr<Net::Web
 					failed = true;
 					resultCd = CSTR("0032");
 					resultMsg = CSTR("No recipient found.");
-					me->log->LogMessage(CSTR("No recipient found"), IO::LogHandler::LogLevel::Error);
+					me->log->LogMessage(CSTR("No recipient found 1"), IO::LogHandler::LogLevel::Error);
 				}
 				else
 				{
@@ -77,7 +77,7 @@ Bool __stdcall Net::WebServer::GCISNotifyHandler::NotifyFunc(NotNullPtr<Net::Web
 							failed = true;
 							resultCd = CSTR("0032");
 							resultMsg = CSTR("No recipient found.");
-							me->log->LogMessage(CSTR("No recipient found"), IO::LogHandler::LogLevel::Error);
+							me->log->LogMessage(CSTR("No recipient found 2"), IO::LogHandler::LogLevel::Error);
 							break;
 						}
 						else if (s.Set(recipient->GetObjectString(CSTR("ChanAddr"))))
@@ -97,7 +97,7 @@ Bool __stdcall Net::WebServer::GCISNotifyHandler::NotifyFunc(NotNullPtr<Net::Web
 							failed = true;
 							resultCd = CSTR("0032");
 							resultMsg = CSTR("No recipient found.");
-							me->log->LogMessage(CSTR("No recipient found"), IO::LogHandler::LogLevel::Error);
+							me->log->LogMessage(CSTR("No recipient found 3"), IO::LogHandler::LogLevel::Error);
 							break;
 						}
 
@@ -139,7 +139,7 @@ Bool __stdcall Net::WebServer::GCISNotifyHandler::NotifyFunc(NotNullPtr<Net::Web
 						failed = true;
 						resultCd = CSTR("0021");
 						resultMsg = CSTR("Invalid content type.");
-						me->log->LogMessage(CSTR("Invalid content type"), IO::LogHandler::LogLevel::Error);
+						me->log->LogMessage(CSTR("Invalid content type 1"), IO::LogHandler::LogLevel::Error);
 					}
 				}
 				else
@@ -147,7 +147,7 @@ Bool __stdcall Net::WebServer::GCISNotifyHandler::NotifyFunc(NotNullPtr<Net::Web
 					failed = true;
 					resultCd = CSTR("0021");
 					resultMsg = CSTR("Invalid content type.");
-					me->log->LogMessage(CSTR("Invalid content type"), IO::LogHandler::LogLevel::Error);
+					me->log->LogMessage(CSTR("Invalid content type 2"), IO::LogHandler::LogLevel::Error);
 				}
 				if (!failed)
 				{
@@ -160,7 +160,7 @@ Bool __stdcall Net::WebServer::GCISNotifyHandler::NotifyFunc(NotNullPtr<Net::Web
 						failed = true;
 						resultCd = CSTR("0021");
 						resultMsg = CSTR("Invalid content type.");
-						me->log->LogMessage(CSTR("Invalid content type"), IO::LogHandler::LogLevel::Error);
+						me->log->LogMessage(CSTR("Invalid content type 3"), IO::LogHandler::LogLevel::Error);
 					}
 				}
 			}
@@ -189,6 +189,11 @@ Bool __stdcall Net::WebServer::GCISNotifyHandler::NotifyFunc(NotNullPtr<Net::Web
 			cert->GetSubjectCN(sb2);
 			builder.ObjectAddStr(CSTR("Client"), sb2.ToCString());
 
+			builder.ObjectAddStr(CSTR("ResultMesg"), resultMsg);
+			builder.ObjectAddStr(CSTR("ResultCd"), resultCd);
+		}
+		else
+		{
 			builder.ObjectAddStr(CSTR("ResultMesg"), resultMsg);
 			builder.ObjectAddStr(CSTR("ResultCd"), resultCd);
 		}

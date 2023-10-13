@@ -19,12 +19,6 @@
 	},
 	"RecipientDetail":[
 		{
-			"ChanAddr":"test@abc.com",
-			"CcAddr":null,
-			"BccAddr":null,
-			"RecipientAtthFile":[]
-		},
-		{
 			"ChanAddr":"sswroom@yahoo.com",
 			"CcAddr":null,
 			"BccAddr":null,
@@ -32,6 +26,7 @@
 		}
 	]
 }
+{"ChanType":"EM","IsEncrypt":false,"IsSign":false,"IsRestricted":false,"IsUrgent":false,"ValidityPeriod":-1,"ContentDetail":{"CharSet":"UTF-8","ContentType":"text/html","Subject":"Email Testing","Content":"This is a test email","AtthFile":[]},"RecipientDetail":[{"ChanAddr":"sswroom@yahoo.com","CcAddr":null,"BccAddr":null,"RecipientAtthFile":[]}]}
 */
 Net::Email::GCISClient::GCISClient(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, Text::CStringNN notifyURL, NotNullPtr<Crypto::Cert::X509Cert> cert, NotNullPtr<Crypto::Cert::X509File> key)
 {
