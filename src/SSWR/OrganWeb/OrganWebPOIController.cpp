@@ -1,10 +1,8 @@
 #include "Stdafx.h"
+#include "Net/WebServer/HTTPServerUtil.h"
 #include "SSWR/OrganWeb/OrganWebEnv.h"
 #include "SSWR/OrganWeb/OrganWebPOIController.h"
 #include "Text/JSText.h"
-
-#include <stdio.h>
-
 
 Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcPublicPOI(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, Net::WebServer::WebController *parent)
 {
@@ -25,7 +23,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcPublicPOI(NotNullPtr<Ne
 	json.ArrayEnd();
 	json.ObjectBeginArray(CSTR("species"));
 	me->AddSpeciesList(json, speciesList);
-	return resp->ResponseJSONStr(req, 0, json.Build());
+	return me->ResponseJSON(req, resp, json.Build());
 }
 
 Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcGroupPOI(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, Net::WebServer::WebController *parent)
@@ -54,7 +52,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcGroupPOI(NotNullPtr<Net
 	json.ArrayEnd();
 	json.ObjectBeginArray(CSTR("species"));
 	me->AddSpeciesList(json, speciesList);
-	return resp->ResponseJSONStr(req, 0, json.Build());
+	return me->ResponseJSON(req, resp, json.Build());
 }
 
 Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcSpeciesPOI(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, Net::WebServer::WebController *parent)
@@ -81,7 +79,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcSpeciesPOI(NotNullPtr<N
 	json.ArrayEnd();
 	json.ObjectBeginArray(CSTR("species"));
 	me->AddSpeciesList(json, speciesList);
-	return resp->ResponseJSONStr(req, 0, json.Build());
+	return me->ResponseJSON(req, resp, json.Build());
 }
 
 Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcDayPOI(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, Net::WebServer::WebController *parent)
@@ -146,7 +144,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcDayPOI(NotNullPtr<Net::
 	json.ObjectBeginArray(CSTR("group"));
 	json.ArrayEnd();
 	json.ObjectBeginArray(CSTR("species"));
-	return resp->ResponseJSONStr(req, 0, json.Build());
+	return me->ResponseJSON(req, resp, json.Build());
 }
 
 
@@ -338,6 +336,15 @@ void SSWR::OrganWeb::OrganWebPOIController::AddSpeciesList(NotNullPtr<Text::JSON
 		json->ArrayEnd();
 		json->ObjectEnd();
 	}
+}
+
+Bool SSWR::OrganWeb::OrganWebPOIController::ResponseJSON(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN json)
+{
+	resp->EnableWriteBuffer();
+	resp->AddDefHeaders(req);
+	resp->AddCacheControl(0);
+	resp->AddContentType(CSTR("application/json;charset=UTF-8"));
+	return Net::WebServer::HTTPServerUtil::SendContent(req, resp, CSTR("application/json"), json);
 }
 
 SSWR::OrganWeb::OrganWebPOIController::OrganWebPOIController(Net::WebServer::MemoryWebSessionManager *sessMgr, OrganWebEnv *env, UInt32 scnSize) : OrganWebController(sessMgr, env, scnSize)
