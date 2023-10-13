@@ -31,7 +31,55 @@ export function toJSText(s)
 	}
 	return out + "\"";
 }
-	
+
+export function toXMLText(s)
+{
+	if (s == null) return "";
+	var out = "";
+	var i = 0;
+	var j = s.length;
+	var c;
+	while (i < j)
+	{
+		c = s.charAt(i);
+		switch (c)
+		{
+		case '&':
+			out += '&amp;';
+			break;
+		case '<':
+			out += '&lt;';
+			break;
+		case '>':
+			out += '&gt;';
+			break;
+		case '\'':
+			out += '&apos;';
+			break;
+		case '"':
+			out += '&quot;';
+			break;
+		case '\r':
+			out += '&#13;';
+			break;
+		case '\n':
+			out += '&#10;';
+			break;
+		default:
+			out += c;
+			break;
+		}
+		i++;
+	}
+	return out + "";
+}
+
+export function toAttrText(s)
+{
+	if (s == null) return "";
+	return "\""+toXMLText(s)+"\"";
+}
+
 export function toHTMLText(s)
 {
 	if (s == null) return "";

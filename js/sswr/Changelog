@@ -1,3 +1,6 @@
+1.2.2
+-Added text.toAttrText(), text.toXMLTest();
+
 1.2.1
 -Merge Individual class js into namespace js
 -Added all declaration files

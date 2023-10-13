@@ -222,54 +222,6 @@ void SSWR::OrganWeb::OrganWebPOIController::AddUserfilePOI(NotNullPtr<Text::JSON
 	json->ObjectAddInt32(CSTR("cateId"), species->cateId);
 	json->ObjectAddStr(CSTR("poiImg"), species->poiImg);
 	json->ObjectEnd();
-/*	sb->AppendUTF8Char('{');
-	sb->AppendC(UTF8STRC("\"id\":\""));
-	sb->AppendI32(file->id);
-	sb->AppendC(UTF8STRC("\",\"name\":"));
-	if (file->descript && file->descript->leng > 0)
-	{
-		Text::JSText::ToJSTextDQuote(sb, file->descript->v);
-	}
-	else
-	{
-		Text::JSText::ToJSTextDQuote(sb, species->sciName->v);
-	}
-	sb->AppendC(UTF8STRC(",\"description\":\"<img src=\\\"/photo.html?id="));
-	sb->AppendI32(species->speciesId);
-	sb->AppendC(UTF8STRC("&cateId="));
-	sb->AppendI32(species->cateId);
-	sb->AppendC(UTF8STRC("&width="));
-	sb->AppendUOSInt(GetPreviewSize());
-	sb->AppendC(UTF8STRC("&height="));
-	sb->AppendUOSInt(GetPreviewSize());
-	sb->AppendC(UTF8STRC("&fileId="));
-	sb->AppendI32(file->id);
-	sb->AppendC(UTF8STRC("\\\" /><br/>"));
-	sb->AppendTS(Data::Timestamp(file->captureTimeTicks, 32));
-	sb->AppendC(UTF8STRC("\",\"lat\":"));
-	sb->AppendDouble(file->lat);
-	sb->AppendC(UTF8STRC(",\"lon\":"));
-	sb->AppendDouble(file->lon);
-	sb->AppendC(UTF8STRC(",\"imgUrl\":\"/photo.html?id="));
-	sb->AppendI32(species->speciesId);
-	sb->AppendC(UTF8STRC("&cateId="));
-	sb->AppendI32(species->cateId);
-	sb->AppendC(UTF8STRC("&width="));
-	sb->AppendUOSInt(GetPreviewSize());
-	sb->AppendC(UTF8STRC("&height="));
-	sb->AppendUOSInt(GetPreviewSize());
-	sb->AppendC(UTF8STRC("&fileId="));
-	sb->AppendI32(file->id);
-	sb->AppendC(UTF8STRC("\",\"poiUrl\":\"img/"));
-	if (species->poiImg)
-	{
-		sb->Append(species->poiImg);
-	}
-	else
-	{
-		sb->AppendC(UTF8STRC("poi.png"));
-	}
-	sb->AppendC(UTF8STRC("\"},\r\n"));*/
 }
 
 void SSWR::OrganWeb::OrganWebPOIController::AddGroups(NotNullPtr<Text::JSONBuilder> json, NotNullPtr<Data::ArrayListNN<GroupInfo>> groups)
