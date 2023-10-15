@@ -4042,55 +4042,6 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoUpload(NotNullPtr
 	return true;
 }
 
-Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoUpload2(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, Net::WebServer::WebController *parent)
-{
-	SSWR::OrganWeb::OrganWebMainController *me = (SSWR::OrganWeb::OrganWebMainController*)parent;
-	RequestEnv env;
-	me->ParseRequestEnv(req, resp, &env, false);
-
-	if (env.user == 0)
-	{
-		resp->ResponseError(req, Net::WebStatus::SC_FORBIDDEN);
-		return true;
-	}
-	Sync::RWMutexUsage mutUsage;
-	UOSInt i = 0;
-	UOSInt fileSize;
-	UTF8Char fileName[512];
-	UTF8Char *fileNameEnd;
-	const UInt8 *fileCont;
-	Text::String *location;
-	Bool succ = true;
-	req->ParseHTTPForm();
-
-	while (true)
-	{
-		fileCont = req->GetHTTPFormFile(CSTR("file"), i, fileName, sizeof(fileName), &fileNameEnd, fileSize);
-		if (fileCont == 0)
-		{
-			break;
-		}
-		location = req->GetHTTPFormStr(CSTR("location"));
-		if (!me->env->UserfileAdd(mutUsage, env.user->id, env.user->unorganSpId, CSTRP(fileName, fileNameEnd), fileCont, fileSize, true, location))
-			succ = false;
-
-		i++;
-	}
-	mutUsage.EndUse();
-
-	IO::MemoryStream mstm;
-	if (succ)
-	{
-		mstm.Write((const UInt8*)"ok", 2);
-	}
-	else
-	{
-		mstm.Write((const UInt8*)"fail", 4);
-	}
-	ResponseMstm(req, resp, mstm, CSTR("text/plain"));
-	return true;
-}
-
 Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoUploadD(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, Net::WebServer::WebController *parent)
 {
 	SSWR::OrganWeb::OrganWebMainController *me = (SSWR::OrganWeb::OrganWebMainController*)parent;
@@ -4897,44 +4848,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcIndex(NotNullPtr<Net::
 	Text::UTF8Writer writer(mstm);
 
 	me->WriteHeader(&writer, (const UTF8Char*)"Index", env.user, env.isMobile);
-	writer.WriteLineC(UTF8STRC("<script type=\"application/javascript\">\r\n"
-								"async function submitFile() {\r\n"
-								"\tdocument.getElementById(\"uploadStatus\").disabled = true;\r\n"
-								"\tvar url = \"photoupload2.html\";\r\n"
-								"\tvar fileupload = document.getElementById(\"file\");\r\n"
-								"\tvar fileLocation = document.getElementById(\"location\").value;\r\n"
-								"\tvar uploadStatus = document.getElementById(\"uploadStatus\");\r\n"
-								"\tvar failList = new Array();\r\n"
-								"\tvar statusText;\r\n"
-								"\tvar i = 0;\r\n"
-								"\tvar j = fileupload.files.length;\r\n"
-								"\twhile (i < j) {\r\n"
-								"\t\tstatusText = \"Uploading \"+(i + 1)+\" of \"+j;\r\n"
-								"\t\tif (failList.length > 0) statusText = statusText+\"<br/>Failed Files:<br/>\"+failList.join(\"<br/>\");\r\n"
-								"\t\tuploadStatus.innerHTML = statusText;\r\n"
-								"\t\tvar formData = new FormData();\r\n"
-								"\t\tformData.append(\"file\", fileupload.files[i]);\r\n"
-								"\t\tformData.append(\"location\", fileLocation);\r\n"
-								"\t\tconst resp = await fetch(url, {\r\n"
-								"\t\t\tmethod: \"POST\", \r\n"
-								"\t\t\tbody: formData\r\n"
-								"\t\t});\r\n"
-								"\t\tconst respText = await resp.text();\r\n"
-								"\t\tif (respText != \"ok\") {\r\n"
-								"\t\t\tfailList.push(fileupload.files[i].name);\r\n"
-								"\t\t}\r\n"
-								"\t\ti++;\r\n"
-								"\t}\r\n"
-								"\tif (failList.length > 0) {\r\n"
-								"\t\tstatusText = \"Failed Files:<br/>\"+failList.join(\"<br/>\");\r\n"
-								"\t} else {\r\n"
-								"\t\tstatusText = \"Upload Success\";\r\n"
-								"\t\tfileupload.value = null;\r\n"
-								"\t}\r\n"
-								"\tuploadStatus.innerHTML = statusText;\r\n"
-								"\tdocument.getElementById(\"uploadStatus\").disabled = false;\r\n"
-								"}\r\n"
-								"</script>"));
+	writer.WriteLineC(UTF8STRC("<script type=\"module\" src=\"util.js\"></script>"));
 	writer.WriteLineC(UTF8STRC("<center><h1>Index</h1></center>"));
 
 	Sync::RWMutexUsage mutUsage;
@@ -5155,7 +5069,6 @@ SSWR::OrganWeb::OrganWebMainController::OrganWebMainController(Net::WebServer::M
 	this->AddService(CSTR("/photoyear.html"), Net::WebUtil::RequestMethod::HTTP_GET, SvcPhotoYear);
 	this->AddService(CSTR("/photoday.html"), Net::WebUtil::RequestMethod::HTTP_GET, SvcPhotoDay);
 	this->AddService(CSTR("/photoupload.html"), Net::WebUtil::RequestMethod::HTTP_POST, SvcPhotoUpload);
-	this->AddService(CSTR("/photoupload2.html"), Net::WebUtil::RequestMethod::HTTP_POST, SvcPhotoUpload2);
 	this->AddService(CSTR("/photouploadd.html"), Net::WebUtil::RequestMethod::HTTP_POST, SvcPhotoUploadD);
 	this->AddService(CSTR("/searchinside.html"), Net::WebUtil::RequestMethod::HTTP_POST, SvcSearchInside);
 	this->AddService(CSTR("/searchinsidemores.html"), Net::WebUtil::RequestMethod::HTTP_GET, SvcSearchInsideMoreS);
