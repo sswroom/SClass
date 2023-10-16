@@ -625,6 +625,134 @@ Bool Data::QueryConditions::StringInCondition::TestValid(NotNullPtr<Data::VariIt
 	}
 }
 
+Data::QueryConditions::StringNotInCondition::StringNotInCondition(Text::CStringNN fieldName, NotNullPtr<Data::ArrayList<const UTF8Char*>> val) : FieldCondition(fieldName)
+{
+	UOSInt i = 0;
+	UOSInt j = val->GetCount();
+	while (i < j)
+	{
+		this->vals.Add(Text::StrCopyNew(val->GetItem(i)).Ptr());
+		i++;
+	}
+}
+
+Data::QueryConditions::StringNotInCondition::~StringNotInCondition()
+{
+	LIST_FREE_FUNC(&this->vals, Text::StrDelNew);
+}
+
+Data::QueryConditions::ConditionType Data::QueryConditions::StringNotInCondition::GetType()
+{
+	return ConditionType::StringNotIn;
+}
+
+Bool Data::QueryConditions::StringNotInCondition::ToWhereClause(NotNullPtr<Text::StringBuilderUTF8> sb, DB::SQLType sqlType, Int8 tzQhr, UOSInt maxDBItem)
+{
+	if (this->vals.GetCount() > maxDBItem || this->vals.GetCount() == 0)
+	{
+		return false;
+	}
+	else
+	{
+		UTF8Char sbuff[512];
+		UTF8Char *sptr;
+		UTF8Char *sptrTmp = 0;
+		UOSInt sptrSize = 0;
+		UOSInt thisSize;
+		UOSInt i;
+		UOSInt j;
+		sptr = DB::DBUtil::SDBColUTF8(sbuff, this->fieldName->v, sqlType);
+		sb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
+		sb->AppendC(UTF8STRC(" not in ("));
+		i = 0;
+		j = this->vals.GetCount();
+		while (i < j)
+		{
+			if (i > 0)
+			{
+				sb->AppendC(UTF8STRC(", "));
+			}
+			thisSize = DB::DBUtil::SDBStrUTF8Leng(this->vals.GetItem(i), sqlType);
+			if (thisSize < 512)
+			{
+				sptr = DB::DBUtil::SDBStrUTF8(sbuff, this->vals.GetItem(i), sqlType);
+				sb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
+			}
+			else
+			{
+				if (thisSize > sptrSize)
+				{
+					sptrSize = thisSize;
+					if (sptrTmp)
+					{
+						MemFree(sptrTmp);
+					}
+					sptrTmp = MemAlloc(UTF8Char, thisSize + 1);
+				}
+				sptr = DB::DBUtil::SDBStrUTF8(sptrTmp, this->vals.GetItem(i), sqlType);
+				sb->AppendC(sptrTmp, (UOSInt)(sptr - sptrTmp));
+			}
+			i++;
+		}
+		if (sptrTmp)
+		{
+			MemFree(sptrTmp);
+		}
+		sb->AppendUTF8Char(')');
+		return true;
+	}
+}
+
+Bool Data::QueryConditions::StringNotInCondition::TestValid(NotNullPtr<Data::VariItem> item)
+{
+	const UTF8Char *csptr;
+	UOSInt i;
+	switch (item->GetItemType())
+	{
+	case Data::VariItem::ItemType::Str:
+		csptr = item->GetItemValue().str->v;
+		i = this->vals.GetCount();
+		while (i-- > 0)
+		{
+			if (Text::StrEquals(csptr, this->vals.GetItem(i)))
+			{
+				return false;
+			}
+		}
+		return true;
+	case Data::VariItem::ItemType::CStr:
+		csptr = item->GetItemValue().cstr.v;
+		i = this->vals.GetCount();
+		while (i-- > 0)
+		{
+			if (Text::StrEquals(csptr, this->vals.GetItem(i)))
+			{
+				return false;
+			}
+		}
+		return true;
+	case Data::VariItem::ItemType::F32:
+	case Data::VariItem::ItemType::F64:
+	case Data::VariItem::ItemType::I8:
+	case Data::VariItem::ItemType::U8:
+	case Data::VariItem::ItemType::I16:
+	case Data::VariItem::ItemType::U16:
+	case Data::VariItem::ItemType::I32:
+	case Data::VariItem::ItemType::U32:
+	case Data::VariItem::ItemType::I64:
+	case Data::VariItem::ItemType::U64:
+	case Data::VariItem::ItemType::BOOL:
+	case Data::VariItem::ItemType::Null:
+	case Data::VariItem::ItemType::Unknown:
+	case Data::VariItem::ItemType::Timestamp:
+	case Data::VariItem::ItemType::ByteArr:
+	case Data::VariItem::ItemType::Vector:
+	case Data::VariItem::ItemType::UUID:
+	default:
+		return false;
+	}
+}
+
 Data::QueryConditions::StringContainsCondition::StringContainsCondition(Text::CStringNN fieldName, const UTF8Char *val) : FieldCondition(fieldName)
 {
 	this->val = Text::String::NewNotNullSlow(val);
@@ -1203,6 +1331,14 @@ NotNullPtr<Data::QueryConditions> Data::QueryConditions::StrIn(Text::CStringNN f
 	return *this;
 }
 
+NotNullPtr<Data::QueryConditions> Data::QueryConditions::StrNotIn(Text::CStringNN fieldName, NotNullPtr<Data::ArrayList<const UTF8Char*>> vals)
+{
+	NotNullPtr<StringNotInCondition> cond;
+	NEW_CLASSNN(cond, StringNotInCondition(fieldName, vals));
+	this->conditionList.Add(cond);
+	return *this;
+}
+
 NotNullPtr<Data::QueryConditions> Data::QueryConditions::StrContains(Text::CStringNN fieldName, const UTF8Char *val)
 {
 	NotNullPtr<StringContainsCondition> cond;
@@ -1379,6 +1515,76 @@ Data::QueryConditions *Data::QueryConditions::ParseStr(Text::CStringNN s, DB::SQ
 					DEL_CLASS(cond);
 					return 0;
 				}
+			}
+		}
+		else if (sb.EqualsICase(UTF8STRC("not")))
+		{
+			sql = DB::SQL::SQLUtil::ParseNextWord(sql, sb, sqlType);
+			if (sb.EqualsICase(UTF8STRC("in")))
+			{
+				sql = DB::SQL::SQLUtil::ParseNextWord(sql, sb, sqlType);
+				if (!sb.Equals(UTF8STRC("(")))
+				{
+					DEL_CLASS(cond);
+					return 0;
+				}
+				Data::ArrayListNN<Data::VariItem> items;
+				while (true)
+				{
+					sql = DB::SQL::SQLUtil::ParseNextWord(sql, sb, sqlType);
+					if (!item.Set(DB::SQL::SQLUtil::ParseValue(sb.ToCString(), sqlType)))
+					{
+						items.FreeAll();
+						DEL_CLASS(cond);
+						return 0;
+					}
+					items.Add(item);
+					sql = DB::SQL::SQLUtil::ParseNextWord(sql, sb, sqlType);
+					if (sb.Equals(UTF8STRC(")")))
+					{
+						Data::VariItem::ItemType itemType = item->GetItemType();
+						if (itemType == Data::VariItem::ItemType::Str)
+						{
+							Data::ArrayList<const UTF8Char*> vals;
+							i = 0;
+							j = items.GetCount();
+							while (i < j)
+							{
+								if (items.GetItem(i)->GetItemType() != itemType)
+								{
+									items.FreeAll();
+									DEL_CLASS(cond);
+									return 0;
+								}
+								vals.Add(items.GetItem(i)->GetItemValue().str->v);
+								i++;
+							}
+							cond->StrNotIn(sbField.ToCString(), vals);
+							items.FreeAll();
+							break;
+						}
+						else
+						{
+							items.FreeAll();
+							DEL_CLASS(cond);
+							return 0;
+						}
+					}
+					else if (sb.Equals(UTF8STRC(",")))
+					{
+					}
+					else
+					{
+						items.FreeAll();
+						DEL_CLASS(cond);
+						return 0;
+					}
+				}
+			}
+			else
+			{
+				DEL_CLASS(cond);
+				return 0;
 			}
 		}
 		else if (sb.Equals(UTF8STRC("=")))

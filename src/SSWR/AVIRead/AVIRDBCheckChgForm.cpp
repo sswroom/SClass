@@ -220,7 +220,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::LoadDataFile(Text::CStringNN fileName)
 			return false;
 		}
 		csv->CloseReader(r);
-		db = csv;
+		this->txtDataFile->SetText(fileName);
 		this->dataFile = csv;
 		this->dataFileNoHeader = noHeader;
 		this->dataFileTz = csvTZ;
@@ -309,6 +309,12 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::CheckDataFile()
 			return false;
 		}
 	}
+	Int8 csvTZ = 0;
+	if (this->chkLocalTZ->IsChecked())
+	{
+		csvTZ = Data::DateTimeUtil::GetLocalTzQhr();
+	}
+	this->dataFileTz = csvTZ;
 	Text::StringBuilderUTF8 sbIgnore;
 	UOSInt nIgnore;
 	Text::PString ignoreArr[10];

@@ -19,6 +19,7 @@ namespace Data
 			Int32In,
 			DOUBLE,
 			StringIn,
+			StringNotIn,
 			StringContains,
 			StringEquals,
 			Boolean,
@@ -162,6 +163,20 @@ namespace Data
 			virtual Bool TestValid(NotNullPtr<Data::VariItem> item);
 		};
 
+		class StringNotInCondition : public FieldCondition
+		{
+		private:
+			Data::ArrayList<const UTF8Char*> vals;
+
+		public:
+			StringNotInCondition(Text::CStringNN fieldName, NotNullPtr<Data::ArrayList<const UTF8Char*>> val);
+			virtual ~StringNotInCondition();
+
+			virtual ConditionType GetType();
+			virtual Bool ToWhereClause(NotNullPtr<Text::StringBuilderUTF8> sb, DB::SQLType sqlType, Int8 tzQhr, UOSInt maxDBItem);
+			virtual Bool TestValid(NotNullPtr<Data::VariItem> item);
+		};
+
 		class StringContainsCondition : public FieldCondition
 		{
 		private:
@@ -269,6 +284,7 @@ namespace Data
 		NotNullPtr<QueryConditions> DoubleGE(Text::CStringNN fieldName, Double val);
 		NotNullPtr<QueryConditions> DoubleLE(Text::CStringNN fieldName, Double val);
 		NotNullPtr<QueryConditions> StrIn(Text::CStringNN fieldName, NotNullPtr<Data::ArrayList<const UTF8Char*>> vals);
+		NotNullPtr<QueryConditions> StrNotIn(Text::CStringNN fieldName, NotNullPtr<Data::ArrayList<const UTF8Char*>> vals);
 		NotNullPtr<QueryConditions> StrContains(Text::CStringNN fieldName, const UTF8Char *val);
 		NotNullPtr<QueryConditions> StrEquals(Text::CStringNN fieldName, Text::CString val);
 		NotNullPtr<QueryConditions> BoolEquals(Text::CStringNN fieldName, Bool val);
