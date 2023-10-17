@@ -28,8 +28,21 @@ UTF8Char *Text::JSText::ToJSText(UTF8Char *buff, const UTF8Char *s)
 			*buff++ = '\\';
 			*buff++ = 'n';
 			break;
+		case '\0':
+			*buff++ = '\\';
+			*buff++ = '0';
+			break;
 		default:
-			*buff++ = c;
+			if (c < 32)
+			{
+				*buff++ = '\\';
+				*buff++ = 'u';
+				buff = Text::StrHexVal16(buff, c);
+			}
+			else
+			{
+				*buff++ = c;
+			}
 			break;
 		}
 	}
@@ -62,8 +75,21 @@ UTF8Char *Text::JSText::ToJSTextDQuote(UTF8Char *buff, const UTF8Char *s)
 			*buff++ = '\\';
 			*buff++ = '\\';
 			break;
+		case '\0':
+			*buff++ = '\\';
+			*buff++ = '0';
+			break;
 		default:
-			*buff++ = c;
+			if (c < 32)
+			{
+				*buff++ = '\\';
+				*buff++ = 'u';
+				buff = Text::StrHexVal16(buff, c);
+			}
+			else
+			{
+				*buff++ = c;
+			}
 			break;
 		}
 	}
@@ -99,11 +125,25 @@ void Text::JSText::ToJSTextDQuote(NotNullPtr<Text::StringBuilderUTF8> sb, const 
 			*sptr++ = '\\';
 			*sptr++ = '\\';
 			break;
+		case '\0':
+			sptr[0] = '\\';
+			sptr[1] = '0';
+			sptr += 2;
+			break;
 		default:
-			*sptr++ = c;
+			if (c < 32)
+			{
+				sptr[0] = '\\';
+				sptr[1] = 'u';
+				sptr = Text::StrHexVal16(sptr + 2, c);
+			}
+			else
+			{
+				*sptr++ = c;
+			}
 			break;
 		}
-		if (sptr - buff >= 254)
+		if (sptr - buff >= 250)
 		{
 			sb->AppendC(buff, (UOSInt)(sptr - buff));
 			sptr = buff;
@@ -206,10 +246,18 @@ NotNullPtr<Text::String> Text::JSText::ToNewJSText(const UTF8Char *s)
 		case '\'':
 		case '\n':
 		case '\r':
+		case '\0':
 			chCnt += 2;
 			break;
 		default:
-			chCnt++;
+			if (c < 32)
+			{
+				chCnt += 6;
+			}
+			else
+			{
+				chCnt++;
+			}
 			break;
 		}
 	}
@@ -238,10 +286,18 @@ NotNullPtr<Text::String> Text::JSText::ToNewJSTextDQuote(const UTF8Char *s)
 		case '\n':
 		case '\r':
 		case '\\':
+		case '\0':
 			chCnt += 2;
 			break;
 		default:
-			chCnt++;
+			if (c < 32)
+			{
+				chCnt += 6;
+			}
+			else
+			{
+				chCnt++;
+			}
 			break;
 		}
 	}

@@ -40,8 +40,22 @@ void Text::JSONBuilder::AppendStrUTF8(const UTF8Char *val)
 			sptr[1] = 'n';
 			sptr += 2;
 			break;
+		case '\0':
+			sptr[0] = '\\';
+			sptr[1] = '0';
+			sptr += 2;
+			break;
 		default:
-			*sptr++ = c;
+			if (c < 32)
+			{
+				sptr[0] = '\\';
+				sptr[1] = 'u';
+				sptr = Text::StrHexVal16(sptr + 2, c);
+			}
+			else
+			{
+				*sptr++ = c;
+			}
 			break;
 		}
 		if (sptr - sbuff >= 254)
