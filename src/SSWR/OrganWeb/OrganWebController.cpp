@@ -51,6 +51,11 @@ Net::WebServer::IWebSession *SSWR::OrganWeb::OrganWebController::ParseRequestEnv
 		}
 		sess->EndUse();
 	}
+	else
+	{
+		env->pickObjType = PickObjType::POT_UNKNOWN;
+		env->pickObjs = 0;
+	}
 	return 0;
 }
 
