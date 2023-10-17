@@ -72,7 +72,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcCateList(NotNullPtr<Net
 			json.ArrayBeginObject();
 			json.ObjectAddInt32(CSTR("cateId"), cate->cateId);
 			json.ObjectAddStr(CSTR("chiName"), cate->chiName);
-			json.ObjectAddStr(CSTR("chiName"), cate->dirName);
+			json.ObjectAddStr(CSTR("dirName"), cate->dirName);
 			json.ObjectAddInt32(CSTR("flags"), cate->flags);
 			json.ObjectEnd();
 		}

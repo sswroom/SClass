@@ -4778,123 +4778,6 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcRestart(NotNullPtr<Net
 	}
 }
 
-Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcIndex(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, Net::WebServer::WebController *parent)
-{
-	SSWR::OrganWeb::OrganWebMainController *me = (SSWR::OrganWeb::OrganWebMainController*)parent;
-	RequestEnv env;
-	me->ParseRequestEnv(req, resp, env, false);
-
-	Data::DateTime dt;
-	UTF8Char sbuff[32];
-	UTF8Char *sptr;
-
-	IO::MemoryStream mstm;
-	Text::UTF8Writer writer(mstm);
-
-	me->WriteHeader(&writer, (const UTF8Char*)"Index", env.user, env.isMobile);
-	writer.WriteLineC(UTF8STRC("<script type=\"module\" src=\"util.js\"></script>"));
-	writer.WriteLineC(UTF8STRC("<center><h1>Index</h1></center>"));
-
-	Sync::RWMutexUsage mutUsage;
-	CategoryInfo *cate;
-	CategoryInfo *firstCate = 0;
-	UOSInt i;
-	UOSInt j;
-	NotNullPtr<Text::String> s;
-	Text::StringBuilderUTF8 sb;
-	Bool notAdmin = (env.user == 0 || env.user->userType != UserType::Admin);
-	Data::ReadingList<CategoryInfo*> *cateList = me->env->CateGetList(mutUsage);
-	i = 0;
-	j = cateList->GetCount();
-	while (i < j)
-	{
-		cate = cateList->GetItem(i);
-		if ((cate->flags & 1) == 0 || !notAdmin)
-		{
-			writer.WriteStrC(UTF8STRC("<a href="));
-			sb.ClearStr();
-			sb.AppendC(UTF8STRC("cate.html?cateName="));
-			sb.Append(cate->dirName);
-			s = Text::XML::ToNewAttrText(sb.ToString());
-			writer.WriteStrC(s->v, s->leng);
-			writer.WriteStrC(UTF8STRC(">"));
-			s->Release();
-			s = Text::XML::ToNewHTMLBodyText(cate->chiName->v);
-			writer.WriteStrC(s->v, s->leng);
-			s->Release();
-			writer.WriteLineC(UTF8STRC("</a><br/>"));
-
-			if (firstCate == 0)
-				firstCate = cate;
-		}
-		i++;
-	}
-	if (env.user)
-	{
-		OSInt endIndex = (OSInt)env.user->userFileIndex.GetCount();
-		OSInt startIndex;
-		Int64 currTime = env.user->userFileIndex.GetItem((UOSInt)endIndex - 1);
-		Int64 thisTicks;
-		if (endIndex > 0)
-		{
-			writer.WriteLineC(UTF8STRC("<hr/>"));
-			dt.ToUTCTime();
-			while (true)
-			{
-				dt.SetTicks(currTime);
-				dt.SetValue(dt.GetYear(), 1, 1, 0, 0, 0, 0);
-				thisTicks = dt.ToTicks();
-				startIndex = env.user->userFileIndex.SortedIndexOf(thisTicks);
-				if (startIndex < 0)
-				{
-					startIndex = ~startIndex;
-				}
-				else
-				{
-					while (startIndex > 0 && env.user->userFileIndex.GetItem((UOSInt)startIndex - 1) == thisTicks)
-					{
-						startIndex--;
-					}
-				}
-//				printf("Index startIndex = %d, endIndex = %d, currTime = %ld, year = %d\r\n", startIndex, endIndex, currTime, dt.GetYear());
-				sptr = Text::StrUInt32(sbuff, dt.GetYear());
-				writer.WriteStrC(UTF8STRC("<a href=\"photoyear.html?y="));
-				writer.WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
-				writer.WriteStrC(UTF8STRC("\">Year "));
-				writer.WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
-				writer.WriteLineC(UTF8STRC("</a><br/>"));
-				if (startIndex <= 0)
-					break;
-				endIndex = startIndex;
-				currTime = env.user->userFileIndex.GetItem((UOSInt)endIndex - 1);
-			}
-		}
-		writer.WriteLineC(UTF8STRC("<hr/>"));
-		writer.WriteLineC(UTF8STRC("<h3>Photo Upload</h3>"));
-		writer.WriteLineC(UTF8STRC("<form name=\"upload\" method=\"POST\" action=\"photoupload.html\" enctype=\"multipart/form-data\">Files:<input type=\"file\" id=\"file\" name=\"file\" multiple/><br/>"));
-		writer.WriteLineC(UTF8STRC("Location:<input type=\"text\" id=\"location\" name=\"file\" /><br/>"));
-		writer.WriteLineC(UTF8STRC("<input type=\"button\" id=\"uploadButton\" value=\"Upload\" onclick=\"submitFile()\"/></form>"));
-		writer.WriteLineC(UTF8STRC("<div id=\"uploadStatus\"></div>"));
-	}
-	writer.WriteLineC(UTF8STRC("<hr/>"));
-	writer.WriteStrC(UTF8STRC("<a href=\"booklist.html?id="));
-	sb.ClearStr();
-	sb.AppendI32(firstCate->cateId);
-	writer.WriteStrC(sb.ToString(), sb.GetLength());
-	writer.WriteLineC(UTF8STRC("\">Book List</a><br/>"));
-	writer.WriteStrC(UTF8STRC("<a href=\"map/index.html\">ShowMap</a><br/>"));
-	writer.WriteStrC(UTF8STRC("<a href=\"map/index2d.html\">ShowMap2D</a><br/>"));
-	if (env.user == 0 && req->IsSecure())
-	{
-		writer.WriteStrC(UTF8STRC("<a href=\"login.html\">Login</a><br/>"));
-	}
-	mutUsage.EndUse();
-
-	me->WriteFooter(&writer);
-	ResponseMstm(req, resp, mstm, CSTR("text/html"));
-	return true;
-}
-
 Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcCate(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, Net::WebServer::WebController *parent)
 {
 	SSWR::OrganWeb::OrganWebMainController *me = (SSWR::OrganWeb::OrganWebMainController*)parent;
@@ -5022,8 +4905,6 @@ SSWR::OrganWeb::OrganWebMainController::OrganWebMainController(Net::WebServer::M
 	this->AddService(CSTR("/logout"), Net::WebUtil::RequestMethod::HTTP_GET, SvcLogout);
 	this->AddService(CSTR("/restart"), Net::WebUtil::RequestMethod::HTTP_GET, SvcRestart);
 	this->AddService(CSTR("/restart"), Net::WebUtil::RequestMethod::HTTP_POST, SvcRestart);
-	this->AddService(CSTR("/"), Net::WebUtil::RequestMethod::HTTP_GET, SvcIndex);
-	this->AddService(CSTR("/index.html"), Net::WebUtil::RequestMethod::HTTP_GET, SvcIndex);
 	this->AddService(CSTR("/cate.html"), Net::WebUtil::RequestMethod::HTTP_GET, SvcCate);
 	this->AddService(CSTR("/favicon.ico"), Net::WebUtil::RequestMethod::HTTP_GET, SvcFavicon);
 }
