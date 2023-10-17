@@ -357,7 +357,7 @@ void SSWR::OrganWeb::OrganWebEnv::LoadUsers(NotNullPtr<Sync::RWMutexUsage> mutUs
 				user->pwd = r->GetNewStrB(2, sb);
 				user->watermark->Release();
 				user->watermark = r->GetNewStrBNN(3, sb);
-				user->userType = r->GetInt32(4);
+				user->userType = (UserType)r->GetInt32(4);
 				this->userNameMap.PutNN(user->userName, user);
 			}
 			else
@@ -367,7 +367,7 @@ void SSWR::OrganWeb::OrganWebEnv::LoadUsers(NotNullPtr<Sync::RWMutexUsage> mutUs
 				user->userName = r->GetNewStrBNN(1, sb);
 				user->pwd = r->GetNewStrB(2, sb);
 				user->watermark = r->GetNewStrBNN(3, sb);
-				user->userType = r->GetInt32(4);
+				user->userType = (UserType)r->GetInt32(4);
 				user->unorganSpId = 0;
 				this->userMap.Put(user->id, user);
 				this->userNameMap.PutNN(user->userName, user);
@@ -2060,7 +2060,7 @@ SSWR::OrganWeb::UserFileInfo *SSWR::OrganWeb::OrganWebEnv::UserfileGetCheck(NotN
 	mutUsage->ReplaceMutex(this->dataMut, false);
 	SpeciesInfo *sp = this->spMap.Get(speciesId);
 	UserFileInfo *userFile = this->userFileMap.Get(userfileId);
-	if (sp && sp->cateId == cateId && currUser && userFile && (currUser->userType == 0 || userFile->webuserId == currUser->id))
+	if (sp && sp->cateId == cateId && currUser && userFile && (currUser->userType == UserType::Admin || userFile->webuserId == currUser->id))
 	{
 		Data::DateTime dt;
 		dt.SetTicks(userFile->fileTimeTicks);

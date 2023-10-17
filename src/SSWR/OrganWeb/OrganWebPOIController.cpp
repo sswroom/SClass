@@ -4,6 +4,24 @@
 #include "SSWR/OrganWeb/OrganWebPOIController.h"
 #include "Text/JSText.h"
 
+Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcLoginInfo(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, Net::WebServer::WebController *parent)
+{
+	SSWR::OrganWeb::OrganWebPOIController *me = (SSWR::OrganWeb::OrganWebPOIController*)parent;
+	NotNullPtr<WebUserInfo> user;
+	RequestEnv env;
+	me->ParseRequestEnv(req, resp, &env, false);
+	Text::JSONBuilder json(Text::JSONBuilder::OT_OBJECT);
+	json.ObjectAddBool(CSTR("isMobile"), env.isMobile);
+	json.ObjectAddInt32(CSTR("scnWidth"), (Int32)env.scnWidth);
+	if (user.Set(env.user))
+	{
+		json.ObjectBeginObject(CSTR("user"));
+		AppendUser(json, user);
+		json.ObjectEnd();
+	}
+	return me->ResponseJSON(req, resp, json.Build());
+}
+
 Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcPhotoUpload(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, Net::WebServer::WebController *parent)
 {
 	SSWR::OrganWeb::OrganWebPOIController *me = (SSWR::OrganWeb::OrganWebPOIController*)parent;
@@ -39,6 +57,32 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcPhotoUpload(NotNullPtr<
 		i++;
 	}
 	return me->ResponseJSON(req, resp, succ?CSTR("{\"status\":\"ok\"}"):CSTR("{\"status\":\"fail\"}"));
+}
+
+Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcReload(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, Net::WebServer::WebController *parent)
+{
+	SSWR::OrganWeb::OrganWebPOIController *me = (SSWR::OrganWeb::OrganWebPOIController*)parent;
+	RequestEnv env;
+	me->ParseRequestEnv(req, resp, &env, false);
+
+	if (me->env->HasReloadPwd() && env.user && env.user->userType == UserType::Admin)
+	{
+		NotNullPtr<Text::String> pwd;
+		req->ParseHTTPForm();
+		if (pwd.Set(req->GetHTTPFormStr(CSTR("pwd"))) && me->env->ReloadPwdMatches(pwd))
+		{
+			me->env->Reload();
+			return me->ResponseJSON(req, resp, CSTR("{\"status\":\"Reloaded\"}"));
+		}
+		else
+		{
+			return me->ResponseJSON(req, resp, CSTR("{\"status\":\"Password Error\"}"));
+		}
+	}
+	else
+	{
+		return resp->ResponseError(req, Net::WebStatus::SC_NOT_FOUND);
+	}
 }
 
 Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcPublicPOI(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, Net::WebServer::WebController *parent)
@@ -223,7 +267,7 @@ void SSWR::OrganWeb::OrganWebPOIController::AddSpeciesPOI(NotNullPtr<Sync::RWMut
 	if (userId != 0)
 	{
 		user = this->env->UserGet(mutUsage, userId);
-		if (user && user->userType == 0)
+		if (user && user->userType == UserType::Admin)
 		{
 			adminUser = true;
 		}
@@ -327,6 +371,14 @@ void SSWR::OrganWeb::OrganWebPOIController::AddSpeciesList(NotNullPtr<Text::JSON
 	}
 }
 
+void SSWR::OrganWeb::OrganWebPOIController::AppendUser(NotNullPtr<Text::JSONBuilder> json, NotNullPtr<WebUserInfo> user)
+{
+	json->ObjectAddInt32(CSTR("id"), user->id);
+	json->ObjectAddInt32(CSTR("userType"), (Int32)user->userType);
+	json->ObjectAddStr(CSTR("userName"), user->userName);
+	json->ObjectAddStr(CSTR("watermark"), user->watermark);
+}
+
 Bool SSWR::OrganWeb::OrganWebPOIController::ResponseJSON(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN json)
 {
 	resp->EnableWriteBuffer();
@@ -338,7 +390,9 @@ Bool SSWR::OrganWeb::OrganWebPOIController::ResponseJSON(NotNullPtr<Net::WebServ
 
 SSWR::OrganWeb::OrganWebPOIController::OrganWebPOIController(Net::WebServer::MemoryWebSessionManager *sessMgr, OrganWebEnv *env, UInt32 scnSize) : OrganWebController(sessMgr, env, scnSize)
 {
+	this->AddService(CSTR("/api/logininfo"), Net::WebUtil::RequestMethod::HTTP_POST, SvcLoginInfo);
 	this->AddService(CSTR("/api/photoupload"), Net::WebUtil::RequestMethod::HTTP_POST, SvcPhotoUpload);
+	this->AddService(CSTR("/api/reload"), Net::WebUtil::RequestMethod::HTTP_POST, SvcReload);
 	this->AddService(CSTR("/api/publicpoi"), Net::WebUtil::RequestMethod::HTTP_GET, SvcPublicPOI);
 	this->AddService(CSTR("/api/grouppoi"), Net::WebUtil::RequestMethod::HTTP_GET, SvcGroupPOI);
 	this->AddService(CSTR("/api/speciespoi"), Net::WebUtil::RequestMethod::HTTP_GET, SvcSpeciesPOI);

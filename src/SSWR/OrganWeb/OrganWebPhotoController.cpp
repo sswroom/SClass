@@ -61,7 +61,7 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhoto(NotNullPtr<Net::WebS
 	UTF8Char *sptrEnd = sbuff;
 	Sync::RWMutexUsage mutUsage;
 	sp = this->env->SpeciesGet(mutUsage, speciesId);
-	Bool notAdmin = (user == 0 || user->userType != 0);
+	Bool notAdmin = (user == 0 || user->userType != UserType::Admin);
 	if (sp && sp->cateId == cateId)
 	{
 		cate = this->env->CateGet(mutUsage, sp->cateId);

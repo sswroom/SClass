@@ -35,7 +35,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebBookController::SvcBookList(NotNullPtr<Ne
 			resp->ResponseError(req, Net::WebStatus::SC_BAD_REQUEST);
 			return true;
 		}
-		if (unselect == 1 && env.user && env.user->userType == 0)
+		if (unselect == 1 && env.user && env.user->userType == UserType::Admin)
 		{
 			me->env->BookSelect(0);
 		}
@@ -119,7 +119,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebBookController::SvcBookList(NotNullPtr<Ne
 
 		writer.WriteLineC(UTF8STRC("</table>"));
 		writer.WriteLineC(UTF8STRC("<br/>"));
-		if (env.user && env.user->userType == 0)
+		if (env.user && env.user->userType == UserType::Admin)
 		{
 			writer.WriteStrC(UTF8STRC("<a href="));
 			sb.ClearStr();
@@ -213,7 +213,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebBookController::SvcBook(NotNullPtr<Net::W
 			resp->ResponseError(req, Net::WebStatus::SC_BAD_REQUEST);
 			return true;
 		}
-		if (selectBook != 0 && env.user && env.user->userType == 0)
+		if (selectBook != 0 && env.user && env.user->userType == UserType::Admin)
 		{
 			me->env->BookSelect(book);
 		}
@@ -297,7 +297,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebBookController::SvcBook(NotNullPtr<Net::W
 			writer.WriteLineC(UTF8STRC("</a><br/>"));
 		}
 
-		if (env.user && env.user->userType == 0)
+		if (env.user && env.user->userType == UserType::Admin)
 		{
 			if (me->env->BookFileExist(book))
 			{
@@ -389,7 +389,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebBookController::SvcBook(NotNullPtr<Net::W
 			i++;
 		}
 		writer.WriteLineC(UTF8STRC("<hr/>"));
-		me->WriteSpeciesTable(mutUsage, &writer, tempList, env.scnWidth, cateId, false, (env.user && env.user->userType == 0));
+		me->WriteSpeciesTable(mutUsage, &writer, tempList, env.scnWidth, cateId, false, (env.user && env.user->userType == UserType::Admin));
 		writer.WriteLineC(UTF8STRC("<hr/>"));
 
 		writer.WriteStrC(UTF8STRC("<a href=\"booklist.html?id="));
@@ -424,7 +424,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebBookController::SvcBookView(NotNullPtr<Ne
 		BookInfo *book;
 		Sync::RWMutexUsage mutUsage;
 		book = me->env->BookGet(mutUsage, id);
-		if (env.user == 0 || env.user->userType != 0)
+		if (env.user == 0 || env.user->userType != UserType::Admin)
 		{
 			mutUsage.EndUse();
 			resp->ResponseError(req, Net::WebStatus::SC_UNAUTHORIZED);
@@ -492,7 +492,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebBookController::SvcBookPhoto(NotNullPtr<N
 		Sync::RWMutexUsage mutUsage;
 		book = me->env->BookGet(mutUsage, id);
 		cate = me->env->CateGet(mutUsage, cateId);
-		if (env.user == 0 || env.user->userType != 0)
+		if (env.user == 0 || env.user->userType != UserType::Admin)
 		{
 			mutUsage.EndUse();
 			resp->ResponseError(req, Net::WebStatus::SC_UNAUTHORIZED);
@@ -717,7 +717,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebBookController::SvcBookAdd(NotNullPtr<Net
 		CategoryInfo *cate;
 		Sync::RWMutexUsage mutUsage;
 		cate = me->env->CateGet(mutUsage, cateId);
-		if (env.user == 0 || env.user->userType != 0)
+		if (env.user == 0 || env.user->userType != UserType::Admin)
 		{
 			mutUsage.EndUse();
 			resp->ResponseError(req, Net::WebStatus::SC_UNAUTHORIZED);

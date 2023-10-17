@@ -39,6 +39,12 @@ namespace SSWR
 			Temperature
 		};
 
+		enum class UserType
+		{
+			Admin,
+			User
+		};
+
 		typedef struct
 		{
 			Int32 bookId;
@@ -134,7 +140,7 @@ namespace SSWR
 			NotNullPtr<Text::String> userName;
 			Text::String *pwd;
 			NotNullPtr<Text::String> watermark;
-			Int32 userType;
+			UserType userType;
 			Data::ArrayListInt64 userFileIndex;
 			Data::ArrayList<UserFileInfo*> userFileObj;
 			Data::FastMap<Int32, Data::FastMap<Int64, TripInfo*>*> tripCates;
@@ -285,9 +291,9 @@ namespace SSWR
 				NotNullPtr<Text::String> bStr;
 				if (env->user != 0)
 				{
-					if (a->descript != 0 && a->descript->leng > 0 && (env->user->userType == 0 || a->webuserId == env->user->id))
+					if (a->descript != 0 && a->descript->leng > 0 && (env->user->userType == UserType::Admin || a->webuserId == env->user->id))
 						aDesc = true;
-					if (b->descript != 0 && b->descript->leng > 0 && (env->user->userType == 0 || b->webuserId == env->user->id))
+					if (b->descript != 0 && b->descript->leng > 0 && (env->user->userType == UserType::Admin || b->webuserId == env->user->id))
 						bDesc = true;
 				}
 				if (aDesc && bDesc && bStr.Set(b->descript))
