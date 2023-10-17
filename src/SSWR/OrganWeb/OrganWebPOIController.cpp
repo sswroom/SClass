@@ -390,7 +390,7 @@ Bool SSWR::OrganWeb::OrganWebPOIController::ResponseJSON(NotNullPtr<Net::WebServ
 
 SSWR::OrganWeb::OrganWebPOIController::OrganWebPOIController(Net::WebServer::MemoryWebSessionManager *sessMgr, OrganWebEnv *env, UInt32 scnSize) : OrganWebController(sessMgr, env, scnSize)
 {
-	this->AddService(CSTR("/api/logininfo"), Net::WebUtil::RequestMethod::HTTP_POST, SvcLoginInfo);
+	this->AddService(CSTR("/api/logininfo"), Net::WebUtil::RequestMethod::HTTP_GET, SvcLoginInfo);
 	this->AddService(CSTR("/api/photoupload"), Net::WebUtil::RequestMethod::HTTP_POST, SvcPhotoUpload);
 	this->AddService(CSTR("/api/reload"), Net::WebUtil::RequestMethod::HTTP_POST, SvcReload);
 	this->AddService(CSTR("/api/publicpoi"), Net::WebUtil::RequestMethod::HTTP_GET, SvcPublicPOI);
