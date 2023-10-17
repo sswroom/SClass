@@ -119,7 +119,7 @@ Bool Crypto::Encrypt::JasyptEncryptor::Decrypt(IO::ConfigFile *cfg)
 	{
 		cate = cateList.GetItem(i);
 		keyList.Clear();
-		cfg->GetKeys(cate, &keyList);
+		cfg->GetKeys(cate, keyList);
 		Data::ArrayIterator<NotNullPtr<Text::String>> it = keyList.Iterator();
 		while (it.HasNext())
 		{

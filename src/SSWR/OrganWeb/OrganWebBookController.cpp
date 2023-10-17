@@ -9,7 +9,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebBookController::SvcBookList(NotNullPtr<Ne
 {
 	SSWR::OrganWeb::OrganWebBookController *me = (SSWR::OrganWeb::OrganWebBookController*)parent;
 	RequestEnv env;
-	me->ParseRequestEnv(req, resp, &env, false);
+	me->ParseRequestEnv(req, resp, env, false);
 
 	Int32 id;
 	UInt32 unselect = 0;
@@ -63,7 +63,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebBookController::SvcBookList(NotNullPtr<Ne
 		writer.WriteLineC(UTF8STRC("<td>Publish Date</td>"));
 		writer.WriteLineC(UTF8STRC("</tr>"));
 
-		me->env->BookGetList(mutUsage, &sortBookList);
+		me->env->BookGetList(mutUsage, sortBookList);
 		Data::Sort::ArtificialQuickSort::Sort(&sortBookList, me);
 
 		i = 0;
@@ -172,7 +172,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebBookController::SvcBook(NotNullPtr<Net::W
 {
 	SSWR::OrganWeb::OrganWebBookController *me = (SSWR::OrganWeb::OrganWebBookController*)parent;
 	RequestEnv env;
-	me->ParseRequestEnv(req, resp, &env, false);
+	me->ParseRequestEnv(req, resp, env, false);
 
 	Int32 id;
 	UInt32 pageNo = 0;
@@ -414,7 +414,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebBookController::SvcBookView(NotNullPtr<Ne
 {
 	SSWR::OrganWeb::OrganWebBookController *me = (SSWR::OrganWeb::OrganWebBookController*)parent;
 	RequestEnv env;
-	me->ParseRequestEnv(req, resp, &env, false);
+	me->ParseRequestEnv(req, resp, env, false);
 
 	Int32 id;
 	if (req->GetQueryValueI32(CSTR("id"), id))
@@ -478,7 +478,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebBookController::SvcBookPhoto(NotNullPtr<N
 {
 	SSWR::OrganWeb::OrganWebBookController *me = (SSWR::OrganWeb::OrganWebBookController*)parent;
 	RequestEnv env;
-	me->ParseRequestEnv(req, resp, &env, false);
+	me->ParseRequestEnv(req, resp, env, false);
 
 	Int32 id;
 	Int32 cateId;
@@ -707,7 +707,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebBookController::SvcBookAdd(NotNullPtr<Net
 {
 	SSWR::OrganWeb::OrganWebBookController *me = (SSWR::OrganWeb::OrganWebBookController*)parent;
 	RequestEnv env;
-	me->ParseRequestEnv(req, resp, &env, false);
+	me->ParseRequestEnv(req, resp, env, false);
 
 	Int32 cateId;
 	if (req->GetQueryValueI32(CSTR("id"), cateId))

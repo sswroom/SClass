@@ -45,6 +45,14 @@ namespace SSWR
 			User
 		};
 
+		enum class FileType
+		{
+			Unknown,
+			Image,
+			Video,
+			Audio
+		};
+
 		typedef struct
 		{
 			Int32 bookId;
@@ -89,7 +97,7 @@ namespace SSWR
 		typedef struct
 		{
 			Int32 id;
-			Int32 fileType;
+			FileType fileType;
 			NotNullPtr<Text::String> oriFileName;
 			Int64 fileTimeTicks;
 			Double lat;

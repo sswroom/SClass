@@ -386,7 +386,7 @@ WChar *IO::Registry::GetName(WChar *nameBuff, UOSInt index)
 		return 0;
 	}
 	Data::ArrayListNN<Text::String> keys;
-	this->clsData->reg->cfg->GetKeys(this->clsData->cate->ToCString(), &keys);
+	this->clsData->reg->cfg->GetKeys(this->clsData->cate->ToCString(), keys);
 	Text::String *key = keys.GetItem(index);
 	if (key)
 	{

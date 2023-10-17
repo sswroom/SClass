@@ -35,7 +35,7 @@ void __stdcall SSWR::AVIRead::AVIRODBCStrForm::OnDriverInfoClicked(void *userObj
 			sarr[0] = (const UTF8Char*)"Name";
 			sarr[1] = (const UTF8Char*)"Value";
 			SSWR::AVIRead::AVIRTableMsgForm frm(0, me->ui, me->core, sb.ToCString(), 2, sarr);
-			driver->GetKeys((Text::String*)0, &keys);
+			driver->GetKeys((Text::String*)0, keys);
 			Data::ArrayIterator<NotNullPtr<Text::String>> it = keys.Iterator();
 			while (it.HasNext())
 			{

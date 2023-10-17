@@ -1,32 +1,222 @@
 #include "Stdafx.h"
+#include "Data/Sort/ArtificialQuickSort.h"
 #include "Net/WebServer/HTTPServerUtil.h"
 #include "SSWR/OrganWeb/OrganWebEnv.h"
 #include "SSWR/OrganWeb/OrganWebPOIController.h"
 #include "Text/JSText.h"
+
+Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcLang(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, Net::WebServer::WebController *parent)
+{
+	SSWR::OrganWeb::OrganWebPOIController *me = (SSWR::OrganWeb::OrganWebPOIController*)parent;
+	IO::ConfigFile *lang = me->env->LangGet(req);
+	Text::JSONBuilder json(Text::JSONBuilder::OT_OBJECT);
+	if (lang)
+	{
+		Data::ArrayListNN<Text::String> keys;
+		NotNullPtr<Text::String> key;
+		lang->GetKeys(CSTR(""), keys);
+		Data::ArrayIterator<NotNullPtr<Text::String>> it = keys.Iterator();
+		while (it.HasNext())
+		{
+			key = it.Next();
+			json.ObjectAddStr(key->ToCString(), lang->GetValue(key));
+		}
+	}
+	return me->ResponseJSON(req, resp, 0, json.Build());
+}
 
 Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcLoginInfo(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, Net::WebServer::WebController *parent)
 {
 	SSWR::OrganWeb::OrganWebPOIController *me = (SSWR::OrganWeb::OrganWebPOIController*)parent;
 	NotNullPtr<WebUserInfo> user;
 	RequestEnv env;
-	me->ParseRequestEnv(req, resp, &env, false);
+	me->ParseRequestEnv(req, resp, env, false);
 	Text::JSONBuilder json(Text::JSONBuilder::OT_OBJECT);
 	json.ObjectAddBool(CSTR("isMobile"), env.isMobile);
 	json.ObjectAddInt32(CSTR("scnWidth"), (Int32)env.scnWidth);
+	json.ObjectAddUInt64(CSTR("previewSize"), GetPreviewSize());
+	json.ObjectAddInt32(CSTR("pickObjType"), env.pickObjType);
+	json.ObjectAddArrayInt32(CSTR("pickObjs"), env.pickObjs);
 	if (user.Set(env.user))
 	{
 		json.ObjectBeginObject(CSTR("user"));
 		AppendUser(json, user);
 		json.ObjectEnd();
+		if (user->userType == UserType::Admin)
+		{
+			Sync::RWMutexUsage mutUsage;
+			BookInfo *book = me->env->BookGetSelected(mutUsage);
+			json.ObjectAddInt32(CSTR("selectedBook"), book?book->id:0);
+		}
 	}
-	return me->ResponseJSON(req, resp, json.Build());
+	return me->ResponseJSON(req, resp, 0, json.Build());
+}
+
+Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcCateList(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, Net::WebServer::WebController *parent)
+{
+	SSWR::OrganWeb::OrganWebPOIController *me = (SSWR::OrganWeb::OrganWebPOIController*)parent;
+	RequestEnv env;
+	me->ParseRequestEnv(req, resp, env, false);
+	Sync::RWMutexUsage mutUsage;
+	Bool notAdmin = (env.user == 0 || env.user->userType != UserType::Admin);
+	Data::ReadingList<CategoryInfo*> *cateList = me->env->CateGetList(mutUsage);
+	CategoryInfo *cate;
+	Text::JSONBuilder json(Text::JSONBuilder::OT_ARRAY);
+	UOSInt i = 0;
+	UOSInt j = cateList->GetCount();
+	while (i < j)
+	{
+		cate = cateList->GetItem(i);
+		if ((cate->flags & 1) == 0 || !notAdmin)
+		{
+			json.ArrayBeginObject();
+			json.ObjectAddInt32(CSTR("cateId"), cate->cateId);
+			json.ObjectAddStr(CSTR("chiName"), cate->chiName);
+			json.ObjectAddStr(CSTR("chiName"), cate->dirName);
+			json.ObjectAddInt32(CSTR("flags"), cate->flags);
+			json.ObjectEnd();
+		}
+		i++;
+	}
+	return me->ResponseJSON(req, resp, 0, json.Build());
+}
+
+Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcYearList(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, Net::WebServer::WebController *parent)
+{
+	SSWR::OrganWeb::OrganWebPOIController *me = (SSWR::OrganWeb::OrganWebPOIController*)parent;
+	RequestEnv env;
+	me->ParseRequestEnv(req, resp, env, false);
+	Text::JSONBuilder json(Text::JSONBuilder::OT_ARRAY);
+	if (env.user)
+	{
+		Data::DateTime dt;
+		OSInt endIndex = (OSInt)env.user->userFileIndex.GetCount();
+		OSInt startIndex;
+		Int64 currTime = env.user->userFileIndex.GetItem((UOSInt)endIndex - 1);
+		Int64 thisTicks;
+		if (endIndex > 0)
+		{
+			dt.ToUTCTime();
+			while (true)
+			{
+				dt.SetTicks(currTime);
+				dt.SetValue(dt.GetYear(), 1, 1, 0, 0, 0, 0);
+				thisTicks = dt.ToTicks();
+				startIndex = env.user->userFileIndex.SortedIndexOf(thisTicks);
+				if (startIndex < 0)
+				{
+					startIndex = ~startIndex;
+				}
+				else
+				{
+					while (startIndex > 0 && env.user->userFileIndex.GetItem((UOSInt)startIndex - 1) == thisTicks)
+					{
+						startIndex--;
+					}
+				}
+				json.ArrayAddInt32((Int32)dt.GetYear());
+				if (startIndex <= 0)
+					break;
+				endIndex = startIndex;
+				currTime = env.user->userFileIndex.GetItem((UOSInt)endIndex - 1);
+			}
+		}
+	}
+	return me->ResponseJSON(req, resp, 0, json.Build());
+}
+
+Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcBookList(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, Net::WebServer::WebController *parent)
+{
+	SSWR::OrganWeb::OrganWebPOIController *me = (SSWR::OrganWeb::OrganWebPOIController*)parent;
+	RequestEnv env;
+	me->ParseRequestEnv(req, resp, env, false);
+	Sync::RWMutexUsage mutUsage;
+	Data::ArrayList<BookInfo*> bookList;
+	BookInfo *book;
+	Text::JSONBuilder json(Text::JSONBuilder::OT_ARRAY);
+	me->env->BookGetList(mutUsage, bookList);
+
+	UOSInt i = 0;
+	UOSInt j = bookList.GetCount();
+	while (i < j)
+	{
+		book = bookList.GetItem(i);
+		json.ArrayBeginObject();
+		json.ObjectAddInt32(CSTR("id"), book->id);
+		json.ObjectAddUInt64(CSTR("speciesCount"), book->species.GetCount());
+		json.ObjectAddInt32(CSTR("userfileId"), book->userfileId);
+		json.ObjectAddInt64(CSTR("publishDateTicks"), book->publishDate);
+		json.ObjectAddStr(CSTR("author"), book->author);
+		json.ObjectAddStr(CSTR("title"), book->title);
+		json.ObjectAddStr(CSTR("press"), book->press);
+		json.ObjectAddStr(CSTR("url"), book->url);
+		json.ObjectEnd();
+
+		i++;
+	}
+	return me->ResponseJSON(req, resp, 0, json.Build());
+}
+
+Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcBookDetail(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, Net::WebServer::WebController *parent)
+{
+	SSWR::OrganWeb::OrganWebPOIController *me = (SSWR::OrganWeb::OrganWebPOIController*)parent;
+	RequestEnv env;
+	me->ParseRequestEnv(req, resp, env, false);
+	Sync::RWMutexUsage mutUsage;
+	Int32 bookId;
+	NotNullPtr<BookInfo> book;
+	Text::JSONBuilder json(Text::JSONBuilder::OT_OBJECT);
+	if (req->GetQueryValueI32(CSTR("id"), bookId) && book.Set(me->env->BookGet(mutUsage, bookId)))
+	{
+		json.ObjectAddInt32(CSTR("id"), book->id);
+		json.ObjectAddUInt64(CSTR("speciesCount"), book->species.GetCount());
+		json.ObjectAddInt32(CSTR("userfileId"), book->userfileId);
+		json.ObjectAddInt64(CSTR("publishDateTicks"), book->publishDate);
+		json.ObjectAddStr(CSTR("author"), book->author);
+		json.ObjectAddStr(CSTR("title"), book->title);
+		json.ObjectAddStr(CSTR("press"), book->press);
+		json.ObjectAddStr(CSTR("url"), book->url);
+		if (book->userfileId != 0)
+		{
+			UserFileInfo *userFile = me->env->UserfileGet(mutUsage, book->userfileId);
+			if (userFile)
+			{
+				SpeciesInfo *sp = me->env->SpeciesGet(mutUsage, userFile->speciesId);
+				if (sp)
+				{
+					json.ObjectBeginObject(CSTR("userfile"));
+					json.ObjectAddInt32(CSTR("id"), userFile->id);
+					json.ObjectAddInt32(CSTR("speciesId"), userFile->speciesId);
+					json.ObjectAddInt32(CSTR("cateId"), sp->cateId);
+				}
+			}
+		}
+		json.ObjectBeginArray(CSTR("species"));
+		UOSInt i = 0;
+		UOSInt j = book->species.GetCount();
+		while (i < j)
+		{
+			BookSpInfo *bookSp = book->species.GetItem(i);
+			NotNullPtr<SpeciesInfo> species;
+			if (species.Set(me->env->SpeciesGet(mutUsage, bookSp->speciesId)))
+			{
+				json.ArrayBeginObject();
+				json.ObjectAddStr(CSTR("dispName"), bookSp->dispName);
+				me->AppendSpecies(json, species);
+				json.ObjectEnd();
+			}
+			i++;
+		}
+		json.ArrayEnd();
+	}
+	return me->ResponseJSON(req, resp, 0, json.Build());
 }
 
 Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcPhotoUpload(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, Net::WebServer::WebController *parent)
 {
 	SSWR::OrganWeb::OrganWebPOIController *me = (SSWR::OrganWeb::OrganWebPOIController*)parent;
 	RequestEnv env;
-	me->ParseRequestEnv(req, resp, &env, false);
+	me->ParseRequestEnv(req, resp, env, false);
 
 	if (env.user == 0)
 	{
@@ -56,14 +246,14 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcPhotoUpload(NotNullPtr<
 
 		i++;
 	}
-	return me->ResponseJSON(req, resp, succ?CSTR("{\"status\":\"ok\"}"):CSTR("{\"status\":\"fail\"}"));
+	return me->ResponseJSON(req, resp, 0, succ?CSTR("{\"status\":\"ok\"}"):CSTR("{\"status\":\"fail\"}"));
 }
 
 Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcReload(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, Net::WebServer::WebController *parent)
 {
 	SSWR::OrganWeb::OrganWebPOIController *me = (SSWR::OrganWeb::OrganWebPOIController*)parent;
 	RequestEnv env;
-	me->ParseRequestEnv(req, resp, &env, false);
+	me->ParseRequestEnv(req, resp, env, false);
 
 	if (me->env->HasReloadPwd() && env.user && env.user->userType == UserType::Admin)
 	{
@@ -72,11 +262,11 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcReload(NotNullPtr<Net::
 		if (pwd.Set(req->GetHTTPFormStr(CSTR("pwd"))) && me->env->ReloadPwdMatches(pwd))
 		{
 			me->env->Reload();
-			return me->ResponseJSON(req, resp, CSTR("{\"status\":\"Reloaded\"}"));
+			return me->ResponseJSON(req, resp, 0, CSTR("{\"status\":\"Reloaded\"}"));
 		}
 		else
 		{
-			return me->ResponseJSON(req, resp, CSTR("{\"status\":\"Password Error\"}"));
+			return me->ResponseJSON(req, resp, 0, CSTR("{\"status\":\"Password Error\"}"));
 		}
 	}
 	else
@@ -104,14 +294,14 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcPublicPOI(NotNullPtr<Ne
 	json.ArrayEnd();
 	json.ObjectBeginArray(CSTR("species"));
 	me->AddSpeciesList(json, speciesList);
-	return me->ResponseJSON(req, resp, json.Build());
+	return me->ResponseJSON(req, resp, 0, json.Build());
 }
 
 Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcGroupPOI(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, Net::WebServer::WebController *parent)
 {
 	SSWR::OrganWeb::OrganWebPOIController *me = (SSWR::OrganWeb::OrganWebPOIController*)parent;
 	RequestEnv env;
-	me->ParseRequestEnv(req, resp, &env, false);
+	me->ParseRequestEnv(req, resp, env, false);
 	Text::JSONBuilder json(Text::JSONBuilder::OT_OBJECT);
 	Data::ArrayListNN<GroupInfo> groups;
 	Data::ArrayListNN<SpeciesInfo> speciesList;
@@ -133,14 +323,14 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcGroupPOI(NotNullPtr<Net
 	json.ArrayEnd();
 	json.ObjectBeginArray(CSTR("species"));
 	me->AddSpeciesList(json, speciesList);
-	return me->ResponseJSON(req, resp, json.Build());
+	return me->ResponseJSON(req, resp, 0, json.Build());
 }
 
 Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcSpeciesPOI(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, Net::WebServer::WebController *parent)
 {
 	SSWR::OrganWeb::OrganWebPOIController *me = (SSWR::OrganWeb::OrganWebPOIController*)parent;
 	RequestEnv env;
-	me->ParseRequestEnv(req, resp, &env, false);
+	me->ParseRequestEnv(req, resp, env, false);
 	Text::JSONBuilder json(Text::JSONBuilder::OT_OBJECT);
 	Data::ArrayListNN<SpeciesInfo> speciesList;
 	Int32 speciesId;
@@ -160,14 +350,14 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcSpeciesPOI(NotNullPtr<N
 	json.ArrayEnd();
 	json.ObjectBeginArray(CSTR("species"));
 	me->AddSpeciesList(json, speciesList);
-	return me->ResponseJSON(req, resp, json.Build());
+	return me->ResponseJSON(req, resp, 0, json.Build());
 }
 
 Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcDayPOI(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, Net::WebServer::WebController *parent)
 {
 	SSWR::OrganWeb::OrganWebPOIController *me = (SSWR::OrganWeb::OrganWebPOIController*)parent;
 	RequestEnv env;
-	me->ParseRequestEnv(req, resp, &env, false);
+	me->ParseRequestEnv(req, resp, env, false);
 	Text::JSONBuilder json(Text::JSONBuilder::OT_OBJECT);
 	Int32 dayId;
 	json.ObjectBeginArray(CSTR("poi"));
@@ -225,7 +415,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcDayPOI(NotNullPtr<Net::
 	json.ObjectBeginArray(CSTR("group"));
 	json.ArrayEnd();
 	json.ObjectBeginArray(CSTR("species"));
-	return me->ResponseJSON(req, resp, json.Build());
+	return me->ResponseJSON(req, resp, 0, json.Build());
 }
 
 
@@ -329,44 +519,13 @@ void SSWR::OrganWeb::OrganWebPOIController::AddGroups(NotNullPtr<Text::JSONBuild
 
 void SSWR::OrganWeb::OrganWebPOIController::AddSpeciesList(NotNullPtr<Text::JSONBuilder> json, NotNullPtr<Data::ArrayListNN<SpeciesInfo>> speciesList)
 {
-	Sync::RWMutexUsage mutUsage;
 	NotNullPtr<SpeciesInfo> species;
-	BookSpInfo *bookSp;
-	BookInfo *book;
-	UOSInt i;
-	UOSInt j;
 	Data::ArrayIterator<NotNullPtr<SpeciesInfo>> it = speciesList->Iterator();
 	while (it.HasNext())
 	{
 		species = it.Next();
 		json->ArrayBeginObject();
-		json->ObjectAddInt32(CSTR("id"), species->speciesId);
-		json->ObjectAddInt32(CSTR("groupId"), species->groupId);
-		json->ObjectAddStr(CSTR("sciName"), species->sciName);
-		json->ObjectAddStr(CSTR("chiName"), species->chiName);
-		json->ObjectAddStr(CSTR("engName"), species->engName);
-		json->ObjectAddStr(CSTR("descript"), species->descript);
-		json->ObjectAddStr(CSTR("poiImg"), species->poiImg);
-		json->ObjectAddInt32(CSTR("flags"), species->flags);
-		json->ObjectBeginArray(CSTR("books"));
-		i = 0;
-		j = species->books.GetCount();
-		while (i < j)
-		{
-			bookSp = species->books.GetItem(i);
-			book = this->env->BookGet(mutUsage, bookSp->bookId);
-			json->ArrayBeginObject();
-			json->ObjectAddStr(CSTR("dispName"), bookSp->dispName);
-			if (book)
-			{
-				json->ObjectAddStr(CSTR("bookTitle"), book->title);
-				json->ObjectAddStr(CSTR("bookAuthor"), book->author);
-				json->ObjectAddTSStr(CSTR("publishDate"), Data::Timestamp(book->publishDate, 32));
-			}
-			json->ObjectEnd();
-			i++;
-		}
-		json->ArrayEnd();
+		AppendSpecies(json, species);
 		json->ObjectEnd();
 	}
 }
@@ -379,18 +538,85 @@ void SSWR::OrganWeb::OrganWebPOIController::AppendUser(NotNullPtr<Text::JSONBuil
 	json->ObjectAddStr(CSTR("watermark"), user->watermark);
 }
 
-Bool SSWR::OrganWeb::OrganWebPOIController::ResponseJSON(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN json)
+void SSWR::OrganWeb::OrganWebPOIController::AppendSpecies(NotNullPtr<Text::JSONBuilder> json, NotNullPtr<SpeciesInfo> species)
+{
+	Sync::RWMutexUsage mutUsage;
+	json->ObjectAddInt32(CSTR("id"), species->speciesId);
+	json->ObjectAddInt32(CSTR("groupId"), species->groupId);
+	json->ObjectAddStr(CSTR("sciName"), species->sciName);
+	json->ObjectAddStr(CSTR("chiName"), species->chiName);
+	json->ObjectAddStr(CSTR("engName"), species->engName);
+	json->ObjectAddStr(CSTR("descript"), species->descript);
+	json->ObjectAddStr(CSTR("poiImg"), species->poiImg);
+	json->ObjectAddInt32(CSTR("flags"), species->flags);
+	json->ObjectAddStr(CSTR("idKey"), species->idKey);
+	json->ObjectAddInt32(CSTR("cateId"), species->cateId);
+	if (species->files.GetCount() > 0)
+	{
+		if ((species->flags & SSWR::OrganWeb::SF_HAS_MYPHOTO) == 0)
+		{
+			this->env->SpeciesSetFlags(mutUsage, species->speciesId, (SSWR::OrganWeb::SpeciesFlags)(species->flags | SSWR::OrganWeb::SF_HAS_MYPHOTO));
+			this->env->GroupAddCounts(mutUsage, species->groupId, 0, (species->flags & SSWR::OrganWeb::SF_HAS_WEBPHOTO)?0:1, 1);
+		}
+	}
+	else
+	{
+		if (species->flags & SSWR::OrganWeb::SF_HAS_MYPHOTO)
+		{
+			this->env->SpeciesSetFlags(mutUsage, species->speciesId, (SSWR::OrganWeb::SpeciesFlags)(species->flags & ~SSWR::OrganWeb::SF_HAS_MYPHOTO));
+			this->env->GroupAddCounts(mutUsage, species->groupId, 0, (species->flags & SSWR::OrganWeb::SF_HAS_WEBPHOTO)?0:(UOSInt)-1, (UOSInt)-1);
+		}
+	}
+	if (species->photoId != 0)
+	{
+		json->ObjectAddInt32(CSTR("photoId"), species->photoId);
+	}
+	else if (species->photoWId != 0)
+	{
+		json->ObjectAddInt32(CSTR("photoWId"), species->photoWId);
+	}
+	else if (species->photo && species->photo->leng > 0)
+	{
+		json->ObjectAddStr(CSTR("photo"), species->photo);
+	}
+	json->ObjectBeginArray(CSTR("books"));
+	UOSInt i = 0;
+	UOSInt j = species->books.GetCount();
+	while (i < j)
+	{
+		BookSpInfo *bookSp = species->books.GetItem(i);
+		BookInfo *book = this->env->BookGet(mutUsage, bookSp->bookId);
+		json->ArrayBeginObject();
+		json->ObjectAddStr(CSTR("dispName"), bookSp->dispName);
+		if (book)
+		{
+			json->ObjectAddStr(CSTR("bookTitle"), book->title);
+			json->ObjectAddStr(CSTR("bookAuthor"), book->author);
+			json->ObjectAddTSStr(CSTR("publishDate"), Data::Timestamp(book->publishDate, 32));
+		}
+		json->ObjectEnd();
+		i++;
+	}
+	json->ArrayEnd();
+}
+
+Bool SSWR::OrganWeb::OrganWebPOIController::ResponseJSON(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, OSInt cacheAge, Text::CStringNN json)
 {
 	resp->EnableWriteBuffer();
 	resp->AddDefHeaders(req);
-	resp->AddCacheControl(0);
+	resp->AddCacheControl(cacheAge);
 	resp->AddContentType(CSTR("application/json;charset=UTF-8"));
 	return Net::WebServer::HTTPServerUtil::SendContent(req, resp, CSTR("application/json"), json);
 }
 
 SSWR::OrganWeb::OrganWebPOIController::OrganWebPOIController(Net::WebServer::MemoryWebSessionManager *sessMgr, OrganWebEnv *env, UInt32 scnSize) : OrganWebController(sessMgr, env, scnSize)
 {
+	this->AddService(CSTR("/api/lang"), Net::WebUtil::RequestMethod::HTTP_GET, SvcLang);
 	this->AddService(CSTR("/api/logininfo"), Net::WebUtil::RequestMethod::HTTP_GET, SvcLoginInfo);
+	this->AddService(CSTR("/api/catelist"), Net::WebUtil::RequestMethod::HTTP_GET, SvcCateList);
+	this->AddService(CSTR("/api/yearlist"), Net::WebUtil::RequestMethod::HTTP_GET, SvcYearList);
+	this->AddService(CSTR("/api/booklist"), Net::WebUtil::RequestMethod::HTTP_GET, SvcBookList);
+	this->AddService(CSTR("/api/bookdetail"), Net::WebUtil::RequestMethod::HTTP_GET, SvcBookDetail);
 	this->AddService(CSTR("/api/photoupload"), Net::WebUtil::RequestMethod::HTTP_POST, SvcPhotoUpload);
 	this->AddService(CSTR("/api/reload"), Net::WebUtil::RequestMethod::HTTP_POST, SvcReload);
 	this->AddService(CSTR("/api/publicpoi"), Net::WebUtil::RequestMethod::HTTP_GET, SvcPublicPOI);

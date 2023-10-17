@@ -69,14 +69,14 @@ Text::String *Crypto::Encrypt::JasyptConfigFile::GetCateValue(NotNullPtr<Text::S
 	}
 }
 
-Text::String *Crypto::Encrypt::JasyptConfigFile::GetCateValue(Text::CStringNN category, Text::CString name)
+Text::String *Crypto::Encrypt::JasyptConfigFile::GetCateValue(Text::CStringNN category, Text::CStringNN name)
 {
 	UTF8Char sbuff[512];
 	Text::String *s;
 	Data::FastStringMap<Text::String*> *cate = this->decVals.GetC(category);
 	if (cate)
 	{
-		s = cate->GetC(name.OrEmpty());
+		s = cate->GetC(name);
 		if (s)
 			return s;
 	}
@@ -93,7 +93,7 @@ Text::String *Crypto::Encrypt::JasyptConfigFile::GetCateValue(Text::CStringNN ca
 				this->decVals.PutC(category, cate);
 			}
 			s = Text::String::New(sbuff, leng).Ptr();
-			cate->PutC(name.OrEmpty(), s);
+			cate->PutC(name, s);
 			return s;
 		}
 		else

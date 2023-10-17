@@ -395,7 +395,7 @@ void SSWR::OrganWeb::OrganWebEnv::LoadUsers(NotNullPtr<Sync::RWMutexUsage> mutUs
 			{
 				userFile = MemAlloc(UserFileInfo, 1);
 				userFile->id = r->GetInt32(0);
-				userFile->fileType = r->GetInt32(1);
+				userFile->fileType = (FileType)r->GetInt32(1);
 				userFile->oriFileName = r->GetNewStrBNN(2, sb);
 				userFile->fileTimeTicks = r->GetTimestamp(3).ToTicks();
 				userFile->lat = r->GetDbl(4);
@@ -1191,7 +1191,7 @@ UTF8Char *SSWR::OrganWeb::OrganWebEnv::BookGetPath(UTF8Char *sbuff, Int32 bookId
 	return sbuff;
 }
 
-void SSWR::OrganWeb::OrganWebEnv::BookGetList(NotNullPtr<Sync::RWMutexUsage> mutUsage, Data::ArrayList<BookInfo*> *bookList)
+void SSWR::OrganWeb::OrganWebEnv::BookGetList(NotNullPtr<Sync::RWMutexUsage> mutUsage, NotNullPtr<Data::ArrayList<BookInfo*>> bookList)
 {
 	mutUsage->ReplaceMutex(this->dataMut, false);
 	bookList->AddAll(this->bookMap);
@@ -2078,7 +2078,7 @@ SSWR::OrganWeb::UserFileInfo *SSWR::OrganWeb::OrganWebEnv::UserfileGetCheck(NotN
 		*sptr++ = IO::Path::PATH_SEPERATOR;
 		sptr = dt.ToString(sptr, "yyyyMM");
 		*sptr++ = IO::Path::PATH_SEPERATOR;
-		if (userFile->fileType == 3)
+		if (userFile->fileType == FileType::Audio)
 		{
 			sptr = Text::StrInt64(sptr, userFile->fileTimeTicks);
 			sptr = Text::StrConcatC(sptr, UTF8STRC("_"));
@@ -2131,7 +2131,7 @@ Int32 SSWR::OrganWeb::OrganWebEnv::UserfileAdd(NotNullPtr<Sync::RWMutexUsage> mu
 	mutUsage->ReplaceMutex(this->dataMut, true);
 	UOSInt j;
 	UOSInt i;
-	Int32 fileType = 0;
+	FileType fileType = FileType::Unknown;
 	UOSInt fileNameLen = fileName.leng;
 	i = fileName.LastIndexOf('.');
 	if (i == INVALID_INDEX)
@@ -2140,49 +2140,49 @@ Int32 SSWR::OrganWeb::OrganWebEnv::UserfileAdd(NotNullPtr<Sync::RWMutexUsage> mu
 	}
 	if (Text::StrEqualsICaseC(&fileName.v[i + 1], fileNameLen - i - 1, UTF8STRC("JPG")))
 	{
-		fileType = 1;
+		fileType = FileType::Image;
 	}
 	else if (Text::StrEqualsICaseC(&fileName.v[i + 1], fileNameLen - i - 1, UTF8STRC("TIF")))
 	{
-		fileType = 1;
+		fileType = FileType::Image;
 	}
 	else if (Text::StrEqualsICaseC(&fileName.v[i + 1], fileNameLen - i - 1, UTF8STRC("PCX")))
 	{
-		fileType = 1;
+		fileType = FileType::Image;
 	}
 	else if (Text::StrEqualsICaseC(&fileName.v[i + 1], fileNameLen - i - 1, UTF8STRC("GIF")))
 	{
-		fileType = 1;
+		fileType = FileType::Image;
 	}
 	else if (Text::StrEqualsICaseC(&fileName.v[i + 1], fileNameLen - i - 1, UTF8STRC("PNG")))
 	{
-		fileType = 1;
+		fileType = FileType::Image;
 	}
 	else if (Text::StrEqualsICaseC(&fileName.v[i + 1], fileNameLen - i - 1, UTF8STRC("HEIC")))
 	{
-		fileType = 1;
+		fileType = FileType::Image;
 	}
 	else if (Text::StrEqualsICaseC(&fileName.v[i + 1], fileNameLen - i - 1, UTF8STRC("HEIF")))
 	{
-		fileType = 1;
+		fileType = FileType::Image;
 	}
 	else if (Text::StrEqualsICaseC(&fileName.v[i + 1], fileNameLen - i - 1, UTF8STRC("AVI")))
 	{
-		fileType = 2;
+		fileType = FileType::Video;
 	}
 	else if (Text::StrEqualsICaseC(&fileName.v[i + 1], fileNameLen - i - 1, UTF8STRC("MOV")))
 	{
-		fileType = 2;
+		fileType = FileType::Video;
 	}
 	else if (Text::StrEqualsICaseC(&fileName.v[i + 1], fileNameLen - i - 1, UTF8STRC("WAV")))
 	{
-		fileType = 3;
+		fileType = FileType::Audio;
 	}
 	else
 	{
 		return 0;
 	}
-	if (fileType == 1)
+	if (fileType == FileType::Image)
 	{
 		IO::ParserType t;
 		IO::ParsedObject *pobj;
@@ -2337,7 +2337,7 @@ Int32 SSWR::OrganWeb::OrganWebEnv::UserfileAdd(NotNullPtr<Sync::RWMutexUsage> mu
 				{
 					DB::SQLBuilder sql(db);
 					sql.AppendCmdC(CSTR("insert into userfile (fileType, oriFileName, fileTime, lat, lon, webuser_id, species_id, captureTime, dataFileName, crcVal, rotType, camera, cropLeft, cropTop, cropRight, cropBottom, location) values ("));
-					sql.AppendInt32(fileType);
+					sql.AppendInt32((Int32)fileType);
 					sql.AppendCmdC(CSTR(", "));
 					sql.AppendStrC(fileName);
 					sql.AppendCmdC(CSTR(", "));
@@ -2447,7 +2447,7 @@ Int32 SSWR::OrganWeb::OrganWebEnv::UserfileAdd(NotNullPtr<Sync::RWMutexUsage> mu
 			return 0;
 		}
 	}
-	else if (fileType == 3)
+	else if (fileType == FileType::Audio)
 	{
 		Crypto::Hash::CRC32R crc;
 		NotNullPtr<Media::DrawImage> img;
@@ -2555,7 +2555,7 @@ Int32 SSWR::OrganWeb::OrganWebEnv::UserfileAdd(NotNullPtr<Sync::RWMutexUsage> mu
 				{
 					DB::SQLBuilder sql(db);
 					sql.AppendCmdC(CSTR("insert into userfile (fileType, oriFileName, fileTime, lat, lon, webuser_id, species_id, captureTime, dataFileName, crcVal, camera, location) values ("));
-					sql.AppendInt32(fileType);
+					sql.AppendInt32((Int32)fileType);
 					sql.AppendCmdC(CSTR(", "));
 					sql.AppendStrC(fileName);
 					sql.AppendCmdC(CSTR(", "));

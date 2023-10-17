@@ -568,6 +568,39 @@ Bool Text::JSONBuilder::ObjectAddNull(Text::CStringNN name)
 	return true;
 }
 
+Bool Text::JSONBuilder::ObjectAddArrayInt32(Text::CStringNN name, Data::ArrayList<Int32> *i32Arr)
+{
+	if (this->currType != OT_OBJECT)
+		return false;
+	if (this->isFirst)
+		this->isFirst = false;
+	else
+	{
+		this->sb.AppendC(UTF8STRC(","));
+	}
+	this->AppendStr(name);
+	if (i32Arr == 0)
+	{
+		this->sb.AppendC(UTF8STRC(":null"));
+	}
+	else
+	{
+		UOSInt i = 0;
+		UOSInt j = i32Arr->GetCount();
+		this->sb.AppendC(UTF8STRC(":["));
+		while (i < j)
+		{
+			if (i > 0)
+				sb.AppendUTF8Char(',');
+			sb.AppendI32(i32Arr->GetItem(i));
+			i++;
+		}
+		this->sb.AppendUTF8Char(']');
+	}
+	return true;
+
+}
+
 Bool Text::JSONBuilder::ObjectAdd(NotNullPtr<Text::JSONObject> obj)
 {
 	if (this->currType != OT_OBJECT)

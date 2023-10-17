@@ -14,7 +14,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPhotoController::SvcPhoto(NotNullPtr<Net:
 {
 	SSWR::OrganWeb::OrganWebPhotoController *me = (SSWR::OrganWeb::OrganWebPhotoController*)parent;
 	RequestEnv env;
-	me->ParseRequestEnv(req, resp, &env, false);
+	me->ParseRequestEnv(req, resp, env, false);
 
 	UTF8Char sbuff[512];
 	Int32 cateId;
@@ -368,7 +368,7 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhotoId(NotNullPtr<Net::We
 	Sync::RWMutexUsage mutUsage;
 	sp = this->env->SpeciesGet(mutUsage, speciesId);
 	userFile = this->env->UserfileGet(mutUsage, fileId);
-	if (sp && sp->cateId == cateId && userFile && userFile->speciesId == speciesId && (userFile->fileType == 1 || userFile->fileType == 3))
+	if (sp && sp->cateId == cateId && userFile && userFile->speciesId == speciesId && (userFile->fileType == FileType::Image || userFile->fileType == FileType::Audio))
 	{
 		if (sp->photoId == fileId && userFile->speciesId != sp->speciesId)
 		{

@@ -53,6 +53,7 @@ namespace Text
 		Bool ObjectAddStrW(Text::CStringNN name, const WChar *val);
 		Bool ObjectAddTSStr(Text::CStringNN name, Data::Timestamp ts);
 		Bool ObjectAddNull(Text::CStringNN name);
+		Bool ObjectAddArrayInt32(Text::CStringNN name, Data::ArrayList<Int32> *i32Arr);
 		Bool ObjectAdd(NotNullPtr<Text::JSONObject> obj);
 		Bool ObjectBeginArray(Text::CStringNN name);
 		Bool ObjectBeginObject(Text::CStringNN name);

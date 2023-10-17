@@ -11,6 +11,7 @@
 #include "Media/ImageUtil.h"
 #include "Media/MediaFile.h"
 #include "Media/PhotoInfo.h"
+#include "Net/MIME.h"
 #include "Net/WebServer/WebSessionUsage.h"
 #include "SSWR/OrganWeb/OrganWebEnv.h"
 #include "SSWR/OrganWeb/OrganWebMainController.h"
@@ -25,7 +26,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoDown(NotNullPtr<N
 {
 	SSWR::OrganWeb::OrganWebMainController *me = (SSWR::OrganWeb::OrganWebMainController*)parent;
 	RequestEnv env;
-	me->ParseRequestEnv(req, resp, &env, false);
+	me->ParseRequestEnv(req, resp, env, false);
 
 	Int32 spId;
 	Int32 cateId;
@@ -51,13 +52,13 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoDown(NotNullPtr<N
 			resp->AddDefHeaders(req);
 			resp->AddContentDisposition(false, userFile->oriFileName->v, req->GetBrowser());
 			resp->AddContentLength(buffSize);
-			if (userFile->fileType == 3)
+			if (userFile->fileType == FileType::Audio)
 			{
 				resp->AddContentType(CSTR("image/png"));
 			}
 			else
 			{
-				resp->AddContentType(CSTR("image/jpeg"));
+				resp->AddContentType(Net::MIME::GetMIMEFromFileName(userFile->oriFileName->v, userFile->oriFileName->leng));
 			}
 			mutUsage.EndUse();
 			resp->Write(buff.Ptr(), buffSize);
@@ -81,7 +82,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcGroup(NotNullPtr<Net::
 {
 	SSWR::OrganWeb::OrganWebMainController *me = (SSWR::OrganWeb::OrganWebMainController*)parent;
 	RequestEnv env;
-	Net::WebServer::WebSessionUsage webSess(me->ParseRequestEnv(req, resp, &env, true));
+	Net::WebServer::WebSessionUsage webSess(me->ParseRequestEnv(req, resp, env, true));
 
 	Int32 id;
 	Int32 cateId;
@@ -529,7 +530,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcGroupMod(NotNullPtr<Ne
 	RequestEnv env;
 	UOSInt i;
 	UOSInt j;
-	me->ParseRequestEnv(req, resp, &env, false);
+	me->ParseRequestEnv(req, resp, env, false);
 
 	if (env.user == 0 || env.user->userType != UserType::Admin)
 	{
@@ -837,7 +838,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSpecies(NotNullPtr<Net
 {
 	SSWR::OrganWeb::OrganWebMainController *me = (SSWR::OrganWeb::OrganWebMainController*)parent;
 	RequestEnv env;
-	Net::WebServer::WebSessionUsage webSess(me->ParseRequestEnv(req, resp, &env, true));
+	Net::WebServer::WebSessionUsage webSess(me->ParseRequestEnv(req, resp, env, true));
 
 	Int32 id;
 	Int32 cateId;
@@ -1642,7 +1643,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSpeciesMod(NotNullPtr<
 {
 	SSWR::OrganWeb::OrganWebMainController *me = (SSWR::OrganWeb::OrganWebMainController*)parent;
 	RequestEnv env;
-	me->ParseRequestEnv(req, resp, &env, false);
+	me->ParseRequestEnv(req, resp, env, false);
 
 	if (env.user == 0 || env.user->userType != UserType::Admin)
 	{
@@ -1935,7 +1936,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcList(NotNullPtr<Net::W
 {
 	SSWR::OrganWeb::OrganWebMainController *me = (SSWR::OrganWeb::OrganWebMainController*)parent;
 	RequestEnv env;
-	me->ParseRequestEnv(req, resp, &env, false);
+	me->ParseRequestEnv(req, resp, env, false);
 
 	Int32 id;
 	UInt32 page = 0;
@@ -2134,7 +2135,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoDetail(NotNullPtr
 {
 	SSWR::OrganWeb::OrganWebMainController *me = (SSWR::OrganWeb::OrganWebMainController*)parent;
 	RequestEnv env;
-	me->ParseRequestEnv(req, resp, &env, false);
+	me->ParseRequestEnv(req, resp, env, false);
 
 	Int32 id;
 	Int32 cateId;
@@ -2393,7 +2394,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoDetail(NotNullPtr
 				writer.WriteLineC(UTF8STRC("<tr><td align=\"center\">"));
 
 
-				if (userFile->fileType == 3)
+				if (userFile->fileType == FileType::Audio)
 				{
 					sptr = me->env->UserfileGetPath(sbuff, userFile);
 					UInt64 fileSize = 0;
@@ -3162,7 +3163,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoDetailD(NotNullPt
 {
 	SSWR::OrganWeb::OrganWebMainController *me = (SSWR::OrganWeb::OrganWebMainController*)parent;
 	RequestEnv env;
-	me->ParseRequestEnv(req, resp, &env, false);
+	me->ParseRequestEnv(req, resp, env, false);
 
 	Int32 fileId;
 	UInt32 index;
@@ -3260,7 +3261,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoDetailD(NotNullPt
 			writer.WriteLineC(UTF8STRC("<tr><td align=\"center\">"));
 
 
-			if (userFile->fileType == 3)
+			if (userFile->fileType == FileType::Audio)
 			{
 				sptr = me->env->UserfileGetPath(sbuff, userFile);
 				UInt64 fileSize = 0;
@@ -3403,7 +3404,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoYear(NotNullPtr<N
 {
 	SSWR::OrganWeb::OrganWebMainController *me = (SSWR::OrganWeb::OrganWebMainController*)parent;
 	RequestEnv env;
-	me->ParseRequestEnv(req, resp, &env, false);
+	me->ParseRequestEnv(req, resp, env, false);
 
 	UInt16 y;
 	if (env.user != 0 &&
@@ -3704,7 +3705,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoDay(NotNullPtr<Ne
 {
 	SSWR::OrganWeb::OrganWebMainController *me = (SSWR::OrganWeb::OrganWebMainController*)parent;
 	RequestEnv env;
-	me->ParseRequestEnv(req, resp, &env, false);
+	me->ParseRequestEnv(req, resp, env, false);
 
 	Int32 d;
 	if (env.user != 0 &&
@@ -3954,7 +3955,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoUpload(NotNullPtr
 {
 	SSWR::OrganWeb::OrganWebMainController *me = (SSWR::OrganWeb::OrganWebMainController*)parent;
 	RequestEnv env;
-	me->ParseRequestEnv(req, resp, &env, false);
+	me->ParseRequestEnv(req, resp, env, false);
 
 	if (env.user == 0)
 	{
@@ -4046,7 +4047,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoUploadD(NotNullPt
 {
 	SSWR::OrganWeb::OrganWebMainController *me = (SSWR::OrganWeb::OrganWebMainController*)parent;
 	RequestEnv env;
-	me->ParseRequestEnv(req, resp, &env, false);
+	me->ParseRequestEnv(req, resp, env, false);
 
 	if (env.user == 0)
 	{
@@ -4094,7 +4095,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSearchInside(NotNullPt
 {
 	SSWR::OrganWeb::OrganWebMainController *me = (SSWR::OrganWeb::OrganWebMainController*)parent;
 	RequestEnv env;
-	me->ParseRequestEnv(req, resp, &env, false);
+	me->ParseRequestEnv(req, resp, env, false);
 
 	Int32 id;
 	Int32 cateId;
@@ -4288,7 +4289,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSearchInsideMoreS(NotN
 {
 	SSWR::OrganWeb::OrganWebMainController *me = (SSWR::OrganWeb::OrganWebMainController*)parent;
 	RequestEnv env;
-	me->ParseRequestEnv(req, resp, &env, false);
+	me->ParseRequestEnv(req, resp, env, false);
 
 	Int32 id;
 	UInt32 pageNo;
@@ -4463,7 +4464,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSearchInsideMoreG(NotN
 {
 	SSWR::OrganWeb::OrganWebMainController *me = (SSWR::OrganWeb::OrganWebMainController*)parent;
 	RequestEnv env;
-	me->ParseRequestEnv(req, resp, &env, false);
+	me->ParseRequestEnv(req, resp, env, false);
 
 	Int32 id;
 	UInt32 pageNo;
@@ -4638,7 +4639,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcLogin(NotNullPtr<Net::
 {
 	SSWR::OrganWeb::OrganWebMainController *me = (SSWR::OrganWeb::OrganWebMainController*)parent;
 	RequestEnv env;
-	me->ParseRequestEnv(req, resp, &env, false);
+	me->ParseRequestEnv(req, resp, env, false);
 
 	Data::DateTime dt;
 	UTF8Char sbuff[128];
@@ -4716,75 +4717,18 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcLogout(NotNullPtr<Net:
 {
 	SSWR::OrganWeb::OrganWebMainController *me = (SSWR::OrganWeb::OrganWebMainController*)parent;
 	RequestEnv env;
-	me->ParseRequestEnv(req, resp, &env, false);
+	me->ParseRequestEnv(req, resp, env, false);
 
 	me->sessMgr->DeleteSession(req, resp);
 	resp->RedirectURL(req, CSTR("/"), 0);
 	return true;
 }
 
-Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcReload(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, Net::WebServer::WebController *parent)
-{
-	SSWR::OrganWeb::OrganWebMainController *me = (SSWR::OrganWeb::OrganWebMainController*)parent;
-	RequestEnv env;
-	me->ParseRequestEnv(req, resp, &env, false);
-
-	if (me->env->HasReloadPwd())
-	{
-		Data::DateTime dt;
-
-		IO::MemoryStream mstm;
-		Text::UTF8Writer writer(mstm);
-
-		me->WriteHeader(&writer, (const UTF8Char*)"Reload", env.user, env.isMobile);
-		writer.WriteLineC(UTF8STRC("<center><h1>Reload</h1></center>"));
-
-		Bool showPwd = true;
-		if (req->GetReqMethod() == Net::WebUtil::RequestMethod::HTTP_POST)
-		{
-			NotNullPtr<Text::String> pwd;
-			req->ParseHTTPForm();
-			if (pwd.Set(req->GetHTTPFormStr(CSTR("pwd"))))
-			{
-				if (me->env->ReloadPwdMatches(pwd))
-				{
-					writer.WriteLineC(UTF8STRC("Reloaded<br/>"));
-					writer.WriteLineC(UTF8STRC("<a href=\"/\">Back to Home</a>"));
-					showPwd = false;
-					me->env->Reload();
-				}
-				else
-				{
-					writer.WriteLineC(UTF8STRC("Password Error<br/>"));
-				}
-			}
-		}
-		if (showPwd)
-		{
-			writer.WriteLineC(UTF8STRC("<form name=\"pwd\" method=\"POST\" action=\"reload\">"));
-			writer.WriteLineC(UTF8STRC("Reload Password:"));
-			writer.WriteLineC(UTF8STRC("<input name=\"pwd\" type=\"password\" /><br/>"));
-			writer.WriteLineC(UTF8STRC("<input type=\"submit\" />"));
-			writer.WriteLineC(UTF8STRC("</form>"));
-		}
-
-		me->WriteFooter(&writer);
-		ResponseMstm(req, resp, mstm, CSTR("text/html"));
-		return true;
-	}
-	else
-	{
-		resp->ResponseError(req, Net::WebStatus::SC_NOT_FOUND);
-		return true;
-	}
-}
-
-
 Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcRestart(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, Net::WebServer::WebController *parent)
 {
 	SSWR::OrganWeb::OrganWebMainController *me = (SSWR::OrganWeb::OrganWebMainController*)parent;
 	RequestEnv env;
-	me->ParseRequestEnv(req, resp, &env, false);
+	me->ParseRequestEnv(req, resp, env, false);
 
 	if (me->env->HasReloadPwd())
 	{
@@ -4838,7 +4782,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcIndex(NotNullPtr<Net::
 {
 	SSWR::OrganWeb::OrganWebMainController *me = (SSWR::OrganWeb::OrganWebMainController*)parent;
 	RequestEnv env;
-	me->ParseRequestEnv(req, resp, &env, false);
+	me->ParseRequestEnv(req, resp, env, false);
 
 	Data::DateTime dt;
 	UTF8Char sbuff[32];
@@ -4955,7 +4899,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcCate(NotNullPtr<Net::W
 {
 	SSWR::OrganWeb::OrganWebMainController *me = (SSWR::OrganWeb::OrganWebMainController*)parent;
 	RequestEnv env;
-	me->ParseRequestEnv(req, resp, &env, false);
+	me->ParseRequestEnv(req, resp, env, false);
 
 	Sync::RWMutexUsage mutUsage;
 	CategoryInfo *cate;
@@ -5044,7 +4988,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcFavicon(NotNullPtr<Net
 {
 	SSWR::OrganWeb::OrganWebMainController *me = (SSWR::OrganWeb::OrganWebMainController*)parent;
 	RequestEnv env;
-	me->ParseRequestEnv(req, resp, &env, false);
+	me->ParseRequestEnv(req, resp, env, false);
 
 	resp->ResponseError(req, Net::WebStatus::SC_NOT_FOUND);
 	return true;
@@ -5076,8 +5020,6 @@ SSWR::OrganWeb::OrganWebMainController::OrganWebMainController(Net::WebServer::M
 	this->AddService(CSTR("/login.html"), Net::WebUtil::RequestMethod::HTTP_GET, SvcLogin);
 	this->AddService(CSTR("/login.html"), Net::WebUtil::RequestMethod::HTTP_POST, SvcLogin);
 	this->AddService(CSTR("/logout"), Net::WebUtil::RequestMethod::HTTP_GET, SvcLogout);
-	this->AddService(CSTR("/reload"), Net::WebUtil::RequestMethod::HTTP_GET, SvcReload);
-	this->AddService(CSTR("/reload"), Net::WebUtil::RequestMethod::HTTP_POST, SvcReload);
 	this->AddService(CSTR("/restart"), Net::WebUtil::RequestMethod::HTTP_GET, SvcRestart);
 	this->AddService(CSTR("/restart"), Net::WebUtil::RequestMethod::HTTP_POST, SvcRestart);
 	this->AddService(CSTR("/"), Net::WebUtil::RequestMethod::HTTP_GET, SvcIndex);

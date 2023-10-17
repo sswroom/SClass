@@ -122,7 +122,7 @@ Bool IO::IniFile::SaveConfig(IO::Writer *writer, IO::ConfigFile *cfg)
 	Text::String *s3;
 	UOSInt i;
 	UOSInt j;
-	cfg->GetKeys((Text::String*)0, &keyList);
+	cfg->GetKeys((Text::String*)0, keyList);
 	Data::ArrayIterator<NotNullPtr<Text::String>> it = keyList.Iterator();
 	while (it.HasNext())
 	{
@@ -147,7 +147,7 @@ Bool IO::IniFile::SaveConfig(IO::Writer *writer, IO::ConfigFile *cfg)
 		writer->WriteLineC(UTF8STRC("]"));
 
 		keyList.Clear();
-		cfg->GetKeys(s2, &keyList);
+		cfg->GetKeys(s2, keyList);
 		it = keyList.Iterator();
 		while (it.HasNext())
 		{
