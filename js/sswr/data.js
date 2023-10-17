@@ -1,3 +1,5 @@
+import { zeroPad } from "./text.js";
+
 export function isArray(o)
 {
 	return o != null && o.constructor === Array;
@@ -74,13 +76,42 @@ export function arrayBuffer2Base64(buff)
 	return btoa(String.fromCharCode.apply(null, new Uint8Array(buff)));
 }
 
-function zpadStr(val, ndigits)
+export function compare(a, b)
 {
-	var s = "" + val;
-	while (s.length < ndigits)
-		s = "0"+s;
-	return s;
+	if (a == b)
+		return 0;
+	if (a == null)
+		return -1;
+	if (b == null)
+		return 1;
+	var ta = typeof a;
+	if (ta == "string")
+	{
+		return a.localeCompare(b);
+	}
+	else if (ta == "number")
+	{
+		if (a > b)
+			return 1;
+		else if (a < b)
+			return -1;
+		else
+			return 0;
+	}
+	else if (ta == "object")
+	{
+		if (a.compareTo)
+		{
+			return a.compareTo(b);
+		}
+		return a.toString().localeCompare(b.toString());
+	}
+	else
+	{
+		return a.toString().localeCompare(b.toString());
+	}
 }
+
 
 export class TimeValue
 {
@@ -671,42 +702,42 @@ export class DateTimeUtil
 				}
 				else if (i + 2 >= pattern.length || pattern.charAt(i + 2) != 'f')
 				{
-					output.push(zpadStr(Math.floor(tval.nanosec / 10000000), 2));
+					output.push(zeroPad(Math.floor(tval.nanosec / 10000000), 2));
 					i += 2;
 				}
 				else if (i + 3 >= pattern.length || pattern.charAt(i + 3) != 'f')
 				{
-					output.push(zpadStr(Math.floor(tval.nanosec / 1000000), 3));
+					output.push(zeroPad(Math.floor(tval.nanosec / 1000000), 3));
 					i += 3;
 				}
 				else if (i + 4 >= pattern.length || pattern.charAt(i + 4) != 'f')
 				{
-					output.push(zpadStr(Math.floor(tval.nanosec / 100000), 4));
+					output.push(zeroPad(Math.floor(tval.nanosec / 100000), 4));
 					i += 4;
 				}
 				else if (i + 5 >= pattern.length || pattern.charAt(i + 5) != 'f')
 				{
-					output.push(zpadStr(Math.floor(tval.nanosec / 10000), 5));
+					output.push(zeroPad(Math.floor(tval.nanosec / 10000), 5));
 					i += 5;
 				}
 				else if (i + 6 >= pattern.length || pattern.charAt(i + 6) != 'f')
 				{
-					output.push(zpadStr(Math.floor(tval.nanosec / 1000), 6));
+					output.push(zeroPad(Math.floor(tval.nanosec / 1000), 6));
 					i += 6;
 				}
 				else if (i + 7 >= pattern.length || pattern.charAt(i + 7) != 'f')
 				{
-					output.push(zpadStr(Math.floor(tval.nanosec / 100), 7));
+					output.push(zeroPad(Math.floor(tval.nanosec / 100), 7));
 					i += 7;
 				}
 				else if (i + 8 >= pattern.length || pattern.charAt(i + 8) != 'f')
 				{
-					output.push(zpadStr(Math.floor(tval.nanosec / 10), 8));
+					output.push(zeroPad(Math.floor(tval.nanosec / 10), 8));
 					i += 8;
 				}
 				else
 				{
-					output.push(""+zpadStr(tval.nanosec, 9));
+					output.push(""+zeroPad(tval.nanosec, 9));
 					i += 9;
 					while (i < pattern.length && pattern.charAt(i) == 'f')
 					{
@@ -746,7 +777,7 @@ export class DateTimeUtil
 						break;
 				}
 				if (digiCnt > 0)
-					output.push(zpadStr(thisMS, digiCnt));
+					output.push(zeroPad(thisMS, digiCnt));
 				break;
 			}
 			case 'h':
@@ -763,7 +794,7 @@ export class DateTimeUtil
 				}
 				else
 				{
-					output.push(zpadStr(thisH, 2));
+					output.push(zeroPad(thisH, 2));
 					i++;
 
 	//				while (*pattern == 'h')
@@ -780,7 +811,7 @@ export class DateTimeUtil
 				}
 				else
 				{
-					output.push(zpadStr(tval.hour, 2));
+					output.push(zeroPad(tval.hour, 2));
 					i++;
 	//				while (*pattern == 'H')
 	//					pattern++;
@@ -796,7 +827,7 @@ export class DateTimeUtil
 				}
 				else if (i + 2 >= pattern.length || pattern.charAt(i + 2) != 'M')
 				{
-					output.push(zpadStr(tval.month, 2));
+					output.push(zeroPad(tval.month, 2));
 					i += 2;
 				}
 				else if (pattern[3] != 'M')
@@ -863,11 +894,11 @@ export class DateTimeUtil
 				{
 					if (hr >= 0)
 					{
-						output.push("+" + zpadStr(hr, 2));
+						output.push("+" + zeroPad(hr, 2));
 					}
 					else
 					{
-						output.push("-" + zpadStr(-hr, 2));
+						output.push("-" + zeroPad(-hr, 2));
 					}
 					i += 2;
 				}
@@ -875,11 +906,11 @@ export class DateTimeUtil
 				{
 					if (hr >= 0)
 					{
-						output.push("+" + zpadStr(hr, 2) + zpadStr(min, 2));
+						output.push("+" + zeroPad(hr, 2) + zeroPad(min, 2));
 					}
 					else
 					{
-						output.push("-" + zpadStr(-hr, 2) + zpadStr(min, 2));
+						output.push("-" + zeroPad(-hr, 2) + zeroPad(min, 2));
 					}
 					i += 3;
 				}
@@ -887,11 +918,11 @@ export class DateTimeUtil
 				{
 					if (hr >= 0)
 					{
-						output.push("+" + zpadStr(hr, 2) + ':' + zpadStr(min, 2));
+						output.push("+" + zeroPad(hr, 2) + ':' + zeroPad(min, 2));
 					}
 					else
 					{
-						output.push("-" + zpadStr(-hr, 2) + ':' + zpadStr(min, 2));
+						output.push("-" + zeroPad(-hr, 2) + ':' + zeroPad(min, 2));
 					}
 					i += 4;
 					while (i < pattern.length && pattern.charAt(i) == 'z')

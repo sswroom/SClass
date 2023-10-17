@@ -1,9 +1,18 @@
+export function zeroPad(val, ndigits)
+{
+	var s = "" + val;
+	while (s.length < ndigits)
+		s = "0"+s;
+	return s;
+}
+
 export function toJSText(s)
 {
 	var out = "\"";
 	var i = 0;
 	var j = s.length;
 	var c;
+	var ccode;
 	while (i < j)
 	{
 		c = s.charAt(i);
@@ -22,6 +31,14 @@ export function toJSText(s)
 		else if (c == "\n")
 		{
 			out += "\\n";
+		}
+		else if (c == "\0")
+		{
+			out += "\\0";
+		}
+		else if ((ccode = s.charCodeAt(i)) < 32)
+		{
+			out += "\\u"+zeroPad(ccode.toString(16), 4);
 		}
 		else
 		{

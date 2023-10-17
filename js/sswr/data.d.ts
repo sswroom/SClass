@@ -2,6 +2,7 @@ export function isArray(o: any): boolean;
 export function isObject(o: any): boolean;
 export function toObjectString(o: any, lev: number): string;
 export function arrayBuffer2Base64(buff: any): string;
+export function compare(a: any, b: any): number;
 
 declare class TimeValue
 {

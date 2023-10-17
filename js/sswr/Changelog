@@ -1,5 +1,7 @@
 1.2.2
 -Added text.toAttrText(), text.toXMLTest();
+-Enhance text.toJSText()
+-Change and export text.zeroPad
 
 1.2.1
 -Merge Individual class js into namespace js
