@@ -96,7 +96,7 @@ namespace SSWR
 			NotNullPtr<Media::ColorManagerSess> GetColorSess() const;
 			NotNullPtr<Media::DrawEngine> GetDrawEngine() const;
 
-			void CalcGroupCount(NotNullPtr<Sync::RWMutexUsage> mutUsage, GroupInfo *group);
+			void CalcGroupCount(NotNullPtr<Sync::RWMutexUsage> mutUsage, NotNullPtr<GroupInfo> group);
 			void GetGroupSpecies(NotNullPtr<Sync::RWMutexUsage> mutUsage, GroupInfo *group, Data::DataMap<Text::String*, SpeciesInfo*> *spMap, WebUserInfo *user);
 			void SearchInGroup(NotNullPtr<Sync::RWMutexUsage> mutUsage, GroupInfo *group, const UTF8Char *searchStr, UOSInt searchStrLen, Data::ArrayListDbl *speciesIndice, Data::ArrayList<SpeciesInfo*> *speciesObjs, Data::ArrayListDbl *groupIndice, Data::ArrayList<GroupInfo*> *groupObjs, WebUserInfo *user);
 			Bool GroupIsAdmin(GroupInfo *group);

@@ -52,6 +52,62 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcLoginInfo(NotNullPtr<Ne
 	return me->ResponseJSON(req, resp, 0, json.Build());
 }
 
+Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcLogin(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, Net::WebServer::WebController *parent)
+{
+	SSWR::OrganWeb::OrganWebPOIController *me = (SSWR::OrganWeb::OrganWebPOIController*)parent;
+	RequestEnv env;
+	me->ParseRequestEnv(req, resp, env, false);
+	Text::CStringNN msg;
+	if (env.user)
+	{
+		msg = CSTR("ok");
+	}
+	else
+	{
+		UTF8Char sbuff[128];
+		UTF8Char *sptr;
+		req->ParseHTTPForm();
+		Text::String *userName = req->GetHTTPFormStr(CSTR("userName"));
+		Text::String *pwd = req->GetHTTPFormStr(CSTR("password"));
+		if (userName && pwd && userName->leng > 0 && pwd->leng > 0)
+		{
+			Sync::RWMutexUsage mutUsage;
+			sptr = me->env->PasswordEnc(sbuff, pwd->ToCString());
+			env.user = me->env->UserGetByName(mutUsage, userName);
+			if (env.user && env.user->pwd->Equals(sbuff, (UOSInt)(sptr - sbuff)))
+			{
+				mutUsage.EndUse();
+				Net::WebServer::IWebSession *sess = me->sessMgr->CreateSession(req, resp);
+				Data::DateTime *t;
+				Data::ArrayListInt32 *pickObjs;
+				NEW_CLASS(t, Data::DateTime());
+				NEW_CLASS(pickObjs, Data::ArrayListInt32());
+				sess->SetValuePtr(UTF8STRC("LastUseTime"), t);
+				sess->SetValuePtr(UTF8STRC("User"), env.user);
+				sess->SetValuePtr(UTF8STRC("PickObjs"), pickObjs);
+				sess->SetValueInt32(UTF8STRC("PickObjType"), 0);
+				sess->EndUse();
+				msg = CSTR("ok");
+			}
+			else
+			{
+				msg = CSTR("Invalid username or password");
+			}
+		}
+		else if (userName == 0 || userName->leng == 0)
+		{
+			msg = CSTR("Username is missing");
+		}
+		else
+		{
+			msg = CSTR("Password is missing");
+		}
+	}
+	Text::JSONBuilder json(Text::JSONBuilder::OT_OBJECT);
+	json.ObjectAddStr(CSTR("status"), msg);
+	return me->ResponseJSON(req, resp, 0, json.Build());
+}
+
 Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcCateList(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, Net::WebServer::WebController *parent)
 {
 	SSWR::OrganWeb::OrganWebPOIController *me = (SSWR::OrganWeb::OrganWebPOIController*)parent;
@@ -79,6 +135,52 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcCateList(NotNullPtr<Net
 		i++;
 	}
 	return me->ResponseJSON(req, resp, 0, json.Build());
+}
+
+Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcCate(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, Net::WebServer::WebController *parent)
+{
+	SSWR::OrganWeb::OrganWebPOIController *me = (SSWR::OrganWeb::OrganWebPOIController*)parent;
+	RequestEnv env;
+	me->ParseRequestEnv(req, resp, env, false);
+
+	Sync::RWMutexUsage mutUsage;
+	CategoryInfo *cate;
+	NotNullPtr<GroupInfo> group;
+	Text::String *cateName = req->GetQueryValue(CSTR("cateName"));
+	if (cateName != 0 && (cate = me->env->CateGetByName(mutUsage, cateName)) != 0)
+	{
+		Bool notAdmin = (env.user == 0 || env.user->userType != UserType::Admin);
+		if ((cate->flags & 1) && notAdmin)
+		{
+			return resp->ResponseError(req, Net::WebStatus::SC_NOT_FOUND);
+		}
+		Text::JSONBuilder json(Text::JSONBuilder::OT_OBJECT);
+		json.ObjectAddInt32(CSTR("cateId"), cate->cateId);
+		json.ObjectAddStr(CSTR("chiName"), cate->chiName);
+		json.ObjectBeginArray(CSTR("groups"));
+		UOSInt i = 0;
+		UOSInt j = cate->groups.GetCount();
+		while (i < j)
+		{
+			if (group.Set(cate->groups.GetItem(i)))
+			{
+				me->env->CalcGroupCount(mutUsage, group);
+				if (!notAdmin || (group->totalCount > 0 && (group->flags & 1) == 0))
+				{
+					json.ArrayBeginObject();
+					me->AddGroup(json, group);
+					json.ObjectEnd();
+				}
+			}
+			i++;
+		}
+		json.ArrayEnd();
+		return me->ResponseJSON(req, resp, 0, json.Build());
+	}
+	else
+	{
+		return resp->ResponseError(req, Net::WebStatus::SC_NOT_FOUND);
+	}
 }
 
 Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcYearList(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, Net::WebServer::WebController *parent)
@@ -618,17 +720,38 @@ void SSWR::OrganWeb::OrganWebPOIController::AddGroups(NotNullPtr<Text::JSONBuild
 	{
 		group = it.Next();
 		json->ArrayBeginObject();
-		json->ObjectAddInt32(CSTR("id"), group->id);
-		json->ObjectAddInt32(CSTR("parentId"), group->parentId);
-		json->ObjectAddStr(CSTR("engName"), group->engName);
-		json->ObjectAddStr(CSTR("chiName"), group->chiName);
-		json->ObjectAddStr(CSTR("descript"), group->descript);
-		json->ObjectAddInt64(CSTR("photoCount"), (Int64)group->photoCount);
-		json->ObjectAddInt64(CSTR("myPhotoCount"), (Int64)group->myPhotoCount);
-		json->ObjectAddInt64(CSTR("totalCount"), (Int64)group->totalCount);
-		json->ObjectAddInt32(CSTR("flags"), group->flags);
-		json->ObjectAddInt32(CSTR("groupType"), group->groupType);
+		this->AddGroup(json, group);
 		json->ObjectEnd();
+	}
+}
+
+void SSWR::OrganWeb::OrganWebPOIController::AddGroup(NotNullPtr<Text::JSONBuilder> json, NotNullPtr<GroupInfo> group)
+{
+	json->ObjectAddInt32(CSTR("id"), group->id);
+	json->ObjectAddInt32(CSTR("parentId"), group->parentId);
+	json->ObjectAddStr(CSTR("engName"), group->engName);
+	json->ObjectAddStr(CSTR("chiName"), group->chiName);
+	json->ObjectAddStr(CSTR("descript"), group->descript);
+	json->ObjectAddInt64(CSTR("photoCount"), (Int64)group->photoCount);
+	json->ObjectAddInt64(CSTR("myPhotoCount"), (Int64)group->myPhotoCount);
+	json->ObjectAddInt64(CSTR("totalCount"), (Int64)group->totalCount);
+	json->ObjectAddInt32(CSTR("flags"), group->flags);
+	json->ObjectAddInt32(CSTR("groupType"), group->groupType);
+	if (group->photoSpObj)
+	{
+		json->ObjectAddInt32(CSTR("photoSpId"), group->photoSpObj->speciesId);
+		if (group->photoSpObj->photoId != 0)
+		{
+			json->ObjectAddInt32(CSTR("photoId"), group->photoSpObj->photoId);
+		}
+		else if (group->photoSpObj->photoWId != 0)
+		{
+			json->ObjectAddInt32(CSTR("photoWId"), group->photoSpObj->photoWId);
+		}
+		else if (group->photoSpObj->photo && group->photoSpObj->photo->leng > 0)
+		{
+			json->ObjectAddStr(CSTR("photoWId"), group->photoSpObj->photo);
+		}
 	}
 }
 
@@ -728,7 +851,9 @@ SSWR::OrganWeb::OrganWebPOIController::OrganWebPOIController(Net::WebServer::Mem
 {
 	this->AddService(CSTR("/api/lang"), Net::WebUtil::RequestMethod::HTTP_GET, SvcLang);
 	this->AddService(CSTR("/api/logininfo"), Net::WebUtil::RequestMethod::HTTP_GET, SvcLoginInfo);
+	this->AddService(CSTR("/api/login"), Net::WebUtil::RequestMethod::HTTP_POST, SvcLogin);
 	this->AddService(CSTR("/api/catelist"), Net::WebUtil::RequestMethod::HTTP_GET, SvcCateList);
+	this->AddService(CSTR("/api/cate"), Net::WebUtil::RequestMethod::HTTP_GET, SvcCate);
 	this->AddService(CSTR("/api/yearlist"), Net::WebUtil::RequestMethod::HTTP_GET, SvcYearList);
 	this->AddService(CSTR("/api/booklist"), Net::WebUtil::RequestMethod::HTTP_GET, SvcBookList);
 	this->AddService(CSTR("/api/bookselect"), Net::WebUtil::RequestMethod::HTTP_POST, SvcBookSelect);

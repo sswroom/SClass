@@ -3951,146 +3951,6 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoDay(NotNullPtr<Ne
 	}
 }
 
-Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoUpload(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, Net::WebServer::WebController *parent)
-{
-	SSWR::OrganWeb::OrganWebMainController *me = (SSWR::OrganWeb::OrganWebMainController*)parent;
-	RequestEnv env;
-	me->ParseRequestEnv(req, resp, env, false);
-
-	if (env.user == 0)
-	{
-		resp->ResponseError(req, Net::WebStatus::SC_FORBIDDEN);
-		return true;
-	}
-	UOSInt i = 0;
-	UOSInt fileSize;
-	UTF8Char fileName[512];
-	UTF8Char *fileNameEnd;
-	UTF8Char sbuff[32];
-	UTF8Char *sptr;
-	const UInt8 *fileCont;
-	Text::String *location;
-	NotNullPtr<Text::String> s;
-	req->ParseHTTPForm();
-
-	IO::MemoryStream mstm;
-	Text::UTF8Writer writer(mstm);
-	Sync::RWMutexUsage mutUsage;
-
-	me->WriteHeader(&writer, (const UTF8Char*)"Photo Upload", env.user, env.isMobile);
-	writer.WriteLineC(UTF8STRC("<table border=\"1\">"));
-	writer.WriteLineC(UTF8STRC("<tr><td>File Name</td><td>File Size</td><td>Image Size</td></tr>"));
-	while (true)
-	{
-		fileCont = req->GetHTTPFormFile(CSTR("file"), i, fileName, sizeof(fileName), &fileNameEnd, fileSize);
-		if (fileCont == 0)
-		{
-			break;
-		}
-		location = req->GetHTTPFormStr(CSTR("location"));
-		writer.WriteStrC(UTF8STRC("<tr><td>"));
-		s = Text::XML::ToNewHTMLBodyText(fileName);
-		writer.WriteStrC(s->v, s->leng);
-		s->Release();
-		writer.WriteStrC(UTF8STRC("</td><td>"));
-		sptr = Text::StrUOSInt(sbuff, fileSize);
-		writer.WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
-		writer.WriteStrC(UTF8STRC("</td><td>"));
-		Int32 ret = me->env->UserfileAdd(mutUsage, env.user->id, env.user->unorganSpId, CSTRP(fileName, fileNameEnd), fileCont, fileSize, true, location);
-		if (ret == 0)
-		{
-			writer.WriteStrC(UTF8STRC("Failed"));
-		}
-		else
-		{
-			writer.WriteStrC(UTF8STRC("Success"));
-		}
-/*
-		Media::ImageList *imgList;
-		{
-			IO::StmData::MemoryDataRef fd(fileCont, fileSize);
-			me->parserMut->Lock();
-			imgList = (Media::ImageList*)me->parsers->ParseFileType(&fd, IO::ParserType::ImageList);
-			me->parserMut->Unlock();
-		}
-		if (imgList)
-		{
-			Int32 imgDelay;
-			Media::Image *img = imgList->GetImage(0, &imgDelay);
-			if (img)
-			{
-				Text::StrUOSInt(Text::StrConcatC(Text::StrUOSInt(sbuff, img->info.dispSize.x), UTF8STRC(" x ")), img->info.dispSize.y);
-				writer.Write(sbuff);
-			}
-			else
-			{
-				writer.WriteStrC(UTF8STRC("-"));
-			}
-			DEL_CLASS(imgList);
-		}
-		else
-		{
-			writer.WriteStrC(UTF8STRC("-"));
-		}*/
-		writer.WriteLineC(UTF8STRC("</td></tr>"));
-		i++;
-	}
-	mutUsage.EndUse();
-	writer.WriteLineC(UTF8STRC("</table>"));
-	me->WriteFooter(&writer);
-
-	ResponseMstm(req, resp, mstm, CSTR("text/html"));
-	return true;
-}
-
-Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoUploadD(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, Net::WebServer::WebController *parent)
-{
-	SSWR::OrganWeb::OrganWebMainController *me = (SSWR::OrganWeb::OrganWebMainController*)parent;
-	RequestEnv env;
-	me->ParseRequestEnv(req, resp, env, false);
-
-	if (env.user == 0)
-	{
-		resp->ResponseError(req, Net::WebStatus::SC_FORBIDDEN);
-		return true;
-	}
-
-	Text::StringBuilderUTF8 sb;
-	if (!req->GetHeaderC(sb, CSTR("X-FileName")))
-	{
-		resp->ResponseError(req, Net::WebStatus::SC_BAD_REQUEST);
-		return true;
-	}
-	Text::String *location = req->GetSHeader(CSTR("X-Location"));
-
-	UOSInt dataSize;
-	const UInt8 *imgData = req->GetReqData(dataSize);
-	if (imgData == 0 || dataSize < 100 || dataSize > 104857600)
-	{
-		resp->ResponseError(req, Net::WebStatus::SC_BAD_REQUEST);
-		return true;
-	}
-
-	Sync::RWMutexUsage mutUsage;
-	Int32 ret = me->env->UserfileAdd(mutUsage, env.user->id, env.user->unorganSpId, sb.ToCString(), imgData, dataSize, true, location);
-	mutUsage.EndUse();
-
-	if (ret == 0)
-	{
-		resp->ResponseError(req, Net::WebStatus::SC_NOT_ACCEPTABLE);
-		return true;
-	}
-	UTF8Char sbuff[32];
-	UTF8Char *sptr;
-	resp->SetStatusCode(Net::WebStatus::SC_OK);
-	resp->AddDefHeaders(req);
-	sptr = Text::StrInt32(sbuff, ret);
-	resp->AddContentLength((UOSInt)(sptr - sbuff));
-	resp->AddContentType(CSTR("text/plain"));
-	resp->Write(sbuff, (UOSInt)(sptr - sbuff));
-	return true;
-}
-
 Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSearchInside(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, Net::WebServer::WebController *parent)
 {
 	SSWR::OrganWeb::OrganWebMainController *me = (SSWR::OrganWeb::OrganWebMainController*)parent;
@@ -4793,8 +4653,8 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcCate(NotNullPtr<Net::W
 		UOSInt i;
 		UOSInt j;
 		Text::StringBuilderUTF8 sb;
-		GroupInfo *group;
-		Data::ArrayList<GroupInfo*> groups;
+		NotNullPtr<GroupInfo> group;
+		Data::ArrayListNN<GroupInfo> groups;
 		IO::ConfigFile *lang = me->env->LangGet(req);
 
 		IO::MemoryStream mstm;
@@ -4812,32 +4672,34 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcCate(NotNullPtr<Net::W
 		j = cate->groups.GetCount();
 		while (i < j)
 		{
-			group = cate->groups.GetItem(i);
-			me->env->CalcGroupCount(mutUsage, group);
-			if ((group->totalCount > 0 && (group->flags & 1) == 0) || !notAdmin)
+			if (group.Set(cate->groups.GetItem(i)))
 			{
-	/*			sb.ClearStr();
-				sb.AppendC(UTF8STRC("<a href=\"group.html?id="));
-				sb.AppendI32(group->id);
-				sb.AppendC(UTF8STRC("&amp;cateId="));
-				sb.AppendI32(group->cateId);
-				sb.AppendC(UTF8STRC("\">"));
-				txt = Text::XML::ToNewHTMLText(group->chiName);
-				sb.Append(txt);
-				sb.AppendC(UTF8STRC(" "));
-				Text::XML::FreeNewText(txt);
-				txt = Text::XML::ToNewHTMLText(group->engName);
-				sb.Append(txt);
-				Text::XML::FreeNewText(txt);
-				sb.AppendC(UTF8STRC(" ("));
-				sb.AppendOSInt(group->myPhotoCount);
-				sb.AppendC(UTF8STRC("/"));
-				sb.AppendOSInt(group->photoCount);
-				sb.AppendC(UTF8STRC("/"));
-				sb.AppendOSInt(group->totalCount);
-				sb.AppendC(UTF8STRC(")</a><br/>"));
-				writer.WriteLineC(sb.ToString(), sb.GetLength());*/
-				groups.Add(group);
+				me->env->CalcGroupCount(mutUsage, group);
+				if ((group->totalCount > 0 && (group->flags & 1) == 0) || !notAdmin)
+				{
+		/*			sb.ClearStr();
+					sb.AppendC(UTF8STRC("<a href=\"group.html?id="));
+					sb.AppendI32(group->id);
+					sb.AppendC(UTF8STRC("&amp;cateId="));
+					sb.AppendI32(group->cateId);
+					sb.AppendC(UTF8STRC("\">"));
+					txt = Text::XML::ToNewHTMLText(group->chiName);
+					sb.Append(txt);
+					sb.AppendC(UTF8STRC(" "));
+					Text::XML::FreeNewText(txt);
+					txt = Text::XML::ToNewHTMLText(group->engName);
+					sb.Append(txt);
+					Text::XML::FreeNewText(txt);
+					sb.AppendC(UTF8STRC(" ("));
+					sb.AppendOSInt(group->myPhotoCount);
+					sb.AppendC(UTF8STRC("/"));
+					sb.AppendOSInt(group->photoCount);
+					sb.AppendC(UTF8STRC("/"));
+					sb.AppendOSInt(group->totalCount);
+					sb.AppendC(UTF8STRC(")</a><br/>"));
+					writer.WriteLineC(sb.ToString(), sb.GetLength());*/
+					groups.Add(group);
+				}
 			}
 			i++;
 		}
@@ -4895,8 +4757,6 @@ SSWR::OrganWeb::OrganWebMainController::OrganWebMainController(Net::WebServer::M
 	this->AddService(CSTR("/photodetaild.html"), Net::WebUtil::RequestMethod::HTTP_GET, SvcPhotoDetailD);
 	this->AddService(CSTR("/photoyear.html"), Net::WebUtil::RequestMethod::HTTP_GET, SvcPhotoYear);
 	this->AddService(CSTR("/photoday.html"), Net::WebUtil::RequestMethod::HTTP_GET, SvcPhotoDay);
-	this->AddService(CSTR("/photoupload.html"), Net::WebUtil::RequestMethod::HTTP_POST, SvcPhotoUpload);
-	this->AddService(CSTR("/photouploadd.html"), Net::WebUtil::RequestMethod::HTTP_POST, SvcPhotoUploadD);
 	this->AddService(CSTR("/searchinside.html"), Net::WebUtil::RequestMethod::HTTP_POST, SvcSearchInside);
 	this->AddService(CSTR("/searchinsidemores.html"), Net::WebUtil::RequestMethod::HTTP_GET, SvcSearchInsideMoreS);
 	this->AddService(CSTR("/searchinsidemoreg.html"), Net::WebUtil::RequestMethod::HTTP_GET, SvcSearchInsideMoreG);

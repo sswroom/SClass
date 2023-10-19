@@ -971,12 +971,12 @@ NotNullPtr<Media::DrawEngine> SSWR::OrganWeb::OrganWebEnv::GetDrawEngine() const
 	return this->eng;
 }
 
-void SSWR::OrganWeb::OrganWebEnv::CalcGroupCount(NotNullPtr<Sync::RWMutexUsage> mutUsage, GroupInfo *group)
+void SSWR::OrganWeb::OrganWebEnv::CalcGroupCount(NotNullPtr<Sync::RWMutexUsage> mutUsage, NotNullPtr<GroupInfo> group)
 {
 	mutUsage->ReplaceMutex(this->dataMut, true);
 	UOSInt i;
 	SpeciesInfo *sp;
-	GroupInfo *sgroup;
+	NotNullPtr<GroupInfo> sgroup;
 	if (group->myPhotoCount != (UOSInt)-1)
 		return;
 
@@ -1009,14 +1009,16 @@ void SSWR::OrganWeb::OrganWebEnv::CalcGroupCount(NotNullPtr<Sync::RWMutexUsage> 
 	i = group->groups.GetCount();
 	while (i-- > 0)
 	{
-		sgroup = group->groups.GetItem(i);
-		this->CalcGroupCount(mutUsage, sgroup);
-		group->myPhotoCount += sgroup->myPhotoCount;
-		group->photoCount += sgroup->photoCount;
-		group->totalCount += sgroup->totalCount;
-		if (group->photoSpObj == 0 || group->photoGroup == sgroup->id)
+		if (sgroup.Set(group->groups.GetItem(i)))
 		{
-			group->photoSpObj = sgroup->photoSpObj;
+			this->CalcGroupCount(mutUsage, sgroup);
+			group->myPhotoCount += sgroup->myPhotoCount;
+			group->photoCount += sgroup->photoCount;
+			group->totalCount += sgroup->totalCount;
+			if (group->photoSpObj == 0 || group->photoGroup == sgroup->id)
+			{
+				group->photoSpObj = sgroup->photoSpObj;
+			}
 		}
 	}
 }
@@ -3135,8 +3137,8 @@ Bool SSWR::OrganWeb::OrganWebEnv::GroupAddCounts(NotNullPtr<Sync::RWMutexUsage> 
 Bool SSWR::OrganWeb::OrganWebEnv::GroupSetPhotoSpecies(NotNullPtr<Sync::RWMutexUsage> mutUsage, Int32 groupId, Int32 photoSpeciesId)
 {
 	mutUsage->ReplaceMutex(this->dataMut, true);
-	GroupInfo *group = this->groupMap.Get(groupId);
-	if (group == 0)
+	NotNullPtr<GroupInfo> group;
+	if (!group.Set(this->groupMap.Get(groupId)))
 		return false;
 	SpeciesInfo *photoSpecies = this->spMap.Get(photoSpeciesId);
 	if (photoSpeciesId != 0 && photoSpecies == 0)
@@ -3172,8 +3174,8 @@ Bool SSWR::OrganWeb::OrganWebEnv::GroupSetPhotoSpecies(NotNullPtr<Sync::RWMutexU
 Bool SSWR::OrganWeb::OrganWebEnv::GroupSetPhotoGroup(NotNullPtr<Sync::RWMutexUsage> mutUsage, Int32 groupId, Int32 photoGroupId)
 {
 	mutUsage->ReplaceMutex(this->dataMut, true);
-	GroupInfo *group = this->groupMap.Get(groupId);
-	if (group == 0)
+	NotNullPtr<GroupInfo> group;
+	if (!group.Set(this->groupMap.Get(groupId)))
 		return false;
 	GroupInfo *photoGroup = this->groupMap.Get(photoGroupId);
 	if (photoGroupId != 0 && photoGroup == 0)

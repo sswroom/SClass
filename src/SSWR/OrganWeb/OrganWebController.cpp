@@ -243,7 +243,7 @@ void SSWR::OrganWeb::OrganWebController::WriteLocatorText(NotNullPtr<Sync::RWMut
 
 void SSWR::OrganWeb::OrganWebController::WriteGroupTable(NotNullPtr<Sync::RWMutexUsage> mutUsage, IO::Writer *writer, NotNullPtr<const Data::ReadingList<GroupInfo *>> groupList, UInt32 scnWidth, Bool showSelect, Bool showAll)
 {
-	GroupInfo *group;
+	NotNullPtr<GroupInfo> group;
 	NotNullPtr<Text::String> s;
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
@@ -261,159 +261,161 @@ void SSWR::OrganWeb::OrganWebController::WriteGroupTable(NotNullPtr<Sync::RWMute
 		currColumn = 0;
 		while (i < j)
 		{
-			group = groupList->GetItem(i);
-			this->env->CalcGroupCount(mutUsage, group);
-			if (showAll || group->totalCount != 0 || showSelect)
+			if (group.Set(groupList->GetItem(i)))
 			{
-				if (currColumn == 0)
+				this->env->CalcGroupCount(mutUsage, group);
+				if (showAll || group->totalCount != 0 || showSelect)
 				{
-					writer->WriteLineC(UTF8STRC("<tr>"));
-				}
-				sb.ClearStr();
-				sb.AppendC(UTF8STRC("<td width=\""));
-				sb.AppendU32(colWidth);
-				sb.AppendC(UTF8STRC("%\">"));
-				writer->WriteLineC(sb.ToString(), sb.GetCharCnt());
-				sb.ClearStr();
-				sb.AppendC(UTF8STRC("<center><a href=\"group.html?id="));
-				sb.AppendI32(group->id);
-				sb.AppendC(UTF8STRC("&amp;cateId="));
-				sb.AppendI32(group->cateId);
-				sb.AppendC(UTF8STRC("\">"));
-				writer->WriteLineC(sb.ToString(), sb.GetCharCnt());
-
-				if (group->photoSpObj && (group->photoSpObj->photo != 0 || group->photoSpObj->photoId != 0 || group->photoSpObj->photoWId != 0))
-				{
-					if (group->photoSpObj->photoId != 0)
+					if (currColumn == 0)
 					{
-						writer->WriteStrC(UTF8STRC("<img src="));
-						sb.ClearStr();
-						sb.AppendC(UTF8STRC("photo.html?id="));
-						sb.AppendI32(group->photoSpObj->speciesId);
-						sb.AppendC(UTF8STRC("&cateId="));
-						sb.AppendI32(group->cateId);
-						sb.AppendC(UTF8STRC("&width="));
-						sb.AppendI32(PREVIEW_SIZE);
-						sb.AppendC(UTF8STRC("&height="));
-						sb.AppendI32(PREVIEW_SIZE);
-						sb.AppendC(UTF8STRC("&fileId="));
-						sb.AppendI32(group->photoSpObj->photoId);
-						s = Text::XML::ToNewAttrText(sb.ToString());
-						writer->WriteStrC(s->v, s->leng);
-						s->Release();
-						writer->WriteStrC(UTF8STRC(" border=\"0\" ALT="));
-						s = Text::XML::ToNewAttrText(group->engName->v);
-						writer->WriteStrC(s->v, s->leng);
-						s->Release();
-						writer->WriteLineC(UTF8STRC("><br/>"));
+						writer->WriteLineC(UTF8STRC("<tr>"));
 					}
-					else if (group->photoSpObj->photoWId != 0)
+					sb.ClearStr();
+					sb.AppendC(UTF8STRC("<td width=\""));
+					sb.AppendU32(colWidth);
+					sb.AppendC(UTF8STRC("%\">"));
+					writer->WriteLineC(sb.ToString(), sb.GetCharCnt());
+					sb.ClearStr();
+					sb.AppendC(UTF8STRC("<center><a href=\"group.html?id="));
+					sb.AppendI32(group->id);
+					sb.AppendC(UTF8STRC("&amp;cateId="));
+					sb.AppendI32(group->cateId);
+					sb.AppendC(UTF8STRC("\">"));
+					writer->WriteLineC(sb.ToString(), sb.GetCharCnt());
+
+					if (group->photoSpObj && (group->photoSpObj->photo != 0 || group->photoSpObj->photoId != 0 || group->photoSpObj->photoWId != 0))
 					{
-						writer->WriteStrC(UTF8STRC("<img src="));
-						sb.ClearStr();
-						sb.AppendC(UTF8STRC("photo.html?id="));
-						sb.AppendI32(group->photoSpObj->speciesId);
-						sb.AppendC(UTF8STRC("&cateId="));
-						sb.AppendI32(group->cateId);
-						sb.AppendC(UTF8STRC("&width="));
-						sb.AppendI32(PREVIEW_SIZE);
-						sb.AppendC(UTF8STRC("&height="));
-						sb.AppendI32(PREVIEW_SIZE);
-						sb.AppendC(UTF8STRC("&fileWId="));
-						sb.AppendI32(group->photoSpObj->photoWId);
-						s = Text::XML::ToNewAttrText(sb.ToString());
-						writer->WriteStrC(s->v, s->leng);
-						s->Release();
-						writer->WriteStrC(UTF8STRC(" border=\"0\" ALT="));
-						s = Text::XML::ToNewAttrText(group->engName->v);
-						writer->WriteStrC(s->v, s->leng);
-						s->Release();
-						writer->WriteLineC(UTF8STRC("><br/>"));
+						if (group->photoSpObj->photoId != 0)
+						{
+							writer->WriteStrC(UTF8STRC("<img src="));
+							sb.ClearStr();
+							sb.AppendC(UTF8STRC("photo.html?id="));
+							sb.AppendI32(group->photoSpObj->speciesId);
+							sb.AppendC(UTF8STRC("&cateId="));
+							sb.AppendI32(group->cateId);
+							sb.AppendC(UTF8STRC("&width="));
+							sb.AppendI32(PREVIEW_SIZE);
+							sb.AppendC(UTF8STRC("&height="));
+							sb.AppendI32(PREVIEW_SIZE);
+							sb.AppendC(UTF8STRC("&fileId="));
+							sb.AppendI32(group->photoSpObj->photoId);
+							s = Text::XML::ToNewAttrText(sb.ToString());
+							writer->WriteStrC(s->v, s->leng);
+							s->Release();
+							writer->WriteStrC(UTF8STRC(" border=\"0\" ALT="));
+							s = Text::XML::ToNewAttrText(group->engName->v);
+							writer->WriteStrC(s->v, s->leng);
+							s->Release();
+							writer->WriteLineC(UTF8STRC("><br/>"));
+						}
+						else if (group->photoSpObj->photoWId != 0)
+						{
+							writer->WriteStrC(UTF8STRC("<img src="));
+							sb.ClearStr();
+							sb.AppendC(UTF8STRC("photo.html?id="));
+							sb.AppendI32(group->photoSpObj->speciesId);
+							sb.AppendC(UTF8STRC("&cateId="));
+							sb.AppendI32(group->cateId);
+							sb.AppendC(UTF8STRC("&width="));
+							sb.AppendI32(PREVIEW_SIZE);
+							sb.AppendC(UTF8STRC("&height="));
+							sb.AppendI32(PREVIEW_SIZE);
+							sb.AppendC(UTF8STRC("&fileWId="));
+							sb.AppendI32(group->photoSpObj->photoWId);
+							s = Text::XML::ToNewAttrText(sb.ToString());
+							writer->WriteStrC(s->v, s->leng);
+							s->Release();
+							writer->WriteStrC(UTF8STRC(" border=\"0\" ALT="));
+							s = Text::XML::ToNewAttrText(group->engName->v);
+							writer->WriteStrC(s->v, s->leng);
+							s->Release();
+							writer->WriteLineC(UTF8STRC("><br/>"));
+						}
+						else
+						{
+							writer->WriteStrC(UTF8STRC("<img src="));
+							sb.ClearStr();
+							sb.AppendC(UTF8STRC("photo.html?id="));
+							sb.AppendI32(group->photoSpObj->speciesId);
+							sb.AppendC(UTF8STRC("&cateId="));
+							sb.AppendI32(group->cateId);
+							sb.AppendC(UTF8STRC("&width="));
+							sb.AppendI32(PREVIEW_SIZE);
+							sb.AppendC(UTF8STRC("&height="));
+							sb.AppendI32(PREVIEW_SIZE);
+							sb.AppendC(UTF8STRC("&file="));
+							sptr = Text::TextBinEnc::URIEncoding::URIEncode(sbuff, group->photoSpObj->photo->v);
+							sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
+							s = Text::XML::ToNewAttrText(sb.ToString());
+							writer->WriteStrC(s->v, s->leng);
+							s->Release();
+							writer->WriteStrC(UTF8STRC(" border=\"0\" ALT="));
+							s = Text::XML::ToNewAttrText(group->engName->v);
+							writer->WriteStrC(s->v, s->leng);
+							s->Release();
+							writer->WriteLineC(UTF8STRC("><br/>"));
+						}
 					}
 					else
 					{
-						writer->WriteStrC(UTF8STRC("<img src="));
-						sb.ClearStr();
-						sb.AppendC(UTF8STRC("photo.html?id="));
-						sb.AppendI32(group->photoSpObj->speciesId);
-						sb.AppendC(UTF8STRC("&cateId="));
-						sb.AppendI32(group->cateId);
-						sb.AppendC(UTF8STRC("&width="));
-						sb.AppendI32(PREVIEW_SIZE);
-						sb.AppendC(UTF8STRC("&height="));
-						sb.AppendI32(PREVIEW_SIZE);
-						sb.AppendC(UTF8STRC("&file="));
-						sptr = Text::TextBinEnc::URIEncoding::URIEncode(sbuff, group->photoSpObj->photo->v);
-						sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
-						s = Text::XML::ToNewAttrText(sb.ToString());
+						s = Text::XML::ToNewHTMLBodyText(group->engName->v);
 						writer->WriteStrC(s->v, s->leng);
 						s->Release();
-						writer->WriteStrC(UTF8STRC(" border=\"0\" ALT="));
-						s = Text::XML::ToNewAttrText(group->engName->v);
-						writer->WriteStrC(s->v, s->leng);
-						s->Release();
-						writer->WriteLineC(UTF8STRC("><br/>"));
 					}
-				}
-				else
-				{
-					s = Text::XML::ToNewHTMLBodyText(group->engName->v);
-					writer->WriteStrC(s->v, s->leng);
-					s->Release();
-				}
-				if (showSelect)
-				{
-					writer->WriteLineC(UTF8STRC("</a>"));
-					
-					sb.ClearStr();
-					sb.AppendC(UTF8STRC("<input type=\"checkbox\" name=\"group"));
-					sb.AppendI32(group->id);
-					sb.AppendC(UTF8STRC("\" id=\"group"));
-					sb.AppendI32(group->id);
-					sb.AppendC(UTF8STRC("\" value=\"1\"/><label for=\"group"));
-					sb.AppendI32(group->id);
-					sb.AppendC(UTF8STRC("\">"));
-					writer->WriteStrC(sb.ToString(), sb.GetLength());
-					sb.ClearStr();
-					sb.Append(group->chiName);
-					sb.AppendC(UTF8STRC(" "));
-					sb.Append(group->engName);
-					sb.AppendC(UTF8STRC(" ("));
-					sb.AppendUOSInt(group->myPhotoCount);
-					sb.AppendC(UTF8STRC("/"));
-					sb.AppendUOSInt(group->photoCount);
-					sb.AppendC(UTF8STRC("/"));
-					sb.AppendUOSInt(group->totalCount);
-					sb.AppendC(UTF8STRC(")"));
-					s = Text::XML::ToNewHTMLBodyText(sb.ToString());
-					writer->WriteStrC(s->v, s->leng);
-					writer->WriteLineC(UTF8STRC("</label></center></td>"));
-					s->Release();
-				}
-				else
-				{
-					sb.ClearStr();
-					sb.Append(group->chiName);
-					sb.AppendC(UTF8STRC(" "));
-					sb.Append(group->engName);
-					sb.AppendC(UTF8STRC(" ("));
-					sb.AppendUOSInt(group->myPhotoCount);
-					sb.AppendC(UTF8STRC("/"));
-					sb.AppendUOSInt(group->photoCount);
-					sb.AppendC(UTF8STRC("/"));
-					sb.AppendUOSInt(group->totalCount);
-					sb.AppendC(UTF8STRC(")"));
-					s = Text::XML::ToNewHTMLBodyText(sb.ToString());
-					writer->WriteStrC(s->v, s->leng);
-					writer->WriteLineC(UTF8STRC("</a></center></td>"));
-					s->Release();
-				}
+					if (showSelect)
+					{
+						writer->WriteLineC(UTF8STRC("</a>"));
+						
+						sb.ClearStr();
+						sb.AppendC(UTF8STRC("<input type=\"checkbox\" name=\"group"));
+						sb.AppendI32(group->id);
+						sb.AppendC(UTF8STRC("\" id=\"group"));
+						sb.AppendI32(group->id);
+						sb.AppendC(UTF8STRC("\" value=\"1\"/><label for=\"group"));
+						sb.AppendI32(group->id);
+						sb.AppendC(UTF8STRC("\">"));
+						writer->WriteStrC(sb.ToString(), sb.GetLength());
+						sb.ClearStr();
+						sb.Append(group->chiName);
+						sb.AppendC(UTF8STRC(" "));
+						sb.Append(group->engName);
+						sb.AppendC(UTF8STRC(" ("));
+						sb.AppendUOSInt(group->myPhotoCount);
+						sb.AppendC(UTF8STRC("/"));
+						sb.AppendUOSInt(group->photoCount);
+						sb.AppendC(UTF8STRC("/"));
+						sb.AppendUOSInt(group->totalCount);
+						sb.AppendC(UTF8STRC(")"));
+						s = Text::XML::ToNewHTMLBodyText(sb.ToString());
+						writer->WriteStrC(s->v, s->leng);
+						writer->WriteLineC(UTF8STRC("</label></center></td>"));
+						s->Release();
+					}
+					else
+					{
+						sb.ClearStr();
+						sb.Append(group->chiName);
+						sb.AppendC(UTF8STRC(" "));
+						sb.Append(group->engName);
+						sb.AppendC(UTF8STRC(" ("));
+						sb.AppendUOSInt(group->myPhotoCount);
+						sb.AppendC(UTF8STRC("/"));
+						sb.AppendUOSInt(group->photoCount);
+						sb.AppendC(UTF8STRC("/"));
+						sb.AppendUOSInt(group->totalCount);
+						sb.AppendC(UTF8STRC(")"));
+						s = Text::XML::ToNewHTMLBodyText(sb.ToString());
+						writer->WriteStrC(s->v, s->leng);
+						writer->WriteLineC(UTF8STRC("</a></center></td>"));
+						s->Release();
+					}
 
-				currColumn++;
-				if (currColumn >= colCount)
-				{
-					writer->WriteLineC(UTF8STRC("</tr>"));
-					currColumn = 0;
+					currColumn++;
+					if (currColumn >= colCount)
+					{
+						writer->WriteLineC(UTF8STRC("</tr>"));
+						currColumn = 0;
+					}
 				}
 			}
 			i++;
