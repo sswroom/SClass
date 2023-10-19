@@ -5,169 +5,6 @@
 #include "Text/UTF8Writer.h"
 #include "Text/XML.h"
 
-Bool __stdcall SSWR::OrganWeb::OrganWebBookController::SvcBookList(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, Net::WebServer::WebController *parent)
-{
-	SSWR::OrganWeb::OrganWebBookController *me = (SSWR::OrganWeb::OrganWebBookController*)parent;
-	RequestEnv env;
-	me->ParseRequestEnv(req, resp, env, false);
-
-	Int32 id;
-	UInt32 unselect = 0;
-	req->GetQueryValueU32(CSTR("unselect"), unselect);
-	if (req->GetQueryValueI32(CSTR("id"), id))
-	{
-		NotNullPtr<Text::String> s;
-		Data::ArrayList<BookInfo*> sortBookList;
-		Data::DateTime dt;
-		UTF8Char sbuff[32];
-		UTF8Char *sptr;
-		BookInfo *book;
-		CategoryInfo *cate;
-		UOSInt i;
-		UOSInt j;
-		Text::StringBuilderUTF8 sb;
-		IO::ConfigFile *lang = me->env->LangGet(req);
-		Sync::RWMutexUsage mutUsage;
-		cate = me->env->CateGet(mutUsage, id);
-		if (cate == 0)
-		{
-			mutUsage.EndUse();
-			resp->ResponseError(req, Net::WebStatus::SC_BAD_REQUEST);
-			return true;
-		}
-		if (unselect == 1 && env.user && env.user->userType == UserType::Admin)
-		{
-			me->env->BookSelect(0);
-		}
-
-		IO::MemoryStream mstm;
-		Text::UTF8Writer writer(mstm);
-
-		sb.ClearStr();
-		sb.Append(cate->chiName);
-		sb.AppendC(UTF8STRC(" - "));
-		sb.AppendC(UTF8STRC("Book List"));
-		me->WriteHeader(&writer, sb.ToString(), env.user, env.isMobile);
-		writer.WriteStrC(UTF8STRC("<center><h1>"));
-		s = Text::XML::ToNewHTMLBodyText(sb.ToString());
-		writer.WriteStrC(s->v, s->leng);
-		s->Release();
-		writer.WriteLineC(UTF8STRC("</h1></center>"));
-
-		writer.WriteLineC(UTF8STRC("<table border=\"0\" width=\"100%\">"));
-		writer.WriteLineC(UTF8STRC("<tr>"));
-		writer.WriteLineC(UTF8STRC("<td>Count</td>"));
-		writer.WriteLineC(UTF8STRC("<td>Book Name</td>"));
-		writer.WriteLineC(UTF8STRC("<td>Author</td>"));
-		writer.WriteLineC(UTF8STRC("<td>Press</td>"));
-		writer.WriteLineC(UTF8STRC("<td>Publish Date</td>"));
-		writer.WriteLineC(UTF8STRC("</tr>"));
-
-		me->env->BookGetList(mutUsage, sortBookList);
-		Data::Sort::ArtificialQuickSort::Sort(&sortBookList, me);
-
-		i = 0;
-		j = sortBookList.GetCount();
-		while (i < j)
-		{
-			book = sortBookList.GetItem(i);
-
-			writer.WriteLineC(UTF8STRC("<tr>"));
-			writer.WriteStrC(UTF8STRC("<td>"));
-			sptr = Text::StrUOSInt(sbuff, book->species.GetCount());
-			if (book->userfileId != 0)
-			{
-				sptr = Text::StrConcatC(sptr, UTF8STRC(" *"));
-			}
-			writer.WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
-			writer.WriteStrC(UTF8STRC("</td>"));
-			writer.WriteStrC(UTF8STRC("<td><a href=\"book.html?id="));
-			sptr = Text::StrInt32(sbuff, book->id);
-			writer.WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
-			writer.WriteStrC(UTF8STRC("&amp;cateId="));
-			sptr = Text::StrInt32(sbuff, cate->cateId);
-			writer.WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
-			writer.WriteStrC(UTF8STRC("\">"));
-			sb.ClearStr();
-			s = Text::XML::ToNewHTMLBodyText(book->title->v);
-			sb.Append(s);
-			sb.ReplaceStr(UTF8STRC("[i]"), UTF8STRC("<i>"));
-			sb.ReplaceStr(UTF8STRC("[/i]"), UTF8STRC("</i>"));
-			writer.WriteStrC(sb.ToString(), sb.GetLength());
-			s->Release();
-			writer.WriteLineC(UTF8STRC("</a></td>"));
-			writer.WriteStrC(UTF8STRC("<td>"));
-			s = Text::XML::ToNewHTMLBodyText(book->author->v);
-			writer.WriteStrC(s->v, s->leng);
-			s->Release();
-			writer.WriteLineC(UTF8STRC("</td>"));
-			writer.WriteStrC(UTF8STRC("<td>"));
-			s = Text::XML::ToNewHTMLBodyText(book->press->v);
-			writer.WriteStrC(s->v, s->leng);
-			s->Release();
-			writer.WriteLineC(UTF8STRC("</td>"));
-			writer.WriteStrC(UTF8STRC("<td>"));
-			dt.SetTicks(book->publishDate);
-			sptr = dt.ToString(sbuff, "yyyy-MM-dd");
-			writer.WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
-			writer.WriteLineC(UTF8STRC("</td>"));
-			writer.WriteLineC(UTF8STRC("</tr>"));
-
-			i++;
-		}
-
-
-		writer.WriteLineC(UTF8STRC("</table>"));
-		writer.WriteLineC(UTF8STRC("<br/>"));
-		if (env.user && env.user->userType == UserType::Admin)
-		{
-			writer.WriteStrC(UTF8STRC("<a href="));
-			sb.ClearStr();
-			sb.AppendC(UTF8STRC("bookadd.html?id="));
-			sb.AppendI32(cate->cateId);
-			s = Text::XML::ToNewAttrText(sb.ToString());
-			writer.WriteStrC(s->v, s->leng);
-			s->Release();
-			writer.WriteStrC(UTF8STRC(">"));
-			writer.WriteStr(LangGetValue(lang, UTF8STRC("New Book")));
-			writer.WriteStrC(UTF8STRC("</a><br/>"));
-			BookInfo *book = me->env->BookGetSelected(mutUsage);
-			if (book)
-			{
-				writer.WriteStrC(UTF8STRC("Selected book: "));
-				s = Text::XML::ToNewHTMLBodyText(book->title->v);
-				writer.WriteStrC(s->v, s->leng);
-				s->Release();
-				writer.WriteStrC(UTF8STRC(" <a href=\"booklist.html?id="));
-				sptr = Text::StrInt32(sbuff, cate->cateId);
-				writer.WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
-				writer.WriteStrC(UTF8STRC("&unselect=1\">"));
-				writer.WriteStrC(UTF8STRC(" Unselect</a><br/>"));
-			}
-		}
-		writer.WriteStrC(UTF8STRC("<a href="));
-		sb.ClearStr();
-		sb.AppendC(UTF8STRC("cate.html?cateName="));
-		sb.Append(cate->dirName);
-		s = Text::XML::ToNewAttrText(sb.ToString());
-		writer.WriteStrC(s->v, s->leng);
-		s->Release();
-		writer.WriteStrC(UTF8STRC(">"));
-		writer.WriteStr(LangGetValue(lang, UTF8STRC("Back")));
-		writer.WriteStrC(UTF8STRC("</a>"));
-
-		me->WriteFooter(&writer);
-		mutUsage.EndUse();
-		ResponseMstm(req, resp, mstm, CSTR("text/html"));
-		return true;
-	}
-	else
-	{
-		resp->ResponseError(req, Net::WebStatus::SC_BAD_REQUEST);
-		return true;
-	}
-}
-
 Bool __stdcall SSWR::OrganWeb::OrganWebBookController::SvcBook(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, Net::WebServer::WebController *parent)
 {
 	SSWR::OrganWeb::OrganWebBookController *me = (SSWR::OrganWeb::OrganWebBookController*)parent;
@@ -188,7 +25,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebBookController::SvcBook(NotNullPtr<Net::W
 		Data::DateTime dt;
 		UTF8Char sbuff[32];
 		UTF8Char *sptr;
-		BookInfo *book;
+		NotNullPtr<BookInfo> book;
 		CategoryInfo *cate;
 		BookSpInfo *bookSp;
 		SpeciesInfo *species;
@@ -206,8 +43,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebBookController::SvcBook(NotNullPtr<Net::W
 			resp->ResponseError(req, Net::WebStatus::SC_BAD_REQUEST);
 			return true;
 		}
-		book = me->env->BookGet(mutUsage, id);
-		if (book == 0)
+		if (!book.Set(me->env->BookGet(mutUsage, id)))
 		{
 			mutUsage.EndUse();
 			resp->ResponseError(req, Net::WebStatus::SC_BAD_REQUEST);
@@ -215,7 +51,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebBookController::SvcBook(NotNullPtr<Net::W
 		}
 		if (selectBook != 0 && env.user && env.user->userType == UserType::Admin)
 		{
-			me->env->BookSelect(book);
+			me->env->BookSelect(book.Ptr());
 		}
 
 		IO::MemoryStream mstm;
@@ -874,7 +710,6 @@ Bool __stdcall SSWR::OrganWeb::OrganWebBookController::SvcBookAdd(NotNullPtr<Net
 
 SSWR::OrganWeb::OrganWebBookController::OrganWebBookController(Net::WebServer::MemoryWebSessionManager *sessMgr, OrganWebEnv *env, UInt32 scnSize) : OrganWebController(sessMgr, env, scnSize)
 {
-	this->AddService(CSTR("/booklisto.html"), Net::WebUtil::RequestMethod::HTTP_GET, SvcBookList);
 	this->AddService(CSTR("/book.html"), Net::WebUtil::RequestMethod::HTTP_GET, SvcBook);
 	this->AddService(CSTR("/bookview.html"), Net::WebUtil::RequestMethod::HTTP_GET, SvcBookView);
 	this->AddService(CSTR("/bookphoto.html"), Net::WebUtil::RequestMethod::HTTP_GET, SvcBookPhoto);

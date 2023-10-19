@@ -1197,7 +1197,7 @@ void SSWR::OrganWeb::OrganWebEnv::BookGetList(NotNullPtr<Sync::RWMutexUsage> mut
 	bookList->AddAll(this->bookMap);
 }
 
-Bool SSWR::OrganWeb::OrganWebEnv::BookFileExist(BookInfo *book)
+Bool SSWR::OrganWeb::OrganWebEnv::BookFileExist(NotNullPtr<BookInfo> book)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;

@@ -550,20 +550,34 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::CheckDataFile()
 	}
 	this->dataFile->CloseReader(r);
 
+	Bool succ = true;
 	if (keyCol != INVALID_INDEX)
 	{
 		if (!r.Set(this->db->QueryTableData(this->schema, this->table, 0, 0, 0, CSTR_NULL, dbCond)))
 		{
 			UI::MessageDialog::ShowDialog(CSTR("Error in getting table data"), CSTR("Check Table Changes"), this);
+			succ = false;
 		}
 		else
 		{
-			Data::ArrayList<Text::String*> idList;
+			Data::ArrayListString idList;
 			while (r->ReadNext())
 			{
 				id = r->GetNewStr(keyCol);
+				if (id == 0)
+				{
+					UI::MessageDialog::ShowDialog(CSTR("Key is null"), CSTR("Check Table Changes"), this);
+					succ = false;
+					break;
+				}
+				if (idList.SortedIndexOf(id) >= 0)
+				{
+					UI::MessageDialog::ShowDialog(CSTR("Key duplicate"), CSTR("Check Table Changes"), this);
+					succ = false;
+					break;
+				}
 				rowData = csvData.Get(id);
-				idList.Add(id);
+				idList.SortedInsert(id);
 				if (rowData)
 				{
 					Bool diff = false;
@@ -621,9 +635,18 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::CheckDataFile()
 									}
 								}
 								break;
+							case DB::DBUtil::CT_Float:
+								{
+									Double v1 = r->GetDbl(i);
+									Double v2 = rowData[i]->ToDouble();
+									if (!Math::NearlyEquals(v1, v2, 0.000001))
+									{
+										diff = true;
+									}
+								}
+								break;
 							case DB::DBUtil::CT_Decimal:
 							case DB::DBUtil::CT_Double:
-							case DB::DBUtil::CT_Float:
 								{
 									Double v1 = r->GetDbl(i);
 									Double v2 = rowData[i]->ToDouble();
@@ -759,17 +782,24 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::CheckDataFile()
 	}
 	DEL_CLASS(table);
 	SDEL_CLASS(dbCond);
-	sptr = Text::StrUOSInt(sbuff, dataFileRowCnt);
-	this->txtDataFileRow->SetText(CSTRP(sbuff, sptr));
-	sptr = Text::StrUOSInt(sbuff, noChgCnt);
-	this->txtNoChg->SetText(CSTRP(sbuff, sptr));
-	sptr = Text::StrUOSInt(sbuff, updateCnt);
-	this->txtUpdated->SetText(CSTRP(sbuff, sptr));
-	sptr = Text::StrUOSInt(sbuff, newRowCnt);
-	this->txtNewRow->SetText(CSTRP(sbuff, sptr));
-	sptr = Text::StrUOSInt(sbuff, delRowCnt);
-	this->txtDeletedRow->SetText(CSTRP(sbuff, sptr));
-	return true;
+	if (succ)
+	{
+		sptr = Text::StrUOSInt(sbuff, dataFileRowCnt);
+		this->txtDataFileRow->SetText(CSTRP(sbuff, sptr));
+		sptr = Text::StrUOSInt(sbuff, noChgCnt);
+		this->txtNoChg->SetText(CSTRP(sbuff, sptr));
+		sptr = Text::StrUOSInt(sbuff, updateCnt);
+		this->txtUpdated->SetText(CSTRP(sbuff, sptr));
+		sptr = Text::StrUOSInt(sbuff, newRowCnt);
+		this->txtNewRow->SetText(CSTRP(sbuff, sptr));
+		sptr = Text::StrUOSInt(sbuff, delRowCnt);
+		this->txtDeletedRow->SetText(CSTRP(sbuff, sptr));
+		return true;
+	}
+	else
+	{
+		return false;
+	}
 }
 
 Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool axisAware, SQLSession *sess)

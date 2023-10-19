@@ -107,7 +107,7 @@ namespace SSWR
 			void BookSelect(BookInfo *book);
 			UTF8Char *BookGetPath(UTF8Char *sbuff, Int32 bookId);
 			void BookGetList(NotNullPtr<Sync::RWMutexUsage> mutUsage, NotNullPtr<Data::ArrayList<BookInfo*>> bookList);
-			Bool BookFileExist(BookInfo *book);
+			Bool BookFileExist(NotNullPtr<BookInfo> book);
 			Bool BookSetPhoto(NotNullPtr<Sync::RWMutexUsage> mutUsage, Int32 bookId, Int32 userfileId);
 			BookInfo *BookAdd(NotNullPtr<Sync::RWMutexUsage> mutUsage, Text::String *title, Text::String *author, Text::String *press, Data::Timestamp pubDate, Text::String *url);
 			Bool BookAddSpecies(NotNullPtr<Sync::RWMutexUsage> mutUsage, Int32 speciesId, Text::String *bookspecies, Bool allowDuplicate);

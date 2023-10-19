@@ -157,6 +157,42 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcBookList(NotNullPtr<Net
 	return me->ResponseJSON(req, resp, 0, json.Build());
 }
 
+Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcBookSelect(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, Net::WebServer::WebController *parent)
+{
+	SSWR::OrganWeb::OrganWebPOIController *me = (SSWR::OrganWeb::OrganWebPOIController*)parent;
+	RequestEnv env;
+	me->ParseRequestEnv(req, resp, env, false);
+	Text::CStringNN json;
+	if (env.user && env.user->userType == UserType::Admin)
+	{
+		req->ParseHTTPForm();
+		Sync::RWMutexUsage mutUsage;
+		Int32 id;
+		if (req->GetHTTPFormInt32(CSTR("id"), id))
+		{
+			BookInfo *book = me->env->BookGet(mutUsage, id);
+			if (book)
+			{
+				me->env->BookSelect(book);
+				json = CSTR("{\"status\":\"ok\"}");
+			}
+			else
+			{
+				json = CSTR("{\"status\":\"id invalid\"}");
+			}
+		}
+		else
+		{
+			json = CSTR("{\"status\":\"id not found\"}");
+		}
+	}
+	else
+	{
+		json = CSTR("{\"status\":\"access denied\"}");
+	}
+	return me->ResponseJSON(req, resp, 0, json);
+}
+
 Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcBookUnselect(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, Net::WebServer::WebController *parent)
 {
 	SSWR::OrganWeb::OrganWebPOIController *me = (SSWR::OrganWeb::OrganWebPOIController*)parent;
@@ -167,6 +203,68 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcBookUnselect(NotNullPtr
 		me->env->BookSelect(0);
 	}
 	return me->ResponseJSON(req, resp, 0, CSTR("{}"));
+}
+
+Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcBookAdd(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, Net::WebServer::WebController *parent)
+{
+	SSWR::OrganWeb::OrganWebPOIController *me = (SSWR::OrganWeb::OrganWebPOIController*)parent;
+	RequestEnv env;
+	me->ParseRequestEnv(req, resp, env, false);
+	Text::CStringNN msg;
+	if (env.user == 0 || env.user->userType != UserType::Admin)
+	{
+		msg = CSTR("Access denied");
+	}
+	else
+	{
+		Text::String *title = 0;
+		Text::String *author = 0;
+		Text::String *press = 0;
+		Text::String *pubDate = 0;
+		Text::String *url = 0;
+		req->ParseHTTPForm();
+		title = req->GetHTTPFormStr(CSTR("title"));
+		author = req->GetHTTPFormStr(CSTR("author"));
+		press = req->GetHTTPFormStr(CSTR("press"));
+		pubDate = req->GetHTTPFormStr(CSTR("pubDate"));
+		url = req->GetHTTPFormStr(CSTR("url"));
+		Data::Timestamp ts;
+		if (title == 0 || title->leng == 0)
+		{
+			msg = CSTR("Book Name is empty");
+		}
+		else if (author == 0 || author->leng == 0)
+		{
+			msg = CSTR("Author is empty");
+		}
+		else if (press == 0 || press->leng == 0)
+		{
+			msg = CSTR("Press is empty");
+		}
+		else if (pubDate == 0 || (ts = Data::Timestamp(pubDate->ToCString(), 0)).IsNull())
+		{
+			msg = CSTR("Publish Date is not valid");
+		}
+		else if (url == 0 || (url->leng > 0 && !url->StartsWith(UTF8STRC("http://")) && !url->StartsWith(UTF8STRC("https://"))))
+		{
+			msg = CSTR("URL is not valid");
+		}
+		else
+		{
+			Sync::RWMutexUsage mutUsage;
+			if (me->env->BookAdd(mutUsage, title, author, press, ts, url))
+			{
+				msg = CSTR("ok");
+			}
+			else
+			{
+				msg = CSTR("Error in adding book");
+			}
+		}
+	}
+	Text::JSONBuilder json(Text::JSONBuilder::OT_OBJECT);
+	json.ObjectAddStr(CSTR("status"), msg);
+	return me->ResponseJSON(req, resp, 0, json.Build());
 }
 
 Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcBookDetail(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, Net::WebServer::WebController *parent)
@@ -203,6 +301,11 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcBookDetail(NotNullPtr<N
 				}
 			}
 		}
+		if (env.user && env.user->userType == UserType::Admin)
+		{
+			json.ObjectAddBool(CSTR("hasFile"), me->env->BookFileExist(book));
+		}
+
 		json.ObjectBeginArray(CSTR("species"));
 		UOSInt i = 0;
 		UOSInt j = book->species.GetCount();
@@ -628,7 +731,9 @@ SSWR::OrganWeb::OrganWebPOIController::OrganWebPOIController(Net::WebServer::Mem
 	this->AddService(CSTR("/api/catelist"), Net::WebUtil::RequestMethod::HTTP_GET, SvcCateList);
 	this->AddService(CSTR("/api/yearlist"), Net::WebUtil::RequestMethod::HTTP_GET, SvcYearList);
 	this->AddService(CSTR("/api/booklist"), Net::WebUtil::RequestMethod::HTTP_GET, SvcBookList);
+	this->AddService(CSTR("/api/bookselect"), Net::WebUtil::RequestMethod::HTTP_POST, SvcBookSelect);
 	this->AddService(CSTR("/api/bookunselect"), Net::WebUtil::RequestMethod::HTTP_GET, SvcBookUnselect);
+	this->AddService(CSTR("/api/bookadd"), Net::WebUtil::RequestMethod::HTTP_GET, SvcBookAdd);
 	this->AddService(CSTR("/api/bookdetail"), Net::WebUtil::RequestMethod::HTTP_GET, SvcBookDetail);
 	this->AddService(CSTR("/api/photoupload"), Net::WebUtil::RequestMethod::HTTP_POST, SvcPhotoUpload);
 	this->AddService(CSTR("/api/reload"), Net::WebUtil::RequestMethod::HTTP_POST, SvcReload);
