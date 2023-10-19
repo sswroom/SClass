@@ -4495,84 +4495,6 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSearchInsideMoreG(NotN
 	}
 }
 
-Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcLogin(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, Net::WebServer::WebController *parent)
-{
-	SSWR::OrganWeb::OrganWebMainController *me = (SSWR::OrganWeb::OrganWebMainController*)parent;
-	RequestEnv env;
-	me->ParseRequestEnv(req, resp, env, false);
-
-	Data::DateTime dt;
-	UTF8Char sbuff[128];
-	UTF8Char *sptr;
-
-	if (env.user || !req->IsSecure())
-	{
-		resp->RedirectURL(req, CSTR("/"), 0);
-		return true;
-	}
-	Sync::RWMutexUsage mutUsage;
-	if (req->GetReqMethod() == Net::WebUtil::RequestMethod::HTTP_POST)
-	{
-		req->ParseHTTPForm();
-		Text::String *userName = req->GetHTTPFormStr(CSTR("userName"));
-		Text::String *pwd = req->GetHTTPFormStr(CSTR("password"));
-		if (userName && pwd)
-		{
-			sptr = me->env->PasswordEnc(sbuff, pwd->ToCString());
-			env.user = me->env->UserGetByName(mutUsage, userName);
-			if (env.user && env.user->pwd->Equals(sbuff, (UOSInt)(sptr - sbuff)))
-			{
-				mutUsage.EndUse();
-				Net::WebServer::IWebSession *sess = me->sessMgr->CreateSession(req, resp);
-				Data::DateTime *t;
-				Data::ArrayListInt32 *pickObjs;
-				NEW_CLASS(t, Data::DateTime());
-				NEW_CLASS(pickObjs, Data::ArrayListInt32());
-				sess->SetValuePtr(UTF8STRC("LastUseTime"), t);
-				sess->SetValuePtr(UTF8STRC("User"), env.user);
-				sess->SetValuePtr(UTF8STRC("PickObjs"), pickObjs);
-				sess->SetValueInt32(UTF8STRC("PickObjType"), 0);
-				sess->EndUse();
-
-				IO::MemoryStream mstm;
-				Text::UTF8Writer writer(mstm);
-
-				me->WriteHeaderPart1(&writer, (const UTF8Char*)"Index", env.isMobile);
-				writer.WriteLineC(UTF8STRC("<script type=\"text/javascript\">"));
-				writer.WriteLineC(UTF8STRC("function afterLoad()"));
-				writer.WriteLineC(UTF8STRC("{"));
-				writer.WriteLineC(UTF8STRC("	document.location.replace('/');"));
-				writer.WriteLineC(UTF8STRC("}"));
-				writer.WriteLineC(UTF8STRC("</script>"));
-				me->WriteHeaderPart2(&writer, 0, (const UTF8Char*)"afterLoad()");
-				writer.WriteLineC(UTF8STRC("Login succeeded"));
-
-				me->WriteFooter(&writer);
-				ResponseMstm(req, resp, mstm, CSTR("text/html"));
-				return true;
-			}
-			env.user = 0;
-		}
-	}
-
-	IO::MemoryStream mstm;
-	Text::UTF8Writer writer(mstm);
-
-	me->WriteHeader(&writer, (const UTF8Char*)"Index", env.user, env.isMobile);
-	writer.WriteLineC(UTF8STRC("<center><h1>Login</h1></center>"));
-
-	writer.WriteLineC(UTF8STRC("<form method=\"POST\" action=\"login.html\">"));
-	writer.WriteLineC(UTF8STRC("User Name: <input type=\"text\" name=\"userName\"/><br/>"));
-	writer.WriteLineC(UTF8STRC("Password: <input type=\"password\" name=\"password\"/><br/>"));
-	writer.WriteLineC(UTF8STRC("<input type=\"submit\" /><br/>"));
-	writer.WriteLineC(UTF8STRC("</form>"));
-	mutUsage.EndUse();
-
-	me->WriteFooter(&writer);
-	ResponseMstm(req, resp, mstm, CSTR("text/html"));
-	return true;
-}
-
 Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcLogout(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, Net::WebServer::WebController *parent)
 {
 	SSWR::OrganWeb::OrganWebMainController *me = (SSWR::OrganWeb::OrganWebMainController*)parent;
@@ -4760,8 +4682,6 @@ SSWR::OrganWeb::OrganWebMainController::OrganWebMainController(Net::WebServer::M
 	this->AddService(CSTR("/searchinside.html"), Net::WebUtil::RequestMethod::HTTP_POST, SvcSearchInside);
 	this->AddService(CSTR("/searchinsidemores.html"), Net::WebUtil::RequestMethod::HTTP_GET, SvcSearchInsideMoreS);
 	this->AddService(CSTR("/searchinsidemoreg.html"), Net::WebUtil::RequestMethod::HTTP_GET, SvcSearchInsideMoreG);
-	this->AddService(CSTR("/login.html"), Net::WebUtil::RequestMethod::HTTP_GET, SvcLogin);
-	this->AddService(CSTR("/login.html"), Net::WebUtil::RequestMethod::HTTP_POST, SvcLogin);
 	this->AddService(CSTR("/logout"), Net::WebUtil::RequestMethod::HTTP_GET, SvcLogout);
 	this->AddService(CSTR("/restart"), Net::WebUtil::RequestMethod::HTTP_GET, SvcRestart);
 	this->AddService(CSTR("/restart"), Net::WebUtil::RequestMethod::HTTP_POST, SvcRestart);

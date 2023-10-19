@@ -733,6 +733,7 @@ void SSWR::OrganWeb::OrganWebPOIController::AddGroup(NotNullPtr<Text::JSONBuilde
 	json->ObjectAddStr(CSTR("engName"), group->engName);
 	json->ObjectAddStr(CSTR("chiName"), group->chiName);
 	json->ObjectAddStr(CSTR("descript"), group->descript);
+	json->ObjectAddInt32(CSTR("cateId"), group->cateId);
 	json->ObjectAddInt64(CSTR("photoCount"), (Int64)group->photoCount);
 	json->ObjectAddInt64(CSTR("myPhotoCount"), (Int64)group->myPhotoCount);
 	json->ObjectAddInt64(CSTR("totalCount"), (Int64)group->totalCount);
