@@ -400,6 +400,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcBookDetail(NotNullPtr<N
 					json.ObjectAddInt32(CSTR("id"), userFile->id);
 					json.ObjectAddInt32(CSTR("speciesId"), userFile->speciesId);
 					json.ObjectAddInt32(CSTR("cateId"), sp->cateId);
+					json.ObjectEnd();
 				}
 			}
 		}
