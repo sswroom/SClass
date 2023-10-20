@@ -137,3 +137,20 @@ export function toHTMLText(s)
 	}
 	return out + "";
 }
+
+export function bracketToHTML(s)
+{
+	var i;
+	var j;
+	while (true)
+	{
+		i = s.indexOf("[i]");
+		if (i < 0)
+			break;
+		j = s.indexOf("[/i]", i + 3);
+		if (j < 0)
+			break;
+		s = s.substring(0, i)+"<i>"+s.substring(i + 3, j)+"</i>"+s.substring(j + 4);
+	}
+	return s;
+}
