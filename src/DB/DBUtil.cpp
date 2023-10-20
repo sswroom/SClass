@@ -1427,7 +1427,7 @@ UTF8Char *DB::DBUtil::SDBTS(UTF8Char *sqlstr, const Data::Timestamp &ts, SQLType
 	{
 		sptr = sqlstr;
 		*sptr++ = '\'';
-		sptr = ts.ToUTCTime().ToString(sptr, "yyyy-MM-dd HH:mm:ss.ffffff");
+		sptr = ts.ConvertTimeZoneQHR(tzQhr).ToString(sptr, "yyyy-MM-dd HH:mm:ss.ffffffzzz");
 		*sptr++ = '\'';
 		*sptr = 0;
 		return sptr;
@@ -1461,7 +1461,7 @@ UOSInt DB::DBUtil::SDBTSLeng(const Data::Timestamp &ts, SQLType sqlType)
 	case DB::SQLType::MySQL:
 		return 28;
 	case DB::SQLType::PostgreSQL:
-		return 28;
+		return 33;
 	default:
 	case DB::SQLType::WBEM:
 	case DB::SQLType::Unknown:

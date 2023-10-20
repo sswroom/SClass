@@ -692,6 +692,14 @@ void DB::PostgreSQLConn::InitConnection()
 		}
 		this->CloseReader(r);
 	}
+	if (r.Set(this->ExecuteReader(CSTR("select now()"))))
+	{
+		if (r->ReadNext())
+		{
+			this->tzQhr = r->GetTimestamp(0).GetTimeZoneQHR();
+		}
+		this->CloseReader(r);
+	}
 }
 
 DB::PostgreSQLConn::PostgreSQLConn(NotNullPtr<Text::String> server, UInt16 port, Text::String *uid, Text::String *pwd, NotNullPtr<Text::String> database, NotNullPtr<IO::LogTool> log) : DBConn(server)
