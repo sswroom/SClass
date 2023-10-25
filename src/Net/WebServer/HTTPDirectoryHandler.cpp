@@ -780,8 +780,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::DoFileRequest(NotNullPtr<Net::WebServ
 	IO::Path::PathType pt = IO::Path::GetPathType({sptr, sptrLen});
 	if (pt == IO::Path::PathType::Unknown)
 	{
-		resp->ResponseError(req, Net::WebStatus::SC_NOT_FOUND);
-		return true;
+		return false;
 	}
 	else if (pt == IO::Path::PathType::Directory)
 	{
