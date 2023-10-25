@@ -41,7 +41,6 @@ namespace SSWR
 
 			NotNullPtr<UI::GUIGroupBox> grpData;
 			NotNullPtr<UI::GUICheckBox> chkNoHeader;
-			NotNullPtr<UI::GUICheckBox> chkLocalTZ;
 			NotNullPtr<UI::GUILabel> lblDataFile;
 			NotNullPtr<UI::GUITextBox> txtDataFile;
 			NotNullPtr<UI::GUIButton> btnDataFile;

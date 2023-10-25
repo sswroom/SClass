@@ -27,6 +27,7 @@ namespace DB
 		virtual void CloseReader(NotNullPtr<DBReader> r) = 0;
 		virtual void GetLastErrorMsg(NotNullPtr<Text::StringBuilderUTF8> str) = 0;
 		virtual void Reconnect() = 0;
+		virtual Int8 GetTzQhr() const;
 
 		virtual UOSInt GetDatabaseNames(NotNullPtr<Data::ArrayListNN<Text::String>> arr);
 		virtual void ReleaseDatabaseNames(NotNullPtr<Data::ArrayListNN<Text::String>> arr);

@@ -387,72 +387,19 @@ void __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnSQLFileClicked(void *userObj)
 	if (me->currDB && me->currDB->IsDBTool())
 	{
 		DB::ReadingDBTool *db = (DB::ReadingDBTool*)me->currDB;
-		NotNullPtr<Text::String> fileName;
 		{
 			UI::FileDialog dlg(L"SSWR", L"AVIRead", L"DBManagerSQLFile", false);
 			dlg.SetAllowMultiSel(false);
 			dlg.AddFilter(CSTR("*.sql"), CSTR("SQL file"));
 			if (dlg.ShowDialog(me->GetHandle()))
 			{
-				fileName = dlg.GetFileName()->Clone();
+				me->RunSQLFile(db, dlg.GetFileName());
 			}
 			else
 			{
 				return;
 			}
 		}
-		me->lvSQLResult->ClearAll();
-		me->lvSQLResult->ChangeColumnCnt(1);
-		me->lvSQLResult->AddColumn(CSTR("Row Changed"), 100);
-		me->lvSQLResult->AddItem(CSTR("0"), 0);
-		me->ui->ProcessMessages();
-		Text::StringBuilderUTF8 sb;
-		UOSInt rowsChanged = 0;
-		Int64 lastShowTime = Data::DateTimeUtil::GetCurrTimeMillis();
-		Int64 t;
-		{
-			IO::FileStream fs(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
-			fileName->Release();
-			DB::SQLFileReader reader(fs, db->GetSQLType(), true);
-			OSInt thisRows;
-			while (reader.NextSQL(sb))
-			{
-				NotNullPtr<DB::DBReader> r;
-				if (r.Set(db->ExecuteReader(sb.ToCString())))
-				{
-					if (r->ColCount() == 0)
-					{
-						thisRows = r->GetRowChanged();
-						if (thisRows > 0)
-						{
-							rowsChanged += (UOSInt)thisRows;
-						}
-						t = Data::DateTimeUtil::GetCurrTimeMillis();
-						if (t - lastShowTime >= 1000)
-						{
-							lastShowTime = t;							
-							sb.ClearStr();
-							sb.AppendUOSInt(rowsChanged);
-							me->lvSQLResult->SetSubItem(0, 0, sb.ToCString());
-							me->ui->ProcessMessages();
-						}
-					}
-					me->currDB->CloseReader(r);
-				}
-				else
-				{
-					sb.ClearStr();
-					me->currDB->GetLastErrorMsg(sb);
-					UI::MessageDialog::ShowDialog(sb.ToCString(), CSTR("DB Manager"), me);
-					break;
-				}
-				sb.ClearStr();
-			}
-		}
-		sb.ClearStr();
-		sb.AppendUOSInt(rowsChanged);
-		me->lvSQLResult->SetSubItem(0, 0, sb.ToCString());
-		me->ui->ProcessMessages();
 	}
 }
 
@@ -495,18 +442,31 @@ void __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnSvrConnKillClicked(void *user
 void __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnFileHandler(void *userObj, NotNullPtr<Text::String> *files, UOSInt nFiles)
 {
 	SSWR::AVIRead::AVIRDBManagerForm *me = (SSWR::AVIRead::AVIRDBManagerForm*)userObj;
+	DB::ReadingDBTool *db = 0;
+	if (me->currDB && me->currDB->IsDBTool())
+	{
+		db = (DB::ReadingDBTool*)me->currDB;
+	}
+	Bool isSQLTab = (me->tcMain->GetSelectedPage() == me->tpSQL);
 	UOSInt i = 0;
 	while (i < nFiles)
 	{
-		IO::StmData::FileData fd(files[i], false);
-		DB::ReadingDB *db = (DB::ReadingDB*)me->core->GetParserList()->ParseFileType(fd, IO::ParserType::ReadingDB);
-		if (db)
+		if (isSQLTab && db && files[i]->EndsWith(UTF8STRC(".sql")))
 		{
-			DB::DBManagerCtrl *ctrl = DB::DBManagerCtrl::CreateFromFile(db, files[i], me->log, me->core->GetSocketFactory(), me->core->GetParserList());
-			me->dbList.Add(ctrl);
-			Text::StringBuilderUTF8 sb;
-			ctrl->GetConnName(sb);
-			me->lbConn->AddItem(sb.ToCString(), ctrl);
+			me->RunSQLFile(db, files[i]);
+		}
+		else
+		{
+			IO::StmData::FileData fd(files[i], false);
+			DB::ReadingDB *db = (DB::ReadingDB*)me->core->GetParserList()->ParseFileType(fd, IO::ParserType::ReadingDB);
+			if (db)
+			{
+				DB::DBManagerCtrl *ctrl = DB::DBManagerCtrl::CreateFromFile(db, files[i], me->log, me->core->GetSocketFactory(), me->core->GetParserList());
+				me->dbList.Add(ctrl);
+				Text::StringBuilderUTF8 sb;
+				ctrl->GetConnName(sb);
+				me->lbConn->AddItem(sb.ToCString(), ctrl);
+			}
 		}
 		i++;
 	}
@@ -824,6 +784,61 @@ void SSWR::AVIRead::AVIRDBManagerForm::UpdateSvrConnList()
 		}
 		((DB::ReadingDBTool*)this->currDB)->FreeConnectionInfo(&conns);
 	}
+}
+
+void SSWR::AVIRead::AVIRDBManagerForm::RunSQLFile(DB::ReadingDBTool *db, NotNullPtr<Text::String> fileName)
+{
+	this->lvSQLResult->ClearAll();
+	this->lvSQLResult->ChangeColumnCnt(1);
+	this->lvSQLResult->AddColumn(CSTR("Row Changed"), 100);
+	this->lvSQLResult->AddItem(CSTR("0"), 0);
+	this->ui->ProcessMessages();
+	Text::StringBuilderUTF8 sb;
+	UOSInt rowsChanged = 0;
+	Int64 lastShowTime = Data::DateTimeUtil::GetCurrTimeMillis();
+	Int64 t;
+	{
+		IO::FileStream fs(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+		DB::SQLFileReader reader(fs, db->GetSQLType(), true);
+		OSInt thisRows;
+		while (reader.NextSQL(sb))
+		{
+			NotNullPtr<DB::DBReader> r;
+			if (r.Set(db->ExecuteReader(sb.ToCString())))
+			{
+				if (r->ColCount() == 0)
+				{
+					thisRows = r->GetRowChanged();
+					if (thisRows > 0)
+					{
+						rowsChanged += (UOSInt)thisRows;
+					}
+					t = Data::DateTimeUtil::GetCurrTimeMillis();
+					if (t - lastShowTime >= 1000)
+					{
+						lastShowTime = t;							
+						sb.ClearStr();
+						sb.AppendUOSInt(rowsChanged);
+						this->lvSQLResult->SetSubItem(0, 0, sb.ToCString());
+						this->ui->ProcessMessages();
+					}
+				}
+				this->currDB->CloseReader(r);
+			}
+			else
+			{
+				sb.ClearStr();
+				this->currDB->GetLastErrorMsg(sb);
+				UI::MessageDialog::ShowDialog(sb.ToCString(), CSTR("DB Manager"), this);
+				break;
+			}
+			sb.ClearStr();
+		}
+	}
+	sb.ClearStr();
+	sb.AppendUOSInt(rowsChanged);
+	this->lvSQLResult->SetSubItem(0, 0, sb.ToCString());
+	this->ui->ProcessMessages();
 }
 
 Data::Class *SSWR::AVIRead::AVIRDBManagerForm::CreateTableClass(Text::CString schemaName, Text::CString tableName)

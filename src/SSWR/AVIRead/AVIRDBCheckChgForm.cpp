@@ -201,11 +201,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::LoadDataFile(Text::CStringNN fileName)
 		return false;
 	}
 	DEL_CLASS(table);
-	Int8 csvTZ = 0;
-	if (this->chkLocalTZ->IsChecked())
-	{
-		csvTZ = Data::DateTimeUtil::GetLocalTzQhr();
-	}
+	Int8 csvTZ = this->db->GetTzQhr();
 	Bool noHeader = this->chkNoHeader->IsChecked();
 	if (fileName.EndsWithICase(UTF8STRC(".csv")))
 	{
@@ -309,11 +305,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::CheckDataFile()
 			return false;
 		}
 	}
-	Int8 csvTZ = 0;
-	if (this->chkLocalTZ->IsChecked())
-	{
-		csvTZ = Data::DateTimeUtil::GetLocalTzQhr();
-	}
+	Int8 csvTZ = this->db->GetTzQhr();
 	this->dataFileTz = csvTZ;
 	Text::StringBuilderUTF8 sbIgnore;
 	UOSInt nIgnore;
@@ -1920,8 +1912,6 @@ SSWR::AVIRead::AVIRDBCheckChgForm::AVIRDBCheckChgForm(UI::GUIClientControl *pare
 	this->grpData->SetRect(0, 72, 800, 192, false);
 	NEW_CLASSNN(this->chkNoHeader, UI::GUICheckBox(ui, this->grpData.Ptr(), CSTR("CSV No Header"), false));
 	this->chkNoHeader->SetRect(100, 0, 200, 23, false);
-	NEW_CLASSNN(this->chkLocalTZ, UI::GUICheckBox(ui, this->grpData.Ptr(), CSTR("Local Timezone"), false));
-	this->chkLocalTZ->SetRect(300, 0, 200, 23, false);
 	NEW_CLASSNN(this->lblDataFile, UI::GUILabel(ui, this->grpData.Ptr(), CSTR("Data File")));
 	this->lblDataFile->SetRect(0, 24, 100, 23, false);
 	NEW_CLASSNN(this->txtDataFile, UI::GUITextBox(ui, this->grpData.Ptr(), CSTR("")));

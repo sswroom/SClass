@@ -125,6 +125,7 @@ namespace SSWR
 			static void UpdateResult(NotNullPtr<DB::DBReader> r, UI::GUIListView *lv);
 			void UpdateVariableList();
 			void UpdateSvrConnList();
+			void RunSQLFile(DB::ReadingDBTool *db, NotNullPtr<Text::String> fileName);
 
 			Data::Class *CreateTableClass(Text::CString schemaName, Text::CString tableName);
 			void CopyTableCreate(DB::SQLType sqlType, Bool axisAware);

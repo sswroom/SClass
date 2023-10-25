@@ -20,6 +20,11 @@ UOSInt DB::ReadingDB::QuerySchemaNames(NotNullPtr<Data::ArrayListNN<Text::String
 	return 0;
 }
 
+Int8 DB::ReadingDB::GetTzQhr() const
+{
+	return Data::DateTimeUtil::GetLocalTzQhr();
+}
+
 UOSInt DB::ReadingDB::GetDatabaseNames(NotNullPtr<Data::ArrayListNN<Text::String>> arr)
 {
 	return 0;
