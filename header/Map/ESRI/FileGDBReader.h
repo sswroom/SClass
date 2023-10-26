@@ -53,7 +53,7 @@ namespace Map
 			virtual Bool GetUUID(UOSInt colIndex, NotNullPtr<Data::UUID> uuid);
 			virtual Bool GetVariItem(UOSInt colIndex, NotNullPtr<Data::VariItem> item);
 
-			virtual NotNullPtr<Data::VariItem> GetNewItem(const UTF8Char *name);
+			virtual NotNullPtr<Data::VariItem> GetNewItem(Text::CStringNN name);
 
 			virtual Bool IsNull(UOSInt colIndex);
 			virtual UTF8Char *GetName(UOSInt colIndex, UTF8Char *buff);

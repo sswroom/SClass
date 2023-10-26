@@ -87,7 +87,7 @@ DB::DBReader *DB::CSVFile::QueryTableData(Text::CString schemaName, Text::CStrin
 		{
 			NEW_CLASS(rdr, IO::StreamReader(stm, codePage));
 		}
-		NEW_CLASS(r, DB::CSVReader(0, rdr, this->noHeader, this->nullIfEmpty));
+		NEW_CLASS(r, DB::CSVReader(0, rdr, this->noHeader, this->nullIfEmpty, condition));
 		return r;
 	}
 	IO::Reader *rdr;
@@ -104,7 +104,7 @@ DB::DBReader *DB::CSVFile::QueryTableData(Text::CString schemaName, Text::CStrin
 		{
 			NEW_CLASS(rdr, IO::StreamReader(fs, codePage));
 		}
-		NEW_CLASS(r, DB::CSVReader(fs.Ptr(), rdr, this->noHeader, this->nullIfEmpty));
+		NEW_CLASS(r, DB::CSVReader(fs.Ptr(), rdr, this->noHeader, this->nullIfEmpty, condition));
 		return r;
 	}
 	else
@@ -160,7 +160,7 @@ void DB::CSVFile::SetNullIfEmpty(Bool nullIfEmpty)
 	this->nullIfEmpty = nullIfEmpty;
 }
 
-DB::CSVReader::CSVReader(IO::Stream *stm, IO::Reader *rdr, Bool noHeader, Bool nullIfEmpty)
+DB::CSVReader::CSVReader(IO::Stream *stm, IO::Reader *rdr, Bool noHeader, Bool nullIfEmpty, Data::QueryConditions *condition)
 {
 	this->stm = stm;
 	this->rdr = rdr;
@@ -172,6 +172,7 @@ DB::CSVReader::CSVReader(IO::Stream *stm, IO::Reader *rdr, Bool noHeader, Bool n
 	this->cols = MemAlloc(UTF8Char*, 128);
 	this->colSize = MemAlloc(UOSInt, 128);
 	this->hdrs = MemAlloc(Text::PString, 128);
+	this->condition = condition;
 
 	UTF8Char *sptr;
 	UTF8Char *currPtr;
@@ -288,99 +289,104 @@ Bool DB::CSVReader::ReadNext()
 		}
 		return true;
 	}
-
 	while (true)
 	{
-		sptr = this->rdr->ReadLine(this->row, this->rowBuffSize - 1);
-		if (sptr == 0)
+		while (true)
 		{
-			this->nCol = 0;
-			return false;
-		}
-		else if (sptr != this->row)
-		{
-			break;
-		}
-	}
-
-	nCol = 1;
-	cols[0] = this->row;
-
-	currPtr = this->row;
-	colStart = true;
-	while (true)
-	{
-		c = *currPtr;
-		if (c == 0)
-		{
-			if (quote)
+			sptr = this->rdr->ReadLine(this->row, this->rowBuffSize - 1);
+			if (sptr == 0)
 			{
-				sptr = this->rdr->GetLastLineBreak(currPtr);
-				sptr = this->rdr->ReadLine(sptr, this->rowBuffSize - (UOSInt)(sptr - this->row) - 1);
-				if (sptr == 0)
-					break;
-				if (!this->rdr->IsLineBreak() && (UOSInt)(sptr - this->row) > this->rowBuffSize - 6)
-				{
-					UTF8Char *newRow = MemAlloc(UTF8Char, this->rowBuffSize << 1);
-					MemCopyNO(newRow, this->row, this->rowBuffSize);
-					this->rowBuffSize <<= 1;
-					sptr = &newRow[(sptr - this->row)];
-					currPtr = &newRow[(currPtr - this->row)];
-					UOSInt i = nCol;
-					while (i-- > 0)
-					{
-						cols[i] = &newRow[(cols[i] - this->row)];
-					}
-					MemFree(this->row);
-					this->row = newRow;
-				}
+				this->nCol = 0;
+				return false;
 			}
-			else
+			else if (sptr != this->row)
 			{
-				this->colSize[nCol - 1] = (UOSInt)(currPtr - cols[nCol - 1]);
 				break;
 			}
 		}
-		else if (c == '"')
+
+		nCol = 1;
+		cols[0] = this->row;
+
+		currPtr = this->row;
+		colStart = true;
+		while (true)
 		{
-			if (quote)
+			c = *currPtr;
+			if (c == 0)
 			{
-				if (currPtr[1] == '"')
+				if (quote)
 				{
-					currPtr += 2;
+					sptr = this->rdr->GetLastLineBreak(currPtr);
+					sptr = this->rdr->ReadLine(sptr, this->rowBuffSize - (UOSInt)(sptr - this->row) - 1);
+					if (sptr == 0)
+						break;
+					if (!this->rdr->IsLineBreak() && (UOSInt)(sptr - this->row) > this->rowBuffSize - 6)
+					{
+						UTF8Char *newRow = MemAlloc(UTF8Char, this->rowBuffSize << 1);
+						MemCopyNO(newRow, this->row, this->rowBuffSize);
+						this->rowBuffSize <<= 1;
+						sptr = &newRow[(sptr - this->row)];
+						currPtr = &newRow[(currPtr - this->row)];
+						UOSInt i = nCol;
+						while (i-- > 0)
+						{
+							cols[i] = &newRow[(cols[i] - this->row)];
+						}
+						MemFree(this->row);
+						this->row = newRow;
+					}
 				}
 				else
 				{
-					quote = false;
+					this->colSize[nCol - 1] = (UOSInt)(currPtr - cols[nCol - 1]);
+					break;
+				}
+			}
+			else if (c == '"')
+			{
+				if (quote)
+				{
+					if (currPtr[1] == '"')
+					{
+						currPtr += 2;
+					}
+					else
+					{
+						quote = false;
+						currPtr++;
+					}
+				}
+				else if (colStart)
+				{
+					quote = true;
+					colStart = false;
+					currPtr++;
+				}
+				else
+				{
 					currPtr++;
 				}
 			}
-			else if (colStart)
+			else if ((c == ',') && (quote == 0))
 			{
-				quote = true;
-				colStart = false;
-				currPtr++;
+				this->colSize[nCol - 1] = (UOSInt)(currPtr - cols[nCol - 1]);
+				*currPtr++ = 0;
+				cols[nCol++] = currPtr;
+				colStart = true;
 			}
 			else
 			{
+				colStart = false;
 				currPtr++;
 			}
 		}
-		else if ((c == ',') && (quote == 0))
+		if (this->condition == 0 || this->condition->IsValid(*this))
 		{
-			this->colSize[nCol - 1] = (UOSInt)(currPtr - cols[nCol - 1]);
-			*currPtr++ = 0;
-			cols[nCol++] = currPtr;
-			colStart = true;
-		}
-		else
-		{
-			colStart = false;
-			currPtr++;
+			this->nCol = nCol;
+			return true;
 		}
 	}
-	this->nCol = nCol;
-	return true;
 }
 
 UOSInt DB::CSVReader::ColCount()
@@ -952,4 +958,24 @@ Bool DB::CSVReader::GetColDef(UOSInt colIndex, NotNullPtr<DB::ColDef> colDef)
 	colDef->SetDefVal(CSTR_NULL);
 	colDef->SetAttr(CSTR_NULL);
 	return true;
+}
+
+NotNullPtr<Data::VariItem> DB::CSVReader::GetNewItem(Text::CStringNN name)
+{
+	UOSInt i = this->nHdr;
+	while (i-- > 0)
+	{
+		if (this->hdrs[i].Equals(name))
+		{
+			if (i >= this->nCol)
+			{
+				return Data::VariItem::NewNull();
+			}
+			else
+			{
+				return Data::VariItem::NewStrSlow(this->cols[i]);
+			}
+		}
+	}
+	return Data::VariItem::NewNull();
 }

@@ -30,7 +30,7 @@ Bool Data::QueryConditions::FieldCondition::IsValid(NotNullPtr<Data::VariObject>
 
 Bool Data::QueryConditions::FieldCondition::IsValid(NotNullPtr<Data::ObjectGetter> getter)
 {
-	NotNullPtr<Data::VariItem> item = getter->GetNewItem(this->fieldName->v);
+	NotNullPtr<Data::VariItem> item = getter->GetNewItem(this->fieldName->ToCString());
 	Bool ret = this->TestValid(item);
 	item.Delete();
 	return ret;
@@ -1600,6 +1600,7 @@ Data::QueryConditions *Data::QueryConditions::ParseStr(Text::CStringNN s, DB::SQ
 			{
 				cond->StrEquals(sbField.ToCString(), item->GetItemValue().str->ToCString());
 			}
+			item.Delete();
 		}
 		else
 		{

@@ -1306,13 +1306,12 @@ Bool Map::ESRI::FileGDBReader::GetVariItem(UOSInt colIndex, NotNullPtr<Data::Var
 	return true;
 }
 
-NotNullPtr<Data::VariItem> Map::ESRI::FileGDBReader::GetNewItem(const UTF8Char *name)
+NotNullPtr<Data::VariItem> Map::ESRI::FileGDBReader::GetNewItem(Text::CStringNN name)
 {
 	UOSInt colIndex = INVALID_INDEX;
 	UOSInt fieldIndex = INVALID_INDEX;
 	UOSInt i;
 	UOSInt j;
-	UOSInt nameLen = Text::StrCharCnt(name);
 	FileGDBFieldInfo *field;
 	if (this->columnIndices)
 	{
@@ -1321,7 +1320,7 @@ NotNullPtr<Data::VariItem> Map::ESRI::FileGDBReader::GetNewItem(const UTF8Char *
 		{
 			j = this->columnIndices->GetItem(i);
 			field = this->tableInfo->fields->GetItem(j);
-			if (field && field->name->EqualsICase(name, nameLen))
+			if (field && field->name->EqualsICase(name))
 			{
 				fieldIndex = j;
 				colIndex = i;
@@ -1335,7 +1334,7 @@ NotNullPtr<Data::VariItem> Map::ESRI::FileGDBReader::GetNewItem(const UTF8Char *
 		while (i-- > 0)
 		{
 			field = this->tableInfo->fields->GetItem(i);
-			if (field && field->name->EqualsICase(name, nameLen))
+			if (field && field->name->EqualsICase(name))
 			{
 				fieldIndex = i;
 				colIndex = i;

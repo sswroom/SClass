@@ -36,7 +36,7 @@ namespace DB
 		void SetNullIfEmpty(Bool nullIfEmpty);
 	};
 
-	class CSVReader : public DB::DBReader
+	class CSVReader : public DB::DBReader, public Data::ObjectGetter
 	{
 	private:
 		IO::Stream *stm;
@@ -51,9 +51,10 @@ namespace DB
 		Text::PString *hdrs;
 		Bool noHeader;
 		Bool nullIfEmpty;
+		Data::QueryConditions *condition;
 
 	public:
-		CSVReader(IO::Stream *stm, IO::Reader *rdr, Bool noHeader, Bool nullIfEmpty);
+		CSVReader(IO::Stream *stm, IO::Reader *rdr, Bool noHeader, Bool nullIfEmpty, Data::QueryConditions *condition);
 		virtual ~CSVReader();
 
 		virtual Bool ReadNext();
@@ -78,6 +79,8 @@ namespace DB
 		virtual Bool IsNull(UOSInt colIndex);
 		virtual DB::DBUtil::ColType GetColType(UOSInt colIndex, OptOut<UOSInt> colSize);
 		virtual Bool GetColDef(UOSInt colIndex, NotNullPtr<DB::ColDef> colDef);
+
+		virtual NotNullPtr<Data::VariItem> GetNewItem(Text::CStringNN name);
 	};
 }
 #endif

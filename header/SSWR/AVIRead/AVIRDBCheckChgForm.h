@@ -52,6 +52,8 @@ namespace SSWR
 			NotNullPtr<UI::GUIComboBox> cboNullCol;
 			NotNullPtr<UI::GUILabel> lblIgnoreCol;
 			NotNullPtr<UI::GUITextBox> txtIgnoreCol;
+			NotNullPtr<UI::GUILabel> lblDataFilter;
+			NotNullPtr<UI::GUITextBox> txtDataFilter;
 			NotNullPtr<UI::GUIButton> btnDataCheck;
 
 			NotNullPtr<UI::GUILabel> lblDataFileRow;

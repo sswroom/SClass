@@ -9,7 +9,7 @@ namespace Data
 	public:
 		virtual ~ObjectGetter() {};
 
-		virtual NotNullPtr<VariItem> GetNewItem(const UTF8Char *name) = 0;
+		virtual NotNullPtr<VariItem> GetNewItem(Text::CStringNN name) = 0;
 	};
 }
 #endif

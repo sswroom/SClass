@@ -217,6 +217,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::LoadDataFile(Text::CStringNN fileName)
 		}
 		csv->CloseReader(r);
 		this->txtDataFile->SetText(fileName);
+		SDEL_CLASS(this->dataFile);
 		this->dataFile = csv;
 		this->dataFileNoHeader = noHeader;
 		this->dataFileTz = csvTZ;
@@ -293,14 +294,27 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::CheckDataFile()
 		UI::MessageDialog::ShowDialog(CSTR("Error in getting table name"), CSTR("Check Table Changes"), this);
 		return false;
 	}
-	Data::QueryConditions *dbCond = 0;
+	Data::QueryConditions *srcDBCond = 0;
+	Data::QueryConditions *dataDBCond = 0;
 	Text::StringBuilderUTF8 sbFilter;
 	this->txtSrcFilter->GetText(sbFilter);
 	if (sbFilter.GetLength() > 0)
 	{
-		dbCond = Data::QueryConditions::ParseStr(sbFilter.ToCString(), this->GetDBSQLType());
-		if (dbCond == 0)
+		srcDBCond = Data::QueryConditions::ParseStr(sbFilter.ToCString(), this->GetDBSQLType());
+		if (srcDBCond == 0)
 		{
+			UI::MessageDialog::ShowDialog(CSTR("Error in parsing source filter"), CSTR("Check Table Changes"), this);
+			return false;
+		}
+	}
+	sbFilter.ClearStr();
+	this->txtDataFilter->GetText(sbFilter);
+	if (sbFilter.GetLength() > 0)
+	{
+		dataDBCond = Data::QueryConditions::ParseStr(sbFilter.ToCString(), this->GetDBSQLType());
+		if (dataDBCond == 0)
+		{
+			SDEL_CLASS(srcDBCond);
 			UI::MessageDialog::ShowDialog(CSTR("Error in parsing data filter"), CSTR("Check Table Changes"), this);
 			return false;
 		}
@@ -322,7 +336,8 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::CheckDataFile()
 	DB::TableDef *table = this->db->GetTableDef(this->schema, this->table);
 	if (table == 0)
 	{
-		SDEL_CLASS(dbCond);
+		SDEL_CLASS(srcDBCond);
+		SDEL_CLASS(dataDBCond);
 		UI::MessageDialog::ShowDialog(CSTR("Error in getting table structure"), CSTR("Check Table Changes"), this);
 		return false;
 	}
@@ -342,9 +357,10 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::CheckDataFile()
 	Text::String** rowData;
 	Bool found;
 	NotNullPtr<DB::DBReader> r;
-	if (!r.Set(this->dataFile->QueryTableData(CSTR_NULL, sbTable.ToCString(), 0, 0, 0, CSTR_NULL, 0)))
+	if (!r.Set(this->dataFile->QueryTableData(CSTR_NULL, sbTable.ToCString(), 0, 0, 0, CSTR_NULL, dataDBCond)))
 	{
-		SDEL_CLASS(dbCond);
+		SDEL_CLASS(srcDBCond);
+		SDEL_CLASS(dataDBCond);
 		DEL_CLASS(table);
 		UI::MessageDialog::ShowDialog(CSTR("Error in reading data file"), CSTR("Check Table Changes"), this);
 		return false;
@@ -397,7 +413,8 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::CheckDataFile()
 				sb.AppendC(UTF8STRC(" not found"));
 				this->dataFile->CloseReader(r);
 				DEL_CLASS(table);
-				SDEL_CLASS(dbCond);
+				SDEL_CLASS(srcDBCond);
+				SDEL_CLASS(dataDBCond);
 				UI::MessageDialog::ShowDialog(sb.ToCString(), CSTR("Check Table Changes"), this);
 				return false;
 			}
@@ -413,7 +430,8 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::CheckDataFile()
 			UI::MessageDialog::ShowDialog(CSTR("Column Count does not match"), CSTR("Check Table Changes"), this);
 			this->dataFile->CloseReader(r);
 			DEL_CLASS(table);
-			SDEL_CLASS(dbCond);
+			SDEL_CLASS(srcDBCond);
+			SDEL_CLASS(dataDBCond);
 			return false;
 		}
 	}
@@ -424,7 +442,8 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::CheckDataFile()
 			UI::MessageDialog::ShowDialog(CSTR("Key Column not found in data file"), CSTR("Check Table Changes"), this);
 			this->dataFile->CloseReader(r);
 			DEL_CLASS(table);
-			SDEL_CLASS(dbCond);
+			SDEL_CLASS(srcDBCond);
+			SDEL_CLASS(dataDBCond);
 			return false;
 		}
 /*		i = 0;
@@ -439,6 +458,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::CheckDataFile()
 				this->dataFile->CloseReader(r);
 				DEL_CLASS(table);
 				SDEL_CLASS(dbCond);
+				SDEL_CLASS(dataDBCond);
 				return false;
 			}
 			i++;
@@ -449,6 +469,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::CheckDataFile()
 	UOSInt updateCnt = 0;
 	UOSInt newRowCnt = 0;
 	UOSInt delRowCnt = 0;
+	Bool succ = true;
 	Text::String *s;
 	Text::String *id;
 	while (r->ReadNext())
@@ -535,6 +556,10 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::CheckDataFile()
 							SDEL_STRING(rowData[i]);
 						}
 						MemFree(rowData);
+
+						UI::MessageDialog::ShowDialog(CSTR("Data File Key duplicate"), CSTR("Check Table Changes"), this);
+						succ = false;
+						break;
 					}
 				}
 			}
@@ -542,10 +567,9 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::CheckDataFile()
 	}
 	this->dataFile->CloseReader(r);
 
-	Bool succ = true;
-	if (keyCol != INVALID_INDEX)
+	if (succ && keyCol != INVALID_INDEX)
 	{
-		if (!r.Set(this->db->QueryTableData(this->schema, this->table, 0, 0, 0, CSTR_NULL, dbCond)))
+		if (!r.Set(this->db->QueryTableData(this->schema, this->table, 0, 0, 0, CSTR_NULL, srcDBCond)))
 		{
 			UI::MessageDialog::ShowDialog(CSTR("Error in getting table data"), CSTR("Check Table Changes"), this);
 			succ = false;
@@ -558,13 +582,17 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::CheckDataFile()
 				id = r->GetNewStr(keyCol);
 				if (id == 0)
 				{
-					UI::MessageDialog::ShowDialog(CSTR("Key is null"), CSTR("Check Table Changes"), this);
+					UI::MessageDialog::ShowDialog(CSTR("Source Key is null"), CSTR("Check Table Changes"), this);
 					succ = false;
 					break;
 				}
 				if (idList.SortedIndexOf(id) >= 0)
 				{
-					UI::MessageDialog::ShowDialog(CSTR("Key duplicate"), CSTR("Check Table Changes"), this);
+					sbFilter.ClearStr();
+					sbFilter.AppendC(UTF8STRC("Source Key duplicate ("));
+					sbFilter.Append(id);
+					sbFilter.AppendUTF8Char(')');
+					UI::MessageDialog::ShowDialog(sbFilter.ToCString(), CSTR("Check Table Changes"), this);
 					succ = false;
 					break;
 				}
@@ -773,7 +801,8 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::CheckDataFile()
 		MemFree(rowData);
 	}
 	DEL_CLASS(table);
-	SDEL_CLASS(dbCond);
+	SDEL_CLASS(srcDBCond);
+	SDEL_CLASS(dataDBCond);
 	if (succ)
 	{
 		sptr = Text::StrUOSInt(sbuff, dataFileRowCnt);
@@ -810,16 +839,28 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool ax
 		UI::MessageDialog::ShowDialog(CSTR("Error in getting table name"), CSTR("Check Table Changes"), this);
 		return false;
 	}
-	Data::QueryConditions *dbCond = 0;
+	Data::QueryConditions *srcDBCond = 0;
+	Data::QueryConditions *dataDBCond = 0;
 	Text::StringBuilderUTF8 sbFilter;
 	this->txtSrcFilter->GetText(sbFilter);
 	if (sbFilter.GetLength() > 0)
 	{
-		dbCond = Data::QueryConditions::ParseStr(sbFilter.ToCString(), this->GetDBSQLType());
-		if (dbCond == 0)
+		srcDBCond = Data::QueryConditions::ParseStr(sbFilter.ToCString(), this->GetDBSQLType());
+		if (srcDBCond == 0)
+		{
+			UI::MessageDialog::ShowDialog(CSTR("Error in parsing source filter"), CSTR("Check Table Changes"), this);
+			return false;
+		}
+	}
+	sbFilter.ClearStr();
+	this->txtDataFilter->GetText(sbFilter);
+	if (sbFilter.GetLength() > 0)
+	{
+		dataDBCond = Data::QueryConditions::ParseStr(sbFilter.ToCString(), this->GetDBSQLType());
+		if (dataDBCond == 0)
 		{
 			UI::MessageDialog::ShowDialog(CSTR("Error in parsing data filter"), CSTR("Check Table Changes"), this);
-			SDEL_CLASS(dbCond);
+			SDEL_CLASS(srcDBCond);
 			return false;
 		}
 	}
@@ -839,7 +880,8 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool ax
 	if (table == 0)
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Error in getting table structure"), CSTR("Check Table Changes"), this);
-		SDEL_CLASS(dbCond);
+		SDEL_CLASS(srcDBCond);
+		SDEL_CLASS(dataDBCond);
 		return false;
 	}
 	Bool succ = true;
@@ -897,7 +939,8 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool ax
 	if (!r.Set(this->dataFile->QueryTableData(CSTR_NULL, sbTable.ToCString(), 0, 0, 0, CSTR_NULL, 0)))
 	{
 		DEL_CLASS(table);
-		SDEL_CLASS(dbCond);
+		SDEL_CLASS(srcDBCond);
+		SDEL_CLASS(dataDBCond);
 		UI::MessageDialog::ShowDialog(CSTR("Error in reading data file"), CSTR("Check Table Changes"), this);
 		return false;
 	}
@@ -949,7 +992,8 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool ax
 				sb.AppendC(UTF8STRC(" not found"));
 				this->dataFile->CloseReader(r);
 				DEL_CLASS(table);
-				SDEL_CLASS(dbCond);
+				SDEL_CLASS(srcDBCond);
+				SDEL_CLASS(dataDBCond);
 				UI::MessageDialog::ShowDialog(sb.ToCString(), CSTR("Check Table Changes"), this);
 				return false;
 			}
@@ -965,7 +1009,8 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool ax
 			UI::MessageDialog::ShowDialog(CSTR("Column Count does not match"), CSTR("Check Table Changes"), this);
 			this->dataFile->CloseReader(r);
 			DEL_CLASS(table);
-			SDEL_CLASS(dbCond);
+			SDEL_CLASS(srcDBCond);
+			SDEL_CLASS(dataDBCond);
 			return false;
 		}
 	}
@@ -976,7 +1021,8 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool ax
 			UI::MessageDialog::ShowDialog(CSTR("Key Column not found in data file"), CSTR("Check Table Changes"), this);
 			this->dataFile->CloseReader(r);
 			DEL_CLASS(table);
-			SDEL_CLASS(dbCond);
+			SDEL_CLASS(srcDBCond);
+			SDEL_CLASS(dataDBCond);
 			return false;
 		}
 /*		i = 0;
@@ -990,7 +1036,8 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool ax
 				UI::MessageDialog::ShowDialog(CSTRP(sbuff, sptr), CSTR("Check Table Changes"), this);
 				this->dataFile->CloseReader(r);
 				DEL_CLASS(table);
-				SDEL_CLASS(dbCond);
+				SDEL_CLASS(srcDBCond);
+				SDEL_CLASS(dataDBCond);
 				return false;
 			}
 			i++;
@@ -1150,7 +1197,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool ax
 
 	if (keyCol != INVALID_INDEX)
 	{
-		if (!r.Set(this->db->QueryTableData(this->schema, this->table, 0, 0, 0, CSTR_NULL, dbCond)))
+		if (!r.Set(this->db->QueryTableData(this->schema, this->table, 0, 0, 0, CSTR_NULL, srcDBCond)))
 		{
 			UI::MessageDialog::ShowDialog(CSTR("Error in getting table data"), CSTR("Check Table Changes"), this);
 		}
@@ -1655,7 +1702,8 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool ax
 		}
 		MemFree(rowData);
 	}
-	SDEL_CLASS(dbCond);
+	SDEL_CLASS(srcDBCond);
+	SDEL_CLASS(dataDBCond);
 	DEL_CLASS(table);
 	return succ;
 }
@@ -1909,7 +1957,7 @@ SSWR::AVIRead::AVIRDBCheckChgForm::AVIRDBCheckChgForm(UI::GUIClientControl *pare
 	NEW_CLASSNN(this->txtSrcFilter, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtSrcFilter->SetRect(100, 48, 200, 23, false);
 	NEW_CLASSNN(this->grpData, UI::GUIGroupBox(ui, this, CSTR("Data Source")));
-	this->grpData->SetRect(0, 72, 800, 192, false);
+	this->grpData->SetRect(0, 72, 800, 216, false);
 	NEW_CLASSNN(this->chkNoHeader, UI::GUICheckBox(ui, this->grpData.Ptr(), CSTR("CSV No Header"), false));
 	this->chkNoHeader->SetRect(100, 0, 200, 23, false);
 	NEW_CLASSNN(this->lblDataFile, UI::GUILabel(ui, this->grpData.Ptr(), CSTR("Data File")));
@@ -1940,39 +1988,43 @@ SSWR::AVIRead::AVIRDBCheckChgForm::AVIRDBCheckChgForm(UI::GUIClientControl *pare
 	this->lblIgnoreCol->SetRect(0, 120, 100, 23, false);
 	NEW_CLASSNN(this->txtIgnoreCol, UI::GUITextBox(ui, this->grpData.Ptr(), CSTR("")));
 	this->txtIgnoreCol->SetRect(100, 120, 300, 23, false);
+	NEW_CLASSNN(this->lblDataFilter, UI::GUILabel(ui, this->grpData.Ptr(), CSTR("Data Filter")));
+	this->lblDataFilter->SetRect(0, 144, 100, 23, false);
+	NEW_CLASSNN(this->txtDataFilter, UI::GUITextBox(ui, this->grpData.Ptr(), CSTR("")));
+	this->txtDataFilter->SetRect(100, 144, 200, 23, false);
 	NEW_CLASSNN(this->btnDataCheck, UI::GUIButton(ui, this->grpData.Ptr(), CSTR("Check")));
-	this->btnDataCheck->SetRect(100, 144, 75, 23, false);
+	this->btnDataCheck->SetRect(100, 168, 75, 23, false);
 	this->btnDataCheck->HandleButtonClick(OnDataCheckClk, this);
 	NEW_CLASSNN(this->lblDataFileRow, UI::GUILabel(ui, this, CSTR("Data Rows")));
-	this->lblDataFileRow->SetRect(0, 264, 100, 23, false);
+	this->lblDataFileRow->SetRect(0, 288, 100, 23, false);
 	NEW_CLASSNN(this->txtDataFileRow, UI::GUITextBox(ui, this, CSTR("0")));
-	this->txtDataFileRow->SetRect(100, 264, 200, 23, false);
+	this->txtDataFileRow->SetRect(100, 288, 200, 23, false);
 	this->txtDataFileRow->SetReadOnly(true);
 	NEW_CLASSNN(this->lblNoChg, UI::GUILabel(ui, this, CSTR("No Changes")));
-	this->lblNoChg->SetRect(0, 288, 100, 23, false);
+	this->lblNoChg->SetRect(0, 312, 100, 23, false);
 	NEW_CLASSNN(this->txtNoChg, UI::GUITextBox(ui, this, CSTR("0")));
-	this->txtNoChg->SetRect(100, 288, 200, 23, false);
+	this->txtNoChg->SetRect(100, 312, 200, 23, false);
 	this->txtNoChg->SetReadOnly(true);
 	NEW_CLASSNN(this->lblUpdated, UI::GUILabel(ui, this, CSTR("Updated rows")));
-	this->lblUpdated->SetRect(0, 312, 100, 23, false);
+	this->lblUpdated->SetRect(0, 336, 100, 23, false);
 	NEW_CLASSNN(this->txtUpdated, UI::GUITextBox(ui, this, CSTR("0")));
-	this->txtUpdated->SetRect(100, 312, 200, 23, false);
+	this->txtUpdated->SetRect(100, 336, 200, 23, false);
 	this->txtUpdated->SetReadOnly(true);
 	NEW_CLASSNN(this->lblNewRow, UI::GUILabel(ui, this, CSTR("New rows")));
-	this->lblNewRow->SetRect(0, 336, 100, 23, false);
+	this->lblNewRow->SetRect(0, 360, 100, 23, false);
 	NEW_CLASSNN(this->txtNewRow, UI::GUITextBox(ui, this, CSTR("0")));
-	this->txtNewRow->SetRect(100, 336, 200, 23, false);
+	this->txtNewRow->SetRect(100, 360, 200, 23, false);
 	this->txtNewRow->SetReadOnly(true);
 	NEW_CLASSNN(this->lblDeletedRow, UI::GUILabel(ui, this, CSTR("Deleted rows")));
-	this->lblDeletedRow->SetRect(0, 360, 100, 23, false);
+	this->lblDeletedRow->SetRect(0, 384, 100, 23, false);
 	NEW_CLASSNN(this->txtDeletedRow, UI::GUITextBox(ui, this, CSTR("0")));
-	this->txtDeletedRow->SetRect(100, 360, 200, 23, false);
+	this->txtDeletedRow->SetRect(100, 384, 200, 23, false);
 	this->txtDeletedRow->SetReadOnly(true);
 
 	NEW_CLASSNN(this->lblDBType, UI::GUILabel(ui, this, CSTR("SQL Type")));
-	this->lblDBType->SetRect(0, 408, 100, 23, false);
+	this->lblDBType->SetRect(0, 432, 100, 23, false);
 	NEW_CLASSNN(this->cboDBType, UI::GUIComboBox(ui, this, false));
-	this->cboDBType->SetRect(100, 408, 200, 23, false);
+	this->cboDBType->SetRect(100, 432, 200, 23, false);
 	this->cboDBType->AddItem(CSTR("MySQL"), (void*)DB::SQLType::MySQL);
 	this->cboDBType->AddItem(CSTR("SQL Server"), (void*)DB::SQLType::MSSQL);
 	this->cboDBType->AddItem(CSTR("PostgreSQL"), (void*)DB::SQLType::PostgreSQL);
@@ -1984,24 +2036,24 @@ SSWR::AVIRead::AVIRDBCheckChgForm::AVIRDBCheckChgForm(UI::GUIClientControl *pare
 	else
 		this->cboDBType->SetSelectedIndex(0);
 	NEW_CLASSNN(this->chkAxisAware, UI::GUICheckBox(ui, this, CSTR("Axis-Aware (MySQL >=8)"), false));
-	this->chkAxisAware->SetRect(300, 408, 150, 23, false);
+	this->chkAxisAware->SetRect(300, 432, 150, 23, false);
 	NEW_CLASSNN(this->chkMultiRow, UI::GUICheckBox(ui, this, CSTR("Multi-Row Insert"), true));
-	this->chkMultiRow->SetRect(100, 432, 150, 23, false);
+	this->chkMultiRow->SetRect(100, 456, 150, 23, false);
 	NEW_CLASSNN(this->btnSQL, UI::GUIButton(ui, this, CSTR("Generate SQL")));
-	this->btnSQL->SetRect(100, 456, 75, 23, false);
+	this->btnSQL->SetRect(100, 480, 75, 23, false);
 	this->btnSQL->HandleButtonClick(OnSQLClicked, this);
 	NEW_CLASSNN(this->btnExecute, UI::GUIButton(ui, this, CSTR("Execute SQL")));
-	this->btnExecute->SetRect(180, 456, 75, 23, false);
+	this->btnExecute->SetRect(180, 480, 75, 23, false);
 	this->btnExecute->HandleButtonClick(OnExecuteClicked, this);
 	NEW_CLASSNN(this->lblStatTime, UI::GUILabel(ui, this, CSTR("Time Used")));
-	this->lblStatTime->SetRect(0, 480, 100, 23, false);
+	this->lblStatTime->SetRect(0, 504, 100, 23, false);
 	NEW_CLASSNN(this->txtStatTime, UI::GUITextBox(ui, this, CSTR("")));
-	this->txtStatTime->SetRect(100, 480, 150, 23 ,false);
+	this->txtStatTime->SetRect(100, 504, 150, 23 ,false);
 	this->txtStatTime->SetReadOnly(true);
 	NEW_CLASSNN(this->lblStatus, UI::GUILabel(ui, this, CSTR("Status")));
-	this->lblStatus->SetRect(0, 504, 100, 23, false);
+	this->lblStatus->SetRect(0, 528, 100, 23, false);
 	NEW_CLASSNN(this->txtStatus, UI::GUITextBox(ui, this, CSTR("")));
-	this->txtStatus->SetRect(100, 504, 300, 23 ,false);
+	this->txtStatus->SetRect(100, 528, 300, 23 ,false);
 	this->txtStatus->SetReadOnly(true);
 
 	this->HandleDropFiles(OnFiles, this);
