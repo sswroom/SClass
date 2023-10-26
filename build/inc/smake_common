@@ -2367,6 +2367,8 @@ Math/VectorTextWriterList.h: ../../src/Math/VectorTextWriterList.cpp
 @VectorTextWriterList.o
 Math/WKBReader.h: ../../src/Math/WKBReader.cpp
 @WKBReader.o
+Math/WKBWriter.h: ../../src/Math/WKBWriter.cpp
+@WKBWriter.o
 Math/WKTReader.h: ../../src/Math/WKTReader.cpp
 @WKTReader.o
 Math/WKTWriter.h: ../../src/Math/WKTWriter.cpp
@@ -5162,6 +5164,7 @@ TSPFile.o: ../../src/Math/TSPFile.cpp
 UTMGridConvertDbl.o: ../../src/Math/UTMGridConvertDbl.cpp
 VectorTextWriterList.o: ../../src/Math/VectorTextWriterList.cpp
 WKBReader.o: ../../src/Math/WKBReader.cpp
+WKBWriter.o: ../../src/Math/WKBWriter.cpp
 WKTReader.o: ../../src/Math/WKTReader.cpp
 WKTWriter.o: ../../src/Math/WKTWriter.cpp
 CircularString.o: ../../src/Math/Geometry/CircularString.cpp
