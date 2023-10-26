@@ -3,8 +3,10 @@
 #include "Data/ByteTool.h"
 #include "DB/ColDef.h"
 #include "DB/DBUtil.h"
+#include "IO/MemoryStream.h"
 #include "Math/CoordinateSystemManager.h"
 #include "Math/Math.h"
+#include "Math/WKBWriter.h"
 #include "Math/WKTWriter.h"
 #include "Math/Geometry/Point.h"
 #include "Text/CharUtil.h"
@@ -112,35 +114,10 @@ UTF8Char *DB::DBUtil::SDBStrUTF8(UTF8Char *sqlstr, const UTF8Char *val, SQLType 
 		*sptr++ = '\'';
 		while ((c = *val++) != 0)
 		{
-			if (c == '\\')
+			if (c == '\'')
 			{
-				*sptr++ = '\\';
-				*sptr++ = '\\';
-			}
-			else if (c == '\'')
-			{
-				*sptr++ = '\\';
 				*sptr++ = '\'';
-			}
-			else if (c == '\"')
-			{
-				*sptr++ = '\\';
-				*sptr++ = '"';
-			}
-			else if (c == '\r')
-			{
-				*sptr++ = '\\';
-				*sptr++ = 'r';
-			}
-			else if (c == '\n')
-			{
-				*sptr++ = '\\';
-				*sptr++ = 'n';
-			}
-			else if (c == '\t')
-			{
-				*sptr++ = '\\';
-				*sptr++ = 't';
+				*sptr++ = '\'';
 			}
 			else if ((c & 0x80) == 0)
 			{
@@ -528,27 +505,7 @@ UOSInt DB::DBUtil::SDBStrUTF8Leng(const UTF8Char *val, DB::SQLType sqlType)
 	{
 		while ((c = *val++) != 0)
 		{
-			if (c == '\\')
-			{
-				leng += 2;
-			}
-			else if (c == '\'')
-			{
-				leng += 2;
-			}
-			else if (c == '\"')
-			{
-				leng += 2;
-			}
-			else if (c == '\r')
-			{
-				leng += 2;
-			}
-			else if (c == '\n')
-			{
-				leng += 2;
-			}
-			else if (c == '\t')
+			if (c == '\'')
 			{
 				leng += 2;
 			}
@@ -1665,6 +1622,19 @@ UTF8Char *DB::DBUtil::SDBVector(UTF8Char *sqlstr, Math::Geometry::Vector2D *vec,
 			return sqlstr;
 		}
 	}
+	else if (sqlType == DB::SQLType::SQLite)
+	{
+		Math::WKBWriter writer;
+		IO::MemoryStream mstm;
+		if (writer.Write(mstm, nnvec))
+		{
+			return SDBBin(sqlstr, mstm.GetBuff(), (UOSInt)mstm.GetLength(), sqlType);
+		}
+		else
+		{
+			return sqlstr;
+		}
+	}
 	else
 	{
 		return sqlstr;
@@ -1717,6 +1687,19 @@ UOSInt DB::DBUtil::SDBVectorLeng(Math::Geometry::Vector2D *vec, DB::SQLType sqlT
 			sb.AppendU32(nnvec->GetSRID());
 			ret += sb.GetLength();
 			return ret;
+		}
+		else
+		{
+			return 0;
+		}
+	}
+	else if (sqlType == DB::SQLType::SQLite)
+	{
+		Math::WKBWriter writer;
+		IO::MemoryStream mstm;
+		if (writer.Write(mstm, nnvec))
+		{
+			return SDBBinLeng(mstm.GetBuff(), (UOSInt)mstm.GetLength(), sqlType);
 		}
 		else
 		{
@@ -2449,6 +2432,11 @@ DB::DBUtil::ColType DB::DBUtil::ParseColType(DB::SQLType sqlType, const UTF8Char
 			*colSize = 8;
 			return DB::DBUtil::CT_Double;
 		}
+		else if (Text::StrEqualsICaseC(typeName, typeNameLen, UTF8STRC("DATE")))
+		{
+			*colSize = 3;
+			return DB::DBUtil::CT_Date;
+		}
 		else if (Text::StrEqualsICaseC(typeName, typeNameLen, UTF8STRC("DATETIME")))
 		{
 			*colSize = 3;
@@ -2471,22 +2459,27 @@ DB::DBUtil::ColType DB::DBUtil::ParseColType(DB::SQLType sqlType, const UTF8Char
 		}
 		else if (Text::StrEqualsICaseC(typeName, typeNameLen, UTF8STRC("POINT")))
 		{
-			*colSize = 2147483647;
+			*colSize = (UOSInt)DB::ColDef::GeometryType::Point;
 			return DB::DBUtil::CT_Vector;
 		}
 		else if (Text::StrEqualsICaseC(typeName, typeNameLen, UTF8STRC("LINESTRING")))
 		{
-			*colSize = 2147483647;
+			*colSize = (UOSInt)DB::ColDef::GeometryType::Polyline;
 			return DB::DBUtil::CT_Vector;
 		}
 		else if (Text::StrEqualsICaseC(typeName, typeNameLen, UTF8STRC("POLYGON")))
 		{
-			*colSize = 2147483647;
+			*colSize = (UOSInt)DB::ColDef::GeometryType::Polygon;
+			return DB::DBUtil::CT_Vector;
+		}
+		else if (Text::StrEqualsICaseC(typeName, typeNameLen, UTF8STRC("MULTIPOLYGON")))
+		{
+			*colSize = (UOSInt)DB::ColDef::GeometryType::MultiPolygon;
 			return DB::DBUtil::CT_Vector;
 		}
 		else if (Text::StrEqualsICaseC(typeName, typeNameLen, UTF8STRC("GEOMETRY")))
 		{
-			*colSize = 2147483647;
+			*colSize = (UOSInt)DB::ColDef::GeometryType::Any;
 			return DB::DBUtil::CT_Vector;
 		}
 		else if (Text::StrEqualsICaseC(typeName, typeNameLen, UTF8STRC("BOOLEAN")))

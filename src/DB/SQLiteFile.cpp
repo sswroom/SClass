@@ -216,7 +216,7 @@ void DB::SQLiteFile::Commit(void *tran)
 
 void DB::SQLiteFile::Rollback(void *tran)
 {
-	ExecuteNonQuery(CSTR("end"));
+	ExecuteNonQuery(CSTR("rollback"));
 }
 
 UOSInt DB::SQLiteFile::QueryTableNames(Text::CString schemaName, NotNullPtr<Data::ArrayListNN<Text::String>> names)

@@ -38,6 +38,7 @@ namespace DB
 		UOSInt GetColCnt() const;
 		DB::ColDef *GetCol(UOSInt index) const;
 		DB::ColDef *GetSinglePKCol() const;
+		UOSInt CountPK() const;
 
 		TableDef *AddCol(NotNullPtr<DB::ColDef> col);
 		TableDef *SetDatabaseName(Text::CString databaseName);

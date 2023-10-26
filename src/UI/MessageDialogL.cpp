@@ -4,7 +4,7 @@
 #include "UI/MessageDialog.h"
 #include <gtk/gtk.h>
 
-void UI::MessageDialog::ShowDialog(Text::CString message, Text::CString title, UI::GUIControl *ctrl)
+void UI::MessageDialog::ShowDialog(Text::CStringNN message, Text::CStringNN title, UI::GUIControl *ctrl)
 {
 	GtkWidget *dlg;
 	GtkWindow *wnd = 0;
@@ -16,7 +16,7 @@ void UI::MessageDialog::ShowDialog(Text::CString message, Text::CString title, U
 	gtk_widget_destroy(dlg);
 }
 
-Bool UI::MessageDialog::ShowYesNoDialog(Text::CString message, Text::CString title, UI::GUIControl *ctrl)
+Bool UI::MessageDialog::ShowYesNoDialog(Text::CStringNN message, Text::CStringNN title, UI::GUIControl *ctrl)
 {
 	GtkWidget *dlg;
 	GtkWindow *wnd = 0;

@@ -6,6 +6,7 @@
 #include "DB/JavaDBUtil.h"
 #include "DB/SQLFileReader.h"
 #include "DB/SQLGenerator.h"
+#include "DB/SQLiteFile.h"
 #include "IO/FileStream.h"
 #include "IO/Path.h"
 #include "IO/StmData/FileData.h"
@@ -62,6 +63,7 @@ typedef enum
 	MNU_TABLE_EXPORT_POSTGRESQL,
 	MNU_TABLE_EXPORT_OPTION,
 	MNU_TABLE_EXPORT_CSV,
+	MNU_TABLE_EXPORT_SQLITE,
 	MNU_TABLE_CHECK_CHANGE
 } MenuEvent;
 
@@ -957,8 +959,8 @@ void SSWR::AVIRead::AVIRDBManagerForm::ExportTableCSV()
 	if (dlg.ShowDialog(this->GetHandle()))
 	{
 		Text::StringBuilderUTF8 sb;
-		DB::DBReader *r = this->currDB->QueryTableData(STR_CSTR(schemaName), tableName->ToCString(), 0, 0, 0, CSTR_NULL, 0);
-		if (r == 0)
+		NotNullPtr<DB::DBReader> r;
+		if (!r.Set(this->currDB->QueryTableData(STR_CSTR(schemaName), tableName->ToCString(), 0, 0, 0, CSTR_NULL, 0)))
 		{
 			UI::MessageDialog::ShowDialog(CSTR("Error in reading table data"), CSTR("DB Manager"), this);
 			tableName->Release();
@@ -1001,9 +1003,81 @@ void SSWR::AVIRead::AVIRDBManagerForm::ExportTableCSV()
 			sb.AppendC(UTF8STRC("\r\n"));
 			fs.Write(sb.ToString(), sb.GetLength());
 		}
+		this->currDB->CloseReader(r);
 	}
 	tableName->Release();
 	SDEL_STRING(schemaName);
+}
+
+void SSWR::AVIRead::AVIRDBManagerForm::ExportTableSQLite()
+{
+	UTF8Char sbuff[4096];
+	UTF8Char *sptr;
+	Text::String *schemaName = this->lbSchema->GetSelectedItemTextNew();
+	Text::String *tableName = this->lbTable->GetSelectedItemTextNew();
+	NotNullPtr<DB::TableDef> table;
+	if (!table.Set(this->currDB->GetTableDef(STR_CSTR(schemaName), tableName->ToCString())))
+	{
+		UI::MessageDialog::ShowDialog(CSTR("Error in getting table definition"), CSTR("DB Manager"), this);
+		tableName->Release();
+		SDEL_STRING(schemaName);
+		return;
+	}
+	sptr = sbuff;
+	if (schemaName->leng > 0)
+	{
+		sptr = schemaName->ConcatTo(sptr);
+		*sptr++ = '_';
+	}
+	sptr = tableName->ConcatTo(sptr);
+	*sptr++ = '_';
+	sptr = Data::Timestamp::Now().ToString(sptr, "yyyyMMdd_HHmmss");
+	sptr = Text::StrConcatC(sptr, UTF8STRC(".sqlite"));
+	UI::FileDialog dlg(L"SSWR", L"AVIRead", L"DBManagerExportSQLite", true);
+	dlg.AddFilter(CSTR("*.sqlite"), CSTR("SQLite File"));
+	dlg.SetFileName(CSTRP(sbuff, sptr));
+	if (dlg.ShowDialog(this->GetHandle()))
+	{
+		DB::SQLiteFile sqlite(dlg.GetFileName());
+		DB::SQLBuilder sql(sqlite.GetSQLType(), false, sqlite.GetTzQhr());
+		DB::SQLGenerator::GenCreateTableCmd(sql, CSTR_NULL, tableName->ToCString(), table, false);
+		if (sqlite.ExecuteNonQuery(sql.ToCString()) <= -2)
+		{
+			Text::StringBuilderUTF8 sb;
+			sb.AppendC(UTF8STRC("Error in creating table: "));
+			sb.Append(sql.ToCString());
+			UI::MessageDialog::ShowDialog(sb.ToCString(), CSTR("DB Manager"), this);
+		}
+		NotNullPtr<DB::DBReader> r;
+		if (!r.Set(this->currDB->QueryTableData(STR_CSTR(schemaName), tableName->ToCString(), 0, 0, 0, CSTR_NULL, 0)))
+		{
+			UI::MessageDialog::ShowDialog(CSTR("Error in reading table data"), CSTR("DB Manager"), this);
+			tableName->Release();
+			SDEL_STRING(schemaName);
+			table.Delete();
+			return;
+		}
+		void *tran = sqlite.BeginTransaction();
+		while (r->ReadNext())
+		{
+			sql.Clear();
+			DB::SQLGenerator::GenInsertCmd(sql, CSTR_NULL, tableName->ToCString(), table.Ptr(), r);
+			if (sqlite.ExecuteNonQuery(sql.ToCString()) != 1)
+			{
+				Text::StringBuilderUTF8 sb;
+				sb.AppendC(UTF8STRC("Error in executing cmd: "));
+				sb.Append(sql.ToCString());
+				UI::MessageDialog::ShowDialog(sb.ToCString(), CSTR("DB Manager"), this);
+				printf("%s\r\n", sql.ToString());
+				break;
+			}
+		}
+		this->currDB->CloseReader(r);
+		sqlite.Commit(tran);
+	}
+	tableName->Release();
+	SDEL_STRING(schemaName);
+	table.Delete();
 }
 
 SSWR::AVIRead::AVIRDBManagerForm::AVIRDBManagerForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
@@ -1213,13 +1287,14 @@ SSWR::AVIRead::AVIRDBManagerForm::AVIRDBManagerForm(UI::GUIClientControl *parent
 	mnu->AddItem(CSTR("MySQL >=8"), MNU_TABLE_CREATE_MYSQL8, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem(CSTR("SQL Server"), MNU_TABLE_CREATE_MSSQL, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem(CSTR("PostgreSQL"), MNU_TABLE_CREATE_POSTGRESQL, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
-	mnu = this->mnuTable->AddSubMenu(CSTR("Export Table Data"));
-	mnu->AddItem(CSTR("MySQL"), MNU_TABLE_EXPORT_MYSQL, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
-	mnu->AddItem(CSTR("MySQL >=8"), MNU_TABLE_EXPORT_MYSQL8, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
-	mnu->AddItem(CSTR("SQL Server"), MNU_TABLE_EXPORT_MSSQL, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
-	mnu->AddItem(CSTR("PostgreSQL"), MNU_TABLE_EXPORT_POSTGRESQL, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
-	mnu->AddItem(CSTR("Export Table Data as SQL..."), MNU_TABLE_EXPORT_OPTION, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
-	mnu->AddItem(CSTR("Export Table Data as CSV"), MNU_TABLE_EXPORT_CSV, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu = this->mnuTable->AddSubMenu(CSTR("Export Table Data as"));
+	mnu->AddItem(CSTR("SQL (MySQL)"), MNU_TABLE_EXPORT_MYSQL, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu->AddItem(CSTR("SQL (MySQL >=8)"), MNU_TABLE_EXPORT_MYSQL8, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu->AddItem(CSTR("SQL (SQL Server)"), MNU_TABLE_EXPORT_MSSQL, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu->AddItem(CSTR("SQL (PostgreSQL)"), MNU_TABLE_EXPORT_POSTGRESQL, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu->AddItem(CSTR("SQL..."), MNU_TABLE_EXPORT_OPTION, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu->AddItem(CSTR("CSV"), MNU_TABLE_EXPORT_CSV, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu->AddItem(CSTR("SQLite"), MNU_TABLE_EXPORT_SQLITE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	this->mnuTable->AddItem(CSTR("Check Table Changes"), MNU_TABLE_CHECK_CHANGE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 
 	UTF8Char sbuff[512];
@@ -1516,6 +1591,9 @@ void SSWR::AVIRead::AVIRDBManagerForm::EventMenuClicked(UInt16 cmdId)
 		break;
 	case MNU_TABLE_EXPORT_CSV:
 		this->ExportTableCSV();
+		break;
+	case MNU_TABLE_EXPORT_SQLITE:
+		this->ExportTableSQLite();
 		break;
 	case MNU_TABLE_CHECK_CHANGE:
 		{

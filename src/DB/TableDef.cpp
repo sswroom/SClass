@@ -106,6 +106,18 @@ DB::ColDef *DB::TableDef::GetSinglePKCol() const
 	return retCol;
 }
 
+UOSInt DB::TableDef::CountPK() const
+{
+	UOSInt cnt = 0;
+	UOSInt i = this->cols.GetCount();
+	while (i-- > 0)
+	{
+		if (this->cols.GetItem(i)->IsPK())
+			cnt++;
+	}
+	return cnt;
+}
+
 DB::TableDef *DB::TableDef::AddCol(NotNullPtr<DB::ColDef> col)
 {
 	this->cols.Add(col);

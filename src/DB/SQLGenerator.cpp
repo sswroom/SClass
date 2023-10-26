@@ -3,7 +3,7 @@
 #include "DB/SQLGenerator.h"
 
 
-void DB::SQLGenerator::AppendColDef(DB::SQLType sqlType, NotNullPtr<DB::SQLBuilder> sql, DB::ColDef *col)
+void DB::SQLGenerator::AppendColDef(DB::SQLType sqlType, NotNullPtr<DB::SQLBuilder> sql, DB::ColDef *col, UOSInt pkCount)
 {
 	sql->AppendCol(col->GetColName()->v);
 	sql->AppendCmdC(CSTR(" "));
@@ -35,7 +35,7 @@ void DB::SQLGenerator::AppendColDef(DB::SQLType sqlType, NotNullPtr<DB::SQLBuild
 	}
 	else if (sqlType == DB::SQLType::SQLite)
 	{
-		if (col->IsAutoInc() && col->IsPK())
+		if (col->IsPK() && (col->IsAutoInc() || pkCount < 2))
 		{
 			sql->AppendCmdC(CSTR(" PRIMARY KEY"));
 		}
@@ -527,12 +527,12 @@ void DB::SQLGenerator::AppendColType(DB::SQLType sqlType, NotNullPtr<DB::SQLBuil
 			break;
 		case DB::DBUtil::CT_UTF16Char:
 			sql->AppendCmdC(CSTR("CHAR("));
-			sql->AppendUInt32((UInt32)(colSize * 3));
+			sql->AppendUInt32((UInt32)(colSize));
 			sql->AppendCmdC(CSTR(")"));
 			break;
 		case DB::DBUtil::CT_UTF32Char:
 			sql->AppendCmdC(CSTR("CHAR("));
-			sql->AppendUInt32((UInt32)(colSize * 4));
+			sql->AppendUInt32((UInt32)(colSize));
 			sql->AppendCmdC(CSTR(")"));
 			break;
 		case DB::DBUtil::CT_VarUTF8Char:
@@ -555,7 +555,7 @@ void DB::SQLGenerator::AppendColType(DB::SQLType sqlType, NotNullPtr<DB::SQLBuil
 			else
 			{
 				sql->AppendCmdC(CSTR("VARCHAR("));
-				sql->AppendUInt32((UInt32)(colSize * 3));
+				sql->AppendUInt32((UInt32)(colSize));
 				sql->AppendCmdC(CSTR(")"));
 			}
 			break;
@@ -567,7 +567,7 @@ void DB::SQLGenerator::AppendColType(DB::SQLType sqlType, NotNullPtr<DB::SQLBuil
 			else
 			{
 				sql->AppendCmdC(CSTR("VARCHAR("));
-				sql->AppendUInt32((UInt32)(colSize * 4));
+				sql->AppendUInt32((UInt32)(colSize));
 				sql->AppendCmdC(CSTR(")"));
 			}
 			break;
@@ -621,6 +621,59 @@ void DB::SQLGenerator::AppendColType(DB::SQLType sqlType, NotNullPtr<DB::SQLBuil
 			sql->AppendCmdC(CSTR("BLOB"));
 			break;
 		case DB::DBUtil::CT_Vector:
+			switch ((DB::ColDef::GeometryType)colSize)
+			{
+			default:
+			case DB::ColDef::GeometryType::Unknown:
+			case DB::ColDef::GeometryType::Any:
+			case DB::ColDef::GeometryType::AnyZ:
+			case DB::ColDef::GeometryType::AnyZM:
+			case DB::ColDef::GeometryType::AnyM:
+				sql->AppendCmdC(CSTR("GEOMETRY"));
+				break;
+			case DB::ColDef::GeometryType::Point:
+			case DB::ColDef::GeometryType::PointZ:
+			case DB::ColDef::GeometryType::PointZM:
+			case DB::ColDef::GeometryType::PointM:
+				sql->AppendCmdC(CSTR("POINT"));
+				break;
+			case DB::ColDef::GeometryType::Multipoint:
+			case DB::ColDef::GeometryType::MultipointZ:
+			case DB::ColDef::GeometryType::MultipointZM:
+			case DB::ColDef::GeometryType::MultipointM:
+				sql->AppendCmdC(CSTR("MULTIPOINT"));
+				break;
+			case DB::ColDef::GeometryType::Polyline:
+			case DB::ColDef::GeometryType::PolylineZ:
+			case DB::ColDef::GeometryType::PolylineZM:
+			case DB::ColDef::GeometryType::PolylineM:
+				sql->AppendCmdC(CSTR("POLYLINE"));
+				break;
+			case DB::ColDef::GeometryType::Polygon:
+			case DB::ColDef::GeometryType::PolygonZ:
+			case DB::ColDef::GeometryType::PolygonZM:
+			case DB::ColDef::GeometryType::PolygonM:
+				sql->AppendCmdC(CSTR("POLYGON"));
+				break;
+			case DB::ColDef::GeometryType::Rectangle:
+			case DB::ColDef::GeometryType::RectangleZ:
+			case DB::ColDef::GeometryType::RectangleZM:
+			case DB::ColDef::GeometryType::RectangleM:
+				sql->AppendCmdC(CSTR("RECTANGLE"));
+				break;
+			case DB::ColDef::GeometryType::Path:
+			case DB::ColDef::GeometryType::PathZ:
+			case DB::ColDef::GeometryType::PathZM:
+			case DB::ColDef::GeometryType::PathM:
+				sql->AppendCmdC(CSTR("PATH"));
+				break;
+			case DB::ColDef::GeometryType::MultiPolygon:
+			case DB::ColDef::GeometryType::MultiPolygonZ:
+			case DB::ColDef::GeometryType::MultiPolygonZM:
+			case DB::ColDef::GeometryType::MultiPolygonM:
+				sql->AppendCmdC(CSTR("MULTIPOLYGON"));
+				break;
+			}
 		case DB::DBUtil::CT_UUID:
 		case DB::DBUtil::CT_Unknown:
 		default:
@@ -833,6 +886,7 @@ Bool DB::SQLGenerator::GenCreateTableCmd(NotNullPtr<DB::SQLBuilder> sql, Text::C
 	UOSInt i;
 	UOSInt j;
 	UOSInt k;
+	UOSInt pkCnt = tabDef->CountPK();
 	DB::ColDef *col;
 	sql->AppendCmdC(CSTR("create table "));
 	if (schemaName.leng > 0)
@@ -854,7 +908,7 @@ Bool DB::SQLGenerator::GenCreateTableCmd(NotNullPtr<DB::SQLBuilder> sql, Text::C
 			}
 			if (multiline) sql->AppendCmdC(CSTR("\r\n\t"));
 			col = tabDef->GetCol(i++);
-			AppendColDef(sqlType, sql, col);
+			AppendColDef(sqlType, sql, col, pkCnt);
 		}
 	}
 	else if (sqlType == DB::SQLType::SQLite)
@@ -866,7 +920,7 @@ Bool DB::SQLGenerator::GenCreateTableCmd(NotNullPtr<DB::SQLBuilder> sql, Text::C
 		{
 			if (multiline) sql->AppendCmdC(CSTR("\r\n\t"));
 			col = tabDef->GetCol(i++);
-			AppendColDef(sqlType, sql, col);
+			AppendColDef(sqlType, sql, col, pkCnt);
 			if (col->IsAutoInc())
 			{
 				hasAutoInc = true;
@@ -876,7 +930,7 @@ Bool DB::SQLGenerator::GenCreateTableCmd(NotNullPtr<DB::SQLBuilder> sql, Text::C
 				sql->AppendCmdC(CSTR(", "));
 			}
 		}
-		if (!hasAutoInc)
+		if (!hasAutoInc && pkCnt > 1)
 		{
 			i = 0;
 			k = 0;
@@ -906,7 +960,7 @@ Bool DB::SQLGenerator::GenCreateTableCmd(NotNullPtr<DB::SQLBuilder> sql, Text::C
 		{
 			col = tabDef->GetCol(i++);
 			if (multiline) sql->AppendCmdC(CSTR("\r\n\t"));
-			AppendColDef(sqlType, sql, col);
+			AppendColDef(sqlType, sql, col, pkCnt);
 			if (i < j)
 			{
 				sql->AppendCmdC(CSTR(", "));

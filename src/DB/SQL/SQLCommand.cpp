@@ -6,6 +6,7 @@
 #include "Text/CharUtil.h"
 #include "Text/StringBuilderUTF8.h"
 
+//#define VERBOSE
 #include <stdio.h>
 
 Bool DB::SQL::SQLCommand::IsPunctuation(const UTF8Char *s)
@@ -15,7 +16,9 @@ Bool DB::SQL::SQLCommand::IsPunctuation(const UTF8Char *s)
 
 DB::SQL::SQLCommand *DB::SQL::SQLCommand::Parse(const UTF8Char *sql, DB::SQLType sqlType)
 {
+#if defined(VERBOSE)
 	printf("SQLCommand: Cmd: %s\r\n", sql);
+#endif
 	DB::SQL::SQLCommand *cmd = 0;
 	Text::StringBuilderUTF8 sb;
 	sql = SQLUtil::ParseNextWord(sql, sb, sqlType);
