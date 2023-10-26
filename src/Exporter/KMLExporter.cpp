@@ -2,6 +2,7 @@
 #include "MyMemory.h"
 #include "Exporter/KMLExporter.h"
 #include "IO/BufferedOutputStream.h"
+#include "IO/Path.h"
 #include "IO/StreamWriter.h"
 #include "Map/MapDrawLayer.h"
 #include "Math/CoordinateSystemManager.h"
@@ -111,6 +112,7 @@ Bool Exporter::KMLExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text:
 	Math::Geometry::Vector2D *vec;
 	Text::Encoding enc(this->codePage);
 	Text::StringBuilderUTF8 sb;
+	NotNullPtr<Text::String> s;
 	NotNullPtr<Math::CoordinateSystem> srcCsys = layer->GetCoordinateSystem();
 	NotNullPtr<Math::CoordinateSystem> destCsys = Math::CoordinateSystemManager::CreateDefaultCsys();
 	Bool needConv = false;
@@ -131,6 +133,17 @@ Bool Exporter::KMLExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text:
 	sptr = Text::StrConcatC(sptr, UTF8STRC("\"?>"));
 	sptr = Text::StrConcatC(sptr, UTF8STRC("<kml xmlns=\"http://www.opengis.net/kml/2.2\" xmlns:gx=\"http://www.google.com/kml/ext/2.2\" xmlns:kml=\"http://www.opengis.net/kml/2.2\" xmlns:atom=\"http://www.w3.org/2005/Atom\">"));
 	sptr = Text::StrConcatC(sptr, UTF8STRC("<Document>"));
+	i = fileName.LastIndexOf(IO::Path::PATH_SEPERATOR);
+	sb.ClearStr();
+	sb.Append(fileName.Substring(i + 1));
+	i = sb.LastIndexOf('.');
+	if (i != INVALID_INDEX)
+		sb.TrimToLength(i);
+	s = Text::XML::ToNewXMLText(sb.ToString());
+	sptr = Text::StrConcatC(sptr, UTF8STRC("<name>"));
+	sptr = s->ConcatTo(sptr);
+	sptr = Text::StrConcatC(sptr, UTF8STRC("</name>"));
+	s->Release();
 	sptr = Text::StrConcatC(sptr, UTF8STRC("<Folder>"));
 	sptr = Text::StrConcatC(sptr, UTF8STRC("<name>Points</name>"));
 	sptr = Text::StrConcatC(sptr, UTF8STRC("<open>1</open>"));
