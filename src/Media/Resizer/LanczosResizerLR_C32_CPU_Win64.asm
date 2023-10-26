@@ -7,8 +7,15 @@ global LanczosResizerLR_C32_CPU_hv_filter
 global LanczosResizerLR_C32_CPU_collapse
 global LanczosResizerLR_C32_CPU_collapse_na
 
+%ifdef __CYGWIN__
+extern _CPUBrand
+extern _UseAVX
+%define CPUBrand _CPUBrand
+%define UseAVX _UseAVX
+%else
 extern CPUBrand
 extern UseAVX
+%endif
 
 ;void LanczosResizerLR_C32_CPU_horizontal_filter(UInt8 *inPt, UInt8 *outPt, OSInt width, OSInt height, OSInt tap, OSInt *index, Int64 *weight, OSInt sstep, OSInt dstep, UInt8 *rgbTable)
 ;xmm7 tmpV

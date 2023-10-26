@@ -1,7 +1,11 @@
 section .text
 
+%ifdef __CYGWIN__
+extern _UseAVX
+%define UseAVX _UseAVX
+%else
 extern UseAVX
-
+%endif
 global CSYUV444P10LEP_RGB32C_convert
 
 ;void CSYUV444P10LEP_RGB32C_convert(UInt8 *yPtr, UInt8 *dest, OSInt width, OSInt height, OSInt dbpl, OSInt yBpl, Int64 *yuv2rgb, Int64 *rgbGammaCorr);

@@ -1,7 +1,14 @@
 section .text
 
+%ifdef __CYGWIN__
+extern _Base64_encArr
+extern _Base64_decArr
+%define Base64_encArr _Base64_encArr
+%define Base64_decArr _Base64_decArr
+%else
 extern Base64_encArr
 extern Base64_decArr
+%endif
 
 global Base64_Encrypt
 global Base64_Decrypt

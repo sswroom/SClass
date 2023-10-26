@@ -7,6 +7,7 @@
 #include "IO/Device/AXCAN.h"
 #include "IO/Device/BYDC9RHandler.h"
 #include "IO/ProtoHdlr/ProtoJMVL01Handler.h"
+#include "Manage/Process.h"
 #include "Text/CPPText.h"
 #include "Text/StringTool.h"
 #include "Text/UTF8Reader.h"
@@ -325,7 +326,18 @@ Int32 AXCAN_BYDC9RTest()
 	return 0;
 }
 
+Int32 ProcessExecTest()
+{
+	Text::StringBuilderUTF8 sb;
+	Manage::Process::ExecuteProcess(CSTR("pkgconf --libs libpq"), sb);
+	while (sb.EndsWith('\r') || sb.EndsWith('\n'))
+	{
+		sb.RemoveChars(1);
+	}
+	printf("Return %s\r\n", sb.ToString());
+}
+
 Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 {
-	return AXCAN_BYDC9RTest();
+	return ProcessExecTest();
 }

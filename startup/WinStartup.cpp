@@ -6,7 +6,9 @@
 #include "Text/MyStringW.h"
 #include "UI/GUICoreWin.h"
 #include <windows.h>
+#ifndef __CYGWIN__
 #include <crtdbg.h>
+#endif
 
 typedef BOOL (WINAPI *BoolFunc)();
 typedef HRESULT (WINAPI *AwareFunc)(OSInt val);
@@ -224,6 +226,8 @@ Int32 __stdcall WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lpCmdLine, i
 	ret = MyMain(ctrl);
 	WinProgControl_Destroy(ctrl);
 	Core::CoreEnd();
+#ifndef __CYGWIN__
 	_CrtDumpMemoryLeaks();
+#endif
 	return ret;
 }

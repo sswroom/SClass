@@ -2,10 +2,6 @@
 MyMemory.h: ../../src/MyMemoryW.cpp
 @MyMemory.o
 
-DB/OLEDBConn.h: ../../src/DB/OLEDBConnW.cpp
-@OLEDBConn.o
-@OLEDBGuid.o
-
 IO/BuildTime.h: ../../src/IO/BuildTimeW.cpp
 @BuildTime.o
 IO/Console.h: ../../src/IO/ConsoleW.cpp
@@ -112,8 +108,6 @@ Win32/COMStream.h: ../../src/Win32/COMStream.cpp
 @COMStream.o
 Win32/StreamCOM.h: ../../src/Win32/StreamCOM.cpp
 @StreamCOM.o
-Win32/WMIQuery.h: ../../src/Win32/WMIQueryW.cpp
-@WMIQuery.o
 Win32/WMIReader.h: ../../src/Win32/WMIReader.cpp
 @WMIReader.o
 
@@ -122,11 +116,6 @@ sqlite3.h:
 
 MyMemory.o: ../../src/MyMemoryW.cpp
 !-ldbghelp
-OLEDBConn.o: ../../src/DB/OLEDBConnW.cpp
-!-lole32
-!-loleaut32
-!-luuid
-OLEDBGuid.o: ../../src/DB/OLEDBGuid.cpp
 BuildTime.o: ../../src/IO/BuildTimeW.cpp
 Console.o: ../../src/IO/ConsoleW.cpp
 ConsoleWriter.o: ../../src/IO/ConsoleWriterW.cpp
@@ -187,9 +176,5 @@ COMStream.o: ../../src/Win32/COMStream.cpp
 !-luuid
 !-lole32
 StreamCOM.o: ../../src/Win32/StreamCOM.cpp
-WMIQuery.o: ../../src/Win32/WMIQueryW.cpp
-!-lole32
-!-loleaut32
-!-lwbemuuid
 WMIReader.o: ../../src/Win32/WMIReader.cpp
 sqlite3.o: ../../ThirdParty/sqlite3/sqlite3.c

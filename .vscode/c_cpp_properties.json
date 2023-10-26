@@ -140,6 +140,26 @@
             "intelliSenseMode": "gcc-x64"
         },
         {
+            "name": "Cygwin",
+            "includePath": [
+                "${workspaceFolder}/../SClass/header",
+                "C:/cygwin64/usr/include",
+                "${workspaceFolder}/../SClass/ThirdParty/baseclasses",
+                "${workspaceFolder}/../SClass/ThirdParty/miniz",
+                "${workspaceFolder}/../SClass/ThirdParty/sqlite3",
+                "${workspaceFolder}/../SClass/ThirdParty/KSSample",
+                "${workspaceFolder}/../SClass/ThirdParty/adl"
+            ],
+            "defines": [
+                "UNICODE",
+                "_UNICODE"
+            ],
+            "compilerPath": "C:/cygwin64/bin/g++.exe",
+            "cStandard": "c11",
+            "cppStandard": "c++17",
+            "intelliSenseMode": "gcc-x64"
+        },
+        {
             "name": "msys2",
             "includePath": [
                 "${workspaceFolder}/../SClass/header",

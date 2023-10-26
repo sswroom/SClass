@@ -24,6 +24,10 @@
 #include <icmpapi.h>
 #endif
 
+#if defined(__CYGWIN__)
+#define u_long __ms_u_long
+#define timeval TIMEVAL
+#endif
 //#define VERBOSE
 #if defined(VERBOSE)
 #include <stdio.h>

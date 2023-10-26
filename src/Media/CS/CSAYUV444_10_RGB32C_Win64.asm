@@ -1,6 +1,11 @@
 section .text
 
+%ifdef __CYGWIN__
+extern _UseAVX
+%define UseAVX _UseAVX
+%else
 extern UseAVX
+%endif
 
 global CSAYUV444_10_RGB32C_convert
 

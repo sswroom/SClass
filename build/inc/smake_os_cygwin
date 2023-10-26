@@ -18,10 +18,9 @@ DB/MySQLConn.h: ../../src/DB/MySQLConnNull.cpp
 @MySQLConn.o
 DB/ODBCConn.h: ../../src/DB/ODBCConn.cpp
 @ODBCConn.o
-DB/OLEDBConn.h: ../../src/DB/OLEDBConnW.cpp
+DB/OLEDBConn.h: ../../src/DB/OLEDBConnNull.cpp
 @OLEDBConn.o
-@OLEDBGuid.o
-DB/PostgreSQLConn.h: ../../src/DB/PostgreSQLConnNul.cpp
+DB/PostgreSQLConn.h: ../../src/DB/PostgreSQLConn.cpp
 @PostgreSQLConn.o
 DB/TDSConn.h: ../../src/DB/TDSConn_Null.cpp
 @TDSConn.o
@@ -187,7 +186,7 @@ Win32/WindowsEvent.h: ../../src/Win32/WindowsEvent.cpp
 @WindowsEvent.o
 Win32/WinRTCore.h: ../../src/Win32/WinRTCore.cpp
 @WinRTCore.o
-Win32/WMIQuery.h: ../../src/Win32/WMIQueryW.cpp
+Win32/WMIQuery.h: ../../src/Win32/WMIQueryNull.cpp
 @WMIQuery.o
 
 TrustStore.o: ../../src/Crypto/Cert/TrustStore_Win.cpp
@@ -202,12 +201,10 @@ MySQLConn.o: ../../src/DB/MySQLConnNull.cpp
 ODBCConn.o: ../../src/DB/ODBCConn.cpp
 !-lodbc32
 !-lodbccp32
-OLEDBConn.o: ../../src/DB/OLEDBConnW.cpp
-!-lole32
-!-loleaut32
-!-luuid
-OLEDBGuid.o: ../../src/DB/OLEDBGuid.cpp
-PostgreSQLConn.o: ../../src/DB/PostgreSQLConnNul.cpp
+OLEDBConn.o: ../../src/DB/OLEDBConnNull.cpp
+PostgreSQLConn.o: ../../src/DB/PostgreSQLConn.cpp
+$`pkgconf --cflags libpq`
+!`pkgconf --libs libpq`
 TDSConn.o: ../../src/DB/TDSConn_Null.cpp
 HEIFExporter.o: ../../src/Exporter/HEIFExporter_Null.cpp
 WebPExporter.o: ../../src/Exporter/WebPExporter_Null.cpp
@@ -259,7 +256,7 @@ Printer.o: ../../src/Media/PrinterW.cpp
 !-lcomdlg32
 ZXingWriter.o: ../../src/Media/ZXingWriter_Null.cpp
 FFMPEGDecoder.o: ../../src/Media/Decoder/FFMPEGDecoder.cpp
-$-I ../../../ffmpeg-master-latest-win64-gpl-shared/include
+#$-I ../../../ffmpeg-master-latest-win64-gpl-shared/include
 #!-L ../../../ffmpeg-master-latest-win64-gpl-shared/lib
 #!-lavutil
 #!-lavcodec
@@ -295,10 +292,7 @@ WindowsBTScanner.o: ../../src/Win32/WindowsBTScanner.cpp
 WindowsEvent.o: ../../src/Win32/WindowsEvent.cpp
 WinRTCore.o: ../../src/Win32/WinRTCore.cpp
 !-lWindowsApp
-WMIQuery.o: ../../src/Win32/WMIQueryW.cpp
-!-lole32
-!-loleaut32
-!-lwbemuuid
+WMIQuery.o: ../../src/Win32/WMIQueryNull.cpp
 
 amfilter.o: ../../ThirdParty/baseclasses/amfilter.cpp
 $-I ../../ThirdParty/baseclasses

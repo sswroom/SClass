@@ -18,7 +18,11 @@
 #include <schnlsp.h>
 #include <bcrypt.h>
 
-
+#if defined(__CYGWIN__)
+#define FLAGS_ULONG unsigned int
+#else
+#define FLAGS_ULONG unsigned long
+#endif
 //#define VERBOSE_SVR
 //#define VERBOSE_CLI
 #if defined(VERBOSE_SVR) || defined(VERBOSE_CLI)
@@ -858,7 +862,7 @@ Net::SSLClient* Net::WinSSLEngine::CreateClientConn(void* sslObj, Socket* s, Tex
 		0,
 		&ctxt,
 		&outputDesc,
-		(unsigned long*)&retFlags,
+		(FLAGS_ULONG*)&retFlags,
 		&ts
 	);
 	if (status != SEC_I_CONTINUE_NEEDED)
@@ -934,7 +938,7 @@ Net::SSLClient* Net::WinSSLEngine::CreateClientConn(void* sslObj, Socket* s, Tex
 			0,
 			0,
 			&outputDesc,
-			(unsigned long*)&retFlags,
+			(FLAGS_ULONG*)&retFlags,
 			&ts);
 
 		if (status == SEC_E_INCOMPLETE_MESSAGE)
@@ -1076,7 +1080,7 @@ Net::SSLClient *Net::WinSSLEngine::CreateServerConn(Socket *s)
 		0,
 		&ctxt,
 		&outputDesc,
-		(unsigned long*)&retFlags,
+		(FLAGS_ULONG*)&retFlags,
 		&ts
 	);
 	if (status != SEC_I_CONTINUE_NEEDED)
@@ -1169,7 +1173,7 @@ Net::SSLClient *Net::WinSSLEngine::CreateServerConn(Socket *s)
 			0,
 			&ctxt,
 			&outputDesc,
-			(unsigned long*)&retFlags,
+			(FLAGS_ULONG*)&retFlags,
 			&ts
 		);
 
