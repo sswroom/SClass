@@ -55,7 +55,7 @@ extern "C"
 #define AVFRAME_IS_KEY_FRAME(frame) frame->key_frame
 #endif
 
-#if !defined(__MINGW32__) && !defined(__CYGWIN__) && defined(__GNUC__)
+#if !defined(__MINGW32__) && defined(__GNUC__)
 #if VERSION_FROM(55, 0, 0) //not sure
 #define FFMPEGDecoder_av_frame_alloc av_frame_alloc
 #define FFMPEGDecoder_av_frame_free av_frame_free

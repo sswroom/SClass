@@ -157,7 +157,7 @@ Text::String *DB::MSSQLConn::GetDriverNameNew()
 
 Bool DB::MSSQLConn::IsNative()
 {
-#if defined(WIN32)
+#if defined(WIN32) && !defined(__CYGWIN__)
 	return false;
 #else
 	return true;

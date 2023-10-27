@@ -143,7 +143,7 @@
             "name": "Cygwin",
             "includePath": [
                 "${workspaceFolder}/../SClass/header",
-                "C:/cygwin64/usr/include",
+                "C:/cygwin64/usr/include/**",
                 "${workspaceFolder}/../SClass/ThirdParty/baseclasses",
                 "${workspaceFolder}/../SClass/ThirdParty/miniz",
                 "${workspaceFolder}/../SClass/ThirdParty/sqlite3",

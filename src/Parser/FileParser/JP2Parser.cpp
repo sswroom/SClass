@@ -5,7 +5,7 @@
 #include "Media/StaticImage.h"
 #include "Parser/FileParser/JP2Parser.h"
 
-#include <openjpeg-2.1/openjpeg.h>
+#include <openjpeg.h>
 
 //#define VERBOSE
 #if defined(VERBOSE)

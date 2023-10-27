@@ -14,7 +14,7 @@ DB/MDBFileConn.h: ../../src/DB/MDBFileConn.cpp
 @MDBFileConn.o
 DB/MongoDB.h: ../../src/DB/MongoDBNull.cpp
 @MongoDB.o
-DB/MySQLConn.h: ../../src/DB/MySQLConnNull.cpp
+DB/MySQLConn.h: ../../src/DB/MySQLConn.cpp
 @MySQLConn.o
 DB/ODBCConn.h: ../../src/DB/ODBCConn.cpp
 @ODBCConn.o
@@ -22,12 +22,12 @@ DB/OLEDBConn.h: ../../src/DB/OLEDBConnNull.cpp
 @OLEDBConn.o
 DB/PostgreSQLConn.h: ../../src/DB/PostgreSQLConn.cpp
 @PostgreSQLConn.o
-DB/TDSConn.h: ../../src/DB/TDSConn_Null.cpp
+DB/TDSConn.h: ../../src/DB/TDSConn.cpp
 @TDSConn.o
 
-Exporter/HEIFExporter.h: ../../src/Exporter/HEIFExporter_Null.cpp
+Exporter/HEIFExporter.h: ../../src/Exporter/HEIFExporter.cpp
 @HEIFExporter.o
-Exporter/WebPExporter.h: ../../src/Exporter/WebPExporter_Null.cpp
+Exporter/WebPExporter.h: ../../src/Exporter/WebPExporter.cpp
 @WebPExporter.o
 
 IO/AMDGPUControl.h: ../../src/IO/AMDGPUControl.cpp
@@ -106,7 +106,7 @@ Media/KSRenderer.h: ../../src/Media/KSRenderer.cpp
 @util.o
 Media/MonitorSurfaceMgrFactory.h: ../../src/Media/MonitorSurfaceMgrFactoryWin.cpp
 @MonitorSurfaceMgrFactory.o
-Media/OCREngine.h: ../../src/Media/OCREngine_Null.cpp
+Media/OCREngine.h: ../../src/Media/OCREngine.cpp
 @OCREngine.o
 Media/Printer.h: ../../src/Media/PrinterW.cpp
 @Printer.o
@@ -126,14 +126,14 @@ Media/DShow/DShowVideoCapture.h: ../../src/Media/DShow/DShowVideoCapture.cpp
 @wxlist.o
 @wxutil.o
 Media/DShow/DShowVideoFilter.h:
-Media/OpenCV/OCVFrame.h: ../../src/Media/OpenCV/OCVFrameNull.cpp
+Media/OpenCV/OCVFrame.h: ../../src/Media/OpenCV/OCVFrame.cpp
 @OCVFrame.o
 Media/OpenCV/OCVFrameFeeder.h: ../../src/Media/OpenCV/OCVFrameFeeder.cpp
 @OCVFrameFeeder.o
 Media/OpenCV/OCVInit.h:
-Media/OpenCV/OCVNumPlateFinder.h: ../../src/Media/OpenCV/OCVNumPlateFinder_Null.cpp
+Media/OpenCV/OCVNumPlateFinder.h: ../../src/Media/OpenCV/OCVNumPlateFinder.cpp
 @OCVNumPlateFinder.o
-Media/OpenCV/OCVObjectDetector.h: ../../src/Media/OpenCV/OCVObjectDetectorNull.cpp
+Media/OpenCV/OCVObjectDetector.h: ../../src/Media/OpenCV/OCVObjectDetector.cpp
 @OCVObjectDetector.o
 Media/OpenCV/OCVUtil.h: ../../src/Media/OpenCV/OCVUtil.cpp
 @OCVUtil.o
@@ -165,11 +165,11 @@ Net/WLANWindowsCore.h: ../../src/Net/WLANWindowsCore.cpp
 Net/WLANWindowsInterface.h: ../../src/Net/WLANWindowsInterface.cpp
 @WLANWindowsInterface.o
 
-Parser/FileParser/HEIFParser.h: ../../src/Parser/FileParser/HEIFParser_Null.cpp
+Parser/FileParser/HEIFParser.h: ../../src/Parser/FileParser/HEIFParser.cpp
 @HEIFParser.o
-Parser/FileParser/JP2Parser.h: ../../src/Parser/FileParser/JP2Parser_Null.cpp
+Parser/FileParser/JP2Parser.h: ../../src/Parser/FileParser/JP2Parser.cpp
 @JP2Parser.o
-Parser/FileParser/WebPParser.h: ../../src/Parser/FileParser/WebPParser_Null.cpp
+Parser/FileParser/WebPParser.h: ../../src/Parser/FileParser/WebPParser.cpp
 @WebPParser.o
 
 Sync/SimpleThread.h: ../../src/Sync/ThreadUtilW.cpp
@@ -197,7 +197,11 @@ WinHttpCert.o: ../../src/Crypto/Cert/WinHttpCert.cpp
 MDBFileConn.o: ../../src/DB/MDBFileConn.cpp
 !-lodbc32
 MongoDB.o: ../../src/DB/MongoDBNull.cpp
-MySQLConn.o: ../../src/DB/MySQLConnNull.cpp
+MySQLConn.o: ../../src/DB/MySQLConn.cpp
+$`mysql_config --cflags`
+$`mariadb_config --cflags`
+!`mysql_config --libs`
+!`mariadb_config --libs`
 ODBCConn.o: ../../src/DB/ODBCConn.cpp
 !-lodbc32
 !-lodbccp32
@@ -205,9 +209,13 @@ OLEDBConn.o: ../../src/DB/OLEDBConnNull.cpp
 PostgreSQLConn.o: ../../src/DB/PostgreSQLConn.cpp
 $`pkgconf --cflags libpq`
 !`pkgconf --libs libpq`
-TDSConn.o: ../../src/DB/TDSConn_Null.cpp
-HEIFExporter.o: ../../src/Exporter/HEIFExporter_Null.cpp
-WebPExporter.o: ../../src/Exporter/WebPExporter_Null.cpp
+TDSConn.o: ../../src/DB/TDSConn.cpp
+!-lsybdb
+HEIFExporter.o: ../../src/Exporter/HEIFExporter.cpp
+!-lheif
+WebPExporter.o: ../../src/Exporter/WebPExporter.cpp
+!-lwebp
+!-lwebpmux
 AMDGPUControl.o: ../../src/IO/AMDGPUControl.cpp
 $-I ../../ThirdParty/adl
 AMDGPUManager.o: ../../src/IO/AMDGPUManager.cpp
@@ -249,7 +257,9 @@ $-I ../../ThirdParty/KSSample
 !-luuid
 !-lksguid
 MonitorSurfaceMgrFactory.o: ../../src/Media/MonitorSurfaceMgrFactoryWin.cpp
-OCREngine.o: ../../src/Media/OCREngine_Null.cpp
+OCREngine.o: ../../src/Media/OCREngine.cpp
+!-lleptonica
+!`pkgconf --libs tesseract`
 Printer.o: ../../src/Media/PrinterW.cpp
 !-lwinspool
 !-lgdi32
@@ -258,18 +268,28 @@ ZXingWriter.o: ../../src/Media/ZXingWriter_Null.cpp
 FFMPEGDecoder.o: ../../src/Media/Decoder/FFMPEGDecoder.cpp
 #$-I ../../../ffmpeg-master-latest-win64-gpl-shared/include
 #!-L ../../../ffmpeg-master-latest-win64-gpl-shared/lib
-#!-lavutil
-#!-lavcodec
+!-lavutil
+!-lavcodec
 DShowVideoCapture.o: ../../src/Media/DShow/DShowVideoCapture.cpp
 $-I ../../ThirdParty/baseclasses
 $-fpermissive
 !-lole32
 !-loleaut32
-OCVFrame.o: ../../src/Media/OpenCV/OCVFrameNull.cpp
+OCVFrame.o: ../../src/Media/OpenCV/OCVFrame.cpp
+$@(pkgconf --exists opencv) `pkgconf --cflags opencv`
+!@(pkgconf --exists opencv) `pkgconf --libs opencv`
 OCVFrameFeeder.o: ../../src/Media/OpenCV/OCVFrameFeeder.cpp
-OCVNumPlateFinder.o: ../../src/Media/OpenCV/OCVNumPlateFinder_Null.cpp
-OCVObjectDetector.o: ../../src/Media/OpenCV/OCVObjectDetectorNull.cpp
+$@(pkgconf --exists opencv) `pkgconf --cflags opencv`
+!@(pkgconf --exists opencv) `pkgconf --libs opencv`
+OCVNumPlateFinder.o: ../../src/Media/OpenCV/OCVNumPlateFinder.cpp
+$@(pkgconf --exists opencv) `pkgconf --cflags opencv`
+!@(pkgconf --exists opencv) `pkgconf --libs opencv`
+OCVObjectDetector.o: ../../src/Media/OpenCV/OCVObjectDetector.cpp
+$@(pkgconf --exists opencv) `pkgconf --cflags opencv`
+!@(pkgconf --exists opencv) `pkgconf --libs opencv`
 OCVUtil.o: ../../src/Media/OpenCV/OCVUtil.cpp
+$@(pkgconf --exists opencv) `pkgconf --cflags opencv`
+!@(pkgconf --exists opencv) `pkgconf --libs opencv`
 HTTPOSClient.o: ../../src/Net/HTTPOSClientW.cpp
 !-lwinhttp
 SSLEngineFactory.o: ../../src/Net/SSLEngineFactoryWin.cpp
@@ -282,9 +302,14 @@ WinSSLEngine.o: ../../src/Net/WinSSLEngine.cpp
 WirelessLAN.o: ../../src/Net/WirelessLANW.cpp
 WLANWindowsCore.o: ../../src/Net/WLANWindowsCore.cpp
 WLANWindowsInterface.o: ../../src/Net/WLANWindowsInterface.cpp
-HEIFParser.o: ../../src/Parser/FileParser/HEIFParser_Null.cpp
-JP2Parser.o: ../../src/Parser/FileParser/JP2Parser_Null.cpp
-WebPParser.o: ../../src/Parser/FileParser/WebPParser_Null.cpp
+HEIFParser.o: ../../src/Parser/FileParser/HEIFParser.cpp
+!-lheif
+JP2Parser.o: ../../src/Parser/FileParser/JP2Parser.cpp
+$`pkgconf --cflags libopenjp2`
+!`pkgconf --libs libopenjp2`
+WebPParser.o: ../../src/Parser/FileParser/WebPParser.cpp
+!-lwebp
+!-lwebpdemux
 SimpleThread.o: ../../src/Sync/SimpleThreadW.cpp
 ThreadUtil.o: ../../src/Sync/ThreadUtilW.cpp
 ServiceControl.o: ../../src/Win32/ServiceControl.cpp
