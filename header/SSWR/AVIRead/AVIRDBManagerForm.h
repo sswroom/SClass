@@ -94,6 +94,7 @@ namespace SSWR
 			Map::MapEnv *mapEnv;
 			Map::DBMapLayer *dbLayer;
 			Math::Coord2D<OSInt> mapDownPos;
+			Bool sqlFileMode;
 
 			static void __stdcall OnConnSelChg(void *userObj);
 			static Bool __stdcall OnConnRClicked(void *userObj, Math::Coord2D<OSInt> scnPos, MouseButton btn);

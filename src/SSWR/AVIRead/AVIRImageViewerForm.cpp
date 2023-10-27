@@ -227,6 +227,7 @@ Bool SSWR::AVIRead::AVIRImageViewerForm::IsImageFileName(Text::CString fileName)
 	if (fileName.EndsWithICase(UTF8STRC(".heic"))) return true;
 	if (fileName.EndsWithICase(UTF8STRC(".heif"))) return true;
 	if (fileName.EndsWithICase(UTF8STRC(".avif"))) return true;
+	if (fileName.EndsWithICase(UTF8STRC(".webp"))) return true;
 	return false;
 }
 

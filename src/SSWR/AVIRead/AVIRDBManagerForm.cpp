@@ -359,6 +359,7 @@ void __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnSQLExecClicked(void *userObj)
 				{
 					if (r->ColCount() == 0)
 					{
+						me->sqlFileMode = false;
 						me->lvSQLResult->ClearAll();
 						me->lvSQLResult->ChangeColumnCnt(1);
 						me->lvSQLResult->AddColumn(CSTR("Row Changed"), 100);
@@ -368,6 +369,7 @@ void __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnSQLExecClicked(void *userObj)
 					}
 					else
 					{
+						me->sqlFileMode = false;
 						UpdateResult(r, me->lvSQLResult);
 					}
 					me->currDB->CloseReader(r);
@@ -790,10 +792,18 @@ void SSWR::AVIRead::AVIRDBManagerForm::UpdateSvrConnList()
 
 void SSWR::AVIRead::AVIRDBManagerForm::RunSQLFile(DB::ReadingDBTool *db, NotNullPtr<Text::String> fileName)
 {
-	this->lvSQLResult->ClearAll();
-	this->lvSQLResult->ChangeColumnCnt(1);
-	this->lvSQLResult->AddColumn(CSTR("Row Changed"), 100);
-	this->lvSQLResult->AddItem(CSTR("0"), 0);
+	UOSInt i = fileName->LastIndexOf(IO::Path::PATH_SEPERATOR);
+	UOSInt rowInd;
+	if (!this->sqlFileMode)
+	{
+		this->lvSQLResult->ClearAll();
+		this->lvSQLResult->ChangeColumnCnt(2);
+		this->lvSQLResult->AddColumn(CSTR("File Name"), 400);
+		this->lvSQLResult->AddColumn(CSTR("Row Changed"), 100);
+		this->sqlFileMode = true;
+	}
+	rowInd = this->lvSQLResult->AddItem(fileName->ToCString().Substring(i + 1), 0);
+	this->lvSQLResult->SetSubItem(rowInd, 1, CSTR("0"));
 	this->ui->ProcessMessages();
 	Text::StringBuilderUTF8 sb;
 	UOSInt rowsChanged = 0;
@@ -821,7 +831,7 @@ void SSWR::AVIRead::AVIRDBManagerForm::RunSQLFile(DB::ReadingDBTool *db, NotNull
 						lastShowTime = t;							
 						sb.ClearStr();
 						sb.AppendUOSInt(rowsChanged);
-						this->lvSQLResult->SetSubItem(0, 0, sb.ToCString());
+						this->lvSQLResult->SetSubItem(rowInd, 1, sb.ToCString());
 						this->ui->ProcessMessages();
 					}
 				}
@@ -839,7 +849,7 @@ void SSWR::AVIRead::AVIRDBManagerForm::RunSQLFile(DB::ReadingDBTool *db, NotNull
 	}
 	sb.ClearStr();
 	sb.AppendUOSInt(rowsChanged);
-	this->lvSQLResult->SetSubItem(0, 0, sb.ToCString());
+	this->lvSQLResult->SetSubItem(rowInd, 1, sb.ToCString());
 	this->ui->ProcessMessages();
 }
 
@@ -1087,6 +1097,7 @@ SSWR::AVIRead::AVIRDBManagerForm::AVIRDBManagerForm(UI::GUIClientControl *parent
 	this->core = core;
 	this->ssl = Net::SSLEngineFactory::Create(core->GetSocketFactory(), true);
 	this->currDB = 0;
+	this->sqlFileMode = false;
 	NEW_CLASS(this->mapEnv, Map::MapEnv(CSTR("DB"), 0xffc0c0ff, Math::CoordinateSystemManager::CreateDefaultCsys()));
 	Map::MapDrawLayer *layer = Map::BaseMapLayer::CreateLayer(Map::BaseMapLayer::BLT_OSM_TILE, this->core->GetSocketFactory(), this->ssl, this->core->GetParserList());
 	this->mapEnv->AddLayer(0, layer, true);
