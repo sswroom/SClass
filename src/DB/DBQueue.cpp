@@ -487,9 +487,9 @@ UOSInt DB::DBQueue::GetNextCmds(IDBCmd **cmds)
 	return cnt;
 }
 
-UTF8Char *DB::DBQueue::DBDate(UTF8Char *buff, Data::DateTime *dat)
+UTF8Char *DB::DBQueue::DBDateTime(UTF8Char *buff, Data::DateTime *dat)
 {
-	return db1->DBDate(buff, dat);
+	return db1->DBDateTime(buff, dat);
 }
 
 UTF8Char *DB::DBQueue::DBInt32(UTF8Char *buff, Int32 val)

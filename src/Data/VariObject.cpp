@@ -63,9 +63,9 @@ void Data::VariObject::SetItemStr(const UTF8Char *name, Text::String *str)
 	this->SetItem(name, Data::VariItem::NewStr(str));
 }
 
-void Data::VariObject::SetItemDate(const UTF8Char *name, Data::DateTime *dt)
+void Data::VariObject::SetItemDateTime(const UTF8Char *name, Data::DateTime *dt)
 {
-	this->SetItem(name, Data::VariItem::NewDate(dt));
+	this->SetItem(name, Data::VariItem::NewDateTime(dt));
 }
 
 void Data::VariObject::SetItemTS(const UTF8Char *name, const Data::Timestamp &ts)

@@ -1234,7 +1234,7 @@ UOSInt DB::DBUtil::SDBUInt64Leng(UInt64 val, DB::SQLType sqlType)
 	return (UOSInt)(Text::StrUInt64(buff, val) - buff);
 }
 
-UTF8Char *DB::DBUtil::SDBDate(UTF8Char *sqlstr, Data::DateTime *dat, DB::SQLType sqlType, Int8 tzQhr)
+UTF8Char *DB::DBUtil::SDBDateTime(UTF8Char *sqlstr, Data::DateTime *dat, DB::SQLType sqlType, Int8 tzQhr)
 {
 	UTF8Char *sptr;
 	NotNullPtr<Data::DateTime> nnDat;
@@ -1303,7 +1303,7 @@ UTF8Char *DB::DBUtil::SDBDate(UTF8Char *sqlstr, Data::DateTime *dat, DB::SQLType
 	}
 }
 
-UOSInt DB::DBUtil::SDBDateLeng(Data::DateTime *dat, DB::SQLType sqlType)
+UOSInt DB::DBUtil::SDBDateTimeLeng(Data::DateTime *dat, DB::SQLType sqlType)
 {
 	if (dat == 0)
 		return 4;
@@ -1423,6 +1423,101 @@ UOSInt DB::DBUtil::SDBTSLeng(const Data::Timestamp &ts, SQLType sqlType)
 	case DB::SQLType::WBEM:
 	case DB::SQLType::Unknown:
 		return 21;
+	}
+}
+
+UTF8Char *DB::DBUtil::SDBDate(UTF8Char *sqlstr, const Data::Date &d, SQLType sqlType)
+{
+	UTF8Char *sptr;
+	if (d.IsNull())
+		return Text::StrConcatC(sqlstr, UTF8STRC("NULL"));
+	if (sqlType == DB::SQLType::Access)
+	{
+		sptr = sqlstr;
+		*sptr++ = '#';
+		sptr = d.ToString(sptr, "dd/MM/yyyy");
+		*sptr++ = '#';
+		*sptr = 0;
+		return sptr;
+	}
+	else if (sqlType == DB::SQLType::MSSQL)
+	{
+		sptr = sqlstr;
+		*sptr++ = '\'';
+		sptr = d.ToString(sptr, "yyyy-MM-dd");
+		*sptr++ = '\'';
+		return sptr;
+	}
+	else if (sqlType == DB::SQLType::SQLite)
+	{
+		sptr = sqlstr;
+		*sptr++ = '\'';
+		sptr = d.ToString(sptr, "yyyy-MM-dd");
+		*sptr++ = '\'';
+		*sptr = 0;
+		return sptr;
+	}
+	else if (sqlType == DB::SQLType::Oracle)
+	{
+		sptr = sqlstr;
+		sptr = Text::StrConcatC(sptr, UTF8STRC("TIMESTAMP '"));
+		sptr = d.ToString(sptr, "yyyy-MM-dd");
+		*sptr++ = '\'';
+		*sptr = 0;
+		return sptr;
+	}
+	else if (sqlType == DB::SQLType::MySQL)
+	{
+		sptr = sqlstr;
+		*sptr++ = '\'';
+		sptr = d.ToString(sptr, "yyyy-MM-dd");
+		*sptr++ = '\'';
+		*sptr = 0;
+		return sptr;
+	}
+	else if (sqlType == DB::SQLType::PostgreSQL)
+	{
+		sptr = sqlstr;
+		*sptr++ = '\'';
+		sptr = d.ToString(sptr, "yyyy-MM-dd");
+		*sptr++ = '\'';
+		*sptr = 0;
+		return sptr;
+	}
+	else
+	{
+		sptr = sqlstr;
+		*sptr++ = '\'';
+		sptr = d.ToString(sptr, "yyyy-MM-dd");
+		*sptr++ = '\'';
+		*sptr = 0;
+		return sptr;
+	}
+}
+
+UOSInt DB::DBUtil::SDBDateLeng(const Data::Date &d, SQLType sqlType)
+{
+	if (d.IsNull())
+		return 4;
+	switch (sqlType)
+	{
+	case DB::SQLType::Access:
+	case DB::SQLType::MDBTools:
+		return 12;
+	case DB::SQLType::MSSQL:
+		return 12;
+	case DB::SQLType::Oracle:
+		return 12;
+	case DB::SQLType::SQLite:
+		return 12;
+	case DB::SQLType::MySQL:
+		return 12;
+	case DB::SQLType::PostgreSQL:
+		return 12;
+	default:
+	case DB::SQLType::WBEM:
+	case DB::SQLType::Unknown:
+		return 12;
 	}
 }
 

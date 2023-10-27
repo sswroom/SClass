@@ -1,5 +1,6 @@
 #ifndef _SM_DATA_TIMESTAMP
 #define _SM_DATA_TIMESTAMP
+#include "Data/Date.h"
 #include "Data/DateTimeUtil.h"
 #include "Data/TimeInstant.h"
 #include <cstddef>
@@ -180,6 +181,14 @@ namespace Data
 		Data::Duration Diff(const Timestamp &ts) const
 		{
 			return this->inst.Diff(ts.inst);
+		}
+
+		Date ToDate() const
+		{
+			if (IsNull())
+				return Date();
+			else
+				return Date((this->inst.sec + this->tzQhr * 900) / 86400);
 		}
 
 		Int64 ToTicks() const

@@ -335,6 +335,7 @@ Int32 ProcessExecTest()
 		sb.RemoveChars(1);
 	}
 	printf("Return %s\r\n", sb.ToString());
+	return 0;
 }
 
 Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)

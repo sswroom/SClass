@@ -91,14 +91,20 @@ void DB::SQLBuilder::AppendStrW(const WChar *val)
 
 void DB::SQLBuilder::AppendDateTime(Data::DateTime *val)
 {
-	this->sb.AllocLeng(DB::DBUtil::SDBDateLeng(val, this->sqlType));
-	this->sb.SetEndPtr(DB::DBUtil::SDBDate(this->sb.GetEndPtr(), val, this->sqlType, (Int8)this->tzQhr));
+	this->sb.AllocLeng(DB::DBUtil::SDBDateTimeLeng(val, this->sqlType));
+	this->sb.SetEndPtr(DB::DBUtil::SDBDateTime(this->sb.GetEndPtr(), val, this->sqlType, (Int8)this->tzQhr));
 }
 
 void DB::SQLBuilder::AppendTS(const Data::Timestamp &val)
 {
 	this->sb.AllocLeng(DB::DBUtil::SDBTSLeng(val, this->sqlType));
 	this->sb.SetEndPtr(DB::DBUtil::SDBTS(this->sb.GetEndPtr(), val, this->sqlType, (Int8)this->tzQhr));
+}
+
+void DB::SQLBuilder::AppendDate(const Data::Date &val)
+{
+	this->sb.AllocLeng(DB::DBUtil::SDBDateLeng(val, this->sqlType));
+	this->sb.SetEndPtr(DB::DBUtil::SDBDate(this->sb.GetEndPtr(), val, this->sqlType));
 }
 
 void DB::SQLBuilder::AppendDbl(Double val)

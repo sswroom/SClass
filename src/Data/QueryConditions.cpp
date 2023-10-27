@@ -80,6 +80,11 @@ Bool Data::QueryConditions::TimeBetweenCondition::TestValid(NotNullPtr<Data::Var
 			Data::Timestamp t = item->GetItemValue().ts;
 			return t >= this->t1 && t <= this->t2;
 		}
+	case Data::VariItem::ItemType::Date:
+		{
+			Data::Timestamp t = Data::Timestamp(item->GetItemValue().date.ToTicks(), Data::DateTimeUtil::GetLocalTzQhr());
+			return t >= this->t1 && t <= this->t2;
+		}
 	case Data::VariItem::ItemType::F32:
 	case Data::VariItem::ItemType::F64:
 	case Data::VariItem::ItemType::I8:
@@ -170,6 +175,7 @@ Bool Data::QueryConditions::Int32Condition::TestValid(NotNullPtr<Data::VariItem>
 	case Data::VariItem::ItemType::Null:
 	case Data::VariItem::ItemType::Unknown:
 	case Data::VariItem::ItemType::Timestamp:
+	case Data::VariItem::ItemType::Date:
 	case Data::VariItem::ItemType::ByteArr:
 	case Data::VariItem::ItemType::Vector:
 	case Data::VariItem::ItemType::UUID:
@@ -283,6 +289,7 @@ Bool Data::QueryConditions::Int32InCondition::TestValid(NotNullPtr<Data::VariIte
 	case Data::VariItem::ItemType::Null:
 	case Data::VariItem::ItemType::Unknown:
 	case Data::VariItem::ItemType::Timestamp:
+	case Data::VariItem::ItemType::Date:
 	case Data::VariItem::ItemType::ByteArr:
 	case Data::VariItem::ItemType::Vector:
 	case Data::VariItem::ItemType::UUID:
@@ -367,6 +374,7 @@ Bool Data::QueryConditions::Int64Condition::TestValid(NotNullPtr<Data::VariItem>
 	case Data::VariItem::ItemType::Null:
 	case Data::VariItem::ItemType::Unknown:
 	case Data::VariItem::ItemType::Timestamp:
+	case Data::VariItem::ItemType::Date:
 	case Data::VariItem::ItemType::ByteArr:
 	case Data::VariItem::ItemType::Vector:
 	case Data::VariItem::ItemType::UUID:
@@ -473,6 +481,7 @@ Bool Data::QueryConditions::DoubleCondition::TestValid(NotNullPtr<Data::VariItem
 	case Data::VariItem::ItemType::Null:
 	case Data::VariItem::ItemType::Unknown:
 	case Data::VariItem::ItemType::Timestamp:
+	case Data::VariItem::ItemType::Date:
 	case Data::VariItem::ItemType::ByteArr:
 	case Data::VariItem::ItemType::Vector:
 	case Data::VariItem::ItemType::UUID:
@@ -617,6 +626,7 @@ Bool Data::QueryConditions::StringInCondition::TestValid(NotNullPtr<Data::VariIt
 	case Data::VariItem::ItemType::Null:
 	case Data::VariItem::ItemType::Unknown:
 	case Data::VariItem::ItemType::Timestamp:
+	case Data::VariItem::ItemType::Date:
 	case Data::VariItem::ItemType::ByteArr:
 	case Data::VariItem::ItemType::Vector:
 	case Data::VariItem::ItemType::UUID:
@@ -745,6 +755,7 @@ Bool Data::QueryConditions::StringNotInCondition::TestValid(NotNullPtr<Data::Var
 	case Data::VariItem::ItemType::Null:
 	case Data::VariItem::ItemType::Unknown:
 	case Data::VariItem::ItemType::Timestamp:
+	case Data::VariItem::ItemType::Date:
 	case Data::VariItem::ItemType::ByteArr:
 	case Data::VariItem::ItemType::Vector:
 	case Data::VariItem::ItemType::UUID:
@@ -820,6 +831,7 @@ Bool Data::QueryConditions::StringContainsCondition::TestValid(NotNullPtr<Data::
 	case Data::VariItem::ItemType::Null:
 	case Data::VariItem::ItemType::Unknown:
 	case Data::VariItem::ItemType::Timestamp:
+	case Data::VariItem::ItemType::Date:
 	case Data::VariItem::ItemType::ByteArr:
 	case Data::VariItem::ItemType::Vector:
 	case Data::VariItem::ItemType::UUID:
@@ -891,6 +903,7 @@ Bool Data::QueryConditions::StringEqualsCondition::TestValid(NotNullPtr<Data::Va
 	case Data::VariItem::ItemType::Null:
 	case Data::VariItem::ItemType::Unknown:
 	case Data::VariItem::ItemType::Timestamp:
+	case Data::VariItem::ItemType::Date:
 	case Data::VariItem::ItemType::ByteArr:
 	case Data::VariItem::ItemType::Vector:
 	case Data::VariItem::ItemType::UUID:
@@ -969,6 +982,7 @@ Bool Data::QueryConditions::BooleanCondition::TestValid(NotNullPtr<Data::VariIte
 	case Data::VariItem::ItemType::Null:
 	case Data::VariItem::ItemType::Unknown:
 	case Data::VariItem::ItemType::Timestamp:
+	case Data::VariItem::ItemType::Date:
 	case Data::VariItem::ItemType::ByteArr:
 	case Data::VariItem::ItemType::Vector:
 	case Data::VariItem::ItemType::UUID:
@@ -1019,6 +1033,7 @@ Bool Data::QueryConditions::NotNullCondition::TestValid(NotNullPtr<Data::VariIte
 	case Data::VariItem::ItemType::Str:
 	case Data::VariItem::ItemType::CStr:
 	case Data::VariItem::ItemType::Timestamp:
+	case Data::VariItem::ItemType::Date:
 	case Data::VariItem::ItemType::ByteArr:
 	case Data::VariItem::ItemType::Vector:
 	case Data::VariItem::ItemType::UUID:

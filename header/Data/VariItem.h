@@ -30,6 +30,7 @@ namespace Data
 			U64,
 			BOOL,
 			CStr,
+			Date,
 
 			Str,
 			ByteArr,
@@ -52,6 +53,7 @@ namespace Data
 			Int64 i64;
 			UInt64 u64;
 			Bool boolean;
+			Data::Date date;
 			Data::ReadonlyArray<UInt8> *byteArr;
 			NotNullPtr<Math::Geometry::Vector2D> vector;
 			NotNullPtr<Data::UUID> uuid;
@@ -137,6 +139,7 @@ namespace Data
 		Text::String *GetAsNewString() const;
 		Data::DateTime *GetAsNewDate() const;
 		Data::Timestamp GetAsTimestamp() const;
+		Data::Date GetAsDate() const;
 		Data::ReadonlyArray<UInt8> *GetAsNewByteArr() const;
 		Math::Geometry::Vector2D *GetAsNewVector() const;
 		Data::UUID *GetAsNewUUID() const;
@@ -153,6 +156,7 @@ namespace Data
 		void SetStr(NotNullPtr<Text::String> str);
 		void SetDate(Data::DateTime *dt);
 		void SetDate(const Data::Timestamp &ts);
+		void SetDate(const Data::Date &date);
 		void SetF32(Single val);
 		void SetF64(Double val);
 		void SetI8(Int8 val);
@@ -179,8 +183,9 @@ namespace Data
 		static NotNullPtr<VariItem> NewStrSlow(const UTF8Char *str);
 		static NotNullPtr<VariItem> NewStr(Text::CString str);
 		static NotNullPtr<VariItem> NewStr(Text::String *str);
-		static NotNullPtr<VariItem> NewDate(Data::DateTime *dt);
+		static NotNullPtr<VariItem> NewDateTime(Data::DateTime *dt);
 		static NotNullPtr<VariItem> NewTS(const Data::Timestamp &ts);
+		static NotNullPtr<VariItem> NewDate(const Data::Date &date);
 		static NotNullPtr<VariItem> NewF32(Single val);
 		static NotNullPtr<VariItem> NewF64(Double val);
 		static NotNullPtr<VariItem> NewI8(Int8 val);

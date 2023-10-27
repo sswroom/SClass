@@ -557,9 +557,9 @@ UTF8Char *DB::ReadingDBTool::DBBool(UTF8Char *sqlStr, Bool val)
 	return DB::DBUtil::SDBBool(sqlStr, val, this->sqlType);
 }
 
-UTF8Char *DB::ReadingDBTool::DBDate(UTF8Char *sqlStr, Data::DateTime *val)
+UTF8Char *DB::ReadingDBTool::DBDateTime(UTF8Char *sqlStr, Data::DateTime *val)
 {
-	return DB::DBUtil::SDBDate(sqlStr, val, this->sqlType, (Int8)this->GetTzQhr());
+	return DB::DBUtil::SDBDateTime(sqlStr, val, this->sqlType, (Int8)this->GetTzQhr());
 }
 
 UInt32 DB::ReadingDBTool::GetDataCnt()

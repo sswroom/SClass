@@ -90,10 +90,12 @@ namespace DB
 		static UOSInt SDBUInt32Leng(UInt32 val, SQLType sqlType);
 		static UTF8Char *SDBUInt64(UTF8Char *sqlstr, UInt64 val, SQLType sqlType);
 		static UOSInt SDBUInt64Leng(UInt64 val, SQLType sqlType);
-		static UTF8Char *SDBDate(UTF8Char *sqlstr, Data::DateTime *dat, SQLType sqlType, Int8 tzQhr);
-		static UOSInt SDBDateLeng(Data::DateTime *dat, SQLType sqlType);
+		static UTF8Char *SDBDateTime(UTF8Char *sqlstr, Data::DateTime *dat, SQLType sqlType, Int8 tzQhr);
+		static UOSInt SDBDateTimeLeng(Data::DateTime *dat, SQLType sqlType);
 		static UTF8Char *SDBTS(UTF8Char *sqlstr, const Data::Timestamp &ts, SQLType sqlType, Int8 tzQhr);
 		static UOSInt SDBTSLeng(const Data::Timestamp &ts, SQLType sqlType);
+		static UTF8Char *SDBDate(UTF8Char *sqlstr, const Data::Date &d, SQLType sqlType);
+		static UOSInt SDBDateLeng(const Data::Date &d, SQLType sqlType);
 		static UTF8Char *SDBDbl(UTF8Char *sqlstr, Double val, SQLType sqlType);
 		static UOSInt SDBDblLeng(Double val, SQLType sqlType);
 		static UTF8Char *SDBSng(UTF8Char *sqlstr, Single val, SQLType sqlType);

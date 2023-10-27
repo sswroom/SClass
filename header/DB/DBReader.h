@@ -59,8 +59,12 @@ namespace DB
 		}
 		virtual UTF8Char *GetStr(UOSInt colIndex, UTF8Char *buff, UOSInt buffSize) = 0;
 		virtual Data::Timestamp GetTimestamp(UOSInt colIndex) = 0;
+		virtual Data::Date GetDate(UOSInt colIndex)
+		{
+			return GetTimestamp(colIndex).ToDate();
+		}
 
-		DateErrType GetAsDate(UOSInt colIndex, NotNullPtr<Data::DateTime> outVal)
+		DateErrType GetAsDateTime(UOSInt colIndex, NotNullPtr<Data::DateTime> outVal)
 		{
 			if (IsNull(colIndex))
 				return DateErrType::Null;

@@ -5225,7 +5225,7 @@ void SSWR::OrganMgr::OrganEnvDB::ExportLite(const UTF8Char *folder)
 			Int32 fileType = r->GetInt32(0);
 			sb.AppendI32(userId);
 			sb.AppendChar(IO::Path::PATH_SEPERATOR, 1);
-			r->GetAsDate(1, dt);
+			r->GetAsDateTime(1, dt);
 			sptr2End = dt.ToString(sptr2, "yyyyMM");
 			sb.AppendP(sptr2, sptr2End);
 			sptr2End = Text::StrConcatC(sptr2, sb.ToString(), sb.GetLength());

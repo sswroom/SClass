@@ -130,7 +130,7 @@ void Data::DateTimeUtil::TimeValueSetTime(NotNullPtr<Data::DateTimeUtil::TimeVal
 	}
 }
 
-Int64 Data::DateTimeUtil::TimeValue2Secs(NotNullPtr<const TimeValue> t, Int8 tzQhr)
+Int64 Data::DateTimeUtil::Date2TotalDays(Int32 year, Int32 month, Int32 day)
 {
 	Int32 totalDays;
 	Int32 leapDays;
@@ -138,9 +138,9 @@ Int64 Data::DateTimeUtil::TimeValue2Secs(NotNullPtr<const TimeValue> t, Int8 tzQ
 	Int32 yearDiff100;
 	Int32 yearDiff400;
 
-	Int32 currYear = t->year;
-	Int32 currMonth = t->month;
-	Int32 currDay = t->day;
+	Int32 currYear = year;
+	Int32 currMonth = month;
+	Int32 currDay = day;
 
 	if (currYear <= 2000)
 	{
@@ -185,7 +185,7 @@ Int64 Data::DateTimeUtil::TimeValue2Secs(NotNullPtr<const TimeValue> t, Int8 tzQ
 	case 4:
 		totalDays += 31;
 	case 3:
-		if (IsYearLeap(t->year))
+		if (IsYearLeap(year))
 			totalDays += 29;
 		else
 			totalDays += 28;
@@ -197,8 +197,17 @@ Int64 Data::DateTimeUtil::TimeValue2Secs(NotNullPtr<const TimeValue> t, Int8 tzQ
 		break;
 	}
 	totalDays += currDay - 1;
+	return totalDays;
+}
 
-	return totalDays * 86400LL + (t->second + t->minute * 60 + t->hour * 3600 - tzQhr * 900);
+Int64 Data::DateTimeUtil::DateValue2TotalDays(NotNullPtr<const DateValue> d)
+{
+	return Date2TotalDays(d->year, d->month, d->day);
+}
+
+Int64 Data::DateTimeUtil::TimeValue2Secs(NotNullPtr<const TimeValue> t, Int8 tzQhr)
+{
+	return DateValue2TotalDays(t) * 86400LL + (t->second + t->minute * 60 + t->hour * 3600 - tzQhr * 900);
 }
 
 Int64 Data::DateTimeUtil::TimeValue2Ticks(NotNullPtr<const TimeValue> t, UInt32 ns, Int8 tzQhr)
@@ -487,6 +496,259 @@ void Data::DateTimeUtil::Secs2TimeValue(Int64 secs, NotNullPtr<TimeValue> t, Int
 	}
 }
 
+void Data::DateTimeUtil::TotalDays2DateValue(Int64 totalDays, NotNullPtr<DateValue> d)
+{
+	if (totalDays < 0)
+	{
+		d->year = 1970;
+		while (totalDays < 0)
+		{
+			d->year--;
+			if (IsYearLeap(d->year))
+			{
+				totalDays += 366;
+			}
+			else
+			{
+				totalDays += 365;
+			}
+		}
+	}
+	else
+	{
+		if (totalDays < 10957)
+		{
+			d->year = 1970;
+			while (true)
+			{
+				if (IsYearLeap(d->year))
+				{
+					if (totalDays < 366)
+					{
+						break;
+					}
+					else
+					{
+						d->year++;
+						totalDays -= 366;
+					}
+				}
+				else
+				{
+					if (totalDays < 365)
+					{
+						break;
+					}
+					else
+					{
+						d->year++;
+						totalDays -= 365;
+					}
+				}
+			}
+		}
+		else
+		{
+			totalDays -= 10957;
+			d->year = (UInt16)(2000 + ((totalDays / 1461) << 2));
+			totalDays = totalDays % 1461;
+			if (totalDays >= 366)
+			{
+				totalDays--;
+				d->year = (UInt16)(d->year + totalDays / 365);
+				totalDays = totalDays % 365;
+			}
+		}
+	}
+
+	if (IsYearLeap(d->year))
+	{
+		if (totalDays < 121)
+		{
+			if (totalDays < 60)
+			{
+				if (totalDays < 31)
+				{
+					d->month = 1;
+					d->day = (UInt8)(totalDays + 1);
+				}
+				else
+				{
+					d->month = 2;
+					d->day = (UInt8)(totalDays - 31 + 1);
+				}
+			}
+			else
+			{
+				if (totalDays < 91)
+				{
+					d->month = 3;
+					d->day = (UInt8)(totalDays - 60 + 1);
+				}
+				else
+				{
+					d->month = 4;
+					d->day = (UInt8)(totalDays - 91 + 1);
+				}
+			}
+		}
+		else
+		{
+			if (totalDays < 244)
+			{
+				if (totalDays < 182)
+				{
+					if (totalDays < 152)
+					{
+						d->month = 5;
+						d->day = (UInt8)(totalDays - 121 + 1);
+					}
+					else
+					{
+						d->month = 6;
+						d->day = (UInt8)(totalDays - 152 + 1);
+					}
+				}
+				else
+				{
+					if (totalDays < 213)
+					{
+						d->month = 7;
+						d->day = (UInt8)(totalDays - 182 + 1);
+					}
+					else
+					{
+						d->month = 8;
+						d->day = (UInt8)(totalDays - 213 + 1);
+					}
+				}
+			}
+			else
+			{
+				if (totalDays < 305)
+				{
+					if (totalDays < 274)
+					{
+						d->month = 9;
+						d->day = (UInt8)(totalDays - 244 + 1);
+					}
+					else
+					{
+						d->month = 10;
+						d->day = (UInt8)(totalDays - 274 + 1);
+					}
+				}
+				else
+				{
+					if (totalDays < 335)
+					{
+						d->month = 11;
+						d->day = (UInt8)(totalDays - 305 + 1);
+					}
+					else
+					{
+						d->month = 12;
+						d->day = (UInt8)(totalDays - 335 + 1);
+					}
+				}
+			}
+		}
+	}
+	else
+	{
+		if (totalDays < 120)
+		{
+			if (totalDays < 59)
+			{
+				if (totalDays < 31)
+				{
+					d->month = 1;
+					d->day = (UInt8)(totalDays + 1);
+				}
+				else
+				{
+					d->month = 2;
+					d->day = (UInt8)(totalDays - 31 + 1);
+				}
+			}
+			else
+			{
+				if (totalDays < 90)
+				{
+					d->month = 3;
+					d->day = (UInt8)(totalDays - 59 + 1);
+				}
+				else
+				{
+					d->month = 4;
+					d->day = (UInt8)(totalDays - 90 + 1);
+				}
+			}
+		}
+		else
+		{
+			if (totalDays < 243)
+			{
+				if (totalDays < 181)
+				{
+					if (totalDays < 151)
+					{
+						d->month = 5;
+						d->day = (UInt8)(totalDays - 120 + 1);
+					}
+					else
+					{
+						d->month = 6;
+						d->day = (UInt8)(totalDays - 151 + 1);
+					}
+				}
+				else
+				{
+					if (totalDays < 212)
+					{
+						d->month = 7;
+						d->day = (UInt8)(totalDays - 181 + 1);
+					}
+					else
+					{
+						d->month = 8;
+						d->day = (UInt8)(totalDays - 212 + 1);
+					}
+				}
+			}
+			else
+			{
+				if (totalDays < 304)
+				{
+					if (totalDays < 273)
+					{
+						d->month = 9;
+						d->day = (UInt8)(totalDays - 243 + 1);
+					}
+					else
+					{
+						d->month = 10;
+						d->day = (UInt8)(totalDays - 273 + 1);
+					}
+				}
+				else
+				{
+					if (totalDays < 334)
+					{
+						d->month = 11;
+						d->day = (UInt8)(totalDays - 304 + 1);
+					}
+					else
+					{
+						d->month = 12;
+						d->day = (UInt8)(totalDays - 334 + 1);
+					}
+				}
+			}
+		}
+	}
+}
+
 void Data::DateTimeUtil::Instant2TimeValue(Int64 secs, UInt32 nanosec, NotNullPtr<TimeValue> t, Int8 tzQhr)
 {
 	secs = secs + tzQhr * 900;
@@ -511,256 +773,7 @@ void Data::DateTimeUtil::Instant2TimeValue(Int64 secs, UInt32 nanosec, NotNullPt
 	minutes = minutes / 60;
 	t->minute = (UInt8)(minutes % 60);
 	t->hour = (UInt8)(minutes / 60);
-
-	if (totalDays < 0)
-	{
-		t->year = 1970;
-		while (totalDays < 0)
-		{
-			t->year--;
-			if (IsYearLeap(t->year))
-			{
-				totalDays += 366;
-			}
-			else
-			{
-				totalDays += 365;
-			}
-		}
-	}
-	else
-	{
-		if (totalDays < 10957)
-		{
-			t->year = 1970;
-			while (true)
-			{
-				if (IsYearLeap(t->year))
-				{
-					if (totalDays < 366)
-					{
-						break;
-					}
-					else
-					{
-						t->year++;
-						totalDays -= 366;
-					}
-				}
-				else
-				{
-					if (totalDays < 365)
-					{
-						break;
-					}
-					else
-					{
-						t->year++;
-						totalDays -= 365;
-					}
-				}
-			}
-		}
-		else
-		{
-			totalDays -= 10957;
-			t->year = (UInt16)(2000 + ((totalDays / 1461) << 2));
-			totalDays = totalDays % 1461;
-			if (totalDays >= 366)
-			{
-				totalDays--;
-				t->year = (UInt16)(t->year + totalDays / 365);
-				totalDays = totalDays % 365;
-			}
-		}
-	}
-
-	if (IsYearLeap(t->year))
-	{
-		if (totalDays < 121)
-		{
-			if (totalDays < 60)
-			{
-				if (totalDays < 31)
-				{
-					t->month = 1;
-					t->day = (UInt8)(totalDays + 1);
-				}
-				else
-				{
-					t->month = 2;
-					t->day = (UInt8)(totalDays - 31 + 1);
-				}
-			}
-			else
-			{
-				if (totalDays < 91)
-				{
-					t->month = 3;
-					t->day = (UInt8)(totalDays - 60 + 1);
-				}
-				else
-				{
-					t->month = 4;
-					t->day = (UInt8)(totalDays - 91 + 1);
-				}
-			}
-		}
-		else
-		{
-			if (totalDays < 244)
-			{
-				if (totalDays < 182)
-				{
-					if (totalDays < 152)
-					{
-						t->month = 5;
-						t->day = (UInt8)(totalDays - 121 + 1);
-					}
-					else
-					{
-						t->month = 6;
-						t->day = (UInt8)(totalDays - 152 + 1);
-					}
-				}
-				else
-				{
-					if (totalDays < 213)
-					{
-						t->month = 7;
-						t->day = (UInt8)(totalDays - 182 + 1);
-					}
-					else
-					{
-						t->month = 8;
-						t->day = (UInt8)(totalDays - 213 + 1);
-					}
-				}
-			}
-			else
-			{
-				if (totalDays < 305)
-				{
-					if (totalDays < 274)
-					{
-						t->month = 9;
-						t->day = (UInt8)(totalDays - 244 + 1);
-					}
-					else
-					{
-						t->month = 10;
-						t->day = (UInt8)(totalDays - 274 + 1);
-					}
-				}
-				else
-				{
-					if (totalDays < 335)
-					{
-						t->month = 11;
-						t->day = (UInt8)(totalDays - 305 + 1);
-					}
-					else
-					{
-						t->month = 12;
-						t->day = (UInt8)(totalDays - 335 + 1);
-					}
-				}
-			}
-		}
-	}
-	else
-	{
-		if (totalDays < 120)
-		{
-			if (totalDays < 59)
-			{
-				if (totalDays < 31)
-				{
-					t->month = 1;
-					t->day = (UInt8)(totalDays + 1);
-				}
-				else
-				{
-					t->month = 2;
-					t->day = (UInt8)(totalDays - 31 + 1);
-				}
-			}
-			else
-			{
-				if (totalDays < 90)
-				{
-					t->month = 3;
-					t->day = (UInt8)(totalDays - 59 + 1);
-				}
-				else
-				{
-					t->month = 4;
-					t->day = (UInt8)(totalDays - 90 + 1);
-				}
-			}
-		}
-		else
-		{
-			if (totalDays < 243)
-			{
-				if (totalDays < 181)
-				{
-					if (totalDays < 151)
-					{
-						t->month = 5;
-						t->day = (UInt8)(totalDays - 120 + 1);
-					}
-					else
-					{
-						t->month = 6;
-						t->day = (UInt8)(totalDays - 151 + 1);
-					}
-				}
-				else
-				{
-					if (totalDays < 212)
-					{
-						t->month = 7;
-						t->day = (UInt8)(totalDays - 181 + 1);
-					}
-					else
-					{
-						t->month = 8;
-						t->day = (UInt8)(totalDays - 212 + 1);
-					}
-				}
-			}
-			else
-			{
-				if (totalDays < 304)
-				{
-					if (totalDays < 273)
-					{
-						t->month = 9;
-						t->day = (UInt8)(totalDays - 243 + 1);
-					}
-					else
-					{
-						t->month = 10;
-						t->day = (UInt8)(totalDays - 273 + 1);
-					}
-				}
-				else
-				{
-					if (totalDays < 334)
-					{
-						t->month = 11;
-						t->day = (UInt8)(totalDays - 304 + 1);
-					}
-					else
-					{
-						t->month = 12;
-						t->day = (UInt8)(totalDays - 334 + 1);
-					}
-				}
-			}
-		}
-	}
+	TotalDays2DateValue(totalDays, t);
 }
 
 Data::DateTimeUtil::Weekday Data::DateTimeUtil::Ticks2Weekday(Int64 ticks, Int8 tzQhr)
@@ -1725,7 +1738,7 @@ Bool Data::DateTimeUtil::TimeValueFromYMDHMS(Int64 ymdhms, NotNullPtr<TimeValue>
 	return true;
 }
 
-Bool Data::DateTimeUtil::IsYearLeap(UInt16 year)
+Bool Data::DateTimeUtil::IsYearLeap(OSInt year)
 {
 	return ((year & 3) == 0) && ((year % 100) != 0 || (year % 400) == 0);
 }

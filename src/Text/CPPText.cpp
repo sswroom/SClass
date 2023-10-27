@@ -431,6 +431,8 @@ Text::CString Text::CPPText::GetCppType(Data::VariItem::ItemType itemType)
 		return CSTR("Text::CString");
 	case Data::VariItem::ItemType::Timestamp:
 		return CSTR("Data::Timestamp");
+	case Data::VariItem::ItemType::Date:
+		return CSTR("Data::Date");
 	case Data::VariItem::ItemType::ByteArr:
 		return CSTR("Data::ReadonlyArr<UInt8>*");
 	case Data::VariItem::ItemType::Vector:

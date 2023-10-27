@@ -140,8 +140,6 @@ namespace Map
 	public:
 		GPSTrackReader(NotNullPtr<Map::GPSTrack> gps);
 		virtual ~GPSTrackReader();
-
-		virtual DateErrType GetDate(UOSInt colIndex, Data::DateTime *outVal); //return 0 = ok, 2 = Error
 	};
 
 	class GPSDataReader : public DB::DBReader

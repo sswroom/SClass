@@ -153,7 +153,7 @@ namespace DB
 		Int8 GetTzQhr() const;
 		UTF8Char *ToString(UTF8Char *buff);
 		UOSInt GetNextCmds(IDBCmd **cmds); //max 200 cmds
-		UTF8Char *DBDate(UTF8Char *buff, Data::DateTime *dat);
+		UTF8Char *DBDateTime(UTF8Char *buff, Data::DateTime *dat);
 		UTF8Char *DBInt32(UTF8Char *buff, Int32 val);
 		UTF8Char *DBInt64(UTF8Char *buff, Int64 val);
 		UTF8Char *DBStrW(UTF8Char *buff, const WChar *val);

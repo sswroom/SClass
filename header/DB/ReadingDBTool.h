@@ -90,7 +90,7 @@ namespace DB
 		UTF8Char *DBStrW(UTF8Char *sqlstr, const WChar *str);
 		UTF8Char *DBInt32(UTF8Char *sqlstr, Int32 val);
 		UTF8Char *DBInt64(UTF8Char *sqlstr, Int64 val);
-		UTF8Char *DBDate(UTF8Char *sqlstr, Data::DateTime *dat);
+		UTF8Char *DBDateTime(UTF8Char *sqlstr, Data::DateTime *dat);
 		UTF8Char *DBSng(UTF8Char *sqlstr, Single val);
 		UTF8Char *DBDbl(UTF8Char *sqlstr, Double val);
 		UTF8Char *DBBool(UTF8Char *sqlstr, Bool val);

@@ -1096,8 +1096,10 @@ Bool DB::SQLGenerator::GenInsertCmd(NotNullPtr<DB::SQLBuilder> sql, Text::CStrin
 				break;
 			case DB::DBUtil::CT_DateTimeTZ:
 			case DB::DBUtil::CT_DateTime:
-			case DB::DBUtil::CT_Date:
 				sql->AppendTS(r->GetTimestamp(i));
+				break;
+			case DB::DBUtil::CT_Date:
+				sql->AppendDate(r->GetDate(i));
 				break;
 			case DB::DBUtil::CT_Int64:
 				sql->AppendInt64(r->GetInt64(i));
