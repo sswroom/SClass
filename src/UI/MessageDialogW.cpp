@@ -5,7 +5,7 @@
 #include "UI/MessageDialog.h"
 #include <windows.h>
 
-void UI::MessageDialog::ShowDialog(Text::CString message, Text::CString title, UI::GUIControl *ctrl)
+void UI::MessageDialog::ShowDialog(Text::CStringNN message, Text::CStringNN title, UI::GUIControl *ctrl)
 {
 	HWND hwnd = 0;
 	if (ctrl)
@@ -17,7 +17,7 @@ void UI::MessageDialog::ShowDialog(Text::CString message, Text::CString title, U
 	Text::StrDelNew(wtitle);
 }
 
-Bool UI::MessageDialog::ShowYesNoDialog(Text::CString message, Text::CString title, UI::GUIControl *ctrl)
+Bool UI::MessageDialog::ShowYesNoDialog(Text::CStringNN message, Text::CStringNN title, UI::GUIControl *ctrl)
 {
 	HWND hwnd = 0;
 	if (ctrl)

@@ -1177,7 +1177,7 @@ Bool IO::SMake::CompileProgInternal(NotNullPtr<const ProgramItem> prog, Bool asm
 			AppendCfg(sb, lib->ToCString());
 			i++;
 		}
-#if defined(_WIN32)
+#if defined(_WIN32) || defined(__CYGWIN__)
 		if (sb.leng > 32767)
 		{
 			this->tasks->WaitForIdle();

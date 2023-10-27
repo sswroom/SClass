@@ -44,7 +44,7 @@ extern "C"
 #define MemCopyO(destPtr, srcPtr, len) memcpy(destPtr, srcPtr, len)
 #define MemClear(buff, count) memset(buff, 0, count);
 
-#elif defined(_MSC_VER) || defined(__MINGW32__)
+#elif defined(_MSC_VER) || defined(__MINGW32__) || defined(__CYGWIN__)
 #include <string.h>
 #include <memory.h>
 #ifdef CPU_X86_64

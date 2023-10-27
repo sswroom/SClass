@@ -58,7 +58,8 @@ UTF8Char **__stdcall ConsoleControl_GetCommandLines(NotNullPtr<Core::IProgContro
 	{
 		Int32 argc;
 		OSInt i;
-		WChar **argv = CommandLineToArgvW(GetCommandLineW(), &argc);
+		WChar *cmdLine = GetCommandLineW();
+		WChar **argv = CommandLineToArgvW(cmdLine, &argc);
 		ctrl->argc = (UOSInt)argc;
 		ctrl->argv = MemAlloc(UTF8Char *, ctrl->argc);
 		i = argc;
@@ -99,6 +100,7 @@ void ConsoleControl_Destroy(NotNullPtr<Core::ConsoleControl> ctrl)
 	}
 	SetConsoleCtrlHandler((PHANDLER_ROUTINE)ConsoleControl_ExitHdlr, FALSE);
 	DEL_CLASS(ctrl->evt);
+#ifndef __CYGWIN__
 	if (ctrl->argv)
 	{
 		UOSInt i = ctrl->argc;
@@ -109,6 +111,7 @@ void ConsoleControl_Destroy(NotNullPtr<Core::ConsoleControl> ctrl)
 		MemFree(ctrl->argv);
 		ctrl->argv = 0;
 	}
+#endif
 }
 
 UI::GUICore *Core::IProgControl::CreateGUICore(NotNullPtr<Core::IProgControl> progCtrl)
@@ -116,12 +119,16 @@ UI::GUICore *Core::IProgControl::CreateGUICore(NotNullPtr<Core::IProgControl> pr
 	return 0;
 }
 
-Int32 main()
+Int32 main(int argc, char *argv[])
 {
 	Int32 ret;
 	Core::ConsoleControl conCtrl;
 	Core::CoreStart();
 	ConsoleControl_Create(conCtrl);
+#ifdef __CYGWIN__
+	conCtrl.argc = argc;
+	conCtrl.argv = (UTF8Char**)argv;
+#endif
 	ret = MyMain(conCtrl);
 	ConsoleControl_Destroy(conCtrl);
 	Core::CoreEnd();

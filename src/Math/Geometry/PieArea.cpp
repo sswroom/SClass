@@ -63,26 +63,25 @@ void Math::Geometry::PieArea::ConvCSys(NotNullPtr<const Math::CoordinateSystem> 
 	this->srid = destCSys->GetSRID();
 }
 
-Bool Math::Geometry::PieArea::Equals(NotNullPtr<const Vector2D> vec) const
-{
-	if (vec->GetVectorType() != Math::Geometry::Vector2D::VectorType::PieArea)
-		return false;
-	const Math::Geometry::PieArea *pa = (const Math::Geometry::PieArea*)vec.Ptr();
-	return this->center == pa->center &&
-		this->r == pa->r &&
-		this->arcAngle1 == pa->arcAngle1 &&
-		this->arcAngle2 == pa->arcAngle2;
-}
-
-Bool Math::Geometry::PieArea::EqualsNearly(NotNullPtr<const Vector2D> vec) const
+Bool Math::Geometry::PieArea::Equals(NotNullPtr<const Vector2D> vec, Bool sameTypeOnly, Bool nearlyVal) const
 {
 	if (vec->GetVectorType() != Math::Geometry::Vector2D::VectorType::PieArea)
 		return false;
 	const Math::Geometry::PieArea* pa = (const Math::Geometry::PieArea*)vec.Ptr();
-	return this->center.EqualsNearly(pa->center) &&
-		Math::NearlyEqualsDbl(this->r, pa->r) &&
-		Math::NearlyEqualsDbl(this->arcAngle1, pa->arcAngle1) &&
-		Math::NearlyEqualsDbl(this->arcAngle2, pa->arcAngle2);
+	if (nearlyVal)
+	{
+		return this->center.EqualsNearly(pa->center) &&
+			Math::NearlyEqualsDbl(this->r, pa->r) &&
+			Math::NearlyEqualsDbl(this->arcAngle1, pa->arcAngle1) &&
+			Math::NearlyEqualsDbl(this->arcAngle2, pa->arcAngle2);
+	}
+	else
+	{
+		return this->center == pa->center &&
+			this->r == pa->r &&
+			this->arcAngle1 == pa->arcAngle1 &&
+			this->arcAngle2 == pa->arcAngle2;
+	}
 }
 
 UOSInt Math::Geometry::PieArea::GetCoordinates(NotNullPtr<Data::ArrayListA<Math::Coord2DDbl>> coordList) const

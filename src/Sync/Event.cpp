@@ -4,7 +4,7 @@
 #include "Sync/Interlocked.h"
 #include "Sync/SimpleThread.h"
 
-#if defined(_MSC_VER) || defined(__MINGW32__)
+#if defined(_MSC_VER) || defined(__MINGW32__) || defined(__CYGWIN__)
 #include <windows.h>
 
 Sync::Event::Event()

@@ -1512,7 +1512,6 @@ Int32 Manage::Process::ExecuteProcessW(const WChar *cmd, NotNullPtr<Text::String
 	startInfo.hStdInput = GetStdHandle(STD_INPUT_HANDLE);
 	createRet = CreateProcessW(0, cmdLine, 0, 0, true, NORMAL_PRIORITY_CLASS, 0, buff, &startInfo, &procInfo);
 #endif
-	printf("1 %d\r\n", sizeof(WChar));
 	if(createRet)
 	{
 		UInt32 exitCode;
@@ -1521,7 +1520,6 @@ Int32 Manage::Process::ExecuteProcessW(const WChar *cmd, NotNullPtr<Text::String
 		CloseHandle(procInfo.hProcess);
 		CloseHandle(procInfo.hThread);
 		CloseHandle(startInfo.hStdOutput);
-		printf("2 %d\r\n", exitCode);
 		//CloseHandle(startInfo.hStdError);
 
 		NotNullPtr<IO::FileStream> fs;
@@ -1553,7 +1551,6 @@ Int32 Manage::Process::ExecuteProcessW(const WChar *cmd, NotNullPtr<Text::String
 	}
 	else
 	{
-		printf("3 %d\r\n", GetLastError());
 		CloseHandle(startInfo.hStdOutput);
 		IO::FileUtil::DeleteFile(CSTRP(tmpFile, sptr), false);
 		//UInt32 ret = GetLastError();

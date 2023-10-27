@@ -4,7 +4,7 @@
 #include "Sync/ThreadUtil.h"
 
 //#define MUTEX_DEBUG
-#if defined(_MSC_VER) || defined(__MINGW32__)
+#if defined(_MSC_VER) || defined(__MINGW32__) || defined(__CYGWIN__)
 #include <windows.h>
 #include <stdlib.h>
 #include <stdio.h>

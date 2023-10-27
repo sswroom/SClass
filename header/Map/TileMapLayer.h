@@ -29,6 +29,7 @@ namespace Map
 			Bool isIdle;
 			TileMapLayer *me;
 			Sync::Event *evt;
+			UOSInt index;
 		} ThreadStat;
 
 	private:

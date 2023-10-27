@@ -19,6 +19,10 @@ UInt32 __stdcall Map::TileMapLayer::TaskThread(void *userObj)
 	Media::ImageList *imgList;
 	CachedImage *cimg;
 	ThreadStat *stat = (ThreadStat*)userObj;
+	UTF8Char sbuff[16];
+	UTF8Char *sptr;
+	sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("TileMapLayer")), stat->index);
+	Sync::ThreadUtil::SetName(CSTRP(sbuff, sptr));
 	{
 		Sync::Event evt;
 		stat->evt = &evt;
@@ -176,6 +180,7 @@ Map::TileMapLayer::TileMapLayer(NotNullPtr<Map::TileMap> tileMap, Parser::Parser
 		this->threads[i].toStop = false;
 		this->threads[i].me = this;
 		this->threads[i].isIdle = false;
+		this->threads[i].index = i;
 		Sync::ThreadUtil::Create(TaskThread, &this->threads[i]);
 	}
 	Bool running = false;

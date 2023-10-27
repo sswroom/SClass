@@ -21,7 +21,7 @@
 #include "Text/Encoding.h"
 
 
-#if defined(_WIN32)
+#if defined(_WIN32) || defined(_WIN64)
 #include <windows.h>
 #endif
 
@@ -304,7 +304,7 @@ Manage::MonConn::MonConn(EventHandler hdlr, void *userObj, NotNullPtr<Net::Socke
 	this->cmdSeq = 0;
 	this->connREvt = 0;
 	this->connTEvt = 0;
-#if defined(_WIN32)
+#if defined(_WIN32) || defined(_WIN64)
 	SetErrorMode(SEM_FAILCRITICALERRORS | SEM_NOALIGNMENTFAULTEXCEPT | SEM_NOGPFAULTERRORBOX);
 #endif
 

@@ -14,7 +14,7 @@
 #include "Text/MyString.h"
 #include "Text/MyStringW.h"
 #include "Text/StringTool.h"
-#if defined(_WIN32) || defined(WIN64)
+#if defined(_WIN32) || defined(_WIN64)
 #include <windows.h>
 #endif
 
@@ -642,7 +642,7 @@ Bool Media::MonitorColorManager::SetFromProfileFile(NotNullPtr<Text::String> fil
 
 void Media::MonitorColorManager::SetOSProfile()
 {
-#if (defined(_WIN32) || defined(WIN64)) && !defined(_WIN32_WCE)
+#if (defined(_WIN32) || defined(_WIN64)) && !defined(_WIN32_WCE)
 	WChar wbuff[512];
 	WChar wbuff2[512];
 	Bool succ = false;

@@ -157,8 +157,14 @@ Bool IO::ConsoleWriter::WriteLineC(const UTF8Char *s, UOSInt nUTF8Char)
 		UOSInt strLen = Text::StrUTF8_WCharCntC(s, nUTF8Char);
 		WChar *str = MemAlloc(WChar, strLen + 2);
 		Text::StrUTF8_WCharC(str, s, nUTF8Char, 0);
+#if defined(__CYGWIN__)
+		str[strLen] = '\r';
+		str[strLen + 1] = '\n';
+		WriteConsoleW(this->clsData->hand, str, nChar = (UInt32)(strLen + 2), (LPDWORD)&outChars, 0);
+#else
 		str[strLen] = '\n';
 		WriteConsoleW(this->clsData->hand, str, nChar = (UInt32)(strLen + 1), (LPDWORD)&outChars, 0);
+#endif
 		MemFree(str);
 		if (outChars == nChar)
 		{
@@ -176,7 +182,7 @@ Bool IO::ConsoleWriter::WriteLineC(const UTF8Char *s, UOSInt nUTF8Char)
 		UInt8 *tmpBuff;
 		nChar = (UInt32)Text::StrCharCnt(s);
 		nBytes = this->clsData->enc->UTF8CountBytesC(s, nChar) + 1;
-		tmpBuff = MemAlloc(UInt8, nBytes + 1);
+		tmpBuff = MemAlloc(UInt8, nBytes + 2);
 		this->clsData->enc->UTF8ToBytesC(tmpBuff, s, nChar);
 		tmpBuff[nBytes - 1] = '\n';
 		if (this->clsData->fileOutput)
@@ -185,7 +191,14 @@ Bool IO::ConsoleWriter::WriteLineC(const UTF8Char *s, UOSInt nUTF8Char)
 		}
 		else
 		{
+#if defined(__CYGWIN__)
+			tmpBuff[nBytes - 1] = '\r';
+			tmpBuff[nBytes] = '\n';
+			WriteConsoleA(this->clsData->hand, tmpBuff, (UInt32)nBytes + 1, (LPDWORD)&outChars, 0);
+			nBytes += 1;
+#else
 			WriteConsoleA(this->clsData->hand, tmpBuff, (UInt32)nBytes, (LPDWORD)&outChars, 0);
+#endif
 		}
 		MemFree(tmpBuff);
 		if (outChars == (UInt32)nBytes)
@@ -203,15 +216,20 @@ Bool IO::ConsoleWriter::WriteLineC(const UTF8Char *s, UOSInt nUTF8Char)
 Bool IO::ConsoleWriter::WriteLine()
 {
 	UInt32 outChars = 0;
+	UInt32 nChar;
 	if (this->clsData->fileOutput)
 	{
-		WriteFile(this->clsData->hand, "\n", 1, (LPDWORD)&outChars, 0);
+		WriteFile(this->clsData->hand, "\n", nChar = 1, (LPDWORD)&outChars, 0);
 	}
 	else
 	{
-		WriteConsoleW(this->clsData->hand, L"\n", 1, (LPDWORD)&outChars, 0);
+#if defined(__CYGWIN__)
+		WriteConsoleW(this->clsData->hand, L"\r\n", nChar = 2, (LPDWORD)&outChars, 0);
+#else
+		WriteConsoleW(this->clsData->hand, L"\n", nChar = 1, (LPDWORD)&outChars, 0);
+#endif
 	}
-	if (outChars == 1)
+	if (outChars == nChar)
 	{
 		if (this->clsData->autoFlush)
 		{
