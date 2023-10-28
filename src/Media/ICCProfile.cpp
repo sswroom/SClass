@@ -862,7 +862,7 @@ void Media::ICCProfile::ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const
 
 	this->GetCreateTime(dt);
 	sb->AppendC(UTF8STRC("\r\nCreate Time = "));
-	sb->AppendDate(dt);
+	sb->AppendDateTime(dt);
 
 	sb->AppendC(UTF8STRC("\r\nPrimary Platform = "));
 	sb->Append(GetNamePrimaryPlatform(this->GetPrimaryPlatform()));

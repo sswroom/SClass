@@ -812,8 +812,7 @@ Bool Net::EthernetAnalyzer::PacketIPv4(const UInt8 *packet, UOSInt packetSize, U
 			{
 				Text::StringBuilderUTF8 sb;
 				IPLogInfo *ipLog;
-				Data::DateTime dt;
-				dt.SetCurrTime();
+				Data::Timestamp ts = Data::Timestamp::Now();
 				UInt32 sortableIP = ReadMUInt32(&packet[12]);
 				Sync::MutexUsage mutUsage(this->ipLogMut);
 				ipLog = this->ipLogMap.Get(sortableIP);
@@ -830,7 +829,7 @@ Bool Net::EthernetAnalyzer::PacketIPv4(const UInt8 *packet, UOSInt packetSize, U
 				if (ipLog)
 				{
 					sb.ClearStr();
-					sb.AppendDate(dt);
+					sb.AppendTS(ts);
 					sb.AppendC(UTF8STRC(" ICMP "));
 					switch (ipData[0])
 					{
@@ -937,7 +936,7 @@ Bool Net::EthernetAnalyzer::PacketIPv4(const UInt8 *packet, UOSInt packetSize, U
 				if (ipLog)
 				{
 					sb.ClearStr();
-					sb.AppendDate(dt);
+					sb.AppendTS(ts);
 					sb.AppendC(UTF8STRC(" ICMP "));
 					switch (ipData[0])
 					{
@@ -1422,9 +1421,7 @@ Bool Net::EthernetAnalyzer::PacketIPv4(const UInt8 *packet, UOSInt packetSize, U
 										this->ipLogMap.Put(sortableIP, ipLog);
 									}
 									ipLogMutUsage.EndUse();
-									Data::DateTime dt;
-									dt.SetCurrTime();
-									sb.AppendDate(dt);
+									sb.AppendTS(Data::Timestamp::Now());
 									sb.AppendC(UTF8STRC(" UDP Port "));
 									sb.AppendU16(srcPort);
 									sb.AppendC(UTF8STRC(" NTP request to "));
@@ -1455,17 +1452,14 @@ Bool Net::EthernetAnalyzer::PacketIPv4(const UInt8 *packet, UOSInt packetSize, U
 										this->ipLogMap.Put(sortableIP, ipLog);
 									}
 									ipLogMutUsage.EndUse();
-									Data::DateTime dt;
-									dt.SetCurrTime();
-									sb.AppendDate(dt);
+									sb.AppendTS(Data::Timestamp::Now());
 									sb.AppendC(UTF8STRC(" UDP Port "));
 									sb.AppendU16(destPort);
 									sb.AppendC(UTF8STRC(" NTP reply from "));
 									sptr = Net::SocketUtil::GetIPv4Name(sbuff, ip->srcIP);
 									sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
 									sb.AppendC(UTF8STRC(", time = "));
-									Net::NTPServer::ReadTime(&ipData[40], &dt);
-									sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
+									sptr = Net::NTPServer::ReadTime(&ipData[40]).ToStringNoZone(sbuff);
 									sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
 									Sync::MutexUsage mutUsage(ipLog->mut);
 									while (ipLog->logList.GetCount() >= IPLOGCNT)
@@ -1636,9 +1630,7 @@ FF FF FF FF FF FF 00 11 32 0A AB 9C 08 00 45 00
 								this->ipLogMap.Put(sortableIP, ipLog);
 							}
 							ipLogMutUsage.EndUse();
-							Data::DateTime dt;
-							dt.SetCurrTime();
-							sb.AppendDate(dt);
+							sb.AppendTS(Data::Timestamp::Now());
 							sb.AppendC(UTF8STRC(" UDP Port "));
 							sb.AppendU16(srcPort);
 							sb.AppendC(UTF8STRC(" SSDP to "));

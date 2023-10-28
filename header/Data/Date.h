@@ -33,6 +33,21 @@ namespace Data
 			this->dateVal = DateTimeUtil::Date2TotalDays(year, month, day);
 		}
 
+		Date(Text::CStringNN dateStr)
+		{
+			Data::DateTimeUtil::TimeValue tval;
+			UInt32 nanosec;
+			Int8 tzQhr;
+			if (DateTimeUtil::String2TimeValue(dateStr, tval, 0, tzQhr, nanosec))
+			{
+				this->dateVal = DateTimeUtil::DateValue2TotalDays(tval);
+			}
+			else
+			{
+				this->dateVal = DATE_NULL;
+			}
+		}
+
 		~Date()
 		{
 		}

@@ -37,9 +37,7 @@ void __stdcall SSWR::AVIRead::AVIRPerformanceLogForm::OnTimerTick(void *userObj)
 	SSWR::AVIRead::AVIRPerformanceLogForm *me = (SSWR::AVIRead::AVIRPerformanceLogForm*)userObj;
 	if (me->testBuff)
 	{
-		Data::DateTime dt;
-		dt.SetCurrTimeUTC();
-		if (dt.DiffMS(me->testTime) >= 600000)
+		if (Data::Timestamp::UtcNow().DiffMS(me->testTime) >= 600000)
 		{
 			me->TestSpeed();
 		}
@@ -88,10 +86,10 @@ void SSWR::AVIRead::AVIRPerformanceLogForm::TestSpeed()
 	Manage::HiResClock clk;
 	Benchmark_MemWriteTest(this->testBuff, this->testBuff, TEST_SIZE, LOOP_CNT);
 	t = clk.GetTimeDiff();
-	this->testTime.SetCurrTimeUTC();
+	this->testTime = Data::Timestamp::UtcNow();
 	Text::StringBuilderUTF8 sb;
 	spd = TEST_SIZE / t * LOOP_CNT;
-	sb.AppendDate(this->testTime);
+	sb.AppendTS(this->testTime);
 	sb.AppendC(UTF8STRC("\t"));
 	sb.AppendDouble(spd);
 	this->writer->WriteLineC(sb.ToString(), sb.GetLength());

@@ -114,12 +114,7 @@ public:
 			switch (extIndex)
 			{
 			case 0:
-				{
-					Data::DateTime dt;
-					dt.SetTicks(ReadInt64(&buff[0]));
-					dt.ToLocalTime();
-					sb->AppendDate(dt);
-				}
+				sb->AppendTS(Data::Timestamp(ReadInt64(&buff[0]), Data::DateTimeUtil::GetLocalTzQhr()));
 				return true;
 			case 1:
 				sb->AppendC(UTF8STRC("0x"));

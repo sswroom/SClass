@@ -438,7 +438,7 @@ Bool Net::ASN1Util::PDUToString(const UInt8 *pdu, const UInt8 *pduEnd, NotNullPt
 				Data::DateTime dt;
 				dt.SetCurrTimeUTC();
 				dt.SetValue((UInt16)((UInt32)(dt.GetYear() / 100) * 100 + Str2Digit(&pdu[ofst])), (OSInt)Str2Digit(&pdu[ofst + 2]), (OSInt)Str2Digit(&pdu[ofst + 4]), (OSInt)Str2Digit(&pdu[ofst + 6]), (OSInt)Str2Digit(&pdu[ofst + 8]), (OSInt)Str2Digit(&pdu[ofst + 10]), 0);
-				sb->AppendDate(dt);
+				sb->AppendDateTime(dt);
 			}
 			else
 			{
@@ -455,7 +455,7 @@ Bool Net::ASN1Util::PDUToString(const UInt8 *pdu, const UInt8 *pduEnd, NotNullPt
 				Data::DateTime dt;
 				dt.SetCurrTimeUTC();
 				dt.SetValue((UInt16)(Str2Digit(&pdu[ofst]) * 100 + Str2Digit(&pdu[ofst + 2])), (OSInt)Str2Digit(&pdu[ofst + 4]), (OSInt)Str2Digit(&pdu[ofst + 6]), (OSInt)Str2Digit(&pdu[ofst + 8]), (OSInt)Str2Digit(&pdu[ofst + 10]), (OSInt)Str2Digit(&pdu[ofst + 12]), 0);
-				sb->AppendDate(dt);
+				sb->AppendDateTime(dt);
 			}
 			else
 			{

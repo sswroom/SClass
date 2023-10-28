@@ -257,7 +257,8 @@ WLANLinuxMTKInterface.o: ../../src/Net/WLANLinuxMTKInterface.cpp
 HEIFParser.o: ../../src/Parser/FileParser/HEIFParser.cpp
 !-lheif
 JP2Parser.o: ../../src/Parser/FileParser/JP2Parser.cpp
-!-lopenjp2
+$`pkg-config --cflags libopenjp2`
+!`pkg-config --libs libopenjp2`
 WebPParser.o: ../../src/Parser/FileParser/WebPParser.cpp
 !-lwebp
 !-lwebpdemux

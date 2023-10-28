@@ -229,7 +229,7 @@ Bool IO::FileAnalyse::QTFileAnalyse::GetFrameDetail(UOSInt index, NotNullPtr<Tex
 	{
 		if (pack->packSize >= 108)
 		{
-			Data::DateTime dt;
+			Data::Timestamp ts;
 			Data::ByteBuffer packBuff((UOSInt)(pack->packSize - 8));
 			this->fd->GetRealData(pack->fileOfst + 8, (UOSInt)(pack->packSize - 8), packBuff);
 
@@ -238,11 +238,11 @@ Bool IO::FileAnalyse::QTFileAnalyse::GetFrameDetail(UOSInt index, NotNullPtr<Tex
 			sb->AppendC(UTF8STRC("\r\nFlags = "));
 			sb->AppendHex24(ReadMUInt32(&packBuff[0]));
 			sb->AppendC(UTF8STRC("\r\nCreation time = "));
-			dt.SetUnixTimestamp(ReadMUInt32(&packBuff[4]));
-			sb->AppendDate(dt);
+			ts = Data::Timestamp::FromEpochSec(ReadMUInt32(&packBuff[4]), 0);
+			sb->AppendTS(ts);
 			sb->AppendC(UTF8STRC("\r\nModification time = "));
-			dt.SetUnixTimestamp(ReadMUInt32(&packBuff[8]));
-			sb->AppendDate(dt);
+			ts = Data::Timestamp::FromEpochSec(ReadMUInt32(&packBuff[8]), 0);
+			sb->AppendTS(ts);
 			sb->AppendC(UTF8STRC("\r\nTime Scale = "));
 			sb->AppendI32(ReadMInt32(&packBuff[12]));
 			sb->AppendC(UTF8STRC("\r\nDuration = "));
@@ -292,7 +292,7 @@ Bool IO::FileAnalyse::QTFileAnalyse::GetFrameDetail(UOSInt index, NotNullPtr<Tex
 	{
 		if (pack->packSize >= 92)
 		{
-			Data::DateTime dt;
+			Data::Timestamp ts;
 			Data::ByteBuffer packBuff((UOSInt)(pack->packSize - 8));
 			this->fd->GetRealData(pack->fileOfst + 8, (UOSInt)(pack->packSize - 8), packBuff);
 
@@ -301,11 +301,11 @@ Bool IO::FileAnalyse::QTFileAnalyse::GetFrameDetail(UOSInt index, NotNullPtr<Tex
 			sb->AppendC(UTF8STRC("\r\nFlags = "));
 			sb->AppendHex24(ReadMUInt32(&packBuff[0]));
 			sb->AppendC(UTF8STRC("\r\nCreation time = "));
-			dt.SetUnixTimestamp(ReadMUInt32(&packBuff[4]));
-			sb->AppendDate(dt);
+			ts = Data::Timestamp::FromEpochSec(ReadMUInt32(&packBuff[4]), 0);
+			sb->AppendTS(ts);
 			sb->AppendC(UTF8STRC("\r\nModification time = "));
-			dt.SetUnixTimestamp(ReadMUInt32(&packBuff[8]));
-			sb->AppendDate(dt);
+			ts = Data::Timestamp::FromEpochSec(ReadMUInt32(&packBuff[8]), 0);
+			sb->AppendTS(ts);
 			sb->AppendC(UTF8STRC("\r\nTrack ID = "));
 			sb->AppendI32(ReadMInt32(&packBuff[12]));
 			sb->AppendC(UTF8STRC("\r\nReserved = "));
@@ -351,7 +351,7 @@ Bool IO::FileAnalyse::QTFileAnalyse::GetFrameDetail(UOSInt index, NotNullPtr<Tex
 	{
 		if (pack->packSize >= 32)
 		{
-			Data::DateTime dt;
+			Data::Timestamp ts;
 			Data::ByteBuffer packBuff((UOSInt)(pack->packSize - 8));
 			this->fd->GetRealData(pack->fileOfst + 8, (UOSInt)(pack->packSize - 8), packBuff);
 
@@ -360,11 +360,11 @@ Bool IO::FileAnalyse::QTFileAnalyse::GetFrameDetail(UOSInt index, NotNullPtr<Tex
 			sb->AppendC(UTF8STRC("\r\nFlags = "));
 			sb->AppendHex24(ReadMUInt32(&packBuff[0]));
 			sb->AppendC(UTF8STRC("\r\nCreation time = "));
-			dt.SetUnixTimestamp(ReadMUInt32(&packBuff[4]));
-			sb->AppendDate(dt);
+			ts = Data::Timestamp::FromEpochSec(ReadMUInt32(&packBuff[4]), 0);
+			sb->AppendTS(ts);
 			sb->AppendC(UTF8STRC("\r\nModification time = "));
-			dt.SetUnixTimestamp(ReadMUInt32(&packBuff[8]));
-			sb->AppendDate(dt);
+			ts = Data::Timestamp::FromEpochSec(ReadMUInt32(&packBuff[8]), 0);
+			sb->AppendTS(ts);
 			sb->AppendC(UTF8STRC("\r\nTime scale = "));
 			sb->AppendI32(ReadMInt32(&packBuff[12]));
 			sb->AppendC(UTF8STRC("\r\nDuration = "));

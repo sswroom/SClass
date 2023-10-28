@@ -88,6 +88,7 @@ namespace DB
 		virtual Text::String *GetNewStr(UOSInt colIndex);
 		virtual UTF8Char *GetStr(UOSInt colIndex, UTF8Char *buff, UOSInt buffSize);
 		virtual Data::Timestamp GetTimestamp(UOSInt colIndex);
+		virtual Data::Date GetDate(UOSInt colIndex);
 		virtual Double GetDbl(UOSInt colIndex);
 		virtual Bool GetBool(UOSInt colIndex);
 		virtual UOSInt GetBinarySize(UOSInt colIndex);

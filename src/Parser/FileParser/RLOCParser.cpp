@@ -134,20 +134,10 @@ public:
 			Text::SBAppendF64(sb, extInfo->other3);
 			return true;
 		case 9:
-			{
-				Data::DateTime dt;
-				dt.SetUnixTimestamp(extInfo->locTimeTS);
-				dt.ToLocalTime();
-				sb->AppendDate(dt);
-			}
+			sb->AppendTS(Data::Timestamp::FromEpochSec(extInfo->locTimeTS, Data::DateTimeUtil::GetLocalTzQhr()));
 			return true;
 		case 10:
-			{
-				Data::DateTime dt;
-				dt.SetUnixTimestamp(extInfo->recvTimeTS);
-				dt.ToLocalTime();
-				sb->AppendDate(dt);
-			}
+			sb->AppendTS(Data::Timestamp::FromEpochSec(extInfo->recvTimeTS, Data::DateTimeUtil::GetLocalTzQhr()));
 			return true;
 		case 11:
 			{

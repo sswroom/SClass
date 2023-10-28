@@ -25,12 +25,11 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnTimerTick(void *userObj)
 	UInt8 id[8];
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
-	Data::DateTime dt;
+	Data::Timestamp ts = Data::Timestamp::UtcNow();
 	UInt64 maxIMAC;
 	Int32 maxRSSI;
 	Text::StringBuilderUTF8 sb;
 	IO::PowerInfo::PowerStatus power;
-	dt.SetCurrTimeUTC();
 	if (IO::PowerInfo::GetPowerStatus(&power))
 	{
 		if (power.hasBattery)
@@ -68,7 +67,7 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnTimerTick(void *userObj)
 			{
 				me->lastMotion = 1;
 				sb.ClearStr();
-				sb.AppendDate(dt);
+				sb.AppendTS(ts);
 				sb.AppendC(UTF8STRC("\tMotion:Moving"));
 				me->captureWriter->WriteLineC(sb.ToString(), sb.GetLength());
 			}
@@ -82,7 +81,7 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnTimerTick(void *userObj)
 			{
 				me->lastMotion = 0;
 				sb.ClearStr();
-				sb.AppendDate(dt);
+				sb.AppendTS(ts);
 				sb.AppendC(UTF8STRC("\tMotion:Stopped"));
 				me->captureWriter->WriteLineC(sb.ToString(), sb.GetLength());
 			}
@@ -91,7 +90,6 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnTimerTick(void *userObj)
 	}
 	if (me->gpsChg)
 	{
-		Data::DateTime dt;
 		me->gpsChg = false;
 		sptr = Text::StrDouble(sbuff, me->currPos.GetLat());
 		me->txtGPSLat->SetText(CSTRP(sbuff, sptr));
@@ -99,8 +97,7 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnTimerTick(void *userObj)
 		me->txtGPSLon->SetText(CSTRP(sbuff, sptr));
 		sptr = Text::StrDouble(sbuff, me->currAlt);
 		me->txtGPSAlt->SetText(CSTRP(sbuff, sptr));
-		dt.SetInstant(me->currGPSTime);
-		sptr = dt.ToStringNoZone(sbuff);
+		sptr = Data::Timestamp(me->currGPSTime, 0).ToStringNoZone(sbuff);
 		me->txtGPSTime->SetText(CSTRP(sbuff, sptr));
 		if (me->currActive)
 		{
@@ -113,8 +110,8 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnTimerTick(void *userObj)
 	}
 	if (me->wlanInterf)
 	{
-		dt.SetCurrTimeUTC();
-		if (dt.ToTicks() - me->lastTimeTick > 900)
+		ts = Data::Timestamp::UtcNow();
+		if (ts.ToTicks() - me->lastTimeTick > 900)
 		{
 			if (me->wlanScan-- <= 0)
 			{
@@ -133,7 +130,7 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnTimerTick(void *userObj)
 				if (me->captureWriter)
 				{
 					sb.ClearStr();
-					sb.AppendDate(dt);
+					sb.AppendTS(ts);
 					sb.AppendC(UTF8STRC("\tWLAN:"));
 					i = 0;
 					j = bssList.GetCount();
@@ -448,8 +445,7 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnTimerTick(void *userObj)
 					me->txtBSSCount->SetText(CSTRP(sbuff, sptr));
 				}
 			}
-			dt.SetCurrTimeUTC();
-			me->lastTimeTick = dt.ToTicks();
+			me->lastTimeTick = Data::DateTimeUtil::GetCurrTimeMillis();
 		}
 	}
 }

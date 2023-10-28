@@ -184,7 +184,14 @@ namespace Text
 			return *this;
 		}
 
-		NotNullPtr<StringBuilderUTF8> AppendDate(NotNullPtr<Data::DateTime> dt)
+		NotNullPtr<StringBuilderUTF8> AppendDate(const Data::Date &d)
+		{
+			this->AllocLeng(10);
+			this->leng = (UOSInt)(d.ToString(&this->v[this->leng], "yyyy-MM-dd") - this->v);
+			return *this;
+		}
+
+		NotNullPtr<StringBuilderUTF8> AppendDateTime(NotNullPtr<Data::DateTime> dt)
 		{
 			this->AllocLeng(19);
 			this->leng = (UOSInt)(dt->ToString(&this->v[this->leng], "yyyy-MM-dd HH:mm:ss") - this->v);

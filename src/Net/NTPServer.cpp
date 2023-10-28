@@ -163,9 +163,7 @@ void Net::NTPServer::ReadTime(const UInt8 *buff, Data::DateTime *time)
 
 Data::Timestamp Net::NTPServer::ReadTime(const UInt8 *buff)
 {
-	UInt32 v = ReadMUInt32(&buff[0]);
-	UInt32 v2 = ReadMUInt32(&buff[4]);
-	return Data::Timestamp(Data::TimeInstant(v - 2208988800LL, (UInt32)((v2 * 1000000000ULL) >> 32)), 0);
+	return Data::Timestamp::FromNTPTime(ReadMUInt32(&buff[0]), ReadMUInt32(&buff[4]), 0);
 }
 
 void Net::NTPServer::WriteTime(UInt8 *buff, Data::DateTime *time)

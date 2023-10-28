@@ -299,7 +299,6 @@ Bool Media::ImageList::ToValueString(NotNullPtr<Text::StringBuilderUTF8> sb) con
 	}
 	if ((j = this->valI64.GetCount()) != 0)
 	{
-		Data::DateTime dt;
 		Int64 v;
 		i = 0;
 		while (i < j)
@@ -314,15 +313,11 @@ Bool Media::ImageList::ToValueString(NotNullPtr<Text::StringBuilderUTF8> sb) con
 			v = this->valI64.GetItem(i);
 			if (vt == VT_CAPTURE_DATE)
 			{
-				dt.SetTicks(v);
-				dt.ToLocalTime();
-				sb->AppendDate(dt);
+				sb->AppendTS(Data::Timestamp(v, Data::DateTimeUtil::GetLocalTzQhr()));
 			}
 			else if (vt == VT_FIRMWARE_DATE)
 			{
-				dt.SetTicks(v);
-				dt.ToUTCTime();
-				sb->AppendDate(dt);
+				sb->AppendTS(Data::Timestamp(v, 0));
 			}
 			else
 			{

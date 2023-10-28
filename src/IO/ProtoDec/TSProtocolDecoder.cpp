@@ -381,12 +381,10 @@ Bool IO::ProtoDec::TSProtocolDecoder::GetProtocolDetail(UInt8 *buff, UOSInt buff
 	{
 	case 0:
 		{
-			Data::DateTime dt;
-			dt.SetTicks(ReadInt64(&buff[8]));
 			sb->AppendC(UTF8STRC("KA (Svr->Cli)"));
 			sb->AppendC(UTF8STRC("\r\n"));
 			sb->AppendC(UTF8STRC("Server Time="));
-			sb->AppendDate(dt);
+			sb->AppendTS(Data::Timestamp(ReadInt64(&buff[8]), 0));
 			sb->AppendC(UTF8STRC("\r\n"));
 		}
 		break;
@@ -400,10 +398,8 @@ Bool IO::ProtoDec::TSProtocolDecoder::GetProtocolDetail(UInt8 *buff, UOSInt buff
 			sb->AppendC(UTF8STRC("\r\n"));
 			if (buff[13] & 1)
 			{
-				Data::DateTime dt;
 				sb->AppendC(UTF8STRC("Server Time="));
-				dt.SetTicks(ReadInt64(&buff[ofst]));
-				sb->AppendDate(dt);
+				sb->AppendTS(Data::Timestamp(ReadInt64(&buff[ofst]), 0));
 				sb->AppendC(UTF8STRC("\r\n"));
 				ofst += 8;
 			}
@@ -558,18 +554,14 @@ Bool IO::ProtoDec::TSProtocolDecoder::GetProtocolDetail(UInt8 *buff, UOSInt buff
 			{
 				OSInt i;
 				OSInt j;
-				Data::DateTime dt;
 				sb->AppendC(UTF8STRC("Start Time="));
-				dt.SetTicks(ReadInt64(&buff[12]));
-				sb->AppendDate(dt);
+				sb->AppendTS(Data::Timestamp(ReadInt64(&buff[12]), 0));
 				sb->AppendC(UTF8STRC("\r\n"));
 				sb->AppendC(UTF8STRC("End Time="));
-				dt.SetTicks(ReadInt64(&buff[20]));
-				sb->AppendDate(dt);
+				sb->AppendTS(Data::Timestamp(ReadInt64(&buff[20]), 0));
 				sb->AppendC(UTF8STRC("\r\n"));
 				sb->AppendC(UTF8STRC("Grid Size="));
-				dt.SetTicks(ReadInt64(&buff[28]));
-				sb->AppendDate(dt);
+				sb->AppendTS(Data::Timestamp(ReadInt64(&buff[28]), 0));
 				sb->AppendC(UTF8STRC("\r\n"));
 				sb->AppendC(UTF8STRC("Area Cnt="));
 				sb->AppendI32((Int32)(j = ReadInt32(&buff[36])));
@@ -649,10 +641,8 @@ Bool IO::ProtoDec::TSProtocolDecoder::GetProtocolDetail(UInt8 *buff, UOSInt buff
 			sb->AppendC(UTF8STRC("\r\n"));
 			if (cmdSize >= 30)
 			{
-				Data::DateTime dt;
-				dt.SetTicks(ReadInt64(&buff[20]));
 				sb->AppendC(UTF8STRC("Complete Time="));
-				sb->AppendDate(dt);
+				sb->AppendTS(Data::Timestamp(ReadInt64(&buff[20]), 0));
 				sb->AppendC(UTF8STRC("\r\n"));
 			}
 		}

@@ -413,7 +413,7 @@ Bool IO::FileAnalyse::RAR5FileAnalyse::GetFrameDetail(UOSInt index, NotNullPtr<T
 				}
 				else if (iVal == 3)
 				{
-					Data::DateTime dt;
+					Data::Timestamp ts;
 					sb->AppendC(UTF8STRC(" (File time)"));
 					packPtr = ReadVInt(packPtr, &headerFlags);
 					sb->AppendC(UTF8STRC(", Flags = 0x"));
@@ -422,46 +422,46 @@ Bool IO::FileAnalyse::RAR5FileAnalyse::GetFrameDetail(UOSInt index, NotNullPtr<T
 					{
 						if (headerFlags & 1)
 						{
-							dt.SetUnixTimestamp(ReadUInt32(&packPtr[0]));
+							ts = Data::Timestamp::FromEpochSec(ReadUInt32(&packPtr[0]), 0);
 							packPtr += 4;
 						}
 						else
 						{
-							dt.SetValueFILETIME((void*)packPtr.Ptr());
+							ts = Data::Timestamp::FromFILETIME((void*)packPtr.Ptr(), 0);
 							packPtr += 8;
 						}
 						sb->AppendC(UTF8STRC(", mtime = "));
-						sb->AppendDate(dt);
+						sb->AppendTS(ts);
 					}
 					if (headerFlags & 4)
 					{
 						if (headerFlags & 1)
 						{
-							dt.SetUnixTimestamp(ReadUInt32(&packPtr[0]));
+							ts = Data::Timestamp::FromEpochSec(ReadUInt32(&packPtr[0]), 0);
 							packPtr += 4;
 						}
 						else
 						{
-							dt.SetValueFILETIME((void*)packPtr.Ptr());
+							ts = Data::Timestamp::FromFILETIME((void*)packPtr.Ptr(), 0);
 							packPtr += 8;
 						}
 						sb->AppendC(UTF8STRC(", ctime = "));
-						sb->AppendDate(dt);
+						sb->AppendTS(ts);
 					}
 					if (headerFlags & 8)
 					{
 						if (headerFlags & 1)
 						{
-							dt.SetUnixTimestamp(ReadUInt32(&packPtr[0]));
+							ts = Data::Timestamp::FromEpochSec(ReadUInt32(&packPtr[0]), 0);
 							packPtr += 4;
 						}
 						else
 						{
-							dt.SetValueFILETIME((void*)packPtr.Ptr());
+							ts = Data::Timestamp::FromFILETIME((void*)packPtr.Ptr(), 0);
 							packPtr += 8;
 						}
 						sb->AppendC(UTF8STRC(", atime = "));
-						sb->AppendDate(dt);
+						sb->AppendTS(ts);
 					}
 				}
 				else if (iVal == 4)

@@ -466,6 +466,13 @@ namespace Data
 			return Timestamp(this->inst.RoundToS(), this->tzQhr);
 		}
 
+		void GetNTPTime(OutParam<Int32> hiWord, OutParam<UInt32> loWord)
+		{
+			Int64 timeSecs = this->inst.sec - 2208988800LL;
+			hiWord.Set((Int32)timeSecs);
+			loWord.Set((UInt32)((((UInt64)this->inst.nanosec) << 32) / 1000000000) + 1);
+		}
+
 		static Timestamp Now()
 		{
 			return Timestamp(TimeInstant::Now(), Data::DateTimeUtil::GetLocalTzQhr());
@@ -562,6 +569,11 @@ namespace Data
 			UInt32 nanosec;
 			Int64 secs = Data::DateTimeUtil::FILETIME2Secs(filetime, nanosec);
 			return Data::Timestamp(Data::TimeInstant(secs, nanosec), tzQhr);
+		}
+
+		static Timestamp FromNTPTime(UInt32 hiWord, UInt32 loWord, Int8 tzQhr)
+		{
+			return Data::Timestamp(Data::TimeInstant(hiWord - 2208988800LL, (UInt32)((loWord * 1000000000ULL) >> 32)), tzQhr);
 		}
 
 		static Timestamp FromYMDHMS(Int64 ymdhms, Int8 tzQhr)

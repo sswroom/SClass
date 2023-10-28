@@ -273,6 +273,18 @@ template <class T> void DB::DBDataFile<T>::AddRecord(T *obj)
 				m += 8;
 			}
 			break;
+		case Data::VariItem::ItemType::Date:
+			if (item.GetItemType() == Data::VariItem::ItemType::Null)
+			{
+				WriteInt64(&this->recordBuff[m], -1);
+				m += 8;
+			}
+			else
+			{
+				WriteInt64(&this->recordBuff[m], item.GetItemValue().date.ToTicks());
+				m += 8;
+			}
+			break;
 		case Data::VariItem::ItemType::ByteArr:
 			if (item.GetItemType() == Data::VariItem::ItemType::Null)
 			{
@@ -524,6 +536,20 @@ template <class T> Bool DB::DBDataFile<T>::LoadFile(Text::CStringNN fileName, Da
 								else
 								{
 									item.SetDate(Data::Timestamp(ticks, 0));
+									cls->SetFieldClearItem(obj, k, item);
+								}
+								m2 += 8;
+							}
+							break;
+						case Data::VariItem::ItemType::Date:
+							{
+								Int64 ticks = ReadInt64(&buff[m2]);
+								if (ticks == -1)
+								{
+								}
+								else
+								{
+									item.SetDate(Data::Date(ticks / 86400000));
 									cls->SetFieldClearItem(obj, k, item);
 								}
 								m2 += 8;

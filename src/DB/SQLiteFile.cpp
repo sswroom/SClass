@@ -553,6 +553,14 @@ Data::Timestamp DB::SQLiteReader::GetTimestamp(UOSInt colIndex)
 	return Data::Timestamp(sb.ToCString(), Data::DateTimeUtil::GetLocalTzQhr());
 }
 
+Data::Date DB::SQLiteReader::GetDate(UOSInt colIndex)
+{
+	Text::StringBuilderUTF8 sb;
+	if (!GetStr(colIndex, sb))
+		return Data::Date(nullptr);
+	return Data::Date(sb.ToCString());
+}
+
 Double DB::SQLiteReader::GetDbl(UOSInt colIndex)
 {
 	return sqlite3_column_double((sqlite3_stmt*)this->hStmt, (int)colIndex);

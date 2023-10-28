@@ -189,11 +189,8 @@ Bool IO::ProtoDec::TK109ProtocolDecoder::GetProtocolDetail(UInt8 *buff, UOSInt b
 		sb->AppendC(UTF8STRC("\r\n"));
 		if (protoSize >= 27)
 		{
-			Data::DateTime dt;
-			dt.SetUnixTimestamp(ReadMUInt32(&buff[7]));
-			dt.ToLocalTime();
 			sb->AppendC(UTF8STRC("GPS Time="));
-			sb->AppendDate(dt);
+			sb->AppendTS(Data::Timestamp::FromEpochSec(ReadMUInt32(&buff[7]), Data::DateTimeUtil::GetLocalTzQhr()));
 			sb->AppendC(UTF8STRC("\r\n"));
 			sb->AppendC(UTF8STRC("Latitude="));
 			Text::SBAppendF64(sb, ReadMInt32(&buff[11]) / 1800000.0);
@@ -277,11 +274,8 @@ Bool IO::ProtoDec::TK109ProtocolDecoder::GetProtocolDetail(UInt8 *buff, UOSInt b
 		sb->AppendC(UTF8STRC("\r\n"));
 		if (protoSize >= 27)
 		{
-			Data::DateTime dt;
-			dt.SetUnixTimestamp(ReadMUInt32(&buff[7]));
-			dt.ToLocalTime();
 			sb->AppendC(UTF8STRC("GPS Time="));
-			sb->AppendDate(dt);
+			sb->AppendTS(Data::Timestamp::FromEpochSec(ReadMUInt32(&buff[7]), Data::DateTimeUtil::GetLocalTzQhr()));
 			sb->AppendC(UTF8STRC("\r\n"));
 			sb->AppendC(UTF8STRC("Latitude="));
 			Text::SBAppendF64(sb, ReadMInt32(&buff[11]) / 1800000.0);
@@ -321,7 +315,6 @@ Bool IO::ProtoDec::TK109ProtocolDecoder::GetProtocolDetail(UInt8 *buff, UOSInt b
 		}
 		if (protoSize >= 28)
 		{
-			Data::DateTime dt;
 			sb->AppendC(UTF8STRC("Status Type="));
 			switch (buff[32])
 			{
@@ -329,10 +322,8 @@ Bool IO::ProtoDec::TK109ProtocolDecoder::GetProtocolDetail(UInt8 *buff, UOSInt b
 				sb->AppendC(UTF8STRC("1, ACC On\r\n"));
 				if (protoSize >= 32)
 				{
-					dt.SetUnixTimestamp(ReadMUInt32(&buff[33]));
-					dt.ToLocalTime();
 					sb->AppendC(UTF8STRC("Status Time="));
-					sb->AppendDate(dt);
+					sb->AppendTS(Data::Timestamp::FromEpochSec(ReadMUInt32(&buff[33]), Data::DateTimeUtil::GetLocalTzQhr()));
 					sb->AppendC(UTF8STRC("\r\n"));
 				}
 				if (protoSize >= 34)
@@ -344,10 +335,8 @@ Bool IO::ProtoDec::TK109ProtocolDecoder::GetProtocolDetail(UInt8 *buff, UOSInt b
 				sb->AppendC(UTF8STRC("2, ACC Off\r\n"));
 				if (protoSize >= 32)
 				{
-					dt.SetUnixTimestamp(ReadMUInt32(&buff[33]));
-					dt.ToLocalTime();
 					sb->AppendC(UTF8STRC("Status Time="));
-					sb->AppendDate(dt);
+					sb->AppendTS(Data::Timestamp::FromEpochSec(ReadMUInt32(&buff[33]), Data::DateTimeUtil::GetLocalTzQhr()));
 					sb->AppendC(UTF8STRC("\r\n"));
 				}
 				if (protoSize >= 34)
@@ -359,10 +348,8 @@ Bool IO::ProtoDec::TK109ProtocolDecoder::GetProtocolDetail(UInt8 *buff, UOSInt b
 				sb->AppendC(UTF8STRC("3, Digital Input Changed\r\n"));
 				if (protoSize >= 32)
 				{
-					dt.SetUnixTimestamp(ReadMUInt32(&buff[33]));
-					dt.ToLocalTime();
 					sb->AppendC(UTF8STRC("Status Time="));
-					sb->AppendDate(dt);
+					sb->AppendTS(Data::Timestamp::FromEpochSec(ReadMUInt32(&buff[33]), Data::DateTimeUtil::GetLocalTzQhr()));
 					sb->AppendC(UTF8STRC("\r\n"));
 				}
 				if (protoSize >= 34)
@@ -391,11 +378,8 @@ Bool IO::ProtoDec::TK109ProtocolDecoder::GetProtocolDetail(UInt8 *buff, UOSInt b
 		sb->AppendC(UTF8STRC("\r\n"));
 		if (protoSize >= 27)
 		{
-			Data::DateTime dt;
-			dt.SetUnixTimestamp(ReadMUInt32(&buff[7]));
-			dt.ToLocalTime();
 			sb->AppendC(UTF8STRC("GPS Time="));
-			sb->AppendDate(dt);
+			sb->AppendTS(Data::Timestamp::FromEpochSec(ReadMUInt32(&buff[7]), Data::DateTimeUtil::GetLocalTzQhr()));
 			sb->AppendC(UTF8STRC("\r\n"));
 			sb->AppendC(UTF8STRC("Latitude="));
 			Text::SBAppendF64(sb, ReadMInt32(&buff[11]) / 1800000.0);

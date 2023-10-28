@@ -437,7 +437,7 @@ void Crypto::Cert::X509File::AppendTBSCertList(const UInt8 *pdu, const UInt8 *pd
 				sb->AppendUTF8Char('.');
 			}
 			sb->AppendC(UTF8STRC("thisUpdate = "));
-			sb->AppendDate(dt);
+			sb->AppendDateTime(dt);
 			sb->AppendC(UTF8STRC("\r\n"));
 		}
 	}
@@ -452,7 +452,7 @@ void Crypto::Cert::X509File::AppendTBSCertList(const UInt8 *pdu, const UInt8 *pd
 				sb->AppendUTF8Char('.');
 			}
 			sb->AppendC(UTF8STRC("nextUpdate = "));
-			sb->AppendDate(dt);
+			sb->AppendDateTime(dt);
 			sb->AppendC(UTF8STRC("\r\n"));
 		}
 		Text::StrUOSInt(cptr, i++);
@@ -491,7 +491,7 @@ void Crypto::Cert::X509File::AppendTBSCertList(const UInt8 *pdu, const UInt8 *pd
 				sb->AppendC(UTF8STRC("revokedCertificates["));
 				sb->AppendUOSInt(j);
 				sb->AppendC(UTF8STRC("].revocationDate = "));
-				sb->AppendDate(dt);
+				sb->AppendDateTime(dt);
 				sb->AppendC(UTF8STRC("\r\n"));
 			}
 			UOSInt itemOfst;
@@ -1138,7 +1138,7 @@ void Crypto::Cert::X509File::AppendValidity(const UInt8 *pdu, const UInt8 *pduEn
 			sb->Append(varName);
 			sb->AppendUTF8Char('.');
 			sb->AppendC(UTF8STRC("notBefore = "));
-			sb->AppendDate(dt);
+			sb->AppendDateTime(dt);
 			sb->AppendC(UTF8STRC("\r\n"));
 		}
 	}
@@ -1149,7 +1149,7 @@ void Crypto::Cert::X509File::AppendValidity(const UInt8 *pdu, const UInt8 *pduEn
 			sb->Append(varName);
 			sb->AppendUTF8Char('.');
 			sb->AppendC(UTF8STRC("notAfter = "));
-			sb->AppendDate(dt);
+			sb->AppendDateTime(dt);
 			sb->AppendC(UTF8STRC("\r\n"));
 		}
 	}

@@ -711,7 +711,7 @@ Text::String *Data::VariItem::GetAsNewString() const
 	}
 }
 
-Data::DateTime *Data::VariItem::GetAsNewDate() const
+Data::DateTime *Data::VariItem::GetAsNewDateTime() const
 {
 	Data::DateTime *date;
 	if (this->itemType == ItemType::Timestamp)

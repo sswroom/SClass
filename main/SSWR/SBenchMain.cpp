@@ -261,19 +261,15 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	console->WriteLineC(sb.ToString(), sb.GetLength());
 	writer->WriteLineC(sb.ToString(), sb.GetLength());
 	{
-		Data::DateTime dt;
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("Build Time: "));
-		IO::BuildTime::GetBuildTime(&dt);
-		dt.ToUTCTime();
-		sb.AppendDate(dt);
+		sb.AppendTS(IO::BuildTime::GetBuildTime().ToUTCTime());
 		console->WriteLineC(sb.ToString(), sb.GetLength());
 		writer->WriteLineC(sb.ToString(), sb.GetLength());
 
-		dt.SetCurrTimeUTC();
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("Benchmark Time: "));
-		sb.AppendDate(dt);
+		sb.AppendTS(Data::Timestamp::UtcNow());
 		console->WriteLineC(sb.ToString(), sb.GetLength());
 		writer->WriteLineC(sb.ToString(), sb.GetLength());
 	}

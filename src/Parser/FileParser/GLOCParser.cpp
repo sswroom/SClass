@@ -147,12 +147,7 @@ public:
 			sb->AppendI32(extInfo->devType);
 			return true;
 		case 2:
-			{
-				Data::DateTime dt;
-				dt.SetUnixTimestamp(extInfo->recvTimeTS);
-				dt.ToLocalTime();
-				sb->AppendDate(dt);
-			}
+			sb->AppendTS(Data::Timestamp::FromEpochSec(extInfo->recvTimeTS, Data::DateTimeUtil::GetLocalTzQhr()));
 			return true;
 		case 3:
 			sb->AppendC(UTF8STRC("0x"));

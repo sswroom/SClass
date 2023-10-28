@@ -312,8 +312,10 @@ public:
 		case SYBFLT8:
 			sb->AppendDouble(ReadDouble(&this->cols[colIndex].buff[0]));
 			return true;
-		case SYBDATETIME:
 		case SYBMSDATE:
+			sb->AppendDate(this->GetDate(colIndex));
+			return true;
+		case SYBDATETIME:
 		case SYBMSTIME:
 		case SYBMSDATETIME2:
 			sb->AppendTS(this->GetTimestamp(colIndex));

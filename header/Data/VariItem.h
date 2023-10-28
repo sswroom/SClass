@@ -137,7 +137,7 @@ namespace Data
 		void GetAsString(NotNullPtr<Text::StringBuilderUTF8> sb) const;
 		UTF8Char *GetAsStringS(UTF8Char *buff, UOSInt buffSize) const;
 		Text::String *GetAsNewString() const;
-		Data::DateTime *GetAsNewDate() const;
+		Data::DateTime *GetAsNewDateTime() const;
 		Data::Timestamp GetAsTimestamp() const;
 		Data::Date GetAsDate() const;
 		Data::ReadonlyArray<UInt8> *GetAsNewByteArr() const;
