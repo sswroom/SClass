@@ -3,6 +3,7 @@
 #include "SSWR/AVIRead/AVIRCore.h"
 #include "UI/GUIButton.h"
 #include "UI/GUICheckBox.h"
+#include "UI/GUIComboBox.h"
 #include "UI/GUIForm.h"
 #include "UI/GUIGroupBox.h"
 #include "UI/GUIHSplitter.h"
@@ -26,7 +27,10 @@ namespace SSWR
 			UI::GUITextBox *txtHost;
 			UI::GUILabel *lblPort;
 			UI::GUITextBox *txtPort;
+			UI::GUILabel *lblMode;
+			UI::GUIComboBox *cboMode;
 			UI::GUIButton *btnCheck;
+
 			UI::GUILabel *lblStatus;
 			UI::GUITextBox *txtStatus;
 			UI::GUILabel *lblCert;

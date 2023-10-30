@@ -3173,6 +3173,8 @@ Net/SSLClient.h: ../../src/Net/SSLClient.cpp
 @SSLClient.o
 Net/SSLEngine.h: ../../src/Net/SSLEngine.cpp
 @SSLEngine.o
+Net/SSLUtil.h: ../../src/Net/SSLUtil.cpp
+@SSLUtil.o
 Net/SyslogServer.h: ../../src/Net/SyslogServer.cpp
 @SyslogServer.o
 Net/TCPBoardcastStream.h: ../../src/Net/TCPBoardcastStream.cpp
@@ -5530,6 +5532,7 @@ SolarEdgeAPI.o: ../../src/Net/SolarEdgeAPI.cpp
 SSDPClient.o: ../../src/Net/SSDPClient.cpp
 SSLClient.o: ../../src/Net/SSLClient.cpp
 SSLEngine.o: ../../src/Net/SSLEngine.cpp
+SSLUtil.o: ../../src/Net/SSLUtil.cpp
 SyslogServer.o: ../../src/Net/SyslogServer.cpp
 TCPBoardcastStream.o: ../../src/Net/TCPBoardcastStream.cpp
 TCPClient.o: ../../src/Net/TCPClient.cpp
