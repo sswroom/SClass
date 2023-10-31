@@ -11,8 +11,8 @@ extern _UseAVX
 %define UseAVX _UseAVX
 %define CPUBrand _CPUBrand
 %else
-extern _CPUBrand
-extern _UseAVX
+extern CPUBrand
+extern UseAVX
 %endif
 
 ;Benchmark_MemCopyTest(UInt8 *buff1, UInt8 *buff2, OSInt buffSize, OSInt loopCnt)

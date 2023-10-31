@@ -1,4 +1,5 @@
 #include "Stdafx.h"
+#include "Crypto/Cert/X509Cert.h"
 #include "Data/ByteTool.h"
 #include "Data/RandomBytesGenerator.h"
 #include "Net/SocketUtil.h"
@@ -98,25 +99,24 @@ UInt16 Net::SSLUtil::csuites[] = {
     0x00ff, //TLS_EMPTY_RENEGOTIATION_INFO_SCSV (0x00ff)
 };
 
-UOSInt Net::SSLUtil::GenClientHello(UInt8 *buff, Text::CStringNN serverHost)
+UOSInt Net::SSLUtil::GenClientHello(UInt8 *buff, Text::CStringNN serverHost, SSLVer ver)
 {
 	Data::RandomBytesGenerator randGen;
 	UOSInt len;
 	buff[0] = 1; //Client Hello
-	buff[2] = 3; //TLS
-	buff[3] = 3; //1.2
-	randGen.NextBytes(&buff[4], 32); //Random
-	buff[36] = 32; //Session ID Length
-	randGen.NextBytes(&buff[37], 32); //Session ID
-	WriteMUInt16(&buff[69], sizeof(csuites));
+	WriteMUInt16(&buff[4], (UInt16)ver);
+	randGen.NextBytes(&buff[6], 32); //Random
+	buff[38] = 32; //Session ID Length
+	randGen.NextBytes(&buff[39], 32); //Session ID
+	WriteMUInt16(&buff[71], sizeof(csuites));
 	UOSInt i = 0;
 	UOSInt j = sizeof(csuites) >> 1;
 	while (i < j)
 	{
-		WriteMUInt16(&buff[71 + i * 2], csuites[i]);
+		WriteMUInt16(&buff[73 + i * 2], csuites[i]);
 		i++;
 	}
-	len = 71 + j * 2;
+	len = 73 + j * 2;
 	buff[len] = 1; //Compression Method Length
 	buff[len + 1] = 0; //Compression Method: Null
 	i = len + 2; //Extension
@@ -187,27 +187,274 @@ UOSInt Net::SSLUtil::GenClientHello(UInt8 *buff, Text::CStringNN serverHost)
 	WriteMUInt16(&buff[len + 30], 0x000a); //sect283r1
 	len += 32;
 
-	WriteMUInt16(&buff[len], 43); //Extension type: supported_versions
+/*	WriteMUInt16(&buff[len], 43); //Extension type: supported_versions
 	WriteMUInt16(&buff[len + 2], 9); //Extension length
 	buff[len + 4] = 8; //Supported versions length
 	WriteMUInt16(&buff[len + 5], 0x304); //TLS 1.3
 	WriteMUInt16(&buff[len + 7], 0x303); //TLS 1.2
 	WriteMUInt16(&buff[len + 9], 0x302); //TLS 1.1
 	WriteMUInt16(&buff[len + 11], 0x301); //TLS 1.0
-	len += 13;
+	len += 13;*/
 
 	WriteMUInt16(&buff[i], len - i - 2); //Extensions Length
-	WriteMUInt16(&buff[1], len - 4);
+	WriteMUInt32(&buff[0], len - 4);
+	buff[0] = 1; //Client Hello
 	return len;
 }
 
-UOSInt Net::SSLUtil::GenSSLClientHello(UInt8 *buff, Text::CStringNN serverHost)
+UOSInt Net::SSLUtil::GenSSLClientHello(UInt8 *buff, Text::CStringNN serverHost, SSLVer ver)
 {
 	UOSInt len;
 	buff[0] = 22; //Handshake
-	buff[1] = 3; //TLS
-	buff[2] = 1; //1.0
-	len = GenClientHello(&buff[5], serverHost);
+	WriteMUInt16(&buff[1], (UInt16)ver);
+	len = GenClientHello(&buff[5], serverHost, ver);
 	WriteMUInt16(&buff[3], len);
 	return len + 5;
+}
+
+void Net::SSLUtil::ParseResponse(const UInt8 *buff, UOSInt packetSize, NotNullPtr<Text::StringBuilderUTF8> sb, OutParam<Crypto::Cert::X509File*> cert)
+{
+	cert.Set(0);
+	if (buff[0] == 21 && packetSize == 7)
+	{
+		sb->AppendC(UTF8STRC("Server Alert: Level = "));
+		switch (buff[5])
+		{
+		case 1:
+			sb->AppendC(UTF8STRC("Warning(1)"));
+			break;
+		case 2:
+			sb->AppendC(UTF8STRC("Fatel(2)"));
+			break;
+		default:
+			sb->AppendC(UTF8STRC("Unknown("));
+			sb->AppendU16(buff[5]);
+			sb->AppendUTF8Char(')');
+			break;
+		}
+		sb->AppendC(UTF8STRC(", Desc: "));
+		switch (buff[6])
+		{
+		case 0:
+			sb->AppendC(UTF8STRC("Close Notify (0)"));
+			break;
+		case 10:
+			sb->AppendC(UTF8STRC("Unexpected Message (10)"));
+			break;
+		case 20:
+			sb->AppendC(UTF8STRC("Bad Record MAC (20)"));
+			break;
+		case 21:
+			sb->AppendC(UTF8STRC("Decryption Failed RESERVED (21)"));
+			break;
+		case 22:
+			sb->AppendC(UTF8STRC("Record Overflow (22)"));
+			break;
+		case 30:
+			sb->AppendC(UTF8STRC("Decompression Failure RESERVED (30)"));
+			break;
+		case 40:
+			sb->AppendC(UTF8STRC("Handshake Failure (40)"));
+			break;
+		case 41:
+			sb->AppendC(UTF8STRC("No certificate RESERVED (41)"));
+			break;
+		case 42:
+			sb->AppendC(UTF8STRC("Bad certificate (42)"));
+			break;
+		case 43:
+			sb->AppendC(UTF8STRC("Unsupported certificate (43)"));
+			break;
+		case 44:
+			sb->AppendC(UTF8STRC("Certificate revoked (44)"));
+			break;
+		case 45:
+			sb->AppendC(UTF8STRC("Certificate expired (45)"));
+			break;
+		case 46:
+			sb->AppendC(UTF8STRC("Certificate unknown (46)"));
+			break;
+		case 47:
+			sb->AppendC(UTF8STRC("Illegal parameter (47)"));
+			break;
+		case 48:
+			sb->AppendC(UTF8STRC("Unknown CA (48)"));
+			break;
+		case 49:
+			sb->AppendC(UTF8STRC("Access denied (49)"));
+			break;
+		case 50:
+			sb->AppendC(UTF8STRC("Decode error (50)"));
+			break;
+		case 51:
+			sb->AppendC(UTF8STRC("Decrypt error (51)"));
+			break;
+		case 60:
+			sb->AppendC(UTF8STRC("Export restriction RESERVED (60)"));
+			break;
+		case 70:
+			sb->AppendC(UTF8STRC("Protocol Version (70)"));
+			break;
+		case 71:
+			sb->AppendC(UTF8STRC("Insufficient security (71)"));
+			break;
+		case 80:
+			sb->AppendC(UTF8STRC("Internal error (80)"));
+			break;
+		case 86:
+			sb->AppendC(UTF8STRC("Inappropriate fallback (86)"));
+			break;
+		case 90:
+			sb->AppendC(UTF8STRC("User canceled (90)"));
+			break;
+		case 100:
+			sb->AppendC(UTF8STRC("No renegotiation RESERVED (100)"));
+			break;
+		case 109:
+			sb->AppendC(UTF8STRC("Missing extension (109)"));
+			break;
+		case 110:
+			sb->AppendC(UTF8STRC("Unsupported extension (110)"));
+			break;
+		case 111:
+			sb->AppendC(UTF8STRC("Certificate unobtainable RESERVED (111)"));
+			break;
+		case 112:
+			sb->AppendC(UTF8STRC("Unrecognized name (112)"));
+			break;
+		case 113:
+			sb->AppendC(UTF8STRC("Bad certificate status response (113)"));
+			break;
+		case 114:
+			sb->AppendC(UTF8STRC("Bad certificate hash value RESERVED (114)"));
+			break;
+		case 115:
+			sb->AppendC(UTF8STRC("Unknown psk identity (115)"));
+			break;
+		case 116:
+			sb->AppendC(UTF8STRC("Certificate required (116)"));
+			break;
+		case 120:
+			sb->AppendC(UTF8STRC("No application protocol (120)"));
+			break;
+		default:
+			sb->AppendC(UTF8STRC("Unknown error ("));
+			sb->AppendU16(buff[6]);
+			sb->AppendUTF8Char(')');
+			break;
+		}
+	}
+	else if (buff[0] == 22 && packetSize >= 9)
+	{
+		Data::ArrayList<Crypto::Cert::X509Cert*> certs;
+		Crypto::Cert::X509Cert *c;
+		Bool hasServerHello = false;
+		UOSInt i = 0;
+		UOSInt j;
+		UInt32 hsLeng;
+		while (i < packetSize - 8)
+		{
+			if (buff[i] != 22)
+			{
+				sb->AppendC(UTF8STRC("Found non handshake packet ("));
+				sb->AppendU16(buff[i]);
+				sb->AppendUTF8Char(')');
+				return;
+			}
+			hsLeng = ReadMUInt16(&buff[i + 3]);
+			j = 0;
+			while (j < hsLeng - 3)
+			{
+				if (buff[i + j + 5] == 2)
+				{
+					if (hasServerHello)
+					{
+						sb->AppendC(UTF8STRC("Found duplicate server hello"));
+						if (certs.GetCount() > 0)
+						{
+							cert.Set(Crypto::Cert::X509File::CreateFromCertsAndClear(certs));
+						}
+						return;
+					}
+					hasServerHello = true;
+				}
+				else if (!hasServerHello)
+				{
+					sb->AppendC(UTF8STRC("Server Hello not found"));
+					return;
+				}
+				if (buff[i + j + 5] == 11) //
+				{
+					UInt32 certsLeng = ReadMUInt24(&buff[i + j + 9]);
+					UInt32 certLeng;
+					UOSInt k = 0;
+					while (k < certsLeng - 3)
+					{
+						certLeng = ReadMUInt24(&buff[i + j + k + 12]);
+						NEW_CLASS(c, Crypto::Cert::X509Cert(CSTR("Cert.crt"), Data::ByteArrayR(&buff[i + j + k + 15], certLeng)));
+						c->SetDefaultSourceName();
+						certs.Add(c);
+						k += certLeng + 3;
+					}
+				}
+				else if (buff[i + j + 5] == 14)
+				{
+					sb->AppendC(UTF8STRC("Success"));
+					if (certs.GetCount() > 0)
+					{
+						cert.Set(Crypto::Cert::X509File::CreateFromCertsAndClear(certs));
+					}
+					return;
+				}
+				j += ReadMUInt24(&buff[i + j + 6]) + 4;
+			}
+			i += hsLeng + 5;
+		}
+		sb->AppendC(UTF8STRC("Server hello end not found"));
+		if (certs.GetCount() > 0)
+		{
+			cert.Set(Crypto::Cert::X509File::CreateFromCertsAndClear(certs));
+		}
+		return;		
+	}
+	else
+	{
+		sb->AppendC(UTF8STRC("Unknown server response, type = "));
+		sb->AppendU16(buff[0]);
+	}
+}
+
+Bool Net::SSLUtil::IncompleteHandshake(const UInt8 *buff, UOSInt packetSize)
+{
+	Bool hasServerHello = false;
+	UOSInt i = 0;
+	UOSInt len;
+	UOSInt j = 0;
+	while (i < packetSize - 8)
+	{
+		if (buff[i] != 22)
+			return false;
+		len = ReadMUInt16(&buff[i + 3]);
+		j = 0;
+		while (j < len - 3)
+		{
+			if (buff[i + j + 5] == 2)
+			{
+				if (hasServerHello)
+					return false;
+				hasServerHello = true;
+			}
+			else if (!hasServerHello)
+			{
+				return false;
+			}
+			if (buff[i + j + 5] == 14)
+			{
+				return false;
+			}
+			j += ReadMUInt24(&buff[i + j + 6]) + 4;
+		}
+		i += len + 5;
+	}
+	return true;
 }

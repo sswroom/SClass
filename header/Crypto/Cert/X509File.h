@@ -230,6 +230,7 @@ namespace Crypto
 			static Text::CStringNN ValidStatusGetDesc(ValidStatus validStatus);
 			static Crypto::Hash::HashType HashTypeFromOID(const UInt8 *oid, UOSInt oidLen);
 			static X509File *CreateFromCerts(NotNullPtr<const Data::ReadingList<Crypto::Cert::Certificate *>> certs);
+			static X509File *CreateFromCertsAndClear(NotNullPtr<Data::ArrayList<Crypto::Cert::X509Cert *>> certs);
 		};
 	}
 }

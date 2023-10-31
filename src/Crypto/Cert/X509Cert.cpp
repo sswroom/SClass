@@ -89,6 +89,16 @@ Bool Crypto::Cert::X509Cert::GetIssuerCN(NotNullPtr<Text::StringBuilderUTF8> sb)
 	}
 }
 
+void Crypto::Cert::X509Cert::SetDefaultSourceName()
+{
+	Text::StringBuilderUTF8 sb;
+	if (GetSubjectCN(sb))
+	{
+		sb.AppendC(UTF8STRC(".crt"));
+		this->SetSourceName(sb.ToCString());
+	}
+}
+
 Crypto::Cert::X509File::FileType Crypto::Cert::X509Cert::GetFileType() const
 {
 	return FileType::Cert;

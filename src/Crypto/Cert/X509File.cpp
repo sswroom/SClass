@@ -7,6 +7,7 @@
 #include "Net/ASN1OIDDB.h"
 #include "Net/ASN1Util.h"
 #include "Net/SSLEngine.h"
+#include "Text/MyStringW.h"
 
 void Crypto::Cert::CertNames::FreeNames(NotNullPtr<CertNames> names)
 {
@@ -1307,7 +1308,14 @@ void Crypto::Cert::X509File::AppendAttributeTypeAndDistinguishedValue(const UInt
 			Net::ASN1Util::OIDToString(typePDU, typeLen, sb);
 		}
 		sb->AppendC(UTF8STRC(" = "));
-		sb->AppendC(valuePDU, valueLen);
+		if (valueType == Net::ASN1Util::IT_BMPSTRING)
+		{
+			sb->AppendUTF16BE(valuePDU, valueLen >> 1);
+		}
+		else
+		{
+			sb->AppendC(valuePDU, valueLen);
+		}
 		sb->AppendC(UTF8STRC("\r\n"));
 	}
 }
@@ -2519,7 +2527,14 @@ Bool Crypto::Cert::X509File::NameGetByOID(const UInt8 *pdu, const UInt8 *pduEnd,
 					strPDU = Net::ASN1Util::PDUGetItem(itemPDU, itemPDU + itemLen, "2", oidLen, itemType);
 					if (strPDU)
 					{
-						sb->AppendC(strPDU, oidLen);
+						if (itemType == Net::ASN1Util::IT_BMPSTRING)
+						{
+							sb->AppendUTF16BE(strPDU, oidLen >> 1);
+						}
+						else
+						{
+							sb->AppendC(strPDU, oidLen);
+						}
 						return true;
 					}
 				}
@@ -2555,7 +2570,14 @@ UTF8Char *Crypto::Cert::X509File::NameGetByOID(const UInt8 *pdu, const UInt8 *pd
 					strPDU = Net::ASN1Util::PDUGetItem(itemPDU, itemPDU + itemLen, "2", oidLen, itemType);
 					if (strPDU)
 					{
-						return Text::StrConcatC(sbuff, strPDU, oidLen);
+						if (itemType == Net::ASN1Util::IT_BMPSTRING)
+						{
+							return Text::StrUTF16BE_UTF8C(sbuff, strPDU, oidLen >> 1);
+						}
+						else
+						{
+							return Text::StrConcatC(sbuff, strPDU, oidLen);
+						}
 					}
 				}
 			}
@@ -3363,6 +3385,40 @@ Crypto::Cert::X509File *Crypto::Cert::X509File::CreateFromCerts(NotNullPtr<const
 			}
 			i++;
 		}
+		return certList;
+	}
+}
+
+Crypto::Cert::X509File *Crypto::Cert::X509File::CreateFromCertsAndClear(NotNullPtr<Data::ArrayList<Crypto::Cert::X509Cert *>> certs)
+{
+	if (certs->GetCount() == 1)
+	{
+		return certs->RemoveAt(0);
+	}
+	else
+	{
+		UOSInt i = 1;
+		UOSInt j = certs->GetCount();
+		Crypto::Cert::X509FileList *certList = 0;
+		NotNullPtr<Crypto::Cert::X509Cert> cert;
+		if (cert.Set(certs->GetItem(0)))
+		{
+			NEW_CLASS(certList, Crypto::Cert::X509FileList(cert->GetSourceNameObj(), cert));
+		}
+		while (i < j)
+		{
+			if (cert.Set(certs->GetItem(i)))
+			{
+				if (certList)
+					certList->AddFile(cert);
+				else
+				{
+					NEW_CLASS(certList, Crypto::Cert::X509FileList(cert->GetSourceNameObj(), cert));
+				}
+			}
+			i++;
+		}
+		certs->Clear();
 		return certList;
 	}
 }

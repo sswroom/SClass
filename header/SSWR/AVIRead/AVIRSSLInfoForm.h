@@ -29,6 +29,8 @@ namespace SSWR
 			UI::GUITextBox *txtPort;
 			UI::GUILabel *lblMode;
 			UI::GUIComboBox *cboMode;
+			UI::GUILabel *lblVersion;
+			UI::GUIComboBox *cboVersion;
 			UI::GUIButton *btnCheck;
 
 			UI::GUILabel *lblStatus;
@@ -36,13 +38,17 @@ namespace SSWR
 			UI::GUILabel *lblCert;
 			UI::GUITextBox *txtCert;
 			UI::GUIButton *btnCert;
+			UI::GUIButton *btnRAW;
 
 			Crypto::Cert::X509File *currCerts;
+			UInt8 *packetBuff;
+			UOSInt packetSize;
 
 		private:
 			static void __stdcall OnCheckClicked(void *userObj);
 			static void __stdcall OnCertClicked(void *userObj);
-
+			static void __stdcall OnRAWClicked(void *userObj);
+			
 		public:
 			AVIRSSLInfoForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRSSLInfoForm();

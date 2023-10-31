@@ -17,6 +17,7 @@ namespace Crypto
 			Bool GetSubjectCN(NotNullPtr<Text::StringBuilderUTF8> sb) const;
 			UTF8Char *GetSubjectCN(UTF8Char *sbuff) const;
 			Bool GetIssuerCN(NotNullPtr<Text::StringBuilderUTF8> sb) const;
+			void SetDefaultSourceName();
 			
 			virtual FileType GetFileType() const;
 			virtual void ToShortName(NotNullPtr<Text::StringBuilderUTF8> sb) const;

@@ -165,3 +165,23 @@ Crypto::Cert::X509File *Crypto::Cert::X509FileList::GetFile(UOSInt index) const
 {
 	return this->fileList.GetItem(index);
 }
+
+void Crypto::Cert::X509FileList::SetDefaultSourceName()
+{
+	Crypto::Cert::X509File *file;
+	UOSInt j = INVALID_INDEX;
+	UOSInt i = this->fileList.GetCount();
+	while (i-- > 0)
+	{
+		file = this->fileList.GetItem(i);
+		if (file->GetFileType() == Crypto::Cert::X509File::FileType::Cert)
+		{
+			((Crypto::Cert::X509Cert*)file)->SetDefaultSourceName();
+			j = i;
+		}
+	}
+	if (j != INVALID_INDEX)
+	{
+		this->SetSourceName(this->fileList.GetItem(j)->GetSourceNameObj());
+	}
+}

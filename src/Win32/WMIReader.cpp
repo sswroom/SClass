@@ -441,9 +441,7 @@ Bool Win32::WMIReader::GetStr(UOSInt colIndex, NotNullPtr<Text::StringBuilderUTF
 				break;
 			case CIM_DATETIME:
 				{
-					Data::DateTime dt;
-					dt.SetValueVariTime(V_DATE(&v));
-					sb->AppendDate(dt);
+					sb->AppendTS(Data::Timestamp::FromVariTime(V_DATE(&v)));
 					ret = true;
 				}
 				break;

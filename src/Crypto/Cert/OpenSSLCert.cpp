@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "Crypto/Cert/OpenSSLCert.h"
+#include "Crypto/Cert/X509FileList.h"
 #include "IO/StmData/MemoryDataRef.h"
 #include "Parser/FileParser/X509Parser.h"
 #include <openssl/ssl.h>
@@ -82,6 +83,17 @@ Crypto::Cert::X509Cert *Crypto::Cert::OpenSSLCert::CreateX509Cert() const
 	{
 		NotNullPtr<Text::String> fileName = Text::String::New(UTF8STRC("Certificate.crt"));
 		pobjCert = Parser::FileParser::X509Parser::ParseBuff(BYTEARR(buff).WithSize((UOSInt)readSize), fileName);
+		if (pobjCert)
+		{
+			if (pobjCert->GetFileType() == Crypto::Cert::X509File::FileType::Cert)
+			{
+				((Crypto::Cert::X509Cert*)pobjCert)->SetDefaultSourceName();
+			}
+			else if (pobjCert->GetFileType() == Crypto::Cert::X509File::FileType::FileList)
+			{
+				((Crypto::Cert::X509FileList*)pobjCert)->SetDefaultSourceName();
+			}
+		}
 		fileName->Release();
 	}
 	BIO_free(bio1);

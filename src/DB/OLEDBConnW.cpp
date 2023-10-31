@@ -1272,9 +1272,7 @@ Bool DB::OLEDBReader::GetStr(UOSInt colIndex, NotNullPtr<Text::StringBuilderUTF8
 	case DBTYPE_DBDATE:
 		if (*valLen == 6)
 		{
-			Data::DateTime dt;
-			dt.SetValue(ReadUInt16(val), ReadUInt16(&val[2]), ReadUInt16(&val[4]), 0, 0, 0, 0, 0);
-			sb->AppendDate(dt);
+			sb->AppendDate(Data::Date(ReadUInt16(val), (UInt8)ReadUInt16(&val[2]), (UInt8)ReadUInt16(&val[4])));
 			return true;
 		}
 		return 0;
@@ -1283,7 +1281,7 @@ Bool DB::OLEDBReader::GetStr(UOSInt colIndex, NotNullPtr<Text::StringBuilderUTF8
 		{
 			Data::DateTime dt;
 			dt.SetValue(1970, 1, 1, ReadUInt16(val), ReadUInt16(&val[2]), ReadUInt16(&val[4]), 0, 0);
-			sb->AppendDate(dt);
+			sb->AppendDateTime(dt);
 			return true;
 		}
 		return 0;
@@ -1292,7 +1290,7 @@ Bool DB::OLEDBReader::GetStr(UOSInt colIndex, NotNullPtr<Text::StringBuilderUTF8
 		{
 			Data::DateTime dt;
 			dt.SetValue(ReadUInt16(val), ReadUInt16(&val[2]), ReadUInt16(&val[4]), ReadInt16(&val[6]), ReadInt16(&val[8]), ReadInt16(&val[10]), ReadInt32(&val[12]), 0);
-			sb->AppendDate(dt);
+			sb->AppendDateTime(dt);
 			return true;
 		}
 		return false;
@@ -1415,9 +1413,7 @@ UTF8Char *DB::OLEDBReader::GetStr(UOSInt colIndex, UTF8Char *buff, UOSInt buffSi
 	case DBTYPE_DBDATE:
 		if (*valLen == 6)
 		{
-			Data::DateTime dt;
-			dt.SetValue(ReadUInt16(val), ReadUInt16(&val[2]), ReadUInt16(&val[4]), 0, 0, 0, 0, 0);
-			return dt.ToString(buff);
+			return Data::Date(ReadUInt16(val), (UInt8)ReadUInt16(&val[2]), (UInt8)ReadUInt16(&val[4])).ToString(buff);
 		}
 		return 0;
 	case DBTYPE_DBTIME:
@@ -1711,11 +1707,12 @@ DB::DBUtil::ColType DB::OLEDBReader::DBType2ColType(UInt16 dbType)
 		return DB::DBUtil::CT_Float;
 	case DBTYPE_R8:
 		return DB::DBUtil::CT_Double;
+	case DBTYPE_DATE:
 	case DBTYPE_DBDATE:
+		return DB::DBUtil::CT_Date;
 	case DBTYPE_DBTIME:
 	case DBTYPE_DBTIMESTAMP:
 	case DBTYPE_FILETIME:
-	case DBTYPE_DATE:
 		return DB::DBUtil::CT_DateTime;
 	case DBTYPE_BSTR:
 		return DB::DBUtil::CT_VarUTF16Char;
