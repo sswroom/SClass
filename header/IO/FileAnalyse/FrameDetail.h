@@ -47,12 +47,13 @@ namespace IO
 			UInt64 GetSize() const;
 			UOSInt GetFieldInfos(UInt64 ofst, Data::ArrayList<const FieldInfo*> *fieldList) const;
 
-			virtual void AddHeader(Text::CString header);
-			virtual void AddField(UInt64 ofst, UInt64 size, Text::CString name, Text::CString value);
-			virtual void AddSubfield(UInt64 ofst, UInt64 size, Text::CString name, Text::CString value);
-			virtual void AddFieldSeperstor(UInt64 ofst, Text::CString name);
-			virtual void AddText(UInt64 ofst, Text::CString name);
+			virtual void AddHeader(Text::CStringNN header);
+			virtual void AddField(UInt64 ofst, UInt64 size, Text::CStringNN name, Text::CString value);
+			virtual void AddSubfield(UInt64 ofst, UInt64 size, Text::CStringNN name, Text::CString value);
+			virtual void AddFieldSeperstor(UInt64 ofst, Text::CStringNN name);
+			virtual void AddText(UInt64 ofst, Text::CStringNN name);
 			virtual void AddSubframe(UInt64 ofst, UInt64 size);
+			void AddArea(UInt64 ofst, UOSInt size, Text::CStringNN name);
 
 			void ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const;
 		};

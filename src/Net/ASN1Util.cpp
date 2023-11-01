@@ -973,6 +973,93 @@ Bool Net::ASN1Util::PDUIsValid(const UInt8 *pdu, const UInt8 *pduEnd)
 	return true;
 }
 
+void Net::ASN1Util::PDUAnalyse(NotNullPtr<IO::FileAnalyse::FrameDetail> frame, Data::ByteArrayR buff, UOSInt pduOfst, UOSInt pduEndOfst)
+{
+	UInt8 itemType;
+	UInt32 len;
+	while (pduOfst < pduEndOfst)
+	{
+		itemType = buff[pduOfst];
+		frame->AddUIntName(pduOfst, 1, CSTR("ItemType"), itemType, ItemTypeGetName(itemType));
+		if (buff[pduOfst + 1] & 0x80)
+		{
+			if (buff[pduOfst + 1] == 0x81)
+			{
+				len = buff[pduOfst + 2];
+				frame->AddUInt(pduOfst + 1, 2, CSTR("Item Length"), len);
+				pduOfst += 3;
+			}
+			else if (buff[pduOfst + 1] == 0x82)
+			{
+				len = buff.ReadMU16(pduOfst + 2);
+				frame->AddUInt(pduOfst + 1, 3, CSTR("Item Length"), len);
+				pduOfst += 4;
+			}
+			else if (buff[pduOfst + 1] == 0x83)
+			{
+				len = buff.ReadMU24(pduOfst + 2);
+				frame->AddUInt(pduOfst + 1, 4, CSTR("Item Length"), len);
+				pduOfst += 5;
+			}
+			else if (buff[pduOfst + 1] == 0x84)
+			{
+				len = buff.ReadMU32(pduOfst + 2);
+				frame->AddUInt(pduOfst + 1, 5, CSTR("Item Length"), len);
+				pduOfst += 6;
+			}
+			else
+			{
+				return;
+			}
+		}
+		else
+		{
+			len = buff[pduOfst + 1];
+			frame->AddUInt(pduOfst + 1, 1, CSTR("Item Length"), len);
+			pduOfst += 2;
+		}
+		if (pduOfst + len > pduEndOfst)
+			return;
+		Text::CStringNN itemName = ItemTypeGetName(itemType);
+		switch (itemType)
+		{
+		case IT_INTEGER:
+			if (len == 1)
+				frame->AddUInt(pduOfst, 1, itemName, buff[pduOfst]);
+			else if (len == 2)
+				frame->AddUInt(pduOfst, 2, itemName, buff.ReadMU16(pduOfst));
+			else if (len == 3)
+				frame->AddUInt(pduOfst, 3, itemName, buff.ReadMU24(pduOfst));
+			else if (len == 4)
+				frame->AddUInt(pduOfst, 4, itemName, buff.ReadMU32(pduOfst));
+			else
+				frame->AddHexBuff(pduOfst, itemName, buff.SubArray(pduOfst, len), true);
+			break;
+		case IT_SEQUENCE:
+			frame->AddArea(pduOfst, len, itemName);
+			PDUAnalyse(frame, buff, pduOfst, pduOfst + len);
+			break;
+		case IT_CONTEXT_SPECIFIC_0:
+		case IT_CONTEXT_SPECIFIC_1:
+		case IT_CONTEXT_SPECIFIC_2:
+		case IT_CONTEXT_SPECIFIC_3:
+			if (PDUIsValid(&buff[pduOfst], &buff[pduOfst + len]))
+			{
+				frame->AddArea(pduOfst, len, itemName);
+				PDUAnalyse(frame, buff, pduOfst, pduOfst + len);
+			}
+			else
+			{
+				frame->AddHexBuff(pduOfst, itemName, buff.SubArray(pduOfst, len), true);
+			}
+			break;
+		default:
+			break;
+		}
+		pduOfst += len;
+	}
+}
+
 OSInt Net::ASN1Util::OIDCompare(const UInt8 *oid1, UOSInt oid1Len, const UInt8 *oid2, UOSInt oid2Len)
 {
 	UOSInt i = 0;
@@ -1255,6 +1342,77 @@ void Net::ASN1Util::UTCTimeToString(const UInt8 *data, UOSInt dataLen, NotNullPt
 		UTF8Char *sptr;
 		sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss");
 		sb->AppendP(sbuff, sptr);
+	}
+}
+
+Text::CStringNN Net::ASN1Util::ItemTypeGetName(UInt8 itemType)
+{
+	switch (itemType)
+	{
+	case IT_UNKNOWN:
+		return CSTR("IT_UNKNOWN");
+	case IT_BOOLEAN:
+		return CSTR("IT_BOOLEAN");
+	case IT_INTEGER:
+		return CSTR("IT_INTEGER");
+	case IT_BIT_STRING:
+		return CSTR("IT_BIT_STRING");
+	case IT_OCTET_STRING:
+		return CSTR("IT_OCTET_STRING");
+	case IT_NULL:
+		return CSTR("IT_NULL");
+	case IT_OID:
+		return CSTR("IT_OID");
+	case IT_ENUMERATED:
+		return CSTR("IT_ENUMERATED");
+	case IT_UTF8STRING:
+		return CSTR("IT_UTF8STRING");
+	case IT_NUMERICSTRING:
+		return CSTR("IT_NUMERICSTRING");
+	case IT_PRINTABLESTRING:
+		return CSTR("IT_PRINTABLESTRING");
+	case IT_T61STRING:
+		return CSTR("IT_T61STRING");
+	case IT_VIDEOTEXSTRING:
+		return CSTR("IT_VIDEOTEXSTRING");
+	case IT_IA5STRING:
+		return CSTR("IT_IA5STRING");
+	case IT_UTCTIME:
+		return CSTR("IT_UTCTIME");
+	case IT_GENERALIZEDTIME:
+		return CSTR("IT_GENERALIZEDTIME");
+	case IT_UNIVERSALSTRING:
+		return CSTR("IT_UNIVERSALSTRING");
+	case IT_BMPSTRING:
+		return CSTR("IT_BMPSTRING");
+	case IT_SEQUENCE:
+		return CSTR("IT_SEQUENCE");
+	case IT_SET:
+		return CSTR("IT_SET");
+	case IT_CHOICE_0:
+		return CSTR("IT_CHOICE_0");
+	case IT_CHOICE_1:
+		return CSTR("IT_CHOICE_1");
+	case IT_CHOICE_2:
+		return CSTR("IT_CHOICE_2");
+	case IT_CHOICE_3:
+		return CSTR("IT_CHOICE_3");
+	case IT_CHOICE_4:
+		return CSTR("IT_CHOICE_4");
+	case IT_CHOICE_5:
+		return CSTR("IT_CHOICE_5");
+	case IT_CHOICE_6:
+		return CSTR("IT_CHOICE_6");
+	case IT_CONTEXT_SPECIFIC_0:
+		return CSTR("IT_CONTEXT_SPECIFIC_0");
+	case IT_CONTEXT_SPECIFIC_1:
+		return CSTR("IT_CONTEXT_SPECIFIC_1");
+	case IT_CONTEXT_SPECIFIC_2:
+		return CSTR("IT_CONTEXT_SPECIFIC_2");
+	case IT_CONTEXT_SPECIFIC_3:
+		return CSTR("IT_CONTEXT_SPECIFIC_3");
+	default:
+		return CSTR("Unknown");
 	}
 }
 

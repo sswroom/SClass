@@ -65,27 +65,27 @@ UOSInt IO::FileAnalyse::FrameDetail::GetFieldInfos(UInt64 ofst, Data::ArrayList<
 	return ret;
 }
 
-void IO::FileAnalyse::FrameDetail::AddHeader(Text::CString header)
+void IO::FileAnalyse::FrameDetail::AddHeader(Text::CStringNN header)
 {
 	this->headers.Add(Text::String::New(header));
 }
 
-void IO::FileAnalyse::FrameDetail::AddField(UInt64 ofst, UInt64 size, Text::CString name, Text::CString value)
+void IO::FileAnalyse::FrameDetail::AddField(UInt64 ofst, UInt64 size, Text::CStringNN name, Text::CString value)
 {
 	this->AddFieldInfo(ofst, size, name, value, FT_FIELD);
 }
 
-void IO::FileAnalyse::FrameDetail::AddSubfield(UInt64 ofst, UInt64 size, Text::CString name, Text::CString value)
+void IO::FileAnalyse::FrameDetail::AddSubfield(UInt64 ofst, UInt64 size, Text::CStringNN name, Text::CString value)
 {
 	this->AddFieldInfo(ofst, size, name, value, FT_SUBFIELD);
 }
 
-void IO::FileAnalyse::FrameDetail::AddFieldSeperstor(UInt64 ofst, Text::CString name)
+void IO::FileAnalyse::FrameDetail::AddFieldSeperstor(UInt64 ofst, Text::CStringNN name)
 {
 	this->AddFieldInfo(ofst, 0, name, CSTR_NULL, FT_SEPERATOR);
 }
 
-void IO::FileAnalyse::FrameDetail::AddText(UInt64 ofst, Text::CString name)
+void IO::FileAnalyse::FrameDetail::AddText(UInt64 ofst, Text::CStringNN name)
 {
 	this->AddFieldInfo(ofst, 0, name, CSTR_NULL, FT_TEXT);
 }
@@ -93,6 +93,11 @@ void IO::FileAnalyse::FrameDetail::AddText(UInt64 ofst, Text::CString name)
 void IO::FileAnalyse::FrameDetail::AddSubframe(UInt64 ofst, UInt64 size)
 {
 	this->AddFieldInfo(ofst, size, CSTR("Subframe"), CSTR_NULL, FT_SUBFRAME);
+}
+
+void IO::FileAnalyse::FrameDetail::AddArea(UInt64 ofst, UOSInt size, Text::CStringNN name)
+{
+
 }
 
 void IO::FileAnalyse::FrameDetail::ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const

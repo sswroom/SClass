@@ -77,6 +77,42 @@ namespace Data
 			return ReadNUInt16(&this->buff[index]);
 		}
 
+		Int32 ReadI24(UOSInt index) const
+		{
+			this->CheckError(index + 3);
+			return ReadInt24(&this->buff[index]);
+		}
+
+		UInt32 ReadU24(UOSInt index) const
+		{
+			this->CheckError(index + 3);
+			return ReadUInt24(&this->buff[index]);
+		}
+
+		Int32 ReadMI24(UOSInt index) const
+		{
+			this->CheckError(index + 3);
+			return ReadMInt24(&this->buff[index]);
+		}
+
+		UInt32 ReadMU24(UOSInt index) const
+		{
+			this->CheckError(index + 3);
+			return ReadMUInt24(&this->buff[index]);
+		}
+
+		Int32 ReadNI24(UOSInt index) const
+		{
+			this->CheckError(index + 3);
+			return ReadNInt24(&this->buff[index]);
+		}
+
+		UInt32 ReadNU24(UOSInt index) const
+		{
+			this->CheckError(index + 3);
+			return ReadNUInt24(&this->buff[index]);
+		}
+
 		Int32 ReadI32(UOSInt index) const
 		{
 			this->CheckError(index + 4);

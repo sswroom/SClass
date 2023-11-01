@@ -67,15 +67,15 @@ namespace Media
 		static Double ReadU16Fixed16Number(const UInt8 *buff);
 		static Double ReadU8Fixed8Number(const UInt8 *buff);
 
-		static Text::CString GetNameCMMType(Int32 val);
-		static Text::CString GetNameProfileClass(Int32 val);
-		static Text::CString GetNameDataColorspace(Int32 val);
-		static Text::CString GetNamePrimaryPlatform(Int32 val);
-		static Text::CString GetNameDeviceManufacturer(Int32 val);
-		static Text::CString GetNameDeviceModel(Int32 val);
-		static Text::CString GetNameTag(Int32 val);
-		static Text::CString GetNameStandardObserver(Int32 val);
-		static Text::CString GetNameStandardIlluminent(Int32 val);
+		static Text::CStringNN GetNameCMMType(Int32 val);
+		static Text::CStringNN GetNameProfileClass(Int32 val);
+		static Text::CStringNN GetNameDataColorspace(Int32 val);
+		static Text::CStringNN GetNamePrimaryPlatform(Int32 val);
+		static Text::CStringNN GetNameDeviceManufacturer(Int32 val);
+		static Text::CStringNN GetNameDeviceModel(Int32 val);
+		static Text::CStringNN GetNameTag(Int32 val);
+		static Text::CStringNN GetNameStandardObserver(Int32 val);
+		static Text::CStringNN GetNameStandardIlluminent(Int32 val);
 
 		static void GetDispCIEXYZ(NotNullPtr<Text::StringBuilderUTF8> sb, const CIEXYZ &xyz);
 		static void GetDispTagType(NotNullPtr<Text::StringBuilderUTF8> sb, UInt8 *buff, UInt32 leng);
@@ -86,8 +86,8 @@ namespace Media
 		static ICCProfile *NewSRGBProfile();
 		static const UInt8 *GetSRGBICCData();
 
-		static void FrameAddXYZNumber(IO::FileAnalyse::FrameDetailHandler *frame, UOSInt ofst, Text::CString fieldName, const UInt8 *xyzBuff);
-		static void FrameDispTagType(IO::FileAnalyse::FrameDetailHandler *frame, UOSInt ofst, Text::CString fieldName, const UInt8 *buff, UInt32 leng);
+		static void FrameAddXYZNumber(IO::FileAnalyse::FrameDetailHandler *frame, UOSInt ofst, Text::CStringNN fieldName, const UInt8 *xyzBuff);
+		static void FrameDispTagType(IO::FileAnalyse::FrameDetailHandler *frame, UOSInt ofst, Text::CStringNN fieldName, const UInt8 *buff, UInt32 leng);
 	};
 }
 #endif

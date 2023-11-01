@@ -40,7 +40,7 @@ namespace IO
 			{
 				UInt32 elementId;
 				ElementType type;
-				Text::CString elementName;
+				Text::CStringNN elementName;
 			} ElementInfo;
 		private:
 			IO::StreamData *fd;

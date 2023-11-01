@@ -1,4 +1,5 @@
 #include "Stdafx.h"
+#include "IO/FileAnalyse/SSLFileAnalyse.h"
 #include "IO/StmData/MemoryDataCopy.h"
 #include "Net/SSLEngineFactory.h"
 #include "Net/SSLUtil.h"
@@ -237,7 +238,9 @@ void __stdcall SSWR::AVIRead::AVIRSSLInfoForm::OnRAWClicked(void *userObj)
 	if (me->packetBuff && me->packetSize > 0)
 	{
 		IO::StmData::MemoryDataCopy md(Data::ByteArrayR(me->packetBuff, me->packetSize));
-		me->core->OpenHex(md, 0);
+		IO::FileAnalyse::SSLFileAnalyse *fileAnalyse;
+		NEW_CLASS(fileAnalyse, IO::FileAnalyse::SSLFileAnalyse(md));
+		me->core->OpenHex(md, fileAnalyse);
 	}
 }
 

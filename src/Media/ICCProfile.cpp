@@ -992,7 +992,7 @@ Bool Media::ICCProfile::ParseFrame(IO::FileAnalyse::FrameDetailHandler *frame, U
 		Int32 tagSign;
 		UInt32 tagOfst;
 		UInt32 tagLeng;
-		Text::CString tagName;
+		Text::CStringNN tagName;
 		tagSign = ReadMInt32(&buff[132 + 12 * i]);
 		tagOfst = ReadMUInt32(&buff[136 + 12 * i]);
 		tagLeng = ReadMUInt32(&buff[140 + 12 * i]);
@@ -1032,7 +1032,7 @@ Double Media::ICCProfile::ReadU8Fixed8Number(const UInt8 *buff)
 	return ((UInt16)ReadMInt16(buff)) / 256.0;
 }
 
-Text::CString Media::ICCProfile::GetNameCMMType(Int32 val)
+Text::CStringNN Media::ICCProfile::GetNameCMMType(Int32 val)
 {
 	switch (val)
 	{
@@ -1085,7 +1085,7 @@ Text::CString Media::ICCProfile::GetNameCMMType(Int32 val)
 	}
 }
 
-Text::CString Media::ICCProfile::GetNameProfileClass(Int32 val)
+Text::CStringNN Media::ICCProfile::GetNameProfileClass(Int32 val)
 {
 	switch (val)
 	{
@@ -1110,7 +1110,7 @@ Text::CString Media::ICCProfile::GetNameProfileClass(Int32 val)
 	}
 }
 
-Text::CString Media::ICCProfile::GetNameDataColorspace(Int32 val)
+Text::CStringNN Media::ICCProfile::GetNameDataColorspace(Int32 val)
 {
 	switch (val)
 	{
@@ -1171,7 +1171,7 @@ Text::CString Media::ICCProfile::GetNameDataColorspace(Int32 val)
 	}
 }
 
-Text::CString Media::ICCProfile::GetNamePrimaryPlatform(Int32 val)
+Text::CStringNN Media::ICCProfile::GetNamePrimaryPlatform(Int32 val)
 {
 	switch (val)
 	{
@@ -1190,7 +1190,7 @@ Text::CString Media::ICCProfile::GetNamePrimaryPlatform(Int32 val)
 	}
 }
 
-Text::CString Media::ICCProfile::GetNameDeviceManufacturer(Int32 val)
+Text::CStringNN Media::ICCProfile::GetNameDeviceManufacturer(Int32 val)
 {
 	switch (val)
 	{
@@ -1201,7 +1201,7 @@ Text::CString Media::ICCProfile::GetNameDeviceManufacturer(Int32 val)
 	}
 }
 
-Text::CString Media::ICCProfile::GetNameDeviceModel(Int32 val)
+Text::CStringNN Media::ICCProfile::GetNameDeviceModel(Int32 val)
 {
 	switch (val)
 	{
@@ -1212,7 +1212,7 @@ Text::CString Media::ICCProfile::GetNameDeviceModel(Int32 val)
 	}
 }
 
-Text::CString Media::ICCProfile::GetNameTag(Int32 val)
+Text::CStringNN Media::ICCProfile::GetNameTag(Int32 val)
 {
 	switch (val)
 	{
@@ -1323,7 +1323,7 @@ Text::CString Media::ICCProfile::GetNameTag(Int32 val)
 	}
 }
 
-Text::CString Media::ICCProfile::GetNameStandardObserver(Int32 val)
+Text::CStringNN Media::ICCProfile::GetNameStandardObserver(Int32 val)
 {
 	switch (val)
 	{
@@ -1338,7 +1338,7 @@ Text::CString Media::ICCProfile::GetNameStandardObserver(Int32 val)
 	}
 }
 
-Text::CString Media::ICCProfile::GetNameStandardIlluminent(Int32 val)
+Text::CStringNN Media::ICCProfile::GetNameStandardIlluminent(Int32 val)
 {
 	switch (val)
 	{
@@ -1709,7 +1709,7 @@ const UInt8 *Media::ICCProfile::GetSRGBICCData()
 	return srgbICC;
 }
 
-void Media::ICCProfile::FrameAddXYZNumber(IO::FileAnalyse::FrameDetailHandler *frame, UOSInt ofst, Text::CString fieldName, const UInt8 *xyzBuff)
+void Media::ICCProfile::FrameAddXYZNumber(IO::FileAnalyse::FrameDetailHandler *frame, UOSInt ofst, Text::CStringNN fieldName, const UInt8 *xyzBuff)
 {
 	Text::StringBuilderUTF8 sb;
 	GetDispCIEXYZ(sb, ReadXYZNumber(xyzBuff));
@@ -1717,7 +1717,7 @@ void Media::ICCProfile::FrameAddXYZNumber(IO::FileAnalyse::FrameDetailHandler *f
 }
 
 
-void Media::ICCProfile::FrameDispTagType(IO::FileAnalyse::FrameDetailHandler *frame, UOSInt ofst, Text::CString fieldName, const UInt8 *buff, UInt32 leng)
+void Media::ICCProfile::FrameDispTagType(IO::FileAnalyse::FrameDetailHandler *frame, UOSInt ofst, Text::CStringNN fieldName, const UInt8 *buff, UInt32 leng)
 {
 	UInt32 typ = ReadMUInt32(buff);
 	Int32 nCh;

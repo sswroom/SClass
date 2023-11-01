@@ -201,7 +201,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::TXTFileAnalyse::GetFrameDetail(UO
 				else
 				{
 					txtSize = size;
-					frame->AddField(0, size, CSTR("Text Line"), Text::CString(buff, txtSize));
+					frame->AddField(0, size, CSTR("Text Line"), Text::CStringNN(buff, txtSize));
 				}
 			}
 		}
@@ -242,7 +242,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::TXTFileAnalyse::GetFrameDetail(UO
 				else
 				{
 					txtSize = size;
-					frame->AddField(0, size, CSTR("Text Line"), Text::CString(buff2.Ptr(), txtSize));
+					frame->AddField(0, size, CSTR("Text Line"), Text::CStringNN(buff2.Ptr(), txtSize));
 				}
 			}
 		}

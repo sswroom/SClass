@@ -4649,12 +4649,12 @@ Text::CString Media::EXIFData::GetEXIFMakerName(EXIFMaker exifMaker)
 	}
 }
 
-Text::CString Media::EXIFData::GetEXIFName(EXIFMaker exifMaker, UInt32 id)
+Text::CStringNN Media::EXIFData::GetEXIFName(EXIFMaker exifMaker, UInt32 id)
 {
 	return GetEXIFName(exifMaker, 0, id);
 }
 
-Text::CString Media::EXIFData::GetEXIFName(EXIFMaker exifMaker, UInt32 id, UInt32 subId)
+Text::CStringNN Media::EXIFData::GetEXIFName(EXIFMaker exifMaker, UInt32 id, UInt32 subId)
 {
 	EXIFInfo *infos;
 	OSInt cnt;

@@ -29,12 +29,12 @@ namespace IO
 
 			static const UInt8 *ReadVInt(const UInt8 *buffPtr, UInt64 *val);
 			static Data::ByteArray ReadVInt(Data::ByteArray buffPtr, UInt64 *val);
-			static const UInt8 *AddVInt(IO::FileAnalyse::FrameDetail *frame, UOSInt ofst, Text::CString name, const UInt8 *buffPtr);
-			static const UInt8 *AddVInt(IO::FileAnalyse::FrameDetail *frame, UOSInt ofst, Text::CString name, const UInt8 *buffPtr, UInt64 *val);
-			static Data::ByteArray AddVInt(IO::FileAnalyse::FrameDetail *frame, UOSInt ofst, Text::CString name, Data::ByteArray buffPtr);
-			static Data::ByteArray AddVInt(IO::FileAnalyse::FrameDetail *frame, UOSInt ofst, Text::CString name, Data::ByteArray buffPtr, UInt64 *val);
-			static const UInt8 *AddVHex(IO::FileAnalyse::FrameDetail *frame, UOSInt ofst, Text::CString name, const UInt8 *buffPtr, UInt64 *val);
-			static Data::ByteArray AddVHex(IO::FileAnalyse::FrameDetail *frame, UOSInt ofst, Text::CString name, Data::ByteArray buffPtr, UInt64 *val);
+			static const UInt8 *AddVInt(IO::FileAnalyse::FrameDetail *frame, UOSInt ofst, Text::CStringNN name, const UInt8 *buffPtr);
+			static const UInt8 *AddVInt(IO::FileAnalyse::FrameDetail *frame, UOSInt ofst, Text::CStringNN name, const UInt8 *buffPtr, OptOut<UInt64> val);
+			static Data::ByteArray AddVInt(IO::FileAnalyse::FrameDetail *frame, UOSInt ofst, Text::CStringNN name, Data::ByteArray buffPtr);
+			static Data::ByteArray AddVInt(IO::FileAnalyse::FrameDetail *frame, UOSInt ofst, Text::CStringNN name, Data::ByteArray buffPtr, OptOut<UInt64> val);
+			static const UInt8 *AddVHex(IO::FileAnalyse::FrameDetail *frame, UOSInt ofst, Text::CStringNN name, const UInt8 *buffPtr, OptOut<UInt64> val);
+			static Data::ByteArray AddVHex(IO::FileAnalyse::FrameDetail *frame, UOSInt ofst, Text::CStringNN name, Data::ByteArray buffPtr, OptOut<UInt64> val);
 			static void __stdcall ParseThread(NotNullPtr<Sync::Thread> thread);
 		public:
 			RAR5FileAnalyse(NotNullPtr<IO::StreamData> fd);

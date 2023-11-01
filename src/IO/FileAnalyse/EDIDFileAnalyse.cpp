@@ -311,7 +311,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::EDIDFileAnalyse::GetFrameDetail(U
 		sbuff[1] = (UTF8Char)(0x40 + ((buff[9] >> 5) | ((buff[8] << 3) & 0x1f)));
 		sbuff[2] = (UTF8Char)(0x40 + (buff[9] & 0x1f));
 		sbuff[3] = 0;
-		frame->AddField(8, 2, CSTR("Manufacturer ID"), Text::CString(sbuff, 3));
+		frame->AddField(8, 2, CSTR("Manufacturer ID"), Text::CStringNN(sbuff, 3));
 		frame->AddHex16(10, CSTR("Manufacturer product code"), ReadUInt16(&buff[10]));
 		frame->AddUInt(12, 4, CSTR("Serial number"), ReadUInt32(&buff[12]));
 		frame->AddUInt(16, 1, CSTR("Week of manufacture"), buff[16]);

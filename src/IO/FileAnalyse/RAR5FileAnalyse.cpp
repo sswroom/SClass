@@ -44,7 +44,7 @@ Data::ByteArray IO::FileAnalyse::RAR5FileAnalyse::ReadVInt(Data::ByteArray buffP
 	return buffPtr;
 }
 
-const UInt8 *IO::FileAnalyse::RAR5FileAnalyse::AddVInt(IO::FileAnalyse::FrameDetail *frame, UOSInt ofst, Text::CString name, const UInt8 *buffPtr)
+const UInt8 *IO::FileAnalyse::RAR5FileAnalyse::AddVInt(IO::FileAnalyse::FrameDetail *frame, UOSInt ofst, Text::CStringNN name, const UInt8 *buffPtr)
 {
 	UInt64 iVal;
 	const UInt8 *nextPtr = ReadVInt(buffPtr, &iVal);
@@ -52,16 +52,16 @@ const UInt8 *IO::FileAnalyse::RAR5FileAnalyse::AddVInt(IO::FileAnalyse::FrameDet
 	return nextPtr;
 }
 
-const UInt8 *IO::FileAnalyse::RAR5FileAnalyse::AddVInt(IO::FileAnalyse::FrameDetail *frame, UOSInt ofst, Text::CString name, const UInt8 *buffPtr, UInt64 *val)
+const UInt8 *IO::FileAnalyse::RAR5FileAnalyse::AddVInt(IO::FileAnalyse::FrameDetail *frame, UOSInt ofst, Text::CStringNN name, const UInt8 *buffPtr, OptOut<UInt64> val)
 {
 	UInt64 iVal;
 	const UInt8 *nextPtr = ReadVInt(buffPtr, &iVal);
 	frame->AddUInt64V(ofst, (UOSInt)(nextPtr - buffPtr), name, iVal);
-	if (val) *val = iVal;
+	val.Set(iVal);
 	return nextPtr;
 }
 
-Data::ByteArray IO::FileAnalyse::RAR5FileAnalyse::AddVInt(IO::FileAnalyse::FrameDetail *frame, UOSInt ofst, Text::CString name, Data::ByteArray buffPtr)
+Data::ByteArray IO::FileAnalyse::RAR5FileAnalyse::AddVInt(IO::FileAnalyse::FrameDetail *frame, UOSInt ofst, Text::CStringNN name, Data::ByteArray buffPtr)
 {
 	UInt64 iVal;
 	Data::ByteArray nextPtr = ReadVInt(buffPtr, &iVal);
@@ -69,30 +69,30 @@ Data::ByteArray IO::FileAnalyse::RAR5FileAnalyse::AddVInt(IO::FileAnalyse::Frame
 	return nextPtr;
 }
 
-Data::ByteArray IO::FileAnalyse::RAR5FileAnalyse::AddVInt(IO::FileAnalyse::FrameDetail *frame, UOSInt ofst, Text::CString name, Data::ByteArray buffPtr, UInt64 *val)
+Data::ByteArray IO::FileAnalyse::RAR5FileAnalyse::AddVInt(IO::FileAnalyse::FrameDetail *frame, UOSInt ofst, Text::CStringNN name, Data::ByteArray buffPtr, OptOut<UInt64> val)
 {
 	UInt64 iVal;
 	Data::ByteArray nextPtr = ReadVInt(buffPtr, &iVal);
 	frame->AddUInt64V(ofst, (UOSInt)(nextPtr - buffPtr), name, iVal);
-	if (val) *val = iVal;
+	val.Set(iVal);
 	return nextPtr;
 }
 
-const UInt8 *IO::FileAnalyse::RAR5FileAnalyse::AddVHex(IO::FileAnalyse::FrameDetail *frame, UOSInt ofst, Text::CString name, const UInt8 *buffPtr, UInt64 *val)
+const UInt8 *IO::FileAnalyse::RAR5FileAnalyse::AddVHex(IO::FileAnalyse::FrameDetail *frame, UOSInt ofst, Text::CStringNN name, const UInt8 *buffPtr, OptOut<UInt64> val)
 {
 	UInt64 iVal;
 	const UInt8 *nextPtr = ReadVInt(buffPtr, &iVal);
 	frame->AddHex64V(ofst, (UOSInt)(nextPtr - buffPtr), name, iVal);
-	if (val) *val = iVal;
+	val.Set(iVal);
 	return nextPtr;
 }
 
-Data::ByteArray IO::FileAnalyse::RAR5FileAnalyse::AddVHex(IO::FileAnalyse::FrameDetail *frame, UOSInt ofst, Text::CString name, Data::ByteArray buffPtr, UInt64 *val)
+Data::ByteArray IO::FileAnalyse::RAR5FileAnalyse::AddVHex(IO::FileAnalyse::FrameDetail *frame, UOSInt ofst, Text::CStringNN name, Data::ByteArray buffPtr, OptOut<UInt64> val)
 {
 	UInt64 iVal;
 	Data::ByteArray nextPtr = ReadVInt(buffPtr, &iVal);
 	frame->AddHex64V(ofst, (UOSInt)(nextPtr - buffPtr), name, iVal);
-	if (val) *val = iVal;
+	val.Set(iVal);
 	return nextPtr;
 }
 
@@ -592,7 +592,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::RAR5FileAnalyse::GetFrameDetail(U
 	extraSize = 0;
 	if (headerFlags & 1)
 	{
-		packPtr = AddVInt(frame, (UOSInt)(packPtr - packBuff), CSTR("Extra Area Size"), packPtr, &extraSize);
+		packPtr = AddVInt(frame, (UOSInt)(packPtr - packBuff), CSTR("Extra Area Size"), packPtr, extraSize);
 	}
 	if (headerFlags & 2)
 	{
@@ -650,14 +650,14 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::RAR5FileAnalyse::GetFrameDetail(U
 				{
 					frame->AddUInt64Name((UOSInt)(packPtr - packBuff), (UOSInt)(nextPtr2 - packPtr), CSTR("Type"), iVal, CSTR("Locator"));
 					packPtr = nextPtr2;
-					packPtr = AddVHex(frame, (UOSInt)(packPtr - packBuff), CSTR("Flags"), packPtr, &iVal);
+					packPtr = AddVHex(frame, (UOSInt)(packPtr - packBuff), CSTR("Flags"), packPtr, iVal);
 					if (iVal & 1)
 					{
-						packPtr = AddVHex(frame, (UOSInt)(packPtr - packBuff), CSTR("Quick open offset"), packPtr, &iVal);
+						packPtr = AddVHex(frame, (UOSInt)(packPtr - packBuff), CSTR("Quick open offset"), packPtr, iVal);
 					}
 					if (iVal & 2)
 					{
-						packPtr = AddVHex(frame, (UOSInt)(packPtr - packBuff), CSTR("Recovery record offset"), packPtr, &iVal);
+						packPtr = AddVHex(frame, (UOSInt)(packPtr - packBuff), CSTR("Recovery record offset"), packPtr, iVal);
 					}
 				}
 				else
@@ -711,7 +711,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::RAR5FileAnalyse::GetFrameDetail(U
 		frame->AddUInt64V((UOSInt)(packPtr - packBuff), (UOSInt)(nextPtr - packPtr), CSTR("Compression dir size"), (iVal & 0x3c00) >> 10);
 		packPtr = nextPtr;
 		packPtr = AddVInt(frame, (UOSInt)(packPtr - packBuff), CSTR("Host OS"), packPtr);
-		packPtr = AddVInt(frame, (UOSInt)(packPtr - packBuff), CSTR("Name length"), packPtr, &iVal);
+		packPtr = AddVInt(frame, (UOSInt)(packPtr - packBuff), CSTR("Name length"), packPtr, iVal);
 		frame->AddStrC((UOSInt)(packPtr - packBuff), (UOSInt)iVal, CSTR("Name"), packPtr.Ptr());
 		packPtr += (UOSInt)iVal;
 
@@ -762,7 +762,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::RAR5FileAnalyse::GetFrameDetail(U
 					Data::DateTime dt;
 					UTF8Char sbuff[64];
 					UTF8Char *sptr;
-					packPtr = AddVInt(frame, (UOSInt)(packPtr - packBuff), CSTR("Flags"), packPtr, &headerFlags);
+					packPtr = AddVInt(frame, (UOSInt)(packPtr - packBuff), CSTR("Flags"), packPtr, headerFlags);
 					if (headerFlags & 2)
 					{
 						if (headerFlags & 1)
@@ -818,7 +818,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::RAR5FileAnalyse::GetFrameDetail(U
 	}
 	else if (pack->headerType == 5)
 	{
-		packPtr = AddVHex(frame, (UOSInt)(packPtr - packBuff), CSTR("End of archive flags"), packPtr, &headerFlags);
+		packPtr = AddVHex(frame, (UOSInt)(packPtr - packBuff), CSTR("End of archive flags"), packPtr, headerFlags);
 	}
 
 	/*	sb->AppendC(UTF8STRC("\r\nMicroSec Per Frame = "));

@@ -5,6 +5,102 @@
 #include "Net/SocketUtil.h"
 #include "Net/SSLUtil.h"
 
+#include <stdio.h>
+
+Net::SSLCipherSuite Net::SSLUtil::csuitesObj[] = {
+    {0x002f, UTF8STRC("TLS_RSA_WITH_AES_128_CBC_SHA")},
+    {0x0032, UTF8STRC("TLS_DHE_DSS_WITH_AES_128_CBC_SHA")},
+    {0x0033, UTF8STRC("TLS_DHE_RSA_WITH_AES_128_CBC_SHA")},
+    {0x0034, UTF8STRC("TLS_DH_anon_WITH_AES_128_CBC_SHA")},
+    {0x0035, UTF8STRC("TLS_RSA_WITH_AES_256_CBC_SHA")},
+    {0x0038, UTF8STRC("TLS_DHE_DSS_WITH_AES_256_CBC_SHA")},
+    {0x0039, UTF8STRC("TLS_DHE_RSA_WITH_AES_256_CBC_SHA")},
+    {0x003a, UTF8STRC("TLS_DH_anon_WITH_AES_256_CBC_SHA")},
+    {0x003c, UTF8STRC("TLS_RSA_WITH_AES_128_CBC_SHA256")},
+    {0x003d, UTF8STRC("TLS_RSA_WITH_AES_256_CBC_SHA256")},
+    {0x0040, UTF8STRC("TLS_DHE_DSS_WITH_AES_128_CBC_SHA256")},
+    {0x0041, UTF8STRC("TLS_RSA_WITH_CAMELLIA_128_CBC_SHA")},
+    {0x0044, UTF8STRC("TLS_DHE_DSS_WITH_CAMELLIA_128_CBC_SHA")},
+    {0x0045, UTF8STRC("TLS_DHE_RSA_WITH_CAMELLIA_128_CBC_SHA")},
+    {0x0046, UTF8STRC("TLS_DH_anon_WITH_CAMELLIA_128_CBC_SHA")},
+    {0x0067, UTF8STRC("TLS_DHE_RSA_WITH_AES_128_CBC_SHA256")},
+    {0x006a, UTF8STRC("TLS_DHE_DSS_WITH_AES_256_CBC_SHA256")},
+    {0x006b, UTF8STRC("TLS_DHE_RSA_WITH_AES_256_CBC_SHA256")},
+    {0x006c, UTF8STRC("TLS_DH_anon_WITH_AES_128_CBC_SHA256")},
+    {0x006d, UTF8STRC("TLS_DH_anon_WITH_AES_256_CBC_SHA256")},
+    {0x0084, UTF8STRC("TLS_RSA_WITH_CAMELLIA_256_CBC_SHA")},
+    {0x0087, UTF8STRC("TLS_DHE_DSS_WITH_CAMELLIA_256_CBC_SHA")},
+    {0x0088, UTF8STRC("TLS_DHE_RSA_WITH_CAMELLIA_256_CBC_SHA")},
+    {0x0089, UTF8STRC("TLS_DH_anon_WITH_CAMELLIA_256_CBC_SHA")},
+    {0x0096, UTF8STRC("TLS_RSA_WITH_SEED_CBC_SHA")},
+    {0x0099, UTF8STRC("TLS_DHE_DSS_WITH_SEED_CBC_SHA")},
+    {0x009a, UTF8STRC("TLS_DHE_RSA_WITH_SEED_CBC_SHA")},
+    {0x009b, UTF8STRC("TLS_DH_anon_WITH_SEED_CBC_SHA")},
+    {0x009c, UTF8STRC("TLS_RSA_WITH_AES_128_GCM_SHA256")},
+    {0x009d, UTF8STRC("TLS_RSA_WITH_AES_256_GCM_SHA384")},
+    {0x009e, UTF8STRC("TLS_DHE_RSA_WITH_AES_128_GCM_SHA256")},
+    {0x009f, UTF8STRC("TLS_DHE_RSA_WITH_AES_256_GCM_SHA384")},
+    {0x00a2, UTF8STRC("TLS_DHE_DSS_WITH_AES_128_GCM_SHA256")},
+    {0x00a3, UTF8STRC("TLS_DHE_DSS_WITH_AES_256_GCM_SHA384")},
+    {0x00a6, UTF8STRC("TLS_DH_anon_WITH_AES_128_GCM_SHA256")},
+    {0x00a7, UTF8STRC("TLS_DH_anon_WITH_AES_256_GCM_SHA384")},
+    {0x00ba, UTF8STRC("TLS_RSA_WITH_CAMELLIA_128_CBC_SHA256")},
+    {0x00bd, UTF8STRC("TLS_DHE_DSS_WITH_CAMELLIA_128_CBC_SHA256")},
+    {0x00be, UTF8STRC("TLS_DHE_RSA_WITH_CAMELLIA_128_CBC_SHA256")},
+    {0x00bf, UTF8STRC("TLS_DH_anon_WITH_CAMELLIA_128_CBC_SHA256")},
+    {0x00c0, UTF8STRC("TLS_RSA_WITH_CAMELLIA_256_CBC_SHA256")},
+    {0x00c3, UTF8STRC("TLS_DHE_DSS_WITH_CAMELLIA_256_CBC_SHA256")},
+    {0x00c4, UTF8STRC("TLS_DHE_RSA_WITH_CAMELLIA_256_CBC_SHA256")},
+    {0x00c5, UTF8STRC("TLS_DH_anon_WITH_CAMELLIA_256_CBC_SHA256")},
+    {0x00ff, UTF8STRC("TLS_EMPTY_RENEGOTIATION_INFO_SCSV")},
+	{0x1301, UTF8STRC("TLS_AES_128_GCM_SHA256")},
+	{0x1302, UTF8STRC("TLS_AES_256_GCM_SHA384")},
+	{0x1303, UTF8STRC("TLS_CHACHA20_POLY1305_SHA256")},
+    {0xc009, UTF8STRC("TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA")},
+    {0xc00a, UTF8STRC("TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA")},
+    {0xc013, UTF8STRC("TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA")},
+    {0xc014, UTF8STRC("TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA")},
+    {0xc018, UTF8STRC("TLS_ECDH_anon_WITH_AES_128_CBC_SHA")},
+    {0xc019, UTF8STRC("TLS_ECDH_anon_WITH_AES_256_CBC_SHA")},
+    {0xc023, UTF8STRC("TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256")},
+    {0xc024, UTF8STRC("TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA384")},
+    {0xc027, UTF8STRC("TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256")},
+    {0xc028, UTF8STRC("TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384")},
+    {0xc02b, UTF8STRC("TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256")},
+	{0xc02c, UTF8STRC("TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384")},
+    {0xc02f, UTF8STRC("TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256")},
+    {0xc030, UTF8STRC("TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384")},
+    {0xc050, UTF8STRC("TLS_RSA_WITH_ARIA_128_GCM_SHA256")},
+    {0xc051, UTF8STRC("TLS_RSA_WITH_ARIA_256_GCM_SHA384")},
+    {0xc052, UTF8STRC("TLS_DHE_RSA_WITH_ARIA_128_GCM_SHA256")},
+    {0xc053, UTF8STRC("TLS_DHE_RSA_WITH_ARIA_256_GCM_SHA384")},
+    {0xc056, UTF8STRC("TLS_DHE_DSS_WITH_ARIA_128_GCM_SHA256")},
+    {0xc057, UTF8STRC("TLS_DHE_DSS_WITH_ARIA_256_GCM_SHA384")},
+    {0xc05c, UTF8STRC("TLS_ECDHE_ECDSA_WITH_ARIA_128_GCM_SHA256")},
+    {0xc05d, UTF8STRC("TLS_ECDHE_ECDSA_WITH_ARIA_256_GCM_SHA384")},
+    {0xc060, UTF8STRC("TLS_ECDHE_RSA_WITH_ARIA_128_GCM_SHA256")},
+    {0xc061, UTF8STRC("TLS_ECDHE_RSA_WITH_ARIA_256_GCM_SHA384")},
+    {0xc072, UTF8STRC("TLS_ECDHE_ECDSA_WITH_CAMELLIA_128_CBC_SHA256")},
+    {0xc073, UTF8STRC("TLS_ECDHE_ECDSA_WITH_CAMELLIA_256_CBC_SHA384")},
+    {0xc076, UTF8STRC("TLS_ECDHE_RSA_WITH_CAMELLIA_128_CBC_SHA256")},
+    {0xc077, UTF8STRC("TLS_ECDHE_RSA_WITH_CAMELLIA_256_CBC_SHA384")},
+    {0xc09c, UTF8STRC("TLS_RSA_WITH_AES_128_CCM")},
+    {0xc09d, UTF8STRC("TLS_RSA_WITH_AES_256_CCM")},
+    {0xc09e, UTF8STRC("TLS_DHE_RSA_WITH_AES_128_CCM")},
+    {0xc09f, UTF8STRC("TLS_DHE_RSA_WITH_AES_256_CCM")},
+    {0xc0a0, UTF8STRC("TLS_RSA_WITH_AES_128_CCM_8")},
+    {0xc0a1, UTF8STRC("TLS_RSA_WITH_AES_256_CCM_8")},
+    {0xc0a2, UTF8STRC("TLS_DHE_RSA_WITH_AES_128_CCM_8")},
+    {0xc0a3, UTF8STRC("TLS_DHE_RSA_WITH_AES_256_CCM_8")},
+    {0xc0ac, UTF8STRC("TLS_ECDHE_ECDSA_WITH_AES_128_CCM")},
+    {0xc0ad, UTF8STRC("TLS_ECDHE_ECDSA_WITH_AES_256_CCM")},
+    {0xc0ae, UTF8STRC("TLS_ECDHE_ECDSA_WITH_AES_128_CCM_8")},
+    {0xc0af, UTF8STRC("TLS_ECDHE_ECDSA_WITH_AES_256_CCM_8")},
+    {0xcca8, UTF8STRC("TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305_SHA256")},
+    {0xcca9, UTF8STRC("TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305_SHA256")},
+    {0xccaa, UTF8STRC("TLS_DHE_RSA_WITH_CHACHA20_POLY1305_SHA256")},
+};
+
 UInt16 Net::SSLUtil::csuites[] = {
 	0x1302, //TLS_AES_256_GCM_SHA384
 	0x1303, //TLS_CHACHA20_POLY1305_SHA256
@@ -218,131 +314,15 @@ void Net::SSLUtil::ParseResponse(const UInt8 *buff, UOSInt packetSize, NotNullPt
 	if (buff[0] == 21 && packetSize == 7)
 	{
 		sb->AppendC(UTF8STRC("Server Alert: Level = "));
-		switch (buff[5])
-		{
-		case 1:
-			sb->AppendC(UTF8STRC("Warning(1)"));
-			break;
-		case 2:
-			sb->AppendC(UTF8STRC("Fatel(2)"));
-			break;
-		default:
-			sb->AppendC(UTF8STRC("Unknown("));
-			sb->AppendU16(buff[5]);
-			sb->AppendUTF8Char(')');
-			break;
-		}
+		sb->Append(AlertLevelGetName(buff[5]));
+		sb->AppendUTF8Char('(');
+		sb->AppendU16(buff[5]);
+		sb->AppendUTF8Char(')');
 		sb->AppendC(UTF8STRC(", Desc: "));
-		switch (buff[6])
-		{
-		case 0:
-			sb->AppendC(UTF8STRC("Close Notify (0)"));
-			break;
-		case 10:
-			sb->AppendC(UTF8STRC("Unexpected Message (10)"));
-			break;
-		case 20:
-			sb->AppendC(UTF8STRC("Bad Record MAC (20)"));
-			break;
-		case 21:
-			sb->AppendC(UTF8STRC("Decryption Failed RESERVED (21)"));
-			break;
-		case 22:
-			sb->AppendC(UTF8STRC("Record Overflow (22)"));
-			break;
-		case 30:
-			sb->AppendC(UTF8STRC("Decompression Failure RESERVED (30)"));
-			break;
-		case 40:
-			sb->AppendC(UTF8STRC("Handshake Failure (40)"));
-			break;
-		case 41:
-			sb->AppendC(UTF8STRC("No certificate RESERVED (41)"));
-			break;
-		case 42:
-			sb->AppendC(UTF8STRC("Bad certificate (42)"));
-			break;
-		case 43:
-			sb->AppendC(UTF8STRC("Unsupported certificate (43)"));
-			break;
-		case 44:
-			sb->AppendC(UTF8STRC("Certificate revoked (44)"));
-			break;
-		case 45:
-			sb->AppendC(UTF8STRC("Certificate expired (45)"));
-			break;
-		case 46:
-			sb->AppendC(UTF8STRC("Certificate unknown (46)"));
-			break;
-		case 47:
-			sb->AppendC(UTF8STRC("Illegal parameter (47)"));
-			break;
-		case 48:
-			sb->AppendC(UTF8STRC("Unknown CA (48)"));
-			break;
-		case 49:
-			sb->AppendC(UTF8STRC("Access denied (49)"));
-			break;
-		case 50:
-			sb->AppendC(UTF8STRC("Decode error (50)"));
-			break;
-		case 51:
-			sb->AppendC(UTF8STRC("Decrypt error (51)"));
-			break;
-		case 60:
-			sb->AppendC(UTF8STRC("Export restriction RESERVED (60)"));
-			break;
-		case 70:
-			sb->AppendC(UTF8STRC("Protocol Version (70)"));
-			break;
-		case 71:
-			sb->AppendC(UTF8STRC("Insufficient security (71)"));
-			break;
-		case 80:
-			sb->AppendC(UTF8STRC("Internal error (80)"));
-			break;
-		case 86:
-			sb->AppendC(UTF8STRC("Inappropriate fallback (86)"));
-			break;
-		case 90:
-			sb->AppendC(UTF8STRC("User canceled (90)"));
-			break;
-		case 100:
-			sb->AppendC(UTF8STRC("No renegotiation RESERVED (100)"));
-			break;
-		case 109:
-			sb->AppendC(UTF8STRC("Missing extension (109)"));
-			break;
-		case 110:
-			sb->AppendC(UTF8STRC("Unsupported extension (110)"));
-			break;
-		case 111:
-			sb->AppendC(UTF8STRC("Certificate unobtainable RESERVED (111)"));
-			break;
-		case 112:
-			sb->AppendC(UTF8STRC("Unrecognized name (112)"));
-			break;
-		case 113:
-			sb->AppendC(UTF8STRC("Bad certificate status response (113)"));
-			break;
-		case 114:
-			sb->AppendC(UTF8STRC("Bad certificate hash value RESERVED (114)"));
-			break;
-		case 115:
-			sb->AppendC(UTF8STRC("Unknown psk identity (115)"));
-			break;
-		case 116:
-			sb->AppendC(UTF8STRC("Certificate required (116)"));
-			break;
-		case 120:
-			sb->AppendC(UTF8STRC("No application protocol (120)"));
-			break;
-		default:
-			sb->AppendC(UTF8STRC("Unknown error ("));
-			sb->AppendU16(buff[6]);
-			sb->AppendUTF8Char(')');
-			break;
-		}
+		sb->Append(AlertDescGetName(buff[6]));
+		sb->AppendC(UTF8STRC(" ("));
+		sb->AppendU16(buff[6]);
+		sb->AppendUTF8Char(')');
 	}
 	else if (buff[0] == 22 && packetSize >= 9)
 	{
@@ -457,4 +437,254 @@ Bool Net::SSLUtil::IncompleteHandshake(const UInt8 *buff, UOSInt packetSize)
 		i += len + 5;
 	}
 	return true;
+}
+
+Text::CStringNN Net::SSLUtil::AlertLevelGetName(UInt8 level)
+{
+	switch (level)
+	{
+	case 1:
+		return CSTR("Warning");
+	case 2:
+		return CSTR("Fatel");
+	default:
+		printf("Unknown AlertLevel %x\r\n", level);
+		return CSTR("Unknown");
+	}
+}
+
+Text::CStringNN Net::SSLUtil::AlertDescGetName(UInt8 desc)
+{
+	switch (desc)
+	{
+	case 0:
+		return CSTR("SSL3_AD_CLOSE_NOTIFY");
+	case 10:
+		return CSTR("SSL3_AD_UNEXPECTED_MESSAGE");
+	case 20:
+		return CSTR("SSL3_AD_BAD_RECORD_MAC");
+	case 21:
+		return CSTR("TLS1_AD_DECRYPTION_FAILED");
+	case 22:
+		return CSTR("TLS1_AD_RECORD_OVERFLOW");
+	case 30:
+		return CSTR("SSL3_AD_DECOMPRESSION_FAILURE");
+	case 40:
+		return CSTR("SSL3_AD_HANDSHAKE_FAILURE");
+	case 41:
+		return CSTR("SSL3_AD_NO_CERTIFICATE");
+	case 42:
+		return CSTR("SSL3_AD_BAD_CERTIFICATE");
+	case 43:
+		return CSTR("SSL3_AD_UNSUPPORTED_CERTIFICATE");
+	case 44:
+		return CSTR("SSL3_AD_CERTIFICATE_REVOKED");
+	case 45:
+		return CSTR("SSL3_AD_CERTIFICATE_EXPIRED");
+	case 46:
+		return CSTR("SSL3_AD_CERTIFICATE_UNKNOWN");
+	case 47:
+		return CSTR("SSL3_AD_ILLEGAL_PARAMETER");
+	case 48:
+		return CSTR("TLS1_AD_UNKNOWN_CA");
+	case 49:
+		return CSTR("TLS1_AD_ACCESS_DENIED");
+	case 50:
+		return CSTR("TLS1_AD_DECODE_ERROR");
+	case 51:
+		return CSTR("TLS1_AD_DECRYPT_ERROR");
+	case 60:
+		return CSTR("TLS1_AD_EXPORT_RESTRICTION");
+	case 70:
+		return CSTR("TLS1_AD_PROTOCOL_VERSION");
+	case 71:
+		return CSTR("TLS1_AD_INSUFFICIENT_SECURITY");
+	case 80:
+		return CSTR("TLS1_AD_INTERNAL_ERROR");
+	case 86:
+		return CSTR("Inappropriate fallback");
+	case 90:
+		return CSTR("TLS1_AD_USER_CANCELLED");
+	case 100:
+		return CSTR("TLS1_AD_NO_RENEGOTIATION");
+	case 109:
+		return CSTR("Missing extension");
+	case 110:
+		return CSTR("TLS1_AD_UNSUPPORTED_EXTENSION");
+	case 111:
+		return CSTR("TLS1_AD_CERTIFICATE_UNOBTAINABLE");
+	case 112:
+		return CSTR("TLS1_AD_UNRECOGNIZED_NAME");
+	case 113:
+		return CSTR("TLS1_AD_BAD_CERTIFICATE_STATUS_RESPONSE");
+	case 114:
+		return CSTR("TLS1_AD_BAD_CERTIFICATE_HASH_VALUE");
+	case 115:
+		return CSTR("TLS1_AD_UNKNOWN_PSK_IDENTITY");
+	case 116:
+		return CSTR("Certificate required");
+	case 120:
+		return CSTR("No application protocol");
+	default:
+		printf("Unknown AlertDesc %d\r\n", desc);
+		return CSTR("Unknown");
+	}
+
+}
+
+Text::CStringNN Net::SSLUtil::RecordTypeGetName(UInt8 recordType)
+{
+	switch (recordType)
+	{
+	case 20:
+		return CSTR("SSL3_RT_CHANGE_CIPHER_SPEC");
+	case 21:
+		return CSTR("SSL3_RT_ALERT");
+	case 22:
+		return CSTR("SSL3_RT_HANDSHAKE");
+	case 23:
+		return CSTR("SSL3_RT_APPLICATION_DATA");
+	case 24:
+		return CSTR("TLS1_RT_HEARTBEAT");
+	default:
+		printf("Unknown RecordType %x\r\n", recordType);
+		return CSTR("Unknown");
+	}
+}
+
+Text::CStringNN Net::SSLUtil::HandshakeTypeGetName(UInt8 hsType)
+{
+	switch (hsType)
+	{
+	case 0:
+		return CSTR("SSL3_MT_HELLO_REQUEST");
+	case 1:
+		return CSTR("SSL3_MT_CLIENT_HELLO");
+	case 2:
+		return CSTR("SSL3_MT_SERVER_HELLO");
+	case 4:
+		return CSTR("SSL3_MT_NEWSESSION_TICKET");
+	case 11:
+		return CSTR("SSL3_MT_CERTIFICATE");
+	case 12:
+		return CSTR("SSL3_MT_SERVER_KEY_EXCHANGE");
+	case 13:
+		return CSTR("SSL3_MT_CERTIFICATE_REQUEST");
+	case 14:
+		return CSTR("SSL3_MT_SERVER_DONE");
+	case 15:
+		return CSTR("SSL3_MT_CERTIFICATE_VERIFY");
+	case 16:
+		return CSTR("SSL3_MT_CLIENT_KEY_EXCHANGE");
+	case 20:
+		return CSTR("SSL3_MT_FINISHED");
+	default:
+		printf("Unknown HandshakeType %x\r\n", hsType);
+		return CSTR("Unknown");
+	}
+}
+
+Text::CStringNN Net::SSLUtil::CompressionMethodGetName(UInt8 method)
+{
+	switch (method)
+	{
+	case 0:
+		return CSTR("null");
+	case 1:
+		return CSTR("DEFLATE");
+	default:
+		printf("Unknown CompressionMethod %x\r\n", method);
+		return CSTR("Unknown");
+	}
+}
+
+Text::CStringNN Net::SSLUtil::ExtensionTypeGetName(UInt16 extType)
+{
+	switch (extType)
+	{
+	case 0x0:
+		return CSTR("server_name");
+	case 0xa:
+		return CSTR("supported_groups");
+	case 0xb:
+		return CSTR("ec_point_formats");
+	case 0xd:
+		return CSTR("signature_algorithms");
+	case 0x23:
+		return CSTR("session_ticket");
+	case 0x2b:
+		return CSTR("supported_versions");
+	case 0x33:
+		return CSTR("key_share");
+	case 0xff01:
+		return CSTR("renegotiation_info");
+	default:
+		printf("Unknown ExtensionType %x\r\n", extType);
+		return CSTR("Unknown");
+	}
+}
+
+Text::CStringNN Net::SSLUtil::ECPointFormatGetName(UInt8 fmt)
+{
+	switch (fmt)
+	{
+	case 0:
+		return CSTR("uncompressed");
+	case 1:
+		return CSTR("ansiX962_compressed_prime");
+	case 2:
+		return CSTR("ansiX962_compressed_char2");
+	default:
+		printf("Unknown ECPointFormat %x\r\n", fmt);
+		return CSTR("Unknown");
+	}
+}
+
+Net::SSLCipherSuite *Net::SSLUtil::CipherSuiteGet(UInt16 cipherSuite)
+{
+	OSInt i = 0;
+	OSInt j = (sizeof(csuitesObj) / sizeof(csuitesObj[0])) - 1;
+	OSInt k;
+	Net::SSLCipherSuite *suite;
+	while (i <= j)
+	{
+		k = (i + j) >> 1;
+		suite = &csuitesObj[k];
+		if (suite->id > cipherSuite)
+			j = k - 1;
+		else if (suite->id < cipherSuite)
+			i = k + 1;
+		else
+			return suite;
+	}
+	printf("Unknown Cipher Suite %x\r\n", cipherSuite);
+	return 0;
+}
+
+Text::CStringNN Net::SSLUtil::CipherSuiteGetName(UInt16 cipherSuite)
+{
+	SSLCipherSuite *cipher = CipherSuiteGet(cipherSuite);
+	if (cipher)
+		return Text::CStringNN(cipher->name, cipher->nameLen);
+	return CSTR("Unknown");
+}
+
+Text::CStringNN Net::SSLVerGetName(UInt16 ver)
+{
+	switch ((Net::SSLVer)ver)
+	{
+	case Net::SSLVer::SSL3_0:
+		return CSTR("SSL 3.0");
+	case Net::SSLVer::TLS1_0:
+		return CSTR("TLS 1.0");
+	case Net::SSLVer::TLS1_1:
+		return CSTR("TLS 1.1");
+	case Net::SSLVer::TLS1_2:
+		return CSTR("TLS 1.2");
+	case Net::SSLVer::TLS1_3:
+		return CSTR("TLS 1.3");
+	default:
+		printf("Unknown SSL Version %x\r\n", ver);
+		return CSTR("Unknown");
+	}
 }

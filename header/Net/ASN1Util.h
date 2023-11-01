@@ -1,6 +1,7 @@
 #ifndef _SM_NET_ASN1UTIL
 #define _SM_NET_ASN1UTIL
 #include "Data/ArrayList.h"
+#include "IO/FileAnalyse/FrameDetail.h"
 #include "Text/StringBuilderUTF8.h"
 
 namespace Net
@@ -61,6 +62,7 @@ namespace Net
 		static ItemType PDUGetItemType(const UInt8 *pdu, const UInt8 *pduEnd, const Char *path);
 		static UOSInt PDUCountItem(const UInt8 *pdu, const UInt8 *pduEnd, const Char *path);
 		static Bool PDUIsValid(const UInt8 *pdu, const UInt8 *pduEnd);
+		static void PDUAnalyse(NotNullPtr<IO::FileAnalyse::FrameDetail> frame, Data::ByteArrayR buff, UOSInt pduOfst, UOSInt pduEndOfst);
 
 		static OSInt OIDCompare(const UInt8 *oid1, UOSInt oid1Len, const UInt8 *oid2, UOSInt oid2Len);
 		static Bool OIDStartsWith(const UInt8 *oid1, UOSInt oid1Len, const UInt8 *oid2, UOSInt oid2Len);
@@ -74,6 +76,7 @@ namespace Net
 		static void BooleanToString(const UInt8 *data, UOSInt dataLen, NotNullPtr<Text::StringBuilderUTF8> sb);
 		static void IntegerToString(const UInt8 *data, UOSInt dataLen, NotNullPtr<Text::StringBuilderUTF8> sb);
 		static void UTCTimeToString(const UInt8 *data, UOSInt dataLen, NotNullPtr<Text::StringBuilderUTF8> sb);
+		static Text::CStringNN ItemTypeGetName(UInt8 itemType);
 	private:
 		static UInt32 Str2Digit(const UTF8Char *s);
 	};

@@ -1180,7 +1180,7 @@ void Net::PacketAnalyzerBluetooth::AddCmdOpcode(IO::FileAnalyse::FrameDetailHand
 	frame->AddHex16Name(frameOfst, CSTR("Command Opcode"), cmd, CmdGetName(cmd));
 }
 
-void Net::PacketAnalyzerBluetooth::AddBDAddr(IO::FileAnalyse::FrameDetailHandler *frame, UInt32 frameOfst, Text::CString name, const UInt8 *mac, Bool randomAddr)
+void Net::PacketAnalyzerBluetooth::AddBDAddr(IO::FileAnalyse::FrameDetailHandler *frame, UInt32 frameOfst, Text::CStringNN name, const UInt8 *mac, Bool randomAddr)
 {
 	UInt8 macBuff[6];
 	macBuff[0] = mac[5];
@@ -1236,7 +1236,7 @@ void Net::PacketAnalyzerBluetooth::AddScanWindow(IO::FileAnalyse::FrameDetailHan
 	frame->AddField(frameOfst, 2, CSTR("Scan Window"), sb.ToCString());
 }
 
-void Net::PacketAnalyzerBluetooth::AddAddrType(IO::FileAnalyse::FrameDetailHandler *frame, UInt32 frameOfst, Text::CString name, UInt8 addrType)
+void Net::PacketAnalyzerBluetooth::AddAddrType(IO::FileAnalyse::FrameDetailHandler *frame, UInt32 frameOfst, Text::CStringNN name, UInt8 addrType)
 {
 	Text::CString vName = CSTR_NULL;
 	switch (addrType)
@@ -1929,7 +1929,7 @@ void Net::PacketAnalyzerBluetooth::AddExAdvEvtType(IO::FileAnalyse::FrameDetailH
 	frame->AddField(frameOfst, 2, CSTR("Event Type"), sb.ToCString());
 }
 
-void Net::PacketAnalyzerBluetooth::AddPHYType(IO::FileAnalyse::FrameDetailHandler *frame, UInt32 frameOfst, Text::CString name, UInt8 phyType)
+void Net::PacketAnalyzerBluetooth::AddPHYType(IO::FileAnalyse::FrameDetailHandler *frame, UInt32 frameOfst, Text::CStringNN name, UInt8 phyType)
 {
 	Text::CString vName = CSTR_NULL;
 	switch (phyType)

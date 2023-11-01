@@ -44,7 +44,7 @@ namespace Media
 		typedef struct
 		{
 			UInt32 id;
-			Text::CString name;
+			Text::CStringNN name;
 		} EXIFInfo;
 
 		typedef enum
@@ -144,8 +144,8 @@ namespace Media
 		EXIFData *ParseMakerNote(const UInt8 *buff, UOSInt buffSize) const;
 
 		static Text::CString GetEXIFMakerName(EXIFMaker exifMaker);
-		static Text::CString GetEXIFName(EXIFMaker exifMaker, UInt32 id);
-		static Text::CString GetEXIFName(EXIFMaker exifMaker, UInt32 id, UInt32 subId);
+		static Text::CStringNN GetEXIFName(EXIFMaker exifMaker, UInt32 id);
+		static Text::CStringNN GetEXIFName(EXIFMaker exifMaker, UInt32 id, UInt32 subId);
 		static Text::CString GetEXIFTypeName(EXIFType type);
 		static Text::CString GetFieldTypeName(UInt32 ftype);
 		static EXIFData *ParseIFD(const UInt8 *buff, UOSInt buffSize, Data::ByteOrder *byteOrder, UInt64 *nextOfst, EXIFMaker exifMaker, const UInt8 *basePtr);

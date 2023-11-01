@@ -39,20 +39,20 @@ namespace IO
 			static Text::CString MemoryLocationGetName(UInt8 location);
 			static Text::CString PointingDeviceInterfaceGetName(UInt8 v);
 			static Text::CString SlotTypeGetName(UInt8 v);
-			static void AddString(FrameDetail *frame, UOSInt ofst, Data::ByteArrayR packBuff, Text::CString *carr, Text::CString name);
-			static void AddHex8(FrameDetail *frame, UOSInt ofst, Data::ByteArrayR packBuff, Text::CString *carr, Text::CString name);
-			static void AddHex16(FrameDetail *frame, UOSInt ofst, Data::ByteArrayR packBuff, Text::CString *carr, Text::CString name);
-			static void AddHex32(FrameDetail *frame, UOSInt ofst, Data::ByteArrayR packBuff, Text::CString *carr, Text::CString name);
-			static void AddHex64(FrameDetail *frame, UOSInt ofst, Data::ByteArrayR packBuff, Text::CString *carr, Text::CString name);
-			static void AddUInt8(FrameDetail *frame, UOSInt ofst, Data::ByteArrayR packBuff, Text::CString *carr, Text::CString name);
-			static void AddUInt16(FrameDetail *frame, UOSInt ofst, Data::ByteArrayR packBuff, Text::CString *carr, Text::CString name);
-			static void AddUInt32(FrameDetail *frame, UOSInt ofst, Data::ByteArrayR packBuff, Text::CString *carr, Text::CString name);
-			static void AddUInt64(FrameDetail *frame, UOSInt ofst, Data::ByteArrayR packBuff, Text::CString *carr, Text::CString name);
-			static void AddUUID(FrameDetail *frame, UOSInt ofst, Data::ByteArrayR packBuff, Text::CString *carr, Text::CString name);
-			static void AddDate(FrameDetail *frame, UOSInt ofst, Data::ByteArrayR packBuff, Text::CString *carr, Text::CString name);
+			static void AddString(FrameDetail *frame, UOSInt ofst, Data::ByteArrayR packBuff, Text::CString *carr, Text::CStringNN name);
+			static void AddHex8(FrameDetail *frame, UOSInt ofst, Data::ByteArrayR packBuff, Text::CString *carr, Text::CStringNN name);
+			static void AddHex16(FrameDetail *frame, UOSInt ofst, Data::ByteArrayR packBuff, Text::CString *carr, Text::CStringNN name);
+			static void AddHex32(FrameDetail *frame, UOSInt ofst, Data::ByteArrayR packBuff, Text::CString *carr, Text::CStringNN name);
+			static void AddHex64(FrameDetail *frame, UOSInt ofst, Data::ByteArrayR packBuff, Text::CString *carr, Text::CStringNN name);
+			static void AddUInt8(FrameDetail *frame, UOSInt ofst, Data::ByteArrayR packBuff, Text::CString *carr, Text::CStringNN name);
+			static void AddUInt16(FrameDetail *frame, UOSInt ofst, Data::ByteArrayR packBuff, Text::CString *carr, Text::CStringNN name);
+			static void AddUInt32(FrameDetail *frame, UOSInt ofst, Data::ByteArrayR packBuff, Text::CString *carr, Text::CStringNN name);
+			static void AddUInt64(FrameDetail *frame, UOSInt ofst, Data::ByteArrayR packBuff, Text::CString *carr, Text::CStringNN name);
+			static void AddUUID(FrameDetail *frame, UOSInt ofst, Data::ByteArrayR packBuff, Text::CString *carr, Text::CStringNN name);
+			static void AddDate(FrameDetail *frame, UOSInt ofst, Data::ByteArrayR packBuff, Text::CString *carr, Text::CStringNN name);
 			static void AddBits(FrameDetail *frame, UOSInt ofst, Data::ByteArrayR packBuff, Text::CString *carr, const Char *bitNames[]);
-			static void AddEnum(FrameDetail *frame, UOSInt ofst, Data::ByteArrayR packBuff, Text::CString *carr, Text::CString name, const Char *names[], UOSInt namesCnt);
-			static void AddEnum(FrameDetail *frame, UOSInt ofst, UInt8 val, Text::CString *carr, Text::CString name, const Char *names[], UOSInt namesCnt);
+			static void AddEnum(FrameDetail *frame, UOSInt ofst, Data::ByteArrayR packBuff, Text::CString *carr, Text::CStringNN name, const Char *names[], UOSInt namesCnt);
+			static void AddEnum(FrameDetail *frame, UOSInt ofst, UInt8 val, Text::CString *carr, Text::CStringNN name, const Char *names[], UOSInt namesCnt);
 		};
 	}
 }
