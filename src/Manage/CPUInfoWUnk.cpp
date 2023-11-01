@@ -116,22 +116,22 @@ Bool Manage::CPUInfo::GetCPUTCC(Double *temp)
 	return false;
 }
 
-Text::CString Manage::CPUInfo::GetCacheInfo(Manage::CPUVendor::CPU_BRAND brand, UInt8 descType)
+Text::CStringNN Manage::CPUInfo::GetCacheInfo(Manage::CPUVendor::CPU_BRAND brand, UInt8 descType)
 {
 	return CSTR("Unknown");
 }
 
-Text::CString Manage::CPUInfo::GetFeatureShortName(UOSInt index)
+Text::CStringNN Manage::CPUInfo::GetFeatureShortName(UOSInt index)
 {
 	return CSTR("Unknown");
 }
 
-Text::CString Manage::CPUInfo::GetFeatureName(UOSInt index)
+Text::CStringNN Manage::CPUInfo::GetFeatureName(UOSInt index)
 {
 	return CSTR("Unknown");
 }
 
-Text::CString Manage::CPUInfo::GetFeatureDesc(UOSInt index)
+Text::CStringNN Manage::CPUInfo::GetFeatureDesc(UOSInt index)
 {
 	return CSTR("Unknown");
 }
