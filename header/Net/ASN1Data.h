@@ -2,6 +2,7 @@
 #define _SM_NET_ASN1DATA
 #include "Data/ByteBuffer.h"
 #include "IO/ParsedObject.h"
+#include "Net/ASN1Names.h"
 #include "Text/StringBuilderUTF8.h"
 
 namespace Net
@@ -25,6 +26,7 @@ namespace Net
 		virtual ASN1Type GetASN1Type() const = 0;
 		virtual NotNullPtr<ASN1Data> Clone() const = 0;
 		virtual void ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const = 0;
+		virtual ASN1Names *CreateNames() const = 0;
 
 		Bool ToASN1String(NotNullPtr<Text::StringBuilderUTF8> sb) const;
 		const UInt8 *GetASN1Buff() const;

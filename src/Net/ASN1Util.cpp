@@ -1,8 +1,9 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Data/ByteTool.h"
-#include "Net/ASN1Util.h"
+#include "Net/ASN1Names.h"
 #include "Net/ASN1OIDDB.h"
+#include "Net/ASN1Util.h"
 #include "Text/StringBuilderUTF8.h"
 #include "Text/StringTool.h"
 
@@ -248,10 +249,15 @@ Bool Net::ASN1Util::PDUParseUTCTimeCont(const UInt8 *pdu, UOSInt len, NotNullPtr
 
 Bool Net::ASN1Util::PDUToString(const UInt8 *pdu, const UInt8 *pduEnd, NotNullPtr<Text::StringBuilderUTF8> sb, UOSInt level)
 {
-	return PDUToString(pdu, pduEnd, sb, level, 0);
+	return PDUToString(pdu, pduEnd, sb, level, 0, 0);
 }
 
 Bool Net::ASN1Util::PDUToString(const UInt8 *pdu, const UInt8 *pduEnd, NotNullPtr<Text::StringBuilderUTF8> sb, UOSInt level, const UInt8 **pduNext)
+{
+	return PDUToString(pdu, pduEnd, sb, level, pduNext, 0);
+}
+
+Bool Net::ASN1Util::PDUToString(const UInt8 *pdu, const UInt8 *pduEnd, NotNullPtr<Text::StringBuilderUTF8> sb, UOSInt level, const UInt8 **pduNext, ASN1Names *names)
 {
 	while (pdu < pduEnd)
 	{
@@ -272,10 +278,16 @@ Bool Net::ASN1Util::PDUToString(const UInt8 *pdu, const UInt8 *pduEnd, NotNullPt
 			return false;
 		}
 
+		Text::CString name;
+		if (names == 0)
+			name = CSTR_NULL;
+		else
+			name = names->ReadNameNoDef((Net::ASN1Util::ItemType)type, len, &pdu[ofst]);
 		switch (type)
 		{
 		case 0x1:
 			sb->AppendChar('\t', level);
+			if (name.v) sb->Append(name)->AppendUTF8Char(' ');
 			sb->AppendC(UTF8STRC("BOOLEAN "));
 			sb->AppendUTF8Char('(');
 			BooleanToString(&pdu[ofst], len, sb);
@@ -292,6 +304,7 @@ Bool Net::ASN1Util::PDUToString(const UInt8 *pdu, const UInt8 *pduEnd, NotNullPt
 					return false;
 				}
 				sb->AppendChar('\t', level);
+				if (name.v) sb->Append(name)->AppendUTF8Char(' ');
 				sb->AppendC(UTF8STRC("INTEGER "));
 				sb->AppendU32(iVal);
 				sb->AppendC(UTF8STRC("\r\n"));
@@ -299,6 +312,7 @@ Bool Net::ASN1Util::PDUToString(const UInt8 *pdu, const UInt8 *pduEnd, NotNullPt
 			else if (len <= 32)
 			{
 				sb->AppendChar('\t', level);
+				if (name.v) sb->Append(name)->AppendUTF8Char(' ');
 				sb->AppendC(UTF8STRC("INTEGER "));
 				sb->AppendHexBuff(&pdu[ofst], len, ' ', Text::LineBreakType::None);
 				sb->AppendC(UTF8STRC("\r\n"));
@@ -307,6 +321,7 @@ Bool Net::ASN1Util::PDUToString(const UInt8 *pdu, const UInt8 *pduEnd, NotNullPt
 			else
 			{
 				sb->AppendChar('\t', level);
+				if (name.v) sb->Append(name)->AppendUTF8Char(' ');
 				sb->AppendC(UTF8STRC("INTEGER\r\n"));
 				sb->AppendHexBuff(&pdu[ofst], len, ' ', Text::LineBreakType::CRLF);
 				sb->AppendC(UTF8STRC("\r\n"));
@@ -315,54 +330,60 @@ Bool Net::ASN1Util::PDUToString(const UInt8 *pdu, const UInt8 *pduEnd, NotNullPt
 			break;
 		case 0x3:
 			sb->AppendChar('\t', level);
+			if (name.v) sb->Append(name)->AppendUTF8Char(' ');
 			sb->AppendC(UTF8STRC("BIT STRING "));
 			sb->AppendHex8(pdu[ofst]);
+			if (PDUIsValid(&pdu[ofst + 1], &pdu[ofst + len]))
 			{
 				Text::StringBuilderUTF8 innerSb;
-				if (PDUToString(&pdu[ofst + 1], &pdu[ofst + len], innerSb, level + 1))
-				{
-					sb->AppendC(UTF8STRC(" {\r\n"));
-					sb->Append(&innerSb);
-					sb->AppendChar('\t', level);
-					sb->AppendC(UTF8STRC("}\r\n"));
-				}
-				else
-				{
-					sb->AppendC(UTF8STRC(" ("));
-					sb->AppendHexBuff(&pdu[ofst + 1], len - 1, ' ', Text::LineBreakType::None);
-					sb->AppendC(UTF8STRC(")\r\n"));
-				}
+				if (names) names->ReadContainer();
+				PDUToString(&pdu[ofst + 1], &pdu[ofst + len], innerSb, level + 1, 0, names);
+				if (names) names->ReadContainerEnd();
+				sb->AppendC(UTF8STRC(" {\r\n"));
+				sb->Append(&innerSb);
+				sb->AppendChar('\t', level);
+				sb->AppendC(UTF8STRC("}\r\n"));
+			}
+			else
+			{
+				sb->AppendC(UTF8STRC(" ("));
+				sb->AppendHexBuff(&pdu[ofst + 1], len - 1, ' ', Text::LineBreakType::None);
+				sb->AppendC(UTF8STRC(")\r\n"));
 			}
 			pdu += ofst + len;
 			break;
 		case 0x4:
 			sb->AppendChar('\t', level);
+			if (name.v) sb->Append(name)->AppendUTF8Char(' ');
 			sb->AppendC(UTF8STRC("OCTET STRING "));
+			if (PDUIsValid(&pdu[ofst], &pdu[ofst + len]))
 			{
 				Text::StringBuilderUTF8 innerSb;
-				if (PDUToString(&pdu[ofst], &pdu[ofst + len], innerSb, level + 1))
-				{
-					sb->AppendC(UTF8STRC("{\r\n"));
-					sb->Append(&innerSb);
-					sb->AppendChar('\t', level);
-					sb->AppendC(UTF8STRC("}\r\n"));
-				}
-				else
-				{
-					sb->AppendC(UTF8STRC("("));
-					sb->AppendHexBuff(&pdu[ofst], len, ' ', Text::LineBreakType::None);
-					sb->AppendC(UTF8STRC(")\r\n"));
-				}
+				if (names) names->ReadContainer();
+				PDUToString(&pdu[ofst], &pdu[ofst + len], innerSb, level + 1, 0, names);
+				if (names) names->ReadContainerEnd();
+				sb->AppendC(UTF8STRC("{\r\n"));
+				sb->Append(&innerSb);
+				sb->AppendChar('\t', level);
+				sb->AppendC(UTF8STRC("}\r\n"));
+			}
+			else
+			{
+				sb->AppendC(UTF8STRC("("));
+				sb->AppendHexBuff(&pdu[ofst], len, ' ', Text::LineBreakType::None);
+				sb->AppendC(UTF8STRC(")\r\n"));
 			}
 			pdu += ofst + len;
 			break;
 		case 0x5:
 			sb->AppendChar('\t', level);
+			if (name.v) sb->Append(name)->AppendUTF8Char(' ');
 			sb->AppendC(UTF8STRC("NULL\r\n"));
 			pdu += ofst + len;
 			break;
 		case 0x6:
 			sb->AppendChar('\t', level);
+			if (name.v) sb->Append(name)->AppendUTF8Char(' ');
 			sb->AppendC(UTF8STRC("OID "));
 			Net::ASN1Util::OIDToString(&pdu[ofst], len, sb);
 			sb->AppendC(UTF8STRC(" ("));
@@ -374,6 +395,7 @@ Bool Net::ASN1Util::PDUToString(const UInt8 *pdu, const UInt8 *pduEnd, NotNullPt
 			if (len == 1)
 			{
 				sb->AppendChar('\t', level);
+				if (name.v) sb->Append(name)->AppendUTF8Char(' ');
 				sb->AppendC(UTF8STRC("ENUMERATED "));
 				sb->AppendU32(pdu[ofst]);
 				sb->AppendC(UTF8STRC("\r\n"));
@@ -386,6 +408,7 @@ Bool Net::ASN1Util::PDUToString(const UInt8 *pdu, const UInt8 *pduEnd, NotNullPt
 			break;
 		case 0x0C:
 			sb->AppendChar('\t', level);
+			if (name.v) sb->Append(name)->AppendUTF8Char(' ');
 			sb->AppendC(UTF8STRC("UTF8String "));
 			sb->AppendC(&pdu[ofst], len);
 			sb->AppendC(UTF8STRC("\r\n"));
@@ -393,6 +416,7 @@ Bool Net::ASN1Util::PDUToString(const UInt8 *pdu, const UInt8 *pduEnd, NotNullPt
 			break;
 		case 0x12:
 			sb->AppendChar('\t', level);
+			if (name.v) sb->Append(name)->AppendUTF8Char(' ');
 			sb->AppendC(UTF8STRC("NumericString "));
 			sb->AppendC(&pdu[ofst], len);
 			sb->AppendC(UTF8STRC("\r\n"));
@@ -400,6 +424,7 @@ Bool Net::ASN1Util::PDUToString(const UInt8 *pdu, const UInt8 *pduEnd, NotNullPt
 			break;
 		case 0x13:
 			sb->AppendChar('\t', level);
+			if (name.v) sb->Append(name)->AppendUTF8Char(' ');
 			sb->AppendC(UTF8STRC("PrintableString "));
 			sb->AppendC(&pdu[ofst], len);
 			sb->AppendC(UTF8STRC("\r\n"));
@@ -407,6 +432,7 @@ Bool Net::ASN1Util::PDUToString(const UInt8 *pdu, const UInt8 *pduEnd, NotNullPt
 			break;
 		case 0x14:
 			sb->AppendChar('\t', level);
+			if (name.v) sb->Append(name)->AppendUTF8Char(' ');
 			sb->AppendC(UTF8STRC("T61String "));
 			sb->AppendC(&pdu[ofst], len);
 			sb->AppendC(UTF8STRC("\r\n"));
@@ -414,6 +440,7 @@ Bool Net::ASN1Util::PDUToString(const UInt8 *pdu, const UInt8 *pduEnd, NotNullPt
 			break;
 		case 0x15:
 			sb->AppendChar('\t', level);
+			if (name.v) sb->Append(name)->AppendUTF8Char(' ');
 			sb->AppendC(UTF8STRC("VideotexString "));
 			sb->AppendC(&pdu[ofst], len);
 			sb->AppendC(UTF8STRC("\r\n"));
@@ -421,6 +448,7 @@ Bool Net::ASN1Util::PDUToString(const UInt8 *pdu, const UInt8 *pduEnd, NotNullPt
 			break;
 		case 0x16:
 			sb->AppendChar('\t', level);
+			if (name.v) sb->Append(name)->AppendUTF8Char(' ');
 			sb->AppendC(UTF8STRC("IA5String "));
 			sb->AppendC(&pdu[ofst], len);
 			if (sb->GetEndPtr()[-1] == 0)
@@ -432,6 +460,7 @@ Bool Net::ASN1Util::PDUToString(const UInt8 *pdu, const UInt8 *pduEnd, NotNullPt
 			break;
 		case 0x17:
 			sb->AppendChar('\t', level);
+			if (name.v) sb->Append(name)->AppendUTF8Char(' ');
 			sb->AppendC(UTF8STRC("UTCTIME "));
 			if (len == 13 && pdu[ofst + 12] == 'Z')
 			{
@@ -449,6 +478,7 @@ Bool Net::ASN1Util::PDUToString(const UInt8 *pdu, const UInt8 *pduEnd, NotNullPt
 			break;
 		case 0x18:
 			sb->AppendChar('\t', level);
+			if (name.v) sb->Append(name)->AppendUTF8Char(' ');
 			sb->AppendC(UTF8STRC("GeneralizedTime "));
 			if (len == 15 && pdu[ofst + 14] == 'Z')
 			{
@@ -466,6 +496,7 @@ Bool Net::ASN1Util::PDUToString(const UInt8 *pdu, const UInt8 *pduEnd, NotNullPt
 			break;
 		case 0x1C:
 			sb->AppendChar('\t', level);
+			if (name.v) sb->Append(name)->AppendUTF8Char(' ');
 			sb->AppendC(UTF8STRC("UniversalString "));
 			sb->AppendC(&pdu[ofst], len);
 			sb->AppendC(UTF8STRC("\r\n"));
@@ -475,12 +506,14 @@ Bool Net::ASN1Util::PDUToString(const UInt8 *pdu, const UInt8 *pduEnd, NotNullPt
 			sb->AppendChar('\t', level);
 			if (len & 1)
 			{
+				if (name.v) sb->Append(name)->AppendUTF8Char(' ');
 				sb->AppendC(UTF8STRC("BMPString ("));
 				sb->AppendHexBuff(&pdu[ofst], len, ' ', Text::LineBreakType::None);
 				sb->AppendC(UTF8STRC(")\r\n"));
 			}
 			else
 			{
+				if (name.v) sb->Append(name)->AppendUTF8Char(' ');
 				sb->AppendC(UTF8STRC("BMPString "));
 				sb->AppendUTF16BE(&pdu[ofst], len >> 1);
 				sb->AppendC(UTF8STRC("\r\n"));
@@ -500,6 +533,7 @@ Bool Net::ASN1Util::PDUToString(const UInt8 *pdu, const UInt8 *pduEnd, NotNullPt
 			if (type < 0x30)
 			{
 				sb->AppendChar('\t', level);
+				if (name.v) sb->Append(name)->AppendUTF8Char(' ');
 				sb->AppendC(UTF8STRC("UNKNOWN 0x"));
 				sb->AppendHex8(type);
 				sb->AppendC(UTF8STRC(" ("));
@@ -511,11 +545,15 @@ Bool Net::ASN1Util::PDUToString(const UInt8 *pdu, const UInt8 *pduEnd, NotNullPt
 			else
 			{
 				sb->AppendChar('\t', level);
+				if (name.v) sb->Append(name)->AppendUTF8Char(' ');
 				sb->AppendC(UTF8STRC("UNKNOWN 0x"));
 				sb->AppendHex8(type);
-				Text::StringBuilderUTF8 innerSb;
-				if (PDUToString(&pdu[ofst], &pdu[ofst + len], innerSb, level + 1))
+				if (PDUIsValid(&pdu[ofst], &pdu[ofst + len]))
 				{
+					Text::StringBuilderUTF8 innerSb;
+					if (names) names->ReadContainer();
+					PDUToString(&pdu[ofst], &pdu[ofst + len], innerSb, level + 1, 0, names);
+					if (names) names->ReadContainerEnd();
 					sb->AppendC(UTF8STRC(" {\r\n"));
 					sb->Append(innerSb);
 					sb->AppendChar('\t', level);
@@ -539,22 +577,27 @@ Bool Net::ASN1Util::PDUToString(const UInt8 *pdu, const UInt8 *pduEnd, NotNullPt
 			}
 		case 0x30:
 			sb->AppendChar('\t', level);
+			if (name.v) sb->Append(name)->AppendUTF8Char(' ');
 			sb->AppendC(UTF8STRC("SEQUENCE {\r\n"));
 			if (pdu[1] == 0x80)
 			{
 				pdu += ofst;
-				if (!PDUToString(pdu, pduEnd, sb, level + 1, &pdu))
+				if (names) names->ReadContainer();
+				if (!PDUToString(pdu, pduEnd, sb, level + 1, &pdu, names))
 				{
 					return false;
 				}
+				if (names) names->ReadContainerEnd();
 			}
 			else
 			{
 				pdu += ofst;
-				if (!PDUToString(pdu, pdu + len, sb, level + 1, 0))
+				if (names) names->ReadContainer();
+				if (!PDUToString(pdu, pdu + len, sb, level + 1, 0, names))
 				{
 					return false;
 				}
+				if (names) names->ReadContainerEnd();
 				pdu += len;
 			}
 			sb->AppendChar('\t', level);
@@ -562,22 +605,27 @@ Bool Net::ASN1Util::PDUToString(const UInt8 *pdu, const UInt8 *pduEnd, NotNullPt
 			break;
 		case 0x31:
 			sb->AppendChar('\t', level);
+			if (name.v) sb->Append(name)->AppendUTF8Char(' ');
 			sb->AppendC(UTF8STRC("SET {\r\n"));
 			if (pdu[1] == 0x80)
 			{
 				pdu += ofst;
-				if (!PDUToString(pdu, pduEnd, sb, level + 1, &pdu))
+				if (names) names->ReadContainer();
+				if (!PDUToString(pdu, pduEnd, sb, level + 1, &pdu, names))
 				{
 					return false;
 				}
+				if (names) names->ReadContainerEnd();
 			}
 			else
 			{
 				pdu += ofst;
-				if (!PDUToString(pdu, pdu + len, sb, level + 1))
+				if (names) names->ReadContainer();
+				if (!PDUToString(pdu, pdu + len, sb, level + 1, 0, names))
 				{
 					return false;
 				}
+				if (names) names->ReadContainerEnd();
 				pdu += len;
 			}
 			sb->AppendChar('\t', level);
@@ -593,24 +641,30 @@ Bool Net::ASN1Util::PDUToString(const UInt8 *pdu, const UInt8 *pduEnd, NotNullPt
 		case 0x87:
 		case 0x88:
 			sb->AppendChar('\t', level);
+			if (name.v) sb->Append(name)->AppendUTF8Char(' ');
 			sb->AppendC(UTF8STRC("CHOICE["));
 			sb->AppendU16((UInt16)(type - 0x80));
 			sb->AppendC(UTF8STRC("] "));
 			if (pdu[1] == 0x80)
 			{
 				sb->AppendC(UTF8STRC("{\r\n"));
-				if (!PDUToString(&pdu[ofst], pduEnd, sb, level + 1, &pdu))
+				if (names) names->ReadContainer();
+				if (!PDUToString(&pdu[ofst], pduEnd, sb, level + 1, &pdu, names))
 				{
 					return false;
 				}
+				if (names) names->ReadContainerEnd();
 				sb->AppendChar('\t', level);
 				sb->AppendC(UTF8STRC("}\r\n"));
 			}
 			else
 			{
-				Text::StringBuilderUTF8 innerSb;
-				if (PDUToString(&pdu[ofst], &pdu[ofst + len], innerSb, level + 1))
+				if (PDUIsValid(&pdu[ofst], &pdu[ofst + len]))
 				{
+					Text::StringBuilderUTF8 innerSb;
+					if (names) names->ReadContainer();
+					PDUToString(&pdu[ofst], &pdu[ofst + len], innerSb, level + 1, 0, names);
+					if (names) names->ReadContainerEnd();
 					sb->AppendC(UTF8STRC("{\r\n"));
 					sb->Append(innerSb);
 					sb->AppendChar('\t', level);
@@ -637,24 +691,30 @@ Bool Net::ASN1Util::PDUToString(const UInt8 *pdu, const UInt8 *pduEnd, NotNullPt
 		case 0xA2:
 		case 0xA3:
 			sb->AppendChar('\t', level);
+			if (name.v) sb->Append(name)->AppendUTF8Char(' ');
 			sb->AppendC(UTF8STRC("CONTEXT SPECIFIC["));
 			sb->AppendU16((UInt16)(type - 0xA0));
 			sb->AppendC(UTF8STRC("] "));
 			if (pdu[1] == 0x80)
 			{
 				sb->AppendC(UTF8STRC("{\r\n"));
-				if (!PDUToString(&pdu[ofst], pduEnd, sb, level + 1, &pdu))
+				if (names) names->ReadContainer();
+				if (!PDUToString(&pdu[ofst], pduEnd, sb, level + 1, &pdu, names))
 				{
 					return false;
 				}
+				if (names) names->ReadContainerEnd();
 				sb->AppendChar('\t', level);
 				sb->AppendC(UTF8STRC("}\r\n"));
 			}
 			else
 			{
 				Text::StringBuilderUTF8 innerSb;
-				if (PDUToString(&pdu[ofst], &pdu[ofst + len], innerSb, level + 1))
+				if (PDUIsValid(&pdu[ofst], &pdu[ofst + len]))
 				{
+					if (names) names->ReadContainer();
+					PDUToString(&pdu[ofst], &pdu[ofst + len], innerSb, level + 1, 0, names);
+					if (names) names->ReadContainerEnd();
 					sb->AppendC(UTF8STRC("{\r\n"));
 					sb->Append(innerSb);
 					sb->AppendChar('\t', level);
@@ -963,7 +1023,7 @@ Bool Net::ASN1Util::PDUIsValid(const UInt8 *pdu, const UInt8 *pduEnd)
 		}
 		if (pdu[0] >= 0x30 && pdu[0] < 0x40)
 		{
-			if (!PDUIsValid(pdu + ofst, pdu + ofst + size))
+			if (!PDUIsValid(pdu + ofst, pdu + ofst + len))
 			{
 				return false;
 			}
@@ -973,10 +1033,11 @@ Bool Net::ASN1Util::PDUIsValid(const UInt8 *pdu, const UInt8 *pduEnd)
 	return true;
 }
 
-void Net::ASN1Util::PDUAnalyse(NotNullPtr<IO::FileAnalyse::FrameDetail> frame, Data::ByteArrayR buff, UOSInt pduOfst, UOSInt pduEndOfst)
+void Net::ASN1Util::PDUAnalyse(NotNullPtr<IO::FileAnalyse::FrameDetail> frame, Data::ByteArrayR buff, UOSInt pduOfst, UOSInt pduEndOfst, Net::ASN1Names *names)
 {
 	UInt8 itemType;
 	UInt32 len;
+	Text::StringBuilderUTF8 sb;
 	while (pduOfst < pduEndOfst)
 	{
 		itemType = buff[pduOfst];
@@ -1020,7 +1081,11 @@ void Net::ASN1Util::PDUAnalyse(NotNullPtr<IO::FileAnalyse::FrameDetail> frame, D
 		}
 		if (pduOfst + len > pduEndOfst)
 			return;
-		Text::CStringNN itemName = ItemTypeGetName(itemType);
+		Text::CStringNN itemName;
+		if (names)
+			itemName = names->ReadName((Net::ASN1Util::ItemType)itemType, len, &buff[pduOfst]);
+		else
+			itemName = Net::ASN1Util::ItemTypeGetName(itemType);
 		switch (itemType)
 		{
 		case IT_INTEGER:
@@ -1035,10 +1100,75 @@ void Net::ASN1Util::PDUAnalyse(NotNullPtr<IO::FileAnalyse::FrameDetail> frame, D
 			else
 				frame->AddHexBuff(pduOfst, itemName, buff.SubArray(pduOfst, len), true);
 			break;
+		case IT_BIT_STRING:
+			sb.ClearStr();
+			sb.Append(itemName);
+			sb.AppendC(UTF8STRC(".unusedBits"));
+			frame->AddUInt(pduOfst, 1, sb.ToCString(), buff[pduOfst]);
+			if (PDUIsValid(&buff[pduOfst + 1], &buff[pduOfst + len]))
+			{
+				frame->AddArea(pduOfst + 1, len - 1, itemName);
+				if (names)
+				{
+					names->ReadContainer();
+					PDUAnalyse(frame, buff, pduOfst + 1, pduOfst + len, names);
+					names->ReadContainerEnd();
+				}
+				else
+				{
+					PDUAnalyse(frame, buff, pduOfst + 1, pduOfst + len, names);
+				}
+			}
+			else
+			{
+				frame->AddHexBuff(pduOfst + 1, itemName, buff.SubArray(pduOfst + 1, len - 1), true);
+			}
+			break;
+		case IT_OID:
+			sb.ClearStr();
+			Net::ASN1Util::OIDToString(&buff[pduOfst], len, sb);
+			sb.AppendC(UTF8STRC(" ("));
+			Net::ASN1OIDDB::OIDToNameString(&buff[pduOfst], len, sb);
+			sb.AppendUTF8Char(')');
+			frame->AddField(pduOfst, len, itemName, sb.ToCString());
+			break;
+		case IT_UTF8STRING:
+		case IT_PRINTABLESTRING:
+		case IT_IA5STRING:
+			frame->AddStrC(pduOfst, len, itemName, &buff[pduOfst]);
+			break;
+		case IT_UTCTIME:
+			sb.ClearStr();
+			Net::ASN1Util::UTCTimeToString(&buff[pduOfst], len, sb);
+			frame->AddField(pduOfst, len, itemName, sb.ToCString());
+			break;
 		case IT_SEQUENCE:
 			frame->AddArea(pduOfst, len, itemName);
-			PDUAnalyse(frame, buff, pduOfst, pduOfst + len);
+			if (names)
+			{
+				names->ReadContainer();
+				PDUAnalyse(frame, buff, pduOfst, pduOfst + len, names);
+				names->ReadContainerEnd();
+			}
+			else
+			{
+				PDUAnalyse(frame, buff, pduOfst, pduOfst + len, names);
+			}
 			break;
+		case IT_SET:
+			frame->AddArea(pduOfst, len, itemName);
+			if (names)
+			{
+				names->ReadContainer();
+				PDUAnalyse(frame, buff, pduOfst, pduOfst + len, names);
+				names->ReadContainerEnd();
+			}
+			else
+			{
+				PDUAnalyse(frame, buff, pduOfst, pduOfst + len, names);
+			}
+			break;
+		case IT_OCTET_STRING:
 		case IT_CONTEXT_SPECIFIC_0:
 		case IT_CONTEXT_SPECIFIC_1:
 		case IT_CONTEXT_SPECIFIC_2:
@@ -1046,7 +1176,48 @@ void Net::ASN1Util::PDUAnalyse(NotNullPtr<IO::FileAnalyse::FrameDetail> frame, D
 			if (PDUIsValid(&buff[pduOfst], &buff[pduOfst + len]))
 			{
 				frame->AddArea(pduOfst, len, itemName);
-				PDUAnalyse(frame, buff, pduOfst, pduOfst + len);
+				if (names)
+				{
+					names->ReadContainer();
+					PDUAnalyse(frame, buff, pduOfst, pduOfst + len, names);
+					names->ReadContainerEnd();
+				}
+				else
+				{
+					PDUAnalyse(frame, buff, pduOfst, pduOfst + len, names);
+				}
+			}
+			else
+			{
+				frame->AddHexBuff(pduOfst, itemName, buff.SubArray(pduOfst, len), true);
+			}
+			break;
+		case IT_CHOICE_0:
+		case IT_CHOICE_1:
+		case IT_CHOICE_2:
+		case IT_CHOICE_3:
+		case IT_CHOICE_4:
+		case IT_CHOICE_5:
+		case IT_CHOICE_6:
+		case IT_CHOICE_7:
+		case IT_CHOICE_8:
+			if (PDUIsValid(&buff[pduOfst], &buff[pduOfst + len]))
+			{
+				frame->AddArea(pduOfst, len, itemName);
+				if (names)
+				{
+					names->ReadContainer();
+					PDUAnalyse(frame, buff, pduOfst, pduOfst + len, names);
+					names->ReadContainerEnd();
+				}
+				else
+				{
+					PDUAnalyse(frame, buff, pduOfst, pduOfst + len, names);
+				}
+			}
+			else if (Text::StringTool::IsASCIIText(Data::ByteArrayR(&buff[pduOfst], len)))
+			{
+				frame->AddStrC(pduOfst, len, itemName, &buff[pduOfst]);
 			}
 			else
 			{
@@ -1403,6 +1574,10 @@ Text::CStringNN Net::ASN1Util::ItemTypeGetName(UInt8 itemType)
 		return CSTR("IT_CHOICE_5");
 	case IT_CHOICE_6:
 		return CSTR("IT_CHOICE_6");
+	case IT_CHOICE_7:
+		return CSTR("IT_CHOICE_7");
+	case IT_CHOICE_8:
+		return CSTR("IT_CHOICE_8");
 	case IT_CONTEXT_SPECIFIC_0:
 		return CSTR("IT_CONTEXT_SPECIFIC_0");
 	case IT_CONTEXT_SPECIFIC_1:

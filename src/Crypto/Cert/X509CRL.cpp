@@ -115,6 +115,11 @@ void Crypto::Cert::X509CRL::ToString(NotNullPtr<Text::StringBuilderUTF8> sb) con
 	}
 }
 
+Net::ASN1Names *Crypto::Cert::X509CRL::CreateNames() const
+{
+	return 0;
+}
+
 Bool Crypto::Cert::X509CRL::HasVersion() const
 {
 	UOSInt itemLen;

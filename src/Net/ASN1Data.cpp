@@ -24,7 +24,10 @@ IO::ParserType Net::ASN1Data::GetParserType() const
 
 Bool Net::ASN1Data::ToASN1String(NotNullPtr<Text::StringBuilderUTF8> sb) const
 {
-	return Net::ASN1Util::PDUToString(this->buff.GetPtr(), this->buff.PtrEnd(), sb, 0);
+	Net::ASN1Names *names = this->CreateNames();
+	Bool ret = Net::ASN1Util::PDUToString(this->buff.GetPtr(), this->buff.PtrEnd(), sb, 0, 0, names);
+	SDEL_CLASS(names);
+	return ret;
 }
 
 const UInt8 *Net::ASN1Data::GetASN1Buff() const

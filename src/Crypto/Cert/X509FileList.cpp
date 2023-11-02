@@ -151,6 +151,11 @@ void Crypto::Cert::X509FileList::ToString(NotNullPtr<Text::StringBuilderUTF8> sb
 	}
 }
 
+Net::ASN1Names *Crypto::Cert::X509FileList::CreateNames() const
+{
+	return 0;
+}
+
 void Crypto::Cert::X509FileList::AddFile(NotNullPtr<Crypto::Cert::X509File> file)
 {
 	this->fileList.Add(file);

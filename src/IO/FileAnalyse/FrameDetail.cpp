@@ -41,7 +41,7 @@ UInt64 IO::FileAnalyse::FrameDetail::GetSize() const
 	return this->size;
 }
 
-UOSInt IO::FileAnalyse::FrameDetail::GetFieldInfos(UInt64 ofst, Data::ArrayList<const FieldInfo*> *fieldList) const
+UOSInt IO::FileAnalyse::FrameDetail::GetFieldInfos(UInt64 ofst, NotNullPtr<Data::ArrayList<const FieldInfo*>> fieldList) const
 {
 	if (ofst < this->ofst || ofst >= this->ofst + this->size)
 	{
@@ -58,6 +58,30 @@ UOSInt IO::FileAnalyse::FrameDetail::GetFieldInfos(UInt64 ofst, Data::ArrayList<
 		if ((field->fieldType == FT_FIELD || field->fieldType == FT_SUBFRAME) && frameOfst >= field->ofst && frameOfst < field->ofst + field->size)
 		{
 			fieldList->Add(field);
+			ret++;
+		}
+		i++;
+	}
+	return ret;
+}
+
+UOSInt IO::FileAnalyse::FrameDetail::GetAreaInfos(UInt64 ofst, NotNullPtr<Data::ArrayList<const FieldInfo*>> areaList) const
+{
+	if (ofst < this->ofst || ofst >= this->ofst + this->size)
+	{
+		return 0;
+	}
+	FieldInfo *field;
+	UInt32 frameOfst = (UInt32)(ofst - this->ofst);
+	UOSInt ret = 0;
+	UOSInt i = 0;
+	UOSInt j = this->fields.GetCount();
+	while (i < j)
+	{
+		field = this->fields.GetItem(i);
+		if (field->fieldType == FT_AREA && frameOfst >= field->ofst && frameOfst < field->ofst + field->size)
+		{
+			areaList->Add(field);
 			ret++;
 		}
 		i++;
@@ -97,7 +121,7 @@ void IO::FileAnalyse::FrameDetail::AddSubframe(UInt64 ofst, UInt64 size)
 
 void IO::FileAnalyse::FrameDetail::AddArea(UInt64 ofst, UOSInt size, Text::CStringNN name)
 {
-
+	this->AddFieldInfo(ofst, size, name, CSTR_NULL, FT_AREA);
 }
 
 void IO::FileAnalyse::FrameDetail::ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const
@@ -122,24 +146,28 @@ void IO::FileAnalyse::FrameDetail::ToString(NotNullPtr<Text::StringBuilderUTF8> 
 		while (i < j)
 		{
 			field = this->fields.GetItem(i);
-			switch (field->fieldType)
+			if (field->fieldType != FT_AREA)
 			{
-			case FT_TEXT:
-			case FT_FIELD:
-				sb->AppendC(UTF8STRC("\r\n"));
-				break;
-			case FT_SUBFIELD:
-				sb->AppendC(UTF8STRC("\r\n-"));
-				break;
-			case FT_SEPERATOR:
-				sb->AppendC(UTF8STRC("\r\n\r\n"));
-				break;
-			case FT_SUBFRAME:
-				sb->AppendC(UTF8STRC("\r\n"));
+				switch (field->fieldType)
+				{
+				case FT_TEXT:
+				case FT_FIELD:
+					sb->AppendC(UTF8STRC("\r\n"));
+					break;
+				case FT_SUBFIELD:
+					sb->AppendC(UTF8STRC("\r\n-"));
+					break;
+				case FT_SEPERATOR:
+					sb->AppendC(UTF8STRC("\r\n\r\n"));
+					break;
+				case FT_SUBFRAME:
+				case FT_AREA:
+					sb->AppendC(UTF8STRC("\r\n"));
+				}
+				sb->Append(field->name);
+				sb->AppendUTF8Char('=');
+				sb->Append(field->value);
 			}
-			sb->Append(field->name);
-			sb->AppendUTF8Char('=');
-			sb->Append(field->value);
 			i++;
 		}
 	}

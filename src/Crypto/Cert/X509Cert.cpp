@@ -234,6 +234,13 @@ void Crypto::Cert::X509Cert::ToString(NotNullPtr<Text::StringBuilderUTF8> sb) co
 	}
 }
 
+Net::ASN1Names *Crypto::Cert::X509Cert::CreateNames() const
+{
+	Net::ASN1Names *names;
+	NEW_CLASS(names, Net::ASN1Names());
+	return names->SetCertificate().Ptr();
+}
+
 Bool Crypto::Cert::X509Cert::GetIssuerNames(NotNullPtr<CertNames> names) const
 {
 	Net::ASN1Util::ItemType itemType;

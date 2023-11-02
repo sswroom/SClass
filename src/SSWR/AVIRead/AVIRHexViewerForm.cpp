@@ -150,7 +150,9 @@ void __stdcall SSWR::AVIRead::AVIRHexViewerForm::OnOffsetChg(void *userObj, UInt
 	{
 		me->txtFrameName->SetText(sb.ToCString());
 		Data::ArrayList<const IO::FileAnalyse::FrameDetail::FieldInfo*> fieldList;
-		me->hexView->GetFieldInfos(&fieldList);
+		Data::ArrayList<const IO::FileAnalyse::FrameDetail::FieldInfo*> areaList;
+		me->hexView->GetAreaInfos(areaList);
+		me->hexView->GetFieldInfos(fieldList);
 		const IO::FileAnalyse::FrameDetail::FieldInfo *field;
 		if (fieldList.GetCount() == 0)
 		{
@@ -158,12 +160,32 @@ void __stdcall SSWR::AVIRead::AVIRHexViewerForm::OnOffsetChg(void *userObj, UInt
 		}
 		else
 		{
+			UOSInt i;
+			UOSInt j = areaList.GetCount();
 			sb.ClearStr();
-			UOSInt i = 0;
-			UOSInt j = fieldList.GetCount();
+			if (j > 0)
+			{
+				sb.AppendC(UTF8STRC("Location: "));
+				i = 0;
+				while (i < j)
+				{
+					if (i > 0)
+					{
+						if (i & 3)
+							sb.AppendC(UTF8STRC(" > "));
+						else
+							sb.AppendC(UTF8STRC(" > \r\n\t"));
+					}
+					sb.Append(areaList.GetItem(i)->name);
+					i++;
+				}
+				sb.AppendC(UTF8STRC("\r\n"));
+			}
+			i = 0;
+			j = fieldList.GetCount();
 			while (i < j)
 			{
-				if (i > 0)
+				if (sb.leng > 0)
 				{
 					sb.AppendC(UTF8STRC("\r\n"));
 				}

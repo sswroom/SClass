@@ -2,6 +2,7 @@
 #define _SM_NET_SOCKETUTIL
 #include "Data/ArrayList.h"
 #include "Text/CString.h"
+#include "Text/PString.h"
 
 namespace Net
 {
@@ -53,6 +54,7 @@ namespace Net
 		static IPType GetIPv4Type(UInt32 ipv4);
 		static UInt32 IPv4ToBroadcast(UInt32 ipv4);
 		static Bool AddrEquals(NotNullPtr<const AddressInfo> addr1, NotNullPtr<const AddressInfo> addr2);
+		static Text::PString GetHostPort(Text::PString str, OutParam<UInt16> port);
 	};
 }
 #endif

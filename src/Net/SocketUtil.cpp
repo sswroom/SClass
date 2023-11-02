@@ -788,3 +788,31 @@ Bool Net::SocketUtil::AddrEquals(NotNullPtr<const Net::SocketUtil::AddressInfo> 
 		return false;
 	}
 }
+
+Text::PString Net::SocketUtil::GetHostPort(Text::PString str, OutParam<UInt16> port)
+{
+	UOSInt i;
+	port.Set(0);
+	if (str.StartsWith('['))
+	{
+		i = str.IndexOf(UTF8STRC("]:"));
+		if (i == INVALID_INDEX)
+			return str;
+		if (str.IndexOf(':', i + 2) == INVALID_INDEX)
+			return str;
+		if (!str.ToCString().Substring(i + 2).ToUInt16(port))
+			return str;
+		str.TrimToLength(i);
+		return str.Substring(1);
+	}
+	else
+	{
+		i = str.IndexOf(':');
+		if (i == INVALID_INDEX)
+			return str;
+		if (!str.ToCString().Substring(i + 1).ToUInt16(port))
+			return str;
+		str.TrimToLength(i);
+		return str;
+	}
+}

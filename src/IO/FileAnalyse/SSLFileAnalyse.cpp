@@ -3,6 +3,7 @@
 #include "Data/ByteTool.h"
 #include "IO/FileAnalyse/SSLFileAnalyse.h"
 #include "Manage/Process.h"
+#include "Net/ASN1Names.h"
 #include "Net/ASN1Util.h"
 #include "Net/SSLUtil.h"
 
@@ -50,6 +51,7 @@ UOSInt IO::FileAnalyse::SSLFileAnalyse::AppendExtension(NotNullPtr<IO::FileAnaly
 	UOSInt len;
 	frame->AddUIntName(ofst, 2, CSTR("Extension Type"), extType, Net::SSLUtil::ExtensionTypeGetName(extType));
 	frame->AddUInt(ofst + 2, 2, CSTR("Length"), extLen);
+	if (extLen > 0) frame->AddArea(ofst + 4, extLen, Net::SSLUtil::ExtensionTypeGetName(extType));
 	switch (extType)
 	{
 	case 0x0b: //ec_point_formats
@@ -156,6 +158,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::SSLFileAnalyse::GetFrameDetail(UO
 	switch (packBuff[0])
 	{
 	case 21:
+		frame->AddArea(5, pack->packSize - 5, CSTR("Alert"));
 		if (pack->packSize == 7)
 		{
 			frame->AddUIntName(5, 1, CSTR("Level"), packBuff[5], Net::SSLUtil::AlertLevelGetName(packBuff[5]));
@@ -163,6 +166,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::SSLFileAnalyse::GetFrameDetail(UO
 		}
 		break;
 	case 22:
+		frame->AddArea(5, pack->packSize - 5, CSTR("Handshake"));
 		i = 5;
 		while (i < pack->packSize - 3)
 		{
@@ -171,6 +175,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::SSLFileAnalyse::GetFrameDetail(UO
 			frame->AddUInt(i + 1, 3, CSTR("Length"), leng);
 			if (i + leng + 4 <= pack->packSize)
 			{
+				frame->AddArea(i + 4, leng, Net::SSLUtil::HandshakeTypeGetName(packBuff[i]));
 				switch (packBuff[i])
 				{
 				case 1: //Client Hello
@@ -207,6 +212,10 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::SSLFileAnalyse::GetFrameDetail(UO
 					l = packBuff.ReadMU16(j + 3);
 					frame->AddUInt(j + 3, 2, CSTR("Extensions Length"), l);
 					j += 5;
+					if (l > 0)
+					{
+						frame->AddArea(j, l, CSTR("Extensions"));
+					}
 					k = j;
 					l += j;
 					while (k < l)
@@ -217,12 +226,14 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::SSLFileAnalyse::GetFrameDetail(UO
 				case 11: //Certificate
 					j = packBuff.ReadMU24(i + 4);
 					frame->AddUInt(i + 4, 3, CSTR("Certificates Length"), j);
+					frame->AddArea(i + 7, j, CSTR("Certificates"));
 					k = 0;
 					while (k < j)
 					{
 						l = packBuff.ReadMU24(i + 7 + k);
 						frame->AddUInt(i + 7 + k, 3, CSTR("Certificate Length"), l);
-						Net::ASN1Util::PDUAnalyse(frame, packBuff, i + 10 + k, i + 10 + k + l);
+						frame->AddArea(i + 10 + k, l, CSTR("Certificate"));
+						Net::ASN1Util::PDUAnalyse(frame, packBuff, i + 10 + k, i + 10 + k + l, Net::ASN1Names().SetCertificate().Ptr());
 						k += 3 + l;
 					}
 					break;

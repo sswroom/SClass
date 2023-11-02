@@ -10,28 +10,35 @@ void __stdcall SSWR::AVIRead::AVIRSSLInfoForm::OnCheckClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRSSLInfoForm *me = (SSWR::AVIRead::AVIRSSLInfoForm *)userObj;
 	Text::StringBuilderUTF8 sb;
-	UInt16 port;
-	me->txtPort->GetText(sb);
-	if (!sb.ToUInt16(port))
-	{
-		me->txtStatus->SetText(CSTR("Please enter valid port"));
-		return;
-	}
-	sb.ClearStr();
-	me->txtHost->GetText(sb);
+	Text::PString hostName;
+	NotNullPtr<Text::String> sslHost;
 	Net::SocketUtil::AddressInfo addr;
+	UInt16 port;
+	me->txtHost->GetText(sb);
 	if (sb.GetLength() == 0)
 	{
 		me->txtStatus->SetText(CSTR("Please enter Host name"));
 		return;
 	}
-	else if (!me->sockf->DNSResolveIP(sb.ToCString(), addr))
+	hostName = Net::SocketUtil::GetHostPort(sb, port);
+	if (!me->sockf->DNSResolveIP(hostName.ToCString(), addr))
 	{
 		me->txtStatus->SetText(CSTR("Error in resolving host name"));
 		return;
 	}
+	sslHost = Text::String::New(hostName.ToCString());
+	if (port == 0)
+	{
+		sb.ClearStr();
+		me->txtPort->GetText(sb);
+		if (!sb.ToUInt16(port))
+		{
+			me->txtStatus->SetText(CSTR("Please enter valid port"));
+			sslHost->Release();
+			return;
+		}
+	}
 	Net::SSLVer ver = (Net::SSLVer)(OSInt)me->cboVersion->GetSelectedItem();
-
 	Socket *s;
 	if (addr.addrType == Net::AddrType::IPv4)
 	{
@@ -44,16 +51,19 @@ void __stdcall SSWR::AVIRead::AVIRSSLInfoForm::OnCheckClicked(void *userObj)
 	else
 	{
 		me->txtStatus->SetText(CSTR("Error in address type"));
+		sslHost->Release();
 		return;
 	}
 	if (s == 0)
 	{
 		me->txtStatus->SetText(CSTR("Error in creating socket"));
+		sslHost->Release();
 		return;
 	}
 	if (!me->sockf->Connect(s, addr, port, 30000))
 	{
 		me->sockf->DestroySocket(s);
+		sslHost->Release();
 		me->txtStatus->SetText(CSTR("Error in connecting to remote host"));
 		return;
 	}
@@ -103,6 +113,7 @@ void __stdcall SSWR::AVIRead::AVIRSSLInfoForm::OnCheckClicked(void *userObj)
 			sb.AppendUOSInt(retSize);
 			me->txtStatus->SetText(sb.ToCString());
 			me->sockf->DestroySocket(s);
+			sslHost->Release();
 			return;
 		}
 		retSize = me->sockf->ReceiveData(s, packetBuff, sizeof(packetBuff), nullptr);
@@ -110,6 +121,7 @@ void __stdcall SSWR::AVIRead::AVIRSSLInfoForm::OnCheckClicked(void *userObj)
 		{
 			me->sockf->DestroySocket(s);
 			me->txtStatus->SetText(CSTR("Server does not have valid reply after PreLogin"));
+			sslHost->Release();
 			return;
 		}
 		packetBuff[0] = 0x12; //Packet Header Type = PreLogin
@@ -117,7 +129,8 @@ void __stdcall SSWR::AVIRead::AVIRSSLInfoForm::OnCheckClicked(void *userObj)
 		WriteMUInt16(&packetBuff[4], 0); //SPID
 		packetBuff[6] = 0; //Packet ID
 		packetBuff[7] = 0; //Window
-		retSize = Net::SSLUtil::GenSSLClientHello(&packetBuff[8], sb.ToCString(), ver);
+		retSize = Net::SSLUtil::GenSSLClientHello(&packetBuff[8], sslHost->ToCString(), ver);
+		sslHost->Release();
 		WriteMUInt16(&packetBuff[2], retSize + 8); //Packet Length
 		if ((retSize = me->sockf->SendData(s, packetBuff, retSize + 8, nullptr)) == 0)
 		{
@@ -176,7 +189,8 @@ void __stdcall SSWR::AVIRead::AVIRSSLInfoForm::OnCheckClicked(void *userObj)
 	}
 	else
 	{
-		retSize = Net::SSLUtil::GenSSLClientHello(packetBuff, sb.ToCString(), ver);
+		retSize = Net::SSLUtil::GenSSLClientHello(packetBuff, sslHost->ToCString(), ver);
+		sslHost->Release();
 		if ((retSize = me->sockf->SendData(s, packetBuff, retSize, nullptr)) == 0)
 		{
 			Text::StringBuilderUTF8 sb;

@@ -121,6 +121,11 @@ void Crypto::Cert::X509PKCS7::ToString(NotNullPtr<Text::StringBuilderUTF8> sb) c
 	}
 }
 
+Net::ASN1Names *Crypto::Cert::X509PKCS7::CreateNames() const
+{
+	return 0;
+}
+
 Bool Crypto::Cert::X509PKCS7::IsSignData() const
 {
 	UOSInt itemLen;

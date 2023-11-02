@@ -29,6 +29,7 @@ namespace Crypto
 			virtual NotNullPtr<ASN1Data> Clone() const;
 			virtual X509Cert *CreateX509Cert() const;
 			virtual void ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const;
+			virtual Net::ASN1Names *CreateNames() const;
 
 			void AddFile(NotNullPtr<Crypto::Cert::X509File> file);
 			UOSInt GetFileCount() const;

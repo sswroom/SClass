@@ -6,6 +6,7 @@
 
 namespace Net
 {
+	class ASN1Names;
 	class ASN1Util
 	{
 	public:
@@ -38,6 +39,8 @@ namespace Net
 			IT_CHOICE_4 = 0x84,
 			IT_CHOICE_5 = 0x85,
 			IT_CHOICE_6 = 0x86,
+			IT_CHOICE_7 = 0x87,
+			IT_CHOICE_8 = 0x88,
 			IT_CONTEXT_SPECIFIC_0 = 0xa0,
 			IT_CONTEXT_SPECIFIC_1 = 0xa1,
 			IT_CONTEXT_SPECIFIC_2 = 0xa2,
@@ -55,6 +58,7 @@ namespace Net
 
 		static Bool PDUToString(const UInt8 *pdu, const UInt8 *pduEnd, NotNullPtr<Text::StringBuilderUTF8> sb, UOSInt level);
 		static Bool PDUToString(const UInt8 *pdu, const UInt8 *pduEnd, NotNullPtr<Text::StringBuilderUTF8> sb, UOSInt level, const UInt8 **pduNext);
+		static Bool PDUToString(const UInt8 *pdu, const UInt8 *pduEnd, NotNullPtr<Text::StringBuilderUTF8> sb, UOSInt level, const UInt8 **pduNext, Net::ASN1Names *names);
 
 		static Bool PDUDSizeEnd(const UInt8 *pdu, const UInt8 *pduEnd, const UInt8 **pduNext);
 		static const UInt8 *PDUGetItemRAW(const UInt8 *pdu, const UInt8 *pduEnd, const Char *path, OptOut<UOSInt> len, OutParam<UOSInt> itemOfst);
@@ -62,7 +66,7 @@ namespace Net
 		static ItemType PDUGetItemType(const UInt8 *pdu, const UInt8 *pduEnd, const Char *path);
 		static UOSInt PDUCountItem(const UInt8 *pdu, const UInt8 *pduEnd, const Char *path);
 		static Bool PDUIsValid(const UInt8 *pdu, const UInt8 *pduEnd);
-		static void PDUAnalyse(NotNullPtr<IO::FileAnalyse::FrameDetail> frame, Data::ByteArrayR buff, UOSInt pduOfst, UOSInt pduEndOfst);
+		static void PDUAnalyse(NotNullPtr<IO::FileAnalyse::FrameDetail> frame, Data::ByteArrayR buff, UOSInt pduOfst, UOSInt pduEndOfst, Net::ASN1Names *names);
 
 		static OSInt OIDCompare(const UInt8 *oid1, UOSInt oid1Len, const UInt8 *oid2, UOSInt oid2Len);
 		static Bool OIDStartsWith(const UInt8 *oid1, UOSInt oid1Len, const UInt8 *oid2, UOSInt oid2Len);

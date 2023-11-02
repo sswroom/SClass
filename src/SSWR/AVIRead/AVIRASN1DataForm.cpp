@@ -5,6 +5,8 @@
 #include "IO/FileStream.h"
 #include "IO/MemoryStream.h"
 #include "IO/Path.h"
+#include "IO/FileAnalyse/ASN1FileAnalyse.h"
+#include "IO/StmData/MemoryDataCopy.h"
 #include "Net/ASN1Util.h"
 #include "Net/SSLEngineFactory.h"
 #include "SSWR/AVIRead/AVIRASN1DataForm.h"
@@ -19,6 +21,7 @@
 enum MenuItem
 {
 	MNU_SAVE = 100,
+	MNU_VIEW_HEX = 101,
 	MNU_CERT_0 = 500,
 	MNU_KEY_CREATE = 600,
 	MNU_CERT_EXT_KEY = 601
@@ -484,7 +487,8 @@ SSWR::AVIRead::AVIRASN1DataForm::AVIRASN1DataForm(UI::GUIClientControl *parent, 
 	UI::GUIMenu *mnu;
 	NEW_CLASS(this->mnuMain, UI::GUIMainMenu());
 	mnu = this->mnuMain->AddSubMenu(CSTR("&File"));
-	mnu->AddItem(CSTR("Save"), MNU_SAVE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu->AddItem(CSTR("Save"), MNU_SAVE, UI::GUIMenu::KM_CONTROL, UI::GUIControl::GK_S);
+	mnu->AddItem(CSTR("View Hex"), MNU_VIEW_HEX, UI::GUIMenu::KM_CONTROL, UI::GUIControl::GK_H);
 	if (this->asn1->GetASN1Type() == Net::ASN1Data::ASN1Type::X509)
 	{
 		Crypto::Cert::X509File *x509 = (Crypto::Cert::X509Cert*)this->asn1;
@@ -753,6 +757,14 @@ void SSWR::AVIRead::AVIRASN1DataForm::EventMenuClicked(UInt16 cmdId)
 	case MNU_SAVE:
 		this->core->SaveData(this, this->asn1, L"ASN1Data");
 		break;
+	case MNU_VIEW_HEX:
+	{
+		IO::StmData::MemoryDataCopy md(this->asn1->GetASN1Buff(), this->asn1->GetASN1BuffSize());
+		IO::FileAnalyse::ASN1FileAnalyse *analyse;
+		NEW_CLASS(analyse, IO::FileAnalyse::ASN1FileAnalyse(md, this->asn1->CreateNames()));
+		this->core->OpenHex(md, analyse);
+		break;
+	}
 	case MNU_KEY_CREATE:
 		{
 			Crypto::Cert::X509Key *key = ((Crypto::Cert::X509PrivKey*)this->asn1)->CreateKey();

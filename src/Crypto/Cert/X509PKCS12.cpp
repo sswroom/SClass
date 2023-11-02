@@ -67,3 +67,10 @@ void Crypto::Cert::X509PKCS12::ToString(NotNullPtr<Text::StringBuilderUTF8> sb) 
 		AppendPFX(this->buff.Ptr(), this->buff.PtrEnd(), "1", sb, CSTR_NULL);
 	}
 }
+
+Net::ASN1Names *Crypto::Cert::X509PKCS12::CreateNames() const
+{
+	Net::ASN1Names *names;
+	NEW_CLASS(names, Net::ASN1Names());
+	return names->SetPFX().Ptr();
+}

@@ -205,7 +205,7 @@ void UI::GUIHexFileView::DrawImage(NotNullPtr<Media::DrawImage> dimg)
 		if (this->frame)
 		{
 			Data::ArrayList<const IO::FileAnalyse::FrameDetail::FieldInfo*> fieldList;
-			this->frame->GetFieldInfos(this->currOfst, &fieldList);
+			this->frame->GetFieldInfos(this->currOfst, fieldList);
 			if (fieldList.GetCount() > 0)
 			{
 				fieldInfo = fieldList.GetItem(0);
@@ -581,7 +581,7 @@ Bool UI::GUIHexFileView::GetFrameName(NotNullPtr<Text::StringBuilderUTF8> sb)
 	return this->analyse->GetFrameName(index, sb);
 }
 
-UOSInt UI::GUIHexFileView::GetFieldInfos(Data::ArrayList<const IO::FileAnalyse::FrameDetail::FieldInfo *> *fieldList)
+UOSInt UI::GUIHexFileView::GetFieldInfos(NotNullPtr<Data::ArrayList<const IO::FileAnalyse::FrameDetail::FieldInfo *>> fieldList)
 {
 	if (this->frame)
 	{
@@ -610,6 +610,15 @@ UOSInt UI::GUIHexFileView::GetFieldInfos(Data::ArrayList<const IO::FileAnalyse::
 			}
 		}
 		return i;
+	}
+	return 0;
+}
+
+UOSInt UI::GUIHexFileView::GetAreaInfos(NotNullPtr<Data::ArrayList<const IO::FileAnalyse::FrameDetail::FieldInfo *>> areaList)
+{
+	if (this->frame)
+	{
+		return this->frame->GetAreaInfos(this->currOfst, areaList);
 	}
 	return 0;
 }
@@ -658,7 +667,7 @@ Bool UI::GUIHexFileView::GoToNextUnkField()
 			}
 		}
 		fieldList.Clear();
-		if (frame->GetFieldInfos(currOfst, &fieldList) == 0)
+		if (frame->GetFieldInfos(currOfst, fieldList) == 0)
 		{
 			this->GoToOffset(currOfst);
 			DEL_CLASS(frame);

@@ -64,6 +64,11 @@ void Crypto::Cert::X509PubKey::ToString(NotNullPtr<Text::StringBuilderUTF8> sb) 
 	}
 }
 
+Net::ASN1Names *Crypto::Cert::X509PubKey::CreateNames() const
+{
+	return 0;
+}
+
 Crypto::Cert::X509Key *Crypto::Cert::X509PubKey::CreateKey() const
 {
 	Net::ASN1Util::ItemType itemType;

@@ -19,7 +19,8 @@ namespace IO
 				FT_SUBFIELD,
 				FT_SEPERATOR,
 				FT_TEXT,
-				FT_SUBFRAME
+				FT_SUBFRAME,
+				FT_AREA
 			};
 
 			struct FieldInfo
@@ -36,7 +37,7 @@ namespace IO
 
 			Data::ArrayListNN<Text::String> headers;
 			Data::ArrayList<FieldInfo*> fields;
-
+			
 			void FreeFieldInfo(FieldInfo *field);
 			void AddFieldInfo(UInt64 ofst, UInt64 size, Text::CString name, Text::CString value, FieldType fieldType);
 		public:
@@ -45,7 +46,8 @@ namespace IO
 
 			UInt64 GetOffset() const;
 			UInt64 GetSize() const;
-			UOSInt GetFieldInfos(UInt64 ofst, Data::ArrayList<const FieldInfo*> *fieldList) const;
+			UOSInt GetFieldInfos(UInt64 ofst, NotNullPtr<Data::ArrayList<const FieldInfo*>> fieldList) const;
+			UOSInt GetAreaInfos(UInt64 ofst, NotNullPtr<Data::ArrayList<const FieldInfo*>> areaList) const;
 
 			virtual void AddHeader(Text::CStringNN header);
 			virtual void AddField(UInt64 ofst, UInt64 size, Text::CStringNN name, Text::CString value);

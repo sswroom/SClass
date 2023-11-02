@@ -230,6 +230,26 @@ void Crypto::Cert::X509Key::ToString(NotNullPtr<Text::StringBuilderUTF8> sb) con
 	}
 }
 
+Net::ASN1Names *Crypto::Cert::X509Key::CreateNames() const
+{
+	Net::ASN1Names *names;
+	NEW_CLASS(names, Net::ASN1Names());
+	switch (this->keyType)
+	{
+	case KeyType::RSA:
+		return names->SetRSAPrivateKey().Ptr();
+	case KeyType::RSAPublic:
+		return names->SetRSAPublicKey().Ptr();
+	default:
+	case KeyType::DSA:
+	case KeyType::ECDSA:
+	case KeyType::ECPublic:
+	case KeyType::ED25519:
+	case KeyType::Unknown:
+		return names;
+	}
+}
+
 Crypto::Cert::X509File::KeyType Crypto::Cert::X509Key::GetKeyType() const
 {
 	return this->keyType;

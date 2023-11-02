@@ -79,6 +79,13 @@ void Crypto::Cert::X509CertReq::ToString(NotNullPtr<Text::StringBuilderUTF8> sb)
 	}
 }
 
+Net::ASN1Names *Crypto::Cert::X509CertReq::CreateNames() const
+{
+	Net::ASN1Names *names;
+	NEW_CLASS(names, Net::ASN1Names());
+	return names->SetCertificationRequest().Ptr();
+}
+
 Bool Crypto::Cert::X509CertReq::GetNames(NotNullPtr<CertNames> names) const
 {
 	UOSInt itemLen;

@@ -64,6 +64,11 @@ void Crypto::Cert::X509PrivKey::ToString(NotNullPtr<Text::StringBuilderUTF8> sb)
 	}
 }
 
+Net::ASN1Names *Crypto::Cert::X509PrivKey::CreateNames() const
+{
+	return 0;
+}
+
 Crypto::Cert::X509File::KeyType Crypto::Cert::X509PrivKey::GetKeyType() const
 {
 	Net::ASN1Util::ItemType itemType;

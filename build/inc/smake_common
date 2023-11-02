@@ -1995,6 +1995,8 @@ IO/Device/TelitLE910.h: ../../src/IO/Device/TelitLE910.cpp
 @TelitLE910.o
 IO/Device/TH10SB.h: ../../src/IO/Device/TH10SB.cpp
 @TH10SB.o
+IO/FileAnalyse/ASN1FileAnalyse.h: ../../src/IO/FileAnalyse/ASN1FileAnalyse.cpp
+@ASN1FileAnalyse.o
 IO/FileAnalyse/DWGFileAnalyse.h: ../../src/IO/FileAnalyse/DWGFileAnalyse.cpp
 @DWGFileAnalyse.o
 IO/FileAnalyse/EBMLFileAnalyse.h: ../../src/IO/FileAnalyse/EBMLFileAnalyse.cpp
@@ -2994,6 +2996,8 @@ Net/ASN1Data.h: ../../src/Net/ASN1Data.cpp
 @ASN1Data.o
 Net/ASN1MIB.h: ../../src/Net/ASN1MIB.cpp
 @ASN1MIB.o
+Net/ASN1Names.h: ../../src/Net/ASN1Names.cpp
+@ASN1Names.o
 Net/ASN1OIDDB.h: ../../src/Net/ASN1OIDDB.cpp
 @ASN1OIDDB.o
 Net/ASN1PDUBuilder.h: ../../src/Net/ASN1PDUBuilder.cpp
@@ -4998,6 +5002,7 @@ SIM7000.o: ../../src/IO/Device/SIM7000.cpp
 SIM7000SocketFactory.o: ../../src/IO/Device/SIM7000SocketFactory.cpp
 TelitLE910.o: ../../src/IO/Device/TelitLE910.cpp
 TH10SB.o: ../../src/IO/Device/TH10SB.cpp
+ASN1FileAnalyse.o: ../../src/IO/FileAnalyse/ASN1FileAnalyse.cpp
 DWGFileAnalyse.o: ../../src/IO/FileAnalyse/DWGFileAnalyse.cpp
 EBMLFileAnalyse.o: ../../src/IO/FileAnalyse/EBMLFileAnalyse.cpp
 EDIDFileAnalyse.o: ../../src/IO/FileAnalyse/EDIDFileAnalyse.cpp
@@ -5449,6 +5454,7 @@ AddressRange.o: ../../src/Net/AddressRange.cpp
 ARPHandler.o: ../../src/Net/ARPHandler.cpp
 ASN1Data.o: ../../src/Net/ASN1Data.cpp
 ASN1MIB.o: ../../src/Net/ASN1MIB.cpp
+ASN1Names.o: ../../src/Net/ASN1Names.cpp
 ASN1OIDDB.o: ../../src/Net/ASN1OIDDB.cpp
 ASN1PDUBuilder.o: ../../src/Net/ASN1PDUBuilder.cpp
 ASN1Util.o: ../../src/Net/ASN1Util.cpp

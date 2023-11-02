@@ -20,6 +20,7 @@ namespace Crypto
 
 			virtual NotNullPtr<ASN1Data> Clone() const;
 			virtual void ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const;
+			virtual Net::ASN1Names *CreateNames() const;
 			
 			Crypto::Cert::X509Key *CreateKey() const;
 
