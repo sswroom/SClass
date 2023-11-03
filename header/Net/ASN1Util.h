@@ -44,7 +44,8 @@ namespace Net
 			IT_CONTEXT_SPECIFIC_0 = 0xa0,
 			IT_CONTEXT_SPECIFIC_1 = 0xa1,
 			IT_CONTEXT_SPECIFIC_2 = 0xa2,
-			IT_CONTEXT_SPECIFIC_3 = 0xa3
+			IT_CONTEXT_SPECIFIC_3 = 0xa3,
+			IT_CONTEXT_SPECIFIC_4 = 0xa4
 		} ItemType;
 	public:
 		static UOSInt PDUParseLen(const UInt8 *pdu, UOSInt ofst, UOSInt pduSize, UInt32 *len); //return pduSize + 1 on error

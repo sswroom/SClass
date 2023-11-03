@@ -17,8 +17,10 @@ namespace Net
 			TypeIsItemType,
 			TypeIsTime,
 			TypeIsString,
+			TypeIsOpt,
 			RepeatIfTypeIs,
-			LastOIDAndTypeIs
+			LastOIDAndTypeIs,
+			AllNotMatch
 		};
 
 		struct RuleContainer;
@@ -58,8 +60,10 @@ namespace Net
 		NotNullPtr<ASN1Names> TypeIs(Net::ASN1Util::ItemType itemType);
 		NotNullPtr<ASN1Names> TypeIsTime();
 		NotNullPtr<ASN1Names> TypeIsString();
+		NotNullPtr<ASN1Names> TypeIsOpt(UInt8 index);
 		NotNullPtr<ASN1Names> RepeatIfTypeIs(Net::ASN1Util::ItemType itemType);
 		NotNullPtr<ASN1Names> LastOIDAndTypeIs(Text::CStringNN oidText, Net::ASN1Util::ItemType itemType);
+		NotNullPtr<ASN1Names> AllNotMatch();
 
 		NotNullPtr<ASN1Names> Container(Text::CStringNN name, ContentFunc func);
 		NotNullPtr<ASN1Names> NextValue(Text::CStringNN name);
@@ -69,10 +73,25 @@ namespace Net
 		static void ValidityCont(NotNullPtr<ASN1Names> names); //PKIX1Explicit88
 		static void ExtensionsCont(NotNullPtr<ASN1Names> names); //PKIX1Explicit88
 		static void ExtensionCont(NotNullPtr<ASN1Names> names); //PKIX1Explicit88
-		static void SubjectAltName(NotNullPtr<ASN1Names> names); //PKIX1Implicit88
 		static void SubjectKeyIdentifier(NotNullPtr<ASN1Names> names); //PKIX1Implicit88
+		static void KeyUsage(NotNullPtr<ASN1Names> names); //PKIX1Implicit88
+		static void GeneralNames(NotNullPtr<ASN1Names> names); //PKIX1Implicit88
+		static void BasicConstraints(NotNullPtr<ASN1Names> names); //PKIX1Implicit88
+		static void BasicConstraintsCont(NotNullPtr<ASN1Names> names); //PKIX1Implicit88
+		static void CRLDistributionPoints(NotNullPtr<ASN1Names> names); //PKIX1Implicit88
+		static void CRLDistributionPointsCont(NotNullPtr<ASN1Names> names); //PKIX1Implicit88
+		static void DistributionPointCont(NotNullPtr<ASN1Names> names); //PKIX1Implicit88
+		static void DistributionPointName(NotNullPtr<ASN1Names> names); //PKIX1Implicit88
+		static void ReasonFlags(NotNullPtr<ASN1Names> names); //PKIX1Implicit88
+		static void CertificatePolicies(NotNullPtr<ASN1Names> names); //PKIX1Implicit88
+		static void CertificatePoliciesCont(NotNullPtr<ASN1Names> names); //PKIX1Implicit88
+		static void PolicyInformationCont(NotNullPtr<ASN1Names> names); //PKIX1Implicit88
+		static void PolicyQualifiers(NotNullPtr<ASN1Names> names); //PKIX1Implicit88
+		static void PolicyQualifierInfoCont(NotNullPtr<ASN1Names> names); //PKIX1Implicit88
 		static void AuthorityKeyIdentifier(NotNullPtr<ASN1Names> names); //PKIX1Implicit88
 		static void AuthorityKeyIdentifierCont(NotNullPtr<ASN1Names> names); //PKIX1Implicit88
+		static void ExtKeyUsageSyntax(NotNullPtr<ASN1Names> names); //PKIX1Implicit88
+		static void ExtKeyUsageSyntaxCont(NotNullPtr<ASN1Names> names); //PKIX1Implicit88
 		static void GeneralNameCont(NotNullPtr<ASN1Names> names); //PKIX1Implicit88
 		static void SubjectPublicKeyInfoCont(NotNullPtr<ASN1Names> names); //PKIX1Explicit88
 		static void RSAPublicKey(NotNullPtr<ASN1Names> names); //PKCS-1
@@ -80,6 +99,7 @@ namespace Net
 		static void RSAPrivateKey(NotNullPtr<ASN1Names> names); //PKCS-1
 		static void RSAPrivateKeyCont(NotNullPtr<ASN1Names> names); //PKCS-1
 		static void OtherPrimeInfos(NotNullPtr<ASN1Names> names); //PKCS-1
+		static void Name(NotNullPtr<ASN1Names> names); //PKIX1Explicit88
 		static void CertificateList(NotNullPtr<ASN1Names> names); //PKIX1Explicit88
 		static void CertificateListCont(NotNullPtr<ASN1Names> names); //PKIX1Explicit88
 		static void Certificate(NotNullPtr<ASN1Names> names); //PKIX1Explicit88
@@ -93,10 +113,11 @@ namespace Net
 		static void RevokedCertificateCont(NotNullPtr<ASN1Names> names); //PKIX1Explicit88
 		static void Extensions(NotNullPtr<ASN1Names> names); //PKIX1Explicit88
 		static void RDNSequenceCont(NotNullPtr<ASN1Names> names); //PKIX1Explicit88
+		static void RelativeDistinguishedName(NotNullPtr<ASN1Names> names); //PKIX1Explicit88
 		static void RelativeDistinguishedNameCont(NotNullPtr<ASN1Names> names); //PKIX1Explicit88
 		static void AttributeTypeAndValueCont(NotNullPtr<ASN1Names> names); //PKIX1Explicit88
 		static void AlgorithmIdentifierCont(NotNullPtr<ASN1Names> names); //PKIX1Explicit88
-		static void RC2_CBC_Param(NotNullPtr<ASN1Names> names);
+		static void PBEParam(NotNullPtr<ASN1Names> names);
 		static void CertificationRequestInfoCont(NotNullPtr<ASN1Names> names); //PKCS-10
 		static void AttributesCont(NotNullPtr<ASN1Names> names); //PKCS-10
 		static void AttributeCont(NotNullPtr<ASN1Names> names); //PKCS-10
@@ -161,6 +182,10 @@ namespace Net
 		static void ContentInfoCont(NotNullPtr<ASN1Names> names); //PKCS-7
 		static void DigestInfoCont(NotNullPtr<ASN1Names> names); //PKCS-7
 		static void MacDataCont(NotNullPtr<ASN1Names> names); //PKCS-12
+		static void AuthorityInfoAccessSyntax(NotNullPtr<ASN1Names> names); //RFC 2459
+		static void AuthorityInfoAccessSyntaxCont(NotNullPtr<ASN1Names> names); //RFC 2459
+		static void AccessDescriptionCont(NotNullPtr<ASN1Names> names); //RFC 2459
+		static void ExtendedValidationCertificates(NotNullPtr<ASN1Names> names); //GoDaddy
 
 		NotNullPtr<ASN1Names> Validity(Text::CStringNN name); //PKIX1Explicit88
 		NotNullPtr<ASN1Names> AddExtensions(Text::CStringNN name); //PKIX1Explicit88

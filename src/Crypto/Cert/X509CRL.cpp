@@ -117,6 +117,9 @@ void Crypto::Cert::X509CRL::ToString(NotNullPtr<Text::StringBuilderUTF8> sb) con
 
 Net::ASN1Names *Crypto::Cert::X509CRL::CreateNames() const
 {
+/*	Net::ASN1Names *names;
+	NEW_CLASS(names, Net::ASN1Names());
+	return names->SetCertificateList().Ptr();*/
 	return 0;
 }
 

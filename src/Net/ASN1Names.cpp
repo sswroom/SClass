@@ -59,6 +59,14 @@ NotNullPtr<Net::ASN1Names> Net::ASN1Names::TypeIsString()
 	return *this;
 }
 
+NotNullPtr<Net::ASN1Names> Net::ASN1Names::TypeIsOpt(UInt8 index)
+{
+	this->currCond = RuleCond::TypeIsOpt;
+	this->currItemType = (Net::ASN1Util::ItemType)index;
+	this->currCondParam = CSTR_NULL;
+	return *this;
+}
+
 NotNullPtr<Net::ASN1Names> Net::ASN1Names::RepeatIfTypeIs(Net::ASN1Util::ItemType itemType)
 {
 	this->currCond = RuleCond::RepeatIfTypeIs;
@@ -72,6 +80,14 @@ NotNullPtr<Net::ASN1Names> Net::ASN1Names::LastOIDAndTypeIs(Text::CStringNN oidT
 	this->currCond = RuleCond::LastOIDAndTypeIs;
 	this->currItemType = itemType;
 	this->currCondParam = oidText;
+	return *this;
+}
+
+NotNullPtr<Net::ASN1Names> Net::ASN1Names::AllNotMatch()
+{
+	this->currCond = RuleCond::AllNotMatch;
+	this->currItemType = Net::ASN1Util::IT_UNKNOWN;
+	this->currCondParam = CSTR_NULL;
 	return *this;
 }
 
@@ -136,20 +152,98 @@ void Net::ASN1Names::ExtensionCont(NotNullPtr<ASN1Names> names)
 {
 	names->TypeIs(Net::ASN1Util::IT_OID)->NextValue(CSTR("extnID"));
 	names->TypeIs(Net::ASN1Util::IT_BOOLEAN)->NextValue(CSTR("critical"));
-	names->LastOIDAndTypeIs(CSTR("2.5.29.17"), Net::ASN1Util::IT_OCTET_STRING)->Container(CSTR("subjectAltName"), SubjectAltName);
+	names->LastOIDAndTypeIs(CSTR("1.3.6.1.4.1.11129.2.4.2"), Net::ASN1Util::IT_OCTET_STRING)->Container(CSTR("extendedValidationCertificates"), ExtendedValidationCertificates);
+	names->LastOIDAndTypeIs(CSTR("1.3.6.1.5.5.7.1.1"), Net::ASN1Util::IT_OCTET_STRING)->Container(CSTR("authorityInfoAccess"), AuthorityInfoAccessSyntax);
 	names->LastOIDAndTypeIs(CSTR("2.5.29.14"), Net::ASN1Util::IT_OCTET_STRING)->Container(CSTR("subjectKeyIdentifier"), SubjectKeyIdentifier);
+	names->LastOIDAndTypeIs(CSTR("2.5.29.15"), Net::ASN1Util::IT_OCTET_STRING)->Container(CSTR("keyUsage"), KeyUsage);
+	names->LastOIDAndTypeIs(CSTR("2.5.29.17"), Net::ASN1Util::IT_OCTET_STRING)->Container(CSTR("subjectAltName"), GeneralNames);
+	names->LastOIDAndTypeIs(CSTR("2.5.29.19"), Net::ASN1Util::IT_OCTET_STRING)->Container(CSTR("basicConstraints"), BasicConstraints);
+	names->LastOIDAndTypeIs(CSTR("2.5.29.31"), Net::ASN1Util::IT_OCTET_STRING)->Container(CSTR("cRLDistributionPoints"), CRLDistributionPoints);
+	names->LastOIDAndTypeIs(CSTR("2.5.29.32"), Net::ASN1Util::IT_OCTET_STRING)->Container(CSTR("certificatePolicies"), CertificatePolicies);
 	names->LastOIDAndTypeIs(CSTR("2.5.29.35"), Net::ASN1Util::IT_OCTET_STRING)->Container(CSTR("authorityKeyIdentifier"), AuthorityKeyIdentifier);
+	names->LastOIDAndTypeIs(CSTR("2.5.29.37"), Net::ASN1Util::IT_OCTET_STRING)->Container(CSTR("extKeyUsage"), ExtKeyUsageSyntax);
 	names->NextValue(CSTR("extnValue"));//////////////////////////////
-}
-
-void Net::ASN1Names::SubjectAltName(NotNullPtr<ASN1Names> names)
-{
-	names->RepeatIfTypeIs(Net::ASN1Util::IT_SEQUENCE)->Container(CSTR("GeneralName"), GeneralNameCont);
 }
 
 void Net::ASN1Names::SubjectKeyIdentifier(NotNullPtr<ASN1Names> names)
 {
 	names->TypeIs(Net::ASN1Util::IT_OCTET_STRING)->NextValue(CSTR("SubjectKeyIdentifier"));
+}
+
+void Net::ASN1Names::KeyUsage(NotNullPtr<ASN1Names> names)
+{
+	names->TypeIs(Net::ASN1Util::IT_BIT_STRING)->NextValue(CSTR("KeyUsage"));
+}
+
+void Net::ASN1Names::GeneralNames(NotNullPtr<ASN1Names> names)
+{
+	names->TypeIs(Net::ASN1Util::IT_SEQUENCE)->Container(CSTR("GeneralName"), GeneralNameCont);
+}
+
+void Net::ASN1Names::BasicConstraints(NotNullPtr<ASN1Names> names)
+{
+	names->TypeIs(Net::ASN1Util::IT_SEQUENCE)->Container(CSTR("BasicConstraints"), BasicConstraintsCont);
+}
+
+void Net::ASN1Names::BasicConstraintsCont(NotNullPtr<ASN1Names> names)
+{
+	names->TypeIs(Net::ASN1Util::IT_BOOLEAN)->NextValue(CSTR("cA"));
+	names->TypeIs(Net::ASN1Util::IT_INTEGER)->NextValue(CSTR("pathLenConstraint"));
+}
+
+void Net::ASN1Names::CRLDistributionPoints(NotNullPtr<ASN1Names> names)
+{
+	names->TypeIs(Net::ASN1Util::IT_SEQUENCE)->Container(CSTR("CRLDistributionPoints"), CRLDistributionPointsCont);
+}
+
+void Net::ASN1Names::CRLDistributionPointsCont(NotNullPtr<ASN1Names> names)
+{
+	names->RepeatIfTypeIs(Net::ASN1Util::IT_SEQUENCE)->Container(CSTR("DistributionPoint"), DistributionPointCont);
+}
+
+void Net::ASN1Names::DistributionPointCont(NotNullPtr<ASN1Names> names)
+{
+	names->TypeIsOpt(0)->Container(CSTR("distributionPoint"), DistributionPointName);
+	names->TypeIsOpt(1)->Container(CSTR("reasons"), ReasonFlags);
+	names->TypeIsOpt(2)->Container(CSTR("cRLIssuer"), GeneralNames);
+}
+
+void Net::ASN1Names::DistributionPointName(NotNullPtr<ASN1Names> names)
+{
+	names->TypeIsOpt(0)->Container(CSTR("fullName"), GeneralNameCont);
+	names->TypeIsOpt(1)->Container(CSTR("nameRelativeToCRLIssuer"), RelativeDistinguishedNameCont);
+}
+
+void Net::ASN1Names::ReasonFlags(NotNullPtr<ASN1Names> names)
+{
+	names->TypeIs(Net::ASN1Util::IT_BIT_STRING)->NextValue(CSTR("ReasonFlags"));
+}
+
+void Net::ASN1Names::CertificatePolicies(NotNullPtr<ASN1Names> names)
+{
+	names->TypeIs(Net::ASN1Util::IT_SEQUENCE)->Container(CSTR("CertificatePolicies"), CertificatePoliciesCont);
+}
+
+void Net::ASN1Names::CertificatePoliciesCont(NotNullPtr<ASN1Names> names)
+{
+	names->RepeatIfTypeIs(Net::ASN1Util::IT_SEQUENCE)->Container(CSTR("PolicyInformation"), PolicyInformationCont);
+}
+
+void Net::ASN1Names::PolicyInformationCont(NotNullPtr<ASN1Names> names)
+{
+	names->TypeIs(Net::ASN1Util::IT_OID)->NextValue(CSTR("policyIdentifier"));
+	names->TypeIs(Net::ASN1Util::IT_SEQUENCE)->Container(CSTR("policyQualifiers"), PolicyQualifiers);
+}
+
+void Net::ASN1Names::PolicyQualifiers(NotNullPtr<ASN1Names> names)
+{
+	names->RepeatIfTypeIs(Net::ASN1Util::IT_SEQUENCE)->Container(CSTR("PolicyQualifierInfo"), PolicyQualifierInfoCont);
+}
+
+void Net::ASN1Names::PolicyQualifierInfoCont(NotNullPtr<ASN1Names> names)
+{
+	names->TypeIs(Net::ASN1Util::IT_OID)->NextValue(CSTR("policyQualifierId"));
+	names->NextValue(CSTR("qualifier"));
 }
 
 void Net::ASN1Names::AuthorityKeyIdentifier(NotNullPtr<ASN1Names> names)
@@ -159,22 +253,33 @@ void Net::ASN1Names::AuthorityKeyIdentifier(NotNullPtr<ASN1Names> names)
 
 void Net::ASN1Names::AuthorityKeyIdentifierCont(NotNullPtr<ASN1Names> names)
 {
-	names->TypeIs(Net::ASN1Util::IT_CHOICE_0)->NextValue(CSTR("keyIdentifier"));
-	names->TypeIs(Net::ASN1Util::IT_CHOICE_1)->NextValue(CSTR("authorityCertIssuer"));
-	names->TypeIs(Net::ASN1Util::IT_CHOICE_2)->NextValue(CSTR("authorityCertSerialNumber"));
+	names->TypeIsOpt(0)->NextValue(CSTR("keyIdentifier"));
+	names->TypeIsOpt(1)->Container(CSTR("authorityCertIssuer"), GeneralNameCont);
+	names->TypeIsOpt(2)->NextValue(CSTR("authorityCertSerialNumber"));
+}
+
+void Net::ASN1Names::ExtKeyUsageSyntax(NotNullPtr<ASN1Names> names)
+{
+	names->TypeIs(Net::ASN1Util::IT_SEQUENCE)->Container(CSTR("ExtKeyUsageSyntax"), ExtKeyUsageSyntaxCont);
+}
+
+void Net::ASN1Names::ExtKeyUsageSyntaxCont(NotNullPtr<ASN1Names> names)
+{
+	names->RepeatIfTypeIs(Net::ASN1Util::IT_OID)->NextValue(CSTR("KeyPurposeId"));
 }
 
 void Net::ASN1Names::GeneralNameCont(NotNullPtr<ASN1Names> names)
 {
-	names->TypeIs(Net::ASN1Util::IT_CHOICE_0)->NextValue(CSTR("otherName"));
-	names->TypeIs(Net::ASN1Util::IT_CHOICE_1)->NextValue(CSTR("rfc822Name"));
-	names->TypeIs(Net::ASN1Util::IT_CHOICE_2)->NextValue(CSTR("dNSName"));
-	names->TypeIs(Net::ASN1Util::IT_CHOICE_3)->NextValue(CSTR("x400Address"));
-	names->TypeIs(Net::ASN1Util::IT_CHOICE_4)->NextValue(CSTR("directoryName"));
-	names->TypeIs(Net::ASN1Util::IT_CHOICE_5)->NextValue(CSTR("ediPartyName"));
-	names->TypeIs(Net::ASN1Util::IT_CHOICE_6)->NextValue(CSTR("uniformResourceIdentifier"));
-	names->TypeIs(Net::ASN1Util::IT_CHOICE_7)->NextValue(CSTR("iPAddress"));
-	names->TypeIs(Net::ASN1Util::IT_CHOICE_8)->NextValue(CSTR("registeredID"));
+	names->TypeIsOpt(0)->NextValue(CSTR("otherName"));
+	names->TypeIsOpt(1)->NextValue(CSTR("rfc822Name"));
+	names->TypeIsOpt(2)->NextValue(CSTR("dNSName"));
+	names->TypeIsOpt(3)->NextValue(CSTR("x400Address"));
+	names->TypeIsOpt(4)->Container(CSTR("directoryName"), Name);
+	names->TypeIsOpt(5)->NextValue(CSTR("ediPartyName"));
+	names->TypeIsOpt(6)->NextValue(CSTR("uniformResourceIdentifier"));
+	names->TypeIsOpt(7)->NextValue(CSTR("iPAddress"));
+	names->TypeIsOpt(8)->NextValue(CSTR("registeredID"));
+	names->AllNotMatch()->NextValue(CSTR("unknown"));
 }
 
 void Net::ASN1Names::SubjectPublicKeyInfoCont(NotNullPtr<ASN1Names> names)
@@ -220,6 +325,11 @@ void Net::ASN1Names::OtherPrimeInfos(NotNullPtr<ASN1Names> names)
 	names->TypeIs(Net::ASN1Util::IT_INTEGER)->NextValue(CSTR("prime"));
 	names->TypeIs(Net::ASN1Util::IT_INTEGER)->NextValue(CSTR("exponent"));
 	names->TypeIs(Net::ASN1Util::IT_INTEGER)->NextValue(CSTR("coefficient"));
+}
+
+void Net::ASN1Names::Name(NotNullPtr<ASN1Names> names)
+{
+	names->TypeIs(Net::ASN1Util::IT_SEQUENCE)->Container(CSTR("Name"), RDNSequenceCont);
 }
 
 void Net::ASN1Names::CertificateList(NotNullPtr<ASN1Names> names)
@@ -313,6 +423,11 @@ void Net::ASN1Names::RDNSequenceCont(NotNullPtr<ASN1Names> names)
 	names->RepeatIfTypeIs(Net::ASN1Util::IT_SET)->Container(CSTR("rdnSequence"), RelativeDistinguishedNameCont);
 }
 
+void Net::ASN1Names::RelativeDistinguishedName(NotNullPtr<ASN1Names> names)
+{
+	names->TypeIs(Net::ASN1Util::IT_SET)->Container(CSTR("RelativeDistinguishedName"), RelativeDistinguishedNameCont);
+}
+
 void Net::ASN1Names::RelativeDistinguishedNameCont(NotNullPtr<ASN1Names> names)
 {
 	names->AttributeTypeAndValue(CSTR("AttributeTypeAndValue"));
@@ -327,14 +442,15 @@ void Net::ASN1Names::AttributeTypeAndValueCont(NotNullPtr<ASN1Names> names)
 void Net::ASN1Names::AlgorithmIdentifierCont(NotNullPtr<ASN1Names> names)
 {
 	names->TypeIs(Net::ASN1Util::IT_OID)->NextValue(CSTR("algorithm"));
-	names->LastOIDAndTypeIs(CSTR("1.2.840.113549.1.12.1.6"), Net::ASN1Util::IT_SEQUENCE)->Container(CSTR("parameters"), RC2_CBC_Param);
+	names->LastOIDAndTypeIs(CSTR("1.2.840.113549.1.12.1.3"), Net::ASN1Util::IT_SEQUENCE)->Container(CSTR("parameters"), PBEParam); //pbeWithSHAAnd3-KeyTripleDES-CBC
+	names->LastOIDAndTypeIs(CSTR("1.2.840.113549.1.12.1.6"), Net::ASN1Util::IT_SEQUENCE)->Container(CSTR("parameters"), PBEParam); //pbeWithSHAAnd40BitRC2-CBC
 	names->NextValue(CSTR("parameters"));
 }
 
-void Net::ASN1Names::RC2_CBC_Param(NotNullPtr<ASN1Names> names)
+void Net::ASN1Names::PBEParam(NotNullPtr<ASN1Names> names)
 {
-	names->TypeIs(Net::ASN1Util::IT_OCTET_STRING)->NextValue(CSTR("iv"));
-	names->TypeIs(Net::ASN1Util::IT_INTEGER)->NextValue(CSTR("effectiveBits"));
+	names->TypeIs(Net::ASN1Util::IT_OCTET_STRING)->NextValue(CSTR("salt"));
+	names->TypeIs(Net::ASN1Util::IT_INTEGER)->NextValue(CSTR("iterations"));
 }
 
 void Net::ASN1Names::CertificationRequestInfoCont(NotNullPtr<ASN1Names> names)
@@ -750,6 +866,27 @@ void Net::ASN1Names::MacDataCont(NotNullPtr<ASN1Names> names)
 	names->TypeIs(Net::ASN1Util::IT_INTEGER)->NextValue(CSTR("iterations"));
 }
 
+void Net::ASN1Names::AuthorityInfoAccessSyntax(NotNullPtr<ASN1Names> names)
+{
+	names->TypeIs(Net::ASN1Util::IT_SEQUENCE)->Container(CSTR("AuthorityInfoAccessSyntax"), AuthorityInfoAccessSyntaxCont);
+}
+
+void Net::ASN1Names::AuthorityInfoAccessSyntaxCont(NotNullPtr<ASN1Names> names)
+{
+	names->RepeatIfTypeIs(Net::ASN1Util::IT_SEQUENCE)->Container(CSTR("AccessDescription"), AccessDescriptionCont);
+}
+
+void Net::ASN1Names::AccessDescriptionCont(NotNullPtr<ASN1Names> names)
+{
+	names->TypeIs(Net::ASN1Util::IT_OID)->NextValue(CSTR("accessMethod"));
+	names->NextValue(CSTR("accessLocation"));
+}
+
+void Net::ASN1Names::ExtendedValidationCertificates(NotNullPtr<ASN1Names> names)
+{
+	names->RepeatIfTypeIs(Net::ASN1Util::IT_OCTET_STRING)->NextValue(CSTR("signedCertTimestamp"));
+}
+
 NotNullPtr<Net::ASN1Names> Net::ASN1Names::Validity(Text::CStringNN name)
 {
 	return this->TypeIs(Net::ASN1Util::IT_SEQUENCE)->Container(name, ValidityCont);
@@ -847,6 +984,7 @@ Text::CStringNN Net::ASN1Names::ReadName(Net::ASN1Util::ItemType itemType, UOSIn
 
 Text::CString Net::ASN1Names::ReadNameNoDef(Net::ASN1Util::ItemType itemType, UOSInt len, const UInt8 *buff)
 {
+	Bool anyMatch = false;
 	if (itemType == Net::ASN1Util::IT_OID)
 	{
 		MemCopyNO(this->readLastOID, buff, len);
@@ -896,6 +1034,12 @@ Text::CString Net::ASN1Names::ReadNameNoDef(Net::ASN1Util::ItemType itemType, UO
 				itemType == Net::ASN1Util::IT_T61STRING)
 				return rule->name;
 			break;
+		case RuleCond::TypeIsOpt:
+			this->readIndex++;
+			if (itemType == rule->itemType + Net::ASN1Util::IT_CHOICE_0 ||
+				itemType == rule->itemType + Net::ASN1Util::IT_CONTEXT_SPECIFIC_0)
+				return rule->name;
+			break;
 		case RuleCond::LastOIDAndTypeIs:
 			this->readIndex++;
 			if (itemType == rule->itemType && Net::ASN1Util::OIDEqualsText(this->readLastOID, this->readLastOIDLen, rule->condParam.v, rule->condParam.leng))
@@ -905,6 +1049,12 @@ Text::CString Net::ASN1Names::ReadNameNoDef(Net::ASN1Util::ItemType itemType, UO
 			if (itemType == rule->itemType)
 				return rule->name;
 			this->readIndex++;
+			break;
+		case RuleCond::AllNotMatch:
+			this->readIndex = 0;
+			if (anyMatch)
+				return rule->name;
+			anyMatch = true;
 			break;
 		}
 	}

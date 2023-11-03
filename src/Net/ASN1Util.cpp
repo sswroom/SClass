@@ -690,6 +690,11 @@ Bool Net::ASN1Util::PDUToString(const UInt8 *pdu, const UInt8 *pduEnd, NotNullPt
 		case 0xA1:
 		case 0xA2:
 		case 0xA3:
+		case 0xA4:
+		case 0xA5:
+		case 0xA6:
+		case 0xA7:
+		case 0xA8:
 			sb->AppendChar('\t', level);
 			if (name.v) sb->Append(name)->AppendUTF8Char(' ');
 			sb->AppendC(UTF8STRC("CONTEXT SPECIFIC["));
@@ -1586,6 +1591,8 @@ Text::CStringNN Net::ASN1Util::ItemTypeGetName(UInt8 itemType)
 		return CSTR("IT_CONTEXT_SPECIFIC_2");
 	case IT_CONTEXT_SPECIFIC_3:
 		return CSTR("IT_CONTEXT_SPECIFIC_3");
+	case IT_CONTEXT_SPECIFIC_4:
+		return CSTR("IT_CONTEXT_SPECIFIC_4");
 	default:
 		return CSTR("Unknown");
 	}
