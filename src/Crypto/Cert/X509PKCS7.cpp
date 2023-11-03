@@ -123,7 +123,9 @@ void Crypto::Cert::X509PKCS7::ToString(NotNullPtr<Text::StringBuilderUTF8> sb) c
 
 Net::ASN1Names *Crypto::Cert::X509PKCS7::CreateNames() const
 {
-	return 0;
+	Net::ASN1Names *names;
+	NEW_CLASS(names, Net::ASN1Names());
+	return names->SetPKCS7ContentInfo().Ptr();
 }
 
 Bool Crypto::Cert::X509PKCS7::IsSignData() const

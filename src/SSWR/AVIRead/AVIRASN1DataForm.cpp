@@ -544,10 +544,12 @@ SSWR::AVIRead::AVIRASN1DataForm::AVIRASN1DataForm(UI::GUIClientControl *parent, 
 	
 	this->tpDesc = this->tcMain->AddTabPage(CSTR("Desc"));
 	NEW_CLASS(this->txtDesc, UI::GUITextBox(ui, this->tpDesc, CSTR(""), true));
+	this->txtDesc->SetReadOnly(true);
 	this->txtDesc->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	this->tpASN1 = this->tcMain->AddTabPage(CSTR("ASN1"));
 	NEW_CLASS(this->txtASN1, UI::GUITextBox(ui, this->tpASN1, CSTR(""), true));
+	this->txtASN1->SetReadOnly(true);
 	this->txtASN1->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	sb.ClearStr();

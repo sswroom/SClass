@@ -38,6 +38,7 @@ void Parser::FileParser::X509Parser::PrepareSelector(NotNullPtr<IO::FileSelector
 		selector->AddFilter(CSTR("*.crt"), CSTR("X.509 Certification File"));
 		selector->AddFilter(CSTR("*.csr"), CSTR("X.509 Certification Request"));
 		selector->AddFilter(CSTR("*.p7b"), CSTR("PKCS 7 Certification File"));
+		selector->AddFilter(CSTR("*.p7s"), CSTR("PKCS 7 Signature File"));
 		selector->AddFilter(CSTR("*.p12"), CSTR("PKCS 12 KeyStore File"));
 		selector->AddFilter(CSTR("*.pfx"), CSTR("PKCS 12 KeyStore File"));
 		selector->AddFilter(CSTR("*.pem"), CSTR("PEM File"));
@@ -468,7 +469,7 @@ Crypto::Cert::X509File *Parser::FileParser::X509Parser::ParseBuff(Data::ByteArra
 		else
 			return file;
 	}
-	else if (buff[0] == 0x30)
+	else if (buff[0] == 0x30 && Net::ASN1Util::PDUIsValid(buff.Ptr(), buff.PtrEnd()))
 	{
 		if (fileName->EndsWithICase(UTF8STRC(".P12")))
 		{

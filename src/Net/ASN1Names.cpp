@@ -222,6 +222,23 @@ void Net::ASN1Names::OtherPrimeInfos(NotNullPtr<ASN1Names> names)
 	names->TypeIs(Net::ASN1Util::IT_INTEGER)->NextValue(CSTR("coefficient"));
 }
 
+void Net::ASN1Names::CertificateList(NotNullPtr<ASN1Names> names)
+{
+	names->TypeIs(Net::ASN1Util::IT_SEQUENCE)->Container(CSTR("CertificateList"), CertificateListCont);
+}
+
+void Net::ASN1Names::CertificateListCont(NotNullPtr<ASN1Names> names)
+{
+	names->TBSCertList(CSTR("tbsCertList"));
+	names->AlgorithmIdentifier(CSTR("signatureAlgorithm"));
+	names->TypeIs(Net::ASN1Util::IT_BIT_STRING)->NextValue(CSTR("signature"));
+}
+
+void Net::ASN1Names::Certificate(NotNullPtr<ASN1Names> names)
+{
+	names->TypeIs(Net::ASN1Util::IT_SEQUENCE)->Container(CSTR("Certificate"), CertificateCont);
+}
+
 void Net::ASN1Names::CertificateCont(NotNullPtr<ASN1Names> names)
 {
 	names->TBSCertificate(CSTR("tbsCertificate"));
@@ -239,8 +256,19 @@ void Net::ASN1Names::CertificationRequestCont(NotNullPtr<ASN1Names> names)
 void Net::ASN1Names::PFXCont(NotNullPtr<ASN1Names> names)
 {
 	names->TypeIs(Net::ASN1Util::IT_INTEGER)->NextValue(CSTR("Version"));
-	names->ContentInfo(CSTR("authSafe"));
+	names->TypeIs(Net::ASN1Util::IT_SEQUENCE)->Container(CSTR("authSafe"), AuthenticatedSafeContentInfoCont);
 	names->MacData(CSTR("macData"));
+}
+
+void Net::ASN1Names::TBSCertListCont(NotNullPtr<ASN1Names> names)
+{
+	names->TypeIs(Net::ASN1Util::IT_INTEGER)->NextValue(CSTR("Version"));
+	names->AlgorithmIdentifier(CSTR("signature"));
+	names->AddName(CSTR("issuer"));
+	names->TypeIsTime()->NextValue(CSTR("thisUpdate"));
+	names->TypeIsTime()->NextValue(CSTR("nextUpdate"));
+	names->TypeIs(Net::ASN1Util::IT_SEQUENCE)->Container(CSTR("revokedCertificates"), RevokedCertificates);
+	names->TypeIs(Net::ASN1Util::IT_CONTEXT_SPECIFIC_0)->Container(CSTR("crlExtensions"), Extensions);
 }
 
 void Net::ASN1Names::TBSCertificateCont(NotNullPtr<ASN1Names> names)
@@ -248,13 +276,13 @@ void Net::ASN1Names::TBSCertificateCont(NotNullPtr<ASN1Names> names)
 	names->TypeIs(Net::ASN1Util::IT_CONTEXT_SPECIFIC_0)->Container(CSTR("version"), TBSCertificateVersion);
 	names->TypeIs(Net::ASN1Util::IT_INTEGER)->NextValue(CSTR("serialNumber"));
 	names->AlgorithmIdentifier(CSTR("signature"));
-	names->Name(CSTR("issuer"));
+	names->AddName(CSTR("issuer"));
 	names->Validity(CSTR("validity"));
-	names->Name(CSTR("subject"));
+	names->AddName(CSTR("subject"));
 	names->SubjectPublicKeyInfo(CSTR("subjectPublicKeyInfo"));
 	names->TypeIs(Net::ASN1Util::IT_CONTEXT_SPECIFIC_1)->NextValue(CSTR("issuerUniqueID"));/////////////////////
 	names->TypeIs(Net::ASN1Util::IT_CONTEXT_SPECIFIC_2)->NextValue(CSTR("subjectUniqueID"));//////////////////////
-	names->TypeIs(Net::ASN1Util::IT_CONTEXT_SPECIFIC_3)->Container(CSTR("extensions"), TBSCertificateExtensions);
+	names->TypeIs(Net::ASN1Util::IT_CONTEXT_SPECIFIC_3)->Container(CSTR("extensions"), Extensions);
 }
 
 void Net::ASN1Names::TBSCertificateVersion(NotNullPtr<ASN1Names> names)
@@ -263,9 +291,21 @@ void Net::ASN1Names::TBSCertificateVersion(NotNullPtr<ASN1Names> names)
 	names->TypeIs(Net::ASN1Util::IT_INTEGER)->Enum(CSTR("Version"), Version, 3);
 }
 
-void Net::ASN1Names::TBSCertificateExtensions(NotNullPtr<ASN1Names> names)
+void Net::ASN1Names::RevokedCertificates(NotNullPtr<ASN1Names> names)
 {
-	names->Extensions(CSTR("Extensions"));
+	names->RepeatIfTypeIs(Net::ASN1Util::IT_SEQUENCE)->Container(CSTR("revokedCertificate"), RevokedCertificateCont);
+}
+
+void Net::ASN1Names::RevokedCertificateCont(NotNullPtr<ASN1Names> names)
+{
+	names->TypeIs(Net::ASN1Util::IT_INTEGER)->NextValue(CSTR("userCertificate"));
+	names->TypeIsTime()->NextValue(CSTR("revocationDate"));
+	names->TypeIs(Net::ASN1Util::IT_SEQUENCE)->Container(CSTR("crlEntryExtensions"), ExtensionsCont);
+}
+
+void Net::ASN1Names::Extensions(NotNullPtr<ASN1Names> names)
+{
+	names->TypeIs(Net::ASN1Util::IT_SEQUENCE)->Container(CSTR("Extensions"), ExtensionsCont);
 }
 
 void Net::ASN1Names::RDNSequenceCont(NotNullPtr<ASN1Names> names)
@@ -287,13 +327,20 @@ void Net::ASN1Names::AttributeTypeAndValueCont(NotNullPtr<ASN1Names> names)
 void Net::ASN1Names::AlgorithmIdentifierCont(NotNullPtr<ASN1Names> names)
 {
 	names->TypeIs(Net::ASN1Util::IT_OID)->NextValue(CSTR("algorithm"));
+	names->LastOIDAndTypeIs(CSTR("1.2.840.113549.1.12.1.6"), Net::ASN1Util::IT_SEQUENCE)->Container(CSTR("parameters"), RC2_CBC_Param);
 	names->NextValue(CSTR("parameters"));
+}
+
+void Net::ASN1Names::RC2_CBC_Param(NotNullPtr<ASN1Names> names)
+{
+	names->TypeIs(Net::ASN1Util::IT_OCTET_STRING)->NextValue(CSTR("iv"));
+	names->TypeIs(Net::ASN1Util::IT_INTEGER)->NextValue(CSTR("effectiveBits"));
 }
 
 void Net::ASN1Names::CertificationRequestInfoCont(NotNullPtr<ASN1Names> names)
 {
 	names->TypeIs(Net::ASN1Util::IT_INTEGER)->NextValue(CSTR("version"));
-	names->Name(CSTR("subject"));
+	names->AddName(CSTR("subject"));
 	names->SubjectPublicKeyInfo(CSTR("subjectPKInfo"));
 	names->TypeIs(Net::ASN1Util::IT_CONTEXT_SPECIFIC_0)->Container(CSTR("attributes"), AttributesCont);
 }
@@ -305,8 +352,87 @@ void Net::ASN1Names::AttributesCont(NotNullPtr<ASN1Names> names)
 
 void Net::ASN1Names::AttributeCont(NotNullPtr<ASN1Names> names)
 {
-	names->TypeIs(Net::ASN1Util::IT_OID)->NextValue(CSTR("type"));
-	names->TypeIs(Net::ASN1Util::IT_SET)->Container(CSTR("values"), EmptyCont);
+	names->TypeIs(Net::ASN1Util::IT_OID)->NextValue(CSTR("attrId"));
+//	names->LastOIDAndTypeIs(CSTR("1.2.840.113549.1.9.1"), Net::ASN1Util::IT_SET)->Container(CSTR("attrValues"), AttributeEmailAddress);
+//	names->LastOIDAndTypeIs(CSTR("1.2.840.113549.1.9.2"), Net::ASN1Util::IT_SET)->Container(CSTR("attrValues"), AttributeUnstructuredName);
+	names->LastOIDAndTypeIs(CSTR("1.2.840.113549.1.9.3"), Net::ASN1Util::IT_SET)->Container(CSTR("attrValues"), AttributeContentType);
+	names->LastOIDAndTypeIs(CSTR("1.2.840.113549.1.9.4"), Net::ASN1Util::IT_SET)->Container(CSTR("attrValues"), AttributeMessageDigest);
+	names->LastOIDAndTypeIs(CSTR("1.2.840.113549.1.9.5"), Net::ASN1Util::IT_SET)->Container(CSTR("attrValues"), AttributeSigningTime);
+//	names->LastOIDAndTypeIs(CSTR("1.2.840.113549.1.9.6"), Net::ASN1Util::IT_SET)->Container(CSTR("attrValues"), AttributeCounterSignature);
+//	names->LastOIDAndTypeIs(CSTR("1.2.840.113549.1.9.7"), Net::ASN1Util::IT_SET)->Container(CSTR("attrValues"), AttributeChallengePassword);
+//	names->LastOIDAndTypeIs(CSTR("1.2.840.113549.1.9.8"), Net::ASN1Util::IT_SET)->Container(CSTR("attrValues"), AttributeUnstructuredAddress);
+//	names->LastOIDAndTypeIs(CSTR("1.2.840.113549.1.9.9"), Net::ASN1Util::IT_SET)->Container(CSTR("attrValues"), AttributeExtendedCertificateAttributes);
+
+	names->LastOIDAndTypeIs(CSTR("1.2.840.113549.1.9.15"), Net::ASN1Util::IT_SET)->Container(CSTR("attrValues"), AttributeSMIMECapabilities);
+	names->LastOIDAndTypeIs(CSTR("1.2.840.113549.1.9.16.2.11"), Net::ASN1Util::IT_SET)->Container(CSTR("attrValues"), AttributeSMIMEEncryptionKeyPreference);
+
+	names->LastOIDAndTypeIs(CSTR("1.2.840.113549.1.9.20"), Net::ASN1Util::IT_SET)->Container(CSTR("attrValues"), AttributeFriendlyName);
+	names->LastOIDAndTypeIs(CSTR("1.2.840.113549.1.9.21"), Net::ASN1Util::IT_SET)->Container(CSTR("attrValues"), AttributeLocalKeyId);
+	names->LastOIDAndTypeIs(CSTR("1.3.6.1.4.1.311.16.4"), Net::ASN1Util::IT_SET)->Container(CSTR("attrValues"), AttributeOutlookExpress);
+	
+	names->TypeIs(Net::ASN1Util::IT_SET)->NextValue(CSTR("attrValues"));
+}
+
+void Net::ASN1Names::DigestAlgorithmIdentifiers(NotNullPtr<ASN1Names> names)
+{
+	names->RepeatIfTypeIs(Net::ASN1Util::IT_SEQUENCE)->Container(CSTR("DigestAlgorithmIdentifier"), AlgorithmIdentifierCont);
+}
+
+void Net::ASN1Names::SignerInfos(NotNullPtr<ASN1Names> names)
+{
+	names->RepeatIfTypeIs(Net::ASN1Util::IT_SEQUENCE)->Container(CSTR("SignerInfo"), SignerInfoCont);
+}
+
+void Net::ASN1Names::SignerInfoCont(NotNullPtr<ASN1Names> names)
+{
+	names->TypeIs(Net::ASN1Util::IT_INTEGER)->NextValue(CSTR("version"));
+	names->TypeIs(Net::ASN1Util::IT_SEQUENCE)->Container(CSTR("signerIdentifier"), IssuerAndSerialNumberCont);
+	names->TypeIs(Net::ASN1Util::IT_CONTEXT_SPECIFIC_2)->Container(CSTR("signerIdentifier"), SubjectKeyIdentifier);
+  	names->TypeIs(Net::ASN1Util::IT_SEQUENCE)->Container(CSTR("digestAlgorithm"), AlgorithmIdentifierCont);
+	names->TypeIs(Net::ASN1Util::IT_CONTEXT_SPECIFIC_0)->Container(CSTR("authenticatedAttributes"), AttributesCont);
+  	names->TypeIs(Net::ASN1Util::IT_SEQUENCE)->Container(CSTR("digestEncryptionAlgorithm"), AlgorithmIdentifierCont);
+	names->TypeIs(Net::ASN1Util::IT_OCTET_STRING)->NextValue(CSTR("encryptedDigest"));
+	names->TypeIs(Net::ASN1Util::IT_CONTEXT_SPECIFIC_1)->Container(CSTR("unauthenticatedAttributes"), AttributesCont);
+}
+
+void Net::ASN1Names::IssuerAndSerialNumberCont(NotNullPtr<ASN1Names> names)
+{
+	names->AddName(CSTR("issuer"));
+	names->TypeIs(Net::ASN1Util::IT_INTEGER)->NextValue(CSTR("serialNumber"));
+}
+
+void Net::ASN1Names::CertificateSet(NotNullPtr<ASN1Names> names)
+{
+	names->RepeatIfTypeIs(Net::ASN1Util::IT_SEQUENCE)->Container(CSTR("certificate"), CertificateCont);
+	names->RepeatIfTypeIs(Net::ASN1Util::IT_CHOICE_0)->NextValue(CSTR("extendedCertificate"));//, ExtendedCertificate);
+	names->RepeatIfTypeIs(Net::ASN1Util::IT_CHOICE_1)->NextValue(CSTR("attributeCertificate"));//, AttributeCertificate);
+}
+
+void Net::ASN1Names::CertificateRevocationLists(NotNullPtr<ASN1Names> names)
+{
+	names->RepeatIfTypeIs(Net::ASN1Util::IT_SEQUENCE)->NextValue(CSTR("CertificateRevocationLists"));//, CertificateListCont);
+}
+
+void Net::ASN1Names::OriginatorInfoCont(NotNullPtr<ASN1Names> names)
+{
+	names->TypeIs(Net::ASN1Util::IT_CONTEXT_SPECIFIC_0)->Container(CSTR("certificates"), CertificateSet);
+	names->TypeIs(Net::ASN1Util::IT_CONTEXT_SPECIFIC_1)->Container(CSTR("crls"), CertificateRevocationLists);
+}
+
+void Net::ASN1Names::RecipientInfos(NotNullPtr<ASN1Names> names)
+{
+	names->RepeatIfTypeIs(Net::ASN1Util::IT_SEQUENCE)->Container(CSTR("keyTransportRecipientInfo"), KeyTransportRecipientInfoCont);
+	names->RepeatIfTypeIs(Net::ASN1Util::IT_CHOICE_0)->NextValue(CSTR("keyAgreementRecipientInfo"));//, KeyAgreementRecipientInfo);
+	names->RepeatIfTypeIs(Net::ASN1Util::IT_CHOICE_1)->NextValue(CSTR("keyEncryptionKeyRecipientInfo"));//, KeyEncryptionKeyRecipientInfo);
+}
+
+void Net::ASN1Names::KeyTransportRecipientInfoCont(NotNullPtr<ASN1Names> names)
+{
+	names->TypeIs(Net::ASN1Util::IT_INTEGER)->NextValue(CSTR("version"));
+	names->//TypeIs(Net::ASN1Util::IT_INTEGER)->
+		NextValue(CSTR("recipientIdentifier")); //RecipientIdentifier
+	names->TypeIs(Net::ASN1Util::IT_SEQUENCE)->Container(CSTR("keyEncryptionAlgorithm"), AlgorithmIdentifierCont);
+	names->TypeIs(Net::ASN1Util::IT_OCTET_STRING)->NextValue(CSTR("encryptedKey"));
 }
 
 void Net::ASN1Names::PKCS7Data(NotNullPtr<ASN1Names> names)
@@ -316,32 +442,286 @@ void Net::ASN1Names::PKCS7Data(NotNullPtr<ASN1Names> names)
 
 void Net::ASN1Names::PKCS7SignedData(NotNullPtr<ASN1Names> names)
 {
-//	names->SignedData(CSTR("signed-data"));
+	names->TypeIs(Net::ASN1Util::IT_SEQUENCE)->Container(CSTR("signed-data"), PKCS7SignedDataCont);
+}
+
+void Net::ASN1Names::PKCS7SignedDataCont(NotNullPtr<ASN1Names> names)
+{
+	names->TypeIs(Net::ASN1Util::IT_INTEGER)->NextValue(CSTR("version"));
+	names->TypeIs(Net::ASN1Util::IT_SET)->Container(CSTR("digestAlgorithms"), DigestAlgorithmIdentifiers);
+	names->TypeIs(Net::ASN1Util::IT_SEQUENCE)->Container(CSTR("contentInfo"), ContentInfoCont);
+	names->TypeIs(Net::ASN1Util::IT_CONTEXT_SPECIFIC_0)->Container(CSTR("certificates"), CertificateSet);
+	names->TypeIs(Net::ASN1Util::IT_CONTEXT_SPECIFIC_1)->Container(CSTR("crls"), CertificateRevocationLists);
+	names->TypeIs(Net::ASN1Util::IT_SET)->Container(CSTR("signerInfos"), SignerInfos);
 }
 
 void Net::ASN1Names::PKCS7EnvelopedData(NotNullPtr<ASN1Names> names)
 {
-//	names->EnvelopedData(CSTR("enveloped-data"));
+	names->TypeIs(Net::ASN1Util::IT_SEQUENCE)->Container(CSTR("enveloped-data"), PKCS7EnvelopedDataCont);
+}
+
+void Net::ASN1Names::PKCS7EnvelopedDataCont(NotNullPtr<ASN1Names> names)
+{
+	names->TypeIs(Net::ASN1Util::IT_INTEGER)->NextValue(CSTR("version"));
+	names->TypeIs(Net::ASN1Util::IT_CONTEXT_SPECIFIC_0)->Container(CSTR("originatorInfo"), OriginatorInfoCont);
+	names->TypeIs(Net::ASN1Util::IT_SET)->Container(CSTR("recipientInfos"), RecipientInfos);
+	names->TypeIs(Net::ASN1Util::IT_SEQUENCE)->Container(CSTR("encryptedContentInfo"), ContentInfoCont);
+	names->TypeIs(Net::ASN1Util::IT_CONTEXT_SPECIFIC_1)->Container(CSTR("unprotectedAttributes"), AttributesCont);
 }
 
 void Net::ASN1Names::PKCS7SignedAndEnvelopedData(NotNullPtr<ASN1Names> names)
 {
-//	names->SignedAndEnvelopedData(CSTR("signed-and-enveloped-data"));
+	names->TypeIs(Net::ASN1Util::IT_SEQUENCE)->Container(CSTR("signed-data"), PKCS7SignedAndEnvelopedDataCont);
+}
+
+void Net::ASN1Names::PKCS7SignedAndEnvelopedDataCont(NotNullPtr<ASN1Names> names)
+{
+	names->TypeIs(Net::ASN1Util::IT_INTEGER)->NextValue(CSTR("version"));
+	names->TypeIs(Net::ASN1Util::IT_SET)->NextValue(CSTR("recipientInfos"));
+	names->TypeIs(Net::ASN1Util::IT_SET)->Container(CSTR("digestAlgorithms"), DigestAlgorithmIdentifiers);
+	names->TypeIs(Net::ASN1Util::IT_SEQUENCE)->Container(CSTR("contentInfo"), ContentInfoCont);
+	names->TypeIs(Net::ASN1Util::IT_CONTEXT_SPECIFIC_0)->Container(CSTR("certificates"), CertificateSet);
+	names->TypeIs(Net::ASN1Util::IT_CONTEXT_SPECIFIC_1)->Container(CSTR("crls"), CertificateRevocationLists);
+	names->TypeIs(Net::ASN1Util::IT_SET)->Container(CSTR("signerInfos"), SignerInfos);
 }
 
 void Net::ASN1Names::PKCS7DigestedData(NotNullPtr<ASN1Names> names)
 {
-//	names->DigestedData(CSTR("digested-data"));
+	names->TypeIs(Net::ASN1Util::IT_SEQUENCE)->Container(CSTR("signed-data"), PKCS7DigestedDataCont);
+}
+
+void Net::ASN1Names::PKCS7DigestedDataCont(NotNullPtr<ASN1Names> names)
+{
+	names->TypeIs(Net::ASN1Util::IT_SEQUENCE)->Container(CSTR("signed-data"), PKCS7DigestedDataCont);
 }
 
 void Net::ASN1Names::PKCS7EncryptedData(NotNullPtr<ASN1Names> names)
 {
-//	names->EncryptedData(CSTR("encrypted-data"));
+	names->TypeIs(Net::ASN1Util::IT_SEQUENCE)->Container(CSTR("encrypted-data"), PKCS7EncryptedDataCont);
+}
+
+void Net::ASN1Names::PKCS7EncryptedDataCont(NotNullPtr<ASN1Names> names)
+{
+	names->TypeIs(Net::ASN1Util::IT_INTEGER)->NextValue(CSTR("version"));
+	names->TypeIs(Net::ASN1Util::IT_SEQUENCE)->Container(CSTR("encryptedContentInfo"), EncryptedContentInfoCont);
+	names->TypeIs(Net::ASN1Util::IT_CONTEXT_SPECIFIC_1)->Container(CSTR("unprotectedAttributes"), AttributesCont);
+}
+
+void Net::ASN1Names::EncryptedContentInfoCont(NotNullPtr<ASN1Names> names)
+{
+	names->TypeIs(Net::ASN1Util::IT_OID)->NextValue(CSTR("contentType"));
+	names->TypeIs(Net::ASN1Util::IT_SEQUENCE)->Container(CSTR("contentEncryptionAlgorithm"), AlgorithmIdentifierCont);
+	names->TypeIs(Net::ASN1Util::IT_CHOICE_0)->NextValue(CSTR("encryptedContent"));
 }
 
 void Net::ASN1Names::PKCS7AuthenticatedData(NotNullPtr<ASN1Names> names)
 {
-//	names->AuthenticatedData(CSTR("authenticated-data"));
+	names->TypeIs(Net::ASN1Util::IT_SEQUENCE)->Container(CSTR("signed-data"), PKCS7AuthenticatedData);
+}
+
+void Net::ASN1Names::PrivateKeyInfo(NotNullPtr<ASN1Names> names)
+{
+	names->TypeIs(Net::ASN1Util::IT_SEQUENCE)->Container(CSTR("PrivateKeyInfo"), PrivateKeyInfoCont);
+}
+
+void Net::ASN1Names::PrivateKeyInfoCont(NotNullPtr<ASN1Names> names)
+{
+	names->TypeIs(Net::ASN1Util::IT_INTEGER)->NextValue(CSTR("version"));
+	names->TypeIs(Net::ASN1Util::IT_SEQUENCE)->Container(CSTR("privateKeyAlgorithm"), AlgorithmIdentifierCont);
+	names->TypeIs(Net::ASN1Util::IT_OCTET_STRING)->NextValue(CSTR("privateKey"));
+	names->TypeIs(Net::ASN1Util::IT_CONTEXT_SPECIFIC_0)->Container(CSTR("attributes"), AttributesCont);
+}
+
+void Net::ASN1Names::EncryptedPrivateKeyInfo(NotNullPtr<ASN1Names> names)
+{
+	names->TypeIs(Net::ASN1Util::IT_SEQUENCE)->Container(CSTR("EncryptedPrivateKeyInfo"), EncryptedPrivateKeyInfoCont);
+}
+
+void Net::ASN1Names::EncryptedPrivateKeyInfoCont(NotNullPtr<ASN1Names> names)
+{
+	names->TypeIs(Net::ASN1Util::IT_SEQUENCE)->Container(CSTR("encryptionAlgorithm"), AlgorithmIdentifierCont);
+	names->TypeIs(Net::ASN1Util::IT_OCTET_STRING)->NextValue(CSTR("encryptedData"));
+}
+
+void Net::ASN1Names::AuthSafeContentInfo(NotNullPtr<ASN1Names> names)
+{
+	names->RepeatIfTypeIs(Net::ASN1Util::IT_SEQUENCE)->Container(CSTR("ContentInfo"), AuthSafeContentInfoCont);
+}
+
+void Net::ASN1Names::AuthSafeContentInfoCont(NotNullPtr<ASN1Names> names)
+{
+	names->TypeIs(Net::ASN1Util::IT_OID)->NextValue(CSTR("content-type"));
+	names->LastOIDAndTypeIs(CSTR("1.2.840.113549.1.7.1"), Net::ASN1Util::IT_CONTEXT_SPECIFIC_0)->Container(CSTR("pkcs7-content"), SafeContentsData);
+	names->LastOIDAndTypeIs(CSTR("1.2.840.113549.1.7.2"), Net::ASN1Util::IT_CONTEXT_SPECIFIC_0)->Container(CSTR("pkcs7-content"), PKCS7SignedData);
+	names->LastOIDAndTypeIs(CSTR("1.2.840.113549.1.7.3"), Net::ASN1Util::IT_CONTEXT_SPECIFIC_0)->Container(CSTR("pkcs7-content"), PKCS7EnvelopedData);
+	names->LastOIDAndTypeIs(CSTR("1.2.840.113549.1.7.4"), Net::ASN1Util::IT_CONTEXT_SPECIFIC_0)->Container(CSTR("pkcs7-content"), PKCS7SignedAndEnvelopedData);
+	names->LastOIDAndTypeIs(CSTR("1.2.840.113549.1.7.5"), Net::ASN1Util::IT_CONTEXT_SPECIFIC_0)->Container(CSTR("pkcs7-content"), PKCS7DigestedData);
+	names->LastOIDAndTypeIs(CSTR("1.2.840.113549.1.7.6"), Net::ASN1Util::IT_CONTEXT_SPECIFIC_0)->Container(CSTR("pkcs7-content"), PKCS7EncryptedData);
+	names->LastOIDAndTypeIs(CSTR("1.2.840.113549.1.9.16.1.2"), Net::ASN1Util::IT_CONTEXT_SPECIFIC_0)->Container(CSTR("pkcs7-content"), PKCS7AuthenticatedData);
+	names->NextValue(CSTR("pkcs7-content")); ////////////////////////
+}
+
+void Net::ASN1Names::SafeContentsData(NotNullPtr<ASN1Names> names)
+{
+	names->TypeIs(Net::ASN1Util::IT_OCTET_STRING)->Container(CSTR("data"), SafeContents);
+}
+
+void Net::ASN1Names::SafeContents(NotNullPtr<ASN1Names> names)
+{
+	names->TypeIs(Net::ASN1Util::IT_SEQUENCE)->Container(CSTR("SafeContents"), SafeContentsCont);
+}
+
+void Net::ASN1Names::SafeContentsCont(NotNullPtr<ASN1Names> names)
+{
+	names->RepeatIfTypeIs(Net::ASN1Util::IT_SEQUENCE)->Container(CSTR("SafeBag"), SafeBagCont);
+}
+
+void Net::ASN1Names::SafeBagCont(NotNullPtr<ASN1Names> names)
+{
+	names->TypeIs(Net::ASN1Util::IT_OID)->NextValue(CSTR("bagId"));
+	names->LastOIDAndTypeIs(CSTR("1.2.840.113549.1.12.10.1.1"), Net::ASN1Util::IT_CONTEXT_SPECIFIC_0)->Container(CSTR("keyBag"), PrivateKeyInfo);
+	names->LastOIDAndTypeIs(CSTR("1.2.840.113549.1.12.10.1.2"), Net::ASN1Util::IT_CONTEXT_SPECIFIC_0)->Container(CSTR("pkcs8ShroudedKeyBag"), EncryptedPrivateKeyInfo);
+	names->LastOIDAndTypeIs(CSTR("1.2.840.113549.1.12.10.1.3"), Net::ASN1Util::IT_CONTEXT_SPECIFIC_0)->Container(CSTR("certBag"), CertBag);
+	names->LastOIDAndTypeIs(CSTR("1.2.840.113549.1.12.10.1.4"), Net::ASN1Util::IT_CONTEXT_SPECIFIC_0)->Container(CSTR("crlBag"), CRLBag);
+	names->LastOIDAndTypeIs(CSTR("1.2.840.113549.1.12.10.1.5"), Net::ASN1Util::IT_CONTEXT_SPECIFIC_0)->Container(CSTR("secretBag"), SecretBag);
+	names->LastOIDAndTypeIs(CSTR("1.2.840.113549.1.12.10.1.6"), Net::ASN1Util::IT_CONTEXT_SPECIFIC_0)->Container(CSTR("safeContentsBag"), SafeContents);
+	names->TypeIs(Net::ASN1Util::IT_SET)->Container(CSTR("bagAttributes"), PKCS12Attributes);
+}
+
+void Net::ASN1Names::CertBag(NotNullPtr<ASN1Names> names)
+{
+	names->TypeIs(Net::ASN1Util::IT_SEQUENCE)->Container(CSTR("CertBag"), CertBagCont);
+}
+
+void Net::ASN1Names::CertBagCont(NotNullPtr<ASN1Names> names)
+{
+	names->TypeIs(Net::ASN1Util::IT_OID)->NextValue(CSTR("certId"));
+	names->LastOIDAndTypeIs(CSTR("1.2.840.113549.1.9.22.1"), Net::ASN1Util::IT_CONTEXT_SPECIFIC_0)->Container(CSTR("certValue"), X509Certificate);
+	names->LastOIDAndTypeIs(CSTR("1.2.840.113549.1.9.22.2"), Net::ASN1Util::IT_CONTEXT_SPECIFIC_0)->Container(CSTR("certValue"), SdsiCertificate);
+}
+
+void Net::ASN1Names::X509Certificate(NotNullPtr<ASN1Names> names)
+{
+	names->TypeIs(Net::ASN1Util::IT_OCTET_STRING)->Container(CSTR("x509Certificate"), Certificate);
+}
+
+void Net::ASN1Names::SdsiCertificate(NotNullPtr<ASN1Names> names)
+{
+	names->TypeIs(Net::ASN1Util::IT_IA5STRING)->NextValue(CSTR("sdsiCertificate"));
+}
+
+void Net::ASN1Names::CRLBag(NotNullPtr<ASN1Names> names)
+{
+	names->TypeIs(Net::ASN1Util::IT_SEQUENCE)->Container(CSTR("CRLBag"), CRLBagCont);
+}
+
+void Net::ASN1Names::CRLBagCont(NotNullPtr<ASN1Names> names)
+{
+	names->TypeIs(Net::ASN1Util::IT_OID)->NextValue(CSTR("crlId"));
+	names->LastOIDAndTypeIs(CSTR("1.2.840.113549.1.9.23.1"), Net::ASN1Util::IT_CONTEXT_SPECIFIC_0)->Container(CSTR("crlValue"), X509CRL);
+}
+
+void Net::ASN1Names::X509CRL(NotNullPtr<ASN1Names> names)
+{
+	names->TypeIs(Net::ASN1Util::IT_OCTET_STRING)->Container(CSTR("x509CRL"), CertificateList);
+}
+
+void Net::ASN1Names::SecretBag(NotNullPtr<ASN1Names> names)
+{
+	names->TypeIs(Net::ASN1Util::IT_SEQUENCE)->Container(CSTR("SecretBag"), SecretBagCont);
+}
+
+void Net::ASN1Names::SecretBagCont(NotNullPtr<ASN1Names> names)
+{
+	names->TypeIs(Net::ASN1Util::IT_OID)->NextValue(CSTR("secretTypeId"));
+	names->TypeIs(Net::ASN1Util::IT_CONTEXT_SPECIFIC_0)->NextValue(CSTR("secretValue"));
+}
+
+void Net::ASN1Names::PKCS12Attributes(NotNullPtr<ASN1Names> names)
+{
+	names->RepeatIfTypeIs(Net::ASN1Util::IT_SEQUENCE)->Container(CSTR("PKCS12Attribute"), AttributeCont);
+}
+
+void Net::ASN1Names::AttributeContentType(NotNullPtr<ASN1Names> names)
+{
+	names->TypeIs(Net::ASN1Util::IT_OID)->NextValue(CSTR("contentType"));
+}
+
+void Net::ASN1Names::AttributeMessageDigest(NotNullPtr<ASN1Names> names)
+{
+	names->TypeIs(Net::ASN1Util::IT_OCTET_STRING)->NextValue(CSTR("messageDigest"));
+}
+
+void Net::ASN1Names::AttributeSigningTime(NotNullPtr<ASN1Names> names)
+{
+	names->TypeIsTime()->NextValue(CSTR("signingTime"));
+}
+
+void Net::ASN1Names::AttributeFriendlyName(NotNullPtr<ASN1Names> names)
+{
+	names->TypeIs(Net::ASN1Util::IT_BMPSTRING)->NextValue(CSTR("friendlyName"));
+}
+
+void Net::ASN1Names::AttributeSMIMECapabilities(NotNullPtr<ASN1Names> names)
+{
+	names->TypeIs(Net::ASN1Util::IT_SEQUENCE)->Container(CSTR("smimeCapabilities"), SMIMECapabilitiesCont);
+}
+
+void Net::ASN1Names::AttributeSMIMEEncryptionKeyPreference(NotNullPtr<ASN1Names> names)
+{
+	names->TypeIs(Net::ASN1Util::IT_CONTEXT_SPECIFIC_0)->Container(CSTR("issuerAndSerialNumber"), IssuerAndSerialNumberCont);
+	names->TypeIs(Net::ASN1Util::IT_CONTEXT_SPECIFIC_1)->NextValue(CSTR("receipentKeyId"));//, RecipientKeyIdentifierCont);
+	names->TypeIs(Net::ASN1Util::IT_CONTEXT_SPECIFIC_2)->NextValue(CSTR("subjectAltKeyIdentifier"));//, SubjectKeyIdentifierCont);
+}
+
+void Net::ASN1Names::AttributeLocalKeyId(NotNullPtr<ASN1Names> names)
+{
+	names->TypeIs(Net::ASN1Util::IT_OCTET_STRING)->NextValue(CSTR("localKeyId"));
+}
+
+void Net::ASN1Names::AttributeOutlookExpress(NotNullPtr<ASN1Names> names)
+{
+	names->TypeIs(Net::ASN1Util::IT_SEQUENCE)->Container(CSTR("issuerAndSerialNumber"), IssuerAndSerialNumberCont);
+}
+
+void Net::ASN1Names::SMIMECapabilitiesCont(NotNullPtr<ASN1Names> names)
+{
+	names->RepeatIfTypeIs(Net::ASN1Util::IT_SEQUENCE)->Container(CSTR("SMIMECapability"), SMIMECapabilityCont);
+}
+
+void Net::ASN1Names::SMIMECapabilityCont(NotNullPtr<ASN1Names> names)
+{
+	names->TypeIs(Net::ASN1Util::IT_OID)->NextValue(CSTR("algorithm"));
+	names->NextValue(CSTR("parameters"));
+}
+
+void Net::ASN1Names::AuthenticatedSafe(NotNullPtr<ASN1Names> names)
+{
+	names->TypeIs(Net::ASN1Util::IT_SEQUENCE)->Container(CSTR("AuthenticatedSafe"), AuthSafeContentInfo);
+}
+
+void Net::ASN1Names::AuthenticatedSafeData(NotNullPtr<ASN1Names> names)
+{
+	names->TypeIs(Net::ASN1Util::IT_OCTET_STRING)->Container(CSTR("data"), AuthenticatedSafe);
+}
+
+void Net::ASN1Names::AuthenticatedSafeEnvelopedData(NotNullPtr<ASN1Names> names)
+{
+	names->TypeIs(Net::ASN1Util::IT_SEQUENCE)->Container(CSTR("signed-data"), PKCS7EnvelopedDataCont);
+}
+
+void Net::ASN1Names::AuthenticatedSafeEncryptedData(NotNullPtr<ASN1Names> names)
+{
+	names->TypeIs(Net::ASN1Util::IT_SEQUENCE)->Container(CSTR("encrypted-data"), PKCS7EncryptedDataCont);
+}
+
+void Net::ASN1Names::AuthenticatedSafeContentInfoCont(NotNullPtr<ASN1Names> names)
+{
+	names->TypeIs(Net::ASN1Util::IT_OID)->NextValue(CSTR("content-type"));
+	names->LastOIDAndTypeIs(CSTR("1.2.840.113549.1.7.1"), Net::ASN1Util::IT_CONTEXT_SPECIFIC_0)->Container(CSTR("pkcs7-content"), AuthenticatedSafeData);
+	names->LastOIDAndTypeIs(CSTR("1.2.840.113549.1.7.3"), Net::ASN1Util::IT_CONTEXT_SPECIFIC_0)->Container(CSTR("pkcs7-content"), AuthenticatedSafeEnvelopedData);
+	names->LastOIDAndTypeIs(CSTR("1.2.840.113549.1.7.6"), Net::ASN1Util::IT_CONTEXT_SPECIFIC_0)->Container(CSTR("pkcs7-content"), AuthenticatedSafeEncryptedData);
+	names->NextValue(CSTR("pkcs7-content")); ////////////////////////
 }
 
 void Net::ASN1Names::ContentInfoCont(NotNullPtr<ASN1Names> names)
@@ -375,7 +755,7 @@ NotNullPtr<Net::ASN1Names> Net::ASN1Names::Validity(Text::CStringNN name)
 	return this->TypeIs(Net::ASN1Util::IT_SEQUENCE)->Container(name, ValidityCont);
 }
 
-NotNullPtr<Net::ASN1Names> Net::ASN1Names::Extensions(Text::CStringNN name)
+NotNullPtr<Net::ASN1Names> Net::ASN1Names::AddExtensions(Text::CStringNN name)
 {
 	return this->TypeIs(Net::ASN1Util::IT_SEQUENCE)->Container(name, ExtensionsCont);
 }
@@ -385,7 +765,7 @@ NotNullPtr<Net::ASN1Names> Net::ASN1Names::SubjectPublicKeyInfo(Text::CStringNN 
 	return this->TypeIs(Net::ASN1Util::IT_SEQUENCE)->Container(name, SubjectPublicKeyInfoCont);
 }
 
-NotNullPtr<Net::ASN1Names> Net::ASN1Names::Name(Text::CStringNN name)
+NotNullPtr<Net::ASN1Names> Net::ASN1Names::AddName(Text::CStringNN name)
 {
 	return this->TypeIs(Net::ASN1Util::IT_SEQUENCE)->Container(name, RDNSequenceCont);
 }
@@ -393,6 +773,11 @@ NotNullPtr<Net::ASN1Names> Net::ASN1Names::Name(Text::CStringNN name)
 NotNullPtr<Net::ASN1Names> Net::ASN1Names::AttributeTypeAndValue(Text::CStringNN name)
 {
 	return this->TypeIs(Net::ASN1Util::IT_SEQUENCE)->Container(name, AttributeTypeAndValueCont);
+}
+
+NotNullPtr<Net::ASN1Names> Net::ASN1Names::TBSCertList(Text::CStringNN name)
+{
+	return this->TypeIs(Net::ASN1Util::IT_SEQUENCE)->Container(name, TBSCertListCont);
 }
 
 NotNullPtr<Net::ASN1Names> Net::ASN1Names::TBSCertificate(Text::CStringNN name)
@@ -598,6 +983,11 @@ NotNullPtr<Net::ASN1Names> Net::ASN1Names::SetRSAPrivateKey()
 {
 	RSAPrivateKey(*this);
 	return *this;
+}
+
+NotNullPtr<Net::ASN1Names> Net::ASN1Names::SetPKCS7ContentInfo()
+{
+	return this->TypeIs(Net::ASN1Util::IT_SEQUENCE)->Container(CSTR("ContentInfo"), ContentInfoCont);
 }
 
 NotNullPtr<Net::ASN1Names> Net::ASN1Names::SetCertificationRequest()
