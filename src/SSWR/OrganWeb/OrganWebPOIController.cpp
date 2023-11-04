@@ -314,6 +314,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcDayList(NotNullPtr<Net:
 					json.ObjectAddInt32(CSTR("photoSpId"), userFile->speciesId);
 					json.ObjectAddInt32(CSTR("photoCateId"), sp->cateId);
 					json.ObjectAddInt32(CSTR("photoFileId"), userFile->id);
+					json.ObjectAddInt32(CSTR("count"), (Int32)(startIndex - dayStartIndex));
 					json.ObjectBeginArray(CSTR("locs"));
 					i = 0;
 					j = locList.GetCount();
@@ -353,6 +354,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcDayList(NotNullPtr<Net:
 			json.ObjectAddInt32(CSTR("photoSpId"), userFile->speciesId);
 			json.ObjectAddInt32(CSTR("photoCateId"), sp->cateId);
 			json.ObjectAddInt32(CSTR("photoFileId"), userFile->id);
+			json.ObjectAddInt32(CSTR("count"), (Int32)(startIndex - dayStartIndex));
 			json.ObjectBeginArray(CSTR("locs"));
 			i = 0;
 			j = locList.GetCount();
