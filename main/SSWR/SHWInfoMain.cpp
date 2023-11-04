@@ -1063,7 +1063,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("Manufacturing Date (MDT): "));
-			sb.AppendU32(sdcard->GetManufacturingYear());
+			sb.AppendI32(Data::DateTimeUtil::DispYearI32(sdcard->GetManufacturingYear()));
 			sb.AppendUTF8Char('/');
 			sb.AppendU32(sdcard->GetManufacturingMonth());
 			console->WriteLineC(sb.ToString(), sb.GetLength());

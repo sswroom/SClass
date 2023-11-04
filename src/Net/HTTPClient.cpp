@@ -397,7 +397,7 @@ void Net::HTTPClient::ParseDateStr(NotNullPtr<Data::DateTime> dt, Text::CStringN
 				j = Text::StrSplitP(ptrs2, 3, ptrs[3], ':');
 				if (j == 3)
 				{
-					dt->SetValue((UInt16)Text::StrToUInt32(ptrs[2].v), Data::DateTimeUtil::ParseMonthStr(ptrs[1].v, ptrs[1].leng), Text::StrToInt32(ptrs[0].v), Text::StrToInt32(ptrs2[0].v), Text::StrToInt32(ptrs2[1].v), Text::StrToInt32(ptrs2[2].v), 0);
+					dt->SetValue(Text::StrToInt32(ptrs[2].v), Data::DateTimeUtil::ParseMonthStr(ptrs[1].ToCString()), Text::StrToInt32(ptrs[0].v), Text::StrToInt32(ptrs2[0].v), Text::StrToInt32(ptrs2[1].v), Text::StrToInt32(ptrs2[2].v), 0);
 				}
 			}
 		}
@@ -408,7 +408,7 @@ void Net::HTTPClient::ParseDateStr(NotNullPtr<Data::DateTime> dt, Text::CStringN
 			{
 				Text::StrSplitP(ptrs2, 3, ptrs[1], ':');
 				Text::StrSplitP(ptrs3, 3, ptrs[0], '-');
-				dt->SetValue((UInt16)(Text::StrToUInt32(ptrs3[2].v) + (UInt32)((dt->GetYear() / 100) * 100)), Data::DateTimeUtil::ParseMonthStr(ptrs3[1].v, ptrs3[1].leng), Text::StrToInt32(ptrs3[0].v), Text::StrToInt32(ptrs2[0].v), Text::StrToInt32(ptrs2[1].v), Text::StrToInt32(ptrs2[2].v), 0);
+				dt->SetValue((ptrs3[2].ToInt32() + ((dt->GetYear() / 100) * 100)), Data::DateTimeUtil::ParseMonthStr(ptrs3[1].ToCString()), Text::StrToInt32(ptrs3[0].v), Text::StrToInt32(ptrs2[0].v), Text::StrToInt32(ptrs2[1].v), Text::StrToInt32(ptrs2[2].v), 0);
 			}
 		}
 	}
@@ -421,7 +421,7 @@ void Net::HTTPClient::ParseDateStr(NotNullPtr<Data::DateTime> dt, Text::CStringN
 			j = Text::StrSplitP(ptrs2, 3, ptrs[i - 2], ':');
 			if (j == 3)
 			{
-				dt->SetValue((UInt16)Text::StrToUInt32(ptrs[i - 1].v), Data::DateTimeUtil::ParseMonthStr(ptrs[1].v, ptrs[1].leng), Text::StrToInt32(ptrs[i - 3].v), Text::StrToInt32(ptrs2[0].v), Text::StrToInt32(ptrs2[1].v), Text::StrToInt32(ptrs2[2].v), 0);
+				dt->SetValue(ptrs[i - 1].ToInt32(), Data::DateTimeUtil::ParseMonthStr(ptrs[1].ToCString()), Text::StrToInt32(ptrs[i - 3].v), Text::StrToInt32(ptrs2[0].v), Text::StrToInt32(ptrs2[1].v), Text::StrToInt32(ptrs2[2].v), 0);
 			}
 		}
 	}
@@ -449,7 +449,7 @@ Data::Timestamp Net::HTTPClient::ParseDateStr(Text::CStringNN dateStr)
 				j = Text::StrSplitP(ptrs2, 3, ptrs[3], ':');
 				if (j == 3)
 				{
-					return Data::Timestamp::FromTimeValue((UInt16)Text::StrToUInt32(ptrs[2].v), Data::DateTimeUtil::ParseMonthStr(ptrs[1].v, ptrs[1].leng), (UInt8)Text::StrToInt32(ptrs[0].v), (UInt8)Text::StrToInt32(ptrs2[0].v), (UInt8)Text::StrToInt32(ptrs2[1].v), (UInt8)Text::StrToInt32(ptrs2[2].v), 0, 0);
+					return Data::Timestamp::FromTimeValue(ptrs[2].ToInt32(), Data::DateTimeUtil::ParseMonthStr(ptrs[1].ToCString()), (UInt8)Text::StrToInt32(ptrs[0].v), (UInt8)Text::StrToInt32(ptrs2[0].v), (UInt8)Text::StrToInt32(ptrs2[1].v), (UInt8)Text::StrToInt32(ptrs2[2].v), 0, 0);
 				}
 			}
 		}
@@ -460,7 +460,7 @@ Data::Timestamp Net::HTTPClient::ParseDateStr(Text::CStringNN dateStr)
 			{
 				Text::StrSplitP(ptrs2, 3, ptrs[1], ':');
 				Text::StrSplitP(ptrs3, 3, ptrs[0], '-');
-				return Data::Timestamp::FromTimeValue((UInt16)(Text::StrToUInt32(ptrs3[2].v) + (UInt32)((2000 / 100) * 100)), Data::DateTimeUtil::ParseMonthStr(ptrs3[1].v, ptrs3[1].leng), (UInt8)Text::StrToInt32(ptrs3[0].v), (UInt8)Text::StrToInt32(ptrs2[0].v), (UInt8)Text::StrToInt32(ptrs2[1].v), (UInt8)Text::StrToInt32(ptrs2[2].v), 0, 0);
+				return Data::Timestamp::FromTimeValue(ptrs3[2].ToInt32() + (Int32)((2000 / 100) * 100), Data::DateTimeUtil::ParseMonthStr(ptrs3[1].ToCString()), (UInt8)Text::StrToInt32(ptrs3[0].v), (UInt8)Text::StrToInt32(ptrs2[0].v), (UInt8)Text::StrToInt32(ptrs2[1].v), (UInt8)Text::StrToInt32(ptrs2[2].v), 0, 0);
 			}
 		}
 	}
@@ -473,7 +473,7 @@ Data::Timestamp Net::HTTPClient::ParseDateStr(Text::CStringNN dateStr)
 			j = Text::StrSplitP(ptrs2, 3, ptrs[i - 2], ':');
 			if (j == 3)
 			{
-				return Data::Timestamp::FromTimeValue((UInt16)Text::StrToUInt32(ptrs[i - 1].v), Data::DateTimeUtil::ParseMonthStr(ptrs[1].v, ptrs[1].leng), (UInt8)Text::StrToInt32(ptrs[i - 3].v), (UInt8)Text::StrToInt32(ptrs2[0].v), (UInt8)Text::StrToInt32(ptrs2[1].v), (UInt8)Text::StrToInt32(ptrs2[2].v), 0, 0);
+				return Data::Timestamp::FromTimeValue(ptrs[i - 1].ToInt32(), Data::DateTimeUtil::ParseMonthStr(ptrs[1].ToCString()), (UInt8)Text::StrToInt32(ptrs[i - 3].v), (UInt8)Text::StrToInt32(ptrs2[0].v), (UInt8)Text::StrToInt32(ptrs2[1].v), (UInt8)Text::StrToInt32(ptrs2[2].v), 0, 0);
 			}
 		}
 	}

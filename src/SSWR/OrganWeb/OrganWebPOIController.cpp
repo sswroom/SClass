@@ -250,8 +250,6 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcDayList(NotNullPtr<Net:
 	{
 		Data::DateTime dt;
 		Data::DateTime dt2;
-		UTF8Char sbuff[32];
-		UTF8Char *sptr;
 		Text::JSONBuilder json(Text::JSONBuilder::OT_ARRAY);
 
 		Sync::RWMutexUsage mutUsage;

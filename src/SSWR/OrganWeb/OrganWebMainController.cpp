@@ -1133,7 +1133,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSpecies(NotNullPtr<Net
 					sb.Append(book->author);
 					sb.AppendC(UTF8STRC(" ("));
 					dt.SetTicks(book->publishDate);
-					sb.AppendU32(dt.GetYear());
+					sb.AppendI32(Data::DateTimeUtil::DispYearI32(dt.GetYear()));
 					sb.AppendC(UTF8STRC(")"));
 					s = Text::XML::ToNewHTMLBodyText(sb.ToString());
 					writer.WriteStrC(s->v, s->leng);
@@ -3931,7 +3931,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoDay(NotNullPtr<Ne
 		sb.AppendC(UTF8STRC("</a><br/>"));
 		writer.WriteLineC(sb.ToString(), sb.GetLength());
 
-		sptr = Text::StrUInt32(sbuff, dt.GetYear());
+		sptr = Text::StrInt32(sbuff, dt.GetYear());
 		writer.WriteStrC(UTF8STRC("<a href=\"photoyear.html?y="));
 		writer.WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
 		writer.WriteStrC(UTF8STRC("\">Year "));

@@ -35,7 +35,7 @@ void SSWR::AVIRead::AVIRHKOForecastForm::Reload(Net::HKOWeather::Language lang)
 		while (i < j)
 		{
 			forecast = weather.forecast.GetItem(i);
-			sptr = Text::StrUInt16(sbuff, forecast->date.year);
+			sptr = Data::DateTimeUtil::DispYear(sbuff, forecast->date.year);
 			*sptr++ = '-';
 			sptr = Text::StrUInt16(sptr, forecast->date.month);
 			*sptr++ = '-';

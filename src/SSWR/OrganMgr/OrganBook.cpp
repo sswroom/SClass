@@ -125,7 +125,7 @@ void SSWR::OrganMgr::OrganBook::GetString(NotNullPtr<Text::StringBuilderUTF8> sb
 	sb->AppendC(UTF8STRC(": "));
 	sb->Append(this->dispAuthor);
 	sb->AppendC(UTF8STRC(" "));
-	sb->AppendU16(this->publishDate.GetTimeValue().year);
+	sb->AppendI32(Data::DateTimeUtil::DispYearI32(this->publishDate.GetTimeValue().year));
 	sb->AppendC(UTF8STRC(". "));
 	sb->Append(this->title);
 	sb->AppendC(UTF8STRC(". "));

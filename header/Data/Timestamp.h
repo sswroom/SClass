@@ -74,7 +74,7 @@ namespace Data
 		{
 			Data::DateTimeUtil::TimeValue tval;
 			this->ToTimeValue(tval);
-			tval.year = (UInt16)(tval.year + val);
+			tval.year = (Int32)(tval.year + val);
 			return Timestamp(Data::TimeInstant(Data::DateTimeUtil::TimeValue2Secs(tval, this->tzQhr), this->inst.nanosec), this->tzQhr);
 		}
 
@@ -552,7 +552,7 @@ namespace Data
 			return Timestamp(Data::TimeInstant(Data::DateTimeUtil::TimeValue2Secs(tval, tzQhr), nanosec), tzQhr);
 		}
 
-		static Timestamp FromTimeValue(UInt16 year, UInt8 month, UInt8 day, UInt8 hour, UInt8 minute, UInt8 second, UInt32 nanosec, Int8 tzQhr)
+		static Timestamp FromTimeValue(Int32 year, UInt8 month, UInt8 day, UInt8 hour, UInt8 minute, UInt8 second, UInt32 nanosec, Int8 tzQhr)
 		{
 			Data::DateTimeUtil::TimeValue tval;
 			tval.year = year;

@@ -117,7 +117,7 @@ Data::DateTime::DateTime(const Data::TimeInstant &instant, Int8 tzQhr)
 	this->SetValue(instant, tzQhr);
 }
 
-Data::DateTime::DateTime(UInt16 year, UInt8 month, UInt8 day, UInt8 hour, UInt8 minute, UInt8 second)
+Data::DateTime::DateTime(Int32 year, UInt8 month, UInt8 day, UInt8 hour, UInt8 minute, UInt8 second)
 {
 	this->timeType = TimeType::Time;
 	this->tzQhr = 0;
@@ -131,7 +131,7 @@ Data::DateTime::DateTime(UInt16 year, UInt8 month, UInt8 day, UInt8 hour, UInt8 
 	this->ns = 0;
 }
 
-Data::DateTime::DateTime(UInt16 year, UInt8 month, UInt8 day, UInt8 hour, UInt8 minute, UInt8 second, UInt16 ms)
+Data::DateTime::DateTime(Int32 year, UInt8 month, UInt8 day, UInt8 hour, UInt8 minute, UInt8 second, UInt16 ms)
 {
 	this->timeType = TimeType::Time;
 	this->tzQhr = 0;
@@ -260,13 +260,13 @@ void Data::DateTime::SetValue(NotNullPtr<const DateTime> time)
 	this->ns = time->ns;
 }
 
-void Data::DateTime::SetValue(UInt16 year, OSInt month, OSInt day, OSInt hour, OSInt minute, OSInt second, OSInt ms, Int8 tzQhr)
+void Data::DateTime::SetValue(Int32 year, OSInt month, OSInt day, OSInt hour, OSInt minute, OSInt second, OSInt ms, Int8 tzQhr)
 {
 	this->SetValue(year, month, day, hour, minute, second, ms);
 	this->tzQhr = tzQhr;
 }
 
-void Data::DateTime::SetValue(UInt16 year, OSInt month, OSInt day, OSInt hour, OSInt minute, OSInt second, OSInt ms)
+void Data::DateTime::SetValue(Int32 year, OSInt month, OSInt day, OSInt hour, OSInt minute, OSInt second, OSInt ms)
 {
 	this->SetDate(year, month, day);
 	this->SetHour(hour);
@@ -294,7 +294,7 @@ void Data::DateTime::SetValue(const Data::TimeInstant &instant, Int8 tzQhr)
 	this->tzQhr = tzQhr;
 }
 
-void Data::DateTime::SetValueNoFix(UInt16 year, UInt8 month, UInt8 day, UInt8 hour, UInt8 minute, UInt8 second, UInt16 ms, Int8 tzQhr)
+void Data::DateTime::SetValueNoFix(Int32 year, UInt8 month, UInt8 day, UInt8 hour, UInt8 minute, UInt8 second, UInt16 ms, Int8 tzQhr)
 {
 	NotNullPtr<Data::DateTimeUtil::TimeValue> tval = this->GetTimeValue();
 	tval->year = year;
@@ -361,7 +361,7 @@ void Data::DateTime::SetValueVariTime(Double variTime)
 	this->ns = (UInt32)variTime;
 }
 
-UInt16 Data::DateTime::GetYear()
+Int32 Data::DateTime::GetYear()
 {
 	return this->GetTimeValue()->year;
 }
@@ -601,7 +601,7 @@ NotNullPtr<Data::DateTime> Data::DateTime::AddMS(OSInt val)
 	return *this;
 }
 
-void Data::DateTime::SetDate(UInt16 year, OSInt month, OSInt day)
+void Data::DateTime::SetDate(Int32 year, OSInt month, OSInt day)
 {
 	NotNullPtr<Data::DateTimeUtil::TimeValue> tval = this->GetTimeValue();
 	tval->year = year;
@@ -644,7 +644,7 @@ void Data::DateTime::SetDate(UInt16 year, OSInt month, OSInt day)
 	tval->day = (UInt8)day;
 }
 
-void Data::DateTime::SetYear(UInt16 year)
+void Data::DateTime::SetYear(Int32 year)
 {
 	NotNullPtr<Data::DateTimeUtil::TimeValue> tval = this->GetTimeValue();
 	tval->year = year;

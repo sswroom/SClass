@@ -81,11 +81,11 @@ UInt32 IO::SDCardInfo::GetSerialNo()
 	}
 }
 
-UInt32 IO::SDCardInfo::GetManufacturingYear()
+Int32 IO::SDCardInfo::GetManufacturingYear()
 {
 	if (this->isEMMC)
 	{
-		UInt32 year = (UInt32)(1997 + (this->cid[14] & 15));
+		Int32 year = (Int32)(1997 + (this->cid[14] & 15));
 		UInt8 month = (UInt8)(this->cid[14] >> 4);
 		Data::DateTime dt;
 		dt.SetCurrTime();
@@ -103,7 +103,7 @@ UInt32 IO::SDCardInfo::GetManufacturingYear()
 	}
 	else
 	{
-		return (UInt32)(2000 + (((this->cid[13] & 15) << 4) | (this->cid[14] >> 4)));
+		return (Int32)(2000 + (((this->cid[13] & 15) << 4) | (this->cid[14] >> 4)));
 	}
 }
 

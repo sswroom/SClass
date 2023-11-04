@@ -41,8 +41,8 @@ namespace Data
 		DateTime(Int64 ticks);
 		DateTime(Int64 ticks, Int8 tzQhr);
 		DateTime(const Data::TimeInstant &instant, Int8 tzQhr);
-		DateTime(UInt16 year, UInt8 month, UInt8 day, UInt8 hour, UInt8 minute, UInt8 second);
-		DateTime(UInt16 year, UInt8 month, UInt8 day, UInt8 hour, UInt8 minute, UInt8 second, UInt16 ms);
+		DateTime(Int32 year, UInt8 month, UInt8 day, UInt8 hour, UInt8 minute, UInt8 second);
+		DateTime(Int32 year, UInt8 month, UInt8 day, UInt8 hour, UInt8 minute, UInt8 second, UInt16 ms);
 		DateTime(Text::CStringNN dateStr);
 		DateTime(NotNullPtr<Data::DateTime> dt);
 		~DateTime();
@@ -51,18 +51,18 @@ namespace Data
 		NotNullPtr<Data::DateTime> SetCurrTime();
 		NotNullPtr<Data::DateTime> SetCurrTimeUTC();
 		void SetValue(NotNullPtr<const DateTime> time);
-		void SetValue(UInt16 year, OSInt month, OSInt day, OSInt hour, OSInt minute, OSInt second, OSInt ms, Int8 tzQhr);
-		void SetValue(UInt16 year, OSInt month, OSInt day, OSInt hour, OSInt minute, OSInt second, OSInt ms);
+		void SetValue(Int32 year, OSInt month, OSInt day, OSInt hour, OSInt minute, OSInt second, OSInt ms, Int8 tzQhr);
+		void SetValue(Int32 year, OSInt month, OSInt day, OSInt hour, OSInt minute, OSInt second, OSInt ms);
 		void SetValue(Int64 ticks, Int8 tzQhr);
 		void SetValue(const Data::TimeInstant &instant, Int8 tzQhr);
-		void SetValueNoFix(UInt16 year, UInt8 month, UInt8 day, UInt8 hour, UInt8 minute, UInt8 second, UInt16 ms, Int8 tzQhr);
+		void SetValueNoFix(Int32 year, UInt8 month, UInt8 day, UInt8 hour, UInt8 minute, UInt8 second, UInt16 ms, Int8 tzQhr);
 		Bool SetValueSlow(const Char *dateStr);
 		Bool SetValue(Text::CStringNN dateStr);
 		void SetValueSYSTEMTIME(const void *sysTime);
 		void SetValueFILETIME(const void *fileTime);
 		void SetValueVariTime(Double variTime);
 
-		UInt16 GetYear();
+		Int32 GetYear();
 		UInt8 GetMonth();
 		UInt8 GetDay();
 		UInt8 GetHour();
@@ -77,8 +77,8 @@ namespace Data
 		NotNullPtr<Data::DateTime> AddSecond(OSInt val);
 		NotNullPtr<Data::DateTime> AddMS(OSInt val);
 		NotNullPtr<Data::DateTime> AddNS(OSInt val);
-		void SetDate(UInt16 year, OSInt month, OSInt day);
-		void SetYear(UInt16 year);
+		void SetDate(Int32 year, OSInt month, OSInt day);
+		void SetYear(Int32 year);
 		void SetMonth(OSInt month);
 		void SetDay(OSInt day);
 		void SetHour(OSInt hour);

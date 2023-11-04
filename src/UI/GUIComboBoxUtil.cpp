@@ -9,12 +9,12 @@ void UI::GUIComboBoxUtil::AddYearItems(UI::GUIComboBox *cbo, UOSInt nYears)
 	UTF8Char *sptr;
 	Data::DateTime dt;
 	dt.SetCurrTime();
-	UOSInt j = dt.GetYear();
-	UOSInt i = j - nYears;
+	OSInt j = dt.GetYear();
+	OSInt i = j - (OSInt)nYears;
 	while (i < j)
 	{
 		i++;
-		sptr = Text::StrUOSInt(sbuff, i);
+		sptr = Text::StrOSInt(sbuff, i);
 		k = cbo->AddItem(CSTRP(sbuff, sptr), (void*)i);
 		if (i == j)
 			cbo->SetSelectedIndex(k);

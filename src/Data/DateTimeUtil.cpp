@@ -63,13 +63,13 @@ void Data::DateTimeUtil::TimeValueSetDate(NotNullPtr<Data::DateTimeUtil::TimeVal
 	{
 		if (vals[1] > 12)
 		{
-			t->year = (UInt16)(((t->year / 100) * 100U) + vals[2]);
+			t->year = (((t->year / 100) * 100) + (Int32)vals[2]);
 			t->month = (UInt8)vals[0];
 			t->day = (UInt8)vals[1];
 		}
 		else
 		{
-			t->year = (UInt16)(((t->year / 100) * 100U) + vals[0]);
+			t->year = (((t->year / 100) * 100) + (Int32)vals[0]);
 			t->month = (UInt8)vals[1];
 			t->day = (UInt8)vals[2];
 		}
@@ -802,15 +802,25 @@ UTF8Char *Data::DateTimeUtil::ToString(UTF8Char *sbuff, NotNullPtr<const TimeVal
 		{
 		case 'y':
 		{
-			UInt16 thisVal = tval->year;
+			Int32 thisVal = tval->year;
+			UInt32 neg;
 			UInt8 digiCnt = 1;
+			if (thisVal <= 0)
+			{
+				neg = 1;
+				thisVal = -thisVal + 1;
+			}
+			else
+			{
+				neg = 0;
+			}
 			pattern++;
 			while (*pattern == 'y')
 			{
 				digiCnt++;
 				pattern++;
 			}
-			sbuff += digiCnt;
+			sbuff += digiCnt + neg;
 			UTF8Char *src = sbuff;
 			while (digiCnt >= 2)
 			{
@@ -822,6 +832,10 @@ UTF8Char *Data::DateTimeUtil::ToString(UTF8Char *sbuff, NotNullPtr<const TimeVal
 			if (digiCnt > 0)
 			{
 				*--src = (UTF8Char)((thisVal % 10) + 0x30);
+			}
+			if (neg)
+			{
+				*--src = '-';
 			}
 			break;
 		}
@@ -1537,20 +1551,20 @@ Bool Data::DateTimeUtil::String2TimeValue(Text::CStringNN dateStr, NotNullPtr<Ti
 		UOSInt timeStrLen = strs2[3].leng;
 		if (len1 == 3 && len2 <= 2 && len3 == 4)
 		{
-			Text::StrToUInt16(strs2[2].v, tval->year);
-			tval->month = Data::DateTimeUtil::ParseMonthStr(strs2[0].v, strs2[0].leng);
+			tval->year = Data::DateTimeUtil::ParseYearStr(strs2[2].ToCString());
+			tval->month = Data::DateTimeUtil::ParseMonthStr(strs2[0].ToCString());
 			tval->day = Text::StrToUInt8(strs2[1].v);
 		}
 		else if (len1 <= 2 && len2 == 3 && len3 == 4)
 		{
-			Text::StrToUInt16(strs2[2].v, tval->year);
-			tval->month = Data::DateTimeUtil::ParseMonthStr(strs2[1].v, strs2[1].leng);
+			tval->year = Data::DateTimeUtil::ParseYearStr(strs2[2].ToCString());
+			tval->month = Data::DateTimeUtil::ParseMonthStr(strs2[1].ToCString());
 			tval->day = Text::StrToUInt8(strs2[0].v);
 		}
 		else if (len1 == 3 && len2 <= 2 && len4 == 4)
 		{
-			Text::StrToUInt16(strs2[3].v, tval->year);
-			tval->month = Data::DateTimeUtil::ParseMonthStr(strs2[0].v, strs2[0].leng);
+			tval->year = Data::DateTimeUtil::ParseYearStr(strs2[3].ToCString());
+			tval->month = Data::DateTimeUtil::ParseMonthStr(strs2[0].ToCString());
 			tval->day = Text::StrToUInt8(strs2[1].v);
 			timeStr = strs2[2].v;
 			timeStrLen = strs2[2].leng;
@@ -1671,7 +1685,7 @@ Bool Data::DateTimeUtil::String2TimeValue(Text::CStringNN dateStr, NotNullPtr<Ti
 						i = Text::StrToUInt32(strs2[j].v);
 						if (i <= 0)
 						{
-							i = Data::DateTimeUtil::ParseMonthStr(strs2[j].v, strs2[j].leng);
+							i = Data::DateTimeUtil::ParseMonthStr(strs2[j].ToCString());
 							if (i > 0)
 							{
 								tval->month = (UInt8)i;
@@ -1679,7 +1693,7 @@ Bool Data::DateTimeUtil::String2TimeValue(Text::CStringNN dateStr, NotNullPtr<Ti
 						}
 						else if (i > 100)
 						{
-							tval->year = (UInt16)i;
+							tval->year = (Int32)i;
 						}
 						else
 						{
@@ -1743,59 +1757,84 @@ Bool Data::DateTimeUtil::IsYearLeap(OSInt year)
 	return ((year & 3) == 0) && ((year % 100) != 0 || (year % 400) == 0);
 }
 
-UInt8 Data::DateTimeUtil::ParseMonthStr(const UTF8Char *month, UOSInt monthLen)
+Int32 Data::DateTimeUtil::ParseYearStr(Text::CStringNN year)
 {
-	if (monthLen < 3)
+	Int32 y;
+	if (year.ToInt32(y))
+	{
+		if (y > 0)
+			return y;
+		return y + 1;
+	}
+	return 1970;
+}
+
+UInt8 Data::DateTimeUtil::ParseMonthStr(Text::CStringNN month)
+{
+	if (month.leng < 3)
 		return 0;
-	if (Text::StrStartsWithICaseC(month, monthLen, UTF8STRC("JAN")))
+	if (month.StartsWithICase(UTF8STRC("JAN")))
 	{
 		return 1;
 	}
-	else if (Text::StrStartsWithICaseC(month, monthLen, UTF8STRC("FEB")))
+	else if (month.StartsWithICase(UTF8STRC("FEB")))
 	{
 		return 2;
 	}
-	else if (Text::StrStartsWithICaseC(month, monthLen, UTF8STRC("MAR")))
+	else if (month.StartsWithICase(UTF8STRC("MAR")))
 	{
 		return 3;
 	}
-	else if (Text::StrStartsWithICaseC(month, monthLen, UTF8STRC("APR")))
+	else if (month.StartsWithICase(UTF8STRC("APR")))
 	{
 		return 4;
 	}
-	else if (Text::StrStartsWithICaseC(month, monthLen, UTF8STRC("MAY")))
+	else if (month.StartsWithICase(UTF8STRC("MAY")))
 	{
 		return 5;
 	}
-	else if (Text::StrStartsWithICaseC(month, monthLen, UTF8STRC("JUN")))
+	else if (month.StartsWithICase(UTF8STRC("JUN")))
 	{
 		return 6;
 	}
-	else if (Text::StrStartsWithICaseC(month, monthLen, UTF8STRC("JUL")))
+	else if (month.StartsWithICase(UTF8STRC("JUL")))
 	{
 		return 7;
 	}
-	else if (Text::StrStartsWithICaseC(month, monthLen, UTF8STRC("AUG")))
+	else if (month.StartsWithICase(UTF8STRC("AUG")))
 	{
 		return 8;
 	}
-	else if (Text::StrStartsWithICaseC(month, monthLen, UTF8STRC("SEP")))
+	else if (month.StartsWithICase(UTF8STRC("SEP")))
 	{
 		return 9;
 	}
-	else if (Text::StrStartsWithICaseC(month, monthLen, UTF8STRC("OCT")))
+	else if (month.StartsWithICase(UTF8STRC("OCT")))
 	{
 		return 10;
 	}
-	else if (Text::StrStartsWithICaseC(month, monthLen, UTF8STRC("NOV")))
+	else if (month.StartsWithICase(UTF8STRC("NOV")))
 	{
 		return 11;
 	}
-	else if (Text::StrStartsWithICaseC(month, monthLen, UTF8STRC("DEC")))
+	else if (month.StartsWithICase(UTF8STRC("DEC")))
 	{
 		return 12;
 	}
 	return 0;
+}
+
+UTF8Char *Data::DateTimeUtil::DispYear(UTF8Char *buff, Int32 year)
+{
+	return Text::StrInt32(buff, DispYearI32(year));
+}
+
+Int32 Data::DateTimeUtil::DispYearI32(Int32 year)
+{
+	if (year > 0)
+		return year;
+	else
+		return year - 1;
 }
 
 Double Data::DateTimeUtil::MS2Days(Int64 ms)
@@ -1818,7 +1857,7 @@ Double Data::DateTimeUtil::MS2Seconds(Int64 ms)
 	return (Double)ms * 0.001;
 }
 
-UInt8 Data::DateTimeUtil::DayInMonth(UInt16 year, UInt8 month)
+UInt8 Data::DateTimeUtil::DayInMonth(Int32 year, UInt8 month)
 {
 	while (month < 1)
 	{
@@ -1901,7 +1940,7 @@ Int64 Data::DateTimeUtil::GetCurrTimeMillis()
 	TimeValue tval;
 	SYSTEMTIME st;
 	GetSystemTime(&st);
-	tval.year = st.wYear;
+	tval.year = (Int32)st.wYear;
 	tval.month = (UInt8)st.wMonth;
 	tval.day = (UInt8)st.wDay;
 	tval.hour = (UInt8)st.wHour;
@@ -1931,7 +1970,7 @@ Int64 Data::DateTimeUtil::GetCurrTimeSecHighP(OutParam<UInt32> nanosec)
 	TimeValue tval;
 	SYSTEMTIME st;
 	GetSystemTime(&st);
-	tval.year = st.wYear;
+	tval.year = (Int32)st.wYear;
 	tval.month = (UInt8)st.wMonth;
 	tval.day = (UInt8)st.wDay;
 	tval.hour = (UInt8)st.wHour;
@@ -1980,7 +2019,7 @@ Int64 Data::DateTimeUtil::SYSTEMTIME2Ticks(void *sysTime)
 {
 	SYSTEMTIME *stime = (SYSTEMTIME*)sysTime;
 	TimeValue tval;
-	tval.year = stime->wYear;
+	tval.year = (Int32)stime->wYear;
 	tval.month = (UInt8)stime->wMonth;
 	tval.day = (UInt8)stime->wDay;
 	tval.hour = (UInt8)stime->wHour;
@@ -1994,7 +2033,7 @@ void Data::DateTimeUtil::Ticks2SYSTEMTIME(void *sysTime, Int64 ticks)
 	Data::DateTimeUtil::TimeValue tval;
 	Ticks2TimeValue(ticks, tval, 0);
 	SYSTEMTIME *stime = (SYSTEMTIME*)sysTime;
-	stime->wYear = tval.year;
+	stime->wYear = (UInt16)tval.year;
 	stime->wMonth = tval.month;
 	stime->wDay = tval.day;
 	stime->wHour = tval.hour;
@@ -2013,7 +2052,7 @@ Bool Data::DateTimeUtil::SetAsComputerTime(Int64 secs, UInt32 nanosec)
 	Data::DateTimeUtil::TimeValue tval;
 	SYSTEMTIME st;
 	Instant2TimeValue(secs, nanosec, tval, 0);
-	st.wYear = tval.year;
+	st.wYear = (UInt16)tval.year;
 	st.wMonth = tval.month;
 	st.wDay = tval.day;
 	st.wHour = tval.hour;

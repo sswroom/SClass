@@ -27,7 +27,7 @@ namespace IO
 		Char *GetProductName(Char *name);
 		UInt8 GetProductRevision();
 		UInt32 GetSerialNo();
-		UInt32 GetManufacturingYear();
+		Int32 GetManufacturingYear();
 		UInt8 GetManufacturingMonth();
 
 		//CSD

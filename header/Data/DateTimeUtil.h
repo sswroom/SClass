@@ -27,7 +27,7 @@ namespace Data
 
 		struct DateValue
 		{
-			UInt16 year;
+			Int32 year;
 			UInt8 month;
 			UInt8 day;
 		};
@@ -63,12 +63,15 @@ namespace Data
 		static Bool TimeValueFromYMDHMS(Int64 ymdhms, NotNullPtr<TimeValue> tval);
 
 		static Bool IsYearLeap(OSInt year);
-		static UInt8 ParseMonthStr(const UTF8Char *month, UOSInt monthLen);
+		static Int32 ParseYearStr(Text::CStringNN year);
+		static UInt8 ParseMonthStr(Text::CStringNN month);
+		static UTF8Char *DispYear(UTF8Char *buff, Int32 year);
+		static Int32 DispYearI32(Int32 year);
 		static Double MS2Days(Int64 ms);
 		static Double MS2Hours(Int64 ms);
 		static Double MS2Minutes(Int64 ms);
 		static Double MS2Seconds(Int64 ms);
-		static UInt8 DayInMonth(UInt16 year, UInt8 month);
+		static UInt8 DayInMonth(Int32 year, UInt8 month);
 		static Int8 GetLocalTzQhr();
 		static Int64 GetCurrTimeMillis();
 		static Int64 GetCurrTimeSecHighP(OutParam<UInt32> nanosec);

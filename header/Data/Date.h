@@ -28,7 +28,7 @@ namespace Data
 			this->dateVal = DateTimeUtil::DateValue2TotalDays(dateVal);
 		}
 
-		Date(UInt16 year, UInt8 month, UInt8 day)
+		Date(Int32 year, UInt8 month, UInt8 day)
 		{
 			this->dateVal = DateTimeUtil::Date2TotalDays(year, month, day);
 		}
@@ -52,7 +52,7 @@ namespace Data
 		{
 		}
 
-		void SetValue(UInt16 year, UInt8 month, UInt8 day)
+		void SetValue(Int32 year, UInt8 month, UInt8 day)
 		{
 			this->dateVal = DateTimeUtil::Date2TotalDays(year, month, day);
 		}
@@ -69,7 +69,7 @@ namespace Data
 			return this->dateVal;
 		}
 
-		void SetYear(UInt16 year)
+		void SetYear(Int32 year)
 		{
 			DateTimeUtil::DateValue d;
 			DateTimeUtil::TotalDays2DateValue(this->dateVal, d);
