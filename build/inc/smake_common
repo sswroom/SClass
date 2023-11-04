@@ -3258,6 +3258,30 @@ Net/Email/SMTPConn.h: ../../src/Net/Email/SMTPConn.cpp
 @SMTPConn.o
 Net/Email/SMTPServer.h: ../../src/Net/Email/SMTPServer.cpp
 @SMTPServer.o
+Net/Names/General.h: ../../src/Net/Names/General.cpp
+@NamesGeneral.o
+Net/Names/InformationFramework.h: ../../src/Net/Names/InformationFramework.cpp
+@NamesInformationFramework.o
+Net/Names/PKCS1.h: ../../src/Net/Names/PKCS1.cpp
+@NamesPKCS1.o
+Net/Names/PKCS7.h: ../../src/Net/Names/PKCS7.cpp
+@NamesPKCS7.o
+Net/Names/PKCS8.h: ../../src/Net/Names/PKCS8.cpp
+@NamesPKCS8.o
+Net/Names/PKCS9.h: ../../src/Net/Names/PKCS9.cpp
+@NamesPKCS9.o
+Net/Names/PKCS10.h: ../../src/Net/Names/PKCS10.cpp
+@NamesPKCS10.o
+Net/Names/PKCS12.h: ../../src/Net/Names/PKCS12.cpp
+@NamesPKCS12.o
+Net/Names/PKIX1Explicit88.h: ../../src/Net/Names/PKIX1Explicit88.cpp
+@NamesPKIX1Explicit88.o
+Net/Names/PKIX1Implicit88.h: ../../src/Net/Names/PKIX1Implicit88.cpp
+@NamesPKIX1Implicit88.o
+Net/Names/RFC2459.h: ../../src/Net/Names/RFC2459.cpp
+@NamesRFC2459.o
+Net/Names/RFC8551.h: ../../src/Net/Names/RFC8551.cpp
+@NamesRFC8551.o
 Net/SNS/SNS7gogo.h: ../../src/Net/SNS/SNS7gogo.cpp
 @SNS7gogo.o
 Net/SNS/SNSControl.h: ../../src/Net/SNS/SNSControl.cpp
@@ -5581,6 +5605,18 @@ POP3Server.o: ../../src/Net/Email/POP3Server.cpp
 SMTPClient.o: ../../src/Net/Email/SMTPClient.cpp
 SMTPConn.o: ../../src/Net/Email/SMTPConn.cpp
 SMTPServer.o: ../../src/Net/Email/SMTPServer.cpp
+NamesGeneral.o: ../../src/Net/Names/General.cpp
+NamesInformationFramework.o: ../../src/Net/Names/InformationFramework.cpp
+NamesPKCS1.o: ../../src/Net/Names/PKCS1.cpp
+NamesPKCS7.o: ../../src/Net/Names/PKCS7.cpp
+NamesPKCS8.o: ../../src/Net/Names/PKCS8.cpp
+NamesPKCS9.o: ../../src/Net/Names/PKCS9.cpp
+NamesPKCS10.o: ../../src/Net/Names/PKCS10.cpp
+NamesPKCS12.o: ../../src/Net/Names/PKCS12.cpp
+NamesPKIX1Explicit88.o: ../../src/Net/Names/PKIX1Explicit88.cpp
+NamesPKIX1Implicit88.o: ../../src/Net/Names/PKIX1Implicit88.cpp
+NamesRFC2459.o: ../../src/Net/Names/RFC2459.cpp
+NamesRFC8551.o: ../../src/Net/Names/RFC8551.cpp
 SNS7gogo.o: ../../src/Net/SNS/SNS7gogo.cpp
 SNSControl.o: ../../src/Net/SNS/SNSControl.cpp
 SNSInstagram.o: ../../src/Net/SNS/SNSInstagram.cpp
