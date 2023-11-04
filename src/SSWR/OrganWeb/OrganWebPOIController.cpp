@@ -108,6 +108,18 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcLogin(NotNullPtr<Net::W
 	return me->ResponseJSON(req, resp, 0, json.Build());
 }
 
+Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcLogout(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, Net::WebServer::WebController *parent)
+{
+	SSWR::OrganWeb::OrganWebPOIController *me = (SSWR::OrganWeb::OrganWebPOIController*)parent;
+	RequestEnv env;
+	me->ParseRequestEnv(req, resp, env, false);
+
+	me->sessMgr->DeleteSession(req, resp);
+	Text::JSONBuilder json(Text::JSONBuilder::OT_OBJECT);
+	json.ObjectAddStr(CSTR("status"), CSTR("ok"));
+	return me->ResponseJSON(req, resp, 0, json.Build());
+}
+
 Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcCateList(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, Net::WebServer::WebController *parent)
 {
 	SSWR::OrganWeb::OrganWebPOIController *me = (SSWR::OrganWeb::OrganWebPOIController*)parent;
@@ -225,6 +237,143 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcYearList(NotNullPtr<Net
 		}
 	}
 	return me->ResponseJSON(req, resp, 0, json.Build());
+}
+
+Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcDayList(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, Net::WebServer::WebController *parent)
+{
+	SSWR::OrganWeb::OrganWebPOIController *me = (SSWR::OrganWeb::OrganWebPOIController*)parent;
+	RequestEnv env;
+	me->ParseRequestEnv(req, resp, env, false);
+	req->ParseHTTPForm();
+	Int32 year;
+	if (req->GetHTTPFormInt32(CSTR("year"), year))
+	{
+		Data::DateTime dt;
+		Data::DateTime dt2;
+		UTF8Char sbuff[32];
+		UTF8Char *sptr;
+		Text::JSONBuilder json(Text::JSONBuilder::OT_ARRAY);
+
+		Sync::RWMutexUsage mutUsage;
+		Int64 startTime;
+		Int64 endTime;
+		OSInt startIndex;
+		OSInt endIndex;
+		dt.ToUTCTime();
+		dt.SetValue((UInt16)(year + 1), 1, 1, 0, 0, 0, 0);
+		endTime = dt.ToTicks();
+		dt.SetValue(year, 1, 1, 0, 0, 0, 0);
+		startTime = dt.ToTicks();
+
+		startIndex = env.user->userFileIndex.SortedIndexOf(startTime);
+		if (startIndex < 0)
+		{
+			startIndex = ~startIndex;
+		}
+		else
+		{
+			while (startIndex > 0 && env.user->userFileIndex.GetItem((UOSInt)startIndex - 1) == startTime)
+			{
+				startIndex--;
+			}
+		}
+		endIndex = env.user->userFileIndex.SortedIndexOf(endTime);
+		if (endIndex < 0)
+		{
+			endIndex = ~endIndex;
+		}
+		else
+		{
+			while (endIndex > 0 && env.user->userFileIndex.GetItem((UOSInt)endIndex - 1) == endTime)
+			{
+				endIndex--;
+			}
+		}
+		UInt8 month = 0;
+		UInt8 day = 0;
+		OSInt dayStartIndex = 0;
+		UserFileInfo *userFile;
+		SpeciesInfo *sp;
+		Text::StringBuilderUTF8 sb;
+		Data::ArrayListStringNN locList;
+		NotNullPtr<Text::String> unkLoc = Text::String::New(UTF8STRC("?"));
+		OSInt si;
+		UOSInt i;
+		UOSInt j;
+
+		while (startIndex < endIndex)
+		{
+			dt.SetTicks(env.user->userFileIndex.GetItem((UOSInt)startIndex));
+			if (dt.GetMonth() != month || dt.GetDay() != day)
+			{
+				if (month != 0 && day != 0)
+				{
+					userFile = env.user->userFileObj.GetItem((UOSInt)(dayStartIndex + startIndex) >> 1);
+					sp = me->env->SpeciesGet(mutUsage, userFile->speciesId);
+
+					json.ArrayBeginObject();
+					json.ObjectAddInt64(CSTR("day"), Data::Date(year, month, day).GetTotalDays());
+					json.ObjectAddInt32(CSTR("photoSpId"), userFile->speciesId);
+					json.ObjectAddInt32(CSTR("photoCateId"), sp->cateId);
+					json.ObjectAddInt32(CSTR("photoFileId"), userFile->id);
+					json.ObjectBeginArray(CSTR("locs"));
+					i = 0;
+					j = locList.GetCount();
+					while (i < j)
+					{
+						json.ArrayAddStr(locList.GetItem(i));
+						i++;
+					}
+					json.ArrayEnd();
+					json.ObjectEnd();
+				}
+
+				month = dt.GetMonth();
+				day = dt.GetDay();
+				dayStartIndex = startIndex;
+				locList.Clear();
+			}
+
+			NotNullPtr<Text::String> locName = unkLoc;
+			userFile = env.user->userFileObj.GetItem((UOSInt)startIndex);
+			locName.Set(userFile->location);
+			si = locList.SortedIndexOf(locName);
+			if (si < 0)
+			{
+				locList.SortedInsert(locName);
+			}
+
+			startIndex++;
+		}
+		if (month != 0 && day != 0)
+		{
+			userFile = env.user->userFileObj.GetItem((UOSInt)(dayStartIndex + startIndex) >> 1);
+			sp = me->env->SpeciesGet(mutUsage, userFile->speciesId);
+
+			json.ArrayBeginObject();
+			json.ObjectAddInt64(CSTR("day"), Data::Date(year, month, day).GetTotalDays());
+			json.ObjectAddInt32(CSTR("photoSpId"), userFile->speciesId);
+			json.ObjectAddInt32(CSTR("photoCateId"), sp->cateId);
+			json.ObjectAddInt32(CSTR("photoFileId"), userFile->id);
+			json.ObjectBeginArray(CSTR("locs"));
+			i = 0;
+			j = locList.GetCount();
+			while (i < j)
+			{
+				json.ArrayAddStr(locList.GetItem(i));
+				i++;
+			}
+			json.ArrayEnd();
+			json.ObjectEnd();
+		}
+		mutUsage.EndUse();
+		unkLoc->Release();
+		return me->ResponseJSON(req, resp, 0, json.Build());
+	}
+	else
+	{
+		return me->ResponseJSON(req, resp, 0, CSTR("[]"));
+	}
 }
 
 Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcBookList(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, Net::WebServer::WebController *parent)
@@ -854,9 +1003,11 @@ SSWR::OrganWeb::OrganWebPOIController::OrganWebPOIController(Net::WebServer::Mem
 	this->AddService(CSTR("/api/lang"), Net::WebUtil::RequestMethod::HTTP_GET, SvcLang);
 	this->AddService(CSTR("/api/logininfo"), Net::WebUtil::RequestMethod::HTTP_GET, SvcLoginInfo);
 	this->AddService(CSTR("/api/login"), Net::WebUtil::RequestMethod::HTTP_POST, SvcLogin);
+	this->AddService(CSTR("/api/logout"), Net::WebUtil::RequestMethod::HTTP_GET, SvcLogout);
 	this->AddService(CSTR("/api/catelist"), Net::WebUtil::RequestMethod::HTTP_GET, SvcCateList);
 	this->AddService(CSTR("/api/cate"), Net::WebUtil::RequestMethod::HTTP_GET, SvcCate);
 	this->AddService(CSTR("/api/yearlist"), Net::WebUtil::RequestMethod::HTTP_GET, SvcYearList);
+	this->AddService(CSTR("/api/daylist"), Net::WebUtil::RequestMethod::HTTP_POST, SvcDayList);
 	this->AddService(CSTR("/api/booklist"), Net::WebUtil::RequestMethod::HTTP_GET, SvcBookList);
 	this->AddService(CSTR("/api/bookselect"), Net::WebUtil::RequestMethod::HTTP_POST, SvcBookSelect);
 	this->AddService(CSTR("/api/bookunselect"), Net::WebUtil::RequestMethod::HTTP_GET, SvcBookUnselect);

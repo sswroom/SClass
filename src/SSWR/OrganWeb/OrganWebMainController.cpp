@@ -4506,60 +4506,6 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcLogout(NotNullPtr<Net:
 	return true;
 }
 
-Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcRestart(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, Net::WebServer::WebController *parent)
-{
-	SSWR::OrganWeb::OrganWebMainController *me = (SSWR::OrganWeb::OrganWebMainController*)parent;
-	RequestEnv env;
-	me->ParseRequestEnv(req, resp, env, false);
-
-	if (me->env->HasReloadPwd())
-	{
-		Data::DateTime dt;
-		IO::MemoryStream mstm;
-		Text::UTF8Writer writer(mstm);
-
-		me->WriteHeader(&writer, (const UTF8Char*)"Restart", env.user, env.isMobile);
-		writer.WriteLineC(UTF8STRC("<center><h1>Restart</h1></center>"));
-
-		Bool showPwd = true;;
-		if (req->GetReqMethod() == Net::WebUtil::RequestMethod::HTTP_POST)
-		{
-			NotNullPtr<Text::String> pwd;
-			req->ParseHTTPForm();
-			if (pwd.Set(req->GetHTTPFormStr(CSTR("pwd"))))
-			{
-				if (me->env->ReloadPwdMatches(pwd))
-				{
-					writer.WriteLineC(UTF8STRC("Restarting<br/>"));
-					showPwd = false;
-					me->env->Restart();
-				}
-				else
-				{
-					writer.WriteLineC(UTF8STRC("Password Error<br/>"));
-				}
-			}
-		}
-		if (showPwd)
-		{
-			writer.WriteLineC(UTF8STRC("<form name=\"pwd\" method=\"POST\" action=\"restart\">"));
-			writer.WriteLineC(UTF8STRC("Restart Password:"));
-			writer.WriteLineC(UTF8STRC("<input name=\"pwd\" type=\"password\" /><br/>"));
-			writer.WriteLineC(UTF8STRC("<input type=\"submit\" />"));
-			writer.WriteLineC(UTF8STRC("</form>"));
-		}
-
-		me->WriteFooter(&writer);
-		ResponseMstm(req, resp, mstm, CSTR("text/html"));
-		return true;
-	}
-	else
-	{
-		resp->ResponseError(req, Net::WebStatus::SC_NOT_FOUND);
-		return true;
-	}
-}
-
 Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcCate(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, Net::WebServer::WebController *parent)
 {
 	SSWR::OrganWeb::OrganWebMainController *me = (SSWR::OrganWeb::OrganWebMainController*)parent;
@@ -4683,9 +4629,7 @@ SSWR::OrganWeb::OrganWebMainController::OrganWebMainController(Net::WebServer::M
 	this->AddService(CSTR("/searchinsidemores.html"), Net::WebUtil::RequestMethod::HTTP_GET, SvcSearchInsideMoreS);
 	this->AddService(CSTR("/searchinsidemoreg.html"), Net::WebUtil::RequestMethod::HTTP_GET, SvcSearchInsideMoreG);
 	this->AddService(CSTR("/logout"), Net::WebUtil::RequestMethod::HTTP_GET, SvcLogout);
-	this->AddService(CSTR("/restart"), Net::WebUtil::RequestMethod::HTTP_GET, SvcRestart);
-	this->AddService(CSTR("/restart"), Net::WebUtil::RequestMethod::HTTP_POST, SvcRestart);
-	this->AddService(CSTR("/cate.html"), Net::WebUtil::RequestMethod::HTTP_GET, SvcCate);
+	this->AddService(CSTR("/cateold.html"), Net::WebUtil::RequestMethod::HTTP_GET, SvcCate);
 	this->AddService(CSTR("/favicon.ico"), Net::WebUtil::RequestMethod::HTTP_GET, SvcFavicon);
 }
 

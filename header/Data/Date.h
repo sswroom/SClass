@@ -64,6 +64,11 @@ namespace Data
 			return d;
 		}
 
+		Int64 GetTotalDays() const
+		{
+			return this->dateVal;
+		}
+
 		void SetYear(UInt16 year)
 		{
 			DateTimeUtil::DateValue d;
