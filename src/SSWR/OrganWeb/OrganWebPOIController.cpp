@@ -387,7 +387,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcDayDetail(NotNullPtr<Ne
 	Int32 d;
 	Int32 tzQhr = 0;
 	req->GetHTTPFormInt32(CSTR("tzQhr"), tzQhr);
-	if (env.user != 0 && req->GetQueryValueI32(CSTR("d"), d))
+	if (env.user != 0 && req->GetHTTPFormInt32(CSTR("d"), d))
 	{
 		Text::JSONBuilder json(Text::JSONBuilder::OT_OBJECT);
 		Data::DateTime dt;

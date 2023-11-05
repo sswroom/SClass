@@ -287,7 +287,7 @@ export class DateTimeUtil
 		case 4:
 			totalDays += 31;
 		case 3:
-			if (DateTimeUtil.isYearLeap(tval.year))
+			if (DateTimeUtil.isYearLeap(year))
 				totalDays += 29;
 			else
 				totalDays += 28;
@@ -1414,7 +1414,7 @@ export class Duration
 	}
 }
 
-export class Date
+export class LocalDate
 {
 	static DATE_NULL = -1234567;
 
@@ -1422,7 +1422,7 @@ export class Date
 	{
 		if (year == null)
 		{
-			this.dateVal = Date.DATE_NULL;
+			this.dateVal = LocalDate.DATE_NULL;
 		}
 		else
 		{
@@ -1447,7 +1447,7 @@ export class Date
 				var tval = DateTimeUtil.string2TimeValue(year, 0);
 				if (tval == null)
 				{
-					this.dateVal = Date.DATE_NULL;
+					this.dateVal = LocalDate.DATE_NULL;
 				}
 				else
 				{
@@ -1528,7 +1528,7 @@ export class Date
 
 	isNull()
 	{
-		return this.dateVal == Date.DATE_NULL;
+		return this.dateVal == LocalDate.DATE_NULL;
 	}
 }
 

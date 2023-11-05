@@ -61,7 +61,7 @@ declare class Duration
 	isZero(): boolean;
 }
 
-declare class Date
+declare class LocalDate
 {
 	static DATE_NULL: number = -1234567;
 
