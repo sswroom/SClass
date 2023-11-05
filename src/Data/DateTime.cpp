@@ -1151,7 +1151,7 @@ void Data::DateTime::SetTimeZoneQHR(Int8 tzQhr)
 {
 	if (this->timeType == TimeType::Ticks && this->tzQhr != tzQhr)
 	{
-		this->val.secs += (tzQhr - this->tzQhr) * (Int64)(15 * 60);
+		this->val.secs += (this->tzQhr - tzQhr) * (Int64)(15 * 60);
 		this->tzQhr = tzQhr;
 	}
 	else

@@ -1,4 +1,4 @@
-import { zeroPad } from "./text.js";
+import { isInteger, zeroPad } from "./text.js";
 
 export function isArray(o)
 {
@@ -1436,6 +1436,17 @@ export class LocalDate
 				else
 				{
 					this.dateVal = year;
+				}
+			}
+			else if (t == "string" && isInteger(year))
+			{
+				if (month != null && day != null)
+				{
+					this.dateVal = DateTimeUtil.date2TotalDays(year - 0, month - 0, day - 0);
+				}
+				else
+				{
+					this.dateVal = year - 0;
 				}
 			}
 			else if (t == "DateValue" || t == "TimeValue")
