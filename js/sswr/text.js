@@ -6,6 +6,25 @@ export function zeroPad(val, ndigits)
 	return s;
 }
 
+export function isInteger(s)
+{
+	if (s === null)
+		return false;
+	var j = s.length;
+	if (j == 0)
+		return false;
+	var i = 0;
+	var c;
+	while (i < j)
+	{
+		c = s.charCodeAt(i);
+		if (c < 0x30 || c > 0x39)
+			return false;
+		i++;
+	}
+	return true;
+}
+
 export function toJSText(s)
 {
 	var out = "\"";

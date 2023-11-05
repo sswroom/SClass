@@ -30,7 +30,7 @@ const Char *Data::DateTimeUtil::monthString[] = {"January", "February", "March",
 Int8 Data::DateTimeUtil::localTzQhr = 0;
 Bool Data::DateTimeUtil::localTzValid = false;
 
-void Data::DateTimeUtil::TimeValueSetDate(NotNullPtr<Data::DateTimeUtil::TimeValue> t, Text::PString *dateStrs)
+void Data::DateTimeUtil::DateValueSetDate(NotNullPtr<Data::DateTimeUtil::DateValue> t, Text::PString *dateStrs)
 {
 	UInt32 vals[3];
 	vals[0] = 0;
@@ -297,12 +297,12 @@ void Data::DateTimeUtil::Secs2TimeValue(Int64 secs, NotNullPtr<TimeValue> t, Int
 		else
 		{
 			totalDays -= 10957;
-			t->year = (UInt16)(2000 + ((totalDays / 1461) << 2));
+			t->year = (2000 + ((totalDays / 1461) << 2));
 			totalDays = totalDays % 1461;
 			if (totalDays >= 366)
 			{
 				totalDays--;
-				t->year = (UInt16)(t->year + totalDays / 365);
+				t->year = (t->year + totalDays / 365);
 				totalDays = totalDays % 365;
 			}
 		}
@@ -1431,15 +1431,15 @@ Bool Data::DateTimeUtil::String2TimeValue(Text::CStringNN dateStr, NotNullPtr<Ti
 		Bool dateSucc = true;
 		if (Text::StrSplitP(strs, 3, strs2[0], '-') == 3)
 		{
-			TimeValueSetDate(tval, strs);
+			DateValueSetDate(tval, strs);
 		}
 		else if (Text::StrSplitP(strs, 3, strs2[0], '/') == 3)
 		{
-			TimeValueSetDate(tval, strs);
+			DateValueSetDate(tval, strs);
 		}
 		else if (Text::StrSplitP(strs, 3, strs2[0], ':') == 3)
 		{
-			TimeValueSetDate(tval, strs);
+			DateValueSetDate(tval, strs);
 		}
 		else
 		{
@@ -1515,7 +1515,7 @@ Bool Data::DateTimeUtil::String2TimeValue(Text::CStringNN dateStr, NotNullPtr<Ti
 	{
 		if (Text::StrSplitP(strs, 3, strs2[0], '-') == 3)
 		{
-			TimeValueSetDate(tval, strs);
+			DateValueSetDate(tval, strs);
 			tval->hour = 0;
 			tval->minute = 0;
 			tval->second = 0;
@@ -1523,7 +1523,7 @@ Bool Data::DateTimeUtil::String2TimeValue(Text::CStringNN dateStr, NotNullPtr<Ti
 		}
 		else if (Text::StrSplitP(strs, 3, strs2[0], '/') == 3)
 		{
-			TimeValueSetDate(tval, strs);
+			DateValueSetDate(tval, strs);
 			tval->hour = 0;
 			tval->minute = 0;
 			tval->second = 0;
@@ -1669,12 +1669,12 @@ Bool Data::DateTimeUtil::String2TimeValue(Text::CStringNN dateStr, NotNullPtr<Ti
 					{
 						if (Text::StrSplitP(strs, 3, strs2[j], '/') == 3)
 						{
-							TimeValueSetDate(tval, strs);
+							DateValueSetDate(tval, strs);
 						}
 					}
 					else if (Text::StrSplitP(strs, 3, strs2[j], '-') == 3)
 					{
-						TimeValueSetDate(tval, strs);
+						DateValueSetDate(tval, strs);
 					}
 					else if (strs2[j].Equals(UTF8STRC("HKT")))
 					{

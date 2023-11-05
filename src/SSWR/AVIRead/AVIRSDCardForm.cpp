@@ -64,7 +64,7 @@ void __stdcall SSWR::AVIRead::AVIRSDCardForm::OnDevicesSelChg(void *userObj)
 		me->txtProductRevision->SetText(CSTRP(sbuff, sptr));
 		sptr = Text::StrHexVal32(sbuff, sdCard->GetSerialNo());
 		me->txtSerialNo->SetText(CSTRP(sbuff, sptr));
-		sptr = Text::StrUInt32(sbuff, sdCard->GetManufacturingYear());
+		sptr = Text::StrInt32(sbuff, sdCard->GetManufacturingYear());
 		*sptr++ = '/';
 		sptr = Text::StrUInt16(sptr, sdCard->GetManufacturingMonth());
 		me->txtManuDate->SetText(CSTRP(sbuff, sptr));

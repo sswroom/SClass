@@ -4,11 +4,17 @@ export function toObjectString(o: any, lev: number): string;
 export function arrayBuffer2Base64(buff: any): string;
 export function compare(a: any, b: any): number;
 
-declare class TimeValue
+declare class DateValue
 {
 	year: number;
 	month: number;
 	day: number;
+
+	constructor();
+};
+
+declare class TimeValue extends DateValue
+{
 	hour: number;
 	minute: number;
 	second: number;
@@ -22,16 +28,20 @@ declare class DateTimeUtil
 {
 	static monString: string[];
 	static monthString: string[];
-	static timeValueSetDate(t: TimeValue, dateStrs: string[]): void;
+	static dateValueSetDate(t: DateValue, dateStrs: string[]): void;
 	static timeValueSetTime(t: TimeValue, timeStrs: string[]): void;
+	static date2TotalDays(year: number, month: number, day: number): number;
+	static dateValue2TotalDays(d: DateValue): number;
 	static timeValue2Secs(tval: TimeValue): number;
 	static timeValue2Ticks(t: TimeValue): number;
 	static ticks2TimeValue(ticks: number, tzQhr: number): TimeValue;
 	static secs2TimeValue(secs: number, tzQhr: number): TimeValue;
+	static totalDays2DateValue(totalDays: number, d: DateValue): void;
 	static instant2TimeValue(secs: number, nanosec: number, tzQhr: number): TimeValue;
 	static toString(tval: TimeValue, pattern: string): string;
 	static string2TimeValue(dateStr: string, tzQhr: number): TimeValue;
 	static isYearLeap(year: number): boolean;
+	static parseYearStr(year: string): number;
 	static parseMonthStr(month: string): number;
 	static getLocalTzQhr(): number;
 };
@@ -49,6 +59,29 @@ declare class Duration
 	getTotalSec(): number;
 	notZero(): boolean;
 	isZero(): boolean;
+}
+
+declare class Date
+{
+	static DATE_NULL: number = -1234567;
+
+	dateVal: number;
+	constructor();
+	constructor(totalDays: number);
+	constructor(dateVal: DateValue);
+	constructor(year: number, month: number, day: number);
+	constructor(dateStr: string);
+	setValue(year: number, month: number, day: number): void;
+	getDateValue(): DateValue;
+	getTotalDays(): number;
+	setYear(year: number): void;
+	setMonth(month: number): void;
+	setDay(day: number): void;
+	isYearLeap(): boolean;
+	toTicks(): number;
+	toString(pattern: string | null): string;
+	compareTo(obj: Date): number;
+	isNull(): boolean;
 }
 
 declare class TimeInstant

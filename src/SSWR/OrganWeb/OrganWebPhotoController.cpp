@@ -6,6 +6,7 @@
 #include "Media/ICCProfile.h"
 #include "Media/ImageList.h"
 #include "Media/ImageUtil.h"
+#include "Net/MIME.h"
 #include "SSWR/OrganWeb/OrganWebEnv.h"
 #include "SSWR/OrganWeb/OrganWebPhotoController.h"
 #include "Text/UTF8Reader.h"
@@ -46,6 +47,72 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPhotoController::SvcPhoto(NotNullPtr<Net:
 		}
 	}
 	resp->ResponseError(req, Net::WebStatus::SC_BAD_REQUEST);
+	return true;
+}
+
+Bool __stdcall SSWR::OrganWeb::OrganWebPhotoController::SvcPhotoDown(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, Net::WebServer::WebController *parent)
+{
+	SSWR::OrganWeb::OrganWebPhotoController *me = (SSWR::OrganWeb::OrganWebPhotoController*)parent;
+	RequestEnv env;
+	me->ParseRequestEnv(req, resp, env, false);
+
+	Int32 spId;
+	Int32 cateId;
+	Int32 fileId;
+	if (req->GetQueryValueI32(CSTR("id"), spId) &&
+		req->GetQueryValueI32(CSTR("cateId"), cateId) &&
+		req->GetQueryValueI32(CSTR("fileId"), fileId))
+	{
+		UTF8Char sbuff[512];
+		UTF8Char *sptr;
+		UserFileInfo *userFile;
+		Sync::RWMutexUsage mutUsage;
+		sptr = sbuff;
+		userFile = me->env->UserfileGetCheck(mutUsage, fileId, spId, cateId, env.user, &sptr);
+		if (userFile)
+		{
+			UOSInt buffSize;
+			IO::StmData::FileData fd(CSTRP(sbuff, sptr), false);
+			
+			buffSize = (UOSInt)fd.GetDataSize();
+			Data::ByteBuffer buff(buffSize);
+			fd.GetRealData(0, buffSize, buff);
+			resp->AddDefHeaders(req);
+			resp->AddContentDisposition(false, userFile->oriFileName->v, req->GetBrowser());
+			resp->AddContentLength(buffSize);
+			if (userFile->fileType == FileType::Audio)
+			{
+				resp->AddContentType(CSTR("image/png"));
+			}
+			else
+			{
+				resp->AddContentType(Net::MIME::GetMIMEFromFileName(userFile->oriFileName->v, userFile->oriFileName->leng));
+			}
+			mutUsage.EndUse();
+			resp->Write(buff.Ptr(), buffSize);
+			return true;
+		}
+		else
+		{
+			mutUsage.EndUse();
+			resp->ResponseError(req, Net::WebStatus::SC_BAD_REQUEST);
+			return true;
+		}
+	}
+	else
+	{
+		resp->ResponseError(req, Net::WebStatus::SC_BAD_REQUEST);
+		return true;
+	}
+}
+
+Bool __stdcall SSWR::OrganWeb::OrganWebPhotoController::SvcFavicon(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, Net::WebServer::WebController *parent)
+{
+	SSWR::OrganWeb::OrganWebPhotoController *me = (SSWR::OrganWeb::OrganWebPhotoController*)parent;
+	RequestEnv env;
+	me->ParseRequestEnv(req, resp, env, false);
+
+	resp->ResponseError(req, Net::WebStatus::SC_NOT_FOUND);
 	return true;
 }
 
@@ -888,6 +955,10 @@ SSWR::OrganWeb::OrganWebPhotoController::OrganWebPhotoController(Net::WebServer:
 	this->csconvPF = Media::PF_UNKNOWN;
 
 	this->AddService(CSTR("/photo.html"), Net::WebUtil::RequestMethod::HTTP_GET, SvcPhoto);
+	this->AddService(CSTR("/photodown.html"), Net::WebUtil::RequestMethod::HTTP_GET, SvcPhotoDown);
+	this->AddService(CSTR("/img/photo"), Net::WebUtil::RequestMethod::HTTP_GET, SvcPhoto);
+	this->AddService(CSTR("/img/photodown"), Net::WebUtil::RequestMethod::HTTP_GET, SvcPhotoDown);
+	this->AddService(CSTR("/favicon.ico"), Net::WebUtil::RequestMethod::HTTP_GET, SvcFavicon);
 }
 
 SSWR::OrganWeb::OrganWebPhotoController::~OrganWebPhotoController()

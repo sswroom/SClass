@@ -112,14 +112,21 @@ export function compare(a, b)
 	}
 }
 
-
-export class TimeValue
+export class DateValue
 {
 	constructor()
 	{
 		this.year = 1970;
 		this.month = 1;
 		this.day = 1;
+	}
+}
+
+export class TimeValue extends DateValue
+{
+	constructor()
+	{
+		super();
 		this.hour = 0;
 		this.minute = 0;
 		this.second = 0;
@@ -132,7 +139,7 @@ export class DateTimeUtil
 {
 	static monString = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 	static monthString = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-	static timeValueSetDate(t, dateStrs)
+	static dateValueSetDate(t, dateStrs)
 	{
 		var vals0 = dateStrs[0] - 0;
 		var vals1 = dateStrs[1] - 0;
@@ -225,7 +232,7 @@ export class DateTimeUtil
 		}
 	}
 
-	static timeValue2Secs(tval)
+	static date2TotalDays(year, month, day)
 	{
 		var totalDays;
 		var leapDays;
@@ -233,9 +240,9 @@ export class DateTimeUtil
 		var yearDiff100;
 		var yearDiff400;
 
-		var currYear = tval.year;
-		var currMonth = tval.month;
-		var currDay = tval.day;
+		var currYear = year;
+		var currMonth = month;
+		var currDay = day;
 
 		if (currYear <= 2000)
 		{
@@ -292,8 +299,17 @@ export class DateTimeUtil
 			break;
 		}
 		totalDays += currDay - 1;
+		return totalDays;
+	}
 
-		return totalDays * 86400 + (tval.second + tval.minute * 60 + tval.hour * 3600 - tval.tzQhr * 900);
+	static dateValue2TotalDays(d)
+	{
+		return DateTimeUtil.date2TotalDays(d.year, d.month, d.day);
+	}
+
+	static timeValue2Secs(tval)
+	{
+		return DateTimeUtil.dateValue2TotalDays(tval) * 86400 + (tval.second + tval.minute * 60 + tval.hour * 3600 - tval.tzQhr * 900);
 	}
 
 	static timeValue2Ticks(t)
@@ -311,34 +327,8 @@ export class DateTimeUtil
 		return DateTimeUtil.instant2TimeValue(secs, 0, tzQhr);
 	}
 
-	static instant2TimeValue(secs, nanosec, tzQhr)
+	static totalDays2DateValue(totalDays, t)
 	{
-		secs = secs + tzQhr * 900;
-		var totalDays = Math.floor(secs / 86400);
-		var minutes;
-		if (secs < 0)
-		{
-			secs -= totalDays * 86400;
-			while (secs < 0)
-			{
-				totalDays -= 1;
-				secs += 86400;
-			}
-			minutes = (secs % 86400);
-		}
-		else
-		{
-			minutes = (secs % 86400);
-		}
-
-		var t = new TimeValue();
-		t.second = (minutes % 60);
-		minutes = Math.floor(minutes / 60);
-		t.minute = (minutes % 60);
-		t.hour = Math.floor(minutes / 60);
-		t.nanosec = nanosec;
-		t.tzQhr = tzQhr;
-
 		if (totalDays < 0)
 		{
 			t.year = 1970;
@@ -588,6 +578,36 @@ export class DateTimeUtil
 				}
 			}
 		}
+	}
+
+	static instant2TimeValue(secs, nanosec, tzQhr)
+	{
+		secs = secs + tzQhr * 900;
+		var totalDays = Math.floor(secs / 86400);
+		var minutes;
+		if (secs < 0)
+		{
+			secs -= totalDays * 86400;
+			while (secs < 0)
+			{
+				totalDays -= 1;
+				secs += 86400;
+			}
+			minutes = (secs % 86400);
+		}
+		else
+		{
+			minutes = (secs % 86400);
+		}
+
+		var t = new TimeValue();
+		t.second = (minutes % 60);
+		minutes = Math.floor(minutes / 60);
+		t.minute = (minutes % 60);
+		t.hour = Math.floor(minutes / 60);
+		t.nanosec = nanosec;
+		t.tzQhr = tzQhr;
+		DateTimeUtil.totalDays2DateValue(totalDays, t);
 		return t;
 	}
 
@@ -978,15 +998,15 @@ export class DateTimeUtil
 			var dateSucc = true;
 			if ((strs = strs2[0].split('-')).length == 3)
 			{
-				DateTimeUtil.timeValueSetDate(tval, strs);
+				DateTimeUtil.dateValueSetDate(tval, strs);
 			}
 			else if ((strs = strs2[0].split('/')).length == 3)
 			{
-				DateTimeUtil.timeValueSetDate(tval, strs);
+				DateTimeUtil.dateValueSetDate(tval, strs);
 			}
 			else if ((strs = strs2[0].split(':')).length == 3)
 			{
-				DateTimeUtil.timeValueSetDate(tval, strs);
+				DateTimeUtil.dateValueSetDate(tval, strs);
 			}
 			else
 			{
@@ -1061,7 +1081,7 @@ export class DateTimeUtil
 		{
 			if ((strs = strs2[0].split('-')).length == 3)
 			{
-				DateTimeUtil.timeValueSetDate(tval, strs);
+				DateTimeUtil.dateValueSetDate(tval, strs);
 				tval.hour = 0;
 				tval.minute = 0;
 				tval.second = 0;
@@ -1069,7 +1089,7 @@ export class DateTimeUtil
 			}
 			else if ((strs = strs2[0].split('/')).length == 3)
 			{
-				DateTimeUtil.timeValueSetDate(tval, strs);
+				DateTimeUtil.dateValueSetDate(tval, strs);
 				tval.hour = 0;
 				tval.minute = 0;
 				tval.second = 0;
@@ -1094,19 +1114,19 @@ export class DateTimeUtil
 			var timeStr = strs2[3];
 			if (len1 == 3 && len2 <= 2 && len3 == 4)
 			{
-				tval.year = strs2[2] - 0;
+				tval.year = DateTimeUtil.parseYearStr(strs2[2]);
 				tval.month = DateTimeUtil.parseMonthStr(strs2[0]);
 				tval.day = strs2[1] - 0;
 			}
 			else if (len1 <= 2 && len2 == 3 && len3 == 4)
 			{
-				tval.year = strs2[2] - 0;
+				tval.year = DateTimeUtil.parseYearStr(strs2[2]);
 				tval.month = DateTimeUtil.parseMonthStr(strs2[1]);
 				tval.day = strs2[0] - 0;
 			}
 			else if (len1 == 3 && len2 <= 2 && len4 == 4)
 			{
-				tval.year = strs2[3] - 0;
+				tval.year = DateTimeUtil.parseYearStr(strs2[3]);
 				tval.month = DateTimeUtil.parseMonthStr(strs2[0]);
 				tval.day = strs2[1] - 0;
 				timeStr = strs2[2];
@@ -1205,12 +1225,12 @@ export class DateTimeUtil
 						{
 							if ((strs = strs2[j].split('/')).length == 3)
 							{
-								DateTimeUtil.timeValueSetDate(tval, strs);
+								DateTimeUtil.dateValueSetDate(tval, strs);
 							}
 						}
 						else if ((strs = strs2[j].split('-')).length == 3)
 						{
-							DateTimeUtil.timeValueSetDate(tval, strs);
+							DateTimeUtil.dateValueSetDate(tval, strs);
 						}
 						else if (strs2[j] == "HKT")
 						{
@@ -1247,6 +1267,14 @@ export class DateTimeUtil
 	static isYearLeap(year)
 	{
 		return ((year & 3) == 0) && ((year % 100) != 0 || (year % 400) == 0);
+	}
+
+	static parseYearStr(year)
+	{
+		var y = year - 0;
+		if (y > 0)
+			return y;
+		return y + 1;
 	}
 
 	static parseMonthStr(month)
@@ -1383,6 +1411,124 @@ export class Duration
 	isZero()
 	{
 		return this.seconds == 0 && this.ns == 0;
+	}
+}
+
+export class Date
+{
+	static DATE_NULL = -1234567;
+
+	constructor(year, month, day)
+	{
+		if (year == null)
+		{
+			this.dateVal = Date.DATE_NULL;
+		}
+		else
+		{
+			var t = typeof year;
+			if (t == "number")
+			{
+				if (month != null && day != null)
+				{
+					this.dateVal = DateTimeUtil.date2TotalDays(year, month, day);
+				}
+				else
+				{
+					this.dateVal = year;
+				}
+			}
+			else if (t == "DateValue" || t == "TimeValue")
+			{
+				this.dateVal = DateTimeUtil.dateValue2TotalDays(year);
+			}
+			else
+			{
+				var tval = DateTimeUtil.string2TimeValue(year, 0);
+				if (tval == null)
+				{
+					this.dateVal = Date.DATE_NULL;
+				}
+				else
+				{
+					this.dateVal = DateTimeUtil.dateValue2TotalDays(tval);	
+				}
+			}
+		}
+	}
+
+	setValue(year, month, day)
+	{
+		this.dateVal = DateTimeUtil.date2TotalDays(year, month, day);
+	}
+
+	getDateValue()
+	{
+		var d = new DateValue();
+		DateTimeUtil.totalDays2DateValue(this.dateVal, d);
+		return d;
+	}
+
+	getTotalDays()
+	{
+		return this.dateVal;
+	}
+
+	setYear(year)
+	{
+		var d = new DateValue();
+		DateTimeUtil.totalDays2DateValue(this.dateVal, d);
+		this.dateVal = DateTimeUtil.date2TotalDays(year, d.month, d.day);
+	}
+
+	setMonth(month)
+	{
+		var d = new DateValue();
+		DateTimeUtil.totalDays2DateValue(this.dateVal, d);
+		this.dateVal = DateTimeUtil.date2TotalDays(d.year, month, d.day);
+	}
+
+	setDay(day)
+	{
+		var d = new DateValue();
+		DateTimeUtil.totalDays2DateValue(this.dateVal, d);
+		this.dateVal = DateTimeUtil.date2TotalDays(d.year, d.month, day);
+	}
+
+	isYearLeap()
+	{
+		var d = new DateValue();
+		DateTimeUtil.totalDays2DateValue(this.dateVal, d);
+		return DateTimeUtil.isYearLeap(d.year);
+	}
+
+	toTicks()
+	{
+		return this.dateVal * 86400000;
+	}
+
+	toString(pattern)
+	{
+		if (pattern == null)
+			pattern = "yyyy-MM-dd";
+		var t = new TimeValue();
+		DateTimeUtil.totalDays2DateValue(this.dateVal, t);
+		return DateTimeUtil.toString(t, pattern);
+	}
+
+	compareTo(obj)
+	{
+		if (this.dateVal > obj.dateVal)
+		return 1;
+	else if (this.dateVal < obj.dateVal)
+		return -1;
+	else
+		return 0;
+	}
+
+	isNull()
+	{
+		return this.dateVal == Date.DATE_NULL;
 	}
 }
 
