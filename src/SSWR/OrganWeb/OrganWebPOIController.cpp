@@ -428,46 +428,66 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcDayDetail(NotNullPtr<Ne
 			}
 		}
 		UserFileInfo *userFile;
-		SpeciesInfo *sp;
+		NotNullPtr<SpeciesInfo> sp;
 		Data::ArrayListInt32 spList;
-		OSInt i;
+		OSInt si;
 		json.ObjectBeginArray(CSTR("userFiles"));
 			
 		while (startIndex < endIndex)
 		{
 			userFile = env.user->userFileObj.GetItem((UOSInt)startIndex);
-			sp = me->env->SpeciesGet(mutUsage, userFile->speciesId);
-			i = spList.SortedIndexOf(userFile->speciesId);
-			if (i < 0)
+			if (sp.Set(me->env->SpeciesGet(mutUsage, userFile->speciesId)))
 			{
-				spList.Insert((UOSInt)~i, userFile->speciesId);
-			}
+				si = spList.SortedIndexOf(userFile->speciesId);
+				if (si < 0)
+				{
+					spList.Insert((UOSInt)~si, userFile->speciesId);
+				}
 
-			json.ArrayBeginObject();
-			json.ObjectAddInt32(CSTR("id"), userFile->id);
-			json.ObjectAddInt32(CSTR("index"), (Int32)startIndex);
-			json.ObjectAddStr(CSTR("oriFileName"), userFile->oriFileName);
-			json.ObjectAddInt64(CSTR("fileTimeTicks"), userFile->fileTimeTicks);
-			json.ObjectAddFloat64(CSTR("lat"), userFile->lat);
-			json.ObjectAddFloat64(CSTR("lon"), userFile->lon);
-			json.ObjectAddInt32(CSTR("webuserId"), userFile->webuserId);
-			json.ObjectAddInt32(CSTR("speciesId"), userFile->speciesId);
-			json.ObjectAddInt64(CSTR("captureTimeTicks"), userFile->captureTimeTicks);
-			json.ObjectAddInt32(CSTR("rotType"), userFile->rotType);
-			json.ObjectAddFloat64(CSTR("cropLeft"), userFile->cropLeft);
-			json.ObjectAddFloat64(CSTR("cropTop"), userFile->cropTop);
-			json.ObjectAddFloat64(CSTR("cropRight"), userFile->cropRight);
-			json.ObjectAddFloat64(CSTR("cropBottom"), userFile->cropBottom);
-			json.ObjectAddStr(CSTR("descript"), userFile->descript);
-			json.ObjectAddStr(CSTR("location"), userFile->location);
-			json.ObjectAddInt32(CSTR("cateId"), sp->cateId);
-			json.ObjectEnd();
+				json.ArrayBeginObject();
+				json.ObjectAddInt32(CSTR("id"), userFile->id);
+				json.ObjectAddInt32(CSTR("index"), (Int32)startIndex);
+				json.ObjectAddStr(CSTR("oriFileName"), userFile->oriFileName);
+				json.ObjectAddInt64(CSTR("fileTimeTicks"), userFile->fileTimeTicks);
+				json.ObjectAddFloat64(CSTR("lat"), userFile->lat);
+				json.ObjectAddFloat64(CSTR("lon"), userFile->lon);
+				json.ObjectAddInt32(CSTR("webuserId"), userFile->webuserId);
+				json.ObjectAddInt32(CSTR("speciesId"), userFile->speciesId);
+				json.ObjectAddInt64(CSTR("captureTimeTicks"), userFile->captureTimeTicks);
+				json.ObjectAddInt32(CSTR("rotType"), userFile->rotType);
+				json.ObjectAddFloat64(CSTR("cropLeft"), userFile->cropLeft);
+				json.ObjectAddFloat64(CSTR("cropTop"), userFile->cropTop);
+				json.ObjectAddFloat64(CSTR("cropRight"), userFile->cropRight);
+				json.ObjectAddFloat64(CSTR("cropBottom"), userFile->cropBottom);
+				json.ObjectAddStr(CSTR("descript"), userFile->descript);
+				json.ObjectAddStr(CSTR("location"), userFile->location);
+				json.ObjectAddInt32(CSTR("cateId"), sp->cateId);
+				json.ObjectEnd();
+			}
 			startIndex++;
 		}
 		json.ArrayEnd();
 		json.ObjectBeginArray(CSTR("dataFiles"));
 		me->AppendDataFiles(json, env.user->gpsDataFiles, startTime, endTime);
 		me->AppendDataFiles(json, env.user->tempDataFiles, startTime, endTime);
+		json.ArrayEnd();
+		if (env.user->userType == UserType::Admin)
+		{
+			json.ObjectBeginArray(CSTR("spList"));
+			UOSInt i = 0;
+			UOSInt j = spList.GetCount();
+			while (i < j)
+			{
+				if (sp.Set(me->env->SpeciesGet(mutUsage, spList.GetItem(i))))
+				{
+					json.ArrayBeginObject();
+					me->AppendSpecies(json, sp);
+					json.ObjectEnd();
+				}
+				i++;
+			}
+			json.ArrayEnd();
+		}
 		return me->ResponseJSON(req, resp, 0, json.Build());
 	}
 	else
