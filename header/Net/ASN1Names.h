@@ -56,8 +56,6 @@ namespace Net
 		void FreeContainer(RuleContainer *container);
 		void ClearRules(NotNullPtr<Data::ArrayListNN<NameRule>> rules);
 
-		static void EmptyCont(NotNullPtr<ASN1Names> names);
-
 	public:
 		ASN1Names();
 		~ASN1Names();
