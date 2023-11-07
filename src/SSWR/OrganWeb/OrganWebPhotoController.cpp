@@ -495,6 +495,11 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhotoId(NotNullPtr<Net::We
 		}
 
 		sptr = this->env->UserfileGetPath(sbuff, userFile);
+		if (userFile->fileType == FileType::Audio)
+		{
+			UOSInt i = Text::StrLastIndexOfC(sbuff, (UOSInt)(sptr - sbuff), '.');
+			sptr = Text::StrConcatC(&sbuff[i + 1], UTF8STRC("png"));
+		}
 		mutUsage.EndUse();
 
 		Media::ImageList *imgList;
