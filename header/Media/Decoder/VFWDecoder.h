@@ -23,7 +23,7 @@ namespace Media
 			typedef struct
 			{
 				UInt32 frameNum;
-				UInt32 frameTime;
+				Data::Duration frameTime;
 				Media::FrameType frameType;
 			} BFrameStatus;
 		private:

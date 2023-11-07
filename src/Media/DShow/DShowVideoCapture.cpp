@@ -413,7 +413,7 @@ UOSInt Media::DShow::DShowVideoCapture::GetFrameCount()
 	return 0;
 }
 
-UInt32 Media::DShow::DShowVideoCapture::GetFrameTime(UOSInt frameIndex)
+Data::Duration Media::DShow::DShowVideoCapture::GetFrameTime(UOSInt frameIndex)
 {
 	return 0;
 }

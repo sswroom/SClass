@@ -153,9 +153,9 @@ Bool Media::AVIUtl::AUIVideo::IsRunning()
 	return this->playing;
 }
 
-Int32 Media::AVIUtl::AUIVideo::GetStreamTime()
+Data::Duration Media::AVIUtl::AUIVideo::GetStreamTime()
 {
-	return (Int32)MulDivU32(this->frameCnt, this->frameRateDenorm * 1000, this->frameRateNorm);
+	return Data::Duration::FromRatioU64(this->frameCnt * (UInt64)this->frameRateDenorm, this->frameRateNorm);
 }
 
 Bool Media::AVIUtl::AUIVideo::CanSeek()
@@ -163,14 +163,13 @@ Bool Media::AVIUtl::AUIVideo::CanSeek()
 	return true;
 }
 
-UInt32 Media::AVIUtl::AUIVideo::SeekToTime(UInt32 time)
+Data::Duration Media::AVIUtl::AUIVideo::SeekToTime(Data::Duration time)
 {
 	Sync::MutexUsage mutUsage(this->frameNumMut);
-	this->currFrameNum = MulDivU32(time, this->frameRateNorm, this->frameRateDenorm * 1000);
+	this->currFrameNum = (UInt32)time.MulDivU32(this->frameRateNorm, this->frameRateDenorm);
 	if (this->currFrameNum > this->frameCnt)
 		this->currFrameNum = this->frameCnt;
-	UInt32 t = MulDivU32(this->currFrameNum, this->frameRateDenorm * 1000, this->frameRateNorm);
-	return t;
+	return Data::Duration::FromRatioU64(this->currFrameNum * this->frameRateDenorm, this->frameRateNorm);
 }
 
 Bool Media::AVIUtl::AUIVideo::IsRealTimeSrc()
@@ -199,9 +198,9 @@ UOSInt Media::AVIUtl::AUIVideo::GetFrameCount()
 	return this->frameCnt;
 }
 
-UInt32 Media::AVIUtl::AUIVideo::GetFrameTime(UOSInt frameIndex)
+Data::Duration Media::AVIUtl::AUIVideo::GetFrameTime(UOSInt frameIndex)
 {
-	return MulDivU32((UInt32)frameIndex, this->frameRateDenorm * 1000, this->frameRateNorm);
+	return Data::Duration::FromRatioU64(frameIndex * (UInt64)this->frameRateDenorm, this->frameRateNorm);
 }
 
 void Media::AVIUtl::AUIVideo::EnumFrameInfos(FrameInfoCallback cb, void *userData)

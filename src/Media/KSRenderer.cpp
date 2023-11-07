@@ -58,7 +58,7 @@ UInt32 __stdcall Media::KSRenderer::PlayThread(void *obj)
 	Media::KSRenderer *me = (Media::KSRenderer *)obj;
 	Media::AudioFormat af;
 	UOSInt i;
-	UInt32 audStartTime;
+	Data::Duration audStartTime;
 //	CKsAudRenFilter *pFilter;
 	CKsAudRenPin *pPin;
 	Sync::Event *evt;

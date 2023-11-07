@@ -60,15 +60,15 @@ Bool Media::VFAudioStream::CanSeek()
 	return true;
 }
 
-Int32 Media::VFAudioStream::GetStreamTime()
+Data::Duration Media::VFAudioStream::GetStreamTime()
 {
-	return (Int32)(this->sampleCnt * 1000 / this->fmt.frequency);
+	return Data::Duration::FromRatioU64(this->sampleCnt, this->fmt.frequency);
 }
 
-UInt32 Media::VFAudioStream::SeekToTime(UInt32 time)
+Data::Duration Media::VFAudioStream::SeekToTime(Data::Duration time)
 {
-	currSample = MulDivU32(time, this->fmt.frequency, 1000);
-	return (UInt32)(currSample * 1000 / this->fmt.frequency);
+	currSample = time.MultiplyU64(this->fmt.frequency);
+	return Data::Duration::FromRatioU64(currSample, this->fmt.frequency);
 }
 
 Bool Media::VFAudioStream::TrimStream(UInt32 trimTimeStart, UInt32 trimTimeEnd, Int32 *syncTime)
@@ -130,9 +130,9 @@ UOSInt Media::VFAudioStream::GetMinBlockSize()
 	return this->fmt.nChannels * ((UOSInt)this->fmt.bitpersample >> 3);
 }
 
-UInt32 Media::VFAudioStream::GetCurrTime()
+Data::Duration Media::VFAudioStream::GetCurrTime()
 {
-	return (UInt32)(currSample * 1000 / this->fmt.frequency);
+	return Data::Duration::FromRatioU64(currSample, this->fmt.frequency);
 }
 
 Bool Media::VFAudioStream::IsEnd()

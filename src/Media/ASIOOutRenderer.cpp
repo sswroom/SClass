@@ -376,7 +376,7 @@ UInt32 __stdcall Media::ASIOOutRenderer::PlayThread(void *obj)
 	UInt32 ch;
 	UInt32 nSamples;
 //	Int32 nextSample;
-	UInt32 audStartTime;
+	Data::Duration audStartTime;
 	UInt8 *sampleBuff;
 	UInt32 blkAlign;
 	Sync::Event *evt;
@@ -434,7 +434,7 @@ UInt32 __stdcall Media::ASIOOutRenderer::PlayThread(void *obj)
 	{
 		if (!me->bufferFilled)
 		{
-			me->clk->Start(audStartTime + (UInt32)(me->bufferOfst * 1000 / fmt.frequency));
+			me->clk->Start(audStartTime + Data::Duration::FromRatioU64(me->bufferOfst, fmt.frequency));
 			if (me->sampleTypes[0] == ASIOSTInt16LSB)
 			{
 				if (fmt.bitpersample == 16)

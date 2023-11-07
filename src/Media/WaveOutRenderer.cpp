@@ -104,13 +104,13 @@ UInt32 __stdcall Media::WaveOutRenderer::PlayThread(void *obj)
 	Sync::Event *evt;
 	WAVEHDR hdrs[4];
 	UInt32 i;
-	UInt32 refStart;
-	UInt32 audStartTime;
+	Data::Duration refStart;
+	Data::Duration audStartTime;
 	MMTIME mmt;
 	UOSInt buffLeng = BUFFLENG;
 	UOSInt minLeng;
-	UInt32 thisT;
-	UInt32 lastT;
+	Data::Duration thisT;
+	Data::Duration lastT;
 	Int32 stmEnd;
 	Bool needNotify = false;
 
@@ -136,7 +136,7 @@ UInt32 __stdcall Media::WaveOutRenderer::PlayThread(void *obj)
 
 	waveOutRestart((HWAVEOUT)me->hwo);
 	waveOutGetPosition((HWAVEOUT)me->hwo, &mmt, sizeof(mmt));
-	lastT = thisT = Media::WaveOutRenderer::GetMSFromTime(&mmt, af);
+	lastT = thisT = Media::WaveOutRenderer::GetDurFromTime(&mmt, af);
 	refStart = thisT - audStartTime;
 	stmEnd = 0;
 
@@ -188,13 +188,13 @@ UInt32 __stdcall Media::WaveOutRenderer::PlayThread(void *obj)
 				waveOutWrite((HWAVEOUT)me->hwo, &hdrs[i], sizeof(WAVEHDR));
 
 				waveOutGetPosition((HWAVEOUT)me->hwo, &mmt, sizeof(mmt));
-				thisT = Media::WaveOutRenderer::GetMSFromTime(&mmt, af);
+				thisT = Media::WaveOutRenderer::GetDurFromTime(&mmt, af);
 				if (lastT > thisT)
 				{
 					waveOutReset((HWAVEOUT)me->hwo);
 					waveOutRestart((HWAVEOUT)me->hwo);
 					waveOutGetPosition((HWAVEOUT)me->hwo, &mmt, sizeof(mmt));
-					lastT = thisT = Media::WaveOutRenderer::GetMSFromTime(&mmt, af);
+					lastT = thisT = Media::WaveOutRenderer::GetDurFromTime(&mmt, af);
 					refStart = thisT - me->audsrc->GetCurrTime();
 				}
 				else
@@ -251,6 +251,31 @@ UInt32 Media::WaveOutRenderer::GetMSFromTime(void *mmTime, NotNullPtr<const Audi
 			(UInt32)mmt->u.smpte.min * 60000 + 
 			(UInt32)mmt->u.smpte.sec * 1000 + 
 			MulDivU32(mmt->u.smpte.frame, 1000, mmt->u.smpte.fps);
+	}
+	else
+	{
+		return 0;
+	}
+}
+
+Data::Duration Media::WaveOutRenderer::GetDurFromTime(void *mmTime, NotNullPtr<const AudioFormat> fmt)
+{
+	MMTIME *mmt = (MMTIME *)mmTime;
+	if (mmt->wType == TIME_MS)
+	{
+		return mmt->u.ms;
+	}
+	else if (mmt->wType == TIME_SAMPLES)
+	{
+		return Data::Duration::FromRatioU64(mmt->u.sample, fmt->frequency);
+	}
+	else if (mmt->wType == TIME_BYTES)
+	{
+		return Data::Duration::FromRatioU64(mmt->u.cb, fmt->frequency * fmt->nChannels * fmt->bitpersample >> 3);
+	}
+	else if (mmt->wType == TIME_SMPTE)
+	{
+		return Data::Duration::FromSecNS(mmt->u.smpte.hour * 3600 + mmt->u.smpte.min * 60 + mmt->u.smpte.sec, MulDivU32(mmt->u.smpte.frame, 1000000000, mmt->u.smpte.fps));
 	}
 	else
 	{

@@ -197,9 +197,9 @@ Bool Media::VFVideoStream::IsRunning()
 	return this->playing;
 }
 
-Int32 Media::VFVideoStream::GetStreamTime()
+Data::Duration Media::VFVideoStream::GetStreamTime()
 {
-	return (Int32)MulDivU32(this->frameCnt, this->frameRateScale * 1000, this->frameRate);
+	return Data::Duration::FromRatioU64(this->frameCnt * (UInt64)this->frameRateScale, this->frameRate);
 }
 
 Bool Media::VFVideoStream::CanSeek()
@@ -207,14 +207,14 @@ Bool Media::VFVideoStream::CanSeek()
 	return true;
 }
 
-UInt32 Media::VFVideoStream::SeekToTime(UInt32 time)
+Data::Duration Media::VFVideoStream::SeekToTime(Data::Duration time)
 {
-	UInt32 newFrameNum = MulDivU32(time, this->frameRate, this->frameRateScale * 1000);
+	UInt32 newFrameNum = (UInt32)time.MulDivU32(this->frameRate, this->frameRateScale);
 	if (newFrameNum >= this->frameCnt)
 		newFrameNum = this->frameCnt;
 	this->currFrameNum = newFrameNum;
 	this->seeked = true;
-	return MulDivU32(newFrameNum, this->frameRateScale * 1000, this->frameRate);
+	return Data::Duration::FromRatioU64(newFrameNum * (UInt64)this->frameRateScale, this->frameRate);
 }
 
 Bool Media::VFVideoStream::IsRealTimeSrc()
@@ -248,9 +248,9 @@ UOSInt Media::VFVideoStream::GetFrameCount()
 {
 	return this->frameCnt;
 }
-UInt32 Media::VFVideoStream::GetFrameTime(UOSInt frameIndex)
+Data::Duration Media::VFVideoStream::GetFrameTime(UOSInt frameIndex)
 {
-	return MulDivU32((UInt32)frameIndex, this->frameRateScale * 1000, this->frameRate);
+	return Data::Duration::FromRatioU64(frameIndex * (UInt64)this->frameRateScale, this->frameRate);
 }
 
 void Media::VFVideoStream::EnumFrameInfos(FrameInfoCallback cb, void *userData)
