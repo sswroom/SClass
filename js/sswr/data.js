@@ -1412,6 +1412,50 @@ export class Duration
 	{
 		return this.seconds == 0 && this.ns == 0;
 	}
+
+	toString()
+	{
+		var txt = new Array();
+		var secs = this.seconds;
+		var ns = this.nanosec;
+		if (secs < 0)
+		{
+			txt.push('-');
+			if (ns > 0)
+			{
+				secs = -secs - 1;
+				ns = 1000000000 - ns;
+			}
+			else
+			{
+				secs = -secs;
+			}
+		}
+		txt.push(Math.floor(secs / 3600));
+		secs = secs % 3600;
+		txt.push(':');
+		if (secs < 600)
+		{
+			txt.push('0');
+		}
+		txt.push(Math.floor(secs / 60));
+		secs = secs % 60;
+		txt.push(':');
+		if (secs < 10)
+		{
+			txt.push('0');
+		}
+		txt.push(secs);
+		if (ns != 0)
+		{
+			txt.push('.');
+			var s = ""+ns;
+			while (s.length < 9) s = "0"+s;
+			while (s.endsWith("0")) s = s.substring(0, s.length - 1);
+			txt.push(s);
+		}
+		return txt.join("");
+	}
 }
 
 export class LocalDate
@@ -1776,7 +1820,7 @@ export class Timestamp
 
 	static fromEpochMS(epochMS, tzQhr)
 	{
-		return new Timestamp(epochMS, tzQhr);
+		return Timestamp.fromTicks(epochMS, tzQhr);
 	}
 
 	static fromEpochUS(epochUS, tzQhr)

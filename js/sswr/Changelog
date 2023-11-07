@@ -2,6 +2,12 @@
 -Added text.toAttrText(), text.toXMLTest();
 -Enhance text.toJSText()
 -Change and export text.zeroPad
+-Update README
+-Added data.DateValue supporting
+-Added data.LocalDate class
+-Added data.Duration.toString()
+-Added text.bracketToHTML()
+-Added text.isInteger()
 
 1.2.1
 -Merge Individual class js into namespace js

@@ -59,6 +59,7 @@ declare class Duration
 	getTotalSec(): number;
 	notZero(): boolean;
 	isZero(): boolean;
+	toString(): string;
 }
 
 declare class LocalDate
