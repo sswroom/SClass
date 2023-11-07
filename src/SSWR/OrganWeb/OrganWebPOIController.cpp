@@ -407,6 +407,8 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcDayDetail(NotNullPtr<Ne
 		Text::StringBuilderUTF8 sb;
 		startTime = dt.ToTicks();
 		endTime = startTime + 86400000LL;
+		printf("Start Time: %lld\r\n", startTime);
+		printf("End Time: %lld\r\n", endTime);
 
 		startIndex = env.user->userFileIndex.SortedIndexOf(startTime);
 		if (startIndex < 0)
@@ -432,6 +434,8 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcDayDetail(NotNullPtr<Ne
 				endIndex--;
 			}
 		}
+		printf("Start Index: %lld\r\n", startIndex);
+		printf("End Index: %lld\r\n", endIndex);
 		UserFileInfo *userFile;
 		NotNullPtr<SpeciesInfo> sp;
 		Data::ArrayListInt32 spList;
@@ -472,6 +476,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcDayDetail(NotNullPtr<Ne
 			startIndex++;
 		}
 		json.ArrayEnd();
+		printf("End UserFiles\r\n");
 		json.ObjectBeginArray(CSTR("dataFiles"));
 		me->AppendDataFiles(json, env.user->gpsDataFiles, startTime, endTime);
 		me->AppendDataFiles(json, env.user->tempDataFiles, startTime, endTime);
@@ -493,6 +498,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcDayDetail(NotNullPtr<Ne
 			}
 			json.ArrayEnd();
 		}
+		printf("End DataFiles\r\n");
 		return me->ResponseJSON(req, resp, 0, json.Build());
 	}
 	else
