@@ -481,6 +481,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcDayDetail(NotNullPtr<Ne
 		me->AppendDataFiles(json, env.user->gpsDataFiles, startTime, endTime);
 		me->AppendDataFiles(json, env.user->tempDataFiles, startTime, endTime);
 		json.ArrayEnd();
+		printf("End DataFiles\r\n");
 		if (env.user->userType == UserType::Admin)
 		{
 			json.ObjectBeginArray(CSTR("spList"));
@@ -491,7 +492,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcDayDetail(NotNullPtr<Ne
 				if (sp.Set(me->env->SpeciesGet(mutUsage, spList.GetItem(i))))
 				{
 					json.ArrayBeginObject();
-					me->AppendSpecies(json, sp);
+					me->AppendSpecies(json, sp, mutUsage);
 					json.ObjectEnd();
 				}
 				i++;
@@ -701,7 +702,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcBookDetail(NotNullPtr<N
 			{
 				json.ArrayBeginObject();
 				json.ObjectAddStr(CSTR("dispName"), bookSp->dispName);
-				me->AppendSpecies(json, species);
+				me->AppendSpecies(json, species, mutUsage);
 				json.ObjectEnd();
 			}
 			i++;
@@ -948,7 +949,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcPublicPOI(NotNullPtr<Ne
 	me->AddGroups(json, groups);
 	json.ArrayEnd();
 	json.ObjectBeginArray(CSTR("species"));
-	me->AddSpeciesList(json, speciesList);
+	me->AddSpeciesList(json, speciesList, mutUsage);
 	return me->ResponseJSON(req, resp, 0, json.Build());
 }
 
@@ -957,6 +958,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcGroupPOI(NotNullPtr<Net
 	SSWR::OrganWeb::OrganWebPOIController *me = (SSWR::OrganWeb::OrganWebPOIController*)parent;
 	RequestEnv env;
 	me->ParseRequestEnv(req, resp, env, false);
+	Sync::RWMutexUsage mutUsage;
 	Text::JSONBuilder json(Text::JSONBuilder::OT_OBJECT);
 	Data::ArrayListNN<GroupInfo> groups;
 	Data::ArrayListNN<SpeciesInfo> speciesList;
@@ -964,7 +966,6 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcGroupPOI(NotNullPtr<Net
 	json.ObjectBeginArray(CSTR("poi"));
 	if (req->GetQueryValueI32(CSTR("id"), groupId))
 	{
-		Sync::RWMutexUsage mutUsage;
 		NotNullPtr<GroupInfo> poiGroup;
 		if (poiGroup.Set(me->env->GroupGet(mutUsage, groupId)))
 		{
@@ -977,7 +978,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcGroupPOI(NotNullPtr<Net
 	me->AddGroups(json, groups);
 	json.ArrayEnd();
 	json.ObjectBeginArray(CSTR("species"));
-	me->AddSpeciesList(json, speciesList);
+	me->AddSpeciesList(json, speciesList, mutUsage);
 	return me->ResponseJSON(req, resp, 0, json.Build());
 }
 
@@ -986,13 +987,13 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcSpeciesPOI(NotNullPtr<N
 	SSWR::OrganWeb::OrganWebPOIController *me = (SSWR::OrganWeb::OrganWebPOIController*)parent;
 	RequestEnv env;
 	me->ParseRequestEnv(req, resp, env, false);
+	Sync::RWMutexUsage mutUsage;
 	Text::JSONBuilder json(Text::JSONBuilder::OT_OBJECT);
 	Data::ArrayListNN<SpeciesInfo> speciesList;
 	Int32 speciesId;
 	json.ObjectBeginArray(CSTR("poi"));
 	if (req->GetQueryValueI32(CSTR("id"), speciesId))
 	{
-		Sync::RWMutexUsage mutUsage;
 		NotNullPtr<SpeciesInfo> poiSpecies;
 		if (poiSpecies.Set(me->env->SpeciesGet(mutUsage, speciesId)))
 		{
@@ -1004,7 +1005,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcSpeciesPOI(NotNullPtr<N
 	json.ObjectBeginArray(CSTR("group"));
 	json.ArrayEnd();
 	json.ObjectBeginArray(CSTR("species"));
-	me->AddSpeciesList(json, speciesList);
+	me->AddSpeciesList(json, speciesList, mutUsage);
 	return me->ResponseJSON(req, resp, 0, json.Build());
 }
 
@@ -1194,7 +1195,7 @@ void SSWR::OrganWeb::OrganWebPOIController::AddGroup(NotNullPtr<Text::JSONBuilde
 	}
 }
 
-void SSWR::OrganWeb::OrganWebPOIController::AddSpeciesList(NotNullPtr<Text::JSONBuilder> json, NotNullPtr<Data::ArrayListNN<SpeciesInfo>> speciesList)
+void SSWR::OrganWeb::OrganWebPOIController::AddSpeciesList(NotNullPtr<Text::JSONBuilder> json, NotNullPtr<Data::ArrayListNN<SpeciesInfo>> speciesList, NotNullPtr<Sync::RWMutexUsage> mutUsage)
 {
 	NotNullPtr<SpeciesInfo> species;
 	Data::ArrayIterator<NotNullPtr<SpeciesInfo>> it = speciesList->Iterator();
@@ -1202,7 +1203,7 @@ void SSWR::OrganWeb::OrganWebPOIController::AddSpeciesList(NotNullPtr<Text::JSON
 	{
 		species = it.Next();
 		json->ArrayBeginObject();
-		AppendSpecies(json, species);
+		AppendSpecies(json, species, mutUsage);
 		json->ObjectEnd();
 	}
 }
@@ -1215,9 +1216,8 @@ void SSWR::OrganWeb::OrganWebPOIController::AppendUser(NotNullPtr<Text::JSONBuil
 	json->ObjectAddStr(CSTR("watermark"), user->watermark);
 }
 
-void SSWR::OrganWeb::OrganWebPOIController::AppendSpecies(NotNullPtr<Text::JSONBuilder> json, NotNullPtr<SpeciesInfo> species)
+void SSWR::OrganWeb::OrganWebPOIController::AppendSpecies(NotNullPtr<Text::JSONBuilder> json, NotNullPtr<SpeciesInfo> species, NotNullPtr<Sync::RWMutexUsage> mutUsage)
 {
-	Sync::RWMutexUsage mutUsage;
 	json->ObjectAddInt32(CSTR("id"), species->speciesId);
 	json->ObjectAddInt32(CSTR("groupId"), species->groupId);
 	json->ObjectAddStr(CSTR("sciName"), species->sciName);

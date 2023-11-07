@@ -37,9 +37,9 @@ namespace SSWR
 			void AddUserfilePOI(NotNullPtr<Text::JSONBuilder> json, NotNullPtr<SpeciesInfo> species, NotNullPtr<UserFileInfo> file);
 			void AddGroups(NotNullPtr<Text::JSONBuilder> json, NotNullPtr<Data::ArrayListNN<GroupInfo>> groups);
 			void AddGroup(NotNullPtr<Text::JSONBuilder> json, NotNullPtr<GroupInfo> group);
-			void AddSpeciesList(NotNullPtr<Text::JSONBuilder> json, NotNullPtr<Data::ArrayListNN<SpeciesInfo>> speciesList);
+			void AddSpeciesList(NotNullPtr<Text::JSONBuilder> json, NotNullPtr<Data::ArrayListNN<SpeciesInfo>> speciesList, NotNullPtr<Sync::RWMutexUsage> mutUsage);
 			static void AppendUser(NotNullPtr<Text::JSONBuilder> json, NotNullPtr<WebUserInfo> user);
-			void AppendSpecies(NotNullPtr<Text::JSONBuilder> json, NotNullPtr<SpeciesInfo> species);
+			void AppendSpecies(NotNullPtr<Text::JSONBuilder> json, NotNullPtr<SpeciesInfo> species, NotNullPtr<Sync::RWMutexUsage> mutUsage);
 			void AppendDataFiles(NotNullPtr<Text::JSONBuilder> json, NotNullPtr<Data::FastMap<Data::Timestamp, DataFileInfo*>> dataFiles, Int64 startTime, Int64 endTime);
 			static Bool ResponseJSON(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, OSInt cacheAge, Text::CStringNN json);
 		public:
