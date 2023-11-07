@@ -24,14 +24,14 @@ Bool Media::Decoder::ADecoderBase::CanSeek()
 	return false;
 }
 
-Int32 Media::Decoder::ADecoderBase::GetStreamTime()
+Data::Duration Media::Decoder::ADecoderBase::GetStreamTime()
 {
 	if (this->sourceAudio)
 		return this->sourceAudio->GetStreamTime();
 	return 0;
 }
 
-UInt32 Media::Decoder::ADecoderBase::GetCurrTime()
+Data::Duration Media::Decoder::ADecoderBase::GetCurrTime()
 {
 	if (this->sourceAudio)
 		return this->sourceAudio->GetCurrTime();

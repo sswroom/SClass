@@ -185,10 +185,10 @@ void Media::MediaPlayerInterface::PBStart()
 	if (!this->player->IsPlaying())
 	{
 		this->currPBC->StartPlayback();
-		if (this->storeTime != (UInt32)-1)
+		if (!this->storeTime.IsInfinity())
 		{
 			this->player->SeekTo(this->storeTime);
-			this->storeTime = (UInt32)-1;
+			this->storeTime = Data::Duration::Infinity();
 		}
 	}
 }
@@ -196,7 +196,7 @@ void Media::MediaPlayerInterface::PBStart()
 void Media::MediaPlayerInterface::PBStop()
 {
 	this->currPBC->StopPlayback();
-	this->storeTime = (UInt32)-1;
+	this->storeTime = Data::Duration::Infinity();
 }
 
 void Media::MediaPlayerInterface::PBPause()
@@ -206,7 +206,7 @@ void Media::MediaPlayerInterface::PBPause()
 		this->storeTime = this->player->GetCurrTime();
 		this->currPBC->StopPlayback();
 	}
-	else if (this->storeTime != (UInt32)-1)
+	else if (!this->storeTime.IsInfinity())
 	{
 		this->currPBC->StartPlayback();
 		this->player->SeekTo(this->storeTime);
@@ -238,15 +238,15 @@ void Media::MediaPlayerInterface::PBIncAVOfst()
 
 void Media::MediaPlayerInterface::PBJumpOfst(Int32 ofst)
 {
-	Int32 targetTime;
+	Data::Duration targetTime;
 	if (this->player->IsPlaying())
 	{
-		targetTime = (Int32)this->player->GetCurrTime() + ofst;
-		if (targetTime < 0)
+		targetTime = this->player->GetCurrTime() + ofst;
+		if (targetTime.IsNegative())
 		{
 			targetTime = 0;
 		}
-		this->player->SeekTo((UInt32)targetTime);
+		this->player->SeekTo(targetTime);
 	}
 }
 

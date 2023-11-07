@@ -467,7 +467,7 @@ Media::AudioFilter::DTMFDecoder::~DTMFDecoder()
 	MemFree(this->calcBuff);
 }
 
-UInt32 Media::AudioFilter::DTMFDecoder::SeekToTime(UInt32 time)
+Data::Duration Media::AudioFilter::DTMFDecoder::SeekToTime(Data::Duration time)
 {
 	this->ResetStatus();
 	return this->sourceAudio->SeekToTime(time);

@@ -2623,6 +2623,8 @@ Media/Playlist.h: ../../src/Media/Playlist.cpp
 @Playlist.o
 Media/ProfiledResizer.h: ../../src/Media/ProfiledResizer.cpp
 @ProfiledResizer.o
+Media/RefClock.h: ../../src/Media/RefClock.cpp
+@RefClock.o
 Media/RGBColorFilter.h: ../../src/Media/RGBColorFilter.cpp
 @RGBColorFilter.o
 @RGBColorFilter_CPP.o
@@ -5310,6 +5312,7 @@ PDFParameter.o: ../../src/Media/PDFParameter.cpp
 PhotoInfo.o: ../../src/Media/PhotoInfo.cpp
 Playlist.o: ../../src/Media/Playlist.cpp
 ProfiledResizer.o: ../../src/Media/ProfiledResizer.cpp
+RefClock.o: ../../src/Media/RefClock.cpp
 RGBColorFilter.o: ../../src/Media/RGBColorFilter.cpp
 RGBLUTGen.o: ../../src/Media/RGBLUTGen.cpp
 SharedImage.o: ../../src/Media/SharedImage.cpp

@@ -206,12 +206,12 @@ Bool Net::RTPAACHandler::CanSeek()
 	return false;
 }
 
-Int32 Net::RTPAACHandler::GetStreamTime()
+Data::Duration Net::RTPAACHandler::GetStreamTime()
 {
-	return -1;
+	return Data::Duration::Infinity();
 }
 
-UInt32 Net::RTPAACHandler::SeekToTime(UInt32 time)
+Data::Duration Net::RTPAACHandler::SeekToTime(Data::Duration time)
 {
 	return 0;
 }
@@ -282,7 +282,7 @@ UOSInt Net::RTPAACHandler::GetMinBlockSize()
 	return 1;
 }
 
-UInt32 Net::RTPAACHandler::GetCurrTime()
+Data::Duration Net::RTPAACHandler::GetCurrTime()
 {
 	return 0;
 }

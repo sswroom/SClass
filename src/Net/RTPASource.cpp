@@ -23,12 +23,12 @@ Bool Net::RTPASource::CanSeek()
 	return false;
 }
 
-Int32 Net::RTPASource::GetStreamTime()
+Data::Duration Net::RTPASource::GetStreamTime()
 {
 	return this->hdlr->GetStreamTime();
 }
 
-UInt32 Net::RTPASource::SeekToTime(UInt32 time)
+Data::Duration Net::RTPASource::SeekToTime(Data::Duration time)
 {
 	return 0;
 }
@@ -66,7 +66,7 @@ UOSInt Net::RTPASource::GetMinBlockSize()
 	return this->hdlr->GetMinBlockSize();
 }
 
-UInt32 Net::RTPASource::GetCurrTime()
+Data::Duration Net::RTPASource::GetCurrTime()
 {
 	return this->hdlr->GetCurrTime();
 }

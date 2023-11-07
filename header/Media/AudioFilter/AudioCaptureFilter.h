@@ -32,7 +32,7 @@ namespace Media
 			AudioCaptureFilter(NotNullPtr<IAudioSource> sourceAudio);
 			virtual ~AudioCaptureFilter();
 
-			virtual UInt32 SeekToTime(UInt32 time); //ms, ret actual time
+			virtual Data::Duration SeekToTime(Data::Duration time);
 			virtual UOSInt ReadBlock(Data::ByteArray blk); //ret actual block size
 
 			Bool StartCapture(Text::CStringNN fileName);

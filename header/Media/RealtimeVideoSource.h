@@ -32,11 +32,11 @@ namespace Media
 		virtual UTF8Char *GetName(UTF8Char *buff);
 
 		virtual Bool GetVideoInfo(Media::FrameInfo *info, UInt32 *rateNorm, UInt32 *rateDenorm, UOSInt *maxFrameSize);
-		virtual void Start();
+		virtual Bool Start();
 		virtual void Stop();
-		virtual Int32 GetStreamTime(); //ms, -1 = infinity
+		virtual Data::Duration GetStreamTime();
 		virtual Bool CanSeek();
-		virtual Int32 SeekToTime(Int32 time); //ms, ret actual time
+		virtual Data::Duration SeekToTime(Data::Duration time);
 		virtual Bool IsRealTimeSrc();
 
 		virtual OSInt ReadNextFrame(UInt8 *frameBuff, Int32 *frameTime, Media::FrameType *ftype); //ret 0 = no more frames

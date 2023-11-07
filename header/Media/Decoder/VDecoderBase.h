@@ -15,10 +15,10 @@ namespace Media
 			void *frameCbData;
 			Bool started;
 
-			static void __stdcall OnVideoFrame(UInt32 frameTime, UInt32 frameNum, UInt8 **imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, void *userData, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst);
+			static void __stdcall OnVideoFrame(Data::Duration frameTime, UInt32 frameNum, UInt8 **imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, void *userData, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst);
 			static void __stdcall OnVideoChange(Media::IVideoSource::FrameChange fc, void *userData);
 
-			virtual void ProcVideoFrame(UInt32 frameTime, UInt32 frameNum, UInt8 **imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst) = 0;
+			virtual void ProcVideoFrame(Data::Duration frameTime, UInt32 frameNum, UInt8 **imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst) = 0;
 		public:
 			VDecoderBase(NotNullPtr<IVideoSource> sourceVideo);
 			virtual ~VDecoderBase();
@@ -35,9 +35,9 @@ namespace Media
 			virtual void Stop();
 			virtual Bool IsRunning();
 
-			virtual Int32 GetStreamTime();
+			virtual Data::Duration GetStreamTime();
 			virtual Bool CanSeek();
-			virtual UInt32 SeekToTime(UInt32 time);
+			virtual Data::Duration SeekToTime(Data::Duration time);
 			virtual Bool IsRealTimeSrc();
 			virtual Bool TrimStream(UInt32 trimTimeStart, UInt32 trimTimeEnd, Int32 *syncTime);
 

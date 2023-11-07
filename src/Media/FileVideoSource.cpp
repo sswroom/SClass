@@ -351,9 +351,9 @@ Bool Media::FileVideoSource::IsRunning()
 	return this->playing && !this->playEnd;
 }
 
-Int32 Media::FileVideoSource::GetStreamTime()
+Data::Duration Media::FileVideoSource::GetStreamTime()
 {
-	return (Int32)MulDivU32((UInt32)this->frameParts.GetCount(), this->frameRateDenorm * 1000, this->frameRateNorm);
+	return Data::Duration::FromRatioU64(this->frameParts.GetCount() * (UInt64)this->frameRateDenorm, this->frameRateNorm);
 }
 
 Bool Media::FileVideoSource::CanSeek()
@@ -361,13 +361,13 @@ Bool Media::FileVideoSource::CanSeek()
 	return true;
 }
 
-UInt32 Media::FileVideoSource::SeekToTime(UInt32 time)
+Data::Duration Media::FileVideoSource::SeekToTime(Data::Duration time)
 {
 	if (this->timeBased)
 	{
 		UOSInt lastKey = 0;
-		UInt32 lastKeyTime = 0;
-		UInt32 thisTime;
+		Data::Duration lastKeyTime = 0;
+		Data::Duration thisTime;
 		UOSInt i = 0;
 		UOSInt j = this->frameParts.GetCount();
 		while (i < j)
@@ -387,7 +387,7 @@ UInt32 Media::FileVideoSource::SeekToTime(UInt32 time)
 	}
 	else
 	{
-		UInt32 newNum = MulDivU32(time, this->frameRateNorm, this->frameRateDenorm * 1000);
+		UInt32 newNum = (UInt32)time.MulDivU32(this->frameRateNorm, this->frameRateDenorm);
 		if (newNum > this->frameParts.GetCount())
 		{
 			newNum = (UInt32)this->frameParts.GetCount();
@@ -398,7 +398,7 @@ UInt32 Media::FileVideoSource::SeekToTime(UInt32 time)
 				newNum--;
 			this->currFrameNum = newNum;
 		}
-		return MulDivU32(this->currFrameNum, this->frameRateDenorm * 1000, this->frameRateNorm);;
+		return Data::Duration::FromRatioU64(this->currFrameNum * (UInt64)this->frameRateDenorm, this->frameRateNorm);
 	}
 }
 
@@ -428,12 +428,12 @@ UOSInt Media::FileVideoSource::GetFrameCount()
 	return this->frameParts.GetCount();
 }
 
-UInt32 Media::FileVideoSource::GetFrameTime(UOSInt frameIndex)
+Data::Duration Media::FileVideoSource::GetFrameTime(UOSInt frameIndex)
 {
-	UInt32 frameTime = this->frameTimes.GetItem(frameIndex);
-	if (frameTime == 0)
+	Data::Duration frameTime = this->frameTimes.GetItem(frameIndex);
+	if (frameTime.IsZero())
 	{
-		frameTime = MulDivU32((UInt32)frameIndex, this->frameRateDenorm * 1000, this->frameRateNorm);
+		frameTime = Data::Duration::FromRatioU64(frameIndex * (UInt64)this->frameRateDenorm, this->frameRateNorm);
 	}
 	return frameTime;
 }

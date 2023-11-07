@@ -61,14 +61,14 @@ Bool Media::VOBAC3StreamSource::CanSeek()
 	return this->pbc->CanSeek();
 }
 
-Int32 Media::VOBAC3StreamSource::GetStreamTime()
+Data::Duration Media::VOBAC3StreamSource::GetStreamTime()
 {
 	return this->pbc->GetStreamTime();
 }
 
-UInt32 Media::VOBAC3StreamSource::SeekToTime(UInt32 time)
+Data::Duration Media::VOBAC3StreamSource::SeekToTime(Data::Duration time)
 {
-	UInt32 t = this->pbc->SeekToTime(time);
+	Data::Duration t = this->pbc->SeekToTime(time);
 	this->buffStart = 0;
 	this->buffEnd = 0;
 	this->SetStreamTime(t);
@@ -247,9 +247,9 @@ UOSInt Media::VOBAC3StreamSource::GetMinBlockSize()
 	return this->fmt.align;
 }
 
-UInt32 Media::VOBAC3StreamSource::GetCurrTime()
+Data::Duration Media::VOBAC3StreamSource::GetCurrTime()
 {
-	return (UInt32)(this->buffSample * 8000LL / this->fmt.bitRate);
+	return Data::Duration::FromRatioU64(this->buffSample, this->fmt.bitRate >> 3);
 }
 
 Bool Media::VOBAC3StreamSource::IsEnd()
@@ -269,10 +269,10 @@ void Media::VOBAC3StreamSource::ClearFrameBuff()
 	this->buffSample = 0;
 }
 
-void Media::VOBAC3StreamSource::SetStreamTime(UInt32 time)
+void Media::VOBAC3StreamSource::SetStreamTime(Data::Duration time)
 {
 	Sync::MutexUsage mutUsage(this->buffMut);
-	this->buffSample = MulDivU32(time, this->fmt.bitRate, 8000);
+	this->buffSample = time.MultiplyU64(this->fmt.bitRate >> 3);
 	mutUsage.EndUse();
 }
 
@@ -356,9 +356,8 @@ void Media::VOBAC3StreamSource::WriteFrameStream(UInt8 *buff, UOSInt buffSize)
 	}
 }
 
-Int32 Media::VOBAC3StreamSource::GetFrameStreamTime()
+Data::Duration Media::VOBAC3StreamSource::GetFrameStreamTime()
 {
-	Int32 t;
 	Sync::MutexUsage mutUsage(this->buffMut);
 	UOSInt buffSize;
 	if (this->buffEnd < this->buffStart)
@@ -369,8 +368,7 @@ Int32 Media::VOBAC3StreamSource::GetFrameStreamTime()
 	{
 		buffSize = this->buffEnd - this->buffStart;
 	}
-	t = (Int32)((this->buffSample + buffSize) * 8000LL / this->fmt.bitRate);
-	return t;
+	return Data::Duration::FromRatioU64(this->buffSample + buffSize, this->fmt.bitRate >> 3);
 }
 
 void Media::VOBAC3StreamSource::EndFrameStream()

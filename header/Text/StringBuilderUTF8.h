@@ -223,6 +223,59 @@ namespace Text
 			return *this;
 		}
 
+		NotNullPtr<StringBuilderUTF8> AppendDur(const Data::Duration &dur)
+		{
+			Int64 secs = dur.GetSeconds();
+			UInt32 ns = dur.GetNS();
+			if (secs < 0)
+			{
+				this->AppendUTF8Char('-');
+				if (ns > 0)
+				{
+					secs = -secs - 1;
+					ns = 1000000000 - ns;
+				}
+				else
+				{
+					secs = -secs;
+				}
+			}
+			this->AppendI64(secs / 3600);
+			secs = secs % 3600;
+			this->AppendUTF8Char(':');
+			if (secs < 600)
+			{
+				this->AppendUTF8Char('0');
+			}
+			this->AppendI64(secs / 60);
+			secs = secs % 60;
+			this->AppendUTF8Char(':');
+			if (secs < 10)
+			{
+				this->AppendUTF8Char('0');
+			}
+			this->AppendI64(secs);
+			if (ns != 0)
+			{
+				UInt8 sbuff[10];
+				UTF8Char *sptr;
+				this->AppendUTF8Char('.');
+				UOSInt nDigits = 9;
+				while ((ns % 10) == 0)
+				{
+					nDigits--;
+					ns = ns / 10;
+				}
+				sptr = Text::StrUInt32(sbuff, ns);
+				if ((UOSInt)(sptr - sbuff) != nDigits)
+				{
+					this->AppendChar('0', nDigits - (UOSInt)(sptr - sbuff));
+				}
+				this->AppendP(sbuff, sptr);
+			}
+			return *this;
+		}
+
 		NotNullPtr<StringBuilderUTF8> AppendOSInt(OSInt iVal)
 		{
 	#if _OSINT_SIZE == 64

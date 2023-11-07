@@ -28,16 +28,16 @@ namespace Media
 		Bool playing;
 		Bool videoPlaying;
 		Bool audioPlaying;
-		UInt32 currTime;
+		Data::Duration currTime;
 		UOSInt pbLastChapter;
 
 		PBEndHandler endHdlr;
 		void *endObj;
 
-		void PlayTime(UInt32 time);
+		void PlayTime(Data::Duration time);
 		static void __stdcall OnVideoEnd(void *userObj);
 		static void __stdcall OnAudioEnd(void *userObj);
-		static void __stdcall VideoCropImage(void *userObj, UInt32 frameTime, UInt32 frameNum, NotNullPtr<Media::StaticImage> img);
+		static void __stdcall VideoCropImage(void *userObj, Data::Duration frameTime, UInt32 frameNum, NotNullPtr<Media::StaticImage> img);
 
 		void ReleaseAudio();
 		Bool SwitchAudioSource(NotNullPtr<Media::IAudioSource> asrc, Int32 syncTime);
@@ -47,7 +47,7 @@ namespace Media
 
 		virtual void SetEndHandler(PBEndHandler hdlr, void *userObj);
 		virtual Bool LoadMedia(Media::MediaFile *file);
-		virtual Bool SeekTo(UInt32 time);
+		virtual Bool SeekTo(Data::Duration time);
 		virtual Bool SwitchAudio(UOSInt index);
 
 		virtual Bool IsPlaying();
@@ -55,7 +55,7 @@ namespace Media
 		virtual Bool StopPlayback();
 		virtual Bool PrevChapter();
 		virtual Bool NextChapter();
-		virtual UInt32 GetCurrTime();
+		virtual Data::Duration GetCurrTime();
 
 		virtual Bool GotoChapter(UOSInt chapter);
 		virtual Bool GetVideoSize(UOSInt *w, UOSInt *h);

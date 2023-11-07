@@ -195,50 +195,12 @@ void __stdcall SSWR::AVIRead::AVIRHQMPForm::OnTimerTick(void *userObj)
 	{
 		Text::StringBuilderUTF8 sb;
 		Media::VideoRenderer::RendererStatus2 dbg;
-		UInt32 currTime;
-		UInt32 v;
 		me->vbox->GetStatus(dbg);
 		sb.AppendC(UTF8STRC("Curr Time: "));
-		sb.AppendU32(dbg.currTime);
-		currTime = dbg.currTime;
-		v = currTime / 3600000;
-		sb.AppendC(UTF8STRC(" ("));
-		sb.AppendU32(v);
-		sb.AppendC(UTF8STRC(":"));
-		currTime -= v * 3600000;
-		v = currTime / 60000;
-		if (v < 10)
-		{
-			sb.AppendC(UTF8STRC("0"));
-		}
-		sb.AppendU32(v);
-		sb.AppendC(UTF8STRC(":"));
-		currTime -= v * 60000;
-		v = currTime / 1000;
-		if (v < 10)
-		{
-			sb.AppendC(UTF8STRC("0"));
-		}
-		sb.AppendU32(v);
-		sb.AppendC(UTF8STRC("."));
-		currTime -= v * 1000;
-		if (currTime < 10)
-		{
-			sb.AppendC(UTF8STRC("00"));
-			sb.AppendU32(currTime);
-		}
-		else if (currTime < 100)
-		{
-			sb.AppendC(UTF8STRC("0"));
-			sb.AppendU32(currTime);
-		}
-		else
-		{
-			sb.AppendU32(currTime);
-		}
-		sb.AppendC(UTF8STRC(")\r\n"));
+		sb.AppendDur(dbg.currTime);
+		sb.AppendC(UTF8STRC("\r\n"));
 		sb.AppendC(UTF8STRC("Disp Frame Time: "));
-		sb.AppendU32(dbg.dispFrameTime);
+		sb.AppendDur(dbg.dispFrameTime);
 		sb.AppendC(UTF8STRC("\r\n"));
 		sb.AppendC(UTF8STRC("Disp Frame Num: "));
 		sb.AppendU32(dbg.dispFrameNum);
@@ -253,7 +215,7 @@ void __stdcall SSWR::AVIRead::AVIRHQMPForm::OnTimerTick(void *userObj)
 		sb.AppendI32(dbg.dispJitter);
 		sb.AppendC(UTF8STRC("\r\n"));
 		sb.AppendC(UTF8STRC("Video Delay: "));
-		sb.AppendI32(dbg.videoDelay);
+		sb.AppendDur(dbg.videoDelay);
 		sb.AppendC(UTF8STRC("\r\n"));
 		sb.AppendC(UTF8STRC("Source Delay: "));
 		sb.AppendI32(dbg.srcDelay);

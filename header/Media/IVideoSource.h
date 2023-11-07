@@ -43,10 +43,10 @@ namespace Media
 			FF_FORCEDISP = 16
 		} FrameFlag;
 
-		typedef void (__stdcall *FrameCallback)(UInt32 frameTime, UInt32 frameNum, UInt8 **imgData, UOSInt dataSize, FrameStruct frameStruct, void *userData, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst);
+		typedef void (__stdcall *FrameCallback)(Data::Duration frameTime, UInt32 frameNum, UInt8 **imgData, UOSInt dataSize, FrameStruct frameStruct, void *userData, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst);
 		typedef void (__stdcall *FrameChangeCallback)(FrameChange frChg, void *userData);
-		typedef Bool (__stdcall *FrameInfoCallback)(UInt32 frameTime, UOSInt frameNum, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, Media::FrameType frameType, void *userData, Media::YCOffset ycOfst); //return true to continue
-		typedef void (__stdcall *ImageCallback)(void *userData, UInt32 frameTime, UInt32 frameNum, NotNullPtr<Media::StaticImage> img);
+		typedef Bool (__stdcall *FrameInfoCallback)(Data::Duration frameTime, UOSInt frameNum, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, Media::FrameType frameType, void *userData, Media::YCOffset ycOfst); //return true to continue
+		typedef void (__stdcall *ImageCallback)(void *userData, Data::Duration frameTime, UInt32 frameNum, NotNullPtr<Media::StaticImage> img);
 
 		IVideoSource();
 		virtual ~IVideoSource();
@@ -64,9 +64,9 @@ namespace Media
 		virtual void Stop() = 0;
 		virtual Bool IsRunning() = 0;
 
-		virtual Int32 GetStreamTime() = 0; //ms, -1 = infinity
+		virtual Data::Duration GetStreamTime() = 0;
 		virtual Bool CanSeek() = 0;
-		virtual UInt32 SeekToTime(UInt32 time) = 0; //ms, ret actual time
+		virtual Data::Duration SeekToTime(Data::Duration time) = 0;
 		virtual Bool IsRealTimeSrc() = 0;
 		virtual Bool SetPreferFrameType(Media::FrameType ftype);
 
@@ -74,7 +74,7 @@ namespace Media
 
 		virtual Bool HasFrameCount() = 0;
 		virtual UOSInt GetFrameCount() = 0;
-		virtual UInt32 GetFrameTime(UOSInt frameIndex) = 0;
+		virtual Data::Duration GetFrameTime(UOSInt frameIndex) = 0;
 		virtual void EnumFrameInfos(FrameInfoCallback cb, void *userData) = 0;
 		virtual UOSInt GetFrameSize(UOSInt frameIndex);
 		virtual UOSInt ReadFrame(UOSInt frameIndex, UInt8 *buff);

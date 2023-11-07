@@ -317,7 +317,7 @@ void Net::TCPClientMgr::ProcessClient(NotNullPtr<Net::TCPClientMgr::TCPClientSta
 
 Net::TCPClientMgr::TCPClientMgr(Int32 timeOutSeconds, TCPClientEvent evtHdlr, TCPClientData dataHdlr, void *userObj, UOSInt workerCnt, TCPClientTimeout toHdlr)
 {
-	this->timeout = Data::Duration(timeOutSeconds, 0);
+	this->timeout = Data::Duration::FromSecNS(timeOutSeconds, 0);
 	this->evtHdlr = evtHdlr;
 	this->dataHdlr = dataHdlr;
 	this->toHdlr = toHdlr;

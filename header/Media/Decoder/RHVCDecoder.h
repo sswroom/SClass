@@ -33,7 +33,7 @@ namespace Media
 
 			static UOSInt CalcNALSize(const UInt8 *buff, UOSInt buffSize);
 			static UInt8 *AppendNAL(UInt8 *outBuff, const UInt8 *srcBuff, UOSInt srcBuffSize);
-			virtual void ProcVideoFrame(UInt32 frameTime, UInt32 frameNum, UInt8 **imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst);
+			virtual void ProcVideoFrame(Data::Duration frameTime, UInt32 frameNum, UInt8 **imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst);
 		public:
 			RHVCDecoder(NotNullPtr<IVideoSource> sourceVideo, Bool toRelease);
 			virtual ~RHVCDecoder();
@@ -42,7 +42,7 @@ namespace Media
 
 			virtual Bool HasFrameCount();
 			virtual UOSInt GetFrameCount();
-			virtual UInt32 GetFrameTime(UOSInt frameIndex);
+			virtual Data::Duration GetFrameTime(UOSInt frameIndex);
 			virtual void EnumFrameInfos(FrameInfoCallback cb, void *userData);
 			virtual UOSInt GetFrameSize(UOSInt frameIndex);
 			virtual UOSInt ReadFrame(UOSInt frameIndex, UInt8 *buff);

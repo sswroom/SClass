@@ -37,7 +37,7 @@ void Media::AudioFilter::AudioAmplifier::GetFormat(NotNullPtr<AudioFormat> forma
 	format->extra = 0;
 }
 
-UInt32 Media::AudioFilter::AudioAmplifier::SeekToTime(UInt32 time)
+Data::Duration Media::AudioFilter::AudioAmplifier::SeekToTime(Data::Duration time)
 {
 	return this->sourceAudio->SeekToTime(time);
 }

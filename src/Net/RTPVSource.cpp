@@ -50,7 +50,7 @@ Bool Net::RTPVSource::IsRunning()
 	return this->ch->IsRunning();
 }
 
-Int32 Net::RTPVSource::GetStreamTime()
+Data::Duration Net::RTPVSource::GetStreamTime()
 {
 	return this->hdlr->GetStreamTime();
 }
@@ -61,9 +61,9 @@ Bool Net::RTPVSource::CanSeek()
 	//return ch->CanSeek();
 }
 
-UInt32 Net::RTPVSource::SeekToTime(UInt32 time)
+Data::Duration Net::RTPVSource::SeekToTime(Data::Duration time)
 {
-	return false;
+	return 0;
 //	return ch->SeekToTime();
 }
 
@@ -92,7 +92,7 @@ UOSInt Net::RTPVSource::GetFrameCount()
 	return 0;
 }
 
-UInt32 Net::RTPVSource::GetFrameTime(UOSInt frameIndex)
+Data::Duration Net::RTPVSource::GetFrameTime(UOSInt frameIndex)
 {
 	return 0;
 }

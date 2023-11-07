@@ -11,7 +11,7 @@ namespace Media
 		Media::AudioFormat format;
 		Data::ArrayListNN<Media::IAudioSource> stmList;
 
-		UInt32 stmTime;
+		Data::Duration stmTime;
 		Bool canSeek;
 
 		UOSInt currStm;
@@ -28,15 +28,15 @@ namespace Media
 
 		virtual UTF8Char *GetSourceName(UTF8Char *buff);
 		virtual Bool CanSeek();
-		virtual Int32 GetStreamTime(); //ms
+		virtual Data::Duration GetStreamTime();
 		virtual void GetFormat(NotNullPtr<AudioFormat> format);
 		virtual Bool TrimStream(UInt32 trimTimeStart, UInt32 trimTimeEnd, Int32 *syncTime);
 
-		virtual UInt32 SeekToTime(UInt32 time); //ms, ret actual time
+		virtual Data::Duration SeekToTime(Data::Duration time);
 		virtual Bool Start(Sync::Event *evt, UOSInt blkSize);
 		virtual void Stop();
 		virtual UOSInt ReadBlock(Data::ByteArray blk); //ret actual block size
-		virtual UInt32 GetCurrTime();
+		virtual Data::Duration GetCurrTime();
 		virtual UOSInt GetMinBlockSize();
 		virtual Bool IsEnd();
 	};

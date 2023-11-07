@@ -71,16 +71,17 @@ Bool Media::LPCMSource::CanSeek()
 	return true;
 }
 
-Int32 Media::LPCMSource::GetStreamTime()
+Data::Duration Media::LPCMSource::GetStreamTime()
 {
-	return (Int32)(this->data->GetDataSize() * 1000 / this->format.frequency / (UInt32)(this->format.bitpersample >> 3) / this->format.nChannels);
+	return Data::Duration::FromRatioU64(this->data->GetDataSize(), (this->format.nChannels * (UInt32)this->format.bitpersample >> 3) * this->format.frequency);
 }
 
-UInt32 Media::LPCMSource::SeekToTime(UInt32 time)
+Data::Duration Media::LPCMSource::SeekToTime(Data::Duration time)
 {
 	UInt32 blk = (this->format.nChannels * (UInt32)this->format.bitpersample >> 3);
-	this->readOfst = time * (UInt64)this->format.frequency / 1000 * blk;
-	return (UInt32)(this->readOfst * 1000 / this->format.frequency / blk);
+	UInt32 bytesPerSec = blk * this->format.frequency;
+	this->readOfst = time.MultiplyU64(this->format.frequency) * blk;
+	return Data::Duration::FromRatioU64(this->readOfst, bytesPerSec);
 }
 
 Bool Media::LPCMSource::TrimStream(UInt32 trimTimeStart, UInt32 trimTimeEnd, Int32 *syncTime)
@@ -397,10 +398,9 @@ UOSInt Media::LPCMSource::GetMinBlockSize()
 	return this->format.nChannels * (UOSInt)(this->format.bitpersample >> 3);
 }
 
-UInt32 Media::LPCMSource::GetCurrTime()
+Data::Duration Media::LPCMSource::GetCurrTime()
 {
-	UInt32 blk = (this->format.nChannels * (UInt32)this->format.bitpersample >> 3);
-	return (UInt32)(this->readOfst * 1000 / this->format.frequency / blk);
+	return Data::Duration::FromRatioU64(this->readOfst, (this->format.nChannels * (UInt32)this->format.bitpersample >> 3) * this->format.frequency);
 }
 
 Bool Media::LPCMSource::IsEnd()

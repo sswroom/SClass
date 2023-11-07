@@ -64,7 +64,7 @@ void Media::Decoder::PSSADecoder::GetFormat(NotNullPtr<AudioFormat> format)
 	}
 }
 
-UInt32 Media::Decoder::PSSADecoder::SeekToTime(UInt32 time)
+Data::Duration Media::Decoder::PSSADecoder::SeekToTime(Data::Duration time)
 {
 	if (this->sourceAudio)
 	{

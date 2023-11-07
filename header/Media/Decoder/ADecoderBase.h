@@ -16,8 +16,8 @@ namespace Media
 
 			virtual UTF8Char *GetSourceName(UTF8Char *buff);
 			virtual Bool CanSeek();
-			virtual Int32 GetStreamTime(); //ms
-			virtual UInt32 GetCurrTime();
+			virtual Data::Duration GetStreamTime();
+			virtual Data::Duration GetCurrTime();
 			virtual Bool IsEnd();
 			virtual Bool TrimStream(UInt32 trimTimeStart, UInt32 trimTimeEnd, Int32 *syncTime);
 		};

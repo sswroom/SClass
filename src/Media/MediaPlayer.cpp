@@ -12,7 +12,7 @@ extern "C"
 	void MediaPlayer_VideoCropImageY(UInt8 *yptr, UOSInt w, UOSInt h, UOSInt ySplit, UOSInt *crops);
 }
 
-void Media::MediaPlayer::PlayTime(UInt32 time)
+void Media::MediaPlayer::PlayTime(Data::Duration time)
 {
 	if (this->currVDecoder)
 	{
@@ -100,7 +100,7 @@ void __stdcall Media::MediaPlayer::OnAudioEnd(void *userObj)
 	}
 }
 
-void __stdcall Media::MediaPlayer::VideoCropImage(void *userObj, UInt32 frameTime, UInt32 frameNum, NotNullPtr<Media::StaticImage> img)
+void __stdcall Media::MediaPlayer::VideoCropImage(void *userObj, Data::Duration frameTime, UInt32 frameNum, NotNullPtr<Media::StaticImage> img)
 {
 	Media::MediaPlayer *me = (Media::MediaPlayer*)userObj;
 	UOSInt w = img->info.dispSize.x;
@@ -290,7 +290,7 @@ Bool Media::MediaPlayer::StopPlayback()
 	return true;
 }
 
-Bool Media::MediaPlayer::SeekTo(UInt32 time)
+Bool Media::MediaPlayer::SeekTo(Data::Duration time)
 {
 	if (IsPlaying())
 	{
@@ -410,7 +410,7 @@ Bool Media::MediaPlayer::GotoChapter(UOSInt chapter)
 	}
 }
 
-UInt32 Media::MediaPlayer::GetCurrTime()
+Data::Duration Media::MediaPlayer::GetCurrTime()
 {
 	return this->clk.GetCurrTime();
 }

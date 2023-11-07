@@ -16,7 +16,7 @@ namespace Media
 		Data::ByteBuffer readBuff;
 		UInt64 readOfst;
 		UInt64 fleng;
-		UInt32 startTime;
+		Data::Duration startTime;
 		Media::M2VStreamSource *vstm;
 		Data::FastMap<Int32, Media::IMediaStream*> dataStms;
 		Data::ArrayList<Media::IAudioSource*> audStms;
@@ -38,13 +38,13 @@ namespace Media
 		virtual void KeepStream(UOSInt index, Bool toKeep);
 
 		virtual UTF8Char *GetMediaName(UTF8Char *buff);
-		virtual Int32 GetStreamTime();
+		virtual Data::Duration GetStreamTime();
 		virtual Bool StartAudio();
 		virtual Bool StopAudio();
 		virtual Bool StartVideo();
 		virtual Bool StopVideo();
 		virtual Bool IsRunning();
-		virtual UInt32 SeekToTime(UInt32 mediaTime);
+		virtual Data::Duration SeekToTime(Data::Duration mediaTime);
 		virtual Bool IsRealTimeSrc();
 		virtual Bool CanSeek();
 		virtual UOSInt GetDataSeekCount();

@@ -227,7 +227,7 @@ void __stdcall SSWR::AVIRead::AVIRTimedCaptureForm::OnTimerTick(void *userObj)
 	me->txtSaveCnt->SetText(CSTRP(sbuff, sptr));
 }
 
-void __stdcall SSWR::AVIRead::AVIRTimedCaptureForm::OnVideoFrame(UInt32 frameTime, UInt32 frameNum, UInt8 **imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, void *userData, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst)
+void __stdcall SSWR::AVIRead::AVIRTimedCaptureForm::OnVideoFrame(Data::Duration frameTime, UInt32 frameNum, UInt8 **imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, void *userData, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst)
 {
 	SSWR::AVIRead::AVIRTimedCaptureForm *me = (SSWR::AVIRead::AVIRTimedCaptureForm *)userData;
 	me->frameCnt++;

@@ -23,7 +23,7 @@ void __stdcall FrameChangeHdlr(Media::IVideoSource::FrameChange frChg, void *use
 {
 }
 
-void __stdcall CaptureTest(UInt32 frameTime, UInt32 frameNum, UInt8 **imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, void *userData, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst)
+void __stdcall CaptureTest(Data::Duration frameTime, UInt32 frameNum, UInt8 **imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, void *userData, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst)
 {
 	Int32 fnum = frameCnt;
 	if (fnum == 1)

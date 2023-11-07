@@ -44,7 +44,7 @@ Bool Media::AudioConcatSource::AppendAudio(NotNullPtr<Media::IAudioSource> audio
 		{
 			this->canSeek = false;
 		}
-		this->stmTime = (UInt32)audio->GetStreamTime();
+		this->stmTime = audio->GetStreamTime();
 		return true;
 	}
 	else
@@ -62,7 +62,7 @@ Bool Media::AudioConcatSource::AppendAudio(NotNullPtr<Media::IAudioSource> audio
 		if (fmt.bitpersample != this->format.bitpersample)
 			return false;
 		this->stmList.Add(audio);
-		this->stmTime += (UInt32)audio->GetStreamTime();
+		this->stmTime += audio->GetStreamTime();
 		return true;
 	}
 }
@@ -93,9 +93,9 @@ Bool Media::AudioConcatSource::CanSeek()
 	return this->canSeek;
 }
 
-Int32 Media::AudioConcatSource::GetStreamTime()
+Data::Duration Media::AudioConcatSource::GetStreamTime()
 {
-	return (Int32)this->stmTime;
+	return this->stmTime;
 }
 
 void Media::AudioConcatSource::GetFormat(NotNullPtr<AudioFormat> format)
@@ -108,10 +108,10 @@ Bool Media::AudioConcatSource::TrimStream(UInt32 trimTimeStart, UInt32 trimTimeE
 	return false;
 }
 
-UInt32 Media::AudioConcatSource::SeekToTime(UInt32 time)
+Data::Duration Media::AudioConcatSource::SeekToTime(Data::Duration time)
 {
-	UInt32 stmTotal;
-	UInt32 stmTime = 0;
+	Data::Duration stmTotal;
+	Data::Duration stmTime = 0;
 	UOSInt stmIndex;
 	UOSInt stmCnt;
 	stmTotal = 0;
@@ -122,7 +122,7 @@ UInt32 Media::AudioConcatSource::SeekToTime(UInt32 time)
 
 	while (stmIndex < stmCnt)
 	{
-		stmTime = (UInt32)((Media::IAudioSource *)this->stmList.GetItem(stmIndex))->GetStreamTime();
+		stmTime = ((Media::IAudioSource *)this->stmList.GetItem(stmIndex))->GetStreamTime();
 		if (stmTime > time)
 		{
 			if (this->currStm != stmIndex && this->readEvt)
@@ -201,9 +201,9 @@ UOSInt Media::AudioConcatSource::ReadBlock(Data::ByteArray blk)
 	return ((Media::IAudioSource*)this->stmList.GetItem(this->currStm))->ReadBlock(blk);
 }
 
-UInt32 Media::AudioConcatSource::GetCurrTime()
+Data::Duration Media::AudioConcatSource::GetCurrTime()
 {
-	UInt32 totalTime = 0;
+	Data::Duration totalTime = 0;
 	UOSInt i = this->currStm;
 	Media::IAudioSource *astm = this->stmList.GetItem(i);
 	if (astm)
@@ -215,7 +215,7 @@ UInt32 Media::AudioConcatSource::GetCurrTime()
 		astm = this->stmList.GetItem(i);
 		if (astm)
 		{
-			totalTime += (UInt32)astm->GetStreamTime();
+			totalTime = totalTime + astm->GetStreamTime();
 		}
 	}
 	return totalTime;

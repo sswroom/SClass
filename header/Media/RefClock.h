@@ -1,5 +1,7 @@
 #ifndef _SM_MEDIA_REFCLOCK
 #define _SM_MEDIA_REFCLOCK
+#include "Data/Duration.h"
+#include "Data/TimeInstant.h"
 
 namespace Media
 {
@@ -7,16 +9,16 @@ namespace Media
 	{
 	private:
 		Bool started;
-		Int64 refStart;
-		UInt32 refStartTime;
+		Data::TimeInstant refStart;
+		Data::Duration refStartTime;
 
 	public:
 		RefClock();
 		~RefClock();
 
-		void Start(UInt32 currTime);
+		void Start(Data::Duration currTime);
 		void Stop();
-		UInt32 GetCurrTime();
+		Data::Duration GetCurrTime();
 		Bool Running();
 	};
 };

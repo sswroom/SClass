@@ -33,14 +33,14 @@ Bool Media::VOBLPCMStreamSource::CanSeek()
 	return this->pbc->CanSeek();
 }
 
-Int32 Media::VOBLPCMStreamSource::GetStreamTime()
+Data::Duration Media::VOBLPCMStreamSource::GetStreamTime()
 {
 	return this->pbc->GetStreamTime();
 }
 
-UInt32 Media::VOBLPCMStreamSource::SeekToTime(UInt32 time)
+Data::Duration Media::VOBLPCMStreamSource::SeekToTime(Data::Duration time)
 {
-	UInt32 t = this->pbc->SeekToTime(time);
+	Data::Duration t = this->pbc->SeekToTime(time);
 	this->buffStart = 0;
 	this->buffEnd = 0;
 	this->SetStreamTime(t);
@@ -204,9 +204,9 @@ UOSInt Media::VOBLPCMStreamSource::GetMinBlockSize()
 	return this->fmt.align;
 }
 
-UInt32 Media::VOBLPCMStreamSource::GetCurrTime()
+Data::Duration Media::VOBLPCMStreamSource::GetCurrTime()
 {
-	return (UInt32)(this->buffSample * 8000LL / this->fmt.bitRate);
+	return Data::Duration::FromRatioU64(this->buffSample * 8, this->fmt.bitRate);
 }
 
 Bool Media::VOBLPCMStreamSource::IsEnd()
@@ -226,10 +226,10 @@ void Media::VOBLPCMStreamSource::ClearFrameBuff()
 	this->buffSample = 0;
 }
 
-void Media::VOBLPCMStreamSource::SetStreamTime(UInt32 time)
+void Media::VOBLPCMStreamSource::SetStreamTime(Data::Duration time)
 {
 	Sync::MutexUsage mutUsage(this->buffMut);
-	this->buffSample = (UInt64)time * this->fmt.bitRate / 8000;
+	this->buffSample = time.MultiplyU64(this->fmt.bitRate >> 3);
 }
 
 void Media::VOBLPCMStreamSource::WriteFrameStream(UInt8 *buff, UOSInt buffSize)
@@ -312,9 +312,8 @@ void Media::VOBLPCMStreamSource::WriteFrameStream(UInt8 *buff, UOSInt buffSize)
 //	}
 }
 
-Int32 Media::VOBLPCMStreamSource::GetFrameStreamTime()
+Data::Duration Media::VOBLPCMStreamSource::GetFrameStreamTime()
 {
-	Int32 t;
 	Sync::MutexUsage mutUsage(this->buffMut);
 	UOSInt buffSize;
 	if (this->buffEnd < this->buffStart)
@@ -325,9 +324,7 @@ Int32 Media::VOBLPCMStreamSource::GetFrameStreamTime()
 	{
 		buffSize = this->buffEnd - this->buffStart;
 	}
-	t = (Int32)((this->buffSample + buffSize) * 8000LL / this->fmt.bitRate);
-	mutUsage.EndUse();
-	return t;
+	return Data::Duration::FromRatioU64((this->buffSample + buffSize) * 8,this->fmt.bitRate);
 }
 
 void Media::VOBLPCMStreamSource::EndFrameStream()

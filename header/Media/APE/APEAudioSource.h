@@ -25,15 +25,15 @@ namespace Media
 
 			virtual WChar *GetName(WChar *buff);
 			virtual Bool CanSeek();
-			virtual Int32 GetStreamTime();
+			virtual Data::Duration GetStreamTime();
 			virtual void GetFormat(AudioFormat *format);
 
-			virtual Int32 SeekToTime(Int32 time);
+			virtual Data::Duration SeekToTime(Data::Duration time);
 			virtual Bool Start(Sync::Event *evt, Int32 blkSize);
 			virtual void Stop();
 			virtual OSInt ReadBlock(UInt8 *buff, OSInt blkSize);
 			virtual OSInt GetMinBlockSize();
-			virtual Int32 GetCurrTime();
+			virtual Data::Duration GetCurrTime();
 		};
 	}
 };

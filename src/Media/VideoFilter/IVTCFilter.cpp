@@ -15,7 +15,7 @@ extern "C"
 	void IVTCFilter_CalcFieldP(UInt8 *framePtr, UOSInt w, UOSInt h, UInt32 *fieldStats);
 }
 
-void Media::VideoFilter::IVTCFilter::ProcessVideoFrame(UInt32 frameTime, UInt32 frameNum, UInt8 **imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, void *userData, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst)
+void Media::VideoFilter::IVTCFilter::ProcessVideoFrame(Data::Duration frameTime, UInt32 frameNum, UInt8 **imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, void *userData, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst)
 {
 	if (flags & Media::IVideoSource::FF_DISCONTTIME)
 	{
@@ -393,7 +393,7 @@ void Media::VideoFilter::IVTCFilter::OnFrameChange(Media::IVideoSource::FrameCha
 	}
 }
 
-void Media::VideoFilter::IVTCFilter::do_IVTC(UInt32 frameTime, UInt32 frameNum, UInt8 **imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst)
+void Media::VideoFilter::IVTCFilter::do_IVTC(Data::Duration frameTime, UInt32 frameNum, UInt8 **imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst)
 {
 	Sync::MutexUsage mutUsage(this->mut);
 	if (this->enabled)
@@ -412,7 +412,7 @@ void Media::VideoFilter::IVTCFilter::do_IVTC(UInt32 frameTime, UInt32 frameNum, 
 				diFrameType = Media::FT_INTERLACED_TFF;
 				diFrameType2 = Media::FT_INTERLACED_TFF;
 			}
-			UInt32 outFrameTime = frameTime;
+			Data::Duration outFrameTime = frameTime;
 			Bool mergedFrame = false;
 			if (this->ivtcFrameBuffSize < dataSize)
 			{
@@ -484,7 +484,7 @@ void Media::VideoFilter::IVTCFilter::do_IVTC(UInt32 frameTime, UInt32 frameNum, 
 				///////////////////////////////////////
 				if (this->ivtcLastFieldUsed)
 				{
-					outFrameTime = (this->ivtcLastFrameTime + frameTime) >> 1;
+					outFrameTime = (this->ivtcLastFrameTime + frameTime) / 2;
 					if (this->ivtcLastSC == 0 && evenDiff > this->ivtcLastEven * 4 && oddDiff > this->ivtcLastOdd * 4 && evenDiff * 2 > pixelCnt && oddDiff * 2 > pixelCnt)
 					{
 						this->ivtcLastSC = 1;
@@ -1225,7 +1225,7 @@ void Media::VideoFilter::IVTCFilter::ClearIVTC()
 	this->fieldExist = false;
 }
 
-void Media::VideoFilter::IVTCFilter::StartIVTC(UInt32 frameTime, UInt32 frameNum, UInt8 *imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst)
+void Media::VideoFilter::IVTCFilter::StartIVTC(Data::Duration frameTime, UInt32 frameNum, UInt8 *imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst)
 {
 	this->ivtcTFrameTime = frameTime;
 	this->ivtcTFrameNum = frameNum;
@@ -1254,7 +1254,7 @@ UInt32 __stdcall Media::VideoFilter::IVTCFilter::IVTCThread(void *userObj)
 	{
 		if (me->ivtcTRequest)
 		{
-			UInt32 frameTime = me->ivtcTFrameTime;
+			Data::Duration frameTime = me->ivtcTFrameTime;
 			UInt32 frameNum = me->ivtcTFrameNum;
 			UInt8 *imgData = me->ivtcTImgData;
 			UOSInt dataSize = me->ivtcTDataSize;

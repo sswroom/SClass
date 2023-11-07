@@ -1,5 +1,6 @@
 #ifndef _SM_DATA_DURATION
 #define _SM_DATA_DURATION
+#define DURATION_INFINITY -12345
 
 namespace Data
 {
@@ -8,6 +9,12 @@ namespace Data
 	private:
 		Int64 seconds;
 		UInt32 ns;
+
+		Duration(Int64 seconds, UInt32 ns)
+		{
+			this->seconds = seconds;
+			this->ns = ns;
+		}
 
 	public:
 		Duration() = default;
@@ -35,12 +42,6 @@ namespace Data
 				this->seconds = ticks / 1000;
 			}
 		};
-
-		Duration(Int64 seconds, UInt32 ns)
-		{
-			this->seconds = seconds;
-			this->ns = ns;
-		}
 
 		Int64 GetSeconds() const
 		{
@@ -71,6 +72,56 @@ namespace Data
 		{
 			return this->seconds == 0 && this->ns == 0;
 		}
+		
+		Bool IsPositiveNonZero() const
+		{
+			return this->seconds > 0 || (this->seconds == 0 && this->ns > 0);
+		}
+
+		Bool IsNegative() const
+		{
+			return this->seconds < 0;
+		}
+
+		Data::Duration AddMS(Int64 ms) const
+		{
+			Int64 secs = ms / 1000;
+			UInt32 ns;
+			if (ms < 0)
+			{
+				ns = (UInt32)((ms % 1000) + 1000) * 1000000 + this->ns;
+				secs -= 1;
+			}
+			else
+			{
+				ns = (UInt32)(ms % 1000) * 1000000 + this->ns;
+			}
+			if (ns >= 1000000000)
+			{
+				return Data::Duration(this->seconds + secs + 1, ns - 1000000000);
+			}
+			else
+			{
+				return Data::Duration(this->seconds + secs, ns);
+			}
+		}
+
+		Data::Duration AddSecDbl(Double sec) const
+		{
+			Int64 isec = (Int64)sec;
+			Int64 ns = this->ns + (Int64)((sec - (Double)isec) * 1000000000);
+			if (ns < 0)
+			{
+				ns += 1000000000;
+				isec -= 1;
+			}
+			else if (ns >= 1000000000)
+			{
+				ns -= 1000000000;
+				isec += 1;
+			}
+			return Data::Duration(isec + this->seconds, (UInt32)ns);
+		}
 
 		Bool operator>=(Data::Duration dur) const
 		{
@@ -92,6 +143,67 @@ namespace Data
 				return this->ns > dur.ns;
 		}
 
+		Bool operator<=(Data::Duration dur) const
+		{
+			if (this->seconds > dur.seconds)
+				return false;
+			else if (this->seconds < dur.seconds)
+				return true;
+			else
+				return this->ns <= dur.ns;
+		}
+
+		Bool operator<(Data::Duration dur) const
+		{
+			if (this->seconds > dur.seconds)
+				return false;
+			else if (this->seconds < dur.seconds)
+				return true;
+			else
+				return this->ns < dur.ns;
+		}
+
+		Bool operator==(Data::Duration dur) const
+		{
+			return this->seconds == dur.seconds && this->ns == dur.ns;
+		}
+
+		Bool operator!=(Data::Duration dur) const
+		{
+			return this->seconds != dur.seconds || this->ns != dur.ns;
+		}
+
+		Bool operator>=(Int64 ticks) const = delete;
+		Bool operator>(Int64 ticks) const = delete;
+		Bool operator<=(Int64 ticks) const = delete;
+		Bool operator<(Int64 ticks) const = delete;
+		Bool operator==(Int64 ticks) const = delete;
+		Bool operator!=(Int64 ticks) const = delete;
+
+		Data::Duration operator+(Data::Duration dur) const
+		{
+			UInt32 ns = this->ns + dur.ns;
+			if (ns >= 1000000000)
+				return Data::Duration(this->seconds + dur.GetSeconds() + 1, ns - 1000000000);
+			else
+				return Data::Duration(this->seconds + dur.GetSeconds(), ns);
+		}
+
+		const Data::Duration &operator+=(Data::Duration dur)
+		{
+			this->ns = this->ns + dur.ns;
+			if (this->ns >= 1000000000)
+			{
+				this->ns -= 1000000000;
+				this->seconds += dur.seconds + 1;
+			}
+			else
+			{
+				this->seconds += dur.seconds;
+			}
+			return *this;
+		}
+
 		Data::Duration operator-(Data::Duration dur) const
 		{
 			Int64 secs = this->seconds - dur.seconds;
@@ -101,6 +213,56 @@ namespace Data
 				return Data::Duration(secs, ns1 - ns2);
 			else
 				return Data::Duration(secs - 1, 1000000000 + ns1 - ns2);
+		}
+
+		const Data::Duration &operator-=(Data::Duration dur)
+		{
+			this->seconds = this->seconds + dur.seconds;
+			if (this->ns >= dur.ns)
+			{
+				this->ns -= dur.ns;
+			}
+			else
+			{
+				this->seconds -= 1;
+				this->ns = 1000000000 + this->ns - dur.ns;
+			}
+			return *this;
+		}
+
+
+		Data::Duration operator/(UInt32 v) const
+		{
+			Int64 v2 = this->seconds % (Int64)v;
+			Int64 seconds = this->seconds / (Int64)v;
+			if (v2 < 0)
+			{
+				seconds--;
+				v2 += v;
+			}
+			return Data::Duration(seconds, (UInt32)((UInt64)v2 * 1000000000 + this->ns) / v);
+		}
+
+		Bool IsInfinity() const
+		{
+			return this->seconds == DURATION_INFINITY;
+		}
+
+		UInt64 MultiplyU64(UInt64 multiplier) const
+		{
+			if (this->seconds < 0)
+				return 0;
+			return ((UInt64)this->seconds * multiplier) + (this->ns * multiplier / 1000000000);
+		}
+
+		UInt64 MulDivU32(UInt32 multiplier, UInt32 divider) const
+		{
+			if (this->seconds < 0)
+				return 0;
+			UInt64 secs = (UInt64)this->seconds;
+			UInt64 ns = this->ns;
+			secs = secs * multiplier + (ns * multiplier) % 1000000000;
+			return secs / divider;
 		}
 
 		static Data::Duration FromUs(Int64 us)
@@ -118,6 +280,23 @@ namespace Data
 			{
 				return Data::Duration(us / 1000000, (UInt32)(us % 1000000) * 1000);
 			}
+		}
+
+		static Data::Duration Infinity()
+		{
+			return Data::Duration(DURATION_INFINITY, 0);
+		}
+
+		static Data::Duration FromSecNS(Int64 seconds, UInt32 ns)
+		{
+			return Data::Duration(seconds, ns);
+		}
+		
+		static Data::Duration FromRatioU64(UInt64 val, UInt64 divider)
+		{
+			Int64 secs = (Int64)(val / divider);
+			UInt64 bytes = val % divider;
+			return Data::Duration(secs, (UInt32)(bytes * 1000000000 / divider));
 		}
 	};
 }

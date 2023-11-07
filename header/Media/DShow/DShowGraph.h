@@ -28,7 +28,7 @@ namespace Media
 			Bool RenderFile(const WChar *fileName);
 			Bool Run();
 			Bool IsCompleted();
-			Bool SeekToTime(Int32 time);
+			Bool SeekToTime(Data::Duration time);
 			Bool CheckStatus();
 		};
 	};

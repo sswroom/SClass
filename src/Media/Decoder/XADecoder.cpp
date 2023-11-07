@@ -57,7 +57,7 @@ void Media::Decoder::XADecoder::GetFormat(NotNullPtr<AudioFormat> format)
 	}
 }
 
-UInt32 Media::Decoder::XADecoder::SeekToTime(UInt32 time)
+Data::Duration Media::Decoder::XADecoder::SeekToTime(Data::Duration time)
 {
 	if (this->sourceAudio)
 	{

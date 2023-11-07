@@ -21,11 +21,11 @@ namespace Media
 		NWASource(NotNullPtr<IO::StreamData> fd, UInt32 sampleCount, UInt32 blockSize, UInt32 compLevel, UInt32 nBlocks, NotNullPtr<const Media::AudioFormat> format, Text::CStringNN name);
 		virtual ~NWASource();
 
-		virtual Int32 GetStreamTime(); //ms
-		virtual UInt32 SeekToTime(UInt32 time); //ms, ret actual time
+		virtual Data::Duration GetStreamTime();
+		virtual Data::Duration SeekToTime(Data::Duration time);
 		virtual UOSInt ReadBlock(Data::ByteArray buff); //ret actual block size
 		virtual UOSInt GetMinBlockSize();
-		virtual UInt32 GetCurrTime();
+		virtual Data::Duration GetCurrTime();
 	};
 }
 #endif

@@ -15,8 +15,8 @@ namespace Media
 			NotNullPtr<Text::String> title;
 			Text::String *artist;
 			NotNullPtr<Text::String> fileName;
-			UInt32 timeStart;
-			Int32 timeEnd;
+			Data::Duration timeStart;
+			Data::Duration timeEnd;
 		} PlaylistEntry;
 
 		Data::ArrayList<PlaylistEntry*> entries;
@@ -41,8 +41,8 @@ namespace Media
 		Text::String *GetTitle(UOSInt index) const;
 		Text::String *GetArtist(UOSInt index) const;
 		Text::String *GetFileName(UOSInt index) const;
-		UInt32 GetTimeStart(UOSInt index) const;
-		Int32 GetTimeEnd(UOSInt index) const;
+		Data::Duration GetTimeStart(UOSInt index) const;
+		Data::Duration GetTimeEnd(UOSInt index) const;
 
 		void SetPlayer(Media::IMediaPlayer *player);
 		Bool OpenItem(UOSInt index);
@@ -52,7 +52,7 @@ namespace Media
 		virtual Bool StopPlayback();
 		virtual Bool PrevChapter();
 		virtual Bool NextChapter();
-		virtual UInt32 GetCurrTime();
+		virtual Data::Duration GetCurrTime();
 	};
 }
 #endif

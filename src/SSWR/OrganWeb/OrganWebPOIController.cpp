@@ -1,5 +1,10 @@
 #include "Stdafx.h"
 #include "Data/Sort/ArtificialQuickSort.h"
+#include "IO/Path.h"
+#include "IO/StmData/FileData.h"
+#include "Media/IAudioSource.h"
+#include "Media/MediaFile.h"
+#include "Media/PhotoInfo.h"
 #include "Net/WebServer/HTTPServerUtil.h"
 #include "SSWR/OrganWeb/OrganWebEnv.h"
 #include "SSWR/OrganWeb/OrganWebPOIController.h"
@@ -700,6 +705,162 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcBookDetail(NotNullPtr<N
 	return me->ResponseJSON(req, resp, 0, json.Build());
 }
 
+Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcPhotoDetail(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, Net::WebServer::WebController *parent)
+{
+	SSWR::OrganWeb::OrganWebPOIController *me = (SSWR::OrganWeb::OrganWebPOIController*)parent;
+	RequestEnv env;
+	me->ParseRequestEnv(req, resp, env, false);
+	req->ParseHTTPForm();
+	Int32 id;
+	Int32 cateId;
+	Int32 fileId;
+	if (req->GetHTTPFormInt32(CSTR("id"), id) &&
+		req->GetHTTPFormInt32(CSTR("cateId"), cateId))
+	{
+		SpeciesInfo *species;
+		GroupInfo *group;
+		CategoryInfo *cate;
+		UTF8Char sbuff[512];
+		UTF8Char *sptr;
+		UOSInt i;
+		UOSInt j;
+		Text::JSONBuilder json(Text::JSONBuilder::OT_OBJECT);
+		Sync::RWMutexUsage mutUsage;
+		species = me->env->SpeciesGet(mutUsage, id);
+		if (species == 0 || species->cateId != cateId)
+		{
+			mutUsage.EndUse();
+			resp->ResponseError(req, Net::WebStatus::SC_BAD_REQUEST);
+			return true;
+		}
+
+		group = me->env->GroupGet(mutUsage, species->groupId);
+		if (group == 0)
+		{
+			mutUsage.EndUse();
+			resp->ResponseError(req, Net::WebStatus::SC_BAD_REQUEST);
+			return true;
+		}
+		cate = me->env->CateGet(mutUsage, group->cateId);
+		if (cate == 0)
+		{
+			mutUsage.EndUse();
+			resp->ResponseError(req, Net::WebStatus::SC_BAD_REQUEST);
+			return true;
+		}
+
+		if (req->GetHTTPFormInt32(CSTR("fileId"), fileId))
+		{
+			Bool found = false;
+			UserFileInfo *userFile;
+			i = 0;
+			j = species->files.GetCount();
+			while (i < j)
+			{
+				userFile = species->files.GetItem(i);
+				if (userFile->id == fileId)
+				{
+					found = true;
+					break;
+				}
+				i++;
+			}
+			if (found)
+			{
+
+				if (userFile->fileType == FileType::Audio)
+				{
+					sptr = me->env->UserfileGetPath(sbuff, userFile);
+					UInt64 fileSize = 0;
+					Media::MediaFile *mediaFile;
+					{
+						IO::StmData::FileData fd(CSTRP(sbuff, sptr), false);
+						fileSize = fd.GetDataSize();
+						mediaFile = (Media::MediaFile*)me->env->ParseFileType(fd, IO::ParserType::MediaFile);
+					}
+
+					if (mediaFile)
+					{
+						json.ObjectAddUInt64(CSTR("fileSize"), fileSize);
+						Media::IMediaSource *msrc = mediaFile->GetStream(0, 0);
+						Data::Duration stmTime;
+						if (msrc)
+						{
+							stmTime = msrc->GetStreamTime();
+							json.ObjectAddInt64(CSTR("stmTime"), stmTime.GetTotalMS());
+
+							if (msrc->GetMediaType() == Media::MEDIA_TYPE_AUDIO)
+							{
+								Media::IAudioSource *asrc = (Media::IAudioSource*)msrc;
+								Media::AudioFormat format;
+								asrc->GetFormat(format);
+								json.ObjectAddUInt64(CSTR("frequency"), format.frequency);
+								json.ObjectAddUInt64(CSTR("bitPerSample"), format.bitpersample);
+								json.ObjectAddUInt64(CSTR("nChannels"), format.nChannels);
+							}
+						}
+						DEL_CLASS(mediaFile);
+					}
+				}
+				else
+				{
+					sptr = me->env->UserfileGetPath(sbuff, userFile);
+					IO::StmData::FileData fd(CSTRP(sbuff, sptr), false);
+					Media::PhotoInfo info(fd);
+					if (info.HasInfo())
+					{
+						Text::StringBuilderUTF8 sb;
+						info.ToString(sb);
+						json.ObjectAddStr(CSTR("photoInfo"), sb.ToCString());
+						json.ObjectAddUInt64(CSTR("imgWidth"), info.GetWidth());
+						json.ObjectAddUInt64(CSTR("imgHeight"), info.GetHeight());
+					}
+				}
+
+			}
+		}
+		else if (req->GetHTTPFormInt32(CSTR("fileWId"), fileId))
+		{
+			WebFileInfo *wfile = species->wfiles.Get(fileId);
+			if (wfile)
+			{
+				json.ObjectAddStr(CSTR("imgUrl"), wfile->imgUrl);
+				json.ObjectAddStr(CSTR("srcUrl"), wfile->srcUrl);
+
+				sptr = me->env->GetDataDir()->ConcatTo(sbuff);
+				if (sptr[-1] != IO::Path::PATH_SEPERATOR)
+				{
+					*sptr++ = IO::Path::PATH_SEPERATOR;
+				}
+				sptr = Text::StrConcatC(sptr, UTF8STRC("WebFile"));
+				*sptr++ = IO::Path::PATH_SEPERATOR;
+				sptr = Text::StrInt32(sptr, wfile->id >> 10);
+				*sptr++ = IO::Path::PATH_SEPERATOR;
+				sptr = Text::StrInt32(sptr, wfile->id);
+				sptr = Text::StrConcatC(sptr, UTF8STRC(".jpg"));
+				mutUsage.EndUse();;
+
+				IO::StmData::FileData fd(CSTRP(sbuff, sptr), false);
+				Media::PhotoInfo info(fd);
+				if (info.HasInfo())
+				{
+					Text::StringBuilderUTF8 sb;
+					info.ToString(sb);
+					json.ObjectAddStr(CSTR("photoInfo"), sb.ToCString());
+					json.ObjectAddUInt64(CSTR("imgWidth"), info.GetWidth());
+					json.ObjectAddUInt64(CSTR("imgHeight"), info.GetHeight());
+				}
+			}
+		}
+
+		return me->ResponseJSON(req, resp, 0, json.Build());
+	}
+	else
+	{
+		return me->ResponseJSON(req, resp, 0, CSTR("{}"));
+	}
+}
+
 Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcPhotoUpload(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, Net::WebServer::WebController *parent)
 {
 	SSWR::OrganWeb::OrganWebPOIController *me = (SSWR::OrganWeb::OrganWebPOIController*)parent;
@@ -1163,6 +1324,7 @@ SSWR::OrganWeb::OrganWebPOIController::OrganWebPOIController(Net::WebServer::Mem
 	this->AddService(CSTR("/api/bookunselect"), Net::WebUtil::RequestMethod::HTTP_GET, SvcBookUnselect);
 	this->AddService(CSTR("/api/bookadd"), Net::WebUtil::RequestMethod::HTTP_GET, SvcBookAdd);
 	this->AddService(CSTR("/api/bookdetail"), Net::WebUtil::RequestMethod::HTTP_GET, SvcBookDetail);
+	this->AddService(CSTR("/api/photodetail"), Net::WebUtil::RequestMethod::HTTP_POST, SvcPhotoDetail);
 	this->AddService(CSTR("/api/photoupload"), Net::WebUtil::RequestMethod::HTTP_POST, SvcPhotoUpload);
 	this->AddService(CSTR("/api/reload"), Net::WebUtil::RequestMethod::HTTP_POST, SvcReload);
 	this->AddService(CSTR("/api/publicpoi"), Net::WebUtil::RequestMethod::HTTP_GET, SvcPublicPOI);

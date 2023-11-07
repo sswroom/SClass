@@ -32,7 +32,7 @@ namespace Media
 			void *finfoData;
 			Media::IVideoSource::FrameInfoCallback finfoCb;
 
-			virtual void ProcVideoFrame(UInt32 frameTime, UInt32 frameNum, UInt8 **imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst);
+			virtual void ProcVideoFrame(Data::Duration frameTime, UInt32 frameNum, UInt8 **imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst);
 		public:
 			RAVCDecoder(NotNullPtr<IVideoSource> sourceVideo, Bool toRelease, Bool skipHeader);
 			virtual ~RAVCDecoder();
@@ -41,7 +41,7 @@ namespace Media
 
 			virtual Bool HasFrameCount();
 			virtual UOSInt GetFrameCount();
-			virtual UInt32 GetFrameTime(UOSInt frameIndex);
+			virtual Data::Duration GetFrameTime(UOSInt frameIndex);
 			virtual void EnumFrameInfos(FrameInfoCallback cb, void *userData);
 			virtual UOSInt GetFrameSize(UOSInt frameIndex);
 			virtual UOSInt ReadFrame(UOSInt frameIndex, UInt8 *buff);

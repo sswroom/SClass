@@ -6,7 +6,7 @@
 #include "Media/Decoder/M2VDecoder.h"
 #include "Sync/ThreadUtil.h"
 
-void Media::Decoder::M2VDecoder::ProcVideoFrame(UInt32 frameTime, UInt32 frameNum, UInt8 **imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst)
+void Media::Decoder::M2VDecoder::ProcVideoFrame(Data::Duration frameTime, UInt32 frameNum, UInt8 **imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst)
 {
 	Int32 srch;
 	WriteMInt32((UInt8*)&srch, 0x00000100);
@@ -158,7 +158,7 @@ UOSInt Media::Decoder::M2VDecoder::GetFrameCount()
 	return 0;
 }
 
-UInt32 Media::Decoder::M2VDecoder::GetFrameTime(UOSInt frameIndex)
+Data::Duration Media::Decoder::M2VDecoder::GetFrameTime(UOSInt frameIndex)
 {
 	if (this->sourceVideo)
 	{

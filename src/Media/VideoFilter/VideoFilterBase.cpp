@@ -2,7 +2,7 @@
 #include "MyMemory.h"
 #include "Media/VideoFilter/VideoFilterBase.h"
 
-void __stdcall Media::VideoFilter::VideoFilterBase::OnVideoFrame(UInt32 frameTime, UInt32 frameNum, UInt8 **imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, void *userData, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst)
+void __stdcall Media::VideoFilter::VideoFilterBase::OnVideoFrame(Data::Duration frameTime, UInt32 frameNum, UInt8 **imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, void *userData, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst)
 {
 	Media::VideoFilter::VideoFilterBase *me = (Media::VideoFilter::VideoFilterBase*)userData;
 	me->ProcessVideoFrame(frameTime, frameNum, imgData, dataSize, frameStruct, userData, frameType, flags, ycOfst);
@@ -135,7 +135,7 @@ Bool Media::VideoFilter::VideoFilterBase::IsRunning()
 	return false;
 }
 
-Int32 Media::VideoFilter::VideoFilterBase::GetStreamTime()
+Data::Duration Media::VideoFilter::VideoFilterBase::GetStreamTime()
 {
 	if (this->srcVideo)
 	{
@@ -153,7 +153,7 @@ Bool Media::VideoFilter::VideoFilterBase::CanSeek()
 	return false;
 }
 
-UInt32 Media::VideoFilter::VideoFilterBase::SeekToTime(UInt32 time)
+Data::Duration Media::VideoFilter::VideoFilterBase::SeekToTime(Data::Duration time)
 {
 	if (this->srcVideo)
 	{
@@ -207,7 +207,7 @@ UOSInt Media::VideoFilter::VideoFilterBase::GetFrameCount()
 	return 0;
 }
 
-UInt32 Media::VideoFilter::VideoFilterBase::GetFrameTime(UOSInt frameIndex)
+Data::Duration Media::VideoFilter::VideoFilterBase::GetFrameTime(UOSInt frameIndex)
 {
 	if (this->srcVideo)
 	{

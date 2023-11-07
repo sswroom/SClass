@@ -195,6 +195,16 @@ Bool Media::PhotoInfo::GetPhotoDate(Data::DateTime *dt) const
 	return false;
 }
 
+UInt32 Media::PhotoInfo::GetWidth() const
+{
+	return this->width;
+}
+
+UInt32 Media::PhotoInfo::GetHeight() const
+{
+	return this->height;
+}
+
 void Media::PhotoInfo::ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const
 {
 	UTF8Char sbuff[32];

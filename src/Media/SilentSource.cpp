@@ -41,34 +41,34 @@ Bool Media::SilentSource::CanSeek()
 	return true;
 }
 
-Int32 Media::SilentSource::GetStreamTime()
+Data::Duration Media::SilentSource::GetStreamTime()
 {
 	if (this->sampleCnt == 0)
 	{
-		return -1;
+		return Data::Duration::Infinity();
 	}
-	return (Int32)(this->sampleCnt * 1000 / this->format.frequency);
+	return Data::Duration::FromRatioU64(this->sampleCnt, this->format.frequency);
 }
 
-UInt32 Media::SilentSource::SeekToTime(UInt32 time)
+Data::Duration Media::SilentSource::SeekToTime(Data::Duration time)
 {
-	this->currSample = time * (UInt64)this->format.frequency / 1000;
+	this->currSample = time.MultiplyU64(this->format.frequency);
 	this->readOfst = this->currSample * this->format.align;
-	return (UInt32)(this->currSample * 1000 / this->format.frequency);
+	return Data::Duration::FromRatioU64(this->currSample, this->format.frequency);
 }
 
 Bool Media::SilentSource::TrimStream(UInt32 trimTimeStart, UInt32 trimTimeEnd, Int32 *syncTime)
 {
-	Int32 streamTime = GetStreamTime();
+	Data::Duration streamTime = GetStreamTime();
 	if (trimTimeEnd == (UInt32)-1)
 	{
-		streamTime -= (Int32)trimTimeStart;
+		streamTime = streamTime - (Int32)trimTimeStart;
 	}
 	else
 	{
 		streamTime = (Int32)(trimTimeEnd - trimTimeStart);
 	}
-	this->sampleCnt = (UInt64)streamTime * this->format.frequency / 1000;
+	this->sampleCnt = streamTime.MultiplyU64(this->format.frequency);
 	if (syncTime)
 	{
 		*syncTime = 0;
@@ -162,10 +162,10 @@ UOSInt Media::SilentSource::GetMinBlockSize()
 	return this->format.align;
 }
 
-UInt32 Media::SilentSource::GetCurrTime()
+Data::Duration Media::SilentSource::GetCurrTime()
 {
 	UInt32 blk = (this->format.nChannels * (UInt32)this->format.bitpersample >> 3);
-	return (UInt32)(this->readOfst * 1000 / this->format.frequency / blk);
+	return Data::Duration::FromRatioU64(this->readOfst, this->format.frequency * blk);
 }
 
 Bool Media::SilentSource::IsEnd()

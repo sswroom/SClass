@@ -30,7 +30,7 @@ namespace Media
 			AudioLevelMeter(NotNullPtr<IAudioSource> sourceAudio);
 			virtual ~AudioLevelMeter();
 
-			virtual UInt32 SeekToTime(UInt32 time); //ms, ret actual time
+			virtual Data::Duration SeekToTime(Data::Duration time);
 			virtual UOSInt ReadBlock(Data::ByteArray blk); //ret actual block size
 
 			Double GetLevel(UOSInt channel);

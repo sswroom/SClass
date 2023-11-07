@@ -47,8 +47,8 @@ namespace Net
 
 		virtual UTF8Char *GetSourceName(UTF8Char *buff);
 		virtual Bool CanSeek();
-		virtual Int32 GetStreamTime(); //ms
-		virtual UInt32 SeekToTime(UInt32 time); //ms, ret actual time
+		virtual Data::Duration GetStreamTime();
+		virtual Data::Duration SeekToTime(Data::Duration time);
 		virtual Bool TrimStream(UInt32 trimTimeStart, UInt32 trimTimeEnd, Int32 *syncTime);
 
 		virtual void GetFormat(NotNullPtr<Media::AudioFormat> format);
@@ -57,7 +57,7 @@ namespace Net
 		virtual void Stop();
 		virtual UOSInt ReadBlock(Data::ByteArray blk); //ret actual block size
 		virtual UOSInt GetMinBlockSize();
-		virtual UInt32 GetCurrTime();
+		virtual Data::Duration GetCurrTime();
 		virtual Bool IsEnd();
 	};
 }

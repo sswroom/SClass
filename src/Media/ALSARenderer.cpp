@@ -71,15 +71,15 @@ void __stdcall Media::ALSARenderer::PlayThread(NotNullPtr<Sync::Thread> thread)
 	Media::ALSARenderer *me = (Media::ALSARenderer *)thread->GetUserObj();
 	Media::AudioFormat af;
 	Int32 i;
-	UInt32 refStart;
-	UInt32 audStartTime;	
+	Data::Duration refStart;
+	Data::Duration audStartTime;	
 	UOSInt readBuffLeng = BUFFLENG;
 	UOSInt outBuffLeng;
 	UOSInt outBitPerSample;
 	UOSInt outNChannels;
 	UOSInt minLeng;
-	UInt32 thisT;
-	UInt32 lastT;
+	Data::Duration thisT;
+	Data::Duration lastT;
 
 	{
 		Sync::Event evt;
@@ -266,7 +266,7 @@ void __stdcall Media::ALSARenderer::PlayThread(NotNullPtr<Sync::Thread> thread)
 				}
 
 				thisT = GetCurrTime(me->hand);
-				if (thisT != 0)
+				if (thisT.NotZero())
 				{
 					if (lastT > thisT)
 					{
@@ -346,9 +346,9 @@ void __stdcall Media::ALSARenderer::PlayThread(NotNullPtr<Sync::Thread> thread)
 	}
 }
 
-UInt32 Media::ALSARenderer::GetCurrTime(void *hand)
+Data::Duration Media::ALSARenderer::GetCurrTime(void *hand)
 {
-	UInt32 ret = 0;
+	Data::Duration ret = 0;
 	Int32 err;
 	snd_pcm_status_t *status;
 	snd_pcm_status_alloca(&status);
@@ -363,7 +363,7 @@ UInt32 Media::ALSARenderer::GetCurrTime(void *hand)
 		snd_timestamp_t tsstart;
 		snd_pcm_status_get_tstamp(status, &tscurr);
 		snd_pcm_status_get_trigger_tstamp(status, &tsstart);
-		ret = (UInt32)(tscurr.tv_sec * 1000LL + (tscurr.tv_usec / 1000LL));
+		ret = Data::Duration::FromSecNS(tscurr.tv_sec, (UInt32)tscurr.tv_usec * 1000);
 	}
 	return ret;
 }

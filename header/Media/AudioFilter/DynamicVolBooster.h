@@ -29,7 +29,7 @@ namespace Media
 			virtual ~DynamicVolBooster();
 
 			virtual void GetFormat(NotNullPtr<AudioFormat> format);
-			virtual UInt32 SeekToTime(UInt32 time); //ms, ret actual time
+			virtual Data::Duration SeekToTime(Data::Duration time);
 			virtual UOSInt ReadBlock(Data::ByteArray blk); //ret actual block size
 
 			void SetEnabled(Bool enabled);

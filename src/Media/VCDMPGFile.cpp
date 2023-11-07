@@ -129,7 +129,7 @@ UInt32 __stdcall Media::VCDMPGFile::PlayThread(void *userData)
 					{
 						if (firstAudio && dts != 0)
 						{
-							initScr = dts - 90 * mstm->GetFrameStreamTime();
+							initScr = dts - (Int64)mstm->GetFrameStreamTime().MultiplyU64(90000);
 							firstVideo = true;
 							firstAudio = false;
 						}
@@ -453,9 +453,9 @@ UTF8Char *Media::VCDMPGFile::GetMediaName(UTF8Char *buff)
 	return this->GetSourceName(buff);
 }
 
-Int32 Media::VCDMPGFile::GetStreamTime()
+Data::Duration Media::VCDMPGFile::GetStreamTime()
 {
-	return (Int32)(this->fleng * 1000 / 75);
+	return Data::Duration::FromRatioU64(this->fleng, 75);
 }
 
 Bool Media::VCDMPGFile::StartAudio()
@@ -483,11 +483,11 @@ Bool Media::VCDMPGFile::IsRunning()
 	return this->playing != 0;
 }
 
-UInt32 Media::VCDMPGFile::SeekToTime(UInt32 mediaTime)
+Data::Duration Media::VCDMPGFile::SeekToTime(Data::Duration mediaTime)
 {
 	if (this->playing)
 		return 0;
-	this->readOfst = mediaTime * 75 / 1000;
+	this->readOfst = mediaTime.MultiplyU64(75);
 	this->startTime = mediaTime;
 	return mediaTime;
 }

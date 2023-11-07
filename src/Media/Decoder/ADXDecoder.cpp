@@ -54,7 +54,7 @@ void Media::Decoder::ADXDecoder::GetFormat(NotNullPtr<AudioFormat> format)
 	}
 }
 
-UInt32 Media::Decoder::ADXDecoder::SeekToTime(UInt32 time)
+Data::Duration Media::Decoder::ADXDecoder::SeekToTime(Data::Duration time)
 {
 	if (this->sourceAudio)
 	{

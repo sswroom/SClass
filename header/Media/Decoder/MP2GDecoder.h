@@ -19,7 +19,7 @@ namespace Media
 			FrameInfoCallback finfoCb;
 
 			Bool hasBFrame;
-			UInt32 lastFrameTime;
+			Data::Duration lastFrameTime;
 			Media::FrameType lastFrameType;
 			Media::IVideoSource::FrameFlag lastFrameFlags;
 			Media::IVideoSource::FrameStruct lastFrameStruct;
@@ -27,7 +27,7 @@ namespace Media
 			Bool lastRFF;
 
 
-			virtual void ProcVideoFrame(UInt32 frameTime, UInt32 frameNum, UInt8 **imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst);
+			virtual void ProcVideoFrame(Data::Duration frameTime, UInt32 frameNum, UInt8 **imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst);
 		public:
 			MP2GDecoder(NotNullPtr<IVideoSource> sourceVideo, Bool toRelease);
 			virtual ~MP2GDecoder();
@@ -36,7 +36,7 @@ namespace Media
 
 			virtual Bool HasFrameCount();
 			virtual UOSInt GetFrameCount();
-			virtual UInt32 GetFrameTime(UOSInt frameIndex);
+			virtual Data::Duration GetFrameTime(UOSInt frameIndex);
 			virtual void EnumFrameInfos(FrameInfoCallback cb, void *userData);
 
 			virtual Bool GetVideoInfo(NotNullPtr<Media::FrameInfo> info, OutParam<UInt32> frameRateNorm, OutParam<UInt32> frameRateDenorm, OutParam<UOSInt> maxFrameSize);

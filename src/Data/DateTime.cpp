@@ -786,11 +786,11 @@ Data::Duration Data::DateTime::Diff(NotNullPtr<DateTime> dt)
 	UInt32 ns2 = dt->ns;
 	if (ns1 >= ns2)
 	{
-		return Data::Duration(secs, ns1 - ns2);
+		return Data::Duration::FromSecNS(secs, ns1 - ns2);
 	}
 	else
 	{
-		return Data::Duration(secs - 1, 1000000000 + ns1 - ns2);
+		return Data::Duration::FromSecNS(secs - 1, 1000000000 + ns1 - ns2);
 	}
 }
 

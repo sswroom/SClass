@@ -14,7 +14,7 @@ UInt32 __stdcall Media::NullRenderer::PlayThread(void *obj)
 {
 	Media::NullRenderer *me = (Media::NullRenderer *)obj;
 	Media::AudioFormat af;
-	UInt32 audStartTime;
+	Data::Duration audStartTime;
 	UOSInt buffLeng = 16384;
 	UOSInt minLeng;
 	UOSInt readSize;

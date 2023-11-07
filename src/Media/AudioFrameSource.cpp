@@ -64,19 +64,17 @@ Bool Media::AudioFrameSource::CanSeek()
 	return true;
 }
 
-Int32 Media::AudioFrameSource::GetStreamTime()
+Data::Duration Media::AudioFrameSource::GetStreamTime()
 {
-	return (Int32)(this->totalSampleCnt * (Int64)1000 / this->format.frequency);
+	return Data::Duration::FromRatioU64(this->totalSampleCnt, this->format.frequency);
 }
 
-UInt32 Media::AudioFrameSource::SeekToTime(UInt32 time)
+Data::Duration Media::AudioFrameSource::SeekToTime(Data::Duration time)
 {
 	OSInt i;
 	OSInt j;
 	OSInt k;
-	if (time < 0)
-		time = 0;
-	UOSInt samplePos = (UOSInt)(time * (UInt64)this->format.frequency / 1000);
+	UOSInt samplePos = (UOSInt)time.MultiplyU64(this->format.frequency);
 	i = 0;
 	j = (OSInt)this->blockCnt - 1;
 	while (i <= j)
@@ -93,12 +91,12 @@ UInt32 Media::AudioFrameSource::SeekToTime(UInt32 time)
 		else
 		{
 			this->readBlock = (UOSInt)k;
-			return (UInt32)(this->blocks[this->readBlock].sampleOffset * (UInt64)1000 / this->format.frequency);
+			return Data::Duration::FromRatioU64(this->blocks[this->readBlock].sampleOffset, this->format.frequency);
 		}
 	}
 	this->readBlock = (UOSInt)i - 1;
 	this->readBlockOfst = 0;
-	return (UInt32)(this->blocks[this->readBlock].sampleOffset * (UInt64)1000 / this->format.frequency);
+	return Data::Duration::FromRatioU64(this->blocks[this->readBlock].sampleOffset, this->format.frequency);
 }
 
 Bool Media::AudioFrameSource::TrimStream(UInt32 trimTimeStart, UInt32 trimTimeEnd, Int32 *syncTime)
@@ -183,13 +181,13 @@ UOSInt Media::AudioFrameSource::GetMinBlockSize()
 	return this->maxBlockSize;
 }
 
-UInt32 Media::AudioFrameSource::GetCurrTime()
+Data::Duration Media::AudioFrameSource::GetCurrTime()
 {
 	if (this->readBlock >= this->blockCnt)
 	{
-		return (UInt32)this->GetStreamTime();
+		return this->GetStreamTime();
 	}
-	return (UInt32)(this->blocks[this->readBlock].sampleOffset * (UInt64)1000 / this->format.frequency);
+	return Data::Duration::FromRatioU64(this->blocks[this->readBlock].sampleOffset, this->format.frequency);
 }
 
 Bool Media::AudioFrameSource::IsEnd()

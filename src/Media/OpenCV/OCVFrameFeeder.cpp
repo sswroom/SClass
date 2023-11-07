@@ -10,7 +10,7 @@
 
 #include <stdio.h>
 
-void __stdcall Media::OpenCV::OCVFrameFeeder::OnFrame(UInt32 frameTime, UInt32 frameNum, UInt8 **imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, void *userData, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst)
+void __stdcall Media::OpenCV::OCVFrameFeeder::OnFrame(Data::Duration frameTime, UInt32 frameNum, UInt8 **imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, void *userData, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst)
 {
 	Media::OpenCV::OCVFrameFeeder *me = (Media::OpenCV::OCVFrameFeeder*)userData;
 	Media::OpenCV::OCVFrame *frame = Media::OpenCV::OCVFrame::CreateYFrame(imgData, dataSize, me->info.fourcc, me->info.dispSize, me->info.storeSize.x, me->info.storeBPP, me->info.pf);

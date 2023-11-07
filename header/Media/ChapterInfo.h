@@ -2,6 +2,7 @@
 #define _SM_MEDIA_CHAPTERINFO
 #include "Data/ArrayListNN.h"
 #include "Data/ArrayListUInt32.h"
+#include "Data/Duration.h"
 #include "Text/String.h"
 
 namespace Media
@@ -18,7 +19,7 @@ namespace Media
 		~ChapterInfo();
 
 		void AddChapter(UInt32 chapterTime, Text::CString chapterName, Text::CString chapterArtist);
-		UOSInt GetChapterIndex(UInt32 currTime);
+		UOSInt GetChapterIndex(Data::Duration currTime);
 		UInt32 GetChapterTime(UOSInt index);
 		UOSInt GetChapterCnt();
 		Text::String *GetChapterName(UOSInt index);

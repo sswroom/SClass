@@ -57,7 +57,7 @@ UInt8 *Media::Decoder::RHVCDecoder::AppendNAL(UInt8 *outBuff, const UInt8 *srcBu
 	return outBuff;
 }
 
-void Media::Decoder::RHVCDecoder::ProcVideoFrame(UInt32 frameTime, UInt32 frameNum, UInt8 **imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst)
+void Media::Decoder::RHVCDecoder::ProcVideoFrame(Data::Duration frameTime, UInt32 frameNum, UInt8 **imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst)
 {
 	Sync::MutexUsage mutUsage(this->frameMut);
 
@@ -293,7 +293,7 @@ UOSInt Media::Decoder::RHVCDecoder::GetFrameCount()
 	return 0;
 }
 
-UInt32 Media::Decoder::RHVCDecoder::GetFrameTime(UOSInt frameIndex)
+Data::Duration Media::Decoder::RHVCDecoder::GetFrameTime(UOSInt frameIndex)
 {
 	if (this->sourceVideo)
 	{

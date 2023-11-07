@@ -15,9 +15,9 @@ namespace Media
 
 			ClassData *clsData;
 			Bool endProcessing;
-			UInt32 lastFrameTime;
+			Data::Duration lastFrameTime;
 
-			virtual void ProcVideoFrame(UInt32 frameTime, UInt32 frameNum, UInt8 **imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst);
+			virtual void ProcVideoFrame(Data::Duration frameTime, UInt32 frameNum, UInt8 **imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst);
 		public:
 			FFMPEGDecoder(NotNullPtr<IVideoSource> sourceVideo);
 			virtual ~FFMPEGDecoder();
@@ -30,7 +30,7 @@ namespace Media
 
 			virtual Bool HasFrameCount();
 			virtual UOSInt GetFrameCount();
-			virtual UInt32 GetFrameTime(UOSInt frameIndex);
+			virtual Data::Duration GetFrameTime(UOSInt frameIndex);
 			virtual void EnumFrameInfos(FrameInfoCallback cb, void *userData);
 
 			virtual void OnFrameChanged(Media::IVideoSource::FrameChange fc);

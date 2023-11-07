@@ -242,52 +242,14 @@ void Media::MediaPlayerWebInterface::WebRequest(NotNullPtr<Net::WebServer::IWebR
 		{
 			Text::StringBuilderUTF8 sb;
 			Media::VideoRenderer::RendererStatus2 status;
-			UInt32 currTime;
-			UInt32 v;
 
 			writer.WriteLineC(UTF8STRC("<hr/>"));
 			this->iface->GetVideoRenderer()->GetStatus(status);
 			sb.AppendC(UTF8STRC("Curr Time: "));
-			sb.AppendU32(status.currTime);
-			currTime = status.currTime;
-			v = currTime / 3600000;
-			sb.AppendC(UTF8STRC(" ("));
-			sb.AppendU32(v);
-			sb.AppendC(UTF8STRC(":"));
-			currTime -= v * 3600000;
-			v = currTime / 60000;
-			if (v < 10)
-			{
-				sb.AppendC(UTF8STRC("0"));
-			}
-			sb.AppendU32(v);
-			sb.AppendC(UTF8STRC(":"));
-			currTime -= v * 60000;
-			v = currTime / 1000;
-			if (v < 10)
-			{
-				sb.AppendC(UTF8STRC("0"));
-			}
-			sb.AppendU32(v);
-			sb.AppendC(UTF8STRC("."));
-			currTime -= v * 1000;
-			if (currTime < 10)
-			{
-				sb.AppendC(UTF8STRC("00"));
-				sb.AppendU32(currTime);
-			}
-			else if (currTime < 100)
-			{
-				sb.AppendC(UTF8STRC("0"));
-				sb.AppendU32(currTime);
-			}
-			else
-			{
-				sb.AppendU32(currTime);
-			}
-			sb.AppendC(UTF8STRC(")<br/>\r\n"));
+			sb.AppendDur(status.currTime);
+			sb.AppendC(UTF8STRC("<br/>\r\n"));
 			sb.AppendC(UTF8STRC("Disp Frame Time: "));
-			sb.AppendU32(status.dispFrameTime);
+			sb.AppendDur(status.dispFrameTime);
 			sb.AppendC(UTF8STRC("<br/>\r\n"));
 			sb.AppendC(UTF8STRC("Disp Frame Num: "));
 			sb.AppendU32(status.dispFrameNum);
@@ -302,7 +264,7 @@ void Media::MediaPlayerWebInterface::WebRequest(NotNullPtr<Net::WebServer::IWebR
 			sb.AppendI32(status.dispJitter);
 			sb.AppendC(UTF8STRC("<br/>\r\n"));
 			sb.AppendC(UTF8STRC("Video Delay: "));
-			sb.AppendI32(status.videoDelay);
+			sb.AppendDur(status.videoDelay);
 			sb.AppendC(UTF8STRC("<br/>\r\n"));
 			sb.AppendC(UTF8STRC("Source Delay: "));
 			sb.AppendI32(status.srcDelay);

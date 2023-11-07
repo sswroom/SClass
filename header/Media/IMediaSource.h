@@ -1,5 +1,6 @@
 #ifndef _SM_MEDIA_IMEDIASOURCE
 #define _SM_MEDIA_IMEDIASOURCE
+#include "Data/Duration.h"
 
 namespace Media
 {
@@ -19,9 +20,9 @@ namespace Media
 		virtual UTF8Char *GetSourceName(UTF8Char *buff) = 0;
 
 		virtual void Stop() = 0;
-		virtual Int32 GetStreamTime() = 0; //ms, -1 = infinity
+		virtual Data::Duration GetStreamTime() = 0;
 		virtual Bool CanSeek() = 0;
-		virtual UInt32 SeekToTime(UInt32 time) = 0; //ms, ret actual time
+		virtual Data::Duration SeekToTime(Data::Duration time) = 0;
 		virtual Bool TrimStream(UInt32 trimTimeStart, UInt32 trimTimeEnd, Int32 *syncTime) = 0;
 
 		virtual MediaType GetMediaType() = 0;

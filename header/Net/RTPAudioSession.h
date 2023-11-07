@@ -51,10 +51,10 @@ namespace Net
 
 		virtual UTF8Char *GetName(UTF8Char *buff);
 		virtual Bool CanSeek();
-		virtual Int32 GetStreamTime(); //ms
+		virtual Data::Duration GetStreamTime();
 		virtual void GetFormat(Media::AudioFormat *format);
 
-		virtual Int32 SeekToTime(Int32 time); //ms, ret actual time
+		virtual Data::Duration SeekToTime(Data::Duration time);
 		virtual Bool Start(Sync::Event *evt, Int32 blkSize);
 		virtual void Stop();
 		virtual UOSInt ReadBlock(UInt8 *buff, UOSInt blkSize); //ret actual block size

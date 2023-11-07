@@ -145,14 +145,14 @@ Bool Media::MPAStreamSource::CanSeek()
 	return this->pbc->CanSeek();
 }
 
-Int32 Media::MPAStreamSource::GetStreamTime()
+Data::Duration Media::MPAStreamSource::GetStreamTime()
 {
 	return this->pbc->GetStreamTime();
 }
 
-UInt32 Media::MPAStreamSource::SeekToTime(UInt32 time)
+Data::Duration Media::MPAStreamSource::SeekToTime(Data::Duration time)
 {
-	UInt32 t = this->pbc->SeekToTime(time);
+	Data::Duration t = this->pbc->SeekToTime(time);
 	this->buffStart = 0;
 	this->buffEnd = 0;
 	this->SetStreamTime(t);
@@ -377,9 +377,9 @@ UOSInt Media::MPAStreamSource::GetMinBlockSize()
 	return size;
 }
 
-UInt32 Media::MPAStreamSource::GetCurrTime()
+Data::Duration Media::MPAStreamSource::GetCurrTime()
 {
-	return (UInt32)(this->buffSample * 8000LL / this->fmt.bitRate);
+	return Data::Duration::FromRatioU64(this->buffSample, this->fmt.bitRate >> 3);
 }
 
 Bool Media::MPAStreamSource::IsEnd()
@@ -399,10 +399,10 @@ void Media::MPAStreamSource::ClearFrameBuff()
 	this->buffSample = 0;
 }
 
-void Media::MPAStreamSource::SetStreamTime(UInt32 time)
+void Media::MPAStreamSource::SetStreamTime(Data::Duration time)
 {
 	Sync::MutexUsage mutUsage(this->buffMut);
-	this->buffSample = (UInt64)time * this->fmt.bitRate / 8000;
+	this->buffSample = time.MultiplyU64(this->fmt.bitRate >> 3);
 }
 
 void Media::MPAStreamSource::WriteFrameStream(UInt8 *buff, UOSInt buffSize)
@@ -483,9 +483,8 @@ void Media::MPAStreamSource::WriteFrameStream(UInt8 *buff, UOSInt buffSize)
 	}
 }
 
-Int32 Media::MPAStreamSource::GetFrameStreamTime()
+Data::Duration Media::MPAStreamSource::GetFrameStreamTime()
 {
-	Int32 t;
 	Sync::MutexUsage mutUsage(this->buffMut);
 	UOSInt buffSize;
 	if (this->buffEnd < this->buffStart)
@@ -496,8 +495,7 @@ Int32 Media::MPAStreamSource::GetFrameStreamTime()
 	{
 		buffSize = this->buffEnd - this->buffStart;
 	}
-	t = (Int32)((this->buffSample + buffSize) * 8000LL / this->fmt.bitRate);
-	return t;
+	return Data::Duration::FromRatioU64(this->buffSample + buffSize, this->fmt.bitRate >> 3);
 }
 
 void Media::MPAStreamSource::EndFrameStream()

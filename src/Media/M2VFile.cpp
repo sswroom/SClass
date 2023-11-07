@@ -82,9 +82,9 @@ UTF8Char *Media::M2VFile::GetMediaName(UTF8Char *buff)
 	return this->GetSourceName(buff);
 }
 
-Int32 Media::M2VFile::GetStreamTime()
+Data::Duration Media::M2VFile::GetStreamTime()
 {
-	return (Int32)(this->fleng * 8000 / this->bitRate);
+	return Data::Duration::FromRatioU64(this->fleng, this->bitRate >> 3);
 }
 
 Bool Media::M2VFile::StartAudio()
@@ -124,11 +124,11 @@ Bool Media::M2VFile::IsRunning()
 	return this->playing;
 }
 
-UInt32 Media::M2VFile::SeekToTime(UInt32 mediaTime)
+Data::Duration Media::M2VFile::SeekToTime(Data::Duration mediaTime)
 {
 	if (this->playing)
 		return 0;
-	this->readOfst = mediaTime * this->bitRate / 8000;
+	this->readOfst = mediaTime.MultiplyU64(this->bitRate >> 3);
 	this->startTime = mediaTime;
 	return mediaTime;
 }

@@ -27,16 +27,16 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 		renderer->Start();
 		if (renderer->IsPlaying())
 		{
-			UInt32 t;
+			Data::Duration t;
 			console.WriteLineC(UTF8STRC("Start Playing"));
 			while (true)
 			{
 				t = clk->GetCurrTime();
-				if (t >= 10000)
+				if (t.GetTotalMS() >= 10000)
 				{
 					break;
 				}
-				Sync::SimpleThread::Sleep(10000 - (UOSInt)t);
+				Sync::SimpleThread::Sleep(10000 - (UOSInt)t.GetTotalMS());
 			}
 			console.WriteLineC(UTF8STRC("End Playing"));
 			renderer->Stop();

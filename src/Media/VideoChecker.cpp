@@ -2,7 +2,7 @@
 #include "MyMemory.h"
 #include "Media/VideoChecker.h"
 
-void __stdcall Media::VideoChecker::OnVideoFrame(UInt32 frameTime, UInt32 frameNum, UInt8 **imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, void *userData, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst)
+void __stdcall Media::VideoChecker::OnVideoFrame(Data::Duration frameTime, UInt32 frameNum, UInt8 **imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, void *userData, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst)
 {
 	DecodeStatus *status = (DecodeStatus *)userData;
 
@@ -59,7 +59,7 @@ Bool Media::VideoChecker::IsValid(Media::MediaFile *mediaFile)
 	UOSInt i = 0;
 	Int32 syncTime;
 	Bool valid = true;
-	UInt32 videoTime = 0;
+	Data::Duration videoTime = 0;
 	while (true)
 	{
 		if (!msrc.Set(mediaFile->GetStream(i, &syncTime)))
@@ -183,18 +183,18 @@ Bool Media::VideoChecker::IsValid(Media::MediaFile *mediaFile)
 					Media::IAudioSource *audio = (Media::IAudioSource *)msrc.Ptr();
 					Media::AudioFormat fmt;
 					audio->GetFormat(fmt);
-					Int64 tdiff = audio->GetStreamTime() - (Int64)(status->sampleCnt * 1000 / fmt.frequency);
-					Int64 tdiff2 = (Int64)videoTime - (Int64)(status->sampleCnt * 1000 / fmt.frequency);
+					Data::Duration tdiff = audio->GetStreamTime() - Data::Duration::FromRatioU64(status->sampleCnt, fmt.frequency);
+					Data::Duration tdiff2 = videoTime - Data::Duration::FromRatioU64(status->sampleCnt, fmt.frequency);
 					if (this->allowTimeSkip)
 					{
-						if ((tdiff < -1000 || tdiff > 1000) && (tdiff2 < -1000 || tdiff2 > 1000))
+						if ((tdiff.GetSeconds() <= -1 || tdiff.GetSeconds() >= 1) && (tdiff2.GetSeconds() <= -1 || tdiff2.GetSeconds() >= 1))
 						{
 							valid = false;
 						}
 					}
 					else
 					{
-						if ((tdiff < -1000 || tdiff > 1000) || (tdiff2 < -1000 || tdiff2 > 1000))
+						if ((tdiff.GetSeconds() <= -1 || tdiff.GetSeconds() >= 1) || (tdiff2.GetSeconds() <= -1 || tdiff2.GetSeconds() >= 1))
 						{
 							valid = false;
 						}

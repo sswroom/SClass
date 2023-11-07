@@ -24,12 +24,12 @@ Bool Media::IAudioFilter::CanSeek()
 	return this->sourceAudio->CanSeek();
 }
 
-Int32 Media::IAudioFilter::GetStreamTime()
+Data::Duration Media::IAudioFilter::GetStreamTime()
 {
 	return this->sourceAudio->GetStreamTime();
 }
 
-UInt32 Media::IAudioFilter::SeekToTime(UInt32 time)
+Data::Duration Media::IAudioFilter::SeekToTime(Data::Duration time)
 {
 	return this->sourceAudio->SeekToTime(time);
 }
@@ -60,7 +60,7 @@ UOSInt Media::IAudioFilter::GetMinBlockSize()
 	return this->sourceAudio->GetMinBlockSize();
 }
 
-UInt32 Media::IAudioFilter::GetCurrTime()
+Data::Duration Media::IAudioFilter::GetCurrTime()
 {
 	return this->sourceAudio->GetCurrTime();
 }

@@ -19,7 +19,7 @@ namespace Media
 		typedef struct
 		{
 			UInt8 *frame;
-			UInt32 frameTime;
+			Data::Duration frameTime;
 			UOSInt frameSize;
 			OSInt pictureStart;
 			UOSInt frameNum;
@@ -39,8 +39,8 @@ namespace Media
 
 		UInt8 *frameBuff;
 		UOSInt frameBuffSize;
-		UInt32 thisFrameTime;
-		UInt32 syncFrameTime;
+		Data::Duration thisFrameTime;
+		Data::Duration syncFrameTime;
 		UOSInt syncFieldCnt;
 		Bool firstFrame;
 		UOSInt frameStart;
@@ -84,9 +84,9 @@ namespace Media
 		virtual void Stop();
 		virtual Bool IsRunning();
 
-		virtual Int32 GetStreamTime(); //ms, -1 = infinity
+		virtual Data::Duration GetStreamTime();
 		virtual Bool CanSeek();
-		virtual UInt32 SeekToTime(UInt32 time); //ms, ret actual time
+		virtual Data::Duration SeekToTime(Data::Duration time);
 		virtual Bool IsRealTimeSrc();
 		virtual Bool TrimStream(UInt32 trimTimeStart, UInt32 trimTimeEnd, Int32 *syncTime);
 
@@ -94,7 +94,7 @@ namespace Media
 
 		virtual Bool HasFrameCount();
 		virtual UOSInt GetFrameCount();
-		virtual UInt32 GetFrameTime(UOSInt frameIndex);
+		virtual Data::Duration GetFrameTime(UOSInt frameIndex);
 		virtual void EnumFrameInfos(FrameInfoCallback cb, void *userData);
 		virtual UOSInt GetFrameSize(UOSInt frameIndex);
 		virtual UOSInt ReadFrame(UOSInt frameIndex, UInt8 *buff);
@@ -103,9 +103,9 @@ namespace Media
 
 		virtual void DetectStreamInfo(UInt8 *header, UOSInt headerSize);
 		virtual void ClearFrameBuff();
-		virtual void SetStreamTime(UInt32 time);
+		virtual void SetStreamTime(Data::Duration time);
 		virtual void WriteFrameStream(UInt8 *buff, UOSInt buffSize);
-		virtual Int32 GetFrameStreamTime();
+		virtual Data::Duration GetFrameStreamTime();
 		virtual void EndFrameStream();
 		virtual UInt64 GetBitRate();
 	};

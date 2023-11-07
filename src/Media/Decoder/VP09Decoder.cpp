@@ -4,7 +4,7 @@
 #include "Data/ByteTool.h"
 #include "Media/Decoder/VP09Decoder.h"
 
-void Media::Decoder::VP09Decoder::ProcVideoFrame(UInt32 frameTime, UInt32 frameNum, UInt8 **imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst)
+void Media::Decoder::VP09Decoder::ProcVideoFrame(Data::Duration frameTime, UInt32 frameNum, UInt8 **imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst)
 {
 	UOSInt nextFrameNum = 0;
 	VP9FrameInfo *frInfo = this->frameList.GetItem(this->frameList.GetCount() - 1);
@@ -139,7 +139,7 @@ UOSInt Media::Decoder::VP09Decoder::GetFrameCount()
 	return 0;
 }
 
-UInt32 Media::Decoder::VP09Decoder::GetFrameTime(UOSInt frameIndex)
+Data::Duration Media::Decoder::VP09Decoder::GetFrameTime(UOSInt frameIndex)
 {
 	VP9FrameInfo *frInfo = this->frameList.GetItem(frameIndex);
 	if (frInfo && this->sourceVideo)

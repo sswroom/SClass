@@ -152,7 +152,7 @@ UInt32 __stdcall Media::MPGFile::PlayThread(void *userData)
 					{
 						if (firstAudio && dts != 0)
 						{
-							initScr = dts - 90 * mstm->GetFrameStreamTime();
+							initScr = dts - (Int64)mstm->GetFrameStreamTime().MultiplyU64(90000);
 							firstVideo = true;
 							firstAudio = false;
 						}
@@ -257,7 +257,7 @@ UInt32 __stdcall Media::MPGFile::PlayThread(void *userData)
 					{
 						if (firstAudio && dts != 0)
 						{
-							initScr = dts - 90 * mstm->GetFrameStreamTime();
+							initScr = dts - (Int64)mstm->GetFrameStreamTime().MultiplyU64(90000);
 							firstVideo = true;
 							firstAudio = false;
 						}
@@ -376,10 +376,10 @@ UInt32 __stdcall Media::MPGFile::PlayThread(void *userData)
 
 UInt64 Media::MPGFile::GetBitRate()
 {
-	Int32 currTime = this->vstm->GetFrameStreamTime();
-	if (currTime > 0 && this->readOfst > 0)
+	Data::Duration currTime = this->vstm->GetFrameStreamTime();
+	if (currTime.IsPositiveNonZero() > 0 && this->readOfst > 0)
 	{
-		return (this->readOfst * 8000LL / (UInt64)(UInt32)currTime);
+		return (this->readOfst * 8000LL / (UInt64)currTime.GetTotalMS());
 	}
 	else
 	{
@@ -843,9 +843,9 @@ UTF8Char *Media::MPGFile::GetMediaName(UTF8Char *buff)
 	return this->GetSourceName(buff);
 }
 
-Int32 Media::MPGFile::GetStreamTime()
+Data::Duration Media::MPGFile::GetStreamTime()
 {
-	return (Int32)(UInt32)(this->fleng * 8000 / this->GetBitRate());
+	return Data::Duration::FromRatioU64(this->fleng * 8, this->GetBitRate());
 }
 
 Bool Media::MPGFile::StartAudio()
@@ -873,11 +873,11 @@ Bool Media::MPGFile::IsRunning()
 	return (this->playing != 0) && !this->playToStop;
 }
 
-UInt32 Media::MPGFile::SeekToTime(UInt32 mediaTime)
+Data::Duration Media::MPGFile::SeekToTime(Data::Duration mediaTime)
 {
 	if (this->playing)
 		return 0;
-	this->readOfst = (UInt64)(mediaTime * this->GetBitRate() / 8000);
+	this->readOfst = mediaTime.MultiplyU64(this->GetBitRate() >> 3);
 	this->startTime = mediaTime;
 	return mediaTime;
 }

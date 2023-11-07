@@ -7,7 +7,7 @@
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
 
-void __stdcall SSWR::AVIRead::AVIRVideoInfoForm::OnVideoFrame(UInt32 frameTime, UInt32 frameNum, UInt8 **imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, void *userData, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst)
+void __stdcall SSWR::AVIRead::AVIRVideoInfoForm::OnVideoFrame(Data::Duration frameTime, UInt32 frameNum, UInt8 **imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, void *userData, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst)
 {
 	DecodeStatus *status = (DecodeStatus *)userData;
 
@@ -92,7 +92,7 @@ void __stdcall SSWR::AVIRead::AVIRVideoInfoForm::OnStreamChg(void *userObj)
 		sb.AppendUOSInt(videoSrc->GetFrameCount());
 		sb.AppendC(UTF8STRC("\r\n"));
 		sb.AppendC(UTF8STRC("Stream Time = "));
-		me->AppendTime(sb, (UInt32)videoSrc->GetStreamTime());
+		sb.AppendDur(videoSrc->GetStreamTime());
 		sb.AppendC(UTF8STRC("\r\n"));
 		if (videoSrc->GetVideoInfo(frameInfo, rateNorm, rateDenorm, maxFrameSize))
 		{
@@ -114,7 +114,7 @@ void __stdcall SSWR::AVIRead::AVIRVideoInfoForm::OnStreamChg(void *userObj)
 			sb.AppendC(UTF8STRC("\r\nDecoded Frame Count = "));
 			sb.AppendU64(decStatus->sampleCnt);
 			sb.AppendC(UTF8STRC("\r\nDecoded Frame Time = "));
-			me->AppendTime(sb, decStatus->lastSampleTime);
+			sb.AppendDur(decStatus->lastSampleTime);
 		}
 	}
 	else if (mediaSrc->GetMediaType() == Media::MEDIA_TYPE_AUDIO)
@@ -126,7 +126,7 @@ void __stdcall SSWR::AVIRead::AVIRVideoInfoForm::OnStreamChg(void *userObj)
 		sb.AppendI64(audioSrc->GetSampleCount());
 		sb.AppendC(UTF8STRC("\r\n"));
 		sb.AppendC(UTF8STRC("Stream Time = "));
-		me->AppendTime(sb, (UInt32)audioSrc->GetStreamTime());
+		sb.AppendDur(audioSrc->GetStreamTime());
 		sb.AppendC(UTF8STRC("\r\n"));
 		sb.AppendC(UTF8STRC("Min Block Size = "));
 		sb.AppendUOSInt(audioSrc->GetMinBlockSize());
@@ -139,7 +139,7 @@ void __stdcall SSWR::AVIRead::AVIRVideoInfoForm::OnStreamChg(void *userObj)
 			sb.AppendC(UTF8STRC("\r\nDecoded sample Count = "));
 			sb.AppendU64(decStatus->sampleCnt);
 			sb.AppendC(UTF8STRC("\r\nDecoded Stream Time = "));
-			me->AppendTime(sb, (UInt32)(decStatus->sampleCnt * 1000 / fmt.frequency));
+			sb.AppendDur(Data::Duration::FromRatioU64(decStatus->sampleCnt, fmt.frequency));
 		}
 	}
 
@@ -306,36 +306,6 @@ Bool SSWR::AVIRead::AVIRVideoInfoForm::OpenFile(Text::CStringNN fileName)
 		i++;
 	}
 	return true;
-}
-
-void SSWR::AVIRead::AVIRVideoInfoForm::AppendTime(NotNullPtr<Text::StringBuilderUTF8> sb, UInt32 t)
-{
-	sb->AppendU32(t / 3600000);
-	t = t % 3600000;
-	sb->AppendUTF8Char(':');
-	if (t < 600000)
-	{
-		sb->AppendUTF8Char('0');
-	}
-	sb->AppendU32(t / 60000);
-	t = t % 60000;
-	sb->AppendUTF8Char(':');
-	if (t < 10000)
-	{
-		sb->AppendUTF8Char('0');
-	}
-	sb->AppendU32(t / 1000);
-	t = t % 1000;
-	sb->AppendUTF8Char('.');
-	if (t < 10)
-	{
-		sb->AppendChar('0', 2);
-	}
-	else if (t < 100)
-	{
-		sb->AppendUTF8Char('0');
-	}
-	sb->AppendU32(t);
 }
 
 void SSWR::AVIRead::AVIRVideoInfoForm::ClearDecode()

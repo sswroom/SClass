@@ -15,7 +15,7 @@ Bool Media::Decoder::VFWDecoder::GetFCCHandlers(UInt32 fourcc, Data::ArrayListUI
 	return true;
 }
 
-void Media::Decoder::VFWDecoder::ProcVideoFrame(UInt32 frameTime, UInt32 frameNum, UInt8 **imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst)
+void Media::Decoder::VFWDecoder::ProcVideoFrame(Data::Duration frameTime, UInt32 frameNum, UInt8 **imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst)
 {
 
 }
@@ -101,7 +101,7 @@ UOSInt Media::Decoder::VFWDecoder::GetFrameCount()
 	return this->sourceVideo->GetFrameCount();
 }
 
-UInt32 Media::Decoder::VFWDecoder::GetFrameTime(UOSInt frameIndex)
+Data::Duration Media::Decoder::VFWDecoder::GetFrameTime(UOSInt frameIndex)
 {
 	return this->sourceVideo->GetFrameTime(frameIndex);
 }

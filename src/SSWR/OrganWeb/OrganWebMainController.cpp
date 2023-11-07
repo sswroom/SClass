@@ -2355,19 +2355,12 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoDetail(NotNullPtr
 						sb.AppendU64(fileSize);
 						sb.AppendC(UTF8STRC(" bytes"));
 						Media::IMediaSource *msrc = mediaFile->GetStream(0, 0);
-						Int32 stmTime;
+						Data::Duration stmTime;
 						if (msrc)
 						{
 							stmTime = msrc->GetStreamTime();
 							sb.AppendC(UTF8STRC(", Length: "));
-							sb.AppendI32(stmTime / 60000);
-							sb.AppendC(UTF8STRC(":"));
-							stmTime = stmTime % 60000;
-							if (stmTime < 10000)
-							{
-								sb.AppendC(UTF8STRC("0"));
-							}
-							sb.AppendDouble(stmTime * 0.001);
+							sb.AppendDur(stmTime);
 
 							if (msrc->GetMediaType() == Media::MEDIA_TYPE_AUDIO)
 							{
@@ -3221,19 +3214,12 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoDetailD(NotNullPt
 					sb.AppendU64(fileSize);
 					sb.AppendC(UTF8STRC(" bytes"));
 					Media::IMediaSource *msrc = mediaFile->GetStream(0, 0);
-					Int32 stmTime;
+					Data::Duration stmTime;
 					if (msrc)
 					{
 						stmTime = msrc->GetStreamTime();
 						sb.AppendC(UTF8STRC(", Length: "));
-						sb.AppendI32(stmTime / 60000);
-						sb.AppendC(UTF8STRC(":"));
-						stmTime = stmTime % 60000;
-						if (stmTime < 10000)
-						{
-							sb.AppendC(UTF8STRC("0"));
-						}
-						sb.AppendDouble(stmTime * 0.001);
+						sb.AppendDur(stmTime);
 
 						if (msrc->GetMediaType() == Media::MEDIA_TYPE_AUDIO)
 						{

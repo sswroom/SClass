@@ -45,7 +45,7 @@ namespace Media
 			Bool ivtcLastExist;
 			Media::FrameType ivtcLastFrameType;
 			UInt32 ivtcLastFrameNum;
-			UInt32 ivtcLastFrameTime;
+			Data::Duration ivtcLastFrameTime;
 			Bool ivtcLastFieldUsed;
 			UOSInt ivtcLastField;
 			UInt32 ivtcLastOdd;
@@ -57,7 +57,7 @@ namespace Media
 			UInt8 *fieldBuff;
 			UOSInt fieldBuffSize;
 			Media::FrameType fieldFrameType;
-			UInt32 fieldTime;
+			Data::Duration fieldTime;
 			UInt32 fieldNum;
 			UOSInt fieldDataSize;
 			Bool fieldIsDiscont;
@@ -75,7 +75,7 @@ namespace Media
 			Sync::Event ivtcTEvt;
 			Int32 ivtcTStatus; //0=not running, 1=idle, 2=processing
 			Bool ivtcTRequest;
-            UInt32 ivtcTFrameTime;
+            Data::Duration ivtcTFrameTime;
 			UInt32 ivtcTFrameNum;
 			UInt8 *ivtcTImgData;
 			UOSInt ivtcTDataSize;
@@ -84,11 +84,11 @@ namespace Media
 			Media::IVideoSource::FrameFlag ivtcTFlags;
 			Media::YCOffset ivtcTYCOfst;
 
-			virtual void ProcessVideoFrame(UInt32 frameTime, UInt32 frameNum, UInt8 **imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, void *userData, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst);
+			virtual void ProcessVideoFrame(Data::Duration frameTime, UInt32 frameNum, UInt8 **imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, void *userData, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst);
 			virtual void OnFrameChange(Media::IVideoSource::FrameChange fc);
-			void do_IVTC(UInt32 frameTime, UInt32 frameNum, UInt8 **imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst);
+			void do_IVTC(Data::Duration frameTime, UInt32 frameNum, UInt8 **imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst);
 			void ClearIVTC();
-			void StartIVTC(UInt32 frameTime, UInt32 frameNum, UInt8 *imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst);
+			void StartIVTC(Data::Duration frameTime, UInt32 frameNum, UInt8 *imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst);
 
 			static UInt32 __stdcall IVTCThread(void *userObj);
 			static UInt32 __stdcall CalcThread(void *userObj);

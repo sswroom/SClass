@@ -34,9 +34,9 @@ Bool Media::IRealtimeVideoSource::IsVideoCapture()
 	return false;
 }
 
-Int32 Media::IRealtimeVideoSource::GetStreamTime()
+Data::Duration Media::IRealtimeVideoSource::GetStreamTime()
 {
-	return -1;
+	return Data::Duration::Infinity();
 }
 
 Bool Media::IRealtimeVideoSource::CanSeek()
@@ -44,7 +44,7 @@ Bool Media::IRealtimeVideoSource::CanSeek()
 	return false;
 }
 
-UInt32 Media::IRealtimeVideoSource::SeekToTime(UInt32 time)
+Data::Duration Media::IRealtimeVideoSource::SeekToTime(Data::Duration time)
 {
 	return 0;
 }
@@ -69,7 +69,7 @@ UOSInt Media::IRealtimeVideoSource::GetFrameCount()
 	return 0;
 }
 
-UInt32 Media::IRealtimeVideoSource::GetFrameTime(UOSInt frameIndex)
+Data::Duration Media::IRealtimeVideoSource::GetFrameTime(UOSInt frameIndex)
 {
 	return 0;
 }

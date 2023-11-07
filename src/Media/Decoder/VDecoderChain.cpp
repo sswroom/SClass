@@ -2,7 +2,7 @@
 #include "MyMemory.h"
 #include "Media/Decoder/VDecoderChain.h"
 
-void Media::Decoder::VDecoderChain::ProcVideoFrame(UInt32 frameTime, UInt32 frameNum, UInt8 **imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst)
+void Media::Decoder::VDecoderChain::ProcVideoFrame(Data::Duration frameTime, UInt32 frameNum, UInt8 **imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst)
 {
 	this->frameCb(frameTime, frameNum, imgData, dataSize, frameStruct, this->frameCbData, frameType, flags, ycOfst);
 }
@@ -54,7 +54,7 @@ UOSInt Media::Decoder::VDecoderChain::GetFrameCount()
 	return this->sourceVideo->GetFrameCount();
 }
 
-UInt32 Media::Decoder::VDecoderChain::GetFrameTime(UOSInt frameIndex)
+Data::Duration Media::Decoder::VDecoderChain::GetFrameTime(UOSInt frameIndex)
 {
 	return this->sourceVideo->GetFrameTime(frameIndex);
 }

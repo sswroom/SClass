@@ -217,7 +217,7 @@ void __stdcall SSWR::AVIRead::AVIRMediaForm::OnFileDblClicked(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRMediaForm::VideoCropImage(void *userObj, UInt32 frameTime, UInt32 frameNum, NotNullPtr<Media::StaticImage> img)
+void __stdcall SSWR::AVIRead::AVIRMediaForm::VideoCropImage(void *userObj, Data::Duration frameTime, UInt32 frameNum, NotNullPtr<Media::StaticImage> img)
 {
 	SSWR::AVIRead::AVIRMediaForm *me = (SSWR::AVIRead::AVIRMediaForm*)userObj;
 	UOSInt w = img->info.dispSize.x;
@@ -249,17 +249,17 @@ void __stdcall SSWR::AVIRead::AVIRMediaForm::VideoCropImage(void *userObj, UInt3
 	me->vbdMain->UpdateCrop();
 }
 
-Bool __stdcall SSWR::AVIRead::AVIRMediaForm::OnFrameTime(UInt32 frameTime, UOSInt frameNum, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, Media::FrameType frameType, void *userData, Media::YCOffset ycOfst)
+Bool __stdcall SSWR::AVIRead::AVIRMediaForm::OnFrameTime(Data::Duration frameTime, UOSInt frameNum, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, Media::FrameType frameType, void *userData, Media::YCOffset ycOfst)
 {
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
 	IO::Writer *writer = (IO::Writer *)userData;
-	sptr = Text::StrUInt32(sbuff, frameTime);
+	sptr = Text::StrInt64(sbuff, frameTime.GetTotalMS());
 	writer->WriteLineC(sbuff, (UOSInt)(sptr - sbuff));
 	return true;
 }
 
-void SSWR::AVIRead::AVIRMediaForm::PBStart(UInt32 startTime)
+void SSWR::AVIRead::AVIRMediaForm::PBStart(Data::Duration startTime)
 {
 	if (this->currDecoder)
 	{
@@ -417,7 +417,7 @@ SSWR::AVIRead::AVIRMediaForm::~AVIRMediaForm()
 
 void SSWR::AVIRead::AVIRMediaForm::EventMenuClicked(UInt16 cmdId)
 {
-	UInt32 currTime;
+	Data::Duration currTime;
 	UOSInt i;
 	if (cmdId >= MNU_PB_CHAPTERS)
 	{
@@ -451,16 +451,16 @@ void SSWR::AVIRead::AVIRMediaForm::EventMenuClicked(UInt16 cmdId)
 		{
 			currTime = this->clk->GetCurrTime();
 			this->PBStop();
-			this->PBStart(currTime + 10000);
+			this->PBStart(currTime.AddMS(10000));
 			this->pbLastChapter = (UOSInt)-1;
 		}
 		break;
 	case MNU_PB_BWD:
 		if (this->PBIsPlaying())
 		{
-			currTime = this->clk->GetCurrTime() - 10000;
+			currTime = this->clk->GetCurrTime().AddMS(-10000);
 			this->PBStop();
-			if (currTime < 0)
+			if (currTime.IsNegative())
 				currTime = 0;
 			this->PBStart(currTime);
 			this->pbLastChapter = (UOSInt)-1;
@@ -600,7 +600,7 @@ void SSWR::AVIRead::AVIRMediaForm::EventMenuClicked(UInt16 cmdId)
 					i = 0;
 					while (i < j)
 					{
-						sptr = Text::StrUInt32(sbuff, video->GetFrameTime(i));
+						sptr = Text::StrInt64(sbuff, video->GetFrameTime(i).GetTotalMS());
 						writer.WriteLineC(sbuff, (UOSInt)(sptr - sbuff));
 						i++;
 					}

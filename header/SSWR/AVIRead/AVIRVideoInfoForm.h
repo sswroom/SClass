@@ -22,7 +22,7 @@ namespace SSWR
 			typedef struct
 			{
 				UInt64 sampleCnt;
-				UInt32 lastSampleTime;
+				Data::Duration lastSampleTime;
 				Bool isEnd;
 				Media::IAudioSource *adecoder;
 				Media::NullRenderer *renderer;
@@ -43,14 +43,13 @@ namespace SSWR
 			UI::GUIHSplitter *hspStream;
 			UI::GUITextBox *txtStream;
 
-			static void __stdcall OnVideoFrame(UInt32 frameTime, UInt32 frameNum, UInt8 **imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, void *userData, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst);
+			static void __stdcall OnVideoFrame(Data::Duration frameTime, UInt32 frameNum, UInt8 **imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, void *userData, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst);
 			static void __stdcall OnVideoChange(Media::IVideoSource::FrameChange frChg, void *userData);
 			static void __stdcall OnAudioEnd(void *userData);
 			static void __stdcall OnFileHandler(void *userObj, NotNullPtr<Text::String> *files, UOSInt nFiles);
 			static void __stdcall OnStreamChg(void *userObj);
 			static void __stdcall OnDecodeClicked(void *userObj);
 			Bool OpenFile(Text::CStringNN fileName);
-			void AppendTime(NotNullPtr<Text::StringBuilderUTF8> sb, UInt32 t);
 			void ClearDecode();
 		public:
 			AVIRVideoInfoForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);

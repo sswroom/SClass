@@ -44,7 +44,7 @@ namespace SSWR
 			Bool isStarted;
 			Int32 jpgQuality;
 			UInt32 interval;
-			UInt32 lastSaveTime;
+			Data::Duration lastSaveTime;
 			UInt32 frameCnt;
 			UInt32 saveCnt;
 			Media::TimedImageList *timedImageList;
@@ -74,7 +74,7 @@ namespace SSWR
 			static void __stdcall OnDevChg(void *userObj);
 			static void __stdcall OnStartClicked(void *userObj);
 			static void __stdcall OnTimerTick(void *userObj);
-			static void __stdcall OnVideoFrame(UInt32 frameTime, UInt32 frameNum, UInt8 **imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, void *userData, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst);
+			static void __stdcall OnVideoFrame(Data::Duration frameTime, UInt32 frameNum, UInt8 **imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, void *userData, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst);
 			static void __stdcall OnVideoChange(Media::IVideoSource::FrameChange frChg, void *userData);
 
 			void StopCapture();

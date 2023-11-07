@@ -6,7 +6,7 @@
 #include "Media/Decoder/MP2GDecoder.h"
 #include "Sync/SimpleThread.h"
 
-void Media::Decoder::MP2GDecoder::ProcVideoFrame(UInt32 frameTime, UInt32 frameNum, UInt8 **imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst)
+void Media::Decoder::MP2GDecoder::ProcVideoFrame(Data::Duration frameTime, UInt32 frameNum, UInt8 **imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst)
 {
 	Int32 srch;
 	UOSInt endSize = dataSize - 4;
@@ -46,13 +46,13 @@ void Media::Decoder::MP2GDecoder::ProcVideoFrame(UInt32 frameTime, UInt32 frameN
 		i++;
 	}
 
-	UInt32 outFrameTime;
+	Data::Duration outFrameTime;
 	Media::FrameType outFrameType;
 	Media::IVideoSource::FrameFlag outFrameFlag;
 	Media::IVideoSource::FrameStruct outFrameStruct;
 	UInt32 outFieldOfst;
 	Bool outRFF;
-	UInt32 ftime;
+	Data::Duration ftime;
 
 	Bool lastRFF = false;
 	Media::FrameType ftype = frameType;
@@ -209,11 +209,11 @@ void Media::Decoder::MP2GDecoder::ProcVideoFrame(UInt32 frameTime, UInt32 frameN
 
 		if (outRFF)
 		{
-			ftime = outFrameTime + MulDivU32(outFieldOfst * 2 + 1, this->frameRateDenorm * 250, this->frameRateNorm);
+			ftime = outFrameTime + Data::Duration::FromRatioU64((outFieldOfst * 2 + 1) * (UInt64)this->frameRateDenorm, this->frameRateNorm * 4);
 		}
 		else
 		{
-			ftime = outFrameTime + MulDivU32(outFieldOfst, this->frameRateDenorm * 500, this->frameRateNorm);
+			ftime = outFrameTime + Data::Duration::FromRatioU64(outFieldOfst * (UInt64)this->frameRateDenorm, this->frameRateNorm * 2);
 		}
 		if (i >= endSize || !this->started)
 		{
@@ -367,7 +367,7 @@ UOSInt Media::Decoder::MP2GDecoder::GetFrameCount()
 	return 0;
 }
 
-UInt32 Media::Decoder::MP2GDecoder::GetFrameTime(UOSInt frameIndex)
+Data::Duration Media::Decoder::MP2GDecoder::GetFrameTime(UOSInt frameIndex)
 {
 	return 0;
 }

@@ -34,8 +34,8 @@ namespace Media
 
 		virtual UTF8Char *GetSourceName(UTF8Char *buff);
 		virtual Bool CanSeek();
-		virtual Int32 GetStreamTime(); //ms
-		virtual UInt32 SeekToTime(UInt32 time); //ms, ret actual time
+		virtual Data::Duration GetStreamTime();
+		virtual Data::Duration SeekToTime(Data::Duration time);
 		virtual Bool TrimStream(UInt32 trimTimeStart, UInt32 trimTimeEnd, Int32 *syncTime);
 
 		virtual void GetFormat(NotNullPtr<AudioFormat> format);
@@ -44,14 +44,14 @@ namespace Media
 		virtual void Stop();
 		virtual UOSInt ReadBlock(Data::ByteArray blk); //ret actual block size
 		virtual UOSInt GetMinBlockSize();
-		virtual UInt32 GetCurrTime();
+		virtual Data::Duration GetCurrTime();
 		virtual Bool IsEnd();
 
 		virtual void DetectStreamInfo(UInt8 *header, UOSInt headerSize);
 		virtual void ClearFrameBuff();
-		virtual void SetStreamTime(UInt32 time);
+		virtual void SetStreamTime(Data::Duration time);
 		virtual void WriteFrameStream(UInt8 *buff, UOSInt buffSize);
-		virtual Int32 GetFrameStreamTime();
+		virtual Data::Duration GetFrameStreamTime();
 		virtual void EndFrameStream();
 		virtual UInt64 GetBitRate();
 	};

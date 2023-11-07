@@ -39,12 +39,12 @@ namespace Media
 		class RendererStatus2
 		{
 		public:
-			UInt32 currTime;
+			Data::Duration currTime;
 			Int32 procDelay;
 			Int32 dispDelay;
 			Int32 dispJitter;
-			Int32 videoDelay;
-			UInt32 dispFrameTime;
+			Data::Duration videoDelay;
+			Data::Duration dispFrameTime;
 			UInt32 dispFrameNum;
 			UInt32 frameDispCnt;
 			UInt32 frameSkipBefore;
@@ -78,7 +78,7 @@ namespace Media
 			OSInt srcW;
 			OSInt srcH;
 
-			UInt32 frameTime;
+			Data::Duration frameTime;
 			UInt32 frameNum;
 			Bool discontTime;
 			Media::MonitorSurface *destSurface;
@@ -123,7 +123,7 @@ namespace Media
 		Bool hasAudio;
 		UInt32 refRate;
 		Bool manualDeint;
-		UInt32 lastFrameTime;
+		Data::Duration lastFrameTime;
 		Bool ignoreFrameTime;
 
 		UOSInt threadCnt;
@@ -152,7 +152,7 @@ namespace Media
 
 		Sync::RWMutex dispDelayMut;
 		Double *dispDelayBuff;
-		Double *dispJitterBuff;
+		Data::Duration *dispJitterBuff;
 		Int32 dispCnt;
 
 		UOSInt cropLeft;
@@ -171,8 +171,8 @@ namespace Media
 		Int32 videoProcCnt;
 		Bool updatingSize;
 
-		Int32 videoDelay;
-		UInt32 dispFrameTime;
+		Data::Duration videoDelay;
+		Data::Duration dispFrameTime;
 		UInt32 dispFrameNum;
 		UInt32 frameDispCnt;
 		UInt32 frameSkipBeforeProc;
@@ -203,7 +203,7 @@ namespace Media
 		virtual void CreateCSConv(ThreadStat *tstat, Media::FrameInfo *info);
 		virtual void CreateThreadResizer(ThreadStat *tstat);
 
-		static void __stdcall OnVideoFrame(UInt32 frameTime, UInt32 frameNum, UInt8 **imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, void *userData, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst);
+		static void __stdcall OnVideoFrame(Data::Duration frameTime, UInt32 frameNum, UInt8 **imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, void *userData, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst);
 		static void __stdcall OnVideoChange(Media::IVideoSource::FrameChange fc, void *userData);
 
 		static UInt32 __stdcall ProcessThread(void *userObj);

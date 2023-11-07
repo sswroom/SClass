@@ -364,9 +364,9 @@ Bool Net::RTPH264Handler::IsRunning()
 }
 
 
-Int32 Net::RTPH264Handler::GetStreamTime()
+Data::Duration Net::RTPH264Handler::GetStreamTime()
 {
-	return -1;
+	return Data::Duration::Infinity();
 }
 
 Bool Net::RTPH264Handler::CanSeek()
@@ -374,7 +374,7 @@ Bool Net::RTPH264Handler::CanSeek()
 	return false;
 }
 
-UInt32 Net::RTPH264Handler::SeekToTime(UInt32 time)
+Data::Duration Net::RTPH264Handler::SeekToTime(Data::Duration time)
 {
 	return 0;
 }
@@ -394,7 +394,7 @@ UOSInt Net::RTPH264Handler::GetFrameCount()
 	return 0;
 }
 
-UInt32 Net::RTPH264Handler::GetFrameTime(UOSInt frameIndex)
+Data::Duration Net::RTPH264Handler::GetFrameTime(UOSInt frameIndex)
 {
 	return 0;
 }

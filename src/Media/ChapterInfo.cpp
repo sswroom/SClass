@@ -34,9 +34,9 @@ void Media::ChapterInfo::AddChapter(UInt32 chapterTime, Text::CString chapterNam
 	}
 }
 
-UOSInt Media::ChapterInfo::GetChapterIndex(UInt32 currTime)
+UOSInt Media::ChapterInfo::GetChapterIndex(Data::Duration currTime)
 {
-	OSInt i = this->chapterTimes.SortedIndexOf(currTime);
+	OSInt i = this->chapterTimes.SortedIndexOf((UInt32)currTime.GetTotalMS());
 	if (i >= 0)
 		return (UOSInt)i;
 	else

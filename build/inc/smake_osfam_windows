@@ -50,8 +50,6 @@ Manage/StackTracer.h: ../../src/Manage/StackTracerW.cpp
 
 Media/ColorManager.h: ../../src/Media/ColorManager.cpp
 @ColorManager.o
-Media/RefClock.h: ../../src/Media/RefClockW.cpp
-@RefClock.o
 Media/VFAPI.h:
 Media/VFAudioStream.h: ../../src/Media/VFAudioStream.cpp
 @VFAudioStream.o
@@ -142,7 +140,6 @@ ProcessExecution.o: ../../src/Manage/ProcessExecutionW.cpp
 StackTracer.o: ../../src/Manage/StackTracerW.cpp
 ColorManager.o: ../../src/Media/ColorManager.cpp
 !-lgdi32
-RefClock.o: ../../src/Media/RefClockW.cpp
 VFAudioStream.o: ../../src/Media/VFAudioStream.cpp
 VFPManager.o: ../../src/Media/VFPManager.cpp
 VFVideoStream.o: ../../src/Media/VFVideoStream.cpp

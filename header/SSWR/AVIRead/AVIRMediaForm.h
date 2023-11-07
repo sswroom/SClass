@@ -55,10 +55,10 @@ namespace SSWR
 		private:
 			static Bool __stdcall OnFileRClicked(void *userObj, Math::Coord2D<OSInt> scnPos, UI::GUIControl::MouseButton btn);
 			static void __stdcall OnFileDblClicked(void *userObj);
-			static void __stdcall VideoCropImage(void *userObj, UInt32 frameTime, UInt32 frameNum, NotNullPtr<Media::StaticImage> img);
-			static Bool __stdcall OnFrameTime(UInt32 frameTime, UOSInt frameNum, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, Media::FrameType frameType, void *userData, Media::YCOffset ycOfst);
+			static void __stdcall VideoCropImage(void *userObj, Data::Duration frameTime, UInt32 frameNum, NotNullPtr<Media::StaticImage> img);
+			static Bool __stdcall OnFrameTime(Data::Duration frameTime, UOSInt frameNum, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, Media::FrameType frameType, void *userData, Media::YCOffset ycOfst);
 
-			void PBStart(UInt32 startTime);
+			void PBStart(Data::Duration startTime);
 			void PBStop();
 			Bool PBIsPlaying();
 		public:

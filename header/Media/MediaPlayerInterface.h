@@ -10,7 +10,7 @@ namespace Media
 	{
 	private:
 		Parser::ParserList *parsers;
-		UInt32 storeTime;
+		Data::Duration storeTime;
 		Media::MediaFile *currFile;
 	protected:
 		Media::MediaPlayer *player;

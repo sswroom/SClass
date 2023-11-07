@@ -29,6 +29,8 @@ namespace Media
 
 		Bool HasInfo() const;
 		Bool GetPhotoDate(Data::DateTime *dt) const;
+		UInt32 GetWidth() const;
+		UInt32 GetHeight() const;
 
 		void ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const;
 	};

@@ -114,9 +114,9 @@ namespace Data
 			UInt32 ns1 = this->nanosec;
 			UInt32 ns2 = ts.nanosec;
 			if (ns1 >= ns2)
-				return Data::Duration(secs, ns1 - ns2);
+				return Data::Duration::FromSecNS(secs, ns1 - ns2);
 			else
-				return Data::Duration(secs - 1, 1000000000 + ns1 - ns2);
+				return Data::Duration::FromSecNS(secs - 1, 1000000000 + ns1 - ns2);
 		}
 
 		Int64 ToTicks() const

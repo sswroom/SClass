@@ -62,7 +62,7 @@ void Media::AudioFilter::DynamicVolBooster::GetFormat(NotNullPtr<AudioFormat> fo
 	format->extra = 0;
 }
 
-UInt32 Media::AudioFilter::DynamicVolBooster::SeekToTime(UInt32 time)
+Data::Duration Media::AudioFilter::DynamicVolBooster::SeekToTime(Data::Duration time)
 {
 	this->ResetStatus();
 	return this->sourceAudio->SeekToTime(time);

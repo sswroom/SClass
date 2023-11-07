@@ -22,7 +22,7 @@ namespace Media
 
 			virtual void GetFormat(NotNullPtr<AudioFormat> format);
 
-			virtual UInt32 SeekToTime(UInt32 time); //ms, ret actual time
+			virtual Data::Duration SeekToTime(Data::Duration time);
 			virtual Bool Start(Sync::Event *evt, UOSInt blkSize);
 			virtual void Stop();
 			virtual UOSInt ReadBlock(Data::ByteArray blk); //ret actual block size

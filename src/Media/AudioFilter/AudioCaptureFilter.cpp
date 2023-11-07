@@ -66,7 +66,7 @@ Media::AudioFilter::AudioCaptureFilter::~AudioCaptureFilter()
 	MemFree(this->writeBuff);
 }
 
-UInt32 Media::AudioFilter::AudioCaptureFilter::SeekToTime(UInt32 time)
+Data::Duration Media::AudioFilter::AudioCaptureFilter::SeekToTime(Data::Duration time)
 {
 	return this->sourceAudio->SeekToTime(time);
 }

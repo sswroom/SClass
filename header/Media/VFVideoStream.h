@@ -40,9 +40,9 @@ namespace Media
 		virtual void Stop();
 		virtual Bool IsRunning();
 
-		virtual Int32 GetStreamTime(); //ms, -1 = infinity
+		virtual Data::Duration GetStreamTime();
 		virtual Bool CanSeek();
-		virtual UInt32 SeekToTime(UInt32 time); //ms, ret actual time
+		virtual Data::Duration SeekToTime(Data::Duration time);
 		virtual Bool IsRealTimeSrc();
 		virtual Bool TrimStream(UInt32 trimTimeStart, UInt32 trimTimeEnd, Int32 *syncTime);
 		virtual Bool SetPreferFrameType(Media::FrameType ftype);
@@ -51,7 +51,7 @@ namespace Media
 
 		virtual Bool HasFrameCount();
 		virtual UOSInt GetFrameCount();
-		virtual UInt32 GetFrameTime(UOSInt frameIndex);
+		virtual Data::Duration GetFrameTime(UOSInt frameIndex);
 		virtual void EnumFrameInfos(FrameInfoCallback cb, void *userData);
 
 		virtual UOSInt ReadNextFrame(UInt8 *frameBuff, UInt32 *frameTime, Media::FrameType *ftype); //ret 0 = no more frames

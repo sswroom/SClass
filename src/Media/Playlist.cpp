@@ -69,7 +69,7 @@ Bool Media::Playlist::AddFile(Text::CStringNN fileName)
 	Text::String *artist;
 	UOSInt i;
 	UOSInt j;
-	Int32 nextTime;
+	Data::Duration nextTime;
 	PlaylistEntry *ent;
 	if (chap)
 	{
@@ -79,7 +79,7 @@ Bool Media::Playlist::AddFile(Text::CStringNN fileName)
 		{
 			if (i >= j - 1)
 			{
-				nextTime = -1;
+				nextTime = Data::Duration::Infinity();
 			}
 			else
 			{
@@ -200,7 +200,7 @@ Text::String *Media::Playlist::GetFileName(UOSInt index) const
 	return ent->fileName.Ptr();
 }
 
-UInt32 Media::Playlist::GetTimeStart(UOSInt index) const
+Data::Duration Media::Playlist::GetTimeStart(UOSInt index) const
 {
 	PlaylistEntry *ent = this->entries.GetItem(index);
 	if (ent == 0)
@@ -208,7 +208,7 @@ UInt32 Media::Playlist::GetTimeStart(UOSInt index) const
 	return ent->timeStart;
 }
 
-Int32 Media::Playlist::GetTimeEnd(UOSInt index) const
+Data::Duration Media::Playlist::GetTimeEnd(UOSInt index) const
 {
 	PlaylistEntry *ent = this->entries.GetItem(index);
 	if (ent == 0)
@@ -246,7 +246,7 @@ Bool Media::Playlist::OpenItem(UOSInt index)
 	if (this->currFile == 0)
 		return false;
 	
-	this->currFile->TrimFile(ent->timeStart, ent->timeEnd);
+	this->currFile->TrimFile((UInt32)ent->timeStart.GetTotalMS(), (Int32)ent->timeEnd.GetTotalMS());
 
 	if (!this->player->LoadMedia(this->currFile))
 		return false;
@@ -311,7 +311,7 @@ Bool Media::Playlist::NextChapter()
 	return true;
 }
 
-UInt32 Media::Playlist::GetCurrTime()
+Data::Duration Media::Playlist::GetCurrTime()
 {
 	if (this->player == 0)
 	{

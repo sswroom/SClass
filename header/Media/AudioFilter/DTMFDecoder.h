@@ -41,7 +41,7 @@ namespace Media
 			DTMFDecoder(NotNullPtr<Media::IAudioSource> audSrc, UOSInt calcInt);
 			virtual ~DTMFDecoder();
 
-			virtual UInt32 SeekToTime(UInt32 time); //ms, ret actual time
+			virtual Data::Duration SeekToTime(Data::Duration time);
 			virtual UOSInt ReadBlock(Data::ByteArray blk); //ret actual block size
 
 			void HandleToneChange(ToneChangeEvent hdlr, void *userObj);

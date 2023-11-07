@@ -15,7 +15,7 @@
 void Media::M2VStreamSource::SubmitFrame(UOSInt frameSize, UOSInt frameStart, UOSInt pictureStart)
 {
 	UOSInt fieldCnt = 2;
-	UInt32 fieldAdd = 0;
+	Data::Duration fieldAdd = 0;
 	UInt32 startCode;
 	Media::MPEGVideoParser::MPEGFrameProp prop;
 	this->totalFrameCnt++;
@@ -104,7 +104,7 @@ void Media::M2VStreamSource::SubmitFrame(UOSInt frameSize, UOSInt frameStart, UO
 		if (prop.rff)
 		{
 			fieldCnt = 3;
-			fieldAdd = 500 * this->frameRateDenorm / this->frameRateNorm;
+			fieldAdd = Data::Duration::FromRatioU64(this->frameRateDenorm, this->frameRateNorm * 2);
 		}
 		else if (prop.pictureStruct == Media::MPEGVideoParser::PS_FRAME)
 		{
@@ -206,7 +206,7 @@ void Media::M2VStreamSource::SubmitFrame(UOSInt frameSize, UOSInt frameStart, UO
 		}
 		this->frameNum++;
 	}
-	this->thisFrameTime = this->syncFrameTime + MulDivU32((UInt32)this->syncFieldCnt, 500 * this->frameRateDenorm, this->frameRateNorm);
+	this->thisFrameTime = this->syncFrameTime + Data::Duration::FromRatioU64(this->syncFieldCnt * (UInt64)this->frameRateDenorm, this->frameRateNorm * 2);
 	this->syncFieldCnt += fieldCnt;
 }
 
@@ -373,7 +373,7 @@ UInt32 __stdcall Media::M2VStreamSource::PlayThread(void *userObj)
 			UInt8 *frameBuff = me->playBuff[me->playBuffStart].frame;
 			UInt32 frameSize = (UInt32)me->playBuff[me->playBuffStart].frameSize;
 			UInt32 frameNum = (UInt32)me->playBuff[me->playBuffStart].frameNum;
-			UInt32 frameTime = me->playBuff[me->playBuffStart].frameTime;
+			Data::Duration frameTime = me->playBuff[me->playBuffStart].frameTime;
 
 			me->playBuffStart++;
 			if (me->playBuffStart >= PLAYBUFFSIZE)
@@ -547,7 +547,7 @@ Bool Media::M2VStreamSource::IsRunning()
 	return this->pbc->IsRunning() || this->playing;
 }
 
-Int32 Media::M2VStreamSource::GetStreamTime()
+Data::Duration Media::M2VStreamSource::GetStreamTime()
 {
 	return this->pbc->GetStreamTime();
 }
@@ -557,7 +557,7 @@ Bool Media::M2VStreamSource::CanSeek()
 	return this->pbc->CanSeek();
 }
 
-UInt32 Media::M2VStreamSource::SeekToTime(UInt32 time)
+Data::Duration Media::M2VStreamSource::SeekToTime(Data::Duration time)
 {
 	this->frameBuffSize = 0;
 	return this->pbc->SeekToTime(time);
@@ -590,7 +590,7 @@ UOSInt Media::M2VStreamSource::GetFrameCount()
 	return 0;
 }
 
-UInt32 Media::M2VStreamSource::GetFrameTime(UOSInt frameIndex)
+Data::Duration Media::M2VStreamSource::GetFrameTime(UOSInt frameIndex)
 {
 	return 0;
 }
@@ -641,7 +641,7 @@ void Media::M2VStreamSource::ClearFrameBuff()
 	this->ClearPlayBuff();
 }
 
-void Media::M2VStreamSource::SetStreamTime(UInt32 time)
+void Media::M2VStreamSource::SetStreamTime(Data::Duration time)
 {
 #ifdef _DEBUG
 	NotNullPtr<Sync::Mutex> debugMut;
@@ -770,9 +770,9 @@ void Media::M2VStreamSource::WriteFrameStream(UInt8 *buff, UOSInt buffSize)
 	}
 }
 
-Int32 Media::M2VStreamSource::GetFrameStreamTime()
+Data::Duration Media::M2VStreamSource::GetFrameStreamTime()
 {
-	return (Int32)this->thisFrameTime;
+	return this->thisFrameTime;
 }
 
 void Media::M2VStreamSource::EndFrameStream()

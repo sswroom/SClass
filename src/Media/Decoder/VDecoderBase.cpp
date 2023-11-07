@@ -2,7 +2,7 @@
 #include "MyMemory.h"
 #include "Media/Decoder/VDecoderBase.h"
 
-void __stdcall Media::Decoder::VDecoderBase::OnVideoFrame(UInt32 frameTime, UInt32 frameNum, UInt8 **imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, void *userData, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst)
+void __stdcall Media::Decoder::VDecoderBase::OnVideoFrame(Data::Duration frameTime, UInt32 frameNum, UInt8 **imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, void *userData, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst)
 {
 	Media::Decoder::VDecoderBase *me = (Media::Decoder::VDecoderBase*)userData;
 	me->ProcVideoFrame(frameTime, frameNum, imgData, dataSize, frameStruct, frameType, flags, ycOfst);
@@ -82,7 +82,7 @@ Bool Media::Decoder::VDecoderBase::IsRunning()
 	return this->sourceVideo->IsRunning();
 }
 
-Int32 Media::Decoder::VDecoderBase::GetStreamTime()
+Data::Duration Media::Decoder::VDecoderBase::GetStreamTime()
 {
 	if (this->sourceVideo)
 		return this->sourceVideo->GetStreamTime();
@@ -96,7 +96,7 @@ Bool Media::Decoder::VDecoderBase::CanSeek()
 	return false;
 }
 
-UInt32 Media::Decoder::VDecoderBase::SeekToTime(UInt32 time)
+Data::Duration Media::Decoder::VDecoderBase::SeekToTime(Data::Duration time)
 {
 	if (this->sourceVideo)
 		return this->sourceVideo->SeekToTime(time);

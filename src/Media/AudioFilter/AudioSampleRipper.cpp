@@ -38,7 +38,7 @@ Media::AudioFilter::AudioSampleRipper::~AudioSampleRipper()
 	}
 }
 
-UInt32 Media::AudioFilter::AudioSampleRipper::SeekToTime(UInt32 time)
+Data::Duration Media::AudioFilter::AudioSampleRipper::SeekToTime(Data::Duration time)
 {
 	this->ResetStatus();
 	return this->sourceAudio->SeekToTime(time);

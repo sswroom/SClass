@@ -56,7 +56,7 @@ Media::AudioFilter::AudioLevelMeter::~AudioLevelMeter()
 	}
 }
 
-UInt32 Media::AudioFilter::AudioLevelMeter::SeekToTime(UInt32 time)
+Data::Duration Media::AudioFilter::AudioLevelMeter::SeekToTime(Data::Duration time)
 {
 	this->ResetStatus();
 	return this->sourceAudio->SeekToTime(time);

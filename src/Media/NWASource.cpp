@@ -39,16 +39,16 @@ Media::NWASource::~NWASource()
 	MemFree(this->blockBuff);
 }
 
-Int32 Media::NWASource::GetStreamTime()
+Data::Duration Media::NWASource::GetStreamTime()
 {
-	return (Int32)(this->sampleCount * 1000 / this->format.frequency / this->format.nChannels);
+	return Data::Duration::FromRatioU64(this->sampleCount, this->format.frequency * this->format.nChannels);
 }
 
-UInt32 Media::NWASource::SeekToTime(UInt32 time)
+Data::Duration Media::NWASource::SeekToTime(Data::Duration time)
 {
 	UInt32 blkSample = this->blockSize / this->format.nChannels;
-	this->currBlock = time * this->format.frequency / blkSample / 1000;
-	return this->currBlock * blkSample * 1000 / this->format.frequency;
+	this->currBlock = (UInt32)(time.MultiplyU64(this->format.frequency) / blkSample);
+	return Data::Duration::FromRatioU64(this->currBlock * blkSample, this->format.frequency);
 }
 
 UOSInt Media::NWASource::ReadBlock(Data::ByteArray buff)
@@ -239,8 +239,8 @@ UOSInt Media::NWASource::GetMinBlockSize()
 	return this->blockSize * (this->format.bitpersample / 8);
 }
 
-UInt32 Media::NWASource::GetCurrTime()
+Data::Duration Media::NWASource::GetCurrTime()
 {
 	UInt32 blkSample = this->blockSize / this->format.nChannels;
-	return this->currBlock * blkSample * 1000 / this->format.frequency;
+	return Data::Duration::FromRatioU64(this->currBlock * blkSample, this->format.frequency);
 }

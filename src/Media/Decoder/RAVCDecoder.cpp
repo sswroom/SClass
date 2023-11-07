@@ -9,7 +9,7 @@
 
 #define ALLONE 1
 
-void Media::Decoder::RAVCDecoder::ProcVideoFrame(UInt32 frameTime, UInt32 frameNum, UInt8 **imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst)
+void Media::Decoder::RAVCDecoder::ProcVideoFrame(Data::Duration frameTime, UInt32 frameNum, UInt8 **imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst)
 {
 	Sync::MutexUsage mutUsage(this->frameMut);
 	Bool found = false;
@@ -168,7 +168,7 @@ void Media::Decoder::RAVCDecoder::ProcVideoFrame(UInt32 frameTime, UInt32 frameN
 				}
 				frameFound = false;
 				frameBuff = this->frameBuff;
-				frameTime += 16;
+				frameTime = frameTime.AddMS(16);
 #if defined(ALLONE)
 				WriteMInt32(frameBuff, 1);
 #else
@@ -453,7 +453,7 @@ UOSInt Media::Decoder::RAVCDecoder::GetFrameCount()
 	return 0;
 }
 
-UInt32 Media::Decoder::RAVCDecoder::GetFrameTime(UOSInt frameIndex)
+Data::Duration Media::Decoder::RAVCDecoder::GetFrameTime(UOSInt frameIndex)
 {
 	if (this->sourceVideo)
 	{

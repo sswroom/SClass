@@ -803,7 +803,7 @@ void Media::VideoRenderer::CreateThreadResizer(ThreadStat *tstat)
 	tstat->resizer10Bit = this->curr10Bit;
 }
 
-void __stdcall Media::VideoRenderer::OnVideoFrame(UInt32 frameTime, UInt32 frameNum, UInt8 **imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, void *userData, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst)
+void __stdcall Media::VideoRenderer::OnVideoFrame(Data::Duration frameTime, UInt32 frameNum, UInt8 **imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, void *userData, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst)
 {
 	Media::VideoRenderer *me = (Media::VideoRenderer*)userData;
 	if (me->ignoreFrameTime)
@@ -855,7 +855,7 @@ void __stdcall Media::VideoRenderer::OnVideoFrame(UInt32 frameTime, UInt32 frame
 			me->dispEvt.Wait(100);
 		}
 		me->dispMut.LockRead();
-		me->dispClk->Start((UInt32)((Int32)frameTime - me->timeDelay - me->avOfst));
+		me->dispClk->Start(frameTime.AddMS(-me->timeDelay - me->avOfst));
 		me->dispMut.UnlockRead();
 	}
 	if (frameType == Media::FT_DISCARD)
@@ -1183,7 +1183,7 @@ UInt32 __stdcall Media::VideoRenderer::ProcessThread(void *userObj)
 	Bool found;
 	Bool hasNew;
 	UOSInt minIndex = 0;
-	UInt32 minTime = 0;
+	Data::Duration minTime = 0;
 	UInt32 minFrame = 0;
 
 	tstat->status = 1;
@@ -1259,7 +1259,7 @@ UInt32 __stdcall Media::VideoRenderer::ProcessThread(void *userObj)
 				buff2 = 0;
 			}
 
-			UInt32 currTime = 0;
+			Data::Duration currTime = 0;
 			Bool toSkip = false;
 
 			tstat->me->dispMut.LockRead();
@@ -1267,14 +1267,14 @@ UInt32 __stdcall Media::VideoRenderer::ProcessThread(void *userObj)
 			{
 				if (!tstat->me->dispClk->Running() || buff->discontTime)
 				{
-					tstat->me->dispClk->Start((UInt32)((Int32)buff->frameTime - tstat->me->timeDelay - tstat->me->avOfst));
+					tstat->me->dispClk->Start(buff->frameTime.AddMS(-tstat->me->timeDelay - tstat->me->avOfst));
 					currTime = buff->frameTime;
 				}
 				else
 				{
 					Int32 procDelay = tstat->me->CalProcDelay();
 					Int32 dispDelay = tstat->me->CalDispDelay();
-					currTime = (UInt32)((Int32)tstat->me->dispClk->GetCurrTime() + tstat->me->timeDelay + tstat->me->avOfst + procDelay + dispDelay + PREPROCTIME);
+					currTime = tstat->me->dispClk->GetCurrTime().AddMS(tstat->me->timeDelay + tstat->me->avOfst + procDelay + dispDelay + PREPROCTIME);
 					if (buff->flags & Media::IVideoSource::FF_FORCEDISP)
 					{
 					}
@@ -1345,8 +1345,8 @@ UInt32 __stdcall Media::VideoRenderer::DisplayThread(void *userObj)
 	Bool found2;
 	UInt32 minFrame = 0;
 	UInt32 minFrame2 = 0;
-	UInt32 minTime = 0;
-	UInt32 minTime2 = 0;
+	Data::Duration minTime = 0;
+	Data::Duration minTime2 = 0;
 	UOSInt lastW = 0;
 	UOSInt lastH = 0;
 	Bool toClear;
@@ -1409,13 +1409,13 @@ UInt32 __stdcall Media::VideoRenderer::DisplayThread(void *userObj)
 				{
 					if (me->buffs[minIndex].isOutputReady)
 					{
-						Int32 t;
+						Data::Duration t;
 //						Int32 dispDelay = me->CalDispDelay();
 						Bool skipFrame = false;;
-						t = ((Int32)me->dispClk->GetCurrTime() + me->timeDelay + me->avOfst);
+						t = me->dispClk->GetCurrTime().AddMS(me->timeDelay + me->avOfst);
 						if (found2 && (me->buffs[minIndex].flags & Media::IVideoSource::FF_FORCEDISP) == 0)
 						{
-							if (t > (Int32)(minTime2 + 17) && ((me->buffs[minIndex].flags & Media::IVideoSource::FF_REALTIME) == 0 || me->hasAudio))
+							if (t > minTime2.AddMS(17) && ((me->buffs[minIndex].flags & Media::IVideoSource::FF_REALTIME) == 0 || me->hasAudio))
 							{
 								skipFrame = true;
 							}
@@ -1434,7 +1434,7 @@ UInt32 __stdcall Media::VideoRenderer::DisplayThread(void *userObj)
 							Manage::HiResClock clk;
 							Double dispT;
 							Media::IVideoSource::FrameFlag flags = me->buffs[minIndex].flags;
-							UInt32 frameTime = me->buffs[minIndex].frameTime;
+							Data::Duration frameTime = me->buffs[minIndex].frameTime;
 							UInt32 frameNum = me->buffs[minIndex].frameNum;
 							////////////////////////////////
 							
@@ -1456,17 +1456,17 @@ UInt32 __stdcall Media::VideoRenderer::DisplayThread(void *userObj)
 								{
 									dispJitter = 1000 / (Int32)me->refRate;
 								}
-								while ((t = ((Int32)me->dispClk->GetCurrTime() + me->timeDelay + me->avOfst + dispJitter)) < (Int32)frameTime)
+								while ((t = me->dispClk->GetCurrTime().AddMS(me->timeDelay + me->avOfst + dispJitter)) < frameTime)
 								{
-									if ((Int32)frameTime - t > 3000 && me->videoDelay > -3000)
+									if ((frameTime - t).GetTotalMS() > 3000 && me->videoDelay.GetTotalMS() > -3000)
 										break;
-									me->dispEvt.Wait((UOSInt)(OSInt)((Int32)frameTime - t));
+									me->dispEvt.Wait(frameTime - t);
 									if (me->dispToStop || !me->playing)
 										break;
 								}
 							}
-							UInt32 startTime = me->dispClk->GetCurrTime();
-							me->videoDelay = (Int32)(startTime - frameTime);
+							Data::Duration startTime = me->dispClk->GetCurrTime();
+							me->videoDelay = (startTime - frameTime);
 							me->dispMut.UnlockRead();
 							clk.Start();
 							me->VideoBeginProc();
@@ -1505,7 +1505,7 @@ UInt32 __stdcall Media::VideoRenderer::DisplayThread(void *userObj)
 							dispT = clk.GetTimeDiff();
 							me->dispDelayMut.LockWrite();
 							me->dispDelayBuff[me->dispCnt & (DISPDELAYBUFF - 1)] = dispT;
-							me->dispJitterBuff[me->dispCnt & (DISPDELAYBUFF - 1)] = (startTime + dispT * 1000.0) - (Int32)frameTime + me->timeDelay + me->avOfst;
+							me->dispJitterBuff[me->dispCnt & (DISPDELAYBUFF - 1)] = startTime.AddSecDbl(dispT) - frameTime.AddMS(me->timeDelay + me->avOfst);
 							me->dispCnt++;
 							me->dispDelayMut.UnlockWrite();
 							
@@ -1683,7 +1683,7 @@ Int32 Media::VideoRenderer::CalDispDelay()
 Int32 Media::VideoRenderer::CalDispJitter()
 {
 	Int32 dispJitter;
-	Double totalJitter;
+	Data::Duration totalJitter;
 	OSInt i;
 	this->dispDelayMut.LockRead();
 	if (this->dispCnt == 0)
@@ -1696,9 +1696,9 @@ Int32 Media::VideoRenderer::CalDispJitter()
 		i = this->dispCnt;
 		while (i-- > 0)
 		{
-			totalJitter += this->dispJitterBuff[i];
+			totalJitter = totalJitter + this->dispJitterBuff[i];
 		}
-		dispJitter = Double2Int32(totalJitter / (Double)this->dispCnt);
+		dispJitter = (Int32)(totalJitter.GetTotalMS() / this->dispCnt);
 	}
 	else
 	{
@@ -1706,9 +1706,9 @@ Int32 Media::VideoRenderer::CalDispJitter()
 		i = DISPDELAYBUFF;
 		while (i-- > 0)
 		{
-			totalJitter += this->dispJitterBuff[i];
+			totalJitter = totalJitter + this->dispJitterBuff[i];
 		}
-		dispJitter = Double2Int32(totalJitter / (Double)DISPDELAYBUFF);
+		dispJitter = (Int32)(totalJitter.GetTotalMS() / DISPDELAYBUFF);
 	}
 	this->dispDelayMut.UnlockRead();
 	return dispJitter;
@@ -1793,7 +1793,7 @@ Media::VideoRenderer::VideoRenderer(Media::ColorManagerSess *colorSess, NotNullP
 	this->procCnt = 0;
 
 	this->dispDelayBuff = MemAlloc(Double, DISPDELAYBUFF);
-	this->dispJitterBuff = MemAlloc(Double, DISPDELAYBUFF);
+	this->dispJitterBuff = MemAlloc(Data::Duration, DISPDELAYBUFF);
 
 	this->buffs = MemAlloc(VideoBuff, this->allBuffCnt);
 	i = allBuffCnt;
