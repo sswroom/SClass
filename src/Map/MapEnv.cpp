@@ -29,7 +29,7 @@ UInt8 Map::MapEnv::GetRandomColor()
 	return (UInt8)i;
 }
 
-UOSInt Map::MapEnv::GetLayersInList(Data::ArrayList<Map::MapDrawLayer*> *layers, const Data::ArrayList<Map::MapEnv::MapItem*> *list, Map::DrawLayerType lyrType) const
+UOSInt Map::MapEnv::GetLayersInList(NotNullPtr<Data::ArrayListNN<Map::MapDrawLayer>> layers, const Data::ArrayList<Map::MapEnv::MapItem*> *list, Map::DrawLayerType lyrType) const
 {
 	MapItem *item;
 	UOSInt retCnt = 0;
@@ -503,7 +503,7 @@ Bool Map::MapEnv::ChgFontStyle(UOSInt index, NotNullPtr<Text::String> fontName, 
 	return true;
 }
 
-UOSInt Map::MapEnv::AddLayer(Map::MapEnv::GroupItem *group, Map::MapDrawLayer *layer, Bool needRelease)
+UOSInt Map::MapEnv::AddLayer(Map::MapEnv::GroupItem *group, NotNullPtr<Map::MapDrawLayer> layer, Bool needRelease)
 {
 	Sync::MutexUsage mutUsage(this->mut);
 	if (layer->GetObjectClass() == Map::MapDrawLayer::OC_MAP_LAYER_COLL)// && layer->GetLayerType() == Map::DRAW_LAYER_MIXED)
@@ -511,12 +511,12 @@ UOSInt Map::MapEnv::AddLayer(Map::MapEnv::GroupItem *group, Map::MapDrawLayer *l
 		UTF8Char sbuff[512];
 		UTF8Char *sptr;
 		UTF8Char *sptr2;
-		Map::MapLayerCollection *layerColl = (Map::MapLayerCollection*)layer;
+		NotNullPtr<Map::MapLayerCollection> layerColl = NotNullPtr<Map::MapLayerCollection>::ConvertFrom(layer);
 		sptr = layerColl->GetName()->ConcatTo(sbuff);
 		sptr2 = &sbuff[Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), '\\') + 1];
 		Map::MapEnv::GroupItem *grp = this->AddGroup(group, CSTRP(sptr2, sptr));
 
-		Map::MapDrawLayer *layer;
+		NotNullPtr<Map::MapDrawLayer> layer;
 		UOSInt i;
 		UOSInt j;
 		UOSInt k;
@@ -536,18 +536,20 @@ UOSInt Map::MapEnv::AddLayer(Map::MapEnv::GroupItem *group, Map::MapDrawLayer *l
 		j = layers.GetCount();
 		while (i < j)
 		{
-			layer = layers.GetItem(i);
-			k = layerColl->GetUpdatedHandlerCnt();
-			while (k-- > 0)
+			if (layer.Set(layers.GetItem(i)))
 			{
-				layer->AddUpdatedHandler(layerColl->GetUpdatedHandler(k), layerColl->GetUpdatedObject(k));
+				k = layerColl->GetUpdatedHandlerCnt();
+				while (k-- > 0)
+				{
+					layer->AddUpdatedHandler(layerColl->GetUpdatedHandler(k), layerColl->GetUpdatedObject(k));
+				}
+				this->AddLayer(grp, layer, needRelease);
 			}
-			this->AddLayer(grp, layer, needRelease);
 			i++;
 		}
 		if (needRelease)
 		{
-			DEL_CLASS(layerColl);
+			layerColl.Delete();
 		}
 		return 1;
 	}
@@ -629,7 +631,7 @@ UOSInt Map::MapEnv::AddLayer(Map::MapEnv::GroupItem *group, Map::MapDrawLayer *l
 	}
 }
 
-Bool Map::MapEnv::ReplaceLayer(Map::MapEnv::GroupItem *group, UOSInt index, Map::MapDrawLayer *layer, Bool needRelease)
+Bool Map::MapEnv::ReplaceLayer(Map::MapEnv::GroupItem *group, UOSInt index, NotNullPtr<Map::MapDrawLayer> layer, Bool needRelease)
 {
 	Map::MapEnv::MapItem *item;
 	if (group)
@@ -645,7 +647,7 @@ Bool Map::MapEnv::ReplaceLayer(Map::MapEnv::GroupItem *group, UOSInt index, Map:
 		Map::MapEnv::LayerItem *lyr = (Map::MapEnv::LayerItem*)item;
 		if (lyr->needRelease)
 		{
-			DEL_CLASS(lyr->layer);
+			lyr->layer.Delete();
 		}
 		lyr->layer = layer;
 		lyr->needRelease = needRelease;
@@ -717,7 +719,7 @@ void Map::MapEnv::RemoveItem(Map::MapEnv::GroupItem *group, UOSInt index)
 		Map::MapEnv::LayerItem *lyr = (Map::MapEnv::LayerItem*)item;
 		if (lyr->needRelease)
 		{
-			DEL_CLASS(lyr->layer);
+			lyr->layer.Delete();
 		}
 		SDEL_STRING(lyr->fontName);
 		MemFree(lyr);
@@ -1226,7 +1228,7 @@ UOSInt Map::MapEnv::GetImageFileIndex(UOSInt index) const
 	return 0;
 }
 
-UOSInt Map::MapEnv::GetLayersOfType(Data::ArrayList<Map::MapDrawLayer *> *layers, Map::DrawLayerType lyrType) const
+UOSInt Map::MapEnv::GetLayersOfType(NotNullPtr<Data::ArrayListNN<Map::MapDrawLayer>> layers, Map::DrawLayerType lyrType) const
 {
 	return this->GetLayersInList(layers, &this->mapLayers, lyrType);
 }
@@ -1387,7 +1389,7 @@ Map::MapDrawLayer *Map::MapEnv::GetFirstLayer(Map::MapEnv::GroupItem *group) con
 		{
 			if (item->itemType == Map::MapEnv::IT_LAYER)
 			{
-				return ((Map::MapEnv::LayerItem*)item)->layer;
+				return ((Map::MapEnv::LayerItem*)item)->layer.Ptr();
 			}
 			else if (item->itemType == Map::MapEnv::IT_GROUP)
 			{
@@ -1401,7 +1403,7 @@ Map::MapDrawLayer *Map::MapEnv::GetFirstLayer(Map::MapEnv::GroupItem *group) con
 	return 0;
 }
 
-UOSInt Map::MapEnv::GetLayersInGroup(Map::MapEnv::GroupItem *group, Data::ArrayList<Map::MapDrawLayer *> *layers) const
+UOSInt Map::MapEnv::GetLayersInGroup(Map::MapEnv::GroupItem *group, NotNullPtr<Data::ArrayListNN<Map::MapDrawLayer>> layers) const
 {
 	const Data::ArrayList<Map::MapEnv::MapItem*> *objs;
 	Map::MapEnv::MapItem *item;
@@ -1441,9 +1443,9 @@ UOSInt Map::MapEnv::GetLayersInGroup(Map::MapEnv::GroupItem *group, Data::ArrayL
 
 Bool Map::MapEnv::GetBounds(Map::MapEnv::GroupItem *group, Math::RectAreaDbl *bounds) const
 {
-	Data::ArrayList<Map::MapDrawLayer*> layers;
+	Data::ArrayListNN<Map::MapDrawLayer> layers;
 	UOSInt i = 0;
-	UOSInt j = this->GetLayersInGroup(group, &layers);
+	UOSInt j = this->GetLayersInGroup(group, layers);
 	Math::RectAreaDbl minMax = Math::RectAreaDbl(0, 0, 0, 0);
 	Math::RectAreaDbl thisBounds;
 	NotNullPtr<Math::CoordinateSystem> lyrCSys;

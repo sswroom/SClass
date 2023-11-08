@@ -387,7 +387,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnViewClicked(void *userObj)
 	{
 		UOSInt buffSize;
 		UInt8 *buff = me->respData->GetBuff(buffSize);
-		Text::IMIMEObj *mimeObj;
+		NotNullPtr<Text::IMIMEObj> mimeObj;
 		{
 			IO::StmData::MemoryDataRef md(buff, buffSize);
 			Text::CStringNN contType;
@@ -399,11 +399,10 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnViewClicked(void *userObj)
 			{
 				contType = CSTR("application/octet-stream");
 			}
-			mimeObj = Text::IMIMEObj::ParseFromData(md, contType);
-		}
-		if (mimeObj)
-		{
-			me->core->OpenObject(mimeObj);
+			if (mimeObj.Set(Text::IMIMEObj::ParseFromData(md, contType)))
+			{
+				me->core->OpenObject(mimeObj);
+			}
 		}
 	}
 	mutUsage.EndUse();
@@ -517,7 +516,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnCertClicked(void *userObj)
 	SSWR::AVIRead::AVIRHTTPClientForm *me = (SSWR::AVIRead::AVIRHTTPClientForm*)userObj;
 	if (me->respCert)
 	{
-		me->core->OpenObject(me->respCert->Clone().Ptr());
+		me->core->OpenObject(me->respCert->Clone());
 	}
 }
 

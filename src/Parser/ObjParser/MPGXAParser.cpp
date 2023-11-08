@@ -31,12 +31,12 @@ IO::ParserType Parser::ObjParser::MPGXAParser::GetParserType()
 	return IO::ParserType::MediaFile;
 }
 
-IO::ParsedObject *Parser::ObjParser::MPGXAParser::ParseObject(IO::ParsedObject *pobj, IO::PackageFile *pkgFile, IO::ParserType targetType)
+IO::ParsedObject *Parser::ObjParser::MPGXAParser::ParseObject(NotNullPtr<IO::ParsedObject> pobj, IO::PackageFile *pkgFile, IO::ParserType targetType)
 {
-	IO::ISectorData *data;
+	NotNullPtr<IO::ISectorData> data;
 	if (pobj->GetParserType() != IO::ParserType::SectorData)
 		return 0;
-	data = (IO::ISectorData*)pobj;
+	data = NotNullPtr<IO::ISectorData>::ConvertFrom(pobj);
 	if (data->GetBytesPerSector() != 2352)
 		return 0;
 

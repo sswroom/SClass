@@ -73,7 +73,7 @@ namespace SSWR
 		public:
 			virtual ~AVIRCore();
 
-			virtual void OpenObject(IO::ParsedObject *pobj) = 0;
+			virtual void OpenObject(NotNullPtr<IO::ParsedObject> pobj) = 0;
 			virtual void SaveData(UI::GUIForm *ownerForm, IO::ParsedObject *pobj, const WChar *dialogName) = 0;
 			virtual Media::Printer *SelectPrinter(UI::GUIForm *frm) = 0;
 

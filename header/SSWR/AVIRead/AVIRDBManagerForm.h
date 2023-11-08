@@ -92,7 +92,7 @@ namespace SSWR
 			DB::ReadingDB *currDB;
 			NotNullPtr<Media::ColorManagerSess> colorSess;
 			Map::MapEnv *mapEnv;
-			Map::DBMapLayer *dbLayer;
+			NotNullPtr<Map::DBMapLayer> dbLayer;
 			Math::Coord2D<OSInt> mapDownPos;
 			Bool sqlFileMode;
 

@@ -500,13 +500,13 @@ void Map::MapDrawLayer::FreeObjects(NotNullPtr<Data::ArrayList<ObjectInfo*>> obj
 	objList->Clear();
 }
 
-Map::VectorLayer *Map::MapDrawLayer::CreateEditableLayer()
+NotNullPtr<Map::VectorLayer> Map::MapDrawLayer::CreateEditableLayer()
 {
 	UTF8Char *sbuff = MemAlloc(UTF8Char, 65536);
 	UTF8Char *sptr;
 	UTF8Char *sptr2;
 	const UTF8Char **sptrs;
-	Map::VectorLayer *lyr;
+	NotNullPtr<Map::VectorLayer> lyr;
 	Data::ArrayListInt64 objIds;
 	Math::Geometry::Vector2D *vec;
 	NotNullPtr<Math::Geometry::Vector2D> nnvec;
@@ -535,7 +535,7 @@ Map::VectorLayer *Map::MapDrawLayer::CreateEditableLayer()
 		}
 	}
 	NotNullPtr<Math::CoordinateSystem> csys = this->csys->Clone();
-	NEW_CLASS(lyr, Map::VectorLayer(this->GetLayerType(), this->sourceName, k, (const UTF8Char**)sptrs, csys, this->GetNameCol(), this->layerName));
+	NEW_CLASSNN(lyr, Map::VectorLayer(this->GetLayerType(), this->sourceName, k, (const UTF8Char**)sptrs, csys, this->GetNameCol(), this->layerName));
 
 	sess = this->BeginGetObject();
 	this->GetAllObjectIds(objIds, &nameArr);

@@ -34,15 +34,16 @@ void __stdcall SSWR::AVIRead::AVIRASN1ParseForm::OnParseClicked(void *userObj)
 	if (ofst + baseLen == len)
 	{
 		Crypto::Cert::X509File *x509 = 0;
+		NotNullPtr<Crypto::Cert::X509File> pobj;
 		switch (me->cboType->GetSelectedIndex())
 		{
 		case 0:
 			NEW_CLASS(x509, Crypto::Cert::X509Cert(CSTR("Cert"), buff));
 			break;
 		}
-		if (x509)
+		if (pobj.Set(x509))
 		{
-			me->core->OpenObject(x509);
+			me->core->OpenObject(pobj);
 		}
 		else
 		{

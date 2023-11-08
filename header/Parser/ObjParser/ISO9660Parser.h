@@ -17,10 +17,10 @@ namespace Parser
 			virtual Int32 GetName();
 			virtual void PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t);
 			virtual IO::ParserType GetParserType();
-			virtual IO::ParsedObject *ParseObject(IO::ParsedObject *pobj, IO::PackageFile *pkgFile, IO::ParserType targetType);
+			virtual IO::ParsedObject *ParseObject(NotNullPtr<IO::ParsedObject> pobj, IO::PackageFile *pkgFile, IO::ParserType targetType);
 
-			IO::PackageFile *ParseVol(IO::ISectorData *sectorData, UInt32 sectorNum, UInt32 codePage);
-			void ParseDir(IO::PackageFile *pkgFile, IO::ISectorData *sectorData, UInt32 sectorNum, UInt32 recSize, UTF8Char *fileNameBuff, UTF8Char *fileNameEnd, UInt32 codePage);
+			NotNullPtr<IO::PackageFile> ParseVol(NotNullPtr<IO::ISectorData> sectorData, UInt32 sectorNum, UInt32 codePage);
+			void ParseDir(NotNullPtr<IO::PackageFile> pkgFile, NotNullPtr<IO::ISectorData> sectorData, UInt32 sectorNum, UInt32 recSize, UTF8Char *fileNameBuff, UTF8Char *fileNameEnd, UInt32 codePage);
 		};
 	};
 };

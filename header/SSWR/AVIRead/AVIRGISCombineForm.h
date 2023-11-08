@@ -27,7 +27,7 @@ namespace SSWR
 			UI::GUIButton *btnCancel;
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
-			Data::ArrayList<Map::MapDrawLayer*> *layers;
+			NotNullPtr<Data::ArrayListNN<Map::MapDrawLayer>> layers;
 			Data::ArrayList<Map::MapDrawLayer*> *selLayers;
 
 		private:
@@ -37,7 +37,7 @@ namespace SSWR
 			static void __stdcall OnCancelClick(void *userObj);
 
 		public:
-			AVIRGISCombineForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Data::ArrayList<Map::MapDrawLayer*> *layers);
+			AVIRGISCombineForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<Data::ArrayListNN<Map::MapDrawLayer>> layers);
 			virtual ~AVIRGISCombineForm();
 
 			virtual void OnMonitorChanged();

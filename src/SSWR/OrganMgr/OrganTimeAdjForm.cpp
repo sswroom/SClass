@@ -233,7 +233,10 @@ SSWR::OrganMgr::OrganTimeAdjForm::OrganTimeAdjForm(UI::GUIClientControl *parent,
 
 	this->env = env;
 	this->dataFile = dataFile;
-	this->gpsTrk = this->env->OpenGPSTrack(dataFile);
+	if (!this->gpsTrk.Set(this->env->OpenGPSTrack(dataFile)))
+	{
+		NEW_CLASSNN(this->gpsTrk, Map::GPSTrack(CSTR("Untitled"), false, 65001, CSTR("Untitled")));
+	}
 	this->colorSess = this->env->GetColorMgr()->CreateSess(this->GetHMonitor());
 	this->dispImg = 0;
 	this->selImgCamera = 0;
@@ -256,7 +259,7 @@ SSWR::OrganMgr::OrganTimeAdjForm::OrganTimeAdjForm(UI::GUIClientControl *parent,
 	tileMap->AddAlternateURL(CSTR("http://b.tile.opencyclemap.org/cycle/"));
 	tileMap->AddAlternateURL(CSTR("http://c.tile.opencyclemap.org/cycle/"));
 	this->mapTile = tileMap;
-	NEW_CLASS(this->mapTileLyr, Map::TileMapLayer(tileMap, this->env->GetParserList()));
+	NEW_CLASSNN(this->mapTileLyr, Map::TileMapLayer(tileMap, this->env->GetParserList()));
 	this->mapTileLyr->AddUpdatedHandler(OnTileUpdated, this);
 	NEW_CLASS(this->mapEnv, Map::MapEnv(CSTR("File"), 0, this->mapTileLyr->GetCoordinateSystem()->Clone()));
 	Media::ColorProfile srcColor(Media::ColorProfile::CPT_SRGB);
@@ -265,7 +268,7 @@ SSWR::OrganMgr::OrganTimeAdjForm::OrganTimeAdjForm(UI::GUIClientControl *parent,
 	NEW_CLASS(imgList, Media::ImageList(CSTR("PointImage")));
 	imgList->AddImage(stimg, 0);
 	this->mapEnv->AddImage(CSTR("PointImage"), imgList);
-	NEW_CLASS(this->adjLyr, OrganTimeAdjLayer(this->gpsTrk, this->currFileList));
+	NEW_CLASSNN(this->adjLyr, OrganTimeAdjLayer(this->gpsTrk, this->currFileList));
 	this->adjLyr->SetCoordinateSystem(this->mapEnv->GetCoordinateSystem()->Clone());
 	this->mapEnv->ChgLineStyleLayer(0, 0, 0xff0000ff, 3, 0, 0);
 	i = this->mapEnv->AddLayer(0, this->mapTileLyr, true);
@@ -326,22 +329,19 @@ SSWR::OrganMgr::OrganTimeAdjForm::OrganTimeAdjForm(UI::GUIClientControl *parent,
 	this->btnTimeApply->HandleButtonClick(OnTimeApplyClicked, this);
 
 	UserFileInfo *userFile;
-	if (this->gpsTrk)
+	UTF8Char sbuff[32];
+	UTF8Char *sptr;
+	Map::GPSTrack::GPSRecord3 *records;
+	Data::DateTime dt;
+	records = this->gpsTrk->GetTrack(0, &j);
+	i = 0;
+	while (i < j)
 	{
-		UTF8Char sbuff[32];
-		UTF8Char *sptr;
-		Map::GPSTrack::GPSRecord3 *records;
-		Data::DateTime dt;
-		records = this->gpsTrk->GetTrack(0, &j);
-		i = 0;
-		while (i < j)
-		{
-			dt.SetInstant(records[i].recTime);
-			dt.ToLocalTime();
-			sptr = dt.ToStringNoZone(sbuff);
-			this->lbTrack->AddItem(CSTRP(sbuff, sptr), &records[i]);
-			i++;
-		}
+		dt.SetInstant(records[i].recTime);
+		dt.ToLocalTime();
+		sptr = dt.ToStringNoZone(sbuff);
+		this->lbTrack->AddItem(CSTRP(sbuff, sptr), &records[i]);
+		i++;
 	}
 
 	Data::ArrayListInt32 spList;
@@ -411,7 +411,7 @@ SSWR::OrganMgr::OrganTimeAdjForm::~OrganTimeAdjForm()
 	this->ClearChildren();
 	DEL_CLASS(this->mapEnv);
 	DEL_CLASS(this->mapRenderer);
-	SDEL_CLASS(this->gpsTrk);
+	this->gpsTrk.Delete();
 	SDEL_CLASS(this->dispImg);
 	this->env->GetColorMgr()->DeleteSess(this->colorSess);
 }

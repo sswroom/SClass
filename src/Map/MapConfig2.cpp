@@ -2270,9 +2270,12 @@ void Map::MapConfig2::DrawPoints(NotNullPtr<Media::DrawImage> img, MapLayerStyle
 	Math::RectAreaDbl *objPtr = &objBounds[*objCnt];
 #endif
 	Map::GetObjectSess *session;
+	NotNullPtr<Map::MapDrawLayer> lyr;
+	if (!lyr.Set(lyrs->lyr))
+		return;
 
 #ifndef NOSCH
-	sch->SetDrawType(lyrs->lyr, 0, 0, lyrs->img, UOSInt2Double(lyrs->img->GetWidth()) * 0.5, UOSInt2Double(lyrs->img->GetHeight()) * 0.5, isLayerEmpty);
+	sch->SetDrawType(lyr, 0, 0, lyrs->img, UOSInt2Double(lyrs->img->GetWidth()) * 0.5, UOSInt2Double(lyrs->img->GetHeight()) * 0.5, isLayerEmpty);
 	sch->SetDrawObjs(objBounds, objCnt, maxObjCnt);
 #endif
 	Data::ArrayListInt64 arri;
@@ -2303,7 +2306,7 @@ void Map::MapConfig2::DrawPoints(NotNullPtr<Media::DrawImage> img, MapLayerStyle
 			imgW = (UInt32)Double2Int32(UOSInt2Double(imgW) * img->GetHDPI() / 96.0) >> 1;
 			imgH = (UInt32)Double2Int32(UOSInt2Double(imgH) * img->GetHDPI() / 96.0) >> 1;
 	#ifndef NOSCH
-			sch->SetDrawType(lyrs->lyr, 0, 0, dimg, UOSInt2Double(dimg->GetWidth()) * 0.5, UOSInt2Double(dimg->GetHeight()) * 0.5, isLayerEmpty);
+			sch->SetDrawType(lyr, 0, 0, dimg, UOSInt2Double(dimg->GetWidth()) * 0.5, UOSInt2Double(dimg->GetHeight()) * 0.5, isLayerEmpty);
 	#endif
 		}
 		else
@@ -4315,7 +4318,7 @@ UTF8Char *Map::MapConfig2::DrawMap(NotNullPtr<Media::DrawImage> img, Map::MapVie
 	UOSInt layerCnt = this->drawList->GetCount();
 	Data::ArrayList<MapFontStyle*> **myArrs;
 	Data::ArrayList<MapFontStyle*> *fontArr;
-	Map::MapDrawLayer *lyr;
+	NotNullPtr<Map::MapDrawLayer> lyr;
 	Map::MapLayerStyle *lyrs;
 	Math::Geometry::Vector2D *vec;
 	Map::MapFontStyle *fnt;
@@ -4432,8 +4435,7 @@ UTF8Char *Map::MapConfig2::DrawMap(NotNullPtr<Media::DrawImage> img, Map::MapVie
 			clk.Start();
 			if (lyrs->drawType == 7)
 			{
-				lyr = lyrs->lyr;
-				if (lyr)
+				if (lyr.Set(lyrs->lyr))
 				{
 					arr.Clear();
 					Math::RectAreaDbl rect = view->GetVerticalRect();
@@ -4536,8 +4538,7 @@ UTF8Char *Map::MapConfig2::DrawMap(NotNullPtr<Media::DrawImage> img, Map::MapVie
 			}
 			else if (lyrs->drawType == 6)
 			{
-				lyr = lyrs->lyr;
-				if (lyr)
+				if (lyr.Set(lyrs->lyr))
 				{
 					arr.Clear();
 					Math::RectAreaDbl rect = view->GetVerticalRect();

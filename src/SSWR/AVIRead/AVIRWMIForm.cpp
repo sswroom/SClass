@@ -11,14 +11,14 @@ void __stdcall SSWR::AVIRead::AVIRWMIForm::OnOKClick(void *userObj)
 	Text::String *ns = me->lbNS->GetSelectedItemTextNew();
 	if (ns)
 	{
-		Win32::WMIQuery *db;
+		NotNullPtr<Win32::WMIQuery> db;
 		const WChar *wptr = Text::StrToWCharNew(ns->v);
-		NEW_CLASS(db, Win32::WMIQuery(wptr));
+		NEW_CLASSNN(db, Win32::WMIQuery(wptr));
 		Text::StrDelNew(wptr);
 		ns->Release();
 		if (db->IsError())
 		{
-			DEL_CLASS(db);
+			db.Delete();
 			UI::MessageDialog::ShowDialog(CSTR("Error in opening the namespace"), CSTR("Error"), me);
 		}
 		else
@@ -41,14 +41,14 @@ void __stdcall SSWR::AVIRead::AVIRWMIForm::OnDblClicked(void *userObj)
 	Text::String *ns = me->lbNS->GetSelectedItemTextNew();
 	if (ns)
 	{
-		Win32::WMIQuery *db;
+		NotNullPtr<Win32::WMIQuery> db;
 		const WChar *wptr = Text::StrToWCharNew(ns->v);
-		NEW_CLASS(db, Win32::WMIQuery(wptr));
+		NEW_CLASSNN(db, Win32::WMIQuery(wptr));
 		Text::StrDelNew(wptr);
 		ns->Release();
 		if (db->IsError())
 		{
-			DEL_CLASS(db);
+			db.Delete();
 			UI::MessageDialog::ShowDialog(CSTR("Error in opening the namespace"), CSTR("Error"), me);
 		}
 		else

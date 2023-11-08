@@ -30,12 +30,12 @@ Bool __stdcall SSWR::AVIRead::AVIRGISGroupQueryForm::OnMouseUp(void *userObj, Ma
 		UOSInt j;
 		UTF8Char sbuff[512];
 		UTF8Char *sptr;
-		Data::ArrayList<Map::MapDrawLayer*> layers;
+		Data::ArrayListNN<Map::MapDrawLayer> layers;
 		Map::MapDrawLayer *lyr;
 		NotNullPtr<Math::CoordinateSystem> csysEnv = me->navi->GetCoordinateSystem();
 		NotNullPtr<Math::CoordinateSystem> csysLyr;
 		mapEnvPos = me->navi->ScnXY2MapXY(scnPos);
-		me->env->GetLayersInGroup(me->group, &layers);
+		me->env->GetLayersInGroup(me->group, layers);
 		i = layers.GetCount();
 		while (i-- > 0)
 		{

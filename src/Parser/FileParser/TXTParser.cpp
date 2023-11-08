@@ -224,8 +224,8 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFileHdr(NotNullPtr<IO::Str
 					return 0;
 				}
 				baseDirEnd = Text::StrConcatC(sarr[1].ConcatTo(fileName), UTF8STRC(".cip"));
-				Map::MapDrawLayer *lyr = this->mapMgr->LoadLayer({baseDir, (UOSInt)(baseDirEnd - baseDir)}, this->parsers, env);
-				if (lyr)
+				NotNullPtr<Map::MapDrawLayer> lyr;
+				if (lyr.Set(this->mapMgr->LoadLayer({baseDir, (UOSInt)(baseDirEnd - baseDir)}, this->parsers, env)))
 				{
 					i = env->AddLayer(currGroup, lyr, false);
 
@@ -249,8 +249,8 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFileHdr(NotNullPtr<IO::Str
 				}
 
 				baseDirEnd = Text::StrConcatC(sarr[1].ConcatTo(fileName), UTF8STRC(".cip"));
-				Map::MapDrawLayer *lyr = this->mapMgr->LoadLayer({baseDir, (UOSInt)(baseDirEnd - baseDir)}, this->parsers, env);
-				if (lyr)
+				NotNullPtr<Map::MapDrawLayer> lyr;
+				if (lyr.Set(this->mapMgr->LoadLayer({baseDir, (UOSInt)(baseDirEnd - baseDir)}, this->parsers, env)))
 				{
 					i = env->AddLayer(currGroup, lyr, false);
 
@@ -275,8 +275,8 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFileHdr(NotNullPtr<IO::Str
 					return 0;
 				}
 				baseDirEnd = Text::StrConcatC(sarr[1].ConcatTo(fileName), UTF8STRC(".cip"));
-				Map::MapDrawLayer *lyr = this->mapMgr->LoadLayer({baseDir, (UOSInt)(baseDirEnd - baseDir)}, this->parsers, env);
-				if (lyr)
+				NotNullPtr<Map::MapDrawLayer> lyr;
+				if (lyr.Set(this->mapMgr->LoadLayer({baseDir, (UOSInt)(baseDirEnd - baseDir)}, this->parsers, env)))
 				{
 					i = env->AddLayer(currGroup, lyr, false);
 
@@ -315,20 +315,23 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFileHdr(NotNullPtr<IO::Str
 				}
 				OSInt si;
 				baseDirEnd = Text::StrConcatC(sarr[1].ConcatTo(fileName), UTF8STRC(".cip"));
-				Map::MapDrawLayer *lyr = this->mapMgr->LoadLayer({baseDir, (UOSInt)(baseDirEnd - baseDir)}, this->parsers, env);
-				baseDirEnd = Text::StrConcat(sbuff3, sbuff2);
-				baseDirEnd = IO::Path::AppendPath(sbuff3, baseDirEnd, sarr[4].ToCString());
-				si = env->AddImage({sbuff3, (UOSInt)(baseDirEnd - sbuff3)}, this->parsers);
-				if (lyr && si != -1)
+				NotNullPtr<Map::MapDrawLayer> lyr;
+				if (lyr.Set(this->mapMgr->LoadLayer({baseDir, (UOSInt)(baseDirEnd - baseDir)}, this->parsers, env)))
 				{
-					i = env->AddLayer(currGroup, lyr, false);
-
-					if (env->GetLayerProp(setting, currGroup, i))
+					baseDirEnd = Text::StrConcat(sbuff3, sbuff2);
+					baseDirEnd = IO::Path::AppendPath(sbuff3, baseDirEnd, sarr[4].ToCString());
+					si = env->AddImage({sbuff3, (UOSInt)(baseDirEnd - sbuff3)}, this->parsers);
+					if (si != -1)
 					{
-						setting.minScale = Text::StrToInt32(sarr[2].v);
-						setting.maxScale = Text::StrToInt32(sarr[3].v);
-						setting.imgIndex = (UOSInt)si;
-						env->SetLayerProp(setting, currGroup, i);
+						i = env->AddLayer(currGroup, lyr, false);
+
+						if (env->GetLayerProp(setting, currGroup, i))
+						{
+							setting.minScale = Text::StrToInt32(sarr[2].v);
+							setting.maxScale = Text::StrToInt32(sarr[3].v);
+							setting.imgIndex = (UOSInt)si;
+							env->SetLayerProp(setting, currGroup, i);
+						}
 					}
 				}
 			}

@@ -98,7 +98,7 @@ void Map::ESRI::FileGDBDir::AddTable(FileGDBTable *table)
 	this->tables.Add(table);
 }
 
-Map::ESRI::FileGDBDir *Map::ESRI::FileGDBDir::OpenDir(IO::PackageFile *pkg, Math::ArcGISPRJParser *prjParser)
+Map::ESRI::FileGDBDir *Map::ESRI::FileGDBDir::OpenDir(NotNullPtr<IO::PackageFile> pkg, NotNullPtr<Math::ArcGISPRJParser> prjParser)
 {
 	FileGDBTable *table;
 	IO::StreamData *indexFD = pkg->GetItemStmDataNew(UTF8STRC("a00000001.gdbtablx"));

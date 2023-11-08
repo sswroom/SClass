@@ -769,16 +769,16 @@ void SSWR::AVIRead::AVIRASN1DataForm::EventMenuClicked(UInt16 cmdId)
 	}
 	case MNU_KEY_CREATE:
 		{
-			Crypto::Cert::X509Key *key = ((Crypto::Cert::X509PrivKey*)this->asn1)->CreateKey();
-			if (key)
+			NotNullPtr<Crypto::Cert::X509Key> key;
+			if (key.Set(((Crypto::Cert::X509PrivKey*)this->asn1)->CreateKey()))
 			{
 				this->core->OpenObject(key);
 			}
 		}
 	case MNU_CERT_EXT_KEY:
 		{
-			Crypto::Cert::X509Key *key = ((Crypto::Cert::X509Cert*)this->asn1)->GetNewPublicKey();
-			if (key)
+			NotNullPtr<Crypto::Cert::X509Key> key;
+			if (key.Set(((Crypto::Cert::X509Cert*)this->asn1)->GetNewPublicKey()))
 			{
 				this->core->OpenObject(key);
 			}
@@ -786,8 +786,8 @@ void SSWR::AVIRead::AVIRASN1DataForm::EventMenuClicked(UInt16 cmdId)
 	default:
 		if (cmdId >= MNU_CERT_0)
 		{
-			Crypto::Cert::X509Cert *cert = ((Crypto::Cert::X509File*)this->asn1)->GetNewCert((UOSInt)(cmdId - MNU_CERT_0));
-			if (cert)
+			NotNullPtr<Crypto::Cert::X509Cert> cert;
+			if (cert.Set(((Crypto::Cert::X509File*)this->asn1)->GetNewCert((UOSInt)(cmdId - MNU_CERT_0))))
 			{
 				this->core->OpenObject(cert);
 			}

@@ -40,8 +40,8 @@ void __stdcall SSWR::AVIRead::AVIRICCInfoForm::OnRLUTClicked(void *userObj)
 	SSWR::AVIRead::AVIRICCInfoForm *me = (SSWR::AVIRead::AVIRICCInfoForm*)userObj;
 	if (me->icc)
 	{
-		Media::LUT *lut = me->icc->CreateRLUT();
-		if (lut)
+		NotNullPtr<Media::LUT> lut;
+		if (lut.Set(me->icc->CreateRLUT()))
 		{
 			me->core->OpenObject(lut);
 		}
@@ -53,8 +53,8 @@ void __stdcall SSWR::AVIRead::AVIRICCInfoForm::OnGLUTClicked(void *userObj)
 	SSWR::AVIRead::AVIRICCInfoForm *me = (SSWR::AVIRead::AVIRICCInfoForm*)userObj;
 	if (me->icc)
 	{
-		Media::LUT *lut = me->icc->CreateGLUT();
-		if (lut)
+		NotNullPtr<Media::LUT> lut;
+		if (lut.Set(me->icc->CreateGLUT()))
 		{
 			me->core->OpenObject(lut);
 		}
@@ -66,8 +66,8 @@ void __stdcall SSWR::AVIRead::AVIRICCInfoForm::OnBLUTClicked(void *userObj)
 	SSWR::AVIRead::AVIRICCInfoForm *me = (SSWR::AVIRead::AVIRICCInfoForm*)userObj;
 	if (me->icc)
 	{
-		Media::LUT *lut = me->icc->CreateBLUT();
-		if (lut)
+		NotNullPtr<Media::LUT> lut;
+		if (lut.Set(me->icc->CreateBLUT()))
 		{
 			me->core->OpenObject(lut);
 		}

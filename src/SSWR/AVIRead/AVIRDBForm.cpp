@@ -3,9 +3,11 @@
 #include "DB/ColDef.h"
 #include "DB/JavaDBUtil.h"
 #include "DB/SQLGenerator.h"
+#include "DB/SQLiteFile.h"
 #include "IO/FileStream.h"
 #include "Math/Math.h"
 #include "SSWR/AVIRead/AVIRChartForm.h"
+#include "SSWR/AVIRead/AVIRDBCheckChgForm.h"
 #include "SSWR/AVIRead/AVIRDBExportForm.h"
 #include "SSWR/AVIRead/AVIRDBForm.h"
 #include "SSWR/AVIRead/AVIRLineChartForm.h"
@@ -36,6 +38,8 @@ typedef enum
 	MNU_TABLE_EXPORT_POSTGRESQL,
 	MNU_TABLE_EXPORT_OPTION,
 	MNU_TABLE_EXPORT_CSV,
+	MNU_TABLE_EXPORT_SQLITE,
+	MNU_TABLE_CHECK_CHANGE,
 	MNU_CHART_LINE,
 	MNU_DATABASE_START = 1000
 } MenuEvent;
@@ -252,15 +256,12 @@ void SSWR::AVIRead::AVIRDBForm::UpdateResult(NotNullPtr<DB::DBReader> r)
 
 Data::Class *SSWR::AVIRead::AVIRDBForm::CreateTableClass(Text::CString schemaName, Text::CString tableName)
 {
-	if (this->dbt)
+	DB::TableDef *tab = this->db->GetTableDef(schemaName, tableName);
+	if (tab)
 	{
-		DB::TableDef *tab = this->dbt->GetTableDef(schemaName, tableName);
-		if (tab)
-		{
-			Data::Class *cls = tab->CreateTableClass().Ptr();
-			DEL_CLASS(tab);
-			return cls;
-		}
+		Data::Class *cls = tab->CreateTableClass().Ptr();
+		DEL_CLASS(tab);
+		return cls;
 	}
 	NotNullPtr<DB::DBReader> r;
 	if (r.Set(this->db->QueryTableData(schemaName, tableName, 0, 0, 0, CSTR_NULL, 0)))
@@ -279,7 +280,7 @@ void SSWR::AVIRead::AVIRDBForm::CopyTableCreate(DB::SQLType sqlType, Bool axisAw
 	Text::String *tableName = this->lbTable->GetSelectedItemTextNew();
 	DB::SQLBuilder sql(sqlType, axisAware, 0);
 	NotNullPtr<DB::TableDef> tabDef;
-	if (tabDef.Set(this->dbt->GetTableDef(STR_CSTR(schemaName), tableName->ToCString())))
+	if (tabDef.Set(this->db->GetTableDef(STR_CSTR(schemaName), tableName->ToCString())))
 	{
 		if (!DB::SQLGenerator::GenCreateTableCmd(sql, STR_CSTR(schemaName), tableName->ToCString(), tabDef, true))
 		{
@@ -415,7 +416,78 @@ void SSWR::AVIRead::AVIRDBForm::ExportTableCSV()
 	SDEL_STRING(schemaName);
 }
 
-SSWR::AVIRead::AVIRDBForm::AVIRDBForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, DB::ReadingDB *db, Bool needRelease) : UI::GUIForm(parent, 1024, 768, ui)
+void SSWR::AVIRead::AVIRDBForm::ExportTableSQLite()
+{
+	UTF8Char sbuff[4096];
+	UTF8Char *sptr;
+	Text::String *schemaName = this->lbSchema->GetSelectedItemTextNew();
+	Text::String *tableName = this->lbTable->GetSelectedItemTextNew();
+	NotNullPtr<DB::TableDef> table;
+	if (!table.Set(this->db->GetTableDef(STR_CSTR(schemaName), tableName->ToCString())))
+	{
+		UI::MessageDialog::ShowDialog(CSTR("Error in getting table definition"), CSTR("DB Manager"), this);
+		tableName->Release();
+		SDEL_STRING(schemaName);
+		return;
+	}
+	sptr = sbuff;
+	if (schemaName->leng > 0)
+	{
+		sptr = schemaName->ConcatTo(sptr);
+		*sptr++ = '_';
+	}
+	sptr = tableName->ConcatTo(sptr);
+	*sptr++ = '_';
+	sptr = Data::Timestamp::Now().ToString(sptr, "yyyyMMdd_HHmmss");
+	sptr = Text::StrConcatC(sptr, UTF8STRC(".sqlite"));
+	UI::FileDialog dlg(L"SSWR", L"AVIRead", L"DBExportSQLite", true);
+	dlg.AddFilter(CSTR("*.sqlite"), CSTR("SQLite File"));
+	dlg.SetFileName(CSTRP(sbuff, sptr));
+	if (dlg.ShowDialog(this->GetHandle()))
+	{
+		DB::SQLiteFile sqlite(dlg.GetFileName());
+		DB::SQLBuilder sql(sqlite.GetSQLType(), false, sqlite.GetTzQhr());
+		DB::SQLGenerator::GenCreateTableCmd(sql, CSTR_NULL, tableName->ToCString(), table, false);
+		if (sqlite.ExecuteNonQuery(sql.ToCString()) <= -2)
+		{
+			Text::StringBuilderUTF8 sb;
+			sb.AppendC(UTF8STRC("Error in creating table: "));
+			sb.Append(sql.ToCString());
+			UI::MessageDialog::ShowDialog(sb.ToCString(), CSTR("DB Manager"), this);
+		}
+		NotNullPtr<DB::DBReader> r;
+		if (!r.Set(this->db->QueryTableData(STR_CSTR(schemaName), tableName->ToCString(), 0, 0, 0, CSTR_NULL, 0)))
+		{
+			UI::MessageDialog::ShowDialog(CSTR("Error in reading table data"), CSTR("DB Manager"), this);
+			tableName->Release();
+			SDEL_STRING(schemaName);
+			table.Delete();
+			return;
+		}
+		void *tran = sqlite.BeginTransaction();
+		while (r->ReadNext())
+		{
+			sql.Clear();
+			DB::SQLGenerator::GenInsertCmd(sql, CSTR_NULL, tableName->ToCString(), table.Ptr(), r);
+			if (sqlite.ExecuteNonQuery(sql.ToCString()) != 1)
+			{
+				Text::StringBuilderUTF8 sb;
+				sb.AppendC(UTF8STRC("Error in executing cmd: "));
+				sb.Append(sql.ToCString());
+				UI::MessageDialog::ShowDialog(sb.ToCString(), CSTR("DB Manager"), this);
+				printf("%s\r\n", sql.ToString());
+				break;
+			}
+		}
+		this->db->CloseReader(r);
+		sqlite.Commit(tran);
+	}
+	tableName->Release();
+	SDEL_STRING(schemaName);
+	table.Delete();
+}
+
+SSWR::AVIRead::AVIRDBForm::AVIRDBForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<DB::ReadingDB> db, Bool needRelease) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
@@ -440,7 +512,7 @@ SSWR::AVIRead::AVIRDBForm::AVIRDBForm(UI::GUIClientControl *parent, NotNullPtr<U
 		this->logHdlr = logHdlr;
 		this->debugWriter = console;
 #endif
-		NEW_CLASS(this->dbt, DB::ReadingDBTool((DB::DBConn*)this->db, needRelease, this->log, CSTR("DB: ")));
+		NEW_CLASS(this->dbt, DB::ReadingDBTool((DB::DBConn*)this->db.Ptr(), needRelease, this->log, CSTR("DB: ")));
 	}
 
 	NEW_CLASS(this->tcDB, UI::GUITabControl(ui, this));
@@ -502,13 +574,15 @@ SSWR::AVIRead::AVIRDBForm::AVIRDBForm(UI::GUIClientControl *parent, NotNullPtr<U
 	mnu2->AddItem(CSTR("MySQL8"), MNU_TABLE_CREATE_MYSQL8, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu2->AddItem(CSTR("SQL Server"), MNU_TABLE_CREATE_MSSQL, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu2->AddItem(CSTR("PostgreSQL"), MNU_TABLE_CREATE_POSTGRESQL, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
-	mnu2 = mnu->AddSubMenu(CSTR("Export Table Data"));
-	mnu2->AddItem(CSTR("MySQL"), MNU_TABLE_EXPORT_MYSQL, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
-	mnu2->AddItem(CSTR("MySQL8"), MNU_TABLE_EXPORT_MYSQL8, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
-	mnu2->AddItem(CSTR("SQL Server"), MNU_TABLE_EXPORT_MSSQL, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
-	mnu2->AddItem(CSTR("PostgreSQL"), MNU_TABLE_EXPORT_POSTGRESQL, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
-	mnu2->AddItem(CSTR("Export Table Data as SQL..."), MNU_TABLE_EXPORT_OPTION, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
-	mnu2->AddItem(CSTR("Export Table Data as CSV..."), MNU_TABLE_EXPORT_CSV, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu2 = mnu->AddSubMenu(CSTR("Export Table Data as"));
+	mnu2->AddItem(CSTR("SQL (MySQL)"), MNU_TABLE_EXPORT_MYSQL, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu2->AddItem(CSTR("SQL (MySQL8)"), MNU_TABLE_EXPORT_MYSQL8, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu2->AddItem(CSTR("SQL (SQL Server)"), MNU_TABLE_EXPORT_MSSQL, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu2->AddItem(CSTR("SQL (PostgreSQL)"), MNU_TABLE_EXPORT_POSTGRESQL, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu2->AddItem(CSTR("SQL..."), MNU_TABLE_EXPORT_OPTION, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu2->AddItem(CSTR("CSV"), MNU_TABLE_EXPORT_CSV, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu2->AddItem(CSTR("SQLite"), MNU_TABLE_EXPORT_SQLITE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu->AddItem(CSTR("Check Table Changes"), MNU_TABLE_CHECK_CHANGE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu = this->mnuMain->AddSubMenu(CSTR("&Chart"));
 	mnu->AddItem(CSTR("&Line Chart"), MNU_CHART_LINE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	if (this->dbt && this->dbt->GetDatabaseNames(&this->dbNames) > 0)
@@ -537,7 +611,7 @@ SSWR::AVIRead::AVIRDBForm::~AVIRDBForm()
 	}
 	else if (this->needRelease)
 	{
-		DEL_CLASS(this->db);
+		this->db.Delete();
 	}
 	NotNullPtr<IO::LogHandler> logHdlr;
 	if (logHdlr.Set(this->logHdlr))
@@ -626,7 +700,7 @@ void SSWR::AVIRead::AVIRDBForm::EventMenuClicked(UInt16 cmdId)
 	switch (cmdId)
 	{
 	case MNU_FILE_SAVE:
-		this->core->SaveData(this, this->db, L"DBSave");
+		this->core->SaveData(this, this->db.Ptr(), L"DBSave");
 		break;
 	case MNU_CHART_LINE:
 		if ((sptr = this->lbTable->GetSelectedItemText(sbuff)) != 0)
@@ -634,7 +708,7 @@ void SSWR::AVIRead::AVIRDBForm::EventMenuClicked(UInt16 cmdId)
 			Data::Chart *chart = 0;
 			{
 				Text::String *schemaName = this->lbSchema->GetSelectedItemTextNew();
-				SSWR::AVIRead::AVIRLineChartForm frm(0, this->ui, this->core, this->db, STR_CSTR(schemaName), CSTRP(sbuff, sptr));
+				SSWR::AVIRead::AVIRLineChartForm frm(0, this->ui, this->core, this->db.Ptr(), STR_CSTR(schemaName), CSTRP(sbuff, sptr));
 				SDEL_STRING(schemaName);
 				if (frm.ShowDialog(this) == DR_OK)
 				{
@@ -692,7 +766,7 @@ void SSWR::AVIRead::AVIRDBForm::EventMenuClicked(UInt16 cmdId)
 			Text::String *schemaName = this->lbSchema->GetSelectedItemTextNew();
 			Text::String *tableName = this->lbTable->GetSelectedItemTextNew();
 			Text::StringBuilderUTF8 sb;
-			DB::JavaDBUtil::ToJavaEntity(sb, schemaName, tableName, 0, this->dbt);
+			DB::JavaDBUtil::ToJavaEntity(sb, schemaName, tableName, 0, this->db);
 			tableName->Release();
 			SDEL_STRING(schemaName);
 			UI::Clipboard::SetString(this->GetHandle(), sb.ToCString());
@@ -726,7 +800,7 @@ void SSWR::AVIRead::AVIRDBForm::EventMenuClicked(UInt16 cmdId)
 		{
 			Text::String *schemaName = this->lbSchema->GetSelectedItemTextNew();
 			Text::String *tableName = this->lbTable->GetSelectedItemTextNew();
-			SSWR::AVIRead::AVIRDBExportForm dlg(0, ui, this->core, this->db, STR_CSTR(schemaName), tableName->ToCString());
+			SSWR::AVIRead::AVIRDBExportForm dlg(0, ui, this->core, this->db.Ptr(), STR_CSTR(schemaName), tableName->ToCString());
 			dlg.ShowDialog(this);
 			tableName->Release();
 			SDEL_STRING(schemaName);
@@ -734,6 +808,16 @@ void SSWR::AVIRead::AVIRDBForm::EventMenuClicked(UInt16 cmdId)
 		break;
 	case MNU_TABLE_EXPORT_CSV:
 		this->ExportTableCSV();
+		break;
+	case MNU_TABLE_CHECK_CHANGE:
+		{
+			Text::String *schemaName = this->lbSchema->GetSelectedItemTextNew();
+			Text::String *tableName = this->lbTable->GetSelectedItemTextNew();
+			SSWR::AVIRead::AVIRDBCheckChgForm dlg(0, ui, this->core, this->db.Ptr(), STR_CSTR(schemaName), tableName->ToCString());
+			dlg.ShowDialog(this);
+			tableName->Release();
+			SDEL_STRING(schemaName);
+		}
 		break;
 	}
 }

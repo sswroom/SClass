@@ -11,7 +11,7 @@
 #define HAS_M_FLAG 4
 #define HAS_Z_FLAG 2
 
-Map::ESRI::FileGDBTableInfo *Map::ESRI::FileGDBUtil::ParseFieldDesc(Data::ByteArray fieldDesc, Math::ArcGISPRJParser *prjParser)
+Map::ESRI::FileGDBTableInfo *Map::ESRI::FileGDBUtil::ParseFieldDesc(Data::ByteArray fieldDesc, NotNullPtr<Math::ArcGISPRJParser> prjParser)
 {
 	UTF8Char sbuff[1024];
 	UTF8Char *sptr;

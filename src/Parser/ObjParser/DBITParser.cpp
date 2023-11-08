@@ -31,16 +31,16 @@ IO::ParserType Parser::ObjParser::DBITParser::GetParserType()
 	return IO::ParserType::MapLayer;
 }
 
-IO::ParsedObject *Parser::ObjParser::DBITParser::ParseObject(IO::ParsedObject *pobj, IO::PackageFile *pkgFile, IO::ParserType targetType)
+IO::ParsedObject *Parser::ObjParser::DBITParser::ParseObject(NotNullPtr<IO::ParsedObject> pobj, IO::PackageFile *pkgFile, IO::ParserType targetType)
 {
-	DB::ReadingDB *db;
+	NotNullPtr<DB::ReadingDB> db;
 	NotNullPtr<DB::DBReader> r;
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 	Bool valid = false;
 	if (pobj->GetParserType() != IO::ParserType::ReadingDB)
 		return 0;
-	db = (DB::ReadingDB*)pobj;
+	db = NotNullPtr<DB::ReadingDB>::ConvertFrom(pobj);
 	if (r.Set(db->QueryTableData(CSTR_NULL, CSTR("IT_TGVLib"), 0, 0, 0, CSTR_NULL, 0)))
 	{
 		valid = true;

@@ -12,11 +12,10 @@ namespace SSWR
 			AVIRCoreWin(NotNullPtr<UI::GUICore> ui);
 			virtual ~AVIRCoreWin();
 
-			virtual void OpenObject(IO::ParsedObject *pobj);
+			virtual void OpenObject(NotNullPtr<IO::ParsedObject> pobj);
 			virtual void SaveData(UI::GUIForm *ownerForm, IO::ParsedObject *pobj, const WChar *dialogName);
 			virtual Media::Printer *SelectPrinter(UI::GUIForm *frm);
 		};
-
-	};
-};
+	}
+}
 #endif

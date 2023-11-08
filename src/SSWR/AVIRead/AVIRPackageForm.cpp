@@ -365,8 +365,8 @@ void __stdcall SSWR::AVIRead::AVIRPackageForm::LVDblClick(void *userObj, UOSInt 
 	IO::PackageFile::PackObjectType pot = me->packFile->GetItemType(index);
 	if (pot == IO::PackageFile::PackObjectType::PackageFileType)
 	{
-		IO::PackageFile *pkg = me->packFile->GetItemPackNew(index);
-		if (pkg)
+		NotNullPtr<IO::PackageFile> pkg;
+		if (pkg.Set(me->packFile->GetItemPackNew(index)))
 		{
 			me->core->OpenObject(pkg);
 		}
@@ -374,8 +374,8 @@ void __stdcall SSWR::AVIRead::AVIRPackageForm::LVDblClick(void *userObj, UOSInt 
 	else if (pot == IO::PackageFile::PackObjectType::ParsedObject)
 	{
 		Bool needRelease;
-		IO::ParsedObject *pobj = me->packFile->GetItemPObj(index, needRelease);
-		if (pobj)
+		NotNullPtr<IO::ParsedObject> pobj;
+		if (pobj.Set(me->packFile->GetItemPObj(index, needRelease)))
 		{
 			if (!needRelease)
 			{

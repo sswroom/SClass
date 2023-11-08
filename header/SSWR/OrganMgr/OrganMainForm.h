@@ -146,7 +146,7 @@ namespace SSWR
 			Map::DrawMapRenderer *mapRenderer;
 			Map::MapView *mapView;
 			Map::MapEnv *mapEnv;
-			Map::TileMapLayer *mapTileLyr;
+			NotNullPtr<Map::TileMapLayer> mapTileLyr;
 			NotNullPtr<Map::TileMap> mapTile;
 			Bool mapUpdated;
 			Data::FastMap<UInt32, OrganSpImgLayer*> mapImgLyrs;
@@ -228,7 +228,7 @@ namespace SSWR
 			void GoToDir(OrganGroup *grp, Int32 parentId);
 
 			void ClearImgLayers();
-			OrganSpImgLayer *GetImgLayer(UInt32 mapColor);
+			NotNullPtr<OrganSpImgLayer> GetImgLayer(UInt32 mapColor);
 		public:
 			OrganMainForm(NotNullPtr<UI::GUICore> ui, UI::GUIClientControl *parent, OrganEnv *env);
 			virtual ~OrganMainForm();

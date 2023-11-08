@@ -39,7 +39,7 @@ void __stdcall IO::FileAnalyse::FGDBFileAnalyse::ParseThread(NotNullPtr<Sync::Th
 	{
 		Data::ByteBuffer fieldBuff(tag->size);
 		me->fd->GetRealData(40, tag->size, fieldBuff);
-		me->tableInfo = Map::ESRI::FileGDBUtil::ParseFieldDesc(fieldBuff, &me->prjParser);
+		me->tableInfo = Map::ESRI::FileGDBUtil::ParseFieldDesc(fieldBuff, me->prjParser);
 	}
 
 	ofst = 40 + tag->size;

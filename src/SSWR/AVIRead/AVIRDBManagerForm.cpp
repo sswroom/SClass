@@ -7,6 +7,7 @@
 #include "DB/SQLFileReader.h"
 #include "DB/SQLGenerator.h"
 #include "DB/SQLiteFile.h"
+#include "IO/DirectoryPackage.h"
 #include "IO/FileStream.h"
 #include "IO/Path.h"
 #include "IO/StmData/FileData.h"
@@ -461,8 +462,18 @@ void __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnFileHandler(void *userObj, No
 		}
 		else
 		{
-			IO::StmData::FileData fd(files[i], false);
-			DB::ReadingDB *db = (DB::ReadingDB*)me->core->GetParserList()->ParseFileType(fd, IO::ParserType::ReadingDB);
+			IO::Path::PathType pt = IO::Path::GetPathType(files[i]->ToCString());
+			DB::ReadingDB *db;
+			if (pt == IO::Path::PathType::Directory)
+			{
+				IO::DirectoryPackage dpkg(files[i]);
+				db = (DB::ReadingDB*)me->core->GetParserList()->ParseObjectType(dpkg, 0, IO::ParserType::ReadingDB);
+			}
+			else
+			{
+				IO::StmData::FileData fd(files[i], false);
+				db = (DB::ReadingDB*)me->core->GetParserList()->ParseFileType(fd, IO::ParserType::ReadingDB);
+			}
 			if (db)
 			{
 				DB::DBManagerCtrl *ctrl = DB::DBManagerCtrl::CreateFromFile(db, files[i], me->log, me->core->GetSocketFactory(), me->core->GetParserList());
@@ -1099,15 +1110,18 @@ SSWR::AVIRead::AVIRDBManagerForm::AVIRDBManagerForm(UI::GUIClientControl *parent
 	this->currDB = 0;
 	this->sqlFileMode = false;
 	NEW_CLASS(this->mapEnv, Map::MapEnv(CSTR("DB"), 0xffc0c0ff, Math::CoordinateSystemManager::CreateDefaultCsys()));
-	Map::MapDrawLayer *layer = Map::BaseMapLayer::CreateLayer(Map::BaseMapLayer::BLT_OSM_TILE, this->core->GetSocketFactory(), this->ssl, this->core->GetParserList());
-	this->mapEnv->AddLayer(0, layer, true);
-	NEW_CLASS(this->dbLayer, Map::DBMapLayer(CSTR("Database")));
+	NotNullPtr<Map::MapDrawLayer> layer;
+	if (layer.Set(Map::BaseMapLayer::CreateLayer(Map::BaseMapLayer::BLT_OSM_TILE, this->core->GetSocketFactory(), this->ssl, this->core->GetParserList())))
+	{
+		this->mapEnv->AddLayer(0, layer, true);
+		layer->AddUpdatedHandler(OnLayerUpdated, this);
+	}
+	NEW_CLASSNN(this->dbLayer, Map::DBMapLayer(CSTR("Database")));
 	UOSInt i = this->mapEnv->AddLayer(0, this->dbLayer, true);
 	Map::MapEnv::LayerItem settings;
 	this->mapEnv->GetLayerProp(settings, 0, i);
 	settings.fillStyle = 0xc0ff905b;
 	this->mapEnv->SetLayerProp(settings, 0, i);
-	layer->AddUpdatedHandler(OnLayerUpdated, this);
 	this->colorSess = core->GetColorMgr()->CreateSess(this->GetHMonitor());
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
@@ -1523,13 +1537,20 @@ void SSWR::AVIRead::AVIRDBManagerForm::EventMenuClicked(UInt16 cmdId)
 			Text::String *schemaName = this->lbSchema->GetSelectedItemTextNew();
 			Text::String *tableName = this->lbTable->GetSelectedItemTextNew();
 			Text::String *databaseName = 0;
-			if (this->currDB)
+			NotNullPtr<DB::ReadingDB> db;
+			if (db.Set(this->currDB))
+			{
 				databaseName = this->currDB->GetCurrDBName();
-			Text::StringBuilderUTF8 sb;
-			DB::JavaDBUtil::ToJavaEntity(sb, schemaName, tableName, databaseName, this->currDB);
+				Text::StringBuilderUTF8 sb;
+				DB::JavaDBUtil::ToJavaEntity(sb, schemaName, tableName, databaseName, db);
+				UI::Clipboard::SetString(this->GetHandle(), sb.ToCString());
+			}
+			else
+			{
+				UI::MessageDialog::ShowDialog(CSTR("Select database first"), CSTR("DB Manager"), this);
+			}
 			tableName->Release();
 			schemaName->Release();
-			UI::Clipboard::SetString(this->GetHandle(), sb.ToCString());
 		}
 		break;
 	case MNU_TABLE_CPP_HEADER:

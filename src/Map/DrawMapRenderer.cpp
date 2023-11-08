@@ -1522,7 +1522,7 @@ void Map::DrawMapRenderer::DrawLayers(NotNullPtr<Map::DrawMapRenderer::DrawEnv> 
 	mutUsage.EndUse();
 }
 
-void Map::DrawMapRenderer::DrawShapes(NotNullPtr<Map::DrawMapRenderer::DrawEnv> denv, Map::MapDrawLayer *layer, UOSInt lineStyle, UInt32 fillStyle, UOSInt lineThick, UInt32 lineColor)
+void Map::DrawMapRenderer::DrawShapes(NotNullPtr<Map::DrawMapRenderer::DrawEnv> denv, NotNullPtr<Map::MapDrawLayer> layer, UOSInt lineStyle, UInt32 fillStyle, UOSInt lineThick, UInt32 lineColor)
 {
 	UOSInt i;
 	Map::GetObjectSess *session;
@@ -1648,7 +1648,7 @@ void Map::DrawMapRenderer::DrawShapes(NotNullPtr<Map::DrawMapRenderer::DrawEnv> 
 	}
 }
 
-void Map::DrawMapRenderer::DrawShapesPoint(NotNullPtr<Map::DrawMapRenderer::DrawEnv> denv, Map::MapDrawLayer *layer, UOSInt imgIndex)
+void Map::DrawMapRenderer::DrawShapesPoint(NotNullPtr<Map::DrawMapRenderer::DrawEnv> denv, NotNullPtr<Map::MapDrawLayer> layer, UOSInt imgIndex)
 {
 	Data::ArrayListInt64 arri;
 	Math::Geometry::Vector2D *vec;
@@ -1824,7 +1824,7 @@ void Map::DrawMapRenderer::DrawShapesPoint(NotNullPtr<Map::DrawMapRenderer::Draw
 	}
 }
 
-void Map::DrawMapRenderer::DrawLabel(NotNullPtr<DrawEnv> denv, Map::MapDrawLayer *layer, UOSInt fontStyle, UOSInt labelCol, Int32 priority, Int32 flags, UOSInt imgWidth, UOSInt imgHeight, Map::MapEnv::FontType fontType)
+void Map::DrawMapRenderer::DrawLabel(NotNullPtr<DrawEnv> denv, NotNullPtr<Map::MapDrawLayer> layer, UOSInt fontStyle, UOSInt labelCol, Int32 priority, Int32 flags, UOSInt imgWidth, UOSInt imgHeight, Map::MapEnv::FontType fontType)
 {
 	Map::NameArray *arr;
 	Data::ArrayListInt64 arri;
@@ -2037,7 +2037,7 @@ void Map::DrawMapRenderer::DrawLabel(NotNullPtr<DrawEnv> denv, Map::MapDrawLayer
 	layer->ReleaseNameArr(arr);
 }
 
-void Map::DrawMapRenderer::DrawImageLayer(NotNullPtr<DrawEnv> denv, Map::MapDrawLayer *layer)
+void Map::DrawMapRenderer::DrawImageLayer(NotNullPtr<DrawEnv> denv, NotNullPtr<Map::MapDrawLayer> layer)
 {
 	Math::Geometry::Vector2D *vec;
 	Math::Geometry::VectorImage *vimg;

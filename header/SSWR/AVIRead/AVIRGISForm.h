@@ -95,7 +95,7 @@ namespace SSWR
 			void UpdateTitle();
 			void CloseCtrlForm(Bool closing);
 			void SetCtrlForm(UI::GUIForm *frm, UI::GUITreeView::TreeItem *item);
-			Bool ParseObject(IO::ParsedObject *pobj);
+			Bool ParseObject(NotNullPtr<IO::ParsedObject> pobj);
 			void OpenURL(Text::CStringNN url, Text::CString customName);
 			void HKOPortal(Text::CString listFile, Text::CString filePath);
 			void OpenCSV(Text::CStringNN url, UInt32 codePage, Text::CStringNN name, Text::CString nameCol, Text::CString latCol, Text::CString lonCol);
@@ -107,7 +107,7 @@ namespace SSWR
 			virtual void OnMonitorChanged();
 			virtual void OnFocus();
 
-			void AddLayer(Map::MapDrawLayer *layer);
+			void AddLayer(NotNullPtr<Map::MapDrawLayer> layer);
 			void AddLayers(::Data::ArrayList<Map::MapDrawLayer*> *layers);
 //			void AddLayerColl(Map::MapLayerCollection *lyrColl);
 			void AddSubForm(UI::GUIForm *frm);

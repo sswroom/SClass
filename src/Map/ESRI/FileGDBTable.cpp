@@ -4,7 +4,7 @@
 #include "Map/ESRI/FileGDBReader.h"
 #include "Map/ESRI/FileGDBTable.h"
 
-Map::ESRI::FileGDBTable::FileGDBTable(Text::CString tableName, NotNullPtr<IO::StreamData> gdbtableFD, IO::StreamData *gdbtablxFD, Math::ArcGISPRJParser *prjParser)
+Map::ESRI::FileGDBTable::FileGDBTable(Text::CString tableName, NotNullPtr<IO::StreamData> gdbtableFD, IO::StreamData *gdbtablxFD, NotNullPtr<Math::ArcGISPRJParser> prjParser)
 {
 	this->tableName = Text::String::New(tableName);
 	this->gdbtableFD = gdbtableFD->GetPartialData(0, gdbtableFD->GetDataSize());

@@ -4,7 +4,7 @@
 #include "Math/Geometry/Point.h"
 #include "SSWR/OrganMgr/OrganTimeAdjLayer.h"
 
-SSWR::OrganMgr::OrganTimeAdjLayer::OrganTimeAdjLayer(Map::GPSTrack *gpsTrk, Data::ArrayList<UserFileInfo *> *userFileList) : Map::MapDrawLayer(CSTR("ImageLayer"), 0, CSTR_NULL, Math::CoordinateSystemManager::CreateDefaultCsys())
+SSWR::OrganMgr::OrganTimeAdjLayer::OrganTimeAdjLayer(NotNullPtr<Map::GPSTrack> gpsTrk, Data::ArrayList<UserFileInfo *> *userFileList) : Map::MapDrawLayer(CSTR("ImageLayer"), 0, CSTR_NULL, Math::CoordinateSystemManager::CreateDefaultCsys())
 {
 	this->gpsTrk = gpsTrk;
 	this->userFileList = userFileList;

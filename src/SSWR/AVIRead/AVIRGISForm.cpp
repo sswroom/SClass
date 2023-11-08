@@ -137,6 +137,7 @@ void __stdcall SSWR::AVIRead::AVIRGISForm::FileHandler(void *userObj, NotNullPtr
 	SSWR::AVIRead::AVIRGISForm *me = (SSWR::AVIRead::AVIRGISForm*)userObj;
 	Parser::ParserList *parsers = me->core->GetParserList();
 	IO::ParsedObject *pobj;
+	NotNullPtr<IO::ParsedObject> nnpobj;
 	IO::ParserType pt;
 	Data::ArrayList<Map::MapDrawLayer *> *layers;
 	Math::Size2D<UOSInt> sz;
@@ -167,12 +168,10 @@ void __stdcall SSWR::AVIRead::AVIRGISForm::FileHandler(void *userObj, NotNullPtr
 		}
 		else if (pathType == IO::Path::PathType::Directory)
 		{
-			IO::DirectoryPackage *dpkg;
-			NEW_CLASS(dpkg, IO::DirectoryPackage(files[i]));
-			pobj = parsers->ParseObject(dpkg, &pt);
-			DEL_CLASS(dpkg);
+			IO::DirectoryPackage dpkg(files[i]);
+			pobj = parsers->ParseObject(dpkg, pt);
 		}
-		if (pobj)
+		if (nnpobj.Set(pobj))
 		{
 			if (pt == IO::ParserType::MapLayer)
 			{
@@ -239,13 +238,13 @@ void __stdcall SSWR::AVIRead::AVIRGISForm::FileHandler(void *userObj, NotNullPtr
 			}
 			else
 			{
-				if (me->ParseObject(pobj))
+				if (me->ParseObject(nnpobj))
 				{
 					DEL_CLASS(pobj);
 				}
 				else
 				{
-					me->core->OpenObject(pobj);
+					me->core->OpenObject(nnpobj);
 				}
 			}
 		}
@@ -364,7 +363,7 @@ void __stdcall SSWR::AVIRead::AVIRGISForm::OnTreeRightClick(void *userObj)
 			Bool canImport = false;
 			if (((Map::MapEnv::LayerItem*)ind->item)->layer->GetObjectClass() == Map::MapDrawLayer::OC_TILE_MAP_LAYER)
 			{
-				Map::TileMapLayer *layer = (Map::TileMapLayer*)((Map::MapEnv::LayerItem*)ind->item)->layer;
+				NotNullPtr<Map::TileMapLayer> layer = NotNullPtr<Map::TileMapLayer>::ConvertFrom(((Map::MapEnv::LayerItem*)ind->item)->layer);
 				NotNullPtr<Map::TileMap> tileMap = layer->GetTileMap();
 				if (tileMap->GetTileType() == Map::TileMap::TT_OSM)
 				{
@@ -518,23 +517,22 @@ void SSWR::AVIRead::AVIRGISForm::SetCtrlForm(UI::GUIForm *frm, UI::GUITreeView::
 	this->ctrlForm->Show();
 }
 
-Bool SSWR::AVIRead::AVIRGISForm::ParseObject(IO::ParsedObject *pobj)
+Bool SSWR::AVIRead::AVIRGISForm::ParseObject(NotNullPtr<IO::ParsedObject> pobj)
 {
 	Parser::ParserList *parsers = this->core->GetParserList();
-	IO::ParsedObject *npobj;
+	NotNullPtr<IO::ParsedObject> npobj;
 	IO::ParserType pt;
-	npobj = parsers->ParseObject(pobj, &pt);
-	if (npobj)
+	if (npobj.Set(parsers->ParseObject(pobj, pt)))
 	{
 		if (pt == IO::ParserType::MapLayer)
 		{
-			this->AddLayer((Map::MapDrawLayer*)npobj);;
+			this->AddLayer(NotNullPtr<Map::MapDrawLayer>::ConvertFrom(npobj));
 			return true;
 		}
 		else
 		{
 			Bool succ = ParseObject(npobj);
-			DEL_CLASS(npobj);
+			npobj.Delete();
 			return succ;
 		}
 	}
@@ -552,19 +550,19 @@ void SSWR::AVIRead::AVIRGISForm::OpenURL(Text::CStringNN url, Text::CString cust
 			fd->SetFullName(customName);
 		}
 		IO::ParserType pt;
-		IO::ParsedObject *pobj = this->core->GetParserList()->ParseFile(fd, &pt);
-		fd.Delete();
-		if (pobj)
+		NotNullPtr<IO::ParsedObject> pobj;
+		if (pobj.Set(this->core->GetParserList()->ParseFile(fd, &pt)))
 		{
 			if (pt == IO::ParserType::MapLayer)
 			{
-				this->AddLayer((Map::MapDrawLayer*)pobj);
+				this->AddLayer(NotNullPtr<Map::MapDrawLayer>::ConvertFrom(pobj));
 			}
 			else
 			{
 				this->core->OpenObject(pobj);
 			}
 		}
+		fd.Delete();
 	}
 }
 
@@ -624,8 +622,8 @@ void SSWR::AVIRead::AVIRGISForm::OpenCSV(Text::CStringNN url, UInt32 codePage, T
 	NotNullPtr<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(this->core->GetSocketFactory(), this->ssl, url, Net::WebUtil::RequestMethod::HTTP_GET, true);
 	if (cli->GetRespStatus() == Net::WebStatus::SC_OK)
 	{
-		Map::MapDrawLayer *lyr = Map::CSVMapParser::ParseAsPoint(cli, codePage, name, nameCol, latCol, lonCol, Math::CoordinateSystemManager::CreateDefaultCsys());
-		if (lyr)
+		NotNullPtr<Map::MapDrawLayer> lyr;
+		if (lyr.Set(Map::CSVMapParser::ParseAsPoint(cli, codePage, name, nameCol, latCol, lonCol, Math::CoordinateSystemManager::CreateDefaultCsys())))
 		{
 			this->AddLayer(lyr);
 		}
@@ -884,9 +882,9 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 	case MNU_GROUP_NEW_IMAGE:
 		{
 			UI::GUIMapTreeView::ItemIndex *ind = (UI::GUIMapTreeView::ItemIndex*)this->popNode->GetItemObj();
-			Map::VectorLayer *layer;
+			NotNullPtr<Map::VectorLayer> layer;
 			const UTF8Char *cols = (const UTF8Char*)"Name";
-			NEW_CLASS(layer, Map::VectorLayer(Map::DRAW_LAYER_IMAGE, CSTR("Image Layer"), 1, &cols, this->env->GetCoordinateSystem()->Clone(), 0, CSTR_NULL));
+			NEW_CLASSNN(layer, Map::VectorLayer(Map::DRAW_LAYER_IMAGE, CSTR("Image Layer"), 1, &cols, this->env->GetCoordinateSystem()->Clone(), 0, CSTR_NULL));
 			this->env->AddLayer((Map::MapEnv::GroupItem*)ind->item, layer, true);
 			layer->AddUpdatedHandler(OnMapLayerUpdated, this);
 			this->mapTree->UpdateTree();
@@ -895,9 +893,9 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 	case MNU_GROUP_NEW_POINT:
 		{
 			UI::GUIMapTreeView::ItemIndex *ind = (UI::GUIMapTreeView::ItemIndex*)this->popNode->GetItemObj();
-			Map::VectorLayer *layer;
+			NotNullPtr<Map::VectorLayer> layer;
 			const UTF8Char *cols = (const UTF8Char*)"Name";
-			NEW_CLASS(layer, Map::VectorLayer(Map::DRAW_LAYER_POINT, CSTR("Point Layer"), 1, &cols, this->env->GetCoordinateSystem()->Clone(), 0, CSTR_NULL));
+			NEW_CLASSNN(layer, Map::VectorLayer(Map::DRAW_LAYER_POINT, CSTR("Point Layer"), 1, &cols, this->env->GetCoordinateSystem()->Clone(), 0, CSTR_NULL));
 			this->env->AddLayer((Map::MapEnv::GroupItem*)ind->item, layer, true);
 			layer->AddUpdatedHandler(OnMapLayerUpdated, this);
 			this->mapTree->UpdateTree();
@@ -906,9 +904,9 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 	case MNU_GROUP_NEW_POLYLINE:
 		{
 			UI::GUIMapTreeView::ItemIndex *ind = (UI::GUIMapTreeView::ItemIndex*)this->popNode->GetItemObj();
-			Map::VectorLayer *layer;
+			NotNullPtr<Map::VectorLayer> layer;
 			const UTF8Char *cols = (const UTF8Char*)"Name";
-			NEW_CLASS(layer, Map::VectorLayer(Map::DRAW_LAYER_POLYLINE, CSTR("Polyline Layer"), 1, &cols, this->env->GetCoordinateSystem()->Clone(), 0, CSTR_NULL));
+			NEW_CLASSNN(layer, Map::VectorLayer(Map::DRAW_LAYER_POLYLINE, CSTR("Polyline Layer"), 1, &cols, this->env->GetCoordinateSystem()->Clone(), 0, CSTR_NULL));
 			this->env->AddLayer((Map::MapEnv::GroupItem*)ind->item, layer, true);
 			layer->AddUpdatedHandler(OnMapLayerUpdated, this);
 			this->mapTree->UpdateTree();
@@ -917,9 +915,9 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 	case MNU_GROUP_NEW_POLYGON:
 		{
 			UI::GUIMapTreeView::ItemIndex *ind = (UI::GUIMapTreeView::ItemIndex*)this->popNode->GetItemObj();
-			Map::VectorLayer *layer;
+			NotNullPtr<Map::VectorLayer> layer;
 			const UTF8Char *cols = (const UTF8Char*)"Name";
-			NEW_CLASS(layer, Map::VectorLayer(Map::DRAW_LAYER_POLYGON, CSTR("Polygon Layer"), 1, &cols, this->env->GetCoordinateSystem()->Clone(), 0, CSTR_NULL));
+			NEW_CLASSNN(layer, Map::VectorLayer(Map::DRAW_LAYER_POLYGON, CSTR("Polygon Layer"), 1, &cols, this->env->GetCoordinateSystem()->Clone(), 0, CSTR_NULL));
 			this->env->AddLayer((Map::MapEnv::GroupItem*)ind->item, layer, true);
 			layer->AddUpdatedHandler(OnMapLayerUpdated, this);
 			this->mapTree->UpdateTree();
@@ -1013,7 +1011,7 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 			if (ind->itemType == Map::MapEnv::IT_LAYER)
 			{
 				Map::MapEnv::LayerItem *lyr = (Map::MapEnv::LayerItem*)ind->item;
-				this->core->SaveData(this, lyr->layer, L"SaveMapLayer");
+				this->core->SaveData(this, lyr->layer.Ptr(), L"SaveMapLayer");
 			}
 		}
 		break;
@@ -1022,51 +1020,52 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 			UI::GUIMapTreeView::ItemIndex *ind = (UI::GUIMapTreeView::ItemIndex *)this->popNode->GetItemObj();
 			Map::MapEnv::LayerItem *lyr = (Map::MapEnv::LayerItem*)this->env->GetItem(ind->group, ind->index);
 
-			Data::ArrayList<Map::MapDrawLayer *> *layers;
-			NEW_CLASS(layers, Data::ArrayList<Map::MapDrawLayer*>());
+			Data::ArrayListNN<Map::MapDrawLayer> layers;
 			this->env->GetLayersOfType(layers, lyr->layer->GetLayerType());
 			AVIRGISCombineForm frm(0, this->ui, this->core, layers);
 			if (frm.ShowDialog(this) == UI::GUIForm::DR_OK)
 			{
-				Map::MapDrawLayer *newLyr;
-				this->env->AddLayer(0, newLyr = frm.GetCombinedLayer(), true);
-				newLyr->AddUpdatedHandler(OnMapLayerUpdated, this);
-				this->mapTree->UpdateTree();
-				this->mapCtrl->UpdateMap();
-				this->mapCtrl->Redraw();
+				NotNullPtr<Map::MapDrawLayer> newLyr;
+				if (newLyr.Set(frm.GetCombinedLayer()))
+				{
+					this->env->AddLayer(0, newLyr, true);
+					newLyr->AddUpdatedHandler(OnMapLayerUpdated, this);
+					this->mapTree->UpdateTree();
+					this->mapCtrl->UpdateMap();
+					this->mapCtrl->Redraw();
+				}
 			}
-			DEL_CLASS(layers);
 		}
 		break;
 	case MNU_LAYER_CONV:
 		{
 			UI::GUIMapTreeView::ItemIndex *itmInd = (UI::GUIMapTreeView::ItemIndex*)this->popNode->GetItemObj();
-			Map::MapDrawLayer *lyr = ((Map::MapEnv::LayerItem*)itmInd->item)->layer;
-			Map::VectorLayer *nlyr = lyr->CreateEditableLayer();
+			NotNullPtr<Map::MapDrawLayer> lyr = ((Map::MapEnv::LayerItem*)itmInd->item)->layer;
+			NotNullPtr<Map::VectorLayer> nlyr = lyr->CreateEditableLayer();
 			this->env->ReplaceLayer(itmInd->group, itmInd->index, nlyr, true);
 			this->mapTree->UpdateTree();
 		}
 		break;
 	case MNU_LAYER_EDIT:
 		{
-			Map::MapDrawLayer *lyr = ((Map::MapEnv::LayerItem*)((UI::GUIMapTreeView::ItemIndex*)this->popNode->GetItemObj())->item)->layer;
+			NotNullPtr<Map::MapDrawLayer> lyr = ((Map::MapEnv::LayerItem*)((UI::GUIMapTreeView::ItemIndex*)this->popNode->GetItemObj())->item)->layer;
 			Map::DrawLayerType lyrType = lyr->GetLayerType();
 			if (lyr->GetObjectClass() == Map::MapDrawLayer::OC_VECTOR_LAYER)
 			{
 				if (lyrType == Map::DRAW_LAYER_IMAGE)
 				{
-					this->SetCtrlForm(NEW_CLASS_D(SSWR::AVIRead::AVIRGISEditImageForm(0, this->ui, this->core, (Map::VectorLayer*)lyr, this)), this->popNode);
+					this->SetCtrlForm(NEW_CLASS_D(SSWR::AVIRead::AVIRGISEditImageForm(0, this->ui, this->core, NotNullPtr<Map::VectorLayer>::ConvertFrom(lyr), this)), this->popNode);
 				}
 				else if (lyrType == Map::DRAW_LAYER_MIXED || lyrType == Map::DRAW_LAYER_POLYGON)
 				{
-					this->SetCtrlForm(NEW_CLASS_D(SSWR::AVIRead::AVIRGISEditVectorForm(0, this->ui, this->core, (Map::VectorLayer*)lyr, this)), this->popNode);
+					this->SetCtrlForm(NEW_CLASS_D(SSWR::AVIRead::AVIRGISEditVectorForm(0, this->ui, this->core, NotNullPtr<Map::VectorLayer>::ConvertFrom(lyr), this)), this->popNode);
 				}
 			}
 		}
 		break;
 	case MNU_LAYER_MUL_COORD:
 		{
-			Map::MapDrawLayer *lyr = ((Map::MapEnv::LayerItem*)((UI::GUIMapTreeView::ItemIndex*)this->popNode->GetItemObj())->item)->layer;
+			NotNullPtr<Map::MapDrawLayer> lyr = ((Map::MapEnv::LayerItem*)((UI::GUIMapTreeView::ItemIndex*)this->popNode->GetItemObj())->item)->layer;
 			if (lyr->GetObjectClass() == Map::MapDrawLayer::OC_GEOPACKAGE)
 			{
 				UtilUI::TextInputDialog dlg(0, this->ui, this->core->GetMonitorMgr(), CSTR("Multiply Coordinate"), CSTR("Please input value floating point value to multiply"));
@@ -1079,7 +1078,7 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 						Double v = sb.ToDouble();
 						if (v > 0)
 						{
-							((Map::GeoPackageLayer*)lyr)->MultiplyCoordinates(v);
+							((Map::GeoPackageLayer*)lyr.Ptr())->MultiplyCoordinates(v);
 						}
 						else
 						{
@@ -1096,10 +1095,10 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 		break;
 	case MNU_LAYER_REPLAY:
 		{
-			Map::MapDrawLayer *lyr = ((Map::MapEnv::LayerItem*)((UI::GUIMapTreeView::ItemIndex*)this->popNode->GetItemObj())->item)->layer;
+			NotNullPtr<Map::MapDrawLayer> lyr = ((Map::MapEnv::LayerItem*)((UI::GUIMapTreeView::ItemIndex*)this->popNode->GetItemObj())->item)->layer;
 			if (lyr->GetObjectClass() == Map::MapDrawLayer::OC_GPS_TRACK)
 			{
-				this->SetCtrlForm(NEW_CLASS_D(SSWR::AVIRead::AVIRGISReplayForm(0, this->ui, this->core, (Map::GPSTrack*)lyr, this)), this->popNode);
+				this->SetCtrlForm(NEW_CLASS_D(SSWR::AVIRead::AVIRGISReplayForm(0, this->ui, this->core, NotNullPtr<Map::GPSTrack>::ConvertFrom(lyr), this)), this->popNode);
 			}
 			else
 			{
@@ -1109,13 +1108,13 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 		break;
 	case MNU_LAYER_OPENDB:
 		{
-			Map::MapDrawLayer *lyr = ((Map::MapEnv::LayerItem*)((UI::GUIMapTreeView::ItemIndex*)this->popNode->GetItemObj())->item)->layer;
+			NotNullPtr<Map::MapDrawLayer> lyr = ((Map::MapEnv::LayerItem*)((UI::GUIMapTreeView::ItemIndex*)this->popNode->GetItemObj())->item)->layer;
 			this->AddSubForm(NEW_CLASS_D(AVIRDBForm(0, ui, this->core, lyr, false)));
 		}
 		break;
 	case MNU_LAYER_ASSIGN_CSYS:
 		{
-			Map::MapDrawLayer *lyr = ((Map::MapEnv::LayerItem*)((UI::GUIMapTreeView::ItemIndex*)this->popNode->GetItemObj())->item)->layer;
+			NotNullPtr<Map::MapDrawLayer> lyr = ((Map::MapEnv::LayerItem*)((UI::GUIMapTreeView::ItemIndex*)this->popNode->GetItemObj())->item)->layer;
 			AVIRGISCSysForm frm(0, this->ui, this->core, lyr->GetCoordinateSystem().Ptr());
 			frm.SetText(CSTR("Assign Coordinate System"));
 			if (frm.ShowDialog(this) == UI::GUIForm::DR_OK && csys.Set(frm.GetCSys()))
@@ -1128,10 +1127,10 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 		break;
 	case MNU_LAYER_CONV_CSYS:
 		{
-			Map::MapDrawLayer *lyr = ((Map::MapEnv::LayerItem*)((UI::GUIMapTreeView::ItemIndex*)this->popNode->GetItemObj())->item)->layer;
+			NotNullPtr<Map::MapDrawLayer> lyr = ((Map::MapEnv::LayerItem*)((UI::GUIMapTreeView::ItemIndex*)this->popNode->GetItemObj())->item)->layer;
 			if (lyr->GetObjectClass() == Map::MapDrawLayer::OC_VECTOR_LAYER)
 			{
-				Map::VectorLayer *vec = (Map::VectorLayer*)lyr;
+				NotNullPtr<Map::VectorLayer> vec = NotNullPtr<Map::VectorLayer>::ConvertFrom(lyr);
 				AVIRGISCSysForm frm(0, this->ui, this->core, lyr->GetCoordinateSystem().Ptr());
 				frm.SetText(CSTR("Convert Coordinate System"));
 				if (frm.ShowDialog(this) == UI::GUIForm::DR_OK && csys.Set(frm.GetCSys()))
@@ -1145,7 +1144,7 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 		break;
 	case MNU_LAYER_EXPAND:
 		{
-			Map::MapDrawLayer *lyr = ((Map::MapEnv::LayerItem*)((UI::GUIMapTreeView::ItemIndex*)this->popNode->GetItemObj())->item)->layer;
+			NotNullPtr<Map::MapDrawLayer> lyr = ((Map::MapEnv::LayerItem*)((UI::GUIMapTreeView::ItemIndex*)this->popNode->GetItemObj())->item)->layer;
 			if (lyr->GetObjectClass() == Map::MapDrawLayer::OC_MAP_LAYER_COLL)
 			{
 				UI::GUIMapTreeView::ItemIndex *itemInd = (UI::GUIMapTreeView::ItemIndex*)this->popNode->GetItemObj();
@@ -1155,19 +1154,19 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 		break;
 	case MNU_LAYER_TILEDOWN:
 		{
-			Map::MapDrawLayer *lyr = ((Map::MapEnv::LayerItem*)((UI::GUIMapTreeView::ItemIndex*)this->popNode->GetItemObj())->item)->layer;
+			NotNullPtr<Map::MapDrawLayer> lyr = ((Map::MapEnv::LayerItem*)((UI::GUIMapTreeView::ItemIndex*)this->popNode->GetItemObj())->item)->layer;
 			if (lyr->GetObjectClass() == Map::MapDrawLayer::OC_TILE_MAP_LAYER)
 			{
-				this->SetCtrlForm(NEW_CLASS_D(SSWR::AVIRead::AVIRGISTileDownloadForm(0, this->ui, this->core, (Map::TileMapLayer*)lyr, this)), this->popNode);
+				this->SetCtrlForm(NEW_CLASS_D(SSWR::AVIRead::AVIRGISTileDownloadForm(0, this->ui, this->core, NotNullPtr<Map::TileMapLayer>::ConvertFrom(lyr), this)), this->popNode);
 			}
 		}
 		break;
 	case MNU_LAYER_IMPORT_TILES:
 		{
-			Map::MapDrawLayer *lyr = ((Map::MapEnv::LayerItem*)((UI::GUIMapTreeView::ItemIndex*)this->popNode->GetItemObj())->item)->layer;
+			NotNullPtr<Map::MapDrawLayer> lyr = ((Map::MapEnv::LayerItem*)((UI::GUIMapTreeView::ItemIndex*)this->popNode->GetItemObj())->item)->layer;
 			if (lyr->GetObjectClass() == Map::MapDrawLayer::OC_TILE_MAP_LAYER)
 			{
-				Map::TileMapLayer *layer = (Map::TileMapLayer*)lyr;
+				NotNullPtr<Map::TileMapLayer> layer = NotNullPtr<Map::TileMapLayer>::ConvertFrom(lyr);
 				NotNullPtr<Map::TileMap> tileMap = layer->GetTileMap();
 				if (tileMap->GetTileType() == Map::TileMap::TT_OSM)
 				{
@@ -1193,10 +1192,10 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 		break;
 	case MNU_LAYER_OPTIMIZE_FILE:
 		{
-			Map::MapDrawLayer *lyr = ((Map::MapEnv::LayerItem*)((UI::GUIMapTreeView::ItemIndex*)this->popNode->GetItemObj())->item)->layer;
+			NotNullPtr<Map::MapDrawLayer> lyr = ((Map::MapEnv::LayerItem*)((UI::GUIMapTreeView::ItemIndex*)this->popNode->GetItemObj())->item)->layer;
 			if (lyr->GetObjectClass() == Map::MapDrawLayer::OC_TILE_MAP_LAYER)
 			{
-				Map::TileMapLayer *layer = (Map::TileMapLayer*)lyr;
+				NotNullPtr<Map::TileMapLayer> layer = NotNullPtr<Map::TileMapLayer>::ConvertFrom(lyr);
 				NotNullPtr<Map::TileMap> tileMap = layer->GetTileMap();
 				if (tileMap->GetTileType() == Map::TileMap::TT_OSM)
 				{
@@ -1216,7 +1215,7 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 		break;
 	case MNU_LAYER_QUERY:
 		{
-			Map::MapDrawLayer *lyr = ((Map::MapEnv::LayerItem*)((UI::GUIMapTreeView::ItemIndex*)this->popNode->GetItemObj())->item)->layer;
+			NotNullPtr<Map::MapDrawLayer> lyr = ((Map::MapEnv::LayerItem*)((UI::GUIMapTreeView::ItemIndex*)this->popNode->GetItemObj())->item)->layer;
 			this->SetCtrlForm(NEW_CLASS_D(SSWR::AVIRead::AVIRGISQueryForm(0, this->ui, this->core, lyr, this)), this->popNode);
 		}
 		break;
@@ -1227,12 +1226,12 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 			if (!port->IsError())
 			{
 				IO::Device::MTKGPSNMEA *mtk;
-				Map::GPSTrack *trk;
+				NotNullPtr<Map::GPSTrack> trk;
 				UTF8Char *sptr;
 				NEW_CLASS(mtk, IO::Device::MTKGPSNMEA(port, true));
 				if (mtk->IsMTKDevice())
 				{
-					NEW_CLASS(trk, Map::GPSTrack(CSTR("MTK_Tracker"), true, 0, CSTR_NULL));
+					NEW_CLASSNN(trk, Map::GPSTrack(CSTR("MTK_Tracker"), true, 0, CSTR_NULL));
 					if (mtk->ParseLog(trk))
 					{
 						Data::DateTime dt;
@@ -1257,7 +1256,7 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 					else
 					{
 						UI::MessageDialog::ShowDialog(CSTR("Error in parsing log"), CSTR("MTK Tracker"), this);
-						DEL_CLASS(trk);
+						trk.Delete();
 					}
 				}
 				else
@@ -1285,10 +1284,10 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 				if (fileSize > 0 && fileSize <= 8388608 && (fileSize & 0xffff) == 0)
 				{
 					UOSInt i;
-					Map::GPSTrack *trk;
+					NotNullPtr<Map::GPSTrack> trk;
 					Data::ByteBuffer fileBuff((UOSInt)fileSize);
 					fs.Read(fileBuff);
-					NEW_CLASS(trk, Map::GPSTrack(dlg.GetFileName(), true, 0, 0));
+					NEW_CLASSNN(trk, Map::GPSTrack(dlg.GetFileName(), true, 0, 0));
 					i = 0;
 					while (i < fileSize)
 					{
@@ -1311,12 +1310,12 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 			{
 				SSWR::AVIRead::AVIRGPSTrackerForm *gpsFrm;
 				IO::GPSNMEA *gps;
-				Map::GPSTrack *trk;
+				NotNullPtr<Map::GPSTrack> trk;
 				NEW_CLASS(gps, IO::GPSNMEA(frm.GetStream(), true));
 				NEW_CLASS(gpsFrm, SSWR::AVIRead::AVIRGPSTrackerForm(0, this->ui, this->core, gps, true));
 				this->AddSubForm(gpsFrm);
-				NEW_CLASS(trk, Map::GPSTrack(CSTR("GPS_Tracker"), true, 0, CSTR_NULL));
-				gpsFrm->SetGPSTrack(trk);
+				NEW_CLASSNN(trk, Map::GPSTrack(CSTR("GPS_Tracker"), true, 0, CSTR_NULL));
+				gpsFrm->SetGPSTrack(trk.Ptr());
 				gpsFrm->SetMapNavigator(this);
 				this->AddLayer(trk);
 			}
@@ -1331,12 +1330,12 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 			{
 				SSWR::AVIRead::AVIRGPSTrackerForm *gpsFrm;
 				IO::GPSNMEA *gps;
-				Map::GPSTrack *trk;
+				NotNullPtr<Map::GPSTrack> trk;
 				NEW_CLASS(gps, IO::Device::MTKGPSNMEA(frm.GetStream(), true));
 				NEW_CLASS(gpsFrm, SSWR::AVIRead::AVIRGPSTrackerForm(0, this->ui, this->core, gps, true));
 				this->AddSubForm(gpsFrm);
-				NEW_CLASS(trk, Map::GPSTrack(CSTR("MTK_GPS_Tracker"), true, 0, CSTR_NULL));
-				gpsFrm->SetGPSTrack(trk);
+				NEW_CLASSNN(trk, Map::GPSTrack(CSTR("MTK_GPS_Tracker"), true, 0, CSTR_NULL));
+				gpsFrm->SetGPSTrack(trk.Ptr());
 				gpsFrm->SetMapNavigator(this);
 				this->AddLayer(trk);
 			}
@@ -1348,8 +1347,8 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 			NotNullPtr<Math::Geometry::LineString> pl;
 			if (frm.ShowDialog(this) == UI::GUIForm::DR_OK && pl.Set(frm.GetPolyline()))
 			{
-				Map::VectorLayer *lyr;
-				NEW_CLASS(lyr, Map::VectorLayer(Map::DRAW_LAYER_POLYLINE, CSTR("Google Polyline"), 0, 0, Math::CoordinateSystemManager::CreateDefaultCsys(), 0, 0, 0, 0, CSTR_NULL));
+				NotNullPtr<Map::VectorLayer> lyr;
+				NEW_CLASSNN(lyr, Map::VectorLayer(Map::DRAW_LAYER_POLYLINE, CSTR("Google Polyline"), 0, 0, Math::CoordinateSystemManager::CreateDefaultCsys(), 0, 0, 0, 0, CSTR_NULL));
 				lyr->AddVector(pl, (const UTF8Char**)0);
 				this->AddLayer(lyr);
 			}
@@ -1473,9 +1472,10 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 			SSWR::AVIRead::AVIRGISHKTrafficForm frm(0, this->ui, this->core);
 			if (frm.ShowDialog(this) == UI::GUIForm::DR_OK)
 			{
-				if (frm.GetMapLayer())
+				NotNullPtr<Map::MapDrawLayer> layer;
+				if (layer.Set(frm.GetMapLayer()))
 				{
-					this->AddLayer(frm.GetMapLayer());
+					this->AddLayer(layer);
 				}
 			}
 		}
@@ -1485,7 +1485,11 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 			SSWR::AVIRead::AVIRGISHKTDTonnesForm frm(0, this->ui, this->core);
 			if (frm.ShowDialog(this) == UI::GUIForm::DR_OK)
 			{
-				this->AddLayer(frm.GetMapLayer());
+				NotNullPtr<Map::MapDrawLayer> layer;
+				if (layer.Set(frm.GetMapLayer()))
+				{
+					this->AddLayer(layer);
+				}
 			}
 		}
 		break;
@@ -1502,8 +1506,8 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 		break;
 	case MNU_HK_PARKING_VACANCY:
 		{
-			Map::HKParkingVacancy *parking;
-			NEW_CLASS(parking, Map::HKParkingVacancy(this->core->GetSocketFactory(), this->ssl));
+			NotNullPtr<Map::HKParkingVacancy> parking;
+			NEW_CLASSNN(parking, Map::HKParkingVacancy(this->core->GetSocketFactory(), this->ssl));
 			this->AddLayer(parking);
 			break;
 		}
@@ -1515,8 +1519,8 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 				NotNullPtr<Map::TileMap> tileMap;
 				if (tileMap.Set(frm.GetTileMap()))
 				{
-					Map::TileMapLayer *layer;
-					NEW_CLASS(layer, Map::TileMapLayer(tileMap, this->core->GetParserList()));
+					NotNullPtr<Map::TileMapLayer> layer;
+					NEW_CLASSNN(layer, Map::TileMapLayer(tileMap, this->core->GetParserList()));
 					this->AddLayer(layer);
 				}
 			}
@@ -1530,8 +1534,8 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 				NotNullPtr<Map::TileMap> tileMap;
 				if (tileMap.Set(frm.GetTileMap()))
 				{
-					Map::TileMapLayer *layer;
-					NEW_CLASS(layer, Map::TileMapLayer(tileMap, this->core->GetParserList()));
+					NotNullPtr<Map::TileMapLayer> layer;
+					NEW_CLASSNN(layer, Map::TileMapLayer(tileMap, this->core->GetParserList()));
 					this->AddLayer(layer);
 				}
 			}
@@ -1543,8 +1547,8 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 			if (frm.ShowDialog(this) == UI::GUIForm::DR_OK)
 			{
 				Map::DrawMapService *mapService = frm.GetDrawMapService();
-				Map::DrawMapServiceLayer *layer;
-				NEW_CLASS(layer, Map::DrawMapServiceLayer(mapService));
+				NotNullPtr<Map::DrawMapServiceLayer> layer;
+				NEW_CLASSNN(layer, Map::DrawMapServiceLayer(mapService));
 				this->AddLayer(layer);
 			}
 			break;
@@ -1554,8 +1558,8 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 			SSWR::AVIRead::AVIRWFSForm frm(0, this->ui, this->core);
 			if (frm.ShowDialog(this) == UI::GUIForm::DR_OK)
 			{
-				Map::MapDrawLayer *layer = frm.LoadLayer();
-				if (layer)
+				NotNullPtr<Map::MapDrawLayer> layer;
+				if (layer.Set(frm.LoadLayer()))
 				{
 					this->AddLayer(layer);
 				}
@@ -1570,7 +1574,7 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 				Crypto::Hash::CRC32R crc(Crypto::Hash::CRC32::GetPolynormialIEEE());
 				UInt8 crcVal[4];
 				Map::ESRI::ESRIMapServer *esriMap = frm.GetSelectedMap();
-				Map::MapDrawLayer *mapLyr;
+				NotNullPtr<Map::MapDrawLayer> mapLyr;
 				if (esriMap->HasTile())
 				{
 					NotNullPtr<Map::ESRI::ESRITileMap> map;
@@ -1583,12 +1587,12 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 					*sptr++ = (UTF8Char)IO::Path::PATH_SEPERATOR;
 					*sptr = 0;
 					NEW_CLASSNN(map, Map::ESRI::ESRITileMap(esriMap, true, CSTRP(sbuff, sptr)));
-					NEW_CLASS(mapLyr, Map::TileMapLayer(map, this->core->GetParserList()));
+					NEW_CLASSNN(mapLyr, Map::TileMapLayer(map, this->core->GetParserList()));
 					this->AddLayer(mapLyr);
 				}
 				else
 				{
-					NEW_CLASS(mapLyr, Map::DrawMapServiceLayer(esriMap));
+					NEW_CLASSNN(mapLyr, Map::DrawMapServiceLayer(esriMap));
 					this->AddLayer(mapLyr);
 				}
 			}
@@ -1599,8 +1603,8 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 			SSWR::AVIRead::AVIRRegionalMapForm frm(0, this->ui, this->core, this->ssl);
 			if (frm.ShowDialog(this) == UI::GUIForm::DR_OK)
 			{
-				Map::MapDrawLayer *layer = frm.GetMapLayer();
-				if (layer)
+				NotNullPtr<Map::MapDrawLayer> layer;
+				if (layer.Set(frm.GetMapLayer()))
 				{
 					this->AddLayer(layer);
 				}
@@ -1614,8 +1618,8 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 			if (frm.ShowDialog(this) == UI::GUIForm::DR_OK)
 			{
 				Map::DrawMapService *mapService = frm.GetDrawMapService();
-				Map::DrawMapServiceLayer *layer;
-				NEW_CLASS(layer, Map::DrawMapServiceLayer(mapService));
+				NotNullPtr<Map::DrawMapServiceLayer> layer;
+				NEW_CLASSNN(layer, Map::DrawMapServiceLayer(mapService));
 				this->AddLayer(layer);
 			}
 			break;
@@ -1636,7 +1640,7 @@ void SSWR::AVIRead::AVIRGISForm::OnFocus()
 	this->ResumeUpdate();
 }
 
-void SSWR::AVIRead::AVIRGISForm::AddLayer(Map::MapDrawLayer *layer)
+void SSWR::AVIRead::AVIRGISForm::AddLayer(NotNullPtr<Map::MapDrawLayer> layer)
 {
 	layer->AddUpdatedHandler(OnMapLayerUpdated, this);
 	if (this->env->GetItemCount(0) == 0)
@@ -1662,7 +1666,7 @@ void SSWR::AVIRead::AVIRGISForm::AddLayer(Map::MapDrawLayer *layer)
 
 void SSWR::AVIRead::AVIRGISForm::AddLayers(::Data::ArrayList<Map::MapDrawLayer*> *layers)
 {
-	Map::MapDrawLayer *layer;
+	NotNullPtr<Map::MapDrawLayer> layer;
 	Bool needPan = this->env->GetItemCount(0) == 0;
 	UOSInt i;
 	UOSInt j;
@@ -1670,17 +1674,21 @@ void SSWR::AVIRead::AVIRGISForm::AddLayers(::Data::ArrayList<Map::MapDrawLayer*>
 
 	if (needPan)
 	{
-		layer = layers->GetItem(0);
-		layer->GetBounds(bounds);
+		if (layer.Set(layers->GetItem(0)))
+		{
+			layer->GetBounds(bounds);
+		}
 	}
 
 	i = 0;
 	j = layers->GetCount();
 	while (i < j)
 	{
-		layer = layers->GetItem(i);
-		layer->AddUpdatedHandler(OnMapLayerUpdated, this);
-		this->env->AddLayer(0, layer, true);
+		if (layer.Set(layers->GetItem(i)))
+		{
+			layer->AddUpdatedHandler(OnMapLayerUpdated, this);
+			this->env->AddLayer(0, layer, true);
+		}
 		i++;
 	}
 	this->UpdateTimeRange();

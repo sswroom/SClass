@@ -12,7 +12,7 @@ Map::HKRoadNetwork2::HKRoadNetwork2(Text::CStringNN fgdbPath, Math::ArcGISPRJPar
 	IO::DirectoryPackage pkg(fgdbPath);
 	Parser::ObjParser::FileGDB2Parser parser;
 	parser.SetArcGISPRJParser(prjParser);
-	this->fgdb = (DB::ReadingDB*)parser.ParseObject(&pkg, 0, IO::ParserType::ReadingDB);
+	this->fgdb = (DB::ReadingDB*)parser.ParseObject(pkg, 0, IO::ParserType::ReadingDB);
 	
 }
 

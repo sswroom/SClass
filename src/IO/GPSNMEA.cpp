@@ -407,16 +407,16 @@ UOSInt IO::GPSNMEA::GenNMEACommand(const UTF8Char *cmd, UOSInt cmdLen, UInt8 *bu
 	return size + 5;
 }
 
-Map::GPSTrack *IO::GPSNMEA::NMEA2Track(NotNullPtr<IO::Stream> stm, Text::CStringNN sourceName)
+NotNullPtr<Map::GPSTrack> IO::GPSNMEA::NMEA2Track(NotNullPtr<IO::Stream> stm, Text::CStringNN sourceName)
 {
-	Map::GPSTrack *trk;
+	NotNullPtr<Map::GPSTrack> trk;
 	Map::GPSTrack::GPSRecord3 record;
 	SateRecord sateRec;
 	Text::StringBuilderUTF8 sb;
 	ParseStatus ps;
 	MemClear(&record, sizeof(record));
 	MemClear(&sateRec, sizeof(sateRec));
-	NEW_CLASS(trk, Map::GPSTrack(sourceName, true, 65001, sourceName));
+	NEW_CLASSNN(trk, Map::GPSTrack(sourceName, true, 65001, sourceName));
 	Text::UTF8Reader reader(stm);
 	while (true)
 	{

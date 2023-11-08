@@ -167,8 +167,11 @@ Bool UI::GUIListView::AddColumn(Text::CStringNN columnName, Double colWidth)
 	if (data->colCnt <= this->colCnt)
 		return false;
 
+	Text::StringBuilderUTF8 sb;
+	sb.Append(columnName);
+	sb.ReplaceStr(UTF8STRC("_"), UTF8STRC("__"));
 	GtkCellRenderer *renderer = gtk_cell_renderer_text_new();
-	GtkTreeViewColumn *col = gtk_tree_view_column_new_with_attributes((const Char*)columnName.v, renderer, "text", this->colCnt, (void*)0);
+	GtkTreeViewColumn *col = gtk_tree_view_column_new_with_attributes((const Char*)sb.v, renderer, "text", this->colCnt, (void*)0);
 	gtk_tree_view_column_set_fixed_width(col, Double2Int32(colWidth * this->hdpi / this->ddpi));
 	gtk_tree_view_column_set_resizable(col, true);
 	gtk_tree_view_append_column((GtkTreeView*)data->treeView, col);

@@ -109,7 +109,7 @@ void __stdcall SSWR::AVIRead::AVIRGCISClientForm::OnServerCertClicked(void *user
 	SSWR::AVIRead::AVIRGCISClientForm *me = (SSWR::AVIRead::AVIRGCISClientForm*)userObj;
 	if (me->svrCert)
 	{
-		me->core->OpenObject(me->svrCert->Clone().Ptr());
+		me->core->OpenObject(me->svrCert->Clone());
 	}
 }
 

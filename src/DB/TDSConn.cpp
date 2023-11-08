@@ -767,7 +767,7 @@ int TDSConnErrHdlr(DBPROCESS * dbproc, int severity, int dberr, int oserr, char 
 #if defined(VERBOSE)
 	printf("TDS: Error occurs, severity = %d, dberr = %d, oserr = %d, msg: %s\r\n", severity, dberr, oserr, dberrstr);
 #endif
-	return INT_CONTINUE;
+	return INT_CANCEL;
 }
 
 int TDSConnMsgHdlr(DBPROCESS * dbproc, DBINT msgno, int msgstate, int severity, char *msgtext, char *srvname, char *proc, int line)
@@ -918,7 +918,9 @@ DB::DBReader *DB::TDSConn::ExecuteReader(Text::CStringNN sql)
 	if (ret == FAIL)
 	{
 		this->cmdMut.Unlock();
+#if defined(VERBOSE)
 		printf("TDS: Execute SQL Error\r\n");
+#endif
 		return 0;
 	}
 	TDSConnReader *r;

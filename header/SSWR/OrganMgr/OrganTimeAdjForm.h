@@ -24,12 +24,12 @@ namespace SSWR
 		private:
 			OrganEnv *env;
 			DataFileInfo *dataFile;
-			Map::GPSTrack *gpsTrk;
+			NotNullPtr<Map::GPSTrack> gpsTrk;
 			Bool mapUpdated;
 			Map::MapEnv *mapEnv;
 			Map::MapView *mapView;
-			Map::TileMapLayer *mapTileLyr;
-			OrganTimeAdjLayer *adjLyr;
+			NotNullPtr<Map::TileMapLayer> mapTileLyr;
+			NotNullPtr<OrganTimeAdjLayer> adjLyr;
 			NotNullPtr<Map::TileMap> mapTile;
 			Map::DrawMapRenderer *mapRenderer;
 			NotNullPtr<Media::ColorManagerSess> colorSess;

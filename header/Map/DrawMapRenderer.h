@@ -89,10 +89,10 @@ namespace Map
 		static OSInt __stdcall VImgCompare(Math::Geometry::VectorImage *obj1, Math::Geometry::VectorImage *obj2);
 	private:
 		void DrawLayers(NotNullPtr<DrawEnv> denv, Map::MapEnv::GroupItem *group);
-		void DrawShapes(NotNullPtr<DrawEnv> denv, Map::MapDrawLayer *layer, UOSInt lineStyle, UInt32 fillStyle, UOSInt lineThick, UInt32 lineColor);
-		void DrawShapesPoint(NotNullPtr<DrawEnv> denv, Map::MapDrawLayer *layer, UOSInt imgIndex);
-		void DrawLabel(NotNullPtr<DrawEnv> denv, Map::MapDrawLayer *layer, UOSInt fontSytle, UOSInt labelCol, Int32 priority, Int32 flags, UOSInt imgWidth, UOSInt imgHeight, Map::MapEnv::FontType fontType);
-		void DrawImageLayer(NotNullPtr<DrawEnv> denv, Map::MapDrawLayer *layer);
+		void DrawShapes(NotNullPtr<DrawEnv> denv, NotNullPtr<Map::MapDrawLayer> layer, UOSInt lineStyle, UInt32 fillStyle, UOSInt lineThick, UInt32 lineColor);
+		void DrawShapesPoint(NotNullPtr<DrawEnv> denv, NotNullPtr<Map::MapDrawLayer> layer, UOSInt imgIndex);
+		void DrawLabel(NotNullPtr<DrawEnv> denv, NotNullPtr<Map::MapDrawLayer> layer, UOSInt fontSytle, UOSInt labelCol, Int32 priority, Int32 flags, UOSInt imgWidth, UOSInt imgHeight, Map::MapEnv::FontType fontType);
+		void DrawImageLayer(NotNullPtr<DrawEnv> denv, NotNullPtr<Map::MapDrawLayer> layer);
 		void DrawImageObject(NotNullPtr<DrawEnv> denv, NotNullPtr<Media::StaticImage> img, Math::Coord2DDbl scnTL, Math::Coord2DDbl scnBR, Double srcAlpha);
 
 		static void GetCharsSize(NotNullPtr<DrawEnv> denv, Math::Coord2DDbl *size, Text::CString label, Map::MapEnv::FontType fontType, UOSInt fontStyle, Double scaleW, Double scaleH);

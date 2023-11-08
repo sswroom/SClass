@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "Core/Core.h"
+#include "DB/MSSQLConn.h"
 #include "IO/ConsoleWriter.h"
 #include "IO/FileStream.h"
 #include "IO/FileUtil.h"

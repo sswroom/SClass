@@ -43,7 +43,7 @@ namespace SSWR
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			Data::ArrayListNN<Text::String> dbNames;
-			DB::ReadingDB *db;
+			NotNullPtr<DB::ReadingDB> db;
 			Bool needRelease;
 			DB::ReadingDBTool *dbt;
 			IO::LogTool log;
@@ -60,8 +60,9 @@ namespace SSWR
 			void CopyTableCreate(DB::SQLType sqlType, Bool axisAware);
 			void ExportTableData(DB::SQLType sqlType, Bool axisAware);
 			void ExportTableCSV();
+			void ExportTableSQLite();
 		public:
-			AVIRDBForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, DB::ReadingDB *db, Bool needRelease);
+			AVIRDBForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<DB::ReadingDB> db, Bool needRelease);
 			virtual ~AVIRDBForm();
 
 			void UpdateSchemas();

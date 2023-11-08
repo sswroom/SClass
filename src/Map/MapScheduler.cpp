@@ -311,7 +311,7 @@ void Map::MapScheduler::SetMapView(Map::MapView *map, NotNullPtr<Media::DrawImag
 	this->img = img.Ptr();
 }
 
-void Map::MapScheduler::SetDrawType(Map::MapDrawLayer *lyr, Media::DrawPen *p, Media::DrawBrush *b, Media::DrawImage *ico, Double icoSpotX, Double icoSpotY, Bool *isLayerEmpty)
+void Map::MapScheduler::SetDrawType(NotNullPtr<Map::MapDrawLayer> lyr, Media::DrawPen *p, Media::DrawBrush *b, Media::DrawImage *ico, Double icoSpotX, Double icoSpotY, Bool *isLayerEmpty)
 {
 	while (this->dt == ThreadState::Clearing)
 	{
@@ -323,7 +323,7 @@ void Map::MapScheduler::SetDrawType(Map::MapDrawLayer *lyr, Media::DrawPen *p, M
 	this->ico = ico;
 	this->icoSpotX = icoSpotX;
 	this->icoSpotY = icoSpotY;
-	this->lyr = lyr;
+	this->lyr = lyr.Ptr();
 	this->isFirst = true;
 	this->isLayerEmpty = isLayerEmpty;
 }

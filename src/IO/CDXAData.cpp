@@ -27,10 +27,10 @@ Bool IO::CDXAData::ReadSector(UInt64 sectorNum, Data::ByteArray sectorBuff)
 	return this->data->GetRealData(sectorNum * 2352LL, 2352, sectorBuff) == 2352;
 }
 
-IO::ISectorData *IO::CDXAData::GetPartialData(UInt64 startSector, UInt64 sectorCount) const
+NotNullPtr<IO::ISectorData> IO::CDXAData::GetPartialData(UInt64 startSector, UInt64 sectorCount) const
 {
-	IO::ISectorData *data;
-	NEW_CLASS(data, IO::CDXAData(this->data, startSector * 2352, sectorCount * 2352));
+	NotNullPtr<IO::ISectorData> data;
+	NEW_CLASSNN(data, IO::CDXAData(this->data, startSector * 2352, sectorCount * 2352));
 	return data;
 }
 

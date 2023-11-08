@@ -167,7 +167,7 @@ void SSWR::AVIRead::AVIRGISReplayForm::FreeNames()
 	}
 }
 
-SSWR::AVIRead::AVIRGISReplayForm::AVIRGISReplayForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Map::GPSTrack *track, IMapNavigator *navi) : UI::GUIForm(parent, 416, 560, ui)
+SSWR::AVIRead::AVIRGISReplayForm::AVIRGISReplayForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<Map::GPSTrack> track, IMapNavigator *navi) : UI::GUIForm(parent, 416, 560, ui)
 {
 	UTF8Char sbuff[16];
 	UTF8Char *sptr;
@@ -353,8 +353,8 @@ void SSWR::AVIRead::AVIRGISReplayForm::EventMenuClicked(UInt16 cmdId)
 			}
 			UOSInt recCnt;
 			UOSInt i;
-			Map::GPSTrack *newTrack;
-			NEW_CLASS(newTrack, Map::GPSTrack(this->track->GetSourceNameObj(), this->track->GetHasAltitude(), this->track->GetCodePage(), this->track->GetName().Ptr()));
+			NotNullPtr<Map::GPSTrack> newTrack;
+			NEW_CLASSNN(newTrack, Map::GPSTrack(this->track->GetSourceNameObj(), this->track->GetHasAltitude(), this->track->GetCodePage(), this->track->GetName().Ptr()));
 			Text::String *trackName = track->GetTrackName(this->currTrackId);
 			if (trackName)
 				newTrack->SetTrackName(trackName->ToCString());

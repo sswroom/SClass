@@ -58,7 +58,7 @@ namespace Map
 		class FileGDBUtil
 		{
 		public:
-			static FileGDBTableInfo *ParseFieldDesc(Data::ByteArray fieldDesc, Math::ArcGISPRJParser *prjParser);
+			static FileGDBTableInfo *ParseFieldDesc(Data::ByteArray fieldDesc, NotNullPtr<Math::ArcGISPRJParser> prjParser);
 			static void FreeFieldInfo(FileGDBFieldInfo *fieldInfo);
 			static void FreeTableInfo(FileGDBTableInfo *tableInfo);
 			static FileGDBFieldInfo *FieldInfoClone(FileGDBFieldInfo *tableInfo);

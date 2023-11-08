@@ -266,10 +266,10 @@ void Parser::FileParser::MEVParser::ReadItems(NotNullPtr<IO::StreamData> fd, Map
 				this->parsers->SetCodePage(ReadUInt32(&buff[12]));
 			}
 			NotNullPtr<Text::String> s = Text::String::NewNotNull(wbuff);
-			Map::MapDrawLayer *layer = this->mapMgr->LoadLayer(s->ToCString(), this->parsers, env);
-			s->Release();
-			if (layer)
+			NotNullPtr<Map::MapDrawLayer> layer;
+			if (layer.Set(this->mapMgr->LoadLayer(s->ToCString(), this->parsers, env)))
 			{
+				s->Release();
 				Map::MapEnv::LayerItem setting;
 				UOSInt layerId = env->AddLayer(group, layer, false);
 				env->GetLayerProp(setting, group, layerId);
@@ -336,6 +336,7 @@ void Parser::FileParser::MEVParser::ReadItems(NotNullPtr<IO::StreamData> fd, Map
 			}
 			else
 			{
+				s->Release();
 				if (ReadUInt32(&buff[16]) == 1)
 				{
 					*currPos = 32 + *currPos;

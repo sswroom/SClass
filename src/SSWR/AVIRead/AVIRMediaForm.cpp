@@ -631,11 +631,11 @@ void SSWR::AVIRead::AVIRMediaForm::EventMenuClicked(UInt16 cmdId)
 
 				UTF8Char sbuff[512];
 				UTF8Char *sptr;
-				Media::ImageList *imgList;
+				NotNullPtr<Media::ImageList> imgList;
 				Media::StaticImage *simg = img->ToStaticImage();
 				this->core->GetDrawEngine()->DeleteImage(img);
 				sptr = audio->GetSourceName(sbuff);
-				NEW_CLASS(imgList, Media::ImageList(CSTRP(sbuff, sptr)));
+				NEW_CLASSNN(imgList, Media::ImageList(CSTRP(sbuff, sptr)));
 				imgList->AddImage(simg, 0);
 				this->core->OpenObject(imgList);
 			}

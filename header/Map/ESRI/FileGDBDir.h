@@ -29,7 +29,7 @@ namespace Map
 
 			void AddTable(FileGDBTable *table);
 
-			static FileGDBDir *OpenDir(IO::PackageFile *pkg, Math::ArcGISPRJParser *prjParser);
+			static FileGDBDir *OpenDir(NotNullPtr<IO::PackageFile> pkg, NotNullPtr<Math::ArcGISPRJParser> prjParser);
 		};
 	}
 }

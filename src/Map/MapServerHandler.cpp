@@ -595,7 +595,7 @@ Bool Map::MapServerHandler::AddAsset(Text::CStringNN filePath)
 	else if (pt == IO::Path::PathType::Directory)
 	{
 		IO::DirectoryPackage dpkg(filePath);
-		pobj = this->parsers->ParseObject(&dpkg, &t);
+		pobj = this->parsers->ParseObject(dpkg, t);
 	}
 	else
 	{

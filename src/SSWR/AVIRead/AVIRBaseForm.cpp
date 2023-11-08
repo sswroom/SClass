@@ -511,7 +511,6 @@ void __stdcall SSWR::AVIRead::AVIRBaseForm::FileHandler(void *userObj, NotNullPt
 	SSWR::AVIRead::AVIRBaseForm *me = (AVIRead::AVIRBaseForm*)userObj;
 	IO::Path::PathType pt;
 	NotNullPtr<IO::StmData::FileData> fd;
-	IO::DirectoryPackage *pkg;
 	Text::StringBuilderUTF8 sb;
 	sb.AppendC(UTF8STRC("Cannot parse:"));
 	Bool found = false;
@@ -526,14 +525,14 @@ void __stdcall SSWR::AVIRead::AVIRBaseForm::FileHandler(void *userObj, NotNullPt
 #if defined(WIN32) || defined(_WIN64) || (defined(_MSC_VER) && defined(_WIN32))
 			if (files[i]->EndsWithICase(UTF8STRC(".GDB")))
 			{
-				DB::OLEDBConn *conn;
+				NotNullPtr<DB::OLEDBConn> conn;
 				Text::StringBuilderUTF8 sb;
 				sb.AppendC(UTF8STRC("Provider=ESRI.GeoDB.OleDB.1;Data Source="));
 				sb.Append(files[i]);
 				sb.AppendC(UTF8STRC(";Extended Properties=workspacetype=esriDataSourcesGDB.FileGDBWorkspaceFactory.1"));
 				sb.AppendC(UTF8STRC(";Geometry=OBJECT"));
 				const WChar *wptr = Text::StrToWCharNew(sb.ToString());
-				NEW_CLASS(conn, DB::OLEDBConn(wptr, me->core->GetLog()));
+				NEW_CLASSNN(conn, DB::OLEDBConn(wptr, me->core->GetLog()));
 				Text::StrDelNew(wptr);
 				if (conn->GetConnError() == DB::OLEDBConn::CE_NONE)
 				{
@@ -542,19 +541,20 @@ void __stdcall SSWR::AVIRead::AVIRBaseForm::FileHandler(void *userObj, NotNullPt
 				}
 				else
 				{
-					DEL_CLASS(conn);
+					conn.Delete();
 				}
 			}
 #endif
 			if (!valid)
 			{
-				NEW_CLASS(pkg, IO::DirectoryPackage(files[i]->ToCString()));
+				NotNullPtr<IO::DirectoryPackage> pkg;
+				NEW_CLASSNN(pkg, IO::DirectoryPackage(files[i]->ToCString()));
 				Parser::ParserList *parsers = me->core->GetParserList();
 				IO::ParserType pt = IO::ParserType::Unknown;
-				IO::ParsedObject *pobj = parsers->ParseObject(pkg, &pt);
-				if (pobj)
+				NotNullPtr<IO::ParsedObject> pobj;
+				if (pobj.Set(parsers->ParseObject(pkg, pt)))
 				{
-					DEL_CLASS(pkg);
+					pkg.Delete();
 					me->core->OpenObject(pobj);
 				}
 				else
@@ -932,7 +932,7 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 	UTF8Char *sptr;
 	UTF8Char *sptr2;
 	NotNullPtr<Map::TileMap> tileMap;
-	Map::MapDrawLayer *mapLyr;
+	NotNullPtr<Map::MapDrawLayer> mapLyr;
 
 	switch (cmdId)
 	{
@@ -947,7 +947,11 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 			SSWR::AVIRead::AVIRODBCDSNForm dlg(0, this->ui, this->core);
 			if (dlg.ShowDialog(this) == UI::GUIForm::DR_OK)
 			{
-				this->core->OpenObject(dlg.GetDBConn());
+				NotNullPtr<DB::DBConn> db;
+				if (db.Set(dlg.GetDBConn()))
+				{
+					this->core->OpenObject(db);
+				}
 			}
 		}
 		break;
@@ -956,7 +960,11 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 			SSWR::AVIRead::AVIRODBCStrForm dlg(0, this->ui, this->core);
 			if (dlg.ShowDialog(this) == UI::GUIForm::DR_OK)
 			{
-				this->core->OpenObject(dlg.GetDBConn());
+				NotNullPtr<DB::DBConn> db;
+				if (db.Set(dlg.GetDBConn()))
+				{
+					this->core->OpenObject(db);
+				}
 			}
 		}
 		break;
@@ -983,9 +991,9 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 			SSWR::AVIRead::AVIRCaptureDevForm dlg(0, this->ui, this->core);
 			if (dlg.ShowDialog(this) == UI::GUIForm::DR_OK)
 			{
-				Media::MediaFile *mf;
+				NotNullPtr<Media::MediaFile> mf;
 				sptr = dlg.capture->GetSourceName(sbuff);
-				NEW_CLASS(mf, Media::MediaFile(CSTRP(sbuff, sptr)));
+				NEW_CLASSNN(mf, Media::MediaFile(CSTRP(sbuff, sptr)));
 				mf->AddSource(dlg.capture, 0);
 				this->core->OpenObject(mf);
 			}
@@ -993,14 +1001,14 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 		break;
 	case MNU_MTK_GPS:
 		{
-			Map::GPSTrack *trk;
+			NotNullPtr<Map::GPSTrack> trk;
 			IO::SerialPort port(IO::Device::MTKGPSNMEA::GetMTKSerialPort(), 115200, IO::SerialPort::PARITY_NONE, true);
 			if (!port.IsError())
 			{
 				IO::Device::MTKGPSNMEA mtk(port, false);
 				if (mtk.IsMTKDevice())
 				{
-					NEW_CLASS(trk, Map::GPSTrack(CSTR("MTK_Tracker"), true, 0, CSTR_NULL));
+					NEW_CLASSNN(trk, Map::GPSTrack(CSTR("MTK_Tracker"), true, 0, CSTR_NULL));
 					if (mtk.ParseLog(trk))
 					{
 						core->OpenObject(trk);
@@ -1008,7 +1016,7 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 					else
 					{
 						UI::MessageDialog::ShowDialog(CSTR("Error in parsing log"), CSTR("MTK Tracker"), this);
-						DEL_CLASS(trk);
+						trk.Delete();
 					}
 				}
 				else
@@ -1055,28 +1063,36 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 		}
 		break;
 	case MNU_OSM_TILE:
-		this->core->OpenObject(Map::BaseMapLayer::CreateLayer(Map::BaseMapLayer::BLT_OSM_TILE, this->core->GetSocketFactory(), this->ssl, this->core->GetParserList()));
+		if (mapLyr.Set(Map::BaseMapLayer::CreateLayer(Map::BaseMapLayer::BLT_OSM_TILE, this->core->GetSocketFactory(), this->ssl, this->core->GetParserList())))
+			this->core->OpenObject(mapLyr);
 		break;
 	case MNU_OSM_CYCLE:
-		this->core->OpenObject(Map::BaseMapLayer::CreateLayer(Map::BaseMapLayer::BLT_OSM_CYCLE, this->core->GetSocketFactory(), this->ssl, this->core->GetParserList()));
+		if (mapLyr.Set(Map::BaseMapLayer::CreateLayer(Map::BaseMapLayer::BLT_OSM_CYCLE, this->core->GetSocketFactory(), this->ssl, this->core->GetParserList())))
+			this->core->OpenObject(mapLyr);
 		break;
 	case MNU_OSM_TRANSP:
-		this->core->OpenObject(Map::BaseMapLayer::CreateLayer(Map::BaseMapLayer::BLT_OSM_TRANSP, this->core->GetSocketFactory(), this->ssl, this->core->GetParserList()));
+		if (mapLyr.Set(Map::BaseMapLayer::CreateLayer(Map::BaseMapLayer::BLT_OSM_TRANSP, this->core->GetSocketFactory(), this->ssl, this->core->GetParserList())))
+			this->core->OpenObject(mapLyr);
 		break;
 	case MNU_OSM_LANDSCAPE:
-		this->core->OpenObject(Map::BaseMapLayer::CreateLayer(Map::BaseMapLayer::BLT_OSM_LANDSCAPE, this->core->GetSocketFactory(), this->ssl, this->core->GetParserList()));
+		if (mapLyr.Set(Map::BaseMapLayer::CreateLayer(Map::BaseMapLayer::BLT_OSM_LANDSCAPE, this->core->GetSocketFactory(), this->ssl, this->core->GetParserList())))
+			this->core->OpenObject(mapLyr);
 		break;
 	case MNU_OSM_OUTDOORS:
-		this->core->OpenObject(Map::BaseMapLayer::CreateLayer(Map::BaseMapLayer::BLT_OSM_OUTDOORS, this->core->GetSocketFactory(), this->ssl, this->core->GetParserList()));
+		if (mapLyr.Set(Map::BaseMapLayer::CreateLayer(Map::BaseMapLayer::BLT_OSM_OUTDOORS, this->core->GetSocketFactory(), this->ssl, this->core->GetParserList())))
+			this->core->OpenObject(mapLyr);
 		break;
 	case MNU_OSM_TRANSP_DARK:
-		this->core->OpenObject(Map::BaseMapLayer::CreateLayer(Map::BaseMapLayer::BLT_OSM_TRANSP_DARK, this->core->GetSocketFactory(), this->ssl, this->core->GetParserList()));
+		if (mapLyr.Set(Map::BaseMapLayer::CreateLayer(Map::BaseMapLayer::BLT_OSM_TRANSP_DARK, this->core->GetSocketFactory(), this->ssl, this->core->GetParserList())))
+			this->core->OpenObject(mapLyr);
 		break;
 	case MNU_OSM_SPINAL:
-		this->core->OpenObject(Map::BaseMapLayer::CreateLayer(Map::BaseMapLayer::BLT_OSM_SPINAL, this->core->GetSocketFactory(), this->ssl, this->core->GetParserList()));
+		if (mapLyr.Set(Map::BaseMapLayer::CreateLayer(Map::BaseMapLayer::BLT_OSM_SPINAL, this->core->GetSocketFactory(), this->ssl, this->core->GetParserList())))
+			this->core->OpenObject(mapLyr);
 		break;
 	case MNU_OSM_MAPQUEST:
-		this->core->OpenObject(Map::BaseMapLayer::CreateLayer(Map::BaseMapLayer::BLT_OSM_MAPQUEST, this->core->GetSocketFactory(), this->ssl, this->core->GetParserList()));
+		if (mapLyr.Set(Map::BaseMapLayer::CreateLayer(Map::BaseMapLayer::BLT_OSM_MAPQUEST, this->core->GetSocketFactory(), this->ssl, this->core->GetParserList())))
+			this->core->OpenObject(mapLyr);
 		break;
 	case MNU_ESRI_MAP:
 		{
@@ -1098,12 +1114,12 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 					*sptr++ = (UTF8Char)IO::Path::PATH_SEPERATOR;
 					*sptr = 0;
 					NEW_CLASSNN(map, Map::ESRI::ESRITileMap(esriMap, true, CSTRP(sbuff, sptr)));
-					NEW_CLASS(mapLyr, Map::TileMapLayer(map, this->core->GetParserList()));
+					NEW_CLASSNN(mapLyr, Map::TileMapLayer(map, this->core->GetParserList()));
 					this->core->OpenObject(mapLyr);
 				}
 				else
 				{
-					NEW_CLASS(mapLyr, Map::DrawMapServiceLayer(esriMap));
+					NEW_CLASSNN(mapLyr, Map::DrawMapServiceLayer(esriMap));
 					this->core->OpenObject(mapLyr);
 				}
 			}
@@ -1139,25 +1155,17 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 				{
 					if (IO::Path::GetPathType(fname->ToCString()) == IO::Path::PathType::Directory)
 					{
-						IO::DirectoryPackage *dp;
-						NEW_CLASS(dp, IO::DirectoryPackage(fname));
-						IO::ParsedObject *pobj;
-						if (dlg.GetParserType() == IO::ParserType::PackageFile)
+						NotNullPtr<IO::DirectoryPackage> dp;
+						NEW_CLASSNN(dp, IO::DirectoryPackage(fname));
+						NotNullPtr<IO::ParsedObject> pobj;
+						if (dlg.GetParserType() == IO::ParserType::PackageFile && pobj.Set(this->core->GetParserList()->ParseObjectType(dp, 0, dlg.GetParserType())))
 						{
-							pobj = 0;
-						}
-						else
-						{
-							pobj = this->core->GetParserList()->ParseObjectType(dp, 0, dlg.GetParserType());
-						}
-						if (pobj)
-						{
-							DEL_CLASS(dp);
+							dp.Delete();
 							this->core->OpenObject(pobj);	
 						}
 						else
 						{
-							this->core->OpenObject(dp);	
+							this->core->OpenObject(dp);
 						}
 					}
 					else
@@ -1175,8 +1183,8 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 				}
 				else
 				{
-					IO::ParsedObject *pobj = Net::URL::OpenObject(fname->ToCString(), CSTR_NULL, this->core->GetSocketFactory(), this->ssl, 30000, this->core->GetLog());
-					if (pobj == 0)
+					NotNullPtr<IO::ParsedObject> pobj;
+					if (!pobj.Set(Net::URL::OpenObject(fname->ToCString(), CSTR_NULL, this->core->GetSocketFactory(), this->ssl, 30000, this->core->GetLog())))
 					{
 						UI::MessageDialog::ShowDialog(CSTR("Error in loading file"), CSTR("AVIRead"), this);
 					}
@@ -1190,8 +1198,8 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 		break;
 	case MNU_PLAYLIST:
 		{
-			Media::Playlist *playlist;
-			NEW_CLASS(playlist, Media::Playlist(CSTR("Untitled"), this->core->GetParserList()));
+			NotNullPtr<Media::Playlist> playlist;
+			NEW_CLASSNN(playlist, Media::Playlist(CSTR("Untitled"), this->core->GetParserList()));
 			this->core->OpenObject(playlist);
 		}
 		break;
@@ -1589,7 +1597,7 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 		sptr = IO::Path::GetProcessFileName(sbuff);
 		sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("OSMCacheTest"));
 		NEW_CLASSNN(tileMap, Map::OSM::OSMTileMap(CSTR("http://127.0.0.1/"), {sbuff, (UOSInt)(sptr - sbuff)}, 18, this->core->GetSocketFactory(), this->ssl));
-		NEW_CLASS(mapLyr, Map::TileMapLayer(tileMap, this->core->GetParserList()));
+		NEW_CLASSNN(mapLyr, Map::TileMapLayer(tileMap, this->core->GetParserList()));
 		this->core->OpenObject(mapLyr);
 		break;
 	case MNU_IMAGEVIEWER:
@@ -1614,7 +1622,7 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 				IO::DirectoryPackage *pkg;
 				NEW_CLASS(pkg, IO::DirectoryPackage(dlg.GetFolder()));
 				NEW_CLASSNN(tileMap, Map::OSM::OSMLocalTileMap(pkg));
-				NEW_CLASS(mapLyr, Map::TileMapLayer(tileMap, this->core->GetParserList()));
+				NEW_CLASSNN(mapLyr, Map::TileMapLayer(tileMap, this->core->GetParserList()));
 				this->core->OpenObject(mapLyr);
 			}
 		}
@@ -1634,7 +1642,7 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 				if (pkg)
 				{
 					NEW_CLASSNN(tileMap, Map::OSM::OSMLocalTileMap(pkg));
-					NEW_CLASS(mapLyr, Map::TileMapLayer(tileMap, parsers));
+					NEW_CLASSNN(mapLyr, Map::TileMapLayer(tileMap, parsers));
 					this->core->OpenObject(mapLyr);
 				}
 			}
@@ -1774,8 +1782,8 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 			}
 			if (img)
 			{
-				Media::ImageList *imgList;
-				NEW_CLASS(imgList, Media::ImageList(CSTR("ScreenCapture")));
+				NotNullPtr<Media::ImageList> imgList;
+				NEW_CLASSNN(imgList, Media::ImageList(CSTR("ScreenCapture")));
 				imgList->AddImage(img, 0);
 				this->core->OpenObject(imgList);
 			}
@@ -1860,7 +1868,9 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 			SSWR::AVIRead::AVIROLEDBForm dlg(0, this->ui, this->core);
 			if (dlg.ShowDialog(this))
 			{
-				this->core->OpenObject(dlg.GetDBConn());
+				NotNullPtr<DB::DBConn> db;
+				if (db.Set(dlg.GetDBConn()))
+					this->core->OpenObject(db);
 			}
 #endif
 		}
@@ -2369,7 +2379,11 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 			}
 			else if (dlg.ShowDialog(this) == UI::GUIForm::DR_OK)
 			{
-				this->core->OpenObject(dlg.GetDBConn());
+				NotNullPtr<DB::DBConn> db;
+				if (db.Set(dlg.GetDBConn()))
+				{
+					this->core->OpenObject(db);
+				}
 			}
 		}
 		break;
@@ -2525,7 +2539,9 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 			SSWR::AVIRead::AVIRMySQLConnForm dlg(0, this->ui, this->core);
 			if (dlg.ShowDialog(this) == UI::GUIForm::DR_OK)
 			{
-				this->core->OpenObject(dlg.GetDBConn());
+				NotNullPtr<DB::DBConn> db;
+				if (db.Set(dlg.GetDBConn()))
+					this->core->OpenObject(db);
 			}
 		}
 		break;
@@ -2569,7 +2585,9 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 			SSWR::AVIRead::AVIRPostgreSQLForm dlg(0, this->ui, this->core);
 			if (dlg.ShowDialog(this) == UI::GUIForm::DR_OK)
 			{
-				this->core->OpenObject(dlg.GetDBConn());
+				NotNullPtr<DB::DBConn> db;
+				if (db.Set(dlg.GetDBConn()))
+					this->core->OpenObject(db);
 			}
 		}
 		break;
@@ -2637,8 +2655,8 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 				NotNullPtr<Map::TileMap> tile;
 				if (tile.Set(frm.GetTileMap()))
 				{
-					Map::TileMapLayer *layer;
-					NEW_CLASS(layer, Map::TileMapLayer(tile, this->core->GetParserList()));
+					NotNullPtr<Map::TileMapLayer> layer;
+					NEW_CLASSNN(layer, Map::TileMapLayer(tile, this->core->GetParserList()));
 					this->core->OpenObject(layer);
 				}
 			}
@@ -2659,8 +2677,8 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 				NotNullPtr<Map::TileMap> tile;
 				if (tile.Set(frm.GetTileMap()))
 				{
-					Map::TileMapLayer *layer;
-					NEW_CLASS(layer, Map::TileMapLayer(tile, this->core->GetParserList()));
+					NotNullPtr<Map::TileMapLayer> layer;
+					NEW_CLASSNN(layer, Map::TileMapLayer(tile, this->core->GetParserList()));
 					this->core->OpenObject(layer);
 				}
 			}
@@ -2672,8 +2690,8 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 			if (frm.ShowDialog(this))
 			{
 				Map::DrawMapService *mapService = frm.GetDrawMapService();
-				Map::DrawMapServiceLayer *layer;
-				NEW_CLASS(layer, Map::DrawMapServiceLayer(mapService));
+				NotNullPtr<Map::DrawMapServiceLayer> layer;
+				NEW_CLASSNN(layer, Map::DrawMapServiceLayer(mapService));
 				this->core->OpenObject(layer);
 			}
 		}
@@ -2683,7 +2701,8 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 			SSWR::AVIRead::AVIRGoogleTileMapForm frm(0, this->ui, this->core, this->ssl);
 			if (frm.ShowDialog(this))
 			{
-				this->core->OpenObject(frm.GetMapLayer());
+				if (mapLyr.Set(frm.GetMapLayer()))
+					this->core->OpenObject(mapLyr);
 			}
 		}
 		break;
@@ -2695,8 +2714,8 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 				NotNullPtr<Map::TileMap> tile;
 				if (tile.Set(frm.GetTileMap()))
 				{
-					Map::TileMapLayer *layer;
-					NEW_CLASS(layer, Map::TileMapLayer(tile, this->core->GetParserList()));
+					NotNullPtr<Map::TileMapLayer> layer;
+					NEW_CLASSNN(layer, Map::TileMapLayer(tile, this->core->GetParserList()));
 					this->core->OpenObject(layer);
 				}
 			}
@@ -2707,7 +2726,8 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 			SSWR::AVIRead::AVIRRegionalMapForm frm(0, this->ui, this->core, this->ssl);
 			if (frm.ShowDialog(this))
 			{
-				this->core->OpenObject(frm.GetMapLayer());
+				if (mapLyr.Set(frm.GetMapLayer()))
+					this->core->OpenObject(mapLyr);
 			}
 		}
 		break;
@@ -2719,8 +2739,8 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 				NotNullPtr<Map::TileMap> tile;
 				if (tile.Set(frm.GetTileMap()))
 				{
-					Map::TileMapLayer *layer;
-					NEW_CLASS(layer, Map::TileMapLayer(tile, this->core->GetParserList()));
+					NotNullPtr<Map::TileMapLayer> layer;
+					NEW_CLASSNN(layer, Map::TileMapLayer(tile, this->core->GetParserList()));
 					this->core->OpenObject(layer);
 				}
 			}

@@ -110,14 +110,11 @@ void __stdcall SSWR::AVIRead::AVIRCameraControlForm::OnFilesDblClick(void *userO
 			IO::MemoryStream mstm;
 			if (me->camera->GetFile(file, &mstm))
 			{
-				IO::ParsedObject *pobj;
+				NotNullPtr<IO::ParsedObject> pobj;
 				UOSInt size;
 				UInt8 *buff = mstm.GetBuff(size);
-				{
-					IO::StmData::MemoryDataRef fd(buff, size);
-					pobj = me->core->GetParserList()->ParseFileType(fd, IO::ParserType::ImageList);
-				}
-				if (pobj)
+				IO::StmData::MemoryDataRef fd(buff, size);
+				if (pobj.Set(me->core->GetParserList()->ParseFileType(fd, IO::ParserType::ImageList)))
 				{
 					me->core->OpenObject(pobj);
 				}
@@ -132,7 +129,7 @@ void __stdcall SSWR::AVIRead::AVIRCameraControlForm::OnFilesDblClick(void *userO
 			if (me->camera->GetFile(file, &mstm))
 			{
 				mstm.SeekFromBeginning(0);
-				Map::GPSTrack *trk = IO::GPSNMEA::NMEA2Track(mstm, {file->fileName, Text::StrCharCnt(file->fileName)});
+				NotNullPtr<Map::GPSTrack> trk = IO::GPSNMEA::NMEA2Track(mstm, {file->fileName, Text::StrCharCnt(file->fileName)});
 				SSWR::AVIRead::AVIRGISForm *frm = me->core->GetGISForm();
 				if (frm)
 				{

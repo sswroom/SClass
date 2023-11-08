@@ -44,5 +44,5 @@ IO::ParsedObject *Parser::FileParser::NMEAParser::ParseFileHdr(NotNullPtr<IO::St
 	}
 
 	IO::StreamDataStream stm(fd, 22, fd->GetDataSize() - 22);
-	return IO::GPSNMEA::NMEA2Track(stm, fd->GetFullName()->ToCString());
+	return IO::GPSNMEA::NMEA2Track(stm, fd->GetFullName()->ToCString()).Ptr();
 }

@@ -13,11 +13,11 @@ namespace SSWR
 		class OrganTimeAdjLayer : public Map::MapDrawLayer
 		{
 		private:
-			Map::GPSTrack *gpsTrk;
+			NotNullPtr<Map::GPSTrack> gpsTrk;
 			Data::ArrayList<UserFileInfo *> *userFileList;
 			Data::StringMap<Int32> cameraMap;
 		public:
-			OrganTimeAdjLayer(Map::GPSTrack *gpsTrk, Data::ArrayList<UserFileInfo *> *userFileList);
+			OrganTimeAdjLayer(NotNullPtr<Map::GPSTrack> gpsTrk, Data::ArrayList<UserFileInfo *> *userFileList);
 			virtual ~OrganTimeAdjLayer();
 
 			virtual Map::DrawLayerType GetLayerType() const;

@@ -36,9 +36,9 @@ IO::ParserType Parser::ObjParser::ISO9660Parser::GetParserType()
 	return IO::ParserType::PackageFile;
 }
 
-IO::ParsedObject *Parser::ObjParser::ISO9660Parser::ParseObject(IO::ParsedObject *pobj, IO::PackageFile *pkgFile, IO::ParserType targetType)
+IO::ParsedObject *Parser::ObjParser::ISO9660Parser::ParseObject(NotNullPtr<IO::ParsedObject> pobj, IO::PackageFile *pkgFile, IO::ParserType targetType)
 {
-	IO::ISectorData *data;
+	NotNullPtr<IO::ISectorData> data;
 	IO::ISectorData *cdData;
 	UInt8 sector[2048];
 	UOSInt sectorSize;
@@ -46,15 +46,17 @@ IO::ParsedObject *Parser::ObjParser::ISO9660Parser::ParseObject(IO::ParsedObject
 		return 0;
 
 	cdData = 0;
-	data = (IO::ISectorData*)pobj;
+	data = NotNullPtr<IO::ISectorData>::ConvertFrom(pobj);
 	sectorSize = data->GetBytesPerSector();
 	if (sectorSize == 2048)
 	{
 	}
 	else if (sectorSize == 2352)
 	{
-		NEW_CLASS(cdData, IO::CDSectorData(data, 16, 2048));
-		data = cdData;
+		NotNullPtr<IO::CDSectorData> cd;
+		NEW_CLASSNN(cd, IO::CDSectorData(data, 16, 2048));
+		cdData = cd.Ptr();
+		data = cd;
 	}
 	else
 	{
@@ -89,26 +91,26 @@ IO::ParsedObject *Parser::ObjParser::ISO9660Parser::ParseObject(IO::ParsedObject
 	IO::PackageFile *pf;
 	if (sectorNumJoliet != 0)
 	{
-		pf = ParseVol(data, sectorNumJoliet, 1201);
+		pf = ParseVol(data, sectorNumJoliet, 1201).Ptr();
 	}
 	else
 	{
-		pf = ParseVol(data, sectorNum9660, 65001);
+		pf = ParseVol(data, sectorNum9660, 65001).Ptr();
 	}
 	SDEL_CLASS(cdData);
 	return pf;
 }
 
-IO::PackageFile *Parser::ObjParser::ISO9660Parser::ParseVol(IO::ISectorData *sectorData, UInt32 sectorNum, UInt32 codePage)
+NotNullPtr<IO::PackageFile> Parser::ObjParser::ISO9660Parser::ParseVol(NotNullPtr<IO::ISectorData> sectorData, UInt32 sectorNum, UInt32 codePage)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 	UInt8 sector[2048];
-	IO::PackageFile *pkgFile;
+	NotNullPtr<IO::PackageFile> pkgFile;
 	Text::Encoding enc(codePage);
 
 	sectorData->ReadSector(sectorNum, BYTEARR(sector));
-	NEW_CLASS(pkgFile, IO::PackageFile(sectorData->GetSourceNameObj()));
+	NEW_CLASSNN(pkgFile, IO::PackageFile(sectorData->GetSourceNameObj()));
 
 	
 	sptr = enc.UTF8FromBytes(sbuff, &sector[8], 32, 0);
@@ -179,7 +181,7 @@ IO::PackageFile *Parser::ObjParser::ISO9660Parser::ParseVol(IO::ISectorData *sec
 	return pkgFile;
 }
 
-void Parser::ObjParser::ISO9660Parser::ParseDir(IO::PackageFile *pkgFile, IO::ISectorData *sectorData, UInt32 sectorNum, UInt32 recSize, UTF8Char *fileName, UTF8Char *fileNameEnd, UInt32 codePage)
+void Parser::ObjParser::ISO9660Parser::ParseDir(NotNullPtr<IO::PackageFile> pkgFile, NotNullPtr<IO::ISectorData> sectorData, UInt32 sectorNum, UInt32 recSize, UTF8Char *fileName, UTF8Char *fileNameEnd, UInt32 codePage)
 {
 	Data::ByteBuffer dataBuff(recSize + 2048);
 	Data::ByteArray recBuff = dataBuff.SubArray(2048);
@@ -236,11 +238,11 @@ void Parser::ObjParser::ISO9660Parser::ParseDir(IO::PackageFile *pkgFile, IO::IS
 				}
 				else
 				{
-					IO::PackageFile *pf2;
+					NotNullPtr<IO::PackageFile> pf2;
 					sptr = fileNameEnd;
 					*sptr++ = IO::Path::PATH_SEPERATOR;
 					sptr = enc.UTF8FromBytes(sptr, &recBuff[33], recBuff[32], 0);
-					NEW_CLASS(pf2, IO::PackageFile(CSTRP(fileName, sptr)));
+					NEW_CLASSNN(pf2, IO::PackageFile(CSTRP(fileName, sptr)));
 					pkgFile->AddPack(pf2, CSTRP(&fileNameEnd[1], sptr), Data::Timestamp(dt.ToInstant(), 0), 0, 0, 0);
 					ParseDir(pf2, sectorData, sectorNum, fileSize, fileName, sptr, codePage);
 				}

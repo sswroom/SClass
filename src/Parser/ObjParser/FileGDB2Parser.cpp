@@ -39,16 +39,17 @@ IO::ParserType Parser::ObjParser::FileGDB2Parser::GetParserType()
 	return IO::ParserType::ReadingDB;
 }
 
-IO::ParsedObject *Parser::ObjParser::FileGDB2Parser::ParseObject(IO::ParsedObject *pobj, IO::PackageFile *pkgFile, IO::ParserType targetType)
+IO::ParsedObject *Parser::ObjParser::FileGDB2Parser::ParseObject(NotNullPtr<IO::ParsedObject> pobj, IO::PackageFile *pkgFile, IO::ParserType targetType)
 {
-	if (pobj->GetParserType() != IO::ParserType::PackageFile)
+	NotNullPtr<Math::ArcGISPRJParser> prjParser;
+	if (!prjParser.Set(this->prjParser) || pobj->GetParserType() != IO::ParserType::PackageFile)
 		return 0;
 	IO::PackageFile *relObj = 0;
-	IO::PackageFile *pkg = (IO::PackageFile*)pobj;
+	NotNullPtr<IO::PackageFile> pkg = NotNullPtr<IO::PackageFile>::ConvertFrom(pobj);
 	if (pkg->GetCount() == 1 && pkg->GetItemType(0) == IO::PackageFile::PackObjectType::PackageFileType)
 	{
-		relObj = pkg->GetItemPackNew(0);
-		pkg = relObj;
+		if (pkg.Set(pkg->GetItemPackNew(0)))
+			relObj = pkg.Ptr();
 	}
 	UOSInt index = pkg->GetItemIndex(CSTR("a00000001.gdbtable"));
 	if (index == INVALID_INDEX)
@@ -57,7 +58,7 @@ IO::ParsedObject *Parser::ObjParser::FileGDB2Parser::ParseObject(IO::ParsedObjec
 		return 0;
 	}
 	NotNullPtr<Map::ESRI::FileGDBDir> fgdb;
-	if (!fgdb.Set(Map::ESRI::FileGDBDir::OpenDir(pkg, this->prjParser)))
+	if (!fgdb.Set(Map::ESRI::FileGDBDir::OpenDir(pkg, prjParser)))
 	{
 		SDEL_CLASS(relObj);
 		return 0;

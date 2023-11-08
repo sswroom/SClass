@@ -231,7 +231,7 @@ Bool Media::VCDMPGFile::StopPlay()
 	return true;
 }
 
-Media::VCDMPGFile::VCDMPGFile(IO::ISectorData *data, UInt64 startSector, UInt64 endSector) : Media::MediaFile(data->GetSourceNameObj()), readBuff(2352)
+Media::VCDMPGFile::VCDMPGFile(NotNullPtr<IO::ISectorData> data, UInt64 startSector, UInt64 endSector) : Media::MediaFile(data->GetSourceNameObj()), readBuff(2352)
 {
 	this->data = data->GetPartialData(startSector, endSector - startSector);
 	this->readOfst = 0;
@@ -424,7 +424,7 @@ Media::VCDMPGFile::~VCDMPGFile()
 		DEL_CLASS(stm);
 	}
 	SDEL_CLASS(this->vstm);
-	DEL_CLASS(this->data);
+	this->data.Delete();
 }
 
 UOSInt Media::VCDMPGFile::AddSource(Media::IMediaSource *src, Int32 syncTime)

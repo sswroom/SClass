@@ -117,7 +117,7 @@ IO::ParsedObject *Parser::FileParser::SPKParser::ParseFileHdr(NotNullPtr<IO::Str
 
 	IO::PackageFile *pf;
 	IO::PackageFile *pf2;
-	IO::PackageFile *pf3;
+	NotNullPtr<IO::PackageFile> pf3;
 	NEW_CLASS(pf, IO::PackageFile(fd->GetFullName()));
 	srcPtr = fd->GetFullName()->ConcatTo(srcPath);
 	UOSInt k;
@@ -152,13 +152,12 @@ IO::ParsedObject *Parser::FileParser::SPKParser::ParseFileHdr(NotNullPtr<IO::Str
 						sptr[k] = 0;
 						*srcPtr2++ = IO::Path::PATH_SEPERATOR;
 						srcPtr2 = Text::StrConcatC(srcPtr2, sptr, k);
-						pf3 = pf2->GetPackFile({sptr, k});
-						if (pf3 == 0)
+						if (!pf3.Set(pf2->GetPackFile({sptr, k})))
 						{
-							NEW_CLASS(pf3, IO::PackageFile(CSTRP(srcPath, srcPtr2)));
+							NEW_CLASSNN(pf3, IO::PackageFile(CSTRP(srcPath, srcPtr2)));
 							pf2->AddPack(pf3, {sptr, k}, 0, 0, 0, 0);
 						}
-						pf2 = pf3;
+						pf2 = pf3.Ptr();
 						sptr = &sptr[k + 1];
 					}
 					else if ((l = Text::StrIndexOfChar(sptr, '\\')) != INVALID_INDEX)
@@ -166,13 +165,12 @@ IO::ParsedObject *Parser::FileParser::SPKParser::ParseFileHdr(NotNullPtr<IO::Str
 						sptr[l] = 0;
 						*srcPtr2++ = IO::Path::PATH_SEPERATOR;
 						srcPtr2 = Text::StrConcatC(srcPtr2, sptr, l);
-						pf3 = pf2->GetPackFile({sptr, l});
-						if (pf3 == 0)
+						if (!pf3.Set(pf2->GetPackFile({sptr, l})))
 						{
-							NEW_CLASS(pf3, IO::PackageFile(CSTRP(srcPath, srcPtr2)));
+							NEW_CLASSNN(pf3, IO::PackageFile(CSTRP(srcPath, srcPtr2)));
 							pf2->AddPack(pf3, {sptr, l}, 0, 0, 0, 0);
 						}
-						pf2 = pf3;
+						pf2 = pf3.Ptr();
 						sptr = &sptr[l + 1];
 					}
 					else
@@ -216,13 +214,12 @@ IO::ParsedObject *Parser::FileParser::SPKParser::ParseFileHdr(NotNullPtr<IO::Str
 						sptr[k] = 0;
 						*srcPtr2++ = (UTF8Char)IO::Path::PATH_SEPERATOR;
 						srcPtr2 = Text::StrConcatC(srcPtr2, sptr, k);
-						pf3 = pf2->GetPackFile({sptr, k});
-						if (pf3 == 0)
+						if (!pf3.Set(pf2->GetPackFile({sptr, k})))
 						{
-							NEW_CLASS(pf3, IO::PackageFile(CSTRP(srcPath, srcPtr2)));
+							NEW_CLASSNN(pf3, IO::PackageFile(CSTRP(srcPath, srcPtr2)));
 							pf2->AddPack(pf3, {sptr, k}, 0, 0, 0, 0);
 						}
-						pf2 = pf3;
+						pf2 = pf3.Ptr();
 						sptr = &sptr[k + 1];
 					}
 					else if ((l = Text::StrIndexOfChar(sptr, '\\')) != INVALID_INDEX)
@@ -230,13 +227,12 @@ IO::ParsedObject *Parser::FileParser::SPKParser::ParseFileHdr(NotNullPtr<IO::Str
 						sptr[l] = 0;
 						*srcPtr2++ = (UTF8Char)IO::Path::PATH_SEPERATOR;
 						srcPtr2 = Text::StrConcatC(srcPtr2, sptr, l);
-						pf3 = pf2->GetPackFile({sptr, l});
-						if (pf3 == 0)
+						if (!pf3.Set(pf2->GetPackFile({sptr, l})))
 						{
-							NEW_CLASS(pf3, IO::PackageFile(CSTRP(srcPath, srcPtr2)));
+							NEW_CLASSNN(pf3, IO::PackageFile(CSTRP(srcPath, srcPtr2)));
 							pf2->AddPack(pf3, {sptr, l}, 0, 0, 0, 0);
 						}
-						pf2 = pf3;
+						pf2 = pf3.Ptr();
 						sptr = &sptr[l + 1];
 					}
 					else

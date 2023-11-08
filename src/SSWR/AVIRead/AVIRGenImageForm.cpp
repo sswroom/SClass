@@ -29,8 +29,8 @@ void __stdcall SSWR::AVIRead::AVIRGenImageForm::GenerateClicked(void *userObj)
 		Media::Image *img = imgGen->GenerateImage(colorProfile, Math::Size2D<UOSInt>(width, height));
 		if (img)
 		{
-			Media::ImageList *imgList;
-			NEW_CLASS(imgList, Media::ImageList(imgGen->GetName()));
+			NotNullPtr<Media::ImageList> imgList;
+			NEW_CLASSNN(imgList, Media::ImageList(imgGen->GetName()));
 			imgList->AddImage(img, 0);
 			me->core->OpenObject(imgList);
 			me->SetDialogResult(UI::GUIForm::DR_OK);

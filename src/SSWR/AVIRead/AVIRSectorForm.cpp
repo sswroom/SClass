@@ -5,16 +5,14 @@ void __stdcall SSWR::AVIRead::AVIRSectorForm::OnParseClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRSectorForm *me = (SSWR::AVIRead::AVIRSectorForm *)userObj;
 	Parser::ParserList *parsers = me->core->GetParserList();
-	IO::ParsedObject *pobj;
-	IO::ParserType pt;
-	pobj = parsers->ParseObject(me->data, &pt);
-	if (pobj)
+	NotNullPtr<IO::ParsedObject> pobj;
+	if (pobj.Set(parsers->ParseObject(me->data, 0)))
 	{
 		me->core->OpenObject(pobj);
 	}
 }
 
-SSWR::AVIRead::AVIRSectorForm::AVIRSectorForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, IO::ISectorData *data) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRSectorForm::AVIRSectorForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<IO::ISectorData> data) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
@@ -39,7 +37,7 @@ SSWR::AVIRead::AVIRSectorForm::AVIRSectorForm(UI::GUIClientControl *parent, NotN
 SSWR::AVIRead::AVIRSectorForm::~AVIRSectorForm()
 {
 	MemFree(this->sectorData);
-	SDEL_CLASS(this->data);
+	this->data.Delete();
 }
 
 void SSWR::AVIRead::AVIRSectorForm::OnMonitorChanged()

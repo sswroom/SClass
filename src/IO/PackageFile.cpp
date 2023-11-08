@@ -163,14 +163,14 @@ void IO::PackageFile::AddCompData(NotNullPtr<IO::StreamData> fd, UInt64 ofst, UI
 	this->namedItems->PutNN(item->name, item);
 }
 
-void IO::PackageFile::AddPack(IO::PackageFile *pkg, Text::CString name, const Data::Timestamp &modTime, const Data::Timestamp &accTime, const Data::Timestamp &createTime, UInt32 unixAttr)
+void IO::PackageFile::AddPack(NotNullPtr<IO::PackageFile> pkg, Text::CString name, const Data::Timestamp &modTime, const Data::Timestamp &accTime, const Data::Timestamp &createTime, UInt32 unixAttr)
 {
 	PackFileItem *item;
 	item = MemAlloc(PackFileItem, 1);
 	item->itemType = IO::PackFileItem::PackItemType::ParsedObject;
 	item->fd = 0;
 	item->name = Text::String::New(name);
-	item->pobj = pkg;
+	item->pobj = pkg.Ptr();
 	item->compInfo = 0;
 	item->modTime = modTime;
 	item->accTime = accTime;

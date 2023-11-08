@@ -43,6 +43,7 @@ IO::ParsedObject *Parser::FileParser::ISOParser::ParseFileHdr(NotNullPtr<IO::Str
 	UInt64 fileSize = fd->GetDataSize();
 
 	IO::FileSectorData *sectorData = 0;
+	NotNullPtr<IO::FileSectorData> sd;
 	if (ReadMInt32(&hdr[0]) == 0x00ffffff && ReadMUInt32(&hdr[4]) == 0xffffffff && ReadMUInt32(&hdr[8]) == 0xffffff00 && fileSize >= 75264 && (fileSize % 2352) == 0)
 	{
 		fd->GetRealData(37632, 32, BYTEARR(buff));
@@ -61,13 +62,13 @@ IO::ParsedObject *Parser::FileParser::ISOParser::ParseFileHdr(NotNullPtr<IO::Str
 		}
 	}
 
-	if (sectorData && targetType != IO::ParserType::SectorData)
+	if (sd.Set(sectorData) && targetType != IO::ParserType::SectorData)
 	{
 		IO::ParserType pt;
-		IO::ParsedObject *pobj = this->parsers->ParseObject(sectorData, &pt);
+		IO::ParsedObject *pobj = this->parsers->ParseObject(sd, pt);
 		if (pobj)
 		{
-			DEL_CLASS(sectorData);
+			sd.Delete();
 			return pobj;
 		}
 	}

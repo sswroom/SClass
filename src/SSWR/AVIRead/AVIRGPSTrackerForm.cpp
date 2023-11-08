@@ -195,15 +195,15 @@ void __stdcall SSWR::AVIRead::AVIRGPSTrackerForm::OnMTKLogDownloadClicked(void *
 	IO::Device::MTKGPSNMEA *mtk = (IO::Device::MTKGPSNMEA*)me->locSvc;
 	if (me->mapNavi)
 	{
-		Map::GPSTrack *gpsTrk;
-		NEW_CLASS(gpsTrk, Map::GPSTrack(CSTR("MTK_GPS"), true, 0, CSTR_NULL));
+		NotNullPtr<Map::GPSTrack> gpsTrk;
+		NEW_CLASSNN(gpsTrk, Map::GPSTrack(CSTR("MTK_GPS"), true, 0, CSTR_NULL));
 		if (mtk->ParseLog(gpsTrk))
 		{
 			me->mapNavi->AddLayer(gpsTrk);
 		}
 		else
 		{
-			DEL_CLASS(gpsTrk);
+			gpsTrk.Delete();
 			UI::MessageDialog::ShowDialog(CSTR("Error in downloading log data"), CSTR("MTK GPS Tracker"), me);
 		}
 	}

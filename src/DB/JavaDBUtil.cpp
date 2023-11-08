@@ -241,7 +241,7 @@ DB::DBTool *DB::JavaDBUtil::OpenJDBC(Text::String *url, Text::String *username, 
 	return 0;
 }
 
-Bool DB::JavaDBUtil::ToJavaEntity(NotNullPtr<Text::StringBuilderUTF8> sb, Text::String *schemaName, Text::String *tableName, Text::String *databaseName, DB::ReadingDB *db)
+Bool DB::JavaDBUtil::ToJavaEntity(NotNullPtr<Text::StringBuilderUTF8> sb, Text::String *schemaName, Text::String *tableName, Text::String *databaseName, NotNullPtr<DB::ReadingDB> db)
 {
 	Data::StringMap<Bool> importMap;
 	Text::StringBuilderUTF8 sbCode;
@@ -257,12 +257,12 @@ Bool DB::JavaDBUtil::ToJavaEntity(NotNullPtr<Text::StringBuilderUTF8> sb, Text::
 	sbCode.AppendC(UTF8STRC("@Entity\r\n"));
 	sbCode.AppendC(UTF8STRC("@Table(name="));
 	Text::JSText::ToJSTextDQuote(sbCode, tableName->v);
-	if (schemaName)
+	if (schemaName && schemaName->leng > 0)
 	{
 		sbCode.AppendC(UTF8STRC(", schema="));
 		Text::JSText::ToJSTextDQuote(sbCode, schemaName->v);
 	}
-	if (databaseName)
+	if (databaseName && databaseName->leng > 0)
 	{
 		sbCode.AppendC(UTF8STRC(", catalog="));
 		Text::JSText::ToJSTextDQuote(sbCode, databaseName->v);

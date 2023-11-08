@@ -96,9 +96,9 @@ IO::ParsedObject *Parser::FileParser::ZIPParser::ParseFileHdr(NotNullPtr<IO::Str
 	{
 		return 0;
 	}
-	IO::PackageFile *pf;
+	NotNullPtr<IO::PackageFile> pf;
 	IO::PackageFile *pf2;
-	IO::PackageFile *pf3;
+	NotNullPtr<IO::PackageFile> pf3;
 	Text::Encoding enc(this->codePage);
 	Text::StringBuilderUTF8 sb;
 	Data::DateTime dt;
@@ -106,7 +106,7 @@ IO::ParsedObject *Parser::FileParser::ZIPParser::ParseFileHdr(NotNullPtr<IO::Str
 	UOSInt ui;
 	Bool parseFile = true;
 	dt.ToLocalTime();
-	NEW_CLASS(pf, IO::PackageFile(fd->GetFullName()));
+	NEW_CLASSNN(pf, IO::PackageFile(fd->GetFullName()));
 
 	if (fd->GetRealData(fileSize - 22, 22, BYTEARR(recHdr)) == 22)
 	{
@@ -255,7 +255,7 @@ IO::ParsedObject *Parser::FileParser::ZIPParser::ParseFileHdr(NotNullPtr<IO::Str
 		{
 			if (currOfst >= fileSize)
 			{
-				DEL_CLASS(pf);
+				pf.Delete();
 				return 0;
 			}
 			fd->GetRealData(currOfst, 512, BYTEARR(buff));
@@ -313,7 +313,7 @@ IO::ParsedObject *Parser::FileParser::ZIPParser::ParseFileHdr(NotNullPtr<IO::Str
 					{
 						dataSize = zipInfo->compSize;
 					}
-					pf2 = pf;
+					pf2 = pf.Ptr();
 					sptr = sbuff;
 					sb.ClearStr();
 					sb.Append(fd->GetFullName());
@@ -325,23 +325,21 @@ IO::ParsedObject *Parser::FileParser::ZIPParser::ParseFileHdr(NotNullPtr<IO::Str
 							sptr[i] = 0;
 							sb.AppendChar(IO::Path::PATH_SEPERATOR, 1);
 							sb.AppendC(sptr, i);
-							pf3 = pf2->GetPackFile({sptr, i});
-							if (pf3 == 0)
+							if (!pf3.Set(pf2->GetPackFile({sptr, i})))
 							{
-								NEW_CLASS(pf3, IO::PackageFile(sb.ToCString()));
+								NEW_CLASSNN(pf3, IO::PackageFile(sb.ToCString()));
 								pf2->AddPack(pf3, {sptr, i}, Data::Timestamp(dt.ToInstant(), dt.GetTimeZoneQHR()), accTime, createTime, unixAttr);
 							}
-							pf2 = pf3;
+							pf2 = pf3.Ptr();
 							sptr = &sptr[i + 1];
 						}
 						else
 						{
 							sb.AppendC(UTF8STRC("\\"));
 							sb.AppendC(sptr, (UOSInt)(sptrEnd - sptr));
-							pf3 = pf2->GetPackFile({sptr, (UOSInt)(sptrEnd - sptr)});
-							if (pf3 == 0)
+							if (!pf3.Set(pf2->GetPackFile({sptr, (UOSInt)(sptrEnd - sptr)})))
 							{
-								NEW_CLASS(pf3, IO::PackageFile(sb.ToCString()));
+								NEW_CLASSNN(pf3, IO::PackageFile(sb.ToCString()));
 								pf2->AddPack(pf3, CSTRP(sptr, sptrEnd), Data::Timestamp(dt.ToInstant(), dt.GetTimeZoneQHR()), accTime, createTime, unixAttr);
 							}
 							break;
@@ -359,7 +357,7 @@ IO::ParsedObject *Parser::FileParser::ZIPParser::ParseFileHdr(NotNullPtr<IO::Str
 					{
 						dataSize = zipInfo->compSize;
 					}
-					pf2 = pf;
+					pf2 = pf.Ptr();
 					sptr = sbuff;
 					sb.ClearStr();
 					sb.Append(fd->GetFullName());
@@ -371,13 +369,12 @@ IO::ParsedObject *Parser::FileParser::ZIPParser::ParseFileHdr(NotNullPtr<IO::Str
 							sptr[i] = 0;
 							sb.AppendChar(IO::Path::PATH_SEPERATOR, 1);
 							sb.AppendC(sptr, i);
-							pf3 = pf2->GetPackFile({sptr, i});
-							if (pf3 == 0)
+							if (!pf3.Set(pf2->GetPackFile({sptr, i})))
 							{
-								NEW_CLASS(pf3, IO::PackageFile(sb.ToCString()));
+								NEW_CLASSNN(pf3, IO::PackageFile(sb.ToCString()));
 								pf2->AddPack(pf3, {sptr, i}, Data::Timestamp(dt.ToInstant(), dt.GetTimeZoneQHR()), accTime, createTime, unixAttr);
 							}
-							pf2 = pf3;
+							pf2 = pf3.Ptr();
 							sptr = &sptr[i + 1];
 						}
 						else
@@ -477,14 +474,14 @@ IO::ParsedObject *Parser::FileParser::ZIPParser::ParseFileHdr(NotNullPtr<IO::Str
 					xmlParser.SetParserList(this->parsers);
 					xmlParser.SetEncFactory(this->encFact);
 					xmlParser.SetWebBrowser(this->browser);
-					pobj = xmlParser.ParseFile(stmData, pf, IO::ParserType::MapLayer);
+					pobj = xmlParser.ParseFile(stmData, pf.Ptr(), IO::ParserType::MapLayer);
 					stmData.Delete();
 				}
 				if (pobj)
 				{
 					if (pobj->GetParserType() == IO::ParserType::MapLayer)
 					{
-						DEL_CLASS(pf);
+						pf.Delete();
 						return pobj;
 					}
 					else
@@ -498,21 +495,21 @@ IO::ParsedObject *Parser::FileParser::ZIPParser::ParseFileHdr(NotNullPtr<IO::Str
 	if (targetType != IO::ParserType::PackageFile && this->parsers)
 	{
 		IO::ParserType pt;
-		IO::ParsedObject *newObj = this->parsers->ParseObjectType(pf, &pt, targetType);
+		IO::ParsedObject *newObj = this->parsers->ParseObjectType(pf, pt, targetType);
 		if (newObj)
 		{
-			DEL_CLASS(pf);
+			pf.Delete();
 			return newObj;
 		}
 	}
-	return pf;
+	return pf.Ptr();
 }
 
-UOSInt Parser::FileParser::ZIPParser::ParseCentDir(IO::PackageFile *pf, Text::Encoding *enc, NotNullPtr<IO::StreamData> fd, Data::ByteArrayR buff, UInt64 ofst)
+UOSInt Parser::FileParser::ZIPParser::ParseCentDir(NotNullPtr<IO::PackageFile> pf, Text::Encoding *enc, NotNullPtr<IO::StreamData> fd, Data::ByteArrayR buff, UInt64 ofst)
 {
 	Data::DateTime dt;
 	IO::PackageFile *pf2;
-	IO::PackageFile *pf3;
+	NotNullPtr<IO::PackageFile> pf3;
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 	UTF8Char *sptrEnd;
@@ -626,7 +623,7 @@ UOSInt Parser::FileParser::ZIPParser::ParseCentDir(IO::PackageFile *pf, Text::En
 		{
 			sptrEnd--;
 			*sptrEnd = 0;
-			pf2 = pf;
+			pf2 = pf.Ptr();
 			sptr = sbuff;
 			while (true)
 			{
@@ -634,22 +631,20 @@ UOSInt Parser::FileParser::ZIPParser::ParseCentDir(IO::PackageFile *pf, Text::En
 				if (j != INVALID_INDEX)
 				{
 					sptr[j] = 0;
-					pf3 = pf2->GetPackFile({sptr, j});
-					if (pf3 == 0)
+					if (!pf3.Set(pf2->GetPackFile({sptr, j})))
 					{
-						NEW_CLASS(pf3, IO::PackageFile(CSTRP(sbuff, &sptr[j])));
+						NEW_CLASSNN(pf3, IO::PackageFile(CSTRP(sbuff, &sptr[j])));
 						pf2->AddPack(pf3, {sptr, j}, Data::Timestamp(dt.ToInstant(), dt.GetTimeZoneQHR()), accTime, createTime, unixAttr);
 					}
-					pf2 = pf3;
+					pf2 = pf3.Ptr();
 					sptr[j] = '/';
 					sptr = &sptr[j + 1];
 				}
 				else
 				{
-					pf3 = pf2->GetPackFile({sptr, (UOSInt)(sptrEnd - sptr)});
-					if (pf3 == 0)
+					if (!pf3.Set(pf2->GetPackFile({sptr, (UOSInt)(sptrEnd - sptr)})))
 					{
-						NEW_CLASS(pf3, IO::PackageFile(CSTRP(sbuff, sptrEnd)));
+						NEW_CLASSNN(pf3, IO::PackageFile(CSTRP(sbuff, sptrEnd)));
 						pf2->AddPack(pf3, CSTRP(sptr, sptrEnd), Data::Timestamp(dt.ToInstant(), dt.GetTimeZoneQHR()), accTime, createTime, unixAttr);
 					}
 					break;
@@ -659,7 +654,7 @@ UOSInt Parser::FileParser::ZIPParser::ParseCentDir(IO::PackageFile *pf, Text::En
 		else
 		{
 			IO::PackFileItem::CompressInfo compInfo;
-			pf2 = pf;
+			pf2 = pf.Ptr();
 			sptr = sbuff;
 			while (true)
 			{
@@ -667,13 +662,12 @@ UOSInt Parser::FileParser::ZIPParser::ParseCentDir(IO::PackageFile *pf, Text::En
 				if (j != INVALID_INDEX)
 				{
 					sptr[j] = 0;
-					pf3 = pf2->GetPackFile({sptr, j});
-					if (pf3 == 0)
+					if (!pf3.Set(pf2->GetPackFile({sptr, j})))
 					{
-						NEW_CLASS(pf3, IO::PackageFile(CSTRP(sbuff, &sptr[j])));
+						NEW_CLASSNN(pf3, IO::PackageFile(CSTRP(sbuff, &sptr[j])));
 						pf2->AddPack(pf3, {sptr, j}, Data::Timestamp(dt.ToInstant(), dt.GetTimeZoneQHR()), accTime, createTime, unixAttr);
 					}
-					pf2 = pf3;
+					pf2 = pf3.Ptr();
 					sptr[j] = '/';
 					sptr = &sptr[j + 1];
 				}

@@ -9,20 +9,20 @@ namespace IO
 	class CDSectorData : public IO::ISectorData
 	{
 	private:
-		IO::ISectorData *data;
+		NotNullPtr<IO::ISectorData> data;
 		UOSInt userOfst;
 		UOSInt userDataSize;
 		Data::ByteBuffer sectorBuff;
 
-		CDSectorData(IO::ISectorData *data, UOSInt userOfst, UOSInt userDataSize, UInt64 startSector, UInt64 sectorCount);
+		CDSectorData(NotNullPtr<IO::ISectorData> data, UOSInt userOfst, UOSInt userDataSize, UInt64 startSector, UInt64 sectorCount);
 	public:
-		CDSectorData(IO::ISectorData *data, UOSInt userOfst, UOSInt userDataSize);
+		CDSectorData(NotNullPtr<IO::ISectorData> data, UOSInt userOfst, UOSInt userDataSize);
 		virtual ~CDSectorData();
 
 		virtual UInt64 GetSectorCount() const;
 		virtual UOSInt GetBytesPerSector() const;
 		virtual Bool ReadSector(UInt64 sectorNum, Data::ByteArray sectorBuff);
-		virtual ISectorData *GetPartialData(UInt64 startSector, UInt64 sectorCount) const;
+		virtual NotNullPtr<ISectorData> GetPartialData(UInt64 startSector, UInt64 sectorCount) const;
 		virtual NotNullPtr<IO::StreamData> GetStreamData(UInt64 startSector, UInt64 dataSize) const;
 		virtual UOSInt GetSeekCount() const;
 	};
@@ -30,13 +30,13 @@ namespace IO
 	class CDSectorStreamData : public IO::StreamData
 	{
 	private:
-		IO::ISectorData *data;
+		NotNullPtr<IO::ISectorData> data;
 		UOSInt sectorOfst;
 		UInt64 dataSize;
 		Data::ByteBuffer sectorBuff;
 
 	public:
-		CDSectorStreamData(IO::ISectorData *data, UOSInt sectorOfst, UInt64 dataSize);
+		CDSectorStreamData(NotNullPtr<IO::ISectorData> data, UOSInt sectorOfst, UInt64 dataSize);
 		virtual ~CDSectorStreamData();
 		virtual UOSInt GetRealData(UInt64 offset, UOSInt length, Data::ByteArray buffer);
 		virtual NotNullPtr<Text::String> GetFullName();

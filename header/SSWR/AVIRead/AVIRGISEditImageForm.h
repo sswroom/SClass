@@ -41,7 +41,7 @@ namespace SSWR
 			Int32 downType;
 			Math::Coord2D<OSInt> downPos;
 
-			Map::VectorLayer *lyr;
+			NotNullPtr<Map::VectorLayer> lyr;
 			IMapNavigator *navi;
 
 			static void __stdcall OnImageChg(void *userObj);
@@ -51,11 +51,11 @@ namespace SSWR
 			static Bool __stdcall OnMouseMove(void *userObj, Math::Coord2D<OSInt> scnPos);
 			Int32 CalcDownType(Math::Coord2D<OSInt> scnPos);
 		public:
-			AVIRGISEditImageForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Map::VectorLayer *lyr, IMapNavigator *navi);
+			AVIRGISEditImageForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<Map::VectorLayer> lyr, IMapNavigator *navi);
 			virtual ~AVIRGISEditImageForm();
 
 			virtual void OnMonitorChanged();
 		};
-	};
-};
+	}
+}
 #endif

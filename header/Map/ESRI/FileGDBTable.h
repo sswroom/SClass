@@ -17,9 +17,9 @@ namespace Map
 			UOSInt indexCnt;
 			UInt64 dataOfst;
 			FileGDBTableInfo *tableInfo;
-			Math::ArcGISPRJParser *prjParser;
+			NotNullPtr<Math::ArcGISPRJParser> prjParser;
 		public:
-			FileGDBTable(Text::CString tableName, NotNullPtr<IO::StreamData> gdbtableFD, IO::StreamData *gdbtablxFD, Math::ArcGISPRJParser *prjParser);
+			FileGDBTable(Text::CString tableName, NotNullPtr<IO::StreamData> gdbtableFD, IO::StreamData *gdbtablxFD, NotNullPtr<Math::ArcGISPRJParser> prjParser);
 			~FileGDBTable();
 
 			Bool IsError();

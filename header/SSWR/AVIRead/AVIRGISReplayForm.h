@@ -41,7 +41,7 @@ namespace SSWR
 			UI::GUIListView *lvExtra;
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
-			Map::GPSTrack *track;
+			NotNullPtr<Map::GPSTrack> track;
 			IMapNavigator *navi;
 			UOSInt startMark;
 			UOSInt endMark;
@@ -59,7 +59,7 @@ namespace SSWR
 			void FreeNames();
 
 		public:
-			AVIRGISReplayForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Map::GPSTrack *track, IMapNavigator *navi);
+			AVIRGISReplayForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<Map::GPSTrack> track, IMapNavigator *navi);
 			virtual ~AVIRGISReplayForm();
 
 			virtual void EventMenuClicked(UInt16 cmdId);

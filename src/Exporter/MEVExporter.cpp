@@ -280,7 +280,7 @@ void Exporter::MEVExporter::GetMapDirs(Map::MapEnv *env, Data::ArrayListString *
 		else
 		{
 			Map::MapEnv::LayerItem *lyr = (Map::MapEnv::LayerItem*)item;
-			Map::MapDrawLayer *layer = lyr->layer;
+			NotNullPtr<Map::MapDrawLayer> layer = lyr->layer;
 			if ((sptr = layer->GetSourceName(sbuff)) != 0)
 			{
 				k = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), '\\');
@@ -359,7 +359,7 @@ void Exporter::MEVExporter::WriteGroupItems(Map::MapEnv *env, Map::MapEnv::Group
 		{
 			Map::DrawLayerType ltype;
 			Map::MapEnv::LayerItem *lyr = (Map::MapEnv::LayerItem*)item;
-			Map::MapDrawLayer *layer = lyr->layer;
+			NotNullPtr<Map::MapDrawLayer> layer = lyr->layer;
 			*(Int32*)&buff[0] = item->itemType;
 			sptr = layer->GetSourceName(sbuff);
 			*(Int32*)&buff[4] = 0;

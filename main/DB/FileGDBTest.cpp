@@ -942,12 +942,12 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	UTF8Char *sptr;
 	IO::ConsoleWriter console;
 	Manage::HiResClock clk;
-	IO::DirectoryPackage *dir;
-	NEW_CLASS(dir, IO::DirectoryPackage(CSTR("~/Progs/Temp/E20210522_PLIS.gdb")));
+	NotNullPtr<IO::DirectoryPackage> dir;
+	NEW_CLASSNN(dir, IO::DirectoryPackage(CSTR("~/Progs/Temp/E20210522_PLIS.gdb")));
 	Map::ESRI::FileGDBDir *fileGDB;
 	Math::ArcGISPRJParser prjParser;
-	fileGDB = Map::ESRI::FileGDBDir::OpenDir(dir, &prjParser);
-	DEL_CLASS(dir);
+	fileGDB = Map::ESRI::FileGDBDir::OpenDir(dir, prjParser);
+	dir.Delete();
 	if (fileGDB)
 	{
 		Text::StringBuilderUTF8 sb;

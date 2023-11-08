@@ -56,7 +56,7 @@ namespace SSWR
 			UOSInt threadCnt;
 			ThreadStat *threadStat;
 
-			Map::TileMapLayer *lyr;
+			NotNullPtr<Map::TileMapLayer> lyr;
 			IMapNavigator *navi;
 
 			static Bool __stdcall OnMouseDown(void *userObj, Math::Coord2D<OSInt> scnPos);
@@ -72,7 +72,7 @@ namespace SSWR
 			void SaveTilesFile(Text::CStringNN fileName);
 			static UInt32 __stdcall ProcThread(void *userObj);
 		public:
-			AVIRGISTileDownloadForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Map::TileMapLayer *lyr, IMapNavigator *navi);
+			AVIRGISTileDownloadForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<Map::TileMapLayer> lyr, IMapNavigator *navi);
 			virtual ~AVIRGISTileDownloadForm();
 
 			virtual void OnMonitorChanged();

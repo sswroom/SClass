@@ -36,13 +36,13 @@ IO::ParserType Parser::ObjParser::ITMParser::GetParserType()
 	return IO::ParserType::ReadingDB;
 }
 
-IO::ParsedObject *Parser::ObjParser::ITMParser::ParseObject(IO::ParsedObject *pobj, IO::PackageFile *pkgFile, IO::ParserType targetType)
+IO::ParsedObject *Parser::ObjParser::ITMParser::ParseObject(NotNullPtr<IO::ParsedObject> pobj, IO::PackageFile *pkgFile, IO::ParserType targetType)
 {
 	if (pobj->GetParserType() != IO::ParserType::PackageFile)
 		return 0;
 	if (this->parsers == 0)
 		return 0;
-	IO::PackageFile *pkg = (IO::PackageFile*)pobj;
+	NotNullPtr<IO::PackageFile> pkg = NotNullPtr<IO::PackageFile>::ConvertFrom(pobj);
 	IO::ParserType pt;
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;

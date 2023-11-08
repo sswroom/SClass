@@ -185,7 +185,7 @@ void __stdcall SSWR::AVIRead::AVIRCAUtilForm::OnKeyViewClicked(void *userObj)
 	SSWR::AVIRead::AVIRCAUtilForm *me = (SSWR::AVIRead::AVIRCAUtilForm*)userObj;
 	if (me->key)
 	{
-		me->core->OpenObject(me->key->Clone().Ptr());
+		me->core->OpenObject(me->key->Clone());
 	}
 }
 
@@ -194,7 +194,7 @@ void __stdcall SSWR::AVIRead::AVIRCAUtilForm::OnCACertViewClicked(void *userObj)
 	SSWR::AVIRead::AVIRCAUtilForm *me = (SSWR::AVIRead::AVIRCAUtilForm*)userObj;
 	if (me->caCert)
 	{
-		me->core->OpenObject(me->caCert->Clone().Ptr());
+		me->core->OpenObject(me->caCert->Clone());
 	}
 }
 
@@ -203,7 +203,7 @@ void __stdcall SSWR::AVIRead::AVIRCAUtilForm::OnCSRViewClicked(void *userObj)
 	SSWR::AVIRead::AVIRCAUtilForm *me = (SSWR::AVIRead::AVIRCAUtilForm*)userObj;
 	if (me->csr)
 	{
-		me->core->OpenObject(me->csr->Clone().Ptr());
+		me->core->OpenObject(me->csr->Clone());
 	}
 }
 
@@ -234,8 +234,8 @@ void __stdcall SSWR::AVIRead::AVIRCAUtilForm::OnIssueClicked(void *userObj)
 		UI::MessageDialog::ShowDialog(CSTR("Valid Days not valid"), CSTR("CA Util"), me);
 		return;
 	}
-	Crypto::Cert::X509Cert *cert = Crypto::Cert::CertUtil::IssueCert(me->ssl, me->caCert, key, validDays, me->csr);
-	if (cert)
+	NotNullPtr<Crypto::Cert::X509Cert> cert;
+	if (cert.Set(Crypto::Cert::CertUtil::IssueCert(me->ssl, me->caCert, key, validDays, me->csr)))
 	{
 		me->core->OpenObject(cert);
 	}

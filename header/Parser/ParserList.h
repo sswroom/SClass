@@ -37,8 +37,8 @@ namespace Parser
 		IO::ParsedObject *ParseFile(NotNullPtr<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType *t);
 		IO::ParsedObject *ParseFile(NotNullPtr<IO::StreamData> fd, IO::ParserType *t);
 		IO::ParsedObject *ParseFileType(NotNullPtr<IO::StreamData> fd, IO::ParserType t);
-		IO::ParsedObject *ParseObject(IO::ParsedObject *pobj, IO::ParserType *t);
-		IO::ParsedObject *ParseObjectType(IO::ParsedObject *pobj, IO::ParserType *t, IO::ParserType targetType);
+		IO::ParsedObject *ParseObject(NotNullPtr<IO::ParsedObject> pobj, OptOut<IO::ParserType> t);
+		IO::ParsedObject *ParseObjectType(NotNullPtr<IO::ParsedObject> pobj, OptOut<IO::ParserType> t, IO::ParserType targetType);
 	};
 }
 #endif

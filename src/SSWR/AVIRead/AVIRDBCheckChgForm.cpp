@@ -233,11 +233,9 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::LoadDataFile(Text::CStringNN fileName)
 		}
 		else if (pt == IO::Path::PathType::Directory)
 		{
-			IO::DirectoryPackage *pkg;
-			NEW_CLASS(pkg, IO::DirectoryPackage(fileName));
+			IO::DirectoryPackage pkg(fileName);
 			Parser::ParserList *parsers = this->core->GetParserList();
 			db = (DB::ReadingDB*)parsers->ParseObjectType(pkg, 0, IO::ParserType::ReadingDB);
-			DEL_CLASS(pkg);
 		}
 		if (db)
 		{

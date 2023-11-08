@@ -1920,7 +1920,7 @@ void SSWR::OrganMgr::OrganMainForm::UpdateImgDir()
 		{
 			showDef = true;
 		}
-		OrganSpImgLayer *lyr;
+		NotNullPtr<OrganSpImgLayer> lyr;
 		if (showDef)
 		{
 			grp = this->groupList.GetItem(this->groupList.GetCount() - 1);
@@ -2101,7 +2101,7 @@ void SSWR::OrganMgr::OrganMainForm::UpdateImgDir()
 		{
 			Data::ArrayList<UserFileInfo*> ufileList;
 			Data::ArrayList<UInt32> ufileColor;
-			OrganSpImgLayer *lyr;
+			NotNullPtr<OrganSpImgLayer> lyr;
 			this->env->GetGroupAllUserFile(&ufileList, &ufileColor, o);
 			i = ufileList.GetCount();
 			while (i-- > 0)
@@ -2458,10 +2458,10 @@ void SSWR::OrganMgr::OrganMainForm::ClearImgLayers()
 	}
 }
 
-SSWR::OrganMgr::OrganSpImgLayer *SSWR::OrganMgr::OrganMainForm::GetImgLayer(UInt32 mapColor)
+NotNullPtr<SSWR::OrganMgr::OrganSpImgLayer> SSWR::OrganMgr::OrganMainForm::GetImgLayer(UInt32 mapColor)
 {
-	OrganSpImgLayer *lyr = this->mapImgLyrs.Get(mapColor);
-	if (lyr)
+	NotNullPtr<OrganSpImgLayer> lyr;
+	if (lyr.Set(this->mapImgLyrs.Get(mapColor)))
 	{
 		return lyr;
 	}
@@ -2473,7 +2473,7 @@ SSWR::OrganMgr::OrganSpImgLayer *SSWR::OrganMgr::OrganMainForm::GetImgLayer(UInt
 	UOSInt imgInd;
 	UOSInt lyrInd;
 	Media::ColorProfile srcColor(Media::ColorProfile::CPT_SRGB);
-	NEW_CLASS(lyr, OrganSpImgLayer());
+	NEW_CLASSNN(lyr, OrganSpImgLayer());
 	NEW_CLASS(stimg, Media::StaticImage(Math::Size2D<UOSInt>(7, 7), 0, 32, Media::PF_B8G8R8A8, 0, srcColor, Media::ColorProfile::YUVT_UNKNOWN, Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
 	lyr->SetCoordinateSystem(this->mapEnv->GetCoordinateSystem()->Clone());
 	stimg->FillColor(mapColor);
@@ -2488,7 +2488,7 @@ SSWR::OrganMgr::OrganSpImgLayer *SSWR::OrganMgr::OrganMainForm::GetImgLayer(UInt
 	sett.flags |= 3;
 	sett.imgIndex = imgInd;
 	this->mapEnv->SetLayerProp(sett, 0, lyrInd);
-	this->mapImgLyrs.Put(mapColor, lyr);
+	this->mapImgLyrs.Put(mapColor, lyr.Ptr());
 	return lyr;
 }
 
@@ -2763,7 +2763,7 @@ SSWR::OrganMgr::OrganMainForm::OrganMainForm(NotNullPtr<UI::GUICore> ui, UI::GUI
 	tileMap->AddAlternateURL(CSTR("http://b.tile.opencyclemap.org/cycle/"));
 	tileMap->AddAlternateURL(CSTR("http://c.tile.opencyclemap.org/cycle/"));
 	this->mapTile = tileMap;
-	NEW_CLASS(this->mapTileLyr, Map::TileMapLayer(tileMap, this->env->GetParserList()));
+	NEW_CLASSNN(this->mapTileLyr, Map::TileMapLayer(tileMap, this->env->GetParserList()));
 	this->mapTileLyr->AddUpdatedHandler(OnTileUpdated, this);
 	NEW_CLASS(this->mapEnv, Map::MapEnv(CSTR("File"), 0, this->mapTileLyr->GetCoordinateSystem()->Clone()));
 	this->mapEnv->AddLayer(0, this->mapTileLyr, true);

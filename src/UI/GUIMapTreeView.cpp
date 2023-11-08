@@ -249,6 +249,7 @@ void UI::GUIMapTreeView::ExpandColl(UI::GUIMapTreeView::ItemIndex *ind)
 		{
 			Map::MapLayerCollection *lyrColl = (Map::MapLayerCollection*)lyr;
 			Map::MapEnv::GroupItem *grp;
+			NotNullPtr<Map::MapDrawLayer> layer;
 			UOSInt i = this->env->GetItemCount(ind->group);
 			UOSInt j;
 			UOSInt k;
@@ -257,7 +258,8 @@ void UI::GUIMapTreeView::ExpandColl(UI::GUIMapTreeView::ItemIndex *ind)
 			k = lyrColl->GetCount();
 			while (j < k)
 			{
-				this->env->AddLayer(grp, lyrColl->GetItem(j), true);
+				if (layer.Set(lyrColl->GetItem(j)))
+					this->env->AddLayer(grp, layer, true);
 				j++;
 			}
 			lyrColl->Clear();

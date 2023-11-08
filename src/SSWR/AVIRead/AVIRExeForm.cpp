@@ -282,8 +282,8 @@ void __stdcall SSWR::AVIRead::AVIRExeForm::OnResourceDblClk(void *userObj)
 			Media::StaticImage *simg = Media::BitmapUtil::ParseDIBBuffer(res->data, res->dataSize);
 			if (simg)
 			{
-				Media::ImageList *imgList;
-				NEW_CLASS(imgList, Media::ImageList(res->name));
+				NotNullPtr<Media::ImageList> imgList;
+				NEW_CLASSNN(imgList, Media::ImageList(res->name));
 				imgList->AddImage(simg, 0);
 				me->core->OpenObject(imgList);
 			}
@@ -295,9 +295,8 @@ void __stdcall SSWR::AVIRead::AVIRExeForm::OnResourceDblClk(void *userObj)
 		}
 		else if (res->rt == IO::EXEFile::RT_FONT)
 		{
-			Media::FontRenderer *font;
-			font = Parser::FileParser::FNTParser::ParseFontBuff(me->exeFile->GetSourceNameObj(), res->data, res->dataSize);
-			if (font)
+			NotNullPtr<Media::FontRenderer> font;
+			if (font.Set(Parser::FileParser::FNTParser::ParseFontBuff(me->exeFile->GetSourceNameObj(), res->data, res->dataSize)))
 			{
 				me->core->OpenObject(font);
 			}

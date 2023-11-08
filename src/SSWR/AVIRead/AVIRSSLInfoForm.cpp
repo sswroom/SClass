@@ -242,7 +242,7 @@ void __stdcall SSWR::AVIRead::AVIRSSLInfoForm::OnCertClicked(void *userObj)
 	SSWR::AVIRead::AVIRSSLInfoForm *me = (SSWR::AVIRead::AVIRSSLInfoForm *)userObj;
 	if (me->currCerts)
 	{
-		me->core->OpenObject(me->currCerts->Clone().Ptr());
+		me->core->OpenObject(me->currCerts->Clone());
 	}
 }
 

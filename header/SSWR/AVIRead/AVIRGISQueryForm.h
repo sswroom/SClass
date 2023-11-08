@@ -52,7 +52,7 @@ namespace SSWR
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			IMapNavigator *navi;
-			Map::MapDrawLayer *lyr;
+			NotNullPtr<Map::MapDrawLayer> lyr;
 			Math::Coord2D<OSInt> downPos;
 			Math::Geometry::Vector2D *currVec;
 			Math::VectorTextWriterList writerList;
@@ -73,7 +73,7 @@ namespace SSWR
 			void ClearQueryResults();
 			void SetQueryItem(UOSInt index);
 		public:
-			AVIRGISQueryForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Map::MapDrawLayer *lyr, IMapNavigator *navi);
+			AVIRGISQueryForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<Map::MapDrawLayer> lyr, IMapNavigator *navi);
 			virtual ~AVIRGISQueryForm();
 
 			virtual void OnMonitorChanged();

@@ -28,10 +28,10 @@ Bool IO::FileSectorData::ReadSector(UInt64 sectorNum, Data::ByteArray sectorBuff
 	return this->data->GetRealData(sectorNum * sectorSize, sectorSize, sectorBuff) == sectorSize;
 }
 
-IO::ISectorData *IO::FileSectorData::GetPartialData(UInt64 startSector, UInt64 sectorCount) const
+NotNullPtr<IO::ISectorData> IO::FileSectorData::GetPartialData(UInt64 startSector, UInt64 sectorCount) const
 {
-	IO::ISectorData *data;
-	NEW_CLASS(data, IO::FileSectorData(this->data, startSector * sectorSize, sectorCount * sectorSize, sectorSize));
+	NotNullPtr<IO::ISectorData> data;
+	NEW_CLASSNN(data, IO::FileSectorData(this->data, startSector * sectorSize, sectorCount * sectorSize, sectorSize));
 	return data;
 }
 

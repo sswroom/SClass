@@ -48,13 +48,13 @@ IO::ParsedObject *Parser::FileParser::MTKGPSParser::ParseFileHdr(NotNullPtr<IO::
 	}
 
 	UOSInt i;
-	Map::GPSTrack *trk;
+	NotNullPtr<Map::GPSTrack> trk;
 	Data::ByteBuffer fileBuff((UOSInt)fileLen);
 	if (fd->GetRealData(0, (UOSInt)fileLen, fileBuff) != fileLen)
 	{
 		return 0;
 	}
-	NEW_CLASS(trk, Map::GPSTrack(fd->GetFullFileName(), true, 0, 0));
+	NEW_CLASSNN(trk, Map::GPSTrack(fd->GetFullFileName(), true, 0, 0));
 	i = 0;
 	while (i < fileLen)
 	{
@@ -66,8 +66,8 @@ IO::ParsedObject *Parser::FileParser::MTKGPSParser::ParseFileHdr(NotNullPtr<IO::
 	}
 	if (trk->GetTrackCnt() > 0)
 	{
-		return trk;
+		return trk.Ptr();
 	}
-	DEL_CLASS(trk);
+	trk.Delete();
 	return 0;
 }
