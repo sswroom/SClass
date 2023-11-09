@@ -20,7 +20,7 @@
 #include "Text/UTF8Writer.h"
 
 
-DB::DBTool::DBTool(DB::DBConn *conn, Bool needRelease, NotNullPtr<IO::LogTool> log, Text::CString logPrefix) : DB::ReadingDBTool(conn, needRelease, log, logPrefix)
+DB::DBTool::DBTool(NotNullPtr<DB::DBConn> conn, Bool needRelease, NotNullPtr<IO::LogTool> log, Text::CString logPrefix) : DB::ReadingDBTool(conn, needRelease, log, logPrefix)
 {
 	this->nqFail = 0;
 	this->tran = 0;
@@ -38,15 +38,10 @@ OSInt DB::DBTool::ExecuteNonQuery(Text::CStringNN sqlCmd)
 		logMsg.Append(sqlCmd);
 		AddLogMsgC(logMsg.ToString(), logMsg.GetLength(), IO::LogHandler::LogLevel::Raw);
 	}
-	if (this->db == 0)
-	{
-		dataCnt += 1;
-		return -1;
-	}
 
 	Data::Timestamp t1 = Data::Timestamp::UtcNow();
 	Data::Timestamp t2 = Data::Timestamp::UtcNow();
-	OSInt i = ((DB::DBConn*)this->db)->ExecuteNonQuery(sqlCmd);
+	OSInt i = this->db->ExecuteNonQuery(sqlCmd);
 	if (i >= -1)
 	{
 		Data::Timestamp t3 = Data::Timestamp::UtcNow();
@@ -99,8 +94,8 @@ OSInt DB::DBTool::ExecuteNonQuery(Text::CStringNN sqlCmd)
 
 void DB::DBTool::BeginTrans()
 {
-	if (tran == 0 && this->db)
-		tran = ((DB::DBConn*)this->db)->BeginTransaction();
+	if (tran == 0)
+		tran = this->db->BeginTransaction();
 }
 
 void DB::DBTool::EndTrans(Bool toCommit)
@@ -109,9 +104,9 @@ void DB::DBTool::EndTrans(Bool toCommit)
 		return;
 
 	if (toCommit)
-		((DB::DBConn*)this->db)->Commit(tran);
+		this->db->Commit(tran);
 	else
-		((DB::DBConn*)this->db)->Rollback(tran);
+		this->db->Rollback(tran);
 	tran = 0;
 }
 

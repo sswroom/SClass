@@ -16,7 +16,7 @@ namespace Media
 			typedef struct
 			{
 				NotNullPtr<IO::StreamData> data;
-				const UTF8Char *fileId;
+				NotNullPtr<Text::String> fileId;
 			} DataInfo;
 
 			typedef struct
@@ -45,7 +45,7 @@ namespace Media
 			~BatchLoader();
 			
 			void AddFileName(Text::CString fileName);
-			void AddImageData(NotNullPtr<IO::StreamData> data, const UTF8Char *fileId);
+			void AddImageData(NotNullPtr<IO::StreamData> data, Text::CStringNN fileId);
 			Bool IsProcessing();
 		};
 	};

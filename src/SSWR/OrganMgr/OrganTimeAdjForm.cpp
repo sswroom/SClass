@@ -261,7 +261,7 @@ SSWR::OrganMgr::OrganTimeAdjForm::OrganTimeAdjForm(UI::GUIClientControl *parent,
 	this->mapTile = tileMap;
 	NEW_CLASSNN(this->mapTileLyr, Map::TileMapLayer(tileMap, this->env->GetParserList()));
 	this->mapTileLyr->AddUpdatedHandler(OnTileUpdated, this);
-	NEW_CLASS(this->mapEnv, Map::MapEnv(CSTR("File"), 0, this->mapTileLyr->GetCoordinateSystem()->Clone()));
+	NEW_CLASSNN(this->mapEnv, Map::MapEnv(CSTR("File"), 0, this->mapTileLyr->GetCoordinateSystem()->Clone()));
 	Media::ColorProfile srcColor(Media::ColorProfile::CPT_SRGB);
 	NEW_CLASS(stimg, Media::StaticImage(Math::Size2D<UOSInt>(7, 7), 0, 32, Media::PF_B8G8R8A8, 0, srcColor, Media::ColorProfile::YUVT_UNKNOWN, Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
 	stimg->FillColor(0xff40ffff);
@@ -409,7 +409,7 @@ SSWR::OrganMgr::OrganTimeAdjForm::~OrganTimeAdjForm()
 	DEL_CLASS(this->currFileList);
 	DEL_CLASS(this->cameraMap);
 	this->ClearChildren();
-	DEL_CLASS(this->mapEnv);
+	this->mapEnv.Delete();
 	DEL_CLASS(this->mapRenderer);
 	this->gpsTrk.Delete();
 	SDEL_CLASS(this->dispImg);

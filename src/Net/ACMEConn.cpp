@@ -746,11 +746,12 @@ Bool Net::ACMEConn::LoadKey(Text::CStringNN fileName)
 
 Bool Net::ACMEConn::SaveKey(Text::CStringNN fileName)
 {
-	if (this->key == 0)
+	NotNullPtr<Crypto::Cert::X509File> key;
+	if (!key.Set(this->key))
 	{
 		return false;
 	}
-	return Exporter::PEMExporter::ExportFile(fileName, this->key);
+	return Exporter::PEMExporter::ExportFile(fileName, key);
 }
 
 Net::ACMEConn::ACMEStatus Net::ACMEConn::ACMEStatusFromString(Text::String* status)

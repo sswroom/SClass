@@ -65,7 +65,7 @@ namespace SSWR
 			UI::GUIPopupMenu *mnuPopup;
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
-			IO::PackageFile *packFile;
+			NotNullPtr<IO::PackageFile> packFile;
 
 			Sync::Mutex statusFileMut;
 			Bool statusFileChg;
@@ -106,9 +106,9 @@ namespace SSWR
 			static void __stdcall OnTimerTick(void *userObj);
 			static void __stdcall LVDblClick(void *userObj, UOSInt index);
 			static void __stdcall OnStatusDblClick(void *userObj, UOSInt index);
-			void DisplayPackFile(IO::PackageFile *packFile);
+			void DisplayPackFile(NotNullPtr<IO::PackageFile> packFile);
 		public:
-			AVIRPackageForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, IO::PackageFile *packFile);
+			AVIRPackageForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<IO::PackageFile> packFile);
 			virtual ~AVIRPackageForm();
 
 			virtual void EventMenuClicked(UInt16 cmdId);

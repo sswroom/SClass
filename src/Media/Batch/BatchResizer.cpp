@@ -55,7 +55,7 @@ void Media::Batch::BatchResizer::SetHandler(Media::Batch::BatchHandler *hdlr)
 	this->hdlr = hdlr;
 }
 
-void Media::Batch::BatchResizer::ImageOutput(Media::ImageList *imgList, const UTF8Char *fileId, const UTF8Char *subId)
+void Media::Batch::BatchResizer::ImageOutput(NotNullPtr<Media::ImageList> imgList, Text::CStringNN fileId, Text::CStringNN subId)
 {
 	UOSInt i;
 	UOSInt j;
@@ -115,7 +115,7 @@ void Media::Batch::BatchResizer::ImageOutput(Media::ImageList *imgList, const UT
 		if (succ)
 		{
 			if (this->hdlr)
-				this->hdlr->ImageOutput(&newImgList, fileId, param->targetId->v);
+				this->hdlr->ImageOutput(newImgList, fileId, param->targetId->ToCString());
 		}
 	}
 }

@@ -25,7 +25,7 @@ Int32 Exporter::SQLiteExporter::GetName()
 	return *(Int32*)"SQLI";
 }
 
-IO::FileExporter::SupportType Exporter::SQLiteExporter::IsObjectSupported(IO::ParsedObject *pobj)
+IO::FileExporter::SupportType Exporter::SQLiteExporter::IsObjectSupported(NotNullPtr<IO::ParsedObject> pobj)
 {
 	if (pobj->GetParserType() != IO::ParserType::ReadingDB && pobj->GetParserType() != IO::ParserType::MapLayer)
 	{
@@ -45,7 +45,7 @@ Bool Exporter::SQLiteExporter::GetOutputName(UOSInt index, UTF8Char *nameBuff, U
 	return false;
 }
 
-Bool Exporter::SQLiteExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text::CStringNN fileName, IO::ParsedObject *pobj, void *param)
+Bool Exporter::SQLiteExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text::CStringNN fileName, NotNullPtr<IO::ParsedObject> pobj, void *param)
 {
 	if (pobj->GetParserType() != IO::ParserType::ReadingDB)
 	{
@@ -54,7 +54,7 @@ Bool Exporter::SQLiteExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Te
 	IO::Path::DeleteFile(fileName.v);
 	NotNullPtr<DB::DBTool> destDB;
 	IO::LogTool log;
-	DB::ReadingDB *sDB;
+	NotNullPtr<DB::ReadingDB> sDB;
 	DB::ReadingDBTool *srcDB;
 	DB::DBReader *r;
 	NotNullPtr<DB::DBReader> nnr;
@@ -69,11 +69,11 @@ Bool Exporter::SQLiteExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Te
 	Bool succ = true;
 	DB::SQLBuilder sql(destDB);
 	Text::StringBuilderUTF8 sb;
-	sDB = (DB::ReadingDB *)pobj;
+	sDB = NotNullPtr<DB::ReadingDB>::ConvertFrom(pobj);
 	sDB->QueryTableNames(CSTR_NULL, tables);
 	if (sDB->IsFullConn())
 	{
-		NEW_CLASS(srcDB, DB::ReadingDBTool((DB::DBConn*)sDB, false, log, CSTR("SDB: ")));
+		NEW_CLASS(srcDB, DB::ReadingDBTool(NotNullPtr<DB::DBConn>::ConvertFrom(sDB), false, log, CSTR("SDB: ")));
 	}
 	else
 	{

@@ -33,7 +33,7 @@ Bool Exporter::GUIPNGExporter::GetOutputName(UOSInt index, UTF8Char *nameBuff, U
 	return false;
 }
 
-Bool Exporter::GUIPNGExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text::CStringNN fileName, IO::ParsedObject *pobj, void *param)
+Bool Exporter::GUIPNGExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text::CStringNN fileName, NotNullPtr<IO::ParsedObject> pobj, void *param)
 {
 	UInt8 *tmpBuff;
 	GdkPixbuf *image = (GdkPixbuf*)ToImage(pobj, &tmpBuff);
@@ -60,7 +60,7 @@ Bool Exporter::GUIPNGExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Te
 		UOSInt pngSize;
 		if (pobj->GetParserType() == IO::ParserType::ImageList)
 		{
-			imgList = (Media::ImageList*)pobj;
+			imgList = (Media::ImageList*)pobj.Ptr();
 			srcImg = imgList->GetImage(0, 0);
 		}
 		pngBuff = (UInt8*)buff;

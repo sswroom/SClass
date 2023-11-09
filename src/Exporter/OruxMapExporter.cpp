@@ -32,16 +32,16 @@ Int32 Exporter::OruxMapExporter::GetName()
 	return *(Int32*)"ORUX";
 }
 
-IO::FileExporter::SupportType Exporter::OruxMapExporter::IsObjectSupported(IO::ParsedObject *pobj)
+IO::FileExporter::SupportType Exporter::OruxMapExporter::IsObjectSupported(NotNullPtr<IO::ParsedObject> pobj)
 {
 	if (pobj->GetParserType() != IO::ParserType::MapLayer)
 	{
 		return IO::FileExporter::SupportType::NotSupported;
 	}
-	Map::MapDrawLayer *layer = (Map::MapDrawLayer *)pobj;
+	NotNullPtr<Map::MapDrawLayer> layer = NotNullPtr<Map::MapDrawLayer>::ConvertFrom(pobj);
 	if (layer->GetObjectClass() == Map::MapDrawLayer::OC_TILE_MAP_LAYER)
 	{
-		NotNullPtr<Map::TileMap> tileMap = ((Map::TileMapLayer*)layer)->GetTileMap();
+		NotNullPtr<Map::TileMap> tileMap = NotNullPtr<Map::TileMapLayer>::ConvertFrom(layer)->GetTileMap();
 		Map::TileMap::TileType ttype = tileMap->GetTileType();
 		if (ttype == Map::TileMap::TT_OSMLOCAL)
 		{
@@ -70,7 +70,7 @@ Bool Exporter::OruxMapExporter::GetOutputName(UOSInt index, UTF8Char *nameBuff, 
 	return false;
 }
 
-Bool Exporter::OruxMapExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text::CStringNN fileName, IO::ParsedObject *pobj, void *param)
+Bool Exporter::OruxMapExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text::CStringNN fileName, NotNullPtr<IO::ParsedObject> pobj, void *param)
 {
 	UTF8Char fileName2[512];
 	UTF8Char u8fileName[512];
@@ -80,12 +80,12 @@ Bool Exporter::OruxMapExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, T
 	{
 		return false;
 	}
-	Map::MapDrawLayer *layer = (Map::MapDrawLayer*)pobj;
+	NotNullPtr<Map::MapDrawLayer> layer = NotNullPtr<Map::MapDrawLayer>::ConvertFrom(pobj);
 	if (layer->GetObjectClass() != Map::MapDrawLayer::OC_TILE_MAP_LAYER)
 	{
 		return false;
 	}
-	NotNullPtr<Map::TileMap> tileMap = ((Map::TileMapLayer*)layer)->GetTileMap();
+	NotNullPtr<Map::TileMap> tileMap = NotNullPtr<Map::TileMapLayer>::ConvertFrom(layer)->GetTileMap();
 	Map::TileMap::TileType ttype = tileMap->GetTileType();
 	Text::UTF8Writer *writer;
 	UOSInt i;

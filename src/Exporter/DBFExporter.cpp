@@ -21,13 +21,13 @@ Int32 Exporter::DBFExporter::GetName()
 	return *(Int32*)"DBFE";
 }
 
-IO::FileExporter::SupportType Exporter::DBFExporter::IsObjectSupported(IO::ParsedObject *pobj)
+IO::FileExporter::SupportType Exporter::DBFExporter::IsObjectSupported(NotNullPtr<IO::ParsedObject> pobj)
 {
 	if (pobj->GetParserType() != IO::ParserType::ReadingDB && pobj->GetParserType() != IO::ParserType::MapLayer)
 	{
 		return IO::FileExporter::SupportType::NotSupported;
 	}
-	DB::ReadingDB *conn = (DB::ReadingDB *)pobj;
+	NotNullPtr<DB::ReadingDB> conn = NotNullPtr<DB::ReadingDB>::ConvertFrom(pobj);
 	UOSInt tableCnt;
 	Data::ArrayListNN<Text::String> tableNames;
 	conn->QueryTableNames(CSTR_NULL, tableNames);
@@ -54,14 +54,14 @@ void Exporter::DBFExporter::SetCodePage(UInt32 codePage)
 	this->codePage = codePage;
 }
 
-Bool Exporter::DBFExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text::CStringNN fileName, IO::ParsedObject *pobj, void *param)
+Bool Exporter::DBFExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text::CStringNN fileName, NotNullPtr<IO::ParsedObject> pobj, void *param)
 {
 	if (pobj->GetParserType() != IO::ParserType::ReadingDB && pobj->GetParserType() != IO::ParserType::MapLayer)
 	{
 		return false;
 	}
 	UTF8Char sbuff[1024];
-	DB::ReadingDB *conn = (DB::ReadingDB *)pobj;
+	NotNullPtr<DB::ReadingDB> conn = NotNullPtr<DB::ReadingDB>::ConvertFrom(pobj);
 	UOSInt tableCnt;
 	Data::ArrayListNN<Text::String> tableNames;
 	conn->QueryTableNames(CSTR_NULL, tableNames);

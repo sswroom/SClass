@@ -14,7 +14,7 @@ Int32 Exporter::HEIFExporter::GetName()
 	return *(Int32*)"HIEF";
 }
 
-IO::FileExporter::SupportType Exporter::HEIFExporter::IsObjectSupported(IO::ParsedObject *pobj)
+IO::FileExporter::SupportType Exporter::HEIFExporter::IsObjectSupported(NotNullPtr<IO::ParsedObject> pobj)
 {
 	return IO::FileExporter::SupportType::NotSupported;
 }
@@ -30,7 +30,7 @@ Bool Exporter::HEIFExporter::GetOutputName(UOSInt index, UTF8Char *nameBuff, UTF
 	return false;
 }
 
-Bool Exporter::HEIFExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text::CStringNN fileName, IO::ParsedObject *pobj, void *param)
+Bool Exporter::HEIFExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text::CStringNN fileName, NotNullPtr<IO::ParsedObject> pobj, void *param)
 {
 	return false;
 }
@@ -40,7 +40,7 @@ UOSInt Exporter::HEIFExporter::GetParamCnt()
 	return 1;
 }
 
-void *Exporter::HEIFExporter::CreateParam(IO::ParsedObject *pobj)
+void *Exporter::HEIFExporter::CreateParam(NotNullPtr<IO::ParsedObject> pobj)
 {
 	Int32 *val = MemAlloc(Int32, 1);
 	*val = 100;
@@ -52,7 +52,7 @@ void Exporter::HEIFExporter::DeleteParam(void *param)
 	MemFree(param);
 }
 
-Bool Exporter::HEIFExporter::GetParamInfo(UOSInt index, ParamInfo *info)
+Bool Exporter::HEIFExporter::GetParamInfo(UOSInt index, NotNullPtr<ParamInfo> info)
 {
 	if (index == 0)
 	{

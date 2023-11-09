@@ -20,11 +20,11 @@ Int32 Exporter::WebPExporter::GetName()
 	return *(Int32*)"WEBP";
 }
 
-IO::FileExporter::SupportType Exporter::WebPExporter::IsObjectSupported(IO::ParsedObject *pobj)
+IO::FileExporter::SupportType Exporter::WebPExporter::IsObjectSupported(NotNullPtr<IO::ParsedObject> pobj)
 {
 	if (pobj->GetParserType() != IO::ParserType::ImageList)
 		return IO::FileExporter::SupportType::NotSupported;
-	Media::ImageList *imgList = (Media::ImageList*)pobj;
+	NotNullPtr<Media::ImageList> imgList = NotNullPtr<Media::ImageList>::ConvertFrom(pobj);
 	if (imgList->GetCount() != 1)
 		return IO::FileExporter::SupportType::NotSupported;
 	return IO::FileExporter::SupportType::NormalStream;
@@ -41,11 +41,11 @@ Bool Exporter::WebPExporter::GetOutputName(UOSInt index, UTF8Char *nameBuff, UTF
 	return false;
 }
 
-Bool Exporter::WebPExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text::CStringNN fileName, IO::ParsedObject *pobj, void *param)
+Bool Exporter::WebPExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text::CStringNN fileName, NotNullPtr<IO::ParsedObject> pobj, void *param)
 {
 	if (pobj->GetParserType() != IO::ParserType::ImageList)
 		return false;
-	Media::ImageList *imgList = (Media::ImageList*)pobj;
+	NotNullPtr<Media::ImageList> imgList = NotNullPtr<Media::ImageList>::ConvertFrom(pobj);
 	if (imgList->GetCount() != 1)
 		return false;
 	Int32 quality;
@@ -187,7 +187,7 @@ UOSInt Exporter::WebPExporter::GetParamCnt()
 	return 1;
 }
 
-void *Exporter::WebPExporter::CreateParam(IO::ParsedObject *pobj)
+void *Exporter::WebPExporter::CreateParam(NotNullPtr<IO::ParsedObject> pobj)
 {
 	Int32 *val = MemAlloc(Int32, 1);
 	*val = 100;
@@ -199,7 +199,7 @@ void Exporter::WebPExporter::DeleteParam(void *param)
 	MemFree(param);
 }
 
-Bool Exporter::WebPExporter::GetParamInfo(UOSInt index, ParamInfo *info)
+Bool Exporter::WebPExporter::GetParamInfo(UOSInt index, NotNullPtr<ParamInfo> info)
 {
 	if (index == 0)
 	{

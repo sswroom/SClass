@@ -15,17 +15,15 @@ void TestEmpty()
 	UTF8Char fileName[512];
 	UTF8Char *sptr;
 	sptr = IO::Path::GetRealPath(fileName, UTF8STRC("~/Progs/Temp/EmptyMe.xlsx"));
-	Workbook *wb;
-	NEW_CLASS(wb, Workbook());
-	wb->AddWorksheet(CSTR("Sheet1"));
-	wb->AddWorksheet(CSTR("Sheet2"));
+	Workbook wb;
+	wb.AddWorksheet(CSTR("Sheet1"));
+	wb.AddWorksheet(CSTR("Sheet2"));
 	Exporter::XLSXExporter exporter;
 	if (!exporter.ExportNewFile({fileName, (UOSInt)(sptr - fileName)}, wb, 0))
 	{
 		IO::ConsoleWriter console;
 		console.WriteLineC(UTF8STRC("Error in writing to file"));
 	}
-	DEL_CLASS(wb);
 }
 
 void TestChart()
@@ -37,13 +35,12 @@ void TestChart()
 	UTF8Char *sptr2;
 	sptr = IO::Path::GetRealPath(fileName, UTF8STRC("~/Progs/Temp/XLSXTest.xlsx"));
 
-	Workbook *wb;
-	NEW_CLASS(wb, Workbook());
-	WorkbookFont *font10 = wb->NewFont(CSTR("Arial"), 10, false);
-	CellStyle *dateStyle = wb->NewCellStyle(font10, Text::HAlignment::Left, Text::VAlignment::Center, CSTR("yyyy-MM-dd"));
-	CellStyle *numStyle = wb->NewCellStyle(font10, Text::HAlignment::Left, Text::VAlignment::Center, CSTR("0.###"));
-	Worksheet *graphSheet = wb->AddWorksheet();
-	Worksheet *dataSheet = wb->AddWorksheet();
+	Workbook wb;
+	WorkbookFont *font10 = wb.NewFont(CSTR("Arial"), 10, false);
+	CellStyle *dateStyle = wb.NewCellStyle(font10, Text::HAlignment::Left, Text::VAlignment::Center, CSTR("yyyy-MM-dd"));
+	CellStyle *numStyle = wb.NewCellStyle(font10, Text::HAlignment::Left, Text::VAlignment::Center, CSTR("0.###"));
+	NotNullPtr<Worksheet> graphSheet = wb.AddWorksheet();
+	NotNullPtr<Worksheet> dataSheet = wb.AddWorksheet();
 	OfficeChart *chart = graphSheet->CreateChart(Math::Unit::Distance::DU_INCH, 0.64, 1.61, 13.10, 5.53, CSTR("\nSETTLEMENT VS CHAINAGE"));
 	chart->InitLineChart(CSTR("ACCUMULATED SETTLEMENT"), CSTR("CHAINAGE"), AxisType::Category);
 	chart->SetDisplayBlankAs(BlankAs::Gap);
@@ -63,7 +60,7 @@ void TestChart()
 		
 		sbuff2[0] = (UTF8Char)('A' + i);
 		sbuff2[1] = 0;
-		graphSheet->SetCellString(0, i, wb->GetStyle(0), {sbuff2, 1});
+		graphSheet->SetCellString(0, i, wb.GetStyle(0), {sbuff2, 1});
 		i++;
 	}
 	if (testRowCnt > 0)
@@ -74,7 +71,7 @@ void TestChart()
 			dt.SetCurrTime();
 			dt.AddDay((OSInt)(rowNum - testRowCnt));
 			rowNum++;
-			dataSheet->SetCellDate(rowNum, 0, dateStyle, &dt);
+			dataSheet->SetCellDateTime(rowNum, 0, dateStyle, dt);
 			i = 0;
 			while (i < j)
 			{
@@ -97,7 +94,6 @@ void TestChart()
 		IO::ConsoleWriter console;
 		console.WriteLineC(UTF8STRC("Error in writing to file"));
 	}
-	DEL_CLASS(wb);
 }
 
 void TestCols()
@@ -105,11 +101,10 @@ void TestCols()
 	UTF8Char fileName[512];
 	UTF8Char *sptr;
 	sptr = IO::Path::GetRealPath(fileName, UTF8STRC("~/Progs/Temp/ColsMe.xlsx"));
-	Workbook *wb;
-	NEW_CLASS(wb, Workbook());
-	WorkbookFont *font10 = wb->NewFont(CSTR("Arial"), 10, false);
-	CellStyle *numStyle = wb->NewCellStyle(font10, Text::HAlignment::Left, Text::VAlignment::Center, CSTR("0.###"));
-	Worksheet *sheet = wb->AddWorksheet(CSTR("Sheet1"));
+	Workbook wb;
+	WorkbookFont *font10 = wb.NewFont(CSTR("Arial"), 10, false);
+	CellStyle *numStyle = wb.NewCellStyle(font10, Text::HAlignment::Left, Text::VAlignment::Center, CSTR("0.###"));
+	NotNullPtr<Worksheet> sheet = wb.AddWorksheet(CSTR("Sheet1"));
 	UOSInt i = 0;
 	UOSInt j = 2000;
 	while (i < j)
@@ -125,7 +120,6 @@ void TestCols()
 		IO::ConsoleWriter console;
 		console.WriteLineC(UTF8STRC("Error in writing to file"));
 	}
-	DEL_CLASS(wb);
 }
 
 void TestColWidth()
@@ -133,9 +127,8 @@ void TestColWidth()
 	UTF8Char fileName[512];
 	UTF8Char *sptr;
 	sptr = IO::Path::GetRealPath(fileName, UTF8STRC("~/Progs/Temp/ColWidthMe.xlsx"));
-	Workbook *wb;
-	NEW_CLASS(wb, Workbook());
-	Worksheet *sheet = wb->AddWorksheet(CSTR("Sheet1"));
+	Workbook wb;
+	NotNullPtr<Worksheet> sheet = wb.AddWorksheet(CSTR("Sheet1"));
 	sheet->SetColWidth(0, 123.75, Math::Unit::Distance::DU_POINT);	//23.5714285714286 * 5.25
 	sheet->SetColWidth(1, 75.75, Math::Unit::Distance::DU_POINT);	//14.4285714285714
 	sheet->SetColWidth(2, 303.75, Math::Unit::Distance::DU_POINT);	//57.8571428571429
@@ -152,7 +145,6 @@ void TestColWidth()
 		IO::ConsoleWriter console;
 		console.WriteLineC(UTF8STRC("Error in writing to file"));
 	}
-	DEL_CLASS(wb);
 }
 
 void TestBorder()
@@ -160,14 +152,13 @@ void TestBorder()
 	UTF8Char fileName[512];
 	UTF8Char *sptr;
 	sptr = IO::Path::GetRealPath(fileName, UTF8STRC("~/Progs/Temp/BorderMe.xlsx"));
-	Workbook *wb;
-	NEW_CLASS(wb, Workbook());
-	Worksheet *sheet = wb->AddWorksheet(CSTR("Sheet1"));
-	WorkbookFont *font = wb->NewFont(CSTR("Arial"), 10.0, false);
-	CellStyle *borderStyle = wb->NewCellStyle(font, Text::HAlignment::Center, Text::VAlignment::Bottom, CSTR("0.0"));
+	Workbook wb;
+	NotNullPtr<Worksheet> sheet = wb.AddWorksheet(CSTR("Sheet1"));
+	WorkbookFont *font = wb.NewFont(CSTR("Arial"), 10.0, false);
+	CellStyle *borderStyle = wb.NewCellStyle(font, Text::HAlignment::Center, Text::VAlignment::Bottom, CSTR("0.0"));
 	CellStyle::BorderStyle border(0xFF000000, BorderType::Medium);
 	borderStyle->SetBorderBottom(border);
-	CellStyle *normalStyle = wb->NewCellStyle(font, Text::HAlignment::Center, Text::VAlignment::Bottom, CSTR("0.0"));
+	CellStyle *normalStyle = wb.NewCellStyle(font, Text::HAlignment::Center, Text::VAlignment::Bottom, CSTR("0.0"));
 	sheet->SetCellInt32(0, 0, borderStyle, 1);
 	sheet->SetCellInt32(0, 1, borderStyle, 2);
 	sheet->SetCellInt32(0, 2, borderStyle, 3);
@@ -183,7 +174,6 @@ void TestBorder()
 		IO::ConsoleWriter console;
 		console.WriteLineC(UTF8STRC("Error in writing to file"));
 	}
-	DEL_CLASS(wb);
 }
 
 Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)

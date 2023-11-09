@@ -1,6 +1,7 @@
 #include "Stdafx.h"
 #include "Data/ArrayListStrUTF8.h"
 #include "DB/ColDef.h"
+#include "DB/DBExporter.h"
 #include "DB/JavaDBUtil.h"
 #include "DB/SQLGenerator.h"
 #include "DB/SQLiteFile.h"
@@ -254,26 +255,6 @@ void SSWR::AVIRead::AVIRDBForm::UpdateResult(NotNullPtr<DB::DBReader> r)
 	MemFree(colSize);
 }
 
-Data::Class *SSWR::AVIRead::AVIRDBForm::CreateTableClass(Text::CString schemaName, Text::CString tableName)
-{
-	DB::TableDef *tab = this->db->GetTableDef(schemaName, tableName);
-	if (tab)
-	{
-		Data::Class *cls = tab->CreateTableClass().Ptr();
-		DEL_CLASS(tab);
-		return cls;
-	}
-	NotNullPtr<DB::DBReader> r;
-	if (r.Set(this->db->QueryTableData(schemaName, tableName, 0, 0, 0, CSTR_NULL, 0)))
-	{
-		Data::Class *cls = r->CreateClass().Ptr();
-		this->db->CloseReader(r);
-		return cls;
-	}
-	return 0;
-}
-
-
 void SSWR::AVIRead::AVIRDBForm::CopyTableCreate(DB::SQLType sqlType, Bool axisAware)
 {
 	Text::String *schemaName = this->lbSchema->GetSelectedItemTextNew();
@@ -321,22 +302,10 @@ void SSWR::AVIRead::AVIRDBForm::ExportTableData(DB::SQLType sqlType, Bool axisAw
 	dlg.SetFileName(CSTRP(sbuff, sptr));
 	if (dlg.ShowDialog(this->GetHandle()))
 	{
-		DB::SQLBuilder sql(sqlType, axisAware, 0);
-		NotNullPtr<DB::DBReader> r;
-		if (!r.Set(this->db->QueryTableData(STR_CSTR(schemaName), tableName->ToCString(), 0, 0, 0, CSTR_NULL, 0)))
+		IO::FileStream fs(dlg.GetFileName(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+		if (!DB::DBExporter::GenerateInsertSQLs(this->db, sqlType, axisAware, STR_CSTR(schemaName), tableName->ToCString(), this->currCond, fs))
 		{
 			UI::MessageDialog::ShowDialog(CSTR("Error in reading table data"), CSTR("DB Manager"), this);
-			tableName->Release();
-			SDEL_STRING(schemaName);
-			return;
-		}
-		IO::FileStream fs(dlg.GetFileName(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
-		while (r->ReadNext())
-		{
-			sql.Clear();			
-			DB::SQLGenerator::GenInsertCmd(sql, schemaName->ToCString(), tableName->ToCString(), r);
-			sql.AppendCmdC(CSTR(";\r\n"));
-			fs.Write(sql.ToString(), sql.GetLength());
 		}
 	}
 	tableName->Release();
@@ -345,10 +314,8 @@ void SSWR::AVIRead::AVIRDBForm::ExportTableData(DB::SQLType sqlType, Bool axisAw
 
 void SSWR::AVIRead::AVIRDBForm::ExportTableCSV()
 {
-	UTF8Char sbuff[4096];
-	UTF8Char csvBuff[4096];
+	UTF8Char sbuff[512];
 	UTF8Char *sptr;
-	UTF8Char *csvPtr;
 	Text::String *schemaName = this->lbSchema->GetSelectedItemTextNew();
 	Text::String *tableName = this->lbTable->GetSelectedItemTextNew();
 	sptr = sbuff;
@@ -366,50 +333,10 @@ void SSWR::AVIRead::AVIRDBForm::ExportTableCSV()
 	dlg.SetFileName(CSTRP(sbuff, sptr));
 	if (dlg.ShowDialog(this->GetHandle()))
 	{
-		Text::StringBuilderUTF8 sb;
-		DB::DBReader *r = this->db->QueryTableData(STR_CSTR(schemaName), tableName->ToCString(), 0, 0, 0, CSTR_NULL, 0);
-		if (r == 0)
+		IO::FileStream fs(dlg.GetFileName(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+		if (!DB::DBExporter::GenerateCSV(this->db, STR_CSTR(schemaName), tableName->ToCString(), this->currCond, CSTR("\"\""), fs, 65001))
 		{
 			UI::MessageDialog::ShowDialog(CSTR("Error in reading table data"), CSTR("DB Manager"), this);
-			tableName->Release();
-			SDEL_STRING(schemaName);
-			return;
-		}
-		IO::FileStream fs(dlg.GetFileName(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
-		sb.ClearStr();
-		UOSInt i = 0;
-		UOSInt j = r->ColCount();
-		while (i < j)
-		{
-			sptr = r->GetName(i, sbuff);
-			csvPtr = Text::StrToCSVRec(csvBuff, sbuff);
-			if (i > 0) sb.AppendUTF8Char(',');
-			sb.AppendP(csvBuff, csvPtr);
-			i++;
-		}
-		sb.AppendC(UTF8STRC("\r\n"));
-		fs.Write(sb.ToString(), sb.GetLength());
-		while (r->ReadNext())
-		{
-			sb.ClearStr();
-			i = 0;
-			while (i < j)
-			{
-				if (i > 0) sb.AppendUTF8Char(',');
-				sptr = r->GetStr(i, sbuff, sizeof(sbuff));
-				if (sptr)
-				{
-					csvPtr = Text::StrToCSVRec(csvBuff, sbuff);
-					sb.AppendP(csvBuff, csvPtr);
-				}
-				else
-				{
-					sb.AppendC(UTF8STRC("\"\""));
-				}
-				i++;
-			}
-			sb.AppendC(UTF8STRC("\r\n"));
-			fs.Write(sb.ToString(), sb.GetLength());
 		}
 	}
 	tableName->Release();
@@ -418,18 +345,10 @@ void SSWR::AVIRead::AVIRDBForm::ExportTableCSV()
 
 void SSWR::AVIRead::AVIRDBForm::ExportTableSQLite()
 {
-	UTF8Char sbuff[4096];
+	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 	Text::String *schemaName = this->lbSchema->GetSelectedItemTextNew();
 	Text::String *tableName = this->lbTable->GetSelectedItemTextNew();
-	NotNullPtr<DB::TableDef> table;
-	if (!table.Set(this->db->GetTableDef(STR_CSTR(schemaName), tableName->ToCString())))
-	{
-		UI::MessageDialog::ShowDialog(CSTR("Error in getting table definition"), CSTR("DB Manager"), this);
-		tableName->Release();
-		SDEL_STRING(schemaName);
-		return;
-	}
 	sptr = sbuff;
 	if (schemaName->leng > 0)
 	{
@@ -445,46 +364,15 @@ void SSWR::AVIRead::AVIRDBForm::ExportTableSQLite()
 	dlg.SetFileName(CSTRP(sbuff, sptr));
 	if (dlg.ShowDialog(this->GetHandle()))
 	{
+		Text::StringBuilderUTF8 sb;
 		DB::SQLiteFile sqlite(dlg.GetFileName());
-		DB::SQLBuilder sql(sqlite.GetSQLType(), false, sqlite.GetTzQhr());
-		DB::SQLGenerator::GenCreateTableCmd(sql, CSTR_NULL, tableName->ToCString(), table, false);
-		if (sqlite.ExecuteNonQuery(sql.ToCString()) <= -2)
+		if (!DB::DBExporter::GenerateSQLite(this->db, STR_CSTR(schemaName), tableName->ToCString(), this->currCond, sqlite, &sb))
 		{
-			Text::StringBuilderUTF8 sb;
-			sb.AppendC(UTF8STRC("Error in creating table: "));
-			sb.Append(sql.ToCString());
 			UI::MessageDialog::ShowDialog(sb.ToCString(), CSTR("DB Manager"), this);
 		}
-		NotNullPtr<DB::DBReader> r;
-		if (!r.Set(this->db->QueryTableData(STR_CSTR(schemaName), tableName->ToCString(), 0, 0, 0, CSTR_NULL, 0)))
-		{
-			UI::MessageDialog::ShowDialog(CSTR("Error in reading table data"), CSTR("DB Manager"), this);
-			tableName->Release();
-			SDEL_STRING(schemaName);
-			table.Delete();
-			return;
-		}
-		void *tran = sqlite.BeginTransaction();
-		while (r->ReadNext())
-		{
-			sql.Clear();
-			DB::SQLGenerator::GenInsertCmd(sql, CSTR_NULL, tableName->ToCString(), table.Ptr(), r);
-			if (sqlite.ExecuteNonQuery(sql.ToCString()) != 1)
-			{
-				Text::StringBuilderUTF8 sb;
-				sb.AppendC(UTF8STRC("Error in executing cmd: "));
-				sb.Append(sql.ToCString());
-				UI::MessageDialog::ShowDialog(sb.ToCString(), CSTR("DB Manager"), this);
-				printf("%s\r\n", sql.ToString());
-				break;
-			}
-		}
-		this->db->CloseReader(r);
-		sqlite.Commit(tran);
 	}
 	tableName->Release();
 	SDEL_STRING(schemaName);
-	table.Delete();
 }
 
 SSWR::AVIRead::AVIRDBForm::AVIRDBForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<DB::ReadingDB> db, Bool needRelease) : UI::GUIForm(parent, 1024, 768, ui)
@@ -501,6 +389,7 @@ SSWR::AVIRead::AVIRDBForm::AVIRDBForm(UI::GUIClientControl *parent, NotNullPtr<U
 	this->dbt = 0;
 	this->debugWriter = 0;
 	this->logHdlr = 0;
+	this->currCond = 0;
 	if (db->IsFullConn())
 	{
 #if defined(VERBOSE)
@@ -512,7 +401,7 @@ SSWR::AVIRead::AVIRDBForm::AVIRDBForm(UI::GUIClientControl *parent, NotNullPtr<U
 		this->logHdlr = logHdlr;
 		this->debugWriter = console;
 #endif
-		NEW_CLASS(this->dbt, DB::ReadingDBTool((DB::DBConn*)this->db.Ptr(), needRelease, this->log, CSTR("DB: ")));
+		NEW_CLASS(this->dbt, DB::ReadingDBTool(NotNullPtr<DB::DBConn>::ConvertFrom(this->db), needRelease, this->log, CSTR("DB: ")));
 	}
 
 	NEW_CLASS(this->tcDB, UI::GUITabControl(ui, this));
@@ -613,6 +502,7 @@ SSWR::AVIRead::AVIRDBForm::~AVIRDBForm()
 	{
 		this->db.Delete();
 	}
+	SDEL_CLASS(this->currCond);
 	NotNullPtr<IO::LogHandler> logHdlr;
 	if (logHdlr.Set(this->logHdlr))
 	{
@@ -700,7 +590,7 @@ void SSWR::AVIRead::AVIRDBForm::EventMenuClicked(UInt16 cmdId)
 	switch (cmdId)
 	{
 	case MNU_FILE_SAVE:
-		this->core->SaveData(this, this->db.Ptr(), L"DBSave");
+		this->core->SaveData(this, this->db, L"DBSave");
 		break;
 	case MNU_CHART_LINE:
 		if ((sptr = this->lbTable->GetSelectedItemText(sbuff)) != 0)
@@ -727,7 +617,7 @@ void SSWR::AVIRead::AVIRDBForm::EventMenuClicked(UInt16 cmdId)
 		if ((sptr = this->lbTable->GetSelectedItemText(sbuff)) != 0)
 		{
 			Text::String *schemaName = this->lbSchema->GetSelectedItemTextNew();
-			Data::Class *cls = this->CreateTableClass(STR_CSTR(schemaName), CSTRP(sbuff, sptr));
+			Data::Class *cls = DB::DBExporter::CreateTableClass(this->db, STR_CSTR(schemaName), CSTRP(sbuff, sptr));
 			SDEL_STRING(schemaName);
 			if (cls)
 			{
@@ -746,7 +636,7 @@ void SSWR::AVIRead::AVIRDBForm::EventMenuClicked(UInt16 cmdId)
 		if ((sptr = this->lbTable->GetSelectedItemText(sbuff)) != 0)
 		{
 			Text::String *schemaName = this->lbSchema->GetSelectedItemTextNew();
-			Data::Class *cls = this->CreateTableClass(STR_CSTR(schemaName), CSTRP(sbuff, sptr));
+			Data::Class *cls = DB::DBExporter::CreateTableClass(this->db, STR_CSTR(schemaName), CSTRP(sbuff, sptr));
 			SDEL_STRING(schemaName);
 			if (cls)
 			{
@@ -808,6 +698,9 @@ void SSWR::AVIRead::AVIRDBForm::EventMenuClicked(UInt16 cmdId)
 		break;
 	case MNU_TABLE_EXPORT_CSV:
 		this->ExportTableCSV();
+		break;
+	case MNU_TABLE_EXPORT_SQLITE:
+		this->ExportTableSQLite();
 		break;
 	case MNU_TABLE_CHECK_CHANGE:
 		{

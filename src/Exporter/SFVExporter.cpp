@@ -19,13 +19,13 @@ Int32 Exporter::SFVExporter::GetName()
 	return *(Int32*)"SFVE";
 }
 
-IO::FileExporter::SupportType Exporter::SFVExporter::IsObjectSupported(IO::ParsedObject *pobj)
+IO::FileExporter::SupportType Exporter::SFVExporter::IsObjectSupported(NotNullPtr<IO::ParsedObject> pobj)
 {
 	if (pobj->GetParserType() != IO::ParserType::FileCheck)
 	{
 		return IO::FileExporter::SupportType::NotSupported;
 	}
-	IO::FileCheck *fchk = (IO::FileCheck *)pobj;
+	NotNullPtr<IO::FileCheck> fchk = NotNullPtr<IO::FileCheck>::ConvertFrom(pobj);
 	if (fchk->GetCheckType() != Crypto::Hash::HashType::CRC32)
 	{
 		return IO::FileExporter::SupportType::NotSupported;
@@ -44,13 +44,13 @@ Bool Exporter::SFVExporter::GetOutputName(UOSInt index, UTF8Char *nameBuff, UTF8
 	return false;
 }
 
-Bool Exporter::SFVExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text::CStringNN fileName, IO::ParsedObject *pobj, void *param)
+Bool Exporter::SFVExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text::CStringNN fileName, NotNullPtr<IO::ParsedObject> pobj, void *param)
 {
 	if (pobj->GetParserType() != IO::ParserType::FileCheck)
 	{
 		return false;
 	}
-	IO::FileCheck *fchk = (IO::FileCheck *)pobj;
+	NotNullPtr<IO::FileCheck> fchk = NotNullPtr<IO::FileCheck>::ConvertFrom(pobj);
 	if (fchk->GetCheckType() != Crypto::Hash::HashType::CRC32)
 	{
 		return false;

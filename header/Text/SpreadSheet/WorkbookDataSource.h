@@ -9,22 +9,22 @@ namespace Text
 		class WorkbookDataSource
 		{
 		private:
-			Worksheet *sheet;
+			NotNullPtr<Worksheet> sheet;
 			UOSInt firstRow;
 			UOSInt lastRow;
 			UOSInt firstCol;
 			UOSInt lastCol;
 
 		public:
-			WorkbookDataSource(Worksheet *sheet, UOSInt firstRow, UOSInt lastRow, UOSInt firstCol, UOSInt lastCol);
+			WorkbookDataSource(NotNullPtr<Worksheet> sheet, UOSInt firstRow, UOSInt lastRow, UOSInt firstCol, UOSInt lastCol);
 			~WorkbookDataSource();
 
-			UTF8Char *ToCodeRange(UTF8Char *sbuff);
-			Worksheet *GetSheet();
-			UOSInt GetFirstRow();
-			UOSInt GetLastRow();
-			UOSInt GetFirstCol();
-			UOSInt GetLastCol();
+			UTF8Char *ToCodeRange(UTF8Char *sbuff) const;
+			NotNullPtr<Worksheet> GetSheet() const;
+			UOSInt GetFirstRow() const;
+			UOSInt GetLastRow() const;
+			UOSInt GetFirstCol() const;
+			UOSInt GetLastCol() const;
 		};
 	}
 }

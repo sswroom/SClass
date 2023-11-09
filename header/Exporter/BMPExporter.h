@@ -11,10 +11,10 @@ namespace Exporter
 		virtual ~BMPExporter();
 
 		virtual Int32 GetName();
-		virtual SupportType IsObjectSupported(IO::ParsedObject *pobj);
+		virtual SupportType IsObjectSupported(NotNullPtr<IO::ParsedObject> pobj);
 		virtual Bool GetOutputName(UOSInt index, UTF8Char *nameBuff, UTF8Char *fileNameBuff);
 		virtual void SetCodePage(UInt32 codePage);
-		virtual Bool ExportFile(NotNullPtr<IO::SeekableStream> stm, Text::CStringNN fileName, IO::ParsedObject *pobj, void *param);
+		virtual Bool ExportFile(NotNullPtr<IO::SeekableStream> stm, Text::CStringNN fileName, NotNullPtr<IO::ParsedObject> pobj, void *param);
 	};
 }
 #endif

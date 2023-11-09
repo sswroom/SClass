@@ -177,11 +177,11 @@ Int32 Exporter::TIFFExporter::GetName()
 	return *(Int32*)"TIFE";
 }
 
-IO::FileExporter::SupportType Exporter::TIFFExporter::IsObjectSupported(IO::ParsedObject *pobj)
+IO::FileExporter::SupportType Exporter::TIFFExporter::IsObjectSupported(NotNullPtr<IO::ParsedObject> pobj)
 {
 	if (pobj->GetParserType() != IO::ParserType::ImageList)
 		return IO::FileExporter::SupportType::NotSupported;
-	Media::ImageList *imgList = (Media::ImageList*)pobj;
+	NotNullPtr<Media::ImageList> imgList = NotNullPtr<Media::ImageList>::ConvertFrom(pobj);
 	if (imgList->GetCount() != 1)
 		return IO::FileExporter::SupportType::NotSupported;
 	Media::Image *img = imgList->GetImage(0, 0);
@@ -244,11 +244,11 @@ void Exporter::TIFFExporter::SetCodePage(UInt32 codePage)
 {
 }
 
-Bool Exporter::TIFFExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text::CStringNN fileName, IO::ParsedObject *pobj, void *param)
+Bool Exporter::TIFFExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text::CStringNN fileName, NotNullPtr<IO::ParsedObject> pobj, void *param)
 {
 	if (pobj->GetParserType() != IO::ParserType::ImageList)
 		return false;
-	Media::ImageList *imgList = (Media::ImageList*)pobj;
+	NotNullPtr<Media::ImageList> imgList = NotNullPtr<Media::ImageList>::ConvertFrom(pobj);
 	UInt8 buff[54];
 
 	buff[0] = 'I';

@@ -18,7 +18,7 @@ namespace SSWR
 		private:
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			Media::Resizer::LanczosResizer8_C8 *resizer;
-			Map::MapEnv *env;
+			NotNullPtr<Map::MapEnv> env;
 			Parser::ParserList *parsers;
 			UOSInt imgIndex;
 
@@ -33,7 +33,7 @@ namespace SSWR
 			static void __stdcall OnFileDrop(void *userObj, NotNullPtr<Text::String> *fileNames, UOSInt fileCnt);
 			void UpdateImages();
 		public:
-			AVIRGISImageForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Map::MapEnv *env, UOSInt imgIndex);
+			AVIRGISImageForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<Map::MapEnv> env, UOSInt imgIndex);
 			virtual ~AVIRGISImageForm();
 
 			virtual void OnMonitorChanged();

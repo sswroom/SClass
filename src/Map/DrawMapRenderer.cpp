@@ -3630,7 +3630,7 @@ void Map::DrawMapRenderer::DrawCharsLA(NotNullPtr<DrawEnv> denv, Text::CStringNN
 	realBounds->br = max;
 }
 
-Map::DrawMapRenderer::DrawMapRenderer(NotNullPtr<Media::DrawEngine> eng, Map::MapEnv *env, NotNullPtr<const Media::ColorProfile> color, Media::ColorManagerSess *colorSess, DrawType drawType)
+Map::DrawMapRenderer::DrawMapRenderer(NotNullPtr<Media::DrawEngine> eng, NotNullPtr<Map::MapEnv> env, NotNullPtr<const Media::ColorProfile> color, Media::ColorManagerSess *colorSess, DrawType drawType)
 {
 	this->eng = eng;
 	this->env = env;
@@ -3748,7 +3748,7 @@ Bool Map::DrawMapRenderer::GetLastsLayerEmpty()
 	return this->lastLayerEmpty;
 }
 
-void Map::DrawMapRenderer::SetEnv(Map::MapEnv *env)
+void Map::DrawMapRenderer::SetEnv(NotNullPtr<Map::MapEnv> env)
 {
 	this->env = env;
 }

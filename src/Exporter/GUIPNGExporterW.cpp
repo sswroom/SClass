@@ -41,7 +41,7 @@ Bool Exporter::GUIPNGExporter::GetOutputName(UOSInt index, UTF8Char *nameBuff, U
 	return false;
 }
 
-Bool Exporter::GUIPNGExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text::CStringNN fileName, IO::ParsedObject *pobj, void *param)
+Bool Exporter::GUIPNGExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text::CStringNN fileName, NotNullPtr<IO::ParsedObject> pobj, void *param)
 {
 #ifdef _WIN32_WCE
 	return false;
@@ -98,12 +98,12 @@ Bool Exporter::GUIPNGExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Te
 	}
 
 	Media::Image *srcImg = 0;
-	Media::ImageList *imgList;
+	NotNullPtr<Media::ImageList> imgList;
 	UInt8 *pngBuff;
 	UOSInt pngSize;
 	if (pobj->GetParserType() == IO::ParserType::ImageList)
 	{
-		imgList = (Media::ImageList*)pobj;
+		imgList = NotNullPtr<Media::ImageList>::ConvertFrom(pobj);
 		srcImg = imgList->GetImage(0, 0);
 	}
 	pngBuff = mstm.GetBuff(pngSize);

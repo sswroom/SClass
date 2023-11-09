@@ -1172,9 +1172,9 @@ IO::ConfigFile *DB::ODBCConn::GetDriverInfo(Text::CString driverName)
 
 DB::DBTool *DB::ODBCConn::CreateDBTool(NotNullPtr<Text::String> dsn, Text::String *uid, Text::String *pwd, Text::String *schema, NotNullPtr<IO::LogTool> log, Text::CString logPrefix)
 {
-	DB::ODBCConn *conn;
+	NotNullPtr<DB::ODBCConn> conn;
 	DB::DBTool *db;
-	NEW_CLASS(conn, DB::ODBCConn(dsn, uid, pwd, schema, log));
+	NEW_CLASSNN(conn, DB::ODBCConn(dsn, uid, pwd, schema, log));
 	if (conn->GetConnError() == CE_NONE)
 	{
 		NEW_CLASS(db, DB::DBTool(conn, true, log, logPrefix));
@@ -1182,16 +1182,16 @@ DB::DBTool *DB::ODBCConn::CreateDBTool(NotNullPtr<Text::String> dsn, Text::Strin
 	}
 	else
 	{
-		DEL_CLASS(conn);
+		conn.Delete();
 		return 0;
 	}
 }
 
 DB::DBTool *DB::ODBCConn::CreateDBTool(Text::CStringNN dsn, Text::CString uid, Text::CString pwd, Text::CString schema, NotNullPtr<IO::LogTool> log, Text::CString logPrefix)
 {
-	DB::ODBCConn *conn;
+	NotNullPtr<DB::ODBCConn> conn;
 	DB::DBTool *db;
-	NEW_CLASS(conn, DB::ODBCConn(dsn, uid, pwd, schema, log));
+	NEW_CLASSNN(conn, DB::ODBCConn(dsn, uid, pwd, schema, log));
 	if (conn->GetConnError() == CE_NONE)
 	{
 		NEW_CLASS(db, DB::DBTool(conn, true, log, logPrefix));
@@ -1199,7 +1199,7 @@ DB::DBTool *DB::ODBCConn::CreateDBTool(Text::CStringNN dsn, Text::CString uid, T
 	}
 	else
 	{
-		DEL_CLASS(conn);
+		conn.Delete();
 		return 0;
 	}
 }

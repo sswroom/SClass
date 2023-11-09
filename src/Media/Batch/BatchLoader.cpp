@@ -15,6 +15,7 @@ UInt32 __stdcall Media::Batch::BatchLoader::ThreadProc(void *userObj)
 	Bool found;
 	UOSInt i;
 	IO::ParsedObject *pobj;
+	NotNullPtr<IO::ParsedObject> nnpobj;
 	IO::ParserType pt;
 
 	ThreadState *state = (ThreadState*)userObj;
@@ -55,11 +56,11 @@ UInt32 __stdcall Media::Batch::BatchLoader::ThreadProc(void *userObj)
 					IO::StmData::FileData fd(fileNameStr, false);
 					pobj = state->me->parsers->ParseFile(fd, &pt);
 				}
-				if (pobj)
+				if (nnpobj.Set(pobj))
 				{
 					if (pt == IO::ParserType::ImageList)
 					{
-						Media::ImageList *imgList = (Media::ImageList*)pobj;
+						NotNullPtr<Media::ImageList> imgList = NotNullPtr<Media::ImageList>::ConvertFrom(nnpobj);
 						i = imgList->GetCount();
 						while (i-- > 0)
 						{
@@ -72,8 +73,9 @@ UInt32 __stdcall Media::Batch::BatchLoader::ThreadProc(void *userObj)
 						if (i != INVALID_INDEX)
 						{
 							sbuff[i] = 0;
+							sptr = &sbuff[i];
 						}
-						state->me->hdlr->ImageOutput(imgList, sbuff, (const UTF8Char*)"");
+						state->me->hdlr->ImageOutput(imgList, CSTRP(sbuff, sptr), CSTR(""));
 					}
 					else
 					{
@@ -92,11 +94,11 @@ UInt32 __stdcall Media::Batch::BatchLoader::ThreadProc(void *userObj)
 			{
 				Sync::MutexUsage mutUsage(state->me->ioMut);
 				pobj = state->me->parsers->ParseFile(info->data, &pt);
-				if (pobj)
+				if (nnpobj.Set(pobj))
 				{
 					if (pt == IO::ParserType::ImageList)
 					{
-						Media::ImageList *imgList = (Media::ImageList*)pobj;
+						NotNullPtr<Media::ImageList> imgList = NotNullPtr<Media::ImageList>::ConvertFrom(nnpobj);
 						i = imgList->GetCount();
 						while (i-- > 0)
 						{
@@ -104,7 +106,7 @@ UInt32 __stdcall Media::Batch::BatchLoader::ThreadProc(void *userObj)
 						}
 						mutUsage.EndUse();
 						
-						state->me->hdlr->ImageOutput(imgList, info->fileId, (const UTF8Char*)"");
+						state->me->hdlr->ImageOutput(imgList, info->fileId->ToCString(), CSTR(""));
 					}
 					else
 					{
@@ -118,7 +120,7 @@ UInt32 __stdcall Media::Batch::BatchLoader::ThreadProc(void *userObj)
 				}
 
 				info->data.Delete();
-				Text::StrDelNew(info->fileId);
+				info->fileId->Release();
 				MemFree(info);
 			}
 		}
@@ -217,7 +219,7 @@ Media::Batch::BatchLoader::~BatchLoader()
 	while ((data = this->datas.Get()) != 0)
 	{
 		data->data.Delete();
-		Text::StrDelNew(data->fileId);
+		data->fileId->Release();
 		MemFree(data);
 	}
 }
@@ -231,12 +233,12 @@ void Media::Batch::BatchLoader::AddFileName(Text::CString fileName)
 	mutUsage.EndUse();
 }
 
-void Media::Batch::BatchLoader::AddImageData(NotNullPtr<IO::StreamData> data, const UTF8Char *fileId)
+void Media::Batch::BatchLoader::AddImageData(NotNullPtr<IO::StreamData> data, Text::CStringNN fileId)
 {
 	DataInfo *info;
 	info = MemAlloc(DataInfo, 1);
 	info->data = data->GetPartialData(0, data->GetDataSize());
-	info->fileId = Text::StrCopyNew(fileId).Ptr();
+	info->fileId = Text::String::New(fileId);
 	Sync::MutexUsage mutUsage(this->reqMut);
 	this->datas.Put(info);
 	this->threadStates[this->nextThread].evt->Set();

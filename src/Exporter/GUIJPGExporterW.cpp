@@ -39,7 +39,7 @@ Bool Exporter::GUIJPGExporter::GetOutputName(UOSInt index, UTF8Char *nameBuff, U
 	return false;
 }
 
-Bool Exporter::GUIJPGExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text::CStringNN fileName, IO::ParsedObject *pobj, void *param)
+Bool Exporter::GUIJPGExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text::CStringNN fileName, NotNullPtr<IO::ParsedObject> pobj, void *param)
 {
 #ifdef _WIN32_WCE
 	return false;
@@ -95,12 +95,12 @@ Bool Exporter::GUIJPGExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Te
 		return false;
 	}
 	Media::Image *srcImg = 0;
-	Media::ImageList *imgList;
+	NotNullPtr<Media::ImageList> imgList;
 	UInt8 *jpgBuff;
 	UOSInt jpgSize;
 	if (pobj->GetParserType() == IO::ParserType::ImageList)
 	{
-		imgList = (Media::ImageList*)pobj;
+		imgList = NotNullPtr<Media::ImageList>::ConvertFrom(pobj);
 		srcImg = imgList->GetImage(0, 0);
 	}
 	jpgBuff = mstm.GetBuff(jpgSize);
@@ -207,7 +207,7 @@ UOSInt Exporter::GUIJPGExporter::GetParamCnt()
 	return 1;
 }
 
-void *Exporter::GUIJPGExporter::CreateParam(IO::ParsedObject *pobj)
+void *Exporter::GUIJPGExporter::CreateParam(NotNullPtr<IO::ParsedObject> pobj)
 {
 	Int32 *val = MemAlloc(Int32, 1);
 	*val = 100;
@@ -219,7 +219,7 @@ void Exporter::GUIJPGExporter::DeleteParam(void *param)
 	MemFree(param);
 }
 
-Bool Exporter::GUIJPGExporter::GetParamInfo(UOSInt index, ParamInfo *info)
+Bool Exporter::GUIJPGExporter::GetParamInfo(UOSInt index, NotNullPtr<ParamInfo> info)
 {
 	if (index == 0)
 	{

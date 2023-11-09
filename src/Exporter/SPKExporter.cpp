@@ -21,7 +21,7 @@ Int32 Exporter::SPKExporter::GetName()
 	return *(Int32*)"SPKE";
 }
 
-IO::FileExporter::SupportType Exporter::SPKExporter::IsObjectSupported(IO::ParsedObject *pobj)
+IO::FileExporter::SupportType Exporter::SPKExporter::IsObjectSupported(NotNullPtr<IO::ParsedObject> pobj)
 {
 	if (pobj->GetParserType() == IO::ParserType::PackageFile)
 	{
@@ -29,11 +29,11 @@ IO::FileExporter::SupportType Exporter::SPKExporter::IsObjectSupported(IO::Parse
 	}
 	else if (pobj->GetParserType() == IO::ParserType::MapLayer)
 	{
-		Map::MapDrawLayer *layer = (Map::MapDrawLayer*)pobj;
+		NotNullPtr<Map::MapDrawLayer> layer = NotNullPtr<Map::MapDrawLayer>::ConvertFrom(pobj);
 		Map::MapDrawLayer::ObjectClass oc = layer->GetObjectClass();
 		if (oc == Map::MapDrawLayer::OC_TILE_MAP_LAYER)
 		{
-			Map::TileMapLayer *tileMapLayer = (Map::TileMapLayer*)layer;
+			NotNullPtr<Map::TileMapLayer> tileMapLayer = NotNullPtr<Map::TileMapLayer>::ConvertFrom(layer);
 			NotNullPtr<Map::TileMap> tileMap = tileMapLayer->GetTileMap();
 			if (tileMap->GetTileType() == Map::TileMap::TT_OSM)
 			{
@@ -63,11 +63,11 @@ void Exporter::SPKExporter::SetCodePage(UInt32 codePage)
 {
 }
 
-Bool Exporter::SPKExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text::CStringNN fileName, IO::ParsedObject *pobj, void *param)
+Bool Exporter::SPKExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text::CStringNN fileName, NotNullPtr<IO::ParsedObject> pobj, void *param)
 {
 	if (pobj->GetParserType() == IO::ParserType::PackageFile)
 	{
-		IO::PackageFile *pkgFile = (IO::PackageFile *)pobj;
+		NotNullPtr<IO::PackageFile> pkgFile = NotNullPtr<IO::PackageFile>::ConvertFrom(pobj);
 		UTF8Char sbuff[512];
 		IO::SPackageFile *spkg;
 		NEW_CLASS(spkg, IO::SPackageFile(stm, false));
@@ -77,11 +77,11 @@ Bool Exporter::SPKExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text:
 	}
 	else if (pobj->GetParserType() == IO::ParserType::MapLayer)
 	{
-		Map::MapDrawLayer *layer = (Map::MapDrawLayer*)pobj;
+		NotNullPtr<Map::MapDrawLayer> layer = NotNullPtr<Map::MapDrawLayer>::ConvertFrom(pobj);
 		Map::MapDrawLayer::ObjectClass oc = layer->GetObjectClass();
 		if (oc == Map::MapDrawLayer::OC_TILE_MAP_LAYER)
 		{
-			Map::TileMapLayer *tileMapLayer = (Map::TileMapLayer*)layer;
+			NotNullPtr<Map::TileMapLayer> tileMapLayer = NotNullPtr<Map::TileMapLayer>::ConvertFrom(layer);
 			NotNullPtr<Map::TileMap> tileMap = tileMapLayer->GetTileMap();
 			if (tileMap->GetTileType() == Map::TileMap::TT_OSM)
 			{
@@ -116,7 +116,7 @@ Bool Exporter::SPKExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text:
 		else if (oc == Map::MapDrawLayer::OC_ORUX_DB_LAYER)
 		{
 			IO::SPackageFile *spkg;
-			Map::OruxDBLayer *orux = (Map::OruxDBLayer*)layer;
+			NotNullPtr<Map::OruxDBLayer> orux = NotNullPtr<Map::OruxDBLayer>::ConvertFrom(layer);
 			Math::RectAreaDbl bounds;
 			Map::NameArray *nameArr;
 			Data::ArrayListInt64 objIds;
@@ -177,14 +177,14 @@ Bool Exporter::SPKExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text:
 	}
 }
 
-void Exporter::SPKExporter::ExportPackageFile(IO::SPackageFile *spkg, IO::PackageFile *pkgFile, UTF8Char *buff, UTF8Char *buffEnd)
+void Exporter::SPKExporter::ExportPackageFile(IO::SPackageFile *spkg, NotNullPtr<IO::PackageFile> pkgFile, UTF8Char *buff, UTF8Char *buffEnd)
 {
 	UOSInt i;
 	UOSInt j;
 	UTF8Char *sptr;
 	NotNullPtr<IO::StreamData> fd;
 	IO::PackageFile::PackObjectType pot;
-	IO::PackageFile *subPkg;
+	NotNullPtr<IO::PackageFile> subPkg;
 	i = 0;
 	j = pkgFile->GetCount();
 	while (i < j)
@@ -195,11 +195,10 @@ void Exporter::SPKExporter::ExportPackageFile(IO::SPackageFile *spkg, IO::Packag
 			sptr = pkgFile->GetItemName(buffEnd, i);
 			*sptr++ = IO::Path::PATH_SEPERATOR;
 			
-			subPkg = pkgFile->GetItemPackNew(i);
-			if (subPkg)
+			if (subPkg.Set(pkgFile->GetItemPackNew(i)))
 			{
 				ExportPackageFile(spkg, subPkg, buff, sptr);
-				DEL_CLASS(subPkg);
+				subPkg.Delete();
 			}
 		}
 		else if (pot == IO::PackageFile::PackObjectType::StreamData)

@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
+#include "DB/DBExporter.h"
 #include "DB/DBReader.h"
 #include "Exporter/DBCSVExporter.h"
 #include "IO/BufferedOutputStream.h"
@@ -20,7 +21,7 @@ Int32 Exporter::DBCSVExporter::GetName()
 	return *(Int32*)"DCSV";
 }
 
-IO::FileExporter::SupportType Exporter::DBCSVExporter::IsObjectSupported(IO::ParsedObject *pobj)
+IO::FileExporter::SupportType Exporter::DBCSVExporter::IsObjectSupported(NotNullPtr<IO::ParsedObject> pobj)
 {
 	if (!DB::ReadingDB::IsDBObj(pobj))
 	{
@@ -45,7 +46,7 @@ void Exporter::DBCSVExporter::SetCodePage(UInt32 codePage)
 	this->codePage = codePage;
 }
 
-Bool Exporter::DBCSVExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text::CStringNN fileName, IO::ParsedObject *pobj, void *param)
+Bool Exporter::DBCSVExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text::CStringNN fileName, NotNullPtr<IO::ParsedObject> pobj, void *param)
 {
 	if (!DB::ReadingDB::IsDBObj(pobj))
 	{
@@ -58,88 +59,8 @@ Bool Exporter::DBCSVExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Tex
 		DBParam *dbParam = (DBParam*)param;
 		name = dbParam->names.GetItem(dbParam->tableIndex);
 	}
-	DB::ReadingDB *db = (DB::ReadingDB*)pobj;
-	NotNullPtr<DB::DBReader> r;
-	if (!r.Set(db->QueryTableData(CSTR_NULL, STR_CSTR(name), 0, 0, 0, CSTR_NULL, 0)))
-	{
-		return false;
-	}
-	UTF8Char *lineBuff1;
-	UTF8Char *lineBuff2;
-	UTF8Char *sptr;
-	UOSInt colCnt;
-	UOSInt i;
-	Bool firstCol;
-
-	IO::BufferedOutputStream cstm(stm, 65536);
-	IO::StreamWriter writer(cstm, this->codePage);
-	writer.WriteSignature();
-
-	lineBuff1 = MemAlloc(UTF8Char, 65536);
-	lineBuff2 = MemAlloc(UTF8Char, 65536);
-
-	sptr = lineBuff2;
-	colCnt = r->ColCount();
-	i = 0;
-	firstCol = true;
-	while (i < colCnt)
-	{
-		if (firstCol)
-		{
-			firstCol = false;
-		}
-		else
-		{
-			sptr = Text::StrConcatC(sptr, UTF8STRC(","));
-		}
-
-		if (r->GetName(i, lineBuff1))
-		{
-			sptr = Text::StrToCSVRec(sptr, lineBuff1);
-		}
-		else
-		{
-			sptr = Text::StrToCSVRec(sptr, 0);
-		}
-		i++;
-	}
-	writer.WriteLineC(lineBuff2, (UOSInt)(sptr - lineBuff2));
-
-	while (r->ReadNext())
-	{
-		sptr = lineBuff2;
-		colCnt = r->ColCount();
-		i = 0;
-		firstCol = true;
-		while (i < colCnt)
-		{
-			if (firstCol)
-			{
-				firstCol = false;
-			}
-			else
-			{
-				sptr = Text::StrConcatC(sptr, UTF8STRC(","));
-			}
-
-			if (r->GetStr(i, lineBuff1, 65536))
-			{
-				sptr = Text::StrToCSVRec(sptr, lineBuff1);
-			}
-			else
-			{
-				sptr = Text::StrToCSVRec(sptr, (const UTF8Char*)"");
-			}
-			i++;
-		}
-		writer.WriteLineC(lineBuff2, (UOSInt)(sptr - lineBuff2));
-	}
-	
-	MemFree(lineBuff2);
-	MemFree(lineBuff1);
-
-	db->CloseReader(r);
-	return true;
+	NotNullPtr<DB::ReadingDB> db = NotNullPtr<DB::ReadingDB>::ConvertFrom(pobj);
+	return DB::DBExporter::GenerateCSV(db, CSTR_NULL, Text::String::OrEmpty(name)->ToCString(), 0, CSTR("\"\""), stm, this->codePage);
 }
 
 UOSInt Exporter::DBCSVExporter::GetParamCnt()
@@ -147,11 +68,11 @@ UOSInt Exporter::DBCSVExporter::GetParamCnt()
 	return 1;
 }
 
-void *Exporter::DBCSVExporter::CreateParam(IO::ParsedObject *pobj)
+void *Exporter::DBCSVExporter::CreateParam(NotNullPtr<IO::ParsedObject> pobj)
 {
 	DBParam *param;
 	NEW_CLASS(param, DBParam());
-	param->db = (DB::ReadingDB *)pobj;
+	param->db = NotNullPtr<DB::ReadingDB>::ConvertFrom(pobj);
 	param->db->QueryTableNames(CSTR_NULL, param->names);
 	param->tableIndex = 0;
 	return param;
@@ -164,7 +85,7 @@ void Exporter::DBCSVExporter::DeleteParam(void *param)
 	DEL_CLASS(dbParam);
 }
 
-Bool Exporter::DBCSVExporter::GetParamInfo(UOSInt index, IO::FileExporter::ParamInfo *info)
+Bool Exporter::DBCSVExporter::GetParamInfo(UOSInt index, NotNullPtr<IO::FileExporter::ParamInfo> info)
 {
 	if (index == 0)
 	{

@@ -28,13 +28,13 @@ Int32 Exporter::SHPExporter::GetName()
 	return *(Int32*)"SHPE";
 }
 
-IO::FileExporter::SupportType Exporter::SHPExporter::IsObjectSupported(IO::ParsedObject *pobj)
+IO::FileExporter::SupportType Exporter::SHPExporter::IsObjectSupported(NotNullPtr<IO::ParsedObject> pobj)
 {
 	if (pobj->GetParserType() != IO::ParserType::MapLayer)
 	{
 		return IO::FileExporter::SupportType::NotSupported;
 	}
-	Map::MapDrawLayer *layer = (Map::MapDrawLayer *)pobj;
+	NotNullPtr<Map::MapDrawLayer> layer = NotNullPtr<Map::MapDrawLayer>::ConvertFrom(pobj);
 	Map::DrawLayerType layerType = layer->GetLayerType();
 	if (layerType == Map::DRAW_LAYER_POINT || layerType == Map::DRAW_LAYER_POINT3D || layerType == Map::DRAW_LAYER_POLYLINE || layerType == Map::DRAW_LAYER_POLYLINE3D || layerType == Map::DRAW_LAYER_POLYGON)
 	{
@@ -59,7 +59,7 @@ void Exporter::SHPExporter::SetCodePage(UInt32 codePage)
 	this->codePage = codePage;
 }
 
-Bool Exporter::SHPExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text::CStringNN fileName, IO::ParsedObject *pobj, void *param)
+Bool Exporter::SHPExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text::CStringNN fileName, NotNullPtr<IO::ParsedObject> pobj, void *param)
 {
 	UInt8 buff[256];
 	UTF8Char fileName2[256];
@@ -68,7 +68,7 @@ Bool Exporter::SHPExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text:
 	{
 		return false;
 	}
-	Map::MapDrawLayer *layer = (Map::MapDrawLayer *)pobj;
+	NotNullPtr<Map::MapDrawLayer> layer = NotNullPtr<Map::MapDrawLayer>::ConvertFrom(pobj);
 	Map::DrawLayerType layerType = layer->GetLayerType();
 	UOSInt fileSize = 100;
 	UOSInt recCnt = 0;

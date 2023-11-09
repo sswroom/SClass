@@ -31,7 +31,7 @@ namespace SSWR
 		private:
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			NotNullPtr<Media::ColorManagerSess> colorSess;
-			Map::MapEnv *env;
+			NotNullPtr<Map::MapEnv> env;
 			NotNullPtr<Media::DrawEngine> eng;
 			UOSInt lineStyle;
 			LineLayer *currLayer;
@@ -82,13 +82,13 @@ namespace SSWR
 
 			static void FreeLayer(LineLayer *lyr);
 		public:
-			AVIRGISLineEditForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Map::MapEnv *env, NotNullPtr<Media::DrawEngine> eng, UOSInt lineStyle);
+			AVIRGISLineEditForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<Map::MapEnv> env, NotNullPtr<Media::DrawEngine> eng, UOSInt lineStyle);
 			virtual ~AVIRGISLineEditForm();
 
 			virtual void OnMonitorChanged();
 			virtual void YUVParamChanged(NotNullPtr<const Media::IColorHandler::YUVPARAM> yuvParam);
 			virtual void RGBParamChanged(NotNullPtr<const Media::IColorHandler::RGBPARAM2> rgbParam);
 		};
-	};
-};
+	}
+}
 #endif

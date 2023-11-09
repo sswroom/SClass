@@ -17,15 +17,15 @@ namespace SSWR
 			UI::GUIListView *lvFileChk;
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
-			IO::FileCheck *fileChk;
+			NotNullPtr<IO::FileCheck> fileChk;
 
 		public:
-			AVIRFileChkForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, IO::FileCheck *fileChk);
+			AVIRFileChkForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<IO::FileCheck> fileChk);
 			virtual ~AVIRFileChkForm();
 
 			virtual void EventMenuClicked(UInt16 cmdId);
 			virtual void OnMonitorChanged();
 		};
-	};
-};
+	}
+}
 #endif

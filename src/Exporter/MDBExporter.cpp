@@ -24,7 +24,7 @@ Int32 Exporter::MDBExporter::GetName()
 	return *(Int32*)"MDBE";
 }
 
-IO::FileExporter::SupportType Exporter::MDBExporter::IsObjectSupported(IO::ParsedObject *pobj)
+IO::FileExporter::SupportType Exporter::MDBExporter::IsObjectSupported(NotNullPtr<IO::ParsedObject> pobj)
 {
 #if defined(_WIN32_WCE)
 	return IO::FileExporter::SupportType::NotSupported;
@@ -48,7 +48,7 @@ Bool Exporter::MDBExporter::GetOutputName(UOSInt index, UTF8Char *nameBuff, UTF8
 	return false;
 }
 
-Bool Exporter::MDBExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text::CStringNN fileName, IO::ParsedObject *pobj, void *param)
+Bool Exporter::MDBExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text::CStringNN fileName, NotNullPtr<IO::ParsedObject> pobj, void *param)
 {
 #if defined(_WIN32_WCE)
 	return false;
@@ -64,7 +64,7 @@ Bool Exporter::MDBExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text:
 	}
 	NotNullPtr<DB::DBTool> mdb;
 	IO::LogTool log;
-	DB::ReadingDB *srcDB;
+	NotNullPtr<DB::ReadingDB> srcDB;
 	NotNullPtr<DB::DBReader> r;
 	NotNullPtr<DB::ColDef> colDef;
 	Data::ArrayListNN<Text::String> tables;
@@ -77,7 +77,7 @@ Bool Exporter::MDBExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text:
 	Bool succ = true;
 	DB::SQLBuilder sql(mdb);
 	Text::StringBuilderUTF8 sb;
-	srcDB = (DB::ReadingDB *)pobj;
+	srcDB = NotNullPtr<DB::ReadingDB>::ConvertFrom(pobj);
 	srcDB->QueryTableNames(CSTR_NULL, tables);
 	i = 0;
 	j = tables.GetCount();

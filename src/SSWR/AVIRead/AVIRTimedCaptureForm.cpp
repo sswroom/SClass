@@ -233,7 +233,7 @@ void __stdcall SSWR::AVIRead::AVIRTimedCaptureForm::OnVideoFrame(Data::Duration 
 	me->frameCnt++;
 	if (me->lastSaveTime + me->interval <= frameTime)
 	{
-		Media::ImageList *imgList;
+		NotNullPtr<Media::ImageList> imgList;
 		Media::StaticImage *simg;
 		Data::DateTime dt;
 		void *param;
@@ -244,7 +244,7 @@ void __stdcall SSWR::AVIRead::AVIRTimedCaptureForm::OnVideoFrame(Data::Duration 
 
 		NEW_CLASS(simg, Media::StaticImage(me->videoInfo.dispSize, 0, 32, Media::PF_B8G8R8A8, me->videoInfo.dispSize.x * me->videoInfo.dispSize.y << 2, sRGB, Media::ColorProfile::YUVT_UNKNOWN, Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
 		me->csConv->ConvertV2(imgData, simg->data, me->videoInfo.dispSize.x, me->videoInfo.dispSize.y, me->videoInfo.storeSize.x, me->videoInfo.storeSize.y, (OSInt)simg->GetDataBpl(), frameType, ycOfst);
-		NEW_CLASS(imgList, Media::ImageList(CSTR("Temp")));
+		NEW_CLASSNN(imgList, Media::ImageList(CSTR("Temp")));
 		imgList->AddImage(simg, 0);
 		param = me->exporter->CreateParam(imgList);
 		me->exporter->SetParamInt32(param, 0, me->jpgQuality);
@@ -255,7 +255,7 @@ void __stdcall SSWR::AVIRead::AVIRTimedCaptureForm::OnVideoFrame(Data::Duration 
 			me->timedImageList->AddImage(dt.ToTicks(), imgBuff, imgSize, Media::TimedImageList::IF_JPG);
 		}
 		me->exporter->DeleteParam(param);
-		DEL_CLASS(imgList);
+		imgList.Delete();
 		me->saveCnt++;
 		me->lastSaveTime = frameTime;
 	}

@@ -19,13 +19,13 @@ Int32 Exporter::MD4Exporter::GetName()
 	return *(Int32*)"MD4E";
 }
 
-IO::FileExporter::SupportType Exporter::MD4Exporter::IsObjectSupported(IO::ParsedObject *pobj)
+IO::FileExporter::SupportType Exporter::MD4Exporter::IsObjectSupported(NotNullPtr<IO::ParsedObject> pobj)
 {
 	if (pobj->GetParserType() != IO::ParserType::FileCheck)
 	{
 		return IO::FileExporter::SupportType::NotSupported;
 	}
-	IO::FileCheck *fchk = (IO::FileCheck *)pobj;
+	NotNullPtr<IO::FileCheck> fchk = NotNullPtr<IO::FileCheck>::ConvertFrom(pobj);
 	if (fchk->GetCheckType() != Crypto::Hash::HashType::MD4)
 	{
 		return IO::FileExporter::SupportType::NotSupported;
@@ -49,13 +49,13 @@ void Exporter::MD4Exporter::SetCodePage(UInt32 codePage)
 	this->codePage = codePage;
 }
 
-Bool Exporter::MD4Exporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text::CStringNN fileName, IO::ParsedObject *pobj, void *param)
+Bool Exporter::MD4Exporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text::CStringNN fileName, NotNullPtr<IO::ParsedObject> pobj, void *param)
 {
 	if (pobj->GetParserType() != IO::ParserType::FileCheck)
 	{
 		return false;
 	}
-	IO::FileCheck *fchk = (IO::FileCheck *)pobj;
+	NotNullPtr<IO::FileCheck> fchk = NotNullPtr<IO::FileCheck>::ConvertFrom(pobj);
 	if (fchk->GetCheckType() != Crypto::Hash::HashType::MD4)
 	{
 		return false;

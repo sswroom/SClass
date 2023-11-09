@@ -7,7 +7,7 @@ typedef enum
 	MNU_FILE_VALIDATE
 } MenuItems;
 
-SSWR::AVIRead::AVIRFileChkForm::AVIRFileChkForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, IO::FileCheck *fileChk) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRFileChkForm::AVIRFileChkForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<IO::FileCheck> fileChk) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
@@ -55,7 +55,7 @@ SSWR::AVIRead::AVIRFileChkForm::AVIRFileChkForm(UI::GUIClientControl *parent, No
 
 SSWR::AVIRead::AVIRFileChkForm::~AVIRFileChkForm()
 {
-	DEL_CLASS(this->fileChk);
+	this->fileChk.Delete();
 }
 
 void SSWR::AVIRead::AVIRFileChkForm::EventMenuClicked(UInt16 cmdId)

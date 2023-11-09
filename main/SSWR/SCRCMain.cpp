@@ -183,20 +183,21 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 			else
 			{
 				IO::FileCheck *fileChk;
+				NotNullPtr<IO::FileCheck> nnfileChk;
 				{
 					ProgressHandler progress;
 					fileChk = IO::FileCheck::CreateCheck({cmdLines[1], cmdLen}, Crypto::Hash::HashType::CRC32, &progress, false);
 				}
 				console->WriteLine();
-				if (fileChk)
+				if (nnfileChk.Set(fileChk))
 				{
 					Text::StringBuilderUTF8 sb;
 					Exporter::SFVExporter exporter;
 					sb.AppendC(cmdLines[1], cmdLen);
 					sb.AppendC(UTF8STRC(".sfv"));
 					IO::FileStream fs(sb.ToCString(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
-					exporter.ExportFile(fs, sb.ToCString(), fileChk, 0);
-					DEL_CLASS(fileChk);
+					exporter.ExportFile(fs, sb.ToCString(), nnfileChk, 0);
+					nnfileChk.Delete();
 					showHelp = false;
 				}
 				else

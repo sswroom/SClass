@@ -74,7 +74,7 @@ namespace SSWR
 			virtual ~AVIRCore();
 
 			virtual void OpenObject(NotNullPtr<IO::ParsedObject> pobj) = 0;
-			virtual void SaveData(UI::GUIForm *ownerForm, IO::ParsedObject *pobj, const WChar *dialogName) = 0;
+			virtual void SaveData(UI::GUIForm *ownerForm, NotNullPtr<IO::ParsedObject> pobj, const WChar *dialogName) = 0;
 			virtual Media::Printer *SelectPrinter(UI::GUIForm *frm) = 0;
 
 			void OpenGSMModem(IO::Stream *modemPort);
@@ -113,8 +113,8 @@ namespace SSWR
 			Media::IAudioRenderer *BindAudio(Media::IAudioSource *audSrc);
 
 			Bool GenLinePreview(NotNullPtr<Media::DrawImage> img, NotNullPtr<Media::DrawEngine> eng, UOSInt lineThick, UInt32 lineColor, Media::ColorConv *colorConv);
-			Bool GenLineStylePreview(NotNullPtr<Media::DrawImage> img, NotNullPtr<Media::DrawEngine> eng, Map::MapEnv *env, UOSInt lineStyle, Media::ColorConv *colorConv);
-			Bool GenFontStylePreview(NotNullPtr<Media::DrawImage> img, NotNullPtr<Media::DrawEngine> eng, Map::MapEnv *env, UOSInt fontStyle, Media::ColorConv *colorConv);
+			Bool GenLineStylePreview(NotNullPtr<Media::DrawImage> img, NotNullPtr<Media::DrawEngine> eng, NotNullPtr<Map::MapEnv> env, UOSInt lineStyle, Media::ColorConv *colorConv);
+			Bool GenFontStylePreview(NotNullPtr<Media::DrawImage> img, NotNullPtr<Media::DrawEngine> eng, NotNullPtr<Map::MapEnv> env, UOSInt fontStyle, Media::ColorConv *colorConv);
 			Bool GenFontPreview(NotNullPtr<Media::DrawImage> img, NotNullPtr<Media::DrawEngine> eng, Text::CStringNN fontName, Double fontSizePt, UInt32 fontColor, Media::ColorConv *colorConv);
 			void ShowForm(UI::GUIForm *frm);
 			void CloseAllForm();

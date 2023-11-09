@@ -358,8 +358,8 @@ Text::SpreadSheet::Workbook *Text::ReportBuilder::CreateWorkbook()
 	UOSInt m;
 	UOSInt urlAdd;
 	Text::SpreadSheet::Workbook *wb;
-	Text::SpreadSheet::Worksheet *ws;
-	Text::SpreadSheet::Worksheet *dataSheet;
+	NotNullPtr<Text::SpreadSheet::Worksheet> ws;
+	NotNullPtr<Text::SpreadSheet::Worksheet> dataSheet;
 	TableCell *cols;
 	HeaderInfo *header;
 	Text::StringBuilderUTF8 sb;
@@ -825,14 +825,11 @@ Text::SpreadSheet::Workbook *Text::ReportBuilder::CreateWorkbook()
 				{
 					dateStyle = wb->NewCellStyle(font10, Text::HAlignment::Left, Text::VAlignment::Center, chart->GetTimeFormat()->ToCString());
 				}
-				Data::DateTime dt;
-				dt.ToLocalTime();
 				Int64 *dateTicks = chart->GetXDateTicks(0, &colCount);
 				i = 0;
 				while (i < colCount)
 				{
-					dt.SetTicks(dateTicks[i]);
-					dataSheet->SetCellDate(0, i + 1, dateStyle, &dt);
+					dataSheet->SetCellTS(0, i + 1, dateStyle, Data::Timestamp(dateTicks[i], Data::DateTimeUtil::GetLocalTzQhr()));
 					i++;
 				}
 				break;
@@ -884,14 +881,11 @@ Text::SpreadSheet::Workbook *Text::ReportBuilder::CreateWorkbook()
 					{
 						dateStyle = wb->NewCellStyle(font10, Text::HAlignment::Left, Text::VAlignment::Center, chart->GetTimeFormat()->ToCString());
 					}
-					Data::DateTime dt;
-					dt.ToLocalTime();
 					Int64 *dateTicks = chart->GetYDateTicks(i, &colCount);
 					k = 0;
 					while (k < colCount)
 					{
-						dt.SetTicks(dateTicks[k]);
-						dataSheet->SetCellDate(i + 1, k + 1, dateStyle, &dt);
+						dataSheet->SetCellTS(i + 1, k + 1, dateStyle, Data::Timestamp(dateTicks[k], Data::DateTimeUtil::GetLocalTzQhr()));
 						k++;
 					}
 					break;

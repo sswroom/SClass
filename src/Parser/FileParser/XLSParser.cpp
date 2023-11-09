@@ -850,7 +850,7 @@ Bool Parser::FileParser::XLSParser::ParseWorkbook(NotNullPtr<IO::StreamData> fd,
 	return eofFound;
 }
 
-Bool Parser::FileParser::XLSParser::ParseWorksheet(NotNullPtr<IO::StreamData> fd, UInt64 ofst, Text::SpreadSheet::Workbook *wb, Text::SpreadSheet::Worksheet *ws, WorkbookStatus *status)
+Bool Parser::FileParser::XLSParser::ParseWorksheet(NotNullPtr<IO::StreamData> fd, UInt64 ofst, Text::SpreadSheet::Workbook *wb, NotNullPtr<Text::SpreadSheet::Worksheet> ws, WorkbookStatus *status)
 {
 	Bool eofFound = false;
 	Bool bofFound = false;

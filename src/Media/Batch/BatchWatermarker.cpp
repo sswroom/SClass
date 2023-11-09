@@ -31,7 +31,7 @@ void Media::Batch::BatchWatermarker::SetHandler(Media::Batch::BatchHandler *hdlr
 	this->hdlr = hdlr;
 }
 
-void Media::Batch::BatchWatermarker::ImageOutput(Media::ImageList *imgList, const UTF8Char *fileId, const UTF8Char *subId)
+void Media::Batch::BatchWatermarker::ImageOutput(NotNullPtr<Media::ImageList> imgList, Text::CStringNN fileId, Text::CStringNN subId)
 {
 	if (this->hdlr == 0)
 		return;

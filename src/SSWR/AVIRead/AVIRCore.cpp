@@ -166,10 +166,10 @@ void SSWR::AVIRead::AVIRCore::EndLoad()
 	if (this->batchLyrs)
 	{
 		AVIRead::AVIRGISForm *gisForm;
-		Map::MapEnv *env;
+		NotNullPtr<Map::MapEnv> env;
 		Map::MapView *view;
 		NotNullPtr<Math::CoordinateSystem> csys = this->batchLyrs->GetItem(0)->GetCoordinateSystem();
-		NEW_CLASS(env, Map::MapEnv(CSTR("Untitled"), 0xffc0c0ff, csys->Clone()));
+		NEW_CLASSNN(env, Map::MapEnv(CSTR("Untitled"), 0xffc0c0ff, csys->Clone()));
 		if (this->batchLyrs->GetCount() > 0)
 		{
 			view = this->batchLyrs->GetItem(0)->CreateMapView(Math::Size2DDbl(320, 240));
@@ -415,7 +415,7 @@ Bool SSWR::AVIRead::AVIRCore::GenLinePreview(NotNullPtr<Media::DrawImage> img, N
 	return true;
 }
 
-Bool SSWR::AVIRead::AVIRCore::GenLineStylePreview(NotNullPtr<Media::DrawImage> img, NotNullPtr<Media::DrawEngine> eng, Map::MapEnv *env, UOSInt lineStyle, Media::ColorConv *colorConv)
+Bool SSWR::AVIRead::AVIRCore::GenLineStylePreview(NotNullPtr<Media::DrawImage> img, NotNullPtr<Media::DrawEngine> eng, NotNullPtr<Map::MapEnv> env, UOSInt lineStyle, Media::ColorConv *colorConv)
 {
 	Math::Size2D<UOSInt> size = img->GetSize();
 	Double dpi = img->GetHDPI();
@@ -453,7 +453,7 @@ Bool SSWR::AVIRead::AVIRCore::GenLineStylePreview(NotNullPtr<Media::DrawImage> i
 	return true;
 }
 
-Bool SSWR::AVIRead::AVIRCore::GenFontStylePreview(NotNullPtr<Media::DrawImage> img, NotNullPtr<Media::DrawEngine> eng, Map::MapEnv *env, UOSInt fontStyle, Media::ColorConv *colorConv)
+Bool SSWR::AVIRead::AVIRCore::GenFontStylePreview(NotNullPtr<Media::DrawImage> img, NotNullPtr<Media::DrawEngine> eng, NotNullPtr<Map::MapEnv> env, UOSInt fontStyle, Media::ColorConv *colorConv)
 {
 	Math::Size2D<UOSInt> size = img->GetSize();
 	Double dpi = img->GetHDPI();

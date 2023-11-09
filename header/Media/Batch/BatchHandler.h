@@ -9,8 +9,8 @@ namespace Media
 		class BatchHandler
 		{
 		public:
-			virtual void ImageOutput(Media::ImageList *imgList, const UTF8Char *fileId, const UTF8Char *subId) = 0;
+			virtual void ImageOutput(NotNullPtr<Media::ImageList> imgList, Text::CStringNN fileId, Text::CStringNN subId) = 0;
 		};
-	};
-};
+	}
+}
 #endif

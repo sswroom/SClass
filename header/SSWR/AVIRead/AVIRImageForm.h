@@ -32,7 +32,7 @@ namespace SSWR
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			NotNullPtr<Media::ColorManagerSess> colorSess;
-			Media::ImageList *imgList;
+			NotNullPtr<Media::ImageList> imgList;
 			Bool allowEnlarge;
 			Media::Image *currImg;
 			UInt32 currImgDelay;
@@ -42,7 +42,7 @@ namespace SSWR
 			static void __stdcall OnInfoICCClicked(void *userObj);
 			void UpdateInfo();
 		public:
-			AVIRImageForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Media::ImageList *imgList);
+			AVIRImageForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<Media::ImageList> imgList);
 			virtual ~AVIRImageForm();
 
 			virtual void EventMenuClicked(UInt16 cmdId);

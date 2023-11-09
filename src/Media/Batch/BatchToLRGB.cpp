@@ -22,7 +22,7 @@ void Media::Batch::BatchToLRGB::SetHandler(Media::Batch::BatchHandler *hdlr)
 	this->hdlr = hdlr;
 }
 
-void Media::Batch::BatchToLRGB::ImageOutput(Media::ImageList *imgList, const UTF8Char *fileId, const UTF8Char *subId)
+void Media::Batch::BatchToLRGB::ImageOutput(NotNullPtr<Media::ImageList> imgList, Text::CStringNN fileId, Text::CStringNN subId)
 {
 	UOSInt i;
 	UOSInt j;

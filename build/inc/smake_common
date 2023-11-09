@@ -1550,6 +1550,8 @@ DB/DBConfig.h: ../../src/DB/DBConfig.cpp
 DB/DBConn.h: ../../src/DB/DBConn.cpp
 @DBConn.o
 DB/DBDataFile.h:
+DB/DBExporter.h: ../../src/DB/DBExporter.cpp
+@DBExporter.o
 DB/DBFFile.h: ../../src/DB/DBFFile.cpp
 @DBFFile.o
 DB/DBFFixWriter.h: ../../src/DB/DBFFixWriter.cpp
@@ -4820,6 +4822,7 @@ DBCache.o: ../../src/DB/DBCache.cpp
 DBConfig.o: ../../src/DB/DBConfig.cpp
 DBConn.o: ../../src/DB/DBConn.cpp
 DBClassBuilder.o: ../../src/DB/DBClassBuilder.cpp
+DBExporter.o: ../../src/DB/DBExporter.cpp
 DBFFile.o: ../../src/DB/DBFFile.cpp
 DBFFixWriter.o: ../../src/DB/DBFFixWriter.cpp
 DBList.o: ../../src/DB/DBList.cpp

@@ -131,8 +131,8 @@ UInt32 __stdcall SSWR::AVIRead::AVIRFileHashForm::HashThread(void *userObj)
 			}
 			if (IO::Path::GetPathType(CSTRP(sbuff, sptr)) == IO::Path::PathType::Unknown)
 			{
-				IO::FileCheck *fchk = IO::FileCheck::CreateCheck(status->fileName->ToCString(), chkType, me, false);
-				if (fchk)
+				NotNullPtr<IO::FileCheck> fchk;
+				if (fchk.Set(IO::FileCheck::CreateCheck(status->fileName->ToCString(), chkType, me, false)))
 				{
 					if (chkType == Crypto::Hash::HashType::CRC32)
 					{
@@ -164,7 +164,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRFileHashForm::HashThread(void *userObj)
 						DEL_CLASS(exporter);
 					}
 					status->status = 2;
-					status->fchk = fchk;
+					status->fchk = fchk.Ptr();
 				}
 				else
 				{

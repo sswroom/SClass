@@ -50,7 +50,7 @@ namespace Map
 		class DrawEnv
 		{
 		public:
-			Map::MapEnv *env;
+			NotNullPtr<Map::MapEnv> env;
 			NotNullPtr<Media::DrawImage> img;
 			Map::MapView *view;
 			Bool isLayerEmpty;
@@ -72,7 +72,7 @@ namespace Map
 	private:
 		Map::MapScheduler mapSch;
 		NotNullPtr<Media::DrawEngine> eng;
-		Map::MapEnv *env;
+		NotNullPtr<Map::MapEnv> env;
 		Media::Resizer::LanczosResizer8_C8 *resizer;
 		Bool lastLayerEmpty;
 		Media::ColorProfile color;
@@ -100,13 +100,13 @@ namespace Map
 		static void DrawCharsL(NotNullPtr<DrawEnv> denv, Text::CStringNN str1, Math::Coord2DDbl *mapPts, Math::Coord2D<Int32> *scnPts, UOSInt nPoints, UOSInt thisPt, Double scaleN, Double scaleD, Map::MapEnv::FontType fontType, UOSInt fontStyle, Math::RectAreaDbl *realBounds);
 		static void DrawCharsLA(NotNullPtr<DrawEnv> denv, Text::CStringNN str1, Math::Coord2DDbl *mapPts, Math::Coord2D<Int32> *scnPts, UOSInt nPoints, UOSInt thisPt, Double scaleN, Double scaleD, Map::MapEnv::FontType fontType, UOSInt fontStyle, Math::RectAreaDbl *realBounds);
 	public:
-		DrawMapRenderer(NotNullPtr<Media::DrawEngine> eng, Map::MapEnv *env, NotNullPtr<const Media::ColorProfile> color, Media::ColorManagerSess *colorSess, DrawType drawType);
+		DrawMapRenderer(NotNullPtr<Media::DrawEngine> eng, NotNullPtr<Map::MapEnv> env, NotNullPtr<const Media::ColorProfile> color, Media::ColorManagerSess *colorSess, DrawType drawType);
 		virtual ~DrawMapRenderer();
 
 		virtual void DrawMap(NotNullPtr<Media::DrawImage> img, Map::MapView *view, UInt32 *imgDurMS);
 		virtual void SetUpdatedHandler(Map::MapRenderer::UpdatedHandler updHdlr, void *userObj);
 		Bool GetLastsLayerEmpty();
-		void SetEnv(Map::MapEnv *env);
+		void SetEnv(NotNullPtr<Map::MapEnv> env);
 		void ColorUpdated();
 	};
 }

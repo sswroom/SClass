@@ -8,12 +8,12 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	Text::CStringNN fileName = CSTR("/home/sswroom/Progs/Temp/FileTest/1.webp");
 	Text::CStringNN outName = CSTR("/home/sswroom/Progs/Temp/FileTest/1.enc.webp");
 	Parser::FileParser::WebPParser parser;
-	IO::ParsedObject *pobj = parser.ParseFilePath(fileName);
-	if (pobj)
+	NotNullPtr<IO::ParsedObject> pobj;
+	if (pobj.Set(parser.ParseFilePath(fileName)))
 	{
 		Exporter::WebPExporter exporter;
 		exporter.ExportNewFile(outName, pobj, 0);
-		DEL_CLASS(pobj);
+		pobj.Delete();
 	}
 	return 0;
 }

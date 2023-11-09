@@ -258,7 +258,7 @@ void __stdcall SSWR::AVIRead::AVIRGISPropForm::OnFontStyleClicked(void *userObj)
 	}
 }
 
-SSWR::AVIRead::AVIRGISPropForm::AVIRGISPropForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Map::MapEnv *env, Map::MapEnv::GroupItem *group, UOSInt index) : UI::GUIForm(parent, 512, 320, ui)
+SSWR::AVIRead::AVIRGISPropForm::AVIRGISPropForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<Map::MapEnv> env, Map::MapEnv::GroupItem *group, UOSInt index) : UI::GUIForm(parent, 512, 320, ui)
 {
 	UI::GUILabel *lbl;
 	this->SetNoResize(true);

@@ -176,12 +176,13 @@ Bool ParseFile(const UTF8Char *fileName, UOSInt fileNameLen)
 	else
 	{
 		IO::FileCheck *fileChk;
+		NotNullPtr<IO::FileCheck> nnfileChk;
 		{
 			ProgressHandler progress;
 			fileChk = IO::FileCheck::CreateCheck({fileName, fileNameLen}, Crypto::Hash::HashType::MD5, &progress, false);
 		}
 		console->WriteLine();
-		if (fileChk)
+		if (nnfileChk.Set(fileChk))
 		{
 			Text::StringBuilderUTF8 sb;
 			Exporter::MD5Exporter exporter;
@@ -189,9 +190,9 @@ Bool ParseFile(const UTF8Char *fileName, UOSInt fileNameLen)
 			sb.AppendC(UTF8STRC(".md5"));
 			{
 				IO::FileStream fs(sb.ToCString(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
-				exporter.ExportFile(fs, sb.ToCString(), fileChk, 0);
+				exporter.ExportFile(fs, sb.ToCString(), nnfileChk, 0);
 			}
-			DEL_CLASS(fileChk);
+			nnfileChk.Delete();
 			showHelp = false;
 			return true;
 		}

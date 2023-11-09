@@ -178,9 +178,10 @@ void __stdcall SSWR::AVIRead::AVIRCertUtilForm::OnKeyViewClicked(void *userObj)
 void __stdcall SSWR::AVIRead::AVIRCertUtilForm::OnKeySaveClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRCertUtilForm *me = (SSWR::AVIRead::AVIRCertUtilForm*)userObj;
-	if (me->key)
+	NotNullPtr<Crypto::Cert::X509Key> key;
+	if (key.Set(me->key))
 	{
-		me->core->SaveData(me, me->key, L"CertUtilSaveKey");
+		me->core->SaveData(me, key, L"CertUtilSaveKey");
 	}
 }
 

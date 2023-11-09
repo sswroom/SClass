@@ -409,9 +409,9 @@ Text::String *DB::MySQLConn::GetConnPWD()
 
 DB::DBTool *DB::MySQLConn::CreateDBTool(NotNullPtr<Net::SocketFactory> sockf, NotNullPtr<Text::String> serverName, Text::String *dbName, Text::String *uid, Text::String *pwd, NotNullPtr<IO::LogTool> log, Text::CString logPrefix)
 {
-	DB::MySQLConn *conn;
+	NotNullPtr<DB::MySQLConn> conn;
 	DB::DBTool *db;
-	NEW_CLASS(conn, DB::MySQLConn(serverName, uid, pwd, dbName, log));
+	NEW_CLASSNN(conn, DB::MySQLConn(serverName, uid, pwd, dbName, log));
 	if (!conn->IsConnError())
 	{
 		NEW_CLASS(db, DB::DBTool(conn, true, log, logPrefix));
@@ -419,16 +419,16 @@ DB::DBTool *DB::MySQLConn::CreateDBTool(NotNullPtr<Net::SocketFactory> sockf, No
 	}
 	else
 	{
-		DEL_CLASS(conn);
+		conn.Delete();
 		return 0;
 	}
 }
 
 DB::DBTool *DB::MySQLConn::CreateDBTool(NotNullPtr<Net::SocketFactory> sockf, Text::CStringNN serverName, Text::CString dbName, Text::CString uid, Text::CString pwd, NotNullPtr<IO::LogTool> log, Text::CString logPrefix)
 {
-	DB::MySQLConn *conn;
+	NotNullPtr<DB::MySQLConn> conn;
 	DB::DBTool *db;
-	NEW_CLASS(conn, DB::MySQLConn(serverName, uid, pwd, dbName, log));
+	NEW_CLASSNN(conn, DB::MySQLConn(serverName, uid, pwd, dbName, log));
 	if (!conn->IsConnError())
 	{
 		NEW_CLASS(db, DB::DBTool(conn, true, log, logPrefix));
@@ -436,7 +436,7 @@ DB::DBTool *DB::MySQLConn::CreateDBTool(NotNullPtr<Net::SocketFactory> sockf, Te
 	}
 	else
 	{
-		DEL_CLASS(conn);
+		conn.Delete();
 		return 0;
 	}
 }

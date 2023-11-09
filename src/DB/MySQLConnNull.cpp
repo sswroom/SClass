@@ -33,7 +33,7 @@ Text::String *DB::MySQLConn::GetConnPWD()
 
 DB::DBTool *DB::MySQLConn::CreateDBTool(NotNullPtr<Net::SocketFactory> sockf, NotNullPtr<Text::String> serverName, Text::String *dbName, Text::String *uid, Text::String *pwd, NotNullPtr<IO::LogTool> log, Text::CString logPrefix)
 {
-	Net::MySQLTCPClient *conn;
+	NotNullPtr<Net::MySQLTCPClient> conn;
 	DB::DBTool *db;
 	Net::SocketUtil::AddressInfo addr;
 	if (!sockf->DNSResolveIP(serverName->ToCString(), addr))
@@ -50,7 +50,7 @@ DB::DBTool *DB::MySQLConn::CreateDBTool(NotNullPtr<Net::SocketFactory> sockf, No
 		}
 		return 0;
 	}
-	NEW_CLASS(conn, Net::MySQLTCPClient(sockf, addr, 3306, Text::String::OrEmpty(uid), Text::String::OrEmpty(pwd), dbName));
+	NEW_CLASSNN(conn, Net::MySQLTCPClient(sockf, addr, 3306, Text::String::OrEmpty(uid), Text::String::OrEmpty(pwd), dbName));
 	if (!conn->IsError())
 	{
 		NEW_CLASS(db, DB::DBTool(conn, true, log, logPrefix));
@@ -69,14 +69,14 @@ DB::DBTool *DB::MySQLConn::CreateDBTool(NotNullPtr<Net::SocketFactory> sockf, No
 			conn->GetLastErrorMsg(sb);
 			log->LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Error);
 		}
-		DEL_CLASS(conn);
+		conn.Delete();
 		return 0;
 	}
 }
 
 DB::DBTool *DB::MySQLConn::CreateDBTool(NotNullPtr<Net::SocketFactory> sockf, Text::CStringNN serverName, Text::CString dbName, Text::CString uid, Text::CString pwd, NotNullPtr<IO::LogTool> log, Text::CString logPrefix)
 {
-	Net::MySQLTCPClient *conn;
+	NotNullPtr<Net::MySQLTCPClient> conn;
 	DB::DBTool *db;
 	Net::SocketUtil::AddressInfo addr;
 	if (!sockf->DNSResolveIP(serverName, addr))
@@ -93,7 +93,7 @@ DB::DBTool *DB::MySQLConn::CreateDBTool(NotNullPtr<Net::SocketFactory> sockf, Te
 		}
 		return 0;
 	}
-	NEW_CLASS(conn, Net::MySQLTCPClient(sockf, addr, 3306, uid, pwd, dbName));
+	NEW_CLASSNN(conn, Net::MySQLTCPClient(sockf, addr, 3306, uid, pwd, dbName));
 	if (!conn->IsError())
 	{
 		NEW_CLASS(db, DB::DBTool(conn, true, log, logPrefix));
@@ -112,7 +112,7 @@ DB::DBTool *DB::MySQLConn::CreateDBTool(NotNullPtr<Net::SocketFactory> sockf, Te
 			conn->GetLastErrorMsg(sb);
 			log->LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Error);
 		}
-		DEL_CLASS(conn);
+		conn.Delete();
 		return 0;
 	}
 }

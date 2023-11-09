@@ -19,13 +19,13 @@ Int32 Exporter::SHA1Exporter::GetName()
 	return *(Int32*)"SHA1";
 }
 
-IO::FileExporter::SupportType Exporter::SHA1Exporter::IsObjectSupported(IO::ParsedObject *pobj)
+IO::FileExporter::SupportType Exporter::SHA1Exporter::IsObjectSupported(NotNullPtr<IO::ParsedObject> pobj)
 {
 	if (pobj->GetParserType() != IO::ParserType::FileCheck)
 	{
 		return IO::FileExporter::SupportType::NotSupported;
 	}
-	IO::FileCheck *fchk = (IO::FileCheck *)pobj;
+	NotNullPtr<IO::FileCheck> fchk = NotNullPtr<IO::FileCheck>::ConvertFrom(pobj);
 	if (fchk->GetCheckType() != Crypto::Hash::HashType::SHA1)
 	{
 		return IO::FileExporter::SupportType::NotSupported;
@@ -49,13 +49,13 @@ void Exporter::SHA1Exporter::SetCodePage(UInt32 codePage)
 	this->codePage = codePage;
 }
 
-Bool Exporter::SHA1Exporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text::CStringNN fileName, IO::ParsedObject *pobj, void *param)
+Bool Exporter::SHA1Exporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text::CStringNN fileName, NotNullPtr<IO::ParsedObject> pobj, void *param)
 {
 	if (pobj->GetParserType() != IO::ParserType::FileCheck)
 	{
 		return false;
 	}
-	IO::FileCheck *fchk = (IO::FileCheck *)pobj;
+	NotNullPtr<IO::FileCheck> fchk = NotNullPtr<IO::FileCheck>::ConvertFrom(pobj);
 	if (fchk->GetCheckType() != Crypto::Hash::HashType::SHA1)
 	{
 		return false;

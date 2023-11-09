@@ -22,13 +22,13 @@ Int32 Exporter::PEMExporter::GetName()
 	return *(Int32*)"PEME";
 }
 
-IO::FileExporter::SupportType Exporter::PEMExporter::IsObjectSupported(IO::ParsedObject *pobj)
+IO::FileExporter::SupportType Exporter::PEMExporter::IsObjectSupported(NotNullPtr<IO::ParsedObject> pobj)
 {
 	if (pobj->GetParserType() != IO::ParserType::ASN1Data)
 	{
 		return IO::FileExporter::SupportType::NotSupported;
 	}
-	Net::ASN1Data *asn1 = (Net::ASN1Data*)pobj;
+	NotNullPtr<Net::ASN1Data> asn1 = NotNullPtr<Net::ASN1Data>::ConvertFrom(pobj);
 	if (asn1->GetASN1Type() != Net::ASN1Data::ASN1Type::X509)
 	{
 		return IO::FileExporter::SupportType::NotSupported;
@@ -60,21 +60,21 @@ Bool Exporter::PEMExporter::GetOutputName(UOSInt index, UTF8Char *nameBuff, UTF8
 	return false;
 }
 
-Bool Exporter::PEMExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text::CStringNN fileName, IO::ParsedObject *pobj, void *param)
+Bool Exporter::PEMExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text::CStringNN fileName, NotNullPtr<IO::ParsedObject> pobj, void *param)
 {
 	if (pobj->GetParserType() != IO::ParserType::ASN1Data)
 	{
 		return false;
 	}
-	Net::ASN1Data *asn1 = (Net::ASN1Data*)pobj;
+	NotNullPtr<Net::ASN1Data> asn1 = NotNullPtr<Net::ASN1Data>::ConvertFrom(pobj);
 	if (asn1->GetASN1Type() != Net::ASN1Data::ASN1Type::X509)
 	{
 		return false;
 	}
-	return ExportStream(stm, (Crypto::Cert::X509File*)asn1);
+	return ExportStream(stm, NotNullPtr<Crypto::Cert::X509File>::ConvertFrom(asn1));
 }
 
-Bool Exporter::PEMExporter::ExportStream(NotNullPtr<IO::SeekableStream> stm, Crypto::Cert::X509File *x509)
+Bool Exporter::PEMExporter::ExportStream(NotNullPtr<IO::SeekableStream> stm, NotNullPtr<Crypto::Cert::X509File> x509)
 {
 	Text::TextBinEnc::Base64Enc b64;
 	Text::StringBuilderUTF8 sb;
@@ -92,7 +92,7 @@ Bool Exporter::PEMExporter::ExportStream(NotNullPtr<IO::SeekableStream> stm, Cry
 		return stm->Write(sb.ToString(), sb.GetLength()) == sb.GetLength();
 	case Crypto::Cert::X509File::FileType::Key:
 		{
-			Crypto::Cert::X509Key *key = (Crypto::Cert::X509Key*)x509;
+			NotNullPtr<Crypto::Cert::X509Key> key = NotNullPtr<Crypto::Cert::X509Key>::ConvertFrom(x509);
 			switch (key->GetKeyType())
 			{
 			case Crypto::Cert::X509Key::KeyType::RSA:
@@ -136,13 +136,15 @@ Bool Exporter::PEMExporter::ExportStream(NotNullPtr<IO::SeekableStream> stm, Cry
 		return stm->Write(sb.ToString(), sb.GetLength()) == sb.GetLength();
 	case Crypto::Cert::X509File::FileType::FileList:
 	{
-		Crypto::Cert::X509FileList *fileList = (Crypto::Cert::X509FileList*)x509;
+		NotNullPtr<Crypto::Cert::X509FileList> fileList = NotNullPtr<Crypto::Cert::X509FileList>::ConvertFrom(x509);
+		NotNullPtr<Crypto::Cert::X509File> file;
 		UOSInt i = 0;
 		UOSInt j = fileList->GetFileCount();
 		while (i < j)
 		{
-			if (!ExportStream(stm, fileList->GetFile(i)))
-				return false;
+			if (file.Set(fileList->GetFile(i)))
+				if (!ExportStream(stm, file))
+					return false;
 			i++;
 		}
 		return true;
@@ -154,7 +156,7 @@ Bool Exporter::PEMExporter::ExportStream(NotNullPtr<IO::SeekableStream> stm, Cry
 	return false;
 }
 
-Bool Exporter::PEMExporter::ExportFile(Text::CStringNN fileName, Crypto::Cert::X509File *x509)
+Bool Exporter::PEMExporter::ExportFile(Text::CStringNN fileName, NotNullPtr<Crypto::Cert::X509File> x509)
 {
 	IO::FileStream fs(fileName, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 	if (fs.IsError())

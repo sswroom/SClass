@@ -2765,7 +2765,7 @@ SSWR::OrganMgr::OrganMainForm::OrganMainForm(NotNullPtr<UI::GUICore> ui, UI::GUI
 	this->mapTile = tileMap;
 	NEW_CLASSNN(this->mapTileLyr, Map::TileMapLayer(tileMap, this->env->GetParserList()));
 	this->mapTileLyr->AddUpdatedHandler(OnTileUpdated, this);
-	NEW_CLASS(this->mapEnv, Map::MapEnv(CSTR("File"), 0, this->mapTileLyr->GetCoordinateSystem()->Clone()));
+	NEW_CLASSNN(this->mapEnv, Map::MapEnv(CSTR("File"), 0, this->mapTileLyr->GetCoordinateSystem()->Clone()));
 	this->mapEnv->AddLayer(0, this->mapTileLyr, true);
 	this->imgFontStyle = this->mapEnv->AddFontStyle(CSTR("Temp"), this->env->GetMapFont(), 12, false, 0xff000000, 2, 0x80ffffff);
 
@@ -2860,7 +2860,7 @@ SSWR::OrganMgr::OrganMainForm::~OrganMainForm()
 		this->mapCurrImage = 0;
 	}
 	DEL_CLASS(this->mapRenderer);
-	DEL_CLASS(this->mapEnv);
+	this->mapEnv.Delete();
 	SDEL_STRING(this->initSelObj);
 	SDEL_STRING(this->initSelImg);
 	this->colorMgr->DeleteSess(this->colorSess);

@@ -21,7 +21,7 @@ namespace SSWR
 		private:
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			NotNullPtr<Media::ColorManagerSess> colorSess;
-			Map::MapEnv *env;
+			NotNullPtr<Map::MapEnv> env;
 			UOSInt fontStyle;
 			Bool changed;
 			NotNullPtr<Media::DrawEngine> eng;
@@ -47,7 +47,7 @@ namespace SSWR
 
 			void UpdatePreview();
 		public:
-			AVIRGISFontStyleForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Map::MapEnv *env, NotNullPtr<Media::DrawEngine> eng, UOSInt fontStyle);
+			AVIRGISFontStyleForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<Map::MapEnv> env, NotNullPtr<Media::DrawEngine> eng, UOSInt fontStyle);
 			virtual ~AVIRGISFontStyleForm();
 
 			virtual void OnMonitorChanged();

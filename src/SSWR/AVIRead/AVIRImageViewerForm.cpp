@@ -295,8 +295,14 @@ void SSWR::AVIRead::AVIRImageViewerForm::EventMenuClicked(UInt16 cmdId)
 	switch (cmdId)
 	{
 	case MNU_IMAGE_SAVE:
-		this->core->SaveData(this, this->imgList, L"SaveImage");
+	{
+		NotNullPtr<Media::ImageList> imgList;
+		if (imgList.Set(this->imgList))
+		{
+			this->core->SaveData(this, imgList, L"SaveImage");
+		}
 		break;
+	}
 	case MNU_IMAGE_RENAME:
 		{
 			SSWR::AVIRead::AVIRFileRenameForm frm(0, this->ui, this->core, this->imgList->GetSourceNameObj());

@@ -58,8 +58,8 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 		if (simg2)
 		{
 			Exporter::TIFFExporter exporter;
-			Media::ImageList *imgList;
-			NEW_CLASS(imgList, Media::ImageList(CSTR("Test.tif")));
+			NotNullPtr<Media::ImageList> imgList;
+			NEW_CLASSNN(imgList, Media::ImageList(CSTR("Test.tif")));
 			imgList->AddImage(simg2, 0);
 			sptr = IO::Path::GetProcessFileName(sbuff);
 			sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("NearestNeighbourTest.tif"));
@@ -67,7 +67,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 				IO::FileStream fs(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 				exporter.ExportFile(fs, CSTRP(sbuff, sptr), imgList, 0);
 			}
-			DEL_CLASS(simg2);
+			imgList.Delete();
 		}
 		simg.Delete();
 	}

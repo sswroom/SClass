@@ -44,7 +44,7 @@ void DB::ReadingDBTool::AddLogMsgC(const UTF8Char *msg, UOSInt msgLen, IO::LogHa
 	}
 }
 
-DB::ReadingDBTool::ReadingDBTool(DB::DBConn *db, Bool needRelease, NotNullPtr<IO::LogTool> log, Text::CString logPrefix) : ReadingDB(db->GetSourceNameObj())
+DB::ReadingDBTool::ReadingDBTool(NotNullPtr<DB::DBConn> db, Bool needRelease, NotNullPtr<IO::LogTool> log, Text::CString logPrefix) : ReadingDB(db->GetSourceNameObj())
 {
 	this->db = db;
 	this->currDBName = 0;
@@ -350,10 +350,9 @@ DB::ReadingDBTool::~ReadingDBTool()
 {
 	SDEL_STRING(this->logPrefix);
 	SDEL_STRING(this->currDBName);
-	if (this->db && this->needRelease)
+	if (this->needRelease)
 	{
-		DEL_CLASS(db);
-		db = 0;
+		db.Delete();
 	}
 }
 
@@ -370,12 +369,6 @@ DB::DBReader *DB::ReadingDBTool::ExecuteReader(Text::CStringNN sqlCmd)
 		logMsg.AppendC(UTF8STRC("ExecuteReader: "));
 		logMsg.Append(sqlCmd);
 		AddLogMsgC(logMsg.ToString(), logMsg.GetLength(), IO::LogHandler::LogLevel::Raw);
-	}
-	if (this->db == 0)
-	{
-		readerCnt += 1;
-		dataCnt += 1;
-		return lastReader;
 	}
 
 	Data::Timestamp t1 = Data::Timestamp::UtcNow();
@@ -477,29 +470,19 @@ void DB::ReadingDBTool::GetLastErrorMsg(NotNullPtr<Text::StringBuilderUTF8> sb)
 	sb->Append(this->lastErrMsg);
 }
 
-DB::DBConn *DB::ReadingDBTool::GetDBConn()
+NotNullPtr<DB::DBConn> DB::ReadingDBTool::GetDBConn()
 {
 	return this->db;
 }
 
 Int8 DB::ReadingDBTool::GetTzQhr() const
 {
-	if (this->db)
-	{
-		return this->db->GetTzQhr();
-	}
-	else
-	{
-		return 0;
-	}
+	return this->db->GetTzQhr();
 }
 
 void DB::ReadingDBTool::Reconnect()
 {
-	if (this->db)
-	{
-		this->db->Reconnect();
-	}
+	this->db->Reconnect();
 }
 
 Bool DB::ReadingDBTool::IsDBTool() const
@@ -579,12 +562,6 @@ DB::DBReader *DB::ReadingDBTool::QueryTableData(Text::CString schemaName, Text::
 		}
 		logMsg.Append(tableName);
 		AddLogMsgC(logMsg.ToString(), logMsg.GetLength(), IO::LogHandler::LogLevel::Raw);
-	}
-	if (this->db == 0)
-	{
-		readerCnt += 1;
-		dataCnt += 1;
-		return lastReader;
 	}
 
 	Data::Timestamp t1 = Data::Timestamp::UtcNow();
@@ -970,9 +947,9 @@ Bool DB::ReadingDBTool::ChangeDatabase(Text::CString databaseName)
 	}
 	else if (this->sqlType == DB::SQLType::PostgreSQL)
 	{
-		if (this->db && this->db->GetConnType() == DB::DBConn::CT_POSTGRESQL)
+		if (this->db->GetConnType() == DB::DBConn::CT_POSTGRESQL)
 		{
-			if (((DB::PostgreSQLConn*)this->db)->ChangeDatabase(databaseName))
+			if (NotNullPtr<DB::PostgreSQLConn>::ConvertFrom(this->db)->ChangeDatabase(databaseName))
 			{
 				SDEL_STRING(this->currDBName);
 				this->currDBName = Text::String::New(databaseName).Ptr();

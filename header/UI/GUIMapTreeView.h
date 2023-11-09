@@ -19,7 +19,7 @@ namespace UI
 		typedef void (__stdcall *TreeDragHandler)(void *userObj, ItemIndex *dragItem, ItemIndex *dropItem);
 
 	private:
-		Map::MapEnv *env;
+		NotNullPtr<Map::MapEnv> env;
 		TreeDragHandler dragHdlr;
 		void *dragObj;
 
@@ -29,7 +29,7 @@ namespace UI
 		void AddTreeNode(UI::GUITreeView::TreeItem *item, Map::MapEnv::GroupItem *group, UOSInt index);
 		void UpdateTreeStatus(UI::GUITreeView::TreeItem *item);
 	public:
-		GUIMapTreeView(NotNullPtr<UI::GUICore> ui, UI::GUIClientControl *parent, Map::MapEnv *env);
+		GUIMapTreeView(NotNullPtr<UI::GUICore> ui, UI::GUIClientControl *parent, NotNullPtr<Map::MapEnv> env);
 		virtual ~GUIMapTreeView();
 
 		virtual OSInt EventBeginLabelEdit(TreeItem *item);
@@ -38,7 +38,7 @@ namespace UI
 		virtual Text::CStringNN GetObjectClass() const;
 
 		void SetDragHandler(TreeDragHandler dragHdlr, void *dragObj);
-		void SetEnv(Map::MapEnv *env);
+		void SetEnv(NotNullPtr<Map::MapEnv> env);
 		void UpdateTree();
 		void AddSubGroup(UI::GUITreeView::TreeItem *item);
 		void RemoveItem(UI::GUITreeView::TreeItem *item);

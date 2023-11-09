@@ -145,7 +145,7 @@ namespace SSWR
 
 			Map::DrawMapRenderer *mapRenderer;
 			Map::MapView *mapView;
-			Map::MapEnv *mapEnv;
+			NotNullPtr<Map::MapEnv> mapEnv;
 			NotNullPtr<Map::TileMapLayer> mapTileLyr;
 			NotNullPtr<Map::TileMap> mapTile;
 			Bool mapUpdated;

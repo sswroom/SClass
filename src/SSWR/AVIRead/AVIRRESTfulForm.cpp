@@ -180,17 +180,21 @@ void __stdcall SSWR::AVIRead::AVIRRESTfulForm::OnLogSel(void *userObj)
 
 void SSWR::AVIRead::AVIRRESTfulForm::InitDB()
 {
-	Text::StringBuilderUTF8 sb;
 	NotNullPtr<DB::DBTool> db;
 	NotNullPtr<DB::DBModel> dbModel;
-	this->dbConn->GetConnName(sb);
-	NEW_CLASSNN(db, DB::DBTool(this->dbConn, false, this->log, CSTR("DB: ")));
-	NEW_CLASSNN(dbModel, DB::DBModel());
-	this->db = db.Ptr();
-	this->dbModel = dbModel.Ptr();
-	this->dbModel->LoadDatabase(this->db, CSTR_NULL, CSTR_NULL);
-	NEW_CLASS(this->dbCache, DB::DBCache(dbModel, db));
-	this->txtDatabase->SetText(sb.ToCString());
+	NotNullPtr<DB::DBConn> dbConn;
+	if (dbConn.Set(this->dbConn))
+	{
+		Text::StringBuilderUTF8 sb;
+		dbConn->GetConnName(sb);
+		NEW_CLASSNN(db, DB::DBTool(dbConn, false, this->log, CSTR("DB: ")));
+		NEW_CLASSNN(dbModel, DB::DBModel());
+		this->db = db.Ptr();
+		this->dbModel = dbModel.Ptr();
+		this->dbModel->LoadDatabase(this->db, CSTR_NULL, CSTR_NULL);
+		NEW_CLASS(this->dbCache, DB::DBCache(dbModel, db));
+		this->txtDatabase->SetText(sb.ToCString());
+	}
 }
 
 SSWR::AVIRead::AVIRRESTfulForm::AVIRRESTfulForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)

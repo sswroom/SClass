@@ -21,7 +21,7 @@ Int32 Exporter::ZIPExporter::GetName()
 	return *(Int32*)"ZIPE";
 }
 
-IO::FileExporter::SupportType Exporter::ZIPExporter::IsObjectSupported(IO::ParsedObject *pobj)
+IO::FileExporter::SupportType Exporter::ZIPExporter::IsObjectSupported(NotNullPtr<IO::ParsedObject> pobj)
 {
 	if (pobj->GetParserType() == IO::ParserType::PackageFile)
 	{
@@ -41,7 +41,7 @@ Bool Exporter::ZIPExporter::GetOutputName(UOSInt index, UTF8Char *nameBuff, UTF8
 	return false;
 }
 
-Bool Exporter::ZIPExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text::CStringNN fileName, IO::ParsedObject *pobj, void *param)
+Bool Exporter::ZIPExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text::CStringNN fileName, NotNullPtr<IO::ParsedObject> pobj, void *param)
 {
 	if (pobj->GetParserType() != IO::ParserType::PackageFile)
 	{
@@ -49,10 +49,10 @@ Bool Exporter::ZIPExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text:
 	}
 	UTF8Char sbuff[512];
 	IO::ZIPMTBuilder zip(stm, IO::ZIPOS::UNIX);
-	return this->ExportPackage(&zip, sbuff, sbuff, (IO::PackageFile*)pobj);
+	return this->ExportPackage(zip, sbuff, sbuff, NotNullPtr<IO::PackageFile>::ConvertFrom(pobj));
 }
 
-Bool Exporter::ZIPExporter::ExportPackage(IO::ZIPMTBuilder *zip, UTF8Char *buffStart, UTF8Char *buffEnd, IO::PackageFile *pkg)
+Bool Exporter::ZIPExporter::ExportPackage(NotNullPtr<IO::ZIPMTBuilder> zip, UTF8Char *buffStart, UTF8Char *buffEnd, NotNullPtr<IO::PackageFile> pkg)
 {
 	UOSInt i;
 	UOSInt j;
@@ -100,13 +100,16 @@ Bool Exporter::ZIPExporter::ExportPackage(IO::ZIPMTBuilder *zip, UTF8Char *buffS
 			*sptr++ = '/';
 			*sptr = 0;
 			zip->AddDir(CSTRP(buffStart, sptr), pkg->GetItemModTime(i), pkg->GetItemAccTime(i), pkg->GetItemCreateTime(i), pkg->GetItemUnixAttr(i));
-			IO::PackageFile *innerPkg = pkg->GetItemPackNew(i);
-			if (!this->ExportPackage(zip, buffStart, sptr, innerPkg))
+			NotNullPtr<IO::PackageFile> innerPkg;
+			if (innerPkg.Set(pkg->GetItemPackNew(i)))
 			{
-				DEL_CLASS(innerPkg);
-				return false;
+				if (!this->ExportPackage(zip, buffStart, sptr, innerPkg))
+				{
+					innerPkg.Delete();
+					return false;
+				}
+				innerPkg.Delete();
 			}
-			DEL_CLASS(innerPkg);
 		}
 		i++;
 	}

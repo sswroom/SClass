@@ -18,7 +18,7 @@ namespace Media
 			BatchSavePNG();
 			virtual ~BatchSavePNG();
 			
-			virtual void ImageOutput(Media::ImageList *imgList, const UTF8Char *fileId, const UTF8Char *targetId);
+			virtual void ImageOutput(NotNullPtr<Media::ImageList> imgList, Text::CStringNN fileId, Text::CStringNN targetId);
 		};
 	}
 }

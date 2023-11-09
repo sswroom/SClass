@@ -389,7 +389,7 @@ void __stdcall SSWR::AVIRead::AVIRPackageForm::LVDblClick(void *userObj, UOSInt 
 		NotNullPtr<IO::StreamData> data;
 		if (data.Set(me->packFile->GetItemStmDataNew(index)))
 		{
-			me->core->LoadData(data, me->packFile);
+			me->core->LoadData(data, me->packFile.Ptr());
 			data.Delete();
 		}
 	}
@@ -411,7 +411,7 @@ void __stdcall SSWR::AVIRead::AVIRPackageForm::OnStatusDblClick(void *userObj, U
 	}
 }
 
-void SSWR::AVIRead::AVIRPackageForm::DisplayPackFile(IO::PackageFile *packFile)
+void SSWR::AVIRead::AVIRPackageForm::DisplayPackFile(NotNullPtr<IO::PackageFile> packFile)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
@@ -474,7 +474,7 @@ void SSWR::AVIRead::AVIRPackageForm::DisplayPackFile(IO::PackageFile *packFile)
 	}
 }
 
-SSWR::AVIRead::AVIRPackageForm::AVIRPackageForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, IO::PackageFile *packFile) : UI::GUIForm(parent, 960, 768, ui)
+SSWR::AVIRead::AVIRPackageForm::AVIRPackageForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<IO::PackageFile> packFile) : UI::GUIForm(parent, 960, 768, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
 	UTF8Char sbuff[512];
@@ -617,7 +617,7 @@ SSWR::AVIRead::AVIRPackageForm::~AVIRPackageForm()
 	{
 		Sync::SimpleThread::Sleep(10);
 	}
-	DEL_CLASS(this->packFile);
+	this->packFile.Delete();
 	LIST_FREE_STRING(&this->fileNames);
 	SDEL_STRING(this->statusFile);
 	DEL_CLASS(this->mnuPopup);

@@ -133,7 +133,7 @@ void __stdcall SSWR::AVIRead::AVIRDBCheckChgForm::OnExecuteClicked(void *userObj
 	}
 	else if (me->db->IsDBTool())
 	{
-		db = ((DB::ReadingDBTool*)me->db)->GetDBConn();
+		db = ((DB::ReadingDBTool*)me->db)->GetDBConn().Ptr();
 	}
 	else
 	{

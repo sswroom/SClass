@@ -631,7 +631,7 @@ void SSWR::AVIRead::AVIRGISForm::OpenCSV(Text::CStringNN url, UInt32 codePage, T
 	cli.Delete();
 }
 
-SSWR::AVIRead::AVIRGISForm::AVIRGISForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<AVIRead::AVIRCore> core, Map::MapEnv *env, Map::MapView *view) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRGISForm::AVIRGISForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<AVIRead::AVIRCore> core, NotNullPtr<Map::MapEnv> env, Map::MapView *view) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->core = core;
 	this->ssl = Net::SSLEngineFactory::Create(this->core->GetSocketFactory(), true);
@@ -823,7 +823,7 @@ SSWR::AVIRead::AVIRGISForm::~AVIRGISForm()
 	DEL_CLASS(this->mnuLayer);
 	DEL_CLASS(this->mnuGroup);
 	DEL_CLASS(this->envRenderer);
-	DEL_CLASS(this->env);
+	this->env.Delete();
 	this->wgs84CSys.Delete();
 	SDEL_CLASS(this->ssl);
 	this->ClearChildren();
@@ -1011,7 +1011,7 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 			if (ind->itemType == Map::MapEnv::IT_LAYER)
 			{
 				Map::MapEnv::LayerItem *lyr = (Map::MapEnv::LayerItem*)ind->item;
-				this->core->SaveData(this, lyr->layer.Ptr(), L"SaveMapLayer");
+				this->core->SaveData(this, lyr->layer, L"SaveMapLayer");
 			}
 		}
 		break;

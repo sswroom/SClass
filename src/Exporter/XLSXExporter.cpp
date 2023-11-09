@@ -30,7 +30,7 @@ Int32 Exporter::XLSXExporter::GetName()
 	return *(Int32*)"XLSX";
 }
 
-IO::FileExporter::SupportType Exporter::XLSXExporter::IsObjectSupported(IO::ParsedObject *pobj)
+IO::FileExporter::SupportType Exporter::XLSXExporter::IsObjectSupported(NotNullPtr<IO::ParsedObject> pobj)
 {
 	if (pobj->GetParserType() != IO::ParserType::Workbook)
 	{
@@ -50,13 +50,13 @@ Bool Exporter::XLSXExporter::GetOutputName(UOSInt index, UTF8Char *nameBuff, UTF
 	return false;
 }
 
-Bool Exporter::XLSXExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text::CStringNN fileName, IO::ParsedObject *pobj, void *param)
+Bool Exporter::XLSXExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text::CStringNN fileName, NotNullPtr<IO::ParsedObject> pobj, void *param)
 {
 	if (pobj->GetParserType() != IO::ParserType::Workbook)
 	{
 		return false;
 	}
-	Text::SpreadSheet::Workbook *workbook = (Text::SpreadSheet::Workbook*)pobj;
+	NotNullPtr<Text::SpreadSheet::Workbook> workbook = NotNullPtr<Text::SpreadSheet::Workbook>::ConvertFrom(pobj);
 	Text::SpreadSheet::Worksheet *sheet;
 	Text::StringBuilderUTF8 sb;
 	Text::StringBuilderUTF8 sbContTypes;
@@ -1545,7 +1545,7 @@ void Exporter::XLSXExporter::AppendSeries(NotNullPtr<Text::StringBuilderUTF8> sb
 	UOSInt lastCol = valData->GetLastCol();
 	if (firstRow == lastRow)
 	{
-		Worksheet *sheet = valData->GetSheet();
+		NotNullPtr<Worksheet> sheet = valData->GetSheet();
 		sb->AppendC(UTF8STRC("<c:numCache>"));
 		sb->AppendC(UTF8STRC("<c:ptCount val=\""));
 		sb->AppendUOSInt(lastCol - firstCol + 1);
@@ -1574,7 +1574,7 @@ void Exporter::XLSXExporter::AppendSeries(NotNullPtr<Text::StringBuilderUTF8> sb
 	}
 	else if (firstCol == lastCol)
 	{
-		Worksheet *sheet = valData->GetSheet();
+		NotNullPtr<Worksheet> sheet = valData->GetSheet();
 		sb->AppendC(UTF8STRC("<c:numCache>"));
 		sb->AppendC(UTF8STRC("<c:ptCount val=\""));
 		sb->AppendUOSInt(lastRow - firstRow + 1);

@@ -85,7 +85,7 @@ namespace UI
 		view - will release
 		*/
 		GUIMapControl(NotNullPtr<GUICore> ui, UI::GUIClientControl *parent, NotNullPtr<Media::DrawEngine> eng, UInt32 bgColor, Map::DrawMapRenderer *renderer, Map::MapView *view, NotNullPtr<Media::ColorManagerSess> colorSess);
-		GUIMapControl(NotNullPtr<GUICore> ui, UI::GUIClientControl *parent, NotNullPtr<Media::DrawEngine> eng, Map::MapEnv *mapEnv, NotNullPtr<Media::ColorManagerSess> colorSess);
+		GUIMapControl(NotNullPtr<GUICore> ui, UI::GUIClientControl *parent, NotNullPtr<Media::DrawEngine> eng, NotNullPtr<Map::MapEnv> mapEnv, NotNullPtr<Media::ColorManagerSess> colorSess);
 		virtual ~GUIMapControl();
 
 		virtual void OnSizeChanged(Bool updateScn);

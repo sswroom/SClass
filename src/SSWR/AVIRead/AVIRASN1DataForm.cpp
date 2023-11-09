@@ -450,19 +450,19 @@ UOSInt SSWR::AVIRead::AVIRASN1DataForm::ParseSignature(Text::PString *s, UInt8 *
 
 Crypto::Cert::X509Key *SSWR::AVIRead::AVIRASN1DataForm::GetNewKey()
 {
-	Crypto::Cert::X509File *x509 = (Crypto::Cert::X509File*)this->asn1;
+	NotNullPtr<Crypto::Cert::X509File> x509 = NotNullPtr<Crypto::Cert::X509File>::ConvertFrom(this->asn1);
 	switch (x509->GetFileType())
 	{
 	case Crypto::Cert::X509File::FileType::FileList:
-		return ((Crypto::Cert::X509Cert*)((Crypto::Cert::X509FileList*)x509)->GetFile(0))->GetNewPublicKey();
+		return ((Crypto::Cert::X509Cert*)NotNullPtr<Crypto::Cert::X509FileList>::ConvertFrom(x509)->GetFile(0))->GetNewPublicKey();
 	case Crypto::Cert::X509File::FileType::Cert:
-		return ((Crypto::Cert::X509Cert*)x509)->GetNewPublicKey();
+		return NotNullPtr<Crypto::Cert::X509Cert>::ConvertFrom(x509)->GetNewPublicKey();
 	case Crypto::Cert::X509File::FileType::Key:
 		return (Crypto::Cert::X509Key*)x509->Clone().Ptr();
 	case Crypto::Cert::X509File::FileType::PrivateKey:
-		return ((Crypto::Cert::X509PrivKey*)x509)->CreateKey();
+		return NotNullPtr<Crypto::Cert::X509PrivKey>::ConvertFrom(x509)->CreateKey();
 	case Crypto::Cert::X509File::FileType::PublicKey:
-		return ((Crypto::Cert::X509PubKey*)x509)->CreateKey();
+		return NotNullPtr<Crypto::Cert::X509PubKey>::ConvertFrom(x509)->CreateKey();
 	case Crypto::Cert::X509File::FileType::CertRequest:
 	case Crypto::Cert::X509File::FileType::PKCS7:
 	case Crypto::Cert::X509File::FileType::PKCS12:
@@ -472,7 +472,7 @@ Crypto::Cert::X509Key *SSWR::AVIRead::AVIRASN1DataForm::GetNewKey()
 	}
 }
 
-SSWR::AVIRead::AVIRASN1DataForm::AVIRASN1DataForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Net::ASN1Data *asn1) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRASN1DataForm::AVIRASN1DataForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<Net::ASN1Data> asn1) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	Text::StringBuilderUTF8 sb;
 	sb.AppendC(UTF8STRC("ASN1 Data - "));
@@ -491,7 +491,7 @@ SSWR::AVIRead::AVIRASN1DataForm::AVIRASN1DataForm(UI::GUIClientControl *parent, 
 	mnu->AddItem(CSTR("View Hex"), MNU_VIEW_HEX, UI::GUIMenu::KM_CONTROL, UI::GUIControl::GK_H);
 	if (this->asn1->GetASN1Type() == Net::ASN1Data::ASN1Type::X509)
 	{
-		Crypto::Cert::X509File *x509 = (Crypto::Cert::X509Cert*)this->asn1;
+		NotNullPtr<Crypto::Cert::X509File> x509 = NotNullPtr<Crypto::Cert::X509Cert>::ConvertFrom(this->asn1);
 		Text::StringBuilderUTF8 sb;
 		UI::GUIMenu *mnu2;
 		UOSInt i;
@@ -561,7 +561,7 @@ SSWR::AVIRead::AVIRASN1DataForm::AVIRASN1DataForm(UI::GUIClientControl *parent, 
 
 	if (this->asn1->GetASN1Type() == Net::ASN1Data::ASN1Type::X509)
 	{
-		Crypto::Cert::X509File *x509 = (Crypto::Cert::X509File*)this->asn1;
+		NotNullPtr<Crypto::Cert::X509File> x509 = NotNullPtr<Crypto::Cert::X509File>::ConvertFrom(this->asn1);
 		Net::SSLEngine *ssl = Net::SSLEngineFactory::Create(this->core->GetSocketFactory(), false);
 		this->txtStatus->SetText(Crypto::Cert::X509File::ValidStatusGetDesc(x509->IsValid(ssl, ssl->GetTrustStore())));
 		SDEL_CLASS(ssl);
@@ -575,7 +575,7 @@ SSWR::AVIRead::AVIRASN1DataForm::AVIRASN1DataForm(UI::GUIClientControl *parent, 
 		{
 		case Crypto::Cert::X509File::FileType::FileList:
 		{
-			Crypto::Cert::X509FileList *fileList = (Crypto::Cert::X509FileList*)x509;
+			NotNullPtr<Crypto::Cert::X509FileList> fileList = NotNullPtr<Crypto::Cert::X509FileList>::ConvertFrom(x509);
 			canVerify = true;
 			hasPubKey = true;
 			sb.ClearStr();
@@ -611,7 +611,7 @@ SSWR::AVIRead::AVIRASN1DataForm::AVIRASN1DataForm(UI::GUIClientControl *parent, 
 		}
 		case Crypto::Cert::X509File::FileType::Cert:
 		{
-			Crypto::Cert::X509Cert *cert = (Crypto::Cert::X509Cert*)x509;
+			NotNullPtr<Crypto::Cert::X509Cert> cert = NotNullPtr<Crypto::Cert::X509Cert>::ConvertFrom(x509);
 			canVerify = true;
 			hasPubKey = true;
 			Crypto::Cert::X509File::SignedInfo signedInfo;
@@ -625,7 +625,7 @@ SSWR::AVIRead::AVIRASN1DataForm::AVIRASN1DataForm(UI::GUIClientControl *parent, 
 			canVerify = true;
 			canSignature = true;
 			hasPubKey = true;
-			if (((Crypto::Cert::X509Key*)x509)->IsPrivateKey())
+			if (NotNullPtr<Crypto::Cert::X509Key>::ConvertFrom(x509)->IsPrivateKey())
 			{
 				hasPrivKey = true;
 			}
@@ -744,7 +744,7 @@ SSWR::AVIRead::AVIRASN1DataForm::AVIRASN1DataForm(UI::GUIClientControl *parent, 
 
 SSWR::AVIRead::AVIRASN1DataForm::~AVIRASN1DataForm()
 {
-	DEL_CLASS(this->asn1);
+	this->asn1.Delete();
 }
 
 void SSWR::AVIRead::AVIRASN1DataForm::OnMonitorChanged()
@@ -770,7 +770,7 @@ void SSWR::AVIRead::AVIRASN1DataForm::EventMenuClicked(UInt16 cmdId)
 	case MNU_KEY_CREATE:
 		{
 			NotNullPtr<Crypto::Cert::X509Key> key;
-			if (key.Set(((Crypto::Cert::X509PrivKey*)this->asn1)->CreateKey()))
+			if (key.Set(NotNullPtr<Crypto::Cert::X509PrivKey>::ConvertFrom(this->asn1)->CreateKey()))
 			{
 				this->core->OpenObject(key);
 			}
@@ -778,7 +778,7 @@ void SSWR::AVIRead::AVIRASN1DataForm::EventMenuClicked(UInt16 cmdId)
 	case MNU_CERT_EXT_KEY:
 		{
 			NotNullPtr<Crypto::Cert::X509Key> key;
-			if (key.Set(((Crypto::Cert::X509Cert*)this->asn1)->GetNewPublicKey()))
+			if (key.Set(NotNullPtr<Crypto::Cert::X509Cert>::ConvertFrom(this->asn1)->GetNewPublicKey()))
 			{
 				this->core->OpenObject(key);
 			}
@@ -787,7 +787,7 @@ void SSWR::AVIRead::AVIRASN1DataForm::EventMenuClicked(UInt16 cmdId)
 		if (cmdId >= MNU_CERT_0)
 		{
 			NotNullPtr<Crypto::Cert::X509Cert> cert;
-			if (cert.Set(((Crypto::Cert::X509File*)this->asn1)->GetNewCert((UOSInt)(cmdId - MNU_CERT_0))))
+			if (cert.Set(NotNullPtr<Crypto::Cert::X509File>::ConvertFrom(this->asn1)->GetNewCert((UOSInt)(cmdId - MNU_CERT_0))))
 			{
 				this->core->OpenObject(cert);
 			}

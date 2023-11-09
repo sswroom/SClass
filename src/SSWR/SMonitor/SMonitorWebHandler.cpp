@@ -1426,9 +1426,9 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingImgReq(SSWR::SMo
 		mutUsage.EndUse();
 		
 		Exporter::GUIPNGExporter *exporter;
-		Media::ImageList *imgList;
+		NotNullPtr<Media::ImageList> imgList;
 
-		NEW_CLASS(imgList, Media::ImageList(CSTR("temp.png")));
+		NEW_CLASSNN(imgList, Media::ImageList(CSTR("temp.png")));
 		imgList->AddImage(dimg->ToStaticImage(), 0);
 		deng->DeleteImage(dimg);
 
@@ -1437,7 +1437,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingImgReq(SSWR::SMo
 		NEW_CLASS(exporter, Exporter::GUIPNGExporter());
 		exporter->ExportFile(nnmstm, CSTR("temp.png"), imgList, 0);
 		DEL_CLASS(exporter);
-		DEL_CLASS(imgList);
+		imgList.Delete();
 
 		buff = nnmstm->GetBuff(buffSize);
 		resp->AddDefHeaders(req);
@@ -1779,9 +1779,9 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DevicePastDataImgReq(SSWR::SM
 		}
 		
 		Exporter::GUIPNGExporter *exporter;
-		Media::ImageList *imgList;
+		NotNullPtr<Media::ImageList> imgList;
 
-		NEW_CLASS(imgList, Media::ImageList(CSTR("temp.png")));
+		NEW_CLASSNN(imgList, Media::ImageList(CSTR("temp.png")));
 		imgList->AddImage(dimg->ToStaticImage(), 0);
 		deng->DeleteImage(dimg);
 
@@ -1789,7 +1789,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DevicePastDataImgReq(SSWR::SM
 		NEW_CLASS(exporter, Exporter::GUIPNGExporter());
 		exporter->ExportFile(mstm, CSTR("temp.png"), imgList, 0);
 		DEL_CLASS(exporter);
-		DEL_CLASS(imgList);
+		imgList.Delete();
 
 		buff = mstm.GetBuff(buffSize);
 		resp->AddDefHeaders(req);

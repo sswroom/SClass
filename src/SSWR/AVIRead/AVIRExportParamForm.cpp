@@ -18,7 +18,7 @@ void __stdcall SSWR::AVIRead::AVIRExportParamForm::OnOKClicked(void *userObj)
 	i = 0;
 	while (i < cnt)
 	{
-		me->exporter->GetParamInfo(i, &pi);
+		me->exporter->GetParamInfo(i, pi);
 
 		if (pi.paramType == IO::FileExporter::ParamType::INT32)
 		{
@@ -77,7 +77,7 @@ SSWR::AVIRead::AVIRExportParamForm::AVIRExportParamForm(UI::GUIClientControl *pa
 	i = 0;
 	while (i < cnt)
 	{
-		this->exporter->GetParamInfo(i, &pi);
+		this->exporter->GetParamInfo(i, pi);
 		NEW_CLASS(lbl, UI::GUILabel(ui, this, pi.name));
 		lbl->SetRect(20, (Int32)i * 24, 120, 23, false);
 		//lbl->TextAlign = System::Drawing::ContentAlignment::MiddleLeft;

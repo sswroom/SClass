@@ -32,13 +32,13 @@ Int32 Exporter::KMLExporter::GetName()
 	return *(Int32*)"KMLE";
 }
 
-IO::FileExporter::SupportType Exporter::KMLExporter::IsObjectSupported(IO::ParsedObject *pobj)
+IO::FileExporter::SupportType Exporter::KMLExporter::IsObjectSupported(NotNullPtr<IO::ParsedObject> pobj)
 {
 	if (pobj->GetParserType() != IO::ParserType::MapLayer)
 	{
 		return IO::FileExporter::SupportType::NotSupported;
 	}
-	Map::MapDrawLayer *layer = (Map::MapDrawLayer *)pobj;
+	NotNullPtr<Map::MapDrawLayer> layer = NotNullPtr<Map::MapDrawLayer>::ConvertFrom(pobj);
 	Map::DrawLayerType layerType = layer->GetLayerType();
 	if (layerType == Map::DRAW_LAYER_POINT)
 	{
@@ -88,7 +88,7 @@ void Exporter::KMLExporter::SetEncFactory(Text::EncodingFactory *encFact)
 	this->encFact = encFact;
 }
 
-Bool Exporter::KMLExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text::CStringNN fileName, IO::ParsedObject *pobj, void *param)
+Bool Exporter::KMLExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text::CStringNN fileName, NotNullPtr<IO::ParsedObject> pobj, void *param)
 {
 	if (pobj->GetParserType() != IO::ParserType::MapLayer)
 	{
@@ -98,7 +98,7 @@ Bool Exporter::KMLExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text:
 	UTF8Char sbuff[256];
 	UTF8Char sbuff2[512];
 	UTF8Char *sptr;
-	Map::MapDrawLayer *layer = (Map::MapDrawLayer *)pobj;
+	NotNullPtr<Map::MapDrawLayer> layer = NotNullPtr<Map::MapDrawLayer>::ConvertFrom(pobj);
 	UOSInt nameCol = layer->GetNameCol();
 
 	UOSInt i;
@@ -690,7 +690,7 @@ UOSInt Exporter::KMLExporter::GetParamCnt()
 	return 1;
 }
 
-void *Exporter::KMLExporter::CreateParam(IO::ParsedObject *pobj)
+void *Exporter::KMLExporter::CreateParam(NotNullPtr<IO::ParsedObject> pobj)
 {
 	Int32 *retParam = MemAlloc(Int32, 1);
 	*retParam = 0;
@@ -702,7 +702,7 @@ void Exporter::KMLExporter::DeleteParam(void *param)
 	MemFree(param);
 }
 
-Bool Exporter::KMLExporter::GetParamInfo(UOSInt index, ParamInfo *info)
+Bool Exporter::KMLExporter::GetParamInfo(UOSInt index, NotNullPtr<ParamInfo> info)
 {
 	if (index != 0)
 		return false;

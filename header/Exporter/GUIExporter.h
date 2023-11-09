@@ -13,10 +13,10 @@ namespace Exporter
 		GUIExporter();
 		virtual ~GUIExporter();
 
-		virtual SupportType IsObjectSupported(IO::ParsedObject *pobj);
+		virtual SupportType IsObjectSupported(NotNullPtr<IO::ParsedObject> pobj);
 
-		void *ToImage(IO::ParsedObject *pobj, UInt8 **relBuff);
+		void *ToImage(NotNullPtr<IO::ParsedObject> pobj, UInt8 **relBuff);
 		Int32 GetEncoderClsid(const WChar *format, void *clsid);
 	};
-};
+}
 #endif

@@ -38,18 +38,20 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 		shpExp.SetCodePage(65001);
 
 		Map::MapLayerCollection *lyrColl = (Map::MapLayerCollection*)pobj;
-		Map::MapDrawLayer *lyr;
+		NotNullPtr<Map::MapDrawLayer> lyr;
 		j = lyrColl->GetCount();
 		i = 0;
 		while (i < j)
 		{
-			lyr = lyrColl->GetItem(i);
-			sptr = lyr->GetName()->ConcatTo(sbuff);
-			sptr = &sbuff[Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), IO::Path::PATH_SEPERATOR) + 1];
-			sptr2 = Text::StrConcatC(Text::StrConcat(Text::StrConcat(sbuff2, destPath), sptr), UTF8STRC(".shp"));
+			if (lyr.Set(lyrColl->GetItem(i)))
+			{
+				sptr = lyr->GetName()->ConcatTo(sbuff);
+				sptr = &sbuff[Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), IO::Path::PATH_SEPERATOR) + 1];
+				sptr2 = Text::StrConcatC(Text::StrConcat(Text::StrConcat(sbuff2, destPath), sptr), UTF8STRC(".shp"));
 
-			IO::FileStream fs(CSTRP(sbuff2, sptr2), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
-			shpExp.ExportFile(fs, CSTRP(sbuff2, sptr2), lyr, 0);
+				IO::FileStream fs(CSTRP(sbuff2, sptr2), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+				shpExp.ExportFile(fs, CSTRP(sbuff2, sptr2), lyr, 0);
+			}
 			i++;
 		}
 

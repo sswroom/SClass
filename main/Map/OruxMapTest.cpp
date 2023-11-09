@@ -14,7 +14,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	Parser::ParserList *parsers;
 	IO::PackageFile *pkg;
 	NotNullPtr<Map::OSM::OSMLocalTileMap> tileMap;
-	Map::TileMapLayer *mapLyr;
+	NotNullPtr<Map::TileMapLayer> mapLyr;
 	NEW_CLASS(parsers, Parser::FullParserList());
 
 	{
@@ -24,10 +24,10 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	if (pkg)
 	{
 		NEW_CLASSNN(tileMap, Map::OSM::OSMLocalTileMap(pkg));
-		NEW_CLASS(mapLyr, Map::TileMapLayer(tileMap, parsers));
+		NEW_CLASSNN(mapLyr, Map::TileMapLayer(tileMap, parsers));
 		Exporter::OruxMapExporter exporter;
 		exporter.ExportNewFile(destFile, mapLyr, 0);
-		DEL_CLASS(mapLyr);
+		mapLyr.Delete();
 	}
 	DEL_CLASS(parsers);
 	return 0;

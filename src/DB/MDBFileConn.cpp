@@ -190,9 +190,9 @@ Bool DB::MDBFileConn::CreateMDBFile(Text::CStringNN fileName)
 
 DB::DBTool *DB::MDBFileConn::CreateDBTool(NotNullPtr<Text::String> fileName, NotNullPtr<IO::LogTool> log, Text::CString logPrefix)
 {
-	DB::MDBFileConn *conn;
+	NotNullPtr<DB::MDBFileConn> conn;
 	DB::DBTool *db;
-	NEW_CLASS(conn, DB::MDBFileConn(fileName->ToCString(), log, 0, 0, 0));
+	NEW_CLASSNN(conn, DB::MDBFileConn(fileName->ToCString(), log, 0, 0, 0));
 	if (conn->GetConnError() == DB::ODBCConn::CE_NONE)
 	{
 		NEW_CLASS(db, DB::DBTool(conn, true, log, logPrefix));
@@ -200,16 +200,16 @@ DB::DBTool *DB::MDBFileConn::CreateDBTool(NotNullPtr<Text::String> fileName, Not
 	}
 	else
 	{
-		DEL_CLASS(conn);
+		conn.Delete();
 		return 0;
 	}
 }
 
 DB::DBTool *DB::MDBFileConn::CreateDBTool(Text::CStringNN fileName, NotNullPtr<IO::LogTool> log, Text::CString logPrefix)
 {
-	DB::MDBFileConn *conn;
+	NotNullPtr<DB::MDBFileConn> conn;
 	DB::DBTool *db;
-	NEW_CLASS(conn, DB::MDBFileConn(fileName, log, 0, 0, 0));
+	NEW_CLASSNN(conn, DB::MDBFileConn(fileName, log, 0, 0, 0));
 	if (conn->GetConnError() == DB::ODBCConn::CE_NONE)
 	{
 		NEW_CLASS(db, DB::DBTool(conn, true, log, logPrefix));
@@ -217,7 +217,7 @@ DB::DBTool *DB::MDBFileConn::CreateDBTool(Text::CStringNN fileName, NotNullPtr<I
 	}
 	else
 	{
-		DEL_CLASS(conn);
+		conn.Delete();
 		return 0;
 	}
 }

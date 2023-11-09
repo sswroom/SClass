@@ -14,7 +14,7 @@ namespace SSWR
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			NotNullPtr<Media::ColorManagerSess> colorSess;
 			Media::ColorConv *colorConv;
-			Map::MapEnv *env;
+			NotNullPtr<Map::MapEnv> env;
 			UOSInt currFontStyle;
 
 			UI::GUIPopupMenu *mnuLayers;
@@ -26,7 +26,7 @@ namespace SSWR
 			virtual void OnKeyDown(UInt32 keyCode);
 
 		public:
-			AVIRFontSelector(NotNullPtr<UI::GUICore> ui, UI::GUIClientControl *parent, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Map::MapEnv *env, UOSInt initFontStyle, NotNullPtr<Media::ColorManagerSess> colorSess);
+			AVIRFontSelector(NotNullPtr<UI::GUICore> ui, UI::GUIClientControl *parent, NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<Map::MapEnv> env, UOSInt initFontStyle, NotNullPtr<Media::ColorManagerSess> colorSess);
 			virtual ~AVIRFontSelector();
 
 			virtual void YUVParamChanged(NotNullPtr<const Media::IColorHandler::YUVPARAM> yuvParam);

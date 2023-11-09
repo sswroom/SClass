@@ -19,13 +19,13 @@ Int32 Exporter::WAVExporter::GetName()
 	return *(Int32*)"WAVE";
 }
 
-IO::FileExporter::SupportType Exporter::WAVExporter::IsObjectSupported(IO::ParsedObject *pobj)
+IO::FileExporter::SupportType Exporter::WAVExporter::IsObjectSupported(NotNullPtr<IO::ParsedObject> pobj)
 {
 	if (pobj->GetParserType() != IO::ParserType::MediaFile)
 	{
 		return IO::FileExporter::SupportType::NotSupported;
 	}
-	Media::MediaFile *file = (Media::MediaFile *)pobj;
+	NotNullPtr<Media::MediaFile> file = NotNullPtr<Media::MediaFile>::ConvertFrom(pobj);
 	if (file->GetStream(1, 0) != 0)
 		return IO::FileExporter::SupportType::NotSupported;
 	Media::IMediaSource *stm = file->GetStream(0, 0);
@@ -52,14 +52,14 @@ void Exporter::WAVExporter::SetCodePage(UInt32 codePage)
 	this->codePage = codePage;
 }
 
-Bool Exporter::WAVExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text::CStringNN fileName, IO::ParsedObject *pobj, void *param)
+Bool Exporter::WAVExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text::CStringNN fileName, NotNullPtr<IO::ParsedObject> pobj, void *param)
 {
 	if (pobj->GetParserType() != IO::ParserType::MediaFile)
 	{
 		return false;
 	}
 	UInt8 *buff;
-	Media::MediaFile *file = (Media::MediaFile *)pobj;
+	NotNullPtr<Media::MediaFile> file = NotNullPtr<Media::MediaFile>::ConvertFrom(pobj);
 	if (file->GetStream(1, 0) != 0)
 		return false;
 	Media::IMediaSource *src = file->GetStream(0, 0);

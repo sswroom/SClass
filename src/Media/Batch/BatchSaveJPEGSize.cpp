@@ -20,7 +20,7 @@ Media::Batch::BatchSaveJPEGSize::~BatchSaveJPEGSize()
 {
 }
 
-void Media::Batch::BatchSaveJPEGSize::ImageOutput(Media::ImageList *imgList, const UTF8Char *fileId, const UTF8Char *targetId)
+void Media::Batch::BatchSaveJPEGSize::ImageOutput(NotNullPtr<Media::ImageList> imgList, Text::CStringNN fileId, Text::CStringNN targetId)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
@@ -34,8 +34,8 @@ void Media::Batch::BatchSaveJPEGSize::ImageOutput(Media::ImageList *imgList, con
 	UInt64 targetSize;
 	Media::Image *img;
 
-	sptr = Text::StrConcat(sbuff, fileId);
-	sptr = Text::StrConcatC(Text::StrConcat(sptr, targetId), UTF8STRC(".jpg"));
+	sptr = fileId.ConcatTo(sbuff);
+	sptr = Text::StrConcatC(targetId.ConcatTo(sptr), UTF8STRC(".jpg"));
 
 	img = imgList->GetImage(0, 0);
 	targetSize = (img->info.dispSize.CalcArea() * img->info.storeBPP >> 3) / this->sizePercent;

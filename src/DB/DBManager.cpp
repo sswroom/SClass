@@ -23,16 +23,16 @@
 #define ENCKEY "sswr"
 #define ENCKEYLEN (sizeof(ENCKEY) - 1)
 
-Bool DB::DBManager::GetConnStr(DB::DBTool *db, NotNullPtr<Text::StringBuilderUTF8> connStr)
+Bool DB::DBManager::GetConnStr(NotNullPtr<DB::DBTool> db, NotNullPtr<Text::StringBuilderUTF8> connStr)
 {
-	DB::DBConn *conn = db->GetDBConn();
+	NotNullPtr<DB::DBConn> conn = db->GetDBConn();
 	Text::String *s;
 	NotNullPtr<Text::String> nns;
 	switch (conn->GetConnType())
 	{
 	case DB::DBConn::CT_ODBC:
 		{
-			DB::ODBCConn *odbc = (DB::ODBCConn*)conn;
+			NotNullPtr<DB::ODBCConn> odbc = NotNullPtr<DB::ODBCConn>::ConvertFrom(conn);
 			if ((s = odbc->GetConnStr()) != 0)
 			{
 				connStr->AppendC(UTF8STRC("odbc:"));
@@ -65,7 +65,7 @@ Bool DB::DBManager::GetConnStr(DB::DBTool *db, NotNullPtr<Text::StringBuilderUTF
 		break;
 	case DB::DBConn::CT_MYSQL:
 		{
-			DB::MySQLConn *mysql = (DB::MySQLConn*)conn;
+			NotNullPtr<DB::MySQLConn> mysql = NotNullPtr<DB::MySQLConn>::ConvertFrom(conn);
 			connStr->AppendC(UTF8STRC("mysql:Server="));
 			connStr->Append(mysql->GetConnServer());
 			if ((s = mysql->GetConnDB()) != 0)
@@ -88,7 +88,7 @@ Bool DB::DBManager::GetConnStr(DB::DBTool *db, NotNullPtr<Text::StringBuilderUTF
 		break;
 	case DB::DBConn::CT_SQLITE:
 		{
-			DB::SQLiteFile *sqlite = (DB::SQLiteFile*)conn;
+			NotNullPtr<DB::SQLiteFile> sqlite = NotNullPtr<DB::SQLiteFile>::ConvertFrom(conn);
 			connStr->AppendC(UTF8STRC("sqlite:File="));
 			connStr->Append(sqlite->GetFileName());
 			return true;
@@ -96,7 +96,7 @@ Bool DB::DBManager::GetConnStr(DB::DBTool *db, NotNullPtr<Text::StringBuilderUTF
 		break;
 	case DB::DBConn::CT_WMIQUERY:
 		{
-			Win32::WMIQuery *wmi = (Win32::WMIQuery*)conn;
+			NotNullPtr<Win32::WMIQuery> wmi = NotNullPtr<Win32::WMIQuery>::ConvertFrom(conn);
 			connStr->AppendC(UTF8STRC("wmi:ns="));
 			const WChar *ns = wmi->GetNS();
 			nns = Text::String::NewNotNull(ns);
@@ -107,7 +107,7 @@ Bool DB::DBManager::GetConnStr(DB::DBTool *db, NotNullPtr<Text::StringBuilderUTF
 		break;
 	case DB::DBConn::CT_OLEDB:
 		{
-			DB::OLEDBConn *oledb = (DB::OLEDBConn*)conn;
+			NotNullPtr<DB::OLEDBConn> oledb = NotNullPtr<DB::OLEDBConn>::ConvertFrom(conn);
 			connStr->AppendC(UTF8STRC("oledb:"));
 			const WChar *cStr = oledb->GetConnStr();
 			nns = Text::String::NewNotNull(cStr);
@@ -120,7 +120,7 @@ Bool DB::DBManager::GetConnStr(DB::DBTool *db, NotNullPtr<Text::StringBuilderUTF
 		{
 			UTF8Char sbuff[128];
 			UTF8Char *sptr;
-			Net::MySQLTCPClient *mysql = (Net::MySQLTCPClient*)conn;
+			NotNullPtr<Net::MySQLTCPClient> mysql = NotNullPtr<Net::MySQLTCPClient>::ConvertFrom(conn);
 			connStr->AppendC(UTF8STRC("mysqltcp:Server="));
 			sptr = Net::SocketUtil::GetAddrName(sbuff, mysql->GetConnAddr());
 			connStr->AppendP(sbuff, sptr);
@@ -143,7 +143,7 @@ Bool DB::DBManager::GetConnStr(DB::DBTool *db, NotNullPtr<Text::StringBuilderUTF
 		{
 			UTF8Char sbuff[128];
 			UTF8Char *sptr;
-			DB::PostgreSQLConn *psql = (DB::PostgreSQLConn*)conn;
+			NotNullPtr<DB::PostgreSQLConn> psql = NotNullPtr<DB::PostgreSQLConn>::ConvertFrom(conn);
 			connStr->AppendC(UTF8STRC("postgresql:Server="));
 			sptr = psql->GetConnServer()->ConcatTo(sbuff);
 			connStr->AppendP(sbuff, sptr);
@@ -165,7 +165,7 @@ Bool DB::DBManager::GetConnStr(DB::DBTool *db, NotNullPtr<Text::StringBuilderUTF
 		{
 			UTF8Char sbuff[128];
 			UTF8Char *sptr;
-			DB::TDSConn *tds = (DB::TDSConn*)conn;
+			NotNullPtr<DB::TDSConn> tds = NotNullPtr<DB::TDSConn>::ConvertFrom(conn);
 			connStr->AppendC(UTF8STRC("tds:Host="));
 			sptr = tds->GetConnHost()->ConcatTo(sbuff);
 			connStr->AppendP(sbuff, sptr);
@@ -254,14 +254,14 @@ DB::ReadingDB *DB::DBManager::OpenConn(Text::CStringNN connStr, NotNullPtr<IO::L
 		}
 		else
 		{
-			DB::ODBCConn *conn;
-			NEW_CLASS(conn, DB::ODBCConn(connStr.Substring(5), CSTR("ODBCConn"), log));
+			NotNullPtr<DB::ODBCConn> conn;
+			NEW_CLASSNN(conn, DB::ODBCConn(connStr.Substring(5), CSTR("ODBCConn"), log));
 			if (conn->GetConnError() == DB::ODBCConn::CE_NONE)
 			{
 				NEW_CLASS(db, DB::DBTool(conn, true, log, DBPREFIX));
 				return db;
 			}
-			DEL_CLASS(conn);
+			conn.Delete();
 		}
 	}
 	else if (connStr.StartsWith(UTF8STRC("mysql:")))
@@ -338,11 +338,11 @@ DB::ReadingDB *DB::DBManager::OpenConn(Text::CStringNN connStr, NotNullPtr<IO::L
 		if (connStr.Substring(4).StartsWithICase(UTF8STRC("NS=")))
 		{
 			const WChar *ns = Text::StrToWCharNew(connStr.v + 7);
-			Win32::WMIQuery *wmi;
-			NEW_CLASS(wmi, Win32::WMIQuery(ns));
+			NotNullPtr<Win32::WMIQuery> wmi;
+			NEW_CLASSNN(wmi, Win32::WMIQuery(ns));
 			if (wmi->IsError())
 			{
-				DEL_CLASS(wmi);
+				wmi.Delete();
 			}
 			else
 			{
@@ -354,11 +354,11 @@ DB::ReadingDB *DB::DBManager::OpenConn(Text::CStringNN connStr, NotNullPtr<IO::L
 	else if (connStr.StartsWith(UTF8STRC("oledb:")))
 	{
 		const WChar *cstr = Text::StrToWCharNew(connStr.v + 6);
-		DB::OLEDBConn *oledb;
-		NEW_CLASS(oledb, DB::OLEDBConn(cstr, log));
+		NotNullPtr<DB::OLEDBConn> oledb;
+		NEW_CLASSNN(oledb, DB::OLEDBConn(cstr, log));
 		if (oledb->GetConnError() != DB::OLEDBConn::CE_NONE)
 		{
-			DEL_CLASS(oledb);
+			oledb.Delete();
 		}
 		else
 		{
@@ -411,6 +411,7 @@ DB::ReadingDB *DB::DBManager::OpenConn(Text::CStringNN connStr, NotNullPtr<IO::L
 			}
 		}
 		Net::MySQLTCPClient *cli = 0;
+		NotNullPtr<Net::MySQLTCPClient> nncli;
 		NotNullPtr<Text::String> uidStr;
 		NotNullPtr<Text::String> pwdStr;
 		if (uidStr.Set(uid) && pwdStr.Set(pwd))
@@ -420,17 +421,17 @@ DB::ReadingDB *DB::DBManager::OpenConn(Text::CStringNN connStr, NotNullPtr<IO::L
 		SDEL_STRING(uid);
 		SDEL_STRING(pwd);
 		SDEL_STRING(schema);
-		if (cli == 0)
+		if (!nncli.Set(cli))
 		{
 
 		}
-		else if (cli->IsError())
+		else if (nncli->IsError())
 		{
-			DEL_CLASS(cli);
+			nncli.Delete();
 		}
 		else
 		{
-			NEW_CLASS(db, DB::DBTool(cli, true, log, DBPREFIX));
+			NEW_CLASS(db, DB::DBTool(nncli, true, log, DBPREFIX));
 			return db;
 		}
 	}
@@ -479,6 +480,7 @@ DB::ReadingDB *DB::DBManager::OpenConn(Text::CStringNN connStr, NotNullPtr<IO::L
 			}
 		}
 		DB::PostgreSQLConn *cli;
+		NotNullPtr<DB::PostgreSQLConn> nncli;
 		NotNullPtr<Text::String> serverStr;
 		NotNullPtr<Text::String> schemaStr;
 		if (serverStr.Set(server) && schemaStr.Set(schema))
@@ -493,17 +495,17 @@ DB::ReadingDB *DB::DBManager::OpenConn(Text::CStringNN connStr, NotNullPtr<IO::L
 		SDEL_STRING(uid);
 		SDEL_STRING(pwd);
 		SDEL_STRING(schema);
-		if (cli == 0)
+		if (!nncli.Set(cli))
 		{
 
 		}
-		else if (cli->IsConnError())
+		else if (nncli->IsConnError())
 		{
-			DEL_CLASS(cli);
+			nncli.Delete();
 		}
 		else
 		{
-			NEW_CLASS(db, DB::DBTool(cli, true, log, DBPREFIX));
+			NEW_CLASS(db, DB::DBTool(nncli, true, log, DBPREFIX));
 			return db;
 		}
 	}
@@ -556,6 +558,7 @@ DB::ReadingDB *DB::DBManager::OpenConn(Text::CStringNN connStr, NotNullPtr<IO::L
 			}
 		}
 		DB::TDSConn *cli = 0;
+		NotNullPtr<DB::TDSConn> nncli;
 		UInt16 port = 1433;
 		if (server)
 		{
@@ -576,9 +579,9 @@ DB::ReadingDB *DB::DBManager::OpenConn(Text::CStringNN connStr, NotNullPtr<IO::L
 		SDEL_STRING(uid);
 		SDEL_STRING(pwd);
 		SDEL_STRING(schema);
-		if (cli)
+		if (nncli.Set(cli))
 		{
-			NEW_CLASS(db, DB::DBTool(cli, true, log, DBPREFIX));
+			NEW_CLASS(db, DB::DBTool(nncli, true, log, DBPREFIX));
 			return db;
 		}
 	}

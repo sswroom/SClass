@@ -382,9 +382,9 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhoto(NotNullPtr<Net::WebS
 						IO::MemoryStream mstm;
 						nimgList.AddImage(dimg, 0);
 						Exporter::GUIJPGExporter exporter;
-						param = exporter.CreateParam(&nimgList);
+						param = exporter.CreateParam(nimgList);
 						exporter.SetParamInt32(param, 0, 95);
-						exporter.ExportFile(mstm, CSTR(""), &nimgList, param);
+						exporter.ExportFile(mstm, CSTR(""), nimgList, param);
 						exporter.DeleteParam(param);
 						ResponseMstm(req, resp, mstm, CSTR("image/jpeg"));
 
@@ -698,9 +698,9 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhotoId(NotNullPtr<Net::We
 					IO::MemoryStream mstm;
 					nimgList.AddImage(dimg, 0);
 					Exporter::GUIJPGExporter exporter;
-					param = exporter.CreateParam(&nimgList);
+					param = exporter.CreateParam(nimgList);
 					exporter.SetParamInt32(param, 0, 95);
-					exporter.ExportFile(mstm, CSTR(""), &nimgList, param);
+					exporter.ExportFile(mstm, CSTR(""), nimgList, param);
 					exporter.DeleteParam(param);
 					ResponseMstm(req, resp, mstm, CSTR("image/jpeg"));
 
@@ -906,9 +906,9 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhotoWId(NotNullPtr<Net::W
 					IO::MemoryStream mstm;
 					nimgList.AddImage(dimg, 0);
 					Exporter::GUIJPGExporter exporter;
-					param = exporter.CreateParam(&nimgList);
+					param = exporter.CreateParam(nimgList);
 					exporter.SetParamInt32(param, 0, 95);
-					exporter.ExportFile(mstm, CSTR(""), &nimgList, param);
+					exporter.ExportFile(mstm, CSTR(""), nimgList, param);
 					exporter.DeleteParam(param);
 					ResponseMstm(req, resp, mstm, CSTR("image/jpeg"));
 

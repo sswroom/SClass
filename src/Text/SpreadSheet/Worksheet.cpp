@@ -190,7 +190,7 @@ Text::SpreadSheet::Worksheet::Worksheet(NotNullPtr<Text::String> name)
 	NEW_CLASS(drawings, Data::ArrayList<WorksheetDrawing*>());
 }
 
-Text::SpreadSheet::Worksheet::Worksheet(Text::CString name)
+Text::SpreadSheet::Worksheet::Worksheet(Text::CStringNN name)
 {
 	this->name = Text::String::New(name);
 	this->freezeHori = 0;
@@ -232,13 +232,13 @@ Text::SpreadSheet::Worksheet::~Worksheet()
 	DEL_CLASS(this->drawings);	
 }
 
-Text::SpreadSheet::Worksheet *Text::SpreadSheet::Worksheet::Clone(const IStyleCtrl *srcCtrl, IStyleCtrl *newCtrl)
+NotNullPtr<Text::SpreadSheet::Worksheet> Text::SpreadSheet::Worksheet::Clone(const IStyleCtrl *srcCtrl, IStyleCtrl *newCtrl)
 {
 	UOSInt i;
 	UOSInt j;
-	Text::SpreadSheet::Worksheet *newWS;
+	NotNullPtr<Text::SpreadSheet::Worksheet> newWS;
 	RowData *row;
-	NEW_CLASS(newWS, Text::SpreadSheet::Worksheet(this->name));
+	NEW_CLASSNN(newWS, Text::SpreadSheet::Worksheet(this->name));
 	newWS->freezeHori = this->freezeHori;
 	newWS->freezeVert = this->freezeVert;
 	newWS->marginLeft = this->marginLeft;
@@ -412,14 +412,19 @@ Bool Text::SpreadSheet::Worksheet::SetCellString(UOSInt row, UOSInt col, NotNull
 	return this->SetCellString(row, col, 0, val);
 }
 
-Bool Text::SpreadSheet::Worksheet::SetCellString(UOSInt row, UOSInt col, Text::CString val)
+Bool Text::SpreadSheet::Worksheet::SetCellString(UOSInt row, UOSInt col, Text::CStringNN val)
 {
 	return this->SetCellString(row, col, 0, val);
 }
 
-Bool Text::SpreadSheet::Worksheet::SetCellDate(UOSInt row, UOSInt col, Data::DateTime *val)
+Bool Text::SpreadSheet::Worksheet::SetCellTS(UOSInt row, UOSInt col, Data::Timestamp val)
 {
-	return this->SetCellDate(row, col, 0, val);
+	return this->SetCellTS(row, col, 0, val);
+}
+
+Bool Text::SpreadSheet::Worksheet::SetCellDateTime(UOSInt row, UOSInt col, NotNullPtr<Data::DateTime> val)
+{
+	return this->SetCellDateTime(row, col, 0, val);
 }
 
 Bool Text::SpreadSheet::Worksheet::SetCellDouble(UOSInt row, UOSInt col, Double val)
@@ -430,6 +435,11 @@ Bool Text::SpreadSheet::Worksheet::SetCellDouble(UOSInt row, UOSInt col, Double 
 Bool Text::SpreadSheet::Worksheet::SetCellInt32(UOSInt row, UOSInt col, Int32 val)
 {
 	return this->SetCellInt32(row, col, 0, val);
+}
+
+Bool Text::SpreadSheet::Worksheet::SetCellInt64(UOSInt row, UOSInt col, Int64 val)
+{
+	return this->SetCellInt64(row, col, 0, val);
 }
 
 Bool Text::SpreadSheet::Worksheet::SetCellStyle(UOSInt row, UOSInt col, Text::SpreadSheet::CellStyle *style)
@@ -540,7 +550,7 @@ Bool Text::SpreadSheet::Worksheet::SetCellString(UOSInt row, UOSInt col, CellSty
 	return true;
 }
 
-Bool Text::SpreadSheet::Worksheet::SetCellString(UOSInt row, UOSInt col, CellStyle *style, Text::CString val)
+Bool Text::SpreadSheet::Worksheet::SetCellString(UOSInt row, UOSInt col, CellStyle *style, Text::CStringNN val)
 {
 	CellData *cell;
 	cell = GetCellData(row, col, false);
@@ -556,7 +566,23 @@ Bool Text::SpreadSheet::Worksheet::SetCellString(UOSInt row, UOSInt col, CellSty
 	return true;
 }
 
-Bool Text::SpreadSheet::Worksheet::SetCellDate(UOSInt row, UOSInt col, CellStyle *style, Data::DateTime *val)
+Bool Text::SpreadSheet::Worksheet::SetCellTS(UOSInt row, UOSInt col, CellStyle *style, Data::Timestamp val)
+{
+	UTF8Char sbuff[32];
+	UTF8Char *sptr;
+	CellData *cell;
+	cell = GetCellData(row, col, false);
+	if (cell == 0)
+		return false;
+	cell->cdt = CellDataType::DateTime;
+	SDEL_STRING(cell->cellValue);
+	sptr = val.ToString(sbuff, "yyyy-MM-ddTHH:mm:ss.fff");
+	cell->cellValue = Text::String::NewP(sbuff, sptr).Ptr();
+	if (style) cell->style = style;
+	return true;
+}
+
+Bool Text::SpreadSheet::Worksheet::SetCellDateTime(UOSInt row, UOSInt col, CellStyle *style, NotNullPtr<Data::DateTime> val)
 {
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
@@ -599,6 +625,22 @@ Bool Text::SpreadSheet::Worksheet::SetCellInt32(UOSInt row, UOSInt col, CellStyl
 	cell->cdt = CellDataType::Number;
 	SDEL_STRING(cell->cellValue);
 	sptr = Text::StrInt32(sbuff, val);
+	cell->cellValue = Text::String::NewP(sbuff, sptr).Ptr();
+	if (style) cell->style = style;
+	return true;
+}
+
+Bool Text::SpreadSheet::Worksheet::SetCellInt64(UOSInt row, UOSInt col, CellStyle *style, Int64 val)
+{
+	UTF8Char sbuff[32];
+	UTF8Char *sptr;
+	CellData *cell;
+	cell = GetCellData(row, col, false);
+	if (cell == 0)
+		return false;
+	cell->cdt = CellDataType::Number;
+	SDEL_STRING(cell->cellValue);
+	sptr = Text::StrInt64(sbuff, val);
 	cell->cellValue = Text::String::NewP(sbuff, sptr).Ptr();
 	if (style) cell->style = style;
 	return true;

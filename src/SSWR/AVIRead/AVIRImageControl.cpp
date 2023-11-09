@@ -202,7 +202,7 @@ void SSWR::AVIRead::AVIRImageControl::InitDir()
 							mutUsage.BeginUse();
 							{
 								IO::FileStream fs(CSTRP(sbuff2, sptr2End), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer);
-								exporter.ExportFile(fs, CSTRP(sbuff2, sptr2End), &imgList, 0);
+								exporter.ExportFile(fs, CSTRP(sbuff2, sptr2End), imgList, 0);
 							}
 							mutUsage.EndUse();
 						}
@@ -299,12 +299,12 @@ void SSWR::AVIRead::AVIRImageControl::ExportQueued()
 				img->To32bpp();
 				sptr2 = IO::Path::ReplaceExt(sptr, UTF8STRC("jpg"));
 				IO::FileStream fs(CSTRP(sbuff, sptr2), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer);
-				void *param = jpgExporter.CreateParam(&imgList);
+				void *param = jpgExporter.CreateParam(imgList);
 				if (param)
 				{
 					jpgExporter.SetParamInt32(param, 0, 100);
 				}
-				jpgExporter.ExportFile(fs, CSTRP(sbuff, sptr2), &imgList, param);
+				jpgExporter.ExportFile(fs, CSTRP(sbuff, sptr2), imgList, param);
 				if (param)
 				{
 					jpgExporter.DeleteParam(param);
@@ -314,7 +314,7 @@ void SSWR::AVIRead::AVIRImageControl::ExportQueued()
 			{
 				sptr2 = IO::Path::ReplaceExt(sptr, UTF8STRC("tif"));
 				IO::FileStream fs(CSTRP(sbuff, sptr2), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer);
-				tifExporter.ExportFile(fs, CSTRP(sbuff, sptr2), &imgList, 0);
+				tifExporter.ExportFile(fs, CSTRP(sbuff, sptr2), imgList, 0);
 			}
 			ioMutUsage.EndUse();
 		}

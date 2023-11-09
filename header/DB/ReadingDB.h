@@ -39,7 +39,7 @@ namespace DB
 		virtual Bool IsFullConn() const; //false = read only, true = DBConn
 		virtual Bool IsDBTool() const; //true = ReadingDBTool
 
-		static Bool IsDBObj(IO::ParsedObject *pobj);
+		static Bool IsDBObj(NotNullPtr<IO::ParsedObject> pobj);
 	};
 }
 #endif

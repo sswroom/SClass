@@ -32,7 +32,7 @@ Bool Exporter::GUIJPGExporter::GetOutputName(UOSInt index, UTF8Char *nameBuff, U
 	return false;
 }
 
-Bool Exporter::GUIJPGExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text::CStringNN fileName, IO::ParsedObject *pobj, void *param)
+Bool Exporter::GUIJPGExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text::CStringNN fileName, NotNullPtr<IO::ParsedObject> pobj, void *param)
 {
 	UInt8 *tmpBuff;
 	GdkPixbuf *image = (GdkPixbuf*)ToImage(pobj, &tmpBuff);
@@ -65,7 +65,7 @@ Bool Exporter::GUIJPGExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Te
 		Media::ImageList *imgList;
 		if (pobj->GetParserType() == IO::ParserType::ImageList)
 		{
-			imgList = (Media::ImageList*)pobj;
+			imgList = (Media::ImageList*)pobj.Ptr();
 			srcImg = imgList->GetImage(0, 0);
 		}
 		Media::JPEGFile::WriteJPGBuffer(stm, (const UInt8*)buff, buffSize, srcImg);
@@ -83,7 +83,7 @@ UOSInt Exporter::GUIJPGExporter::GetParamCnt()
 	return 1;
 }
 
-void *Exporter::GUIJPGExporter::CreateParam(IO::ParsedObject *pobj)
+void *Exporter::GUIJPGExporter::CreateParam(NotNullPtr<IO::ParsedObject> pobj)
 {
 	Int32 *val = MemAlloc(Int32, 1);
 	*val = 100;
@@ -95,7 +95,7 @@ void Exporter::GUIJPGExporter::DeleteParam(void *param)
 	MemFree(param);
 }
 
-Bool Exporter::GUIJPGExporter::GetParamInfo(UOSInt index, ParamInfo *info)
+Bool Exporter::GUIJPGExporter::GetParamInfo(UOSInt index, NotNullPtr<ParamInfo> info)
 {
 	if (index == 0)
 	{

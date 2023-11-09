@@ -1372,11 +1372,11 @@ Int32 Exporter::PNGExporter::GetName()
 	return *(Int32*)"PNGE";
 }
 
-IO::FileExporter::SupportType Exporter::PNGExporter::IsObjectSupported(IO::ParsedObject *pobj)
+IO::FileExporter::SupportType Exporter::PNGExporter::IsObjectSupported(NotNullPtr<IO::ParsedObject> pobj)
 {
 	if (pobj->GetParserType() != IO::ParserType::ImageList)
 		return IO::FileExporter::SupportType::NotSupported;
-	Media::ImageList *imgList = (Media::ImageList*)pobj;
+	NotNullPtr<Media::ImageList> imgList = NotNullPtr<Media::ImageList>::ConvertFrom(pobj);
 	if (imgList->GetCount() != 1)
 		return IO::FileExporter::SupportType::NotSupported;
 	Media::Image *img = imgList->GetImage(0, 0);
@@ -1426,11 +1426,11 @@ Bool Exporter::PNGExporter::GetOutputName(UOSInt index, UTF8Char *nameBuff, UTF8
 	return false;
 }
 
-Bool Exporter::PNGExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text::CStringNN fileName, IO::ParsedObject *pobj, void *param)
+Bool Exporter::PNGExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text::CStringNN fileName, NotNullPtr<IO::ParsedObject> pobj, void *param)
 {
 	if (IsObjectSupported(pobj) == SupportType::NotSupported)
 		return false;
-	Media::ImageList *imgList = (Media::ImageList*)pobj;
+	NotNullPtr<Media::ImageList> imgList = NotNullPtr<Media::ImageList>::ConvertFrom(pobj);
 	imgList->ToStaticImage(0);
 	Media::StaticImage *img = (Media::StaticImage*)imgList->GetImage(0, 0);
 	UInt8 *tmpBuff;

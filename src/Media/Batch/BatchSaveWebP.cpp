@@ -17,13 +17,13 @@ Media::Batch::BatchSaveWebP::~BatchSaveWebP()
 {
 }
 
-void Media::Batch::BatchSaveWebP::ImageOutput(Media::ImageList *imgList, const UTF8Char *fileId, const UTF8Char *targetId)
+void Media::Batch::BatchSaveWebP::ImageOutput(NotNullPtr<Media::ImageList> imgList, Text::CStringNN fileId, Text::CStringNN targetId)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
-	sptr = Text::StrConcat(sbuff, fileId);
+	sptr = fileId.ConcatTo(sbuff);
 	void *param;
-	sptr = Text::StrConcatC(Text::StrConcat(sptr, targetId), UTF8STRC(".webp"));
+	sptr = Text::StrConcatC(targetId.ConcatTo(sptr), UTF8STRC(".webp"));
 	IO::FileStream fs(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer);
 	param = this->exporter.CreateParam(imgList);
 	this->exporter.SetParamInt32(param, 0, (Int32)this->quality);

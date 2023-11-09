@@ -20,13 +20,13 @@ Int32 Exporter::CIPExporter::GetName()
 	return *(Int32*)"CIPE";
 }
 
-IO::FileExporter::SupportType Exporter::CIPExporter::IsObjectSupported(IO::ParsedObject *pobj)
+IO::FileExporter::SupportType Exporter::CIPExporter::IsObjectSupported(NotNullPtr<IO::ParsedObject> pobj)
 {
 	if (pobj->GetParserType() != IO::ParserType::MapLayer)
 	{
 		return IO::FileExporter::SupportType::NotSupported;
 	}
-	Map::MapDrawLayer *layer = (Map::MapDrawLayer *)pobj;
+	NotNullPtr<Map::MapDrawLayer> layer = NotNullPtr<Map::MapDrawLayer>::ConvertFrom(pobj);
 	Map::DrawLayerType layerType = layer->GetLayerType();
 	if (layerType == Map::DRAW_LAYER_POINT || layerType == Map::DRAW_LAYER_POINT3D)
 	{
@@ -54,7 +54,7 @@ Bool Exporter::CIPExporter::GetOutputName(UOSInt index, UTF8Char *nameBuff, UTF8
 	return false;
 }
 
-Bool Exporter::CIPExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text::CStringNN fileName, IO::ParsedObject *pobj, void *param)
+Bool Exporter::CIPExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text::CStringNN fileName, NotNullPtr<IO::ParsedObject> pobj, void *param)
 {
 	UInt8 buff[256];
 	UTF8Char sbuff[256];
@@ -66,7 +66,7 @@ Bool Exporter::CIPExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text:
 	{
 		return false;
 	}
-	Map::MapDrawLayer *layer = (Map::MapDrawLayer *)pobj;
+	NotNullPtr<Map::MapDrawLayer> layer = NotNullPtr<Map::MapDrawLayer>::ConvertFrom(pobj);
 	Map::DrawLayerType layerType = layer->GetLayerType();
 	Int32 iLayerType;
 	if (layerType == Map::DRAW_LAYER_POINT || layerType == Map::DRAW_LAYER_POINT3D)
@@ -381,13 +381,13 @@ UOSInt Exporter::CIPExporter::GetParamCnt()
 	return 2;
 }
 
-void *Exporter::CIPExporter::CreateParam(IO::ParsedObject *pobj)
+void *Exporter::CIPExporter::CreateParam(NotNullPtr<IO::ParsedObject> pobj)
 {
 	if (this->IsObjectSupported(pobj) == IO::FileExporter::SupportType::MultiFiles)
 	{
 		Exporter::CIPExporter::CIPParam *param;
 		param = MemAlloc(Exporter::CIPExporter::CIPParam, 1);
-		param->layer = (Map::MapDrawLayer *)pobj;
+		param->layer = NotNullPtr<Map::MapDrawLayer>::ConvertFrom(pobj);
 		param->dispCol = 0;
 
 		if (param->layer->GetLayerType() == Map::DRAW_LAYER_POINT || param->layer->GetLayerType() == Map::DRAW_LAYER_POINT3D)
@@ -408,7 +408,7 @@ void Exporter::CIPExporter::DeleteParam(void *param)
 	MemFree(param);
 }
 
-Bool Exporter::CIPExporter::GetParamInfo(UOSInt index, IO::FileExporter::ParamInfo *info)
+Bool Exporter::CIPExporter::GetParamInfo(UOSInt index, NotNullPtr<IO::FileExporter::ParamInfo> info)
 {
 	if (index == 0)
 	{

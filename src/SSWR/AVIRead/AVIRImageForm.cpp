@@ -523,7 +523,7 @@ Bool __stdcall SSWR::AVIRead::AVIRImageForm::OnImageMouseMove(void *userObj, Mat
 			dG = 0;
 			dB = 0;
 		}
-		if (me->imgList && me->imgList->HasThermoImage())
+		if (me->imgList->HasThermoImage())
 		{
 			sb.AppendC(UTF8STRC(", T = "));
 			sb.AppendDouble(me->imgList->GetThermoValue(imgPos.x / UOSInt2Double(me->currImg->info.dispSize.x), imgPos.y / UOSInt2Double(me->currImg->info.dispSize.y)));
@@ -572,11 +572,8 @@ void SSWR::AVIRead::AVIRImageForm::UpdateInfo()
 		this->currImg->ToString(sb);
 		sb.AppendC(UTF8STRC("\r\nDelay: "));
 		sb.AppendU32(this->currImgDelay);
-		if (this->imgList)
-		{
-			sb.AppendC(UTF8STRC("\r\n"));
-			this->imgList->ToValueString(sb);
-		}
+		sb.AppendC(UTF8STRC("\r\n"));
+		this->imgList->ToValueString(sb);
 		this->txtInfo->SetText(sb.ToCString());
 		if (this->currImg->info.color.GetRAWICC())
 		{
@@ -594,7 +591,7 @@ void SSWR::AVIRead::AVIRImageForm::UpdateInfo()
 	}
 }
 
-SSWR::AVIRead::AVIRImageForm::AVIRImageForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Media::ImageList *imgList) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRImageForm::AVIRImageForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<Media::ImageList> imgList) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
 	UTF8Char sbuff[512];
@@ -670,7 +667,7 @@ SSWR::AVIRead::AVIRImageForm::AVIRImageForm(UI::GUIClientControl *parent, NotNul
 
 SSWR::AVIRead::AVIRImageForm::~AVIRImageForm()
 {
-	DEL_CLASS(this->imgList);
+	this->imgList.Delete();
 	this->ClearChildren();
 	this->core->GetColorMgr()->DeleteSess(this->colorSess);
 }

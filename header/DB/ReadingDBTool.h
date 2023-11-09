@@ -35,7 +35,7 @@ namespace DB
 		typedef Int32 (__stdcall * SQLFailedFunc)(Text::CString sqlCmd, TriggerType trigType);
 
 	protected:
-		DB::DBConn *db;
+		NotNullPtr<DB::DBConn> db;
 		NotNullPtr<IO::LogTool> log;
 		DB::DBReader *lastReader;
 		UInt32 readerCnt;
@@ -67,7 +67,7 @@ namespace DB
 		UOSInt SplitMSSQL(UTF8Char **outStrs, UOSInt maxCnt, UTF8Char *oriStr);
 		UOSInt SplitUnkSQL(UTF8Char **outStrs, UOSInt maxCnt, UTF8Char *oriStr);
 	public:
-		ReadingDBTool(DB::DBConn *db, Bool needRelease, NotNullPtr<IO::LogTool> log, Text::CString logPrefix);
+		ReadingDBTool(NotNullPtr<DB::DBConn> db, Bool needRelease, NotNullPtr<IO::LogTool> log, Text::CString logPrefix);
 		virtual ~ReadingDBTool();
 
 		void SetFailTrigger(SQLFailedFunc trig);
@@ -77,7 +77,7 @@ namespace DB
 		Bool IsAxisAware() const;
 		Bool IsDataError(const UTF8Char *errCode);
 		virtual void GetLastErrorMsg(NotNullPtr<Text::StringBuilderUTF8> sb);
-		DB::DBConn *GetDBConn();
+		NotNullPtr<DB::DBConn> GetDBConn();
 		Int8 GetTzQhr() const;
 		virtual void Reconnect();
 

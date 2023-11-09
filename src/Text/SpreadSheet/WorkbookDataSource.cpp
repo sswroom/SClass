@@ -5,7 +5,7 @@
 #include "Text/SpreadSheet/Worksheet.h"
 
 
-Text::SpreadSheet::WorkbookDataSource::WorkbookDataSource(Worksheet *sheet, UOSInt firstRow, UOSInt lastRow, UOSInt firstCol, UOSInt lastCol)
+Text::SpreadSheet::WorkbookDataSource::WorkbookDataSource(NotNullPtr<Worksheet> sheet, UOSInt firstRow, UOSInt lastRow, UOSInt firstCol, UOSInt lastCol)
 {
 	this->sheet = sheet;
 	this->firstRow = firstRow;
@@ -19,7 +19,7 @@ Text::SpreadSheet::WorkbookDataSource::~WorkbookDataSource()
 
 }
 
-UTF8Char *Text::SpreadSheet::WorkbookDataSource::ToCodeRange(UTF8Char *sbuff)
+UTF8Char *Text::SpreadSheet::WorkbookDataSource::ToCodeRange(UTF8Char *sbuff) const
 {
 	sbuff = this->sheet->GetName()->ConcatTo(sbuff);
 	*sbuff++ = '!';
@@ -35,27 +35,27 @@ UTF8Char *Text::SpreadSheet::WorkbookDataSource::ToCodeRange(UTF8Char *sbuff)
 	return sbuff;
 }
 
-Text::SpreadSheet::Worksheet *Text::SpreadSheet::WorkbookDataSource::GetSheet()
+NotNullPtr<Text::SpreadSheet::Worksheet> Text::SpreadSheet::WorkbookDataSource::GetSheet() const
 {
 	return this->sheet;
 }
 
-UOSInt Text::SpreadSheet::WorkbookDataSource::GetFirstRow()
+UOSInt Text::SpreadSheet::WorkbookDataSource::GetFirstRow() const
 {
 	return this->firstRow;
 }
 
-UOSInt Text::SpreadSheet::WorkbookDataSource::GetLastRow()
+UOSInt Text::SpreadSheet::WorkbookDataSource::GetLastRow() const
 {
 	return this->lastRow;
 }
 
-UOSInt Text::SpreadSheet::WorkbookDataSource::GetFirstCol()
+UOSInt Text::SpreadSheet::WorkbookDataSource::GetFirstCol() const
 {
 	return this->firstCol;
 }
 
-UOSInt Text::SpreadSheet::WorkbookDataSource::GetLastCol()
+UOSInt Text::SpreadSheet::WorkbookDataSource::GetLastCol() const
 {
 	return this->lastCol;
 }

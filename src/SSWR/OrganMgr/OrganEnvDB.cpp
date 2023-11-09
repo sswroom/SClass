@@ -5241,17 +5241,18 @@ void SSWR::OrganMgr::OrganEnvDB::ExportLite(const UTF8Char *folder)
 				if (fileType == 1 && Text::StrEndsWithICaseC(sptr2, (UOSInt)(sptr2End - sptr2), UTF8STRC(".jpg")))
 				{
 					Media::ImageList *imgList;
+					NotNullPtr<Media::ImageList> nnimgList;
 					{
 						IO::StmData::FileData fd({sbuff2, (UOSInt)(sptr3End - sbuff2)}, false);
 						imgList = (Media::ImageList*)this->parsers.ParseFileType(fd, IO::ParserType::ImageList);
 					}
 
-					if (imgList)
+					if (nnimgList.Set(imgList))
 					{
-						imgList->ToStaticImage(0);
+						nnimgList->ToStaticImage(0);
 						Media::StaticImage *newImg;
 						NotNullPtr<Media::StaticImage> simg;
-						if (simg.Set((Media::StaticImage*)imgList->GetImage(0, 0)))
+						if (simg.Set((Media::StaticImage*)nnimgList->GetImage(0, 0)))
 						{
 							if (simg->info.dispSize.x > 1920 || simg->info.dispSize.y > 1920)
 							{
@@ -5260,18 +5261,18 @@ void SSWR::OrganMgr::OrganEnvDB::ExportLite(const UTF8Char *folder)
 								newImg = resizer.ProcessToNew(simg);
 								if (newImg)
 								{
-									imgList->ReplaceImage(0, newImg);
+									nnimgList->ReplaceImage(0, newImg);
 								}
 							}
 
 						}
-						param = exporter.CreateParam(imgList);
+						param = exporter.CreateParam(nnimgList);
 						exporter.SetParamInt32(param, 0, 95);
 						{
 							IO::FileStream fs(CSTRP(sbuff, sptr2End), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
-							exporter.ExportFile(fs, CSTRP(sbuff, sptr2End), imgList, param);
+							exporter.ExportFile(fs, CSTRP(sbuff, sptr2End), nnimgList, param);
 						}
-						DEL_CLASS(imgList);
+						nnimgList.Delete();
 					}
 					else
 					{

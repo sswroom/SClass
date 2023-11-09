@@ -23,14 +23,12 @@ Exporter::GUIExporter::~GUIExporter()
 {
 }
 
-IO::FileExporter::SupportType Exporter::GUIExporter::IsObjectSupported(IO::ParsedObject *pobj)
+IO::FileExporter::SupportType Exporter::GUIExporter::IsObjectSupported(NotNullPtr<IO::ParsedObject> pobj)
 {
-	Media::ImageList *imgList;
-	if (pobj == 0)
-		return IO::FileExporter::SupportType::NotSupported;
+	NotNullPtr<Media::ImageList> imgList;
 	if (pobj->GetParserType() != IO::ParserType::ImageList)
 		return IO::FileExporter::SupportType::NotSupported;
-	imgList = (Media::ImageList*)pobj;
+	imgList = NotNullPtr<Media::ImageList>::ConvertFrom(pobj);
 	if (imgList->GetCount() != 1)
 		return IO::FileExporter::SupportType::NotSupported;
 	Media::Image *img = imgList->GetImage(0, 0);
@@ -77,19 +75,15 @@ IO::FileExporter::SupportType Exporter::GUIExporter::IsObjectSupported(IO::Parse
 	}
 }
 
-void *Exporter::GUIExporter::ToImage(IO::ParsedObject *pobj, UInt8 **relBuff)
+void *Exporter::GUIExporter::ToImage(NotNullPtr<IO::ParsedObject> pobj, UInt8 **relBuff)
 {
-	Media::ImageList *imgList;
+	NotNullPtr<Media::ImageList> imgList;
 	*relBuff = 0;
-	if (pobj == 0)
-	{
-		return 0;
-	}
 	if (pobj->GetParserType() != IO::ParserType::ImageList)
 	{
 		return 0;
 	}
-	imgList = (Media::ImageList*)pobj;
+	imgList = NotNullPtr<Media::ImageList>::ConvertFrom(pobj);
 	if (imgList->GetCount() != 1)
 	{
 		return 0;

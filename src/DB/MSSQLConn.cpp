@@ -108,9 +108,9 @@ DB::DBTool *DB::MSSQLConn::CreateDBToolTCP(Text::CStringNN serverHost, UInt16 po
 	Text::StringBuilderUTF8 sb;
 	sb.Append(logPrefix);
 	sb.AppendC(UTF8STRC("Error in connecting to database: "));
-	DB::DBConn *conn = OpenConnTCP(serverHost, port, encrypt, database, userName, password, log, &sb);
 	DB::DBTool *db;
-	if (conn)
+	NotNullPtr<DB::DBConn> conn;
+	if (conn.Set(OpenConnTCP(serverHost, port, encrypt, database, userName, password, log, &sb)))
 	{
 		NEW_CLASS(db, DB::DBTool(conn, true, log, logPrefix));
 		return db;

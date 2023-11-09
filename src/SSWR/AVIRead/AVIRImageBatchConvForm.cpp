@@ -235,22 +235,23 @@ void SSWR::AVIRead::AVIRImageBatchConvForm::MTConvertFile(ConvertSess *sess, Tex
 void SSWR::AVIRead::AVIRImageBatchConvForm::ConvertFile(ConvertSess *sess, Text::CStringNN srcFile, Text::CStringNN destFile)
 {
 	Media::ImageList *imgList;
+	NotNullPtr<Media::ImageList> nnimgList;
 	void *param;
 	{
 		IO::StmData::FileData fd(srcFile, false);
 		imgList = (Media::ImageList*)this->core->GetParserList()->ParseFileType(fd, IO::ParserType::ImageList);
 	}
-	if (imgList)
+	if (nnimgList.Set(imgList))
 	{
-		imgList->ToStaticImage(0);
-		param = sess->exporter->CreateParam(imgList);
+		nnimgList->ToStaticImage(0);
+		param = sess->exporter->CreateParam(nnimgList);
 		if (param)
 		{
 			sess->exporter->SetParamInt32(param, 0, sess->quality);
 		}
 		{
 			IO::FileStream fs(destFile, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
-			if (!sess->exporter->ExportFile(fs, destFile, imgList, param))
+			if (!sess->exporter->ExportFile(fs, destFile, nnimgList, param))
 			{
 				Text::StringBuilderUTF8 sb;
 				sb.AppendC(UTF8STRC("Error in converting to "));
@@ -266,7 +267,7 @@ void SSWR::AVIRead::AVIRImageBatchConvForm::ConvertFile(ConvertSess *sess, Text:
 		{
 			sess->exporter->DeleteParam(param);
 		}
-		DEL_CLASS(imgList);
+		nnimgList.Delete();
 	}
 	else
 	{

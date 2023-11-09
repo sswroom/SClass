@@ -48,7 +48,7 @@ namespace SSWR
 			UI::GUICheckBox *chkTime;
 			UI::GUILabel *lblVAngle;
 			UI::GUITrackBar *tbVAngle;
-			Map::MapEnv *env;
+			NotNullPtr<Map::MapEnv> env;
 			Map::DrawMapRenderer *envRenderer;
 			Bool scaleChanging;
 			UI::GUITreeView::TreeItem *popNode;
@@ -100,7 +100,7 @@ namespace SSWR
 			void HKOPortal(Text::CString listFile, Text::CString filePath);
 			void OpenCSV(Text::CStringNN url, UInt32 codePage, Text::CStringNN name, Text::CString nameCol, Text::CString latCol, Text::CString lonCol);
 		public:
-			AVIRGISForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Map::MapEnv *env, Map::MapView *view);
+			AVIRGISForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<Map::MapEnv> env, Map::MapView *view);
 			virtual ~AVIRGISForm();
 
 			virtual void EventMenuClicked(UInt16 cmdId);

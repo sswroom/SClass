@@ -90,8 +90,9 @@ namespace SSWR
 			Net::SSLEngine *ssl;
 			IO::LogTool log;
 			DB::ReadingDB *currDB;
+			Data::QueryConditions *currCond;
 			NotNullPtr<Media::ColorManagerSess> colorSess;
-			Map::MapEnv *mapEnv;
+			NotNullPtr<Map::MapEnv> mapEnv;
 			NotNullPtr<Map::DBMapLayer> dbLayer;
 			Math::Coord2D<OSInt> mapDownPos;
 			Bool sqlFileMode;
@@ -128,7 +129,7 @@ namespace SSWR
 			void UpdateSvrConnList();
 			void RunSQLFile(DB::ReadingDBTool *db, NotNullPtr<Text::String> fileName);
 
-			Data::Class *CreateTableClass(Text::CString schemaName, Text::CString tableName);
+			Data::Class *CreateTableClass(Text::CString schemaName, Text::CStringNN tableName);
 			void CopyTableCreate(DB::SQLType sqlType, Bool axisAware);
 			void ExportTableData(DB::SQLType sqlType, Bool axisAware);
 			void ExportTableCSV();
@@ -140,7 +141,7 @@ namespace SSWR
 			virtual void EventMenuClicked(UInt16 cmdId);
 			virtual void OnMonitorChanged();
 
-			void ConnAdd(DB::DBConn *conn);
+			void ConnAdd(NotNullPtr<DB::DBConn> conn);
 		};
 	}
 }

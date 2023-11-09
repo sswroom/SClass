@@ -390,37 +390,37 @@ void Text::SpreadSheet::Workbook::SetPalette(UInt32 *palette)
 	MemCopyNO(this->palette, palette, sizeof(UInt32) * 56);
 }
 
-Text::SpreadSheet::Worksheet *Text::SpreadSheet::Workbook::AddWorksheet()
+NotNullPtr<Text::SpreadSheet::Worksheet> Text::SpreadSheet::Workbook::AddWorksheet()
 {
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
-	Text::SpreadSheet::Worksheet *ws;
+	NotNullPtr<Text::SpreadSheet::Worksheet> ws;
 	sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("Sheet")), this->sheets.GetCount());
-	NEW_CLASS(ws, Text::SpreadSheet::Worksheet(CSTRP(sbuff, sptr)));
+	NEW_CLASSNN(ws, Text::SpreadSheet::Worksheet(CSTRP(sbuff, sptr)));
 	this->sheets.Add(ws);
 	return ws;
 }
 
-Text::SpreadSheet::Worksheet *Text::SpreadSheet::Workbook::AddWorksheet(NotNullPtr<Text::String> name)
+NotNullPtr<Text::SpreadSheet::Worksheet> Text::SpreadSheet::Workbook::AddWorksheet(NotNullPtr<Text::String> name)
 {
-	Text::SpreadSheet::Worksheet *ws;
-	NEW_CLASS(ws, Text::SpreadSheet::Worksheet(name));
+	NotNullPtr<Text::SpreadSheet::Worksheet> ws;
+	NEW_CLASSNN(ws, Text::SpreadSheet::Worksheet(name));
 	this->sheets.Add(ws);
 	return ws;
 }
 
-Text::SpreadSheet::Worksheet *Text::SpreadSheet::Workbook::AddWorksheet(Text::CString name)
+NotNullPtr<Text::SpreadSheet::Worksheet> Text::SpreadSheet::Workbook::AddWorksheet(Text::CStringNN name)
 {
-	Text::SpreadSheet::Worksheet *ws;
-	NEW_CLASS(ws, Text::SpreadSheet::Worksheet(name));
+	NotNullPtr<Text::SpreadSheet::Worksheet> ws;
+	NEW_CLASSNN(ws, Text::SpreadSheet::Worksheet(name));
 	this->sheets.Add(ws);
 	return ws;
 }
 
-Text::SpreadSheet::Worksheet *Text::SpreadSheet::Workbook::InsertWorksheet(UOSInt index, Text::CString name)
+NotNullPtr<Text::SpreadSheet::Worksheet> Text::SpreadSheet::Workbook::InsertWorksheet(UOSInt index, Text::CStringNN name)
 {
-	Text::SpreadSheet::Worksheet *ws;
-	NEW_CLASS(ws, Text::SpreadSheet::Worksheet(name));
+	NotNullPtr<Text::SpreadSheet::Worksheet> ws;
+	NEW_CLASSNN(ws, Text::SpreadSheet::Worksheet(name));
 	this->sheets.Insert(index, ws);
 	return ws;
 }

@@ -735,7 +735,7 @@ UI::GUIMapControl::GUIMapControl(NotNullPtr<UI::GUICore> ui, UI::GUIClientContro
 	}
 }
 
-UI::GUIMapControl::GUIMapControl(NotNullPtr<GUICore> ui, UI::GUIClientControl *parent, NotNullPtr<Media::DrawEngine> eng, Map::MapEnv *mapEnv, NotNullPtr<Media::ColorManagerSess> colorSess) : UI::GUICustomDraw(ui, parent, eng)
+UI::GUIMapControl::GUIMapControl(NotNullPtr<GUICore> ui, UI::GUIClientControl *parent, NotNullPtr<Media::DrawEngine> eng, NotNullPtr<Map::MapEnv> mapEnv, NotNullPtr<Media::ColorManagerSess> colorSess) : UI::GUICustomDraw(ui, parent, eng)
 {
 	this->colorSess = colorSess;
 	this->colorSess->AddHandler(*this);
@@ -753,7 +753,7 @@ UI::GUIMapControl::GUIMapControl(NotNullPtr<GUICore> ui, UI::GUIClientControl *p
 	this->mouseUpHdlr = 0;
 	this->drawHdlr = 0;
 	this->drawHdlrObj = 0;
-	this->mapEnv = mapEnv;
+	this->mapEnv = mapEnv.Ptr();
 	this->imgTimeoutTick = 0;
 
 	this->markerPos = Math::Coord2DDbl(0, 0);

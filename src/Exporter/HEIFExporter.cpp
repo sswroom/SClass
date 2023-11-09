@@ -20,7 +20,7 @@ Int32 Exporter::HEIFExporter::GetName()
 	return *(Int32*)"HIEF";
 }
 
-IO::FileExporter::SupportType Exporter::HEIFExporter::IsObjectSupported(IO::ParsedObject *pobj)
+IO::FileExporter::SupportType Exporter::HEIFExporter::IsObjectSupported(NotNullPtr<IO::ParsedObject> pobj)
 {
 	if (pobj->GetParserType() != IO::ParserType::ImageList)
 		return IO::FileExporter::SupportType::NotSupported;
@@ -215,7 +215,7 @@ heif_image *HEIFExporter_CreateImage(Media::Image *img)
 	return image;
 }
 
-Bool Exporter::HEIFExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text::CStringNN fileName, IO::ParsedObject *pobj, void *param)
+Bool Exporter::HEIFExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text::CStringNN fileName, NotNullPtr<IO::ParsedObject> pobj, void *param)
 {
 	if (pobj->GetParserType() != IO::ParserType::ImageList)
 		return false;
@@ -228,7 +228,7 @@ Bool Exporter::HEIFExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text
 	{
 		quality = 90;
 	}
-	Media::ImageList *imgList = (Media::ImageList*)pobj;
+	NotNullPtr<Media::ImageList> imgList = NotNullPtr<Media::ImageList>::ConvertFrom(pobj);
 	heif_context *ctx = heif_context_alloc();
 	heif_encoder* encoder;
 	heif_context_get_encoder_for_format(ctx, heif_compression_HEVC, &encoder);
@@ -261,7 +261,7 @@ UOSInt Exporter::HEIFExporter::GetParamCnt()
 	return 1;
 }
 
-void *Exporter::HEIFExporter::CreateParam(IO::ParsedObject *pobj)
+void *Exporter::HEIFExporter::CreateParam(NotNullPtr<IO::ParsedObject> pobj)
 {
 	Int32 *val = MemAlloc(Int32, 1);
 	*val = 100;
@@ -273,7 +273,7 @@ void Exporter::HEIFExporter::DeleteParam(void *param)
 	MemFree(param);
 }
 
-Bool Exporter::HEIFExporter::GetParamInfo(UOSInt index, ParamInfo *info)
+Bool Exporter::HEIFExporter::GetParamInfo(UOSInt index, NotNullPtr<ParamInfo> info)
 {
 	if (index == 0)
 	{

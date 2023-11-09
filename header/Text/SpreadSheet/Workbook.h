@@ -1,7 +1,8 @@
 #ifndef _SM_TEXT_SPREADSHEET_WORKBOOK
 #define _SM_TEXT_SPREADSHEET_WORKBOOK
-#include "IO/ParsedObject.h"
 #include "Data/DateTime.h"
+#include "Data/ArrayListNN.h"
+#include "IO/ParsedObject.h"
 #include "Text/SpreadSheet/IStyleCtrl.h"
 #include "Text/SpreadSheet/WorkbookFont.h"
 #include "Text/SpreadSheet/Worksheet.h"
@@ -26,7 +27,7 @@ namespace Text
 			UOSInt activeSheet;
 			UInt32 palette[56];
 
-			Data::ArrayList<Worksheet*> sheets;
+			Data::ArrayListNN<Worksheet> sheets;
 			Data::ArrayList<CellStyle*> styles;
 			Data::ArrayList<WorkbookFont*> fonts;
 
@@ -78,10 +79,10 @@ namespace Text
 			void GetPalette(UInt32 *palette);
 			void SetPalette(UInt32 *palette);
 
-			Worksheet *AddWorksheet();
-			Worksheet *AddWorksheet(NotNullPtr<Text::String> name);
-			Worksheet *AddWorksheet(Text::CString name);
-			Worksheet *InsertWorksheet(UOSInt index, Text::CString name);
+			NotNullPtr<Worksheet> AddWorksheet();
+			NotNullPtr<Worksheet> AddWorksheet(NotNullPtr<Text::String> name);
+			NotNullPtr<Worksheet> AddWorksheet(Text::CStringNN name);
+			NotNullPtr<Worksheet> InsertWorksheet(UOSInt index, Text::CStringNN name);
 			UOSInt GetCount();
 			Worksheet *GetItem(UOSInt index);
 			void RemoveAt(UOSInt index);

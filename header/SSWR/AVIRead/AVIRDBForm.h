@@ -47,6 +47,7 @@ namespace SSWR
 			Bool needRelease;
 			DB::ReadingDBTool *dbt;
 			IO::LogTool log;
+			Data::QueryConditions *currCond;
 
 			IO::Writer *debugWriter;
 			IO::LogHandler *logHdlr;
@@ -56,7 +57,6 @@ namespace SSWR
 			static void __stdcall OnSQLClicked(void *userObj);
 
 			void UpdateResult(NotNullPtr<DB::DBReader> r);
-			Data::Class *CreateTableClass(Text::CString schemaName, Text::CString tableName);
 			void CopyTableCreate(DB::SQLType sqlType, Bool axisAware);
 			void ExportTableData(DB::SQLType sqlType, Bool axisAware);
 			void ExportTableCSV();

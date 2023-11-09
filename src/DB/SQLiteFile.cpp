@@ -130,6 +130,8 @@ OSInt DB::SQLiteFile::ExecuteNonQuery(Text::CStringNN sql)
 		}
 		else
 		{
+			SDEL_STRING(this->lastErrMsg);
+			this->lastErrMsg = Text::String::NewNotNullSlow((const UTF8Char*)sqlite3_errmsg((sqlite3*)this->db)).Ptr();
 			this->lastDataError = DE_INIT_SQL_ERROR;
 			return -2;
 		}
@@ -372,11 +374,11 @@ Math::Geometry::Vector2D *DB::SQLiteFile::GPGeometryParse(const UInt8 *buff, UOS
 
 DB::DBTool *DB::SQLiteFile::CreateDBTool(NotNullPtr<Text::String> fileName, NotNullPtr<IO::LogTool> log, Text::CString logPrefix)
 {
-	DB::SQLiteFile *conn;
-	NEW_CLASS(conn, DB::SQLiteFile(fileName));
+	NotNullPtr<DB::SQLiteFile> conn;
+	NEW_CLASSNN(conn, DB::SQLiteFile(fileName));
 	if (conn->IsError())
 	{
-		DEL_CLASS(conn);
+		conn.Delete();
 		return 0;
 	}
 	DB::DBTool *db;
@@ -386,11 +388,11 @@ DB::DBTool *DB::SQLiteFile::CreateDBTool(NotNullPtr<Text::String> fileName, NotN
 
 DB::DBTool *DB::SQLiteFile::CreateDBTool(Text::CStringNN fileName, NotNullPtr<IO::LogTool> log, Text::CString logPrefix)
 {
-	DB::SQLiteFile *conn;
-	NEW_CLASS(conn, DB::SQLiteFile(fileName));
+	NotNullPtr<DB::SQLiteFile> conn;
+	NEW_CLASSNN(conn, DB::SQLiteFile(fileName));
 	if (conn->IsError())
 	{
-		DEL_CLASS(conn);
+		conn.Delete();
 		return 0;
 	}
 	DB::DBTool *db;

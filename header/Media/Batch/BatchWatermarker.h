@@ -25,8 +25,8 @@ namespace Media
 			void SetWatermark(Text::CString watermark);
 			void SetHandler(Media::Batch::BatchHandler *hdlr);
 		private:
-			virtual void ImageOutput(Media::ImageList *imgList, const UTF8Char *fileId, const UTF8Char *subId);
+			virtual void ImageOutput(NotNullPtr<Media::ImageList> imgList, Text::CStringNN fileId, Text::CStringNN subId);
 		};
-	};
-};
+	}
+}
 #endif

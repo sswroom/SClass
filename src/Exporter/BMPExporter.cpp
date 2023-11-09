@@ -19,11 +19,11 @@ Int32 Exporter::BMPExporter::GetName()
 	return *(Int32*)"BMPE";
 }
 
-IO::FileExporter::SupportType Exporter::BMPExporter::IsObjectSupported(IO::ParsedObject *pobj)
+IO::FileExporter::SupportType Exporter::BMPExporter::IsObjectSupported(NotNullPtr<IO::ParsedObject> pobj)
 {
 	if (pobj->GetParserType() != IO::ParserType::ImageList)
 		return IO::FileExporter::SupportType::NotSupported;
-	Media::ImageList *imgList = (Media::ImageList*)pobj;
+	NotNullPtr<Media::ImageList> imgList = NotNullPtr<Media::ImageList>::ConvertFrom(pobj);
 	if (imgList->GetCount() != 1)
 		return IO::FileExporter::SupportType::NotSupported;
 	Media::Image *img = imgList->GetImage(0, 0);
@@ -73,11 +73,11 @@ void Exporter::BMPExporter::SetCodePage(UInt32 codePage)
 {
 }
 
-Bool Exporter::BMPExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text::CStringNN fileName, IO::ParsedObject *pobj, void *param)
+Bool Exporter::BMPExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text::CStringNN fileName, NotNullPtr<IO::ParsedObject> pobj, void *param)
 {
 	if (IsObjectSupported(pobj) == SupportType::NotSupported)
 		return false;
-	Media::ImageList *imgList = (Media::ImageList*)pobj;
+	NotNullPtr<Media::ImageList> imgList = NotNullPtr<Media::ImageList>::ConvertFrom(pobj);
 	Media::Image *img = imgList->GetImage(0, 0);
 
 	UInt8 buff[138];

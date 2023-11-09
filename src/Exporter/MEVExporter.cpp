@@ -21,7 +21,7 @@ Int32 Exporter::MEVExporter::GetName()
 	return *(Int32*)"MENV";
 }
 
-IO::FileExporter::SupportType Exporter::MEVExporter::IsObjectSupported(IO::ParsedObject *pobj)
+IO::FileExporter::SupportType Exporter::MEVExporter::IsObjectSupported(NotNullPtr<IO::ParsedObject> pobj)
 {
 	if (pobj->GetParserType() != IO::ParserType::MapEnv)
 	{
@@ -41,13 +41,13 @@ Bool Exporter::MEVExporter::GetOutputName(UOSInt index, UTF8Char *nameBuff, UTF8
 	return false;
 }
 
-Bool Exporter::MEVExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text::CStringNN fileName, IO::ParsedObject *pobj, void *param)
+Bool Exporter::MEVExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text::CStringNN fileName, NotNullPtr<IO::ParsedObject> pobj, void *param)
 {
 	if (pobj->GetParserType() != IO::ParserType::MapEnv)
 	{
 		return false;
 	}
-	Map::MapEnv *env = (Map::MapEnv*)pobj;
+	NotNullPtr<Map::MapEnv> env = NotNullPtr<Map::MapEnv>::ConvertFrom(pobj);
 	UOSInt i;
 	UOSInt j;
 	UOSInt k;
@@ -261,7 +261,7 @@ Bool Exporter::MEVExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text:
 	return true;
 }
 
-void Exporter::MEVExporter::GetMapDirs(Map::MapEnv *env, Data::ArrayListString *dirArr, Map::MapEnv::GroupItem *group)
+void Exporter::MEVExporter::GetMapDirs(NotNullPtr<Map::MapEnv> env, Data::ArrayListString *dirArr, Map::MapEnv::GroupItem *group)
 {
 	UOSInt i = 0;
 	UOSInt j = env->GetItemCount(group);
@@ -329,7 +329,7 @@ UInt32 Exporter::MEVExporter::AddString(Data::StringMap<MEVStrRecord*> *strArr, 
 	return strRec->byteSize;
 }
 
-void Exporter::MEVExporter::WriteGroupItems(Map::MapEnv *env, Map::MapEnv::GroupItem *group, UInt32 *stmPos, NotNullPtr<IO::SeekableStream> stm, Data::StringMap<Exporter::MEVExporter::MEVStrRecord*> *strArr, Data::ArrayListString *dirArr)
+void Exporter::MEVExporter::WriteGroupItems(NotNullPtr<Map::MapEnv> env, Map::MapEnv::GroupItem *group, UInt32 *stmPos, NotNullPtr<IO::SeekableStream> stm, Data::StringMap<Exporter::MEVExporter::MEVStrRecord*> *strArr, Data::ArrayListString *dirArr)
 {
 	UInt8 buff[256];
 	UTF8Char sbuff[256];

@@ -105,7 +105,7 @@ DB::DBManagerCtrl *DB::DBManagerCtrl::Create(Text::CString connStr, NotNullPtr<I
 	return ctrl;
 }
 
-DB::DBManagerCtrl *DB::DBManagerCtrl::Create(DB::DBTool *db, NotNullPtr<IO::LogTool> log, NotNullPtr<Net::SocketFactory> sockf, Parser::ParserList *parsers)
+DB::DBManagerCtrl *DB::DBManagerCtrl::Create(NotNullPtr<DB::DBTool> db, NotNullPtr<IO::LogTool> log, NotNullPtr<Net::SocketFactory> sockf, Parser::ParserList *parsers)
 {
 	Text::StringBuilderUTF8 sb;
 	DB::DBManagerCtrl *ctrl;
@@ -114,12 +114,12 @@ DB::DBManagerCtrl *DB::DBManagerCtrl::Create(DB::DBTool *db, NotNullPtr<IO::LogT
 	{
 		ctrl->connStr = Text::String::New(sb.ToCString()).Ptr();
 	}
-	ctrl->db = db;
+	ctrl->db = db.Ptr();
 	ctrl->status = ConnStatus::Connected;
 	return ctrl;
 }
 
-DB::DBManagerCtrl *DB::DBManagerCtrl::CreateFromFile(DB::ReadingDB *db, NotNullPtr<Text::String> filePath, NotNullPtr<IO::LogTool> log, NotNullPtr<Net::SocketFactory> sockf, Parser::ParserList *parsers)
+DB::DBManagerCtrl *DB::DBManagerCtrl::CreateFromFile(NotNullPtr<DB::ReadingDB> db, NotNullPtr<Text::String> filePath, NotNullPtr<IO::LogTool> log, NotNullPtr<Net::SocketFactory> sockf, Parser::ParserList *parsers)
 {
 	Text::StringBuilderUTF8 sb;
 	DB::DBManagerCtrl *ctrl;
@@ -127,7 +127,7 @@ DB::DBManagerCtrl *DB::DBManagerCtrl::CreateFromFile(DB::ReadingDB *db, NotNullP
 	sb.AppendC(UTF8STRC("file:"));
 	sb.Append(filePath);
 	ctrl->connStr = Text::String::New(sb.ToCString()).Ptr();
-	ctrl->db = db;
+	ctrl->db = db.Ptr();
 	ctrl->status = ConnStatus::Connected;
 	return ctrl;
 }

@@ -26,7 +26,7 @@ namespace SSWR
 			DataFileInfo *dataFile;
 			NotNullPtr<Map::GPSTrack> gpsTrk;
 			Bool mapUpdated;
-			Map::MapEnv *mapEnv;
+			NotNullPtr<Map::MapEnv> mapEnv;
 			Map::MapView *mapView;
 			NotNullPtr<Map::TileMapLayer> mapTileLyr;
 			NotNullPtr<OrganTimeAdjLayer> adjLyr;

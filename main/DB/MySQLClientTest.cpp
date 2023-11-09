@@ -411,7 +411,7 @@ void TextReadAll(DB::DBTool *db)
 void TestBinaryRead(DB::DBTool *db)
 {
 	Data::ArrayList<Userfile*> dataList;
-	Net::MySQLTCPClient *conn = (Net::MySQLTCPClient*)db->GetDBConn();
+	NotNullPtr<Net::MySQLTCPClient> conn = NotNullPtr<Net::MySQLTCPClient>::ConvertFrom(db->GetDBConn());
 	NotNullPtr<DB::DBReader> r;
 	if (r.Set(conn->ExecuteReaderBinary(CSTR("select * from userfile"))))
 	{

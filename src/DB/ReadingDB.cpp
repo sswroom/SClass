@@ -60,7 +60,7 @@ Bool DB::ReadingDB::IsDBTool() const
 	return false;
 }
 
-Bool DB::ReadingDB::IsDBObj(IO::ParsedObject *pobj)
+Bool DB::ReadingDB::IsDBObj(NotNullPtr<IO::ParsedObject> pobj)
 {
 	IO::ParserType pt = pobj->GetParserType();
 	if (pt == IO::ParserType::MapLayer || pt == IO::ParserType::ReadingDB)
