@@ -371,10 +371,12 @@ void __stdcall SSWR::AVIRead::AVIRPackageForm::LVDblClick(void *userObj, UOSInt 
 	IO::PackageFile::PackObjectType pot = me->packFile->GetItemType(index);
 	if (pot == IO::PackageFile::PackObjectType::PackageFileType)
 	{
+		Bool needRelease;
 		NotNullPtr<IO::PackageFile> pkg;
-		if (pkg.Set(me->packFile->GetItemPackNew(index)))
+		if (pkg.Set(me->packFile->GetItemPack(index, needRelease)))
 		{
-			me->core->OpenObject(pkg);
+			me->UpdatePackFile(pkg, needRelease);
+//			me->core->OpenObject(pkg);
 		}
 	}
 	else if (pot == IO::PackageFile::PackObjectType::ParsedObject)
@@ -495,6 +497,25 @@ UOSInt SSWR::AVIRead::AVIRPackageForm::PackFileIndex(UOSInt lvIndex)
 	return lvIndex;
 }
 
+void SSWR::AVIRead::AVIRPackageForm::UpdatePackFile(NotNullPtr<IO::PackageFile> packFile, Bool needDelete)
+{
+	UTF8Char sbuff[512];
+	UTF8Char *sptr;
+	sptr = packFile->GetSourceNameObj()->ConcatTo(Text::StrConcatC(sbuff, UTF8STRC("Package Form - ")));
+	this->SetText(CSTRP(sbuff, sptr));
+	this->mnuEdit->SetItemEnabled((UInt16)this->pasteInd, packFile->IsPhysicalDirectory());
+	if (this->packNeedDelete)
+	{
+		this->packFile.Delete();
+	}
+	this->packFile = packFile;
+	this->packNeedDelete = needDelete;
+	Text::StringBuilderUTF8 sb;
+	this->packFile->GetInfoText(sb);
+	this->txtInfo->SetText(sb.ToCString());
+	this->DisplayPackFile(packFile);
+}
+
 SSWR::AVIRead::AVIRPackageForm::AVIRPackageForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<IO::PackageFile> packFile) : UI::GUIForm(parent, 960, 768, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
@@ -505,6 +526,16 @@ SSWR::AVIRead::AVIRPackageForm::AVIRPackageForm(UI::GUIClientControl *parent, No
 
 	this->core = core;
 	this->packFile = packFile;
+	if (this->packFile->IsPhysicalDirectory())
+	{
+		this->packNeedDelete = true;
+		this->rootPackFile = 0;
+	}
+	else
+	{
+		this->rootPackFile = packFile.Ptr();
+		this->packNeedDelete = false;
+	}
 	this->statusChg = false;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 	this->threadRunning = false;
@@ -554,12 +585,11 @@ SSWR::AVIRead::AVIRPackageForm::AVIRPackageForm(UI::GUIClientControl *parent, No
 	UI::GUIMainMenu *mnuMain;
 	UI::GUIMenu *mnu;
 //	UI::GUIMenu *mnu2;
-	UOSInt ind;
 	NEW_CLASS(mnuMain, UI::GUIMainMenu());
 	mnu = mnuMain->AddSubMenu(CSTR("&File"));
 	mnu->AddItem(CSTR("Save &As..."), MNU_SAVEAS, UI::GUIMenu::KM_CONTROL, UI::GUIControl::GK_S);
-	mnu = mnuMain->AddSubMenu(CSTR("&Edit"));
-	ind = mnu->AddItem(CSTR("&Paste"), MNU_PASTE, UI::GUIMenu::KM_CONTROL, UI::GUIControl::GK_V);
+	mnu = this->mnuEdit = mnuMain->AddSubMenu(CSTR("&Edit"));
+	this->pasteInd = mnu->AddItem(CSTR("&Paste"), MNU_PASTE, UI::GUIMenu::KM_CONTROL, UI::GUIControl::GK_V);
 	mnu->AddItem(CSTR("Copy To..."), MNU_COPYTO, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem(CSTR("Copy All To..."), MNU_COPYALLTO, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 
@@ -569,58 +599,55 @@ SSWR::AVIRead::AVIRPackageForm::AVIRPackageForm(UI::GUIClientControl *parent, No
 	this->mnuPopup->AddItem(CSTR("Open Hex Viewer"), MNU_OPEN_HEX_VIEWER, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	this->lvFiles->HandleRightClick(OnFilesRightClick, this);
 
-	if (!packFile->AllowWrite())
+	if (!packFile->IsPhysicalDirectory())
 	{
-		mnu->SetItemEnabled((UInt16)ind, false);
+		mnu->SetItemEnabled((UInt16)this->pasteInd, false);
 	}
-	else
-	{
-		this->tpStatus = this->tcMain->AddTabPage(CSTR("Status"));
-		NEW_CLASS(this->pnlStatus, UI::GUIPanel(ui, this->tpStatus));
-		this->pnlStatus->SetRect(0, 0, 100, 48, false);
-		this->pnlStatus->SetDockType(UI::GUIControl::DOCK_TOP);
-		NEW_CLASS(this->lblStatusFile, UI::GUILabel(ui, this->pnlStatus, CSTR("Copy From")));
-		this->lblStatusFile->SetRect(0, 0, 100, 23, false);
-		NEW_CLASS(this->txtStatusFile, UI::GUITextBox(ui, this->pnlStatus, CSTR("")));
-		this->txtStatusFile->SetRect(100, 0, 800, 23, false);
-		this->txtStatusFile->SetReadOnly(true);
-		NEW_CLASS(this->pnlStatusBNT, UI::GUIPanel(ui, this->pnlStatus));
-		this->pnlStatusBNT->SetBGColor(0xffc0c0c0);
-		this->pnlStatusBNT->SetRect(900, 0, 23, 23, false);
-		NEW_CLASS(this->lblStatusFileSize, UI::GUILabel(ui, this->pnlStatus, CSTR("File Size")));
-		this->lblStatusFileSize->SetRect(0, 24, 100, 23, false);
-		NEW_CLASS(this->txtStatusFileSize, UI::GUITextBox(ui, this->pnlStatus, CSTR("")));
-		this->txtStatusFileSize->SetRect(100, 24, 100, 23, false);
-		this->txtStatusFileSize->SetReadOnly(true);
-		NEW_CLASS(this->lblStatusCurrSize, UI::GUILabel(ui, this->pnlStatus, CSTR("Curr Size")));
-		this->lblStatusCurrSize->SetRect(220, 24, 100, 23, false);
-		NEW_CLASS(this->txtStatusCurrSize, UI::GUITextBox(ui, this->pnlStatus, CSTR("")));
-		this->txtStatusCurrSize->SetRect(320, 24, 100, 23, false);
-		this->txtStatusCurrSize->SetReadOnly(true);
-		NEW_CLASS(this->lblStatusCurrSpeed, UI::GUILabel(ui, this->pnlStatus, CSTR("Curr Speed")));
-		this->lblStatusCurrSpeed->SetRect(440, 24, 100, 23, false);
-		NEW_CLASS(this->txtStatusCurrSpeed, UI::GUITextBox(ui, this->pnlStatus, CSTR("")));
-		this->txtStatusCurrSpeed->SetRect(540, 24, 100, 23, false);
-		this->txtStatusCurrSpeed->SetReadOnly(true);
-		NEW_CLASS(this->lblStatusTimeLeft, UI::GUILabel(ui, this->pnlStatus, CSTR("Time Left")));
-		this->lblStatusTimeLeft->SetRect(660, 24, 100, 23, false);
-		NEW_CLASS(this->txtStatusTimeLeft, UI::GUITextBox(ui, this->pnlStatus, CSTR("")));
-		this->txtStatusTimeLeft->SetRect(760, 24, 100, 23, false);
-		this->txtStatusTimeLeft->SetReadOnly(true);
-		NEW_CLASS(this->rlcStatus, UI::GUIRealtimeLineChart(ui, this->tpStatus, this->core->GetDrawEngine(), 1, 720, 1000));
-		this->rlcStatus->SetRect(0, 0, 100, 360, false);
-		this->rlcStatus->SetDockType(UI::GUIControl::DOCK_BOTTOM);
-		NEW_CLASS(this->vspStatus, UI::GUIVSplitter(ui, this->tpStatus, 3, true));
-		NEW_CLASS(this->lvStatus, UI::GUIListView(ui, this->tpStatus, UI::GUIListView::LVSTYLE_TABLE, 2));
-		this->lvStatus->SetDockType(UI::GUIControl::DOCK_FILL);
-		this->lvStatus->SetFullRowSelect(true);
-		this->lvStatus->AddColumn(CSTR("Source File"), 200);
-		this->lvStatus->AddColumn(CSTR("Status"), 200);
-		this->lvStatus->HandleDblClk(OnStatusDblClick, this);
+	this->tpStatus = this->tcMain->AddTabPage(CSTR("Status"));
+	NEW_CLASS(this->pnlStatus, UI::GUIPanel(ui, this->tpStatus));
+	this->pnlStatus->SetRect(0, 0, 100, 48, false);
+	this->pnlStatus->SetDockType(UI::GUIControl::DOCK_TOP);
+	NEW_CLASS(this->lblStatusFile, UI::GUILabel(ui, this->pnlStatus, CSTR("Copy From")));
+	this->lblStatusFile->SetRect(0, 0, 100, 23, false);
+	NEW_CLASS(this->txtStatusFile, UI::GUITextBox(ui, this->pnlStatus, CSTR("")));
+	this->txtStatusFile->SetRect(100, 0, 800, 23, false);
+	this->txtStatusFile->SetReadOnly(true);
+	NEW_CLASS(this->pnlStatusBNT, UI::GUIPanel(ui, this->pnlStatus));
+	this->pnlStatusBNT->SetBGColor(0xffc0c0c0);
+	this->pnlStatusBNT->SetRect(900, 0, 23, 23, false);
+	NEW_CLASS(this->lblStatusFileSize, UI::GUILabel(ui, this->pnlStatus, CSTR("File Size")));
+	this->lblStatusFileSize->SetRect(0, 24, 100, 23, false);
+	NEW_CLASS(this->txtStatusFileSize, UI::GUITextBox(ui, this->pnlStatus, CSTR("")));
+	this->txtStatusFileSize->SetRect(100, 24, 100, 23, false);
+	this->txtStatusFileSize->SetReadOnly(true);
+	NEW_CLASS(this->lblStatusCurrSize, UI::GUILabel(ui, this->pnlStatus, CSTR("Curr Size")));
+	this->lblStatusCurrSize->SetRect(220, 24, 100, 23, false);
+	NEW_CLASS(this->txtStatusCurrSize, UI::GUITextBox(ui, this->pnlStatus, CSTR("")));
+	this->txtStatusCurrSize->SetRect(320, 24, 100, 23, false);
+	this->txtStatusCurrSize->SetReadOnly(true);
+	NEW_CLASS(this->lblStatusCurrSpeed, UI::GUILabel(ui, this->pnlStatus, CSTR("Curr Speed")));
+	this->lblStatusCurrSpeed->SetRect(440, 24, 100, 23, false);
+	NEW_CLASS(this->txtStatusCurrSpeed, UI::GUITextBox(ui, this->pnlStatus, CSTR("")));
+	this->txtStatusCurrSpeed->SetRect(540, 24, 100, 23, false);
+	this->txtStatusCurrSpeed->SetReadOnly(true);
+	NEW_CLASS(this->lblStatusTimeLeft, UI::GUILabel(ui, this->pnlStatus, CSTR("Time Left")));
+	this->lblStatusTimeLeft->SetRect(660, 24, 100, 23, false);
+	NEW_CLASS(this->txtStatusTimeLeft, UI::GUITextBox(ui, this->pnlStatus, CSTR("")));
+	this->txtStatusTimeLeft->SetRect(760, 24, 100, 23, false);
+	this->txtStatusTimeLeft->SetReadOnly(true);
+	NEW_CLASS(this->rlcStatus, UI::GUIRealtimeLineChart(ui, this->tpStatus, this->core->GetDrawEngine(), 1, 720, 1000));
+	this->rlcStatus->SetRect(0, 0, 100, 360, false);
+	this->rlcStatus->SetDockType(UI::GUIControl::DOCK_BOTTOM);
+	NEW_CLASS(this->vspStatus, UI::GUIVSplitter(ui, this->tpStatus, 3, true));
+	NEW_CLASS(this->lvStatus, UI::GUIListView(ui, this->tpStatus, UI::GUIListView::LVSTYLE_TABLE, 2));
+	this->lvStatus->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvStatus->SetFullRowSelect(true);
+	this->lvStatus->AddColumn(CSTR("Source File"), 200);
+	this->lvStatus->AddColumn(CSTR("Status"), 200);
+	this->lvStatus->HandleDblClk(OnStatusDblClick, this);
 
-		this->AddTimer(500, OnTimerTick, this);
-		Sync::ThreadUtil::Create(ProcessThread, this);
-	}
+	this->AddTimer(500, OnTimerTick, this);
+	Sync::ThreadUtil::Create(ProcessThread, this);
 
 	this->tpInfo = this->tcMain->AddTabPage(CSTR("Info"));
 	NEW_CLASS(this->txtInfo, UI::GUITextBox(ui, this->tpInfo, CSTR(""), true));
@@ -641,7 +668,11 @@ SSWR::AVIRead::AVIRPackageForm::~AVIRPackageForm()
 	{
 		Sync::SimpleThread::Sleep(10);
 	}
-	this->packFile.Delete();
+	if (this->packNeedDelete)
+	{
+		this->packFile.Delete();
+	}
+	SDEL_CLASS(this->rootPackFile);
 	LIST_FREE_STRING(&this->fileNames);
 	SDEL_STRING(this->statusFile);
 	DEL_CLASS(this->mnuPopup);

@@ -13,6 +13,7 @@ namespace Map
 		private:
 			//const WChar *tileDir;
 			IO::PackageFile *pkgFile;
+			IO::PackageFile *rootPkg;
 			UOSInt maxLevel;
 
 			Math::Coord2DDbl min;

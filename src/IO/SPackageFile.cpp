@@ -100,12 +100,16 @@ void IO::SPackageFile::AddPackageInner(IO::PackageFile *pkg, UTF8Char pathSepera
 		}
 		else if (pt == IO::PackageFile::PackObjectType::PackageFileType)
 		{
-			IO::PackageFile *innerPack = pkg->GetItemPackNew(i);
+			Bool innerNeedDelete;
+			IO::PackageFile *innerPack = pkg->GetItemPack(i, innerNeedDelete);
 			if (innerPack)
 			{
 				*sptr++ = pathSeperator;
 				AddPackageInner(innerPack, pathSeperator, pathStart, sptr);
-				DEL_CLASS(innerPack);
+				if (innerNeedDelete)
+				{
+					DEL_CLASS(innerPack);
+				}
 			}
 		}
 		else if (pt == IO::PackageFile::PackObjectType::StreamData)

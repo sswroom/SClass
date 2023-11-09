@@ -175,7 +175,7 @@ IO::StreamData *IO::DirectoryPackage::GetItemStmDataNew(UOSInt index) const
 	}
 }
 
-IO::PackageFile *IO::DirectoryPackage::GetItemPackNew(UOSInt index) const
+IO::PackageFile *IO::DirectoryPackage::GetItemPack(UOSInt index, OutParam<Bool> needDelete) const
 {
 	if (this->files.GetCount() <= index)
 		return 0;
@@ -185,6 +185,7 @@ IO::PackageFile *IO::DirectoryPackage::GetItemPackNew(UOSInt index) const
 	{
 		IO::DirectoryPackage *pkg;
 		NEW_CLASS(pkg, IO::DirectoryPackage(fileName));
+		needDelete.Set(true);
 		return pkg;
 	}
 	else
@@ -195,8 +196,7 @@ IO::PackageFile *IO::DirectoryPackage::GetItemPackNew(UOSInt index) const
 
 IO::ParsedObject *IO::DirectoryPackage::GetItemPObj(UOSInt index, OutParam<Bool> needRelease) const
 {
-	needRelease.Set(true);
-	return GetItemPackNew(index);
+	return GetItemPack(index, needRelease);
 }
 
 Data::Timestamp IO::DirectoryPackage::GetItemModTime(UOSInt index) const
@@ -262,7 +262,7 @@ IO::PackageFile *IO::DirectoryPackage::Clone() const
 	return dpkg;
 }
 
-Bool IO::DirectoryPackage::AllowWrite() const
+Bool IO::DirectoryPackage::IsPhysicalDirectory() const
 {
 	return true;
 }

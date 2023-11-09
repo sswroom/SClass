@@ -48,7 +48,8 @@ IO::ParsedObject *Parser::ObjParser::FileGDB2Parser::ParseObject(NotNullPtr<IO::
 	NotNullPtr<IO::PackageFile> pkg = NotNullPtr<IO::PackageFile>::ConvertFrom(pobj);
 	if (pkg->GetCount() == 1 && pkg->GetItemType(0) == IO::PackageFile::PackObjectType::PackageFileType)
 	{
-		if (pkg.Set(pkg->GetItemPackNew(0)))
+		Bool needRelease;
+		if (pkg.Set(pkg->GetItemPack(0, needRelease)) && needRelease)
 			relObj = pkg.Ptr();
 	}
 	UOSInt index = pkg->GetItemIndex(CSTR("a00000001.gdbtable"));

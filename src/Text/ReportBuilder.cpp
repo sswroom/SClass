@@ -378,7 +378,7 @@ Text::SpreadSheet::Workbook *Text::ReportBuilder::CreateWorkbook()
 
 		if (this->tableBorders)
 		{
-			tableStyle = wb->NewCellStyle(0, Text::HAlignment::Unknown, Text::VAlignment::Unknown, CSTR_NULL);
+			tableStyle = wb->NewCellStyle(0, Text::HAlignment::Unknown, Text::VAlignment::Unknown, CSTR_NULL).Ptr();
 			tableStyle->SetBorderLeft(Text::SpreadSheet::CellStyle::BorderStyle(0xff000000, Text::SpreadSheet::BorderType::Thin));
 			tableStyle->SetBorderTop(Text::SpreadSheet::CellStyle::BorderStyle(0xff000000, Text::SpreadSheet::BorderType::Thin));
 			tableStyle->SetBorderRight(Text::SpreadSheet::CellStyle::BorderStyle(0xff000000, Text::SpreadSheet::BorderType::Thin));
@@ -540,7 +540,7 @@ Text::SpreadSheet::Workbook *Text::ReportBuilder::CreateWorkbook()
 			{
 				if (styleSummary == 0)
 				{
-					styleSummary = wb->NewCellStyle();
+					styleSummary = wb->NewCellStyle().Ptr();
 					styleSummary->SetBorderTop(Text::SpreadSheet::CellStyle::BorderStyle(0xff000000, Text::SpreadSheet::BorderType::Medium));
 				}
 				l = 0;
@@ -670,7 +670,7 @@ Text::SpreadSheet::Workbook *Text::ReportBuilder::CreateWorkbook()
 	{
 		NEW_CLASS(wb, Text::SpreadSheet::Workbook());
 		Text::SpreadSheet::WorkbookFont *font10 = wb->NewFont(CSTR("Arial"), 10, false);
-		Text::SpreadSheet::CellStyle *strStyle = wb->NewCellStyle(font10, Text::HAlignment::Left, Text::VAlignment::Center, CSTR("General"));
+		Text::SpreadSheet::CellStyle *strStyle = wb->NewCellStyle(font10, Text::HAlignment::Left, Text::VAlignment::Center, CSTR("General")).Ptr();
 		ws = wb->AddWorksheet(this->name);
 		dataSheet = wb->AddWorksheet(CSTR("ChartData"));
 
@@ -812,7 +812,7 @@ Text::SpreadSheet::Workbook *Text::ReportBuilder::CreateWorkbook()
 		{
 			Text::SpreadSheet::CellStyle *dateStyle = 0;
 			Text::SpreadSheet::CellStyle *intStyle = 0;
-			Text::SpreadSheet::CellStyle *dblStyle = wb->NewCellStyle(font10, Text::HAlignment::Left, Text::VAlignment::Center, CSTR("General"));
+			Text::SpreadSheet::CellStyle *dblStyle = wb->NewCellStyle(font10, Text::HAlignment::Left, Text::VAlignment::Center, CSTR("General")).Ptr();
 
 			UOSInt i;
 			UOSInt j;
@@ -823,7 +823,7 @@ Text::SpreadSheet::Workbook *Text::ReportBuilder::CreateWorkbook()
 			{
 				if (dateStyle == 0)
 				{
-					dateStyle = wb->NewCellStyle(font10, Text::HAlignment::Left, Text::VAlignment::Center, chart->GetTimeFormat()->ToCString());
+					dateStyle = wb->NewCellStyle(font10, Text::HAlignment::Left, Text::VAlignment::Center, chart->GetTimeFormat()->ToCString()).Ptr();
 				}
 				Int64 *dateTicks = chart->GetXDateTicks(0, &colCount);
 				i = 0;
@@ -838,7 +838,7 @@ Text::SpreadSheet::Workbook *Text::ReportBuilder::CreateWorkbook()
 			{
 				if (dblStyle == 0)
 				{
-					dblStyle = wb->NewCellStyle(font10, Text::HAlignment::Left, Text::VAlignment::Center, chart->GetDblFormat()->ToCString());
+					dblStyle = wb->NewCellStyle(font10, Text::HAlignment::Left, Text::VAlignment::Center, chart->GetDblFormat()->ToCString()).Ptr();
 				}
 				Double *dblValues = chart->GetXDouble(0, &colCount);
 				i = 0;
@@ -853,7 +853,7 @@ Text::SpreadSheet::Workbook *Text::ReportBuilder::CreateWorkbook()
 			{
 				if (intStyle == 0)
 				{
-					intStyle = wb->NewCellStyle(font10, Text::HAlignment::Left, Text::VAlignment::Center, CSTR("0"));
+					intStyle = wb->NewCellStyle(font10, Text::HAlignment::Left, Text::VAlignment::Center, CSTR("0")).Ptr();
 				}
 				Int32 *intValues = chart->GetXInt32(0, &colCount);
 				i = 0;
@@ -879,7 +879,7 @@ Text::SpreadSheet::Workbook *Text::ReportBuilder::CreateWorkbook()
 				{
 					if (dateStyle == 0)
 					{
-						dateStyle = wb->NewCellStyle(font10, Text::HAlignment::Left, Text::VAlignment::Center, chart->GetTimeFormat()->ToCString());
+						dateStyle = wb->NewCellStyle(font10, Text::HAlignment::Left, Text::VAlignment::Center, chart->GetTimeFormat()->ToCString()).Ptr();
 					}
 					Int64 *dateTicks = chart->GetYDateTicks(i, &colCount);
 					k = 0;
@@ -894,7 +894,7 @@ Text::SpreadSheet::Workbook *Text::ReportBuilder::CreateWorkbook()
 				{
 					if (dblStyle == 0)
 					{
-						dblStyle = wb->NewCellStyle(font10, Text::HAlignment::Left, Text::VAlignment::Center, chart->GetDblFormat()->ToCString());
+						dblStyle = wb->NewCellStyle(font10, Text::HAlignment::Left, Text::VAlignment::Center, chart->GetDblFormat()->ToCString()).Ptr();
 					}
 					Double *dblValues = chart->GetYDouble(i, &colCount);
 					k = 0;
@@ -909,7 +909,7 @@ Text::SpreadSheet::Workbook *Text::ReportBuilder::CreateWorkbook()
 				{
 					if (intStyle == 0)
 					{
-						intStyle = wb->NewCellStyle(font10, Text::HAlignment::Left, Text::VAlignment::Center, CSTR("0"));
+						intStyle = wb->NewCellStyle(font10, Text::HAlignment::Left, Text::VAlignment::Center, CSTR("0")).Ptr();
 					}
 					Int32 *intValues = chart->GetYInt32(i, &colCount);
 					k = 0;

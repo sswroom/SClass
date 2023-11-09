@@ -58,7 +58,7 @@ namespace IO
 		virtual PackObjectType GetItemType(UOSInt index) const;
 		virtual UTF8Char *GetItemName(UTF8Char *sbuff, UOSInt index) const;
 		virtual IO::StreamData *GetItemStmDataNew(UOSInt index) const;
-		virtual IO::PackageFile *GetItemPackNew(UOSInt index) const;
+		virtual IO::PackageFile *GetItemPack(UOSInt index, OutParam<Bool> needRelease) const;
 		virtual IO::ParsedObject *GetItemPObj(UOSInt index, OutParam<Bool> needRelease) const;
 		virtual Data::Timestamp GetItemModTime(UOSInt index) const;
 		virtual Data::Timestamp GetItemAccTime(UOSInt index) const;
@@ -70,7 +70,7 @@ namespace IO
 		virtual Bool IsCompressed(UOSInt index) const;
 		virtual Data::Compress::Decompressor::CompressMethod GetItemComp(UOSInt index) const;
 		virtual PackageFile *Clone() const;
-		virtual Bool AllowWrite() const;
+		virtual Bool IsPhysicalDirectory() const;
 		virtual Bool CopyFrom(Text::CStringNN fileName, IO::ProgressHandler *progHdlr, OptOut<IO::ActiveStreamReader::BottleNeckType> bnt);
 		virtual Bool MoveFrom(Text::CStringNN fileName, IO::ProgressHandler *progHdlr, OptOut<IO::ActiveStreamReader::BottleNeckType> bnt);
 		virtual Bool RetryCopyFrom(Text::CStringNN fileName, IO::ProgressHandler *progHdlr, OptOut<IO::ActiveStreamReader::BottleNeckType> bnt);

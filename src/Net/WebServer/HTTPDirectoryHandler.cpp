@@ -630,7 +630,8 @@ Bool Net::WebServer::HTTPDirectoryHandler::DoFileRequest(NotNullPtr<Net::WebServ
 				}
 				else if (pot == IO::PackageFile::PackObjectType::PackageFileType)
 				{
-					IO::PackageFile *innerPF = packageFile->GetPItemPackNew(pitem);
+					Bool innerNeedRelease;
+					IO::PackageFile *innerPF = packageFile->GetPItemPack(pitem, innerNeedRelease);
 					if (innerPF)
 					{
 						const IO::PackFileItem *pitem2 = innerPF->GetPackFileItem((const UTF8Char*)"index.html");
@@ -664,7 +665,10 @@ Bool Net::WebServer::HTTPDirectoryHandler::DoFileRequest(NotNullPtr<Net::WebServ
 						{
 							ResponsePackageFile(req, resp, subReq, innerPF);
 						}
-						DEL_CLASS(innerPF);
+						if (innerNeedRelease)
+						{
+							DEL_CLASS(innerPF);
+						}
 						if (needRelease)
 						{
 							DEL_CLASS(packageFile);

@@ -97,14 +97,14 @@ namespace IO
 		virtual const PackFileItem *GetPackFileItem(UOSInt index) const;
 		virtual PackObjectType GetPItemType(const PackFileItem *itemObj) const;
 		virtual IO::StreamData *GetPItemStmDataNew(const PackFileItem *itemObj) const;
-		virtual IO::PackageFile *GetPItemPackNew(const PackFileItem *itemObj) const;
+		virtual IO::PackageFile *GetPItemPack(const PackFileItem *itemObj, OutParam<Bool> needRelease) const;
 
 		virtual UOSInt GetCount() const;
 		virtual PackObjectType GetItemType(UOSInt index) const;
 		virtual UTF8Char *GetItemName(UTF8Char *sbuff, UOSInt index) const;
 		virtual IO::StreamData *GetItemStmDataNew(UOSInt index) const;
 		IO::StreamData *GetItemStmDataNew(const UTF8Char* name, UOSInt nameLen) const;
-		virtual IO::PackageFile *GetItemPackNew(UOSInt index) const;
+		virtual IO::PackageFile *GetItemPack(UOSInt index, OutParam<Bool> needRelease) const;
 		virtual IO::ParsedObject *GetItemPObj(UOSInt index, OutParam<Bool> needRelease) const;
 		virtual Data::Timestamp GetItemModTime(UOSInt index) const;
 		virtual Data::Timestamp GetItemAccTime(UOSInt index) const;
@@ -116,7 +116,7 @@ namespace IO
 		virtual Bool IsCompressed(UOSInt index) const;
 		virtual Data::Compress::Decompressor::CompressMethod GetItemComp(UOSInt index) const;
 		virtual PackageFile *Clone() const;
-		virtual Bool AllowWrite() const;
+		virtual Bool IsPhysicalDirectory() const;
 		virtual Bool CopyFrom(Text::CStringNN fileName, IO::ProgressHandler *progHdlr, OptOut<IO::ActiveStreamReader::BottleNeckType> bnt);
 		virtual Bool MoveFrom(Text::CStringNN fileName, IO::ProgressHandler *progHdlr, OptOut<IO::ActiveStreamReader::BottleNeckType> bnt);
 		virtual Bool RetryCopyFrom(Text::CStringNN fileName, IO::ProgressHandler *progHdlr, OptOut<IO::ActiveStreamReader::BottleNeckType> bnt);

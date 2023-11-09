@@ -382,13 +382,14 @@ IO::StreamData *IO::PackageFile::GetPItemStmDataNew(const PackFileItem *item) co
 	}
 }
 
-IO::PackageFile *IO::PackageFile::GetPItemPackNew(const PackFileItem *item) const
+IO::PackageFile *IO::PackageFile::GetPItemPack(const PackFileItem *item, OutParam<Bool> needRelease) const
 {
 	if (item != 0)
 	{
 		if (item->itemType == PackFileItem::PackItemType::ParsedObject && item->pobj->GetParserType() == IO::ParserType::PackageFile)
 		{
-			return ((IO::PackageFile*)item->pobj)->Clone();
+			needRelease.Set(false);
+			return ((IO::PackageFile*)item->pobj);
 		}
 		return 0;
 	}
@@ -436,10 +437,10 @@ IO::StreamData *IO::PackageFile::GetItemStmDataNew(const UTF8Char* name, UOSInt 
 	return this->GetItemStmDataNew(index);
 }
 
-IO::PackageFile *IO::PackageFile::GetItemPackNew(UOSInt index) const
+IO::PackageFile *IO::PackageFile::GetItemPack(UOSInt index, OutParam<Bool> needRelease) const
 {
 	IO::PackFileItem *item = this->items->GetItem(index);
-	return GetPItemPackNew(item);
+	return GetPItemPack(item, needRelease);
 }
 
 IO::ParsedObject *IO::PackageFile::GetItemPObj(UOSInt index, OutParam<Bool> needRelease) const
@@ -598,7 +599,7 @@ IO::PackageFile *IO::PackageFile::Clone() const
 	return NEW_CLASS_D(PackageFile(this));
 }
 
-Bool IO::PackageFile::AllowWrite() const
+Bool IO::PackageFile::IsPhysicalDirectory() const
 {
 	return false;
 }
@@ -791,6 +792,7 @@ IO::StreamData *IO::PackageFile::OpenStreamData(Text::CString fileName) const
 	const IO::PackageFile *pf;
 	IO::PackageFile *pf2;
 	Bool needRel = false;
+	Bool needRel2 = false;
 	Bool found;
 
 	pf = this;
@@ -808,7 +810,7 @@ IO::StreamData *IO::PackageFile::OpenStreamData(Text::CString fileName) const
 				sptr = pf->GetItemName(sbuff, i);
 				if (Text::StrEqualsC(sb.ToString(), j, sbuff, (UOSInt)(sptr - sbuff)))
 				{
-					pf2 = pf->GetItemPackNew(i);
+					pf2 = pf->GetItemPack(i, needRel2);
 					if (pf2)
 					{
 						found = true;
@@ -818,7 +820,7 @@ IO::StreamData *IO::PackageFile::OpenStreamData(Text::CString fileName) const
 						}
 						sb.SetSubstr((UOSInt)j + 1);
 						pf = pf2;
-						needRel = true;
+						needRel = needRel2;
 						break;
 					}
 				}

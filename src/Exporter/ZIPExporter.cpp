@@ -101,14 +101,17 @@ Bool Exporter::ZIPExporter::ExportPackage(NotNullPtr<IO::ZIPMTBuilder> zip, UTF8
 			*sptr = 0;
 			zip->AddDir(CSTRP(buffStart, sptr), pkg->GetItemModTime(i), pkg->GetItemAccTime(i), pkg->GetItemCreateTime(i), pkg->GetItemUnixAttr(i));
 			NotNullPtr<IO::PackageFile> innerPkg;
-			if (innerPkg.Set(pkg->GetItemPackNew(i)))
+			Bool innerNeedDelete;
+			if (innerPkg.Set(pkg->GetItemPack(i, innerNeedDelete)))
 			{
 				if (!this->ExportPackage(zip, buffStart, sptr, innerPkg))
 				{
-					innerPkg.Delete();
+					if (innerNeedDelete)
+						innerPkg.Delete();
 					return false;
 				}
-				innerPkg.Delete();
+				if (innerNeedDelete)
+					innerPkg.Delete();
 			}
 		}
 		i++;

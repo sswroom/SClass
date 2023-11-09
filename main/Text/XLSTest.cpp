@@ -37,8 +37,8 @@ void TestChart()
 
 	Workbook wb;
 	WorkbookFont *font10 = wb.NewFont(CSTR("Arial"), 10, false);
-	CellStyle *dateStyle = wb.NewCellStyle(font10, Text::HAlignment::Left, Text::VAlignment::Center, CSTR("yyyy-MM-dd"));
-	CellStyle *numStyle = wb.NewCellStyle(font10, Text::HAlignment::Left, Text::VAlignment::Center, CSTR("0.###"));
+	NotNullPtr<CellStyle> dateStyle = wb.NewCellStyle(font10, Text::HAlignment::Left, Text::VAlignment::Center, CSTR("yyyy-MM-dd"));
+	NotNullPtr<CellStyle> numStyle = wb.NewCellStyle(font10, Text::HAlignment::Left, Text::VAlignment::Center, CSTR("0.###"));
 	NotNullPtr<Worksheet> graphSheet = wb.AddWorksheet();
 	NotNullPtr<Worksheet> dataSheet = wb.AddWorksheet();
 	OfficeChart *chart = graphSheet->CreateChart(Math::Unit::Distance::DU_INCH, 0.64, 1.61, 13.10, 5.53, CSTR("\nSETTLEMENT VS CHAINAGE"));
@@ -51,12 +51,12 @@ void TestChart()
 
 	UOSInt rowNum;
 	Data::DateTime dt;
-	dataSheet->SetCellString(0, 0, dateStyle, CSTR("Date"));
+	dataSheet->SetCellString(0, 0, dateStyle.Ptr(), CSTR("Date"));
 	UOSInt i = 0;
 	UOSInt j = 20;
 	while (i < j)
 	{
-		dataSheet->SetCellDouble(0, i + 1, numStyle, 112.0 + UOSInt2Double(i) * 0.1);
+		dataSheet->SetCellDouble(0, i + 1, numStyle.Ptr(), 112.0 + UOSInt2Double(i) * 0.1);
 		
 		sbuff2[0] = (UTF8Char)('A' + i);
 		sbuff2[1] = 0;
@@ -71,13 +71,13 @@ void TestChart()
 			dt.SetCurrTime();
 			dt.AddDay((OSInt)(rowNum - testRowCnt));
 			rowNum++;
-			dataSheet->SetCellDateTime(rowNum, 0, dateStyle, dt);
+			dataSheet->SetCellDateTime(rowNum, 0, dateStyle.Ptr(), dt);
 			i = 0;
 			while (i < j)
 			{
 				if (i != 5)
 				{
-					dataSheet->SetCellDouble(rowNum, i + 1, numStyle, UOSInt2Double(rowNum) * 0.2 + UOSInt2Double(i) * 0.1);
+					dataSheet->SetCellDouble(rowNum, i + 1, numStyle.Ptr(), UOSInt2Double(rowNum) * 0.2 + UOSInt2Double(i) * 0.1);
 				}
 				i++;
 			}
@@ -103,13 +103,13 @@ void TestCols()
 	sptr = IO::Path::GetRealPath(fileName, UTF8STRC("~/Progs/Temp/ColsMe.xlsx"));
 	Workbook wb;
 	WorkbookFont *font10 = wb.NewFont(CSTR("Arial"), 10, false);
-	CellStyle *numStyle = wb.NewCellStyle(font10, Text::HAlignment::Left, Text::VAlignment::Center, CSTR("0.###"));
+	NotNullPtr<CellStyle> numStyle = wb.NewCellStyle(font10, Text::HAlignment::Left, Text::VAlignment::Center, CSTR("0.###"));
 	NotNullPtr<Worksheet> sheet = wb.AddWorksheet(CSTR("Sheet1"));
 	UOSInt i = 0;
 	UOSInt j = 2000;
 	while (i < j)
 	{
-		sheet->SetCellDouble(0, i + 1, numStyle, 112.0 + UOSInt2Double(i) * 0.1);
+		sheet->SetCellDouble(0, i + 1, numStyle.Ptr(), 112.0 + UOSInt2Double(i) * 0.1);
 
 		i++;
 	}
@@ -155,18 +155,18 @@ void TestBorder()
 	Workbook wb;
 	NotNullPtr<Worksheet> sheet = wb.AddWorksheet(CSTR("Sheet1"));
 	WorkbookFont *font = wb.NewFont(CSTR("Arial"), 10.0, false);
-	CellStyle *borderStyle = wb.NewCellStyle(font, Text::HAlignment::Center, Text::VAlignment::Bottom, CSTR("0.0"));
+	NotNullPtr<CellStyle> borderStyle = wb.NewCellStyle(font, Text::HAlignment::Center, Text::VAlignment::Bottom, CSTR("0.0"));
 	CellStyle::BorderStyle border(0xFF000000, BorderType::Medium);
 	borderStyle->SetBorderBottom(border);
-	CellStyle *normalStyle = wb.NewCellStyle(font, Text::HAlignment::Center, Text::VAlignment::Bottom, CSTR("0.0"));
-	sheet->SetCellInt32(0, 0, borderStyle, 1);
-	sheet->SetCellInt32(0, 1, borderStyle, 2);
-	sheet->SetCellInt32(0, 2, borderStyle, 3);
-	sheet->SetCellInt32(0, 3, borderStyle, 4);
-	sheet->SetCellInt32(1, 0, normalStyle, 5);
-	sheet->SetCellInt32(1, 1, normalStyle, 6);
-	sheet->SetCellInt32(1, 2, normalStyle, 7);
-	sheet->SetCellInt32(1, 3, normalStyle, 8);
+	NotNullPtr<CellStyle> normalStyle = wb.NewCellStyle(font, Text::HAlignment::Center, Text::VAlignment::Bottom, CSTR("0.0"));
+	sheet->SetCellInt32(0, 0, borderStyle.Ptr(), 1);
+	sheet->SetCellInt32(0, 1, borderStyle.Ptr(), 2);
+	sheet->SetCellInt32(0, 2, borderStyle.Ptr(), 3);
+	sheet->SetCellInt32(0, 3, borderStyle.Ptr(), 4);
+	sheet->SetCellInt32(1, 0, normalStyle.Ptr(), 5);
+	sheet->SetCellInt32(1, 1, normalStyle.Ptr(), 6);
+	sheet->SetCellInt32(1, 2, normalStyle.Ptr(), 7);
+	sheet->SetCellInt32(1, 3, normalStyle.Ptr(), 8);
 
 	Exporter::XLSXExporter exporter;
 	if (!exporter.ExportNewFile({fileName, (UOSInt)(sptr - fileName)}, wb, 0))

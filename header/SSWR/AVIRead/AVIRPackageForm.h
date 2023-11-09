@@ -66,6 +66,8 @@ namespace SSWR
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			NotNullPtr<IO::PackageFile> packFile;
+			IO::PackageFile *rootPackFile;
+			Bool packNeedDelete;
 
 			Sync::Mutex statusFileMut;
 			Bool statusFileChg;
@@ -101,6 +103,8 @@ namespace SSWR
 			UInt64 progUpdateNew;
 			Bool progUpdated;
 			Bool progEnd;
+			UOSInt pasteInd;
+			UI::GUIMenu *mnuEdit;
 
 			static UInt32 __stdcall ProcessThread(void *userObj);
 			static void __stdcall OnTimerTick(void *userObj);
@@ -109,6 +113,7 @@ namespace SSWR
 			static void __stdcall OnFilesRightClick(void *userObj, Math::Coord2DDbl coord, UOSInt index);
 			void DisplayPackFile(NotNullPtr<IO::PackageFile> packFile);
 			UOSInt PackFileIndex(UOSInt lvIndex);
+			void UpdatePackFile(NotNullPtr<IO::PackageFile> packFile, Bool needDelete);
 		public:
 			AVIRPackageForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<IO::PackageFile> packFile);
 			virtual ~AVIRPackageForm();

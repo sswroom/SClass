@@ -195,10 +195,12 @@ void Exporter::SPKExporter::ExportPackageFile(IO::SPackageFile *spkg, NotNullPtr
 			sptr = pkgFile->GetItemName(buffEnd, i);
 			*sptr++ = IO::Path::PATH_SEPERATOR;
 			
-			if (subPkg.Set(pkgFile->GetItemPackNew(i)))
+			Bool subNeedDelete;
+			if (subPkg.Set(pkgFile->GetItemPack(i, subNeedDelete)))
 			{
 				ExportPackageFile(spkg, subPkg, buff, sptr);
-				subPkg.Delete();
+				if (subNeedDelete)
+					subPkg.Delete();
 			}
 		}
 		else if (pot == IO::PackageFile::PackObjectType::StreamData)

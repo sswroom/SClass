@@ -541,8 +541,21 @@ OSInt UI::GUIListView::OnNotify(UInt32 code, void *lParam)
 		this->EventSelChg();
 		break;
 	case NM_CLICK:
-		this->changing = false;
-		this->EventSelChg();
+		{
+			this->changing = false;
+			this->EventSelChg();
+
+			NMITEMACTIVATE *ia;
+			ia = (NMITEMACTIVATE*)lParam;
+			this->EventMouseClick(Math::Coord2DDbl(ia->ptAction.x, ia->ptAction.y), MouseButton::MBTN_LEFT);
+		}
+		break;
+	case NM_RCLICK:
+		{
+			NMITEMACTIVATE *ia;
+			ia = (NMITEMACTIVATE*)lParam;
+			this->EventMouseClick(Math::Coord2DDbl(ia->ptAction.x, ia->ptAction.y), MouseButton::MBTN_RIGHT);
+		}
 		break;
 	case NM_DBLCLK:
 #ifdef _WIN32_WCE
@@ -599,6 +612,19 @@ void UI::GUIListView::EventDblClk(UOSInt itemIndex)
 	}
 }
 
+void UI::GUIListView::EventMouseClick(Math::Coord2DDbl coord, MouseButton btn)
+{
+	if (btn == MouseButton::MBTN_RIGHT)
+	{
+		UOSInt i;
+		i = this->rClkHdlrs.GetCount();
+		while (i-- > 0)
+		{
+			this->rClkHdlrs.GetItem(i)(this->rClkObjs.GetItem(i), coord, this->GetSelectedIndex());
+		}
+	}
+}
+
 void UI::GUIListView::SetDPI(Double hdpi, Double ddpi)
 {
 	Double oldHDPI = this->hdpi;
@@ -642,4 +668,10 @@ void UI::GUIListView::HandleDblClk(ItemEvent hdlr, void *userObj)
 {
 	this->dblClkHdlrs.Add(hdlr);
 	this->dblClkObjs.Add(userObj);
+}
+
+void UI::GUIListView::HandleRightClick(MouseEvent hdlr, void *userObj)
+{
+	this->rClkHdlrs.Add(hdlr);
+	this->rClkObjs.Add(userObj);
 }
