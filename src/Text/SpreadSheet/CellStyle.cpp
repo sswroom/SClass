@@ -51,10 +51,10 @@ Text::SpreadSheet::CellStyle::~CellStyle()
 	SDEL_STRING(this->dataFormat);
 }
 
-Text::SpreadSheet::CellStyle *Text::SpreadSheet::CellStyle::Clone() const
+NotNullPtr<Text::SpreadSheet::CellStyle> Text::SpreadSheet::CellStyle::Clone() const
 {
-	Text::SpreadSheet::CellStyle *style;
-	NEW_CLASS(style, Text::SpreadSheet::CellStyle(this->index));
+	NotNullPtr<Text::SpreadSheet::CellStyle> style;
+	NEW_CLASSNN(style, Text::SpreadSheet::CellStyle(this->index));
 	style->id = SCOPY_TEXT(this->id);
 	style->halign = this->halign;
 	style->valign = this->valign;
@@ -91,7 +91,7 @@ void Text::SpreadSheet::CellStyle::CopyFrom(CellStyle *style)
 	this->protection = style->protection;
 }
 
-Bool Text::SpreadSheet::CellStyle::Equals(const CellStyle *style) const
+Bool Text::SpreadSheet::CellStyle::Equals(NotNullPtr<const CellStyle> style) const
 {
 	if (style->halign != this->halign)
 		return false;

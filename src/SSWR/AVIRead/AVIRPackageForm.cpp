@@ -1,15 +1,18 @@
 #include "Stdafx.h"
 #include "IO/Path.h"
 #include "SSWR/AVIRead/AVIRPackageForm.h"
+#include "SSWR/AVIRead/AVIRHexViewerForm.h"
 #include "Sync/MutexUsage.h"
 #include "Sync/SimpleThread.h"
 #include "Sync/ThreadUtil.h"
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
+#include "Text/StringTool.h"
 #include "Text/URLString.h"
 #include "UI/Clipboard.h"
 #include "UI/FolderDialog.h"
 #include "UI/MessageDialog.h"
+#include "UtilUI/TextViewerForm.h"
 
 #include <stdio.h>
 
@@ -18,7 +21,9 @@ typedef enum
 	MNU_PASTE = 100,
 	MNU_COPYTO,
 	MNU_COPYALLTO,
-	MNU_SAVEAS
+	MNU_SAVEAS,
+	MNU_OPEN_TEXT_VIEWER,
+	MNU_OPEN_HEX_VIEWER
 } MenuItem;
 
 UInt32 __stdcall SSWR::AVIRead::AVIRPackageForm::ProcessThread(void *userObj)
@@ -362,6 +367,7 @@ void __stdcall SSWR::AVIRead::AVIRPackageForm::OnTimerTick(void *userObj)
 void __stdcall SSWR::AVIRead::AVIRPackageForm::LVDblClick(void *userObj, UOSInt index)
 {
 	SSWR::AVIRead::AVIRPackageForm *me = (SSWR::AVIRead::AVIRPackageForm*)userObj;
+	index = me->PackFileIndex(index);
 	IO::PackageFile::PackObjectType pot = me->packFile->GetItemType(index);
 	if (pot == IO::PackageFile::PackObjectType::PackageFileType)
 	{
@@ -409,6 +415,12 @@ void __stdcall SSWR::AVIRead::AVIRPackageForm::OnStatusDblClick(void *userObj, U
 		me->fileAction.SetItem(index, AT_RETRYMOVE);
 		me->statusChg = true;
 	}
+}
+
+void __stdcall SSWR::AVIRead::AVIRPackageForm::OnFilesRightClick(void *userObj, Math::Coord2DDbl coord, UOSInt index)
+{
+	SSWR::AVIRead::AVIRPackageForm *me = (SSWR::AVIRead::AVIRPackageForm*)userObj;
+	me->mnuPopup->ShowMenu(me->lvFiles, Math::Coord2D<OSInt>(Double2OSInt(coord.x), Double2OSInt(coord.y)));
 }
 
 void SSWR::AVIRead::AVIRPackageForm::DisplayPackFile(NotNullPtr<IO::PackageFile> packFile)
@@ -472,6 +484,15 @@ void SSWR::AVIRead::AVIRPackageForm::DisplayPackFile(NotNullPtr<IO::PackageFile>
 	{
 		this->lvFiles->SetColumnWidth(0, (Int32)(maxWidth + 6));
 	}
+}
+
+UOSInt SSWR::AVIRead::AVIRPackageForm::PackFileIndex(UOSInt lvIndex)
+{
+	if (lvIndex == INVALID_INDEX)
+	{
+		return INVALID_INDEX;
+	}
+	return lvIndex;
 }
 
 SSWR::AVIRead::AVIRPackageForm::AVIRPackageForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<IO::PackageFile> packFile) : UI::GUIForm(parent, 960, 768, ui)
@@ -544,6 +565,9 @@ SSWR::AVIRead::AVIRPackageForm::AVIRPackageForm(UI::GUIClientControl *parent, No
 
 	NEW_CLASS(this->mnuPopup, UI::GUIPopupMenu());
 	this->mnuPopup->AddItem(CSTR("Copy To..."), MNU_COPYTO, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	this->mnuPopup->AddItem(CSTR("Open Text Viewer"), MNU_OPEN_TEXT_VIEWER, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	this->mnuPopup->AddItem(CSTR("Open Hex Viewer"), MNU_OPEN_HEX_VIEWER, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	this->lvFiles->HandleRightClick(OnFilesRightClick, this);
 
 	if (!packFile->AllowWrite())
 	{
@@ -682,7 +706,7 @@ void SSWR::AVIRead::AVIRPackageForm::EventMenuClicked(UInt16 cmdId)
 					j = 0;
 					while (j < i)
 					{
-						if (!packFile->CopyTo(selIndices.GetItem(j), dlg.GetFolder()->ToCString(), false))
+						if (!packFile->CopyTo(PackFileIndex(selIndices.GetItem(j)), dlg.GetFolder()->ToCString(), false))
 						{
 							UI::MessageDialog::ShowDialog(CSTR("Error in copying"), CSTR("Copy To"), this);
 							break;
@@ -716,6 +740,91 @@ void SSWR::AVIRead::AVIRPackageForm::EventMenuClicked(UInt16 cmdId)
 	case MNU_SAVEAS:
 		{
 			this->core->SaveData(this, this->packFile, L"PackageSave");
+		}
+		break;
+	case MNU_OPEN_HEX_VIEWER:
+		{
+			UOSInt i = this->PackFileIndex(this->lvFiles->GetSelectedIndex());
+			if (i != INVALID_INDEX)
+			{
+				IO::PackageFile::PackObjectType pot = packFile->GetItemType(i);
+				if (pot == IO::PackageFile::PackObjectType::PackageFileType)
+				{
+					UI::MessageDialog::ShowDialog(CSTR("Viewing directory is not supported"), CSTR("Package"), this);
+					return;
+				}
+				else if (pot == IO::PackageFile::PackObjectType::StreamData)
+				{
+					NotNullPtr<IO::StreamData> fd;
+					if (!fd.Set(packFile->GetItemStmDataNew(i)))
+					{
+						UI::MessageDialog::ShowDialog(CSTR("Error in opening file"), CSTR("Package"), this);
+						return;
+					}
+					else
+					{
+						SSWR::AVIRead::AVIRHexViewerForm *frm;
+						NEW_CLASS(frm, SSWR::AVIRead::AVIRHexViewerForm(0, this->ui, this->core));
+						frm->SetData(fd, IO::FileAnalyse::IFileAnalyse::AnalyseFile(fd));
+						this->core->ShowForm(frm);
+					}
+				}
+				else
+				{
+					UI::MessageDialog::ShowDialog(CSTR("Viewing of this file is not supported"), CSTR("Package"), this);
+					return;
+				}
+			}
+		}
+		break;
+	case MNU_OPEN_TEXT_VIEWER:
+		{
+			UOSInt i = this->PackFileIndex(this->lvFiles->GetSelectedIndex());
+			if (i != INVALID_INDEX)
+			{
+				IO::PackageFile::PackObjectType pot = packFile->GetItemType(i);
+				if (pot == IO::PackageFile::PackObjectType::PackageFileType)
+				{
+					UI::MessageDialog::ShowDialog(CSTR("Viewing directory is not supported"), CSTR("Package"), this);
+					return;
+				}
+				else if (pot == IO::PackageFile::PackObjectType::StreamData)
+				{
+					NotNullPtr<IO::StreamData> fd;
+					if (!fd.Set(packFile->GetItemStmDataNew(i)))
+					{
+						UI::MessageDialog::ShowDialog(CSTR("Error in opening file"), CSTR("Package"), this);
+						return;
+					}
+					else
+					{
+						UInt8 buff[2048];
+						UOSInt buffSize = fd->GetRealData(0, 2048, BYTEARR(buff));
+						if (buffSize == 0)
+						{
+							UI::MessageDialog::ShowDialog(CSTR("Cannot read content of the file"), CSTR("Package"), this);
+							fd.Delete();
+							return;
+						}
+						if (!Text::StringTool::IsASCIIText(Data::ByteArrayR(buff, buffSize)))
+						{
+							UI::MessageDialog::ShowDialog(CSTR("The file seems not a text file"), CSTR("Package"), this);
+							fd.Delete();
+							return;
+						}
+						UtilUI::TextViewerForm *frm;
+						NEW_CLASS(frm, UtilUI::TextViewerForm(0, this->ui, this->core->GetMonitorMgr(), this->core->GetDrawEngine(), 0));
+						frm->LoadStreamData(fd);
+						fd.Delete();
+						this->core->ShowForm(frm);
+					}
+				}
+				else
+				{
+					UI::MessageDialog::ShowDialog(CSTR("Viewing of this file is not supported"), CSTR("Package"), this);
+					return;
+				}
+			}
 		}
 		break;
 	}

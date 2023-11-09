@@ -138,6 +138,19 @@ Bool UtilUI::TextViewerForm::LoadFile(NotNullPtr<Text::String> filePath)
 	return false;
 }
 
+Bool UtilUI::TextViewerForm::LoadStreamData(NotNullPtr<IO::StreamData> data)
+{
+	UTF8Char sbuff[530];
+	UTF8Char *sptr;
+	if (this->txtView->LoadStreamData(data))
+	{
+		sptr = data->GetShortName().ConcatTo(Text::StrConcatC(sbuff, UTF8STRC("Text Viewer - ")));
+		this->SetText(CSTRP(sbuff, sptr));
+		return true;
+	}
+	return false;
+}
+
 Bool UtilUI::TextViewerForm::OpenSearch(Text::CString txt)
 {
 	if (this->srchFrm)

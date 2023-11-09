@@ -28,7 +28,7 @@ namespace Text
 			UInt32 palette[56];
 
 			Data::ArrayListNN<Worksheet> sheets;
-			Data::ArrayList<CellStyle*> styles;
+			Data::ArrayListNN<CellStyle> styles;
 			Data::ArrayList<WorkbookFont*> fonts;
 
 			static const UInt32 defPalette[56];
@@ -69,12 +69,12 @@ namespace Text
 			Bool HasWindowInfo();
 
 			Bool HasCellStyle();
-			CellStyle *NewCellStyle();
-			CellStyle *NewCellStyle(WorkbookFont *font, HAlignment halign, VAlignment valign, Text::CString dataFormat);
+			NotNullPtr<CellStyle> NewCellStyle();
+			NotNullPtr<CellStyle> NewCellStyle(WorkbookFont *font, HAlignment halign, VAlignment valign, Text::CString dataFormat);
 			UOSInt GetStyleCount() const;
 			virtual OSInt GetStyleIndex(CellStyle *style) const;
-			virtual CellStyle *GetStyle(UOSInt Index) const;
-			virtual CellStyle *FindOrCreateStyle(const CellStyle *tmpStyle);
+			virtual CellStyle *GetStyle(UOSInt index) const;
+			virtual NotNullPtr<CellStyle> FindOrCreateStyle(NotNullPtr<const CellStyle> tmpStyle);
 			CellStyle *GetDefaultStyle();
 			void GetPalette(UInt32 *palette);
 			void SetPalette(UInt32 *palette);

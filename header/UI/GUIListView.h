@@ -18,6 +18,7 @@ namespace UI
 		} ListViewStyle;
 
 		typedef void (__stdcall *ItemEvent)(void *userObj, UOSInt itemIndex);
+		typedef void (__stdcall *MouseEvent)(void *userObj, Math::Coord2DDbl pos, UOSInt index);
 	protected:
 		void *clsData;
 	private:
@@ -25,6 +26,8 @@ namespace UI
 		Data::ArrayList<void*> selChgObjs;
 		Data::ArrayList<ItemEvent> dblClkHdlrs;
 		Data::ArrayList<void*> dblClkObjs;
+		Data::ArrayList<MouseEvent> rClkHdlrs;
+		Data::ArrayList<void*> rClkObjs;
 		void *himgList;
 		UInt32 imgW;
 		UInt32 imgH;
@@ -89,10 +92,12 @@ namespace UI
 		virtual void OnSizeChanged(Bool updateScn);
 		void EventSelChg();
 		void EventDblClk(UOSInt index);
+		void EventMouseClick(Math::Coord2DDbl coord, MouseButton btn);
 		virtual void SetDPI(Double hdpi, Double ddpi);
 
 		void HandleSelChg(UI::UIEvent hdlr, void *userObj);
 		void HandleDblClk(ItemEvent hdlr, void *userObj);
+		void HandleRightClick(MouseEvent hdlr, void *userObj);
 	};
 }
 #endif

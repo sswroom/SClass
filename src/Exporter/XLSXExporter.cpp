@@ -263,7 +263,7 @@ Bool Exporter::XLSXExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text
 									Data::DateTime dt;
 									dt.ToLocalTime();
 									dt.SetValue(cell->cellValue->ToCString());
-									sb.AppendDouble(Text::XLSUtil::Date2Number(&dt));
+									sb.AppendDouble(Text::XLSUtil::Date2Number(Data::Timestamp::FromStr(cell->cellValue->ToCString(), Data::DateTimeUtil::GetLocalTzQhr())));
 								}
 								break;
 							case Text::SpreadSheet::CellDataType::MergedLeft:
@@ -992,107 +992,11 @@ Bool Exporter::XLSXExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text
 			j = workbook->GetStyleCount();
 			while (i < j)
 			{
-				Text::SpreadSheet::CellStyle *style = workbook->GetStyle(i);
-				Text::SpreadSheet::WorkbookFont *font = style->GetFont();
-				Text::String *optS = style->GetDataFormat();
-				if (optS == 0)
+				NotNullPtr<Text::SpreadSheet::CellStyle> style;
+				if (style.Set(workbook->GetStyle(i)))
 				{
-					csptr = (const UTF8Char*)"general";
+					AppendXF(sb, style, borders, workbook, numFmtMap);
 				}
-				else
-				{
-					csptr = optS->v;
-				}
-				sb.AppendC(UTF8STRC("<xf numFmtId=\""));
-				sb.AppendUOSInt(numFmtMap.Get(csptr) + 164);
-				sb.AppendC(UTF8STRC("\" fontId=\""));
-				if (font == 0)
-				{
-					sb.AppendUTF8Char('0');
-				}
-				else
-				{
-					sb.AppendUOSInt(workbook->GetFontIndex(font));
-				}
-				sb.AppendC(UTF8STRC("\" fillId=\"0\" borderId=\""));
-				k = borders.GetCount();
-				while (k-- > 0)
-				{
-					border = borders.GetItem(k);
-					if (border->left == style->GetBorderLeft() &&
-						border->top == style->GetBorderTop() &&
-						border->right == style->GetBorderRight() &&
-						border->bottom == style->GetBorderBottom())
-					{
-						break;
-					}
-				}
-				if (k == INVALID_INDEX)
-				{
-					k = 0;
-				}
-				sb.AppendUOSInt(k);
-				sb.AppendC(UTF8STRC("\" xfId=\"0\" applyFont=\""));
-				if (font)
-				{
-					sb.AppendC(UTF8STRC("true"));
-				}
-				else
-				{
-					sb.AppendC(UTF8STRC("false"));
-				}
-				sb.AppendC(UTF8STRC("\" applyBorder=\"false\" applyAlignment=\"true\" applyProtection=\"false\">"));
-				sb.AppendC(UTF8STRC("<alignment horizontal=\""));
-				switch (style->GetHAlign())
-				{
-				case Text::HAlignment::Left:
-					sb.AppendC(UTF8STRC("left"));
-					break;
-				case Text::HAlignment::Center:
-					sb.AppendC(UTF8STRC("center"));
-					break;
-				case Text::HAlignment::Right:
-					sb.AppendC(UTF8STRC("right"));
-					break;
-				case Text::HAlignment::Fill:
-					sb.AppendC(UTF8STRC("fill"));
-					break;
-				case Text::HAlignment::Justify:
-					sb.AppendC(UTF8STRC("justify"));
-					break;
-				case Text::HAlignment::Unknown:
-				default:
-					sb.AppendC(UTF8STRC("general"));
-					break;
-				}
-				sb.AppendC(UTF8STRC("\" vertical=\""));
-				switch (style->GetVAlign())
-				{
-				case Text::VAlignment::Top:
-					sb.AppendC(UTF8STRC("top"));
-					break;
-				case Text::VAlignment::Center:
-					sb.AppendC(UTF8STRC("center"));
-					break;
-				case Text::VAlignment::Bottom:
-					sb.AppendC(UTF8STRC("bottom"));
-					break;
-				case Text::VAlignment::Justify:
-					sb.AppendC(UTF8STRC("justify"));
-					break;
-				case Text::VAlignment::Unknown:
-				default:
-					sb.AppendC(UTF8STRC("general"));
-					break;
-				}
-				sb.AppendC(UTF8STRC("\" textRotation=\"0\" wrapText=\""));
-				if (style->GetWordWrap())
-					sb.AppendC(UTF8STRC("true"));
-				else
-					sb.AppendC(UTF8STRC("false"));
-				sb.AppendC(UTF8STRC("\" indent=\"0\" shrinkToFit=\"false\"/>"));
-				sb.AppendC(UTF8STRC("<protection locked=\"true\" hidden=\"false\"/>"));
-				sb.AppendC(UTF8STRC("</xf>"));
 				i++;
 			}
 			sb.AppendC(UTF8STRC("</cellXfs>"));
@@ -1680,6 +1584,113 @@ void Exporter::XLSXExporter::AppendBorder(NotNullPtr<Text::StringBuilderUTF8> sb
 		sb->Append(name);
 		sb->AppendUTF8Char('>');
 	}
+}
+
+void Exporter::XLSXExporter::AppendXF(NotNullPtr<Text::StringBuilderUTF8> sb, NotNullPtr<Text::SpreadSheet::CellStyle> style, NotNullPtr<Data::ArrayList<BorderInfo*>> borders, NotNullPtr<Text::SpreadSheet::Workbook> workbook, NotNullPtr<Data::StringUTF8Map<UOSInt>> numFmtMap)
+{
+	UOSInt k;
+	const UTF8Char *csptr;
+	BorderInfo *border;
+	Text::SpreadSheet::WorkbookFont *font = style->GetFont();
+	Text::String *optS = style->GetDataFormat();
+	if (optS == 0)
+	{
+		csptr = (const UTF8Char*)"general";
+	}
+	else
+	{
+		csptr = optS->v;
+	}
+	sb->AppendC(UTF8STRC("<xf numFmtId=\""));
+	sb->AppendUOSInt(numFmtMap->Get(csptr) + 164);
+	sb->AppendC(UTF8STRC("\" fontId=\""));
+	if (font == 0)
+	{
+		sb->AppendUTF8Char('0');
+	}
+	else
+	{
+		sb->AppendUOSInt(workbook->GetFontIndex(font));
+	}
+	sb->AppendC(UTF8STRC("\" fillId=\"0\" borderId=\""));
+	k = borders->GetCount();
+	while (k-- > 0)
+	{
+		border = borders->GetItem(k);
+		if (border->left == style->GetBorderLeft() &&
+			border->top == style->GetBorderTop() &&
+			border->right == style->GetBorderRight() &&
+			border->bottom == style->GetBorderBottom())
+		{
+			break;
+		}
+	}
+	if (k == INVALID_INDEX)
+	{
+		k = 0;
+	}
+	sb->AppendUOSInt(k);
+	sb->AppendC(UTF8STRC("\" xfId=\"0\" applyFont=\""));
+	if (font)
+	{
+		sb->AppendC(UTF8STRC("true"));
+	}
+	else
+	{
+		sb->AppendC(UTF8STRC("false"));
+	}
+	sb->AppendC(UTF8STRC("\" applyBorder=\"false\" applyAlignment=\"true\" applyProtection=\"false\">"));
+	sb->AppendC(UTF8STRC("<alignment horizontal=\""));
+	switch (style->GetHAlign())
+	{
+	case Text::HAlignment::Left:
+		sb->AppendC(UTF8STRC("left"));
+		break;
+	case Text::HAlignment::Center:
+		sb->AppendC(UTF8STRC("center"));
+		break;
+	case Text::HAlignment::Right:
+		sb->AppendC(UTF8STRC("right"));
+		break;
+	case Text::HAlignment::Fill:
+		sb->AppendC(UTF8STRC("fill"));
+		break;
+	case Text::HAlignment::Justify:
+		sb->AppendC(UTF8STRC("justify"));
+		break;
+	case Text::HAlignment::Unknown:
+	default:
+		sb->AppendC(UTF8STRC("general"));
+		break;
+	}
+	sb->AppendC(UTF8STRC("\" vertical=\""));
+	switch (style->GetVAlign())
+	{
+	case Text::VAlignment::Top:
+		sb->AppendC(UTF8STRC("top"));
+		break;
+	case Text::VAlignment::Center:
+		sb->AppendC(UTF8STRC("center"));
+		break;
+	case Text::VAlignment::Bottom:
+		sb->AppendC(UTF8STRC("bottom"));
+		break;
+	case Text::VAlignment::Justify:
+		sb->AppendC(UTF8STRC("justify"));
+		break;
+	case Text::VAlignment::Unknown:
+	default:
+		sb->AppendC(UTF8STRC("general"));
+		break;
+	}
+	sb->AppendC(UTF8STRC("\" textRotation=\"0\" wrapText=\""));
+	if (style->GetWordWrap())
+		sb->AppendC(UTF8STRC("true"));
+	else
+		sb->AppendC(UTF8STRC("false"));
+	sb->AppendC(UTF8STRC("\" indent=\"0\" shrinkToFit=\"false\"/>"));
+	sb->AppendC(UTF8STRC("<protection locked=\"true\" hidden=\"false\"/>"));
+	sb->AppendC(UTF8STRC("</xf>"));
 }
 
 Text::CString Exporter::XLSXExporter::PresetColorCode(PresetColor color)

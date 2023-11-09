@@ -40,6 +40,10 @@ typedef enum
 	MNU_TABLE_EXPORT_OPTION,
 	MNU_TABLE_EXPORT_CSV,
 	MNU_TABLE_EXPORT_SQLITE,
+	MNU_TABLE_EXPORT_HTML,
+	MNU_TABLE_EXPORT_PLIST,
+	MNU_TABLE_EXPORT_EXCELXML,
+	MNU_TABLE_EXPORT_XLSX,
 	MNU_TABLE_CHECK_CHANGE,
 	MNU_CHART_LINE,
 	MNU_DATABASE_START = 1000
@@ -375,6 +379,132 @@ void SSWR::AVIRead::AVIRDBForm::ExportTableSQLite()
 	SDEL_STRING(schemaName);
 }
 
+void SSWR::AVIRead::AVIRDBForm::ExportTableHTML()
+{
+	UTF8Char sbuff[512];
+	UTF8Char *sptr;
+	Text::String *schemaName = this->lbSchema->GetSelectedItemTextNew();
+	Text::String *tableName = this->lbTable->GetSelectedItemTextNew();
+	sptr = sbuff;
+	if (schemaName->leng > 0)
+	{
+		sptr = schemaName->ConcatTo(sptr);
+		*sptr++ = '_';
+	}
+	sptr = tableName->ConcatTo(sptr);
+	*sptr++ = '_';
+	sptr = Data::Timestamp::Now().ToString(sptr, "yyyyMMdd_HHmmss");
+	sptr = Text::StrConcatC(sptr, UTF8STRC(".html"));
+	UI::FileDialog dlg(L"SSWR", L"AVIRead", L"DBExportHTML", true);
+	dlg.AddFilter(CSTR("*.html"), CSTR("HTML File"));
+	dlg.SetFileName(CSTRP(sbuff, sptr));
+	if (dlg.ShowDialog(this->GetHandle()))
+	{
+		IO::FileStream fs(dlg.GetFileName(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+		if (!DB::DBExporter::GenerateHTML(this->db, STR_CSTR(schemaName), tableName->ToCString(), this->currCond, fs, 65001))
+		{
+			UI::MessageDialog::ShowDialog(CSTR("Error in exporting as PList"), CSTR("DB Manager"), this);
+		}
+	}
+	tableName->Release();
+	SDEL_STRING(schemaName);
+}
+
+void SSWR::AVIRead::AVIRDBForm::ExportTablePList()
+{
+	UTF8Char sbuff[512];
+	UTF8Char *sptr;
+	Text::String *schemaName = this->lbSchema->GetSelectedItemTextNew();
+	Text::String *tableName = this->lbTable->GetSelectedItemTextNew();
+	sptr = sbuff;
+	if (schemaName->leng > 0)
+	{
+		sptr = schemaName->ConcatTo(sptr);
+		*sptr++ = '_';
+	}
+	sptr = tableName->ConcatTo(sptr);
+	*sptr++ = '_';
+	sptr = Data::Timestamp::Now().ToString(sptr, "yyyyMMdd_HHmmss");
+	sptr = Text::StrConcatC(sptr, UTF8STRC(".plist"));
+	UI::FileDialog dlg(L"SSWR", L"AVIRead", L"DBExportPList", true);
+	dlg.AddFilter(CSTR("*.plist"), CSTR("PList File"));
+	dlg.SetFileName(CSTRP(sbuff, sptr));
+	if (dlg.ShowDialog(this->GetHandle()))
+	{
+		IO::FileStream fs(dlg.GetFileName(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+		if (!DB::DBExporter::GeneratePList(this->db, STR_CSTR(schemaName), tableName->ToCString(), this->currCond, fs, 65001))
+		{
+			UI::MessageDialog::ShowDialog(CSTR("Error in exporting as PList"), CSTR("DB Manager"), this);
+		}
+	}
+	tableName->Release();
+	SDEL_STRING(schemaName);
+}
+
+void SSWR::AVIRead::AVIRDBForm::ExportTableXLSX()
+{
+	UTF8Char sbuff[512];
+	UTF8Char *sptr;
+	Text::String *schemaName = this->lbSchema->GetSelectedItemTextNew();
+	Text::String *tableName = this->lbTable->GetSelectedItemTextNew();
+	sptr = sbuff;
+	if (schemaName->leng > 0)
+	{
+		sptr = schemaName->ConcatTo(sptr);
+		*sptr++ = '_';
+	}
+	sptr = tableName->ConcatTo(sptr);
+	*sptr++ = '_';
+	sptr = Data::Timestamp::Now().ToString(sptr, "yyyyMMdd_HHmmss");
+	sptr = Text::StrConcatC(sptr, UTF8STRC(".xlsx"));
+	UI::FileDialog dlg(L"SSWR", L"AVIRead", L"DBExportXLSX", true);
+	dlg.AddFilter(CSTR("*.xlsx"), CSTR("Excel 2007 File"));
+	dlg.SetFileName(CSTRP(sbuff, sptr));
+	if (dlg.ShowDialog(this->GetHandle()))
+	{
+		Text::StringBuilderUTF8 sb;
+		IO::FileStream fs(dlg.GetFileName(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+		if (!DB::DBExporter::GenerateXLSX(this->db, STR_CSTR(schemaName), tableName->ToCString(), this->currCond, fs, &sb))
+		{
+			UI::MessageDialog::ShowDialog(sb.ToCString(), CSTR("DB Manager"), this);
+		}
+	}
+	tableName->Release();
+	SDEL_STRING(schemaName);
+}
+
+void SSWR::AVIRead::AVIRDBForm::ExportTableExcelXML()
+{
+	UTF8Char sbuff[512];
+	UTF8Char *sptr;
+	Text::String *schemaName = this->lbSchema->GetSelectedItemTextNew();
+	Text::String *tableName = this->lbTable->GetSelectedItemTextNew();
+	sptr = sbuff;
+	if (schemaName->leng > 0)
+	{
+		sptr = schemaName->ConcatTo(sptr);
+		*sptr++ = '_';
+	}
+	sptr = tableName->ConcatTo(sptr);
+	*sptr++ = '_';
+	sptr = Data::Timestamp::Now().ToString(sptr, "yyyyMMdd_HHmmss");
+	sptr = Text::StrConcatC(sptr, UTF8STRC(".xml"));
+	UI::FileDialog dlg(L"SSWR", L"AVIRead", L"DBExportXML", true);
+	dlg.AddFilter(CSTR("*.xml"), CSTR("Excel XML File"));
+	dlg.SetFileName(CSTRP(sbuff, sptr));
+	if (dlg.ShowDialog(this->GetHandle()))
+	{
+		Text::StringBuilderUTF8 sb;
+		IO::FileStream fs(dlg.GetFileName(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+		if (!DB::DBExporter::GenerateExcelXML(this->db, STR_CSTR(schemaName), tableName->ToCString(), this->currCond, fs, &sb))
+		{
+			UI::MessageDialog::ShowDialog(sb.ToCString(), CSTR("DB Manager"), this);
+		}
+	}
+	tableName->Release();
+	SDEL_STRING(schemaName);
+}
+
 SSWR::AVIRead::AVIRDBForm::AVIRDBForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<DB::ReadingDB> db, Bool needRelease) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	UTF8Char sbuff[512];
@@ -471,6 +601,10 @@ SSWR::AVIRead::AVIRDBForm::AVIRDBForm(UI::GUIClientControl *parent, NotNullPtr<U
 	mnu2->AddItem(CSTR("SQL..."), MNU_TABLE_EXPORT_OPTION, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu2->AddItem(CSTR("CSV"), MNU_TABLE_EXPORT_CSV, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu2->AddItem(CSTR("SQLite"), MNU_TABLE_EXPORT_SQLITE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu2->AddItem(CSTR("HTML"), MNU_TABLE_EXPORT_HTML, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu2->AddItem(CSTR("PList"), MNU_TABLE_EXPORT_PLIST, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu2->AddItem(CSTR("Excel 2007"), MNU_TABLE_EXPORT_XLSX, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu2->AddItem(CSTR("Excel XML"), MNU_TABLE_EXPORT_EXCELXML, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem(CSTR("Check Table Changes"), MNU_TABLE_CHECK_CHANGE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu = this->mnuMain->AddSubMenu(CSTR("&Chart"));
 	mnu->AddItem(CSTR("&Line Chart"), MNU_CHART_LINE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
@@ -701,6 +835,18 @@ void SSWR::AVIRead::AVIRDBForm::EventMenuClicked(UInt16 cmdId)
 		break;
 	case MNU_TABLE_EXPORT_SQLITE:
 		this->ExportTableSQLite();
+		break;
+	case MNU_TABLE_EXPORT_HTML:
+		this->ExportTableHTML();
+		break;
+	case MNU_TABLE_EXPORT_PLIST:
+		this->ExportTablePList();
+		break;
+	case MNU_TABLE_EXPORT_EXCELXML:
+		this->ExportTableExcelXML();
+		break;
+	case MNU_TABLE_EXPORT_XLSX:
+		this->ExportTableXLSX();
 		break;
 	case MNU_TABLE_CHECK_CHANGE:
 		{

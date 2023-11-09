@@ -42,6 +42,27 @@ gboolean GUIListView_ButtonClick(GtkWidget *widget, GdkEventButton *event, gpoin
 			me->EventDblClk(i);
 		}
 	}
+	else if (event->type == GDK_BUTTON_PRESS)
+	{
+		UI::GUIListView *me = (UI::GUIListView*)user_data;
+		UI::GUIControl::MouseButton btn;
+		switch (event->button)
+		{
+		case GDK_BUTTON_PRIMARY:
+			btn = UI::GUIControl::MouseButton::MBTN_LEFT;
+			break;
+		case GDK_BUTTON_MIDDLE:
+			btn = UI::GUIControl::MouseButton::MBTN_MIDDLE;
+			break;
+		case GDK_BUTTON_SECONDARY:
+			btn = UI::GUIControl::MouseButton::MBTN_RIGHT;
+			break;
+		default:
+			btn = UI::GUIControl::MouseButton::MBTN_LEFT;
+			break;
+		}
+		me->EventMouseClick(Math::Coord2DDbl(event->x, event->y), btn);
+	}
 	return false;
 }
 
@@ -636,6 +657,20 @@ void UI::GUIListView::EventDblClk(UOSInt itemIndex)
 	}
 }
 
+void UI::GUIListView::EventMouseClick(Math::Coord2DDbl coord, MouseButton btn)
+{
+	if (btn == MouseButton::MBTN_RIGHT)
+	{
+		UOSInt index = this->GetSelectedIndex();
+		UOSInt i;
+		i = this->rClkHdlrs.GetCount();
+		while (i-- > 0)
+		{
+			this->rClkHdlrs.GetItem(i)(this->rClkObjs.GetItem(i), coord, index);
+		}
+	}
+}
+
 void UI::GUIListView::SetDPI(Double hdpi, Double ddpi)
 {
 	this->hdpi = hdpi;
@@ -674,3 +709,8 @@ void UI::GUIListView::HandleDblClk(ItemEvent hdlr, void *userObj)
 	this->dblClkObjs.Add(userObj);
 }
 
+void UI::GUIListView::HandleRightClick(MouseEvent hdlr, void *userObj)
+{
+	this->rClkHdlrs.Add(hdlr);
+	this->rClkObjs.Add(userObj);
+}

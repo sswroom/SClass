@@ -627,9 +627,8 @@ Bool Exporter::ExcelXMLExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, 
 										break;
 									case Text::SpreadSheet::CellDataType::DateTime:
 										sb.AppendC(UTF8STRC("<Data ss:Type=\"DateTime\">"));
-										s = Text::XML::ToNewXMLText(cell->cellValue->v);
-										sb.Append(s);
-										s->Release();
+										sptr = Data::Timestamp::FromStr(cell->cellValue->ToCString(), Data::DateTimeUtil::GetLocalTzQhr()).ToString(sbuff, "yyyy-MM-ddTHH:mm:ss.fff");
+										sb.AppendP(sbuff, sptr);
 										sb.AppendC(UTF8STRC("</Data>"));
 										break;
 									case Text::SpreadSheet::CellDataType::MergedLeft:

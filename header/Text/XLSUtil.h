@@ -9,6 +9,7 @@ namespace Text
 	{
 	public:
 		static Double Date2Number(Data::DateTime *dt);
+		static Double Date2Number(Data::Timestamp ts);
 		static void Number2Date(Data::DateTime *dt, Double v);
 		static Data::Timestamp Number2Timestamp(Double v);
 		static UTF8Char *GetCellID(UTF8Char *sbuff, UOSInt col, UOSInt row);

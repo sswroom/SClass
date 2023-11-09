@@ -250,7 +250,7 @@ Bool Parser::FileParser::XLSParser::ParseWorkbook(NotNullPtr<IO::StreamData> fd,
 	Bool bofFound = false;
 	WorkbookStatus status;
 	Parser::FileParser::XLSParser::FontInfo *font;
-	Text::SpreadSheet::CellStyle *style;
+	NotNullPtr<Text::SpreadSheet::CellStyle> style;
 	UOSInt readBuffSize;
 	UOSInt readSize;
 	UOSInt i;
@@ -809,11 +809,13 @@ Bool Parser::FileParser::XLSParser::ParseWorkbook(NotNullPtr<IO::StreamData> fd,
 			readBuffSize -= i;
 		}
 	}
-	style = wb->GetDefaultStyle();
-	font = status.fontList.GetItem(0);
-	if (font)
+	if (style.Set(wb->GetDefaultStyle()))
 	{
-		style->SetFont(wb->GetFont(0));
+		font = status.fontList.GetItem(0);
+		if (font)
+		{
+			style->SetFont(wb->GetFont(0));
+		}
 	}
 
 	i = status.wsList.GetCount();

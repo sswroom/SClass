@@ -14,7 +14,21 @@ Double Text::XLSUtil::Date2Number(Data::DateTime *dt)
 		ticks += 86400000LL;
 		days -= 1;
 	}
-	return days + (Double)ticks / 86400000.0;
+	return days + (Double)ticks / 86400000.0 + 50000 / 86400000000000.0;
+}
+
+Double Text::XLSUtil::Date2Number(Data::Timestamp ts)
+{
+	ts = ts.SetTimeZoneQHR(0);
+	Int64 secs = ts.inst.sec;
+	Int32 days = (Int32)(secs / 86400LL) + 25569;
+	secs -= (days - 25569) * 86400;
+	while (secs < 0)
+	{
+		secs += 86400LL;
+		days -= 1;
+	}
+	return days + (Double)secs / 86400.0 + (ts.inst.nanosec + 50000) / 86400000000000.0;
 }
 
 void Text::XLSUtil::Number2Date(Data::DateTime *dt, Double v)

@@ -3,6 +3,7 @@
 #include "Data/ArrayListUInt64.h"
 #include "Data/ByteBuffer.h"
 #include "IO/FileStream.h"
+#include "IO/StreamData.h"
 #include "Sync/Event.h"
 #include "Sync/Mutex.h"
 #include "UI/GUITextView.h"
@@ -14,14 +15,23 @@ namespace UI
 	public:
 		typedef void (__stdcall *TextPosEvent)(void *userObj, UInt32 textPosX, UOSInt textPosY);
 	private:
+		enum class LoadFileType
+		{
+			None,
+			FilePath,
+			FileData,
+			FileStream
+		};
+
 		Data::ArrayList<TextPosEvent> textPosUpdHdlr;
 		Data::ArrayList<void *> textPosUpdObj;
-		IO::FileStream *fs;
+		IO::SeekableStream *fs;
 		UInt32 codePage;
 //		void *drawFont;
 		UOSInt lastLineCnt;
 
 		NotNullPtr<Text::String> fileName;
+		IO::StreamData *fileData;
 		Data::ByteBuffer readBuff;
 		UInt64 readBuffOfst;
 		UOSInt readBuffSize;
@@ -33,7 +43,7 @@ namespace UI
 		Sync::Event evtThread;
 		Bool threadToStop;
 		Bool threadRunning;
-		Bool loadNewFile;
+		LoadFileType loadNewFile;
 		Bool readingFile;
 		UInt32 dispLineNumW;
 		UInt32 selStartX;
@@ -60,6 +70,7 @@ namespace UI
 		void GetPosFromByteOfst(UInt64 byteOfst, UInt32 *txtPosX, UOSInt *txtPosY);
 
 		void EventTextPosUpdated();
+		void ClearFileStatus();
 	public:
 		GUITextFileView(NotNullPtr<UI::GUICore> ui, UI::GUIClientControl *parent, NotNullPtr<Media::DrawEngine> deng);
 		virtual ~GUITextFileView();
@@ -86,6 +97,7 @@ namespace UI
 		UOSInt GetLineCount();
 		void SetCodePage(UInt32 codePage);
 		Bool LoadFile(NotNullPtr<Text::String> fileName);
+		Bool LoadStreamData(NotNullPtr<IO::StreamData> fd);
 		NotNullPtr<Text::String> GetFileName() const;
 		void GetTextPos(OSInt scnPosX, OSInt scnPosY, UInt32 *textPosX, UOSInt *textPosY);
 		UOSInt GetTextPosY();

@@ -85,9 +85,9 @@ namespace Text
 			CellStyle(UOSInt index);
 			~CellStyle();
 
-			CellStyle *Clone() const;
+			NotNullPtr<CellStyle> Clone() const;
 			void CopyFrom(CellStyle *style);
-			Bool Equals(const CellStyle *style) const;
+			Bool Equals(NotNullPtr<const CellStyle> style) const;
 
 			CellStyle *SetIndex(UOSInt index);
 			CellStyle *SetID(const UTF8Char *id);

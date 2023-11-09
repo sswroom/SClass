@@ -1,6 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Data/ByteBuffer.h"
+#include "IO/StreamDataStream.h"
 #include "Math/Math.h"
 #include "Sync/Interlocked.h"
 #include "Sync/MutexUsage.h"
@@ -25,7 +26,7 @@ UInt32 __stdcall UI::GUITextFileView::ProcThread(void *userObj)
 	me->threadRunning = true;
 	while (!me->threadToStop)
 	{
-		if (me->loadNewFile)
+		if (me->loadNewFile != LoadFileType::None)
 		{
 			if (me->isSearching)
 			{
@@ -33,12 +34,22 @@ UInt32 __stdcall UI::GUITextFileView::ProcThread(void *userObj)
 				me->isSearching = false;
 			}
 			Sync::MutexUsage mutUsage(me->mut);
-			me->loadNewFile = false;
+			LoadFileType thisType = me->loadNewFile;
+			me->loadNewFile = LoadFileType::None;
 			if (me->fs)
 			{
 				DEL_CLASS(me->fs);
 			}
-			NEW_CLASS(me->fs, IO::FileStream(me->fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Sequential));
+			NotNullPtr<IO::StreamData> stmData;
+			if (thisType == LoadFileType::FileData && stmData.Set(me->fileData))
+			{
+				NEW_CLASS(me->fs, IO::StreamDataStream(stmData));
+				stmData.Delete();
+			}
+			else
+			{
+				NEW_CLASS(me->fs, IO::FileStream(me->fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Sequential));
+			}
 			me->lineOfsts.Clear();
 			me->readingFile = true;
 			me->readBuffOfst = 0;
@@ -79,7 +90,7 @@ UInt32 __stdcall UI::GUITextFileView::ProcThread(void *userObj)
 			{
 				while (me->readBuffSize > 0)
 				{
-					if (me->loadNewFile || me->threadToStop)
+					if (me->loadNewFile != LoadFileType::None || me->threadToStop)
 						break;
 
 					Sync::MutexUsage mutUsage(me->mut);
@@ -125,7 +136,7 @@ UInt32 __stdcall UI::GUITextFileView::ProcThread(void *userObj)
 			{
 				while (me->readBuffSize > 0)
 				{
-					if (me->loadNewFile || me->threadToStop)
+					if (me->loadNewFile != LoadFileType::None || me->threadToStop)
 						break;
 
 					lineCurr = 0;
@@ -171,7 +182,7 @@ UInt32 __stdcall UI::GUITextFileView::ProcThread(void *userObj)
 			{
 				while (me->readBuffSize > 0)
 				{
-					if (me->loadNewFile || me->threadToStop)
+					if (me->loadNewFile != LoadFileType::None || me->threadToStop)
 						break;
 
 					lineCurr = 0;
@@ -213,7 +224,7 @@ UInt32 __stdcall UI::GUITextFileView::ProcThread(void *userObj)
 					mutUsage.EndUse();
 				}
 			}
-			if (me->loadNewFile || me->threadToStop)
+			if (me->loadNewFile != LoadFileType::None || me->threadToStop)
 			{
 			}
 			else
@@ -246,7 +257,7 @@ UInt32 __stdcall UI::GUITextFileView::ProcThread(void *userObj)
 				{
 					while (me->readBuffSize > 0)
 					{
-						if (me->loadNewFile || me->threadToStop)
+						if (me->loadNewFile != LoadFileType::None || me->threadToStop)
 							break;
 
 						Sync::MutexUsage mutUsage(me->mut);
@@ -292,7 +303,7 @@ UInt32 __stdcall UI::GUITextFileView::ProcThread(void *userObj)
 				{
 					while (me->readBuffSize > 0)
 					{
-						if (me->loadNewFile || me->threadToStop)
+						if (me->loadNewFile != LoadFileType::None || me->threadToStop)
 							break;
 
 						lineCurr = 0;
@@ -338,7 +349,7 @@ UInt32 __stdcall UI::GUITextFileView::ProcThread(void *userObj)
 				{
 					while (me->readBuffSize > 0)
 					{
-						if (me->loadNewFile || me->threadToStop)
+						if (me->loadNewFile != LoadFileType::None || me->threadToStop)
 							break;
 
 						lineCurr = 0;
@@ -380,7 +391,7 @@ UInt32 __stdcall UI::GUITextFileView::ProcThread(void *userObj)
 						mutUsage.EndUse();
 					}
 				}
-				if (me->loadNewFile || me->threadToStop)
+				if (me->loadNewFile != LoadFileType::None || me->threadToStop)
 				{
 				}
 				else
@@ -849,12 +860,31 @@ void UI::GUITextFileView::EventTextPosUpdated()
 	}
 }
 
+void UI::GUITextFileView::ClearFileStatus()
+{
+	this->fileSize = 0;
+
+	this->lastLineCnt = 0;
+	this->SetScrollVRange(0, 0);
+
+	this->caretX = 0;
+	this->caretY = 0;
+	this->selStartX = 0;
+	this->selStartY = 0;
+	this->selEndX = 0;
+	this->selEndY = 0;
+	this->selLastX = 0;
+	this->selLastY = 0;
+	this->evtThread.Set();
+}
+
 UI::GUITextFileView::GUITextFileView(NotNullPtr<UI::GUICore> ui, UI::GUIClientControl *parent, NotNullPtr<Media::DrawEngine> deng) : UI::GUITextView(ui, parent, deng), readBuff(READBUFFSIZE)
 {
 	this->fileName = Text::String::NewEmpty();
+	this->fileData = 0;
 	this->threadToStop = false;
 	this->threadRunning = false;
-	this->loadNewFile = false;
+	this->loadNewFile = LoadFileType::None;
 	this->readingFile = false;
 	this->readBuffOfst = 0;
 	this->readBuffSize = 0;
@@ -1499,21 +1529,26 @@ Bool UI::GUITextFileView::LoadFile(NotNullPtr<Text::String> fileName)
 	Sync::MutexUsage mutUsage(this->mut);
 	this->fileName->Release();
 	this->fileName = fileName->Clone();
-	this->loadNewFile = true;
-	this->fileSize = 0;
+	this->loadNewFile = LoadFileType::FilePath;
+	this->ClearFileStatus();
+	mutUsage.EndUse();
+	this->EventTextPosUpdated();
+	return true;
+}
 
-	this->lastLineCnt = 0;
-	this->SetScrollVRange(0, 0);
+Bool UI::GUITextFileView::LoadStreamData(NotNullPtr<IO::StreamData> fd)
+{
+	while (this->isSearching)
+	{
+		Sync::SimpleThread::Sleep(10);
+	}
 
-	this->caretX = 0;
-	this->caretY = 0;
-	this->selStartX = 0;
-	this->selStartY = 0;
-	this->selEndX = 0;
-	this->selEndY = 0;
-	this->selLastX = 0;
-	this->selLastY = 0;
-	this->evtThread.Set();
+	Sync::MutexUsage mutUsage(this->mut);
+	this->fileName->Release();
+	this->fileName = fd->GetFullFileName()->Clone();
+	this->fileData = fd->GetPartialData(0, fd->GetDataSize()).Ptr();
+	this->loadNewFile = LoadFileType::FileData;
+	this->ClearFileStatus();
 	mutUsage.EndUse();
 	this->EventTextPosUpdated();
 	return true;

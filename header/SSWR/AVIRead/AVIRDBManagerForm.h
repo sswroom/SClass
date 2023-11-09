@@ -134,6 +134,10 @@ namespace SSWR
 			void ExportTableData(DB::SQLType sqlType, Bool axisAware);
 			void ExportTableCSV();
 			void ExportTableSQLite();
+			void ExportTableHTML();
+			void ExportTablePList();
+			void ExportTableXLSX();
+			void ExportTableExcelXML();
 		public:
 			AVIRDBManagerForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRDBManagerForm();

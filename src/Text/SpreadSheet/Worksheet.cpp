@@ -458,15 +458,15 @@ Bool Text::SpreadSheet::Worksheet::SetCellStyleHAlign(UOSInt row, UOSInt col, IS
 	cell = GetCellData(row, col, false);
 	if (cell == 0)
 		return false;
-	CellStyle *tmpStyle;
+	NotNullPtr<CellStyle> tmpStyle;
 	if (cell->style == 0)
 	{
 		if (hAlign == Text::HAlignment::Unknown)
 			return true;
-		NEW_CLASS(tmpStyle, CellStyle(0));
+		NEW_CLASSNN(tmpStyle, CellStyle(0));
 		tmpStyle->SetHAlign(hAlign);
-		cell->style = wb->FindOrCreateStyle(tmpStyle);
-		DEL_CLASS(tmpStyle);
+		cell->style = wb->FindOrCreateStyle(tmpStyle).Ptr();
+		tmpStyle.Delete();
 	}
 	else
 	{
@@ -474,8 +474,8 @@ Bool Text::SpreadSheet::Worksheet::SetCellStyleHAlign(UOSInt row, UOSInt col, IS
 			return true;
 		tmpStyle = cell->style->Clone();
 		tmpStyle->SetHAlign(hAlign);
-		cell->style = wb->FindOrCreateStyle(tmpStyle);
-		DEL_CLASS(tmpStyle);
+		cell->style = wb->FindOrCreateStyle(tmpStyle).Ptr();
+		tmpStyle.Delete();
 	}
 	return true;
 }
@@ -486,15 +486,15 @@ Bool Text::SpreadSheet::Worksheet::SetCellStyleBorderBottom(UOSInt row, UOSInt c
 	cell = GetCellData(row, col, true);
 	if (cell == 0)
 		return false;
-	CellStyle *tmpStyle;
+	NotNullPtr<CellStyle> tmpStyle;
 	if (cell->style == 0)
 	{
 		if (borderType == Text::SpreadSheet::BorderType::None)
 			return true;
-		NEW_CLASS(tmpStyle, CellStyle(0));
+		NEW_CLASSNN(tmpStyle, CellStyle(0));
 		tmpStyle->SetBorderBottom(Text::SpreadSheet::CellStyle::BorderStyle(color, borderType));
-		cell->style = wb->FindOrCreateStyle(tmpStyle);
-		DEL_CLASS(tmpStyle);
+		cell->style = wb->FindOrCreateStyle(tmpStyle).Ptr();
+		tmpStyle.Delete();
 	}
 	else
 	{
@@ -503,8 +503,8 @@ Bool Text::SpreadSheet::Worksheet::SetCellStyleBorderBottom(UOSInt row, UOSInt c
 			return true;
 		tmpStyle = cell->style->Clone();
 		tmpStyle->SetBorderBottom(Text::SpreadSheet::CellStyle::BorderStyle(color, borderType));
-		cell->style = wb->FindOrCreateStyle(tmpStyle);
-		DEL_CLASS(tmpStyle);
+		cell->style = wb->FindOrCreateStyle(tmpStyle).Ptr();
+		tmpStyle.Delete();
 	}
 	return true;
 }
@@ -576,9 +576,29 @@ Bool Text::SpreadSheet::Worksheet::SetCellTS(UOSInt row, UOSInt col, CellStyle *
 		return false;
 	cell->cdt = CellDataType::DateTime;
 	SDEL_STRING(cell->cellValue);
-	sptr = val.ToString(sbuff, "yyyy-MM-ddTHH:mm:ss.fff");
+	sptr = val.ToString(sbuff, "yyyy-MM-ddTHH:mm:ss.fffffffff");
 	cell->cellValue = Text::String::NewP(sbuff, sptr).Ptr();
-	if (style) cell->style = style;
+	if (style)
+	{
+		 cell->style = style;
+	}
+	else
+	{
+		CellStyle tmpStyle(0);
+		UInt32 nanosec = val.inst.nanosec;
+		if (nanosec == 0)
+		{
+			tmpStyle.SetDataFormat(CSTR("YYYY-MM-DD HH:MM:SS"));
+		}
+		else if (nanosec % 1000000 == 0)
+		{
+			tmpStyle.SetDataFormat(CSTR("YYYY-MM-DD HH:MM:SS.000"));
+		}
+		else
+		{
+			tmpStyle.SetDataFormat(CSTR("YYYY-MM-DD HH:MM:SS.00000"));
+		}
+	}
 	return true;
 }
 
@@ -592,7 +612,7 @@ Bool Text::SpreadSheet::Worksheet::SetCellDateTime(UOSInt row, UOSInt col, CellS
 		return false;
 	cell->cdt = CellDataType::DateTime;
 	SDEL_STRING(cell->cellValue);
-	sptr = val->ToString(sbuff, "yyyy-MM-ddTHH:mm:ss.fff");
+	sptr = val->ToString(sbuff, "yyyy-MM-ddTHH:mm:ss.fffffffff");
 	cell->cellValue = Text::String::NewP(sbuff, sptr).Ptr();
 	if (style) cell->style = style;
 	return true;

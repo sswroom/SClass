@@ -1,13 +1,14 @@
 #ifndef _SM_EXPORTER_XLSXEXPORTER
 #define _SM_EXPORTER_XLSXEXPORTER
 #include "Data/DateTime.h"
+#include "Data/StringUTF8Map.h"
 #include "IO/FileExporter.h"
 #include "Text/CString.h"
 #include "Text/StringBuilderUTF8.h"
 #include "Text/SpreadSheet/OfficeChartAxis.h"
 #include "Text/SpreadSheet/OfficeChartSeries.h"
 #include "Text/SpreadSheet/OfficeShapeProp.h"
-#include "Text/SpreadSheet/Worksheet.h"
+#include "Text/SpreadSheet/Workbook.h"
 
 namespace Exporter
 {
@@ -45,6 +46,7 @@ namespace Exporter
 		static void AppendAxis(NotNullPtr<Text::StringBuilderUTF8> sb, Text::SpreadSheet::OfficeChartAxis *axis, UOSInt index);
 		static void AppendSeries(NotNullPtr<Text::StringBuilderUTF8> sb, Text::SpreadSheet::OfficeChartSeries *series, UOSInt index);
 		static void AppendBorder(NotNullPtr<Text::StringBuilderUTF8> sb, Text::SpreadSheet::CellStyle::BorderStyle border, Text::CString name);
+		static void AppendXF(NotNullPtr<Text::StringBuilderUTF8> sb, NotNullPtr<Text::SpreadSheet::CellStyle> style, NotNullPtr<Data::ArrayList<BorderInfo*>> borders, NotNullPtr<Text::SpreadSheet::Workbook> workbook, NotNullPtr<Data::StringUTF8Map<UOSInt>> numFmtMap);
 
 		static Text::CString PresetColorCode(Text::SpreadSheet::PresetColor color);
 		static UTF8Char *ToFormatCode(UTF8Char *sbuff, const UTF8Char *dataFormat);

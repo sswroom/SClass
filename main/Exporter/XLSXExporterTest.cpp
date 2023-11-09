@@ -11,6 +11,15 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	Exporter::XLSXExporter exporterXLSX;
 	Text::CStringNN fileName;
 	Text::SpreadSheet::Workbook workbook;
+	NotNullPtr<Text::SpreadSheet::Worksheet> sheet = workbook.AddWorksheet(CSTR("Sheet"));
+	Text::SpreadSheet::CellStyle style(0);
+	style.SetDataFormat(CSTR("0.0"));
+	sheet->SetCellDouble(0, 0, workbook.FindOrCreateStyle(style).Ptr(), 0.123456);
+	Data::Timestamp ts = Data::Timestamp::Now();
+	style.SetDataFormat(CSTR("YYYY-MM-DD"));
+	sheet->SetCellTS(0, 1, workbook.FindOrCreateStyle(style).Ptr(), ts);
+	style.SetDataFormat(CSTR("HH:MM:SS.000"));
+	sheet->SetCellTS(0, 2, workbook.FindOrCreateStyle(style).Ptr(), ts);
 
 	fileName = CSTR("Workbook.xml");
 	{

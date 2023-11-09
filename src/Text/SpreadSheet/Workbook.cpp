@@ -123,10 +123,10 @@ Text::SpreadSheet::Workbook *Text::SpreadSheet::Workbook::Clone() const
 
 void Text::SpreadSheet::Workbook::AddDefaultStyles()
 {
-	Text::SpreadSheet::CellStyle *style;
+	NotNullPtr<Text::SpreadSheet::CellStyle> style;
 	while (this->styles.GetCount() < 21)
 	{
-		NEW_CLASS(style, Text::SpreadSheet::CellStyle(this->styles.GetCount()));
+		NEW_CLASSNN(style, Text::SpreadSheet::CellStyle(this->styles.GetCount()));
 		this->styles.Add(style);
 	}
 }
@@ -315,18 +315,18 @@ Bool Text::SpreadSheet::Workbook::HasCellStyle()
 	return false;
 }
 
-Text::SpreadSheet::CellStyle *Text::SpreadSheet::Workbook::NewCellStyle()
+NotNullPtr<Text::SpreadSheet::CellStyle> Text::SpreadSheet::Workbook::NewCellStyle()
 {
-	CellStyle *style;
-	NEW_CLASS(style, CellStyle(this->styles.GetCount()));
+	NotNullPtr<CellStyle> style;
+	NEW_CLASSNN(style, CellStyle(this->styles.GetCount()));
 	this->styles.Add(style);
 	return style;
 }
 
-Text::SpreadSheet::CellStyle *Text::SpreadSheet::Workbook::NewCellStyle(WorkbookFont *font, HAlignment halign, VAlignment valign, Text::CString dataFormat)
+NotNullPtr<Text::SpreadSheet::CellStyle> Text::SpreadSheet::Workbook::NewCellStyle(WorkbookFont *font, HAlignment halign, VAlignment valign, Text::CString dataFormat)
 {
-	CellStyle *style;
-	NEW_CLASS(style, CellStyle(this->styles.GetCount()));
+	NotNullPtr<CellStyle> style;
+	NEW_CLASSNN(style, CellStyle(this->styles.GetCount()));
 	style->SetFont(font);
 	style->SetHAlign(halign);
 	style->SetVAlign(valign);
@@ -356,16 +356,18 @@ Text::SpreadSheet::CellStyle *Text::SpreadSheet::Workbook::GetStyle(UOSInt index
 	return this->styles.GetItem(index);
 }
 
-Text::SpreadSheet::CellStyle *Text::SpreadSheet::Workbook::FindOrCreateStyle(const CellStyle *tmpStyle)
+NotNullPtr<Text::SpreadSheet::CellStyle> Text::SpreadSheet::Workbook::FindOrCreateStyle(NotNullPtr<const CellStyle> tmpStyle)
 {
-	CellStyle *style;
+	NotNullPtr<CellStyle> style;
 	UOSInt i = this->styles.GetCount();
 	while (i-- > 0)
 	{
-		style = this->styles.GetItem(i);
-		if (style->Equals(tmpStyle))
+		if (style.Set(this->styles.GetItem(i)))
 		{
-			return style;
+			if (style->Equals(tmpStyle))
+			{
+				return style;
+			}
 		}
 	}
 	style = tmpStyle->Clone();

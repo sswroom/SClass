@@ -1443,6 +1443,7 @@ DB::DBUtil::ColType Map::ESRI::FileGDBReader::GetColType(UOSInt colIndex, OptOut
 		case 4:
 			return DB::DBUtil::CT_VarUTF8Char;
 		case 5:
+			colSize.Set(0);
 			return DB::DBUtil::CT_DateTime;
 		case 6:
 			return DB::DBUtil::CT_Int32;

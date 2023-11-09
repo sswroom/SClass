@@ -106,7 +106,9 @@ namespace SSWR
 			static void __stdcall OnTimerTick(void *userObj);
 			static void __stdcall LVDblClick(void *userObj, UOSInt index);
 			static void __stdcall OnStatusDblClick(void *userObj, UOSInt index);
+			static void __stdcall OnFilesRightClick(void *userObj, Math::Coord2DDbl coord, UOSInt index);
 			void DisplayPackFile(NotNullPtr<IO::PackageFile> packFile);
+			UOSInt PackFileIndex(UOSInt lvIndex);
 		public:
 			AVIRPackageForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<IO::PackageFile> packFile);
 			virtual ~AVIRPackageForm();

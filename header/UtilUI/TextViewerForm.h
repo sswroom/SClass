@@ -33,6 +33,7 @@ namespace UtilUI
 
 		Bool SearchText(Text::CString txt);
 		Bool LoadFile(NotNullPtr<Text::String> filePath);
+		Bool LoadStreamData(NotNullPtr<IO::StreamData> data);
 		Bool OpenSearch(Text::CString txt);
 	};
 }

@@ -55,10 +55,12 @@ IO::ParsedObject *Parser::FileParser::ISOParser::ParseFileHdr(NotNullPtr<IO::Str
 
 	if (sectorData == 0)// && (fileSize & 2047) == 0)
 	{
-		fd->GetRealData(32768, 32, BYTEARR(buff));
-		if (ReadMInt32(&buff[0]) == 0x01434430 && ReadMInt32(&buff[4]) == 0x30310100)
+		if (fd->GetRealData(32768, 32, BYTEARR(buff)) >= 8)
 		{
-			NEW_CLASS(sectorData, IO::FileSectorData(fd, 0, fileSize, 2048));
+			if (ReadMInt32(&buff[0]) == 0x01434430 && ReadMInt32(&buff[4]) == 0x30310100)
+			{
+				NEW_CLASS(sectorData, IO::FileSectorData(fd, 0, fileSize, 2048));
+			}
 		}
 	}
 

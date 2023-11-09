@@ -3,6 +3,7 @@
 #include "DB/DBReader.h"
 #include "DB/SQLBuilder.h"
 #include "DB/SQLGenerator.h"
+#include "Exporter/ExcelXMLExporter.h"
 #include "Exporter/XLSXExporter.h"
 #include "IO/BufferedOutputStream.h"
 #include "IO/StreamWriter.h"
@@ -408,7 +409,7 @@ Bool DB::DBExporter::GeneratePList(NotNullPtr<DB::ReadingDB> db, Text::CString s
 	return true;
 }
 
-Bool DB::DBExporter::GenerateXLSX(NotNullPtr<DB::ReadingDB> db, Text::CString schema, Text::CStringNN tableName, Data::QueryConditions *cond, NotNullPtr<IO::SeekableStream> outStm, Text::StringBuilderUTF8 *sbError)
+Bool DB::DBExporter::AppendWorksheet(NotNullPtr<Text::SpreadSheet::Workbook> wb, NotNullPtr<DB::ReadingDB> db, Text::CString schema, Text::CStringNN tableName, Data::QueryConditions *cond, Text::StringBuilderUTF8 *sbError)
 {
 	UTF8Char sbuff[4096];
 	UTF8Char *sptr;
@@ -425,8 +426,9 @@ Bool DB::DBExporter::GenerateXLSX(NotNullPtr<DB::ReadingDB> db, Text::CString sc
 		SDEL_CLASS(table);
 		return false;
 	}
-	Text::SpreadSheet::Workbook wb;
-	NotNullPtr<Text::SpreadSheet::Worksheet> ws = wb.AddWorksheet(tableName);
+	NotNullPtr<Text::SpreadSheet::Worksheet> ws = wb->AddWorksheet(tableName);
+	Text::SpreadSheet::CellStyle style(0);
+	NotNullPtr<Text::SpreadSheet::CellStyle> timeStyle;
 	UOSInt i = 0;
 	UOSInt j = r->ColCount();
 	UOSInt row;
@@ -452,7 +454,16 @@ Bool DB::DBExporter::GenerateXLSX(NotNullPtr<DB::ReadingDB> db, Text::CString sc
 				case DB::DBUtil::CT_Date:
 				case DB::DBUtil::CT_DateTime:
 				case DB::DBUtil::CT_DateTimeTZ:
-					ws->SetCellTS(row, i, r->GetTimestamp(i));
+					if (colSize < 3)
+					{
+						style.SetDataFormat(CSTR("YYYY-MM-DD HH:MM:SS"));
+					}
+					else
+					{
+						style.SetDataFormat(CSTR("YYYY-MM-DD HH:MM:SS.000"));
+					}
+					timeStyle = wb->FindOrCreateStyle(style);
+					ws->SetCellTS(row, i, timeStyle.Ptr(), r->GetTimestamp(i));
 					break;
 				case DB::DBUtil::CT_Double:
 				case DB::DBUtil::CT_Float:
@@ -498,8 +509,28 @@ Bool DB::DBExporter::GenerateXLSX(NotNullPtr<DB::ReadingDB> db, Text::CString sc
 	}
 	db->CloseReader(r);
 	SDEL_CLASS(table);
+	return true;
+}
+
+Bool DB::DBExporter::GenerateXLSX(NotNullPtr<DB::ReadingDB> db, Text::CString schema, Text::CStringNN tableName, Data::QueryConditions *cond, NotNullPtr<IO::SeekableStream> outStm, Text::StringBuilderUTF8 *sbError)
+{
+	Text::SpreadSheet::Workbook wb;
+	wb.AddDefaultStyles();
+	if (!AppendWorksheet(wb, db, schema, tableName, cond, sbError))
+		return false;
 
 	Exporter::XLSXExporter exporter;
+	return exporter.ExportFile(outStm, outStm->GetSourceNameObj()->ToCString(), wb, 0);
+}
+
+Bool DB::DBExporter::GenerateExcelXML(NotNullPtr<DB::ReadingDB> db, Text::CString schema, Text::CStringNN tableName, Data::QueryConditions *cond, NotNullPtr<IO::SeekableStream> outStm, Text::StringBuilderUTF8 *sbError)
+{
+	Text::SpreadSheet::Workbook wb;
+	wb.AddDefaultStyles();
+	if (!AppendWorksheet(wb, db, schema, tableName, cond, sbError))
+		return false;
+
+	Exporter::ExcelXMLExporter exporter;
 	return exporter.ExportFile(outStm, outStm->GetSourceNameObj()->ToCString(), wb, 0);
 }
 
