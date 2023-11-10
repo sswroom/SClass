@@ -1928,6 +1928,8 @@ IO/VBoxVMInfo.h: ../../src/IO/VBoxVMInfo.cpp
 @VBoxVMInfo.o
 IO/VirtualIOPinMgr.h: ../../src/IO/VirtualIOPinMgr.cpp
 @VirtualIOPinMgr.o
+IO/VirtualPackageFile.h: ../../src/IO/VirtualPackageFile.cpp
+@VirtualPackageFile.o
 IO/WindowsError.h: ../../src/IO/WindowsError.cpp
 @WindowsError.o
 IO/WriteCacheStream.h: ../../src/IO/WriteCacheStream.cpp
@@ -4996,6 +4998,7 @@ UnixConfigFile.o: ../../src/IO/UnixConfigFile.cpp
 VBoxManager.o: ../../src/IO/VBoxManager.cpp
 VBoxVMInfo.o: ../../src/IO/VBoxVMInfo.cpp
 VirtualIOPinMgr.o: ../../src/IO/VirtualIOPinMgr.cpp
+VirtualPackageFile.o: ../../src/IO/VirtualPackageFile.cpp
 WindowsError.o: ../../src/IO/WindowsError.cpp
 WriteCacheStream.o: ../../src/IO/WriteCacheStream.cpp
 WriterLogHandler.o: ../../src/IO/WriterLogHandler.cpp

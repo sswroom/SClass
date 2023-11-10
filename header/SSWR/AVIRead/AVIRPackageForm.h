@@ -103,8 +103,6 @@ namespace SSWR
 			UInt64 progUpdateNew;
 			Bool progUpdated;
 			Bool progEnd;
-			UOSInt pasteInd;
-			UI::GUIMenu *mnuEdit;
 
 			static UInt32 __stdcall ProcessThread(void *userObj);
 			static void __stdcall OnTimerTick(void *userObj);

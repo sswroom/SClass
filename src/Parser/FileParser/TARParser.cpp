@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "IO/PackageFile.h"
+#include "IO/VirtualPackageFile.h"
 #include "Parser/FileParser/TARParser.h"
 #include "Text/Encoding.h"
 #include "Text/MyString.h"
@@ -60,12 +60,12 @@ IO::ParsedObject *Parser::FileParser::TARParser::ParseFileHdr(NotNullPtr<IO::Str
 	}
 
 	currOfst = 0;
-	IO::PackageFile *pf;
-	IO::PackageFile *pf2;
+	IO::VirtualPackageFile *pf;
+	IO::VirtualPackageFile *pf2;
 	NotNullPtr<IO::PackageFile> pf3;
 	Text::StringBuilderUTF8 sb;
 	Text::Encoding enc(this->codePage);
-	NEW_CLASS(pf, IO::PackageFile(fd->GetFullName()));
+	NEW_CLASS(pf, IO::VirtualPackageFile(fd->GetFullName()));
 
 	while (true)
 	{
@@ -100,10 +100,10 @@ IO::ParsedObject *Parser::FileParser::TARParser::ParseFileHdr(NotNullPtr<IO::Str
 						sb.AppendC(sptr, i);
 						if (!pf3.Set(pf2->GetPackFile({sptr, i})))
 						{
-							NEW_CLASSNN(pf3, IO::PackageFile(sb.ToCString()));
+							NEW_CLASSNN(pf3, IO::VirtualPackageFile(sb.ToCString()));
 							pf2->AddPack(pf3, {sptr, i}, Data::Timestamp(t * 1000LL, 0), 0, 0, 0);
 						}
-						pf2 = pf3.Ptr();
+						pf2 = (IO::VirtualPackageFile*)pf3.Ptr();
 						sptr = &sptr[i + 1];
 					}
 					else 
@@ -114,7 +114,7 @@ IO::ParsedObject *Parser::FileParser::TARParser::ParseFileHdr(NotNullPtr<IO::Str
 							sb.AppendC(sptr, (UOSInt)(sptrEnd - sptr));
 							if (!pf3.Set(pf2->GetPackFile({sptr, (UOSInt)(sptrEnd - sptr)})))
 							{
-								NEW_CLASSNN(pf3, IO::PackageFile(sb.ToCString()));
+								NEW_CLASSNN(pf3, IO::VirtualPackageFile(sb.ToCString()));
 								pf2->AddPack(pf3, CSTRP(sptr, sptrEnd), Data::Timestamp(t * 1000LL, 0), 0, 0, 0);
 							}
 						}
@@ -140,10 +140,10 @@ IO::ParsedObject *Parser::FileParser::TARParser::ParseFileHdr(NotNullPtr<IO::Str
 				sb.AppendC(sptr, i);
 				if (!pf3.Set(pf2->GetPackFile({sptr, i})))
 				{
-					NEW_CLASSNN(pf3, IO::PackageFile(sb.ToCString()));
+					NEW_CLASSNN(pf3, IO::VirtualPackageFile(sb.ToCString()));
 					pf2->AddPack(pf3, {sptr, i}, Data::Timestamp(t * 1000LL, 0), 0, 0, 0);
 				}
-				pf2 = pf3.Ptr();
+				pf2 = (IO::VirtualPackageFile*)pf3.Ptr();
 				sptr = &sptr[i + 1];
 			}
 			else

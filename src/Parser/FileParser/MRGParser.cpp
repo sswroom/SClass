@@ -1,9 +1,9 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
+#include "IO/VirtualPackageFile.h"
 #include "Parser/FileParser/MRGParser.h"
 #include "Text/Encoding.h"
 #include "Text/MyString.h"
-#include "IO/PackageFile.h"
 
 Parser::FileParser::MRGParser::MRGParser()
 {
@@ -50,8 +50,8 @@ IO::ParsedObject *Parser::FileParser::MRGParser::ParseFileHdr(NotNullPtr<IO::Str
 	currOfst = startOfst;
 	hdrOfst = 16;
 	Text::Encoding enc(932);
-	IO::PackageFile *pf;
-	NEW_CLASS(pf, IO::PackageFile(fd->GetFullName()));
+	IO::VirtualPackageFile *pf;
+	NEW_CLASS(pf, IO::VirtualPackageFile(fd->GetFullName()));
 
 	while (hdrOfst < startOfst)
 	{

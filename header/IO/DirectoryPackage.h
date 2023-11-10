@@ -66,15 +66,19 @@ namespace IO
 		virtual UInt32 GetItemUnixAttr(UOSInt index) const;
 		virtual UInt64 GetItemStoreSize(UOSInt index) const;
 		virtual UInt64 GetItemSize(UOSInt index) const;
-		virtual UOSInt GetItemIndex(Text::CString name) const;
+		virtual UOSInt GetItemIndex(Text::CStringNN name) const;
 		virtual Bool IsCompressed(UOSInt index) const;
 		virtual Data::Compress::Decompressor::CompressMethod GetItemComp(UOSInt index) const;
 		virtual PackageFile *Clone() const;
-		virtual Bool IsPhysicalDirectory() const;
+		virtual PackageFileType GetFileType() const;
 		virtual Bool CopyFrom(Text::CStringNN fileName, IO::ProgressHandler *progHdlr, OptOut<IO::ActiveStreamReader::BottleNeckType> bnt);
 		virtual Bool MoveFrom(Text::CStringNN fileName, IO::ProgressHandler *progHdlr, OptOut<IO::ActiveStreamReader::BottleNeckType> bnt);
 		virtual Bool RetryCopyFrom(Text::CStringNN fileName, IO::ProgressHandler *progHdlr, OptOut<IO::ActiveStreamReader::BottleNeckType> bnt);
 		virtual Bool RetryMoveFrom(Text::CStringNN fileName, IO::ProgressHandler *progHdlr, OptOut<IO::ActiveStreamReader::BottleNeckType> bnt);
+		virtual Bool CopyTo(UOSInt index, Text::CString destPath, Bool fullFileName);
+		virtual IO::StreamData *OpenStreamData(Text::CString fileName) const;
+		virtual Bool HasParent() const;
+		virtual IO::PackageFile *GetParent(OutParam<Bool> needRelease) const;
 
 		Bool Sort();
 	};

@@ -2,7 +2,7 @@
 #include "MyMemory.h"
 #include "Data/ByteBuffer.h"
 #include "Data/ByteTool.h"
-#include "IO/PackageFile.h"
+#include "IO/VirtualPackageFile.h"
 #include "Parser/FileParser/TILParser.h"
 #include "Text/Encoding.h"
 #include "Text/MyString.h"
@@ -40,13 +40,13 @@ IO::ParsedObject *Parser::FileParser::TILParser::ParseFileHdr(NotNullPtr<IO::Str
 	Int32 flags;
 	UTF8Char fileName[256];
 	UTF8Char *srcPtr;
-	IO::PackageFile *pf;
+	IO::VirtualPackageFile *pf;
 
 	if (hdr[0] != 'S' || hdr[1] != 'T' || hdr[2] != 'i' || hdr[3] != 'l')
 		return 0;
 	
 	Data::DateTime dt;
-	NEW_CLASS(pf, IO::PackageFile(fd->GetFullName()));
+	NEW_CLASS(pf, IO::VirtualPackageFile(fd->GetFullName()));
 	dirOfst = ReadUInt64(&hdr[8]);
 	flags = ReadInt32(&hdr[4]);
 	fileSize = fd->GetDataSize();

@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Data/ByteTool.h"
-#include "IO/PackageFile.h"
+#include "IO/VirtualPackageFile.h"
 #include "Parser/FileParser/DCPackParser.h"
 #include "Text/Encoding.h"
 #include "Text/MyString.h"
@@ -51,10 +51,10 @@ IO::ParsedObject *Parser::FileParser::DCPackParser::ParseFileHdr(NotNullPtr<IO::
 	hdrEnd = ReadUInt32(&hdr[56]) << 6;
 	fileOfst = 0;
 	hdrOfst = 64;
-	IO::PackageFile *pf;
+	IO::VirtualPackageFile *pf;
 	UInt8 buff[64];
 	Text::Encoding enc(932);
-	NEW_CLASS(pf, IO::PackageFile(fd->GetFullName()));
+	NEW_CLASS(pf, IO::VirtualPackageFile(fd->GetFullName()));
 
 	while (hdrOfst < hdrEnd)
 	{

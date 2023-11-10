@@ -255,7 +255,7 @@ void Net::WebServer::HTTPDirectoryHandler::ResponsePackageFile(NotNullPtr<Net::W
 	return ;
 }
 
-Bool Net::WebServer::HTTPDirectoryHandler::ResponsePackageFileItem(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, IO::PackageFile *packageFile, const IO::PackFileItem *pitem)
+Bool Net::WebServer::HTTPDirectoryHandler::ResponsePackageFileItem(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, IO::VirtualPackageFile *packageFile, const IO::PackFileItem *pitem)
 {
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
@@ -593,87 +593,91 @@ Bool Net::WebServer::HTTPDirectoryHandler::DoFileRequest(NotNullPtr<Net::WebServ
 			}
 
 			sptr = &sb.v[i + 2];
-			if (i == INVALID_INDEX || sptr[0] == 0)
+			if (packageFile->GetFileType() == IO::PackageFileType::Virtual)
 			{
-				const IO::PackFileItem *pitem2 = packageFile->GetPackFileItem((const UTF8Char*)"index.html");
-				if (pitem2 && packageFile->GetPItemType(pitem2) == IO::PackageFile::PackObjectType::StreamData)
+				IO::VirtualPackageFile *vpackageFile = (IO::VirtualPackageFile*)packageFile;
+				if (i == INVALID_INDEX || sptr[0] == 0)
 				{
-					if (!ResponsePackageFileItem(req,resp, packageFile, pitem2))
+					const IO::PackFileItem *pitem2 = vpackageFile->GetPackFileItem((const UTF8Char*)"index.html");
+					if (pitem2 && vpackageFile->GetPItemType(pitem2) == IO::PackageFile::PackObjectType::StreamData)
 					{
-						ResponsePackageFile(req, resp, subReq, packageFile);
-					}
-				}
-				else
-				{
-					ResponsePackageFile(req, resp, subReq, packageFile);
-				}
-				if (needRelease)
-				{
-					DEL_CLASS(packageFile);
-				}
-				return true;
-			}
-			const IO::PackFileItem *pitem = packageFile->GetPackFileItem(sptr);
-			if (pitem)
-			{
-				IO::PackageFile::PackObjectType pot = packageFile->GetPItemType(pitem);
-				if (pot == IO::PackageFile::PackObjectType::StreamData)
-				{
-					if (ResponsePackageFileItem(req, resp, packageFile, pitem))
-					{
-						if (needRelease)
+						if (!ResponsePackageFileItem(req,resp, vpackageFile, pitem2))
 						{
-							DEL_CLASS(packageFile);
+							ResponsePackageFile(req, resp, subReq, vpackageFile);
 						}
-						return true;
 					}
-				}
-				else if (pot == IO::PackageFile::PackObjectType::PackageFileType)
-				{
-					Bool innerNeedRelease;
-					IO::PackageFile *innerPF = packageFile->GetPItemPack(pitem, innerNeedRelease);
-					if (innerPF)
+					else
 					{
-						const IO::PackFileItem *pitem2 = innerPF->GetPackFileItem((const UTF8Char*)"index.html");
-						if (pitem2 && innerPF->GetPItemType(pitem2) == IO::PackageFile::PackObjectType::StreamData)
+						ResponsePackageFile(req, resp, subReq, vpackageFile);
+					}
+					if (needRelease)
+					{
+						DEL_CLASS(vpackageFile);
+					}
+					return true;
+				}
+				const IO::PackFileItem *pitem = vpackageFile->GetPackFileItem(sptr);
+				if (pitem)
+				{
+					IO::PackageFile::PackObjectType pot = vpackageFile->GetPItemType(pitem);
+					if (pot == IO::PackageFile::PackObjectType::StreamData)
+					{
+						if (ResponsePackageFileItem(req, resp, vpackageFile, pitem))
 						{
-							NotNullPtr<IO::StreamData> stmData;
-							if (stmData.Set(innerPF->GetPItemStmDataNew(pitem2)))
+							if (needRelease)
 							{
-								UOSInt dataLen = (UOSInt)stmData->GetDataSize();
-								Data::ByteBuffer dataBuff(dataLen);
-								stmData->GetRealData(0, dataLen, dataBuff);
-								stmData.Delete();
-								mime = Net::MIME::GetMIMEFromExt(CSTR("html"));
-
-								resp->EnableWriteBuffer();
-								resp->AddDefHeaders(req);
-								resp->AddLastModified(pitem2->modTime);
-								if (this->allowOrigin)
+								DEL_CLASS(vpackageFile);
+							}
+							return true;
+						}
+					}
+					else if (pot == IO::PackageFile::PackObjectType::PackageFileType)
+					{
+						Bool innerNeedRelease;
+						IO::PackageFile *innerPF = vpackageFile->GetPItemPack(pitem, innerNeedRelease);
+						if (innerPF)
+						{
+							UOSInt index2 = innerPF->GetItemIndex(CSTR("index.html"));
+							if (index2 != INVALID_INDEX && innerPF->GetItemType(index2) == IO::PackageFile::PackObjectType::StreamData)
+							{
+								NotNullPtr<IO::StreamData> stmData;
+								if (stmData.Set(innerPF->GetItemStmDataNew(index2)))
 								{
-									resp->AddHeader(CSTR("Access-Control-Allow-Origin"), this->allowOrigin->ToCString());
+									UOSInt dataLen = (UOSInt)stmData->GetDataSize();
+									Data::ByteBuffer dataBuff(dataLen);
+									stmData->GetRealData(0, dataLen, dataBuff);
+									stmData.Delete();
+									mime = Net::MIME::GetMIMEFromExt(CSTR("html"));
+
+									resp->EnableWriteBuffer();
+									resp->AddDefHeaders(req);
+									resp->AddLastModified(innerPF->GetItemModTime(index2));
+									if (this->allowOrigin)
+									{
+										resp->AddHeader(CSTR("Access-Control-Allow-Origin"), this->allowOrigin->ToCString());
+									}
+									resp->AddContentType(mime);
+									Net::WebServer::HTTPServerUtil::SendContent(req, resp, mime, dataLen, dataBuff.Ptr());
 								}
-								resp->AddContentType(mime);
-								Net::WebServer::HTTPServerUtil::SendContent(req, resp, mime, dataLen, dataBuff.Ptr());
+								else
+								{
+									ResponsePackageFile(req, resp, subReq, innerPF);
+								}
 							}
 							else
 							{
 								ResponsePackageFile(req, resp, subReq, innerPF);
 							}
+							if (innerNeedRelease)
+							{
+								DEL_CLASS(innerPF);
+							}
+							if (needRelease)
+							{
+								DEL_CLASS(packageFile);
+							}
+							return true;
 						}
-						else
-						{
-							ResponsePackageFile(req, resp, subReq, innerPF);
-						}
-						if (innerNeedRelease)
-						{
-							DEL_CLASS(innerPF);
-						}
-						if (needRelease)
-						{
-							DEL_CLASS(packageFile);
-						}
-						return true;
 					}
 				}
 			}

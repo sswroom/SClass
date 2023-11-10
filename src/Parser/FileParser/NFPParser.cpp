@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Data/ByteTool.h"
-#include "IO/PackageFile.h"
+#include "IO/VirtualPackageFile.h"
 #include "Parser/FileParser/NFPParser.h"
 #include "Text/Encoding.h"
 #include "Text/MyString.h"
@@ -57,8 +57,8 @@ IO::ParsedObject *Parser::FileParser::NFPParser::ParseFileHdr(NotNullPtr<IO::Str
 	fileOfst = ReadUInt32(&hdr[56]);
 //	dataOfst = ReadInt32(&hdr[60]);
 	Text::Encoding enc(932);
-	IO::PackageFile *pf;
-	NEW_CLASS(pf, IO::PackageFile(fd->GetFullName()));
+	IO::VirtualPackageFile *pf;
+	NEW_CLASS(pf, IO::VirtualPackageFile(fd->GetFullName()));
 
 	fileInfo = MemAlloc(NFPFileInfo, fileCnt);
 	fd->GetRealData(fileOfst, fileCnt * sizeof(NFPFileInfo), Data::ByteArray((UInt8*)fileInfo, fileCnt * sizeof(NFPFileInfo)));

@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Data/ByteTool.h"
-#include "IO/PackageFile.h"
+#include "IO/VirtualPackageFile.h"
 #include "Parser/FileParser/B3DMParser.h"
 
 Parser::FileParser::B3DMParser::B3DMParser()
@@ -65,8 +65,8 @@ IO::ParsedObject *Parser::FileParser::B3DMParser::ParseFileHdr(NotNullPtr<IO::St
 		return 0;
 	}
 
-	IO::PackageFile *pf;
-	NEW_CLASS(pf, IO::PackageFile(fd->GetFullName()));
+	IO::VirtualPackageFile *pf;
+	NEW_CLASS(pf, IO::VirtualPackageFile(fd->GetFullName()));
 	sptr = fd->GetShortName().ConcatTo(sbuff);
 	sptr = Text::StrConcatC(sptr, UTF8STRC(".glb"));
 	pf->AddData(fd, ofst, fd->GetDataSize() - ofst, CSTRP(sbuff, sptr), 0, 0, 0, 0);

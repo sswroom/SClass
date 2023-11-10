@@ -20,5 +20,5 @@ namespace IO
 		static Watchdog *Create();
 		static Watchdog *Create(Int32 devNum);
 	};
-};
+}
 #endif

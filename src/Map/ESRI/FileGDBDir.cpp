@@ -101,9 +101,9 @@ void Map::ESRI::FileGDBDir::AddTable(FileGDBTable *table)
 Map::ESRI::FileGDBDir *Map::ESRI::FileGDBDir::OpenDir(NotNullPtr<IO::PackageFile> pkg, NotNullPtr<Math::ArcGISPRJParser> prjParser)
 {
 	FileGDBTable *table;
-	IO::StreamData *indexFD = pkg->GetItemStmDataNew(UTF8STRC("a00000001.gdbtablx"));
+	IO::StreamData *indexFD = pkg->GetItemStmDataNew(CSTR("a00000001.gdbtablx"));
 	NotNullPtr<IO::StreamData> tableFD;;
-	if (!tableFD.Set(pkg->GetItemStmDataNew(UTF8STRC("a00000001.gdbtable"))))
+	if (!tableFD.Set(pkg->GetItemStmDataNew(CSTR("a00000001.gdbtable"))))
 	{
 		SDEL_CLASS(indexFD);
 		return 0;
@@ -139,10 +139,10 @@ Map::ESRI::FileGDBDir *Map::ESRI::FileGDBDir::OpenDir(NotNullPtr<IO::PackageFile
 			FileGDBTable *innerTable;
 			sptr = Text::StrConcatC(Text::StrHexVal32(Text::StrConcatC(sbuff, UTF8STRC("a")), (UInt32)id), UTF8STRC(".gdbtablx"));
 			sptr = Text::StrToLowerC(sbuff, sbuff, (UOSInt)(sptr - sbuff));
-			indexFD = pkg->GetItemStmDataNew(sbuff, (UOSInt)(sptr - sbuff));
+			indexFD = pkg->GetItemStmDataNew(CSTRP(sbuff, sptr));
 			sptr = Text::StrConcatC(Text::StrHexVal32(Text::StrConcatC(sbuff, UTF8STRC("a")), (UInt32)id), UTF8STRC(".gdbtable"));
 			sptr = Text::StrToLowerC(sbuff, sbuff, (UOSInt)(sptr - sbuff));
-			if (tableFD.Set(pkg->GetItemStmDataNew(sbuff, (UOSInt)(sptr - sbuff))))
+			if (tableFD.Set(pkg->GetItemStmDataNew(CSTRP(sbuff, sptr))))
 			{
 				NEW_CLASS(innerTable, FileGDBTable(sb.ToCString(), tableFD, indexFD, prjParser));
 				tableFD.Delete();

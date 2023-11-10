@@ -229,7 +229,7 @@ UInt64 IO::DirectoryPackage::GetItemSize(UOSInt index) const
 	return this->files.GetItem(index).fileSize;
 }
 
-UOSInt IO::DirectoryPackage::GetItemIndex(Text::CString name) const
+UOSInt IO::DirectoryPackage::GetItemIndex(Text::CStringNN name) const
 {
 	UOSInt j = this->files.GetCount();
 	UOSInt i;
@@ -262,9 +262,9 @@ IO::PackageFile *IO::DirectoryPackage::Clone() const
 	return dpkg;
 }
 
-Bool IO::DirectoryPackage::IsPhysicalDirectory() const
+IO::PackageFileType IO::DirectoryPackage::GetFileType() const
 {
-	return true;
+	return IO::PackageFileType::Directory;
 }
 
 Bool IO::DirectoryPackage::CopyFrom(Text::CStringNN fileName, IO::ProgressHandler *progHdlr, OptOut<IO::ActiveStreamReader::BottleNeckType> bnt)
@@ -441,6 +441,36 @@ Bool IO::DirectoryPackage::RetryMoveFrom(Text::CStringNN fileName, IO::ProgressH
 		return ret;
 	}
 	return false;
+}
+
+Bool IO::DirectoryPackage::CopyTo(UOSInt index, Text::CString destPath, Bool fullFileName)
+{
+	return false;
+}
+
+IO::StreamData *IO::DirectoryPackage::OpenStreamData(Text::CString fileName) const
+{
+	return 0;
+}
+
+Bool IO::DirectoryPackage::HasParent() const
+{
+	if (IO::Path::PATH_SEPERATOR == '/')
+	{
+	}
+	else
+	{
+		if (this->dirName->StartsWith(UTF8STRC("\\\\")))
+		{
+
+		}
+	}
+	return false;
+}
+
+IO::PackageFile *IO::DirectoryPackage::GetParent(OutParam<Bool> needRelease) const
+{
+	return 0;
 }
 
 OSInt __stdcall DirectoryPackage_Compare(IO::DirectoryPackage::FileItem obj1, IO::DirectoryPackage::FileItem obj2)

@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Data/ByteBuffer.h"
-#include "IO/PackageFile.h"
+#include "IO/VirtualPackageFile.h"
 #include "Parser/FileParser/X13Parser.h"
 #include "Text/Encoding.h"
 #include "Text/MyString.h"
@@ -44,11 +44,11 @@ IO::ParsedObject *Parser::FileParser::X13Parser::ParseFileHdr(NotNullPtr<IO::Str
 		return 0;
 	}
 
-	IO::PackageFile *pf;
+	IO::VirtualPackageFile *pf;
 	Text::Encoding enc;
 	Data::ByteBuffer recHdrs(ReadUInt32(&hdr[8]));
 	fd->GetRealData(ReadUInt32(&hdr[4]), ReadUInt32(&hdr[8]), recHdrs);
-	NEW_CLASS(pf, IO::PackageFile(fd->GetFullName()));
+	NEW_CLASS(pf, IO::VirtualPackageFile(fd->GetFullName()));
 	buffOfst = 0;
 	while (buffOfst < ReadUInt32(&hdr[8]))
 	{

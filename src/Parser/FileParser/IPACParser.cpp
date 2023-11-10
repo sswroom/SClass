@@ -1,10 +1,10 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Data/ByteTool.h"
+#include "IO/VirtualPackageFile.h"
 #include "Parser/FileParser/IPACParser.h"
 #include "Text/Encoding.h"
 #include "Text/MyString.h"
-#include "IO/PackageFile.h"
 
 Parser::FileParser::IPACParser::IPACParser()
 {
@@ -52,8 +52,8 @@ IO::ParsedObject *Parser::FileParser::IPACParser::ParseFileHdr(NotNullPtr<IO::St
 	currOfst = recCnt * 44 + 8;
 
 	Text::Encoding enc(932);
-	IO::PackageFile *pf;
-	NEW_CLASS(pf, IO::PackageFile(fd->GetFullName()));
+	IO::VirtualPackageFile *pf;
+	NEW_CLASS(pf, IO::VirtualPackageFile(fd->GetFullName()));
 	UInt32 i = 0;
 
 	while (i < recCnt)

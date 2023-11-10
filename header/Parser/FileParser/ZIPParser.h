@@ -1,7 +1,7 @@
 #ifndef _SM_PARSER_FILEPARSER_ZIPPARSER
 #define _SM_PARSER_FILEPARSER_ZIPPARSER
 #include "IO/FileParser.h"
-#include "IO/PackageFile.h"
+#include "IO/VirtualPackageFile.h"
 
 namespace Parser
 {
@@ -28,7 +28,7 @@ namespace Parser
 			virtual IO::ParsedObject *ParseFileHdr(NotNullPtr<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr);
 
 		private:
-			static UOSInt ParseCentDir(NotNullPtr<IO::PackageFile> pf, Text::Encoding *enc, NotNullPtr<IO::StreamData> fd, Data::ByteArrayR buff, UInt64 ofst);
+			static UOSInt ParseCentDir(NotNullPtr<IO::VirtualPackageFile> pf, Text::Encoding *enc, NotNullPtr<IO::StreamData> fd, Data::ByteArrayR buff, UInt64 ofst);
 		};
 	}
 }

@@ -2,7 +2,7 @@
 #include "MyMemory.h"
 #include "Data/ByteBuffer.h"
 #include "Data/ByteTool.h"
-#include "IO/PackageFile.h"
+#include "IO/VirtualPackageFile.h"
 #include "Parser/FileParser/CABParser.h"
 #include "Text/Encoding.h"
 #include "Text/MyString.h"
@@ -84,8 +84,8 @@ IO::ParsedObject *Parser::FileParser::CABParser::ParseFileHdr(NotNullPtr<IO::Str
 		return 0;
 	}
 
-	IO::PackageFile *pf;
-	NEW_CLASS(pf, IO::PackageFile(fd->GetFullName()));
+	IO::VirtualPackageFile *pf;
+	NEW_CLASS(pf, IO::VirtualPackageFile(fd->GetFullName()));
 	
 	j = 0;
 	i = 0;

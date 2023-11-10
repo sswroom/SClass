@@ -2,7 +2,7 @@
 #include "MyMemory.h"
 #include "Data/ByteBuffer.h"
 #include "Data/ByteTool.h"
-#include "IO/PackageFile.h"
+#include "IO/VirtualPackageFile.h"
 #include "Parser/FileParser/NOAParser.h"
 #include "Text/Encoding.h"
 #include "Text/MyString.h"
@@ -73,9 +73,9 @@ IO::ParsedObject *Parser::FileParser::NOAParser::ParseFileHdr(NotNullPtr<IO::Str
 		return 0;
 	}
 
-	IO::PackageFile *pf;
+	IO::VirtualPackageFile *pf;
 	Text::Encoding enc(932);
-	NEW_CLASS(pf, IO::PackageFile(fd->GetFullName()));
+	NEW_CLASS(pf, IO::VirtualPackageFile(fd->GetFullName()));
 	
 	j = 4;
 	i = 0;

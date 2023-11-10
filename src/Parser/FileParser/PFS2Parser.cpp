@@ -2,7 +2,7 @@
 #include "MyMemory.h"
 #include "Data/ByteBuffer.h"
 #include "Data/ByteTool.h"
-#include "IO/PackageFile.h"
+#include "IO/VirtualPackageFile.h"
 #include "Parser/FileParser/PFS2Parser.h"
 #include "Text/Encoding.h"
 #include "Text/MyString.h"
@@ -63,8 +63,8 @@ IO::ParsedObject *Parser::FileParser::PFS2Parser::ParseFileHdr(NotNullPtr<IO::St
 		return 0;
 	Data::ByteBuffer records(hdrSize - 8);
 	fd->GetRealData(15, hdrSize - 8, records);
-	IO::PackageFile *pf = 0;
-	NEW_CLASS(pf, IO::PackageFile(fd->GetFullName()));
+	IO::VirtualPackageFile *pf = 0;
+	NEW_CLASS(pf, IO::VirtualPackageFile(fd->GetFullName()));
 	i = 0;
 	while (i < hdrSize - 8)
 	{

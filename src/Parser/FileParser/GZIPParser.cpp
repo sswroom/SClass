@@ -1,10 +1,10 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Data/ByteTool.h"
+#include "IO/VirtualPackageFile.h"
 #include "Parser/FileParser/GZIPParser.h"
 #include "Text/Encoding.h"
 #include "Text/MyString.h"
-#include "IO/PackageFile.h"
 
 Parser::FileParser::GZIPParser::GZIPParser()
 {
@@ -75,7 +75,7 @@ IO::ParsedObject *Parser::FileParser::GZIPParser::ParseFileHdr(NotNullPtr<IO::St
 	fileLeng = fd->GetDataSize();
 	fd->GetRealData(fileLeng - 8, 8, BYTEARR(footer));
 
-	IO::PackageFile *pf;
+	IO::VirtualPackageFile *pf;
 	IO::PackFileItem::CompressInfo cinfo;
 
 	cinfo.decSize = *(UInt32*)&footer[4];
@@ -85,7 +85,7 @@ IO::ParsedObject *Parser::FileParser::GZIPParser::ParseFileHdr(NotNullPtr<IO::St
 	cinfo.compExtraSize = 0;
 	cinfo.compExtras = 0;
 	*(Int32*)cinfo.checkBytes = *(Int32*)footer;
-	NEW_CLASS(pf, IO::PackageFile(fd->GetFullName()));
+	NEW_CLASS(pf, IO::VirtualPackageFile(fd->GetFullName()));
 	pf->AddCompData(fd, 10 + byteConv, fileLeng - 18 - byteConv, &cinfo, CSTRP(sbuff, sptr), Data::Timestamp(ReadUInt32(&hdr[4]) * 1000LL, 0), 0, 0, 0);
 
 	return pf;

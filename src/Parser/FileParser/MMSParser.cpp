@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "IO/StreamData.h"
-#include "IO/PackageFile.h"
+#include "IO/VirtualPackageFile.h"
 #include "Parser/FileParser/MMSParser.h"
 #include "Text/Encoding.h"
 
@@ -33,7 +33,7 @@ IO::ParserType Parser::FileParser::MMSParser::GetParserType()
 
 IO::ParsedObject *Parser::FileParser::MMSParser::ParseFileHdr(NotNullPtr<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
-	IO::PackageFile *pf;
+	IO::VirtualPackageFile *pf;
 	UInt32 fileCnt;
 	UOSInt currOfst;
 	UInt8 buff[256];
@@ -44,7 +44,7 @@ IO::ParsedObject *Parser::FileParser::MMSParser::ParseFileHdr(NotNullPtr<IO::Str
 	if (hdr[0] != 0x8c || hdr[1] != 0x80)
 		return 0;
 
-	NEW_CLASS(pf, IO::PackageFile(fd->GetFullName()));
+	NEW_CLASS(pf, IO::VirtualPackageFile(fd->GetFullName()));
 	ptr = &hdr[2];
 	while (*ptr & 0x80)
 	{

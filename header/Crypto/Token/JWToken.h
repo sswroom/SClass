@@ -2,6 +2,7 @@
 #define _SM_CRYPTO_TOKEN_JWTOKEN
 #include "Crypto/Token/JWTParam.h"
 #include "Crypto/Token/JWSignature.h"
+#include "Data/StringMap.h"
 #include "Net/SSLEngine.h"
 #include "Text/StringBuilderUTF8.h"
 

@@ -4,8 +4,8 @@
 #include "Data/ByteTool.h"
 #include "IO/CDSectorData.h"
 #include "IO/ISectorData.h"
-#include "IO/PackageFile.h"
 #include "IO/Path.h"
+#include "IO/VirtualPackageFile.h"
 #include "Parser/ObjParser/ISO9660Parser.h"
 #include "Text/Encoding.h"
 
@@ -106,74 +106,74 @@ NotNullPtr<IO::PackageFile> Parser::ObjParser::ISO9660Parser::ParseVol(NotNullPt
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 	UInt8 sector[2048];
-	NotNullPtr<IO::PackageFile> pkgFile;
+	NotNullPtr<IO::VirtualPackageFile> pkgFile;
 	Text::Encoding enc(codePage);
 
 	sectorData->ReadSector(sectorNum, BYTEARR(sector));
-	NEW_CLASSNN(pkgFile, IO::PackageFile(sectorData->GetSourceNameObj()));
+	NEW_CLASSNN(pkgFile, IO::VirtualPackageFile(sectorData->GetSourceNameObj()));
 
 	
 	sptr = enc.UTF8FromBytes(sbuff, &sector[8], 32, 0);
 	sptr = Text::StrTrim(sbuff);
 	if (sptr != sbuff)
 	{
-		pkgFile->SetInfo(IO::PackageFile::IT_SYSTEM_ID, sbuff);
+		pkgFile->SetInfo(IO::VirtualPackageFile::IT_SYSTEM_ID, sbuff);
 	}
 
 	sptr = enc.UTF8FromBytes(sbuff, &sector[40], 32, 0);
 	sptr = Text::StrTrim(sbuff);
 	if (sptr != sbuff)
 	{
-		pkgFile->SetInfo(IO::PackageFile::IT_VOLUME_ID, sbuff);
+		pkgFile->SetInfo(IO::VirtualPackageFile::IT_VOLUME_ID, sbuff);
 	}
 
 	sptr = enc.UTF8FromBytes(sbuff, &sector[190], 128, 0);
 	sptr = Text::StrTrim(sbuff);
 	if (sptr != sbuff)
 	{
-		pkgFile->SetInfo(IO::PackageFile::IT_VOLUME_SET_ID, sbuff);
+		pkgFile->SetInfo(IO::VirtualPackageFile::IT_VOLUME_SET_ID, sbuff);
 	}
 
 	sptr = enc.UTF8FromBytes(sbuff, &sector[318], 128, 0);
 	sptr = Text::StrTrim(sbuff);
 	if (sptr != sbuff)
 	{
-		pkgFile->SetInfo(IO::PackageFile::IT_PUBLISHER_ID, sbuff);
+		pkgFile->SetInfo(IO::VirtualPackageFile::IT_PUBLISHER_ID, sbuff);
 	}
 
 	sptr = enc.UTF8FromBytes(sbuff, &sector[446], 128, 0);
 	sptr = Text::StrTrim(sbuff);
 	if (sptr != sbuff)
 	{
-		pkgFile->SetInfo(IO::PackageFile::IT_DATA_PREPARER_ID, sbuff);
+		pkgFile->SetInfo(IO::VirtualPackageFile::IT_DATA_PREPARER_ID, sbuff);
 	}
 
 	sptr = enc.UTF8FromBytes(sbuff, &sector[574], 128, 0);
 	sptr = Text::StrTrim(sbuff);
 	if (sptr != sbuff)
 	{
-		pkgFile->SetInfo(IO::PackageFile::IT_APPLICATION_ID, sbuff);
+		pkgFile->SetInfo(IO::VirtualPackageFile::IT_APPLICATION_ID, sbuff);
 	}
 
 	sptr = enc.UTF8FromBytes(sbuff, &sector[702], 37, 0);
 	sptr = Text::StrTrim(sbuff);
 	if (sptr != sbuff)
 	{
-		pkgFile->SetInfo(IO::PackageFile::IT_COPYRIGHT_FILE_ID, sbuff);
+		pkgFile->SetInfo(IO::VirtualPackageFile::IT_COPYRIGHT_FILE_ID, sbuff);
 	}
 
 	sptr = enc.UTF8FromBytes(sbuff, &sector[739], 37, 0);
 	sptr = Text::StrTrim(sbuff);
 	if (sptr != sbuff)
 	{
-		pkgFile->SetInfo(IO::PackageFile::IT_ABSTRACT_FILE_ID, sbuff);
+		pkgFile->SetInfo(IO::VirtualPackageFile::IT_ABSTRACT_FILE_ID, sbuff);
 	}
 
 	sptr = enc.UTF8FromBytes(sbuff, &sector[776], 37, 0);
 	sptr = Text::StrTrim(sbuff);
 	if (sptr != sbuff)
 	{
-		pkgFile->SetInfo(IO::PackageFile::IT_BIBLIOGRAHPICAL_FILE_ID, sbuff);
+		pkgFile->SetInfo(IO::VirtualPackageFile::IT_BIBLIOGRAHPICAL_FILE_ID, sbuff);
 	}
 
 	sptr = sectorData->GetSourceName(sbuff);
@@ -181,7 +181,7 @@ NotNullPtr<IO::PackageFile> Parser::ObjParser::ISO9660Parser::ParseVol(NotNullPt
 	return pkgFile;
 }
 
-void Parser::ObjParser::ISO9660Parser::ParseDir(NotNullPtr<IO::PackageFile> pkgFile, NotNullPtr<IO::ISectorData> sectorData, UInt32 sectorNum, UInt32 recSize, UTF8Char *fileName, UTF8Char *fileNameEnd, UInt32 codePage)
+void Parser::ObjParser::ISO9660Parser::ParseDir(NotNullPtr<IO::VirtualPackageFile> pkgFile, NotNullPtr<IO::ISectorData> sectorData, UInt32 sectorNum, UInt32 recSize, UTF8Char *fileName, UTF8Char *fileNameEnd, UInt32 codePage)
 {
 	Data::ByteBuffer dataBuff(recSize + 2048);
 	Data::ByteArray recBuff = dataBuff.SubArray(2048);
@@ -238,11 +238,11 @@ void Parser::ObjParser::ISO9660Parser::ParseDir(NotNullPtr<IO::PackageFile> pkgF
 				}
 				else
 				{
-					NotNullPtr<IO::PackageFile> pf2;
+					NotNullPtr<IO::VirtualPackageFile> pf2;
 					sptr = fileNameEnd;
 					*sptr++ = IO::Path::PATH_SEPERATOR;
 					sptr = enc.UTF8FromBytes(sptr, &recBuff[33], recBuff[32], 0);
-					NEW_CLASSNN(pf2, IO::PackageFile(CSTRP(fileName, sptr)));
+					NEW_CLASSNN(pf2, IO::VirtualPackageFile(CSTRP(fileName, sptr)));
 					pkgFile->AddPack(pf2, CSTRP(&fileNameEnd[1], sptr), Data::Timestamp(dt.ToInstant(), 0), 0, 0, 0);
 					ParseDir(pf2, sectorData, sectorNum, fileSize, fileName, sptr, codePage);
 				}

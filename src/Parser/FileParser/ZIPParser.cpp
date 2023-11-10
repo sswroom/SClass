@@ -3,8 +3,8 @@
 #include "Data/ByteBuffer.h"
 #include "Data/ByteTool.h"
 #include "Data/StringUTF8Map.h"
-#include "IO/PackageFile.h"
 #include "IO/Path.h"
+#include "IO/VirtualPackageFile.h"
 #include "Parser/ParserList.h"
 #include "Parser/FileParser/XMLParser.h"
 #include "Parser/FileParser/ZIPParser.h"
@@ -96,8 +96,8 @@ IO::ParsedObject *Parser::FileParser::ZIPParser::ParseFileHdr(NotNullPtr<IO::Str
 	{
 		return 0;
 	}
-	NotNullPtr<IO::PackageFile> pf;
-	IO::PackageFile *pf2;
+	NotNullPtr<IO::VirtualPackageFile> pf;
+	IO::VirtualPackageFile *pf2;
 	NotNullPtr<IO::PackageFile> pf3;
 	Text::Encoding enc(this->codePage);
 	Text::StringBuilderUTF8 sb;
@@ -106,7 +106,7 @@ IO::ParsedObject *Parser::FileParser::ZIPParser::ParseFileHdr(NotNullPtr<IO::Str
 	UOSInt ui;
 	Bool parseFile = true;
 	dt.ToLocalTime();
-	NEW_CLASSNN(pf, IO::PackageFile(fd->GetFullName()));
+	NEW_CLASSNN(pf, IO::VirtualPackageFile(fd->GetFullName()));
 
 	if (fd->GetRealData(fileSize - 22, 22, BYTEARR(recHdr)) == 22)
 	{
@@ -327,10 +327,10 @@ IO::ParsedObject *Parser::FileParser::ZIPParser::ParseFileHdr(NotNullPtr<IO::Str
 							sb.AppendC(sptr, i);
 							if (!pf3.Set(pf2->GetPackFile({sptr, i})))
 							{
-								NEW_CLASSNN(pf3, IO::PackageFile(sb.ToCString()));
+								NEW_CLASSNN(pf3, IO::VirtualPackageFile(sb.ToCString()));
 								pf2->AddPack(pf3, {sptr, i}, Data::Timestamp(dt.ToInstant(), dt.GetTimeZoneQHR()), accTime, createTime, unixAttr);
 							}
-							pf2 = pf3.Ptr();
+							pf2 = (IO::VirtualPackageFile*)pf3.Ptr();
 							sptr = &sptr[i + 1];
 						}
 						else
@@ -339,7 +339,7 @@ IO::ParsedObject *Parser::FileParser::ZIPParser::ParseFileHdr(NotNullPtr<IO::Str
 							sb.AppendC(sptr, (UOSInt)(sptrEnd - sptr));
 							if (!pf3.Set(pf2->GetPackFile({sptr, (UOSInt)(sptrEnd - sptr)})))
 							{
-								NEW_CLASSNN(pf3, IO::PackageFile(sb.ToCString()));
+								NEW_CLASSNN(pf3, IO::VirtualPackageFile(sb.ToCString()));
 								pf2->AddPack(pf3, CSTRP(sptr, sptrEnd), Data::Timestamp(dt.ToInstant(), dt.GetTimeZoneQHR()), accTime, createTime, unixAttr);
 							}
 							break;
@@ -371,10 +371,10 @@ IO::ParsedObject *Parser::FileParser::ZIPParser::ParseFileHdr(NotNullPtr<IO::Str
 							sb.AppendC(sptr, i);
 							if (!pf3.Set(pf2->GetPackFile({sptr, i})))
 							{
-								NEW_CLASSNN(pf3, IO::PackageFile(sb.ToCString()));
+								NEW_CLASSNN(pf3, IO::VirtualPackageFile(sb.ToCString()));
 								pf2->AddPack(pf3, {sptr, i}, Data::Timestamp(dt.ToInstant(), dt.GetTimeZoneQHR()), accTime, createTime, unixAttr);
 							}
-							pf2 = pf3.Ptr();
+							pf2 = (IO::VirtualPackageFile*)pf3.Ptr();
 							sptr = &sptr[i + 1];
 						}
 						else
@@ -505,10 +505,10 @@ IO::ParsedObject *Parser::FileParser::ZIPParser::ParseFileHdr(NotNullPtr<IO::Str
 	return pf.Ptr();
 }
 
-UOSInt Parser::FileParser::ZIPParser::ParseCentDir(NotNullPtr<IO::PackageFile> pf, Text::Encoding *enc, NotNullPtr<IO::StreamData> fd, Data::ByteArrayR buff, UInt64 ofst)
+UOSInt Parser::FileParser::ZIPParser::ParseCentDir(NotNullPtr<IO::VirtualPackageFile> pf, Text::Encoding *enc, NotNullPtr<IO::StreamData> fd, Data::ByteArrayR buff, UInt64 ofst)
 {
 	Data::DateTime dt;
-	IO::PackageFile *pf2;
+	IO::VirtualPackageFile *pf2;
 	NotNullPtr<IO::PackageFile> pf3;
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
@@ -633,10 +633,10 @@ UOSInt Parser::FileParser::ZIPParser::ParseCentDir(NotNullPtr<IO::PackageFile> p
 					sptr[j] = 0;
 					if (!pf3.Set(pf2->GetPackFile({sptr, j})))
 					{
-						NEW_CLASSNN(pf3, IO::PackageFile(CSTRP(sbuff, &sptr[j])));
+						NEW_CLASSNN(pf3, IO::VirtualPackageFile(CSTRP(sbuff, &sptr[j])));
 						pf2->AddPack(pf3, {sptr, j}, Data::Timestamp(dt.ToInstant(), dt.GetTimeZoneQHR()), accTime, createTime, unixAttr);
 					}
-					pf2 = pf3.Ptr();
+					pf2 = (IO::VirtualPackageFile*)pf3.Ptr();
 					sptr[j] = '/';
 					sptr = &sptr[j + 1];
 				}
@@ -644,7 +644,7 @@ UOSInt Parser::FileParser::ZIPParser::ParseCentDir(NotNullPtr<IO::PackageFile> p
 				{
 					if (!pf3.Set(pf2->GetPackFile({sptr, (UOSInt)(sptrEnd - sptr)})))
 					{
-						NEW_CLASSNN(pf3, IO::PackageFile(CSTRP(sbuff, sptrEnd)));
+						NEW_CLASSNN(pf3, IO::VirtualPackageFile(CSTRP(sbuff, sptrEnd)));
 						pf2->AddPack(pf3, CSTRP(sptr, sptrEnd), Data::Timestamp(dt.ToInstant(), dt.GetTimeZoneQHR()), accTime, createTime, unixAttr);
 					}
 					break;
@@ -664,10 +664,10 @@ UOSInt Parser::FileParser::ZIPParser::ParseCentDir(NotNullPtr<IO::PackageFile> p
 					sptr[j] = 0;
 					if (!pf3.Set(pf2->GetPackFile({sptr, j})))
 					{
-						NEW_CLASSNN(pf3, IO::PackageFile(CSTRP(sbuff, &sptr[j])));
+						NEW_CLASSNN(pf3, IO::VirtualPackageFile(CSTRP(sbuff, &sptr[j])));
 						pf2->AddPack(pf3, {sptr, j}, Data::Timestamp(dt.ToInstant(), dt.GetTimeZoneQHR()), accTime, createTime, unixAttr);
 					}
-					pf2 = pf3.Ptr();
+					pf2 = (IO::VirtualPackageFile*)pf3.Ptr();
 					sptr[j] = '/';
 					sptr = &sptr[j + 1];
 				}

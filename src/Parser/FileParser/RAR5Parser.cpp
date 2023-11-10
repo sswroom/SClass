@@ -2,8 +2,8 @@
 #include "MyMemory.h"
 #include "Data/ByteTool.h"
 #include "Data/StringUTF8Map.h"
-#include "IO/PackageFile.h"
 #include "IO/Path.h"
+#include "IO/VirtualPackageFile.h"
 #include "Parser/FileParser/RAR5Parser.h"
 
 const UInt8 *Parser::FileParser::RAR5Parser::ReadVInt(const UInt8 *buffPtr, UInt64 *val)
@@ -72,10 +72,10 @@ IO::ParsedObject *Parser::FileParser::RAR5Parser::ParseFileHdr(NotNullPtr<IO::St
 	{
 		return 0;
 	}
-	IO::PackageFile *pf;
+	IO::VirtualPackageFile *pf;
 	Data::DateTime dt;
 	dt.ToLocalTime();
-	NEW_CLASS(pf, IO::PackageFile(fd->GetFullName()));
+	NEW_CLASS(pf, IO::VirtualPackageFile(fd->GetFullName()));
 
 	while (currOfst + 8 <= endOfst)
 	{

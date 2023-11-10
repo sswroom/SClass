@@ -2,7 +2,7 @@
 #include "MyMemory.h"
 #include "Data/ByteBuffer.h"
 #include "Data/ByteTool.h"
-#include "IO/PackageFile.h"
+#include "IO/VirtualPackageFile.h"
 #include "Parser/FileParser/SEGPackParser.h"
 #include "Text/Encoding.h"
 #include "Text/MyString.h"
@@ -49,10 +49,10 @@ IO::ParsedObject *Parser::FileParser::SEGPackParser::ParseFileHdr(NotNullPtr<IO:
 		return 0;
 	}
 
-	IO::PackageFile *pf;
+	IO::VirtualPackageFile *pf;
 	Text::Encoding enc(932);
 
-	NEW_CLASS(pf, IO::PackageFile(fd->GetFullName()));
+	NEW_CLASS(pf, IO::VirtualPackageFile(fd->GetFullName()));
 	Data::ByteBuffer buff(hdrSize);
 	fd->GetRealData(4, hdrSize, buff);
 	

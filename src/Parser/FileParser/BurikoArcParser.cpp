@@ -2,7 +2,7 @@
 #include "MyMemory.h"
 #include "Data/ByteBuffer.h"
 #include "Data/ByteTool.h"
-#include "IO/PackageFile.h"
+#include "IO/VirtualPackageFile.h"
 #include "Parser/FileParser/BurikoArcParser.h"
 #include "Text/Encoding.h"
 #include "Text/MyString.h"
@@ -66,9 +66,9 @@ IO::ParsedObject *Parser::FileParser::BurikoArcParser::ParseFileHdr(NotNullPtr<I
 	}
 
 	dataOfst = 16 + recCnt * 128;
-	IO::PackageFile *pf;
+	IO::VirtualPackageFile *pf;
 	Text::Encoding enc(932);
-	NEW_CLASS(pf, IO::PackageFile(fd->GetFullName()));
+	NEW_CLASS(pf, IO::VirtualPackageFile(fd->GetFullName()));
 	
 	j = 0;
 	i = 0;

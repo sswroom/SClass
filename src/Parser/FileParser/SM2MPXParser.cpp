@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Data/ByteTool.h"
-#include "IO/PackageFile.h"
+#include "IO/VirtualPackageFile.h"
 #include "Parser/FileParser/SM2MPXParser.h"
 #include "Text/Encoding.h"
 #include "Text/MyString.h"
@@ -57,9 +57,9 @@ IO::ParsedObject *Parser::FileParser::SM2MPXParser::ParseFileHdr(NotNullPtr<IO::
 	UInt32 thisOfst;
 	UInt32 thisSize;
 	lastOfst = endOfst;
-	IO::PackageFile *pf;
+	IO::VirtualPackageFile *pf;
 	Text::Encoding enc(932);
-	NEW_CLASS(pf, IO::PackageFile(fd->GetFullName()));
+	NEW_CLASS(pf, IO::VirtualPackageFile(fd->GetFullName()));
 	while (hdrOfst < endOfst)
 	{
 		fd->GetRealData(hdrOfst, 20, BYTEARR(rec));

@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "IO/Path.h"
+#include "IO/VirtualPackageFile.h"
 #include "SSWR/AVIRead/AVIRPackageForm.h"
 #include "SSWR/AVIRead/AVIRHexViewerForm.h"
 #include "Sync/MutexUsage.h"
@@ -367,6 +368,16 @@ void __stdcall SSWR::AVIRead::AVIRPackageForm::OnTimerTick(void *userObj)
 void __stdcall SSWR::AVIRead::AVIRPackageForm::LVDblClick(void *userObj, UOSInt index)
 {
 	SSWR::AVIRead::AVIRPackageForm *me = (SSWR::AVIRead::AVIRPackageForm*)userObj;
+	if (index == 0 && me->packFile->HasParent())
+	{
+		Bool needRelease;
+		NotNullPtr<IO::PackageFile> pkg;
+		if (pkg.Set(me->packFile->GetParent(needRelease)))
+		{
+			me->UpdatePackFile(pkg, needRelease);
+		}
+		return;
+	}
 	index = me->PackFileIndex(index);
 	IO::PackageFile::PackObjectType pot = me->packFile->GetItemType(index);
 	if (pot == IO::PackageFile::PackObjectType::PackageFileType)
@@ -437,6 +448,11 @@ void SSWR::AVIRead::AVIRPackageForm::DisplayPackFile(NotNullPtr<IO::PackageFile>
 	UOSInt j;
 	UOSInt k;
 	IO::PackageFile::PackObjectType pot;
+	if (packFile->HasParent())
+	{
+		k = this->lvFiles->AddItem(CSTR(".."), (void*)INVALID_INDEX);
+		this->lvFiles->SetSubItem(k, 1, CSTR("Folder"));
+	}
 	i = 0;
 	j = packFile->GetCount();
 	while (i < j)
@@ -494,6 +510,10 @@ UOSInt SSWR::AVIRead::AVIRPackageForm::PackFileIndex(UOSInt lvIndex)
 	{
 		return INVALID_INDEX;
 	}
+	if (this->packFile->HasParent())
+	{
+		return lvIndex - 1;
+	}
 	return lvIndex;
 }
 
@@ -501,18 +521,20 @@ void SSWR::AVIRead::AVIRPackageForm::UpdatePackFile(NotNullPtr<IO::PackageFile> 
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
-	sptr = packFile->GetSourceNameObj()->ConcatTo(Text::StrConcatC(sbuff, UTF8STRC("Package Form - ")));
+	sptr = Text::StrConcatC(sbuff, UTF8STRC("Package Form - "));
+	if (this->rootPackFile && packFile.Ptr() != this->rootPackFile)
+	{
+		sptr = this->rootPackFile->GetSourceNameObj()->ConcatTo(sptr);
+		*sptr++ = '/';
+	}
+	sptr = packFile->GetSourceNameObj()->ConcatTo(sptr);
 	this->SetText(CSTRP(sbuff, sptr));
-	this->mnuEdit->SetItemEnabled((UInt16)this->pasteInd, packFile->IsPhysicalDirectory());
 	if (this->packNeedDelete)
 	{
 		this->packFile.Delete();
 	}
 	this->packFile = packFile;
 	this->packNeedDelete = needDelete;
-	Text::StringBuilderUTF8 sb;
-	this->packFile->GetInfoText(sb);
-	this->txtInfo->SetText(sb.ToCString());
 	this->DisplayPackFile(packFile);
 }
 
@@ -526,7 +548,7 @@ SSWR::AVIRead::AVIRPackageForm::AVIRPackageForm(UI::GUIClientControl *parent, No
 
 	this->core = core;
 	this->packFile = packFile;
-	if (this->packFile->IsPhysicalDirectory())
+	if (this->packFile->GetFileType() == IO::PackageFileType::Directory)
 	{
 		this->packNeedDelete = true;
 		this->rootPackFile = 0;
@@ -588,8 +610,8 @@ SSWR::AVIRead::AVIRPackageForm::AVIRPackageForm(UI::GUIClientControl *parent, No
 	NEW_CLASS(mnuMain, UI::GUIMainMenu());
 	mnu = mnuMain->AddSubMenu(CSTR("&File"));
 	mnu->AddItem(CSTR("Save &As..."), MNU_SAVEAS, UI::GUIMenu::KM_CONTROL, UI::GUIControl::GK_S);
-	mnu = this->mnuEdit = mnuMain->AddSubMenu(CSTR("&Edit"));
-	this->pasteInd = mnu->AddItem(CSTR("&Paste"), MNU_PASTE, UI::GUIMenu::KM_CONTROL, UI::GUIControl::GK_V);
+	mnu = mnuMain->AddSubMenu(CSTR("&Edit"));
+	mnu->AddItem(CSTR("&Paste"), MNU_PASTE, UI::GUIMenu::KM_CONTROL, UI::GUIControl::GK_V);
 	mnu->AddItem(CSTR("Copy To..."), MNU_COPYTO, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem(CSTR("Copy All To..."), MNU_COPYALLTO, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 
@@ -599,10 +621,6 @@ SSWR::AVIRead::AVIRPackageForm::AVIRPackageForm(UI::GUIClientControl *parent, No
 	this->mnuPopup->AddItem(CSTR("Open Hex Viewer"), MNU_OPEN_HEX_VIEWER, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	this->lvFiles->HandleRightClick(OnFilesRightClick, this);
 
-	if (!packFile->IsPhysicalDirectory())
-	{
-		mnu->SetItemEnabled((UInt16)this->pasteInd, false);
-	}
 	this->tpStatus = this->tcMain->AddTabPage(CSTR("Status"));
 	NEW_CLASS(this->pnlStatus, UI::GUIPanel(ui, this->tpStatus));
 	this->pnlStatus->SetRect(0, 0, 100, 48, false);
@@ -649,13 +667,16 @@ SSWR::AVIRead::AVIRPackageForm::AVIRPackageForm(UI::GUIClientControl *parent, No
 	this->AddTimer(500, OnTimerTick, this);
 	Sync::ThreadUtil::Create(ProcessThread, this);
 
-	this->tpInfo = this->tcMain->AddTabPage(CSTR("Info"));
-	NEW_CLASS(this->txtInfo, UI::GUITextBox(ui, this->tpInfo, CSTR(""), true));
-	this->txtInfo->SetReadOnly(true);
-	this->txtInfo->SetDockType(UI::GUIControl::DOCK_FILL);
-	Text::StringBuilderUTF8 sb;
-	this->packFile->GetInfoText(sb);
-	this->txtInfo->SetText(sb.ToCString());
+	if (this->packFile->GetFileType() == IO::PackageFileType::Virtual)
+	{
+		this->tpInfo = this->tcMain->AddTabPage(CSTR("Info"));
+		NEW_CLASS(this->txtInfo, UI::GUITextBox(ui, this->tpInfo, CSTR(""), true));
+		this->txtInfo->SetReadOnly(true);
+		this->txtInfo->SetDockType(UI::GUIControl::DOCK_FILL);
+		Text::StringBuilderUTF8 sb;
+		NotNullPtr<IO::VirtualPackageFile>::ConvertFrom(this->packFile)->GetInfoText(sb);
+		this->txtInfo->SetText(sb.ToCString());
+	}
 
 	this->SetMenu(mnuMain);
 }
@@ -693,33 +714,72 @@ void SSWR::AVIRead::AVIRPackageForm::EventMenuClicked(UInt16 cmdId)
 			fpt = clipboard.GetDataFiles(&fileNames);
 			if (fpt == UI::Clipboard::FPT_MOVE)
 			{
-				Sync::MutexUsage mutUsage(this->fileMut);
-				i = 0;
-				j = fileNames.GetCount();
-				while (i < j)
+				if (this->packFile->GetFileType() == IO::PackageFileType::Virtual)
 				{
-					this->fileNames.Add(fileNames.GetItem(i)->Clone());
-					this->fileAction.Add(AT_MOVE);
-					i++;
+					UI::MessageDialog::ShowDialog(CSTR("Virtual Package does not support move"), CSTR("Package"), this);
 				}
-				this->statusChg = true;
-				mutUsage.EndUse();
-				clipboard.FreeDataFiles(&fileNames);
+				else
+				{
+					Sync::MutexUsage mutUsage(this->fileMut);
+					i = 0;
+					j = fileNames.GetCount();
+					while (i < j)
+					{
+						this->fileNames.Add(fileNames.GetItem(i)->Clone());
+						this->fileAction.Add(AT_MOVE);
+						i++;
+					}
+					this->statusChg = true;
+					mutUsage.EndUse();
+					clipboard.FreeDataFiles(&fileNames);
+				}
 			}
 			else if (fpt == UI::Clipboard::FPT_COPY)
 			{
-				Sync::MutexUsage mutUsage(this->fileMut);
-				i = 0;
-				j = fileNames.GetCount();
-				while (i < j)
+				if (this->packFile->GetFileType() == IO::PackageFileType::Virtual)
 				{
-					this->fileNames.Add(fileNames.GetItem(i)->Clone());
-					this->fileAction.Add(AT_COPY);
-					i++;
+					Bool changed = false;
+					i = 0;
+					j = fileNames.GetCount();
+					while (i < j)
+					{
+						if (!this->packFile->CopyFrom(fileNames.GetItem(i)->ToCString(), 0, 0))
+						{
+							Text::StringBuilderUTF8 sb;
+							sb.Append(CSTR("Failed to copy "));
+							sb.Append(fileNames.GetItem(i));
+							sb.Append(CSTR(", do you want to continue?"));
+							if (!UI::MessageDialog::ShowYesNoDialog(sb.ToCString(), CSTR("Package"), this))
+							{
+								break;
+							}
+						}
+						else
+						{
+							changed = true;
+						}
+						i++;
+					}
+					if (changed)
+					{
+						this->DisplayPackFile(this->packFile);
+					}
 				}
-				this->statusChg = true;
-				mutUsage.EndUse();
-				clipboard.FreeDataFiles(&fileNames);
+				else
+				{
+					Sync::MutexUsage mutUsage(this->fileMut);
+					i = 0;
+					j = fileNames.GetCount();
+					while (i < j)
+					{
+						this->fileNames.Add(fileNames.GetItem(i)->Clone());
+						this->fileAction.Add(AT_COPY);
+						i++;
+					}
+					this->statusChg = true;
+					mutUsage.EndUse();
+					clipboard.FreeDataFiles(&fileNames);
+				}
 			}
 		}
 		break;

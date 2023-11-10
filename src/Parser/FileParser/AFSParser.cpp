@@ -3,7 +3,7 @@
 #include "Data/ByteBuffer.h"
 #include "Data/ByteTool.h"
 #include "IO/StreamData.h"
-#include "IO/PackageFile.h"
+#include "IO/VirtualPackageFile.h"
 #include "Parser/FileParser/AFSParser.h"
 #include "Text/Encoding.h"
 
@@ -35,7 +35,7 @@ IO::ParserType Parser::FileParser::AFSParser::GetParserType()
 
 IO::ParsedObject *Parser::FileParser::AFSParser::ParseFileHdr(NotNullPtr<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
-	IO::PackageFile *pf;
+	IO::VirtualPackageFile *pf;
 	UTF8Char sbuff[9];
 	UTF8Char *namePtr;
 	UInt32 fileCnt;
@@ -57,7 +57,7 @@ IO::ParsedObject *Parser::FileParser::AFSParser::ParseFileHdr(NotNullPtr<IO::Str
 
 	fileCnt = ReadUInt32(&hdr[4]);
 	Data::ByteBuffer buff2(fileCnt << 3);
-	NEW_CLASS(pf, IO::PackageFile(fd->GetFullName()));
+	NEW_CLASS(pf, IO::VirtualPackageFile(fd->GetFullName()));
 	fd->GetRealData(8, fileCnt << 3, buff2);
 	i = 0;
 	while (i < fileCnt)

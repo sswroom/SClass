@@ -3,7 +3,7 @@
 #include "Data/BTreeUTF8Map.h"
 #include "Data/StringUTF8Map.h"
 #include "Data/Timestamp.h"
-#include "IO/PackageFile.h"
+#include "IO/VirtualPackageFile.h"
 #include "Parser/ParserList.h"
 #include "Net/WebServer/WebStandardHandler.h"
 #include "Sync/Mutex.h"
@@ -65,7 +65,7 @@ namespace Net
 
 			void AddCacheHeader(NotNullPtr<Net::WebServer::IWebResponse> resp);
 			void ResponsePackageFile(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, IO::PackageFile *packageFile);
-			Bool ResponsePackageFileItem(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, IO::PackageFile *packageFile, const IO::PackFileItem *pitem);
+			Bool ResponsePackageFileItem(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, IO::VirtualPackageFile *packageFile, const IO::PackFileItem *pitem);
 
 			void StatLoad(StatInfo *stat);
 			void StatSave(StatInfo *stat);

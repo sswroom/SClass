@@ -2,7 +2,7 @@
 #include "MyMemory.h"
 #include "Data/ByteBuffer.h"
 #include "Data/ByteTool.h"
-#include "IO/PackageFile.h"
+#include "IO/VirtualPackageFile.h"
 #include "IO/StmData/ConcatStreamData.h"
 #include "IO/StmData/FileData.h"
 #include "Parser/FileParser/NS2Parser.h"
@@ -59,12 +59,12 @@ IO::ParsedObject *Parser::FileParser::NS2Parser::ParseFileHdr(NotNullPtr<IO::Str
 	if (hdr[i + 5] != '"')
 		return 0;
 
-	IO::PackageFile *pf;
+	IO::VirtualPackageFile *pf;
 	Text::Encoding enc(932);
 	hdrSize = ReadUInt32(&hdr[0]);
 	Data::ByteBuffer hdrBuff(hdrSize);
 	fd->GetRealData(0, hdrSize, hdrBuff);
-	NEW_CLASS(pf, IO::PackageFile(fd->GetFullName()));
+	NEW_CLASS(pf, IO::VirtualPackageFile(fd->GetFullName()));
 	
 	i = 4;
 	fileOfst = hdrSize;
