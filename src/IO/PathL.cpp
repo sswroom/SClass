@@ -954,42 +954,42 @@ UTF8Char *IO::Path::GetUserHome(UTF8Char *buff)
 	return 0;
 }
 
-Bool IO::Path::GetFileTime(const UTF8Char *path, Data::Timestamp *modTime, Data::Timestamp *createTime, Data::Timestamp *accessTime)
+Bool IO::Path::GetFileTime(Text::CStringNN path, OptOut<Data::Timestamp> modTime, OptOut<Data::Timestamp> createTime, OptOut<Data::Timestamp> accessTime)
 {
 #if defined(__USE_LARGEFILE64)
 	struct stat64 s;
-	int status = lstat64((const Char*)path, &s);
+	int status = lstat64((const Char*)path.v, &s);
 #else
 	struct stat s;
-	int status = lstat((const Char*)path, &s);
+	int status = lstat((const Char*)path.v, &s);
 #endif
 	if (status != 0)
 		return false;
 #if defined(__APPLE__)
-	if (modTime)
+	if (modTime.IsNotNull())
 	{
-		*modTime = Data::Timestamp(Data::TimeInstant(s.st_mtimespec.tv_sec, (UInt32)s.st_mtimespec.tv_nsec), Data::DateTimeUtil::GetLocalTzQhr());
+		modTime.SetNoCheck(Data::Timestamp(Data::TimeInstant(s.st_mtimespec.tv_sec, (UInt32)s.st_mtimespec.tv_nsec), Data::DateTimeUtil::GetLocalTzQhr()));
 	}
-	if (createTime)
+	if (createTime.IsNotNull())
 	{
-		*createTime = Data::Timestamp(Data::TimeInstant(s.st_ctimespec.tv_sec, (UInt32)s.st_ctimespec.tv_nsec), Data::DateTimeUtil::GetLocalTzQhr());
+		createTime.SetNoCheck(Data::Timestamp(Data::TimeInstant(s.st_ctimespec.tv_sec, (UInt32)s.st_ctimespec.tv_nsec), Data::DateTimeUtil::GetLocalTzQhr()));
 	}
-	if (accessTime)
+	if (accessTime.IsNotNull())
 	{
-		*accessTime = Data::Timestamp(Data::TimeInstant(s.st_atimespec.tv_sec, (UInt32)s.st_atimespec.tv_nsec), Data::DateTimeUtil::GetLocalTzQhr());
+		accessTime.SetNoCheck(Data::Timestamp(Data::TimeInstant(s.st_atimespec.tv_sec, (UInt32)s.st_atimespec.tv_nsec), Data::DateTimeUtil::GetLocalTzQhr()));
 	}
 #else
-	if (modTime)
+	if (modTime.IsNotNull())
 	{
-		*modTime = Data::Timestamp(Data::TimeInstant(s.st_mtim.tv_sec, (UInt32)s.st_mtim.tv_nsec), Data::DateTimeUtil::GetLocalTzQhr());
+		modTime.SetNoCheck(Data::Timestamp(Data::TimeInstant(s.st_mtim.tv_sec, (UInt32)s.st_mtim.tv_nsec), Data::DateTimeUtil::GetLocalTzQhr()));
 	}
-	if (createTime)
+	if (createTime.IsNotNull())
 	{
-		*createTime = Data::Timestamp(Data::TimeInstant(s.st_ctim.tv_sec, (UInt32)s.st_ctim.tv_nsec), Data::DateTimeUtil::GetLocalTzQhr());
+		createTime.SetNoCheck(Data::Timestamp(Data::TimeInstant(s.st_ctim.tv_sec, (UInt32)s.st_ctim.tv_nsec), Data::DateTimeUtil::GetLocalTzQhr()));
 	}
-	if (accessTime)
+	if (accessTime.IsNotNull())
 	{
-		*accessTime = Data::Timestamp(Data::TimeInstant(s.st_atim.tv_sec, (UInt32)s.st_atim.tv_nsec), Data::DateTimeUtil::GetLocalTzQhr());
+		accessTime.SetNoCheck(Data::Timestamp(Data::TimeInstant(s.st_atim.tv_sec, (UInt32)s.st_atim.tv_nsec), Data::DateTimeUtil::GetLocalTzQhr()));
 	}
 #endif
 	return true;

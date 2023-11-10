@@ -1224,26 +1224,26 @@ UTF8Char *IO::Path::GetUserHome(UTF8Char *buff)
 	return buff;
 }
 
-Bool IO::Path::GetFileTime(const UTF8Char *path, Data::Timestamp *modTime, Data::Timestamp *createTime, Data::Timestamp *accessTime)
+Bool IO::Path::GetFileTime(Text::CStringNN path, OptOut<Data::Timestamp> modTime, OptOut<Data::Timestamp> createTime, OptOut<Data::Timestamp> accessTime)
 {
 	WIN32_FIND_DATAW fd;
-	const WChar *wptr = Text::StrToWCharNew(path);
+	const WChar *wptr = Text::StrToWCharNew(path.v);
 	HANDLE hand = FindFirstFileW(wptr, &fd);
 	Text::StrDelNew(wptr);
 	if (hand == INVALID_HANDLE_VALUE)
 		return false;
 	FindClose(hand);
-	if (modTime)
+	if (modTime.IsNotNull())
 	{
-		*modTime = Data::Timestamp::FromFILETIME(&fd.ftLastWriteTime, Data::DateTimeUtil::GetLocalTzQhr());
+		modTime.SetNoCheck(Data::Timestamp::FromFILETIME(&fd.ftLastWriteTime, Data::DateTimeUtil::GetLocalTzQhr()));
 	}
-	if (createTime)
+	if (createTime.IsNotNull())
 	{
-		*createTime = Data::Timestamp::FromFILETIME(&fd.ftCreationTime, Data::DateTimeUtil::GetLocalTzQhr());
+		createTime.SetNoCheck(Data::Timestamp::FromFILETIME(&fd.ftCreationTime, Data::DateTimeUtil::GetLocalTzQhr()));
 	}
-	if (accessTime)
+	if (accessTime.IsNotNull())
 	{
-		*accessTime = Data::Timestamp::FromFILETIME(&fd.ftLastAccessTime, Data::DateTimeUtil::GetLocalTzQhr());
+		accessTime.SetNoCheck(Data::Timestamp::FromFILETIME(&fd.ftLastAccessTime, Data::DateTimeUtil::GetLocalTzQhr()));
 	}
 	return true;
 }

@@ -255,7 +255,7 @@ Bool IO::FileUtil::CopyFile(Text::CStringNN file1, Text::CStringNN file2, FileEx
 				writeSize = fs1.Read(buff);
 				writeSize = fs2->Write(buff.Ptr(), (UOSInt)writeSize);
 			}
-			fs1.GetFileTimes(&ts1, &ts2, &ts3);
+			fs1.GetFileTimes(ts1, ts2, ts3);
 			fs2->SetFileTimes(ts1, ts2, ts3);
 			if (progHdlr)
 			{
@@ -296,7 +296,7 @@ Bool IO::FileUtil::CopyFile(Text::CStringNN file1, Text::CStringNN file2, FileEx
 				}
 			}
 			MemFreeA(buff);
-			fs1.GetFileTimes(&ts1, &ts2, &ts3);
+			fs1.GetFileTimes(ts1, ts2, ts3);
 			fs2->SetFileTimes(ts1, ts2, ts3);
 		}
 		else
@@ -314,7 +314,7 @@ Bool IO::FileUtil::CopyFile(Text::CStringNN file1, Text::CStringNN file2, FileEx
 			asr->ReadStream(bnt);
 			DEL_CLASS(asr);
 			writeSize = csess.writeSize;
-			fs1.GetFileTimes(&ts1, &ts2, &ts3);
+			fs1.GetFileTimes(ts1, ts2, ts3);
 			fs2->SetFileTimes(ts1, ts2, ts3);
 		}
 		DEL_CLASS(fs2);

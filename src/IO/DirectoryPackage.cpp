@@ -25,7 +25,7 @@ void IO::DirectoryPackage::AddFile(Text::CStringNN fileName)
 			item.modTime = ts;
 			item.accTime = 0;
 			item.createTime = 0;
-			IO::Path::GetFileTime(fileName.v, &item.modTime, &item.accTime, &item.createTime);
+			IO::Path::GetFileTime(fileName, item.modTime, item.accTime, item.createTime);
 			item.unixAttr = IO::Path::GetFileUnixAttr(fileName);
 			this->files.Add(item);
 		}
@@ -69,7 +69,7 @@ void IO::DirectoryPackage::Init()
 					item.modTime = ts;
 					item.accTime = 0;
 					item.createTime = 0;
-					IO::Path::GetFileTime(sbuff, &item.modTime, &item.accTime, &item.createTime);
+					IO::Path::GetFileTime(CSTRP(sbuff, sptr2), item.modTime, item.accTime, item.createTime);
 					item.unixAttr = IO::Path::GetFileUnixAttr(CSTRP(sbuff, sptr2));
 					this->files.Add(item);
 				}
@@ -255,10 +255,10 @@ Data::Compress::Decompressor::CompressMethod IO::DirectoryPackage::GetItemComp(U
 	return Data::Compress::Decompressor::CM_UNCOMPRESSED;
 }
 
-IO::PackageFile *IO::DirectoryPackage::Clone() const
+NotNullPtr<IO::PackageFile> IO::DirectoryPackage::Clone() const
 {
-	IO::DirectoryPackage *dpkg;
-	NEW_CLASS(dpkg, IO::DirectoryPackage(this->dirName));
+	NotNullPtr<IO::DirectoryPackage> dpkg;
+	NEW_CLASSNN(dpkg, IO::DirectoryPackage(this->dirName));
 	return dpkg;
 }
 
@@ -476,6 +476,24 @@ IO::PackageFile *IO::DirectoryPackage::GetParent(OutParam<Bool> needRelease) con
 OSInt __stdcall DirectoryPackage_Compare(IO::DirectoryPackage::FileItem obj1, IO::DirectoryPackage::FileItem obj2)
 {
 	return obj1.fileName->CompareTo(obj2.fileName);
+}
+
+Bool IO::DirectoryPackage::DeleteItem(UOSInt index)
+{
+	if (index >= this->files.GetCount())
+		return false;
+	FileItem file = this->files.GetItem(index);
+	IO::Path::PathType pt = IO::Path::GetPathType(file.fileName->ToCString());
+	if (pt == IO::Path::PathType::File)
+	{
+		if (IO::Path::DeleteFile(file.fileName->v))
+		{
+			file.fileName->Release();
+			this->files.RemoveAt(index);
+			return true;
+		}
+	}
+	return false;
 }
 
 Bool IO::DirectoryPackage::Sort()

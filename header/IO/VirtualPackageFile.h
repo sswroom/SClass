@@ -71,6 +71,7 @@ namespace IO
 		Data::FastMap<Int32, const UTF8Char *> infoMap;
 		VirtualPackageFile *parent;
 
+		void ReusePackFileItem(IO::PackFileItem *item);
 		VirtualPackageFile(const VirtualPackageFile *pkg);
 	public:
 		VirtualPackageFile(NotNullPtr<Text::String> fileName);
@@ -81,8 +82,13 @@ namespace IO
 		Bool AddObject(IO::ParsedObject *pobj, Text::CStringNN name, const Data::Timestamp &modTime, const Data::Timestamp &accTime, const Data::Timestamp &createTime, UInt32 unixAttr);
 		Bool AddCompData(NotNullPtr<StreamData> fd, UInt64 ofst, UInt64 length, PackFileItem::CompressInfo *compInfo, Text::CStringNN name, const Data::Timestamp &modTime, const Data::Timestamp &accTime, const Data::Timestamp &createTime, UInt32 unixAttr);
 		Bool AddPack(NotNullPtr<IO::PackageFile> pkg, Text::CStringNN name, const Data::Timestamp &modTime, const Data::Timestamp &accTime, const Data::Timestamp &createTime, UInt32 unixAttr);
+		Bool AddOrReplaceData(NotNullPtr<StreamData> fd, UInt64 ofst, UInt64 length, Text::CStringNN name, const Data::Timestamp &modTime, const Data::Timestamp &accTime, const Data::Timestamp &createTime, UInt32 unixAttr);
+		Bool AddOrReplaceObject(IO::ParsedObject *pobj, Text::CStringNN name, const Data::Timestamp &modTime, const Data::Timestamp &accTime, const Data::Timestamp &createTime, UInt32 unixAttr);
+		Bool AddOrReplaceCompData(NotNullPtr<StreamData> fd, UInt64 ofst, UInt64 length, PackFileItem::CompressInfo *compInfo, Text::CStringNN name, const Data::Timestamp &modTime, const Data::Timestamp &accTime, const Data::Timestamp &createTime, UInt32 unixAttr);
+		Bool AddOrReplacePack(NotNullPtr<IO::PackageFile> pkg, Text::CStringNN name, const Data::Timestamp &modTime, const Data::Timestamp &accTime, const Data::Timestamp &createTime, UInt32 unixAttr);
 		IO::PackageFile *GetPackFile(Text::CStringNN name) const;
 		Bool UpdateCompInfo(const UTF8Char *name, NotNullPtr<IO::StreamData> fd, UInt64 ofst, Int32 crc, UOSInt compSize, UInt32 decSize);
+		Bool MergePackage(NotNullPtr<IO::PackageFile> pkg);
 
 		const PackFileItem *GetPackFileItem(const UTF8Char *name) const;
 		const PackFileItem *GetPackFileItem(UOSInt index) const;
@@ -106,7 +112,7 @@ namespace IO
 		virtual UOSInt GetItemIndex(Text::CStringNN name) const;
 		virtual Bool IsCompressed(UOSInt index) const;
 		virtual Data::Compress::Decompressor::CompressMethod GetItemComp(UOSInt index) const;
-		virtual PackageFile *Clone() const;
+		virtual NotNullPtr<PackageFile> Clone() const;
 		virtual PackageFileType GetFileType() const;
 		virtual Bool CopyFrom(Text::CStringNN fileName, IO::ProgressHandler *progHdlr, OptOut<IO::ActiveStreamReader::BottleNeckType> bnt);
 		virtual Bool MoveFrom(Text::CStringNN fileName, IO::ProgressHandler *progHdlr, OptOut<IO::ActiveStreamReader::BottleNeckType> bnt);
@@ -116,6 +122,7 @@ namespace IO
 		virtual IO::StreamData *OpenStreamData(Text::CString fileName) const;
 		virtual Bool HasParent() const;
 		virtual IO::PackageFile *GetParent(OutParam<Bool> needRelease) const;
+		virtual Bool DeleteItem(UOSInt index);
 
 		void SetInfo(InfoType infoType, const UTF8Char *val);
 		void GetInfoText(NotNullPtr<Text::StringBuilderUTF8> sb) const;

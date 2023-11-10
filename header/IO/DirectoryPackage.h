@@ -69,7 +69,7 @@ namespace IO
 		virtual UOSInt GetItemIndex(Text::CStringNN name) const;
 		virtual Bool IsCompressed(UOSInt index) const;
 		virtual Data::Compress::Decompressor::CompressMethod GetItemComp(UOSInt index) const;
-		virtual PackageFile *Clone() const;
+		virtual NotNullPtr<PackageFile> Clone() const;
 		virtual PackageFileType GetFileType() const;
 		virtual Bool CopyFrom(Text::CStringNN fileName, IO::ProgressHandler *progHdlr, OptOut<IO::ActiveStreamReader::BottleNeckType> bnt);
 		virtual Bool MoveFrom(Text::CStringNN fileName, IO::ProgressHandler *progHdlr, OptOut<IO::ActiveStreamReader::BottleNeckType> bnt);
@@ -79,6 +79,7 @@ namespace IO
 		virtual IO::StreamData *OpenStreamData(Text::CString fileName) const;
 		virtual Bool HasParent() const;
 		virtual IO::PackageFile *GetParent(OutParam<Bool> needRelease) const;
+		virtual Bool DeleteItem(UOSInt index);
 
 		Bool Sort();
 	};

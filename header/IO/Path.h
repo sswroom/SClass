@@ -67,7 +67,7 @@ namespace IO
 		static UTF8Char *GetOSPath(UTF8Char *buff);
 		static WChar *GetOSPathW(WChar *buff);
 		static UTF8Char *GetUserHome(UTF8Char *buff);
-		static Bool GetFileTime(const UTF8Char *path, Data::Timestamp *modTime, Data::Timestamp *createTime, Data::Timestamp *accessTime);
+		static Bool GetFileTime(Text::CStringNN path, OptOut<Data::Timestamp> modTime, OptOut<Data::Timestamp> createTime, OptOut<Data::Timestamp> accessTime);
 		static Data::Timestamp GetModifyTime(const UTF8Char *path);
 		static UInt32 GetFileUnixAttr(Text::CStringNN path);
 		static UTF8Char *GetCurrDirectory(UTF8Char *buff);

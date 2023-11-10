@@ -202,7 +202,7 @@ Bool SSWR::AVIRead::AVIRTimedFileCopyForm::CopyToZip(IO::ZIPMTBuilder *zip, cons
 					{
 						createTime = 0;
 						accTime = 0;
-						IO::Path::GetFileTime(buffStart, &modTime, &createTime, &accTime);
+						IO::Path::GetFileTime(CSTRP(buffStart, sptr), modTime, createTime, accTime);
 						unixAttr = IO::Path::GetFileUnixAttr(CSTRP(buffStart, sptr));
 						*sptr++ = IO::Path::PATH_SEPERATOR;
 						*sptr = 0;

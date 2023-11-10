@@ -11,6 +11,7 @@
 #include "Text/StringTool.h"
 #include "Text/URLString.h"
 #include "UI/Clipboard.h"
+#include "UI/FileDialog.h"
 #include "UI/FolderDialog.h"
 #include "UI/MessageDialog.h"
 #include "UtilUI/TextViewerForm.h"
@@ -23,8 +24,10 @@ typedef enum
 	MNU_COPYTO,
 	MNU_COPYALLTO,
 	MNU_SAVEAS,
+	MNU_DELETE_ITEM,
 	MNU_OPEN_TEXT_VIEWER,
-	MNU_OPEN_HEX_VIEWER
+	MNU_OPEN_HEX_VIEWER,
+	MNU_APPEND_ZIP
 } MenuItem;
 
 UInt32 __stdcall SSWR::AVIRead::AVIRPackageForm::ProcessThread(void *userObj)
@@ -695,6 +698,7 @@ SSWR::AVIRead::AVIRPackageForm::AVIRPackageForm(UI::GUIClientControl *parent, No
 	NEW_CLASS(mnuMain, UI::GUIMainMenu());
 	mnu = mnuMain->AddSubMenu(CSTR("&File"));
 	mnu->AddItem(CSTR("Save &As..."), MNU_SAVEAS, UI::GUIMenu::KM_CONTROL, UI::GUIControl::GK_S);
+	mnu->AddItem(CSTR("Append Zip Content"), MNU_APPEND_ZIP, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu = mnuMain->AddSubMenu(CSTR("&Edit"));
 	mnu->AddItem(CSTR("&Paste"), MNU_PASTE, UI::GUIMenu::KM_CONTROL, UI::GUIControl::GK_V);
 	mnu->AddItem(CSTR("Copy To..."), MNU_COPYTO, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
@@ -704,6 +708,7 @@ SSWR::AVIRead::AVIRPackageForm::AVIRPackageForm(UI::GUIClientControl *parent, No
 	this->mnuPopup->AddItem(CSTR("Copy To..."), MNU_COPYTO, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	this->mnuPopup->AddItem(CSTR("Open Text Viewer"), MNU_OPEN_TEXT_VIEWER, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	this->mnuPopup->AddItem(CSTR("Open Hex Viewer"), MNU_OPEN_HEX_VIEWER, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	this->mnuPopup->AddItem(CSTR("Delete Item"), MNU_DELETE_ITEM, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	this->lvFiles->HandleRightClick(OnFilesRightClick, this);
 
 	this->tpStatus = this->tcMain->AddTabPage(CSTR("Status"));
@@ -933,6 +938,53 @@ void SSWR::AVIRead::AVIRPackageForm::EventMenuClicked(UInt16 cmdId)
 					return;
 				}
 			}
+		}
+		break;
+	case MNU_DELETE_ITEM:
+		{
+			UOSInt i = this->PackFileIndex(this->lvFiles->GetSelectedIndex());
+			if (i != INVALID_INDEX)
+			{
+				if (!this->packFile->DeleteItem(i))
+				{
+					UI::MessageDialog::ShowDialog(CSTR("Cannot delete item"), CSTR("Package"), this);
+				}
+				else
+				{
+					this->DisplayPackFile(packFile);
+				}
+			}
+		}
+		break;
+	case MNU_APPEND_ZIP:
+		if (this->packFile->GetFileType() == IO::PackageFileType::Virtual)
+		{
+			NotNullPtr<IO::VirtualPackageFile> vpkg = NotNullPtr<IO::VirtualPackageFile>::ConvertFrom(this->packFile);
+			Parser::ParserList *parsers = this->core->GetParserList();
+			UI::FileDialog dlg(L"SSWR", L"AVIRead", L"PackageFileZip", false);
+			dlg.SetAllowMultiSel(false);
+			parsers->PrepareSelector(dlg, IO::ParserType::PackageFile);
+			if (dlg.ShowDialog(this->GetHandle()))
+			{
+				IO::StmData::FileData fd(dlg.GetFileName(), false);
+				NotNullPtr<IO::PackageFile> zipPkg;
+				if (zipPkg.Set((IO::PackageFile*)parsers->ParseFileType(fd, IO::ParserType::PackageFile)))
+				{
+					if (!vpkg->MergePackage(zipPkg))
+					{
+						UI::MessageDialog::ShowDialog(CSTR("Error occurs during append zip file"), CSTR("Package"), this);
+					}
+					this->DisplayPackFile(this->packFile);
+				}
+				else
+				{
+					UI::MessageDialog::ShowDialog(CSTR("Cannot parse file as Zip"), CSTR("Package"), this);
+				}
+			}
+		}
+		else
+		{
+			UI::MessageDialog::ShowDialog(CSTR("This directory is not supported to append zip content"), CSTR("Package"), this);
 		}
 		break;
 	}
