@@ -309,7 +309,7 @@ void IO::FileStream::GetFileTimes(Data::DateTime *creationTime, Data::DateTime *
 #endif
 }
 
-void IO::FileStream::GetFileTimes(Data::Timestamp *creationTime, Data::Timestamp *lastAccessTime, Data::Timestamp *lastWriteTime)
+void IO::FileStream::GetFileTimes(OptOut<Data::Timestamp> creationTime, OptOut<Data::Timestamp> lastAccessTime, OptOut<Data::Timestamp> lastWriteTime)
 {
 #if defined(__USE_LARGEFILE64)
 	struct stat64 s;
@@ -337,30 +337,30 @@ void IO::FileStream::GetFileTimes(Data::Timestamp *creationTime, Data::Timestamp
 	}
 #endif
 #if defined(__APPLE__)
-	if (creationTime)
+	if (creationTime.IsNotNull())
 	{
-		*creationTime = Data::Timestamp::FromSecNS(s.st_ctimespec.tv_sec, (UInt32)s.st_ctimespec.tv_nsec, 0);
+		creationTime.SetNoCheck(Data::Timestamp::FromSecNS(s.st_ctimespec.tv_sec, (UInt32)s.st_ctimespec.tv_nsec, 0));
 	}
-	if (lastAccessTime)
+	if (lastAccessTime.IsNotNull())
 	{
-		*lastAccessTime = Data::Timestamp::FromSecNS(s.st_atimespec.tv_sec, (UInt32)s.st_atimespec.tv_nsec, 0);
+		lastAccessTime.SetNoCheck(Data::Timestamp::FromSecNS(s.st_atimespec.tv_sec, (UInt32)s.st_atimespec.tv_nsec, 0));
 	}
-	if (lastWriteTime)
+	if (lastWriteTime.IsNotNull())
 	{
-		*lastWriteTime = Data::Timestamp::FromSecNS(s.st_mtimespec.tv_sec, (UInt32)s.st_mtimespec.tv_nsec, 0);
+		lastWriteTime.SetNoCheck(Data::Timestamp::FromSecNS(s.st_mtimespec.tv_sec, (UInt32)s.st_mtimespec.tv_nsec, 0));
 	}
 #else
-	if (creationTime)
+	if (creationTime.IsNotNull())
 	{
-		*creationTime = Data::Timestamp::FromSecNS(s.st_ctim.tv_sec, (UInt32)s.st_ctim.tv_nsec, 0);
+		creationTime.SetNoCheck(Data::Timestamp::FromSecNS(s.st_ctim.tv_sec, (UInt32)s.st_ctim.tv_nsec, 0));
 	}
-	if (lastAccessTime)
+	if (lastAccessTime.IsNotNull())
 	{
-		*lastAccessTime = Data::Timestamp::FromSecNS(s.st_atim.tv_sec, (UInt32)s.st_atim.tv_nsec, 0);
+		lastAccessTime.SetNoCheck(Data::Timestamp::FromSecNS(s.st_atim.tv_sec, (UInt32)s.st_atim.tv_nsec, 0));
 	}
-	if (lastWriteTime)
+	if (lastWriteTime.IsNotNull())
 	{
-		*lastWriteTime = Data::Timestamp::FromSecNS(s.st_mtim.tv_sec, (UInt32)s.st_mtim.tv_nsec, 0);
+		lastWriteTime.SetNoCheck(Data::Timestamp::FromSecNS(s.st_mtim.tv_sec, (UInt32)s.st_mtim.tv_nsec, 0));
 	}
 #endif
 }

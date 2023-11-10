@@ -50,7 +50,7 @@ namespace IO
 		virtual Bool IsError() const;
 		virtual Int32 GetErrCode();
 		void GetFileTimes(Data::DateTime *creationTime, Data::DateTime *lastAccessTime, Data::DateTime *lastWriteTime);
-		void GetFileTimes(Data::Timestamp *creationTime, Data::Timestamp *lastAccessTime, Data::Timestamp *lastWriteTime);
+		void GetFileTimes(OptOut<Data::Timestamp> creationTime, OptOut<Data::Timestamp> lastAccessTime, OptOut<Data::Timestamp> lastWriteTime);
 		Data::Timestamp GetCreateTime();
 		Data::Timestamp GetModifyTime();
 		void SetFileTimes(Data::DateTime *creationTime, Data::DateTime *lastAccessTime, Data::DateTime *lastWriteTime);

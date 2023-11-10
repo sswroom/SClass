@@ -436,6 +436,19 @@ void __stdcall SSWR::AVIRead::AVIRPackageForm::OnFilesRightClick(void *userObj, 
 	me->mnuPopup->ShowMenu(me->lvFiles, Math::Coord2D<OSInt>(Double2OSInt(coord.x), Double2OSInt(coord.y)));
 }
 
+void __stdcall SSWR::AVIRead::AVIRPackageForm::OnFiles(void *userObj, NotNullPtr<Text::String> *files, UOSInt nFiles)
+{
+	SSWR::AVIRead::AVIRPackageForm *me = (SSWR::AVIRead::AVIRPackageForm*)userObj;
+	Data::ArrayListNN<Text::String> fileNames(nFiles);
+	UOSInt i = 0;
+	while (i < nFiles)
+	{
+		fileNames.Add(files[i]);
+		i++;
+	}
+	me->PasteFiles(fileNames, false);
+}
+
 void SSWR::AVIRead::AVIRPackageForm::DisplayPackFile(NotNullPtr<IO::PackageFile> packFile)
 {
 	UTF8Char sbuff[512];
@@ -536,6 +549,78 @@ void SSWR::AVIRead::AVIRPackageForm::UpdatePackFile(NotNullPtr<IO::PackageFile> 
 	this->packFile = packFile;
 	this->packNeedDelete = needDelete;
 	this->DisplayPackFile(packFile);
+}
+
+void SSWR::AVIRead::AVIRPackageForm::PasteFiles(NotNullPtr<Data::ArrayListNN<Text::String>> files, Bool move)
+{
+	UOSInt i;
+	UOSInt j;
+	if (move)
+	{
+		if (this->packFile->GetFileType() == IO::PackageFileType::Virtual)
+		{
+			UI::MessageDialog::ShowDialog(CSTR("Virtual Package does not support move"), CSTR("Package"), this);
+		}
+		else
+		{
+			Sync::MutexUsage mutUsage(this->fileMut);
+			i = 0;
+			j = files->GetCount();
+			while (i < j)
+			{
+				this->fileNames.Add(files->GetItem(i)->Clone());
+				this->fileAction.Add(AT_MOVE);
+				i++;
+			}
+			this->statusChg = true;
+		}
+	}
+	else
+	{
+		if (this->packFile->GetFileType() == IO::PackageFileType::Virtual)
+		{
+			Bool changed = false;
+			i = 0;
+			j = files->GetCount();
+			while (i < j)
+			{
+				if (!this->packFile->CopyFrom(files->GetItem(i)->ToCString(), 0, 0))
+				{
+					Text::StringBuilderUTF8 sb;
+					sb.Append(CSTR("Failed to copy "));
+					sb.Append(files->GetItem(i));
+					sb.Append(CSTR(", do you want to continue?"));
+					if (!UI::MessageDialog::ShowYesNoDialog(sb.ToCString(), CSTR("Package"), this))
+					{
+						break;
+					}
+				}
+				else
+				{
+					changed = true;
+				}
+				i++;
+			}
+			if (changed)
+			{
+				this->DisplayPackFile(this->packFile);
+			}
+		}
+		else
+		{
+			Sync::MutexUsage mutUsage(this->fileMut);
+			i = 0;
+			j = files->GetCount();
+			while (i < j)
+			{
+				this->fileNames.Add(files->GetItem(i)->Clone());
+				this->fileAction.Add(AT_COPY);
+				i++;
+			}
+			this->statusChg = true;
+		}
+	}
+
 }
 
 SSWR::AVIRead::AVIRPackageForm::AVIRPackageForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<IO::PackageFile> packFile) : UI::GUIForm(parent, 960, 768, ui)
@@ -679,6 +764,7 @@ SSWR::AVIRead::AVIRPackageForm::AVIRPackageForm(UI::GUIClientControl *parent, No
 	}
 
 	this->SetMenu(mnuMain);
+	this->HandleDropFiles(OnFiles, this);
 }
 
 SSWR::AVIRead::AVIRPackageForm::~AVIRPackageForm()
@@ -709,78 +795,9 @@ void SSWR::AVIRead::AVIRPackageForm::EventMenuClicked(UInt16 cmdId)
 			UI::Clipboard clipboard(this->hwnd);
 			Data::ArrayListNN<Text::String> fileNames;
 			UI::Clipboard::FilePasteType fpt;
-			UOSInt i;
-			UOSInt j;
 			fpt = clipboard.GetDataFiles(&fileNames);
-			if (fpt == UI::Clipboard::FPT_MOVE)
-			{
-				if (this->packFile->GetFileType() == IO::PackageFileType::Virtual)
-				{
-					UI::MessageDialog::ShowDialog(CSTR("Virtual Package does not support move"), CSTR("Package"), this);
-				}
-				else
-				{
-					Sync::MutexUsage mutUsage(this->fileMut);
-					i = 0;
-					j = fileNames.GetCount();
-					while (i < j)
-					{
-						this->fileNames.Add(fileNames.GetItem(i)->Clone());
-						this->fileAction.Add(AT_MOVE);
-						i++;
-					}
-					this->statusChg = true;
-					mutUsage.EndUse();
-					clipboard.FreeDataFiles(&fileNames);
-				}
-			}
-			else if (fpt == UI::Clipboard::FPT_COPY)
-			{
-				if (this->packFile->GetFileType() == IO::PackageFileType::Virtual)
-				{
-					Bool changed = false;
-					i = 0;
-					j = fileNames.GetCount();
-					while (i < j)
-					{
-						if (!this->packFile->CopyFrom(fileNames.GetItem(i)->ToCString(), 0, 0))
-						{
-							Text::StringBuilderUTF8 sb;
-							sb.Append(CSTR("Failed to copy "));
-							sb.Append(fileNames.GetItem(i));
-							sb.Append(CSTR(", do you want to continue?"));
-							if (!UI::MessageDialog::ShowYesNoDialog(sb.ToCString(), CSTR("Package"), this))
-							{
-								break;
-							}
-						}
-						else
-						{
-							changed = true;
-						}
-						i++;
-					}
-					if (changed)
-					{
-						this->DisplayPackFile(this->packFile);
-					}
-				}
-				else
-				{
-					Sync::MutexUsage mutUsage(this->fileMut);
-					i = 0;
-					j = fileNames.GetCount();
-					while (i < j)
-					{
-						this->fileNames.Add(fileNames.GetItem(i)->Clone());
-						this->fileAction.Add(AT_COPY);
-						i++;
-					}
-					this->statusChg = true;
-					mutUsage.EndUse();
-					clipboard.FreeDataFiles(&fileNames);
-				}
-			}
+			this->PasteFiles(fileNames, fpt == UI::Clipboard::FPT_MOVE);
+			clipboard.FreeDataFiles(&fileNames);
 		}
 		break;
 	case MNU_COPYTO:

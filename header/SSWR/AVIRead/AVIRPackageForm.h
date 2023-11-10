@@ -109,9 +109,12 @@ namespace SSWR
 			static void __stdcall LVDblClick(void *userObj, UOSInt index);
 			static void __stdcall OnStatusDblClick(void *userObj, UOSInt index);
 			static void __stdcall OnFilesRightClick(void *userObj, Math::Coord2DDbl coord, UOSInt index);
+			static void __stdcall OnFiles(void *userObj, NotNullPtr<Text::String> *files, UOSInt nFiles);
+
 			void DisplayPackFile(NotNullPtr<IO::PackageFile> packFile);
 			UOSInt PackFileIndex(UOSInt lvIndex);
 			void UpdatePackFile(NotNullPtr<IO::PackageFile> packFile, Bool needDelete);
+			void PasteFiles(NotNullPtr<Data::ArrayListNN<Text::String>> files, Bool move);
 		public:
 			AVIRPackageForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<IO::PackageFile> packFile);
 			virtual ~AVIRPackageForm();

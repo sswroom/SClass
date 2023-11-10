@@ -94,9 +94,14 @@ IO::VirtualPackageFile::~VirtualPackageFile()
 	}
 }
 
-void IO::VirtualPackageFile::AddData(NotNullPtr<IO::StreamData> fd, UInt64 ofst, UInt64 length, Text::CString name, const Data::Timestamp &modTime, const Data::Timestamp &accTime, const Data::Timestamp &createTime, UInt32 unixAttr)
+Bool IO::VirtualPackageFile::AddData(NotNullPtr<IO::StreamData> fd, UInt64 ofst, UInt64 length, Text::CStringNN name, const Data::Timestamp &modTime, const Data::Timestamp &accTime, const Data::Timestamp &createTime, UInt32 unixAttr)
 {
 	PackFileItem *item;
+	UOSInt i = GetItemIndex(name);
+	if (i >= 0)
+	{
+		return false;
+	}
 	item = MemAlloc(PackFileItem, 1);
 	item->itemType = IO::PackFileItem::PackItemType::Uncompressed;
 	item->fd = fd->GetPartialData(ofst, length).Ptr();
@@ -110,11 +115,17 @@ void IO::VirtualPackageFile::AddData(NotNullPtr<IO::StreamData> fd, UInt64 ofst,
 	item->useCnt = 1;
 	this->items->Add(item);
 	this->namedItems->PutNN(item->name, item);
+	return true;
 }
 
-void IO::VirtualPackageFile::AddObject(IO::ParsedObject *pobj, Text::CString name, const Data::Timestamp &modTime, const Data::Timestamp &accTime, const Data::Timestamp &createTime, UInt32 unixAttr)
+Bool IO::VirtualPackageFile::AddObject(IO::ParsedObject *pobj, Text::CStringNN name, const Data::Timestamp &modTime, const Data::Timestamp &accTime, const Data::Timestamp &createTime, UInt32 unixAttr)
 {
 	PackFileItem *item;
+	UOSInt i = GetItemIndex(name);
+	if (i >= 0)
+	{
+		return false;
+	}
 	item = MemAlloc(PackFileItem, 1);
 	item->itemType = IO::PackFileItem::PackItemType::ParsedObject;
 	item->fd = 0;
@@ -135,11 +146,17 @@ void IO::VirtualPackageFile::AddObject(IO::ParsedObject *pobj, Text::CString nam
 	item->useCnt = 1;
 	this->items->Add(item);
 	this->namedItems->PutNN(item->name, item);
+	return true;
 }
 
-void IO::VirtualPackageFile::AddCompData(NotNullPtr<IO::StreamData> fd, UInt64 ofst, UInt64 length, IO::PackFileItem::CompressInfo *compInfo, Text::CString name, const Data::Timestamp &modTime, const Data::Timestamp &accTime, const Data::Timestamp &createTime, UInt32 unixAttr)
+Bool IO::VirtualPackageFile::AddCompData(NotNullPtr<IO::StreamData> fd, UInt64 ofst, UInt64 length, IO::PackFileItem::CompressInfo *compInfo, Text::CStringNN name, const Data::Timestamp &modTime, const Data::Timestamp &accTime, const Data::Timestamp &createTime, UInt32 unixAttr)
 {
 	PackFileItem *item;
+	UOSInt i = GetItemIndex(name);
+	if (i >= 0)
+	{
+		return false;
+	}
 	item = MemAlloc(PackFileItem, 1);
 	item->itemType = IO::PackFileItem::PackItemType::Compressed;
 	item->fd = fd->GetPartialData(ofst, length).Ptr();
@@ -159,11 +176,17 @@ void IO::VirtualPackageFile::AddCompData(NotNullPtr<IO::StreamData> fd, UInt64 o
 	item->useCnt = 1;
 	this->items->Add(item);
 	this->namedItems->PutNN(item->name, item);
+	return true;
 }
 
-void IO::VirtualPackageFile::AddPack(NotNullPtr<IO::PackageFile> pkg, Text::CString name, const Data::Timestamp &modTime, const Data::Timestamp &accTime, const Data::Timestamp &createTime, UInt32 unixAttr)
+Bool IO::VirtualPackageFile::AddPack(NotNullPtr<IO::PackageFile> pkg, Text::CStringNN name, const Data::Timestamp &modTime, const Data::Timestamp &accTime, const Data::Timestamp &createTime, UInt32 unixAttr)
 {
 	PackFileItem *item;
+	UOSInt i = GetItemIndex(name);
+	if (i >= 0)
+	{
+		return false;
+	}
 	item = MemAlloc(PackFileItem, 1);
 	item->itemType = IO::PackFileItem::PackItemType::ParsedObject;
 	item->fd = 0;
@@ -182,6 +205,7 @@ void IO::VirtualPackageFile::AddPack(NotNullPtr<IO::PackageFile> pkg, Text::CStr
 	this->items->Add(item);
 	this->pkgFiles.PutNN(item->name, item);
 	this->namedItems->PutNN(item->name, item);
+	return true;
 }
 
 IO::PackageFile *IO::VirtualPackageFile::GetPackFile(Text::CStringNN name) const
@@ -612,6 +636,40 @@ IO::PackageFileType IO::VirtualPackageFile::GetFileType() const
 
 Bool IO::VirtualPackageFile::CopyFrom(Text::CStringNN fileName, IO::ProgressHandler *progHdlr, OptOut<IO::ActiveStreamReader::BottleNeckType> bnt)
 {
+	IO::Path::PathType pt = IO::Path::GetPathType(fileName);
+	if (pt == IO::Path::PathType::File)
+	{
+		UOSInt i = fileName.LastIndexOf(IO::Path::PATH_SEPERATOR);
+		Text::CStringNN fName = fileName.Substring(i + 1);
+		UOSInt j = this->GetItemIndex(fName);
+		if (j >= 0)
+		{
+			IO::PackageFile::PackObjectType pot = this->GetItemType(j);
+			if (pot == IO::PackageFile::PackObjectType::PackageFileType)
+			{
+				return false;
+			}
+		}
+		NotNullPtr<IO::StmData::FileData> fd;
+		NEW_CLASSNN(fd, IO::StmData::FileData(fileName, false));
+		if (fd->IsError())
+		{
+			fd.Delete();
+			return false;
+		}
+		Data::Timestamp modTime = 0;
+		Data::Timestamp createTime = 0;
+		Data::Timestamp accTime = 0;
+		fd->GetFileStream()->GetFileTimes(createTime, accTime, modTime);
+		UInt32 unixAttr = IO::Path::GetFileUnixAttr(fileName);
+		Bool succ = this->AddData(fd, 0, fd->GetDataSize(), fName, modTime, accTime, createTime, unixAttr);
+		fd.Delete();
+		return succ;
+	}
+	else if (pt == IO::Path::PathType::Directory)
+	{
+
+	}
 	return false;
 }
 

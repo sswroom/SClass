@@ -473,23 +473,23 @@ void IO::FileStream::GetFileTimes(Data::DateTime *creationTime, Data::DateTime *
 	}
 }
 
-void IO::FileStream::GetFileTimes(Data::Timestamp *creationTime, Data::Timestamp *lastAccessTime, Data::Timestamp *lastWriteTime)
+void IO::FileStream::GetFileTimes(OptOut<Data::Timestamp> creationTime, OptOut<Data::Timestamp> lastAccessTime, OptOut<Data::Timestamp> lastWriteTime)
 {
 	FILETIME createTime;
 	FILETIME lastAccTime;
 	FILETIME lastWrTime;
 	GetFileTime(this->handle, &createTime, &lastAccTime, &lastWrTime);
-	if (creationTime)
+	if (creationTime.IsNotNull())
 	{
-		*creationTime = Data::Timestamp(Data::TimeInstant::FromFILETIME(&createTime), 0);
+		creationTime.SetNoCheck(Data::Timestamp(Data::TimeInstant::FromFILETIME(&createTime), 0));
 	}
-	if (lastAccessTime)
+	if (lastAccessTime.IsNotNull())
 	{
-		*lastAccessTime = Data::Timestamp(Data::TimeInstant::FromFILETIME(&lastAccTime), 0);
+		lastAccessTime.SetNoCheck(Data::Timestamp(Data::TimeInstant::FromFILETIME(&lastAccTime), 0));
 	}
-	if (lastWriteTime)
+	if (lastWriteTime.IsNotNull())
 	{
-		*lastWriteTime = Data::Timestamp(Data::TimeInstant::FromFILETIME(&lastWrTime), 0);
+		lastWriteTime.SetNoCheck(Data::Timestamp(Data::TimeInstant::FromFILETIME(&lastWrTime), 0));
 	}
 }
 
