@@ -30,10 +30,9 @@ UInt32 __stdcall IO::ActiveStreamReader::ReadThread(void *obj)
 	return 0;
 }
 
-IO::ActiveStreamReader::ActiveStreamReader(DataHdlr hdlr, void *userData, NotNullPtr<IO::Stream> stm, UOSInt buffSize)
+IO::ActiveStreamReader::ActiveStreamReader(DataHdlr hdlr, void *userData, UOSInt buffSize)
 {
 	this->hdlr = hdlr;
-	this->stm = stm;
 	this->buffSize = buffSize;
 	this->currIndex = 0;
 	this->userData = userData;
@@ -63,14 +62,19 @@ IO::ActiveStreamReader::~ActiveStreamReader()
 	{
 		MemFreeA(this->buffs[i].buff);
 	}
+
 }
 
-void IO::ActiveStreamReader::ReadStream(OptOut<IO::ActiveStreamReader::BottleNeckType> bnt)
+void IO::ActiveStreamReader::SetUserData(void *userData)
+{
+	this->userData = userData;
+}
+
+void IO::ActiveStreamReader::ReadStream(NotNullPtr<IO::Stream> stm, OptOut<IO::ActiveStreamReader::BottleNeckType> bnt)
 {
 	Int32 i = this->currIndex;
 	UOSInt readSize = this->buffSize;
 	UOSInt actSize;
-	NotNullPtr<IO::Stream> stm = this->stm;
 	this->bnt = bnt;
 	this->reading = true;
 	while (true)
@@ -83,6 +87,40 @@ void IO::ActiveStreamReader::ReadStream(OptOut<IO::ActiveStreamReader::BottleNec
 		actSize = stm->Read(Data::ByteArray(this->buffs[i].buff, readSize));
 		if (actSize <= 0)
 			break;
+		this->buffs[i].buffSize = actSize;
+		this->fullEvt.Set();
+		i = (i + 1) % ACTIVESTREAMREADER_BUFFCNT;
+	}
+	this->reading = false;
+	this->bnt = 0;
+	
+	i = (i + ACTIVESTREAMREADER_BUFFCNT - 1) % ACTIVESTREAMREADER_BUFFCNT;
+	while (this->buffs[i].buffSize)
+	{
+		this->emptyEvt.Wait(1000);
+	}
+	this->currIndex = (i + 1) % ACTIVESTREAMREADER_BUFFCNT;
+}
+
+void IO::ActiveStreamReader::ReadStreamData(NotNullPtr<IO::StreamData> stmData, OptOut<BottleNeckType> bnt)
+{
+	Int32 i = this->currIndex;
+	UInt64 currOfst = 0;
+	UOSInt readSize = this->buffSize;
+	UOSInt actSize;
+	this->bnt = bnt;
+	this->reading = true;
+	while (true)
+	{
+		while (this->buffs[i].buffSize)
+		{
+			bnt.Set(IO::ActiveStreamReader::BottleNeckType::Write);
+			this->emptyEvt.Wait(1000);
+		}
+		actSize = stmData->GetRealData(currOfst, readSize, Data::ByteArray(this->buffs[i].buff, readSize));
+		if (actSize <= 0)
+			break;
+		currOfst += actSize;
 		this->buffs[i].buffSize = actSize;
 		this->fullEvt.Set();
 		i = (i + 1) % ACTIVESTREAMREADER_BUFFCNT;

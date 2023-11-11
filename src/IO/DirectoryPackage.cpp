@@ -43,6 +43,7 @@ void IO::DirectoryPackage::Init()
 	UInt64 fileSize;
 	FileItem item;
 	IO::Path::FindFileSession *sess;
+	this->parent = 0;
 	if (this->dirName->leng > 0)
 	{
 		sptr = this->dirName->ConcatTo(sbuff);
@@ -185,6 +186,7 @@ IO::PackageFile *IO::DirectoryPackage::GetItemPack(UOSInt index, OutParam<Bool> 
 	{
 		IO::DirectoryPackage *pkg;
 		NEW_CLASS(pkg, IO::DirectoryPackage(fileName));
+		pkg->SetParent(this->parent);
 		needDelete.Set(true);
 		return pkg;
 	}
@@ -455,6 +457,8 @@ IO::StreamData *IO::DirectoryPackage::OpenStreamData(Text::CString fileName) con
 
 Bool IO::DirectoryPackage::HasParent() const
 {
+	if (this->parent)
+		return true;
 	if (IO::Path::PATH_SEPERATOR == '/')
 	{
 	}
@@ -470,7 +474,7 @@ Bool IO::DirectoryPackage::HasParent() const
 
 IO::PackageFile *IO::DirectoryPackage::GetParent(OutParam<Bool> needRelease) const
 {
-	return 0;
+	return this->parent;
 }
 
 OSInt __stdcall DirectoryPackage_Compare(IO::DirectoryPackage::FileItem obj1, IO::DirectoryPackage::FileItem obj2)
@@ -494,6 +498,11 @@ Bool IO::DirectoryPackage::DeleteItem(UOSInt index)
 		}
 	}
 	return false;
+}
+
+void IO::DirectoryPackage::SetParent(IO::PackageFile *pkg)
+{
+	this->parent = pkg;
 }
 
 Bool IO::DirectoryPackage::Sort()

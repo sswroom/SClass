@@ -46,6 +46,7 @@ namespace IO
 	private:
 		Data::ArrayList<FileItem> files;
 		NotNullPtr<Text::String> dirName;
+		IO::PackageFile *parent;
 
 		void AddFile(Text::CStringNN fileName);
 		void Init();
@@ -80,6 +81,7 @@ namespace IO
 		virtual Bool HasParent() const;
 		virtual IO::PackageFile *GetParent(OutParam<Bool> needRelease) const;
 		virtual Bool DeleteItem(UOSInt index);
+		virtual void SetParent(IO::PackageFile *pkg);
 
 		Bool Sort();
 	};

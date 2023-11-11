@@ -1,6 +1,7 @@
 #ifndef _SM_IO_ACTIVESTREAMREADER
 #define _SM_IO_ACTIVESTREAMREADER
 #include "IO/Stream.h"
+#include "IO/StreamData.h"
 
 #define ACTIVESTREAMREADER_BUFFCNT 2
 
@@ -24,7 +25,6 @@ namespace IO
 			UOSInt buffSize;
 		} ReadBuffer;
 	private:
-		NotNullPtr<IO::Stream> stm;
 		DataHdlr hdlr;
 		UOSInt buffSize;
 
@@ -42,10 +42,12 @@ namespace IO
 
 		static UInt32 __stdcall ReadThread(void *obj);
 	public:
-		ActiveStreamReader(DataHdlr hdlr, void *userData, NotNullPtr<IO::Stream> stm, UOSInt buffSize);
+		ActiveStreamReader(DataHdlr hdlr, void *userData, UOSInt buffSize);
 		~ActiveStreamReader();
 
-		void ReadStream(OptOut<BottleNeckType> bnt);
+		void SetUserData(void *userData);
+		void ReadStream(NotNullPtr<IO::Stream> stm, OptOut<BottleNeckType> bnt);
+		void ReadStreamData(NotNullPtr<IO::StreamData> stmData, OptOut<BottleNeckType> bnt);
 	};
 }
 #endif

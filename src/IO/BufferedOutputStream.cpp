@@ -9,6 +9,7 @@ IO::BufferedOutputStream::BufferedOutputStream(NotNullPtr<IO::Stream> outStm, UO
 	this->cacheBuffSize = buffSize;
 	this->cacheBuff = MemAlloc(UInt8, buffSize);
 	this->cacheSize = 0;
+	this->totalWrite = 0;
 }
 
 IO::BufferedOutputStream::~BufferedOutputStream()
@@ -33,6 +34,7 @@ UOSInt IO::BufferedOutputStream::Read(const Data::ByteArray &buff)
 
 UOSInt IO::BufferedOutputStream::Write(const UInt8 *buff, UOSInt size)
 {
+	this->totalWrite += size;
 	if (this->cacheSize + size < this->cacheBuffSize)
 	{
 		MemCopyNO(&this->cacheBuff[this->cacheSize], buff, size);
@@ -43,11 +45,10 @@ UOSInt IO::BufferedOutputStream::Write(const UInt8 *buff, UOSInt size)
 	{
 		if (this->cacheSize > 0)
 		{
-			this->outStm->Write(this->cacheBuff, this->cacheSize);
+			this->outStm->WriteCont(this->cacheBuff, this->cacheSize);
 			this->cacheSize = 0;
 		}
-		this->outStm->Write(buff, size);
-		return size;
+		return this->outStm->WriteCont(buff, size);
 	}
 	
 	UOSInt ret = this->cacheBuffSize - this->cacheSize;
@@ -58,7 +59,7 @@ UOSInt IO::BufferedOutputStream::Write(const UInt8 *buff, UOSInt size)
 		size -= ret;
 	}
 
-	UOSInt writeSize = this->outStm->Write(this->cacheBuff, this->cacheBuffSize);
+	UOSInt writeSize = this->outStm->WriteCont(this->cacheBuff, this->cacheBuffSize);
 	if (writeSize == 0)
 	{
 		return ret;
@@ -85,7 +86,7 @@ UOSInt IO::BufferedOutputStream::Write(const UInt8 *buff, UOSInt size)
 	this->cacheSize = 0;
 	if (size >= this->cacheBuffSize)
 	{
-		writeSize = this->outStm->Write(buff, size);
+		writeSize = this->outStm->WriteCont(buff, size);
 		ret += writeSize;
 		if (writeSize == size)
 		{
@@ -145,4 +146,9 @@ Bool IO::BufferedOutputStream::Recover()
 IO::StreamType IO::BufferedOutputStream::GetStreamType() const
 {
 	return IO::StreamType::BufferedOutput;
+}
+
+UInt64 IO::BufferedOutputStream::GetPosition() const
+{
+	return this->totalWrite;
 }

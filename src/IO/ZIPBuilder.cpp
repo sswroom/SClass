@@ -13,10 +13,10 @@
 #include <stdio.h>
 #endif
 
-IO::ZIPBuilder::ZIPBuilder(NotNullPtr<IO::SeekableStream> stm, ZIPOS os)
+IO::ZIPBuilder::ZIPBuilder(NotNullPtr<IO::SeekableStream> stm, ZIPOS os) : stm(stm, 1048576)
 {
-	this->stm = stm;
-	this->baseOfst = this->stm->GetPosition();
+	this->outStm = stm;
+	this->baseOfst = this->outStm->GetPosition();
 	this->currOfst = 0;
 	this->osType = os;
 }
@@ -100,7 +100,7 @@ IO::ZIPBuilder::~ZIPBuilder()
 		WriteUInt16(&hdrBuff[30], hdrLen - 46 - file->fileName->leng);
 		hdrBuff[6] = minVer;
 
-		this->stm->WriteCont(hdrBuff, hdrLen);
+		this->stm.WriteCont(hdrBuff, hdrLen);
 		cdLen += hdrLen;
 
 		file->fileName->Release();
@@ -109,7 +109,7 @@ IO::ZIPBuilder::~ZIPBuilder()
 	}
 	if (this->currOfst >= 0xffffffff || j >= 0xffff)
 	{
-		UInt64 cdOfst = this->stm->GetPosition();
+		UInt64 cdOfst = this->stm.GetPosition();
 		WriteUInt32(&hdrBuff[0], 0x06064b50); //Record Type (Zip64 End of central directory record)
 		WriteUInt64(&hdrBuff[4], 44); //Size of zip64 end of central directory record
 		WriteUInt16(&hdrBuff[12], ZIPVER); //Version made by
@@ -120,13 +120,13 @@ IO::ZIPBuilder::~ZIPBuilder()
 		WriteUInt64(&hdrBuff[32], j); //Total number of entries in the central directory
 		WriteUInt64(&hdrBuff[40], cdLen); //Size of central directory
 		WriteUInt64(&hdrBuff[48], this->currOfst); //Offset of start of central directory with respect to the starting disk number
-		this->stm->WriteCont(hdrBuff, 56);
+		this->stm.WriteCont(hdrBuff, 56);
 
 		WriteUInt32(&hdrBuff[0], 0x07064b50); //Record Type (Zip64 end of central directory locator)
 		WriteUInt32(&hdrBuff[4], 0); //Number of the disk with the start of the zip64 end of central directory
 		WriteUInt64(&hdrBuff[8], cdOfst); //Relative offset of the zip64 end of central directory record
 		WriteUInt32(&hdrBuff[16], 1); //Total number of disks
-		this->stm->WriteCont(hdrBuff, 20);
+		this->stm.WriteCont(hdrBuff, 20);
 
 		WriteUInt32(&hdrBuff[0], 0x06054b50); //Record Type (End of central directory record)
 		WriteUInt16(&hdrBuff[4], 0); //Number of this disk
@@ -144,7 +144,7 @@ IO::ZIPBuilder::~ZIPBuilder()
 		WriteUInt32(&hdrBuff[12], (UInt32)cdLen); //Size of central directory
 		WriteUInt32(&hdrBuff[16], 0xffffffff); //Offset of start of central directory
 		WriteUInt16(&hdrBuff[20], 0); //Comment Length
-		this->stm->WriteCont(hdrBuff, 22);
+		this->stm.WriteCont(hdrBuff, 22);
 	}
 	else
 	{
@@ -156,7 +156,7 @@ IO::ZIPBuilder::~ZIPBuilder()
 		WriteUInt32(&hdrBuff[12], (UInt32)cdLen); //Size of central directory
 		WriteUInt32(&hdrBuff[16], (UInt32)this->currOfst); //Offset of start of central directory
 		WriteUInt16(&hdrBuff[20], 0); //Comment Length
-		this->stm->WriteCont(hdrBuff, 22);
+		this->stm.WriteCont(hdrBuff, 22);
 	}
 }
 
@@ -258,8 +258,8 @@ Bool IO::ZIPBuilder::AddFile(Text::CStringNN fileName, const UInt8 *fileContent,
 		WriteInt32(&hdrBuff[18], (Int32)fileSize);
 		file->compMeth = 0;
 		file->compSize = fileSize;
-		writeSize = this->stm->WriteCont(hdrBuff, hdrLen);
-		writeSize += this->stm->WriteCont(fileContent, fileSize);
+		writeSize = this->stm.WriteCont(hdrBuff, hdrLen);
+		writeSize += this->stm.WriteCont(fileContent, fileSize);
 		this->currOfst += writeSize;
 #if defined(VERBOSE)
 		if (writeSize != (hdrLen + fileSize))
@@ -272,8 +272,8 @@ Bool IO::ZIPBuilder::AddFile(Text::CStringNN fileName, const UInt8 *fileContent,
 	else
 	{
 		UOSInt writeSize;
-		writeSize = this->stm->WriteCont(hdrBuff, hdrLen);
-		writeSize += this->stm->WriteCont(outBuff, compSize);
+		writeSize = this->stm.WriteCont(hdrBuff, hdrLen);
+		writeSize += this->stm.WriteCont(outBuff, compSize);
 		this->currOfst += writeSize;
 #if defined(VERBOSE)
 		if (writeSize != (hdrLen + compSize))
@@ -343,7 +343,7 @@ Bool IO::ZIPBuilder::AddDir(Text::CStringNN dirName, Data::Timestamp lastModTime
 	file->fileOfst = this->currOfst;
 	this->files.Add(file);
 	UOSInt writeSize;
-	writeSize = this->stm->WriteCont(hdrBuff, hdrLen);
+	writeSize = this->stm.WriteCont(hdrBuff, hdrLen);
 	this->currOfst += writeSize;
 #if defined(VERBOSE)
 	if (writeSize != hdrLen)
@@ -427,8 +427,8 @@ Bool IO::ZIPBuilder::AddDeflate(Text::CStringNN fileName, Data::ByteArrayR buff,
 	file->fileOfst = this->currOfst;
 	this->files.Add(file);
 	UOSInt writeSize;
-	writeSize = this->stm->WriteCont(hdrBuff, hdrLen);
-	writeSize += this->stm->WriteCont(buff.Ptr(), buff.GetSize());
+	writeSize = this->stm.WriteCont(hdrBuff, hdrLen);
+	writeSize += this->stm.WriteCont(buff.Ptr(), buff.GetSize());
 	this->currOfst += writeSize;
 #if defined(VERBOSE)
 	if (writeSize != (hdrLen + buff.GetSize()))

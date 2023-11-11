@@ -287,8 +287,8 @@ Bool IO::FileUtil::CopyFile(Text::CStringNN file1, Text::CStringNN file2, FileEx
 		csess.progHdlr = progHdlr;
 		csess.fileSize = fileSize;
 
-		NEW_CLASS(asr, IO::ActiveStreamReader(CopyHdlr, &csess, fs1, 1048576));
-		asr->ReadStream(bnt);
+		NEW_CLASS(asr, IO::ActiveStreamReader(CopyHdlr, &csess, 1048576));
+		asr->ReadStream(fs1, bnt);
 		DEL_CLASS(asr);
 		writeSize = csess.writeSize;
 		fs1.GetFileTimes(ts1, ts2, ts3);

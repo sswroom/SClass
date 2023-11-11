@@ -11,6 +11,7 @@ namespace IO
 		UInt8 *cacheBuff;
 		UOSInt cacheBuffSize;
 		UOSInt cacheSize;
+		UInt64 totalWrite;
 	public:
 		BufferedOutputStream(NotNullPtr<IO::Stream> outStm, UOSInt buffSize);
 		virtual ~BufferedOutputStream();
@@ -23,6 +24,8 @@ namespace IO
 		virtual void Close();
 		virtual Bool Recover();
 		virtual StreamType GetStreamType() const;
+
+		UInt64 GetPosition() const;
 	};
 }
 #endif

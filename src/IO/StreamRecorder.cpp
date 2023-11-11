@@ -22,10 +22,8 @@ Bool IO::StreamRecorder::AppendStream(NotNullPtr<IO::Stream> stm)
 {
 	if (destStm.IsError())
 		return false;
-	IO::ActiveStreamReader *reader;
-	NEW_CLASS(reader, IO::ActiveStreamReader(DataHdlr, this, stm, 1048576));
-	reader->ReadStream(0);
-	DEL_CLASS(reader);
+	IO::ActiveStreamReader reader(DataHdlr, this, 1048576);
+	reader.ReadStream(stm, 0);
 	return true;
 }
 

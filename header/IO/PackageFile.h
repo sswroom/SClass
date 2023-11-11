@@ -61,6 +61,7 @@ namespace IO
 		virtual Bool HasParent() const = 0;
 		virtual IO::PackageFile *GetParent(OutParam<Bool> needRelease) const = 0;
 		virtual Bool DeleteItem(UOSInt index) = 0;
+		virtual void SetParent(IO::PackageFile *pkg) = 0;
 	};
 }
 #endif

@@ -2,6 +2,7 @@
 #define _SM_IO_FILECHECK
 #include "Data/ArrayList.h"
 #include "Data/ArrayListStringNN.h"
+#include "IO/ActiveStreamReader.h"
 #include "IO/ParsedObject.h"
 #include "IO/ProgressHandler.h"
 #include "Crypto/Hash/IHash.h"
@@ -21,7 +22,7 @@ namespace IO
 		static FileCheck *CreateCheck(Text::CStringNN path, Crypto::Hash::HashType chkType, IO::ProgressHandler *progress, Bool skipError);
 	private:
 		static void __stdcall CheckData(const UInt8 *buff, UOSInt buffSize, void *userData);
-		static Bool CheckDir(UTF8Char *fullPath, UTF8Char *hashPath, Crypto::Hash::IHash *hash, IO::FileCheck *fchk, IO::ProgressHandler *progress, Bool skipError); //true = error
+		static Bool CheckDir(NotNullPtr<IO::ActiveStreamReader> reader, UTF8Char *fullPath, UTF8Char *hashPath, Crypto::Hash::IHash *hash, IO::FileCheck *fchk, IO::ProgressHandler *progress, Bool skipError); //true = error
 
 	public:
 		FileCheck(NotNullPtr<Text::String> name, Crypto::Hash::HashType chkType);

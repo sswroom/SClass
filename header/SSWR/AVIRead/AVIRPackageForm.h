@@ -35,6 +35,26 @@ namespace SSWR
 				AT_RETRYCOPY,
 				AT_RETRYMOVE
 			} ActionType;
+
+		public:
+			struct ReadSession
+			{
+				Crypto::Hash::IHash *hash;
+				Crypto::Hash::HashType currHash;
+				UInt64 fileReadSize;
+				UOSInt fileCnt;
+				UOSInt dirCnt;
+				UOSInt errorCnt;
+				UInt64 totalSizeUncomp;
+				UInt64 totalCompSize;
+				UInt64 totalSize;
+				UInt64 totalStoreSize;
+				Data::Duration totalDurUncomp;
+				Data::Duration totalDurComp;
+				Double slowestSpeedUncomp;
+				Double slowestSpeedComp;
+				Text::StringBuilderUTF8 *sbError;
+			};
 		private:
 			UI::GUITabControl *tcMain;
 			UI::GUIProgressBar *prgStatus;
@@ -61,6 +81,9 @@ namespace SSWR
 
 			UI::GUITabPage *tpInfo;
 			UI::GUITextBox *txtInfo;
+
+			UI::GUITabPage *tpTest;
+			UI::GUITextBox *txtTest;
 
 			UI::GUIPopupMenu *mnuPopup;
 
@@ -111,6 +134,7 @@ namespace SSWR
 			static void __stdcall OnFilesRightClick(void *userObj, Math::Coord2DDbl coord, UOSInt index);
 			static void __stdcall OnFiles(void *userObj, NotNullPtr<Text::String> *files, UOSInt nFiles);
 
+			void TestPackage(NotNullPtr<IO::ActiveStreamReader> reader, NotNullPtr<ReadSession> sess, NotNullPtr<IO::PackageFile> pack);
 			void DisplayPackFile(NotNullPtr<IO::PackageFile> packFile);
 			UOSInt PackFileIndex(UOSInt lvIndex);
 			void UpdatePackFile(NotNullPtr<IO::PackageFile> packFile, Bool needDelete);

@@ -193,10 +193,7 @@ Bool IO::VirtualPackageFile::AddPack(NotNullPtr<IO::PackageFile> pkg, Text::CStr
 	item->createTime = createTime;
 	item->unixAttr = unixAttr;
 	item->useCnt = 1;
-	if (pkg->GetFileType() == IO::PackageFileType::Virtual)
-	{
-		NotNullPtr<IO::VirtualPackageFile>::ConvertFrom(pkg)->parent = this;
-	}
+	pkg->SetParent(this);
 	this->items->Add(item);
 	this->pkgFiles.PutNN(item->name, item);
 	this->namedItems->PutNN(item->name, item);
@@ -301,7 +298,9 @@ Bool IO::VirtualPackageFile::AddOrReplacePack(NotNullPtr<IO::PackageFile> pkg, T
 				item->accTime = accTime;
 				item->createTime = createTime;
 				item->unixAttr = unixAttr;
-				return ((IO::VirtualPackageFile*)myPkg)->MergePackage(pkg);
+				Bool succ = ((IO::VirtualPackageFile*)myPkg)->MergePackage(pkg);
+				pkg.Delete();
+				return succ;
 			}
 		}
 		pkg.Delete();
@@ -1133,6 +1132,23 @@ Bool IO::VirtualPackageFile::DeleteItem(UOSInt index)
 		return true;
 	}
 	return false;
+}
+
+void IO::VirtualPackageFile::SetParent(IO::PackageFile *pkg)
+{
+	this->parent = pkg;
+	PackFileItem *item;
+	UOSInt i = 0;
+	UOSInt j = this->items->GetCount();
+	while (i < j)
+	{
+		item = this->items->GetItem(i);
+		if (item->itemType == IO::PackFileItem::PackItemType::ParsedObject && item->pobj->GetParserType() == IO::ParserType::PackageFile)
+		{
+			((IO::PackageFile*)item->pobj)->SetParent(this);
+		}
+		i++;
+	}
 }
 
 void IO::VirtualPackageFile::SetInfo(InfoType infoType, const UTF8Char *val)

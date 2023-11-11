@@ -69,7 +69,7 @@ namespace IO
 		NotNullPtr<Data::StringMap<PackFileItem *>> namedItems;
 		Data::FastStringMap<PackFileItem *> pkgFiles;
 		Data::FastMap<Int32, const UTF8Char *> infoMap;
-		VirtualPackageFile *parent;
+		PackageFile *parent;
 
 		void ReusePackFileItem(IO::PackFileItem *item);
 		VirtualPackageFile(const VirtualPackageFile *pkg);
@@ -123,6 +123,7 @@ namespace IO
 		virtual Bool HasParent() const;
 		virtual IO::PackageFile *GetParent(OutParam<Bool> needRelease) const;
 		virtual Bool DeleteItem(UOSInt index);
+		virtual void SetParent(IO::PackageFile *pkg);
 
 		void SetInfo(InfoType infoType, const UTF8Char *val);
 		void GetInfoText(NotNullPtr<Text::StringBuilderUTF8> sb) const;

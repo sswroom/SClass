@@ -4,6 +4,7 @@
 #include "Data/ArrayList.h"
 #include "Data/Timestamp.h"
 #include "Data/Compress/Inflate.h"
+#include "IO/BufferedOutputStream.h"
 #include "IO/SeekableStream.h"
 #include "Sync/Mutex.h"
 
@@ -67,7 +68,8 @@ TTTTsstrwxrwxrwx0000000000ADVSHR
 		} FileInfo;
 		
 	private:
-		NotNullPtr<IO::SeekableStream> stm;
+		IO::BufferedOutputStream stm;
+		NotNullPtr<IO::SeekableStream> outStm;
 		Crypto::Hash::CRC32RIEEE crc;
 		UInt64 baseOfst;
 		UInt64 currOfst;
