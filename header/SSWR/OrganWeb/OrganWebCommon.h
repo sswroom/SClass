@@ -231,6 +231,20 @@ namespace SSWR
 			PickObjType pickObjType;
 		} RequestEnv;
 
+		struct PeakInfo
+		{
+			Int32 id;
+			NotNullPtr<Text::String> refId;
+			NotNullPtr<Text::String> district;
+			Double mapX;
+			Double mapY;
+			Double markedHeight;
+			Int32 csys;
+			Int32 status;
+			Text::String *name;
+			Text::String *type;
+		};
+
 		class SpeciesSciNameComparator : public Data::Comparator<SpeciesInfo*>
 		{
 		public:

@@ -153,6 +153,9 @@ namespace SSWR
 			CategoryInfo *CateGetByName(NotNullPtr<Sync::RWMutexUsage> mutUsage, Text::String *name);
 			Data::ReadingList<CategoryInfo*> *CateGetList(NotNullPtr<Sync::RWMutexUsage> mutUsage);
 
+			UOSInt PeakGetUnfin(NotNullPtr<Sync::RWMutexUsage> mutUsage, NotNullPtr<Data::ArrayListNN<PeakInfo>> peaks);
+			void PeakFreeAll(NotNullPtr<Data::ArrayListNN<PeakInfo>> peaks);
+
 			IO::ConfigFile *LangGet(NotNullPtr<Net::WebServer::IWebRequest> req);
 		};
 	}

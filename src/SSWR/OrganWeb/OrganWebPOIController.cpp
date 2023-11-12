@@ -2,6 +2,7 @@
 #include "Data/Sort/ArtificialQuickSort.h"
 #include "IO/Path.h"
 #include "IO/StmData/FileData.h"
+#include "Math/CoordinateSystemManager.h"
 #include "Media/IAudioSource.h"
 #include "Media/MediaFile.h"
 #include "Media/PhotoInfo.h"
@@ -896,6 +897,93 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcPhotoUpload(NotNullPtr<
 		i++;
 	}
 	return me->ResponseJSON(req, resp, 0, succ?CSTR("{\"status\":\"ok\"}"):CSTR("{\"status\":\"fail\"}"));
+}
+
+Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcPhotoName(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, Net::WebServer::WebController *parent)
+{
+	SSWR::OrganWeb::OrganWebPOIController *me = (SSWR::OrganWeb::OrganWebPOIController*)parent;
+	RequestEnv env;
+	me->ParseRequestEnv(req, resp, env, false);
+
+	if (env.user)
+	{
+		Int32 fileId;
+		Text::String *desc;
+		req->ParseHTTPForm();
+		if ((desc = req->GetHTTPFormStr(CSTR("desc"))) != 0 && req->GetHTTPFormInt32(CSTR("fileId"), fileId))
+		{
+			Sync::RWMutexUsage mutUsage;
+			UserFileInfo *file = me->env->UserfileGet(mutUsage, fileId);
+			if (file && (env.user->userType == UserType::Admin || file->webuserId == env.user->id))
+			{
+				if (me->env->UserfileUpdateDesc(mutUsage, fileId, desc->ToCString()))
+				{
+					return me->ResponseJSON(req, resp, 0, CSTR("{\"status\", \"ok\"}"));
+				}
+			}
+		}
+	}
+	return me->ResponseJSON(req, resp, 0, CSTR("{\"status\", \"failed\"}"));
+}
+
+Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcUnfinPeak(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, Net::WebServer::WebController *parent)
+{
+	SSWR::OrganWeb::OrganWebPOIController *me = (SSWR::OrganWeb::OrganWebPOIController*)parent;
+	RequestEnv env;
+	me->ParseRequestEnv(req, resp, env, false);
+
+	if (env.user && env.user->userType == UserType::Admin)
+	{
+		Sync::RWMutexUsage mutUsage;
+		Data::ArrayListNN<PeakInfo> peaks;
+		Text::JSONBuilder json(Text::JSONBuilder::ObjectType::OT_ARRAY);
+		PeakInfo *peak;
+		Math::Vector3 pt;
+		me->env->PeakGetUnfin(mutUsage, peaks);
+		UOSInt i = 0;
+		UOSInt j = peaks.GetCount();
+		if (j > 0)
+		{
+			Math::CoordinateSystem *csysHK = Math::CoordinateSystemManager::CreateProjCoordinateSystemDefName(Math::CoordinateSystemManager::PCST_HK80);
+			Math::CoordinateSystem *csysMO = Math::CoordinateSystemManager::CreateProjCoordinateSystemDefName(Math::CoordinateSystemManager::PCST_MACAU_GRID);
+			NotNullPtr<Math::CoordinateSystem> csysWGS84 = Math::CoordinateSystemManager::CreateDefaultCsys();
+			NotNullPtr<Math::CoordinateSystem> csys;
+			while (i < j)
+			{
+				peak = peaks.GetItem(i);
+				json.ArrayBeginObject();
+				json.ObjectAddInt32(CSTR("id"), peak->id);
+				json.ObjectAddStr(CSTR("refId"), peak->refId);
+				json.ObjectAddStr(CSTR("district"), peak->district);
+				if (peak->csys == 1 && csys.Set(csysHK))
+				{
+					pt = Math::CoordinateSystem::ConvertXYZ(csys, csysWGS84, Math::Vector3(peak->mapX, peak->mapY, peak->markedHeight));
+				}
+				else if (peak->csys == 2 && csys.Set(csysMO))
+				{
+					pt = Math::CoordinateSystem::ConvertXYZ(csys, csysWGS84, Math::Vector3(peak->mapX, peak->mapY, peak->markedHeight));
+				}
+				else
+				{
+					pt = Math::Vector3(peak->mapX, peak->mapY, peak->markedHeight);
+				}
+				json.ObjectAddFloat64(CSTR("lon"), pt.GetLon());
+				json.ObjectAddFloat64(CSTR("lat"), pt.GetLat());
+				json.ObjectAddFloat64(CSTR("height"), pt.GetZ());
+				json.ObjectAddInt32(CSTR("status"), peak->status);
+				json.ObjectAddStr(CSTR("name"), peak->name);
+				json.ObjectAddStr(CSTR("type"), peak->type);
+				json.ObjectEnd();
+				i++;
+			}
+			SDEL_CLASS(csysHK);
+			SDEL_CLASS(csysMO);
+			csysWGS84.Delete();
+		}
+		me->env->PeakFreeAll(peaks);
+		return me->ResponseJSON(req, resp, 0, json.Build());
+	}
+	return me->ResponseJSON(req, resp, 0, CSTR("[]"));
 }
 
 Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcReload(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, Net::WebServer::WebController *parent)

@@ -3245,6 +3245,51 @@ Data::ReadingList<SSWR::OrganWeb::CategoryInfo*> *SSWR::OrganWeb::OrganWebEnv::C
 	return &this->cateMap;
 }
 
+UOSInt SSWR::OrganWeb::OrganWebEnv::PeakGetUnfin(NotNullPtr<Sync::RWMutexUsage> mutUsage, NotNullPtr<Data::ArrayListNN<PeakInfo>> peaks)
+{
+	mutUsage->ReplaceMutex(this->dataMut, true);
+	NotNullPtr<DB::DBReader> r;
+	NotNullPtr<PeakInfo> peak;
+	UOSInt ret = 0;
+	if (r.Set(this->db->ExecuteReader(CSTR("select id, RefId, District, MapX, MapY, MarkedHeight, csys, status, name, type from peak where status = 0"))))
+	{
+		while (r->ReadNext())
+		{
+			peak = MemAllocNN(PeakInfo, 1);
+			peak->id = r->GetInt32(0);
+			peak->refId = r->GetNewStrNN(1);
+			peak->district = r->GetNewStrNN(2);
+			peak->mapX = r->GetDbl(3);
+			peak->mapY = r->GetDbl(4);
+			peak->markedHeight = r->GetDbl(5);
+			peak->csys = r->GetInt32(6);
+			peak->status = r->GetInt32(7);
+			peak->name = r->GetNewStr(8);
+			peak->type = r->GetNewStr(9);
+			peaks->Add(peak);
+			ret++;
+		}
+		this->db->CloseReader(r);
+	}
+	return ret;
+}
+
+void SSWR::OrganWeb::OrganWebEnv::PeakFreeAll(NotNullPtr<Data::ArrayListNN<PeakInfo>> peaks)
+{
+	PeakInfo *peak;
+	UOSInt i = peaks->GetCount();
+	while (i-- > 0)
+	{
+		peak = peaks->GetItem(i);
+		peak->refId->Release();
+		peak->district->Release();
+		SDEL_STRING(peak->name);
+		SDEL_STRING(peak->type);
+		MemFree(peak);
+	}
+	peaks->Clear();
+}
+
 IO::ConfigFile *SSWR::OrganWeb::OrganWebEnv::LangGet(NotNullPtr<Net::WebServer::IWebRequest> req)
 {
 	Text::StringBuilderUTF8 sb;
