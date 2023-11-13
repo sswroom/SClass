@@ -27,8 +27,9 @@ void __stdcall SSWR::AVIRead::AVIRDBCopyTablesForm::OnSourceDBChg(void *userObj)
 			UTF8Char *sptr;
 			DB::ReadingDBTool *dbt = (DB::ReadingDBTool*)db;
 			DB::Collation collation;
-			me->txtSourceDB->SetText(dbt->GetCurrDBName()->ToCString());
-			if (dbt->GetDBCollation(dbt->GetCurrDBName()->ToCString(), &collation))
+			NotNullPtr<Text::String> dbName = Text::String::OrEmpty(dbt->GetCurrDBName());
+			me->txtSourceDB->SetText(dbName->ToCString());
+			if (dbt->GetDBCollation(dbName->ToCString(), &collation))
 			{
 				sptr = DB::DBUtil::SDBCollation(sbuff, &collation, dbt->GetSQLType());
 				me->txtSourceCollation->SetText(CSTRP(sbuff, sptr));
