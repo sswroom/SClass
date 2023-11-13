@@ -918,12 +918,12 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcPhotoName(NotNullPtr<Ne
 			{
 				if (me->env->UserfileUpdateDesc(mutUsage, fileId, desc->ToCString()))
 				{
-					return me->ResponseJSON(req, resp, 0, CSTR("{\"status\", \"ok\"}"));
+					return me->ResponseJSON(req, resp, 0, CSTR("{\"status\": \"ok\"}"));
 				}
 			}
 		}
 	}
-	return me->ResponseJSON(req, resp, 0, CSTR("{\"status\", \"failed\"}"));
+	return me->ResponseJSON(req, resp, 0, CSTR("{\"status\": \"failed\"}"));
 }
 
 Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcUnfinPeak(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, Net::WebServer::WebController *parent)
