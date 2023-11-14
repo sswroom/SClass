@@ -3,6 +3,133 @@ export class Vector2D {
 	{
 		this.srid = srid;
 	}
+
+	insideVector(x, y)
+	{
+		return false;
+	}
+}
+
+export class LineString extends Vector2D
+{
+	constructor(srid, coordinates)
+	{
+		super(srid);
+		this.coordinates = coordinates;
+	}
+
+	calBoundaryPoint(x, y)
+	{
+		var l;
+		var points;
+	
+		var calBase;
+		var calDiffX;
+		var calDiffY;
+		var calSqDiffX;
+		var calSqDiffY;
+		var calPtX;
+		var calPtY;
+		var calPtOutX = 0;
+		var calPtOutY = 0;
+		var calD;
+		var dist = 0x7fffffff;
+	
+		points = this.coordinates;
+		l = points.length - 1;
+		while (l-- > 0)
+		{
+			calDiffX = points[l][0] - points[l + 1][0];
+			calDiffY = points[l][1] - points[l + 1][1];
+
+			if (calDiffY == 0)
+			{
+				calPtX = x;
+			}
+			else
+			{
+				calSqDiffX = calDiffX * calDiffX;
+				calSqDiffY = calDiffY * calDiffY;
+				calBase = calSqDiffX + calSqDiffY;
+				calPtX = calSqDiffX * x;
+				calPtX += calSqDiffY * points[l][0];
+				calPtX += (y - points[l][1]) * calDiffX * calDiffY;
+				calPtX /= calBase;
+			}
+
+			if (calDiffX == 0)
+			{
+				calPtY = y;
+			}
+			else
+			{
+				calPtY = ((calPtX - points[l][0]) * calDiffY / calDiffX) + points[l][1];
+			}
+
+			if (calDiffX < 0)
+			{
+				if (points[l][0] > calPtX)
+					continue;
+				if (points[l + 1][0] < calPtX)
+					continue;
+			}
+			else
+			{
+				if (points[l][0] < calPtX)
+					continue;
+				if (points[l + 1][0] > calPtX)
+					continue;
+			}
+
+			if (calDiffY < 0)
+			{
+				if (points[l][1] > calPtY)
+					continue;
+				if (points[l + 1][1] < calPtY)
+					continue;
+			}
+			else
+			{
+				if (points[l][1] < calPtY)
+					continue;
+				if (points[l + 1][1] > calPtY)
+					continue;
+			}
+
+			calDiffX = x - calPtX;
+			calDiffY = y - calPtY;
+			calSqDiffX = calDiffX * calDiffX;
+			calSqDiffY = calDiffY * calDiffY;
+			calD = calSqDiffX + calSqDiffY;
+			if (calD < dist)
+			{
+				dist = calD;
+				calPtOutX = calPtX;
+				calPtOutY = calPtY;
+			}
+		}
+		points = this.coordinates;
+		l = points.length;
+		while (l-- > 0)
+		{
+			calDiffX = x - points[l][0];
+			calDiffY = y - points[l][1];
+			calSqDiffX = calDiffX * calDiffX;
+			calSqDiffY = calDiffY * calDiffY;
+			calD = calSqDiffX + calSqDiffY;
+			if (calD < dist)
+			{
+				dist = calD;
+				calPtOutX = points[l][0];
+				calPtOutY = points[l][1];
+			}
+		}
+		var ret = new Object();
+		ret.x = calPtOutX;
+		ret.y = calPtOutY;
+		ret.dist = dist;
+		return ret;
+	}
 }
 
 export class MultiGeometry extends Vector2D

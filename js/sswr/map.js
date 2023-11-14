@@ -1,3 +1,4 @@
+import * as geometry from "./geometry.js";
 import * as math from "./math.js";
 import * as web from "./web.js";
 import { DistanceUnit } from "./unit.js";
@@ -23,4 +24,25 @@ export function getLayers(svcUrl, onResultFunc)
 export function getLayerData(svcUrl, onResultFunc, layerName, dataFormat)
 {
 	web.loadJSON(svcUrl + '/getlayerdata?name='+encodeURIComponent(layerName)+"&fmt="+encodeURIComponent(dataFormat), onResultFunc);
+}
+
+export class GPSTrack
+{
+	constructor(recs)
+	{
+		this.recs = recs;
+	}
+
+	createLineString()
+	{
+		var coordinates = new Array();
+		var i = 0;
+		var j = this.recs.length;
+		while (i < j)
+		{
+			coordinates.push([this.recs[i].lon, this.recs[i].lat, this.recs[i].a]);
+			i++;
+		}
+		return new geometry.LineString(4326, coordinates);
+	}
 }

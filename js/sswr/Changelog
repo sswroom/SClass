@@ -8,6 +8,8 @@
 -Added data.Duration.toString()
 -Added text.bracketToHTML()
 -Added text.isInteger()
+-Added map.GPSTrack
+-Added geometry.LineString
 
 1.2.1
 -Merge Individual class js into namespace js

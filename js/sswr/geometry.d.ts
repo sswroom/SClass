@@ -8,7 +8,15 @@ declare class BoundaryPointResult
 declare class Vector2D {
 	type: string;
 	constructor(srid: number);
+	insideVector(x: number, y: number): boolean;
 };
+
+declare class LineString extends Vector2D
+{
+	coordinates: number[][];
+	constructor(srid: number, coordinates: number[][]);
+	calBoundaryPoint(x: number, y: number): BoundaryPointResult;
+}
 
 declare class MultiGeometry extends Vector2D
 {
@@ -21,13 +29,13 @@ declare class MultiGeometry extends Vector2D
 
 declare class MultiPolygon extends MultiGeometry
 {
-	constructor(srid: number, coordinates: number[][][]);
+	constructor(srid: number, coordinates: number[][][][]);
 }
 
 declare class Polygon extends Vector2D
 {
-	coordinates: number[][];
-	constructor(srid: number, coordinates: number[][]);
+	coordinates: number[][][];
+	constructor(srid: number, coordinates: number[][][]);
 	calBoundaryPoint(x: number, y: number): BoundaryPointResult;
 	insideVector(x: number, y: number): boolean;
 }
