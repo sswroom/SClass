@@ -27,7 +27,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRGISReplayForm::AddressThread(void *userObj)
 	UTF8Char *sptr;
 
 	me->threadRunning = true;
-	recs = me->track->GetTrack(me->currTrackId, &recCnt);
+	recs = me->track->GetTrack(me->currTrackId, recCnt);
 	latLon = MemAllocA(Math::Coord2DDbl, recCnt);
 	i = 0;
 	while (i < recCnt)
@@ -66,7 +66,7 @@ void __stdcall SSWR::AVIRead::AVIRGISReplayForm::OnLbRecordChg(void *userObj)
 		UTF8Char sbuff[64];
 		UTF8Char *sptr;
 		UOSInt recCnt = 0;
-		Map::GPSTrack::GPSRecord3 *recs = me->track->GetTrack(me->currTrackId, &recCnt);
+		Map::GPSTrack::GPSRecord3 *recs = me->track->GetTrack(me->currTrackId, recCnt);
 		Data::DateTime dt;
 		dt.SetInstant(recs[i].recTime);
 		sptr = dt.ToStringNoZone(sbuff);
@@ -358,7 +358,7 @@ void SSWR::AVIRead::AVIRGISReplayForm::EventMenuClicked(UInt16 cmdId)
 			Text::String *trackName = track->GetTrackName(this->currTrackId);
 			if (trackName)
 				newTrack->SetTrackName(trackName->ToCString());
-			Map::GPSTrack::GPSRecord3 *recs = track->GetTrack(this->currTrackId, &recCnt);
+			Map::GPSTrack::GPSRecord3 *recs = track->GetTrack(this->currTrackId, recCnt);
 			i = this->startMark;
 			while (i <= this->endMark)
 			{
@@ -399,7 +399,7 @@ void SSWR::AVIRead::AVIRGISReplayForm::UpdateRecList()
 	UTF8Char *sptr;
 	Data::DateTime dt;
 	UOSInt recCnt = 0;
-	Map::GPSTrack::GPSRecord3 *recs = this->track->GetTrack(this->currTrackId, &recCnt);
+	Map::GPSTrack::GPSRecord3 *recs = this->track->GetTrack(this->currTrackId, recCnt);
 	if (recs)
 	{
 		Double dist = 0;

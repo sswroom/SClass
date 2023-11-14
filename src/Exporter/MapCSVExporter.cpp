@@ -87,7 +87,7 @@ Bool Exporter::MapCSVExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Te
 
 		while (i < j)
 		{
-			rec = track->GetTrack(i, &recCnt);
+			rec = track->GetTrack(i, recCnt);
 			k = 0;
 			while (k < recCnt)
 			{

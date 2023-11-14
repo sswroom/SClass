@@ -2,6 +2,9 @@
 #include "Data/Sort/ArtificialQuickSort.h"
 #include "IO/Path.h"
 #include "IO/StmData/FileData.h"
+#include "IO/StmData/MemoryDataRef.h"
+#include "Map/GPSTrack.h"
+#include "Map/MapDrawLayer.h"
 #include "Math/CoordinateSystemManager.h"
 #include "Media/IAudioSource.h"
 #include "Media/MediaFile.h"
@@ -9,6 +12,7 @@
 #include "Net/WebServer/HTTPServerUtil.h"
 #include "SSWR/OrganWeb/OrganWebEnv.h"
 #include "SSWR/OrganWeb/OrganWebPOIController.h"
+#include "Text/JSONUtil.h"
 #include "Text/JSText.h"
 
 Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcLang(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, Net::WebServer::WebController *parent)
@@ -474,8 +478,8 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcDayDetail(NotNullPtr<Ne
 		}
 		json.ArrayEnd();
 		json.ObjectBeginArray(CSTR("dataFiles"));
-		me->AppendDataFiles(json, env.user->gpsDataFiles, startTime, endTime);
-		me->AppendDataFiles(json, env.user->tempDataFiles, startTime, endTime);
+		me->AppendDataFiles(json, env.user->gpsDataFiles, startTime, endTime, false);
+		me->AppendDataFiles(json, env.user->tempDataFiles, startTime, endTime, false);
 		json.ArrayEnd();
 		if (env.user->userType == UserType::Admin)
 		{
@@ -891,7 +895,23 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcPhotoUpload(NotNullPtr<
 			break;
 		}
 		location = req->GetHTTPFormStr(CSTR("location"));
-		if (!me->env->UserfileAdd(mutUsage, env.user->id, env.user->unorganSpId, CSTRP(fileName, fileNameEnd), fileCont, fileSize, true, location))
+		IO::StmData::MemoryDataRef md(fileCont, fileSize);
+		NotNullPtr<Map::MapDrawLayer> layer;
+		if (layer.Set((Map::MapDrawLayer*)me->env->ParseFileType(md, IO::ParserType::MapLayer)))
+		{
+			if (layer->GetObjectClass() == Map::MapDrawLayer::OC_GPS_TRACK)
+			{
+				NotNullPtr<Map::GPSTrack> gps = NotNullPtr<Map::GPSTrack>::ConvertFrom(layer);
+				succ = me->env->GPSFileAdd(mutUsage, env.user->id, CSTRP(fileName, fileNameEnd), gps->GetTrackStartTime(0), gps->GetTrackEndTime(0), fileCont, fileSize, gps);
+				layer.Delete();
+			}
+			else
+			{
+				layer.Delete();
+				succ = false;
+			}
+		}
+		else if (!me->env->UserfileAdd(mutUsage, env.user->id, env.user->unorganSpId, CSTRP(fileName, fileNameEnd), fileCont, fileSize, true, location))
 			succ = false;
 
 		i++;
@@ -1097,7 +1117,6 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcDayPOI(NotNullPtr<Net::
 	me->ParseRequestEnv(req, resp, env, false);
 	Text::JSONBuilder json(Text::JSONBuilder::OT_OBJECT);
 	Int32 dayId;
-	json.ObjectBeginArray(CSTR("poi"));
 	if (env.user == 0)
 	{
 		printf("SvcDayPOI: user == null\r\n");
@@ -1112,6 +1131,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcDayPOI(NotNullPtr<Net::
 		startTime = dayId * 86400000LL;
 		endTime = startTime + 86400000LL;
 
+		json.ObjectBeginArray(CSTR("poi"));
 		startIndex = env.user->userFileIndex.SortedIndexOf(startTime);
 		if (startIndex < 0)
 		{
@@ -1147,8 +1167,11 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcDayPOI(NotNullPtr<Net::
 			}
 			startIndex++;
 		}
+		json.ArrayEnd();
+		json.ObjectBeginArray(CSTR("datafiles"));
+		me->AppendDataFiles(json, env.user->gpsDataFiles, startTime, endTime, true);
+		json.ArrayEnd();
 	}
-	json.ArrayEnd();
 	json.ObjectBeginArray(CSTR("group"));
 	json.ArrayEnd();
 	json.ObjectBeginArray(CSTR("species"));
@@ -1358,7 +1381,7 @@ void SSWR::OrganWeb::OrganWebPOIController::AppendSpecies(NotNullPtr<Text::JSONB
 	json->ArrayEnd();
 }
 
-void SSWR::OrganWeb::OrganWebPOIController::AppendDataFiles(NotNullPtr<Text::JSONBuilder> json, NotNullPtr<Data::FastMap<Data::Timestamp, DataFileInfo*>> dataFiles, Int64 startTime, Int64 endTime)
+void SSWR::OrganWeb::OrganWebPOIController::AppendDataFiles(NotNullPtr<Text::JSONBuilder> json, NotNullPtr<Data::FastMap<Data::Timestamp, DataFileInfo*>> dataFiles, Int64 startTime, Int64 endTime, Bool includeCont)
 {
 	OSInt startIndex;
 	OSInt endIndex;
@@ -1373,15 +1396,29 @@ void SSWR::OrganWeb::OrganWebPOIController::AppendDataFiles(NotNullPtr<Text::JSO
 		endIndex = ~endIndex;
 	while (startIndex < endIndex)
 	{
-		DataFileInfo *dataFile = dataFiles->GetItem((UOSInt)startIndex);
-		json->ArrayBeginObject();
-		json->ObjectAddInt32(CSTR("id"), dataFile->id);
-		json->ObjectAddInt32(CSTR("fileType"), (Int32)dataFile->fileType);
-		json->ObjectAddInt64(CSTR("startTime"), dataFile->startTime.ToTicks());
-		json->ObjectAddInt64(CSTR("endTime"), dataFile->endTime.ToTicks());
-		json->ObjectAddStr(CSTR("oriFileName"), dataFile->oriFileName);
-		json->ObjectAddInt32(CSTR("webuserId"), dataFile->webuserId);
-		json->ObjectEnd();
+		NotNullPtr<DataFileInfo> dataFile;
+		if (dataFile.Set(dataFiles->GetItem((UOSInt)startIndex)))
+		{
+			json->ArrayBeginObject();
+			json->ObjectAddInt32(CSTR("id"), dataFile->id);
+			json->ObjectAddInt32(CSTR("fileType"), (Int32)dataFile->fileType);
+			json->ObjectAddInt64(CSTR("startTime"), dataFile->startTime.ToTicks());
+			json->ObjectAddInt64(CSTR("endTime"), dataFile->endTime.ToTicks());
+			json->ObjectAddStr(CSTR("oriFileName"), dataFile->oriFileName);
+			json->ObjectAddInt32(CSTR("webuserId"), dataFile->webuserId);
+			if (includeCont)
+			{
+				NotNullPtr<Map::GPSTrack> trk;
+				if (dataFile->fileType == DataFileType::GPSTrack && trk.Set((Map::GPSTrack*)this->env->DataFileParse(dataFile)))
+				{
+					json->ObjectBeginArray(CSTR("track"));
+					Text::JSONUtil::ArrayGPSTrack(json, trk);
+					json->ArrayEnd();
+					trk.Delete();
+				}
+			}
+			json->ObjectEnd();
+		}
 		startIndex++;
 	}
 }

@@ -83,7 +83,7 @@ Bool Exporter::PLTExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text:
 	while (i < j)
 	{
 		k = 0;
-		recs = track->GetTrack(i, &l);
+		recs = track->GetTrack(i, l);
 		while (k < l)
 		{
 			sptr = FixDouble(sbuff, recs[k].pos.GetLat(), "0.000000", 11);

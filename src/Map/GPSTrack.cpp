@@ -803,6 +803,23 @@ Bool Map::GPSTrack::GetTrackStartTime(UOSInt index, Data::DateTime *dt)
 	}
 }
 
+Data::Timestamp Map::GPSTrack::GetTrackStartTime(UOSInt index)
+{
+	if (index < this->currTracks.GetCount())
+	{
+		Map::GPSTrack::TrackRecord *track = this->currTracks.GetItem(index);
+		return Data::Timestamp(track->records[0].recTime, 0);
+	}
+	else if (index == this->currTracks.GetCount() && this->currTimes.GetCount() > 0)
+	{
+		return Data::Timestamp(this->currTimes.GetItem(0), 0);
+	}
+	else
+	{
+		return 0;
+	}
+}
+
 Bool Map::GPSTrack::GetTrackEndTime(UOSInt index, Data::DateTime *dt)
 {
 	if (index < this->currTracks.GetCount())
@@ -822,6 +839,23 @@ Bool Map::GPSTrack::GetTrackEndTime(UOSInt index, Data::DateTime *dt)
 	}
 }
 
+Data::Timestamp Map::GPSTrack::GetTrackEndTime(UOSInt index)
+{
+	if (index < this->currTracks.GetCount())
+	{
+		Map::GPSTrack::TrackRecord *track = this->currTracks.GetItem(index);
+		return Data::Timestamp(track->records[track->nRecords - 1].recTime, 0);
+	}
+	else if (index == this->currTracks.GetCount() && this->currTimes.GetCount() > 0)
+	{
+		return Data::Timestamp(this->currTimes.GetItem(this->currTimes.GetCount() - 1), 0);
+	}
+	else
+	{
+		return 0;
+	}
+}
+
 UOSInt Map::GPSTrack::GetTrackCnt()
 {
 	UOSInt cnt = this->currTracks.GetCount();
@@ -830,7 +864,7 @@ UOSInt Map::GPSTrack::GetTrackCnt()
 	return cnt;
 }
 
-Map::GPSTrack::GPSRecord3 *Map::GPSTrack::GetTrack(UOSInt index, UOSInt *recordCnt)
+Map::GPSTrack::GPSRecord3 *Map::GPSTrack::GetTrack(UOSInt index, OutParam<UOSInt> recordCnt)
 {
 	if (this->currTracks.GetCount() < index)
 		return 0;
@@ -839,8 +873,7 @@ Map::GPSTrack::GPSRecord3 *Map::GPSTrack::GetTrack(UOSInt index, UOSInt *recordC
 		if (this->currTimes.GetCount() == 0)
 			return 0;
 		UOSInt i = this->currTimes.GetCount();
-		if (recordCnt)
-			*recordCnt = i;
+		recordCnt.Set(i);
 		if (this->tmpRecord)
 		{
 			return this->tmpRecord;
@@ -855,8 +888,7 @@ Map::GPSTrack::GPSRecord3 *Map::GPSTrack::GetTrack(UOSInt index, UOSInt *recordC
 	else
 	{
 		Map::GPSTrack::TrackRecord *rec = this->currTracks.GetItem(index);
-		if (recordCnt)
-			*recordCnt = rec->nRecords;
+		recordCnt.Set(rec->nRecords);
 		return rec->records;
 	}
 }
@@ -1043,7 +1075,7 @@ Bool Map::GPSDataReader::ReadNext()
 	j = this->gps->GetTrackCnt();
 	while (i < j)
 	{
-		rec = this->gps->GetTrack(i, &k);
+		rec = this->gps->GetTrack(i, k);
 		if (rec == 0)
 		{
 			return false;

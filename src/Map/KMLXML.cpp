@@ -980,7 +980,7 @@ void Map::KMLXML::ParseKMLPlacemarkTrack(NotNullPtr<Text::XMLReader> reader, Map
 								coordList.Clear();
 							}
 							UOSInt recCnt;
-							Map::GPSTrack::GPSRecord3 *recs = lyr->GetTrack(0, &recCnt);
+							Map::GPSTrack::GPSRecord3 *recs = lyr->GetTrack(0, recCnt);
 							while (reader->NextElement())
 							{
 								if (reader->GetNodeText()->EqualsICase(UTF8STRC("SCHEMADATA")))

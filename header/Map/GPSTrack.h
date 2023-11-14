@@ -117,10 +117,12 @@ namespace Map
 		void GetTrackNames(Data::ArrayListString *nameArr);
 		Text::String *GetTrackName(UOSInt index);
 		Bool GetTrackStartTime(UOSInt index, Data::DateTime *dt);
+		Data::Timestamp GetTrackStartTime(UOSInt index);
 		Bool GetTrackEndTime(UOSInt index, Data::DateTime *dt);
+		Data::Timestamp GetTrackEndTime(UOSInt index);
 
 		UOSInt GetTrackCnt();
-		GPSRecord3 *GetTrack(UOSInt index, UOSInt *recordCnt);
+		GPSRecord3 *GetTrack(UOSInt index, OutParam<UOSInt> recordCnt);
 		Math::Coord2DDbl GetPosByTime(const Data::Timestamp &ts);
 		Math::Coord2DDbl GetPosByTime(Data::DateTime *dt);
 		Math::Coord2DDbl GetPosByTicks(Int64 tiemTicks);

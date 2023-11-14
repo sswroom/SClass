@@ -333,7 +333,7 @@ SSWR::OrganMgr::OrganTimeAdjForm::OrganTimeAdjForm(UI::GUIClientControl *parent,
 	UTF8Char *sptr;
 	Map::GPSTrack::GPSRecord3 *records;
 	Data::DateTime dt;
-	records = this->gpsTrk->GetTrack(0, &j);
+	records = this->gpsTrk->GetTrack(0, j);
 	i = 0;
 	while (i < j)
 	{

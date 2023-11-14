@@ -95,6 +95,10 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 			{
 				db = DB::ODBCConn::CreateDBTool(s, cfg->GetValue(CSTR("DBUID")), cfg->GetValue(CSTR("DBPwd")), cfg->GetValue(CSTR("DBSchema")), log, CSTR("DB: ")).OrNull();
 			}
+			else
+			{
+				db = 0;
+			}
 			UInt16 port;
 			if (!cfg->GetValue(CSTR("SvrPort")).SetTo(s) || !s->ToUInt16(port))
 				port = 0;

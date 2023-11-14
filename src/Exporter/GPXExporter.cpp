@@ -89,7 +89,7 @@ Bool Exporter::GPXExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text:
 	{
 		writer.WriteLineC(UTF8STRC("<trkseg>"));
 		k = 0;
-		recs = track->GetTrack(i, &l);
+		recs = track->GetTrack(i, l);
 		while (k < l)
 		{
 			writer.WriteStrC(UTF8STRC("<trkpt lat=\""));

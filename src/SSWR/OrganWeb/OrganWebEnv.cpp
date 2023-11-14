@@ -4,6 +4,7 @@
 #include "Crypto/Hash/MD5.h"
 #include "Data/Sort/ArtificialQuickSort.h"
 #include "DB/DBReader.h"
+#include "IO/FileUtil.h"
 #include "IO/IniFile.h"
 #include "IO/Path.h"
 #include "IO/StmData/FileData.h"
@@ -461,8 +462,8 @@ void SSWR::OrganWeb::OrganWebEnv::LoadUsers(NotNullPtr<Sync::RWMutexUsage> mutUs
 			dataFile->fileType = (DataFileType)r->GetInt32(1);
 			dataFile->startTime = r->GetTimestamp(2);
 			dataFile->endTime = r->GetTimestamp(3);
-			dataFile->oriFileName = r->GetNewStr(4);
-			dataFile->dataFileName = r->GetNewStr(5);
+			dataFile->oriFileName = r->GetNewStrNN(4);
+			dataFile->dataFileName = r->GetNewStrNN(5);
 			dataFile->webuserId = userId;
 			this->dataFileMap.Put(dataFile->id, dataFile);
 			if (user != 0)
@@ -734,8 +735,8 @@ void SSWR::OrganWeb::OrganWebEnv::FreeUsers()
 	while (i-- > 0)
 	{
 		dataFile = this->dataFileMap.GetItem(i);
-		SDEL_STRING(dataFile->oriFileName);
-		SDEL_STRING(dataFile->dataFileName);
+		dataFile->oriFileName->Release();
+		dataFile->dataFileName->Release();
 		MemFree(dataFile);
 	}
 	this->dataFileMap.Clear();
@@ -773,8 +774,8 @@ void SSWR::OrganWeb::OrganWebEnv::ClearUsers()
 	while (i-- > 0)
 	{
 		dataFile = this->dataFileMap.GetItem(i);
-		SDEL_STRING(dataFile->oriFileName);
-		SDEL_STRING(dataFile->dataFileName);
+		dataFile->oriFileName->Release();
+		dataFile->dataFileName->Release();
 		MemFree(dataFile);
 	}
 	this->dataFileMap.Clear();
@@ -2844,6 +2845,40 @@ Bool SSWR::OrganWeb::OrganWebEnv::UserfileUpdateRotType(NotNullPtr<Sync::RWMutex
 	return false;
 }
 
+Bool SSWR::OrganWeb::OrganWebEnv::UserfileUpdatePos(NotNullPtr<Sync::RWMutexUsage> mutUsage, Int32 userfileId, Data::Timestamp captureTime, Double lat, Double lon)
+{
+	NotNullPtr<DB::DBTool> db;
+	if (!db.Set(this->db))
+		return false;
+	mutUsage->ReplaceMutex(this->dataMut, true);
+	UserFileInfo *userFile = this->userFileMap.Get(userfileId);
+	if (userFile == 0)
+	{
+		return false;
+	}
+	if (userFile->captureTimeTicks == captureTime.ToTicks() && Math::NearlyEqualsDbl(userFile->lat, lat) && Math::NearlyEqualsDbl(userFile->lon, lon))
+	{
+		return true;
+	}
+	DB::SQLBuilder sql(db);
+	sql.AppendCmdC(CSTR("update userfile set captureTime = "));
+	sql.AppendTS(captureTime);
+	sql.AppendCmdC(CSTR(", lat = "));
+	sql.AppendDbl(lat);
+	sql.AppendCmdC(CSTR(", lon = "));
+	sql.AppendDbl(lon);
+	sql.AppendCmdC(CSTR(" where id = "));
+	sql.AppendInt32(userFile->id);
+	if (db->ExecuteNonQuery(sql.ToCString()) > 0)
+	{
+		userFile->captureTimeTicks = captureTime.ToTicks();
+		userFile->lat = lat;
+		userFile->lon = lon;
+		return true;
+	}
+	return false;
+}
+
 Bool SSWR::OrganWeb::OrganWebEnv::SpeciesBookIsExist(NotNullPtr<Sync::RWMutexUsage> mutUsage, Text::CString speciesName, NotNullPtr<Text::StringBuilderUTF8> bookNameOut)
 {
 	mutUsage->ReplaceMutex(this->dataMut, false);
@@ -2906,6 +2941,165 @@ void SSWR::OrganWeb::OrganWebEnv::WebFilePrevUpdated(NotNullPtr<Sync::RWMutexUsa
 			db->ExecuteNonQuery(sql.ToCString());
 		}
 		wfile->prevUpdated = 0;
+	}
+}
+
+Bool SSWR::OrganWeb::OrganWebEnv::GPSFileAdd(NotNullPtr<Sync::RWMutexUsage> mutUsage, Int32 webuserId, Text::CStringNN fileName, Data::Timestamp startTime, Data::Timestamp endTime, const UInt8 *fileCont, UOSInt fileSize, NotNullPtr<Map::GPSTrack> gpsTrk)
+{
+	if (DataFileAdd(mutUsage, webuserId, fileName, startTime, endTime, DataFileType::GPSTrack, fileCont, fileSize))
+	{
+		WebUserInfo *webUser = this->userMap.Get(webuserId);
+		OSInt startIndex = webUser->userFileIndex.SortedIndexOf(startTime.ToTicks());
+		OSInt endIndex = webUser->userFileIndex.SortedIndexOf(endTime.ToTicks());
+		if (startIndex < 0)
+		{
+			startIndex = ~startIndex;
+		}
+		if (endIndex < 0)
+		{
+			endIndex = ~endIndex - 1;
+		}
+		while (startIndex <= endIndex)
+		{
+			UserFileInfo *userFile = webUser->userFileObj.GetItem((UOSInt)startIndex);
+			if (userFile->lat == 0 && userFile->lon == 0)
+			{
+				Math::Coord2DDbl pos = Math::Coord2DDbl(0, 0);
+				Data::Timestamp captureTime = Data::Timestamp(userFile->captureTimeTicks, 0);
+				pos = gpsTrk->GetPosByTime(captureTime);
+				this->UserfileUpdatePos(mutUsage, userFile->id, captureTime, pos.GetLat(), pos.GetLon());
+			}
+			startIndex++;
+		}
+		return true;
+	}
+	return false;
+}
+
+Bool SSWR::OrganWeb::OrganWebEnv::DataFileAdd(NotNullPtr<Sync::RWMutexUsage> mutUsage, Int32 webuserId, Text::CStringNN fileName, Data::Timestamp startTime, Data::Timestamp endTime, DataFileType fileType, const UInt8 *fileCont, UOSInt fileSize)
+{
+	if (startTime.IsNull() || endTime.IsNull())
+		return false;
+	WebUserInfo *user = this->userMap.Get(webuserId);
+	if (user == 0)
+		return false;
+	switch (fileType)
+	{
+	case DataFileType::GPSTrack:
+		if (user->gpsDataFiles.GetIndex(startTime) != user->gpsDataFiles.GetIndex(endTime))
+			return false;
+		break;
+	case DataFileType::Temperature:
+		if (user->tempDataFiles.GetIndex(startTime) != user->tempDataFiles.GetIndex(endTime))
+			return false;
+		break;
+	case DataFileType::Unknown:
+	default:
+		return false;
+	}
+	NotNullPtr<DB::DBTool> db;
+	mutUsage->ReplaceMutex(this->dataMut, true);
+	if (!db.Set(this->db))
+		return false;
+	UTF8Char sbuff[512];
+	UTF8Char *dataFileName;
+	UTF8Char *sptr = this->dataDir->ConcatTo(sbuff);
+	if (sptr[-1] != IO::Path::PATH_SEPERATOR)
+	{
+		*sptr++ = IO::Path::PATH_SEPERATOR;
+	}
+	sptr = Text::StrConcatC(sptr, UTF8STRC("DataFile"));
+	IO::Path::CreateDirectory(CSTRP(sbuff, sptr));
+	*sptr++ = IO::Path::PATH_SEPERATOR;
+	dataFileName = sptr;
+	sptr = Text::StrInt32(sptr, webuserId);
+	sptr = Text::StrConcatC(sptr, UTF8STRC("_"));
+	sptr = Text::StrInt64(sptr, startTime.ToTicks());
+	UOSInt i = fileName.LastIndexOf('.');
+	if (i != INVALID_INDEX)
+	{
+		sptr = Text::StrConcatC(sptr, &fileName.v[i], fileName.leng - i);
+	}
+	DB::SQLBuilder sql(db);
+	sql.AppendCmdC(CSTR("insert into datafile (fileType, startTime, endTime, oriFileName, dataFileName, webuser_id) values ("));
+	sql.AppendInt32((Int32)fileType);
+	sql.AppendCmdC(CSTR(", "));
+	sql.AppendTS(startTime);
+	sql.AppendCmdC(CSTR(", "));
+	sql.AppendTS(endTime);
+	sql.AppendCmdC(CSTR(", "));
+	sql.AppendStrC(fileName);
+	sql.AppendCmdC(CSTR(", "));
+	sql.AppendStrUTF8(dataFileName);
+	sql.AppendCmdC(CSTR(", "));
+	sql.AppendInt32(webuserId);
+	sql.AppendCmdC(CSTR(")"));
+	if (db->ExecuteNonQuery(sql.ToCString()) >= 1)
+	{
+		if (IO::FileUtil::CopyFile(fileName, CSTRP(sbuff, sptr), IO::FileUtil::FileExistAction::Fail, 0, 0))
+		{
+			DataFileInfo *dataFile;
+			dataFile = MemAlloc(DataFileInfo, 1);
+			dataFile->id = db->GetLastIdentity32();
+			dataFile->fileType = fileType;
+			dataFile->startTime = startTime;
+			dataFile->endTime = endTime;
+			dataFile->webuserId = webuserId;
+			dataFile->oriFileName = Text::String::New(fileName);
+			dataFile->dataFileName = Text::String::NewP(dataFileName, sptr);
+			this->dataFileMap.Put(dataFile->id, dataFile);
+			switch (fileType)
+			{
+			case DataFileType::GPSTrack:
+				user->gpsDataFiles.Put(startTime, dataFile);
+				break;
+			case DataFileType::Temperature:
+				user->tempDataFiles.Put(startTime, dataFile);
+				break;
+			case DataFileType::Unknown:
+			default:
+				return false;
+			}
+			return true;
+		}
+		else
+		{
+			Int32 id = db->GetLastIdentity32();
+			sql.Clear();
+			sql.AppendCmdC(CSTR("delete from datafile where id = "));
+			sql.AppendInt32(id);
+			db->ExecuteNonQuery(sql.ToCString());
+			return false;
+		}
+	}
+	else
+	{
+		return false;
+	}
+}
+
+IO::ParsedObject *SSWR::OrganWeb::OrganWebEnv::DataFileParse(NotNullPtr<DataFileInfo> dataFile)
+{
+	UTF8Char sbuff[512];
+	UTF8Char *sptr = this->dataDir->ConcatTo(sbuff);
+	if (sptr[-1] != IO::Path::PATH_SEPERATOR)
+	{
+		*sptr++ = IO::Path::PATH_SEPERATOR;
+	}
+	sptr = Text::StrConcatC(sptr, UTF8STRC("DataFile"));
+	IO::Path::CreateDirectory(CSTRP(sbuff, sptr));
+	*sptr++ = IO::Path::PATH_SEPERATOR;
+	sptr = dataFile->dataFileName->ConcatTo(sptr);
+
+	IO::StmData::FileData fd(CSTRP(sbuff, sptr), false);
+	switch (dataFile->fileType)
+	{
+	case DataFileType::GPSTrack:
+		return this->parsers.ParseFileType(fd, IO::ParserType::MapLayer);
+	case DataFileType::Temperature:
+	case DataFileType::Unknown:
+	default:
+		return 0;
 	}
 }
 

@@ -4419,6 +4419,8 @@ Text/JSON.h: ../../src/Text/JSON.cpp
 @JSON.o
 Text/JSONBuilder.h: ../../src/Text/JSONBuilder.cpp
 @JSONBuilder.o
+Text/JSONUtil.h: ../../src/Text/JSONUtil.cpp
+@JSONUtil.o
 Text/JSText.h: ../../src/Text/JSText.cpp
 @JSText.o
 Text/LineBreakType.h:
@@ -6181,6 +6183,7 @@ IMIMEObj.o: ../../src/Text/IMIMEObj.cpp
 JavaText.o: ../../src/Text/JavaText.cpp
 JSON.o: ../../src/Text/JSON.cpp
 JSONBuilder.o: ../../src/Text/JSONBuilder.cpp
+JSONUtil.o: ../../src/Text/JSONUtil.cpp
 JSText.o: ../../src/Text/JSText.cpp
 Locale.o: ../../src/Text/Locale.cpp
 MailBase64Stream.o: ../../src/Text/MailBase64Stream.cpp

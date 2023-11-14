@@ -137,8 +137,8 @@ namespace SSWR
 			DataFileType fileType;
 			Data::Timestamp startTime;
 			Data::Timestamp endTime;
-			Text::String *oriFileName;
-			Text::String *dataFileName;
+			NotNullPtr<Text::String> oriFileName;
+			NotNullPtr<Text::String> dataFileName;
 			Int32 webuserId;
 		};
 

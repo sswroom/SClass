@@ -3232,7 +3232,7 @@ Bool SSWR::OrganMgr::OrganEnvDB::AddDataFile(Text::CStringNN fileName)
 				j = gpsTrk->GetTrackCnt();
 				while (i < j)
 				{
-					recArr = gpsTrk->GetTrack(i, &l);
+					recArr = gpsTrk->GetTrack(i, l);
 					k = 0;
 					while (k < l)
 					{
