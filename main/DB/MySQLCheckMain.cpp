@@ -42,7 +42,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	{
 		cptr = cfgList[i];
 		UOSInt len = Text::StrCharCnt(cptr);
-		if (cfg->GetValue({(const UTF8Char*)cptr, len}) == 0)
+		if (cfg->GetValue({(const UTF8Char*)cptr, len}).IsNull())
 		{
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("Config "));
@@ -55,18 +55,18 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 		i++;
 	}
 
-	Text::String *mysqlServer = cfg->GetValue(CSTR("MySQLServer"));
-	Text::String *mysqlPort = cfg->GetValue(CSTR("MySQLPort"));
-	Text::String *mysqlUser = cfg->GetValue(CSTR("MySQLUser"));
-	Text::String *mysqlPassword = cfg->GetValue(CSTR("MySQLPassword"));
-	Text::String *mysqlSchemas = cfg->GetValue(CSTR("MySQLSchemas"));
-	Text::String *smtpHost = cfg->GetValue(CSTR("SMTPHost"));
-	Text::String *smtpPort = cfg->GetValue(CSTR("SMTPPort"));
-	Text::String *smtpType = cfg->GetValue(CSTR("SMTPType"));
-	Text::String *smtpFrom = cfg->GetValue(CSTR("SMTPFrom"));
-	Text::String *smtpTo = cfg->GetValue(CSTR("SMTPTo"));
-	Text::String *smtpUser = cfg->GetValue(CSTR("SMTPUser"));
-	Text::String *smtpPassword = cfg->GetValue(CSTR("SMTPPassword"));
+	NotNullPtr<Text::String> mysqlServer;
+	NotNullPtr<Text::String> mysqlPort;
+	Optional<Text::String> mysqlUser = cfg->GetValue(CSTR("MySQLUser"));
+	Optional<Text::String> mysqlPassword = cfg->GetValue(CSTR("MySQLPassword"));
+	NotNullPtr<Text::String> mysqlSchemas;
+	NotNullPtr<Text::String> smtpHost;
+	NotNullPtr<Text::String> smtpPort;
+	NotNullPtr<Text::String> smtpType;
+	NotNullPtr<Text::String> smtpFrom;
+	NotNullPtr<Text::String> smtpTo;
+	NotNullPtr<Text::String> smtpUser;
+	NotNullPtr<Text::String> smtpPassword;
 	Net::MySQLTCPClient *cli;
 	DB::MySQLMaintance *mysql;
 	Net::SocketUtil::AddressInfo addr;
@@ -74,6 +74,54 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	UInt16 smtpIPort;
 	Net::Email::SMTPConn::ConnType connType;
 	UTF8Char *sarr[2];
+	if (!cfg->GetValue(CSTR("SMTPType")).SetTo(smtpType))
+	{
+		DEL_CLASS(cfg);
+		console.WriteLineC(UTF8STRC("SMTPType cannot be empty"));
+		return 3;
+	}
+	if (!cfg->GetValue(CSTR("MySQLServer")).SetTo(mysqlServer))
+	{
+		DEL_CLASS(cfg);
+		console.WriteLineC(UTF8STRC("MySQLServer cannot be empty"));
+		return 3;
+	}
+	if (!cfg->GetValue(CSTR("MySQLPort")).SetTo(mysqlPort))
+	{
+		DEL_CLASS(cfg);
+		console.WriteLineC(UTF8STRC("MySQLPort cannot be empty"));
+		return 3;
+	}
+	if (!cfg->GetValue(CSTR("MySQLSchemas")).SetTo(mysqlSchemas))
+	{
+		DEL_CLASS(cfg);
+		console.WriteLineC(UTF8STRC("MySQLSchemas cannot be empty"));
+		return 3;
+	}
+	if (!cfg->GetValue(CSTR("SMTPHost")).SetTo(smtpHost))
+	{
+		DEL_CLASS(cfg);
+		console.WriteLineC(UTF8STRC("SMTPHost cannot be empty"));
+		return 3;
+	}
+	if (!cfg->GetValue(CSTR("SMTPPort")).SetTo(smtpPort))
+	{
+		DEL_CLASS(cfg);
+		console.WriteLineC(UTF8STRC("SMTPPort cannot be empty"));
+		return 3;
+	}
+	if (!cfg->GetValue(CSTR("SMTPFrom")).SetTo(smtpFrom))
+	{
+		DEL_CLASS(cfg);
+		console.WriteLineC(UTF8STRC("SMTPFrom cannot be empty"));
+		return 3;
+	}
+	if (!cfg->GetValue(CSTR("SMTPTo")).SetTo(smtpTo))
+	{
+		DEL_CLASS(cfg);
+		console.WriteLineC(UTF8STRC("SMTPTo cannot be empty"));
+		return 3;
+	}
 	if (smtpType->EqualsICase(UTF8STRC("PLAIN")))
 	{
 		connType = Net::Email::SMTPConn::ConnType::Plain;
@@ -123,7 +171,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 		{
 			Text::StringBuilderUTF8 sbMsg;
 			sbMsg.AppendC(UTF8STRC("ServerName = "));
-			sbMsg.Append(cfg->GetValue(CSTR("ServerName")));
+			sbMsg.Append(Text::String::OrEmpty(cfg->GetValue(CSTR("ServerName"))));
 			sbMsg.AppendC(UTF8STRC("\r\n"));
 			sbMsg.AppendC(UTF8STRC("MySQL Check detail:\r\n"));
 			NEW_CLASS(mysql, DB::MySQLMaintance(cli, true));
@@ -154,7 +202,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 			Data::DateTime currTime;
 			currTime.SetCurrTime();
 			NEW_CLASS(smtp, Net::Email::SMTPClient(sockf, ssl, smtpHost->ToCString(), smtpIPort, connType, writer, 30000));
-			if (smtpUser->v[0] && smtpPassword->v[0])
+			if (cfg->GetValue(CSTR("SMTPUser")).SetTo(smtpUser) && cfg->GetValue(CSTR("SMTPPassword")).SetTo(smtpPassword) && smtpUser->v[0] && smtpPassword->v[0])
 			{
 				smtp->SetPlainAuth(smtpUser->ToCString(), smtpPassword->ToCString());
 			}

@@ -593,8 +593,8 @@ Media::ALSARenderer::ALSARenderer(const UTF8Char *devName) : thread(PlayThread, 
 		IO::ConfigFile *cfg = IO::WSConfigFile::Parse(CSTR("/etc/asound.conf"));
 		if (cfg)
 		{
-			Text::String *s = cfg->GetValue(CSTR("defaults.pcm.card"));
-			if (s)
+			NotNullPtr<Text::String> s;
+			if (cfg->GetValue(CSTR("defaults.pcm.card")).SetTo(s))
 			{
 				UTF8Char sbuff[32];
 				UTF8Char *sptr;

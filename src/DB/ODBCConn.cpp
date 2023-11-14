@@ -398,7 +398,7 @@ DB::ODBCConn::ODBCConn(Text::CString connStr, Text::CStringNN sourceName, NotNul
 	s->Release();
 }
 
-DB::ODBCConn::ODBCConn(NotNullPtr<Text::String> dsn, Text::String *uid, Text::String *pwd, Text::String *schema, NotNullPtr<IO::LogTool> log) : DB::DBConn(dsn)
+DB::ODBCConn::ODBCConn(NotNullPtr<Text::String> dsn, Optional<Text::String> uid, Optional<Text::String> pwd, Optional<Text::String> schema, NotNullPtr<IO::LogTool> log) : DB::DBConn(dsn)
 {
 	this->log = log;
 	this->connStr = 0;
@@ -408,9 +408,9 @@ DB::ODBCConn::ODBCConn(NotNullPtr<Text::String> dsn, Text::String *uid, Text::St
 	this->envHand = 0;
 	this->enableDebug = false;
 	this->dsn = dsn->Clone().Ptr();
-	this->uid = SCOPY_STRING(uid);
-	this->pwd = SCOPY_STRING(pwd);
-	this->schema = SCOPY_STRING(schema);
+	this->uid = Text::String::CopyOrNull(uid);
+	this->pwd = Text::String::CopyOrNull(pwd);
+	this->schema = Text::String::CopyOrNull(schema);
 	lastStmtHand = 0;
 	this->tzQhr = 0;
 	this->forceTz = false;
@@ -1141,7 +1141,7 @@ UOSInt DB::ODBCConn::GetDriverList(Data::ArrayListNN<Text::String> *driverList)
 	{
 		Data::ArrayListNN<Text::String> cateList;
 		UOSInt i = 0;
-		UOSInt j = cfg->GetCateList(&cateList, false);
+		UOSInt j = cfg->GetCateList(cateList, false);
 		while (i < j)
 		{
 			driverList->Add(cateList.GetItem(i)->Clone());
@@ -1170,7 +1170,7 @@ IO::ConfigFile *DB::ODBCConn::GetDriverInfo(Text::CString driverName)
 #endif
 }
 
-DB::DBTool *DB::ODBCConn::CreateDBTool(NotNullPtr<Text::String> dsn, Text::String *uid, Text::String *pwd, Text::String *schema, NotNullPtr<IO::LogTool> log, Text::CString logPrefix)
+Optional<DB::DBTool> DB::ODBCConn::CreateDBTool(NotNullPtr<Text::String> dsn, Optional<Text::String> uid, Optional<Text::String> pwd, Optional<Text::String> schema, NotNullPtr<IO::LogTool> log, Text::CString logPrefix)
 {
 	NotNullPtr<DB::ODBCConn> conn;
 	DB::DBTool *db;
@@ -1187,7 +1187,7 @@ DB::DBTool *DB::ODBCConn::CreateDBTool(NotNullPtr<Text::String> dsn, Text::Strin
 	}
 }
 
-DB::DBTool *DB::ODBCConn::CreateDBTool(Text::CStringNN dsn, Text::CString uid, Text::CString pwd, Text::CString schema, NotNullPtr<IO::LogTool> log, Text::CString logPrefix)
+Optional<DB::DBTool> DB::ODBCConn::CreateDBTool(Text::CStringNN dsn, Text::CString uid, Text::CString pwd, Text::CString schema, NotNullPtr<IO::LogTool> log, Text::CString logPrefix)
 {
 	NotNullPtr<DB::ODBCConn> conn;
 	DB::DBTool *db;

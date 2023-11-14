@@ -13,8 +13,8 @@ Net::Spring::SpringBootApplication::SpringBootApplication(Text::CString appName)
 	this->activeProfile = Text::String::New(UTF8STRC("default"));
 	if (this->cfg)
 	{
-		Text::String *s = this->cfg->GetValue(CSTR("spring.profiles.active"));
-		if (s)
+		NotNullPtr<Text::String> s;
+		if (this->cfg->GetValue(CSTR("spring.profiles.active")).SetTo(s))
 		{
 			this->activeProfile->Release();
 			this->activeProfile = s->Clone();

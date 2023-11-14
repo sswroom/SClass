@@ -80,7 +80,7 @@ namespace SSWR
 			void FreeUsers();
 			void ClearUsers();
 		public:
-			OrganWebEnv(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, NotNullPtr<IO::LogTool> log, DB::DBTool *db, Text::String *imageDir, UInt16 port, UInt16 sslPort, Text::String *cacheDir, Text::String *dataDir, UInt32 scnSize, Text::String *reloadPwd, Int32 unorganizedGroupId, NotNullPtr<Media::DrawEngine> eng, Text::CString osmCachePath);
+			OrganWebEnv(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, NotNullPtr<IO::LogTool> log, DB::DBTool *db, Optional<Text::String> imageDir, UInt16 port, UInt16 sslPort, Optional<Text::String> cacheDir, Optional<Text::String> dataDir, UInt32 scnSize, Optional<Text::String> reloadPwd, Int32 unorganizedGroupId, NotNullPtr<Media::DrawEngine> eng, Text::CString osmCachePath);
 			~OrganWebEnv();
 
 			Bool IsError();

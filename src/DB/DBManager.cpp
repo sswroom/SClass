@@ -241,7 +241,7 @@ DB::ReadingDB *DB::DBManager::OpenConn(Text::CStringNN connStr, NotNullPtr<IO::L
 			db = 0;
 			if (s.Set(dsn))
 			{
-				db = DB::ODBCConn::CreateDBTool(s, uid, pwd, schema, log, DBPREFIX);
+				db = DB::ODBCConn::CreateDBTool(s, uid, pwd, schema, log, DBPREFIX).OrNull();
 			}
 			SDEL_STRING(dsn);
 			SDEL_STRING(uid);

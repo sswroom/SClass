@@ -27,8 +27,8 @@ UTF8Char *IO::OS::GetDistro(UTF8Char *sbuff)
 		IO::ConfigFile *cfg = IO::UnixConfigFile::Parse(CSTR("/etc/os-release"));
 		if (cfg)
 		{
-			Text::String *s = cfg->GetValue(CSTR("NAME"));
-			if (s)
+			NotNullPtr<Text::String> s;
+			if (cfg->GetValue(CSTR("NAME")).SetTo(s))
 			{
 				sbuff = s->ConcatTo(sbuff);
 			}
@@ -161,13 +161,12 @@ UTF8Char *IO::OS::GetVersion(UTF8Char *sbuff)
 		IO::ConfigFile *cfg = IO::UnixConfigFile::Parse(CSTR("/etc/os-release"));
 		if (cfg)
 		{
-			Text::String *s = cfg->GetValue(CSTR("VERSION"));
-			if (s)
+			NotNullPtr<Text::String> s;
+			if (cfg->GetValue(CSTR("VERSION")).SetTo(s))
 			{
 				sbuff = s->ConcatTo(sbuff);
 			}
-			s = cfg->GetValue(CSTR("BUILD_ID"));
-			if (s)
+			if (cfg->GetValue(CSTR("BUILD_ID")).SetTo(s))
 			{
 				*sbuff++ = ' ';
 				sbuff = s->ConcatTo(sbuff);
@@ -203,16 +202,14 @@ UTF8Char *IO::OS::GetVersion(UTF8Char *sbuff)
 	if (IO::Path::GetPathType(CSTR("/etc/VERSION")) == IO::Path::PathType::File)
 	{
 		IO::ConfigFile *cfg = IO::UnixConfigFile::Parse(CSTR("/etc/VERSION"));
-		Text::String *s;
+		NotNullPtr<Text::String> s;
 		if (cfg)
 		{
-			s = cfg->GetValue(CSTR("productversion"));
-			if (s)
+			if (cfg->GetValue(CSTR("productversion")).SetTo(s))
 			{
 				sbuff = s->ConcatTo(sbuff);
 			}
-			s = cfg->GetValue(CSTR("buildnumber"));
-			if (s)
+			if (cfg->GetValue(CSTR("buildnumber")).SetTo(s))
 			{
 				sbuff = s->ConcatTo(Text::StrConcatC(sbuff, UTF8STRC("-")));
 			}

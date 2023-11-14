@@ -326,7 +326,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcGroup(NotNullPtr<Net::
 		sb.AppendC(UTF8STRC("&amp;cateId="));
 		sb.AppendI32(group->cateId);
 		sb.AppendC(UTF8STRC("\">"));
-		sb.Append(LangGetValue(lang, UTF8STRC("ListAll")));
+		sb.Append(LangGetValue(lang, CSTR("ListAll")));
 		sb.AppendC(UTF8STRC("</a><br/>"));
 		writer.WriteLineC(sb.ToString(), sb.GetCharCnt());
 
@@ -336,7 +336,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcGroup(NotNullPtr<Net::
 		sb.AppendC(UTF8STRC("&amp;cateId="));
 		sb.AppendI32(group->cateId);
 		sb.AppendC(UTF8STRC("\">"));
-		sb.Append(LangGetValue(lang, UTF8STRC("ListImage")));
+		sb.Append(LangGetValue(lang, CSTR("ListImage")));
 		sb.AppendC(UTF8STRC("</a><br/>"));
 		writer.WriteLineC(sb.ToString(), sb.GetLength());
 
@@ -346,7 +346,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcGroup(NotNullPtr<Net::
 			sb.AppendC(UTF8STRC("<a href=\"map/index.html?group="));
 			sb.AppendI32(group->id);
 			sb.AppendC(UTF8STRC("\">"));
-			sb.Append(LangGetValue(lang, UTF8STRC("ShowMap")));
+			sb.Append(LangGetValue(lang, CSTR("ShowMap")));
 			sb.AppendC(UTF8STRC("</a><br/>"));
 			writer.WriteLineC(sb.ToString(), sb.GetLength());
 		}
@@ -400,7 +400,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcGroup(NotNullPtr<Net::
 		}
 		if (!found)
 		{
-			writer.WriteLineCStr(LangGetValue(lang, UTF8STRC("NoItems")));
+			writer.WriteLineCStr(LangGetValue(lang, CSTR("NoItems")));
 			writer.WriteLineC(UTF8STRC("<hr/>"));
 		}
 		if (!notAdmin)
@@ -432,7 +432,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcGroup(NotNullPtr<Net::
 			writer.WriteStrC(s->v, s->leng);
 			s->Release();
 			writer.WriteStrC(UTF8STRC(">"));
-			writer.WriteStr(LangGetValue(lang, UTF8STRC("Back")));
+			writer.WriteStr(LangGetValue(lang, CSTR("Back")));
 			writer.WriteStrC(UTF8STRC("</a>"));
 		}
 		else
@@ -444,7 +444,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcGroup(NotNullPtr<Net::
 			sb.AppendI32(group->cateId);
 			writer.WriteStrC(sb.ToString(), sb.GetCharCnt());
 			writer.WriteStrC(UTF8STRC("\">"));
-			writer.WriteStr(LangGetValue(lang, UTF8STRC("Back")));
+			writer.WriteStr(LangGetValue(lang, CSTR("Back")));
 			writer.WriteStrC(UTF8STRC("</a>"));
 		}
 		if (env.user != 0 && env.user->userType == UserType::Admin)
@@ -762,7 +762,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcGroupMod(NotNullPtr<Ne
 		sb.AppendI32(group->cateId);
 		writer.WriteStrC(sb.ToString(), sb.GetLength());
 		writer.WriteStrC(UTF8STRC("\">"));
-		writer.WriteStr(LangGetValue(lang, UTF8STRC("Back")));
+		writer.WriteStr(LangGetValue(lang, CSTR("Back")));
 		writer.WriteStrC(UTF8STRC("</a>"));
 		writer.WriteLineC(UTF8STRC("</td></tr>"));
 		writer.WriteLineC(UTF8STRC("</table></form>"));
@@ -1047,7 +1047,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSpecies(NotNullPtr<Net
 		{
 			Data::DateTime dt;
 			writer.WriteLineC(UTF8STRC("<br/><br/>"));
-			writer.WriteStr(LangGetValue(lang, UTF8STRC("Document")));
+			writer.WriteStr(LangGetValue(lang, CSTR("Document")));
 			writer.WriteLineC(UTF8STRC(":<br/>"));
 			writer.WriteLineC(UTF8STRC("<table border=\"0\">"));
 			i = 0;
@@ -1097,7 +1097,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSpecies(NotNullPtr<Net
 			sb.AppendC(UTF8STRC("<a href=\"map/index.html?species="));
 			sb.AppendI32(id);
 			sb.AppendC(UTF8STRC("\">"));
-			sb.Append(LangGetValue(lang, UTF8STRC("ShowMap")));
+			sb.Append(LangGetValue(lang, CSTR("ShowMap")));
 			sb.AppendC(UTF8STRC("</a><br/>"));
 			writer.WriteLineC(sb.ToString(), sb.GetLength());
 		}
@@ -1547,7 +1547,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSpecies(NotNullPtr<Net
 		sb.AppendI32(group->cateId);
 		writer.WriteStrC(sb.ToString(), sb.GetLength());
 		writer.WriteStrC(UTF8STRC("\">"));
-		writer.WriteStr(LangGetValue(lang, UTF8STRC("Back")));
+		writer.WriteStr(LangGetValue(lang, CSTR("Back")));
 		writer.WriteStrC(UTF8STRC("</a>"));
 
 		if (env.user != 0 && env.user->userType == UserType::Admin)
@@ -1855,7 +1855,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSpeciesMod(NotNullPtr<
 		sb.AppendI32(group->cateId);
 		writer.WriteStrC(sb.ToString(), sb.GetLength());
 		writer.WriteStrC(UTF8STRC("\">"));
-		writer.WriteStr(LangGetValue(lang, UTF8STRC("Back")));
+		writer.WriteStr(LangGetValue(lang, CSTR("Back")));
 		writer.WriteStrC(UTF8STRC("</a>"));
 		if (canDelete)
 		{
@@ -1993,9 +1993,9 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcList(NotNullPtr<Net::W
 				sb.AppendC(UTF8STRC("&amp;page="));
 				sb.AppendU32(page - 1);
 				sb.AppendC(UTF8STRC("\">&lt;"));
-				sb.Append(LangGetValue(lang, UTF8STRC("Previous")));
+				sb.Append(LangGetValue(lang, CSTR("Previous")));
 				sb.AppendUOSInt(perPage);
-				sb.Append(LangGetValue(lang, UTF8STRC("Items")));
+				sb.Append(LangGetValue(lang, CSTR("Items")));
 				sb.AppendC(UTF8STRC("</a>"));
 				writer.WriteLineC(sb.ToString(), sb.GetLength());
 			}
@@ -2009,9 +2009,9 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcList(NotNullPtr<Net::W
 				sb.AppendC(UTF8STRC("&amp;page="));
 				sb.AppendU32(page + 1);
 				sb.AppendC(UTF8STRC("\">"));
-				sb.Append(LangGetValue(lang, UTF8STRC("Next")));
+				sb.Append(LangGetValue(lang, CSTR("Next")));
 				sb.AppendUOSInt(perPage);
-				sb.Append(LangGetValue(lang, UTF8STRC("Items")));
+				sb.Append(LangGetValue(lang, CSTR("Items")));
 				sb.AppendC(UTF8STRC("&gt;</a>"));
 				writer.WriteLineC(sb.ToString(), sb.GetLength());
 			}
@@ -2028,9 +2028,9 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcList(NotNullPtr<Net::W
 				sb.AppendC(UTF8STRC("&page="));
 				sb.AppendU32(page - 1);
 				sb.AppendC(UTF8STRC("\">&lt;"));
-				sb.Append(LangGetValue(lang, UTF8STRC("Previous")));
+				sb.Append(LangGetValue(lang, CSTR("Previous")));
 				sb.AppendUOSInt(perPage);
-				sb.Append(LangGetValue(lang, UTF8STRC("Items")));
+				sb.Append(LangGetValue(lang, CSTR("Items")));
 				sb.AppendC(UTF8STRC("</a>"));
 				writer.WriteLineC(sb.ToString(), sb.GetLength());
 			}
@@ -2044,9 +2044,9 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcList(NotNullPtr<Net::W
 				sb.AppendC(UTF8STRC("&page="));
 				sb.AppendU32(page + 1);
 				sb.AppendC(UTF8STRC("\">"));
-				sb.Append(LangGetValue(lang, UTF8STRC("Next")));
+				sb.Append(LangGetValue(lang, CSTR("Next")));
 				sb.AppendUOSInt(perPage);
-				sb.Append(LangGetValue(lang, UTF8STRC("Items")));
+				sb.Append(LangGetValue(lang, CSTR("Items")));
 				sb.AppendC(UTF8STRC("&gt;</a>"));
 				writer.WriteLineC(sb.ToString(), sb.GetLength());
 			}
@@ -2060,7 +2060,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcList(NotNullPtr<Net::W
 		sb.AppendI32(group->cateId);
 		writer.WriteStrC(sb.ToString(), sb.GetLength());
 		writer.WriteStrC(UTF8STRC("\">"));
-		writer.WriteStr(LangGetValue(lang, UTF8STRC("Back")));
+		writer.WriteStr(LangGetValue(lang, CSTR("Back")));
 		writer.WriteStrC(UTF8STRC("</a>"));
 
 		me->WriteFooter(&writer);
@@ -2377,7 +2377,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoDetail(NotNullPtr
 							}
 						}
 						writer.WriteStrC(UTF8STRC("<b>"));
-						writer.WriteStr(LangGetValue(lang, UTF8STRC("PhotoSpec")));
+						writer.WriteStr(LangGetValue(lang, CSTR("PhotoSpec")));
 						writer.WriteStrC(UTF8STRC("</b> "));
 						writer.WriteStrC(sb.ToString(), sb.GetLength());
 						writer.WriteStrC(UTF8STRC("<br/>"));
@@ -2386,7 +2386,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoDetail(NotNullPtr
 					if (userFile->captureTimeTicks != 0)
 					{
 						writer.WriteStrC(UTF8STRC("<b>"));
-						writer.WriteStr(LangGetValue(lang, UTF8STRC("PhotoDate")));
+						writer.WriteStr(LangGetValue(lang, CSTR("PhotoDate")));
 						writer.WriteStrC(UTF8STRC("</b> "));
 						sptr2 = Data::Timestamp(userFile->captureTimeTicks, Data::DateTimeUtil::GetLocalTzQhr()).ToString(sbuff2, "yyyy-MM-dd HH:mm:ss zzzz");
 						writer.WriteStrC(sbuff2, (UOSInt)(sptr2 - sbuff2));
@@ -2402,14 +2402,14 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoDetail(NotNullPtr
 					{
 						sb.ClearStr();
 						writer.WriteStrC(UTF8STRC("<b>"));
-						writer.WriteStr(LangGetValue(lang, UTF8STRC("PhotoSpec")));
+						writer.WriteStr(LangGetValue(lang, CSTR("PhotoSpec")));
 						writer.WriteStrC(UTF8STRC("</b> "));
 						info.ToString(sb);
 						writer.WriteStrC(sb.ToString(), sb.GetLength());
 						writer.WriteStrC(UTF8STRC("<br/>"));
 
 						writer.WriteStrC(UTF8STRC("<b>"));
-						writer.WriteStr(LangGetValue(lang, UTF8STRC("PhotoDate")));
+						writer.WriteStr(LangGetValue(lang, CSTR("PhotoDate")));
 						writer.WriteStrC(UTF8STRC("</b> "));
 						sptr2 = Data::Timestamp(userFile->captureTimeTicks, Data::DateTimeUtil::GetLocalTzQhr()).ToString(sbuff2, "yyyy-MM-dd HH:mm:ss zzzz");
 						writer.WriteStrC(sbuff2, (UOSInt)(sptr2 - sbuff2));
@@ -2432,7 +2432,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoDetail(NotNullPtr
 					sb.Append(s);
 					s->Release();
 					sb.AppendC(UTF8STRC(">"));
-					sb.Append(LangGetValue(lang, UTF8STRC("Download")));
+					sb.Append(LangGetValue(lang, CSTR("Download")));
 					sb.AppendC(UTF8STRC("</a>"));
 					writer.WriteLineC(sb.ToString(), sb.GetLength());
 
@@ -2480,7 +2480,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoDetail(NotNullPtr
 				sb.Append(s);
 				s->Release();
 				sb.AppendC(UTF8STRC(">"));
-				sb.Append(LangGetValue(lang, UTF8STRC("Back")));
+				sb.Append(LangGetValue(lang, CSTR("Back")));
 				sb.AppendC(UTF8STRC("</a>"));
 				writer.WriteLineC(sb.ToString(), sb.GetLength());
 				writer.WriteLineC(UTF8STRC("</td></tr>"));
@@ -2704,7 +2704,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoDetail(NotNullPtr
 				sb.Append(s);
 				sb.AppendUTF8Char('>');
 				s->Release();
-				sb.Append(LangGetValue(lang, UTF8STRC("Back")));
+				sb.Append(LangGetValue(lang, CSTR("Back")));
 				sb.AppendC(UTF8STRC("</a>"));
 				writer.WriteLineC(sb.ToString(), sb.GetLength());
 				writer.WriteLineC(UTF8STRC("</td></tr>"));
@@ -2869,7 +2869,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoDetail(NotNullPtr
 					sb.AppendC(UTF8STRC("<a href="));
 					sb.Append(s);
 					s->Release();
-					sb.Append(LangGetValue(lang, UTF8STRC("Back")));
+					sb.Append(LangGetValue(lang, CSTR("Back")));
 					sb.AppendC(UTF8STRC("</a>"));
 					writer.WriteLineC(sb.ToString(), sb.GetLength());
 					writer.WriteLineC(UTF8STRC("</td></tr>"));
@@ -3041,7 +3041,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoDetail(NotNullPtr
 							Data::DateTime dt;
 							sb.ClearStr();
 							writer.WriteStrC(UTF8STRC("<b>"));
-							writer.WriteStr(LangGetValue(lang, UTF8STRC("PhotoSpec")));
+							writer.WriteStr(LangGetValue(lang, CSTR("PhotoSpec")));
 							writer.WriteStrC(UTF8STRC("</b> "));
 							info.ToString(sb);
 							writer.WriteStrC(sb.ToString(), sb.GetLength());
@@ -3049,7 +3049,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoDetail(NotNullPtr
 							if (info.GetPhotoDate(&dt))
 							{
 								writer.WriteStrC(UTF8STRC("<b>"));
-								writer.WriteStr(LangGetValue(lang, UTF8STRC("PhotoDate")));
+								writer.WriteStr(LangGetValue(lang, CSTR("PhotoDate")));
 								writer.WriteStrC(UTF8STRC("</b> "));
 								sptr2 = dt.ToString(sbuff2, "yyyy-MM-dd HH:mm:ss zzzz");
 								writer.WriteStrC(sbuff2, (UOSInt)(sptr2 - sbuff2));
@@ -3068,7 +3068,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoDetail(NotNullPtr
 					sb.AppendC(UTF8STRC("<a href="));
 					sb.Append(s);
 					s->Release();
-					sb.Append(LangGetValue(lang, UTF8STRC("Back")));
+					sb.Append(LangGetValue(lang, CSTR("Back")));
 					sb.AppendC(UTF8STRC("</a>"));
 					writer.WriteLineC(sb.ToString(), sb.GetLength());
 					writer.WriteLineC(UTF8STRC("</td></tr>"));
@@ -3275,7 +3275,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSearchInside(NotNullPt
 		sb.AppendI32(group->cateId);
 		writer.WriteStrC(sb.ToString(), sb.GetLength());
 		writer.WriteStrC(UTF8STRC("\">"));
-		writer.WriteStr(LangGetValue(lang, UTF8STRC("Back")));
+		writer.WriteStr(LangGetValue(lang, CSTR("Back")));
 		writer.WriteStrC(UTF8STRC("</a>"));
 
 		me->WriteFooter(&writer);
@@ -3450,7 +3450,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSearchInsideMoreS(NotN
 		sb.AppendI32(group->cateId);
 		writer.WriteStrC(sb.ToString(), sb.GetLength());
 		writer.WriteStrC(UTF8STRC("\">"));
-		writer.WriteStr(LangGetValue(lang, UTF8STRC("Back")));
+		writer.WriteStr(LangGetValue(lang, CSTR("Back")));
 		writer.WriteStrC(UTF8STRC("</a>"));
 
 		me->WriteFooter(&writer);
@@ -3625,7 +3625,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSearchInsideMoreG(NotN
 		sb.AppendI32(group->cateId);
 		writer.WriteStrC(sb.ToString(), sb.GetLength());
 		writer.WriteStrC(UTF8STRC("\">"));
-		writer.WriteStr(LangGetValue(lang, UTF8STRC("Back")));
+		writer.WriteStr(LangGetValue(lang, CSTR("Back")));
 		writer.WriteStrC(UTF8STRC("</a>"));
 
 		me->WriteFooter(&writer);

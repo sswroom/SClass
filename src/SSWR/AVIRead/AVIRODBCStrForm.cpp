@@ -41,7 +41,7 @@ void __stdcall SSWR::AVIRead::AVIRODBCStrForm::OnDriverInfoClicked(void *userObj
 			{
 				NotNullPtr<Text::String> s = it.Next();
 				sarr[0] = s->v;
-				sarr[1] = driver->GetValue(s)->v;
+				sarr[1] = Text::String::OrEmpty(driver->GetValue(s))->v;
 				frm.AddRow(sarr);
 			}
 			frm.ShowDialog(me);

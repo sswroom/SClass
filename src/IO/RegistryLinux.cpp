@@ -237,7 +237,7 @@ WChar *IO::Registry::GetSubReg(WChar *buff, UOSInt index)
 		return 0;
 	}
 	Text::String *cate;
-	this->clsData->reg->cfg->GetCateList(&cateList, false);
+	this->clsData->reg->cfg->GetCateList(cateList, false);
 	WChar *ret = 0;
 	Text::StringBuilderUTF8 sbSubReg;
 	UOSInt thisCateLen = this->clsData->cate->leng;

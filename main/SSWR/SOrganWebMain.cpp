@@ -25,8 +25,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 		Net::OSSocketFactory sockf(true);
 		Net::SSLEngine *ssl = 0;
 		IO::LogTool log;
-		Text::String *s;
-		NotNullPtr<Text::String> nns;
+		NotNullPtr<Text::String> s;
 		Text::CString osmCacheDir;
 		UTF8Char sbuff[512];
 		UTF8Char *sptr;
@@ -41,7 +40,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 		else
 		{
 			UInt16 sslPort = 0;
-			if ((s = cfg->GetValue(CSTR("SSLPort"))) != 0)
+			if (cfg->GetValue(CSTR("SSLPort")).SetTo(s))
 			{
 				if (s->ToUInt16(sslPort) && sslPort != 0)
 				{
@@ -52,14 +51,14 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 					}
 					else
 					{
-						Text::String *certFile = cfg->GetValue(CSTR("SSLCert"));
-						Text::String *keyFile = cfg->GetValue(CSTR("SSLKey"));
-						if (certFile == 0)
+						NotNullPtr<Text::String> certFile;
+						NotNullPtr<Text::String> keyFile;
+						if (!cfg->GetValue(CSTR("SSLCert")).SetTo(certFile))
 						{
 							console.WriteLineC(UTF8STRC("SSLCert not found"));
 							SDEL_CLASS(ssl);
 						}
-						else if (keyFile == 0)
+						else if (!cfg->GetValue(CSTR("SSLKey")).SetTo(keyFile))
 						{
 							console.WriteLineC(UTF8STRC("SSLKey not found"));
 							SDEL_CLASS(ssl);
@@ -72,7 +71,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 					}
 				}
 			}
-			if ((s = cfg->GetValue(CSTR("ScreenSize"))) != 0)
+			if (cfg->GetValue(CSTR("ScreenSize")).SetTo(s))
 			{
 				scnSize = s->ToUInt32();
 			}
@@ -80,26 +79,26 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 			{
 				scnSize = 1800;
 			}
-			if ((s = cfg->GetValue(CSTR("Unorganized"))) != 0)
+			if (cfg->GetValue(CSTR("Unorganized")).SetTo(s))
 			{
 				s->ToInt32(unorganizedGroupId);
 			}
-			if (nns.Set(cfg->GetValue(CSTR("MDBFile"))))
+			if (cfg->GetValue(CSTR("MDBFile")).SetTo(s))
 			{
-				db = DB::MDBFileConn::CreateDBTool(nns, log, CSTR("DB: "));
+				db = DB::MDBFileConn::CreateDBTool(s, log, CSTR("DB: "));
 			}
-			else if (nns.Set(cfg->GetValue(CSTR("MySQLServer"))))
+			else if (cfg->GetValue(CSTR("MySQLServer")).SetTo(s))
 			{
-				db = Net::MySQLTCPClient::CreateDBTool(sockf, nns, cfg->GetValue(CSTR("MySQLDB")), Text::String::OrEmpty(cfg->GetValue(CSTR("MySQLUID"))), Text::String::OrEmpty(cfg->GetValue(CSTR("MySQLPwd"))), log, CSTR("DB: "));
+				db = Net::MySQLTCPClient::CreateDBTool(sockf, s, cfg->GetValue(CSTR("MySQLDB")), Text::String::OrEmpty(cfg->GetValue(CSTR("MySQLUID"))), Text::String::OrEmpty(cfg->GetValue(CSTR("MySQLPwd"))), log, CSTR("DB: "));
 			}
-			else
+			else if (cfg->GetValue(CSTR("DBDSN")).SetTo(s))
 			{
-				db = DB::ODBCConn::CreateDBTool(Text::String::OrEmpty(cfg->GetValue(CSTR("DBDSN"))), cfg->GetValue(CSTR("DBUID")), cfg->GetValue(CSTR("DBPwd")), cfg->GetValue(CSTR("DBSchema")), log, CSTR("DB: "));
+				db = DB::ODBCConn::CreateDBTool(s, cfg->GetValue(CSTR("DBUID")), cfg->GetValue(CSTR("DBPwd")), cfg->GetValue(CSTR("DBSchema")), log, CSTR("DB: ")).OrNull();
 			}
 			UInt16 port;
-			cfg->GetValue(CSTR("SvrPort"))->ToUInt16S(port, 0);
-			s = cfg->GetValue(CSTR("OSMCacheDir"));
-			if (s)
+			if (!cfg->GetValue(CSTR("SvrPort")).SetTo(s) || !s->ToUInt16(port))
+				port = 0;
+			if (cfg->GetValue(CSTR("OSMCacheDir")).SetTo(s))
 			{
 				osmCacheDir = s->ToCString();
 			}

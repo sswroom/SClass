@@ -61,7 +61,8 @@ namespace Text
 		static NotNullPtr<String> New(const UTF32Char *str, UOSInt len);
 		static NotNullPtr<String> NewCSVRec(const UTF8Char *str);
 		static NotNullPtr<String> NewEmpty();
-		static NotNullPtr<String> OrEmpty(Text::String *s);
+		static NotNullPtr<String> OrEmpty(Optional<Text::String> s);
+		static String *CopyOrNull(Optional<Text::String> s);
 		void Release();
 		NotNullPtr<String> Clone() const;
 

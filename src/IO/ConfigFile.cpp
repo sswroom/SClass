@@ -45,12 +45,12 @@ IO::ConfigFile::~ConfigFile()
 	this->defCate->Release();
 }
 
-Text::String *IO::ConfigFile::GetValue(NotNullPtr<Text::String> name)
+Optional<Text::String> IO::ConfigFile::GetValue(NotNullPtr<Text::String> name)
 {
 	return GetCateValue(this->defCate, name);
 }
 
-Text::String *IO::ConfigFile::GetValue(Text::CStringNN name)
+Optional<Text::String> IO::ConfigFile::GetValue(Text::CStringNN name)
 {
 	return GetCateValue(this->defCate->ToCString(), name);
 }
@@ -144,7 +144,7 @@ UOSInt IO::ConfigFile::GetCateCount() const
 	return this->cfgVals.GetCount();
 }
 
-UOSInt IO::ConfigFile::GetCateList(Data::ArrayListNN<Text::String> *cateList, Bool withEmpty)
+UOSInt IO::ConfigFile::GetCateList(NotNullPtr<Data::ArrayListNN<Text::String>> cateList, Bool withEmpty)
 {
 	UOSInt retCnt = 0;
 	Data::FastStringKeyIterator<Data::FastStringMap<Text::String*>*> it = this->cfgVals.KeyIterator();

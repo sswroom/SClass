@@ -1169,10 +1169,8 @@ SSWR::SMonitor::SMonitorSvrCore::SMonitorSvrCore(NotNullPtr<IO::Writer> writer, 
 	this->initErr = false;
 
 	IO::ConfigFile *cfg = IO::IniFile::ParseProgConfig(0);
-	NotNullPtr<Text::String> nns;
-	Text::String *s;
-	Text::String *s2;
-	Text::String *s3;
+	NotNullPtr<Text::String> s;
+	NotNullPtr<Text::String> s2;
 	UInt16 port;
 	Text::StringBuilderUTF8 sb;
 	{
@@ -1200,8 +1198,7 @@ SSWR::SMonitor::SMonitorSvrCore::SMonitorSvrCore(NotNullPtr<IO::Writer> writer, 
 	}
 	else
 	{
-		s = cfg->GetValue(CSTR("LogDir"));
-		if (s)
+		if (cfg->GetValue(CSTR("LogDir")).SetTo(s))
 		{
 			sb.ClearStr();
 			sb.Append(s);
@@ -1216,8 +1213,7 @@ SSWR::SMonitor::SMonitorSvrCore::SMonitorSvrCore(NotNullPtr<IO::Writer> writer, 
 			this->log.AddFileLog(sb.ToCString(), IO::LogHandler::LogType::PerDay, IO::LogHandler::LogGroup::PerMonth, IO::LogHandler::LogLevel::Raw, "yyyy-MM-dd HH:mm:ss.fff", false);
 		}
 
-		s = cfg->GetValue(CSTR("NotifyPwd"));
-		if (s)
+		if (cfg->GetValue(CSTR("NotifyPwd")).SetTo(s))
 		{
 			this->notifyPwd = s->Clone().Ptr();
 		}
@@ -1226,8 +1222,7 @@ SSWR::SMonitor::SMonitorSvrCore::SMonitorSvrCore(NotNullPtr<IO::Writer> writer, 
 			writer->WriteLineC(UTF8STRC("NotifyPwd not found"));
 			this->initErr = true;
 		}
-		s = cfg->GetValue(CSTR("DataDir"));
-		if (s)
+		if (cfg->GetValue(CSTR("DataDir")).SetTo(s))
 		{
 			if (!s->EndsWith(IO::Path::PATH_SEPERATOR))
 			{
@@ -1242,11 +1237,9 @@ SSWR::SMonitor::SMonitorSvrCore::SMonitorSvrCore(NotNullPtr<IO::Writer> writer, 
 			}
 		}
 
-		s = cfg->GetValue(CSTR("MySQLServer"));
-		s2 = cfg->GetValue(CSTR("MySQLDB"));
-		if (nns.Set(s) && s2)
+		if (cfg->GetValue(CSTR("MySQLServer")).SetTo(s) && cfg->GetValue(CSTR("MySQLDB")).SetTo(s2))
 		{
-			this->db = Net::MySQLTCPClient::CreateDBTool(this->sockf, nns, s2, Text::String::OrEmpty(cfg->GetValue(CSTR("UID"))), Text::String::OrEmpty(cfg->GetValue(CSTR("PWD"))), this->log, CSTR("DB: "));
+			this->db = Net::MySQLTCPClient::CreateDBTool(this->sockf, s, s2, Text::String::OrEmpty(cfg->GetValue(CSTR("UID"))), Text::String::OrEmpty(cfg->GetValue(CSTR("PWD"))), this->log, CSTR("DB: "));
 			NEW_CLASS(this->dbMut, Sync::Mutex());
 			if (this->db == 0)
 			{
@@ -1259,12 +1252,9 @@ SSWR::SMonitor::SMonitorSvrCore::SMonitorSvrCore(NotNullPtr<IO::Writer> writer, 
 		}
 		else
 		{
-			s = cfg->GetValue(CSTR("DSN"));
-			s2 = cfg->GetValue(CSTR("UID"));
-			s3 = cfg->GetValue(CSTR("PWD"));
-			if (nns.Set(s))
+			if (cfg->GetValue(CSTR("DSN")).SetTo(s))
 			{
-				this->db = DB::ODBCConn::CreateDBTool(nns, s2, s3, cfg->GetValue(CSTR("Schema")), this->log, CSTR("DB: "));
+				this->db = DB::ODBCConn::CreateDBTool(s, cfg->GetValue(CSTR("UID")), cfg->GetValue(CSTR("PWD")), cfg->GetValue(CSTR("Schema")), this->log, CSTR("DB: ")).OrNull();
 				NEW_CLASS(this->dbMut, Sync::Mutex());
 				if (this->db == 0)
 				{
@@ -1281,11 +1271,9 @@ SSWR::SMonitor::SMonitorSvrCore::SMonitorSvrCore(NotNullPtr<IO::Writer> writer, 
 			}
 		}
 
-		s = cfg->GetValue(CSTR("WebPort"));
-		s2 = cfg->GetValue(CSTR("HTTPFiles"));
-		if (s)
+		if (cfg->GetValue(CSTR("WebPort")).SetTo(s))
 		{
-			if (s2 && IO::Path::GetPathType(s2->ToCString()) == IO::Path::PathType::Directory)
+			if (cfg->GetValue(CSTR("HTTPFiles")).SetTo(s2) && IO::Path::GetPathType(s2->ToCString()) == IO::Path::PathType::Directory)
 			{
 				if (s->ToUInt16(port) && port > 0)
 				{
@@ -1306,10 +1294,10 @@ SSWR::SMonitor::SMonitorSvrCore::SMonitorSvrCore(NotNullPtr<IO::Writer> writer, 
 					shdlr->HandlePath(CSTR("/files"), fileshdlr, true);
 					hdlr->HandlePath(CSTR("/monitor"), shdlr, true);
 					hdlr->HandlePath(CSTR("/benchmark"), benchhdlr, true);
-					if ((s = cfg->GetValue(CSTR("VAMSLogPath"))) != 0)
+					if (cfg->GetValue(CSTR("VAMSLogPath")).SetTo(s))
 					{
 						NEW_CLASS(btList, SSWR::VAMS::VAMSBTList());
-						NEW_CLASSNN(vamsHdlr, SSWR::VAMS::VAMSBTWebHandler(Text::String::OrEmpty(s), btList));
+						NEW_CLASSNN(vamsHdlr, SSWR::VAMS::VAMSBTWebHandler(s, btList));
 						hdlr->HandlePath(CSTR("/vams"), vamsHdlr, true);
 					}
 
@@ -1354,8 +1342,7 @@ SSWR::SMonitor::SMonitorSvrCore::SMonitorSvrCore(NotNullPtr<IO::Writer> writer, 
 			writer->WriteLineC(UTF8STRC("Config WebPort not found"));
 		}
 
-		s = cfg->GetValue(CSTR("ClientPort"));
-		if (s)
+		if (cfg->GetValue(CSTR("ClientPort")).SetTo(s))
 		{
 			if (s->ToUInt16(port) && port > 0)
 			{
@@ -1379,8 +1366,7 @@ SSWR::SMonitor::SMonitorSvrCore::SMonitorSvrCore(NotNullPtr<IO::Writer> writer, 
 			writer->WriteLineC(UTF8STRC("Config ClientPort not found"));
 		}
 
-		s = cfg->GetValue(CSTR("DataUDPPort"));
-		if (s)
+		if (cfg->GetValue(CSTR("DataUDPPort")).SetTo(s))
 		{
 			if (s->ToUInt16(port) && port > 0)
 			{

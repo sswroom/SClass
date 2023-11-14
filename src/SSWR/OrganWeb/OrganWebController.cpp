@@ -934,14 +934,14 @@ void SSWR::OrganWeb::OrganWebController::WriteDataFiles(IO::Writer *writer, Data
 	}
 }
 
-Text::CString SSWR::OrganWeb::OrganWebController::LangGetValue(IO::ConfigFile *lang, const UTF8Char *name, UOSInt nameLen)
+Text::CStringNN SSWR::OrganWeb::OrganWebController::LangGetValue(IO::ConfigFile *lang, Text::CStringNN name)
 {
 	if (lang == 0)
-		return {name, nameLen};
-	Text::String *s = lang->GetValue({name, nameLen});
-	if (s)
+		return name;
+	NotNullPtr<Text::String> s;
+	if (lang->GetValue(name).SetTo(s))
 		return s->ToCString();
-	return {name, nameLen};
+	return name;
 }
 
 SSWR::OrganWeb::OrganWebController::OrganWebController(Net::WebServer::MemoryWebSessionManager *sessMgr, OrganWebEnv *env, UInt32 scnSize) : Net::WebServer::WebController(CSTR(""))

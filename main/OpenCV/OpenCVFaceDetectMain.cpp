@@ -195,37 +195,37 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	IO::ConfigFile *cfg = IO::IniFile::ParseProgConfig(0);
 	if (cfg)
 	{
-		Text::String *s;
-		if ((s = cfg->GetValue(CSTR("FrameSkip"))) != 0)
+		NotNullPtr<Text::String> s;
+		if (cfg->GetValue(CSTR("FrameSkip")).SetTo(s))
 		{
 			frameSkip = s->ToOSInt();
 		}
-		if ((s = cfg->GetValue(CSTR("RangeLeft"))) != 0)
+		if (cfg->GetValue(CSTR("RangeLeft")).SetTo(s))
 		{
 			rangeLeft = s->ToOSInt();
 		}
-		if ((s = cfg->GetValue(CSTR("RangeTop"))) != 0)
+		if (cfg->GetValue(CSTR("RangeTop")).SetTo(s))
 		{
 			rangeTop = s->ToOSInt();
 		}
-		if ((s = cfg->GetValue(CSTR("RangeRight"))) != 0)
+		if (cfg->GetValue(CSTR("RangeRight")).SetTo(s))
 		{
 			rangeRight = s->ToOSInt();
 		}
-		if ((s = cfg->GetValue(CSTR("RangeBottom"))) != 0)
+		if (cfg->GetValue(CSTR("RangeBottom")).SetTo(s))
 		{
 			rangeBottom = s->ToOSInt();
 		}
-		if ((s = cfg->GetValue(CSTR("PreferedFormat"))) != 0)
+		if (cfg->GetValue(CSTR("PreferedFormat")).SetTo(s))
 		{
 			if (s->leng == 4)
 			preferedFormat = *(UInt32*)s->v;
 		}
-		if ((s = cfg->GetValue(CSTR("PreferedWidth"))) != 0)
+		if (cfg->GetValue(CSTR("PreferedWidth")).SetTo(s))
 		{
 			preferedWidth = s->ToUOSInt();
 		}
-		if ((s = cfg->GetValue(CSTR("PreferedHeight"))) != 0)
+		if (cfg->GetValue(CSTR("PreferedHeight")).SetTo(s))
 		{
 			preferedHeight = s->ToUOSInt();
 		}

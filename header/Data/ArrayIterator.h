@@ -9,6 +9,7 @@ namespace Data
 		const T *arr;
 		UOSInt cnt;
 	public:
+		ArrayIterator() = default;
 		ArrayIterator(const T *arr, UOSInt cnt)
 		{
 			this->arr = arr;

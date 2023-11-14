@@ -114,7 +114,7 @@ Bool Crypto::Encrypt::JasyptEncryptor::Decrypt(IO::ConfigFile *cfg)
 	UInt8 buff[256];
 	UOSInt buffSize;
 	UOSInt i = 0;
-	UOSInt j = cfg->GetCateList(&cateList, true);
+	UOSInt j = cfg->GetCateList(cateList, true);
 	while (i < j)
 	{
 		cate = cateList.GetItem(i);

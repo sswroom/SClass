@@ -780,17 +780,17 @@ void SSWR::OrganWeb::OrganWebEnv::ClearUsers()
 	this->dataFileMap.Clear();
 }
 
-SSWR::OrganWeb::OrganWebEnv::OrganWebEnv(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, NotNullPtr<IO::LogTool> log, DB::DBTool *db, Text::String *imageDir, UInt16 port, UInt16 sslPort, Text::String *cacheDir, Text::String *dataDir, UInt32 scnSize, Text::String *reloadPwd, Int32 unorganizedGroupId, NotNullPtr<Media::DrawEngine> eng, Text::CString osmCachePath)
+SSWR::OrganWeb::OrganWebEnv::OrganWebEnv(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, NotNullPtr<IO::LogTool> log, DB::DBTool *db, Optional<Text::String> imageDir, UInt16 port, UInt16 sslPort, Optional<Text::String> cacheDir, Optional<Text::String> dataDir, UInt32 scnSize, Optional<Text::String> reloadPwd, Int32 unorganizedGroupId, NotNullPtr<Media::DrawEngine> eng, Text::CString osmCachePath)
 {
-	this->imageDir = SCOPY_STRING(imageDir);
+	this->imageDir = Text::String::CopyOrNull(imageDir);
 	this->sockf = sockf;
 	this->ssl = ssl;
 	this->log = log;
 	this->scnSize = scnSize;
-	this->dataDir = SCOPY_STRING(dataDir);
+	this->dataDir = Text::String::CopyOrNull(dataDir);
 	this->unorganizedGroupId = unorganizedGroupId;
-	this->cacheDir = SCOPY_STRING(cacheDir);
-	this->reloadPwd = SCOPY_STRING(reloadPwd);
+	this->cacheDir = Text::String::CopyOrNull(cacheDir);
+	this->reloadPwd = Text::String::CopyOrNull(reloadPwd);
 	this->webHdlr = 0;
 	this->selectedBook = 0;
 

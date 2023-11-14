@@ -157,11 +157,18 @@ NotNullPtr<Text::String> Text::String::NewEmpty()
 	return emptyStr.Clone();
 }
 
-NotNullPtr<Text::String> Text::String::OrEmpty(Text::String *s)
+NotNullPtr<Text::String> Text::String::OrEmpty(Optional<Text::String> s)
 {
 	NotNullPtr<Text::String> ret;
-	if (ret.Set(s)) return ret;
+	if (s.SetTo(ret)) return ret;
 	return emptyStr.Clone();
+}
+
+Text::String *Text::String::CopyOrNull(Optional<Text::String> s)
+{
+	NotNullPtr<Text::String> ret;
+	if (s.SetTo(ret)) return ret->Clone().Ptr();
+	return 0;
 }
 
 void Text::String::Release()

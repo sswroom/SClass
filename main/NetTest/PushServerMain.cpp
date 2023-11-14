@@ -18,9 +18,9 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 		console.WriteLineC(UTF8STRC("Config file not found"));
 		return 1;
 	}
-	Text::String *sPort = cfg->GetValue(CSTR("Port"));
-	Text::String *fcmKey = cfg->GetValue(CSTR("FCMKey"));
-	if (sPort == 0)
+	NotNullPtr<Text::String> sPort;
+	NotNullPtr<Text::String> fcmKey;
+	if (!cfg->GetValue(CSTR("Port")).SetTo(sPort))
 	{
 		DEL_CLASS(cfg);
 		console.WriteLineC(UTF8STRC("Config Port missing"));
@@ -33,7 +33,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 		console.WriteLineC(UTF8STRC("Error in parsing port number"));
 		return 3;
 	}
-	if (fcmKey == 0)
+	if (!cfg->GetValue(CSTR("FCMKey")).SetTo(fcmKey))
 	{
 		DEL_CLASS(cfg);
 		console.WriteLineC(UTF8STRC("Config FCMKey missing"));

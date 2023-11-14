@@ -69,7 +69,7 @@ namespace Net
 		void SendExecuteStmt(UInt32 stmtId);
 		void SendStmtClose(UInt32 stmtId);
 	public:
-		MySQLTCPClient(NotNullPtr<Net::SocketFactory> sockf, NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, NotNullPtr<Text::String> userName, NotNullPtr<Text::String> password, Text::String *database);
+		MySQLTCPClient(NotNullPtr<Net::SocketFactory> sockf, NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, NotNullPtr<Text::String> userName, NotNullPtr<Text::String> password, Optional<Text::String> database);
 		MySQLTCPClient(NotNullPtr<Net::SocketFactory> sockf, NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, Text::CString userName, Text::CString password, Text::CString database);
 		virtual ~MySQLTCPClient();
 
@@ -114,7 +114,7 @@ namespace Net
 		NotNullPtr<Text::String> GetConnPWD() const;
 
 		static UInt16 GetDefaultPort();
-		static DB::DBTool *CreateDBTool(NotNullPtr<Net::SocketFactory> sockf, NotNullPtr<Text::String> serverName, Text::String *dbName, NotNullPtr<Text::String> uid, NotNullPtr<Text::String> pwd, NotNullPtr<IO::LogTool> log, Text::CString logPrefix);
+		static DB::DBTool *CreateDBTool(NotNullPtr<Net::SocketFactory> sockf, NotNullPtr<Text::String> serverName, Optional<Text::String> dbName, NotNullPtr<Text::String> uid, NotNullPtr<Text::String> pwd, NotNullPtr<IO::LogTool> log, Text::CString logPrefix);
 		static DB::DBTool *CreateDBTool(NotNullPtr<Net::SocketFactory> sockf, Text::CStringNN serverName, Text::CString dbName, Text::CString uid, Text::CString pwd, NotNullPtr<IO::LogTool> log, Text::CString logPrefix);
 	};
 }

@@ -5,8 +5,8 @@
 DB::DBTool *DB::DBConfig::LoadFromConfig(NotNullPtr<Net::SocketFactory> sockf, IO::ConfigFile *cfg, NotNullPtr<IO::LogTool> log)
 {
 	Text::CString logPrefix = CSTR("DB: ");
-	Text::String *s = cfg->GetValue(CSTR("DBType"));
-	if (s == 0)
+	NotNullPtr<Text::String> s;
+	if (!cfg->GetValue(CSTR("DBType")).SetTo(s))
 	{
 		log->LogMessage(CSTR("DBType not found in config"), IO::LogHandler::LogLevel::Error);
 		return 0;
@@ -15,14 +15,14 @@ DB::DBTool *DB::DBConfig::LoadFromConfig(NotNullPtr<Net::SocketFactory> sockf, I
 	if (s->Equals(UTF8STRC("MSSQL")))
 	{
 		UInt16 port;
-		Text::String *serverHost = cfg->GetValue(CSTR("MSSQLHost"));
-		Text::String *sPort = cfg->GetValue(CSTR("MSSQLPort"));
-		Text::String *sSSL = cfg->GetValue(CSTR("MSSQLEncrypt"));
-		Text::String *database = cfg->GetValue(CSTR("MSSQLDatabase"));
-		Text::String *userName = cfg->GetValue(CSTR("MSSQLUser"));
-		Text::String *password = cfg->GetValue(CSTR("MSSQLPwd"));
+		NotNullPtr<Text::String> serverHost;
+		NotNullPtr<Text::String> sPort;
+		Text::String *sSSL = cfg->GetValue(CSTR("MSSQLEncrypt")).OrNull();
+		NotNullPtr<Text::String> database;
+		NotNullPtr<Text::String> userName;
+		NotNullPtr<Text::String> password;
 		Net::SocketUtil::AddressInfo addr;
-		if (serverHost == 0)
+		if (!cfg->GetValue(CSTR("MSSQLHost")).SetTo(serverHost))
 		{
 			log->LogMessage(CSTR("MSSQLHost is missing"), IO::LogHandler::LogLevel::Error);
 			return 0;
@@ -32,7 +32,7 @@ DB::DBTool *DB::DBConfig::LoadFromConfig(NotNullPtr<Net::SocketFactory> sockf, I
 			log->LogMessage(CSTR("MSSQLHost is not valid"), IO::LogHandler::LogLevel::Error);
 			return 0;
 		}
-		if (sPort == 0)
+		if (!cfg->GetValue(CSTR("MSSQLPort")).SetTo(sPort))
 		{
 			log->LogMessage(CSTR("MSSQLPort is missing"), IO::LogHandler::LogLevel::Error);
 			return 0;
@@ -42,17 +42,17 @@ DB::DBTool *DB::DBConfig::LoadFromConfig(NotNullPtr<Net::SocketFactory> sockf, I
 			log->LogMessage(CSTR("MSSQLPort is not valid"), IO::LogHandler::LogLevel::Error);
 			return 0;
 		}
-		if (database == 0 || database->leng == 0)
+		if (!cfg->GetValue(CSTR("MSSQLDatabase")).SetTo(database) || database->leng == 0)
 		{
 			log->LogMessage(CSTR("MSSQLDatabase is missing"), IO::LogHandler::LogLevel::Error);
 			return 0;
 		}
-		if (userName == 0 || userName->leng == 0)
+		if (!cfg->GetValue(CSTR("MSSQLUser")).SetTo(userName) || userName->leng == 0)
 		{
 			log->LogMessage(CSTR("MSSQLUser is missing"), IO::LogHandler::LogLevel::Error);
 			return 0;
 		}
-		if (password == 0 || password->leng == 0)
+		if (!cfg->GetValue(CSTR("MSSQLPwd")).SetTo(password) || password->leng == 0)
 		{
 			log->LogMessage(CSTR("MSSQLPwd is missing"), IO::LogHandler::LogLevel::Error);
 			return 0;

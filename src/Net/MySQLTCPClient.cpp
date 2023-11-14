@@ -2043,7 +2043,7 @@ void Net::MySQLTCPClient::SendStmtClose(UInt32 stmtId)
 	this->cli->Write(sbuff, 9);
 }
 
-Net::MySQLTCPClient::MySQLTCPClient(NotNullPtr<Net::SocketFactory> sockf, NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, NotNullPtr<Text::String> userName, NotNullPtr<Text::String> password, Text::String *database) : DB::DBConn(CSTR("MySQLTCPClient"))
+Net::MySQLTCPClient::MySQLTCPClient(NotNullPtr<Net::SocketFactory> sockf, NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, NotNullPtr<Text::String> userName, NotNullPtr<Text::String> password, Optional<Text::String> database) : DB::DBConn(CSTR("MySQLTCPClient"))
 {
 	this->sockf = sockf;
 	this->recvRunning = false;
@@ -2059,7 +2059,7 @@ Net::MySQLTCPClient::MySQLTCPClient(NotNullPtr<Net::SocketFactory> sockf, NotNul
 	this->lastError = 0;
 	this->userName = userName->Clone();
 	this->password = password->Clone();
-	this->database = SCOPY_STRING(database);
+	this->database = Text::String::CopyOrNull(database);
 	this->cmdSeqNum = 0;
 	this->cmdTCPReader = 0;
 	this->cmdBinReader = 0;
@@ -2576,7 +2576,7 @@ UInt16 Net::MySQLTCPClient::GetDefaultPort()
 	return 3306;
 }
 
-DB::DBTool *Net::MySQLTCPClient::CreateDBTool(NotNullPtr<Net::SocketFactory> sockf, NotNullPtr<Text::String> serverName, Text::String *dbName, NotNullPtr<Text::String> uid, NotNullPtr<Text::String> pwd, NotNullPtr<IO::LogTool> log, Text::CString logPrefix)
+DB::DBTool *Net::MySQLTCPClient::CreateDBTool(NotNullPtr<Net::SocketFactory> sockf, NotNullPtr<Text::String> serverName, Optional<Text::String> dbName, NotNullPtr<Text::String> uid, NotNullPtr<Text::String> pwd, NotNullPtr<IO::LogTool> log, Text::CString logPrefix)
 {
 	NotNullPtr<Net::MySQLTCPClient> conn;
 	DB::DBTool *db;

@@ -35,13 +35,12 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 {
 	IO::ConsoleWriter console;
 	IO::ConfigFile *cfg = IO::IniFile::ParseProgConfig(0);
-	Text::String *s;
+	NotNullPtr<Text::String> s;
 	UInt16 pinNum;
 	if (cfg)
 	{
 		pinNum = 0;
-		s = cfg->GetValue(CSTR("GPIOPin"));
-		if (s && s->ToUInt16(pinNum))
+		if (cfg->GetValue(CSTR("GPIOPin")).SetTo(s) && s->ToUInt16(pinNum))
 		{
 			if (pinNum > 0)
 			{

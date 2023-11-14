@@ -25,7 +25,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcLang(NotNullPtr<Net::We
 		while (it.HasNext())
 		{
 			key = it.Next();
-			json.ObjectAddStr(key->ToCString(), lang->GetValue(key));
+			json.ObjectAddStr(key->ToCString(), lang->GetValue(key).OrNull());
 		}
 	}
 	return me->ResponseJSON(req, resp, 0, json.Build());

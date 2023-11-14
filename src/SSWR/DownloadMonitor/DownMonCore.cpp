@@ -488,21 +488,21 @@ SSWR::DownloadMonitor::DownMonCore::DownMonCore() : thread(CheckThread, this, CS
 	IO::ConfigFile *cfg = IO::IniFile::ParseProgConfig(0);
 	if (cfg)
 	{
-		Text::String *s;
-		s = cfg->GetValue(CSTR("DownPath"));
-		this->downPath = SCOPY_STRING(s);
-		s = cfg->GetValue(CSTR("SuccPath"));
-		this->succPath = SCOPY_STRING(s);
-		s = cfg->GetValue(CSTR("ErrPath"));
-		this->errPath = SCOPY_STRING(s);
-		s = cfg->GetValue(CSTR("YTPath"));
-		this->ytPath = SCOPY_STRING(s);
-		s = cfg->GetValue(CSTR("FFMPEGPath"));
-		this->ffmpegPath = SCOPY_STRING(s);
-		s = cfg->GetValue(CSTR("FirefoxPath"));
-		this->firefoxPath = SCOPY_STRING(s);
-		s = cfg->GetValue(CSTR("ListFile"));
-		this->listFile = SCOPY_STRING(s);
+		NotNullPtr<Text::String> s;
+		if (cfg->GetValue(CSTR("DownPath")).SetTo(s))
+			this->downPath = s->Clone().Ptr();
+		if (cfg->GetValue(CSTR("SuccPath")).SetTo(s))
+			this->succPath = s->Clone().Ptr();
+		if (cfg->GetValue(CSTR("ErrPath")).SetTo(s))
+			this->errPath = s->Clone().Ptr();
+		if (cfg->GetValue(CSTR("YTPath")).SetTo(s))
+			this->ytPath = s->Clone().Ptr();
+		if (cfg->GetValue(CSTR("FFMPEGPath")).SetTo(s))
+			this->ffmpegPath = s->Clone().Ptr();
+		if (cfg->GetValue(CSTR("FirefoxPath")).SetTo(s))
+			this->firefoxPath = s->Clone().Ptr();
+		if (cfg->GetValue(CSTR("ListFile")).SetTo(s))
+			this->listFile = s->Clone().Ptr();
 	}
 	if (this->downPath == 0) this->downPath = Text::String::New(UTF8STRC("D:\\DownTemp")).Ptr();
 	if (this->succPath == 0) this->succPath = Text::String::New(UTF8STRC("\\\\192.168.0.21\\disk4\\DownVideo\\ToCheck")).Ptr();

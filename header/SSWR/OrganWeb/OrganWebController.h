@@ -38,7 +38,7 @@ namespace SSWR
 			void WritePickObjs(NotNullPtr<Sync::RWMutexUsage> mutUsage, IO::Writer *writer, RequestEnv *env, const UTF8Char *url, Bool allowMerge);
 			void WriteDataFiles(IO::Writer *writer, Data::FastMap<Data::Timestamp, DataFileInfo*> *fileMap, Int64 startTimeTicks, Int64 endTimeTicks);
 
-			static Text::CString LangGetValue(IO::ConfigFile *lang, const UTF8Char *name, UOSInt nameLen);
+			static Text::CStringNN LangGetValue(IO::ConfigFile *lang, Text::CStringNN name);
 		public:
 			OrganWebController(Net::WebServer::MemoryWebSessionManager *sessMgr, OrganWebEnv *env, UInt32 scnSize);
 			virtual ~OrganWebController();

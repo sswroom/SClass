@@ -153,8 +153,8 @@ Text::Cpp::CppEnv::CppEnv(Text::CodeProject *proj, IO::ConfigFile *cfg)
 		this->vsv = ((Text::VSProject*)proj)->GetVSVersion();
 		if (cfg)
 		{
-			Text::String *inclDir = cfg->GetValue(CSTR("AdditionalIncludeDirectories"));
-			if (inclDir)
+			NotNullPtr<Text::String> inclDir;
+			if (cfg->GetValue(CSTR("AdditionalIncludeDirectories")).SetTo(inclDir))
 			{
 				Text::PString sarr[2];
 				UOSInt cnt;

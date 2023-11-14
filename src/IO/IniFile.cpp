@@ -118,36 +118,33 @@ Bool IO::IniFile::SaveConfig(IO::Writer *writer, IO::ConfigFile *cfg)
 	Data::ArrayListNN<Text::String> cateList;
 	Data::ArrayListNN<Text::String> keyList;
 	NotNullPtr<Text::String> s;
-	Text::String *s2;
+	NotNullPtr<Text::String> s2;
 	Text::String *s3;
-	UOSInt i;
-	UOSInt j;
 	cfg->GetKeys((Text::String*)0, keyList);
+	Data::ArrayIterator<NotNullPtr<Text::String>> itCate;
 	Data::ArrayIterator<NotNullPtr<Text::String>> it = keyList.Iterator();
 	while (it.HasNext())
 	{
 		s = it.Next();
 		writer->WriteStrC(s->v, s->leng);
 		writer->WriteStrC(UTF8STRC("="));
-		s2 = cfg->GetValue(s);
-		if (s2)
+		if (cfg->GetValue(s).SetTo(s2))
 			writer->WriteLineC(s2->v, s2->leng);
 		else
 			writer->WriteLine();
 	}
-	cfg->GetCateList(&cateList, false);
-	i = 0;
-	j = cateList.GetCount();
-	while (i < j)
+	cfg->GetCateList(cateList, false);
+	itCate = cateList.Iterator();
+	while (itCate.HasNext())
 	{
-		s2 = cateList.GetItem(i);
+		s2 = itCate.Next();
 		writer->WriteLine();
 		writer->WriteStrC(UTF8STRC("["));
 		writer->WriteStrC(s2->v, s2->leng);
 		writer->WriteLineC(UTF8STRC("]"));
 
 		keyList.Clear();
-		cfg->GetKeys(s2, keyList);
+		cfg->GetKeys(s2.Ptr(), keyList);
 		it = keyList.Iterator();
 		while (it.HasNext())
 		{
@@ -160,7 +157,6 @@ Bool IO::IniFile::SaveConfig(IO::Writer *writer, IO::ConfigFile *cfg)
 			else
 				writer->WriteLine();
 		}
-		i++;
 	}
 	return true;
 }

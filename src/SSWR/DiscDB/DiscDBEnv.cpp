@@ -133,17 +133,16 @@ SSWR::DiscDB::DiscDBEnv::DiscDBEnv()
 	cfg = IO::IniFile::ParseProgConfig(0);
 	if (cfg)
 	{
-		Text::String *s;
 		NotNullPtr<Text::String> str;
-		if (str.Set(cfg->GetValue(CSTR("DSN"))))
+		if (cfg->GetValue(CSTR("DSN")).SetTo(str))
 		{
 			this->db = DB::ODBCConn::CreateDBTool(str,
 				cfg->GetValue(CSTR("UID")),
 				cfg->GetValue(CSTR("PWD")),
 				cfg->GetValue(CSTR("Schema")),
-				this->log, CSTR("DB: "));
+				this->log, CSTR("DB: ")).OrNull();
 		}
-		else if (str.Set(cfg->GetValue(CSTR("MySQLServer"))))
+		else if (cfg->GetValue(CSTR("MySQLServer")).SetTo(str))
 		{
 			this->db = Net::MySQLTCPClient::CreateDBTool(this->sockf,
 				str,
@@ -152,9 +151,9 @@ SSWR::DiscDB::DiscDBEnv::DiscDBEnv()
 				Text::String::OrEmpty(cfg->GetValue(CSTR("PWD"))),
 				this->log, CSTR("DB: "));
 		}
-		else if ((s = cfg->GetValue(CSTR("MDBFile"))) != 0)
+		else if (cfg->GetValue(CSTR("MDBFile")).SetTo(str))
 		{
-			this->db = DB::MDBFileConn::CreateDBTool(s->ToCString(), this->log, CSTR("DB: "));
+			this->db = DB::MDBFileConn::CreateDBTool(str->ToCString(), this->log, CSTR("DB: "));
 		}
 		DEL_CLASS(cfg);
 

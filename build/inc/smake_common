@@ -1206,6 +1206,7 @@ GUITest9.o: ../../main/UI/GUITest9.cpp
 
 Handles.h:
 NotNullPtr.h:
+Optional.h:
 OptOut.h:
 OutParam.h:
 sdefs.h:

@@ -766,9 +766,9 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	{
 		Crypto::Encrypt::JasyptEncryptor jasypt(Crypto::Encrypt::JasyptEncryptor::KA_PBEWITHHMACSHA512, Crypto::Encrypt::JasyptEncryptor::CA_AES256, key.v, key.leng);
 		jasypt.Decrypt(cfg);
-		DB::DBTool *db = DB::JavaDBUtil::OpenJDBC(cfg->GetValue(CSTR("spring.datasource.url")),
-			cfg->GetValue(CSTR("spring.datasource.username")),
-			cfg->GetValue(CSTR("spring.datasource.password")), log, sockf);
+		DB::DBTool *db = DB::JavaDBUtil::OpenJDBC(cfg->GetValue(CSTR("spring.datasource.url")).OrNull(),
+			cfg->GetValue(CSTR("spring.datasource.username")).OrNull(),
+			cfg->GetValue(CSTR("spring.datasource.password")).OrNull(), log, sockf);
 //		console.WriteLine(Text::String::OrEmpty(cfg->GetValue(UTF8STRC("spring.datasource.url")))->v);
 //		console.WriteLine(Text::String::OrEmpty(cfg->GetValue(UTF8STRC("spring.datasource.username")))->v);
 //		console.WriteLine(Text::String::OrEmpty(cfg->GetValue(UTF8STRC("spring.datasource.password")))->v);

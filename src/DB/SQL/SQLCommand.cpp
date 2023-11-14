@@ -24,11 +24,11 @@ DB::SQL::SQLCommand *DB::SQL::SQLCommand::Parse(const UTF8Char *sql, DB::SQLType
 	sql = SQLUtil::ParseNextWord(sql, sb, sqlType);
 	if (sb.EqualsICase(UTF8STRC("CREATE")))
 	{
-		Bool isVirtual = false;
+//		Bool isVirtual = false;
 		sql = SQLUtil::ParseNextWord(sql, sb, sqlType);
 		if (sb.EqualsICase(UTF8STRC("VIRTUAL")))
 		{
-			isVirtual = true;
+//			isVirtual = true;
 			sql = SQLUtil::ParseNextWord(sql, sb, sqlType);
 		}
 		if (sb.EqualsICase(UTF8STRC("TABLE")))

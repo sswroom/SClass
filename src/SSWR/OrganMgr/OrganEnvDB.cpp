@@ -53,30 +53,26 @@ SSWR::OrganMgr::OrganEnvDB::OrganEnvDB() : OrganEnv()
 		this->errType = ERR_CONFIG;
 		return;
 	}
-	NotNullPtr<Text::String> nns;
-	Text::String *cfgMySQLHost;
-	Text::String *cfgMySQLDB;
-	Text::String *cfgDSN;
-	Text::String *cfgUID;
-	Text::String *cfgPassword;
+	NotNullPtr<Text::String> cfgMySQLHost;
+	NotNullPtr<Text::String> cfgMySQLDB;
+	NotNullPtr<Text::String> cfgDSN;
+	Optional<Text::String> cfgUID;
+	Optional<Text::String> cfgPassword;
 
-	cfgMySQLHost = cfg->GetValue(CSTR("MySQLHost"));
-	cfgMySQLDB = cfg->GetValue(CSTR("MySQLDB"));
-	cfgDSN = cfg->GetValue(CSTR("DBDSN"));
 	cfgUID = cfg->GetValue(CSTR("DBUID"));
 	cfgPassword = cfg->GetValue(CSTR("DBPwd"));
-	this->cfgImgDirBase = cfg->GetValue(CSTR("ImageDir"));
-	this->cfgDataPath = cfg->GetValue(CSTR("DataDir"));
-	this->cfgCacheDir = cfg->GetValue(CSTR("CacheDir"));
-	this->cfgMapFont = cfg->GetValue(CSTR("MapFont"));
-	Text::String *userId = cfg->GetValue(CSTR("WebUser"));
+	this->cfgImgDirBase = cfg->GetValue(CSTR("ImageDir")).OrNull();
+	this->cfgDataPath = cfg->GetValue(CSTR("DataDir")).OrNull();
+	this->cfgCacheDir = cfg->GetValue(CSTR("CacheDir")).OrNull();
+	this->cfgMapFont = cfg->GetValue(CSTR("MapFont")).OrNull();
+	NotNullPtr<Text::String> userId;
 
 	if (this->cfgImgDirBase == 0 || this->cfgImgDirBase->leng == 0 || this->cfgDataPath == 0 || this->cfgDataPath->leng == 0 || this->cfgCacheDir == 0 || this->cfgCacheDir->leng == 0)
 	{
 		this->errType = ERR_CONFIG;
 		return;
 	}
-	if (!userId->ToInt32(this->userId))
+	if (!cfg->GetValue(CSTR("WebUser")).SetTo(userId) || !userId->ToInt32(this->userId))
 	{
 		this->errType = ERR_CONFIG;
 		return;
@@ -88,13 +84,13 @@ SSWR::OrganMgr::OrganEnvDB::OrganEnvDB() : OrganEnv()
 		this->cfgImgDirBase->v[i - 1] = 0;
 	}
 	this->log.AddFileLog(CSTR("OrganMgr.log"), IO::LogHandler::LogType::SingleFile, IO::LogHandler::LogGroup::NoGroup, IO::LogHandler::LogLevel::Raw, 0, false);
-	if (cfgMySQLDB && nns.Set(cfgMySQLHost))
+	if (cfg->GetValue(CSTR("MySQLDB")).SetTo(cfgMySQLDB) && cfg->GetValue(CSTR("MySQLHost")).SetTo(cfgMySQLHost))
 	{
-		this->db = Net::MySQLTCPClient::CreateDBTool(this->sockf, nns, cfgMySQLDB, Text::String::OrEmpty(cfgUID), Text::String::OrEmpty(cfgPassword), this->log, CSTR_NULL);
+		this->db = Net::MySQLTCPClient::CreateDBTool(this->sockf, cfgMySQLHost, cfgMySQLDB, Text::String::OrEmpty(cfgUID), Text::String::OrEmpty(cfgPassword), this->log, CSTR_NULL);
 	}
-	else if (cfgDSN)
+	else if (cfg->GetValue(CSTR("DBDSN")).SetTo(cfgDSN))
 	{
-		this->db = DB::ODBCConn::CreateDBTool(Text::String::OrEmpty(cfgDSN), cfgUID, cfgPassword, 0, this->log, CSTR_NULL);
+		this->db = DB::ODBCConn::CreateDBTool(cfgDSN, cfgUID, cfgPassword, 0, this->log, CSTR_NULL).OrNull();
 	}
 	NotNullPtr<DB::DBTool> db;
 	if (!db.Set(this->db))

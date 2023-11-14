@@ -246,13 +246,13 @@ SSWR::OrganMgr::OrganEnv::ErrorType SSWR::OrganMgr::OrganEnv::GetErrorType()
 	return this->errType;
 }
 
-Text::CStringNN SSWR::OrganMgr::OrganEnv::GetLang(const UTF8Char *name, UOSInt nameLen)
+Text::CStringNN SSWR::OrganMgr::OrganEnv::GetLang(Text::CStringNN name)
 {
 	if (this->langFile == 0)
-		return {name, nameLen};
-	Text::String *ret = this->langFile->GetValue({name, nameLen});
-	if (ret == 0)
-		return {name, nameLen};
+		return name;
+	NotNullPtr<Text::String> ret;
+	if (!this->langFile->GetValue(name).SetTo(ret))
+		return name;
 	return ret->ToCString();
 }
 

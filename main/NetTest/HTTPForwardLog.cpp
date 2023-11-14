@@ -60,7 +60,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 {
 	UInt16 listenPort = 0;
 	UInt16 forwardPort = 0;
-	Text::String *s;
+	NotNullPtr<Text::String> s;
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 
@@ -72,12 +72,12 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	{
 		Bool succ = true;
 		Net::OSSocketFactory sockf(false);
-		if ((s = cfg->GetValue(CSTR("ListenPort"))) == 0 || !s->ToUInt16(listenPort))
+		if (!cfg->GetValue(CSTR("ListenPort")).SetTo(s) || !s->ToUInt16(listenPort))
 		{
 			console->WriteLineC(UTF8STRC("Config ListenPort is not valid"));
 			succ = false;
 		}
-		if ((s = cfg->GetValue(CSTR("ForwardPort"))) == 0 || !s->ToUInt16(forwardPort))
+		if (!cfg->GetValue(CSTR("ForwardPort")).SetTo(s) || !s->ToUInt16(forwardPort))
 		{
 			console->WriteLineC(UTF8STRC("Config ForwardPort is not valid"));
 			succ = false;

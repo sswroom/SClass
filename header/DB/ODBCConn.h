@@ -53,7 +53,7 @@ namespace DB
 		Bool Connect(Text::CString connStr);
 		ODBCConn(Text::CStringNN sourceName, NotNullPtr<IO::LogTool> log);
 	public:
-		ODBCConn(NotNullPtr<Text::String> dsn, Text::String *uid, Text::String *pwd, Text::String *schema, NotNullPtr<IO::LogTool> log);
+		ODBCConn(NotNullPtr<Text::String> dsn, Optional<Text::String> uid, Optional<Text::String> pwd, Optional<Text::String> schema, NotNullPtr<IO::LogTool> log);
 		ODBCConn(Text::CStringNN dsn, Text::CString uid, Text::CString pwd, Text::CString schema, NotNullPtr<IO::LogTool> log);
 		ODBCConn(Text::CString connStr, Text::CStringNN sourceName, NotNullPtr<IO::LogTool> log);
 		virtual ~ODBCConn();
@@ -98,8 +98,8 @@ namespace DB
 
 		static UOSInt GetDriverList(Data::ArrayListNN<Text::String> *driverList);
 		static IO::ConfigFile *GetDriverInfo(Text::CString driverName);
-		static DBTool *CreateDBTool(NotNullPtr<Text::String> dsn, Text::String *uid, Text::String *pwd, Text::String *schema, NotNullPtr<IO::LogTool> log, Text::CString logPrefix);
-		static DBTool *CreateDBTool(Text::CStringNN dsn, Text::CString uid, Text::CString pwd, Text::CString schema, NotNullPtr<IO::LogTool> log, Text::CString logPrefix);
+		static Optional<DBTool> CreateDBTool(NotNullPtr<Text::String> dsn, Optional<Text::String> uid, Optional<Text::String> pwd, Optional<Text::String> schema, NotNullPtr<IO::LogTool> log, Text::CString logPrefix);
+		static Optional<DBTool> CreateDBTool(Text::CStringNN dsn, Text::CString uid, Text::CString pwd, Text::CString schema, NotNullPtr<IO::LogTool> log, Text::CString logPrefix);
 	};
 
 	class ODBCReader : public DB::DBReader

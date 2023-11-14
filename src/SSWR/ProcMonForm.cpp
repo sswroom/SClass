@@ -349,8 +349,8 @@ SSWR::ProcMonForm::ProcMonForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUIC
 	IO::ConfigFile *cfg = IO::IniFile::ParseProgConfig(0);
 	if (cfg)
 	{
-		Text::String *s = cfg->GetValue(CSTR("NotifyCmd"));
-		if (s)
+		NotNullPtr<Text::String> s;
+		if (cfg->GetValue(CSTR("NotifyCmd")).SetTo(s))
 		{
 			this->notifyCmd = s->Clone().Ptr();
 		}

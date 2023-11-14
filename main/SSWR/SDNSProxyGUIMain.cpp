@@ -29,13 +29,12 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 		cfg = IO::IniFile::ParseProgConfig(0);
 		if (cfg)
 		{
-			Text::String *s;
+			NotNullPtr<Text::String> s;
 			UOSInt i;
 			UInt32 ip;
 			Int32 v;
 			Text::PString sarr[2];
-			s = cfg->GetValue(CSTR("DNS"));
-			if (s)
+			if (cfg->GetValue(CSTR("DNS")).SetTo(s))
 			{
 				Data::ArrayList<UInt32> dnsList;
 				Text::StringBuilderUTF8 sb;
@@ -55,14 +54,12 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 				frm->SetDNSList(&dnsList);
 			}
 
-			s = cfg->GetValue(CSTR("DisableV6"));
-			if (s && s->ToInt32(v))
+			if (cfg->GetValue(CSTR("DisableV6")).SetTo(s) && s->ToInt32(v))
 			{
 				frm->SetDisableV6(v != 0);
 			}
 
-			s = cfg->GetValue(CSTR("Blacklist"));
-			if (s && s->leng != 0)
+			if (cfg->GetValue(CSTR("Blacklist")).SetTo(s) && s->leng != 0)
 			{
 				Text::StringBuilderUTF8 sb;
 				sb.Append(s);

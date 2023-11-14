@@ -75,35 +75,35 @@ SSWR::OrganMgr::OrganUserEditForm::OrganUserEditForm(UI::GUIClientControl *paren
 
 	if (user)
 	{
-		this->SetText(this->env->GetLang(UTF8STRC("UserEditTitleModify")));
+		this->SetText(this->env->GetLang(CSTR("UserEditTitleModify")));
 	}
 	else
 	{
-		this->SetText(this->env->GetLang(UTF8STRC("UserEditTitleModify")));
+		this->SetText(this->env->GetLang(CSTR("UserEditTitleModify")));
 	}
 
-	NEW_CLASS(this->lblUserName, UI::GUILabel(ui, this, this->env->GetLang(UTF8STRC("UserEditUserName"))));
+	NEW_CLASS(this->lblUserName, UI::GUILabel(ui, this, this->env->GetLang(CSTR("UserEditUserName"))));
 	this->lblUserName->SetRect(64, 4, 100, 23, false);
 	NEW_CLASS(this->txtUserName, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtUserName->SetRect(164, 4, 200, 23, false);
-	NEW_CLASS(this->lblPassword, UI::GUILabel(ui, this, this->env->GetLang(UTF8STRC("UserEditPassword"))));
+	NEW_CLASS(this->lblPassword, UI::GUILabel(ui, this, this->env->GetLang(CSTR("UserEditPassword"))));
 	this->lblPassword->SetRect(64, 28, 100, 23, false);
 	NEW_CLASS(this->txtPassword, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtPassword->SetRect(164, 28, 200, 23, false);
 	this->txtPassword->SetPasswordChar('*');
-	NEW_CLASS(this->lblRetype, UI::GUILabel(ui, this, this->env->GetLang(UTF8STRC("UserEditRetype"))));
+	NEW_CLASS(this->lblRetype, UI::GUILabel(ui, this, this->env->GetLang(CSTR("UserEditRetype"))));
 	this->lblRetype->SetRect(64, 52, 100, 23, false);
 	NEW_CLASS(this->txtRetype, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtRetype->SetRect(164, 52, 200, 23, false);
 	this->txtRetype->SetPasswordChar('*');
-	NEW_CLASS(this->lblWatermark, UI::GUILabel(ui, this, this->env->GetLang(UTF8STRC("UserEditWatermark"))));
+	NEW_CLASS(this->lblWatermark, UI::GUILabel(ui, this, this->env->GetLang(CSTR("UserEditWatermark"))));
 	this->lblWatermark->SetRect(64, 76, 100, 23, false);
 	NEW_CLASS(this->txtWatermark, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtWatermark->SetRect(164, 76, 200, 23, false);
-	NEW_CLASS(this->btnOK, UI::GUIButton(ui, this, this->env->GetLang(UTF8STRC("UserEditOk"))));
+	NEW_CLASS(this->btnOK, UI::GUIButton(ui, this, this->env->GetLang(CSTR("UserEditOk"))));
 	this->btnOK->SetRect(164, 108, 75, 23, false);
 	this->btnOK->HandleButtonClick(OnOKClicked, this);
-	NEW_CLASS(this->btnCancel, UI::GUIButton(ui, this, this->env->GetLang(UTF8STRC("UserEditCancel"))));
+	NEW_CLASS(this->btnCancel, UI::GUIButton(ui, this, this->env->GetLang(CSTR("UserEditCancel"))));
 	this->btnCancel->SetRect(244, 108, 75, 23, false);
 	this->btnCancel->HandleButtonClick(OnCancelClicked, this);
 
