@@ -72,6 +72,20 @@ export class Coord2D
 	}
 }
 
+export class Vector3 extends Coord2D
+{
+	constructor(x, y, z)
+	{
+		super(x, y);
+		this.z = z;
+	}
+
+	get height()
+	{
+		return this.z;
+	}
+}
+
 export const EarthEllipsoidType = {
 	OTHER: 0,
 	PLESSIS: 1,

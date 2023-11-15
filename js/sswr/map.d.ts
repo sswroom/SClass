@@ -1,4 +1,6 @@
+import { Vector3 } from "./math";
 import { LineString, Vector2D } from "./geometry";
+import { Timestamp } from "./data";
 
 export let DataFormat: object;
 export function calcDistance(srid: number, geom: Vector2D, x: number, y: number): number;
@@ -22,4 +24,6 @@ export class GPSTrack
 	recs: GPSRecord[];
 	constructor(recs: GPSRecord[]);
 	createLineString(): LineString;
+	getPosByTime(ts: Timestamp): Vector3;
+	getPosByTicks(ticks: number): Vector3;
 }

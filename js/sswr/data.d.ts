@@ -34,12 +34,12 @@ declare class DateTimeUtil
 	static dateValue2TotalDays(d: DateValue): number;
 	static timeValue2Secs(tval: TimeValue): number;
 	static timeValue2Ticks(t: TimeValue): number;
-	static ticks2TimeValue(ticks: number, tzQhr: number): TimeValue;
-	static secs2TimeValue(secs: number, tzQhr: number): TimeValue;
+	static ticks2TimeValue(ticks: number, tzQhr?: number): TimeValue;
+	static secs2TimeValue(secs: number, tzQhr?: number): TimeValue;
 	static totalDays2DateValue(totalDays: number, d: DateValue): void;
-	static instant2TimeValue(secs: number, nanosec: number, tzQhr: number): TimeValue;
+	static instant2TimeValue(secs: number, nanosec: number, tzQhr?: number): TimeValue;
 	static toString(tval: TimeValue, pattern: string): string;
-	static string2TimeValue(dateStr: string, tzQhr: number): TimeValue;
+	static string2TimeValue(dateStr: string, tzQhr?: number): TimeValue;
 	static isYearLeap(year: number): boolean;
 	static parseYearStr(year: string): number;
 	static parseMonthStr(month: string): number;
@@ -117,20 +117,20 @@ declare class TimeInstant
 }
 
 declare class Timestamp {
-	constructor(inst: TimeInstant, tzQhr: number);
-	static fromTicks(ticks: number, tzQhr: number): Timestamp;
-	static fromStr(str: string, defTzQhr: number): Timestamp;
+	constructor(inst: TimeInstant, tzQhr?: number);
+	static fromTicks(ticks: number, tzQhr?: number): Timestamp;
+	static fromStr(str: string, defTzQhr?: number): Timestamp;
 	static now(): Timestamp;
 	static utcNow(): Timestamp;
 	static fromVariTime(variTime: any): Timestamp;
-	static fromSecNS(unixTS: number, nanosec: number, tzQhr: number): Timestamp;
-	static fromDotNetTicks(ticks: number, tzQhr: number): Timestamp;
-	static fromEpochSec(epochSec: number, tzQhr: number): Timestamp;
-	static fromEpochMS(epochMS: number, tzQhr: number): Timestamp;
-	static fromEpochUS(epochUS: number, tzQhr: number): Timestamp;
-	static fromEpochNS(epochNS: number, tzQhr: number): Timestamp;
+	static fromSecNS(unixTS: number, nanosec: number, tzQhr?: number): Timestamp;
+	static fromDotNetTicks(ticks: number, tzQhr?: number): Timestamp;
+	static fromEpochSec(epochSec: number, tzQhr?: number): Timestamp;
+	static fromEpochMS(epochMS: number, tzQhr?: number): Timestamp;
+	static fromEpochUS(epochUS: number, tzQhr?: number): Timestamp;
+	static fromEpochNS(epochNS: number, tzQhr?: number): Timestamp;
 	static fromTimeValue(tval: any): Timestamp;
-	static fromYMDHMS(ymdhms: number, tzQhr: number): Timestamp;
+	static fromYMDHMS(ymdhms: number, tzQhr?: number): Timestamp;
 	addMonth(val: number): Timestamp;
 	addYear(val: number): Timestamp;
 	addDay(val: number): Timestamp;

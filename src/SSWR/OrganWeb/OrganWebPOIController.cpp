@@ -968,6 +968,37 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcPhotoName(NotNullPtr<Ne
 	return me->ResponseJSON(req, resp, 0, CSTR("{\"status\": \"failed\"}"));
 }
 
+Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcPhotoPos(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, Net::WebServer::WebController *parent)
+{
+	SSWR::OrganWeb::OrganWebPOIController *me = (SSWR::OrganWeb::OrganWebPOIController*)parent;
+	RequestEnv env;
+	me->ParseRequestEnv(req, resp, env, false);
+
+	Int32 id;
+	Double lat;
+	Double lon;
+	Int32 locType;
+	Int64 captureTime;
+	req->ParseHTTPForm();
+	if (env.user && req->GetHTTPFormInt32(CSTR("id"), id) && req->GetHTTPFormDouble(CSTR("lat"), lat) && req->GetHTTPFormDouble(CSTR("lon"), lon) && req->GetHTTPFormInt32(CSTR("locType"), locType) && req->GetHTTPFormInt64(CSTR("captureTime"), captureTime))
+	{
+		Sync::RWMutexUsage mutUsage;
+		UserFileInfo *file = me->env->UserfileGet(mutUsage, id);
+		if (file && file->webuserId == env.user->id)
+		{
+			Int64 tdiff = file->fileTimeTicks - captureTime;
+			if (tdiff >= -900000 && tdiff <= 900000)
+			{
+				if (me->env->UserfileUpdatePos(mutUsage, id, Data::Timestamp(captureTime, 0), lat, lon, (LocType)locType))
+				{
+					return me->ResponseJSON(req, resp, 0, CSTR("{\"status\": \"ok\"}"));
+				}
+			}
+		}
+	}
+	return me->ResponseJSON(req, resp, 0, CSTR("{\"status\": \"failed\"}"));
+}
+
 Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcUnfinPeak(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, Net::WebServer::WebController *parent)
 {
 	SSWR::OrganWeb::OrganWebPOIController *me = (SSWR::OrganWeb::OrganWebPOIController*)parent;
@@ -1390,7 +1421,7 @@ void SSWR::OrganWeb::OrganWebPOIController::AddGroup(NotNullPtr<Text::JSONBuilde
 		}
 		else if (group->photoSpObj->photo && group->photoSpObj->photo->leng > 0)
 		{
-			json->ObjectAddStr(CSTR("photoWId"), group->photoSpObj->photo);
+			json->ObjectAddStr(CSTR("photo"), group->photoSpObj->photo);
 		}
 	}
 }
@@ -1547,6 +1578,7 @@ SSWR::OrganWeb::OrganWebPOIController::OrganWebPOIController(Net::WebServer::Mem
 	this->AddService(CSTR("/api/photodetail"), Net::WebUtil::RequestMethod::HTTP_POST, SvcPhotoDetail);
 	this->AddService(CSTR("/api/photoupload"), Net::WebUtil::RequestMethod::HTTP_POST, SvcPhotoUpload);
 	this->AddService(CSTR("/api/photoname"), Net::WebUtil::RequestMethod::HTTP_POST, SvcPhotoName);
+	this->AddService(CSTR("/api/photopos"), Net::WebUtil::RequestMethod::HTTP_POST, SvcPhotoPos);
 	this->AddService(CSTR("/api/unfinpeak"), Net::WebUtil::RequestMethod::HTTP_GET, SvcUnfinPeak);
 	this->AddService(CSTR("/api/reload"), Net::WebUtil::RequestMethod::HTTP_POST, SvcReload);
 	this->AddService(CSTR("/api/publicpoi"), Net::WebUtil::RequestMethod::HTTP_GET, SvcPublicPOI);

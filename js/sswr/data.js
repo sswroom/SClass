@@ -582,6 +582,8 @@ export class DateTimeUtil
 
 	static instant2TimeValue(secs, nanosec, tzQhr)
 	{
+		if (tzQhr == null)
+			tzQhr = DateTimeUtil.getLocalTzQhr();
 		secs = secs + tzQhr * 900;
 		var totalDays = Math.floor(secs / 86400);
 		var minutes;
@@ -1768,6 +1770,8 @@ export class Timestamp
 	{
 		this.inst = inst;
 		this.tzQhr = tzQhr;
+		if (this.tzQhr == null)
+			this.tzQhr = DateTimeUtil.getLocalTzQhr();
 	}
 
 	static fromTicks(ticks, tzQhr)

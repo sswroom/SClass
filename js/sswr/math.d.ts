@@ -16,6 +16,13 @@ declare class Coord2D
 	get lon(): number;
 }
 
+declare class Vector3 extends Coord2D
+{
+	z: number;
+	constructor(x: number, y: number, z: number);
+	get height(): number;
+}
+
 declare enum EarthEllipsoidType
 {
 	OTHER,

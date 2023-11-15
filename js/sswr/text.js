@@ -10,6 +10,8 @@ export function isInteger(s)
 {
 	if (s === null)
 		return false;
+	if (s.startsWith("-"))
+		s = s.substring(1);
 	var j = s.length;
 	if (j == 0)
 		return false;
