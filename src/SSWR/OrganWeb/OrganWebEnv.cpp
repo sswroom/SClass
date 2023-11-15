@@ -3051,7 +3051,17 @@ Bool SSWR::OrganWeb::OrganWebEnv::DataFileAdd(NotNullPtr<Sync::RWMutexUsage> mut
 	sql.AppendCmdC(CSTR(")"));
 	if (db->ExecuteNonQuery(sql.ToCString()) >= 1)
 	{
-		if (IO::FileUtil::CopyFile(fileName, CSTRP(sbuff, sptr), IO::FileUtil::FileExistAction::Fail, 0, 0))
+		Bool succ = true;
+		if (IO::Path::GetPathType(CSTRP(sbuff, sptr)) != IO::Path::PathType::Unknown)
+		{
+			succ = false;
+		}
+		else
+		{
+			IO::FileStream fs(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+			succ = (fs.WriteCont(fileCont, fileSize) == fileSize);
+		}
+		if (succ)
 		{
 			DataFileInfo *dataFile;
 			dataFile = MemAlloc(DataFileInfo, 1);
