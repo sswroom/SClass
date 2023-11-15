@@ -2959,9 +2959,9 @@ void SSWR::OrganWeb::OrganWebEnv::WebFilePrevUpdated(NotNullPtr<Sync::RWMutexUsa
 	}
 }
 
-Bool SSWR::OrganWeb::OrganWebEnv::GPSFileAdd(NotNullPtr<Sync::RWMutexUsage> mutUsage, Int32 webuserId, Text::CStringNN fileName, Data::Timestamp startTime, Data::Timestamp endTime, const UInt8 *fileCont, UOSInt fileSize, NotNullPtr<Map::GPSTrack> gpsTrk)
+Bool SSWR::OrganWeb::OrganWebEnv::GPSFileAdd(NotNullPtr<Sync::RWMutexUsage> mutUsage, Int32 webuserId, Text::CStringNN fileName, Data::Timestamp startTime, Data::Timestamp endTime, const UInt8 *fileCont, UOSInt fileSize, NotNullPtr<Map::GPSTrack> gpsTrk, OutParam<Text::CString> errMsg)
 {
-	if (DataFileAdd(mutUsage, webuserId, fileName, startTime, endTime, DataFileType::GPSTrack, fileCont, fileSize))
+	if (DataFileAdd(mutUsage, webuserId, fileName, startTime, endTime, DataFileType::GPSTrack, fileCont, fileSize, errMsg))
 	{
 		WebUserInfo *webUser = this->userMap.Get(webuserId);
 		OSInt startIndex = webUser->userFileIndex.SortedIndexOf(startTime.ToTicks());
@@ -2991,31 +2991,51 @@ Bool SSWR::OrganWeb::OrganWebEnv::GPSFileAdd(NotNullPtr<Sync::RWMutexUsage> mutU
 	return false;
 }
 
-Bool SSWR::OrganWeb::OrganWebEnv::DataFileAdd(NotNullPtr<Sync::RWMutexUsage> mutUsage, Int32 webuserId, Text::CStringNN fileName, Data::Timestamp startTime, Data::Timestamp endTime, DataFileType fileType, const UInt8 *fileCont, UOSInt fileSize)
+Bool SSWR::OrganWeb::OrganWebEnv::DataFileAdd(NotNullPtr<Sync::RWMutexUsage> mutUsage, Int32 webuserId, Text::CStringNN fileName, Data::Timestamp startTime, Data::Timestamp endTime, DataFileType fileType, const UInt8 *fileCont, UOSInt fileSize, OutParam<Text::CString> errMsg)
 {
-	if (startTime.IsNull() || endTime.IsNull())
+	if (startTime.IsNull())
+	{
+		errMsg.Set(CSTR("StartTime is null"));
 		return false;
+	}
+	else if (endTime.IsNull())
+	{
+		errMsg.Set(CSTR("EndTime is null"));
+	}
 	WebUserInfo *user = this->userMap.Get(webuserId);
 	if (user == 0)
+	{
+		errMsg.Set(CSTR("User not found"));
 		return false;
+	}
 	switch (fileType)
 	{
 	case DataFileType::GPSTrack:
 		if (user->gpsDataFiles.GetIndex(startTime) != user->gpsDataFiles.GetIndex(endTime))
+		{
+			errMsg.Set(CSTR("GPS file already exist"));
 			return false;
+		}
 		break;
 	case DataFileType::Temperature:
 		if (user->tempDataFiles.GetIndex(startTime) != user->tempDataFiles.GetIndex(endTime))
+		{
+			errMsg.Set(CSTR("Temp file already exist"));
 			return false;
+		}
 		break;
 	case DataFileType::Unknown:
 	default:
+		errMsg.Set(CSTR("File type not supported"));
 		return false;
 	}
 	NotNullPtr<DB::DBTool> db;
 	mutUsage->ReplaceMutex(this->dataMut, true);
 	if (!db.Set(this->db))
+	{
+		errMsg.Set(CSTR("Database not found"));
 		return false;
+	}
 	UTF8Char sbuff[512];
 	UTF8Char *dataFileName;
 	UTF8Char *sptr = this->dataDir->ConcatTo(sbuff);
@@ -3054,12 +3074,17 @@ Bool SSWR::OrganWeb::OrganWebEnv::DataFileAdd(NotNullPtr<Sync::RWMutexUsage> mut
 		Bool succ = true;
 		if (IO::Path::GetPathType(CSTRP(sbuff, sptr)) != IO::Path::PathType::Unknown)
 		{
+			errMsg.Set(CSTR("Datafile already exist in disk"));
 			succ = false;
 		}
 		else
 		{
 			IO::FileStream fs(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 			succ = (fs.WriteCont(fileCont, fileSize) == fileSize);
+			if (!succ)
+			{
+				errMsg.Set(CSTR("Error in writing Datafile to disk"));
+			}
 		}
 		if (succ)
 		{
@@ -3083,6 +3108,7 @@ Bool SSWR::OrganWeb::OrganWebEnv::DataFileAdd(NotNullPtr<Sync::RWMutexUsage> mut
 				break;
 			case DataFileType::Unknown:
 			default:
+				errMsg.Set(CSTR("File type not supported2"));
 				return false;
 			}
 			return true;
@@ -3099,6 +3125,7 @@ Bool SSWR::OrganWeb::OrganWebEnv::DataFileAdd(NotNullPtr<Sync::RWMutexUsage> mut
 	}
 	else
 	{
+		errMsg.Set(CSTR("Error in writing to database"));
 		return false;
 	}
 }

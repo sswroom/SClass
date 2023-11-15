@@ -886,6 +886,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcPhotoUpload(NotNullPtr<
 	UTF8Char *fileNameEnd;
 	const UInt8 *fileCont;
 	Text::String *location;
+	Text::CString msg = CSTR_NULL;
 	Bool succ = true;
 	req->ParseHTTPForm();
 
@@ -904,19 +905,36 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcPhotoUpload(NotNullPtr<
 			if (layer->GetObjectClass() == Map::MapDrawLayer::OC_GPS_TRACK)
 			{
 				NotNullPtr<Map::GPSTrack> gps = NotNullPtr<Map::GPSTrack>::ConvertFrom(layer);
-				succ = me->env->GPSFileAdd(mutUsage, env.user->id, CSTRP(fileName, fileNameEnd), gps->GetTrackStartTime(0), gps->GetTrackEndTime(0), fileCont, fileSize, gps);
+				succ = me->env->GPSFileAdd(mutUsage, env.user->id, CSTRP(fileName, fileNameEnd), gps->GetTrackStartTime(0), gps->GetTrackEndTime(0), fileCont, fileSize, gps, msg);
 				layer.Delete();
 			}
 			else
 			{
 				layer.Delete();
 				succ = false;
+				msg = CSTR("Not GPS Track");
 			}
 		}
 		else if (!me->env->UserfileAdd(mutUsage, env.user->id, env.user->unorganSpId, CSTRP(fileName, fileNameEnd), fileCont, fileSize, true, location))
+		{
+			msg = CSTR("Userfile problem");
 			succ = false;
+		}
 
 		i++;
+	}
+	Text::JSONBuilder json(Text::JSONBuilder::OT_OBJECT);
+	if (succ)
+	{
+		json.ObjectAddStr(CSTR("status"), CSTR("ok"));
+	}
+	else
+	{
+		json.ObjectAddStr(CSTR("status"), CSTR("fail"));
+		if (msg.v)
+		{
+			json.ObjectAddStr(CSTR("msg"), msg);
+		}
 	}
 	return me->ResponseJSON(req, resp, 0, succ?CSTR("{\"status\":\"ok\"}"):CSTR("{\"status\":\"fail\"}"));
 }

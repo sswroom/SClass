@@ -140,9 +140,9 @@ namespace SSWR
 			Bool SpeciesBookIsExist(NotNullPtr<Sync::RWMutexUsage> mutUsage, Text::CString speciesName, NotNullPtr<Text::StringBuilderUTF8> bookNameOut);
 			void UserFilePrevUpdated(NotNullPtr<Sync::RWMutexUsage> mutUsage, UserFileInfo *userFile);
 			void WebFilePrevUpdated(NotNullPtr<Sync::RWMutexUsage> mutUsage, WebFileInfo *userFile);
-			Bool GPSFileAdd(NotNullPtr<Sync::RWMutexUsage> mutUsage, Int32 webuserId, Text::CStringNN fileName, Data::Timestamp startTime, Data::Timestamp endTime, const UInt8 *fileCont, UOSInt fileSize, NotNullPtr<Map::GPSTrack> gpsTrk);
+			Bool GPSFileAdd(NotNullPtr<Sync::RWMutexUsage> mutUsage, Int32 webuserId, Text::CStringNN fileName, Data::Timestamp startTime, Data::Timestamp endTime, const UInt8 *fileCont, UOSInt fileSize, NotNullPtr<Map::GPSTrack> gpsTrk, OutParam<Text::CString> errMsg);
 
-			Bool DataFileAdd(NotNullPtr<Sync::RWMutexUsage> mutUsage, Int32 webuserId, Text::CStringNN fileName, Data::Timestamp startTime, Data::Timestamp endTime, DataFileType fileType, const UInt8 *fileCont, UOSInt fileSize);
+			Bool DataFileAdd(NotNullPtr<Sync::RWMutexUsage> mutUsage, Int32 webuserId, Text::CStringNN fileName, Data::Timestamp startTime, Data::Timestamp endTime, DataFileType fileType, const UInt8 *fileCont, UOSInt fileSize, OutParam<Text::CString> errMsg);
 			IO::ParsedObject *DataFileParse(NotNullPtr<DataFileInfo> dataFile);
 			DataFileInfo *DataFileGet(NotNullPtr<Sync::RWMutexUsage> mutUsage, Int32 datafileId);
 
