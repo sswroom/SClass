@@ -11,6 +11,7 @@ namespace IO
 		{
 		private:
 			Data::ByteArrayR data;
+			Text::String *name;
 
 		public:
 			MemoryDataRef(const UInt8 *data, UOSInt dataLength);
@@ -20,6 +21,7 @@ namespace IO
 			virtual UOSInt GetRealData(UInt64 offset, UOSInt length, Data::ByteArray buffer);
 			virtual NotNullPtr<Text::String> GetFullName();
 			virtual Text::CString GetShortName();
+			virtual void SetFullName(Text::CString fullName);
 			virtual UInt64 GetDataSize();
 			virtual const UInt8 *GetPointer();
 
@@ -27,6 +29,9 @@ namespace IO
 			virtual Bool IsFullFile();
 			virtual Bool IsLoading();
 			virtual UOSInt GetSeekCount();
+
+			void SetName(Text::CStringNN name);
+			void SetName(NotNullPtr<Text::String> name);
 		};
 	}
 }

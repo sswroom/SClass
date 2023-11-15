@@ -66,7 +66,7 @@ namespace Net
 			virtual Net::WebUtil::RequestMethod GetReqMethod() const = 0;
 			virtual void ParseHTTPForm() = 0;
 			virtual Text::String *GetHTTPFormStr(Text::CStringNN name) = 0;
-			virtual const UInt8 *GetHTTPFormFile(Text::CStringNN formName, UOSInt index, UTF8Char *fileName, UOSInt fileNameBuffSize, UTF8Char **fileNameEnd, OptOut<UOSInt> fileSize) = 0;
+			virtual const UInt8 *GetHTTPFormFile(Text::CStringNN formName, UOSInt index, UTF8Char *fileName, UOSInt fileNameBuffSize, OptOut<UTF8Char*> fileNameEnd, OptOut<UOSInt> fileSize) = 0;
 			Bool GetHTTPFormInt16(Text::CStringNN name, OutParam<Int16> valOut);
 			Bool GetHTTPFormUInt16(Text::CStringNN name, OutParam<UInt16> valOut);
 			Bool GetHTTPFormInt32(Text::CStringNN name, OutParam<Int32> valOut);

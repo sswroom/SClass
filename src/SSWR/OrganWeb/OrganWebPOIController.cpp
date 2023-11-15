@@ -892,13 +892,14 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcPhotoUpload(NotNullPtr<
 
 	while (true)
 	{
-		fileCont = req->GetHTTPFormFile(CSTR("file"), i, fileName, sizeof(fileName), &fileNameEnd, fileSize);
+		fileCont = req->GetHTTPFormFile(CSTR("file"), i, fileName, sizeof(fileName), fileNameEnd, fileSize);
 		if (fileCont == 0)
 		{
 			break;
 		}
 		location = req->GetHTTPFormStr(CSTR("location"));
 		IO::StmData::MemoryDataRef md(fileCont, fileSize);
+		md.SetName(CSTRP(fileName, fileNameEnd));
 		NotNullPtr<Map::MapDrawLayer> layer;
 		if (layer.Set((Map::MapDrawLayer*)me->env->ParseFileType(md, IO::ParserType::MapLayer)))
 		{
@@ -935,6 +936,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcPhotoUpload(NotNullPtr<
 		{
 			json.ObjectAddStr(CSTR("msg"), msg);
 		}
+		json.ObjectAddUInt64(CSTR("fileSize"), fileSize);
 	}
 	return me->ResponseJSON(req, resp, 0, json.Build());
 }

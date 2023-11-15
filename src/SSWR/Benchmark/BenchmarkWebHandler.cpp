@@ -260,7 +260,7 @@ Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::CPUInfoReq(SSWR::Benchmark:
 			else
 			{
 				req->ParseHTTPForm();
-				fileBuff = req->GetHTTPFormFile(CSTR("uploadfile"), 0, fileName, sizeof(fileName), &fileNameEnd, fileSize);
+				fileBuff = req->GetHTTPFormFile(CSTR("uploadfile"), 0, fileName, sizeof(fileName), fileNameEnd, fileSize);
 			}
 			if (fileBuff == 0)
 			{
