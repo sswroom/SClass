@@ -35,6 +35,14 @@ namespace SSWR
 			UT_USER
 		} UserType;
 
+		enum class LocType
+		{
+			Unknown,
+			GPSTrack,
+			PhotoExif,
+			UserInput
+		};
+
 		typedef struct
 		{
 			Int32 cateId;
@@ -90,6 +98,7 @@ namespace SSWR
 			Double cropRight;
 			Double cropBottom;
 			Text::String *location;
+			LocType locType;
 		};
 
 		typedef struct
@@ -270,7 +279,7 @@ namespace SSWR
 			Data::ArrayList<DataFileInfo*> *GetDataFiles();
 			virtual Bool DelDataFile(DataFileInfo *dataFile) = 0;
 			void ReleaseDataFile(DataFileInfo *dataFile);
-			virtual Bool GetGPSPos(Int32 userId, const Data::Timestamp &ts, Math::Coord2DDbl *pos) = 0;
+			virtual Bool GetGPSPos(Int32 userId, const Data::Timestamp &ts, OutParam<Math::Coord2DDbl> pos) = 0;
 			virtual Map::GPSTrack *OpenGPSTrack(DataFileInfo *dataFile) = 0;
 
 			void ReleaseSpecies(SpeciesInfo *species);

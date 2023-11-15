@@ -117,16 +117,24 @@ Math::Geometry::Vector2D *SSWR::OrganMgr::OrganTimeAdjLayer::GetNewVectorById(Ma
 	if (ufile == 0)
 		return 0;
 	Math::Geometry::Point *pt;
-	Math::Coord2DDbl pos;
-	Data::Timestamp ts = ufile->fileTime;
-	if (ufile->camera)
+	if (ufile->locType != LocType::PhotoExif && ufile->locType != LocType::UserInput)
 	{
-		ts = ts.AddSecond(this->cameraMap.Get(ufile->camera));
+		Math::Coord2DDbl pos;
+		Data::Timestamp ts = ufile->fileTime;
+		if (ufile->camera)
+		{
+			ts = ts.AddSecond(this->cameraMap.Get(ufile->camera));
+		}
+		UInt32 srid = this->csys->GetSRID();
+		pos = this->gpsTrk->GetPosByTime(ts);
+		NEW_CLASS(pt, Math::Geometry::Point(srid, pos));
+		return pt;
 	}
-	UInt32 srid = this->csys->GetSRID();
-	pos = this->gpsTrk->GetPosByTime(ts);
-	NEW_CLASS(pt, Math::Geometry::Point(srid, pos));
-	return pt;
+	else
+	{
+		NEW_CLASS(pt, Math::Geometry::Point(this->csys->GetSRID(), Math::Coord2DDbl(ufile->lon, ufile->lat)));
+		return pt;
+	}
 }
 
 Map::MapDrawLayer::ObjectClass SSWR::OrganMgr::OrganTimeAdjLayer::GetObjectClass() const

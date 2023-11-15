@@ -377,7 +377,7 @@ void SSWR::OrganWeb::OrganWebEnv::LoadUsers(NotNullPtr<Sync::RWMutexUsage> mutUs
 		this->db->CloseReader(r);
 	}
 
-	if (r.Set(this->db->ExecuteReader(CSTR("select id, fileType, oriFileName, fileTime, lat, lon, webuser_id, species_id, captureTime, dataFileName, crcVal, rotType, prevUpdated, cropLeft, cropTop, cropRight, cropBottom, descript, location from userfile"))))
+	if (r.Set(this->db->ExecuteReader(CSTR("select id, fileType, oriFileName, fileTime, lat, lon, webuser_id, species_id, captureTime, dataFileName, crcVal, rotType, prevUpdated, cropLeft, cropTop, cropRight, cropBottom, descript, location, camera, locType from userfile"))))
 	{
 		UserFileInfo *userFile;
 		SpeciesInfo *species;
@@ -414,6 +414,8 @@ void SSWR::OrganWeb::OrganWebEnv::LoadUsers(NotNullPtr<Sync::RWMutexUsage> mutUs
 				userFile->cropBottom = r->GetDbl(16);
 				userFile->descript = r->GetNewStrB(17, sb);
 				userFile->location = r->GetNewStrB(18, sb);
+				userFile->camera = r->GetNewStrB(19, sb);
+				userFile->locType = (LocType)r->GetInt32(20);
 				species = this->spMap.Get(userFile->speciesId);
 				if (species != 0)
 				{
@@ -710,6 +712,7 @@ void SSWR::OrganWeb::OrganWebEnv::FreeUsers()
 			userFile->dataFileName->Release();
 			SDEL_STRING(userFile->descript);
 			SDEL_STRING(userFile->location);
+			SDEL_STRING(userFile->camera);
 			MemFree(userFile);
 		}
 
@@ -761,6 +764,8 @@ void SSWR::OrganWeb::OrganWebEnv::ClearUsers()
 			userFile->oriFileName->Release();
 			userFile->dataFileName->Release();
 			SDEL_STRING(userFile->descript);
+			SDEL_STRING(userFile->location);
+			SDEL_STRING(userFile->camera);
 			MemFree(userFile);
 		}
 		user->userFileIndex.Clear();
@@ -2193,6 +2198,7 @@ Int32 SSWR::OrganWeb::OrganWebEnv::UserfileAdd(NotNullPtr<Sync::RWMutexUsage> mu
 		Data::Timestamp fileTime = Data::Timestamp(0, Data::DateTimeUtil::GetLocalTzQhr());
 		Double lat = 0;
 		Double lon = 0;
+		LocType locType = LocType::Unknown;
 		Int32 rotType = 0;
 		UserFileInfo *userFile;
 		Text::String *camera = 0;
@@ -2220,7 +2226,10 @@ Int32 SSWR::OrganWeb::OrganWebEnv::UserfileAdd(NotNullPtr<Sync::RWMutexUsage> mu
 						fileTime = fileTime.SetTimeZoneQHR(Data::DateTimeUtil::GetLocalTzQhr());
 						if (fileTime.ToUnixTimestamp() >= 946684800) //Y2000
 						{
-							this->UserGPSGetPos(mutUsage, userId, fileTime, &lat, &lon);
+							if (this->UserGPSGetPos(mutUsage, userId, fileTime, &lat, &lon))
+							{
+								locType = LocType::GPSTrack;
+							}
 						}
 						Text::CString cstr;
 						Text::CString cstr2;
@@ -2255,7 +2264,10 @@ Int32 SSWR::OrganWeb::OrganWebEnv::UserfileAdd(NotNullPtr<Sync::RWMutexUsage> mu
 						}
 						Double altitude;
 						Int64 gpsTimeTick;
-						exif->GetPhotoLocation(&lat, &lon, &altitude, &gpsTimeTick);
+						if (exif->GetPhotoLocation(&lat, &lon, &altitude, &gpsTimeTick))
+						{
+							locType = LocType::PhotoExif;
+						}
 						rotType = (Int32)exif->GetRotateType();
 					}
 				}
@@ -2339,7 +2351,7 @@ Int32 SSWR::OrganWeb::OrganWebEnv::UserfileAdd(NotNullPtr<Sync::RWMutexUsage> mu
 				if (succ)
 				{
 					DB::SQLBuilder sql(db);
-					sql.AppendCmdC(CSTR("insert into userfile (fileType, oriFileName, fileTime, lat, lon, webuser_id, species_id, captureTime, dataFileName, crcVal, rotType, camera, cropLeft, cropTop, cropRight, cropBottom, location) values ("));
+					sql.AppendCmdC(CSTR("insert into userfile (fileType, oriFileName, fileTime, lat, lon, webuser_id, species_id, captureTime, dataFileName, crcVal, rotType, camera, locType, cropLeft, cropTop, cropRight, cropBottom, location) values ("));
 					sql.AppendInt32((Int32)fileType);
 					sql.AppendCmdC(CSTR(", "));
 					sql.AppendStrC(fileName);
@@ -2363,6 +2375,8 @@ Int32 SSWR::OrganWeb::OrganWebEnv::UserfileAdd(NotNullPtr<Sync::RWMutexUsage> mu
 					sql.AppendInt32(rotType);
 					sql.AppendCmdC(CSTR(", "));
 					sql.AppendStr(camera);
+					sql.AppendCmdC(CSTR(", "));
+					sql.AppendInt32((Int32)locType);
 					sql.AppendCmdC(CSTR(", "));
 					sql.AppendDbl(0);
 					sql.AppendCmdC(CSTR(", "));
@@ -2397,7 +2411,8 @@ Int32 SSWR::OrganWeb::OrganWebEnv::UserfileAdd(NotNullPtr<Sync::RWMutexUsage> mu
 						userFile->crcVal = crcVal;
 						userFile->rotType = rotType;
 						userFile->prevUpdated = 0;
-						//userFile->camera = camera;
+						userFile->camera = camera;
+						userFile->locType = locType;
 						userFile->cropLeft = 0;
 						userFile->cropTop = 0;
 						userFile->cropRight = 0;
@@ -2422,8 +2437,6 @@ Int32 SSWR::OrganWeb::OrganWebEnv::UserfileAdd(NotNullPtr<Sync::RWMutexUsage> mu
 						webUser = this->userMap.Get(userFile->webuserId);
 						j = webUser->userFileIndex.SortedInsert(userFile->fileTimeTicks);
 						webUser->userFileObj.Insert(j, userFile);
-						
-						SDEL_STRING(camera);
 						return userFile->id;
 					}
 					else
@@ -2845,7 +2858,7 @@ Bool SSWR::OrganWeb::OrganWebEnv::UserfileUpdateRotType(NotNullPtr<Sync::RWMutex
 	return false;
 }
 
-Bool SSWR::OrganWeb::OrganWebEnv::UserfileUpdatePos(NotNullPtr<Sync::RWMutexUsage> mutUsage, Int32 userfileId, Data::Timestamp captureTime, Double lat, Double lon)
+Bool SSWR::OrganWeb::OrganWebEnv::UserfileUpdatePos(NotNullPtr<Sync::RWMutexUsage> mutUsage, Int32 userfileId, Data::Timestamp captureTime, Double lat, Double lon, LocType locType)
 {
 	NotNullPtr<DB::DBTool> db;
 	if (!db.Set(this->db))
@@ -2867,6 +2880,8 @@ Bool SSWR::OrganWeb::OrganWebEnv::UserfileUpdatePos(NotNullPtr<Sync::RWMutexUsag
 	sql.AppendDbl(lat);
 	sql.AppendCmdC(CSTR(", lon = "));
 	sql.AppendDbl(lon);
+	sql.AppendCmdC(CSTR(", locType = "));
+	sql.AppendInt32((Int32)locType);
 	sql.AppendCmdC(CSTR(" where id = "));
 	sql.AppendInt32(userFile->id);
 	if (db->ExecuteNonQuery(sql.ToCString()) > 0)
@@ -2967,7 +2982,7 @@ Bool SSWR::OrganWeb::OrganWebEnv::GPSFileAdd(NotNullPtr<Sync::RWMutexUsage> mutU
 				Math::Coord2DDbl pos = Math::Coord2DDbl(0, 0);
 				Data::Timestamp captureTime = Data::Timestamp(userFile->captureTimeTicks, 0);
 				pos = gpsTrk->GetPosByTime(captureTime);
-				this->UserfileUpdatePos(mutUsage, userFile->id, captureTime, pos.GetLat(), pos.GetLon());
+				this->UserfileUpdatePos(mutUsage, userFile->id, captureTime, pos.GetLat(), pos.GetLon(), LocType::GPSTrack);
 			}
 			startIndex++;
 		}
@@ -3101,6 +3116,12 @@ IO::ParsedObject *SSWR::OrganWeb::OrganWebEnv::DataFileParse(NotNullPtr<DataFile
 	default:
 		return 0;
 	}
+}
+
+SSWR::OrganWeb::DataFileInfo *SSWR::OrganWeb::OrganWebEnv::DataFileGet(NotNullPtr<Sync::RWMutexUsage> mutUsage, Int32 datafileId)
+{
+	mutUsage->ReplaceMutex(this->dataMut, false);
+	return this->dataFileMap.Get(datafileId);
 }
 
 SSWR::OrganWeb::GroupInfo *SSWR::OrganWeb::OrganWebEnv::GroupGet(NotNullPtr<Sync::RWMutexUsage> mutUsage, Int32 id)

@@ -136,13 +136,15 @@ namespace SSWR
 			Bool UserfileMove(NotNullPtr<Sync::RWMutexUsage> mutUsage, Int32 userfileId, Int32 speciesId, Int32 cateId);
 			Bool UserfileUpdateDesc(NotNullPtr<Sync::RWMutexUsage> mutUsage, Int32 userfileId, Text::CString descr);
 			Bool UserfileUpdateRotType(NotNullPtr<Sync::RWMutexUsage> mutUsage, Int32 userfileId, Int32 rotType);
-			Bool UserfileUpdatePos(NotNullPtr<Sync::RWMutexUsage> mutUsage, Int32 userfileId, Data::Timestamp captureTime, Double lat, Double lon);
+			Bool UserfileUpdatePos(NotNullPtr<Sync::RWMutexUsage> mutUsage, Int32 userfileId, Data::Timestamp captureTime, Double lat, Double lon, LocType locType);
 			Bool SpeciesBookIsExist(NotNullPtr<Sync::RWMutexUsage> mutUsage, Text::CString speciesName, NotNullPtr<Text::StringBuilderUTF8> bookNameOut);
 			void UserFilePrevUpdated(NotNullPtr<Sync::RWMutexUsage> mutUsage, UserFileInfo *userFile);
 			void WebFilePrevUpdated(NotNullPtr<Sync::RWMutexUsage> mutUsage, WebFileInfo *userFile);
 			Bool GPSFileAdd(NotNullPtr<Sync::RWMutexUsage> mutUsage, Int32 webuserId, Text::CStringNN fileName, Data::Timestamp startTime, Data::Timestamp endTime, const UInt8 *fileCont, UOSInt fileSize, NotNullPtr<Map::GPSTrack> gpsTrk);
+
 			Bool DataFileAdd(NotNullPtr<Sync::RWMutexUsage> mutUsage, Int32 webuserId, Text::CStringNN fileName, Data::Timestamp startTime, Data::Timestamp endTime, DataFileType fileType, const UInt8 *fileCont, UOSInt fileSize);
 			IO::ParsedObject *DataFileParse(NotNullPtr<DataFileInfo> dataFile);
+			DataFileInfo *DataFileGet(NotNullPtr<Sync::RWMutexUsage> mutUsage, Int32 datafileId);
 
 			GroupInfo *GroupGet(NotNullPtr<Sync::RWMutexUsage> mutUsage, Int32 id);
 			Int32 GroupAdd(NotNullPtr<Sync::RWMutexUsage> mutUsage, Text::CString engName, Text::CString chiName, Int32 parentId, Text::CString descr, Int32 groupTypeId, Int32 cateId, GroupFlags flags);

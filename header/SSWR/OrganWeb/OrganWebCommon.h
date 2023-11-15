@@ -53,6 +53,14 @@ namespace SSWR
 			Audio
 		};
 
+		enum class LocType
+		{
+			Unknown,
+			GPSTrack,
+			PhotoExif,
+			UserInput
+		};
+
 		typedef struct
 		{
 			Int32 bookId;
@@ -115,6 +123,8 @@ namespace SSWR
 			Double cropBottom;
 			Text::String *descript;
 			Text::String *location;
+			Text::String *camera;
+			LocType locType;
 		} UserFileInfo;
 
 		typedef struct

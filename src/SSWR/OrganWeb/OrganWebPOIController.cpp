@@ -471,6 +471,8 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcDayDetail(NotNullPtr<Ne
 				json.ObjectAddFloat64(CSTR("cropBottom"), userFile->cropBottom);
 				json.ObjectAddStr(CSTR("descript"), userFile->descript);
 				json.ObjectAddStr(CSTR("location"), userFile->location);
+				json.ObjectAddStr(CSTR("camera"), userFile->camera);
+				json.ObjectAddInt32(CSTR("locType"), (Int32)userFile->locType);
 				json.ObjectAddInt32(CSTR("cateId"), sp->cateId);
 				json.ObjectEnd();
 			}
@@ -1178,6 +1180,77 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcDayPOI(NotNullPtr<Net::
 	return me->ResponseJSON(req, resp, 0, json.Build());
 }
 
+Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcDatafilePOI(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, Net::WebServer::WebController *parent)
+{
+	SSWR::OrganWeb::OrganWebPOIController *me = (SSWR::OrganWeb::OrganWebPOIController*)parent;
+	RequestEnv env;
+	me->ParseRequestEnv(req, resp, env, false);
+	Text::JSONBuilder json(Text::JSONBuilder::OT_OBJECT);
+	Int32 fileId;
+	if (env.user == 0)
+	{
+		printf("SvcDatafilePOI: user == null\r\n");
+	}
+	else if (req->GetQueryValueI32(CSTR("id"), fileId))
+	{
+		Sync::RWMutexUsage mutUsage;
+		DataFileInfo *file = me->env->DataFileGet(mutUsage, fileId);
+		if (file && file->webuserId == env.user->id)
+		{
+			Int64 startTime;
+			Int64 endTime;
+			OSInt startIndex;
+			OSInt endIndex;
+			startTime = file->startTime.ToTicks();
+			endTime = file->endTime.ToTicks();
+
+			json.ObjectBeginArray(CSTR("poi"));
+			startIndex = env.user->userFileIndex.SortedIndexOf(startTime);
+			if (startIndex < 0)
+			{
+				startIndex = ~startIndex;
+			}
+			else
+			{
+				while (startIndex > 0 && env.user->userFileIndex.GetItem((UOSInt)startIndex - 1) == startTime)
+				{
+					startIndex--;
+				}
+			}
+			endIndex = env.user->userFileIndex.SortedIndexOf(endTime);
+			if (endIndex < 0)
+			{
+				endIndex = ~endIndex;
+			}
+			else
+			{
+				while (endIndex > 0 && env.user->userFileIndex.GetItem((UOSInt)endIndex - 1) == endTime)
+				{
+					endIndex--;
+				}
+			}
+			NotNullPtr<UserFileInfo> userFile;
+			NotNullPtr<SpeciesInfo> sp;
+
+			while (startIndex < endIndex)
+			{
+				if (userFile.Set(env.user->userFileObj.GetItem((UOSInt)startIndex)) && sp.Set(me->env->SpeciesGet(mutUsage, userFile->speciesId)))
+				{
+					me->AddUserfilePOI(json, sp, userFile);
+				}
+				startIndex++;
+			}
+			json.ArrayEnd();
+			json.ObjectBeginArray(CSTR("datafiles"));
+			me->AppendDataFiles(json, env.user->gpsDataFiles, startTime, endTime, true);
+			json.ArrayEnd();
+		}
+	}
+	json.ObjectBeginArray(CSTR("group"));
+	json.ArrayEnd();
+	json.ObjectBeginArray(CSTR("species"));
+	return me->ResponseJSON(req, resp, 0, json.Build());
+}
 
 void SSWR::OrganWeb::OrganWebPOIController::AddGroupPOI(NotNullPtr<Sync::RWMutexUsage> mutUsage, NotNullPtr<Text::JSONBuilder> json, NotNullPtr<GroupInfo> group, Int32 userId, NotNullPtr<Data::ArrayListNN<GroupInfo>> groups, NotNullPtr<Data::ArrayListNN<SpeciesInfo>> speciesList)
 {
@@ -1243,6 +1316,7 @@ void SSWR::OrganWeb::OrganWebPOIController::AddUserfilePOI(NotNullPtr<Text::JSON
 	json->ObjectAddInt32(CSTR("id"), file->id);
 	json->ObjectAddStr(CSTR("descript"), file->descript);
 	json->ObjectAddTSStr(CSTR("captureTime"), Data::Timestamp(file->captureTimeTicks, 32));
+	json->ObjectAddTSStr(CSTR("fileTime"), Data::Timestamp(file->fileTimeTicks, 32));
 	json->ObjectAddFloat64(CSTR("lat"), file->lat);
 	json->ObjectAddFloat64(CSTR("lon"), file->lon);
 	json->ObjectAddStr(CSTR("oriFileName"), file->oriFileName);
@@ -1252,6 +1326,8 @@ void SSWR::OrganWeb::OrganWebPOIController::AddUserfilePOI(NotNullPtr<Text::JSON
 	json->ObjectAddInt32(CSTR("groupId"), species->groupId);
 	json->ObjectAddInt32(CSTR("cateId"), species->cateId);
 	json->ObjectAddStr(CSTR("poiImg"), species->poiImg);
+	json->ObjectAddStr(CSTR("camera"), file->camera);
+	json->ObjectAddInt32(CSTR("locType"), (Int32)file->locType);
 	json->ObjectEnd();
 }
 
@@ -1457,6 +1533,7 @@ SSWR::OrganWeb::OrganWebPOIController::OrganWebPOIController(Net::WebServer::Mem
 	this->AddService(CSTR("/api/grouppoi"), Net::WebUtil::RequestMethod::HTTP_GET, SvcGroupPOI);
 	this->AddService(CSTR("/api/speciespoi"), Net::WebUtil::RequestMethod::HTTP_GET, SvcSpeciesPOI);
 	this->AddService(CSTR("/api/daypoi"), Net::WebUtil::RequestMethod::HTTP_GET, SvcDayPOI);
+	this->AddService(CSTR("/api/datafilepoi"), Net::WebUtil::RequestMethod::HTTP_GET, SvcDatafilePOI);
 }
 
 SSWR::OrganWeb::OrganWebPOIController::~OrganWebPOIController()

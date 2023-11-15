@@ -162,7 +162,7 @@ SSWR::OrganMgr::OrganEnvDB::OrganEnvDB() : OrganEnv()
 		db->CloseReader(r);
 	}
 
-	if (r.Set(db->ExecuteReader(CSTR("select id, fileType, oriFileName, fileTime, lat, lon, webuser_id, species_id, captureTime, dataFileName, crcVal, rotType, camera, descript, cropLeft, cropTop, cropRight, cropBottom, location from userfile order by id"))))
+	if (r.Set(db->ExecuteReader(CSTR("select id, fileType, oriFileName, fileTime, lat, lon, webuser_id, species_id, captureTime, dataFileName, crcVal, rotType, camera, descript, cropLeft, cropTop, cropRight, cropBottom, location, locType from userfile order by id"))))
 	{
 		UOSInt k;
 		Data::DateTime dt;
@@ -194,6 +194,7 @@ SSWR::OrganMgr::OrganEnvDB::OrganEnvDB() : OrganEnv()
 			userFile->cropRight = r->GetDbl(16);
 			userFile->cropBottom = r->GetDbl(17);
 			userFile->location = r->GetNewStr(18);
+			userFile->locType = (LocType)r->GetInt32(19);
 			userFileList.Add(userFile);
 		}
 		db->CloseReader(r);
@@ -1538,6 +1539,7 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesFil
 		UserFileInfo *userFile;
 		Text::String *camera = 0;
 		UInt32 crcVal = 0;
+		LocType locType = LocType::Unknown;
 
 		{
 			IO::StmData::MemoryDataRef md(readBuff);
@@ -1560,7 +1562,10 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesFil
 						fileTime = fileTime.SetTimeZoneQHR(Data::DateTimeUtil::GetLocalTzQhr());
 						if (fileTime.ToUnixTimestamp() >= 946684800) //Y2000
 						{
-							this->GetGPSPos(this->userId, fileTime, &pos);
+							if (this->GetGPSPos(this->userId, fileTime, pos))
+							{
+								locType = LocType::GPSTrack;
+							}
 						}
 						Text::CString cstr;
 						Text::CString cstr2;
@@ -1588,6 +1593,10 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesFil
 						else if (cstr2.v)
 						{
 							camera = Text::String::New(cstr2).Ptr();
+						}
+						if (exif->GetPhotoLocation(&pos.y, &pos.x, 0, 0))
+						{
+							locType = LocType::PhotoExif;
 						}
 					}
 				}
@@ -1676,7 +1685,7 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesFil
 					if (db.Set(this->db))
 					{
 						DB::SQLBuilder sql(db);
-						sql.AppendCmdC(CSTR("insert into userfile (fileType, oriFileName, fileTime, lat, lon, webuser_id, species_id, captureTime, dataFileName, crcVal, camera, cropLeft, cropTop, cropRight, cropBottom) values ("));
+						sql.AppendCmdC(CSTR("insert into userfile (fileType, oriFileName, fileTime, lat, lon, webuser_id, species_id, captureTime, dataFileName, crcVal, camera, cropLeft, cropTop, cropRight, cropBottom, locType) values ("));
 						sql.AppendInt32(fileType);
 						sql.AppendCmdC(CSTR(", "));
 						sql.AppendStrC(fileName.Substring(i + 1));
@@ -1706,6 +1715,8 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesFil
 						sql.AppendDbl(0);
 						sql.AppendCmdC(CSTR(", "));
 						sql.AppendDbl(0);
+						sql.AppendCmdC(CSTR(", "));
+						sql.AppendInt32((Int32)locType);
 						sql.AppendCmdC(CSTR(")"));
 						if (db->ExecuteNonQuery(sql.ToCString()) > 0)
 						{
@@ -1729,6 +1740,7 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesFil
 							userFile->cropRight = 0;
 							userFile->cropBottom = 0;
 							userFile->location = 0;
+							userFile->locType = locType;
 							this->userFileMap.Put(userFile->id, userFile);
 
 							SpeciesInfo *species = this->GetSpeciesInfo(userFile->speciesId, true);
@@ -1951,6 +1963,7 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesFil
 							userFile->cropRight = 0;
 							userFile->cropBottom = 0;
 							userFile->location = 0;
+							userFile->locType = LocType::Unknown;
 							this->userFileMap.Put(userFile->id, userFile);
 
 							SpeciesInfo *species = this->GetSpeciesInfo(userFile->speciesId, true);
@@ -3441,7 +3454,7 @@ Bool SSWR::OrganMgr::OrganEnvDB::DelDataFile(DataFileInfo *dataFile)
 	return true;
 }
 
-Bool SSWR::OrganMgr::OrganEnvDB::GetGPSPos(Int32 userId, const Data::Timestamp &ts, Math::Coord2DDbl *pos)
+Bool SSWR::OrganMgr::OrganEnvDB::GetGPSPos(Int32 userId, const Data::Timestamp &ts, OutParam<Math::Coord2DDbl> pos)
 {
 	OSInt i;
 	WebUserInfo *webUser;
@@ -3492,12 +3505,11 @@ Bool SSWR::OrganMgr::OrganEnvDB::GetGPSPos(Int32 userId, const Data::Timestamp &
 
 	if (this->gpsTrk)
 	{
-		*pos = this->gpsTrk->GetPosByTime(ts);
+		pos.Set(this->gpsTrk->GetPosByTime(ts));
 		return true;
 	}
 	else
 	{
-		*pos = Math::Coord2DDbl(0, 0);
 		return false;
 	}
 }
