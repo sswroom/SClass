@@ -936,7 +936,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcPhotoUpload(NotNullPtr<
 			json.ObjectAddStr(CSTR("msg"), msg);
 		}
 	}
-	return me->ResponseJSON(req, resp, 0, succ?CSTR("{\"status\":\"ok\"}"):CSTR("{\"status\":\"fail\"}"));
+	return me->ResponseJSON(req, resp, 0, json.Build());
 }
 
 Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcPhotoName(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, Net::WebServer::WebController *parent)
