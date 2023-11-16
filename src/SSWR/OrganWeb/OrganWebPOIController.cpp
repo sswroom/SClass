@@ -1059,6 +1059,26 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcUnfinPeak(NotNullPtr<Ne
 	return me->ResponseJSON(req, resp, 0, CSTR("[]"));
 }
 
+Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcUpdatePeak(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, Net::WebServer::WebController *parent)
+{
+	SSWR::OrganWeb::OrganWebPOIController *me = (SSWR::OrganWeb::OrganWebPOIController*)parent;
+	RequestEnv env;
+	me->ParseRequestEnv(req, resp, env, false);
+
+	Int32 id;
+	Int32 status;
+	req->ParseHTTPForm();
+	if (env.user && env.user->userType == UserType::Admin && req->GetHTTPFormInt32(CSTR("id"), id) && req->GetHTTPFormInt32(CSTR("status"), status))
+	{
+		Sync::RWMutexUsage mutUsage;
+		if (me->env->PeakUpdateStatus(mutUsage, id, status))
+		{
+			return me->ResponseJSON(req, resp, 0, CSTR("{\"status\": \"ok\"}"));
+		}
+	}
+	return me->ResponseJSON(req, resp, 0, CSTR("{\"status\": \"failed\"}"));
+}
+
 Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcReload(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, Net::WebServer::WebController *parent)
 {
 	SSWR::OrganWeb::OrganWebPOIController *me = (SSWR::OrganWeb::OrganWebPOIController*)parent;
@@ -1580,6 +1600,7 @@ SSWR::OrganWeb::OrganWebPOIController::OrganWebPOIController(Net::WebServer::Mem
 	this->AddService(CSTR("/api/photoname"), Net::WebUtil::RequestMethod::HTTP_POST, SvcPhotoName);
 	this->AddService(CSTR("/api/photopos"), Net::WebUtil::RequestMethod::HTTP_POST, SvcPhotoPos);
 	this->AddService(CSTR("/api/unfinpeak"), Net::WebUtil::RequestMethod::HTTP_GET, SvcUnfinPeak);
+	this->AddService(CSTR("/api/updatepeak"), Net::WebUtil::RequestMethod::HTTP_POST, SvcUpdatePeak);
 	this->AddService(CSTR("/api/reload"), Net::WebUtil::RequestMethod::HTTP_POST, SvcReload);
 	this->AddService(CSTR("/api/publicpoi"), Net::WebUtil::RequestMethod::HTTP_GET, SvcPublicPOI);
 	this->AddService(CSTR("/api/grouppoi"), Net::WebUtil::RequestMethod::HTTP_GET, SvcGroupPOI);

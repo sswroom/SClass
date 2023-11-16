@@ -161,6 +161,7 @@ namespace SSWR
 			Data::ReadingList<CategoryInfo*> *CateGetList(NotNullPtr<Sync::RWMutexUsage> mutUsage);
 
 			UOSInt PeakGetUnfin(NotNullPtr<Sync::RWMutexUsage> mutUsage, NotNullPtr<Data::ArrayListNN<PeakInfo>> peaks);
+			Bool PeakUpdateStatus(NotNullPtr<Sync::RWMutexUsage> mutUsage, Int32 id, Int32 status);
 			void PeakFreeAll(NotNullPtr<Data::ArrayListNN<PeakInfo>> peaks);
 
 			IO::ConfigFile *LangGet(NotNullPtr<Net::WebServer::IWebRequest> req);
