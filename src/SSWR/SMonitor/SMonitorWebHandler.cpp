@@ -1028,8 +1028,8 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingImgReq(SSWR::SMo
 	NotNullPtr<Media::DrawImage> dimg;
 	if (dimg.Set(deng->CreateImage32(Math::Size2D<UOSInt>(640, 120), Media::AT_NO_ALPHA)))
 	{
-		Media::DrawFont *f;
-		Media::DrawBrush *b;
+		NotNullPtr<Media::DrawFont> f;
+		NotNullPtr<Media::DrawBrush> b;
 		UOSInt readingIndex = (UOSInt)-1;
 		Int32 readingTypeD;
 		Data::LineChart *chart;
@@ -1659,8 +1659,8 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DevicePastDataImgReq(SSWR::SM
 	NotNullPtr<Media::DrawImage> dimg;
 	if (dimg.Set(deng->CreateImage32(Math::Size2D<UOSInt>(640, 120), Media::AT_NO_ALPHA)))
 	{
-		Media::DrawFont *f;
-		Media::DrawBrush *b;
+		NotNullPtr<Media::DrawFont> f;
+		NotNullPtr<Media::DrawBrush> b;
 		UOSInt readingIndex = (UOSInt)-1;
 		Int32 readingType = 0;
 		Data::LineChart *chart;

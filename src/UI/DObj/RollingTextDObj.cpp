@@ -17,8 +17,8 @@ void UI::DObj::RollingTextDObj::UpdateBGImg()
 	if (this->txt)
 	{
 		NotNullPtr<Media::DrawImage> dimg;
-		Media::DrawFont *f;
-		Media::DrawBrush *b;
+		NotNullPtr<Media::DrawFont> f;
+		NotNullPtr<Media::DrawBrush> b;
 		Data::ArrayListNN<Text::String> lines;
 		NotNullPtr<Text::String> s;
 		Double currY;
@@ -26,7 +26,7 @@ void UI::DObj::RollingTextDObj::UpdateBGImg()
 		{
 			f = dimg->NewFontPx(this->fontName->ToCString(), this->fontSize, Media::DrawEngine::DFS_ANTIALIAS, this->codePage);
 
-			Media::DrawImageTool::SplitString(dimg, this->txt->ToCString(), &lines, f, OSInt2Double(this->size.x));
+			Media::DrawImageTool::SplitString(dimg, this->txt->ToCString(), lines, f, OSInt2Double(this->size.x));
 			dimg->DelFont(f);
 			this->deng->DeleteImage(dimg);
 		}

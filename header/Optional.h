@@ -38,5 +38,13 @@ public:
 	{
 		return this->p == 0;
 	}
+
+	template <typename V> static Optional<T> ConvertFrom(Optional<V> ptr)
+	{
+		NotNullPtr<V> p;
+		if (ptr.SetTo(p))
+			return Optional<T>((T*)p.Ptr());
+		return Optional<T>(0);
+	}
 };
 #endif

@@ -393,10 +393,10 @@ Media::DrawPen *Media::StaticDrawImage::NewPenARGB(UInt32 color, Double thick, U
 	return p;
 }
 
-Media::DrawBrush *Media::StaticDrawImage::NewBrushARGB(UInt32 color)
+NotNullPtr<Media::DrawBrush> Media::StaticDrawImage::NewBrushARGB(UInt32 color)
 {
-	Media::StaticBrush *b;
-	NEW_CLASS(b, Media::StaticBrush(color));
+	NotNullPtr<Media::StaticBrush> b;
+	NEW_CLASSNN(b, Media::StaticBrush(color));
 	return b;
 }
 
@@ -426,10 +426,10 @@ UOSInt Media::StaticDrawImage::SaveGIF(NotNullPtr<IO::SeekableStream> stm)
 		return -1;
 	}
 	Exporter::GIFExporter exporter;
-	Media::ImageList *imgList;
-	NEW_CLASS(imgList, Media::ImageList(CSTR("GIFTemp")));
+	NotNullPtr<Media::ImageList> imgList;
+	NEW_CLASSNN(imgList, Media::ImageList(CSTR("GIFTemp")));
 	imgList->AddImage(simg, 0);
 	Bool succ = exporter.ExportFile(stm, CSTR("Temp"), imgList, 0);
-	DEL_CLASS(imgList);
+	imgList.Delete();
 	return succ?0:-1;
 }

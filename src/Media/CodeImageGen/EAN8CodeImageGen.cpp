@@ -277,9 +277,9 @@ Media::DrawImage *Media::CodeImageGen::EAN8CodeImageGen::GenCode(Text::CString c
 	Double fh = 12.0 * UOSInt2Double(codeWidth);
 
 	Media::DrawImage *dimg = eng->CreateImage32(Math::Size2D<UOSInt>((4 + 67) * codeWidth, h), Media::AT_NO_ALPHA);
-	Media::DrawBrush *b;
+	NotNullPtr<Media::DrawBrush> b;
 	Media::DrawPen *p;
-	Media::DrawFont *f;
+	NotNullPtr<Media::DrawFont> f;
 	b = dimg->NewBrushARGB(0xffffffff);
 	dimg->DrawRect(Math::Coord2DDbl(0, 0), dimg->GetSize().ToDouble(), 0, b);
 	dimg->DelBrush(b);

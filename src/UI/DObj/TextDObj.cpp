@@ -38,8 +38,8 @@ UI::DObj::TextDObj::TextDObj(NotNullPtr<Media::DrawEngine> deng, Text::CString t
 		NotNullPtr<Media::DrawImage> dimg;
 		if (dimg.Set(this->deng->CreateImage32(this->size, Media::AT_NO_ALPHA)))
 		{
-			Media::DrawFont *f = dimg->NewFontPx(this->fontName->ToCString(), this->fontSize, (Media::DrawEngine::DrawFontStyle)(fontStyle | Media::DrawEngine::DFS_ANTIALIAS), codePage);
-			Media::DrawImageTool::SplitString(dimg, this->txt->ToCString(), &this->lines, f, OSInt2Double(this->size.x));
+			NotNullPtr<Media::DrawFont> f = dimg->NewFontPx(this->fontName->ToCString(), this->fontSize, (Media::DrawEngine::DrawFontStyle)(fontStyle | Media::DrawEngine::DFS_ANTIALIAS), codePage);
+			Media::DrawImageTool::SplitString(dimg, this->txt->ToCString(), this->lines, f, OSInt2Double(this->size.x));
 			dimg->DelFont(f);
 			this->deng->DeleteImage(dimg);
 		}
@@ -72,8 +72,8 @@ void UI::DObj::TextDObj::DrawObject(NotNullPtr<Media::DrawImage> dimg)
 {
 	this->pageChg = false;
 	Math::Size2DDbl sz;
-	Media::DrawFont *f;
-	Media::DrawBrush *b;
+	NotNullPtr<Media::DrawFont> f;
+	NotNullPtr<Media::DrawBrush> b;
 	f = dimg->NewFontPx(this->fontName->ToCString(), this->fontSize, (Media::DrawEngine::DrawFontStyle)(this->fontStyle | Media::DrawEngine::DFS_ANTIALIAS), this->codePage);
 	b = dimg->NewBrushARGB(this->fontColor);
 	Math::Coord2D<OSInt> tl = this->GetCurrPos();

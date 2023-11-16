@@ -90,8 +90,8 @@ void SSWR::AVIRead::AVIRSetDPIForm::UpdatePreview()
 	Math::Size2DDbl sz;
 	NotNullPtr<Media::DrawEngine> eng;
 	NotNullPtr<Media::DrawImage> gimg;
-	Media::DrawBrush *b;
-	Media::DrawFont *f;
+	NotNullPtr<Media::DrawBrush> b;
+	NotNullPtr<Media::DrawFont> f;
 	Media::DrawPen *p;
 	this->pbPreview->SetImage(0);
 	SDEL_CLASS(this->pimg);

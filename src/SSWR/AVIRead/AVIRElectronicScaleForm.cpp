@@ -70,8 +70,8 @@ void __stdcall SSWR::AVIRead::AVIRElectronicScaleForm::OnTimerTick(void *userObj
 
 			if (img.Set(me->dimg))
 			{
-				Media::DrawBrush *b;
-				Media::DrawFont *f;
+				NotNullPtr<Media::DrawBrush> b;
+				NotNullPtr<Media::DrawFont> f;
 				b = img->NewBrushARGB(0xffffffff);
 				img->DrawRect(Math::Coord2DDbl(0, 0), usz.ToDouble(), 0, b);
 				img->DelBrush(b);

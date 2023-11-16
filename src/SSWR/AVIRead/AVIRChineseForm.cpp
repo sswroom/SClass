@@ -331,8 +331,8 @@ void SSWR::AVIRead::AVIRChineseForm::UpdateImg()
 	if (this->charImg)
 	{
 		UTF8Char sbuff[7];
-		Media::DrawBrush *b;
-		Media::DrawFont *f;
+		NotNullPtr<Media::DrawBrush> b;
+		NotNullPtr<Media::DrawFont> f;
 		b = this->charImg->NewBrushARGB(0xffffffff);
 		this->charImg->DrawRect(Math::Coord2DDbl(0, 0), newSize.ToDouble(), 0, b);
 		this->charImg->DelBrush(b);

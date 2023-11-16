@@ -87,7 +87,7 @@ namespace Media
 		virtual Bool DrawImagePt3(NotNullPtr<DrawImage> img, Math::Coord2DDbl destTL, Math::Coord2DDbl srcTL, Math::Size2DDbl srcSize);
 
 		virtual DrawPen *NewPenARGB(UInt32 color, Double thick, UInt8 *pattern, UOSInt nPattern);
-		virtual DrawBrush *NewBrushARGB(UInt32 color);
+		virtual NotNullPtr<DrawBrush> NewBrushARGB(UInt32 color);
 /*		virtual DrawFont *NewFontA(const Char *name, Int16 pxSize, Media::DrawEngine::DrawFontStyle fontStyle) = 0;
 		virtual DrawFont *NewFontW(const WChar *name, Int16 pxSize, Media::DrawEngine::DrawFontStyle fontStyle) = 0;
 		virtual DrawFont *NewFontH(const WChar *name, Double height, Media::DrawEngine::DrawFontStyle fontStyle, Int32 codePage) = 0;*/

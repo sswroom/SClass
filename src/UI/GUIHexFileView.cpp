@@ -170,7 +170,7 @@ void UI::GUIHexFileView::EventTimerTick()
 
 void UI::GUIHexFileView::DrawImage(NotNullPtr<Media::DrawImage> dimg)
 {
-	Media::DrawBrush *b = dimg->NewBrushARGB(this->bgColor);
+	NotNullPtr<Media::DrawBrush> b = dimg->NewBrushARGB(this->bgColor);
 	dimg->DrawRect(Math::Coord2DDbl(0, 0), dimg->GetSize().ToDouble(), 0, b);
 	dimg->DelBrush(b);
 	OSInt vPos = this->GetScrollVPos();
@@ -181,12 +181,13 @@ void UI::GUIHexFileView::DrawImage(NotNullPtr<Media::DrawImage> dimg)
 		UTF8Char *sptr;
 		UInt64 currOfst = ((UInt64)(UOSInt)vPos) * 16;
 		Media::DrawFont *f = this->CreateDrawFont(dimg);
-		Media::DrawBrush *lineNumBrush = dimg->NewBrushARGB(this->lineNumColor);
-		Media::DrawBrush *textBrush = dimg->NewBrushARGB(this->txtColor);
-		Media::DrawBrush *selBrush = dimg->NewBrushARGB(this->selColor);
-		Media::DrawBrush *selTextBrush = dimg->NewBrushARGB(this->selTextColor);
-		Media::DrawBrush *frameBrush = dimg->NewBrushARGB(this->frameColor);
-		Media::DrawBrush *fieldBrush = dimg->NewBrushARGB(this->fieldColor);
+		NotNullPtr<Media::DrawFont> fnt;
+		NotNullPtr<Media::DrawBrush> lineNumBrush = dimg->NewBrushARGB(this->lineNumColor);
+		NotNullPtr<Media::DrawBrush> textBrush = dimg->NewBrushARGB(this->txtColor);
+		NotNullPtr<Media::DrawBrush> selBrush = dimg->NewBrushARGB(this->selColor);
+		NotNullPtr<Media::DrawBrush> selTextBrush = dimg->NewBrushARGB(this->selTextColor);
+		NotNullPtr<Media::DrawBrush> frameBrush = dimg->NewBrushARGB(this->frameColor);
+		NotNullPtr<Media::DrawBrush> fieldBrush = dimg->NewBrushARGB(this->fieldColor);
 		Math::Coord2DDbl currPos = Math::Coord2DDbl(0, 0);
 		Double hHeight = this->pageLineHeight * 0.5;
 		Double dHeight = UOSInt2Double(dimg->GetHeight());
@@ -230,18 +231,21 @@ void UI::GUIHexFileView::DrawImage(NotNullPtr<Media::DrawImage> dimg)
 			{
 				Text::StrHexVal64(sbuff, currOfst);
 			}
-			while (true)
+			if (fnt.Set(f))
 			{
-				c = sbuff[i];
-				if (c == 0)
+				while (true)
 				{
-					break;
+					c = sbuff[i];
+					if (c == 0)
+					{
+						break;
+					}
+					sbuff2[0] = c;
+					sbuff2[1] = 0;
+					dimg->DrawString(currPos, {sbuff2, 1}, fnt, lineNumBrush);
+					currPos.x += hHeight;
+					i++;
 				}
-				sbuff2[0] = c;
-				sbuff2[1] = 0;
-				dimg->DrawString(currPos, {sbuff2, 1}, f, lineNumBrush);
-				currPos.x += hHeight;
-				i++;
 			}
 			currPos.x += hHeight;
 
@@ -281,21 +285,28 @@ void UI::GUIHexFileView::DrawImage(NotNullPtr<Media::DrawImage> dimg)
 						}
 					}
 				}
-				Media::DrawBrush *tBrush = textBrush;
+				NotNullPtr<Media::DrawBrush> tBrush = textBrush;
 				if (this->currOfst == drawOfst)
 				{
 					dimg->DrawRect(currPos, Math::Size2DDbl(this->pageLineHeight, this->pageLineHeight), 0, selBrush);
 					tBrush = selTextBrush;
 				}
 				Text::StrHexByte(sbuff, *currPtr++);
-				sbuff2[0] = sbuff[0];
-				sbuff2[1] = 0;
-				dimg->DrawString(currPos, {sbuff2, 1}, f, tBrush);
-				currPos.x += hHeight;
-				sbuff2[0] = sbuff[1];
-				sbuff2[1] = 0;
-				dimg->DrawString(currPos, {sbuff2, 1}, f, tBrush);
-				currPos.x += hHeight * 2;
+				if (fnt.Set(f))
+				{
+					sbuff2[0] = sbuff[0];
+					sbuff2[1] = 0;
+					dimg->DrawString(currPos, {sbuff2, 1}, fnt, tBrush);
+					currPos.x += hHeight;
+					sbuff2[0] = sbuff[1];
+					sbuff2[1] = 0;
+					dimg->DrawString(currPos, {sbuff2, 1}, fnt, tBrush);
+					currPos.x += hHeight * 2;
+				}
+				else
+				{
+					currPos.x += hHeight * 3;
+				}
 				j++;
 			}
 
@@ -310,31 +321,34 @@ void UI::GUIHexFileView::DrawImage(NotNullPtr<Media::DrawImage> dimg)
 				textPtr += textSkip;
 				textSkip = 0;
 			}
-			while (j < k)
+			if (fnt.Set(f))
 			{
-				if (Text::CharUtil::UTF8CharValid(textPtr))
+				while (j < k)
 				{
-					textPtr2 = Text::StrReadChar(textPtr, &wc);
-					if (wc < 32)
+					if (Text::CharUtil::UTF8CharValid(textPtr))
 					{
-						dimg->DrawString(currPos, CSTR("."), f, textBrush);
+						textPtr2 = Text::StrReadChar(textPtr, &wc);
+						if (wc < 32)
+						{
+							dimg->DrawString(currPos, CSTR("."), fnt, textBrush);
+						}
+						else
+						{
+							sptr = Text::StrWriteChar(sbuff, wc);
+							*sptr = 0;
+							dimg->DrawString(currPos, CSTRP(sbuff, sptr), fnt, textBrush);
+						}
+						currPos.x += hHeight * OSInt2Double(textPtr2 - textPtr);
+						j += (UOSInt)(textPtr2 - textPtr);
+						textPtr = textPtr2;
 					}
 					else
 					{
-						sptr = Text::StrWriteChar(sbuff, wc);
-						*sptr = 0;
-						dimg->DrawString(currPos, CSTRP(sbuff, sptr), f, textBrush);
+						dimg->DrawString(currPos, CSTR("."), fnt, textBrush);
+						textPtr++;
+						currPos.x += hHeight;
+						j++;
 					}
-					currPos.x += hHeight * OSInt2Double(textPtr2 - textPtr);
-					j += (UOSInt)(textPtr2 - textPtr);
-					textPtr = textPtr2;
-				}
-				else
-				{
-					dimg->DrawString(currPos, CSTR("."), f, textBrush);
-					textPtr++;
-					currPos.x += hHeight;
-					j++;
 				}
 			}
 			if (j > k)
@@ -351,7 +365,8 @@ void UI::GUIHexFileView::DrawImage(NotNullPtr<Media::DrawImage> dimg)
 		dimg->DelBrush(selTextBrush);
 		dimg->DelBrush(textBrush);
 		dimg->DelBrush(lineNumBrush);
-		dimg->DelFont(f);
+		if (fnt.Set(f))
+			dimg->DelFont(fnt);
 	}
 }
 

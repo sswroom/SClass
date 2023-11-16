@@ -125,7 +125,7 @@ void UI::GUISudokuViewer::OnDraw(NotNullPtr<Media::DrawImage> img)
 	UOSInt blockSize;
 	UOSInt tlx;
 	UOSInt tly;
-	Media::DrawBrush *b3;
+	NotNullPtr<Media::DrawBrush> b3;
 	sz = this->GetSizeP();
 	b3 = img->NewBrushARGB(0xffffffff);
 	if (sz.x > sz.y)
@@ -147,9 +147,9 @@ void UI::GUISudokuViewer::OnDraw(NotNullPtr<Media::DrawImage> img)
 	blockSize = (size / 9) - 2;
 
 	Media::DrawPen *p;
-	Media::DrawBrush *b;
-	Media::DrawBrush *b2;
-	Media::DrawFont *f;
+	NotNullPtr<Media::DrawBrush> b;
+	NotNullPtr<Media::DrawBrush> b2;
+	NotNullPtr<Media::DrawFont> f;
 	UOSInt lastPos;
 	UOSInt currPos;
 	UOSInt i;

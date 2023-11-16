@@ -1356,8 +1356,8 @@ void Map::DrawMapRenderer::DrawLayers(NotNullPtr<Map::DrawMapRenderer::DrawEnv> 
 							else if (layer.fontType == Map::MapEnv::FontType::LayerStyle)
 							{
 								UOSInt fs = denv->layerFont.GetCount();
-								Media::DrawFont *f = denv->img->NewFontPt(layer.fontName->ToCString(), layer.fontSizePt, Media::DrawEngine::DFS_NORMAL, 0);
-								Media::DrawBrush *b = denv->img->NewBrushARGB(this->colorConv->ConvRGB8(layer.fontColor));
+								NotNullPtr<Media::DrawFont> f = denv->img->NewFontPt(layer.fontName->ToCString(), layer.fontSizePt, Media::DrawEngine::DFS_NORMAL, 0);
+								NotNullPtr<Media::DrawBrush> b = denv->img->NewBrushARGB(this->colorConv->ConvRGB8(layer.fontColor));
 								denv->layerFont.Add(f);
 								denv->layerFontColor.Add(b);
 								DrawLabel(denv, layer.layer, fs, layer.labelCol, layer.priority, layer.flags, 0, 0, layer.fontType);
@@ -1389,8 +1389,8 @@ void Map::DrawMapRenderer::DrawLayers(NotNullPtr<Map::DrawMapRenderer::DrawEnv> 
 							else if (layer.fontType == Map::MapEnv::FontType::LayerStyle)
 							{
 								UOSInt fs = denv->layerFont.GetCount();
-								Media::DrawFont *f = denv->img->NewFontPt(layer.fontName->ToCString(), layer.fontSizePt, Media::DrawEngine::DFS_NORMAL, 0);
-								Media::DrawBrush *b = denv->img->NewBrushARGB(this->colorConv->ConvRGB8(layer.fontColor));
+								NotNullPtr<Media::DrawFont> f = denv->img->NewFontPt(layer.fontName->ToCString(), layer.fontSizePt, Media::DrawEngine::DFS_NORMAL, 0);
+								NotNullPtr<Media::DrawBrush> b = denv->img->NewBrushARGB(this->colorConv->ConvRGB8(layer.fontColor));
 								denv->layerFont.Add(f);
 								denv->layerFontColor.Add(b);
 								DrawLabel(denv, layer.layer, fs, layer.labelCol, layer.priority, layer.flags, 0, 0, layer.fontType);
@@ -1449,8 +1449,8 @@ void Map::DrawMapRenderer::DrawLayers(NotNullPtr<Map::DrawMapRenderer::DrawEnv> 
 							else if (layer.fontType == Map::MapEnv::FontType::LayerStyle)
 							{
 								UOSInt fs = denv->layerFont.GetCount();
-								Media::DrawFont *f = denv->img->NewFontPt(layer.fontName->ToCString(), layer.fontSizePt, Media::DrawEngine::DFS_NORMAL, 0);
-								Media::DrawBrush *b = denv->img->NewBrushARGB(this->colorConv->ConvRGB8(layer.fontColor));
+								NotNullPtr<Media::DrawFont> f = denv->img->NewFontPt(layer.fontName->ToCString(), layer.fontSizePt, Media::DrawEngine::DFS_NORMAL, 0);
+								NotNullPtr<Media::DrawBrush> b = denv->img->NewBrushARGB(this->colorConv->ConvRGB8(layer.fontColor));
 								denv->layerFont.Add(f);
 								denv->layerFontColor.Add(b);
 								if (pimg)
@@ -1497,8 +1497,8 @@ void Map::DrawMapRenderer::DrawLayers(NotNullPtr<Map::DrawMapRenderer::DrawEnv> 
 							else if (layer.fontType == Map::MapEnv::FontType::LayerStyle)
 							{
 								UOSInt fs = denv->layerFont.GetCount();
-								Media::DrawFont *f = denv->img->NewFontPt(layer.fontName->ToCString(), layer.fontSizePt, Media::DrawEngine::DFS_NORMAL, 0);
-								Media::DrawBrush *b = denv->img->NewBrushARGB(this->colorConv->ConvRGB8(layer.fontColor));
+								NotNullPtr<Media::DrawFont> f = denv->img->NewFontPt(layer.fontName->ToCString(), layer.fontSizePt, Media::DrawEngine::DFS_NORMAL, 0);
+								NotNullPtr<Media::DrawBrush> b = denv->img->NewBrushARGB(this->colorConv->ConvRGB8(layer.fontColor));
 								denv->layerFont.Add(f);
 								denv->layerFontColor.Add(b);
 								layer.layer->SetMixedData(Map::MapDrawLayer::MixedData::NonPointOnly);
@@ -1527,7 +1527,7 @@ void Map::DrawMapRenderer::DrawShapes(NotNullPtr<Map::DrawMapRenderer::DrawEnv> 
 	UOSInt i;
 	Map::GetObjectSess *session;
 	Media::DrawPen *p;
-	Media::DrawBrush *b;
+	NotNullPtr<Media::DrawBrush> b;
 	Int64 lastId;
 	Int64 thisId;
 	UOSInt layerId = 0;
@@ -2256,19 +2256,29 @@ void Map::DrawMapRenderer::DrawImageObject(NotNullPtr<DrawEnv> denv, NotNullPtr<
 	}
 }
 
-void Map::DrawMapRenderer::GetCharsSize(NotNullPtr<DrawEnv> denv, Math::Coord2DDbl *size, Text::CString label, Map::MapEnv::FontType fontType, UOSInt fontStyle, Double scaleW, Double scaleH)
+void Map::DrawMapRenderer::GetCharsSize(NotNullPtr<DrawEnv> denv, Math::Coord2DDbl *size, Text::CStringNN label, Map::MapEnv::FontType fontType, UOSInt fontStyle, Double scaleW, Double scaleH)
 {
 	Math::Size2DDbl szTmp;
 	UOSInt buffSize;
-	Media::DrawFont *df;
+	NotNullPtr<Media::DrawFont> df;
 	if (fontType == Map::MapEnv::FontType::LayerStyle)
 	{
-		df = denv->layerFont.GetItem(fontStyle);
+		if (!df.Set(denv->layerFont.GetItem(fontStyle)))
+		{
+			size->x = 0;
+			size->y = 0;
+			return;
+		}
 		buffSize = 0;
 	}
 	else
 	{
-		df = denv->fontStyles[fontStyle].font;
+		if (!df.Set(denv->fontStyles[fontStyle].font))
+		{
+			size->x = 0;
+			size->y = 0;
+			return;
+		}
 		buffSize = denv->fontStyles[fontStyle].buffSize;
 	}
 	szTmp = denv->img->GetTextSize(df, label);
@@ -2335,23 +2345,21 @@ void Map::DrawMapRenderer::DrawChars(NotNullPtr<DrawEnv> denv, Text::CStringNN s
 	Math::Size2DDbl size;
 	UInt16 absH;
 	Map::DrawMapRenderer::DrawFontStyle *font;
-	Media::DrawFont *df;
-	Media::DrawBrush *db;
+	NotNullPtr<Media::DrawFont> df;
+	NotNullPtr<Media::DrawBrush> db;
 
 	if (fontType == Map::MapEnv::FontType::GlobalStyle)
 	{
 		if (fontStyle >= denv->fontStyleCnt)
 			return;
 		font = &denv->fontStyles[fontStyle];
-		df = font->font;
-		db = font->fontBrush;
+		if (!df.Set(font->font) || !font->fontBrush.SetTo(db))
+			return;
 	}
 	else if (fontType == Map::MapEnv::FontType::LayerStyle)
 	{
 		font = 0;
-		df = denv->layerFont.GetItem(fontStyle);
-		db = denv->layerFontColor.GetItem(fontStyle);
-		if (df == 0 || db == 0)
+		if (!df.Set(denv->layerFont.GetItem(fontStyle)) || !db.Set(denv->layerFontColor.GetItem(fontStyle)))
 			return;
 	}
 	else
@@ -2375,9 +2383,11 @@ void Map::DrawMapRenderer::DrawChars(NotNullPtr<DrawEnv> denv, Text::CStringNN s
 	{
 		denv->img->SetTextAlign(Media::DrawEngine::DRAW_POS_TOPLEFT);
 
-		if (font && font->buffSize > 0)
+		NotNullPtr<Media::DrawBrush> buffBrush;
+		NotNullPtr<Media::DrawFont> buffFnt;
+		if (font && font->buffSize > 0 && buffFnt.Set(font->font) && font->buffBrush.SetTo(buffBrush))
 		{
-			denv->img->DrawStringB(scnPos - (size * 0.5), str1, font->font, font->buffBrush, (UOSInt)Double2Int32(UOSInt2Double(font->buffSize) * denv->img->GetHDPI() / 96.0));
+			denv->img->DrawStringB(scnPos - (size * 0.5), str1, buffFnt, buffBrush, (UOSInt)Double2Int32(UOSInt2Double(font->buffSize) * denv->img->GetHDPI() / 96.0));
 			denv->img->DrawString(scnPos - (size * 0.5), str1, df, db);
 		}
 		else
@@ -2448,23 +2458,25 @@ void Map::DrawMapRenderer::DrawChars(NotNullPtr<DrawEnv> denv, Text::CStringNN s
 		UOSInt cnt;
 		const UTF8Char *lbl = str1.v;
 
-		if (font && font->buffSize > 0)
+		NotNullPtr<Media::DrawFont> buffFnt;
+		NotNullPtr<Media::DrawBrush> buffBrush;
+		if (font && font->buffSize > 0 && buffFnt.Set(font->font) && font->buffBrush.SetTo(buffBrush))
 		{
 			currPt.x = 0;
 			currPt.y = 0;
 
 			cnt = str1.leng;
-
 			while (cnt--)
 			{
-				szThis = denv->img->GetTextSize(font->font, {lbl, 1});
+				szThis = denv->img->GetTextSize(buffFnt, {lbl, 1});
 
+				
 				if (type)
 				{
 					UTF8Char l[2];
 					l[0] = lbl[0];
 					l[1] = 0;
-					denv->img->DrawStringB(Math::Coord2DDbl(startPt.x + currPt.x - (szThis.x * 0.5), startPt.y + currPt.y), {l, 1}, font->font, font->buffBrush, (UOSInt)Double2Int32(UOSInt2Double(font->buffSize) * denv->img->GetHDPI() / 96.0));
+					denv->img->DrawStringB(Math::Coord2DDbl(startPt.x + currPt.x - (szThis.x * 0.5), startPt.y + currPt.y), {l, 1}, buffFnt, buffBrush, (UOSInt)Double2Int32(UOSInt2Double(font->buffSize) * denv->img->GetHDPI() / 96.0));
 
 					currPt.y += szThis.y;
 
@@ -2476,7 +2488,7 @@ void Map::DrawMapRenderer::DrawChars(NotNullPtr<DrawEnv> denv, Text::CStringNN s
 					UTF8Char l[2];
 					l[0] = lbl[0];
 					l[1] = 0;
-					denv->img->DrawStringB(startPt + currPt, {l, 1}, font->font, font->buffBrush, (UOSInt)Double2Int32(UOSInt2Double(font->buffSize) * denv->img->GetHDPI() / 96.0));
+					denv->img->DrawStringB(startPt + currPt, {l, 1}, buffFnt, buffBrush, (UOSInt)Double2Int32(UOSInt2Double(font->buffSize) * denv->img->GetHDPI() / 96.0));
 
 					currPt.x += szThis.x;
 					if (scaleW)
@@ -2525,9 +2537,11 @@ void Map::DrawMapRenderer::DrawChars(NotNullPtr<DrawEnv> denv, Text::CStringNN s
 	else
 	{
 		denv->img->SetTextAlign(Media::DrawEngine::DRAW_POS_CENTER);
-		if (font && font->buffSize > 0)
+		NotNullPtr<Media::DrawBrush> buffBrush;
+		NotNullPtr<Media::DrawFont> buffFnt;
+		if (font && font->buffSize > 0 && buffFnt.Set(font->font) && font->buffBrush.SetTo(buffBrush))
 		{
-			denv->img->DrawStringRotB(scnPos, str1, font->font, font->buffBrush, degD * 180 / Math::PI, font->buffSize);
+			denv->img->DrawStringRotB(scnPos, str1, buffFnt, buffBrush, degD * 180 / Math::PI, font->buffSize);
 		}
 		denv->img->DrawStringRot(scnPos, str1, df, db, degD * 180 / Math::PI);
 	}
@@ -2552,23 +2566,21 @@ void Map::DrawMapRenderer::DrawCharsL(NotNullPtr<Map::DrawMapRenderer::DrawEnv> 
 	Math::Size2DDbl szLast;
 	Int32 mode;
 	Map::DrawMapRenderer::DrawFontStyle *font;
-	Media::DrawFont *df;
-	Media::DrawBrush *db;
+	NotNullPtr<Media::DrawFont> df;
+	NotNullPtr<Media::DrawBrush> db;
 
 	if (fontType == Map::MapEnv::FontType::GlobalStyle)
 	{
 		if (fontStyle >= denv->fontStyleCnt)
 			return;
 		font = &denv->fontStyles[fontStyle];
-		df = font->font;
-		db = font->fontBrush;
+		if (!df.Set(font->font) || !font->fontBrush.SetTo(db))
+			return;
 	}
 	else if (fontType == Map::MapEnv::FontType::LayerStyle)
 	{
 		font = 0;
-		df = denv->layerFont.GetItem(fontStyle);
-		db = denv->layerFontColor.GetItem(fontStyle);
-		if (df == 0 || db == 0)
+		if (!df.Set(denv->layerFont.GetItem(fontStyle)) || !db.Set(denv->layerFontColor.GetItem(fontStyle)))
 			return;
 	}
 	else
@@ -2994,19 +3006,20 @@ void Map::DrawMapRenderer::DrawCharsL(NotNullPtr<Map::DrawMapRenderer::DrawEnv> 
 				max.y = (currPt.y + yadd);
 			}
 
+			NotNullPtr<Media::DrawBrush> buffBrush;
 			if (mode == 0)
 			{
-				if (font && font->buffSize > 0)
+				if (font && font->buffSize > 0 && font->buffBrush.SetTo(buffBrush))
 				{
-					denv->img->DrawStringRotB(currPt, CSTRP(lbl, nextPos), df, font->buffBrush, lastAngle, font->buffSize);
+					denv->img->DrawStringRotB(currPt, CSTRP(lbl, nextPos), df, buffBrush, lastAngle, font->buffSize);
 				}
 				denv->img->DrawStringRot(currPt, CSTRP(lbl, nextPos), df, db, lastAngle);
 			}
 			else
 			{
-				if (font && font->buffSize > 0)
+				if (font && font->buffSize > 0 && font->buffBrush.SetTo(buffBrush))
 				{
-					denv->img->DrawStringRotB(currPt, CSTRP(lbl, nextPos), df, font->buffBrush, lastAngle, font->buffSize);
+					denv->img->DrawStringRotB(currPt, CSTRP(lbl, nextPos), df, buffBrush, lastAngle, font->buffSize);
 				}
 				denv->img->DrawStringRot(currPt, CSTRP(lbl, nextPos), df, db, lastAngle);
 			}
@@ -3037,19 +3050,20 @@ void Map::DrawMapRenderer::DrawCharsL(NotNullPtr<Map::DrawMapRenderer::DrawEnv> 
 				max.y = (currPt.y + yadd);
 			}
 
+			NotNullPtr<Media::DrawBrush> buffBrush;
 			if (mode == 0)
 			{
-				if (font && font->buffSize > 0)
+				if (font && font->buffSize > 0 && font->buffBrush.SetTo(buffBrush))
 				{
-					denv->img->DrawStringRotB(currPt, CSTRP(lbl, nextPos), df, font->buffBrush, angleDegree, font->buffSize);
+					denv->img->DrawStringRotB(currPt, CSTRP(lbl, nextPos), df, buffBrush, angleDegree, font->buffSize);
 				}
 				denv->img->DrawStringRot(currPt, CSTRP(lbl, nextPos), df, db, angleDegree);
 			}
 			else
 			{
-				if (font && font->buffSize > 0)
+				if (font && font->buffSize > 0 && font->buffBrush.SetTo(buffBrush))
 				{
-					denv->img->DrawStringRotB(currPt, CSTRP(lbl, nextPos), df, font->buffBrush, angleDegree, font->buffSize);
+					denv->img->DrawStringRotB(currPt, CSTRP(lbl, nextPos), df, buffBrush, angleDegree, font->buffSize);
 				}
 				denv->img->DrawStringRot(currPt, CSTRP(lbl, nextPos), df, db, angleDegree);
 			}
@@ -3085,23 +3099,21 @@ void Map::DrawMapRenderer::DrawCharsLA(NotNullPtr<DrawEnv> denv, Text::CStringNN
 	Int32 mode;
 	Bool found;
 	Map::DrawMapRenderer::DrawFontStyle *font;
-	Media::DrawFont *df;
-	Media::DrawBrush *db;
+	NotNullPtr<Media::DrawFont> df;
+	NotNullPtr<Media::DrawBrush> db;
 
 	if (fontType == Map::MapEnv::FontType::GlobalStyle)
 	{
 		if (fontStyle >= denv->fontStyleCnt)
 			return;
 		font = &denv->fontStyles[fontStyle];
-		df = font->font;
-		db = font->fontBrush;
+		if (!df.Set(font->font) || !font->fontBrush.SetTo(db))
+			return;
 	}
 	else if (fontType == Map::MapEnv::FontType::LayerStyle)
 	{
 		font = 0;
-		df = denv->layerFont.GetItem(fontStyle);
-		db = denv->layerFontColor.GetItem(fontStyle);
-		if (df == 0 || db == 0)
+		if (!df.Set(denv->layerFont.GetItem(fontStyle)) || !db.Set(denv->layerFontColor.GetItem(fontStyle)))
 			return;
 	}
 	else
@@ -3607,19 +3619,20 @@ void Map::DrawMapRenderer::DrawCharsLA(NotNullPtr<DrawEnv> denv, Text::CStringNN
 		}
 
 		lastPt = currPt;
+		NotNullPtr<Media::DrawBrush> buffBrush;
 		if (mode == 0)
 		{
-			if (font && font->buffSize > 0)
+			if (font && font->buffSize > 0 && font->buffBrush.SetTo(buffBrush))
 			{
-				denv->img->DrawStringB(currPt, CSTRP(lbl, nextPos), df, font->buffBrush, (UInt32)Double2Int32(UOSInt2Double(font->buffSize) * denv->img->GetHDPI() / 96.0));
+				denv->img->DrawStringB(currPt, CSTRP(lbl, nextPos), df, buffBrush, (UInt32)Double2Int32(UOSInt2Double(font->buffSize) * denv->img->GetHDPI() / 96.0));
 			}
 			denv->img->DrawString(currPt, CSTRP(lbl, nextPos), df, db);
 		}
 		else
 		{
-			if (font && font->buffSize > 0)
+			if (font && font->buffSize > 0 && font->buffBrush.SetTo(buffBrush))
 			{
-				denv->img->DrawStringB(currPt, CSTRP(lbl, nextPos), df, font->buffBrush, (UInt32)Double2Int32(UOSInt2Double(font->buffSize) * denv->img->GetHDPI() / 96.0));
+				denv->img->DrawStringB(currPt, CSTRP(lbl, nextPos), df, buffBrush, (UInt32)Double2Int32(UOSInt2Double(font->buffSize) * denv->img->GetHDPI() / 96.0));
 			}
 			denv->img->DrawString(currPt, CSTRP(lbl, nextPos), df, db);
 		}
@@ -3687,7 +3700,7 @@ void Map::DrawMapRenderer::DrawMap(NotNullPtr<Media::DrawImage> img, Map::MapVie
 		font = &denv.fontStyles[i];
 		if (env->GetFontStyle(i, fontName, fontSizePt, bold, fontColor, buffSize, buffColor))
 		{
-			font->font = img->NewFontPt(fontName->ToCString(), fontSizePt, bold?Media::DrawEngine::DFS_BOLD:Media::DrawEngine::DFS_NORMAL, 0);
+			font->font = img->NewFontPt(fontName->ToCString(), fontSizePt, bold?Media::DrawEngine::DFS_BOLD:Media::DrawEngine::DFS_NORMAL, 0).Ptr();
 			font->fontBrush = img->NewBrushARGB(this->colorConv->ConvRGB8(fontColor));
 			font->buffSize = buffSize;
 			if (buffSize > 0)
@@ -3711,22 +3724,28 @@ void Map::DrawMapRenderer::DrawMap(NotNullPtr<Media::DrawImage> img, Map::MapVie
 	this->DrawLayers(denv, 0);
 	DrawLabels(denv);
 
+	NotNullPtr<Media::DrawBrush> b;
+	NotNullPtr<Media::DrawFont> fnt;
 	i = denv.fontStyleCnt;
 	while (i-- > 0)
 	{
 		font = &denv.fontStyles[i];
-		img->DelBrush(font->fontBrush);
-		img->DelFont(font->font);
-		if (font->buffBrush)
+		if (font->fontBrush.SetTo(b))
+			img->DelBrush(b);
+		if (fnt.Set(font->font))
+			img->DelFont(fnt);
+		if (font->buffBrush.SetTo(b))
 		{
-			img->DelBrush(font->buffBrush);
+			img->DelBrush(b);
 		}
 	}
 	i = denv.layerFont.GetCount();
 	while (i-- > 0)
 	{
-		img->DelFont(denv.layerFont.GetItem(i));
-		img->DelBrush(denv.layerFontColor.GetItem(i));
+		if (fnt.Set(denv.layerFont.GetItem(i)))
+			img->DelFont(fnt);
+		if (b.Set(denv.layerFontColor.GetItem(i)))
+			img->DelBrush(b);
 	}
 	MemFree(denv.fontStyles);
 	MemFreeA(denv.objBounds);

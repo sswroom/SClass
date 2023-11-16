@@ -332,7 +332,7 @@ void SSWR::AVIRead::AVIRMQTTSubscribeForm::UpdateTopicChart()
 		{
 			if (this->currTopic == 0 || this->currTopic->recvCnt <= 1)
 			{
-				Media::DrawBrush *b;
+				NotNullPtr<Media::DrawBrush> b;
 				b = gimg->NewBrushARGB(0xffffffff);
 				gimg->DrawRect(Math::Coord2DDbl(0, 0), sz.ToDouble(), 0, b);
 				gimg->DelBrush(b);

@@ -20,8 +20,8 @@ Media::DrawImage *Media::FrequencyGraph::CreateGraph(NotNullPtr<Media::DrawEngin
 	Media::DrawImage *retImg = 0;
 	NotNullPtr<Media::DrawImage> tmpImg;
 	Media::DrawPen *p;
-	Media::DrawBrush *b;
-	Media::DrawFont *f;
+	NotNullPtr<Media::DrawBrush> b;
+	NotNullPtr<Media::DrawFont> f;
 	Data::ArrayListDbl chartPos;
 	Data::ArrayListNN<Text::String> chartLabels;
 	UInt32 ihFontSize = (UInt32)Double2Int32(fontSizePx * 0.5);

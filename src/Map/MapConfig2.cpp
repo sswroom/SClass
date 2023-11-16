@@ -124,6 +124,7 @@ void Map::MapConfig2::DrawChars(NotNullPtr<Media::DrawImage> img, Text::CStringN
 		Double rcRight;
 		Double rcTop;
 		Double rcBottom;
+		NotNullPtr<Media::DrawBrush> b;
 		img->SetTextAlign(Media::DrawEngine::DRAW_POS_TOPLEFT);
 
 		i = 0;
@@ -174,13 +175,13 @@ void Map::MapConfig2::DrawChars(NotNullPtr<Media::DrawImage> img, Text::CStringN
 
 				img->DrawPolyline(pt, 5, (Media::DrawPen*)font->other);
 			}
-			else if (font->fontType == 0)
+			else if (font->fontType == 0 && b.Set((Media::DrawBrush*)font->other))
 			{
-				img->DrawString(scnPos - (size * 0.5), str1, font->font, (Media::DrawBrush*)font->other);
+				img->DrawString(scnPos - (size * 0.5), str1, font->font, b);
 			}
-			else if (font->fontType == 4)
+			else if (font->fontType == 4 && b.Set((Media::DrawBrush*)font->other))
 			{
-				img->DrawStringB(scnPos - (size * 0.5), str1, font->font, (Media::DrawBrush*)font->other, (UInt32)Double2Int32(font->thick));
+				img->DrawStringB(scnPos - (size * 0.5), str1, font->font, b, (UInt32)Double2Int32(font->thick));
 			}
 			i++;
 		}
@@ -206,6 +207,7 @@ void Map::MapConfig2::DrawChars(NotNullPtr<Media::DrawImage> img, Text::CStringN
 	i = 0;
 	while (i < fntCount)
 	{
+		NotNullPtr<Media::DrawBrush> nnb;
 		Media::DrawBrush *b;
 		Media::DrawPen *p;
 
@@ -274,124 +276,127 @@ void Map::MapConfig2::DrawChars(NotNullPtr<Media::DrawImage> img, Text::CStringN
 		}
 		else if (font->fontType == 0 || font->fontType == 4)
 		{
-			if (isAlign)
+			if (nnb.Set((Media::DrawBrush*)font->other))
 			{
-				img->SetTextAlign(Media::DrawEngine::DRAW_POS_TOPLEFT);
-				Math::Coord2DDbl currPt = Math::Coord2DDbl(0, 0);
-				Double startX;
-				Double startY;
-				Double tmp;
-				Int32 type;
-				Math::Size2DDbl szThis = img->GetTextSize(font->font, str1);
-
-				if ((szThis.x * absH) < (szThis.y * UOSInt2Double(lblSize) * scaleW))
+				if (isAlign)
 				{
-					scaleW = -scaleW;
-					startX = scnPos.x - (tmp = (szThis.x * 0.5));
-					if (scaleW)
-						startY = scnPos.y - (szThis.y * 0.5) - (tmp * scaleH / scaleW);
+					img->SetTextAlign(Media::DrawEngine::DRAW_POS_TOPLEFT);
+					Math::Coord2DDbl currPt = Math::Coord2DDbl(0, 0);
+					Double startX;
+					Double startY;
+					Double tmp;
+					Int32 type;
+					Math::Size2DDbl szThis = img->GetTextSize(font->font, str1);
+
+					if ((szThis.x * absH) < (szThis.y * UOSInt2Double(lblSize) * scaleW))
+					{
+						scaleW = -scaleW;
+						startX = scnPos.x - (tmp = (szThis.x * 0.5));
+						if (scaleW)
+							startY = scnPos.y - (szThis.y * 0.5) - (tmp * scaleH / scaleW);
+						else
+							startY = scnPos.y - (szThis.y * 0.5);
+						type = 0;
+					}
 					else
-						startY = scnPos.y - (szThis.y * 0.5);
-					type = 0;
+					{
+						scaleW = -scaleW;
+						if (scaleH > 0)
+						{
+							startY = scnPos.y - (tmp = ((szThis.y * UOSInt2Double(lblSize)) * 0.5));
+							startX = scnPos.x - (tmp * scaleW / scaleH);
+						}
+						else if (scaleH)
+						{
+							scaleW = -scaleW;
+							scaleH = -scaleH;
+							startY = scnPos.y - (tmp = ((szThis.y * UOSInt2Double(lblSize)) * 0.5));
+							startX = scnPos.x - (tmp * scaleW / scaleH);
+						}
+						else
+						{
+							startY = scnPos.y - (tmp = ((szThis.y * UOSInt2Double(lblSize)) * 0.5));
+							startX = scnPos.x;
+						}
+						type = 1;
+					}
+
+	//				Double cHeight;
+	//				if (scaleH < 0)
+	//					cHeight = szThis.height;
+	//				else
+	//					cHeight = -szThis.height;
+
+					currPt.x = 0;
+					currPt.y = 0;
+
+					UOSInt cnt;
+					UTF8Char *lbl = sbuff;
+					cnt = lblSize;
+
+					while (cnt--)
+					{
+						szThis = img->GetTextSize(font->font, {lbl, 1});
+
+						if (type)
+						{
+							if (font->fontType == 0)
+							{
+								UTF8Char l[2];
+								l[0] = lbl[0];
+								l[1] = 0;
+								img->DrawString(Math::Coord2DDbl(startX + currPt.x - (szThis.x * 0.5), startY + currPt.y), {l, 1}, font->font, nnb);
+							}
+							else
+							{
+								UTF8Char l[2];
+								l[0] = lbl[0];
+								l[1] = 0;
+								img->DrawStringB(Math::Coord2DDbl(startX + currPt.x - (szThis.x * 0.5), startY + currPt.y), {l, 1}, font->font, nnb, (UInt32)Double2Int32(font->thick));
+							}
+
+							currPt.y += szThis.y;
+
+							if (scaleH)
+								currPt.x = (currPt.y * scaleW / scaleH);
+						}
+						else
+						{
+							if (font->fontType == 0)
+							{
+								UTF8Char l[2];
+								l[0] = lbl[0];
+								l[1] = 0;
+								img->DrawString(Math::Coord2DDbl(startX + currPt.x, startY + currPt.y), {l, 1}, font->font, nnb);
+							}
+							else
+							{
+								UTF8Char l[2];
+								l[0] = lbl[0];
+								l[1] = 0;
+								img->DrawStringB(Math::Coord2DDbl(startX + currPt.x, startY + currPt.y), {l, 1}, font->font, nnb, (UInt32)Double2Int32(font->thick));
+							}
+
+							currPt.x += szThis.x;
+							if (scaleW)
+								currPt.y = (Int16)((Int32)currPt.x * (Int32)scaleH / (Int32)scaleW);
+						}
+						lbl += 1;
+					}
+
 				}
 				else
 				{
-					scaleW = -scaleW;
-					if (scaleH > 0)
+					img->SetTextAlign(Media::DrawEngine::DRAW_POS_CENTER);
+
+					if (font->fontType == 0)
 					{
-						startY = scnPos.y - (tmp = ((szThis.y * UOSInt2Double(lblSize)) * 0.5));
-						startX = scnPos.x - (tmp * scaleW / scaleH);
+						img->DrawStringRot(scnPos, str1, font->font, nnb, (degD * 180.0 / PI));
 					}
-					else if (scaleH)
+					else if (font->fontType == 4)
 					{
-						scaleW = -scaleW;
-						scaleH = -scaleH;
-						startY = scnPos.y - (tmp = ((szThis.y * UOSInt2Double(lblSize)) * 0.5));
-						startX = scnPos.x - (tmp * scaleW / scaleH);
+						img->DrawStringRotB(scnPos, str1, font->font, nnb, (degD * 180.0 / PI), (UInt32)Double2Int32(font->thick));
 					}
-					else
-					{
-						startY = scnPos.y - (tmp = ((szThis.y * UOSInt2Double(lblSize)) * 0.5));
-						startX = scnPos.x;
-					}
-					type = 1;
-				}
-
-//				Double cHeight;
-//				if (scaleH < 0)
-//					cHeight = szThis.height;
-//				else
-//					cHeight = -szThis.height;
-
-				currPt.x = 0;
-				currPt.y = 0;
-
-				UOSInt cnt;
-				UTF8Char *lbl = sbuff;
-				cnt = lblSize;
-
-				while (cnt--)
-				{
-					szThis = img->GetTextSize(font->font, {lbl, 1});
-
-					if (type)
-					{
-						if (font->fontType == 0)
-						{
-							UTF8Char l[2];
-							l[0] = lbl[0];
-							l[1] = 0;
-							img->DrawString(Math::Coord2DDbl(startX + currPt.x - (szThis.x * 0.5), startY + currPt.y), {l, 1}, font->font, (Media::DrawBrush*)font->other);
-						}
-						else
-						{
-							UTF8Char l[2];
-							l[0] = lbl[0];
-							l[1] = 0;
-							img->DrawStringB(Math::Coord2DDbl(startX + currPt.x - (szThis.x * 0.5), startY + currPt.y), {l, 1}, font->font, (Media::DrawBrush*)font->other, (UInt32)Double2Int32(font->thick));
-						}
-
-						currPt.y += szThis.y;
-
-						if (scaleH)
-							currPt.x = (currPt.y * scaleW / scaleH);
-					}
-					else
-					{
-						if (font->fontType == 0)
-						{
-							UTF8Char l[2];
-							l[0] = lbl[0];
-							l[1] = 0;
-							img->DrawString(Math::Coord2DDbl(startX + currPt.x, startY + currPt.y), {l, 1}, font->font, (Media::DrawBrush*)font->other);
-						}
-						else
-						{
-							UTF8Char l[2];
-							l[0] = lbl[0];
-							l[1] = 0;
-							img->DrawStringB(Math::Coord2DDbl(startX + currPt.x, startY + currPt.y), {l, 1}, font->font, (Media::DrawBrush*)font->other, (UInt32)Double2Int32(font->thick));
-						}
-
-						currPt.x += szThis.x;
-						if (scaleW)
-							currPt.y = (Int16)((Int32)currPt.x * (Int32)scaleH / (Int32)scaleW);
-					}
-					lbl += 1;
-				}
-
-			}
-			else
-			{
-				img->SetTextAlign(Media::DrawEngine::DRAW_POS_CENTER);
-
-				if (font->fontType == 0)
-				{
-					img->DrawStringRot(scnPos, str1, font->font, (Media::DrawBrush*)font->other, (degD * 180.0 / PI));
-				}
-				else if (font->fontType == 4)
-				{
-					img->DrawStringRotB(scnPos, str1, font->font, (Media::DrawBrush*)font->other, (degD * 180.0 / PI), (UInt32)Double2Int32(font->thick));
 				}
 			}
 		}
@@ -709,6 +714,7 @@ void Map::MapConfig2::DrawCharsLA(NotNullPtr<Media::DrawImage> img, Text::CStrin
 	{
 		j -= 1;
 	}
+	NotNullPtr<Media::DrawBrush> nnb;
 	UOSInt startInd = j;
 	img->SetTextAlign(Media::DrawEngine::DRAW_POS_CENTER);
 
@@ -716,243 +722,245 @@ void Map::MapConfig2::DrawCharsLA(NotNullPtr<Media::DrawImage> img, Text::CStrin
 	while (i < fntCount)
 	{
 		font = (Map::MapFontStyle *)fontStyle->GetItem(i);
-		////////////////////////////////
-		UTF8Char *lbl = sbuff;
-		UTF8Char *nextPos = lbl;
-		UTF8Char nextChar = *lbl;
-		Double angle;
-		Double angleDegree;
-		Double lastAngle;
-		UOSInt lastAInd;
-		Math::Coord2DDbl lastPt;
-
-		szLast.x = 0;
-		szLast.y = 0;
-
-		lastPt = currPt = startPt;
-		j = startInd;
-
-		angle = angleOfst - Math_ArcTan2((mapPts[j].y - mapPts[j + 1].y), (mapPts[j + 1].x - mapPts[j].x));
-		angleDegree = angle * 180.0 / PI;
-		while (angleDegree < 0)
+		if (nnb.Set((Media::DrawBrush*)font->other))
 		{
-			angleDegree += 360;
-		}
-		lastAngle = angleDegree;
-		lastAInd = j;
+			UTF8Char *lbl = sbuff;
+			UTF8Char *nextPos = lbl;
+			UTF8Char nextChar = *lbl;
+			Double angle;
+			Double angleDegree;
+			Double lastAngle;
+			UOSInt lastAInd;
+			Math::Coord2DDbl lastPt;
 
-		while (nextChar)
-		{
-			lbl = nextPos;
-			*lbl = nextChar;
-			nextPos++;
-			nextChar = *nextPos;
-			*nextPos = 0;
+			szLast.x = 0;
+			szLast.y = 0;
 
-			szThis = img->GetTextSize(font->font, CSTRP(lbl, nextPos));
-			while (true)
+			lastPt = currPt = startPt;
+			j = startInd;
+
+			angle = angleOfst - Math_ArcTan2((mapPts[j].y - mapPts[j + 1].y), (mapPts[j + 1].x - mapPts[j].x));
+			angleDegree = angle * 180.0 / PI;
+			while (angleDegree < 0)
 			{
-				if (angleDegree <= 90)
-				{
-					nextPt.x = currPt.x + ((szLast.x + szThis.x) * 0.5);
-					nextPt.y = currPt.y - ((szLast.y + szThis.y) * 0.5);
-				}
-				else if (angleDegree <= 180)
-				{
-					nextPt = currPt - ((szLast + szThis) * 0.5);
-				}
-				else if (angleDegree <= 270)
-				{
-					nextPt.x = currPt.x - ((szLast.x + szThis.x) * 0.5);
-					nextPt.y = currPt.y + ((szLast.y + szThis.y) * 0.5);
-				}
-				else
-				{
-					nextPt = currPt + ((szLast + szThis) * 0.5);
-				}
+				angleDegree += 360;
+			}
+			lastAngle = angleDegree;
+			lastAInd = j;
 
-				if (((nextPt.x > scnPts[j].x) ^ (nextPt.x > scnPts[j + 1].x)) || (nextPt.x == scnPts[j].x) || (nextPt.x == scnPts[j + 1].x))
+			while (nextChar)
+			{
+				lbl = nextPos;
+				*lbl = nextChar;
+				nextPos++;
+				nextChar = *nextPos;
+				*nextPos = 0;
+
+				szThis = img->GetTextSize(font->font, CSTRP(lbl, nextPos));
+				while (true)
 				{
-					Double tempY = scnPts[j].y + (scnPts[j + 1].y - scnPts[j].y) * (nextPt.x - scnPts[j].x) / (scnPts[j + 1].x - scnPts[j].x);
-					tempY -= currPt.y;
-					if (tempY < 0)
-						tempY = -tempY;
-					if (tempY > (szLast.y + szThis.y) * 0.5)
+					if (angleDegree <= 90)
+					{
+						nextPt.x = currPt.x + ((szLast.x + szThis.x) * 0.5);
+						nextPt.y = currPt.y - ((szLast.y + szThis.y) * 0.5);
+					}
+					else if (angleDegree <= 180)
+					{
+						nextPt = currPt - ((szLast + szThis) * 0.5);
+					}
+					else if (angleDegree <= 270)
+					{
+						nextPt.x = currPt.x - ((szLast.x + szThis.x) * 0.5);
+						nextPt.y = currPt.y + ((szLast.y + szThis.y) * 0.5);
+					}
+					else
+					{
+						nextPt = currPt + ((szLast + szThis) * 0.5);
+					}
+
+					if (((nextPt.x > scnPts[j].x) ^ (nextPt.x > scnPts[j + 1].x)) || (nextPt.x == scnPts[j].x) || (nextPt.x == scnPts[j + 1].x))
+					{
+						Double tempY = scnPts[j].y + (scnPts[j + 1].y - scnPts[j].y) * (nextPt.x - scnPts[j].x) / (scnPts[j + 1].x - scnPts[j].x);
+						tempY -= currPt.y;
+						if (tempY < 0)
+							tempY = -tempY;
+						if (tempY > (szLast.y + szThis.y) * 0.5)
+						{
+							currPt.y = nextPt.y;
+							currPt.x = scnPts[j].x + (scnPts[j + 1].x - scnPts[j].x) * (currPt.y - scnPts[j].y) / (scnPts[j + 1].y - scnPts[j].y);
+						}
+						else
+						{
+							currPt.x = nextPt.x;
+							currPt.y = scnPts[j].y + (scnPts[j + 1].y - scnPts[j].y) * (nextPt.x - scnPts[j].x) / (scnPts[j + 1].x - scnPts[j].x);
+						}
+						break;
+					}
+					else if (((nextPt.y > scnPts[j].y) ^ (nextPt.y > scnPts[j + 1].y)) || (nextPt.y == scnPts[j].y) || (nextPt.y == scnPts[j + 1].y))
 					{
 						currPt.y = nextPt.y;
 						currPt.x = scnPts[j].x + (scnPts[j + 1].x - scnPts[j].x) * (currPt.y - scnPts[j].y) / (scnPts[j + 1].y - scnPts[j].y);
+						break;
+					}
+					else
+					{
+						if (mode == 0)
+						{
+							j++;
+							if (j >= nPoints - 1)
+							{
+								j = nPoints - 2;
+
+								Double tempY = scnPts[j].y + (scnPts[j + 1].y - scnPts[j].y) * (nextPt.x - scnPts[j].x) / (scnPts[j + 1].x - scnPts[j].x);
+								tempY -= currPt.y;
+								if (tempY < 0)
+									tempY = -tempY;
+								if (tempY > (szLast.y + szThis.y) * 0.5)
+								{
+									currPt.y = nextPt.y;
+									currPt.x = scnPts[j].x + (scnPts[j + 1].x - scnPts[j].x) * (currPt.y - scnPts[j].y) / (scnPts[j + 1].y - scnPts[j].y);
+								}
+								else
+								{
+									currPt.x = nextPt.x;
+									currPt.y = scnPts[j].y + (scnPts[j + 1].y - scnPts[j].y) * (nextPt.x - scnPts[j].x) / (scnPts[j + 1].x - scnPts[j].x);
+								}
+								break;
+							}
+						}
+						else if (mode == 1)
+						{
+							j--;
+							if ((OSInt)j < 0)
+							{
+								j = 0;
+
+								Double tempY = scnPts[j].y + (scnPts[j + 1].y - scnPts[j].y) * (nextPt.x - scnPts[j].x) / (scnPts[j + 1].x - scnPts[j].x);
+								tempY -= currPt.y;
+								if (tempY < 0)
+									tempY = -tempY;
+								if (tempY > (szLast.y + szThis.y) * 0.5)
+								{
+									currPt.y = nextPt.y;
+									currPt.x = scnPts[j].x + (scnPts[j + 1].x - scnPts[j].x) * (currPt.y - scnPts[j].y) / (scnPts[j + 1].y - scnPts[j].y);
+								}
+								else
+								{
+									currPt.x = nextPt.x;
+									currPt.y = scnPts[j].y + (scnPts[j + 1].y - scnPts[j].y) * (nextPt.x - scnPts[j].x) / (scnPts[j + 1].x - scnPts[j].x);
+								}
+								break;
+							}
+						}
+
+						angle = angleOfst - Math_ArcTan2((mapPts[j].y - mapPts[j + 1].y), (mapPts[j + 1].x - mapPts[j].x));
+						angleDegree = angle * 180.0 / PI;
+						while (angleDegree < 0)
+						{
+							angleDegree += 360;
+						}
+					}
+				}
+
+				Double angleDiff;
+				if (lastAngle > angleDegree)
+				{
+					angleDiff = lastAngle - angleDegree;
+				}
+				else
+				{
+					angleDiff = angleDegree - lastAngle;
+				}
+				if (angleDiff >= 135 && angleDiff <= 215)
+				{
+					if (lastAngle <= 90)
+					{
+						nextPt.x = lastPt.x + ((szLast.x + szThis.x) * 0.5);
+						nextPt.y = lastPt.y - ((szLast.y + szThis.y) * 0.5);
+					}
+					else if (lastAngle <= 180)
+					{
+						nextPt = lastPt - ((szLast + szThis) * 0.5);
+					}
+					else if (lastAngle <= 270)
+					{
+						nextPt.x = lastPt.x - ((szLast.x + szThis.x) * 0.5);
+						nextPt.y = lastPt.y + ((szLast.y + szThis.y) * 0.5);
+					}
+					else
+					{
+						nextPt = lastPt + ((szLast + szThis) * 0.5);
+					}
+					Double tempY = scnPts[lastAInd].y + (scnPts[lastAInd + 1].y - scnPts[lastAInd].y) * (nextPt.x - scnPts[lastAInd].x) / (scnPts[lastAInd + 1].x - scnPts[lastAInd].x);
+					Double tempX = scnPts[lastAInd].x + (scnPts[lastAInd + 1].x - scnPts[lastAInd].x) * (nextPt.y - scnPts[lastAInd].y) / (scnPts[lastAInd + 1].y - scnPts[lastAInd].y);
+					tempY -= lastPt.y;
+					tempX -= lastPt.x;
+					if (tempY < 0)
+						tempY = -tempY;
+					if (tempX < 0)
+						tempX = -tempX;
+					if (tempX <= (szLast.x + szThis.x) * 0.5)
+					{
+						currPt.y = nextPt.y;
+						currPt.x = scnPts[lastAInd].x + (scnPts[lastAInd + 1].x - scnPts[lastAInd].x) * (nextPt.y - scnPts[lastAInd].y) / (scnPts[lastAInd + 1].y - scnPts[lastAInd].y);
 					}
 					else
 					{
 						currPt.x = nextPt.x;
-						currPt.y = scnPts[j].y + (scnPts[j + 1].y - scnPts[j].y) * (nextPt.x - scnPts[j].x) / (scnPts[j + 1].x - scnPts[j].x);
+						currPt.y = scnPts[lastAInd].y + (scnPts[lastAInd + 1].y - scnPts[lastAInd].y) * (nextPt.x - scnPts[lastAInd].x) / (scnPts[lastAInd + 1].x - scnPts[lastAInd].x);
 					}
-					break;
-				}
-				else if (((nextPt.y > scnPts[j].y) ^ (nextPt.y > scnPts[j + 1].y)) || (nextPt.y == scnPts[j].y) || (nextPt.y == scnPts[j + 1].y))
-				{
-					currPt.y = nextPt.y;
-					currPt.x = scnPts[j].x + (scnPts[j + 1].x - scnPts[j].x) * (currPt.y - scnPts[j].y) / (scnPts[j + 1].y - scnPts[j].y);
-					break;
 				}
 				else
 				{
-					if (mode == 0)
+					lastAngle = angleDegree;
+					lastAInd = j;
+				}
+
+
+				Double xadd = szThis.x * 0.5;
+				Double yadd = szThis.y * 0.5;
+				if ((currPt.x - xadd) < min.x)
+				{
+					min.x = currPt.x - xadd;
+				}
+				if ((currPt.x + xadd) > max.x)
+				{
+					max.x = currPt.x + xadd;
+				}
+				if ((currPt.y - yadd) < min.y)
+				{
+					min.y = currPt.y - yadd;
+				}
+				if ((currPt.y + yadd) > max.y)
+				{
+					max.y = currPt.y + yadd;
+				}
+
+				lastPt = currPt;
+				if (mode == 0)
+				{
+					if (font->fontType == 0)
 					{
-						j++;
-						if (j >= nPoints - 1)
-						{
-							j = nPoints - 2;
-
-							Double tempY = scnPts[j].y + (scnPts[j + 1].y - scnPts[j].y) * (nextPt.x - scnPts[j].x) / (scnPts[j + 1].x - scnPts[j].x);
-							tempY -= currPt.y;
-							if (tempY < 0)
-								tempY = -tempY;
-							if (tempY > (szLast.y + szThis.y) * 0.5)
-							{
-								currPt.y = nextPt.y;
-								currPt.x = scnPts[j].x + (scnPts[j + 1].x - scnPts[j].x) * (currPt.y - scnPts[j].y) / (scnPts[j + 1].y - scnPts[j].y);
-							}
-							else
-							{
-								currPt.x = nextPt.x;
-								currPt.y = scnPts[j].y + (scnPts[j + 1].y - scnPts[j].y) * (nextPt.x - scnPts[j].x) / (scnPts[j + 1].x - scnPts[j].x);
-							}
-							break;
-						}
+						img->DrawString(currPt, CSTRP(lbl, nextPos), font->font, nnb);
 					}
-					else if (mode == 1)
+					else
 					{
-						j--;
-						if ((OSInt)j < 0)
-						{
-							j = 0;
-
-							Double tempY = scnPts[j].y + (scnPts[j + 1].y - scnPts[j].y) * (nextPt.x - scnPts[j].x) / (scnPts[j + 1].x - scnPts[j].x);
-							tempY -= currPt.y;
-							if (tempY < 0)
-								tempY = -tempY;
-							if (tempY > (szLast.y + szThis.y) * 0.5)
-							{
-								currPt.y = nextPt.y;
-								currPt.x = scnPts[j].x + (scnPts[j + 1].x - scnPts[j].x) * (currPt.y - scnPts[j].y) / (scnPts[j + 1].y - scnPts[j].y);
-							}
-							else
-							{
-								currPt.x = nextPt.x;
-								currPt.y = scnPts[j].y + (scnPts[j + 1].y - scnPts[j].y) * (nextPt.x - scnPts[j].x) / (scnPts[j + 1].x - scnPts[j].x);
-							}
-							break;
-						}
+						img->DrawStringB(currPt, CSTRP(lbl, nextPos), font->font, nnb, (UInt32)Double2Int32(font->thick));
 					}
-
-					angle = angleOfst - Math_ArcTan2((mapPts[j].y - mapPts[j + 1].y), (mapPts[j + 1].x - mapPts[j].x));
-					angleDegree = angle * 180.0 / PI;
-					while (angleDegree < 0)
+				}
+				else
+				{
+					if (font->fontType == 0)
 					{
-						angleDegree += 360;
+						img->DrawString(currPt, CSTRP(lbl, nextPos), font->font, nnb);
+					}
+					else
+					{
+						img->DrawStringB(currPt, CSTRP(lbl, nextPos), font->font, nnb, (UInt32)Double2Int32(font->thick));
 					}
 				}
+				szLast = szThis;
 			}
-
-			Double angleDiff;
-			if (lastAngle > angleDegree)
-			{
-				angleDiff = lastAngle - angleDegree;
-			}
-			else
-			{
-				angleDiff = angleDegree - lastAngle;
-			}
-			if (angleDiff >= 135 && angleDiff <= 215)
-			{
-				if (lastAngle <= 90)
-				{
-					nextPt.x = lastPt.x + ((szLast.x + szThis.x) * 0.5);
-					nextPt.y = lastPt.y - ((szLast.y + szThis.y) * 0.5);
-				}
-				else if (lastAngle <= 180)
-				{
-					nextPt = lastPt - ((szLast + szThis) * 0.5);
-				}
-				else if (lastAngle <= 270)
-				{
-					nextPt.x = lastPt.x - ((szLast.x + szThis.x) * 0.5);
-					nextPt.y = lastPt.y + ((szLast.y + szThis.y) * 0.5);
-				}
-				else
-				{
-					nextPt = lastPt + ((szLast + szThis) * 0.5);
-				}
-				Double tempY = scnPts[lastAInd].y + (scnPts[lastAInd + 1].y - scnPts[lastAInd].y) * (nextPt.x - scnPts[lastAInd].x) / (scnPts[lastAInd + 1].x - scnPts[lastAInd].x);
-				Double tempX = scnPts[lastAInd].x + (scnPts[lastAInd + 1].x - scnPts[lastAInd].x) * (nextPt.y - scnPts[lastAInd].y) / (scnPts[lastAInd + 1].y - scnPts[lastAInd].y);
-				tempY -= lastPt.y;
-				tempX -= lastPt.x;
-				if (tempY < 0)
-					tempY = -tempY;
-				if (tempX < 0)
-					tempX = -tempX;
-				if (tempX <= (szLast.x + szThis.x) * 0.5)
-				{
-					currPt.y = nextPt.y;
-					currPt.x = scnPts[lastAInd].x + (scnPts[lastAInd + 1].x - scnPts[lastAInd].x) * (nextPt.y - scnPts[lastAInd].y) / (scnPts[lastAInd + 1].y - scnPts[lastAInd].y);
-				}
-				else
-				{
-					currPt.x = nextPt.x;
-					currPt.y = scnPts[lastAInd].y + (scnPts[lastAInd + 1].y - scnPts[lastAInd].y) * (nextPt.x - scnPts[lastAInd].x) / (scnPts[lastAInd + 1].x - scnPts[lastAInd].x);
-				}
-			}
-			else
-			{
-				lastAngle = angleDegree;
-				lastAInd = j;
-			}
-
-
-			Double xadd = szThis.x * 0.5;
-			Double yadd = szThis.y * 0.5;
-			if ((currPt.x - xadd) < min.x)
-			{
-				min.x = currPt.x - xadd;
-			}
-			if ((currPt.x + xadd) > max.x)
-			{
-				max.x = currPt.x + xadd;
-			}
-			if ((currPt.y - yadd) < min.y)
-			{
-				min.y = currPt.y - yadd;
-			}
-			if ((currPt.y + yadd) > max.y)
-			{
-				max.y = currPt.y + yadd;
-			}
-
-			lastPt = currPt;
-			if (mode == 0)
-			{
-				if (font->fontType == 0)
-				{
-					img->DrawString(currPt, CSTRP(lbl, nextPos), font->font, (Media::DrawBrush*)font->other);
-				}
-				else
-				{
-					img->DrawStringB(currPt, CSTRP(lbl, nextPos), font->font, (Media::DrawBrush*)font->other, (UInt32)Double2Int32(font->thick));
-				}
-			}
-			else
-			{
-				if (font->fontType == 0)
-				{
-					img->DrawString(currPt, CSTRP(lbl, nextPos), font->font, (Media::DrawBrush*)font->other);
-				}
-				else
-				{
-					img->DrawStringB(currPt, CSTRP(lbl, nextPos), font->font, (Media::DrawBrush*)font->other, (UInt32)Double2Int32(font->thick));
-				}
-			}
-			szLast = szThis;
 		}
 		i++;
 	}
@@ -1255,6 +1263,7 @@ void Map::MapConfig2::DrawCharsLAo(NotNullPtr<Media::DrawImage> img, Text::CStri
 		}
 	}
 
+	NotNullPtr<Media::DrawBrush> b;
 	if ((OSInt)j < 0)
 	{
 		j = 0;
@@ -1268,304 +1277,307 @@ void Map::MapConfig2::DrawCharsLAo(NotNullPtr<Media::DrawImage> img, Text::CStri
 	while (i < fntCount)
 	{
 		font = (Map::MapFontStyle *)fontStyle->GetItem(i);
-		UTF8Char *lbl = sbuff;
-		UTF8Char l[2];
-		UOSInt currInd;
-		UOSInt lastInd;
-		UOSInt cnt;
-		cnt = lblSize;
-		currPt.x = startX;
-		currPt.y = startY;
-		lastInd = (UOSInt)-1;
-		currInd = j;
-
-		while (cnt--)
+		if (b.Set((Media::DrawBrush*)font->other))
 		{
-			if (lastInd != currInd)
+			UTF8Char *lbl = sbuff;
+			UTF8Char l[2];
+			UOSInt currInd;
+			UOSInt lastInd;
+			UOSInt cnt;
+			cnt = lblSize;
+			currPt.x = startX;
+			currPt.y = startY;
+			lastInd = (UOSInt)-1;
+			currInd = j;
+
+			while (cnt--)
 			{
-				lastInd = currInd;
+				if (lastInd != currInd)
+				{
+					lastInd = currInd;
 
-				diff = scnPts[currInd + 1].ToDouble() - scnPts[currInd].ToDouble();
-				aDiff = diff.Abs();
+					diff = scnPts[currInd + 1].ToDouble() - scnPts[currInd].ToDouble();
+					aDiff = diff.Abs();
 
+					if (mode == 0)
+					{
+						nextPt = scnPts[currInd + 1].ToDouble();
+					}
+					else
+					{
+						nextPt = scnPts[currInd].ToDouble();
+					}
+				}
+
+				szThis = img->GetTextSize(font->font, {lbl, 1});
+				l[0] = lbl[0];
+				l[1] = 0;
+				if (font->fontType == 0)
+				{
+					img->DrawString(currPt - (szThis * 0.5), {l, 1}, font->font, b);
+				}
+				else
+				{
+					img->DrawStringB(currPt - (szThis * 0.5), {l, 1}, font->font, b, (UInt32)Double2Int32(font->thick));
+				}
+
+				found = false;
 				if (mode == 0)
 				{
-					nextPt = scnPts[currInd + 1].ToDouble();
-				}
-				else
-				{
-					nextPt = scnPts[currInd].ToDouble();
-				}
-			}
-
-			szThis = img->GetTextSize(font->font, {lbl, 1});
-			l[0] = lbl[0];
-			l[1] = 0;
-			if (font->fontType == 0)
-			{
-				img->DrawString(currPt - (szThis * 0.5), {l, 1}, font->font, (Media::DrawBrush*)font->other);
-			}
-			else
-			{
-				img->DrawStringB(currPt - (szThis * 0.5), {l, 1}, font->font, (Media::DrawBrush*)font->other, (UInt32)Double2Int32(font->thick));
-			}
-
-			found = false;
-			if (mode == 0)
-			{
-				if (aDiff.x > aDiff.y)
-				{
-					if (diff.x > 0)
+					if (aDiff.x > aDiff.y)
 					{
-						if (currPt.x + szThis.x <= nextPt.x)
+						if (diff.x > 0)
 						{
-							currPt.x += szThis.x;
-							currPt.y = scnPts[currInd].y + (scnPts[currInd + 1].y - scnPts[currInd].y) * (currPt.x - scnPts[currInd].x) / (scnPts[currInd + 1].x - scnPts[currInd].x);
-							found = true;
-						}
-						else
-						{
-							nextPt.x = currPt.x + szThis.x;
-						}
-					}
-					else
-					{
-						if (currPt.x - szThis.x >= nextPt.x)
-						{
-							currPt.x -= szThis.x;
-							currPt.y = scnPts[currInd].y + (scnPts[currInd + 1].y - scnPts[currInd].y) * (currPt.x - scnPts[currInd].x) / (scnPts[currInd + 1].x - scnPts[currInd].x);
-							found = true;
-						}
-						else
-						{
-							nextPt.x = currPt.x - szThis.x;
-						}
-					}
-					if (!found)
-					{
-						currInd++;
-						while (currInd < nPoints - 1)
-						{
-							if (((scnPts[currInd].x - nextPt.x > 0) ^ (scnPts[currInd + 1].x - nextPt.x > 0)) || (scnPts[currInd].x == nextPt.x) || (scnPts[currInd + 1].x == nextPt.x))
+							if (currPt.x + szThis.x <= nextPt.x)
 							{
-								currPt.x = nextPt.x;
+								currPt.x += szThis.x;
 								currPt.y = scnPts[currInd].y + (scnPts[currInd + 1].y - scnPts[currInd].y) * (currPt.x - scnPts[currInd].x) / (scnPts[currInd + 1].x - scnPts[currInd].x);
 								found = true;
-								break;
 							}
-							else if (((scnPts[currInd].y - (currPt.y - szThis.y) > 0) ^ (scnPts[currInd + 1].y - (currPt.y - szThis.y) > 0)) || (scnPts[currInd].y == (currPt.y - szThis.y)) || (scnPts[currInd + 1].y == (currPt.y - szThis.y)))
+							else
 							{
-								currPt.y = currPt.y - szThis.y;
-								currPt.x = scnPts[currInd].x + (scnPts[currInd + 1].x - scnPts[currInd].x) * (currPt.y - scnPts[currInd].y) / (scnPts[currInd + 1].y - scnPts[currInd].y);
-								found = true;
-								break;
+								nextPt.x = currPt.x + szThis.x;
 							}
-							else if (((scnPts[currInd].y - (currPt.y + szThis.y) > 0) ^ (scnPts[currInd + 1].y - (currPt.y + szThis.y) > 0)) || (scnPts[currInd].y == (currPt.y + szThis.y)) || (scnPts[currInd + 1].y == (currPt.y + szThis.y)))
+						}
+						else
+						{
+							if (currPt.x - szThis.x >= nextPt.x)
 							{
-								currPt.y = currPt.y + szThis.y;
-								currPt.x = scnPts[currInd].x + (scnPts[currInd + 1].x - scnPts[currInd].x) * (currPt.y - scnPts[currInd].y) / (scnPts[currInd + 1].y - scnPts[currInd].y);
+								currPt.x -= szThis.x;
+								currPt.y = scnPts[currInd].y + (scnPts[currInd + 1].y - scnPts[currInd].y) * (currPt.x - scnPts[currInd].x) / (scnPts[currInd + 1].x - scnPts[currInd].x);
 								found = true;
-								break;
 							}
+							else
+							{
+								nextPt.x = currPt.x - szThis.x;
+							}
+						}
+						if (!found)
+						{
 							currInd++;
-						}
-						if (!found)
-						{
-							lastInd = (UOSInt)-1;
-							currInd--;
-						}
-					}
-				}
-				else
-				{
-					if (diff.y > 0)
-					{
-						if (currPt.y + szThis.y <= nextPt.y)
-						{
-							currPt.y += szThis.y;
-							currPt.x = scnPts[currInd].x + (scnPts[currInd + 1].x - scnPts[currInd].x) * (currPt.y - scnPts[currInd].y) / (scnPts[currInd + 1].y - scnPts[currInd].y);
-							found = true;
-						}
-						else
-						{
-							nextPt.y = currPt.y + szThis.y;
+							while (currInd < nPoints - 1)
+							{
+								if (((scnPts[currInd].x - nextPt.x > 0) ^ (scnPts[currInd + 1].x - nextPt.x > 0)) || (scnPts[currInd].x == nextPt.x) || (scnPts[currInd + 1].x == nextPt.x))
+								{
+									currPt.x = nextPt.x;
+									currPt.y = scnPts[currInd].y + (scnPts[currInd + 1].y - scnPts[currInd].y) * (currPt.x - scnPts[currInd].x) / (scnPts[currInd + 1].x - scnPts[currInd].x);
+									found = true;
+									break;
+								}
+								else if (((scnPts[currInd].y - (currPt.y - szThis.y) > 0) ^ (scnPts[currInd + 1].y - (currPt.y - szThis.y) > 0)) || (scnPts[currInd].y == (currPt.y - szThis.y)) || (scnPts[currInd + 1].y == (currPt.y - szThis.y)))
+								{
+									currPt.y = currPt.y - szThis.y;
+									currPt.x = scnPts[currInd].x + (scnPts[currInd + 1].x - scnPts[currInd].x) * (currPt.y - scnPts[currInd].y) / (scnPts[currInd + 1].y - scnPts[currInd].y);
+									found = true;
+									break;
+								}
+								else if (((scnPts[currInd].y - (currPt.y + szThis.y) > 0) ^ (scnPts[currInd + 1].y - (currPt.y + szThis.y) > 0)) || (scnPts[currInd].y == (currPt.y + szThis.y)) || (scnPts[currInd + 1].y == (currPt.y + szThis.y)))
+								{
+									currPt.y = currPt.y + szThis.y;
+									currPt.x = scnPts[currInd].x + (scnPts[currInd + 1].x - scnPts[currInd].x) * (currPt.y - scnPts[currInd].y) / (scnPts[currInd + 1].y - scnPts[currInd].y);
+									found = true;
+									break;
+								}
+								currInd++;
+							}
+							if (!found)
+							{
+								lastInd = (UOSInt)-1;
+								currInd--;
+							}
 						}
 					}
 					else
 					{
-						if (currPt.y - szThis.y >= nextPt.y)
+						if (diff.y > 0)
 						{
-							currPt.y -= szThis.y;
-							currPt.x = scnPts[currInd].x + (scnPts[currInd + 1].x - scnPts[currInd].x) * (currPt.y - scnPts[currInd].y) / (scnPts[currInd + 1].y - scnPts[currInd].y);
-							found = true;
+							if (currPt.y + szThis.y <= nextPt.y)
+							{
+								currPt.y += szThis.y;
+								currPt.x = scnPts[currInd].x + (scnPts[currInd + 1].x - scnPts[currInd].x) * (currPt.y - scnPts[currInd].y) / (scnPts[currInd + 1].y - scnPts[currInd].y);
+								found = true;
+							}
+							else
+							{
+								nextPt.y = currPt.y + szThis.y;
+							}
 						}
 						else
 						{
-							nextPt.y = currPt.y - szThis.y;
-						}
-					}
-					if (!found)
-					{
-						currInd++;
-						while (currInd < nPoints - 1)
-						{
-							if (((scnPts[currInd].y - nextPt.y > 0) ^ (scnPts[currInd + 1].y - nextPt.y > 0)) || (scnPts[currInd].y == nextPt.y) || (scnPts[currInd + 1].y == nextPt.y))
+							if (currPt.y - szThis.y >= nextPt.y)
 							{
-								currPt.y = nextPt.y;
+								currPt.y -= szThis.y;
 								currPt.x = scnPts[currInd].x + (scnPts[currInd + 1].x - scnPts[currInd].x) * (currPt.y - scnPts[currInd].y) / (scnPts[currInd + 1].y - scnPts[currInd].y);
 								found = true;
-								break;
 							}
-							else if (((scnPts[currInd].x - (currPt.x - szThis.x) > 0) ^ (scnPts[currInd + 1].x - (currPt.x - szThis.x) > 0)) || (scnPts[currInd].x == (currPt.x - szThis.x)) || (scnPts[currInd + 1].x == (currPt.x - szThis.x)))
+							else
 							{
-								currPt.x = currPt.x - szThis.x;
-								currPt.y = scnPts[currInd].y + (scnPts[currInd + 1].y - scnPts[currInd].y) * (currPt.x - scnPts[currInd].x) / (scnPts[currInd + 1].x - scnPts[currInd].x);
-								found = true;
-								break;
+								nextPt.y = currPt.y - szThis.y;
 							}
-							else if (((scnPts[currInd].x - (currPt.x + szThis.x) > 0) ^ (scnPts[currInd + 1].x - (currPt.x + szThis.x) > 0)) || (scnPts[currInd].x == (currPt.x + szThis.x)) || (scnPts[currInd + 1].x == (currPt.x + szThis.x)))
-							{
-								currPt.x = currPt.x + szThis.x;
-								currPt.y = scnPts[currInd].y + (scnPts[currInd + 1].y - scnPts[currInd].y) * (currPt.x - scnPts[currInd].x) / (scnPts[currInd + 1].x - scnPts[currInd].x);
-								found = true;
-								break;
-							}
+						}
+						if (!found)
+						{
 							currInd++;
-						}
-						if (!found)
-						{
-							lastInd = (UOSInt)-1;
-							currInd--;
-						}
-					}
-				}
-			}
-			else
-			{
-				if (aDiff.x > aDiff.y)
-				{
-					if (diff.x < 0)
-					{
-						if (currPt.x + szThis.x <= nextPt.x)
-						{
-							currPt.x += szThis.x;
-							currPt.y = scnPts[currInd].y + (scnPts[currInd + 1].y - scnPts[currInd].y) * (currPt.x - scnPts[currInd].x) / (scnPts[currInd + 1].x - scnPts[currInd].x);
-							found = true;
-						}
-						else
-						{
-							nextPt.x = currPt.x + szThis.x;
-						}
-					}
-					else
-					{
-						if (currPt.x - szThis.x >= nextPt.x)
-						{
-							currPt.x -= szThis.x;
-							currPt.y = scnPts[currInd].y + (scnPts[currInd + 1].y - scnPts[currInd].y) * (currPt.x - scnPts[currInd].x) / (scnPts[currInd + 1].x - scnPts[currInd].x);
-							found = true;
-						}
-						else
-						{
-							nextPt.x = currPt.x - szThis.x;
-						}
-					}
-					if (!found)
-					{
-						while (currInd > 0)
-						{
-							currInd--;
-							if (((scnPts[currInd].x - nextPt.x > 0) ^ (scnPts[currInd + 1].x - nextPt.x > 0) || (scnPts[currInd].x == nextPt.x)) || (scnPts[currInd + 1].x == nextPt.x))
+							while (currInd < nPoints - 1)
 							{
-								currPt.x = nextPt.x;
-								currPt.y = scnPts[currInd].y + (scnPts[currInd + 1].y - scnPts[currInd].y) * (currPt.x - scnPts[currInd].x) / (scnPts[currInd + 1].x - scnPts[currInd].x);
-								found = true;
-								break;
+								if (((scnPts[currInd].y - nextPt.y > 0) ^ (scnPts[currInd + 1].y - nextPt.y > 0)) || (scnPts[currInd].y == nextPt.y) || (scnPts[currInd + 1].y == nextPt.y))
+								{
+									currPt.y = nextPt.y;
+									currPt.x = scnPts[currInd].x + (scnPts[currInd + 1].x - scnPts[currInd].x) * (currPt.y - scnPts[currInd].y) / (scnPts[currInd + 1].y - scnPts[currInd].y);
+									found = true;
+									break;
+								}
+								else if (((scnPts[currInd].x - (currPt.x - szThis.x) > 0) ^ (scnPts[currInd + 1].x - (currPt.x - szThis.x) > 0)) || (scnPts[currInd].x == (currPt.x - szThis.x)) || (scnPts[currInd + 1].x == (currPt.x - szThis.x)))
+								{
+									currPt.x = currPt.x - szThis.x;
+									currPt.y = scnPts[currInd].y + (scnPts[currInd + 1].y - scnPts[currInd].y) * (currPt.x - scnPts[currInd].x) / (scnPts[currInd + 1].x - scnPts[currInd].x);
+									found = true;
+									break;
+								}
+								else if (((scnPts[currInd].x - (currPt.x + szThis.x) > 0) ^ (scnPts[currInd + 1].x - (currPt.x + szThis.x) > 0)) || (scnPts[currInd].x == (currPt.x + szThis.x)) || (scnPts[currInd + 1].x == (currPt.x + szThis.x)))
+								{
+									currPt.x = currPt.x + szThis.x;
+									currPt.y = scnPts[currInd].y + (scnPts[currInd + 1].y - scnPts[currInd].y) * (currPt.x - scnPts[currInd].x) / (scnPts[currInd + 1].x - scnPts[currInd].x);
+									found = true;
+									break;
+								}
+								currInd++;
 							}
-							else if (((scnPts[currInd].y - (currPt.y - szThis.y) > 0) ^ (scnPts[currInd + 1].y - (currPt.y - szThis.y) > 0)) || (scnPts[currInd].y == (currPt.y - szThis.y)) || (scnPts[currInd + 1].y == (currPt.y - szThis.y)))
+							if (!found)
 							{
-								currPt.y = currPt.y - szThis.y;
-								currPt.x = scnPts[currInd].x + (scnPts[currInd + 1].x - scnPts[currInd].x) * (currPt.y - scnPts[currInd].y) / (scnPts[currInd + 1].y - scnPts[currInd].y);
-								found = true;
-								break;
+								lastInd = (UOSInt)-1;
+								currInd--;
 							}
-							else if (((scnPts[currInd].y - (currPt.y + szThis.y) > 0) ^ (scnPts[currInd + 1].y - (currPt.y + szThis.y) > 0)) || (scnPts[currInd].y == (currPt.y + szThis.y)) || (scnPts[currInd + 1].y == (currPt.y + szThis.y)))
-							{
-								currPt.y = currPt.y + szThis.y;
-								currPt.x = scnPts[currInd].x + (scnPts[currInd + 1].x - scnPts[currInd].x) * (currPt.y - scnPts[currInd].y) / (scnPts[currInd + 1].y - scnPts[currInd].y);
-								found = true;
-								break;
-							}
-						}
-						if (!found)
-						{
-							lastInd = (UOSInt)-1;
 						}
 					}
 				}
 				else
 				{
-					if (diff.y < 0)
+					if (aDiff.x > aDiff.y)
 					{
-						if (currPt.y + szThis.y <= nextPt.y)
+						if (diff.x < 0)
 						{
-							currPt.y += szThis.y;
-							currPt.x = scnPts[currInd].x + (scnPts[currInd + 1].x - scnPts[currInd].x) * (currPt.y - scnPts[currInd].y) / (scnPts[currInd + 1].y - scnPts[currInd].y);
-							found = true;
+							if (currPt.x + szThis.x <= nextPt.x)
+							{
+								currPt.x += szThis.x;
+								currPt.y = scnPts[currInd].y + (scnPts[currInd + 1].y - scnPts[currInd].y) * (currPt.x - scnPts[currInd].x) / (scnPts[currInd + 1].x - scnPts[currInd].x);
+								found = true;
+							}
+							else
+							{
+								nextPt.x = currPt.x + szThis.x;
+							}
 						}
 						else
 						{
-							nextPt.y = currPt.y + szThis.y;
-						}
-					}
-					else
-					{
-						if (currPt.y - szThis.y >= nextPt.y)
-						{
-							currPt.y -= szThis.y;
-							currPt.x = scnPts[currInd].x + (scnPts[currInd + 1].x - scnPts[currInd].x) * (currPt.y - scnPts[currInd].y) / (scnPts[currInd + 1].y - scnPts[currInd].y);
-							found = true;
-						}
-						else
-						{
-							nextPt.y = currPt.y - szThis.y;
-						}
-					}
-					if (!found)
-					{
-						while (currInd > 0)
-						{
-							currInd--;
-							if (((scnPts[currInd].y - nextPt.y > 0) ^ (scnPts[currInd + 1].y - nextPt.y > 0)) || (scnPts[currInd].y == nextPt.y) || (scnPts[currInd + 1].y == nextPt.y))
+							if (currPt.x - szThis.x >= nextPt.x)
 							{
-								currPt.y = nextPt.y;
-								currPt.x = scnPts[currInd].x + (scnPts[currInd + 1].x - scnPts[currInd].x) * (currPt.y - scnPts[currInd].y) / (scnPts[currInd + 1].y - scnPts[currInd].y);
-								found = true;
-								break;
-							}
-							else if (((scnPts[currInd].x - (currPt.x - szThis.x) > 0) ^ (scnPts[currInd + 1].x - (currPt.x - szThis.x) > 0)) || (scnPts[currInd].x == (currPt.x - szThis.x)) || (scnPts[currInd + 1].x == (currPt.x - szThis.x)))
-							{
-								currPt.x = currPt.x - szThis.x;
+								currPt.x -= szThis.x;
 								currPt.y = scnPts[currInd].y + (scnPts[currInd + 1].y - scnPts[currInd].y) * (currPt.x - scnPts[currInd].x) / (scnPts[currInd + 1].x - scnPts[currInd].x);
 								found = true;
-								break;
 							}
-							else if (((scnPts[currInd].x - (currPt.x + szThis.x) > 0) ^ (scnPts[currInd + 1].x - (currPt.x + szThis.x) > 0)) || (scnPts[currInd].x == (currPt.x + szThis.x)) || (scnPts[currInd + 1].x == (currPt.x + szThis.x)))
+							else
 							{
-								currPt.x = currPt.x + szThis.x;
-								currPt.y = scnPts[currInd].y + (scnPts[currInd + 1].y - scnPts[currInd].y) * (currPt.x - scnPts[currInd].x) / (scnPts[currInd + 1].x - scnPts[currInd].x);
-								found = true;
-								break;
+								nextPt.x = currPt.x - szThis.x;
 							}
 						}
 						if (!found)
 						{
-							lastInd = (UOSInt)-1;
+							while (currInd > 0)
+							{
+								currInd--;
+								if (((scnPts[currInd].x - nextPt.x > 0) ^ (scnPts[currInd + 1].x - nextPt.x > 0) || (scnPts[currInd].x == nextPt.x)) || (scnPts[currInd + 1].x == nextPt.x))
+								{
+									currPt.x = nextPt.x;
+									currPt.y = scnPts[currInd].y + (scnPts[currInd + 1].y - scnPts[currInd].y) * (currPt.x - scnPts[currInd].x) / (scnPts[currInd + 1].x - scnPts[currInd].x);
+									found = true;
+									break;
+								}
+								else if (((scnPts[currInd].y - (currPt.y - szThis.y) > 0) ^ (scnPts[currInd + 1].y - (currPt.y - szThis.y) > 0)) || (scnPts[currInd].y == (currPt.y - szThis.y)) || (scnPts[currInd + 1].y == (currPt.y - szThis.y)))
+								{
+									currPt.y = currPt.y - szThis.y;
+									currPt.x = scnPts[currInd].x + (scnPts[currInd + 1].x - scnPts[currInd].x) * (currPt.y - scnPts[currInd].y) / (scnPts[currInd + 1].y - scnPts[currInd].y);
+									found = true;
+									break;
+								}
+								else if (((scnPts[currInd].y - (currPt.y + szThis.y) > 0) ^ (scnPts[currInd + 1].y - (currPt.y + szThis.y) > 0)) || (scnPts[currInd].y == (currPt.y + szThis.y)) || (scnPts[currInd + 1].y == (currPt.y + szThis.y)))
+								{
+									currPt.y = currPt.y + szThis.y;
+									currPt.x = scnPts[currInd].x + (scnPts[currInd + 1].x - scnPts[currInd].x) * (currPt.y - scnPts[currInd].y) / (scnPts[currInd + 1].y - scnPts[currInd].y);
+									found = true;
+									break;
+								}
+							}
+							if (!found)
+							{
+								lastInd = (UOSInt)-1;
+							}
+						}
+					}
+					else
+					{
+						if (diff.y < 0)
+						{
+							if (currPt.y + szThis.y <= nextPt.y)
+							{
+								currPt.y += szThis.y;
+								currPt.x = scnPts[currInd].x + (scnPts[currInd + 1].x - scnPts[currInd].x) * (currPt.y - scnPts[currInd].y) / (scnPts[currInd + 1].y - scnPts[currInd].y);
+								found = true;
+							}
+							else
+							{
+								nextPt.y = currPt.y + szThis.y;
+							}
+						}
+						else
+						{
+							if (currPt.y - szThis.y >= nextPt.y)
+							{
+								currPt.y -= szThis.y;
+								currPt.x = scnPts[currInd].x + (scnPts[currInd + 1].x - scnPts[currInd].x) * (currPt.y - scnPts[currInd].y) / (scnPts[currInd + 1].y - scnPts[currInd].y);
+								found = true;
+							}
+							else
+							{
+								nextPt.y = currPt.y - szThis.y;
+							}
+						}
+						if (!found)
+						{
+							while (currInd > 0)
+							{
+								currInd--;
+								if (((scnPts[currInd].y - nextPt.y > 0) ^ (scnPts[currInd + 1].y - nextPt.y > 0)) || (scnPts[currInd].y == nextPt.y) || (scnPts[currInd + 1].y == nextPt.y))
+								{
+									currPt.y = nextPt.y;
+									currPt.x = scnPts[currInd].x + (scnPts[currInd + 1].x - scnPts[currInd].x) * (currPt.y - scnPts[currInd].y) / (scnPts[currInd + 1].y - scnPts[currInd].y);
+									found = true;
+									break;
+								}
+								else if (((scnPts[currInd].x - (currPt.x - szThis.x) > 0) ^ (scnPts[currInd + 1].x - (currPt.x - szThis.x) > 0)) || (scnPts[currInd].x == (currPt.x - szThis.x)) || (scnPts[currInd + 1].x == (currPt.x - szThis.x)))
+								{
+									currPt.x = currPt.x - szThis.x;
+									currPt.y = scnPts[currInd].y + (scnPts[currInd + 1].y - scnPts[currInd].y) * (currPt.x - scnPts[currInd].x) / (scnPts[currInd + 1].x - scnPts[currInd].x);
+									found = true;
+									break;
+								}
+								else if (((scnPts[currInd].x - (currPt.x + szThis.x) > 0) ^ (scnPts[currInd + 1].x - (currPt.x + szThis.x) > 0)) || (scnPts[currInd].x == (currPt.x + szThis.x)) || (scnPts[currInd + 1].x == (currPt.x + szThis.x)))
+								{
+									currPt.x = currPt.x + szThis.x;
+									currPt.y = scnPts[currInd].y + (scnPts[currInd + 1].y - scnPts[currInd].y) * (currPt.x - scnPts[currInd].x) / (scnPts[currInd + 1].x - scnPts[currInd].x);
+									found = true;
+									break;
+								}
+							}
+							if (!found)
+							{
+								lastInd = (UOSInt)-1;
+							}
 						}
 					}
 				}
+				lbl += 1;
 			}
-			lbl += 1;
 		}
 		i++;
 	}
@@ -1750,364 +1762,368 @@ void Map::MapConfig2::DrawCharsL(NotNullPtr<Media::DrawImage> img, Text::CString
 		}
 	}
 
+	NotNullPtr<Media::DrawBrush> b;
 	UOSInt startInd = j;
 	img->SetTextAlign(Media::DrawEngine::DRAW_POS_CENTER);
 	i = 0;
 	while (i < fntCount)
 	{
 		font = (Map::MapFontStyle *)fontStyle->GetItem(i);
-		////////////////////////////////
-		UTF8Char *lbl = sbuff;
-		UTF8Char *nextPos = lbl;
-		UTF32Char nextChar;
-		Double angle;
-		Double cosAngle;
-		Double sinAngle;
-		Double dist;
-		Double angleDegree;
-		Double lastAngle;
-		Double lastX;
-		Double lastY;
-
-		szLast.x = 0;
-
-		lastX = currPt.x = startX;
-		lastY = currPt.y = startY;
-		j = startInd;
-		UOSInt lastInd = j;
-
-		angle = angleOfst - Math_ArcTan2((mapPts[j].y - mapPts[j + 1].y), (mapPts[j + 1].x - mapPts[j].x));
-		angleDegree = angle * 180.0 / PI;
-		cosAngle = Math_Cos(angle);
-		sinAngle = Math_Sin(angle);
-		lastAngle = angleDegree;
-
-		Text::StrReadChar(lbl, &nextChar);
-		while (nextChar)
+		if (b.Set((Media::DrawBrush*)font->other))
 		{
-			lbl = nextPos;
-			Text::StrWriteChar(lbl, nextChar);
+			////////////////////////////////
+			UTF8Char *lbl = sbuff;
+			UTF8Char *nextPos = lbl;
+			UTF32Char nextChar;
+			Double angle;
+			Double cosAngle;
+			Double sinAngle;
+			Double dist;
+			Double angleDegree;
+			Double lastAngle;
+			Double lastX;
+			Double lastY;
 
-			while (true)
-			{
-				nextPos = (UTF8Char*)Text::StrReadChar(nextPos, &nextChar);
-				if (nextChar == 0)
-				{
-					nextPos--;
-					break;
-				}
-				if (nextChar == ' ')
-				{
-					Text::StrReadChar(nextPos, &nextChar);
-					*nextPos = 0;
-					break;
-				}
-				else if (nextChar >= 0x3f00 && nextChar <= 0x9f00)
-				{
-					Text::StrReadChar(nextPos, &nextChar);
-					*nextPos = 0;
-					break;
-				}
-			}
+			szLast.x = 0;
 
-			szThis = img->GetTextSize(font->font, CSTRP(lbl, nextPos));
-			dist = (szLast.x + szThis.x) * 0.5;
-			nextPt.x = currPt.x + (dist * cosAngle);
-			nextPt.y = currPt.y - (dist * sinAngle);
-			if ( (((nextPt.x > scnPts[j].x) ^ (nextPt.x > scnPts[j + 1].x)) || (nextPt.x == scnPts[j].x) || (nextPt.x == scnPts[j + 1].x)) && (((nextPt.y > scnPts[j].y) ^ (nextPt.y > scnPts[j + 1].y)) || (nextPt.y == scnPts[j].y) || (nextPt.y == scnPts[j + 1].y)))
-			{
-				currPt.x = nextPt.x;
-				currPt.y = nextPt.y;
-			}
-			else
-			{
-				diff.x = szLast.x + szThis.x;
-				diff.y = (diff.x * diff.x) * 0.25;
+			lastX = currPt.x = startX;
+			lastY = currPt.y = startY;
+			j = startInd;
+			UOSInt lastInd = j;
 
-				if (mode == 0)
+			angle = angleOfst - Math_ArcTan2((mapPts[j].y - mapPts[j + 1].y), (mapPts[j + 1].x - mapPts[j].x));
+			angleDegree = angle * 180.0 / PI;
+			cosAngle = Math_Cos(angle);
+			sinAngle = Math_Sin(angle);
+			lastAngle = angleDegree;
+
+			Text::StrReadChar(lbl, &nextChar);
+			while (nextChar)
+			{
+				lbl = nextPos;
+				Text::StrWriteChar(lbl, nextChar);
+
+				while (true)
 				{
-					j++;
-					while (j < nPoints - 1)
+					nextPos = (UTF8Char*)Text::StrReadChar(nextPos, &nextChar);
+					if (nextChar == 0)
 					{
-						nextPt.x = scnPts[j + 1].x - currPt.x;
-						nextPt.y = scnPts[j + 1].y - currPt.y;
-						diff.x = (nextPt.x * nextPt.x) + (nextPt.y * nextPt.y);
-						if (diff.x < diff.y)
+						nextPos--;
+						break;
+					}
+					if (nextChar == ' ')
+					{
+						Text::StrReadChar(nextPos, &nextChar);
+						*nextPos = 0;
+						break;
+					}
+					else if (nextChar >= 0x3f00 && nextChar <= 0x9f00)
+					{
+						Text::StrReadChar(nextPos, &nextChar);
+						*nextPos = 0;
+						break;
+					}
+				}
+
+				szThis = img->GetTextSize(font->font, CSTRP(lbl, nextPos));
+				dist = (szLast.x + szThis.x) * 0.5;
+				nextPt.x = currPt.x + (dist * cosAngle);
+				nextPt.y = currPt.y - (dist * sinAngle);
+				if ( (((nextPt.x > scnPts[j].x) ^ (nextPt.x > scnPts[j + 1].x)) || (nextPt.x == scnPts[j].x) || (nextPt.x == scnPts[j + 1].x)) && (((nextPt.y > scnPts[j].y) ^ (nextPt.y > scnPts[j + 1].y)) || (nextPt.y == scnPts[j].y) || (nextPt.y == scnPts[j + 1].y)))
+				{
+					currPt.x = nextPt.x;
+					currPt.y = nextPt.y;
+				}
+				else
+				{
+					diff.x = szLast.x + szThis.x;
+					diff.y = (diff.x * diff.x) * 0.25;
+
+					if (mode == 0)
+					{
+						j++;
+						while (j < nPoints - 1)
 						{
-							j++;
+							nextPt.x = scnPts[j + 1].x - currPt.x;
+							nextPt.y = scnPts[j + 1].y - currPt.y;
+							diff.x = (nextPt.x * nextPt.x) + (nextPt.y * nextPt.y);
+							if (diff.x < diff.y)
+							{
+								j++;
+							}
+							else
+							{
+								if (nextPt.x > 0)
+								{
+									aDiff.x = nextPt.x;
+								}
+								else
+								{
+									aDiff.x = -nextPt.x;
+								}
+								if (nextPt.y > 0)
+								{
+									aDiff.y = nextPt.y;
+								}
+								else
+								{
+									aDiff.y = -nextPt.y;
+								}
+
+								if (aDiff.x > aDiff.y)
+								{
+									if ((scnPts[j].x < scnPts[j + 1].x) ^ (nextPt.x > 0))
+									{
+										currPt.x = currPt.x - nextPt.x * Math_Sqrt(diff.y) / Math_Sqrt(diff.x);
+									}
+									else
+									{
+										currPt.x = currPt.x + nextPt.x * Math_Sqrt(diff.y) / Math_Sqrt(diff.x);
+									}
+									if (((currPt.x > scnPts[j].x) ^ (currPt.x > scnPts[j + 1].x)) || (currPt.x == scnPts[j].x) || (currPt.x == scnPts[j + 1].x))
+									{
+									}
+									else
+									{
+										currPt.x = scnPts[j].x;
+									}
+									currPt.y = scnPts[j].y + (scnPts[j + 1].y - scnPts[j].y) * (currPt.x - scnPts[j].x) / (scnPts[j + 1].x - scnPts[j].x);
+								}
+								else
+								{
+									if ((scnPts[j].y < scnPts[j + 1].y) ^ (nextPt.y > 0))
+									{
+										currPt.y = currPt.y - (nextPt.y * Math_Sqrt(diff.y) / Math_Sqrt(diff.x));
+									}
+									else
+									{
+										currPt.y = currPt.y + (nextPt.y * Math_Sqrt(diff.y) / Math_Sqrt(diff.x));
+									}
+									if (((currPt.y > scnPts[j].y) ^ (currPt.y > scnPts[j + 1].y)) || (currPt.y == scnPts[j].y) || (currPt.y == scnPts[j + 1].y))
+									{
+									}
+									else
+									{
+										currPt.y = scnPts[j].y;
+									}
+									currPt.x = scnPts[j].x + (scnPts[j + 1].x - scnPts[j].x) * (currPt.y - scnPts[j].y) / (scnPts[j + 1].y - scnPts[j].y);
+								}
+								break;
+							}
+						}
+						if (j == nPoints - 1)
+						{
+							j--;
+
+							currPt.x = currPt.x + (dist * cosAngle);
+							currPt.y = currPt.y - (dist * sinAngle);
+						}
+					}
+					else if (mode == 1)
+					{
+						while (j-- > 0)
+						{
+							nextPt.x = scnPts[j].x - currPt.x;
+							nextPt.y = scnPts[j].y - currPt.y;
+							diff.x = (nextPt.x * nextPt.x) + (nextPt.y * nextPt.y);
+							if (diff.x < diff.y)
+							{
+
+							}
+							else
+							{
+								if (nextPt.x > 0)
+								{
+									aDiff.x = nextPt.x;
+								}
+								else
+								{
+									aDiff.x = -nextPt.x;
+								}
+								if (nextPt.y > 0)
+								{
+									aDiff.y = nextPt.y;
+								}
+								else
+								{
+									aDiff.y = -nextPt.y;
+								}
+
+								if (aDiff.x > aDiff.y)
+								{
+									if ((scnPts[j].x < scnPts[j + 1].x) ^ (nextPt.x > 0))
+									{
+										currPt.x = currPt.x + (nextPt.x * Math_Sqrt(diff.y) / Math_Sqrt(diff.x));
+									}
+									else
+									{
+										currPt.x = currPt.x - (nextPt.x * Math_Sqrt(diff.y) / Math_Sqrt(diff.x));
+									}
+									if (((currPt.x > scnPts[j].x) ^ (currPt.x > scnPts[j + 1].x)) || (currPt.x == scnPts[j].x) || (currPt.x == scnPts[j + 1].x))
+									{
+									}
+									else
+									{
+										currPt.x = scnPts[j + 1].x;
+									}
+									currPt.y = scnPts[j].y + (scnPts[j + 1].y - scnPts[j].y) * (currPt.x - scnPts[j].x) / (scnPts[j + 1].x - scnPts[j].x);
+								}
+								else
+								{
+									if ((scnPts[j].y < scnPts[j + 1].y) ^ (nextPt.y > 0))
+									{
+										currPt.y = currPt.y + (nextPt.y * Math_Sqrt(diff.y) / Math_Sqrt(diff.x));
+									}
+									else
+									{
+										currPt.y = currPt.y - (nextPt.y * Math_Sqrt(diff.y) / Math_Sqrt(diff.x));
+									}
+									if (((currPt.y > scnPts[j].y) ^ (currPt.y > scnPts[j + 1].y)) || (currPt.y == scnPts[j].y) || (currPt.y == scnPts[j + 1].y))
+									{
+									}
+									else
+									{
+										currPt.y = scnPts[j + 1].y;
+									}
+									currPt.x = scnPts[j].x + (scnPts[j + 1].x - scnPts[j].x) * (currPt.y - scnPts[j].y) / (scnPts[j + 1].y - scnPts[j].y);
+								}
+								break;
+							}
+						}
+						if (j == (UOSInt)-1)
+						{
+							j = 0;
+							currPt.x = currPt.x + (dist * cosAngle);
+							currPt.y = currPt.y - (dist * sinAngle);
+						}
+					}
+
+					if (j != lastInd)
+					{
+						lastInd = j;
+						angle = angleOfst - Math_ArcTan2((mapPts[j].y - mapPts[j + 1].y), (mapPts[j + 1].x - mapPts[j].x));
+						angleDegree = angle * 180.0 / PI;
+						cosAngle = Math_Cos(angle);
+						sinAngle = Math_Sin(angle);
+					}
+				}
+
+				Double angleDiff;
+				if (lastAngle > angleDegree)
+				{
+					angleDiff = lastAngle - angleDegree;
+				}
+				else
+				{
+					angleDiff = angleDegree - lastAngle;
+				}
+				if (angleDiff >= 150 && angleDiff <= 210)
+				{
+					Double lsa = Math_Sin(lastAngle * PI / 180.0);
+					Double lca = Math_Cos(lastAngle * PI / 180.0);
+					currPt.x = lastX + (dist * lca);
+					currPt.y = lastY - (dist * lsa);
+
+					Double xadd = szThis.x * lca;
+					Double yadd = szThis.x * lsa;
+					if (xadd < 0)
+						xadd = -xadd;
+					if (yadd < 0)
+						yadd = -yadd;
+					if ((currPt.x - xadd) < min.x)
+					{
+						min.x = (currPt.x - xadd);
+					}
+					if ((currPt.x + xadd) > max.x)
+					{
+						max.x = (currPt.x + xadd);
+					}
+					if ((currPt.y - yadd) < min.y)
+					{
+						min.y = (currPt.y - yadd);
+					}
+					if ((currPt.y + yadd) > max.y)
+					{
+						max.y = (currPt.y + yadd);
+					}
+
+					if (mode == 0)
+					{
+						if (font->fontType == 0)
+						{
+							img->DrawStringRot(currPt, CSTRP(lbl, nextPos), font->font, b, lastAngle);
 						}
 						else
 						{
-							if (nextPt.x > 0)
-							{
-								aDiff.x = nextPt.x;
-							}
-							else
-							{
-								aDiff.x = -nextPt.x;
-							}
-							if (nextPt.y > 0)
-							{
-								aDiff.y = nextPt.y;
-							}
-							else
-							{
-								aDiff.y = -nextPt.y;
-							}
-
-							if (aDiff.x > aDiff.y)
-							{
-								if ((scnPts[j].x < scnPts[j + 1].x) ^ (nextPt.x > 0))
-								{
-									currPt.x = currPt.x - nextPt.x * Math_Sqrt(diff.y) / Math_Sqrt(diff.x);
-								}
-								else
-								{
-									currPt.x = currPt.x + nextPt.x * Math_Sqrt(diff.y) / Math_Sqrt(diff.x);
-								}
-								if (((currPt.x > scnPts[j].x) ^ (currPt.x > scnPts[j + 1].x)) || (currPt.x == scnPts[j].x) || (currPt.x == scnPts[j + 1].x))
-								{
-								}
-								else
-								{
-									currPt.x = scnPts[j].x;
-								}
-								currPt.y = scnPts[j].y + (scnPts[j + 1].y - scnPts[j].y) * (currPt.x - scnPts[j].x) / (scnPts[j + 1].x - scnPts[j].x);
-							}
-							else
-							{
-								if ((scnPts[j].y < scnPts[j + 1].y) ^ (nextPt.y > 0))
-								{
-									currPt.y = currPt.y - (nextPt.y * Math_Sqrt(diff.y) / Math_Sqrt(diff.x));
-								}
-								else
-								{
-									currPt.y = currPt.y + (nextPt.y * Math_Sqrt(diff.y) / Math_Sqrt(diff.x));
-								}
-								if (((currPt.y > scnPts[j].y) ^ (currPt.y > scnPts[j + 1].y)) || (currPt.y == scnPts[j].y) || (currPt.y == scnPts[j + 1].y))
-								{
-								}
-								else
-								{
-									currPt.y = scnPts[j].y;
-								}
-								currPt.x = scnPts[j].x + (scnPts[j + 1].x - scnPts[j].x) * (currPt.y - scnPts[j].y) / (scnPts[j + 1].y - scnPts[j].y);
-							}
-							break;
+							img->DrawStringRotB(currPt, CSTRP(lbl, nextPos), font->font, b, lastAngle, (UInt32)Double2Int32(font->thick));
 						}
-					}
-					if (j == nPoints - 1)
-					{
-						j--;
-
-						currPt.x = currPt.x + (dist * cosAngle);
-						currPt.y = currPt.y - (dist * sinAngle);
-					}
-				}
-				else if (mode == 1)
-				{
-					while (j-- > 0)
-					{
-						nextPt.x = scnPts[j].x - currPt.x;
-						nextPt.y = scnPts[j].y - currPt.y;
-						diff.x = (nextPt.x * nextPt.x) + (nextPt.y * nextPt.y);
-						if (diff.x < diff.y)
-						{
-
-						}
-						else
-						{
-							if (nextPt.x > 0)
-							{
-								aDiff.x = nextPt.x;
-							}
-							else
-							{
-								aDiff.x = -nextPt.x;
-							}
-							if (nextPt.y > 0)
-							{
-								aDiff.y = nextPt.y;
-							}
-							else
-							{
-								aDiff.y = -nextPt.y;
-							}
-
-							if (aDiff.x > aDiff.y)
-							{
-								if ((scnPts[j].x < scnPts[j + 1].x) ^ (nextPt.x > 0))
-								{
-									currPt.x = currPt.x + (nextPt.x * Math_Sqrt(diff.y) / Math_Sqrt(diff.x));
-								}
-								else
-								{
-									currPt.x = currPt.x - (nextPt.x * Math_Sqrt(diff.y) / Math_Sqrt(diff.x));
-								}
-								if (((currPt.x > scnPts[j].x) ^ (currPt.x > scnPts[j + 1].x)) || (currPt.x == scnPts[j].x) || (currPt.x == scnPts[j + 1].x))
-								{
-								}
-								else
-								{
-									currPt.x = scnPts[j + 1].x;
-								}
-								currPt.y = scnPts[j].y + (scnPts[j + 1].y - scnPts[j].y) * (currPt.x - scnPts[j].x) / (scnPts[j + 1].x - scnPts[j].x);
-							}
-							else
-							{
-								if ((scnPts[j].y < scnPts[j + 1].y) ^ (nextPt.y > 0))
-								{
-									currPt.y = currPt.y + (nextPt.y * Math_Sqrt(diff.y) / Math_Sqrt(diff.x));
-								}
-								else
-								{
-									currPt.y = currPt.y - (nextPt.y * Math_Sqrt(diff.y) / Math_Sqrt(diff.x));
-								}
-								if (((currPt.y > scnPts[j].y) ^ (currPt.y > scnPts[j + 1].y)) || (currPt.y == scnPts[j].y) || (currPt.y == scnPts[j + 1].y))
-								{
-								}
-								else
-								{
-									currPt.y = scnPts[j + 1].y;
-								}
-								currPt.x = scnPts[j].x + (scnPts[j + 1].x - scnPts[j].x) * (currPt.y - scnPts[j].y) / (scnPts[j + 1].y - scnPts[j].y);
-							}
-							break;
-						}
-					}
-					if (j == (UOSInt)-1)
-					{
-						j = 0;
-						currPt.x = currPt.x + (dist * cosAngle);
-						currPt.y = currPt.y - (dist * sinAngle);
-					}
-				}
-
-				if (j != lastInd)
-				{
-					lastInd = j;
-					angle = angleOfst - Math_ArcTan2((mapPts[j].y - mapPts[j + 1].y), (mapPts[j + 1].x - mapPts[j].x));
-					angleDegree = angle * 180.0 / PI;
-					cosAngle = Math_Cos(angle);
-					sinAngle = Math_Sin(angle);
-				}
-			}
-
-			Double angleDiff;
-			if (lastAngle > angleDegree)
-			{
-				angleDiff = lastAngle - angleDegree;
-			}
-			else
-			{
-				angleDiff = angleDegree - lastAngle;
-			}
-			if (angleDiff >= 150 && angleDiff <= 210)
-			{
-				Double lsa = Math_Sin(lastAngle * PI / 180.0);
-				Double lca = Math_Cos(lastAngle * PI / 180.0);
-				currPt.x = lastX + (dist * lca);
-				currPt.y = lastY - (dist * lsa);
-
-				Double xadd = szThis.x * lca;
-				Double yadd = szThis.x * lsa;
-				if (xadd < 0)
-					xadd = -xadd;
-				if (yadd < 0)
-					yadd = -yadd;
-				if ((currPt.x - xadd) < min.x)
-				{
-					min.x = (currPt.x - xadd);
-				}
-				if ((currPt.x + xadd) > max.x)
-				{
-					max.x = (currPt.x + xadd);
-				}
-				if ((currPt.y - yadd) < min.y)
-				{
-					min.y = (currPt.y - yadd);
-				}
-				if ((currPt.y + yadd) > max.y)
-				{
-					max.y = (currPt.y + yadd);
-				}
-
-				if (mode == 0)
-				{
-					if (font->fontType == 0)
-					{
-						img->DrawStringRot(currPt, CSTRP(lbl, nextPos), font->font, (Media::DrawBrush*)font->other, lastAngle);
 					}
 					else
 					{
-						img->DrawStringRotB(currPt, CSTRP(lbl, nextPos), font->font, (Media::DrawBrush*)font->other, lastAngle, (UInt32)Double2Int32(font->thick));
+						if (font->fontType == 0)
+						{
+							img->DrawStringRot(currPt, CSTRP(lbl, nextPos), font->font, b, lastAngle);
+						}
+						else
+						{
+							img->DrawStringRotB(currPt, CSTRP(lbl, nextPos), font->font, b, lastAngle, (UInt32)Double2Int32(font->thick));
+						}
 					}
 				}
 				else
 				{
-					if (font->fontType == 0)
+					lastAngle = angleDegree;
+					Double xadd = szThis.x * cosAngle;
+					Double yadd = szThis.x * sinAngle;
+					if (xadd < 0)
+						xadd = -xadd;
+					if (yadd < 0)
+						yadd = -yadd;
+					if ((currPt.x - xadd) < min.x)
 					{
-						img->DrawStringRot(currPt, CSTRP(lbl, nextPos), font->font, (Media::DrawBrush*)font->other, lastAngle);
+						min.x = (currPt.x - xadd);
 					}
-					else
+					if ((currPt.x + xadd) > max.x)
 					{
-						img->DrawStringRotB(currPt, CSTRP(lbl, nextPos), font->font, (Media::DrawBrush*)font->other, lastAngle, (UInt32)Double2Int32(font->thick));
+						max.x = (currPt.x + xadd);
 					}
-				}
-			}
-			else
-			{
-				lastAngle = angleDegree;
-				Double xadd = szThis.x * cosAngle;
-				Double yadd = szThis.x * sinAngle;
-				if (xadd < 0)
-					xadd = -xadd;
-				if (yadd < 0)
-					yadd = -yadd;
-				if ((currPt.x - xadd) < min.x)
-				{
-					min.x = (currPt.x - xadd);
-				}
-				if ((currPt.x + xadd) > max.x)
-				{
-					max.x = (currPt.x + xadd);
-				}
-				if ((currPt.y - yadd) < min.y)
-				{
-					min.y = (currPt.y - yadd);
-				}
-				if ((currPt.y + yadd) > max.y)
-				{
-					max.y = (currPt.y + yadd);
-				}
+					if ((currPt.y - yadd) < min.y)
+					{
+						min.y = (currPt.y - yadd);
+					}
+					if ((currPt.y + yadd) > max.y)
+					{
+						max.y = (currPt.y + yadd);
+					}
 
-				if (mode == 0)
-				{
-					if (font->fontType == 0)
+					if (mode == 0)
 					{
-						img->DrawStringRot(currPt, CSTRP(lbl, nextPos), font->font, (Media::DrawBrush*)font->other, angleDegree);
+						if (font->fontType == 0)
+						{
+							img->DrawStringRot(currPt, CSTRP(lbl, nextPos), font->font, b, angleDegree);
+						}
+						else
+						{
+							img->DrawStringRotB(currPt, CSTRP(lbl, nextPos), font->font, b, angleDegree, (UInt32)Double2Int32(font->thick));
+						}
 					}
 					else
 					{
-						img->DrawStringRotB(currPt, CSTRP(lbl, nextPos), font->font, (Media::DrawBrush*)font->other, angleDegree, (UInt32)Double2Int32(font->thick));
+						if (font->fontType == 0)
+						{
+							img->DrawStringRot(currPt, CSTRP(lbl, nextPos), font->font, b, angleDegree);
+						}
+						else
+						{
+							img->DrawStringRotB(currPt, CSTRP(lbl, nextPos), font->font, b, angleDegree, (UInt32)Double2Int32(font->thick));
+						}
 					}
-				}
-				else
-				{
-					if (font->fontType == 0)
-					{
-						img->DrawStringRot(currPt, CSTRP(lbl, nextPos), font->font, (Media::DrawBrush*)font->other, angleDegree);
-					}
-					else
-					{
-						img->DrawStringRotB(currPt, CSTRP(lbl, nextPos), font->font, (Media::DrawBrush*)font->other, angleDegree, (UInt32)Double2Int32(font->thick));
-					}
-				}
 
+				}
+				lastX = currPt.x;
+				lastY = currPt.y;
+				szLast.x = szThis.x;
 			}
-			lastX = currPt.x;
-			lastY = currPt.y;
-			szLast.x = szThis.x;
 		}
 		i++;
 	}
@@ -2115,7 +2131,7 @@ void Map::MapConfig2::DrawCharsL(NotNullPtr<Media::DrawImage> img, Text::CString
 	realBounds->br = max;
 }
 
-void Map::MapConfig2::GetCharsSize(NotNullPtr<Media::DrawImage> img, OutParam<Math::Coord2DDbl> size, Text::CString label, Data::ArrayList<MapFontStyle*> *fontStyle, Double scaleW, Double scaleH)
+void Map::MapConfig2::GetCharsSize(NotNullPtr<Media::DrawImage> img, OutParam<Math::Coord2DDbl> size, Text::CStringNN label, Data::ArrayList<MapFontStyle*> *fontStyle, Double scaleW, Double scaleH)
 {
 	Double xSizeAdd = 0;
 	Double ySizeAdd = 0;
@@ -4323,7 +4339,7 @@ UTF8Char *Map::MapConfig2::DrawMap(NotNullPtr<Media::DrawImage> img, Map::MapVie
 	Math::Geometry::Vector2D *vec;
 	Map::MapFontStyle *fnt;
 	Map::MapFontStyle *fnt2;
-	Media::DrawBrush *brush;
+	NotNullPtr<Media::DrawBrush> brush;
 	Media::DrawPen *pen;
 	UOSInt i;
 	UOSInt j;
@@ -4377,11 +4393,11 @@ UTF8Char *Map::MapConfig2::DrawMap(NotNullPtr<Media::DrawImage> img, Map::MapVie
 					if (fnt->thick > 0)
 						s = (Media::DrawEngine::DrawFontStyle)(s | Media::DrawEngine::DFS_BOLD);
 					fnt2->font = img->NewFontPt(fnt->fontName->ToCString(), fnt->fontSizePt, s, 0);
-					fnt2->other = img->NewBrushARGB(fnt->color);
+					fnt2->other = img->NewBrushARGB(fnt->color).Ptr();
 				}
 				else if (fnt->fontType == 1)
 				{
-					fnt2->other = img->NewBrushARGB(fnt->color);
+					fnt2->other = img->NewBrushARGB(fnt->color).Ptr();
 				}
 				else if (fnt->fontType == 2)
 				{
@@ -4411,7 +4427,7 @@ UTF8Char *Map::MapConfig2::DrawMap(NotNullPtr<Media::DrawImage> img, Map::MapVie
 					{
 						fnt2->font = img->NewFontPt(fnt->fontName->ToCString(), fnt->fontSizePt, Media::DrawEngine::DFS_NORMAL, 0);
 					}
-					fnt2->other = img->NewBrushARGB(fnt->color);
+					fnt2->other = img->NewBrushARGB(fnt->color).Ptr();
 					fnt2->thick = fnt2->thick * img->GetHDPI() / 96.0;
 				}
 
@@ -4635,6 +4651,7 @@ UTF8Char *Map::MapConfig2::DrawMap(NotNullPtr<Media::DrawImage> img, Map::MapVie
 
 	DrawLabels(img, labels, maxLabel, &labelCnt, view, myArrs, drawEng, objBounds, &objCnt);
 
+	NotNullPtr<Media::DrawBrush> b;
 	i = this->nFont;
 	while (i-- > 0)
 	{
@@ -4649,11 +4666,13 @@ UTF8Char *Map::MapConfig2::DrawMap(NotNullPtr<Media::DrawImage> img, Map::MapVie
 				if (fnt->fontType == 0)
 				{
 					img->DelFont(fnt->font);
-					img->DelBrush((Media::DrawBrush*)fnt->other);
+					if (b.Set((Media::DrawBrush*)fnt->other))
+						img->DelBrush(b);
 				}
 				else if (fnt->fontType == 1)
 				{
-					img->DelBrush((Media::DrawBrush*)fnt->other);
+					if (b.Set((Media::DrawBrush*)fnt->other))
+						img->DelBrush(b);
 				}
 				else if (fnt->fontType == 2)
 				{
@@ -4662,7 +4681,8 @@ UTF8Char *Map::MapConfig2::DrawMap(NotNullPtr<Media::DrawImage> img, Map::MapVie
 				else if (fnt->fontType == 4)
 				{
 					img->DelFont(fnt->font);
-					img->DelBrush((Media::DrawBrush*)fnt->other);
+					if (b.Set((Media::DrawBrush*)fnt->other))
+						img->DelBrush(b);
 				}
 				MemFree(fnt);
 

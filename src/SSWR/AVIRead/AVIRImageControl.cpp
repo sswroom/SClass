@@ -621,9 +621,9 @@ void SSWR::AVIRead::AVIRImageControl::SetDPI(Double hdpi, Double ddpi)
 
 void SSWR::AVIRead::AVIRImageControl::OnDraw(NotNullPtr<Media::DrawImage> dimg)
 {
-	Media::DrawBrush *b;
-	Media::DrawFont *f;
-	Media::DrawBrush *barr[5];
+	NotNullPtr<Media::DrawBrush> b;
+	NotNullPtr<Media::DrawFont> f;
+	NotNullPtr<Media::DrawBrush> barr[5];
 	NotNullPtr<Media::DrawImage> img;
 	NotNullPtr<const Data::ArrayList<SSWR::AVIRead::AVIRImageControl::ImageStatus*>> imgList;
 	SSWR::AVIRead::AVIRImageControl::ImageStatus *status;
@@ -697,7 +697,7 @@ void SSWR::AVIRead::AVIRImageControl::OnDraw(NotNullPtr<Media::DrawImage> dimg)
 			{
 				Text::StringBuilderUTF8 sb;
 				sb.Append(status->fileName);
-				if (f && (strSz = dimg->GetTextSize(f, sb.ToCString())).HasArea())
+				if ((strSz = dimg->GetTextSize(f, sb.ToCString())).HasArea())
 				{
 					dimg->DrawString(Math::Coord2DDbl((UOSInt2Double(scnW) - strSz.x) * 0.5, UOSInt2Double(i * itemTH - scrPos + itemH)), sb.ToCString(), f, b);
 				}

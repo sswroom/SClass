@@ -928,7 +928,7 @@ void UI::GUITextFileView::EventLineUp()
 	UOSInt textYPos;
 	if (this->caretY > 0)
 	{
-		this->GetTextPos((Int32)this->caretDispX, (Int32)this->caretDispY - Double2Int32(this->pageLineHeight - 2), &textXPos, &textYPos);
+		this->GetTextPos((Int32)this->caretDispX, (Int32)this->caretDispY - Double2Int32(this->pageLineHeight - 2), textXPos, textYPos);
 		this->caretX = textXPos;
 		this->caretY = textYPos;
 		this->UpdateCaretSel(false);
@@ -942,7 +942,7 @@ void UI::GUITextFileView::EventLineDown()
 {
 	UInt32 textXPos;
 	UOSInt textYPos;
-	this->GetTextPos(this->caretDispX, this->caretDispY + Double2Int32(this->pageLineHeight + 3), &textXPos, &textYPos);
+	this->GetTextPos(this->caretDispX, this->caretDispY + Double2Int32(this->pageLineHeight + 3), textXPos, textYPos);
 	this->caretX = textXPos;
 	this->caretY = textYPos;
 	this->UpdateCaretSel(false);
@@ -1075,7 +1075,7 @@ void UI::GUITextFileView::EventMouseDown(OSInt scnX, OSInt scnY, MouseButton btn
 	UOSInt textYPos;
 	if (btn == MBTN_LEFT)
 	{
-		this->GetTextPos(scnX, scnY, &textXPos, &textYPos);
+		this->GetTextPos(scnX, scnY, textXPos, textYPos);
 		this->caretX = textXPos;
 		this->caretY = textYPos;
 		if (!this->IsShiftPressed())
@@ -1113,7 +1113,10 @@ void UI::GUITextFileView::EventMouseMove(OSInt scnX, OSInt scnY)
 		lineOfst = Double2OSInt(OSInt2Double(scnX) / this->pageLineHeight);
 		if (lineOfst < 0)
 		{
-			this->SetScrollVPos((UOSInt)(this->GetScrollVPos() + lineOfst), false);
+			OSInt newPos = (this->GetScrollVPos() + lineOfst);
+			if (newPos < 0)
+				newPos = 0;
+			this->SetScrollVPos((UOSInt)newPos, false);
 			needRedraw = true;
 		}
 		else if (lineOfst > (OSInt)this->pageLineCnt)
@@ -1121,7 +1124,7 @@ void UI::GUITextFileView::EventMouseMove(OSInt scnX, OSInt scnY)
 			this->SetScrollVPos((UOSInt)(this->GetScrollVPos() + lineOfst) - this->pageLineCnt, false);
 			needRedraw = true;
 		}
-		this->GetTextPos(scnX, scnY, &textXPos, &textYPos);
+		this->GetTextPos(scnX, scnY, textXPos, textYPos);
 		if (this->selLastX != textXPos || this->selLastY != textYPos)
 		{
 			this->selLastX = textXPos;
@@ -1193,7 +1196,7 @@ void UI::GUITextFileView::DrawImage(NotNullPtr<Media::DrawImage> dimg)
 	xPos = (UOSInt)this->GetScrollHPos();
 	yPos = (UOSInt)this->GetScrollVPos();
 
-	Media::DrawBrush *bgBrush = dimg->NewBrushARGB(this->bgColor);
+	NotNullPtr<Media::DrawBrush> bgBrush = dimg->NewBrushARGB(this->bgColor);
 	dimg->DrawRect(Math::Coord2DDbl(0, 0), dimg->GetSize().ToDouble(), 0, bgBrush);
 	dimg->DelBrush(bgBrush);
 
@@ -1215,7 +1218,11 @@ void UI::GUITextFileView::DrawImage(NotNullPtr<Media::DrawImage> dimg)
 	this->fs->Read(rbuff);
 
 	maxScnWidth = dimg->GetWidth() + xPos;
-	Media::DrawFont *fnt = this->CreateDrawFont(dimg);
+	NotNullPtr<Media::DrawFont> fnt;
+	if (!fnt.Set(this->CreateDrawFont(dimg)))
+	{
+		return;
+	}
 	sbuffEnd = Text::StrUOSInt(sbuff, this->pageLineCnt + yPos);
 	sz = dimg->GetTextSize(fnt, CSTRP(sbuff, sbuffEnd));
 	this->dispLineNumW = (UInt32)Double2Int32(sz.x) + 8;
@@ -1249,10 +1256,10 @@ void UI::GUITextFileView::DrawImage(NotNullPtr<Media::DrawImage> dimg)
 	{
 	}
 
-	Media::DrawBrush *textBrush = dimg->NewBrushARGB(this->txtColor);
-	Media::DrawBrush *lineNumBrush = dimg->NewBrushARGB(this->lineNumColor);
-	Media::DrawBrush *selBrush = dimg->NewBrushARGB(this->selColor);
-	Media::DrawBrush *selTextBrush = dimg->NewBrushARGB(this->selTextColor);
+	NotNullPtr<Media::DrawBrush> textBrush = dimg->NewBrushARGB(this->txtColor);
+	NotNullPtr<Media::DrawBrush> lineNumBrush = dimg->NewBrushARGB(this->lineNumColor);
+	NotNullPtr<Media::DrawBrush> selBrush = dimg->NewBrushARGB(this->selColor);
+	NotNullPtr<Media::DrawBrush> selTextBrush = dimg->NewBrushARGB(this->selTextColor);
 	currOfst = startOfst;
 	i = 0;
 	while (i < this->pageLineCnt)
@@ -1559,7 +1566,7 @@ NotNullPtr<Text::String> UI::GUITextFileView::GetFileName() const
 	return this->fileName;
 }
 
-void UI::GUITextFileView::GetTextPos(OSInt scnPosX, OSInt scnPosY, UInt32 *textPosX, UOSInt *textPosY)
+void UI::GUITextFileView::GetTextPos(OSInt scnPosX, OSInt scnPosY, OutParam<UInt32> textPosX, OutParam<UOSInt> textPosY)
 {
 	OSInt textY = (OSInt)(OSInt2Double(this->GetScrollVPos()) + OSInt2Double(scnPosY) / this->pageLineHeight);
 	Int32 drawX;
@@ -1568,16 +1575,24 @@ void UI::GUITextFileView::GetTextPos(OSInt scnPosX, OSInt scnPosY, UInt32 *textP
 	{
 		textY = (OSInt)this->lineOfsts.GetCount() - 1;
 		textX = 0;
-		*textPosX = textX;
-		*textPosY = (UOSInt)textY;
+		textPosX.Set(textX);
+		textPosY.Set((UOSInt)textY);
+		return;
+	}
+	else if (textY < 0)
+	{
+		textY = 0;
+		textX = 0;
+		textPosX.Set(textX);
+		textPosY.Set((UOSInt)textY);
 		return;
 	}
 	drawX = (Int32)(scnPosX + this->GetScrollHPos() - (OSInt)this->dispLineNumW);
 	if (drawX < 0)
 	{
 		textX = 0;
-		*textPosX = textX;
-		*textPosY = (UOSInt)textY;
+		textPosX.Set(textX);
+		textPosY.Set((UOSInt)textY);
 		return;
 	}
 	if (this->fs)
@@ -1613,8 +1628,8 @@ void UI::GUITextFileView::GetTextPos(OSInt scnPosX, OSInt scnPosY, UInt32 *textP
 		}
 		mutUsage.EndUse();
 	}
-	*textPosX = textX;
-	*textPosY = (UOSInt)textY;
+	textPosX.Set(textX);
+	textPosY.Set((UOSInt)textY);
 }
 
 UOSInt UI::GUITextFileView::GetTextPosY()

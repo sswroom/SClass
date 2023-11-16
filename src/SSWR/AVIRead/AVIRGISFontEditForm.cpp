@@ -111,8 +111,8 @@ void SSWR::AVIRead::AVIRGISFontEditForm::UpdateFontPreview()
 	Math::Size2DDbl sz;
 	Math::Size2D<UOSInt> usz;
 	NotNullPtr<Media::DrawImage> dimg;
-	Media::DrawFont *f;
-	Media::DrawBrush *b;
+	NotNullPtr<Media::DrawFont> f;
+	NotNullPtr<Media::DrawBrush> b;
 	usz = this->pbFontPreview->GetSizeP();
 	if (dimg.Set(this->eng->CreateImage32(usz, Media::AT_NO_ALPHA)))
 	{

@@ -403,7 +403,7 @@ Media::IAudioRenderer *SSWR::AVIRead::AVIRCore::BindAudio(Media::IAudioSource *a
 Bool SSWR::AVIRead::AVIRCore::GenLinePreview(NotNullPtr<Media::DrawImage> img, NotNullPtr<Media::DrawEngine> eng, UOSInt lineThick, UInt32 lineColor, Media::ColorConv *colorConv)
 {
 	Media::DrawPen *p;
-	Media::DrawBrush *b;
+	NotNullPtr<Media::DrawBrush> b;
 	Double dpi = img->GetHDPI();
 	b = img->NewBrushARGB(colorConv->ConvRGB8(0xffffffff));
 	img->DrawRect(Math::Coord2DDbl(0, 0), img->GetSize().ToDouble(), 0, b);
@@ -421,8 +421,8 @@ Bool SSWR::AVIRead::AVIRCore::GenLineStylePreview(NotNullPtr<Media::DrawImage> i
 	Double dpi = img->GetHDPI();
 	if (lineStyle >= env->GetLineStyleCount())
 	{
-		Media::DrawFont *f = img->NewFontPt(CSTR("Arial"), 9, Media::DrawEngine::DFS_ANTIALIAS, 0);
-		Media::DrawBrush *b = img->NewBrushARGB(colorConv->ConvRGB8(0xffffffff));
+		NotNullPtr<Media::DrawFont> f = img->NewFontPt(CSTR("Arial"), 9, Media::DrawEngine::DFS_ANTIALIAS, 0);
+		NotNullPtr<Media::DrawBrush> b = img->NewBrushARGB(colorConv->ConvRGB8(0xffffffff));
 		img->DrawRect(Math::Coord2DDbl(0, 0), size.ToDouble(), 0, b);
 		img->DelBrush(b);
 		b = img->NewBrushARGB(colorConv->ConvRGB8(0xff000000));
@@ -433,7 +433,7 @@ Bool SSWR::AVIRead::AVIRCore::GenLineStylePreview(NotNullPtr<Media::DrawImage> i
 	}
 
 	Media::DrawPen *p;
-	Media::DrawBrush *b;
+	NotNullPtr<Media::DrawBrush> b;
 	b = img->NewBrushARGB(colorConv->ConvRGB8(0xffc0c0c0));
 	img->DrawRect(Math::Coord2DDbl(0, 0), size.ToDouble(), 0, b);
 	img->DelBrush(b);
@@ -460,8 +460,8 @@ Bool SSWR::AVIRead::AVIRCore::GenFontStylePreview(NotNullPtr<Media::DrawImage> i
 	
 	if (fontStyle >= env->GetFontStyleCount())
 	{
-		Media::DrawFont *f = img->NewFontPt(CSTR("Arial"), 9.0, Media::DrawEngine::DFS_ANTIALIAS, 0);
-		Media::DrawBrush *b = img->NewBrushARGB(colorConv->ConvRGB8(0xffffffff));
+		NotNullPtr<Media::DrawFont> f = img->NewFontPt(CSTR("Arial"), 9.0, Media::DrawEngine::DFS_ANTIALIAS, 0);
+		NotNullPtr<Media::DrawBrush> b = img->NewBrushARGB(colorConv->ConvRGB8(0xffffffff));
 		img->DrawRect(Math::Coord2DDbl(0, 0), size.ToDouble(), 0, b);
 		img->DelBrush(b);
 		b = img->NewBrushARGB(colorConv->ConvRGB8(0xff000000));
@@ -471,8 +471,8 @@ Bool SSWR::AVIRead::AVIRCore::GenFontStylePreview(NotNullPtr<Media::DrawImage> i
 		return false;
 	}
 
-	Media::DrawFont *f;
-	Media::DrawBrush *b;
+	NotNullPtr<Media::DrawFont> f;
+	NotNullPtr<Media::DrawBrush> b;
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
 	Math::Coord2DDbl refPos;
@@ -520,8 +520,8 @@ Bool SSWR::AVIRead::AVIRCore::GenFontPreview(NotNullPtr<Media::DrawImage> img, N
 		fontName = CSTR("Arial");
 	}
 	Math::Size2DDbl sz;
-	Media::DrawFont *f;
-	Media::DrawBrush *b;
+	NotNullPtr<Media::DrawFont> f;
+	NotNullPtr<Media::DrawBrush> b;
 	b = img->NewBrushARGB(colorConv->ConvRGB8(0xffffffff));
 	img->DrawRect(Math::Coord2DDbl(0, 0), img->GetSize().ToDouble(), 0, b);
 	img->DelBrush(b);

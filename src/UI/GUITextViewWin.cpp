@@ -418,8 +418,8 @@ void UI::GUITextView::UpdateScrollBar()
 	}
 	else
 	{
-		Media::DrawFont *fnt = this->CreateDrawFont(img);
-		if (fnt == 0)
+		NotNullPtr<Media::DrawFont> fnt;
+		if (!fnt.Set(this->CreateDrawFont(img)))
 		{
 			sz.y = 12;
 		}
@@ -474,13 +474,20 @@ UInt32 UI::GUITextView::GetCharCntAtWidth(WChar *str, UOSInt strLen, UOSInt pxWi
 	if (img.Set((Media::GDIImage*)this->drawBuff))
 	{
 		SIZE sz;
-		Media::GDIFont *fnt = (Media::GDIFont*)this->CreateDrawFont(img);
-		HDC hdc = (HDC)img->hdcBmp;
-		SelectObject(hdc, (HFONT)fnt->hfont);
-		Int32 textX;
-		GetTextExtentExPoint(hdc, str, (Int32)(OSInt)strLen, (int)(OSInt)pxWidth, &textX, 0, &sz);
-		img->DelFont(fnt);
-		return (UInt32)textX;
+		NotNullPtr<Media::GDIFont> fnt;
+		if (fnt.Set((Media::GDIFont*)this->CreateDrawFont(img)))
+		{
+			HDC hdc = (HDC)img->hdcBmp;
+			SelectObject(hdc, (HFONT)fnt->hfont);
+			Int32 textX;
+			GetTextExtentExPoint(hdc, str, (Int32)(OSInt)strLen, (int)(OSInt)pxWidth, &textX, 0, &sz);
+			img->DelFont(fnt);
+			return (UInt32)textX;
+		}
+		else
+		{
+			return 0;
+		}
 	}
 	else
 	{
@@ -504,11 +511,19 @@ void UI::GUITextView::GetDrawSize(WChar *str, UOSInt strLen, UOSInt *width, UOSI
 	if (img.Set((Media::GDIImage*)this->drawBuff))
 	{
 		Math::Size2DDbl sz;
-		Media::DrawFont *fnt = this->CreateDrawFont(img);
-		sz = img->GetTextSize(fnt, str, (OSInt)strLen);
-		*width = (UOSInt)Double2OSInt(sz.x);
-		*height = (UOSInt)Double2OSInt(sz.y);
-		img->DelFont(fnt);
+		NotNullPtr<Media::DrawFont> fnt;
+		if (fnt.Set(this->CreateDrawFont(img)))
+		{
+			sz = img->GetTextSize(fnt, str, (OSInt)strLen);
+			*width = (UOSInt)Double2OSInt(sz.x);
+			*height = (UOSInt)Double2OSInt(sz.y);
+			img->DelFont(fnt);
+		}
+		else
+		{
+			*width = 0;
+			*height = 0;
+		}
 	}
 	else
 	{

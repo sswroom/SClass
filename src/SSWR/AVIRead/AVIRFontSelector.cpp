@@ -46,13 +46,13 @@ void SSWR::AVIRead::AVIRFontSelector::OnDraw(NotNullPtr<Media::DrawImage> img)
 	tmpBmp->SetHDPI(this->GetHDPI() / this->GetDDPI() * 96.0);
 	tmpBmp->SetVDPI(this->GetHDPI() / this->GetDDPI() * 96.0);
 
-	Media::DrawBrush *bWhite = img->NewBrushARGB(this->colorConv->ConvRGB8(0xffffffff));
-	Media::DrawBrush *bBlack = img->NewBrushARGB(this->colorConv->ConvRGB8(0xff000000));
+	NotNullPtr<Media::DrawBrush> bWhite = img->NewBrushARGB(this->colorConv->ConvRGB8(0xffffffff));
+	NotNullPtr<Media::DrawBrush> bBlack = img->NewBrushARGB(this->colorConv->ConvRGB8(0xff000000));
 	while (currPos < j && i < h)
 	{
 		if (currPos == defVal)
 		{
-			Media::DrawBrush *bDef = img->NewBrushARGB(this->colorConv->ConvRGB8(0xffffffc0));
+			NotNullPtr<Media::DrawBrush> bDef = img->NewBrushARGB(this->colorConv->ConvRGB8(0xffffffc0));
 			img->DrawRect(Math::Coord2DDbl(0, UOSInt2Double(i)), Math::Size2DDbl(UOSInt2Double(w), itemTH), 0, bDef);
 			img->DelBrush(bDef);
 		}
@@ -63,7 +63,7 @@ void SSWR::AVIRead::AVIRFontSelector::OnDraw(NotNullPtr<Media::DrawImage> img)
 		this->core->GenFontStylePreview(tmpBmp, deng, this->env, currPos, this->colorConv);
 		if (currPos == this->currFontStyle)
 		{
-			Media::DrawBrush *bRed = img->NewBrushARGB(this->colorConv->ConvRGB8(0xffff0000));
+			NotNullPtr<Media::DrawBrush> bRed = img->NewBrushARGB(this->colorConv->ConvRGB8(0xffff0000));
 			img->DrawRect(Math::Coord2DDbl(0, UOSInt2Double(i)), Math::Size2DDbl(UOSInt2Double(w), itemTH), 0, bRed);
 			img->DelBrush(bRed);
 		}
@@ -77,10 +77,13 @@ void SSWR::AVIRead::AVIRFontSelector::OnDraw(NotNullPtr<Media::DrawImage> img)
 		if (sbuff[0])
 		{
 			Math::Size2DDbl sz;
-			Media::DrawFont *fnt = this->CreateDrawFont(img);
-			sz = img->GetTextSize(fnt, CSTRP(sbuff, sptr));
-			img->DrawString(Math::Coord2DDbl((UOSInt2Double(w) - sz.x) * 0.5, UOSInt2Double(i + itemH + 2)), CSTRP(sbuff, sptr), fnt, bBlack);
-			img->DelFont(fnt);
+			NotNullPtr<Media::DrawFont> fnt;
+			if (fnt.Set(this->CreateDrawFont(img)))
+			{
+				sz = img->GetTextSize(fnt, CSTRP(sbuff, sptr));
+				img->DrawString(Math::Coord2DDbl((UOSInt2Double(w) - sz.x) * 0.5, UOSInt2Double(i + itemH + 2)), CSTRP(sbuff, sptr), fnt, bBlack);
+				img->DelFont(fnt);
+			}
 		}
 
 		i += itemTH;

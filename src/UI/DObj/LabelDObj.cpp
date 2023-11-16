@@ -51,8 +51,8 @@ void UI::DObj::LabelDObj::DrawObject(NotNullPtr<Media::DrawImage> dimg)
 	NotNullPtr<Text::String> s;
 	if (s.Set(this->txt))
 	{
-		Media::DrawFont *f;
-		Media::DrawBrush *b;
+		NotNullPtr<Media::DrawFont> f;
+		NotNullPtr<Media::DrawBrush> b;
 		f = dimg->NewFontPx(this->fontName->ToCString(), this->fontSizePx, (Media::DrawEngine::DrawFontStyle)(this->fontStyle | Media::DrawEngine::DFS_ANTIALIAS), this->codePage);
 		b = dimg->NewBrushARGB(this->fontColor);
 		Math::Coord2DDbl tl = this->GetCurrPos().ToDouble();

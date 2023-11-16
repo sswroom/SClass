@@ -349,7 +349,7 @@ void UI::GUIMapControl::OnDraw(NotNullPtr<Media::DrawImage> img)
 		drawImg.Delete();
 
 
-		Media::DrawBrush *bgBrush = img->NewBrushARGB(this->bgColor);
+		NotNullPtr<Media::DrawBrush> bgBrush = img->NewBrushARGB(this->bgColor);
 		if (tl.x > 0)
 		{
 			img->DrawRect(Math::Coord2DDbl(0, 0), Math::Size2DDbl(tl.x, UOSInt2Double(this->currSize.y)), 0, bgBrush);
@@ -370,7 +370,7 @@ void UI::GUIMapControl::OnDraw(NotNullPtr<Media::DrawImage> img)
 	}
 	else
 	{
-		Media::DrawBrush *bgBrush = img->NewBrushARGB(this->bgColor);
+		NotNullPtr<Media::DrawBrush> bgBrush = img->NewBrushARGB(this->bgColor);
 		if (tl.x > 0)
 		{
 			img->DrawRect(Math::Coord2DDbl(0, 0), Math::Size2DDbl(tl.x, UOSInt2Double(this->currSize.y)), 0, bgBrush);
@@ -489,7 +489,7 @@ void UI::GUIMapControl::DrawScnObjects(NotNullPtr<Media::DrawImage> img, Math::C
 		{
 			Math::Geometry::Polygon *pg = (Math::Geometry::Polygon*)vec;
 			Media::DrawPen *p = img->NewPenARGB(0xffff0000, 3, 0, 0);
-			Media::DrawBrush *b = img->NewBrushARGB(0x403f0000);
+			NotNullPtr<Media::DrawBrush> b = img->NewBrushARGB(0x403f0000);
 			UOSInt nPoint;
 			UOSInt nPtOfst;
 			Math::Coord2DDbl *points = pg->GetPointList(nPoint);
@@ -515,7 +515,7 @@ void UI::GUIMapControl::DrawScnObjects(NotNullPtr<Media::DrawImage> img, Math::C
 		{
 			Math::Geometry::MultiPolygon *mpg = (Math::Geometry::MultiPolygon*)vec;
 			Media::DrawPen *p = img->NewPenARGB(0xffff0000, 3, 0, 0);
-			Media::DrawBrush *b = img->NewBrushARGB(0x403f0000);
+			NotNullPtr<Media::DrawBrush> b = img->NewBrushARGB(0x403f0000);
 			UOSInt npg = mpg->GetCount();
 			UOSInt nPoint;
 			UOSInt nPtOfst;
@@ -546,7 +546,7 @@ void UI::GUIMapControl::DrawScnObjects(NotNullPtr<Media::DrawImage> img, Math::C
 		{
 			Math::Geometry::Ellipse *circle = (Math::Geometry::Ellipse*)vec;
 			Media::DrawPen *p = img->NewPenARGB(0xffff0000, 3, 0, 0);
-			Media::DrawBrush *b = img->NewBrushARGB(0x403f0000);
+			NotNullPtr<Media::DrawBrush> b = img->NewBrushARGB(0x403f0000);
 			Math::Coord2DDbl bl = view->MapXYToScnXY(circle->GetTL());
 			Math::Coord2DDbl tr = view->MapXYToScnXY(circle->GetBR());
 			img->DrawEllipse(Math::Coord2DDbl(bl.x + ofst.x, tr.y + ofst.y), Math::Size2DDbl(tr.x - bl.x, bl.y - tr.y), p, b);
@@ -640,7 +640,7 @@ void UI::GUIMapControl::DrawScnObjects(NotNullPtr<Media::DrawImage> img, Math::C
 		{
 			Math::Geometry::VectorImage *vimg = (Math::Geometry::VectorImage*)vec;
 			Media::DrawPen *p = img->NewPenARGB(0xffff0000, 3, 0, 0);
-			Media::DrawBrush *b = img->NewBrushARGB(0x403f0000);
+			NotNullPtr<Media::DrawBrush> b = img->NewBrushARGB(0x403f0000);
 			UInt32 nPoints;
 			Math::Coord2DDbl pts[5];
 			Math::RectAreaDbl bounds;
@@ -678,7 +678,7 @@ void UI::GUIMapControl::DrawScnObjects(NotNullPtr<Media::DrawImage> img, Math::C
 		{
 			Math::Geometry::Point *pt = (Math::Geometry::Point*)vec;
 			Math::Coord2DDbl coord = view->MapXYToScnXY(pt->GetCenter());
-			Media::DrawBrush *b = img->NewBrushARGB(0xffff0000);
+			NotNullPtr<Media::DrawBrush> b = img->NewBrushARGB(0xffff0000);
 			img->DrawRect(coord - 8, Math::Size2DDbl(17, 17), 0, b);
 			img->DelBrush(b);
 		}
@@ -911,7 +911,7 @@ void UI::GUIMapControl::UpdateMap()
 		UInt32 imgDurMS;
 		Math::Coord2DDbl center = this->view->GetCenter();
 		Manage::HiResClock clk;
-		Media::DrawBrush *b = bgImg->NewBrushARGB(this->bgDispColor);
+		NotNullPtr<Media::DrawBrush> b = bgImg->NewBrushARGB(this->bgDispColor);
 		bgImg->DrawRect(Math::Coord2DDbl(0, 0), bgImg->GetSize().ToDouble(), 0, b);
 		bgImg->DelBrush(b);
 		this->renderer->DrawMap(bgImg, this->view, &imgDurMS);

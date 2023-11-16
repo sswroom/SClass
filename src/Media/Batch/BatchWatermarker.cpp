@@ -60,8 +60,8 @@ void Media::Batch::BatchWatermarker::ImageOutput(NotNullPtr<Media::ImageList> im
 			UInt32 iWidth;
 			UInt32 iHeight;
 			NotNullPtr<Media::DrawImage> gimg2;
-			Media::DrawBrush *b = tmpImg->NewBrushARGB(0xffffffff);
-			Media::DrawFont *f;
+			NotNullPtr<Media::DrawBrush> b = tmpImg->NewBrushARGB(0xffffffff);
+			NotNullPtr<Media::DrawFont> f;
 
 			simg = (Media::StaticImage*)imgList->GetImage(i, 0);
 			fontSizePx = UOSInt2Double(simg->info.dispSize.x) / 12.0;

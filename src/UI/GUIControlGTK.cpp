@@ -839,7 +839,7 @@ Media::DrawFont *UI::GUIControl::CreateDrawFont(NotNullPtr<Media::DrawImage> img
 	}
 	else
 	{
-		return img->NewFontPt(this->fontName->ToCString(), this->fontHeightPt * this->hdpi / this->ddpi, this->fontIsBold?Media::DrawEngine::DFS_BOLD:Media::DrawEngine::DFS_NORMAL, 0);
+		return img->NewFontPt(this->fontName->ToCString(), this->fontHeightPt * this->hdpi / this->ddpi, this->fontIsBold?Media::DrawEngine::DFS_BOLD:Media::DrawEngine::DFS_NORMAL, 0).Ptr();
 	}
 }
 

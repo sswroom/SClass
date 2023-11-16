@@ -622,8 +622,8 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhotoId(NotNullPtr<Net::We
 							UInt32 iWidth;
 							UInt32 iHeight;
 							NotNullPtr<Media::DrawImage> gimg2;
-							Media::DrawBrush *b = gimg->NewBrushARGB(0xffffffff);
-							Media::DrawFont *f;
+							NotNullPtr<Media::DrawBrush> b = gimg->NewBrushARGB(0xffffffff);
+							NotNullPtr<Media::DrawFont> f;
 							while (true)
 							{
 								f = gimg->NewFontPx(CSTR("Arial"), fontSizePx, Media::DrawEngine::DFS_NORMAL, 0);

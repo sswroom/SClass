@@ -99,7 +99,7 @@ namespace UI
 		Bool LoadFile(NotNullPtr<Text::String> fileName);
 		Bool LoadStreamData(NotNullPtr<IO::StreamData> fd);
 		NotNullPtr<Text::String> GetFileName() const;
-		void GetTextPos(OSInt scnPosX, OSInt scnPosY, UInt32 *textPosX, UOSInt *textPosY);
+		void GetTextPos(OSInt scnPosX, OSInt scnPosY, OutParam<UInt32> textPosX, OutParam<UOSInt> textPosY);
 		UOSInt GetTextPosY();
 		UInt32 GetTextPosX();
 		void GoToText(UOSInt newPosY, UInt32 newPosX);

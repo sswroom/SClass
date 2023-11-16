@@ -33,8 +33,8 @@ void SSWR::AVIRead::AVIRAudioViewerForm::UpdateImages()
 		return;
 	if (this->totalSample == 0 || this->totalSample == (UOSInt)-1)
 	{
-		Media::DrawBrush *b;
-		Media::DrawFont *f;
+		NotNullPtr<Media::DrawBrush> b;
+		NotNullPtr<Media::DrawFont> f;
 		if (gimg.Set(this->eng->CreateImage32(sz, Media::AT_NO_ALPHA)))
 		{
 			b = gimg->NewBrushARGB(0xff000000);
@@ -55,7 +55,7 @@ void SSWR::AVIRead::AVIRAudioViewerForm::UpdateImages()
 	}
 	else
 	{
-		Media::DrawBrush *b;
+		NotNullPtr<Media::DrawBrush> b;
 		Media::DrawPen *p;
 		UOSInt i;
 		UOSInt j;
@@ -134,8 +134,8 @@ void SSWR::AVIRead::AVIRAudioViewerForm::UpdateFreqImage()
 		return;
 	if (this->totalSample == 0 || this->totalSample == (UOSInt)-1)
 	{
-		Media::DrawBrush *b;
-		Media::DrawFont *f;
+		NotNullPtr<Media::DrawBrush> b;
+		NotNullPtr<Media::DrawFont> f;
 		if (gimg.Set(this->eng->CreateImage32(sz, Media::AT_NO_ALPHA)))
 		{
 			b = gimg->NewBrushARGB(0xff000000);
@@ -156,7 +156,7 @@ void SSWR::AVIRead::AVIRAudioViewerForm::UpdateFreqImage()
 	}
 	else
 	{
-		Media::DrawBrush *b;
+		NotNullPtr<Media::DrawBrush> b;
 		Media::DrawPen *p;
 		UOSInt i;
 		UOSInt j;

@@ -58,8 +58,8 @@ void UI::GUIRealtimeLineChart::OnPaint(NotNullPtr<Media::DrawImage> dimg)
 {
 	NotNullPtr<Media::DrawImage> img;
 	Media::DrawPen *p;
-	Media::DrawBrush *b;
-	Media::DrawFont *f;
+	NotNullPtr<Media::DrawBrush> b;
+	NotNullPtr<Media::DrawFont> f;
 	UOSInt i;
 	UOSInt j;
 	UOSInt k;

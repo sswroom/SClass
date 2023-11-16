@@ -19,7 +19,7 @@ namespace Map
 		UInt32 fontSizePt;
 		Double thick;
 		UInt32 color;
-		Media::DrawFont *font;
+		NotNullPtr<Media::DrawFont> font;
 		void *other;
 	} MapFontStyle;
 

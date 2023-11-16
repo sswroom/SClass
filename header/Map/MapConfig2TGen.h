@@ -63,7 +63,7 @@ namespace Map
 		static void DrawCharsLA(NotNullPtr<Media::DrawImage> img, Text::CStringNN str1, Math::Coord2DDbl *mapPts, Math::Coord2D<Int32> *scnPts, UOSInt nPoints, UInt32 thisPt, Double scaleN, Double scaleD, Data::ArrayList<MapFontStyle*> *fontStyle, Math::RectAreaDbl *realBounds);
 		static void DrawCharsLAo(NotNullPtr<Media::DrawImage> img, Text::CStringNN str1, Double *mapPts, Math::Coord2D<Int32> *scnPts, UOSInt nPoints, UInt32 thisPt, Double scaleN, Double scaleD, Data::ArrayList<MapFontStyle*> *fontStyle);
 		static void DrawCharsL(NotNullPtr<Media::DrawImage> img, Text::CStringNN str1, Math::Coord2DDbl *mapPts, Math::Coord2D<Int32> *scnPts, UOSInt nPoints, UInt32 thisPt, Double scaleN, Double scaleD, Data::ArrayList<MapFontStyle*> *fontStyle, Math::RectAreaDbl *realBounds);
-		static void GetCharsSize(NotNullPtr<Media::DrawImage> img, Math::Coord2DDbl *size, Text::CString label, Data::ArrayList<MapFontStyle*> *fontStyle, Double scaleW, Double scaleH);
+		static void GetCharsSize(NotNullPtr<Media::DrawImage> img, Math::Coord2DDbl *size, Text::CStringNN label, Data::ArrayList<MapFontStyle*> *fontStyle, Double scaleW, Double scaleH);
 		static UInt32 ToColor(const UTF8Char *str);
 		static Map::MapDrawLayer *GetDrawLayer(Text::CStringNN name, Data::ArrayList<Map::MapDrawLayer*> *layerList, IO::Writer *errWriter);
 		static void DrawPoints(NotNullPtr<Media::DrawImage> img, MapLayerStyle *lyrs, Map::MapView *view, Bool *isLayerEmpty, Map::MapScheduler *mapSch, NotNullPtr<Media::DrawEngine> eng, Media::IImgResizer *resizer, Math::RectAreaDbl *objBounds, UOSInt *objCnt, UOSInt maxObjCnt);

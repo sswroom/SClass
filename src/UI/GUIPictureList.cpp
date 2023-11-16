@@ -53,7 +53,7 @@ void UI::GUIPictureList::OnDraw(NotNullPtr<Media::DrawImage> img)
 			{
 				if (i == this->selectedIndex)
 				{
-					Media::DrawBrush *b = img->NewBrushARGB(0xffff4040);
+					NotNullPtr<Media::DrawBrush> b = img->NewBrushARGB(0xffff4040);
 					img->DrawRect(Math::Coord2DDbl(0, OSInt2Double(ofst)), Math::Size2DDbl(UOSInt2Double(w), UOSInt2Double(this->iconSize.y + ICONPADDING)), 0, b);
 					img->DelBrush(b);
 				}
@@ -89,7 +89,7 @@ void UI::GUIPictureList::OnDraw(NotNullPtr<Media::DrawImage> img)
 				{
 					if (i + k == this->selectedIndex)
 					{
-						Media::DrawBrush *b = img->NewBrushARGB(0xffff4040);
+						NotNullPtr<Media::DrawBrush> b = img->NewBrushARGB(0xffff4040);
 						img->DrawRect(Math::Coord2DDbl(UOSInt2Double((this->iconSize.x + ICONPADDING) * k), OSInt2Double(ofst)), this->iconSize.ToDouble() + ICONPADDING, 0, b);
 						img->DelBrush(b);
 					}

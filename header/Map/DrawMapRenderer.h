@@ -42,9 +42,9 @@ namespace Map
 		typedef struct
 		{
 			Media::DrawFont *font;
-			Media::DrawBrush *fontBrush;
+			Optional<Media::DrawBrush> fontBrush;
 			UOSInt buffSize;
-			Media::DrawBrush *buffBrush;
+			Optional<Media::DrawBrush> buffBrush;
 		} DrawFontStyle;
 
 		class DrawEnv
@@ -65,8 +65,8 @@ namespace Map
 			Math::Size2DDbl dispSize;
 
 			Data::ArrayListInt64 idArr;
-			Data::ArrayList<Media::DrawFont*> layerFont;
-			Data::ArrayList<Media::DrawBrush*> layerFontColor;
+			Data::ArrayListNN<Media::DrawFont> layerFont;
+			Data::ArrayListNN<Media::DrawBrush> layerFontColor;
 		};
 
 	private:
@@ -95,7 +95,7 @@ namespace Map
 		void DrawImageLayer(NotNullPtr<DrawEnv> denv, NotNullPtr<Map::MapDrawLayer> layer);
 		void DrawImageObject(NotNullPtr<DrawEnv> denv, NotNullPtr<Media::StaticImage> img, Math::Coord2DDbl scnTL, Math::Coord2DDbl scnBR, Double srcAlpha);
 
-		static void GetCharsSize(NotNullPtr<DrawEnv> denv, Math::Coord2DDbl *size, Text::CString label, Map::MapEnv::FontType fontType, UOSInt fontStyle, Double scaleW, Double scaleH);
+		static void GetCharsSize(NotNullPtr<DrawEnv> denv, Math::Coord2DDbl *size, Text::CStringNN label, Map::MapEnv::FontType fontType, UOSInt fontStyle, Double scaleW, Double scaleH);
 		static void DrawChars(NotNullPtr<DrawEnv> denv, Text::CStringNN str1, Math::Coord2DDbl scnPos, Double scaleW, Double scaleH, Map::MapEnv::FontType fontType, UOSInt fontStyle, Bool isAlign);
 		static void DrawCharsL(NotNullPtr<DrawEnv> denv, Text::CStringNN str1, Math::Coord2DDbl *mapPts, Math::Coord2D<Int32> *scnPts, UOSInt nPoints, UOSInt thisPt, Double scaleN, Double scaleD, Map::MapEnv::FontType fontType, UOSInt fontStyle, Math::RectAreaDbl *realBounds);
 		static void DrawCharsLA(NotNullPtr<DrawEnv> denv, Text::CStringNN str1, Math::Coord2DDbl *mapPts, Math::Coord2D<Int32> *scnPts, UOSInt nPoints, UOSInt thisPt, Double scaleN, Double scaleD, Map::MapEnv::FontType fontType, UOSInt fontStyle, Math::RectAreaDbl *realBounds);

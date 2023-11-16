@@ -242,8 +242,8 @@ void UI::GUITextView::UpdateScrollBar()
 	}
 	else
 	{
-		Media::DrawFont *fnt = this->CreateDrawFont(drawBuff);
-		if (fnt == 0)
+		NotNullPtr<Media::DrawFont> fnt;
+		if (!fnt.Set(this->CreateDrawFont(drawBuff)))
 		{
 			sz.y = 12;
 		}
@@ -371,39 +371,47 @@ UInt32 UI::GUITextView::GetCharCntAtWidth(WChar *str, UOSInt strLen, UOSInt pxWi
 		GdkDrawingContext *drawing = gdk_window_begin_draw_frame(window, region);
 		cairo_t *cr = gdk_drawing_context_get_cairo_context(drawing);
 		WChar c;
-		Media::DrawFont *fnt = this->CreateDrawFont(drawBuff);
-		c = str[strLen];
-		str[strLen] = 0;
-		const UTF8Char *csptr = Text::StrToUTF8New(str);
-		str[strLen] = c;
-		((Media::GTKDrawFont*)fnt)->Init(cr);
-		cairo_text_extents_t extents;
-
-		currPtr = csptr;
-		while (true)
+		UOSInt ret;
+		NotNullPtr<Media::DrawFont> fnt;
+		if (fnt.Set(this->CreateDrawFont(drawBuff)))
 		{
-			nextPtr = Text::StrReadChar(currPtr, &u32c);
-			if (u32c == 0)
+			c = str[strLen];
+			str[strLen] = 0;
+			const UTF8Char *csptr = Text::StrToUTF8New(str);
+			str[strLen] = c;
+			NotNullPtr<Media::GTKDrawFont>::ConvertFrom(fnt)->Init(cr);
+			cairo_text_extents_t extents;
+
+			currPtr = csptr;
+			while (true)
 			{
-				break;
+				nextPtr = Text::StrReadChar(currPtr, &u32c);
+				if (u32c == 0)
+				{
+					break;
+				}
+				Text::StrWriteChar(sbuff, u32c)[0] = 0;
+				
+				cairo_text_extents(cr, (const Char*)sbuff, &extents);
+				if (extents.width > pxLeft)
+				{
+					break;
+				}
+				pxLeft -= extents.width;
+				currPtr = nextPtr;
+				if (pxLeft <= 0)
+				{
+					break;
+				}
 			}
-			Text::StrWriteChar(sbuff, u32c)[0] = 0;
-			
-			cairo_text_extents(cr, (const Char*)sbuff, &extents);
-			if (extents.width > pxLeft)
-			{
-				break;
-			}
-			pxLeft -= extents.width;
-			currPtr = nextPtr;
-			if (pxLeft <= 0)
-			{
-				break;
-			}
+			ret = Text::StrUTF8_WCharCntC(csptr, (UOSInt)(currPtr - csptr));
+			Text::StrDelNew(csptr);
+			drawBuff->DelFont(fnt);
 		}
-		UOSInt ret = Text::StrUTF8_WCharCntC(csptr, (UOSInt)(currPtr - csptr));
-		Text::StrDelNew(csptr);
-		drawBuff->DelFont(fnt);
+		else
+		{
+			ret = 0;
+		}
 		gdk_window_end_draw_frame(window, drawing);
 		cairo_region_destroy(region);
 		return (UInt32)ret;
@@ -421,16 +429,24 @@ void UI::GUITextView::GetDrawSize(WChar *str, UOSInt strLen, UOSInt *width, UOSI
 	{
 		WChar c;
 		Math::Size2DDbl sz;
-		Media::DrawFont *fnt = this->CreateDrawFont(drawBuff);
-		c = str[strLen];
-		str[strLen] = 0;
-		NotNullPtr<Text::String> s = Text::String::NewNotNull(str);
-		str[strLen] = c;
-		sz = drawBuff->GetTextSize(fnt, s->ToCString());
-		s->Release();
-		*width = (UOSInt)Double2OSInt(sz.x);
-		*height = (UOSInt)Double2OSInt(sz.y);
-		drawBuff->DelFont(fnt);
+		NotNullPtr<Media::DrawFont> fnt;
+		if (fnt.Set(this->CreateDrawFont(drawBuff)))
+		{
+			c = str[strLen];
+			str[strLen] = 0;
+			NotNullPtr<Text::String> s = Text::String::NewNotNull(str);
+			str[strLen] = c;
+			sz = drawBuff->GetTextSize(fnt, s->ToCString());
+			s->Release();
+			*width = (UOSInt)Double2OSInt(sz.x);
+			*height = (UOSInt)Double2OSInt(sz.y);
+			drawBuff->DelFont(fnt);
+		}
+		else
+		{
+			*width = 0;
+			*height = 0;
+		}
 	}
 /*	else
 	{
@@ -784,7 +800,7 @@ void UI::GUITextView::OnDraw(void *cr)
 		dimg = ((Media::GTKDrawEngine*)this->deng.Ptr())->CreateImageScn(cr, Math::Coord2D<OSInt>((OSInt)(sz.x - clsData->scrSize), 0), Math::Coord2D<OSInt>((OSInt)clsData->scrSize, (OSInt)drawHeight));
 		dimg->SetHDPI(this->GetHDPI() / this->GetDDPI() * 96.0);
 		dimg->SetVDPI(this->GetHDPI() / this->GetDDPI() * 96.0);
-		Media::DrawBrush *b = dimg->NewBrushARGB(this->bgColor);
+		NotNullPtr<Media::DrawBrush> b = dimg->NewBrushARGB(this->bgColor);
 		dimg->DrawRect(Math::Coord2DDbl(0, 0), Math::Size2DDbl(UOSInt2Double(clsData->scrSize), UOSInt2Double(drawHeight)), 0, b);
 		dimg->DelBrush(b);
 		b = dimg->NewBrushARGB(this->scrColor);
@@ -803,7 +819,7 @@ void UI::GUITextView::OnDraw(void *cr)
 		dimg = ((Media::GTKDrawEngine*)this->deng.Ptr())->CreateImageScn(cr, Math::Coord2D<OSInt>(0, (OSInt)(sz.y - clsData->scrSize)), Math::Coord2D<OSInt>((OSInt)drawWidth, (OSInt)clsData->scrSize));
 		dimg->SetHDPI(this->GetHDPI() / this->GetDDPI() * 96.0);
 		dimg->SetVDPI(this->GetHDPI() / this->GetDDPI() * 96.0);
-		Media::DrawBrush *b = dimg->NewBrushARGB(this->bgColor);
+		NotNullPtr<Media::DrawBrush> b = dimg->NewBrushARGB(this->bgColor);
 		dimg->DrawRect(Math::Coord2DDbl(0, 0), Math::Size2DDbl(UOSInt2Double(drawWidth), UOSInt2Double(clsData->scrSize)), 0, b);
 		dimg->DelBrush(b);
 		b = dimg->NewBrushARGB(this->scrColor);

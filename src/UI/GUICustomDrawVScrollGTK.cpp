@@ -46,7 +46,7 @@ gboolean GUICustomDrawVScroll_OnDraw(GtkWidget *widget, cairo_t *cr, gpointer da
 		dimg = ((Media::GTKDrawEngine*)me->deng.Ptr())->CreateImageScn(cr, Math::Coord2D<OSInt>(width - clsData->scrollSize, 0), Math::Coord2D<OSInt>(clsData->scrollSize, height));
 		dimg->SetHDPI(me->GetHDPI() / me->GetDDPI() * 96.0);
 		dimg->SetVDPI(me->GetHDPI() / me->GetDDPI() * 96.0);
-		Media::DrawBrush *b = dimg->NewBrushARGB(0xff000000);
+		NotNullPtr<Media::DrawBrush> b = dimg->NewBrushARGB(0xff000000);
 		dimg->DrawRect(Math::Coord2DDbl(0, 0), Math::Size2DDbl(OSInt2Double(clsData->scrollSize), OSInt2Double(height)), 0, b);
 		dimg->DelBrush(b);
 		b = dimg->NewBrushARGB(0xffcccccc);

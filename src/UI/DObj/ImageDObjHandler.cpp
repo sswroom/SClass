@@ -52,7 +52,7 @@ void UI::DObj::ImageDObjHandler::DrawBkg(NotNullPtr<Media::DrawImage> dimg)
 	}
 	else
 	{
-		Media::DrawBrush *b = dimg->NewBrushARGB(this->bgColor);
+		NotNullPtr<Media::DrawBrush> b = dimg->NewBrushARGB(this->bgColor);
 		dimg->DrawRect(Math::Coord2DDbl(0, 0), dimg->GetSize().ToDouble(), 0, b);
 		dimg->DelBrush(b);
 	}
