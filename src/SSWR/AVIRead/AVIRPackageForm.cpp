@@ -1072,6 +1072,7 @@ void SSWR::AVIRead::AVIRPackageForm::EventMenuClicked(UInt16 cmdId)
 						SSWR::AVIRead::AVIRHexViewerForm *frm;
 						NEW_CLASS(frm, SSWR::AVIRead::AVIRHexViewerForm(0, this->ui, this->core));
 						frm->SetData(fd, IO::FileAnalyse::IFileAnalyse::AnalyseFile(fd));
+						fd.Delete();
 						this->core->ShowForm(frm);
 					}
 				}

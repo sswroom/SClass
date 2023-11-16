@@ -42,6 +42,11 @@ OSInt DB::DBTool::ExecuteNonQuery(Text::CStringNN sqlCmd)
 	Data::Timestamp t1 = Data::Timestamp::UtcNow();
 	Data::Timestamp t2 = Data::Timestamp::UtcNow();
 	OSInt i = this->db->ExecuteNonQuery(sqlCmd);
+	if (i < -1 && !this->db->IsLastDataError())
+	{
+		this->db->Reconnect();
+		i = this->db->ExecuteNonQuery(sqlCmd);
+	}
 	if (i >= -1)
 	{
 		Data::Timestamp t3 = Data::Timestamp::UtcNow();
@@ -78,10 +83,6 @@ OSInt DB::DBTool::ExecuteNonQuery(Text::CStringNN sqlCmd)
 			AddLogMsgC(logMsg.ToString(), logMsg.GetLength(), IO::LogHandler::LogLevel::ErrorDetail);
 		}
 		Bool isData = this->db->IsLastDataError();
-		if (!isData)
-		{
-			this->db->Reconnect();
-		}
 
 		if (trig)
 			trig(sqlCmd, DB::ReadingDBTool::NonQueryTrigger);
