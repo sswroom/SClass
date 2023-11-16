@@ -3529,13 +3529,18 @@ UOSInt SSWR::OrganWeb::OrganWebEnv::PeakGetUnfin(NotNullPtr<Sync::RWMutexUsage> 
 Bool SSWR::OrganWeb::OrganWebEnv::PeakUpdateStatus(NotNullPtr<Sync::RWMutexUsage> mutUsage, Int32 id, Int32 status)
 {
 	mutUsage->ReplaceMutex(this->dataMut, true);
-	DB::SQLBuilder sql(this->db->GetDBConn());
-	sql.AppendCmdC(CSTR("update peak set status = "));
-	sql.AppendInt32(status);
-	sql.AppendCmdC(CSTR(" where id = "));
-	sql.AppendInt32(id);
-	sql.AppendCmdC(CSTR(" and status = 0"));
-	return this->db->ExecuteNonQuery(sql.ToCString()) > 0;
+	NotNullPtr<DB::DBTool> db;
+	if (db.Set(this->db))
+	{
+		DB::SQLBuilder sql(db);
+		sql.AppendCmdC(CSTR("update peak set status = "));
+		sql.AppendInt32(status);
+		sql.AppendCmdC(CSTR(" where id = "));
+		sql.AppendInt32(id);
+		sql.AppendCmdC(CSTR(" and status = 0"));
+		return this->db->ExecuteNonQuery(sql.ToCString()) > 0;
+	}
+	return false;
 }
 
 void SSWR::OrganWeb::OrganWebEnv::PeakFreeAll(NotNullPtr<Data::ArrayListNN<PeakInfo>> peaks)
