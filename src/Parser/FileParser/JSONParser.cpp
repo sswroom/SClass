@@ -4,7 +4,9 @@
 #include "Data/ByteTool.h"
 #include "DB/JSONDB.h"
 #include "Map/DBMapLayer.h"
+#include "Map/TileMapLayer.h"
 #include "Map/VectorLayer.h"
+#include "Map/OSM/OSMLocalTileMap.h"
 #include "Math/CoordinateSystemManager.h"
 #include "Math/Geometry/LineString.h"
 #include "Math/Geometry/MultiPolygon.h"
@@ -19,6 +21,7 @@
 
 Parser::FileParser::JSONParser::JSONParser()
 {
+	this->parsers = 0;
 }
 
 Parser::FileParser::JSONParser::~JSONParser()
@@ -28,6 +31,11 @@ Parser::FileParser::JSONParser::~JSONParser()
 Int32 Parser::FileParser::JSONParser::GetName()
 {
 	return *(Int32*)"JSON";
+}
+
+void Parser::FileParser::JSONParser::SetParserList(Parser::ParserList *parsers)
+{
+	this->parsers = parsers;
 }
 
 void Parser::FileParser::JSONParser::PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t)
@@ -78,17 +86,18 @@ IO::ParsedObject *Parser::FileParser::JSONParser::ParseFileHdr(NotNullPtr<IO::St
 		return 0;
 	}
 
-	pobj = ParseJSON(fileJSON, fd->GetFullName(), fd->GetShortName(), targetType);
+	pobj = ParseJSON(fileJSON, fd->GetFullName(), fd->GetShortName(), targetType, pkgFile, this->parsers);
 	fileJSON->EndUse();
 	return pobj;
 }
 
-IO::ParsedObject *Parser::FileParser::JSONParser::ParseJSON(Text::JSONBase *fileJSON, NotNullPtr<Text::String> sourceName, Text::CString layerName, IO::ParserType targetType)
+IO::ParsedObject *Parser::FileParser::JSONParser::ParseJSON(Text::JSONBase *fileJSON, NotNullPtr<Text::String> sourceName, Text::CString layerName, IO::ParserType targetType, Optional<IO::PackageFile> pkgFile, Parser::ParserList *parsers)
 {
 	UInt32 srid = 0;
 	IO::ParsedObject *pobj = 0;
 	if (fileJSON->GetType() == Text::JSONType::Object)
 	{
+		NotNullPtr<IO::PackageFile> nnpkgFile;
 		Text::JSONObject *jobj = (Text::JSONObject*)fileJSON;
 		Text::JSONBase *jbase = jobj->GetObjectValue(CSTR("type"));
 		if (jbase && jbase->Equals(CSTR("FeatureCollection")))
@@ -210,6 +219,31 @@ IO::ParsedObject *Parser::FileParser::JSONParser::ParseJSON(Text::JSONBase *file
 			}
 			return pobj;
 		}
+		else if (jbase && jbase->Equals(CSTR("overlay")) && layerName.EndsWith(UTF8STRC("metadata.json")) && pkgFile.SetTo(nnpkgFile))
+		{
+			NotNullPtr<Text::String> name;
+			NotNullPtr<Text::String> format;
+			Text::String *sMinZoom = jobj->GetObjectString(CSTR("minzoom"));
+			Text::String *sMaxZoom = jobj->GetObjectString(CSTR("maxzoom"));
+			UInt32 minZoom;
+			UInt32 maxZoom;
+			Text::JSONArray *bounds = jobj->GetObjectArray(CSTR("bounds"));
+			if (name.Set(jobj->GetObjectString(CSTR("name"))) && format.Set(jobj->GetObjectString(CSTR("format"))) && sMinZoom && sMaxZoom && bounds && sMinZoom->ToUInt32(minZoom) && sMaxZoom->ToUInt32(maxZoom) && bounds->GetArrayLength() == 4)
+			{
+				Math::Coord2DDbl maxCoord;
+				Math::Coord2DDbl minCoord;
+				Math::Coord2DDbl coord;
+				coord = Math::Coord2DDbl(bounds->GetArrayDouble(0), bounds->GetArrayDouble(1));
+				maxCoord = Math::Coord2DDbl(bounds->GetArrayDouble(2), bounds->GetArrayDouble(3));
+				minCoord = coord.Min(maxCoord);
+				maxCoord = coord.Max(maxCoord);
+				NotNullPtr<Map::OSM::OSMLocalTileMap> tileMap;
+				NotNullPtr<Map::TileMapLayer> mapLayer;
+				NEW_CLASSNN(tileMap, Map::OSM::OSMLocalTileMap(nnpkgFile->Clone(), name, format, minZoom, maxZoom, minCoord, maxCoord));
+				NEW_CLASSNN(mapLayer, Map::TileMapLayer(tileMap, parsers));
+				return mapLayer.Ptr();
+			}
+		}
 	}
 	Text::JSONArray *dataArr = GetDataArray(fileJSON);
 	if (dataArr == 0)
@@ -226,7 +260,7 @@ IO::ParsedObject *Parser::FileParser::JSONParser::ParseJSON(Text::JSONBase *file
 		{
 			return layer;
 		}
-
+		DEL_CLASS(layer);
 	}
 	return db;
 }

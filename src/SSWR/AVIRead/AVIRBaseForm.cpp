@@ -1619,8 +1619,8 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 			UI::FolderDialog dlg(L"SSWR", L"AVIRead", L"OSMLocal");
 			if (dlg.ShowDialog(this->GetHandle()))
 			{
-				IO::DirectoryPackage *pkg;
-				NEW_CLASS(pkg, IO::DirectoryPackage(dlg.GetFolder()));
+				NotNullPtr<IO::DirectoryPackage> pkg;
+				NEW_CLASSNN(pkg, IO::DirectoryPackage(dlg.GetFolder()));
 				NEW_CLASSNN(tileMap, Map::OSM::OSMLocalTileMap(pkg));
 				NEW_CLASSNN(mapLyr, Map::TileMapLayer(tileMap, this->core->GetParserList()));
 				this->core->OpenObject(mapLyr);
@@ -1634,14 +1634,15 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 			parsers->PrepareSelector(dlg, IO::ParserType::PackageFile);
 			if (dlg.ShowDialog(this->GetHandle()))
 			{
+				NotNullPtr<IO::PackageFile> pkgFile;
 				IO::PackageFile *pkg;
 				{
 					IO::StmData::FileData fd(dlg.GetFileName(), false);
 					pkg = (IO::PackageFile*)parsers->ParseFileType(fd, IO::ParserType::PackageFile);
 				}
-				if (pkg)
+				if (pkgFile.Set(pkg))
 				{
-					NEW_CLASSNN(tileMap, Map::OSM::OSMLocalTileMap(pkg));
+					NEW_CLASSNN(tileMap, Map::OSM::OSMLocalTileMap(pkgFile));
 					NEW_CLASSNN(mapLyr, Map::TileMapLayer(tileMap, parsers));
 					this->core->OpenObject(mapLyr);
 				}

@@ -11,10 +11,12 @@ namespace Map
 		class OSMLocalTileMap : public Map::TileMap
 		{
 		private:
-			//const WChar *tileDir;
-			IO::PackageFile *pkgFile;
-			IO::PackageFile *rootPkg;
+			NotNullPtr<IO::PackageFile> pkgFile;
+			Optional<IO::PackageFile> rootPkg;
+			Text::String *name;
+			UOSInt minLevel;
 			UOSInt maxLevel;
+			NotNullPtr<Text::String> fmt;
 
 			Math::Coord2DDbl min;
 			Math::Coord2DDbl max;
@@ -23,7 +25,8 @@ namespace Map
 			NotNullPtr<Math::CoordinateSystem> csys;
 
 		public:
-			OSMLocalTileMap(IO::PackageFile *pkgFile); //const WChar *tileDir);
+			OSMLocalTileMap(NotNullPtr<IO::PackageFile> pkgFile);
+			OSMLocalTileMap(NotNullPtr<IO::PackageFile> pkgFile, NotNullPtr<Text::String> name, NotNullPtr<Text::String> format, UOSInt minZoom, UOSInt maxZoom, Math::Coord2DDbl minCoord, Math::Coord2DDbl maxCoord);
 			virtual ~OSMLocalTileMap();
 
 			virtual Text::CStringNN GetName() const;

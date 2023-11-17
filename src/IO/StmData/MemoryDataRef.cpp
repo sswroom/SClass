@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
+#include "IO/Path.h"
 #include "IO/StmData/MemoryDataRef.h"
 
 IO::StmData::MemoryDataRef::MemoryDataRef(const UInt8 *data, UOSInt dataLength) : data(data, dataLength)
@@ -41,6 +42,11 @@ NotNullPtr<Text::String> IO::StmData::MemoryDataRef::GetFullName()
 
 Text::CString IO::StmData::MemoryDataRef::GetShortName()
 {
+	if (this->name)
+	{
+		UOSInt i = this->name->LastIndexOf(IO::Path::PATH_SEPERATOR);
+		return this->name->ToCString().Substring(i + 1);
+	}
 	return CSTR("Memory");
 }
 
