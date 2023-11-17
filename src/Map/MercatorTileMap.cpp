@@ -69,9 +69,14 @@ Bool Map::MercatorTileMap::IsError() const
 	return false;
 }
 
-UOSInt Map::MercatorTileMap::GetLevelCount() const
+UOSInt Map::MercatorTileMap::GetMinLevel() const
 {
-	return this->maxLevel + 1;
+	return this->minLevel;
+}
+
+UOSInt Map::MercatorTileMap::GetMaxLevel() const
+{
+	return this->maxLevel;
 }
 
 
@@ -172,7 +177,7 @@ UOSInt Map::MercatorTileMap::GetTileImageIDs(UOSInt level, Math::RectAreaDbl rec
 	return (UOSInt)((pixX2 - pixX1 + 1) * (pixY2 - pixY1 + 1));
 }
 
-Media::ImageList *Map::MercatorTileMap::LoadTileImage(UOSInt level, Math::Coord2D<Int32> tileId, Parser::ParserList *parsers, Math::RectAreaDbl *bounds, Bool localOnly)
+Media::ImageList *Map::MercatorTileMap::LoadTileImage(UOSInt level, Math::Coord2D<Int32> tileId, Parser::ParserList *parsers, OutParam<Math::RectAreaDbl> bounds, Bool localOnly)
 {
 	UTF8Char url[1024];
 	UTF8Char *urlPtr;
@@ -192,8 +197,7 @@ Media::ImageList *Map::MercatorTileMap::LoadTileImage(UOSInt level, Math::Coord2
 	Double x2 = TileX2Lon(tileId.x + 1, level);
 	Double y2 = TileY2Lat(tileId.y + 1, level);
 
-	bounds->tl = Math::Coord2DDbl(x1, y1);
-	bounds->br = Math::Coord2DDbl(x2, y2);
+	bounds.Set(Math::RectAreaDbl(Math::Coord2DDbl(x1, y1), Math::Coord2DDbl(x2, y2)));
 	if (x1 > 180 || y1 < -90)
 		return 0;
 
@@ -355,7 +359,7 @@ Media::ImageList *Map::MercatorTileMap::LoadTileImage(UOSInt level, Math::Coord2
 	return 0;
 }
 
-IO::StreamData *Map::MercatorTileMap::LoadTileImageData(UOSInt level, Math::Coord2D<Int32> tileId, Math::RectAreaDbl *bounds, Bool localOnly, ImageType *it)
+Optional<IO::StreamData> Map::MercatorTileMap::LoadTileImageData(UOSInt level, Math::Coord2D<Int32> tileId, OutParam<Math::RectAreaDbl> bounds, Bool localOnly, OptOut<ImageType> it)
 {
 	UOSInt readSize;
 	UTF8Char url[1024];
@@ -376,8 +380,7 @@ IO::StreamData *Map::MercatorTileMap::LoadTileImageData(UOSInt level, Math::Coor
 	Double x2 = TileX2Lon(tileId.x + 1, level);
 	Double y2 = TileY2Lat(tileId.y + 1, level);
 
-	bounds->tl = Math::Coord2DDbl(x1, y1);
-	bounds->br = Math::Coord2DDbl(x2, y2);
+	bounds.Set(Math::RectAreaDbl(Math::Coord2DDbl(x1, y1), Math::Coord2DDbl(x2, y2)));
 	if (x1 > 180 || y1 < -90)
 		return 0;
 
@@ -392,7 +395,20 @@ IO::StreamData *Map::MercatorTileMap::LoadTileImageData(UOSInt level, Math::Coor
 		IO::Path::CreateDirectory(CSTRP(filePathU, sptru));
 		*sptru++ = IO::Path::PATH_SEPERATOR;
 		sptru = Text::StrInt32(sptru, tileId.y);
-		sptru = Text::StrConcatC(sptru, UTF8STRC(".png"));
+		ImageType imgt = this->GetImageType();
+		switch (imgt)
+		{
+		case IT_JPG:
+			sptru = Text::StrConcatC(sptru, UTF8STRC(".jpg"));
+			break;
+		case IT_WEBP:
+			sptru = Text::StrConcatC(sptru, UTF8STRC(".webp"));
+			break;
+		default:
+		case IT_PNG:
+			sptru = Text::StrConcatC(sptru, UTF8STRC(".png"));
+			break;
+		}
 		NEW_CLASS(fd, IO::StmData::FileData({filePathU, (UOSInt)(sptru - filePathU)}, false));
 		if (fd->GetDataSize() > 0)
 		{
@@ -401,8 +417,7 @@ IO::StreamData *Map::MercatorTileMap::LoadTileImageData(UOSInt level, Math::Coor
 			((IO::StmData::FileData*)fd)->GetFileStream()->GetFileTimes(&dt, 0, 0);
 			if (dt.CompareTo(currTime) > 0)
 			{
-				if (it)
-					*it = IT_PNG;
+				it.Set(imgt);
 				return fd;
 			}
 			else
@@ -419,12 +434,24 @@ IO::StreamData *Map::MercatorTileMap::LoadTileImageData(UOSInt level, Math::Coor
 		sptru = Text::StrInt32(sptru, tileId.x);
 		*sptru++ = '/';
 		sptru = Text::StrInt32(sptru, tileId.y);
-		sptru = Text::StrConcatC(sptru, UTF8STRC(".png"));
+		ImageType imgt = this->GetImageType();
+		switch (imgt)
+		{
+		case IT_JPG:
+			sptru = Text::StrConcatC(sptru, UTF8STRC(".jpg"));
+			break;
+		case IT_WEBP:
+			sptru = Text::StrConcatC(sptru, UTF8STRC(".webp"));
+			break;
+		default:
+		case IT_PNG:
+			sptru = Text::StrConcatC(sptru, UTF8STRC(".png"));
+			break;
+		}
 		fd = this->spkg->CreateStreamData({filePathU, (UOSInt)(sptru - filePathU)});
 		if (fd)
 		{
-			if (it)
-				*it = IT_PNG;
+			it.Set(imgt);
 			return fd;
 		}
 		DEL_CLASS(fd);
@@ -506,8 +533,7 @@ IO::StreamData *Map::MercatorTileMap::LoadTileImageData(UOSInt level, Math::Coor
 	{
 		if (fd->GetDataSize() > 0)
 		{
-			if (it)
-				*it = IT_PNG;
+			it.Set(this->GetImageType());
 			return fd;
 		}
 		DEL_CLASS(fd);

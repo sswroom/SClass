@@ -3612,6 +3612,8 @@ Parser/ObjParser/KMZParser.h: ../../src/Parser/ObjParser/KMZParser.cpp
 @KMZParser.o
 Parser/ObjParser/MPGXAParser.h: ../../src/Parser/ObjParser/MPGXAParser.cpp
 @MPGXAParser.o
+Parser/ObjParser/OSMMapParser.h: ../../src/Parser/ObjParser/OSMMapParser.cpp
+@OSMMapParser.o
 
 SSWR/ProcMonForm.h: ../../src/SSWR/ProcMonForm.cpp
 @ProcMonForm.o
@@ -5786,6 +5788,7 @@ ISO9660Parser.o: ../../src/Parser/ObjParser/ISO9660Parser.cpp
 ITMParser.o: ../../src/Parser/ObjParser/ITMParser.cpp
 KMZParser.o: ../../src/Parser/ObjParser/KMZParser.cpp
 MPGXAParser.o: ../../src/Parser/ObjParser/MPGXAParser.cpp
+OSMMapParser.o: ../../src/Parser/ObjParser/OSMMapParser.cpp
 ProcMonForm.o: ../../src/SSWR/ProcMonForm.cpp
 AVIRAboutForm.o: ../../src/SSWR/AVIRead/AVIRAboutForm.cpp
 AVIRAccelerometerForm.o: ../../src/SSWR/AVIRead/AVIRAccelerometerForm.cpp

@@ -33,7 +33,8 @@ namespace Map
 		Bool OptimizeToFile(Text::CStringNN fileName);
 
 		virtual Bool IsError() const;
-		virtual UOSInt GetLevelCount() const;
+		virtual UOSInt GetMinLevel() const;
+		virtual UOSInt GetMaxLevel() const;
 		virtual Double GetLevelScale(UOSInt level) const;
 		virtual UOSInt GetNearestLevel(Double scale) const;
 		virtual Bool GetBounds(OutParam<Math::RectAreaDbl> bounds) const;
@@ -42,8 +43,8 @@ namespace Map
 		virtual UOSInt GetTileSize() const;
 
 		virtual UOSInt GetTileImageIDs(UOSInt level, Math::RectAreaDbl rect, Data::ArrayList<Math::Coord2D<Int32>> *ids);
-		virtual Media::ImageList *LoadTileImage(UOSInt level, Math::Coord2D<Int32> tileId, Parser::ParserList *parsers, Math::RectAreaDbl *bounds, Bool localOnly);
-		virtual IO::StreamData *LoadTileImageData(UOSInt level, Math::Coord2D<Int32> tileId, Math::RectAreaDbl *bounds, Bool localOnly, ImageType *it);
+		virtual Media::ImageList *LoadTileImage(UOSInt level, Math::Coord2D<Int32> tileId, Parser::ParserList *parsers, OutParam<Math::RectAreaDbl> bounds, Bool localOnly);
+		virtual Optional<IO::StreamData> LoadTileImageData(UOSInt level, Math::Coord2D<Int32> tileId, OutParam<Math::RectAreaDbl> bounds, Bool localOnly, OptOut<ImageType> it);
 
 		static Int32 Lon2TileX(Double lon, UOSInt level);
 		static Int32 Lat2TileY(Double lat, UOSInt level);

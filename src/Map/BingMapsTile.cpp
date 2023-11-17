@@ -111,6 +111,11 @@ Map::TileMap::TileType Map::BingMapsTile::GetTileType() const
 	return TT_BING;
 }
 
+Map::TileMap::ImageType Map::BingMapsTile::GetImageType() const
+{
+	return IT_PNG;
+}
+
 UOSInt Map::BingMapsTile::GetConcurrentCount() const
 {
 	return 2 * this->subdomains.GetCount();

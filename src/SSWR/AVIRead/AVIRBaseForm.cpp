@@ -1596,7 +1596,7 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 	case MNU_TEST:
 		sptr = IO::Path::GetProcessFileName(sbuff);
 		sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("OSMCacheTest"));
-		NEW_CLASSNN(tileMap, Map::OSM::OSMTileMap(CSTR("http://127.0.0.1/"), {sbuff, (UOSInt)(sptr - sbuff)}, 18, this->core->GetSocketFactory(), this->ssl));
+		NEW_CLASSNN(tileMap, Map::OSM::OSMTileMap(CSTR("http://127.0.0.1/"), {sbuff, (UOSInt)(sptr - sbuff)}, 0, 18, this->core->GetSocketFactory(), this->ssl));
 		NEW_CLASSNN(mapLyr, Map::TileMapLayer(tileMap, this->core->GetParserList()));
 		this->core->OpenObject(mapLyr);
 		break;

@@ -100,7 +100,7 @@ IO::ParsedObject *Parser::FileParser::SPKParser::ParseFileHdr(NotNullPtr<IO::Str
 			srcPath[customBuff[1]] = 0;
 			j = 2 + (UOSInt)customBuff[1];
 			NEW_CLASS(spkg, IO::SPackageFile(fd->GetFullFileName()->ToCString()));
-			NEW_CLASSNN(tileMap, Map::OSM::OSMTileMap({srcPath, customBuff[1]}, spkg, 18, sockf, this->ssl));
+			NEW_CLASSNN(tileMap, Map::OSM::OSMTileMap({srcPath, customBuff[1]}, spkg, 0, 18, sockf, this->ssl));
 			i = 1;
 			while (i < customBuff[0])
 			{

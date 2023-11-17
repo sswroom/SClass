@@ -130,7 +130,7 @@ Bool Exporter::OruxMapExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, T
 		{
 			Data::ArrayList<Math::Coord2D<Int32>> imgIds;
 			Map::TileMap::ImageType it;
-			IO::StreamData *fd;
+			NotNullPtr<IO::StreamData> fd;
 			DB::SQLBuilder sql(db->GetSQLType(), db->IsAxisAware(), db->GetTzQhr());
 			db->ExecuteNonQuery(CSTR("CREATE TABLE android_metadata (locale TEXT)"));
 			db->ExecuteNonQuery(CSTR("CREATE TABLE tiles (x int, y int, z int, image blob, PRIMARY KEY (x,y,z))"));
@@ -252,8 +252,7 @@ Bool Exporter::OruxMapExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, T
 					while (j-- > 0)
 					{
 						Math::Coord2D<Int32> tileId = imgIds.GetItem(j);
-						fd = osm->LoadTileImageData(level, tileId, &bounds, true, &it);
-						if (fd)
+						if (osm->LoadTileImageData(level, tileId, bounds, true, it).SetTo(fd))
 						{
 							UOSInt imgSize = (UOSInt)fd->GetDataSize();
 							Data::ByteBuffer imgBuff(imgSize);
@@ -269,7 +268,7 @@ Bool Exporter::OruxMapExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, T
 							sql.AppendBinary(imgBuff.Ptr(), imgSize);
 							sql.AppendCmdC(CSTR(")"));
 							db->ExecuteNonQuery(sql.ToCString());
-							DEL_CLASS(fd);
+							fd.Delete();
 							if (j != 0 && (j & 0x3fff) == 0)
 							{
 								db->Commit(sess);

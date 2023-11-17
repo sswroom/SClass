@@ -350,9 +350,14 @@ Map::TileMap::TileType Map::TileMapServiceSource::GetTileType() const
 	return Map::TileMap::TT_TMS;
 }
 
-UOSInt Map::TileMapServiceSource::GetLevelCount() const
+UOSInt Map::TileMapServiceSource::GetMinLevel() const
 {
-	return this->layers.GetCount();
+	return 0;
+}
+
+UOSInt Map::TileMapServiceSource::GetMaxLevel() const
+{
+	return this->layers.GetCount() - 1;
 }
 
 Double Map::TileMapServiceSource::GetLevelScale(UOSInt level) const
@@ -419,6 +424,11 @@ UOSInt Map::TileMapServiceSource::GetTileSize() const
 	return this->tileWidth;
 }
 
+Map::TileMap::ImageType Map::TileMapServiceSource::GetImageType() const
+{
+	return this->imgType;
+}
+
 UOSInt Map::TileMapServiceSource::GetTileImageIDs(UOSInt level, Math::RectAreaDbl rect, Data::ArrayList<Math::Coord2D<Int32>> *ids)
 {
 	TileLayer *layer = this->layers.GetItem(level);
@@ -449,12 +459,12 @@ UOSInt Map::TileMapServiceSource::GetTileImageIDs(UOSInt level, Math::RectAreaDb
 	return ret;
 }
 
-Media::ImageList *Map::TileMapServiceSource::LoadTileImage(UOSInt level, Math::Coord2D<Int32> tileId, Parser::ParserList *parsers, Math::RectAreaDbl *bounds, Bool localOnly)
+Media::ImageList *Map::TileMapServiceSource::LoadTileImage(UOSInt level, Math::Coord2D<Int32> tileId, Parser::ParserList *parsers, OutParam<Math::RectAreaDbl> bounds, Bool localOnly)
 {
 	ImageType it;
 	NotNullPtr<IO::StreamData> fd;
 	IO::ParsedObject *pobj;
-	if (fd.Set(this->LoadTileImageData(level, tileId, bounds, localOnly, &it)))
+	if (this->LoadTileImageData(level, tileId, bounds, localOnly, it).SetTo(fd))
 	{
 		IO::ParserType pt;
 		pobj = parsers->ParseFile(fd, &pt);
@@ -488,7 +498,7 @@ UTF8Char *Map::TileMapServiceSource::GetTileImageURL(UTF8Char *sbuff, UOSInt lev
 	return 0;
 }
 
-IO::StreamData *Map::TileMapServiceSource::LoadTileImageData(UOSInt level, Math::Coord2D<Int32> tileId, Math::RectAreaDbl *bounds, Bool localOnly, ImageType *it)
+Optional<IO::StreamData> Map::TileMapServiceSource::LoadTileImageData(UOSInt level, Math::Coord2D<Int32> tileId, OutParam<Math::RectAreaDbl> bounds, Bool localOnly, OptOut<ImageType> it)
 {
 	UTF8Char filePathU[512];
 	UTF8Char sbuff[64];
@@ -508,9 +518,9 @@ IO::StreamData *Map::TileMapServiceSource::LoadTileImageData(UOSInt level, Math:
 	Double x2 = (tileId.x + 1) * layer->unitPerPixel * UOSInt2Double(this->tileWidth) + this->csysOrigin.x;
 	Double y2 = (tileId.y + 1) * layer->unitPerPixel * UOSInt2Double(this->tileHeight) + this->csysOrigin.y;
 
-	bounds->tl = Math::Coord2DDbl(x1, y1);
-	bounds->br = Math::Coord2DDbl(x2, y2);
-	if (!this->bounds.OverlapOrTouch(*bounds))
+	Math::RectAreaDbl b = Math::RectAreaDbl(Math::Coord2DDbl(x1, y1), Math::Coord2DDbl(x2, y2));
+	bounds.Set(b);
+	if (!this->bounds.OverlapOrTouch(b))
 		return 0;
 
 #if defined(VERBOSE)
@@ -536,8 +546,7 @@ IO::StreamData *Map::TileMapServiceSource::LoadTileImageData(UOSInt level, Math:
 		((IO::StmData::FileData*)fd.Ptr())->GetFileStream()->GetFileTimes(&dt, 0, 0);
 		if (dt.CompareTo(currTime) > 0)
 		{
-			if (it)
-				*it = this->imgType;
+			it.Set(this->imgType);
 			return fd.Ptr();
 		}
 		else
@@ -607,8 +616,7 @@ IO::StreamData *Map::TileMapServiceSource::LoadTileImageData(UOSInt level, Math:
 	NEW_CLASSNN(fd, IO::StmData::FileData({filePathU, (UOSInt)(sptru - filePathU)}, false));
 	if (fd->GetDataSize() > 0)
 	{
-		if (it)
-			*it = IT_PNG;
+		it.Set(IT_PNG);
 		return fd.Ptr();
 	}
 	fd.Delete();

@@ -766,11 +766,16 @@ Map::TileMap::TileType Map::WebMapTileServiceSource::GetTileType() const
 	return Map::TileMap::TT_WMTS;
 }
 
-UOSInt Map::WebMapTileServiceSource::GetLevelCount() const
+UOSInt Map::WebMapTileServiceSource::GetMinLevel() const
+{
+	return 0;
+}
+
+UOSInt Map::WebMapTileServiceSource::GetMaxLevel() const
 {
 	if (this->currSet == 0)
 		return 0;
-	return this->currSet->tiles.GetCount();
+	return this->currSet->tiles.GetCount() - 1;
 }
 
 Double Map::WebMapTileServiceSource::GetLevelScale(UOSInt level) const
@@ -857,6 +862,13 @@ UOSInt Map::WebMapTileServiceSource::GetTileSize() const
 	{
 		return 0;
 	}
+}
+
+Map::TileMap::ImageType Map::WebMapTileServiceSource::GetImageType() const
+{
+	if (this->currResource)
+		return this->currResource->imgType;
+	return IT_PNG;
 }
 
 Bool Map::WebMapTileServiceSource::CanQuery() const
@@ -966,12 +978,12 @@ UOSInt Map::WebMapTileServiceSource::GetTileImageIDs(UOSInt level, Math::RectAre
 	return ret;
 }
 
-Media::ImageList *Map::WebMapTileServiceSource::LoadTileImage(UOSInt level, Math::Coord2D<Int32> tileId, Parser::ParserList *parsers, Math::RectAreaDbl *bounds, Bool localOnly)
+Media::ImageList *Map::WebMapTileServiceSource::LoadTileImage(UOSInt level, Math::Coord2D<Int32> tileId, Parser::ParserList *parsers, OutParam<Math::RectAreaDbl> bounds, Bool localOnly)
 {
 	ImageType it;
 	NotNullPtr<IO::StreamData> fd;
 	IO::ParsedObject *pobj;
-	if (fd.Set(this->LoadTileImageData(level, tileId, bounds, localOnly, &it)))
+	if (this->LoadTileImageData(level, tileId, bounds, localOnly, it).SetTo(fd))
 	{
 		IO::ParserType pt;
 		pobj = parsers->ParseFile(fd, &pt);
@@ -1009,7 +1021,7 @@ UTF8Char *Map::WebMapTileServiceSource::GetTileImageURL(UTF8Char *sbuff, UOSInt 
 	return 0;
 }
 
-IO::StreamData *Map::WebMapTileServiceSource::LoadTileImageData(UOSInt level, Math::Coord2D<Int32> tileId, Math::RectAreaDbl *bounds, Bool localOnly, ImageType *it)
+Optional<IO::StreamData> Map::WebMapTileServiceSource::LoadTileImageData(UOSInt level, Math::Coord2D<Int32> tileId, OutParam<Math::RectAreaDbl> bounds, Bool localOnly, OptOut<ImageType> it)
 {
 	UTF8Char filePathU[512];
 	UTF8Char sbuff[64];
@@ -1030,9 +1042,9 @@ IO::StreamData *Map::WebMapTileServiceSource::LoadTileImageData(UOSInt level, Ma
 	Double x2 = (tileId.x + 1) * tileMatrixDef->unitPerPixel * UOSInt2Double(tileMatrixDef->tileWidth) + tileMatrixDef->origin.x;
 	Double y2 = tileMatrixDef->origin.y - (tileId.y + 1) * tileMatrixDef->unitPerPixel * UOSInt2Double(tileMatrixDef->tileHeight);
 
-	bounds->tl = Math::Coord2DDbl(x1, y2);
-	bounds->br = Math::Coord2DDbl(x2, y1);
-	if (!this->currSet->bounds.OverlapOrTouch(*bounds))
+	Math::RectAreaDbl b = Math::RectAreaDbl(Math::Coord2DDbl(x1, y2), Math::Coord2DDbl(x2, y1));
+	bounds.Set(b);
+	if (!this->currSet->bounds.OverlapOrTouch(b))
 		return 0;
 
 #if defined(VERBOSE)
@@ -1061,8 +1073,7 @@ IO::StreamData *Map::WebMapTileServiceSource::LoadTileImageData(UOSInt level, Ma
 			((IO::StmData::FileData*)fd.Ptr())->GetFileStream()->GetFileTimes(&dt, 0, 0);
 			if (dt.CompareTo(currTime) > 0)
 			{
-				if (it)
-					*it = this->currResource->imgType;
+				it.Set(this->currResource->imgType);
 				return fd.Ptr();
 			}
 			else
@@ -1131,8 +1142,7 @@ IO::StreamData *Map::WebMapTileServiceSource::LoadTileImageData(UOSInt level, Ma
 	NEW_CLASSNN(fd, IO::StmData::FileData({filePathU, (UOSInt)(sptru - filePathU)}, false));
 	if (fd->GetDataSize() > 0)
 	{
-		if (it)
-			*it = IT_PNG;
+		it.Set(IT_PNG);
 		return fd.Ptr();
 	}
 	fd.Delete();
@@ -1337,6 +1347,8 @@ Text::CString Map::WebMapTileServiceSource::GetExt(Map::TileMap::ImageType imgTy
 		return CSTR("jpg");
 	case ImageType::IT_PNG:
 		return CSTR("png");
+	case ImageType::IT_WEBP:
+		return CSTR("webp");
 	default:
 		return CSTR("");
 	}

@@ -44,7 +44,7 @@ UInt32 __stdcall Map::TileMapLayer::TaskThread(void *userObj)
 				}
 				else
 				{
-					imgList = stat->me->tileMap->LoadTileImage(cimg->level, IdToCoord(cimg->imgId), stat->me->parsers, &bounds, false);
+					imgList = stat->me->tileMap->LoadTileImage(cimg->level, IdToCoord(cimg->imgId), stat->me->parsers, bounds, false);
 					if (imgList)
 					{
 						NEW_CLASS(cimg->img, Media::SharedImage(imgList, false));
@@ -303,15 +303,15 @@ Map::MapView *Map::TileMapLayer::CreateMapView(Math::Size2DDbl scnSize)
 	Map::MapView *view;
 	if (this->tileMap->IsMercatorProj())
 	{
-		NEW_CLASS(view, Map::MercatorMapView(scnSize, Math::Coord2DDbl(114.2, 22.4), this->tileMap->GetLevelCount(), this->tileMap->GetTileSize()));
+		NEW_CLASS(view, Map::MercatorMapView(scnSize, Math::Coord2DDbl(114.2, 22.4), this->tileMap->GetMaxLevel(), this->tileMap->GetTileSize()));
 		return view;
 	}
 	else
 	{
 		Data::ArrayListDbl scales;
-		UOSInt i = 0;
-		UOSInt j = this->tileMap->GetLevelCount();
-		while (i < j)
+		UOSInt i = this->tileMap->GetMinLevel();
+		UOSInt j = this->tileMap->GetMaxLevel();
+		while (i <= j)
 		{
 			scales.Add(this->tileMap->GetLevelScale(i));
 			i++;
@@ -542,7 +542,7 @@ Math::Geometry::Vector2D *Map::TileMapLayer::GetNewVectorById(GetObjectSess *ses
 	{
 		return 0;
 	}
-	imgList = this->tileMap->LoadTileImage(level, tileId, this->parsers, &bounds, true);
+	imgList = this->tileMap->LoadTileImage(level, tileId, this->parsers, bounds, true);
 	if (imgList)
 	{
 		cimg = MemAllocA(CachedImage, 1);

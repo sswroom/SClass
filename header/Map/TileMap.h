@@ -16,7 +16,8 @@ namespace Map
 		typedef enum
 		{
 			IT_PNG,
-			IT_JPG
+			IT_JPG,
+			IT_WEBP
 		} ImageType;
 
 		typedef enum
@@ -37,7 +38,8 @@ namespace Map
 		virtual Text::CStringNN GetName() const = 0;
 		virtual Bool IsError() const = 0;
 		virtual TileType GetTileType() const = 0;
-		virtual UOSInt GetLevelCount() const = 0;
+		virtual UOSInt GetMinLevel() const = 0;
+		virtual UOSInt GetMaxLevel() const = 0;
 		virtual Double GetLevelScale(UOSInt level) const = 0;
 		virtual UOSInt GetNearestLevel(Double scale) const = 0;
 		virtual UOSInt GetConcurrentCount() const = 0;
@@ -45,14 +47,15 @@ namespace Map
 		virtual NotNullPtr<Math::CoordinateSystem> GetCoordinateSystem() const = 0;
 		virtual Bool IsMercatorProj() const = 0;
 		virtual UOSInt GetTileSize() const = 0;
+		virtual ImageType GetImageType() const = 0;
 		virtual Bool CanQuery() const { return false; };
 		virtual Bool QueryInfos(Math::Coord2DDbl coord, UOSInt level, Data::ArrayList<Math::Geometry::Vector2D*> *vecList, Data::ArrayList<UOSInt> *valueOfstList, Data::ArrayListNN<Text::String> *nameList, Data::ArrayList<Text::String*> *valueList) const { return false; };
 		virtual void SetDispSize(Math::Size2DDbl size, Double dpi) {};
 
 		virtual UOSInt GetTileImageIDs(UOSInt level, Math::RectAreaDbl rect, Data::ArrayList<Math::Coord2D<Int32>> *ids) = 0;
-		virtual Media::ImageList *LoadTileImage(UOSInt level, Math::Coord2D<Int32> tileId, Parser::ParserList *parsers, Math::RectAreaDbl *bounds, Bool localOnly) = 0;
+		virtual Media::ImageList *LoadTileImage(UOSInt level, Math::Coord2D<Int32> tileId, Parser::ParserList *parsers, OutParam<Math::RectAreaDbl> bounds, Bool localOnly) = 0;
 		virtual UTF8Char *GetTileImageURL(UTF8Char *sbuff, UOSInt level, Math::Coord2D<Int32> tileId) = 0;
-		virtual IO::StreamData *LoadTileImageData(UOSInt level, Math::Coord2D<Int32> tileId, Math::RectAreaDbl *bounds, Bool localOnly, ImageType *it) = 0;
+		virtual Optional<IO::StreamData> LoadTileImageData(UOSInt level, Math::Coord2D<Int32> tileId, OutParam<Math::RectAreaDbl> bounds, Bool localOnly, OptOut<ImageType> it) = 0;
 
 		virtual UOSInt GetScreenObjCnt() { return 0; };
 		virtual Math::Geometry::Vector2D *CreateScreenObjVector(UOSInt index) { return 0; };

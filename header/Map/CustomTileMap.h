@@ -9,6 +9,7 @@ namespace Map
 	private:
 		NotNullPtr<Text::String> url;
 		NotNullPtr<Text::String> name;
+		UOSInt minLevel;
 		UOSInt concurrCnt;
 		Math::RectAreaDbl bounds;
 
@@ -18,6 +19,7 @@ namespace Map
 
 		virtual Text::CStringNN GetName() const;
 		virtual TileType GetTileType() const;
+		virtual ImageType GetImageType() const;
 		virtual UOSInt GetConcurrentCount() const;
 		virtual Bool GetBounds(OutParam<Math::RectAreaDbl> bounds) const;
 		virtual UTF8Char *GetTileImageURL(UTF8Char *sbuff, UOSInt level, Math::Coord2D<Int32> tileId);

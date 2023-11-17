@@ -43,9 +43,14 @@ Map::TileMap::TileType Map::ESRI::ESRITileMap::GetTileType() const
 	return Map::TileMap::TT_ESRI;
 }
 
-UOSInt Map::ESRI::ESRITileMap::GetLevelCount() const
+UOSInt Map::ESRI::ESRITileMap::GetMinLevel() const
 {
-	return this->esriMap->TileGetLevelCount();
+	return 0;
+}
+
+UOSInt Map::ESRI::ESRITileMap::GetMaxLevel() const
+{
+	return this->esriMap->TileGetLevelCount() - 1;
 }
 
 
@@ -109,6 +114,11 @@ Bool Map::ESRI::ESRITileMap::IsMercatorProj() const
 UOSInt Map::ESRI::ESRITileMap::GetTileSize() const
 {
 	return this->esriMap->TileGetWidth();
+}
+
+Map::TileMap::ImageType Map::ESRI::ESRITileMap::GetImageType() const
+{
+	return IT_PNG;
 }
 
 Bool Map::ESRI::ESRITileMap::CanQuery() const
@@ -176,7 +186,7 @@ UOSInt Map::ESRI::ESRITileMap::GetTileImageIDs(UOSInt level, Math::RectAreaDbl r
 	return (UOSInt)((pixX2 - pixX1 + 1) * (pixY2 - pixY1 + 1));
 }
 
-Media::ImageList *Map::ESRI::ESRITileMap::LoadTileImage(UOSInt level, Math::Coord2D<Int32> tileId, Parser::ParserList *parsers, Math::RectAreaDbl *bounds, Bool localOnly)
+Media::ImageList *Map::ESRI::ESRITileMap::LoadTileImage(UOSInt level, Math::Coord2D<Int32> tileId, Parser::ParserList *parsers, OutParam<Math::RectAreaDbl> bounds, Bool localOnly)
 {
 	UTF8Char filePath[512];
 	UTF8Char *sptr;
@@ -193,9 +203,9 @@ Media::ImageList *Map::ESRI::ESRITileMap::LoadTileImage(UOSInt level, Math::Coor
 	Double x2 = x1 + UOSInt2Double(tileWidth) * resol;
 	Double y2 = y1 - UOSInt2Double(tileHeight) * resol;
 
-	bounds->tl = Math::Coord2DDbl(x1, y1);
-	bounds->br = Math::Coord2DDbl(x2, y2);
-	if (!bounds->OverlapOrTouch(this->esriMap->GetBounds()))
+	Math::RectAreaDbl b = Math::RectAreaDbl(Math::Coord2DDbl(x1, y1), Math::Coord2DDbl(x2, y2));
+	bounds.Set(b);
+	if (!b.OverlapOrTouch(this->esriMap->GetBounds()))
 		return 0;
 
 
@@ -252,7 +262,7 @@ UTF8Char *Map::ESRI::ESRITileMap::GetTileImageURL(UTF8Char *sbuff, UOSInt level,
 	return this->esriMap->TileGetURL(sbuff, level, tileId.x, tileId.y);
 }
 
-IO::StreamData *Map::ESRI::ESRITileMap::LoadTileImageData(UOSInt level, Math::Coord2D<Int32> tileId, Math::RectAreaDbl *bounds, Bool localOnly, ImageType *it)
+Optional<IO::StreamData> Map::ESRI::ESRITileMap::LoadTileImageData(UOSInt level, Math::Coord2D<Int32> tileId, OutParam<Math::RectAreaDbl> bounds, Bool localOnly, OptOut<ImageType> it)
 {
 	UTF8Char filePath[512];
 	UTF8Char *sptr;
@@ -268,9 +278,9 @@ IO::StreamData *Map::ESRI::ESRITileMap::LoadTileImageData(UOSInt level, Math::Co
 	Double x2 = x1 + UOSInt2Double(tileWidth) * resol;
 	Double y2 = y1 - UOSInt2Double(tileHeight) * resol;
 
-	bounds->tl = Math::Coord2DDbl(x1, y1);
-	bounds->br = Math::Coord2DDbl(x2, y2);
-	if (!bounds->OverlapOrTouch(this->esriMap->GetBounds()))
+	Math::RectAreaDbl b = Math::RectAreaDbl(Math::Coord2DDbl(x1, y1), Math::Coord2DDbl(x2, y2));
+	bounds.Set(b);
+	if (!b.OverlapOrTouch(this->esriMap->GetBounds()))
 		return 0;
 
 	sptr = this->cacheDir->ConcatTo(filePath);
@@ -286,8 +296,7 @@ IO::StreamData *Map::ESRI::ESRITileMap::LoadTileImageData(UOSInt level, Math::Co
 	NEW_CLASS(fd, IO::StmData::FileData({filePath, (UOSInt)(sptr - filePath)}, false));
 	if (fd->GetDataSize() > 0)
 	{
-		if (it)
-			*it = IT_PNG;
+		it.Set(IT_PNG);
 		return fd;
 	}
 	DEL_CLASS(fd);
@@ -299,8 +308,7 @@ IO::StreamData *Map::ESRI::ESRITileMap::LoadTileImageData(UOSInt level, Math::Co
 	NEW_CLASS(fd, IO::StmData::FileData({filePath, (UOSInt)(sptr - filePath)}, false));
 	if (fd->GetDataSize() > 0)
 	{
-		if (it)
-			*it = IT_PNG;
+		it.Set(IT_PNG);
 		return fd;
 	}
 	DEL_CLASS(fd);

@@ -47,6 +47,7 @@ namespace Map
 		virtual Bool IsError() const;
 		virtual Text::CStringNN GetName() const;
 		virtual TileType GetTileType() const;
+		virtual ImageType GetImageType() const;
 		virtual UOSInt GetConcurrentCount() const;
 		virtual void SetDispSize(Math::Size2DDbl size, Double dpi);
 		virtual UTF8Char *GetTileImageURL(UTF8Char *sbuff, UOSInt level, Math::Coord2D<Int32> imgId);

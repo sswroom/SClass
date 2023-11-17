@@ -11,13 +11,13 @@ Text::String *Map::OSM::OSMTileMap::GetNextURL()
 	return thisUrl;
 }
 
-Map::OSM::OSMTileMap::OSMTileMap(Text::CStringNN url, Text::CString cacheDir, UOSInt maxLevel, NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl) : Map::MercatorTileMap(cacheDir, 0, maxLevel, sockf, ssl)
+Map::OSM::OSMTileMap::OSMTileMap(Text::CStringNN url, Text::CString cacheDir, UOSInt minLevel, UOSInt maxLevel, NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl) : Map::MercatorTileMap(cacheDir, minLevel, maxLevel, sockf, ssl)
 {
 	this->urls.Add(Text::String::New(url));
 	this->urlNext = 0;
 }
 
-Map::OSM::OSMTileMap::OSMTileMap(Text::CStringNN url, IO::SPackageFile *spkg, UOSInt maxLevel, NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl) : Map::MercatorTileMap(CSTR_NULL, 0, maxLevel, sockf, ssl)
+Map::OSM::OSMTileMap::OSMTileMap(Text::CStringNN url, IO::SPackageFile *spkg, UOSInt minLevel, UOSInt maxLevel, NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl) : Map::MercatorTileMap(CSTR_NULL, minLevel, maxLevel, sockf, ssl)
 {
 	this->urls.Add(Text::String::New(url));
 	this->urlNext = 0;
@@ -52,6 +52,11 @@ Text::CStringNN Map::OSM::OSMTileMap::GetName() const
 Map::TileMap::TileType Map::OSM::OSMTileMap::GetTileType() const
 {
 	return Map::TileMap::TT_OSM;
+}
+
+Map::TileMap::ImageType Map::OSM::OSMTileMap::GetImageType() const
+{
+	return Map::TileMap::IT_PNG;
 }
 
 UOSInt Map::OSM::OSMTileMap::GetConcurrentCount() const

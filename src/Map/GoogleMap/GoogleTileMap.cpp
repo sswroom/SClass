@@ -23,6 +23,11 @@ Map::TileMap::TileType Map::GoogleMap::GoogleTileMap::GetTileType() const
 	return Map::TileMap::TT_GOOGLE;
 }
 
+Map::TileMap::ImageType Map::GoogleMap::GoogleTileMap::GetImageType() const
+{
+	return IT_PNG;
+}
+
 UOSInt Map::GoogleMap::GoogleTileMap::GetConcurrentCount() const
 {
 	return 2;

@@ -21,6 +21,6 @@ namespace Parser
 			virtual IO::ParserType GetParserType();
 			virtual IO::ParsedObject *ParseObject(NotNullPtr<IO::ParsedObject> pobj, IO::PackageFile *pkgFile, IO::ParserType targetType);
 		};
-	};
-};
+	}
+}
 #endif

@@ -212,24 +212,29 @@ Map::TileMap::TileType Map::OSM::OSMLocalTileMap::GetTileType() const
 	return Map::TileMap::TT_OSMLOCAL;
 }
 
-UOSInt Map::OSM::OSMLocalTileMap::GetLevelCount() const
+UOSInt Map::OSM::OSMLocalTileMap::GetMinLevel() const
 {
-	return (this->maxLevel - this->minLevel) + 1;
+	return this->minLevel;
+}
+
+UOSInt Map::OSM::OSMLocalTileMap::GetMaxLevel() const
+{
+	return this->maxLevel;
 }
 
 
 Double Map::OSM::OSMLocalTileMap::GetLevelScale(UOSInt index) const
 {
-	return 204094080000.0 / UOSInt2Double(this->tileWidth) / (1 << (index + this->minLevel));
+	return 204094080000.0 / UOSInt2Double(this->tileWidth) / (1 << index);
 }
 
 UOSInt Map::OSM::OSMLocalTileMap::GetNearestLevel(Double scale) const
 {
-	Int32 level = Double2Int32(Math_Log10(204094080000.0 / scale / UOSInt2Double(this->tileWidth)) / Math_Log10(2)) - (Int32)this->minLevel;
-	if (level < 0)
+	Int32 level = Double2Int32(Math_Log10(204094080000.0 / scale / UOSInt2Double(this->tileWidth)) / Math_Log10(2));
+	if (level < (Int32)this->minLevel)
 		level = 0;
-	else if (level >= (Int32)GetLevelCount())
-		level = (Int32)GetLevelCount() - 1;
+	else if (level > (Int32)this->maxLevel)
+		level = (Int32)this->maxLevel;
 	return (UOSInt)level;
 }
 
@@ -259,16 +264,33 @@ UOSInt Map::OSM::OSMLocalTileMap::GetTileSize() const
 	return this->tileWidth;
 }
 
+Map::TileMap::ImageType Map::OSM::OSMLocalTileMap::GetImageType() const
+{
+	if (this->fmt->Equals(UTF8STRC("webp")))
+	{
+		return IT_WEBP;
+	}
+	else if (this->fmt->Equals(UTF8STRC("jpg")))
+	{
+		return IT_JPG;
+	}
+	else
+	{
+		return IT_PNG;
+	}
+}
+
 UOSInt Map::OSM::OSMLocalTileMap::GetTileImageIDs(UOSInt level, Math::RectAreaDbl rect, Data::ArrayList<Math::Coord2D<Int32>> *ids)
 {
-	level += this->minLevel;
 	Int32 i;
 	Int32 j;
 	rect.tl = rect.tl.Max(this->min);
 	rect.br = rect.br.Min(this->max);
-	if (rect.tl.x == rect.br.x)
+	if (rect.tl.x >= rect.br.x)
 		return 0;
-	if (rect.tl.y == rect.br.y)
+	if (rect.tl.y >= rect.br.y)
+		return 0;
+	if (level < this->minLevel || level > this->maxLevel)
 		return 0;
 	Int32 pixX1 = Map::OSM::OSMTileMap::Lon2TileX(rect.tl.x, level);
 	Int32 pixX2 = Map::OSM::OSMTileMap::Lon2TileX(rect.br.x, level);
@@ -312,12 +334,12 @@ UOSInt Map::OSM::OSMLocalTileMap::GetTileImageIDs(UOSInt level, Math::RectAreaDb
 	return (UOSInt)((pixX2 - pixX1 + 1) * (pixY2 - pixY1 + 1));
 }
 
-Media::ImageList *Map::OSM::OSMLocalTileMap::LoadTileImage(UOSInt level, Math::Coord2D<Int32> tileId, Parser::ParserList *parsers, Math::RectAreaDbl *bounds, Bool localOnly)
+Media::ImageList *Map::OSM::OSMLocalTileMap::LoadTileImage(UOSInt level, Math::Coord2D<Int32> tileId, Parser::ParserList *parsers, OutParam<Math::RectAreaDbl> bounds, Bool localOnly)
 {
 	ImageType it;
 	NotNullPtr<IO::StreamData> fd;
 	IO::ParsedObject *pobj;
-	if (fd.Set(this->LoadTileImageData(level, tileId, bounds, localOnly, &it)))
+	if (this->LoadTileImageData(level, tileId, bounds, localOnly, it).SetTo(fd))
 	{
 		IO::ParserType pt;
 		pobj = parsers->ParseFile(fd, &pt);
@@ -345,7 +367,7 @@ UTF8Char *Map::OSM::OSMLocalTileMap::GetTileImageURL(UTF8Char *sbuff, UOSInt lev
 	{
 		Text::StrReplace(sbuff, '\\', '/');
 	}
-	sptr = Text::StrUOSInt(sptr, level + this->minLevel);
+	sptr = Text::StrUOSInt(sptr, level);
 	sptr = Text::StrConcatC(sptr, UTF8STRC("/"));
 	sptr = Text::StrInt32(sptr, tileId.x);
 	sptr = Text::StrConcatC(sptr, UTF8STRC("/"));
@@ -355,9 +377,8 @@ UTF8Char *Map::OSM::OSMLocalTileMap::GetTileImageURL(UTF8Char *sbuff, UOSInt lev
 	return sptr;
 }
 
-IO::StreamData *Map::OSM::OSMLocalTileMap::LoadTileImageData(UOSInt level, Math::Coord2D<Int32> tileId, Math::RectAreaDbl *bounds, Bool localOnly, ImageType *it)
+Optional<IO::StreamData> Map::OSM::OSMLocalTileMap::LoadTileImageData(UOSInt level, Math::Coord2D<Int32> tileId, OutParam<Math::RectAreaDbl> bounds, Bool localOnly, OptOut<ImageType> it)
 {
-	level += this->minLevel;
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 	IO::StreamData *fd;
@@ -368,8 +389,7 @@ IO::StreamData *Map::OSM::OSMLocalTileMap::LoadTileImageData(UOSInt level, Math:
 	Double x2 = Map::OSM::OSMTileMap::TileX2Lon(tileId.x + 1, level);
 	Double y2 = Map::OSM::OSMTileMap::TileY2Lat(tileId.y + 1, level);
 
-	bounds->tl = Math::Coord2DDbl(x1, y1);
-	bounds->br = Math::Coord2DDbl(x2, y2);
+	bounds.Set(Math::RectAreaDbl(Math::Coord2DDbl(x1, y1), Math::Coord2DDbl(x2, y2)));
 	if (x1 > 180 || y1 < -90)
 		return 0;
 
@@ -392,8 +412,10 @@ IO::StreamData *Map::OSM::OSMLocalTileMap::LoadTileImageData(UOSInt level, Math:
 			fd = yPkg->GetItemStmDataNew((UOSInt)yPkg->GetItemIndex(CSTRP(sbuff, sptr)));
 			if (fd)
 			{
-				if (it)
-					*it = IT_PNG;
+				if (it.IsNotNull())
+				{
+					it.SetNoCheck(this->GetImageType());
+				}
 			}
 			if (yNeedDelete)
 			{
@@ -410,7 +432,6 @@ IO::StreamData *Map::OSM::OSMLocalTileMap::LoadTileImageData(UOSInt level, Math:
 
 Bool Map::OSM::OSMLocalTileMap::GetTileBounds(UOSInt level, Int32 *minX, Int32 *minY, Int32 *maxX, Int32 *maxY)
 {
-	level += this->minLevel;
 	UOSInt i;
 	UOSInt j;
 	UOSInt k;

@@ -1,6 +1,7 @@
 #ifndef _SM_SSWR_AVIREAD_AVIRGISTILEDOWNLOADFORM
 #define _SM_SSWR_AVIREAD_AVIRGISTILEDOWNLOADFORM
 #include "IO/SPackageFile.h"
+#include "IO/ZIPBuilder.h"
 #include "Map/TileMapLayer.h"
 #include "SSWR/AVIRead/AVIRCore.h"
 #include "SSWR/AVIRead/IMapNavigator.h"
@@ -26,22 +27,27 @@ namespace SSWR
 				Math::Coord2D<Int32> imageId;
 				Sync::Mutex *pkgMut;
 				IO::SPackageFile *spkg;
+				IO::ZIPBuilder *zip;
 				const UTF8Char *folderName;
 				NotNullPtr<Map::TileMap> tileMap;
 			};
 		private:
-			UI::GUIButton *btnArea;
-			UI::GUIButton *btnSave;
-			UI::GUIButton *btnStop;
+			NotNullPtr<UI::GUILabel> lblMinLevel;
+			NotNullPtr<UI::GUITextBox> txtMinLevel;
+			NotNullPtr<UI::GUILabel> lblMaxLevel;
+			NotNullPtr<UI::GUITextBox> txtMaxLevel;
+			NotNullPtr<UI::GUIButton> btnArea;
+			NotNullPtr<UI::GUIButton> btnSave;
+			NotNullPtr<UI::GUIButton> btnStop;
 
-			UI::GUILabel *lblTotalImages;
-			UI::GUITextBox *txtTotalImages;
-			UI::GUILabel *lblLayer;
-			UI::GUITextBox *txtLayer;
-			UI::GUILabel *lblImages;
-			UI::GUITextBox *txtImages;
-			UI::GUILabel *lblError;
-			UI::GUITextBox *txtError;
+			NotNullPtr<UI::GUILabel> lblTotalImages;
+			NotNullPtr<UI::GUITextBox> txtTotalImages;
+			NotNullPtr<UI::GUILabel> lblLayer;
+			NotNullPtr<UI::GUITextBox> txtLayer;
+			NotNullPtr<UI::GUILabel> lblImages;
+			NotNullPtr<UI::GUITextBox> txtImages;
+			NotNullPtr<UI::GUILabel> lblError;
+			NotNullPtr<UI::GUITextBox> txtError;
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			Math::Coord2DDbl sel1;
@@ -68,8 +74,9 @@ namespace SSWR
 			static void __stdcall OnSaveFileClicked(void *userObj);
 			static void __stdcall OnStopClicked(void *userObj);
 
-			void SaveTilesDir(const UTF8Char *folderName);
-			void SaveTilesFile(Text::CStringNN fileName);
+			void SaveTilesDir(const UTF8Char *folderName, UOSInt userMinLevel, UOSInt userMaxLevel);
+			void SaveTilesFile(Text::CStringNN fileName, UOSInt fileType, UOSInt userMinLevel, UOSInt userMaxLevel);
+			Bool GetLevels(OutParam<UOSInt> minLevel, OutParam<UOSInt> maxLevel);
 			static UInt32 __stdcall ProcThread(void *userObj);
 		public:
 			AVIRGISTileDownloadForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<Map::TileMapLayer> lyr, IMapNavigator *navi);

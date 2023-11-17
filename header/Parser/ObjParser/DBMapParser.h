@@ -28,6 +28,6 @@ namespace Parser
 			virtual IO::ParserType GetParserType();
 			virtual IO::ParsedObject *ParseObject(IO::ParsedObject *pobj, IO::PackageFile *pkgFile, IO::ParserType targetType);
 		};
-	};
-};
+	}
+}
 #endif

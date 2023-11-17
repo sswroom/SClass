@@ -28,6 +28,11 @@ Map::TileMap::TileType Map::CustomTileMap::GetTileType() const
 	return Map::TileMap::TT_CUSTOM;
 }
 
+Map::TileMap::ImageType Map::CustomTileMap::GetImageType() const
+{
+	return Map::TileMap::IT_PNG;
+}
+
 UOSInt Map::CustomTileMap::GetConcurrentCount() const
 {
 	return this->concurrCnt;
