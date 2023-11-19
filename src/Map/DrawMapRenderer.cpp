@@ -83,7 +83,7 @@ Bool Map::DrawMapRenderer::LabelOverlapped(Math::RectAreaDbl *points, UOSInt nPo
 	return false;
 }
 
-Bool Map::DrawMapRenderer::AddLabel(MapLabels *labels, UOSInt maxLabel, UOSInt *labelCnt, Text::CString label, UOSInt nPoints, Math::Coord2DDbl *points, Int32 priority, Map::DrawLayerType recType, UOSInt fontStyle, Int32 flags, Map::MapView *view, OSInt xOfst, OSInt yOfst, Map::MapEnv::FontType fontType)
+Bool Map::DrawMapRenderer::AddLabel(MapLabels *labels, UOSInt maxLabel, UOSInt *labelCnt, Text::CString label, UOSInt nPoints, Math::Coord2DDbl *points, Int32 priority, Map::DrawLayerType recType, UOSInt fontStyle, Int32 flags, NotNullPtr<Map::MapView> view, OSInt xOfst, OSInt yOfst, Map::MapEnv::FontType fontType)
 {
 	Double size;
 	Double visibleSize;
@@ -3662,7 +3662,7 @@ Map::DrawMapRenderer::~DrawMapRenderer()
 	DEL_CLASS(this->colorConv);
 }
 
-void Map::DrawMapRenderer::DrawMap(NotNullPtr<Media::DrawImage> img, Map::MapView *view, UInt32 *imgDurMS)
+void Map::DrawMapRenderer::DrawMap(NotNullPtr<Media::DrawImage> img, NotNullPtr<Map::MapView> view, OptOut<UInt32> imgDurMS)
 {
 	Map::DrawMapRenderer::DrawEnv denv;
 	UOSInt i;
@@ -3752,10 +3752,7 @@ void Map::DrawMapRenderer::DrawMap(NotNullPtr<Media::DrawImage> img, Map::MapVie
 	MemFreeA(denv.labels);
 
 	this->lastLayerEmpty = denv.isLayerEmpty;
-	if (imgDurMS)
-	{
-		*imgDurMS = denv.imgDurMS;
-	}
+	imgDurMS.Set(denv.imgDurMS);
 }
 
 void Map::DrawMapRenderer::SetUpdatedHandler(Map::MapRenderer::UpdatedHandler updHdlr, void *userObj)
@@ -3770,6 +3767,11 @@ Bool Map::DrawMapRenderer::GetLastsLayerEmpty()
 void Map::DrawMapRenderer::SetEnv(NotNullPtr<Map::MapEnv> env)
 {
 	this->env = env;
+}
+
+NotNullPtr<Map::MapEnv> Map::DrawMapRenderer::GetEnv() const
+{
+	return this->env;
 }
 
 void Map::DrawMapRenderer::ColorUpdated()

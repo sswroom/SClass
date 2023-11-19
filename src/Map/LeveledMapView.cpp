@@ -263,9 +263,9 @@ Math::Coord2DDbl Map::LeveledMapView::ScnXYToMapXY(Math::Coord2DDbl scnPos) cons
 	return Math::Coord2DDbl(this->tl.x + v.x, this->br.y - v.y);
 }
 
-Map::MapView *Map::LeveledMapView::Clone() const
+NotNullPtr<Map::MapView> Map::LeveledMapView::Clone() const
 {
-	Map::LeveledMapView *view;
-	NEW_CLASS(view, Map::LeveledMapView(this->projected, this->scnSize, this->centMap, this->scales));
+	NotNullPtr<Map::LeveledMapView> view;
+	NEW_CLASSNN(view, Map::LeveledMapView(this->projected, this->scnSize, this->centMap, this->scales));
 	return view;
 }

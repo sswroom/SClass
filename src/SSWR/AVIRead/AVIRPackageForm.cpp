@@ -29,7 +29,9 @@ typedef enum
 	MNU_OPEN_TEXT_VIEWER,
 	MNU_OPEN_HEX_VIEWER,
 	MNU_APPEND_ZIP,
-	MNU_TEST
+	MNU_TEST,
+	MNU_GO_UP_LEVEL,
+	MNU_OPEN_SELECTED
 } MenuItem;
 
 void AVIRPackageForm_TestHandler(const UInt8 *buff, UOSInt buffSize, void *userData)
@@ -383,50 +385,7 @@ void __stdcall SSWR::AVIRead::AVIRPackageForm::OnTimerTick(void *userObj)
 void __stdcall SSWR::AVIRead::AVIRPackageForm::LVDblClick(void *userObj, UOSInt index)
 {
 	SSWR::AVIRead::AVIRPackageForm *me = (SSWR::AVIRead::AVIRPackageForm*)userObj;
-	if (index == 0 && me->packFile->HasParent())
-	{
-		Bool needRelease;
-		NotNullPtr<IO::PackageFile> pkg;
-		if (pkg.Set(me->packFile->GetParent(needRelease)))
-		{
-			me->UpdatePackFile(pkg, needRelease);
-		}
-		return;
-	}
-	index = me->PackFileIndex(index);
-	IO::PackageFile::PackObjectType pot = me->packFile->GetItemType(index);
-	if (pot == IO::PackageFile::PackObjectType::PackageFileType)
-	{
-		Bool needRelease;
-		NotNullPtr<IO::PackageFile> pkg;
-		if (pkg.Set(me->packFile->GetItemPack(index, needRelease)))
-		{
-			me->UpdatePackFile(pkg, needRelease);
-//			me->core->OpenObject(pkg);
-		}
-	}
-	else if (pot == IO::PackageFile::PackObjectType::ParsedObject)
-	{
-		Bool needRelease;
-		NotNullPtr<IO::ParsedObject> pobj;
-		if (pobj.Set(me->packFile->GetItemPObj(index, needRelease)))
-		{
-			if (!needRelease)
-			{
-				printf("AVIRPackageForm: Memory problem occurred\r\n");
-			}
-			me->core->OpenObject(pobj);
-		}
-	}
-	else if (pot == IO::PackageFile::PackObjectType::StreamData)
-	{
-		NotNullPtr<IO::StreamData> data;
-		if (data.Set(me->packFile->GetItemStmDataNew(index)))
-		{
-			me->core->LoadData(data, me->packFile.Ptr());
-			data.Delete();
-		}
-	}
+	me->OpenItem(index);
 }
 
 void __stdcall SSWR::AVIRead::AVIRPackageForm::OnStatusDblClick(void *userObj, UOSInt index)
@@ -462,6 +421,61 @@ void __stdcall SSWR::AVIRead::AVIRPackageForm::OnFiles(void *userObj, NotNullPtr
 		i++;
 	}
 	me->PasteFiles(fileNames, false);
+}
+
+void SSWR::AVIRead::AVIRPackageForm::GoUpLevel()
+{
+	Bool needRelease;
+	NotNullPtr<IO::PackageFile> pkg;
+	if (pkg.Set(this->packFile->GetParent(needRelease)))
+	{
+		NotNullPtr<Text::String> name = this->packFile->GetSourceNameObj();
+		UOSInt i = name->LastIndexOf(IO::Path::PATH_SEPERATOR);
+		this->UpdatePackFile(pkg, needRelease, name->ToCString().Substring(i + 1));
+	}
+}
+
+void SSWR::AVIRead::AVIRPackageForm::OpenItem(UOSInt index)
+{
+	if (index == 0 && this->packFile->HasParent())
+	{
+		this->GoUpLevel();
+		return;
+	}
+	index = this->PackFileIndex(index);
+	IO::PackageFile::PackObjectType pot = this->packFile->GetItemType(index);
+	if (pot == IO::PackageFile::PackObjectType::PackageFileType)
+	{
+		Bool needRelease;
+		NotNullPtr<IO::PackageFile> pkg;
+		if (pkg.Set(this->packFile->GetItemPack(index, needRelease)))
+		{
+			this->UpdatePackFile(pkg, needRelease, CSTR_NULL);
+//			this->core->OpenObject(pkg);
+		}
+	}
+	else if (pot == IO::PackageFile::PackObjectType::ParsedObject)
+	{
+		Bool needRelease;
+		NotNullPtr<IO::ParsedObject> pobj;
+		if (pobj.Set(this->packFile->GetItemPObj(index, needRelease)))
+		{
+			if (!needRelease)
+			{
+				printf("AVIRPackageForm: Memory problem occurred\r\n");
+			}
+			this->core->OpenObject(pobj);
+		}
+	}
+	else if (pot == IO::PackageFile::PackObjectType::StreamData)
+	{
+		NotNullPtr<IO::StreamData> data;
+		if (data.Set(this->packFile->GetItemStmDataNew(index)))
+		{
+			this->core->LoadData(data, this->packFile.Ptr());
+			data.Delete();
+		}
+	}
 }
 
 void SSWR::AVIRead::AVIRPackageForm::TestPackage(NotNullPtr<IO::ActiveStreamReader> reader, NotNullPtr<ReadSession> sess, NotNullPtr<IO::PackageFile> pack)
@@ -648,6 +662,7 @@ void SSWR::AVIRead::AVIRPackageForm::DisplayPackFile(NotNullPtr<IO::PackageFile>
 	UOSInt i;
 	UOSInt j;
 	UOSInt k;
+	UOSInt selIndex = INVALID_INDEX;
 	IO::PackageFile::PackObjectType pot;
 	if (packFile->HasParent())
 	{
@@ -661,6 +676,10 @@ void SSWR::AVIRead::AVIRPackageForm::DisplayPackFile(NotNullPtr<IO::PackageFile>
 		sptr = packFile->GetItemName(sbuff, i);
 		pot = packFile->GetItemType(i);
 		k = this->lvFiles->AddItem(CSTRP(sbuff, sptr), (void*)i);
+		if (this->initSel && this->initSel->Equals(CSTRP(sbuff, sptr)))
+		{
+			selIndex = k;
+		}
 		w = this->lvFiles->GetStringWidth(sbuff);
 		if (w > maxWidth)
 			maxWidth = w;
@@ -703,6 +722,11 @@ void SSWR::AVIRead::AVIRPackageForm::DisplayPackFile(NotNullPtr<IO::PackageFile>
 	{
 		this->lvFiles->SetColumnWidth(0, (Int32)(maxWidth + 6));
 	}
+	if (selIndex != INVALID_INDEX)
+	{
+		this->lvFiles->SetSelectedIndex(selIndex);
+		this->lvFiles->EnsureVisible(selIndex);
+	}
 }
 
 UOSInt SSWR::AVIRead::AVIRPackageForm::PackFileIndex(UOSInt lvIndex)
@@ -718,7 +742,7 @@ UOSInt SSWR::AVIRead::AVIRPackageForm::PackFileIndex(UOSInt lvIndex)
 	return lvIndex;
 }
 
-void SSWR::AVIRead::AVIRPackageForm::UpdatePackFile(NotNullPtr<IO::PackageFile> packFile, Bool needDelete)
+void SSWR::AVIRead::AVIRPackageForm::UpdatePackFile(NotNullPtr<IO::PackageFile> packFile, Bool needDelete, Text::CString initSel)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
@@ -730,6 +754,11 @@ void SSWR::AVIRead::AVIRPackageForm::UpdatePackFile(NotNullPtr<IO::PackageFile> 
 	}
 	sptr = packFile->GetSourceNameObj()->ConcatTo(sptr);
 	this->SetText(CSTRP(sbuff, sptr));
+	SDEL_STRING(this->initSel);
+	if (!initSel.IsNull())
+	{
+		this->initSel = Text::String::New(initSel).Ptr();
+	}
 	if (this->packNeedDelete)
 	{
 		this->packFile.Delete();
@@ -821,6 +850,7 @@ SSWR::AVIRead::AVIRPackageForm::AVIRPackageForm(UI::GUIClientControl *parent, No
 
 	this->core = core;
 	this->packFile = packFile;
+	this->initSel = 0;
 	if (this->packFile->GetFileType() == IO::PackageFileType::Directory)
 	{
 		this->packNeedDelete = true;
@@ -890,7 +920,9 @@ SSWR::AVIRead::AVIRPackageForm::AVIRPackageForm(UI::GUIClientControl *parent, No
 	mnu->AddItem(CSTR("Copy To..."), MNU_COPYTO, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem(CSTR("Copy All To..."), MNU_COPYALLTO, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem(CSTR("Delete Item"), MNU_DELETE_ITEM, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_DELETE);
-
+	mnu = mnuMain->AddSubMenu(CSTR("&Navigate"));
+	mnu->AddItem(CSTR("Open Selected"), MNU_OPEN_SELECTED, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_ENTER);
+	mnu->AddItem(CSTR("Go Up Level"), MNU_GO_UP_LEVEL, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_BACKSPACE);
 
 	NEW_CLASS(this->mnuPopup, UI::GUIPopupMenu());
 	this->mnuPopup->AddItem(CSTR("Copy To..."), MNU_COPYTO, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
@@ -982,6 +1014,7 @@ SSWR::AVIRead::AVIRPackageForm::~AVIRPackageForm()
 	SDEL_STRING(this->statusFile);
 	DEL_CLASS(this->mnuPopup);
 	SDEL_STRING(this->progName);
+	SDEL_STRING(this->initSel);
 }
 
 void SSWR::AVIRead::AVIRPackageForm::EventMenuClicked(UInt16 cmdId)
@@ -1249,6 +1282,18 @@ void SSWR::AVIRead::AVIRPackageForm::EventMenuClicked(UInt16 cmdId)
 			}
 			this->txtTest->SetText(sb.ToCString());
 			this->tcMain->SetSelectedPage(this->tpTest);
+		}
+		break;
+	case MNU_GO_UP_LEVEL:
+		this->GoUpLevel();
+		break;
+	case MNU_OPEN_SELECTED:
+		{
+			UOSInt i = this->lvFiles->GetSelectedIndex();
+			if (i != INVALID_INDEX)
+			{
+				this->OpenItem(i);
+			}
 		}
 		break;
 	}

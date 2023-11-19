@@ -305,9 +305,9 @@ Map::MapScheduler::~MapScheduler()
 	}
 }
 
-void Map::MapScheduler::SetMapView(Map::MapView *map, NotNullPtr<Media::DrawImage> img)
+void Map::MapScheduler::SetMapView(NotNullPtr<Map::MapView> map, NotNullPtr<Media::DrawImage> img)
 {
-	this->map = map;
+	this->map = map.Ptr();
 	this->img = img.Ptr();
 }
 

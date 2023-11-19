@@ -129,6 +129,8 @@ namespace Map
 		UOSInt defLineStyle;
 		UOSInt defFontStyle;
 		NotNullPtr<Math::CoordinateSystem> csys;
+		Double maxScale;
+		Double minScale;
 
 	private:
 		UInt8 GetRandomColor();
@@ -146,6 +148,8 @@ namespace Map
 		void SetDefLineStyle(UOSInt lineStyle);
 		UOSInt GetDefFontStyle() const;
 		void SetDefFontStyle(UOSInt fontStyle);
+		Double GetMaxScale() const;
+		Double GetMinScale() const;
 
 		UOSInt AddLineStyle();
 		Bool SetLineStyleName(UOSInt index, Text::CString name);
@@ -207,7 +211,7 @@ namespace Map
 		Map::MapDrawLayer *GetFirstLayer(GroupItem *group) const;
 		UOSInt GetLayersInGroup(Map::MapEnv::GroupItem *group, NotNullPtr<Data::ArrayListNN<Map::MapDrawLayer>> layers) const;
 		Bool GetBounds(Map::MapEnv::GroupItem *group, Math::RectAreaDbl *bounds) const;
-		Map::MapView *CreateMapView(Math::Size2DDbl scnSize) const;
+		NotNullPtr<Map::MapView> CreateMapView(Math::Size2DDbl scnSize) const;
 		NotNullPtr<Math::CoordinateSystem> GetCoordinateSystem() const;
 		UInt32 GetSRID() const;
 

@@ -77,8 +77,8 @@ export class GPSTrack
 				}
 			}
 			var tDiff;
-			var rec1 = this.recs[i];
-			var rec2 = this.recs[i + 1];
+			var rec1 = this.recs[i - 1];
+			var rec2 = this.recs[i];
 			tDiff = rec2.t - rec1.t;
 			return new math.Vector3(
 				(rec1.lon * (rec2.t - ticks) + rec2.lon * (ticks - rec1.t)) / tDiff,
