@@ -27,7 +27,7 @@ namespace SSWR
 			NotNullPtr<Map::GPSTrack> gpsTrk;
 			Bool mapUpdated;
 			NotNullPtr<Map::MapEnv> mapEnv;
-			Map::MapView *mapView;
+			NotNullPtr<Map::MapView> mapView;
 			NotNullPtr<Map::TileMapLayer> mapTileLyr;
 			NotNullPtr<OrganTimeAdjLayer> adjLyr;
 			NotNullPtr<Map::TileMap> mapTile;

@@ -114,7 +114,7 @@ Bool Map::TileMapGenerator::GenerateDBFile(Int32 x, Int32 y, UInt32 scale, Map::
 	{
 		dimg2->SetHDPI(96.0 * UOSInt2Double(this->osSize));
 		dimg2->SetVDPI(96.0 * UOSInt2Double(this->osSize));
-		mcfg->DrawMap(dimg2, &view, &isLayerEmpty, mapSch, resizer, CSTRP(sbuff, sptr), &params);
+		mcfg->DrawMap(dimg2, view, &isLayerEmpty, mapSch, resizer, CSTRP(sbuff, sptr), &params);
 		mutUsage.BeginUse();
 		this->dbGenList.RemoveAt((UOSInt)this->dbGenList.SortedIndexOf(id));
 		this->dbEvt.Set();
@@ -202,7 +202,7 @@ Bool Map::TileMapGenerator::GenerateTile(Int64 tileId, UInt32 scale, Map::MapSch
 		{
 			dimg->SetHDPI(96);
 			dimg->SetVDPI(96);
-			mcfg->DrawMap(dimg, &view, &isLayerEmpty, mapSch, resizer, CSTR_NULL, &params);
+			mcfg->DrawMap(dimg, view, &isLayerEmpty, mapSch, resizer, CSTR_NULL, &params);
 		}
 		else
 		{
@@ -210,7 +210,7 @@ Bool Map::TileMapGenerator::GenerateTile(Int64 tileId, UInt32 scale, Map::MapSch
 			{
 				dimg2->SetHDPI(96.0 * UOSInt2Double(this->osSize));
 				dimg2->SetVDPI(96.0 * UOSInt2Double(this->osSize));
-				mcfg->DrawMap(dimg2, &view, &isLayerEmpty, mapSch, resizer, CSTR_NULL, &params);
+				mcfg->DrawMap(dimg2, view, &isLayerEmpty, mapSch, resizer, CSTR_NULL, &params);
 				
 				Bool revOrder;
 				UInt8 *imgPtr = dimg2->GetImgBits(revOrder);

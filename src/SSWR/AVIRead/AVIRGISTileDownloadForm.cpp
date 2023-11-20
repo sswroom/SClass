@@ -282,6 +282,7 @@ void SSWR::AVIRead::AVIRGISTileDownloadForm::SaveTilesFile(Text::CStringNN fileN
 	if (userMaxLevel > tileMaxLevel)
 		userMaxLevel = tileMaxLevel;
 	Data::ArrayList<Math::Coord2D<Int32>> imgIdList;
+	Data::ArrayListInt32 imgXList;
 	UOSInt i;
 	UOSInt j;
 	UOSInt cnt;
@@ -316,8 +317,11 @@ void SSWR::AVIRead::AVIRGISTileDownloadForm::SaveTilesFile(Text::CStringNN fileN
 
 		if (zip)
 		{
+			*sptr++ = '/';
+			*sptr = 0;
 			Data::Timestamp t = Data::Timestamp::UtcNow();
 			zip->AddDir(CSTRP(sbuff, sptr), t, t, t, 0);
+			imgXList.Clear();
 		}
 
 		imgIdList.Clear();
@@ -329,6 +333,22 @@ void SSWR::AVIRead::AVIRGISTileDownloadForm::SaveTilesFile(Text::CStringNN fileN
 			sptr = Text::StrUOSInt(Text::StrConcatC(Text::StrUOSInt(sbuff, cnt - i), UTF8STRC("/")), cnt);
 			this->txtImages->SetText(CSTRP(sbuff, sptr));
 			this->ui->ProcessMessages();
+			Math::Coord2D<Int32> imageId = imgIdList.GetItem(i);
+			if (zip)
+			{
+				OSInt k = imgXList.SortedIndexOf(imageId.x);
+				if (k < 0)
+				{
+					imgXList.Insert((UOSInt)~k, imageId.x);
+					sptr = Text::StrUOSInt(sbuff, currLyr);
+					*sptr++ = '/';
+					sptr = Text::StrInt32(sptr, imageId.x);
+					*sptr++ = '/';
+					*sptr = 0;
+					Data::Timestamp t = Data::Timestamp::UtcNow();
+					zip->AddDir(CSTRP(sbuff, sptr), t, t, t, 0);
+				}
+			}
 
 			found = false;
 			while (!this->stopDownload)
@@ -339,7 +359,7 @@ void SSWR::AVIRead::AVIRGISTileDownloadForm::SaveTilesFile(Text::CStringNN fileN
 					if (this->threadStat[j].threadStat == 1)
 					{
 						this->threadStat[j].lyrId = currLyr;
-						this->threadStat[j].imageId = imgIdList.GetItem(i);
+						this->threadStat[j].imageId = imageId;
 						this->threadStat[j].spkg = spkg;
 						this->threadStat[j].pkgMut = spkgMut;
 						this->threadStat[j].zip = zip;

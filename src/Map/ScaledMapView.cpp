@@ -243,10 +243,10 @@ Math::Coord2DDbl Map::ScaledMapView::ScnXYToMapXY(Math::Coord2DDbl scnPos) const
 	return Math::Coord2DDbl(this->tl.x + v.x, this->br.y - v.y);
 }
 
-Map::MapView *Map::ScaledMapView::Clone() const
+NotNullPtr<Map::MapView> Map::ScaledMapView::Clone() const
 {
-	Map::ScaledMapView *view;
-	NEW_CLASS(view, Map::ScaledMapView(this->scnSize, this->centMap, this->scale, this->projected));
+	NotNullPtr<Map::ScaledMapView> view;
+	NEW_CLASSNN(view, Map::ScaledMapView(this->scnSize, this->centMap, this->scale, this->projected));
 	view->SetDPI(this->hdpi, this->ddpi);
 	return view;
 }

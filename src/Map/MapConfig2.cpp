@@ -2274,7 +2274,7 @@ Map::MapDrawLayer *Map::MapConfig2::GetDrawLayer(Text::CStringNN name, Data::Arr
 	return cip;
 }
 
-void Map::MapConfig2::DrawPoints(NotNullPtr<Media::DrawImage> img, MapLayerStyle *lyrs, Map::MapView *view, Bool *isLayerEmpty, Map::MapScheduler *sch, NotNullPtr<Media::DrawEngine> eng, Media::IImgResizer *resizer, Math::RectAreaDbl *objBounds, UOSInt *objCnt, UOSInt maxObjCnt)
+void Map::MapConfig2::DrawPoints(NotNullPtr<Media::DrawImage> img, MapLayerStyle *lyrs, NotNullPtr<Map::MapView> view, Bool *isLayerEmpty, Map::MapScheduler *sch, NotNullPtr<Media::DrawEngine> eng, Media::IImgResizer *resizer, Math::RectAreaDbl *objBounds, UOSInt *objCnt, UOSInt maxObjCnt)
 {
 	Math::Geometry::Vector2D *vec;
 	UOSInt imgW;
@@ -2370,7 +2370,7 @@ void Map::MapConfig2::DrawPoints(NotNullPtr<Media::DrawImage> img, MapLayerStyle
 	}
 }
 
-void Map::MapConfig2::DrawString(NotNullPtr<Media::DrawImage> img, MapLayerStyle *lyrs, Map::MapView *view, Data::ArrayList<MapFontStyle*> **fonts, MapLabels2 *labels, UInt32 maxLabels, UInt32 *labelCnt, Bool *isLayerEmpty)
+void Map::MapConfig2::DrawString(NotNullPtr<Media::DrawImage> img, MapLayerStyle *lyrs, NotNullPtr<Map::MapView> view, Data::ArrayList<MapFontStyle*> **fonts, MapLabels2 *labels, UInt32 maxLabels, UInt32 *labelCnt, Bool *isLayerEmpty)
 {
 	Map::NameArray *arr;
 	UOSInt i;
@@ -2607,7 +2607,7 @@ UInt32 Map::MapConfig2::NewLabel(MapLabels2 *labels, UInt32 maxLabel, UInt32 *la
 }
 
 
-Bool Map::MapConfig2::AddLabel(MapLabels2 *labels, UInt32 maxLabel, UInt32 *labelCnt, Text::CString labelt, UInt32 nPoint, Math::Coord2DDbl *points, Int32 priority, Int32 recType, UInt32 fontStyle, UInt32 flags, Map::MapView *view, Double xOfst, Double yOfst)
+Bool Map::MapConfig2::AddLabel(MapLabels2 *labels, UInt32 maxLabel, UInt32 *labelCnt, Text::CString labelt, UInt32 nPoint, Math::Coord2DDbl *points, Int32 priority, Int32 recType, UInt32 fontStyle, UInt32 flags, NotNullPtr<Map::MapView> view, Double xOfst, Double yOfst)
 {
 	Double size;
 	Double visibleSize;
@@ -3200,7 +3200,7 @@ Bool Map::MapConfig2::LabelOverlapped(Math::RectAreaDbl *points, UOSInt nPoints,
 	return false;
 }
 
-void Map::MapConfig2::DrawLabels(NotNullPtr<Media::DrawImage> img, MapLabels2 *labels, UInt32 maxLabel, UInt32 *labelCnt, Map::MapView *view, Data::ArrayList<MapFontStyle*> **fonts, NotNullPtr<Media::DrawEngine> drawEng, Math::RectAreaDbl *objBounds, UOSInt *objCnt)
+void Map::MapConfig2::DrawLabels(NotNullPtr<Media::DrawImage> img, MapLabels2 *labels, UInt32 maxLabel, UInt32 *labelCnt, NotNullPtr<Map::MapView> view, Data::ArrayList<MapFontStyle*> **fonts, NotNullPtr<Media::DrawEngine> drawEng, Math::RectAreaDbl *objBounds, UOSInt *objCnt)
 {
 	UInt32 i;
 	UOSInt j;
@@ -4322,7 +4322,7 @@ Media::DrawPen *Map::MapConfig2::CreatePen(NotNullPtr<Media::DrawImage> img, UIn
 	return 0;
 }
 
-UTF8Char *Map::MapConfig2::DrawMap(NotNullPtr<Media::DrawImage> img, Map::MapView *view, Bool *isLayerEmpty, Map::MapScheduler *mapSch, Media::IImgResizer *resizer, UTF8Char *slowLayer, Double *slowTime)
+UTF8Char *Map::MapConfig2::DrawMap(NotNullPtr<Media::DrawImage> img, NotNullPtr<Map::MapView> view, Bool *isLayerEmpty, Map::MapScheduler *mapSch, Media::IImgResizer *resizer, UTF8Char *slowLayer, Double *slowTime)
 {
 	//Manage::HiResClock clk;
 	UTF8Char *retPtr = 0;

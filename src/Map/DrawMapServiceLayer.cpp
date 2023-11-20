@@ -140,10 +140,10 @@ void Map::DrawMapServiceLayer::SetCurrScale(Double scale)
 {
 }
 
-Map::MapView *Map::DrawMapServiceLayer::CreateMapView(Math::Size2DDbl scnSize)
+NotNullPtr<Map::MapView> Map::DrawMapServiceLayer::CreateMapView(Math::Size2DDbl scnSize)
 {
-	Map::MapView *view;
-	NEW_CLASS(view, Map::ScaledMapView(this->dispSize, this->dispBounds.GetCenter(), Map::ScaledMapView::CalcScale(this->dispBounds, this->dispSize, this->dispDPI, this->csys->IsProjected()), this->csys->IsProjected()));
+	NotNullPtr<Map::MapView> view;
+	NEW_CLASSNN(view, Map::ScaledMapView(this->dispSize, this->dispBounds.GetCenter(), Map::ScaledMapView::CalcScale(this->dispBounds, this->dispSize, this->dispDPI, this->csys->IsProjected()), this->csys->IsProjected()));
 	return view;
 }
 

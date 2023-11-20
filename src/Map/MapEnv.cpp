@@ -122,6 +122,9 @@ Map::MapEnv::MapEnv(Text::CStringNN fileName, UInt32 bgColor, NotNullPtr<Math::C
 	this->csys = csys;
 	this->defFontStyle = 0;
 	this->defLineStyle = 0;
+	this->maxScale = 200000000;
+	this->minScale = 100;
+
 	this->AddLineStyle();
 	this->AddLineStyleLayer(0, 0xff000000, 1, 0, 0);
 }
@@ -194,6 +197,16 @@ void Map::MapEnv::SetDefFontStyle(UOSInt fontStyle)
 	{
 		this->defFontStyle = fontStyle;
 	}
+}
+
+Double Map::MapEnv::GetMaxScale() const
+{
+	return this->maxScale;
+}
+
+Double Map::MapEnv::GetMinScale() const
+{
+	return this->minScale;
 }
 
 UOSInt Map::MapEnv::AddLineStyle()
@@ -1478,7 +1491,7 @@ Bool Map::MapEnv::GetBounds(Map::MapEnv::GroupItem *group, Math::RectAreaDbl *bo
 	return !isFirst;
 }
 
-Map::MapView *Map::MapEnv::CreateMapView(Math::Size2DDbl scnSize) const
+NotNullPtr<Map::MapView> Map::MapEnv::CreateMapView(Math::Size2DDbl scnSize) const
 {
 	Map::MapDrawLayer *baseLayer = GetFirstLayer(0);
 	if (baseLayer)
@@ -1487,14 +1500,14 @@ Map::MapView *Map::MapEnv::CreateMapView(Math::Size2DDbl scnSize) const
 	}
 	if (csys->IsProjected())
 	{
-		Map::MapView *view;
-		NEW_CLASS(view, Map::ScaledMapView(scnSize, Math::Coord2DDbl(835000, 820000), 10000, true));
+		NotNullPtr<Map::MapView> view;
+		NEW_CLASSNN(view, Map::ScaledMapView(scnSize, Math::Coord2DDbl(835000, 820000), 10000, true));
 		return view;
 	}
 	else
 	{
-		Map::MapView *view;
-		NEW_CLASS(view, Map::ScaledMapView(scnSize, Math::Coord2DDbl(114.2, 22.4), 10000, true));
+		NotNullPtr<Map::MapView> view;
+		NEW_CLASSNN(view, Map::ScaledMapView(scnSize, Math::Coord2DDbl(114.2, 22.4), 10000, true));
 		return view;
 	}
 }

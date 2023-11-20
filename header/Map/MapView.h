@@ -35,7 +35,7 @@ namespace Map
 		virtual Bool IMapXYToScnXY(Double mapRate, const Math::Coord2D<Int32> *srcArr, Math::Coord2D<Int32> *destArr, UOSInt nPoints, Math::Coord2D<Int32> ofst) const = 0; // return inScreen
 		virtual Math::Coord2DDbl MapXYToScnXY(Math::Coord2DDbl mapPos) const = 0;
 		virtual Math::Coord2DDbl ScnXYToMapXY(Math::Coord2DDbl scnPos) const = 0;
-		virtual Map::MapView *Clone() const = 0;
+		virtual NotNullPtr<Map::MapView> Clone() const = 0;
 
 		Double GetScnWidth() const;
 		Double GetScnHeight() const;

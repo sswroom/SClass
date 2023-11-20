@@ -52,7 +52,7 @@ namespace Map
 		public:
 			NotNullPtr<Map::MapEnv> env;
 			NotNullPtr<Media::DrawImage> img;
-			Map::MapView *view;
+			NotNullPtr<Map::MapView> view;
 			Bool isLayerEmpty;
 			Math::RectAreaDbl *objBounds;
 			UOSInt objCnt;
@@ -84,7 +84,7 @@ namespace Map
 		static UOSInt NewLabel(MapLabels *labels, UOSInt maxLabel, UOSInt *labelCnt, Int32 priority);
 		static void SwapLabel(MapLabels *mapLabels, UOSInt index, UOSInt index2);
 		static Bool LabelOverlapped(Math::RectAreaDbl *points, UOSInt nPoints, Math::RectAreaDbl rect);
-		static Bool AddLabel(MapLabels *labels, UOSInt maxLabel, UOSInt *labelCnt, Text::CString label, UOSInt nPoints, Math::Coord2DDbl *points, Int32 priority, Map::DrawLayerType recType, UOSInt fntStyle, Int32 flag, Map::MapView *view, OSInt xOfst, OSInt yOfst, Map::MapEnv::FontType fontType);
+		static Bool AddLabel(MapLabels *labels, UOSInt maxLabel, UOSInt *labelCnt, Text::CString label, UOSInt nPoints, Math::Coord2DDbl *points, Int32 priority, Map::DrawLayerType recType, UOSInt fntStyle, Int32 flag, NotNullPtr<Map::MapView> view, OSInt xOfst, OSInt yOfst, Map::MapEnv::FontType fontType);
 		static void DrawLabels(NotNullPtr<DrawEnv> denv);
 		static OSInt __stdcall VImgCompare(Math::Geometry::VectorImage *obj1, Math::Geometry::VectorImage *obj2);
 	private:
@@ -103,10 +103,11 @@ namespace Map
 		DrawMapRenderer(NotNullPtr<Media::DrawEngine> eng, NotNullPtr<Map::MapEnv> env, NotNullPtr<const Media::ColorProfile> color, Media::ColorManagerSess *colorSess, DrawType drawType);
 		virtual ~DrawMapRenderer();
 
-		virtual void DrawMap(NotNullPtr<Media::DrawImage> img, Map::MapView *view, UInt32 *imgDurMS);
+		virtual void DrawMap(NotNullPtr<Media::DrawImage> img, NotNullPtr<Map::MapView> view, OptOut<UInt32> imgDurMS);
 		virtual void SetUpdatedHandler(Map::MapRenderer::UpdatedHandler updHdlr, void *userObj);
 		Bool GetLastsLayerEmpty();
 		void SetEnv(NotNullPtr<Map::MapEnv> env);
+		NotNullPtr<Map::MapEnv> GetEnv() const;
 		void ColorUpdated();
 	};
 }

@@ -144,7 +144,7 @@ namespace SSWR
 			Math::Coord2D<OSInt> dispImageCurrPos;
 
 			Map::DrawMapRenderer *mapRenderer;
-			Map::MapView *mapView;
+			NotNullPtr<Map::MapView> mapView;
 			NotNullPtr<Map::MapEnv> mapEnv;
 			NotNullPtr<Map::TileMapLayer> mapTileLyr;
 			NotNullPtr<Map::TileMap> mapTile;

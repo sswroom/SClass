@@ -34,9 +34,9 @@ void Map::MercatorMapView::SetCenterXY(Math::Coord2DDbl mapPos)
 
 void Map::MercatorMapView::SetMapScale(Double scale)
 {
-	if (scale < 400)
+	if (scale < 10)
 	{
-		scale = 400;
+		scale = 10;
 	}
 	OSInt level = (OSInt)(Math_Log10(204094080000.0 / scale / this->dtileSize) / Math_Log10(2));
 	if (level < 0)
@@ -273,10 +273,10 @@ Math::Coord2DDbl Map::MercatorMapView::ScnXYToMapXY(Math::Coord2DDbl scnPos) con
 	return Math::Coord2DDbl(PixelX2Lon(px.x), PixelY2Lat(px.y));
 }
 
-Map::MapView *Map::MercatorMapView::Clone() const
+NotNullPtr<Map::MapView> Map::MercatorMapView::Clone() const
 {
-	Map::MercatorMapView *view;
-	NEW_CLASS(view, Map::MercatorMapView(this->scnSize, this->centMap, this->maxLevel, (UOSInt)this->dtileSize));
+	NotNullPtr<Map::MercatorMapView> view;
+	NEW_CLASSNN(view, Map::MercatorMapView(this->scnSize, this->centMap, this->maxLevel, (UOSInt)this->dtileSize));
 	return view;
 }
 

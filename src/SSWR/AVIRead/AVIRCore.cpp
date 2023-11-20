@@ -167,7 +167,7 @@ void SSWR::AVIRead::AVIRCore::EndLoad()
 	{
 		AVIRead::AVIRGISForm *gisForm;
 		NotNullPtr<Map::MapEnv> env;
-		Map::MapView *view;
+		NotNullPtr<Map::MapView> view;
 		NotNullPtr<Math::CoordinateSystem> csys = this->batchLyrs->GetItem(0)->GetCoordinateSystem();
 		NEW_CLASSNN(env, Map::MapEnv(CSTR("Untitled"), 0xffc0c0ff, csys->Clone()));
 		if (this->batchLyrs->GetCount() > 0)

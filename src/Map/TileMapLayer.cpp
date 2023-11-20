@@ -298,12 +298,12 @@ void Map::TileMapLayer::SetCurrScale(Double scale)
 	}
 }
 
-Map::MapView *Map::TileMapLayer::CreateMapView(Math::Size2DDbl scnSize)
+NotNullPtr<Map::MapView> Map::TileMapLayer::CreateMapView(Math::Size2DDbl scnSize)
 {
-	Map::MapView *view;
+	NotNullPtr<Map::MapView> view;
 	if (this->tileMap->IsMercatorProj())
 	{
-		NEW_CLASS(view, Map::MercatorMapView(scnSize, Math::Coord2DDbl(114.2, 22.4), this->tileMap->GetMaxLevel(), this->tileMap->GetTileSize()));
+		NEW_CLASSNN(view, Map::MercatorMapView(scnSize, Math::Coord2DDbl(114.2, 22.4), this->tileMap->GetMaxLevel(), this->tileMap->GetTileSize()));
 		return view;
 	}
 	else
@@ -319,7 +319,7 @@ Map::MapView *Map::TileMapLayer::CreateMapView(Math::Size2DDbl scnSize)
 		Math::RectAreaDbl bounds;
 		this->tileMap->GetBounds(bounds);
 		NotNullPtr<Math::CoordinateSystem> csys = this->tileMap->GetCoordinateSystem();
-		NEW_CLASS(view, Map::LeveledMapView(csys->IsProjected(), scnSize, bounds.GetCenter(), scales));
+		NEW_CLASSNN(view, Map::LeveledMapView(csys->IsProjected(), scnSize, bounds.GetCenter(), scales));
 		return view;
 	}
 }

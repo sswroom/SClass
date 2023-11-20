@@ -130,14 +130,23 @@ Bool UI::GUIMapControl::OnMouseWheel(Math::Coord2D<OSInt> scnPos, Int32 delta)
 {
 	Math::Coord2DDbl newPt;
 	Math::Coord2DDbl pt = this->view->ScnXYToMapXY(scnPos.ToDouble());
+	Double newScale;
 	if (delta < 0)
 	{
-		this->view->SetMapScale(this->view->GetMapScale() * 2.0);
+		newScale = this->view->GetMapScale() * 2.0;
 	}
 	else
 	{
-		this->view->SetMapScale(this->view->GetMapScale() * 0.5);
+		newScale = this->view->GetMapScale() * 0.5;
 	}
+	NotNullPtr<Map::MapEnv> mapEnv;
+	if (!mapEnv.Set(this->mapEnv))
+		mapEnv = this->renderer->GetEnv();
+	if (newScale < mapEnv->GetMinScale())
+		newScale = mapEnv->GetMinScale();
+	else if (newScale > mapEnv->GetMaxScale())
+		newScale = mapEnv->GetMaxScale();
+	this->view->SetMapScale(newScale);
 	newPt = this->view->MapXYToScnXY(pt);
 	pt = this->view->ScnXYToMapXY(newPt - scnPos.ToDouble() + (this->currSize.ToDouble() * 0.5));
 	this->view->SetCenterXY(pt);
@@ -176,7 +185,15 @@ void UI::GUIMapControl::OnGestureEnd(Math::Coord2D<OSInt> scnPos, UInt64 dist)
 		this->gZoomCurrPos = scnPos;
 		this->gZoom = false;
 		pt = this->view->ScnXYToMapXY(this->gZoomPos.ToDouble());
-		this->view->SetMapScale(this->view->GetMapScale() * (Double)this->gZoomDist /(Double)dist);
+		Double newScale = this->view->GetMapScale() * (Double)this->gZoomDist /(Double)dist;
+		NotNullPtr<Map::MapEnv> mapEnv;
+		if (!mapEnv.Set(this->mapEnv))
+			mapEnv = this->renderer->GetEnv();
+		if (newScale < mapEnv->GetMinScale())
+			newScale = mapEnv->GetMinScale();
+		else if (newScale > mapEnv->GetMaxScale())
+			newScale = mapEnv->GetMaxScale();
+		this->view->SetMapScale(newScale);
 		newPt = this->view->MapXYToScnXY(pt);
 		pt = this->view->ScnXYToMapXY(newPt - this->gZoomCurrPos.ToDouble() + (this->currSize.ToDouble() * 0.5));
 		this->view->SetCenterXY(pt);
@@ -698,7 +715,7 @@ void UI::GUIMapControl::ReleaseSelVecList()
 	this->selVecList.Clear();
 }
 
-UI::GUIMapControl::GUIMapControl(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, NotNullPtr<Media::DrawEngine> eng, UInt32 bgColor, Map::DrawMapRenderer *renderer, Map::MapView *view, NotNullPtr<Media::ColorManagerSess> colorSess) : UI::GUICustomDraw(ui, parent, eng)
+UI::GUIMapControl::GUIMapControl(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, NotNullPtr<Media::DrawEngine> eng, UInt32 bgColor, Map::DrawMapRenderer *renderer, NotNullPtr<Map::MapView> view, NotNullPtr<Media::ColorManagerSess> colorSess) : UI::GUICustomDraw(ui, parent, eng)
 {
 	this->colorSess = colorSess;
 	this->colorSess->AddHandler(*this);
@@ -796,7 +813,7 @@ UI::GUIMapControl::~GUIMapControl()
 	{
 		DEL_CLASS(this->renderer);
 	}
-	DEL_CLASS(this->view);
+	this->view.Delete();
 	this->colorSess->RemoveHandler(*this);
 }
 
@@ -914,7 +931,7 @@ void UI::GUIMapControl::UpdateMap()
 		NotNullPtr<Media::DrawBrush> b = bgImg->NewBrushARGB(this->bgDispColor);
 		bgImg->DrawRect(Math::Coord2DDbl(0, 0), bgImg->GetSize().ToDouble(), 0, b);
 		bgImg->DelBrush(b);
-		this->renderer->DrawMap(bgImg, this->view, &imgDurMS);
+		this->renderer->DrawMap(bgImg, this->view, imgDurMS);
 		t = clk.GetTimeDiff();
 		if (imgDurMS != 0)
 		{
@@ -962,6 +979,13 @@ void UI::GUIMapControl::SetMapScale(Double newScale)
 {
 	if (this->view->GetMapScale() == newScale)
 		return;
+	NotNullPtr<Map::MapEnv> mapEnv;
+	if (!mapEnv.Set(this->mapEnv))
+		mapEnv = this->renderer->GetEnv();
+	if (newScale < mapEnv->GetMinScale())
+		newScale = mapEnv->GetMinScale();
+	else if (newScale > mapEnv->GetMaxScale())
+		newScale = mapEnv->GetMaxScale();
 	this->view->SetMapScale(newScale);
 	this->EventScaleChanged(newScale);
 	if (!this->pauseUpdate)
@@ -1107,21 +1131,17 @@ void UI::GUIMapControl::SetMapUpdated()
 	this->bgUpdated = true;
 }
 
-void UI::GUIMapControl::UpdateMapView(Map::MapView *view)
+void UI::GUIMapControl::UpdateMapView(NotNullPtr<Map::MapView> view)
 {
-	if (view)
-	{
-		DEL_CLASS(this->view);
-		this->view = view;
-		this->view->UpdateSize(this->currSize.ToDouble());
-		this->EventScaleChanged(this->view->GetMapScale());
-	}
+	this->view.Delete();
+	this->view = view;
+	this->view->UpdateSize(this->currSize.ToDouble());
+	this->EventScaleChanged(this->view->GetMapScale());
 }
 
-Map::MapView *UI::GUIMapControl::CloneMapView()
+NotNullPtr<Map::MapView> UI::GUIMapControl::CloneMapView()
 {
-	Map::MapView *view = this->view->Clone();
-	return view;
+	return this->view->Clone();
 }
 
 void UI::GUIMapControl::PauseUpdate(Bool pauseUpdate)

@@ -20,7 +20,7 @@ namespace UI
 	private:
 		Media::DrawImage *bgImg;
 		NotNullPtr<Media::ColorManagerSess> colorSess;
-		Map::MapView *view;
+		NotNullPtr<Map::MapView> view;
 		Map::MapEnv *mapEnv;
 		Map::DrawMapRenderer *renderer;
 		Bool releaseRenderer;
@@ -84,7 +84,7 @@ namespace UI
 		/*
 		view - will release
 		*/
-		GUIMapControl(NotNullPtr<GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, NotNullPtr<Media::DrawEngine> eng, UInt32 bgColor, Map::DrawMapRenderer *renderer, Map::MapView *view, NotNullPtr<Media::ColorManagerSess> colorSess);
+		GUIMapControl(NotNullPtr<GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, NotNullPtr<Media::DrawEngine> eng, UInt32 bgColor, Map::DrawMapRenderer *renderer, NotNullPtr<Map::MapView> view, NotNullPtr<Media::ColorManagerSess> colorSess);
 		GUIMapControl(NotNullPtr<GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, NotNullPtr<Media::DrawEngine> eng, NotNullPtr<Map::MapEnv> mapEnv, NotNullPtr<Media::ColorManagerSess> colorSess);
 		virtual ~GUIMapControl();
 
@@ -123,8 +123,8 @@ namespace UI
 		void HandleMouseDown(MouseEventHandler hdlr, void *userObj);
 		void HandleCustomDraw(DrawHandler hdlr, void *userObj);
 		void SetMapUpdated();
-		void UpdateMapView(Map::MapView *view);
-		Map::MapView *CloneMapView();
+		void UpdateMapView(NotNullPtr<Map::MapView> view);
+		NotNullPtr<Map::MapView> CloneMapView();
 		void PauseUpdate(Bool pauseUpdate);
 	};
 };

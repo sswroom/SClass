@@ -99,18 +99,18 @@ void Map::OruxDBLayer::SetCurrScale(Double scale)
 	this->currLayer = (UInt32)level;
 }
 
-Map::MapView *Map::OruxDBLayer::CreateMapView(Math::Size2DDbl scnSize)
+NotNullPtr<Map::MapView> Map::OruxDBLayer::CreateMapView(Math::Size2DDbl scnSize)
 {
-	Map::MapView *view;
+	NotNullPtr<Map::MapView> view;
 	Map::OruxDBLayer::LayerInfo *lyr = this->layerMap.Get(this->currLayer);
 	if (lyr)
 	{
-		NEW_CLASS(view, Map::MercatorMapView(scnSize, (lyr->mapMax + lyr->mapMin) * 0.5, this->layerMap.GetCount(), this->tileSize));
+		NEW_CLASSNN(view, Map::MercatorMapView(scnSize, (lyr->mapMax + lyr->mapMin) * 0.5, this->layerMap.GetCount(), this->tileSize));
 		return view;
 	}
 	else
 	{
-		NEW_CLASS(view, Map::MercatorMapView(scnSize, Math::Coord2DDbl(114.2, 22.4), 18, 256));
+		NEW_CLASSNN(view, Map::MercatorMapView(scnSize, Math::Coord2DDbl(114.2, 22.4), 18, 256));
 		return view;
 	}
 }

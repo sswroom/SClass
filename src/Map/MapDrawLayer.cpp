@@ -98,12 +98,12 @@ Int64 Map::MapDrawLayer::GetTimeEndTS() const
 	return 0;
 }
 
-Map::MapView *Map::MapDrawLayer::CreateMapView(Math::Size2DDbl scnSize)
+NotNullPtr<Map::MapView> Map::MapDrawLayer::CreateMapView(Math::Size2DDbl scnSize)
 {
-	Map::MapView *view;
+	NotNullPtr<Map::MapView> view;
 	Math::RectAreaDbl minMax;
 	this->GetBounds(minMax);
-	NEW_CLASS(view, Map::ScaledMapView(scnSize, minMax.GetCenter(), 10000, this->csys->IsProjected()));
+	NEW_CLASSNN(view, Map::ScaledMapView(scnSize, minMax.GetCenter(), 10000, this->csys->IsProjected()));
 	return view;
 }
 

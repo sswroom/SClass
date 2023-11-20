@@ -129,9 +129,6 @@ typedef enum
 	MNU_HK_GEODATA_WMS
 } MenuItems;
 
-#define MAX_SCALE 200000000
-#define MIN_SCALE 400
-
 void __stdcall SSWR::AVIRead::AVIRGISForm::FileHandler(void *userObj, NotNullPtr<Text::String> *files, UOSInt nFiles)
 {
 	SSWR::AVIRead::AVIRGISForm *me = (SSWR::AVIRead::AVIRGISForm*)userObj;
@@ -325,7 +322,7 @@ void __stdcall SSWR::AVIRead::AVIRGISForm::OnMapScaleChanged(void *userObj, Doub
 		return;
 	}
 	me->scaleChanging = true;
-	me->tbScale->SetPos((UOSInt)Double2OSInt(Math_Log10(newScale / MIN_SCALE) * 65536.0 / Math_Log10(MAX_SCALE / (Double)MIN_SCALE)));
+	me->tbScale->SetPos((UOSInt)Double2OSInt(Math_Log10(newScale / me->env->GetMinScale()) * 65536.0 / Math_Log10(me->env->GetMaxScale() / me->env->GetMinScale())));
 	me->scaleChanging = false;
 	sptr = Text::StrDoubleFmt(Text::StrConcatC(sbuff, UTF8STRC("1:")), me->mapCtrl->GetViewScale(), "0.#");
 	me->txtScale->SetText(CSTRP(sbuff, sptr));
@@ -344,7 +341,7 @@ void __stdcall SSWR::AVIRead::AVIRGISForm::OnScaleScrolled(void *userObj, UOSInt
 	if (me->scaleChanging)
 		return;
 	me->scaleChanging = true;
-	Int32 scale = Double2Int32(Math_Pow(10, Math_Log10((MAX_SCALE / (Double)MIN_SCALE)) * UOSInt2Double(newVal) / 65536.0) * MIN_SCALE);
+	Int32 scale = Double2Int32(Math_Pow(10, Math_Log10((me->env->GetMaxScale() / me->env->GetMinScale())) * UOSInt2Double(newVal) / 65536.0) * me->env->GetMinScale());
 	me->mapCtrl->SetMapScale(scale);
 	me->scaleChanging = false;
 }
@@ -631,7 +628,7 @@ void SSWR::AVIRead::AVIRGISForm::OpenCSV(Text::CStringNN url, UInt32 codePage, T
 	cli.Delete();
 }
 
-SSWR::AVIRead::AVIRGISForm::AVIRGISForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<AVIRead::AVIRCore> core, NotNullPtr<Map::MapEnv> env, Map::MapView *view) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRGISForm::AVIRGISForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<AVIRead::AVIRCore> core, NotNullPtr<Map::MapEnv> env, NotNullPtr<Map::MapView> view) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->core = core;
 	this->ssl = Net::SSLEngineFactory::Create(this->core->GetSocketFactory(), true);
@@ -1980,13 +1977,13 @@ Bool SSWR::AVIRead::AVIRGISForm::BeginPrint(Media::IPrintDocument *doc)
 
 Bool SSWR::AVIRead::AVIRGISForm::PrintPage(NotNullPtr<Media::DrawImage> printPage)
 {
-	Map::MapView *view = this->mapCtrl->CloneMapView();
+	NotNullPtr<Map::MapView> view = this->mapCtrl->CloneMapView();
 	Map::DrawMapRenderer *renderer;
 	NEW_CLASS(renderer, Map::DrawMapRenderer(this->core->GetDrawEngine(), this->env, printPage->GetColorProfile(), 0, Map::DrawMapRenderer::DT_VECTORDRAW));
 	view->SetDestImage(printPage);
 	renderer->DrawMap(printPage, view, 0);
 	DEL_CLASS(renderer);
-	DEL_CLASS(view);
+	view.Delete();
 	return false;
 }
 
