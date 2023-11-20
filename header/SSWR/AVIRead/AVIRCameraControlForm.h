@@ -22,7 +22,7 @@ namespace SSWR
 			UI::GUIListView *lvInfo;
 			UI::GUIVSplitter *vspInfo;
 			UI::GUIListView *lvFiles;
-			UI::GUIPanel *pnlControl;
+			NotNullPtr<UI::GUIPanel> pnlControl;
 			UI::GUIPictureBoxSimple *pbPreview;
 			UI::GUIButton *btnDownload;
 

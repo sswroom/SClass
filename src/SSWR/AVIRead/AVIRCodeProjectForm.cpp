@@ -189,21 +189,21 @@ SSWR::AVIRead::AVIRCodeProjectForm::AVIRCodeProjectForm(UI::GUIClientControl *pa
 	this->proj = proj;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 	
-	NEW_CLASS(this->pnlCtrl, UI::GUIPanel(ui, this));
+	NEW_CLASSNN(this->pnlCtrl, UI::GUIPanel(ui, *this));
 	this->pnlCtrl->SetRect(0, 0, 100, 23, false);
 	this->pnlCtrl->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->lblConfig, UI::GUILabel(ui, this->pnlCtrl, CSTR("Config")));
 	this->lblConfig->SetRect(100, 0, 100, 23, false);
 	NEW_CLASS(this->cboConfig, UI::GUIComboBox(ui, this->pnlCtrl, false));
 	this->cboConfig->SetRect(200, 0, 200, 23, false);
-	NEW_CLASS(this->tvMain, UI::GUITreeView(ui, this));
+	NEW_CLASS(this->tvMain, UI::GUITreeView(ui, *this));
 	this->tvMain->SetRect(0, 0, 200, 23, false);
 	this->tvMain->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->tvMain->SetHasLines(true);
 	this->tvMain->SetHasButtons(true);
 	this->tvMain->HandleSelectionChange(OnItemSelected, this);
-	NEW_CLASS(this->hspMain, UI::GUIHSplitter(ui, this, 3, false));
-	NEW_CLASS(this->txtMessage, UI::GUITextBox(ui, this, CSTR(""), true));
+	NEW_CLASS(this->hspMain, UI::GUIHSplitter(ui, *this, 3, false));
+	NEW_CLASS(this->txtMessage, UI::GUITextBox(ui, *this, CSTR(""), true));
 	this->txtMessage->SetReadOnly(true);
 	this->txtMessage->SetDockType(UI::GUIControl::DOCK_FILL);
 

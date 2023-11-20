@@ -122,27 +122,27 @@ SSWR::AVIRead::AVIRESRIMapForm::AVIRESRIMapForm(UI::GUIClientControl *parent, No
 	this->esriMap = 0;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 	
-	NEW_CLASS(this->radPredefine, UI::GUIRadioButton(ui, this, CSTR("Predefine"), true));
+	NEW_CLASS(this->radPredefine, UI::GUIRadioButton(ui, *this, CSTR("Predefine"), true));
 	this->radPredefine->SetRect(8, 8, 100, 23, false);
-	NEW_CLASS(this->cboPredefine, UI::GUIComboBox(ui, this, false));
+	NEW_CLASS(this->cboPredefine, UI::GUIComboBox(ui, *this, false));
 	this->cboPredefine->SetRect(108, 8, 150, 23, false);
-	NEW_CLASS(this->radOther, UI::GUIRadioButton(ui, this, CSTR("Other"), false));
+	NEW_CLASS(this->radOther, UI::GUIRadioButton(ui, *this, CSTR("Other"), false));
 	this->radOther->SetRect(8, 32, 100, 23, false);
-	NEW_CLASS(this->txtOther, UI::GUITextBox(ui, this, CSTR("")));
+	NEW_CLASS(this->txtOther, UI::GUITextBox(ui, *this, CSTR("")));
 	this->txtOther->SetRect(108, 32, 500, 23, false);
 	this->txtOther->HandleTextChanged(OnOtherChanged, this);
-	NEW_CLASS(this->chkNoResource, UI::GUICheckBox(ui, this, CSTR("No Resource"), false));
+	NEW_CLASS(this->chkNoResource, UI::GUICheckBox(ui, *this, CSTR("No Resource"), false));
 	this->chkNoResource->SetRect(108, 56, 120, 23, false);
 	this->chkNoResource->HandleCheckedChange(OnNoResourceChg, this);
-	NEW_CLASS(this->lblSRID, UI::GUILabel(ui, this, CSTR("SRID")));
+	NEW_CLASS(this->lblSRID, UI::GUILabel(ui, *this, CSTR("SRID")));
 	this->lblSRID->SetRect(228, 56, 100, 23, false);
-	NEW_CLASS(this->txtSRID, UI::GUITextBox(ui, this, CSTR("4326")));
+	NEW_CLASS(this->txtSRID, UI::GUITextBox(ui, *this, CSTR("4326")));
 	this->txtSRID->SetRect(328, 56, 100, 23, false);
 	this->txtSRID->SetReadOnly(true);
-	NEW_CLASS(this->btnOK, UI::GUIButton(ui, this, CSTR("OK")));
+	NEW_CLASS(this->btnOK, UI::GUIButton(ui, *this, CSTR("OK")));
 	this->btnOK->SetRect(250, 88, 75, 23, false);
 	this->btnOK->HandleButtonClick(OKClicked, this);
-	NEW_CLASS(this->btnCancel, UI::GUIButton(ui, this, CSTR("Cancel")));
+	NEW_CLASS(this->btnCancel, UI::GUIButton(ui, *this, CSTR("Cancel")));
 	this->btnCancel->SetRect(330, 88, 75, 23, false);
 	this->btnCancel->HandleButtonClick(CancelClicked, this);
 

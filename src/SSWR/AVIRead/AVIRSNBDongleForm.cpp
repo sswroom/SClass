@@ -481,11 +481,11 @@ SSWR::AVIRead::AVIRSNBDongleForm::AVIRSNBDongleForm(UI::GUIClientControl *parent
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 	this->dongleUpdated = false;
 
-	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, this));
+	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, *this));
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	this->tpDevice = this->tcMain->AddTabPage(CSTR("Device"));
-	NEW_CLASS(this->pnlDevice, UI::GUIPanel(ui, this->tpDevice));
+	NEW_CLASSNN(this->pnlDevice, UI::GUIPanel(ui, this->tpDevice));
 	this->pnlDevice->SetRect(0, 0, 100, 103, false);
 	this->pnlDevice->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->btnDongleInfo, UI::GUIButton(ui, this->pnlDevice, CSTR("Get Dongle Info")));
@@ -520,9 +520,9 @@ SSWR::AVIRead::AVIRSNBDongleForm::AVIRSNBDongleForm(UI::GUIClientControl *parent
 	NEW_CLASS(this->btnUpload, UI::GUIButton(ui, this->pnlDevice, CSTR("Upload")));
 	this->btnUpload->SetRect(704, 76, 75, 23, false);
 	this->btnUpload->HandleButtonClick(OnUploadClicked, this);
-	NEW_CLASS(this->grpDevice, UI::GUIGroupBox(ui, this->tpDevice, CSTR("Device")));
+	NEW_CLASSNN(this->grpDevice, UI::GUIGroupBox(ui, this->tpDevice, CSTR("Device")));
 	this->grpDevice->SetDockType(UI::GUIControl::DOCK_FILL);
-	NEW_CLASS(this->pnlDevCtrl, UI::GUIPanel(ui, this->grpDevice));
+	NEW_CLASSNN(this->pnlDevCtrl, UI::GUIPanel(ui, this->grpDevice));
 	this->pnlDevCtrl->SetRect(0, 0, 100, 31, false);
 	this->pnlDevCtrl->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->btnCopyDevId, UI::GUIButton(ui, this->pnlDevCtrl, CSTR("Copy Device Id")));

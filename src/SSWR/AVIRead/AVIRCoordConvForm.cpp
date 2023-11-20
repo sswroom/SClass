@@ -547,7 +547,7 @@ SSWR::AVIRead::AVIRCoordConvForm::AVIRCoordConvForm(UI::GUIClientControl *parent
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 	this->inited = false;
 
-	NEW_CLASS(this->pnlSrc, UI::GUIPanel(ui, this));
+	NEW_CLASSNN(this->pnlSrc, UI::GUIPanel(ui, *this));
 	this->pnlSrc->SetRect(0, 0, 100, 24, false);
 	this->pnlSrc->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->lblSrc, UI::GUILabel(ui, this->pnlSrc, CSTR("Source Type")));
@@ -560,7 +560,7 @@ SSWR::AVIRead::AVIRCoordConvForm::AVIRCoordConvForm(UI::GUIClientControl *parent
 	NEW_CLASS(this->cboSrc, UI::GUIComboBox(ui, this->pnlSrc, false));
 	this->cboSrc->SetRect(300, 0, 200, 23, false);
 	this->cboSrc->HandleSelectionChange(OnSrcCboChanged, this);
-	NEW_CLASS(this->pnlDest, UI::GUIPanel(ui, this));
+	NEW_CLASSNN(this->pnlDest, UI::GUIPanel(ui, *this));
 	this->pnlDest->SetRect(0, 0, 100, 24, false);
 	this->pnlDest->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->lblDest, UI::GUILabel(ui, this->pnlDest, CSTR("Dest Type")));
@@ -576,7 +576,7 @@ SSWR::AVIRead::AVIRCoordConvForm::AVIRCoordConvForm(UI::GUIClientControl *parent
 	NEW_CLASS(this->btnConvFile, UI::GUIButton(ui, this->pnlDest, CSTR("Conv File")));
 	this->btnConvFile->SetRect(500, 0, 75, 23, false);
 	this->btnConvFile->HandleButtonClick(OnConvFileClicked, this);
-	NEW_CLASS(this->pnlCoord, UI::GUIPanel(ui, this));
+	NEW_CLASSNN(this->pnlCoord, UI::GUIPanel(ui, *this));
 	this->pnlCoord->SetRect(0, 0, 100, 24, false);
 	this->pnlCoord->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->lblName, UI::GUILabel(ui, this->pnlCoord, CSTR("Name")));
@@ -604,11 +604,11 @@ SSWR::AVIRead::AVIRCoordConvForm::AVIRCoordConvForm(UI::GUIClientControl *parent
 	NEW_CLASS(this->btnCopyAll, UI::GUIButton(ui, this->pnlCoord, CSTR("Copy All")));
 	this->btnCopyAll->SetRect(860, 0, 75, 23, false);
 	this->btnCopyAll->HandleButtonClick(OnCopyAllClicked, this);
-	NEW_CLASS(this->txtStatus, UI::GUITextBox(ui, this, CSTR("")));
+	NEW_CLASS(this->txtStatus, UI::GUITextBox(ui, *this, CSTR("")));
 	this->txtStatus->SetRect(0, 0, 100, 23, false);
 	this->txtStatus->SetReadOnly(true);
 	this->txtStatus->SetDockType(UI::GUIControl::DOCK_BOTTOM);
-	NEW_CLASS(this->lvCoord, UI::GUIListView(ui, this, UI::GUIListView::LVSTYLE_TABLE, 7));
+	NEW_CLASS(this->lvCoord, UI::GUIListView(ui, *this, UI::GUIListView::LVSTYLE_TABLE, 7));
 	this->lvCoord->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvCoord->AddColumn(CSTR("Name"), 100);
 	this->lvCoord->AddColumn(CSTR("Easting"), 100);

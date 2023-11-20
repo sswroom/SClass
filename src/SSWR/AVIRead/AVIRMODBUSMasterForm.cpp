@@ -563,7 +563,7 @@ SSWR::AVIRead::AVIRMODBUSMasterForm::AVIRMODBUSMasterForm(UI::GUIClientControl *
 	this->sendUpdated = false;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASS(this->grpStream, UI::GUIGroupBox(ui, this, CSTR("Stream")));
+	NEW_CLASSNN(this->grpStream, UI::GUIGroupBox(ui, *this, CSTR("Stream")));
 	this->grpStream->SetRect(0, 0, 100, 96, false);
 	this->grpStream->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->lblStream, UI::GUILabel(ui, this->grpStream, CSTR("Stream Type")));
@@ -585,7 +585,7 @@ SSWR::AVIRead::AVIRMODBUSMasterForm::AVIRMODBUSMasterForm(UI::GUIClientControl *
 	NEW_CLASS(this->btnTimeout, UI::GUIButton(ui, this->grpStream, CSTR("Set")));
 	this->btnTimeout->SetRect(204, 52, 75, 23, false);
 	this->btnTimeout->HandleButtonClick(OnTimeoutClicked, this);
-	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, this));
+	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, *this));
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
 	
 	this->tpGetValue = this->tcMain->AddTabPage(CSTR("GetValue"));
@@ -669,7 +669,7 @@ SSWR::AVIRead::AVIRMODBUSMasterForm::AVIRMODBUSMasterForm(UI::GUIClientControl *
 
 
 	this->tpDevice = this->tcMain->AddTabPage(CSTR("Device"));
-	NEW_CLASS(this->pnlDevice, UI::GUIPanel(ui, this->tpDevice));
+	NEW_CLASSNN(this->pnlDevice, UI::GUIPanel(ui, this->tpDevice));
 	this->pnlDevice->SetRect(0, 0, 100, 31, false);
 	this->pnlDevice->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->lblDeviceAddr, UI::GUILabel(ui, this->pnlDevice, CSTR("Addr")));

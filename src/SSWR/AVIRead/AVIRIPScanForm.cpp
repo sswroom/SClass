@@ -69,7 +69,7 @@ SSWR::AVIRead::AVIRIPScanForm::AVIRIPScanForm(UI::GUIClientControl *parent, NotN
 	NEW_CLASS(this->scanner, Net::ICMPScanner(core->GetSocketFactory()));
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASS(this->pnlControl, UI::GUIPanel(ui, this));
+	NEW_CLASSNN(this->pnlControl, UI::GUIPanel(ui, *this));
 	this->pnlControl->SetRect(0, 0, 100, 31, false);
 	this->pnlControl->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->lblIP, UI::GUILabel(ui, this->pnlControl, CSTR("IP")));
@@ -79,7 +79,7 @@ SSWR::AVIRead::AVIRIPScanForm::AVIRIPScanForm(UI::GUIClientControl *parent, NotN
 	NEW_CLASS(this->btnStart, UI::GUIButton(ui, this->pnlControl, CSTR("Start")));
 	this->btnStart->SetRect(254, 4, 75, 23, false);
 	this->btnStart->HandleButtonClick(OnStartClicked, this);
-	NEW_CLASS(this->lvIP, UI::GUIListView(ui, this, UI::GUIListView::LVSTYLE_TABLE, 4));
+	NEW_CLASS(this->lvIP, UI::GUIListView(ui, *this, UI::GUIListView::LVSTYLE_TABLE, 4));
 	this->lvIP->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvIP->SetFullRowSelect(true);
 	this->lvIP->SetShowGrid(true);

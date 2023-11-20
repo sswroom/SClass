@@ -24,22 +24,22 @@ namespace SSWR
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			IO::SiLabDriver *siLabDriver;
 
-			UI::GUIGroupBox *grpStream;
+			NotNullPtr<UI::GUIGroupBox> grpStream;
 			UI::GUILabel *lblStream;
 			UI::GUITextBox *txtStream;
 			UI::GUIButton *btnStream;
 
 			UI::GUIHSplitter *hspMain;
-			UI::GUIGroupBox *grpSend;
+			NotNullPtr<UI::GUIGroupBox> grpSend;
 			UI::GUIComboBox *cboSendType;
 			UI::GUITextBox *txtSendDisp;
-			UI::GUIPanel *pnlSend;
+			NotNullPtr<UI::GUIPanel> pnlSend;
 			UI::GUITextBox *txtSendValue;
 			UI::GUIButton *btnSend;
-			UI::GUIGroupBox *grpRecv;
+			NotNullPtr<UI::GUIGroupBox> grpRecv;
 			UI::GUIComboBox *cboRecvType;
 			UI::GUITextBox *txtRecvDisp;
-			UI::GUIPanel *pnlSendOption;
+			NotNullPtr<UI::GUIPanel> pnlSendOption;
 			UI::GUILabel *lblSendLBreak;
 			UI::GUIComboBox *cboSendLBreak;
 			UI::GUIRadioButton *radSendText;

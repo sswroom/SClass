@@ -24,9 +24,9 @@ namespace SSWR
 		private:
 			UI::GUIMainMenu *mnu;
 			UI::GUITabControl *tcMain;
-			UI::GUITabPage *tpSample;
+			NotNullPtr<UI::GUITabPage> tpSample;
 			UI::GUIPictureBoxSimple *pbsSample;
-			UI::GUITabPage *tpFreq;
+			NotNullPtr<UI::GUITabPage> tpFreq;
 			UI::GUIPictureBoxSimple *pbsFreq;
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;

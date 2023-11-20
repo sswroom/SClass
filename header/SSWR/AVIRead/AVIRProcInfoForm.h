@@ -36,18 +36,18 @@ namespace SSWR
 		private:
 			UI::GUITabControl *tcMain;
 
-			UI::GUITabPage* tpSummary;
-			UI::GUIPanel *pnlSummary;
+			NotNullPtr<UI::GUITabPage> tpSummary;
+			NotNullPtr<UI::GUIPanel> pnlSummary;
 			UI::GUIListView *lvSummary;
 
-			UI::GUITabPage *tpDetail;
-			UI::GUIPanel *pnlDetail;
+			NotNullPtr<UI::GUITabPage> tpDetail;
+			NotNullPtr<UI::GUIPanel> pnlDetail;
 			UI::GUIButton *btnDetailCurr;
 			UI::GUIListBox *lbDetail;
 			UI::GUIHSplitter *hspDetail;
 			UI::GUITabControl *tcDetail;
 
-			UI::GUITabPage *tpDetInfo;
+			NotNullPtr<UI::GUITabPage> tpDetInfo;
 			UI::GUILabel *lblDetProcId;
 			UI::GUITextBox *txtDetProcId;
 			UI::GUILabel *lblDetParentId;
@@ -67,40 +67,40 @@ namespace SSWR
 			UI::GUILabel* lblDetArchitecture;
 			UI::GUITextBox* txtDetArchitecture;
 
-			UI::GUITabPage *tpDetModule;
-			UI::GUIPanel *pnlDetModule;
+			NotNullPtr<UI::GUITabPage> tpDetModule;
+			NotNullPtr<UI::GUIPanel> pnlDetModule;
 			UI::GUIButton *btnDetModule;
 			UI::GUIListView *lvDetModule;
 
-			UI::GUITabPage *tpDetThread;
-			UI::GUIPanel *pnlDetThread;
+			NotNullPtr<UI::GUITabPage> tpDetThread;
+			NotNullPtr<UI::GUIPanel> pnlDetThread;
 			UI::GUIButton *btnDetThread;
 			UI::GUIListView *lvDetThread;
 
-			UI::GUITabPage *tpDetHeap;
-			UI::GUIPanel *pnlDetHeap;
+			NotNullPtr<UI::GUITabPage> tpDetHeap;
+			NotNullPtr<UI::GUIPanel> pnlDetHeap;
 			UI::GUIButton *btnDetHeap;
 			UI::GUIListBox *lbDetHeap;
 			UI::GUIHSplitter *hspDetHeap;
 			UI::GUITextBox *txtDetHeap;
 			UI::GUIListView *lvDetHeap;
 
-			UI::GUITabPage *tpDetHandle;
-			UI::GUIPanel *pnlDetHandle;
+			NotNullPtr<UI::GUITabPage> tpDetHandle;
+			NotNullPtr<UI::GUIPanel> pnlDetHandle;
 			UI::GUIButton *btnDetHandle;
 			UI::GUIListView *lvDetHandle;
 
-			UI::GUITabPage *tpDetChart;
-			UI::GUIGroupBox *grpDetChartCPU;
+			NotNullPtr<UI::GUITabPage> tpDetChart;
+			NotNullPtr<UI::GUIGroupBox> grpDetChartCPU;
 			UI::GUIRealtimeLineChart *rlcDetChartCPU;
 			UI::GUIVSplitter *vspDetChartCPU;
-			UI::GUIGroupBox *grpDetChartPage;
+			NotNullPtr<UI::GUIGroupBox> grpDetChartPage;
 			UI::GUIRealtimeLineChart *rlcDetChartPage;
 			UI::GUIVSplitter *vspDetChartPage;
-			UI::GUIGroupBox *grpDetChartCount;
+			NotNullPtr<UI::GUIGroupBox> grpDetChartCount;
 			UI::GUIRealtimeLineChart *rlcDetChartCount;
 			UI::GUIVSplitter *vspDetChartCount;
-			UI::GUIGroupBox *grpDetChartWS;
+			NotNullPtr<UI::GUIGroupBox> grpDetChartWS;
 			UI::GUIRealtimeLineChart *rlcDetChartWS;
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;

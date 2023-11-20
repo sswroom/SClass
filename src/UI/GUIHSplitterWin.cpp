@@ -49,10 +49,13 @@ OSInt __stdcall UI::GUIHSplitter::FormWndProc(void *hWnd, UInt32 msg, UOSInt wPa
 		me->CalDragRange();
 		me->SetCapture();
 		
-		hdc = GetDC((HWND)me->parent->GetHandle());
-		me->DrawXorBar(hdc, pt.x, pt.y);
-		ReleaseDC((HWND)me->parent->GetHandle(), hdc);
-
+		NotNullPtr<GUIClientControl> nnparent;
+		if (me->parent.SetTo(nnparent))
+		{
+			hdc = GetDC((HWND)nnparent->GetHandle());
+			me->DrawXorBar(hdc, pt.x, pt.y);
+			ReleaseDC((HWND)nnparent->GetHandle(), hdc);
+		}
 		return 0;
 	case WM_LBUTTONUP:
 		if (me->dragMode)
@@ -66,9 +69,13 @@ OSInt __stdcall UI::GUIHSplitter::FormWndProc(void *hWnd, UInt32 msg, UOSInt wPa
 			me->dragMode = false;
 			me->ReleaseCapture();
 
-			hdc = GetDC((HWND)me->parent->GetHandle());
-			me->DrawXorBar(hdc, me->lastX, me->lastY);
-			ReleaseDC((HWND)me->parent->GetHandle(), hdc);
+			NotNullPtr<GUIClientControl> nnparent;
+			if (me->parent.SetTo(nnparent))
+			{
+				hdc = GetDC((HWND)nnparent->GetHandle());
+				me->DrawXorBar(hdc, me->lastX, me->lastY);
+				ReleaseDC((HWND)nnparent->GetHandle(), hdc);
+			}
 
 			pos = me->GetPositionP();
 			drawX = pos.x + me->lastX - me->dragX;
@@ -81,32 +88,35 @@ OSInt __stdcall UI::GUIHSplitter::FormWndProc(void *hWnd, UInt32 msg, UOSInt wPa
 				drawX = me->dragMax;
 			}
 			foundThis = false;
-			i = me->parent->GetChildCount();
-			while (i-- > 0)
+			if (me->parent.SetTo(nnparent))
 			{
-				ctrl = me->parent->GetChild(i);
-				if (ctrl == me)
+				i = nnparent->GetChildCount();
+				while (i-- > 0)
 				{
-					foundThis = true;
-				}
-				else if (foundThis)
-				{
-					dockType = ctrl->GetDockType();
-					if (dockType == UI::GUIControl::DOCK_RIGHT && me->isRight)
+					ctrl = nnparent->GetChild(i);
+					if (ctrl == me)
 					{
-						pos = ctrl->GetPositionP();
-						sz = ctrl->GetSizeP();
-						ctrl->SetAreaP(drawX, pos.y, pos.x + (OSInt)sz.x, pos.y + (OSInt)sz.y, false);
-						me->parent->UpdateChildrenSize(true);
-						break;
+						foundThis = true;
 					}
-					else if (dockType == UI::GUIControl::DOCK_LEFT && !me->isRight)
+					else if (foundThis)
 					{
-						pos = ctrl->GetPositionP();
-						sz = ctrl->GetSizeP();
-						ctrl->SetAreaP(pos.x, pos.y, drawX, pos.y + (OSInt)sz.y, false);
-						me->parent->UpdateChildrenSize(true);
-						break;
+						dockType = ctrl->GetDockType();
+						if (dockType == UI::GUIControl::DOCK_RIGHT && me->isRight)
+						{
+							pos = ctrl->GetPositionP();
+							sz = ctrl->GetSizeP();
+							ctrl->SetAreaP(drawX, pos.y, pos.x + (OSInt)sz.x, pos.y + (OSInt)sz.y, false);
+							nnparent->UpdateChildrenSize(true);
+							break;
+						}
+						else if (dockType == UI::GUIControl::DOCK_LEFT && !me->isRight)
+						{
+							pos = ctrl->GetPositionP();
+							sz = ctrl->GetSizeP();
+							ctrl->SetAreaP(pos.x, pos.y, drawX, pos.y + (OSInt)sz.y, false);
+							nnparent->UpdateChildrenSize(true);
+							break;
+						}
 					}
 				}
 			}
@@ -122,12 +132,16 @@ OSInt __stdcall UI::GUIHSplitter::FormWndProc(void *hWnd, UInt32 msg, UOSInt wPa
 			GetCursorPos(&pt);
 #endif
 
-			hdc = GetDC((HWND)me->parent->GetHandle());
+			NotNullPtr<GUIClientControl> nnparent;
+			if (me->parent.SetTo(nnparent))
+			{
+				hdc = GetDC((HWND)nnparent->GetHandle());
 
-			me->DrawXorBar(hdc, me->lastX, me->lastY);
-			me->DrawXorBar(hdc, pt.x, pt.y);
+				me->DrawXorBar(hdc, me->lastX, me->lastY);
+				me->DrawXorBar(hdc, pt.x, pt.y);
 
-			ReleaseDC((HWND)me->parent->GetHandle(), hdc);
+				ReleaseDC((HWND)nnparent->GetHandle(), hdc);
+			}
 			me->lastX = pt.x;
 			me->lastY = pt.y;
 		}
@@ -207,79 +221,83 @@ void UI::GUIHSplitter::CalDragRange()
 	UI::GUIControl *ctrl;
 	UI::GUIControl::DockType dockType;
 	min = 0;
-	Double maxD = this->parent->GetClientSize().x;
-	max = Double2Int32(maxD * this->hdpi / 96.0);
+	NotNullPtr<GUIClientControl> nnparent;
+	if (this->parent.SetTo(nnparent))
+	{
+		Double maxD = nnparent->GetClientSize().x;
+		max = Double2Int32(maxD * this->hdpi / 96.0);
 
-	i = this->parent->GetChildCount();
-	if (this->isRight)
-	{
-		while (i-- > 0)
+		i = nnparent->GetChildCount();
+		if (this->isRight)
 		{
-			ctrl = this->parent->GetChild(i);
-			if (ctrl == this)
+			while (i-- > 0)
 			{
-				foundThis = true;
-			}
-			else
-			{
-				dockType = ctrl->GetDockType();
-				if (dockType == UI::GUIControl::DOCK_RIGHT)
+				ctrl = nnparent->GetChild(i);
+				if (ctrl == this)
 				{
-					if (foundThis && !foundRight)
-					{
-						foundRight = true;
-						max = ctrl->GetPositionP().x;
-						max += (OSInt)ctrl->GetSizeP().x;
-					}
+					foundThis = true;
 				}
-				else if (dockType == UI::GUIControl::DOCK_LEFT)
+				else
 				{
-					if (!foundLeft)
+					dockType = ctrl->GetDockType();
+					if (dockType == UI::GUIControl::DOCK_RIGHT)
 					{
-						foundLeft = true;
-						min = ctrl->GetPositionP().x;
-						min += (OSInt)ctrl->GetSizeP().x;
+						if (foundThis && !foundRight)
+						{
+							foundRight = true;
+							max = ctrl->GetPositionP().x;
+							max += (OSInt)ctrl->GetSizeP().x;
+						}
+					}
+					else if (dockType == UI::GUIControl::DOCK_LEFT)
+					{
+						if (!foundLeft)
+						{
+							foundLeft = true;
+							min = ctrl->GetPositionP().x;
+							min += (OSInt)ctrl->GetSizeP().x;
+						}
 					}
 				}
 			}
 		}
-	}
-	else
-	{
-		while (i-- > 0)
+		else
 		{
-			ctrl = this->parent->GetChild(i);
-			if (ctrl == this)
+			while (i-- > 0)
 			{
-				foundThis = true;
-			}
-			else
-			{
-				dockType = ctrl->GetDockType();
-				if (dockType == UI::GUIControl::DOCK_RIGHT)
+				ctrl = nnparent->GetChild(i);
+				if (ctrl == this)
 				{
-					if (!foundRight)
-					{
-						foundRight = true;
-						max = ctrl->GetPositionP().x;
-					}
+					foundThis = true;
 				}
-				else if (dockType == UI::GUIControl::DOCK_LEFT)
+				else
 				{
-					if (foundThis && !foundLeft)
+					dockType = ctrl->GetDockType();
+					if (dockType == UI::GUIControl::DOCK_RIGHT)
 					{
-						foundLeft = true;
-						min = ctrl->GetPositionP().x;
+						if (!foundRight)
+						{
+							foundRight = true;
+							max = ctrl->GetPositionP().x;
+						}
+					}
+					else if (dockType == UI::GUIControl::DOCK_LEFT)
+					{
+						if (foundThis && !foundLeft)
+						{
+							foundLeft = true;
+							min = ctrl->GetPositionP().x;
+						}
 					}
 				}
 			}
 		}
+		this->dragMax = max;
+		this->dragMin = min;
 	}
-	this->dragMax = max;
-	this->dragMin = min;
 }
 
-UI::GUIHSplitter::GUIHSplitter(NotNullPtr<UI::GUICore> ui, UI::GUIClientControl *parent, Int32 width, Bool isRight) : UI::GUIControl(ui, parent)
+UI::GUIHSplitter::GUIHSplitter(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, Int32 width, Bool isRight) : UI::GUIControl(ui, parent)
 {
 	this->dragMode = false;
 	this->isRight = isRight;

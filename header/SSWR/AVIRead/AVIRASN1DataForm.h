@@ -23,18 +23,18 @@ namespace SSWR
 
 			UI::GUIMainMenu *mnuMain;
 
-			UI::GUIPanel *pnlStatus;
+			NotNullPtr<UI::GUIPanel> pnlStatus;
 			UI::GUILabel *lblStatus;
 			UI::GUITextBox *txtStatus;
 			UI::GUITabControl *tcMain;
 
-			UI::GUITabPage *tpDesc;
+			NotNullPtr<UI::GUITabPage> tpDesc;
 			UI::GUITextBox *txtDesc;
 			
-			UI::GUITabPage *tpASN1;
+			NotNullPtr<UI::GUITabPage> tpASN1;
 			UI::GUITextBox *txtASN1;
 
-			UI::GUITabPage *tpVerify;
+			NotNullPtr<UI::GUITabPage> tpVerify;
 			UI::GUILabel *lblVerifyHash;
 			UI::GUIComboBox *cboVerifyHash;
 			UI::GUILabel *lblVerifyPayloadFile;
@@ -46,7 +46,7 @@ namespace SSWR
 			UI::GUILabel *lblVerifyStatus;
 			UI::GUITextBox *txtVerifyStatus;
 
-			UI::GUITabPage *tpSignature;
+//			NotNullPtr<UI::GUITabPage> tpSignature;
 /*			UI::GUILabel *lblSignatureHash;
 			UI::GUIComboBox *cboSignatureHash;
 			UI::GUILabel *lblSignaturePayloadFile;
@@ -55,7 +55,7 @@ namespace SSWR
 			UI::GUILabel *lblSiguatureValue;
 			UI::GUITextBox *txtSignatureValue;*/
 
-			UI::GUITabPage *tpEncrypt;
+			NotNullPtr<UI::GUITabPage> tpEncrypt;
 			UI::GUILabel *lblEncryptInputType;
 			UI::GUIComboBox *cboEncryptInputType;
 			UI::GUILabel *lblEncryptOutputType;

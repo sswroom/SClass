@@ -204,10 +204,10 @@ SSWR::AVIRead::AVIRUserAgentBatchForm::AVIRUserAgentBatchForm(UI::GUIClientContr
 
 	this->core = core;
 
-	NEW_CLASS(this->pnlSource, UI::GUIPanel(ui, this));
+	NEW_CLASSNN(this->pnlSource, UI::GUIPanel(ui, *this));
 	this->pnlSource->SetRect(0, 0, 100, 256, false);
 	this->pnlSource->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->pnlControl, UI::GUIPanel(ui, this->pnlSource));
+	NEW_CLASSNN(this->pnlControl, UI::GUIPanel(ui, this->pnlSource));
 	this->pnlControl->SetRect(0, 0, 100, 31, false);
 	this->pnlControl->SetDockType(UI::GUIControl::DOCK_BOTTOM);
 	NEW_CLASS(this->txtSource, UI::GUITextBox(ui, this->pnlSource, CSTR(""), true));
@@ -221,8 +221,8 @@ SSWR::AVIRead::AVIRUserAgentBatchForm::AVIRUserAgentBatchForm(UI::GUIClientContr
 	NEW_CLASS(this->btnUpdateCB, UI::GUIButton(ui, this->pnlControl, CSTR("Update from Clipboard")));
 	this->btnUpdateCB->SetRect(164, 4, 150, 23, false);
 	this->btnUpdateCB->HandleButtonClick(OnUpdateCBClicked, this);
-	NEW_CLASS(this->vspControl, UI::GUIVSplitter(ui, this, 3, false));
-	NEW_CLASS(this->txtOutput, UI::GUITextBox(ui, this, CSTR(""), true));
+	NEW_CLASS(this->vspControl, UI::GUIVSplitter(ui, *this, 3, false));
+	NEW_CLASS(this->txtOutput, UI::GUITextBox(ui, *this, CSTR(""), true));
 	this->txtOutput->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->txtOutput->SetReadOnly(true);
 

@@ -22,14 +22,14 @@ namespace SSWR
 			Math::CoordinateSystem *outCSys;
 
 			UI::GUITextBox *txtCurrCSys;
-			UI::GUIPanel *pnlSel;
+			NotNullPtr<UI::GUIPanel> pnlSel;
 			UI::GUIRadioButton *radGeo;
 			UI::GUIComboBox *cboGeo;
 			UI::GUIRadioButton *radProj;
 			UI::GUIComboBox *cboProj;
 			UI::GUIButton *btnOK;
 			UI::GUIButton *btnCancel;
-			UI::GUIPanel *pnlInfo;
+			NotNullPtr<UI::GUIPanel> pnlInfo;
 
 			static void __stdcall OnOKClicked(void *userObj);
 			static void __stdcall OnCancelClicked(void *userObj);

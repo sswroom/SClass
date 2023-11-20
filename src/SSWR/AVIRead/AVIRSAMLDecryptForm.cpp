@@ -145,20 +145,20 @@ SSWR::AVIRead::AVIRSAMLDecryptForm::AVIRSAMLDecryptForm(UI::GUIClientControl *pa
 	this->SetFont(0, 0, 8.25, false);
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASS(this->lblKey, UI::GUILabel(ui, this, CSTR("Key File")));
+	NEW_CLASS(this->lblKey, UI::GUILabel(ui, *this, CSTR("Key File")));
 	this->lblKey->SetRect(0, 0, 100, 23, false);
-	NEW_CLASS(this->txtKey, UI::GUITextBox(ui, this, CSTR("")));
+	NEW_CLASS(this->txtKey, UI::GUITextBox(ui, *this, CSTR("")));
 	this->txtKey->SetRect(100, 0, 600, 23, false);
-	NEW_CLASS(this->lblRAWResponse, UI::GUILabel(ui, this, CSTR("RAW Response")));
+	NEW_CLASS(this->lblRAWResponse, UI::GUILabel(ui, *this, CSTR("RAW Response")));
 	this->lblRAWResponse->SetRect(0, 24, 100, 23, false);
-	NEW_CLASS(this->txtRAWResponse, UI::GUITextBox(ui, this, CSTR(""), true));
+	NEW_CLASS(this->txtRAWResponse, UI::GUITextBox(ui, *this, CSTR(""), true));
 	this->txtRAWResponse->SetRect(100, 24, 500, 119, false);
-	NEW_CLASS(this->btnDecrypt, UI::GUIButton(ui, this, CSTR("Decrypt")));
+	NEW_CLASS(this->btnDecrypt, UI::GUIButton(ui, *this, CSTR("Decrypt")));
 	this->btnDecrypt->SetRect(100, 144, 75, 23, false);
 	this->btnDecrypt->HandleButtonClick(OnDecryptClicked, this);
-	NEW_CLASS(this->lblResult, UI::GUILabel(ui, this, CSTR("Result")));
+	NEW_CLASS(this->lblResult, UI::GUILabel(ui, *this, CSTR("Result")));
 	this->lblResult->SetRect(0, 168, 100, 23, false);
-	NEW_CLASS(this->txtResult, UI::GUITextBox(ui, this, CSTR(""), true));
+	NEW_CLASS(this->txtResult, UI::GUITextBox(ui, *this, CSTR(""), true));
 	this->txtResult->SetRect(100, 168, 500, 119, false);
 
 	this->HandleDropFiles(OnFormFiles, this);

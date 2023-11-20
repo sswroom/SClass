@@ -38,7 +38,7 @@ namespace SSWR
 			Net::SSLEngine *ssl;
 			Data::StringMap<CountryInfo*> countries;
 
-			UI::GUIPanel *pnlRequest;
+			NotNullPtr<UI::GUIPanel> pnlRequest;
 			UI::GUIButton *btnFile;
 			UI::GUIButton *btnDownload;
 			UI::GUIPictureBoxSimple *pbNewCases;

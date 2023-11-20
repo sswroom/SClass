@@ -36,11 +36,11 @@ namespace SSWR
 			IO::LogTool log;
 			IO::MODBUSDevSim *currDev;
 
-			UI::GUIPanel *pnlCtrl;
+			NotNullPtr<UI::GUIPanel> pnlCtrl;
 			UI::GUILabel *lblPort;
 			UI::GUITextBox *txtPort;
 			UI::GUIButton *btnListen;
-			UI::GUIGroupBox *grpDev;
+			NotNullPtr<UI::GUIGroupBox> grpDev;
 			UI::GUILabel *lblAddr;
 			UI::GUITextBox *txtAddr;
 			UI::GUIComboBox *cboDevType;

@@ -544,11 +544,11 @@ SSWR::AVIRead::AVIRProcInfoForm::AVIRProcInfoForm(UI::GUIClientControl *parent, 
 	this->currProcRes = 0;
 	this->threadCnt = Sync::ThreadUtil::GetThreadCnt();
 
-	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, this));
+	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, *this));
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	this->tpSummary = this->tcMain->AddTabPage(CSTR("Summary"));
-	NEW_CLASS(this->pnlSummary, UI::GUIPanel(ui, this->tpSummary));
+	NEW_CLASSNN(this->pnlSummary, UI::GUIPanel(ui, this->tpSummary));
 	this->pnlSummary->SetRect(0, 0, 100, 48, false);
 	this->pnlSummary->SetDockType(UI::GUIControl::DOCK_BOTTOM);
 	NEW_CLASS(this->lvSummary, UI::GUIListView(ui, this->tpSummary, UI::GUIListView::LVSTYLE_TABLE, 10));
@@ -568,7 +568,7 @@ SSWR::AVIRead::AVIRProcInfoForm::AVIRProcInfoForm(UI::GUIClientControl *parent, 
 	this->lvSummary->AddColumn(CSTR("Handles"), 50);
 
 	this->tpDetail = this->tcMain->AddTabPage(CSTR("Detail"));
-	NEW_CLASS(this->pnlDetail, UI::GUIPanel(ui, this->tpDetail));
+	NEW_CLASSNN(this->pnlDetail, UI::GUIPanel(ui, this->tpDetail));
 	this->pnlDetail->SetRect(0, 0, 200, 100, false);
 	this->pnlDetail->SetDockType(UI::GUIControl::DOCK_LEFT);
 	NEW_CLASS(this->btnDetailCurr, UI::GUIButton(ui, this->pnlDetail, CSTR("Current Process")));
@@ -630,7 +630,7 @@ SSWR::AVIRead::AVIRProcInfoForm::AVIRProcInfoForm(UI::GUIClientControl *parent, 
 	this->txtDetArchitecture->SetReadOnly(true);
 
 	this->tpDetModule = this->tcDetail->AddTabPage(CSTR("Module"));
-	NEW_CLASS(this->pnlDetModule, UI::GUIPanel(ui, this->tpDetModule));
+	NEW_CLASSNN(this->pnlDetModule, UI::GUIPanel(ui, this->tpDetModule));
 	this->pnlDetModule->SetRect(0, 0, 100, 31, false);
 	this->pnlDetModule->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->btnDetModule, UI::GUIButton(ui, this->pnlDetModule, CSTR("Refresh")));
@@ -645,7 +645,7 @@ SSWR::AVIRead::AVIRProcInfoForm::AVIRProcInfoForm(UI::GUIClientControl *parent, 
 	this->lvDetModule->AddColumn(CSTR("Size"), 80);
 
 	this->tpDetThread = this->tcDetail->AddTabPage(CSTR("Thread"));
-	NEW_CLASS(this->pnlDetThread, UI::GUIPanel(ui, this->tpDetThread));
+	NEW_CLASSNN(this->pnlDetThread, UI::GUIPanel(ui, this->tpDetThread));
 	this->pnlDetThread->SetRect(0, 0, 100, 31, false);
 	this->pnlDetThread->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->btnDetThread, UI::GUIButton(ui, this->pnlDetThread, CSTR("Refresh")));
@@ -662,7 +662,7 @@ SSWR::AVIRead::AVIRProcInfoForm::AVIRProcInfoForm(UI::GUIClientControl *parent, 
 	this->lvDetThread->AddColumn(CSTR("Start Address(Name)"), 600);
 
 	this->tpDetHeap = this->tcDetail->AddTabPage(CSTR("Heap"));
-	NEW_CLASS(this->pnlDetHeap, UI::GUIPanel(ui, this->tpDetHeap));
+	NEW_CLASSNN(this->pnlDetHeap, UI::GUIPanel(ui, this->tpDetHeap));
 	this->pnlDetHeap->SetRect(0, 0, 100, 31, false);
 	this->pnlDetHeap->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->btnDetHeap, UI::GUIButton(ui, this->pnlDetHeap, CSTR("Refresh")));
@@ -687,7 +687,7 @@ SSWR::AVIRead::AVIRProcInfoForm::AVIRProcInfoForm(UI::GUIClientControl *parent, 
 	this->lvDetHeap->HandleSelChg(OnDetHeapItemSelChg, this);
 
 	this->tpDetHandle = this->tcDetail->AddTabPage(CSTR("Handles"));
-	NEW_CLASS(this->pnlDetHandle, UI::GUIPanel(ui, this->tpDetHandle));
+	NEW_CLASSNN(this->pnlDetHandle, UI::GUIPanel(ui, this->tpDetHandle));
 	this->pnlDetHandle->SetRect(0, 0, 100, 31, false);
 	this->pnlDetHandle->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->btnDetHandle, UI::GUIButton(ui, this->pnlDetHandle, CSTR("Refresh")));
@@ -703,26 +703,26 @@ SSWR::AVIRead::AVIRProcInfoForm::AVIRProcInfoForm(UI::GUIClientControl *parent, 
 	this->lvDetHandle->AddColumn(CSTR("Desc"), 300);
 
 	this->tpDetChart = this->tcDetail->AddTabPage(CSTR("Chart"));
-	NEW_CLASS(this->grpDetChartCPU, UI::GUIGroupBox(ui, this->tpDetChart, CSTR("CPU")));
+	NEW_CLASSNN(this->grpDetChartCPU, UI::GUIGroupBox(ui, this->tpDetChart, CSTR("CPU")));
 	this->grpDetChartCPU->SetRect(0, 0, 100, 200, false);
 	this->grpDetChartCPU->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->rlcDetChartCPU, UI::GUIRealtimeLineChart(ui, this->grpDetChartCPU, this->core->GetDrawEngine(), 1, 600, 300));
 	this->rlcDetChartCPU->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->rlcDetChartCPU->SetUnit(CSTR("%"));
 	NEW_CLASS(this->vspDetChartCPU, UI::GUIVSplitter(ui, this->tpDetChart, 3, false));
-	NEW_CLASS(this->grpDetChartPage, UI::GUIGroupBox(ui, this->tpDetChart, CSTR("Paged(R)/Non-Paged(B) Pool")));
+	NEW_CLASSNN(this->grpDetChartPage, UI::GUIGroupBox(ui, this->tpDetChart, CSTR("Paged(R)/Non-Paged(B) Pool")));
 	this->grpDetChartPage->SetRect(0, 0, 100, 200, false);
 	this->grpDetChartPage->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->rlcDetChartPage, UI::GUIRealtimeLineChart(ui, this->grpDetChartPage, this->core->GetDrawEngine(), 2, 600, 300));
 	this->rlcDetChartPage->SetDockType(UI::GUIControl::DOCK_FILL);
 	NEW_CLASS(this->vspDetChartPage, UI::GUIVSplitter(ui, this->tpDetChart, 3, false));
-	NEW_CLASS(this->grpDetChartCount, UI::GUIGroupBox(ui, this->tpDetChart, CSTR("GDI(R)/User(B)/Handle(G) Count")));
+	NEW_CLASSNN(this->grpDetChartCount, UI::GUIGroupBox(ui, this->tpDetChart, CSTR("GDI(R)/User(B)/Handle(G) Count")));
 	this->grpDetChartCount->SetRect(0, 0, 100, 200, false);
 	this->grpDetChartCount->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->rlcDetChartCount, UI::GUIRealtimeLineChart(ui, this->grpDetChartCount, this->core->GetDrawEngine(), 3, 600, 300));
 	this->rlcDetChartCount->SetDockType(UI::GUIControl::DOCK_FILL);
 	NEW_CLASS(this->vspDetChartCount, UI::GUIVSplitter(ui, this->tpDetChart, 3, false));
-	NEW_CLASS(this->grpDetChartWS, UI::GUIGroupBox(ui, this->tpDetChart, CSTR("WS(R)/Page File(B)")));
+	NEW_CLASSNN(this->grpDetChartWS, UI::GUIGroupBox(ui, this->tpDetChart, CSTR("WS(R)/Page File(B)")));
 	this->grpDetChartWS->SetRect(0, 0, 100, 200, false);
 	this->grpDetChartWS->SetDockType(UI::GUIControl::DOCK_FILL);
 	NEW_CLASS(this->rlcDetChartWS, UI::GUIRealtimeLineChart(ui, this->grpDetChartWS, this->core->GetDrawEngine(), 2, 600, 300));

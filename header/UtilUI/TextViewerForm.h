@@ -14,7 +14,7 @@ namespace UtilUI
 	{
 	private:
 		UI::GUITextFileView *txtView;
-		UI::GUIPanel *pnlStatus;
+		NotNullPtr<UI::GUIPanel> pnlStatus;
 		UI::GUITextBox *txtStatus;
 		UI::GUIMainMenu *mnuMain;
 

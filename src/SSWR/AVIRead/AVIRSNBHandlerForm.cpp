@@ -56,7 +56,7 @@ SSWR::AVIRead::AVIRSNBHandlerForm::AVIRSNBHandlerForm(UI::GUIClientControl *pare
 	this->simg = 0;
 	this->handType = handType;
 
-	NEW_CLASS(this->pnlControl, UI::GUIPanel(ui, this));
+	NEW_CLASSNN(this->pnlControl, UI::GUIPanel(ui, *this));
 	this->pnlControl->SetRect(0, 0, 200, 100, false);
 	this->pnlControl->SetDockType(UI::GUIControl::DOCK_LEFT);
 	NEW_CLASS(this->lblType, UI::GUILabel(ui, this->pnlControl, CSTR("Type")));
@@ -70,7 +70,7 @@ SSWR::AVIRead::AVIRSNBHandlerForm::AVIRSNBHandlerForm(UI::GUIClientControl *pare
 	NEW_CLASS(this->btnOk, UI::GUIButton(ui, this->pnlControl, CSTR("Ok")));
 	this->btnOk->SetRect(100, 64, 75, 23, false);
 	this->btnOk->HandleButtonClick(OnOkClicked, this);
-	NEW_CLASS(this->pbImage, UI::GUIPictureBox(ui, this, this->core->GetDrawEngine(), false, true));
+	NEW_CLASS(this->pbImage, UI::GUIPictureBox(ui, *this, this->core->GetDrawEngine(), false, true));
 	this->pbImage->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	UOSInt i = 0;

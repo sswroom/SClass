@@ -37,11 +37,11 @@ SSWR::AVIRead::AVIRRegionalMapForm::AVIRRegionalMapForm(UI::GUIClientControl *pa
 	this->layer = 0;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASS(this->txtDesc, UI::GUITextBox(ui, this, CSTR(""), true));
+	NEW_CLASS(this->txtDesc, UI::GUITextBox(ui, *this, CSTR(""), true));
 	this->txtDesc->SetRect(0, 0, 100, 71, false);
 	this->txtDesc->SetReadOnly(true);
 	this->txtDesc->SetDockType(UI::GUIControl::DOCK_BOTTOM);
-	NEW_CLASS(this->lvMaps, UI::GUIListView(ui, this, UI::GUIListView::LVSTYLE_TABLE, 3));
+	NEW_CLASS(this->lvMaps, UI::GUIListView(ui, *this, UI::GUIListView::LVSTYLE_TABLE, 3));
 	this->lvMaps->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvMaps->HandleSelChg(OnMapsSelChg, this);
 	this->lvMaps->HandleDblClk(OnMapsDblClk, this);

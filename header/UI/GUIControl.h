@@ -223,7 +223,7 @@ namespace UI
 		void *hbrBackground;
 		NotNullPtr<GUICore> ui;
 		DockType dockType;
-		GUIClientControl *parent;
+		Optional<GUIClientControl> parent;
 		Double lxPos;
 		Double lyPos;
 		Double lxPos2;
@@ -241,9 +241,9 @@ namespace UI
 
 	protected:
 		void InitControl(void *hInst, void *parentHWnd, const WChar *className, const UTF8Char *txt, UInt32 style, UInt32 exStyle, Double x, Double y, Double w, Double h);
-		void InitControl(void *hInst, UI::GUIClientControl *parent, const WChar *className, const UTF8Char *txt, UInt32 style, UInt32 exStyle, Double x, Double y, Double w, Double h);
+		void InitControl(void *hInst, Optional<UI::GUIClientControl> parent, const WChar *className, const UTF8Char *txt, UInt32 style, UInt32 exStyle, Double x, Double y, Double w, Double h);
 
-		GUIControl(NotNullPtr<GUICore> ui, UI::GUIClientControl *parent);
+		GUIControl(NotNullPtr<GUICore> ui, Optional<UI::GUIClientControl> parent);
 	public:
 		virtual ~GUIControl();
 
@@ -302,7 +302,7 @@ namespace UI
 		UInt32 GetColorHightlight();
 		UInt32 GetColorHightlightText();
 
-		virtual GUIClientControl *GetParent();
+		virtual Optional<GUIClientControl> GetParent();
 		GUIForm *GetRootForm();
 		ControlHandle *GetHandle();
 		MonitorHandle *GetHMonitor();

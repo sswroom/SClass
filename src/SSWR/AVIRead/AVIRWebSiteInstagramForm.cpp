@@ -98,11 +98,11 @@ SSWR::AVIRead::AVIRWebSiteInstagramForm::AVIRWebSiteInstagramForm(UI::GUIClientC
 	ua->Release();
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, this));
+	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, *this));
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	this->tpUser = this->tcMain->AddTabPage(CSTR("User"));
-	NEW_CLASS(this->pnlRequest, UI::GUIPanel(ui, this->tpUser));
+	NEW_CLASSNN(this->pnlRequest, UI::GUIPanel(ui, this->tpUser));
 	this->pnlRequest->SetRect(0, 0, 100, 31, false);
 	this->pnlRequest->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->lblChannelId, UI::GUILabel(ui, this->pnlRequest, CSTR("ChannelId")));
@@ -123,7 +123,7 @@ SSWR::AVIRead::AVIRWebSiteInstagramForm::AVIRWebSiteInstagramForm(UI::GUIClientC
 	this->lvItems->AddColumn(CSTR("Message"), 400);
 
 	this->tpPage = this->tcMain->AddTabPage(CSTR("Page"));
-	NEW_CLASS(this->pnlPage, UI::GUIPanel(ui, this->tpPage));
+	NEW_CLASSNN(this->pnlPage, UI::GUIPanel(ui, this->tpPage));
 	this->pnlPage->SetRect(0, 0, 100, 31, false);
 	this->pnlPage->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->lblShortCode, UI::GUILabel(ui, this->pnlPage, CSTR("ShortCode")));

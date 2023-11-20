@@ -9,7 +9,7 @@
 
 #define NMEAMAXSIZE 128
 
-SSWR::AVIRead::AVIRGPSTrackerForm::DisplayOffButton::DisplayOffButton(NotNullPtr<UI::GUICore> ui, UI::GUIClientControl *parent, Text::CStringNN txt, AVIRGPSTrackerForm *frm) : UI::GUIButton(ui, parent, txt)
+SSWR::AVIRead::AVIRGPSTrackerForm::DisplayOffButton::DisplayOffButton(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, Text::CStringNN txt, AVIRGPSTrackerForm *frm) : UI::GUIButton(ui, parent, txt)
 {
 	this->frm = frm;
 }
@@ -296,7 +296,7 @@ SSWR::AVIRead::AVIRGPSTrackerForm::AVIRGPSTrackerForm(UI::GUIClientControl *pare
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 	this->lastUpdateTime.SetCurrTimeUTC();
 
-	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, this));
+	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, *this));
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->tpLocation = this->tcMain->AddTabPage(CSTR("Location"));
 
@@ -412,7 +412,7 @@ SSWR::AVIRead::AVIRGPSTrackerForm::AVIRGPSTrackerForm(UI::GUIClientControl *pare
 	NEW_CLASS(this->lbAlertAdd, UI::GUIListBox(ui, this->tpAlertAdd, false));
 	this->lbAlertAdd->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->tpAlertView = this->tcAlert->AddTabPage(CSTR("View"));
-	NEW_CLASS(this->pnlAlertView, UI::GUIPanel(ui, this->tpAlertView));
+	NEW_CLASSNN(this->pnlAlertView, UI::GUIPanel(ui, this->tpAlertView));
 	this->pnlAlertView->SetRect(0, 0, 100, 31, false);
 	this->pnlAlertView->SetDockType(UI::GUIControl::DOCK_BOTTOM);
 	NEW_CLASS(this->lbAlert, UI::GUIListBox(ui, this->tpAlertView, false));
@@ -421,7 +421,7 @@ SSWR::AVIRead::AVIRGPSTrackerForm::AVIRGPSTrackerForm(UI::GUIClientControl *pare
 	if (this->locSvc->GetServiceType() == Map::ILocationService::ST_MTK)
 	{
 		this->tpMTK = this->tcMain->AddTabPage(CSTR("MTK"));
-		NEW_CLASS(this->grpMTKFirmware, UI::GUIGroupBox(ui, this->tpMTK, CSTR("Firmware")));
+		NEW_CLASSNN(this->grpMTKFirmware, UI::GUIGroupBox(ui, this->tpMTK, CSTR("Firmware")));
 		this->grpMTKFirmware->SetRect(0, 0, 340, 116, false);
 		NEW_CLASS(this->lblMTKRelease, UI::GUILabel(ui, this->grpMTKFirmware, CSTR("Release")));
 		this->lblMTKRelease->SetRect(0, 0, 100, 23, false);

@@ -25,7 +25,7 @@ gboolean GUITabControl_OnShow(gpointer user_data)
 	return false;
 }
 
-UI::GUITabControl::GUITabControl(NotNullPtr<UI::GUICore> ui, UI::GUIClientControl *parent) : UI::GUIControl(ui, parent)
+UI::GUITabControl::GUITabControl(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIClientControl> parent) : UI::GUIControl(ui, parent)
 {
 	this->selIndex = 0;
 	this->hwnd = (ControlHandle*)gtk_notebook_new();
@@ -50,11 +50,11 @@ UI::GUITabControl::~GUITabControl()
 	}
 }
 
-UI::GUITabPage *UI::GUITabControl::AddTabPage(NotNullPtr<Text::String> tabName)
+NotNullPtr<UI::GUITabPage> UI::GUITabControl::AddTabPage(NotNullPtr<Text::String> tabName)
 {
-	UI::GUITabPage *tp;
+	NotNullPtr<UI::GUITabPage> tp;
 	PageInfo *page;
-	NEW_CLASS(tp, UI::GUITabPage(this->ui, 0, this, this->tabPages.GetCount()));
+	NEW_CLASSNN(tp, UI::GUITabPage(this->ui, 0, *this, this->tabPages.GetCount()));
 	page = MemAlloc(PageInfo, 1);
 	page->lbl = gtk_label_new((const Char*)tabName->v);
 	page->txt = tabName->Clone();
@@ -72,11 +72,11 @@ UI::GUITabPage *UI::GUITabControl::AddTabPage(NotNullPtr<Text::String> tabName)
 	return tp;
 }
 
-UI::GUITabPage *UI::GUITabControl::AddTabPage(Text::CStringNN tabName)
+NotNullPtr<UI::GUITabPage> UI::GUITabControl::AddTabPage(Text::CStringNN tabName)
 {
-	UI::GUITabPage *tp;
+	NotNullPtr<UI::GUITabPage> tp;
 	PageInfo *page;
-	NEW_CLASS(tp, UI::GUITabPage(this->ui, 0, this, this->tabPages.GetCount()));
+	NEW_CLASSNN(tp, UI::GUITabPage(this->ui, 0, *this, this->tabPages.GetCount()));
 	page = MemAlloc(PageInfo, 1);
 	page->lbl = gtk_label_new((const Char*)tabName.v);
 	page->txt = Text::String::New(tabName);
@@ -103,14 +103,12 @@ void UI::GUITabControl::SetSelectedIndex(UOSInt index)
 	}
 }
 
-void UI::GUITabControl::SetSelectedPage(UI::GUITabPage *page)
+void UI::GUITabControl::SetSelectedPage(NotNullPtr<UI::GUITabPage> page)
 {
-	if (page == 0)
-		return;
 	UOSInt i = this->tabPages.GetCount();
 	while (i-- > 0)
 	{
-		if (page == this->tabPages.GetItem(i))
+		if (page.Ptr() == this->tabPages.GetItem(i))
 		{
 			SetSelectedIndex(i);
 		}

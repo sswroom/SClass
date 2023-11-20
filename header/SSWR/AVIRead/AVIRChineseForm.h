@@ -42,7 +42,7 @@ namespace SSWR
 			UI::GUITextBox *txtRelatedAdd;
 			UI::GUIButton *btnRelatedGo;
 
-			UI::GUIGroupBox *grpCharInfo;
+			NotNullPtr<UI::GUIGroupBox> grpCharInfo;
 			UI::GUILabel *lblRadical;
 			UI::GUITextBox *txtRadical;
 			UI::GUILabel *lblRadicalV;

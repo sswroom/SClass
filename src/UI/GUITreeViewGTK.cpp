@@ -134,7 +134,7 @@ void UI::GUITreeView::FreeItems()
 	}
 }
 
-UI::GUITreeView::GUITreeView(NotNullPtr<GUICore> ui, UI::GUIClientControl *parent) : UI::GUIControl(ui, parent)
+UI::GUITreeView::GUITreeView(NotNullPtr<GUICore> ui, NotNullPtr<UI::GUIClientControl> parent) : UI::GUIControl(ui, parent)
 {
 	ClassData *data = MemAlloc(ClassData, 1);
 	this->autoFocus = false;

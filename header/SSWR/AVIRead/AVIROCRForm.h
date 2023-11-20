@@ -31,7 +31,7 @@ namespace SSWR
 			Data::ArrayList<ResultInfo*> results;
 			Media::StaticImage *currImg;
 
-			UI::GUIPanel *pnlResult;
+			NotNullPtr<UI::GUIPanel> pnlResult;
 			UI::GUIPictureBoxSimple *pbResult;
 			UI::GUIListView *lvText;
 			UI::GUIHSplitter *hspText;

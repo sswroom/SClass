@@ -23,20 +23,20 @@ namespace SSWR
 		private:
 			UI::GUITabControl *tcMain;
 
-			UI::GUITabPage *tpMain;
+			NotNullPtr<UI::GUITabPage> tpMain;
 			UI::GUIButton *btnChgProfile;
 			UI::GUILabel *lblProfile;
 			
-			UI::GUITabPage *tpProfile;
-			UI::GUIPanel *pnlProfile1;
+			NotNullPtr<UI::GUITabPage> tpProfile;
+			NotNullPtr<UI::GUIPanel> pnlProfile1;
 			UI::GUIListBox *lbProfile;
 			UI::GUIButton *btnProfileDel;
 		//	UI::GUIHSplitter *hspProfile;
-			UI::GUIPanel *pnlProfile2;
+			NotNullPtr<UI::GUIPanel> pnlProfile2;
 			UI::GUITextBox *txtProfileName;
 			UI::GUITextBox *txtSuffix;
 
-			UI::GUIGroupBox *grpSize;
+			NotNullPtr<UI::GUIGroupBox> grpSize;
 			UI::GUIRadioButton *radSize;
 			UI::GUITextBox *txtWidth;
 			UI::GUITextBox *txtHeight;

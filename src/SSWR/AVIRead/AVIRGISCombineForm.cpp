@@ -70,8 +70,8 @@ SSWR::AVIRead::AVIRGISCombineForm::AVIRGISCombineForm(UI::GUIClientControl *pare
 	NEW_CLASS(this->selLayers, Data::ArrayList<Map::MapDrawLayer*>());
 
 	UI::GUILabel *lbl;
-	UI::GUIPanel *pnl;
-	NEW_CLASS(pnl, UI::GUIPanel(ui, this));
+	NotNullPtr<UI::GUIPanel> pnl;
+	NEW_CLASSNN(pnl, UI::GUIPanel(ui, *this));
 	pnl->SetRect(0, 0, 448, 48, false);
 	pnl->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(lbl, UI::GUILabel(ui, pnl, CSTR("Select layers to combine")));
@@ -83,7 +83,7 @@ SSWR::AVIRead::AVIRGISCombineForm::AVIRGISCombineForm(UI::GUIClientControl *pare
 	this->btnUncheckAll->SetRect(88, 24, 80, 23, false);
 	this->btnUncheckAll->HandleButtonClick(OnUncheckAllClick, this);
 
-	NEW_CLASS(pnl, UI::GUIPanel(ui, this));
+	NEW_CLASSNN(pnl, UI::GUIPanel(ui, *this));
 	pnl->SetRect(0, 0, 448, 40, false);
 	pnl->SetDockType(UI::GUIControl::DOCK_BOTTOM);
 	NEW_CLASS(this->btnCombine, UI::GUIButton(ui, pnl, CSTR("Combine")));
@@ -93,7 +93,7 @@ SSWR::AVIRead::AVIRGISCombineForm::AVIRGISCombineForm(UI::GUIClientControl *pare
 	this->btnCancel->SetRect(160, 8, 75, 23, false);
 	this->btnCancel->HandleButtonClick(OnCancelClick, this);
 	
-	NEW_CLASS(this->lbLayers, UI::GUICheckedListBox(ui, this));
+	NEW_CLASS(this->lbLayers, UI::GUICheckedListBox(ui, *this));
 	this->lbLayers->SetDockType(UI::GUIControl::DOCK_FILL);
 
 

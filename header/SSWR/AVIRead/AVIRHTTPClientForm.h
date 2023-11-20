@@ -46,8 +46,8 @@ namespace SSWR
 
 			UI::GUITabControl *tcMain;
 
-			UI::GUITabPage *tpRequest;
-			UI::GUIPanel *pnlRequest;
+			NotNullPtr<UI::GUITabPage> tpRequest;
+			NotNullPtr<UI::GUIPanel> pnlRequest;
 			UI::GUILabel *lblURL;
 			UI::GUITextBox *txtURL;
 			UI::GUICheckBox *chkNoShutdown;
@@ -78,8 +78,8 @@ namespace SSWR
 			UI::GUIButton *btnRequest;
 			UI::GUIListView *lvReqData;
 
-			UI::GUITabPage *tpResponse;
-			UI::GUIPanel *pnlResponse;
+			NotNullPtr<UI::GUITabPage> tpResponse;
+			NotNullPtr<UI::GUIPanel> pnlResponse;
 			UI::GUILabel *lblReqURL;
 			UI::GUITextBox *txtReqURL;
 			UI::GUILabel *lblSvrIP;
@@ -107,16 +107,16 @@ namespace SSWR
 			UI::GUILabel *lblRespContSize;
 			UI::GUITextBox *txtRespContSize;
 			UI::GUIListView *lvHeaders;
-			UI::GUIPanel *pnlControl;
+			NotNullPtr<UI::GUIPanel> pnlControl;
 			UI::GUIButton *btnSave;
 			UI::GUIButton *btnView;
 
-			UI::GUITabPage *tpCert;
-			UI::GUIPanel *pnlCert;
+			NotNullPtr<UI::GUITabPage> tpCert;
+			NotNullPtr<UI::GUIPanel> pnlCert;
 			UI::GUIButton *btnCert;
 			UI::GUITextBox *txtCert;
 
-			UI::GUITabPage *tpCookie;
+			NotNullPtr<UI::GUITabPage> tpCookie;
 			UI::GUIListView *lvCookie;
 
 			NotNullPtr<Net::SocketFactory> sockf;

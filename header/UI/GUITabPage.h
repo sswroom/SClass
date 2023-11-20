@@ -9,11 +9,11 @@ namespace UI
 	class GUITabPage : public GUIPanel
 	{
 	private:
-		UI::GUITabControl *ctrl;
+		NotNullPtr<UI::GUITabControl> ctrl;
 		UOSInt index;
 		void *custObj;
 	public:
-		GUITabPage(NotNullPtr<GUICore> ui, UI::GUIClientControl *parent, UI::GUITabControl *ctrl, UOSInt index);
+		GUITabPage(NotNullPtr<GUICore> ui, Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUITabControl> ctrl, UOSInt index);
 		virtual ~GUITabPage();
 
 		virtual void *GetFont();
@@ -22,7 +22,7 @@ namespace UI
 
 		virtual Text::CStringNN GetObjectClass() const;
 		virtual OSInt OnNotify(UInt32 code, void *lParam);
-		virtual GUIClientControl *GetParent();
+		virtual Optional<GUIClientControl> GetParent();
 
 		void SetCustObj(void *custObj);
 		void *GetCustObj();

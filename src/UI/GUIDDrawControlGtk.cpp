@@ -437,7 +437,7 @@ void UI::GUIDDrawControl::EndUpdateSize()
 	this->switching = false;
 }
 
-UI::GUIDDrawControl::GUIDDrawControl(NotNullPtr<GUICore> ui, UI::GUIClientControl *parent, Bool directMode, NotNullPtr<Media::ColorManagerSess> colorSess) : UI::GUIControl(ui, parent)
+UI::GUIDDrawControl::GUIDDrawControl(NotNullPtr<GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, Bool directMode, NotNullPtr<Media::ColorManagerSess> colorSess) : UI::GUIControl(ui, parent)
 {
 	this->clsData = MemAlloc(ClassData, 1);
 	this->clsData->pSurfaceUpdated = true;

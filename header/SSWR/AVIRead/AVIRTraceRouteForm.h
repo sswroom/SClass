@@ -26,7 +26,7 @@ namespace SSWR
 			NotNullPtr<Net::SocketFactory> sockf;
 			Net::WhoisHandler whois;
 
-			UI::GUIPanel *pnlControl;
+			NotNullPtr<UI::GUIPanel> pnlControl;
 			UI::GUILabel *lblSelfIP;
 			UI::GUIComboBox *cboSelfIP;
 			UI::GUILabel *lblTargetIP;

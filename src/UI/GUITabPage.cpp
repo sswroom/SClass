@@ -5,7 +5,7 @@
 #include "UI/GUITabControl.h"
 #include "UI/GUITabPage.h"
 
-UI::GUITabPage::GUITabPage(NotNullPtr<UI::GUICore> ui, UI::GUIClientControl *parent, UI::GUITabControl *ctrl, UOSInt index) : UI::GUIPanel(ui, ctrl->GetHandle())
+UI::GUITabPage::GUITabPage(NotNullPtr<UI::GUICore> ui, Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUITabControl> ctrl, UOSInt index) : UI::GUIPanel(ui, ctrl->GetHandle())
 {
 	this->ctrl = ctrl;
 	this->index = index;
@@ -22,13 +22,9 @@ void *UI::GUITabPage::GetFont()
 	{
 		return hFont;
 	}
-	else if (this->ctrl)
-	{
-		return this->ctrl->GetFont();
-	}
 	else
 	{
-		return 0;
+		return this->ctrl->GetFont();
 	}
 }
 
@@ -52,7 +48,7 @@ OSInt UI::GUITabPage::OnNotify(UInt32 code, void *lParam)
 	return 0;
 }
 
-UI::GUIClientControl *UI::GUITabPage::GetParent()
+Optional<UI::GUIClientControl> UI::GUITabPage::GetParent()
 {
 	return this->ctrl->GetParent();
 }

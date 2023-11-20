@@ -26,23 +26,23 @@ namespace SSWR
 			IO::LogTool log;
 			NotNullPtr<UI::ListBoxLogger> logger;
 
-			UI::GUIPanel *pnlCtrl;
+			NotNullPtr<UI::GUIPanel> pnlCtrl;
 			UI::GUILabel *lblPort;
 			UI::GUITextBox *txtPort;
 			UI::GUIButton *btnStart;
 			UI::GUITabControl *tcMain;
 
-			UI::GUITabPage *tpUser;
+			NotNullPtr<UI::GUITabPage> tpUser;
 			UI::GUIListBox *lbUser;
 			UI::GUIHSplitter *hspUser;
-			UI::GUIPanel *pnlUser;
+			NotNullPtr<UI::GUIPanel> pnlUser;
 			UI::GUILabel *lblUserName;
 			UI::GUITextBox *txtUserName;
 			UI::GUILabel *lblPassword;
 			UI::GUITextBox *txtPassword;
 			UI::GUIButton *btnUserAdd;
 
-			UI::GUITabPage *tpLog;
+			NotNullPtr<UI::GUITabPage> tpLog;
 			NotNullPtr<UI::GUIListBox> lbLog;
 			UI::GUITextBox *txtLog;
 

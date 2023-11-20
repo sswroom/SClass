@@ -72,7 +72,7 @@ namespace UI
 		void EventTextPosUpdated();
 		void ClearFileStatus();
 	public:
-		GUITextFileView(NotNullPtr<UI::GUICore> ui, UI::GUIClientControl *parent, NotNullPtr<Media::DrawEngine> deng);
+		GUITextFileView(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, NotNullPtr<Media::DrawEngine> deng);
 		virtual ~GUITextFileView();
 
 		virtual void EventLineUp();

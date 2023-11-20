@@ -28,26 +28,26 @@ namespace SSWR
 				Data::ArrayListStringNN *codeList;
 			} ExeB16Addr;
 		private:
-			UI::GUITabControl *tcEXE;
+			NotNullPtr<UI::GUITabControl> tcEXE;
 
-			UI::GUITabPage *tpProp;
+			NotNullPtr<UI::GUITabPage> tpProp;
 			UI::GUIListView *lvProp;
 
-			UI::GUITabPage *tpImport;
+			NotNullPtr<UI::GUITabPage> tpImport;
 			UI::GUIListBox *lbImport;
 			UI::GUIHSplitter *hspImport;
 			UI::GUIListView *lvImport;
 
-			UI::GUITabPage *tpExport;
+			NotNullPtr<UI::GUITabPage> tpExport;
 			UI::GUIListBox *lbExport;
 
-			UI::GUITabPage *tpResource;
+			NotNullPtr<UI::GUITabPage> tpResource;
 			UI::GUIListBox *lbResource;
 			UI::GUIHSplitter *hspResource;
 			UI::GUITextBox *txtResource;
 
-			UI::GUITabPage *tp16Bit;
-			UI::GUIPanel *pnl16BitInfo;
+			NotNullPtr<UI::GUITabPage> tp16Bit;
+			NotNullPtr<UI::GUIPanel> pnl16BitInfo;
 			UI::GUIListBox *lb16BitFuncs;
 			UI::GUIHSplitter *hsp16Bit;
 			UI::GUIListBox *lb16BitCont;

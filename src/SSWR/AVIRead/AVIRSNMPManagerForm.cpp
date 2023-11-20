@@ -286,7 +286,7 @@ SSWR::AVIRead::AVIRSNMPManagerForm::AVIRSNMPManagerForm(UI::GUIClientControl *pa
 	this->lastUpdateTime = dt.ToTicks();
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASS(this->pnlControl, UI::GUIPanel(ui, this));
+	NEW_CLASSNN(this->pnlControl, UI::GUIPanel(ui, *this));
 	this->pnlControl->SetRect(0, 0, 100, 104, false);
 	this->pnlControl->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->lblAgentAddr, UI::GUILabel(ui, this->pnlControl, CSTR("Agent Addr")));
@@ -304,12 +304,12 @@ SSWR::AVIRead::AVIRSNMPManagerForm::AVIRSNMPManagerForm(UI::GUIClientControl *pa
 	this->btnAgentAdd->HandleButtonClick(OnAgentAddClicked, this);
 	NEW_CLASS(this->chkSendToSvr, UI::GUICheckBox(ui, this->pnlControl, CSTR("Send to Server"), false));
 	this->chkSendToSvr->SetRect(104, 76, 150, 23, false);
-	NEW_CLASS(this->lbAgent, UI::GUIListBox(ui, this, false));
+	NEW_CLASS(this->lbAgent, UI::GUIListBox(ui, *this, false));
 	this->lbAgent->SetRect(0, 0, 150, 23, false);
 	this->lbAgent->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbAgent->HandleSelectionChange(OnAgentSelChg, this);
-	NEW_CLASS(this->hspAgent, UI::GUIHSplitter(ui, this, 3, false));
-	NEW_CLASS(this->pnlAgent, UI::GUIPanel(ui, this));
+	NEW_CLASS(this->hspAgent, UI::GUIHSplitter(ui, *this, 3, false));
+	NEW_CLASSNN(this->pnlAgent, UI::GUIPanel(ui, *this));
 	this->pnlAgent->SetRect(0, 0, 100, 248, false);
 	this->pnlAgent->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->lblAgentDAddr, UI::GUILabel(ui, this->pnlAgent, CSTR("Agent Address")));
@@ -365,7 +365,7 @@ SSWR::AVIRead::AVIRSNMPManagerForm::AVIRSNMPManagerForm(UI::GUIClientControl *pa
 	NEW_CLASS(this->txtAgentModel, UI::GUITextBox(ui, this->pnlAgent, CSTR("")));
 	this->txtAgentModel->SetRect(104, 220, 150, 23, false);
 	this->txtAgentModel->SetReadOnly(true);
-	NEW_CLASS(this->lvAgentReading, UI::GUIListView(ui, this, UI::GUIListView::LVSTYLE_TABLE, 4));
+	NEW_CLASS(this->lvAgentReading, UI::GUIListView(ui, *this, UI::GUIListView::LVSTYLE_TABLE, 4));
 	this->lvAgentReading->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvAgentReading->SetShowGrid(true);
 	this->lvAgentReading->SetFullRowSelect(true);

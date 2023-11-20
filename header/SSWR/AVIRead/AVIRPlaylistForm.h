@@ -20,7 +20,7 @@ namespace SSWR
 		{
 		private:
 			UI::GUIListView *lvPlaylist;
-			UI::GUIPanel *pnlCtrl;
+			NotNullPtr<UI::GUIPanel> pnlCtrl;
 			UI::GUIHSplitter *hsplit;
 			UI::GUIVideoBoxDD *vbdMain;
 			UI::GUIMainMenu *mnu;

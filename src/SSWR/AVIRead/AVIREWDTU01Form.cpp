@@ -189,7 +189,7 @@ SSWR::AVIRead::AVIREWDTU01Form::AVIREWDTU01Form(UI::GUIClientControl *parent, No
 	this->dataChg = false;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASS(this->pnlMQTT, UI::GUIPanel(ui, this));
+	NEW_CLASSNN(this->pnlMQTT, UI::GUIPanel(ui, *this));
 	this->pnlMQTT->SetRect(0, 0, 100, 31, false);
 	this->pnlMQTT->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->lblServer, UI::GUILabel(ui, this->pnlMQTT, CSTR("MQTT Server")));
@@ -204,7 +204,7 @@ SSWR::AVIRead::AVIREWDTU01Form::AVIREWDTU01Form(UI::GUIClientControl *parent, No
 	this->btnConnect->SetRect(404, 4, 75, 23, false);
 	this->btnConnect->HandleButtonClick(OnConnectClicked, this);
 
-	NEW_CLASS(this->lvDevices, UI::GUIListView(ui, this, UI::GUIListView::LVSTYLE_TABLE, 5));
+	NEW_CLASS(this->lvDevices, UI::GUIListView(ui, *this, UI::GUIListView::LVSTYLE_TABLE, 5));
 	this->lvDevices->SetShowGrid(true);
 	this->lvDevices->SetFullRowSelect(true);
 	this->lvDevices->SetDockType(UI::GUIControl::DOCK_FILL);

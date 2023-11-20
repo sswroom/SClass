@@ -125,11 +125,11 @@ SSWR::AVIRead::AVIRIBuddyForm::AVIRIBuddyForm(UI::GUIClientControl *parent, NotN
 	this->currBuddy = 0;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASS(this->lbDevice, UI::GUIListBox(ui, this, false));
+	NEW_CLASS(this->lbDevice, UI::GUIListBox(ui, *this, false));
 	this->lbDevice->SetRect(0, 0, 100, 23, false);
 	this->lbDevice->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbDevice->HandleSelectionChange(OnDevChanged, this);
-	NEW_CLASS(this->pnlMain, UI::GUIPanel(ui, this));
+	NEW_CLASSNN(this->pnlMain, UI::GUIPanel(ui, *this));
 	this->pnlMain->SetDockType(UI::GUIControl::DOCK_FILL);
 	NEW_CLASS(this->lblHead, UI::GUILabel(ui, this->pnlMain, CSTR("Head")));
 	this->lblHead->SetRect(4, 4, 100, 23, false);

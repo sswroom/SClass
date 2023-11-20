@@ -42,14 +42,14 @@ namespace SSWR
 			Bool enableGZip;
 			Double t;
 
-			UI::GUIGroupBox *grpURL;
-			UI::GUIPanel *pnlURL;
-			UI::GUIPanel *pnlURLCtrl;
+			NotNullPtr<UI::GUIGroupBox> grpURL;
+			NotNullPtr<UI::GUIPanel> pnlURL;
+			NotNullPtr<UI::GUIPanel> pnlURLCtrl;
 			UI::GUIListBox *lbURL;
 			UI::GUITextBox *txtURL;
 			UI::GUIButton *btnURLAdd;
 			UI::GUIButton *btnURLClear;
-			UI::GUIPanel *pnlRequest;
+			NotNullPtr<UI::GUIPanel> pnlRequest;
 			UI::GUILabel *lblConcurrCnt;
 			UI::GUITextBox *txtConcurrCnt;
 			UI::GUILabel *lblTotalConnCnt;
@@ -61,7 +61,7 @@ namespace SSWR
 			UI::GUICheckBox *chkKAConn;
 			UI::GUICheckBox *chkGZip;
 			UI::GUIButton *btnStart;
-			UI::GUIGroupBox *grpStatus;
+			NotNullPtr<UI::GUIGroupBox> grpStatus;
 			UI::GUILabel *lblConnLeftCnt;
 			UI::GUITextBox *txtConnLeftCnt;
 			UI::GUILabel *lblThreadCnt;

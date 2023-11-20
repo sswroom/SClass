@@ -34,7 +34,7 @@ namespace SSWR
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			Data::ArrayList<FileItem *> *items;
 
-			UI::GUIPanel *pnlCtrl;
+			NotNullPtr<UI::GUIPanel> pnlCtrl;
 			UI::GUILabel *lblUsername;
 			UI::GUITextBox *txtUsername;
 			UI::GUILabel *lblPassword;

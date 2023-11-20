@@ -261,7 +261,7 @@ SSWR::AVIRead::AVIRAudioViewerForm::AVIRAudioViewerForm(UI::GUIClientControl *pa
 	mnu->AddItem(CSTR("Go to E&nd"), MNU_END, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_END);
 	this->SetMenu(this->mnu);
 
-	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, this));
+	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, *this));
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->tpSample = this->tcMain->AddTabPage(CSTR("Sample"));
 	NEW_CLASS(this->pbsSample, UI::GUIPictureBoxSimple(ui, this->tpSample, this->eng, false));

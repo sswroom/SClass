@@ -22,7 +22,7 @@ namespace SSWR
 		private:
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 
-			UI::GUIPanel *pnlRequest;
+			NotNullPtr<UI::GUIPanel> pnlRequest;
 			UI::GUILabel *lblURL;
 			UI::GUITextBox *txtURL;
 			UI::GUILabel *lblDownloadDir;
@@ -30,13 +30,13 @@ namespace SSWR
 			UI::GUILabel *lblHeaders;
 			UI::GUITextBox *txtHeaders;
 			UI::GUIButton *btnRequest;
-			UI::GUIGroupBox *grpStatus;
+			NotNullPtr<UI::GUIGroupBox> grpStatus;
 			UI::GUILabel *lblCurrSpeed;
 			UI::GUITextBox *txtCurrSpeed;
 			UI::GUILabel *lblTotalSize;
 			UI::GUITextBox *txtTotalSize;
-			UI::GUIGroupBox *grpResponse;
-			UI::GUIPanel *pnlResponse;
+			NotNullPtr<UI::GUIGroupBox> grpResponse;
+			NotNullPtr<UI::GUIPanel> pnlResponse;
 			UI::GUILabel *lblSvrIP;
 			UI::GUITextBox *txtSvrIP;
 			UI::GUILabel *lblTimeDNS;

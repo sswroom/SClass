@@ -299,7 +299,7 @@ SSWR::AVIRead::AVIRLineChartForm::AVIRLineChartForm(UI::GUIClientControl *parent
 	NEW_CLASS(this->yCols, Data::ArrayList<UInt32>());
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASS(this->pnlStrCols, UI::GUIPanel(ui, this));
+	NEW_CLASSNN(this->pnlStrCols, UI::GUIPanel(ui, *this));
 	this->pnlStrCols->SetRect(0, 0, 100, 128, false);
 	this->pnlStrCols->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->lblStrCols, UI::GUILabel(ui, this->pnlStrCols, CSTR("String Columns")));
@@ -312,14 +312,14 @@ SSWR::AVIRead::AVIRLineChartForm::AVIRLineChartForm(UI::GUIClientControl *parent
 	NEW_CLASS(this->btnStrColsInt32, UI::GUIButton(ui, this->pnlStrCols, CSTR("Force as Int32")));
 	this->btnStrColsInt32->SetRect(304, 32, 120, 23, false);
 	this->btnStrColsInt32->HandleButtonClick(OnStrColsInt32Clicked, this);
-	NEW_CLASS(this->pnlXAxis, UI::GUIPanel(ui, this));
+	NEW_CLASSNN(this->pnlXAxis, UI::GUIPanel(ui, *this));
 	this->pnlXAxis->SetRect(0, 0 , 100, 32, false);
 	this->pnlXAxis->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->lblXAxis, UI::GUILabel(ui, this->pnlXAxis, CSTR("X-Axis")));
 	this->lblXAxis->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->cboXAxis, UI::GUIComboBox(ui, this->pnlXAxis, false));
 	this->cboXAxis->SetRect(104, 4, 200, 23, false);
-	NEW_CLASS(this->pnlControl, UI::GUIPanel(ui, this));
+	NEW_CLASSNN(this->pnlControl, UI::GUIPanel(ui, *this));
 	this->pnlControl->SetRect(0, 0, 100, 32, false);
 	this->pnlControl->SetDockType(UI::GUIControl::DOCK_BOTTOM);
 	NEW_CLASS(this->btnPlot, UI::GUIButton(ui, this->pnlControl, CSTR("Plot")));
@@ -328,9 +328,9 @@ SSWR::AVIRead::AVIRLineChartForm::AVIRLineChartForm(UI::GUIClientControl *parent
 	NEW_CLASS(this->btnCancel, UI::GUIButton(ui, this->pnlControl, CSTR("Cancel")));
 	this->btnCancel->SetRect(84, 4, 75, 23, false);
 	this->btnCancel->HandleButtonClick(OnCancelClicked, this);
-	NEW_CLASS(this->grpYAxis, UI::GUIGroupBox(ui, this, CSTR("Y-Axis")));
+	NEW_CLASSNN(this->grpYAxis, UI::GUIGroupBox(ui, *this, CSTR("Y-Axis")));
 	this->grpYAxis->SetDockType(UI::GUIControl::DOCK_FILL);
-	NEW_CLASS(this->pnlYAxis, UI::GUIPanel(ui, this->grpYAxis));
+	NEW_CLASSNN(this->pnlYAxis, UI::GUIPanel(ui, this->grpYAxis));
 	this->pnlYAxis->SetRect(0, 0, 100, 32, false);
 	this->pnlYAxis->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->lblYAxis, UI::GUILabel(ui, this->pnlYAxis, CSTR("Column")));

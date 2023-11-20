@@ -23,7 +23,7 @@ namespace SSWR
 			Data::FastMap<UInt64, UInt32> pubDevMap;
 			IO::BTScanner *bt;
 
-			UI::GUIPanel *pnlControl;
+			NotNullPtr<UI::GUIPanel> pnlControl;
 			UI::GUIButton *btnStart;
 			UI::GUIButton *btnStoreList;
 			UI::GUIListView *lvDevices;

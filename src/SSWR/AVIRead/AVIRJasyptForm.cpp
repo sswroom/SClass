@@ -53,9 +53,9 @@ SSWR::AVIRead::AVIRJasyptForm::AVIRJasyptForm(UI::GUIClientControl *parent, NotN
 	UOSInt i;
 	UOSInt j;
 
-	NEW_CLASS(this->lblKeyAlg, UI::GUILabel(ui, this, CSTR("Key Algorithm")));
+	NEW_CLASS(this->lblKeyAlg, UI::GUILabel(ui, *this, CSTR("Key Algorithm")));
 	this->lblKeyAlg->SetRect(4, 4, 100, 23, false);
-	NEW_CLASS(this->cboKeyAlg, UI::GUIComboBox(ui, this, false));
+	NEW_CLASS(this->cboKeyAlg, UI::GUIComboBox(ui, *this, false));
 	this->cboKeyAlg->SetRect(104, 4, 150, 23, false);
 	i = Crypto::Encrypt::JasyptEncryptor::KA_FIRST;
 	j = Crypto::Encrypt::JasyptEncryptor::KA_LAST;
@@ -66,9 +66,9 @@ SSWR::AVIRead::AVIRJasyptForm::AVIRJasyptForm(UI::GUIClientControl *parent, NotN
 	}
 	this->cboKeyAlg->SetSelectedIndex(0);
 
-	NEW_CLASS(this->lblEncAlg, UI::GUILabel(ui, this, CSTR("Encrypt Algorithm")));
+	NEW_CLASS(this->lblEncAlg, UI::GUILabel(ui, *this, CSTR("Encrypt Algorithm")));
 	this->lblEncAlg->SetRect(4, 28, 100, 23, false);
-	NEW_CLASS(this->cboEncAlg, UI::GUIComboBox(ui, this, false));
+	NEW_CLASS(this->cboEncAlg, UI::GUIComboBox(ui, *this, false));
 	this->cboEncAlg->SetRect(104, 28, 150, 23, false);
 	i = Crypto::Encrypt::JasyptEncryptor::CA_FIRST;
 	j = Crypto::Encrypt::JasyptEncryptor::CA_LAST;
@@ -79,23 +79,23 @@ SSWR::AVIRead::AVIRJasyptForm::AVIRJasyptForm(UI::GUIClientControl *parent, NotN
 	}
 	this->cboEncAlg->SetSelectedIndex(0);
 
-	NEW_CLASS(this->lblPassword, UI::GUILabel(ui, this, CSTR("Password")));
+	NEW_CLASS(this->lblPassword, UI::GUILabel(ui, *this, CSTR("Password")));
 	this->lblPassword->SetRect(4, 52, 100, 23, false);
-	NEW_CLASS(this->txtPassword, UI::GUITextBox(ui, this, CSTR("")));
+	NEW_CLASS(this->txtPassword, UI::GUITextBox(ui, *this, CSTR("")));
 	this->txtPassword->SetRect(104, 52, 150, 23, false);
-	NEW_CLASS(this->lblMessage, UI::GUILabel(ui, this, CSTR("Message")));
+	NEW_CLASS(this->lblMessage, UI::GUILabel(ui, *this, CSTR("Message")));
 	this->lblMessage->SetRect(4, 76, 100, 23, false);
-	NEW_CLASS(this->txtMessage, UI::GUITextBox(ui, this, CSTR("")));
+	NEW_CLASS(this->txtMessage, UI::GUITextBox(ui, *this, CSTR("")));
 	this->txtMessage->SetRect(104, 76, 400, 23, false);
-	NEW_CLASS(this->btnDecrypt, UI::GUIButton(ui, this, CSTR("Decrypt")));
+	NEW_CLASS(this->btnDecrypt, UI::GUIButton(ui, *this, CSTR("Decrypt")));
 	this->btnDecrypt->SetRect(104, 100, 75, 23, false);
 	this->btnDecrypt->HandleButtonClick(OnDecryptClicked, this);
-	NEW_CLASS(this->btnEncrypt, UI::GUIButton(ui, this, CSTR("Encrypt")));
+	NEW_CLASS(this->btnEncrypt, UI::GUIButton(ui, *this, CSTR("Encrypt")));
 	this->btnEncrypt->SetRect(184, 100, 75, 23, false);
 	this->btnEncrypt->HandleButtonClick(OnEncryptClicked, this);
-	NEW_CLASS(this->lblResult, UI::GUILabel(ui, this, CSTR("Result")));
+	NEW_CLASS(this->lblResult, UI::GUILabel(ui, *this, CSTR("Result")));
 	this->lblResult->SetRect(4, 124, 100, 23, false);
-	NEW_CLASS(this->txtResult, UI::GUITextBox(ui, this, CSTR("")));
+	NEW_CLASS(this->txtResult, UI::GUITextBox(ui, *this, CSTR("")));
 	this->txtResult->SetRect(104, 124, 400, 23, false);
 	this->txtResult->SetReadOnly(true);
 }

@@ -10,7 +10,7 @@ SSWR::AVIRead::AVIRMIMEViewerForm::AVIRMIMEViewerForm(UI::GUIClientControl *pare
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 	this->obj = obj;
 	this->sess = this->core->GetColorMgr()->CreateSess(this->GetHMonitor());
-	this->viewer = SSWR::AVIRead::MIMEViewer::AVIRMIMEViewer::CreateViewer(core, ui, this, this->sess, obj);
+	this->viewer = SSWR::AVIRead::MIMEViewer::AVIRMIMEViewer::CreateViewer(core, ui, *this, this->sess, obj);
 }
 
 SSWR::AVIRead::AVIRMIMEViewerForm::~AVIRMIMEViewerForm()

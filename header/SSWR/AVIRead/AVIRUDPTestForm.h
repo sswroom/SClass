@@ -48,12 +48,12 @@ namespace SSWR
 			ThreadStatus *threads;
 			Sync::Event mainEvt;
 
-			UI::GUIGroupBox *grpServer;
+			NotNullPtr<UI::GUIGroupBox> grpServer;
 			UI::GUILabel *lblServerPort;
 			UI::GUITextBox *txtServerPort;
 			UI::GUIButton *btnStart;
 			UI::GUICheckBox *chkAutoReply;
-			UI::GUIGroupBox *grpDest;
+			NotNullPtr<UI::GUIGroupBox> grpDest;
 			UI::GUILabel *lblDestHost;
 			UI::GUITextBox *txtDestHost;
 			UI::GUILabel *lblDestPort;
@@ -61,7 +61,7 @@ namespace SSWR
 			UI::GUILabel *lblDestCount;
 			UI::GUITextBox *txtDestCount;
 			UI::GUIButton *btnSend;
-			UI::GUIGroupBox *grpStatus;
+			NotNullPtr<UI::GUIGroupBox> grpStatus;
 			UI::GUILabel *lblRecvCnt;
 			UI::GUITextBox *txtRecvCnt;
 			UI::GUITextBox *txtRecvCntRate;

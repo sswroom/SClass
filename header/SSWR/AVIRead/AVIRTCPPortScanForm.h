@@ -22,7 +22,7 @@ namespace SSWR
 			Net::TCPPortScanner *scanner;
 			Bool listUpdated;
 
-			UI::GUIPanel *pnlControl;
+			NotNullPtr<UI::GUIPanel> pnlControl;
 			UI::GUILabel *lblIP;
 			UI::GUITextBox *txtIP;
 			UI::GUILabel *lblThreadCnt;

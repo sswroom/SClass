@@ -27,14 +27,14 @@ namespace SSWR
 		} ProgInfo;
 	private:
 		UI::GUITabControl *tcMain;
-		UI::GUITabPage *tpLog;
+		NotNullPtr<UI::GUITabPage> tpLog;
 		NotNullPtr<UI::GUIListBox> lbLog;
 		UI::GUITextBox *txtLog;
 
-		UI::GUITabPage *tpProg;
+		NotNullPtr<UI::GUITabPage> tpProg;
 		UI::GUIListBox *lbProg;
-		UI::GUIPanel *pnlProg;
-		UI::GUIGroupBox *grpProgAdd;
+		NotNullPtr<UI::GUIPanel> pnlProg;
+		NotNullPtr<UI::GUIGroupBox> grpProgAdd;
 		UI::GUILabel *lblProgAddName;
 		UI::GUITextBox *txtProgAddName;
 		UI::GUILabel *lblProgAddId;

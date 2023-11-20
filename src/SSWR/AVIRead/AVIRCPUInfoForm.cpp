@@ -96,11 +96,11 @@ SSWR::AVIRead::AVIRCPUInfoForm::AVIRCPUInfoForm(UI::GUIClientControl *parent, No
 	this->ssl = Net::SSLEngineFactory::Create(this->core->GetSocketFactory(), true);
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, this));
+	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, *this));
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	this->tpCPU = this->tcMain->AddTabPage(CSTR("CPU"));
-	NEW_CLASS(this->pnlMain, UI::GUIPanel(ui, this->tpCPU));
+	NEW_CLASSNN(this->pnlMain, UI::GUIPanel(ui, this->tpCPU));
 	this->pnlMain->SetRect(0, 0, 100, 31, false);
 	this->pnlMain->SetDockType(UI::GUIControl::DOCK_BOTTOM);
 	NEW_CLASS(this->btnUpload, UI::GUIButton(ui, this->pnlMain, CSTR("Upload Info")));

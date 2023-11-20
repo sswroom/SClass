@@ -24,7 +24,7 @@ namespace SSWR
 			Net::SNMPManager *mgr;
 			Int64 lastUpdateTime;
 
-			UI::GUIPanel *pnlControl;
+			NotNullPtr<UI::GUIPanel> pnlControl;
 			UI::GUILabel *lblAgentAddr;
 			UI::GUITextBox *txtAgentAddr;
 			UI::GUICheckBox *chkAgentScan;
@@ -34,7 +34,7 @@ namespace SSWR
 			UI::GUICheckBox *chkSendToSvr;
 			UI::GUIListBox *lbAgent;
 			UI::GUIHSplitter *hspAgent;
-			UI::GUIPanel *pnlAgent;
+			NotNullPtr<UI::GUIPanel> pnlAgent;
 			UI::GUILabel *lblAgentDAddr;
 			UI::GUITextBox *txtAgentDAddr;
 			UI::GUIButton *btnAgentWalk;

@@ -19,7 +19,7 @@ namespace SSWR
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			Net::SSLEngine *ssl;
 
-			UI::GUIPanel *pnlControl;
+			NotNullPtr<UI::GUIPanel> pnlControl;
 			UI::GUILabel *lblHost;
 			UI::GUITextBox *txtHost;
 			UI::GUILabel *lblPort;

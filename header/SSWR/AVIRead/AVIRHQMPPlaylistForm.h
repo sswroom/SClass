@@ -14,7 +14,7 @@ namespace SSWR
 		class AVIRHQMPPlaylistForm : public UI::GUIForm 
 		{
 		private:
-			UI::GUIPanel *pnlCtrl;
+			NotNullPtr<UI::GUIPanel> pnlCtrl;
 			UI::GUIListBox *lbPlaylist;
 			UI::GUIButton *btnAdd;
 			UI::GUIButton *btnAddDir;

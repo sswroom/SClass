@@ -142,13 +142,13 @@ SSWR::AVIRead::AVIRJWTParserForm::AVIRJWTParserForm(UI::GUIClientControl *parent
 	this->verifyType = Crypto::Token::JWToken::VerifyType::Unknown;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASS(this->txtJWT, UI::GUITextBox(ui, this, CSTR(""), true));
+	NEW_CLASS(this->txtJWT, UI::GUITextBox(ui, *this, CSTR(""), true));
 	this->txtJWT->SetRect(0, 0, 300, 23, false);
 	this->txtJWT->SetDockType(UI::GUIControl::DOCK_LEFT);
-	NEW_CLASS(this->hspJWT, UI::GUIHSplitter(ui, this, 3, false));
-	NEW_CLASS(this->pnlMain, UI::GUIPanel(ui, this));
+	NEW_CLASS(this->hspJWT, UI::GUIHSplitter(ui, *this, 3, false));
+	NEW_CLASSNN(this->pnlMain, UI::GUIPanel(ui, *this));
 	this->pnlMain->SetDockType(UI::GUIControl::DOCK_FILL);
-	NEW_CLASS(this->pnlResult, UI::GUIPanel(ui, this->pnlMain));
+	NEW_CLASSNN(this->pnlResult, UI::GUIPanel(ui, this->pnlMain));
 	this->pnlResult->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->btnParse, UI::GUIButton(ui, this->pnlResult, CSTR("Parse")));
 	this->btnParse->SetRect(4, 4, 75, 23, false);

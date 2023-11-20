@@ -44,15 +44,15 @@ SSWR::AVIRead::AVIRHKOWarningSummaryForm::AVIRHKOWarningSummaryForm(UI::GUIClien
 	this->ssl = Net::SSLEngineFactory::Create(this->core->GetSocketFactory(), true);
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASS(this->pnlReqTime, UI::GUIPanel(ui, this));
+	NEW_CLASSNN(this->pnlReqTime, UI::GUIPanel(ui, *this));
 	this->pnlReqTime->SetRect(0, 0, 100, 31, false);
 	this->pnlReqTime->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->lblReqTime, UI::GUILabel(ui, this->pnlReqTime, CSTR("Request Time")));
 	this->lblReqTime->SetRect(4, 4, 100, 23, false);
-	NEW_CLASS(this->txtReqTime, UI::GUITextBox(ui, this, CSTR("")));
+	NEW_CLASS(this->txtReqTime, UI::GUITextBox(ui, *this, CSTR("")));
 	this->txtReqTime->SetRect(104, 4, 160, 23, false);
 	this->txtReqTime->SetReadOnly(true);
-	NEW_CLASS(this->lvWarning, UI::GUIListView(ui, this, UI::GUIListView::LVSTYLE_TABLE, 6));
+	NEW_CLASS(this->lvWarning, UI::GUIListView(ui, *this, UI::GUIListView::LVSTYLE_TABLE, 6));
 	this->lvWarning->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvWarning->SetFullRowSelect(true);
 	this->lvWarning->SetShowGrid(true);

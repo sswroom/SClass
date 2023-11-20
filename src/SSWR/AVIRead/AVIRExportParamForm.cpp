@@ -78,7 +78,7 @@ SSWR::AVIRead::AVIRExportParamForm::AVIRExportParamForm(UI::GUIClientControl *pa
 	while (i < cnt)
 	{
 		this->exporter->GetParamInfo(i, pi);
-		NEW_CLASS(lbl, UI::GUILabel(ui, this, pi.name));
+		NEW_CLASS(lbl, UI::GUILabel(ui, *this, pi.name));
 		lbl->SetRect(20, (Int32)i * 24, 120, 23, false);
 		//lbl->TextAlign = System::Drawing::ContentAlignment::MiddleLeft;
 
@@ -86,7 +86,7 @@ SSWR::AVIRead::AVIRExportParamForm::AVIRExportParamForm(UI::GUIClientControl *pa
 		{
 			UI::GUITextBox *txt;
 			sptr = Text::StrInt32(sbuff, this->exporter->GetParamInt32(this->param, i));
-			NEW_CLASS(txt, UI::GUITextBox(ui, this, CSTRP(sbuff, sptr)));
+			NEW_CLASS(txt, UI::GUITextBox(ui, *this, CSTRP(sbuff, sptr)));
 			txt->SetRect(140, (Int32)i * 24, 120, 23, false);
 			this->ctrls[i] = txt;
 		}
@@ -96,7 +96,7 @@ SSWR::AVIRead::AVIRExportParamForm::AVIRExportParamForm(UI::GUIClientControl *pa
 		else if (pi.paramType == ::IO::FileExporter::ParamType::SELECTION)
 		{
 			UI::GUIComboBox *cbo;
-			NEW_CLASS(cbo, UI::GUIComboBox(ui, this, false));
+			NEW_CLASS(cbo, UI::GUIComboBox(ui, *this, false));
 
 			UOSInt j;
 			j = 0;
@@ -112,9 +112,9 @@ SSWR::AVIRead::AVIRExportParamForm::AVIRExportParamForm(UI::GUIClientControl *pa
 		i++;
 	}
 
-	UI::GUIPanel *pnl;
+	NotNullPtr<UI::GUIPanel> pnl;
 	UI::GUIButton *btn;
-	NEW_CLASS(pnl, UI::GUIPanel(ui, this));
+	NEW_CLASSNN(pnl, UI::GUIPanel(ui, *this));
 	pnl->SetRect(0, 0, 292, 48, false);
 	pnl->SetDockType(UI::GUIControl::DOCK_BOTTOM);
 	NEW_CLASS(btn, UI::GUIButton(ui, pnl, CSTR("OK")));

@@ -21,20 +21,20 @@ namespace SSWR
 		class AVIRGISQueryForm : public UI::GUIForm
 		{
 		private:
-			UI::GUIPanel *pnlObj;
+			NotNullPtr<UI::GUIPanel> pnlObj;
 			UI::GUIComboBox *cboObj;
 			UI::GUITabControl *tcMain;
 
-			UI::GUITabPage *tpInfo;
+			NotNullPtr<UI::GUITabPage> tpInfo;
 			UI::GUIListView *lvInfo;
 
-			UI::GUITabPage *tpShape;
-			UI::GUIPanel *pnlShape;
+			NotNullPtr<UI::GUITabPage> tpShape;
+			NotNullPtr<UI::GUIPanel> pnlShape;
 			UI::GUILabel *lblShapeFmt;
 			UI::GUIComboBox *cboShapeFmt;
 			UI::GUITextBox *txtShape;
 
-			UI::GUITabPage *tpBounds;
+			NotNullPtr<UI::GUITabPage> tpBounds;
 			UI::GUILabel *lblMinX;
 			UI::GUITextBox *txtMinX;
 			UI::GUILabel *lblMinY;
@@ -44,7 +44,7 @@ namespace SSWR
 			UI::GUILabel *lblMaxY;
 			UI::GUITextBox *txtMaxY;
 
-			UI::GUITabPage *tpDist;
+			NotNullPtr<UI::GUITabPage> tpDist;
 			UI::GUILabel *lblDist;
 			UI::GUITextBox *txtDist;
 			UI::GUILabel *lblInside;

@@ -46,20 +46,20 @@ SSWR::AVIRead::AVIRMACManagerEntryForm::AVIRMACManagerEntryForm(UI::GUIClientCon
 	this->core = core;
 	this->name = Text::String::NewEmpty();
 
-	NEW_CLASS(this->lblMAC, UI::GUILabel(ui, this, CSTR("MAC")));
+	NEW_CLASS(this->lblMAC, UI::GUILabel(ui, *this, CSTR("MAC")));
 	this->lblMAC->SetRect(4, 4, 100, 23, false);
-	NEW_CLASS(this->txtMAC, UI::GUITextBox(ui, this, CSTR("")));
+	NEW_CLASS(this->txtMAC, UI::GUITextBox(ui, *this, CSTR("")));
 	this->txtMAC->SetRect(104, 4, 200, 23, false);
 	this->txtMAC->SetReadOnly(true);
-	NEW_CLASS(this->lblName, UI::GUILabel(ui, this, CSTR("Name")));
+	NEW_CLASS(this->lblName, UI::GUILabel(ui, *this, CSTR("Name")));
 	this->lblName->SetRect(4, 28, 100, 23, false);
-	NEW_CLASS(this->cboName, UI::GUIComboBox(ui, this, true));
+	NEW_CLASS(this->cboName, UI::GUIComboBox(ui, *this, true));
 	this->cboName->SetRect(104, 28, 400, 23, false);
 	this->cboName->SetAutoComplete(true);
-	NEW_CLASS(this->btnCancel, UI::GUIButton(ui, this, CSTR("Cancel")));
+	NEW_CLASS(this->btnCancel, UI::GUIButton(ui, *this, CSTR("Cancel")));
 	this->btnCancel->SetRect(104, 52, 75, 23, false);
 	this->btnCancel->HandleButtonClick(OnCancelClicked, this);
-	NEW_CLASS(this->btnOK, UI::GUIButton(ui, this, CSTR("Ok")));
+	NEW_CLASS(this->btnOK, UI::GUIButton(ui, *this, CSTR("Ok")));
 	this->btnOK->SetRect(204, 52, 75, 23, false);
 	this->btnOK->HandleButtonClick(OnOKClicked, this);
 	this->SetDefaultButton(this->btnOK);

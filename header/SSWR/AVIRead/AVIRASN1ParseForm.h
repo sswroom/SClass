@@ -17,12 +17,12 @@ namespace SSWR
 		private:
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 
-			UI::GUIPanel *pnlOptions;
+			NotNullPtr<UI::GUIPanel> pnlOptions;
 			UI::GUILabel *lblType;
 			UI::GUIComboBox *cboType;
 			UI::GUILabel *lblData;
 			UI::GUITextBox *txtData;
-			UI::GUIPanel *pnlControl;
+			NotNullPtr<UI::GUIPanel> pnlControl;
 			UI::GUIButton *btnParse;
 
 			static void __stdcall OnParseClicked(void *userObj);

@@ -34,7 +34,7 @@ namespace SSWR
 			NotNullPtr<UI::ListBoxLogger> logger;
 			CommandInfo *cmdInfos;
 
-			UI::GUIPanel *pnlPort;
+			NotNullPtr<UI::GUIPanel> pnlPort;
 			UI::GUILabel *lblTVType;
 			UI::GUIComboBox *cboTVType;
 			UI::GUILabel *lblPort;
@@ -42,8 +42,8 @@ namespace SSWR
 			UI::GUICheckBox *chkLogFile;
 			UI::GUIButton *btnStart;
 			UI::GUITabControl *tcMain;
-			UI::GUITabPage *tpControl;
-			UI::GUITabPage *tpLog;
+			NotNullPtr<UI::GUITabPage> tpControl;
+			NotNullPtr<UI::GUITabPage> tpLog;
 
 			NotNullPtr<UI::GUIListBox> lbLog;
 			UI::GUITextBox *txtLog;

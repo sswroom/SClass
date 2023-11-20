@@ -34,8 +34,8 @@ namespace SSWR
 		private:
 			OrganEnv *env;
 
-			UI::GUIPanel *pnlBook;
-			UI::GUIPanel *pnlBookDet;
+			NotNullPtr<UI::GUIPanel> pnlBook;
+			NotNullPtr<UI::GUIPanel> pnlBookDet;
 			UI::GUIListView *lvBook;
 			UI::GUIHSplitter *hspBook;
 			UI::GUIButton *btnBookPaste;
@@ -53,8 +53,8 @@ namespace SSWR
 			UI::GUITextBox *txtBookGroup;
 			UI::GUIButton *btnBookAdd;
 			UI::GUITabControl *tcBook;
-			UI::GUITabPage *tpBookRef;
-			UI::GUITabPage *tpBookAuthor;
+			NotNullPtr<UI::GUITabPage> tpBookRef;
+			NotNullPtr<UI::GUITabPage> tpBookAuthor;
 
 			BookArrayList bookList;
 			Bool changed;

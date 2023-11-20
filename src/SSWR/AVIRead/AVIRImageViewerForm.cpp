@@ -261,7 +261,7 @@ SSWR::AVIRead::AVIRImageViewerForm::AVIRImageViewerForm(UI::GUIClientControl *pa
 	mnu->AddItem(CSTR("Hide Mouse Cursor"), MNU_MOUSE_CURSOR, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_OEM_PERIOD);
 	this->SetMenu(this->mnuMain);
 
-	NEW_CLASS(this->pbImage, UI::GUIPictureBoxDD(ui, this, this->colorSess, this->allowEnlarge, false));
+	NEW_CLASS(this->pbImage, UI::GUIPictureBoxDD(ui, *this, this->colorSess, this->allowEnlarge, false));
 	this->pbImage->SetUserFSMode(UI::GUIDDrawControl::SM_VFS);
 	this->pbImage->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->pbImage->HandleMoveToNext(OnMoveToNext, this);

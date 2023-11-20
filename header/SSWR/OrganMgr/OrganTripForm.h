@@ -17,7 +17,7 @@ namespace SSWR
 		class OrganTripForm : public UI::GUIForm
 		{
 		private:
-			UI::GUIPanel *pnlDetail;
+			NotNullPtr<UI::GUIPanel> pnlDetail;
 			UI::GUILabel *lblFrom;
 			UI::GUILabel *lblTo;
 			UI::GUILabel *lblLocation;

@@ -38,7 +38,7 @@ namespace SSWR
 			const UTF8Char *filePath;
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 
-			UI::GUIPanel *pnlFile;
+			NotNullPtr<UI::GUIPanel> pnlFile;
 			UI::GUILabel *lblDir;
 			UI::GUITextBox *txtDir;
 			UI::GUIButton *btnStart;

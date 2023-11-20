@@ -36,7 +36,7 @@ namespace SSWR
 
 			UI::GUITabControl *tcMain;
 
-			UI::GUITabPage *tpControl;
+			NotNullPtr<UI::GUITabPage> tpControl;
 			UI::GUILabel *lblPort;
 			UI::GUITextBox *txtPort;
 			UI::GUILabel *lblSSL;
@@ -62,16 +62,16 @@ namespace SSWR
 			UI::GUILabel *lblLogoutURL;
 			UI::GUITextBox *txtLogoutURL;
 
-			UI::GUITabPage *tpSAMLResp;
+			NotNullPtr<UI::GUITabPage> tpSAMLResp;
 			UI::GUITextBox *txtSAMLResp;
 
-			UI::GUITabPage *tpSAMLRespWF;
+			NotNullPtr<UI::GUITabPage> tpSAMLRespWF;
 			UI::GUITextBox *txtSAMLRespWF;
 
-			UI::GUITabPage *tpSAMLDecrypt;
+			NotNullPtr<UI::GUITabPage> tpSAMLDecrypt;
 			UI::GUITextBox *txtSAMLDecrypt;
 
-			UI::GUITabPage *tpLog;
+			NotNullPtr<UI::GUITabPage> tpLog;
 			NotNullPtr<UI::GUIListBox> lbLog;
 			UI::GUITextBox *txtLog;
 

@@ -32,7 +32,7 @@ namespace SSWR
 			IO::LogTool log;
 			NotNullPtr<UI::ListBoxLogger> logger;
 
-			UI::GUIPanel *pnlDevice;
+			NotNullPtr<UI::GUIPanel> pnlDevice;
 			UI::GUILabel *lblDeviceSerial;
 			UI::GUIComboBox *cboDeviceSerial;
 			UI::GUIButton *btnDeviceSerial;
@@ -41,8 +41,8 @@ namespace SSWR
 			UI::GUIButton *btnDeviceOther;
 			UI::GUITabControl *tcMain;
 
-			UI::GUITabPage *tpInfo;
-			UI::GUIPanel *pnlInfo;
+			NotNullPtr<UI::GUITabPage> tpInfo;
+			NotNullPtr<UI::GUIPanel> pnlInfo;
 			UI::GUILabel *lblModemManu;
 			UI::GUITextBox *txtModemManu;
 			UI::GUILabel *lblModemModel;
@@ -69,15 +69,15 @@ namespace SSWR
 			UI::GUITextBox *txtSignalQuality;
 			UI::GUIRealtimeLineChart *rlcRSSI;
 
-			UI::GUITabPage *tpPhoneBook;
-			UI::GUIPanel *pnlPhone;
+			NotNullPtr<UI::GUITabPage> tpPhoneBook;
+			NotNullPtr<UI::GUIPanel> pnlPhone;
 			UI::GUIComboBox *cboPhoneStorage;
 			UI::GUIButton *btnPhoneRead;
 			UI::GUILabel *lblPhoneStatus;
 			UI::GUIListView *lvPhone;
 
-			UI::GUITabPage *tpSMS;
-			UI::GUIPanel *pnlSMS;
+			NotNullPtr<UI::GUITabPage> tpSMS;
+			NotNullPtr<UI::GUIPanel> pnlSMS;
 			UI::GUIComboBox *cboSMSStorage;
 			UI::GUIButton *btnSMSRead;
 			UI::GUILabel *lblSMSC;
@@ -87,8 +87,8 @@ namespace SSWR
 			UI::GUIButton *btnSMSSaveAll;
 			UI::GUIListView *lvSMS;
 
-			UI::GUITabPage *tpPDPContext;
-			UI::GUIPanel *pnlPDPContext;
+			NotNullPtr<UI::GUITabPage> tpPDPContext;
+			NotNullPtr<UI::GUIPanel> pnlPDPContext;
 			UI::GUIButton *btnPDPContextLoad;
 			UI::GUILabel *lblPDPContextStatus;
 			UI::GUITextBox *txtPDPContextStatus;
@@ -107,18 +107,18 @@ namespace SSWR
 			UI::GUIButton *btnPDPContextDeactiveSelected;
 			UI::GUIListView *lvPDPContext;
 
-			UI::GUITabPage *tpATCommand;
-			UI::GUIPanel *pnlATCommand;
+			NotNullPtr<UI::GUITabPage> tpATCommand;
+			NotNullPtr<UI::GUIPanel> pnlATCommand;
 			UI::GUILabel *lblATCommand;
 			UI::GUITextBox *txtATCommand;
 			UI::GUIButton *btnATCommand;
 			UI::GUITextBox *txtATCommandRep;
 
-			UI::GUITabPage *tpLog;
+			NotNullPtr<UI::GUITabPage> tpLog;
 			NotNullPtr<UI::GUIListBox> lbLog;
 			UI::GUITextBox *txtLog;
 
-			UI::GUITabPage *tpHuawei;
+			NotNullPtr<UI::GUITabPage> tpHuawei;
 			UI::GUILabel *lblHuaweiICCID;
 			UI::GUITextBox *txtHuaweiICCID;
 			UI::GUILabel *lblHuaweiSIMType;
@@ -145,7 +145,7 @@ namespace SSWR
 			UI::GUITextBox *txtHuaweiCSQ3;
 			UI::GUILabel *lblHuaweiCSQ4;
 			UI::GUITextBox *txtHuaweiCSQ4;
-			UI::GUIGroupBox *grpHuaweiDHCP;
+			NotNullPtr<UI::GUIGroupBox> grpHuaweiDHCP;
 			UI::GUIButton *btnHuaweiDHCP;
 			UI::GUILabel *lblHuaweiDHCPClientIP;
 			UI::GUITextBox *txtHuaweiDHCPClientIP;

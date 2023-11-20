@@ -33,7 +33,7 @@ OSInt __stdcall UI::GUIListBox::LBWndProc(void *hWnd, UInt32 msg, UOSInt wParam,
 	return 0;
 }
 
-UI::GUIListBox::GUIListBox(NotNullPtr<UI::GUICore> ui, UI::GUIClientControl *parent, Bool multiSelect) : UI::GUIControl(ui, parent)
+UI::GUIListBox::GUIListBox(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, Bool multiSelect) : UI::GUIControl(ui, parent)
 {
 	this->mulSel = multiSelect;
 

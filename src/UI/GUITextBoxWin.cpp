@@ -11,7 +11,7 @@
 #include <richedit.h>
 #endif
 
-UI::GUITextBox::GUITextBox(NotNullPtr<UI::GUICore> ui, UI::GUIClientControl *parent, Text::CStringNN initText) : UI::GUIControl(ui, parent)
+UI::GUITextBox::GUITextBox(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, Text::CStringNN initText) : UI::GUIControl(ui, parent)
 {
 	UInt32 style = WS_BORDER | WS_TABSTOP | WS_CHILD | ES_AUTOHSCROLL;
 	if (parent->IsChildVisible())
@@ -21,7 +21,7 @@ UI::GUITextBox::GUITextBox(NotNullPtr<UI::GUICore> ui, UI::GUIClientControl *par
 	this->InitControl(((UI::GUICoreWin*)ui.Ptr())->GetHInst(), parent, L"EDIT", initText.v, style, WS_EX_CLIENTEDGE, 0, 0, 200, 28);
 }
 
-UI::GUITextBox::GUITextBox(NotNullPtr<UI::GUICore> ui, UI::GUIClientControl *parent, Text::CStringNN initText, Bool isMultiline) : UI::GUIControl(ui, parent)
+UI::GUITextBox::GUITextBox(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, Text::CStringNN initText, Bool isMultiline) : UI::GUIControl(ui, parent)
 {
 	UInt32 style = WS_BORDER | WS_TABSTOP | WS_CHILD | ES_AUTOHSCROLL;
 	if (parent->IsChildVisible())

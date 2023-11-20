@@ -109,11 +109,11 @@ SSWR::AVIRead::AVIRGLBViewerForm::AVIRGLBViewerForm(UI::GUIClientControl *parent
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASS(this->pnlBinBuff, UI::GUIPanel(ui, this));
+	NEW_CLASSNN(this->pnlBinBuff, UI::GUIPanel(ui, *this));
 	this->pnlBinBuff->SetRect(0, 0, 100, 200, false);
 	this->pnlBinBuff->SetDockType(UI::GUIControl::DOCK_BOTTOM);
-	NEW_CLASS(this->vspMain, UI::GUIVSplitter(ui, this, 3, true));
-	NEW_CLASS(this->pnlJSON, UI::GUIPanel(ui, this));
+	NEW_CLASS(this->vspMain, UI::GUIVSplitter(ui, *this, 3, true));
+	NEW_CLASSNN(this->pnlJSON, UI::GUIPanel(ui, *this));
 	this->pnlJSON->SetDockType(UI::GUIControl::DOCK_FILL);
 	NEW_CLASS(this->lblJSON, UI::GUILabel(ui, this->pnlJSON, CSTR("JSON")));
 	this->lblJSON->SetRect(0, 0, 100, 23, false);

@@ -33,8 +33,8 @@ namespace SSWR
 
 			UI::GUIListBox *lbResults;
 			UI::GUIHSplitter *hspResults;
-			UI::GUIPanel *pnlResults;
-			UI::GUIPanel *pnlTrap;
+			NotNullPtr<UI::GUIPanel> pnlResults;
+			NotNullPtr<UI::GUIPanel> pnlTrap;
 			UI::GUILabel *lblCommunity;
 			UI::GUITextBox *txtCommunity;
 			UI::GUILabel *lblEnterpriseOID;

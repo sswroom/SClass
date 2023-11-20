@@ -10,7 +10,7 @@
 #include "SSWR/AVIRead/MIMEViewer/AVIRMultipartViewer.h"
 #include "SSWR/AVIRead/MIMEViewer/AVIRUnknownViewer.h"
 
-SSWR::AVIRead::MIMEViewer::AVIRMIMEViewer::AVIRMIMEViewer(NotNullPtr<SSWR::AVIRead::AVIRCore> core, UI::GUIClientControl *ctrl, Text::IMIMEObj *obj)
+SSWR::AVIRead::MIMEViewer::AVIRMIMEViewer::AVIRMIMEViewer(NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<UI::GUIClientControl> ctrl, Text::IMIMEObj *obj)
 {
 	this->core = core;
 	this->ctrl = ctrl;
@@ -20,7 +20,7 @@ SSWR::AVIRead::MIMEViewer::AVIRMIMEViewer::~AVIRMIMEViewer()
 {
 }
 
-SSWR::AVIRead::MIMEViewer::AVIRMIMEViewer *SSWR::AVIRead::MIMEViewer::AVIRMIMEViewer::CreateViewer(NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<UI::GUICore> ui, UI::GUIClientControl *ctrl, NotNullPtr<Media::ColorManagerSess> sess, Text::IMIMEObj *obj)
+SSWR::AVIRead::MIMEViewer::AVIRMIMEViewer *SSWR::AVIRead::MIMEViewer::AVIRMIMEViewer::CreateViewer(NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIClientControl> ctrl, NotNullPtr<Media::ColorManagerSess> sess, Text::IMIMEObj *obj)
 {
 	SSWR::AVIRead::MIMEViewer::AVIRMIMEViewer *viewer;
 	if (obj == 0)

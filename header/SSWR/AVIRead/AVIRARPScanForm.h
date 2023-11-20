@@ -31,7 +31,7 @@ namespace SSWR
 			} IPMapInfo;
 			
 		private:
-			UI::GUIPanel *pnlCtrl;
+			NotNullPtr<UI::GUIPanel> pnlCtrl;
 			UI::GUILabel *lblAdapter;
 			UI::GUIComboBox *cboAdapter;
 			UI::GUIButton *btnScan;

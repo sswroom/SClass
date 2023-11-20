@@ -14,7 +14,7 @@ namespace UI
 		Data::ArrayList<CheckedChangeHandler> checkedChangeHdlrs;
 		Data::ArrayList<void*> checkedChangeObjs;
 	public:
-		GUICheckBox(NotNullPtr<GUICore> ui, UI::GUIClientControl *parent, Text::CStringNN initText, Bool checked);
+		GUICheckBox(NotNullPtr<GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, Text::CStringNN initText, Bool checked);
 		virtual ~GUICheckBox();
 
 		virtual void SetText(Text::CStringNN text);
@@ -28,6 +28,5 @@ namespace UI
 
 		void HandleCheckedChange(CheckedChangeHandler hdlr, void *obj);
 	};
-};
-
+}
 #endif

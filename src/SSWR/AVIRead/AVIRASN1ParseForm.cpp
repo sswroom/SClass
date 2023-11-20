@@ -64,7 +64,7 @@ SSWR::AVIRead::AVIRASN1ParseForm::AVIRASN1ParseForm(UI::GUIClientControl *parent
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASS(this->pnlOptions, UI::GUIPanel(ui, this));
+	NEW_CLASSNN(this->pnlOptions, UI::GUIPanel(ui, *this));
 	this->pnlOptions->SetRect(0, 0, 100, 51, false);
 	this->pnlOptions->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->lblType, UI::GUILabel(ui, this->pnlOptions, CSTR("Type")));
@@ -75,13 +75,13 @@ SSWR::AVIRead::AVIRASN1ParseForm::AVIRASN1ParseForm(UI::GUIClientControl *parent
 	this->cboType->SetSelectedIndex(0);
 	NEW_CLASS(this->lblData, UI::GUILabel(ui, this->pnlOptions, CSTR("Base64 encoded data")));
 	this->lblData->SetRect(4, 28, 100, 23, false);
-	NEW_CLASS(this->pnlControl, UI::GUIPanel(ui, this));
+	NEW_CLASSNN(this->pnlControl, UI::GUIPanel(ui, *this));
 	this->pnlControl->SetRect(0, 0, 100, 31, false);
 	this->pnlControl->SetDockType(UI::GUIControl::DOCK_BOTTOM);
 	NEW_CLASS(this->btnParse, UI::GUIButton(ui, this->pnlControl, CSTR("Parse")));
 	this->btnParse->SetRect(4, 4, 75, 23, false);
 	this->btnParse->HandleButtonClick(OnParseClicked, this);
-	NEW_CLASS(this->txtData, UI::GUITextBox(ui, this, CSTR(""), true));
+	NEW_CLASS(this->txtData, UI::GUITextBox(ui, *this, CSTR(""), true));
 	this->txtData->SetDockType(UI::GUIControl::DOCK_FILL);
 }
 

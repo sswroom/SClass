@@ -75,7 +75,7 @@ gboolean GUIVSplitter_OnMouseUp(GtkWidget *widget, GdkEvent *event, gpointer dat
 	return false;
 }
 
-UI::GUIVSplitter::GUIVSplitter(NotNullPtr<UI::GUICore> ui, UI::GUIClientControl *parent, Int32 height, Bool isBottom) : UI::GUIControl(ui, parent)
+UI::GUIVSplitter::GUIVSplitter(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, Int32 height, Bool isBottom) : UI::GUIControl(ui, parent)
 {
 	this->dragMode = false;
 	this->isBottom = isBottom;
@@ -119,7 +119,8 @@ void UI::GUIVSplitter::EventMouseUp(UI::GUIControl::MouseButton btn, Math::Coord
 {
 	if (btn == UI::GUIControl::MBTN_LEFT)
 	{
-		if (this->dragMode)
+		NotNullPtr<UI::GUIClientControl> nnparent;
+		if (this->dragMode && this->parent.SetTo(nnparent))
 		{
 			UI::GUIControl *ctrl;
 			Bool foundThis = false;
@@ -127,10 +128,10 @@ void UI::GUIVSplitter::EventMouseUp(UI::GUIControl::MouseButton btn, Math::Coord
 			pos = this->GetPositionP();
 			drawY += pos.y;
 			Math::Size2D<UOSInt> sz;
-			UOSInt i = this->parent->GetChildCount();
+			UOSInt i = nnparent->GetChildCount();
 			while (i-- > 0)
 			{
-				ctrl = this->parent->GetChild(i);
+				ctrl = nnparent->GetChild(i);
 				if (ctrl == this)
 				{
 					foundThis = true;
@@ -143,7 +144,7 @@ void UI::GUIVSplitter::EventMouseUp(UI::GUIControl::MouseButton btn, Math::Coord
 						pos = ctrl->GetPositionP();
 						sz = ctrl->GetSizeP();
 						ctrl->SetAreaP(pos.x, drawY, pos.x + (OSInt)sz.x, pos.y + (OSInt)sz.y, false);
-						this->parent->UpdateChildrenSize(true);
+						nnparent->UpdateChildrenSize(true);
 						break;
 					}
 					else if (dockType == UI::GUIControl::DOCK_TOP && !this->isBottom)
@@ -151,7 +152,7 @@ void UI::GUIVSplitter::EventMouseUp(UI::GUIControl::MouseButton btn, Math::Coord
 						pos = ctrl->GetPositionP();
 						sz = ctrl->GetSizeP();
 						ctrl->SetAreaP(pos.x, pos.y, pos.x + (OSInt)sz.x, drawY, false);
-						this->parent->UpdateChildrenSize(true);
+						nnparent->UpdateChildrenSize(true);
 						break;
 					}
 				}

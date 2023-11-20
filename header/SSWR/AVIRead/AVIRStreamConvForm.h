@@ -24,8 +24,8 @@ namespace SSWR
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			IO::SiLabDriver *siLabDriver;
 
-			UI::GUIGroupBox *grpStream1;
-			UI::GUIPanel *pnlStream1;
+			NotNullPtr<UI::GUIGroupBox> grpStream1;
+			NotNullPtr<UI::GUIPanel> pnlStream1;
 			UI::GUILabel *lblStream1;
 			UI::GUITextBox *txtStream1;
 			UI::GUICheckBox *chkStreamLog1;
@@ -33,8 +33,8 @@ namespace SSWR
 			UI::GUIRealtimeLineChart *rlcStream1;
 			UI::GUIHSplitter *hspStream;
 
-			UI::GUIGroupBox *grpStream2;
-			UI::GUIPanel *pnlStream2;
+			NotNullPtr<UI::GUIGroupBox> grpStream2;
+			NotNullPtr<UI::GUIPanel> pnlStream2;
 			UI::GUILabel *lblStream2;
 			UI::GUITextBox *txtStream2;
 			UI::GUICheckBox *chkStreamLog2;

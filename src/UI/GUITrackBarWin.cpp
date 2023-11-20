@@ -19,7 +19,7 @@ void UI::GUITrackBar::EventScrolled()
 	}
 }
 
-UI::GUITrackBar::GUITrackBar(NotNullPtr<UI::GUICore> ui, UI::GUIClientControl *parent, UOSInt minVal, UOSInt maxVal, UOSInt currVal) : UI::GUIControl(ui, parent)
+UI::GUITrackBar::GUITrackBar(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, UOSInt minVal, UOSInt maxVal, UOSInt currVal) : UI::GUIControl(ui, parent)
 {
     INITCOMMONCONTROLSEX icex;
 

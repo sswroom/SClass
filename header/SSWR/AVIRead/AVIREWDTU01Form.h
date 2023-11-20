@@ -29,7 +29,7 @@ namespace SSWR
 			} DeviceEntry;
 
 		private:
-			UI::GUIPanel *pnlMQTT;
+			NotNullPtr<UI::GUIPanel> pnlMQTT;
 			UI::GUILabel *lblServer;
 			UI::GUITextBox *txtServer;
 			UI::GUILabel *lblPort;

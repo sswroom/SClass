@@ -50,7 +50,7 @@ SSWR::AVIRead::AVIRVBoxManagerForm::AVIRVBoxManagerForm(UI::GUIClientControl *pa
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASS(this->pnlVersion, UI::GUIPanel(ui, this));
+	NEW_CLASSNN(this->pnlVersion, UI::GUIPanel(ui, *this));
 	this->pnlVersion->SetRect(0, 0, 100, 31, false);
 	this->pnlVersion->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->lblVersion, UI::GUILabel(ui, this->pnlVersion, CSTR("Version")));
@@ -58,12 +58,12 @@ SSWR::AVIRead::AVIRVBoxManagerForm::AVIRVBoxManagerForm(UI::GUIClientControl *pa
 	NEW_CLASS(this->txtVersion, UI::GUITextBox(ui, this->pnlVersion, CSTR("")));
 	this->txtVersion->SetReadOnly(true);
 	this->txtVersion->SetRect(104, 4, 200, 23, false);
-	NEW_CLASS(this->lbVMS, UI::GUIListBox(ui, this, false));
+	NEW_CLASS(this->lbVMS, UI::GUIListBox(ui, *this, false));
 	this->lbVMS->SetRect(0, 0, 150, 23, false);
 	this->lbVMS->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbVMS->HandleSelectionChange(OnVMSSelChg, this);
-	NEW_CLASS(this->hspVM, UI::GUIHSplitter(ui, this, 3, false));
-	NEW_CLASS(this->tcVM, UI::GUITabControl(ui, this));
+	NEW_CLASS(this->hspVM, UI::GUIHSplitter(ui, *this, 3, false));
+	NEW_CLASS(this->tcVM, UI::GUITabControl(ui, *this));
 	this->tcVM->SetDockType(UI::GUIControl::DOCK_FILL);
 	
 	this->tpControl = this->tcVM->AddTabPage(CSTR("Control"));

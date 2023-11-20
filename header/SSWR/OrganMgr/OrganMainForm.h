@@ -40,15 +40,15 @@ namespace SSWR
 			} InputMode;
 
 		private:
-			UI::GUIPanel *pnlLeft;
+			NotNullPtr<UI::GUIPanel> pnlLeft;
 			UI::GUILabel *lblLeft;
 			UI::GUIListBox *lbDir;
 			UI::GUIHSplitter *hsbLeft;
 
-			UI::GUIPanel *pnlMid;
+			NotNullPtr<UI::GUIPanel> pnlMid;
 			UI::GUILabel *lblMid;
 			UI::GUIListBox *lbObj;
-			UI::GUIPanel *pnlMidBottom;
+			NotNullPtr<UI::GUIPanel> pnlMidBottom;
 			UI::GUILabel *lblPickMsg;
 			UI::GUIButton *btnObjPick;
 			UI::GUIButton *btnObjPlace;
@@ -57,7 +57,7 @@ namespace SSWR
 
 			UI::GUITabControl *tcMain;
 
-			UI::GUITabPage *tpGroup;
+			NotNullPtr<UI::GUITabPage> tpGroup;
 			UI::GUITextBox *txtGroupId;
 			UI::GUIComboBox *cboGroupType;
 			UI::GUITextBox *txtGroupEName;
@@ -69,8 +69,8 @@ namespace SSWR
 			UI::GUIButton *btnGroupAdd;
 			UI::GUIButton *btnGroupEnter;
 
-			UI::GUITabPage *tpSpecies;
-			UI::GUIPanel *pnlSpecies;
+			NotNullPtr<UI::GUITabPage> tpSpecies;
+			NotNullPtr<UI::GUIPanel> pnlSpecies;
 			UI::GUITextBox *txtSpeciesId;
 			UI::GUITextBox *txtSpeciesCName;
 			UI::GUITextBox *txtSpeciesSName;
@@ -82,21 +82,21 @@ namespace SSWR
 			UI::GUIButton *btnSpeciesAdd;
 			UI::GUIButton *btnSpeciesPasteSName;
 			UI::GUIButton *btnSpeciesColor;
-			UI::GUIGroupBox *grpSpBook;
-			UI::GUIPanel *pnlSpBook;
+			NotNullPtr<UI::GUIGroupBox> grpSpBook;
+			NotNullPtr<UI::GUIPanel> pnlSpBook;
 			UI::GUITextBox *txtSpBook;
 			UI::GUITextBox *txtSpBookYear;
 			UI::GUIComboBox *cboSpBook;
 			UI::GUIButton *btnSpBookAdd;
-			UI::GUIPanel *pnlSpBookCtrl;
+			NotNullPtr<UI::GUIPanel> pnlSpBookCtrl;
 			UI::GUIButton *btnSpBookDel;
 			UI::GUIListView *lvSpBook;
 
-			UI::GUITabPage *tpImage;
+			NotNullPtr<UI::GUITabPage> tpImage;
 			UI::GUIPictureBoxDD *pbImg;
 			UI::GUIVSplitter *vsbImg;
 			UI::GUIListBox *lbImage;
-			UI::GUIPanel *pnlImage;
+			NotNullPtr<UI::GUIPanel> pnlImage;
 			UI::GUIButton *btnImageSaveAll;
 			UI::GUIButton *btnImageSave;
 			UI::GUIButton *btnImagePick;
@@ -107,9 +107,9 @@ namespace SSWR
 			UI::GUIButton *btnImageCrop;
 			UI::GUIButton *btnImageClipboard;
 
-			UI::GUITabPage *tpMap;
-			UI::GUIPanel *pnlMapCtrl;
-			UI::GUIPanel *pnlMapStatus;
+			NotNullPtr<UI::GUITabPage> tpMap;
+			NotNullPtr<UI::GUIPanel> pnlMapCtrl;
+			NotNullPtr<UI::GUIPanel> pnlMapStatus;
 			UI::GUITrackBar *tbMapScale;
 			UI::GUITextBox *txtMapPos;
 			UI::GUITextBox *txtMapScale;

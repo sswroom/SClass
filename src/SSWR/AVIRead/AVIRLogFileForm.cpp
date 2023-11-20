@@ -58,7 +58,7 @@ SSWR::AVIRead::AVIRLogFileForm::AVIRLogFileForm(UI::GUIClientControl *parent, No
 	this->SetText(CSTRP(sbuff, sptr));
 	this->SetFont(0, 0, 8.25, false);
 
-	NEW_CLASS(this->lvLogs, UI::GUIListView(ui, this, UI::GUIListView::LVSTYLE_TABLE, 2));
+	NEW_CLASS(this->lvLogs, UI::GUIListView(ui, *this, UI::GUIListView::LVSTYLE_TABLE, 2));
 	this->lvLogs->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvLogs->SetShowGrid(true);
 	this->lvLogs->SetFullRowSelect(true);

@@ -98,7 +98,7 @@ SSWR::AVIRead::AVIRSelIOPinForm::AVIRSelIOPinForm(UI::GUIClientControl *parent, 
 	this->gpioPin = this->core->GetGPIOControl();
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASS(this->pnlPinType, UI::GUIPanel(ui, this));
+	NEW_CLASSNN(this->pnlPinType, UI::GUIPanel(ui, *this));
 	this->pnlPinType->SetRect(0, 0, 100, 31, false);
 	this->pnlPinType->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->lblPinType, UI::GUILabel(ui, this->pnlPinType, CSTR("Pin Type")));
@@ -109,7 +109,7 @@ SSWR::AVIRead::AVIRSelIOPinForm::AVIRSelIOPinForm(UI::GUIClientControl *parent, 
 	this->cboPinType->AddItem(SSWR::AVIRead::AVIRCore::IOPinTypeGetName(SSWR::AVIRead::AVIRCore::IOPT_VIOPIN), (void*)SSWR::AVIRead::AVIRCore::IOPT_VIOPIN);
 	this->cboPinType->HandleSelectionChange(OnPinTypeChg, this);
 
-	NEW_CLASS(this->pnlButtons, UI::GUIPanel(ui, this));
+	NEW_CLASSNN(this->pnlButtons, UI::GUIPanel(ui, *this));
 	this->pnlButtons->SetRect(0, 0, 100, 31, false);
 	this->pnlButtons->SetDockType(UI::GUIControl::DOCK_BOTTOM);
 	NEW_CLASS(this->btnOK, UI::GUIButton(ui, this->pnlButtons, CSTR("&OK")));
@@ -119,7 +119,7 @@ SSWR::AVIRead::AVIRSelIOPinForm::AVIRSelIOPinForm(UI::GUIClientControl *parent, 
 	this->btnCancel->SetRect(132, 4, 75, 23, false);
 	this->btnCancel->HandleButtonClick(OnCancelClick, this);
 
-	NEW_CLASS(this->tcConfig, UI::GUITabControl(ui, this));
+	NEW_CLASS(this->tcConfig, UI::GUITabControl(ui, *this));
 	this->tcConfig->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	this->tpGPIO = this->tcConfig->AddTabPage(CSTR("GPIO"));

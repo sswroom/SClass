@@ -18,7 +18,7 @@ namespace SSWR
 		private:
 			UI::GUITabControl *tcMain;
 
-			UI::GUITabPage *tpSystem;
+			NotNullPtr<UI::GUITabPage> tpSystem;
 			UI::GUILabel *lblOSName;
 			UI::GUITextBox *txtOSName;
 			UI::GUILabel *lblOSVer;
@@ -30,10 +30,10 @@ namespace SSWR
 			UI::GUILabel *lblProductType;
 			UI::GUITextBox *txtProductType;
 
-			UI::GUITabPage *tpDevices;
+			NotNullPtr<UI::GUITabPage> tpDevices;
 			UI::GUIListView *lvDevices;
 
-			UI::GUITabPage *tpDrivers;
+			NotNullPtr<UI::GUITabPage> tpDrivers;
 			UI::GUIListView *lvDrivers;
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;

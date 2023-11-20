@@ -289,7 +289,7 @@ SSWR::ProcMonForm::ProcMonForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUIC
 	this->SetText(CSTR("Process Monitor"));
 	this->SetFont(0, 0, 8.25, false);
 
-	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, this));
+	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, *this));
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->tpLog = this->tcMain->AddTabPage(CSTR("Log"));
 	NEW_CLASS(this->txtLog, UI::GUITextBox(ui, this->tpLog, CSTR("")));
@@ -305,9 +305,9 @@ SSWR::ProcMonForm::ProcMonForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUIC
 	this->lbProg->SetRect(0, 0, 150, 100, false);
 	this->lbProg->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbProg->HandleSelectionChange(OnProgSelChange, this);
-	NEW_CLASS(this->pnlProg, UI::GUIPanel(ui, this->tpProg));
+	NEW_CLASSNN(this->pnlProg, UI::GUIPanel(ui, this->tpProg));
 	this->pnlProg->SetDockType(UI::GUIControl::DOCK_FILL);
-	NEW_CLASS(this->grpProgAdd, UI::GUIGroupBox(ui, this->pnlProg, CSTR("Add Prog")));
+	NEW_CLASSNN(this->grpProgAdd, UI::GUIGroupBox(ui, this->pnlProg, CSTR("Add Prog")));
 	this->grpProgAdd->SetRect(0, 0, 100, 64, false);
 	this->grpProgAdd->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->lblProgAddName, UI::GUILabel(ui, this->grpProgAdd, CSTR("Prog Name")));

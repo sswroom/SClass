@@ -19,14 +19,14 @@ namespace SSWR
 		class AVIRFileAnalyseForm : public UI::GUIForm
 		{
 		private:
-			UI::GUIPanel *pnlCtrl;
+			NotNullPtr<UI::GUIPanel> pnlCtrl;
 			UI::GUILabel *lblFile;
 			UI::GUITextBox *txtFile;
 			UI::GUIButton *btnFile;
 			UI::GUITabControl *tcMain;
-			UI::GUITabPage *tpContent;
-			UI::GUITabPage *tpStream;
-			UI::GUITabPage *tpTool;
+			NotNullPtr<UI::GUITabPage> tpContent;
+			NotNullPtr<UI::GUITabPage> tpStream;
+			NotNullPtr<UI::GUITabPage> tpTool;
 
 			UI::GUIListBox *lbPackList;
 			UI::GUIHSplitter *hspPack;

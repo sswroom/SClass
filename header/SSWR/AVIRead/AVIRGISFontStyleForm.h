@@ -26,12 +26,12 @@ namespace SSWR
 			Bool changed;
 			NotNullPtr<Media::DrawEngine> eng;
 
-			UI::GUIPanel *pnlBtn;
+			NotNullPtr<UI::GUIPanel> pnlBtn;
 			UI::GUIButton *btnOK;
 			UI::GUIButton *btnCancel;
 
-			UI::GUIGroupBox *grpStyle;
-			UI::GUIPanel *pnlStyle;
+			NotNullPtr<UI::GUIGroupBox> grpStyle;
+			NotNullPtr<UI::GUIPanel> pnlStyle;
 			UI::GUIButton *btnAddStyle;
 			UI::GUIButton *btnRemoveStyle;
 			UI::GUIButton *btnEditStyle;

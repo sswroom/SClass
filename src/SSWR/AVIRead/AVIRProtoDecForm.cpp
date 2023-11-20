@@ -135,7 +135,7 @@ SSWR::AVIRead::AVIRProtoDecForm::AVIRProtoDecForm(UI::GUIClientControl *parent, 
 	NEW_CLASS(this->itemList, Data::ArrayList<ProtocolItem*>());
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASS(this->pnlCtrl, UI::GUIPanel(ui, this));
+	NEW_CLASSNN(this->pnlCtrl, UI::GUIPanel(ui, *this));
 	this->pnlCtrl->SetRect(0, 0, 100, 80, false);
 	this->pnlCtrl->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->lblFile, UI::GUILabel(ui, this->pnlCtrl, CSTR("File")));
@@ -153,12 +153,12 @@ SSWR::AVIRead::AVIRProtoDecForm::AVIRProtoDecForm(UI::GUIClientControl *parent, 
 	NEW_CLASS(this->btnLoad, UI::GUIButton(ui, this->pnlCtrl, CSTR("&Load")));
 	this->btnLoad->SetRect(104, 52, 75, 23, false);
 	this->btnLoad->HandleButtonClick(OnLoadClicked, this);
-	NEW_CLASS(this->txtLogs, UI::GUITextBox(ui, this, CSTR(""), true));
+	NEW_CLASS(this->txtLogs, UI::GUITextBox(ui, *this, CSTR(""), true));
 	this->txtLogs->SetReadOnly(true);
 	this->txtLogs->SetRect(0, 0, 100, 144, false);
 	this->txtLogs->SetDockType(UI::GUIControl::DOCK_BOTTOM);
-	NEW_CLASS(this->vspLogs, UI::GUIVSplitter(ui, this, 3, true));
-	NEW_CLASS(this->lvLogs, UI::GUIListView(ui, this, UI::GUIListView::LVSTYLE_TABLE, 3));
+	NEW_CLASS(this->vspLogs, UI::GUIVSplitter(ui, *this, 3, true));
+	NEW_CLASS(this->lvLogs, UI::GUIListView(ui, *this, UI::GUIListView::LVSTYLE_TABLE, 3));
 	this->lvLogs->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvLogs->SetShowGrid(true);
 	this->lvLogs->SetFullRowSelect(true);

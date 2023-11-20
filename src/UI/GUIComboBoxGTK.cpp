@@ -29,7 +29,7 @@ struct UI::GUIComboBox::ClassData
 	GtkTreeModel *model;
 };
 
-UI::GUIComboBox::GUIComboBox(NotNullPtr<UI::GUICore> ui, UI::GUIClientControl *parent, Bool allowEdit) : UI::GUIControl(ui, parent)
+UI::GUIComboBox::GUIComboBox(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, Bool allowEdit) : UI::GUIControl(ui, parent)
 {
 	this->clsData = MemAlloc(ClassData, 1);
 	this->clsData->model = 0;
@@ -189,7 +189,7 @@ UOSInt UI::GUIComboBox::AddItem(Text::CStringNN itemText, void *itemObj)
 	return cnt;
 }
 
-UOSInt UI::GUIComboBox::InsertItem(UOSInt index, Text::String *itemText, void *itemObj)
+UOSInt UI::GUIComboBox::InsertItem(UOSInt index, NotNullPtr<Text::String> itemText, void *itemObj)
 {
 	UOSInt cnt = this->itemTexts.GetCount();
 	if (index >= cnt)

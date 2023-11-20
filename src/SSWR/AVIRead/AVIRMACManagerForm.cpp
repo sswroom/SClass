@@ -491,7 +491,7 @@ SSWR::AVIRead::AVIRMACManagerForm::AVIRMACManagerForm(UI::GUIClientControl *pare
 
 	this->core = core;
 
-	NEW_CLASS(this->pnlControl, UI::GUIPanel(ui, this));
+	NEW_CLASSNN(this->pnlControl, UI::GUIPanel(ui, *this));
 	this->pnlControl->SetRect(0, 0, 100, 31, false);
 	this->pnlControl->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->btnStore, UI::GUIButton(ui, this->pnlControl, CSTR("Store")));
@@ -499,11 +499,11 @@ SSWR::AVIRead::AVIRMACManagerForm::AVIRMACManagerForm(UI::GUIClientControl *pare
 	this->btnStore->HandleButtonClick(OnStoreClicked, this);
 	NEW_CLASS(this->lblInfo, UI::GUILabel(ui, this->pnlControl, CSTR("")));
 	this->lblInfo->SetRect(84, 4, 200, 23, false);
-	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, this));
+	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, *this));
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	this->tpFile = this->tcMain->AddTabPage(CSTR("WiFi Log"));
-	NEW_CLASS(this->pnlFile, UI::GUIPanel(ui, this->tpFile));
+	NEW_CLASSNN(this->pnlFile, UI::GUIPanel(ui, this->tpFile));
 	this->pnlFile->SetRect(0, 0, 100, 31, false);
 	this->pnlFile->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->lblFile, UI::GUILabel(ui, this->pnlFile, CSTR("Log File")));

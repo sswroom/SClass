@@ -13,7 +13,7 @@ namespace SSWR
 		class AVIRSectorForm : public UI::GUIForm
 		{
 		private:
-			UI::GUIPanel *pnlCtrl;
+			NotNullPtr<UI::GUIPanel> pnlCtrl;
 			UI::GUIButton *btnParse;
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;

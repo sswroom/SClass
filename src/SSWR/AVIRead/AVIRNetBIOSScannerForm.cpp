@@ -122,7 +122,7 @@ SSWR::AVIRead::AVIRNetBIOSScannerForm::AVIRNetBIOSScannerForm(UI::GUIClientContr
 	this->tableUpdated = false;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASS(this->pnlControl, UI::GUIPanel(ui, this));
+	NEW_CLASSNN(this->pnlControl, UI::GUIPanel(ui, *this));
 	this->pnlControl->SetRect(0, 0, 100, 104, false);
 	this->pnlControl->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->lblTargetAddr, UI::GUILabel(ui, this->pnlControl, CSTR("Target Addr")));
@@ -135,7 +135,7 @@ SSWR::AVIRead::AVIRNetBIOSScannerForm::AVIRNetBIOSScannerForm(UI::GUIClientContr
 	this->btnRequest->SetRect(104, 28, 75, 23, false);
 	this->btnRequest->HandleButtonClick(OnRequestClicked, this);
 
-	NEW_CLASS(this->lvAnswers, UI::GUIListView(ui, this, UI::GUIListView::LVSTYLE_TABLE, 5));
+	NEW_CLASS(this->lvAnswers, UI::GUIListView(ui, *this, UI::GUIListView::LVSTYLE_TABLE, 5));
 	this->lvAnswers->SetRect(0, 0, 100, 300, false);
 	this->lvAnswers->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->lvAnswers->SetShowGrid(true);
@@ -146,8 +146,8 @@ SSWR::AVIRead::AVIRNetBIOSScannerForm::AVIRNetBIOSScannerForm(UI::GUIClientContr
 	this->lvAnswers->AddColumn(CSTR("Name"), 140);
 	this->lvAnswers->AddColumn(CSTR("TTL"), 80);
 	this->lvAnswers->HandleSelChg(OnAnswerSelChg, this);
-	NEW_CLASS(this->vspAnswers, UI::GUIVSplitter(ui, this, 3, false));
-	NEW_CLASS(this->lvEntries, UI::GUIListView(ui, this, UI::GUIListView::LVSTYLE_TABLE, 4));
+	NEW_CLASS(this->vspAnswers, UI::GUIVSplitter(ui, *this, 3, false));
+	NEW_CLASS(this->lvEntries, UI::GUIListView(ui, *this, UI::GUIListView::LVSTYLE_TABLE, 4));
 	this->lvEntries->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvEntries->SetShowGrid(true);
 	this->lvEntries->SetFullRowSelect(true);

@@ -22,7 +22,7 @@ namespace SSWR
 			Text::TextBinEnc::TextBinEncList encList;
 			Data::ArrayListNN<Text::String> fileList;
 
-			UI::GUIPanel *pnlControl;
+			NotNullPtr<UI::GUIPanel> pnlControl;
 			UI::GUILabel *lblDir;
 			UI::GUITextBox *txtDir;
 			UI::GUILabel *lblEncoding;

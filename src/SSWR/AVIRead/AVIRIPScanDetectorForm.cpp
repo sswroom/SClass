@@ -35,11 +35,11 @@ SSWR::AVIRead::AVIRIPScanDetectorForm::AVIRIPScanDetectorForm(UI::GUIClientContr
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 	NEW_CLASS(this->log, IO::LogTool());
 	
-	NEW_CLASS(this->txtLog, UI::GUITextBox(ui, this, CSTR("")));
+	NEW_CLASS(this->txtLog, UI::GUITextBox(ui, *this, CSTR("")));
 	this->txtLog->SetRect(0, 0, 100, 23, false);
 	this->txtLog->SetReadOnly(true);
 	this->txtLog->SetDockType(UI::GUIControl::DOCK_BOTTOM);
-	NEW_CLASSNN(this->lbLog, UI::GUIListBox(ui, this, false));
+	NEW_CLASSNN(this->lbLog, UI::GUIListBox(ui, *this, false));
 	this->lbLog->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lbLog->HandleSelectionChange(OnLogSelChg, this);
 

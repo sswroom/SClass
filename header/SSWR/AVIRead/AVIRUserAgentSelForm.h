@@ -31,12 +31,12 @@ namespace SSWR
 			UOSInt currUserAgentLen;
 			Data::ArrayList<OSItem*> *osList;
 
-			UI::GUIPanel *pnlFilter;
+			NotNullPtr<UI::GUIPanel> pnlFilter;
 			UI::GUILabel *lblFilterOS;
 			UI::GUIComboBox *cboFilterOS;
 			UI::GUILabel *lblFilterBrowser;
 			UI::GUIComboBox *cboFilterBrowser;
-			UI::GUIPanel *pnlControl;
+			NotNullPtr<UI::GUIPanel> pnlControl;
 			UI::GUIButton *btnOk;
 			UI::GUIListView *lvUserAgent;
 

@@ -22,7 +22,7 @@ namespace UI
 		Bool hasBorder;
 
 	public:
-		GUIPictureList(NotNullPtr<GUICore> ui, UI::GUIClientControl *parent, NotNullPtr<Media::DrawEngine> eng, Bool hasBorder, Math::Size2D<UOSInt> iconSize);
+		GUIPictureList(NotNullPtr<GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, NotNullPtr<Media::DrawEngine> eng, Bool hasBorder, Math::Size2D<UOSInt> iconSize);
 		virtual ~GUIPictureList();
 
 		virtual void OnDraw(NotNullPtr<Media::DrawImage> img);

@@ -83,7 +83,7 @@ SSWR::AVIRead::AVIRHashTestForm::AVIRHashTestForm(UI::GUIClientControl *parent, 
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, this));
+	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, *this));
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	this->tpAlgorithm = this->tcMain->AddTabPage(CSTR("Algorithm"));
@@ -101,7 +101,7 @@ SSWR::AVIRead::AVIRHashTestForm::AVIRHashTestForm(UI::GUIClientControl *parent, 
 	this->txtSpeed->SetReadOnly(true);
 
 	this->tpCompare = this->tcMain->AddTabPage(CSTR("Compare"));
-	NEW_CLASS(this->pnlCompare, UI::GUIPanel(ui, this->tpCompare));
+	NEW_CLASSNN(this->pnlCompare, UI::GUIPanel(ui, this->tpCompare));
 	this->pnlCompare->SetRect(0, 0, 100, 31, false);
 	this->pnlCompare->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->btnCompare, UI::GUIButton(ui, this->pnlCompare, CSTR("Compare")));

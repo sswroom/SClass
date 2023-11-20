@@ -360,10 +360,10 @@ SSWR::AVIRead::AVIRHexViewerForm::AVIRHexViewerForm(UI::GUIClientControl *parent
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, this));
+	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, *this));
 	this->tcMain->SetRect(0, 0, 100, 200, false);
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_BOTTOM);
-	NEW_CLASS(this->hexView, UI::GUIHexFileView(ui, this, this->core->GetDrawEngine()));
+	NEW_CLASS(this->hexView, UI::GUIHexFileView(ui, *this, this->core->GetDrawEngine()));
 	this->hexView->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->hexView->HandleOffsetChg(OnOffsetChg, this);
 	

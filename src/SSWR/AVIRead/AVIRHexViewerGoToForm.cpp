@@ -67,14 +67,14 @@ SSWR::AVIRead::AVIRHexViewerGoToForm::AVIRHexViewerGoToForm(UI::GUIClientControl
 	this->SetText(CSTR("Go To"));
 	this->SetFont(0, 0, 8.25, false);
 
-	NEW_CLASS(this->lblMessage, UI::GUILabel(ui, this, CSTR("Input offset to go to: (Start with +/- for relative offset)")))
+	NEW_CLASS(this->lblMessage, UI::GUILabel(ui, *this, CSTR("Input offset to go to: (Start with +/- for relative offset)")))
 	this->lblMessage->SetRect(0, 24, 320, 23, false);
-	NEW_CLASS(this->txtInput, UI::GUITextBox(ui, this, CSTR("")));
+	NEW_CLASS(this->txtInput, UI::GUITextBox(ui, *this, CSTR("")));
 	this->txtInput->SetRect(0, 56, 320, 23, false);
-	NEW_CLASS(this->btnCancel, UI::GUIButton(ui, this, CSTR("Cancel")));
+	NEW_CLASS(this->btnCancel, UI::GUIButton(ui, *this, CSTR("Cancel")));
 	this->btnCancel->SetRect(80, 88, 75, 23, false);
 	this->btnCancel->HandleButtonClick(OnCancelClicked, this);
-	NEW_CLASS(this->btnOK, UI::GUIButton(ui, this, CSTR("OK")));
+	NEW_CLASS(this->btnOK, UI::GUIButton(ui, *this, CSTR("OK")));
 	this->btnOK->SetRect(160, 88, 75, 23, false);
 	this->btnOK->HandleButtonClick(OnOKClicked, this);
 

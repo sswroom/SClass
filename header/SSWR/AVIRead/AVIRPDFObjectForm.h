@@ -23,7 +23,7 @@ namespace SSWR
 			UI::GUIHSplitter *hspMain;
 			UI::GUITabControl *tcMain;
 			
-			UI::GUITabPage *tpParameter;
+			NotNullPtr<UI::GUITabPage> tpParameter;
 			UI::GUIListView *lvParameter;
 
 			UI::GUIMainMenu *mnuMain;

@@ -31,16 +31,16 @@ void UI::GUIRadioButton::ChangeSelected(Bool selVal)
 	}
 }
 
-UI::GUIRadioButton::GUIRadioButton(NotNullPtr<UI::GUICore> ui, UI::GUIClientControl *parent, Text::CStringNN initText, Bool selected) : UI::GUIControl(ui, parent)
+UI::GUIRadioButton::GUIRadioButton(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, Text::CStringNN initText, Bool selected) : UI::GUIControl(ui, parent)
 {
 	this->selected = selected;
 
 	GUIRadioButton *radioBtn = 0;
 	UOSInt i = 0;
-	UOSInt j = this->parent->GetChildCount();
+	UOSInt j = parent->GetChildCount();
 	while (i < j)
 	{
-		UI::GUIControl *ctrl = this->parent->GetChild(i);
+		UI::GUIControl *ctrl = parent->GetChild(i);
 		if (ctrl != this)
 		{
 			if (ctrl->GetObjectClass().Equals(UTF8STRC("RadioButton")))

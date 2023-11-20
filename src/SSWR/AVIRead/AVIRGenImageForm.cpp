@@ -62,28 +62,28 @@ SSWR::AVIRead::AVIRGenImageForm::AVIRGenImageForm(UI::GUIClientControl *parent, 
 	
 	UI::GUILabel *lbl;
 	
-	NEW_CLASS(lbl, UI::GUILabel(ui, this, CSTR("Generator")));
+	NEW_CLASS(lbl, UI::GUILabel(ui, *this, CSTR("Generator")));
 	lbl->SetRect(8, 8, 100, 23, false);
-	NEW_CLASS(this->cboGenerator, UI::GUIComboBox(ui, this, false));
+	NEW_CLASS(this->cboGenerator, UI::GUIComboBox(ui, *this, false));
 	this->cboGenerator->SetRect(112, 8, 224, 23, false);
-	NEW_CLASS(lbl, UI::GUILabel(ui, this, CSTR("Color Profile")));
+	NEW_CLASS(lbl, UI::GUILabel(ui, *this, CSTR("Color Profile")));
 	lbl->SetRect(8, 32, 100, 23, false);
-	NEW_CLASS(this->cboColorProfile, UI::GUIComboBox(ui, this, false));
+	NEW_CLASS(this->cboColorProfile, UI::GUIComboBox(ui, *this, false));
 	this->cboColorProfile->SetRect(112, 32, 224, 23, false);
 
-	NEW_CLASS(lbl, UI::GUILabel(ui, this, CSTR("Output Size")));
+	NEW_CLASS(lbl, UI::GUILabel(ui, *this, CSTR("Output Size")));
 	lbl->SetRect(8, 200, 100, 23, false);
-	NEW_CLASS(this->txtWidth, UI::GUITextBox(ui, this, CSTR("640")));
+	NEW_CLASS(this->txtWidth, UI::GUITextBox(ui, *this, CSTR("640")));
 	this->txtWidth->SetRect(112, 200, 56, 23, false);
-	NEW_CLASS(lbl, UI::GUILabel(ui, this, CSTR("x")));
+	NEW_CLASS(lbl, UI::GUILabel(ui, *this, CSTR("x")));
 	lbl->SetRect(168, 200, 24, 23, false);
-	NEW_CLASS(this->txtHeight, UI::GUITextBox(ui, this, CSTR("480")));
+	NEW_CLASS(this->txtHeight, UI::GUITextBox(ui, *this, CSTR("480")));
 	this->txtHeight->SetRect(192, 200, 56, 23, false);
 
-	NEW_CLASS(btnGenerate, UI::GUIButton(ui, this, CSTR("Generate")));
+	NEW_CLASS(btnGenerate, UI::GUIButton(ui, *this, CSTR("Generate")));
 	btnGenerate->SetRect(88, 232, 75, 23, false);
 	btnGenerate->HandleButtonClick(GenerateClicked, this);
-	NEW_CLASS(btnCancel, UI::GUIButton(ui, this, CSTR("Cancel")));
+	NEW_CLASS(btnCancel, UI::GUIButton(ui, *this, CSTR("Cancel")));
 	btnCancel->SetRect(184, 232, 75, 23, false);
 	btnCancel->HandleButtonClick(CancelClicked, this);
 	this->SetDefaultButton(btnGenerate);

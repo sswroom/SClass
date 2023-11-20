@@ -20,13 +20,13 @@ namespace SSWR
 		class AVIRDWQB30Form : public UI::GUIForm
 		{
 		private:
-			UI::GUIGroupBox *grpConn;
+			NotNullPtr<UI::GUIGroupBox> grpConn;
 			UI::GUILabel *lblDevType;
 			UI::GUIComboBox *cboDevType;
 			UI::GUILabel *lblPort;
 			UI::GUITextBox *txtPort;
 			UI::GUIButton *btnPort;
-			UI::GUIGroupBox *grpCtrl;
+			NotNullPtr<UI::GUIGroupBox> grpCtrl;
 			UI::GUILabel *lblMode;
 			UI::GUITextBox *txtMode;
 			UI::GUIButton *btnModeScan;
@@ -36,13 +36,13 @@ namespace SSWR
 			UI::GUIButton *btnDefault;
 			UI::GUITabControl *tcMain;
 
-			UI::GUITabPage *tpScan;
-			UI::GUIPanel *pnlScan;
+			NotNullPtr<UI::GUITabPage> tpScan;
+			NotNullPtr<UI::GUIPanel> pnlScan;
 			UI::GUILabel *lblScan;
 			UI::GUITextBox *txtScan;
 			UI::GUIListBox *lbScan;
 
-			UI::GUITabPage *tpSetting;
+			NotNullPtr<UI::GUITabPage> tpSetting;
 			UI::GUILabel *lblSetCmd;
 			UI::GUIComboBox *cboSetCmd;
 			UI::GUIComboBox *cboSetParam;

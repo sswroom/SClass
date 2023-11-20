@@ -418,7 +418,7 @@ UI::GUIForm *UI::GUIForm::FindForm(NotNullPtr<UI::GUICore> ui, const UTF8Char *f
 	return frm;
 }
 
-UI::GUIForm::GUIForm(UI::GUIClientControl *parent, Double initW, Double initH, NotNullPtr<UI::GUICore> ui) : UI::GUIClientControl(ui, parent)
+UI::GUIForm::GUIForm(Optional<UI::GUIClientControl> parent, Double initW, Double initH, NotNullPtr<UI::GUICore> ui) : UI::GUIClientControl(ui, parent)
 {
 	this->virtualMode = false;
 	this->hAcc = 0;
@@ -442,9 +442,10 @@ UI::GUIForm::GUIForm(UI::GUIClientControl *parent, Double initW, Double initH, N
 	Math::Size2DDbl sz;
 	Double initX;
 	Double initY;
-	if (parent)
+	NotNullPtr<GUIClientControl> nnparent;
+	if (parent.SetTo(nnparent))
 	{
-		sz = parent->GetClientSize();
+		sz = nnparent->GetClientSize();
 		initX = (sz.x - initW) * 0.5;
 		initY = (sz.y - initH) * 0.5;
 	}

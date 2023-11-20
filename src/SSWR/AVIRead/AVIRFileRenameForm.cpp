@@ -63,16 +63,16 @@ SSWR::AVIRead::AVIRFileRenameForm::AVIRFileRenameForm(UI::GUIClientControl *pare
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASS(this->lblNewName, UI::GUILabel(ui, this, CSTR("New Name")));
+	NEW_CLASS(this->lblNewName, UI::GUILabel(ui, *this, CSTR("New Name")));
 	this->lblNewName->SetRect(4, 4, 100, 23, false);
-	NEW_CLASS(this->txtNewName, UI::GUITextBox(ui, this, CSTR("")));
+	NEW_CLASS(this->txtNewName, UI::GUITextBox(ui, *this, CSTR("")));
 	this->txtNewName->SetRect(104, 4, 300, 23, false);
-	NEW_CLASS(this->txtNewExt, UI::GUITextBox(ui, this, CSTR("")));
+	NEW_CLASS(this->txtNewExt, UI::GUITextBox(ui, *this, CSTR("")));
 	this->txtNewExt->SetRect(404, 4, 100, 23, false);
-	NEW_CLASS(this->btnRename, UI::GUIButton(ui, this, CSTR("Rename")));
+	NEW_CLASS(this->btnRename, UI::GUIButton(ui, *this, CSTR("Rename")));
 	this->btnRename->SetRect(104, 28, 75, 23, false);
 	this->btnRename->HandleButtonClick(OnRenameClicked, this);
-	NEW_CLASS(this->btnCancel, UI::GUIButton(ui, this, CSTR("Cancel")));
+	NEW_CLASS(this->btnCancel, UI::GUIButton(ui, *this, CSTR("Cancel")));
 	this->btnCancel->SetRect(184, 28, 75, 23, false);
 	this->btnCancel->HandleButtonClick(OnCancelClicked, this);
 

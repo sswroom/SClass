@@ -17,7 +17,7 @@ namespace SSWR
 		class AVIRThreadSpeedForm : public UI::GUIForm
 		{
 		private:
-			UI::GUIPanel *pnlCtrl;
+			NotNullPtr<UI::GUIPanel> pnlCtrl;
 			UI::GUIButton *btnTest;
 			UI::GUIListView *lvResult;
 

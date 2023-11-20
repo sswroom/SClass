@@ -23,7 +23,7 @@ namespace UI
 		Bool nonUIEvent;
 
 	public:
-		GUIComboBox(NotNullPtr<GUICore> ui, UI::GUIClientControl *parent, Bool allowEditing);
+		GUIComboBox(NotNullPtr<GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, Bool allowEditing);
 		virtual ~GUIComboBox();
 
 		void EventSelectionChange();
@@ -37,7 +37,7 @@ namespace UI
 		void EndUpdate();
 		UOSInt AddItem(NotNullPtr<Text::String> itemText, void *itemObj);
 		UOSInt AddItem(Text::CStringNN itemText, void *itemObj);
-		UOSInt InsertItem(UOSInt index, Text::String *itemText, void *itemObj);
+		UOSInt InsertItem(UOSInt index, NotNullPtr<Text::String> itemText, void *itemObj);
 		UOSInt InsertItem(UOSInt index, Text::CStringNN itemText, void *itemObj);
 		void *RemoveItem(UOSInt index);
 		void ClearItems();

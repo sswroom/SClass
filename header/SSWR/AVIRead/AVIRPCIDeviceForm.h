@@ -20,7 +20,7 @@ namespace SSWR
 
 			UI::GUIListBox *lbDevices;
 			UI::GUIHSplitter *hspDevices;
-			UI::GUIPanel *pnlDevices;
+			NotNullPtr<UI::GUIPanel> pnlDevices;
 			UI::GUILabel *lblVendorId;
 			UI::GUITextBox *txtVendorId;
 			UI::GUILabel *lblVendorName;

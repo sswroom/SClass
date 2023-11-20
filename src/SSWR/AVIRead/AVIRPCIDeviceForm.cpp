@@ -76,12 +76,12 @@ SSWR::AVIRead::AVIRPCIDeviceForm::AVIRPCIDeviceForm(UI::GUIClientControl *parent
 	this->SetText(CSTR("PCI Devices"));
 	this->SetFont(0, 0, 8.25, false);
 
-	NEW_CLASS(this->lbDevices, UI::GUIListBox(ui, this, false));
+	NEW_CLASS(this->lbDevices, UI::GUIListBox(ui, *this, false));
 	this->lbDevices->SetRect(0, 0, 100, 23, false);
 	this->lbDevices->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbDevices->HandleSelectionChange(OnDevicesSelChg, this);
-	NEW_CLASS(this->hspDevices, UI::GUIHSplitter(ui, this, 3, false));
-	NEW_CLASS(this->pnlDevices, UI::GUIPanel(ui, this));
+	NEW_CLASS(this->hspDevices, UI::GUIHSplitter(ui, *this, 3, false));
+	NEW_CLASSNN(this->pnlDevices, UI::GUIPanel(ui, *this));
 	this->pnlDevices->SetDockType(UI::GUIControl::DOCK_FILL);
 	NEW_CLASS(this->lblVendorId, UI::GUILabel(ui, this->pnlDevices, CSTR("VendorId")));
 	this->lblVendorId->SetRect(4, 4, 100, 23, false);

@@ -21,7 +21,7 @@ namespace SSWR
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			Text::CodeProject *proj;
 
-			UI::GUIPanel *pnlCtrl;
+			NotNullPtr<UI::GUIPanel> pnlCtrl;
 			UI::GUILabel *lblConfig;
 			UI::GUIComboBox *cboConfig;
 			UI::GUITreeView *tvMain;

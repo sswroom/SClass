@@ -7,7 +7,7 @@
 #include <windows.h>
 #include <commctrl.h>
 
-UI::GUIProgressBar::GUIProgressBar(NotNullPtr<UI::GUICore> ui, UI::GUIClientControl *parent, UInt64 totalCnt) : UI::GUIControl(ui, parent)
+UI::GUIProgressBar::GUIProgressBar(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, UInt64 totalCnt) : UI::GUIControl(ui, parent)
 {
     INITCOMMONCONTROLSEX icex;
 

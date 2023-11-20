@@ -1036,7 +1036,7 @@ SSWR::AVIRead::AVIRGSMModemForm::AVIRGSMModemForm(UI::GUIClientControl *parent, 
 	this->regNetACT = IO::GSMModemController::AccessTech::GSM;
 	this->operNextTime = Data::Timestamp::UtcNow();
 
-	NEW_CLASS(this->pnlDevice, UI::GUIPanel(ui, this));
+	NEW_CLASSNN(this->pnlDevice, UI::GUIPanel(ui, *this));
 	this->pnlDevice->SetRect(0, 0, 100, 48, false);
 	this->pnlDevice->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->lblDeviceSerial, UI::GUILabel(ui, this->pnlDevice, CSTR("Serial Port")));
@@ -1054,14 +1054,14 @@ SSWR::AVIRead::AVIRGSMModemForm::AVIRGSMModemForm(UI::GUIClientControl *parent, 
 	NEW_CLASS(this->btnDeviceOther, UI::GUIButton(ui, this->pnlDevice, CSTR("Open Stream")));
 	this->btnDeviceOther->SetRect(250, 24, 75, 23, false);
 	this->btnDeviceOther->HandleButtonClick(OnDeviceOtherClk, this);
-	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, this));
+	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, *this));
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	this->tpInfo = this->tcMain->AddTabPage(CSTR("Info"));
 	NEW_CLASS(this->rlcRSSI, UI::GUIRealtimeLineChart(ui, this->tpInfo, this->core->GetDrawEngine(), 5, 360, 10000));
 	this->rlcRSSI->SetRect(0, 0, 100, 100, false);
 	this->rlcRSSI->SetDockType(UI::GUIControl::DOCK_BOTTOM);
-	NEW_CLASS(this->pnlInfo, UI::GUIPanel(ui, this->tpInfo));
+	NEW_CLASSNN(this->pnlInfo, UI::GUIPanel(ui, this->tpInfo));
 	this->pnlInfo->SetDockType(UI::GUIControl::DOCK_FILL);
 	NEW_CLASS(this->lblModemManu, UI::GUILabel(ui, this->pnlInfo, CSTR("Manufacture")));
 	this->lblModemManu->SetRect(8, 8, 100, 23, false);
@@ -1125,7 +1125,7 @@ SSWR::AVIRead::AVIRGSMModemForm::AVIRGSMModemForm(UI::GUIClientControl *parent, 
 	this->txtSignalQuality->SetReadOnly(true);
 
 	this->tpPhoneBook = this->tcMain->AddTabPage(CSTR("PhoneBook"));
-	NEW_CLASS(this->pnlPhone, UI::GUIPanel(ui, this->tpPhoneBook));
+	NEW_CLASSNN(this->pnlPhone, UI::GUIPanel(ui, this->tpPhoneBook));
 	this->pnlPhone->SetRect(0, 0, 100, 32, false);
 	this->pnlPhone->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->cboPhoneStorage, UI::GUIComboBox(ui, this->pnlPhone, false));
@@ -1154,7 +1154,7 @@ SSWR::AVIRead::AVIRGSMModemForm::AVIRGSMModemForm(UI::GUIClientControl *parent, 
 	this->lvPhone->SetShowGrid(true);
 
 	this->tpSMS = this->tcMain->AddTabPage(CSTR("SMS"));
-	NEW_CLASS(this->pnlSMS, UI::GUIPanel(ui, this->tpSMS));
+	NEW_CLASSNN(this->pnlSMS, UI::GUIPanel(ui, this->tpSMS));
 	this->pnlSMS->SetRect(0, 0, 100, 32, false);
 	this->pnlSMS->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->cboSMSStorage, UI::GUIComboBox(ui, this->pnlSMS, false));
@@ -1190,7 +1190,7 @@ SSWR::AVIRead::AVIRGSMModemForm::AVIRGSMModemForm(UI::GUIClientControl *parent, 
 	this->lvSMS->SetFullRowSelect(true);
 
 	this->tpPDPContext = this->tcMain->AddTabPage(CSTR("PDP Context(APN)"));
-	NEW_CLASS(this->pnlPDPContext, UI::GUIPanel(ui, this->tpPDPContext));
+	NEW_CLASSNN(this->pnlPDPContext, UI::GUIPanel(ui, this->tpPDPContext));
 	this->pnlPDPContext->SetRect(0, 0, 100, 72, false);
 	this->pnlPDPContext->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->btnPDPContextLoad, UI::GUIButton(ui, this->pnlPDPContext, CSTR("Load")));
@@ -1244,7 +1244,7 @@ SSWR::AVIRead::AVIRGSMModemForm::AVIRGSMModemForm(UI::GUIClientControl *parent, 
 	this->lvPDPContext->AddColumn(CSTR("Activate"), 80);
 
 	this->tpATCommand = this->tcMain->AddTabPage(CSTR("AT Command"));
-	NEW_CLASS(this->pnlATCommand, UI::GUIPanel(ui, this->tpATCommand));
+	NEW_CLASSNN(this->pnlATCommand, UI::GUIPanel(ui, this->tpATCommand));
 	this->pnlATCommand->SetRect(0, 0, 100, 24, false);
 	this->pnlATCommand->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->lblATCommand, UI::GUILabel(ui, this->pnlATCommand, CSTR("AT Command")));
@@ -1336,7 +1336,7 @@ SSWR::AVIRead::AVIRGSMModemForm::AVIRGSMModemForm(UI::GUIClientControl *parent, 
 	NEW_CLASS(this->txtHuaweiCSQ4, UI::GUITextBox(ui, this->tpHuawei, CSTR("")));
 	this->txtHuaweiCSQ4->SetRect(100, 288, 150, 23, false);
 	this->txtHuaweiCSQ4->SetReadOnly(true);
-	NEW_CLASS(this->grpHuaweiDHCP, UI::GUIGroupBox(ui, this->tpHuawei, CSTR("DHCP")));
+	NEW_CLASSNN(this->grpHuaweiDHCP, UI::GUIGroupBox(ui, this->tpHuawei, CSTR("DHCP")));
 	this->grpHuaweiDHCP->SetRect(280, 0, 300, 248, false);
 	NEW_CLASS(this->btnHuaweiDHCP, UI::GUIButton(ui, this->grpHuaweiDHCP, CSTR("Update")));
 	this->btnHuaweiDHCP->SetRect(0, 0, 75, 23, false);

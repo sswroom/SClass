@@ -95,11 +95,11 @@ SSWR::AVIRead::AVIRWebSite48IdolForm::AVIRWebSite48IdolForm(UI::GUIClientControl
 	ua->Release();
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, this));
+	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, *this));
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	this->tpItems = this->tcMain->AddTabPage(CSTR("Items"));
-	NEW_CLASS(this->pnlRequest, UI::GUIPanel(ui, this->tpItems));
+	NEW_CLASSNN(this->pnlRequest, UI::GUIPanel(ui, this->tpItems));
 	this->pnlRequest->SetRect(0, 0, 100, 31, false);
 	this->pnlRequest->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->lblPageNo, UI::GUILabel(ui, this->pnlRequest, CSTR("PageNo")));

@@ -294,7 +294,7 @@ SSWR::AVIRead::AVIRDWQB30Form::AVIRDWQB30Form(UI::GUIClientControl *parent, NotN
 	this->cmdMin = 0;
 	this->cmdMax = 0;
 
-	NEW_CLASS(this->grpConn, UI::GUIGroupBox(ui, this, CSTR("Connect")));
+	NEW_CLASSNN(this->grpConn, UI::GUIGroupBox(ui, *this, CSTR("Connect")));
 	this->grpConn->SetRect(0, 0, 100, 68, false);
 	this->grpConn->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->lblDevType, UI::GUILabel(ui, this->grpConn, CSTR("Type")));
@@ -312,7 +312,7 @@ SSWR::AVIRead::AVIRDWQB30Form::AVIRDWQB30Form(UI::GUIClientControl *parent, NotN
 	NEW_CLASS(this->btnPort, UI::GUIButton(ui, this->grpConn, CSTR("Open")));
 	this->btnPort->SetRect(360, 24, 75, 23, false);
 	this->btnPort->HandleButtonClick(OnPortClicked, this);
-	NEW_CLASS(this->grpCtrl, UI::GUIGroupBox(ui, this, CSTR("Control")));
+	NEW_CLASSNN(this->grpCtrl, UI::GUIGroupBox(ui, *this, CSTR("Control")));
 	this->grpCtrl->SetRect(0, 0, 100, 68, false);
 	this->grpCtrl->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->lblMode, UI::GUILabel(ui, this->grpCtrl, CSTR("Mode")));
@@ -336,11 +336,11 @@ SSWR::AVIRead::AVIRDWQB30Form::AVIRDWQB30Form(UI::GUIClientControl *parent, NotN
 	this->btnDefault->SetRect(440, 24, 75, 23, false);
 	this->btnDefault->HandleButtonClick(OnDefaultClicked, this);	
 
-	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, this));
+	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, *this));
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	this->tpScan = this->tcMain->AddTabPage(CSTR("Scan"));
-	NEW_CLASS(this->pnlScan, UI::GUIPanel(ui, this->tpScan));
+	NEW_CLASSNN(this->pnlScan, UI::GUIPanel(ui, this->tpScan));
 	this->pnlScan->SetRect(0, 0, 100, 32, false);
 	this->pnlScan->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->lblScan, UI::GUILabel(ui, this->pnlScan, CSTR("Last Result")));

@@ -18,7 +18,7 @@ namespace SSWR
 		class AVIRDBExportForm : public UI::GUIForm
 		{
 		private:
-			UI::GUIPanel *pnlMain;
+			NotNullPtr<UI::GUIPanel> pnlMain;
 			UI::GUIListView *lvTables;
 			UI::GUILabel *lblDBType;
 			UI::GUIComboBox *cboDBType;

@@ -19,12 +19,12 @@ namespace SSWR
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			IO::SiLabDriver *siLabDriver;
 
-			UI::GUIGroupBox *grpStream;
+			NotNullPtr<UI::GUIGroupBox> grpStream;
 			UI::GUILabel *lblStream;
 			UI::GUITextBox *txtStream;
 			UI::GUIButton *btnStream;
 
-			UI::GUIGroupBox *grpStatus;
+			NotNullPtr<UI::GUIGroupBox> grpStatus;
 			UI::GUILabel *lblDataSize;
 			UI::GUITextBox *txtDataSize;
 

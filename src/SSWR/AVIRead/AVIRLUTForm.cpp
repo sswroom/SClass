@@ -175,11 +175,11 @@ SSWR::AVIRead::AVIRLUTForm::AVIRLUTForm(UI::GUIClientControl *parent, NotNullPtr
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, this));
+	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, *this));
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	this->tpInfo = this->tcMain->AddTabPage(CSTR("Info"));
-	NEW_CLASS(this->pnlInfo, UI::GUIPanel(ui, this->tpInfo));
+	NEW_CLASSNN(this->pnlInfo, UI::GUIPanel(ui, this->tpInfo));
 	this->pnlInfo->SetRect(0, 0, 100, 36, false);
 	this->pnlInfo->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->lblFileName, UI::GUILabel(ui, this->pnlInfo, CSTR("File Name")));
@@ -192,7 +192,7 @@ SSWR::AVIRead::AVIRLUTForm::AVIRLUTForm(UI::GUIClientControl *parent, NotNullPtr
 	this->txtRemark->SetReadOnly(true);
 
 	this->tpValues = this->tcMain->AddTabPage(CSTR("Values"));
-	NEW_CLASS(this->pnlValues, UI::GUIPanel(ui, this->tpValues));
+	NEW_CLASSNN(this->pnlValues, UI::GUIPanel(ui, this->tpValues));
 	this->pnlValues->SetRect(0, 0, 100, 32, false);
 	this->pnlValues->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->cboChannels, UI::GUIComboBox(ui, this->pnlValues, false));

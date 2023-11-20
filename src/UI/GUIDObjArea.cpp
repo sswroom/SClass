@@ -180,7 +180,7 @@ void __stdcall UI::GUIDObjArea::OnUpdateSize(void *userObj)
 	}
 }
 
-UI::GUIDObjArea::GUIDObjArea(NotNullPtr<GUICore> ui, UI::GUIClientControl *parent, NotNullPtr<Media::DrawEngine> deng, NotNullPtr<Media::ColorManagerSess> colorSess) : UI::GUIDDrawControl(ui, parent, false, colorSess), displayThread(DisplayThread, this, CSTR("GUIDObjAreaDisp")), processThread(ProcessThread, this, CSTR("GUIDObjAreaProc"))
+UI::GUIDObjArea::GUIDObjArea(NotNullPtr<GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, NotNullPtr<Media::DrawEngine> deng, NotNullPtr<Media::ColorManagerSess> colorSess) : UI::GUIDDrawControl(ui, parent, false, colorSess), displayThread(DisplayThread, this, CSTR("GUIDObjAreaDisp")), processThread(ProcessThread, this, CSTR("GUIDObjAreaProc"))
 {
 	this->deng = deng;
 	this->colorSess = colorSess;

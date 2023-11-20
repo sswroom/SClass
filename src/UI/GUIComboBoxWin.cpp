@@ -11,7 +11,7 @@
 #include <windows.h>
 #include <commctrl.h>
 
-UI::GUIComboBox::GUIComboBox(NotNullPtr<GUICore> ui, UI::GUIClientControl *parent, Bool allowTyping) : UI::GUIControl(ui, parent)
+UI::GUIComboBox::GUIComboBox(NotNullPtr<GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, Bool allowTyping) : UI::GUIControl(ui, parent)
 {
 	this->autoComplete = false;
 	this->minVisible = 5;
@@ -160,7 +160,7 @@ UOSInt UI::GUIComboBox::AddItem(Text::CStringNN itemText, void *itemObj)
 	return (UOSInt)i;
 }
 
-UOSInt UI::GUIComboBox::InsertItem(UOSInt index, Text::String *itemText, void *itemObj)
+UOSInt UI::GUIComboBox::InsertItem(UOSInt index, NotNullPtr<Text::String> itemText, void *itemObj)
 {
 	const WChar *wptr = Text::StrToWCharNew(itemText->v);
 	OSInt i = SendMessage((HWND)hwnd, CB_INSERTSTRING, index, (LPARAM)wptr);
@@ -290,9 +290,10 @@ void UI::GUIComboBox::SetArea(Double left, Double top, Double right, Double bott
 {
 	UOSInt itemHeight = GetSelectionHeight();
 	Math::Coord2DDbl ofst = Math::Coord2DDbl(0, 0);
-	if (this->parent)
+	NotNullPtr<GUIClientControl> nnparent;
+	if (this->parent.SetTo(nnparent))
 	{
-		ofst = this->parent->GetClientOfst();
+		ofst = nnparent->GetClientOfst();
 	}
 	this->lxPos = left;
 	this->lyPos = top;
@@ -336,9 +337,10 @@ void UI::GUIComboBox::UpdatePos(Bool redraw)
 {
 	UOSInt itemHeight = GetSelectionHeight();
 	Math::Coord2DDbl ofst = Math::Coord2DDbl(0, 0);
-	if (this->parent)
+	NotNullPtr<GUIClientControl> nnparent;
+	if (this->parent.SetTo(nnparent))
 	{
-		ofst = this->parent->GetClientOfst();
+		ofst = nnparent->GetClientOfst();
 	}
 	MoveWindow((HWND)hwnd, (int)((this->lxPos + ofst.x) * this->hdpi / this->ddpi), (int)((this->lyPos + ofst.y) * this->hdpi / this->ddpi), (int)((this->lxPos2 - this->lxPos) * this->hdpi / this->ddpi), (int)((this->lyPos2 - this->lyPos + UOSInt2Double(itemHeight * this->minVisible)) * this->hdpi / this->ddpi), redraw?TRUE:FALSE);
 }

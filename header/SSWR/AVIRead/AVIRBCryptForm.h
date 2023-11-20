@@ -16,7 +16,7 @@ namespace SSWR
 		private:
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 
-			UI::GUIGroupBox *grpGenerate;
+			NotNullPtr<UI::GUIGroupBox> grpGenerate;
 			UI::GUILabel *lblCost;
 			UI::GUITextBox *txtCost;
 			UI::GUILabel *lblGenPassword;
@@ -25,7 +25,7 @@ namespace SSWR
 			UI::GUILabel *lblGenHash;
 			UI::GUITextBox *txtGenHash;
 
-			UI::GUIGroupBox *grpCheck;
+			NotNullPtr<UI::GUIGroupBox> grpCheck;
 			UI::GUILabel *lblCheckHash;
 			UI::GUITextBox *txtCheckHash;
 			UI::GUILabel *lblCheckPassword;

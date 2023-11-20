@@ -269,7 +269,7 @@ SSWR::AVIRead::AVIRMySQLClientForm::AVIRMySQLClientForm(UI::GUIClientControl *pa
 	this->SetFont(0, 0, 8.25, false);
 	this->cli = 0;
 
-	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, this));
+	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, *this));
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	this->tpControl = this->tcMain->AddTabPage(CSTR("Control"));
@@ -331,7 +331,7 @@ SSWR::AVIRead::AVIRMySQLClientForm::AVIRMySQLClientForm(UI::GUIClientControl *pa
 	this->txtServerCS->SetReadOnly(true);
 
 	tpQuery = this->tcMain->AddTabPage(CSTR("Query"));
-	NEW_CLASS(this->pnlQuery, UI::GUIPanel(ui, this->tpQuery));
+	NEW_CLASSNN(this->pnlQuery, UI::GUIPanel(ui, this->tpQuery));
 	this->pnlQuery->SetRect(0, 0, 100, 31, false);
 	this->pnlQuery->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->btnQuery, UI::GUIButton(ui, this->pnlQuery, CSTR("Query")));

@@ -124,15 +124,15 @@ SSWR::AVIRead::AVIRTCPSpdSvrForm::AVIRTCPSpdSvrForm(UI::GUIClientControl *parent
 	this->cliMgr = 0;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASS(this->lblPort, UI::GUILabel(ui, this, CSTR("Port")));
+	NEW_CLASS(this->lblPort, UI::GUILabel(ui, *this, CSTR("Port")));
 	this->lblPort->SetRect(4, 4, 100, 23, false);
-	NEW_CLASS(this->txtPort, UI::GUITextBox(ui, this, CSTR("1234")));
+	NEW_CLASS(this->txtPort, UI::GUITextBox(ui, *this, CSTR("1234")));
 	this->txtPort->SetRect(104, 4, 100, 23, false);
-	NEW_CLASS(this->chkMultiThread, UI::GUICheckBox(ui, this, CSTR("Multi-Thread"), false));
+	NEW_CLASS(this->chkMultiThread, UI::GUICheckBox(ui, *this, CSTR("Multi-Thread"), false));
 	this->chkMultiThread->SetRect(104, 28, 100, 23, false);
-	NEW_CLASS(this->chkEcho, UI::GUICheckBox(ui, this, CSTR("Echo"), true));
+	NEW_CLASS(this->chkEcho, UI::GUICheckBox(ui, *this, CSTR("Echo"), true));
 	this->chkEcho->SetRect(104, 52, 100, 23, false);
-	NEW_CLASS(this->btnStart, UI::GUIButton(ui, this, CSTR("Start")));
+	NEW_CLASS(this->btnStart, UI::GUIButton(ui, *this, CSTR("Start")));
 	this->btnStart->SetRect(104, 76, 75, 23, false);
 	this->btnStart->HandleButtonClick(OnStartClick, this);
 }

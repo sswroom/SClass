@@ -222,7 +222,7 @@ SSWR::AVIRead::AVIRLineCounterForm::AVIRLineCounterForm(UI::GUIClientControl *pa
 	this->SetText(CSTR("Line Counter"));
 	this->SetFont(0, 0, 8.25, false);
 
-	NEW_CLASS(this->pnlConfig, UI::GUIPanel(ui, this));
+	NEW_CLASSNN(this->pnlConfig, UI::GUIPanel(ui, *this));
 	this->pnlConfig->SetRect(0, 0, 100, 220, false);
 	this->pnlConfig->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->lblPath, UI::GUILabel(ui, this->pnlConfig, CSTR("Path")));
@@ -258,7 +258,7 @@ SSWR::AVIRead::AVIRLineCounterForm::AVIRLineCounterForm(UI::GUIClientControl *pa
 	this->btnResultSave->SetRect(304, 196, 100, 23, false);
 	this->btnResultSave->HandleButtonClick(OnResultSaveClicked, this);
 
-	NEW_CLASS(this->lvResult, UI::GUIListView(ui, this, UI::GUIListView::LVSTYLE_TABLE, 2));
+	NEW_CLASS(this->lvResult, UI::GUIListView(ui, *this, UI::GUIListView::LVSTYLE_TABLE, 2));
 	this->lvResult->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvResult->SetShowGrid(true);
 	this->lvResult->SetFullRowSelect(true);

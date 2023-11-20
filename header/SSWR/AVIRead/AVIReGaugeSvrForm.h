@@ -33,17 +33,17 @@ namespace SSWR
 
 			UI::GUITabControl *tcMain;
 
-			UI::GUITabPage *tpControl;
+			NotNullPtr<UI::GUITabPage> tpControl;
 			UI::GUILabel *lblPort;
 			UI::GUITextBox *txtPort;
 			UI::GUIButton *btnStart;
 
-			UI::GUITabPage *tpReqText;
+			NotNullPtr<UI::GUITabPage> tpReqText;
 			UI::GUITextBox *txtReqText;
 
 			NotNullPtr<UI::GUIListBox> lbLog;
 			UI::GUITextBox *txtLog;
-			UI::GUITabPage *tpLog;
+			NotNullPtr<UI::GUITabPage> tpLog;
 
 		private:
 			static void __stdcall OnStartClick(void *userObj);

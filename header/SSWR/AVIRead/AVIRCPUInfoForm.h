@@ -18,16 +18,16 @@ namespace SSWR
 		private:
 			UI::GUITabControl *tcMain;
 
-			UI::GUITabPage *tpCPU;
+			NotNullPtr<UI::GUITabPage> tpCPU;
 			UI::GUIListView *lvMain;
-			UI::GUIPanel *pnlMain;
+			NotNullPtr<UI::GUIPanel> pnlMain;
 			UI::GUIButton *btnUpload;
 			UI::GUIButton *btnCopyInfo;
 
-			UI::GUITabPage *tpCache;
+			NotNullPtr<UI::GUITabPage> tpCache;
 			UI::GUIListBox *lbCache;
 
-			UI::GUITabPage *tpFeature;
+			NotNullPtr<UI::GUITabPage> tpFeature;
 			UI::GUIListView *lvFeature;
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;

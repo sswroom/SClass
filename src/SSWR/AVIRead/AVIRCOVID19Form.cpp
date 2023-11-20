@@ -247,7 +247,7 @@ SSWR::AVIRead::AVIRCOVID19Form::AVIRCOVID19Form(UI::GUIClientControl *parent, No
 	this->ssl = Net::SSLEngineFactory::Create(this->sockf, true);
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASS(this->pnlRequest, UI::GUIPanel(ui, this));
+	NEW_CLASSNN(this->pnlRequest, UI::GUIPanel(ui, *this));
 	this->pnlRequest->SetRect(0, 0, 100, 31, false);
 	this->pnlRequest->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->btnFile, UI::GUIButton(ui, this->pnlRequest, CSTR("&Load File")));
@@ -256,12 +256,12 @@ SSWR::AVIRead::AVIRCOVID19Form::AVIRCOVID19Form(UI::GUIClientControl *parent, No
 	NEW_CLASS(this->btnDownload, UI::GUIButton(ui, this->pnlRequest, CSTR("&Load Internet")));
 	this->btnDownload->SetRect(84, 4, 75, 23, false);
 	this->btnDownload->HandleButtonClick(OnDownloadClicked, this);
-	NEW_CLASS(this->pbNewCases, UI::GUIPictureBoxSimple(ui, this, this->core->GetDrawEngine(), false));
+	NEW_CLASS(this->pbNewCases, UI::GUIPictureBoxSimple(ui, *this, this->core->GetDrawEngine(), false));
 	this->pbNewCases->SetRect(0, 0, 100, 150, false);
 	this->pbNewCases->SetDockType(UI::GUIControl::DOCK_BOTTOM);
 	this->pbNewCases->HandleSizeChanged(OnNewCasesSizeChanged, this);
-	NEW_CLASS(this->vspNewCases, UI::GUIVSplitter(ui, this, 3, true));
-	NEW_CLASS(this->lvCountry, UI::GUIListView(ui, this, UI::GUIListView::LVSTYLE_TABLE, 5));
+	NEW_CLASS(this->vspNewCases, UI::GUIVSplitter(ui, *this, 3, true));
+	NEW_CLASS(this->lvCountry, UI::GUIListView(ui, *this, UI::GUIListView::LVSTYLE_TABLE, 5));
 	this->lvCountry->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvCountry->SetShowGrid(true);
 	this->lvCountry->SetFullRowSelect(true);

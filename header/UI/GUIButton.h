@@ -19,7 +19,7 @@ namespace UI
 
 		static OSInt __stdcall BTNWndProc(void *hWnd, UInt32 msg, UInt32 wParam, OSInt lParam);
 	public:
-		GUIButton(NotNullPtr<GUICore> ui, UI::GUIClientControl *parent, Text::CStringNN txt);
+		GUIButton(NotNullPtr<GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, Text::CStringNN txt);
 		virtual ~GUIButton();
 
 		virtual void SetText(Text::CStringNN text);

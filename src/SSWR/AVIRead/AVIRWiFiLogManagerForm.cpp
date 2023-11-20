@@ -325,7 +325,7 @@ SSWR::AVIRead::AVIRWiFiLogManagerForm::AVIRWiFiLogManagerForm(UI::GUIClientContr
 	NEW_CLASS(this->macList, Net::MACInfoList());
 	this->filterText = 0;
 
-	NEW_CLASS(this->pnlControl, UI::GUIPanel(ui, this));
+	NEW_CLASSNN(this->pnlControl, UI::GUIPanel(ui, *this));
 	this->pnlControl->SetRect(0, 0, 100, 31, false);
 	this->pnlControl->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->btnFile, UI::GUIButton(ui, this->pnlControl, CSTR("Open Log")));
@@ -351,12 +351,12 @@ SSWR::AVIRead::AVIRWiFiLogManagerForm::AVIRWiFiLogManagerForm(UI::GUIClientContr
 	this->cboDblClk->AddItem(CSTR("Edit"), 0);
 	this->cboDblClk->AddItem(CSTR("Paste"), 0);
 	this->cboDblClk->SetSelectedIndex(0);
-	NEW_CLASS(this->txtFileIE, UI::GUITextBox(ui, this, CSTR(""), true));
+	NEW_CLASS(this->txtFileIE, UI::GUITextBox(ui, *this, CSTR(""), true));
 	this->txtFileIE->SetRect(0, 0, 100, 255, false);
 	this->txtFileIE->SetDockType(UI::GUIControl::DOCK_BOTTOM);
 	this->txtFileIE->SetReadOnly(true);
-	NEW_CLASS(this->vspFile, UI::GUIVSplitter(ui, this, 3, true));
-	NEW_CLASS(this->lvContent, UI::GUIListView(ui, this, UI::GUIListView::LVSTYLE_TABLE, 13));
+	NEW_CLASS(this->vspFile, UI::GUIVSplitter(ui, *this, 3, true));
+	NEW_CLASS(this->lvContent, UI::GUIListView(ui, *this, UI::GUIListView::LVSTYLE_TABLE, 13));
 	this->lvContent->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvContent->SetShowGrid(true);
 	this->lvContent->SetFullRowSelect(true);

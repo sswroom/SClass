@@ -190,11 +190,11 @@ SSWR::AVIRead::AVIRLoraGWSimForm::AVIRLoraGWSimForm(UI::GUIClientControl *parent
 	this->sockf = this->core->GetSocketFactory();
 	this->lora = 0;
 
-	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, this));
+	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, *this));
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	this->tpControl = this->tcMain->AddTabPage(CSTR("Control"));
-	NEW_CLASS(this->pnlControl, UI::GUIPanel(ui, this->tpControl));
+	NEW_CLASSNN(this->pnlControl, UI::GUIPanel(ui, this->tpControl));
 	this->pnlControl->SetRect(0, 0, 100, 103, false);
 	this->pnlControl->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->lblServerIP, UI::GUILabel(ui, this->pnlControl, CSTR("Server IP")));
@@ -212,7 +212,7 @@ SSWR::AVIRead::AVIRLoraGWSimForm::AVIRLoraGWSimForm(UI::GUIClientControl *parent
 	NEW_CLASS(this->btnStart, UI::GUIButton(ui, this->pnlControl, CSTR("Start")));
 	this->btnStart->SetRect(104, 76, 75, 23, false);
 	this->btnStart->HandleButtonClick(OnStartClick, this);
-	NEW_CLASS(this->pnlDevice, UI::GUIPanel(ui, this->tpControl));
+	NEW_CLASSNN(this->pnlDevice, UI::GUIPanel(ui, this->tpControl));
 	this->pnlDevice->SetDockType(UI::GUIControl::DOCK_FILL);
 	NEW_CLASS(this->lblDevAddr, UI::GUILabel(ui, this->pnlDevice, CSTR("DevAddr")));
 	this->lblDevAddr->SetRect(4, 4, 100, 23, false);

@@ -25,25 +25,25 @@ namespace SSWR
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			IO::SiLabDriver *siLabDriver;
 
-			UI::GUIGroupBox *grpStream;
+			NotNullPtr<UI::GUIGroupBox> grpStream;
 			UI::GUILabel *lblStream;
 			UI::GUITextBox *txtStream;
 			UI::GUIButton *btnStream;
 
-			UI::GUIGroupBox *grpControl;
+			NotNullPtr<UI::GUIGroupBox> grpControl;
 			UI::GUILabel *lblReqInterval;
 			UI::GUIComboBox *cboReqInterval;
 
 			UI::GUITabControl *tcMain;
 
-			UI::GUITabPage *tpLatency;
+			NotNullPtr<UI::GUITabPage> tpLatency;
 			UI::GUIRealtimeLineChart *rlcLatency;
 
-			UI::GUITabPage *tpLog;
+			NotNullPtr<UI::GUITabPage> tpLog;
 			UI::GUITextBox *txtLog;
 			NotNullPtr<UI::GUIListBox> lbLog;
 
-			UI::GUITabPage *tpStatus;
+			NotNullPtr<UI::GUITabPage> tpStatus;
 			UI::GUILabel *lblSentCnt;
 			UI::GUITextBox *txtSentCnt;
 			UI::GUILabel *lblRecvCnt;

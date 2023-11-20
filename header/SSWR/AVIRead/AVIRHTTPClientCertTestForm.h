@@ -23,7 +23,7 @@ namespace SSWR
 			Crypto::Cert::X509File *sslKey;
 			Data::ArrayListNN<Crypto::Cert::X509Cert> caCerts;
 
-			UI::GUIGroupBox *grpParam;
+			NotNullPtr<UI::GUIGroupBox> grpParam;
 			UI::GUILabel *lblPort;
 			UI::GUITextBox *txtPort;
 			UI::GUILabel *lblSSL;

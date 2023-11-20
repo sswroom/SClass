@@ -280,7 +280,7 @@ SSWR::OrganMgr::OrganTimeAdjForm::OrganTimeAdjForm(UI::GUIClientControl *parent,
 
 	this->env->GetUserFiles(this->userFileList, this->dataFile->startTime, this->dataFile->endTime);
 
-	NEW_CLASS(this->pnlLeft, UI::GUIPanel(ui, this));
+	NEW_CLASSNN(this->pnlLeft, UI::GUIPanel(ui, *this));
 	this->pnlLeft->SetRect(0, 0, 300, 23, false);
 	this->pnlLeft->SetDockType(UI::GUIControl::DOCK_LEFT);
 	NEW_CLASS(this->pbPreview, UI::GUIPictureBoxDD(ui, this->pnlLeft, this->colorSess, true, false));
@@ -297,17 +297,17 @@ SSWR::OrganMgr::OrganTimeAdjForm::OrganTimeAdjForm(UI::GUIClientControl *parent,
 	NEW_CLASS(this->lbPictures, UI::GUIListBox(ui, this->pnlLeft, false));
 	this->lbPictures->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lbPictures->HandleSelectionChange(OnPictureChg, this);
-	NEW_CLASS(this->pnlMapCtrl, UI::GUIPanel(ui, this));
+	NEW_CLASSNN(this->pnlMapCtrl, UI::GUIPanel(ui, *this));
 	this->pnlMapCtrl->SetRect(0, 0, 100, 31, false);
 	this->pnlMapCtrl->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->tbMapScale, UI::GUITrackBar(ui, this->pnlMapCtrl, 0, 18, 16));
 	this->tbMapScale->SetRect(0, 0, 100, 23, false);
 	this->tbMapScale->SetDockType(UI::GUIControl::DOCK_RIGHT);
 	this->tbMapScale->HandleScrolled(OnMapScaleScroll, this);
-	NEW_CLASS(this->pnlControl, UI::GUIPanel(ui, this));
+	NEW_CLASSNN(this->pnlControl, UI::GUIPanel(ui, *this));
 	this->pnlControl->SetRect(0, 0, 100, 31, false);
 	this->pnlControl->SetDockType(UI::GUIControl::DOCK_BOTTOM);
-	NEW_CLASS(this->mapMain, UI::GUIMapControl(ui, this, this->env->GetDrawEngine(), 0xff000000, this->mapRenderer, this->mapView, this->colorSess));
+	NEW_CLASS(this->mapMain, UI::GUIMapControl(ui, *this, this->env->GetDrawEngine(), 0xff000000, this->mapRenderer, this->mapView, this->colorSess));
 	this->mapMain->SetDockType(UI::GUIControl::DOCK_FILL);
 	NEW_CLASS(this->cboCamera, UI::GUIComboBox(ui, this->pnlControl, false));
 	this->cboCamera->SetRect(4, 4, 150, 23, false);

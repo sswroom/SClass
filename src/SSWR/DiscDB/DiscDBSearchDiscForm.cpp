@@ -56,7 +56,7 @@ SSWR::DiscDB::DiscDBSearchDiscForm::DiscDBSearchDiscForm(UI::GUIClientControl *p
 	this->env = env;
 	this->SetDPI(this->env->GetMonitorHDPI(this->GetHMonitor()), this->env->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASS(this->pnlDiscId, UI::GUIPanel(ui, this));
+	NEW_CLASSNN(this->pnlDiscId, UI::GUIPanel(ui, *this));
 	this->pnlDiscId->SetRect(0, 0, 292, 43, false);
 	this->pnlDiscId->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->lblDiscId, UI::GUILabel(ui, this->pnlDiscId, CSTR("Disc ID")));
@@ -66,7 +66,7 @@ SSWR::DiscDB::DiscDBSearchDiscForm::DiscDBSearchDiscForm(UI::GUIClientControl *p
 	NEW_CLASS(this->btnSearch, UI::GUIButton(ui, this->pnlDiscId, CSTR("&Search")));
 	this->btnSearch->SetRect(208, 9, 75, 25, false);
 	this->btnSearch->HandleButtonClick(OnSearchClicked, this);
-	NEW_CLASS(this->pnlOut, UI::GUIPanel(ui, this));
+	NEW_CLASSNN(this->pnlOut, UI::GUIPanel(ui, *this));
 	this->pnlOut->SetRect(0, 0, 292, 108, false);
 	this->pnlOut->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->lblDiscIdOut, UI::GUILabel(ui, this->pnlOut, CSTR("Disc ID")));
@@ -84,7 +84,7 @@ SSWR::DiscDB::DiscDBSearchDiscForm::DiscDBSearchDiscForm(UI::GUIClientControl *p
 	NEW_CLASS(this->txtBurntDate, UI::GUITextBox(ui, this->pnlOut, CSTR("")));
 	this->txtBurntDate->SetRect(72, 61, 100, 20, false);
 	this->txtBurntDate->SetReadOnly(true);
-	NEW_CLASS(this->lvFiles, UI::GUIListView(ui, this, UI::GUIListView::LVSTYLE_TABLE, 3));
+	NEW_CLASS(this->lvFiles, UI::GUIListView(ui, *this, UI::GUIListView::LVSTYLE_TABLE, 3));
 	this->lvFiles->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvFiles->SetFullRowSelect(true);
 	this->lvFiles->SetShowGrid(true);

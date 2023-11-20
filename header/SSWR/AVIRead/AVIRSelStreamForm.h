@@ -32,12 +32,12 @@ namespace SSWR
 			IO::DeviceManager devMgr;
 			Data::ArrayList<IO::DeviceInfo*> devList;
 
-			UI::GUIPanel *pnlStreamType;
+			NotNullPtr<UI::GUIPanel> pnlStreamType;
 			UI::GUILabel *lblStreamType;
 			UI::GUIComboBox *cboStreamType;
 			UI::GUITabControl *tcConfig;
 
-			UI::GUITabPage *tpSerialPort;
+			NotNullPtr<UI::GUITabPage> tpSerialPort;
 			UI::GUILabel *lblSerialPort;
 			UI::GUIComboBox *cboSerialPort;
 			UI::GUILabel *lblBaudRate;
@@ -45,53 +45,53 @@ namespace SSWR
 			UI::GUILabel *lblParity;
 			UI::GUIComboBox *cboParity;
 
-			UI::GUITabPage *tpSiLabPort;
-			UI::GUIPanel *pnlSLInfo;
+			NotNullPtr<UI::GUITabPage> tpSiLabPort;
+			NotNullPtr<UI::GUIPanel> pnlSLInfo;
 			UI::GUILabel *lblDLLVer;
 			UI::GUITextBox *txtDLLVer;
 			UI::GUILabel *lblDriverVer;
 			UI::GUITextBox *txtDriverVer;
-			UI::GUIPanel *pnlSLControl;
+			NotNullPtr<UI::GUIPanel> pnlSLControl;
 			UI::GUILabel *lblSLBaudRate;
 			UI::GUITextBox *txtSLBaudRate;
 			UI::GUIListView *lvSLPort;
 
-			UI::GUITabPage *tpTCPSvr;
+			NotNullPtr<UI::GUITabPage> tpTCPSvr;
 			UI::GUILabel *lblTCPSvrPort;
 			UI::GUITextBox *txtTCPSvrPort;
 			UI::GUICheckBox *chkBoardcast;
 
-			UI::GUITabPage *tpTCPCli;
+			NotNullPtr<UI::GUITabPage> tpTCPCli;
 			UI::GUILabel *lblTCPCliHost;
 			UI::GUITextBox *txtTCPCliHost;
 			UI::GUILabel *lblTCPCliPort;
 			UI::GUITextBox *txtTCPCliPort;
 
-			UI::GUITabPage *tpSSLCli;
+			NotNullPtr<UI::GUITabPage> tpSSLCli;
 			UI::GUILabel *lblSSLCliHost;
 			UI::GUITextBox *txtSSLCliHost;
 			UI::GUILabel *lblSSLCliPort;
 			UI::GUITextBox *txtSSLCliPort;
 
-			UI::GUITabPage *tpUDPSvr;
+			NotNullPtr<UI::GUITabPage> tpUDPSvr;
 			UI::GUILabel *lblUDPSvrPort;
 			UI::GUITextBox *txtUDPSvrPort;
 
-			UI::GUITabPage *tpUDPCli;
+			NotNullPtr<UI::GUITabPage> tpUDPCli;
 			UI::GUILabel *lblUDPCliHost;
 			UI::GUITextBox *txtUDPCliHost;
 			UI::GUILabel *lblUDPCliPort;
 			UI::GUITextBox *txtUDPCliPort;
 
-			UI::GUITabPage *tpFile;
+			NotNullPtr<UI::GUITabPage> tpFile;
 			UI::GUILabel *lblFileName;
 			UI::GUITextBox *txtFileName;
 			UI::GUIButton *btnFileBrowse;
 
-			UI::GUITabPage *tpHID;
+			NotNullPtr<UI::GUITabPage> tpHID;
 			UI::GUIListBox *lbHIDDevice;
 
-			UI::GUIPanel *pnlButtons;
+			NotNullPtr<UI::GUIPanel> pnlButtons;
 			UI::GUIButton *btnOK;
 			UI::GUIButton *btnCancel;
 

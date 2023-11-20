@@ -20,7 +20,7 @@ namespace SSWR
 			UI::GUITextBox *txtY;
 			UI::GUILabel *lblZ;
 			UI::GUITextBox *txtZ;
-			UI::GUIPanel *pnlMoving;
+			NotNullPtr<UI::GUIPanel> pnlMoving;
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			IO::MotionDetectorAccelerometer *motion;

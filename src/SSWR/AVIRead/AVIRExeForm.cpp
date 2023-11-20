@@ -317,7 +317,9 @@ SSWR::AVIRead::AVIRExeForm::AVIRExeForm(UI::GUIClientControl *parent, NotNullPtr
 	sptr = exeFile->GetSourceNameObj()->ConcatTo(Text::StrConcatC(sbuff, UTF8STRC("EXE Form - ")));
 	this->SetText(CSTRP(sbuff, sptr));
 
-	NEW_CLASS(this->tcEXE, UI::GUITabControl(ui, this));
+	UOSInt i;
+	UOSInt j;
+	NEW_CLASSNN(this->tcEXE, UI::GUITabControl(ui, *this));
 	this->tcEXE->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	this->tpProp = this->tcEXE->AddTabPage(CSTR("Properties"));
@@ -328,8 +330,6 @@ SSWR::AVIRead::AVIRExeForm::AVIRExeForm(UI::GUIClientControl *parent, NotNullPtr
 	this->lvProp->AddColumn(CSTR("Name"), 250);
 	this->lvProp->AddColumn(CSTR("Value"), 250);
 
-	UOSInt i;
-	UOSInt j;
 	UOSInt k;
 	Text::String *s;
 	i = 0;
@@ -397,7 +397,7 @@ SSWR::AVIRead::AVIRExeForm::AVIRExeForm(UI::GUIClientControl *parent, NotNullPtr
 	if (this->exeFile->HasDOS())
 	{
 		this->tp16Bit = this->tcEXE->AddTabPage(CSTR("16 Bit"));
-		NEW_CLASS(this->pnl16BitInfo, UI::GUIPanel(ui, this->tp16Bit));
+		NEW_CLASSNN(this->pnl16BitInfo, UI::GUIPanel(ui, this->tp16Bit));
 		this->pnl16BitInfo->SetRect(0, 0, 100, 40, false);
 		this->pnl16BitInfo->SetDockType(UI::GUIControl::DOCK_TOP);
 		NEW_CLASS(this->lb16BitFuncs, UI::GUIListBox(ui, this->tp16Bit, false));

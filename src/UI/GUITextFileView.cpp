@@ -878,7 +878,7 @@ void UI::GUITextFileView::ClearFileStatus()
 	this->evtThread.Set();
 }
 
-UI::GUITextFileView::GUITextFileView(NotNullPtr<UI::GUICore> ui, UI::GUIClientControl *parent, NotNullPtr<Media::DrawEngine> deng) : UI::GUITextView(ui, parent, deng), readBuff(READBUFFSIZE)
+UI::GUITextFileView::GUITextFileView(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, NotNullPtr<Media::DrawEngine> deng) : UI::GUITextView(ui, parent, deng), readBuff(READBUFFSIZE)
 {
 	this->fileName = Text::String::NewEmpty();
 	this->fileData = 0;

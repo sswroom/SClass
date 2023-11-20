@@ -401,7 +401,7 @@ SSWR::AVIRead::AVIRSolarEdgeForm::AVIRSolarEdgeForm(UI::GUIClientControl *parent
 	this->imgSiteEnergy = 0;
 	this->imgSitePower = 0;
 
-	NEW_CLASS(this->pnlAPIKey, UI::GUIPanel(ui, this));
+	NEW_CLASSNN(this->pnlAPIKey, UI::GUIPanel(ui, *this));
 	this->pnlAPIKey->SetRect(0, 0, 100, 31, false);
 	this->pnlAPIKey->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->lblAPIKey, UI::GUILabel(ui, this->pnlAPIKey, CSTR("API Key")));
@@ -411,7 +411,7 @@ SSWR::AVIRead::AVIRSolarEdgeForm::AVIRSolarEdgeForm(UI::GUIClientControl *parent
 	NEW_CLASS(this->btnAPIKey, UI::GUIButton(ui, this->pnlAPIKey, CSTR("Start")));
 	this->btnAPIKey->SetRect(404, 4, 75, 23, false);
 	this->btnAPIKey->HandleButtonClick(OnAPIKeyClicked, this);
-	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, this));
+	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, *this));
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	this->tpVersion = this->tcMain->AddTabPage(CSTR("Version"));
@@ -427,7 +427,7 @@ SSWR::AVIRead::AVIRSolarEdgeForm::AVIRSolarEdgeForm(UI::GUIClientControl *parent
 	this->txtSuppVer->SetReadOnly(true);
 
 	this->tpSiteList = this->tcMain->AddTabPage(CSTR("Site List"));
-	NEW_CLASS(this->pnlSiteList, UI::GUIPanel(ui, this->tpSiteList));
+	NEW_CLASSNN(this->pnlSiteList, UI::GUIPanel(ui, this->tpSiteList));
 	this->pnlSiteList->SetRect(0, 0, 100, 216, false);
 	this->pnlSiteList->SetDockType(UI::GUIControl::DOCK_BOTTOM);
 	NEW_CLASS(this->lvSiteList, UI::GUIListView(ui, this->tpSiteList, UI::GUIListView::ListViewStyle::LVSTYLE_TABLE, 11));
@@ -523,7 +523,7 @@ SSWR::AVIRead::AVIRSolarEdgeForm::AVIRSolarEdgeForm(UI::GUIClientControl *parent
 	this->txtSiteCurrentPower->SetReadOnly(true);
 
 	this->tpSiteEnergy = this->tcMain->AddTabPage(CSTR("Site Energy"));
-	NEW_CLASS(this->pnlSiteEnergy, UI::GUIPanel(ui, this->tpSiteEnergy));
+	NEW_CLASSNN(this->pnlSiteEnergy, UI::GUIPanel(ui, this->tpSiteEnergy));
 	this->pnlSiteEnergy->SetRect(0, 0, 100, 103, false);
 	this->pnlSiteEnergy->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->lblSiteEnergySite, UI::GUILabel(ui, this->pnlSiteEnergy, CSTR("Site")));
@@ -540,13 +540,13 @@ SSWR::AVIRead::AVIRSolarEdgeForm::AVIRSolarEdgeForm(UI::GUIClientControl *parent
 	this->cboSiteEnergyInterval->SetSelectedIndex(0);
 	NEW_CLASS(this->lblSiteEnergyRange, UI::GUILabel(ui, this->pnlSiteEnergy, CSTR("Time Range")));
 	this->lblSiteEnergyRange->SetRect(4, 52, 100, 23, false);
-	NEW_CLASS(this->cboSiteEnergyYear, UI::GUIComboBox(ui, this->pnlSiteEnergy, false));
+	NEW_CLASSNN(this->cboSiteEnergyYear, UI::GUIComboBox(ui, this->pnlSiteEnergy, false));
 	this->cboSiteEnergyYear->SetRect(104, 52, 100, 23, false);
 	UI::GUIComboBoxUtil::AddYearItems(this->cboSiteEnergyYear, 5);
-	NEW_CLASS(this->cboSiteEnergyMonth, UI::GUIComboBox(ui, this->pnlSiteEnergy, false));
+	NEW_CLASSNN(this->cboSiteEnergyMonth, UI::GUIComboBox(ui, this->pnlSiteEnergy, false));
 	this->cboSiteEnergyMonth->SetRect(204, 52, 60, 23, false);
 	UI::GUIComboBoxUtil::AddMonthItems(this->cboSiteEnergyMonth);
-	NEW_CLASS(this->cboSiteEnergyDay, UI::GUIComboBox(ui, this->pnlSiteEnergy, false));
+	NEW_CLASSNN(this->cboSiteEnergyDay, UI::GUIComboBox(ui, this->pnlSiteEnergy, false));
 	this->cboSiteEnergyDay->SetRect(264, 52, 60, 23, false);
 	UI::GUIComboBoxUtil::AddDayItems(this->cboSiteEnergyDay);
 	NEW_CLASS(this->btnSiteEnergy, UI::GUIButton(ui, this->pnlSiteEnergy, CSTR("Query")));
@@ -557,7 +557,7 @@ SSWR::AVIRead::AVIRSolarEdgeForm::AVIRSolarEdgeForm(UI::GUIClientControl *parent
 	this->pbSiteEnergy->HandleSizeChanged(OnSiteEnergySizeChg, this);
 
 	this->tpSitePower = this->tcMain->AddTabPage(CSTR("Site Power"));
-	NEW_CLASS(this->pnlSitePower, UI::GUIPanel(ui, this->tpSitePower));
+	NEW_CLASSNN(this->pnlSitePower, UI::GUIPanel(ui, this->tpSitePower));
 	this->pnlSitePower->SetRect(0, 0, 100, 79, false);
 	this->pnlSitePower->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->lblSitePowerSite, UI::GUILabel(ui, this->pnlSitePower, CSTR("Site")));
@@ -566,13 +566,13 @@ SSWR::AVIRead::AVIRSolarEdgeForm::AVIRSolarEdgeForm(UI::GUIClientControl *parent
 	this->cboSitePowerSite->SetRect(104, 4, 150, 23, false);
 	NEW_CLASS(this->lblSitePowerRange, UI::GUILabel(ui, this->pnlSitePower, CSTR("Time Range")));
 	this->lblSitePowerRange->SetRect(4, 28, 100, 23, false);
-	NEW_CLASS(this->cboSitePowerYear, UI::GUIComboBox(ui, this->pnlSitePower, false));
+	NEW_CLASSNN(this->cboSitePowerYear, UI::GUIComboBox(ui, this->pnlSitePower, false));
 	this->cboSitePowerYear->SetRect(104, 28, 100, 23, false);
 	UI::GUIComboBoxUtil::AddYearItems(this->cboSitePowerYear, 5);
-	NEW_CLASS(this->cboSitePowerMonth, UI::GUIComboBox(ui, this->pnlSitePower, false));
+	NEW_CLASSNN(this->cboSitePowerMonth, UI::GUIComboBox(ui, this->pnlSitePower, false));
 	this->cboSitePowerMonth->SetRect(204, 28, 60, 23, false);
 	UI::GUIComboBoxUtil::AddMonthItems(this->cboSitePowerMonth);
-	NEW_CLASS(this->cboSitePowerDay, UI::GUIComboBox(ui, this->pnlSitePower, false));
+	NEW_CLASSNN(this->cboSitePowerDay, UI::GUIComboBox(ui, this->pnlSitePower, false));
 	this->cboSitePowerDay->SetRect(264, 28, 60, 23, false);
 	UI::GUIComboBoxUtil::AddDayItems(this->cboSitePowerDay);
 	NEW_CLASS(this->btnSitePower, UI::GUIButton(ui, this->pnlSitePower, CSTR("Query")));

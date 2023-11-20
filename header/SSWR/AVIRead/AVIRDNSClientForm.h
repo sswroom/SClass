@@ -22,7 +22,7 @@ namespace SSWR
 		private:
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 
-			UI::GUIPanel *pnlRequest;
+			NotNullPtr<UI::GUIPanel> pnlRequest;
 			UI::GUILabel *lblServer;
 			UI::GUITextBox *txtServer;
 			UI::GUILabel *lblRequest;
@@ -35,7 +35,7 @@ namespace SSWR
 			UI::GUITextBox *txtRequestTime;
 			UI::GUIListBox *lbAnswer;
 			UI::GUIHSplitter *hspAnswer;
-			UI::GUIPanel *pnlAnswer;
+			NotNullPtr<UI::GUIPanel> pnlAnswer;
 			UI::GUILabel *lblAnsName;
 			UI::GUITextBox *txtAnsName;
 			UI::GUILabel *lblAnsType;

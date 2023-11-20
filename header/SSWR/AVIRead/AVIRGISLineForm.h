@@ -28,7 +28,7 @@ namespace SSWR
 			Media::StaticImage *prevImg;
 
 			UI::GUIPictureBox *pbPreview;
-			UI::GUIPanel *pnlMain;
+			NotNullPtr<UI::GUIPanel> pnlMain;
 			UI::GUILabel *lblThick;
 			UI::GUIHScrollBar *hsbThick;
 			UI::GUILabel *lblThickV;

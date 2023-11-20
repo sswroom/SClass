@@ -24,11 +24,8 @@ namespace SSWR
 		{
 		private:
 			UI::GUITabControl *tcMain;
-			UI::GUITabPage *tpInfo;
-			UI::GUITabPage *tpContext;
-			UI::GUITabPage *tpStack;
-			UI::GUITabPage *tpMyStack;
 
+			NotNullPtr<UI::GUITabPage> tpInfo;
 			UI::GUILabel *lblThreadId;
 			UI::GUITextBox *txtThreadId;
 			UI::GUILabel *lblStartAddr;
@@ -38,13 +35,16 @@ namespace SSWR
 			UI::GUILabel *lblThreadName;
 			UI::GUITextBox *txtThreadName;
 
+			NotNullPtr<UI::GUITabPage> tpContext;
 			UI::GUIListView *lvContext;
 
+			NotNullPtr<UI::GUITabPage> tpStack;
 			UI::GUIListView *lvStack;
 
+			NotNullPtr<UI::GUITabPage> tpMyStack;
 			UI::GUIListBox *lbMyStack;
 			UI::GUIHSplitter *hspMyStack;
-			UI::GUIPanel *pnlMyStack;
+			NotNullPtr<UI::GUIPanel> pnlMyStack;
 			UI::GUITextBox *txtMyStackMem;
 			UI::GUIVSplitter *vspMyStack;
 			UI::GUIListView *lvMyStack;

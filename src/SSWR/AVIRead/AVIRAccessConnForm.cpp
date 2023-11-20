@@ -62,17 +62,17 @@ SSWR::AVIRead::AVIRAccessConnForm::AVIRAccessConnForm(UI::GUIClientControl *pare
 	this->conn = 0;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASS(this->lblFileName, UI::GUILabel(ui, this, CSTR("File Name")));
+	NEW_CLASS(this->lblFileName, UI::GUILabel(ui, *this, CSTR("File Name")));
 	this->lblFileName->SetRect(4, 4, 100, 23, false);
-	NEW_CLASS(this->txtFileName, UI::GUITextBox(ui, this, CSTR("")));
+	NEW_CLASS(this->txtFileName, UI::GUITextBox(ui, *this, CSTR("")));
 	this->txtFileName->SetRect(104, 4, 500, 23, false);
-	NEW_CLASS(this->btnBrowse, UI::GUIButton(ui, this, CSTR("B&rowse")));
+	NEW_CLASS(this->btnBrowse, UI::GUIButton(ui, *this, CSTR("B&rowse")));
 	this->btnBrowse->SetRect(604, 4, 75, 23, false);
 	this->btnBrowse->HandleButtonClick(OnBrowseClicked, this);
-	NEW_CLASS(this->btnOK, UI::GUIButton(ui, this, CSTR("OK")));
+	NEW_CLASS(this->btnOK, UI::GUIButton(ui, *this, CSTR("OK")));
 	this->btnOK->SetRect(104, 28, 75, 23, false);
 	this->btnOK->HandleButtonClick(OnOKClicked, this);
-	NEW_CLASS(this->btnCancel, UI::GUIButton(ui, this, CSTR("Cancel")));
+	NEW_CLASS(this->btnCancel, UI::GUIButton(ui, *this, CSTR("Cancel")));
 	this->btnCancel->SetRect(184, 28, 75, 23, false);
 	this->btnCancel->HandleButtonClick(OnCancelClicked, this);
 

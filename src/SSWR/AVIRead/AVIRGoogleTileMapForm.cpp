@@ -37,19 +37,19 @@ SSWR::AVIRead::AVIRGoogleTileMapForm::AVIRGoogleTileMapForm(UI::GUIClientControl
 	this->layer = 0;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASS(this->lblMapType, UI::GUILabel(ui, this, CSTR("Map Type")));
+	NEW_CLASS(this->lblMapType, UI::GUILabel(ui, *this, CSTR("Map Type")));
 	this->lblMapType->SetRect(4, 4, 100, 23, false);
-	NEW_CLASS(this->cboMapType, UI::GUIComboBox(ui, this, false));
+	NEW_CLASS(this->cboMapType, UI::GUIComboBox(ui, *this, false));
 	this->cboMapType->SetRect(104, 4, 200, 23, false);
 	this->cboMapType->AddItem(CSTR("Map"), 0);
 	this->cboMapType->AddItem(CSTR("Terrain"), 0);
 	this->cboMapType->AddItem(CSTR("Satelite"), 0);
 	this->cboMapType->AddItem(CSTR("Hybrid"), 0);
 	this->cboMapType->SetSelectedIndex(0);
-	NEW_CLASS(this->txtDeclare, UI::GUITextBox(ui, this, CSTR("Declaimer: There may be Legal issue in using Google Tile Map. Please use for Research purpose only."), true));
+	NEW_CLASS(this->txtDeclare, UI::GUITextBox(ui, *this, CSTR("Declaimer: There may be Legal issue in using Google Tile Map. Please use for Research purpose only."), true));
 	this->txtDeclare->SetRect(4, 28, 350, 47, false);
 	this->txtDeclare->SetReadOnly(true);
-	NEW_CLASS(this->btnOK, UI::GUIButton(ui, this, CSTR("OK")));
+	NEW_CLASS(this->btnOK, UI::GUIButton(ui, *this, CSTR("OK")));
 	this->btnOK->SetRect(104, 76, 75, 23, false);
 	this->btnOK->HandleButtonClick(OnOKClicked, this);
 }

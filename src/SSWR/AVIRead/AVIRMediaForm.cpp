@@ -326,16 +326,16 @@ SSWR::AVIRead::AVIRMediaForm::AVIRMediaForm(UI::GUIClientControl *parent, NotNul
 	this->currChapters = mediaFile->GetChapterInfo();
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASS(this->lbFiles, UI::GUIListBox(ui, this, false));
+	NEW_CLASS(this->lbFiles, UI::GUIListBox(ui, *this, false));
 	this->lbFiles->SetRect(0, 0, 160, 100, false);
 	this->lbFiles->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbFiles->HandleRightClicked(OnFileRClicked, this);
 	this->lbFiles->HandleDoubleClicked(OnFileDblClicked, this);
-	NEW_CLASS(this->hsplit, UI::GUIHSplitter(ui, this, 3, false));
-	NEW_CLASS(this->pnlCtrl, UI::GUIPanel(ui, this));
+	NEW_CLASS(this->hsplit, UI::GUIHSplitter(ui, *this, 3, false));
+	NEW_CLASSNN(this->pnlCtrl, UI::GUIPanel(ui, *this));
 	this->pnlCtrl->SetRect(0, 0, 100, 56, false);
 	this->pnlCtrl->SetDockType(UI::GUIControl::DOCK_BOTTOM);
-	NEW_CLASS(this->vbdMain, UI::GUIVideoBoxDD(ui, this, this->colorSess, 5, Sync::ThreadUtil::GetThreadCnt()));
+	NEW_CLASS(this->vbdMain, UI::GUIVideoBoxDD(ui, *this, this->colorSess, 5, Sync::ThreadUtil::GetThreadCnt()));
 	this->vbdMain->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	UI::GUIMenu *mnu;

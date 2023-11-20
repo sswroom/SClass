@@ -35,16 +35,16 @@ SSWR::AVIRead::AVIRCodePageForm::AVIRCodePageForm(UI::GUIClientControl *parent, 
 	UTF8Char *sptr;
 	UI::GUILabel *lbl;
 	
-	NEW_CLASS(lbl, UI::GUILabel(ui, this, CSTR("Code Pages")));
+	NEW_CLASS(lbl, UI::GUILabel(ui, *this, CSTR("Code Pages")));
 	lbl->SetRect(8, 8, 120, 23, false);
 
-	NEW_CLASS(this->lbCodePages, UI::GUIListBox(ui, this, false));
+	NEW_CLASS(this->lbCodePages, UI::GUIListBox(ui, *this, false));
 	this->lbCodePages->SetRect(8, 32, 240, 560, false);
 
-	NEW_CLASS(btnOK, UI::GUIButton(ui, this, CSTR("OK")));
+	NEW_CLASS(btnOK, UI::GUIButton(ui, *this, CSTR("OK")));
 	btnOK->SetRect(40, 600, 75, 23, false);
 	btnOK->HandleButtonClick(OKClicked, this);
-	NEW_CLASS(btnCancel, UI::GUIButton(ui, this, CSTR("Cancel")));
+	NEW_CLASS(btnCancel, UI::GUIButton(ui, *this, CSTR("Cancel")));
 	btnCancel->SetRect(128, 600, 75, 23, false);
 	btnCancel->HandleButtonClick(CancelClicked, this);
 	this->SetDefaultButton(btnOK);

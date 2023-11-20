@@ -31,7 +31,7 @@ namespace SSWR
 			} UpdateQueue;
 		private:
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
-			UI::GUIPanel *pnlCtrl;
+			NotNullPtr<UI::GUIPanel> pnlCtrl;
 			UI::GUIButton *btnCancel;
 			UI::GUICheckBox *chkAllowTimeSkip;
 			UI::GUIListView *lvFiles;

@@ -165,7 +165,7 @@ SSWR::AVIRead::AVIRServiceForm::AVIRServiceForm(UI::GUIClientControl *parent, No
 
 	this->core = core;
 
-	NEW_CLASS(this->lvService, UI::GUIListView(ui, this, UI::GUIListView::LVSTYLE_TABLE, 2));
+	NEW_CLASS(this->lvService, UI::GUIListView(ui, *this, UI::GUIListView::LVSTYLE_TABLE, 2));
 	this->lvService->SetRect(0, 0, 220, 23, false);
 	this->lvService->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lvService->AddColumn(CSTR("Name"), 150);
@@ -173,8 +173,8 @@ SSWR::AVIRead::AVIRServiceForm::AVIRServiceForm(UI::GUIClientControl *parent, No
 	this->lvService->SetFullRowSelect(true);
 	this->lvService->SetShowGrid(true);
 	this->lvService->HandleSelChg(OnServiceSelChg, this);
-	NEW_CLASS(this->hspService, UI::GUIHSplitter(ui, this, 3, false));
-	NEW_CLASS(this->pnlCtrl, UI::GUIPanel(ui, this));
+	NEW_CLASS(this->hspService, UI::GUIHSplitter(ui, *this, 3, false));
+	NEW_CLASSNN(this->pnlCtrl, UI::GUIPanel(ui, *this));
 	this->pnlCtrl->SetRect(0, 0, 100, 55, false);
 	this->pnlCtrl->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->btnStart, UI::GUIButton(ui, this->pnlCtrl, CSTR("Start")));
@@ -195,7 +195,7 @@ SSWR::AVIRead::AVIRServiceForm::AVIRServiceForm(UI::GUIClientControl *parent, No
 	NEW_CLASS(this->btnCreate, UI::GUIButton(ui, this->pnlCtrl, CSTR("Create")));
 	this->btnCreate->SetRect(84, 28, 75, 23, false);
 	this->btnCreate->HandleButtonClick(OnCreateClicked, this);
-	NEW_CLASS(this->pnlDetail, UI::GUIPanel(ui, this));
+	NEW_CLASSNN(this->pnlDetail, UI::GUIPanel(ui, *this));
 	this->pnlDetail->SetDockType(UI::GUIControl::DOCK_FILL);
 	NEW_CLASS(this->lblName, UI::GUILabel(ui, this->pnlDetail, CSTR("Name")));
 	this->lblName->SetRect(4, 4, 100, 23, false);

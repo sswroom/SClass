@@ -10,7 +10,7 @@ namespace UI
 		Bool hasTextColor;
 		UInt32 textColor;
 	public:
-		GUILabel(NotNullPtr<GUICore> ui, UI::GUIClientControl *parent, Text::CStringNN initText);
+		GUILabel(NotNullPtr<GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, Text::CStringNN initText);
 		virtual ~GUILabel();
 
 		virtual void SetText(Text::CStringNN text);

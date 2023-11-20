@@ -40,15 +40,15 @@ SSWR::AVIRead::AVIRWIADevForm::AVIRWIADevForm(UI::GUIClientControl *parent, NotN
 
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
-	NEW_CLASS(this->lblDevice, UI::GUILabel(ui, this, CSTR("Capture Device")));
+	NEW_CLASS(this->lblDevice, UI::GUILabel(ui, *this, CSTR("Capture Device")));
 	this->lblDevice->SetRect(8, 8, 100, 23, false);
-	NEW_CLASS(this->lbDevice, UI::GUIListBox(ui, this, false));
+	NEW_CLASS(this->lbDevice, UI::GUIListBox(ui, *this, false));
 	this->lbDevice->SetRect(112, 8, 256, 112, false);
 
-	NEW_CLASS(this->btnOK, UI::GUIButton(ui, this, CSTR("&OK")));
+	NEW_CLASS(this->btnOK, UI::GUIButton(ui, *this, CSTR("&OK")));
 	this->btnOK->SetRect(112, 144, 75, 23, false);
 	this->btnOK->HandleButtonClick(OnOKClick, this);
-	NEW_CLASS(this->btnCancel, UI::GUIButton(ui, this, CSTR("&Cancel")));
+	NEW_CLASS(this->btnCancel, UI::GUIButton(ui, *this, CSTR("&Cancel")));
 	this->btnCancel->SetRect(192, 144, 75, 23, false);
 	this->btnCancel->HandleButtonClick(OnCancelClick, this);
 	this->SetDefaultButton(this->btnOK);

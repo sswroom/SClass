@@ -17,7 +17,7 @@ namespace SSWR
 		private:
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 
-			UI::GUIPanel *pnlFile;
+			NotNullPtr<UI::GUIPanel> pnlFile;
 			UI::GUILabel *lblFile;
 			UI::GUITextBox *txtFile;
 			UI::GUIButton *btnBrowse;

@@ -131,7 +131,7 @@ SSWR::AVIRead::AVIRARPScanForm::AVIRARPScanForm(UI::GUIClientControl *parent, No
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASS(this->pnlCtrl, UI::GUIPanel(ui, this));
+	NEW_CLASSNN(this->pnlCtrl, UI::GUIPanel(ui, *this));
 	this->pnlCtrl->SetRect(0, 0, 100, 31, false);
 	this->pnlCtrl->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->lblAdapter, UI::GUILabel(ui, this->pnlCtrl, CSTR("Adapter")));
@@ -141,7 +141,7 @@ SSWR::AVIRead::AVIRARPScanForm::AVIRARPScanForm(UI::GUIClientControl *parent, No
 	NEW_CLASS(this->btnScan, UI::GUIButton(ui, this->pnlCtrl, CSTR("Scan")));
 	this->btnScan->SetRect(254, 4, 75, 23, false);
 	this->btnScan->HandleButtonClick(OnScanClicked, this);
-	NEW_CLASS(this->lvARP, UI::GUIListView(ui, this, UI::GUIListView::LVSTYLE_TABLE, 3));
+	NEW_CLASS(this->lvARP, UI::GUIListView(ui, *this, UI::GUIListView::LVSTYLE_TABLE, 3));
 	this->lvARP->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvARP->SetFullRowSelect(true);
 	this->lvARP->SetShowGrid(true);

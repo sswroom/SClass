@@ -16,7 +16,7 @@ namespace SSWR
 		class AVIRGUIEventForm : public UI::GUIForm
 		{
 		private:
-			UI::GUIPanel *pnlMain;
+			NotNullPtr<UI::GUIPanel> pnlMain;
 			UI::GUIButton *btnDisplayOff;
 			NotNullPtr<UI::GUIListBox> lbLog;
 			UI::GUITextBox *txtLog;

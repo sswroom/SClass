@@ -17,11 +17,11 @@ namespace SSWR
 		private:
 			SSWR::DiscDB::DiscDBEnv *env;
 
-			UI::GUIPanel *pnlDiscId;
+			NotNullPtr<UI::GUIPanel> pnlDiscId;
 			UI::GUILabel *lblDiscId;
 			UI::GUITextBox *txtDiscId;
 			UI::GUIButton *btnSearch;
-			UI::GUIPanel *pnlOut;
+			NotNullPtr<UI::GUIPanel> pnlOut;
 			UI::GUILabel *lblDiscIdOut;
 			UI::GUITextBox *txtDiscIdOut;
 			UI::GUILabel *lblDiscType;

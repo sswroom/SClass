@@ -164,10 +164,10 @@ SSWR::AVIRead::AVIRADAMForm::AVIRADAMForm(UI::GUIClientControl *parent, NotNullP
 	this->stm = 0;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASS(this->pnlMain, UI::GUIPanel(ui, this));
+	NEW_CLASSNN(this->pnlMain, UI::GUIPanel(ui, *this));
 	this->pnlMain->SetRect(0, 0, 100, 316, false);
 	this->pnlMain->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->grpStream, UI::GUIGroupBox(ui, this->pnlMain, CSTR("Stream")));
+	NEW_CLASSNN(this->grpStream, UI::GUIGroupBox(ui, this->pnlMain, CSTR("Stream")));
 	this->grpStream->SetRect(0, 0, 100, 72, false);
 	this->grpStream->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->lblAddress, UI::GUILabel(ui, this->grpStream, CSTR("Address")));
@@ -233,7 +233,7 @@ SSWR::AVIRead::AVIRADAMForm::AVIRADAMForm(UI::GUIClientControl *parent, NotNullP
 	this->txtSlewRate->SetRect(104, 292, 100, 23, false);
 	this->txtSlewRate->SetReadOnly(true);
 
-	NEW_CLASS(this->lvData, UI::GUIListView(ui, this, UI::GUIListView::LVSTYLE_TABLE, 2));
+	NEW_CLASS(this->lvData, UI::GUIListView(ui, *this, UI::GUIListView::LVSTYLE_TABLE, 2));
 	this->lvData->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvData->SetFullRowSelect(true);
 	this->lvData->SetShowGrid(true);

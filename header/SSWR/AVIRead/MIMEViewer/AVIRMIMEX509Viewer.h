@@ -18,15 +18,15 @@ namespace SSWR
 			private:
 				UI::GUITabControl *tcMain;
 
-				UI::GUITabPage *tpDesc;
+				NotNullPtr<UI::GUITabPage> tpDesc;
 				UI::GUITextBox *txtDesc;
-				UI::GUITabPage *tpASN1;
+				NotNullPtr<UI::GUITabPage> tpASN1;
 				UI::GUITextBox *txtASN1;
 
 				Text::MIMEObj::UnknownMIMEObj *obj;
 
 			public:
-				AVIRMIMEX509Viewer(NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<UI::GUICore> ui, UI::GUIClientControl *ctrl, NotNullPtr<Media::ColorManagerSess> sess, Text::MIMEObj::UnknownMIMEObj *obj);
+				AVIRMIMEX509Viewer(NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIClientControl> ctrl, NotNullPtr<Media::ColorManagerSess> sess, Text::MIMEObj::UnknownMIMEObj *obj);
 				virtual ~AVIRMIMEX509Viewer();
 			};
 		}

@@ -53,7 +53,7 @@ SSWR::AVIRead::AVIRWHOISClientForm::AVIRWHOISClientForm(UI::GUIClientControl *pa
 	this->sockf = core->GetSocketFactory();
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASS(this->pnlRequest, UI::GUIPanel(ui, this));
+	NEW_CLASSNN(this->pnlRequest, UI::GUIPanel(ui, *this));
 	this->pnlRequest->SetRect(0, 0, 100, 55, false);
 	this->pnlRequest->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->lblIP, UI::GUILabel(ui, this->pnlRequest, CSTR("IP")));
@@ -68,7 +68,7 @@ SSWR::AVIRead::AVIRWHOISClientForm::AVIRWHOISClientForm(UI::GUIClientControl *pa
 	NEW_CLASS(this->txtRespTime, UI::GUITextBox(ui, this->pnlRequest, CSTR("")));
 	this->txtRespTime->SetRect(104, 28, 400, 23, false);
 	this->txtRespTime->SetReadOnly(true);
-	NEW_CLASS(this->lbResponse, UI::GUIListBox(ui, this, false));
+	NEW_CLASS(this->lbResponse, UI::GUIListBox(ui, *this, false));
 	this->lbResponse->SetDockType(UI::GUIControl::DOCK_FILL);
 	
 	this->SetDefaultButton(this->btnRequest);

@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "SSWR/AVIRead/MIMEViewer/AVIRMailViewer.h"
 
-SSWR::AVIRead::MIMEViewer::AVIRMailViewer::AVIRMailViewer(NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<UI::GUICore> ui, UI::GUIClientControl *ctrl, NotNullPtr<Media::ColorManagerSess> sess, Text::MIMEObj::MailMessage *mail) : SSWR::AVIRead::MIMEViewer::AVIRMIMEViewer(core, ctrl, mail)
+SSWR::AVIRead::MIMEViewer::AVIRMailViewer::AVIRMailViewer(NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIClientControl> ctrl, NotNullPtr<Media::ColorManagerSess> sess, Text::MIMEObj::MailMessage *mail) : SSWR::AVIRead::MIMEViewer::AVIRMIMEViewer(core, ctrl, mail)
 {
 	this->mail = mail;
 
@@ -18,7 +18,7 @@ SSWR::AVIRead::MIMEViewer::AVIRMailViewer::AVIRMailViewer(NotNullPtr<SSWR::AVIRe
 	this->lvRecp->AddColumn(CSTR("Email"), 150);
 	this->lvRecp->SetShowGrid(true);
 	this->lvRecp->SetFullRowSelect(true);
-	NEW_CLASS(this->pnlFrom, UI::GUIPanel(ui, this->tpHeading));
+	NEW_CLASSNN(this->pnlFrom, UI::GUIPanel(ui, this->tpHeading));
 	this->pnlFrom->SetRect(0, 0, 100, 24, false);
 	this->pnlFrom->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->lblFrom, UI::GUILabel(ui, this->pnlFrom, CSTR("From")));
@@ -27,7 +27,7 @@ SSWR::AVIRead::MIMEViewer::AVIRMailViewer::AVIRMailViewer(NotNullPtr<SSWR::AVIRe
 	NEW_CLASS(this->txtFrom, UI::GUITextBox(ui, this->pnlFrom, CSTR("")));
 	this->txtFrom->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->txtFrom->SetReadOnly(true);
-	NEW_CLASS(this->pnlSubject, UI::GUIPanel(ui, this->tpHeading));
+	NEW_CLASSNN(this->pnlSubject, UI::GUIPanel(ui, this->tpHeading));
 	this->pnlSubject->SetRect(0, 0, 100, 24, false);
 	this->pnlSubject->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->lblSubject, UI::GUILabel(ui, this->pnlSubject, CSTR("Subject")));
@@ -36,7 +36,7 @@ SSWR::AVIRead::MIMEViewer::AVIRMailViewer::AVIRMailViewer(NotNullPtr<SSWR::AVIRe
 	NEW_CLASS(this->txtSubject, UI::GUITextBox(ui, this->pnlSubject, CSTR("")));
 	this->txtSubject->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->txtSubject->SetReadOnly(true);
-	NEW_CLASS(this->pnlDate, UI::GUIPanel(ui, this->tpHeading));
+	NEW_CLASSNN(this->pnlDate, UI::GUIPanel(ui, this->tpHeading));
 	this->pnlDate->SetDockType(UI::GUIControl::DOCK_FILL);
 	NEW_CLASS(this->lblDate, UI::GUILabel(ui, this->pnlDate, CSTR("Date")));
 	this->lblDate->SetRect(0, 0, 100, 23, false);
@@ -53,7 +53,7 @@ SSWR::AVIRead::MIMEViewer::AVIRMailViewer::AVIRMailViewer(NotNullPtr<SSWR::AVIRe
 	this->lvRAW->SetShowGrid(true);
 	this->lvRAW->SetFullRowSelect(true);
 
-	NEW_CLASS(this->pnlContent, UI::GUIPanel(ui, ctrl));
+	NEW_CLASSNN(this->pnlContent, UI::GUIPanel(ui, ctrl));
 	this->pnlContent->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->viewer = SSWR::AVIRead::MIMEViewer::AVIRMIMEViewer::CreateViewer(this->core, ui, this->pnlContent, sess, this->mail->GetRAWContent());
 

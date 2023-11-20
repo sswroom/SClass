@@ -17,7 +17,7 @@ namespace UI
 
 		void InitContainer();
 	protected:
-		GUIClientControl(NotNullPtr<GUICore> ui, UI::GUIClientControl *parent);
+		GUIClientControl(NotNullPtr<GUICore> ui, Optional<UI::GUIClientControl> parent);
 		virtual void UpdateFont();
 		void ClearChildren();
 		Bool MyEraseBkg(void *hdc);

@@ -741,15 +741,15 @@ SSWR::AVIRead::AVIRHQMPForm::AVIRHQMPForm(UI::GUIClientControl *parent, NotNullP
 
 	if (this->qMode == SSWR::AVIRead::AVIRHQMPForm::QM_HQ)
 	{
-		NEW_CLASS(this->vbox, UI::GUIVideoBoxDD(ui, this, this->colorSess, 6, 2));
+		NEW_CLASS(this->vbox, UI::GUIVideoBoxDD(ui, *this, this->colorSess, 6, 2));
 	}
 	else if (this->qMode == SSWR::AVIRead::AVIRHQMPForm::QM_UQ)
 	{
-		NEW_CLASS(this->vbox, UI::GUIVideoBoxDD(ui, this, this->colorSess, 6, 2));
+		NEW_CLASS(this->vbox, UI::GUIVideoBoxDD(ui, *this, this->colorSess, 6, 2));
 	}
 	else
 	{
-		NEW_CLASS(this->vbox, UI::GUIVideoBoxDDLQ(ui, this, this->colorSess, 6, 2));
+		NEW_CLASS(this->vbox, UI::GUIVideoBoxDDLQ(ui, *this, this->colorSess, 6, 2));
 	}
 
 	this->vbox->SetDockType(UI::GUIControl::DOCK_FILL);
@@ -876,8 +876,10 @@ void SSWR::AVIRead::AVIRHQMPForm::EventMenuClicked(UInt16 cmdId)
 	case MNU_FILE_INFO:
 		if (this->dbgFrm == 0)
 		{
-			NEW_CLASS(this->dbgFrm, UI::GUIForm(0, 320, 444, ui));
-			NEW_CLASS(this->txtDebug, UI::GUITextBox(ui, this->dbgFrm, CSTR(""), true));
+			NotNullPtr<UI::GUIForm> frm;
+			NEW_CLASSNN(frm, UI::GUIForm(0, 320, 444, ui));
+			this->dbgFrm = frm.Ptr();
+			NEW_CLASS(this->txtDebug, UI::GUITextBox(ui, frm, CSTR(""), true));
 			this->txtDebug->SetReadOnly(true);
 			this->txtDebug->SetDockType(UI::GUIControl::DOCK_FILL);
 			this->dbgFrm->SetFont(0, 0, 8.25, false);

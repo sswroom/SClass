@@ -100,7 +100,7 @@ SSWR::OrganMgr::OrganDataFileForm::OrganDataFileForm(UI::GUIClientControl *paren
 
 	this->env = env;
 
-	NEW_CLASS(this->pnlCtrl, UI::GUIPanel(ui, this));
+	NEW_CLASSNN(this->pnlCtrl, UI::GUIPanel(ui, *this));
 	this->pnlCtrl->SetRect(0, 0, 100, 32, false);
 	this->pnlCtrl->SetDockType(UI::GUIControl::DOCK_BOTTOM);
 	NEW_CLASS(this->btnDelete, UI::GUIButton(ui, this->pnlCtrl, this->env->GetLang(CSTR("DataFileDelete"))));
@@ -109,7 +109,7 @@ SSWR::OrganMgr::OrganDataFileForm::OrganDataFileForm(UI::GUIClientControl *paren
 	NEW_CLASS(this->btnStartTime, UI::GUIButton(ui, this->pnlCtrl, this->env->GetLang(CSTR("DataFileStartTime"))));
 	this->btnStartTime->SetRect(104, 4, 75, 23, false);
 	this->btnStartTime->HandleButtonClick(OnStartTimeClicked, this);
-	NEW_CLASS(this->lvFiles, UI::GUIListView(ui, this, UI::GUIListView::LVSTYLE_TABLE, 3));
+	NEW_CLASS(this->lvFiles, UI::GUIListView(ui, *this, UI::GUIListView::LVSTYLE_TABLE, 3));
 	this->lvFiles->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvFiles->SetShowGrid(true);
 	this->lvFiles->SetFullRowSelect(true);

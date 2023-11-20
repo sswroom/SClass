@@ -19,12 +19,12 @@ namespace SSWR
 		class AVIRGISEditImageForm : public UI::GUIForm
 		{
 		private:
-			UI::GUIPanel *pnlCtrl;
+			NotNullPtr<UI::GUIPanel> pnlCtrl;
 			UI::GUICheckBox *chkAutoPan;
 			UI::GUICheckBox *chkEdit;
 			UI::GUIListBox *lbImages;
 			UI::GUIHSplitter *hspMain;
-			UI::GUIPanel *pnlMain;
+			NotNullPtr<UI::GUIPanel> pnlMain;
 			UI::GUILabel *lblLeft;
 			UI::GUITextBox *txtLeft;
 			UI::GUILabel *lblTop;

@@ -19,14 +19,14 @@ namespace SSWR
 		private:
 			UI::GUIListView *lvService;
 			UI::GUIHSplitter *hspService;
-			UI::GUIPanel *pnlCtrl;
+			NotNullPtr<UI::GUIPanel> pnlCtrl;
 			UI::GUIButton *btnStart;
 			UI::GUIButton *btnStop;
 			UI::GUIButton *btnEnable;
 			UI::GUIButton *btnDisable;
 			UI::GUIButton *btnDelete;
 			UI::GUIButton *btnCreate;
-			UI::GUIPanel *pnlDetail;
+			NotNullPtr<UI::GUIPanel> pnlDetail;
 			UI::GUILabel *lblName;
 			UI::GUITextBox *txtName;
 			UI::GUILabel *lblStatus;

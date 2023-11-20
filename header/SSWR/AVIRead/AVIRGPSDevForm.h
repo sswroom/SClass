@@ -46,7 +46,7 @@ namespace SSWR
 				Int32 alarmStatus5;
 			} DevGuard;
 		private:
-			UI::GUIPanel *pnlConn;
+			NotNullPtr<UI::GUIPanel> pnlConn;
 			UI::GUILabel *lblHost;
 			UI::GUITextBox *txtHost;
 			UI::GUILabel *lblPort;
@@ -54,38 +54,38 @@ namespace SSWR
 			UI::GUIButton *btnConn;
 			UI::GUITabControl *tcMain;
 
-			UI::GUITabPage *tpStatus;
+			NotNullPtr<UI::GUITabPage> tpStatus;
 			UI::GUILabel *lblStatusConn;
 			UI::GUITextBox *txtStatusConn;
 
-			UI::GUITabPage *tpDevice;
-			UI::GUIPanel *pnlDeviceC;
+			NotNullPtr<UI::GUITabPage> tpDevice;
+			NotNullPtr<UI::GUIPanel> pnlDeviceC;
 			UI::GUIButton *btnDeviceR;
 			UI::GUIListBox *lbDevice;
 			UI::GUIHSplitter *hspDevice;
 			UI::GUITabControl *tcDevice;
-			UI::GUITabPage *tpDevInfo;
+			NotNullPtr<UI::GUITabPage> tpDevInfo;
 			UI::GUIListView *lvDevInfo;
-			UI::GUITabPage *tpDevAlert;
+			NotNullPtr<UI::GUITabPage> tpDevAlert;
 			UI::GUIListView *lvDevAlert;
-			UI::GUITabPage *tpDevGuard;
+			NotNullPtr<UI::GUITabPage> tpDevGuard;
 			UI::GUIListView *lvDevGuard;
 
-			UI::GUITabPage *tpUser;
-			UI::GUIPanel *pnlUserC;
+			NotNullPtr<UI::GUITabPage> tpUser;
+			NotNullPtr<UI::GUIPanel> pnlUserC;
 			UI::GUIButton *btnUserR;
 			UI::GUIListBox *lbUser;
 			UI::GUIHSplitter *hspUser;
-			UI::GUIPanel *pnlUser;
+			NotNullPtr<UI::GUIPanel> pnlUser;
 			UI::GUIListBox *lbUserDev;
 			UI::GUIListView *lvUser;
 
-			UI::GUITabPage *tpAlert;
-			UI::GUIPanel *pnlAlertC;
+			NotNullPtr<UI::GUITabPage> tpAlert;
+			NotNullPtr<UI::GUIPanel> pnlAlertC;
 			UI::GUIButton *btnAlertR;
 			UI::GUIListBox *lbAlert;
 			UI::GUIHSplitter *hspAlert;
-			UI::GUIPanel *pnlAlert;
+			NotNullPtr<UI::GUIPanel> pnlAlert;
 			UI::GUIListBox *lbAlertDev;
 			UI::GUIListView *lvAlert;
 

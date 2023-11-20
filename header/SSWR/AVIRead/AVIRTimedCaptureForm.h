@@ -53,7 +53,7 @@ namespace SSWR
 			UI::GUIHSplitter *hspMain;
 			UI::GUITabControl *tcMain;
 
-			UI::GUITabPage *tpControl;
+			NotNullPtr<UI::GUITabPage> tpControl;
 			UI::GUILabel *lblFormat;
 			UI::GUIComboBox *cboFormat;
 			UI::GUILabel *lblInterval;
@@ -65,7 +65,7 @@ namespace SSWR
 			UI::GUIButton *btnStart;
 			UI::GUITextBox *txtDeviceInfo;
 
-			UI::GUITabPage *tpStatus;
+			NotNullPtr<UI::GUITabPage> tpStatus;
 			UI::GUILabel *lblFrameCnt;
 			UI::GUITextBox *txtFrameCnt;
 			UI::GUILabel *lblSaveCnt;

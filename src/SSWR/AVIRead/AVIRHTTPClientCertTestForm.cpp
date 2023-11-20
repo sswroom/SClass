@@ -189,7 +189,7 @@ SSWR::AVIRead::AVIRHTTPClientCertTestForm::AVIRHTTPClientCertTestForm(UI::GUICli
 	this->log = 0;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASS(this->grpParam, UI::GUIGroupBox(ui, this, CSTR("Parameters")));
+	NEW_CLASSNN(this->grpParam, UI::GUIGroupBox(ui, *this, CSTR("Parameters")));
 	this->grpParam->SetRect(0, 0, 620, 96, false);
 	this->grpParam->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->lblPort, UI::GUILabel(ui, this->grpParam, CSTR("Port")));
@@ -207,10 +207,10 @@ SSWR::AVIRead::AVIRHTTPClientCertTestForm::AVIRHTTPClientCertTestForm(UI::GUICli
 	this->lblClientCA->SetRect(8, 56, 100, 23, false);
 	NEW_CLASS(this->txtClientCA, UI::GUITextBox(ui, this->grpParam, CSTR("")));
 	this->txtClientCA->SetRect(108, 56, 50, 23, false);
-	NEW_CLASS(this->btnStart, UI::GUIButton(ui, this, CSTR("Start")));
+	NEW_CLASS(this->btnStart, UI::GUIButton(ui, *this, CSTR("Start")));
 	this->btnStart->SetRect(108, 100, 75, 23, false);
 	this->btnStart->HandleButtonClick(OnStartClick, this);
-	NEW_CLASS(this->btnStop, UI::GUIButton(ui, this, CSTR("Stop")));
+	NEW_CLASS(this->btnStop, UI::GUIButton(ui, *this, CSTR("Stop")));
 	this->btnStop->SetRect(208, 100, 75, 23, false);
 	this->btnStop->HandleButtonClick(OnStopClick, this);
 }

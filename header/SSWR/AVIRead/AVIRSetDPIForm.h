@@ -18,8 +18,8 @@ namespace SSWR
 		{
 		private:
 			UI::GUIPictureBoxSimple *pbPreview;
-			UI::GUIPanel *pnlDPI;
-			UI::GUIPanel *pnlBtn;
+			NotNullPtr<UI::GUIPanel> pnlDPI;
+			NotNullPtr<UI::GUIPanel> pnlBtn;
 			UI::GUILabel *lblDPI;
 			UI::GUIHScrollBar *hsbDPI;
 			UI::GUILabel *lblDPIV;

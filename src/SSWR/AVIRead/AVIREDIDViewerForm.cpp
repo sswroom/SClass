@@ -188,7 +188,7 @@ SSWR::AVIRead::AVIREDIDViewerForm::AVIREDIDViewerForm(UI::GUIClientControl *pare
 	this->edid = 0;
 	this->edidSize = 0;
 
-	NEW_CLASS(this->pnlCtrl, UI::GUIPanel(ui, this));
+	NEW_CLASSNN(this->pnlCtrl, UI::GUIPanel(ui, *this));
 	this->pnlCtrl->SetRect(0, 0, 100, 31, false);
 	this->pnlCtrl->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->btnSave, UI::GUIButton(ui, this->pnlCtrl, CSTR("Save")));
@@ -197,7 +197,7 @@ SSWR::AVIRead::AVIREDIDViewerForm::AVIREDIDViewerForm(UI::GUIClientControl *pare
 	NEW_CLASS(this->btnHex, UI::GUIButton(ui, this->pnlCtrl, CSTR("Hex")));
 	this->btnHex->SetRect(84, 4, 75, 23, false);
 	this->btnHex->HandleButtonClick(OnHexClicked, this);
-	NEW_CLASS(this->txtEDID, UI::GUITextBox(ui, this, CSTR(""), true));
+	NEW_CLASS(this->txtEDID, UI::GUITextBox(ui, *this, CSTR(""), true));
 	this->txtEDID->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->txtEDID->SetReadOnly(true);
 

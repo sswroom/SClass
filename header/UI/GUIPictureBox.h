@@ -35,7 +35,7 @@ namespace UI
 		void Deinit(void *hInst);
 		void UpdatePreview();
 	public:
-		GUIPictureBox(NotNullPtr<GUICore> ui, UI::GUIClientControl *parent, NotNullPtr<Media::DrawEngine> eng, Bool hasBorder, Bool allowResize);
+		GUIPictureBox(NotNullPtr<GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, NotNullPtr<Media::DrawEngine> eng, Bool hasBorder, Bool allowResize);
 		virtual ~GUIPictureBox();
 
 		virtual Text::CStringNN GetObjectClass() const;

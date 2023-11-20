@@ -68,12 +68,12 @@ namespace SSWR
 			Data::ArrayListNN<Crypto::Cert::X509Cert> caCerts;
 
 			UI::GUITabControl *tcMain;
-			UI::GUITabPage *tpControl;
-			UI::GUITabPage *tpStatus;
-			UI::GUITabPage *tpAccess;
-			UI::GUITabPage *tpLog;
+			NotNullPtr<UI::GUITabPage> tpControl;
+			NotNullPtr<UI::GUITabPage> tpStatus;
+			NotNullPtr<UI::GUITabPage> tpAccess;
+			NotNullPtr<UI::GUITabPage> tpLog;
 
-			UI::GUIGroupBox *grpParam;
+			NotNullPtr<UI::GUIGroupBox> grpParam;
 			UI::GUILabel *lblPort;
 			UI::GUITextBox *txtPort;
 			UI::GUILabel *lblDocDir;

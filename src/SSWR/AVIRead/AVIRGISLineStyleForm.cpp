@@ -86,13 +86,13 @@ SSWR::AVIRead::AVIRGISLineStyleForm::AVIRGISLineStyleForm(UI::GUIClientControl *
 	this->SetFont(0, 0, 8.25, false);
 	this->SetNoResize(true);
 
-	NEW_CLASS(this->pnlButtons, UI::GUIPanel(ui, this));
+	NEW_CLASSNN(this->pnlButtons, UI::GUIPanel(ui, *this));
 	this->pnlButtons->SetRect(0, 0, 456, 32, false);
 	this->pnlButtons->SetDockType(UI::GUIControl::DOCK_BOTTOM);
-	NEW_CLASS(this->grpStyle, UI::GUIGroupBox(ui, this, CSTR("Style")));
+	NEW_CLASSNN(this->grpStyle, UI::GUIGroupBox(ui, *this, CSTR("Style")));
 	this->grpStyle->SetRect(0, 0, 456, 160, false);
 	this->grpStyle->SetDockType(UI::GUIControl::DOCK_FILL);
-	NEW_CLASS(this->pnlStyle, UI::GUIPanel(ui, this->grpStyle));
+	NEW_CLASSNN(this->pnlStyle, UI::GUIPanel(ui, this->grpStyle));
 	this->pnlStyle->SetRect(0, 0, 456, 32, false);
 	this->pnlStyle->SetDockType(UI::GUIControl::DOCK_BOTTOM);
 	NEW_CLASS(this->lineSelector, SSWR::AVIRead::AVIRLineSelector(ui, this->grpStyle, this->core, this->env, this->lineStyle, this->colorSess));

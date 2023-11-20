@@ -36,10 +36,10 @@ void __stdcall SSWR::OrganMgr::OrganTripForm::OnTripSelChg(void *userObj)
 		Data::DateTime dt;
 		dt.SetTicks(trip->fromDate.ToTicks());
 		dt.ToLocalTime();
-		me->dtpFrom->SetValue(&dt);
+		me->dtpFrom->SetValue(dt);
 		dt.SetTicks(trip->toDate.ToTicks());
 		dt.ToLocalTime();
-		me->dtpTo->SetValue(&dt);
+		me->dtpTo->SetValue(dt);
 		Location *loc = me->env->LocationGet(trip->locId);
 		if (loc)
 		{
@@ -65,9 +65,9 @@ void __stdcall SSWR::OrganMgr::OrganTripForm::OnAddClicked(void *userObj)
 	Data::Timestamp ifrDate;
 	Data::Timestamp itoDate;
 	frDate.ToLocalTime();
-	me->dtpFrom->GetSelectedTime(&frDate);
+	me->dtpFrom->GetSelectedTime(frDate);
 	toDate.ToLocalTime();
-	me->dtpTo->GetSelectedTime(&toDate);
+	me->dtpTo->GetSelectedTime(toDate);
 	ifrDate = frDate.ToTimestamp();
 	itoDate = toDate.ToTimestamp();
 	if (frDate > toDate)
@@ -148,23 +148,23 @@ void __stdcall SSWR::OrganMgr::OrganTripForm::OnDate1HrClicked(void *userObj)
 		if (min < 15)
 		{
 			dt.SetValue(dt.GetYear(), dt.GetMonth(), dt.GetDay(), dt.GetHour() - 1, 30, 0, 0, dt.GetTimeZoneQHR());
-			me->dtpFrom->SetValue(&dt);
+			me->dtpFrom->SetValue(dt);
 			dt.AddHour(1);
-			me->dtpTo->SetValue(&dt);
+			me->dtpTo->SetValue(dt);
 		}
 		else if (min < 45)
 		{
 			dt.SetValue(dt.GetYear(), dt.GetMonth(), dt.GetDay(), dt.GetHour(), 0, 0, 0, dt.GetTimeZoneQHR());
-			me->dtpFrom->SetValue(&dt);
+			me->dtpFrom->SetValue(dt);
 			dt.AddHour(1);
-			me->dtpTo->SetValue(&dt);
+			me->dtpTo->SetValue(dt);
 		}
 		else
 		{
 			dt.SetValue(dt.GetYear(), dt.GetMonth(), dt.GetDay(), dt.GetHour(), 30, 0, 0, dt.GetTimeZoneQHR());
-			me->dtpFrom->SetValue(&dt);
+			me->dtpFrom->SetValue(dt);
 			dt.AddHour(1);
-			me->dtpTo->SetValue(&dt);
+			me->dtpTo->SetValue(dt);
 		}
 	}
 }
@@ -196,11 +196,11 @@ SSWR::OrganMgr::OrganTripForm::OrganTripForm(UI::GUIClientControl *parent, NotNu
 
 	this->SetText(this->env->GetLang(CSTR("TripFormTitle")));
 
-	NEW_CLASS(this->lbTrips, UI::GUIListBox(ui, this, false));
+	NEW_CLASS(this->lbTrips, UI::GUIListBox(ui, *this, false));
 	this->lbTrips->SetRect(0, 0, 320, 268, false);
 	this->lbTrips->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbTrips->HandleSelectionChange(OnTripSelChg, this);
-	NEW_CLASS(this->pnlDetail, UI::GUIPanel(ui, this));
+	NEW_CLASSNN(this->pnlDetail, UI::GUIPanel(ui, *this));
 	this->pnlDetail->SetDockType(UI::GUIControl::DOCK_FILL);
 	NEW_CLASS(this->lblFrom, UI::GUILabel(ui, this->pnlDetail, this->env->GetLang(CSTR("TripFormFrom"))));
 	this->lblFrom->SetRect(0, 24, 72, 23, false);

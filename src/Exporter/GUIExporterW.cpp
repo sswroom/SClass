@@ -31,11 +31,11 @@ void *Exporter::GUIExporter::ToImage(IO::ParsedObject *pobj, UInt8 **relBuff)
 #else
 #include <gdiplus.h>
 
-typedef struct
+struct Exporter::GUIExporter::ClassData
 {
 	UInt32 gdiplusToken;
 	Gdiplus::GdiplusStartupInput *gdiplusStartupInput;
-} ClassData;
+};
 
 Exporter::GUIExporter::GUIExporter() : IO::FileExporter()
 {

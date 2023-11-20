@@ -132,12 +132,12 @@ SSWR::AVIRead::AVIRProgramLinksForm::AVIRProgramLinksForm(UI::GUIClientControl *
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASS(this->lbItems, UI::GUIListBox(ui, this, false));
+	NEW_CLASS(this->lbItems, UI::GUIListBox(ui, *this, false));
 	this->lbItems->SetRect(0, 0, 200, 23, false);
 	this->lbItems->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbItems->HandleSelectionChange(OnItemsSelChg, this);
-	NEW_CLASS(this->hspItems, UI::GUIHSplitter(ui, this, 3, false));
-	NEW_CLASS(this->pnlItem, UI::GUIPanel(ui, this));
+	NEW_CLASS(this->hspItems, UI::GUIHSplitter(ui, *this, 3, false));
+	NEW_CLASSNN(this->pnlItem, UI::GUIPanel(ui, *this));
 	this->pnlItem->SetDockType(UI::GUIControl::DOCK_FILL);
 	NEW_CLASS(this->btnDelete, UI::GUIButton(ui, this->pnlItem, CSTR("Delete")));
 	this->btnDelete->SetRect(4, 4, 75, 23, false);

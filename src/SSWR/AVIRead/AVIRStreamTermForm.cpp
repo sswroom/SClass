@@ -269,7 +269,7 @@ SSWR::AVIRead::AVIRStreamTermForm::AVIRStreamTermForm(UI::GUIClientControl *pare
 	this->recvUpdated = false;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASS(this->grpStream, UI::GUIGroupBox(ui, this, CSTR("Stream")));
+	NEW_CLASSNN(this->grpStream, UI::GUIGroupBox(ui, *this, CSTR("Stream")));
 	this->grpStream->SetRect(0, 0, 100, 48, false);
 	this->grpStream->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->lblStream, UI::GUILabel(ui, this->grpStream, CSTR("Stream Type")));
@@ -281,11 +281,11 @@ SSWR::AVIRead::AVIRStreamTermForm::AVIRStreamTermForm(UI::GUIClientControl *pare
 	this->btnStream->SetRect(304, 4, 75, 23, false);
 	this->btnStream->HandleButtonClick(OnStreamClicked, this);
 	
-	NEW_CLASS(this->grpRecv, UI::GUIGroupBox(ui, this, CSTR("Receive")));
+	NEW_CLASSNN(this->grpRecv, UI::GUIGroupBox(ui, *this, CSTR("Receive")));
 	this->grpRecv->SetRect(0, 0, 256, 100, false);
 	this->grpRecv->SetDockType(UI::GUIControl::DOCK_LEFT);
-	NEW_CLASS(this->hspMain, UI::GUIHSplitter(ui, this, 3, false));
-	NEW_CLASS(this->grpSend, UI::GUIGroupBox(ui, this, CSTR("Send")));
+	NEW_CLASS(this->hspMain, UI::GUIHSplitter(ui, *this, 3, false));
+	NEW_CLASSNN(this->grpSend, UI::GUIGroupBox(ui, *this, CSTR("Send")));
 	this->grpSend->SetDockType(UI::GUIControl::DOCK_FILL);
 	NEW_CLASS(this->cboRecvType, UI::GUIComboBox(ui, this->grpRecv, false));
 	this->cboRecvType->SetRect(0, 0, 100, 23, false);
@@ -297,10 +297,10 @@ SSWR::AVIRead::AVIRStreamTermForm::AVIRStreamTermForm(UI::GUIClientControl *pare
 	NEW_CLASS(this->txtRecvDisp, UI::GUITextBox(ui, this->grpRecv, CSTR(""), true));
 	this->txtRecvDisp->SetReadOnly(true);
 	this->txtRecvDisp->SetDockType(UI::GUIControl::DOCK_FILL);
-	NEW_CLASS(this->pnlSendOption, UI::GUIPanel(ui, this->grpSend));
+	NEW_CLASSNN(this->pnlSendOption, UI::GUIPanel(ui, this->grpSend));
 	this->pnlSendOption->SetRect(0, 0, 100, 72, false);
 	this->pnlSendOption->SetDockType(UI::GUIControl::DOCK_BOTTOM);
-	NEW_CLASS(this->pnlSend, UI::GUIPanel(ui, this->pnlSendOption));
+	NEW_CLASSNN(this->pnlSend, UI::GUIPanel(ui, this->pnlSendOption));
 	this->pnlSend->SetRect(0, 0, 100, 24, false);
 	this->pnlSend->SetDockType(UI::GUIControl::DOCK_BOTTOM);
 	NEW_CLASS(this->btnSend, UI::GUIButton(ui, this->pnlSend, CSTR("&Send")));

@@ -59,14 +59,14 @@ namespace SSWR
 			UI::GUITabControl *tcMain;
 			UI::GUIProgressBar *prgStatus;
 
-			UI::GUITabPage *tpFiles;
+			NotNullPtr<UI::GUITabPage> tpFiles;
 			UI::GUIListView *lvFiles;
 
-			UI::GUITabPage *tpStatus;
-			UI::GUIPanel *pnlStatus;
+			NotNullPtr<UI::GUITabPage> tpStatus;
+			NotNullPtr<UI::GUIPanel> pnlStatus;
 			UI::GUILabel *lblStatusFile;
 			UI::GUITextBox *txtStatusFile;
-			UI::GUIPanel *pnlStatusBNT;
+			NotNullPtr<UI::GUIPanel> pnlStatusBNT;
 			UI::GUILabel *lblStatusFileSize;
 			UI::GUITextBox *txtStatusFileSize;
 			UI::GUILabel *lblStatusCurrSize;
@@ -79,10 +79,10 @@ namespace SSWR
 			UI::GUIVSplitter *vspStatus;
 			UI::GUIRealtimeLineChart *rlcStatus;
 
-			UI::GUITabPage *tpInfo;
+			NotNullPtr<UI::GUITabPage> tpInfo;
 			UI::GUITextBox *txtInfo;
 
-			UI::GUITabPage *tpTest;
+			NotNullPtr<UI::GUITabPage> tpTest;
 			UI::GUITextBox *txtTest;
 
 			UI::GUIPopupMenu *mnuPopup;

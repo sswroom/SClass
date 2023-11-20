@@ -107,7 +107,7 @@ SSWR::AVIRead::AVIRUserAgentSelForm::AVIRUserAgentSelForm(UI::GUIClientControl *
 	this->currUserAgentLen = currUserAgent.leng;
 	NEW_CLASS(this->osList, Data::ArrayList<SSWR::AVIRead::AVIRUserAgentSelForm::OSItem*>());
 
-	NEW_CLASS(this->pnlFilter, UI::GUIPanel(ui, this));
+	NEW_CLASSNN(this->pnlFilter, UI::GUIPanel(ui, *this));
 	this->pnlFilter->SetRect(0, 0, 100, 31, false);
 	this->pnlFilter->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->lblFilterOS, UI::GUILabel(ui, this->pnlFilter, CSTR("OS")));
@@ -120,13 +120,13 @@ SSWR::AVIRead::AVIRUserAgentSelForm::AVIRUserAgentSelForm(UI::GUIClientControl *
 	NEW_CLASS(this->cboFilterBrowser, UI::GUIComboBox(ui, this->pnlFilter, false));
 	this->cboFilterBrowser->SetRect(404, 4, 150, 23, false);
 	this->cboFilterBrowser->HandleSelectionChange(OnFilterChg, this);
-	NEW_CLASS(this->pnlControl, UI::GUIPanel(ui, this));
+	NEW_CLASSNN(this->pnlControl, UI::GUIPanel(ui, *this));
 	this->pnlControl->SetRect(0, 0, 100, 31, false);
 	this->pnlControl->SetDockType(UI::GUIControl::DOCK_BOTTOM);
 	NEW_CLASS(this->btnOk, UI::GUIButton(ui, this->pnlControl, CSTR("Ok")));
 	this->btnOk->SetRect(4, 4, 75, 23, false);
 	this->btnOk->HandleButtonClick(OnOkClicked, this);
-	NEW_CLASS(this->lvUserAgent, UI::GUIListView(ui, this, UI::GUIListView::LVSTYLE_TABLE, 7));
+	NEW_CLASS(this->lvUserAgent, UI::GUIListView(ui, *this, UI::GUIListView::LVSTYLE_TABLE, 7));
 	this->lvUserAgent->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvUserAgent->HandleSelChg(OnUserAgentSelChg, this);
 	this->lvUserAgent->SetFullRowSelect(true);

@@ -43,7 +43,7 @@ void UI::GUIClientControl::InitContainer()
 	gtk_widget_show(data->scrolledWin);
 }
 
-UI::GUIClientControl::GUIClientControl(NotNullPtr<UI::GUICore> ui, UI::GUIClientControl *parent) : UI::GUIControl(ui, parent)
+UI::GUIClientControl::GUIClientControl(NotNullPtr<UI::GUICore> ui, Optional<UI::GUIClientControl> parent) : UI::GUIControl(ui, parent)
 {
 	this->container = 0;
 }
@@ -120,9 +120,10 @@ UI::GUIControl *UI::GUIClientControl::GetChild(UOSInt index)
 
 void UI::GUIClientControl::FocusChild(GUIControl *child)
 {
-	if (this->parent)
+	NotNullPtr<GUIClientControl> nnparent;
+	if (this->parent.SetTo(nnparent))
 	{
-		this->parent->FocusChild(child);
+		nnparent->FocusChild(child);
 	}
 	else
 	{

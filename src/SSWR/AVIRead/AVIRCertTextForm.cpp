@@ -69,15 +69,15 @@ SSWR::AVIRead::AVIRCertTextForm::AVIRCertTextForm(UI::GUIClientControl *parent, 
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASS(this->pnlButton, UI::GUIPanel(ui, this));
+	NEW_CLASSNN(this->pnlButton, UI::GUIPanel(ui, *this));
 	this->pnlButton->SetRect(0, 0, 100, 31, false);
 	this->pnlButton->SetDockType(UI::GUIControl::DOCK_BOTTOM);
-	NEW_CLASS(this->pnlLabel, UI::GUIPanel(ui, this));
+	NEW_CLASSNN(this->pnlLabel, UI::GUIPanel(ui, *this));
 	this->pnlLabel->SetRect(0, 0, 100, 23, false);
 	this->pnlLabel->SetDockType(UI::GUIControl::DOCK_LEFT);
 	NEW_CLASS(this->lblEncType, UI::GUILabel(ui, this->pnlLabel, CSTR("Enc Type")));
 	this->lblEncType->SetRect(0, 0, 100, 23, false);
-	NEW_CLASS(this->cboEncType, UI::GUIComboBox(ui, this, false));
+	NEW_CLASS(this->cboEncType, UI::GUIComboBox(ui, *this, false));
 	this->cboEncType->SetRect(0, 0, 100, 23, false);
 	this->cboEncType->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->cboEncType->AddItem(CSTR("Base64"), 0);
@@ -85,7 +85,7 @@ SSWR::AVIRead::AVIRCertTextForm::AVIRCertTextForm(UI::GUIClientControl *parent, 
 	this->cboEncType->SetSelectedIndex(0);
 	NEW_CLASS(this->lblText, UI::GUILabel(ui, this->pnlLabel, CSTR("Text")));
 	this->lblText->SetRect(0, 24, 100, 23, false);
-	NEW_CLASS(this->txtText, UI::GUITextBox(ui, this, CSTR(""), true));
+	NEW_CLASS(this->txtText, UI::GUITextBox(ui, *this, CSTR(""), true));
 	this->txtText->SetDockType(UI::GUIControl::DOCK_FILL);
 	NEW_CLASS(this->btnLoad, UI::GUIButton(ui, this->pnlButton, CSTR("Load")));
 	this->btnLoad->SetRect(104, 4, 75, 23, false);

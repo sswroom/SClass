@@ -28,20 +28,20 @@ namespace SSWR
 			Media::StaticImage *imgSiteEnergy;
 			Media::StaticImage *imgSitePower;
 
-			UI::GUIPanel *pnlAPIKey;
+			NotNullPtr<UI::GUIPanel> pnlAPIKey;
 			UI::GUILabel *lblAPIKey;
 			UI::GUITextBox *txtAPIKey;
 			UI::GUIButton *btnAPIKey;
 			UI::GUITabControl *tcMain;
 			
-			UI::GUITabPage *tpVersion;
+			NotNullPtr<UI::GUITabPage> tpVersion;
 			UI::GUILabel *lblCurrVer;
 			UI::GUITextBox *txtCurrVer;
 			UI::GUILabel *lblSuppVer;
 			UI::GUITextBox *txtSuppVer;
 
-			UI::GUITabPage *tpSiteList;
-			UI::GUIPanel *pnlSiteList;
+			NotNullPtr<UI::GUITabPage> tpSiteList;
+			NotNullPtr<UI::GUIPanel> pnlSiteList;
 			UI::GUIListView *lvSiteList;
 			UI::GUILabel *lblSiteCountry;
 			UI::GUITextBox *txtSiteCountry;
@@ -74,27 +74,27 @@ namespace SSWR
 			UI::GUILabel *lblSiteCurrentPower;
 			UI::GUITextBox *txtSiteCurrentPower;
 
-			UI::GUITabPage *tpSiteEnergy;
-			UI::GUIPanel *pnlSiteEnergy;
+			NotNullPtr<UI::GUITabPage> tpSiteEnergy;
+			NotNullPtr<UI::GUIPanel> pnlSiteEnergy;
 			UI::GUILabel *lblSiteEnergySite;
 			UI::GUIComboBox *cboSiteEnergySite;
 			UI::GUILabel *lblSiteEnergyInterval;
 			UI::GUIComboBox *cboSiteEnergyInterval;
 			UI::GUILabel *lblSiteEnergyRange;
-			UI::GUIComboBox *cboSiteEnergyYear;
-			UI::GUIComboBox *cboSiteEnergyMonth;
-			UI::GUIComboBox *cboSiteEnergyDay;
+			NotNullPtr<UI::GUIComboBox> cboSiteEnergyYear;
+			NotNullPtr<UI::GUIComboBox> cboSiteEnergyMonth;
+			NotNullPtr<UI::GUIComboBox> cboSiteEnergyDay;
 			UI::GUIButton *btnSiteEnergy;
 			UI::GUIPictureBox *pbSiteEnergy;
 
-			UI::GUITabPage *tpSitePower;
-			UI::GUIPanel *pnlSitePower;
+			NotNullPtr<UI::GUITabPage> tpSitePower;
+			NotNullPtr<UI::GUIPanel> pnlSitePower;
 			UI::GUILabel *lblSitePowerSite;
 			UI::GUIComboBox *cboSitePowerSite;
 			UI::GUILabel *lblSitePowerRange;
-			UI::GUIComboBox *cboSitePowerYear;
-			UI::GUIComboBox *cboSitePowerMonth;
-			UI::GUIComboBox *cboSitePowerDay;
+			NotNullPtr<UI::GUIComboBox> cboSitePowerYear;
+			NotNullPtr<UI::GUIComboBox> cboSitePowerMonth;
+			NotNullPtr<UI::GUIComboBox> cboSitePowerDay;
 			UI::GUIButton *btnSitePower;
 			UI::GUIPictureBox *pbSitePower;
 

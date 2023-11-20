@@ -22,7 +22,7 @@ namespace SSWR
 			IO::CANListener *listener;
 			Net::SSLEngine *ssl;
 
-			UI::GUIGroupBox *grpCANBus;
+			NotNullPtr<UI::GUIGroupBox> grpCANBus;
 			UI::GUILabel *lblCANBus;
 			UI::GUITextBox *txtCANBus;
 			UI::GUIButton *btnCANBus;

@@ -128,9 +128,9 @@ SSWR::AVIRead::AVIRBruteForceForm::AVIRBruteForceForm(UI::GUIClientControl *pare
 	Crypto::Hash::HashType currHash;
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
-	NEW_CLASS(this->lblHashType, UI::GUILabel(ui, this, CSTR("Hash Type")));
+	NEW_CLASS(this->lblHashType, UI::GUILabel(ui, *this, CSTR("Hash Type")));
 	this->lblHashType->SetRect(4, 4, 100, 23, false);
-	NEW_CLASS(this->cboHashType, UI::GUIComboBox(ui, this, false));
+	NEW_CLASS(this->cboHashType, UI::GUIComboBox(ui, *this, false));
 	this->cboHashType->SetRect(104, 4, 150, 23, false);
 
 	Crypto::Hash::IHash *hash;
@@ -145,29 +145,29 @@ SSWR::AVIRead::AVIRBruteForceForm::AVIRBruteForceForm(UI::GUIClientControl *pare
 	}
 	this->cboHashType->AddItem(CSTR("Bcrypt"), (void*)1000);
 	this->cboHashType->SetSelectedIndex(0);
-	NEW_CLASS(this->lblHashValue, UI::GUILabel(ui, this, CSTR("Hash Value")));
+	NEW_CLASS(this->lblHashValue, UI::GUILabel(ui, *this, CSTR("Hash Value")));
 	this->lblHashValue->SetRect(4, 28, 100, 23, false);
-	NEW_CLASS(this->txtHashValue, UI::GUITextBox(ui, this, CSTR("")));
+	NEW_CLASS(this->txtHashValue, UI::GUITextBox(ui, *this, CSTR("")));
 	this->txtHashValue->SetRect(104, 28, 200, 23, false);
-	NEW_CLASS(this->lblEncoding, UI::GUILabel(ui, this, CSTR("Encoding")));
+	NEW_CLASS(this->lblEncoding, UI::GUILabel(ui, *this, CSTR("Encoding")));
 	this->lblEncoding->SetRect(4, 52, 100, 23, false);
-	NEW_CLASS(this->cboEncoding, UI::GUIComboBox(ui, this, false));
+	NEW_CLASS(this->cboEncoding, UI::GUIComboBox(ui, *this, false));
 	this->cboEncoding->SetRect(104, 52, 150, 23, false);
 	this->cboEncoding->AddItem(CSTR("UTF-8"), (void*)Crypto::Hash::BruteForceAttack::CharEncoding::UTF8);
 	this->cboEncoding->AddItem(CSTR("UTF-16LE"), (void*)Crypto::Hash::BruteForceAttack::CharEncoding::UTF16LE);
 	this->cboEncoding->AddItem(CSTR("UTF-32LE"), (void*)Crypto::Hash::BruteForceAttack::CharEncoding::UTF32LE);
 	this->cboEncoding->SetSelectedIndex(0);
-	NEW_CLASS(this->lblMinLen, UI::GUILabel(ui, this, CSTR("Min Length")));
+	NEW_CLASS(this->lblMinLen, UI::GUILabel(ui, *this, CSTR("Min Length")));
 	this->lblMinLen->SetRect(4, 76, 100, 23, false);
-	NEW_CLASS(this->txtMinLen, UI::GUITextBox(ui, this, CSTR("4")));
+	NEW_CLASS(this->txtMinLen, UI::GUITextBox(ui, *this, CSTR("4")));
 	this->txtMinLen->SetRect(104, 76, 100, 23, false);
-	NEW_CLASS(this->lblMaxLen, UI::GUILabel(ui, this, CSTR("Max Length")));
+	NEW_CLASS(this->lblMaxLen, UI::GUILabel(ui, *this, CSTR("Max Length")));
 	this->lblMaxLen->SetRect(4, 100, 100, 23, false);
-	NEW_CLASS(this->txtMaxLen, UI::GUITextBox(ui, this, CSTR("16")));
+	NEW_CLASS(this->txtMaxLen, UI::GUITextBox(ui, *this, CSTR("16")));
 	this->txtMaxLen->SetRect(104, 100, 100, 23, false);
-	NEW_CLASS(this->lblCharType, UI::GUILabel(ui, this, CSTR("Char Type")));
+	NEW_CLASS(this->lblCharType, UI::GUILabel(ui, *this, CSTR("Char Type")));
 	this->lblCharType->SetRect(4, 124, 100, 23, false);
-	NEW_CLASS(this->cboCharType, UI::GUIComboBox(ui, this, false));
+	NEW_CLASS(this->cboCharType, UI::GUIComboBox(ui, *this, false));
 	this->cboCharType->SetRect(104, 124, 200, 23, false);
 	Crypto::Hash::BruteForceAttack::CharLimit currLimit = Crypto::Hash::BruteForceAttack::CharLimit::First;
 	while (currLimit <= Crypto::Hash::BruteForceAttack::CharLimit::Last)
@@ -176,12 +176,12 @@ SSWR::AVIRead::AVIRBruteForceForm::AVIRBruteForceForm(UI::GUIClientControl *pare
 		currLimit = (Crypto::Hash::BruteForceAttack::CharLimit)((OSInt)currLimit + 1);
 	}
 	this->cboCharType->SetSelectedIndex(0);
-	NEW_CLASS(this->btnStart, UI::GUIButton(ui, this, CSTR("Start")));
+	NEW_CLASS(this->btnStart, UI::GUIButton(ui, *this, CSTR("Start")));
 	this->btnStart->SetRect(104, 148, 75, 23, false);
 	this->btnStart->HandleButtonClick(OnStartClicked, this);
-	NEW_CLASS(this->lblStatus, UI::GUILabel(ui, this, CSTR("Status")));
+	NEW_CLASS(this->lblStatus, UI::GUILabel(ui, *this, CSTR("Status")));
 	this->lblStatus->SetRect(4, 172, 100, 23, false);
-	NEW_CLASS(this->txtStatus, UI::GUITextBox(ui, this, CSTR("")));
+	NEW_CLASS(this->txtStatus, UI::GUITextBox(ui, *this, CSTR("")));
 	this->txtStatus->SetRect(104, 172, 250, 23, false);
 	this->txtStatus->SetReadOnly(true);
 

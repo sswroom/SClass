@@ -89,7 +89,7 @@ SSWR::AVIRead::AVIROCRForm::AVIROCRForm(UI::GUIClientControl *parent, NotNullPtr
 	this->ocr.HandleOCRResult(OnOCRResult, this);
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASS(this->pnlResult, UI::GUIPanel(ui, this));
+	NEW_CLASSNN(this->pnlResult, UI::GUIPanel(ui, *this));
 	this->pnlResult->SetRect(0, 0, 250, 100, false);
 	this->pnlResult->SetDockType(UI::GUIControl::DOCK_RIGHT);
 	NEW_CLASS(this->pbResult, UI::GUIPictureBoxSimple(ui, this->pnlResult, this->core->GetDrawEngine(), false));
@@ -103,8 +103,8 @@ SSWR::AVIRead::AVIROCRForm::AVIROCRForm(UI::GUIClientControl *parent, NotNullPtr
 	this->lvText->AddColumn(CSTR("Color Rate"), 50);
 	this->lvText->AddColumn(CSTR("Confidence"), 50);
 	this->lvText->HandleSelChg(OnTextSelChg, this);
-	NEW_CLASS(this->hspText, UI::GUIHSplitter(ui, this, 3, true));
-	NEW_CLASS(this->pbImg, UI::GUIPictureBoxDD(ui, this, this->colorSess, true, false));
+	NEW_CLASS(this->hspText, UI::GUIHSplitter(ui, *this, 3, true));
+	NEW_CLASS(this->pbImg, UI::GUIPictureBoxDD(ui, *this, this->colorSess, true, false));
 	this->pbImg->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	this->HandleDropFiles(OnFileHandler, this);

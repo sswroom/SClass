@@ -35,18 +35,18 @@ SSWR::SHPConv::SHPConvElevationFilterForm::SHPConvElevationFilterForm(UI::GUICli
 	this->dbf = dbf;
 	this->filter = 0;
 	
-	NEW_CLASS(this->lblCol, UI::GUILabel(ui, this, CSTR("Column")));
+	NEW_CLASS(this->lblCol, UI::GUILabel(ui, *this, CSTR("Column")));
 	this->lblCol->SetRect(8, 8, 56, 23, false);
-	NEW_CLASS(this->cboCol, UI::GUIComboBox(ui, this, false));
+	NEW_CLASS(this->cboCol, UI::GUIComboBox(ui, *this, false));
 	this->cboCol->SetRect(72, 8, 176, 21, false);
-	NEW_CLASS(this->lblHeight, UI::GUILabel(ui, this, CSTR("Height")));
+	NEW_CLASS(this->lblHeight, UI::GUILabel(ui, *this, CSTR("Height")));
 	this->lblHeight->SetRect(8, 32, 56, 23, false);
-	NEW_CLASS(this->txtHeight, UI::GUITextBox(ui, this, CSTR("20")));
+	NEW_CLASS(this->txtHeight, UI::GUITextBox(ui, *this, CSTR("20")));
 	this->txtHeight->SetRect(72, 32, 80, 20, false);
-	NEW_CLASS(this->btnOK, UI::GUIButton(ui, this, CSTR("OK")));
+	NEW_CLASS(this->btnOK, UI::GUIButton(ui, *this, CSTR("OK")));
 	this->btnOK->SetRect(72, 56, 75, 23, false);
 	this->btnOK->HandleButtonClick(OnOKClicked, this);
-	NEW_CLASS(this->btnCancel, UI::GUIButton(ui, this, CSTR("Cancel")));
+	NEW_CLASS(this->btnCancel, UI::GUIButton(ui, *this, CSTR("Cancel")));
 	this->btnCancel->SetRect(152, 56, 75, 23, false);
 	this->btnCancel->HandleButtonClick(OnCancelClicked, this);
 	this->SetDefaultButton(this->btnOK);

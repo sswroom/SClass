@@ -24,7 +24,7 @@ namespace SSWR
 			Bool alarmSet;
 			Int64 alarmTime;
 
-			UI::GUIPanel *pnlButtons;
+			NotNullPtr<UI::GUIPanel> pnlButtons;
 			UI::GUILabel *lblStatus;
 			UI::GUITextBox *txtStatus;
 			UI::GUICheckBox *chkAutoStart;

@@ -34,7 +34,7 @@ namespace SSWR
 			Media::MediaFile *currFile;
 			Data::ArrayList<DecodeStatus*> *decStatus;
 
-			UI::GUIPanel *pnlFile;
+			NotNullPtr<UI::GUIPanel> pnlFile;
 			UI::GUILabel *lblFile;
 			UI::GUITextBox *txtFile;
 			UI::GUIButton *btnDecode;

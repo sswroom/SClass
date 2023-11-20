@@ -54,18 +54,18 @@ SSWR::SHPConv::SHPConvAddFilterForm::SHPConvAddFilterForm(UI::GUIClientControl *
 	this->dbf = dbf;
 	this->filter = 0;
 	
-	NEW_CLASS(this->lblFilter, UI::GUILabel(ui, this, CSTR("Filter Type")));
+	NEW_CLASS(this->lblFilter, UI::GUILabel(ui, *this, CSTR("Filter Type")));
 	this->lblFilter->SetRect(8, 16, 64, 23, false);
-	NEW_CLASS(this->cboFilter, UI::GUIComboBox(ui, this, false));
+	NEW_CLASS(this->cboFilter, UI::GUIComboBox(ui, *this, false));
 	this->cboFilter->SetRect(80, 16, 121, 21, false);
 	this->cboFilter->AddItem(CSTR("Value Filter"), 0);
 	this->cboFilter->AddItem(CSTR("Range Filter"), 0);
 	this->cboFilter->AddItem(CSTR("Elevation Filter"), 0);
 	this->cboFilter->SetSelectedIndex(0);
-	NEW_CLASS(this->btnOK, UI::GUIButton(ui, this, CSTR("OK")));
+	NEW_CLASS(this->btnOK, UI::GUIButton(ui, *this, CSTR("OK")));
 	this->btnOK->SetRect(8, 56, 75, 23, false);
 	this->btnOK->HandleButtonClick(OnOKClicked, this);
-	NEW_CLASS(this->btnCancel, UI::GUIButton(ui, this, CSTR("Cancel")));
+	NEW_CLASS(this->btnCancel, UI::GUIButton(ui, *this, CSTR("Cancel")));
 	this->btnCancel->SetRect(120, 56, 75, 23, false);
 	this->btnCancel->HandleButtonClick(OnCancelClicked, this);
 }

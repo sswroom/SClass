@@ -39,13 +39,13 @@ SSWR::AVIRead::AVIRBingMapsForm::AVIRBingMapsForm(UI::GUIClientControl *parent, 
 	this->tileMap = 0;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASS(this->lblKey, UI::GUILabel(ui, this, CSTR("Key")));
+	NEW_CLASS(this->lblKey, UI::GUILabel(ui, *this, CSTR("Key")));
 	this->lblKey->SetRect(4, 4, 100, 23, false);
-	NEW_CLASS(this->txtKey, UI::GUITextBox(ui, this, CSTR("")));
+	NEW_CLASS(this->txtKey, UI::GUITextBox(ui, *this, CSTR("")));
 	this->txtKey->SetRect(104, 4, 800, 23, false);
-	NEW_CLASS(this->lblImagerySet, UI::GUILabel(ui, this, CSTR("Min Level")));
+	NEW_CLASS(this->lblImagerySet, UI::GUILabel(ui, *this, CSTR("Min Level")));
 	this->lblImagerySet->SetRect(4, 28, 100, 23, false);
-	NEW_CLASS(this->cboImagerySet, UI::GUIComboBox(ui, this, false));
+	NEW_CLASS(this->cboImagerySet, UI::GUIComboBox(ui, *this, false));
 	this->cboImagerySet->SetRect(104, 28, 200, 23, false);
 	Map::BingMapsTile::ImagerySet is = (Map::BingMapsTile::ImagerySet)0;
 	while (is <= Map::BingMapsTile::ImagerySet::Last)
@@ -54,7 +54,7 @@ SSWR::AVIRead::AVIRBingMapsForm::AVIRBingMapsForm(UI::GUIClientControl *parent, 
 		is = (Map::BingMapsTile::ImagerySet)((OSInt)is + 1);
 	}
 	this->cboImagerySet->SetSelectedIndex(0);
-	NEW_CLASS(this->btnOK, UI::GUIButton(ui, this, CSTR("OK")));
+	NEW_CLASS(this->btnOK, UI::GUIButton(ui, *this, CSTR("OK")));
 	this->btnOK->SetRect(104, 76, 75, 23, false);
 	this->btnOK->HandleButtonClick(OnOKClicked, this);
 }

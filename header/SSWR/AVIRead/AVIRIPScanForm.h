@@ -22,7 +22,7 @@ namespace SSWR
 			NotNullPtr<Net::SocketFactory> sockf;
 			Net::ICMPScanner *scanner;
 
-			UI::GUIPanel *pnlControl;
+			NotNullPtr<UI::GUIPanel> pnlControl;
 			UI::GUILabel *lblIP;
 			UI::GUIComboBox *cboIP;
 			UI::GUIButton *btnStart;

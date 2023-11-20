@@ -17,5 +17,5 @@ namespace UI
 
 		void *GetHandle();
 	};
-};
+}
 #endif

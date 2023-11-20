@@ -133,7 +133,7 @@ SSWR::AVIRead::AVIRCppEnumForm::AVIRCppEnumForm(UI::GUIClientControl *parent, No
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASS(this->pnlCtrl, UI::GUIPanel(ui, this));
+	NEW_CLASSNN(this->pnlCtrl, UI::GUIPanel(ui, *this));
 	this->pnlCtrl->SetRect(0, 0, 100, 55, false);
 	this->pnlCtrl->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->lblType, UI::GUILabel(ui, this->pnlCtrl, CSTR("Type")));
@@ -155,11 +155,11 @@ SSWR::AVIRead::AVIRCppEnumForm::AVIRCppEnumForm(UI::GUIClientControl *parent, No
 	this->lblPrefix->SetRect(234, 28, 100, 23, false);
 	NEW_CLASS(this->txtPrefix, UI::GUITextBox(ui, this->pnlCtrl, CSTR("")));
 	this->txtPrefix->SetRect(334, 28, 100, 23, false);
-	NEW_CLASS(this->txtSource, UI::GUITextBox(ui, this, CSTR(""), true));
+	NEW_CLASS(this->txtSource, UI::GUITextBox(ui, *this, CSTR(""), true));
 	this->txtSource->SetRect(0, 0, 512, 100, false);
 	this->txtSource->SetDockType(UI::GUIControl::DOCK_LEFT);
-	NEW_CLASS(this->hspMain, UI::GUIHSplitter(ui, this, 3, false));
-	NEW_CLASS(this->txtDest, UI::GUITextBox(ui, this, CSTR(""), true));
+	NEW_CLASS(this->hspMain, UI::GUIHSplitter(ui, *this, 3, false));
+	NEW_CLASS(this->txtDest, UI::GUITextBox(ui, *this, CSTR(""), true));
 	this->txtDest->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->txtDest->SetReadOnly(true);
 }

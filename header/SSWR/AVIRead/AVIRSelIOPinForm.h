@@ -24,20 +24,20 @@ namespace SSWR
 			IO::VirtualIOPinMgr *vioPinMgr;
 			IO::GPIOControl *gpioPin;
 
-			UI::GUIPanel *pnlPinType;
+			NotNullPtr<UI::GUIPanel> pnlPinType;
 			UI::GUILabel *lblPinType;
 			UI::GUIComboBox *cboPinType;
 			UI::GUITabControl *tcConfig;
 
-			UI::GUITabPage *tpGPIO;
+			NotNullPtr<UI::GUITabPage> tpGPIO;
 			UI::GUILabel *lblGPIO;
 			UI::GUIComboBox *cboGPIO;
 
-			UI::GUITabPage *tpVirtualPin;
+			NotNullPtr<UI::GUITabPage> tpVirtualPin;
 			UI::GUILabel *lblVirtualPin;
 			UI::GUIComboBox *cboVirtualPin;
 
-			UI::GUIPanel *pnlButtons;
+			NotNullPtr<UI::GUIPanel> pnlButtons;
 			UI::GUIButton *btnOK;
 			UI::GUIButton *btnCancel;
 

@@ -21,7 +21,7 @@ namespace SSWR
 		private:
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 
-			UI::GUIPanel *pnlControl;
+			NotNullPtr<UI::GUIPanel> pnlControl;
 			UI::GUIButton *btnFile;
 			UI::GUICheckBox *chkUnkOnly;
 			UI::GUITextBox *txtFilter;

@@ -71,7 +71,7 @@ namespace SSWR
 			IO::LogTool log;
 			NotNullPtr<UI::ListBoxLogger> logger;
 
-			UI::GUIGroupBox *grpStream;
+			NotNullPtr<UI::GUIGroupBox> grpStream;
 			UI::GUILabel *lblStream;
 			UI::GUITextBox *txtStream;
 			UI::GUIButton *btnStream;
@@ -82,7 +82,7 @@ namespace SSWR
 			UI::GUIButton *btnTimeout;
 			UI::GUITabControl *tcMain;
 
-			UI::GUITabPage *tpGetValue;
+			NotNullPtr<UI::GUITabPage> tpGetValue;
 			UI::GUILabel *lblDevAddr;
 			UI::GUILabel *lblRegAddr;
 			UI::GUILabel *lblValue;
@@ -107,7 +107,7 @@ namespace SSWR
 			UI::GUIButton *btnF32Get;
 			UI::GUITextBox *txtF32Value;
 
-			UI::GUITabPage *tpSetValue;
+			NotNullPtr<UI::GUITabPage> tpSetValue;
 			UI::GUILabel *lblSetDevAddr;
 			UI::GUILabel *lblSetRegAddr;
 			UI::GUILabel *lblSetValue;
@@ -118,8 +118,8 @@ namespace SSWR
 			UI::GUIButton *btnSetU8High;
 			UI::GUITextBox *txtSetU8Value;
 
-			UI::GUITabPage *tpDevice;
-			UI::GUIPanel *pnlDevice;
+			NotNullPtr<UI::GUITabPage> tpDevice;
+			NotNullPtr<UI::GUIPanel> pnlDevice;
 			UI::GUILabel *lblDeviceAddr;
 			UI::GUITextBox *txtDeviceAddr;
 			UI::GUILabel *lblDevice;
@@ -127,13 +127,13 @@ namespace SSWR
 			UI::GUIButton *btnDeviceAdd;
 			UI::GUIListView *lvDevice;
 
-			UI::GUITabPage *tpRAWSend;
+			NotNullPtr<UI::GUITabPage> tpRAWSend;
 			UI::GUITextBox *txtRAWSend;
 
-			UI::GUITabPage *tpRAWRecv;
+			NotNullPtr<UI::GUITabPage> tpRAWRecv;
 			UI::GUITextBox *txtRAWRecv;
 
-			UI::GUITabPage *tpLog;
+			NotNullPtr<UI::GUITabPage> tpLog;
 			UI::GUITextBox *txtLog;
 			NotNullPtr<UI::GUIListBox> lbLog;
 		private:

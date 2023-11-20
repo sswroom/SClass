@@ -608,12 +608,12 @@ SSWR::AVIRead::AVIRImageForm::AVIRImageForm(UI::GUIClientControl *parent, NotNul
 	this->currImgDelay = 0;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 	
-	NEW_CLASS(this->lbImages, UI::GUIListBox(ui, this, false));
+	NEW_CLASS(this->lbImages, UI::GUIListBox(ui, *this, false));
 	this->lbImages->SetRect(0, 0, 160, 10, false);
 	this->lbImages->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbImages->HandleSelectionChange(ImagesSelChg, this);
-	NEW_CLASS(this->hSplitter, UI::GUIHSplitter(ui, this, 3, false));
-	NEW_CLASS(this->tcImage, UI::GUITabControl(ui, this));
+	NEW_CLASS(this->hSplitter, UI::GUIHSplitter(ui, *this, 3, false));
+	NEW_CLASS(this->tcImage, UI::GUITabControl(ui, *this));
 	this->tcImage->SetDockType(UI::GUIControl::DOCK_FILL);
 	
 	this->tpImage = this->tcImage->AddTabPage(CSTR("Image"));
@@ -624,8 +624,9 @@ SSWR::AVIRead::AVIRImageForm::AVIRImageForm(UI::GUIClientControl *parent, NotNul
 	NEW_CLASS(this->pbImage, UI::GUIPictureBoxDD(ui, this->tpImage, this->colorSess, this->allowEnlarge, false));
 	this->pbImage->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->pbImage->HandleMouseMove(OnImageMouseMove, this);
+
 	this->tpInfo = this->tcImage->AddTabPage(CSTR("Info"));
-	NEW_CLASS(this->pnlInfo, UI::GUIPanel(ui, this->tpInfo));
+	NEW_CLASSNN(this->pnlInfo, UI::GUIPanel(ui, this->tpInfo));
 	this->pnlInfo->SetRect(0, 0, 100, 31, false);
 	this->pnlInfo->SetDockType(UI::GUIControl::DOCK_BOTTOM);
 	NEW_CLASS(this->btnInfoICC, UI::GUIButton(ui, this->pnlInfo, CSTR("ICC Profile")));

@@ -24,7 +24,7 @@ namespace SSWR
 			NotNullPtr<IO::Stream> port;
 
 			UI::GUITabControl *tcMain;
-			UI::GUITabPage *tpInfo;
+			NotNullPtr<UI::GUITabPage> tpInfo;
 			UI::GUILabel *lblModemManu;
 			UI::GUITextBox *txtModemManu;
 			UI::GUILabel *lblModemModel;
@@ -34,7 +34,7 @@ namespace SSWR
 			UI::GUILabel *lblModemIMEI;
 			UI::GUITextBox *txtModemIMEI;
 
-			UI::GUITabPage *tpDial;
+			NotNullPtr<UI::GUITabPage> tpDial;
 			UI::GUILabel *lblDialNum;
 			UI::GUITextBox *txtDialNum;
 			UI::GUIButton *btnDial;

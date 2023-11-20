@@ -187,7 +187,7 @@ SSWR::AVIRead::AVIRStreamLatencyForm::AVIRStreamLatencyForm(UI::GUIClientControl
 	NEW_CLASS(this->log, IO::LogTool());
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASS(this->grpStream, UI::GUIGroupBox(ui, this, CSTR("Stream")));
+	NEW_CLASSNN(this->grpStream, UI::GUIGroupBox(ui, *this, CSTR("Stream")));
 	this->grpStream->SetRect(0, 0, 100, 48, false);
 	this->grpStream->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->lblStream, UI::GUILabel(ui, this->grpStream, CSTR("Stream Type")));
@@ -199,7 +199,7 @@ SSWR::AVIRead::AVIRStreamLatencyForm::AVIRStreamLatencyForm(UI::GUIClientControl
 	this->btnStream->SetRect(304, 4, 75, 23, false);
 	this->btnStream->HandleButtonClick(OnStreamClicked, this);
 	
-	NEW_CLASS(this->grpControl, UI::GUIGroupBox(ui, this, CSTR("Control")));
+	NEW_CLASSNN(this->grpControl, UI::GUIGroupBox(ui, *this, CSTR("Control")));
 	this->grpControl->SetRect(0, 0, 100, 48, false);
 	this->grpControl->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->lblReqInterval, UI::GUILabel(ui, this->grpControl, CSTR("Req Interval")));
@@ -220,7 +220,7 @@ SSWR::AVIRead::AVIRStreamLatencyForm::AVIRStreamLatencyForm(UI::GUIClientControl
 	this->cboReqInterval->AddItem(CSTR("2min"), (void *)120000);
 	this->cboReqInterval->SetSelectedIndex(8);
 
-	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, this));
+	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, *this));
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	this->tpLatency = this->tcMain->AddTabPage(CSTR("Latency (ms)"));

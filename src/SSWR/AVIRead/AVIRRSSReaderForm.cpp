@@ -204,7 +204,7 @@ SSWR::AVIRead::AVIRRSSReaderForm::AVIRRSSReaderForm(UI::GUIClientControl *parent
 	this->rss = 0;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASS(this->pnlURL, UI::GUIPanel(ui, this));
+	NEW_CLASSNN(this->pnlURL, UI::GUIPanel(ui, *this));
 	this->pnlURL->SetRect(0, 0, 100, 55, false);
 	this->pnlURL->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->lblRecent, UI::GUILabel(ui, this->pnlURL, CSTR("Recent")));
@@ -219,7 +219,7 @@ SSWR::AVIRead::AVIRRSSReaderForm::AVIRRSSReaderForm(UI::GUIClientControl *parent
 	NEW_CLASS(this->btnRequest, UI::GUIButton(ui, this->pnlURL, CSTR("Request")));
 	this->btnRequest->SetRect(704, 28, 75, 23, false);
 	this->btnRequest->HandleButtonClick(OnRequestClicked, this);
-	NEW_CLASS(this->tcRSS, UI::GUITabControl(ui, this));
+	NEW_CLASS(this->tcRSS, UI::GUITabControl(ui, *this));
 	this->tcRSS->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	this->tpInfo = this->tcRSS->AddTabPage(CSTR("Info"));

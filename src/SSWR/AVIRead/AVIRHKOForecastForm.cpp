@@ -78,7 +78,7 @@ SSWR::AVIRead::AVIRHKOForecastForm::AVIRHKOForecastForm(UI::GUIClientControl *pa
 	this->ssl = Net::SSLEngineFactory::Create(this->core->GetSocketFactory(), true);
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASS(this->pnlMain, UI::GUIPanel(ui, this));
+	NEW_CLASSNN(this->pnlMain, UI::GUIPanel(ui, *this));
 	this->pnlMain->SetRect(0, 0, 100, 248, false);
 	this->pnlMain->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->lblLang, UI::GUILabel(ui, this->pnlMain, CSTR("Language")));
@@ -125,7 +125,7 @@ SSWR::AVIRead::AVIRHKOForecastForm::AVIRHKOForecastForm(UI::GUIClientControl *pa
 	this->txtGeneralSituation->SetReadOnly(true);
 	this->txtGeneralSituation->SetWordWrap(true);
 
-	NEW_CLASS(this->lvForecast, UI::GUIListView(ui, this, UI::GUIListView::LVSTYLE_TABLE, 8));
+	NEW_CLASS(this->lvForecast, UI::GUIListView(ui, *this, UI::GUIListView::LVSTYLE_TABLE, 8));
 	this->lvForecast->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvForecast->SetFullRowSelect(true);
 	this->lvForecast->SetShowGrid(true);

@@ -2,7 +2,7 @@
 #include "IO/StmData/MemoryDataRef.h"
 #include "SSWR/AVIRead/MIMEViewer/AVIRMIMEImageViewer.h"
 
-SSWR::AVIRead::MIMEViewer::AVIRMIMEImageViewer::AVIRMIMEImageViewer(NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<UI::GUICore> ui, UI::GUIClientControl *ctrl, NotNullPtr<Media::ColorManagerSess> sess, Text::MIMEObj::UnknownMIMEObj *obj) : SSWR::AVIRead::MIMEViewer::AVIRMIMEViewer(core, ctrl, obj)
+SSWR::AVIRead::MIMEViewer::AVIRMIMEImageViewer::AVIRMIMEImageViewer(NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIClientControl> ctrl, NotNullPtr<Media::ColorManagerSess> sess, Text::MIMEObj::UnknownMIMEObj *obj) : SSWR::AVIRead::MIMEViewer::AVIRMIMEViewer(core, ctrl, obj)
 {
 	this->obj = obj;
 	this->imgList = 0;
@@ -13,7 +13,7 @@ SSWR::AVIRead::MIMEViewer::AVIRMIMEImageViewer::AVIRMIMEImageViewer(NotNullPtr<S
 		this->imgList = (Media::ImageList*)core->GetParserList()->ParseFileType(data, IO::ParserType::ImageList);
 	}
 
-	NEW_CLASS(this->pbContent, UI::GUIPictureBoxDD(ui, ctrl, sess, true, false));
+	NEW_CLASSNN(this->pbContent, UI::GUIPictureBoxDD(ui, ctrl, sess, true, false));
 	this->pbContent->SetDockType(UI::GUIControl::DOCK_FILL);
 	if (this->imgList)
 	{

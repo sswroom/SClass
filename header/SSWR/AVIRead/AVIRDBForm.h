@@ -27,15 +27,15 @@ namespace SSWR
 			UI::GUIVSplitter *vspDB;
 			UI::GUIListView *lvResult;
 
-			UI::GUITabPage *tpTable;
+			NotNullPtr<UI::GUITabPage> tpTable;
 			UI::GUIListBox *lbSchema;
 			UI::GUIHSplitter *hspSchema;
 			UI::GUIListBox *lbTable;
 			UI::GUIHSplitter *hspTable;
 			UI::GUIListView *lvTable;
 
-			UI::GUITabPage *tpSQL;
-			UI::GUIPanel *pnlSQLCtrl;
+			NotNullPtr<UI::GUITabPage> tpSQL;
+			NotNullPtr<UI::GUIPanel> pnlSQLCtrl;
 			UI::GUIButton *btnSQL;
 			UI::GUITextBox *txtSQL;
 

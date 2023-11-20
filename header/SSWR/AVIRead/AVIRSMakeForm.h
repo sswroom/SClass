@@ -19,32 +19,32 @@ namespace SSWR
 		class AVIRSMakeForm : public UI::GUIForm
 		{
 		private:
-			UI::GUIPanel *pnlFile;
+			NotNullPtr<UI::GUIPanel> pnlFile;
 			UI::GUILabel *lblFile;
 			UI::GUITextBox *txtFile;
 			UI::GUITabControl *tcMain;
 
-			UI::GUITabPage *tpProgGroup;
+			NotNullPtr<UI::GUITabPage> tpProgGroup;
 			UI::GUIListBox *lbProgGroup;
 			UI::GUIHSplitter *hspProgGroup;
 			UI::GUIListBox *lbProgGroupItems;
 
-			UI::GUITabPage *tpProg;
+			NotNullPtr<UI::GUITabPage> tpProg;
 			UI::GUIListBox *lbProg;
 			UI::GUIHSplitter *hspProg;
-			UI::GUIPanel *pnlProg;
+			NotNullPtr<UI::GUIPanel> pnlProg;
 			UI::GUITabControl *tcProg;
 
-			UI::GUITabPage *tpProgObject;
+			NotNullPtr<UI::GUITabPage> tpProgObject;
 			UI::GUIListBox *lbProgObject;
 
-			UI::GUITabPage *tpProgHeader;
+			NotNullPtr<UI::GUITabPage> tpProgHeader;
 			UI::GUIListBox *lbProgHeader;
 
-			UI::GUITabPage *tpProgSource;
+			NotNullPtr<UI::GUITabPage> tpProgSource;
 			UI::GUIListBox *lbProgSource;
 
-			UI::GUITabPage *tpConfig;
+			NotNullPtr<UI::GUITabPage> tpConfig;
 			UI::GUIListView *lvConfig;
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;

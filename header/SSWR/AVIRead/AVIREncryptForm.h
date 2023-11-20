@@ -17,10 +17,10 @@ namespace SSWR
 		class AVIREncryptForm : public UI::GUIForm
 		{
 		private:
-			UI::GUIPanel *pnlSrc;
-			UI::GUIPanel *pnlSrcCtrl;
-			UI::GUIPanel *pnlDest;
-			UI::GUIPanel *pnlDestCtrl;
+			NotNullPtr<UI::GUIPanel> pnlSrc;
+			NotNullPtr<UI::GUIPanel> pnlSrcCtrl;
+			NotNullPtr<UI::GUIPanel> pnlDest;
+			NotNullPtr<UI::GUIPanel> pnlDestCtrl;
 			UI::GUIHSplitter *hspMain;
 			UI::GUILabel *lblSrc;
 			UI::GUIComboBox *cboSrc;

@@ -124,24 +124,24 @@ SSWR::AVIRead::AVIRGISHKTDTonnesForm::AVIRGISHKTDTonnesForm(UI::GUIClientControl
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 	this->lyr = 0;
 
-	NEW_CLASS(this->lblRoadRoute, UI::GUILabel(ui, this, CSTR("Road Route")));
+	NEW_CLASS(this->lblRoadRoute, UI::GUILabel(ui, *this, CSTR("Road Route")));
 	this->lblRoadRoute->SetRect(4, 4, 150, 23, false);
-	NEW_CLASS(this->txtRoadRoute, UI::GUITextBox(ui, this, CSTR("20180628 Road Traffic\\ROADROUTE.mdb")));
+	NEW_CLASS(this->txtRoadRoute, UI::GUITextBox(ui, *this, CSTR("20180628 Road Traffic\\ROADROUTE.mdb")));
 	this->txtRoadRoute->SetRect(154, 4, 750, 23, false);
-	NEW_CLASS(this->btnRoadRoute, UI::GUIButton(ui, this, CSTR("Browse")));
+	NEW_CLASS(this->btnRoadRoute, UI::GUIButton(ui, *this, CSTR("Browse")));
 	this->btnRoadRoute->SetRect(904, 4, 75, 23, false);
 	this->btnRoadRoute->HandleButtonClick(OnRoadRouteClicked, this);
-	NEW_CLASS(this->lblVehicleRes, UI::GUILabel(ui, this, CSTR("Vehicle Restriction")));
+	NEW_CLASS(this->lblVehicleRes, UI::GUILabel(ui, *this, CSTR("Vehicle Restriction")));
 	this->lblVehicleRes->SetRect(4, 28, 150, 23, false);
-	NEW_CLASS(this->txtVehicleRes, UI::GUITextBox(ui, this, CSTR("20180628 Road Traffic\\VEHICLE_RESTRICTION.mdb")));
+	NEW_CLASS(this->txtVehicleRes, UI::GUITextBox(ui, *this, CSTR("20180628 Road Traffic\\VEHICLE_RESTRICTION.mdb")));
 	this->txtVehicleRes->SetRect(154, 28, 750, 23, false);
-	NEW_CLASS(this->btnVehicleRes, UI::GUIButton(ui, this, CSTR("Browse")));
+	NEW_CLASS(this->btnVehicleRes, UI::GUIButton(ui, *this, CSTR("Browse")));
 	this->btnVehicleRes->SetRect(904, 28, 75, 23, false);
 	this->btnVehicleRes->HandleButtonClick(OnVehicleResClicked, this);
-	NEW_CLASS(this->btnCancel, UI::GUIButton(ui, this, CSTR("Cancel")));
+	NEW_CLASS(this->btnCancel, UI::GUIButton(ui, *this, CSTR("Cancel")));
 	this->btnCancel->SetRect(154, 52, 75, 23, false);
 	this->btnCancel->HandleButtonClick(OnCancelClicked, this);
-	NEW_CLASS(this->btnOK, UI::GUIButton(ui, this, CSTR("OK")));
+	NEW_CLASS(this->btnOK, UI::GUIButton(ui, *this, CSTR("OK")));
 	this->btnOK->SetRect(234, 52, 75, 23, false);
 	this->btnOK->HandleButtonClick(OnOKClicked, this);
 }

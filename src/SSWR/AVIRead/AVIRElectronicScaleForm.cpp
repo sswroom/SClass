@@ -219,10 +219,10 @@ SSWR::AVIRead::AVIRElectronicScaleForm::AVIRElectronicScaleForm(UI::GUIClientCon
 	this->currWeightUpd = false;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASS(this->pnlCtrl, UI::GUIPanel(ui, this));
+	NEW_CLASSNN(this->pnlCtrl, UI::GUIPanel(ui, *this));
 	this->pnlCtrl->SetRect(0, 0, 100, 80, false);
 	this->pnlCtrl->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->grpStream, UI::GUIGroupBox(ui, this->pnlCtrl, CSTR("Stream")));
+	NEW_CLASSNN(this->grpStream, UI::GUIGroupBox(ui, this->pnlCtrl, CSTR("Stream")));
 	this->grpStream->SetRect(0, 0, 100, 48, false);
 	this->grpStream->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->lblStream, UI::GUILabel(ui, this->grpStream, CSTR("Stream Type")));
@@ -238,7 +238,7 @@ SSWR::AVIRead::AVIRElectronicScaleForm::AVIRElectronicScaleForm(UI::GUIClientCon
 	NEW_CLASS(this->txtWeight, UI::GUITextBox(ui, this->pnlCtrl, CSTR("")));
 	this->txtWeight->SetRect(104, 52, 150, 23, false);
 	this->txtWeight->SetReadOnly(true);
-	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, this));
+	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, *this));
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	this->tpDisplay = this->tcMain->AddTabPage(CSTR("Display"));

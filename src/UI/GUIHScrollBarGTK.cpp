@@ -28,7 +28,7 @@ void UI::GUIHScrollBar::Deinit(void *hInst)
 {
 }
 
-UI::GUIHScrollBar::GUIHScrollBar(NotNullPtr<UI::GUICore> ui, UI::GUIClientControl *parent, Int32 width) : UI::GUIControl(ui, parent)
+UI::GUIHScrollBar::GUIHScrollBar(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, Int32 width) : UI::GUIControl(ui, parent)
 {
 	this->hwnd = (ControlHandle*)gtk_scrollbar_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	g_signal_connect((GtkButton*)this->hwnd, "value-changed", G_CALLBACK(GUIHScrollBar_ValueChanged), this);
@@ -65,17 +65,18 @@ void UI::GUIHScrollBar::SetArea(Double left, Double top, Double right, Double bo
 	if (left == this->lxPos && top == this->lyPos && right == this->lxPos2 && bottom == this->lyPos2)
 		return;
 	Math::Coord2DDbl ofst = Math::Coord2DDbl(0, 0);
-	if (this->parent)
+	NotNullPtr<UI::GUIClientControl> nnparent;
+	if (this->parent.SetTo(nnparent))
 	{
-		ofst = this->parent->GetClientOfst();
+		ofst = nnparent->GetClientOfst();
 	}
 	this->lxPos = left;
 	this->lyPos = top;
 	this->selfResize = true;
 
-	if (this->parent)
+	if (this->parent.SetTo(nnparent))
 	{
-		void *container = this->parent->GetContainer();
+		void *container = nnparent->GetContainer();
 		gtk_fixed_move((GtkFixed*)container, (GtkWidget*)this->hwnd, Double2Int32((left + ofst.x) * this->hdpi / this->ddpi), Double2Int32((top + ofst.y) * this->hdpi / this->ddpi));
 	}
 	if (right < left)
@@ -116,17 +117,18 @@ void UI::GUIHScrollBar::SetAreaP(OSInt left, OSInt top, OSInt right, OSInt botto
 	if (OSInt2Double(left) == this->lxPos && OSInt2Double(top) == this->lyPos && OSInt2Double(right) == this->lxPos2 && OSInt2Double(bottom) == this->lyPos2)
 		return;
 	Math::Coord2DDbl ofst = Math::Coord2DDbl(0, 0);
-	if (this->parent)
+	NotNullPtr<UI::GUIClientControl> nnparent;
+	if (this->parent.SetTo(nnparent))
 	{
-		ofst = this->parent->GetClientOfst();
+		ofst = nnparent->GetClientOfst();
 	}
 	this->lxPos = OSInt2Double(left) * this->ddpi / this->hdpi;
 	this->lyPos = OSInt2Double(top) * this->ddpi / this->hdpi;
 	this->selfResize = true;
 
-	if (this->parent)
+	if (this->parent.SetTo(nnparent))
 	{
-		void *container = this->parent->GetContainer();
+		void *container = nnparent->GetContainer();
 		gtk_fixed_move((GtkFixed*)container, (GtkWidget*)this->hwnd, Double2Int32(OSInt2Double(left) + ofst.x * this->hdpi / this->ddpi), Double2Int32(OSInt2Double(top) + ofst.y * this->hdpi / this->ddpi));
 	}
 	if (right < left)

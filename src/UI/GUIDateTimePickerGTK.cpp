@@ -10,7 +10,7 @@ typedef struct
 	const Char *format;
 } DateTimePickerData;
 
-UI::GUIDateTimePicker::GUIDateTimePicker(NotNullPtr<UI::GUICore> ui, UI::GUIClientControl *parent, SelectType st) : UI::GUIControl(ui, parent)
+UI::GUIDateTimePicker::GUIDateTimePicker(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, SelectType st) : UI::GUIControl(ui, parent)
 {
 	DateTimePickerData *data = MemAlloc(DateTimePickerData, 1);
 	data->format = 0;
@@ -42,7 +42,7 @@ OSInt UI::GUIDateTimePicker::OnNotify(UInt32 code, void *lParam)
 	return 0;
 }
 
-void UI::GUIDateTimePicker::SetValue(Data::DateTime *dt)
+void UI::GUIDateTimePicker::SetValue(NotNullPtr<Data::DateTime> dt)
 {
 	DateTimePickerData *data = (DateTimePickerData*)this->clsData;
 	if (data->format)
@@ -68,7 +68,7 @@ void UI::GUIDateTimePicker::SetValue(const Data::Timestamp &ts)
 	}
 }
 
-void UI::GUIDateTimePicker::GetSelectedTime(Data::DateTime *dt)
+void UI::GUIDateTimePicker::GetSelectedTime(NotNullPtr<Data::DateTime> dt)
 {
 	DateTimePickerData *data = (DateTimePickerData*)this->clsData;
 	GtkEntryBuffer *buff = gtk_entry_get_buffer((GtkEntry*)data->widget);
@@ -91,7 +91,7 @@ void UI::GUIDateTimePicker::SetFormat(const Char *format)
 	data->format = Text::StrCopyNew(format);
 	Data::DateTime dt;
 	dt.SetCurrTime();
-	this->SetValue(&dt);
+	this->SetValue(dt);
 }
 
 void UI::GUIDateTimePicker::SetCalShowWeeknum(Bool showWeeknum)

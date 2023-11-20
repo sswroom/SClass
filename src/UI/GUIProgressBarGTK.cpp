@@ -36,7 +36,7 @@ Int32 GUIProgressBar_OnTick(void *userObj)
 	return 1;
 }
 
-UI::GUIProgressBar::GUIProgressBar(NotNullPtr<UI::GUICore> ui, UI::GUIClientControl *parent, UInt64 totalCnt) : UI::GUIControl(ui, parent)
+UI::GUIProgressBar::GUIProgressBar(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, UInt64 totalCnt) : UI::GUIControl(ui, parent)
 {
 	this->hwnd = (ControlHandle*)gtk_progress_bar_new();
 	gtk_progress_bar_set_show_text((GtkProgressBar*)this->hwnd, false);

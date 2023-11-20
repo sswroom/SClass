@@ -56,12 +56,12 @@ namespace SSWR
 
 			UI::GUITabControl *tcMain;
 
-			UI::GUITabPage *tpCurr;
+			NotNullPtr<UI::GUITabPage> tpCurr;
 			UI::GUIListView *lvCurrWifi;
 
-			UI::GUITabPage *tpLogWifi;
+			NotNullPtr<UI::GUITabPage> tpLogWifi;
 			UI::GUIListView *lvLogWifi;
-			UI::GUIPanel *pnlLogWifi;
+			NotNullPtr<UI::GUIPanel> pnlLogWifi;
 			UI::GUIButton *btnLogWifiSave;
 			UI::GUIButton *btnLogWifiSaveF;
 

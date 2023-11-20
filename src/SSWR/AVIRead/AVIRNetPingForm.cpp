@@ -105,10 +105,10 @@ SSWR::AVIRead::AVIRNetPingForm::AVIRNetPingForm(UI::GUIClientControl *parent, No
 	NEW_CLASS(this->log, IO::LogTool());
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASS(this->pnlRequest, UI::GUIPanel(ui, this));
+	NEW_CLASSNN(this->pnlRequest, UI::GUIPanel(ui, *this));
 	this->pnlRequest->SetRect(0, 0, 100, 80, false);
 	this->pnlRequest->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->vspRequest, UI::GUIVSplitter(ui, this, 3, false));
+	NEW_CLASS(this->vspRequest, UI::GUIVSplitter(ui, *this, 3, false));
 	NEW_CLASS(this->lblTarget, UI::GUILabel(ui, this->pnlRequest, CSTR("Target")));
 	this->lblTarget->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtTarget, UI::GUITextBox(ui, this->pnlRequest, CSTR("")));
@@ -120,12 +120,12 @@ SSWR::AVIRead::AVIRNetPingForm::AVIRNetPingForm(UI::GUIClientControl *parent, No
 	NEW_CLASS(this->btnPing, UI::GUIButton(ui, this->pnlRequest, CSTR("&Ping")));
 	this->btnPing->SetRect(104, 52, 75, 23, false);
 	this->btnPing->HandleButtonClick(OnPingClicked, this);
-	NEW_CLASS(this->rlcPing, UI::GUIRealtimeLineChart(ui, this, this->core->GetDrawEngine(), 2, 600, 1000));
+	NEW_CLASS(this->rlcPing, UI::GUIRealtimeLineChart(ui, *this, this->core->GetDrawEngine(), 2, 600, 1000));
 	this->rlcPing->SetRect(0, 0, 100, 100, false);
 	this->rlcPing->SetDockType(UI::GUIControl::DOCK_BOTTOM);
 	this->rlcPing->SetUnit(CSTR("ms"));
-	NEW_CLASS(this->vspPing, UI::GUIVSplitter(ui, this, 3, true));
-	NEW_CLASSNN(this->lbLog, UI::GUIListBox(ui, this, false));
+	NEW_CLASS(this->vspPing, UI::GUIVSplitter(ui, *this, 3, true));
+	NEW_CLASSNN(this->lbLog, UI::GUIListBox(ui, *this, false));
 	this->lbLog->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	NEW_CLASSNN(this->logger, UI::ListBoxLogger(*this, this->lbLog, 500, true));

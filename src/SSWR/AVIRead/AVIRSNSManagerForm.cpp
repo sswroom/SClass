@@ -63,7 +63,7 @@ SSWR::AVIRead::AVIRSNSManagerForm::AVIRSNSManagerForm(UI::GUIClientControl *pare
 	NEW_CLASS(this->mgr, Net::SNS::SNSManager(core->GetSocketFactory(), this->ssl, core->GetEncFactory(), userAgent, CSTR_NULL, this->core->GetLog()));
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASS(this->pnlChannel, UI::GUIPanel(ui, this));
+	NEW_CLASSNN(this->pnlChannel, UI::GUIPanel(ui, *this));
 	this->pnlChannel->SetRect(0, 0, 100, 31, false);
 	this->pnlChannel->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->cboChannel, UI::GUIComboBox(ui, this->pnlChannel, false));
@@ -73,11 +73,11 @@ SSWR::AVIRead::AVIRSNSManagerForm::AVIRSNSManagerForm(UI::GUIClientControl *pare
 	NEW_CLASS(this->btnChannelAdd, UI::GUIButton(ui, this->pnlChannel, CSTR("Add")));
 	this->btnChannelAdd->SetRect(404, 4, 75, 23, false);
 	this->btnChannelAdd->HandleButtonClick(OnChannelAddClicked, this);
-	NEW_CLASS(this->lbChannels, UI::GUIListBox(ui, this, false));
+	NEW_CLASS(this->lbChannels, UI::GUIListBox(ui, *this, false));
 	this->lbChannels->SetRect(0, 0, 150, 23, false);
 	this->lbChannels->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbChannels->HandleSelectionChange(OnChannelsSelChg, this);
-	NEW_CLASS(this->tcChannels, UI::GUITabControl(ui, this));
+	NEW_CLASS(this->tcChannels, UI::GUITabControl(ui, *this));
 	this->tcChannels->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	this->tpCurrItems = this->tcChannels->AddTabPage(CSTR("Curr Items"));

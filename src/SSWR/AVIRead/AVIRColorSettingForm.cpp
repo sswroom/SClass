@@ -490,7 +490,7 @@ SSWR::AVIRead::AVIRColorSettingForm::AVIRColorSettingForm(UI::GUIClientControl *
 	rgbParam = this->monColor->GetRGBParam();
 	yuvParam = this->monColor->GetYUVParam();
 
-	NEW_CLASS(this->pnlMonitor, UI::GUIPanel(ui, this));
+	NEW_CLASSNN(this->pnlMonitor, UI::GUIPanel(ui, *this));
 	this->pnlMonitor->SetRect(0, 0, 100, 23, false);
 	this->pnlMonitor->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->lblMonitor, UI::GUILabel(ui, this->pnlMonitor, CSTR("Monitor")));
@@ -502,7 +502,7 @@ SSWR::AVIRead::AVIRColorSettingForm::AVIRColorSettingForm(UI::GUIClientControl *
 	{
 		this->txtMonitor->SetText(monName->ToCString());
 	}
-	NEW_CLASS(this->pnlButtons, UI::GUIPanel(ui, this));
+	NEW_CLASSNN(this->pnlButtons, UI::GUIPanel(ui, *this));
 	this->pnlButtons->SetRect(0, 0, 100, 40, false);
 	this->pnlButtons->SetDockType(UI::GUIControl::DOCK_BOTTOM);
 	NEW_CLASS(this->btnOK, UI::GUIButton(ui, this->pnlButtons, CSTR("OK")));
@@ -511,7 +511,7 @@ SSWR::AVIRead::AVIRColorSettingForm::AVIRColorSettingForm(UI::GUIClientControl *
 	NEW_CLASS(this->btnCancel, UI::GUIButton(ui, this->pnlButtons, CSTR("&Cancel")));
 	this->btnCancel->SetRect(304, 8, 75, 23, false);
 	this->btnCancel->HandleButtonClick(OnCancelClicked, this);
-	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, this));
+	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, *this));
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	this->tpSetting = this->tcMain->AddTabPage(CSTR("Setting"));
@@ -554,7 +554,7 @@ SSWR::AVIRead::AVIRColorSettingForm::AVIRColorSettingForm(UI::GUIClientControl *
 	NEW_CLASS(this->btnMonProfile, UI::GUIButton(ui, this->tpSetting, CSTR("B&rowse")));
 	this->btnMonProfile->SetRect(300, 0, 75, 23, false);
 	this->btnMonProfile->HandleButtonClick(OnMonProfileClicked, this);
-	NEW_CLASS(this->grpMonProfile, UI::GUIGroupBox(ui, this->tpSetting, CSTR("Monitor Profile")));
+	NEW_CLASSNN(this->grpMonProfile, UI::GUIGroupBox(ui, this->tpSetting, CSTR("Monitor Profile")));
 	this->grpMonProfile->SetRect(0, 24, 500, 72, false);
 	NEW_CLASS(this->lblMonTran, UI::GUILabel(ui, this->grpMonProfile, CSTR("Transfer Characteristics")));
 	this->lblMonTran->SetRect(0, 0, 150, 23, false);
@@ -613,7 +613,7 @@ SSWR::AVIRead::AVIRColorSettingForm::AVIRColorSettingForm(UI::GUIClientControl *
 	this->txtLuminance->SetRect(100, 176, 50, 23, false);
 	NEW_CLASS(this->lblLuminanceUnit, UI::GUILabel(ui, this->tpSetting, CSTR("cd/m2")));
 	this->lblLuminanceUnit->SetRect(150, 176, 100, 23, false);
-	NEW_CLASS(this->grpYUVDef, UI::GUIGroupBox(ui, this->tpSetting, CSTR("Default YUV Type")));
+	NEW_CLASSNN(this->grpYUVDef, UI::GUIGroupBox(ui, this->tpSetting, CSTR("Default YUV Type")));
 	this->grpYUVDef->SetRect(0, 208, 280, 96, false);
 	NEW_CLASS(this->radYUVDefBT601, UI::GUIRadioButton(ui, this->grpYUVDef, CSTR("BT601"), false));
 	this->radYUVDefBT601->SetRect(8, 0, 100, 23, false);
@@ -635,7 +635,7 @@ SSWR::AVIRead::AVIRColorSettingForm::AVIRColorSettingForm(UI::GUIClientControl *
 	this->radYUVDefSMPTE240M->HandleSelectedChange(OnYUVDefSMPTE240MChg, this);
 
 	this->tpCal = this->tcMain->AddTabPage(CSTR("Calibrate"));
-	NEW_CLASS(this->pnlCalRed, UI::GUIPanel(ui, this->tpCal));
+	NEW_CLASSNN(this->pnlCalRed, UI::GUIPanel(ui, this->tpCal));
 	this->pnlCalRed->SetBGColor(0xffffc0c0);
 	this->pnlCalRed->SetRect(0, 0, 608, 104, false);
 	this->pnlCalRed->SetDockType(UI::GUIControl::DOCK_TOP);
@@ -664,7 +664,7 @@ SSWR::AVIRead::AVIRColorSettingForm::AVIRColorSettingForm(UI::GUIClientControl *
 	this->hsbCalRedG->HandlePosChanged(OnCalRedGChg, this);
 	NEW_CLASS(this->lblCalRedGV, UI::GUILabel(ui, this->pnlCalRed, CSTR("")));
 	this->lblCalRedGV->SetRect(520, 56, 64, 16, false);
-	NEW_CLASS(this->pnlCalGreen, UI::GUIPanel(ui, this->tpCal));
+	NEW_CLASSNN(this->pnlCalGreen, UI::GUIPanel(ui, this->tpCal));
 	this->pnlCalGreen->SetBGColor(0xffc0ffc0);
 	this->pnlCalGreen->SetRect(0, 0, 608, 104, false);
 	this->pnlCalGreen->SetDockType(UI::GUIControl::DOCK_TOP);
@@ -692,7 +692,7 @@ SSWR::AVIRead::AVIRColorSettingForm::AVIRColorSettingForm(UI::GUIClientControl *
 	this->hsbCalGreenG->HandlePosChanged(OnCalGreenGChg, this);
 	NEW_CLASS(this->lblCalGreenGV, UI::GUILabel(ui, this->pnlCalGreen, CSTR("")));
 	this->lblCalGreenGV->SetRect(520, 56, 64, 16, false);
-	NEW_CLASS(this->pnlCalBlue, UI::GUIPanel(ui, this->tpCal));
+	NEW_CLASSNN(this->pnlCalBlue, UI::GUIPanel(ui, this->tpCal));
 	this->pnlCalBlue->SetBGColor(0xffc0c0ff);
 	this->pnlCalBlue->SetRect(0, 0, 608, 104, false);
 	this->pnlCalBlue->SetDockType(UI::GUIControl::DOCK_TOP);

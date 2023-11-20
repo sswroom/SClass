@@ -20,7 +20,7 @@ namespace SSWR
 		class AVIRRSSReaderForm : public UI::GUIForm
 		{
 		private:
-			UI::GUIPanel *pnlURL;
+			NotNullPtr<UI::GUIPanel> pnlURL;
 			UI::GUILabel *lblRecent;
 			UI::GUIComboBox *cboRecent;
 			UI::GUILabel *lblURL;
@@ -28,10 +28,10 @@ namespace SSWR
 			UI::GUIButton *btnRequest;
 			UI::GUITabControl *tcRSS;
 
-			UI::GUITabPage *tpInfo;
+			NotNullPtr<UI::GUITabPage> tpInfo;
 			UI::GUIListView *lvInfo;
 
-			UI::GUITabPage *tpItems;
+			NotNullPtr<UI::GUITabPage> tpItems;
 			UI::GUIListView *lvItems;
 
 			Net::RSS *rss;

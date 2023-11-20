@@ -33,32 +33,32 @@ namespace SSWR
 				UInt16 port;
 			} PacketInfo;
 		private:
-			UI::GUIPanel *pnlControl;
+			NotNullPtr<UI::GUIPanel> pnlControl;
 			UI::GUILabel *lblPort;
 			UI::GUITextBox *txtPort;
 			UI::GUICheckBox *chkReuseAddr;
 			UI::GUIButton *btnStart;
 			UI::GUITabControl *tcMain;
 
-			UI::GUITabPage *tpData;
+			NotNullPtr<UI::GUITabPage> tpData;
 			UI::GUIListBox *lbData;
 			UI::GUIHSplitter *hspData;
 			UI::GUITextBox *txtData;
 
-			UI::GUITabPage *tpLog;
+			NotNullPtr<UI::GUITabPage> tpLog;
 			UI::GUITextBox *txtLog;
 			NotNullPtr<UI::GUIListBox> lbLog;
 
-			UI::GUITabPage *tpPorts;
+			NotNullPtr<UI::GUITabPage> tpPorts;
 			UI::GUIListView *lvPorts;
 
-			UI::GUITabPage *tpMulticast;
-			UI::GUIPanel *pnlMulticastCommon;
+			NotNullPtr<UI::GUITabPage> tpMulticast;
+			NotNullPtr<UI::GUIPanel> pnlMulticastCommon;
 			UI::GUILabel *lblMulticastCommon;
 			UI::GUIListBox *lbMulticastCommon;
 			UI::GUIHSplitter *hspMulticast;
-			UI::GUIPanel *pnlMulticast;
-			UI::GUIPanel *pnlMulticastCtrl;
+			NotNullPtr<UI::GUIPanel> pnlMulticast;
+			NotNullPtr<UI::GUIPanel> pnlMulticastCtrl;
 			UI::GUILabel *lblMulticastCurr;
 			UI::GUITextBox *txtMulticastCurr;
 			UI::GUIButton *btnMulticastAdd;

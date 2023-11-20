@@ -16,7 +16,7 @@ namespace SSWR
 		class AVIRCoordInfoForm : public UI::GUIForm
 		{
 		private:
-			UI::GUIPanel *pnlCoord;
+			NotNullPtr<UI::GUIPanel> pnlCoord;
 			UI::GUILabel *lblSRID;
 			UI::GUITextBox *txtSRID;
 			UI::GUIButton *btnSRID;

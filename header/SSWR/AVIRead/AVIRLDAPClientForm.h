@@ -22,7 +22,7 @@ namespace SSWR
 			Net::LDAPClient *cli;
 			Data::ArrayList<Net::LDAPClient::SearchResObject*> *dispResults;
 
-			UI::GUIPanel *pnlRequest;
+			NotNullPtr<UI::GUIPanel> pnlRequest;
 			UI::GUILabel *lblHost;
 			UI::GUITextBox *txtHost;
 			UI::GUILabel *lblPort;
@@ -34,8 +34,8 @@ namespace SSWR
 			UI::GUILabel *lblPassword;
 			UI::GUITextBox *txtPassword;
 			UI::GUIButton *btnConnect;
-			UI::GUIGroupBox *grpSearch;
-			UI::GUIPanel *pnlSearchRequest;
+			NotNullPtr<UI::GUIGroupBox> grpSearch;
+			NotNullPtr<UI::GUIPanel> pnlSearchRequest;
 			UI::GUILabel *lblSearchBase;
 			UI::GUITextBox *txtSearchBase;
 			UI::GUILabel *lblSearchScope;

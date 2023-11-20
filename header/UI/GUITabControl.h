@@ -1,5 +1,6 @@
 #ifndef _SM_UI_GUITABCONTROL
 #define _SM_UI_GUITABCONTROL
+#include "Data/ArrayListNN.h"
 #include "Text/CString.h"
 #include "UI/GUIClientControl.h"
 
@@ -10,7 +11,7 @@ namespace UI
 	class GUITabControl : public GUIControl
 	{
 	private:
-		Data::ArrayList<UI::GUITabPage*> tabPages;
+		Data::ArrayListNN<UI::GUITabPage> tabPages;
 		Data::ArrayList<UIEvent> selChgHdlrs;
 		Data::ArrayList<void *> selChgObjs;
 		UOSInt selIndex;
@@ -19,13 +20,13 @@ namespace UI
 
 		static OSInt __stdcall TCWndProc(void *hWnd, UInt32 msg, UOSInt wParam, OSInt lParam);
 	public:
-		GUITabControl(NotNullPtr<GUICore> ui, UI::GUIClientControl *parent);
+		GUITabControl(NotNullPtr<GUICore> ui, NotNullPtr<UI::GUIClientControl> parent);
 		virtual ~GUITabControl();
 
-		GUITabPage *AddTabPage(NotNullPtr<Text::String> itemText);
-		GUITabPage *AddTabPage(Text::CStringNN itemText);
+		NotNullPtr<GUITabPage> AddTabPage(NotNullPtr<Text::String> itemText);
+		NotNullPtr<GUITabPage> AddTabPage(Text::CStringNN itemText);
 		void SetSelectedIndex(UOSInt index);
-		void SetSelectedPage(GUITabPage *page);
+		void SetSelectedPage(NotNullPtr<GUITabPage> page);
 		UOSInt GetSelectedIndex();
 		GUITabPage *GetSelectedPage();
 		void SetTabPageName(UOSInt index, Text::CStringNN name);

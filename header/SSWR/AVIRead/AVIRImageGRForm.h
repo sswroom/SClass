@@ -32,10 +32,10 @@ namespace SSWR
 			UOSInt currLayer;
 			Bool modifying;
 
-			UI::GUIPanel *pnlLayers;
+			NotNullPtr<UI::GUIPanel> pnlLayers;
 			UI::GUIListBox *lbLayers;
 			UI::GUIHSplitter *hspLayers;
-			UI::GUIPanel *pnlSetting;
+			NotNullPtr<UI::GUIPanel> pnlSetting;
 			UI::GUILabel *lblHOfst;
 			UI::GUIHScrollBar *hsbHOfst;
 			UI::GUITextBox *txtHOfst;

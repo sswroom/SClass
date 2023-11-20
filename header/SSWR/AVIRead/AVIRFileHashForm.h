@@ -29,16 +29,16 @@ namespace SSWR
 			} FileStatus;
 
 		private:
-			UI::GUIPanel *pnlCheckType;
+			NotNullPtr<UI::GUIPanel> pnlCheckType;
 			UI::GUILabel *lblCheckType;
 			UI::GUIComboBox *cboCheckType;
 			UI::GUITabControl *tcMain;
-			UI::GUITabPage *tpStatus;
-			UI::GUITabPage *tpTasks;
-			UI::GUITabPage *tpFiles;
+			NotNullPtr<UI::GUITabPage> tpStatus;
+			NotNullPtr<UI::GUITabPage> tpTasks;
+			NotNullPtr<UI::GUITabPage> tpFiles;
 
-			UI::GUIPanel *pnlStatus;
-			UI::GUIPanel *pnlStatusFile;
+			NotNullPtr<UI::GUIPanel> pnlStatus;
+			NotNullPtr<UI::GUIPanel> pnlStatusFile;
 			UI::GUILabel *lblFile;
 			UI::GUITextBox *txtFileName;
 			UI::GUILabel *lblSpeed;
@@ -48,7 +48,7 @@ namespace SSWR
 			UI::GUIProgressBar *prgFile;
 			UI::GUIRealtimeLineChart *rlcSpeed;
 
-			UI::GUIPanel *pnlTasks;
+			NotNullPtr<UI::GUIPanel> pnlTasks;
 			UI::GUIButton *btnTasksClear;
 			UI::GUIListView *lvTasks;
 

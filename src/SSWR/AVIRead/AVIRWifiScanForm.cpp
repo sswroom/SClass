@@ -171,7 +171,7 @@ SSWR::AVIRead::AVIRWifiScanForm::AVIRWifiScanForm(UI::GUIClientControl *parent, 
 	}
 
 
-	NEW_CLASS(this->pnlControl, UI::GUIPanel(ui, this));
+	NEW_CLASSNN(this->pnlControl, UI::GUIPanel(ui, *this));
 	this->pnlControl->SetRect(0, 0, 100, 31, false);
 	this->pnlControl->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->btnScan, UI::GUIButton(ui, this->pnlControl, CSTR("Scan")));
@@ -187,12 +187,12 @@ SSWR::AVIRead::AVIRWifiScanForm::AVIRWifiScanForm(UI::GUIClientControl *parent, 
 	NEW_CLASS(this->txtResultTime, UI::GUITextBox(ui, this->pnlControl, CSTR("")));
 	this->txtResultTime->SetReadOnly(true);
 	this->txtResultTime->SetRect(404, 4, 100, 23, false);
-	NEW_CLASS(this->txtWifi, UI::GUITextBox(ui, this, CSTR(""), true));
+	NEW_CLASS(this->txtWifi, UI::GUITextBox(ui, *this, CSTR(""), true));
 	this->txtWifi->SetRect(0, 0, 100, 128, false);
 	this->txtWifi->SetReadOnly(true);
 	this->txtWifi->SetDockType(UI::GUIControl::DOCK_BOTTOM);
-	NEW_CLASS(this->vspWifi, UI::GUIVSplitter(ui, this, 3, true));
-	NEW_CLASS(this->lvWifi, UI::GUIListView(ui, this, UI::GUIListView::LVSTYLE_TABLE, 16));
+	NEW_CLASS(this->vspWifi, UI::GUIVSplitter(ui, *this, 3, true));
+	NEW_CLASS(this->lvWifi, UI::GUIListView(ui, *this, UI::GUIListView::LVSTYLE_TABLE, 16));
 	this->lvWifi->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvWifi->SetShowGrid(true);
 	this->lvWifi->SetFullRowSelect(true);

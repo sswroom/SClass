@@ -110,7 +110,7 @@ SSWR::AVIRead::AVIRPerformanceLogForm::AVIRPerformanceLogForm(UI::GUIClientContr
 	this->testBuff = 0;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 	
-	NEW_CLASS(this->pnlCtrl, UI::GUIPanel(ui, this));
+	NEW_CLASSNN(this->pnlCtrl, UI::GUIPanel(ui, *this));
 	this->pnlCtrl->SetRect(0, 0, 100, 52, false);
 	this->pnlCtrl->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->btnStart, UI::GUIButton(ui, this->pnlCtrl, CSTR("Start")));
@@ -121,7 +121,7 @@ SSWR::AVIRead::AVIRPerformanceLogForm::AVIRPerformanceLogForm(UI::GUIClientContr
 	NEW_CLASS(this->txtCurrWRate, UI::GUITextBox(ui, this->pnlCtrl, CSTR("")));
 	this->txtCurrWRate->SetRect(104, 28, 150, 23, false);
 	this->txtCurrWRate->SetReadOnly(true);
-	NEW_CLASS(this->rlcWRate, UI::GUIRealtimeLineChart(ui, this, this->core->GetDrawEngine(), 1, 144, 1000));
+	NEW_CLASS(this->rlcWRate, UI::GUIRealtimeLineChart(ui, *this, this->core->GetDrawEngine(), 1, 144, 1000));
 	this->rlcWRate->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	this->AddTimer(1000, OnTimerTick, this);

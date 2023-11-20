@@ -24,7 +24,7 @@ namespace SSWR
 
 			UI::GUITabControl *tcMain;
 
-			UI::GUITabPage *tpControl;
+			NotNullPtr<UI::GUITabPage> tpControl;
 			UI::GUILabel *lblHost;
 			UI::GUITextBox *txtHost;
 			UI::GUILabel *lblPort;
@@ -39,7 +39,7 @@ namespace SSWR
 			UI::GUILabel *lblStatus;
 			UI::GUITextBox *txtStatus;
 
-			UI::GUITabPage *tpInfo;
+			NotNullPtr<UI::GUITabPage> tpInfo;
 			UI::GUILabel *lblServerVer;
 			UI::GUITextBox *txtServerVer;
 			UI::GUILabel *lblConnId;
@@ -51,8 +51,8 @@ namespace SSWR
 			UI::GUILabel *lblServerCS;
 			UI::GUITextBox *txtServerCS;
 
-			UI::GUITabPage *tpQuery;
-			UI::GUIPanel *pnlQuery;
+			NotNullPtr<UI::GUITabPage> tpQuery;
+			NotNullPtr<UI::GUIPanel> pnlQuery;
 			UI::GUIButton *btnQuery;
 			UI::GUITextBox *txtQuery;
 			UI::GUITextBox *txtQueryStatus;

@@ -71,7 +71,7 @@ namespace SSWR
 
 			UI::GUITabControl *tcMain;
 
-			UI::GUITabPage *tpStatus;
+			NotNullPtr<UI::GUITabPage> tpStatus;
 			UI::GUILabel *lblMotion;
 			UI::GUITextBox *txtMotion;
 			UI::GUILabel *lblGPS;
@@ -95,12 +95,12 @@ namespace SSWR
 			UI::GUITextBox *txtBSSCount;
 			UI::GUIButton *btnCapture;
 
-			UI::GUITabPage *tpCurr;
+			NotNullPtr<UI::GUITabPage> tpCurr;
 			UI::GUIListView *lvCurrWifi;
 
-			UI::GUITabPage *tpLogWifi;
+			NotNullPtr<UI::GUITabPage> tpLogWifi;
 			UI::GUIListView *lvLogWifi;
-			UI::GUIPanel *pnlLogWifi;
+			NotNullPtr<UI::GUIPanel> pnlLogWifi;
 			UI::GUIButton *btnLogWifiSave;
 			UI::GUIButton *btnLogWifiSaveF;
 

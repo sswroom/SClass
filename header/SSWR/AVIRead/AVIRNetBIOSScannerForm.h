@@ -21,7 +21,7 @@ namespace SSWR
 			Net::NetBIOSScanner *netbios;
 			Bool tableUpdated;
 
-			UI::GUIPanel *pnlControl;
+			NotNullPtr<UI::GUIPanel> pnlControl;
 			UI::GUILabel *lblTargetAddr;
 			UI::GUITextBox *txtTargetAddr;
 			UI::GUICheckBox *chkTargetScan;

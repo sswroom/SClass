@@ -38,7 +38,7 @@ namespace UI
 		static OSInt useCnt;
 
 	public:
-		GUIListView(NotNullPtr<GUICore> ui, UI::GUIClientControl *parent, ListViewStyle lvstyle, UOSInt colCount);
+		GUIListView(NotNullPtr<GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, ListViewStyle lvstyle, UOSInt colCount);
 		virtual ~GUIListView();
 
 		void ResetImages(UInt32 width, UInt32 height);

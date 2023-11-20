@@ -35,16 +35,17 @@ void GUIControl_SizeChanged(GtkWidget *wnd, GdkEvent *event, gpointer data)
 	me->OnSizeChanged(false);
 }
 
-UI::GUIControl::GUIControl(NotNullPtr<UI::GUICore> ui, GUIClientControl *parent)
+UI::GUIControl::GUIControl(NotNullPtr<UI::GUICore> ui, Optional<GUIClientControl> parent)
 {
 	this->ui = ui;
 	this->parent = parent;
 	this->selfResize = false;
 	this->dockType = UI::GUIControl::DOCK_NONE;
-	if (parent)
+	NotNullPtr<GUIClientControl> nnparent;
+	if (parent.SetTo(nnparent))
 	{
-		this->hdpi = parent->GetHDPI();
-		this->ddpi = parent->GetDDPI();
+		this->hdpi = nnparent->GetHDPI();
+		this->ddpi = nnparent->GetDDPI();
 	}
 	else
 	{
@@ -80,13 +81,14 @@ UI::GUIControl::~GUIControl()
 
 void *UI::GUIControl::GetFont()
 {
+	NotNullPtr<GUIClientControl> nnparent;
 	if (this->hFont)
 	{
 		return this->hFont;
 	}
-	else if (this->parent)
+	else if (this->parent.SetTo(nnparent))
 	{
-		return this->parent->GetFont();
+		return nnparent->GetFont();
 	}
 	else
 	{
@@ -171,17 +173,18 @@ void UI::GUIControl::SetArea(Double left, Double top, Double right, Double botto
 	if (left == this->lxPos && top == this->lyPos && right == this->lxPos2 && bottom == this->lyPos2)
 		return;
 	Math::Coord2DDbl ofst = Math::Coord2DDbl(0, 0);
-	if (this->parent)
+	NotNullPtr<GUIClientControl> nnparent;
+	if (this->parent.SetTo(nnparent))
 	{
-		ofst = this->parent->GetClientOfst();
+		ofst = nnparent->GetClientOfst();
 	}
 	this->lxPos = left;
 	this->lyPos = top;
 	this->selfResize = true;
 
-	if (this->parent)
+	if (this->parent.SetTo(nnparent))
 	{
-		void *container = this->parent->GetContainer();
+		void *container = nnparent->GetContainer();
 		gtk_fixed_move((GtkFixed*)container, (GtkWidget*)this->hwnd, Double2Int32((left + ofst.x) * this->hdpi / this->ddpi), Double2Int32((top + ofst.y) * this->hdpi / this->ddpi));
 	}
 	if ((right - left) < 0)
@@ -227,17 +230,18 @@ void UI::GUIControl::SetAreaP(OSInt left, OSInt top, OSInt right, OSInt bottom, 
 	if (OSInt2Double(left) == this->lxPos && OSInt2Double(top) == this->lyPos && OSInt2Double(right) == this->lxPos2 && OSInt2Double(bottom) == this->lyPos2)
 		return;
 	Math::Coord2DDbl ofst = Math::Coord2DDbl(0, 0);
-	if (this->parent)
+	NotNullPtr<GUIClientControl> nnparent;
+	if (this->parent.SetTo(nnparent))
 	{
-		ofst = this->parent->GetClientOfst();
+		ofst = nnparent->GetClientOfst();
 	}
 	this->lxPos = OSInt2Double(left) * this->ddpi / this->hdpi;
 	this->lyPos = OSInt2Double(top) * this->ddpi / this->hdpi;
 	this->selfResize = true;
 
-	if (this->parent)
+	if (this->parent.SetTo(nnparent))
 	{
-		void *container = this->parent->GetContainer();
+		void *container = nnparent->GetContainer();
 		gtk_fixed_move((GtkFixed*)container, (GtkWidget*)this->hwnd, Double2Int32(OSInt2Double(left) + ofst.x * this->hdpi / this->ddpi), Double2Int32(OSInt2Double(top) + ofst.y * this->hdpi / this->ddpi));
 	}
 	if ((right - left) < 0)
@@ -327,9 +331,10 @@ void UI::GUIControl::SetDockType(UI::GUIControl::DockType dockType)
 	if (this->dockType != dockType)
 	{
 		this->dockType = dockType;
-		if (this->parent)
+		NotNullPtr<GUIClientControl> nnparent;
+		if (this->parent.SetTo(nnparent))
 		{
-			this->parent->UpdateChildrenSize(true);
+			nnparent->UpdateChildrenSize(true);
 		}
 	}
 }
@@ -499,10 +504,11 @@ void UI::GUIControl::UpdatePos(Bool redraw)
 		}
 	}
 
-	if (this->parent)
+	NotNullPtr<GUIClientControl> nnparent;
+	if (this->parent.SetTo(nnparent))
 	{
-		Math::Coord2DDbl ofst = this->parent->GetClientOfst();
-		void *container = this->parent->GetContainer();
+		Math::Coord2DDbl ofst = nnparent->GetClientOfst();
+		void *container = nnparent->GetContainer();
 		gtk_fixed_move((GtkFixed*)container, (GtkWidget*)this->hwnd, Double2Int32((this->lxPos + ofst.x) * this->hdpi / this->ddpi), Double2Int32((this->lyPos + ofst.y) * this->hdpi / this->ddpi));
 		if (this->lxPos2 < this->lxPos)
 		{
@@ -693,7 +699,7 @@ UInt32 UI::GUIControl::GetColorHightlightText()
 	return GdkRGBA2Color(&color);
 }
 
-UI::GUIClientControl *UI::GUIControl::GetParent()
+Optional<UI::GUIClientControl> UI::GUIControl::GetParent()
 {
 	return this->parent;
 }
@@ -707,10 +713,10 @@ UI::GUIForm *UI::GUIControl::GetRootForm()
 		objCls = ctrl->GetObjectClass();
 		if (objCls.Equals(UTF8STRC("WinForm")))
 		{
-			if (ctrl->GetParent() == 0)
+			if (ctrl->GetParent().IsNull())
 				return (UI::GUIForm*)ctrl;
 		}
-		ctrl = ctrl->GetParent();
+		ctrl = ctrl->GetParent().OrNull();
 	}
 	return 0;
 }

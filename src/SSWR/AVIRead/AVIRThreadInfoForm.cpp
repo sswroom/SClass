@@ -183,13 +183,17 @@ SSWR::AVIRead::AVIRThreadInfoForm::AVIRThreadInfoForm(UI::GUIClientControl *pare
 	this->contextType = Manage::ThreadContext::ContextType::Unknown;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, this));
+	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, *this));
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
-	this->tpInfo = this->tcMain->AddTabPage(CSTR("Info"));
-	this->tpContext = this->tcMain->AddTabPage(CSTR("Context"));
-	this->tpStack = this->tcMain->AddTabPage(CSTR("Stack"));
-	this->tpMyStack = this->tcMain->AddTabPage(CSTR("My Stack"));
 
+	Manage::ThreadInfo thread(proc->GetProcId(), threadId);
+	NotNullPtr<Manage::ThreadContext> context;
+	UTF8Char sbuff[512];
+	UTF8Char *sptr;
+	UInt64 startAddr;
+	UOSInt i;
+	UOSInt j;
+	this->tpInfo = this->tcMain->AddTabPage(CSTR("Info"));
 	NEW_CLASS(this->lblThreadId, UI::GUILabel(ui, this->tpInfo, CSTR("Thread Id")));
 	this->lblThreadId->SetRect(0, 0, 100, 23, false);
 	NEW_CLASS(this->txtThreadId, UI::GUITextBox(ui, this->tpInfo, CSTR(""), false));
@@ -211,46 +215,6 @@ SSWR::AVIRead::AVIRThreadInfoForm::AVIRThreadInfoForm(UI::GUIClientControl *pare
 	this->txtThreadName->SetRect(100, 72, 500, 23, false);
 	this->txtThreadName->SetReadOnly(true);
 
-	NEW_CLASS(this->lvContext, UI::GUIListView(ui, this->tpContext, UI::GUIListView::LVSTYLE_TABLE, 2));
-	this->lvContext->SetDockType(UI::GUIControl::DOCK_FILL);
-	this->lvContext->SetFullRowSelect(true);
-	this->lvContext->SetShowGrid(true);
-	this->lvContext->AddColumn(CSTR("Name"), 100);
-	this->lvContext->AddColumn(CSTR("Value"), 300);
-
-	NEW_CLASS(this->lvStack, UI::GUIListView(ui, this->tpStack, UI::GUIListView::LVSTYLE_TABLE, 2));
-	this->lvStack->SetDockType(UI::GUIControl::DOCK_FILL);
-	this->lvStack->SetFullRowSelect(true);
-	this->lvStack->SetShowGrid(true);
-	this->lvStack->AddColumn(CSTR("Address"), 120);
-	this->lvStack->AddColumn(CSTR("Name"), 500);
-
-	NEW_CLASS(this->lbMyStack, UI::GUIListBox(ui, this->tpMyStack, false));
-	this->lbMyStack->SetRect(0, 0, 300, 23, false);
-	this->lbMyStack->SetDockType(UI::GUIControl::DOCK_LEFT);
-	this->lbMyStack->HandleSelectionChange(OnMyStackChg, this);
-	NEW_CLASS(this->hspMyStack, UI::GUIHSplitter(ui, this->tpMyStack, 3, false));
-	NEW_CLASS(this->pnlMyStack, UI::GUIPanel(ui, this->tpMyStack));
-	this->pnlMyStack->SetDockType(UI::GUIControl::DOCK_FILL);
-	NEW_CLASS(this->txtMyStackMem, UI::GUITextBox(ui, this->pnlMyStack, CSTR(""), true));
-	this->txtMyStackMem->SetRect(0, 0, 100, 200, false);
-	this->txtMyStackMem->SetDockType(UI::GUIControl::DOCK_TOP);
-	this->txtMyStackMem->SetReadOnly(true);
-	NEW_CLASS(this->vspMyStack, UI::GUIVSplitter(ui, this->pnlMyStack, 3, false));
-	NEW_CLASS(this->lvMyStack, UI::GUIListView(ui, this->pnlMyStack, UI::GUIListView::LVSTYLE_TABLE, 1));
-	this->lvMyStack->SetShowGrid(true);
-	this->lvMyStack->SetFullRowSelect(true);
-	this->lvMyStack->SetDockType(UI::GUIControl::DOCK_FILL);
-	this->lvMyStack->HandleDblClk(OnMyStackDblClk, this);
-
-	NotNullPtr<Manage::ThreadContext> context;
-	UTF8Char sbuff[512];
-	UTF8Char *sptr;
-	UInt64 startAddr;
-	UOSInt i;
-	UOSInt j;
-	Manage::ThreadInfo thread(proc->GetProcId(), threadId);
-
 	startAddr = thread.GetStartAddress();
 	sptr = Text::StrUInt32(sbuff, threadId);
 	this->txtThreadId->SetText(CSTRP(sbuff, sptr));
@@ -267,6 +231,41 @@ SSWR::AVIRead::AVIRThreadInfoForm::AVIRThreadInfoForm(UI::GUIClientControl *pare
 	{
 		this->txtThreadName->SetText(CSTRP(sbuff, sptr));
 	}
+
+	this->tpContext = this->tcMain->AddTabPage(CSTR("Context"));
+	NEW_CLASS(this->lvContext, UI::GUIListView(ui, this->tpContext, UI::GUIListView::LVSTYLE_TABLE, 2));
+	this->lvContext->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvContext->SetFullRowSelect(true);
+	this->lvContext->SetShowGrid(true);
+	this->lvContext->AddColumn(CSTR("Name"), 100);
+	this->lvContext->AddColumn(CSTR("Value"), 300);
+
+	this->tpStack = this->tcMain->AddTabPage(CSTR("Stack"));
+	NEW_CLASS(this->lvStack, UI::GUIListView(ui, this->tpStack, UI::GUIListView::LVSTYLE_TABLE, 2));
+	this->lvStack->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvStack->SetFullRowSelect(true);
+	this->lvStack->SetShowGrid(true);
+	this->lvStack->AddColumn(CSTR("Address"), 120);
+	this->lvStack->AddColumn(CSTR("Name"), 500);
+
+	this->tpMyStack = this->tcMain->AddTabPage(CSTR("My Stack"));
+	NEW_CLASS(this->lbMyStack, UI::GUIListBox(ui, this->tpMyStack, false));
+	this->lbMyStack->SetRect(0, 0, 300, 23, false);
+	this->lbMyStack->SetDockType(UI::GUIControl::DOCK_LEFT);
+	this->lbMyStack->HandleSelectionChange(OnMyStackChg, this);
+	NEW_CLASS(this->hspMyStack, UI::GUIHSplitter(ui, this->tpMyStack, 3, false));
+	NEW_CLASSNN(this->pnlMyStack, UI::GUIPanel(ui, this->tpMyStack));
+	this->pnlMyStack->SetDockType(UI::GUIControl::DOCK_FILL);
+	NEW_CLASS(this->txtMyStackMem, UI::GUITextBox(ui, this->pnlMyStack, CSTR(""), true));
+	this->txtMyStackMem->SetRect(0, 0, 100, 200, false);
+	this->txtMyStackMem->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->txtMyStackMem->SetReadOnly(true);
+	NEW_CLASS(this->vspMyStack, UI::GUIVSplitter(ui, this->pnlMyStack, 3, false));
+	NEW_CLASS(this->lvMyStack, UI::GUIListView(ui, this->pnlMyStack, UI::GUIListView::LVSTYLE_TABLE, 1));
+	this->lvMyStack->SetShowGrid(true);
+	this->lvMyStack->SetFullRowSelect(true);
+	this->lvMyStack->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvMyStack->HandleDblClk(OnMyStackDblClk, this);
 
 	if (thread.IsCurrThread())
 	{

@@ -217,7 +217,7 @@ SSWR::AVIRead::AVIRImageGRForm::AVIRImageGRForm(UI::GUIClientControl *parent, No
 	this->modifying = false;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASS(this->pnlLayers, UI::GUIPanel(ui, this));
+	NEW_CLASSNN(this->pnlLayers, UI::GUIPanel(ui, *this));
 	this->pnlLayers->SetRect(0, 0, 200, 23, false);
 	this->pnlLayers->SetDockType(UI::GUIControl::DOCK_LEFT);
 	NEW_CLASS(this->btnAddLayer, UI::GUIButton(ui, this->pnlLayers, CSTR("New Layer")));
@@ -227,8 +227,8 @@ SSWR::AVIRead::AVIRImageGRForm::AVIRImageGRForm(UI::GUIClientControl *parent, No
 	NEW_CLASS(this->lbLayers, UI::GUIListBox(ui, this->pnlLayers, false));
 	this->lbLayers->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lbLayers->HandleSelectionChange(OnLayersChanged, this);
-	NEW_CLASS(this->hspLayers, UI::GUIHSplitter(ui, this, 3, false));
-	NEW_CLASS(this->pnlSetting, UI::GUIPanel(ui, this));
+	NEW_CLASS(this->hspLayers, UI::GUIHSplitter(ui, *this, 3, false));
+	NEW_CLASSNN(this->pnlSetting, UI::GUIPanel(ui, *this));
 	this->pnlSetting->SetDockType(UI::GUIControl::DOCK_FILL);
 	NEW_CLASS(this->btnRemoveLayer, UI::GUIButton(ui, this->pnlSetting, CSTR("Remove Layer")));
 	this->btnRemoveLayer->SetRect(4, 4, 75, 23, false);

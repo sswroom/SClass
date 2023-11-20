@@ -33,7 +33,7 @@ namespace SSWR
 
 			UI::GUITabControl *tcMain;
 
-			UI::GUITabPage *tpSMTP;
+			NotNullPtr<UI::GUITabPage> tpSMTP;
 			UI::GUIButton *btnSMTPCertKey;
 			UI::GUILabel *lblSMTPCertKey;
 			UI::GUILabel *lblSMTPPort;
@@ -43,7 +43,7 @@ namespace SSWR
 			UI::GUIButton *btnSMTPStart;
 			UI::GUIButton *btnLogFile;
 
-			UI::GUITabPage *tpPOP3;
+			NotNullPtr<UI::GUITabPage> tpPOP3;
 			UI::GUIButton *btnPOP3CertKey;
 			UI::GUILabel *lblPOP3CertKey;
 			UI::GUILabel *lblPOP3Port;
@@ -51,7 +51,7 @@ namespace SSWR
 			UI::GUICheckBox *chkPOP3SSL;
 			UI::GUIButton *btnPOP3Start;
 
-			UI::GUITabPage *tpGCIS;
+			NotNullPtr<UI::GUITabPage> tpGCIS;
 			UI::GUIButton *btnGCISCertKey;
 			UI::GUILabel *lblGCISCertKey;
 			UI::GUILabel *lblGCISPort;
@@ -62,10 +62,10 @@ namespace SSWR
 			UI::GUITextBox *txtGCISBatchUplPath;
 			UI::GUIButton *btnGCISStart;
 
-			UI::GUITabPage *tpEmail;
+			NotNullPtr<UI::GUITabPage> tpEmail;
 			UI::GUIListView *lvEmail;
 
-			UI::GUITabPage *tpLog;
+			NotNullPtr<UI::GUITabPage> tpLog;
 			UI::GUITextBox *txtLog;
 			NotNullPtr<UI::GUIListBox> lbLog;
 

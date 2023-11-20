@@ -1240,11 +1240,11 @@ SSWR::AVIRead::AVIRHTTPClientForm::AVIRHTTPClientForm(UI::GUIClientControl *pare
 	this->userAgent = Text::String::New(UTF8STRC("SSWR/1.0"));
 	this->respSvrAddr.addrType = Net::AddrType::Unknown;
 	
-	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, this));
+	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, *this));
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	this->tpRequest = this->tcMain->AddTabPage(CSTR("Request"));
-	NEW_CLASS(this->pnlRequest, UI::GUIPanel(ui, this->tpRequest));
+	NEW_CLASSNN(this->pnlRequest, UI::GUIPanel(ui, this->tpRequest));
 	this->pnlRequest->SetRect(0, 0, 100, 316, false);
 	this->pnlRequest->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->lblURL, UI::GUILabel(ui, this->pnlRequest, CSTR("URL")));
@@ -1326,7 +1326,7 @@ SSWR::AVIRead::AVIRHTTPClientForm::AVIRHTTPClientForm(UI::GUIClientControl *pare
 	this->lvReqData->AddColumn(CSTR("Value"), 400);
 
 	this->tpResponse = this->tcMain->AddTabPage(CSTR("Response"));
-	NEW_CLASS(this->pnlResponse, UI::GUIPanel(ui, this->tpResponse));
+	NEW_CLASSNN(this->pnlResponse, UI::GUIPanel(ui, this->tpResponse));
 	this->pnlResponse->SetRect(0, 0, 100, 319, false);
 	this->pnlResponse->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->lblReqURL, UI::GUILabel(ui, this->pnlResponse, CSTR("Req URL")));
@@ -1394,7 +1394,7 @@ SSWR::AVIRead::AVIRHTTPClientForm::AVIRHTTPClientForm(UI::GUIClientControl *pare
 	NEW_CLASS(this->txtRespContSize, UI::GUITextBox(ui, this->pnlResponse, CSTR("")));
 	this->txtRespContSize->SetRect(104, 292, 150, 23, false);
 	this->txtRespContSize->SetReadOnly(true);
-	NEW_CLASS(this->pnlControl, UI::GUIPanel(ui, this->tpResponse));
+	NEW_CLASSNN(this->pnlControl, UI::GUIPanel(ui, this->tpResponse));
 	this->pnlControl->SetRect(0, 0, 100, 31, false);
 	this->pnlControl->SetDockType(UI::GUIControl::DOCK_BOTTOM);
 	NEW_CLASS(this->btnSave, UI::GUIButton(ui, this->pnlControl, CSTR("Save")));
@@ -1410,7 +1410,7 @@ SSWR::AVIRead::AVIRHTTPClientForm::AVIRHTTPClientForm(UI::GUIClientControl *pare
 	this->lvHeaders->AddColumn(CSTR("Header"), 1000);
 
 	this->tpCert = this->tcMain->AddTabPage(CSTR("Cert"));
-	NEW_CLASS(this->pnlCert, UI::GUIPanel(ui, this->tpCert));
+	NEW_CLASSNN(this->pnlCert, UI::GUIPanel(ui, this->tpCert));
 	this->pnlCert->SetRect(0, 0, 100, 31, false);
 	this->pnlCert->SetDockType(UI::GUIControl::DOCK_BOTTOM);
 	NEW_CLASS(this->btnCert, UI::GUIButton(ui, this->pnlCert, CSTR("Open")));

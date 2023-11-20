@@ -22,7 +22,7 @@ namespace SSWR
 		private:
 			UI::GUITabControl *tcMain;
 
-			UI::GUITabPage *tpSource;
+			NotNullPtr<UI::GUITabPage> tpSource;
 			UI::GUILabel *lblSourceConn;
 			UI::GUIComboBox *cboSourceConn;
 			UI::GUILabel *lblSourceDB;
@@ -33,8 +33,8 @@ namespace SSWR
 			UI::GUIComboBox *cboSourceSchema;
 			UI::GUIButton *btnSourceSelect;
 
-			UI::GUITabPage *tpData;
-			UI::GUIGroupBox *grpDest;
+			NotNullPtr<UI::GUITabPage> tpData;
+			NotNullPtr<UI::GUIGroupBox> grpDest;
 			UI::GUIListView *lvData;
 			UI::GUILabel *lblDestDB;
 			UI::GUIComboBox *cboDestDB;

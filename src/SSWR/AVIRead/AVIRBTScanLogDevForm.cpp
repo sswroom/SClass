@@ -65,7 +65,7 @@ SSWR::AVIRead::AVIRBTScanLogDevForm::AVIRBTScanLogDevForm(UI::GUIClientControl *
 	this->core = core;
 	this->entry = entry;
 
-	NEW_CLASS(this->pnlDevInfo, UI::GUIPanel(ui, this));
+	NEW_CLASSNN(this->pnlDevInfo, UI::GUIPanel(ui, *this));
 	this->pnlDevInfo->SetRect(0, 0, 100, 56, false);
 	this->pnlDevInfo->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->lblMAC, UI::GUILabel(ui, this->pnlDevInfo, CSTR("MAC")));
@@ -90,7 +90,7 @@ SSWR::AVIRead::AVIRBTScanLogDevForm::AVIRBTScanLogDevForm(UI::GUIClientControl *
 	NEW_CLASS(this->btnCSV, UI::GUIButton(ui, this->pnlDevInfo, CSTR("Save CSV")));
 	this->btnCSV->SetRect(304, 28, 75, 23, false);
 	this->btnCSV->HandleButtonClick(OnCSVClicked, this);
-	NEW_CLASS(this->lvContent, UI::GUIListView(ui, this, UI::GUIListView::LVSTYLE_TABLE, 5));
+	NEW_CLASS(this->lvContent, UI::GUIListView(ui, *this, UI::GUIListView::LVSTYLE_TABLE, 5));
 	this->lvContent->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvContent->SetShowGrid(true);
 	this->lvContent->SetFullRowSelect(true);

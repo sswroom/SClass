@@ -655,10 +655,10 @@ SSWR::AVIRead::AVIRGISForm::AVIRGISForm(UI::GUIClientControl *parent, NotNullPtr
 	this->UpdateTitle();
 	this->SetFont(0, 0, 8.25, false);
 
-	NEW_CLASS(this->pnlControl, UI::GUIPanel(ui, this));
+	NEW_CLASSNN(this->pnlControl, UI::GUIPanel(ui, *this));
 	this->pnlControl->SetArea(0, 0, 100, 24, false);
 	this->pnlControl->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->pnlStatus, UI::GUIPanel(ui, this));
+	NEW_CLASSNN(this->pnlStatus, UI::GUIPanel(ui, *this));
 	this->pnlStatus->SetArea(0, 0, 100, 19, false);
 	this->pnlStatus->SetDockType(UI::GUIControl::DOCK_BOTTOM);
 	NEW_CLASS(this->txtScale, UI::GUITextBox(ui, pnlStatus, CSTR("")));
@@ -695,15 +695,15 @@ SSWR::AVIRead::AVIRGISForm::AVIRGISForm(UI::GUIClientControl *parent, NotNullPtr
 	this->tbVAngle->SetRect(350, 0, 100, 23, false);
 	this->tbVAngle->HandleScrolled(OnVAngleScrolled, this);
 
-	NEW_CLASS(this->mapTree, UI::GUIMapTreeView(ui, this, env));
+	NEW_CLASS(this->mapTree, UI::GUIMapTreeView(ui, *this, env));
 	this->mapTree->SetRect(0, 0, 200, 10, false);
 	this->mapTree->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->mapTree->HandleRightClick(OnTreeRightClick, this);
 	this->mapTree->SetDragHandler(OnTreeDrag, this);
-	NEW_CLASS(this->splitter, UI::GUIHSplitter(ui, this, 3, false));
+	NEW_CLASS(this->splitter, UI::GUIHSplitter(ui, *this, 3, false));
 	Media::ColorProfile color(Media::ColorProfile::CPT_PDISPLAY);
 	NEW_CLASS(this->envRenderer, Map::DrawMapRenderer(core->GetDrawEngine(), env, color, this->colorSess.Ptr(), Map::DrawMapRenderer::DT_PIXELDRAW));
-	NEW_CLASS(this->mapCtrl, UI::GUIMapControl(ui, this, this->core->GetDrawEngine(), env->GetBGColor(), this->envRenderer, view, this->colorSess));
+	NEW_CLASS(this->mapCtrl, UI::GUIMapControl(ui, *this, this->core->GetDrawEngine(), env->GetBGColor(), this->envRenderer, view, this->colorSess));
 	this->mapCtrl->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->mapCtrl->HandleScaleChanged(OnMapScaleChanged, this);
 	this->mapCtrl->HandleMouseMove(OnMapMouseMove, this);

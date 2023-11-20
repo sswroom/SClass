@@ -46,15 +46,15 @@ SSWR::SHPConv::SHPConvCurrFilterForm::SHPConvCurrFilterForm(UI::GUIClientControl
 	this->dbf = dbf;
 	this->filters = filters;
 	
-	NEW_CLASS(this->lbFilters, UI::GUIListBox(ui, this, false));
+	NEW_CLASS(this->lbFilters, UI::GUIListBox(ui, *this, false));
 	this->lbFilters->SetRect(8, 8, 392, 199, false);
-	NEW_CLASS(this->btnAdd, UI::GUIButton(ui, this, CSTR("Add Filter")));
+	NEW_CLASS(this->btnAdd, UI::GUIButton(ui, *this, CSTR("Add Filter")));
 	this->btnAdd->SetRect(8, 224, 96, 23, false);
 	this->btnAdd->HandleButtonClick(OnAddClicked, this);
-	NEW_CLASS(this->btnDelete, UI::GUIButton(ui, this, CSTR("Delete Filter")));
+	NEW_CLASS(this->btnDelete, UI::GUIButton(ui, *this, CSTR("Delete Filter")));
 	this->btnDelete->SetRect(144, 224, 96, 23, false);
 	this->btnDelete->HandleButtonClick(OnDeleteClicked, this);
-	NEW_CLASS(this->btnOK, UI::GUIButton(ui, this, CSTR("OK")));
+	NEW_CLASS(this->btnOK, UI::GUIButton(ui, *this, CSTR("OK")));
 	this->btnOK->SetRect(320, 224, 75, 23, false);
 	this->btnOK->HandleButtonClick(OnOkClicked, this);
 

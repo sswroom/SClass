@@ -291,7 +291,7 @@ SSWR::AVIRead::AVIRLDAPExplorerForm::AVIRLDAPExplorerForm(UI::GUIClientControl *
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 	this->rootLev = 0;
 
-	NEW_CLASS(this->pnlRequest, UI::GUIPanel(ui, this));
+	NEW_CLASSNN(this->pnlRequest, UI::GUIPanel(ui, *this));
 	this->pnlRequest->SetRect(0, 0, 100, 151, false);
 	this->pnlRequest->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->lblHost, UI::GUILabel(ui, this->pnlRequest, CSTR("Host")));
@@ -322,18 +322,18 @@ SSWR::AVIRead::AVIRLDAPExplorerForm::AVIRLDAPExplorerForm(UI::GUIClientControl *
 	this->btnConnect->SetRect(104, 124, 75, 23, false);
 	this->btnConnect->HandleButtonClick(OnConnectClicked, this);
 
-	NEW_CLASS(this->lbPath, UI::GUIListBox(ui, this, false));
+	NEW_CLASS(this->lbPath, UI::GUIListBox(ui, *this, false));
 	this->lbPath->SetRect(0, 0, 150, 23, false);
 	this->lbPath->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbPath->HandleSelectionChange(OnPathSelChg, this);
-	NEW_CLASS(this->hspPath, UI::GUIHSplitter(ui, this, 3, false));
-	NEW_CLASS(this->lbObjects, UI::GUIListBox(ui, this, false));
+	NEW_CLASS(this->hspPath, UI::GUIHSplitter(ui, *this, 3, false));
+	NEW_CLASS(this->lbObjects, UI::GUIListBox(ui, *this, false));
 	this->lbObjects->SetRect(0, 0, 150, 23, false);
 	this->lbObjects->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbObjects->HandleSelectionChange(OnObjectsSelChg, this);
 	this->lbObjects->HandleDoubleClicked(OnObjectsDblClk, this);
-	NEW_CLASS(this->hspObjects, UI::GUIHSplitter(ui, this, 3, false));
-	NEW_CLASS(this->lvValues, UI::GUIListView(ui, this, UI::GUIListView::LVSTYLE_TABLE, 2));
+	NEW_CLASS(this->hspObjects, UI::GUIHSplitter(ui, *this, 3, false));
+	NEW_CLASS(this->lvValues, UI::GUIListView(ui, *this, UI::GUIListView::LVSTYLE_TABLE, 2));
 	this->lvValues->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvValues->SetFullRowSelect(true);
 	this->lvValues->SetShowGrid(true);

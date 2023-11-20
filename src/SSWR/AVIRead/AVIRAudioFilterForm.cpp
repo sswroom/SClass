@@ -1006,17 +1006,17 @@ SSWR::AVIRead::AVIRAudioFilterForm::AVIRAudioFilterForm(UI::GUIClientControl *pa
 	this->fftImg = 0;
 	this->dtmfMod = false;
 
-	NEW_CLASS(this->pnlInput, UI::GUIPanel(ui, this));
+	NEW_CLASSNN(this->pnlInput, UI::GUIPanel(ui, *this));
 	this->pnlInput->SetRect(0, 0, 100, 168, false);
 	this->pnlInput->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->pbsFFT, UI::GUIPictureBoxSimple(ui, this, this->eng, false));
+	NEW_CLASS(this->pbsFFT, UI::GUIPictureBoxSimple(ui, *this, this->eng, false));
 	this->pbsFFT->SetDockType(UI::GUIControl::DOCK_BOTTOM);
 	this->pbsFFT->SetNoBGColor(true);
-	NEW_CLASS(this->vspSample, UI::GUIVSplitter(ui, this, 3, true));
-	NEW_CLASS(this->tcFilter, UI::GUITabControl(ui, this));
+	NEW_CLASS(this->vspSample, UI::GUIVSplitter(ui, *this, 3, true));
+	NEW_CLASS(this->tcFilter, UI::GUITabControl(ui, *this));
 	this->tcFilter->SetDockType(UI::GUIControl::DOCK_FILL);
 
-	NEW_CLASS(this->pnlAudioSource, UI::GUIPanel(ui, this->pnlInput));
+	NEW_CLASSNN(this->pnlAudioSource, UI::GUIPanel(ui, this->pnlInput));
 	this->pnlAudioSource->SetRect(0, 0, 400, 23, false);
 	NEW_CLASS(this->lblAudioSource, UI::GUILabel(ui, this->pnlAudioSource, CSTR("Audio Source")));
 	this->lblAudioSource->SetRect(0, 0, 100, 23, false);
@@ -1024,7 +1024,7 @@ SSWR::AVIRead::AVIRAudioFilterForm::AVIRAudioFilterForm(UI::GUIClientControl *pa
 	this->radInputWaveIn->SetRect(100, 0, 100, 23, false);
 	NEW_CLASS(this->radInputSilent, UI::GUIRadioButton(ui, this->pnlAudioSource, CSTR("Silent"), false));
 	this->radInputSilent->SetRect(200, 0, 100, 23, false);
-	NEW_CLASS(this->pnlAudioOutput, UI::GUIPanel(ui, this->pnlInput));
+	NEW_CLASSNN(this->pnlAudioOutput, UI::GUIPanel(ui, this->pnlInput));
 	this->pnlAudioOutput->SetRect(0, 24, 400, 23, false);
 	NEW_CLASS(this->lblAudioOutput, UI::GUILabel(ui, this->pnlAudioOutput, CSTR("Audio Output")));
 	this->lblAudioOutput->SetRect(0, 0, 100, 23, false);
@@ -1068,7 +1068,7 @@ SSWR::AVIRead::AVIRAudioFilterForm::AVIRAudioFilterForm(UI::GUIClientControl *pa
 	this->pbsFFT->SetNoBGColor(true);*/
 
 	this->tpDTMF = this->tcFilter->AddTabPage(CSTR("DTMF"));
-	NEW_CLASS(this->pnlDTMF, UI::GUIPanel(ui, this->tpDTMF));
+	NEW_CLASSNN(this->pnlDTMF, UI::GUIPanel(ui, this->tpDTMF));
 	this->pnlDTMF->SetRect(0, 0, 100, 56, false);
 	this->pnlDTMF->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->lblDTMFInterval, UI::GUILabel(ui, this->pnlDTMF, CSTR("Decode Interval")));

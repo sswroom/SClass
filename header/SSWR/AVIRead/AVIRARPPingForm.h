@@ -44,7 +44,7 @@ namespace SSWR
 			NotNullPtr<UI::ListBoxLogger> logger;
 			Data::ArrayList<AdapterInfo*> *adapters;
 
-			UI::GUIPanel *pnlRequest;
+			NotNullPtr<UI::GUIPanel> pnlRequest;
 			UI::GUIVSplitter *vspRequest;
 			UI::GUILabel *lblAdapter;
 			UI::GUIComboBox *cboAdapter;

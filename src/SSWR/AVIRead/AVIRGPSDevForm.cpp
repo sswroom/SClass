@@ -478,7 +478,7 @@ SSWR::AVIRead::AVIRGPSDevForm::AVIRGPSDevForm(UI::GUIClientControl *parent, NotN
 	this->alertContUpd = false;
 	this->userContUpd = false;
 
-	NEW_CLASS(this->pnlConn, UI::GUIPanel(ui, this));
+	NEW_CLASSNN(this->pnlConn, UI::GUIPanel(ui, *this));
 	this->pnlConn->SetRect(0, 0, 100, 56, false);
 	this->pnlConn->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->lblHost, UI::GUILabel(ui, this->pnlConn, CSTR("Host")));
@@ -492,7 +492,7 @@ SSWR::AVIRead::AVIRGPSDevForm::AVIRGPSDevForm(UI::GUIClientControl *parent, NotN
 	NEW_CLASS(this->btnConn, UI::GUIButton(ui, this->pnlConn, CSTR("Start")));
 	this->btnConn->SetRect(204, 28, 75, 23, false);
 	this->btnConn->HandleButtonClick(OnConnClicked, this);
-	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, this));
+	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, *this));
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
 	
 	this->tpStatus = this->tcMain->AddTabPage(CSTR("Status"));
@@ -503,7 +503,7 @@ SSWR::AVIRead::AVIRGPSDevForm::AVIRGPSDevForm(UI::GUIClientControl *parent, NotN
 	this->txtStatusConn->SetReadOnly(true);
 
 	this->tpDevice = this->tcMain->AddTabPage(CSTR("Device"));
-	NEW_CLASS(this->pnlDeviceC, UI::GUIPanel(ui, this->tpDevice));
+	NEW_CLASSNN(this->pnlDeviceC, UI::GUIPanel(ui, this->tpDevice));
 	this->pnlDeviceC->SetRect(0, 0, 200, 23, false);
 	this->pnlDeviceC->SetDockType(UI::GUIControl::DOCK_LEFT);
 	NEW_CLASS(this->btnDeviceR, UI::GUIButton(ui, this->pnlDeviceC, CSTR("Refresh")));
@@ -552,7 +552,7 @@ SSWR::AVIRead::AVIRGPSDevForm::AVIRGPSDevForm(UI::GUIClientControl *parent, NotN
 	this->lvDevGuard->AddColumn(CSTR("AlarmStatus5"), 60);
 
 	this->tpUser = this->tcMain->AddTabPage(CSTR("User"));
-	NEW_CLASS(this->pnlUserC, UI::GUIPanel(ui, this->tpUser));
+	NEW_CLASSNN(this->pnlUserC, UI::GUIPanel(ui, this->tpUser));
 	this->pnlUserC->SetRect(0, 0, 200, 23, false);
 	this->pnlUserC->SetDockType(UI::GUIControl::DOCK_LEFT);
 	NEW_CLASS(this->btnUserR, UI::GUIButton(ui, this->pnlUserC, CSTR("Refresh")));
@@ -563,7 +563,7 @@ SSWR::AVIRead::AVIRGPSDevForm::AVIRGPSDevForm(UI::GUIClientControl *parent, NotN
 	this->lbUser->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lbUser->HandleSelectionChange(OnUserSelChg, this);
 	NEW_CLASS(this->hspUser, UI::GUIHSplitter(ui, this->tpUser, 3, false));
-	NEW_CLASS(this->pnlUser, UI::GUIPanel(ui, this->tpUser));
+	NEW_CLASSNN(this->pnlUser, UI::GUIPanel(ui, this->tpUser));
 	this->pnlUser->SetDockType(UI::GUIControl::DOCK_FILL);
 	NEW_CLASS(this->lbUserDev, UI::GUIListBox(ui, this->pnlUser, false));
 	this->lbUserDev->SetRect(0, 0, 150, 23, false);
@@ -576,7 +576,7 @@ SSWR::AVIRead::AVIRGPSDevForm::AVIRGPSDevForm(UI::GUIClientControl *parent, NotN
 	this->lvUser->AddColumn(CSTR("Value"), 400);
 
 	this->tpAlert = this->tcMain->AddTabPage(CSTR("Alert"));
-	NEW_CLASS(this->pnlAlertC, UI::GUIPanel(ui, this->tpAlert));
+	NEW_CLASSNN(this->pnlAlertC, UI::GUIPanel(ui, this->tpAlert));
 	this->pnlAlertC->SetRect(0, 0, 200, 23, false);
 	this->pnlAlertC->SetDockType(UI::GUIControl::DOCK_LEFT);
 	NEW_CLASS(this->btnAlertR, UI::GUIButton(ui, this->pnlAlertC, CSTR("Refresh")));
@@ -587,7 +587,7 @@ SSWR::AVIRead::AVIRGPSDevForm::AVIRGPSDevForm(UI::GUIClientControl *parent, NotN
 	this->lbAlert->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lbAlert->HandleSelectionChange(OnAlertSelChg, this);
 	NEW_CLASS(this->hspAlert, UI::GUIHSplitter(ui, this->tpAlert, 3, false));
-	NEW_CLASS(this->pnlAlert, UI::GUIPanel(ui, this->tpAlert));
+	NEW_CLASSNN(this->pnlAlert, UI::GUIPanel(ui, this->tpAlert));
 	this->pnlAlert->SetDockType(UI::GUIControl::DOCK_FILL);
 	NEW_CLASS(this->lbAlertDev, UI::GUIListBox(ui, this->pnlAlert, false));
 	this->lbAlertDev->SetRect(0, 0, 150, 23, false);

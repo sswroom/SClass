@@ -745,19 +745,19 @@ SSWR::AVIRead::AVIRGISEditImageForm::AVIRGISEditImageForm(UI::GUIClientControl *
 	this->currImage = -1;
 	this->downType = 0;
 
-	NEW_CLASS(this->pnlCtrl, UI::GUIPanel(ui, this));
+	NEW_CLASSNN(this->pnlCtrl, UI::GUIPanel(ui, *this));
 	this->pnlCtrl->SetRect(0, 0, 100, 23, false);
 	this->pnlCtrl->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->chkAutoPan, UI::GUICheckBox(ui, this->pnlCtrl, CSTR("Auto Pan"), true));
 	this->chkAutoPan->SetRect(0, 0, 100, 23, false);
 	NEW_CLASS(this->chkEdit, UI::GUICheckBox(ui, this->pnlCtrl, CSTR("Edit Mode"), true));
 	this->chkEdit->SetRect(120, 0, 100, 23, false);
-	NEW_CLASS(this->lbImages, UI::GUIListBox(ui, this, false));
+	NEW_CLASS(this->lbImages, UI::GUIListBox(ui, *this, false));
 	this->lbImages->SetRect(0, 0, 200, 10, false);
 	this->lbImages->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbImages->HandleSelectionChange(OnImageChg, this);
-	NEW_CLASS(this->hspMain, UI::GUIHSplitter(ui, this, 3, false));
-	NEW_CLASS(this->pnlMain, UI::GUIPanel(ui, this));
+	NEW_CLASS(this->hspMain, UI::GUIHSplitter(ui, *this, 3, false));
+	NEW_CLASSNN(this->pnlMain, UI::GUIPanel(ui, *this));
 	this->pnlMain->SetDockType(UI::GUIControl::DOCK_FILL);
 	NEW_CLASS(this->lblLeft, UI::GUILabel(ui, this->pnlMain, CSTR("Left")));
 	this->lblLeft->SetRect(0, 0, 100, 23, false);

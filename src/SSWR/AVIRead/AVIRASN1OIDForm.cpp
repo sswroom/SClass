@@ -70,11 +70,11 @@ SSWR::AVIRead::AVIRASN1OIDForm::AVIRASN1OIDForm(UI::GUIClientControl *parent, No
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, this));
+	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, *this));
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
 		
 	this->tpSource = this->tcMain->AddTabPage(CSTR("Source"));
-	NEW_CLASS(this->pnlSource, UI::GUIPanel(ui, this->tpSource));
+	NEW_CLASSNN(this->pnlSource, UI::GUIPanel(ui, this->tpSource));
 	this->pnlSource->SetRect(0, 0, 100, 31, false);
 	this->pnlSource->SetDockType(UI::GUIControl::DOCK_BOTTOM);
 	NEW_CLASS(this->btnConvert, UI::GUIButton(ui, this->pnlSource, CSTR("Convert")));

@@ -195,7 +195,7 @@ SSWR::AVIRead::AVIRMODBUSTCPSimForm::AVIRMODBUSTCPSimForm(UI::GUIClientControl *
 	this->listener = 0;
 	this->currDev = 0;
 
-	NEW_CLASS(this->pnlCtrl, UI::GUIPanel(ui, this));
+	NEW_CLASSNN(this->pnlCtrl, UI::GUIPanel(ui, *this));
 	this->pnlCtrl->SetRect(0, 0, 100, 120, false);
 	this->pnlCtrl->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->lblPort, UI::GUILabel(ui, this->pnlCtrl, CSTR("Port")));
@@ -205,7 +205,7 @@ SSWR::AVIRead::AVIRMODBUSTCPSimForm::AVIRMODBUSTCPSimForm(UI::GUIClientControl *
 	NEW_CLASS(this->btnListen, UI::GUIButton(ui, this->pnlCtrl, CSTR("Listen")));
 	this->btnListen->SetRect(204, 4, 75, 23, false);
 	this->btnListen->HandleButtonClick(OnListenClicked, this);
-	NEW_CLASS(this->grpDev, UI::GUIGroupBox(ui, this->pnlCtrl, CSTR("Device")));
+	NEW_CLASSNN(this->grpDev, UI::GUIGroupBox(ui, this->pnlCtrl, CSTR("Device")));
 	this->grpDev->SetRect(0, 28, 400, 64, false);
 	NEW_CLASS(this->lblAddr, UI::GUILabel(ui, this->grpDev, CSTR("Address")));
 	this->lblAddr->SetRect(4, 4, 100, 23, false);
@@ -223,11 +223,11 @@ SSWR::AVIRead::AVIRMODBUSTCPSimForm::AVIRMODBUSTCPSimForm(UI::GUIClientControl *
 	NEW_CLASS(this->btnDelay, UI::GUIButton(ui, this->pnlCtrl, CSTR("Set")));
 	this->btnDelay->SetRect(204, 96, 75, 23, false);
 	this->btnDelay->HandleButtonClick(OnDelayClicked, this);
-	NEW_CLASS(this->lbDevice, UI::GUIListBox(ui, this, false));
+	NEW_CLASS(this->lbDevice, UI::GUIListBox(ui, *this, false));
 	this->lbDevice->SetRect(0, 0, 100, 23, false);
 	this->lbDevice->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbDevice->HandleSelectionChange(OnDeviceChanged, this);
-	NEW_CLASS(this->lvDeviceValues, UI::GUIListView(ui, this, UI::GUIListView::LVSTYLE_TABLE, 2));
+	NEW_CLASS(this->lvDeviceValues, UI::GUIListView(ui, *this, UI::GUIListView::LVSTYLE_TABLE, 2));
 	this->lvDeviceValues->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvDeviceValues->SetFullRowSelect(true);
 	this->lvDeviceValues->SetShowGrid(true);

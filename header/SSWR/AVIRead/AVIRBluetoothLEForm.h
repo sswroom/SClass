@@ -36,7 +36,7 @@ namespace SSWR
 			Sync::Mutex devMut;
 			Data::FastMap<UInt64, BTDevice*> devMap;
 
-			UI::GUIPanel *pnlControl;
+			NotNullPtr<UI::GUIPanel> pnlControl;
 			UI::GUILabel *lblInterface;
 			UI::GUIComboBox *cboInterface;
 			UI::GUIButton *btnStart;

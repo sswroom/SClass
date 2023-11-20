@@ -21,7 +21,7 @@ namespace SSWR
 			Net::WirelessLAN *wlan;
 			Net::WirelessLAN::Interface *wlanInterf;
 
-			UI::GUIPanel *pnlControl;
+			NotNullPtr<UI::GUIPanel> pnlControl;
 			UI::GUIButton *btnScan;
 			UI::GUILabel *lblScanTime;
 			UI::GUITextBox *txtScanTime;

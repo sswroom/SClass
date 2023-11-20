@@ -80,19 +80,19 @@ SSWR::AVIRead::AVIRFileTextEncryptForm::AVIRFileTextEncryptForm(UI::GUIClientCon
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASS(this->lblSrcFile, UI::GUILabel(ui, this, CSTR("Source File")));
+	NEW_CLASS(this->lblSrcFile, UI::GUILabel(ui, *this, CSTR("Source File")));
 	this->lblSrcFile->SetRect(4, 4, 100, 23, false);
-	NEW_CLASS(this->txtSrcFile, UI::GUITextBox(ui, this, CSTR("")));
+	NEW_CLASS(this->txtSrcFile, UI::GUITextBox(ui, *this, CSTR("")));
 	this->txtSrcFile->SetRect(104, 4, 600, 23, false);
-	NEW_CLASS(this->lblDestFile, UI::GUILabel(ui, this, CSTR("Dest File")));
+	NEW_CLASS(this->lblDestFile, UI::GUILabel(ui, *this, CSTR("Dest File")));
 	this->lblDestFile->SetRect(4, 28, 100, 23, false);
-	NEW_CLASS(this->txtDestFile, UI::GUITextBox(ui, this, CSTR(""), true));
+	NEW_CLASS(this->txtDestFile, UI::GUITextBox(ui, *this, CSTR(""), true));
 	this->txtDestFile->SetRect(104, 28, 600, 23, false);
-	NEW_CLASS(this->lblEncrypt, UI::GUILabel(ui, this, CSTR("Encryption")));
+	NEW_CLASS(this->lblEncrypt, UI::GUILabel(ui, *this, CSTR("Encryption")));
 	this->lblEncrypt->SetRect(4, 52, 100, 23, false);
-	NEW_CLASS(this->cboEncrypt, UI::GUIComboBox(ui, this, false));
+	NEW_CLASS(this->cboEncrypt, UI::GUIComboBox(ui, *this, false));
 	this->cboEncrypt->SetRect(104, 52, 200, 23, false);
-	NEW_CLASS(this->btnConvert, UI::GUIButton(ui, this, CSTR("&Convert")));
+	NEW_CLASS(this->btnConvert, UI::GUIButton(ui, *this, CSTR("&Convert")));
 	this->btnConvert->SetRect(104, 76, 75, 23, false);
 	this->btnConvert->HandleButtonClick(OnConvertClicked, this);
 

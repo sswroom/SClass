@@ -161,7 +161,7 @@ SSWR::AVIRead::AVIRWellFormatForm::AVIRWellFormatForm(UI::GUIClientControl *pare
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASS(this->pnlFile, UI::GUIPanel(ui, this));
+	NEW_CLASSNN(this->pnlFile, UI::GUIPanel(ui, *this));
 	this->pnlFile->SetRect(0, 0, 100, 55, false);
 	this->pnlFile->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->lblFile, UI::GUILabel(ui, this->pnlFile, CSTR("JS Text")));
@@ -177,7 +177,7 @@ SSWR::AVIRead::AVIRWellFormatForm::AVIRWellFormatForm(UI::GUIClientControl *pare
 	NEW_CLASS(this->btnParseToFile, UI::GUIButton(ui, this->pnlFile, CSTR("To File")));
 	this->btnParseToFile->SetRect(184, 28, 75, 23, false);
 	this->btnParseToFile->HandleButtonClick(OnParseToFileClicked, this);
-	NEW_CLASS(this->txtOutput, UI::GUITextBox(ui, this, CSTR(""), true));
+	NEW_CLASS(this->txtOutput, UI::GUITextBox(ui, *this, CSTR(""), true));
 	this->txtOutput->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->txtOutput->SetReadOnly(true);
 

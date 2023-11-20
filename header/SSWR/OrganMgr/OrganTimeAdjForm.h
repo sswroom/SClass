@@ -40,13 +40,13 @@ namespace SSWR
 			Text::String *selImgCamera;
 			Data::Timestamp selImgTime;
 
-			UI::GUIPanel *pnlLeft;
+			NotNullPtr<UI::GUIPanel> pnlLeft;
 			UI::GUIPictureBoxDD *pbPreview;
 			UI::GUIListBox *lbTrack;
 			UI::GUIComboBox *cboSpecies;
 			UI::GUIListBox *lbPictures;
-			UI::GUIPanel *pnlMapCtrl;
-			UI::GUIPanel *pnlControl;
+			NotNullPtr<UI::GUIPanel> pnlMapCtrl;
+			NotNullPtr<UI::GUIPanel> pnlControl;
 			UI::GUITrackBar *tbMapScale;
 			UI::GUIMapControl *mapMain;
 			UI::GUIComboBox *cboCamera;

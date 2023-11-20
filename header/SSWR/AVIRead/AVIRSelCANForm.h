@@ -23,7 +23,7 @@ namespace SSWR
 
 			UI::GUITabControl *tcMain;
 
-			UI::GUITabPage *tpAXCAN;
+			NotNullPtr<UI::GUITabPage> tpAXCAN;
 			UI::GUILabel *lblAXCANBitRate;
 			UI::GUIComboBox *cboAXCANBitRate;
 			UI::GUIButton *btnAXCANSerial;

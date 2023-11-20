@@ -51,7 +51,7 @@ namespace SSWR
 			Crypto::Cert::X509Cert *cliCert;
 			Crypto::Cert::X509File *cliKey;
 
-			UI::GUIPanel *pnlConnect;
+			NotNullPtr<UI::GUIPanel> pnlConnect;
 			UI::GUILabel *lblHost;
 			UI::GUITextBox *txtHost;
 			UI::GUILabel *lblPort;
@@ -70,16 +70,16 @@ namespace SSWR
 			UI::GUIButton *btnStart;
 			UI::GUITabControl *tcDetail;
 
-			UI::GUITabPage *tpRecv;
+			NotNullPtr<UI::GUITabPage> tpRecv;
 			UI::GUIListView *lvRecvTopic;
 			UI::GUIVSplitter *vspRecvTopic;
 			UI::GUIPictureBoxSimple *pbRecvTopic;
 
-			UI::GUITabPage *tpPublish;
-			UI::GUIPanel *pnlPubTopic;
+			NotNullPtr<UI::GUITabPage> tpPublish;
+			NotNullPtr<UI::GUIPanel> pnlPubTopic;
 			UI::GUILabel *lblPubTopic;
 			UI::GUITextBox *txtPubTopic;
-			UI::GUIPanel *pnlPubCtrl;
+			NotNullPtr<UI::GUIPanel> pnlPubCtrl;
 			UI::GUIButton *btnPublish;
 			UI::GUITextBox *txtPubContent;
 

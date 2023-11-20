@@ -148,22 +148,22 @@ SSWR::AVIRead::AVIRTFTPClientForm::AVIRTFTPClientForm(UI::GUIClientControl *pare
 	this->SetNoResize(true);
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASS(this->lblHost, UI::GUILabel(ui, this, CSTR("Host")));
+	NEW_CLASS(this->lblHost, UI::GUILabel(ui, *this, CSTR("Host")));
 	this->lblHost->SetRect(4, 4, 100, 23, false);
-	NEW_CLASS(this->txtHost, UI::GUITextBox(ui, this, CSTR("127.0.0.1")));
+	NEW_CLASS(this->txtHost, UI::GUITextBox(ui, *this, CSTR("127.0.0.1")));
 	this->txtHost->SetRect(104, 4, 150, 23, false);
-	NEW_CLASS(this->lblPort, UI::GUILabel(ui, this, CSTR("Port")));
+	NEW_CLASS(this->lblPort, UI::GUILabel(ui, *this, CSTR("Port")));
 	this->lblPort->SetRect(4, 28, 100, 23, false);
-	NEW_CLASS(this->txtPort, UI::GUITextBox(ui, this, CSTR("69")));
+	NEW_CLASS(this->txtPort, UI::GUITextBox(ui, *this, CSTR("69")));
 	this->txtPort->SetRect(104, 28, 50, 23, false);
-	NEW_CLASS(this->lblFileName, UI::GUILabel(ui, this, CSTR("FileName")));
+	NEW_CLASS(this->lblFileName, UI::GUILabel(ui, *this, CSTR("FileName")));
 	this->lblFileName->SetRect(4, 52, 100, 23, false);
-	NEW_CLASS(this->txtFileName, UI::GUITextBox(ui, this, CSTR("File.dat")));
+	NEW_CLASS(this->txtFileName, UI::GUITextBox(ui, *this, CSTR("File.dat")));
 	this->txtFileName->SetRect(104, 52, 200, 23, false);
-	NEW_CLASS(this->btnRecv, UI::GUIButton(ui, this, CSTR("Receive")));
+	NEW_CLASS(this->btnRecv, UI::GUIButton(ui, *this, CSTR("Receive")));
 	this->btnRecv->SetRect(104, 76, 75, 23, false);
 	this->btnRecv->HandleButtonClick(OnRecvClick, this);
-	NEW_CLASS(this->btnSend, UI::GUIButton(ui, this, CSTR("Send")));
+	NEW_CLASS(this->btnSend, UI::GUIButton(ui, *this, CSTR("Send")));
 	this->btnSend->SetRect(184, 76, 75, 23, false);
 	this->btnSend->HandleButtonClick(OnSendClick, this);
 }

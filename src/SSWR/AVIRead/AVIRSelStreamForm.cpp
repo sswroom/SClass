@@ -413,7 +413,7 @@ SSWR::AVIRead::AVIRSelStreamForm::AVIRSelStreamForm(UI::GUIClientControl *parent
 	this->ssl = ssl;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASS(this->pnlStreamType, UI::GUIPanel(ui, this));
+	NEW_CLASSNN(this->pnlStreamType, UI::GUIPanel(ui, *this));
 	this->pnlStreamType->SetRect(0, 0, 100, 31, false);
 	this->pnlStreamType->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->lblStreamType, UI::GUILabel(ui, this->pnlStreamType, CSTR("Stream Type")));
@@ -440,7 +440,7 @@ SSWR::AVIRead::AVIRSelStreamForm::AVIRSelStreamForm(UI::GUIClientControl *parent
 	this->cboStreamType->AddItem(IO::StreamTypeGetName(IO::StreamType::HID), (void*)IO::StreamType::HID);
 	this->cboStreamType->HandleSelectionChange(OnStmTypeChg, this);
 
-	NEW_CLASS(this->pnlButtons, UI::GUIPanel(ui, this));
+	NEW_CLASSNN(this->pnlButtons, UI::GUIPanel(ui, *this));
 	this->pnlButtons->SetRect(0, 0, 100, 31, false);
 	this->pnlButtons->SetDockType(UI::GUIControl::DOCK_BOTTOM);
 	NEW_CLASS(this->btnOK, UI::GUIButton(ui, this->pnlButtons, CSTR("&OK")));
@@ -450,7 +450,7 @@ SSWR::AVIRead::AVIRSelStreamForm::AVIRSelStreamForm(UI::GUIClientControl *parent
 	this->btnCancel->SetRect(132, 4, 75, 23, false);
 	this->btnCancel->HandleButtonClick(OnCancelClick, this);
 
-	NEW_CLASS(this->tcConfig, UI::GUITabControl(ui, this));
+	NEW_CLASS(this->tcConfig, UI::GUITabControl(ui, *this));
 	this->tcConfig->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	this->tpSerialPort = this->tcConfig->AddTabPage(CSTR("Serial Port"));
@@ -497,7 +497,7 @@ SSWR::AVIRead::AVIRSelStreamForm::AVIRSelStreamForm(UI::GUIClientControl *parent
 	if (this->siLabDriver)
 	{
 		this->tpSiLabPort = this->tcConfig->AddTabPage(CSTR("SiLab"));
-		NEW_CLASS(this->pnlSLInfo, UI::GUIPanel(ui, this->tpSiLabPort));
+		NEW_CLASSNN(this->pnlSLInfo, UI::GUIPanel(ui, this->tpSiLabPort));
 		this->pnlSLInfo->SetRect(0, 0, 100, 55, false);
 		this->pnlSLInfo->SetDockType(UI::GUIControl::DOCK_TOP);
 		NEW_CLASS(this->lblDLLVer, UI::GUILabel(ui, this->pnlSLInfo, CSTR("DLL Version")));
@@ -511,7 +511,7 @@ SSWR::AVIRead::AVIRSelStreamForm::AVIRSelStreamForm(UI::GUIClientControl *parent
 		this->txtDriverVer->SetRect(104, 28, 100, 23, false);
 		this->txtDriverVer->SetReadOnly(true);
 
-		NEW_CLASS(this->pnlSLControl, UI::GUIPanel(ui, this->tpSiLabPort));
+		NEW_CLASSNN(this->pnlSLControl, UI::GUIPanel(ui, this->tpSiLabPort));
 		this->pnlSLControl->SetRect(0, 0, 100, 67, false);
 		this->pnlSLControl->SetDockType(UI::GUIControl::DOCK_BOTTOM);
 		NEW_CLASS(this->lblSLBaudRate, UI::GUILabel(ui, this->pnlSLControl, CSTR("Baud Rate")));

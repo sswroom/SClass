@@ -144,7 +144,7 @@ SSWR::AVIRead::AVIRLDAPClientForm::AVIRLDAPClientForm(UI::GUIClientControl *pare
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASS(this->pnlRequest, UI::GUIPanel(ui, this));
+	NEW_CLASSNN(this->pnlRequest, UI::GUIPanel(ui, *this));
 	this->pnlRequest->SetRect(0, 0, 100, 151, false);
 	this->pnlRequest->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->lblHost, UI::GUILabel(ui, this->pnlRequest, CSTR("Host")));
@@ -175,9 +175,9 @@ SSWR::AVIRead::AVIRLDAPClientForm::AVIRLDAPClientForm(UI::GUIClientControl *pare
 	this->btnConnect->SetRect(104, 124, 75, 23, false);
 	this->btnConnect->HandleButtonClick(OnConnectClicked, this);
 
-	NEW_CLASS(this->grpSearch, UI::GUIGroupBox(ui, this, CSTR("Search")));
+	NEW_CLASSNN(this->grpSearch, UI::GUIGroupBox(ui, *this, CSTR("Search")));
 	this->grpSearch->SetDockType(UI::GUIControl::DOCK_FILL);
-	NEW_CLASS(this->pnlSearchRequest, UI::GUIPanel(ui, this->grpSearch));
+	NEW_CLASSNN(this->pnlSearchRequest, UI::GUIPanel(ui, this->grpSearch));
 	this->pnlSearchRequest->SetRect(0, 0, 100, 124, false);
 	this->pnlSearchRequest->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->lblSearchBase, UI::GUILabel(ui, this->pnlSearchRequest, CSTR("Base Object")));

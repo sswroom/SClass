@@ -40,12 +40,12 @@ namespace SSWR
 			Media::StaticImage *prevsImage;
 			Bool thickChging;
 
-			UI::GUIPanel *pnlButtons;
-			UI::GUIPanel *pnlStyle;
-			UI::GUIGroupBox *grpLayer;
-			UI::GUIPanel *pnlLayers;
-			UI::GUIPanel *pnlLayersButton;
-			UI::GUIPanel *pnlLayer;
+			NotNullPtr<UI::GUIPanel> pnlButtons;
+			NotNullPtr<UI::GUIPanel> pnlStyle;
+			NotNullPtr<UI::GUIGroupBox> grpLayer;
+			NotNullPtr<UI::GUIPanel> pnlLayers;
+			NotNullPtr<UI::GUIPanel> pnlLayersButton;
+			NotNullPtr<UI::GUIPanel> pnlLayer;
 
 			UI::GUIPictureBox *pbPreview;
 			UI::GUILabel *lblName;

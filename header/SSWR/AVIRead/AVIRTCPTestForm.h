@@ -33,7 +33,7 @@ namespace SSWR
 			UInt32 connCnt;
 			UInt32 failCnt;
 
-			UI::GUIPanel *pnlRequest;
+			NotNullPtr<UI::GUIPanel> pnlRequest;
 			UI::GUILabel *lblIP;
 			UI::GUITextBox *txtIP;
 			UI::GUILabel *lblPort;
@@ -43,7 +43,7 @@ namespace SSWR
 			UI::GUILabel *lblTotalConnCnt;
 			UI::GUITextBox *txtTotalConnCnt;
 			UI::GUIButton *btnStart;
-			UI::GUIGroupBox *grpStatus;
+			NotNullPtr<UI::GUIGroupBox> grpStatus;
 			UI::GUILabel *lblConnLeftCnt;
 			UI::GUITextBox *txtConnLeftCnt;
 			UI::GUILabel *lblThreadCnt;

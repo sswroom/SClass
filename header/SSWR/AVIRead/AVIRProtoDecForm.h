@@ -26,7 +26,7 @@ namespace SSWR
 				UOSInt size;
 			} ProtocolItem;
 		private:
-			UI::GUIPanel *pnlCtrl;
+			NotNullPtr<UI::GUIPanel> pnlCtrl;
 			UI::GUILabel *lblFile;
 			UI::GUITextBox *txtFile;
 			UI::GUIButton *btnFile;

@@ -29,14 +29,14 @@ UtilUI::TextSearchForm::TextSearchForm(UI::GUIClientControl *parent, NotNullPtr<
 	this->monMgr = monMgr;
 	this->mainFrm = mainFrm;
 
-	NEW_CLASS(this->lblSearch, UI::GUILabel(ui, this, CSTR("Search Text:")));
+	NEW_CLASS(this->lblSearch, UI::GUILabel(ui, *this, CSTR("Search Text:")));
 	this->lblSearch->SetRect(8, 16, 80, 21, false);
-	NEW_CLASS(this->txtSearch, UI::GUITextBox(ui, this, CSTR("")));
+	NEW_CLASS(this->txtSearch, UI::GUITextBox(ui, *this, CSTR("")));
 	this->txtSearch->SetRect(88, 14, 100, 23, false);
-	NEW_CLASS(this->btnSearch, UI::GUIButton(ui, this, CSTR("&Search")));
+	NEW_CLASS(this->btnSearch, UI::GUIButton(ui, *this, CSTR("&Search")));
 	this->btnSearch->SetRect(8, 56, 100, 23, false);
 	this->btnSearch->HandleButtonClick(OnSearchClicked, this);
-	NEW_CLASS(this->btnClose, UI::GUIButton(ui, this, CSTR("&Close")));
+	NEW_CLASS(this->btnClose, UI::GUIButton(ui, *this, CSTR("&Close")));
 	this->btnClose->SetRect(128, 56, 100, 23, false);
 	this->btnClose->HandleButtonClick(OnCloseClicked, this);
 	this->SetDefaultButton(this->btnSearch);

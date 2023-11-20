@@ -202,7 +202,7 @@ SSWR::AVIRead::AVIRTVControlForm::AVIRTVControlForm(UI::GUIClientControl *parent
 	this->cmdInfos = 0;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASS(this->pnlPort, UI::GUIPanel(ui, this));
+	NEW_CLASSNN(this->pnlPort, UI::GUIPanel(ui, *this));
 	this->pnlPort->SetRect(0, 0, 100, 64, false);
 	this->pnlPort->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->lblTVType, UI::GUILabel(ui, this->pnlPort, CSTR("TV Type")));
@@ -253,7 +253,7 @@ SSWR::AVIRead::AVIRTVControlForm::AVIRTVControlForm(UI::GUIClientControl *parent
 	this->btnStart->SetRect(308, 32, 75, 23, false);
 	this->btnStart->HandleButtonClick(OnStartClick, this);
 
-	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, this));
+	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, *this));
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->tpControl = this->tcMain->AddTabPage(CSTR("Control"));
 	this->tpLog = this->tcMain->AddTabPage(CSTR("Log"));

@@ -41,8 +41,8 @@ namespace SSWR
 
 			UI::GUITabControl *tcMain;
 			
-			UI::GUITabPage *tpControl;
-			UI::GUIPanel *pnlControl;
+			NotNullPtr<UI::GUITabPage> tpControl;
+			NotNullPtr<UI::GUIPanel> pnlControl;
 			UI::GUILabel *lblServerIP;
 			UI::GUITextBox *txtServerIP;
 			UI::GUILabel *lblServerPort;
@@ -50,7 +50,7 @@ namespace SSWR
 			UI::GUILabel *lblGatewayEUI;
 			UI::GUITextBox *txtGatewayEUI;
 			UI::GUIButton *btnStart;
-			UI::GUIPanel *pnlDevice;
+			NotNullPtr<UI::GUIPanel> pnlDevice;
 			UI::GUILabel *lblDevAddr;
 			UI::GUITextBox *txtDevAddr;
 			UI::GUILabel *lblNwkSKey;
@@ -72,7 +72,7 @@ namespace SSWR
 			UI::GUITextBox *txtData;
 			UI::GUIButton *btnSendULData;
 
-			UI::GUITabPage *tpLog;
+			NotNullPtr<UI::GUITabPage> tpLog;
 			UI::GUITextBox *txtLog;
 			NotNullPtr<UI::GUIListBox> lbLog;
 

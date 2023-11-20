@@ -24,21 +24,21 @@ namespace SSWR
 				void *datas;
 			} ColInfo;
 		private:
-			UI::GUIPanel *pnlStrCols;
+			NotNullPtr<UI::GUIPanel> pnlStrCols;
 			UI::GUILabel *lblStrCols;
 			UI::GUIListBox *lbStrCols;
 			UI::GUIButton *btnStrColsDbl;
 			UI::GUIButton *btnStrColsInt32;
-			UI::GUIPanel *pnlXAxis;
+			NotNullPtr<UI::GUIPanel> pnlXAxis;
 			UI::GUILabel *lblXAxis;
 			UI::GUIComboBox *cboXAxis;
-			UI::GUIGroupBox *grpYAxis;
-			UI::GUIPanel *pnlYAxis;
+			NotNullPtr<UI::GUIGroupBox> grpYAxis;
+			NotNullPtr<UI::GUIPanel> pnlYAxis;
 			UI::GUILabel *lblYAxis;
 			UI::GUIComboBox *cboYAxis;
 			UI::GUIButton *btnYAxis;
 			UI::GUIListBox *lbYAxis;
-			UI::GUIPanel *pnlControl;
+			NotNullPtr<UI::GUIPanel> pnlControl;
 			UI::GUIButton *btnPlot;
 			UI::GUIButton *btnCancel;
 

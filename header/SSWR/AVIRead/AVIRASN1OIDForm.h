@@ -20,12 +20,12 @@ namespace SSWR
 
 			UI::GUITabControl *tcMain;
 			
-			UI::GUITabPage *tpSource;
-			UI::GUIPanel *pnlSource;
+			NotNullPtr<UI::GUITabPage> tpSource;
+			NotNullPtr<UI::GUIPanel> pnlSource;
 			UI::GUIButton *btnConvert;
 			UI::GUITextBox *txtSource;
 
-			UI::GUITabPage *tpCPP;
+			NotNullPtr<UI::GUITabPage> tpCPP;
 			UI::GUITextBox *txtCPP;
 
 			static void __stdcall OnConvertClicked(void *userObj);

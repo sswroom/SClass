@@ -21,7 +21,7 @@ namespace SSWR
 
 			UI::GUILabel *lblText;
 			UI::GUITextBox *txtText;
-			UI::GUIPanel *pnlControl;
+			NotNullPtr<UI::GUIPanel> pnlControl;
 			UI::GUILabel *lblEncrypt;
 			UI::GUIComboBox *cboEncrypt;
 			UI::GUILabel *lblHashType;

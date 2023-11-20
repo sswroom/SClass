@@ -5,7 +5,7 @@
 #include "UI/GUIClientControl.h"
 #include <windows.h>
 
-UI::GUIClientControl::GUIClientControl(NotNullPtr<GUICore> ui, UI::GUIClientControl *parent) : UI::GUIControl(ui, parent)
+UI::GUIClientControl::GUIClientControl(NotNullPtr<GUICore> ui, Optional<UI::GUIClientControl> parent) : UI::GUIControl(ui, parent)
 {
 	this->hasFillCtrl = false;
 	this->undockLeft = 0;

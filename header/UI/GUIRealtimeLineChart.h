@@ -35,7 +35,7 @@ namespace UI
 		void Init(void *hInst);
 		void Deinit(void *hInst);
 	public:
-		GUIRealtimeLineChart(NotNullPtr<GUICore> ui, UI::GUIClientControl *parent, NotNullPtr<Media::DrawEngine> eng, UOSInt lineCnt, UOSInt sampleCnt, UInt32 updateIntervalMS);
+		GUIRealtimeLineChart(NotNullPtr<GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, NotNullPtr<Media::DrawEngine> eng, UOSInt lineCnt, UOSInt sampleCnt, UInt32 updateIntervalMS);
 		virtual ~GUIRealtimeLineChart();
 
 		virtual Text::CStringNN GetObjectClass() const;

@@ -331,7 +331,7 @@ SSWR::AVIRead::AVIRVideoInfoForm::AVIRVideoInfoForm(UI::GUIClientControl *parent
 	NEW_CLASS(this->decStatus, Data::ArrayList<SSWR::AVIRead::AVIRVideoInfoForm::DecodeStatus*>());
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASS(this->pnlFile, UI::GUIPanel(ui, this));
+	NEW_CLASSNN(this->pnlFile, UI::GUIPanel(ui, *this));
 	this->pnlFile->SetRect(0, 0, 100, 55, false);
 	this->pnlFile->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->lblFile, UI::GUILabel(ui, this->pnlFile, CSTR("File Name")));
@@ -344,12 +344,12 @@ SSWR::AVIRead::AVIRVideoInfoForm::AVIRVideoInfoForm(UI::GUIClientControl *parent
 	this->btnDecode->HandleButtonClick(OnDecodeClicked, this);
 	NEW_CLASS(this->lblDecode, UI::GUILabel(ui, this->pnlFile, CSTR("")));
 	this->lblDecode->SetRect(254, 28, 100, 23, false);
-	NEW_CLASS(this->lbStream, UI::GUIListBox(ui, this, false));
+	NEW_CLASS(this->lbStream, UI::GUIListBox(ui, *this, false));
 	this->lbStream->SetRect(0, 0, 150, 23, false);
 	this->lbStream->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbStream->HandleSelectionChange(OnStreamChg, this);
-	NEW_CLASS(this->hspStream, UI::GUIHSplitter(ui, this, 3, false));
-	NEW_CLASS(this->txtStream, UI::GUITextBox(ui, this, CSTR(""), true));
+	NEW_CLASS(this->hspStream, UI::GUIHSplitter(ui, *this, 3, false));
+	NEW_CLASS(this->txtStream, UI::GUITextBox(ui, *this, CSTR(""), true));
 	this->txtStream->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->txtStream->SetReadOnly(true);
 

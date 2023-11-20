@@ -436,7 +436,7 @@ SSWR::AVIRead::AVIRAsmConvForm::AVIRAsmConvForm(UI::GUIClientControl *parent, No
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASS(this->pnlCtrl, UI::GUIPanel(ui, this));
+	NEW_CLASSNN(this->pnlCtrl, UI::GUIPanel(ui, *this));
 	this->pnlCtrl->SetRect(0, 0, 100, 31, false);
 	this->pnlCtrl->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->btnConv, UI::GUIButton(ui, this->pnlCtrl, CSTR("Convert")));
@@ -445,11 +445,11 @@ SSWR::AVIRead::AVIRAsmConvForm::AVIRAsmConvForm(UI::GUIClientControl *parent, No
 	NEW_CLASS(this->btnConv2, UI::GUIButton(ui, this->pnlCtrl, CSTR("Paste-Conv-Copy")));
 	this->btnConv2->SetRect(84, 4, 150, 23, false);
 	this->btnConv2->HandleButtonClick(OnConv2Clicked, this);
-	NEW_CLASS(this->txtIntelAsm, UI::GUITextBox(ui, this, CSTR(""), true));
+	NEW_CLASS(this->txtIntelAsm, UI::GUITextBox(ui, *this, CSTR(""), true));
 	this->txtIntelAsm->SetRect(0, 0, 512, 100, false);
 	this->txtIntelAsm->SetDockType(UI::GUIControl::DOCK_LEFT);
-	NEW_CLASS(this->hspAsm, UI::GUIHSplitter(ui, this, 3, false));
-	NEW_CLASS(this->txtGNUAsm, UI::GUITextBox(ui, this, CSTR(""), true));
+	NEW_CLASS(this->hspAsm, UI::GUIHSplitter(ui, *this, 3, false));
+	NEW_CLASS(this->txtGNUAsm, UI::GUITextBox(ui, *this, CSTR(""), true));
 	this->txtGNUAsm->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->txtGNUAsm->SetReadOnly(true);
 }

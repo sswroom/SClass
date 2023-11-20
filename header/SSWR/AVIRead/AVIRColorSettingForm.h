@@ -29,19 +29,19 @@ namespace SSWR
 			Text::String *monFileName;
 			MonitorHandle *hMon;
 
-			UI::GUIPanel *pnlMonitor;
+			NotNullPtr<UI::GUIPanel> pnlMonitor;
 			UI::GUILabel *lblMonitor;
 			UI::GUITextBox *txtMonitor;
-			UI::GUIPanel *pnlButtons;
+			NotNullPtr<UI::GUIPanel> pnlButtons;
 			UI::GUITabControl *tcMain;
 			UI::GUIButton *btnOK;
 			UI::GUIButton *btnCancel;
 
-			UI::GUITabPage *tpSetting;
+			NotNullPtr<UI::GUITabPage> tpSetting;
 			UI::GUILabel *lblMonProfile;
 			UI::GUIComboBox *cboMonProfile;
 			UI::GUIButton *btnMonProfile;
-			UI::GUIGroupBox *grpMonProfile;
+			NotNullPtr<UI::GUIGroupBox> grpMonProfile;
 			UI::GUILabel *lblMonTran;
 			UI::GUITextBox *txtMonTran;
 			UI::GUILabel *lblMonRGBGamma;
@@ -57,7 +57,7 @@ namespace SSWR
 			UI::GUILabel *lblLuminance;
 			UI::GUITextBox *txtLuminance;
 			UI::GUILabel *lblLuminanceUnit;
-			UI::GUIGroupBox *grpYUVDef;
+			NotNullPtr<UI::GUIGroupBox> grpYUVDef;
 			UI::GUIRadioButton *radYUVDefBT601;
 			UI::GUIRadioButton *radYUVDefBT709;
 			UI::GUIRadioButton *radYUVDefFCC;
@@ -65,8 +65,8 @@ namespace SSWR
 			UI::GUIRadioButton *radYUVDefSMPTE170M;
 			UI::GUIRadioButton *radYUVDefSMPTE240M;
 
-			UI::GUITabPage *tpCal;
-			UI::GUIPanel *pnlCalRed;
+			NotNullPtr<UI::GUITabPage> tpCal;
+			NotNullPtr<UI::GUIPanel> pnlCalRed;
 			UI::GUILabel *lblCalRedB;
 			UI::GUIHScrollBar *hsbCalRedB;
 			UI::GUILabel *lblCalRedBV;
@@ -76,7 +76,7 @@ namespace SSWR
 			UI::GUILabel *lblCalRedG;
 			UI::GUIHScrollBar *hsbCalRedG;
 			UI::GUILabel *lblCalRedGV;
-			UI::GUIPanel *pnlCalGreen;
+			NotNullPtr<UI::GUIPanel> pnlCalGreen;
 			UI::GUILabel *lblCalGreenB;
 			UI::GUIHScrollBar *hsbCalGreenB;
 			UI::GUILabel *lblCalGreenBV;
@@ -86,7 +86,7 @@ namespace SSWR
 			UI::GUILabel *lblCalGreenG;
 			UI::GUIHScrollBar *hsbCalGreenG;
 			UI::GUILabel *lblCalGreenGV;
-			UI::GUIPanel *pnlCalBlue;
+			NotNullPtr<UI::GUIPanel> pnlCalBlue;
 			UI::GUILabel *lblCalBlueB;
 			UI::GUIHScrollBar *hsbCalBlueB;
 			UI::GUILabel *lblCalBlueBV;
@@ -97,7 +97,7 @@ namespace SSWR
 			UI::GUIHScrollBar *hsbCalBlueG;
 			UI::GUILabel *lblCalBlueGV;
 
-			UI::GUITabPage *tpRGB;
+			NotNullPtr<UI::GUITabPage> tpRGB;
 			UI::GUILabel *lblMonVBrig;
 			UI::GUIHScrollBar *hsbMonVBrig;
 			UI::GUILabel *lblMonVBrigV;
@@ -114,7 +114,7 @@ namespace SSWR
 			UI::GUIHScrollBar *hsbMonBBrig;
 			UI::GUILabel *lblMonBBrigV;
 
-			UI::GUITabPage *tpYUV;
+			NotNullPtr<UI::GUITabPage> tpYUV;
 			UI::GUILabel *lblYUVBrig;
 			UI::GUIHScrollBar *hsbYUVBrig;
 			UI::GUILabel *lblYUVBrigV;

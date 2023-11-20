@@ -13,7 +13,7 @@ namespace SSWR
 		class AVIRStringMsgForm : public UI::GUIForm
 		{
 		private:
-			UI::GUIPanel *pnlButton;
+			NotNullPtr<UI::GUIPanel> pnlButton;
 			UI::GUIButton *btnOK;
 			UI::GUITextBox *txtMessage;
 

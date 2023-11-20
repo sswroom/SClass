@@ -602,7 +602,7 @@ SSWR::DownloadMonitor::DownMonMainForm::DownMonMainForm(UI::GUIClientControl *pa
 	this->alarmTime = 0;
 	this->core->SetFileEndHandler(OnFileEnd, this);
 
-	NEW_CLASS(this->pnlButtons, UI::GUIPanel(ui, this));
+	NEW_CLASSNN(this->pnlButtons, UI::GUIPanel(ui, *this));
 	this->pnlButtons->SetRect(0, 0, 100, 55, false);
 	this->pnlButtons->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->lblStatus, UI::GUILabel(ui, this->pnlButtons, CSTR("Status")));
@@ -633,7 +633,7 @@ SSWR::DownloadMonitor::DownMonMainForm::DownMonMainForm(UI::GUIClientControl *pa
 	this->btn30Minutes->SetRect(104, 28, 75, 23, false);
 	this->btn30Minutes->HandleButtonClick(On30MinutesClicked, this);
 
-	NEW_CLASS(this->lvFiles, UI::GUIListView(ui, this, UI::GUIListView::LVSTYLE_TABLE, 3));
+	NEW_CLASS(this->lvFiles, UI::GUIListView(ui, *this, UI::GUIListView::LVSTYLE_TABLE, 3));
 	this->lvFiles->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvFiles->AddColumn(CSTR("Id"), 60);
 	this->lvFiles->AddColumn(CSTR("File Name"), 240);

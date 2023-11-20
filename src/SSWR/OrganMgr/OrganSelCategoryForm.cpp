@@ -30,15 +30,15 @@ SSWR::OrganMgr::OrganSelCategoryForm::OrganSelCategoryForm(UI::GUIClientControl 
 
 	this->SetText(this->env->GetLang(CSTR("SelCategoryTitle")));
 
-	NEW_CLASS(this->lbl, UI::GUILabel(ui, this, this->env->GetLang(CSTR("SelCategoryDB"))));
+	NEW_CLASS(this->lbl, UI::GUILabel(ui, *this, this->env->GetLang(CSTR("SelCategoryDB"))));
 	this->lbl->SetRect(16, 8, 100, 23, false);
-	NEW_CLASS(this->lbCategory, UI::GUIListBox(ui, this, false));
+	NEW_CLASS(this->lbCategory, UI::GUIListBox(ui, *this, false));
 	this->lbCategory->SetRect(8, 32, 344, 136, false);
 	this->lbCategory->HandleDoubleClicked(OnOKClicked, this);
-	NEW_CLASS(this->btnOK, UI::GUIButton(ui, this, this->env->GetLang(CSTR("SelCategoryOk"))));
+	NEW_CLASS(this->btnOK, UI::GUIButton(ui, *this, this->env->GetLang(CSTR("SelCategoryOk"))));
 	this->btnOK->SetRect(72, 192, 75, 23, false);
 	this->btnOK->HandleButtonClick(OnOKClicked, this);
-	NEW_CLASS(this->btnCancel, UI::GUIButton(ui, this, this->env->GetLang(CSTR("SelCategoryCancel"))));
+	NEW_CLASS(this->btnCancel, UI::GUIButton(ui, *this, this->env->GetLang(CSTR("SelCategoryCancel"))));
 	this->btnCancel->SetRect(216, 192, 75, 23, false);
 	this->btnCancel->HandleButtonClick(OnCancelClicked, this);
 	this->SetDefaultButton(this->btnOK);

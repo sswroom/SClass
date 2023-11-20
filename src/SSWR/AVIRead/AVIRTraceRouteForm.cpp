@@ -92,7 +92,7 @@ SSWR::AVIRead::AVIRTraceRouteForm::AVIRTraceRouteForm(UI::GUIClientControl *pare
 	this->sockf = core->GetSocketFactory();
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASS(this->pnlControl, UI::GUIPanel(ui, this));
+	NEW_CLASSNN(this->pnlControl, UI::GUIPanel(ui, *this));
 	this->pnlControl->SetRect(0, 0, 100, 55, false);
 	this->pnlControl->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->lblSelfIP, UI::GUILabel(ui, this->pnlControl, CSTR("Self IP")));
@@ -107,12 +107,12 @@ SSWR::AVIRead::AVIRTraceRouteForm::AVIRTraceRouteForm(UI::GUIClientControl *pare
 	this->btnStart->SetRect(254, 28, 75, 23, false);
 	this->btnStart->HandleButtonClick(OnStartClicked, this);
 	
-	NEW_CLASS(this->lbIP, UI::GUIListBox(ui, this, false));
+	NEW_CLASS(this->lbIP, UI::GUIListBox(ui, *this, false));
 	this->lbIP->SetRect(0, 0, 150, 23, false);
 	this->lbIP->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbIP->HandleSelectionChange(OnIPSelChg, this);
-	NEW_CLASS(this->hspIP, UI::GUIHSplitter(ui, this, 3, false));
-	NEW_CLASS(this->txtIPWhois, UI::GUITextBox(ui, this, CSTR(""), true));
+	NEW_CLASS(this->hspIP, UI::GUIHSplitter(ui, *this, 3, false));
+	NEW_CLASS(this->txtIPWhois, UI::GUITextBox(ui, *this, CSTR(""), true));
 	this->txtIPWhois->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->txtIPWhois->SetReadOnly(true);
 

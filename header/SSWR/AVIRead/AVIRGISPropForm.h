@@ -36,7 +36,7 @@ namespace SSWR
 			UI::GUILabel *lblIcon;
 			UI::GUIPictureBox *pbIcon;
 
-			UI::GUIGroupBox *grpLabel;
+			NotNullPtr<UI::GUIGroupBox> grpLabel;
 			UI::GUICheckBox *chkSmart;
 			UI::GUICheckBox *chkRotate;
 			UI::GUICheckBox *chkAlign;

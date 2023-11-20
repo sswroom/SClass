@@ -477,7 +477,7 @@ void UI::GUITextView::SetCaretPos(OSInt scnX, OSInt scnY)
 
 }
 
-UI::GUITextView::GUITextView(NotNullPtr<UI::GUICore> ui, UI::GUIClientControl *parent, NotNullPtr<Media::DrawEngine> deng) : UI::GUIControl(ui, parent)
+UI::GUITextView::GUITextView(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, NotNullPtr<Media::DrawEngine> deng) : UI::GUIControl(ui, parent)
 {
 	this->deng = deng;
 	this->drawBuff = 0;

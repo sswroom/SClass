@@ -23,7 +23,7 @@ namespace SSWR
 			UOSInt imgIndex;
 
 			UI::GUILabel *lbl;
-			UI::GUIPanel *pnlButtons;
+			NotNullPtr<UI::GUIPanel> pnlButtons;
 			UI::GUIPictureList *plIcons;
 			UI::GUIButton *btnOK;
 			UI::GUIButton *btnCancel;

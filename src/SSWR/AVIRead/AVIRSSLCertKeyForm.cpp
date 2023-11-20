@@ -220,7 +220,7 @@ SSWR::AVIRead::AVIRSSLCertKeyForm::AVIRSSLCertKeyForm(UI::GUIClientControl *pare
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 	this->HandleFormClosed(OnFormClosed, this);
 
-	NEW_CLASS(this->pnlCurr, UI::GUIPanel(ui, this));
+	NEW_CLASSNN(this->pnlCurr, UI::GUIPanel(ui, *this));
 	this->pnlCurr->SetRect(0, 0, 100, 55, false);
 	this->pnlCurr->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->lblCurrCert, UI::GUILabel(ui, this->pnlCurr, CSTR("Curr Cert")));
@@ -233,7 +233,7 @@ SSWR::AVIRead::AVIRSSLCertKeyForm::AVIRSSLCertKeyForm(UI::GUIClientControl *pare
 	NEW_CLASS(this->txtCurrKey, UI::GUITextBox(ui, this->pnlCurr, CSTR("")));
 	this->txtCurrKey->SetRect(104, 28, 200, 23, false);
 	this->txtCurrKey->SetReadOnly(true);
-	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, this));
+	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, *this));
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	this->tpFile = this->tcMain->AddTabPage(CSTR("File"));

@@ -8,7 +8,7 @@
 
 #include <windows.h>
 
-UI::GUILabel::GUILabel(NotNullPtr<UI::GUICore> ui, UI::GUIClientControl *parent, Text::CStringNN initText) : UI::GUIControl(ui, parent)
+UI::GUILabel::GUILabel(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, Text::CStringNN initText) : UI::GUIControl(ui, parent)
 {
 	this->hasTextColor = false;
 	this->textColor = 0;

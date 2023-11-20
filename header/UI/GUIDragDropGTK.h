@@ -47,6 +47,5 @@ namespace UI
 		void OnDragLeave();		
 		Bool OnDragDrop(void *context, OSInt x, OSInt y, UInt32 time);
 	};
-};
-
+}
 #endif

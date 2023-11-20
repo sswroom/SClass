@@ -178,11 +178,11 @@ SSWR::AVIRead::AVIRGISGroupQueryForm::AVIRGISGroupQueryForm(UI::GUIClientControl
 	this->SetText(sb.ToCString());
 	this->SetFont(0, 0, 8.25, false);
 
-	NEW_CLASS(this->txtLayer, UI::GUITextBox(ui, this, CSTR("")));
+	NEW_CLASS(this->txtLayer, UI::GUITextBox(ui, *this, CSTR("")));
 	this->txtLayer->SetRect(0, 0, 100, 23, false);
 	this->txtLayer->SetReadOnly(true);
 	this->txtLayer->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->lvInfo, UI::GUIListView(ui, this, UI::GUIListView::LVSTYLE_TABLE, 2));
+	NEW_CLASS(this->lvInfo, UI::GUIListView(ui, *this, UI::GUIListView::LVSTYLE_TABLE, 2));
 	this->lvInfo->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvInfo->AddColumn(CSTR("Name"), 100);
 	this->lvInfo->AddColumn(CSTR("Value"), 300);

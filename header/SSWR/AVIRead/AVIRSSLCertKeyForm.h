@@ -26,21 +26,21 @@ namespace SSWR
 			Crypto::Cert::X509File *key;
 			Data::ArrayListNN<Crypto::Cert::X509Cert> caCerts;
 
-			UI::GUIPanel *pnlCurr;
+			NotNullPtr<UI::GUIPanel> pnlCurr;
 			UI::GUILabel *lblCurrCert;
 			UI::GUITextBox *txtCurrCert;
 			UI::GUILabel *lblCurrKey;
 			UI::GUITextBox *txtCurrKey;
 			UI::GUITabControl *tcMain;
 
-			UI::GUITabPage *tpFile;
+			NotNullPtr<UI::GUITabPage> tpFile;
 			UI::GUIButton *btnFileCert;
 			UI::GUILabel *lblFileCert;
 			UI::GUIButton *btnFileKey;
 			UI::GUILabel *lblFileKey;
 			UI::GUIButton *btnFileConfirm;
 
-			UI::GUITabPage *tpGenerate;
+			NotNullPtr<UI::GUITabPage> tpGenerate;
 			UI::GUILabel *lblGenCountry;
 			UI::GUITextBox *txtGenCountry;
 			UI::GUILabel *lblGenCompany;

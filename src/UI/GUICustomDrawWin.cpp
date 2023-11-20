@@ -227,7 +227,7 @@ void UI::GUICustomDraw::InitJS()
 	}
 }
 
-UI::GUICustomDraw::GUICustomDraw(NotNullPtr<UI::GUICore> ui, UI::GUIClientControl *parent, NotNullPtr<Media::DrawEngine> eng) : UI::GUIControl(ui, parent)
+UI::GUICustomDraw::GUICustomDraw(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, NotNullPtr<Media::DrawEngine> eng) : UI::GUIControl(ui, parent)
 {
 	this->eng = eng;
 	NEW_CLASS(this->lib, IO::Library((const UTF8Char*)"User32.dll"));

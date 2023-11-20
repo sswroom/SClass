@@ -20,28 +20,28 @@ namespace SSWR
 			{
 			private:
 				UI::GUITabControl *tcHeader;
-				UI::GUITabPage *tpHeading;
+				NotNullPtr<UI::GUITabPage> tpHeading;
 				UI::GUIListView *lvRecp;
-				UI::GUIPanel *pnlFrom;
+				NotNullPtr<UI::GUIPanel> pnlFrom;
 				UI::GUILabel *lblFrom;
 				UI::GUITextBox *txtFrom;
-				UI::GUIPanel *pnlSubject;
+				NotNullPtr<UI::GUIPanel> pnlSubject;
 				UI::GUILabel *lblSubject;
 				UI::GUITextBox *txtSubject;
-				UI::GUIPanel *pnlDate;
+				NotNullPtr<UI::GUIPanel> pnlDate;
 				UI::GUILabel *lblDate;
 				UI::GUITextBox *txtDate;
 
-				UI::GUITabPage *tpRAW;
+				NotNullPtr<UI::GUITabPage> tpRAW;
 				UI::GUIListView *lvRAW;
 
-				UI::GUIPanel *pnlContent;
+				NotNullPtr<UI::GUIPanel> pnlContent;
 
 				Text::MIMEObj::MailMessage *mail;
 				SSWR::AVIRead::MIMEViewer::AVIRMIMEViewer *viewer;
 
 			public:
-				AVIRMailViewer(NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<UI::GUICore> ui, UI::GUIClientControl *ctrl, NotNullPtr<Media::ColorManagerSess> sess, Text::MIMEObj::MailMessage *mail);
+				AVIRMailViewer(NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIClientControl> ctrl, NotNullPtr<Media::ColorManagerSess> sess, Text::MIMEObj::MailMessage *mail);
 				virtual ~AVIRMailViewer();
 			};
 		}

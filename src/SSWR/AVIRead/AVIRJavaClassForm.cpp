@@ -20,7 +20,7 @@ SSWR::AVIRead::AVIRJavaClassForm::AVIRJavaClassForm(UI::GUIClientControl *parent
 	sb.Append(clsFile->GetSourceNameObj());
 	this->SetText(sb.ToCString());
 
-	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, this));
+	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, *this));
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	this->tpFileStruct = this->tcMain->AddTabPage(CSTR("File Structure"));

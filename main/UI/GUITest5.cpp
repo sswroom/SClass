@@ -21,15 +21,15 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	NotNullPtr<UI::GUICore> core;
 	if (core.Set(progCtrl->CreateGUICore(progCtrl)))
 	{
-		UI::GUIForm *frm;
-		NEW_CLASS(frm, UI::GUIForm(0, 640, 480, core));
+		NotNullPtr<UI::GUIForm> frm;
+		NEW_CLASSNN(frm, UI::GUIForm(0, 640, 480, core));
 		frm->SetText(CSTR("GUI Test 5"));
 		NEW_CLASS(lb, UI::GUIListBox(core, frm, false));
 		lb->SetDockType(UI::GUIControl::DOCK_FILL);
 		lb->AddItem(CSTR("Item 1"), 0);
 		lb->AddItem(CSTR("Item 2"), 0);
 		lb->AddItem(CSTR("Item 3"), 0);
-		lb->HandleDoubleClicked(OnLBDblClick, frm);
+		lb->HandleDoubleClicked(OnLBDblClick, frm.Ptr());
 		frm->SetExitOnClose(true);
 		frm->Show();
 		core->Run();

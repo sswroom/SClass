@@ -1339,10 +1339,10 @@ SSWR::DiscDB::DiscDBBurntDiscForm::DiscDBBurntDiscForm(UI::GUIClientControl *par
 	this->selectedFile = 0;
 	NEW_CLASS(this->fileList, Data::ArrayList<BurntFile*>());
 
-	NEW_CLASS(this->pnlTop, UI::GUIPanel(ui, this));
+	NEW_CLASSNN(this->pnlTop, UI::GUIPanel(ui, *this));
 	this->pnlTop->SetRect(0, 0, 624, 121, false);
 	this->pnlTop->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->pnlBurntDisc, UI::GUIPanel(ui, this->pnlTop));
+	NEW_CLASSNN(this->pnlBurntDisc, UI::GUIPanel(ui, this->pnlTop));
 	this->pnlBurntDisc->SetRect(0, 0, 472, 121, false);
 	this->pnlBurntDisc->SetDockType(UI::GUIControl::DOCK_LEFT);
 	NEW_CLASS(this->btnBrowse, UI::GUIButton(ui, this->pnlBurntDisc, CSTR("&Browse")));
@@ -1376,7 +1376,7 @@ SSWR::DiscDB::DiscDBBurntDiscForm::DiscDBBurntDiscForm(UI::GUIClientControl *par
 	this->lbDVDName->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lbDVDName->HandleSelectionChange(OnDVDNameSelChg, this);
 
-	NEW_CLASS(this->pnlFile, UI::GUIPanel(ui, this));
+	NEW_CLASSNN(this->pnlFile, UI::GUIPanel(ui, *this));
 	this->pnlFile->SetRect(416, 121, 208, 335, false);
 	this->pnlFile->SetDockType(UI::GUIControl::DOCK_RIGHT);
 	NEW_CLASS(this->lblCategory, UI::GUILabel(ui, this->pnlFile, CSTR("Category")));
@@ -1384,7 +1384,7 @@ SSWR::DiscDB::DiscDBBurntDiscForm::DiscDBBurntDiscForm(UI::GUIClientControl *par
 	NEW_CLASS(this->cboCategory, UI::GUIComboBox(ui, this->pnlFile, false));
 	this->cboCategory->SetRect(80, 17, 121, 21, false);
 	this->cboCategory->HandleSelectionChange(OnCategorySelChg, this);
-	NEW_CLASS(this->pnlDVDV, UI::GUIPanel(ui, this->pnlFile));
+	NEW_CLASSNN(this->pnlDVDV, UI::GUIPanel(ui, this->pnlFile));
 	this->pnlDVDV->SetRect(0, 43, 208, 165, false);
 	NEW_CLASS(this->lblDVDName, UI::GUILabel(ui, this->pnlDVDV, CSTR("Name")));
 	this->lblDVDName->SetRect(8, 17, 48, 25, false);
@@ -1424,7 +1424,7 @@ SSWR::DiscDB::DiscDBBurntDiscForm::DiscDBBurntDiscForm(UI::GUIClientControl *par
 	NEW_CLASS(this->btnSectorSize, UI::GUIButton(ui, this->pnlFile, CSTR("Apply")));
 	this->btnSectorSize->SetRect(120, 303, 75, 25, false);
 	this->btnSectorSize->HandleButtonClick(OnSectorSizeClicked, this);
-	NEW_CLASS(this->lbFileName, UI::GUIListBox(ui, this, false));
+	NEW_CLASS(this->lbFileName, UI::GUIListBox(ui, *this, false));
 	this->lbFileName->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lbFileName->HandleSelectionChange(OnFileNameSelChg, this);
 

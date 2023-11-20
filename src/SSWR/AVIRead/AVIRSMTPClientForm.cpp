@@ -108,7 +108,7 @@ SSWR::AVIRead::AVIRSMTPClientForm::AVIRSMTPClientForm(UI::GUIClientControl *pare
 	this->ssl = Net::SSLEngineFactory::Create(this->core->GetSocketFactory(), true);
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASS(this->pnlControl, UI::GUIPanel(ui, this));
+	NEW_CLASSNN(this->pnlControl, UI::GUIPanel(ui, *this));
 	this->pnlControl->SetRect(0, 0, 300, 23, false);
 	this->pnlControl->SetDockType(UI::GUIControl::DOCK_LEFT);
 	NEW_CLASS(this->lblHost, UI::GUILabel(ui, this->pnlControl, CSTR("Host")));
@@ -163,7 +163,7 @@ SSWR::AVIRead::AVIRSMTPClientForm::AVIRSMTPClientForm(UI::GUIClientControl *pare
 	NEW_CLASS(this->btnSend, UI::GUIButton(ui, this->pnlControl, CSTR("Send")));
 	this->btnSend->SetRect(4, 364, 75, 23, false);
 	this->btnSend->HandleButtonClick(OnSendClicked, this);
-	NEW_CLASS(this->txtLog, UI::GUITextBox(ui, this, CSTR(""), true));
+	NEW_CLASS(this->txtLog, UI::GUITextBox(ui, *this, CSTR(""), true));
 	this->txtLog->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->txtLog->SetReadOnly(true);
 }

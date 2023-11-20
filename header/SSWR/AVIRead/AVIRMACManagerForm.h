@@ -38,13 +38,13 @@ namespace SSWR
 		private:
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 
-			UI::GUIPanel *pnlControl;
+			NotNullPtr<UI::GUIPanel> pnlControl;
 			UI::GUIButton *btnStore;
 			UI::GUILabel *lblInfo;
 			UI::GUITabControl *tcMain;
 
-			UI::GUITabPage *tpFile;
-			UI::GUIPanel *pnlFile;
+			NotNullPtr<UI::GUITabPage> tpFile;
+			NotNullPtr<UI::GUIPanel> pnlFile;
 			UI::GUILabel *lblFile;
 			UI::GUITextBox *txtFile;
 			UI::GUIButton *btnFile;
@@ -52,12 +52,12 @@ namespace SSWR
 			UI::GUIVSplitter *vspFile;
 			UI::GUIListView *lvContent;
 
-			UI::GUITabPage *tpInput;
+			NotNullPtr<UI::GUITabPage> tpInput;
 			UI::GUILabel *lblInput;
 			UI::GUITextBox *txtInput;
 			UI::GUIButton *btnInput;
 
-			UI::GUITabPage *tpWireshark;
+			NotNullPtr<UI::GUITabPage> tpWireshark;
 			UI::GUIButton *btnWireshark;
 
 			Data::ArrayList<LogFileEntry*> logList;

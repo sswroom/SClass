@@ -20,7 +20,7 @@ namespace SSWR
 		private:
 			UI::GUITabControl *tcMain;
 
-			UI::GUITabPage *tpChar;
+			NotNullPtr<UI::GUITabPage> tpChar;
 			UI::GUIListBox *lbChar;
 			UI::GUIHSplitter *hspChar;
 			UI::GUIPictureBoxDD *pbChar;

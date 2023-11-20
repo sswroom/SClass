@@ -7,7 +7,8 @@ namespace Exporter
 	class GUIExporter : public IO::FileExporter
 	{
 	private:
-		void *clsData;
+		struct ClassData;
+		ClassData *clsData;
 
 	public:
 		GUIExporter();

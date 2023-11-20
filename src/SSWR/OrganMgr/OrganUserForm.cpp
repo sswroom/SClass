@@ -57,7 +57,7 @@ SSWR::OrganMgr::OrganUserForm::OrganUserForm(UI::GUIClientControl *parent, NotNu
 
 	this->SetText(this->env->GetLang(CSTR("UserFormTitle")));
 
-	NEW_CLASS(this->pnlCtrl, UI::GUIPanel(ui, this));
+	NEW_CLASSNN(this->pnlCtrl, UI::GUIPanel(ui, *this));
 	this->pnlCtrl->SetRect(0, 0, 100, 32, false);
 	this->pnlCtrl->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->btnAdd, UI::GUIButton(ui, this->pnlCtrl, this->env->GetLang(CSTR("UserFormAdd"))));
@@ -66,7 +66,7 @@ SSWR::OrganMgr::OrganUserForm::OrganUserForm(UI::GUIClientControl *parent, NotNu
 	NEW_CLASS(this->btnModify, UI::GUIButton(ui, this->pnlCtrl, this->env->GetLang(CSTR("UserFormModify"))));
 	this->btnModify->SetRect(84, 4, 75, 23, false);
 	this->btnModify->HandleButtonClick(OnModifyClicked, this);
-	NEW_CLASS(this->lvUser, UI::GUIListView(ui, this, UI::GUIListView::LVSTYLE_TABLE, 3));
+	NEW_CLASS(this->lvUser, UI::GUIListView(ui, *this, UI::GUIListView::LVSTYLE_TABLE, 3));
 	this->lvUser->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvUser->SetShowGrid(true);
 	this->lvUser->SetFullRowSelect(true);

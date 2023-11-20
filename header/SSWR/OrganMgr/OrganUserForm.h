@@ -15,7 +15,7 @@ namespace SSWR
 		{
 		private:
 			OrganEnv *env;
-			UI::GUIPanel *pnlCtrl;
+			NotNullPtr<UI::GUIPanel> pnlCtrl;
 			UI::GUIButton *btnAdd;
 			UI::GUIButton *btnModify;
 			UI::GUIListView *lvUser;

@@ -64,10 +64,10 @@ SSWR::AVIRead::AVIRGISImageForm::AVIRGISImageForm(UI::GUIClientControl *parent, 
 
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
-	NEW_CLASS(this->lbl, UI::GUILabel(ui, this, CSTR("Drag and drop to add icons")));
+	NEW_CLASS(this->lbl, UI::GUILabel(ui, *this, CSTR("Drag and drop to add icons")));
 	this->lbl->SetRect(0, 0, 100, 23, false);
 	this->lbl->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->pnlButtons, UI::GUIPanel(ui, this));
+	NEW_CLASSNN(this->pnlButtons, UI::GUIPanel(ui, *this));
 	this->pnlButtons->SetRect(0, 0, 456, 48, false);
 	this->pnlButtons->SetDockType(UI::GUIControl::DOCK_BOTTOM);
 	NEW_CLASS(this->btnOK, UI::GUIButton(ui, this->pnlButtons, CSTR("&OK")));
@@ -76,7 +76,7 @@ SSWR::AVIRead::AVIRGISImageForm::AVIRGISImageForm(UI::GUIClientControl *parent, 
 	NEW_CLASS(this->btnCancel, UI::GUIButton(ui, this->pnlButtons, CSTR("&Cancel")));
 	this->btnCancel->SetRect(264, 8, 100, 23, false);
 	this->btnCancel->HandleButtonClick(OnCancelClick, this);
-	NEW_CLASS(this->plIcons, UI::GUIPictureList(ui, this, core->GetDrawEngine(), true, Math::Size2D<UOSInt>(48, 48)));
+	NEW_CLASS(this->plIcons, UI::GUIPictureList(ui, *this, core->GetDrawEngine(), true, Math::Size2D<UOSInt>(48, 48)));
 	this->plIcons->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->plIcons->HandleDblClk(OnOKClick, this);
 

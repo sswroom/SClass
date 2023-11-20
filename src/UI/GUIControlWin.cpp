@@ -46,22 +46,23 @@ void UI::GUIControl::InitControl(void *hInst, void *parentHWnd, const WChar *cla
 	UpdateFont();
 }
 
-void UI::GUIControl::InitControl(void *hInst, UI::GUIClientControl *parent, const WChar *className, const UTF8Char *txt, UInt32 style, UInt32 exStyle, Double x, Double y, Double w, Double h)
+void UI::GUIControl::InitControl(void *hInst, Optional<UI::GUIClientControl> parent, const WChar *className, const UTF8Char *txt, UInt32 style, UInt32 exStyle, Double x, Double y, Double w, Double h)
 {
 	this->fontHeightPt = 0.0;
-	if (parent)
+	NotNullPtr<GUIClientControl> nnparent;
+	if (parent.SetTo(nnparent))
 	{
-		Math::Coord2DDbl ofst = parent->GetClientOfst();
-		this->hdpi = parent->GetHDPI();
-		this->ddpi = parent->GetDDPI();
+		Math::Coord2DDbl ofst = nnparent->GetClientOfst();
+		this->hdpi = nnparent->GetHDPI();
+		this->ddpi = nnparent->GetDDPI();
 		if (txt == 0)
 		{
-			this->hwnd = (ControlHandle*)CreateWindowExW(exStyle, className, 0, style, Double2Int32((x + ofst.x) * this->hdpi / this->ddpi), Double2Int32((y + ofst.y) * this->hdpi / this->ddpi), Double2Int32(w * this->hdpi / this->ddpi), Double2Int32(h * this->hdpi / this->ddpi), (HWND)parent->GetHandle(), 0, (HINSTANCE)hInst, 0);
+			this->hwnd = (ControlHandle*)CreateWindowExW(exStyle, className, 0, style, Double2Int32((x + ofst.x) * this->hdpi / this->ddpi), Double2Int32((y + ofst.y) * this->hdpi / this->ddpi), Double2Int32(w * this->hdpi / this->ddpi), Double2Int32(h * this->hdpi / this->ddpi), (HWND)nnparent->GetHandle(), 0, (HINSTANCE)hInst, 0);
 		}
 		else
 		{
 			const WChar *wptr = Text::StrToWCharNew(txt);
-			this->hwnd = (ControlHandle*)CreateWindowExW(exStyle, className, wptr, style, Double2Int32((x + ofst.x) * this->hdpi / this->ddpi), Double2Int32((y + ofst.y) * this->hdpi / this->ddpi), Double2Int32(w * this->hdpi / this->ddpi), Double2Int32(h * this->hdpi / this->ddpi), (HWND)parent->GetHandle(), 0, (HINSTANCE)hInst, 0);
+			this->hwnd = (ControlHandle*)CreateWindowExW(exStyle, className, wptr, style, Double2Int32((x + ofst.x) * this->hdpi / this->ddpi), Double2Int32((y + ofst.y) * this->hdpi / this->ddpi), Double2Int32(w * this->hdpi / this->ddpi), Double2Int32(h * this->hdpi / this->ddpi), (HWND)nnparent->GetHandle(), 0, (HINSTANCE)hInst, 0);
 			Text::StrDelNew(wptr);
 		}
 		this->lxPos = x;
@@ -94,7 +95,7 @@ void UI::GUIControl::InitControl(void *hInst, UI::GUIClientControl *parent, cons
 //	UpdateBGColor();
 }
 
-UI::GUIControl::GUIControl(NotNullPtr<GUICore> ui, UI::GUIClientControl *parent)
+UI::GUIControl::GUIControl(NotNullPtr<GUICore> ui, Optional<UI::GUIClientControl> parent)
 {
 	this->dropHdlr = 0;
 	this->inited = false;
@@ -108,11 +109,12 @@ UI::GUIControl::GUIControl(NotNullPtr<GUICore> ui, UI::GUIClientControl *parent)
 	this->fontName = 0;
 	this->fontHeightPt = 0;
 	this->fontIsBold = false;
-	if (parent)
+	NotNullPtr<GUIClientControl> nnparent;
+	if (parent.SetTo(nnparent))
 	{
-		this->hdpi = parent->GetHDPI();
-		this->ddpi = parent->GetDDPI();
-		parent->AddChild(this);
+		this->hdpi = nnparent->GetHDPI();
+		this->ddpi = nnparent->GetDDPI();
+		nnparent->AddChild(this);
 	}
 	else
 	{
@@ -155,13 +157,14 @@ void *UI::GUIControl::GetHInst()
 
 void *UI::GUIControl::GetFont()
 {
+	NotNullPtr<GUIClientControl> nnparent;
 	if (hFont)
 	{
 		return hFont;
 	}
-	else if (this->parent)
+	else if (this->parent.SetTo(nnparent))
 	{
-		return this->parent->GetFont();
+		return nnparent->GetFont();
 	}
 	else
 	{
@@ -248,9 +251,10 @@ void UI::GUIControl::SetArea(Double left, Double top, Double right, Double botto
 	if (left == this->lxPos && top == this->lyPos && right == this->lxPos2 && bottom == this->lyPos2)
 		return;
 	Math::Coord2DDbl ofst = Math::Coord2DDbl(0, 0);
-	if (this->parent)
+	NotNullPtr<GUIClientControl> nnparent;
+	if (this->parent.SetTo(nnparent))
 	{
-		ofst = this->parent->GetClientOfst();
+		ofst = nnparent->GetClientOfst();
 	}
 	this->lxPos = left;
 	this->lyPos = top;
@@ -267,9 +271,10 @@ void UI::GUIControl::SetArea(Double left, Double top, Double right, Double botto
 void UI::GUIControl::SetAreaP(OSInt left, OSInt top, OSInt right, OSInt bottom, Bool updateScn)
 {
 	Math::Coord2DDbl ofst = Math::Coord2DDbl(0, 0);
-	if (this->parent)
+	NotNullPtr<GUIClientControl> nnparent;
+	if (this->parent.SetTo(nnparent))
 	{
-		ofst = this->parent->GetClientOfst();
+		ofst = nnparent->GetClientOfst();
 	}
 	this->lxPos = OSInt2Double(left) * this->ddpi / this->hdpi;
 	this->lyPos = OSInt2Double(top) * this->ddpi / this->hdpi;
@@ -331,12 +336,13 @@ void UI::GUIControl::InitFont()
 
 void UI::GUIControl::SetDockType(UI::GUIControl::DockType dockType)
 {
+	NotNullPtr<GUIClientControl> nnparent;
 	if (this->dockType != dockType)
 	{
 		this->dockType = dockType;
-		if (this->parent)
+		if (this->parent.SetTo(nnparent))
 		{
-			this->parent->UpdateChildrenSize(true);
+			nnparent->UpdateChildrenSize(true);
 		}
 	}
 }
@@ -382,9 +388,10 @@ void UI::GUIControl::SetVisible(Bool isVisible)
 	}
 	if (changed && this->dockType != UI::GUIControl::DOCK_NONE)
 	{
-		if (this->parent)
+		NotNullPtr<GUIClientControl> nnparent;
+		if (this->parent.SetTo(nnparent))
 		{
-			this->parent->UpdateChildrenSize(true);
+			nnparent->UpdateChildrenSize(true);
 		}
 	}
 #endif
@@ -419,16 +426,18 @@ void *UI::GUIControl::GetBGBrush()
 {
 	if (this->hbrBackground)
 		return this->hbrBackground;
-	if (this->parent)
-		return this->parent->GetBGBrush();
+	NotNullPtr<GUIClientControl> nnparent;
+	if (this->parent.SetTo(nnparent))
+		return nnparent->GetBGBrush();
 	return 0;
 }
 
 Bool UI::GUIControl::IsFormFocused()
 {
-	if (this->parent)
+	NotNullPtr<GUIClientControl> nnparent;
+	if (this->parent.SetTo(nnparent))
 	{
-		return this->parent->IsFormFocused();
+		return nnparent->IsFormFocused();
 	}
 	else
 	{
@@ -537,9 +546,10 @@ void UI::GUIControl::UpdatePos(Bool redraw)
 	}
 #endif
 
-	if (this->parent)
+	NotNullPtr<GUIClientControl> nnparent;
+	if (this->parent.SetTo(nnparent))
 	{
-		Math::Coord2DDbl ofst = this->parent->GetClientOfst();
+		Math::Coord2DDbl ofst = nnparent->GetClientOfst();
 		MoveWindow((HWND)hwnd, Double2Int32((this->lxPos + ofst.x) * this->hdpi / this->ddpi), Double2Int32((this->lyPos + ofst.y) * this->hdpi / this->ddpi), Double2Int32((this->lxPos2 - this->lxPos) * this->hdpi / this->ddpi), Double2Int32((this->lyPos2 - this->lyPos) * this->hdpi / this->ddpi), redraw?TRUE:FALSE);
 	}
 	else
@@ -681,7 +691,7 @@ UInt32 UI::GUIControl::GetColorHightlightText()
 	return FromGDIColor(v);
 }
 
-UI::GUIClientControl *UI::GUIControl::GetParent()
+Optional<UI::GUIClientControl> UI::GUIControl::GetParent()
 {
 	return this->parent;
 }
@@ -695,10 +705,10 @@ UI::GUIForm *UI::GUIControl::GetRootForm()
 		objCls = ctrl->GetObjectClass();
 		if (objCls.Equals(UTF8STRC("WinForm")))
 		{
-			if (ctrl->GetParent() == 0)
+			if (ctrl->GetParent().IsNull())
 				return (UI::GUIForm*)ctrl;
 		}
-		ctrl = ctrl->GetParent();
+		ctrl = ctrl->GetParent().OrNull();
 	}
 	return 0;
 }

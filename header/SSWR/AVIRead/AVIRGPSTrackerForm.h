@@ -27,7 +27,7 @@ namespace SSWR
 			private:
 				AVIRGPSTrackerForm *frm;
 			public:
-				DisplayOffButton(NotNullPtr<UI::GUICore> ui, UI::GUIClientControl *parent, Text::CStringNN txt, AVIRGPSTrackerForm *frm);
+				DisplayOffButton(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, Text::CStringNN txt, AVIRGPSTrackerForm *frm);
 				virtual ~DisplayOffButton();
 
 				virtual void OnFocusLost();
@@ -60,7 +60,7 @@ namespace SSWR
 
 			UI::GUITabControl *tcMain;
 
-			UI::GUITabPage *tpLocation;
+			NotNullPtr<UI::GUITabPage> tpLocation;
 			UI::GUILabel *lblStreamStatus;
 			UI::GUITextBox *txtStreamStatus;
 			UI::GUILabel *lblGPSTime;
@@ -102,18 +102,18 @@ namespace SSWR
 			UI::GUILabel *lblDistance;
 			UI::GUITextBox *txtDistance;
 
-			UI::GUITabPage *tpAlert;
+			NotNullPtr<UI::GUITabPage> tpAlert;
 			UI::GUITabControl *tcAlert;
-			UI::GUITabPage *tpAlertAdd;
+			NotNullPtr<UI::GUITabPage> tpAlertAdd;
 			UI::GUIListBox *lbAlertLyr;
 			UI::GUIHSplitter *hspAlertAdd;
 			UI::GUIListBox *lbAlertAdd;
-			UI::GUITabPage *tpAlertView;
-			UI::GUIPanel *pnlAlertView;
+			NotNullPtr<UI::GUITabPage> tpAlertView;
+			NotNullPtr<UI::GUIPanel> pnlAlertView;
 			UI::GUIListBox *lbAlert;
 
-			UI::GUITabPage *tpMTK;
-			UI::GUIGroupBox *grpMTKFirmware;
+			NotNullPtr<UI::GUITabPage> tpMTK;
+			NotNullPtr<UI::GUIGroupBox> grpMTKFirmware;
 			UI::GUILabel *lblMTKRelease;
 			UI::GUITextBox *txtMTKRelease;
 			UI::GUILabel *lblMTKBuildID;
@@ -128,10 +128,10 @@ namespace SSWR
 			UI::GUIButton *btnMTKFactoryReset;
 			UI::GUIButton *btnMTKTest;
 
-			UI::GUITabPage *tpSate;
+			NotNullPtr<UI::GUITabPage> tpSate;
 			UI::GUIListView *lvSate;
 
-			UI::GUITabPage *tpNMEA;
+			NotNullPtr<UI::GUITabPage> tpNMEA;
 			UI::GUIListBox *lbNMEA;
 
 			static void __stdcall OnGPSUpdate(void *userObj, NotNullPtr<Map::GPSTrack::GPSRecord3> record, Data::DataArray<Map::ILocationService::SateStatus> sates);

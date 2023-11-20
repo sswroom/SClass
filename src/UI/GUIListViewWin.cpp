@@ -15,7 +15,7 @@
 
 OSInt UI::GUIListView::useCnt = 0;
 
-UI::GUIListView::GUIListView(NotNullPtr<UI::GUICore> ui, UI::GUIClientControl *parent, ListViewStyle lvstyle, UOSInt colCount) : UI::GUIControl(ui, parent)
+UI::GUIListView::GUIListView(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, ListViewStyle lvstyle, UOSInt colCount) : UI::GUIControl(ui, parent)
 {
 	if (Sync::Interlocked::IncrementOS(useCnt) == 1)
 	{

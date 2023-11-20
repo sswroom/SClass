@@ -140,7 +140,7 @@ SSWR::AVIRead::AVIRSyslogServerForm::AVIRSyslogServerForm(UI::GUIClientControl *
 	this->ipListUpd = false;
 	this->msgListUpd = false;
 
-	NEW_CLASS(this->pnlControl, UI::GUIPanel(ui, this));
+	NEW_CLASSNN(this->pnlControl, UI::GUIPanel(ui, *this));
 	this->pnlControl->SetRect(0, 0, 100, 31, false);
 	this->pnlControl->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->lblPort, UI::GUILabel(ui, this->pnlControl, CSTR("Port")));
@@ -150,16 +150,16 @@ SSWR::AVIRead::AVIRSyslogServerForm::AVIRSyslogServerForm(UI::GUIClientControl *
 	NEW_CLASS(this->btnStart, UI::GUIButton(ui, this->pnlControl, CSTR("Start")));
 	this->btnStart->SetRect(204, 4, 75, 23, false);
 	this->btnStart->HandleButtonClick(OnStartClick, this);
-	NEW_CLASS(this->lbClient, UI::GUIListBox(ui, this, false));
+	NEW_CLASS(this->lbClient, UI::GUIListBox(ui, *this, false));
 	this->lbClient->SetRect(0, 0, 150, 23, false);
 	this->lbClient->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbClient->HandleSelectionChange(OnClientSelChg, this);
-	NEW_CLASS(this->hspClient, UI::GUIHSplitter(ui, this, 3, false));
-	NEW_CLASS(this->txtLog, UI::GUITextBox(ui, this, CSTR("")));
+	NEW_CLASS(this->hspClient, UI::GUIHSplitter(ui, *this, 3, false));
+	NEW_CLASS(this->txtLog, UI::GUITextBox(ui, *this, CSTR("")));
 	this->txtLog->SetRect(0, 0, 100, 23, false);
 	this->txtLog->SetReadOnly(true);
 	this->txtLog->SetDockType(UI::GUIControl::DOCK_BOTTOM);
-	NEW_CLASS(this->lbLog, UI::GUIListBox(ui, this, false));
+	NEW_CLASS(this->lbLog, UI::GUIListBox(ui, *this, false));
 	this->lbLog->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lbLog->HandleSelectionChange(OnLogSelChg, this);
 

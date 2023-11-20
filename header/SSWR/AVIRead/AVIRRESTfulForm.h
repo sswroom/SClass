@@ -36,8 +36,8 @@ namespace SSWR
 
 			UI::GUITabControl *tcMain;
 
-			UI::GUITabPage *tpControl;
-			UI::GUIGroupBox *grpParam;
+			NotNullPtr<UI::GUITabPage> tpControl;
+			NotNullPtr<UI::GUIGroupBox> grpParam;
 			UI::GUILabel *lblPort;
 			UI::GUITextBox *txtPort;
 			UI::GUILabel *lblLogDir;
@@ -55,10 +55,10 @@ namespace SSWR
 			UI::GUIButton *btnStart;
 			UI::GUIButton *btnStop;
 
-			UI::GUITabPage *tpTable;
+			NotNullPtr<UI::GUITabPage> tpTable;
 			UI::GUIListView *lvTable;
 
-			UI::GUITabPage *tpLog;
+			NotNullPtr<UI::GUITabPage> tpLog;
 			NotNullPtr<UI::GUIListBox> lbLog;
 			UI::GUITextBox *txtLog;
 

@@ -25,7 +25,7 @@ namespace SSWR
 			Data::ArrayList<Net::LDAPClient::SearchResObject*> *dispResults;
 			UOSInt rootLev;
 
-			UI::GUIPanel *pnlRequest;
+			NotNullPtr<UI::GUIPanel> pnlRequest;
 			UI::GUILabel *lblHost;
 			UI::GUITextBox *txtHost;
 			UI::GUILabel *lblPort;

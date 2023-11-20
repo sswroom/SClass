@@ -13,7 +13,7 @@ namespace SSWR
 		{
 		private:
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
-			UI::GUIPanel *pnlCtrl;
+			NotNullPtr<UI::GUIPanel> pnlCtrl;
 			UI::GUIButton *btnSave;
 			UI::GUIButton *btnHex;
 			UI::GUITextBox *txtEDID;

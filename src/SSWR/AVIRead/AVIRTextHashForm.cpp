@@ -62,13 +62,13 @@ SSWR::AVIRead::AVIRTextHashForm::AVIRTextHashForm(UI::GUIClientControl *parent, 
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASS(this->lblText, UI::GUILabel(ui, this, CSTR("Text")));
+	NEW_CLASS(this->lblText, UI::GUILabel(ui, *this, CSTR("Text")));
 	this->lblText->SetRect(4, 4, 100, 23, false);
 	this->lblText->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->pnlControl, UI::GUIPanel(ui, this));
+	NEW_CLASSNN(this->pnlControl, UI::GUIPanel(ui, *this));
 	this->pnlControl->SetRect(0, 0, 100, 104, false);
 	this->pnlControl->SetDockType(UI::GUIControl::DOCK_BOTTOM);
-	NEW_CLASS(this->txtText, UI::GUITextBox(ui, this, CSTR(""), true));
+	NEW_CLASS(this->txtText, UI::GUITextBox(ui, *this, CSTR(""), true));
 	this->txtText->SetDockType(UI::GUIControl::DOCK_FILL);
 	NEW_CLASS(this->lblEncrypt, UI::GUILabel(ui, this->pnlControl, CSTR("Text Encrypt")));
 	this->lblEncrypt->SetRect(4, 4, 100, 23, false);

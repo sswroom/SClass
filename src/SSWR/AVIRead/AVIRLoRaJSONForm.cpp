@@ -165,10 +165,10 @@ SSWR::AVIRead::AVIRLoRaJSONForm::AVIRLoRaJSONForm(UI::GUIClientControl *parent, 
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASS(this->pnlJSON, UI::GUIPanel(ui, this));
+	NEW_CLASSNN(this->pnlJSON, UI::GUIPanel(ui, *this));
 	this->pnlJSON->SetRect(0, 0, 100, 103, false);
 	this->pnlJSON->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->pnlJSONCtrl, UI::GUIPanel(ui, this->pnlJSON));
+	NEW_CLASSNN(this->pnlJSONCtrl, UI::GUIPanel(ui, this->pnlJSON));
 	this->pnlJSONCtrl->SetRect(0, 0, 100, 31, false);
 	this->pnlJSONCtrl->SetDockType(UI::GUIControl::DOCK_BOTTOM);
 	NEW_CLASS(this->lblJSON, UI::GUILabel(ui, this->pnlJSON, CSTR("JSON")));
@@ -179,10 +179,10 @@ SSWR::AVIRead::AVIRLoRaJSONForm::AVIRLoRaJSONForm(UI::GUIClientControl *parent, 
 	NEW_CLASS(this->btnJSONParse, UI::GUIButton(ui, this->pnlJSONCtrl, CSTR("Parse")));
 	this->btnJSONParse->SetRect(104, 4, 75, 23, false);
 	this->btnJSONParse->HandleButtonClick(OnJSONParseClick, this);
-	NEW_CLASS(this->lblInfo, UI::GUILabel(ui, this, CSTR("Info")));
+	NEW_CLASS(this->lblInfo, UI::GUILabel(ui, *this, CSTR("Info")));
 	this->lblInfo->SetRect(0, 0, 100, 23, false);
 	this->lblInfo->SetDockType(UI::GUIControl::DOCK_LEFT);
-	NEW_CLASS(this->txtInfo, UI::GUITextBox(ui, this, CSTR(""), true));
+	NEW_CLASS(this->txtInfo, UI::GUITextBox(ui, *this, CSTR(""), true));
 	this->txtInfo->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->txtInfo->SetReadOnly(true);
 }

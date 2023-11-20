@@ -21,14 +21,14 @@ SSWR::SHPConv::SHPConvGroupForm::SHPConvGroupForm(UI::GUIClientControl *parent, 
 	NEW_CLASS(this->monMgr, Media::MonitorMgr());
 	this->SetDPI(this->monMgr->GetMonitorHDPI(this->GetHMonitor()), this->monMgr->GetMonitorDDPI(this->GetHMonitor()));
 	
-	NEW_CLASS(this->lblGroup, UI::GUILabel(ui, this, CSTR("Groups")));
+	NEW_CLASS(this->lblGroup, UI::GUILabel(ui, *this, CSTR("Groups")));
 	this->lblGroup->SetRect(8, 0, 100, 23, false);
-	NEW_CLASS(this->lbGroup, UI::GUIListBox(ui, this, false));
+	NEW_CLASS(this->lbGroup, UI::GUIListBox(ui, *this, false));
 	this->lbGroup->SetRect(8, 24, 264, 121, false);
-	NEW_CLASS(this->btnOk, UI::GUIButton(ui, this, CSTR("&Ok")));
+	NEW_CLASS(this->btnOk, UI::GUIButton(ui, *this, CSTR("&Ok")));
 	this->btnOk->SetRect(40, 152, 75, 23, false);
 	this->btnOk->HandleButtonClick(OnOkClicked, this);
-	NEW_CLASS(this->btnCancel, UI::GUIButton(ui, this, CSTR("&Cancel")));
+	NEW_CLASS(this->btnCancel, UI::GUIButton(ui, *this, CSTR("&Cancel")));
 	this->btnCancel->SetRect(40, 152, 75, 23, false);
 	this->btnCancel->HandleButtonClick(OnCancelClicked, this);
 

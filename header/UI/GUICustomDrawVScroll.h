@@ -33,7 +33,7 @@ namespace UI
 		void ClearBackground(NotNullPtr<Media::DrawImage> img);
 
 	public:
-		GUICustomDrawVScroll(NotNullPtr<UI::GUICore> ui, UI::GUIClientControl *parent, NotNullPtr<Media::DrawEngine> deng);
+		GUICustomDrawVScroll(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, NotNullPtr<Media::DrawEngine> deng);
 		virtual ~GUICustomDrawVScroll();
 
 		virtual Text::CStringNN GetObjectClass() const;

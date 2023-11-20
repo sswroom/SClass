@@ -25,7 +25,7 @@ namespace SSWR
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			Net::SNMPClient *cli;
 
-			UI::GUIPanel *pnlRequest;
+			NotNullPtr<UI::GUIPanel> pnlRequest;
 			UI::GUILabel *lblAgent;
 			UI::GUITextBox *txtAgent;
 			UI::GUILabel *lblCommunity;

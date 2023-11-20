@@ -560,7 +560,7 @@ SSWR::AVIRead::AVIRMQTTExplorerForm::AVIRMQTTExplorerForm(UI::GUIClientControl *
 	this->cliCert = 0;
 	this->cliKey = 0;
 
-	NEW_CLASS(this->pnlConnect, UI::GUIPanel(ui, this));
+	NEW_CLASSNN(this->pnlConnect, UI::GUIPanel(ui, *this));
 	this->pnlConnect->SetRect(0, 0, 100, 103, false);
 	this->pnlConnect->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->lblHost, UI::GUILabel(ui, this->pnlConnect, CSTR("Host")));
@@ -598,7 +598,7 @@ SSWR::AVIRead::AVIRMQTTExplorerForm::AVIRMQTTExplorerForm(UI::GUIClientControl *
 	this->btnStart->HandleButtonClick(OnStartClicked, this);
 	NEW_CLASS(this->lblStatus, UI::GUILabel(ui, this->pnlConnect, CSTR("Not Connected")));
 	this->lblStatus->SetRect(4, 80, 150, 23, false);
-	NEW_CLASS(this->tcDetail, UI::GUITabControl(ui, this));
+	NEW_CLASS(this->tcDetail, UI::GUITabControl(ui, *this));
 	this->tcDetail->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	this->tpRecv = this->tcDetail->AddTabPage(CSTR("Recv"));
@@ -617,14 +617,14 @@ SSWR::AVIRead::AVIRMQTTExplorerForm::AVIRMQTTExplorerForm(UI::GUIClientControl *
 	this->lvRecvTopic->HandleSelChg(OnTopicSelChg, this);
 
 	this->tpPublish = this->tcDetail->AddTabPage(CSTR("Publish"));
-	NEW_CLASS(this->pnlPubTopic, UI::GUIPanel(ui, this->tpPublish));
+	NEW_CLASSNN(this->pnlPubTopic, UI::GUIPanel(ui, this->tpPublish));
 	this->pnlPubTopic->SetRect(0, 0, 100, 31, false);
 	this->pnlPubTopic->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->lblPubTopic, UI::GUILabel(ui, this->pnlPubTopic, CSTR("Topic")));
 	this->lblPubTopic->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtPubTopic, UI::GUITextBox(ui, this->pnlPubTopic, CSTR("")));
 	this->txtPubTopic->SetRect(104, 4, 300, 23, false);
-	NEW_CLASS(this->pnlPubCtrl, UI::GUIPanel(ui, this->tpPublish));
+	NEW_CLASSNN(this->pnlPubCtrl, UI::GUIPanel(ui, this->tpPublish));
 	this->pnlPubCtrl->SetRect(0, 0, 100, 31, false);
 	this->pnlPubCtrl->SetDockType(UI::GUIControl::DOCK_BOTTOM);
 	NEW_CLASS(this->btnPublish, UI::GUIButton(ui, this->pnlPubCtrl, CSTR("Publish")));
@@ -633,16 +633,9 @@ SSWR::AVIRead::AVIRMQTTExplorerForm::AVIRMQTTExplorerForm(UI::GUIClientControl *
 	NEW_CLASS(this->txtPubContent, UI::GUITextBox(ui, this->tpPublish, CSTR(""), true));
 	this->txtPubContent->SetDockType(UI::GUIControl::DOCK_FILL);
 
-	if (this->tpLog.Set(this->tcDetail->AddTabPage(CSTR("Log"))))
-	{
-		this->logger = UI::ListBoxLogger::CreateUI(*this, this->ui, this->tpLog, 500, false);
-		this->log.AddLogHandler(this->logger, IO::LogHandler::LogLevel::Raw);
-	}
-	else
-	{
-		this->logger = UI::ListBoxLogger::CreateUI(*this, this->ui, *this, 500, false);
-		this->log.AddLogHandler(this->logger, IO::LogHandler::LogLevel::Raw);
-	}
+	this->tpLog = this->tcDetail->AddTabPage(CSTR("Log"));
+	this->logger = UI::ListBoxLogger::CreateUI(*this, this->ui, this->tpLog, 500, false);
+	this->log.AddLogHandler(this->logger, IO::LogHandler::LogLevel::Raw);
 
 	this->client = 0;
 

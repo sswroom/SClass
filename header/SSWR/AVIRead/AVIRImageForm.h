@@ -21,12 +21,12 @@ namespace SSWR
 			UI::GUIMainMenu *mnuMain;
 			UI::GUITabControl *tcImage;
 
-			UI::GUITabPage *tpImage;
+			NotNullPtr<UI::GUITabPage> tpImage;
 			UI::GUIPictureBoxDD *pbImage;
 			UI::GUITextBox *txtImageStatus;
 
-			UI::GUITabPage *tpInfo;
-			UI::GUIPanel *pnlInfo;
+			NotNullPtr<UI::GUITabPage> tpInfo;
+			NotNullPtr<UI::GUIPanel> pnlInfo;
 			UI::GUIButton *btnInfoICC;
 			UI::GUITextBox *txtInfo;
 

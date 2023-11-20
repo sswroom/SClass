@@ -116,7 +116,7 @@ void __stdcall SSWR::OrganMgr::OrganBookForm::OnBookAddClicked(void *userObj)
 		return;
 	}
 	Data::DateTime publishDate;
-	me->dtpBookPublish->GetSelectedTime(&publishDate);
+	me->dtpBookPublish->GetSelectedTime(publishDate);
 	if (!me->env->NewBook(sb2.ToCString(), sb.ToCString(), sb3.ToCString(), publishDate.ToTimestamp(), sb4.ToCString()))
 	{
 		UI::MessageDialog::ShowDialog(me->env->GetLang(CSTR("BookFormDBError")), CSTR("Error"), me);
@@ -170,7 +170,7 @@ void __stdcall SSWR::OrganMgr::OrganBookForm::OnBookPasteClicked(void *userObj)
 						sb2.ClearStr();
 						sb2.AppendChar(chars[i - 3], 4);
 						dt.SetValue((UInt16)sb2.ToInt32(), 1, 1, 0, 0, 0, 0);
-						me->dtpBookPublish->SetValue(&dt);
+						me->dtpBookPublish->SetValue(dt);
 						sb.SetSubstr(i + 2);
 						sb.Trim();
 					}
@@ -183,7 +183,7 @@ void __stdcall SSWR::OrganMgr::OrganBookForm::OnBookPasteClicked(void *userObj)
 						sb2.ClearStr();
 						sb2.AppendChar(chars[i - 3], 4);
 						dt.SetValue((UInt16)sb2.ToInt32(), 1, 1, 0, 0, 0, 0);
-						me->dtpBookPublish->SetValue(&dt);
+						me->dtpBookPublish->SetValue(dt);
 						sb.SetSubstr(i + 1);
 						sb.Trim();
 					}
@@ -287,14 +287,14 @@ SSWR::OrganMgr::OrganBookForm::OrganBookForm(UI::GUIClientControl *parent, NotNu
 	this->SetText(this->env->GetLang(CSTR("BookFormTitle")));
 	this->SetFont(0, 0, 10.5, false);
 
-	NEW_CLASS(this->pnlBook, UI::GUIPanel(ui, this));
+	NEW_CLASSNN(this->pnlBook, UI::GUIPanel(ui, *this));
 	this->pnlBook->SetRect(0, 0, 168, 500, false);
 	this->pnlBook->SetDockType(UI::GUIControl::DOCK_RIGHT);
-	NEW_CLASS(this->pnlBookDet, UI::GUIPanel(ui, this->pnlBook));
+	NEW_CLASSNN(this->pnlBookDet, UI::GUIPanel(ui, this->pnlBook));
 	this->pnlBookDet->SetRect(0, 0, 168, 320, false);
 	this->pnlBookDet->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->hspBook, UI::GUIHSplitter(ui, this, 3, true));
-	NEW_CLASS(this->lvBook, UI::GUIListView(ui, this, UI::GUIListView::LVSTYLE_TABLE, 4));
+	NEW_CLASS(this->hspBook, UI::GUIHSplitter(ui, *this, 3, true));
+	NEW_CLASS(this->lvBook, UI::GUIListView(ui, *this, UI::GUIListView::LVSTYLE_TABLE, 4));
 	this->lvBook->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvBook->SetShowGrid(true);
 	this->lvBook->SetFullRowSelect(true);

@@ -20,13 +20,13 @@ namespace SSWR
 		private:
 			IO::VBoxManager vbox;
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
-			UI::GUIPanel *pnlVersion;
+			NotNullPtr<UI::GUIPanel> pnlVersion;
 			UI::GUILabel *lblVersion;
 			UI::GUITextBox *txtVersion;
 			UI::GUIListBox *lbVMS;
 			UI::GUIHSplitter *hspVM;
 			UI::GUITabControl *tcVM;
-			UI::GUITabPage *tpControl;
+			NotNullPtr<UI::GUITabPage> tpControl;
 			UI::GUILabel *lblState;
 			UI::GUITextBox *txtState;
 			UI::GUILabel *lblStateSince;

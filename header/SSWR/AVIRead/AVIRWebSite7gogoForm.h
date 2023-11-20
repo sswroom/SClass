@@ -16,7 +16,7 @@ namespace SSWR
 		class AVIRWebSite7gogoForm : public UI::GUIForm
 		{
 		private:
-			UI::GUIPanel *pnlRequest;
+			NotNullPtr<UI::GUIPanel> pnlRequest;
 			UI::GUILabel *lblChannelId;
 			UI::GUITextBox *txtChannelId;
 			UI::GUIButton *btnRequestPage;

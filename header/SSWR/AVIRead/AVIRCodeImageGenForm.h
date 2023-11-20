@@ -24,7 +24,7 @@ namespace SSWR
 			Media::StaticImage *simg;
 
 			UI::GUIPictureBoxDD *pbMain;
-			UI::GUIPanel *pnlMain;
+			NotNullPtr<UI::GUIPanel> pnlMain;
 			UI::GUILabel *lblCodeType;
 			UI::GUIComboBox *cboCodeType;
 			UI::GUILabel *lblCodeSize;

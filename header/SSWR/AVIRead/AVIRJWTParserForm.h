@@ -27,8 +27,8 @@ namespace SSWR
 
 			UI::GUITextBox *txtJWT;
 			UI::GUIHSplitter *hspJWT;
-			UI::GUIPanel *pnlMain;
-			UI::GUIPanel *pnlResult;
+			NotNullPtr<UI::GUIPanel> pnlMain;
+			NotNullPtr<UI::GUIPanel> pnlResult;
 			UI::GUIButton *btnParse;
 			UI::GUILabel *lblParseStatus;
 			UI::GUITextBox *txtParseStatus;

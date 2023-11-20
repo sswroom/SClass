@@ -16,7 +16,7 @@ namespace UI
 	public:
 		void ChangeSelected(Bool selVal);
 	public:
-		GUIRadioButton(NotNullPtr<GUICore> ui, UI::GUIClientControl *parent, Text::CStringNN initText, Bool selected);
+		GUIRadioButton(NotNullPtr<GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, Text::CStringNN initText, Bool selected);
 		virtual ~GUIRadioButton();
 
 		virtual Text::CStringNN GetObjectClass() const;
@@ -27,6 +27,6 @@ namespace UI
 
 		void HandleSelectedChange(SelectedChangeHandler hdlr, void *userObj);
 	};
-};
+}
 
 #endif

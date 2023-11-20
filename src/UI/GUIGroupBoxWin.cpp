@@ -51,7 +51,7 @@ OSInt __stdcall UI::GUIGroupBox::GBWndProc(void *hWnd, UInt32 msg, UOSInt wParam
 	return 0;
 }
 
-UI::GUIGroupBox::GUIGroupBox(NotNullPtr<UI::GUICore> ui, UI::GUIClientControl *parent, Text::CStringNN text) : UI::GUIClientControl(ui, parent)
+UI::GUIGroupBox::GUIGroupBox(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, Text::CStringNN text) : UI::GUIClientControl(ui, parent)
 {
 	UInt32 style = WS_CLIPSIBLINGS | WS_CHILD | BS_GROUPBOX;
 	if (parent->IsChildVisible())

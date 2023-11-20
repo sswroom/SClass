@@ -85,31 +85,31 @@ SSWR::DiscDB::DiscDBDVDTypeForm::DiscDBDVDTypeForm(UI::GUIClientControl *parent,
 	this->env = env;
 	this->SetDPI(this->env->GetMonitorHDPI(this->GetHMonitor()), this->env->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASS(this->lblID, UI::GUILabel(ui, this, CSTR("ID")));
+	NEW_CLASS(this->lblID, UI::GUILabel(ui, *this, CSTR("ID")));
 	this->lblID->SetRect(8, 9, 80, 25, false);
-	NEW_CLASS(this->txtID, UI::GUITextBox(ui, this, CSTR("")));
+	NEW_CLASS(this->txtID, UI::GUITextBox(ui, *this, CSTR("")));
 	this->txtID->SetRect(96, 9, 100, 20, false);
 	this->txtID->SetReadOnly(true);
-	NEW_CLASS(this->btnNew, UI::GUIButton(ui, this, CSTR("N&ew")));
+	NEW_CLASS(this->btnNew, UI::GUIButton(ui, *this, CSTR("N&ew")));
 	this->btnNew->SetRect(224, 9, 80, 25, false);
-	NEW_CLASS(this->btnCancel, UI::GUIButton(ui, this, CSTR("&Cancel")));
+	NEW_CLASS(this->btnCancel, UI::GUIButton(ui, *this, CSTR("&Cancel")));
 	this->btnCancel->SetRect(224, 43, 80, 25, false);
 	this->btnCancel->SetVisible(false);
-	NEW_CLASS(this->lblName, UI::GUILabel(ui, this, CSTR("Name")));
+	NEW_CLASS(this->lblName, UI::GUILabel(ui, *this, CSTR("Name")));
 	this->lblName->SetRect(8, 43, 80, 25, false);
-	NEW_CLASS(this->txtName, UI::GUITextBox(ui, this, CSTR("")));
+	NEW_CLASS(this->txtName, UI::GUITextBox(ui, *this, CSTR("")));
 	this->txtName->SetRect(96, 43, 100, 20, false);
-	NEW_CLASS(this->lblDescription, UI::GUILabel(ui, this, CSTR("Description")));
+	NEW_CLASS(this->lblDescription, UI::GUILabel(ui, *this, CSTR("Description")));
 	this->lblDescription->SetRect(8, 78, 80, 25, false);
-	NEW_CLASS(this->txtDescription, UI::GUITextBox(ui, this, CSTR("")));
+	NEW_CLASS(this->txtDescription, UI::GUITextBox(ui, *this, CSTR("")));
 	this->txtDescription->SetRect(96, 78, 216, 20, false);
-	NEW_CLASS(this->lblDisplay, UI::GUILabel(ui, this, CSTR("")));
+	NEW_CLASS(this->lblDisplay, UI::GUILabel(ui, *this, CSTR("")));
 	this->lblDisplay->SetRect(8, 113, 304, 26, false);
-	NEW_CLASS(this->btnPrev, UI::GUIButton(ui, this, CSTR("&Prev")));
+	NEW_CLASS(this->btnPrev, UI::GUIButton(ui, *this, CSTR("&Prev")));
 	this->btnPrev->SetRect(8, 147, 75, 25, false);
-	NEW_CLASS(this->btnSave, UI::GUIButton(ui, this, CSTR("&Save")));
+	NEW_CLASS(this->btnSave, UI::GUIButton(ui, *this, CSTR("&Save")));
 	this->btnSave->SetRect(120, 147, 75, 25, false);
-	NEW_CLASS(this->btnNext, UI::GUIButton(ui, this, CSTR("&Next")));
+	NEW_CLASS(this->btnNext, UI::GUIButton(ui, *this, CSTR("&Next")));
 	this->btnNext->SetRect(240, 147, 75, 25, false);
 
     if (this->env->GetDVDTypeCount() <= 0)

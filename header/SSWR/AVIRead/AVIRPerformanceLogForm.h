@@ -28,7 +28,7 @@ namespace SSWR
 			UInt8 *testBuff;
 			Data::Timestamp testTime;
 
-			UI::GUIPanel *pnlCtrl;
+			NotNullPtr<UI::GUIPanel> pnlCtrl;
 			UI::GUIButton *btnStart;
 			UI::GUILabel *lblCurrWRate;
 			UI::GUITextBox *txtCurrWRate;

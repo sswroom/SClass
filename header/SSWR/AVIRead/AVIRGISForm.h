@@ -34,8 +34,8 @@ namespace SSWR
 			UI::GUIMapTreeView *mapTree;
 			UI::GUIHSplitter *splitter;
 
-			UI::GUIPanel *pnlControl;
-			UI::GUIPanel *pnlStatus;
+			NotNullPtr<UI::GUIPanel> pnlControl;
+			NotNullPtr<UI::GUIPanel> pnlStatus;
 			UI::GUITextBox *txtScale;
 			UI::GUITextBox *txtLatLon;
 			UI::GUITextBox *txtUTMGrid;

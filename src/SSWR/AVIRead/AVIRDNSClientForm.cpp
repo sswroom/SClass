@@ -136,7 +136,7 @@ SSWR::AVIRead::AVIRDNSClientForm::AVIRDNSClientForm(UI::GUIClientControl *parent
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 	this->sockf = core->GetSocketFactory();
 
-	NEW_CLASS(this->pnlRequest, UI::GUIPanel(ui, this));
+	NEW_CLASSNN(this->pnlRequest, UI::GUIPanel(ui, *this));
 	this->pnlRequest->SetRect(0, 0, 100, 104, false);
 	this->pnlRequest->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->lblServer, UI::GUILabel(ui, this->pnlRequest, CSTR("DNS Server")));
@@ -168,12 +168,12 @@ SSWR::AVIRead::AVIRDNSClientForm::AVIRDNSClientForm(UI::GUIClientControl *parent
 	NEW_CLASS(this->txtRequestTime, UI::GUITextBox(ui, this->pnlRequest, CSTR("")));
 	this->txtRequestTime->SetRect(124, 76, 150, 23, false);
 	this->txtRequestTime->SetReadOnly(true);
-	NEW_CLASS(this->lbAnswer, UI::GUIListBox(ui, this, false));
+	NEW_CLASS(this->lbAnswer, UI::GUIListBox(ui, *this, false));
 	this->lbAnswer->SetRect(0, 0, 200, 23, false);
 	this->lbAnswer->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbAnswer->HandleSelectionChange(OnAnswerSelChg, this);
-	NEW_CLASS(this->hspAnswer, UI::GUIHSplitter(ui, this, 3, false));
-	NEW_CLASS(this->pnlAnswer, UI::GUIPanel(ui, this));
+	NEW_CLASS(this->hspAnswer, UI::GUIHSplitter(ui, *this, 3, false));
+	NEW_CLASSNN(this->pnlAnswer, UI::GUIPanel(ui, *this));
 	this->pnlAnswer->SetDockType(UI::GUIControl::DOCK_FILL);
 	NEW_CLASS(this->lblAnsName, UI::GUILabel(ui, this->pnlAnswer, CSTR("Name")));
 	this->lblAnsName->SetRect(4, 4, 100, 23, false);

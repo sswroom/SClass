@@ -30,7 +30,7 @@ namespace SSWR
 			Media::StaticImage *previewImage;
 
 			UI::GUIPictureBox *pbPreview;
-			UI::GUIPanel *pnlMain;
+			NotNullPtr<UI::GUIPanel> pnlMain;
 			UI::GUILabel *lblFont;
 			UI::GUITextBox *txtFont;
 			UI::GUIButton *btnFont;

@@ -12,7 +12,7 @@
 
 #include <stdio.h>
 
-SSWR::AVIRead::MIMEViewer::AVIRMultipartViewer::AVIRMultipartViewer(NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<UI::GUICore> ui, UI::GUIClientControl *ctrl, NotNullPtr<Media::ColorManagerSess> sess, Text::MIMEObj::MultipartMIMEObj *obj) : SSWR::AVIRead::MIMEViewer::AVIRMIMEViewer(core, ctrl, obj)
+SSWR::AVIRead::MIMEViewer::AVIRMultipartViewer::AVIRMultipartViewer(NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIClientControl> ctrl, NotNullPtr<Media::ColorManagerSess> sess, Text::MIMEObj::MultipartMIMEObj *obj) : SSWR::AVIRead::MIMEViewer::AVIRMIMEViewer(core, ctrl, obj)
 {
 	UInt8 hashBuff[64];
 	UOSInt i;
@@ -23,7 +23,7 @@ SSWR::AVIRead::MIMEViewer::AVIRMultipartViewer::AVIRMultipartViewer(NotNullPtr<S
 
 	if (obj->GetContentType().StartsWith(UTF8STRC("multipart/signed")))
 	{
-		NEW_CLASS(this->pnlSMIME, UI::GUIPanel(ui, ctrl));
+		NEW_CLASSNN(this->pnlSMIME, UI::GUIPanel(ui, ctrl));
 		this->pnlSMIME->SetRect(0, 0, 100, 31, false);
 		this->pnlSMIME->SetDockType(UI::GUIControl::DOCK_BOTTOM);
 		NEW_CLASS(this->lblSignState, UI::GUILabel(ui, this->pnlSMIME, CSTR("Signature")));
@@ -175,7 +175,7 @@ SSWR::AVIRead::MIMEViewer::AVIRMultipartViewer::AVIRMultipartViewer(NotNullPtr<S
 			this->txtSignState->SetText(CSTR("Unexpected Multipart format"));
 		}
 	}
-	UI::GUITabPage *tp;
+	NotNullPtr<UI::GUITabPage> tp;
 	SSWR::AVIRead::MIMEViewer::AVIRMIMEViewer *viewer;
 	NEW_CLASS(this->tcParts, UI::GUITabControl(ui, ctrl));
 	this->tcParts->SetDockType(UI::GUIControl::DOCK_FILL);

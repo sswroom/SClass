@@ -312,14 +312,14 @@ SSWR::AVIRead::AVIRHTTPLoadBalanceForm::AVIRHTTPLoadBalanceForm(UI::GUIClientCon
 	NEW_CLASS(this->reqLog, SSWR::AVIRead::AVIRHTTPLog(100));
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, this));
+	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, *this));
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->tpControl = this->tcMain->AddTabPage(CSTR("Control"));
 	this->tpStatus = this->tcMain->AddTabPage(CSTR("Status"));
 	this->tpAccess = this->tcMain->AddTabPage(CSTR("Access"));
 	this->tpLog = this->tcMain->AddTabPage(CSTR("Log"));
 
-	NEW_CLASS(this->grpParam, UI::GUIGroupBox(ui, this->tpControl, CSTR("Parameters")));
+	NEW_CLASSNN(this->grpParam, UI::GUIGroupBox(ui, this->tpControl, CSTR("Parameters")));
 	this->grpParam->SetRect(0, 0, 620, 256, false);
 	this->grpParam->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->lblPort, UI::GUILabel(ui, this->grpParam, CSTR("Port")));

@@ -11,7 +11,7 @@ void GUICheckBox_CheckedChange(GtkToggleButton *btn, gpointer data)
 	me->EventCheckedChange(me->IsChecked());
 }
 
-UI::GUICheckBox::GUICheckBox(NotNullPtr<GUICore> ui, UI::GUIClientControl *parent, Text::CStringNN initText, Bool checked) : UI::GUIControl(ui, parent)
+UI::GUICheckBox::GUICheckBox(NotNullPtr<GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, Text::CStringNN initText, Bool checked) : UI::GUIControl(ui, parent)
 {
 	this->checked = false;
 

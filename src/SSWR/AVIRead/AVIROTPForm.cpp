@@ -124,7 +124,7 @@ SSWR::AVIRead::AVIROTPForm::AVIROTPForm(UI::GUIClientControl *parent, NotNullPtr
 
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASS(this->grpNew, UI::GUIGroupBox(ui, this, CSTR("New Entry")));
+	NEW_CLASSNN(this->grpNew, UI::GUIGroupBox(ui, *this, CSTR("New Entry")));
 	this->grpNew->SetRect(0, 0, 100, 112, false);
 	this->grpNew->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->lblName, UI::GUILabel(ui, this->grpNew, CSTR("Name")));
@@ -151,7 +151,7 @@ SSWR::AVIRead::AVIROTPForm::AVIROTPForm(UI::GUIClientControl *parent, NotNullPtr
 	NEW_CLASS(this->btnNew, UI::GUIButton(ui, this->grpNew, CSTR("New")));
 	this->btnNew->SetRect(104, 76, 75, 23, false);
 	this->btnNew->HandleButtonClick(OnNewClicked, this);
-	NEW_CLASS(this->lvEntry, UI::GUIListView(ui, this, UI::GUIListView::LVSTYLE_TABLE, 2));
+	NEW_CLASS(this->lvEntry, UI::GUIListView(ui, *this, UI::GUIListView::LVSTYLE_TABLE, 2));
 	this->lvEntry->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvEntry->AddColumn(CSTR("Name"), 150);
 	this->lvEntry->AddColumn(CSTR("Code"), 100);

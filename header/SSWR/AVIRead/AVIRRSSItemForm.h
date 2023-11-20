@@ -23,14 +23,14 @@ namespace SSWR
 		private:
 			UI::GUITabControl *tcMain;
 
-			UI::GUITabPage *tpInfo;
+			NotNullPtr<UI::GUITabPage> tpInfo;
 			UI::GUIListView *lvInfo;
 
-			UI::GUITabPage *tpImage;
+			NotNullPtr<UI::GUITabPage> tpImage;
 			UI::GUIComboBox *cboImage;
 			UI::GUIPictureBoxSimple *pbImage;
 
-			UI::GUITabPage *tpText;
+			NotNullPtr<UI::GUITabPage> tpText;
 			UI::GUITextBox *txtText;
 
 			Media::ImageList *currImg;

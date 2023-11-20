@@ -23,7 +23,7 @@ namespace UI
 		UInt32 fieldColor;
 
 	public:
-		GUIHexFileView(NotNullPtr<UI::GUICore> ui, UI::GUIClientControl *parent, NotNullPtr<Media::DrawEngine> deng);
+		GUIHexFileView(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, NotNullPtr<Media::DrawEngine> deng);
 		virtual ~GUIHexFileView();
 
 		virtual void EventLineUp();

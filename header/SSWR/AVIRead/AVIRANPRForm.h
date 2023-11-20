@@ -45,11 +45,11 @@ namespace SSWR
 			ActionType selectMode;
 			Data::ArrayListA<Math::Coord2DDbl> points;
 
-			UI::GUIPanel *pnlCtrl;
+			NotNullPtr<UI::GUIPanel> pnlCtrl;
 			UI::GUIButton *btnSelPlate;
 			UI::GUIButton *btnSelCorners;
 			UI::GUILabel *lblSelStatus;
-			UI::GUIPanel *pnlPlate;
+			NotNullPtr<UI::GUIPanel> pnlPlate;
 			UI::GUIPictureBoxSimple *pbPlate;
 			UI::GUIListView *lvPlate;
 			UI::GUIHSplitter *hspPlate;

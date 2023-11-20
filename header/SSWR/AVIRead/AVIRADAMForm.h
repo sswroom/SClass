@@ -25,8 +25,8 @@ namespace SSWR
 			UInt8 channelAddr;
 			UInt32 channelModule;
 
-			UI::GUIPanel *pnlMain;
-			UI::GUIGroupBox *grpStream;
+			NotNullPtr<UI::GUIPanel> pnlMain;
+			NotNullPtr<UI::GUIGroupBox> grpStream;
 			UI::GUILabel *lblAddress;
 			UI::GUITextBox *txtAddress;
 			UI::GUILabel *lblStream;

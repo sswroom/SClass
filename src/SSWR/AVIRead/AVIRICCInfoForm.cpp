@@ -84,23 +84,23 @@ SSWR::AVIRead::AVIRICCInfoForm::AVIRICCInfoForm(UI::GUIClientControl *parent, No
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASS(this->lblFileName, UI::GUILabel(ui, this, CSTR("File Name")));
+	NEW_CLASS(this->lblFileName, UI::GUILabel(ui, *this, CSTR("File Name")));
 	this->lblFileName->SetRect(4, 4, 100, 23, false);
-	NEW_CLASS(this->txtFileName, UI::GUITextBox(ui, this, CSTR("")));
+	NEW_CLASS(this->txtFileName, UI::GUITextBox(ui, *this, CSTR("")));
 	this->txtFileName->SetRect(104, 4, 800, 23, false);
 	this->txtFileName->SetReadOnly(true);
-	NEW_CLASS(this->lblInfo, UI::GUILabel(ui, this, CSTR("Info")));
+	NEW_CLASS(this->lblInfo, UI::GUILabel(ui, *this, CSTR("Info")));
 	this->lblInfo->SetRect(4, 28, 100, 23, false);
-	NEW_CLASS(this->txtInfo, UI::GUITextBox(ui, this, CSTR(""), true));
+	NEW_CLASS(this->txtInfo, UI::GUITextBox(ui, *this, CSTR(""), true));
 	this->txtInfo->SetRect(104, 28, 800, 676, false);
 	this->txtInfo->SetReadOnly(true);
-	NEW_CLASS(this->btnRLUT, UI::GUIButton(ui, this, CSTR("View R LUT")));
+	NEW_CLASS(this->btnRLUT, UI::GUIButton(ui, *this, CSTR("View R LUT")));
 	this->btnRLUT->SetRect(104, 708, 75, 23, false);
 	this->btnRLUT->HandleButtonClick(OnRLUTClicked, this);
-	NEW_CLASS(this->btnGLUT, UI::GUIButton(ui, this, CSTR("View G LUT")));
+	NEW_CLASS(this->btnGLUT, UI::GUIButton(ui, *this, CSTR("View G LUT")));
 	this->btnGLUT->SetRect(184, 708, 75, 23, false);
 	this->btnGLUT->HandleButtonClick(OnGLUTClicked, this);
-	NEW_CLASS(this->btnBLUT, UI::GUIButton(ui, this, CSTR("View B LUT")));
+	NEW_CLASS(this->btnBLUT, UI::GUIButton(ui, *this, CSTR("View B LUT")));
 	this->btnBLUT->SetRect(264, 708, 75, 23, false);
 	this->btnBLUT->HandleButtonClick(OnBLUTClicked, this);
 

@@ -53,8 +53,8 @@ namespace SSWR
 
 			UI::GUITabControl *tcMain;
 
-			UI::GUITabPage *tpDevice;
-			UI::GUIPanel *pnlDevice;
+			NotNullPtr<UI::GUITabPage> tpDevice;
+			NotNullPtr<UI::GUIPanel> pnlDevice;
 			UI::GUIButton *btnDongleInfo;
 			UI::GUILabel *lblDongleId;
 			UI::GUITextBox *txtDongleId;
@@ -67,8 +67,8 @@ namespace SSWR
 			UI::GUILabel *lblURL;
 			UI::GUITextBox *txtURL;
 			UI::GUIButton *btnUpload;
-			UI::GUIGroupBox *grpDevice;
-			UI::GUIPanel *pnlDevCtrl;
+			NotNullPtr<UI::GUIGroupBox> grpDevice;
+			NotNullPtr<UI::GUIPanel> pnlDevCtrl;
 			UI::GUIButton *btnCopyDevId;
 			UI::GUIButton *btnDevReportTime;
 			UI::GUIButton *btnDevSetReportTime;
@@ -77,7 +77,7 @@ namespace SSWR
 			UI::GUIButton *btnDevStatus;
 			UI::GUIListView *lvDevice;
 
-			UI::GUITabPage *tpLog;
+			NotNullPtr<UI::GUITabPage> tpLog;
 			NotNullPtr<UI::GUIListBox> lbLog;
 			UI::GUITextBox *txtLog;
 			NotNullPtr<UI::ListBoxLogger> logger;

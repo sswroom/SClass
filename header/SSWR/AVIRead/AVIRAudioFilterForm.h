@@ -37,13 +37,13 @@ namespace SSWR
 		class AVIRAudioFilterForm : public UI::GUIForm
 		{
 		private:
-			UI::GUIPanel *pnlInput;
+			NotNullPtr<UI::GUIPanel> pnlInput;
 			UI::GUITabControl *tcFilter;
-			UI::GUIPanel *pnlAudioSource;
+			NotNullPtr<UI::GUIPanel> pnlAudioSource;
 			UI::GUILabel *lblAudioSource;
 			UI::GUIRadioButton *radInputWaveIn;
 			UI::GUIRadioButton *radInputSilent;
-			UI::GUIPanel *pnlAudioOutput;
+			NotNullPtr<UI::GUIPanel> pnlAudioOutput;
 			UI::GUILabel *lblAudioOutput;
 			UI::GUIRadioButton *radOutputDevice;
 			UI::GUIRadioButton *radOutputSilent;
@@ -57,14 +57,14 @@ namespace SSWR
 			UI::GUITextBox *txtBitCount;
 			UI::GUIButton *btnStart;
 
-			UI::GUITabPage *tpVolBoost;
+			NotNullPtr<UI::GUITabPage> tpVolBoost;
 			UI::GUICheckBox *chkVolBoost;
 			UI::GUILabel *lblVolBoostBG;
 			UI::GUITrackBar *tbVolBoostBG;
 			UI::GUILabel *lblVolBoostBGVol;
 
-			UI::GUITabPage *tpDTMF;
-			UI::GUIPanel *pnlDTMF;
+			NotNullPtr<UI::GUITabPage> tpDTMF;
+			NotNullPtr<UI::GUIPanel> pnlDTMF;
 			UI::GUILabel *lblDTMFInterval;
 			UI::GUITextBox *txtDTMFInterval;
 			UI::GUILabel *lblDTMFIntervalMS;
@@ -72,7 +72,7 @@ namespace SSWR
 			UI::GUITextBox *txtDTMFDecode;
 			UI::GUIButton *btnDTMFClear;
 			UI::GUITabControl *tcDTMF;
-			UI::GUITabPage *tpDTMFGen;
+			NotNullPtr<UI::GUITabPage> tpDTMFGen;
 			UI::GUIButton *btnDTMF1;
 			UI::GUIButton *btnDTMF2;
 			UI::GUIButton *btnDTMF3;
@@ -92,7 +92,7 @@ namespace SSWR
 			UI::GUILabel *lblDTMFVol;
 			UI::GUITrackBar *tbDTMFVol;
 			UI::GUILabel *lblDTMFVolV;
-			UI::GUITabPage *tpDTMFGen2;
+			NotNullPtr<UI::GUITabPage> tpDTMFGen2;
 			UI::GUILabel *lblDTMFSignalTime;
 			UI::GUITextBox *txtDTMFSignalTime;
 			UI::GUILabel *lblDTMFSignalTimeMS;
@@ -105,28 +105,28 @@ namespace SSWR
 			UI::GUITextBox *txtDTMFTones;
 			UI::GUIButton *btnDTMFTones;
 
-			UI::GUITabPage *tpVolLevel;
+			NotNullPtr<UI::GUITabPage> tpVolLevel;
 			UI::GUIRealtimeLineChart *rlcVolLevel;
 			UI::GUIVSplitter *vspVolLevel;
 			UI::GUIPictureBoxSimple *pbsSample;
 			UI::GUIVSplitter *vspSample;
 			UI::GUIPictureBoxSimple *pbsFFT;
 
-			UI::GUITabPage *tpFileMix;
+			NotNullPtr<UI::GUITabPage> tpFileMix;
 			UI::GUILabel *lblFileMix;
 			UI::GUITextBox *txtFileMix;
 			UI::GUIButton *btnFileMix;
 			UI::GUIButton *btnFileMixStart;
 			UI::GUIButton *btnFileMixStop;
 
-			UI::GUITabPage *tpCapture;
+			NotNullPtr<UI::GUITabPage> tpCapture;
 			UI::GUIButton *btnCaptureStart;
 			UI::GUIButton *btnCaptureStop;
 
-			UI::GUITabPage *tpSoundGen;
+			NotNullPtr<UI::GUITabPage> tpSoundGen;
 			UI::GUIButton *btnSoundGenBell;
 
-			UI::GUITabPage *tpSweep;
+			NotNullPtr<UI::GUITabPage> tpSweep;
 			UI::GUILabel *lblSweepVol;
 			UI::GUITrackBar *tbSweepVol;
 			UI::GUILabel *lblSweepVolV;
@@ -138,7 +138,7 @@ namespace SSWR
 			UI::GUITextBox *txtSweepDur;
 			UI::GUIButton *btnSweepStart;
 
-			UI::GUITabPage *tpAmplifier;
+			NotNullPtr<UI::GUITabPage> tpAmplifier;
 			UI::GUILabel *lblAmplifierVol;
 			UI::GUITrackBar *tbAmplifierVol;
 			UI::GUILabel *lblAmplifierVolV;

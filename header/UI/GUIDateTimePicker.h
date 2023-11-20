@@ -25,15 +25,15 @@ namespace UI
 		Data::ArrayList<void*> dateChangedObjs;
 
 	public:
-		GUIDateTimePicker(NotNullPtr<GUICore> ui, UI::GUIClientControl *parent, SelectType st);
+		GUIDateTimePicker(NotNullPtr<GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, SelectType st);
 		virtual ~GUIDateTimePicker();
 
 		virtual Text::CStringNN GetObjectClass() const;
 		virtual OSInt OnNotify(UInt32 code, void *lParam);
 
-		void SetValue(Data::DateTime *dt);
+		void SetValue(NotNullPtr<Data::DateTime> dt);
 		void SetValue(const Data::Timestamp &dt);
-		void GetSelectedTime(Data::DateTime *dt);
+		void GetSelectedTime(NotNullPtr<Data::DateTime> dt);
 		Data::Timestamp GetSelectedTime();
 		void SetFormat(const Char *format);
 		void SetCalShowWeeknum(Bool showWeeknum);

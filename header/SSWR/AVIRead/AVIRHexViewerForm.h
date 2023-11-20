@@ -26,7 +26,7 @@ namespace SSWR
 			UI::GUIHexFileView *hexView;
 			UI::GUITabControl *tcMain;
 			
-			UI::GUITabPage *tpValues;
+			NotNullPtr<UI::GUITabPage> tpValues;
 			UI::GUILabel *lblEndian;
 			UI::GUIRadioButton *radEndianLittle;
 			UI::GUIRadioButton *radEndianBig;
@@ -57,7 +57,7 @@ namespace SSWR
 			UI::GUICheckBox *chkDynamicSize;
 			UI::GUIButton *btnOpenFile;
 
-			UI::GUITabPage *tpAnalyse;
+			NotNullPtr<UI::GUITabPage> tpAnalyse;
 			UI::GUILabel *lblFileFormat;
 			UI::GUITextBox *txtFileFormat;
 			UI::GUILabel *lblFrameName;
@@ -65,7 +65,7 @@ namespace SSWR
 			UI::GUILabel *lblFieldDetail;
 			UI::GUITextBox *txtFieldDetail;
 
-			UI::GUITabPage *tpExtract;
+			NotNullPtr<UI::GUITabPage> tpExtract;
 			UI::GUILabel *lblExtractBegin;
 			UI::GUITextBox *txtExtractBegin;
 			UI::GUIButton *btnExtractBegin;

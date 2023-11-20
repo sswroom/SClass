@@ -25,7 +25,7 @@ namespace SSWR
 			IO::Device::IBuddy::IBuddyHeartEffect currHeart;
 
 			UI::GUIListBox *lbDevice;
-			UI::GUIPanel *pnlMain;
+			NotNullPtr<UI::GUIPanel> pnlMain;
 			UI::GUILabel *lblHead;
 			UI::GUIListBox *lbHead;
 			UI::GUILabel *lblHeart;

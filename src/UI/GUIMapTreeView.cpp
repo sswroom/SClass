@@ -99,7 +99,7 @@ void UI::GUIMapTreeView::UpdateTreeStatus(UI::GUITreeView::TreeItem *item)
 	}
 }
 
-UI::GUIMapTreeView::GUIMapTreeView(NotNullPtr<UI::GUICore> ui, UI::GUIClientControl *parent, NotNullPtr<Map::MapEnv> env) : UI::GUITreeView(ui, parent)
+UI::GUIMapTreeView::GUIMapTreeView(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, NotNullPtr<Map::MapEnv> env) : UI::GUITreeView(ui, parent)
 {
 	this->dragHdlr = 0;
 	this->env = env;

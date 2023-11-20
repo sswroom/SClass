@@ -22,21 +22,21 @@ namespace SSWR
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			Net::ASN1MIB mib;
 
-			UI::GUIPanel *pnlRequest;
+			NotNullPtr<UI::GUIPanel> pnlRequest;
 			UI::GUILabel *lblFile;
 			UI::GUITextBox *txtFile;
 			UI::GUIButton *btnBrowse;
 			UI::GUITabControl *tcMain;
 
-			UI::GUITabPage *tpObjects;
+			NotNullPtr<UI::GUITabPage> tpObjects;
 			UI::GUIListView *lvObjects;
 			UI::GUIVSplitter *vspObjects;
 			UI::GUIListView *lvObjectsVal;
 
-			UI::GUITabPage *tpOID;
+			NotNullPtr<UI::GUITabPage> tpOID;
 			UI::GUIListView *lvOID;
 
-			UI::GUITabPage *tpOIDText;
+			NotNullPtr<UI::GUITabPage> tpOIDText;
 			UI::GUITextBox *txtOIDText;
 
 			static void __stdcall OnFileDroped(void *userObj, NotNullPtr<Text::String> *files, UOSInt nFiles);

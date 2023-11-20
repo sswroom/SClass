@@ -51,7 +51,7 @@ namespace SSWR
 			Bool ipContUpdated;
 			IPInfo *currIP;
 
-			UI::GUIPanel *pnlControl;
+			NotNullPtr<UI::GUIPanel> pnlControl;
 			UI::GUILabel *lblInfo;
 			UI::GUITextBox *txtInfo;
 			UI::GUIButton *btnInfo;
@@ -60,21 +60,21 @@ namespace SSWR
 			UI::GUIButton *btnStart;
 			UI::GUITabControl *tcMain;
 
-			UI::GUITabPage *tpIP;
+			NotNullPtr<UI::GUITabPage> tpIP;
 			UI::GUIListBox *lbIP;
 			UI::GUIHSplitter *hspIP;
 			UI::GUITabControl *tcIP;
-			UI::GUITabPage *tpIPInfo;
+			NotNullPtr<UI::GUITabPage> tpIPInfo;
 			UI::GUILabel *lblIPCount;
 			UI::GUITextBox *txtIPCount;
 			UI::GUILabel *lblIPName;
 			UI::GUITextBox *txtIPName;
 			UI::GUILabel *lblIPCountry;
 			UI::GUITextBox *txtIPCountry;
-			UI::GUITabPage *tpIPWhois;
+			NotNullPtr<UI::GUITabPage> tpIPWhois;
 			UI::GUITextBox *txtIPWhois;
 
-			UI::GUITabPage *tpLog;
+			NotNullPtr<UI::GUITabPage> tpLog;
 			UI::GUITextBox *txtLog;
 			NotNullPtr<UI::GUIListBox> lbLog;
 

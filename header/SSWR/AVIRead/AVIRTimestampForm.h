@@ -18,7 +18,7 @@ namespace SSWR
 		private:
 			UI::GUITabControl *tcMain;
 
-			UI::GUITabPage *tpValue;
+			NotNullPtr<UI::GUITabPage> tpValue;
 			UI::GUILabel *lblValue;
 			UI::GUITextBox *txtValue;
 			UI::GUIButton *btnEpochSec;
@@ -31,7 +31,7 @@ namespace SSWR
 			UI::GUILabel *lblLocalTime;
 			UI::GUITextBox *txtLocalTime;
 			
-			UI::GUITabPage *tpStr;
+			NotNullPtr<UI::GUITabPage> tpStr;
 			UI::GUILabel *lblStr;
 			UI::GUITextBox *txtStr;
 			UI::GUIButton *btnStrConv;

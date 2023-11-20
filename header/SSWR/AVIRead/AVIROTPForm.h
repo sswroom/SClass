@@ -29,7 +29,7 @@ namespace SSWR
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			Data::ArrayList<EntryInfo*> *entryList;
 
-			UI::GUIGroupBox *grpNew;
+			NotNullPtr<UI::GUIGroupBox> grpNew;
 			UI::GUILabel *lblName;
 			UI::GUITextBox *txtName;
 			UI::GUILabel *lblKey;

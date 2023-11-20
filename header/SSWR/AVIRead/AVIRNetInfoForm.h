@@ -23,17 +23,17 @@ namespace SSWR
 		{
 		private:
 			UI::GUITabControl *tcMain;
-			UI::GUITabPage *tpAdaptor;
-			UI::GUITabPage *tpIPInfo;
-			UI::GUITabPage *tpTCPInfo;
-			UI::GUITabPage *tpUDPInfo;
-			UI::GUITabPage *tpARPInfo;
-			UI::GUITabPage *tpWIFIInfo;
-			UI::GUITabPage *tpPortInfo;
+			NotNullPtr<UI::GUITabPage> tpAdaptor;
+			NotNullPtr<UI::GUITabPage> tpIPInfo;
+			NotNullPtr<UI::GUITabPage> tpTCPInfo;
+			NotNullPtr<UI::GUITabPage> tpUDPInfo;
+			NotNullPtr<UI::GUITabPage> tpARPInfo;
+			NotNullPtr<UI::GUITabPage> tpWIFIInfo;
+			NotNullPtr<UI::GUITabPage> tpPortInfo;
 
 			UI::GUIListBox *lbAdaptors;
 			UI::GUIHSplitter *hSplitter;
-			UI::GUIPanel *pnlAdaptor;
+			NotNullPtr<UI::GUIPanel> pnlAdaptor;
 
 			UI::GUILabel *lblAdaptorName;
 			UI::GUITextBox *txtAdaptorName;
@@ -160,12 +160,12 @@ namespace SSWR
 			UI::GUIListBox *lbWIFIIFs;
 			UI::GUIHSplitter *hspWIFI;
 			UI::GUITabControl *tcWIFI;
-			UI::GUITabPage *tpWIFIAP;
+			NotNullPtr<UI::GUITabPage> tpWIFIAP;
 			UI::GUIListView *lvWIFINetwork;
-			UI::GUITabPage *tpWIFIBSS;
+			NotNullPtr<UI::GUITabPage> tpWIFIBSS;
 			UI::GUIListView *lvWIFIBSS;
 
-			UI::GUIPanel *pnlPortInfo;
+			NotNullPtr<UI::GUIPanel> pnlPortInfo;
 			UI::GUIButton *btnPortRefresh;
 			UI::GUICheckBox *chkPortAuto;
 			UI::GUIListView *lvPortInfo;

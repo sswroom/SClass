@@ -44,17 +44,17 @@ namespace SSWR
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			UI::GUITabControl *tcMain;
 
-			UI::GUITabPage *tpV4Main;
+			NotNullPtr<UI::GUITabPage> tpV4Main;
 			UI::GUIListBox *lbV4Request;
 			UI::GUIHSplitter *hspV4Request;
-			UI::GUIPanel *pnlV4Request;
+			NotNullPtr<UI::GUIPanel> pnlV4Request;
 			UI::GUILabel *lblV4RequestTime;
 			UI::GUITextBox *txtV4RequestTime;
 			UI::GUILabel *lblV4RequestTTL;
 			UI::GUITextBox *txtV4RequestTTL;
 			UI::GUIListBox *lbV4Answer;
 			UI::GUIHSplitter *hspV4Answer;
-			UI::GUIPanel *pnlV4Detail;
+			NotNullPtr<UI::GUIPanel> pnlV4Detail;
 			UI::GUILabel *lblV4AnsName;
 			UI::GUITextBox *txtV4AnsName;
 			UI::GUILabel *lblV4AnsType;
@@ -66,17 +66,17 @@ namespace SSWR
 			UI::GUILabel *lblV4AnsRD;
 			UI::GUITextBox *txtV4AnsRD;
 
-			UI::GUITabPage *tpV6Main;
+			NotNullPtr<UI::GUITabPage> tpV6Main;
 			UI::GUIListBox *lbV6Request;
 			UI::GUIHSplitter *hspV6Request;
-			UI::GUIPanel *pnlV6Request;
+			NotNullPtr<UI::GUIPanel> pnlV6Request;
 			UI::GUILabel *lblV6RequestTime;
 			UI::GUITextBox *txtV6RequestTime;
 			UI::GUILabel *lblV6RequestTTL;
 			UI::GUITextBox *txtV6RequestTTL;
 			UI::GUIListBox *lbV6Answer;
 			UI::GUIHSplitter *hspV6Answer;
-			UI::GUIPanel *pnlV6Detail;
+			NotNullPtr<UI::GUIPanel> pnlV6Detail;
 			UI::GUILabel *lblV6AnsName;
 			UI::GUITextBox *txtV6AnsName;
 			UI::GUILabel *lblV6AnsType;
@@ -88,17 +88,17 @@ namespace SSWR
 			UI::GUILabel *lblV6AnsRD;
 			UI::GUITextBox *txtV6AnsRD;
 
-			UI::GUITabPage *tpOthMain;
+			NotNullPtr<UI::GUITabPage> tpOthMain;
 			UI::GUIListBox *lbOthRequest;
 			UI::GUIHSplitter *hspOthRequest;
-			UI::GUIPanel *pnlOthRequest;
+			NotNullPtr<UI::GUIPanel> pnlOthRequest;
 			UI::GUILabel *lblOthRequestTime;
 			UI::GUITextBox *txtOthRequestTime;
 			UI::GUILabel *lblOthRequestTTL;
 			UI::GUITextBox *txtOthRequestTTL;
 			UI::GUIListBox *lbOthAnswer;
 			UI::GUIHSplitter *hspOthAnswer;
-			UI::GUIPanel *pnlOthDetail;
+			NotNullPtr<UI::GUIPanel> pnlOthDetail;
 			UI::GUILabel *lblOthAnsName;
 			UI::GUITextBox *txtOthAnsName;
 			UI::GUILabel *lblOthAnsType;
@@ -110,21 +110,21 @@ namespace SSWR
 			UI::GUILabel *lblOthAnsRD;
 			UI::GUITextBox *txtOthAnsRD;
 
-			UI::GUITabPage *tpTarget;
+			NotNullPtr<UI::GUITabPage> tpTarget;
 			UI::GUIListBox *lbTarget;
 			UI::GUIHSplitter *hspTarget;
 			UI::GUITabControl *tcTarget;
-			UI::GUITabPage *tpTargetInfo;
+			NotNullPtr<UI::GUITabPage> tpTargetInfo;
 			UI::GUILabel *lblTargetName;
 			UI::GUITextBox *txtTargetName;
 			UI::GUILabel *lblTargetCountry;
 			UI::GUITextBox *txtTargetCountry;
 			UI::GUILabel *lblTargetDomains;
 			UI::GUIListBox *lbTargetDomains;
-			UI::GUITabPage *tpTargetWhois;
+			NotNullPtr<UI::GUITabPage> tpTargetWhois;
 			UI::GUITextBox *txtTargetWhois;
 
-			UI::GUITabPage *tpStatus;
+			NotNullPtr<UI::GUITabPage> tpStatus;
 			UI::GUILabel *lblDNSPort;
 			UI::GUITextBox *txtDNSPort;
 			UI::GUILabel *lblDisableV6;
@@ -141,8 +141,8 @@ namespace SSWR
 			UI::GUITextBox *txtWPAD;
 			UI::GUIButton *btnWPAD;
 
-			UI::GUITabPage *tpSearch;
-			UI::GUIPanel *pnlSearch;
+			NotNullPtr<UI::GUITabPage> tpSearch;
+			NotNullPtr<UI::GUIPanel> pnlSearch;
 			UI::GUILabel *lblSearchIPRange;
 			UI::GUITextBox *txtSearchIPRange;
 			UI::GUILabel *lblSearchMask;
@@ -150,14 +150,14 @@ namespace SSWR
 			UI::GUIButton *btnSearch;
 			UI::GUIListBox *lbSearch;
 			UI::GUIHSplitter *hspSearch;
-			UI::GUIPanel *pnlSRequest;
+			NotNullPtr<UI::GUIPanel> pnlSRequest;
 			UI::GUILabel *lblSRequestTime;
 			UI::GUITextBox *txtSRequestTime;
 			UI::GUILabel *lblSRequestTTL;
 			UI::GUITextBox *txtSRequestTTL;
 			UI::GUIListBox *lbSAnswer;
 			UI::GUIHSplitter *hspSAnswer;
-			UI::GUIPanel *pnlSDetail;
+			NotNullPtr<UI::GUIPanel> pnlSDetail;
 			UI::GUILabel *lblSAnsName;
 			UI::GUITextBox *txtSAnsName;
 			UI::GUILabel *lblSAnsType;
@@ -169,18 +169,18 @@ namespace SSWR
 			UI::GUILabel *lblSAnsRD;
 			UI::GUITextBox *txtSAnsRD;
 
-			UI::GUITabPage *tpBlackList;
-			UI::GUIPanel *pnlBlackList;
+			NotNullPtr<UI::GUITabPage> tpBlackList;
+			NotNullPtr<UI::GUIPanel> pnlBlackList;
 			UI::GUIListBox *lbBlackList;
 			UI::GUITextBox *txtBlackList;
 			UI::GUIButton *btnBlackList;
 
-			UI::GUITabPage *tpClient;
+			NotNullPtr<UI::GUITabPage> tpClient;
 			UI::GUIListBox *lbClientIP;
 			UI::GUIHSplitter *hspClient;
 			UI::GUIListView *lvClient;
 
-			UI::GUITabPage *tpLog;
+			NotNullPtr<UI::GUITabPage> tpLog;
 			NotNullPtr<UI::GUIListBox> lbLog;
 			UI::GUITextBox *txtLog;
 

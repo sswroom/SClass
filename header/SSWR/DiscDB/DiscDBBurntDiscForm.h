@@ -49,8 +49,8 @@ namespace SSWR
 			BurntFile *selectedFile;
 			Data::ArrayList<BurntFile*> *fileList;
 
-			UI::GUIPanel *pnlTop;
-			UI::GUIPanel *pnlBurntDisc;
+			NotNullPtr<UI::GUIPanel> pnlTop;
+			NotNullPtr<UI::GUIPanel> pnlBurntDisc;
 			UI::GUIButton *btnBrowse;
 			UI::GUIButton *btnFinish;
 			UI::GUIButton *btnNewDisc;
@@ -63,10 +63,10 @@ namespace SSWR
 			UI::GUIListBox *lbDiscId;
 			UI::GUIListBox *lbBrand;
 			UI::GUIListBox *lbDVDName;
-			UI::GUIPanel *pnlFile;
+			NotNullPtr<UI::GUIPanel> pnlFile;
 			UI::GUILabel *lblCategory;
 			UI::GUIComboBox *cboCategory;
-			UI::GUIPanel *pnlDVDV;
+			NotNullPtr<UI::GUIPanel> pnlDVDV;
 			UI::GUILabel *lblDVDName;
 			UI::GUIComboBox *cboDVDName;
 			UI::GUILabel *lblSeries;

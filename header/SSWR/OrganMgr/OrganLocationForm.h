@@ -25,7 +25,7 @@ namespace SSWR
 		private:
 			UI::GUIListBox *lbLocation;
 			UI::GUIListBox *lbSublocations;
-			UI::GUIPanel *pnlLocation;
+			NotNullPtr<UI::GUIPanel> pnlLocation;
 			UI::GUILabel *lblID;
 			UI::GUILabel *lblEName;
 			UI::GUILabel *lblCName;

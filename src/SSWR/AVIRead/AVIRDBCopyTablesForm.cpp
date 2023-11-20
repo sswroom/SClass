@@ -376,7 +376,7 @@ SSWR::AVIRead::AVIRDBCopyTablesForm::AVIRDBCopyTablesForm(UI::GUIClientControl *
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 
-	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, this));
+	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, *this));
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	this->tpSource = this->tcMain->AddTabPage(CSTR("Source"));
@@ -404,7 +404,7 @@ SSWR::AVIRead::AVIRDBCopyTablesForm::AVIRDBCopyTablesForm(UI::GUIClientControl *
 	this->cboSourceConn->HandleSelectionChange(OnSourceDBChg, this);
 
 	this->tpData = this->tcMain->AddTabPage(CSTR("Data"));
-	NEW_CLASS(this->grpDest, UI::GUIGroupBox(ui, this->tpData, CSTR("Destination")));
+	NEW_CLASSNN(this->grpDest, UI::GUIGroupBox(ui, this->tpData, CSTR("Destination")));
 	this->grpDest->SetRect(0, 0, 100, 130, false);
 	this->grpDest->SetDockType(UI::GUIControl::DOCK_BOTTOM);
 	NEW_CLASS(this->lvData, UI::GUIListView(ui, this->tpData, UI::GUIListView::LVSTYLE_TABLE, 2));

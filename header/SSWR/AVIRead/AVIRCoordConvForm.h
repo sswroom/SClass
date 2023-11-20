@@ -19,18 +19,18 @@ namespace SSWR
 		class AVIRCoordConvForm : public UI::GUIForm
 		{
 		private:
-			UI::GUIPanel *pnlSrc;
+			NotNullPtr<UI::GUIPanel> pnlSrc;
 			UI::GUILabel *lblSrc;
 			UI::GUIRadioButton *radSrcGeo;
 			UI::GUIRadioButton *radSrcProj;
 			UI::GUIComboBox *cboSrc;
-			UI::GUIPanel *pnlDest;
+			NotNullPtr<UI::GUIPanel> pnlDest;
 			UI::GUILabel *lblDest;
 			UI::GUIRadioButton *radDestGeo;
 			UI::GUIRadioButton *radDestProj;
 			UI::GUIComboBox *cboDest;
 			UI::GUIButton *btnConvFile;
-			UI::GUIPanel *pnlCoord;
+			NotNullPtr<UI::GUIPanel> pnlCoord;
 			UI::GUILabel *lblName;
 			UI::GUITextBox *txtName;
 			UI::GUILabel *lblEasting;

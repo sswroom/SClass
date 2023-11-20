@@ -534,11 +534,11 @@ SSWR::AVIRead::AVIRDBForm::AVIRDBForm(UI::GUIClientControl *parent, NotNullPtr<U
 		NEW_CLASS(this->dbt, DB::ReadingDBTool(NotNullPtr<DB::DBConn>::ConvertFrom(this->db), needRelease, this->log, CSTR("DB: ")));
 	}
 
-	NEW_CLASS(this->tcDB, UI::GUITabControl(ui, this));
+	NEW_CLASS(this->tcDB, UI::GUITabControl(ui, *this));
 	this->tcDB->SetRect(0, 0, 100, 400, false);
 	this->tcDB->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->vspDB, UI::GUIVSplitter(ui, this, 3, false));
-	NEW_CLASS(this->lvResult, UI::GUIListView(ui, this, UI::GUIListView::LVSTYLE_TABLE, 1));
+	NEW_CLASS(this->vspDB, UI::GUIVSplitter(ui, *this, 3, false));
+	NEW_CLASS(this->lvResult, UI::GUIListView(ui, *this, UI::GUIListView::LVSTYLE_TABLE, 1));
 	this->lvResult->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvResult->SetFullRowSelect(true);
 	this->lvResult->SetShowGrid(true);
@@ -569,7 +569,7 @@ SSWR::AVIRead::AVIRDBForm::AVIRDBForm(UI::GUIClientControl *parent, NotNullPtr<U
 	if (this->dbt)
 	{
 		this->tpSQL = this->tcDB->AddTabPage(CSTR("SQL"));
-		NEW_CLASS(this->pnlSQLCtrl, UI::GUIPanel(ui, this->tpSQL));
+		NEW_CLASSNN(this->pnlSQLCtrl, UI::GUIPanel(ui, this->tpSQL));
 		this->pnlSQLCtrl->SetRect(0, 0, 100, 31, false);
 		this->pnlSQLCtrl->SetDockType(UI::GUIControl::DOCK_BOTTOM);
 		NEW_CLASS(this->btnSQL, UI::GUIButton(ui, this->pnlSQLCtrl, CSTR("Execute")));

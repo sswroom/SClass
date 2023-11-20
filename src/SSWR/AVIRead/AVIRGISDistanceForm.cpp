@@ -135,30 +135,30 @@ SSWR::AVIRead::AVIRGISDistanceForm::AVIRGISDistanceForm(UI::GUIClientControl *pa
 	this->lastMapPos = {0, 0};
 	this->csys = this->navi->GetCoordinateSystem()->Clone();
 
-	NEW_CLASS(this->lblType, UI::GUILabel(ui, this, CSTR("Type")));
+	NEW_CLASS(this->lblType, UI::GUILabel(ui, *this, CSTR("Type")));
 	this->lblType->SetRect(4, 4, 100, 23, false);
-	NEW_CLASS(this->pnlType, UI::GUIPanel(ui, this));
+	NEW_CLASSNN(this->pnlType, UI::GUIPanel(ui, *this));
 	this->pnlType->SetRect(104, 4, 200, 24, false);
 	NEW_CLASS(this->radTypeLine, UI::GUIRadioButton(ui, this->pnlType, CSTR("Line"), true));
 	this->radTypeLine->SetRect(0, 0, 100, 23, false);
 	NEW_CLASS(this->radTypePath, UI::GUIRadioButton(ui, this->pnlType, CSTR("Path"), false));
 	this->radTypePath->SetRect(100, 0, 100, 23, false);
 	this->radTypePath->HandleSelectedChange(OnTypeSelChg, this);
-	NEW_CLASS(this->lblAction, UI::GUILabel(ui, this, CSTR("Action")));
+	NEW_CLASS(this->lblAction, UI::GUILabel(ui, *this, CSTR("Action")));
 	this->lblAction->SetRect(4, 28, 100, 23, false);
-	NEW_CLASS(this->pnlAction, UI::GUIPanel(ui, this));
+	NEW_CLASSNN(this->pnlAction, UI::GUIPanel(ui, *this));
 	this->pnlAction->SetRect(104, 28, 200, 24, false);
 	NEW_CLASS(this->radActionPause, UI::GUIRadioButton(ui, this->pnlAction, CSTR("Pause"), false));
 	this->radActionPause->SetRect(0, 0, 100, 23, false);
 	NEW_CLASS(this->radActionMeasure, UI::GUIRadioButton(ui, this->pnlAction, CSTR("Measure"), true));
 	this->radActionMeasure->SetRect(100, 0, 100, 23, false);
 	this->radActionMeasure->HandleSelectedChange(OnMeasureSelChg, this);
-	NEW_CLASS(this->lblDistance, UI::GUILabel(ui, this, CSTR("Distance")));
+	NEW_CLASS(this->lblDistance, UI::GUILabel(ui, *this, CSTR("Distance")));
 	this->lblDistance->SetRect(4, 52, 100, 23, false);
-	NEW_CLASS(this->txtDistance, UI::GUITextBox(ui, this, CSTR("")));
+	NEW_CLASS(this->txtDistance, UI::GUITextBox(ui, *this, CSTR("")));
 	this->txtDistance->SetRect(104, 52, 140, 23, false);
 	this->txtDistance->SetReadOnly(true);
-	NEW_CLASS(this->cboDistanceUnit, UI::GUIComboBox(ui, this, false));
+	NEW_CLASS(this->cboDistanceUnit, UI::GUIComboBox(ui, *this, false));
 	this->cboDistanceUnit->SetRect(244, 52, 60, 23, false);
 	this->cboDistanceUnit->HandleSelectionChange(OnDistanceUnitChg, this);
 	

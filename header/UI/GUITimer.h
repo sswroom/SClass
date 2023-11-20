@@ -20,6 +20,5 @@ namespace UI
 		virtual void OnTick();
 		UOSInt GetId();
 	};
-};
-
+}
 #endif

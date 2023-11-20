@@ -162,17 +162,17 @@ SSWR::AVIRead::AVIRSSDPClientForm::AVIRSSDPClientForm(UI::GUIClientControl *pare
 	NEW_CLASS(this->rootMap, Data::FastStringMap<Net::SSDPClient::SSDPRoot*>());
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASS(this->lbDevice, UI::GUIListBox(ui, this, false));
+	NEW_CLASS(this->lbDevice, UI::GUIListBox(ui, *this, false));
 	this->lbDevice->SetRect(0, 0, 120, 23, false);
 	this->lbDevice->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbDevice->HandleSelectionChange(OnDeviceSelChg, this);
-	NEW_CLASS(this->hspDevice, UI::GUIHSplitter(ui, this, 3, false));
-	NEW_CLASS(this->lbService, UI::GUIListBox(ui, this, false));
+	NEW_CLASS(this->hspDevice, UI::GUIHSplitter(ui, *this, 3, false));
+	NEW_CLASS(this->lbService, UI::GUIListBox(ui, *this, false));
 	this->lbService->SetRect(0, 0, 200, 23, false);
 	this->lbService->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbService->HandleSelectionChange(OnServiceSelChg, this);
-	NEW_CLASS(this->hspService, UI::GUIHSplitter(ui, this, 3, false));
-	NEW_CLASS(this->pnlService, UI::GUIPanel(ui, this));
+	NEW_CLASS(this->hspService, UI::GUIHSplitter(ui, *this, 3, false));
+	NEW_CLASSNN(this->pnlService, UI::GUIPanel(ui, *this));
 	this->pnlService->SetDockType(UI::GUIControl::DOCK_FILL);
 	NEW_CLASS(this->lblLocation, UI::GUILabel(ui, this->pnlService, CSTR("Location")));
 	this->lblLocation->SetRect(4, 4, 100, 23, false);

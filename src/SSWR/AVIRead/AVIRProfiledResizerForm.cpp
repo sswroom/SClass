@@ -231,7 +231,7 @@ SSWR::AVIRead::AVIRProfiledResizerForm::AVIRProfiledResizerForm(UI::GUIClientCon
 	resizer->LoadProfile(CSTR(""));
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, this));
+	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, *this));
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->tpMain = this->tcMain->AddTabPage(CSTR("Main"));
 	this->tpProfile = this->tcMain->AddTabPage(CSTR("Edit Profiles"));
@@ -252,7 +252,7 @@ SSWR::AVIRead::AVIRProfiledResizerForm::AVIRProfiledResizerForm(UI::GUIClientCon
 	lbl->SetRect(60, 50, 200, 19, false);
 
 	
-	NEW_CLASS(this->pnlProfile1, UI::GUIPanel(ui, this->tpProfile));
+	NEW_CLASSNN(this->pnlProfile1, UI::GUIPanel(ui, this->tpProfile));
 	this->pnlProfile1->SetRect(0, 0, 100, 100, false);
 	this->pnlProfile1->SetDockType(UI::GUIControl::DOCK_LEFT);
 	NEW_CLASS(this->btnProfileDel, UI::GUIButton(ui, this->pnlProfile1, CSTR("&Delete")));
@@ -262,7 +262,7 @@ SSWR::AVIRead::AVIRProfiledResizerForm::AVIRProfiledResizerForm(UI::GUIClientCon
 	NEW_CLASS(this->lbProfile, UI::GUIListBox(ui, this->pnlProfile1, false));
 	this->lbProfile->SetDockType(UI::GUIControl::DOCK_FILL);
 
-	NEW_CLASS(this->pnlProfile2, UI::GUIPanel(ui, this->tpProfile));
+	NEW_CLASSNN(this->pnlProfile2, UI::GUIPanel(ui, this->tpProfile));
 	this->pnlProfile2->SetDockType(UI::GUIControl::DOCK_FILL);
 	NEW_CLASS(lbl, UI::GUILabel(ui, this->pnlProfile2, CSTR("Name")));
 	lbl->SetRect(0, 0, 60, 19, false);
@@ -272,7 +272,7 @@ SSWR::AVIRead::AVIRProfiledResizerForm::AVIRProfiledResizerForm(UI::GUIClientCon
 	lbl->SetRect(0, 19, 60, 19, false);
 	NEW_CLASS(this->txtSuffix, UI::GUITextBox(ui, this->pnlProfile2, CSTR("")));
 	this->txtSuffix->SetRect(60, 19, 50, 19, false);
-	NEW_CLASS(this->grpSize, UI::GUIGroupBox(ui, this->pnlProfile2, CSTR("Size")));
+	NEW_CLASSNN(this->grpSize, UI::GUIGroupBox(ui, this->pnlProfile2, CSTR("Size")));
 	this->grpSize->SetRect(0, 38, 200, 83, false);
 	NEW_CLASS(this->radSize, UI::GUIRadioButton(ui, this->grpSize, CSTR("Size"), true));
 	this->radSize->SetRect(0, 0, 60, 19, false);

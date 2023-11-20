@@ -90,12 +90,12 @@ SSWR::AVIRead::AVIRSDCardForm::AVIRSDCardForm(UI::GUIClientControl *parent, NotN
 	this->SetText(CSTR("SD Cards"));
 	this->SetFont(0, 0, 8.25, false);
 
-	NEW_CLASS(this->lbDevices, UI::GUIListBox(ui, this, false));
+	NEW_CLASS(this->lbDevices, UI::GUIListBox(ui, *this, false));
 	this->lbDevices->SetRect(0, 0, 100, 23, false);
 	this->lbDevices->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbDevices->HandleSelectionChange(OnDevicesSelChg, this);
-	NEW_CLASS(this->hspDevices, UI::GUIHSplitter(ui, this, 3, false));
-	NEW_CLASS(this->pnlDevices, UI::GUIPanel(ui, this));
+	NEW_CLASS(this->hspDevices, UI::GUIHSplitter(ui, *this, 3, false));
+	NEW_CLASSNN(this->pnlDevices, UI::GUIPanel(ui, *this));
 	this->pnlDevices->SetDockType(UI::GUIControl::DOCK_FILL);
 	NEW_CLASS(this->lblName, UI::GUILabel(ui, this->pnlDevices, CSTR("Name")));
 	this->lblName->SetRect(4, 4, 100, 23, false);

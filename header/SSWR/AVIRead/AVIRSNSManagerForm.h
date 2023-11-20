@@ -21,7 +21,7 @@ namespace SSWR
 		class AVIRSNSManagerForm : public UI::GUIForm
 		{
 		private:
-			UI::GUIPanel *pnlChannel;
+			NotNullPtr<UI::GUIPanel> pnlChannel;
 			UI::GUIComboBox *cboChannel;
 			UI::GUITextBox *txtChannelId;
 			UI::GUIButton *btnChannelAdd;
@@ -29,7 +29,7 @@ namespace SSWR
 			UI::GUIHSplitter *hspChannels;
 			UI::GUITabControl *tcChannels;
 
-			UI::GUITabPage *tpCurrItems;
+			NotNullPtr<UI::GUITabPage> tpCurrItems;
 			UI::GUIListView *lvCurrItems;
 
 			Net::SNS::SNSManager *mgr;

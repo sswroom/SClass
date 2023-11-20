@@ -221,10 +221,10 @@ SSWR::AVIRead::AVIRStreamConvForm::AVIRStreamConvForm(UI::GUIClientControl *pare
 	this->stmLog2 = 0;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASS(this->grpStream1, UI::GUIGroupBox(ui, this, CSTR("Stream 1")));
+	NEW_CLASSNN(this->grpStream1, UI::GUIGroupBox(ui, *this, CSTR("Stream 1")));
 	this->grpStream1->SetRect(0, 0, 250, 48, false);
 	this->grpStream1->SetDockType(UI::GUIControl::DOCK_LEFT);
-	NEW_CLASS(this->pnlStream1, UI::GUIPanel(ui, this->grpStream1));
+	NEW_CLASSNN(this->pnlStream1, UI::GUIPanel(ui, this->grpStream1));
 	this->pnlStream1->SetRect(0, 0, 100, 104, false);
 	this->pnlStream1->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->lblStream1, UI::GUILabel(ui, this->pnlStream1, CSTR("Stream Type")));
@@ -239,11 +239,11 @@ SSWR::AVIRead::AVIRStreamConvForm::AVIRStreamConvForm(UI::GUIClientControl *pare
 	this->btnStream1->HandleButtonClick(OnStream1Clicked, this);
 	NEW_CLASS(this->rlcStream1, UI::GUIRealtimeLineChart(ui, this->grpStream1, this->core->GetDrawEngine(), 1, 120, 1000));
 	this->rlcStream1->SetDockType(UI::GUIControl::DOCK_FILL);
-	NEW_CLASS(this->hspStream, UI::GUIHSplitter(ui, this, 3, false));
+	NEW_CLASS(this->hspStream, UI::GUIHSplitter(ui, *this, 3, false));
 
-	NEW_CLASS(this->grpStream2, UI::GUIGroupBox(ui, this, CSTR("Stream 2")));
+	NEW_CLASSNN(this->grpStream2, UI::GUIGroupBox(ui, *this, CSTR("Stream 2")));
 	this->grpStream2->SetDockType(UI::GUIControl::DOCK_FILL);
-	NEW_CLASS(this->pnlStream2, UI::GUIPanel(ui, this->grpStream2));
+	NEW_CLASSNN(this->pnlStream2, UI::GUIPanel(ui, this->grpStream2));
 	this->pnlStream2->SetRect(0, 0, 100, 104, false);
 	this->pnlStream2->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->lblStream2, UI::GUILabel(ui, this->pnlStream2, CSTR("Stream Type")));

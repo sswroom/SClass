@@ -42,7 +42,7 @@ SSWR::AVIRead::AVIRRSSItemForm::AVIRRSSItemForm(UI::GUIClientControl *parent, No
 	this->currImg = 0;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, this));
+	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, *this));
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	this->tpInfo = this->tcMain->AddTabPage(CSTR("Info"));
@@ -62,7 +62,7 @@ SSWR::AVIRead::AVIRRSSItemForm::AVIRRSSItemForm(UI::GUIClientControl *parent, No
 	NEW_CLASS(this->pbImage, UI::GUIPictureBoxSimple(ui, this->tpImage, this->core->GetDrawEngine(), false));
 	this->pbImage->SetDockType(UI::GUIControl::DOCK_FILL);
 #else
-	this->tpImage = 0;
+	//this->tpImage = 0;
 	this->cboImage = 0;
 	this->pbImage = 0;
 #endif

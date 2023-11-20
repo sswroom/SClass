@@ -351,7 +351,7 @@ SSWR::AVIRead::AVIRFileSizePackForm::AVIRFileSizePackForm(UI::GUIClientControl *
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 	this->filePath = 0;
 
-	NEW_CLASS(this->pnlFile, UI::GUIPanel(ui, this));
+	NEW_CLASSNN(this->pnlFile, UI::GUIPanel(ui, *this));
 	this->pnlFile->SetRect(0, 0, 424, 104, false);
 	this->pnlFile->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->lblDir, UI::GUILabel(ui, this->pnlFile, CSTR("Directory")));
@@ -381,11 +381,11 @@ SSWR::AVIRead::AVIRFileSizePackForm::AVIRFileSizePackForm(UI::GUIClientControl *
 	NEW_CLASS(this->btnMove, UI::GUIButton(ui, this->pnlFile, CSTR("Move")));
 	this->btnMove->SetRect(232, 76, 75, 23, false);
 	this->btnMove->HandleButtonClick(OnMoveClicked, this);
-	NEW_CLASS(this->lbFilePack, UI::GUIListBox(ui, this, false));
+	NEW_CLASS(this->lbFilePack, UI::GUIListBox(ui, *this, false));
 	this->lbFilePack->SetRect(0, 0, 120, 212, false);
 	this->lbFilePack->SetDockType(UI::GUIControl::DOCK_LEFT);
-	NEW_CLASS(this->hspFile, UI::GUIHSplitter(ui, this, 3, false));
-	NEW_CLASS(this->lbFileDir, UI::GUIListBox(ui, this, false));
+	NEW_CLASS(this->hspFile, UI::GUIHSplitter(ui, *this, 3, false));
+	NEW_CLASS(this->lbFileDir, UI::GUIListBox(ui, *this, false));
 	this->lbFileDir->SetDockType(UI::GUIControl::DOCK_FILL);
 }
 

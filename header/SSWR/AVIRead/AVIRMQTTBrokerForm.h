@@ -50,7 +50,7 @@ namespace SSWR
 
 			UI::GUITabControl *tcMain;
 
-			UI::GUITabPage *tpStatus;
+			NotNullPtr<UI::GUITabPage> tpStatus;
 			UI::GUILabel *lblSSL;
 			UI::GUICheckBox *chkSSL;
 			UI::GUIButton *btnSSLCert;
@@ -63,10 +63,10 @@ namespace SSWR
 			UI::GUILabel *lblDataRate;
 			UI::GUITextBox *txtDataRate;
 
-			UI::GUITabPage *tpTopic;
+			NotNullPtr<UI::GUITabPage> tpTopic;
 			UI::GUIListView *lvTopic;
 
-			UI::GUITabPage *tpLog;
+			NotNullPtr<UI::GUITabPage> tpLog;
 			NotNullPtr<UI::GUIListBox> lbLog;
 			UI::GUITextBox *txtLog;
 

@@ -332,7 +332,7 @@ void __stdcall SSWR::AVIRead::AVIRASN1DataForm::OnFileDrop(void *userObj, NotNul
 	{
 		return;
 	}
-	if (tp == me->tpVerify)
+	if (tp == me->tpVerify.Ptr())
 	{
 		i = 0;
 		while (i < nFiles)
@@ -349,10 +349,10 @@ void __stdcall SSWR::AVIRead::AVIRASN1DataForm::OnFileDrop(void *userObj, NotNul
 			i++;
 		}
 	}
-	else if (tp == me->tpSignature)
-	{
+//	else if (tp == me->tpSignature)
+//	{
 		//me->txtSignaturePayloadFile->SetText(files[0]->ToCString());
-	}
+//	}
 }
 
 UOSInt SSWR::AVIRead::AVIRASN1DataForm::ParseSignature(Text::PString *s, UInt8 *signBuff)
@@ -531,7 +531,7 @@ SSWR::AVIRead::AVIRASN1DataForm::AVIRASN1DataForm(UI::GUIClientControl *parent, 
 	}
 	this->SetMenu(this->mnuMain);
 
-	NEW_CLASS(this->pnlStatus, UI::GUIPanel(ui, this));
+	NEW_CLASSNN(this->pnlStatus, UI::GUIPanel(ui, *this));
 	this->pnlStatus->SetRect(0, 0, 100, 31, false);
 	this->pnlStatus->SetDockType(UI::GUIControl::DOCK_BOTTOM);
 	NEW_CLASS(this->lblStatus, UI::GUILabel(ui, this->pnlStatus, CSTR("Valid Status")));
@@ -539,7 +539,7 @@ SSWR::AVIRead::AVIRASN1DataForm::AVIRASN1DataForm(UI::GUIClientControl *parent, 
 	NEW_CLASS(this->txtStatus, UI::GUITextBox(ui, this->pnlStatus, CSTR("")));
 	this->txtStatus->SetRect(104, 4, 200, 23, false);
 	this->txtStatus->SetReadOnly(true);
-	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, this));
+	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, *this));
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
 	
 	this->tpDesc = this->tcMain->AddTabPage(CSTR("Desc"));
@@ -589,7 +589,7 @@ SSWR::AVIRead::AVIRASN1DataForm::AVIRASN1DataForm(UI::GUIClientControl *parent, 
 			{
 				hashType = Crypto::Cert::X509File::GetAlgHash(signedInfo.algType);
 			}
-			UI::GUITabPage *tp;
+			NotNullPtr<UI::GUITabPage> tp;
 			UI::GUITextBox *txt;
 			Crypto::Cert::X509File *file;
 			UOSInt i = 1;
@@ -674,11 +674,11 @@ SSWR::AVIRead::AVIRASN1DataForm::AVIRASN1DataForm(UI::GUIClientControl *parent, 
 			this->txtVerifyStatus->SetRect(104, 100, 600, 47, false);
 			this->txtVerifyStatus->SetReadOnly(true);
 		}
-		this->tpSignature = 0;
+		//this->tpSignature = 0;
 		if (canSignature)
 		{
 /*
-			UI::GUITabPage *tpSignature;
+			NotNullPtr<UI::GUITabPage> tpSignature;
 			UI::GUILabel *lblSignatureHash;
 			UI::GUIComboBox *cboSignatureHash;
 			UI::GUILabel *lblSignaturePayloadFile;

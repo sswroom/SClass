@@ -18,7 +18,7 @@ namespace SSWR
 			{
 			private:
 				UI::GUITabControl *tcParts;
-				UI::GUIPanel *pnlSMIME;
+				NotNullPtr<UI::GUIPanel> pnlSMIME;
 				UI::GUILabel *lblSignState;
 				UI::GUITextBox *txtSignState;
 
@@ -26,7 +26,7 @@ namespace SSWR
 				Text::MIMEObj::MultipartMIMEObj *obj;
 
 			public:
-				AVIRMultipartViewer(NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<UI::GUICore> ui, UI::GUIClientControl *ctrl, NotNullPtr<Media::ColorManagerSess> sess, Text::MIMEObj::MultipartMIMEObj *obj);
+				AVIRMultipartViewer(NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIClientControl> ctrl, NotNullPtr<Media::ColorManagerSess> sess, Text::MIMEObj::MultipartMIMEObj *obj);
 				virtual ~AVIRMultipartViewer();
 			};
 		}

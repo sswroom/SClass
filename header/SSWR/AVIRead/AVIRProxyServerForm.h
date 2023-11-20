@@ -24,7 +24,7 @@ namespace SSWR
 			NotNullPtr<UI::ListBoxLogger> logger;
 			Net::ProxyServer *svr;
 
-			UI::GUIPanel *pnlRequest;
+			NotNullPtr<UI::GUIPanel> pnlRequest;
 			UI::GUILabel *lblPort;
 			UI::GUITextBox *txtPort;
 			UI::GUIButton *btnStart;

@@ -175,10 +175,10 @@ SSWR::AVIRead::AVIRHQMPPlaylistForm::AVIRHQMPPlaylistForm(UI::GUIClientControl *
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASS(this->pnlCtrl, UI::GUIPanel(ui, this));
+	NEW_CLASSNN(this->pnlCtrl, UI::GUIPanel(ui, *this));
 	this->pnlCtrl->SetRect(0, 0, 100, 56, false);
 	this->pnlCtrl->SetDockType(UI::GUIControl::DOCK_BOTTOM);
-	NEW_CLASS(this->lbPlaylist, UI::GUIListBox(ui, this, false));
+	NEW_CLASS(this->lbPlaylist, UI::GUIListBox(ui, *this, false));
 	this->lbPlaylist->SetRect(0, 0, 160, 100, false);
 	this->lbPlaylist->SetDockType(UI::GUIControl::DOCK_FILL);
 	NEW_CLASS(this->btnAdd, UI::GUIButton(ui, this->pnlCtrl, CSTR("&Add")));

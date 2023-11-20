@@ -17,11 +17,11 @@ namespace SSWR
 		{
 		private:
 			UI::GUILabel *lblType;
-			UI::GUIPanel *pnlType;
+			NotNullPtr<UI::GUIPanel> pnlType;
 			UI::GUIRadioButton *radTypeLine;
 			UI::GUIRadioButton *radTypePath;
 			UI::GUILabel *lblAction;
-			UI::GUIPanel *pnlAction;
+			NotNullPtr<UI::GUIPanel> pnlAction;
 			UI::GUIRadioButton *radActionPause;
 			UI::GUIRadioButton *radActionMeasure;
 			UI::GUILabel *lblDistance;

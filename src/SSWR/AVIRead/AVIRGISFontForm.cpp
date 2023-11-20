@@ -101,10 +101,10 @@ SSWR::AVIRead::AVIRGISFontForm::AVIRGISFontForm(UI::GUIClientControl *parent, No
 	this->SetFont(0, 0, 8.25, false);
 	this->SetNoResize(true);
 
-	NEW_CLASS(this->pbPreview, UI::GUIPictureBox(ui, this, eng, true, false));
+	NEW_CLASS(this->pbPreview, UI::GUIPictureBox(ui, *this, eng, true, false));
 	this->pbPreview->SetRect(0, 0, 100, 60, false);
 	this->pbPreview->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->pnlMain, UI::GUIPanel(ui, this));
+	NEW_CLASSNN(this->pnlMain, UI::GUIPanel(ui, *this));
 	this->pnlMain->SetDockType(UI::GUIControl::DOCK_FILL);
 	NEW_CLASS(this->lblFont, UI::GUILabel(ui, this->pnlMain, CSTR("Font")));
 	this->lblFont->SetRect(4, 4, 100, 23, false);

@@ -63,27 +63,27 @@ SSWR::AVIRead::AVIRDS18B20Form::AVIRDS18B20Form(UI::GUIClientControl *parent, No
 	this->SetNoResize(true);
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASS(this->lblSN, UI::GUILabel(ui, this, CSTR("SN")));
+	NEW_CLASS(this->lblSN, UI::GUILabel(ui, *this, CSTR("SN")));
 	this->lblSN->SetRect(4, 4, 100, 23, false);
-	NEW_CLASS(this->txtSN, UI::GUITextBox(ui, this, CSTR("")));
+	NEW_CLASS(this->txtSN, UI::GUITextBox(ui, *this, CSTR("")));
 	this->txtSN->SetRect(104, 4, 200, 23, false);
 	this->txtSN->SetReadOnly(true);
-	NEW_CLASS(this->btnSN, UI::GUIButton(ui, this, CSTR("Read SN")));
+	NEW_CLASS(this->btnSN, UI::GUIButton(ui, *this, CSTR("Read SN")));
 	this->btnSN->SetRect(304, 4, 75, 23, false);
 	this->btnSN->HandleButtonClick(OnSNClicked, this);
-	NEW_CLASS(this->lblTemp, UI::GUILabel(ui, this, CSTR("Temperature")));
+	NEW_CLASS(this->lblTemp, UI::GUILabel(ui, *this, CSTR("Temperature")));
 	this->lblTemp->SetRect(4, 28, 100, 23, false);
-	NEW_CLASS(this->txtTemp, UI::GUITextBox(ui, this, CSTR("")));
+	NEW_CLASS(this->txtTemp, UI::GUITextBox(ui, *this, CSTR("")));
 	this->txtTemp->SetRect(104, 28, 100, 23, false);
 	this->txtTemp->SetReadOnly(true);
-	NEW_CLASS(this->btnRead, UI::GUIButton(ui, this, CSTR("Read")));
+	NEW_CLASS(this->btnRead, UI::GUIButton(ui, *this, CSTR("Read")));
 	this->btnRead->SetRect(104, 52, 75, 23, false);
 	this->btnRead->HandleButtonClick(OnReadClicked, this);
-	NEW_CLASS(this->chkAutoRead, UI::GUICheckBox(ui, this, CSTR("Auto Read"), false));
+	NEW_CLASS(this->chkAutoRead, UI::GUICheckBox(ui, *this, CSTR("Auto Read"), false));
 	this->chkAutoRead->SetRect(184, 52, 100, 23, false);
-	NEW_CLASS(this->lblStatus, UI::GUILabel(ui, this, CSTR("Status")));
+	NEW_CLASS(this->lblStatus, UI::GUILabel(ui, *this, CSTR("Status")));
 	this->lblStatus->SetRect(4, 76, 100, 23, false);
-	NEW_CLASS(this->txtStatus, UI::GUITextBox(ui, this, CSTR("")));
+	NEW_CLASS(this->txtStatus, UI::GUITextBox(ui, *this, CSTR("")));
 	this->txtStatus->SetRect(104, 76, 100, 23, false);
 	this->txtStatus->SetReadOnly(true);
 

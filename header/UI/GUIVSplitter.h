@@ -26,7 +26,7 @@ namespace UI
 		void DrawXorBar(void *hdc, Int32 x, Int32 y);
 		void CalDragRange();
 	public:
-		GUIVSplitter(NotNullPtr<GUICore> ui, UI::GUIClientControl *parent, Int32 height, Bool isBottom);
+		GUIVSplitter(NotNullPtr<GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, Int32 height, Bool isBottom);
 		virtual ~GUIVSplitter();
 
 		virtual Text::CStringNN GetObjectClass() const;

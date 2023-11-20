@@ -37,20 +37,20 @@ SSWR::AVIRead::AVIRSAMLReqDecodeForm::AVIRSAMLReqDecodeForm(UI::GUIClientControl
 	this->SetFont(0, 0, 8.25, false);
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASS(this->lblRAWRequest, UI::GUILabel(ui, this, CSTR("RAW Request")));
+	NEW_CLASS(this->lblRAWRequest, UI::GUILabel(ui, *this, CSTR("RAW Request")));
 	this->lblRAWRequest->SetRect(0, 0, 100, 23, false);
-	NEW_CLASS(this->txtRAWRequest, UI::GUITextBox(ui, this, CSTR(""), true));
+	NEW_CLASS(this->txtRAWRequest, UI::GUITextBox(ui, *this, CSTR(""), true));
 	this->txtRAWRequest->SetRect(100, 0, 500, 119, false);
-	NEW_CLASS(this->btnDecode, UI::GUIButton(ui, this, CSTR("Decode")));
+	NEW_CLASS(this->btnDecode, UI::GUIButton(ui, *this, CSTR("Decode")));
 	this->btnDecode->SetRect(100, 120, 75, 23, false);
 	this->btnDecode->HandleButtonClick(OnDecodeClicked, this);
-	NEW_CLASS(this->lblResult, UI::GUILabel(ui, this, CSTR("Result")));
+	NEW_CLASS(this->lblResult, UI::GUILabel(ui, *this, CSTR("Result")));
 	this->lblResult->SetRect(0, 144, 100, 23, false);
-	NEW_CLASS(this->txtResult, UI::GUITextBox(ui, this, CSTR(""), true));
+	NEW_CLASS(this->txtResult, UI::GUITextBox(ui, *this, CSTR(""), true));
 	this->txtResult->SetRect(100, 144, 500, 119, false);
-	NEW_CLASS(this->lblWellFormat, UI::GUILabel(ui, this, CSTR("Well Format")));
+	NEW_CLASS(this->lblWellFormat, UI::GUILabel(ui, *this, CSTR("Well Format")));
 	this->lblWellFormat->SetRect(0, 264, 100, 23, false);
-	NEW_CLASS(this->txtWellFormat, UI::GUITextBox(ui, this, CSTR(""), true));
+	NEW_CLASS(this->txtWellFormat, UI::GUITextBox(ui, *this, CSTR(""), true));
 	this->txtWellFormat->SetRect(100, 264, 500, 119, false);
 }
 

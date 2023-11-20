@@ -182,12 +182,12 @@ SSWR::AVIRead::AVIRGISReplayForm::AVIRGISReplayForm(UI::GUIClientControl *parent
 	this->SetText(CSTR("Replay"));
 	this->SetFont(0, 0, 8.25, false);
 
-	UI::GUIPanel *pnl;
-	UI::GUIPanel *pnl2;
+	NotNullPtr<UI::GUIPanel> pnl;
+	NotNullPtr<UI::GUIPanel> pnl2;
 	UI::GUILabel *lbl;
 	UI::GUIHSplitter *splitter;
 
-	NEW_CLASS(pnl, UI::GUIPanel(ui, this));
+	NEW_CLASSNN(pnl, UI::GUIPanel(ui, *this));
 	pnl->SetRect(0, 0, 408, 24, false);
 	pnl->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(lbl, UI::GUILabel(ui, pnl, CSTR("Name")));
@@ -198,15 +198,15 @@ SSWR::AVIRead::AVIRGISReplayForm::AVIRGISReplayForm(UI::GUIClientControl *parent
 	NEW_CLASS(this->lblDist, UI::GUILabel(ui, pnl, CSTR("")));
 	this->lblDist->SetRect(245, 0, 200, 23, false);
 
-	NEW_CLASS(this->lbRecord, UI::GUIListBox(ui, this, false));
+	NEW_CLASS(this->lbRecord, UI::GUIListBox(ui, *this, false));
 	this->lbRecord->SetRect(0, 24, 150, 152, false);
 	this->lbRecord->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbRecord->HandleSelectionChange(OnLbRecordChg, this);
 	this->lbRecord->HandleRightClicked(OnLbRecordRClick, this);
-	NEW_CLASS(splitter, UI::GUIHSplitter(ui, this, 3, false));
-	NEW_CLASS(pnl2, UI::GUIPanel(ui, this));
+	NEW_CLASS(splitter, UI::GUIHSplitter(ui, *this, 3, false));
+	NEW_CLASSNN(pnl2, UI::GUIPanel(ui, *this));
 	pnl2->SetDockType(UI::GUIControl::DOCK_FILL);
-	NEW_CLASS(pnl, UI::GUIPanel(ui, pnl2));
+	NEW_CLASSNN(pnl, UI::GUIPanel(ui, pnl2));
 	pnl->SetRect(0, 0, 100, 348, false);
 	pnl->SetDockType(UI::GUIControl::DOCK_TOP);
 

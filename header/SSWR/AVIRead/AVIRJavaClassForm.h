@@ -18,18 +18,18 @@ namespace SSWR
 		private:
 			UI::GUITabControl *tcMain;
 
-			UI::GUITabPage *tpFileStruct;
+			NotNullPtr<UI::GUITabPage> tpFileStruct;
 			UI::GUITextBox *txtFileStruct;
 
-			UI::GUITabPage *tpFields;
+			NotNullPtr<UI::GUITabPage> tpFields;
 			UI::GUIListBox *lbFields;
 
-			UI::GUITabPage *tpMethods;
+			NotNullPtr<UI::GUITabPage> tpMethods;
 			UI::GUIListBox *lbMethods;
 			UI::GUIVSplitter *vspMethods;
 			UI::GUITextBox *txtMethods;
 
-			UI::GUITabPage *tpDecompile;
+			NotNullPtr<UI::GUITabPage> tpDecompile;
 			UI::GUITextBox *txtDecompile;
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;

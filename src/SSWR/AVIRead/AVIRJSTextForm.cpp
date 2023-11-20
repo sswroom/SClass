@@ -26,16 +26,16 @@ SSWR::AVIRead::AVIRJSTextForm::AVIRJSTextForm(UI::GUIClientControl *parent, NotN
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASS(this->lblJSText, UI::GUILabel(ui, this, CSTR("JS Text")));
+	NEW_CLASS(this->lblJSText, UI::GUILabel(ui, *this, CSTR("JS Text")));
 	this->lblJSText->SetRect(4, 4, 100, 23, false);
-	NEW_CLASS(this->txtJSText, UI::GUITextBox(ui, this, CSTR("")));
+	NEW_CLASS(this->txtJSText, UI::GUITextBox(ui, *this, CSTR("")));
 	this->txtJSText->SetRect(104, 4, 800, 23, false);
-	NEW_CLASS(this->btnExtract, UI::GUIButton(ui, this, CSTR("Extract")));
+	NEW_CLASS(this->btnExtract, UI::GUIButton(ui, *this, CSTR("Extract")));
 	this->btnExtract->SetRect(104, 28, 75, 23, false);
 	this->btnExtract->HandleButtonClick(OnExtractClicked, this);
-	NEW_CLASS(this->lblOriText, UI::GUILabel(ui, this, CSTR("Original Text")));
+	NEW_CLASS(this->lblOriText, UI::GUILabel(ui, *this, CSTR("Original Text")));
 	this->lblOriText->SetRect(4, 56, 100, 23, false);
-	NEW_CLASS(this->txtOriText, UI::GUITextBox(ui, this, CSTR("")));
+	NEW_CLASS(this->txtOriText, UI::GUITextBox(ui, *this, CSTR("")));
 	this->txtOriText->SetRect(104, 56, 800, 23, false);
 	this->txtOriText->SetReadOnly(true);
 }

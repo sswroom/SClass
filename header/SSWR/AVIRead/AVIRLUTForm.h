@@ -20,14 +20,14 @@ namespace SSWR
 		private:
 			UI::GUITabControl *tcMain;
 
-			UI::GUITabPage *tpInfo;
-			UI::GUIPanel *pnlInfo;
+			NotNullPtr<UI::GUITabPage> tpInfo;
+			NotNullPtr<UI::GUIPanel> pnlInfo;
 			UI::GUILabel *lblFileName;
 			UI::GUITextBox *txtFileName;
 			UI::GUITextBox *txtRemark;
 
-			UI::GUITabPage *tpValues;
-			UI::GUIPanel *pnlValues;
+			NotNullPtr<UI::GUITabPage> tpValues;
+			NotNullPtr<UI::GUIPanel> pnlValues;
 			UI::GUIComboBox *cboChannels;
 			UI::GUIListView *lvValues;
 

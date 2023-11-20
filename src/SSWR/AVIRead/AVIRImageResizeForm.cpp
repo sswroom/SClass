@@ -67,33 +67,33 @@ SSWR::AVIRead::AVIRImageResizeForm::AVIRImageResizeForm(UI::GUIClientControl *pa
 	this->outImg = 0;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 	
-	NEW_CLASS(this->lblOriW, UI::GUILabel(ui, this, CSTR("Ori Width")));
+	NEW_CLASS(this->lblOriW, UI::GUILabel(ui, *this, CSTR("Ori Width")));
 	this->lblOriW->SetRect(4, 4, 100, 23, false);
-	NEW_CLASS(this->txtOriW, UI::GUITextBox(ui, this, CSTR("")));
+	NEW_CLASS(this->txtOriW, UI::GUITextBox(ui, *this, CSTR("")));
 	this->txtOriW->SetRect(104, 4, 100, 23, false);
 	this->txtOriW->SetReadOnly(true);
-	NEW_CLASS(this->lblOriH, UI::GUILabel(ui, this, CSTR("Ori Height")));
+	NEW_CLASS(this->lblOriH, UI::GUILabel(ui, *this, CSTR("Ori Height")));
 	this->lblOriH->SetRect(4, 28, 100, 23, false);
-	NEW_CLASS(this->txtOriH, UI::GUITextBox(ui, this, CSTR("")));
+	NEW_CLASS(this->txtOriH, UI::GUITextBox(ui, *this, CSTR("")));
 	this->txtOriH->SetRect(104, 28, 100, 23, false);
 	this->txtOriH->SetReadOnly(true);
-	NEW_CLASS(this->lblOutW, UI::GUILabel(ui, this, CSTR("Out Width")));
+	NEW_CLASS(this->lblOutW, UI::GUILabel(ui, *this, CSTR("Out Width")));
 	this->lblOutW->SetRect(4, 64, 100, 23, false);
-	NEW_CLASS(this->txtOutW, UI::GUITextBox(ui, this, CSTR("")));
+	NEW_CLASS(this->txtOutW, UI::GUITextBox(ui, *this, CSTR("")));
 	this->txtOutW->SetRect(104, 64, 100, 23, false);
-	NEW_CLASS(this->lblOutH, UI::GUILabel(ui, this, CSTR("Out Height")));
+	NEW_CLASS(this->lblOutH, UI::GUILabel(ui, *this, CSTR("Out Height")));
 	this->lblOutH->SetRect(4, 88, 100, 23, false);
-	NEW_CLASS(this->txtOutH, UI::GUITextBox(ui, this, CSTR("")));
+	NEW_CLASS(this->txtOutH, UI::GUITextBox(ui, *this, CSTR("")));
 	this->txtOutH->SetRect(104, 88, 100, 23, false);
-	NEW_CLASS(this->lblNTap, UI::GUILabel(ui, this, CSTR("N-Tap")));
+	NEW_CLASS(this->lblNTap, UI::GUILabel(ui, *this, CSTR("N-Tap")));
 	this->lblNTap->SetRect(4, 112, 100, 23, false);
-	NEW_CLASS(this->txtNTap, UI::GUITextBox(ui, this, CSTR("16")));
+	NEW_CLASS(this->txtNTap, UI::GUITextBox(ui, *this, CSTR("16")));
 	this->txtNTap->SetRect(104, 112, 100, 23, false);
 
-	NEW_CLASS(this->btnCancel, UI::GUIButton(ui, this, CSTR("Cancel")));
+	NEW_CLASS(this->btnCancel, UI::GUIButton(ui, *this, CSTR("Cancel")));
 	this->btnCancel->SetRect(104, 144, 75, 23, false);
 	this->btnCancel->HandleButtonClick(OnCancelClicked, this);
-	NEW_CLASS(this->btnOK, UI::GUIButton(ui, this, CSTR("OK")));
+	NEW_CLASS(this->btnOK, UI::GUIButton(ui, *this, CSTR("OK")));
 	this->btnOK->SetRect(184, 144, 75, 23, false);
 	this->btnOK->HandleButtonClick(OnOKClicked, this);
 

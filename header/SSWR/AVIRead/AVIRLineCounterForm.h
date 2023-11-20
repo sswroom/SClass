@@ -22,7 +22,7 @@ namespace SSWR
 				UOSInt lineCnt;
 			} FileInfo;
 		private:
-			UI::GUIPanel *pnlConfig;
+			NotNullPtr<UI::GUIPanel> pnlConfig;
 			UI::GUILabel *lblPath;
 			UI::GUITextBox *txtPath;
 			UI::GUILabel *lblExtensions;

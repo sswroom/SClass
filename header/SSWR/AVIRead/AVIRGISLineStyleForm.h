@@ -26,10 +26,10 @@ namespace SSWR
 			UOSInt lineStyle;
 			Bool changed;
 
-			UI::GUIGroupBox *grpStyle;
+			NotNullPtr<UI::GUIGroupBox> grpStyle;
 			SSWR::AVIRead::AVIRLineSelector *lineSelector;
-			UI::GUIPanel *pnlStyle;
-			UI::GUIPanel *pnlButtons;
+			NotNullPtr<UI::GUIPanel> pnlStyle;
+			NotNullPtr<UI::GUIPanel> pnlButtons;
 
 			UI::GUIButton *btnAddStyle;
 			UI::GUIButton *btnRemoveStyle;

@@ -86,7 +86,7 @@ namespace UI
 		static GUIForm *FindForm(NotNullPtr<UI::GUICore> ui, const UTF8Char *formName);
 
 	public:
-		GUIForm(UI::GUIClientControl *parent, Double initW, Double initH, NotNullPtr<UI::GUICore> ui);
+		GUIForm(Optional<UI::GUIClientControl> parent, Double initW, Double initH, NotNullPtr<UI::GUICore> ui);
 		virtual ~GUIForm();
 
 		void SetFormState(FormState fs);

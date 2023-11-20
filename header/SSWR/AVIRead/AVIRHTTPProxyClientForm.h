@@ -20,7 +20,7 @@ namespace SSWR
 		private:
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 
-			UI::GUIPanel *pnlRequest;
+			NotNullPtr<UI::GUIPanel> pnlRequest;
 			UI::GUILabel *lblURL;
 			UI::GUITextBox *txtURL;
 			UI::GUILabel *lblProxySvr;
@@ -28,8 +28,8 @@ namespace SSWR
 			UI::GUILabel *lblProxyPort;
 			UI::GUITextBox *txtProxyPort;
 			UI::GUIButton *btnRequest;
-			UI::GUIGroupBox *grpResponse;
-			UI::GUIPanel *pnlResponse;
+			NotNullPtr<UI::GUIGroupBox> grpResponse;
+			NotNullPtr<UI::GUIPanel> pnlResponse;
 			UI::GUILabel *lblSvrIP;
 			UI::GUITextBox *txtSvrIP;
 			UI::GUILabel *lblTimeDNS;

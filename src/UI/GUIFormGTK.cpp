@@ -107,7 +107,7 @@ void UI::GUIForm::UpdateHAcc()
 	}
 }
 
-UI::GUIForm::GUIForm(GUIClientControl *parent, Double initW, Double initH, NotNullPtr<GUICore> ui) : UI::GUIClientControl(ui, parent)
+UI::GUIForm::GUIForm(Optional<GUIClientControl> parent, Double initW, Double initH, NotNullPtr<GUICore> ui) : UI::GUIClientControl(ui, parent)
 {
 	this->exitOnClose = false;
 	this->isDialog = false;
@@ -126,9 +126,10 @@ UI::GUIForm::GUIForm(GUIClientControl *parent, Double initW, Double initH, NotNu
 	Math::Size2DDbl sz;
 	Double initX;
 	Double initY;
-	if (parent)
+	NotNullPtr<GUIClientControl> nnparent;
+	if (parent.SetTo(nnparent))
 	{
-		sz = parent->GetClientSize();
+		sz = nnparent->GetClientSize();
 		initX = (sz.x - initW) * 0.5;
 		initY = (sz.y - initH) * 0.5;
 	}

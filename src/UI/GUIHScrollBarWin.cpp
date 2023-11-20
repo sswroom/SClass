@@ -86,7 +86,7 @@ void UI::GUIHScrollBar::Deinit(void *hInst)
 	UnregisterClassW(CLASSNAME, (HINSTANCE)hInst);
 }
 
-UI::GUIHScrollBar::GUIHScrollBar(NotNullPtr<UI::GUICore> ui, UI::GUIClientControl *parent, Int32 width) : UI::GUIControl(ui, parent)
+UI::GUIHScrollBar::GUIHScrollBar(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, Int32 width) : UI::GUIControl(ui, parent)
 {
 	if (Sync::Interlocked::IncrementI32(useCnt) == 1)
 	{
@@ -138,9 +138,10 @@ void UI::GUIHScrollBar::SetArea(Double left, Double top, Double right, Double bo
 	if (left == this->lxPos && top == this->lyPos && right == this->lxPos2 && bottom == this->lyPos2)
 		return;
 	Math::Coord2DDbl ofst = Math::Coord2DDbl(0, 0);
-	if (this->parent)
+	NotNullPtr<UI::GUIClientControl> nnparent;
+	if (this->parent.SetTo(nnparent))
 	{
-		ofst = this->parent->GetClientOfst();
+		ofst = nnparent->GetClientOfst();
 	}
 	this->lxPos = left;
 	this->lyPos = top;
@@ -161,9 +162,10 @@ void UI::GUIHScrollBar::SetArea(Double left, Double top, Double right, Double bo
 void UI::GUIHScrollBar::SetAreaP(OSInt left, OSInt top, OSInt right, OSInt bottom, Bool updateScn)
 {
 	Math::Coord2DDbl ofst = Math::Coord2DDbl(0, 0);
-	if (this->parent)
+	NotNullPtr<UI::GUIClientControl> nnparent;
+	if (this->parent.SetTo(nnparent))
 	{
-		ofst = this->parent->GetClientOfst();
+		ofst = nnparent->GetClientOfst();
 	}
 	this->lxPos = OSInt2Double(left) * this->ddpi / this->hdpi;
 	this->lyPos = OSInt2Double(top) * this->ddpi / this->hdpi;
@@ -208,9 +210,10 @@ void UI::GUIHScrollBar::UpdatePos(Bool redraw)
 	Int32 minSize = GetSystemMetrics(SM_CYHSCROLL) + 1;
 	Int32 newSize;
 
-	if (this->parent)
+	NotNullPtr<UI::GUIClientControl> nnparent;
+	if (this->parent.SetTo(nnparent))
 	{
-		Math::Coord2DDbl ofst = this->parent->GetClientOfst();
+		Math::Coord2DDbl ofst = nnparent->GetClientOfst();
 		newSize = Double2Int32((this->lyPos2 - this->lyPos) * this->hdpi / this->ddpi);
 		if (newSize < minSize)
 			newSize = minSize;

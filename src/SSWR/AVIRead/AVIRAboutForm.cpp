@@ -48,19 +48,19 @@ SSWR::AVIRead::AVIRAboutForm::AVIRAboutForm(UI::GUIClientControl *parent, NotNul
 #else
 	sptr = Text::StrConcatC(sbuff, UTF8STRC("AVIRead v4 by sswroom"));
 #endif
-	NEW_CLASS(lbl, UI::GUILabel(ui, this, CSTRP(sbuff, sptr)));
+	NEW_CLASS(lbl, UI::GUILabel(ui, *this, CSTRP(sbuff, sptr)));
 	lbl->SetRect(8, 8, 400, 23, false);
 
 	sptr = IO::Path::GetProcessFileName(Text::StrConcatC(sbuff, UTF8STRC("Path: ")));
-	NEW_CLASS(lbl, UI::GUILabel(ui, this, CSTRP(sbuff, sptr)));
+	NEW_CLASS(lbl, UI::GUILabel(ui, *this, CSTRP(sbuff, sptr)));
 	lbl->SetRect(8, 32, 400, 23, false);
 
 	IO::BuildTime::GetBuildTime(&t);
 	sptr = t.ToString(Text::StrConcatC(sbuff, UTF8STRC("Build date: ")), "yyyy-MM-dd HH:mm:ss");
-	NEW_CLASS(lbl, UI::GUILabel(ui, this, CSTRP(sbuff, sptr)));
+	NEW_CLASS(lbl, UI::GUILabel(ui, *this, CSTRP(sbuff, sptr)));
 	lbl->SetRect(8, 56, 400, 23, false);
 
-	NEW_CLASS(btn, UI::GUIButton(ui, this, CSTR("OK")));
+	NEW_CLASS(btn, UI::GUIButton(ui, *this, CSTR("OK")));
 	btn->SetRect(385, 74, 75, 23, false);
 	btn->HandleButtonClick(OKClicked, this);
 }

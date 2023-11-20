@@ -87,11 +87,11 @@ SSWR::AVIRead::AVIRGISSearchForm::AVIRGISSearchForm(UI::GUIClientControl *parent
 	this->SetText(CSTR("GIS Search"));
 	this->SetFont(0, 0, 8.25, false);
 
-	NEW_CLASS(this->txtSearchStr, UI::GUITextBox(ui, this, CSTR("")));
+	NEW_CLASS(this->txtSearchStr, UI::GUITextBox(ui, *this, CSTR("")));
 	this->txtSearchStr->SetRect(0, 0, 100, 21, false);
 	this->txtSearchStr->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->txtSearchStr->HandleTextChanged(OnTextChg, this);
-	NEW_CLASS(this->lbResults, UI::GUIListBox(ui, this, false));
+	NEW_CLASS(this->lbResults, UI::GUIListBox(ui, *this, false));
 	this->lbResults->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lbResults->HandleSelectionChange(OnResultSelChg, this);
 

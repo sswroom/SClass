@@ -31,7 +31,7 @@ namespace SSWR
 			UI::GUIHSplitter *hspMain;
 			UI::GUITabControl *tcMain;
 
-			UI::GUITabPage *tpInfo;
+			NotNullPtr<UI::GUITabPage> tpInfo;
 			UI::GUILabel *lblRadioName;
 			UI::GUITextBox *txtRadioName;
 			UI::GUILabel *lblAddr;
@@ -43,13 +43,13 @@ namespace SSWR
 			UI::GUILabel *lblClass;
 			UI::GUITextBox *txtClass;
 
-			UI::GUITabPage *tpDevice;
-			UI::GUIPanel *pnlDevice;
+			NotNullPtr<UI::GUITabPage> tpDevice;
+			NotNullPtr<UI::GUIPanel> pnlDevice;
 			UI::GUIButton *btnDeviceSrch;
 			UI::GUIButton *btnDeviceUpdate;
-			UI::GUIPanel *pnlDevDetail;
+			NotNullPtr<UI::GUIPanel> pnlDevDetail;
 			UI::GUIVSplitter *vspDevice;
-			UI::GUIPanel *pnlDevCtrl;
+			NotNullPtr<UI::GUIPanel> pnlDevCtrl;
 			UI::GUIButton *btnDevAuthen;
 			UI::GUIButton *btnDevUnauthen;
 			UI::GUIListBox *lbDevServices;

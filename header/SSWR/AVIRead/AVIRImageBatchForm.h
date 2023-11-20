@@ -22,13 +22,13 @@ namespace SSWR
 		private:
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 
-			UI::GUIPanel *pnlCtrl;
+			NotNullPtr<UI::GUIPanel> pnlCtrl;
 			UI::GUIButton *btnFolder;
 			UI::GUILabel *lblFolder;
 			UI::GUIProgressBar *prgMain;
 			SSWR::AVIRead::AVIRImageControl *icMain;
 			UI::GUIHSplitter *hspLeft;
-			UI::GUIPanel *pnlImage;
+			NotNullPtr<UI::GUIPanel> pnlImage;
 			UI::GUIPictureBoxDD *pbMain;
 
 			UI::GUILabel *lblBright;

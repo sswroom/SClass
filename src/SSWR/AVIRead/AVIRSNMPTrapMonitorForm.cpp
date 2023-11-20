@@ -129,14 +129,14 @@ SSWR::AVIRead::AVIRSNMPTrapMonitorForm::AVIRSNMPTrapMonitorForm(UI::GUIClientCon
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASS(this->lbResults, UI::GUIListBox(ui, this, false));
+	NEW_CLASS(this->lbResults, UI::GUIListBox(ui, *this, false));
 	this->lbResults->SetRect(0, 0, 140, 23, false);
 	this->lbResults->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbResults->HandleSelectionChange(OnResultSelChg, this);
-	NEW_CLASS(this->hspResults, UI::GUIHSplitter(ui, this, 3, false));
-	NEW_CLASS(this->pnlResults, UI::GUIPanel(ui, this));
+	NEW_CLASS(this->hspResults, UI::GUIHSplitter(ui, *this, 3, false));
+	NEW_CLASSNN(this->pnlResults, UI::GUIPanel(ui, *this));
 	this->pnlResults->SetDockType(UI::GUIControl::DOCK_FILL);
-	NEW_CLASS(this->pnlTrap, UI::GUIPanel(ui, this->pnlResults));
+	NEW_CLASSNN(this->pnlTrap, UI::GUIPanel(ui, this->pnlResults));
 	this->pnlTrap->SetRect(0, 0, 100, 248, false);
 	this->pnlTrap->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->lblCommunity, UI::GUILabel(ui, this->pnlTrap, CSTR("Community")));

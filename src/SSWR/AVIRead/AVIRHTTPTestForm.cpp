@@ -337,7 +337,7 @@ SSWR::AVIRead::AVIRHTTPTestForm::AVIRHTTPTestForm(UI::GUIClientControl *parent, 
 	this->postSize = 0;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASS(this->grpStatus, UI::GUIGroupBox(ui, this, CSTR("Status")));
+	NEW_CLASSNN(this->grpStatus, UI::GUIGroupBox(ui, *this, CSTR("Status")));
 	this->grpStatus->SetRect(0, 0, 100, 136, false);
 	this->grpStatus->SetDockType(UI::GUIControl::DOCK_BOTTOM);
 	NEW_CLASS(this->lblConnLeftCnt, UI::GUILabel(ui, this->grpStatus, CSTR("Conn Left")));
@@ -366,7 +366,7 @@ SSWR::AVIRead::AVIRHTTPTestForm::AVIRHTTPTestForm(UI::GUIClientControl *parent, 
 	this->txtTimeUsed->SetRect(104, 100, 150, 23, false);
 	this->txtTimeUsed->SetReadOnly(true);
 
-	NEW_CLASS(this->pnlRequest, UI::GUIPanel(ui, this));
+	NEW_CLASSNN(this->pnlRequest, UI::GUIPanel(ui, *this));
 	this->pnlRequest->SetRect(0, 0, 100, 127, false);
 	this->pnlRequest->SetDockType(UI::GUIControl::DOCK_BOTTOM);
 	NEW_CLASS(this->lblConcurrCnt, UI::GUILabel(ui, this->pnlRequest, CSTR("Concurrent Count")));
@@ -396,12 +396,12 @@ SSWR::AVIRead::AVIRHTTPTestForm::AVIRHTTPTestForm(UI::GUIClientControl *parent, 
 	this->btnStart->SetRect(104, 100, 75, 23, false);
 	this->btnStart->HandleButtonClick(OnStartClicked, this);
 	
-	NEW_CLASS(this->grpURL, UI::GUIGroupBox(ui, this, CSTR("URL")));
+	NEW_CLASSNN(this->grpURL, UI::GUIGroupBox(ui, *this, CSTR("URL")));
 	this->grpURL->SetDockType(UI::GUIControl::DOCK_FILL);
-	NEW_CLASS(this->pnlURL, UI::GUIPanel(ui, this->grpURL));
+	NEW_CLASSNN(this->pnlURL, UI::GUIPanel(ui, this->grpURL));
 	this->pnlURL->SetRect(0, 0, 100, 23, false);
 	this->pnlURL->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->pnlURLCtrl, UI::GUIPanel(ui, this->grpURL));
+	NEW_CLASSNN(this->pnlURLCtrl, UI::GUIPanel(ui, this->grpURL));
 	this->pnlURLCtrl->SetRect(0, 0, 100, 31, false);
 	this->pnlURLCtrl->SetDockType(UI::GUIControl::DOCK_BOTTOM);
 	NEW_CLASS(this->btnURLAdd, UI::GUIButton(ui, this->pnlURL, CSTR("&Add")));

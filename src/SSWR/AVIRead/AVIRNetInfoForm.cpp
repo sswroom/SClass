@@ -711,7 +711,7 @@ SSWR::AVIRead::AVIRNetInfoForm::AVIRNetInfoForm(UI::GUIClientControl *parent, No
 	this->wlanScanCnt = 0;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, this));
+	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, *this));
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	this->tpAdaptor = this->tcMain->AddTabPage(CSTR("Adaptor"));
@@ -720,7 +720,7 @@ SSWR::AVIRead::AVIRNetInfoForm::AVIRNetInfoForm(UI::GUIClientControl *parent, No
 	this->lbAdaptors->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbAdaptors->HandleSelectionChange(OnAdaptorSelChg, this);
 	NEW_CLASS(this->hSplitter, UI::GUIHSplitter(ui, this->tpAdaptor, 3, false));
-	NEW_CLASS(this->pnlAdaptor, UI::GUIPanel(ui, this->tpAdaptor));
+	NEW_CLASSNN(this->pnlAdaptor, UI::GUIPanel(ui, this->tpAdaptor));
 	this->pnlAdaptor->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	NEW_CLASS(this->lblAdaptorName, UI::GUILabel(ui, this->pnlAdaptor, CSTR("Name")));
@@ -1028,7 +1028,7 @@ SSWR::AVIRead::AVIRNetInfoForm::AVIRNetInfoForm(UI::GUIClientControl *parent, No
 	this->lvARPInfo->AddColumn(CSTR("Type"), 150);
 
 	this->tpPortInfo = this->tcMain->AddTabPage(CSTR("Port Info"));
-	NEW_CLASS(this->pnlPortInfo, UI::GUIPanel(ui, this->tpPortInfo));
+	NEW_CLASSNN(this->pnlPortInfo, UI::GUIPanel(ui, this->tpPortInfo));
 	this->pnlPortInfo->SetRect(0, 0, 100, 40, false);
 	this->pnlPortInfo->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->btnPortRefresh, UI::GUIButton(ui, this->pnlPortInfo, CSTR("&Refresh")));

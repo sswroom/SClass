@@ -154,7 +154,7 @@ SSWR::AVIRead::AVIRANPRForm::AVIRANPRForm(UI::GUIClientControl *parent, NotNullP
 	this->anpr.SetResultHandler(OnANPRResult, this);
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASS(this->pnlCtrl, UI::GUIPanel(ui, this));
+	NEW_CLASSNN(this->pnlCtrl, UI::GUIPanel(ui, *this));
 	this->pnlCtrl->SetRect(0, 0, 100, 31, false);
 	this->pnlCtrl->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->btnSelPlate, UI::GUIButton(ui, this->pnlCtrl, CSTR("Sel Plate")));
@@ -165,7 +165,7 @@ SSWR::AVIRead::AVIRANPRForm::AVIRANPRForm(UI::GUIClientControl *parent, NotNullP
 	this->btnSelCorners->HandleButtonClick(OnSelCornersClicked, this);
 	NEW_CLASS(this->lblSelStatus, UI::GUILabel(ui, this->pnlCtrl, CSTR("")));
 	this->lblSelStatus->SetRect(164, 4, 200, 23, false);
-	NEW_CLASS(this->pnlPlate, UI::GUIPanel(ui, this));
+	NEW_CLASSNN(this->pnlPlate, UI::GUIPanel(ui, *this));
 	this->pnlPlate->SetRect(0, 0, 250, 100, false);
 	this->pnlPlate->SetDockType(UI::GUIControl::DOCK_RIGHT);
 	NEW_CLASS(this->pbPlate, UI::GUIPictureBoxSimple(ui, this->pnlPlate, this->core->GetDrawEngine(), false));
@@ -179,8 +179,8 @@ SSWR::AVIRead::AVIRANPRForm::AVIRANPRForm(UI::GUIClientControl *parent, NotNullP
 	this->lvPlate->AddColumn(CSTR("Area"), 50);
 	this->lvPlate->AddColumn(CSTR("Confidence"), 50);
 	this->lvPlate->HandleSelChg(OnPlateSelChg, this);
-	NEW_CLASS(this->hspPlate, UI::GUIHSplitter(ui, this, 3, true));
-	NEW_CLASS(this->pbImg, UI::GUIPictureBoxDD(ui, this, this->colorSess, true, false));
+	NEW_CLASS(this->hspPlate, UI::GUIHSplitter(ui, *this, 3, true));
+	NEW_CLASS(this->pbImg, UI::GUIPictureBoxDD(ui, *this, this->colorSess, true, false));
 	this->pbImg->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->pbImg->HandleMouseDown(OnImgDown, this);
 

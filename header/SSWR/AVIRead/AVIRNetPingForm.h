@@ -27,7 +27,7 @@ namespace SSWR
 			IO::LogTool *log;
 			NotNullPtr<UI::ListBoxLogger> logger;
 
-			UI::GUIPanel *pnlRequest;
+			NotNullPtr<UI::GUIPanel> pnlRequest;
 			UI::GUIVSplitter *vspRequest;
 			UI::GUILabel *lblTarget;
 			UI::GUITextBox *txtTarget;

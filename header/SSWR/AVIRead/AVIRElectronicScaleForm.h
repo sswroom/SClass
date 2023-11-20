@@ -24,8 +24,8 @@ namespace SSWR
 			NotNullPtr<Media::DrawEngine> eng;
 			Media::DrawImage *dimg;
 
-			UI::GUIPanel *pnlCtrl;
-			UI::GUIGroupBox *grpStream;
+			NotNullPtr<UI::GUIPanel> pnlCtrl;
+			NotNullPtr<UI::GUIGroupBox> grpStream;
 			UI::GUILabel *lblStream;
 			UI::GUITextBox *txtStream;
 			UI::GUIButton *btnStream;
@@ -33,10 +33,10 @@ namespace SSWR
 			UI::GUITextBox *txtWeight;
 			UI::GUITabControl *tcMain;
 
-			UI::GUITabPage *tpHistory;
+			NotNullPtr<UI::GUITabPage> tpHistory;
 			UI::GUIRealtimeLineChart *rlcHistory;
 
-			UI::GUITabPage *tpDisplay;
+			NotNullPtr<UI::GUITabPage> tpDisplay;
 			UI::GUIPictureBoxSimple *pbsDisplay;
 
 			IO::Stream *stm;

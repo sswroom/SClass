@@ -175,12 +175,12 @@ SSWR::AVIRead::AVIRBluetoothForm::AVIRBluetoothForm(UI::GUIClientControl *parent
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASS(this->lbCtrl, UI::GUIListBox(ui, this, false));
+	NEW_CLASS(this->lbCtrl, UI::GUIListBox(ui, *this, false));
 	this->lbCtrl->SetRect(0, 0, 200, 23, false);
 	this->lbCtrl->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbCtrl->HandleSelectionChange(OnCtrlChanged, this);
-	NEW_CLASS(this->hspMain, UI::GUIHSplitter(ui, this, 3, false));
-	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, this));
+	NEW_CLASS(this->hspMain, UI::GUIHSplitter(ui, *this, 3, false));
+	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, *this));
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	this->tpInfo = this->tcMain->AddTabPage(CSTR("Info"));
@@ -211,7 +211,7 @@ SSWR::AVIRead::AVIRBluetoothForm::AVIRBluetoothForm(UI::GUIClientControl *parent
 	this->txtClass->SetReadOnly(true);
 
 	this->tpDevice = this->tcMain->AddTabPage(CSTR("Device"));
-	NEW_CLASS(this->pnlDevice, UI::GUIPanel(ui, this->tpDevice));
+	NEW_CLASSNN(this->pnlDevice, UI::GUIPanel(ui, this->tpDevice));
 	this->pnlDevice->SetRect(0, 0, 100, 31, false);
 	this->pnlDevice->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->btnDeviceSrch, UI::GUIButton(ui, this->pnlDevice, CSTR("Search")));
@@ -220,11 +220,11 @@ SSWR::AVIRead::AVIRBluetoothForm::AVIRBluetoothForm(UI::GUIClientControl *parent
 	NEW_CLASS(this->btnDeviceUpdate, UI::GUIButton(ui, this->pnlDevice, CSTR("Update")));
 	this->btnDeviceUpdate->SetRect(84, 4, 75, 23, false);
 	this->btnDeviceUpdate->HandleButtonClick(OnDeviceUpdateClicked, this);
-	NEW_CLASS(this->pnlDevDetail, UI::GUIPanel(ui, this->tpDevice));
+	NEW_CLASSNN(this->pnlDevDetail, UI::GUIPanel(ui, this->tpDevice));
 	this->pnlDevDetail->SetRect(0, 0, 100, 360, false);
 	this->pnlDevDetail->SetDockType(UI::GUIControl::DOCK_BOTTOM);
 	NEW_CLASS(this->vspDevice, UI::GUIVSplitter(ui, this->tpDevice, 3, true));
-	NEW_CLASS(this->pnlDevCtrl, UI::GUIPanel(ui, this->pnlDevDetail));
+	NEW_CLASSNN(this->pnlDevCtrl, UI::GUIPanel(ui, this->pnlDevDetail));
 	this->pnlDevCtrl->SetRect(0, 0, 100, 31, false);
 	this->pnlDevCtrl->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->btnDevAuthen, UI::GUIButton(ui, this->pnlDevCtrl, CSTR("Pair")));

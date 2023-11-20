@@ -300,13 +300,13 @@ SSWR::AVIRead::AVIRGISQueryForm::AVIRGISQueryForm(UI::GUIClientControl *parent, 
 	this->SetText(sb.ToCString());
 	this->SetFont(0, 0, 8.25, false);
 
-	NEW_CLASS(this->pnlObj, UI::GUIPanel(ui, this));
+	NEW_CLASSNN(this->pnlObj, UI::GUIPanel(ui, *this));
 	this->pnlObj->SetRect(0, 0, 100, 31, false);
 	this->pnlObj->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->cboObj, UI::GUIComboBox(ui, this->pnlObj, false));
 	this->cboObj->SetRect(4, 4, 200, 23, false);
 	this->cboObj->HandleSelectionChange(OnObjSelChg, this);
-	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, this));
+	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, *this));
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	this->tpInfo = this->tcMain->AddTabPage(CSTR("Info"));
@@ -318,7 +318,7 @@ SSWR::AVIRead::AVIRGISQueryForm::AVIRGISQueryForm(UI::GUIClientControl *parent, 
 	this->lvInfo->SetFullRowSelect(true);
 
 	this->tpShape = this->tcMain->AddTabPage(CSTR("Shape"));
-	NEW_CLASS(this->pnlShape, UI::GUIPanel(ui, this->tpShape));
+	NEW_CLASSNN(this->pnlShape, UI::GUIPanel(ui, this->tpShape));
 	this->pnlShape->SetRect(0, 0, 100, 31, false);
 	this->pnlShape->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->lblShapeFmt, UI::GUILabel(ui, this->pnlShape, CSTR("Format")));

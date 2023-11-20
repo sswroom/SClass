@@ -67,7 +67,7 @@ namespace UI
 		void DrawFromBG();
 		virtual void OnPaint();
 	public:
-		GUIPictureBoxDD(NotNullPtr<GUICore> ui, UI::GUIClientControl *parent, NotNullPtr<Media::ColorManagerSess> colorSess, Bool allowEnlarge, Bool directMode);
+		GUIPictureBoxDD(NotNullPtr<GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, NotNullPtr<Media::ColorManagerSess> colorSess, Bool allowEnlarge, Bool directMode);
 		virtual ~GUIPictureBoxDD();
 
 		virtual Text::CStringNN GetObjectClass() const;

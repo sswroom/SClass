@@ -457,7 +457,7 @@ void __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnFileHandler(void *userObj, No
 	{
 		db = (DB::ReadingDBTool*)me->currDB;
 	}
-	Bool isSQLTab = (me->tcMain->GetSelectedPage() == me->tpSQL);
+	Bool isSQLTab = (me->tcMain->GetSelectedPage() == me->tpSQL.Ptr());
 	UOSInt i = 0;
 	while (i < nFiles)
 	{
@@ -1193,14 +1193,14 @@ SSWR::AVIRead::AVIRDBManagerForm::AVIRDBManagerForm(UI::GUIClientControl *parent
 	this->colorSess = core->GetColorMgr()->CreateSess(this->GetHMonitor());
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASS(this->lbConn, UI::GUIListBox(ui, this, false));
+	NEW_CLASS(this->lbConn, UI::GUIListBox(ui, *this, false));
 	this->lbConn->SetRect(0, 0, 150, 23, false);
 	this->lbConn->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbConn->HandleSelectionChange(OnConnSelChg, this);
 	this->lbConn->HandleRightClicked(OnConnRClicked, this);
 	this->lbConn->HandleDoubleClicked(OnConnDblClicked, this);
-	NEW_CLASS(this->hspConn, UI::GUIHSplitter(ui, this, 3, false));
-	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, this));
+	NEW_CLASS(this->hspConn, UI::GUIHSplitter(ui, *this, 3, false));
+	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, *this));
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	this->tpDatabase = this->tcMain->AddTabPage(CSTR("Database"));
@@ -1218,7 +1218,7 @@ SSWR::AVIRead::AVIRDBManagerForm::AVIRDBManagerForm(UI::GUIClientControl *parent
 	this->btnDatabaseNew->HandleButtonClick(OnDatabaseNewClicked, this);
 
 	this->tpTable = this->tcMain->AddTabPage(CSTR("Table"));
-	NEW_CLASS(this->pnlTable, UI::GUIPanel(ui, this->tpTable));
+	NEW_CLASSNN(this->pnlTable, UI::GUIPanel(ui, this->tpTable));
 	this->pnlTable->SetRect(0, 0, 100, 250, false);
 	this->pnlTable->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->lbSchema, UI::GUIListBox(ui, this->pnlTable, false));
@@ -1252,10 +1252,10 @@ SSWR::AVIRead::AVIRDBManagerForm::AVIRDBManagerForm(UI::GUIClientControl *parent
 	this->lvTableResult->SetShowGrid(true);
 
 	this->tpSQL = this->tcMain->AddTabPage(CSTR("SQL"));
-	NEW_CLASS(this->pnlSQL, UI::GUIPanel(ui, this->tpSQL));
+	NEW_CLASSNN(this->pnlSQL, UI::GUIPanel(ui, this->tpSQL));
 	this->pnlSQL->SetRect(0, 0, 100, 152, false);
 	this->pnlSQL->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->pnlSQLCtrl, UI::GUIPanel(ui, this->pnlSQL));
+	NEW_CLASSNN(this->pnlSQLCtrl, UI::GUIPanel(ui, this->pnlSQL));
 	this->pnlSQLCtrl->SetRect(0, 0, 100, 31, false);
 	this->pnlSQLCtrl->SetDockType(UI::GUIControl::DOCK_BOTTOM);
 	NEW_CLASS(this->btnSQLExec, UI::GUIButton(ui, this->pnlSQLCtrl, CSTR("Execute")));
@@ -1273,7 +1273,7 @@ SSWR::AVIRead::AVIRDBManagerForm::AVIRDBManagerForm(UI::GUIClientControl *parent
 	this->lvSQLResult->SetShowGrid(true);
 
 	this->tpMap = this->tcMain->AddTabPage(CSTR("Map"));
-	NEW_CLASS(this->pnlMap, UI::GUIPanel(ui, this->tpMap));
+	NEW_CLASSNN(this->pnlMap, UI::GUIPanel(ui, this->tpMap));
 	this->pnlMap->SetRect(0, 0, 250, 23, false);
 	this->pnlMap->SetDockType(UI::GUIControl::DOCK_LEFT);
 	NEW_CLASS(this->hspMap, UI::GUIHSplitter(ui, this->tpMap, 3, false));
@@ -1281,7 +1281,7 @@ SSWR::AVIRead::AVIRDBManagerForm::AVIRDBManagerForm(UI::GUIClientControl *parent
 	this->mapMain->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->mapMain->HandleMouseDown(OnMapMouseDown, this);
 	this->mapMain->HandleMouseUp(OnMapMouseUp, this);
-	NEW_CLASS(this->pnlMapTable, UI::GUIPanel(ui, this->pnlMap));
+	NEW_CLASSNN(this->pnlMapTable, UI::GUIPanel(ui, this->pnlMap));
 	this->pnlMapTable->SetRect(0, 0, 100, 100, false);
 	this->pnlMapTable->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->vspMapRecord, UI::GUIVSplitter(ui, this->pnlMap, 3, false));
@@ -1301,7 +1301,7 @@ SSWR::AVIRead::AVIRDBManagerForm::AVIRDBManagerForm(UI::GUIClientControl *parent
 	this->lbMapTable->HandleSelectionChange(OnMapTableSelChg, this);
 
 	this->tpVariable = this->tcMain->AddTabPage(CSTR("Variable"));
-	NEW_CLASS(this->pnlVariable, UI::GUIPanel(ui, this->tpVariable));
+	NEW_CLASSNN(this->pnlVariable, UI::GUIPanel(ui, this->tpVariable));
 	this->pnlVariable->SetRect(0, 0, 100, 31, false);
 	this->pnlVariable->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->btnVariable, UI::GUIButton(ui, this->pnlVariable, CSTR("Show")));
@@ -1315,7 +1315,7 @@ SSWR::AVIRead::AVIRDBManagerForm::AVIRDBManagerForm(UI::GUIClientControl *parent
 	this->lvVariable->AddColumn(CSTR("Value"), 300);
 
 	this->tpSvrConn = this->tcMain->AddTabPage(CSTR("Connection"));
-	NEW_CLASS(this->pnlSvrConn, UI::GUIPanel(ui, this->tpSvrConn));
+	NEW_CLASSNN(this->pnlSvrConn, UI::GUIPanel(ui, this->tpSvrConn));
 	this->pnlSvrConn->SetRect(0, 0, 100, 31, false);
 	this->pnlSvrConn->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->btnSvrConn, UI::GUIButton(ui, this->pnlSvrConn, CSTR("Show")));

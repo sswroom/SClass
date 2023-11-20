@@ -25,7 +25,7 @@ namespace SSWR
 			UI::GUIHSplitter *hspDevice;
 			UI::GUIListBox *lbService;
 			UI::GUIHSplitter *hspService;
-			UI::GUIPanel *pnlService;
+			NotNullPtr<UI::GUIPanel> pnlService;
 			UI::GUILabel *lblLocation;
 			UI::GUITextBox *txtLocation;
 			UI::GUILabel *lblDate;

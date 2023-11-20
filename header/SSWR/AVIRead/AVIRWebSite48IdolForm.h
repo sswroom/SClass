@@ -20,21 +20,21 @@ namespace SSWR
 		private:
 			UI::GUITabControl *tcMain;
 			
-			UI::GUITabPage *tpItems;
-			UI::GUIPanel *pnlRequest;
+			NotNullPtr<UI::GUITabPage> tpItems;
+			NotNullPtr<UI::GUIPanel> pnlRequest;
 			UI::GUILabel *lblPageNo;
 			UI::GUITextBox *txtPageNo;
 			UI::GUIButton *btnRequestPage;
 			UI::GUIListView *lvItems;
 
-			UI::GUITabPage *tpDownloadLink;
+			NotNullPtr<UI::GUITabPage> tpDownloadLink;
 			UI::GUILabel *lblVideoId;
 			UI::GUITextBox *txtVideoId;
 			UI::GUIButton *btnDownloadLink;
 			UI::GUILabel *lblDownloadLink;
 			UI::GUITextBox *txtDownloadLink;
 
-			UI::GUITabPage *tpVideoName;
+			NotNullPtr<UI::GUITabPage> tpVideoName;
 			UI::GUILabel *lblNameVideoId;
 			UI::GUITextBox *txtNameVideoId;
 			UI::GUIButton *btnVideoName;

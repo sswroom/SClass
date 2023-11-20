@@ -21,15 +21,15 @@ namespace SSWR
 		private:
 			UI::GUITabControl *tcMain;
 
-			UI::GUITabPage *tpUser;
-			UI::GUIPanel *pnlRequest;
+			NotNullPtr<UI::GUITabPage> tpUser;
+			NotNullPtr<UI::GUIPanel> pnlRequest;
 			UI::GUILabel *lblChannelId;
 			UI::GUITextBox *txtChannelId;
 			UI::GUIButton *btnRequestUser;
 			UI::GUIListView *lvItems;
 
-			UI::GUITabPage *tpPage;
-			UI::GUIPanel *pnlPage;
+			NotNullPtr<UI::GUITabPage> tpPage;
+			NotNullPtr<UI::GUIPanel> pnlPage;
 			UI::GUILabel *lblShortCode;
 			UI::GUITextBox *txtShortCode;
 			UI::GUIButton *btnPage;

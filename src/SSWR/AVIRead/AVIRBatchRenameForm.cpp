@@ -102,14 +102,14 @@ SSWR::AVIRead::AVIRBatchRenameForm::AVIRBatchRenameForm(UI::GUIClientControl *pa
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASS(this->lblDirectory, UI::GUILabel(ui, this, CSTR("Directory")));
+	NEW_CLASS(this->lblDirectory, UI::GUILabel(ui, *this, CSTR("Directory")));
 	this->lblDirectory->SetRect(4, 4, 100, 23, false);
-	NEW_CLASS(this->txtDirectory, UI::GUITextBox(ui, this, CSTR("")));
+	NEW_CLASS(this->txtDirectory, UI::GUITextBox(ui, *this, CSTR("")));
 	this->txtDirectory->SetRect(104, 4, 600, 23, false);
-	NEW_CLASS(this->btnRenameExtUpper, UI::GUIButton(ui, this, CSTR("Rename Ext Upper")));
+	NEW_CLASS(this->btnRenameExtUpper, UI::GUIButton(ui, *this, CSTR("Rename Ext Upper")));
 	this->btnRenameExtUpper->SetRect(104, 28, 150, 23, false);
 	this->btnRenameExtUpper->HandleButtonClick(OnRenameExtUpperClicked, this);
-	NEW_CLASS(this->btnRenameExtLower, UI::GUIButton(ui, this, CSTR("Rename Ext Lower")));
+	NEW_CLASS(this->btnRenameExtLower, UI::GUIButton(ui, *this, CSTR("Rename Ext Lower")));
 	this->btnRenameExtLower->SetRect(254, 28, 150, 23, false);
 	this->btnRenameExtLower->HandleButtonClick(OnRenameExtLowerClicked, this);
 }

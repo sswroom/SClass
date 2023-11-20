@@ -17,7 +17,7 @@ namespace SSWR
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			Net::SSLEngine *ssl;
 
-			UI::GUIPanel *pnlReqTime;
+			NotNullPtr<UI::GUIPanel> pnlReqTime;
 			UI::GUILabel *lblReqTime;
 			UI::GUITextBox *txtReqTime;
 			UI::GUIListView *lvWarning;

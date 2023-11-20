@@ -10,7 +10,7 @@
 
 Int32 UI::GUIDateTimePicker::useCnt = 0;
 
-UI::GUIDateTimePicker::GUIDateTimePicker(NotNullPtr<GUICore> ui, UI::GUIClientControl *parent, SelectType st) : UI::GUIControl(ui, parent)
+UI::GUIDateTimePicker::GUIDateTimePicker(NotNullPtr<GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, SelectType st) : UI::GUIControl(ui, parent)
 {
 	if (Sync::Interlocked::IncrementI32(useCnt) == 1)
 	{
@@ -84,7 +84,7 @@ OSInt UI::GUIDateTimePicker::OnNotify(UInt32 code, void *lParam)
 	return 0;
 }
 
-void UI::GUIDateTimePicker::SetValue(Data::DateTime *dt)
+void UI::GUIDateTimePicker::SetValue(NotNullPtr<Data::DateTime> dt)
 {
 	SYSTEMTIME t;
 	Int8 tz = dt->GetTimeZoneQHR();
@@ -101,7 +101,7 @@ void UI::GUIDateTimePicker::SetValue(const Data::Timestamp &ts)
 	SendMessage((HWND)this->hwnd, DTM_SETSYSTEMTIME, GDT_VALID, (LPARAM)&t);
 }
 
-void UI::GUIDateTimePicker::GetSelectedTime(Data::DateTime *dt)
+void UI::GUIDateTimePicker::GetSelectedTime(NotNullPtr<Data::DateTime> dt)
 {
 	SYSTEMTIME t;
 	SendMessage((HWND)this->hwnd, DTM_GETSYSTEMTIME, 0, (LPARAM)&t);

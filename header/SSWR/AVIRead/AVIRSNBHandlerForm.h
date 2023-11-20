@@ -21,7 +21,7 @@ namespace SSWR
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			Media::ImageList *simg;
 
-			UI::GUIPanel *pnlControl;
+			NotNullPtr<UI::GUIPanel> pnlControl;
 			UI::GUILabel *lblType;
 			UI::GUIComboBox *cboType;
 			UI::GUIButton *btnOk;

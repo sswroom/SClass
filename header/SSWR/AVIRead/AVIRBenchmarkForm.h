@@ -37,24 +37,24 @@ namespace SSWR
 			Data::ArrayList<TestResult*> *resultList;
 			Bool processing;
 
-			UI::GUIPanel *pnlCtrl;
+			NotNullPtr<UI::GUIPanel> pnlCtrl;
 			UI::GUIButton *btnStart;
 			UI::GUIButton *btnQuick;
 			UI::GUIButton *btnSave;
 			UI::GUIProgressBar *pbMain;
 			UI::GUITabControl *tcMain;
 
-			UI::GUITabPage *tpCopy;
+			NotNullPtr<UI::GUITabPage> tpCopy;
 			UI::GUIListView *lvCopy;
 
-			UI::GUITabPage *tpRead;
+			NotNullPtr<UI::GUITabPage> tpRead;
 			UI::GUIListView *lvRead;
 
-			UI::GUITabPage *tpWrite;
+			NotNullPtr<UI::GUITabPage> tpWrite;
 			UI::GUIListView *lvWrite;
 
-			UI::GUITabPage *tpInfo;
-			UI::GUIPanel *pnlInfo;
+			NotNullPtr<UI::GUITabPage> tpInfo;
+			NotNullPtr<UI::GUIPanel> pnlInfo;
 			UI::GUILabel *lblPlatform;
 			UI::GUITextBox *txtPlatform;
 			UI::GUILabel *lblCPU;

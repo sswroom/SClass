@@ -16,7 +16,7 @@ namespace UI
 	public:
 		void EventScrolled();
 	public:
-		GUITrackBar(NotNullPtr<GUICore> ui, UI::GUIClientControl *parent, UOSInt minVal, UOSInt maxVal, UOSInt currVal);
+		GUITrackBar(NotNullPtr<GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, UOSInt minVal, UOSInt maxVal, UOSInt currVal);
 		virtual ~GUITrackBar();
 
 		virtual Text::CStringNN GetObjectClass() const;
