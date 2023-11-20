@@ -77,7 +77,7 @@ namespace Data
 		static Int64 GetCurrTimeSecHighP(OutParam<UInt32> nanosec);
 		static Int64 FILETIME2Secs(const void *fileTime, OutParam<UInt32> nanosec);
 		static void Secs2FILETIME(Int64 secs, UInt32 nanosec, void *fileTime);
-		static Int64 SYSTEMTIME2Ticks(void *sysTime);
+		static Int64 SYSTEMTIME2Ticks(const void *sysTime);
 		static void Ticks2SYSTEMTIME(void *sysTime, Int64 ticks);
 		static Bool SetAsComputerTime(Int64 secs, UInt32 nanosec);
 		static Weekday WeekdayParse(Text::CStringNN weekday);

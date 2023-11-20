@@ -46,7 +46,9 @@ namespace Text
 			void SetLastAuthor(const UTF8Char *lastAuthor);
 			void SetCompany(const UTF8Char *company);
 			void SetCreateTime(Data::DateTime *createTime);
+			void SetCreateTime(Data::Timestamp createTime);
 			void SetModifyTime(Data::DateTime *modifyTime);
+			void SetModifyTime(Data::Timestamp modifyTime);
 			void SetVersion(Double version);
 			const UTF8Char *GetAuthor() const;
 			const UTF8Char *GetLastAuthor() const;

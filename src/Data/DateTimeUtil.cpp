@@ -2015,9 +2015,9 @@ void Data::DateTimeUtil::Secs2FILETIME(Int64 secs, UInt32 nanosec, void* fileTim
 	WriteInt64((UInt8*)fileTime, secs + 116444736000000000LL);
 }
 
-Int64 Data::DateTimeUtil::SYSTEMTIME2Ticks(void *sysTime)
+Int64 Data::DateTimeUtil::SYSTEMTIME2Ticks(const void *sysTime)
 {
-	SYSTEMTIME *stime = (SYSTEMTIME*)sysTime;
+	const SYSTEMTIME *stime = (const SYSTEMTIME*)sysTime;
 	TimeValue tval;
 	tval.year = (Int32)stime->wYear;
 	tval.month = (UInt8)stime->wMonth;

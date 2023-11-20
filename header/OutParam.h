@@ -3,7 +3,7 @@
 
 template <typename T> struct OutParam
 {
-private:
+protected:
 	T* p;
 
 	OutParam(T *p)

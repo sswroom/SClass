@@ -17,6 +17,7 @@
 #include "Parser/FileParser/BurikoPackFileParser.h"
 #include "Parser/FileParser/CABParser.h"
 #include "Parser/FileParser/CDXAParser.h"
+#include "Parser/FileParser/CFBParser.h"
 #include "Parser/FileParser/CIPParser.h"
 #include "Parser/FileParser/ClassParser.h"
 #include "Parser/FileParser/COMParser.h"
@@ -110,7 +111,6 @@
 #include "Parser/FileParser/WPTParser.h"
 #include "Parser/FileParser/X13Parser.h"
 #include "Parser/FileParser/X509Parser.h"
-#include "Parser/FileParser/XLSParser.h"
 #include "Parser/FileParser/XMLParser.h"
 #include "Parser/FileParser/XPCMParser.h"
 #include "Parser/FileParser/YKCParser.h"
@@ -217,7 +217,7 @@ Parser::FullParserList::FullParserList() : Parser::ParserList()
 	this->AddFileParser(parser);
 	NEW_CLASS(parser, Parser::FileParser::LUTParser());
 	this->AddFileParser(parser);
-	NEW_CLASS(parser, Parser::FileParser::XLSParser());
+	NEW_CLASS(parser, Parser::FileParser::CFBParser());
 	this->AddFileParser(parser);
 	NEW_CLASS(parser, Parser::FileParser::SQLiteParser());
 	this->AddFileParser(parser);

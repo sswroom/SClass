@@ -1205,6 +1205,7 @@ GUITest8.o: ../../main/UI/GUITest8.cpp
 GUITest9.o: ../../main/UI/GUITest9.cpp
 
 Handles.h:
+InOutParam.h:
 NotNullPtr.h:
 Optional.h:
 OptOut.h:
@@ -3410,6 +3411,8 @@ Parser/FileParser/CABParser.h: ../../src/Parser/FileParser/CABParser.cpp
 @CABParser.o
 Parser/FileParser/CDXAParser.h: ../../src/Parser/FileParser/CDXAParser.cpp
 @CDXAParser.o
+Parser/FileParser/CFBParser.h: ../../src/Parser/FileParser/CFBParser.cpp
+@CFBParser.o
 Parser/FileParser/CIPParser.h: ../../src/Parser/FileParser/CIPParser.cpp
 @CIPParser.o
 Parser/FileParser/ClassParser.h: ../../src/Parser/FileParser/ClassParser.cpp
@@ -3588,8 +3591,6 @@ Parser/FileParser/X13Parser.h: ../../src/Parser/FileParser/X13Parser.cpp
 @X13Parser.o
 Parser/FileParser/X509Parser.h: ../../src/Parser/FileParser/X509Parser.cpp
 @X509Parser.o
-Parser/FileParser/XLSParser.h: ../../src/Parser/FileParser/XLSParser.cpp
-@XLSParser.o
 Parser/FileParser/XMLParser.h: ../../src/Parser/FileParser/XMLParser.cpp
 @XMLParser.o
 Parser/FileParser/XPCMParser.h: ../../src/Parser/FileParser/XPCMParser.cpp
@@ -5688,6 +5689,7 @@ BurikoArcParser.o: ../../src/Parser/FileParser/BurikoArcParser.cpp
 BurikoPackFileParser.o: ../../src/Parser/FileParser/BurikoPackFileParser.cpp
 CABParser.o: ../../src/Parser/FileParser/CABParser.cpp
 CDXAParser.o: ../../src/Parser/FileParser/CDXAParser.cpp
+CFBParser.o: ../../src/Parser/FileParser/CFBParser.cpp
 CIPParser.o: ../../src/Parser/FileParser/CIPParser.cpp
 ClassParser.o: ../../src/Parser/FileParser/ClassParser.cpp
 COMParser.o: ../../src/Parser/FileParser/COMParser.cpp
@@ -5776,7 +5778,6 @@ WAVParser.o: ../../src/Parser/FileParser/WAVParser.cpp
 WPTParser.o: ../../src/Parser/FileParser/WPTParser.cpp
 X13Parser.o: ../../src/Parser/FileParser/X13Parser.cpp
 X509Parser.o: ../../src/Parser/FileParser/X509Parser.cpp
-XLSParser.o: ../../src/Parser/FileParser/XLSParser.cpp
 XMLParser.o: ../../src/Parser/FileParser/XMLParser.cpp
 XPCMParser.o: ../../src/Parser/FileParser/XPCMParser.cpp
 YKCParser.o: ../../src/Parser/FileParser/YKCParser.cpp

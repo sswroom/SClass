@@ -189,6 +189,25 @@ void Text::SpreadSheet::Workbook::SetCreateTime(Data::DateTime *createTime)
 	}
 }
 
+void Text::SpreadSheet::Workbook::SetCreateTime(Data::Timestamp createTime)
+{
+	if (createTime.IsNull())
+	{
+		SDEL_CLASS(this->createTime);
+	}
+	else
+	{
+		if (this->createTime == 0)
+		{
+			NEW_CLASS(this->createTime, Data::DateTime(createTime.inst, createTime.tzQhr));
+		}
+		else
+		{
+			this->createTime->SetValue(createTime.inst, createTime.tzQhr);
+		}
+	}
+}
+
 void Text::SpreadSheet::Workbook::SetModifyTime(Data::DateTime *modifyTime)
 {
 	SDEL_CLASS(this->modifyTime);
@@ -198,6 +217,26 @@ void Text::SpreadSheet::Workbook::SetModifyTime(Data::DateTime *modifyTime)
 		NEW_CLASS(this->modifyTime, Data::DateTime(dt));
 	}
 }
+
+void Text::SpreadSheet::Workbook::SetModifyTime(Data::Timestamp modifyTime)
+{
+	if (modifyTime.IsNull())
+	{
+		SDEL_CLASS(this->modifyTime);
+	}
+	else
+	{
+		if (this->modifyTime == 0)
+		{
+			NEW_CLASS(this->modifyTime, Data::DateTime(modifyTime.inst, modifyTime.tzQhr));
+		}
+		else
+		{
+			this->modifyTime->SetValue(modifyTime.inst, modifyTime.tzQhr);
+		}
+	}
+}
+
 
 void Text::SpreadSheet::Workbook::SetVersion(Double version)
 {

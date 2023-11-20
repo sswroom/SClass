@@ -37,6 +37,15 @@ void __stdcall SSWR::AVIRead::AVIROpenFileForm::OnCancelClicked(void *userObj)
 	me->SetDialogResult(UI::GUIForm::DR_CANCEL);
 }
 
+void __stdcall SSWR::AVIRead::AVIROpenFileForm::FileHandler(void *userObj, NotNullPtr<Text::String> *files, UOSInt nFiles)
+{
+	SSWR::AVIRead::AVIROpenFileForm *me = (SSWR::AVIRead::AVIROpenFileForm*)userObj;
+	if (nFiles > 0)
+	{
+		me->txtName->SetText(files[0]->ToCString());
+	}
+}
+
 SSWR::AVIRead::AVIROpenFileForm::AVIROpenFileForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, IO::ParserType t) : UI::GUIForm(parent, 640, 120, ui)
 {
 	this->SetText(CSTR("Open File"));
@@ -77,6 +86,8 @@ SSWR::AVIRead::AVIROpenFileForm::AVIROpenFileForm(UI::GUIClientControl *parent, 
 		this->cboType->AddItem(IO::ParserTypeGetName((IO::ParserType)i), (void*)i);
 	}
 	this->cboType->SetSelectedIndex(0);
+
+	this->HandleDropFiles(FileHandler, this);
 }
 
 SSWR::AVIRead::AVIROpenFileForm::~AVIROpenFileForm()

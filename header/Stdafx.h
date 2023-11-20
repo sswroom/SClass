@@ -16,7 +16,7 @@
 #ifndef SDEFS_INCLUDED
 #include "sdefs.h"
 #include "NotNullPtr.h"
-#include "OutParam.h"
+#include "InOutParam.h"
 #include "OptOut.h"
 #include "Optional.h"
 #endif

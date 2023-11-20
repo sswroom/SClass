@@ -320,8 +320,9 @@ Bool Data::DateTime::SetValue(Text::CStringNN dateStr)
 
 void Data::DateTime::SetValueSYSTEMTIME(const void *sysTime)
 {
-	SYSTEMTIME *stime = (SYSTEMTIME*)sysTime;
 	NotNullPtr<Data::DateTimeUtil::TimeValue> tval = this->GetTimeValue();
+	
+	SYSTEMTIME *stime = (SYSTEMTIME*)sysTime;
 	tval->year = stime->wYear;
 	tval->month = (UInt8)stime->wMonth;
 	tval->day = (UInt8)stime->wDay;

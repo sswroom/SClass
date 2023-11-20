@@ -571,6 +571,11 @@ namespace Data
 			return Data::Timestamp(Data::TimeInstant(secs, nanosec), tzQhr);
 		}
 
+		static Timestamp FromSYSTEMTIME(const void* sysTime, Int8 tzQhr)
+		{
+			return Data::Timestamp(Data::DateTimeUtil::SYSTEMTIME2Ticks(sysTime), tzQhr);
+		}
+
 		static Timestamp FromNTPTime(UInt32 hiWord, UInt32 loWord, Int8 tzQhr)
 		{
 			return Data::Timestamp(Data::TimeInstant(hiWord - 2208988800LL, (UInt32)((loWord * 1000000000ULL) >> 32)), tzQhr);
