@@ -148,9 +148,17 @@ void __stdcall SSWR::AVIRead::AVIRHTTPSvrForm::OnStartClick(void *userObj)
 	}
 	UInt16 port = 0;
 	Bool valid = true;
+	UOSInt workerCnt;
 	Text::StringBuilderUTF8 sb;
 	me->txtPort->GetText(sb);
 	Text::StrToUInt16S(sb.ToString(), port, 0);
+	sb.ClearStr();
+	me->txtWorkerCnt->GetText(sb);
+	if (!sb.ToUOSInt(workerCnt))
+	{
+		UI::MessageDialog::ShowDialog(CSTR("Please enter valid worker count"), CSTR("HTTP Server"), me);
+		return;
+	}
 	sb.ClearStr();
 	me->txtDocDir->GetText(sb);
 	Net::SSLEngine *ssl = 0;
@@ -186,7 +194,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPSvrForm::OnStartClick(void *userObj)
 		sptr = dt.ToString(Text::StrConcatC(sbuff, UTF8STRC("AVIRead/")), "yyyyMMddHHmmss");
 		NotNullPtr<Net::WebServer::HTTPDirectoryHandler> dirHdlr;
 		NEW_CLASSNN(dirHdlr, Net::WebServer::HTTPDirectoryHandler(sb.ToCString(), me->chkAllowBrowse->IsChecked(), cacheSize, true));
-		NEW_CLASS(me->svr, Net::WebServer::WebListener(me->core->GetSocketFactory(), ssl, dirHdlr, port, 120, Sync::ThreadUtil::GetThreadCnt(), CSTRP(sbuff, sptr), me->chkAllowProxy->IsChecked(), (Net::WebServer::KeepAlive)(OSInt)me->cboKeepAlive->GetSelectedItem(), false));
+		NEW_CLASS(me->svr, Net::WebServer::WebListener(me->core->GetSocketFactory(), ssl, dirHdlr, port, 120, 2, Sync::ThreadUtil::GetThreadCnt(), CSTRP(sbuff, sptr), me->chkAllowProxy->IsChecked(), (Net::WebServer::KeepAlive)(OSInt)me->cboKeepAlive->GetSelectedItem(), false));
 		if (me->svr->IsError())
 		{
 			valid = false;
@@ -245,6 +253,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPSvrForm::OnStartClick(void *userObj)
 		me->txtPort->SetReadOnly(true);
 		me->txtDocDir->SetReadOnly(true);
 		me->txtLogDir->SetReadOnly(true);
+		me->txtWorkerCnt->SetReadOnly(true);
 		me->chkAllowBrowse->SetEnabled(false);
 		me->chkAllowProxy->SetEnabled(false);
 		me->chkCacheFile->SetEnabled(false);
@@ -288,6 +297,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPSvrForm::OnStopClick(void *userObj)
 	me->txtPort->SetReadOnly(false);
 	me->txtDocDir->SetReadOnly(false);
 	me->txtLogDir->SetReadOnly(false);
+	me->txtWorkerCnt->SetReadOnly(false);
 	me->chkAllowBrowse->SetEnabled(true);
 	me->chkAllowProxy->SetEnabled(true);
 	me->chkCacheFile->SetEnabled(true);
@@ -486,7 +496,7 @@ SSWR::AVIRead::AVIRHTTPSvrForm::AVIRHTTPSvrForm(UI::GUIClientControl *parent, No
 	this->tpLog = this->tcMain->AddTabPage(CSTR("Log"));
 
 	NEW_CLASSNN(this->grpParam, UI::GUIGroupBox(ui, this->tpControl, CSTR("Parameters")));
-	this->grpParam->SetRect(0, 0, 620, 320, false);
+	this->grpParam->SetRect(0, 0, 620, 344, false);
 	this->grpParam->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->lblPort, UI::GUILabel(ui, this->grpParam, CSTR("Port")));
 	this->lblPort->SetRect(8, 8, 100, 23, false);
@@ -518,51 +528,56 @@ SSWR::AVIRead::AVIRHTTPSvrForm::AVIRHTTPSvrForm(UI::GUIClientControl *parent, No
 	this->btnSSLCert->HandleButtonClick(OnSSLCertClicked, this);
 	NEW_CLASS(this->lblSSLCert, UI::GUILabel(ui, this->grpParam, CSTR("")));
 	this->lblSSLCert->SetRect(288, 80, 200, 23, false);
+	NEW_CLASS(this->lblWorkerCnt, UI::GUILabel(ui, this->grpParam, CSTR("Worker Count")));
+	this->lblWorkerCnt->SetRect(8, 104, 100, 23, false);
+	sptr = Text::StrUOSInt(sbuff, Sync::ThreadUtil::GetThreadCnt());
+	NEW_CLASS(this->txtWorkerCnt, UI::GUITextBox(ui, this->grpParam, CSTRP(sbuff, sptr)));
+	this->txtWorkerCnt->SetRect(108, 104, 100, 23, false);
 	NEW_CLASS(this->lblAllowBrowse, UI::GUILabel(ui, this->grpParam, CSTR("Directory Browsing")));
-	this->lblAllowBrowse->SetRect(8, 104, 100, 23, false);
+	this->lblAllowBrowse->SetRect(8, 128, 100, 23, false);
 	NEW_CLASS(this->chkAllowBrowse, UI::GUICheckBox(ui, this->grpParam, CSTR("Allow"), true));
-	this->chkAllowBrowse->SetRect(108, 104, 100, 23, false);
+	this->chkAllowBrowse->SetRect(108, 128, 100, 23, false);
 	NEW_CLASS(this->lblAllowProxy, UI::GUILabel(ui, this->grpParam, CSTR("Proxy Connection")));
-	this->lblAllowProxy->SetRect(8, 128, 100, 23, false);
+	this->lblAllowProxy->SetRect(8, 152, 100, 23, false);
 	NEW_CLASS(this->chkAllowProxy, UI::GUICheckBox(ui, this->grpParam, CSTR("Allow"), false));
-	this->chkAllowProxy->SetRect(108, 128, 100, 23, false);
+	this->chkAllowProxy->SetRect(108, 152, 100, 23, false);
 	NEW_CLASS(this->lblCacheFile, UI::GUILabel(ui, this->grpParam, CSTR("Cache File")));
-	this->lblCacheFile->SetRect(8, 152, 100, 23, false);
+	this->lblCacheFile->SetRect(8, 176, 100, 23, false);
 	NEW_CLASS(this->chkCacheFile, UI::GUICheckBox(ui, this->grpParam, CSTR("Enable"), false));
-	this->chkCacheFile->SetRect(108, 152, 100, 23, false);
+	this->chkCacheFile->SetRect(108, 176, 100, 23, false);
 	NEW_CLASS(this->lblSPKPackageFile, UI::GUILabel(ui, this->grpParam, CSTR("Expand SPK Packages")));
-	this->lblSPKPackageFile->SetRect(8, 176, 100, 23, false);
+	this->lblSPKPackageFile->SetRect(8, 200, 100, 23, false);
 	NEW_CLASS(this->chkSPKPackageFile, UI::GUICheckBox(ui, this->grpParam, CSTR("Enable"), false));
-	this->chkSPKPackageFile->SetRect(108, 176, 100, 23, false);
+	this->chkSPKPackageFile->SetRect(108, 200, 100, 23, false);
 	NEW_CLASS(this->lblZIPPackageFile, UI::GUILabel(ui, this->grpParam, CSTR("Expand ZIP Packages")));
-	this->lblZIPPackageFile->SetRect(8, 200, 100, 23, false);
+	this->lblZIPPackageFile->SetRect(8, 224, 100, 23, false);
 	NEW_CLASS(this->chkZIPPackageFile, UI::GUICheckBox(ui, this->grpParam, CSTR("Enable"), false));
-	this->chkZIPPackageFile->SetRect(108, 200, 100, 23, false);
+	this->chkZIPPackageFile->SetRect(108, 224, 100, 23, false);
 	NEW_CLASS(this->lblSkipLog, UI::GUILabel(ui, this->grpParam, CSTR("Skip Logging")));
-	this->lblSkipLog->SetRect(8, 224, 100, 23, false);
+	this->lblSkipLog->SetRect(8, 248, 100, 23, false);
 	NEW_CLASS(this->chkSkipLog, UI::GUICheckBox(ui, this->grpParam, CSTR("Enable"), true));
-	this->chkSkipLog->SetRect(108, 224, 100, 23, false);
+	this->chkSkipLog->SetRect(108, 248, 100, 23, false);
 	NEW_CLASS(this->lblKeepAlive, UI::GUILabel(ui, this->grpParam, CSTR("Keep Alive")));
-	this->lblKeepAlive->SetRect(8, 248, 100, 23, false);
+	this->lblKeepAlive->SetRect(8, 272, 100, 23, false);
 	NEW_CLASS(this->cboKeepAlive, UI::GUIComboBox(ui, this->grpParam, false));
-	this->cboKeepAlive->SetRect(108, 248, 100, 23, false);
+	this->cboKeepAlive->SetRect(108, 272, 100, 23, false);
 	this->cboKeepAlive->AddItem(CSTR("Always"), (void*)(OSInt)Net::WebServer::KeepAlive::Always);
 	this->cboKeepAlive->AddItem(CSTR("Default"), (void*)(OSInt)Net::WebServer::KeepAlive::Default);
 	this->cboKeepAlive->AddItem(CSTR("No"), (void*)(OSInt)Net::WebServer::KeepAlive::No);
 	this->cboKeepAlive->SetSelectedIndex(1);
 	NEW_CLASS(this->lblCrossOrigin, UI::GUILabel(ui, this->grpParam, CSTR("Cross Origin")));
-	this->lblCrossOrigin->SetRect(8, 272, 100, 23, false);
+	this->lblCrossOrigin->SetRect(8, 296, 100, 23, false);
 	NEW_CLASS(this->chkCrossOrigin, UI::GUICheckBox(ui, this->grpParam, CSTR("Allow"), false));
-	this->chkCrossOrigin->SetRect(108, 272, 100, 23, false);
+	this->chkCrossOrigin->SetRect(108, 296, 100, 23, false);
 	NEW_CLASS(this->lblDownloadCnt, UI::GUILabel(ui, this->grpParam, CSTR("Download Count")));
-	this->lblDownloadCnt->SetRect(8, 320, 100, 23, false);
+	this->lblDownloadCnt->SetRect(8, 344, 100, 23, false);
 	NEW_CLASS(this->chkDownloadCnt, UI::GUICheckBox(ui, this->grpParam, CSTR("Enable"), false));
-	this->chkDownloadCnt->SetRect(108, 320, 100, 23, false);
+	this->chkDownloadCnt->SetRect(108, 344, 100, 23, false);
 	NEW_CLASS(this->btnStart, UI::GUIButton(ui, this->tpControl, CSTR("Start")));
-	this->btnStart->SetRect(200, 356, 75, 23, false);
+	this->btnStart->SetRect(200, 380, 75, 23, false);
 	this->btnStart->HandleButtonClick(OnStartClick, this);
 	NEW_CLASS(this->btnStop, UI::GUIButton(ui, this->tpControl, CSTR("Stop")));
-	this->btnStop->SetRect(300, 356, 75, 23, false);
+	this->btnStop->SetRect(300, 380, 75, 23, false);
 	this->btnStop->HandleButtonClick(OnStopClick, this);
 
 	NEW_CLASS(this->lblConnCurr, UI::GUILabel(ui, this->tpStatus, CSTR("Conn Curr")));

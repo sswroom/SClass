@@ -65,6 +65,8 @@ IO::ParsedObject *Parser::FileParser::CFBParser::ParseFileHdr(NotNullPtr<IO::Str
 	UInt64 sizeLeft;
 	Data::Timestamp createTS;
 	Data::Timestamp modifyTS;
+	Data::Timestamp rootCreateTS = 0;
+	Data::Timestamp rootModifyTS = 0;
 
 	Data::ByteBuffer fat(sectorSize * fatCnt);
 	UOSInt fatSize = 0;
@@ -118,19 +120,21 @@ IO::ParsedObject *Parser::FileParser::CFBParser::ParseFileHdr(NotNullPtr<IO::Str
 			if (ReadInt32(&buff[i]) == 0)
 				break;
 
-			createTS = 0;
-			modifyTS = 0;
+			createTS = rootCreateTS;
+			modifyTS = rootModifyTS;
 			if (ReadInt32(&buff[i + 100]) != 0 || ReadInt32(&buff[i + 104]) != 0)
 			{
 				createTS = Data::Timestamp::FromFILETIME(&buff[i + 100], 0);
 			}
 			if (ReadInt32(&buff[i + 108]) != 0 || ReadInt32(&buff[i + 112]) != 0)
 			{
-				modifyTS = Data::Timestamp::FromSYSTEMTIME(&buff[i + 108], 0);
+				modifyTS = Data::Timestamp::FromFILETIME(&buff[i + 108], 0);
 			}
 
 			if (Text::StrEqualsICaseASCII((const UTF16Char *)&buff[i], "Root Entry"))
 			{
+				rootCreateTS = createTS;
+				rootModifyTS = modifyTS;
 				currSect = ReadUInt32(&buff[i + 116]);
 				sizeLeft = ReadUInt64(&buff[i + 120]);
 				while (sizeLeft > 0)

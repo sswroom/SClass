@@ -341,7 +341,16 @@ Int32 ProcessExecTest()
 	return 0;
 }
 
+Int32 CFBTimeTest()
+{
+	UInt64 t = 0x01BAB44B13921E80;
+	UTF8Char sbuff[64];
+	UTF8Char *sptr = Data::Timestamp::FromFILETIME(&t, 0).ToString(sbuff);
+	printf("Time = %s\r\n", sbuff);
+	return 0;
+}
+
 Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 {
-	return ProcessExecTest();
+	return CFBTimeTest();
 }

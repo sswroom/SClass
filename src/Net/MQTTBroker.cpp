@@ -1067,7 +1067,7 @@ Bool Net::MQTTBroker::AddWSListener(Net::SSLEngine *ssl, UInt16 port, Bool autoS
 	listener->ssl = 0;
 	listener->cliMgr = 0;
 	listener->svr = 0;
-	NEW_CLASS(listener->listener, Net::WebServer::WebListener(this->sockf, ssl, this->wsHdlr, port, 60, Sync::ThreadUtil::GetThreadCnt(), CSTR("SSWRMQTT/1.0"), false, Net::WebServer::KeepAlive::No, autoStart));
+	NEW_CLASS(listener->listener, Net::WebServer::WebListener(this->sockf, ssl, this->wsHdlr, port, 60, 2, Sync::ThreadUtil::GetThreadCnt(), CSTR("SSWRMQTT/1.0"), false, Net::WebServer::KeepAlive::No, autoStart));
 	if (listener->listener->IsError())
 	{
 		DEL_CLASS(listener->listener);

@@ -896,7 +896,7 @@ void SSWR::AVIRead::AVIRHQMPForm::EventMenuClicked(UInt16 cmdId)
 		{
 			NotNullPtr<Media::MediaPlayerWebInterface> hdlr;
 			NEW_CLASSNN(hdlr, Media::MediaPlayerWebInterface(this, true));
-			NEW_CLASS(this->listener, Net::WebServer::WebListener(this->core->GetSocketFactory(), 0, hdlr, 8080, 10, 2, CSTR("HQMP/1.0"), false, Net::WebServer::KeepAlive::Default, true));
+			NEW_CLASS(this->listener, Net::WebServer::WebListener(this->core->GetSocketFactory(), 0, hdlr, 8080, 10, 1, 2, CSTR("HQMP/1.0"), false, Net::WebServer::KeepAlive::Default, true));
 			if (this->listener->IsError())
 			{
 				DEL_CLASS(this->listener);

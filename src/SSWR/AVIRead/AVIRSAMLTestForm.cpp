@@ -239,7 +239,7 @@ void __stdcall SSWR::AVIRead::AVIRSAMLTestForm::OnStartClicked(void *userObj)
 		}
 		samlHdlr->HandleRAWSAMLResponse(OnSAMLResponse, me);
 		samlHdlr->HandleLoginRequest(OnLoginRequest, me);
-		NEW_CLASS(me->svr, Net::WebServer::WebListener(me->core->GetSocketFactory(), ssl, samlHdlr, port, 120, Sync::ThreadUtil::GetThreadCnt(), CSTR("SAMLTest/1.0"), false, Net::WebServer::KeepAlive::Default, false));
+		NEW_CLASS(me->svr, Net::WebServer::WebListener(me->core->GetSocketFactory(), ssl, samlHdlr, port, 120, 2, Sync::ThreadUtil::GetThreadCnt(), CSTR("SAMLTest/1.0"), false, Net::WebServer::KeepAlive::Default, false));
 		if (me->svr->IsError())
 		{
 			SDEL_CLASS(me->svr);

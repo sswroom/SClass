@@ -90,7 +90,7 @@ void __stdcall SSWR::AVIRead::AVIRPingMonitorForm::OnInfoClicked(void *userObj)
 	}
 	NotNullPtr<Net::EthernetWebHandler> webHdlr;
 	NEW_CLASSNN(webHdlr, Net::EthernetWebHandler(&me->analyzer));
-	NEW_CLASS(me->listener, Net::WebServer::WebListener(me->sockf, 0, webHdlr, port, 60, 3, CSTR("PingMonitor/1.0"), false, Net::WebServer::KeepAlive::Default, true));
+	NEW_CLASS(me->listener, Net::WebServer::WebListener(me->sockf, 0, webHdlr, port, 60, 1, 3, CSTR("PingMonitor/1.0"), false, Net::WebServer::KeepAlive::Default, true));
 	if (me->listener->IsError())
 	{
 		DEL_CLASS(me->listener);

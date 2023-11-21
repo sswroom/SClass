@@ -84,6 +84,8 @@ namespace SSWR
 			UI::GUICheckBox *chkSSL;
 			UI::GUIButton *btnSSLCert;
 			UI::GUILabel *lblSSLCert;
+			UI::GUILabel *lblWorkerCnt;
+			UI::GUITextBox *txtWorkerCnt;
 			UI::GUILabel *lblAllowBrowse;
 			UI::GUICheckBox *chkAllowBrowse;
 			UI::GUILabel *lblAllowProxy;

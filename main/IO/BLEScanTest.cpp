@@ -92,7 +92,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 		NotNullPtr<Net::WebServer::CapturerWebHandler> webHdlr;
 		Net::OSSocketFactory sockf(true);
 		NEW_CLASSNN(webHdlr, Net::WebServer::CapturerWebHandler(0, capturer, radioLogger));
-		NEW_CLASS(listener, Net::WebServer::WebListener(sockf, 0, webHdlr, webPort, 120, 4, CSTR("BLEScanTest/1.0"), false, Net::WebServer::KeepAlive::Default, false));
+		NEW_CLASS(listener, Net::WebServer::WebListener(sockf, 0, webHdlr, webPort, 120, 1, 4, CSTR("BLEScanTest/1.0"), false, Net::WebServer::KeepAlive::Default, false));
 		if (listener->IsError())
 		{
 			sb.AppendC(UTF8STRC("Error in starting web server at port "));

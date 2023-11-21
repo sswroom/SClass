@@ -7,7 +7,7 @@ Net::PushServer::PushServer(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine
 	this->sockf = sockf;
 	this->listener = 0;
 	NEW_CLASSNN(this->webHdlr, Net::PushServerHandler(this->mgr));
-	NEW_CLASS(this->listener, Net::WebServer::WebListener(sockf, 0, this->webHdlr, port, 120, 4, CSTR("PushServer/1.0"), false, Net::WebServer::KeepAlive::Default, true));
+	NEW_CLASS(this->listener, Net::WebServer::WebListener(sockf, 0, this->webHdlr, port, 120, 1, 4, CSTR("PushServer/1.0"), false, Net::WebServer::KeepAlive::Default, true));
 	if (this->listener->IsError())
 	{
 		DEL_CLASS(this->listener);

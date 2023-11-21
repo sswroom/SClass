@@ -836,10 +836,10 @@ SSWR::OrganWeb::OrganWebEnv::OrganWebEnv(NotNullPtr<Net::SocketFactory> sockf, N
 		webHdlr->HandlePath(CSTR("/osm"), this->osmHdlr, false);
 
 		this->webHdlr = webHdlr.Ptr();
-		NEW_CLASS(this->listener, Net::WebServer::WebListener(this->sockf, 0, webHdlr, port, 30, 10, CSTR("OrganWeb/1.0"), false, Net::WebServer::KeepAlive::Default, true));
+		NEW_CLASS(this->listener, Net::WebServer::WebListener(this->sockf, 0, webHdlr, port, 30, 1, 10, CSTR("OrganWeb/1.0"), false, Net::WebServer::KeepAlive::Default, true));
 		if (this->ssl && sslPort)
 		{
-			NEW_CLASS(this->sslListener, Net::WebServer::WebListener(this->sockf, this->ssl, webHdlr, sslPort, 30, 10, CSTR("OrganWeb/1.0"), false, Net::WebServer::KeepAlive::Default, true));
+			NEW_CLASS(this->sslListener, Net::WebServer::WebListener(this->sockf, this->ssl, webHdlr, sslPort, 30, 1, 10, CSTR("OrganWeb/1.0"), false, Net::WebServer::KeepAlive::Default, true));
 		}
 		else
 		{

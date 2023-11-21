@@ -51,7 +51,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	Net::OSSocketFactory sockf(true);
 	NotNullPtr<Net::WebServer::WebStandardHandler> hdlr;
 	NEW_CLASSNN(hdlr, Net::WebServer::HTTPDirectoryHandler(path, true, 65536, true));
-	NEW_CLASS(svr, Net::WebServer::WebListener(sockf, 0, hdlr, port, 120, 8, CSTR("sswr/1.0"), false, Net::WebServer::KeepAlive::Default, true));
+	NEW_CLASS(svr, Net::WebServer::WebListener(sockf, 0, hdlr, port, 120, 1, 8, CSTR("sswr/1.0"), false, Net::WebServer::KeepAlive::Default, true));
 	if (!svr->IsError())
 	{
 		progCtrl->WaitForExit(progCtrl);

@@ -87,7 +87,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	{
 		modbusListener.AddDevice(devAddr, dev);
 		Net::WebServer::MODBUSDevSimHandler devHdlr(modbusListener, dev);
-		Net::WebServer::WebListener webListener(sockf, 0, devHdlr, ctrlPort, 120, 2, CSTR("MODBUSSim/1.0"), false, Net::WebServer::KeepAlive::Default, false);
+		Net::WebServer::WebListener webListener(sockf, 0, devHdlr, ctrlPort, 120, 1, 2, CSTR("MODBUSSim/1.0"), false, Net::WebServer::KeepAlive::Default, false);
 		if (webListener.IsError())
 		{
 			console.WriteLineC(UTF8STRC("Error in listening to CtrlPort"));

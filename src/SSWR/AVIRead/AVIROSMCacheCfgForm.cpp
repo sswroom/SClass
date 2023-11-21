@@ -85,7 +85,7 @@ void __stdcall SSWR::AVIRead::AVIROSMCacheCfgForm::OnOKClick(void *userObj)
 		break;
 	}
 	NotNullPtr<Net::WebServer::WebListener> listener;
-	NEW_CLASSNN(listener, Net::WebServer::WebListener(me->core->GetSocketFactory(), 0, hdlr, port, 120, 8, CSTR("SSWR_OSM_Cache/1.0"), false, Net::WebServer::KeepAlive::Default, true));
+	NEW_CLASSNN(listener, Net::WebServer::WebListener(me->core->GetSocketFactory(), 0, hdlr, port, 120, 1, 8, CSTR("SSWR_OSM_Cache/1.0"), false, Net::WebServer::KeepAlive::Default, true));
 	if (listener->IsError())
 	{
 		listener.Delete();
