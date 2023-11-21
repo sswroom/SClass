@@ -1142,12 +1142,14 @@ Math::Geometry::Vector2D *Map::ESRI::FileGDBReader::GetVector(UOSInt colIndex)
 			}
 			UOSInt j;
 			UOSInt k;
+			OSInt dx = 0;
+			OSInt dy = 0;
+			OSInt dz = 0;
+			OSInt dm = 0;
 			i = 0;
 			while (i < nParts)
 			{
 				Int64 iv;
-				OSInt dx = 0;
-				OSInt dy = 0;
 				j = parts[i];
 				if (i + 1 < nParts)
 				{
@@ -1171,33 +1173,34 @@ Math::Geometry::Vector2D *Map::ESRI::FileGDBReader::GetVector(UOSInt colIndex)
 				}
 				if (geometryType & 0x80000000)
 				{
-					dx = 0;
 					j = parts[i];
 					while (j < k)
 					{
 						ofst = Map::ESRI::FileGDBUtil::ReadVarInt(this->rowData, ofst, iv);
-						dx += (OSInt)iv;
-						z = OSInt2Double(dx) / this->tableInfo->zScale + this->tableInfo->zOrigin;
+						dz += (OSInt)iv;
+						z = OSInt2Double(dz) / this->tableInfo->zScale + this->tableInfo->zOrigin;
 						zArr[j] = z;
 						j++;
 					}
 				}
 				if (geometryType & 0x40000000)
 				{
-					dx = 0;
+					dm = 0;
 					j = parts[i];
 					while (j < k)
 					{
 						ofst = Map::ESRI::FileGDBUtil::ReadVarInt(this->rowData, ofst, iv);
-						dx += (OSInt)iv;
-						m = OSInt2Double(dx) / this->tableInfo->mScale + this->tableInfo->mOrigin;
+						dm += (OSInt)iv;
+						m = OSInt2Double(dm) / this->tableInfo->mScale + this->tableInfo->mOrigin;
 						mArr[j] = m;
 						j++;
 					}
 				}
 				i++;
 			}
-			return pg;
+			NotNullPtr<Math::Geometry::MultiPolygon> mpg = pg->CreateMultiPolygon();
+			DEL_CLASS(pg);
+			return mpg.Ptr();
 		}
 		break;
 	}

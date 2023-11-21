@@ -3,6 +3,13 @@
 #include "Math/CoordinateSystem.h"
 #include "Math/Geometry/PointOfstCollection.h"
 
+#ifndef VERBOSE
+//#define VERBOSE
+#endif
+#ifdef VERBOSE
+#include <stdio.h>
+#endif
+
 Math::Geometry::PointOfstCollection::PointOfstCollection(UInt32 srid, UOSInt nPtOfst, UOSInt nPoint, const Math::Coord2DDbl *pointArr, Bool hasZ, Bool hasM) : Math::Geometry::PointCollection(srid, nPoint, pointArr)
 {
 	if (nPtOfst == 0)
@@ -132,6 +139,9 @@ Bool Math::Geometry::PointOfstCollection::Equals(NotNullPtr<const Math::Geometry
 {
 	if (vec->GetSRID() != this->srid)
 	{
+#ifdef VERBOSE
+		printf("PointOfstCollection: SRID different: %d != %d\r\n", vec->GetSRID(), this->srid);
+#endif
 		return false;
 	}
 	if (vec->GetVectorType() == this->GetVectorType() && this->HasZ() == vec->HasZ() && this->HasM() == vec->HasM())
@@ -142,8 +152,18 @@ Bool Math::Geometry::PointOfstCollection::Equals(NotNullPtr<const Math::Geometry
 		const UInt32 *ptOfst = pl->GetPtOfstList(nPtOfst);
 		const Math::Coord2DDbl *ptList = pl->GetPointList(nPoint);
 		Double *valArr;
-		if (nPtOfst != this->nPtOfst || nPoint != this->nPoint)
+		if (nPtOfst != this->nPtOfst)
 		{
+#ifdef VERBOSE
+			printf("PointOfstCollection: nPtOfst different: %d != %d\r\n", (UInt32)nPtOfst, (UInt32)this->nPtOfst);
+#endif
+			return false;
+		}
+		if (nPoint != this->nPoint)
+		{
+#ifdef VERBOSE
+			printf("PointOfstCollection: nPoint different: %d != %d\r\n", (UInt32)nPoint, (UInt32)this->nPoint);
+#endif
 			return false;
 		}
 		UOSInt i = nPtOfst;
@@ -151,6 +171,9 @@ Bool Math::Geometry::PointOfstCollection::Equals(NotNullPtr<const Math::Geometry
 		{
 			if (ptOfst[i] != this->ptOfstArr[i])
 			{
+#ifdef VERBOSE
+				printf("PointOfstCollection: ptOfst[%d] different: %d != %d\r\n", (UInt32)i, ptOfst[i], this->ptOfstArr[i]);
+#endif
 				return false;
 			}
 		}
@@ -161,6 +184,9 @@ Bool Math::Geometry::PointOfstCollection::Equals(NotNullPtr<const Math::Geometry
 			{
 				if (!ptList[i].EqualsNearly(this->pointArr[i]))
 				{
+#ifdef VERBOSE
+					printf("PointOfstCollection: points[%d] not nearly equal: (%lf, %lf) != (%lf, %lf)\r\n", (UInt32)i, ptList[i].x, ptList[i].y, this->pointArr[i].x, this->pointArr[i].y);
+#endif
 					return false;
 				}
 			}
@@ -172,6 +198,9 @@ Bool Math::Geometry::PointOfstCollection::Equals(NotNullPtr<const Math::Geometry
 				{
 					if (!Math::NearlyEqualsDbl(valArr[i], this->zArr[i]))
 					{
+#ifdef VERBOSE
+						printf("PointOfstCollection: zArr[%d] not nearly equal: %lf != %lf\r\n", (UInt32)i, valArr[i], this->zArr[i]);
+#endif
 						return false;
 					}
 				}
@@ -184,6 +213,9 @@ Bool Math::Geometry::PointOfstCollection::Equals(NotNullPtr<const Math::Geometry
 				{
 					if (!Math::NearlyEqualsDbl(valArr[i], this->mArr[i]))
 					{
+#ifdef VERBOSE
+						printf("PointOfstCollection: mArr[%d] not nearly equal: %lf != %lf\r\n", (UInt32)i, valArr[i], this->mArr[i]);
+#endif
 						return false;
 					}
 				}
@@ -196,6 +228,9 @@ Bool Math::Geometry::PointOfstCollection::Equals(NotNullPtr<const Math::Geometry
 			{
 				if (ptList[i] != this->pointArr[i])
 				{
+#ifdef VERBOSE
+					printf("PointOfstCollection: points[%d] not equal: (%lf, %lf) != (%lf, %lf)\r\n", (UInt32)i, ptList[i].x, ptList[i].y, this->pointArr[i].x, this->pointArr[i].y);
+#endif
 					return false;
 				}
 			}
@@ -207,6 +242,9 @@ Bool Math::Geometry::PointOfstCollection::Equals(NotNullPtr<const Math::Geometry
 				{
 					if (valArr[i] != this->zArr[i])
 					{
+#ifdef VERBOSE
+						printf("PointOfstCollection: zArr[%d] not equal: %lf != %lf\r\n", (UInt32)i, valArr[i], this->zArr[i]);
+#endif
 						return false;
 					}
 				}
@@ -219,6 +257,9 @@ Bool Math::Geometry::PointOfstCollection::Equals(NotNullPtr<const Math::Geometry
 				{
 					if (valArr[i] != this->mArr[i])
 					{
+#ifdef VERBOSE
+						printf("PointOfstCollection: mArr[%d] not nearly equal: %lf != %lf\r\n", (UInt32)i, valArr[i], this->mArr[i]);
+#endif
 						return false;
 					}
 				}
@@ -228,6 +269,20 @@ Bool Math::Geometry::PointOfstCollection::Equals(NotNullPtr<const Math::Geometry
 	}
 	else
 	{
+#ifdef VERBOSE
+		if (vec->GetVectorType() != this->GetVectorType())
+		{
+			printf("PointOfstCollection: vectorType not equal\r\n");
+		}
+		else if (this->HasZ() != vec->HasZ())
+		{
+			printf("PointOfstCollection: hasZ not equal\r\n");
+		}
+		else if (this->HasM() != vec->HasM())
+		{
+			printf("PointOfstCollection: hasM not equal\r\n");
+		}
+#endif
 		return false;
 	}
 }

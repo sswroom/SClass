@@ -513,6 +513,7 @@ NotNullPtr<Math::Geometry::MultiPolygon> Math::Geometry::Polygon::CreateMultiPol
 		mpg->AddGeometry(NotNullPtr<Math::Geometry::Polygon>::ConvertFrom(this->Clone()));
 		return mpg;
 	}
+	Data::ArrayListNN<Math::Geometry::Polygon> pgList;
 	NotNullPtr<Math::Geometry::Polygon> pg;
 	UOSInt i = 0;
 	UOSInt j = 0;
@@ -538,8 +539,46 @@ NotNullPtr<Math::Geometry::MultiPolygon> Math::Geometry::Polygon::CreateMultiPol
 		{
 			MemCopyNO(pg->mArr, &this->mArr[j], sizeof(this->mArr[0]) * (k - j));
 		}
-		mpg->AddGeometry(pg);
+		pgList.Add(pg);
 		j = k;
+	}
+	i = 1;
+	j = pgList.GetCount();
+	while (i < j)
+	{
+		if (pg.Set(pgList.GetItem(i)))
+		{
+			UOSInt ptCnt;
+			Math::Coord2DDbl *ptArr = pg->GetPointList(ptCnt);
+			Math::Geometry::Polygon *lastPG = pgList.GetItem(i - 1);
+			Bool inside = true;
+			while (ptCnt-- > 0)
+			{
+				if (!lastPG->InsideVector(ptArr[ptCnt]))
+				{
+					inside = false;
+					break;
+				}
+			}
+			if (inside && lastPG->JoinVector(pg))
+			{
+				pg.Delete();
+				pgList.RemoveAt(i);
+				j--;
+				i--;
+			}
+		}
+		i++;
+	}
+	i = 0;
+	j = pgList.GetCount();
+	while (i < j)
+	{
+		if (pg.Set(pgList.GetItem(i)))
+		{
+			mpg->AddGeometry(pg);
+		}
+		i++;
 	}
 	return mpg;
 }

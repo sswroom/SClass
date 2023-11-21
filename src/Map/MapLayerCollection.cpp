@@ -31,6 +31,10 @@ Map::MapLayerCollection::~MapLayerCollection()
 UOSInt Map::MapLayerCollection::Add(NotNullPtr<Map::MapDrawLayer> val)
 {
 	val->AddUpdatedHandler(InnerUpdated, this);
+	if (this->layerList.GetCount() == 0)
+	{
+		this->SetCoordinateSystem(val->GetCoordinateSystem()->Clone());
+	}
 	Sync::RWMutexUsage mutUsage(this->mut, true);
 	return this->layerList.Add(val);
 }

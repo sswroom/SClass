@@ -5,6 +5,13 @@
 #include "Math/CoordinateSystem.h"
 #include "Math/Geometry/Vector2D.h"
 
+#ifndef VERBOSE
+//#define VERBOSE
+#endif
+#if defined(VERBOSE)
+#include <stdio.h>
+#endif
+
 namespace Math
 {
 	namespace Geometry
@@ -174,11 +181,19 @@ namespace Math
 					{
 						return this->geometries.GetItem(0)->Equals(vec, sameTypeOnly, nearlyVal);
 					}
+#if defined(VERBOSE)
+					printf("MultiGeometry: Vector type different\r\n");
+#endif
 					return false;
 				}
 				Math::Geometry::MultiGeometry<T> *obj = (Math::Geometry::MultiGeometry<T> *)vec.Ptr();
 				if (obj->GetCount() != this->GetCount())
+				{
+#if defined(VERBOSE)
+					printf("MultiGeometry: Vector count different: %d != %d\r\n", (UInt32)obj->GetCount(), (UInt32)this->GetCount());
+#endif
 					return false;
+				}
 				NotNullPtr<Math::Geometry::Vector2D> v;
 				UOSInt i = this->GetCount();
 				while (i-- > 0)
