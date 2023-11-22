@@ -16,6 +16,7 @@ namespace Math
 			virtual void AddGeometry(NotNullPtr<LineString> geometry);
 			virtual Vector2D::VectorType GetVectorType() const;
 			virtual NotNullPtr<Vector2D> Clone() const;
+			UOSInt GetDrawPoints(NotNullPtr<Data::ArrayListA<Math::Coord2DDbl>> ptList);
 		};
 	}
 }

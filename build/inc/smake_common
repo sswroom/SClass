@@ -2203,6 +2203,8 @@ Map/MapConfig2TGen.h: ../../src/Map/MapConfig2TGen.cpp
 Map/MapConfigBase.h:
 Map/MapDrawLayer.h: ../../src/Map/MapDrawLayer.cpp
 @MapDrawLayer.o
+Map/MapDrawUtil.h: ../../src/Map/MapDrawUtil.cpp
+@MapDrawUtil.o
 Map/MapEnv.h: ../../src/Map/MapEnv.cpp
 @MapEnv.o
 Map/MapLayerCollection.h: ../../src/Map/MapLayerCollection.cpp
@@ -5131,6 +5133,7 @@ HKTrafficLayer.o: ../../src/Map/HKTrafficLayer.cpp
 HKTrafficLayer2.o: ../../src/Map/HKTrafficLayer2.cpp
 ILocationService.o: ../../src/Map/ILocationService.cpp
 MapDrawLayer.o: ../../src/Map/MapDrawLayer.cpp
+MapDrawUtil.o: ../../src/Map/MapDrawUtil.cpp
 KMLXML.o: ../../src/Map/KMLXML.cpp
 LayerTools.o: ../../src/Map/LayerTools.cpp
 LeveledMapView.o: ../../src/Map/LeveledMapView.cpp

@@ -108,7 +108,16 @@ Bool __stdcall SSWR::AVIRead::AVIRGISQueryForm::OnMouseUp(void *userObj, Math::C
 				}
 				if (vec)
 				{
-					me->cboObj->AddItem(Math::Geometry::Vector2D::VectorTypeGetName(vec->GetVectorType()), 0);
+					sptr = me->lyr->GetString(sbuff, sizeof(sbuff), nameArr, obj->objId, me->lyr->GetNameCol());
+					if (sptr)
+					{
+						sptr = Math::Geometry::Vector2D::VectorTypeGetName(vec->GetVectorType()).ConcatTo(Text::StrConcatC(sptr, UTF8STRC(" - ")));
+						me->cboObj->AddItem(CSTRP(sbuff, sptr), 0);
+					}
+					else
+					{
+						me->cboObj->AddItem(Math::Geometry::Vector2D::VectorTypeGetName(vec->GetVectorType()), 0);
+					}
 					me->queryVecList.Add(vec);
 					i = 0;
 					i2 = me->lyr->GetColumnCnt();

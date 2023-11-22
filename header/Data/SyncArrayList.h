@@ -18,7 +18,7 @@ namespace Data
 		virtual ~SyncArrayList();
 
 		virtual UOSInt Add(T val);
-		virtual UOSInt AddRange(T *arr, UOSInt cnt);
+		virtual UOSInt AddRange(const T *arr, UOSInt cnt);
 		virtual Bool Remove(T val);
 		virtual T RemoveAt(UOSInt index);
 		virtual void Insert(UOSInt index, T val);
@@ -54,7 +54,7 @@ namespace Data
 		return this->arr.Add(val);
 	}
 
-	template <class T> UOSInt Data::SyncArrayList<T>::AddRange(T *arr, UOSInt cnt)
+	template <class T> UOSInt Data::SyncArrayList<T>::AddRange(const T *arr, UOSInt cnt)
 	{
 		Sync::MutexUsage mutUsage(this->mut);
 		return this->arr.AddRange(arr, cnt);

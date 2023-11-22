@@ -2,6 +2,7 @@
 #include "MyMemory.h"
 #include "IO/Library.h"
 #include "Manage/HiResClock.h"
+#include "Map/MapDrawUtil.h"
 #include "Math/Math.h"
 #include "Math/Geometry/Ellipse.h"
 #include "Math/Geometry/LineString.h"
@@ -460,246 +461,21 @@ void UI::GUIMapControl::DrawScnObjects(NotNullPtr<Media::DrawImage> img, Math::C
 	}
 	UOSInt i = 0;
 	UOSInt j = this->selVecList.GetCount();
-	while (i < j)
+	if (j > 0)
 	{
-		Math::Geometry::Vector2D *vec = this->selVecList.GetItem(i);
-		Math::Geometry::Vector2D::VectorType vecType = vec->GetVectorType();
-		if (vecType == Math::Geometry::Vector2D::VectorType::LineString)
+		Media::DrawPen *p = img->NewPenARGB(0xffff0000, 3, 0, 0);
+		NotNullPtr<Media::DrawBrush> b = img->NewBrushARGB(0x403f0000);
+		NotNullPtr<Math::Geometry::Vector2D> vec;
+		while (i < j)
 		{
-			Math::Geometry::LineString *pl = (Math::Geometry::LineString*)vec;
-			Media::DrawPen *p = img->NewPenARGB(0xffff0000, 3, 0, 0);
-			UOSInt nPoint;
-			Math::Coord2DDbl *points = pl->GetPointList(nPoint);
-			Math::Coord2DDbl *dpoints = MemAllocA(Math::Coord2DDbl, nPoint);
-			view->MapXYToScnXY(points, dpoints, nPoint, ofst);
-			img->DrawPolyline(dpoints, nPoint, p);
-			MemFreeA(dpoints);
-			img->DelPen(p);
-		}
-		else if (vecType == Math::Geometry::Vector2D::VectorType::Polyline)
-		{
-			Math::Geometry::Polyline *pl = (Math::Geometry::Polyline*)vec;
-			Media::DrawPen *p = img->NewPenARGB(0xffff0000, 3, 0, 0);
-			UOSInt nPoint;
-			UOSInt nPtOfst;
-			Math::Coord2DDbl *points = pl->GetPointList(nPoint);
-			UInt32 *ptOfsts = pl->GetPtOfstList(nPtOfst);
-			UOSInt i;
-			Math::Coord2DDbl *dpoints = MemAllocA(Math::Coord2DDbl, nPoint);
-			UOSInt lastCnt;
-			UOSInt thisCnt;
-
-			view->MapXYToScnXY(points, dpoints, nPoint, ofst);
-			lastCnt = nPoint;
-			i = nPtOfst;
-			while (i-- > 0)
+			if (vec.Set(this->selVecList.GetItem(i)))
 			{
-				thisCnt = ptOfsts[i];
-				img->DrawPolyline(&dpoints[thisCnt * 2], lastCnt - thisCnt, p);
-				lastCnt = thisCnt;
+				Map::MapDrawUtil::DrawVector(vec, img, view, b, p, ofst);
 			}
-			MemFreeA(dpoints);
-
-			img->DelPen(p);
+			i++;
 		}
-		else if (vecType == Math::Geometry::Vector2D::VectorType::Polygon)
-		{
-			Math::Geometry::Polygon *pg = (Math::Geometry::Polygon*)vec;
-			Media::DrawPen *p = img->NewPenARGB(0xffff0000, 3, 0, 0);
-			NotNullPtr<Media::DrawBrush> b = img->NewBrushARGB(0x403f0000);
-			UOSInt nPoint;
-			UOSInt nPtOfst;
-			Math::Coord2DDbl *points = pg->GetPointList(nPoint);
-			UInt32 *ptOfsts = pg->GetPtOfstList(nPtOfst);
-			Math::Coord2DDbl *dpoints = MemAllocA(Math::Coord2DDbl, nPoint);
-			UInt32 *myPtCnts = MemAlloc(UInt32, nPtOfst);
-			view->MapXYToScnXY(points, dpoints, nPoint, ofst);
-
-			UOSInt i = nPtOfst;
-			while (i-- > 0)
-			{
-				myPtCnts[i] = (UInt32)nPoint - ptOfsts[i];
-				nPoint = ptOfsts[i];
-			}
-
-			img->DrawPolyPolygon(dpoints, myPtCnts, nPtOfst, p, b);
-			MemFreeA(dpoints);
-			MemFree(myPtCnts);
-			img->DelPen(p);
-			img->DelBrush(b);
-		}
-		else if (vecType == Math::Geometry::Vector2D::VectorType::MultiPolygon)
-		{
-			Math::Geometry::MultiPolygon *mpg = (Math::Geometry::MultiPolygon*)vec;
-			Media::DrawPen *p = img->NewPenARGB(0xffff0000, 3, 0, 0);
-			NotNullPtr<Media::DrawBrush> b = img->NewBrushARGB(0x403f0000);
-			UOSInt npg = mpg->GetCount();
-			UOSInt nPoint;
-			UOSInt nPtOfst;
-			while (npg-- > 0)
-			{
-				Math::Geometry::Polygon *pg = mpg->GetItem(npg);
-				Math::Coord2DDbl *points = pg->GetPointList(nPoint);
-				UInt32 *ptOfsts = pg->GetPtOfstList(nPtOfst);
-				Math::Coord2DDbl *dpoints = MemAllocA(Math::Coord2DDbl, nPoint);
-				UInt32 *myPtCnts = MemAlloc(UInt32, nPtOfst);
-				view->MapXYToScnXY(points, dpoints, nPoint, ofst);
-
-				UOSInt i = nPtOfst;
-				while (i-- > 0)
-				{
-					myPtCnts[i] = (UInt32)nPoint - ptOfsts[i];
-					nPoint = ptOfsts[i];
-				}
-
-				img->DrawPolyPolygon(dpoints, myPtCnts, nPtOfst, p, b);
-				MemFreeA(dpoints);
-				MemFree(myPtCnts);
-			}
-			img->DelPen(p);
-			img->DelBrush(b);
-		}
-		else if (vecType == Math::Geometry::Vector2D::VectorType::Ellipse)
-		{
-			Math::Geometry::Ellipse *circle = (Math::Geometry::Ellipse*)vec;
-			Media::DrawPen *p = img->NewPenARGB(0xffff0000, 3, 0, 0);
-			NotNullPtr<Media::DrawBrush> b = img->NewBrushARGB(0x403f0000);
-			Math::Coord2DDbl bl = view->MapXYToScnXY(circle->GetTL());
-			Math::Coord2DDbl tr = view->MapXYToScnXY(circle->GetBR());
-			img->DrawEllipse(Math::Coord2DDbl(bl.x + ofst.x, tr.y + ofst.y), Math::Size2DDbl(tr.x - bl.x, bl.y - tr.y), p, b);
-			img->DelPen(p);
-			img->DelBrush(b);
-		}
-		else if (vecType == Math::Geometry::Vector2D::VectorType::PieArea)
-		{
-//			Math::PieArea *pie = (Math::PieArea*)this->selVec;
-/*			BITMAPINFOHEADER bmih;
-			bmih.biSize = sizeof(bmih);
-			bmih.biWidth = (LONG)this->currWidth;
-			bmih.biHeight = (LONG)this->currHeight;
-			bmih.biPlanes = 1;
-			bmih.biBitCount = 32;
-			bmih.biCompression = BI_RGB;
-			bmih.biSizeImage = 0;
-			bmih.biXPelsPerMeter = 300;
-			bmih.biYPelsPerMeter = 300;
-			bmih.biClrUsed = 0;
-			bmih.biClrImportant = 0;
-			void *pbits;
-			HDC hdcBmp = CreateCompatibleDC(hdc);
-			HBITMAP hBmp = CreateDIBSection(hdcBmp, (BITMAPINFO*)&bmih, 0, &pbits, 0, 0);
-			if (hBmp)
-			{
-				MemClear(pbits, this->currWidth * this->currHeight * 4);
-				SelectObject(hdcBmp, hBmp);
-
-				Double x1;
-				Double y1;
-				Double x2;
-				Double y2;
-				Double r;
-				Double a1;
-				Double a2;
-				x1 = pie->GetCX();
-				y1 = pie->GetCY();
-				r = pie->GetR();
-				x2 = x1 + r;
-				y2 = y1 + r;
-				x1 = x1 - r;
-				y1 = y1 - r;
-				view->MapXYToScnXY(x1, y1, &x1, &y1);
-				view->MapXYToScnXY(x2, y2, &x2, &y2);
-				r = (x1 - x2) / 2;
-				if (r < 0)
-				{
-					r = -r;
-				}
-				a1 = pie->GetArcAngle1();
-				a2 = pie->GetArcAngle2();
-				Double cx = (x1 + x2) * 0.5 + xOfst;
-				Double cy = (y1 + y2) * 0.5 + yOfst;
-
-				HBRUSH hbr = CreateSolidBrush(0xffffff);
-				SelectObject(hdcBmp, hbr);
-				Pie(hdcBmp, Double2Int32(x1 + xOfst), Double2Int32(y1 + yOfst), Double2Int32(x2 + xOfst), Double2Int32(y2 + yOfst), Double2Int32(cx + r * Math_Sin(a2)), Double2Int32(cy - r * Math_Cos(a2)), Double2Int32(cx + r * Math_Sin(a1)), Double2Int32(cy - r * Math_Cos(a1)));
-				DeleteObject(hbr);
-
-
-				UInt32 *ptr = (UInt32*)pbits;
-				OSInt cnt = this->currWidth * this->currHeight;
-				while (cnt-- > 0)
-				{
-					if (*ptr)
-					{
-						*ptr = 0x403f0000;
-					}
-					ptr++;
-				}
-				BLENDFUNCTION bf;
-				bf.BlendOp = 0;
-				bf.BlendFlags = 0;
-				bf.SourceConstantAlpha = 255;
-				bf.AlphaFormat = AC_SRC_ALPHA;
-				AlphaBlend(hdc, 0, 0, (int)this->currWidth, (int)this->currHeight, hdcBmp, 0, 0, (int)this->currWidth, (int)this->currHeight, bf);
-
-				HPEN p = CreatePen(PS_SOLID, 3, 0x0000ff);
-				HGDIOBJ lastPen = SelectObject(hdc, p);
-				SelectObject(hdc, GetStockObject(HOLLOW_BRUSH));
-				Pie(hdc, Double2Int32(x1 + xOfst), Double2Int32(y1 + yOfst), Double2Int32(x2 + xOfst), Double2Int32(y2 + yOfst), Double2Int32(cx + r * Math_Sin(a2)), Double2Int32(cy - r * Math_Cos(a2)), Double2Int32(cx + r * Math_Sin(a1)), Double2Int32(cy - r * Math_Cos(a1)));
-				SelectObject(hdc, lastPen);
-				DeleteObject(p);
-
-				DeleteObject(hBmp);
-			}
-			DeleteDC(hdcBmp);*/
-		}
-		else if (vecType == Math::Geometry::Vector2D::VectorType::Image)
-		{
-			Math::Geometry::VectorImage *vimg = (Math::Geometry::VectorImage*)vec;
-			Media::DrawPen *p = img->NewPenARGB(0xffff0000, 3, 0, 0);
-			NotNullPtr<Media::DrawBrush> b = img->NewBrushARGB(0x403f0000);
-			UInt32 nPoints;
-			Math::Coord2DDbl pts[5];
-			Math::RectAreaDbl bounds;
-			
-			if (vimg->IsScnCoord())
-			{
-				vimg->GetScreenBounds(img->GetWidth(), img->GetHeight(), img->GetHDPI(), img->GetVDPI(), &bounds.tl.x, &bounds.tl.y, &bounds.br.x, &bounds.br.y);
-				pts[0] = bounds.tl + ofst;
-				pts[1].x = bounds.tl.x + ofst.x;
-				pts[1].y = bounds.br.y + ofst.y;
-				pts[2] = bounds.br + ofst;
-				pts[3].x = bounds.br.x + ofst.x;
-				pts[3].y = bounds.tl.y + ofst.y;
-				pts[4] = bounds.tl + ofst;
-			}
-			else
-			{
-				bounds = vimg->GetBounds();
-				Math::Coord2DDbl pt1 = view->MapXYToScnXY(bounds.tl);
-				Math::Coord2DDbl pt2 = view->MapXYToScnXY(bounds.br);
-				pts[0] = pt1 + ofst;
-				pts[1].x = pt1.x + ofst.x;
-				pts[1].y = pt2.y + ofst.y;
-				pts[2] = pt2 + ofst;
-				pts[3].x = pt2.x + ofst.x;
-				pts[3].y = pt1.y + ofst.y;
-				pts[4] = pt1 + ofst;
-			}
-			nPoints = 5;
-			img->DrawPolyPolygon(pts, &nPoints, 1, p, b);
-			img->DelPen(p);
-			img->DelBrush(b);
-		}
-		else if (vecType == Math::Geometry::Vector2D::VectorType::Point)
-		{
-			Math::Geometry::Point *pt = (Math::Geometry::Point*)vec;
-			Math::Coord2DDbl coord = view->MapXYToScnXY(pt->GetCenter());
-			NotNullPtr<Media::DrawBrush> b = img->NewBrushARGB(0xffff0000);
-			img->DrawRect(coord - 8, Math::Size2DDbl(17, 17), 0, b);
-			img->DelBrush(b);
-		}
-		i++;
+		img->DelBrush(b);
+		img->DelPen(p);
 	}
 }
 

@@ -53,7 +53,7 @@ Bool Map::GeoPackageLayer::StringSessGoRow(StringSession *sess, UOSInt index)
 	}
 }
 
-Map::GeoPackageLayer::GeoPackageLayer(Map::GeoPackage *gpkg, NotNullPtr<Map::GeoPackage::ContentInfo> layerContent) : Map::MapDrawLayer(gpkg->GetSourceNameObj(), 0, layerContent->tableName.Ptr(), Math::CoordinateSystemManager::SRCreateCSysOrDef((UInt32)this->layerContent->srsId))
+Map::GeoPackageLayer::GeoPackageLayer(Map::GeoPackage *gpkg, NotNullPtr<Map::GeoPackage::ContentInfo> layerContent) : Map::MapDrawLayer(gpkg->GetSourceNameObj(), 0, layerContent->tableName.Ptr(), Math::CoordinateSystemManager::SRCreateCSysOrDef((UInt32)layerContent->srsId))
 {
 	this->gpkg = gpkg;
 	this->layerContent = layerContent;

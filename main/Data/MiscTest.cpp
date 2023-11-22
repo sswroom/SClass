@@ -345,7 +345,7 @@ Int32 CFBTimeTest()
 {
 	UInt64 t = 0x01BAB44B13921E80;
 	UTF8Char sbuff[64];
-	UTF8Char *sptr = Data::Timestamp::FromFILETIME(&t, 0).ToString(sbuff);
+	Data::Timestamp::FromFILETIME(&t, 0).ToString(sbuff);
 	printf("Time = %s\r\n", sbuff);
 	return 0;
 }

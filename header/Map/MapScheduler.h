@@ -3,9 +3,11 @@
 #include "Data/ArrayList.h"
 #include "Map/MapDrawLayer.h"
 #include "Map/MapView.h"
+#include "Math/Geometry/CurvePolygon.h"
 #include "Math/Geometry/GeometryCollection.h"
 #include "Math/Geometry/LineString.h"
 #include "Math/Geometry/MultiPolygon.h"
+#include "Math/Geometry/MultiSurface.h"
 #include "Math/Geometry/Point.h"
 #include "Math/Geometry/Polygon.h"
 #include "Math/Geometry/Polyline.h"
@@ -59,6 +61,8 @@ namespace Map
 		void DrawPolyline(Math::Geometry::Polyline *pl);
 		void DrawPolygon(Math::Geometry::Polygon *pg);
 		void DrawMultiPolygon(Math::Geometry::MultiPolygon *mpg);
+		void DrawMultiSurface(Math::Geometry::MultiSurface *ms);
+		void DrawCurvePolygon(Math::Geometry::CurvePolygon *cp);
 		void DrawGeometryCollection(Math::Geometry::GeometryCollection *geomColl);
 	public:
 		MapScheduler();

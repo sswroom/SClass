@@ -2,6 +2,7 @@
 #include "MyMemory.h"
 #include "Map/MapScheduler.h"
 #include "Math/Math.h"
+#include "Math/Geometry/CompoundCurve.h"
 #include "Math/Geometry/LineString.h"
 #include "Math/Geometry/MultiPolygon.h"
 #include "Sync/MutexUsage.h"
@@ -96,12 +97,16 @@ void Map::MapScheduler::DrawVector(Math::Geometry::Vector2D *vec)
 	case Math::Geometry::Vector2D::VectorType::GeometryCollection:
 		this->DrawGeometryCollection((Math::Geometry::GeometryCollection*)vec);
 		break;
+	case Math::Geometry::Vector2D::VectorType::MultiSurface:
+		this->DrawMultiSurface((Math::Geometry::MultiSurface*)vec);
+		break;
+	case Math::Geometry::Vector2D::VectorType::CurvePolygon:
+		this->DrawCurvePolygon((Math::Geometry::CurvePolygon*)vec);
+		break;
 	case Math::Geometry::Vector2D::VectorType::MultiPoint:
 	case Math::Geometry::Vector2D::VectorType::CircularString:
 	case Math::Geometry::Vector2D::VectorType::CompoundCurve:
-	case Math::Geometry::Vector2D::VectorType::CurvePolygon:
 	case Math::Geometry::Vector2D::VectorType::MultiCurve:
-	case Math::Geometry::Vector2D::VectorType::MultiSurface:
 	case Math::Geometry::Vector2D::VectorType::Curve:
 	case Math::Geometry::Vector2D::VectorType::Surface:
 	case Math::Geometry::Vector2D::VectorType::PolyhedralSurface:
@@ -266,6 +271,68 @@ void Map::MapScheduler::DrawMultiPolygon(Math::Geometry::MultiPolygon *mpg)
 			ptOfstArr[k - 1] = (UInt32)(nPoint - ptOfstArr[k - 1]);
 		}
 
+		this->img->DrawPolyPolygon(pointArr, ptOfstArr, nPtOfst, this->p, this->b);
+	}
+}
+
+void Map::MapScheduler::DrawMultiSurface(Math::Geometry::MultiSurface *ms)
+{
+	UOSInt pgInd = ms->GetCount();
+	while (pgInd-- > 0)
+	{
+		this->DrawVector(ms->GetItem(pgInd));
+	}
+}
+
+void Map::MapScheduler::DrawCurvePolygon(Math::Geometry::CurvePolygon *cp)
+{
+	Data::ArrayList<UInt32> ptOfst;
+	Data::ArrayListA<Math::Coord2DDbl> ptList;
+	UOSInt nPoint;
+	Math::Geometry::Vector2D *vec;
+	UOSInt i = 0;
+	UOSInt j = cp->GetCount();
+	while (i < j)
+	{
+		vec = cp->GetItem(i);
+		if (vec->GetVectorType() == Math::Geometry::Vector2D::VectorType::CompoundCurve)
+		{
+			ptOfst.Add((UInt32)ptList.GetCount());
+			((Math::Geometry::CompoundCurve*)vec)->GetDrawPoints(ptList);
+		}
+		else if (vec->GetVectorType() == Math::Geometry::Vector2D::VectorType::LineString)
+		{
+			ptOfst.Add((UInt32)ptList.GetCount());
+			const Math::Coord2DDbl *ptArr = ((Math::Geometry::LineString*)vec)->GetPointListRead(nPoint);
+			ptList.AddRange(ptArr, nPoint);
+		}
+		else
+		{
+			printf("MapScheduler: DrawCurvePolygon unexpected type: %s\r\n", Math::Geometry::Vector2D::VectorTypeGetName(vec->GetVectorType()).v);
+		}
+		i++;
+	}
+	if (ptList.GetCount() > 0)
+	{
+		Math::Coord2DDbl *pointArr = ptList.GetPtr(nPoint);
+		UOSInt nPtOfst;
+		UInt32 *ptOfstArr = ptOfst.GetPtr(nPtOfst);
+		if (this->isFirst)
+		{
+			UOSInt k;
+			UOSInt l;
+
+			if (this->map->MapXYToScnXY(pointArr, pointArr, nPoint, Math::Coord2DDbl(0, 0)))
+				*this->isLayerEmpty = false;
+			k = nPtOfst;
+			l = 1;
+			while (l < k)
+			{
+				ptOfstArr[l - 1] = ptOfstArr[l] - ptOfstArr[l - 1];
+				l++;
+			}
+			ptOfstArr[k - 1] = (UInt32)(nPoint - ptOfstArr[k - 1]);
+		}
 		this->img->DrawPolyPolygon(pointArr, ptOfstArr, nPtOfst, this->p, this->b);
 	}
 }

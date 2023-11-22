@@ -22,7 +22,7 @@ namespace Data
 		virtual ~ArrayListNN();
 
 		virtual UOSInt Add(NotNullPtr<T> val);
-		virtual UOSInt AddRange(NotNullPtr<T> *arr, UOSInt cnt);
+		virtual UOSInt AddRange(const NotNullPtr<T> *arr, UOSInt cnt);
 		UOSInt AddAll(NotNullPtr<const ArrayListNN<T>> list);
 		virtual Bool Remove(NotNullPtr<T> val);
 		virtual T *RemoveAt(UOSInt index);
@@ -120,7 +120,7 @@ namespace Data
 		return cnt;
 	}
 
-	template <class T> UOSInt ArrayListNN<T>::AddRange(NotNullPtr<T> *arr, UOSInt cnt)
+	template <class T> UOSInt ArrayListNN<T>::AddRange(const NotNullPtr<T> *arr, UOSInt cnt)
 	{
 		if (objCnt + cnt >= this->capacity)
 		{

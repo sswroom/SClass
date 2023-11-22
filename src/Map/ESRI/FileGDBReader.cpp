@@ -1003,6 +1003,7 @@ Math::Geometry::Vector2D *Map::ESRI::FileGDBReader::GetVector(UOSInt colIndex)
 			if (geometryType & 0x20000000)
 			{
 				ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, ofst, nCurves);
+				printf("FileGDBReader: geometry has curves, may not fully support\r\n");
 			}
 			ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, ofst, v); //xmin
 			ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, ofst, v); //ymin
@@ -1109,6 +1110,7 @@ Math::Geometry::Vector2D *Map::ESRI::FileGDBReader::GetVector(UOSInt colIndex)
 			if (geometryType & 0x20000000)
 			{
 				ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, ofst, nCurves);
+				printf("FileGDBReader: geometry has curves, may not fully support\r\n");
 			}
 			ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, ofst, v); //xmin
 			ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, ofst, v); //ymin
