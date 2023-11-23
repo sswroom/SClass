@@ -132,7 +132,7 @@ typedef enum
 void __stdcall SSWR::AVIRead::AVIRGISForm::FileHandler(void *userObj, NotNullPtr<Text::String> *files, UOSInt nFiles)
 {
 	SSWR::AVIRead::AVIRGISForm *me = (SSWR::AVIRead::AVIRGISForm*)userObj;
-	Parser::ParserList *parsers = me->core->GetParserList();
+	NotNullPtr<Parser::ParserList> parsers = me->core->GetParserList();
 	IO::ParsedObject *pobj;
 	NotNullPtr<IO::ParsedObject> nnpobj;
 	IO::ParserType pt;
@@ -516,7 +516,7 @@ void SSWR::AVIRead::AVIRGISForm::SetCtrlForm(UI::GUIForm *frm, UI::GUITreeView::
 
 Bool SSWR::AVIRead::AVIRGISForm::ParseObject(NotNullPtr<IO::ParsedObject> pobj)
 {
-	Parser::ParserList *parsers = this->core->GetParserList();
+	NotNullPtr<Parser::ParserList> parsers = this->core->GetParserList();
 	NotNullPtr<IO::ParsedObject> npobj;
 	IO::ParserType pt;
 	if (npobj.Set(parsers->ParseObject(pobj, pt)))

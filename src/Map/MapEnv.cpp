@@ -1096,7 +1096,7 @@ Media::StaticImage *Map::MapEnv::GetImage(UOSInt index, OptOut<UInt32> imgDurMS)
 	return 0;
 }
 
-OSInt Map::MapEnv::AddImage(Text::CStringNN fileName, Parser::ParserList *parserList)
+OSInt Map::MapEnv::AddImage(Text::CStringNN fileName, NotNullPtr<Parser::ParserList> parserList)
 {
 	Sync::MutexUsage mutUsage(this->mut);
 	ImageInfo *imgInfo;

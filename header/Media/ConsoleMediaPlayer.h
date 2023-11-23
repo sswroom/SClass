@@ -19,7 +19,7 @@ namespace Media
 
 		virtual void OnMediaOpened();
 	public:
-		ConsoleMediaPlayer(Media::MonitorMgr *monMgr, Media::ColorManager *colorMgr, Parser::ParserList *parsers, Media::AudioDevice *audioDev);
+		ConsoleMediaPlayer(Media::MonitorMgr *monMgr, Media::ColorManager *colorMgr, NotNullPtr<Parser::ParserList> parsers, Media::AudioDevice *audioDev);
 		virtual ~ConsoleMediaPlayer();
 
 		Bool IsError();

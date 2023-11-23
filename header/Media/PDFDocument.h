@@ -24,7 +24,7 @@ namespace Media
 		virtual PDFObject *GetItem(UOSInt index) const;
 		
 		PDFObject *AddObject(UInt32 id);
-		Media::ImageList *CreateImage(UInt32 id, Parser::ParserList *parsers);
+		Media::ImageList *CreateImage(UInt32 id, NotNullPtr<Parser::ParserList> parsers);
 	};
 }
 #endif

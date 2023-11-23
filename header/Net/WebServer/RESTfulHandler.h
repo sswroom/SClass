@@ -19,10 +19,8 @@ namespace Net
 			void AppendVector(NotNullPtr<Text::JSONBuilder> json, Text::CStringNN name, NotNullPtr<Math::Geometry::Vector2D> vec);
 		public:
 			RESTfulHandler(DB::DBCache *dbCache);
-
-		protected:
 			virtual ~RESTfulHandler();
-		public:
+
 			virtual Bool ProcessRequest(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq);
 
 			static DB::PageRequest *ParsePageReq(NotNullPtr<Net::WebServer::IWebRequest> req);

@@ -376,8 +376,8 @@ DB::PageRequest *Net::WebServer::RESTfulHandler::ParsePageReq(NotNullPtr<Net::We
 	}
 	DB::PageRequest *page;
 	NEW_CLASS(page, DB::PageRequest(pageNum, pageSize));
-	Text::String *sort = req->GetQueryValue(CSTR("sort"));
-	if (sort)
+	NotNullPtr<Text::String> sort;
+	if (req->GetQueryValue(CSTR("sort")).SetTo(sort))
 	{
 		Text::StringBuilderUTF8 sb;
 		sb.Append(sort);

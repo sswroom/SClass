@@ -4,7 +4,7 @@
 void __stdcall SSWR::AVIRead::AVIRSectorForm::OnParseClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRSectorForm *me = (SSWR::AVIRead::AVIRSectorForm *)userObj;
-	Parser::ParserList *parsers = me->core->GetParserList();
+	NotNullPtr<Parser::ParserList> parsers = me->core->GetParserList();
 	NotNullPtr<IO::ParsedObject> pobj;
 	if (pobj.Set(parsers->ParseObject(me->data, 0)))
 	{

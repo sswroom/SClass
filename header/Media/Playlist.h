@@ -20,7 +20,7 @@ namespace Media
 		} PlaylistEntry;
 
 		Data::ArrayList<PlaylistEntry*> entries;
-		Parser::ParserList *parsers;
+		NotNullPtr<Parser::ParserList> parsers;
 		Media::IMediaPlayer *player;
 		Media::MediaFile *currFile;
 		Bool playing;
@@ -28,7 +28,7 @@ namespace Media
 		static void __stdcall OnPBEnd(void *userObj);
 		void FreeEntry(PlaylistEntry* ent);
 	public:
-		Playlist(Text::CStringNN sourceName, Parser::ParserList *parsers);
+		Playlist(Text::CStringNN sourceName, NotNullPtr<Parser::ParserList> parsers);
 		virtual ~Playlist();
 
 		virtual IO::ParserType GetParserType() const;

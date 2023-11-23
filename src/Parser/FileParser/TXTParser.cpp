@@ -81,13 +81,14 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFileHdr(NotNullPtr<IO::Str
 	{
 		return 0;
 	}
+	NotNullPtr<Parser::ParserList> parsers;
 	IO::StreamDataStream stm(fd);
 	IO::StreamReader reader(stm, this->codePage);
 	if ((sptr = reader.ReadLine(sbuff, 255)) == 0)
 	{
 		return 0;
 	}
-	if (Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("1,")) && Text::StrCountChar(sbuff, ',') == 4 && this->parsers != 0 && this->mapMgr != 0)
+	if (Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("1,")) && Text::StrCountChar(sbuff, ',') == 4 && parsers.Set(this->parsers) && this->mapMgr != 0)
 	{
 		Map::MapEnv *env;
 		Map::MapEnv::GroupItem *currGroup = 0;
@@ -320,7 +321,7 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFileHdr(NotNullPtr<IO::Str
 				{
 					baseDirEnd = Text::StrConcat(sbuff3, sbuff2);
 					baseDirEnd = IO::Path::AppendPath(sbuff3, baseDirEnd, sarr[4].ToCString());
-					si = env->AddImage({sbuff3, (UOSInt)(baseDirEnd - sbuff3)}, this->parsers);
+					si = env->AddImage({sbuff3, (UOSInt)(baseDirEnd - sbuff3)}, parsers);
 					if (si != -1)
 					{
 						i = env->AddLayer(currGroup, lyr, false);

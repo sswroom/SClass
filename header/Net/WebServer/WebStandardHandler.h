@@ -15,13 +15,12 @@ namespace Net
 			Data::ArrayListNN<Net::WebServer::WebStandardHandler> relHdlrs;
 
 		protected:
-			virtual ~WebStandardHandler();
 			Bool DoRequest(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq);
 		public:
 			WebStandardHandler();
+			virtual ~WebStandardHandler();
 
 			virtual void WebRequest(NotNullPtr<IWebRequest> req, NotNullPtr<IWebResponse> resp);
-			virtual void Release();
 
 			virtual Bool ProcessRequest(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq);
 

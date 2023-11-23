@@ -1643,7 +1643,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSpeciesMod(NotNullPtr<
 			sname = req->GetHTTPFormStr(CSTR("sname"));
 			ename = req->GetHTTPFormStr(CSTR("ename"));
 			descr = req->GetHTTPFormStr(CSTR("descr"));
-			bookIgn = STR_PTR(req->GetQueryValue(CSTR("bookIgn")));
+			bookIgn = STR_PTR(req->GetQueryValue(CSTR("bookIgn")).OrNull());
 			if (task != 0 && cname != 0 && sname != 0 && ename != 0 && descr != 0 && cname->v[0] != 0 && sname->v[0] != 0)
 			{
 				if (task->Equals(UTF8STRC("new")))
@@ -3299,11 +3299,11 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSearchInsideMoreS(NotN
 	Int32 id;
 	UInt32 pageNo;
 	Int32 cateId;
-	Text::String *searchStr;
+	NotNullPtr<Text::String> searchStr;
 	if (req->GetQueryValueI32(CSTR("id"), id) &&
 		req->GetQueryValueI32(CSTR("cateId"), cateId) &&
 		req->GetQueryValueU32(CSTR("pageNo"), pageNo) &&
-		(searchStr = req->GetQueryValue(CSTR("searchStr"))) != 0)
+		req->GetQueryValue(CSTR("searchStr")).SetTo(searchStr))
 	{
 		NotNullPtr<Text::String> s;
 		UOSInt i;
@@ -3474,11 +3474,11 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSearchInsideMoreG(NotN
 	Int32 id;
 	UInt32 pageNo;
 	Int32 cateId;
-	Text::String *searchStr;
+	NotNullPtr<Text::String> searchStr;
 	if (req->GetQueryValueI32(CSTR("id"), id) &&
 		req->GetQueryValueI32(CSTR("cateId"), cateId) &&
 		req->GetQueryValueU32(CSTR("pageNo"), pageNo) &&
-		(searchStr = req->GetQueryValue(CSTR("searchStr"))) != 0)
+		req->GetQueryValue(CSTR("searchStr")).SetTo(searchStr))
 	{
 		NotNullPtr<Text::String> s;
 		UOSInt i;
@@ -3576,7 +3576,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSearchInsideMoreG(NotN
 			me->WriteGroupTable(mutUsage, &writer, groupList, env.scnWidth, false, env.user && env.user->userType == UserType::Admin);
 			if (pageNo > 0)
 			{
-				sptr = Text::TextBinEnc::URIEncoding::URIEncode(sbuff, STR_PTR(searchStr));
+				sptr = Text::TextBinEnc::URIEncoding::URIEncode(sbuff, searchStr->v);
 				writer.WriteStrC(UTF8STRC("<a href="));
 				sb.ClearStr();
 				sb.AppendC(UTF8STRC("searchinsidemoreg.html?id="));
@@ -3594,7 +3594,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSearchInsideMoreG(NotN
 			}
 			if (i > 0)
 			{
-				sptr = Text::TextBinEnc::URIEncoding::URIEncode(sbuff, STR_PTR(searchStr));
+				sptr = Text::TextBinEnc::URIEncoding::URIEncode(sbuff, searchStr->v);
 				writer.WriteStrC(UTF8STRC(" <a href="));
 				sb.ClearStr();
 				sb.AppendC(UTF8STRC("searchinsidemoreg.html?id="));

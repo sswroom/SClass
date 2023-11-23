@@ -19,7 +19,7 @@ namespace SSWR
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			Media::Resizer::LanczosResizer8_C8 *resizer;
 			NotNullPtr<Map::MapEnv> env;
-			Parser::ParserList *parsers;
+			NotNullPtr<Parser::ParserList> parsers;
 			UOSInt imgIndex;
 
 			UI::GUILabel *lbl;

@@ -64,7 +64,7 @@ void __stdcall SSWR::AVIRead::AVIRRESTfulForm::OnStartClick(void *userObj)
 		{
 			valid = false;
 			SDEL_CLASS(me->svr);
-			restHdlr->Release();
+			restHdlr.Delete();
 			UI::MessageDialog::ShowDialog(CSTR("Error in listening to port"), CSTR("RESTful Server"), me);
 		}
 		else
@@ -128,11 +128,7 @@ void __stdcall SSWR::AVIRead::AVIRRESTfulForm::OnStartClick(void *userObj)
 		else
 		{
 			SDEL_CLASS(me->svr);
-			if (me->restHdlr)
-			{
-				me->restHdlr->Release();
-				me->restHdlr = 0;
-			}
+			SDEL_CLASS(me->restHdlr);
 			NotNullPtr<UI::ListBoxLogger> logger;
 			if (logger.Set(me->logger))
 			{
@@ -155,11 +151,7 @@ void __stdcall SSWR::AVIRead::AVIRRESTfulForm::OnStopClick(void *userObj)
 		return;
 	}
 	SDEL_CLASS(me->svr);
-	if (me->restHdlr)
-	{
-		me->restHdlr->Release();
-		me->restHdlr = 0;
-	}
+	SDEL_CLASS(me->restHdlr);
 	SDEL_CLASS(me->logger);
 	me->txtPort->SetReadOnly(false);
 	me->txtLogDir->SetReadOnly(false);
@@ -283,11 +275,7 @@ SSWR::AVIRead::AVIRRESTfulForm::AVIRRESTfulForm(UI::GUIClientControl *parent, No
 SSWR::AVIRead::AVIRRESTfulForm::~AVIRRESTfulForm()
 {
 	SDEL_CLASS(this->svr);
-	if (this->restHdlr)
-	{
-		this->restHdlr->Release();
-		this->restHdlr = 0;
-	}
+	SDEL_CLASS(this->restHdlr);
 	SDEL_CLASS(this->dbCache);
 	SDEL_CLASS(this->dbModel);
 	SDEL_CLASS(this->db);

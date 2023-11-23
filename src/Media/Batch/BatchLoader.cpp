@@ -131,7 +131,7 @@ UInt32 __stdcall Media::Batch::BatchLoader::ThreadProc(void *userObj)
 	return 0;
 }
 
-Media::Batch::BatchLoader::BatchLoader(Parser::ParserList *parsers, Media::Batch::BatchHandler *hdlr)
+Media::Batch::BatchLoader::BatchLoader(NotNullPtr<Parser::ParserList> parsers, Media::Batch::BatchHandler *hdlr)
 {
 	UOSInt i;
 	Bool started;

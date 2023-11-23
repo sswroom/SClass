@@ -50,7 +50,7 @@ SSWR::AVIRead::AVIRCore::AVIRCore(NotNullPtr<UI::GUICore> ui) : vioPinMgr(4)
 	this->eng = ui->CreateDrawEngine();
 	sptr = IO::Path::GetProcessFileName(sbuff);
 	sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("CacheDir"));
-	NEW_CLASS(this->parsers, Parser::FullParserList());
+	NEW_CLASSNN(this->parsers, Parser::FullParserList());
 	NEW_CLASSNN(this->sockf, Net::OSSocketFactory(true));
 	this->ssl = Net::SSLEngineFactory::Create(this->sockf, true);
 	NEW_CLASS(this->browser, Net::WebBrowser(sockf, this->ssl, CSTRP(sbuff, sptr)));
@@ -104,7 +104,7 @@ SSWR::AVIRead::AVIRCore::~AVIRCore()
 {
 	UOSInt i;
 	this->CloseAllForm();
-	DEL_CLASS(this->parsers);
+	this->parsers.Delete();
 	DEL_CLASS(this->browser);
 	SDEL_CLASS(this->ssl);
 	this->sockf.Delete();
@@ -217,7 +217,7 @@ Bool SSWR::AVIRead::AVIRCore::LoadDataType(NotNullPtr<IO::StreamData> data, IO::
 	}
 }
 
-Parser::ParserList *SSWR::AVIRead::AVIRCore::GetParserList()
+NotNullPtr<Parser::ParserList> SSWR::AVIRead::AVIRCore::GetParserList()
 {
 	return this->parsers;
 }

@@ -552,6 +552,10 @@ Bool Net::WebServer::HTTPDirectoryHandler::DoFileRequest(NotNullPtr<Net::WebServ
 	{
 		return resp->ResponseError(req, Net::WebStatus::SC_METHOD_NOT_ALLOWED);
 	}
+	if (subReq.leng == 0)
+	{
+		subReq = CSTR("/");
+	}
 	if (!this->FileValid(subReq))
 	{
 		return resp->ResponseError(req, Net::WebStatus::SC_FORBIDDEN);
@@ -911,7 +915,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::DoFileRequest(NotNullPtr<Net::WebServ
 						}
 						fileId++;
 					}
-					if (req->GetQueryValue(CSTR("uploadDirect")) != 0)
+					if (!req->GetQueryValue(CSTR("uploadDirect")).IsNull())
 					{
 						resp->EnableWriteBuffer();
 						resp->AddDefHeaders(req);
@@ -1600,7 +1604,7 @@ void Net::WebServer::HTTPDirectoryHandler::ClearFileCache()
 	this->fileCache.Clear();
 }
 
-void Net::WebServer::HTTPDirectoryHandler::ExpandPackageFiles(Parser::ParserList *parsers, Text::CString searchPattern)
+void Net::WebServer::HTTPDirectoryHandler::ExpandPackageFiles(NotNullPtr<Parser::ParserList> parsers, Text::CStringNN searchPattern)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;

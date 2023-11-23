@@ -434,7 +434,7 @@ Net::WebServer::IWebRequest::RequestProtocol Net::WebServer::WebRequest::GetProt
 	return this->reqProto;
 }
 
-Text::String *Net::WebServer::WebRequest::GetQueryValue(Text::CStringNN name)
+Optional<Text::String> Net::WebServer::WebRequest::GetQueryValue(Text::CStringNN name)
 {
 	if (this->queryMap == 0)
 	{

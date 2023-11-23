@@ -103,9 +103,9 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::IndexReq(SSWR::SMonitor::SMon
 			userType = 0;
 		}
 
-		Text::String *reqDevId = req->GetQueryValue(CSTR("devid"));
-		Text::String *reqOutput = req->GetQueryValue(CSTR("output"));
-		if (reqDevId && reqOutput)
+		NotNullPtr<Text::String> reqDevId;
+		NotNullPtr<Text::String> reqOutput;
+		if (req->GetQueryValue(CSTR("devid")).SetTo(reqDevId) && req->GetQueryValue(CSTR("output")).SetTo(reqOutput))
 		{
 			Int64 idevId = reqDevId->ToInt64();
 			if (me->core->UserHasDevice(userId, userType, idevId))
@@ -545,9 +545,9 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceEditReq(SSWR::SMonitor:
 	{
 		return resp->RedirectURL(req, CSTR("/monitor/index"), 0);
 	}
-	Text::String *cid = req->GetQueryValue(CSTR("id"));
+	NotNullPtr<Text::String> cid;
 	Int64 cliId = 0;
-	if (cid)
+	if (req->GetQueryValue(CSTR("id")).SetTo(cid))
 	{
 		cliId = cid->ToInt64();
 	}
@@ -668,9 +668,9 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingReq(SSWR::SMonit
 	{
 		return resp->RedirectURL(req, CSTR("/monitor/index"), 0);
 	}
-	Text::String *cid = req->GetQueryValue(CSTR("id"));
+	NotNullPtr<Text::String> cid;
 	Int64 cliId = 0;
-	if (cid)
+	if (req->GetQueryValue(CSTR("id")).SetTo(cid))
 	{
 		cliId = cid->ToInt64();
 	}
@@ -810,9 +810,9 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceDigitalsReq(SSWR::SMoni
 	{
 		return resp->RedirectURL(req, CSTR("/monitor/index"), 0);
 	}
-	Text::String *cid = req->GetQueryValue(CSTR("id"));
+	NotNullPtr<Text::String> cid;
 	Int64 cliId = 0;
-	if (cid)
+	if (req->GetQueryValue(CSTR("id")).SetTo(cid))
 	{
 		cliId = cid->ToInt64();
 	}
@@ -922,7 +922,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceDigitalsReq(SSWR::SMoni
 
 Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingImgReq(SSWR::SMonitor::SMonitorWebHandler *me, NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp)
 {
-	Text::String *s;
+	NotNullPtr<Text::String> s;
 	Int64 cliId = 0;
 	Int32 userId = 0;
 	Int32 userType = 0;
@@ -930,8 +930,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingImgReq(SSWR::SMo
 	Int32 readingId = 0;
 	Int32 readingType = 0;
 	Bool valid = true;
-	s = req->GetQueryValue(CSTR("id"));
-	if (s == 0)
+	if (!req->GetQueryValue(CSTR("id")).SetTo(s))
 	{
 		valid = false;
 	}
@@ -940,8 +939,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingImgReq(SSWR::SMo
 		valid = false;
 	}
 
-	s = req->GetQueryValue(CSTR("sensor"));
-	if (s == 0)
+	if (!req->GetQueryValue(CSTR("sensor")).SetTo(s))
 	{
 		valid = false;
 	}
@@ -950,8 +948,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingImgReq(SSWR::SMo
 		valid = false;
 	}
 
-	s = req->GetQueryValue(CSTR("reading"));
-	if (s == 0)
+	if (!req->GetQueryValue(CSTR("reading")).SetTo(s))
 	{
 		valid = false;
 	}
@@ -960,8 +957,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingImgReq(SSWR::SMo
 		valid = false;
 	}
 
-	s = req->GetQueryValue(CSTR("readingType"));
-	if (s == 0)
+	if (!req->GetQueryValue(CSTR("readingType")).SetTo(s))
 	{
 		valid = false;
 	}
@@ -1579,7 +1575,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DevicePastDataReq(SSWR::SMoni
 
 Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DevicePastDataImgReq(SSWR::SMonitor::SMonitorWebHandler *me, NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp)
 {
-	Text::String *s;
+	NotNullPtr<Text::String> s;
 	Int64 cliId = 0;
 	Int64 startTime = 0;
 	Int32 userId = 0;
@@ -1587,8 +1583,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DevicePastDataImgReq(SSWR::SM
 	Int32 sensorId = 0;
 	Int32 readingId = 0;
 	Bool valid = true;
-	s = req->GetQueryValue(CSTR("id"));
-	if (s == 0)
+	if (!req->GetQueryValue(CSTR("id")).SetTo(s))
 	{
 		valid = false;
 	}
@@ -1597,8 +1592,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DevicePastDataImgReq(SSWR::SM
 		valid = false;
 	}
 
-	s = req->GetQueryValue(CSTR("sensor"));
-	if (s == 0)
+	if (!req->GetQueryValue(CSTR("sensor")).SetTo(s))
 	{
 		valid = false;
 	}
@@ -1607,8 +1601,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DevicePastDataImgReq(SSWR::SM
 		valid = false;
 	}
 
-	s = req->GetQueryValue(CSTR("reading"));
-	if (s == 0)
+	if (!req->GetQueryValue(CSTR("reading")).SetTo(s))
 	{
 		valid = false;
 	}
@@ -1617,8 +1610,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DevicePastDataImgReq(SSWR::SM
 		valid = false;
 	}
 
-	s = req->GetQueryValue(CSTR("starttime"));
-	if (s == 0)
+	if (!req->GetQueryValue(CSTR("starttime")).SetTo(s))
 	{
 		valid = false;
 	}

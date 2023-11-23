@@ -168,8 +168,8 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcCate(NotNullPtr<Net::We
 	Sync::RWMutexUsage mutUsage;
 	CategoryInfo *cate;
 	NotNullPtr<GroupInfo> group;
-	Text::String *cateName = req->GetQueryValue(CSTR("cateName"));
-	if (cateName != 0 && (cate = me->env->CateGetByName(mutUsage, cateName)) != 0)
+	NotNullPtr<Text::String> cateName;
+	if (req->GetQueryValue(CSTR("cateName")).SetTo(cateName) && (cate = me->env->CateGetByName(mutUsage, cateName)) != 0)
 	{
 		Bool notAdmin = (env.user == 0 || env.user->userType != UserType::Admin);
 		if ((cate->flags & 1) && notAdmin)

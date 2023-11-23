@@ -58,10 +58,10 @@ namespace Net
 			void *loginObj;
 
 		protected:
-			virtual ~SAMLHandler();
 			virtual Bool ProcessRequest(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq);
 		public:
 			SAMLHandler(SAMLConfig *cfg, Net::SSLEngine *ssl, WebStandardHandler *defHdlr);
+			virtual ~SAMLHandler();
 
 			SAMLError GetInitError();
 			Bool GetLogoutURL(NotNullPtr<Text::StringBuilderUTF8> sb);

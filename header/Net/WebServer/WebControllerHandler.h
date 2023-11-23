@@ -14,11 +14,11 @@ namespace Net
 			Data::ArrayList<WebController *> ctrlList;
 
 		protected:
-			virtual ~WebControllerHandler();
 			virtual Bool ProcessRequest(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq);
 		public:
 			WebControllerHandler();
 			WebControllerHandler(Text::CStringNN rootDir);
+			virtual ~WebControllerHandler();
 
 			void AddController(WebController *ctrl);
 		};

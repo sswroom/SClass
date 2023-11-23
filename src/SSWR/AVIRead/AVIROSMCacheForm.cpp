@@ -63,7 +63,7 @@ SSWR::AVIRead::AVIROSMCacheForm::AVIROSMCacheForm(UI::GUIClientControl *parent, 
 SSWR::AVIRead::AVIROSMCacheForm::~AVIROSMCacheForm()
 {
 	this->listener.Delete();
-	this->hdlr->Release();
+	this->hdlr.Delete();
 }
 
 void SSWR::AVIRead::AVIROSMCacheForm::OnMonitorChanged()

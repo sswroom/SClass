@@ -1149,7 +1149,7 @@ SSWR::SMonitor::SMonitorSvrCore::SMonitorSvrCore(NotNullPtr<IO::Writer> writer, 
 {
 	NEW_CLASSNN(this->sockf, Net::OSSocketFactory(true));
 	this->ssl = Net::SSLEngineFactory::Create(sockf, true);
-	NEW_CLASS(this->parsers, Parser::FullParserList());
+	NEW_CLASSNN(this->parsers, Parser::FullParserList());
 	this->deng = deng;
 	this->dataDir = 0;
 	this->cliSvr = 0;
@@ -1407,11 +1407,7 @@ SSWR::SMonitor::SMonitorSvrCore::~SMonitorSvrCore()
 	SDEL_CLASS(this->dataUDP);
 	SDEL_CLASS(this->notifyUDP);
 	SDEL_CLASS(this->listener);
-	if (this->webHdlr)
-	{
-		this->webHdlr->Release();
-		this->webHdlr = 0;
-	}
+	SDEL_CLASS(this->webHdlr);
 	SDEL_CLASS(this->db);
 	SDEL_CLASS(this->dbMut);
 	this->thread.Stop();
@@ -1487,7 +1483,7 @@ SSWR::SMonitor::SMonitorSvrCore::~SMonitorSvrCore()
 	this->RefererStore();
 
 	SDEL_CLASS(this->dataCRC);
-	DEL_CLASS(this->parsers);
+	this->parsers.Delete();
 	SDEL_CLASS(this->ssl);
 	this->sockf.Delete();
 	this->deng.Delete();

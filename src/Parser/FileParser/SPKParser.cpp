@@ -90,7 +90,8 @@ IO::ParsedObject *Parser::FileParser::SPKParser::ParseFileHdr(NotNullPtr<IO::Str
 		customType = ReadInt32(&hdr[i + 0]);
 		customSize = ReadUInt32(&hdr[i + 4]);
 		NotNullPtr<Net::SocketFactory> sockf;
-		if (customType == 1 && fd->IsFullFile() && sockf.Set(this->sockf) && this->parsers)
+		NotNullPtr<Parser::ParserList> parsers;
+		if (customType == 1 && fd->IsFullFile() && sockf.Set(this->sockf) && parsers.Set(this->parsers))
 		{
 			Data::ByteBuffer customBuff(customSize);
 			IO::SPackageFile *spkg;
@@ -110,7 +111,7 @@ IO::ParsedObject *Parser::FileParser::SPKParser::ParseFileHdr(NotNullPtr<IO::Str
 				i++;
 			}
 			Map::TileMapLayer *layer;
-			NEW_CLASS(layer, Map::TileMapLayer(tileMap, this->parsers));
+			NEW_CLASS(layer, Map::TileMapLayer(tileMap, parsers));
 			return layer;
 		}
 	}

@@ -143,7 +143,7 @@ void __stdcall SSWR::AVIRead::AVIRCoordConvForm::OnConvFileClicked(void *userObj
 	UTF8Char *strBuff;
 	UTF8Char *sptr;
 	UTF8Char *sptr2;
-	Parser::ParserList *parsers = me->core->GetParserList();
+	NotNullPtr<Parser::ParserList> parsers = me->core->GetParserList();
 	Math::CoordinateSystem *srcCoord;
 	Math::CoordinateSystem *destCoord;
 	NotNullPtr<Math::CoordinateSystem> srcCsys;
@@ -372,7 +372,7 @@ void __stdcall SSWR::AVIRead::AVIRCoordConvForm::OnCoordDblClk(void *userObj, UO
 void __stdcall SSWR::AVIRead::AVIRCoordConvForm::OnFileDrop(void *userObj, NotNullPtr<Text::String> *files, UOSInt nFiles)
 {
 	SSWR::AVIRead::AVIRCoordConvForm *me = (SSWR::AVIRead::AVIRCoordConvForm *)userObj;
-	Parser::ParserList *parsers = me->core->GetParserList();
+	NotNullPtr<Parser::ParserList> parsers = me->core->GetParserList();
 	Bool listUpdated = false;
 	Text::StringBuilderUTF8 sb;
 	Double lat;

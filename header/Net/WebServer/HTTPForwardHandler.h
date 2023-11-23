@@ -36,9 +36,8 @@ namespace Net
 			virtual Text::String *GetNextURL(NotNullPtr<Net::WebServer::IWebRequest> req);
 		public:
 			HTTPForwardHandler(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, Text::CString forwardURL, ForwardType fwdType);
-		protected:
 			virtual ~HTTPForwardHandler();
-		public:
+
 			virtual Bool ProcessRequest(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq);
 
 			void AddForwardURL(Text::CString url);

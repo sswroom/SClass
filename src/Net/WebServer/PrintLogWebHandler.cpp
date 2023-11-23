@@ -3,14 +3,15 @@
 #include "Net/WebServer/PrintLogWebResponse.h"
 #include "Text/StringBuilderUTF8.h"
 
-Net::WebServer::PrintLogWebHandler::~PrintLogWebHandler()
-{
-}
-
 Net::WebServer::PrintLogWebHandler::PrintLogWebHandler(Net::WebServer::IWebHandler *hdlr, NotNullPtr<IO::Writer> writer)
 {
 	this->hdlr = hdlr;
 	this->writer = writer;
+}
+
+Net::WebServer::PrintLogWebHandler::~PrintLogWebHandler()
+{
+	DEL_CLASS(this->hdlr);
 }
 
 void Net::WebServer::PrintLogWebHandler::WebRequest(NotNullPtr<IWebRequest> req, NotNullPtr<IWebResponse> resp)
@@ -46,10 +47,4 @@ void Net::WebServer::PrintLogWebHandler::WebRequest(NotNullPtr<IWebRequest> req,
 	this->writer->WriteLineC(sbuff, (UOSInt)(sptr - sbuff));
 	Net::WebServer::PrintLogWebResponse plResp(resp, this->writer, CSTRP(sbuff, sptr));
 	this->hdlr->WebRequest(req, plResp);
-}
-
-void Net::WebServer::PrintLogWebHandler::Release()
-{
-	this->hdlr->Release();
-	DEL_CLASS(this);
 }

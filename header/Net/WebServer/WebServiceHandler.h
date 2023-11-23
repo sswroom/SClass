@@ -22,11 +22,11 @@ namespace Net
 			Data::FastStringMap<ServiceInfo *> services;
 
 		protected:
-			virtual ~WebServiceHandler();
 			virtual Bool ProcessRequest(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq);
 		public:
 			WebServiceHandler();
 			WebServiceHandler(Text::CStringNN rootDir);
+			virtual ~WebServiceHandler();
 
 			void AddService(Text::CStringNN svcPath, Net::WebUtil::RequestMethod reqMeth, ServiceFunc func);
 		};

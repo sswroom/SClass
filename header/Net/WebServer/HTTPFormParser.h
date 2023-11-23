@@ -20,6 +20,6 @@ namespace Net
 			const UTF8Char *GetStrName(OSInt index);
 			const UTF8Char *GetStrValue(const UTF8Char *strName);
 		};
-	};
-};
+	}
+}
 #endif

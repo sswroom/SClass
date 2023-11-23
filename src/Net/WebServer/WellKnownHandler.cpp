@@ -25,7 +25,7 @@ Bool __stdcall Net::WebServer::WellKnownHandler::AddFunc(NotNullPtr<Net::WebServ
 	NotNullPtr<Text::String> t;
 	NotNullPtr<Text::String> name;
 	NotNullPtr<Text::String> val;
-	if (t.Set(req->GetQueryValue(CSTR("t"))) && name.Set(req->GetQueryValue(CSTR("name"))) && val.Set(req->GetQueryValue(CSTR("val"))))
+	if (req->GetQueryValue(CSTR("t")).SetTo(t) && req->GetQueryValue(CSTR("name")).SetTo(name) && req->GetQueryValue(CSTR("val")).SetTo(val))
 	{
 		if (t->Equals(UTF8STRC("acme")))
 		{

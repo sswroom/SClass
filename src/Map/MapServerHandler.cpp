@@ -43,22 +43,22 @@ Bool __stdcall Map::MapServerHandler::GetLayersFunc(NotNullPtr<Net::WebServer::I
 Bool __stdcall Map::MapServerHandler::GetLayerDataFunc(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, WebServiceHandler *myObj)
 {
 	Map::MapServerHandler *me = (Map::MapServerHandler*)myObj;
-	Text::String *name = req->GetQueryValue(CSTR("name"));
-	Text::String *fmt = req->GetQueryValue(CSTR("fmt"));
+	NotNullPtr<Text::String> name;
+	NotNullPtr<Text::String> fmt;
 	Text::StringBuilderUTF8 sb;
 	Math::Vector3 tmpPos;
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
 	Map::MapDrawLayer *layer;
-	if (name == 0)
+	if (!req->GetQueryValue(CSTR("name")).SetTo(name))
 	{
 		layer = 0;
 	}
 	else
 	{
-		layer = me->layerMap.Get(name);
+		layer = me->layerMap.GetNN(name);
 	}
-	if (fmt != 0 && fmt->Equals(UTF8STRC("cesium")))
+	if (req->GetQueryValue(CSTR("fmt")).SetTo(fmt) && fmt->Equals(UTF8STRC("cesium")))
 	{
 		if (layer == 0)
 		{
@@ -249,15 +249,15 @@ Bool __stdcall Map::MapServerHandler::GetLayerDataFunc(NotNullPtr<Net::WebServer
 Bool __stdcall Map::MapServerHandler::CesiumDataFunc(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, WebServiceHandler *myObj)
 {
 	Map::MapServerHandler *me = (Map::MapServerHandler*)myObj;
-	Text::String *file = req->GetQueryValue(CSTR("file"));
-	Text::String *range = req->GetQueryValue(CSTR("range"));
+	NotNullPtr<Text::String> file;
+	Optional<Text::String> range = req->GetQueryValue(CSTR("range"));
 	Double minErr;
 	if (!req->GetQueryValueF64(CSTR("minErr"), minErr))
 	{
 		minErr = me->cesiumMinError;
 	}
 	Text::StringBuilderUTF8 sb;
-	if (file == 0)
+	if (!req->GetQueryValue(CSTR("file")).SetTo(file))
 	{
 		resp->ResponseError(req, Net::WebStatus::SC_FORBIDDEN);
 		return true;
@@ -266,7 +266,8 @@ Bool __stdcall Map::MapServerHandler::CesiumDataFunc(NotNullPtr<Net::WebServer::
 	Double y1;
 	Double x2;
 	Double y2;
-	if (range == 0)
+	NotNullPtr<Text::String> nnrange;
+	if (!range.SetTo(nnrange))
 	{
 		x1 = -180;
 		y1 = -90;
@@ -277,7 +278,7 @@ Bool __stdcall Map::MapServerHandler::CesiumDataFunc(NotNullPtr<Net::WebServer::
 	{
 		Text::PString sarr[5];
 		UOSInt sarrCnt;
-		sb.Append(range);
+		sb.Append(nnrange);
 		sarrCnt = Text::StrSplitP(sarr, 5, sb, ',');
 		if (sarrCnt != 4)
 		{
@@ -359,9 +360,9 @@ Bool __stdcall Map::MapServerHandler::CesiumDataFunc(NotNullPtr<Net::WebServer::
 Bool __stdcall Map::MapServerHandler::CesiumB3DMFunc(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, WebServiceHandler *myObj)
 {
 	Map::MapServerHandler *me = (Map::MapServerHandler*)myObj;
-	Text::String *file = req->GetQueryValue(CSTR("file"));
+	NotNullPtr<Text::String> file;
 	Text::StringBuilderUTF8 sb;
-	if (file == 0)
+	if (!req->GetQueryValue(CSTR("file")).SetTo(file))
 	{
 		resp->ResponseError(req, Net::WebStatus::SC_FORBIDDEN);
 		return true;
@@ -385,7 +386,7 @@ Bool __stdcall Map::MapServerHandler::CesiumB3DMFunc(NotNullPtr<Net::WebServer::
 	return Net::WebServer::HTTPServerUtil::ResponseFile(req, resp, sb.ToCString(), -2);
 }
 
-void Map::MapServerHandler::CheckObject(Text::JSONBase *obj, Double x1, Double y1, Double x2, Double y2, Double minErr, Text::String *fileName, NotNullPtr<Text::StringBuilderUTF8> tmpSb)
+void Map::MapServerHandler::CheckObject(Text::JSONBase *obj, Double x1, Double y1, Double x2, Double y2, Double minErr, NotNullPtr<Text::String> fileName, NotNullPtr<Text::StringBuilderUTF8> tmpSb)
 {
 	if (obj->GetType() != Text::JSONType::Object)
 	{

@@ -157,7 +157,7 @@ namespace SSWR
 			Bool GroupIsPublic(NotNullPtr<Sync::RWMutexUsage> mutUsage, Int32 groupId);
 
 			CategoryInfo *CateGet(NotNullPtr<Sync::RWMutexUsage> mutUsage, Int32 id);
-			CategoryInfo *CateGetByName(NotNullPtr<Sync::RWMutexUsage> mutUsage, Text::String *name);
+			CategoryInfo *CateGetByName(NotNullPtr<Sync::RWMutexUsage> mutUsage, NotNullPtr<Text::String> name);
 			Data::ReadingList<CategoryInfo*> *CateGetList(NotNullPtr<Sync::RWMutexUsage> mutUsage);
 
 			UOSInt PeakGetUnfin(NotNullPtr<Sync::RWMutexUsage> mutUsage, NotNullPtr<Data::ArrayListNN<PeakInfo>> peaks);

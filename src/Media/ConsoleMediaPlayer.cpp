@@ -8,7 +8,7 @@ void Media::ConsoleMediaPlayer::OnMediaOpened()
 	this->PBStart();
 }
 
-Media::ConsoleMediaPlayer::ConsoleMediaPlayer(Media::MonitorMgr *monMgr, Media::ColorManager *colorMgr, Parser::ParserList *parsers, Media::AudioDevice *audioDev) : Media::MediaPlayerInterface(parsers)
+Media::ConsoleMediaPlayer::ConsoleMediaPlayer(Media::MonitorMgr *monMgr, Media::ColorManager *colorMgr, NotNullPtr<Parser::ParserList> parsers, Media::AudioDevice *audioDev) : Media::MediaPlayerInterface(parsers)
 {
 	this->colorMgr = colorMgr;
 	this->surfaceMgr = Media::MonitorSurfaceMgrFactory::Create(monMgr, colorMgr);

@@ -35,7 +35,7 @@ namespace Map
 	private:
 		NotNullPtr<Map::TileMap> tileMap;
 		Double scale;
-		Parser::ParserList *parsers;
+		NotNullPtr<Parser::ParserList> parsers;
 
 		UOSInt threadCnt;
 		ThreadStat *threads;
@@ -61,7 +61,7 @@ namespace Map
 		void AddTask(CachedImage *cimg);
 		void CheckCache(NotNullPtr<Data::ArrayListInt64> currIDs);
 	public:
-		TileMapLayer(NotNullPtr<Map::TileMap> tileMap, Parser::ParserList *parsers);
+		TileMapLayer(NotNullPtr<Map::TileMap> tileMap, NotNullPtr<Parser::ParserList> parsers);
 		virtual ~TileMapLayer();
 
 		virtual void SetCurrScale(Double scale);

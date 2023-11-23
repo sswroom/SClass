@@ -136,8 +136,8 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 			progCtrl->WaitForExit(progCtrl);
 			console.WriteLineC(UTF8STRC("Server stopping"));
 		}
-		logHdlr->Release();
-		svcHdlr->Release();
+		logHdlr.Delete();
+		DEL_CLASS(svcHdlr);
 	}
 	SDEL_CLASS(ssl);
 	return 0;

@@ -216,9 +216,9 @@ NotNullPtr<Media::DrawEngine> SSWR::OrganMgr::OrganEnv::GetDrawEngine()
 	return this->drawEng;
 }
 
-Parser::ParserList *SSWR::OrganMgr::OrganEnv::GetParserList()
+NotNullPtr<Parser::ParserList> SSWR::OrganMgr::OrganEnv::GetParserList()
 {
-	return &this->parsers;
+	return this->parsers;
 }
 
 NotNullPtr<Net::SocketFactory> SSWR::OrganMgr::OrganEnv::GetSocketFactory()

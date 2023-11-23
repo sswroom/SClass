@@ -33,7 +33,7 @@ void __stdcall SSWR::AVIRead::AVIRSNBHandlerForm::OnTypeSelChg(void *userObj)
 	me->pbImage->SetImage(0);
 	SDEL_CLASS(me->simg);
 
-	Parser::ParserList *parsers = me->core->GetParserList();
+	NotNullPtr<Parser::ParserList> parsers = me->core->GetParserList();
 	Media::ImageList *imgList;
 	{
 		IO::StmData::FileData fd(CSTRP(sbuff, sptr), false);

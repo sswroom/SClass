@@ -12,11 +12,7 @@ void __stdcall SSWR::AVIRead::AVIReGaugeSvrForm::OnStartClick(void *userObj)
 	if (me->svr)
 	{
 		SDEL_CLASS(me->svr);
-		if (me->dirHdlr)
-		{
-			me->dirHdlr->Release();
-			me->dirHdlr = 0;
-		}
+		SDEL_CLASS(me->dirHdlr);
 		SDEL_CLASS(me->log);
 		SDEL_CLASS(me->logger);
 		me->txtPort->SetReadOnly(false);
@@ -39,7 +35,7 @@ void __stdcall SSWR::AVIRead::AVIReGaugeSvrForm::OnStartClick(void *userObj)
 			{
 				valid = false;
 				SDEL_CLASS(me->svr);
-				dirHdlr->Release();
+				dirHdlr.Delete();
 			}
 			else
 			{
@@ -64,11 +60,7 @@ void __stdcall SSWR::AVIRead::AVIReGaugeSvrForm::OnStartClick(void *userObj)
 		else
 		{
 			SDEL_CLASS(me->svr);
-			if (me->dirHdlr)
-			{
-				me->dirHdlr->Release();
-				me->dirHdlr = 0;
-			}
+			SDEL_CLASS(me->dirHdlr);
 			SDEL_CLASS(me->log);
 			SDEL_CLASS(me->logger);
 		}
@@ -151,11 +143,7 @@ SSWR::AVIRead::AVIReGaugeSvrForm::AVIReGaugeSvrForm(UI::GUIClientControl *parent
 SSWR::AVIRead::AVIReGaugeSvrForm::~AVIReGaugeSvrForm()
 {
 	SDEL_CLASS(this->svr);
-	if (this->dirHdlr)
-	{
-		this->dirHdlr->Release();
-		this->dirHdlr = 0;
-	}
+	SDEL_CLASS(this->dirHdlr);
 	if (this->reqLast)
 	{
 		this->reqLast->Release();

@@ -9,7 +9,7 @@
 void __stdcall SSWR::AVIRead::AVIRSAMLDecryptForm::OnFormFiles(void *userObj, NotNullPtr<Text::String> *files, UOSInt nFiles)
 {
 	SSWR::AVIRead::AVIRSAMLDecryptForm *me = (SSWR::AVIRead::AVIRSAMLDecryptForm*)userObj;
-	Parser::ParserList *parsers = me->core->GetParserList();
+	NotNullPtr<Parser::ParserList> parsers = me->core->GetParserList();
 
 	UOSInt i = 0;
 	IO::ParsedObject *pobj;

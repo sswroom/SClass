@@ -18,7 +18,7 @@ void Media::MediaPlayerInterface::SetPlayer(Media::MediaPlayer *player)
 	this->currPBC = player;
 }
 
-Media::MediaPlayerInterface::MediaPlayerInterface(Parser::ParserList *parsers)
+Media::MediaPlayerInterface::MediaPlayerInterface(NotNullPtr<Parser::ParserList> parsers)
 {
 	this->parsers = parsers;
 	this->storeTime = (UInt32)-1;

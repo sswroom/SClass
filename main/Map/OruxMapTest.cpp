@@ -11,12 +11,12 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 {
 	Text::CStringNN fileName = CSTR("/media/sswroom/Extreme SSD/Map/HKTIle.spk");
 	Text::CStringNN destFile = CSTR("/media/sswroom/Extreme SSD/Map/Temp/Temp.otrk2.xml");
-	Parser::ParserList *parsers;
+	NotNullPtr<Parser::ParserList> parsers;
 	IO::PackageFile *pkg;
 	NotNullPtr<IO::PackageFile> pkgFile;
 	NotNullPtr<Map::OSM::OSMLocalTileMap> tileMap;
 	NotNullPtr<Map::TileMapLayer> mapLyr;
-	NEW_CLASS(parsers, Parser::FullParserList());
+	NEW_CLASSNN(parsers, Parser::FullParserList());
 
 	{
 		IO::StmData::FileData fd(fileName, false);
@@ -30,6 +30,6 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 		exporter.ExportNewFile(destFile, mapLyr, 0);
 		mapLyr.Delete();
 	}
-	DEL_CLASS(parsers);
+	parsers.Delete();
 	return 0;
 }

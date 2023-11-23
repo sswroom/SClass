@@ -28,7 +28,7 @@ Media::MediaPlayerWebInterface::~MediaPlayerWebInterface()
 
 void Media::MediaPlayerWebInterface::BrowseRequest(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp)
 {
-	Text::String *fname = req->GetQueryValue(CSTR("fname"));
+	Optional<Text::String> fname = req->GetQueryValue(CSTR("fname"));
 	if (this->iface->GetOpenedFile() == 0)
 	{
 		resp->RedirectURL(req, CSTR("/"), 0);
@@ -38,15 +38,16 @@ void Media::MediaPlayerWebInterface::BrowseRequest(NotNullPtr<Net::WebServer::IW
 	UTF8Char sbuff2[1024];
 	UTF8Char *sptr;
 	UTF8Char *sptr2;
+	NotNullPtr<Text::String> s;
 	UOSInt i;
 	UOSInt j;
 	sptr = this->iface->GetOpenedFile()->GetSourceNameObj()->ConcatTo(sbuff);
 	i = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), IO::Path::PATH_SEPERATOR);
 	sptr = &sbuff[i + 1];
 
-	if (fname)
+	if (fname.SetTo(s))
 	{
-		sptr2 = fname->ConcatTo(sptr);
+		sptr2 = s->ConcatTo(sptr);
 		if (this->iface->OpenFile(CSTRP(sbuff, sptr2), IO::ParserType::MediaFile))
 		{
 			this->iface->PBStart();
@@ -57,7 +58,6 @@ void Media::MediaPlayerWebInterface::BrowseRequest(NotNullPtr<Net::WebServer::IW
 	IO::Path::PathType pt;
 	IO::Path::FindFileSession *sess;
 	UInt8 *buff;
-	NotNullPtr<Text::String> s;
 	UOSInt size;
 	UInt64 fileSize;
 

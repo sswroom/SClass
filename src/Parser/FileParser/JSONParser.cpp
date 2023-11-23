@@ -91,13 +91,14 @@ IO::ParsedObject *Parser::FileParser::JSONParser::ParseFileHdr(NotNullPtr<IO::St
 	return pobj;
 }
 
-IO::ParsedObject *Parser::FileParser::JSONParser::ParseJSON(Text::JSONBase *fileJSON, NotNullPtr<Text::String> sourceName, Text::CString layerName, IO::ParserType targetType, Optional<IO::PackageFile> pkgFile, Parser::ParserList *parsers)
+IO::ParsedObject *Parser::FileParser::JSONParser::ParseJSON(Text::JSONBase *fileJSON, NotNullPtr<Text::String> sourceName, Text::CString layerName, IO::ParserType targetType, Optional<IO::PackageFile> pkgFile, Optional<Parser::ParserList> parsers)
 {
 	UInt32 srid = 0;
 	IO::ParsedObject *pobj = 0;
 	if (fileJSON->GetType() == Text::JSONType::Object)
 	{
 		NotNullPtr<IO::PackageFile> nnpkgFile;
+		NotNullPtr<Parser::ParserList> nnparsers;
 		Text::JSONObject *jobj = (Text::JSONObject*)fileJSON;
 		Text::JSONBase *jbase = jobj->GetObjectValue(CSTR("type"));
 		if (jbase && jbase->Equals(CSTR("FeatureCollection")))
@@ -219,7 +220,7 @@ IO::ParsedObject *Parser::FileParser::JSONParser::ParseJSON(Text::JSONBase *file
 			}
 			return pobj;
 		}
-		else if (jbase && jbase->Equals(CSTR("overlay")) && layerName.EndsWith(UTF8STRC("metadata.json")) && pkgFile.SetTo(nnpkgFile))
+		else if (jbase && jbase->Equals(CSTR("overlay")) && layerName.EndsWith(UTF8STRC("metadata.json")) && pkgFile.SetTo(nnpkgFile) && parsers.SetTo(nnparsers))
 		{
 			NotNullPtr<Text::String> name;
 			NotNullPtr<Text::String> format;
@@ -240,7 +241,7 @@ IO::ParsedObject *Parser::FileParser::JSONParser::ParseJSON(Text::JSONBase *file
 				NotNullPtr<Map::OSM::OSMLocalTileMap> tileMap;
 				NotNullPtr<Map::TileMapLayer> mapLayer;
 				NEW_CLASSNN(tileMap, Map::OSM::OSMLocalTileMap(nnpkgFile->Clone(), name, format, minZoom, maxZoom, minCoord, maxCoord));
-				NEW_CLASSNN(mapLayer, Map::TileMapLayer(tileMap, parsers));
+				NEW_CLASSNN(mapLayer, Map::TileMapLayer(tileMap, nnparsers));
 				return mapLayer.Ptr();
 			}
 		}

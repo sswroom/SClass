@@ -5,7 +5,7 @@
 void __stdcall SSWR::AVIRead::AVIROCRForm::OnFileHandler(void *userObj, NotNullPtr<Text::String> *files, UOSInt nFiles)
 {
 	SSWR::AVIRead::AVIROCRForm *me = (SSWR::AVIRead::AVIROCRForm*)userObj;
-	Parser::ParserList *parsers = me->core->GetParserList();
+	NotNullPtr<Parser::ParserList> parsers = me->core->GetParserList();
 	UOSInt i = 0;
 	while (i < nFiles)
 	{

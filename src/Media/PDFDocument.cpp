@@ -60,7 +60,7 @@ Media::PDFObject *Media::PDFDocument::AddObject(UInt32 id)
 	return obj;
 }
 
-Media::ImageList *Media::PDFDocument::CreateImage(UInt32 id, Parser::ParserList *parsers)
+Media::ImageList *Media::PDFDocument::CreateImage(UInt32 id, NotNullPtr<Parser::ParserList> parsers)
 {
 	Media::PDFObject *obj = this->objMap.Get(id);
 	if (obj == 0)

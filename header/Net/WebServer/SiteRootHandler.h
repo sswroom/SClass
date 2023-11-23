@@ -13,10 +13,10 @@ namespace Net
 			UOSInt faviconSize;
 
 		protected:
-			virtual ~SiteRootHandler();
 			virtual Bool ProcessRequest(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq);
 		public:
 			SiteRootHandler(Text::CStringNN faviconPath);
+			virtual ~SiteRootHandler();
 		};
 	}
 }

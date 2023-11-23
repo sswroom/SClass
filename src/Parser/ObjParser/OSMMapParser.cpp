@@ -43,6 +43,9 @@ IO::ParsedObject *Parser::ObjParser::OSMMapParser::ParseObject(NotNullPtr<IO::Pa
 	IO::StreamData *fd = pkg->OpenStreamData(CSTR("metadata.json"));
 	if (fd == 0)
 		return 0;
+	NotNullPtr<Parser::ParserList> parsers;
+	if (!parsers.Set(this->parsers))
+		return 0;
 
 	UOSInt buffSize = (UOSInt)fd->GetDataSize();
 	UInt8 *fileBuff = MemAlloc(UInt8, buffSize + 1);
@@ -80,7 +83,7 @@ IO::ParsedObject *Parser::ObjParser::OSMMapParser::ParseObject(NotNullPtr<IO::Pa
 				NotNullPtr<Map::OSM::OSMLocalTileMap> tileMap;
 				NotNullPtr<Map::TileMapLayer> mapLayer;
 				NEW_CLASSNN(tileMap, Map::OSM::OSMLocalTileMap(pkg->Clone(), name, format, minZoom, maxZoom, minCoord, maxCoord));
-				NEW_CLASSNN(mapLayer, Map::TileMapLayer(tileMap, this->parsers));
+				NEW_CLASSNN(mapLayer, Map::TileMapLayer(tileMap, parsers));
 				DEL_CLASS(fd);
 				jobj->EndUse();
 				return mapLayer.Ptr();

@@ -72,9 +72,9 @@ namespace Net
 		public:
 			HTTPDirectoryHandler(NotNullPtr<Text::String> rootDir, Bool allowBrowsing, UInt64 fileCacheSize, Bool allowUpload);
 			HTTPDirectoryHandler(Text::CStringNN rootDir, Bool allowBrowsing, UInt64 fileCacheSize, Bool allowUpload);
+			virtual ~HTTPDirectoryHandler();
 
 		protected:
-			virtual ~HTTPDirectoryHandler();
 			virtual Bool FileValid(Text::CStringNN subReq);
 		public:
 			virtual Bool ProcessRequest(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq);
@@ -88,7 +88,7 @@ namespace Net
 			void SetExpirePeriod(Int32 periodSec);
 			void SetAllowOrigin(Text::CString origin);
 			void ClearFileCache();
-			void ExpandPackageFiles(Parser::ParserList *parsers, Text::CString searchPattern);
+			void ExpandPackageFiles(NotNullPtr<Parser::ParserList> parsers, Text::CStringNN searchPattern);
 			void EnableStats();
 			void SaveStats();
 		};

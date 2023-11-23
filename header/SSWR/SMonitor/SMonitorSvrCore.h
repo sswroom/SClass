@@ -53,7 +53,7 @@ namespace SSWR
 			Net::WebServer::HTTPDirectoryHandler *webHdlr;
 			Text::String *dataDir;
 			NotNullPtr<Media::DrawEngine> deng;
-			Parser::ParserList *parsers;
+			NotNullPtr<Parser::ParserList> parsers;
 			Bool initErr;
 
 			DB::DBTool *db;

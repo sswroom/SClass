@@ -55,7 +55,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPForwarderForm::OnStartClick(void *userObj)
 		{
 			valid = false;
 			SDEL_CLASS(me->svr);
-			fwdHdlr->Release();
+			fwdHdlr.Delete();
 			UI::MessageDialog::ShowDialog(CSTR("Error in listening to port"), CSTR("HTTP Forwarder"), me);
 		}
 		else
@@ -91,11 +91,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPForwarderForm::OnStartClick(void *userObj)
 	else
 	{
 		SDEL_CLASS(me->svr);
-		if (me->fwdHdlr)
-		{
-			me->fwdHdlr->Release();
-			me->fwdHdlr = 0;
-		}
+		SDEL_CLASS(me->fwdHdlr);
 		SDEL_CLASS(me->fwdLog);
 	}
 }
@@ -108,11 +104,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPForwarderForm::OnStopClick(void *userObj)
 		return;
 	}
 	SDEL_CLASS(me->svr);
-	if (me->fwdHdlr)
-	{
-		me->fwdHdlr->Release();
-		me->fwdHdlr = 0;
-	}
+	SDEL_CLASS(me->fwdHdlr);
 	SDEL_CLASS(me->fwdLog);
 	me->txtPort->SetReadOnly(false);
 	me->txtFwdURL->SetReadOnly(false);
@@ -205,11 +197,7 @@ SSWR::AVIRead::AVIRHTTPForwarderForm::AVIRHTTPForwarderForm(UI::GUIClientControl
 SSWR::AVIRead::AVIRHTTPForwarderForm::~AVIRHTTPForwarderForm()
 {
 	SDEL_CLASS(this->svr);
-	if (this->fwdHdlr)
-	{
-		this->fwdHdlr->Release();
-		this->fwdHdlr = 0;
-	}
+	SDEL_CLASS(this->fwdHdlr);
 	SDEL_CLASS(this->fwdLog);
 	SDEL_CLASS(this->ssl);
 	SDEL_CLASS(this->sslCert);

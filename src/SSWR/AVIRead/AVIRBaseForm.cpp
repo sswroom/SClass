@@ -549,7 +549,7 @@ void __stdcall SSWR::AVIRead::AVIRBaseForm::FileHandler(void *userObj, NotNullPt
 			{
 				NotNullPtr<IO::DirectoryPackage> pkg;
 				NEW_CLASSNN(pkg, IO::DirectoryPackage(files[i]->ToCString()));
-				Parser::ParserList *parsers = me->core->GetParserList();
+				NotNullPtr<Parser::ParserList> parsers = me->core->GetParserList();
 				IO::ParserType pt = IO::ParserType::Unknown;
 				NotNullPtr<IO::ParsedObject> pobj;
 				if (pobj.Set(parsers->ParseObject(pkg, pt)))
@@ -1629,7 +1629,7 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 		break;
 	case MNU_OSM_LOCAL_FILE:
 		{
-			Parser::ParserList *parsers = this->core->GetParserList();
+			NotNullPtr<Parser::ParserList> parsers = this->core->GetParserList();
 			UI::FileDialog dlg(L"SSWR", L"AVIRead", L"OSMLocalFile", false);
 			parsers->PrepareSelector(dlg, IO::ParserType::PackageFile);
 			if (dlg.ShowDialog(this->GetHandle()))

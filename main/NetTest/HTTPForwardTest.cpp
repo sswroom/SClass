@@ -53,7 +53,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 			console->WriteLineC(UTF8STRC("Error in listening port"));
 		}
 		DEL_CLASS(svr);
-		hdlr->Release();
+		hdlr.Delete();
 	}
 	SDEL_CLASS(ssl);
 	DEL_CLASS(console);

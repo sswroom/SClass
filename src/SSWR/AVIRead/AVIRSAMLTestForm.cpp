@@ -17,7 +17,7 @@
 void __stdcall SSWR::AVIRead::AVIRSAMLTestForm::OnFormFiles(void *userObj, NotNullPtr<Text::String> *files, UOSInt nFiles)
 {
 	SSWR::AVIRead::AVIRSAMLTestForm *me = (SSWR::AVIRead::AVIRSAMLTestForm*)userObj;
-	Parser::ParserList *parsers = me->core->GetParserList();
+	NotNullPtr<Parser::ParserList> parsers = me->core->GetParserList();
 
 	UOSInt i = 0;
 	IO::ParsedObject *pobj;
@@ -107,11 +107,7 @@ void __stdcall SSWR::AVIRead::AVIRSAMLTestForm::OnStartClicked(void *userObj)
 	if (me->svr)
 	{
 		SDEL_CLASS(me->svr);
-		if (me->samlHdlr)
-		{
-			me->samlHdlr->Release();
-			me->samlHdlr = 0;
-		}
+		SDEL_CLASS(me->samlHdlr);
 		me->txtPort->SetReadOnly(false);
 		me->btnSSLCert->SetEnabled(true);
 		me->txtHost->SetReadOnly(false);
@@ -234,7 +230,7 @@ void __stdcall SSWR::AVIRead::AVIRSAMLTestForm::OnStartClicked(void *userObj)
 			sb.AppendC(UTF8STRC("Error in initializing SAML: "));
 			sb.Append(Net::WebServer::SAMLErrorGetName(samlHdlr->GetInitError()));
 			UI::MessageDialog::ShowDialog(sb.ToCString(), CSTR("SAML Test"), me);
-			samlHdlr->Release();
+			samlHdlr.Delete();
 			return;
 		}
 		samlHdlr->HandleRAWSAMLResponse(OnSAMLResponse, me);
@@ -243,14 +239,14 @@ void __stdcall SSWR::AVIRead::AVIRSAMLTestForm::OnStartClicked(void *userObj)
 		if (me->svr->IsError())
 		{
 			SDEL_CLASS(me->svr);
-			samlHdlr->Release();
+			samlHdlr.Delete();
 			UI::MessageDialog::ShowDialog(CSTR("Error in listening to port"), CSTR("SAML Test"), me);
 			valid = false;
 		}
 		else if (!me->svr->Start())
 		{
 			SDEL_CLASS(me->svr);
-			samlHdlr->Release();
+			samlHdlr.Delete();
 			UI::MessageDialog::ShowDialog(CSTR("Error in starting HTTP Server"), CSTR("SAML Test"), me);
 			valid = false;
 		}
@@ -286,11 +282,7 @@ void __stdcall SSWR::AVIRead::AVIRSAMLTestForm::OnStartClicked(void *userObj)
 	else
 	{
 		SDEL_CLASS(me->svr);
-		if (me->samlHdlr)
-		{
-			me->samlHdlr->Release();
-			me->samlHdlr = 0;
-		}
+		SDEL_CLASS(me->samlHdlr);
 	}
 }
 
@@ -498,11 +490,7 @@ SSWR::AVIRead::AVIRSAMLTestForm::AVIRSAMLTestForm(UI::GUIClientControl *parent, 
 SSWR::AVIRead::AVIRSAMLTestForm::~AVIRSAMLTestForm()
 {
 	SDEL_CLASS(this->svr);
-	if (this->samlHdlr)
-	{
-		this->samlHdlr->Release();
-		this->samlHdlr = 0;
-	}
+	SDEL_CLASS(this->samlHdlr);
 	this->log.RemoveLogHandler(this->logger);
 	this->logger.Delete();
 	SDEL_CLASS(this->ssl);

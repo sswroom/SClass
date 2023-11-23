@@ -14,7 +14,7 @@
 void __stdcall SSWR::AVIRead::AVIRCAUtilForm::OnFileDrop(void *userObj, NotNullPtr<Text::String> *files, UOSInt nFiles)
 {
 	SSWR::AVIRead::AVIRCAUtilForm *me = (SSWR::AVIRead::AVIRCAUtilForm*)userObj;
-	Parser::ParserList *parsers = me->core->GetParserList();
+	NotNullPtr<Parser::ParserList> parsers = me->core->GetParserList();
 
 	UOSInt i = 0;
 	IO::ParserType t;

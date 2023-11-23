@@ -40,7 +40,6 @@ Net::RAWAnalyzer::RAWAnalyzer(NotNullPtr<Net::SocketFactory> sockf, UInt16 infoP
 	if (this->listener->IsError())
 	{
 		DEL_CLASS(this->listener);
-		this->webHdlr->Release();
 		this->listener = 0;
 	}
 	else
@@ -71,7 +70,7 @@ Net::RAWAnalyzer::~RAWAnalyzer()
 	}
 
 	SDEL_CLASS(this->listener);
-	this->webHdlr->Release();
+	this->webHdlr.Delete();
 	DEL_CLASS(this->analyzer);
 }
 

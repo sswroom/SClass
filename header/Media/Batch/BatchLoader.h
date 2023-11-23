@@ -28,7 +28,7 @@ namespace Media
 				BatchLoader *me;
 			} ThreadState;
 		private:
-			Parser::ParserList *parsers;
+			NotNullPtr<Parser::ParserList> parsers;
 			Media::Batch::BatchHandler *hdlr;
 			Sync::Event mainEvt;
 			Sync::Mutex ioMut;
@@ -41,7 +41,7 @@ namespace Media
 
 			static UInt32 __stdcall ThreadProc(void *userObj);
 		public:
-			BatchLoader(Parser::ParserList *parsers, Media::Batch::BatchHandler *hdlr);
+			BatchLoader(NotNullPtr<Parser::ParserList> parsers, Media::Batch::BatchHandler *hdlr);
 			~BatchLoader();
 			
 			void AddFileName(Text::CString fileName);

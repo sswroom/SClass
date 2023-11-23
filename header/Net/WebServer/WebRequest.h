@@ -61,7 +61,7 @@ namespace Net
 
 			virtual NotNullPtr<Text::String> GetRequestURI() const;
 			virtual RequestProtocol GetProtocol() const;
-			virtual Text::String *GetQueryValue(Text::CStringNN name);
+			virtual Optional<Text::String> GetQueryValue(Text::CStringNN name);
 			virtual Bool HasQuery(Text::CStringNN name);
 			virtual Net::WebUtil::RequestMethod GetReqMethod() const;
 			virtual void ParseHTTPForm();

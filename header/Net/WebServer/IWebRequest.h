@@ -54,7 +54,7 @@ namespace Net
 			UTF8Char *GetRequestPath(UTF8Char *sbuff, UOSInt maxLeng);
 			UTF8Char *GetQueryString(UTF8Char *sbuff, UOSInt maxLeng);
 			virtual RequestProtocol GetProtocol() const = 0;
-			virtual Text::String *GetQueryValue(Text::CStringNN name) = 0;
+			virtual Optional<Text::String> GetQueryValue(Text::CStringNN name) = 0;
 			UTF8Char *GetQueryValueStr(Text::CStringNN name, UTF8Char *buff, UOSInt buffSize);
 			Bool GetQueryValueI16(Text::CStringNN name, OutParam<Int16> val);
 			Bool GetQueryValueU16(Text::CStringNN name, OutParam<UInt16> val);

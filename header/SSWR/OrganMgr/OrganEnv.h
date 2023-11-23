@@ -216,7 +216,7 @@ namespace SSWR
 			virtual ~OrganEnv();
 
 			NotNullPtr<Media::DrawEngine> GetDrawEngine();
-			Parser::ParserList *GetParserList();
+			NotNullPtr<Parser::ParserList> GetParserList();
 			NotNullPtr<Net::SocketFactory> GetSocketFactory();
 			Net::SSLEngine *GetSSLEngine();
 			Media::ColorManager *GetColorMgr();

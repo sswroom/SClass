@@ -132,7 +132,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	NEW_CLASS(listener, Net::WebServer::WebListener(sockf, 0, webHdlr, PORT, 120, 1, Sync::ThreadUtil::GetThreadCnt(), CSTR("GPIO/1.0"), false, Net::WebServer::KeepAlive::Default, true));
 	progCtrl->WaitForExit(progCtrl);
 	DEL_CLASS(listener);
-	webHdlr->Release();
+	webHdlr.Delete();
 	DEL_CLASS(gpio);
 	return 0;
 }

@@ -217,56 +217,56 @@ UTF8Char *Net::WebServer::IWebRequest::GetQueryString(UTF8Char *sbuff, UOSInt ma
 
 UTF8Char *Net::WebServer::IWebRequest::GetQueryValueStr(Text::CStringNN name, UTF8Char *buff, UOSInt buffSize)
 {
-	Text::String *s = this->GetQueryValue(name);
-	if (s == 0)
+	NotNullPtr<Text::String> s;
+	if (!this->GetQueryValue(name).SetTo(s))
 		return 0;
 	return Text::StrConcatCS(buff, s->v, s->leng, buffSize);
 }
 
 Bool Net::WebServer::IWebRequest::GetQueryValueI16(Text::CStringNN name, OutParam<Int16> val)
 {
-	Text::String *s = this->GetQueryValue(name);
-	if (s == 0)
+	NotNullPtr<Text::String> s;
+	if (!this->GetQueryValue(name).SetTo(s))
 		return false;
 	return s->ToInt16(val);
 }
 
 Bool Net::WebServer::IWebRequest::GetQueryValueU16(Text::CStringNN name, OutParam<UInt16> val)
 {
-	Text::String *s = this->GetQueryValue(name);
-	if (s == 0)
+	NotNullPtr<Text::String> s;
+	if (!this->GetQueryValue(name).SetTo(s))
 		return false;
 	return s->ToUInt16(val);
 }
 
 Bool Net::WebServer::IWebRequest::GetQueryValueI32(Text::CStringNN name, OutParam<Int32> val)
 {
-	Text::String *s = this->GetQueryValue(name);
-	if (s == 0)
+	NotNullPtr<Text::String> s;
+	if (!this->GetQueryValue(name).SetTo(s))
 		return false;
 	return s->ToInt32(val);
 }
 
 Bool Net::WebServer::IWebRequest::GetQueryValueU32(Text::CStringNN name, OutParam<UInt32> val)
 {
-	Text::String *s = this->GetQueryValue(name);
-	if (s == 0)
+	NotNullPtr<Text::String> s;
+	if (!this->GetQueryValue(name).SetTo(s))
 		return false;
 	return s->ToUInt32(val);
 }
 
 Bool Net::WebServer::IWebRequest::GetQueryValueI64(Text::CStringNN name, OutParam<Int64> val)
 {
-	Text::String *s = this->GetQueryValue(name);
-	if (s == 0)
+	NotNullPtr<Text::String> s;
+	if (!this->GetQueryValue(name).SetTo(s))
 		return false;
 	return s->ToInt64(val);
 }
 
 Bool Net::WebServer::IWebRequest::GetQueryValueF64(Text::CStringNN name, OutParam<Double> val)
 {
-	Text::String *s = this->GetQueryValue(name);
-	if (s == 0)
+	NotNullPtr<Text::String> s;
+	if (!this->GetQueryValue(name).SetTo(s))
 		return false;
 	return s->ToDouble(val);
 }

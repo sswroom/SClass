@@ -9,7 +9,7 @@
 #include "Media/AudioFilter/FileMixFilter.h"
 #include "Text/MyString.h"
 
-Media::AudioFilter::FileMixFilter::FileMixFilter(NotNullPtr<IAudioSource> sourceAudio, Parser::ParserList *parsers) : Media::IAudioFilter(sourceAudio)
+Media::AudioFilter::FileMixFilter::FileMixFilter(NotNullPtr<IAudioSource> sourceAudio, NotNullPtr<Parser::ParserList> parsers) : Media::IAudioFilter(sourceAudio)
 {
 	sourceAudio->GetFormat(this->format);
 	this->parsers = parsers;

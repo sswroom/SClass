@@ -1197,7 +1197,7 @@ void SSWR::AVIRead::AVIRPackageForm::EventMenuClicked(UInt16 cmdId)
 		if (this->packFile->GetFileType() == IO::PackageFileType::Virtual)
 		{
 			NotNullPtr<IO::VirtualPackageFile> vpkg = NotNullPtr<IO::VirtualPackageFile>::ConvertFrom(this->packFile);
-			Parser::ParserList *parsers = this->core->GetParserList();
+			NotNullPtr<Parser::ParserList> parsers = this->core->GetParserList();
 			UI::FileDialog dlg(L"SSWR", L"AVIRead", L"PackageFileZip", false);
 			dlg.SetAllowMultiSel(false);
 			parsers->PrepareSelector(dlg, IO::ParserType::PackageFile);

@@ -70,11 +70,12 @@ IO::ParsedObject *Parser::FileParser::MEVParser::ParseFileHdr(NotNullPtr<IO::Str
 	UTF8Char sbuff2[256];
 	UTF8Char *u8ptr;
 	UTF8Char *u8ptr2;
+	NotNullPtr<Parser::ParserList> parsers;
 
 	UOSInt i;
 	UOSInt j;
 	
-	if (this->parsers == 0)
+	if (!parsers.Set(this->parsers))
 		return 0;
 	if (this->mapMgr == 0)
 		return 0;
@@ -154,7 +155,7 @@ IO::ParsedObject *Parser::FileParser::MEVParser::ParseFileHdr(NotNullPtr<IO::Str
 		Text::StrUTF8_WCharC(wptr, &buff[16], ReadUInt32(&buff[4]), 0);
 
 		NotNullPtr<Text::String> s = Text::String::NewNotNull(wbuff);
-		imgFileArr[i].envIndex = env->AddImage(s->ToCString(), this->parsers);
+		imgFileArr[i].envIndex = env->AddImage(s->ToCString(), parsers);
 		s->Release();
 		i++;
 		currPos += 16;

@@ -53,7 +53,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPLoadBalanceForm::OnStartClick(void *userOb
 		{
 			valid = false;
 			SDEL_CLASS(me->svr);
-			fwdHdlr->Release();
+			fwdHdlr.Delete();
 		}
 		else
 		{
@@ -98,11 +98,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPLoadBalanceForm::OnStartClick(void *userOb
 	else
 	{
 		SDEL_CLASS(me->svr);
-		if (me->fwdHdlr)
-		{
-			me->fwdHdlr->Release();
-			me->fwdHdlr = 0;
-		}
+		SDEL_CLASS(me->fwdHdlr);
 		SDEL_CLASS(me->log);
 		SDEL_CLASS(me->logger);
 	}
@@ -116,11 +112,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPLoadBalanceForm::OnStopClick(void *userObj
 		return;
 	}
 	SDEL_CLASS(me->svr);
-	if (me->fwdHdlr)
-	{
-		me->fwdHdlr->Release();
-		me->fwdHdlr = 0;
-	}
+	SDEL_CLASS(me->fwdHdlr);
 	SDEL_CLASS(me->log);
 	SDEL_CLASS(me->logger);
 	me->txtPort->SetReadOnly(false);
@@ -435,11 +427,7 @@ SSWR::AVIRead::AVIRHTTPLoadBalanceForm::AVIRHTTPLoadBalanceForm(UI::GUIClientCon
 SSWR::AVIRead::AVIRHTTPLoadBalanceForm::~AVIRHTTPLoadBalanceForm()
 {
 	SDEL_CLASS(this->svr);
-	if (this->fwdHdlr)
-	{
-		this->fwdHdlr->Release();
-		this->fwdHdlr = 0;
-	}
+	SDEL_CLASS(this->fwdHdlr);
 	SDEL_CLASS(this->log);
 	SDEL_CLASS(this->logger);
 	SDEL_CLASS(this->reqLog);

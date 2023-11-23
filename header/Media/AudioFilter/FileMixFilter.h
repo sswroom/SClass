@@ -12,14 +12,14 @@ namespace Media
 		{
 		private:
 			AudioFormat format;
-			Parser::ParserList *parsers;
+			NotNullPtr<Parser::ParserList> parsers;
 			Media::IAudioSource *fileSrc;
 			Bool mixing;
 			UInt64 mixOfst;
 			Bool chMix;
 
 		public:
-			FileMixFilter(NotNullPtr<IAudioSource> sourceAudio, Parser::ParserList *parsers);
+			FileMixFilter(NotNullPtr<IAudioSource> sourceAudio, NotNullPtr<Parser::ParserList> parsers);
 			virtual ~FileMixFilter();
 
 			virtual void GetFormat(AudioFormat *format);

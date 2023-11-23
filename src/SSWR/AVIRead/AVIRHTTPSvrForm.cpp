@@ -199,7 +199,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPSvrForm::OnStartClick(void *userObj)
 		{
 			valid = false;
 			SDEL_CLASS(me->svr);
-			dirHdlr->Release();
+			dirHdlr.Delete();
 			UI::MessageDialog::ShowDialog(CSTR("Error in listening to port"), CSTR("HTTP Server"), me);
 		}
 		else
@@ -269,11 +269,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPSvrForm::OnStartClick(void *userObj)
 	else
 	{
 		SDEL_CLASS(me->svr);
-		if (me->dirHdlr)
-		{
-			me->dirHdlr->Release();
-			me->dirHdlr = 0;
-		}
+		SDEL_CLASS(me->dirHdlr);
 		SDEL_CLASS(me->log);
 		SDEL_CLASS(me->logger);
 	}
@@ -287,11 +283,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPSvrForm::OnStopClick(void *userObj)
 		return;
 	}
 	SDEL_CLASS(me->svr);
-	if (me->dirHdlr)
-	{
-		me->dirHdlr->Release();
-		me->dirHdlr = 0;
-	}
+	SDEL_CLASS(me->dirHdlr);
 	SDEL_CLASS(me->log);
 	SDEL_CLASS(me->logger);
 	me->txtPort->SetReadOnly(false);
@@ -643,11 +635,7 @@ SSWR::AVIRead::AVIRHTTPSvrForm::AVIRHTTPSvrForm(UI::GUIClientControl *parent, No
 SSWR::AVIRead::AVIRHTTPSvrForm::~AVIRHTTPSvrForm()
 {
 	SDEL_CLASS(this->svr);
-	if (this->dirHdlr)
-	{
-		this->dirHdlr->Release();
-		this->dirHdlr = 0;
-	}
+	SDEL_CLASS(this->dirHdlr);
 	SDEL_CLASS(this->log);
 	SDEL_CLASS(this->logger);
 	SDEL_CLASS(this->reqLog);

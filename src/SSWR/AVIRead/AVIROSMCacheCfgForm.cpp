@@ -89,7 +89,7 @@ void __stdcall SSWR::AVIRead::AVIROSMCacheCfgForm::OnOKClick(void *userObj)
 	if (listener->IsError())
 	{
 		listener.Delete();
-		hdlr->Release();
+		hdlr.Delete();
 		UI::MessageDialog::ShowDialog(CSTR("Error in listening to the port"), CSTR("Error"), me);
 		return;
 	}

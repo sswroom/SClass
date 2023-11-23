@@ -8,17 +8,6 @@
 #include "Net/WebServer/HTTPServerUtil.h"
 #include "Net/WebServer/WebStandardHandler.h"
 
-Net::WebServer::WebStandardHandler::~WebStandardHandler()
-{
-	Net::WebServer::WebStandardHandler *hdlr;
-	UOSInt i = this->relHdlrs.GetCount();
-	while (i-- > 0)
-	{
-		hdlr = this->relHdlrs.GetItem(i);
-		hdlr->Release();
-	}
-}
-
 Bool Net::WebServer::WebStandardHandler::DoRequest(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq)
 {
 	if (subReq.v[0] != '/')
@@ -78,6 +67,17 @@ Net::WebServer::WebStandardHandler::WebStandardHandler()
 {
 }
 
+Net::WebServer::WebStandardHandler::~WebStandardHandler()
+{
+	Net::WebServer::WebStandardHandler *hdlr;
+	UOSInt i = this->relHdlrs.GetCount();
+	while (i-- > 0)
+	{
+		hdlr = this->relHdlrs.GetItem(i);
+		DEL_CLASS(hdlr);
+	}
+}
+
 void Net::WebServer::WebStandardHandler::WebRequest(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp)
 {
 	NotNullPtr<Text::String> reqURL = req->GetRequestURI();
@@ -125,11 +125,6 @@ void Net::WebServer::WebStandardHandler::WebRequest(NotNullPtr<Net::WebServer::I
 	}
 }
 
-void Net::WebServer::WebStandardHandler::Release()
-{
-	DEL_CLASS(this);
-}
-
 Bool Net::WebServer::WebStandardHandler::ProcessRequest(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq)
 {
 	return DoRequest(req, resp, subReq);
@@ -142,7 +137,7 @@ void Net::WebServer::WebStandardHandler::HandlePath(Text::CStringNN relativePath
 	{
 		if (needRelease)
 		{
-			hdlr->Release();
+			hdlr.Delete();
 		}
 		return;
 	}

@@ -863,7 +863,7 @@ SSWR::OrganWeb::OrganWebEnv::~OrganWebEnv()
 	SDEL_CLASS(this->webHdlr);
 	SDEL_CLASS(this->db);
 	this->osmHdlr.Delete();
-	this->nodeHdlr->Release();
+	this->nodeHdlr.Delete();
 
 	FreeGroups();
 	FreeSpecies();
@@ -3485,10 +3485,10 @@ SSWR::OrganWeb::CategoryInfo *SSWR::OrganWeb::OrganWebEnv::CateGet(NotNullPtr<Sy
 	return this->cateMap.Get(id);
 }
 
-SSWR::OrganWeb::CategoryInfo *SSWR::OrganWeb::OrganWebEnv::CateGetByName(NotNullPtr<Sync::RWMutexUsage> mutUsage, Text::String *name)
+SSWR::OrganWeb::CategoryInfo *SSWR::OrganWeb::OrganWebEnv::CateGetByName(NotNullPtr<Sync::RWMutexUsage> mutUsage, NotNullPtr<Text::String> name)
 {
 	mutUsage->ReplaceMutex(this->dataMut, false);
-	return this->cateSMap.Get(name);
+	return this->cateSMap.GetNN(name);
 }
 
 Data::ReadingList<SSWR::OrganWeb::CategoryInfo*> *SSWR::OrganWeb::OrganWebEnv::CateGetList(NotNullPtr<Sync::RWMutexUsage> mutUsage)

@@ -13,13 +13,11 @@ namespace Net
 			Net::WebServer::IWebHandler *hdlr;
 			NotNullPtr<IO::Writer> writer;
 
-		private:
-			virtual ~PrintLogWebHandler();
 		public:
 			PrintLogWebHandler(Net::WebServer::IWebHandler *hdlr, NotNullPtr<IO::Writer> writer);
+			virtual ~PrintLogWebHandler();
 
 			virtual void WebRequest(NotNullPtr<IWebRequest> req, NotNullPtr<IWebResponse> resp);
-			virtual void Release();
 		};
 	}
 }

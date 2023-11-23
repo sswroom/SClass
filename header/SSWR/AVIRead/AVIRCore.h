@@ -38,7 +38,7 @@ namespace SSWR
 			} IOPinType;
 
 		protected:
-			Parser::ParserList *parsers;
+			NotNullPtr<Parser::ParserList> parsers;
 			Map::MapManager mapMgr;
 			Media::ColorManager colorMgr;
 			IO::SiLabDriver *siLabDriver;
@@ -86,7 +86,7 @@ namespace SSWR
 			Bool LoadData(NotNullPtr<IO::StreamData> data, IO::PackageFile *pkgFile);
 			Bool LoadDataType(NotNullPtr<IO::StreamData> data, IO::PackageFile *pkgFile, IO::ParserType targetType);
 
-			Parser::ParserList *GetParserList();
+			NotNullPtr<Parser::ParserList> GetParserList();
 			Map::MapManager *GetMapManager();
 			Media::ColorManager *GetColorMgr();
 			NotNullPtr<Net::SocketFactory> GetSocketFactory();

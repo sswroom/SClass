@@ -27,6 +27,6 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 		console.WriteLineC(UTF8STRC("Error in listening to port 8889"));
 	}
 	DEL_CLASS(listener);
-	hdlr->Release();
+	hdlr.Delete();
 	return 0;
 }

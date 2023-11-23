@@ -234,7 +234,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::LoadDataFile(Text::CStringNN fileName)
 		else if (pt == IO::Path::PathType::Directory)
 		{
 			IO::DirectoryPackage pkg(fileName);
-			Parser::ParserList *parsers = this->core->GetParserList();
+			NotNullPtr<Parser::ParserList> parsers = this->core->GetParserList();
 			db = (DB::ReadingDB*)parsers->ParseObjectType(pkg, 0, IO::ParserType::ReadingDB);
 		}
 		if (db)

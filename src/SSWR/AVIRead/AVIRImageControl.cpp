@@ -114,7 +114,7 @@ void SSWR::AVIRead::AVIRImageControl::InitDir()
 	NotNullPtr<const Data::ArrayList<ImageSetting*>> imgSettList;
 	ImageSetting *imgSett;
 	SSWR::AVIRead::AVIRImageControl::ImageStatus *status;
-	Parser::ParserList *parsers;
+	NotNullPtr<Parser::ParserList> parsers;
 	Data::ICaseStringUTF8Map<ImageSetting*> imgSettMap;
 	sptr3 = Text::StrConcatC(sptr, UTF8STRC("Setting.txt"));
 	{

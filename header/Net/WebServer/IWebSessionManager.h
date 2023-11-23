@@ -25,6 +25,6 @@ namespace Net
 			virtual IWebSession *CreateSession(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp) = 0;
 			virtual void DeleteSession(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp) = 0;
 		};
-	};
-};
+	}
+}
 #endif
