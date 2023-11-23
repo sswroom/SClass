@@ -1486,7 +1486,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::DoFileRequest(NotNullPtr<Net::WebServ
 	return false;
 }
 
-IO::PackageFile *Net::WebServer::HTTPDirectoryHandler::GetPackageFile(Text::CStringNN path, OutParam<Bool> needRelease)
+Optional<IO::PackageFile> Net::WebServer::HTTPDirectoryHandler::GetPackageFile(Text::CStringNN path, OutParam<Bool> needRelease)
 {
 	if (path.StartsWith('/'))
 	{

@@ -167,6 +167,11 @@ namespace Net
 				return this->AddHeader(CSTR("Server"), server);
 			}
 
+			Bool AddAccessControlAllowOrigin(Text::CStringNN origin)
+			{
+				return this->AddHeader(CSTR("Access-Control-Allow-Origin"), origin);
+			}
+
 			Bool AddSetCookie(Text::CString name, Text::CString value, Text::CString path, Bool httpOnly, Bool secure, SameSiteType sameSite, Data::Timestamp expires)
 			{
 				Text::StringBuilderUTF8 sb;
