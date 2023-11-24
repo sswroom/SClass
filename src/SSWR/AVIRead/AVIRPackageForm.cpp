@@ -448,7 +448,7 @@ void SSWR::AVIRead::AVIRPackageForm::OpenItem(UOSInt index)
 	{
 		Bool needRelease;
 		NotNullPtr<IO::PackageFile> pkg;
-		if (pkg.Set(this->packFile->GetItemPack(index, needRelease)))
+		if (this->packFile->GetItemPack(index, needRelease).SetTo(pkg))
 		{
 			this->UpdatePackFile(pkg, needRelease, CSTR_NULL);
 //			this->core->OpenObject(pkg);
@@ -458,7 +458,7 @@ void SSWR::AVIRead::AVIRPackageForm::OpenItem(UOSInt index)
 	{
 		Bool needRelease;
 		NotNullPtr<IO::ParsedObject> pobj;
-		if (pobj.Set(this->packFile->GetItemPObj(index, needRelease)))
+		if (this->packFile->GetItemPObj(index, needRelease).SetTo(pobj))
 		{
 			if (!needRelease)
 			{
@@ -470,7 +470,7 @@ void SSWR::AVIRead::AVIRPackageForm::OpenItem(UOSInt index)
 	else if (pot == IO::PackageFile::PackObjectType::StreamData)
 	{
 		NotNullPtr<IO::StreamData> data;
-		if (data.Set(this->packFile->GetItemStmDataNew(index)))
+		if (this->packFile->GetItemStmDataNew(index).SetTo(data))
 		{
 			this->core->LoadData(data, this->packFile.Ptr());
 			data.Delete();
@@ -497,7 +497,7 @@ void SSWR::AVIRead::AVIRPackageForm::TestPackage(NotNullPtr<IO::ActiveStreamRead
 		{
 		case IO::PackageFile::PackObjectType::PackageFileType:
 			sess->dirCnt++;
-			if (innerPack.Set(pack->GetItemPack(i, needDelete)))
+			if (pack->GetItemPack(i, needDelete).SetTo(innerPack))
 			{
 				TestPackage(reader, sess, innerPack);
 				if (needDelete)
@@ -527,7 +527,7 @@ void SSWR::AVIRead::AVIRPackageForm::TestPackage(NotNullPtr<IO::ActiveStreamRead
 			break;
 		case IO::PackageFile::PackObjectType::StreamData:
 			sess->fileCnt++;
-			if (stmData.Set(pack->GetItemStmDataNew(i)))
+			if (pack->GetItemStmDataNew(i).SetTo(stmData))
 			{
 				storeSize = pack->GetItemStoreSize(i);
 				fileSize = stmData->GetDataSize();
@@ -1095,7 +1095,7 @@ void SSWR::AVIRead::AVIRPackageForm::EventMenuClicked(UInt16 cmdId)
 				else if (pot == IO::PackageFile::PackObjectType::StreamData)
 				{
 					NotNullPtr<IO::StreamData> fd;
-					if (!fd.Set(packFile->GetItemStmDataNew(i)))
+					if (!packFile->GetItemStmDataNew(i).SetTo(fd))
 					{
 						UI::MessageDialog::ShowDialog(CSTR("Error in opening file"), CSTR("Package"), this);
 						return;
@@ -1131,7 +1131,7 @@ void SSWR::AVIRead::AVIRPackageForm::EventMenuClicked(UInt16 cmdId)
 				else if (pot == IO::PackageFile::PackObjectType::StreamData)
 				{
 					NotNullPtr<IO::StreamData> fd;
-					if (!fd.Set(packFile->GetItemStmDataNew(i)))
+					if (!packFile->GetItemStmDataNew(i).SetTo(fd))
 					{
 						UI::MessageDialog::ShowDialog(CSTR("Error in opening file"), CSTR("Package"), this);
 						return;

@@ -36,7 +36,7 @@ Map::OSM::OSMLocalTileMap::OSMLocalTileMap(NotNullPtr<IO::PackageFile> pkgFile)
 	if (pkgFile->GetCount() == 1 && pkgFile->GetItemType(0) == IO::PackageFile::PackObjectType::PackageFileType)
 	{
 		Bool needDelete;
-		if (pkgFile.Set(pkgFile->GetItemPack(0, needDelete)))
+		if (pkgFile->GetItemPack(0, needDelete).SetTo(pkgFile))
 		{
 			if (needDelete)
 			{
@@ -78,10 +78,9 @@ Map::OSM::OSMLocalTileMap::OSMLocalTileMap(NotNullPtr<IO::PackageFile> pkgFile)
 		maxXBlk = (UInt32)-1;
 		
 		Bool xNeedDelete;
-		IO::PackageFile *xPkg;
+		NotNullPtr<IO::PackageFile> xPkg;
 		sptr = Text::StrUOSInt(sbuff, this->maxLevel);
-		xPkg = pkgFile->GetItemPack((UOSInt)pkgFile->GetItemIndex(CSTRP(sbuff, sptr)), xNeedDelete);
-		if (xPkg)
+		if (pkgFile->GetItemPack((UOSInt)pkgFile->GetItemIndex(CSTRP(sbuff, sptr)), xNeedDelete).SetTo(xPkg))
 		{
 			i = 0;
 			j = xPkg->GetCount();
@@ -113,10 +112,9 @@ Map::OSM::OSMLocalTileMap::OSMLocalTileMap(NotNullPtr<IO::PackageFile> pkgFile)
 				maxYBlk = (UInt32)-1;
 
 				Bool yNeedDelete;
-				IO::PackageFile *yPkg;
+				NotNullPtr<IO::PackageFile> yPkg;
 				sptr = Text::StrUInt32(sbuff, minXBlk);
-				yPkg = xPkg->GetItemPack((UOSInt)xPkg->GetItemIndex(CSTRP(sbuff, sptr)), yNeedDelete);
-				if (yPkg)
+				if (xPkg->GetItemPack((UOSInt)xPkg->GetItemIndex(CSTRP(sbuff, sptr)), yNeedDelete).SetTo(yPkg))
 				{
 					i = yPkg->GetCount();
 					while (i-- > 0)
@@ -144,7 +142,7 @@ Map::OSM::OSMLocalTileMap::OSMLocalTileMap(NotNullPtr<IO::PackageFile> pkgFile)
 					}
 					if (yNeedDelete)
 					{
-						DEL_CLASS(yPkg);
+						yPkg.Delete();
 					}
 
 					if (minYBlk != (UInt32)-1)
@@ -158,7 +156,7 @@ Map::OSM::OSMLocalTileMap::OSMLocalTileMap(NotNullPtr<IO::PackageFile> pkgFile)
 			}
 			if (xNeedDelete)
 			{
-				DEL_CLASS(xPkg);
+				xPkg.Delete();
 			}
 		}
 	}
@@ -381,7 +379,7 @@ Optional<IO::StreamData> Map::OSM::OSMLocalTileMap::LoadTileImageData(UOSInt lev
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
-	IO::StreamData *fd;
+	Optional<IO::StreamData> fd;
 	if (level < this->minLevel || level > this->maxLevel)
 		return 0;
 	Double x1 = Map::OSM::OSMTileMap::TileX2Lon(tileId.x, level);
@@ -394,23 +392,21 @@ Optional<IO::StreamData> Map::OSM::OSMLocalTileMap::LoadTileImageData(UOSInt lev
 		return 0;
 
 	Bool xNeedDelete;
-	IO::PackageFile *xPkg;
+	NotNullPtr<IO::PackageFile> xPkg;
 	Bool yNeedDelete;
-	IO::PackageFile *yPkg;
+	NotNullPtr<IO::PackageFile> yPkg;
 	fd = 0;
 	sptr = Text::StrUOSInt(sbuff, level);
-	xPkg = this->pkgFile->GetItemPack((UOSInt)this->pkgFile->GetItemIndex(CSTRP(sbuff, sptr)), xNeedDelete);
-	if (xPkg)
+	if (this->pkgFile->GetItemPack((UOSInt)this->pkgFile->GetItemIndex(CSTRP(sbuff, sptr)), xNeedDelete).SetTo(xPkg))
 	{
 		sptr = Text::StrInt32(sbuff, tileId.x);
-		yPkg = xPkg->GetItemPack((UOSInt)xPkg->GetItemIndex(CSTRP(sbuff, sptr)), yNeedDelete);
-		if (yPkg)
+		if (xPkg->GetItemPack((UOSInt)xPkg->GetItemIndex(CSTRP(sbuff, sptr)), yNeedDelete).SetTo(yPkg))
 		{
 			sptr = Text::StrInt32(sbuff, tileId.y);
 			*sptr++ = '.';
 			sptr = this->fmt->ConcatTo(sptr);
 			fd = yPkg->GetItemStmDataNew((UOSInt)yPkg->GetItemIndex(CSTRP(sbuff, sptr)));
-			if (fd)
+			if (!fd.IsNull())
 			{
 				if (it.IsNotNull())
 				{
@@ -419,12 +415,12 @@ Optional<IO::StreamData> Map::OSM::OSMLocalTileMap::LoadTileImageData(UOSInt lev
 			}
 			if (yNeedDelete)
 			{
-				DEL_CLASS(yPkg);
+				yPkg.Delete();
 			}
 		}
 		if (xNeedDelete)
 		{
-			DEL_CLASS(xPkg);
+			xPkg.Delete();
 		}
 	}
 	return fd;
@@ -474,8 +470,8 @@ Bool Map::OSM::OSMLocalTileMap::GetTileBounds(UOSInt level, Int32 *minX, Int32 *
 	Int32 thisMaxX = 0;
 	Int32 thisMaxY = 0;
 	Bool levNeedDelete;
-	IO::PackageFile *levPkg = pkgFile->GetItemPack(i, levNeedDelete);
-	if (levPkg)
+	NotNullPtr<IO::PackageFile> levPkg;
+	if (pkgFile->GetItemPack(i, levNeedDelete).SetTo(levPkg))
 	{
 		i = levPkg->GetCount();
 		while (i-- > 0)
@@ -499,8 +495,8 @@ Bool Map::OSM::OSMLocalTileMap::GetTileBounds(UOSInt level, Int32 *minX, Int32 *
 						thisMaxX = x;
 					}
 					Bool xNeedDelete;
-					IO::PackageFile *xPkg = levPkg->GetItemPack(i, xNeedDelete);
-					if (xPkg)
+					NotNullPtr<IO::PackageFile> xPkg;
+					if (levPkg->GetItemPack(i, xNeedDelete).SetTo(xPkg))
 					{
 						j = xPkg->GetCount();
 						while (j-- > 0)
@@ -533,7 +529,7 @@ Bool Map::OSM::OSMLocalTileMap::GetTileBounds(UOSInt level, Int32 *minX, Int32 *
 						}
 						if (xNeedDelete)
 						{
-							DEL_CLASS(xPkg);
+							xPkg.Delete();
 						}
 					}
 				}
@@ -541,7 +537,7 @@ Bool Map::OSM::OSMLocalTileMap::GetTileBounds(UOSInt level, Int32 *minX, Int32 *
 		}
 		if (levNeedDelete)
 		{
-			DEL_CLASS(levPkg);
+			levPkg.Delete();
 		}
 		if (found)
 		{

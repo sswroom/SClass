@@ -109,7 +109,7 @@ IO::ParsedObject *Parser::FileParser::MPGParser::ParseFileHdr(NotNullPtr<IO::Str
 					{
 						break;
 					}
-					if (!fd.Set(pkgFile->GetItemStmDataNew(ind)))
+					if (!pkgFile->GetItemStmDataNew(ind).SetTo(fd))
 					{
 						break;
 					}

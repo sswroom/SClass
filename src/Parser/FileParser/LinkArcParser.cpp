@@ -2,7 +2,7 @@
 #include "MyMemory.h"
 #include "Data/ByteTool.h"
 #include "Data/DateTime.h"
-#include "IO/VirtualPackageFile.h"
+#include "IO/VirtualPackageFileFast.h"
 #include "Parser/FileParser/LinkArcParser.h"
 #include "Text/MyString.h"
 #include "Text/MyStringW.h"
@@ -59,7 +59,7 @@ IO::ParsedObject *Parser::FileParser::LinkArcParser::ParseFileHdr(NotNullPtr<IO:
 	fileSize = fd->GetDataSize();
 
 	IO::VirtualPackageFile *pf;
-	NEW_CLASS(pf, IO::VirtualPackageFile(fd->GetFullName()));
+	NEW_CLASS(pf, IO::VirtualPackageFileFast(fd->GetFullName()));
 	
 	while (currOfst < fileSize)
 	{

@@ -35,7 +35,7 @@ namespace Net
 			{
 				NotNullPtr<Text::String> fileName;
 				Data::Timestamp modTime;
-				IO::PackageFile *packageFile;
+				NotNullPtr<IO::PackageFile> packageFile;
 			} PackageInfo;
 
 			typedef struct
@@ -64,8 +64,8 @@ namespace Net
 			Data::FastStringMap<PackageInfo*> *packageMap;
 
 			void AddCacheHeader(NotNullPtr<Net::WebServer::IWebResponse> resp);
-			void ResponsePackageFile(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, IO::PackageFile *packageFile);
-			Bool ResponsePackageFileItem(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, IO::VirtualPackageFile *packageFile, const IO::PackFileItem *pitem);
+			void ResponsePackageFile(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, NotNullPtr<IO::PackageFile> packageFile);
+			Bool ResponsePackageFileItem(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, NotNullPtr<IO::VirtualPackageFile> packageFile, NotNullPtr<const IO::PackFileItem> pitem);
 
 			void StatLoad(StatInfo *stat);
 			void StatSave(StatInfo *stat);

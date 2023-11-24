@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Data/ByteTool.h"
-#include "IO/VirtualPackageFile.h"
+#include "IO/VirtualPackageFileFast.h"
 #include "Parser/FileParser/IPACParser.h"
 #include "Text/Encoding.h"
 #include "Text/MyString.h"
@@ -53,7 +53,7 @@ IO::ParsedObject *Parser::FileParser::IPACParser::ParseFileHdr(NotNullPtr<IO::St
 
 	Text::Encoding enc(932);
 	IO::VirtualPackageFile *pf;
-	NEW_CLASS(pf, IO::VirtualPackageFile(fd->GetFullName()));
+	NEW_CLASS(pf, IO::VirtualPackageFileFast(fd->GetFullName()));
 	UInt32 i = 0;
 
 	while (i < recCnt)

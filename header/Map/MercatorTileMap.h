@@ -29,7 +29,7 @@ namespace Map
 
 		void SetSPackageFile(IO::SPackageFile *spkg);
 		Bool HasSPackageFile();
-		Bool ImportTiles(IO::PackageFile *pkg);
+		Bool ImportTiles(NotNullPtr<IO::PackageFile> pkg);
 		Bool OptimizeToFile(Text::CStringNN fileName);
 
 		virtual Bool IsError() const;

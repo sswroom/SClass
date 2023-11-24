@@ -1439,17 +1439,17 @@ Map::MapDrawLayer *Map::KMLXML::ParseKMLPlacemarkLyr(NotNullPtr<Text::XMLReader>
 			{
 				if (style->img == 0)
 				{
-					IO::StreamData *fd = 0;
+					Optional<IO::StreamData> fd = 0;
 					if (basePF)
 					{
 						fd = basePF->OpenStreamData(style->iconURL->ToCString());
 					}
-					if (fd == 0 && browser)
+					if (fd.IsNull() && browser)
 					{
 						fd = browser->GetData(style->iconURL->ToCString(), false, 0);
 					}
 					NotNullPtr<IO::StreamData> nnfd;
-					if (nnfd.Set(fd))
+					if (fd.SetTo(nnfd))
 					{
 						Media::ImageList *imgList = (Media::ImageList*)parsers->ParseFileType(nnfd, IO::ParserType::ImageList);
 						if (imgList)

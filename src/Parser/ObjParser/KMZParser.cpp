@@ -60,7 +60,7 @@ IO::ParsedObject *Parser::ObjParser::KMZParser::ParseObject(NotNullPtr<IO::Parse
 		if (Text::StrEndsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC(".kml")))
 		{
 			NotNullPtr<IO::StreamData> fd;
-			if (fd.Set(pkg->GetItemStmDataNew(i)))
+			if (pkg->GetItemStmDataNew(i).SetTo(fd))
 			{
 				pobj2 = this->parsers->ParseFile(fd, &pt);
 				fd.Delete();

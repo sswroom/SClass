@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Data/ByteTool.h"
-#include "IO/VirtualPackageFile.h"
+#include "IO/VirtualPackageFileFast.h"
 #include "Parser/FileParser/GZIPParser.h"
 #include "Text/Encoding.h"
 #include "Text/MyString.h"
@@ -85,7 +85,7 @@ IO::ParsedObject *Parser::FileParser::GZIPParser::ParseFileHdr(NotNullPtr<IO::St
 	cinfo.compExtraSize = 0;
 	cinfo.compExtras = 0;
 	*(Int32*)cinfo.checkBytes = *(Int32*)footer;
-	NEW_CLASS(pf, IO::VirtualPackageFile(fd->GetFullName()));
+	NEW_CLASS(pf, IO::VirtualPackageFileFast(fd->GetFullName()));
 	pf->AddCompData(fd, 10 + byteConv, fileLeng - 18 - byteConv, &cinfo, CSTRP(sbuff, sptr), Data::Timestamp(ReadUInt32(&hdr[4]) * 1000LL, 0), 0, 0, 0);
 
 	return pf;

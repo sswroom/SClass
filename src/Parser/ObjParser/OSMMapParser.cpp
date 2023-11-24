@@ -40,8 +40,8 @@ IO::ParsedObject *Parser::ObjParser::OSMMapParser::ParseObject(NotNullPtr<IO::Pa
 	if (pobj->GetParserType() != IO::ParserType::PackageFile)
 		return 0;
 	pkg = NotNullPtr<IO::PackageFile>::ConvertFrom(pobj);
-	IO::StreamData *fd = pkg->OpenStreamData(CSTR("metadata.json"));
-	if (fd == 0)
+	NotNullPtr<IO::StreamData> fd;
+	if (!pkg->OpenStreamData(CSTR("metadata.json")).SetTo(fd))
 		return 0;
 	NotNullPtr<Parser::ParserList> parsers;
 	if (!parsers.Set(this->parsers))
@@ -55,7 +55,7 @@ IO::ParsedObject *Parser::ObjParser::OSMMapParser::ParseObject(NotNullPtr<IO::Pa
 
 	if (fileJSON == 0)
 	{
-		DEL_CLASS(fd);
+		fd.Delete();
 		return 0;
 	}
 	if (fileJSON->GetType() == Text::JSONType::Object)
@@ -84,13 +84,13 @@ IO::ParsedObject *Parser::ObjParser::OSMMapParser::ParseObject(NotNullPtr<IO::Pa
 				NotNullPtr<Map::TileMapLayer> mapLayer;
 				NEW_CLASSNN(tileMap, Map::OSM::OSMLocalTileMap(pkg->Clone(), name, format, minZoom, maxZoom, minCoord, maxCoord));
 				NEW_CLASSNN(mapLayer, Map::TileMapLayer(tileMap, parsers));
-				DEL_CLASS(fd);
+				fd.Delete();
 				jobj->EndUse();
 				return mapLayer.Ptr();
 			}
 		}
 	}
-	DEL_CLASS(fd);
+	fd.Delete();
 	fileJSON->EndUse();
 	return 0;
 }

@@ -3,7 +3,7 @@
 #include "Crypto/Cert/X509Cert.h"
 #include "Data/ByteBuffer.h"
 #include "Data/ByteTool.h"
-#include "IO/VirtualPackageFile.h"
+#include "IO/VirtualPackageFileFast.h"
 #include "Parser/FileParser/JKSParser.h"
 #include "Parser/FileParser/X509Parser.h"
 
@@ -51,7 +51,7 @@ IO::ParsedObject *Parser::FileParser::JKSParser::ParseFileHdr(NotNullPtr<IO::Str
 	Data::ByteBuffer cerBuff;
 	Text::StringBuilderUTF8 sb;
 	IO::VirtualPackageFile *pkg;
-	NEW_CLASS(pkg, IO::VirtualPackageFile(fd->GetFullFileName()));
+	NEW_CLASS(pkg, IO::VirtualPackageFileFast(fd->GetFullFileName()));
 	UInt32 cnt = ReadMUInt32(&hdr[8]);
 	UInt64 ofst = 12;
 	UOSInt readSize;

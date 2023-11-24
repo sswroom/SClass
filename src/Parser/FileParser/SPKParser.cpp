@@ -4,7 +4,7 @@
 #include "Data/ByteTool.h"
 #include "IO/Path.h"
 #include "IO/SPackageFile.h"
-#include "IO/VirtualPackageFile.h"
+#include "IO/VirtualPackageFileFast.h"
 #include "Map/TileMapLayer.h"
 #include "Map/OSM/OSMTileMap.h"
 #include "Parser/FileParser/SPKParser.h"
@@ -119,7 +119,7 @@ IO::ParsedObject *Parser::FileParser::SPKParser::ParseFileHdr(NotNullPtr<IO::Str
 	IO::VirtualPackageFile *pf;
 	IO::VirtualPackageFile *pf2;
 	NotNullPtr<IO::PackageFile> pf3;
-	NEW_CLASS(pf, IO::VirtualPackageFile(fd->GetFullName()));
+	NEW_CLASS(pf, IO::VirtualPackageFileFast(fd->GetFullName()));
 	srcPtr = fd->GetFullName()->ConcatTo(srcPath);
 	UOSInt k;
 	UOSInt l;
@@ -155,7 +155,7 @@ IO::ParsedObject *Parser::FileParser::SPKParser::ParseFileHdr(NotNullPtr<IO::Str
 						srcPtr2 = Text::StrConcatC(srcPtr2, sptr, k);
 						if (!pf3.Set(pf2->GetPackFile({sptr, k})))
 						{
-							NEW_CLASSNN(pf3, IO::VirtualPackageFile(CSTRP(srcPath, srcPtr2)));
+							NEW_CLASSNN(pf3, IO::VirtualPackageFileFast(CSTRP(srcPath, srcPtr2)));
 							pf2->AddPack(pf3, {sptr, k}, 0, 0, 0, 0);
 						}
 						pf2 = (IO::VirtualPackageFile*)pf3.Ptr();
@@ -168,7 +168,7 @@ IO::ParsedObject *Parser::FileParser::SPKParser::ParseFileHdr(NotNullPtr<IO::Str
 						srcPtr2 = Text::StrConcatC(srcPtr2, sptr, l);
 						if (!pf3.Set(pf2->GetPackFile({sptr, l})))
 						{
-							NEW_CLASSNN(pf3, IO::VirtualPackageFile(CSTRP(srcPath, srcPtr2)));
+							NEW_CLASSNN(pf3, IO::VirtualPackageFileFast(CSTRP(srcPath, srcPtr2)));
 							pf2->AddPack(pf3, {sptr, l}, 0, 0, 0, 0);
 						}
 						pf2 = (IO::VirtualPackageFile*)pf3.Ptr();
@@ -217,7 +217,7 @@ IO::ParsedObject *Parser::FileParser::SPKParser::ParseFileHdr(NotNullPtr<IO::Str
 						srcPtr2 = Text::StrConcatC(srcPtr2, sptr, k);
 						if (!pf3.Set(pf2->GetPackFile({sptr, k})))
 						{
-							NEW_CLASSNN(pf3, IO::VirtualPackageFile(CSTRP(srcPath, srcPtr2)));
+							NEW_CLASSNN(pf3, IO::VirtualPackageFileFast(CSTRP(srcPath, srcPtr2)));
 							pf2->AddPack(pf3, {sptr, k}, 0, 0, 0, 0);
 						}
 						pf2 = (IO::VirtualPackageFile*)pf3.Ptr();
@@ -230,7 +230,7 @@ IO::ParsedObject *Parser::FileParser::SPKParser::ParseFileHdr(NotNullPtr<IO::Str
 						srcPtr2 = Text::StrConcatC(srcPtr2, sptr, l);
 						if (!pf3.Set(pf2->GetPackFile({sptr, l})))
 						{
-							NEW_CLASSNN(pf3, IO::VirtualPackageFile(CSTRP(srcPath, srcPtr2)));
+							NEW_CLASSNN(pf3, IO::VirtualPackageFileFast(CSTRP(srcPath, srcPtr2)));
 							pf2->AddPack(pf3, {sptr, l}, 0, 0, 0, 0);
 						}
 						pf2 = (IO::VirtualPackageFile*)pf3.Ptr();

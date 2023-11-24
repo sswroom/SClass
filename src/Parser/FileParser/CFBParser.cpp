@@ -3,7 +3,7 @@
 #include "Data/ByteBuffer.h"
 #include "Data/ByteTool.h"
 #include "DB/WorkbookDB.h"
-#include "IO/VirtualPackageFile.h"
+#include "IO/VirtualPackageFileFast.h"
 #include "IO/StmData/BlockStreamData.h"
 #include "Map/DBMapLayer.h"
 #include "Parser/FileParser/CFBParser.h"
@@ -107,7 +107,7 @@ IO::ParsedObject *Parser::FileParser::CFBParser::ParseFileHdr(NotNullPtr<IO::Str
 
 	Text::StringBuilderUTF8 sb;
 	NotNullPtr<IO::VirtualPackageFile> pkg;
-	NEW_CLASSNN(pkg, IO::VirtualPackageFile(fd->GetFullFileName()));
+	NEW_CLASSNN(pkg, IO::VirtualPackageFileFast(fd->GetFullFileName()));
 	Text::String *workbookName = 0;
 	IO::StmData::BlockStreamData miniStmFd(fd);
 	while (true)
@@ -243,7 +243,7 @@ IO::ParsedObject *Parser::FileParser::CFBParser::ParseFileHdr(NotNullPtr<IO::Str
 		}
 	}
 	NotNullPtr<IO::StreamData> stmData;
-	if (workbookName && targetType != IO::ParserType::PackageFile && stmData.Set(pkg->OpenStreamData(workbookName->ToCString())))
+	if (workbookName && targetType != IO::ParserType::PackageFile && pkg->OpenStreamData(workbookName->ToCString()).SetTo(stmData))
 	{
 		NotNullPtr<Text::SpreadSheet::Workbook> wb;
 		workbookName->Release();

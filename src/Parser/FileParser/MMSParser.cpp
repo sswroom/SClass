@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "IO/StreamData.h"
-#include "IO/VirtualPackageFile.h"
+#include "IO/VirtualPackageFileFast.h"
 #include "Parser/FileParser/MMSParser.h"
 #include "Text/Encoding.h"
 
@@ -44,7 +44,7 @@ IO::ParsedObject *Parser::FileParser::MMSParser::ParseFileHdr(NotNullPtr<IO::Str
 	if (hdr[0] != 0x8c || hdr[1] != 0x80)
 		return 0;
 
-	NEW_CLASS(pf, IO::VirtualPackageFile(fd->GetFullName()));
+	NEW_CLASS(pf, IO::VirtualPackageFileFast(fd->GetFullName()));
 	ptr = &hdr[2];
 	while (*ptr & 0x80)
 	{

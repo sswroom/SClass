@@ -58,7 +58,7 @@ void __stdcall SSWR::AVIRead::AVIRImageViewerForm::OnMoveToNext(void *userObj)
 				sptr = me->pkgFile->GetItemName(sbuff, i);
 				if (IsImageFileName(CSTRP(sbuff, sptr)))
 				{
-					if (fd.Set(me->pkgFile->GetItemStmDataNew(i)))
+					if (me->pkgFile->GetItemStmDataNew(i).SetTo(fd))
 					{
 						pobj = me->core->GetParserList()->ParseFileType(fd, IO::ParserType::ImageList);
 						fd.Delete();
@@ -86,7 +86,7 @@ void __stdcall SSWR::AVIRead::AVIRImageViewerForm::OnMoveToNext(void *userObj)
 				sptr = me->pkgFile->GetItemName(sbuff, i);
 				if (IsImageFileName(CSTRP(sbuff, sptr)))
 				{
-					if (fd.Set(me->pkgFile->GetItemStmDataNew(i)))
+					if (me->pkgFile->GetItemStmDataNew(i).SetTo(fd))
 					{
 						pobj = me->core->GetParserList()->ParseFileType(fd, IO::ParserType::ImageList);
 						fd.Delete();
@@ -124,7 +124,7 @@ void __stdcall SSWR::AVIRead::AVIRImageViewerForm::OnMoveToPrev(void *userObj)
 				sptr = me->pkgFile->GetItemName(sbuff, i);
 				if (IsImageFileName(CSTRP(sbuff, sptr)))
 				{
-					if (fd.Set(me->pkgFile->GetItemStmDataNew(i)))
+					if (me->pkgFile->GetItemStmDataNew(i).SetTo(fd))
 					{
 						pobj = me->core->GetParserList()->ParseFileType(fd, IO::ParserType::ImageList);
 						fd.Delete();
@@ -151,7 +151,7 @@ void __stdcall SSWR::AVIRead::AVIRImageViewerForm::OnMoveToPrev(void *userObj)
 				sptr = me->pkgFile->GetItemName(sbuff, i);
 				if (IsImageFileName(CSTRP(sbuff, sptr)))
 				{
-					if (fd.Set(me->pkgFile->GetItemStmDataNew(i)))
+					if (me->pkgFile->GetItemStmDataNew(i).SetTo(fd))
 					{
 						pobj = me->core->GetParserList()->ParseFileType(fd, IO::ParserType::ImageList);
 						fd.Delete();
@@ -466,7 +466,7 @@ Bool SSWR::AVIRead::AVIRImageViewerForm::ParseFile(NotNullPtr<IO::StreamData> fd
 				sptr = pf->GetItemName(sbuff, i);
 				if (IsImageFileName(CSTRP(sbuff, sptr)))
 				{
-					if (fd2.Set(pf->GetItemStmDataNew(i)))
+					if (pf->GetItemStmDataNew(i).SetTo(fd2))
 					{
 						pobj2 = this->core->GetParserList()->ParseFile(fd2, &pt);
 						fd2.Delete();

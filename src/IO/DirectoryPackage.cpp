@@ -158,7 +158,7 @@ UTF8Char *IO::DirectoryPackage::GetItemName(UTF8Char *sbuff, UOSInt index) const
 	return Text::StrConcat(sbuff, &fileName->v[i + 1]);
 }
 
-IO::StreamData *IO::DirectoryPackage::GetItemStmDataNew(UOSInt index) const
+Optional<IO::StreamData> IO::DirectoryPackage::GetItemStmDataNew(UOSInt index) const
 {
 	if (this->files.GetCount() <= index)
 		return 0;
@@ -176,7 +176,7 @@ IO::StreamData *IO::DirectoryPackage::GetItemStmDataNew(UOSInt index) const
 	}
 }
 
-IO::PackageFile *IO::DirectoryPackage::GetItemPack(UOSInt index, OutParam<Bool> needDelete) const
+Optional<IO::PackageFile> IO::DirectoryPackage::GetItemPack(UOSInt index, OutParam<Bool> needDelete) const
 {
 	if (this->files.GetCount() <= index)
 		return 0;
@@ -196,7 +196,7 @@ IO::PackageFile *IO::DirectoryPackage::GetItemPack(UOSInt index, OutParam<Bool> 
 	}
 }
 
-IO::ParsedObject *IO::DirectoryPackage::GetItemPObj(UOSInt index, OutParam<Bool> needRelease) const
+Optional<IO::ParsedObject> IO::DirectoryPackage::GetItemPObj(UOSInt index, OutParam<Bool> needRelease) const
 {
 	return GetItemPack(index, needRelease);
 }
@@ -450,7 +450,7 @@ Bool IO::DirectoryPackage::CopyTo(UOSInt index, Text::CString destPath, Bool ful
 	return false;
 }
 
-IO::StreamData *IO::DirectoryPackage::OpenStreamData(Text::CString fileName) const
+Optional<IO::StreamData> IO::DirectoryPackage::OpenStreamData(Text::CString fileName) const
 {
 	return 0;
 }

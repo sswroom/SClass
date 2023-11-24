@@ -125,7 +125,7 @@ void Net::WebServer::HTTPDirectoryHandler::AddCacheHeader(NotNullPtr<Net::WebSer
 	}
 }
 
-void Net::WebServer::HTTPDirectoryHandler::ResponsePackageFile(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, IO::PackageFile *packageFile)
+void Net::WebServer::HTTPDirectoryHandler::ResponsePackageFile(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, NotNullPtr<IO::PackageFile> packageFile)
 {
 	if (!this->allowBrowsing)
 	{
@@ -255,7 +255,7 @@ void Net::WebServer::HTTPDirectoryHandler::ResponsePackageFile(NotNullPtr<Net::W
 	return ;
 }
 
-Bool Net::WebServer::HTTPDirectoryHandler::ResponsePackageFileItem(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, IO::VirtualPackageFile *packageFile, const IO::PackFileItem *pitem)
+Bool Net::WebServer::HTTPDirectoryHandler::ResponsePackageFileItem(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, NotNullPtr<IO::VirtualPackageFile> packageFile, NotNullPtr<const IO::PackFileItem> pitem)
 {
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
@@ -374,7 +374,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ResponsePackageFileItem(NotNullPtr<Ne
 		}
 	}
 	NotNullPtr<IO::StreamData> stmData;
-	if (stmData.Set(packageFile->GetPItemStmDataNew(pitem)))
+	if (packageFile->GetPItemStmDataNew(pitem).SetTo(stmData))
 	{
 		UOSInt dataLen = (UOSInt)stmData->GetDataSize();
 		Data::ByteBuffer dataBuff(dataLen);
@@ -494,7 +494,7 @@ Net::WebServer::HTTPDirectoryHandler::~HTTPDirectoryHandler()
 		{
 			package = this->packageMap->GetItem(i);
 			package->fileName->Release();
-			DEL_CLASS(package->packageFile);
+			package->packageFile.Delete();
 			MemFree(package);
 		}
 		DEL_CLASS(this->packageMap);
@@ -585,25 +585,25 @@ Bool Net::WebServer::HTTPDirectoryHandler::DoFileRequest(NotNullPtr<Net::WebServ
 		packageMutUsage.EndUse();
 		if (package)
 		{
-			IO::PackageFile *packageFile = package->packageFile;
+			NotNullPtr<IO::PackageFile> packageFile = package->packageFile;
 			Bool needRelease = false;
 			if (packageFile->GetCount() == 1 && packageFile->GetItemType(0) == IO::PackageFile::PackObjectType::PackageFileType)
 			{
 				sptr = packageFile->GetItemName(sbuff, 0);
 				if (dirName.Substring(1).Equals(sbuff, (UOSInt)(sptr - sbuff)))
 				{
-					packageFile = (IO::PackageFile*)packageFile->GetItemPObj(0, needRelease);
+					packageFile->GetItemPack(0, needRelease).SetTo(packageFile);
 				}
 			}
 
 			sptr = &sb.v[i + 2];
 			if (packageFile->GetFileType() == IO::PackageFileType::Virtual)
 			{
-				IO::VirtualPackageFile *vpackageFile = (IO::VirtualPackageFile*)packageFile;
+				NotNullPtr<IO::VirtualPackageFile> vpackageFile = NotNullPtr<IO::VirtualPackageFile>::ConvertFrom(packageFile);
 				if (i == INVALID_INDEX || sptr[0] == 0)
 				{
-					const IO::PackFileItem *pitem2 = vpackageFile->GetPackFileItem((const UTF8Char*)"index.html");
-					if (pitem2 && vpackageFile->GetPItemType(pitem2) == IO::PackageFile::PackObjectType::StreamData)
+					NotNullPtr<const IO::PackFileItem> pitem2;
+					if (vpackageFile->GetPackFileItem((const UTF8Char*)"index.html").SetTo(pitem2) && vpackageFile->GetPItemType(pitem2) == IO::PackageFile::PackObjectType::StreamData)
 					{
 						if (!ResponsePackageFileItem(req,resp, vpackageFile, pitem2))
 						{
@@ -616,12 +616,12 @@ Bool Net::WebServer::HTTPDirectoryHandler::DoFileRequest(NotNullPtr<Net::WebServ
 					}
 					if (needRelease)
 					{
-						DEL_CLASS(vpackageFile);
+						vpackageFile.Delete();
 					}
 					return true;
 				}
-				const IO::PackFileItem *pitem = vpackageFile->GetPackFileItem(sptr);
-				if (pitem)
+				NotNullPtr<const IO::PackFileItem> pitem;
+				if (vpackageFile->GetPackFileItem(sptr).SetTo(pitem))
 				{
 					IO::PackageFile::PackObjectType pot = vpackageFile->GetPItemType(pitem);
 					if (pot == IO::PackageFile::PackObjectType::StreamData)
@@ -630,7 +630,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::DoFileRequest(NotNullPtr<Net::WebServ
 						{
 							if (needRelease)
 							{
-								DEL_CLASS(vpackageFile);
+								vpackageFile.Delete();
 							}
 							return true;
 						}
@@ -638,14 +638,14 @@ Bool Net::WebServer::HTTPDirectoryHandler::DoFileRequest(NotNullPtr<Net::WebServ
 					else if (pot == IO::PackageFile::PackObjectType::PackageFileType)
 					{
 						Bool innerNeedRelease;
-						IO::PackageFile *innerPF = vpackageFile->GetPItemPack(pitem, innerNeedRelease);
-						if (innerPF)
+						NotNullPtr<IO::PackageFile> innerPF;
+						if (vpackageFile->GetPItemPack(pitem, innerNeedRelease).SetTo(innerPF))
 						{
 							UOSInt index2 = innerPF->GetItemIndex(CSTR("index.html"));
 							if (index2 != INVALID_INDEX && innerPF->GetItemType(index2) == IO::PackageFile::PackObjectType::StreamData)
 							{
 								NotNullPtr<IO::StreamData> stmData;
-								if (stmData.Set(innerPF->GetItemStmDataNew(index2)))
+								if (innerPF->GetItemStmDataNew(index2).SetTo(stmData))
 								{
 									UOSInt dataLen = (UOSInt)stmData->GetDataSize();
 									Data::ByteBuffer dataBuff(dataLen);
@@ -674,11 +674,11 @@ Bool Net::WebServer::HTTPDirectoryHandler::DoFileRequest(NotNullPtr<Net::WebServ
 							}
 							if (innerNeedRelease)
 							{
-								DEL_CLASS(innerPF);
+								innerPF.Delete();
 							}
 							if (needRelease)
 							{
-								DEL_CLASS(packageFile);
+								packageFile.Delete();
 							}
 							return true;
 						}
@@ -687,7 +687,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::DoFileRequest(NotNullPtr<Net::WebServ
 			}
 			if (needRelease)
 			{
-				DEL_CLASS(packageFile);
+				packageFile.Delete();
 			}
 		}
 	}
@@ -1516,14 +1516,14 @@ Optional<IO::PackageFile> Net::WebServer::HTTPDirectoryHandler::GetPackageFile(T
 		packageMutUsage.EndUse();
 		if (pkgInfo)
 		{
-			IO::PackageFile *packageFile = pkgInfo->packageFile;
+			NotNullPtr<IO::PackageFile> packageFile = pkgInfo->packageFile;
 			needRelease.Set(false);
 			if (packageFile->GetCount() == 1 && packageFile->GetItemType(0) == IO::PackageFile::PackObjectType::PackageFileType)
 			{
 				sptr = packageFile->GetItemName(sbuff, 0);
 				if (pkgName.Equals(sbuff, (UOSInt)(sptr - sbuff)))
 				{
-					packageFile = (IO::PackageFile*)packageFile->GetItemPObj(0, needRelease);
+					return packageFile->GetItemPack(0, needRelease);
 				}
 			}
 			return packageFile;
@@ -1638,6 +1638,7 @@ void Net::WebServer::HTTPDirectoryHandler::ExpandPackageFiles(NotNullPtr<Parser:
 		Data::Timestamp ts;
 		IO::Path::PathType pt;
 		IO::PackageFile *pf;
+		NotNullPtr<IO::PackageFile> nnpf;
 		UOSInt i;
 		PackageInfo *package;
 
@@ -1649,10 +1650,10 @@ void Net::WebServer::HTTPDirectoryHandler::ExpandPackageFiles(NotNullPtr<Parser:
 					IO::StmData::FileData fd(CSTRP(sbuff, sptr2), false);
 					pf = (IO::PackageFile*)parsers->ParseFileType(fd, IO::ParserType::PackageFile);
 				}
-				if (pf)
+				if (nnpf.Set(pf))
 				{
 					package = MemAlloc(PackageInfo, 1);
-					package->packageFile = pf;
+					package->packageFile = nnpf;
 					package->modTime = ts;
 					i = Text::StrLastIndexOfCharC(sptr, (UOSInt)(sptr2 - sptr), '.');
 					if (i != INVALID_INDEX)

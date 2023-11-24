@@ -2,7 +2,7 @@
 #include "MyMemory.h"
 #include "Data/ByteBuffer.h"
 #include "Data/ByteTool.h"
-#include "IO/VirtualPackageFile.h"
+#include "IO/VirtualPackageFileFast.h"
 #include "Parser/FileParser/MajiroArcParser.h"
 #include "Text/Encoding.h"
 #include "Text/MyString.h"
@@ -70,7 +70,7 @@ IO::ParsedObject *Parser::FileParser::MajiroArcParser::ParseFileHdr(NotNullPtr<I
 
 	IO::VirtualPackageFile *pf;
 	Text::Encoding enc(932);
-	NEW_CLASS(pf, IO::VirtualPackageFile(fd->GetFullName()));
+	NEW_CLASS(pf, IO::VirtualPackageFileFast(fd->GetFullName()));
 	fileNamePtr = fileNameBuff;
 	i = 0;
 	

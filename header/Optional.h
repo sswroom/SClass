@@ -24,6 +24,15 @@ public:
 		this->p = p.Ptr();
 	}
 
+	template <typename V> Optional(Optional<V> p)
+	{
+		NotNullPtr<V> nnp;
+		if (p.SetTo(nnp))
+			this->p = nnp.Ptr();
+		else
+			this->p = 0;
+	}
+
 	T *OrNull() const
 	{
 		return this->p;

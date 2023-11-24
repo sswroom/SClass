@@ -196,7 +196,7 @@ void Exporter::SPKExporter::ExportPackageFile(IO::SPackageFile *spkg, NotNullPtr
 			*sptr++ = IO::Path::PATH_SEPERATOR;
 			
 			Bool subNeedDelete;
-			if (subPkg.Set(pkgFile->GetItemPack(i, subNeedDelete)))
+			if (pkgFile->GetItemPack(i, subNeedDelete).SetTo(subPkg))
 			{
 				ExportPackageFile(spkg, subPkg, buff, sptr);
 				if (subNeedDelete)
@@ -206,7 +206,7 @@ void Exporter::SPKExporter::ExportPackageFile(IO::SPackageFile *spkg, NotNullPtr
 		else if (pot == IO::PackageFile::PackObjectType::StreamData)
 		{
 			sptr = pkgFile->GetItemName(buffEnd, i);
-			if (fd.Set(pkgFile->GetItemStmDataNew(i)))
+			if (pkgFile->GetItemStmDataNew(i).SetTo(fd))
 			{
 				spkg->AddFile(fd, {buff, (UOSInt)(sptr - buff)}, pkgFile->GetItemModTime(i));
 				fd.Delete();

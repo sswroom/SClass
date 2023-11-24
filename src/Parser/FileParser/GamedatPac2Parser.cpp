@@ -2,7 +2,7 @@
 #include "MyMemory.h"
 #include "Data/ByteBuffer.h"
 #include "Data/ByteTool.h"
-#include "IO/VirtualPackageFile.h"
+#include "IO/VirtualPackageFileFast.h"
 #include "Parser/FileParser/GamedatPac2Parser.h"
 #include "Text/Encoding.h"
 #include "Text/MyString.h"
@@ -63,7 +63,7 @@ IO::ParsedObject *Parser::FileParser::GamedatPac2Parser::ParseFileHdr(NotNullPtr
 
 	IO::VirtualPackageFile *pf;
 	Text::Encoding enc(932);
-	NEW_CLASS(pf, IO::VirtualPackageFile(fd->GetFullName()));
+	NEW_CLASS(pf, IO::VirtualPackageFileFast(fd->GetFullName()));
 	
 	j = recCnt * 32;
 	i = 0;

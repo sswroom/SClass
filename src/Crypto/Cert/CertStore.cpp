@@ -145,22 +145,25 @@ void Crypto::Cert::CertStore::FromPackageFile(IO::PackageFile *pkg)
 	while (i < j)
 	{
 		Bool needRelease;
-		IO::ParsedObject *pobj = pkg->GetItemPObj(i, needRelease);
-		if (pobj && pobj->GetParserType() == IO::ParserType::ASN1Data)
+		NotNullPtr<IO::ParsedObject> pobj;
+		if (pkg->GetItemPObj(i, needRelease).SetTo(pobj))
 		{
-			Net::ASN1Data *asn1 = (Net::ASN1Data*)pobj;
-			if (asn1->GetASN1Type() == Net::ASN1Data::ASN1Type::X509)
+			if (pobj->GetParserType() == IO::ParserType::ASN1Data)
 			{
-				Crypto::Cert::X509File *x509 = (Crypto::Cert::X509File*)asn1;
-				if (x509->GetFileType() == Crypto::Cert::X509File::FileType::Cert)
+				NotNullPtr<Net::ASN1Data> asn1 = NotNullPtr<Net::ASN1Data>::ConvertFrom(pobj);
+				if (asn1->GetASN1Type() == Net::ASN1Data::ASN1Type::X509)
 				{
-					this->AddCert(NotNullPtr<Crypto::Cert::X509Cert>::ConvertFrom(x509->Clone()));
+					NotNullPtr<Crypto::Cert::X509File> x509 = NotNullPtr<Crypto::Cert::X509File>::ConvertFrom(asn1);
+					if (x509->GetFileType() == Crypto::Cert::X509File::FileType::Cert)
+					{
+						this->AddCert(NotNullPtr<Crypto::Cert::X509Cert>::ConvertFrom(x509->Clone()));
+					}
 				}
 			}
-		}
-		if (needRelease)
-		{
-			DEL_CLASS(pobj);
+			if (needRelease)
+			{
+				pobj.Delete();
+			}
 		}
 		i++;
 	}

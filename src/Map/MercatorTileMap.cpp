@@ -40,7 +40,7 @@ Bool Map::MercatorTileMap::HasSPackageFile()
 	return this->spkg != 0;
 }
 
-Bool Map::MercatorTileMap::ImportTiles(IO::PackageFile *pkg)
+Bool Map::MercatorTileMap::ImportTiles(NotNullPtr<IO::PackageFile> pkg)
 {
 	if (this->spkg)
 	{

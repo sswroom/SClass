@@ -87,7 +87,7 @@ Bool Exporter::ZIPExporter::ExportPackage(NotNullPtr<IO::ZIPMTBuilder> zip, UTF8
 						return false;
 					}
 				}
-				else if (fd.Set(pkg->GetItemStmDataNew(i)))
+				else if (pkg->GetItemStmDataNew(i).SetTo(fd))
 				{
 					if (!zip->AddFile(CSTRP(buffStart, sptr), fd, pkg->GetItemModTime(i), pkg->GetItemAccTime(i), pkg->GetItemCreateTime(i), Data::Compress::Inflate::CompressionLevel::BestCompression, pkg->GetItemUnixAttr(i)))
 					{
@@ -104,7 +104,7 @@ Bool Exporter::ZIPExporter::ExportPackage(NotNullPtr<IO::ZIPMTBuilder> zip, UTF8
 					return false;
 				}
 			}
-			else if (fd.Set(pkg->GetItemStmDataNew(i)))
+			else if (pkg->GetItemStmDataNew(i).SetTo(fd))
 			{
 				if (!zip->AddFile(CSTRP(buffStart, sptr), fd, pkg->GetItemModTime(i), pkg->GetItemAccTime(i), pkg->GetItemCreateTime(i), Data::Compress::Inflate::CompressionLevel::BestCompression, pkg->GetItemUnixAttr(i)))
 				{
@@ -128,7 +128,7 @@ Bool Exporter::ZIPExporter::ExportPackage(NotNullPtr<IO::ZIPMTBuilder> zip, UTF8
 			zip->AddDir(CSTRP(buffStart, sptr), pkg->GetItemModTime(i), pkg->GetItemAccTime(i), pkg->GetItemCreateTime(i), pkg->GetItemUnixAttr(i));
 			NotNullPtr<IO::PackageFile> innerPkg;
 			Bool innerNeedDelete;
-			if (innerPkg.Set(pkg->GetItemPack(i, innerNeedDelete)))
+			if (pkg->GetItemPack(i, innerNeedDelete).SetTo(innerPkg))
 			{
 				if (!this->ExportPackage(zip, buffStart, sptr, innerPkg))
 				{

@@ -20,7 +20,7 @@ IO::ParserType IO::PackageFile::GetParserType() const
 }
 
 
-IO::StreamData *IO::PackageFile::GetItemStmDataNew(Text::CStringNN name) const
+Optional<IO::StreamData> IO::PackageFile::GetItemStmDataNew(Text::CStringNN name) const
 {
 	UOSInt index = GetItemIndex(name);
 	if (index == INVALID_INDEX)

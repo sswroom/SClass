@@ -31,59 +31,23 @@ void IO::VirtualPackageFile::ReusePackFileItem(IO::PackFileItem *item)
 	}
 }
 
-IO::VirtualPackageFile::VirtualPackageFile(const VirtualPackageFile *pkg) : IO::PackageFile(pkg->GetSourceNameObj()), pkgFiles(&pkg->pkgFiles)
-{
-	this->parent = pkg->parent;
-	this->items = pkg->items->Clone();
-	this->namedItems = pkg->namedItems->Clone();
-	IO::PackFileItem *item;
-	UOSInt i;
-	UOSInt j;
-	i = 0;
-	j = this->items->GetCount();
-	while (i < j)
-	{
-		item = this->items->GetItem(i);
-		Sync::Interlocked::IncrementI32(item->useCnt);
-		i++;
-	}
-}
-
 IO::VirtualPackageFile::VirtualPackageFile(NotNullPtr<Text::String> fileName) : IO::PackageFile(fileName)
 {
 	this->parent = 0;
-	NEW_CLASSNN(this->items, Data::ArrayList<PackFileItem*>());
-	if (IO::Path::PATH_SEPERATOR == '\\')
-	{
-		NEW_CLASSNN(this->namedItems, Data::ICaseStringMap<PackFileItem*>());
-	}
-	else
-	{
-		NEW_CLASSNN(this->namedItems, Data::StringMap<PackFileItem*>());
-	}
 }
 
 IO::VirtualPackageFile::VirtualPackageFile(Text::CStringNN fileName) : IO::PackageFile(fileName)
 {
 	this->parent = 0;
-	NEW_CLASSNN(this->items, Data::ArrayList<PackFileItem*>());
-	if (IO::Path::PATH_SEPERATOR == '\\')
-	{
-		NEW_CLASSNN(this->namedItems, Data::ICaseStringMap<PackFileItem*>());
-	}
-	else
-	{
-		NEW_CLASSNN(this->namedItems, Data::StringMap<PackFileItem*>());
-	}
 }
 
 IO::VirtualPackageFile::~VirtualPackageFile()
 {
 	PackFileItem *item;
-	UOSInt i = this->items->GetCount();
+	UOSInt i = this->items.GetCount();
 	while (i-- > 0)
 	{
-		item = this->items->GetItem(i);
+		item = this->items.GetItem(i);
 		if (Sync::Interlocked::DecrementI32(item->useCnt) == 0)
 		{
 			item->name->Release();
@@ -100,8 +64,6 @@ IO::VirtualPackageFile::~VirtualPackageFile()
 			MemFree(item);
 		}
 	}
-	this->items.Delete();
-	this->namedItems.Delete();
 	i = this->infoMap.GetCount();
 	while (i-- > 0)
 	{
@@ -111,8 +73,8 @@ IO::VirtualPackageFile::~VirtualPackageFile()
 
 Bool IO::VirtualPackageFile::AddData(NotNullPtr<IO::StreamData> fd, UInt64 ofst, UInt64 length, Text::CStringNN name, const Data::Timestamp &modTime, const Data::Timestamp &accTime, const Data::Timestamp &createTime, UInt32 unixAttr)
 {
-	PackFileItem *item;
-	item = MemAlloc(PackFileItem, 1);
+	NotNullPtr<PackFileItem> item;
+	item = MemAllocNN(PackFileItem, 1);
 	item->itemType = IO::PackFileItem::PackItemType::Uncompressed;
 	item->fd = fd->GetPartialData(ofst, length).Ptr();
 	item->name = Text::String::New(name);
@@ -123,15 +85,15 @@ Bool IO::VirtualPackageFile::AddData(NotNullPtr<IO::StreamData> fd, UInt64 ofst,
 	item->createTime = createTime;
 	item->unixAttr = unixAttr;
 	item->useCnt = 1;
-	this->items->Add(item);
-	this->namedItems->PutNN(item->name, item);
+	this->items.Add(item);
+	this->PutItem(item->name, item);
 	return true;
 }
 
 Bool IO::VirtualPackageFile::AddObject(IO::ParsedObject *pobj, Text::CStringNN name, const Data::Timestamp &modTime, const Data::Timestamp &accTime, const Data::Timestamp &createTime, UInt32 unixAttr)
 {
-	PackFileItem *item;
-	item = MemAlloc(PackFileItem, 1);
+	NotNullPtr<PackFileItem> item;
+	item = MemAllocNN(PackFileItem, 1);
 	item->itemType = IO::PackFileItem::PackItemType::ParsedObject;
 	item->fd = 0;
 	if (name.leng > 0)
@@ -149,15 +111,15 @@ Bool IO::VirtualPackageFile::AddObject(IO::ParsedObject *pobj, Text::CStringNN n
 	item->createTime = createTime;
 	item->unixAttr = unixAttr;
 	item->useCnt = 1;
-	this->items->Add(item);
-	this->namedItems->PutNN(item->name, item);
+	this->items.Add(item);
+	this->PutItem(item->name, item);
 	return true;
 }
 
 Bool IO::VirtualPackageFile::AddCompData(NotNullPtr<IO::StreamData> fd, UInt64 ofst, UInt64 length, IO::PackFileItem::CompressInfo *compInfo, Text::CStringNN name, const Data::Timestamp &modTime, const Data::Timestamp &accTime, const Data::Timestamp &createTime, UInt32 unixAttr)
 {
-	PackFileItem *item;
-	item = MemAlloc(PackFileItem, 1);
+	NotNullPtr<PackFileItem> item;
+	item = MemAllocNN(PackFileItem, 1);
 	item->itemType = IO::PackFileItem::PackItemType::Compressed;
 	item->fd = fd->GetPartialData(ofst, length).Ptr();
 	item->name = Text::String::New(name);
@@ -174,15 +136,15 @@ Bool IO::VirtualPackageFile::AddCompData(NotNullPtr<IO::StreamData> fd, UInt64 o
 	item->createTime = createTime;
 	item->unixAttr = unixAttr;
 	item->useCnt = 1;
-	this->items->Add(item);
-	this->namedItems->PutNN(item->name, item);
+	this->items.Add(item);
+	this->PutItem(item->name, item);
 	return true;
 }
 
 Bool IO::VirtualPackageFile::AddPack(NotNullPtr<IO::PackageFile> pkg, Text::CStringNN name, const Data::Timestamp &modTime, const Data::Timestamp &accTime, const Data::Timestamp &createTime, UInt32 unixAttr)
 {
-	PackFileItem *item;
-	item = MemAlloc(PackFileItem, 1);
+	NotNullPtr<PackFileItem> item;
+	item = MemAllocNN(PackFileItem, 1);
 	item->itemType = IO::PackFileItem::PackItemType::ParsedObject;
 	item->fd = 0;
 	item->name = Text::String::New(name);
@@ -194,9 +156,9 @@ Bool IO::VirtualPackageFile::AddPack(NotNullPtr<IO::PackageFile> pkg, Text::CStr
 	item->unixAttr = unixAttr;
 	item->useCnt = 1;
 	pkg->SetParent(this);
-	this->items->Add(item);
-	this->pkgFiles.PutNN(item->name, item);
-	this->namedItems->PutNN(item->name, item);
+	this->items.Add(item);
+	this->pkgFiles.PutNN(item->name, item.Ptr());
+	this->PutItem(item->name, item);
 	return true;
 }
 
@@ -206,7 +168,7 @@ Bool IO::VirtualPackageFile::AddOrReplaceData(NotNullPtr<StreamData> fd, UInt64 
 	UOSInt i = GetItemIndex(name);
 	if (i != INVALID_INDEX)
 	{
-		item = this->items->GetItem(i);
+		item = this->items.GetItem(i);
 		if (item && (item->itemType == IO::PackFileItem::PackItemType::Uncompressed || item->itemType == IO::PackFileItem::PackItemType::Compressed))
 		{
 			ReusePackFileItem(item);
@@ -231,7 +193,7 @@ Bool IO::VirtualPackageFile::AddOrReplaceObject(IO::ParsedObject *pobj, Text::CS
 	UOSInt i = GetItemIndex(name);
 	if (i != INVALID_INDEX)
 	{
-		item = this->items->GetItem(i);
+		item = this->items.GetItem(i);
 		if (item && (item->itemType == IO::PackFileItem::PackItemType::Uncompressed || item->itemType == IO::PackFileItem::PackItemType::Compressed))
 		{
 			ReusePackFileItem(item);
@@ -257,7 +219,7 @@ Bool IO::VirtualPackageFile::AddOrReplaceCompData(NotNullPtr<StreamData> fd, UIn
 	UOSInt i = GetItemIndex(name);
 	if (i != INVALID_INDEX)
 	{
-		item = this->items->GetItem(i);
+		item = this->items.GetItem(i);
 		if (item && (item->itemType == IO::PackFileItem::PackItemType::Uncompressed || item->itemType == IO::PackFileItem::PackItemType::Compressed))
 		{
 			ReusePackFileItem(item);
@@ -288,7 +250,7 @@ Bool IO::VirtualPackageFile::AddOrReplacePack(NotNullPtr<IO::PackageFile> pkg, T
 	UOSInt i = GetItemIndex(name);
 	if (i != INVALID_INDEX)
 	{
-		item = this->items->GetItem(i);
+		item = this->items.GetItem(i);
 		if (item && item->itemType == IO::PackFileItem::PackItemType::ParsedObject && item->pobj->GetParserType() == IO::ParserType::PackageFile)
 		{
 			IO::PackageFile *myPkg = (IO::PackageFile*)item->pobj;
@@ -322,10 +284,10 @@ Bool IO::VirtualPackageFile::UpdateCompInfo(const UTF8Char *name, NotNullPtr<IO:
 	UOSInt i;
 	IO::PackFileItem *item;
 	UOSInt nameLen = Text::StrCharCnt(name);
-	i = this->items->GetCount();
+	i = this->items.GetCount();
 	while (i-- > 0)
 	{
-		item = this->items->GetItem(i);
+		item = this->items.GetItem(i);
 		if (item->name->Equals(name, nameLen))
 		{
 			if (item->itemType == IO::PackFileItem::PackItemType::Compressed)
@@ -401,7 +363,7 @@ Bool IO::VirtualPackageFile::MergePackage(NotNullPtr<IO::PackageFile> pkg)
 			switch (pkg->GetItemType(i))
 			{
 			case IO::PackageFile::PackObjectType::PackageFileType:
-				if (!ipkg.Set(pkg->GetItemPack(i, needRelease)))
+				if (!pkg->GetItemPack(i, needRelease).SetTo(ipkg))
 					return false;
 				if (!needRelease)
 					ipkg = ipkg->Clone();
@@ -409,7 +371,7 @@ Bool IO::VirtualPackageFile::MergePackage(NotNullPtr<IO::PackageFile> pkg)
 					return false;
 				break;
 			case IO::PackageFile::PackObjectType::StreamData:
-				if (!fd.Set(pkg->GetItemStmDataNew(i)))
+				if (!pkg->GetItemStmDataNew(i).SetTo(fd))
 					return false;
 				if (!this->AddOrReplaceData(fd, 0, fd->GetDataSize(), CSTRP(sbuff, sptr), pkg->GetItemModTime(i), pkg->GetItemAccTime(i), pkg->GetItemCreateTime(i), pkg->GetItemUnixAttr(i)))
 					return false;
@@ -426,7 +388,7 @@ Bool IO::VirtualPackageFile::MergePackage(NotNullPtr<IO::PackageFile> pkg)
 	}
 }
 
-const IO::PackFileItem *IO::VirtualPackageFile::GetPackFileItem(const UTF8Char *name) const
+Optional<const IO::PackFileItem> IO::VirtualPackageFile::GetPackFileItem(const UTF8Char *name) const
 {
 	UTF8Char sbuff[256];
 	const UTF8Char *sptr;
@@ -441,14 +403,14 @@ const IO::PackFileItem *IO::VirtualPackageFile::GetPackFileItem(const UTF8Char *
 			nameLen = (UOSInt)(sptr - name - 1);
 			if (nameLen <= 0)
 				return 0;
-			return this->namedItems->Get({name, nameLen});
+			return this->GetItemByName({name, nameLen});
 		}
 		else if (c == '/' || c == '\\')
 		{
 			nameLen = (UOSInt)(sptr - name - 1);
 			Text::StrConcatC(sbuff, name, nameLen);
-			IO::PackFileItem *item = this->namedItems->Get({sbuff, nameLen});
-			if (item == 0)
+			NotNullPtr<const IO::PackFileItem> item;
+			if (!this->GetItemByName({sbuff, nameLen}).SetTo(item))
 			{
 				return 0;
 			}
@@ -475,16 +437,12 @@ const IO::PackFileItem *IO::VirtualPackageFile::GetPackFileItem(const UTF8Char *
 
 const IO::PackFileItem *IO::VirtualPackageFile::GetPackFileItem(UOSInt index) const
 {
-	return this->items->GetItem(index);
+	return this->items.GetItem(index);
 }
 
-IO::PackageFile::PackObjectType IO::VirtualPackageFile::GetPItemType(const PackFileItem *itemObj) const
+IO::PackageFile::PackObjectType IO::VirtualPackageFile::GetPItemType(NotNullPtr<const PackFileItem> itemObj) const
 {
-	if (itemObj == 0)
-	{
-		return IO::PackageFile::PackObjectType::Unknown;
-	}
-	else if (itemObj->itemType == IO::PackFileItem::PackItemType::Compressed || itemObj->itemType == IO::PackFileItem::PackItemType::Uncompressed)
+	if (itemObj->itemType == IO::PackFileItem::PackItemType::Compressed || itemObj->itemType == IO::PackFileItem::PackItemType::Uncompressed)
 	{
 		return IO::PackageFile::PackObjectType::StreamData;
 	}
@@ -505,90 +463,83 @@ IO::PackageFile::PackObjectType IO::VirtualPackageFile::GetPItemType(const PackF
 	}
 }
 
-IO::StreamData *IO::VirtualPackageFile::GetPItemStmDataNew(const PackFileItem *item) const
+Optional<IO::StreamData> IO::VirtualPackageFile::GetPItemStmDataNew(NotNullPtr<const PackFileItem> item) const
 {
-	if (item != 0)
+	if (item->itemType == IO::PackFileItem::PackItemType::Uncompressed)
 	{
-		if (item->itemType == IO::PackFileItem::PackItemType::Uncompressed)
+		NotNullPtr<IO::StreamData> data = item->fd->GetPartialData(0, item->fd->GetDataSize());
+		Text::StringBuilderUTF8 sb;
+		sb.Append(this->sourceName);
+		sb.AppendC(UTF8STRC("\\"));
+		sb.Append(item->name);
+		data->SetFullName(sb.ToCString());
+		return data;
+	}
+	else if (item->itemType == IO::PackFileItem::PackItemType::Compressed)
+	{
+		Data::Compress::Decompressor *decomp = Data::Compress::Decompressor::CreateDecompressor(item->compInfo->compMethod);
+		Crypto::Hash::IHash *hash;
+		NotNullPtr<IO::StreamData> fd;
+		if (decomp == 0 || !fd.Set(item->fd))
+			return 0;
+
+		hash = Crypto::Hash::HashCreator::CreateHash(item->compInfo->checkMethod);
+		if (hash == 0)
 		{
-			NotNullPtr<IO::StreamData> data = item->fd->GetPartialData(0, item->fd->GetDataSize());
-			Text::StringBuilderUTF8 sb;
-			sb.Append(this->sourceName);
-			sb.AppendC(UTF8STRC("\\"));
-			sb.Append(item->name);
-			data->SetFullName(sb.ToCString());
-			return data.Ptr();
-		}
-		else if (item->itemType == IO::PackFileItem::PackItemType::Compressed)
-		{
-			Data::Compress::Decompressor *decomp = Data::Compress::Decompressor::CreateDecompressor(item->compInfo->compMethod);
-			Crypto::Hash::IHash *hash;
-			NotNullPtr<IO::StreamData> fd;
-			if (decomp == 0 || !fd.Set(item->fd))
-				return 0;
-
-			hash = Crypto::Hash::HashCreator::CreateHash(item->compInfo->checkMethod);
-			if (hash == 0)
-			{
-				DEL_CLASS(decomp);
-				return 0;
-			}
-			UTF8Char sbuff[512];
-			UTF8Char *sptr;
-			UInt8 chkResult[32];
-			UOSInt resSize;
-			UOSInt i;
-			Bool diff = false;
-			sptr = IO::Path::GetProcessFileName(sbuff);
-			sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("temp"));
-			IO::Path::CreateDirectory(CSTRP(sbuff, sptr));
-			*sptr++ = IO::Path::PATH_SEPERATOR;
-			sptr = Text::StrHexVal64(sptr, (UInt64)Data::DateTimeUtil::GetCurrTimeMillis());
-			*sptr++ = '_';
-			sptr = item->name->ConcatTo(sptr);
-			{
-				IO::FileStream fs(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
-				Crypto::Hash::HashStream hashStm(&fs, hash);
-
-				hash->Clear();
-				decomp->Decompress(&hashStm, fd);
-				resSize = hash->GetResultSize();
-				hash->GetValue(chkResult);
-
-				i = 0;
-				while (i < resSize)
-				{
-					if (chkResult[i] != item->compInfo->checkBytes[i])
-					{
-						diff = true;
-						break;
-					}
-					i++;
-				}
-			}
-
-			DEL_CLASS(hash);
 			DEL_CLASS(decomp);
-			if (diff)
+			return 0;
+		}
+		UTF8Char sbuff[512];
+		UTF8Char *sptr;
+		UInt8 chkResult[32];
+		UOSInt resSize;
+		UOSInt i;
+		Bool diff = false;
+		sptr = IO::Path::GetProcessFileName(sbuff);
+		sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("temp"));
+		IO::Path::CreateDirectory(CSTRP(sbuff, sptr));
+		*sptr++ = IO::Path::PATH_SEPERATOR;
+		sptr = Text::StrHexVal64(sptr, (UInt64)Data::DateTimeUtil::GetCurrTimeMillis());
+		*sptr++ = '_';
+		sptr = item->name->ConcatTo(sptr);
+		{
+			IO::FileStream fs(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+			Crypto::Hash::HashStream hashStm(&fs, hash);
+
+			hash->Clear();
+			decomp->Decompress(&hashStm, fd);
+			resSize = hash->GetResultSize();
+			hash->GetValue(chkResult);
+
+			i = 0;
+			while (i < resSize)
 			{
-				IO::Path::DeleteFile(sbuff);
-				return 0;
+				if (chkResult[i] != item->compInfo->checkBytes[i])
+				{
+					diff = true;
+					break;
+				}
+				i++;
 			}
-			else
-			{
-				IO::StmData::FileData *fd;
-				Text::StringBuilderUTF8 sb;
-				NEW_CLASS(fd, IO::StmData::FileData(CSTRP(sbuff, sptr), true));
-				sb.Append(this->sourceName);
-				sb.AppendC(UTF8STRC("\\"));
-				sb.Append(item->name);
-				fd->SetFullName(sb.ToCString());
-				return fd;
-			}
+		}
+
+		DEL_CLASS(hash);
+		DEL_CLASS(decomp);
+		if (diff)
+		{
+			IO::Path::DeleteFile(sbuff);
+			return 0;
 		}
 		else
 		{
-			return 0;
+			IO::StmData::FileData *fd;
+			Text::StringBuilderUTF8 sb;
+			NEW_CLASS(fd, IO::StmData::FileData(CSTRP(sbuff, sptr), true));
+			sb.Append(this->sourceName);
+			sb.AppendC(UTF8STRC("\\"));
+			sb.Append(item->name);
+			fd->SetFullName(sb.ToCString());
+			return fd;
 		}
 	}
 	else
@@ -597,37 +548,32 @@ IO::StreamData *IO::VirtualPackageFile::GetPItemStmDataNew(const PackFileItem *i
 	}
 }
 
-IO::PackageFile *IO::VirtualPackageFile::GetPItemPack(const PackFileItem *item, OutParam<Bool> needRelease) const
+Optional<IO::PackageFile> IO::VirtualPackageFile::GetPItemPack(NotNullPtr<const PackFileItem> item, OutParam<Bool> needRelease) const
 {
-	if (item != 0)
+	if (item->itemType == PackFileItem::PackItemType::ParsedObject && item->pobj->GetParserType() == IO::ParserType::PackageFile)
 	{
-		if (item->itemType == PackFileItem::PackItemType::ParsedObject && item->pobj->GetParserType() == IO::ParserType::PackageFile)
-		{
-			needRelease.Set(false);
-			return ((IO::PackageFile*)item->pobj);
-		}
-		return 0;
+		needRelease.Set(false);
+		return ((IO::PackageFile*)item->pobj);
 	}
-	else
-	{
-		return 0;
-	}
+	return 0;
 }
 
 UOSInt IO::VirtualPackageFile::GetCount() const
 {
-	return this->items->GetCount();
+	return this->items.GetCount();
 }
 
 IO::PackageFile::PackObjectType IO::VirtualPackageFile::GetItemType(UOSInt index) const
 {
-	IO::PackFileItem *item = this->items->GetItem(index);
-	return GetPItemType(item);
+	NotNullPtr<IO::PackFileItem> item;
+	if (item.Set(this->items.GetItem(index)))
+		return GetPItemType(item);
+	return PackObjectType::Unknown;
 }
 
 UTF8Char *IO::VirtualPackageFile::GetItemName(UTF8Char *sbuff, UOSInt index) const
 {
-	IO::PackFileItem *item = this->items->GetItem(index);
+	IO::PackFileItem *item = this->items.GetItem(index);
 	if (item == 0)
 	{
 		*sbuff = 0;
@@ -636,13 +582,15 @@ UTF8Char *IO::VirtualPackageFile::GetItemName(UTF8Char *sbuff, UOSInt index) con
 	return item->name->ConcatTo(sbuff);
 }
 
-IO::StreamData *IO::VirtualPackageFile::GetItemStmDataNew(UOSInt index) const
+Optional<IO::StreamData> IO::VirtualPackageFile::GetItemStmDataNew(UOSInt index) const
 {
-	IO::PackFileItem *item = this->items->GetItem(index);
-	return GetPItemStmDataNew(item);
+	NotNullPtr<IO::PackFileItem> item;
+	if (item.Set(this->items.GetItem(index)))
+		return GetPItemStmDataNew(item);
+	return 0;
 }
 
-IO::StreamData *IO::VirtualPackageFile::GetItemStmDataNew(const UTF8Char* name, UOSInt nameLen) const
+Optional<IO::StreamData> IO::VirtualPackageFile::GetItemStmDataNew(const UTF8Char* name, UOSInt nameLen) const
 {
 	UOSInt index = GetItemIndex({name, nameLen});
 	if (index == INVALID_INDEX)
@@ -652,15 +600,17 @@ IO::StreamData *IO::VirtualPackageFile::GetItemStmDataNew(const UTF8Char* name, 
 	return this->GetItemStmDataNew(index);
 }
 
-IO::PackageFile *IO::VirtualPackageFile::GetItemPack(UOSInt index, OutParam<Bool> needRelease) const
+Optional<IO::PackageFile> IO::VirtualPackageFile::GetItemPack(UOSInt index, OutParam<Bool> needRelease) const
 {
-	IO::PackFileItem *item = this->items->GetItem(index);
-	return GetPItemPack(item, needRelease);
+	NotNullPtr<IO::PackFileItem> item;
+	if (item.Set(this->items.GetItem(index)))
+		return GetPItemPack(item, needRelease);
+	return 0;
 }
 
-IO::ParsedObject *IO::VirtualPackageFile::GetItemPObj(UOSInt index, OutParam<Bool> needRelease) const
+Optional<IO::ParsedObject> IO::VirtualPackageFile::GetItemPObj(UOSInt index, OutParam<Bool> needRelease) const
 {
-	IO::PackFileItem *item = this->items->GetItem(index);
+	IO::PackFileItem *item = this->items.GetItem(index);
 	needRelease.Set(false);
 	if (item != 0)
 	{
@@ -681,7 +631,7 @@ IO::ParsedObject *IO::VirtualPackageFile::GetItemPObj(UOSInt index, OutParam<Boo
 
 Data::Timestamp IO::VirtualPackageFile::GetItemModTime(UOSInt index) const
 {
-	IO::PackFileItem *item = this->items->GetItem(index);
+	IO::PackFileItem *item = this->items.GetItem(index);
 	if (item != 0)
 	{
 		return item->modTime;
@@ -691,7 +641,7 @@ Data::Timestamp IO::VirtualPackageFile::GetItemModTime(UOSInt index) const
 
 Data::Timestamp IO::VirtualPackageFile::GetItemAccTime(UOSInt index) const
 {
-	IO::PackFileItem *item = this->items->GetItem(index);
+	IO::PackFileItem *item = this->items.GetItem(index);
 	if (item != 0)
 	{
 		return item->accTime;
@@ -701,7 +651,7 @@ Data::Timestamp IO::VirtualPackageFile::GetItemAccTime(UOSInt index) const
 
 Data::Timestamp IO::VirtualPackageFile::GetItemCreateTime(UOSInt index) const
 {
-	IO::PackFileItem *item = this->items->GetItem(index);
+	IO::PackFileItem *item = this->items.GetItem(index);
 	if (item != 0)
 	{
 		return item->createTime;
@@ -711,7 +661,7 @@ Data::Timestamp IO::VirtualPackageFile::GetItemCreateTime(UOSInt index) const
 
 UInt32 IO::VirtualPackageFile::GetItemUnixAttr(UOSInt index) const
 {
-	IO::PackFileItem *item = this->items->GetItem(index);
+	IO::PackFileItem *item = this->items.GetItem(index);
 	if (item != 0)
 	{
 		return item->unixAttr;
@@ -721,7 +671,7 @@ UInt32 IO::VirtualPackageFile::GetItemUnixAttr(UOSInt index) const
 
 UInt64 IO::VirtualPackageFile::GetItemStoreSize(UOSInt index) const
 {
-	IO::PackFileItem *item = this->items->GetItem(index);
+	IO::PackFileItem *item = this->items.GetItem(index);
 	if (item != 0)
 	{
 		return item->fd->GetDataSize();
@@ -731,7 +681,7 @@ UInt64 IO::VirtualPackageFile::GetItemStoreSize(UOSInt index) const
 
 UInt64 IO::VirtualPackageFile::GetItemSize(UOSInt index) const
 {
-	IO::PackFileItem *item = this->items->GetItem(index);
+	IO::PackFileItem *item = this->items.GetItem(index);
 	if (item != 0)
 	{
 		if (item->itemType == IO::PackFileItem::PackItemType::Uncompressed)
@@ -754,10 +704,10 @@ UOSInt IO::VirtualPackageFile::GetItemIndex(Text::CStringNN name) const
 {
 	UOSInt i;
 	IO::PackFileItem *item;
-	i = this->items->GetCount();
+	i = this->items.GetCount();
 	while (i-- > 0)
 	{
-		item = this->items->GetItem(i);
+		item = this->items.GetItem(i);
 		if (item)
 		{
 			if (item->name->EqualsICase(name))
@@ -780,7 +730,7 @@ UOSInt IO::VirtualPackageFile::GetItemIndex(Text::CStringNN name) const
 
 Bool IO::VirtualPackageFile::IsCompressed(UOSInt index) const
 {
-	IO::PackFileItem *item = this->items->GetItem(index);
+	IO::PackFileItem *item = this->items.GetItem(index);
 	if (item != 0 && item->itemType == IO::PackFileItem::PackItemType::Compressed)
 	{
 		return true;
@@ -790,7 +740,7 @@ Bool IO::VirtualPackageFile::IsCompressed(UOSInt index) const
 
 Data::Compress::Decompressor::CompressMethod IO::VirtualPackageFile::GetItemComp(UOSInt index) const
 {
-	IO::PackFileItem *item = this->items->GetItem(index);
+	IO::PackFileItem *item = this->items.GetItem(index);
 	if (item != 0)
 	{
 		if (item->itemType == IO::PackFileItem::PackItemType::Compressed)
@@ -807,13 +757,6 @@ Data::Compress::Decompressor::CompressMethod IO::VirtualPackageFile::GetItemComp
 		}
 	}
 	return Data::Compress::Decompressor::CM_UNKNOWN;
-}
-
-NotNullPtr<IO::PackageFile> IO::VirtualPackageFile::Clone() const
-{
-	NotNullPtr<IO::PackageFile> pkg;
-	NEW_CLASSNN(pkg, VirtualPackageFile(this));
-	return pkg;
 }
 
 IO::PackageFileType IO::VirtualPackageFile::GetFileType() const
@@ -873,7 +816,7 @@ Bool IO::VirtualPackageFile::RetryMoveFrom(Text::CStringNN fileName, IO::Progres
 
 Bool IO::VirtualPackageFile::CopyTo(UOSInt index, Text::CString destPath, Bool fullFileName)
 {
-	IO::PackFileItem *item = this->items->GetItem(index);
+	IO::PackFileItem *item = this->items.GetItem(index);
 	if (item != 0)
 	{
 		Text::StringBuilderUTF8 sb;
@@ -1021,14 +964,14 @@ Bool IO::VirtualPackageFile::CopyTo(UOSInt index, Text::CString destPath, Bool f
 	return false;
 }
 
-IO::StreamData *IO::VirtualPackageFile::OpenStreamData(Text::CString fileName) const
+Optional<IO::StreamData> IO::VirtualPackageFile::OpenStreamData(Text::CString fileName) const
 {
 	if (fileName.IndexOf(':') != INVALID_INDEX)
 	{
 		return 0;
 	}
 
-	IO::StreamData *retFD = 0;
+	Optional<IO::StreamData> retFD = 0;
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 	UOSInt i;
@@ -1037,7 +980,7 @@ IO::StreamData *IO::VirtualPackageFile::OpenStreamData(Text::CString fileName) c
 	sb.Append(fileName);
 	sb.Replace('\\', '/');
 	const IO::PackageFile *pf;
-	IO::PackageFile *pf2;
+	NotNullPtr<IO::PackageFile> pf2;
 	Bool needRel = false;
 	Bool needRel2 = false;
 	Bool found;
@@ -1057,8 +1000,7 @@ IO::StreamData *IO::VirtualPackageFile::OpenStreamData(Text::CString fileName) c
 				sptr = pf->GetItemName(sbuff, i);
 				if (Text::StrEqualsC(sb.ToString(), j, sbuff, (UOSInt)(sptr - sbuff)))
 				{
-					pf2 = pf->GetItemPack(i, needRel2);
-					if (pf2)
+					if (pf->GetItemPack(i, needRel2).SetTo(pf2))
 					{
 						found = true;
 						if (needRel)
@@ -1066,7 +1008,7 @@ IO::StreamData *IO::VirtualPackageFile::OpenStreamData(Text::CString fileName) c
 							DEL_CLASS(pf);
 						}
 						sb.SetSubstr((UOSInt)j + 1);
-						pf = pf2;
+						pf = pf2.Ptr();
 						needRel = needRel2;
 						break;
 					}
@@ -1119,14 +1061,14 @@ IO::PackageFile *IO::VirtualPackageFile::GetParent(OutParam<Bool> needRelease) c
 
 Bool IO::VirtualPackageFile::DeleteItem(UOSInt index)
 {
-	IO::PackFileItem *item = this->items->RemoveAt(index);
+	IO::PackFileItem *item = this->items.RemoveAt(index);
 	if (item)
 	{
 		if (item->itemType == IO::PackFileItem::PackItemType::ParsedObject && item->pobj->GetParserType() == IO::ParserType::PackageFile)
 		{
 			this->pkgFiles.RemoveNN(item->name);
 		}
-		this->namedItems->RemoveNN(item->name);
+		this->RemoveItem(item->name);
 		ReusePackFileItem(item);
 		MemFree(item);
 		return true;
@@ -1139,10 +1081,10 @@ void IO::VirtualPackageFile::SetParent(IO::PackageFile *pkg)
 	this->parent = pkg;
 	PackFileItem *item;
 	UOSInt i = 0;
-	UOSInt j = this->items->GetCount();
+	UOSInt j = this->items.GetCount();
 	while (i < j)
 	{
-		item = this->items->GetItem(i);
+		item = this->items.GetItem(i);
 		if (item->itemType == IO::PackFileItem::PackItemType::ParsedObject && item->pobj->GetParserType() == IO::ParserType::PackageFile)
 		{
 			((IO::PackageFile*)item->pobj)->SetParent(this);

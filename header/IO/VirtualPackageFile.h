@@ -1,7 +1,7 @@
 #ifndef _SM_IO_VIRTUALPACKAGEFILE
 #define _SM_IO_VIRTUALPACKAGEFILE
 #include "Crypto/Hash/IHash.h"
-#include "Data/ArrayList.h"
+#include "Data/ArrayListNN.h"
 #include "Data/FastMap.h"
 #include "Data/FastStringMap.h"
 #include "Data/StringMap.h"
@@ -64,18 +64,20 @@ namespace IO
 			IT_BIBLIOGRAHPICAL_FILE_ID
 		} InfoType;
 
-	private:
-		NotNullPtr<Data::ArrayList<PackFileItem *>> items;
-		NotNullPtr<Data::StringMap<PackFileItem *>> namedItems;
+	protected:
+		Data::ArrayListNN<PackFileItem> items;
 		Data::FastStringMap<PackFileItem *> pkgFiles;
 		Data::FastMap<Int32, const UTF8Char *> infoMap;
 		PackageFile *parent;
 
 		void ReusePackFileItem(IO::PackFileItem *item);
-		VirtualPackageFile(const VirtualPackageFile *pkg);
-	public:
 		VirtualPackageFile(NotNullPtr<Text::String> fileName);
 		VirtualPackageFile(Text::CStringNN fileName);
+
+		virtual Optional<const PackFileItem> GetItemByName(Text::CStringNN name) const = 0;
+		virtual void PutItem(NotNullPtr<Text::String> name, NotNullPtr<PackFileItem> item) = 0;
+		virtual void RemoveItem(NotNullPtr<Text::String> name) = 0;
+	public:
 		virtual ~VirtualPackageFile();
 
 		Bool AddData(NotNullPtr<StreamData> fd, UInt64 ofst, UInt64 length, Text::CStringNN name, const Data::Timestamp &modTime, const Data::Timestamp &accTime, const Data::Timestamp &createTime, UInt32 unixAttr);
@@ -90,19 +92,19 @@ namespace IO
 		Bool UpdateCompInfo(const UTF8Char *name, NotNullPtr<IO::StreamData> fd, UInt64 ofst, Int32 crc, UOSInt compSize, UInt32 decSize);
 		Bool MergePackage(NotNullPtr<IO::PackageFile> pkg);
 
-		const PackFileItem *GetPackFileItem(const UTF8Char *name) const;
+		Optional<const PackFileItem> GetPackFileItem(const UTF8Char *name) const;
 		const PackFileItem *GetPackFileItem(UOSInt index) const;
-		PackObjectType GetPItemType(const PackFileItem *itemObj) const;
-		IO::StreamData *GetPItemStmDataNew(const PackFileItem *itemObj) const;
-		IO::PackageFile *GetPItemPack(const PackFileItem *itemObj, OutParam<Bool> needRelease) const;
+		PackObjectType GetPItemType(NotNullPtr<const PackFileItem> itemObj) const;
+		Optional<IO::StreamData> GetPItemStmDataNew(NotNullPtr<const PackFileItem> itemObj) const;
+		Optional<IO::PackageFile> GetPItemPack(NotNullPtr<const PackFileItem> itemObj, OutParam<Bool> needRelease) const;
 
 		virtual UOSInt GetCount() const;
 		virtual PackObjectType GetItemType(UOSInt index) const;
 		virtual UTF8Char *GetItemName(UTF8Char *sbuff, UOSInt index) const;
-		virtual IO::StreamData *GetItemStmDataNew(UOSInt index) const;
-		IO::StreamData *GetItemStmDataNew(const UTF8Char* name, UOSInt nameLen) const;
-		virtual IO::PackageFile *GetItemPack(UOSInt index, OutParam<Bool> needRelease) const;
-		virtual IO::ParsedObject *GetItemPObj(UOSInt index, OutParam<Bool> needRelease) const;
+		virtual Optional<IO::StreamData> GetItemStmDataNew(UOSInt index) const;
+		Optional<IO::StreamData> GetItemStmDataNew(const UTF8Char* name, UOSInt nameLen) const;
+		virtual Optional<IO::PackageFile> GetItemPack(UOSInt index, OutParam<Bool> needRelease) const;
+		virtual Optional<IO::ParsedObject> GetItemPObj(UOSInt index, OutParam<Bool> needRelease) const;
 		virtual Data::Timestamp GetItemModTime(UOSInt index) const;
 		virtual Data::Timestamp GetItemAccTime(UOSInt index) const;
 		virtual Data::Timestamp GetItemCreateTime(UOSInt index) const;
@@ -112,14 +114,13 @@ namespace IO
 		virtual UOSInt GetItemIndex(Text::CStringNN name) const;
 		virtual Bool IsCompressed(UOSInt index) const;
 		virtual Data::Compress::Decompressor::CompressMethod GetItemComp(UOSInt index) const;
-		virtual NotNullPtr<PackageFile> Clone() const;
 		virtual PackageFileType GetFileType() const;
 		virtual Bool CopyFrom(Text::CStringNN fileName, IO::ProgressHandler *progHdlr, OptOut<IO::ActiveStreamReader::BottleNeckType> bnt);
 		virtual Bool MoveFrom(Text::CStringNN fileName, IO::ProgressHandler *progHdlr, OptOut<IO::ActiveStreamReader::BottleNeckType> bnt);
 		virtual Bool RetryCopyFrom(Text::CStringNN fileName, IO::ProgressHandler *progHdlr, OptOut<IO::ActiveStreamReader::BottleNeckType> bnt);
 		virtual Bool RetryMoveFrom(Text::CStringNN fileName, IO::ProgressHandler *progHdlr, OptOut<IO::ActiveStreamReader::BottleNeckType> bnt);
 		virtual Bool CopyTo(UOSInt index, Text::CString destPath, Bool fullFileName);
-		virtual IO::StreamData *OpenStreamData(Text::CString fileName) const;
+		virtual Optional<IO::StreamData> OpenStreamData(Text::CString fileName) const;
 		virtual Bool HasParent() const;
 		virtual IO::PackageFile *GetParent(OutParam<Bool> needRelease) const;
 		virtual Bool DeleteItem(UOSInt index);

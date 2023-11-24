@@ -69,7 +69,7 @@ namespace Data
 	template <class T> ArrayListNN<T>::ArrayListNN(const ArrayListNN<T> &list)
 	{
 		Init(list.capacity);
-		this->AddAll(&list);
+		this->AddAll(list);
 	}
 
 	template <class T> ArrayListNN<T>::~ArrayListNN()

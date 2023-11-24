@@ -1175,11 +1175,11 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 						if (dlg.ShowDialog(this->GetHandle()))
 						{
 							IO::StmData::FileData fd(dlg.GetFileName(), false);
-							IO::PackageFile *pkg = (IO::PackageFile*)this->core->GetParserList()->ParseFileType(fd, IO::ParserType::PackageFile);
-							if (pkg)
+							NotNullPtr<IO::PackageFile> pkg;
+							if (pkg.Set((IO::PackageFile*)this->core->GetParserList()->ParseFileType(fd, IO::ParserType::PackageFile)))
 							{
 								osm->ImportTiles(pkg);
-								DEL_CLASS(pkg);
+								pkg.Delete();
 							}
 						}
 					}

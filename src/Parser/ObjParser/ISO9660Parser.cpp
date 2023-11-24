@@ -5,7 +5,7 @@
 #include "IO/CDSectorData.h"
 #include "IO/ISectorData.h"
 #include "IO/Path.h"
-#include "IO/VirtualPackageFile.h"
+#include "IO/VirtualPackageFileFast.h"
 #include "Parser/ObjParser/ISO9660Parser.h"
 #include "Text/Encoding.h"
 
@@ -110,7 +110,7 @@ NotNullPtr<IO::PackageFile> Parser::ObjParser::ISO9660Parser::ParseVol(NotNullPt
 	Text::Encoding enc(codePage);
 
 	sectorData->ReadSector(sectorNum, BYTEARR(sector));
-	NEW_CLASSNN(pkgFile, IO::VirtualPackageFile(sectorData->GetSourceNameObj()));
+	NEW_CLASSNN(pkgFile, IO::VirtualPackageFileFast(sectorData->GetSourceNameObj()));
 
 	
 	sptr = enc.UTF8FromBytes(sbuff, &sector[8], 32, 0);
@@ -242,7 +242,7 @@ void Parser::ObjParser::ISO9660Parser::ParseDir(NotNullPtr<IO::VirtualPackageFil
 					sptr = fileNameEnd;
 					*sptr++ = IO::Path::PATH_SEPERATOR;
 					sptr = enc.UTF8FromBytes(sptr, &recBuff[33], recBuff[32], 0);
-					NEW_CLASSNN(pf2, IO::VirtualPackageFile(CSTRP(fileName, sptr)));
+					NEW_CLASSNN(pf2, IO::VirtualPackageFileFast(CSTRP(fileName, sptr)));
 					pkgFile->AddPack(pf2, CSTRP(&fileNameEnd[1], sptr), Data::Timestamp(dt.ToInstant(), 0), 0, 0, 0);
 					ParseDir(pf2, sectorData, sectorNum, fileSize, fileName, sptr, codePage);
 				}

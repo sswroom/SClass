@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Data/ByteTool.h"
-#include "IO/VirtualPackageFile.h"
+#include "IO/VirtualPackageFileFast.h"
 #include "IO/StmData/ConcatStreamData.h"
 #include "IO/StmData/FileData.h"
 #include "Parser/FileParser/SZSParser.h"
@@ -54,7 +54,7 @@ IO::ParsedObject *Parser::FileParser::SZSParser::ParseFileHdr(NotNullPtr<IO::Str
 	if (fileCnt <= 0)
 		return 0;
 	Text::Encoding enc(932);
-	NEW_CLASS(pf, IO::VirtualPackageFile(fd->GetFullName()));
+	NEW_CLASS(pf, IO::VirtualPackageFileFast(fd->GetFullName()));
 	ofst = 16;
 	minOfst = 16 + 272 * (UInt32)fileCnt;
 	i = 0;

@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Data/ByteTool.h"
-#include "IO/VirtualPackageFile.h"
+#include "IO/VirtualPackageFileFast.h"
 #include "Parser/FileParser/MLHParser.h"
 #include "Text/Encoding.h"
 #include "Text/MyString.h"
@@ -62,7 +62,7 @@ IO::ParsedObject *Parser::FileParser::MLHParser::ParseFileHdr(NotNullPtr<IO::Str
 
 	Text::Encoding enc(932);
 	IO::VirtualPackageFile *pf;
-	NEW_CLASS(pf, IO::VirtualPackageFile(fd->GetFullName()));
+	NEW_CLASS(pf, IO::VirtualPackageFileFast(fd->GetFullName()));
 
 	fileInfo = MemAlloc(MLHFileInfo, fileCnt);
 	fd->GetRealData(fileOfst, fileCnt * sizeof(MLHFileInfo), Data::ByteArray((UInt8*)fileInfo, fileCnt * sizeof(MLHFileInfo)));

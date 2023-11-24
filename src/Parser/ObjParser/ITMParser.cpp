@@ -59,7 +59,7 @@ IO::ParsedObject *Parser::ObjParser::ITMParser::ParseObject(NotNullPtr<IO::Parse
 			{
 				NotNullPtr<IO::StreamData> fd;
 				IO::ParsedObject *pobj2 = 0;
-				if (fd.Set(pkg->GetItemStmDataNew(i)))
+				if (pkg->GetItemStmDataNew(i).SetTo(fd))
 				{
 					pobj2 = parsers->ParseFile(fd, &pt);
 					fd.Delete();

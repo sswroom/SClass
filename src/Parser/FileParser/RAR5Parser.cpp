@@ -3,7 +3,7 @@
 #include "Data/ByteTool.h"
 #include "Data/StringUTF8Map.h"
 #include "IO/Path.h"
-#include "IO/VirtualPackageFile.h"
+#include "IO/VirtualPackageFileFast.h"
 #include "Parser/FileParser/RAR5Parser.h"
 
 const UInt8 *Parser::FileParser::RAR5Parser::ReadVInt(const UInt8 *buffPtr, UInt64 *val)
@@ -75,7 +75,7 @@ IO::ParsedObject *Parser::FileParser::RAR5Parser::ParseFileHdr(NotNullPtr<IO::St
 	IO::VirtualPackageFile *pf;
 	Data::DateTime dt;
 	dt.ToLocalTime();
-	NEW_CLASS(pf, IO::VirtualPackageFile(fd->GetFullName()));
+	NEW_CLASS(pf, IO::VirtualPackageFileFast(fd->GetFullName()));
 
 	while (currOfst + 8 <= endOfst)
 	{

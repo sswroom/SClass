@@ -3,7 +3,7 @@
 #include "Data/ByteBuffer.h"
 #include "Data/ByteTool.h"
 #include "IO/StreamData.h"
-#include "IO/VirtualPackageFile.h"
+#include "IO/VirtualPackageFileFast.h"
 #include "Parser/FileParser/AFSParser.h"
 #include "Text/Encoding.h"
 
@@ -57,7 +57,7 @@ IO::ParsedObject *Parser::FileParser::AFSParser::ParseFileHdr(NotNullPtr<IO::Str
 
 	fileCnt = ReadUInt32(&hdr[4]);
 	Data::ByteBuffer buff2(fileCnt << 3);
-	NEW_CLASS(pf, IO::VirtualPackageFile(fd->GetFullName()));
+	NEW_CLASS(pf, IO::VirtualPackageFileFast(fd->GetFullName()));
 	fd->GetRealData(8, fileCnt << 3, buff2);
 	i = 0;
 	while (i < fileCnt)

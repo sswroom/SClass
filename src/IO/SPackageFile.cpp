@@ -86,7 +86,7 @@ void IO::SPackageFile::ReadV2DirEnt(UInt64 ofst, UInt64 size)
 	MemFree(sbuff);
 }
 
-void IO::SPackageFile::AddPackageInner(IO::PackageFile *pkg, UTF8Char pathSeperator, UTF8Char *pathStart, UTF8Char *pathEnd)
+void IO::SPackageFile::AddPackageInner(NotNullPtr<IO::PackageFile> pkg, UTF8Char pathSeperator, UTF8Char *pathStart, UTF8Char *pathEnd)
 {
 	UOSInt i = 0;
 	UOSInt j = pkg->GetCount();
@@ -101,21 +101,21 @@ void IO::SPackageFile::AddPackageInner(IO::PackageFile *pkg, UTF8Char pathSepera
 		else if (pt == IO::PackageFile::PackObjectType::PackageFileType)
 		{
 			Bool innerNeedDelete;
-			IO::PackageFile *innerPack = pkg->GetItemPack(i, innerNeedDelete);
-			if (innerPack)
+			NotNullPtr<IO::PackageFile> innerPack;
+			if (pkg->GetItemPack(i, innerNeedDelete).SetTo(innerPack))
 			{
 				*sptr++ = pathSeperator;
 				AddPackageInner(innerPack, pathSeperator, pathStart, sptr);
 				if (innerNeedDelete)
 				{
-					DEL_CLASS(innerPack);
+					innerPack.Delete();
 				}
 			}
 		}
 		else if (pt == IO::PackageFile::PackObjectType::StreamData)
 		{
 			NotNullPtr<IO::StreamData> fd;
-			if (fd.Set(pkg->GetItemStmDataNew(i)))
+			if (pkg->GetItemStmDataNew(i).SetTo(fd))
 			{
 				this->AddFile(fd, {pathStart, (UOSInt)(sptr - pathStart)}, pkg->GetItemModTime(i));
 				fd.Delete();
@@ -568,7 +568,7 @@ Bool IO::SPackageFile::AddFile(const UInt8 *fileBuff, UOSInt fileSize, Text::CSt
 	return succ;
 }
 
-Bool IO::SPackageFile::AddPackage(IO::PackageFile *pkg, UTF8Char pathSeperator)
+Bool IO::SPackageFile::AddPackage(NotNullPtr<IO::PackageFile> pkg, UTF8Char pathSeperator)
 {
 	UTF8Char sbuff[512];
 	AddPackageInner(pkg, pathSeperator, sbuff, sbuff);
