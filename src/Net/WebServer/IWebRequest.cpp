@@ -142,7 +142,7 @@ Bool Net::WebServer::IWebRequest::GetCookie(Text::CStringNN name, NotNullPtr<Tex
 	return found;
 }
 
-Text::String *Net::WebServer::IWebRequest::GetCookieAsNew(Text::CStringNN name)
+Optional<Text::String> Net::WebServer::IWebRequest::GetCookieAsNew(Text::CStringNN name)
 {
 	Text::String *cookie = this->GetSHeader(CSTR("Cookie"));
 	if (cookie == 0)
@@ -273,8 +273,8 @@ Bool Net::WebServer::IWebRequest::GetQueryValueF64(Text::CStringNN name, OutPara
 
 Bool Net::WebServer::IWebRequest::GetHTTPFormInt16(Text::CStringNN name, OutParam<Int16> valOut)
 {
-	Text::String *s = this->GetHTTPFormStr(name);
-	if (s == 0)
+	NotNullPtr<Text::String> s;
+	if (!this->GetHTTPFormStr(name).SetTo(s))
 	{
 		return false;
 	}
@@ -283,8 +283,8 @@ Bool Net::WebServer::IWebRequest::GetHTTPFormInt16(Text::CStringNN name, OutPara
 
 Bool Net::WebServer::IWebRequest::GetHTTPFormUInt16(Text::CStringNN name, OutParam<UInt16> valOut)
 {
-	Text::String *s = this->GetHTTPFormStr(name);
-	if (s == 0)
+	NotNullPtr<Text::String> s;
+	if (!this->GetHTTPFormStr(name).SetTo(s))
 	{
 		return false;
 	}
@@ -293,8 +293,8 @@ Bool Net::WebServer::IWebRequest::GetHTTPFormUInt16(Text::CStringNN name, OutPar
 
 Bool Net::WebServer::IWebRequest::GetHTTPFormInt32(Text::CStringNN name, OutParam<Int32> valOut)
 {
-	Text::String *s = this->GetHTTPFormStr(name);
-	if (s == 0)
+	NotNullPtr<Text::String> s;
+	if (!this->GetHTTPFormStr(name).SetTo(s))
 	{
 		return false;
 	}
@@ -303,8 +303,8 @@ Bool Net::WebServer::IWebRequest::GetHTTPFormInt32(Text::CStringNN name, OutPara
 
 Bool Net::WebServer::IWebRequest::GetHTTPFormUInt32(Text::CStringNN name, OutParam<UInt32> valOut)
 {
-	Text::String *s = this->GetHTTPFormStr(name);
-	if (s == 0)
+	NotNullPtr<Text::String> s;
+	if (!this->GetHTTPFormStr(name).SetTo(s))
 	{
 		return false;
 	}
@@ -313,8 +313,8 @@ Bool Net::WebServer::IWebRequest::GetHTTPFormUInt32(Text::CStringNN name, OutPar
 
 Bool Net::WebServer::IWebRequest::GetHTTPFormInt64(Text::CStringNN name, OutParam<Int64> valOut)
 {
-	Text::String *s = this->GetHTTPFormStr(name);
-	if (s == 0)
+	NotNullPtr<Text::String> s;
+	if (!this->GetHTTPFormStr(name).SetTo(s))
 	{
 		return false;
 	}
@@ -323,8 +323,8 @@ Bool Net::WebServer::IWebRequest::GetHTTPFormInt64(Text::CStringNN name, OutPara
 
 Bool Net::WebServer::IWebRequest::GetHTTPFormUInt64(Text::CStringNN name, OutParam<UInt64> valOut)
 {
-	Text::String *s = this->GetHTTPFormStr(name);
-	if (s == 0)
+	NotNullPtr<Text::String> s;
+	if (!this->GetHTTPFormStr(name).SetTo(s))
 	{
 		return false;
 	}
@@ -333,8 +333,8 @@ Bool Net::WebServer::IWebRequest::GetHTTPFormUInt64(Text::CStringNN name, OutPar
 
 Bool Net::WebServer::IWebRequest::GetHTTPFormDouble(Text::CStringNN name, OutParam<Double> valOut)
 {
-	Text::String *s = this->GetHTTPFormStr(name);
-	if (s == 0)
+	NotNullPtr<Text::String> s;
+	if (!this->GetHTTPFormStr(name).SetTo(s))
 	{
 		return false;
 	}

@@ -122,8 +122,8 @@ namespace Net
 		Bool IsDisableV6();
 		void SetDisableV6(Bool disableV6);
 		UOSInt GetBlackList(Data::ArrayList<Text::String*> *blackList);
-		Bool AddBlackList(Text::String *blackList);
-		Bool AddBlackList(Text::CString blackList);
+		Bool AddBlackList(NotNullPtr<Text::String> blackList);
+		Bool AddBlackList(Text::CStringNN blackList);
 		void HandleDNSRequest(DNSProxyRequest hdlr, void *userObj);
 		void SetCustomAnswer(Text::CString name, const Net::SocketUtil::AddressInfo *addr);
 		void SetWebProxyAutoDiscovery(const Net::SocketUtil::AddressInfo *addr);

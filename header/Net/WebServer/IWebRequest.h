@@ -48,7 +48,7 @@ namespace Net
 			Bool GetRefererDomain(NotNullPtr<Text::StringBuilderUTF8> sb);
 			Bool GetIfModifiedSince(Data::DateTime *dt);
 			Bool GetCookie(Text::CStringNN name, NotNullPtr<Text::StringBuilderUTF8> sb);
-			Text::String *GetCookieAsNew(Text::CStringNN name);
+			Optional<Text::String> GetCookieAsNew(Text::CStringNN name);
 
 			virtual NotNullPtr<Text::String> GetRequestURI() const = 0;
 			UTF8Char *GetRequestPath(UTF8Char *sbuff, UOSInt maxLeng);
@@ -65,7 +65,7 @@ namespace Net
 			virtual Bool HasQuery(Text::CStringNN name) = 0;
 			virtual Net::WebUtil::RequestMethod GetReqMethod() const = 0;
 			virtual void ParseHTTPForm() = 0;
-			virtual Text::String *GetHTTPFormStr(Text::CStringNN name) = 0;
+			virtual Optional<Text::String> GetHTTPFormStr(Text::CStringNN name) = 0;
 			virtual const UInt8 *GetHTTPFormFile(Text::CStringNN formName, UOSInt index, UTF8Char *fileName, UOSInt fileNameBuffSize, OptOut<UTF8Char*> fileNameEnd, OptOut<UOSInt> fileSize) = 0;
 			Bool GetHTTPFormInt16(Text::CStringNN name, OutParam<Int16> valOut);
 			Bool GetHTTPFormUInt16(Text::CStringNN name, OutParam<UInt16> valOut);

@@ -951,12 +951,12 @@ UOSInt Net::DNSProxy::GetBlackList(Data::ArrayList<Text::String*> *blackList)
 	return ret;
 }
 
-Bool Net::DNSProxy::AddBlackList(Text::String *blackList)
+Bool Net::DNSProxy::AddBlackList(NotNullPtr<Text::String> blackList)
 {
 	return this->AddBlackList(blackList->ToCString());
 }
 
-Bool Net::DNSProxy::AddBlackList(Text::CString blackList)
+Bool Net::DNSProxy::AddBlackList(Text::CStringNN blackList)
 {
 	Sync::MutexUsage blackListMutUsage(this->blackListMut);
 	this->blackList.Add(Text::String::New(blackList));

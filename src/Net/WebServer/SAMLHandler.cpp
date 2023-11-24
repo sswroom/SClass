@@ -107,8 +107,8 @@ Bool Net::WebServer::SAMLHandler::ProcessRequest(NotNullPtr<Net::WebServer::IWeb
 			if (req->GetReqMethod() == Net::WebUtil::RequestMethod::HTTP_POST)
 			{
 				req->ParseHTTPForm();
-				Text::String *s = req->GetHTTPFormStr(CSTR("SAMLResponse"));
-				if (s)
+				NotNullPtr<Text::String> s;
+				if (req->GetHTTPFormStr(CSTR("SAMLResponse")).SetTo(s))
 				{
 					Text::TextBinEnc::Base64Enc b64;
 					UInt8 *buff = MemAlloc(UInt8, s->leng + 1);

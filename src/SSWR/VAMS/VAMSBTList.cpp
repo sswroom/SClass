@@ -27,7 +27,7 @@ SSWR::VAMS::VAMSBTList::~VAMSBTList()
 	}
 }
 
-void SSWR::VAMS::VAMSBTList::AddItem(Text::String *avlNo, Int32 progId, Int64 ts, Int16 rssi)
+void SSWR::VAMS::VAMSBTList::AddItem(NotNullPtr<Text::String> avlNo, Int32 progId, Int64 ts, Int16 rssi)
 {
 	Data::DateTime dt;
 	dt.SetCurrTimeUTC();
@@ -42,7 +42,7 @@ void SSWR::VAMS::VAMSBTList::AddItem(Text::String *avlNo, Int32 progId, Int64 ts
 		NEW_CLASS(progMap, Data::FastStringMap<AvlBleItem*>());
 		this->itemMap.Put(progId, progMap);
 	}
-	AvlBleItem *item = progMap->Get(avlNo);
+	AvlBleItem *item = progMap->GetNN(avlNo);
 	if (item == 0)
 	{
 		item = MemAlloc(AvlBleItem, 1);
@@ -51,7 +51,7 @@ void SSWR::VAMS::VAMSBTList::AddItem(Text::String *avlNo, Int32 progId, Int64 ts
 		item->lastDevTS = ts;
 		item->rssi = rssi;
 		item->lastProcTS = 0;
-		progMap->Put(avlNo, item);
+		progMap->PutNN(avlNo, item);
 	}
 	else if (item->lastDevTS < ts)
 	{

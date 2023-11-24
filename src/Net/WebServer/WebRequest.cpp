@@ -532,7 +532,7 @@ void Net::WebServer::WebRequest::ParseHTTPForm()
 	}
 }
 
-Text::String *Net::WebServer::WebRequest::GetHTTPFormStr(Text::CStringNN name)
+Optional<Text::String> Net::WebServer::WebRequest::GetHTTPFormStr(Text::CStringNN name)
 {
 	if (this->formMap == 0)
 		return 0;

@@ -594,6 +594,18 @@ namespace Data
 			}
 		}
 
+		static Timestamp FromMSDOSTime(UInt16 date, UInt16 time, Int8 tzQhr)
+		{
+			Data::DateTimeUtil::TimeValue tval;
+			tval.year = (UInt16)(1980 + ((date >> 9) & 0x7f));
+			tval.month = (date >> 5) & 0xf;
+			tval.day = date & 0x1f;
+			tval.hour = (UInt8)(time >> 11);
+			tval.minute = (time >> 5) & 0x3f;
+			tval.second = (UInt8)((time & 0x1f) << 1);
+			return Timestamp(Data::TimeInstant(Data::DateTimeUtil::TimeValue2Secs(tval, tzQhr), 0), tzQhr);
+		}
+
 		static Timestamp Null()
 		{
 			return Data::Timestamp(0);

@@ -16,7 +16,7 @@ Bool Net::WebServer::MODBUSDevSimHandler::ProcessRequest(NotNullPtr<Net::WebServ
 				UInt32 delay;
 				UInt16 toggleIndex;
 				req->ParseHTTPForm();
-				if (s.Set(req->GetHTTPFormStr(CSTR("action"))))
+				if (req->GetHTTPFormStr(CSTR("action")).SetTo(s))
 				{
 					if (s->Equals(UTF8STRC("toggle")) && req->GetHTTPFormUInt16(CSTR("index"), toggleIndex))
 					{

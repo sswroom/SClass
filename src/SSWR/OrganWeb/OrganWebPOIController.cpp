@@ -77,13 +77,21 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcLogin(NotNullPtr<Net::W
 		UTF8Char sbuff[128];
 		UTF8Char *sptr;
 		req->ParseHTTPForm();
-		Text::String *userName = req->GetHTTPFormStr(CSTR("userName"));
-		Text::String *pwd = req->GetHTTPFormStr(CSTR("password"));
-		if (userName && pwd && userName->leng > 0 && pwd->leng > 0)
+		NotNullPtr<Text::String> userName;
+		NotNullPtr<Text::String> pwd;
+		if (!req->GetHTTPFormStr(CSTR("userName")).SetTo(userName) || userName->leng == 0)
+		{
+			msg = CSTR("Username is missing");
+		}
+		else if (!req->GetHTTPFormStr(CSTR("password")).SetTo(pwd) || pwd->leng == 0)
+		{
+			msg = CSTR("Password is missing");
+		}
+		else
 		{
 			Sync::RWMutexUsage mutUsage;
 			sptr = me->env->PasswordEnc(sbuff, pwd->ToCString());
-			env.user = me->env->UserGetByName(mutUsage, userName);
+			env.user = me->env->UserGetByName(mutUsage, userName).OrNull();
 			if (env.user && env.user->pwd->Equals(sbuff, (UOSInt)(sptr - sbuff)))
 			{
 				mutUsage.EndUse();
@@ -103,14 +111,6 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcLogin(NotNullPtr<Net::W
 			{
 				msg = CSTR("Invalid username or password");
 			}
-		}
-		else if (userName == 0 || userName->leng == 0)
-		{
-			msg = CSTR("Username is missing");
-		}
-		else
-		{
-			msg = CSTR("Password is missing");
 		}
 	}
 	Text::JSONBuilder json(Text::JSONBuilder::OT_OBJECT);
@@ -601,35 +601,30 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcBookAdd(NotNullPtr<Net:
 	}
 	else
 	{
-		Text::String *title = 0;
-		Text::String *author = 0;
-		Text::String *press = 0;
-		Text::String *pubDate = 0;
-		Text::String *url = 0;
+		NotNullPtr<Text::String> title;
+		NotNullPtr<Text::String> author;
+		NotNullPtr<Text::String> press;
+		NotNullPtr<Text::String> pubDate;
+		NotNullPtr<Text::String> url;
 		req->ParseHTTPForm();
-		title = req->GetHTTPFormStr(CSTR("title"));
-		author = req->GetHTTPFormStr(CSTR("author"));
-		press = req->GetHTTPFormStr(CSTR("press"));
-		pubDate = req->GetHTTPFormStr(CSTR("pubDate"));
-		url = req->GetHTTPFormStr(CSTR("url"));
 		Data::Timestamp ts;
-		if (title == 0 || title->leng == 0)
+		if (!req->GetHTTPFormStr(CSTR("title")).SetTo(title) || title->leng == 0)
 		{
 			msg = CSTR("Book Name is empty");
 		}
-		else if (author == 0 || author->leng == 0)
+		else if (!req->GetHTTPFormStr(CSTR("author")).SetTo(author) || author->leng == 0)
 		{
 			msg = CSTR("Author is empty");
 		}
-		else if (press == 0 || press->leng == 0)
+		else if (!req->GetHTTPFormStr(CSTR("press")).SetTo(press) || press->leng == 0)
 		{
 			msg = CSTR("Press is empty");
 		}
-		else if (pubDate == 0 || (ts = Data::Timestamp(pubDate->ToCString(), 0)).IsNull())
+		else if (!req->GetHTTPFormStr(CSTR("pubDate")).SetTo(pubDate) || (ts = Data::Timestamp(pubDate->ToCString(), 0)).IsNull())
 		{
 			msg = CSTR("Publish Date is not valid");
 		}
-		else if (url == 0 || (url->leng > 0 && !url->StartsWith(UTF8STRC("http://")) && !url->StartsWith(UTF8STRC("https://"))))
+		else if (!req->GetHTTPFormStr(CSTR("url")).SetTo(url) || (url->leng > 0 && !url->StartsWith(UTF8STRC("http://")) && !url->StartsWith(UTF8STRC("https://"))))
 		{
 			msg = CSTR("URL is not valid");
 		}
@@ -885,7 +880,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcPhotoUpload(NotNullPtr<
 	UTF8Char fileName[512];
 	UTF8Char *fileNameEnd;
 	const UInt8 *fileCont;
-	Text::String *location;
+	NotNullPtr<Text::String> location;
 	Text::CString msg = CSTR_NULL;
 	Bool succ = true;
 	req->ParseHTTPForm();
@@ -897,7 +892,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcPhotoUpload(NotNullPtr<
 		{
 			break;
 		}
-		location = req->GetHTTPFormStr(CSTR("location"));
+		location = Text::String::OrEmpty(req->GetHTTPFormStr(CSTR("location")));
 		IO::StmData::MemoryDataRef md(fileCont, fileSize);
 		md.SetName(CSTRP(fileName, fileNameEnd));
 		NotNullPtr<Map::MapDrawLayer> layer;
@@ -916,7 +911,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcPhotoUpload(NotNullPtr<
 				msg = CSTR("Not GPS Track");
 			}
 		}
-		else if (!me->env->UserfileAdd(mutUsage, env.user->id, env.user->unorganSpId, CSTRP(fileName, fileNameEnd), fileCont, fileSize, true, location))
+		else if (!me->env->UserfileAdd(mutUsage, env.user->id, env.user->unorganSpId, CSTRP(fileName, fileNameEnd), fileCont, fileSize, true, location->leng == 0?0:location.Ptr()))
 		{
 			msg = CSTR("Userfile problem");
 			succ = false;
@@ -950,9 +945,9 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcPhotoName(NotNullPtr<Ne
 	if (env.user)
 	{
 		Int32 fileId;
-		Text::String *desc;
+		NotNullPtr<Text::String> desc;
 		req->ParseHTTPForm();
-		if ((desc = req->GetHTTPFormStr(CSTR("desc"))) != 0 && req->GetHTTPFormInt32(CSTR("fileId"), fileId))
+		if (req->GetHTTPFormStr(CSTR("desc")).SetTo(desc) && req->GetHTTPFormInt32(CSTR("fileId"), fileId))
 		{
 			Sync::RWMutexUsage mutUsage;
 			UserFileInfo *file = me->env->UserfileGet(mutUsage, fileId);
@@ -1089,7 +1084,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcReload(NotNullPtr<Net::
 	{
 		NotNullPtr<Text::String> pwd;
 		req->ParseHTTPForm();
-		if (pwd.Set(req->GetHTTPFormStr(CSTR("pwd"))) && me->env->ReloadPwdMatches(pwd))
+		if (req->GetHTTPFormStr(CSTR("pwd")).SetTo(pwd) && me->env->ReloadPwdMatches(pwd))
 		{
 			me->env->Reload();
 			return me->ResponseJSON(req, resp, 0, CSTR("{\"status\":\"Reloaded\"}"));

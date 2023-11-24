@@ -28,7 +28,7 @@ namespace SSWR
 			VAMSBTList();
 			~VAMSBTList();
 
-			void AddItem(Text::String *avlNo, Int32 progId, Int64 ts, Int16 rssi);
+			void AddItem(NotNullPtr<Text::String> avlNo, Int32 progId, Int64 ts, Int16 rssi);
 			UOSInt QueryByProgId(Data::ArrayList<AvlBleItem *> *itemList, Int32 progId, Int32 timeoutIntervalMs);
 			void KARecv(Int32 progId);
 			Int64 GetLastKeepAlive(Int32 progId);

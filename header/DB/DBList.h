@@ -28,7 +28,7 @@ namespace DB
 
 		void Close();
 		void AddDB(NotNullPtr<DB::DBTool> db);
-		DB::DBTool *UseDB();
+		Optional<DB::DBTool> UseDB();
 		void UnuseDB(NotNullPtr<DB::DBTool> db);
 		UOSInt GetCount() const;
 	};

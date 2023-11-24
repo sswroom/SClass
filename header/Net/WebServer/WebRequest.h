@@ -65,7 +65,7 @@ namespace Net
 			virtual Bool HasQuery(Text::CStringNN name);
 			virtual Net::WebUtil::RequestMethod GetReqMethod() const;
 			virtual void ParseHTTPForm();
-			virtual Text::String *GetHTTPFormStr(Text::CStringNN name);
+			virtual Optional<Text::String> GetHTTPFormStr(Text::CStringNN name);
 			virtual const UInt8 *GetHTTPFormFile(Text::CStringNN formName, UOSInt index, UTF8Char *fileName, UOSInt fileNameBuffSize, OptOut<UTF8Char*> fileNameEnd, OptOut<UOSInt> fileSize);
 			virtual void GetRequestURLBase(NotNullPtr<Text::StringBuilderUTF8> sb);
 

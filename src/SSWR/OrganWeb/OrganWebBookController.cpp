@@ -323,38 +323,43 @@ Bool __stdcall SSWR::OrganWeb::OrganWebBookController::SvcBookAdd(NotNullPtr<Net
 			resp->ResponseError(req, Net::WebStatus::SC_BAD_REQUEST);
 			return true;
 		}
-		Text::String *title = 0;
-		Text::String *author = 0;
-		Text::String *press = 0;
-		Text::String *pubDate = 0;
-		Text::String *url = 0;
+		NotNullPtr<Text::String> title = Text::String::NewEmpty();
+		NotNullPtr<Text::String> author = title;
+		NotNullPtr<Text::String> press = title;
+		NotNullPtr<Text::String> pubDate = title;
+		NotNullPtr<Text::String> url = title;
 		Text::CString errMsg = CSTR_NULL;
 		if (req->GetReqMethod() == Net::WebUtil::RequestMethod::HTTP_POST)
 		{
 			req->ParseHTTPForm();
-			title = req->GetHTTPFormStr(CSTR("title"));
-			author = req->GetHTTPFormStr(CSTR("author"));
-			press = req->GetHTTPFormStr(CSTR("press"));
-			pubDate = req->GetHTTPFormStr(CSTR("pubDate"));
-			url = req->GetHTTPFormStr(CSTR("url"));
 			Data::Timestamp ts;
-			if (title == 0 || title->leng == 0)
+			if (!req->GetHTTPFormStr(CSTR("title")).SetTo(title) || title->leng == 0)
 			{
 				errMsg = CSTR("Book Name is empty");
+				req->GetHTTPFormStr(CSTR("author")).SetTo(author);
+				req->GetHTTPFormStr(CSTR("press")).SetTo(press);
+				req->GetHTTPFormStr(CSTR("pubDate")).SetTo(pubDate);
+				req->GetHTTPFormStr(CSTR("url")).SetTo(url);
 			}
-			else if (author == 0 || author->leng == 0)
+			else if (!req->GetHTTPFormStr(CSTR("author")).SetTo(author) || author->leng == 0)
 			{
 				errMsg = CSTR("Author is empty");
+				req->GetHTTPFormStr(CSTR("press")).SetTo(press);
+				req->GetHTTPFormStr(CSTR("pubDate")).SetTo(pubDate);
+				req->GetHTTPFormStr(CSTR("url")).SetTo(url);
 			}
-			else if (press == 0 || press->leng == 0)
+			else if (!req->GetHTTPFormStr(CSTR("press")).SetTo(press) || press->leng == 0)
 			{
 				errMsg = CSTR("Press is empty");
+				req->GetHTTPFormStr(CSTR("pubDate")).SetTo(pubDate);
+				req->GetHTTPFormStr(CSTR("url")).SetTo(url);
 			}
-			else if (pubDate == 0 || (ts = Data::Timestamp(pubDate->ToCString(), 0)).IsNull())
+			else if (!req->GetHTTPFormStr(CSTR("pubDate")).SetTo(pubDate) || (ts = Data::Timestamp(pubDate->ToCString(), 0)).IsNull())
 			{
 				errMsg = CSTR("Publish Date is not valid");
+				req->GetHTTPFormStr(CSTR("url")).SetTo(url);
 			}
-			else if (url == 0 || (url->leng > 0 && !url->StartsWith(UTF8STRC("http://")) && !url->StartsWith(UTF8STRC("https://"))))
+			else if (!req->GetHTTPFormStr(CSTR("url")).SetTo(url) || (url->leng > 0 && !url->StartsWith(UTF8STRC("http://")) && !url->StartsWith(UTF8STRC("https://"))))
 			{
 				errMsg = CSTR("URL is not valid");
 			}
@@ -386,7 +391,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebBookController::SvcBookAdd(NotNullPtr<Net
 		writer.WriteStrC(UTF8STRC("\">"));
 
 		writer.WriteStrC(UTF8STRC("<b>Book Name:</b> <input type=\"text\" name=\"title\""));
-		if (title)
+		if (title->leng > 0)
 		{
 			s = Text::XML::ToNewAttrText(title->v);
 			writer.WriteStrC(UTF8STRC(" value="));
@@ -396,7 +401,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebBookController::SvcBookAdd(NotNullPtr<Net
 		writer.WriteLineC(UTF8STRC(" /><br/>"));
 
 		writer.WriteStrC(UTF8STRC("<b>Author:</b> <input type=\"text\" name=\"author\""));
-		if (author)
+		if (author->leng > 0)
 		{
 			s = Text::XML::ToNewAttrText(author->v);
 			writer.WriteStrC(UTF8STRC(" value="));
@@ -406,7 +411,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebBookController::SvcBookAdd(NotNullPtr<Net
 		writer.WriteLineC(UTF8STRC(" /><br/>"));
 
 		writer.WriteStrC(UTF8STRC("<b>Publish Date:</b> <input type=\"text\" name=\"pubDate\""));
-		if (pubDate)
+		if (pubDate->leng > 0)
 		{
 			s = Text::XML::ToNewAttrText(pubDate->v);
 			writer.WriteStrC(UTF8STRC(" value="));
@@ -423,7 +428,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebBookController::SvcBookAdd(NotNullPtr<Net
 		writer.WriteLineC(UTF8STRC(" /><br/>"));
 
 		writer.WriteStrC(UTF8STRC("<b>Press:</b> <input type=\"text\" name=\"press\""));
-		if (press)
+		if (press->leng > 0)
 		{
 			s = Text::XML::ToNewAttrText(press->v);
 			writer.WriteStrC(UTF8STRC(" value="));
@@ -433,7 +438,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebBookController::SvcBookAdd(NotNullPtr<Net
 		writer.WriteLineC(UTF8STRC(" /><br/>"));
 
 		writer.WriteStrC(UTF8STRC("<b>URL:</b> <input type=\"text\" name=\"url\""));
-		if (url)
+		if (url->leng > 0)
 		{
 			s = Text::XML::ToNewAttrText(url->v);
 			writer.WriteStrC(UTF8STRC(" value="));

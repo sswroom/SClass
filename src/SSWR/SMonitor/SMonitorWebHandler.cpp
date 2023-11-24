@@ -56,7 +56,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::IndexReq(SSWR::SMonitor::SMon
 			req->ParseHTTPForm();
 			NotNullPtr<Text::String> pwd;
 			NotNullPtr<Text::String> retype;
-			if (pwd.Set(req->GetHTTPFormStr(CSTR("password"))) && retype.Set(req->GetHTTPFormStr(CSTR("retype"))))
+			if (req->GetHTTPFormStr(CSTR("password")).SetTo(pwd) && req->GetHTTPFormStr(CSTR("retype")).SetTo(retype))
 			{
 				if (pwd->leng >= 3 && pwd->Equals(retype))
 				{
@@ -294,10 +294,10 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::LoginReq(SSWR::SMonitor::SMon
 	if (req->GetReqMethod() == Net::WebUtil::RequestMethod::HTTP_POST)
 	{
 		req->ParseHTTPForm();
-		Text::String *s = req->GetHTTPFormStr(CSTR("action"));
-		Text::String *s2 = req->GetHTTPFormStr(CSTR("user"));
-		Text::String *s3 = req->GetHTTPFormStr(CSTR("pwd"));
-		if (s && s2 && s3 && s->Equals(UTF8STRC("login")))
+		NotNullPtr<Text::String> s;
+		NotNullPtr<Text::String> s2;
+		NotNullPtr<Text::String> s3;
+		if (req->GetHTTPFormStr(CSTR("action")).SetTo(s) && req->GetHTTPFormStr(CSTR("user")).SetTo(s2) && req->GetHTTPFormStr(CSTR("pwd")).SetTo(s3) && s->Equals(UTF8STRC("login")))
 		{
 			if (s2->v[0])
 			{
@@ -565,23 +565,21 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceEditReq(SSWR::SMonitor:
 	if (req->GetReqMethod() == Net::WebUtil::RequestMethod::HTTP_POST)
 	{
 		req->ParseHTTPForm();
-		Text::String *action = req->GetHTTPFormStr(CSTR("action"));
-		if (action && action->Equals(UTF8STRC("modify")))
+		NotNullPtr<Text::String> action;
+		if (req->GetHTTPFormStr(CSTR("action")).SetTo(action) && action->Equals(UTF8STRC("modify")))
 		{
-			Text::String *devName = req->GetHTTPFormStr(CSTR("devName"));
+			NotNullPtr<Text::String> devName;
 			Int32 flags = 0;
-			Text::String *s;
-			s = req->GetHTTPFormStr(CSTR("anonymous"));
-			if (s && s->v[0] == '1')
+			NotNullPtr<Text::String> s;
+			if (req->GetHTTPFormStr(CSTR("anonymous")).SetTo(s) && s->v[0] == '1')
 			{
 				flags |= 1;
 			}
-			s = req->GetHTTPFormStr(CSTR("removed"));
-			if (s && s->v[0] == '1')
+			if (req->GetHTTPFormStr(CSTR("removed")).SetTo(s) && s->v[0] == '1')
 			{
 				flags |= 2;
 			}
-			if (devName)
+			if (req->GetHTTPFormStr(CSTR("devName")).SetTo(devName))
 			{
 				if (me->core->DeviceModify(cliId, devName->ToCString(), flags))
 				{
@@ -689,11 +687,11 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingReq(SSWR::SMonit
 	if (req->GetReqMethod() == Net::WebUtil::RequestMethod::HTTP_POST)
 	{
 		req->ParseHTTPForm();
-		Text::String *action = req->GetHTTPFormStr(CSTR("action"));
-		if (action && action->Equals(UTF8STRC("reading")))
+		NotNullPtr<Text::String> action;
+		if (req->GetHTTPFormStr(CSTR("action")).SetTo(action) && action->Equals(UTF8STRC("reading")))
 		{
 			Text::StringBuilderUTF8 sb;
-			Text::String *s;
+			NotNullPtr<Text::String> s;
 			i = 0;
 			j = dev->nReading;
 			while (i < j)
@@ -703,8 +701,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingReq(SSWR::SMonit
 					sb.AppendC(UTF8STRC("|"));
 				}
 				sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("readingName")), i);
-				s = req->GetHTTPFormStr(CSTRP(sbuff, sptr));
-				if (s)
+				if (req->GetHTTPFormStr(CSTRP(sbuff, sptr)).SetTo(s))
 				{
 					sb.Append(s);
 				}
@@ -831,11 +828,11 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceDigitalsReq(SSWR::SMoni
 	if (req->GetReqMethod() == Net::WebUtil::RequestMethod::HTTP_POST)
 	{
 		req->ParseHTTPForm();
-		Text::String *action = req->GetHTTPFormStr(CSTR("action"));
-		if (action && action->Equals(UTF8STRC("digitals")))
+		NotNullPtr<Text::String> action;
+		if (req->GetHTTPFormStr(CSTR("action")).SetTo(action) && action->Equals(UTF8STRC("digitals")))
 		{
 			Text::StringBuilderUTF8 sb;
-			Text::String *s;
+			NotNullPtr<Text::String> s;
 			i = 0;
 			j = dev->ndigital;
 			while (i < j)
@@ -845,8 +842,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceDigitalsReq(SSWR::SMoni
 					sb.AppendC(UTF8STRC("|"));
 				}
 				sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("digitalName")), i);
-				s = req->GetHTTPFormStr(CSTRP(sbuff, sptr));
-				if (s)
+				if (req->GetHTTPFormStr(CSTRP(sbuff, sptr)).SetTo(s))
 				{
 					sb.Append(s);
 				}
@@ -1814,11 +1810,11 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::UserPasswordReq(SSWR::SMonito
 		req->ParseHTTPForm();
 		NotNullPtr<Text::String> pwd;
 		NotNullPtr<Text::String> retype;
-		if (!pwd.Set(req->GetHTTPFormStr(CSTR("password"))) || pwd->v[0] == 0)
+		if (!req->GetHTTPFormStr(CSTR("password")).SetTo(pwd) || pwd->v[0] == 0)
 		{
 			msg = CSTR("Password is empty");
 		}
-		else if (!retype.Set(req->GetHTTPFormStr(CSTR("retype"))) || retype->v[0] == 0)
+		else if (!req->GetHTTPFormStr(CSTR("retype")).SetTo(retype) || retype->v[0] == 0)
 		{
 			msg = CSTR("Retype is empty");
 		}
@@ -1968,11 +1964,9 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::UserAddReq(SSWR::SMonitor::SM
 	if (req->GetReqMethod() == Net::WebUtil::RequestMethod::HTTP_POST)
 	{
 		req->ParseHTTPForm();
-		Text::String *action;
-		Text::String *userName;
-		action = req->GetHTTPFormStr(CSTR("action"));
-		userName = req->GetHTTPFormStr(CSTR("username"));
-		if (action && userName && action->Equals(UTF8STRC("adduser")))
+		NotNullPtr<Text::String> action;
+		NotNullPtr<Text::String> userName;
+		if (req->GetHTTPFormStr(CSTR("action")).SetTo(action) && req->GetHTTPFormStr(CSTR("username")).SetTo(userName) && action->Equals(UTF8STRC("adduser")))
 		{
 			UOSInt len = userName->leng;
 			if (len >= 3 && len < 128)
@@ -2049,11 +2043,9 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::UserAssignReq(SSWR::SMonitor:
 	if (req->GetReqMethod() == Net::WebUtil::RequestMethod::HTTP_POST)
 	{
 		req->ParseHTTPForm();
-		Text::String *action;
-		Text::String *devicestr;
-		action = req->GetHTTPFormStr(CSTR("action"));
-		devicestr = req->GetHTTPFormStr(CSTR("device"));
-		if (action && devicestr && action->Equals(UTF8STRC("userassign")))
+		NotNullPtr<Text::String> action;
+		NotNullPtr<Text::String> devicestr;
+		if (req->GetHTTPFormStr(CSTR("action")).SetTo(action) && req->GetHTTPFormStr(CSTR("device")).SetTo(devicestr) && action->Equals(UTF8STRC("userassign")))
 		{
 			Data::ArrayListInt64 devIds;
 			UTF8Char *sarr[2];

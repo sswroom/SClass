@@ -110,15 +110,15 @@ namespace SSWR
 			void BookGetList(NotNullPtr<Sync::RWMutexUsage> mutUsage, NotNullPtr<Data::ArrayList<BookInfo*>> bookList);
 			Bool BookFileExist(NotNullPtr<BookInfo> book);
 			Bool BookSetPhoto(NotNullPtr<Sync::RWMutexUsage> mutUsage, Int32 bookId, Int32 userfileId);
-			BookInfo *BookAdd(NotNullPtr<Sync::RWMutexUsage> mutUsage, Text::String *title, Text::String *author, Text::String *press, Data::Timestamp pubDate, Text::String *url);
-			Bool BookAddSpecies(NotNullPtr<Sync::RWMutexUsage> mutUsage, Int32 speciesId, Text::String *bookspecies, Bool allowDuplicate);
+			BookInfo *BookAdd(NotNullPtr<Sync::RWMutexUsage> mutUsage, NotNullPtr<Text::String> title, NotNullPtr<Text::String> author, NotNullPtr<Text::String> press, Data::Timestamp pubDate, NotNullPtr<Text::String> url);
+			Bool BookAddSpecies(NotNullPtr<Sync::RWMutexUsage> mutUsage, Int32 speciesId, NotNullPtr<Text::String> bookspecies, Bool allowDuplicate);
 
 			Bool UserGPSGetPos(NotNullPtr<Sync::RWMutexUsage> mutUsage, Int32 userId, const Data::Timestamp &t, Double *lat, Double *lon);
 			WebUserInfo *UserGet(NotNullPtr<Sync::RWMutexUsage> mutUsage, Int32 id);
-			WebUserInfo *UserGetByName(NotNullPtr<Sync::RWMutexUsage> mutUsage, Text::String *name);
+			Optional<WebUserInfo> UserGetByName(NotNullPtr<Sync::RWMutexUsage> mutUsage, NotNullPtr<Text::String> name);
 
 			SpeciesInfo *SpeciesGet(NotNullPtr<Sync::RWMutexUsage> mutUsage, Int32 id);
-			SpeciesInfo *SpeciesGetByName(NotNullPtr<Sync::RWMutexUsage> mutUsage, Text::String *sname);
+			SpeciesInfo *SpeciesGetByName(NotNullPtr<Sync::RWMutexUsage> mutUsage, NotNullPtr<Text::String> sname);
 			Int32 SpeciesAdd(NotNullPtr<Sync::RWMutexUsage> mutUsage, Text::CString engName, Text::CString chiName, Text::CString sciName, Int32 groupId, Text::CString description, Text::CString dirName, Text::CString idKey, Int32 cateId);
 			Bool SpeciesUpdateDefPhoto(NotNullPtr<Sync::RWMutexUsage> mutUsage, Int32 speciesId);
 			Bool SpeciesSetPhotoId(NotNullPtr<Sync::RWMutexUsage> mutUsage, Int32 speciesId, Int32 photoId);

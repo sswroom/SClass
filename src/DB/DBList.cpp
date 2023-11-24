@@ -35,7 +35,7 @@ void DB::DBList::AddDB(NotNullPtr<DB::DBTool> db)
 	this->dbList.Add(dbInfo);
 }
 
-DB::DBTool *DB::DBList::UseDB()
+Optional<DB::DBTool> DB::DBList::UseDB()
 {
 	DBInfo *dbInfo;
 	UOSInt i;
@@ -64,7 +64,7 @@ DB::DBTool *DB::DBList::UseDB()
 				dbInfo->isUsing = true;
 				this->nextIndex = k;
 				mutUsage.EndUse();
-				return dbInfo->db.Ptr();
+				return dbInfo->db;
 			}
 		}
 		mutUsage.EndUse();

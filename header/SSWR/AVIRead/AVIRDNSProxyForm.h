@@ -230,7 +230,7 @@ namespace SSWR
 			Bool IsError();
 			void SetDNSList(Data::ArrayList<UInt32> *dnsList);
 			void SetDisableV6(Bool disableV6);
-			void AddBlacklist(Text::CString blackList);
+			void AddBlacklist(Text::CStringNN blackList);
 		};
 	}
 }

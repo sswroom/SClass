@@ -66,186 +66,184 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcGroup(NotNullPtr<Net::
 		if (req->GetReqMethod() == Net::WebUtil::RequestMethod::HTTP_POST && env.user != 0 && env.user->userType == UserType::Admin)
 		{
 			req->ParseHTTPForm();
-			Text::String *action = req->GetHTTPFormStr(CSTR("action"));
-			Text::String *s;
+			NotNullPtr<Text::String> action;
 			Int32 itemId;
-			if (action && action->Equals(UTF8STRC("pickall")))
+			if (req->GetHTTPFormStr(CSTR("action")).SetTo(action))
 			{
-				if (group->groups.GetCount() > 0)
+				if (action->Equals(UTF8STRC("pickall")))
 				{
-					env.pickObjType = POT_GROUP;
-					webSess.GetSess()->SetValueInt32(UTF8STRC("PickObjType"), env.pickObjType);
-					env.pickObjs->Clear();
-					i = 0;
-					j = group->groups.GetCount();
-					while (i < j)
+					if (group->groups.GetCount() > 0)
 					{
-						env.pickObjs->SortedInsert(group->groups.GetItem(i)->id);
-						i++;
-					}
-				}
-				else if (group->species.GetCount() > 0)
-				{
-					env.pickObjType = POT_SPECIES;
-					webSess.GetSess()->SetValueInt32(UTF8STRC("PickObjType"), env.pickObjType);
-					env.pickObjs->Clear();
-					i = 0;
-					j = group->species.GetCount();
-					while (i < j)
-					{
-						env.pickObjs->SortedInsert(group->species.GetItem(i)->speciesId);
-						i++;
-					}
-				}
-			}
-			else if (action && action->Equals(UTF8STRC("picksel")))
-			{
-				if (group->groups.GetCount() > 0)
-				{
-					env.pickObjType = POT_GROUP;
-					webSess.GetSess()->SetValueInt32(UTF8STRC("PickObjType"), env.pickObjType);
-					env.pickObjs->Clear();
-					i = 0;
-					j = group->groups.GetCount();
-					while (i < j)
-					{
-						itemId = group->groups.GetItem(i)->id;
-						sb.ClearStr();
-						sb.AppendC(UTF8STRC("group"));
-						sb.AppendI32(itemId);
-						s = req->GetHTTPFormStr(sb.ToCString());
-						if (s && s->v[0] == '1')
+						env.pickObjType = POT_GROUP;
+						webSess.GetSess()->SetValueInt32(UTF8STRC("PickObjType"), env.pickObjType);
+						env.pickObjs->Clear();
+						i = 0;
+						j = group->groups.GetCount();
+						while (i < j)
 						{
-							env.pickObjs->SortedInsert(itemId);
+							env.pickObjs->SortedInsert(group->groups.GetItem(i)->id);
+							i++;
 						}
-						i++;
 					}
-				}
-				else if (group->species.GetCount() > 0)
-				{
-					env.pickObjType = POT_SPECIES;
-					webSess.GetSess()->SetValueInt32(UTF8STRC("PickObjType"), env.pickObjType);
-					env.pickObjs->Clear();
-					i = 0;
-					j = group->species.GetCount();
-					while (i < j)
+					else if (group->species.GetCount() > 0)
 					{
-						itemId = group->species.GetItem(i)->speciesId;
-						sb.ClearStr();
-						sb.AppendC(UTF8STRC("species"));
-						sb.AppendI32(itemId);
-						s = req->GetHTTPFormStr(sb.ToCString());
-						if (s && s->v[0] == '1')
+						env.pickObjType = POT_SPECIES;
+						webSess.GetSess()->SetValueInt32(UTF8STRC("PickObjType"), env.pickObjType);
+						env.pickObjs->Clear();
+						i = 0;
+						j = group->species.GetCount();
+						while (i < j)
 						{
-							env.pickObjs->SortedInsert(itemId);
+							env.pickObjs->SortedInsert(group->species.GetItem(i)->speciesId);
+							i++;
 						}
-						i++;
 					}
 				}
-			}
-			else if (action && action->Equals(UTF8STRC("place")))
-			{
-				if (env.pickObjType == POT_GROUP && group->species.GetCount() == 0)
+				else if (action->Equals(UTF8STRC("picksel")))
 				{
-					i = 0;
-					j = env.pickObjs->GetCount();
-					while (i < j)
+					if (group->groups.GetCount() > 0)
 					{
-						itemId = env.pickObjs->GetItem(i);
-						sb.ClearStr();
-						sb.AppendC(UTF8STRC("group"));
-						sb.AppendI32(itemId);
-						s = req->GetHTTPFormStr(sb.ToCString());
-						if (s && s->v[0] == '1')
+						env.pickObjType = POT_GROUP;
+						webSess.GetSess()->SetValueInt32(UTF8STRC("PickObjType"), env.pickObjType);
+						env.pickObjs->Clear();
+						i = 0;
+						j = group->groups.GetCount();
+						while (i < j)
 						{
+							itemId = group->groups.GetItem(i)->id;
+							sb.ClearStr();
+							sb.AppendC(UTF8STRC("group"));
+							sb.AppendI32(itemId);
+							if (req->GetHTTPFormStr(sb.ToCString()).SetTo(s) && s->v[0] == '1')
+							{
+								env.pickObjs->SortedInsert(itemId);
+							}
+							i++;
+						}
+					}
+					else if (group->species.GetCount() > 0)
+					{
+						env.pickObjType = POT_SPECIES;
+						webSess.GetSess()->SetValueInt32(UTF8STRC("PickObjType"), env.pickObjType);
+						env.pickObjs->Clear();
+						i = 0;
+						j = group->species.GetCount();
+						while (i < j)
+						{
+							itemId = group->species.GetItem(i)->speciesId;
+							sb.ClearStr();
+							sb.AppendC(UTF8STRC("species"));
+							sb.AppendI32(itemId);
+							if (req->GetHTTPFormStr(sb.ToCString()).SetTo(s) && s->v[0] == '1')
+							{
+								env.pickObjs->SortedInsert(itemId);
+							}
+							i++;
+						}
+					}
+				}
+				else if (action->Equals(UTF8STRC("place")))
+				{
+					if (env.pickObjType == POT_GROUP && group->species.GetCount() == 0)
+					{
+						i = 0;
+						j = env.pickObjs->GetCount();
+						while (i < j)
+						{
+							itemId = env.pickObjs->GetItem(i);
+							sb.ClearStr();
+							sb.AppendC(UTF8STRC("group"));
+							sb.AppendI32(itemId);
+							if (req->GetHTTPFormStr(sb.ToCString()).SetTo(s) && s->v[0] == '1')
+							{
+								if (me->env->GroupMove(mutUsage, itemId, id, cateId))
+								{
+									env.pickObjs->RemoveAt(i);
+									i--;
+								}
+							}
+							i++;
+						}
+						if (env.pickObjs->GetCount() == 0)
+						{
+							env.pickObjType = POT_UNKNOWN;
+							webSess.GetSess()->SetValueInt32(UTF8STRC("PickObjType"), env.pickObjType);
+						}
+					}
+					else if (env.pickObjType == POT_SPECIES && group->groups.GetCount() == 0)
+					{
+						i = 0;
+						j = env.pickObjs->GetCount();
+						while (i < j)
+						{
+							itemId = env.pickObjs->GetItem(i);
+							sb.ClearStr();
+							sb.AppendC(UTF8STRC("species"));
+							sb.AppendI32(itemId);
+							if (req->GetHTTPFormStr(sb.ToCString()).SetTo(s) && s->v[0] == '1')
+							{
+								if (me->env->SpeciesMove(mutUsage, itemId, id, cateId))
+								{
+									env.pickObjs->RemoveAt(i);
+									i--;
+								}
+							}
+							i++;
+						}
+						if (env.pickObjs->GetCount() == 0)
+						{
+							env.pickObjType = POT_UNKNOWN;
+							webSess.GetSess()->SetValueInt32(UTF8STRC("PickObjType"), env.pickObjType);
+						}
+					}
+				}
+				else if (action->Equals(UTF8STRC("placeall")))
+				{
+					if (env.pickObjType == POT_GROUP && group->species.GetCount() == 0)
+					{
+						i = 0;
+						j = env.pickObjs->GetCount();
+						while (i < j)
+						{
+							itemId = env.pickObjs->GetItem(i);
 							if (me->env->GroupMove(mutUsage, itemId, id, cateId))
 							{
 								env.pickObjs->RemoveAt(i);
 								i--;
 							}
+							i++;
 						}
-						i++;
-					}
-					if (env.pickObjs->GetCount() == 0)
-					{
-						env.pickObjType = POT_UNKNOWN;
-						webSess.GetSess()->SetValueInt32(UTF8STRC("PickObjType"), env.pickObjType);
-					}
-				}
-				else if (env.pickObjType == POT_SPECIES && group->groups.GetCount() == 0)
-				{
-					i = 0;
-					j = env.pickObjs->GetCount();
-					while (i < j)
-					{
-						itemId = env.pickObjs->GetItem(i);
-						sb.ClearStr();
-						sb.AppendC(UTF8STRC("species"));
-						sb.AppendI32(itemId);
-						s = req->GetHTTPFormStr(sb.ToCString());
-						if (s && s->v[0] == '1')
+						if (env.pickObjs->GetCount() == 0)
 						{
+							env.pickObjType = POT_UNKNOWN;
+							webSess.GetSess()->SetValueInt32(UTF8STRC("PickObjType"), env.pickObjType);
+						}
+					}
+					else if (env.pickObjType == POT_SPECIES && group->groups.GetCount() == 0)
+					{
+						i = 0;
+						j = env.pickObjs->GetCount();
+						while (i < j)
+						{
+							itemId = env.pickObjs->GetItem(i);
 							if (me->env->SpeciesMove(mutUsage, itemId, id, cateId))
 							{
 								env.pickObjs->RemoveAt(i);
 								i--;
 							}
+							i++;
 						}
-						i++;
-					}
-					if (env.pickObjs->GetCount() == 0)
-					{
-						env.pickObjType = POT_UNKNOWN;
-						webSess.GetSess()->SetValueInt32(UTF8STRC("PickObjType"), env.pickObjType);
-					}
-				}
-			}
-			else if (action && action->Equals(UTF8STRC("placeall")))
-			{
-				if (env.pickObjType == POT_GROUP && group->species.GetCount() == 0)
-				{
-					i = 0;
-					j = env.pickObjs->GetCount();
-					while (i < j)
-					{
-						itemId = env.pickObjs->GetItem(i);
-						if (me->env->GroupMove(mutUsage, itemId, id, cateId))
+						if (env.pickObjs->GetCount() == 0)
 						{
-							env.pickObjs->RemoveAt(i);
-							i--;
+							env.pickObjType = POT_UNKNOWN;
+							webSess.GetSess()->SetValueInt32(UTF8STRC("PickObjType"), env.pickObjType);
 						}
-						i++;
-					}
-					if (env.pickObjs->GetCount() == 0)
-					{
-						env.pickObjType = POT_UNKNOWN;
-						webSess.GetSess()->SetValueInt32(UTF8STRC("PickObjType"), env.pickObjType);
 					}
 				}
-				else if (env.pickObjType == POT_SPECIES && group->groups.GetCount() == 0)
+				else if (action->Equals(UTF8STRC("setphoto")))
 				{
-					i = 0;
-					j = env.pickObjs->GetCount();
-					while (i < j)
-					{
-						itemId = env.pickObjs->GetItem(i);
-						if (me->env->SpeciesMove(mutUsage, itemId, id, cateId))
-						{
-							env.pickObjs->RemoveAt(i);
-							i--;
-						}
-						i++;
-					}
-					if (env.pickObjs->GetCount() == 0)
-					{
-						env.pickObjType = POT_UNKNOWN;
-						webSess.GetSess()->SetValueInt32(UTF8STRC("PickObjType"), env.pickObjType);
-					}
+					me->env->GroupSetPhotoGroup(mutUsage, group->parentId, group->id);
 				}
-			}
-			else if (action && action->Equals(UTF8STRC("setphoto")))
-			{
-				me->env->GroupSetPhotoGroup(mutUsage, group->parentId, group->id);
 			}
 		}
 
@@ -492,7 +490,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcGroupMod(NotNullPtr<Ne
 		CategoryInfo *cate;
 		Text::StringBuilderUTF8 sb;
 		NotNullPtr<Text::String> s;
-		Text::String *txt;
+		NotNullPtr<Text::String> txt;
 		IO::ConfigFile *lang = me->env->LangGet(req);
 
 		Sync::RWMutexUsage mutUsage;
@@ -512,10 +510,9 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcGroupMod(NotNullPtr<Ne
 		}
 
 		Text::StringBuilderUTF8 msg;
-		Text::String *ename = 0;
-		NotNullPtr<Text::String> nnename;
-		Text::String *cname = 0;
-		Text::String *descr = 0;
+		NotNullPtr<Text::String> ename = Text::String::NewEmpty();
+		NotNullPtr<Text::String> cname = ename;
+		NotNullPtr<Text::String> descr = ename;
 		GroupFlags groupFlags = GF_NONE;
 		Int32 groupTypeId = 0;
 		GroupInfo *modGroup = 0;
@@ -524,25 +521,25 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcGroupMod(NotNullPtr<Ne
 			modGroup = me->env->GroupGet(mutUsage, groupId);
 			if (modGroup)
 			{
-				cname = modGroup->chiName.Ptr();
-				ename = modGroup->engName.Ptr();
-				descr = modGroup->descript.Ptr();
+				cname = modGroup->chiName;
+				ename = modGroup->engName;
+				descr = modGroup->descript;
 				groupTypeId = modGroup->groupType;
 			}
 		}
 		if (req->GetReqMethod() == Net::WebUtil::RequestMethod::HTTP_POST)
 		{
 			req->ParseHTTPForm();
-			Text::String *task = req->GetHTTPFormStr(CSTR("task"));
-			cname = req->GetHTTPFormStr(CSTR("cname"));
-			ename = req->GetHTTPFormStr(CSTR("ename"));
-			descr = req->GetHTTPFormStr(CSTR("descr"));
-			txt = req->GetHTTPFormStr(CSTR("adminOnly"));
-			if (txt && txt->v[0] == '1')
+			NotNullPtr<Text::String> task;
+			if (req->GetHTTPFormStr(CSTR("adminOnly")).SetTo(txt) && txt->v[0] == '1')
 			{
 				groupFlags = (GroupFlags)(groupFlags | GF_ADMIN_ONLY);
 			}
-			if (task != 0 && cname != 0 && req->GetHTTPFormInt32(CSTR("groupType"), groupTypeId) && nnename.Set(ename) && descr != 0 && ename->v[0] != 0 && cname->v[0] != 0)
+			if (req->GetHTTPFormStr(CSTR("task")).SetTo(task) &&
+				req->GetHTTPFormStr(CSTR("cname")).SetTo(cname) &&
+				req->GetHTTPFormInt32(CSTR("groupType"), groupTypeId) &&
+				req->GetHTTPFormStr(CSTR("ename")).SetTo(ename) &&
+				req->GetHTTPFormStr(CSTR("descr")).SetTo(descr) && ename->v[0] != 0 && cname->v[0] != 0)
 			{
 				if (task->Equals(UTF8STRC("new")))
 				{
@@ -551,7 +548,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcGroupMod(NotNullPtr<Ne
 					i = group->groups.GetCount();
 					while (i-- > 0)
 					{
-						if (group->groups.GetItem(i)->engName->Equals(nnename))
+						if (group->groups.GetItem(i)->engName->Equals(ename))
 						{
 							found = true;
 							break;
@@ -588,7 +585,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcGroupMod(NotNullPtr<Ne
 					i = group->groups.GetCount();
 					while (i-- > 0)
 					{
-						if (group->groups.GetItem(i) != modGroup && group->groups.GetItem(i)->engName->Equals(nnename))
+						if (group->groups.GetItem(i) != modGroup && group->groups.GetItem(i)->engName->Equals(ename))
 						{
 							found = true;
 							break;
@@ -600,7 +597,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcGroupMod(NotNullPtr<Ne
 					}
 					else
 					{
-						if (me->env->GroupModify(mutUsage, modGroup->id, STR_CSTR(ename), STR_CSTR(cname), STR_CSTR(descr), groupTypeId, groupFlags))
+						if (me->env->GroupModify(mutUsage, modGroup->id, ename->ToCString(), cname->ToCString(), descr->ToCString(), groupTypeId, groupFlags))
 						{
 							mutUsage.EndUse();
 							sb.ClearStr();
@@ -710,7 +707,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcGroupMod(NotNullPtr<Ne
 		}
 		writer.WriteLineC(UTF8STRC("</select></td></tr>"));
 		writer.WriteStrC(UTF8STRC("<tr><td>English Name</td><td><input type=\"text\" name=\"ename\""));
-		if (ename)
+		if (ename->leng > 0)
 		{
 			writer.WriteStrC(UTF8STRC(" value="));
 			s = Text::XML::ToNewAttrText(ename->v);
@@ -719,7 +716,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcGroupMod(NotNullPtr<Ne
 		}
 		writer.WriteLineC(UTF8STRC("/></td></tr>"));
 		writer.WriteStrC(UTF8STRC("<tr><td>Chinese Name</td><td><input type=\"text\" name=\"cname\""));
-		if (cname)
+		if (cname->leng > 0)
 		{
 			writer.WriteStrC(UTF8STRC(" value="));
 			s = Text::XML::ToNewAttrText(cname->v);
@@ -734,7 +731,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcGroupMod(NotNullPtr<Ne
 		}
 		writer.WriteLineC(UTF8STRC("/><label for=\"adminOnly\">Admin Only</label></td></tr>"));
 		writer.WriteStrC(UTF8STRC("<tr><td>Description</td><td><textarea name=\"descr\" rows=\"4\" cols=\"40\">"));
-		if (descr)
+		if (descr->leng > 0)
 		{
 			s = Text::XML::ToNewHTMLElementText(descr->v);
 			writer.WriteStrC(s->v, s->leng);
@@ -837,148 +834,148 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSpecies(NotNullPtr<Net
 		if (req->GetReqMethod() == Net::WebUtil::RequestMethod::HTTP_POST && env.user != 0 && env.user->userType == UserType::Admin)
 		{
 			req->ParseHTTPForm();
-			Text::String *action = req->GetHTTPFormStr(CSTR("action"));
-			Text::String *s;
+			NotNullPtr<Text::String> action;
+			NotNullPtr<Text::String> s;
 			Int32 userfileId;
-			if (action && action->Equals(UTF8STRC("pickall")))
+			if (req->GetHTTPFormStr(CSTR("action")).SetTo(action))
 			{
-				env.pickObjType = POT_USERFILE;
-				webSess.GetSess()->SetValueInt32(UTF8STRC("PickObjType"), env.pickObjType);
-				env.pickObjs->Clear();
-				i = 0;
-				j = species->files.GetCount();
-				while (i < j)
+				if (action->Equals(UTF8STRC("pickall")))
 				{
-					env.pickObjs->SortedInsert(species->files.GetItem(i)->id);
-					i++;
-				}
-			}
-			else if (action && action->Equals(UTF8STRC("picksel")))
-			{
-				env.pickObjType = POT_USERFILE;
-				webSess.GetSess()->SetValueInt32(UTF8STRC("PickObjType"), env.pickObjType);
-				env.pickObjs->Clear();
-				i = 0;
-				j = species->files.GetCount();
-				while (i < j)
-				{
-					userfileId = species->files.GetItem(i)->id;
-					sb.ClearStr();
-					sb.AppendC(UTF8STRC("userfile"));
-					sb.AppendI32(userfileId);
-					s = req->GetHTTPFormStr(sb.ToCString());
-					if (s && s->v[0] == '1')
-					{
-						env.pickObjs->SortedInsert(userfileId);
-					}
-					i++;
-				}
-			}
-			else if (action && action->Equals(UTF8STRC("place")))
-			{
-				if (env.pickObjType == POT_USERFILE)
-				{
+					env.pickObjType = POT_USERFILE;
+					webSess.GetSess()->SetValueInt32(UTF8STRC("PickObjType"), env.pickObjType);
+					env.pickObjs->Clear();
 					i = 0;
-					j = env.pickObjs->GetCount();
+					j = species->files.GetCount();
 					while (i < j)
 					{
-						userfileId = env.pickObjs->GetItem(i);
+						env.pickObjs->SortedInsert(species->files.GetItem(i)->id);
+						i++;
+					}
+				}
+				else if (action->Equals(UTF8STRC("picksel")))
+				{
+					env.pickObjType = POT_USERFILE;
+					webSess.GetSess()->SetValueInt32(UTF8STRC("PickObjType"), env.pickObjType);
+					env.pickObjs->Clear();
+					i = 0;
+					j = species->files.GetCount();
+					while (i < j)
+					{
+						userfileId = species->files.GetItem(i)->id;
 						sb.ClearStr();
 						sb.AppendC(UTF8STRC("userfile"));
 						sb.AppendI32(userfileId);
-						s = req->GetHTTPFormStr(sb.ToCString());
-						if (s && s->v[0] == '1')
+						if (req->GetHTTPFormStr(sb.ToCString()).SetTo(s) && s->v[0] == '1')
 						{
+							env.pickObjs->SortedInsert(userfileId);
+						}
+						i++;
+					}
+				}
+				else if (action->Equals(UTF8STRC("place")))
+				{
+					if (env.pickObjType == POT_USERFILE)
+					{
+						i = 0;
+						j = env.pickObjs->GetCount();
+						while (i < j)
+						{
+							userfileId = env.pickObjs->GetItem(i);
+							sb.ClearStr();
+							sb.AppendC(UTF8STRC("userfile"));
+							sb.AppendI32(userfileId);
+							if (req->GetHTTPFormStr(sb.ToCString()).SetTo(s) && s->v[0] == '1')
+							{
+								if (me->env->UserfileMove(mutUsage, userfileId, id, cateId))
+								{
+									env.pickObjs->RemoveAt(i);
+									i--;
+								}
+							}
+							i++;
+						}
+						if (env.pickObjs->GetCount() == 0)
+						{
+							env.pickObjType = POT_UNKNOWN;
+							webSess.GetSess()->SetValueInt32(UTF8STRC("PickObjType"), env.pickObjType);
+						}
+					}
+				}
+				else if (action->Equals(UTF8STRC("placeall")))
+				{
+					if (env.pickObjType == POT_USERFILE)
+					{
+						i = 0;
+						j = env.pickObjs->GetCount();
+						while (i < j)
+						{
+							userfileId = env.pickObjs->GetItem(i);
 							if (me->env->UserfileMove(mutUsage, userfileId, id, cateId))
 							{
 								env.pickObjs->RemoveAt(i);
 								i--;
 							}
+							i++;
 						}
-						i++;
-					}
-					if (env.pickObjs->GetCount() == 0)
-					{
-						env.pickObjType = POT_UNKNOWN;
-						webSess.GetSess()->SetValueInt32(UTF8STRC("PickObjType"), env.pickObjType);
+						if (env.pickObjs->GetCount() == 0)
+						{
+							env.pickObjType = POT_UNKNOWN;
+							webSess.GetSess()->SetValueInt32(UTF8STRC("PickObjType"), env.pickObjType);
+						}
 					}
 				}
-			}
-			else if (action && action->Equals(UTF8STRC("placeall")))
-			{
-				if (env.pickObjType == POT_USERFILE)
+				else if (action->Equals(UTF8STRC("placemerge")))
 				{
-					i = 0;
-					j = env.pickObjs->GetCount();
-					while (i < j)
+					if (env.pickObjType == POT_SPECIES)
 					{
-						userfileId = env.pickObjs->GetItem(i);
-						if (me->env->UserfileMove(mutUsage, userfileId, id, cateId))
+						i = 0;
+						j = env.pickObjs->GetCount();
+						while (i < j)
 						{
-							env.pickObjs->RemoveAt(i);
-							i--;
-						}
-						i++;
-					}
-					if (env.pickObjs->GetCount() == 0)
-					{
-						env.pickObjType = POT_UNKNOWN;
-						webSess.GetSess()->SetValueInt32(UTF8STRC("PickObjType"), env.pickObjType);
-					}
-				}
-			}
-			else if (action && action->Equals(UTF8STRC("placemerge")))
-			{
-				if (env.pickObjType == POT_SPECIES)
-				{
-					i = 0;
-					j = env.pickObjs->GetCount();
-					while (i < j)
-					{
-						Int32 speciesId = env.pickObjs->GetItem(i);
-						sb.ClearStr();
-						sb.AppendC(UTF8STRC("species"));
-						sb.AppendI32(speciesId);
-						s = req->GetHTTPFormStr(sb.ToCString());
-						if (s && s->v[0] == '1')
-						{
-							if (me->env->SpeciesMerge(mutUsage, speciesId, id, cateId))
+							Int32 speciesId = env.pickObjs->GetItem(i);
+							sb.ClearStr();
+							sb.AppendC(UTF8STRC("species"));
+							sb.AppendI32(speciesId);
+							if (req->GetHTTPFormStr(sb.ToCString()).SetTo(s) && s->v[0] == '1')
 							{
-								env.pickObjs->RemoveAt(i);
-								i--;
+								if (me->env->SpeciesMerge(mutUsage, speciesId, id, cateId))
+								{
+									env.pickObjs->RemoveAt(i);
+									i--;
+								}
 							}
+							i++;
 						}
-						i++;
+						if (env.pickObjs->GetCount() == 0)
+						{
+							env.pickObjType = POT_UNKNOWN;
+							webSess.GetSess()->SetValueInt32(UTF8STRC("PickObjType"), env.pickObjType);
+						}
 					}
-					if (env.pickObjs->GetCount() == 0)
+				}
+				else if (action->Equals(UTF8STRC("setphoto")))
+				{
+					me->env->GroupSetPhotoSpecies(mutUsage, species->groupId, species->speciesId);
+				}
+				else if (action->Equals(UTF8STRC("bookspecies")))
+				{
+					NotNullPtr<Text::String> dispName;
+					UInt32 bookAllowDup = 0;
+					req->GetHTTPFormUInt32(CSTR("bookAllowDup"), bookAllowDup);
+					if (req->GetHTTPFormStr(CSTR("speciesname")).SetTo(dispName) && dispName->leng > 0)
 					{
-						env.pickObjType = POT_UNKNOWN;
-						webSess.GetSess()->SetValueInt32(UTF8STRC("PickObjType"), env.pickObjType);
+						me->env->BookAddSpecies(mutUsage, species->speciesId, dispName, bookAllowDup != 0);
 					}
 				}
-			}
-			else if (action && action->Equals(UTF8STRC("setphoto")))
-			{
-				me->env->GroupSetPhotoSpecies(mutUsage, species->groupId, species->speciesId);
-			}
-			else if (action && action->Equals(UTF8STRC("bookspecies")))
-			{
-				Text::String *dispName = req->GetHTTPFormStr(CSTR("speciesname"));
-				UInt32 bookAllowDup = 0;
-				req->GetHTTPFormUInt32(CSTR("bookAllowDup"), bookAllowDup);
-				if (dispName && dispName->leng > 0)
+				else if (action->Equals(UTF8STRC("webfile")))
 				{
-					me->env->BookAddSpecies(mutUsage, species->speciesId, dispName, bookAllowDup != 0);
-				}
-			}
-			else if (action && action->Equals(UTF8STRC("webfile")))
-			{
-				Text::String *srcURL = req->GetHTTPFormStr(CSTR("srcURL"));
-				Text::String *imgURL = req->GetHTTPFormStr(CSTR("imgURL"));
-				Text::String *location = req->GetHTTPFormStr(CSTR("location"));
-				if (srcURL && imgURL && srcURL->leng > 0 && imgURL->leng > 0)
-				{
-					me->env->SpeciesAddWebfile(mutUsage, species->speciesId, imgURL->ToCString(), srcURL->ToCString(), STR_CSTR(location));
+					NotNullPtr<Text::String> srcURL;
+					NotNullPtr<Text::String> imgURL;
+					Optional<Text::String> location = req->GetHTTPFormStr(CSTR("location"));
+					if (req->GetHTTPFormStr(CSTR("srcURL")).SetTo(srcURL) && req->GetHTTPFormStr(CSTR("imgURL")).SetTo(imgURL) && srcURL->leng > 0 && imgURL->leng > 0)
+					{
+						me->env->SpeciesAddWebfile(mutUsage, species->speciesId, imgURL->ToCString(), srcURL->ToCString(), OPTSTR_CSTR(location));
+					}
 				}
 			}
 		}
@@ -1616,10 +1613,10 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSpeciesMod(NotNullPtr<
 		}
 
 		Text::StringBuilderUTF8 msg;
-		Text::String *cname = 0;
-		Text::String *sname = 0;
-		Text::String *ename = 0;
-		Text::String *descr = 0;
+		NotNullPtr<Text::String> cname = Text::String::NewEmpty();
+		NotNullPtr<Text::String> sname = cname;
+		NotNullPtr<Text::String> ename = cname;
+		NotNullPtr<Text::String> descr = cname;
 		Bool canDelete = false;
 		const UTF8Char *bookIgn = 0;
 		SpeciesInfo *species = 0;
@@ -1628,23 +1625,23 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSpeciesMod(NotNullPtr<
 			species = me->env->SpeciesGet(mutUsage, spId);
 			if (species)
 			{
-				cname = species->chiName.Ptr();
-				sname = species->sciName.Ptr();
-				ename = species->engName.Ptr();
-				descr = species->descript.Ptr();
+				cname = species->chiName;
+				sname = species->sciName;
+				ename = species->engName;
+				descr = species->descript;
 				canDelete = (species->files.GetCount() == 0 && species->books.GetCount() == 0 && species->wfiles.GetCount() == 0);
 			}
 		}
 		if (req->GetReqMethod() == Net::WebUtil::RequestMethod::HTTP_POST)
 		{
 			req->ParseHTTPForm();
-			Text::String *task = req->GetHTTPFormStr(CSTR("task"));
-			cname = req->GetHTTPFormStr(CSTR("cname"));
-			sname = req->GetHTTPFormStr(CSTR("sname"));
-			ename = req->GetHTTPFormStr(CSTR("ename"));
-			descr = req->GetHTTPFormStr(CSTR("descr"));
+			NotNullPtr<Text::String> task;
 			bookIgn = STR_PTR(req->GetQueryValue(CSTR("bookIgn")).OrNull());
-			if (task != 0 && cname != 0 && sname != 0 && ename != 0 && descr != 0 && cname->v[0] != 0 && sname->v[0] != 0)
+			if (req->GetHTTPFormStr(CSTR("task")).SetTo(task) &&
+				req->GetHTTPFormStr(CSTR("cname")).SetTo(cname) &&
+				req->GetHTTPFormStr(CSTR("sname")).SetTo(sname) &&
+				req->GetHTTPFormStr(CSTR("ename")).SetTo(ename) &&
+				req->GetHTTPFormStr(CSTR("descr")).SetTo(descr) && cname->v[0] != 0 && sname->v[0] != 0)
 			{
 				if (task->Equals(UTF8STRC("new")))
 				{
@@ -1667,7 +1664,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSpeciesMod(NotNullPtr<
 						sb.ToLower();
 						sb.ReplaceStr(UTF8STRC(" "), UTF8STRC("_"));
 						sb.ReplaceStr(UTF8STRC("."), UTF8STRC(""));
-						Int32 spId = me->env->SpeciesAdd(mutUsage, STR_CSTR(ename), STR_CSTR(cname), STR_CSTR(sname), id, STR_CSTR(descr), sb.ToCString(), CSTR(""), cateId);
+						Int32 spId = me->env->SpeciesAdd(mutUsage, ename->ToCString(), cname->ToCString(), sname->ToCString(), id, descr->ToCString(), sb.ToCString(), CSTR(""), cateId);
 						if (spId)
 						{
 							mutUsage.EndUse();
@@ -1694,7 +1691,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSpeciesMod(NotNullPtr<
 					{
 						msg.AppendC(UTF8STRC("Species already exist"));
 					}
-					else if (nameChg && (bookIgn == 0 || bookIgn[0] != '1') && me->env->SpeciesBookIsExist(mutUsage, STR_CSTR(sname), sb))
+					else if (nameChg && (bookIgn == 0 || bookIgn[0] != '1') && me->env->SpeciesBookIsExist(mutUsage, sname->ToCString(), sb))
 					{
 						msg.AppendC(UTF8STRC("Species already exist in book: "));
 						msg.AppendC(sb.ToString(), sb.GetLength());
@@ -1708,7 +1705,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSpeciesMod(NotNullPtr<
 						sb.ToLower();
 						sb.ReplaceStr(UTF8STRC(" "), UTF8STRC("_"));
 						sb.ReplaceStr(UTF8STRC("."), UTF8STRC(""));
-						if (me->env->SpeciesModify(mutUsage, spId, STR_CSTR(ename), STR_CSTR(cname), Text::String::OrEmpty(sname)->ToCString(), STR_CSTR(descr), sb.ToCString()))
+						if (me->env->SpeciesModify(mutUsage, spId, ename->ToCString(), cname->ToCString(), Text::String::OrEmpty(sname)->ToCString(), descr->ToCString(), sb.ToCString()))
 						{
 							sb.ClearStr();
 							sb.AppendC(UTF8STRC("species.html?id="));
@@ -1807,7 +1804,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSpeciesMod(NotNullPtr<
 		writer.WriteLineC(UTF8STRC("<input type=\"hidden\" name=\"task\"/>"));
 		writer.WriteLineC(UTF8STRC("<table border=\"0\">"));
 		writer.WriteStrC(UTF8STRC("<tr><td>Chinese Name</td><td><input type=\"text\" name=\"cname\""));
-		if (cname)
+		if (cname->leng > 0)
 		{
 			writer.WriteStrC(UTF8STRC(" value="));
 			s = Text::XML::ToNewAttrText(cname->v);
@@ -1816,7 +1813,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSpeciesMod(NotNullPtr<
 		}
 		writer.WriteLineC(UTF8STRC("/></td></tr>"));
 		writer.WriteStrC(UTF8STRC("<tr><td>Science Name</td><td><input type=\"text\" name=\"sname\""));
-		if (sname)
+		if (sname->leng > 0)
 		{
 			writer.WriteStrC(UTF8STRC(" value="));
 			s = Text::XML::ToNewAttrText(sname->v);
@@ -1825,7 +1822,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSpeciesMod(NotNullPtr<
 		}
 		writer.WriteLineC(UTF8STRC("/></td></tr>"));
 		writer.WriteStrC(UTF8STRC("<tr><td>English Name</td><td><input type=\"text\" name=\"ename\""));
-		if (ename)
+		if (ename->leng > 0)
 		{
 			writer.WriteStrC(UTF8STRC(" value="));
 			s = Text::XML::ToNewAttrText(ename->v);
@@ -1834,7 +1831,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSpeciesMod(NotNullPtr<
 		}
 		writer.WriteLineC(UTF8STRC("/></td></tr>"));
 		writer.WriteStrC(UTF8STRC("<tr><td>Description</td><td><textarea name=\"descr\" rows=\"4\" cols=\"40\">"));
-		if (descr)
+		if (descr->leng > 0)
 		{
 			s = Text::XML::ToNewHTMLElementText(descr->v);
 			writer.WriteStrC(s->v, s->leng);
@@ -2160,22 +2157,25 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoDetail(NotNullPtr
 				if (req->GetReqMethod() == Net::WebUtil::RequestMethod::HTTP_POST && env.user && (env.user->userType == UserType::Admin || env.user->id == userFile->webuserId))
 				{
 					req->ParseHTTPForm();
-					Text::String *action = req->GetHTTPFormStr(CSTR("action"));
-					if (action && action->Equals(UTF8STRC("setdefault")) && env.user->userType == UserType::Admin)
+					NotNullPtr<Text::String> action;
+					if (req->GetHTTPFormStr(CSTR("action")).SetTo(action))
 					{
-						me->env->SpeciesSetPhotoId(mutUsage, id, fileId);
-					}
-					else if (action && action->Equals(UTF8STRC("setname")))
-					{
-						Text::String *desc = req->GetHTTPFormStr(CSTR("descr"));
-						if (desc)
+						if (action->Equals(UTF8STRC("setdefault")) && env.user->userType == UserType::Admin)
 						{
-							me->env->UserfileUpdateDesc(mutUsage, fileId, desc->ToCString());
+							me->env->SpeciesSetPhotoId(mutUsage, id, fileId);
 						}
-					}
-					else if (action && action->Equals(UTF8STRC("rotate")))
-					{
-						me->env->UserfileUpdateRotType(mutUsage, fileId, (userFile->rotType + 1) & 3);
+						else if (action->Equals(UTF8STRC("setname")))
+						{
+							NotNullPtr<Text::String> desc;
+							if (req->GetHTTPFormStr(CSTR("descr")).SetTo(desc))
+							{
+								me->env->UserfileUpdateDesc(mutUsage, fileId, desc->ToCString());
+							}
+						}
+						else if (action->Equals(UTF8STRC("rotate")))
+						{
+							me->env->UserfileUpdateRotType(mutUsage, fileId, (userFile->rotType + 1) & 3);
+						}
 					}
 				}
 
@@ -2507,8 +2507,8 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoDetail(NotNullPtr
 				if (req->GetReqMethod() == Net::WebUtil::RequestMethod::HTTP_POST && env.user && env.user->userType == UserType::Admin)
 				{
 					req->ParseHTTPForm();
-					Text::String *action = req->GetHTTPFormStr(CSTR("action"));
-					if (action && action->Equals(UTF8STRC("setdefault")))
+					NotNullPtr<Text::String> action;
+					if (req->GetHTTPFormStr(CSTR("action")).SetTo(action) && action->Equals(UTF8STRC("setdefault")))
 					{
 						me->env->SpeciesSetPhotoWId(mutUsage, id, fileId, true);
 					}
@@ -3104,11 +3104,11 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSearchInside(NotNullPt
 
 	Int32 id;
 	Int32 cateId;
-	Text::String *searchStr;
+	NotNullPtr<Text::String> searchStr;
 	req->ParseHTTPForm();
 	if (req->GetQueryValueI32(CSTR("id"), id) &&
 		req->GetQueryValueI32(CSTR("cateId"), cateId) &&
-		(searchStr = req->GetHTTPFormStr(CSTR("searchStr"))) != 0)
+		req->GetHTTPFormStr(CSTR("searchStr")).SetTo(searchStr))
 	{
 		NotNullPtr<Text::String> s;
 		UOSInt i;

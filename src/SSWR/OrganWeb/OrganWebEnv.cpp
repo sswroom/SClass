@@ -1248,13 +1248,13 @@ Bool SSWR::OrganWeb::OrganWebEnv::BookSetPhoto(NotNullPtr<Sync::RWMutexUsage> mu
 	}
 }
 
-SSWR::OrganWeb::BookInfo *SSWR::OrganWeb::OrganWebEnv::BookAdd(NotNullPtr<Sync::RWMutexUsage> mutUsage, Text::String *title, Text::String *author, Text::String *press, Data::Timestamp pubDate, Text::String *url)
+SSWR::OrganWeb::BookInfo *SSWR::OrganWeb::OrganWebEnv::BookAdd(NotNullPtr<Sync::RWMutexUsage> mutUsage, NotNullPtr<Text::String> title, NotNullPtr<Text::String> author, NotNullPtr<Text::String> press, Data::Timestamp pubDate, NotNullPtr<Text::String> url)
 {
-	if (title == 0 || title->leng == 0 ||
-		author == 0 || author->leng == 0 ||
-		press == 0 || press->leng == 0 ||
+	if (title->leng == 0 ||
+		author->leng == 0 ||
+		press->leng == 0 ||
 		pubDate.IsNull() ||
-		(url != 0 && !(url->leng == 0 || url->StartsWith(UTF8STRC("http://")) || url->StartsWith(UTF8STRC("https://")))))
+		(!(url->leng == 0 || url->StartsWith(UTF8STRC("http://")) || url->StartsWith(UTF8STRC("https://")))))
 	{
 		return 0;
 	}
@@ -1286,7 +1286,7 @@ SSWR::OrganWeb::BookInfo *SSWR::OrganWeb::OrganWebEnv::BookAdd(NotNullPtr<Sync::
 		book->author = author->Clone();
 		book->press = press->Clone();
 		book->publishDate = pubDate.ToTicks();
-		book->url = SCOPY_STRING(url);
+		book->url = url->Clone().Ptr();
 		book->userfileId = 0;
 
 		this->bookMap.Put(book->id, book);
@@ -1299,7 +1299,7 @@ SSWR::OrganWeb::BookInfo *SSWR::OrganWeb::OrganWebEnv::BookAdd(NotNullPtr<Sync::
 	}
 }
 
-Bool SSWR::OrganWeb::OrganWebEnv::BookAddSpecies(NotNullPtr<Sync::RWMutexUsage> mutUsage, Int32 speciesId, Text::String *bookspecies, Bool allowDuplicate)
+Bool SSWR::OrganWeb::OrganWebEnv::BookAddSpecies(NotNullPtr<Sync::RWMutexUsage> mutUsage, Int32 speciesId, NotNullPtr<Text::String> bookspecies, Bool allowDuplicate)
 {
 	BookInfo *book = this->selectedBook;
 	if (book == 0)
@@ -1415,10 +1415,10 @@ SSWR::OrganWeb::WebUserInfo *SSWR::OrganWeb::OrganWebEnv::UserGet(NotNullPtr<Syn
 	return this->userMap.Get(id);
 }
 
-SSWR::OrganWeb::WebUserInfo *SSWR::OrganWeb::OrganWebEnv::UserGetByName(NotNullPtr<Sync::RWMutexUsage> mutUsage, Text::String *name)
+Optional<SSWR::OrganWeb::WebUserInfo> SSWR::OrganWeb::OrganWebEnv::UserGetByName(NotNullPtr<Sync::RWMutexUsage> mutUsage, NotNullPtr<Text::String> name)
 {
 	mutUsage->ReplaceMutex(this->dataMut, false);
-	return this->userNameMap.Get(name);
+	return this->userNameMap.GetNN(name);
 }
 
 SSWR::OrganWeb::SpeciesInfo *SSWR::OrganWeb::OrganWebEnv::SpeciesGet(NotNullPtr<Sync::RWMutexUsage> mutUsage, Int32 id)
@@ -1427,10 +1427,10 @@ SSWR::OrganWeb::SpeciesInfo *SSWR::OrganWeb::OrganWebEnv::SpeciesGet(NotNullPtr<
 	return this->spMap.Get(id);
 }
 
-SSWR::OrganWeb::SpeciesInfo *SSWR::OrganWeb::OrganWebEnv::SpeciesGetByName(NotNullPtr<Sync::RWMutexUsage> mutUsage, Text::String *sname)
+SSWR::OrganWeb::SpeciesInfo *SSWR::OrganWeb::OrganWebEnv::SpeciesGetByName(NotNullPtr<Sync::RWMutexUsage> mutUsage, NotNullPtr<Text::String> sname)
 {
 	mutUsage->ReplaceMutex(this->dataMut, false);
-	return this->spNameMap.Get(sname);
+	return this->spNameMap.GetNN(sname);
 }
 
 Int32 SSWR::OrganWeb::OrganWebEnv::SpeciesAdd(NotNullPtr<Sync::RWMutexUsage> mutUsage, Text::CString engName, Text::CString chiName, Text::CString sciName, Int32 groupId, Text::CString description, Text::CString dirName, Text::CString idKey, Int32 cateId)

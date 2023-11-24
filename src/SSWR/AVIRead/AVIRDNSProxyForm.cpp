@@ -1199,7 +1199,7 @@ void SSWR::AVIRead::AVIRDNSProxyForm::SetDisableV6(Bool disableV6)
 	this->chkDisableV6->SetChecked(disableV6);
 }
 
-void SSWR::AVIRead::AVIRDNSProxyForm::AddBlacklist(Text::CString blackList)
+void SSWR::AVIRead::AVIRDNSProxyForm::AddBlacklist(Text::CStringNN blackList)
 {
 	if (blackList.leng == 0)
 		return;

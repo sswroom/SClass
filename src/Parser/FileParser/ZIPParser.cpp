@@ -507,7 +507,6 @@ IO::ParsedObject *Parser::FileParser::ZIPParser::ParseFileHdr(NotNullPtr<IO::Str
 
 UOSInt Parser::FileParser::ZIPParser::ParseCentDir(NotNullPtr<IO::VirtualPackageFile> pf, Text::Encoding *enc, NotNullPtr<IO::StreamData> fd, Data::ByteArrayR buff, UInt64 ofst)
 {
-	Data::DateTime dt;
 	IO::VirtualPackageFile *pf2;
 	NotNullPtr<IO::PackageFile> pf3;
 	UTF8Char sbuff[512];
@@ -523,6 +522,7 @@ UOSInt Parser::FileParser::ZIPParser::ParseCentDir(NotNullPtr<IO::VirtualPackage
 	UInt32 recType;
 	UInt32 extAttr;
 	UInt32 unixAttr;
+	Data::Timestamp modTime;
 	Data::Timestamp accTime;
 	Data::Timestamp createTime;
 	UOSInt i;
@@ -560,8 +560,7 @@ UOSInt Parser::FileParser::ZIPParser::ParseCentDir(NotNullPtr<IO::VirtualPackage
 				unixAttr |= 0x4000 | 0x49;
 		}
 		ofst = ReadUInt32(&buff[i + 42]);
-		dt.ToLocalTime();
-		dt.SetMSDOSTime(ReadUInt16(&buff[i + 14]), ReadUInt16(&buff[i + 12]));
+		modTime = Data::Timestamp::FromMSDOSTime(ReadUInt16(&buff[i + 14]), ReadUInt16(&buff[i + 12]), Data::DateTimeUtil::GetLocalTzQhr());
 		accTime = 0;
 		createTime = 0;
 
@@ -600,11 +599,11 @@ UOSInt Parser::FileParser::ZIPParser::ParseCentDir(NotNullPtr<IO::VirtualPackage
 				}
 				else if (extraTag == 0x5455)
 				{
-					dt.SetUnixTimestamp(ReadUInt32(&extraBuff[j + 5]));
+					modTime = Data::Timestamp(ReadUInt32(&extraBuff[j + 5]), Data::DateTimeUtil::GetLocalTzQhr());
 				}
 				else if (extraTag == 10 && extraSize >= 32 && ReadUInt16(&extraBuff[j + 8]) == 1)
 				{
-					dt.SetValueFILETIME(&extraBuff[j + 12]);
+					modTime = Data::Timestamp::FromFILETIME(&extraBuff[j + 12], Data::DateTimeUtil::GetLocalTzQhr());
 					accTime = Data::Timestamp::FromFILETIME(&extraBuff[j + 20], Data::DateTimeUtil::GetLocalTzQhr());
 					createTime = Data::Timestamp::FromFILETIME(&extraBuff[j + 20], Data::DateTimeUtil::GetLocalTzQhr());
 				}
@@ -634,7 +633,7 @@ UOSInt Parser::FileParser::ZIPParser::ParseCentDir(NotNullPtr<IO::VirtualPackage
 					if (!pf3.Set(pf2->GetPackFile({sptr, j})))
 					{
 						NEW_CLASSNN(pf3, IO::VirtualPackageFileFast(CSTRP(sbuff, &sptr[j])));
-						pf2->AddPack(pf3, {sptr, j}, Data::Timestamp(dt.ToInstant(), dt.GetTimeZoneQHR()), accTime, createTime, unixAttr);
+						pf2->AddPack(pf3, {sptr, j}, modTime, accTime, createTime, unixAttr);
 					}
 					pf2 = (IO::VirtualPackageFile*)pf3.Ptr();
 					sptr[j] = '/';
@@ -645,7 +644,7 @@ UOSInt Parser::FileParser::ZIPParser::ParseCentDir(NotNullPtr<IO::VirtualPackage
 					if (!pf3.Set(pf2->GetPackFile({sptr, (UOSInt)(sptrEnd - sptr)})))
 					{
 						NEW_CLASSNN(pf3, IO::VirtualPackageFileFast(CSTRP(sbuff, sptrEnd)));
-						pf2->AddPack(pf3, CSTRP(sptr, sptrEnd), Data::Timestamp(dt.ToInstant(), dt.GetTimeZoneQHR()), accTime, createTime, unixAttr);
+						pf2->AddPack(pf3, CSTRP(sptr, sptrEnd), modTime, accTime, createTime, unixAttr);
 					}
 					break;
 				}
@@ -665,7 +664,7 @@ UOSInt Parser::FileParser::ZIPParser::ParseCentDir(NotNullPtr<IO::VirtualPackage
 					if (!pf3.Set(pf2->GetPackFile({sptr, j})))
 					{
 						NEW_CLASSNN(pf3, IO::VirtualPackageFileFast(CSTRP(sbuff, &sptr[j])));
-						pf2->AddPack(pf3, {sptr, j}, Data::Timestamp(dt.ToInstant(), dt.GetTimeZoneQHR()), accTime, createTime, unixAttr);
+						pf2->AddPack(pf3, {sptr, j}, modTime, accTime, createTime, unixAttr);
 					}
 					pf2 = (IO::VirtualPackageFile*)pf3.Ptr();
 					sptr[j] = '/';
@@ -687,7 +686,7 @@ UOSInt Parser::FileParser::ZIPParser::ParseCentDir(NotNullPtr<IO::VirtualPackage
 			}
 			if (compMeth == 0)
 			{
-				pf2->AddData(fd, ofst + hdrLen, compSize, CSTRP(sptr, sptrEnd), Data::Timestamp(dt.ToInstant(), dt.GetTimeZoneQHR()), accTime, createTime, unixAttr);
+				pf2->AddData(fd, ofst + hdrLen, compSize, CSTRP(sptr, sptrEnd), modTime, accTime, createTime, unixAttr);
 			}
 			else
 			{
@@ -705,7 +704,7 @@ UOSInt Parser::FileParser::ZIPParser::ParseCentDir(NotNullPtr<IO::VirtualPackage
 					compInfo.compMethod = Data::Compress::Decompressor::CM_UNKNOWN;
 				}
 				compInfo.decSize = uncompSize;
-				pf2->AddCompData(fd, ofst + hdrLen, compSize, &compInfo, CSTRP(sptr, sptrEnd), Data::Timestamp(dt.ToInstant(), dt.GetTimeZoneQHR()), accTime, createTime, unixAttr);
+				pf2->AddCompData(fd, ofst + hdrLen, compSize, &compInfo, CSTRP(sptr, sptrEnd), modTime, accTime, createTime, unixAttr);
 			}
 		}
 

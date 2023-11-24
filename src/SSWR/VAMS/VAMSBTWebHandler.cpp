@@ -7,11 +7,11 @@ Bool __stdcall SSWR::VAMS::VAMSBTWebHandler::DevData(NotNullPtr<Net::WebServer::
 {
 	SSWR::VAMS::VAMSBTWebHandler *me = (SSWR::VAMS::VAMSBTWebHandler*)hdlr;
 	req->ParseHTTPForm();
-	Text::String *avlNo = req->GetHTTPFormStr(CSTR("avlNo"));
+	NotNullPtr<Text::String> avlNo;
 	Int64 ts;
 	Int32 progId;
 	Int16 rssi;
-	if (avlNo == 0 || !req->GetHTTPFormInt64(CSTR("ts"), ts) || !req->GetHTTPFormInt32(CSTR("progId"), progId) || !req->GetHTTPFormInt16(CSTR("rssi"), rssi))
+	if (!req->GetHTTPFormStr(CSTR("avlNo")).SetTo(avlNo) || !req->GetHTTPFormInt64(CSTR("ts"), ts) || !req->GetHTTPFormInt32(CSTR("progId"), progId) || !req->GetHTTPFormInt16(CSTR("rssi"), rssi))
 	{
 		resp->ResponseError(req, Net::WebStatus::SC_NOT_FOUND);
 		return true;
