@@ -262,6 +262,24 @@ Bool Text::JSONBuilder::ArrayAddNull()
 	return true;
 }
 
+Bool Text::JSONBuilder::ArrayAddCoord2D(Math::Coord2DDbl coord)
+{
+	if (this->currType != OT_ARRAY)
+		return false;
+	if (this->isFirst)
+		this->isFirst = false;
+	else
+	{
+		this->sb.AppendC(UTF8STRC(","));
+	}
+	this->sb.AppendUTF8Char('[');
+	this->sb.AppendDouble(coord.x);
+	this->sb.AppendUTF8Char(',');
+	this->sb.AppendDouble(coord.y);
+	this->sb.AppendUTF8Char(']');
+	return true;
+}
+
 Bool Text::JSONBuilder::ArrayAdd(NotNullPtr<Text::JSONArray> arr)
 {
 	if (this->currType != OT_ARRAY)
@@ -612,7 +630,63 @@ Bool Text::JSONBuilder::ObjectAddArrayInt32(Text::CStringNN name, Data::ArrayLis
 		this->sb.AppendUTF8Char(']');
 	}
 	return true;
+}
 
+Bool Text::JSONBuilder::ObjectAddCoord2D(Text::CStringNN name, Math::Coord2DDbl coord)
+{
+	if (this->currType != OT_OBJECT)
+		return false;
+	if (this->isFirst)
+		this->isFirst = false;
+	else
+	{
+		this->sb.AppendC(UTF8STRC(","));
+	}
+	this->AppendStr(name);
+	this->sb.AppendC(UTF8STRC(":["));
+	this->sb.AppendDouble(coord.x);
+	this->sb.AppendUTF8Char(',');
+	this->sb.AppendDouble(coord.y);
+	this->sb.AppendUTF8Char(']');
+	return true;
+}
+
+Bool Text::JSONBuilder::ObjectAddArrayCoord2D(Text::CStringNN name, Data::ArrayListA<Math::Coord2DDbl> *coordArr)
+{
+	if (this->currType != OT_OBJECT)
+		return false;
+	if (this->isFirst)
+		this->isFirst = false;
+	else
+	{
+		this->sb.AppendC(UTF8STRC(","));
+	}
+	this->AppendStr(name);
+	if (coordArr == 0)
+	{
+		this->sb.AppendC(UTF8STRC(":null"));
+	}
+	else
+	{
+		Math::Coord2DDbl coord;
+		UOSInt i = 0;
+		UOSInt j = coordArr->GetCount();
+		this->sb.AppendC(UTF8STRC(":["));
+		while (i < j)
+		{
+			coord = coordArr->GetItem(i);
+			if (i > 0)
+				sb.AppendUTF8Char(',');
+			this->sb.AppendUTF8Char('[');
+			this->sb.AppendDouble(coord.x);
+			this->sb.AppendUTF8Char(',');
+			this->sb.AppendDouble(coord.y);
+			this->sb.AppendUTF8Char(']');
+			i++;
+		}
+		this->sb.AppendUTF8Char(']');
+	}
+	return true;
 }
 
 Bool Text::JSONBuilder::ObjectAdd(NotNullPtr<Text::JSONObject> obj)

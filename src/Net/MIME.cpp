@@ -49,6 +49,7 @@ Net::MIME::MIMEEntry Net::MIME::mimeList[] = {
 	{UTF8STRC("m2t"),  UTF8STRC("video/MP2T")},
 	{UTF8STRC("m3u8"), UTF8STRC("application/vnd.apple.mpegurl")},
 	{UTF8STRC("m4a"),  UTF8STRC("audio/x-m4a")},
+	{UTF8STRC("md"),   UTF8STRC("text/markdown")},
 	{UTF8STRC("mdb"),  UTF8STRC("application/vnd.ms-access")},
 	{UTF8STRC("mkv"),  UTF8STRC("video/x-matroska")},
 	{UTF8STRC("mov"),  UTF8STRC("video/quicktime")},

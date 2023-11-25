@@ -1,6 +1,8 @@
 #ifndef _SM_TEXT_JSONBUILDER
 #define _SM_TEXT_JSONBUILDER
 #include "Data/ArrayList.h"
+#include "Data/ArrayListA.h"
+#include "Math/Coord2DDbl.h"
 #include "Text/JSON.h"
 #include "Text/StringBuilderUTF8.h"
 
@@ -36,6 +38,7 @@ namespace Text
 		Bool ArrayAddStr(Text::PString *val);
 		Bool ArrayAddStrUTF8(const UTF8Char *val);
 		Bool ArrayAddNull();
+		Bool ArrayAddCoord2D(Math::Coord2DDbl coord);
 		Bool ArrayAdd(NotNullPtr<Text::JSONArray> arr);
 		Bool ArrayBeginObject();
 		Bool ArrayBeginArray();
@@ -54,6 +57,8 @@ namespace Text
 		Bool ObjectAddTSStr(Text::CStringNN name, Data::Timestamp ts);
 		Bool ObjectAddNull(Text::CStringNN name);
 		Bool ObjectAddArrayInt32(Text::CStringNN name, Data::ArrayList<Int32> *i32Arr);
+		Bool ObjectAddCoord2D(Text::CStringNN name, Math::Coord2DDbl coord);
+		Bool ObjectAddArrayCoord2D(Text::CStringNN name, Data::ArrayListA<Math::Coord2DDbl> *coordArr);
 		Bool ObjectAdd(NotNullPtr<Text::JSONObject> obj);
 		Bool ObjectBeginArray(Text::CStringNN name);
 		Bool ObjectBeginObject(Text::CStringNN name);
