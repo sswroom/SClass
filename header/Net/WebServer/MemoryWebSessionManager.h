@@ -1,6 +1,7 @@
 #ifndef _SM_NET_WEBSERVER_MEMORYWEBSESSIONMANAGER
 #define _SM_NET_WEBSERVER_MEMORYWEBSESSIONMANAGER
 #include "Data/ArrayListInt64.h"
+#include "Data/ArrayListNN.h"
 #include "Net/WebServer/IWebSessionManager.h"
 #include "Net/WebServer/MemoryWebSession.h"
 #include "Sync/Mutex.h"
@@ -13,7 +14,7 @@ namespace Net
 		{
 		private:
 			Data::ArrayListInt64 sessIds;
-			Data::ArrayList<Net::WebServer::MemoryWebSession*> sesses;
+			Data::ArrayListNN<Net::WebServer::MemoryWebSession> sesses;
 			Sync::Mutex mut;
 			NotNullPtr<Text::String> path;
 			NotNullPtr<Text::String> cookieName;
@@ -31,12 +32,12 @@ namespace Net
 			MemoryWebSessionManager(Text::CString path, SessionHandler delHdlr, void *delHdlrObj, Int32 chkInterval, SessionHandler chkHdlr, void *chkHdlrObj, Text::CString cookieName);
 			virtual ~MemoryWebSessionManager();
 
-			virtual IWebSession *GetSession(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp);
-			virtual IWebSession *CreateSession(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp);
+			virtual Optional<IWebSession> GetSession(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp);
+			virtual NotNullPtr<IWebSession> CreateSession(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp);
 			virtual void DeleteSession(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp);
 
 			Int64 GenSessId(NotNullPtr<Net::WebServer::IWebRequest> req);
-			IWebSession *CreateSession(Int64 sessId);
+			NotNullPtr<IWebSession> CreateSession(Int64 sessId);
 			IWebSession *GetSession(Int64 sessId);
 			void DeleteSession(Int64 sessId);
 

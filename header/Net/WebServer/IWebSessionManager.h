@@ -11,7 +11,7 @@ namespace Net
 		class IWebSessionManager
 		{
 		public:
-			typedef Bool (__stdcall *SessionHandler)(IWebSession* sess, void *userObj);
+			typedef Bool (__stdcall *SessionHandler)(NotNullPtr<IWebSession> sess, void *userObj);
 
 		protected:
 			SessionHandler delHdlr;
@@ -21,8 +21,8 @@ namespace Net
 		public:
 			virtual ~IWebSessionManager();
 
-			virtual IWebSession *GetSession(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp) = 0;
-			virtual IWebSession *CreateSession(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp) = 0;
+			virtual Optional<IWebSession> GetSession(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp) = 0;
+			virtual NotNullPtr<IWebSession> CreateSession(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp) = 0;
 			virtual void DeleteSession(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp) = 0;
 		};
 	}

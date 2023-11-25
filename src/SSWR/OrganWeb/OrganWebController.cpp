@@ -36,8 +36,8 @@ Net::WebServer::IWebSession *SSWR::OrganWeb::OrganWebController::ParseRequestEnv
 		env->isMobile = true;
 		env->scnWidth = 1024;
 	}
-	Net::WebServer::IWebSession *sess = this->sessMgr->GetSession(req, resp);
-	if (sess)
+	NotNullPtr<Net::WebServer::IWebSession> sess;
+	if (this->sessMgr->GetSession(req, resp).SetTo(sess))
 	{
 		Data::DateTime *t;
 		env->user = (WebUserInfo*)sess->GetValuePtr(UTF8STRC("User"));
@@ -47,7 +47,7 @@ Net::WebServer::IWebSession *SSWR::OrganWeb::OrganWebController::ParseRequestEnv
 		t->SetCurrTimeUTC();
 		if (keepSess)
 		{
-			return sess;
+			return sess.Ptr();
 		}
 		sess->EndUse();
 	}

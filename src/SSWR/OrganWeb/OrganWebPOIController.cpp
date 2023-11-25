@@ -95,7 +95,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcLogin(NotNullPtr<Net::W
 			if (env.user && env.user->pwd->Equals(sbuff, (UOSInt)(sptr - sbuff)))
 			{
 				mutUsage.EndUse();
-				Net::WebServer::IWebSession *sess = me->sessMgr->CreateSession(req, resp);
+				NotNullPtr<Net::WebServer::IWebSession> sess = me->sessMgr->CreateSession(req, resp);
 				Data::DateTime *t;
 				Data::ArrayListInt32 *pickObjs;
 				NEW_CLASS(t, Data::DateTime());

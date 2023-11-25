@@ -19,8 +19,8 @@ namespace SSWR
 			Data::FastStringMap<RequestHandler> *reqMap;
 			Net::WebServer::MemoryWebSessionManager *sessMgr;
 
-			static Bool __stdcall OnSessDeleted(Net::WebServer::IWebSession* sess, void *userObj);
-			static Bool __stdcall OnSessCheck(Net::WebServer::IWebSession* sess, void *userObj);
+			static Bool __stdcall OnSessDeleted(NotNullPtr<Net::WebServer::IWebSession> sess, void *userObj);
+			static Bool __stdcall OnSessCheck(NotNullPtr<Net::WebServer::IWebSession> sess, void *userObj);
 
 			static Bool __stdcall DefaultReq(SSWR::SMonitor::SMonitorWebHandler *me, NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp);
 			static Bool __stdcall IndexReq(SSWR::SMonitor::SMonitorWebHandler *me, NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp);
@@ -40,7 +40,7 @@ namespace SSWR
 
 			static void __stdcall WriteHeaderBegin(IO::Writer *writer);
 			static void __stdcall WriteHeaderEnd(IO::Writer *writer);
-			static void __stdcall WriteMenu(IO::Writer *writer, Net::WebServer::IWebSession *sess);
+			static void __stdcall WriteMenu(IO::Writer *writer, Optional<Net::WebServer::IWebSession> sess);
 			static void __stdcall WriteHTMLText(IO::Writer *writer, const UTF8Char *txt);
 			static void __stdcall WriteHTMLText(IO::Writer *writer, NotNullPtr<Text::String> txt);
 			static void __stdcall WriteHTMLText(IO::Writer *writer, Text::CString txt);

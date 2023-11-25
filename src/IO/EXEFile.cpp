@@ -312,7 +312,7 @@ Data::Timestamp IO::EXEFile::GetFileTime(Text::CStringNN fileName)
 	{
 		return 0;
 	}
-	return Data::Timestamp(ReadUInt32(&buff[8]), Data::DateTimeUtil::GetLocalTzQhr());
+	return Data::Timestamp(Data::TimeInstant(ReadUInt32(&buff[8]), 0), Data::DateTimeUtil::GetLocalTzQhr());
 }
 
 Text::CString IO::EXEFile::GetResourceTypeName(ResourceType rt)
