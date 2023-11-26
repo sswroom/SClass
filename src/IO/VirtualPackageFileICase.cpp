@@ -51,6 +51,6 @@ void IO::VirtualPackageFileICase::RemoveItem(NotNullPtr<Text::String> name)
 NotNullPtr<IO::PackageFile> IO::VirtualPackageFileICase::Clone() const
 {
 	NotNullPtr<IO::PackageFile> pkg;
-	NEW_CLASSNN(pkg, VirtualPackageFileICase(*this));
+	NEW_CLASSNN(pkg, VirtualPackageFileICase(NotNullPtr<const VirtualPackageFileICase>(*this)));
 	return pkg;
 }

@@ -50,7 +50,7 @@ void IO::VirtualPackageFileFast::RemoveItem(NotNullPtr<Text::String> name)
 
 NotNullPtr<IO::PackageFile> IO::VirtualPackageFileFast::Clone() const
 {
-	NotNullPtr<IO::PackageFile> pkg;
-	NEW_CLASSNN(pkg, VirtualPackageFileFast(*this));
+	NotNullPtr<IO::VirtualPackageFileFast> pkg;
+	NEW_CLASSNN(pkg, VirtualPackageFileFast(NotNullPtr<const VirtualPackageFileFast>(*this)));
 	return pkg;
 }
