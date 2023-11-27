@@ -10,6 +10,7 @@
 #include "Math/CoordinateSystemManager.h"
 #include "Math/Geometry/LineString.h"
 #include "Math/Geometry/PointZ.h"
+#include "Math/Geometry/Polygon.h"
 #include "Media/StaticImage.h"
 #include "Text/URLString.h"
 

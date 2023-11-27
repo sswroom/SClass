@@ -589,7 +589,7 @@ Math::Geometry::Vector2D *Parser::FileParser::JSONParser::ParseGeomJSON(Text::JS
 							}
 							if (mpg == 0)
 							{
-								NEW_CLASS(mpg, Math::Geometry::MultiPolygon(srid, hasZ, false));
+								NEW_CLASS(mpg, Math::Geometry::MultiPolygon(srid));
 							}
 							mpg->AddGeometry(pg);
 						}

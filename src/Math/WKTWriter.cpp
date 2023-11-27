@@ -265,20 +265,22 @@ void Math::WKTWriter::AppendPolygonZ(NotNullPtr<Text::StringBuilderUTF8> sb, Mat
 void Math::WKTWriter::AppendPolyline(NotNullPtr<Text::StringBuilderUTF8> sb, Math::Geometry::Polyline *pl, Bool reverseAxis)
 {
 	sb->AppendUTF8Char('(');
-	UOSInt nPtOfst;
-	UOSInt nPoint;
-	UInt32 *ptOfstList = pl->GetPtOfstList(nPtOfst);
-	Math::Coord2DDbl *pointList = pl->GetPointList(nPoint);
+	Math::Coord2DDbl *pointList;
+	Math::Geometry::LineString *lineString;
 	UOSInt i;
 	UOSInt j;
 	UOSInt k;
+	UOSInt l;
 	k = 0;
 	i = 0;
-	j = nPtOfst - 1;
+	j = pl->GetCount();
 	while (i < j)
 	{
+		lineString = pl->GetItem(i);
+		k = 0;
+		pointList = lineString->GetPointList(l);
 		sb->AppendUTF8Char('(');
-		while (k < ptOfstList[i + 1])
+		while (k < l)
 		{
 			if (reverseAxis)
 			{
@@ -293,58 +295,38 @@ void Math::WKTWriter::AppendPolyline(NotNullPtr<Text::StringBuilderUTF8> sb, Mat
 				sb->AppendDouble(pointList[k].y, &Text::DoubleStyleC);
 			}
 			k++;
-			if (k < ptOfstList[i + 1])
-			{
+			if (k < l)
 				sb->AppendUTF8Char(',');
-			}
 		}
 		sb->AppendUTF8Char(')');
-		sb->AppendUTF8Char(',');
 		i++;
-	}
-	sb->AppendUTF8Char('(');
-	while (k < nPoint)
-	{
-		if (reverseAxis)
-		{
-			sb->AppendDouble(pointList[k].y, &Text::DoubleStyleC);
-			sb->AppendUTF8Char(' ');
-			sb->AppendDouble(pointList[k].x, &Text::DoubleStyleC);
-		}
-		else
-		{
-			sb->AppendDouble(pointList[k].x, &Text::DoubleStyleC);
-			sb->AppendUTF8Char(' ');
-			sb->AppendDouble(pointList[k].y, &Text::DoubleStyleC);
-		}
-		k++;
-		if (k < nPoint)
-		{
+		if (i < j)
 			sb->AppendUTF8Char(',');
-		}
 	}
-	sb->AppendUTF8Char(')');
 	sb->AppendUTF8Char(')');
 }
 
 void Math::WKTWriter::AppendPolylineZ(NotNullPtr<Text::StringBuilderUTF8> sb, Math::Geometry::Polyline *pl, Bool reverseAxis)
 {
 	sb->AppendUTF8Char('(');
-	UOSInt nPtOfst;
-	UOSInt nPoint;
-	UInt32 *ptOfstList = pl->GetPtOfstList(nPtOfst);
-	Math::Coord2DDbl *pointList = pl->GetPointList(nPoint);
-	Double *zList = pl->GetZList(nPoint);
+	Math::Coord2DDbl *pointList;
+	Double *zList;
+	Math::Geometry::LineString *lineString;
 	UOSInt i;
 	UOSInt j;
 	UOSInt k;
+	UOSInt l;
 	k = 0;
 	i = 0;
-	j = nPtOfst - 1;
+	j = pl->GetCount();
 	while (i < j)
 	{
+		lineString = pl->GetItem(i);
+		pointList = lineString->GetPointList(l);
+		zList = lineString->GetZList(l);
+		k = 0;
 		sb->AppendUTF8Char('(');
-		while (k < ptOfstList[i + 1])
+		while (k < l)
 		{
 			if (reverseAxis)
 			{
@@ -361,61 +343,40 @@ void Math::WKTWriter::AppendPolylineZ(NotNullPtr<Text::StringBuilderUTF8> sb, Ma
 			sb->AppendUTF8Char(' ');
 			sb->AppendDouble(zList[k], &Text::DoubleStyleC);
 			k++;
-			if (k < ptOfstList[i + 1])
-			{
+			if (k < l)
 				sb->AppendUTF8Char(',');
-			}
 		}
 		sb->AppendUTF8Char(')');
-		sb->AppendUTF8Char(',');
 		i++;
-	}
-	sb->AppendUTF8Char('(');
-	while (k < nPoint)
-	{
-		if (reverseAxis)
-		{
-			sb->AppendDouble(pointList[k].y, &Text::DoubleStyleC);
-			sb->AppendUTF8Char(' ');
-			sb->AppendDouble(pointList[k].x, &Text::DoubleStyleC);
-		}
-		else
-		{
-			sb->AppendDouble(pointList[k].x, &Text::DoubleStyleC);
-			sb->AppendUTF8Char(' ');
-			sb->AppendDouble(pointList[k].y, &Text::DoubleStyleC);
-		}
-		sb->AppendUTF8Char(' ');
-		sb->AppendDouble(zList[k], &Text::DoubleStyleC);
-		k++;
-		if (k < nPoint)
-		{
+		if (i < j)
 			sb->AppendUTF8Char(',');
-		}
 	}
-	sb->AppendUTF8Char(')');
 	sb->AppendUTF8Char(')');
 }
 
 void Math::WKTWriter::AppendPolylineZM(NotNullPtr<Text::StringBuilderUTF8> sb, Math::Geometry::Polyline *pl, Bool reverseAxis)
 {
 	sb->AppendUTF8Char('(');
-	UOSInt nPtOfst;
-	UOSInt nPoint;
-	UInt32 *ptOfstList = pl->GetPtOfstList(nPtOfst);
-	Math::Coord2DDbl *pointList = pl->GetPointList(nPoint);
-	Double *zList = pl->GetZList(nPoint);
-	Double *mList = pl->GetMList(nPoint);
+	Math::Coord2DDbl *pointList;
+	Double *zList;
+	Double *mList;
+	Math::Geometry::LineString *lineString;
 	UOSInt i;
 	UOSInt j;
 	UOSInt k;
+	UOSInt l;
 	k = 0;
 	i = 0;
-	j = nPtOfst - 1;
+	j = pl->GetCount();
 	while (i < j)
 	{
+		lineString = pl->GetItem(i);
+		pointList = lineString->GetPointList(l);
+		zList = lineString->GetZList(l);
+		mList = lineString->GetMList(l);
+		k = 0;
 		sb->AppendUTF8Char('(');
-		while (k < ptOfstList[i + 1])
+		while (k < l)
 		{
 			if (reverseAxis)
 			{
@@ -434,41 +395,14 @@ void Math::WKTWriter::AppendPolylineZM(NotNullPtr<Text::StringBuilderUTF8> sb, M
 			sb->AppendUTF8Char(' ');
 			sb->AppendDouble(mList[k], &Text::DoubleStyleC);
 			k++;
-			if (k < ptOfstList[i + 1])
-			{
+			if (k < l)
 				sb->AppendUTF8Char(',');
-			}
 		}
 		sb->AppendUTF8Char(')');
-		sb->AppendUTF8Char(',');
 		i++;
-	}
-	sb->AppendUTF8Char('(');
-	while (k < nPoint)
-	{
-		if (reverseAxis)
-		{
-			sb->AppendDouble(pointList[k].y, &Text::DoubleStyleC);
-			sb->AppendUTF8Char(' ');
-			sb->AppendDouble(pointList[k].x, &Text::DoubleStyleC);
-		}
-		else
-		{
-			sb->AppendDouble(pointList[k].x, &Text::DoubleStyleC);
-			sb->AppendUTF8Char(' ');
-			sb->AppendDouble(pointList[k].y, &Text::DoubleStyleC);
-		}
-		sb->AppendUTF8Char(' ');
-		sb->AppendDouble(zList[k], &Text::DoubleStyleC);
-		sb->AppendUTF8Char(' ');
-		sb->AppendDouble(mList[k], &Text::DoubleStyleC);
-		k++;
-		if (k < nPoint)
-		{
+		if (i < j)
 			sb->AppendUTF8Char(',');
-		}
 	}
-	sb->AppendUTF8Char(')');
 	sb->AppendUTF8Char(')');
 }
 

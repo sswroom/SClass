@@ -3,6 +3,7 @@
 #include "Map/VectorLayer.h"
 #include "Math/Math.h"
 #include "Math/Geometry/Point.h"
+#include "Math/Geometry/Polyline.h"
 #include "Text/MyStringFloat.h"
 
 Map::HKTDVehRestrict::HKTDVehRestrict(Map::MapDrawLayer *routeLyr, DB::DBTool *db)
@@ -161,47 +162,14 @@ Map::MapDrawLayer *Map::HKTDVehRestrict::CreateTonnesSignLayer()
 				Double maxWeight = r->GetDbl((UOSInt)maxWeightCol);
 				RouteInfo *route;
 				NotNullPtr<Math::Geometry::Point> pt;
-				Double ptX;
-				Double ptY;
-				Double dist;
-				Double diffX;
-				Double diffY;
+				Math::Coord2DDbl coord;
 				sbuff[0] = 0;
 				r->GetStr((UOSInt)remarksCol, sbuff, sizeof(sbuff));
 
 				route = this->routeMap.Get(roadRouteId);
 				if (route)
 				{
-					Math::Coord2DDbl *points = route->pl->GetPointList(j);
-					if (location <= 0)
-					{
-						ptX = points[0].x;
-						ptY = points[0].y;
-					}
-					else
-					{
-						ptX = points[j - 1].x;
-						ptY = points[j - 1].y;
-
-						i = 1;
-						while (i < j)
-						{
-							diffX = points[i - 1].x - points[i].x;
-							diffY = points[i - 1].y - points[i].y;
-							dist = Math_Sqrt(diffX * diffX + diffY * diffY);
-							if (dist > location)
-							{
-								ptX = points[i - 1].x + (points[i].x - points[i - 1].x) * location / dist;
-								ptY = points[i - 1].y + (points[i].y - points[i - 1].y) * location / dist;
-								break;
-							}
-							else
-							{
-								location -= dist;
-							}
-							i++;
-						}
-					}
+					coord = route->pl->CalcPosAtDistance(location);
 					strs[0] = sbuff2;
 					strs[1] = Text::StrInt32(sbuff2, vrId) + 1;
 					UInt32 iMaxWeight = (UInt32)maxWeight;
@@ -214,7 +182,7 @@ Map::MapDrawLayer *Map::HKTDVehRestrict::CreateTonnesSignLayer()
 						Text::StrDouble(strs[1], maxWeight);
 					}
 					strs[2] = sbuff;
-					NEW_CLASSNN(pt, Math::Geometry::Point(this->csys->GetSRID(), ptX, ptY));
+					NEW_CLASSNN(pt, Math::Geometry::Point(this->csys->GetSRID(), coord));
 					lyr->AddVector(pt, (const UTF8Char**)strs);
 				}
 			}

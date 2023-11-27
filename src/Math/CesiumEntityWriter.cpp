@@ -83,12 +83,12 @@ Bool Math::CesiumEntityWriter::ToText(NotNullPtr<Text::StringBuilderUTF8> sb, No
 			sb->AppendUTF8Char('}');
 		}
 		return true;
-	case Math::Geometry::Vector2D::VectorType::Polyline:
+	case Math::Geometry::Vector2D::VectorType::LineString:
 		sb->AppendC(UTF8STRC("{\r\n"));
 		{
-			Math::Geometry::Polyline *pl = (Math::Geometry::Polyline*)vec.Ptr();
+			NotNullPtr<Math::Geometry::LineString> lineString = NotNullPtr<Math::Geometry::LineString>::ConvertFrom(vec);
 			UOSInt nPoint;
-			Math::Coord2DDbl *pointList = pl->GetPointList(nPoint);
+			Math::Coord2DDbl *pointList = lineString->GetPointList(nPoint);
 			UOSInt k;
 			sb->AppendC(UTF8STRC("\tpolyline : {\r\n"));
 			sb->AppendC(UTF8STRC("\t\tpositions : Cesium.Cartesian3.fromDegreesArray([\r\n"));
@@ -107,12 +107,42 @@ Bool Math::CesiumEntityWriter::ToText(NotNullPtr<Text::StringBuilderUTF8> sb, No
 			sb->AppendUTF8Char('}');
 		}
 		return true;
+	case Math::Geometry::Vector2D::VectorType::Polyline:
+		sb->AppendC(UTF8STRC("{\r\n"));
+		{
+			Math::Geometry::Polyline *pl = (Math::Geometry::Polyline*)vec.Ptr();
+			Math::Geometry::LineString *lineString;
+			sb->AppendC(UTF8STRC("\tpolyline : {\r\n"));
+			sb->AppendC(UTF8STRC("\t\tpositions : Cesium.Cartesian3.fromDegreesArray([\r\n"));
+			UOSInt i = 0;
+			UOSInt j = pl->GetCount();
+			while (i < j)
+			{
+				lineString = pl->GetItem(i);
+				UOSInt nPoint;
+				Math::Coord2DDbl *pointList = lineString->GetPointList(nPoint);
+				UOSInt k;
+				k = 0;
+				while (k < nPoint)
+				{
+					sb->AppendC(UTF8STRC("\t\t\t"));
+					sb->AppendDouble(pointList[k].x);
+					sb->AppendUTF8Char(',');
+					sb->AppendDouble(pointList[k].y);
+					sb->AppendC(UTF8STRC(",\r\n"));
+					k++;
+				}
+			}
+			sb->AppendC(UTF8STRC("\t\t]),\r\n"));
+			sb->AppendC(UTF8STRC("\t}\r\n"));
+			sb->AppendUTF8Char('}');
+		}
+		return true;
 	case Math::Geometry::Vector2D::VectorType::MultiPoint:
 	case Math::Geometry::Vector2D::VectorType::MultiPolygon:
 	case Math::Geometry::Vector2D::VectorType::CurvePolygon:
 	case Math::Geometry::Vector2D::VectorType::CompoundCurve:
 	case Math::Geometry::Vector2D::VectorType::CircularString:
-	case Math::Geometry::Vector2D::VectorType::LineString:
 	case Math::Geometry::Vector2D::VectorType::GeometryCollection:
 	case Math::Geometry::Vector2D::VectorType::MultiCurve:
 	case Math::Geometry::Vector2D::VectorType::MultiSurface:

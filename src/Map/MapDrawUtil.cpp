@@ -24,25 +24,30 @@ Bool Map::MapDrawUtil::DrawLineString(NotNullPtr<Math::Geometry::LineString> pl,
 
 Bool Map::MapDrawUtil::DrawPolyline(NotNullPtr<Math::Geometry::Polyline> pl, NotNullPtr<Media::DrawImage> img, NotNullPtr<Map::MapView> view, Optional<Media::DrawBrush> b, Media::DrawPen *p, Math::Coord2DDbl ofst)
 {
+	Math::Geometry::LineString *lineString;
 	UOSInt nPoint;
-	UOSInt nPtOfst;
-	Math::Coord2DDbl *points = pl->GetPointList(nPoint);
-	UInt32 *ptOfsts = pl->GetPtOfstList(nPtOfst);
-	UOSInt i;
-	Math::Coord2DDbl *dpoints = MemAllocA(Math::Coord2DDbl, nPoint);
-	UOSInt lastCnt;
-	UOSInt thisCnt;
-
-	view->MapXYToScnXY(points, dpoints, nPoint, ofst);
-	lastCnt = nPoint;
-	i = nPtOfst;
-	while (i-- > 0)
+	UOSInt dpointsSize = 0;
+	Math::Coord2DDbl *dpoints = 0;
+	UOSInt i = 0;
+	UOSInt j = pl->GetCount();
+	while (i < j)
 	{
-		thisCnt = ptOfsts[i];
-		img->DrawPolyline(&dpoints[thisCnt * 2], lastCnt - thisCnt, p);
-		lastCnt = thisCnt;
+		lineString = pl->GetItem(i);
+		Math::Coord2DDbl *points = lineString->GetPointList(nPoint);
+		if (nPoint > dpointsSize)
+		{
+			if (dpoints)
+				MemFreeA(dpoints);
+			dpointsSize = nPoint;
+			dpoints = MemAllocA(Math::Coord2DDbl, nPoint);
+		}
+		view->MapXYToScnXY(points, dpoints, nPoint, ofst);
+		img->DrawPolyline(dpoints, nPoint, p);
 	}
-	MemFreeA(dpoints);
+	if (dpoints)
+	{
+		MemFreeA(dpoints);
+	}
 	return true;
 }
 

@@ -1946,8 +1946,9 @@ void Map::DrawMapRenderer::DrawLabel(NotNullPtr<DrawEnv> denv, NotNullPtr<Map::M
 					case Math::Geometry::Vector2D::VectorType::Polyline:
 					{
 						Math::Geometry::Polyline *pl = (Math::Geometry::Polyline*)vec;
+						Math::Geometry::LineString *lineString = pl->GetItem(pl->GetCount() >> 1);
 						UOSInt nPoint;
-						Math::Coord2DDbl *pointArr = pl->GetPointList(nPoint);
+						Math::Coord2DDbl *pointArr = lineString->GetPointList(nPoint);
 						if (nPoint & 1)
 						{
 							UOSInt l = nPoint >> 1;

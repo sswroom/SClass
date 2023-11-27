@@ -3,6 +3,8 @@
 #include "Math/Math.h"
 #include "Math/MercatorProjectedCoordinateSystem.h"
 #include "Math/Mercator1SPProjectedCoordinateSystem.h"
+#include "Math/Geometry/LineString.h"
+#include "Math/Geometry/Polyline.h"
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
 
@@ -45,74 +47,54 @@ Double Math::ProjectedCoordinateSystem::CalSurfaceDistanceXY(Math::Coord2DDbl po
 	return d;
 }
 
-Double Math::ProjectedCoordinateSystem::CalPLDistance(NotNullPtr<Math::Geometry::Polyline> pl, Math::Unit::Distance::DistanceUnit unit) const
+Double Math::ProjectedCoordinateSystem::CalLineStringDistance(NotNullPtr<Math::Geometry::LineString> lineString, Math::Unit::Distance::DistanceUnit unit) const
 {
 	UOSInt nPoint;
-	UOSInt nPtOfst;
-	UInt32 *ptOfsts;
 	Math::Coord2DDbl *points;
-	ptOfsts = pl->GetPtOfstList(nPtOfst);
-	points = pl->GetPointList(nPoint);
-	UOSInt i = nPtOfst;
+	points = lineString->GetPointList(nPoint);
 	UOSInt j = nPoint;
-	UOSInt k;
 	Double totalDist = 0;
 	Bool hasLast;
 	Math::Coord2DDbl lastPt;
-	while (i-- > 0)
+	hasLast = false;
+	while (j-- > 0)
 	{
-		k = ptOfsts[i];
-		hasLast = false;
-		while (j-- > k)
+		if (hasLast)
 		{
-			if (hasLast)
-			{
-				totalDist += CalSurfaceDistanceXY(lastPt, points[j], unit);
-			}
-			hasLast = true;
-			lastPt = points[j];
+			totalDist += CalSurfaceDistanceXY(lastPt, points[j], unit);
 		}
-		j++;
+		hasLast = true;
+		lastPt = points[j];
 	}
 	return totalDist;
 }
 
-Double Math::ProjectedCoordinateSystem::CalPLDistance3D(NotNullPtr<Math::Geometry::Polyline> pl, Math::Unit::Distance::DistanceUnit unit) const
+Double Math::ProjectedCoordinateSystem::CalLineStringDistance3D(NotNullPtr<Math::Geometry::LineString> lineString, Math::Unit::Distance::DistanceUnit unit) const
 {
 	UOSInt nPoint;
-	UOSInt nPtOfst;
 	UOSInt nAlts;
-	UInt32 *ptOfsts;
 	Math::Coord2DDbl *points;
 	Double *alts;
-	ptOfsts = pl->GetPtOfstList(nPtOfst);
-	points = pl->GetPointList(nPoint);
-	alts = pl->GetZList(nAlts);
-	UOSInt i = nPtOfst;
+	points = lineString->GetPointList(nPoint);
+	alts = lineString->GetZList(nAlts);
 	UOSInt j = nPoint;
-	UOSInt k;
 	Double dist;
 	Double totalDist = 0;
 	Bool hasLast;
 	Math::Coord2DDbl lastPt;
 	Double lastH;
-	while (i-- > 0)
+	hasLast = false;
+	while (j-- > 0)
 	{
-		k = ptOfsts[i];
-		hasLast = false;
-		while (j-- > k)
+		if (hasLast)
 		{
-			if (hasLast)
-			{
-				dist = CalSurfaceDistanceXY(lastPt, points[j], unit);
-				dist = Math_Sqrt(dist * dist + (alts[j] - lastH) * (alts[j] - lastH));
-				totalDist += dist;
-			}
-			hasLast = true;
-			lastPt = points[j];
-			lastH = alts[j];
+			dist = CalSurfaceDistanceXY(lastPt, points[j], unit);
+			dist = Math_Sqrt(dist * dist + (alts[j] - lastH) * (alts[j] - lastH));
+			totalDist += dist;
 		}
-		j++;
+		hasLast = true;
+		lastPt = points[j];
+		lastH = alts[j];
 	}
 	return totalDist;
 }

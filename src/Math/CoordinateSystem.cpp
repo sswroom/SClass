@@ -3,6 +3,7 @@
 #include "Math/Math.h"
 #include "Math/GeographicCoordinateSystem.h"
 #include "Math/ProjectedCoordinateSystem.h"
+#include "Math/Geometry/Polyline.h"
 #include "Text/MyString.h"
 
 Math::CoordinateSystem::CoordinateSystem(NotNullPtr<Text::String> sourceName, UInt32 srid, Text::CString csysName) : IO::ParsedObject(sourceName)
@@ -20,6 +21,36 @@ Math::CoordinateSystem::CoordinateSystem(Text::CStringNN sourceName, UInt32 srid
 Math::CoordinateSystem::~CoordinateSystem()
 {
 	this->csysName->Release();
+}
+
+Double Math::CoordinateSystem::CalPLDistance(NotNullPtr<Math::Geometry::Polyline> pl, Math::Unit::Distance::DistanceUnit unit) const
+{
+	NotNullPtr<Math::Geometry::LineString> lineString;
+	UOSInt i = pl->GetCount();
+	Double totalDist = 0;
+	while (i-- > 0)
+	{
+		if (lineString.Set(pl->GetItem(i)))
+		{
+			totalDist += CalLineStringDistance(lineString, unit);
+		}
+	}
+	return totalDist;
+}
+
+Double Math::CoordinateSystem::CalPLDistance3D(NotNullPtr<Math::Geometry::Polyline> pl, Math::Unit::Distance::DistanceUnit unit) const
+{
+	NotNullPtr<Math::Geometry::LineString> lineString;
+	UOSInt i = pl->GetCount();
+	Double totalDist = 0;
+	while (i-- > 0)
+	{
+		if (lineString.Set(pl->GetItem(i)))
+		{
+			totalDist += CalLineStringDistance3D(lineString, unit);
+		}
+	}
+	return totalDist;
 }
 
 IO::ParserType Math::CoordinateSystem::GetParserType() const

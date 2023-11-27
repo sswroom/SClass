@@ -168,7 +168,7 @@ Bool Exporter::MapCSVExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Te
 		j = objIds.GetCount();
 		while (i < j)
 		{
-			Math::Geometry::Polyline *pl = (Math::Geometry::Polyline*)layer->GetNewVectorById(sess, objIds.GetItem(i));
+			Math::Geometry::LineString *pl = (Math::Geometry::LineString*)layer->GetNewVectorById(sess, objIds.GetItem(i));
 			points = pl->GetPointList(l);
 			k = 0;
 			while (k < l)

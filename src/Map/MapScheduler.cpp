@@ -180,41 +180,50 @@ void Map::MapScheduler::DrawLineString(Math::Geometry::LineString *pl)
 
 void Map::MapScheduler::DrawPolyline(Math::Geometry::Polyline *pl)
 {
+	Math::Geometry::LineString *lineString;
 	UOSInt nPoint;
-	Math::Coord2DDbl *pointArr = pl->GetPointList(nPoint);
-	UOSInt nPtOfst;
-	UInt32 *ptOfstArr = pl->GetPtOfstList(nPtOfst);
-	UOSInt k;
-	UOSInt l;
+	Math::Coord2DDbl *pointArr;
+	UOSInt i;
+	UOSInt j;
 	if (this->isFirst)
 	{
-		if (this->map->MapXYToScnXY(pointArr, pointArr, nPoint, Math::Coord2DDbl(0, 0)))
-			*this->isLayerEmpty = false;
+		i = 0;
+		j = pl->GetCount();
+		while (i < j)
+		{
+			lineString = pl->GetItem(i);
+			pointArr = lineString->GetPointList(nPoint);
+			if (this->map->MapXYToScnXY(pointArr, pointArr, nPoint, Math::Coord2DDbl(0, 0)))
+				*this->isLayerEmpty = false;
+			i++;
+		}
 	}
 
 	if (pl->HasColor())
 	{
 		Media::DrawPen *p = this->img->NewPenARGB(pl->GetColor(), this->p->GetThick(), 0 ,0);
-		k = nPtOfst;
-		l = 1;
-		while (l < k)
+		i = 0;
+		j = pl->GetCount();
+		while (i < j)
 		{
-			this->img->DrawPolyline(&pointArr[ptOfstArr[l - 1]], ptOfstArr[l] - ptOfstArr[l - 1], p);
-			l++;
+			lineString = pl->GetItem(i);
+			pointArr = lineString->GetPointList(nPoint);
+			this->img->DrawPolyline(pointArr, nPoint, p);
+			i++;
 		}
-		this->img->DrawPolyline(&pointArr[ptOfstArr[k - 1]], nPoint - ptOfstArr[k - 1], p);
 		this->img->DelPen(p);
 	}
 	else
 	{
-		k = nPtOfst;
-		l = 1;
-		while (l < k)
+		i = 0;
+		j = pl->GetCount();
+		while (i < j)
 		{
-			this->img->DrawPolyline(&pointArr[ptOfstArr[l - 1]], ptOfstArr[l] - ptOfstArr[l - 1], this->p);
-			l++;
+			lineString = pl->GetItem(i);
+			pointArr = lineString->GetPointList(nPoint);
+			this->img->DrawPolyline(pointArr, nPoint, this->p);
+			i++;
 		}
-		this->img->DrawPolyline(&pointArr[ptOfstArr[k - 1]], nPoint - ptOfstArr[k - 1], this->p);
 	}
 }
 

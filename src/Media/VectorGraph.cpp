@@ -290,9 +290,9 @@ Bool Media::VectorGraph::DrawLine(Double x1, Double y1, Double x2, Double y2, Dr
 	Math::Coord2DDbl pt[2];
 	pt[0] = Math::Coord2DDbl(x1, y1);
 	pt[1] = Math::Coord2DDbl(x2, y2);
-	Math::Geometry::Polyline *pl;
+	Math::Geometry::LineString *pl;
 	VectorStyles *style;
-	NEW_CLASS(pl, Math::Geometry::Polyline(this->srid, pt, 2, false, false));
+	NEW_CLASS(pl, Math::Geometry::LineString(this->srid, pt, 2, false, false));
 	style = MemAlloc(VectorStyles, 1);
 	style->pen = (Media::VectorGraph::VectorPenStyle*)p;
 	style->brush = 0;
@@ -306,9 +306,9 @@ Bool Media::VectorGraph::DrawPolylineI(const Int32 *points, UOSInt nPoints, Draw
 {
 	Double *dPoints = MemAlloc(Double, nPoints * 2);
 	Math_Int32Arr2DblArr(dPoints, points, nPoints * 2);
-	Math::Geometry::Polyline *pl;
+	Math::Geometry::LineString *pl;
 	VectorStyles *style;
-	NEW_CLASS(pl, Math::Geometry::Polyline(this->srid, (Math::Coord2DDbl*)dPoints, nPoints, false, false));
+	NEW_CLASS(pl, Math::Geometry::LineString(this->srid, (Math::Coord2DDbl*)dPoints, nPoints, false, false));
 	style = MemAlloc(VectorStyles, 1);
 	style->pen = (VectorPenStyle*)p;
 	style->brush = 0;
@@ -333,9 +333,9 @@ Bool Media::VectorGraph::DrawPolyPolygonI(const Int32 *points, const UInt32 *poi
 
 Bool Media::VectorGraph::DrawPolyline(const Math::Coord2DDbl *points, UOSInt nPoints, DrawPen *p)
 {
-	Math::Geometry::Polyline *pl;
+	Math::Geometry::LineString *pl;
 	VectorStyles *style;
-	NEW_CLASS(pl, Math::Geometry::Polyline(this->srid, points, nPoints, false, false));
+	NEW_CLASS(pl, Math::Geometry::LineString(this->srid, points, nPoints, false, false));
 	style = MemAlloc(VectorStyles, 1);
 	style->pen = (VectorPenStyle*)p;
 	style->brush = 0;
@@ -823,13 +823,35 @@ void Media::VectorGraph::DrawTo(NotNullPtr<Media::DrawImage> dimg, OptOut<UInt32
 		if (vec->GetVectorType() == Math::Geometry::Vector2D::VectorType::Polyline)
 		{
 			Math::Geometry::Polyline *pl = (Math::Geometry::Polyline*)vec;
-//			OSInt nParts;
 			UOSInt nPoints;
-//			Int32 *parts;
 			Math::Coord2DDbl *points;
 			Math::Coord2DDbl *dpoints;
-//			parts = pl->GetPartList(&nParts);
-			dpoints = pl->GetPointList(nPoints);
+			UOSInt i = 0;
+			UOSInt j = pl->GetCount();
+			Math::Geometry::LineString *lineString;
+			while (i < j)
+			{
+				lineString = pl->GetItem(i);
+				dpoints = lineString->GetPointList(nPoints);
+				points = MemAllocA(Math::Coord2DDbl, nPoints);
+				Math::Coord2DDbl dScale = Math::Coord2DDbl(scale, scale);
+				k = nPoints;
+				while (k-- > 0)
+				{
+					points[k] = dpoints[k] * dScale;
+				}
+				dimg->DrawPolyline(points, nPoints, p);
+				MemFreeA(points);
+				i++;
+			}
+		}
+		else if (vec->GetVectorType() == Math::Geometry::Vector2D::VectorType::LineString)
+		{
+			Math::Geometry::LineString *lineString = (Math::Geometry::LineString*)vec;
+			UOSInt nPoints;
+			Math::Coord2DDbl *points;
+			Math::Coord2DDbl *dpoints;
+			dpoints = lineString->GetPointList(nPoints);
 			points = MemAllocA(Math::Coord2DDbl, nPoints);
 			Math::Coord2DDbl dScale = Math::Coord2DDbl(scale, scale);
 			k = nPoints;

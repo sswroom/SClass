@@ -20,13 +20,9 @@ namespace Math
 		{
 		protected:
 			Data::ArrayListNN<T> geometries;
-			Bool hasZ;
-			Bool hasM;
 		public:
-			MultiGeometry(UInt32 srid, Bool hasZ, Bool hasM) : Math::Geometry::Vector2D(srid)
+			MultiGeometry(UInt32 srid) : Math::Geometry::Vector2D(srid)
 			{
-				this->hasZ = hasZ;
-				this->hasM = hasM;
 			}
 
 			virtual ~MultiGeometry()
@@ -155,12 +151,16 @@ namespace Math
 
 			virtual Bool HasZ() const
 			{
-				return this->hasZ;
+				if (this->geometries.GetCount() > 0)
+					return this->geometries.GetItem(0)->HasZ();
+				return false;
 			}
 
 			virtual Bool HasM() const
 			{
-				return this->hasM;
+				if (this->geometries.GetCount() > 0)
+					return this->geometries.GetItem(0)->HasM();
+				return false;
 			}
 
 			virtual void ConvCSys(NotNullPtr<const Math::CoordinateSystem> srcCSys, NotNullPtr<const Math::CoordinateSystem> destCSys)

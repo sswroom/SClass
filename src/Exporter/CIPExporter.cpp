@@ -5,6 +5,8 @@
 #include "IO/FileStream.h"
 #include "IO/Path.h"
 #include "Math/Math.h"
+#include "Math/Geometry/Polygon.h"
+#include "Math/Geometry/Polyline.h"
 #include "Text/MyString.h"
 
 Exporter::CIPExporter::CIPExporter()
@@ -156,7 +158,71 @@ Bool Exporter::CIPExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text:
 			top = minY / p->scale;
 			bottom = maxY / p->scale;
 		}
-		else
+		else if (vec->GetVectorType() == Math::Geometry::Vector2D::VectorType::Polyline)
+		{
+			Math::Geometry::Polyline *pl = (Math::Geometry::Polyline*)vec;
+			UOSInt nPtOfst = pl->GetCount();
+			UInt32 *ptOfstArr = MemAlloc(UInt32, nPtOfst + 1);
+			WriteUInt32(&buff[4], (UInt32)nPtOfst);
+			ptOfstArr[0] = 0;
+			UOSInt i = 0;
+			while (i < nPtOfst)
+			{
+				i++;
+				ptOfstArr[i] = ptOfstArr[i - 1] + (UInt32)pl->GetItem(i)->GetPointCount();
+			}
+			stm->Write(buff, 8);
+			stm->Write((UInt8*)ptOfstArr, nPtOfst * 4);
+			stmPos += 8 + nPtOfst * 4;
+
+			UOSInt nPoint = ptOfstArr[nPtOfst];
+			MemFree(ptOfstArr);
+			Int32 *ptArr = MemAlloc(Int32, nPoint << 1);
+			UOSInt j = 0;
+			UOSInt k;
+			UOSInt l;
+			Math::Geometry::LineString *lineString;
+			i = 0;
+			while (i < nPtOfst)
+			{
+				lineString = pl->GetItem(i);
+				k = 0;
+				Math::Coord2DDbl *pointArr = lineString->GetPointList(l);
+				while (k < l)
+				{
+					ptArr[j] = Double2Int32(pointArr[k].x * 200000.0);
+					ptArr[j + 1] = Double2Int32(pointArr[k].y * 200000.0);
+					j += 2;
+					k++;
+				}
+				i++;
+			}
+			stm->Write((UInt8*)&nPoint, 4);
+			stm->Write((UInt8*)ptArr, 8 * nPoint);
+			stmPos += 8 * nPoint + 4;
+
+			maxX = minX = ptArr[0];
+			maxY = minY = ptArr[1];
+			j = nPoint;
+			while (j-- > 0)
+			{
+				if (minX > ptArr[j << 1])
+					minX = ptArr[j << 1];
+				if (maxX < ptArr[j << 1])
+					maxX = ptArr[j << 1];
+				if (minY > ptArr[(j << 1) + 1])
+					minY = ptArr[(j << 1) + 1];
+				if (maxY < ptArr[(j << 1) + 1])
+					maxY = ptArr[(j << 1) + 1];
+			}
+
+			left = minX / p->scale;
+			right = maxX / p->scale;
+			top = minY / p->scale;
+			bottom = maxY / p->scale;
+			MemFree(ptArr);
+		}
+		else if (vec->GetVectorType() == Math::Geometry::Vector2D::VectorType::Polygon)
 		{
 			Math::Geometry::PointOfstCollection *ptOfst = (Math::Geometry::PointOfstCollection*)vec;
 			UOSInt nPtOfst;
@@ -199,6 +265,14 @@ Bool Exporter::CIPExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text:
 			top = minY / p->scale;
 			bottom = maxY / p->scale;
 			MemFree(ptArr);
+		}
+		else
+		{
+			printf("CIPExporter: Unsupported vector type\r\n");
+			left = 0;
+			right = 0;
+			top = 0;
+			bottom = 0;
 		}
 
 		{

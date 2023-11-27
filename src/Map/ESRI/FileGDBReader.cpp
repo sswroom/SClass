@@ -837,67 +837,89 @@ Math::Geometry::Vector2D *Map::ESRI::FileGDBReader::GetVector(UOSInt colIndex)
 				srid = this->tableInfo->csys->GetSRID();
 			}
 			UOSInt i;
-			UInt32 *parts;
+			UOSInt j;
+			UOSInt k;
+			NotNullPtr<Math::Geometry::LineString> lineString;
+			UInt32 *ptOfstList;
 			Math::Coord2DDbl *points;
 			Double *zArr;
 			Double *mArr;
-			NEW_CLASS(pl, Math::Geometry::Polyline(srid, (UOSInt)nParts, (UOSInt)nPoints, (this->tableInfo->geometryFlags & 0x80) != 0, (this->tableInfo->geometryFlags & 0x40) != 0));
-			parts = pl->GetPtOfstList(i);
-			points = pl->GetPointList(i);
-			zArr = pl->GetZList(i);
-			mArr = pl->GetMList(i);
-			parts[0] = 0;
+			NEW_CLASS(pl, Math::Geometry::Polyline(srid));
+			//, (UOSInt)nParts, (UOSInt)nPoints, (this->tableInfo->geometryFlags & 0x80) != 0, (this->tableInfo->geometryFlags & 0x40) != 0
+			ptOfstList = MemAlloc(UInt32, (UOSInt)nParts);
+			ptOfstList[0] = 0;
 			UInt32 ptOfst = 0;
 			i = 1;
 			while (i < nParts)
 			{
 				ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, ofst, v);
 				ptOfst += (UInt32)v;
-				parts[i] = ptOfst;
+				ptOfstList[i] = ptOfst;
 				i++;
 			}
 			Int64 iv;
 			OSInt dx = 0;
 			OSInt dy = 0;
+			OSInt dz = 0;
+			OSInt dm = 0;
 			i = 0;
-			while (i < nPoints)
+			while (i < nParts)
 			{
-				ofst = Map::ESRI::FileGDBUtil::ReadVarInt(this->rowData, ofst, iv);
-				dx += (OSInt)iv;
-				x = Int64_Double(dx) / this->tableInfo->xyScale + this->tableInfo->xOrigin;
-				ofst = Map::ESRI::FileGDBUtil::ReadVarInt(this->rowData, ofst, iv);
-				dy += (OSInt)iv;
-				y = Int64_Double(dy) / this->tableInfo->xyScale + this->tableInfo->yOrigin;
-				points[i].x = x;
-				points[i].y = y;
+				if (i + 1 == nParts)
+				{
+					k = nPoints - ptOfstList[i];
+				}
+				else
+				{
+					k = ptOfstList[i + 1] - ptOfstList[i];
+				}
+				NEW_CLASSNN(lineString, Math::Geometry::LineString(srid, k, (this->tableInfo->geometryFlags & 0x80) != 0, (this->tableInfo->geometryFlags & 0x40) != 0));
+				points = lineString->GetPointList(j);
+				zArr = lineString->GetZList(j);
+				mArr = lineString->GetMList(j);
+
+				j = 0;
+				while (j < k)
+				{
+					ofst = Map::ESRI::FileGDBUtil::ReadVarInt(this->rowData, ofst, iv);
+					dx += (OSInt)iv;
+					x = Int64_Double(dx) / this->tableInfo->xyScale + this->tableInfo->xOrigin;
+					ofst = Map::ESRI::FileGDBUtil::ReadVarInt(this->rowData, ofst, iv);
+					dy += (OSInt)iv;
+					y = Int64_Double(dy) / this->tableInfo->xyScale + this->tableInfo->yOrigin;
+					points[j].x = x;
+					points[j].y = y;
+					j++;
+				}
+				if (this->tableInfo->geometryFlags & 0x80)
+				{
+					j = 0;
+					while (j < k)
+					{
+						ofst = Map::ESRI::FileGDBUtil::ReadVarInt(this->rowData, ofst, iv);
+						dz += (OSInt)iv;
+						z = Int64_Double(dz) / this->tableInfo->zScale + this->tableInfo->zOrigin;
+						zArr[j] = z;
+						j++;
+					}
+				}
+				if (this->tableInfo->geometryFlags & 0x40)
+				{
+					j = 0;
+					while (j < k)
+					{
+						ofst = Map::ESRI::FileGDBUtil::ReadVarInt(this->rowData, ofst, iv);
+						dm += (OSInt)iv;
+						m = Int64_Double(dm) / this->tableInfo->mScale + this->tableInfo->mOrigin;
+						mArr[j] = m;
+						j++;
+					}
+				}
+				pl->AddGeometry(lineString);
+
 				i++;
 			}
-			if (this->tableInfo->geometryFlags & 0x80)
-			{
-				dx = 0;
-				i = 0;
-				while (i < nPoints)
-				{
-					ofst = Map::ESRI::FileGDBUtil::ReadVarInt(this->rowData, ofst, iv);
-					dx += (OSInt)iv;
-					z = Int64_Double(dx) / this->tableInfo->zScale + this->tableInfo->zOrigin;
-					zArr[i] = z;
-					i++;
-				}
-			}
-			if (this->tableInfo->geometryFlags & 0x40)
-			{
-				dx = 0;
-				i = 0;
-				while (i < nPoints)
-				{
-					ofst = Map::ESRI::FileGDBUtil::ReadVarInt(this->rowData, ofst, iv);
-					dx += (OSInt)iv;
-					m = Int64_Double(dx) / this->tableInfo->mScale + this->tableInfo->mOrigin;
-					mArr[i] = m;
-					i++;
-				}
-			}
+			MemFree(ptOfstList);
 			return pl;
 		}
 		break;
@@ -1011,87 +1033,94 @@ Math::Geometry::Vector2D *Map::ESRI::FileGDBReader::GetVector(UOSInt colIndex)
 			ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, ofst, v); //ymax
 			Math::Geometry::Polyline *pl;
 			srid = 0;
-			UOSInt i;
 			if (this->tableInfo->csys)
 			{
 				srid = this->tableInfo->csys->GetSRID();
 			}
-			UInt32 *parts;
+			UOSInt i;
+			UOSInt j;
+			UOSInt k;
+			NotNullPtr<Math::Geometry::LineString> lineString;
+			UInt32 *ptOfstList;
 			Math::Coord2DDbl *points;
 			Double *zArr;
 			Double *mArr;
-			NEW_CLASS(pl, Math::Geometry::Polyline(srid, (UOSInt)nParts, (UOSInt)nPoints, (geometryType & 0x80000000) != 0, (geometryType & 0x40000000) != 0));
-			parts = pl->GetPtOfstList(i);
-			points = pl->GetPointList(i);
-			zArr = pl->GetZList(i);
-			mArr = pl->GetMList(i);
-			parts[0] = 0;
+			NEW_CLASS(pl, Math::Geometry::Polyline(srid));
+			//, (UOSInt)nParts, (UOSInt)nPoints, (this->tableInfo->geometryFlags & 0x80) != 0, (this->tableInfo->geometryFlags & 0x40) != 0
+			ptOfstList = MemAlloc(UInt32, (UOSInt)nParts);
+			ptOfstList[0] = 0;
 			UInt32 ptOfst = 0;
 			i = 1;
 			while (i < nParts)
 			{
 				ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, ofst, v);
 				ptOfst += (UInt32)v;
-				parts[i] = ptOfst;
+				ptOfstList[i] = ptOfst;
 				i++;
 			}
-			UOSInt j;
-			UOSInt k;
+			Int64 iv;
 			i = 0;
 			while (i < nParts)
 			{
-				Int64 iv;
-				OSInt dx = 0;
-				OSInt dy = 0;
-				j = parts[i];
-				if (i + 1 < nParts)
+				if (i + 1 == nParts)
 				{
-					k = parts[i + 1];
+					k = nPoints - ptOfstList[i];
 				}
 				else
 				{
-					k = (UOSInt)nPoints;
+					k = ptOfstList[i + 1] - ptOfstList[i];
 				}
+				NEW_CLASSNN(lineString, Math::Geometry::LineString(srid, k, (this->tableInfo->geometryFlags & 0x80) != 0, (this->tableInfo->geometryFlags & 0x40) != 0));
+				points = lineString->GetPointList(j);
+				zArr = lineString->GetZList(j);
+				mArr = lineString->GetMList(j);
+
+				OSInt dx = 0;
+				OSInt dy = 0;
+				OSInt dz = 0;
+				OSInt dm = 0;
+				j = 0;
 				while (j < k)
 				{
 					ofst = Map::ESRI::FileGDBUtil::ReadVarInt(this->rowData, ofst, iv);
 					dx += (OSInt)iv;
-					x = OSInt2Double(dx) / this->tableInfo->xyScale + this->tableInfo->xOrigin;
+					x = Int64_Double(dx) / this->tableInfo->xyScale + this->tableInfo->xOrigin;
 					ofst = Map::ESRI::FileGDBUtil::ReadVarInt(this->rowData, ofst, iv);
 					dy += (OSInt)iv;
-					y = OSInt2Double(dy) / this->tableInfo->xyScale + this->tableInfo->yOrigin;
+					y = Int64_Double(dy) / this->tableInfo->xyScale + this->tableInfo->yOrigin;
 					points[j].x = x;
 					points[j].y = y;
 					j++;
 				}
-				if (geometryType & 0x80000000)
+				if (this->tableInfo->geometryFlags & 0x80)
 				{
-					dx = 0;
-					j = parts[i];
+					j = 0;
 					while (j < k)
 					{
 						ofst = Map::ESRI::FileGDBUtil::ReadVarInt(this->rowData, ofst, iv);
-						dx += (OSInt)iv;
-						z = OSInt2Double(dx) / this->tableInfo->zScale + this->tableInfo->zOrigin;
+						dz += (OSInt)iv;
+						z = Int64_Double(dz) / this->tableInfo->zScale + this->tableInfo->zOrigin;
 						zArr[j] = z;
 						j++;
 					}
 				}
-				if (geometryType & 0x40000000)
+				if (this->tableInfo->geometryFlags & 0x40)
 				{
-					dx = 0;
-					j = parts[i];
+					j = 0;
 					while (j < k)
 					{
 						ofst = Map::ESRI::FileGDBUtil::ReadVarInt(this->rowData, ofst, iv);
-						dx += (OSInt)iv;
-						m = OSInt2Double(dx) / this->tableInfo->mScale + this->tableInfo->mOrigin;
+						dm += (OSInt)iv;
+						m = Int64_Double(dm) / this->tableInfo->mScale + this->tableInfo->mOrigin;
 						mArr[j] = m;
 						j++;
 					}
 				}
+				pl->AddGeometry(lineString);
+
 				i++;
 			}
+			MemFree(ptOfstList);
 			return pl;
 		}
 		break;

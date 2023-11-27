@@ -729,30 +729,55 @@ Math::Geometry::Vector2D *Map::CIPLayer2::GetNewVectorById(GetObjectSess *sessio
 	{
 		return 0;
 	}
-	else if (this->lyrType == Map::DRAW_LAYER_POLYLINE || this->lyrType == Map::DRAW_LAYER_POLYGON)
+	else if (this->lyrType == Map::DRAW_LAYER_POLYLINE)
 	{
-		Math::Geometry::PointOfstCollection *ptColl = 0;
+		Math::Geometry::Polyline *pl;
+		NotNullPtr<Math::Geometry::LineString> lineString;
+		NEW_CLASS(pl, Math::Geometry::Polyline(4326));
+		UOSInt i = 0;
+		UOSInt j;
+		UOSInt k;
+		UOSInt l;
+		Math::Coord2DDbl *tmpPoints;
+		while (i < fobj->nPtOfst)
+		{
+			j = fobj->ptOfstArr[i];
+			if (i + 1 >= fobj->nPtOfst)
+				k = fobj->nPoint;
+			else
+				k = fobj->ptOfstArr[i + 1];
+			NEW_CLASSNN(lineString, Math::Geometry::LineString(4326, (k - j), false, false));
+			tmpPoints = lineString->GetPointList(l);
+			l = 0;
+			while (j < k)
+			{
+				tmpPoints[l].x = fobj->pointArr[(j << 1)] / 200000.0;
+				tmpPoints[l].y = fobj->pointArr[(j << 1) + 1] / 200000.0;
+				j++;
+				l++;
+			}
+			pl->AddGeometry(lineString);
+			i++;
+		}
+		return pl;
+	}
+	else if (this->lyrType == Map::DRAW_LAYER_POLYGON)
+	{
+		Math::Geometry::Polygon *pg = 0;
 		UInt32 *tmpPtOfsts;
 		Math::Coord2DDbl *tmpPoints;
 		UOSInt i;
-		if (this->lyrType == Map::DRAW_LAYER_POLYLINE)
-		{
-			NEW_CLASS(ptColl, Math::Geometry::Polyline(4326, fobj->nPtOfst, fobj->nPoint, false, false));
-		}
-		else
-		{
-			NEW_CLASS(ptColl, Math::Geometry::Polygon(4326, fobj->nPtOfst, fobj->nPoint, false, false));
-		}
-		tmpPtOfsts = ptColl->GetPtOfstList(i);
+		NEW_CLASS(pg, Math::Geometry::Polygon(4326, fobj->nPtOfst, fobj->nPoint, false, false));
+		tmpPtOfsts = pg->GetPtOfstList(i);
 		MemCopyNO(tmpPtOfsts, fobj->ptOfstArr, fobj->nPtOfst * sizeof(UInt32));
 		
-		tmpPoints = ptColl->GetPointList(i);
+		tmpPoints = pg->GetPointList(i);
 		while (i--)
 		{
 			tmpPoints[i].x = fobj->pointArr[(i << 1)] / 200000.0;
 			tmpPoints[i].y = fobj->pointArr[(i << 1) + 1] / 200000.0;
 		}
-		return ptColl;
+		return pg;
 	}
 	return 0;
 }

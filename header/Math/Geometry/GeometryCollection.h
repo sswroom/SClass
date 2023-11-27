@@ -9,7 +9,7 @@ namespace Math
 		class GeometryCollection : public MultiGeometry<Vector2D>
 		{
 		public:
-			GeometryCollection(UInt32 srid, Bool hasZ, Bool hasM);
+			GeometryCollection(UInt32 srid);
 			virtual ~GeometryCollection();
 
 			virtual Vector2D::VectorType GetVectorType() const;

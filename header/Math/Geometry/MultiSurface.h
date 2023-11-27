@@ -9,7 +9,7 @@ namespace Math
 		class MultiSurface : public MultiGeometry<Vector2D>
 		{
 		public:
-			MultiSurface(UInt32 srid, Bool hasZ, Bool hasM);
+			MultiSurface(UInt32 srid);
 			virtual ~MultiSurface();
 
 			virtual void AddGeometry(NotNullPtr<Vector2D> geometry);

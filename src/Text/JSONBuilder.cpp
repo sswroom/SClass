@@ -280,6 +280,26 @@ Bool Text::JSONBuilder::ArrayAddCoord2D(Math::Coord2DDbl coord)
 	return true;
 }
 
+Bool Text::JSONBuilder::ArrayAddVector3(Math::Vector3 vec3)
+{
+	if (this->currType != OT_ARRAY)
+		return false;
+	if (this->isFirst)
+		this->isFirst = false;
+	else
+	{
+		this->sb.AppendC(UTF8STRC(","));
+	}
+	this->sb.AppendUTF8Char('[');
+	this->sb.AppendDouble(vec3.GetX());
+	this->sb.AppendUTF8Char(',');
+	this->sb.AppendDouble(vec3.GetY());
+	this->sb.AppendUTF8Char(',');
+	this->sb.AppendDouble(vec3.GetZ());
+	this->sb.AppendUTF8Char(']');
+	return true;
+}
+
 Bool Text::JSONBuilder::ArrayAdd(NotNullPtr<Text::JSONArray> arr)
 {
 	if (this->currType != OT_ARRAY)
@@ -686,6 +706,27 @@ Bool Text::JSONBuilder::ObjectAddArrayCoord2D(Text::CStringNN name, Data::ArrayL
 		}
 		this->sb.AppendUTF8Char(']');
 	}
+	return true;
+}
+
+Bool Text::JSONBuilder::ObjectAddVector3(Text::CStringNN name, Math::Vector3 vec3)
+{
+	if (this->currType != OT_OBJECT)
+		return false;
+	if (this->isFirst)
+		this->isFirst = false;
+	else
+	{
+		this->sb.AppendC(UTF8STRC(","));
+	}
+	this->AppendStr(name);
+	this->sb.AppendC(UTF8STRC(":["));
+	this->sb.AppendDouble(vec3.GetX());
+	this->sb.AppendUTF8Char(',');
+	this->sb.AppendDouble(vec3.GetY());
+	this->sb.AppendUTF8Char(',');
+	this->sb.AppendDouble(vec3.GetZ());
+	this->sb.AppendUTF8Char(']');
 	return true;
 }
 

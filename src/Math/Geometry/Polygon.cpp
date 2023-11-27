@@ -507,7 +507,7 @@ void Math::Geometry::Polygon::SplitByJunction(Data::ArrayList<Math::Geometry::Po
 NotNullPtr<Math::Geometry::MultiPolygon> Math::Geometry::Polygon::CreateMultiPolygon() const
 {
 	NotNullPtr<Math::Geometry::MultiPolygon> mpg;
-	NEW_CLASSNN(mpg, Math::Geometry::MultiPolygon(this->srid, this->HasZ(), this->HasM()));
+	NEW_CLASSNN(mpg, Math::Geometry::MultiPolygon(this->srid));
 	if (this->nPtOfst <= 1)
 	{
 		mpg->AddGeometry(NotNullPtr<Math::Geometry::Polygon>::ConvertFrom(this->Clone()));

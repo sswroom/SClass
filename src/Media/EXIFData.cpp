@@ -7,6 +7,7 @@
 #include "Math/CoordinateSystemManager.h"
 #include "Math/GeographicCoordinateSystem.h"
 #include "Math/Math.h"
+#include "Math/Size2DDbl.h"
 #include "Media/EXIFData.h"
 #include "Text/MyStringFloat.h"
 #include "Text/MyStringW.h"

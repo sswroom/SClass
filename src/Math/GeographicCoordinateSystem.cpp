@@ -77,14 +77,14 @@ Double Math::GeographicCoordinateSystem::CalSurfaceDistanceXY(Math::Coord2DDbl p
 	return this->datum.spheroid.ellipsoid->CalSurfaceDistance(pos1.GetLat(), pos1.GetLon(), pos2.GetLat(), pos2.GetLon(), unit);
 }
 
-Double Math::GeographicCoordinateSystem::CalPLDistance(NotNullPtr<Math::Geometry::Polyline> pl, Math::Unit::Distance::DistanceUnit unit) const
+Double Math::GeographicCoordinateSystem::CalLineStringDistance(NotNullPtr<Math::Geometry::LineString> lineString, Math::Unit::Distance::DistanceUnit unit) const
 {
-	return this->datum.spheroid.ellipsoid->CalPLDistance(pl, unit);
+	return this->datum.spheroid.ellipsoid->CalLineStringDistance(lineString, unit);
 }
 
-Double Math::GeographicCoordinateSystem::CalPLDistance3D(NotNullPtr<Math::Geometry::Polyline> pl, Math::Unit::Distance::DistanceUnit unit) const
+Double Math::GeographicCoordinateSystem::CalLineStringDistance3D(NotNullPtr<Math::Geometry::LineString> lineString, Math::Unit::Distance::DistanceUnit unit) const
 {
-	return this->datum.spheroid.ellipsoid->CalPLDistance3D(pl, unit);
+	return this->datum.spheroid.ellipsoid->CalLineStringDistance3D(lineString, unit);
 }
 
 NotNullPtr<Math::CoordinateSystem> Math::GeographicCoordinateSystem::Clone() const

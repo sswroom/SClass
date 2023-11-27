@@ -3,7 +3,6 @@
 #include "IO/ParsedObject.h"
 #include "Math/Coord2DDbl.h"
 #include "Math/EarthEllipsoid.h"
-#include "Math/Geometry/Polyline.h"
 #include "Math/Vector3.h"
 #include "Math/Unit/Angle.h"
 #include "Math/Unit/Distance.h"
@@ -12,6 +11,12 @@
 
 namespace Math
 {
+	namespace Geometry
+	{
+		class LineString;
+		class Polyline;
+	}
+
 	class CoordinateSystem : public IO::ParsedObject
 	{
 	public:
@@ -72,8 +77,10 @@ namespace Math
 		virtual ~CoordinateSystem();
 
 		virtual Double CalSurfaceDistanceXY(Math::Coord2DDbl pos1, Math::Coord2DDbl pos2, Math::Unit::Distance::DistanceUnit unit) const = 0;
-		virtual Double CalPLDistance(NotNullPtr<Math::Geometry::Polyline> pl, Math::Unit::Distance::DistanceUnit unit) const = 0;
-		virtual Double CalPLDistance3D(NotNullPtr<Math::Geometry::Polyline> pl, Math::Unit::Distance::DistanceUnit unit) const = 0;
+		virtual Double CalLineStringDistance(NotNullPtr<Math::Geometry::LineString> lineString, Math::Unit::Distance::DistanceUnit unit) const = 0;
+		virtual Double CalLineStringDistance3D(NotNullPtr<Math::Geometry::LineString> lineString, Math::Unit::Distance::DistanceUnit unit) const = 0;
+		Double CalPLDistance(NotNullPtr<Math::Geometry::Polyline> pl, Math::Unit::Distance::DistanceUnit unit) const;
+		Double CalPLDistance3D(NotNullPtr<Math::Geometry::Polyline> pl, Math::Unit::Distance::DistanceUnit unit) const;
 		virtual NotNullPtr<CoordinateSystem> Clone() const = 0;
 		virtual CoordinateSystemType GetCoordSysType() const = 0;
 		virtual Bool IsProjected() const = 0;

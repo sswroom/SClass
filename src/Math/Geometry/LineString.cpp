@@ -4,6 +4,8 @@
 #include "Math/CoordinateSystem.h"
 #include "Math/Math.h"
 #include "Math/Geometry/LineString.h"
+#include "Math/Geometry/Polygon.h"
+#include "Math/Geometry/Polyline.h"
 
 Math::Geometry::LineString::LineString(UInt32 srid, UOSInt nPoint, Bool hasZ, Bool hasM) : PointCollection(srid, nPoint, 0)
 {
@@ -309,6 +311,19 @@ Bool Math::Geometry::LineString::Equals(NotNullPtr<const Vector2D> vec, Bool sam
 	}
 }
 
+Double Math::Geometry::LineString::CalcLength() const
+{
+	Double leng = 0;
+	Math::Coord2DDbl diff;
+	UOSInt i = this->nPoint;
+	while (i-- > 1)
+	{
+		diff = this->pointArr[i] - this->pointArr[i - 1];
+		leng += Math_Sqrt(diff.x * diff.x + diff.y * diff.y);
+	}
+	return leng;
+}
+
 Double *Math::Geometry::LineString::GetZList(OutParam<UOSInt> nPoint) const
 {
 	nPoint.Set(this->nPoint);
@@ -319,6 +334,11 @@ Double *Math::Geometry::LineString::GetMList(OutParam<UOSInt> nPoint) const
 {
 	nPoint.Set(this->nPoint);
 	return this->mArr;
+}
+
+UOSInt Math::Geometry::LineString::GetPointCount() const
+{
+	return this->nPoint;
 }
 
 Math::Geometry::LineString *Math::Geometry::LineString::SplitByPoint(Math::Coord2DDbl pt)
@@ -809,16 +829,7 @@ Math::Geometry::Polygon *Math::Geometry::LineString::CreatePolygonByDist(Double 
 NotNullPtr<Math::Geometry::Polyline> Math::Geometry::LineString::CreatePolyline() const
 {
 	NotNullPtr<Math::Geometry::Polyline> pl;
-	NEW_CLASSNN(pl, Math::Geometry::Polyline(this->srid, this->pointArr, this->nPoint, this->zArr != 0, this->mArr != 0));
-	if (this->zArr)
-	{
-		UOSInt nPoint;
-		MemCopyNO(pl->GetZList(nPoint), this->zArr, sizeof(Double) * this->nPoint);
-	}
-	if (this->mArr)
-	{
-		UOSInt nPoint;
-		MemCopyNO(pl->GetMList(nPoint), this->mArr, sizeof(Double) * this->nPoint);
-	}
+	NEW_CLASSNN(pl, Math::Geometry::Polyline(this->srid));
+	pl->AddGeometry(NotNullPtr<LineString>::ConvertFrom(this->Clone()));
 	return pl;
 }

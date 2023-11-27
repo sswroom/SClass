@@ -2,7 +2,7 @@
 #include "MyMemory.h"
 #include "Math/Geometry/MultiSurface.h"
 
-Math::Geometry::MultiSurface::MultiSurface(UInt32 srid, Bool hasZ, Bool hasM) : Math::Geometry::MultiGeometry<Math::Geometry::Vector2D>(srid, hasZ, hasM)
+Math::Geometry::MultiSurface::MultiSurface(UInt32 srid) : Math::Geometry::MultiGeometry<Math::Geometry::Vector2D>(srid)
 {
 }
 
@@ -31,7 +31,7 @@ Math::Geometry::Vector2D::VectorType Math::Geometry::MultiSurface::GetVectorType
 NotNullPtr<Math::Geometry::Vector2D> Math::Geometry::MultiSurface::Clone() const
 {
 	NotNullPtr<Math::Geometry::MultiSurface> newObj;
-	NEW_CLASSNN(newObj, Math::Geometry::MultiSurface(this->srid, this->hasZ, this->hasM));
+	NEW_CLASSNN(newObj, Math::Geometry::MultiSurface(this->srid));
 	UOSInt i = 0;
 	UOSInt j = this->geometries.GetCount();
 	while (i < j)

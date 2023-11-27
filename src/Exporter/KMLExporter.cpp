@@ -330,92 +330,99 @@ Bool Exporter::KMLExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text:
 					sb.AppendP(sbuff2, sptr);
 					sb.AppendC(UTF8STRC("</name><styleUrl>#lineLabel</styleUrl><LineString><coordinates>"));
 
-					Math::Coord2DDbl *points = pl->GetPointList(nPoints);
-					if (needConv)
+					UOSInt i = 0;
+					UOSInt j = pl->GetCount();
+					Math::Geometry::LineString *lineString;
+					while (i < j)
 					{
-						Math::Vector3 v;
-						if (vec->HasZ())
+						lineString = pl->GetItem(i);
+						Math::Coord2DDbl *points = lineString->GetPointList(nPoints);
+						if (needConv)
 						{
-							Double *alts = pl->GetZList(nPoints);
-							k = 0;
-							while (k < nPoints)
+							Math::Vector3 v;
+							if (lineString->HasZ())
 							{
-								v = Math::CoordinateSystem::ConvertXYZ(srcCsys, destCsys, Math::Vector3(points[k], alts[k]));
+								Double *alts = lineString->GetZList(nPoints);
+								k = 0;
+								while (k < nPoints)
+								{
+									v = Math::CoordinateSystem::ConvertXYZ(srcCsys, destCsys, Math::Vector3(points[k], alts[k]));
 
-								sptr = sbuff2;
-								sptr = Text::StrDouble(sptr, v.GetX());
-								*sptr++ = ',';
-								sptr = Text::StrDouble(sptr, v.GetY());
-								*sptr++ = ',';
-								sptr = Text::StrDouble(sptr, v.GetZ());
-								*sptr++ = ' ';
-								*sptr = 0;
+									sptr = sbuff2;
+									sptr = Text::StrDouble(sptr, v.GetX());
+									*sptr++ = ',';
+									sptr = Text::StrDouble(sptr, v.GetY());
+									*sptr++ = ',';
+									sptr = Text::StrDouble(sptr, v.GetZ());
+									*sptr++ = ' ';
+									*sptr = 0;
 
-								sb.AppendC(sbuff2, (UOSInt)(sptr - sbuff2));
-								k++;
+									sb.AppendC(sbuff2, (UOSInt)(sptr - sbuff2));
+									k++;
+								}
+							}
+							else
+							{
+								k = 0;
+								while (k < nPoints)
+								{
+									v = Math::CoordinateSystem::ConvertXYZ(srcCsys, destCsys, Math::Vector3(points[k], defHeight));
+									sptr = sbuff2;
+									sptr = Text::StrDouble(sptr, v.GetX());
+									*sptr++ = ',';
+									sptr = Text::StrDouble(sptr, v.GetY());
+									*sptr++ = ',';
+									sptr = Text::StrDouble(sptr, v.GetZ());
+									*sptr++ = ' ';
+									*sptr = 0;
+
+									sb.AppendC(sbuff2, (UOSInt)(sptr - sbuff2));
+									k++;
+								}
 							}
 						}
 						else
 						{
-							k = 0;
-							while (k < nPoints)
+							if (lineString->HasZ())
 							{
-								v = Math::CoordinateSystem::ConvertXYZ(srcCsys, destCsys, Math::Vector3(points[k], defHeight));
-								sptr = sbuff2;
-								sptr = Text::StrDouble(sptr, v.GetX());
-								*sptr++ = ',';
-								sptr = Text::StrDouble(sptr, v.GetY());
-								*sptr++ = ',';
-								sptr = Text::StrDouble(sptr, v.GetZ());
-								*sptr++ = ' ';
-								*sptr = 0;
+								Double *alts = lineString->GetZList(nPoints);
+								k = 0;
+								while (k < nPoints)
+								{
+									sptr = sbuff2;
+									sptr = Text::StrDouble(sptr, points[k].x);
+									*sptr++ = ',';
+									sptr = Text::StrDouble(sptr, points[k].y);
+									*sptr++ = ',';
+									sptr = Text::StrDouble(sptr, alts[k]);
+									*sptr++ = ' ';
+									*sptr = 0;
 
-								sb.AppendC(sbuff2, (UOSInt)(sptr - sbuff2));
-								k++;
+									sb.AppendC(sbuff2, (UOSInt)(sptr - sbuff2));
+									k++;
+								}
+							}
+							else
+							{
+								k = 0;
+								while (k < nPoints)
+								{
+									sptr = sbuff2;
+									sptr = Text::StrDouble(sptr, points[k].x);
+									*sptr++ = ',';
+									sptr = Text::StrDouble(sptr, points[k].y);
+									*sptr++ = ',';
+									sptr = Text::StrDouble(sptr, defHeight);
+									*sptr++ = ' ';
+									*sptr = 0;
+
+									sb.AppendC(sbuff2, (UOSInt)(sptr - sbuff2));
+									k++;
+								}
 							}
 						}
+						i++;
 					}
-					else
-					{
-						if (vec->HasZ())
-						{
-							Double *alts = pl->GetZList(nPoints);
-							k = 0;
-							while (k < nPoints)
-							{
-								sptr = sbuff2;
-								sptr = Text::StrDouble(sptr, points[k].x);
-								*sptr++ = ',';
-								sptr = Text::StrDouble(sptr, points[k].y);
-								*sptr++ = ',';
-								sptr = Text::StrDouble(sptr, alts[k]);
-								*sptr++ = ' ';
-								*sptr = 0;
-
-								sb.AppendC(sbuff2, (UOSInt)(sptr - sbuff2));
-								k++;
-							}
-						}
-						else
-						{
-							k = 0;
-							while (k < nPoints)
-							{
-								sptr = sbuff2;
-								sptr = Text::StrDouble(sptr, points[k].x);
-								*sptr++ = ',';
-								sptr = Text::StrDouble(sptr, points[k].y);
-								*sptr++ = ',';
-								sptr = Text::StrDouble(sptr, defHeight);
-								*sptr++ = ' ';
-								*sptr = 0;
-
-								sb.AppendC(sbuff2, (UOSInt)(sptr - sbuff2));
-								k++;
-							}
-						}
-					}
-
 					sb.AppendC(UTF8STRC("</coordinates></LineString></Placemark>"));
 					writer.WriteLineC(sb.ToString(), sb.GetLength());
 				}

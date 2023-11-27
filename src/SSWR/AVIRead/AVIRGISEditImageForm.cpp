@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "Math/Math.h"
+#include "Math/Geometry/Polygon.h"
 #include "Math/Geometry/VectorImage.h"
 #include "SSWR/AVIRead/AVIRGISEditImageForm.h"
 #include "Sync/ThreadUtil.h"

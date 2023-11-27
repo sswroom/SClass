@@ -2,6 +2,7 @@
 #include "MyMemory.h"
 #include "Math/Math.h"
 #include "Math/PointMappingCoordinateSystem.h"
+#include "Math/Geometry/Polyline.h"
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
 
@@ -108,33 +109,33 @@ Double Math::PointMappingCoordinateSystem::CalSurfaceDistanceXY(Math::Coord2DDbl
 	return this->baseCSys->CalSurfaceDistanceXY(ptList[0], ptList[1], unit);
 }
 
-Double Math::PointMappingCoordinateSystem::CalPLDistance(NotNullPtr<Math::Geometry::Polyline> pl, Math::Unit::Distance::DistanceUnit unit) const
+Double Math::PointMappingCoordinateSystem::CalLineStringDistance(NotNullPtr<Math::Geometry::LineString> lineString, Math::Unit::Distance::DistanceUnit unit) const
 {
-	NotNullPtr<Math::Geometry::Polyline> tmpPl = NotNullPtr<Math::Geometry::Polyline>::ConvertFrom(pl->Clone());
-	Double ret;
+	NotNullPtr<Math::Geometry::LineString> tmpLS = NotNullPtr<Math::Geometry::LineString>::ConvertFrom(lineString->Clone());
+	Double ret = 0;
 	UOSInt i;
-	Math::Coord2DDbl *ptList = tmpPl->GetPointList(i);
+	Math::Coord2DDbl *ptList = tmpLS->GetPointList(i);
 	while (i-- > 0)
 	{
 		ptList[i] = CalcBaseXY(ptList[i]);
 	}
-	ret = this->baseCSys->CalPLDistance(tmpPl, unit);
-	tmpPl.Delete();
+	ret = this->baseCSys->CalLineStringDistance(tmpLS, unit);
+	tmpLS.Delete();
 	return ret;
 }
 
-Double Math::PointMappingCoordinateSystem::CalPLDistance3D(NotNullPtr<Math::Geometry::Polyline> pl, Math::Unit::Distance::DistanceUnit unit) const
+Double Math::PointMappingCoordinateSystem::CalLineStringDistance3D(NotNullPtr<Math::Geometry::LineString> lineString, Math::Unit::Distance::DistanceUnit unit) const
 {
-	NotNullPtr<Math::Geometry::Polyline> tmpPl = NotNullPtr<Math::Geometry::Polyline>::ConvertFrom(pl->Clone());
-	Double ret;
+	NotNullPtr<Math::Geometry::LineString> tmpLS = NotNullPtr<Math::Geometry::LineString>::ConvertFrom(lineString->Clone());
+	Double ret = 0;
 	UOSInt i;
-	Math::Coord2DDbl *ptList = tmpPl->GetPointList(i);
+	Math::Coord2DDbl *ptList = tmpLS->GetPointList(i);
 	while (i-- > 0)
 	{
 		ptList[i] = CalcBaseXY(ptList[i]);
 	}
-	ret = this->baseCSys->CalPLDistance3D(tmpPl, unit);
-	tmpPl.Delete();
+	ret = this->baseCSys->CalLineStringDistance3D(tmpLS, unit);
+	tmpLS.Delete();
 	return ret;
 }
 

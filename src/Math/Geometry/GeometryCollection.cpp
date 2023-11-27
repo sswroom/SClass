@@ -2,7 +2,7 @@
 #include "MyMemory.h"
 #include "Math/Geometry/GeometryCollection.h"
 
-Math::Geometry::GeometryCollection::GeometryCollection(UInt32 srid, Bool hasZ, Bool hasM) : Math::Geometry::MultiGeometry<Math::Geometry::Vector2D>(srid, hasZ, hasM)
+Math::Geometry::GeometryCollection::GeometryCollection(UInt32 srid) : Math::Geometry::MultiGeometry<Math::Geometry::Vector2D>(srid)
 {
 }
 
@@ -18,7 +18,7 @@ Math::Geometry::Vector2D::VectorType Math::Geometry::GeometryCollection::GetVect
 NotNullPtr<Math::Geometry::Vector2D> Math::Geometry::GeometryCollection::Clone() const
 {
 	NotNullPtr<Math::Geometry::GeometryCollection> newObj;
-	NEW_CLASSNN(newObj, Math::Geometry::GeometryCollection(this->srid, this->hasZ, this->hasM));
+	NEW_CLASSNN(newObj, Math::Geometry::GeometryCollection(this->srid));
 	UOSInt i = 0;
 	UOSInt j = this->geometries.GetCount();
 	while (i < j)

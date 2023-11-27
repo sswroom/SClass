@@ -10,7 +10,7 @@ namespace Math
 		class MultiPolygon : public MultiGeometry<Polygon>
 		{
 		public:
-			MultiPolygon(UInt32 srid, Bool hasZ, Bool hasM);
+			MultiPolygon(UInt32 srid);
 			virtual ~MultiPolygon();
 
 			virtual Vector2D::VectorType GetVectorType() const;

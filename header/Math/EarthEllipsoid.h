@@ -1,13 +1,18 @@
 #ifndef _SM_MATH_EARTHELLIPSOID
 #define _SM_MATH_EARTHELLIPSOID
 #include "Math/Vector3.h"
-#include "Math/Geometry/Polyline.h"
 #include "Math/Unit/Distance.h"
 #include "Text/CString.h"
 #include "Text/StringBuilderUTF8.h"
 
 namespace Math
 {
+	namespace Geometry
+	{
+		class LineString;
+		class Polyline;
+	}
+
 	class EarthEllipsoid
 	{
 	public:
@@ -74,6 +79,8 @@ namespace Math
 		~EarthEllipsoid();
 
 		Double CalSurfaceDistance(Double dLat1, Double dLon1, Double dLat2, Double dLon2, Math::Unit::Distance::DistanceUnit unit) const;
+		Double CalLineStringDistance(NotNullPtr<Math::Geometry::LineString> lineString, Math::Unit::Distance::DistanceUnit unit) const;
+		Double CalLineStringDistance3D(NotNullPtr<Math::Geometry::LineString> lineString, Math::Unit::Distance::DistanceUnit unit) const;
 		Double CalPLDistance(NotNullPtr<Math::Geometry::Polyline> pl, Math::Unit::Distance::DistanceUnit unit) const;
 		Double CalPLDistance3D(NotNullPtr<Math::Geometry::Polyline> pl, Math::Unit::Distance::DistanceUnit unit) const;
 

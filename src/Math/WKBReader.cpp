@@ -516,7 +516,7 @@ Math::Geometry::Vector2D *Math::WKBReader::ParseWKB(const UInt8 *wkb, UOSInt wkb
 			UOSInt i;
 			NotNullPtr<Math::Geometry::Vector2D> vec;
 			Math::Geometry::MultiPolygon *mpg;
-			Bool hasZ;
+/*			Bool hasZ;
 			Bool hasM;
 			if (geomType & 0xC0000000)
 			{
@@ -528,8 +528,8 @@ Math::Geometry::Vector2D *Math::WKBReader::ParseWKB(const UInt8 *wkb, UOSInt wkb
 				UInt32 t = geomType / 1000;
 				hasZ = (t & 1) != 0;
 				hasM = (t & 2) != 0;
-			}
-			NEW_CLASS(mpg, Math::Geometry::MultiPolygon(srid, hasZ, hasM));
+			}*/
+			NEW_CLASS(mpg, Math::Geometry::MultiPolygon(srid));
 			i = 0;
 			while (i < nPolygon)
 			{
@@ -575,7 +575,7 @@ Math::Geometry::Vector2D *Math::WKBReader::ParseWKB(const UInt8 *wkb, UOSInt wkb
 			UOSInt i;
 			NotNullPtr<Math::Geometry::Vector2D> vec;
 			Math::Geometry::GeometryCollection *mpg;
-			Bool hasZ;
+/*			Bool hasZ;
 			Bool hasM;
 			if (geomType & 0xC0000000)
 			{
@@ -587,8 +587,8 @@ Math::Geometry::Vector2D *Math::WKBReader::ParseWKB(const UInt8 *wkb, UOSInt wkb
 				UInt32 t = geomType / 1000;
 				hasZ = (t & 1) != 0;
 				hasM = (t & 2) != 0;
-			}
-			NEW_CLASS(mpg, Math::Geometry::GeometryCollection(srid, hasZ, hasM));
+			}*/
+			NEW_CLASS(mpg, Math::Geometry::GeometryCollection(srid));
 			i = 0;
 			while (i < nGeometry)
 			{
@@ -742,7 +742,7 @@ Math::Geometry::Vector2D *Math::WKBReader::ParseWKB(const UInt8 *wkb, UOSInt wkb
 			UOSInt i;
 			NotNullPtr<Math::Geometry::Vector2D> vec;
 			Math::Geometry::CompoundCurve *cpl;
-			Bool hasZ;
+/*			Bool hasZ;
 			Bool hasM;
 			if (geomType & 0xC0000000)
 			{
@@ -754,8 +754,8 @@ Math::Geometry::Vector2D *Math::WKBReader::ParseWKB(const UInt8 *wkb, UOSInt wkb
 				UInt32 t = geomType / 1000;
 				hasZ = (t & 1) != 0;
 				hasM = (t & 2) != 0;
-			}
-			NEW_CLASS(cpl, Math::Geometry::CompoundCurve(srid, hasZ, hasM));
+			}*/
+			NEW_CLASS(cpl, Math::Geometry::CompoundCurve(srid));
 			i = 0;
 			while (i < nPolyline)
 			{
@@ -805,7 +805,7 @@ Math::Geometry::Vector2D *Math::WKBReader::ParseWKB(const UInt8 *wkb, UOSInt wkb
 			UOSInt i;
 			NotNullPtr<Math::Geometry::Vector2D> vec;
 			Math::Geometry::CurvePolygon *cpg;
-			Bool hasZ;
+/*			Bool hasZ;
 			Bool hasM;
 			if (geomType & 0xC0000000)
 			{
@@ -817,8 +817,8 @@ Math::Geometry::Vector2D *Math::WKBReader::ParseWKB(const UInt8 *wkb, UOSInt wkb
 				UInt32 t = geomType / 1000;
 				hasZ = (t & 1) != 0;
 				hasM = (t & 2) != 0;
-			}
-			NEW_CLASS(cpg, Math::Geometry::CurvePolygon(srid, hasZ, hasM));
+			}*/
+			NEW_CLASS(cpg, Math::Geometry::CurvePolygon(srid));
 			i = 0;
 			while (i < nCPolyline)
 			{
@@ -868,7 +868,7 @@ Math::Geometry::Vector2D *Math::WKBReader::ParseWKB(const UInt8 *wkb, UOSInt wkb
 			UOSInt i;
 			NotNullPtr<Math::Geometry::Vector2D> vec;
 			Math::Geometry::MultiSurface *cpg;
-			Bool hasZ;
+/*			Bool hasZ;
 			Bool hasM;
 			if (geomType & 0xC0000000)
 			{
@@ -880,8 +880,8 @@ Math::Geometry::Vector2D *Math::WKBReader::ParseWKB(const UInt8 *wkb, UOSInt wkb
 				UInt32 t = geomType / 1000;
 				hasZ = (t & 1) != 0;
 				hasM = (t & 2) != 0;
-			}
-			NEW_CLASS(cpg, Math::Geometry::MultiSurface(srid, hasZ, hasM));
+			}*/
+			NEW_CLASS(cpg, Math::Geometry::MultiSurface(srid));
 			i = 0;
 			while (i < nCPolyline)
 			{

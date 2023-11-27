@@ -10,7 +10,7 @@ namespace Math
 		class CompoundCurve : public MultiGeometry<LineString>
 		{
 		public:
-			CompoundCurve(UInt32 srid, Bool hasZ, Bool hasM);
+			CompoundCurve(UInt32 srid);
 			virtual ~CompoundCurve();
 
 			virtual void AddGeometry(NotNullPtr<LineString> geometry);

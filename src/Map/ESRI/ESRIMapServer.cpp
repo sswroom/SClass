@@ -5,6 +5,8 @@
 #include "Map/ESRI/ESRIMapServer.h"
 #include "Math/CoordinateSystemManager.h"
 #include "Math/Geometry/PointZ.h"
+#include "Math/Geometry/Polygon.h"
+#include "Math/Geometry/Polyline.h"
 #include "Net/HTTPClient.h"
 #include "Parser/FileParser/PNGParser.h"
 #include "Text/Encoding.h"
@@ -628,17 +630,8 @@ Math::Geometry::Vector2D *Map::ESRI::ESRIMapServer::ParseGeometry(UInt32 srid, T
 			if (ptArr.GetCount() > 0)
 			{
 				Math::Geometry::Polyline *pl;
-				NEW_CLASS(pl, Math::Geometry::Polyline(srid, ptOfstArr.GetCount(), ptArr.GetCount(), false, false));
-				UInt32 *ptOfstList = pl->GetPtOfstList(i);
-				while (i-- > 0)
-				{
-					ptOfstList[i] = ptOfstArr.GetItem(i);
-				}
-				Math::Coord2DDbl *ptList = pl->GetPointList(i);
-				while (i-- > 0)
-				{
-					ptList[i] = ptArr.GetItem(i);
-				}
+				NEW_CLASS(pl, Math::Geometry::Polyline(srid));
+				pl->AddFromPtOfst(ptOfstArr.Ptr(), ptOfstArr.GetCount(), ptArr.Ptr(), ptArr.GetCount(), 0, 0);
 				return pl;
 			}
 		}

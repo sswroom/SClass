@@ -7,6 +7,7 @@
 #include "Map/VectorLayer.h"
 #include "Math/CoordinateSystemManager.h"
 #include "Math/Geometry/Point.h"
+#include "Math/Geometry/Polyline.h"
 #include "Net/HTTPClient.h"
 #include "Net/HTTPOSClient.h"
 #include "Sync/MutexUsage.h"

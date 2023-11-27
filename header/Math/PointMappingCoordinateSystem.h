@@ -1,5 +1,6 @@
 #ifndef _SM_MATH_POINTMAPPINGCOORDINATESYSTEM
 #define _SM_MATH_POINTMAPPINGCOORDINATESYSTEM
+#include "Data/ArrayList.h"
 #include "Math/CoordinateSystem.h"
 
 namespace Math
@@ -19,8 +20,8 @@ namespace Math
 		Math::Coord2DDbl CalcBaseXY(Math::Coord2DDbl mapPt) const;
 
 		virtual Double CalSurfaceDistanceXY(Math::Coord2DDbl pos1, Math::Coord2DDbl pos2, Math::Unit::Distance::DistanceUnit unit) const;
-		virtual Double CalPLDistance(NotNullPtr<Math::Geometry::Polyline> pl, Math::Unit::Distance::DistanceUnit unit) const;
-		virtual Double CalPLDistance3D(NotNullPtr<Math::Geometry::Polyline> pl, Math::Unit::Distance::DistanceUnit unit) const;
+		virtual Double CalLineStringDistance(NotNullPtr<Math::Geometry::LineString> lineString, Math::Unit::Distance::DistanceUnit unit) const;
+		virtual Double CalLineStringDistance3D(NotNullPtr<Math::Geometry::LineString> lineString, Math::Unit::Distance::DistanceUnit unit) const;
 		virtual NotNullPtr<CoordinateSystem> Clone() const;
 		virtual CoordinateSystemType GetCoordSysType() const;
 		virtual Bool IsProjected() const;

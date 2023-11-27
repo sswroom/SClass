@@ -7,6 +7,7 @@
 #include "Math/Geometry/Point.h"
 #include "Math/Geometry/PointZ.h"
 #include "Math/Geometry/Polygon.h"
+#include "Math/Geometry/Polyline.h"
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
 
@@ -328,10 +329,11 @@ Math::Geometry::Vector2D *Math::WKTReader::ParseWKT(const UTF8Char *wkt)
 	{
 		Data::ArrayList<Double> ptList;
 		Data::ArrayList<Double> zList;
-		Data::ArrayList<UInt32> ptOfstList;
 		Double x;
 		Double y;
 		Double z;
+		Math::Geometry::Polyline *pl;
+		NotNullPtr<Math::Geometry::LineString> lineString;
 		wkt += 15;
 		while (*wkt == ' ')
 		{
@@ -341,26 +343,31 @@ Math::Geometry::Vector2D *Math::WKTReader::ParseWKT(const UTF8Char *wkt)
 		{
 			return 0;
 		}
+		NEW_CLASS(pl, Math::Geometry::Polyline(this->srid));
 		while (true)
 		{
 			while (*++wkt == ' ');
 			if (*wkt != '(')
 			{
+				DEL_CLASS(pl);
 				return 0;
 			}
-			ptOfstList.Add((UInt32)(ptList.GetCount() >> 1));
+			ptList.Clear();
+			zList.Clear();
 			while (true)
 			{
 				while (*++wkt == ' ');
 				wkt = NextDouble(wkt, x);
 				if (wkt == 0 || *wkt != ' ')
 				{
+					DEL_CLASS(pl);
 					return 0;
 				}
 				while (*++wkt == ' ');
 				wkt = NextDouble(wkt, y);
 				if (wkt == 0)
 				{
+					DEL_CLASS(pl);
 					return 0;
 				}
 				while (*wkt == ' ')
@@ -369,6 +376,7 @@ Math::Geometry::Vector2D *Math::WKTReader::ParseWKT(const UTF8Char *wkt)
 					wkt = NextDouble(wkt, z);
 					if (wkt == 0)
 					{
+						DEL_CLASS(pl);
 						return 0;
 					}
 					zList.Add(z);
@@ -386,9 +394,46 @@ Math::Geometry::Vector2D *Math::WKTReader::ParseWKT(const UTF8Char *wkt)
 				}
 				else
 				{
+					DEL_CLASS(pl);
 					return 0;
 				}
 			}
+
+			Bool hasZ = false;
+			Bool hasM = false;
+			if (zList.GetCount() == ptList.GetCount())
+			{
+				hasZ = true;
+				hasM = true;
+			}
+			else if (zList.GetCount() == (ptList.GetCount() >> 1))
+			{
+				hasZ = true;
+			}
+			NEW_CLASSNN(lineString, Math::Geometry::LineString(srid, ptList.GetCount() >> 1, hasZ, hasM));
+			UOSInt i;
+			Math::Coord2DDbl *ptArr = lineString->GetPointList(i);
+			MemCopyNO(ptArr, ptList.Ptr(), ptList.GetCount() * sizeof(Double));
+			if (hasM)
+			{
+				Double *zArr = lineString->GetZList(i);
+				Double *mArr = lineString->GetMList(i);
+				while (i-- > 0)
+				{
+					zArr[i] = zList.GetItem((i << 1));
+					mArr[i] = zList.GetItem((i << 1) + 1);
+				}
+			}
+			else if (hasZ)
+			{
+				Double *zArr = lineString->GetZList(i);
+				while (i-- > 0)
+				{
+					zArr[i] = zList.GetItem(i);
+				}
+			}
+			pl->AddGeometry(lineString);
+
 			if (*wkt == ',')
 			{
 				continue;
@@ -400,48 +445,14 @@ Math::Geometry::Vector2D *Math::WKTReader::ParseWKT(const UTF8Char *wkt)
 			}
 			else
 			{
+				DEL_CLASS(pl);
 				return 0;
 			}
 		}
 		if (*wkt != 0)
 		{
+			DEL_CLASS(pl);
 			return 0;
-		}
-		Math::Geometry::Polyline *pl;
-		Bool hasZ = false;
-		Bool hasM = false;
-		if (zList.GetCount() == ptList.GetCount())
-		{
-			hasZ = true;
-			hasM = true;
-		}
-		else if (zList.GetCount() == (ptList.GetCount() >> 1))
-		{
-			hasZ = true;
-		}
-		NEW_CLASS(pl, Math::Geometry::Polyline(this->srid, ptOfstList.GetCount(), ptList.GetCount() >> 1, hasZ, hasM));
-		UOSInt i;
-		UInt32 *ptOfstArr = pl->GetPtOfstList(i);
-		MemCopyNO(ptOfstArr, ptOfstList.Ptr(), ptOfstList.GetCount() * sizeof(UInt32));
-		Math::Coord2DDbl *ptArr = pl->GetPointList(i);
-		MemCopyNO(ptArr, ptList.Ptr(), ptList.GetCount() * sizeof(Double));
-		if (hasM)
-		{
-			Double *zArr = pl->GetZList(i);
-			Double *mArr = pl->GetMList(i);
-			while (i-- > 0)
-			{
-				zArr[i] = zList.GetItem((i << 1));
-				mArr[i] = zList.GetItem((i << 1) + 1);
-			}
-		}
-		else if (hasZ)
-		{
-			Double *zArr = pl->GetZList(i);
-			while (i-- > 0)
-			{
-				zArr[i] = zList.GetItem(i);
-			}
 		}
 		return pl;
 	}
@@ -559,7 +570,7 @@ Math::Geometry::Vector2D *Math::WKTReader::ParseWKT(const UTF8Char *wkt)
 			}
 			if (mpg == 0)
 			{
-				NEW_CLASS(mpg, Math::Geometry::MultiPolygon(this->srid, pg->HasZ(), pg->HasM()));
+				NEW_CLASS(mpg, Math::Geometry::MultiPolygon(this->srid));
 			}
 			mpg->AddGeometry(pg);
 

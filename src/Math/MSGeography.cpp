@@ -7,6 +7,7 @@
 #include "Math/Geometry/Point.h"
 #include "Math/Geometry/PointZ.h"
 #include "Math/Geometry/Polygon.h"
+#include "Math/Geometry/Polyline.h"
 
 #define VERBOSE
 #include <stdio.h>
@@ -107,23 +108,49 @@ Math::Geometry::Vector2D *Math::MSGeography::ParseBinary(const UInt8 *buffPtr, U
 					return 0;
 				}
 				Math::Geometry::Polyline *pl;
+				NotNullPtr<Math::Geometry::LineString> lineString;
 				UOSInt i;
 				UOSInt j;
-				NEW_CLASS(pl, Math::Geometry::Polyline(srid, nFigures, nPoints, false, false));
-				Math::Coord2DDbl *points = pl->GetPointList(j);
-				i = 0;
-				while (i < j)
+				UOSInt k;
+				UOSInt l;
+				Math::Coord2DDbl *points;
+				NEW_CLASS(pl, Math::Geometry::Polyline(srid));
+				if (nFigures <= 1)
 				{
-					points[i] = Math::Coord2DDbl(ReadDouble(&pointPtr[i * 16]), ReadDouble(&pointPtr[i * 16 + 8]));
-					i++;
-				}
-				if (nFigures > 1)
-				{
-					UInt32 *ofstList = pl->GetPtOfstList(j);
+					NEW_CLASSNN(lineString, Math::Geometry::LineString(srid, nPoints, false, false));
+					points = lineString->GetPointList(j);
 					i = 0;
 					while (i < j)
 					{
-						ofstList[i] = ReadUInt32(&figurePtr[i * 5 + 1]);
+						points[i] = Math::Coord2DDbl(ReadDouble(&pointPtr[i * 16]), ReadDouble(&pointPtr[i * 16 + 8]));
+						i++;
+					}
+					pl->AddGeometry(lineString);
+				}
+				else
+				{
+					i = 0;
+					while (i < nFigures)
+					{
+						l = ReadUInt32(&figurePtr[i * 5 + 1]);
+						if (i + 1 == nFigures)
+						{
+							k = nPoints;
+						}
+						else
+						{
+							k = ReadUInt32(&figurePtr[i * 5 + 6]);
+						}
+						NEW_CLASSNN(lineString, Math::Geometry::LineString(srid, k - l, false, false));
+						points = lineString->GetPointList(j);
+						j = 0;
+						while (l < k)
+						{
+							points[j] = Math::Coord2DDbl(ReadDouble(&pointPtr[l * 16]), ReadDouble(&pointPtr[l * 16 + 8]));
+							l++;
+							j++;
+						}
+						pl->AddGeometry(lineString);
 						i++;
 					}
 				}
@@ -162,23 +189,49 @@ Math::Geometry::Vector2D *Math::MSGeography::ParseBinary(const UInt8 *buffPtr, U
 			else if (shapePtr[8] == 5) //Multilinestring
 			{
 				Math::Geometry::Polyline *pl;
+				NotNullPtr<Math::Geometry::LineString> lineString;
 				UOSInt i;
 				UOSInt j;
-				NEW_CLASS(pl, Math::Geometry::Polyline(srid, nFigures, nPoints, false, false));
-				Math::Coord2DDbl *points = pl->GetPointList(j);
-				i = 0;
-				while (i < j)
+				UOSInt k;
+				UOSInt l;
+				Math::Coord2DDbl *points;
+				NEW_CLASS(pl, Math::Geometry::Polyline(srid));
+				if (nFigures <= 1)
 				{
-					points[i] = Math::Coord2DDbl(ReadDouble(&pointPtr[i * 16]), ReadDouble(&pointPtr[i * 16 + 8]));
-					i++;
-				}
-				if (nFigures > 1)
-				{
-					UInt32 *ofstList = pl->GetPtOfstList(j);
+					NEW_CLASSNN(lineString, Math::Geometry::LineString(srid, nPoints, false, false));
+					points = lineString->GetPointList(j);
 					i = 0;
 					while (i < j)
 					{
-						ofstList[i] = ReadUInt32(&figurePtr[i * 5 + 1]);
+						points[i] = Math::Coord2DDbl(ReadDouble(&pointPtr[i * 16]), ReadDouble(&pointPtr[i * 16 + 8]));
+						i++;
+					}
+					pl->AddGeometry(lineString);
+				}
+				else
+				{
+					i = 0;
+					while (i < nFigures)
+					{
+						l = ReadUInt32(&figurePtr[i * 5 + 1]);
+						if (i + 1 == nFigures)
+						{
+							k = nPoints;
+						}
+						else
+						{
+							k = ReadUInt32(&figurePtr[i * 5 + 6]);
+						}
+						NEW_CLASSNN(lineString, Math::Geometry::LineString(srid, k - l, false, false));
+						points = lineString->GetPointList(j);
+						j = 0;
+						while (l < k)
+						{
+							points[j] = Math::Coord2DDbl(ReadDouble(&pointPtr[l * 16]), ReadDouble(&pointPtr[l * 16 + 8]));
+							l++;
+							j++;
+						}
+						pl->AddGeometry(lineString);
 						i++;
 					}
 				}
@@ -192,7 +245,7 @@ Math::Geometry::Vector2D *Math::MSGeography::ParseBinary(const UInt8 *buffPtr, U
 				UOSInt j;
 				UOSInt k;
 				UOSInt l;
-				NEW_CLASS(mpg, Math::Geometry::MultiPolygon(srid, false, false));
+				NEW_CLASS(mpg, Math::Geometry::MultiPolygon(srid));
 				if (nFigures > 1)
 				{
 					i = 0;
@@ -358,32 +411,56 @@ Math::Geometry::Vector2D *Math::MSGeography::ParseBinary(const UInt8 *buffPtr, U
 			}
 			else if (shapePtr[8] == 5)
 			{
+				const UInt8 *zPtr = pointPtr + nPoints * 16;
 				Math::Geometry::Polyline *pl;
+				NotNullPtr<Math::Geometry::LineString> lineString;
 				UOSInt i;
 				UOSInt j;
-				NEW_CLASS(pl, Math::Geometry::Polyline(srid, nFigures, nPoints, true, false));
-				Math::Coord2DDbl *points = pl->GetPointList(j);
-				Double *zList = pl->GetZList(j);
-				i = 0;
-				while (i < j)
+				UOSInt k;
+				UOSInt l;
+				Math::Coord2DDbl *points;
+				Double *zArr;
+				NEW_CLASS(pl, Math::Geometry::Polyline(srid));
+				if (nFigures <= 1)
 				{
-					points[i] = Math::Coord2DDbl(ReadDouble(&pointPtr[i * 16]), ReadDouble(&pointPtr[i * 16 + 8]));
-					i++;
-				}
-				pointPtr += j * 16;
-				i = 0;
-				while (i < j)
-				{
-					zList[i] = ReadDouble(&pointPtr[i * 8]);
-					i++;
-				}
-				if (nFigures > 1)
-				{
-					UInt32 *ofstList = pl->GetPtOfstList(j);
+					NEW_CLASSNN(lineString, Math::Geometry::LineString(srid, nPoints, true, false));
+					points = lineString->GetPointList(j);
+					zArr = lineString->GetZList(j);
 					i = 0;
 					while (i < j)
 					{
-						ofstList[i] = ReadUInt32(&figurePtr[i * 5 + 1]);
+						points[i] = Math::Coord2DDbl(ReadDouble(&pointPtr[i * 16]), ReadDouble(&pointPtr[i * 16 + 8]));
+						zArr[i] = ReadDouble(&zPtr[i * 8]);
+						i++;
+					}
+					pl->AddGeometry(lineString);
+				}
+				else
+				{
+					i = 0;
+					while (i < nFigures)
+					{
+						l = ReadUInt32(&figurePtr[i * 5 + 1]);
+						if (i + 1 == nFigures)
+						{
+							k = nPoints;
+						}
+						else
+						{
+							k = ReadUInt32(&figurePtr[i * 5 + 6]);
+						}
+						NEW_CLASSNN(lineString, Math::Geometry::LineString(srid, k - l, true, false));
+						points = lineString->GetPointList(j);
+						zArr = lineString->GetZList(j);
+						j = 0;
+						while (l < k)
+						{
+							points[j] = Math::Coord2DDbl(ReadDouble(&pointPtr[l * 16]), ReadDouble(&pointPtr[l * 16 + 8]));
+							zArr[j] = ReadDouble(&zPtr[l * 8]);
+							l++;
+							j++;
+						}
+						pl->AddGeometry(lineString);
 						i++;
 					}
 				}
@@ -392,7 +469,7 @@ Math::Geometry::Vector2D *Math::MSGeography::ParseBinary(const UInt8 *buffPtr, U
 			else if (shapePtr[8] == 6)
 			{
 				Math::Geometry::MultiPolygon *mpg;
-				NEW_CLASS(mpg, Math::Geometry::MultiPolygon(srid, true, false));
+				NEW_CLASS(mpg, Math::Geometry::MultiPolygon(srid));
 				shapePtr += 9;
 				UOSInt thisFigure;
 				UOSInt nextFigure = ReadUInt32(&shapePtr[4]);
@@ -574,40 +651,62 @@ Math::Geometry::Vector2D *Math::MSGeography::ParseBinary(const UInt8 *buffPtr, U
 			}*/
 			else if (shapePtr[8] == 5)
 			{
+				const UInt8 *zPtr = pointPtr + nPoints * 16;
+				const UInt8 *mPtr = zPtr + nPoints * 8;
 				Math::Geometry::Polyline *pl;
+				NotNullPtr<Math::Geometry::LineString> lineString;
 				UOSInt i;
 				UOSInt j;
-				NEW_CLASS(pl, Math::Geometry::Polyline(srid, nFigures, nPoints, true, true));
-				Math::Coord2DDbl *points = pl->GetPointList(j);
-				Double *zList = pl->GetZList(j);
-				Double *mList = pl->GetMList(j);
-				i = 0;
-				while (i < j)
+				UOSInt k;
+				UOSInt l;
+				Math::Coord2DDbl *points;
+				Double *zArr;
+				Double *mArr;
+				NEW_CLASS(pl, Math::Geometry::Polyline(srid));
+				if (nFigures <= 1)
 				{
-					points[i] = Math::Coord2DDbl(ReadDouble(&pointPtr[i * 16]), ReadDouble(&pointPtr[i * 16 + 8]));
-					i++;
-				}
-				pointPtr += j * 16;
-				i = 0;
-				while (i < j)
-				{
-					zList[i] = ReadDouble(&pointPtr[i * 8]);
-					i++;
-				}
-				pointPtr += j * 8;
-				i = 0;
-				while (i < j)
-				{
-					mList[i] = ReadDouble(&pointPtr[i * 8]);
-					i++;
-				}
-				if (nFigures > 1)
-				{
-					UInt32 *ofstList = pl->GetPtOfstList(j);
+					NEW_CLASSNN(lineString, Math::Geometry::LineString(srid, nPoints, true, true));
+					points = lineString->GetPointList(j);
+					zArr = lineString->GetZList(j);
+					mArr = lineString->GetMList(j);
 					i = 0;
 					while (i < j)
 					{
-						ofstList[i] = ReadUInt32(&figurePtr[i * 5 + 1]);
+						points[i] = Math::Coord2DDbl(ReadDouble(&pointPtr[i * 16]), ReadDouble(&pointPtr[i * 16 + 8]));
+						zArr[i] = ReadDouble(&zPtr[i * 8]);
+						mArr[i] = ReadDouble(&mPtr[i * 8]);
+						i++;
+					}
+					pl->AddGeometry(lineString);
+				}
+				else
+				{
+					i = 0;
+					while (i < nFigures)
+					{
+						l = ReadUInt32(&figurePtr[i * 5 + 1]);
+						if (i + 1 == nFigures)
+						{
+							k = nPoints;
+						}
+						else
+						{
+							k = ReadUInt32(&figurePtr[i * 5 + 6]);
+						}
+						NEW_CLASSNN(lineString, Math::Geometry::LineString(srid, k - l, true, true));
+						points = lineString->GetPointList(j);
+						zArr = lineString->GetZList(j);
+						mArr = lineString->GetMList(j);
+						j = 0;
+						while (l < k)
+						{
+							points[j] = Math::Coord2DDbl(ReadDouble(&pointPtr[l * 16]), ReadDouble(&pointPtr[l * 16 + 8]));
+							zArr[j] = ReadDouble(&zPtr[l * 8]);
+							mArr[j] = ReadDouble(&mPtr[l * 8]);
+							l++;
+							j++;
+						}
+						pl->AddGeometry(lineString);
 						i++;
 					}
 				}

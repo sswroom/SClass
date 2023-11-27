@@ -6,6 +6,7 @@
 #include "Math/CoordinateSystemManager.h"
 #include "Math/Geometry/LineString.h"
 #include "Math/Geometry/Point.h"
+#include "Math/Geometry/Polygon.h"
 #include "Text/MyStringFloat.h"
 
 #define OSMTYPECNT 80

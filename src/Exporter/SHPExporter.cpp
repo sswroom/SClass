@@ -206,8 +206,11 @@ Bool Exporter::SHPExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text:
 			if (pl)
 			{
 				box = pl->GetBounds();
-				ptOfsts = pl->GetPtOfstList(nPtOfst);
-				points = pl->GetPointList(nPoint);
+				nPtOfst = pl->GetCount();
+				ptOfsts = MemAlloc(UInt32, nPtOfst);
+				nPoint = pl->GetPointCount();
+				points = MemAllocA(Math::Coord2DDbl, nPoint);
+				pl->FillPointOfstList(points, ptOfsts, 0, 0);
 				WriteUInt32(&nvals[0], (UInt32)nPtOfst);
 				WriteUInt32(&nvals[4], (UInt32)nPoint);
 
@@ -236,6 +239,8 @@ Bool Exporter::SHPExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text:
 				stm->Write((UInt8*)points, nPoint * 16);
 				fileSize += nPtOfst * 4 + nPoint * 16;
 
+				MemFreeA(points);
+				MemFree(ptOfsts);
 				DEL_CLASS(pl);
 			}
 			else
@@ -265,9 +270,12 @@ Bool Exporter::SHPExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text:
 		{
 			pl = (Math::Geometry::Polyline*)layer->GetNewVectorById(sess, objIds.GetItem(i));
 			box = pl->GetBounds();
-			ptOfsts = pl->GetPtOfstList(nPtOfst);
-			points = pl->GetPointList(nPoint);
-			alts = pl->GetZList(nPoint);
+			nPtOfst = pl->GetCount();
+			ptOfsts = MemAlloc(UInt32, nPtOfst);
+			nPoint = pl->GetPointCount();
+			points = MemAllocA(Math::Coord2DDbl, nPoint);
+			alts = MemAlloc(Double, nPoint);
+			pl->FillPointOfstList(points, ptOfsts, alts, 0);
 			WriteUInt32(&nvals[0], (UInt32)nPtOfst);
 			WriteUInt32(&nvals[4], (UInt32)nPoint);
 
@@ -319,6 +327,9 @@ Bool Exporter::SHPExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text:
 			stm->Write((UInt8*)alts, nPoint * 8);
 			fileSize += 16 + nPoint * 8;
 
+			MemFree(alts);
+			MemFreeA(points);
+			MemFree(ptOfsts);
 			DEL_CLASS(pl);
 			i++;
 		}

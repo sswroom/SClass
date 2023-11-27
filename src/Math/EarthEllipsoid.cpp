@@ -2,6 +2,7 @@
 #include "MyMemory.h"
 #include "Math/Math.h"
 #include "Math/EarthEllipsoid.h"
+#include "Math/Geometry/Polyline.h"
 
 Math::EarthEllipsoid::EarthEllipsoidInfo Math::EarthEllipsoid::refEllipsoids[] = {
 	{EET_OTHER,			CSTR("Other"),						1984, 6378137.0,		191.0},
@@ -112,73 +113,83 @@ Double Math::EarthEllipsoid::CalSurfaceDistance(Double dLat1, Double dLon1, Doub
 	return d;
 }
 
-Double Math::EarthEllipsoid::CalPLDistance(NotNullPtr<Math::Geometry::Polyline> pl, Math::Unit::Distance::DistanceUnit unit) const
+Double Math::EarthEllipsoid::CalLineStringDistance(NotNullPtr<Math::Geometry::LineString> lineString, Math::Unit::Distance::DistanceUnit unit) const
 {
 	UOSInt nPoint;
-	UOSInt nPtOfst;
-	UInt32 *ptOfsts;
 	Math::Coord2DDbl *points;
-	ptOfsts = pl->GetPtOfstList(nPtOfst);
-	points = pl->GetPointList(nPoint);
-	UOSInt i = nPtOfst;
+	points = lineString->GetPointList(nPoint);
 	UOSInt j = nPoint;
-	UOSInt k;
 	Double totalDist = 0;
 	Math::Coord2DDbl lastPt;
+	if (j-- > 0)
+	{
+		lastPt = points[j];
+		while (j-- > 0)
+		{
+			totalDist += CalSurfaceDistance(lastPt.y, lastPt.x, points[j].y, points[j].x, unit);
+			lastPt = points[j];
+		}
+	}
+	return totalDist;
+}
+
+Double Math::EarthEllipsoid::CalLineStringDistance3D(NotNullPtr<Math::Geometry::LineString> lineString, Math::Unit::Distance::DistanceUnit unit) const
+{
+	UOSInt nPoint;
+	UOSInt nAlts;
+	Math::Coord2DDbl *points;
+	Double *alts;
+	points = lineString->GetPointList(nPoint);
+	alts = lineString->GetZList(nAlts);
+	UOSInt j = nPoint;
+	Double dist;
+	Double totalDist = 0;
+	Math::Coord2DDbl lastPt;
+	Double lastH;
+	Double altDiff;
+	if (j-- > 0)
+	{
+		lastPt = points[j];
+		lastH = alts[j];
+		while (j-- > 0)
+		{
+			dist = CalSurfaceDistance(lastPt.y, lastPt.x, points[j].y, points[j].x, unit);
+			altDiff = (alts[j] - lastH);
+			dist = Math_Sqrt(dist * dist + altDiff * altDiff);
+			totalDist += dist;
+			lastPt = points[j];
+			lastH = alts[j];
+		}
+	}
+	return totalDist;
+}
+
+Double Math::EarthEllipsoid::CalPLDistance(NotNullPtr<Math::Geometry::Polyline> pl, Math::Unit::Distance::DistanceUnit unit) const
+{
+	NotNullPtr<Math::Geometry::LineString> lineString;
+	UOSInt i = pl->GetCount();
+	Double totalDist = 0;
 	while (i-- > 0)
 	{
-		k = ptOfsts[i];
-		if (j-- > k)
+		if (lineString.Set(pl->GetItem(i)))
 		{
-			lastPt = points[j];
-			while (j-- > k)
-			{
-				totalDist += CalSurfaceDistance(lastPt.y, lastPt.x, points[j].y, points[j].x, unit);
-				lastPt = points[j];
-			}
+			totalDist += CalLineStringDistance(lineString, unit);
 		}
-		j++;
 	}
 	return totalDist;
 }
 
 Double Math::EarthEllipsoid::CalPLDistance3D(NotNullPtr<Math::Geometry::Polyline> pl, Math::Unit::Distance::DistanceUnit unit) const
 {
-	UOSInt nPoint;
-	UOSInt nPtOfst;
-	UOSInt nAlts;
-	UInt32 *ptOfsts;
-	Math::Coord2DDbl *points;
-	Double *alts;
-	ptOfsts = pl->GetPtOfstList(nPtOfst);
-	points = pl->GetPointList(nPoint);
-	alts = pl->GetZList(nAlts);
-	UOSInt i = nPtOfst;
-	UOSInt j = nPoint;
-	UOSInt k;
-	Double dist;
+	NotNullPtr<Math::Geometry::LineString> lineString;
+	UOSInt i = pl->GetCount();
 	Double totalDist = 0;
-	Math::Coord2DDbl lastPt;
-	Double lastH;
-	Double altDiff;
 	while (i-- > 0)
 	{
-		k = ptOfsts[i];
-		if (j-- > k)
+		if (lineString.Set(pl->GetItem(i)))
 		{
-			lastPt = points[j];
-			lastH = alts[j];
-			while (j-- > k)
-			{
-				dist = CalSurfaceDistance(lastPt.y, lastPt.x, points[j].y, points[j].x, unit);
-				altDiff = (alts[j] - lastH);
-				dist = Math_Sqrt(dist * dist + altDiff * altDiff);
-				totalDist += dist;
-				lastPt = points[j];
-				lastH = alts[j];
-			}
+			totalDist += CalLineStringDistance3D(lineString, unit);
 		}
-		j++;
 	}
 	return totalDist;
 }

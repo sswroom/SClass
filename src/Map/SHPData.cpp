@@ -596,9 +596,14 @@ Math::Geometry::Vector2D *Map::SHPData::GetNewVectorById(GetObjectSess *session,
 		if (rec == 0)
 			return 0;
 		if (rec->vec) return rec->vec->Clone().Ptr();
-		NEW_CLASS(pl, Math::Geometry::Polyline(srid, rec->nPtOfst, rec->nPoint, false, false));
-		shpData->GetRealData(rec->ofst, rec->nPtOfst << 2, Data::ByteArray((UInt8*)pl->GetPtOfstList(nPoint), rec->nPtOfst << 2));
-		shpData->GetRealData(rec->ofst + (rec->nPtOfst << 2), rec->nPoint << 4, Data::ByteArray((UInt8*)pl->GetPointList(nPoint), rec->nPoint << 4));
+		NEW_CLASS(pl, Math::Geometry::Polyline(srid));
+		UInt32 *ptOfstList = MemAlloc(UInt32, rec->nPtOfst);
+		Math::Coord2DDbl *pointList = MemAllocA(Math::Coord2DDbl, rec->nPoint);
+		shpData->GetRealData(rec->ofst, rec->nPtOfst << 2, Data::ByteArray((UInt8*)ptOfstList, rec->nPtOfst << 2));
+		shpData->GetRealData(rec->ofst + (rec->nPtOfst << 2), rec->nPoint << 4, Data::ByteArray((UInt8*)pointList, rec->nPoint << 4));
+		pl->AddFromPtOfst(ptOfstList, rec->nPtOfst, pointList, rec->nPoint, 0, 0);
+		MemFreeA(pointList);
+		MemFree(ptOfstList);
 		rec->vec = pl->Clone().Ptr();
 		return pl;
 	}
@@ -610,10 +615,17 @@ Math::Geometry::Vector2D *Map::SHPData::GetNewVectorById(GetObjectSess *session,
 		if (rec == 0)
 			return 0;
 		if (rec->vec) return rec->vec->Clone().Ptr();
-		NEW_CLASS(pl, Math::Geometry::Polyline(srid, rec->nPtOfst, rec->nPoint, true, false));
-		shpData->GetRealData(rec->ofst, rec->nPtOfst << 2, Data::ByteArray((UInt8*)pl->GetPtOfstList(nPoint), rec->nPtOfst << 2));
-		shpData->GetRealData(rec->ofst + (rec->nPtOfst << 2), rec->nPoint << 4, Data::ByteArray((UInt8*)pl->GetPointList(nPoint), rec->nPoint << 4));
-		shpData->GetRealData(rec->ofst + (rec->nPtOfst << 2) + (rec->nPoint << 4) + 16, rec->nPoint << 3, Data::ByteArray((UInt8*)pl->GetZList(nPoint), rec->nPoint << 3));
+		NEW_CLASS(pl, Math::Geometry::Polyline(srid));
+		UInt32 *ptOfstList = MemAlloc(UInt32, rec->nPtOfst);
+		Math::Coord2DDbl *pointList = MemAllocA(Math::Coord2DDbl, rec->nPoint);
+		Double *zList = MemAlloc(Double, rec->nPoint);
+		shpData->GetRealData(rec->ofst, rec->nPtOfst << 2, Data::ByteArray((UInt8*)ptOfstList, rec->nPtOfst << 2));
+		shpData->GetRealData(rec->ofst + (rec->nPtOfst << 2), rec->nPoint << 4, Data::ByteArray((UInt8*)pointList, rec->nPoint << 4));
+		shpData->GetRealData(rec->ofst + (rec->nPtOfst << 2) + (rec->nPoint << 4) + 16, rec->nPoint << 3, Data::ByteArray((UInt8*)zList, rec->nPoint << 3));
+		pl->AddFromPtOfst(ptOfstList, rec->nPtOfst, pointList, rec->nPoint, 0, 0);
+		MemFree(zList);
+		MemFreeA(pointList);
+		MemFree(ptOfstList);
 		rec->vec = pl->Clone().Ptr();
 		return pl;
 	}

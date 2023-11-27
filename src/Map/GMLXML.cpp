@@ -486,7 +486,7 @@ Math::Geometry::Vector2D *Map::GMLXML::ParseGeometry(NotNullPtr<Text::XMLReader>
 							{
 								if (mpg == 0)
 								{
-									NEW_CLASS(mpg, Math::Geometry::MultiPolygon(env->srid, newVec->HasZ(), false));
+									NEW_CLASS(mpg, Math::Geometry::MultiPolygon(env->srid));
 									SDEL_CLASS(vec);
 									vec = mpg;
 								}

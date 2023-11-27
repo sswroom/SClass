@@ -8,6 +8,7 @@
 #include "Map/MapServerHandler.h"
 #include "Math/CoordinateSystemManager.h"
 #include "Math/GeoJSONWriter.h"
+#include "Math/Geometry/Polygon.h"
 #include "Net/WebServer/HTTPServerUtil.h"
 #include "Text/JSON.h"
 #include "Text/JSText.h"
@@ -45,13 +46,14 @@ Bool __stdcall Map::MapServerHandler::GetLayerDataFunc(NotNullPtr<Net::WebServer
 	Map::MapServerHandler *me = (Map::MapServerHandler*)myObj;
 	NotNullPtr<Text::String> name;
 	NotNullPtr<Text::String> fmt;
-	Text::StringBuilderUTF8 sb;
-	Math::Vector3 tmpPos;
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
+	UTF8Char sbuff2[256];
+	UTF8Char *sptr2;
 	Map::MapDrawLayer *layer;
 	if (!req->GetQueryValue(CSTR("name")).SetTo(name))
 	{
+		name = Text::String::NewEmpty();
 		layer = 0;
 	}
 	else
@@ -60,9 +62,9 @@ Bool __stdcall Map::MapServerHandler::GetLayerDataFunc(NotNullPtr<Net::WebServer
 	}
 	if (req->GetQueryValue(CSTR("fmt")).SetTo(fmt) && fmt->Equals(UTF8STRC("cesium")))
 	{
+		Text::JSONBuilder json(Text::JSONBuilder::OT_ARRAY);
 		if (layer == 0)
 		{
-			sb.AppendC(UTF8STRC("[]"));
 		}
 		else //Cesium format
 		{
@@ -74,7 +76,7 @@ Bool __stdcall Map::MapServerHandler::GetLayerDataFunc(NotNullPtr<Net::WebServer
 			Int64 objId;
 			NotNullPtr<Text::String> s;
 			Map::NameArray *nameArr;
-			sb.AppendUTF8Char('[');
+			Text::StringBuilderUTF8 sb;
 			layer->GetAllObjectIds(objIds, &nameArr);
 			if (objIds.GetCount() > 0)
 			{
@@ -88,16 +90,14 @@ Bool __stdcall Map::MapServerHandler::GetLayerDataFunc(NotNullPtr<Net::WebServer
 					Math::Geometry::Vector2D *vec = layer->GetNewVectorById(sess, objId);
 					if (vec)
 					{
-						if (i > 0)
-							sb.AppendUTF8Char(',');
-						sb.AppendUTF8Char('{');
-						sb.AppendC(UTF8STRC("\"id\":\""));
-						sb.Append(name);
-						sb.AppendUTF8Char('_');
-						sb.AppendI64(objId);
-						sb.AppendC(UTF8STRC("\",\"name\":\""));
-						sb.AppendI64(objId);
-						sb.AppendC(UTF8STRC("\",\"description\":\""));
+						json.ArrayBeginObject();
+						sptr = name->ConcatTo(sbuff);
+						*sptr++ = '_';
+						sptr = Text::StrInt64(sptr, objId);
+						json.ObjectAddStr(CSTR("id"), CSTRP(sbuff, sptr));
+						sptr = Text::StrInt64(sbuff, objId);
+						json.ObjectAddStr(CSTR("name"), CSTRP(sbuff, sptr));
+						sb.ClearStr();
 						k = 0;
 						l = layer->GetColumnCnt();
 						while (k < l)
@@ -117,37 +117,28 @@ Bool __stdcall Map::MapServerHandler::GetLayerDataFunc(NotNullPtr<Net::WebServer
 							}
 							k++;
 						}
-						sb.AppendC(UTF8STRC("\","));
+						json.ObjectAddStr(CSTR("description"), sb.ToCString());
 						if (vec->GetVectorType() == Math::Geometry::Vector2D::VectorType::Polygon)
 						{
 							Math::Geometry::Polygon *pg = (Math::Geometry::Polygon*)vec;
-							sb.AppendC(UTF8STRC("\"polygon\":{\"carr\":["));
+							json.ObjectBeginObject(CSTR("polygon"));
+							json.ObjectBeginArray(CSTR("carr"));
 							k = 0;
 							Math::Coord2DDbl *pointList = pg->GetPointList(l);
 							while (k < l)
 							{
-								tmpPos = Math::CoordinateSystem::ConvertToCartesianCoord(csys, Math::Vector3(pointList[k], 0));
-								if (k > 0)
-								{
-									sb.AppendC(UTF8STRC(",\r\n"));
-								}
-								sb.AppendUTF8Char('[');
-								sb.AppendDouble(tmpPos.GetX());
-								sb.AppendUTF8Char(',');
-								sb.AppendDouble(tmpPos.GetY());
-								sb.AppendUTF8Char(',');
-								sb.AppendDouble(tmpPos.GetZ());
-								sb.AppendUTF8Char(']');
+								json.ArrayAddVector3(Math::CoordinateSystem::ConvertToCartesianCoord(csys, Math::Vector3(pointList[k], 0)));
 								k++;
 							}
-							sb.AppendC(UTF8STRC("]}"));
+							json.ArrayEnd();
+							json.ObjectEnd();
 						}
 						else
 						{
 
 						}
 						DEL_CLASS(vec);
-						sb.AppendUTF8Char('}');
+						json.ObjectEnd();
 					}
 
 					i++;
@@ -155,14 +146,19 @@ Bool __stdcall Map::MapServerHandler::GetLayerDataFunc(NotNullPtr<Net::WebServer
 				layer->EndGetObject(sess);
 			}
 			layer->ReleaseNameArr(nameArr);
-			sb.AppendUTF8Char(']');
 		}
+		Text::CStringNN j = json.Build();
+		resp->EnableWriteBuffer();
+		resp->AddDefHeaders(req);
+		resp->AddContentType(CSTR("application/json"));
+		Net::WebServer::HTTPServerUtil::SendContent(req, resp, CSTR("application/json"), j.leng, j.v);
+		return true;
 	}
 	else //GeoJSON
 	{
-		sb.AppendUTF8Char('{');
-		sb.AppendC(UTF8STRC("\"type\":\"FeatureCollection\","));
-		sb.AppendC(UTF8STRC("\"features\":["));
+		Text::JSONBuilder json(Text::JSONBuilder::OT_OBJECT);
+		json.ObjectAddStr(CSTR("type"), CSTR("FeatureCollection"));
+		json.ObjectBeginArray(CSTR("features"));
 		if (layer)
 		{
 			Math::GeoJSONWriter writer;
@@ -185,50 +181,48 @@ Bool __stdcall Map::MapServerHandler::GetLayerDataFunc(NotNullPtr<Net::WebServer
 				while (i < j)
 				{
 					objId = objIds.GetItem(i);
-					if (i > 0)
-						sb.AppendUTF8Char(',');
-					sb.AppendC(UTF8STRC("{\"type\":\"Feature\""));
-					sb.AppendC(UTF8STRC(",\"id\":\""));
-					sb.Append(name);
-					sb.AppendUTF8Char('_');
-					sb.AppendI64(objId);
-					sb.AppendC(UTF8STRC("\",\"properties\":{"));
+					json.ArrayBeginObject();
+					json.ObjectAddStr(CSTR("type"), CSTR("Feature"));
+					sptr = name->ConcatTo(sbuff);
+					*sptr++ = '_';
+					sptr = Text::StrInt64(sptr, objId);
+					json.ObjectAddStr(CSTR("id"), CSTRP(sbuff, sptr));
+					json.ObjectBeginObject(CSTR("properties"));
+
 					k = 0;
 					l = layer->GetColumnCnt();
 					while (k < l)
 					{
-						if (k > 0)
-							sb.AppendUTF8Char(',');
 						sptr = layer->GetColumnName(sbuff, k);
-						Text::JSText::ToJSTextDQuote(sb, sbuff);
-						sb.AppendUTF8Char(':');
-						sptr = layer->GetString(sbuff, sizeof(sbuff), nameArr, objId, k);
-						if (sptr)
+						sptr2 = layer->GetString(sbuff2, sizeof(sbuff2), nameArr, objId, k);
+						if (sptr2)
 						{
-							Text::JSText::ToJSTextDQuote(sb, sbuff);
+							json.ObjectAddStr(CSTRP(sbuff, sptr), CSTRP(sbuff2, sptr2));
 						}
 						else
 						{
-							sb.AppendC(UTF8STRC("null"));
+							json.ObjectAddNull(CSTRP(sbuff, sptr));
 						}
 						k++;
 					}
-					sb.AppendC(UTF8STRC("},\"geometry\":"));
+					json.ObjectEnd();
 					NotNullPtr<Math::Geometry::Vector2D> vec;
 					if (vec.Set(layer->GetNewVectorById(sess, objId)))
 					{
+						json.ObjectBeginObject(CSTR("geometry"));
 						if (needConv)
 						{
 							vec->ConvCSys(csys, wgs84);
 						}
-						writer.ToGeometry(sb, vec);
+						writer.ToGeometry(json, vec);
 						vec.Delete();
+						json.ObjectEnd();
 					}
 					else
 					{
-						sb.AppendC(UTF8STRC("null"));
+						json.ObjectAddNull(CSTR("geometry"));
 					}
-					sb.AppendUTF8Char('}');
+					json.ObjectEnd();
 					i++;
 				}
 				layer->EndGetObject(sess);
@@ -236,14 +230,14 @@ Bool __stdcall Map::MapServerHandler::GetLayerDataFunc(NotNullPtr<Net::WebServer
 			}
 			layer->ReleaseNameArr(nameArr);
 		}
-		sb.AppendUTF8Char(']');
-		sb.AppendUTF8Char('}');
+		json.ArrayEnd();
+		Text::CStringNN j = json.Build();
+		resp->EnableWriteBuffer();
+		resp->AddDefHeaders(req);
+		resp->AddContentType(CSTR("application/json"));
+		Net::WebServer::HTTPServerUtil::SendContent(req, resp, CSTR("application/json"), j.leng, j.v);
+		return true;
 	}
-	resp->EnableWriteBuffer();
-	resp->AddDefHeaders(req);
-	resp->AddContentType(CSTR("application/json"));
-	Net::WebServer::HTTPServerUtil::SendContent(req, resp, CSTR("application/json"), sb.GetLength(), sb.ToString());
-	return true;
 }
 
 Bool __stdcall Map::MapServerHandler::CesiumDataFunc(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, WebServiceHandler *myObj)

@@ -9,7 +9,7 @@ namespace Math
 		class CurvePolygon : public MultiGeometry<Vector2D>
 		{
 		public:
-			CurvePolygon(UInt32 srid, Bool hasZ, Bool hasM);
+			CurvePolygon(UInt32 srid);
 			virtual ~CurvePolygon();
 
 			virtual void AddGeometry(NotNullPtr<Vector2D> geometry);

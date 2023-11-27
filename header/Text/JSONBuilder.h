@@ -3,6 +3,7 @@
 #include "Data/ArrayList.h"
 #include "Data/ArrayListA.h"
 #include "Math/Coord2DDbl.h"
+#include "Math/Vector3.h"
 #include "Text/JSON.h"
 #include "Text/StringBuilderUTF8.h"
 
@@ -39,6 +40,7 @@ namespace Text
 		Bool ArrayAddStrUTF8(const UTF8Char *val);
 		Bool ArrayAddNull();
 		Bool ArrayAddCoord2D(Math::Coord2DDbl coord);
+		Bool ArrayAddVector3(Math::Vector3 vec3);
 		Bool ArrayAdd(NotNullPtr<Text::JSONArray> arr);
 		Bool ArrayBeginObject();
 		Bool ArrayBeginArray();
@@ -59,6 +61,7 @@ namespace Text
 		Bool ObjectAddArrayInt32(Text::CStringNN name, Data::ArrayList<Int32> *i32Arr);
 		Bool ObjectAddCoord2D(Text::CStringNN name, Math::Coord2DDbl coord);
 		Bool ObjectAddArrayCoord2D(Text::CStringNN name, Data::ArrayListA<Math::Coord2DDbl> *coordArr);
+		Bool ObjectAddVector3(Text::CStringNN name, Math::Vector3 vec3);
 		Bool ObjectAdd(NotNullPtr<Text::JSONObject> obj);
 		Bool ObjectBeginArray(Text::CStringNN name);
 		Bool ObjectBeginObject(Text::CStringNN name);

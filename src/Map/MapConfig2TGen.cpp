@@ -2613,7 +2613,7 @@ void Map::MapConfig2TGen::DrawString(NotNullPtr<Media::DrawImage> img, MapLayerS
 				{
 					Math::Geometry::Polyline *pl = (Math::Geometry::Polyline*)vec;
 					UOSInt nPoint;
-					Math::Coord2DDbl *pointArr = pl->GetPointList(nPoint);
+					Math::Coord2DDbl *pointArr = pl->GetItem(pl->GetCount() >> 1)->GetPointList(nPoint);
 					if (nPoint & 1)
 					{
 						UOSInt l = nPoint >> 1;

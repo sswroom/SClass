@@ -42,25 +42,47 @@ Math::Geometry::Vector2D *Map::SHPUtil::ParseShpRecord(UInt32 srid, const UInt8 
 			nPoint = ReadUInt32(&buff[40]);
 			if (buffSize >= 44 + nPtOfst * 4 + nPoint * 16)
 			{
-				UOSInt tmpV;
+				UOSInt i;
+				UOSInt j;
+				UOSInt k;
 				UInt32 *ptOfsts;
 				Math::Coord2DDbl *points;
-				NEW_CLASS(pl, Math::Geometry::Polyline(srid, nPtOfst, nPoint, false, false));
-				ptOfsts = pl->GetPtOfstList(tmpV);
+				NotNullPtr<Math::Geometry::LineString> lineString;
+				NEW_CLASS(pl, Math::Geometry::Polyline(srid));
+				ptOfsts = MemAlloc(UInt32, nPtOfst);
 				buff += 44;
-				while (tmpV-- > 0)
+				i = 0;
+				while (i < nPtOfst)
 				{
-					*ptOfsts++ = ReadUInt32(buff);
+					ptOfsts[i] = ReadUInt32(buff);
 					buff += 4;
+					i++;
 				}
-				points = pl->GetPointList(tmpV);
-				while (tmpV-- > 0)
+				i = 0;
+				while (i < nPtOfst)
 				{
-					points->x = ReadDouble(&buff[0]);
-					points->y = ReadDouble(&buff[8]);
-					points++;
-					buff += 16;
+					if (i + 1 == nPtOfst)
+					{
+						k = nPoint - ptOfsts[i];
+					}
+					else
+					{
+						k = ptOfsts[i + 1] - ptOfsts[i];
+					}
+					NEW_CLASSNN(lineString, Math::Geometry::LineString(srid, k, false, false));
+					points = lineString->GetPointList(j);
+					j = 0;
+					while (j < k)
+					{
+						points[j].x = ReadDouble(&buff[0]);
+						points[j].y = ReadDouble(&buff[8]);
+						buff += 16;
+						j++;
+					}
+					pl->AddGeometry(lineString);
+					i++;
 				}
+				MemFree(ptOfsts);
 				return pl;
 			}
 		}
@@ -145,32 +167,64 @@ Math::Geometry::Vector2D *Map::SHPUtil::ParseShpRecord(UInt32 srid, const UInt8 
 			nPoint = ReadUInt32(&buff[40]);
 			if (buffSize >= 44 + nPtOfst * 4 + nPoint * 24)
 			{
-				UOSInt tmpV;
+				UOSInt i;
+				UOSInt j;
+				UOSInt k;
 				UInt32 *ptOfsts;
+				NotNullPtr<Math::Geometry::LineString> lineString;
 				Math::Coord2DDbl *points;
 				Double *alts;
-				NEW_CLASS(pl, Math::Geometry::Polyline(srid, nPtOfst, nPoint, true, false));
-				ptOfsts = pl->GetPtOfstList(tmpV);
+				NEW_CLASS(pl, Math::Geometry::Polyline(srid));
+				ptOfsts = MemAlloc(UInt32, nPtOfst);
 				buff += 44;
-				while (tmpV-- > 0)
+				i = 0;
+				while (i < nPtOfst)
 				{
-					*ptOfsts++ = ReadUInt32(buff);
+					ptOfsts[i] = ReadUInt32(buff);
 					buff += 4;
+					i++;
 				}
-				points = pl->GetPointList(tmpV);
-				while (tmpV-- > 0)
+				i = 0;
+				while (i < nPtOfst)
 				{
-					points->x = ReadDouble(&buff[0]);
-					points->y = ReadDouble(&buff[8]);
-					points++;
-					buff += 16;
+					if (i + 1 == nPtOfst)
+					{
+						k = nPoint - ptOfsts[i];
+					}
+					else
+					{
+						k = ptOfsts[i + 1] - ptOfsts[i];
+					}
+					NEW_CLASSNN(lineString, Math::Geometry::LineString(srid, k, true, false));
+					points = lineString->GetPointList(j);
+					j = 0;
+					while (j < k)
+					{
+						points[j].x = ReadDouble(&buff[0]);
+						points[j].y = ReadDouble(&buff[8]);
+						buff += 16;
+						j++;
+					}
+					pl->AddGeometry(lineString);
+					i++;
 				}
-				alts = pl->GetZList(tmpV);
-				while (tmpV-- > 0)
+				i = 0;
+				while (i < nPtOfst)
 				{
-					*alts++ = ReadDouble(&buff[0]);
-					buff += 8;
+					if (lineString.Set(pl->GetItem(i)))
+					{
+						alts = lineString->GetZList(k);
+						j = 0;
+						while (j < k)
+						{
+							alts[j] = ReadDouble(&buff[0]);
+							buff += 8;
+							j++;
+						}
+					}
+					i++;
 				}
+				MemFree(ptOfsts);
 				return pl;
 			}
 		}
@@ -199,39 +253,80 @@ Math::Geometry::Vector2D *Map::SHPUtil::ParseShpRecord(UInt32 srid, const UInt8 
 			nPoint = ReadUInt32(&buff[40]);
 			if (buffSize >= 44 + nPtOfst * 4 + nPoint * 32)
 			{
-				UOSInt tmpV;
+				UOSInt i;
+				UOSInt j;
+				UOSInt k;
 				UInt32 *ptOfsts;
+				NotNullPtr<Math::Geometry::LineString> lineString;
 				Math::Coord2DDbl *points;
-				Double *zArr;
-				Double *mArr;
-				NEW_CLASS(pl, Math::Geometry::Polyline(srid, nPtOfst, nPoint, true, true));
-				ptOfsts = pl->GetPtOfstList(tmpV);
+				Double *dArr;
+				NEW_CLASS(pl, Math::Geometry::Polyline(srid));
+				ptOfsts = MemAlloc(UInt32, nPtOfst);
 				buff += 44;
-				while (tmpV-- > 0)
+				i = 0;
+				while (i < nPtOfst)
 				{
-					*ptOfsts++ = ReadUInt32(buff);
+					ptOfsts[i] = ReadUInt32(buff);
 					buff += 4;
+					i++;
 				}
-				points = pl->GetPointList(tmpV);
-				while (tmpV-- > 0)
+				i = 0;
+				while (i < nPtOfst)
 				{
-					points->x = ReadDouble(&buff[0]);
-					points->y = ReadDouble(&buff[8]);
-					points++;
-					buff += 16;
+					if (i + 1 == nPtOfst)
+					{
+						k = nPoint - ptOfsts[i];
+					}
+					else
+					{
+						k = ptOfsts[i + 1] - ptOfsts[i];
+					}
+					NEW_CLASSNN(lineString, Math::Geometry::LineString(srid, k, true, true));
+					points = lineString->GetPointList(j);
+					j = 0;
+					while (j < k)
+					{
+						points[j].x = ReadDouble(&buff[0]);
+						points[j].y = ReadDouble(&buff[8]);
+						buff += 16;
+						j++;
+					}
+					pl->AddGeometry(lineString);
+					i++;
 				}
-				zArr = pl->GetZList(tmpV);
-				while (tmpV-- > 0)
+				i = 0;
+				while (i < nPtOfst)
 				{
-					*zArr++ = ReadDouble(&buff[0]);
-					buff += 8;
+					if (lineString.Set(pl->GetItem(i)))
+					{
+						dArr = lineString->GetZList(k);
+						j = 0;
+						while (j < k)
+						{
+							dArr[j] = ReadDouble(&buff[0]);
+							buff += 8;
+							j++;
+						}
+					}
+					i++;
 				}
-				mArr = pl->GetMList(tmpV);
-				while (tmpV-- > 0)
+				i = 0;
+				while (i < nPtOfst)
 				{
-					*mArr++ = ReadDouble(&buff[0]);
-					buff += 8;
+					if (lineString.Set(pl->GetItem(i)))
+					{
+						dArr = lineString->GetMList(k);
+						j = 0;
+						while (j < k)
+						{
+							dArr[j] = ReadDouble(&buff[0]);
+							buff += 8;
+							j++;
+						}
+					}
+					i++;
 				}
+				MemFree(ptOfsts);
 				return pl;
 			}
 		}
@@ -365,32 +460,64 @@ Math::Geometry::Vector2D *Map::SHPUtil::ParseShpRecord(UInt32 srid, const UInt8 
 			nPoint = ReadUInt32(&buff[40]);
 			if (buffSize >= 44 + nPtOfst * 4 + nPoint * 16)
 			{
-				UOSInt tmpV;
+				UOSInt i;
+				UOSInt j;
+				UOSInt k;
 				UInt32 *ptOfsts;
+				NotNullPtr<Math::Geometry::LineString> lineString;
 				Math::Coord2DDbl *points;
 				Double *mArr;
-				NEW_CLASS(pl, Math::Geometry::Polyline(srid, nPtOfst, nPoint, false, true));
-				ptOfsts = pl->GetPtOfstList(tmpV);
+				NEW_CLASS(pl, Math::Geometry::Polyline(srid));
+				ptOfsts = MemAlloc(UInt32, nPtOfst);
 				buff += 44;
-				while (tmpV-- > 0)
+				i = 0;
+				while (i < nPtOfst)
 				{
-					*ptOfsts++ = ReadUInt32(buff);
+					ptOfsts[i] = ReadUInt32(buff);
 					buff += 4;
+					i++;
 				}
-				points = pl->GetPointList(tmpV);
-				while (tmpV-- > 0)
+				i = 0;
+				while (i < nPtOfst)
 				{
-					points->x = ReadDouble(&buff[0]);
-					points->y = ReadDouble(&buff[8]);
-					points++;
-					buff += 16;
+					if (i + 1 == nPtOfst)
+					{
+						k = nPoint - ptOfsts[i];
+					}
+					else
+					{
+						k = ptOfsts[i + 1] - ptOfsts[i];
+					}
+					NEW_CLASSNN(lineString, Math::Geometry::LineString(srid, k, false, true));
+					points = lineString->GetPointList(j);
+					j = 0;
+					while (j < k)
+					{
+						points[j].x = ReadDouble(&buff[0]);
+						points[j].y = ReadDouble(&buff[8]);
+						buff += 16;
+						j++;
+					}
+					pl->AddGeometry(lineString);
+					i++;
 				}
-				mArr = pl->GetMList(tmpV);
-				while (tmpV-- > 0)
+				i = 0;
+				while (i < nPtOfst)
 				{
-					*mArr++ = ReadDouble(&buff[0]);
-					buff += 8;
+					if (lineString.Set(pl->GetItem(i)))
+					{
+						mArr = lineString->GetMList(k);
+						j = 0;
+						while (j < k)
+						{
+							mArr[j] = ReadDouble(&buff[0]);
+							buff += 8;
+							j++;
+						}
+					}
+					i++;
 				}
+				MemFree(ptOfsts);
 				return pl;
 			}
 		}

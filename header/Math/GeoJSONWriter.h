@@ -1,6 +1,7 @@
 #ifndef _SM_MATH_GEOJSONWRITER
 #define _SM_MATH_GEOJSONWRITER
 #include "Math/VectorTextWriter.h"
+#include "Text/JSONBuilder.h"
 
 namespace Math
 {
@@ -17,7 +18,7 @@ namespace Math
 		virtual Text::CStringNN GetWriterName() const;
 		virtual Bool ToText(NotNullPtr<Text::StringBuilderUTF8> sb, NotNullPtr<const Math::Geometry::Vector2D> vec);
 		virtual Text::String *GetLastError();
-		Bool ToGeometry(NotNullPtr<Text::StringBuilderUTF8> sb, NotNullPtr<const Math::Geometry::Vector2D> vec);
+		Bool ToGeometry(NotNullPtr<Text::JSONBuilder> json, NotNullPtr<const Math::Geometry::Vector2D> vec);
 	};
 }
 #endif

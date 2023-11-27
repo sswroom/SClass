@@ -1,6 +1,7 @@
 #include "Stdafx.h"
 #include "Math/Math.h"
 #include "Math/Geometry/LineString.h"
+#include "Math/Geometry/Polyline.h"
 #include "SSWR/AVIRead/AVIRGISReplayForm.h"
 #include "Sync/SimpleThread.h"
 #include "Sync/ThreadUtil.h"

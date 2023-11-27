@@ -1,9 +1,11 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
+#include "Data/ArrayList.h"
 #include "Math/Geometry/CompoundCurve.h"
 #include "Math/Geometry/CurvePolygon.h"
+#include "Math/Geometry/Polygon.h"
 
-Math::Geometry::CurvePolygon::CurvePolygon(UInt32 srid, Bool hasZ, Bool hasM) : Math::Geometry::MultiGeometry<Math::Geometry::Vector2D>(srid, hasZ, hasM)
+Math::Geometry::CurvePolygon::CurvePolygon(UInt32 srid) : Math::Geometry::MultiGeometry<Math::Geometry::Vector2D>(srid)
 {
 }
 
@@ -32,7 +34,7 @@ Math::Geometry::Vector2D::VectorType Math::Geometry::CurvePolygon::GetVectorType
 NotNullPtr<Math::Geometry::Vector2D> Math::Geometry::CurvePolygon::Clone() const
 {
 	NotNullPtr<Math::Geometry::CurvePolygon> newObj;
-	NEW_CLASSNN(newObj, Math::Geometry::CurvePolygon(this->srid, this->hasZ, this->hasM));
+	NEW_CLASSNN(newObj, Math::Geometry::CurvePolygon(this->srid));
 	UOSInt i = 0;
 	UOSInt j = this->geometries.GetCount();
 	while (i < j)
