@@ -1,4 +1,4 @@
-enum AngleUnit
+export enum AngleUnit
 {
 	RADIAN = 1,
 	GRADIAN,
@@ -10,12 +10,12 @@ enum AngleUnit
 	MICROARCSECOND
 }
 
-declare class Angle
+export class Angle
 {
 	static getUnitRatio(u: AngleUnit) : number;
 }
 
-enum DistanceUnit
+export enum DistanceUnit
 {
 	METER,
 	CENTIMETER,

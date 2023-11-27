@@ -4,7 +4,7 @@ export function toObjectString(o: any, lev: number): string;
 export function arrayBuffer2Base64(buff: any): string;
 export function compare(a: any, b: any): number;
 
-declare class DateValue
+export class DateValue
 {
 	year: number;
 	month: number;
@@ -13,7 +13,7 @@ declare class DateValue
 	constructor();
 };
 
-declare class TimeValue extends DateValue
+export class TimeValue extends DateValue
 {
 	hour: number;
 	minute: number;
@@ -24,7 +24,7 @@ declare class TimeValue extends DateValue
 	constructor();
 };
 
-declare class DateTimeUtil
+export class DateTimeUtil
 {
 	static monString: string[];
 	static monthString: string[];
@@ -46,7 +46,7 @@ declare class DateTimeUtil
 	static getLocalTzQhr(): number;
 };
 
-declare class Duration
+export class Duration
 {
 	seconds: number;
 	ns: number;
@@ -62,7 +62,7 @@ declare class Duration
 	toString(): string;
 }
 
-declare class LocalDate
+export class LocalDate
 {
 	static DATE_NULL: number = -1234567;
 
@@ -85,7 +85,7 @@ declare class LocalDate
 	isNull(): boolean;
 }
 
-declare class TimeInstant
+export class TimeInstant
 {
 	sec: number;
 	nanosec: number;
@@ -116,7 +116,7 @@ declare class TimeInstant
 	toEpochNS(): number;
 }
 
-declare class Timestamp {
+export class Timestamp {
 	constructor(inst: TimeInstant, tzQhr?: number);
 	static fromTicks(ticks: number, tzQhr?: number): Timestamp;
 	static fromStr(str: string, defTzQhr?: number): Timestamp;

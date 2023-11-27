@@ -27,19 +27,21 @@ Math::Geometry::LineString::LineString(UInt32 srid, UOSInt nPoint, Bool hasZ, Bo
 	}
 }
 
-Math::Geometry::LineString::LineString(UInt32 srid, const Math::Coord2DDbl *pointArr, UOSInt nPoint, Bool hasZ, Bool hasM) : PointCollection(srid, nPoint, pointArr)
+Math::Geometry::LineString::LineString(UInt32 srid, const Math::Coord2DDbl *pointArr, UOSInt nPoint, Double *zArr, Double *mArr) : PointCollection(srid, nPoint, pointArr)
 {
-	if (hasZ)
+	if (zArr)
 	{
 		this->zArr = MemAllocA(Double, nPoint);
+		MemCopyNO(this->zArr, zArr, sizeof(Double) * nPoint);
 	}
 	else
 	{
 		this->zArr = 0;
 	}
-	if (hasM)
+	if (mArr)
 	{
 		this->mArr = MemAllocA(Double, nPoint);
+		MemCopyNO(this->mArr, mArr, sizeof(Double) * nPoint);
 	}
 	else
 	{

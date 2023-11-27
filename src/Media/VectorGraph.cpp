@@ -292,7 +292,7 @@ Bool Media::VectorGraph::DrawLine(Double x1, Double y1, Double x2, Double y2, Dr
 	pt[1] = Math::Coord2DDbl(x2, y2);
 	Math::Geometry::LineString *pl;
 	VectorStyles *style;
-	NEW_CLASS(pl, Math::Geometry::LineString(this->srid, pt, 2, false, false));
+	NEW_CLASS(pl, Math::Geometry::LineString(this->srid, pt, 2, 0, 0));
 	style = MemAlloc(VectorStyles, 1);
 	style->pen = (Media::VectorGraph::VectorPenStyle*)p;
 	style->brush = 0;
@@ -308,7 +308,7 @@ Bool Media::VectorGraph::DrawPolylineI(const Int32 *points, UOSInt nPoints, Draw
 	Math_Int32Arr2DblArr(dPoints, points, nPoints * 2);
 	Math::Geometry::LineString *pl;
 	VectorStyles *style;
-	NEW_CLASS(pl, Math::Geometry::LineString(this->srid, (Math::Coord2DDbl*)dPoints, nPoints, false, false));
+	NEW_CLASS(pl, Math::Geometry::LineString(this->srid, (Math::Coord2DDbl*)dPoints, nPoints, 0, 0));
 	style = MemAlloc(VectorStyles, 1);
 	style->pen = (VectorPenStyle*)p;
 	style->brush = 0;
@@ -335,7 +335,7 @@ Bool Media::VectorGraph::DrawPolyline(const Math::Coord2DDbl *points, UOSInt nPo
 {
 	Math::Geometry::LineString *pl;
 	VectorStyles *style;
-	NEW_CLASS(pl, Math::Geometry::LineString(this->srid, points, nPoints, false, false));
+	NEW_CLASS(pl, Math::Geometry::LineString(this->srid, points, nPoints, 0, 0));
 	style = MemAlloc(VectorStyles, 1);
 	style->pen = (VectorPenStyle*)p;
 	style->brush = 0;

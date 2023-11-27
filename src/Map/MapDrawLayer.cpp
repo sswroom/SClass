@@ -795,6 +795,7 @@ Map::DrawLayerType Map::MapDrawLayer::VectorType2LayerType(Math::Geometry::Vecto
 	case Math::Geometry::Vector2D::VectorType::PolyhedralSurface:
 	case Math::Geometry::Vector2D::VectorType::Tin:
 	case Math::Geometry::Vector2D::VectorType::Triangle:
+	case Math::Geometry::Vector2D::VectorType::LinearRing:
 	case Math::Geometry::Vector2D::VectorType::String:
 	case Math::Geometry::Vector2D::VectorType::Ellipse:
 	case Math::Geometry::Vector2D::VectorType::PieArea:

@@ -332,6 +332,7 @@ Bool Map::MapDrawUtil::DrawVector(NotNullPtr<Math::Geometry::Vector2D> vec, NotN
 	case Math::Geometry::Vector2D::VectorType::PolyhedralSurface:
 	case Math::Geometry::Vector2D::VectorType::Tin:
 	case Math::Geometry::Vector2D::VectorType::Triangle:
+	case Math::Geometry::Vector2D::VectorType::LinearRing:
 	case Math::Geometry::Vector2D::VectorType::String:
 	case Math::Geometry::Vector2D::VectorType::PieArea:
 	case Math::Geometry::Vector2D::VectorType::Unknown:

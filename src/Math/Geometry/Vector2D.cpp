@@ -97,6 +97,8 @@ Text::CStringNN Math::Geometry::Vector2D::VectorTypeGetName(VectorType vecType)
 		return CSTR("Tin");
 	case VectorType::Triangle:
 		return CSTR("Triangle");
+	case VectorType::LinearRing:
+		return CSTR("LinearRing");
 	case VectorType::Image:
 		return CSTR("Image");
 	case VectorType::String:

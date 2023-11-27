@@ -7,7 +7,7 @@ export class GeoJSON
 	static parseGeometry(srid: null, geom: object): Vector2D | null;
 };
 
-declare class Coord2D
+export class Coord2D
 {
 	x: number;
 	y: number;
@@ -16,14 +16,14 @@ declare class Coord2D
 	get lon(): number;
 }
 
-declare class Vector3 extends Coord2D
+export class Vector3 extends Coord2D
 {
 	z: number;
 	constructor(x: number, y: number, z: number);
 	get height(): number;
 }
 
-declare enum EarthEllipsoidType
+export enum EarthEllipsoidType
 {
 	OTHER,
 	PLESSIS,
@@ -102,7 +102,7 @@ export enum CoordinateSystemType
 	GausskrugerProjected
 };
 
-declare abstract class CoordinateSystem
+export abstract class CoordinateSystem
 {
 	srid: number;
 	csysName: string;

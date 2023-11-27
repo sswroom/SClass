@@ -34,6 +34,7 @@ namespace Math
 				PolyhedralSurface,
 				Tin,
 				Triangle,
+				LinearRing,
 
 				Image,
 				String,

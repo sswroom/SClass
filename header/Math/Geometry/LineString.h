@@ -17,7 +17,7 @@ namespace Math
 			Double *mArr;
 		public:
 			LineString(UInt32 srid, UOSInt nPoint, Bool hasZ, Bool hasM);
-			LineString(UInt32 srid, const Math::Coord2DDbl *pointArr, UOSInt nPoint, Bool hasZ, Bool hasM);
+			LineString(UInt32 srid, const Math::Coord2DDbl *pointArr, UOSInt nPoint, Double *zArr, Double *mArr);
 			virtual ~LineString();
 
 			virtual VectorType GetVectorType() const;

@@ -1,0 +1,41 @@
+#include "Stdafx.h"
+#include "Math/Geometry/LinearRing.h"
+
+Math::Geometry::LinearRing::LinearRing(UInt32 srid, UOSInt nPoint, Bool hasZ, Bool hasM) : LineString(srid, nPoint, hasZ, hasM)
+{
+}
+
+Math::Geometry::LinearRing::~LinearRing()
+{
+}
+
+Math::Geometry::Vector2D::VectorType Math::Geometry::LinearRing::GetVectorType() const
+{
+	return Math::Geometry::Vector2D::VectorType::LinearRing;
+}
+
+NotNullPtr<Math::Geometry::Vector2D> Math::Geometry::LinearRing::Clone() const
+{
+	NotNullPtr<Math::Geometry::LinearRing> lr;
+	NEW_CLASSNN(lr, Math::Geometry::LinearRing(this->srid, this->nPoint, this->zArr != 0, this->mArr != 0));
+	MemCopyNO(lr->pointArr, this->pointArr, sizeof(Math::Coord2DDbl) * this->nPoint);
+	if (this->zArr)
+	{
+		MemCopyNO(lr->zArr, this->zArr, sizeof(Double) * this->nPoint);
+	}
+	if (this->mArr)
+	{
+		MemCopyNO(lr->mArr, this->mArr, sizeof(Double) * this->nPoint);
+	}
+	return lr;
+}
+
+Bool Math::Geometry::LinearRing::IsOpen() const
+{
+	return this->pointArr[0] != this->pointArr[this->nPoint - 1];
+}
+
+Bool Math::Geometry::LinearRing::IsClose() const
+{
+	return this->pointArr[0] == this->pointArr[this->nPoint - 1];
+}

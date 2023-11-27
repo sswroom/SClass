@@ -3,6 +3,7 @@
 #include "DB/DBReader.h"
 #include "DB/DBTool.h"
 #include "DB/SQLBuilder.h"
+#include "Math/GeoJSONWriter.h"
 #include "Math/Geometry/Point.h"
 #include "Math/Geometry/Polygon.h"
 #include "Net/WebServer/RESTfulHandler.h"
@@ -65,96 +66,13 @@ void Net::WebServer::RESTfulHandler::BuildJSON(NotNullPtr<Text::JSONBuilder> jso
 
 void Net::WebServer::RESTfulHandler::AppendVector(NotNullPtr<Text::JSONBuilder> json, Text::CStringNN name, NotNullPtr<Math::Geometry::Vector2D> vec)
 {
-	switch (vec->GetVectorType())
+	Math::GeoJSONWriter writer;
+	json->ObjectBeginObject(name);
+	if (!writer.ToGeometry(json, vec))
 	{
-	case Math::Geometry::Vector2D::VectorType::Polygon:
-	case Math::Geometry::Vector2D::VectorType::Polyline:
-		{
-			UOSInt nPtOfst;
-			UInt32 *ptOfsts;
-			UOSInt nPoint;
-			Math::Coord2DDbl *points;
-			UOSInt i;
-			UOSInt j;
-			UOSInt k;
-			Math::Geometry::PointOfstCollection *pg = (Math::Geometry::PointOfstCollection*)vec.Ptr();
-			json->ObjectBeginObject(name);
-			if (vec->GetVectorType() == Math::Geometry::Vector2D::VectorType::Polygon)
-			{
-				json->ObjectAddStr(CSTR("type"), CSTR("Polygon"));
-			}
-			else
-			{
-				json->ObjectAddStr(CSTR("type"), CSTR("Polyline"));
-			}
-			json->ObjectBeginArray(CSTR("coordinates"));
-			ptOfsts = pg->GetPtOfstList(nPtOfst);
-			points = pg->GetPointList(nPoint);
-			j = ptOfsts[0];
-			i = 0;
-			while (i < nPtOfst)
-			{
-				i++;
-				if (i >= nPtOfst)
-				{
-					k = nPoint;
-				}
-				else
-				{
-					k = ptOfsts[i];
-				}
-				json->ArrayBeginArray();
-				while (j < k)
-				{
-					json->ArrayBeginArray();
-					json->ArrayAddFloat64(points[j].x);
-					json->ArrayAddFloat64(points[j].y);
-					json->ArrayEnd();
-					j++;
-				}
-				json->ArrayEnd();
-			}
-			json->ArrayEnd();
-			json->ObjectEnd();
-		}
-		break;
-	case Math::Geometry::Vector2D::VectorType::Point:
-		{
-			Math::Coord2DDbl coord;
-			Math::Geometry::Point *pt = (Math::Geometry::Point*)vec.Ptr();
-			json->ObjectBeginObject(name);
-			json->ObjectAddStr(CSTR("type"), CSTR("Point"));
-			json->ObjectBeginArray(CSTR("coordinates"));
-			coord = pt->GetCenter();
-			json->ArrayAddFloat64(coord.x);
-			json->ArrayAddFloat64(coord.y);
-			json->ArrayEnd();
-			json->ObjectEnd();
-		}
-		break;
-	case Math::Geometry::Vector2D::VectorType::MultiPoint:
-	case Math::Geometry::Vector2D::VectorType::MultiPolygon:
-	case Math::Geometry::Vector2D::VectorType::CurvePolygon:
-	case Math::Geometry::Vector2D::VectorType::CompoundCurve:
-	case Math::Geometry::Vector2D::VectorType::CircularString:
-	case Math::Geometry::Vector2D::VectorType::LineString:
-	case Math::Geometry::Vector2D::VectorType::GeometryCollection:
-	case Math::Geometry::Vector2D::VectorType::MultiCurve:
-	case Math::Geometry::Vector2D::VectorType::MultiSurface:
-	case Math::Geometry::Vector2D::VectorType::Curve:
-	case Math::Geometry::Vector2D::VectorType::Surface:
-	case Math::Geometry::Vector2D::VectorType::PolyhedralSurface:
-	case Math::Geometry::Vector2D::VectorType::Tin:
-	case Math::Geometry::Vector2D::VectorType::Triangle:
-	case Math::Geometry::Vector2D::VectorType::Image:
-	case Math::Geometry::Vector2D::VectorType::String:
-	case Math::Geometry::Vector2D::VectorType::Ellipse:
-	case Math::Geometry::Vector2D::VectorType::PieArea:
-	case Math::Geometry::Vector2D::VectorType::Unknown:
-	default:
-		json->ObjectAddStr(name, CSTR("?"));
-		break;
+		json->ObjectAddStr(CSTR("UnsupportedType"), Math::Geometry::Vector2D::VectorTypeGetName(vec->GetVectorType()));
 	}
+	json->ObjectEnd();
 }
 
 Net::WebServer::RESTfulHandler::RESTfulHandler(DB::DBCache *dbCache)

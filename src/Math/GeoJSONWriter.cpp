@@ -298,6 +298,7 @@ Bool Math::GeoJSONWriter::ToText(NotNullPtr<Text::StringBuilderUTF8> sb, NotNull
 	case Math::Geometry::Vector2D::VectorType::PolyhedralSurface:
 	case Math::Geometry::Vector2D::VectorType::Tin:
 	case Math::Geometry::Vector2D::VectorType::Triangle:
+	case Math::Geometry::Vector2D::VectorType::LinearRing:
 	case Math::Geometry::Vector2D::VectorType::Image:
 	case Math::Geometry::Vector2D::VectorType::String:
 	case Math::Geometry::Vector2D::VectorType::Ellipse:
@@ -434,6 +435,7 @@ Bool Math::GeoJSONWriter::ToGeometry(NotNullPtr<Text::JSONBuilder> json, NotNull
 	case Math::Geometry::Vector2D::VectorType::PolyhedralSurface:
 	case Math::Geometry::Vector2D::VectorType::Tin:
 	case Math::Geometry::Vector2D::VectorType::Triangle:
+	case Math::Geometry::Vector2D::VectorType::LinearRing:
 	case Math::Geometry::Vector2D::VectorType::Image:
 	case Math::Geometry::Vector2D::VectorType::String:
 	case Math::Geometry::Vector2D::VectorType::Ellipse:
