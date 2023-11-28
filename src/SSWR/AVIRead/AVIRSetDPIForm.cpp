@@ -92,7 +92,7 @@ void SSWR::AVIRead::AVIRSetDPIForm::UpdatePreview()
 	NotNullPtr<Media::DrawImage> gimg;
 	NotNullPtr<Media::DrawBrush> b;
 	NotNullPtr<Media::DrawFont> f;
-	Media::DrawPen *p;
+	NotNullPtr<Media::DrawPen> p;
 	this->pbPreview->SetImage(0);
 	SDEL_CLASS(this->pimg);
 	usz = this->pbPreview->GetSizeP();

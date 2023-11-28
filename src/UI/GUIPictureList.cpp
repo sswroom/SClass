@@ -117,7 +117,7 @@ void UI::GUIPictureList::OnDraw(NotNullPtr<Media::DrawImage> img)
 
 	if (this->hasBorder)
 	{
-		Media::DrawPen *p = img->NewPenARGB(0xff000000, 1, 0, 0);
+		NotNullPtr<Media::DrawPen> p = img->NewPenARGB(0xff000000, 1, 0, 0);
 		img->DrawRect(Math::Coord2DDbl(0, 0), Math::Size2DDbl(UOSInt2Double(w - 1), UOSInt2Double(h - 1)), p, 0);
 		img->DelPen(p);
 	}

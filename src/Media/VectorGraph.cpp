@@ -63,7 +63,7 @@ UOSInt Media::VectorGraph::VectorPenStyle::GetIndex()
 	return this->index;
 }
 
-Media::DrawPen *Media::VectorGraph::VectorPenStyle::CreateDrawPen(Double oriDPI, NotNullPtr<Media::DrawImage> dimg)
+NotNullPtr<Media::DrawPen> Media::VectorGraph::VectorPenStyle::CreateDrawPen(Double oriDPI, NotNullPtr<Media::DrawImage> dimg)
 {
 	Double thick = this->thick * dimg->GetHDPI() / oriDPI;
 	return dimg->NewPenARGB(this->color, thick, this->pattern, this->nPattern);
@@ -285,7 +285,7 @@ UOSInt Media::VectorGraph::GetImgBpl() const
 	return 0;
 }
 
-Bool Media::VectorGraph::DrawLine(Double x1, Double y1, Double x2, Double y2, DrawPen *p)
+Bool Media::VectorGraph::DrawLine(Double x1, Double y1, Double x2, Double y2, NotNullPtr<DrawPen> p)
 {
 	Math::Coord2DDbl pt[2];
 	pt[0] = Math::Coord2DDbl(x1, y1);
@@ -294,7 +294,7 @@ Bool Media::VectorGraph::DrawLine(Double x1, Double y1, Double x2, Double y2, Dr
 	VectorStyles *style;
 	NEW_CLASS(pl, Math::Geometry::LineString(this->srid, pt, 2, 0, 0));
 	style = MemAlloc(VectorStyles, 1);
-	style->pen = (Media::VectorGraph::VectorPenStyle*)p;
+	style->pen = (Media::VectorGraph::VectorPenStyle*)p.Ptr();
 	style->brush = 0;
 	style->font = 0;
 	this->items.Add(pl);
@@ -302,7 +302,7 @@ Bool Media::VectorGraph::DrawLine(Double x1, Double y1, Double x2, Double y2, Dr
 	return true;
 }
 
-Bool Media::VectorGraph::DrawPolylineI(const Int32 *points, UOSInt nPoints, DrawPen *p)
+Bool Media::VectorGraph::DrawPolylineI(const Int32 *points, UOSInt nPoints, NotNullPtr<DrawPen> p)
 {
 	Double *dPoints = MemAlloc(Double, nPoints * 2);
 	Math_Int32Arr2DblArr(dPoints, points, nPoints * 2);
@@ -310,7 +310,7 @@ Bool Media::VectorGraph::DrawPolylineI(const Int32 *points, UOSInt nPoints, Draw
 	VectorStyles *style;
 	NEW_CLASS(pl, Math::Geometry::LineString(this->srid, (Math::Coord2DDbl*)dPoints, nPoints, 0, 0));
 	style = MemAlloc(VectorStyles, 1);
-	style->pen = (VectorPenStyle*)p;
+	style->pen = (VectorPenStyle*)p.Ptr();
 	style->brush = 0;
 	style->font = 0;
 	this->items.Add(pl);
@@ -319,25 +319,25 @@ Bool Media::VectorGraph::DrawPolylineI(const Int32 *points, UOSInt nPoints, Draw
 	return true;
 }
 
-Bool Media::VectorGraph::DrawPolygonI(const Int32 *points, UOSInt nPoints, DrawPen *p, Optional<DrawBrush> b)
+Bool Media::VectorGraph::DrawPolygonI(const Int32 *points, UOSInt nPoints, Optional<DrawPen> p, Optional<DrawBrush> b)
 {
 	/////////////////////////////////
 	return false;
 }
 
-Bool Media::VectorGraph::DrawPolyPolygonI(const Int32 *points, const UInt32 *pointCnt, UOSInt nPointCnt, DrawPen *p, Optional<DrawBrush> b)
+Bool Media::VectorGraph::DrawPolyPolygonI(const Int32 *points, const UInt32 *pointCnt, UOSInt nPointCnt, Optional<DrawPen> p, Optional<DrawBrush> b)
 {
 	/////////////////////////////////
 	return false;
 }
 
-Bool Media::VectorGraph::DrawPolyline(const Math::Coord2DDbl *points, UOSInt nPoints, DrawPen *p)
+Bool Media::VectorGraph::DrawPolyline(const Math::Coord2DDbl *points, UOSInt nPoints, NotNullPtr<DrawPen> p)
 {
 	Math::Geometry::LineString *pl;
 	VectorStyles *style;
 	NEW_CLASS(pl, Math::Geometry::LineString(this->srid, points, nPoints, 0, 0));
 	style = MemAlloc(VectorStyles, 1);
-	style->pen = (VectorPenStyle*)p;
+	style->pen = (VectorPenStyle*)p.Ptr();
 	style->brush = 0;
 	style->font = 0;
 	this->items.Add(pl);
@@ -345,31 +345,31 @@ Bool Media::VectorGraph::DrawPolyline(const Math::Coord2DDbl *points, UOSInt nPo
 	return true;
 }
 
-Bool Media::VectorGraph::DrawPolygon(const Math::Coord2DDbl *points, UOSInt nPoints, DrawPen *p, Optional<DrawBrush> b)
+Bool Media::VectorGraph::DrawPolygon(const Math::Coord2DDbl *points, UOSInt nPoints, Optional<DrawPen> p, Optional<DrawBrush> b)
 {
 	/////////////////////////////////
 	return false;
 }
 
-Bool Media::VectorGraph::DrawPolyPolygon(const Math::Coord2DDbl *points, const UInt32 *pointCnt, UOSInt nPointCnt, DrawPen *p, Optional<DrawBrush> b)
+Bool Media::VectorGraph::DrawPolyPolygon(const Math::Coord2DDbl *points, const UInt32 *pointCnt, UOSInt nPointCnt, Optional<DrawPen> p, Optional<DrawBrush> b)
 {
 	/////////////////////////////////
 	return false;
 }
 
-Bool Media::VectorGraph::DrawRect(Math::Coord2DDbl tl, Math::Size2DDbl size, DrawPen *p, Optional<DrawBrush> b)
+Bool Media::VectorGraph::DrawRect(Math::Coord2DDbl tl, Math::Size2DDbl size, Optional<DrawPen> p, Optional<DrawBrush> b)
 {
 	/////////////////////////////////
 	return false;
 }
 
-Bool Media::VectorGraph::DrawEllipse(Math::Coord2DDbl tl, Math::Size2DDbl size, DrawPen *p, Optional<DrawBrush> b)
+Bool Media::VectorGraph::DrawEllipse(Math::Coord2DDbl tl, Math::Size2DDbl size, Optional<DrawPen> p, Optional<DrawBrush> b)
 {
 	VectorStyles *style;
 	Math::Geometry::Ellipse *vstr;
 	NEW_CLASS(vstr, Math::Geometry::Ellipse(this->srid, tl, size));
 	style = MemAlloc(VectorStyles, 1);
-	style->pen = (Media::VectorGraph::VectorPenStyle*)p;
+	style->pen = Optional<Media::VectorGraph::VectorPenStyle>::ConvertFrom(p);
 	style->brush = Optional<VectorBrushStyle>::ConvertFrom(b);
 	style->font = 0;
 	this->items.Add(vstr);
@@ -551,21 +551,20 @@ Bool Media::VectorGraph::DrawImagePt3(NotNullPtr<DrawImage> img, Math::Coord2DDb
 	return true;
 }
 
-Media::DrawPen *Media::VectorGraph::NewPenARGB(UInt32 color, Double thick, UInt8 *pattern, UOSInt nPattern)
+NotNullPtr<Media::DrawPen> Media::VectorGraph::NewPenARGB(UInt32 color, Double thick, UInt8 *pattern, UOSInt nPattern)
 {
-	Media::VectorGraph::VectorPenStyle *pen;
+	NotNullPtr<Media::VectorGraph::VectorPenStyle> pen;
 	UOSInt i;
 	UOSInt j;
 	i = 0;
 	j = this->penStyles.GetCount();
 	while (i < j)
 	{
-		pen = this->penStyles.GetItem(i);
-		if (pen->IsSame(color, thick, pattern, nPattern))
+		if (pen.Set(this->penStyles.GetItem(i)) && pen->IsSame(color, thick, pattern, nPattern))
 			return pen;
 		i++;
 	}
-	NEW_CLASS(pen, Media::VectorGraph::VectorPenStyle(this->penStyles.GetCount(), color, thick, pattern, nPattern));
+	NEW_CLASSNN(pen, Media::VectorGraph::VectorPenStyle(this->penStyles.GetCount(), color, thick, pattern, nPattern));
 	this->penStyles.Add(pen);
 	return pen;
 }
@@ -635,7 +634,7 @@ NotNullPtr<Media::DrawFont> Media::VectorGraph::CloneFont(NotNullPtr<Media::Draw
 	return font;
 }
 
-void Media::VectorGraph::DelPen(DrawPen *p)
+void Media::VectorGraph::DelPen(NotNullPtr<DrawPen> p)
 {
 }
 
@@ -747,17 +746,19 @@ void Media::VectorGraph::DrawTo(NotNullPtr<Media::DrawImage> dimg, OptOut<UInt32
 	UOSInt k;
 	Data::ArrayListNN<Media::DrawFont> dfonts;
 	Data::ArrayListNN<Media::DrawBrush> dbrushes;
-	Data::ArrayList<Media::DrawPen*> dpens;
+	Data::ArrayListNN<Media::DrawPen> dpens;
 	VectorPenStyle *pen;
 	VectorFontStyle *font;
 	VectorBrushStyle *brush;
 	VectorStyles *styles;
 	Math::Geometry::Vector2D *vec;
-	Media::DrawPen *p;
+	NotNullPtr<Media::DrawPen> p;
+	Optional<Media::DrawPen> dp;
 	NotNullPtr<Media::DrawBrush> b;
 	Optional<Media::DrawBrush> ob;
 	NotNullPtr<Media::DrawFont> f;
 	Optional<Media::DrawFont> df;
+	NotNullPtr<VectorPenStyle> vpen;
 	NotNullPtr<VectorFontStyle> vfnt;
 	i = 0;
 	j = this->fontStyles.GetCount();
@@ -794,13 +795,13 @@ void Media::VectorGraph::DrawTo(NotNullPtr<Media::DrawImage> dimg, OptOut<UInt32
 	{
 		vec = this->items.GetItem(i);
 		styles = this->itemStyle.GetItem(i);
-		if (styles->pen)
+		if (styles->pen.SetTo(vpen))
 		{
-			p = dpens.GetItem(styles->pen->GetIndex());
+			dp = dpens.GetItem(vpen->GetIndex());
 		}
 		else
 		{
-			p = 0;
+			dp = 0;
 		}
 		if (styles->font.SetTo(vfnt))
 		{
@@ -822,16 +823,40 @@ void Media::VectorGraph::DrawTo(NotNullPtr<Media::DrawImage> dimg, OptOut<UInt32
 
 		if (vec->GetVectorType() == Math::Geometry::Vector2D::VectorType::Polyline)
 		{
-			Math::Geometry::Polyline *pl = (Math::Geometry::Polyline*)vec;
-			UOSInt nPoints;
-			Math::Coord2DDbl *points;
-			Math::Coord2DDbl *dpoints;
-			UOSInt i = 0;
-			UOSInt j = pl->GetCount();
-			Math::Geometry::LineString *lineString;
-			while (i < j)
+			if (dp.SetTo(p))
 			{
-				lineString = pl->GetItem(i);
+				Math::Geometry::Polyline *pl = (Math::Geometry::Polyline*)vec;
+				UOSInt nPoints;
+				Math::Coord2DDbl *points;
+				Math::Coord2DDbl *dpoints;
+				UOSInt i = 0;
+				UOSInt j = pl->GetCount();
+				Math::Geometry::LineString *lineString;
+				while (i < j)
+				{
+					lineString = pl->GetItem(i);
+					dpoints = lineString->GetPointList(nPoints);
+					points = MemAllocA(Math::Coord2DDbl, nPoints);
+					Math::Coord2DDbl dScale = Math::Coord2DDbl(scale, scale);
+					k = nPoints;
+					while (k-- > 0)
+					{
+						points[k] = dpoints[k] * dScale;
+					}
+					dimg->DrawPolyline(points, nPoints, p);
+					MemFreeA(points);
+					i++;
+				}
+			}
+		}
+		else if (vec->GetVectorType() == Math::Geometry::Vector2D::VectorType::LineString)
+		{
+			if (dp.SetTo(p))
+			{
+				Math::Geometry::LineString *lineString = (Math::Geometry::LineString*)vec;
+				UOSInt nPoints;
+				Math::Coord2DDbl *points;
+				Math::Coord2DDbl *dpoints;
 				dpoints = lineString->GetPointList(nPoints);
 				points = MemAllocA(Math::Coord2DDbl, nPoints);
 				Math::Coord2DDbl dScale = Math::Coord2DDbl(scale, scale);
@@ -842,25 +867,7 @@ void Media::VectorGraph::DrawTo(NotNullPtr<Media::DrawImage> dimg, OptOut<UInt32
 				}
 				dimg->DrawPolyline(points, nPoints, p);
 				MemFreeA(points);
-				i++;
 			}
-		}
-		else if (vec->GetVectorType() == Math::Geometry::Vector2D::VectorType::LineString)
-		{
-			Math::Geometry::LineString *lineString = (Math::Geometry::LineString*)vec;
-			UOSInt nPoints;
-			Math::Coord2DDbl *points;
-			Math::Coord2DDbl *dpoints;
-			dpoints = lineString->GetPointList(nPoints);
-			points = MemAllocA(Math::Coord2DDbl, nPoints);
-			Math::Coord2DDbl dScale = Math::Coord2DDbl(scale, scale);
-			k = nPoints;
-			while (k-- > 0)
-			{
-				points[k] = dpoints[k] * dScale;
-			}
-			dimg->DrawPolyline(points, nPoints, p);
-			MemFreeA(points);
 		}
 		else if (vec->GetVectorType() == Math::Geometry::Vector2D::VectorType::String && df.SetTo(f) && ob.SetTo(b))
 		{
@@ -923,7 +930,7 @@ void Media::VectorGraph::DrawTo(NotNullPtr<Media::DrawImage> dimg, OptOut<UInt32
 			Math::Geometry::Ellipse *ellipse = (Math::Geometry::Ellipse*)vec;
 			Math::RectAreaDbl bounds = ellipse->GetBounds();
 			bounds = bounds * scale;
-			dimg->DrawEllipse(bounds.tl, bounds.GetSize(), p, ob);
+			dimg->DrawEllipse(bounds.tl, bounds.GetSize(), dp, ob);
 		}
 		else
 		{
@@ -935,8 +942,8 @@ void Media::VectorGraph::DrawTo(NotNullPtr<Media::DrawImage> dimg, OptOut<UInt32
 	i = dpens.GetCount();
 	while (i-- > 0)
 	{
-		p = dpens.GetItem(i);
-		dimg->DelPen(p);
+		if (p.Set(dpens.GetItem(i)))
+			dimg->DelPen(p);
 	}
 	i = dbrushes.GetCount();
 	while (i-- > 0)

@@ -410,9 +410,9 @@ Media::PixelFormat Media::GTKDrawImage::GetPixelFormat() const
 	return this->info.pf;
 }
 
-Bool Media::GTKDrawImage::DrawLine(Double x1, Double y1, Double x2, Double y2, DrawPen *p)
+Bool Media::GTKDrawImage::DrawLine(Double x1, Double y1, Double x2, Double y2, NotNullPtr<DrawPen> p)
 {
-	GTKDrawPen *pen = (GTKDrawPen*)p;
+	NotNullPtr<GTKDrawPen> pen = NotNullPtr<GTKDrawPen>::ConvertFrom(p);
 	pen->Init(this->cr);
 	cairo_move_to((cairo_t*)this->cr, x1 + OSInt2Double(this->tl.x), y1 + OSInt2Double(this->tl.y));
 	cairo_line_to((cairo_t*)this->cr, x2 + OSInt2Double(this->tl.x), y2 + OSInt2Double(this->tl.y));
@@ -420,27 +420,27 @@ Bool Media::GTKDrawImage::DrawLine(Double x1, Double y1, Double x2, Double y2, D
 	return true;
 }
 
-Bool Media::GTKDrawImage::DrawPolylineI(const Int32 *points, UOSInt nPoints, DrawPen *p)
+Bool Media::GTKDrawImage::DrawPolylineI(const Int32 *points, UOSInt nPoints, NotNullPtr<DrawPen> p)
 {
 	printf("GTK: Draw PolylineI (Not support)\r\n");
 	return false;
 }
 
-Bool Media::GTKDrawImage::DrawPolygonI(const Int32 *points, UOSInt nPoints, DrawPen *p, Optional<DrawBrush> b)
+Bool Media::GTKDrawImage::DrawPolygonI(const Int32 *points, UOSInt nPoints, Optional<DrawPen> p, Optional<DrawBrush> b)
 {
 	printf("GTK: Draw PolygonI (Not support)\r\n");
 	return false;
 }
 
-Bool Media::GTKDrawImage::DrawPolyPolygonI(const Int32 *points, const UInt32 *pointCnt, UOSInt nPointCnt, DrawPen *p, Optional<DrawBrush> b)
+Bool Media::GTKDrawImage::DrawPolyPolygonI(const Int32 *points, const UInt32 *pointCnt, UOSInt nPointCnt, Optional<DrawPen> p, Optional<DrawBrush> b)
 {
 	printf("GTK: Draw PolyPolygonI (Not support)\r\n");
 	return false;
 }
 
-Bool Media::GTKDrawImage::DrawPolyline(const Math::Coord2DDbl *points, UOSInt nPoints, DrawPen *p)
+Bool Media::GTKDrawImage::DrawPolyline(const Math::Coord2DDbl *points, UOSInt nPoints, NotNullPtr<DrawPen> p)
 {
-	GTKDrawPen *pen = (GTKDrawPen*)p;
+	NotNullPtr<GTKDrawPen> pen = NotNullPtr<GTKDrawPen>::ConvertFrom(p);
 	if (nPoints >= 2)
 	{
 		pen->Init(this->cr);
@@ -460,9 +460,10 @@ Bool Media::GTKDrawImage::DrawPolyline(const Math::Coord2DDbl *points, UOSInt nP
 	}
 }
 
-Bool Media::GTKDrawImage::DrawPolygon(const Math::Coord2DDbl *points, UOSInt nPoints, DrawPen *p, Optional<DrawBrush> b)
+Bool Media::GTKDrawImage::DrawPolygon(const Math::Coord2DDbl *points, UOSInt nPoints, Optional<DrawPen> p, Optional<DrawBrush> b)
 {
-	GTKDrawPen *pen = (GTKDrawPen*)p;
+	NotNullPtr<GTKDrawPen> pen;
+	NotNullPtr<DrawPen> nnp;
 	NotNullPtr<DrawBrush> nnb;
 	NotNullPtr<GTKDrawBrush> brush;
 	if (nPoints >= 2)
@@ -475,16 +476,18 @@ Bool Media::GTKDrawImage::DrawPolygon(const Math::Coord2DDbl *points, UOSInt nPo
 			points++;
 		}
 		cairo_close_path((cairo_t*)this->cr);
-		if (pen && b.SetTo(nnb))
+		if (p.SetTo(nnp) && b.SetTo(nnb))
 		{
 			brush = NotNullPtr<GTKDrawBrush>::ConvertFrom(nnb);
+			pen = NotNullPtr<GTKDrawPen>::ConvertFrom(nnp);
 			pen->Init(this->cr);
 			cairo_stroke_preserve((cairo_t*)this->cr);
 			brush->Init(this->cr);
 			cairo_fill((cairo_t*)this->cr);
 		}
-		else if (pen)
+		else if (p.SetTo(nnp))
 		{
+			pen = NotNullPtr<GTKDrawPen>::ConvertFrom(nnp);
 			pen->Init(this->cr);
 			cairo_stroke((cairo_t*)this->cr);
 		}
@@ -506,9 +509,10 @@ Bool Media::GTKDrawImage::DrawPolygon(const Math::Coord2DDbl *points, UOSInt nPo
 	}
 }
 
-Bool Media::GTKDrawImage::DrawPolyPolygon(const Math::Coord2DDbl *points, const UInt32 *pointCnt, UOSInt nPointCnt, DrawPen *p, Optional<DrawBrush> b)
+Bool Media::GTKDrawImage::DrawPolyPolygon(const Math::Coord2DDbl *points, const UInt32 *pointCnt, UOSInt nPointCnt, Optional<DrawPen> p, Optional<DrawBrush> b)
 {
-	GTKDrawPen *pen = (GTKDrawPen*)p;
+	NotNullPtr<GTKDrawPen> pen;
+	NotNullPtr<DrawPen> nnp;
 	NotNullPtr<DrawBrush> nnb;
 	NotNullPtr<GTKDrawBrush> brush;
 	UOSInt i;
@@ -530,16 +534,18 @@ Bool Media::GTKDrawImage::DrawPolyPolygon(const Math::Coord2DDbl *points, const 
 			}
 		}
 
-		if (pen && b.SetTo(nnb))
+		if (p.SetTo(nnp) && b.SetTo(nnb))
 		{
 			brush = NotNullPtr<GTKDrawBrush>::ConvertFrom(nnb);
+			pen = NotNullPtr<GTKDrawPen>::ConvertFrom(nnp);
 			pen->Init(this->cr);
 			cairo_stroke_preserve((cairo_t*)this->cr);
 			brush->Init(this->cr);
 			cairo_fill((cairo_t*)this->cr);
 		}
-		else if (pen)
+		else if (p.SetTo(nnp))
 		{
+			pen = NotNullPtr<GTKDrawPen>::ConvertFrom(nnp);
 			pen->Init(this->cr);
 			cairo_stroke((cairo_t*)this->cr);
 		}
@@ -561,9 +567,10 @@ Bool Media::GTKDrawImage::DrawPolyPolygon(const Math::Coord2DDbl *points, const 
 	}
 }
 
-Bool Media::GTKDrawImage::DrawRect(Math::Coord2DDbl tl, Math::Size2DDbl size, DrawPen *p, Optional<DrawBrush> b)
+Bool Media::GTKDrawImage::DrawRect(Math::Coord2DDbl tl, Math::Size2DDbl size, Optional<DrawPen> p, Optional<DrawBrush> b)
 {
 	NotNullPtr<DrawBrush> nnb;
+	NotNullPtr<DrawPen> nnp;
 	if (b.SetTo(nnb))
 	{
 		NotNullPtr<GTKDrawBrush> brush = NotNullPtr<GTKDrawBrush>::ConvertFrom(nnb);
@@ -571,9 +578,9 @@ Bool Media::GTKDrawImage::DrawRect(Math::Coord2DDbl tl, Math::Size2DDbl size, Dr
 		cairo_rectangle((cairo_t*)this->cr, tl.x + OSInt2Double(this->tl.x), tl.y + OSInt2Double(this->tl.y), size.x, size.y);
 		cairo_fill((cairo_t*)this->cr);
 	}
-	if (p)
+	if (p.SetTo(nnp))
 	{
-		GTKDrawPen *pen = (GTKDrawPen*)p;
+		NotNullPtr<GTKDrawPen> pen = NotNullPtr<GTKDrawPen>::ConvertFrom(nnp);
 		pen->Init(this->cr);
 		cairo_rectangle((cairo_t*)this->cr, tl.x + OSInt2Double(this->tl.x), tl.y + OSInt2Double(this->tl.y), size.x, size.y);
 		cairo_stroke((cairo_t*)this->cr);
@@ -581,9 +588,10 @@ Bool Media::GTKDrawImage::DrawRect(Math::Coord2DDbl tl, Math::Size2DDbl size, Dr
 	return true;
 }
 
-Bool Media::GTKDrawImage::DrawEllipse(Math::Coord2DDbl tl, Math::Size2DDbl size, DrawPen *p, Optional<DrawBrush> b)
+Bool Media::GTKDrawImage::DrawEllipse(Math::Coord2DDbl tl, Math::Size2DDbl size, Optional<DrawPen> p, Optional<DrawBrush> b)
 {
-	GTKDrawPen *pen = (GTKDrawPen*)p;
+	NotNullPtr<GTKDrawPen> pen;
+	NotNullPtr<DrawPen> nnp;
 	NotNullPtr<DrawBrush> nnb;
 	NotNullPtr<GTKDrawBrush> brush;
 	cairo_t *cr = (cairo_t *)this->cr;
@@ -593,16 +601,18 @@ Bool Media::GTKDrawImage::DrawEllipse(Math::Coord2DDbl tl, Math::Size2DDbl size,
 	cairo_translate(cr, -tl.x - size.x * 0.5, -tl.y - size.y * 0.5);
 	cairo_arc(cr, tl.x + size.x * 0.5, tl.y + size.y * 0.5, size.x * 0.5, 0, 2 * Math::PI);
 	cairo_close_path(cr);
-	if (pen && b.SetTo(nnb))
+	if (p.SetTo(nnp) && b.SetTo(nnb))
 	{
 		brush = NotNullPtr<GTKDrawBrush>::ConvertFrom(nnb);
+		pen = NotNullPtr<GTKDrawPen>::ConvertFrom(nnp);
 		pen->Init(this->cr);
 		cairo_stroke_preserve((cairo_t*)this->cr);
 		brush->Init(this->cr);
 		cairo_fill((cairo_t*)this->cr);
 	}
-	else if (pen)
+	else if (p.SetTo(nnp))
 	{
+		pen = NotNullPtr<GTKDrawPen>::ConvertFrom(nnp);
 		pen->Init(this->cr);
 		cairo_stroke((cairo_t*)this->cr);
 	}
@@ -1067,10 +1077,10 @@ Bool Media::GTKDrawImage::DrawImagePt3(NotNullPtr<DrawImage> img, Math::Coord2DD
 	}
 }
 
-Media::DrawPen *Media::GTKDrawImage::NewPenARGB(UInt32 color, Double thick, UInt8 *pattern, UOSInt nPattern)
+NotNullPtr<Media::DrawPen> Media::GTKDrawImage::NewPenARGB(UInt32 color, Double thick, UInt8 *pattern, UOSInt nPattern)
 {
-	Media::GTKDrawPen *p;
-	NEW_CLASS(p, Media::GTKDrawPen(color, thick));
+	NotNullPtr<Media::GTKDrawPen> p;
+	NEW_CLASSNN(p, Media::GTKDrawPen(color, thick));
 	return p;
 }
 
@@ -1106,10 +1116,10 @@ NotNullPtr<Media::DrawFont> Media::GTKDrawImage::CloneFont(NotNullPtr<DrawFont> 
 	return fnt;
 }
 
-void Media::GTKDrawImage::DelPen(DrawPen *p)
+void Media::GTKDrawImage::DelPen(NotNullPtr<DrawPen> p)
 {
-	GTKDrawPen *pen = (GTKDrawPen*)p;
-	DEL_CLASS(pen);
+	NotNullPtr<GTKDrawPen> pen = NotNullPtr<GTKDrawPen>::ConvertFrom(p);
+	pen.Delete();
 }
 
 void Media::GTKDrawImage::DelBrush(NotNullPtr<DrawBrush> b)

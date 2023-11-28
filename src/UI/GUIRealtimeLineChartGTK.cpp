@@ -56,7 +56,7 @@ Int32 GUIRealtimeLineChart_OnTick(void *userObj)
 void UI::GUIRealtimeLineChart::OnPaint(NotNullPtr<Media::DrawImage> dimg)
 {
 	NotNullPtr<Media::DrawImage> img;
-	Media::DrawPen *p;
+	NotNullPtr<Media::DrawPen> p;
 	NotNullPtr<Media::DrawBrush> b;
 	NotNullPtr<Media::DrawFont> f;
 	UOSInt i;

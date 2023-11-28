@@ -56,7 +56,7 @@ void SSWR::AVIRead::AVIRAudioViewerForm::UpdateImages()
 	else
 	{
 		NotNullPtr<Media::DrawBrush> b;
-		Media::DrawPen *p;
+		NotNullPtr<Media::DrawPen> p;
 		UOSInt i;
 		UOSInt j;
 		UInt32 currCh;
@@ -157,7 +157,7 @@ void SSWR::AVIRead::AVIRAudioViewerForm::UpdateFreqImage()
 	else
 	{
 		NotNullPtr<Media::DrawBrush> b;
-		Media::DrawPen *p;
+		NotNullPtr<Media::DrawPen> p;
 		UOSInt i;
 		UOSInt j;
 		Double lastX;

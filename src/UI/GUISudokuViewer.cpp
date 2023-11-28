@@ -146,7 +146,7 @@ void UI::GUISudokuViewer::OnDraw(NotNullPtr<Media::DrawImage> img)
 	}
 	blockSize = (size / 9) - 2;
 
-	Media::DrawPen *p;
+	NotNullPtr<Media::DrawPen> p;
 	NotNullPtr<Media::DrawBrush> b;
 	NotNullPtr<Media::DrawBrush> b2;
 	NotNullPtr<Media::DrawFont> f;

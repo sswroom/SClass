@@ -68,7 +68,7 @@ public:
 		UOSInt h = printPage->GetHeight();
 		Double hdpi = printPage->GetHDPI();
 		Double vdpi = printPage->GetVDPI();
-		Media::DrawPen *p = printPage->NewPenARGB(0xff000000, 1, 0, 0);
+		NotNullPtr<Media::DrawPen> p = printPage->NewPenARGB(0xff000000, 1, 0, 0);
 		printPage->DrawRect(Math::Coord2DDbl(hdpi * 0.5, vdpi * 0.5), Math::Size2DDbl(UOSInt2Double(w) - hdpi, UOSInt2Double(h) - vdpi), p, 0);
 		printPage->DelPen(p);
 

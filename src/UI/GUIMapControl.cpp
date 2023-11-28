@@ -440,7 +440,7 @@ void UI::GUIMapControl::DrawScnObjects(NotNullPtr<Media::DrawImage> img, Math::C
 		scnPos = this->view->MapXYToScnXY(this->markerPos);
 		x = Double2Int32(scnPos.x + ofst.x);
 		y = Double2Int32(scnPos.y + ofst.y);
-		Media::DrawPen *p = img->NewPenARGB(0xffff0000, 3 * hdpi / ddpi, 0, 0);
+		NotNullPtr<Media::DrawPen> p = img->NewPenARGB(0xffff0000, 3 * hdpi / ddpi, 0, 0);
 		if (this->markerHasDir)
 		{
 			Double ptAdd = 8 * hdpi / ddpi;
@@ -463,7 +463,7 @@ void UI::GUIMapControl::DrawScnObjects(NotNullPtr<Media::DrawImage> img, Math::C
 	UOSInt j = this->selVecList.GetCount();
 	if (j > 0)
 	{
-		Media::DrawPen *p = img->NewPenARGB(0xffff0000, 3, 0, 0);
+		NotNullPtr<Media::DrawPen> p = img->NewPenARGB(0xffff0000, 3, 0, 0);
 		NotNullPtr<Media::DrawBrush> b = img->NewBrushARGB(0x403f0000);
 		NotNullPtr<Math::Geometry::Vector2D> vec;
 		while (i < j)

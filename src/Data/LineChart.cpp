@@ -586,10 +586,10 @@ void Data::LineChart::Plot(NotNullPtr<Media::DrawImage> img, Double x, Double y,
 	Data::DateTime dt2;
 
 	NotNullPtr<Media::DrawBrush> bgBrush = img->NewBrushARGB(bgColor);
-	Media::DrawPen *boundPen = img->NewPenARGB(boundColor, this->lineThick, 0, 0);
+	NotNullPtr<Media::DrawPen> boundPen = img->NewPenARGB(boundColor, this->lineThick, 0, 0);
 	NotNullPtr<Media::DrawBrush> fontBrush = img->NewBrushARGB(fontColor);
-	Media::DrawPen *gridPen = img->NewPenARGB(gridColor, this->lineThick, 0, 0);
-	Media::DrawPen *refLinePen = img->NewPenARGB(refLineColor, this->lineThick, 0, 0);
+	NotNullPtr<Media::DrawPen> gridPen = img->NewPenARGB(gridColor, this->lineThick, 0, 0);
+	NotNullPtr<Media::DrawPen> refLinePen = img->NewPenARGB(refLineColor, this->lineThick, 0, 0);
 
 	fnt = img->NewFontPt(fntName->ToCString(), (Double)fntSizePt, Media::DrawEngine::DFS_ANTIALIAS, 0);
 	img->DrawRect(Math::Coord2DDbl(x, y), Math::Size2DDbl(width, height), 0, bgBrush);
@@ -1474,7 +1474,7 @@ void Data::LineChart::Plot(NotNullPtr<Media::DrawImage> img, Double x, Double y,
 				currPos[j - 2].y = (Double)(y + height - xLeng);
 				currPos[j - 1].x = currPos[0].x;
 				currPos[j - 1].y = (Double)(y + height - xLeng);
-				Media::DrawPen *p = img->NewPenARGB(((Data::LineChart::ChartData*)yCharts->GetItem(i))->lineColor, 1, 0, 0);
+				NotNullPtr<Media::DrawPen> p = img->NewPenARGB(((Data::LineChart::ChartData*)yCharts->GetItem(i))->lineColor, 1, 0, 0);
 				NotNullPtr<Media::DrawBrush> b = img->NewBrushARGB(((Data::LineChart::ChartData*)yCharts->GetItem(i))->lineColor);
 				img->DrawPolygon(currPos, currPosLen, p, b);
 				img->DelBrush(b);
@@ -1485,7 +1485,7 @@ void Data::LineChart::Plot(NotNullPtr<Media::DrawImage> img, Double x, Double y,
 		{
 			if (currPosLen >= 2)
 			{
-				Media::DrawPen *pen = img->NewPenARGB(((Data::LineChart::ChartData*)yCharts->GetItem(i))->lineColor, this->lineThick, 0, 0);
+				NotNullPtr<Media::DrawPen> pen = img->NewPenARGB(((Data::LineChart::ChartData*)yCharts->GetItem(i))->lineColor, this->lineThick, 0, 0);
 				img->DrawPolyline(currPos, currPosLen, pen);
 				img->DelPen(pen);
 

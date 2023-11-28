@@ -402,7 +402,7 @@ Media::IAudioRenderer *SSWR::AVIRead::AVIRCore::BindAudio(Media::IAudioSource *a
 
 Bool SSWR::AVIRead::AVIRCore::GenLinePreview(NotNullPtr<Media::DrawImage> img, NotNullPtr<Media::DrawEngine> eng, UOSInt lineThick, UInt32 lineColor, Media::ColorConv *colorConv)
 {
-	Media::DrawPen *p;
+	NotNullPtr<Media::DrawPen> p;
 	NotNullPtr<Media::DrawBrush> b;
 	Double dpi = img->GetHDPI();
 	b = img->NewBrushARGB(colorConv->ConvRGB8(0xffffffff));
@@ -432,7 +432,7 @@ Bool SSWR::AVIRead::AVIRCore::GenLineStylePreview(NotNullPtr<Media::DrawImage> i
 		return false;
 	}
 
-	Media::DrawPen *p;
+	NotNullPtr<Media::DrawPen> p;
 	NotNullPtr<Media::DrawBrush> b;
 	b = img->NewBrushARGB(colorConv->ConvRGB8(0xffc0c0c0));
 	img->DrawRect(Math::Coord2DDbl(0, 0), size.ToDouble(), 0, b);

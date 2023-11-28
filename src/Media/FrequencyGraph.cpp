@@ -19,7 +19,7 @@ Media::DrawImage *Media::FrequencyGraph::CreateGraph(NotNullPtr<Media::DrawEngin
 	UTF8Char sbuff[32];
 	Media::DrawImage *retImg = 0;
 	NotNullPtr<Media::DrawImage> tmpImg;
-	Media::DrawPen *p;
+	NotNullPtr<Media::DrawPen> p;
 	NotNullPtr<Media::DrawBrush> b;
 	NotNullPtr<Media::DrawFont> f;
 	Data::ArrayListDbl chartPos;

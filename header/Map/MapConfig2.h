@@ -71,7 +71,7 @@ namespace Map
 		~MapConfig2();
 
 		Bool IsError();
-		Media::DrawPen *CreatePen(NotNullPtr<Media::DrawImage> img, UInt32 lineStyle, UOSInt lineLayer);
+		Optional<Media::DrawPen> CreatePen(NotNullPtr<Media::DrawImage> img, UInt32 lineStyle, UOSInt lineLayer);
 		UTF8Char *DrawMap(NotNullPtr<Media::DrawImage> img, NotNullPtr<Map::MapView> view, Bool *isLayerEmpty, Map::MapScheduler *mapSch, Media::IImgResizer *resizer, UTF8Char *slowLayer, Double *slowTime);
 
 		UInt32 GetBGColor();

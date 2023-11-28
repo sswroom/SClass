@@ -31,7 +31,7 @@ void SSWR::AVIRead::AVIRGISLineEditForm::UpdatePreview()
 	UOSInt h = this->prevImage->GetHeight();
 	Double dpi = this->prevImage->GetHDPI();
 
-	Media::DrawPen *p;
+	NotNullPtr<Media::DrawPen> p;
 	NotNullPtr<Media::DrawBrush> b;
 	b = this->prevImage->NewBrushARGB(Media::ColorConv::ConvARGB(srcProfile, destProfile, this->colorSess.Ptr(), 0xffc0c0c0));
 	this->prevImage->DrawRect(Math::Coord2DDbl(0, 0), Math::Size2DDbl(UOSInt2Double(w), UOSInt2Double(h)), 0, b);

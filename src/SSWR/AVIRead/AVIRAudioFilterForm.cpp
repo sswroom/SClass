@@ -602,7 +602,7 @@ void __stdcall SSWR::AVIRead::AVIRAudioFilterForm::OnLevelTimerTick(void *userOb
 			NotNullPtr<Media::DrawImage> img;
 			NotNullPtr<Media::DrawImage> dimg;
 			NotNullPtr<Media::DrawBrush> b;
-			Media::DrawPen *p;
+			NotNullPtr<Media::DrawPen> p;
 			me->audioRipper->GetSamples(me->sampleBuff);
 			sz = me->pbsSample->GetSizeP();
 			if (sz.x <= 0 || sz.y <= 0)

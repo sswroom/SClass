@@ -167,6 +167,11 @@ void Map::MapScheduler::DrawPoint(Math::Geometry::Point *pt)
 
 void Map::MapScheduler::DrawLineString(Math::Geometry::LineString *pl)
 {
+	NotNullPtr<Media::DrawPen> nnp;
+	if (!this->p.SetTo(nnp))
+	{
+		return;
+	}
 	UOSInt nPoint;
 	Math::Coord2DDbl *pointArr = pl->GetPointList(nPoint);
 	if (this->isFirst)
@@ -175,11 +180,16 @@ void Map::MapScheduler::DrawLineString(Math::Geometry::LineString *pl)
 			*this->isLayerEmpty = false;
 	}
 
-	this->img->DrawPolyline(pointArr, nPoint, this->p);
+	this->img->DrawPolyline(pointArr, nPoint, nnp);
 }
 
 void Map::MapScheduler::DrawPolyline(Math::Geometry::Polyline *pl)
 {
+	NotNullPtr<Media::DrawPen> nnp;
+	if (!this->p.SetTo(nnp))
+	{
+		return;
+	}
 	Math::Geometry::LineString *lineString;
 	UOSInt nPoint;
 	Math::Coord2DDbl *pointArr;
@@ -201,7 +211,7 @@ void Map::MapScheduler::DrawPolyline(Math::Geometry::Polyline *pl)
 
 	if (pl->HasColor())
 	{
-		Media::DrawPen *p = this->img->NewPenARGB(pl->GetColor(), this->p->GetThick(), 0 ,0);
+		NotNullPtr<Media::DrawPen> p = this->img->NewPenARGB(pl->GetColor(), nnp->GetThick(), 0 ,0);
 		i = 0;
 		j = pl->GetCount();
 		while (i < j)
@@ -221,7 +231,7 @@ void Map::MapScheduler::DrawPolyline(Math::Geometry::Polyline *pl)
 		{
 			lineString = pl->GetItem(i);
 			pointArr = lineString->GetPointList(nPoint);
-			this->img->DrawPolyline(pointArr, nPoint, this->p);
+			this->img->DrawPolyline(pointArr, nPoint, nnp);
 			i++;
 		}
 	}
@@ -387,7 +397,7 @@ void Map::MapScheduler::SetMapView(NotNullPtr<Map::MapView> map, NotNullPtr<Medi
 	this->img = img.Ptr();
 }
 
-void Map::MapScheduler::SetDrawType(NotNullPtr<Map::MapDrawLayer> lyr, Media::DrawPen *p, Optional<Media::DrawBrush> b, Media::DrawImage *ico, Double icoSpotX, Double icoSpotY, Bool *isLayerEmpty)
+void Map::MapScheduler::SetDrawType(NotNullPtr<Map::MapDrawLayer> lyr, Optional<Media::DrawPen> p, Optional<Media::DrawBrush> b, Media::DrawImage *ico, Double icoSpotX, Double icoSpotY, Bool *isLayerEmpty)
 {
 	while (this->dt == ThreadState::Clearing)
 	{
@@ -411,16 +421,16 @@ void Map::MapScheduler::SetDrawObjs(Math::RectAreaDbl *objBounds, UOSInt *objCnt
 	this->maxCnt = maxCnt;
 }
 
-void Map::MapScheduler::Draw(Math::Geometry::Vector2D *vec)
+void Map::MapScheduler::Draw(NotNullPtr<Math::Geometry::Vector2D> vec)
 {
 	Sync::MutexUsage mutUsage(this->taskMut);
 	this->taskFinish = false;
-	this->tasks.Add(vec);
+	this->tasks.Add(vec.Ptr());
 	mutUsage.EndUse();
 	this->taskEvt.Set();
 }
 
-void Map::MapScheduler::DrawNextType(Media::DrawPen *p, Media::DrawBrush *b)
+void Map::MapScheduler::DrawNextType(Optional<Media::DrawPen> p, Optional<Media::DrawBrush> b)
 {
 	while (!this->taskFinish)
 	{
@@ -432,9 +442,10 @@ void Map::MapScheduler::DrawNextType(Media::DrawPen *p, Media::DrawBrush *b)
 		this->img->DelBrush(nnb);
 		this->b = 0;
 	}
-	if (this->p)
+	NotNullPtr<Media::DrawPen> nnp;
+	if (this->p.SetTo(nnp))
 	{
-		this->img->DelPen(this->p);
+		this->img->DelPen(nnp);
 		this->p = 0;
 	}
 	this->p = p;
@@ -459,9 +470,10 @@ void Map::MapScheduler::WaitForFinish()
 		this->img->DelBrush(b);
 		this->b = 0;
 	}
-	if (this->p)
+	NotNullPtr<Media::DrawPen> p;
+	if (this->p.SetTo(p))
 	{
-		this->img->DelPen(this->p);
+		this->img->DelPen(p);
 		this->p = 0;
 	}
 	this->dt = ThreadState::Clearing;

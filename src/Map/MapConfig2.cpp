@@ -125,6 +125,7 @@ void Map::MapConfig2::DrawChars(NotNullPtr<Media::DrawImage> img, Text::CStringN
 		Double rcTop;
 		Double rcBottom;
 		NotNullPtr<Media::DrawBrush> b;
+		NotNullPtr<Media::DrawPen> p;
 		img->SetTextAlign(Media::DrawEngine::DRAW_POS_TOPLEFT);
 
 		i = 0;
@@ -155,7 +156,7 @@ void Map::MapConfig2::DrawChars(NotNullPtr<Media::DrawImage> img, Text::CStringN
 
 				img->DrawRect(Math::Coord2DDbl(rcLeft, rcTop), Math::Size2DDbl(rcRight - rcLeft, rcBottom - rcTop), p, b);
 			}
-			else if (font->fontType == 2)
+			else if (font->fontType == 2 && p.Set((Media::DrawPen*)font->other))
 			{
 				Math::Coord2DDbl pt[5];
 				rcLeft = scnPos.x - ((size.x + font->fontSizePt) * 0.5);
@@ -173,7 +174,7 @@ void Map::MapConfig2::DrawChars(NotNullPtr<Media::DrawImage> img, Text::CStringN
 				pt[3].y = rcBottom;
 				pt[4] = pt[0];
 
-				img->DrawPolyline(pt, 5, (Media::DrawPen*)font->other);
+				img->DrawPolyline(pt, 5, p);
 			}
 			else if (font->fontType == 0 && b.Set((Media::DrawBrush*)font->other))
 			{
@@ -209,6 +210,7 @@ void Map::MapConfig2::DrawChars(NotNullPtr<Media::DrawImage> img, Text::CStringN
 	{
 		NotNullPtr<Media::DrawBrush> nnb;
 		Media::DrawBrush *b;
+		NotNullPtr<Media::DrawPen> nnp;
 		Media::DrawPen *p;
 
 		scaleW = lastScaleW;
@@ -255,24 +257,27 @@ void Map::MapConfig2::DrawChars(NotNullPtr<Media::DrawImage> img, Text::CStringN
 		}
 		else if (font->fontType == 2)
 		{
-			xPos = size.x + font->fontSizePt;
-			yPos = size.y + font->fontSizePt;
-			Int32 xs = (Int32) ((xPos * 0.5) * (sVal = Math_Sin(degD)));
-			Int32 ys = (Int32) ((yPos * 0.5) * sVal);
-			Int32 xc = (Int32) ((xPos * 0.5) * (cVal = Math_Cos(degD)));
-			Int32 yc = (Int32) ((yPos * 0.5) * cVal);
+			if (nnp.Set((Media::DrawPen*)font->other))
+			{
+				xPos = size.x + font->fontSizePt;
+				yPos = size.y + font->fontSizePt;
+				Int32 xs = (Int32) ((xPos * 0.5) * (sVal = Math_Sin(degD)));
+				Int32 ys = (Int32) ((yPos * 0.5) * sVal);
+				Int32 xc = (Int32) ((xPos * 0.5) * (cVal = Math_Cos(degD)));
+				Int32 yc = (Int32) ((yPos * 0.5) * cVal);
 
-			pt[0].x = scnPos.x - xc - ys;
-			pt[0].y = scnPos.y + xs - yc;
-			pt[1].x = scnPos.x + xc - ys;
-			pt[1].y = scnPos.y - xs - yc;
-			pt[2].x = scnPos.x + xc + ys;
-			pt[2].y = scnPos.y - xs + yc;
-			pt[3].x = scnPos.x - xc + ys;
-			pt[3].y = scnPos.y + xs + yc;
-			pt[4] = pt[0];
-			
-			img->DrawPolyline(pt, 5, (Media::DrawPen*)font->other);
+				pt[0].x = scnPos.x - xc - ys;
+				pt[0].y = scnPos.y + xs - yc;
+				pt[1].x = scnPos.x + xc - ys;
+				pt[1].y = scnPos.y - xs - yc;
+				pt[2].x = scnPos.x + xc + ys;
+				pt[2].y = scnPos.y - xs + yc;
+				pt[3].x = scnPos.x - xc + ys;
+				pt[3].y = scnPos.y + xs + yc;
+				pt[4] = pt[0];
+				
+				img->DrawPolyline(pt, 5, nnp);
+			}
 		}
 		else if (font->fontType == 0 || font->fontType == 4)
 		{
@@ -2276,7 +2281,7 @@ Map::MapDrawLayer *Map::MapConfig2::GetDrawLayer(Text::CStringNN name, Data::Arr
 
 void Map::MapConfig2::DrawPoints(NotNullPtr<Media::DrawImage> img, MapLayerStyle *lyrs, NotNullPtr<Map::MapView> view, Bool *isLayerEmpty, Map::MapScheduler *sch, NotNullPtr<Media::DrawEngine> eng, Media::IImgResizer *resizer, Math::RectAreaDbl *objBounds, UOSInt *objCnt, UOSInt maxObjCnt)
 {
-	Math::Geometry::Vector2D *vec;
+	NotNullPtr<Math::Geometry::Vector2D> vec;
 	UOSInt imgW;
 	UOSInt imgH;
 	UOSInt i;
@@ -2340,7 +2345,7 @@ void Map::MapConfig2::DrawPoints(NotNullPtr<Media::DrawImage> img, MapLayerStyle
 	i = arri.GetCount();
 	while (i-- > 0)
 	{
-		if ((vec = lyrs->lyr->GetNewVectorById(session, arri.GetItem(i))) != 0)
+		if (vec.Set(lyrs->lyr->GetNewVectorById(session, arri.GetItem(i))))
 		{
 #ifdef NOSCH
 			j = dobj->nPoint;
@@ -4261,7 +4266,7 @@ Bool Map::MapConfig2::IsError()
 	return this->drawList == 0;
 }
 
-Media::DrawPen *Map::MapConfig2::CreatePen(NotNullPtr<Media::DrawImage> img, UInt32 lineStyle, UOSInt lineLayer)
+Optional<Media::DrawPen> Map::MapConfig2::CreatePen(NotNullPtr<Media::DrawImage> img, UInt32 lineStyle, UOSInt lineLayer)
 {
 	if (lineStyle >= this->nLine)
 	{
@@ -4315,7 +4320,7 @@ Media::DrawPen *Map::MapConfig2::CreatePen(NotNullPtr<Media::DrawImage> img, UIn
 			}
 			currCh++;
 		}
-		Media::DrawPen *pen = img->NewPenARGB(thisLine->color, thisLine->lineWidth * img->GetHDPI() / 96.0, pattern, i);
+		NotNullPtr<Media::DrawPen> pen = img->NewPenARGB(thisLine->color, thisLine->lineWidth * img->GetHDPI() / 96.0, pattern, i);
 		MemFree(pattern);
 		return pen;
 	}
@@ -4336,11 +4341,11 @@ UTF8Char *Map::MapConfig2::DrawMap(NotNullPtr<Media::DrawImage> img, NotNullPtr<
 	Data::ArrayList<MapFontStyle*> *fontArr;
 	NotNullPtr<Map::MapDrawLayer> lyr;
 	Map::MapLayerStyle *lyrs;
-	Math::Geometry::Vector2D *vec;
+	NotNullPtr<Math::Geometry::Vector2D> vec;
 	Map::MapFontStyle *fnt;
 	Map::MapFontStyle *fnt2;
 	NotNullPtr<Media::DrawBrush> brush;
-	Media::DrawPen *pen;
+	Optional<Media::DrawPen> pen;
 	UOSInt i;
 	UOSInt j;
 	UOSInt k;
@@ -4401,7 +4406,7 @@ UTF8Char *Map::MapConfig2::DrawMap(NotNullPtr<Media::DrawImage> img, NotNullPtr<
 				}
 				else if (fnt->fontType == 2)
 				{
-					fnt2->other = img->NewPenARGB(fnt->color, fnt->thick * img->GetHDPI() / 96.0, 0, 0);
+					fnt2->other = img->NewPenARGB(fnt->color, fnt->thick * img->GetHDPI() / 96.0, 0, 0).Ptr();
 				}
 				else if (fnt->fontType == 4)
 				{
@@ -4473,7 +4478,7 @@ UTF8Char *Map::MapConfig2::DrawMap(NotNullPtr<Media::DrawImage> img, NotNullPtr<
 							if (thisId != lastId)
 							{
 								lastId = thisId;
-								if ((vec = lyr->GetNewVectorById(session, thisId)) != 0)
+								if (vec.Set(lyr->GetNewVectorById(session, thisId)))
 								{
 #ifndef NOSCH
 									mapSch->Draw(vec);
@@ -4538,11 +4543,10 @@ UTF8Char *Map::MapConfig2::DrawMap(NotNullPtr<Media::DrawImage> img, NotNullPtr<
 							lyr->ReleaseObject(session, dobj);
 						}
 #else
-
-						if (pen)
+						if (!pen.IsNull())
 						{
 							index2 = 1;
-							while ((pen = CreatePen(img, lyrs->style, index2++)) != 0)
+							while (!(pen = CreatePen(img, lyrs->style, index2++)).IsNull())
 							{
 								mapSch->DrawNextType(pen, 0);
 							}
@@ -4576,7 +4580,7 @@ UTF8Char *Map::MapConfig2::DrawMap(NotNullPtr<Media::DrawImage> img, NotNullPtr<
 							if (thisId != lastId)
 							{
 								lastId = thisId;
-								if ((vec = lyr->GetNewVectorById(session, thisId)) != 0)
+								if (vec.Set(lyr->GetNewVectorById(session, thisId)))
 								{
 #ifndef NOSCH
 									mapSch->Draw(vec);
@@ -4619,10 +4623,10 @@ UTF8Char *Map::MapConfig2::DrawMap(NotNullPtr<Media::DrawImage> img, NotNullPtr<
 							lyr->ReleaseObject(session, dobj);
 						}
 #else
-						if (pen)
+						if (!pen.IsNull())
 						{
 							index2 = 1;
-							while ((pen = CreatePen(img, lyrs->style, index2++)) != 0)
+							while (!(pen = CreatePen(img, lyrs->style, index2++)).IsNull())
 							{
 								mapSch->DrawNextType(pen, 0);
 							}
@@ -4652,6 +4656,7 @@ UTF8Char *Map::MapConfig2::DrawMap(NotNullPtr<Media::DrawImage> img, NotNullPtr<
 	DrawLabels(img, labels, maxLabel, &labelCnt, view, myArrs, drawEng, objBounds, &objCnt);
 
 	NotNullPtr<Media::DrawBrush> b;
+	NotNullPtr<Media::DrawPen> p;
 	i = this->nFont;
 	while (i-- > 0)
 	{
@@ -4676,7 +4681,8 @@ UTF8Char *Map::MapConfig2::DrawMap(NotNullPtr<Media::DrawImage> img, NotNullPtr<
 				}
 				else if (fnt->fontType == 2)
 				{
-					img->DelPen((Media::DrawPen*)fnt->other);
+					if (p.Set((Media::DrawPen*)fnt->other))
+						img->DelPen(p);
 				}
 				else if (fnt->fontType == 4)
 				{

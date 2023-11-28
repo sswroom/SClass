@@ -1526,12 +1526,12 @@ void Map::DrawMapRenderer::DrawShapes(NotNullPtr<Map::DrawMapRenderer::DrawEnv> 
 {
 	UOSInt i;
 	Map::GetObjectSess *session;
-	Media::DrawPen *p;
+	NotNullPtr<Media::DrawPen> p;
 	NotNullPtr<Media::DrawBrush> b;
 	Int64 lastId;
 	Int64 thisId;
 	UOSInt layerId = 0;
-	Math::Geometry::Vector2D *vec;
+	NotNullPtr<Math::Geometry::Vector2D> vec;
 	NotNullPtr<Math::CoordinateSystem> lyrCSys = layer->GetCoordinateSystem();
 	NotNullPtr<Math::CoordinateSystem> envCSys = this->env->GetCoordinateSystem();
 	denv->idArr.Clear();
@@ -1572,7 +1572,7 @@ void Map::DrawMapRenderer::DrawShapes(NotNullPtr<Map::DrawMapRenderer::DrawEnv> 
 				if (thisId != lastId)
 				{
 					lastId = thisId;
-					if ((vec = layer->GetNewVectorById(session, thisId)) != 0)
+					if (vec.Set(layer->GetNewVectorById(session, thisId)))
 					{
 						vec->ConvCSys(lyrCSys, envCSys);
 						this->mapSch.Draw(vec);
@@ -1627,7 +1627,7 @@ void Map::DrawMapRenderer::DrawShapes(NotNullPtr<Map::DrawMapRenderer::DrawEnv> 
 				if (thisId != lastId)
 				{
 					lastId = thisId;
-					if ((vec = layer->GetNewVectorById(session, thisId)) != 0)
+					if (vec.Set(layer->GetNewVectorById(session, thisId)))
 					{
 						this->mapSch.Draw(vec);
 					}
@@ -1651,7 +1651,7 @@ void Map::DrawMapRenderer::DrawShapes(NotNullPtr<Map::DrawMapRenderer::DrawEnv> 
 void Map::DrawMapRenderer::DrawShapesPoint(NotNullPtr<Map::DrawMapRenderer::DrawEnv> denv, NotNullPtr<Map::MapDrawLayer> layer, UOSInt imgIndex)
 {
 	Data::ArrayListInt64 arri;
-	Math::Geometry::Vector2D *vec;
+	NotNullPtr<Math::Geometry::Vector2D> vec;
 	UOSInt i;
 	Map::GetObjectSess *session;
 	Math::Coord2DDbl tl;
@@ -1749,7 +1749,7 @@ void Map::DrawMapRenderer::DrawShapesPoint(NotNullPtr<Map::DrawMapRenderer::Draw
 			i = arri.GetCount();
 			while (i-- > 0)
 			{
-				if ((vec = layer->GetNewVectorById(session, arri.GetItem(i))) != 0)
+				if (vec.Set(layer->GetNewVectorById(session, arri.GetItem(i))))
 				{
 					vec->ConvCSys(lyrCSys, envCSys);
 					this->mapSch.Draw(vec);
@@ -1811,7 +1811,7 @@ void Map::DrawMapRenderer::DrawShapesPoint(NotNullPtr<Map::DrawMapRenderer::Draw
 			i = arri.GetCount();
 			while (i-- > 0)
 			{
-				if ((vec = layer->GetNewVectorById(session, arri.GetItem(i))) != 0)
+				if (vec.Set(layer->GetNewVectorById(session, arri.GetItem(i))))
 				{
 					this->mapSch.Draw(vec);
 				}

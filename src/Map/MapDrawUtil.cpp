@@ -2,7 +2,7 @@
 #include "Map/MapDrawUtil.h"
 #include "Math/Geometry/CompoundCurve.h"
 
-Bool Map::MapDrawUtil::DrawPoint(NotNullPtr<Math::Geometry::Point> pt, NotNullPtr<Media::DrawImage> img, NotNullPtr<Map::MapView> view, Optional<Media::DrawBrush> b, Media::DrawPen *p, Math::Coord2DDbl ofst)
+Bool Map::MapDrawUtil::DrawPoint(NotNullPtr<Math::Geometry::Point> pt, NotNullPtr<Media::DrawImage> img, NotNullPtr<Map::MapView> view, Optional<Media::DrawBrush> b, Optional<Media::DrawPen> p, Math::Coord2DDbl ofst)
 {
 	Math::Coord2DDbl coord = view->MapXYToScnXY(pt->GetCenter()) + ofst;
 	NotNullPtr<Media::DrawBrush> b2 = img->NewBrushARGB(0xffff0000);
@@ -11,19 +11,25 @@ Bool Map::MapDrawUtil::DrawPoint(NotNullPtr<Math::Geometry::Point> pt, NotNullPt
 	return true;
 }
 
-Bool Map::MapDrawUtil::DrawLineString(NotNullPtr<Math::Geometry::LineString> pl, NotNullPtr<Media::DrawImage> img, NotNullPtr<Map::MapView> view, Optional<Media::DrawBrush> b, Media::DrawPen *p, Math::Coord2DDbl ofst)
+Bool Map::MapDrawUtil::DrawLineString(NotNullPtr<Math::Geometry::LineString> pl, NotNullPtr<Media::DrawImage> img, NotNullPtr<Map::MapView> view, Optional<Media::DrawBrush> b, Optional<Media::DrawPen> p, Math::Coord2DDbl ofst)
 {
+	NotNullPtr<Media::DrawPen> nnp;
+	if (!p.SetTo(nnp))
+		return false;
 	UOSInt nPoint;
 	Math::Coord2DDbl *points = pl->GetPointList(nPoint);
 	Math::Coord2DDbl *dpoints = MemAllocA(Math::Coord2DDbl, nPoint);
 	view->MapXYToScnXY(points, dpoints, nPoint, ofst);
-	img->DrawPolyline(dpoints, nPoint, p);
+	img->DrawPolyline(dpoints, nPoint, nnp);
 	MemFreeA(dpoints);
 	return true;
 }
 
-Bool Map::MapDrawUtil::DrawPolyline(NotNullPtr<Math::Geometry::Polyline> pl, NotNullPtr<Media::DrawImage> img, NotNullPtr<Map::MapView> view, Optional<Media::DrawBrush> b, Media::DrawPen *p, Math::Coord2DDbl ofst)
+Bool Map::MapDrawUtil::DrawPolyline(NotNullPtr<Math::Geometry::Polyline> pl, NotNullPtr<Media::DrawImage> img, NotNullPtr<Map::MapView> view, Optional<Media::DrawBrush> b, Optional<Media::DrawPen> p, Math::Coord2DDbl ofst)
 {
+	NotNullPtr<Media::DrawPen> nnp;
+	if (!p.SetTo(nnp))
+		return false;
 	Math::Geometry::LineString *lineString;
 	UOSInt nPoint;
 	UOSInt dpointsSize = 0;
@@ -42,7 +48,7 @@ Bool Map::MapDrawUtil::DrawPolyline(NotNullPtr<Math::Geometry::Polyline> pl, Not
 			dpoints = MemAllocA(Math::Coord2DDbl, nPoint);
 		}
 		view->MapXYToScnXY(points, dpoints, nPoint, ofst);
-		img->DrawPolyline(dpoints, nPoint, p);
+		img->DrawPolyline(dpoints, nPoint, nnp);
 	}
 	if (dpoints)
 	{
@@ -51,7 +57,7 @@ Bool Map::MapDrawUtil::DrawPolyline(NotNullPtr<Math::Geometry::Polyline> pl, Not
 	return true;
 }
 
-Bool Map::MapDrawUtil::DrawPolygon(NotNullPtr<Math::Geometry::Polygon> pg, NotNullPtr<Media::DrawImage> img, NotNullPtr<Map::MapView> view, Optional<Media::DrawBrush> b, Media::DrawPen *p, Math::Coord2DDbl ofst)
+Bool Map::MapDrawUtil::DrawPolygon(NotNullPtr<Math::Geometry::Polygon> pg, NotNullPtr<Media::DrawImage> img, NotNullPtr<Map::MapView> view, Optional<Media::DrawBrush> b, Optional<Media::DrawPen> p, Math::Coord2DDbl ofst)
 {
 	UOSInt nPoint;
 	UOSInt nPtOfst;
@@ -74,7 +80,7 @@ Bool Map::MapDrawUtil::DrawPolygon(NotNullPtr<Math::Geometry::Polygon> pg, NotNu
 	return true;
 }
 
-Bool Map::MapDrawUtil::DrawMultiPolygon(NotNullPtr<Math::Geometry::MultiPolygon> mpg, NotNullPtr<Media::DrawImage> img, NotNullPtr<Map::MapView> view, Optional<Media::DrawBrush> b, Media::DrawPen *p, Math::Coord2DDbl ofst)
+Bool Map::MapDrawUtil::DrawMultiPolygon(NotNullPtr<Math::Geometry::MultiPolygon> mpg, NotNullPtr<Media::DrawImage> img, NotNullPtr<Map::MapView> view, Optional<Media::DrawBrush> b, Optional<Media::DrawPen> p, Math::Coord2DDbl ofst)
 {
 	Bool succ = false;
 	NotNullPtr<Math::Geometry::Polygon> pg;
@@ -89,7 +95,7 @@ Bool Map::MapDrawUtil::DrawMultiPolygon(NotNullPtr<Math::Geometry::MultiPolygon>
 	return succ;
 }
 
-Bool Map::MapDrawUtil::DrawMultiSurface(NotNullPtr<Math::Geometry::MultiSurface> ms, NotNullPtr<Media::DrawImage> img, NotNullPtr<Map::MapView> view, Optional<Media::DrawBrush> b, Media::DrawPen *p, Math::Coord2DDbl ofst)
+Bool Map::MapDrawUtil::DrawMultiSurface(NotNullPtr<Math::Geometry::MultiSurface> ms, NotNullPtr<Media::DrawImage> img, NotNullPtr<Map::MapView> view, Optional<Media::DrawBrush> b, Optional<Media::DrawPen> p, Math::Coord2DDbl ofst)
 {
 	Bool succ = false;
 	NotNullPtr<Math::Geometry::Vector2D> vec;
@@ -104,7 +110,7 @@ Bool Map::MapDrawUtil::DrawMultiSurface(NotNullPtr<Math::Geometry::MultiSurface>
 	return succ;
 }
 
-Bool Map::MapDrawUtil::DrawCurvePolygon(NotNullPtr<Math::Geometry::CurvePolygon> cp, NotNullPtr<Media::DrawImage> img, NotNullPtr<Map::MapView> view, Optional<Media::DrawBrush> b, Media::DrawPen *p, Math::Coord2DDbl ofst)
+Bool Map::MapDrawUtil::DrawCurvePolygon(NotNullPtr<Math::Geometry::CurvePolygon> cp, NotNullPtr<Media::DrawImage> img, NotNullPtr<Map::MapView> view, Optional<Media::DrawBrush> b, Optional<Media::DrawPen> p, Math::Coord2DDbl ofst)
 {
 	Data::ArrayList<UInt32> ptOfst;
 	Data::ArrayListA<Math::Coord2DDbl> ptList;
@@ -157,7 +163,7 @@ Bool Map::MapDrawUtil::DrawCurvePolygon(NotNullPtr<Math::Geometry::CurvePolygon>
 	return false;
 }
 
-Bool Map::MapDrawUtil::DrawGeometryCollection(NotNullPtr<Math::Geometry::GeometryCollection> geomColl, NotNullPtr<Media::DrawImage> img, NotNullPtr<Map::MapView> view, Optional<Media::DrawBrush> b, Media::DrawPen *p, Math::Coord2DDbl ofst)
+Bool Map::MapDrawUtil::DrawGeometryCollection(NotNullPtr<Math::Geometry::GeometryCollection> geomColl, NotNullPtr<Media::DrawImage> img, NotNullPtr<Map::MapView> view, Optional<Media::DrawBrush> b, Optional<Media::DrawPen> p, Math::Coord2DDbl ofst)
 {
 	Bool succ = false;
 	NotNullPtr<Math::Geometry::Vector2D> vec;
@@ -172,7 +178,7 @@ Bool Map::MapDrawUtil::DrawGeometryCollection(NotNullPtr<Math::Geometry::Geometr
 	return succ;
 }
 
-Bool Map::MapDrawUtil::DrawEllipse(NotNullPtr<Math::Geometry::Ellipse> circle, NotNullPtr<Media::DrawImage> img, NotNullPtr<Map::MapView> view, Optional<Media::DrawBrush> b, Media::DrawPen *p, Math::Coord2DDbl ofst)
+Bool Map::MapDrawUtil::DrawEllipse(NotNullPtr<Math::Geometry::Ellipse> circle, NotNullPtr<Media::DrawImage> img, NotNullPtr<Map::MapView> view, Optional<Media::DrawBrush> b, Optional<Media::DrawPen> p, Math::Coord2DDbl ofst)
 {
 	Math::Coord2DDbl bl = view->MapXYToScnXY(circle->GetTL());
 	Math::Coord2DDbl tr = view->MapXYToScnXY(circle->GetBR());
@@ -180,7 +186,7 @@ Bool Map::MapDrawUtil::DrawEllipse(NotNullPtr<Math::Geometry::Ellipse> circle, N
 	return true;
 }
 
-Bool Map::MapDrawUtil::DrawVectorImage(NotNullPtr<Math::Geometry::VectorImage> vimg, NotNullPtr<Media::DrawImage> img, NotNullPtr<Map::MapView> view, Optional<Media::DrawBrush> b, Media::DrawPen *p, Math::Coord2DDbl ofst)
+Bool Map::MapDrawUtil::DrawVectorImage(NotNullPtr<Math::Geometry::VectorImage> vimg, NotNullPtr<Media::DrawImage> img, NotNullPtr<Map::MapView> view, Optional<Media::DrawBrush> b, Optional<Media::DrawPen> p, Math::Coord2DDbl ofst)
 {
 	UInt32 nPoints;
 	Math::Coord2DDbl pts[5];
@@ -299,7 +305,7 @@ Bool Map::MapDrawUtil::DrawPieArea(NotNullPtr<Math::Geometry::PieArea> pieArea, 
 	DeleteDC(hdcBmp);
 }*/
 
-Bool Map::MapDrawUtil::DrawVector(NotNullPtr<Math::Geometry::Vector2D> vec, NotNullPtr<Media::DrawImage> img, NotNullPtr<Map::MapView> view, Optional<Media::DrawBrush> b, Media::DrawPen *p, Math::Coord2DDbl ofst)
+Bool Map::MapDrawUtil::DrawVector(NotNullPtr<Math::Geometry::Vector2D> vec, NotNullPtr<Media::DrawImage> img, NotNullPtr<Map::MapView> view, Optional<Media::DrawBrush> b, Optional<Media::DrawPen> p, Math::Coord2DDbl ofst)
 {
 	switch (vec->GetVectorType())
 	{

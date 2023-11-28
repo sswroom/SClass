@@ -951,7 +951,7 @@ Media::VectorDocument *Text::ReportBuilder::CreateVDoc(Int32 id, NotNullPtr<Medi
 	Double fontHeightPt = Math::Unit::Distance::Convert(Math::Unit::Distance::DU_MILLIMETER, Math::Unit::Distance::DU_POINT, fontHeightMM);
 	NotNullPtr<Media::DrawFont> f;
 	NotNullPtr<Media::DrawBrush> b;
-	Media::DrawPen *p;
+	NotNullPtr<Media::DrawPen> p;
 	Double headerW1;
 	Double headerW2;
 	Double headerW3;
