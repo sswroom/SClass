@@ -640,7 +640,7 @@ export class DateTimeUtil
 				{
 					while (s.length < digiCnt)
 					{
-						s = "0"+digiCnt;
+						s = "0"+s;
 					}
 					output.push(s);
 				}

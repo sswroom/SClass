@@ -1,3 +1,6 @@
+1.2.3
+-Fixed DateTimeUtil.toString infinity loop
+
 1.2.2
 -Added text.toAttrText(), text.toXMLTest();
 -Enhance text.toJSText()
