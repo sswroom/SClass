@@ -227,6 +227,27 @@ Bool Text::JSONBuilder::ArrayAddStr(Text::PString *val)
 	return true;
 }
 
+Bool Text::JSONBuilder::ArrayAddStr(Text::CString val)
+{
+	if (this->currType != OT_ARRAY)
+		return false;
+	if (this->isFirst)
+		this->isFirst = false;
+	else
+	{
+		this->sb.AppendC(UTF8STRC(","));
+	}
+	if (val.v == 0)
+	{
+		this->sb.AppendC(UTF8STRC("null"));
+	}
+	else
+	{
+		this->AppendStrUTF8(val.v);
+	}
+	return true;
+}
+
 Bool Text::JSONBuilder::ArrayAddStrUTF8(const UTF8Char *val)
 {
 	if (this->currType != OT_ARRAY)

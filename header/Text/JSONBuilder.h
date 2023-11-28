@@ -37,6 +37,7 @@ namespace Text
 		Bool ArrayAddFloat64(Double val);
 		Bool ArrayAddBool(Bool val);
 		Bool ArrayAddStr(Text::PString *val);
+		Bool ArrayAddStr(Text::CString val);
 		Bool ArrayAddStrUTF8(const UTF8Char *val);
 		Bool ArrayAddNull();
 		Bool ArrayAddCoord2D(Math::Coord2DDbl coord);
