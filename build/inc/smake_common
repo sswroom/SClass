@@ -2412,12 +2412,8 @@ Math/Geometry/MultiSurface.h: ../../src/Math/Geometry/MultiSurface.cpp
 Math/Geometry/PieArea.h:
 Math/Geometry/Point.h: ../../src/Math/Geometry/Point.cpp
 @Point.o
-Math/Geometry/PointCollection.h: ../../src/Math/Geometry/PointCollection.cpp
-@PointCollection.o
 Math/Geometry/PointM.h: ../../src/Math/Geometry/PointM.cpp
 @PointM.o
-Math/Geometry/PointOfstCollection.h: ../../src/Math/Geometry/PointOfstCollection.cpp
-@PointOfstCollection.o
 Math/Geometry/PointZ.h: ../../src/Math/Geometry/PointZ.cpp
 @PointZ.o
 Math/Geometry/PointZM.h: ../../src/Math/Geometry/PointZM.cpp
@@ -5237,9 +5233,7 @@ LineString.o: ../../src/Math/Geometry/LineString.cpp
 MultiPolygon.o: ../../src/Math/Geometry/MultiPolygon.cpp
 MultiSurface.o: ../../src/Math/Geometry/MultiSurface.cpp
 Point.o: ../../src/Math/Geometry/Point.cpp
-PointCollection.o: ../../src/Math/Geometry/PointCollection.cpp
 PointM.o: ../../src/Math/Geometry/PointM.cpp
-PointOfstCollection.o: ../../src/Math/Geometry/PointOfstCollection.cpp
 PointZ.o: ../../src/Math/Geometry/PointZ.cpp
 PointZM.o: ../../src/Math/Geometry/PointZM.cpp
 Polygon.o: ../../src/Math/Geometry/Polygon.cpp

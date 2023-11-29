@@ -3,7 +3,6 @@
 #include "Exporter/PNGExporter.h"
 #include "IO/Path.h"
 #include "IO/StmData/FileData.h"
-#include "Math/Geometry/PointCollection.h"
 #include "Media/ANPR.h"
 #include "Media/ImageList.h"
 #include "Media/OCREngine.h"

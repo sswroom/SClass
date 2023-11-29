@@ -2,7 +2,7 @@
 #define _SM_MATH_GEOMETRY_LINESTRING
 #include "Data/ArrayListA.h"
 #include "Math/Coord2DDbl.h"
-#include "Math/Geometry/PointCollection.h"
+#include "Math/Geometry/Vector2D.h"
 
 namespace Math
 {
@@ -10,9 +10,11 @@ namespace Math
 	{
 		class Polyline;
 		class Polygon;
-		class LineString : public PointCollection
+		class LineString : public Vector2D
 		{
 		protected:
+			Math::Coord2DDbl *pointArr;
+			UOSInt nPoint;
 			Double *zArr;
 			Double *mArr;
 		public:
@@ -21,16 +23,23 @@ namespace Math
 			virtual ~LineString();
 
 			virtual VectorType GetVectorType() const;
+			virtual Math::Coord2DDbl GetCenter() const;
 			virtual NotNullPtr<Math::Geometry::Vector2D> Clone() const;
+			virtual Math::RectAreaDbl GetBounds() const;
 			virtual Double CalBoundarySqrDistance(Math::Coord2DDbl pt, OutParam<Math::Coord2DDbl> nearPt) const;
 			virtual Bool JoinVector(NotNullPtr<const Math::Geometry::Vector2D> vec);
 			virtual Bool HasZ() const;
 			virtual Bool HasM() const;
 			virtual void ConvCSys(NotNullPtr<const Math::CoordinateSystem> srcCSys, NotNullPtr<const Math::CoordinateSystem> destCSys);
 			virtual Bool Equals(NotNullPtr<const Vector2D> vec, Bool sameTypeOnly, Bool nearlyVal) const;
+			virtual UOSInt GetCoordinates(NotNullPtr<Data::ArrayListA<Math::Coord2DDbl>> coordList) const;
 			virtual Bool InsideOrTouch(Math::Coord2DDbl coord) const;
+			virtual void SwapXY();
+			virtual void MultiplyCoordinatesXY(Double v);
 			virtual UOSInt GetPointCount() const;
 
+			Math::Coord2DDbl *GetPointList(OutParam<UOSInt> nPoint) { nPoint.Set(this->nPoint); return this->pointArr; }
+			const Math::Coord2DDbl *GetPointListRead(OutParam<UOSInt> nPoint) const { nPoint.Set(this->nPoint); return this->pointArr; }
 			Double CalcLength() const;
 
 			Double *GetZList(OutParam<UOSInt> nPoint) const;

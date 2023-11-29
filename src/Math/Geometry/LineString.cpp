@@ -7,8 +7,11 @@
 #include "Math/Geometry/Polygon.h"
 #include "Math/Geometry/Polyline.h"
 
-Math::Geometry::LineString::LineString(UInt32 srid, UOSInt nPoint, Bool hasZ, Bool hasM) : PointCollection(srid, nPoint, 0)
+Math::Geometry::LineString::LineString(UInt32 srid, UOSInt nPoint, Bool hasZ, Bool hasM) : Vector2D(srid)
 {
+	this->pointArr = MemAllocA(Math::Coord2DDbl, nPoint);
+	this->nPoint = nPoint;
+	MemClearAC(this->pointArr, sizeof(Math::Coord2DDbl) * nPoint);
 	if (hasZ)
 	{
 		this->zArr = MemAllocA(Double, nPoint);
@@ -27,8 +30,11 @@ Math::Geometry::LineString::LineString(UInt32 srid, UOSInt nPoint, Bool hasZ, Bo
 	}
 }
 
-Math::Geometry::LineString::LineString(UInt32 srid, const Math::Coord2DDbl *pointArr, UOSInt nPoint, Double *zArr, Double *mArr) : PointCollection(srid, nPoint, pointArr)
+Math::Geometry::LineString::LineString(UInt32 srid, const Math::Coord2DDbl *pointArr, UOSInt nPoint, Double *zArr, Double *mArr) : Vector2D(srid)
 {
+	this->pointArr = MemAllocA(Math::Coord2DDbl, nPoint);
+	this->nPoint = nPoint;
+	MemCopyAC(this->pointArr, pointArr, nPoint * sizeof(Math::Coord2DDbl));
 	if (zArr)
 	{
 		this->zArr = MemAllocA(Double, nPoint);
@@ -62,6 +68,52 @@ Math::Geometry::Vector2D::VectorType Math::Geometry::LineString::GetVectorType()
 	return Math::Geometry::Vector2D::VectorType::LineString;
 }
 
+Math::Coord2DDbl Math::Geometry::LineString::GetCenter() const
+{
+	const Math::Coord2DDbl *points;
+	UOSInt nPoints;
+
+	Double maxX;
+	Double maxY;
+	Double minX;
+	Double minY;
+	Double v;
+	points = this->GetPointListRead(nPoints);
+	if (nPoints <= 0)
+	{
+		return Math::Coord2DDbl(0, 0);
+	}
+	else
+	{
+		UOSInt i = nPoints;
+		minX = maxX = points[0].x;
+		minY = maxY = points[0].y;
+
+		while (i-- > 0)
+		{
+			v = points[i].x;
+			if (v > maxX)
+			{
+				maxX = v;
+			}
+			if (v < minX)
+			{
+				minX = v;
+			}
+			v = points[i].y;
+			if (v > maxY)
+			{
+				maxY = v;
+			}
+			else if (v < minY)
+			{
+				minY = v;
+			}
+		}
+		return Math::Coord2DDbl((minX + maxX) * 0.5, (minY + maxY) * 0.5);
+	}
+}
+
 NotNullPtr<Math::Geometry::Vector2D> Math::Geometry::LineString::Clone() const
 {
 	NotNullPtr<Math::Geometry::LineString> pl;
@@ -76,6 +128,21 @@ NotNullPtr<Math::Geometry::Vector2D> Math::Geometry::LineString::Clone() const
 		MemCopyAC(pl->mArr, this->mArr, sizeof(Double) * nPoint);
 	}
 	return pl;
+}
+
+Math::RectAreaDbl Math::Geometry::LineString::GetBounds() const
+{
+	UOSInt i = this->nPoint;
+	Math::Coord2DDbl min;
+	Math::Coord2DDbl max;
+	min = max = this->pointArr[0];
+	while (i > 1)
+	{
+		i -= 1;
+		min = min.Min(this->pointArr[i]);
+		max = max.Max(this->pointArr[i]);
+	}
+	return Math::RectAreaDbl(min, max);
 }
 
 Double Math::Geometry::LineString::CalBoundarySqrDistance(Math::Coord2DDbl pt, OutParam<Math::Coord2DDbl> nearPt) const
@@ -183,6 +250,64 @@ Bool Math::Geometry::LineString::JoinVector(NotNullPtr<const Math::Geometry::Vec
 	if (vec->GetVectorType() != Math::Geometry::Vector2D::VectorType::LineString || this->HasZ() != vec->HasZ() || this->HasM() != vec->HasM())
 	{
 		return false;
+	}
+	NotNullPtr<LineString> ls = NotNullPtr<LineString>::ConvertFrom(vec);
+	UOSInt nPoint;
+	UOSInt i;
+	UOSInt j;
+	const Math::Coord2DDbl *points = ls->GetPointListRead(nPoint);
+	Math::Coord2DDbl *newPoints;
+	if (points[0] == this->pointArr[this->nPoint - 1])
+	{
+		newPoints = MemAllocA(Math::Coord2DDbl, this->nPoint + nPoint - 1);
+		MemCopyAC(newPoints, this->pointArr, this->nPoint * sizeof(Math::Coord2DDbl));
+		MemCopyAC(&newPoints[this->nPoint], &points[1], (nPoint - 1) * sizeof(Math::Coord2DDbl));
+		MemFreeA(this->pointArr);
+		this->pointArr = newPoints;
+		this->nPoint += nPoint - 1;
+		return true;
+	}
+	else if (points[nPoint - 1] == this->pointArr[this->nPoint - 1])
+	{
+		newPoints = MemAllocA(Math::Coord2DDbl, this->nPoint + nPoint - 1);
+		MemCopyAC(newPoints, this->pointArr, this->nPoint * sizeof(Math::Coord2DDbl));
+		i = nPoint - 1;
+		j = this->nPoint;
+		while (i-- > 0)
+		{
+			newPoints[j] = points[i];
+			j++;
+		}
+		MemFreeA(this->pointArr);
+		this->pointArr = newPoints;
+		this->nPoint += nPoint - 1;
+		return true;
+	}
+	else if (points[nPoint - 1] == this->pointArr[0])
+	{
+		newPoints = MemAllocA(Math::Coord2DDbl, this->nPoint + nPoint - 1);
+		MemCopyAC(newPoints, points, (nPoint - 1) * sizeof(Math::Coord2DDbl));
+		MemCopyAC(&newPoints[nPoint - 1], this->pointArr, this->nPoint * sizeof(Math::Coord2DDbl));
+		MemFreeA(this->pointArr);
+		this->pointArr = newPoints;
+		this->nPoint += nPoint - 1;
+		return true;
+	}
+	else if (points[0] == this->pointArr[0])
+	{
+		newPoints = MemAllocA(Math::Coord2DDbl, this->nPoint + nPoint - 1);
+		MemCopyAC(&newPoints[nPoint - 1], this->pointArr, this->nPoint * sizeof(Math::Coord2DDbl));
+		i = nPoint - 1;
+		j = 1;
+		while (i-- > 0)
+		{
+			newPoints[i] = points[j];
+			j++;
+		}
+		MemFreeA(this->pointArr);
+		this->pointArr = newPoints;
+		this->nPoint += nPoint - 1;
+		return true;
 	}
 	return false;
 }
@@ -313,6 +438,11 @@ Bool Math::Geometry::LineString::Equals(NotNullPtr<const Vector2D> vec, Bool sam
 	}
 }
 
+UOSInt Math::Geometry::LineString::GetCoordinates(NotNullPtr<Data::ArrayListA<Math::Coord2DDbl>> coordList) const
+{
+	return coordList->AddRange(this->pointArr, this->nPoint);
+}
+
 Bool Math::Geometry::LineString::InsideOrTouch(Math::Coord2DDbl coord) const
 {
 	Double thisX;
@@ -360,6 +490,24 @@ Bool Math::Geometry::LineString::InsideOrTouch(Math::Coord2DDbl coord) const
 		lastY = thisY;
 	}
 	return false;
+}
+
+void Math::Geometry::LineString::SwapXY()
+{
+	UOSInt i = this->nPoint;
+	while (i-- > 0)
+	{
+		this->pointArr[i] = this->pointArr[i].SwapXY();
+	}
+}
+
+void Math::Geometry::LineString::MultiplyCoordinatesXY(Double v)
+{
+	UOSInt i = this->nPoint;
+	while (i-- > 0)
+	{
+		this->pointArr[i] = this->pointArr[i] * v;
+	}
 }
 
 UOSInt Math::Geometry::LineString::GetPointCount() const
