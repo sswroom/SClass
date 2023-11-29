@@ -57,7 +57,7 @@ OSInt __stdcall UI::GUIRealtimeLineChart::RLCWndProc(void *hWnd, UInt32 msg, UIn
 void UI::GUIRealtimeLineChart::OnPaint(NotNullPtr<Media::DrawImage> dimg)
 {
 	NotNullPtr<Media::DrawImage> img;
-	Media::DrawPen *p;
+	NotNullPtr<Media::DrawPen> p;
 	NotNullPtr<Media::DrawBrush> b;
 	NotNullPtr<Media::DrawFont> f;
 	UOSInt i;

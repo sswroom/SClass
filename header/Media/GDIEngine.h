@@ -131,15 +131,15 @@ namespace Media
 		virtual Media::EXIFData *GetEXIF() const;
 		virtual Media::PixelFormat GetPixelFormat() const;
 
-		virtual Bool DrawLine(Double x1, Double y1, Double x2, Double y2, DrawPen *p);
-		virtual Bool DrawPolylineI(const Int32 *points, UOSInt nPoints, DrawPen *p);
-		virtual Bool DrawPolygonI(const Int32 *points, UOSInt nPoints, DrawPen *p, Optional<DrawBrush> b);
-		virtual Bool DrawPolyPolygonI(const Int32 *points, const UInt32 *pointCnt, UOSInt nPointCnt, DrawPen *p, Optional<DrawBrush> b);
-		virtual Bool DrawPolyline(const Math::Coord2DDbl *points, UOSInt nPoints, DrawPen *p);
-		virtual Bool DrawPolygon(const Math::Coord2DDbl *points, UOSInt nPoints, DrawPen *p, Optional<DrawBrush> b);
-		virtual Bool DrawPolyPolygon(const Math::Coord2DDbl *points, const UInt32 *pointCnt, UOSInt nPointCnt, DrawPen *p, Optional<DrawBrush> b);
-		virtual Bool DrawRect(Math::Coord2DDbl tl, Math::Size2DDbl size, DrawPen *p, Optional<DrawBrush> b);
-		virtual Bool DrawEllipse(Math::Coord2DDbl tl, Math::Size2DDbl size, DrawPen *p, Optional<DrawBrush> b);
+		virtual Bool DrawLine(Double x1, Double y1, Double x2, Double y2, NotNullPtr<DrawPen>);
+		virtual Bool DrawPolylineI(const Int32 *points, UOSInt nPoints, NotNullPtr<DrawPen>);
+		virtual Bool DrawPolygonI(const Int32 *points, UOSInt nPoints, Optional<DrawPen> p, Optional<DrawBrush> b);
+		virtual Bool DrawPolyPolygonI(const Int32 *points, const UInt32 *pointCnt, UOSInt nPointCnt, Optional<DrawPen> p, Optional<DrawBrush> b);
+		virtual Bool DrawPolyline(const Math::Coord2DDbl *points, UOSInt nPoints, NotNullPtr<DrawPen>);
+		virtual Bool DrawPolygon(const Math::Coord2DDbl *points, UOSInt nPoints, Optional<DrawPen> p, Optional<DrawBrush> b);
+		virtual Bool DrawPolyPolygon(const Math::Coord2DDbl *points, const UInt32 *pointCnt, UOSInt nPointCnt, Optional<DrawPen> p, Optional<DrawBrush> b);
+		virtual Bool DrawRect(Math::Coord2DDbl tl, Math::Size2DDbl size, Optional<DrawPen> p, Optional<DrawBrush> b);
+		virtual Bool DrawEllipse(Math::Coord2DDbl tl, Math::Size2DDbl size, Optional<DrawPen> p, Optional<DrawBrush> b);
 		virtual Bool DrawString(Math::Coord2DDbl tl, NotNullPtr<Text::String> str, NotNullPtr<DrawFont> f, NotNullPtr<DrawBrush> b);
 		virtual Bool DrawString(Math::Coord2DDbl tl, Text::CStringNN str, NotNullPtr<DrawFont> f, NotNullPtr<DrawBrush> b);
 		Bool DrawStringW(Math::Coord2DDbl tl, const WChar *str, NotNullPtr<DrawFont> f, NotNullPtr<DrawBrush> b);
@@ -157,14 +157,14 @@ namespace Media
 		virtual Bool DrawImagePt3(NotNullPtr<DrawImage> img, Math::Coord2DDbl destTL, Math::Coord2DDbl srcTL, Math::Size2DDbl srcSize);
 		Bool DrawImageRect(NotNullPtr<DrawImage> img, OSInt tlx, OSInt tly, OSInt brx, OSInt bry);
 
-		virtual DrawPen *NewPenARGB(UInt32 color, Double thick, UInt8 *pattern, UOSInt nPattern);
+		virtual NotNullPtr<DrawPen> NewPenARGB(UInt32 color, Double thick, UInt8 *pattern, UOSInt nPattern);
 		virtual NotNullPtr<DrawBrush> NewBrushARGB(UInt32 color);
 		virtual NotNullPtr<DrawFont> NewFontPt(Text::CString name, Double ptSize, Media::DrawEngine::DrawFontStyle fontStyle, UInt32 codePage);
 		NotNullPtr<DrawFont> NewFontPtW(const WChar *name, Double ptSize, Media::DrawEngine::DrawFontStyle fontStyle, UInt32 codePage);
 		virtual NotNullPtr<DrawFont> NewFontPx(Text::CString name, Double pxSize, Media::DrawEngine::DrawFontStyle fontStyle, UInt32 codePage);
 		NotNullPtr<DrawFont> NewFontPxW(const WChar *name, Double pxSize, Media::DrawEngine::DrawFontStyle fontStyle, UInt32 codePage);
 		virtual NotNullPtr<DrawFont> CloneFont(NotNullPtr<Media::DrawFont> f);
-		virtual void DelPen(DrawPen *p);
+		virtual void DelPen(NotNullPtr<DrawPen> p);
 		virtual void DelBrush(NotNullPtr<DrawBrush> b);
 		virtual void DelFont(NotNullPtr<DrawFont> f);
 

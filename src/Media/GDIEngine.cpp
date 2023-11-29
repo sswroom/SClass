@@ -817,14 +817,14 @@ Media::PixelFormat Media::GDIImage::GetPixelFormat() const
 	return this->info.pf;
 }
 
-Bool Media::GDIImage::DrawLine(Double x1, Double y1, Double x2, Double y2, DrawPen *p)
+Bool Media::GDIImage::DrawLine(Double x1, Double y1, Double x2, Double y2, NotNullPtr<DrawPen> p)
 {
-	if (this->currPen != p)
+	if (this->currPen != p.Ptr())
 	{
-		GDIPen *pen = (GDIPen*)(this->currPen = p);
+		GDIPen *pen = (GDIPen*)(this->currPen = p.Ptr());
 		SelectObject((HDC)this->hdcBmp, (HPEN)pen->hpen);
 	}
-	if (p && (((GDIPen*)p)->oriColor & 0xff000000))
+	if ((((GDIPen*)p.Ptr())->oriColor & 0xff000000))
 	{
 		MoveToEx((HDC)this->hdcBmp, Double2Int32(x1), Double2Int32(y1), 0);
 		LineTo((HDC)this->hdcBmp, Double2Int32(x2), Double2Int32(y2));
@@ -832,27 +832,28 @@ Bool Media::GDIImage::DrawLine(Double x1, Double y1, Double x2, Double y2, DrawP
 	return true;
 }
 
-Bool Media::GDIImage::DrawPolylineI(const Int32 *points, UOSInt nPoints, DrawPen *p)
+Bool Media::GDIImage::DrawPolylineI(const Int32 *points, UOSInt nPoints, NotNullPtr<DrawPen> p)
 {
-	if (this->currPen != p)
+	if (this->currPen != p.Ptr())
 	{
-		GDIPen *pen = (GDIPen*)(this->currPen = p);
+		GDIPen *pen = (GDIPen*)(this->currPen = p.Ptr());
 		SelectObject((HDC)this->hdcBmp, (HPEN)pen->hpen);
 	}
-	if (p && (((GDIPen*)p)->oriColor & 0xff000000))
+	if ((((GDIPen*)p.Ptr())->oriColor & 0xff000000))
 	{
 		Polyline((HDC)this->hdcBmp, (POINT*)points, (int)nPoints);
 	}
 	return true;
 }
 
-Bool Media::GDIImage::DrawPolygonI(const Int32 *points, UOSInt nPoints, DrawPen *p, Optional<DrawBrush> b)
+Bool Media::GDIImage::DrawPolygonI(const Int32 *points, UOSInt nPoints, Optional<DrawPen> p, Optional<DrawBrush> b)
 {
-	if (p)
+	NotNullPtr<DrawPen> nnp;
+	if (p.SetTo(nnp))
 	{
-		if (this->currPen != p)
+		if (this->currPen != nnp.Ptr())
 		{
-			GDIPen *pen = (GDIPen*)(this->currPen = p);
+			GDIPen *pen = (GDIPen*)(this->currPen = nnp.Ptr());
 			SelectObject((HDC)this->hdcBmp, (HPEN)pen->hpen);
 		}
 	}
@@ -872,7 +873,7 @@ Bool Media::GDIImage::DrawPolygonI(const Int32 *points, UOSInt nPoints, DrawPen 
 			PolylineAccel(this->hdcBmp, line2, 2, left, top, width, height);
 		}
 #else
-		if (p)
+		if (p.SetTo(nnp))
 		{
 			MoveToEx((HDC)this->hdcBmp, points[(nPoints << 1) - 2], points[(nPoints << 1) - 1], 0);
 			PolylineTo((HDC)this->hdcBmp, (POINT*)points, (DWORD)nPoints);
@@ -894,7 +895,7 @@ Bool Media::GDIImage::DrawPolygonI(const Int32 *points, UOSInt nPoints, DrawPen 
 	return true;
 }
 
-Bool Media::GDIImage::DrawPolyPolygonI(const Int32 *points, const UInt32 *pointCnt, UOSInt nPointCnt, DrawPen *p, Optional<DrawBrush> b)
+Bool Media::GDIImage::DrawPolyPolygonI(const Int32 *points, const UInt32 *pointCnt, UOSInt nPointCnt, Optional<DrawPen> p, Optional<DrawBrush> b)
 {
 	UOSInt i;
 	UInt32 j;
@@ -909,14 +910,15 @@ Bool Media::GDIImage::DrawPolyPolygonI(const Int32 *points, const UInt32 *pointC
 //	if (j == 1709)
 //		return true;
 
-	if (p)
+	NotNullPtr<DrawPen> nnp;
+	if (p.SetTo(nnp))
 	{
-		if (this->currPen != p)
+		if (this->currPen != nnp.Ptr())
 		{
-			GDIPen *pen = (GDIPen*)(this->currPen = p);
+			GDIPen *pen = (GDIPen*)(this->currPen = nnp.Ptr());
 			SelectObject((HDC)this->hdcBmp, (HPEN)pen->hpen);
 		}
-		if ((penWidth = ((Media::GDIPen*)p)->thick) < 1)
+		if ((penWidth = ((Media::GDIPen*)nnp.Ptr())->thick) < 1)
 			penWidth = 1;
 	}
 
@@ -924,7 +926,7 @@ Bool Media::GDIImage::DrawPolyPolygonI(const Int32 *points, const UInt32 *pointC
 	if (!b.SetTo(nnb))
 	{
 		const Int32 *pts = points;
-		if (p)
+		if (p.SetTo(nnp))
 		{
 			i = 0;
 			while (i < nPointCnt)
@@ -1014,7 +1016,7 @@ Bool Media::GDIImage::DrawPolyPolygonI(const Int32 *points, const UInt32 *pointC
 					sptr++;
 					dptr++;
 				}
-				if (p)
+				if (p.SetTo(nnp))
 				{
 					PolyPolyline((HDC)this->hdcBmp, (POINT*)points, (const DWORD*)pointCnt, (Int32)nPointCnt);
 				}
@@ -1068,7 +1070,7 @@ Bool Media::GDIImage::DrawPolyPolygonI(const Int32 *points, const UInt32 *pointC
 				bf.AlphaFormat = AC_SRC_ALPHA;
 				AlphaBlend((HDC)this->hdcBmp, 0, 0, (int)this->info.dispSize.x, (int)this->info.dispSize.y, hdcBmp, 0, 0, (int)this->info.dispSize.x, (int)this->info.dispSize.y, bf);
 
-				if (p)
+				if (p.SetTo(nnp))
 				{
 					PolyPolyline((HDC)this->hdcBmp, (POINT*)points, (const DWORD*)pointCnt, (Int32)nPointCnt);
 				}
@@ -1082,7 +1084,7 @@ Bool Media::GDIImage::DrawPolyPolygonI(const Int32 *points, const UInt32 *pointC
 	return true;
 }
 
-Bool Media::GDIImage::DrawPolyline(const Math::Coord2DDbl *points, UOSInt nPoints, DrawPen *p)
+Bool Media::GDIImage::DrawPolyline(const Math::Coord2DDbl *points, UOSInt nPoints, NotNullPtr<DrawPen> p)
 {
 	UOSInt i = nPoints;
 	Bool ret;
@@ -1097,7 +1099,7 @@ Bool Media::GDIImage::DrawPolyline(const Math::Coord2DDbl *points, UOSInt nPoint
 	return ret;
 }
 
-Bool Media::GDIImage::DrawPolygon(const Math::Coord2DDbl *points, UOSInt nPoints, DrawPen *p, Optional<DrawBrush> b)
+Bool Media::GDIImage::DrawPolygon(const Math::Coord2DDbl *points, UOSInt nPoints, Optional<DrawPen> p, Optional<DrawBrush> b)
 {
 	UOSInt i = nPoints;
 	Bool ret;
@@ -1112,7 +1114,7 @@ Bool Media::GDIImage::DrawPolygon(const Math::Coord2DDbl *points, UOSInt nPoints
 	return ret;
 }
 
-Bool Media::GDIImage::DrawPolyPolygon(const Math::Coord2DDbl *points, const UInt32 *pointCnt, UOSInt nPointCnt, DrawPen *p, Optional<DrawBrush> b)
+Bool Media::GDIImage::DrawPolyPolygon(const Math::Coord2DDbl *points, const UInt32 *pointCnt, UOSInt nPointCnt, Optional<DrawPen> p, Optional<DrawBrush> b)
 {
 	UOSInt i = 0;
 	UOSInt j = nPointCnt;
@@ -1132,7 +1134,7 @@ Bool Media::GDIImage::DrawPolyPolygon(const Math::Coord2DDbl *points, const UInt
 	return ret;
 }
 
-Bool Media::GDIImage::DrawRect(Math::Coord2DDbl tl, Math::Size2DDbl size, DrawPen *p, Optional<DrawBrush> b)
+Bool Media::GDIImage::DrawRect(Math::Coord2DDbl tl, Math::Size2DDbl size, Optional<DrawPen> p, Optional<DrawBrush> b)
 {
 	NotNullPtr<DrawBrush> nnb;
 	if (b.SetTo(nnb))
@@ -1197,9 +1199,10 @@ Bool Media::GDIImage::DrawRect(Math::Coord2DDbl tl, Math::Size2DDbl size, DrawPe
 		}
 	}
 
-	if (p)
+	NotNullPtr<DrawPen> nnp;
+	if (p.SetTo(nnp))
 	{
-		GDIPen *pen = (GDIPen*)p;
+		GDIPen *pen = (GDIPen*)nnp.Ptr();
 		if (this->bmpBits && (pen->oriColor & 0xff000000) == 0xff000000)
 		{
 			OSInt ix = Double2Int32(tl.x);
@@ -1213,9 +1216,9 @@ Bool Media::GDIImage::DrawRect(Math::Coord2DDbl tl, Math::Size2DDbl size, DrawPe
 			else
 			{
 				POINT pts[5];
-				if (this->currPen != p)
+				if (this->currPen != nnp.Ptr())
 				{
-					GDIPen *pen = (GDIPen*)(this->currPen = p);
+					GDIPen *pen = (GDIPen*)(this->currPen = nnp.Ptr());
 					SelectObject((HDC)this->hdcBmp, (HPEN)pen->hpen);
 				}
 				pts[4].x = pts[1].x = pts[0].x = Double2Int32(tl.x);
@@ -1228,9 +1231,9 @@ Bool Media::GDIImage::DrawRect(Math::Coord2DDbl tl, Math::Size2DDbl size, DrawPe
 		else
 		{
 			POINT pts[5];
-			if (this->currPen != p)
+			if (this->currPen != nnp.Ptr())
 			{
-				GDIPen *pen = (GDIPen*)(this->currPen = p);
+				GDIPen *pen = (GDIPen*)(this->currPen = nnp.Ptr());
 				SelectObject((HDC)this->hdcBmp, (HPEN)pen->hpen);
 			}
 			pts[4].x = pts[1].x = pts[0].x = Double2Int32(tl.x);
@@ -1244,18 +1247,19 @@ Bool Media::GDIImage::DrawRect(Math::Coord2DDbl tl, Math::Size2DDbl size, DrawPe
 	return true;
 }
 
-Bool Media::GDIImage::DrawEllipse(Math::Coord2DDbl tl, Math::Size2DDbl size, DrawPen *p, Optional<DrawBrush> b)
+Bool Media::GDIImage::DrawEllipse(Math::Coord2DDbl tl, Math::Size2DDbl size, Optional<DrawPen> p, Optional<DrawBrush> b)
 {
+	NotNullPtr<DrawPen> nnp;
 	if (this->info.atype == Media::AT_NO_ALPHA)
 	{
 		NotNullPtr<DrawBrush> nnb;
 		if (!b.SetTo(nnb))
 		{
-			if (p != 0)
+			if (p.SetTo(nnp))
 			{
-				if (this->currPen != p)
+				if (this->currPen != nnp.Ptr())
 				{
-					GDIPen *pen = (GDIPen*)p;
+					GDIPen *pen = (GDIPen*)nnp.Ptr();
 					SelectObject((HDC)this->hdcBmp, pen->hpen);
 				}
 				SelectObject((HDC)this->hdcBmp, GetStockObject(NULL_BRUSH));
@@ -1266,11 +1270,11 @@ Bool Media::GDIImage::DrawEllipse(Math::Coord2DDbl tl, Math::Size2DDbl size, Dra
 		}
 		else
 		{
-			if (p != 0)
+			if (p.SetTo(nnp))
 			{
-				if (this->currPen != p)
+				if (this->currPen != nnp.Ptr())
 				{
-					GDIPen *pen = (GDIPen*)p;
+					GDIPen *pen = (GDIPen*)nnp.Ptr();
 					SelectObject((HDC)this->hdcBmp, pen->hpen);
 				}
 			}
@@ -1299,10 +1303,10 @@ Bool Media::GDIImage::DrawEllipse(Math::Coord2DDbl tl, Math::Size2DDbl size, Dra
 		Int32 c1 = 0;
 		Int32 c2 = 0;
 		ImageUtil_ColorFill32(imgPtr, imgW * imgH, 0xff000000);
-		if (p)
+		if (p.SetTo(nnp))
 		{
 			SelectObject((HDC)tmpImg->hdcBmp, (HPEN)eng->GetBlackPen());
-			c1 = ((Media::GDIPen*)p)->oriColor;
+			c1 = ((Media::GDIPen*)nnp.Ptr())->oriColor;
 		}
 		else
 		{
@@ -2237,7 +2241,7 @@ Bool Media::GDIImage::DrawImageRect(NotNullPtr<DrawImage> img, OSInt tlx, OSInt 
 	return true;
 }
 
-Media::DrawPen *Media::GDIImage::NewPenARGB(UInt32 color, Double thick, UInt8 *pattern, UOSInt nPattern)
+NotNullPtr<Media::DrawPen> Media::GDIImage::NewPenARGB(UInt32 color, Double thick, UInt8 *pattern, UOSInt nPattern)
 {
 	if (thick < 1)
 		thick = 1;
@@ -2270,8 +2274,8 @@ Media::DrawPen *Media::GDIImage::NewPenARGB(UInt32 color, Double thick, UInt8 *p
 		hpen = ExtCreatePen(PS_GEOMETRIC | PS_USERSTYLE | PS_ENDCAP_ROUND, Double2Int32(thick), &lb, (UInt32)nPattern, dwPattern);
 #endif
 	}
-	GDIPen *pen;
-	NEW_CLASS(pen, GDIPen(hpen, (UInt32*)dwPattern, nPattern, this, thick, color));
+	NotNullPtr<GDIPen> pen;
+	NEW_CLASSNN(pen, GDIPen(hpen, (UInt32*)dwPattern, nPattern, this, thick, color));
 	return pen;
 }
 
@@ -2322,11 +2326,11 @@ NotNullPtr<Media::DrawFont> Media::GDIImage::CloneFont(NotNullPtr<Media::DrawFon
 	return f;
 }
 
-void Media::GDIImage::DelPen(DrawPen *p)
+void Media::GDIImage::DelPen(NotNullPtr<DrawPen> p)
 {
-	if (this->currPen == p)
+	if (this->currPen == p.Ptr())
 		this->currPen = 0;
-	GDIPen *pen = (GDIPen *)p;
+	GDIPen *pen = (GDIPen *)p.Ptr();
 	if (pen->pattern)
 		MemFree(pen->pattern);
 	DeleteObject((HPEN)pen->hpen);
