@@ -28,12 +28,13 @@ namespace Math
 			virtual Bool HasM() const;
 			virtual void ConvCSys(NotNullPtr<const Math::CoordinateSystem> srcCSys, NotNullPtr<const Math::CoordinateSystem> destCSys);
 			virtual Bool Equals(NotNullPtr<const Vector2D> vec, Bool sameTypeOnly, Bool nearlyVal) const;
+			virtual Bool InsideOrTouch(Math::Coord2DDbl coord) const;
+			virtual UOSInt GetPointCount() const;
 
 			Double CalcLength() const;
 
 			Double *GetZList(OutParam<UOSInt> nPoint) const;
 			Double *GetMList(OutParam<UOSInt> nPoint) const;
-			UOSInt GetPointCount() const;
 			Math::Geometry::LineString *SplitByPoint(Math::Coord2DDbl pt);
 			OSInt GetPointNo(Math::Coord2DDbl pt, Bool *isPoint, Math::Coord2DDbl *calPt, Double *calZ, Double *calM);
 

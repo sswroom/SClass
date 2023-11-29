@@ -224,23 +224,31 @@ Bool Exporter::CIPExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text:
 		}
 		else if (vec->GetVectorType() == Math::Geometry::Vector2D::VectorType::Polygon)
 		{
-			Math::Geometry::PointOfstCollection *ptOfst = (Math::Geometry::PointOfstCollection*)vec;
-			UOSInt nPtOfst;
-			UInt32 *ptOfstArr = ptOfst->GetPtOfstList(nPtOfst);
+			Math::Geometry::Polygon *pg = (Math::Geometry::Polygon*)vec;
+			UOSInt nPtOfst = pg->GetCount();
+			UInt32 *ptOfstArr = MemAlloc(UInt32, nPtOfst);
+			Data::ArrayListA<Math::Coord2DDbl> pointArr;
+			j = 0;
+			while (j < nPtOfst)
+			{
+				ptOfstArr[j] = (UInt32)pointArr.GetCount();
+				pg->GetItem(j)->GetCoordinates(pointArr);
+				j++;
+			}
 			WriteUInt32(&buff[4], (UInt32)nPtOfst);
 			stm->Write(buff, 8);
 			stm->Write((UInt8*)ptOfstArr, nPtOfst * 4);
 			stmPos += 8 + nPtOfst * 4;
 
-			UOSInt nPoint;
-			Math::Coord2DDbl *pointArr = ptOfst->GetPointList(nPoint);
-			Int32 *ptArr = MemAlloc(Int32, nPoint << 1);
-			j = nPoint;
+			Int32 *ptArr = MemAlloc(Int32, pointArr.GetCount() << 1);
+			j = pointArr.GetCount();
 			while (j-- > 0)
 			{
-				ptArr[j << 1] = Double2Int32(pointArr[j].x * 200000.0);
-				ptArr[(j << 1) + 1] = Double2Int32(pointArr[j].y * 200000.0);
+				Math::Coord2DDbl pt = pointArr.GetItem(j);
+				ptArr[j << 1] = Double2Int32(pt.x * 200000.0);
+				ptArr[(j << 1) + 1] = Double2Int32(pt.y * 200000.0);
 			}
+			UInt32 nPoint = (UInt32)pointArr.GetCount();
 			stm->Write((UInt8*)&nPoint, 4);
 			stm->Write((UInt8*)ptArr, 8 * nPoint);
 			stmPos += 8 * nPoint + 4;

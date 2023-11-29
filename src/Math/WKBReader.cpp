@@ -277,44 +277,41 @@ Math::Geometry::Vector2D *Math::WKBReader::ParseWKB(const UInt8 *wkb, UOSInt wkb
 			ofst += 4;
 			UOSInt i;
 			UOSInt j;
-			Data::ArrayListA<Math::Coord2DDbl> points;
 			if (numParts < 1)
 			{
 				return 0;
 			}
-			UInt32 *parts = MemAlloc(UInt32, numParts);
+			Math::Geometry::Polygon *pg;
+			NEW_CLASS(pg, Math::Geometry::Polygon(srid));
 			i = 0;
 			while (i < numParts)
 			{
 				if (ofst + 4 > wkbLen)
 				{
-					MemFree(parts);
+					DEL_CLASS(pg);
 					return 0;
 				}
 				UInt32 numPoints = readUInt32(&wkb[ofst]);
 				ofst += 4;
 				if (ofst + numPoints * 16 > wkbLen)
 				{
-					MemFree(parts);
+					DEL_CLASS(pg);
 					return 0;
 				}
-				parts[i] = (UInt32)points.GetCount();
+				UOSInt tmp;
+				NotNullPtr<Math::Geometry::LinearRing> lr;
+				NEW_CLASSNN(lr, Math::Geometry::LinearRing(srid, numPoints, false, false));
+				Math::Coord2DDbl *points = lr->GetPointList(tmp);
 				j = 0;
 				while (j < numPoints)
 				{
-					points.Add(Math::Coord2DDbl(readDouble(&wkb[ofst]), readDouble(&wkb[ofst + 8])));
+					points[j] = Math::Coord2DDbl(readDouble(&wkb[ofst]), readDouble(&wkb[ofst + 8]));
 					ofst += 16;
 					j++;
 				}
+				pg->AddGeometry(lr);
 				i++;
 			}
-			Math::Geometry::Polygon *pg;
-			NEW_CLASS(pg, Math::Geometry::Polygon(srid, numParts, points.GetCount(), false, false));
-			UInt32 *ptOfsts = pg->GetPtOfstList(j);
-			Math::Coord2DDbl *pointArr = pg->GetPointList(i);
-			MemCopyNO(ptOfsts, parts, sizeof(UInt32) * numParts);
-			MemCopyAC(pointArr, points.Ptr(), sizeof(Math::Coord2DDbl) * points.GetCount());
-			MemFree(parts);
 			if (sizeUsed)
 			{
 				*sizeUsed = ofst;
@@ -331,48 +328,43 @@ Math::Geometry::Vector2D *Math::WKBReader::ParseWKB(const UInt8 *wkb, UOSInt wkb
 			ofst += 4;
 			UOSInt i;
 			UOSInt j;
-			Data::ArrayListA<Math::Coord2DDbl> points;
-			Data::ArrayList<Double> zList;
 			if (numParts < 1)
 			{
 				return 0;
 			}
-			UInt32 *parts = MemAlloc(UInt32, numParts);
+			Math::Geometry::Polygon *pg;
+			NEW_CLASS(pg, Math::Geometry::Polygon(srid));
 			i = 0;
 			while (i < numParts)
 			{
 				if (ofst + 4 > wkbLen)
 				{
-					MemFree(parts);
+					DEL_CLASS(pg);
 					return 0;
 				}
 				UInt32 numPoints = readUInt32(&wkb[ofst]);
 				ofst += 4;
 				if (ofst + numPoints * 24 > wkbLen)
 				{
-					MemFree(parts);
+					DEL_CLASS(pg);
 					return 0;
 				}
-				parts[i] = (UInt32)points.GetCount();
+				UOSInt tmp;
+				NotNullPtr<Math::Geometry::LinearRing> lr;
+				NEW_CLASSNN(lr, Math::Geometry::LinearRing(srid, numPoints, true, false));
+				Math::Coord2DDbl *points = lr->GetPointList(tmp);
+				Double *zList = lr->GetZList(tmp);
 				j = 0;
 				while (j < numPoints)
 				{
-					points.Add(Math::Coord2DDbl(readDouble(&wkb[ofst]), readDouble(&wkb[ofst + 8])));
-					zList.Add(readDouble(&wkb[ofst + 16]));
+					points[j] = Math::Coord2DDbl(readDouble(&wkb[ofst]), readDouble(&wkb[ofst + 8]));
+					zList[j] = readDouble(&wkb[ofst + 16]);
 					ofst += 24;
 					j++;
 				}
+				pg->AddGeometry(lr);
 				i++;
 			}
-			Math::Geometry::Polygon *pg;
-			NEW_CLASS(pg, Math::Geometry::Polygon(srid, numParts, points.GetCount(), true, false));
-			UInt32 *ptOfsts = pg->GetPtOfstList(j);
-			Math::Coord2DDbl *pointArr = pg->GetPointList(i);
-			Double *zArr = pg->GetZList(i);
-			MemCopyNO(ptOfsts, parts, sizeof(UInt32) * numParts);
-			MemCopyAC(pointArr, points.Ptr(), sizeof(Math::Coord2DDbl) * points.GetCount());
-			MemCopyAC(zArr, zList.Ptr(), sizeof(Double) * points.GetCount());
-			MemFree(parts);
 			if (sizeUsed)
 			{
 				*sizeUsed = ofst;
@@ -389,48 +381,43 @@ Math::Geometry::Vector2D *Math::WKBReader::ParseWKB(const UInt8 *wkb, UOSInt wkb
 			ofst += 4;
 			UOSInt i;
 			UOSInt j;
-			Data::ArrayListA<Math::Coord2DDbl> points;
-			Data::ArrayList<Double> mList;
 			if (numParts < 1)
 			{
 				return 0;
 			}
-			UInt32 *parts = MemAlloc(UInt32, numParts);
+			Math::Geometry::Polygon *pg;
+			NEW_CLASS(pg, Math::Geometry::Polygon(srid));
 			i = 0;
 			while (i < numParts)
 			{
 				if (ofst + 4 > wkbLen)
 				{
-					MemFree(parts);
+					DEL_CLASS(pg);
 					return 0;
 				}
 				UInt32 numPoints = readUInt32(&wkb[ofst]);
 				ofst += 4;
 				if (ofst + numPoints * 24 > wkbLen)
 				{
-					MemFree(parts);
+					DEL_CLASS(pg);
 					return 0;
 				}
-				parts[i] = (UInt32)points.GetCount();
+				UOSInt tmp;
+				NotNullPtr<Math::Geometry::LinearRing> lr;
+				NEW_CLASSNN(lr, Math::Geometry::LinearRing(srid, numPoints, false, true));
+				Math::Coord2DDbl *points = lr->GetPointList(tmp);
+				Double *mList = lr->GetMList(tmp);
 				j = 0;
 				while (j < numPoints)
 				{
-					points.Add(Math::Coord2DDbl(readDouble(&wkb[ofst]), readDouble(&wkb[ofst + 8])));
-					mList.Add(readDouble(&wkb[ofst + 16]));
+					points[j] = Math::Coord2DDbl(readDouble(&wkb[ofst]), readDouble(&wkb[ofst + 8]));
+					mList[j] = readDouble(&wkb[ofst + 16]);
 					ofst += 24;
 					j++;
 				}
+				pg->AddGeometry(lr);
 				i++;
 			}
-			Math::Geometry::Polygon *pg;
-			NEW_CLASS(pg, Math::Geometry::Polygon(srid, numParts, points.GetCount(), false, true));
-			UInt32 *ptOfsts = pg->GetPtOfstList(j);
-			Math::Coord2DDbl *pointArr = pg->GetPointList(i);
-			Double *mArr = pg->GetMList(i);
-			MemCopyNO(ptOfsts, parts, sizeof(UInt32) * numParts);
-			MemCopyAC(pointArr, points.Ptr(), sizeof(Math::Coord2DDbl) * points.GetCount());
-			MemCopyAC(mArr, mList.Ptr(), sizeof(Double) * points.GetCount());
-			MemFree(parts);
 			if (sizeUsed)
 			{
 				*sizeUsed = ofst;
@@ -447,52 +434,45 @@ Math::Geometry::Vector2D *Math::WKBReader::ParseWKB(const UInt8 *wkb, UOSInt wkb
 			ofst += 4;
 			UOSInt i;
 			UOSInt j;
-			Data::ArrayListA<Math::Coord2DDbl> points;
-			Data::ArrayList<Double> zList;
-			Data::ArrayList<Double> mList;
 			if (numParts < 1)
 			{
 				return 0;
 			}
-			UInt32 *parts = MemAlloc(UInt32, numParts);
+			Math::Geometry::Polygon *pg;
+			NEW_CLASS(pg, Math::Geometry::Polygon(srid));
 			i = 0;
 			while (i < numParts)
 			{
 				if (ofst + 4 > wkbLen)
 				{
-					MemFree(parts);
+					DEL_CLASS(pg);
 					return 0;
 				}
 				UInt32 numPoints = readUInt32(&wkb[ofst]);
 				ofst += 4;
 				if (ofst + numPoints * 32 > wkbLen)
 				{
-					MemFree(parts);
+					DEL_CLASS(pg);
 					return 0;
 				}
-				parts[i] = (UInt32)points.GetCount();
+				UOSInt tmp;
+				NotNullPtr<Math::Geometry::LinearRing> lr;
+				NEW_CLASSNN(lr, Math::Geometry::LinearRing(srid, numPoints, true, true))
+				Math::Coord2DDbl *points = lr->GetPointList(tmp);
+				Double *zList = lr->GetZList(tmp);
+				Double *mList = lr->GetMList(tmp);
 				j = 0;
 				while (j < numPoints)
 				{
-					points.Add(Math::Coord2DDbl(readDouble(&wkb[ofst]), readDouble(&wkb[ofst + 8])));
-					zList.Add(readDouble(&wkb[ofst + 16]));
-					mList.Add(readDouble(&wkb[ofst + 24]));
+					points[j] = Math::Coord2DDbl(readDouble(&wkb[ofst]), readDouble(&wkb[ofst + 8]));
+					zList[j] = readDouble(&wkb[ofst + 16]);
+					mList[j] = readDouble(&wkb[ofst + 24]);
 					ofst += 32;
 					j++;
 				}
+				pg->AddGeometry(lr);
 				i++;
 			}
-			Math::Geometry::Polygon *pg;
-			NEW_CLASS(pg, Math::Geometry::Polygon(srid, numParts, points.GetCount(), true, true));
-			UInt32 *ptOfsts = pg->GetPtOfstList(j);
-			Math::Coord2DDbl *pointArr = pg->GetPointList(i);
-			Double *zArr = pg->GetZList(i);
-			Double *mArr = pg->GetMList(i);
-			MemCopyNO(ptOfsts, parts, sizeof(UInt32) * numParts);
-			MemCopyAC(pointArr, points.Ptr(), sizeof(Math::Coord2DDbl) * points.GetCount());
-			MemCopyAC(zArr, zList.Ptr(), sizeof(Double) * points.GetCount());
-			MemCopyAC(mArr, mList.Ptr(), sizeof(Double) * points.GetCount());
-			MemFree(parts);
 			if (sizeUsed)
 			{
 				*sizeUsed = ofst;

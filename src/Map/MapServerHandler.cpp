@@ -123,11 +123,12 @@ Bool __stdcall Map::MapServerHandler::GetLayerDataFunc(NotNullPtr<Net::WebServer
 							Math::Geometry::Polygon *pg = (Math::Geometry::Polygon*)vec;
 							json.ObjectBeginObject(CSTR("polygon"));
 							json.ObjectBeginArray(CSTR("carr"));
+							Data::ArrayListA<Math::Coord2DDbl> pointList;
 							k = 0;
-							Math::Coord2DDbl *pointList = pg->GetPointList(l);
+							l = pg->GetCoordinates(pointList);
 							while (k < l)
 							{
-								json.ArrayAddVector3(Math::CoordinateSystem::ConvertToCartesianCoord(csys, Math::Vector3(pointList[k], 0)));
+								json.ArrayAddVector3(Math::CoordinateSystem::ConvertToCartesianCoord(csys, Math::Vector3(pointList.GetItem(k), 0)));
 								k++;
 							}
 							json.ArrayEnd();

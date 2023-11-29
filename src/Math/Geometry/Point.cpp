@@ -94,3 +94,13 @@ void Math::Geometry::Point::MultiplyCoordinatesXY(Double v)
 {
 	this->pos = this->pos * v;
 }
+
+Bool Math::Geometry::Point::InsideOrTouch(Math::Coord2DDbl coord) const
+{
+	return this->pos == coord;
+}
+
+UOSInt Math::Geometry::Point::GetPointCount() const
+{
+	return 1;
+}

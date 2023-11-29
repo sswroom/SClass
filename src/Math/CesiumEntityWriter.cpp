@@ -63,18 +63,22 @@ Bool Math::CesiumEntityWriter::ToText(NotNullPtr<Text::StringBuilderUTF8> sb, No
 		sb->AppendC(UTF8STRC("{\r\n"));
 		{
 			Math::Geometry::Polygon *pg = (Math::Geometry::Polygon*)vec.Ptr();
-			UOSInt nPoint;
-			Math::Coord2DDbl *pointList = pg->GetPointList(nPoint);
 			UOSInt k;
+			UOSInt nPoint;
+			Math::Coord2DDbl pt;
+			Data::ArrayListA<Math::Coord2DDbl> pointList;
+			pg->GetCoordinates(pointList);
 			sb->AppendC(UTF8STRC("\tpolygon : {\r\n"));
 			sb->AppendC(UTF8STRC("\t\thierarchy : Cesium.Cartesian3.fromDegreesArray([\r\n"));
 			k = 0;
+			nPoint = pointList.GetCount();
 			while (k < nPoint)
 			{
+				pt = pointList.GetItem(k);
 				sb->AppendC(UTF8STRC("\t\t\t"));
-				sb->AppendDouble(pointList[k].x);
+				sb->AppendDouble(pt.x);
 				sb->AppendUTF8Char(',');
-				sb->AppendDouble(pointList[k].y);
+				sb->AppendDouble(pt.y);
 				sb->AppendC(UTF8STRC(",\r\n"));
 				k++;
 			}

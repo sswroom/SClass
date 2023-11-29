@@ -764,18 +764,32 @@ Math::Geometry::Vector2D *Map::CIPLayer2::GetNewVectorById(GetObjectSess *sessio
 	else if (this->lyrType == Map::DRAW_LAYER_POLYGON)
 	{
 		Math::Geometry::Polygon *pg = 0;
-		UInt32 *tmpPtOfsts;
+		NotNullPtr<Math::Geometry::LinearRing> lr;
 		Math::Coord2DDbl *tmpPoints;
 		UOSInt i;
-		NEW_CLASS(pg, Math::Geometry::Polygon(4326, fobj->nPtOfst, fobj->nPoint, false, false));
-		tmpPtOfsts = pg->GetPtOfstList(i);
-		MemCopyNO(tmpPtOfsts, fobj->ptOfstArr, fobj->nPtOfst * sizeof(UInt32));
-		
-		tmpPoints = pg->GetPointList(i);
-		while (i--)
+		UOSInt j;
+		UOSInt k;
+		UOSInt l;
+		NEW_CLASS(pg, Math::Geometry::Polygon(4326));
+		j = 0;
+		i = 0;
+		while (i < fobj->nPtOfst)
 		{
-			tmpPoints[i].x = fobj->pointArr[(i << 1)] / 200000.0;
-			tmpPoints[i].y = fobj->pointArr[(i << 1) + 1] / 200000.0;
+			if (i + 1 == fobj->nPtOfst)
+				k = fobj->nPoint;
+			else
+				k = fobj->ptOfstArr[i + 1];
+			NEW_CLASSNN(lr, Math::Geometry::LinearRing(4326, (k - j), false, false));
+			tmpPoints = lr->GetPointList(l);
+			l = 0;
+			while (j < k)
+			{
+				tmpPoints[l].x = fobj->pointArr[(j << 1)] / 200000.0;
+				tmpPoints[l].y = fobj->pointArr[(j << 1) + 1] / 200000.0;
+				j++;
+			}
+			pg->AddGeometry(lr);
+			i++;
 		}
 		return pg;
 	}

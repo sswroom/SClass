@@ -60,9 +60,11 @@ namespace Math
 			virtual void ConvCSys(NotNullPtr<const Math::CoordinateSystem> srcCSys, NotNullPtr<const Math::CoordinateSystem> destCSys) = 0;
 			virtual Bool Equals(NotNullPtr<const Vector2D> vec, Bool sameTypeOnly, Bool nearlyVal) const = 0;
 			virtual UOSInt GetCoordinates(NotNullPtr<Data::ArrayListA<Math::Coord2DDbl>> coordList) const = 0;
-			virtual Bool InsideVector(Math::Coord2DDbl coord) const;
+			virtual Bool InsideOrTouch(Math::Coord2DDbl coord) const = 0;
 			virtual void SwapXY() = 0;
 			virtual void MultiplyCoordinatesXY(Double v) = 0;
+			virtual UOSInt GetPointCount() const = 0;
+			Bool Contains(NotNullPtr<Math::Geometry::Vector2D> vec) const;
 
 			UInt32 GetSRID() const;
 			virtual void SetSRID(UInt32 srid);

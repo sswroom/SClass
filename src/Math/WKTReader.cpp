@@ -309,19 +309,54 @@ Math::Geometry::Vector2D *Math::WKTReader::ParseWKT(const UTF8Char *wkt)
 			return 0;
 		}
 		Math::Geometry::Polygon *pg;
-		NEW_CLASS(pg, Math::Geometry::Polygon(this->srid, ptOfstList.GetCount(), ptList.GetCount() >> 1, zList.GetCount() == (ptList.GetCount() >> 1), false));
-		UOSInt i;
-		UInt32 *ptOfstArr = pg->GetPtOfstList(i);
-		MemCopyNO(ptOfstArr, ptOfstList.Ptr(), ptOfstList.GetCount() * sizeof(UInt32));
-		Math::Coord2DDbl *ptArr = pg->GetPointList(i);
-		MemCopyNO(ptArr, ptList.Ptr(), ptList.GetCount() * sizeof(Double));
-		if (pg->HasZ())
+		NotNullPtr<Math::Geometry::LinearRing> lr;
+		Bool hasM = false;
+		Bool hasZ = false;
+		if (zList.GetCount() == ptList.GetCount())
 		{
-			Double *zArr = pg->GetZList(i);
-			while (i-- > 0)
+			hasM = true;
+			hasZ = true;
+		}
+		else if (zList.GetCount() == (ptList.GetCount() >> 1))
+		{
+			hasZ = true;
+		}
+		NEW_CLASS(pg, Math::Geometry::Polygon(this->srid));
+		UOSInt i = 0;
+		UOSInt j = ptOfstList.GetCount();
+		UOSInt k = 0;
+		UOSInt l;
+		UOSInt m;
+		while (i < j)
+		{
+			i++;
+			if (i >= j)
+				l = ptList.GetCount();
+			else
+				l = ptOfstList.GetItem(i);
+			NEW_CLASSNN(lr, Math::Geometry::LinearRing(srid, (l - k), hasZ, hasM));
+			Math::Coord2DDbl *ptArr = lr->GetPointList(m);
+			MemCopyNO(ptArr, ptList.Ptr() + k, (l - k) * sizeof(Double));
+			if (hasM)
 			{
-				zArr[i] = zList.GetItem(i);
+				Double *zArr = lr->GetZList(m);
+				Double *mArr = lr->GetMList(m);
+				while (m-- > 0)
+				{
+					zArr[m] = zList.GetItem((j + m) << 1);
+					mArr[m] = zList.GetItem(((j + m) << 1) + 1);
+				}
 			}
+			else if (hasZ)
+			{
+				Double *zArr = lr->GetZList(m);
+				while (m-- > 0)
+				{
+					zArr[m] = zList.GetItem(j + m);
+				}
+			}
+			pg->AddGeometry(lr);
+			k = l;
 		}
 		return pg;
 	}
@@ -554,19 +589,54 @@ Math::Geometry::Vector2D *Math::WKTReader::ParseWKT(const UTF8Char *wkt)
 				}
 			}
 			NotNullPtr<Math::Geometry::Polygon> pg;
-			NEW_CLASSNN(pg, Math::Geometry::Polygon(this->srid, ptOfstList.GetCount(), ptList.GetCount() >> 1, zList.GetCount() == (ptList.GetCount() >> 1), false));
-			UOSInt i;
-			UInt32 *ptOfstArr = pg->GetPtOfstList(i);
-			MemCopyNO(ptOfstArr, ptOfstList.Ptr(), ptOfstList.GetCount() * sizeof(UInt32));
-			Math::Coord2DDbl *ptArr = pg->GetPointList(i);
-			MemCopyNO(ptArr, ptList.Ptr(), ptList.GetCount() * sizeof(Double));
-			if (pg->HasZ())
+			NotNullPtr<Math::Geometry::LinearRing> lr;
+			Bool hasM = false;
+			Bool hasZ = false;
+			if (zList.GetCount() == ptList.GetCount())
 			{
-				Double *zArr = pg->GetZList(i);
-				while (i-- > 0)
+				hasM = true;
+				hasZ = true;
+			}
+			else if (zList.GetCount() == (ptList.GetCount() >> 1))
+			{
+				hasZ = true;
+			}
+			NEW_CLASSNN(pg, Math::Geometry::Polygon(this->srid));
+			UOSInt i = 0;
+			UOSInt j = ptOfstList.GetCount();
+			UOSInt k = 0;
+			UOSInt l;
+			UOSInt m;
+			while (i < j)
+			{
+				i++;
+				if (i >= j)
+					l = ptList.GetCount();
+				else
+					l = ptOfstList.GetItem(i);
+				NEW_CLASSNN(lr, Math::Geometry::LinearRing(srid, (l - k), hasZ, hasM));
+				Math::Coord2DDbl *ptArr = lr->GetPointList(m);
+				MemCopyNO(ptArr, ptList.Ptr() + k, (l - k) * sizeof(Double));
+				if (hasM)
 				{
-					zArr[i] = zList.GetItem(i);
+					Double *zArr = lr->GetZList(m);
+					Double *mArr = lr->GetMList(m);
+					while (m-- > 0)
+					{
+						zArr[m] = zList.GetItem((j + m) << 1);
+						mArr[m] = zList.GetItem(((j + m) << 1) + 1);
+					}
 				}
+				else if (hasZ)
+				{
+					Double *zArr = lr->GetZList(m);
+					while (m-- > 0)
+					{
+						zArr[m] = zList.GetItem(j + m);
+					}
+				}
+				pg->AddGeometry(lr);
+				k = l;
 			}
 			if (mpg == 0)
 			{

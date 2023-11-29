@@ -241,27 +241,43 @@ void Map::MapScheduler::DrawPolyline(Math::Geometry::Polyline *pl)
 void Map::MapScheduler::DrawPolygon(Math::Geometry::Polygon *pg)
 {
 	UOSInt nPoint;
-	Math::Coord2DDbl *pointArr = pg->GetPointList(nPoint);
+	Math::Coord2DDbl *pointArr;
 	UOSInt nPtOfst;
-	UInt32 *ptOfstArr = pg->GetPtOfstList(nPtOfst);
 	if (this->isFirst)
 	{
-		UOSInt k;
-		UOSInt l;
-
-		if (this->map->MapXYToScnXY(pointArr, pointArr, nPoint, Math::Coord2DDbl(0, 0)))
-			*this->isLayerEmpty = false;
-		k = nPtOfst;
-		l = 1;
-		while (l < k)
+		nPtOfst = pg->GetCount();
+		while (nPtOfst-- > 0)
 		{
-			ptOfstArr[l - 1] = ptOfstArr[l] - ptOfstArr[l - 1];
-			l++;
+			pointArr = pg->GetItem(nPtOfst)->GetPointList(nPoint);
+			if (this->map->MapXYToScnXY(pointArr, pointArr, nPoint, Math::Coord2DDbl(0, 0)))
+				*this->isLayerEmpty = false;
 		}
-		ptOfstArr[k - 1] = (UInt32)(nPoint - ptOfstArr[k - 1]);
 	}
-
-	this->img->DrawPolyPolygon(pointArr, ptOfstArr, nPtOfst, this->p, this->b);
+	UOSInt i = 0;
+	nPtOfst = pg->GetCount();
+	UInt32 *ptOfstArr;
+	UInt32 *relArr = 0;
+	UInt32 cntArr[20];
+	if (nPtOfst <= 20)
+		ptOfstArr = cntArr;
+	else
+	{
+		relArr = MemAlloc(UInt32, nPtOfst);
+		ptOfstArr = relArr;
+	}
+	Data::ArrayListA<Math::Coord2DDbl> ptList;
+	while (i < nPtOfst)
+	{
+		pointArr = pg->GetItem(i)->GetPointList(nPoint);
+		ptList.AddRange(pointArr, nPoint);
+		ptOfstArr[i] = (UInt32)nPoint;
+		i++;
+	}
+	this->img->DrawPolyPolygon(ptList.Ptr(), ptOfstArr, nPtOfst, this->p, this->b);
+	if (relArr)
+	{
+		MemFree(relArr);
+	}
 }
 
 void Map::MapScheduler::DrawMultiPolygon(Math::Geometry::MultiPolygon *mpg)
@@ -269,29 +285,7 @@ void Map::MapScheduler::DrawMultiPolygon(Math::Geometry::MultiPolygon *mpg)
 	UOSInt pgInd = mpg->GetCount();
 	while (pgInd-- > 0)
 	{
-		Math::Geometry::Polygon *pg = mpg->GetItem(pgInd);
-		UOSInt nPoint;
-		Math::Coord2DDbl *pointArr = pg->GetPointList(nPoint);
-		UOSInt nPtOfst;
-		UInt32 *ptOfstArr = pg->GetPtOfstList(nPtOfst);
-		if (this->isFirst)
-		{
-			UOSInt k;
-			UOSInt l;
-
-			if (this->map->MapXYToScnXY(pointArr, pointArr, nPoint, Math::Coord2DDbl(0, 0)))
-				*this->isLayerEmpty = false;
-			k = nPtOfst;
-			l = 1;
-			while (l < k)
-			{
-				ptOfstArr[l - 1] = ptOfstArr[l] - ptOfstArr[l - 1];
-				l++;
-			}
-			ptOfstArr[k - 1] = (UInt32)(nPoint - ptOfstArr[k - 1]);
-		}
-
-		this->img->DrawPolyPolygon(pointArr, ptOfstArr, nPtOfst, this->p, this->b);
+		this->DrawPolygon(mpg->GetItem(pgInd));
 	}
 }
 

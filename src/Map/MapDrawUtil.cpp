@@ -59,19 +59,23 @@ Bool Map::MapDrawUtil::DrawPolyline(NotNullPtr<Math::Geometry::Polyline> pl, Not
 
 Bool Map::MapDrawUtil::DrawPolygon(NotNullPtr<Math::Geometry::Polygon> pg, NotNullPtr<Media::DrawImage> img, NotNullPtr<Map::MapView> view, Optional<Media::DrawBrush> b, Optional<Media::DrawPen> p, Math::Coord2DDbl ofst)
 {
-	UOSInt nPoint;
-	UOSInt nPtOfst;
-	Math::Coord2DDbl *points = pg->GetPointList(nPoint);
-	UInt32 *ptOfsts = pg->GetPtOfstList(nPtOfst);
+	UOSInt nPoint = pg->GetPointCount();
+	UOSInt nPtOfst = pg->GetCount();
+	UOSInt k;
+	Math::Coord2DDbl *points;
 	Math::Coord2DDbl *dpoints = MemAllocA(Math::Coord2DDbl, nPoint);
+	Math::Geometry::LinearRing *lr;
 	UInt32 *myPtCnts = MemAlloc(UInt32, nPtOfst);
-	view->MapXYToScnXY(points, dpoints, nPoint, ofst);
-
-	UOSInt i = nPtOfst;
-	while (i-- > 0)
+	UOSInt i = 0;
+	UOSInt j = 0;
+	while (i < nPtOfst)
 	{
-		myPtCnts[i] = (UInt32)nPoint - ptOfsts[i];
-		nPoint = ptOfsts[i];
+		lr = pg->GetItem(i);
+		points = lr->GetPointList(k);
+		view->MapXYToScnXY(points, &dpoints[j], k, ofst);
+		myPtCnts[i] = (UInt32)k;
+		j += k;
+		i++;
 	}
 
 	img->DrawPolyPolygon(dpoints, myPtCnts, nPtOfst, p, b);

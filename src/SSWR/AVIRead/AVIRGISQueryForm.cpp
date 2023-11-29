@@ -157,7 +157,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISQueryForm::OnMouseMove(void *userObj, Math:
 		UTF8Char *sptr;
 		sptr = Text::StrDouble(sbuff, d);
 		me->txtDist->SetText(CSTRP(sbuff, sptr));
-		if (me->currVec->InsideVector(mapPos))
+		if (me->currVec->InsideOrTouch(mapPos))
 		{
 			me->txtInside->SetText(CSTR("Inside"));
 		}

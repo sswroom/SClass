@@ -14,7 +14,7 @@ Math::Geometry::Vector2D::~Vector2D()
 
 Double Math::Geometry::Vector2D::CalSqrDistance(Math::Coord2DDbl pt, OutParam<Math::Coord2DDbl> nearPt) const
 {
-	if (this->InsideVector(pt))
+	if (this->InsideOrTouch(pt))
 	{
 		nearPt.Set(pt);
 		return 0;
@@ -22,9 +22,19 @@ Double Math::Geometry::Vector2D::CalSqrDistance(Math::Coord2DDbl pt, OutParam<Ma
 	return this->CalBoundarySqrDistance(pt, nearPt);
 }
 
-Bool Math::Geometry::Vector2D::InsideVector(Math::Coord2DDbl coord) const
+Bool Math::Geometry::Vector2D::Contains(NotNullPtr<Math::Geometry::Vector2D> vec) const
 {
-	return false;
+	Data::ArrayListA<Math::Coord2DDbl> ptList;
+	this->GetCoordinates(ptList);
+	UOSInt i = ptList.GetCount();
+	if (i == 0)
+		return false;
+	while (i-- > 0)
+	{
+		if (!this->InsideOrTouch(ptList.GetItem(i)))
+			return false;
+	}
+	return true;
 }
 
 UInt32 Math::Geometry::Vector2D::GetSRID() const

@@ -60,7 +60,7 @@ namespace Map
 		static void DrawPoints(NotNullPtr<Media::DrawImage> img, MapLayerStyle *lyrs, NotNullPtr<Map::MapView> view, Bool *isLayerEmpty, Map::MapScheduler *mapSch, NotNullPtr<Media::DrawEngine> eng, Media::IImgResizer *resizer, Math::RectAreaDbl *objBounds, UOSInt *objCnt, UOSInt maxObjCnt);
 		static void DrawString(NotNullPtr<Media::DrawImage> img, MapLayerStyle *lyrs, NotNullPtr<Map::MapView> view, Data::ArrayList<MapFontStyle*> **fonts, MapLabels2 *labels, UInt32 maxLabels, UInt32 *labelCnt, Bool *isLayerEmpty);
 		static UInt32 NewLabel(MapLabels2 *labels, UInt32 maxLabel, UInt32 *labelCnt, Int32 priority);
-		static Bool AddLabel(MapLabels2 *labels, UInt32 maxLabel, UInt32 *labelCnt, Text::CString label, UInt32 nPoints, Math::Coord2DDbl *points, Int32 priority, Int32 recType, UInt32 fntStyle, UInt32 flags, NotNullPtr<Map::MapView> view, Double xOfst, Double yOfst);
+		static Bool AddLabel(MapLabels2 *labels, UInt32 maxLabel, UInt32 *labelCnt, Text::CString label, UOSInt nPoints, Math::Coord2DDbl *points, Int32 priority, Int32 recType, UInt32 fntStyle, UInt32 flags, NotNullPtr<Map::MapView> view, Double xOfst, Double yOfst);
 		static void SwapLabel(MapLabels2 *mapLabels, UInt32 index, UInt32 index2);
 		static Bool LabelOverlapped(Math::RectAreaDbl *points, UOSInt nPoints, Math::RectAreaDbl rect);
 		static void DrawLabels(NotNullPtr<Media::DrawImage> img, MapLabels2 *labels, UInt32 maxLabel, UInt32 *labelCnt, NotNullPtr<Map::MapView> view, Data::ArrayList<MapFontStyle*> **fonts, NotNullPtr<Media::DrawEngine> drawEng, Math::RectAreaDbl *objBounds, UOSInt *objCnt);

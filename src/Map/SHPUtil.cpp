@@ -92,7 +92,8 @@ Math::Geometry::Vector2D *Map::SHPUtil::ParseShpRecord(UInt32 srid, const UInt8 
 		{
 			UInt32 nPtOfst;
 			UInt32 nPoint;
-			Math::Geometry::Polygon *pl;
+			Math::Geometry::Polygon *pg;
+			NotNullPtr<Math::Geometry::LinearRing> lr;
 			/*
 			xMin = ReadDouble(&buff[4]);
 			yMin = ReadDouble(&buff[12]);
@@ -104,25 +105,35 @@ Math::Geometry::Vector2D *Map::SHPUtil::ParseShpRecord(UInt32 srid, const UInt8 
 			if (buffSize >= 44 + nPtOfst * 4 + nPoint * 16)
 			{
 				UOSInt tmpV;
-				UInt32 *ptOfsts;
+				const UInt8 *ptOfsts;
 				Math::Coord2DDbl *points;
-				NEW_CLASS(pl, Math::Geometry::Polygon(srid, nPtOfst, nPoint, false, false));
-				ptOfsts = pl->GetPtOfstList(tmpV);
+				UOSInt i = 0;
+				UOSInt j = 0;
+				UOSInt k;
 				buff += 44;
-				while (tmpV-- > 0)
+				ptOfsts = buff;
+				buff += nPtOfst * 4;
+				NEW_CLASS(pg, Math::Geometry::Polygon(srid));
+				while (i < nPtOfst)
 				{
-					*ptOfsts++ = ReadUInt32(buff);
-					buff += 4;
+					i++;
+					if (i >= nPtOfst)
+						k = nPoint;
+					else
+						k = ReadUInt32(&ptOfsts[i * 4]);
+					NEW_CLASSNN(lr, Math::Geometry::LinearRing(srid, (k - j), false, false));
+					points = lr->GetPointList(tmpV);
+					while (tmpV-- > 0)
+					{
+						points->x = ReadDouble(&buff[0]);
+						points->y = ReadDouble(&buff[8]);
+						points++;
+						buff += 16;
+					}
+					j = k;
+					pg->AddGeometry(lr);
 				}
-				points = pl->GetPointList(tmpV);
-				while (tmpV-- > 0)
-				{
-					points->x = ReadDouble(&buff[0]);
-					points->y = ReadDouble(&buff[8]);
-					points++;
-					buff += 16;
-				}
-				return pl;
+				return pg;
 			}
 		}
 		return 0;
@@ -336,7 +347,7 @@ Math::Geometry::Vector2D *Map::SHPUtil::ParseShpRecord(UInt32 srid, const UInt8 
 		{
 			UInt32 nPtOfst;
 			UInt32 nPoint;
-			Math::Geometry::Polygon *pl;
+			Math::Geometry::Polygon *pg;
 			/*
 			xMin = ReadDouble(&buff[4]);
 			yMin = ReadDouble(&buff[12]);
@@ -347,40 +358,48 @@ Math::Geometry::Vector2D *Map::SHPUtil::ParseShpRecord(UInt32 srid, const UInt8 
 			nPoint = ReadUInt32(&buff[40]);
 			if (buffSize >= 44 + nPtOfst * 4 + nPoint * 16)
 			{
-				UOSInt tmpV;
-				UInt32 *ptOfsts;
-				Math::Coord2DDbl *points;
-				Double *zArr;
-				Double *mArr;
-				NEW_CLASS(pl, Math::Geometry::Polygon(srid, nPtOfst, nPoint, true, true));
-				ptOfsts = pl->GetPtOfstList(tmpV);
+				UOSInt i;
+				UInt32 *ptOfsts = MemAlloc(UInt32, nPtOfst);
+				Math::Coord2DDbl *points = MemAllocA(Math::Coord2DDbl, nPoint);
+				Double *zArr = MemAlloc(Double, nPoint);
+				Double *mArr = MemAlloc(Double, nPoint);
+				NEW_CLASS(pg, Math::Geometry::Polygon(srid));
 				buff += 44;
-				while (tmpV-- > 0)
+				i = 0;
+				while (i < nPtOfst)
 				{
-					*ptOfsts++ = ReadUInt32(buff);
+					ptOfsts[i] = ReadUInt32(buff);
 					buff += 4;
+					i++;
 				}
-				points = pl->GetPointList(tmpV);
-				while (tmpV-- > 0)
+				i = 0;
+				while (i < nPoint)
 				{
-					points->x = ReadDouble(&buff[0]);
-					points->y = ReadDouble(&buff[8]);
-					points++;
+					points[i].x = ReadDouble(&buff[0]);
+					points[i].y = ReadDouble(&buff[8]);
 					buff += 16;
+					i++;
 				}
-				zArr = pl->GetZList(tmpV);
-				while (tmpV-- > 0)
+				i = 0;
+				while (i < nPoint)
 				{
-					*zArr++ = ReadDouble(&buff[0]);
+					zArr[i] = ReadDouble(&buff[0]);
 					buff += 8;
+					i++;
 				}
-				mArr = pl->GetMList(tmpV);
-				while (tmpV-- > 0)
+				i = 0;
+				while (i < nPoint)
 				{
-					*mArr++ = ReadDouble(&buff[0]);
+					mArr[i] = ReadDouble(&buff[0]);
 					buff += 8;
+					i++;
 				}
-				return pl;
+				pg->AddFromPtOfst(ptOfsts, nPtOfst, points, nPoint, zArr, mArr);
+				MemFree(mArr);
+				MemFree(zArr);
+				MemFreeA(points);
+				MemFree(ptOfsts);
+				return pg;
 			}
 		}
 		return 0;
@@ -391,7 +410,7 @@ Math::Geometry::Vector2D *Map::SHPUtil::ParseShpRecord(UInt32 srid, const UInt8 
 		{
 			UInt32 nPtOfst;
 			UInt32 nPoint;
-			Math::Geometry::Polygon *pl;
+			Math::Geometry::Polygon *pg;
 			/*
 			xMin = ReadDouble(&buff[4]);
 			yMin = ReadDouble(&buff[12]);
@@ -402,34 +421,39 @@ Math::Geometry::Vector2D *Map::SHPUtil::ParseShpRecord(UInt32 srid, const UInt8 
 			nPoint = ReadUInt32(&buff[40]);
 			if (buffSize >= 44 + nPtOfst * 4 + nPoint * 16)
 			{
-				UOSInt tmpV;
-				UInt32 *ptOfsts;
-				Math::Coord2DDbl *points;
-				Double *zArr;
-				NEW_CLASS(pl, Math::Geometry::Polygon(srid, nPtOfst, nPoint, true, false));
-				ptOfsts = pl->GetPtOfstList(tmpV);
+				UOSInt i;
+				UInt32 *ptOfsts = MemAlloc(UInt32, nPtOfst);
+				Math::Coord2DDbl *points = MemAllocA(Math::Coord2DDbl, nPoint);
+				Double *zArr = MemAlloc(Double, nPoint);
+				NEW_CLASS(pg, Math::Geometry::Polygon(srid));
 				buff += 44;
-				while (tmpV-- > 0)
+				i = 0;
+				while (i < nPtOfst)
 				{
-					*ptOfsts++ = ReadUInt32(buff);
+					ptOfsts[i] = ReadUInt32(buff);
 					buff += 4;
+					i++;
 				}
-				points = pl->GetPointList(tmpV);
-				while (tmpV-- > 0)
+				i = 0;
+				while (i < nPoint)
 				{
-					points->x = ReadDouble(&buff[0]);
-					points->y = ReadDouble(&buff[8]);
-					points++;
+					points[i].x = ReadDouble(&buff[0]);
+					points[i].y = ReadDouble(&buff[8]);
 					buff += 16;
+					i++;
 				}
-				zArr = pl->GetZList(tmpV);
-				while (tmpV-- > 0)
+				i = 0;
+				while (i < nPoint)
 				{
-					*zArr = ReadDouble(&buff[0]);
-					zArr++;
+					zArr[i] = ReadDouble(&buff[0]);
 					buff += 8;
+					i++;
 				}
-				return pl;
+				pg->AddFromPtOfst(ptOfsts, nPtOfst, points, nPoint, zArr, 0);
+				MemFree(zArr);
+				MemFreeA(points);
+				MemFree(ptOfsts);
+				return pg;
 			}
 		}
 		return 0;
@@ -527,7 +551,7 @@ Math::Geometry::Vector2D *Map::SHPUtil::ParseShpRecord(UInt32 srid, const UInt8 
 		{
 			UInt32 nPtOfst;
 			UInt32 nPoint;
-			Math::Geometry::Polygon *pl;
+			Math::Geometry::Polygon *pg;
 			/*
 			xMin = ReadDouble(&buff[4]);
 			yMin = ReadDouble(&buff[12]);
@@ -538,33 +562,39 @@ Math::Geometry::Vector2D *Map::SHPUtil::ParseShpRecord(UInt32 srid, const UInt8 
 			nPoint = ReadUInt32(&buff[40]);
 			if (buffSize >= 44 + nPtOfst * 4 + nPoint * 16)
 			{
-				UOSInt tmpV;
-				UInt32 *ptOfsts;
-				Math::Coord2DDbl *points;
-				Double *mArr;
-				NEW_CLASS(pl, Math::Geometry::Polygon(srid, nPtOfst, nPoint, false, true));
-				ptOfsts = pl->GetPtOfstList(tmpV);
+				UOSInt i;
+				UInt32 *ptOfsts = MemAlloc(UInt32, nPtOfst);
+				Math::Coord2DDbl *points = MemAllocA(Math::Coord2DDbl, nPoint);
+				Double *mArr = MemAlloc(Double, nPoint);
+				NEW_CLASS(pg, Math::Geometry::Polygon(srid));
 				buff += 44;
-				while (tmpV-- > 0)
+				i = 0;
+				while (i < nPtOfst)
 				{
-					*ptOfsts++ = ReadUInt32(buff);
+					ptOfsts[i] = ReadUInt32(buff);
 					buff += 4;
+					i++;
 				}
-				points = pl->GetPointList(tmpV);
-				while (tmpV-- > 0)
+				i = 0;
+				while (i < nPoint)
 				{
-					points->x = ReadDouble(&buff[0]);
-					points->y = ReadDouble(&buff[8]);
-					points++;
+					points[i].x = ReadDouble(&buff[0]);
+					points[i].y = ReadDouble(&buff[8]);
 					buff += 16;
+					i++;
 				}
-				mArr = pl->GetMList(tmpV);
-				while (tmpV-- > 0)
+				i = 0;
+				while (i < nPoint)
 				{
-					*mArr++ = ReadDouble(&buff[0]);
+					mArr[i] = ReadDouble(&buff[0]);
 					buff += 8;
+					i++;
 				}
-				return pl;
+				pg->AddFromPtOfst(ptOfsts, nPtOfst, points, nPoint, 0, mArr);
+				MemFree(mArr);
+				MemFreeA(points);
+				MemFree(ptOfsts);
+				return pg;
 			}
 		}
 		return 0;

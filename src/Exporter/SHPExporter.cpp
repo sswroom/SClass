@@ -351,8 +351,11 @@ Bool Exporter::SHPExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text:
 		{
 			pg = (Math::Geometry::Polygon*)layer->GetNewVectorById(sess, objIds.GetItem(i));
 			box = pg->GetBounds();
-			ptOfsts = pg->GetPtOfstList(nPtOfst);
-			points = pg->GetPointList(nPoint);
+			nPtOfst = pg->GetCount();
+			nPoint = pg->GetPointCount();
+			ptOfsts = MemAlloc(UInt32, nPtOfst);
+			points = MemAllocA(Math::Coord2DDbl, nPoint);
+			pg->FillPointOfstList(points, ptOfsts, 0, 0);
 			WriteUInt32(&nvals[0], (UInt32)nPtOfst);
 			WriteUInt32(&nvals[4], (UInt32)nPoint);
 
@@ -380,7 +383,8 @@ Bool Exporter::SHPExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text:
 			stm->Write((UInt8*)ptOfsts, nPtOfst * 4);
 			stm->Write((UInt8*)points, nPoint * 16);
 			fileSize += nPtOfst * 4 + nPoint * 16;
-
+			MemFreeA(points);
+			MemFree(ptOfsts);
 			DEL_CLASS(pg);
 			i++;
 		}

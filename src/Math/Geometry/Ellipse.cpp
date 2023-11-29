@@ -93,7 +93,7 @@ UOSInt Math::Geometry::Ellipse::GetCoordinates(NotNullPtr<Data::ArrayListA<Math:
 	return 4;
 }
 
-Bool Math::Geometry::Ellipse::InsideVector(Math::Coord2DDbl coord) const
+Bool Math::Geometry::Ellipse::InsideOrTouch(Math::Coord2DDbl coord) const
 {
 	Math::Coord2DDbl cent = this->tl + (this->size * 0.5);
 	Double yDiff = (coord.y - cent.y) * this->size.x / this->size.y;
@@ -111,6 +111,11 @@ void Math::Geometry::Ellipse::MultiplyCoordinatesXY(Double v)
 {
 	this->tl = this->tl * v;
 	this->size = this->size * v;
+}
+
+UOSInt Math::Geometry::Ellipse::GetPointCount() const
+{
+	return 4;
 }
 
 Math::Coord2DDbl Math::Geometry::Ellipse::GetTL()

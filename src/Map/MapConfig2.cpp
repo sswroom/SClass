@@ -2422,25 +2422,53 @@ void Map::MapConfig2::DrawString(NotNullPtr<Media::DrawImage> img, MapLayerStyle
 					break;
 				}
 				case Math::Geometry::Vector2D::VectorType::Polyline:
-				case Math::Geometry::Vector2D::VectorType::Polygon:	
 				{
-					Math::Geometry::PointOfstCollection *ptOfst = (Math::Geometry::PointOfstCollection*)vec;
+					Math::Geometry::Polyline *pl = (Math::Geometry::Polyline*)vec;
 					UOSInt k;
-					UInt32 maxSize;
-					UInt32 maxPos;
-					UOSInt nPtOfst;
-					UInt32 *ptOfstArr = ptOfst->GetPtOfstList(nPtOfst);
+					UOSInt maxSize;
+					UOSInt maxPos;
 					UOSInt nPoint;
-					Math::Coord2DDbl *pointArr = ptOfst->GetPointList(nPoint);
-					maxSize = (UInt32)nPoint - (maxPos = ptOfstArr[nPtOfst - 1]);
-					k = nPtOfst;
+					Math::Coord2DDbl *pointArr;
+					maxSize = pl->GetItem(0)->GetPointCount();
+					maxPos = 0;
+					k = pl->GetCount();
 					while (k-- > 1)
 					{
-						if ((ptOfstArr[k] - ptOfstArr[k - 1]) > maxSize)
-							maxSize = (ptOfstArr[k] - (maxPos = ptOfstArr[k - 1]));
+						nPoint = pl->GetItem(k)->GetPointCount();
+						if (nPoint > maxSize)
+						{
+							maxSize = nPoint;
+							maxPos = k;
+						}
 					}
 					sptrEnd = lyrs->lyr->GetString(sptr = lblStr, sizeof(lblStr), arr, arri.GetItem(i), 0);
-					AddLabel(labels, maxLabels, labelCnt, CSTRP(sptr, sptrEnd), maxSize, &pointArr[maxPos], lyrs->priority, lyrs->lyr->GetLayerType(), lyrs->style, lyrs->bkColor, view, (UOSInt2Double(imgWidth) * view->GetHDPI() / view->GetDDPI()), (UOSInt2Double(imgHeight) * view->GetHDPI() / view->GetDDPI()));
+					pointArr = pl->GetItem(maxPos)->GetPointList(nPoint);
+					AddLabel(labels, maxLabels, labelCnt, CSTRP(sptr, sptrEnd), nPoint, pointArr, lyrs->priority, lyrs->lyr->GetLayerType(), lyrs->style, lyrs->bkColor, view, (UOSInt2Double(imgWidth) * view->GetHDPI() / view->GetDDPI()), (UOSInt2Double(imgHeight) * view->GetHDPI() / view->GetDDPI()));
+					break;
+				}
+				case Math::Geometry::Vector2D::VectorType::Polygon:	
+				{
+					Math::Geometry::Polygon *pg = (Math::Geometry::Polygon*)vec;
+					UOSInt k;
+					UOSInt maxSize;
+					UOSInt maxPos;
+					UOSInt nPoint;
+					Math::Coord2DDbl *pointArr;
+					maxSize = pg->GetItem(0)->GetPointCount();
+					maxPos = 0;
+					k = pg->GetCount();
+					while (k-- > 1)
+					{
+						nPoint = pg->GetItem(k)->GetPointCount();
+						if (nPoint > maxSize)
+						{
+							maxSize = nPoint;
+							maxPos = k;
+						}
+					}
+					sptrEnd = lyrs->lyr->GetString(sptr = lblStr, sizeof(lblStr), arr, arri.GetItem(i), 0);
+					pointArr = pg->GetItem(maxPos)->GetPointList(nPoint);
+					AddLabel(labels, maxLabels, labelCnt, CSTRP(sptr, sptrEnd), nPoint, pointArr, lyrs->priority, lyrs->lyr->GetLayerType(), lyrs->style, lyrs->bkColor, view, (UOSInt2Double(imgWidth) * view->GetHDPI() / view->GetDDPI()), (UOSInt2Double(imgHeight) * view->GetHDPI() / view->GetDDPI()));
 					break;
 				}
 				case Math::Geometry::Vector2D::VectorType::LineString:
@@ -2457,6 +2485,7 @@ void Map::MapConfig2::DrawString(NotNullPtr<Media::DrawImage> img, MapLayerStyle
 				case Math::Geometry::Vector2D::VectorType::PolyhedralSurface:
 				case Math::Geometry::Vector2D::VectorType::Tin:
 				case Math::Geometry::Vector2D::VectorType::Triangle:
+				case Math::Geometry::Vector2D::VectorType::LinearRing:
 				case Math::Geometry::Vector2D::VectorType::Image:
 				case Math::Geometry::Vector2D::VectorType::String:
 				case Math::Geometry::Vector2D::VectorType::Ellipse:
@@ -2508,11 +2537,7 @@ void Map::MapConfig2::DrawString(NotNullPtr<Media::DrawImage> img, MapLayerStyle
 				case Math::Geometry::Vector2D::VectorType::Polygon:
 				{
 					Math::Geometry::Polygon *pg = (Math::Geometry::Polygon*)vec;
-					UOSInt nPoint;
-					Math::Coord2DDbl *pointArr = pg->GetPointList(nPoint);
-					UOSInt nPtOfst;
-					UInt32 *ptOfstArr = pg->GetPtOfstList(nPtOfst);
-					pts = Math::GeometryTool::GetPolygonCenter(nPtOfst, nPoint, ptOfstArr, pointArr);
+					pts = pg->GetCenter();
 					if (view->InViewXY(pts))
 					{
 						pts = view->MapXYToScnXY(pts);
@@ -2544,6 +2569,7 @@ void Map::MapConfig2::DrawString(NotNullPtr<Media::DrawImage> img, MapLayerStyle
 				case Math::Geometry::Vector2D::VectorType::PolyhedralSurface:
 				case Math::Geometry::Vector2D::VectorType::Tin:
 				case Math::Geometry::Vector2D::VectorType::Triangle:
+				case Math::Geometry::Vector2D::VectorType::LinearRing:
 				case Math::Geometry::Vector2D::VectorType::Image:
 				case Math::Geometry::Vector2D::VectorType::String:
 				case Math::Geometry::Vector2D::VectorType::Ellipse:
@@ -2612,7 +2638,7 @@ UInt32 Map::MapConfig2::NewLabel(MapLabels2 *labels, UInt32 maxLabel, UInt32 *la
 }
 
 
-Bool Map::MapConfig2::AddLabel(MapLabels2 *labels, UInt32 maxLabel, UInt32 *labelCnt, Text::CString labelt, UInt32 nPoint, Math::Coord2DDbl *points, Int32 priority, Int32 recType, UInt32 fontStyle, UInt32 flags, NotNullPtr<Map::MapView> view, Double xOfst, Double yOfst)
+Bool Map::MapConfig2::AddLabel(MapLabels2 *labels, UInt32 maxLabel, UInt32 *labelCnt, Text::CString labelt, UOSInt nPoint, Math::Coord2DDbl *points, Int32 priority, Int32 recType, UInt32 fontStyle, UInt32 flags, NotNullPtr<Map::MapView> view, Double xOfst, Double yOfst)
 {
 	Double size;
 	Double visibleSize;
@@ -2706,7 +2732,7 @@ Bool Map::MapConfig2::AddLabel(MapLabels2 *labels, UInt32 maxLabel, UInt32 *labe
 					scnSqrLen = scnPos.x + scnPos.y;
 
 					labels[i].currSize = scnSqrLen;
-					labels[i].totalSize = nPoint;
+					labels[i].totalSize = UOSInt2Double(nPoint);
 					labels[i].nPoints = 0;
 					labels[i].shapeType = 1;
 					labels[i].points = 0;
@@ -2914,7 +2940,7 @@ Bool Map::MapConfig2::AddLabel(MapLabels2 *labels, UInt32 maxLabel, UInt32 *labe
 						UOSInt newSize = labels[i].nPoints + nPoint - 1;
 						Math::Coord2DDbl* newArr = MemAllocA(Math::Coord2DDbl, newSize);
 						MemCopyNO(newArr, labels[i].points, labels[i].nPoints << 4);
-						UInt32 k;
+						UOSInt k;
 						UOSInt l;
 						l = labels[i].nPoints;
 						k = nPoint - 1;

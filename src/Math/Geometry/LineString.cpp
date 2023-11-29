@@ -313,6 +313,60 @@ Bool Math::Geometry::LineString::Equals(NotNullPtr<const Vector2D> vec, Bool sam
 	}
 }
 
+Bool Math::Geometry::LineString::InsideOrTouch(Math::Coord2DDbl coord) const
+{
+	Double thisX;
+	Double thisY;
+	Double lastX;
+	Double lastY;
+	UOSInt j;
+	UOSInt l;
+	Double tmpX;
+
+	l = this->nPoint;
+	lastX = this->pointArr[0].x;
+	lastY = this->pointArr[0].y;
+	while (l-- > 0)
+	{
+		thisX = this->pointArr[l].x;
+		thisY = this->pointArr[l].y;
+		j = 0;
+		if (lastY > coord.y)
+			j += 1;
+		if (thisY > coord.y)
+			j += 1;
+
+		if (j == 1)
+		{
+			tmpX = lastX - (lastX - thisX) * (lastY - coord.y) / (lastY - thisY);
+			if (tmpX == coord.x)
+			{
+				return true;
+			}
+		}
+		else if (thisY == coord.y && lastY == coord.y)
+		{
+			if ((thisX >= coord.x && lastX <= coord.x) || (lastX >= coord.x && thisX <= coord.x))
+			{
+				return true;
+			}
+		}
+		else if (thisY == coord.y && thisX == coord.x)
+		{
+			return true;
+		}
+
+		lastX = thisX;
+		lastY = thisY;
+	}
+	return false;
+}
+
+UOSInt Math::Geometry::LineString::GetPointCount() const
+{
+	return this->nPoint;
+}
+
 Double Math::Geometry::LineString::CalcLength() const
 {
 	Double leng = 0;
@@ -336,11 +390,6 @@ Double *Math::Geometry::LineString::GetMList(OutParam<UOSInt> nPoint) const
 {
 	nPoint.Set(this->nPoint);
 	return this->mArr;
-}
-
-UOSInt Math::Geometry::LineString::GetPointCount() const
-{
-	return this->nPoint;
 }
 
 Math::Geometry::LineString *Math::Geometry::LineString::SplitByPoint(Math::Coord2DDbl pt)
@@ -814,10 +863,12 @@ Math::Geometry::Polygon *Math::Geometry::LineString::CreatePolygonByDist(Double 
 	outPoints.Add(lastPtY);
 
 	Math::Geometry::Polygon *pg;
+	NotNullPtr<Math::Geometry::LinearRing> lr;
 	UOSInt nPoints;
 	Math::Coord2DDbl *pts;
-	NEW_CLASS(pg, Math::Geometry::Polygon(this->srid, 1, outPoints.GetCount() >> 1, false, false));
-	pts = pg->GetPointList(nPoints);
+	NEW_CLASS(pg, Math::Geometry::Polygon(this->srid));
+	NEW_CLASSNN(lr, Math::Geometry::LinearRing(this->srid, outPoints.GetCount(), false, false));
+	pts = lr->GetPointList(nPoints);
 	i = 0;
 	while (i < nPoints)
 	{
@@ -825,6 +876,7 @@ Math::Geometry::Polygon *Math::Geometry::LineString::CreatePolygonByDist(Double 
 		pts[i].y = outPoints.GetItem((i << 1) + 1);
 		i++;
 	}
+	pg->AddGeometry(lr);
 	return pg;
 }
 

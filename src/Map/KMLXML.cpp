@@ -1514,30 +1514,23 @@ Map::MapDrawLayer *Map::KMLXML::ParseKMLPlacemarkLyr(NotNullPtr<Text::XMLReader>
 			if (coord.GetCount() > 0)
 			{
 				NotNullPtr<Math::Geometry::Polygon> pg;
+				NotNullPtr<Math::Geometry::LinearRing> lr;
 				UOSInt nPoints;
 				Math::Coord2DDbl *ptArr;
-				UInt32 *ptList;
 
+				NEW_CLASSNN(pg, Math::Geometry::Polygon(4326));
+				NEW_CLASSNN(lr, Math::Geometry::LinearRing(4326, coord.GetCount() >> 1, false, false));
+				ptArr = lr->GetPointList(nPoints);
+				MemCopyNO(ptArr, coord.Ptr(), sizeof(Double) * coord.GetCount());
+				pg->AddGeometry(lr);
 				if (altList.GetCount() > 0)
 				{
-					NEW_CLASSNN(pg, Math::Geometry::Polygon(4326, 2, (coord.GetCount() + altList.GetCount()) >> 1, false, false));
-					ptList = pg->GetPtOfstList(nPoints);
-					ptList[0] = 0;
-					ptList[1] = (UInt32)(coord.GetCount() >> 1);
-					ptArr = pg->GetPointList(nPoints);
-					MemCopyNO(ptArr, coord.Ptr(), sizeof(Double) * coord.GetCount());
-					MemCopyNO(&ptArr[coord.GetCount()], altList.Ptr(), sizeof(Double) * altList.GetCount());
-					lyr->AddVector(pg, &lyrNameSb);
+					NEW_CLASSNN(lr, Math::Geometry::LinearRing(4326, altList.GetCount() >> 1, false, false));
+					ptArr = lr->GetPointList(nPoints);
+					MemCopyNO(ptArr, altList.Ptr(), sizeof(Double) * altList.GetCount());
+					pg->AddGeometry(lr);
 				}
-				else
-				{
-					NEW_CLASSNN(pg, Math::Geometry::Polygon(4326, 1, coord.GetCount() >> 1, false, false));
-					ptList = pg->GetPtOfstList(nPoints);
-					ptList[0] = 0;
-					ptArr = pg->GetPointList(nPoints);
-					MemCopyNO(ptArr, coord.Ptr(), sizeof(Double) * coord.GetCount());
-					lyr->AddVector(pg, &lyrNameSb);
-				}
+				lyr->AddVector(pg, &lyrNameSb);
 			}
 
 			if (style)

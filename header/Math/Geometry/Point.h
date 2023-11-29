@@ -27,6 +27,8 @@ namespace Math
 			virtual UOSInt GetCoordinates(NotNullPtr<Data::ArrayListA<Math::Coord2DDbl>> coordList) const;
 			virtual void SwapXY();
 			virtual void MultiplyCoordinatesXY(Double v);
+			virtual Bool InsideOrTouch(Math::Coord2DDbl coord) const;
+			virtual UOSInt GetPointCount() const;
 		};
 	}
 }

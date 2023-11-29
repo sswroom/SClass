@@ -46,10 +46,10 @@ Bool __stdcall SSWR::AVIRead::AVIRGISTileDownloadForm::OnMouseUp(void *userObj, 
 		me->sel1 = mapPt1;
 		me->sel2 = mapPt2;
 
-		Math::Geometry::Polygon *pg;
-		NEW_CLASS(pg, Math::Geometry::Polygon(me->navi->GetSRID(), 1, 5, false, false));
+		Math::Geometry::LinearRing *lr;
+		NEW_CLASS(lr, Math::Geometry::LinearRing(me->navi->GetSRID(), 5, false, false));
 		UOSInt nPoints;
-		Math::Coord2DDbl *ptList = pg->GetPointList(nPoints);
+		Math::Coord2DDbl *ptList = lr->GetPointList(nPoints);
 		ptList[0].x = me->sel1.x;
 		ptList[0].y = me->sel1.y;
 		ptList[1].x = me->sel2.x;
@@ -60,7 +60,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISTileDownloadForm::OnMouseUp(void *userObj, 
 		ptList[3].y = me->sel2.y;
 		ptList[4].x = me->sel1.x;
 		ptList[4].y = me->sel1.y;
-		me->navi->SetSelectedVector(pg);
+		me->navi->SetSelectedVector(lr);
 
 		UTF8Char sbuff[32];
 		UTF8Char *sptr;
@@ -105,10 +105,10 @@ Bool __stdcall SSWR::AVIRead::AVIRGISTileDownloadForm::OnMouseMove(void *userObj
 			mapPt2.y = tmpV;
 		}
 
-		Math::Geometry::Polygon *pg;
-		NEW_CLASS(pg, Math::Geometry::Polygon(me->navi->GetSRID(), 1, 5, false, false));
+		Math::Geometry::LinearRing *lr;
+		NEW_CLASS(lr, Math::Geometry::LinearRing(me->navi->GetSRID(), 5, false, false));
 		UOSInt nPoints;
-		Math::Coord2DDbl *ptList = pg->GetPointList(nPoints);
+		Math::Coord2DDbl *ptList = lr->GetPointList(nPoints);
 		ptList[0].x = mapPt1.x;
 		ptList[0].y = mapPt1.y;
 		ptList[1].x = mapPt2.x;
@@ -119,7 +119,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISTileDownloadForm::OnMouseMove(void *userObj
 		ptList[3].y = mapPt2.y;
 		ptList[4].x = mapPt1.x;
 		ptList[4].y = mapPt1.y;
-		me->navi->SetSelectedVector(pg);
+		me->navi->SetSelectedVector(lr);
 		return true;
 	}
 	return false;

@@ -164,25 +164,31 @@ Math::Geometry::Vector2D *Math::MSGeography::ParseBinary(const UInt8 *buffPtr, U
 					return 0;
 				}
 				Math::Geometry::Polygon *pg;
+				NotNullPtr<Math::Geometry::LinearRing> lr;
 				UOSInt i;
 				UOSInt j;
-				NEW_CLASS(pg, Math::Geometry::Polygon(srid, nFigures, nPoints, false, false));
-				Math::Coord2DDbl *points = pg->GetPointList(j);
+				UOSInt k;
+				UOSInt l;
+				NEW_CLASS(pg, Math::Geometry::Polygon(srid));
+				j = 0;
 				i = 0;
-				while (i < j)
+				while (i < nFigures)
 				{
-					points[i] = Math::Coord2DDbl(ReadDouble(&pointPtr[i * 16]), ReadDouble(&pointPtr[i * 16 + 8]));
-					i++;
-				}
-				if (nFigures > 1)
-				{
-					UInt32 *ofstList = pg->GetPtOfstList(j);
-					i = 0;
-					while (i < j)
+					if (i + 1 >= nFigures)
+						k = nPoints;
+					else
+						k = ReadUInt32(&figurePtr[i * 5 + 1]);
+					NEW_CLASSNN(lr, Math::Geometry::LinearRing(srid, (k - j), false ,false));
+					Math::Coord2DDbl *points = lr->GetPointList(l);
+					l = 0;
+					while (j < k)
 					{
-						ofstList[i] = ReadUInt32(&figurePtr[i * 5 + 1]);
-						i++;
+						points[l] = Math::Coord2DDbl(ReadDouble(&pointPtr[j * 16]), ReadDouble(&pointPtr[j * 16 + 8]));
+						j++;
+						l++;
 					}
+					pg->AddGeometry(lr);
+					i++;
 				}
 				return pg;
 			}
@@ -241,48 +247,38 @@ Math::Geometry::Vector2D *Math::MSGeography::ParseBinary(const UInt8 *buffPtr, U
 			{
 				Math::Geometry::MultiPolygon *mpg;
 				NotNullPtr<Math::Geometry::Polygon> pg;
+				NotNullPtr<Math::Geometry::LinearRing> lr;
 				UOSInt i;
 				UOSInt j;
 				UOSInt k;
 				UOSInt l;
 				NEW_CLASS(mpg, Math::Geometry::MultiPolygon(srid));
-				if (nFigures > 1)
+				if (nFigures == 0)
+					nFigures = 1;
+				i = 0;
+				j = 0;
+				while (i < nFigures)
 				{
-					i = 0;
-					j = 0;
-					while (i < nFigures)
+					i++;
+					if (i == nFigures)
 					{
-						i++;
-						if (i == nFigures)
-						{
-							k = nPoints;
-						}
-						else
-						{
-							k = ReadUInt32(&figurePtr[i * 5 + 1]);
-						}
-						NEW_CLASSNN(pg, Math::Geometry::Polygon(srid, 1, k - j, false, false));
-						Math::Coord2DDbl *points = pg->GetPointList(l);
-						l = 0;
-						while (j < k)
-						{
-							points[l] = Math::Coord2DDbl(ReadDouble(&pointPtr[j * 16]), ReadDouble(&pointPtr[j * 16 + 8]));
-							j++;
-							l++;
-						}
-						mpg->AddGeometry(pg);
+						k = nPoints;
 					}
-				}
-				else
-				{
-					NEW_CLASSNN(pg, Math::Geometry::Polygon(srid, 1, nPoints, false, false));
-					Math::Coord2DDbl *points = pg->GetPointList(j);
-					i = 0;
-					while (i < j)
+					else
 					{
-						points[i] = Math::Coord2DDbl(ReadDouble(&pointPtr[i * 16]), ReadDouble(&pointPtr[i * 16 + 8]));
-						i++;
+						k = ReadUInt32(&figurePtr[i * 5 + 1]);
 					}
+					NEW_CLASSNN(pg, Math::Geometry::Polygon(srid));
+					NEW_CLASSNN(lr, Math::Geometry::LinearRing(srid, (k - j), false, false));
+					Math::Coord2DDbl *points = lr->GetPointList(l);
+					l = 0;
+					while (j < k)
+					{
+						points[l] = Math::Coord2DDbl(ReadDouble(&pointPtr[j * 16]), ReadDouble(&pointPtr[j * 16 + 8]));
+						j++;
+						l++;
+					}
+					pg->AddGeometry(lr);
 					mpg->AddGeometry(pg);
 				}
 				return mpg;
@@ -379,33 +375,36 @@ Math::Geometry::Vector2D *Math::MSGeography::ParseBinary(const UInt8 *buffPtr, U
 					return 0;
 				}
 				Math::Geometry::Polygon *pg;
+				NotNullPtr<Math::Geometry::LinearRing> lr;
 				UOSInt i;
 				UOSInt j;
-				NEW_CLASS(pg, Math::Geometry::Polygon(srid, nFigures, nPoints, true, false));
-				Math::Coord2DDbl *points = pg->GetPointList(j);
-				Double *zList = pg->GetZList(j);
+				UOSInt k;
+				UOSInt l;
+				const UInt8 *zPtr = pointPtr + nPoints * 16;
+				if (nFigures == 0)
+					nFigures = 1;
+				NEW_CLASS(pg, Math::Geometry::Polygon(srid));
 				i = 0;
-				while (i < j)
+				j = 0;
+				while (i < nFigures)
 				{
-					points[i] = Math::Coord2DDbl(ReadDouble(&pointPtr[i * 16]), ReadDouble(&pointPtr[i * 16 + 8]));
 					i++;
-				}
-				pointPtr += j * 16;
-				i = 0;
-				while (i < j)
-				{
-					zList[i] = ReadDouble(&pointPtr[i * 8]);
-					i++;
-				}
-				if (nFigures > 1)
-				{
-					UInt32 *ofstList = pg->GetPtOfstList(j);
-					i = 0;
-					while (i < j)
+					if (i >= nFigures)
+						k = nPoints;
+					else
+						k = ReadUInt32(&figurePtr[i * 5 + 1]);
+					NEW_CLASSNN(lr, Math::Geometry::LinearRing(srid, (k - j), true, false));
+					Math::Coord2DDbl *points = lr->GetPointList(l);
+					Double *zList = lr->GetZList(l);
+					l = 0;
+					while (j < k)
 					{
-						ofstList[i] = ReadUInt32(&figurePtr[i * 5 + 1]);
-						i++;
+						points[l] = Math::Coord2DDbl(ReadDouble(&pointPtr[j * 16]), ReadDouble(&pointPtr[j * 16 + 8]));
+						zList[l] = ReadDouble(&zPtr[j * 8]);
+						j++;
+						l++;
 					}
+					pg->AddGeometry(lr);
 				}
 				return pg;
 			}
@@ -495,33 +494,30 @@ Math::Geometry::Vector2D *Math::MSGeography::ParseBinary(const UInt8 *buffPtr, U
 						nextPtOfst = ReadUInt32(&figurePtr[nextFigure * 5 + 1]);
 					}
 					NotNullPtr<Math::Geometry::Polygon> pg;
+					NotNullPtr<Math::Geometry::LinearRing> lr;
 					UOSInt k;
 					UOSInt l;
-					NEW_CLASSNN(pg, Math::Geometry::Polygon(srid, nextFigure - thisFigure, nextPtOfst - thisPtOfst, true, false));
-					Math::Coord2DDbl *points = pg->GetPointList(l);
-					Double *zList = pg->GetZList(l);
-					k = 0;
-					while (k < l)
-					{
-						points[k] = Math::Coord2DDbl(ReadDouble(&pointPtr[(k + thisPtOfst) * 16]), ReadDouble(&pointPtr[(k + thisPtOfst) * 16 + 8]));
-						k++;
-					}
+					UOSInt m = thisFigure;
+					UOSInt tmpV;
 					pointPtrTmp = pointPtr + nPoints * 16;
+					NEW_CLASSNN(pg, Math::Geometry::Polygon(srid));
 					k = 0;
-					while (k < l)
+					while (m < nextFigure)
 					{
-						zList[k] = ReadDouble(&pointPtrTmp[(k + thisPtOfst) * 8]);
-						k++;
-					}
-					if ((nextFigure - thisFigure) > 1)
-					{
-						UInt32 *ofstList = pg->GetPtOfstList(l);
-						k = 0;
+						if (m + 1 >= nextFigure)
+							l = nextFigure - thisFigure;
+						else
+							l = ReadUInt32(&figurePtr[(k + thisFigure) * 5 + 1]);
+						NEW_CLASSNN(lr, Math::Geometry::LinearRing(srid, l - k, true, false));
+						Math::Coord2DDbl *points = lr->GetPointList(tmpV);
+						Double *zList = lr->GetZList(tmpV);
 						while (k < l)
 						{
-							ofstList[k] = ReadUInt32(&figurePtr[(k + thisFigure) * 5 + 1]) - (UInt32)thisPtOfst;
+							points[k] = Math::Coord2DDbl(ReadDouble(&pointPtr[(k + thisPtOfst) * 16]), ReadDouble(&pointPtr[(k + thisPtOfst) * 16 + 8]));
+							zList[k] = ReadDouble(&pointPtrTmp[(k + thisPtOfst) * 8]);
 							k++;
 						}
+						pg->AddGeometry(lr);
 					}
 					mpg->AddGeometry(pg);
 

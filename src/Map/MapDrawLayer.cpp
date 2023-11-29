@@ -303,7 +303,7 @@ UTF8Char *Map::MapDrawLayer::GetPGLabel(UTF8Char *buff, UOSInt buffSize, Math::C
 				if (vec->GetVectorType() == Math::Geometry::Vector2D::VectorType::Polygon)
 				{
 					Math::Geometry::Polygon *pg = (Math::Geometry::Polygon*)vec;
-					if (pg->InsideVector(coord))
+					if (pg->InsideOrTouch(coord))
 					{
 						retVal = this->GetString(buff, buffSize, names, lastId, strIndex);
 						if (buff != retVal)

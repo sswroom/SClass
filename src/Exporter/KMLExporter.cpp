@@ -446,18 +446,21 @@ Bool Exporter::KMLExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text:
 					sb.AppendC(UTF8STRC("<tessellate>1</tessellate>"));
 					sb.AppendC(UTF8STRC("<altitudeMode>relativeToGround</altitudeMode>"));
 
-					Math::Coord2DDbl *points = pg->GetPointList(nPoints);
-					UInt32 *ptOfsts = pg->GetPtOfstList(nParts);
+					Math::Coord2DDbl *points;
+					Math::Geometry::LinearRing *lr;
 
 					if (needConv)
 					{
 						Math::Vector3 v;
-						k = nPoints;
-						l = nParts;
-						while (l-- > 0)
+						l = 0;
+						nParts = pg->GetCount();
+						while (l < nParts)
 						{
+							lr = pg->GetItem(l);
 							sb.AppendC(UTF8STRC("<outerBoundaryIs><LinearRing><coordinates>"));
-							while (k-- > ptOfsts[l])
+							k = 0;
+							points = lr->GetPointList(nPoints);
+							while (k < nPoints)
 							{
 								v = Math::CoordinateSystem::ConvertXYZ(srcCsys, destCsys, Math::Vector3(points[k], defHeight));
 								sptr = Text::StrDouble(sbuff2, v.GetX());
@@ -467,19 +470,23 @@ Bool Exporter::KMLExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text:
 								sptr = Text::StrDouble(sptr, v.GetZ());
 								sptr = Text::StrConcatC(sptr, UTF8STRC(" "));
 								sb.AppendC(sbuff2, (UOSInt)(sptr - sbuff2));
+								k++;
 							}
-							k++;
 							sb.AppendC(UTF8STRC("</coordinates></LinearRing></outerBoundaryIs>"));
+							l++;
 						}
 					}
 					else
 					{
-						k = nPoints;
-						l = nParts;
-						while (l-- > 0)
+						l = 0;
+						nParts = pg->GetCount();
+						while (l < nParts)
 						{
+							lr = pg->GetItem(l);
 							sb.AppendC(UTF8STRC("<outerBoundaryIs><LinearRing><coordinates>"));
-							while (k-- > ptOfsts[l])
+							k = 0;
+							points = lr->GetPointList(nPoints);
+							while (k < nPoints)
 							{
 								sptr = Text::StrDouble(sbuff2, points[k].x);
 								sptr = Text::StrConcatC(sptr, UTF8STRC(","));
@@ -488,9 +495,10 @@ Bool Exporter::KMLExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text:
 								sptr = Text::StrDouble(sptr, defHeight);
 								sptr = Text::StrConcatC(sptr, UTF8STRC(" "));
 								sb.AppendC(sbuff2, (UOSInt)(sptr - sbuff2));
+								k++;
 							}
-							k++;
 							sb.AppendC(UTF8STRC("</coordinates></LinearRing></outerBoundaryIs>"));
+							l++;
 						}
 					}
 

@@ -42,9 +42,10 @@ namespace Math
 			virtual void ConvCSys(NotNullPtr<const Math::CoordinateSystem> srcCSys, NotNullPtr<const Math::CoordinateSystem> destCSys);
 			virtual Bool Equals(NotNullPtr<const Vector2D> vec, Bool sameTypeOnly, Bool nearlyVal) const;
 			virtual UOSInt GetCoordinates(NotNullPtr<Data::ArrayListA<Math::Coord2DDbl>> coordList) const;
-			virtual Bool InsideVector(Math::Coord2DDbl coord) const;
+			virtual Bool InsideOrTouch(Math::Coord2DDbl coord) const;
 			virtual void SwapXY();
 			virtual void MultiplyCoordinatesXY(Double v);
+			virtual UOSInt GetPointCount() const;
 
 			Text::String *GetSourceAddr() const;
 			void SetHeight(Double height);

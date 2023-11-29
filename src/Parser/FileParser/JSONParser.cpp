@@ -464,31 +464,33 @@ Math::Geometry::Vector2D *Parser::FileParser::JSONParser::ParseGeomJSON(Text::JS
 				{
 					Math::Coord2DDbl *ptArr;
 					Math::Geometry::Polygon *pg;
-					NEW_CLASS(pg, Math::Geometry::Polygon(srid, partList.GetCount(), ptList.GetCount() >> 1, hasAlt, false));
-					UInt32 *ptOfsts = pg->GetPtOfstList(j);
+					NotNullPtr<Math::Geometry::LinearRing> lr;
+					UOSInt m;
+					NEW_CLASS(pg, Math::Geometry::Polygon(srid));
 					i = 0;
+					j = partList.GetCount();
+					k = 0;
 					while (i < j)
 					{
-						ptOfsts[i] = partList.GetItem(i);
 						i++;
-					}
-					ptArr = pg->GetPointList(j);
-					i = 0;
-					while (i < j)
-					{
-						ptArr[i].x = ptList.GetItem((i << 1));
-						ptArr[i].y = ptList.GetItem((i << 1) + 1);
-						i++;
-					}
-					if (hasAlt)
-					{
-						Double *altArr = pg->GetZList(j);
-						i = 0;
-						while (i < j)
+						if (i >= j)
+							l = ptList.GetCount() >> 1;
+						else
+							l = partList.GetItem(i);
+						NEW_CLASSNN(lr, Math::Geometry::LinearRing(srid, (l - k), hasAlt, false));
+						ptArr = lr->GetPointList(m);
+						Double *altArr = lr->GetZList(m);
+						m = 0;
+						while (k < l)
 						{
-							altArr[i] = altList.GetItem(i);
-							i++;
+							ptArr[m].x = ptList.GetItem((k << 1));
+							ptArr[m].y = ptList.GetItem((k << 1) + 1);
+							if (altArr)
+								altArr[m] = altList.GetItem(k);
+							k++;
 						}
+						pg->AddGeometry(lr);
+						i++;
 					}
 					return pg;
 				}
@@ -561,31 +563,33 @@ Math::Geometry::Vector2D *Parser::FileParser::JSONParser::ParseGeomJSON(Text::JS
 							Math::Coord2DDbl *ptArr;
 							NotNullPtr<Math::Geometry::Polygon> pg;
 							Bool hasZ = ptList.GetCount() == altList.GetCount() * 2;
-							NEW_CLASSNN(pg, Math::Geometry::Polygon(srid, partList.GetCount(), ptList.GetCount() >> 1, hasZ, false));
-							UInt32 *ptOfsts = pg->GetPtOfstList(j);
+							NotNullPtr<Math::Geometry::LinearRing> lr;
+							UOSInt m;
+							NEW_CLASSNN(pg, Math::Geometry::Polygon(srid));
 							i = 0;
+							j = partList.GetCount();
+							k = 0;
 							while (i < j)
 							{
-								ptOfsts[i] = partList.GetItem(i);
 								i++;
-							}
-							ptArr = pg->GetPointList(j);
-							i = 0;
-							while (i < j)
-							{
-								ptArr[i].x = ptList.GetItem((i << 1));
-								ptArr[i].y = ptList.GetItem((i << 1) + 1);
-								i++;
-							}
-							if (hasZ)
-							{
-								Double *altArr = pg->GetZList(j);
-								i = 0;
-								while (i < j)
+								if (i >= j)
+									l = ptList.GetCount() >> 1;
+								else
+									l = partList.GetItem(i);
+								NEW_CLASSNN(lr, Math::Geometry::LinearRing(srid, (l - k), hasZ, false));
+								ptArr = lr->GetPointList(m);
+								Double *altArr = lr->GetZList(m);
+								m = 0;
+								while (k < l)
 								{
-									altArr[i] = altList.GetItem(i);
-									i++;
+									ptArr[m].x = ptList.GetItem((k << 1));
+									ptArr[m].y = ptList.GetItem((k << 1) + 1);
+									if (altArr)
+										altArr[m] = altList.GetItem(k);
+									k++;
 								}
+								pg->AddGeometry(lr);
+								i++;
 							}
 							if (mpg == 0)
 							{

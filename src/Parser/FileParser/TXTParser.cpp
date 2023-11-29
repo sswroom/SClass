@@ -395,15 +395,18 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFileHdr(NotNullPtr<IO::Str
 						else if (ptX.GetItem(j - 1) == ptX.GetItem(0) && ptY.GetItem(j - 1) == ptY.GetItem(0) && ptZ.GetItem(j - 1) == ptZ.GetItem(0))
 						{
 							hasPG = true;
-							NEW_CLASS(pg, Math::Geometry::Polygon(srid, 1, j - 1, false, false));
-							ptList = pg->GetPointList(k);
+							NEW_CLASS(pg, Math::Geometry::Polygon(srid));
+							NotNullPtr<Math::Geometry::LinearRing> lr;
+							NEW_CLASSNN(lr, Math::Geometry::LinearRing(srid, j, false, false));
+							ptList = lr->GetPointList(k);
 							k = 0;
-							while (k < j - 1)
+							while (k < j)
 							{
 								ptList[k].x = ptX.GetItem(k);
 								ptList[k].y = ptY.GetItem(k);
 								k++;
 							}
+							pg->AddGeometry(lr);
 							vecMap.Put(currId, pg);
 						}
 						else
@@ -452,15 +455,18 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFileHdr(NotNullPtr<IO::Str
 			else if (ptX.GetItem(j - 1) == ptX.GetItem(0) && ptY.GetItem(j - 1) == ptY.GetItem(0) && ptZ.GetItem(j - 1) == ptZ.GetItem(0))
 			{
 				hasPG = true;
-				NEW_CLASS(pg, Math::Geometry::Polygon(srid, 1, j - 1, false, false));
-				ptList = pg->GetPointList(k);
+				NEW_CLASS(pg, Math::Geometry::Polygon(srid));
+				NotNullPtr<Math::Geometry::LinearRing> lr;
+				NEW_CLASSNN(lr, Math::Geometry::LinearRing(srid, j, false, false));
+				ptList = lr->GetPointList(k);
 				k = 0;
-				while (k < j - 1)
+				while (k < j)
 				{
 					ptList[k].x = ptX.GetItem(k);
 					ptList[k].y = ptY.GetItem(k);
 					k++;
 				}
+				pg->AddGeometry(lr);
 				vecMap.Put(currId, pg);
 			}
 			else

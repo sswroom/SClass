@@ -42,9 +42,11 @@ Bool __stdcall SSWR::AVIRead::AVIRGISRandomLocForm::OnMouseUp(void *userObj, Mat
 		me->selPt2 = mapPt2;
 
 		Math::Geometry::Polygon *pg;
-		NEW_CLASS(pg, Math::Geometry::Polygon(me->navi->GetSRID(), 1, 5, false, false));
+		NotNullPtr<Math::Geometry::LinearRing> lr;
+		NEW_CLASS(pg, Math::Geometry::Polygon(me->navi->GetSRID()));
+		NEW_CLASSNN(lr, Math::Geometry::LinearRing(me->navi->GetSRID(), 5, false, false));
 		UOSInt nPoints;
-		Math::Coord2DDbl *ptList = pg->GetPointList(nPoints);
+		Math::Coord2DDbl *ptList = lr->GetPointList(nPoints);
 		ptList[0] = me->selPt1;
 		ptList[1].x = me->selPt2.x;
 		ptList[1].y = me->selPt1.y;
@@ -52,6 +54,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISRandomLocForm::OnMouseUp(void *userObj, Mat
 		ptList[3].x = me->selPt1.x;
 		ptList[3].y = me->selPt2.y;
 		ptList[4] = me->selPt1;
+		pg->AddGeometry(lr);
 		me->navi->SetSelectedVector(pg);
 		return true;
 	}
@@ -82,9 +85,11 @@ Bool __stdcall SSWR::AVIRead::AVIRGISRandomLocForm::OnMouseMove(void *userObj, M
 		}
 
 		Math::Geometry::Polygon *pg;
-		NEW_CLASS(pg, Math::Geometry::Polygon(me->navi->GetSRID(), 1, 5, false, false));
+		NotNullPtr<Math::Geometry::LinearRing> lr;
+		NEW_CLASS(pg, Math::Geometry::Polygon(me->navi->GetSRID()));
+		NEW_CLASSNN(lr, Math::Geometry::LinearRing(me->navi->GetSRID(), 5, false, false));
 		UOSInt nPoints;
-		Math::Coord2DDbl *ptList = pg->GetPointList(nPoints);
+		Math::Coord2DDbl *ptList = lr->GetPointList(nPoints);
 		ptList[0] = mapPt1;
 		ptList[1].x = mapPt2.x;
 		ptList[1].y = mapPt1.y;
@@ -92,6 +97,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISRandomLocForm::OnMouseMove(void *userObj, M
 		ptList[3].x = mapPt1.x;
 		ptList[3].y = mapPt2.y;
 		ptList[4] = mapPt1;
+		pg->AddGeometry(lr);
 		me->navi->SetSelectedVector(pg);
 		return true;
 	}

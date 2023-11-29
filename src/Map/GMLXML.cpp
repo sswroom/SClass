@@ -298,6 +298,7 @@ Math::Geometry::Vector2D *Map::GMLXML::ParseGeometry(NotNullPtr<Text::XMLReader>
 		Data::ArrayListDbl yPts;
 		Data::ArrayListDbl zPts;
 		Math::Geometry::Polygon *pg;
+		NotNullPtr<Math::Geometry::LinearRing> lr;
 		Math::Coord2DDbl *ptList;
 		Text::StringBuilderUTF8 sb;
 		while (reader->ReadNext())
@@ -316,6 +317,7 @@ Math::Geometry::Vector2D *Map::GMLXML::ParseGeometry(NotNullPtr<Text::XMLReader>
 					}
 					else if (reader->GetNodeType() == Text::XMLNode::NodeType::Element && reader->GetNodeText()->Equals(UTF8STRC("gml:PolygonPatch")))
 					{
+						NEW_CLASS(pg, Math::Geometry::Polygon(env->srid));
 						while (reader->ReadNext())
 						{
 							if (reader->GetNodeType() == Text::XMLNode::NodeType::ElementEnd)
@@ -359,15 +361,14 @@ Math::Geometry::Vector2D *Map::GMLXML::ParseGeometry(NotNullPtr<Text::XMLReader>
 
 												if (xPts.GetCount() > 0)
 												{
-													NEW_CLASS(pg, Math::Geometry::Polygon(env->srid, 1, xPts.GetCount(), false, false));
-													ptList = pg->GetPointList(i);
+													NEW_CLASSNN(lr, Math::Geometry::LinearRing(env->srid, xPts.GetCount(), false, false));
+													ptList = lr->GetPointList(i);
 													while (i-- > 0)
 													{
 														ptList[i].x = xPts.GetItem(i);
 														ptList[i].y = yPts.GetItem(i);
 													}
-													SDEL_CLASS(vec);
-													vec = pg;
+													pg->AddGeometry(lr);
 												}
 											}
 											else if (reader->GetNodeType() == Text::XMLNode::NodeType::Element)
@@ -386,6 +387,15 @@ Math::Geometry::Vector2D *Map::GMLXML::ParseGeometry(NotNullPtr<Text::XMLReader>
 							{
 								reader->SkipElement();
 							}
+						}
+						if (pg->GetCount() > 0)
+						{
+							SDEL_CLASS(vec);
+							vec = pg;
+						}
+						else
+						{
+							DEL_CLASS(pg);
 						}
 					}
 					else if (reader->GetNodeType() == Text::XMLNode::NodeType::Element)
@@ -515,40 +525,16 @@ Math::Geometry::Vector2D *Map::GMLXML::ParseGeometry(NotNullPtr<Text::XMLReader>
 		Data::ArrayListDbl xPts;
 		Data::ArrayListDbl yPts;
 		Data::ArrayListDbl zPts;
-		Data::ArrayList<UOSInt> ptOfsts;
 		Math::Geometry::Polygon *pg;
+		NotNullPtr<Math::Geometry::LinearRing> lr;
 		Math::Coord2DDbl *ptList;
 		Text::StringBuilderUTF8 sb;
+		NEW_CLASS(pg, Math::Geometry::Polygon(env->srid));
 		while (reader->ReadNext())
 		{
 			Text::XMLNode::NodeType nodeType = reader->GetNodeType();
 			if (nodeType == Text::XMLNode::NodeType::ElementEnd)
 			{
-				if (xPts.GetCount() > 0)
-				{
-					NEW_CLASS(pg, Math::Geometry::Polygon(env->srid, ptOfsts.GetCount(), xPts.GetCount(), zPts.GetCount() == xPts.GetCount(), false));
-					UInt32 *ptOfstList = pg->GetPtOfstList(i);
-					while (i-- > 0)
-					{
-						ptOfstList[i] = (UInt32)ptOfsts.GetItem(i);
-					}
-					ptList = pg->GetPointList(i);
-					while (i-- > 0)
-					{
-						ptList[i].x = xPts.GetItem(i);
-						ptList[i].y = yPts.GetItem(i);
-					}
-					if (xPts.GetCount() == zPts.GetCount())
-					{
-						Double *altList = pg->GetZList(i);
-						while (i-- > 0)
-						{
-							altList[i] = zPts.GetItem(i);
-						}
-					}
-					SDEL_CLASS(vec);
-					vec = pg;
-				}
 				break;
 			}
 			else if (nodeType == Text::XMLNode::NodeType::Element)
@@ -556,8 +542,9 @@ Math::Geometry::Vector2D *Map::GMLXML::ParseGeometry(NotNullPtr<Text::XMLReader>
 				nodeName = reader->GetNodeText();
 				if (nodeName->Equals(UTF8STRC("gml:outerBoundaryIs")) || nodeName->Equals(UTF8STRC("gml:exterior")) || nodeName->Equals(UTF8STRC("gml:innerBoundaryIs")))
 				{
-					ptOfsts.Add(xPts.GetCount());
-
+					xPts.Clear();
+					yPts.Clear();
+					zPts.Clear();
 					while (reader->ReadNext())
 					{
 						nodeType = reader->GetNodeType();
@@ -646,12 +633,40 @@ Math::Geometry::Vector2D *Map::GMLXML::ParseGeometry(NotNullPtr<Text::XMLReader>
 							reader->SkipElement();
 						}
 					}
+					if (xPts.GetCount() > 0)
+					{
+						NEW_CLASSNN(lr, Math::Geometry::LinearRing(env->srid, xPts.GetCount(), zPts.GetCount() == xPts.GetCount(), false));
+						ptList = lr->GetPointList(i);
+						while (i-- > 0)
+						{
+							ptList[i].x = xPts.GetItem(i);
+							ptList[i].y = yPts.GetItem(i);
+						}
+						if (xPts.GetCount() == zPts.GetCount())
+						{
+							Double *altList = lr->GetZList(i);
+							while (i-- > 0)
+							{
+								altList[i] = zPts.GetItem(i);
+							}
+						}
+						pg->AddGeometry(lr);
+					}
 				}
 				else
 				{
 					reader->SkipElement();
 				}
 			}
+		}
+		if (pg->GetCount() > 0)
+		{
+			SDEL_CLASS(vec);
+			vec = pg;
+		}
+		else
+		{
+			DEL_CLASS(pg);
 		}
 	}
 	else

@@ -124,17 +124,6 @@ Double Math::Geometry::Polyline::CalcLength() const
 	return dist;
 }
 
-UOSInt Math::Geometry::Polyline::GetPointCount() const
-{
-	UOSInt cnt = 0;
-	UOSInt i = this->geometries.GetCount();
-	while (i-- > 0)
-	{
-		cnt += this->geometries.GetItem(i)->GetPointCount();
-	}
-	return cnt;
-}
-
 UOSInt Math::Geometry::Polyline::FillPointOfstList(Math::Coord2DDbl *pointList, UInt32 *ptOfstList, Double *zList, Double *mList) const
 {
 	UOSInt totalCnt = 0;

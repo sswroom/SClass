@@ -16,7 +16,7 @@ namespace Math
 			virtual Vector2D::VectorType GetVectorType() const;
 			virtual NotNullPtr<Vector2D> Clone() const;
 			virtual NotNullPtr<Vector2D> CurveToLine() const;
-			virtual Bool InsideVector(Math::Coord2DDbl coord) const;
+			virtual Bool InsideOrTouch(Math::Coord2DDbl coord) const;
 		};
 	}
 }

@@ -102,6 +102,11 @@ UOSInt Math::Geometry::VectorString::GetCoordinates(NotNullPtr<Data::ArrayListA<
 	return 1;
 }
 
+Bool Math::Geometry::VectorString::InsideOrTouch(Math::Coord2DDbl coord) const
+{
+	return coord == this->pos;
+}
+
 void Math::Geometry::VectorString::SwapXY()
 {
 	this->pos = this->pos.SwapXY();
@@ -110,6 +115,11 @@ void Math::Geometry::VectorString::SwapXY()
 void Math::Geometry::VectorString::MultiplyCoordinatesXY(Double v)
 {
 	this->pos = this->pos * v;
+}
+
+UOSInt Math::Geometry::VectorString::GetPointCount() const
+{
+	return 1;
 }
 
 NotNullPtr<Text::String> Math::Geometry::VectorString::GetString() const

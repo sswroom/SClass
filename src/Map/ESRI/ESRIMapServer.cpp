@@ -550,7 +550,9 @@ Math::Geometry::Vector2D *Map::ESRI::ESRIMapServer::ParseGeometry(UInt32 srid, T
 		o = geometry->GetValue(CSTR("rings"));
 		if (o && o->GetType() == Text::JSONType::Array)
 		{
-			Data::ArrayList<UInt32> ptOfstArr;
+			NotNullPtr<Math::Geometry::LinearRing> lr;
+			Math::Geometry::Polygon *pg;
+			NEW_CLASS(pg, Math::Geometry::Polygon(srid));
 			Data::ArrayListA<Math::Coord2DDbl> ptArr;
 			Text::JSONArray *rings = (Text::JSONArray*)o;
 			UOSInt i = 0;
@@ -561,7 +563,7 @@ Math::Geometry::Vector2D *Map::ESRI::ESRIMapServer::ParseGeometry(UInt32 srid, T
 				if (o->GetType() == Text::JSONType::Array)
 				{
 					Text::JSONArray *ring = (Text::JSONArray*)o;
-					ptOfstArr.Add((UInt32)ptArr.GetCount());
+					ptArr.Clear();
 					UOSInt k = 0;
 					UOSInt l = ring->GetArrayLength();
 					while (k < l)
@@ -574,25 +576,19 @@ Math::Geometry::Vector2D *Map::ESRI::ESRIMapServer::ParseGeometry(UInt32 srid, T
 						}
 						k++;
 					}
+					if (ptArr.GetCount() > 0)
+					{
+						NEW_CLASSNN(lr, Math::Geometry::LinearRing(srid, ptArr.Ptr(), ptArr.GetCount(), 0, 0));
+						pg->AddGeometry(lr);
+					}
 				}
 				i++;
 			}
-			if (ptArr.GetCount() > 0)
+			if (pg->GetCount() > 0)
 			{
-				Math::Geometry::Polygon *pg;
-				NEW_CLASS(pg, Math::Geometry::Polygon(srid, ptOfstArr.GetCount(), ptArr.GetCount(), false, false));
-				UInt32 *ptOfstList = pg->GetPtOfstList(i);
-				while (i-- > 0)
-				{
-					ptOfstList[i] = ptOfstArr.GetItem(i);
-				}
-				Math::Coord2DDbl *ptList = pg->GetPointList(i);
-				while (i-- > 0)
-				{
-					ptList[i] = ptArr.GetItem(i);
-				}
 				return pg;
 			}
+			DEL_CLASS(pg);
 		}
 	}
 	else if (geometryType->Equals(UTF8STRC("esriGeometryPolyline")))

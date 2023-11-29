@@ -105,12 +105,12 @@ namespace Math
 				return minDist;
 			}
 
-			virtual Double CalSqrDistance(Math::Coord2DDbl pt, Math::Coord2DDbl *nearPt) const
+			virtual Double CalSqrDistance(Math::Coord2DDbl pt, OutParam<Math::Coord2DDbl> nearPt) const
 			{
 				UOSInt j = this->geometries.GetCount();
 				if (j == 0)
 				{
-					*nearPt = Math::Coord2DDbl(0, 0);
+					nearPt.Set(Math::Coord2DDbl(0, 0));
 					return 1000000000;
 				}
 				Math::Coord2DDbl minPt;
@@ -128,7 +128,7 @@ namespace Math
 					}
 					i++;
 				}
-				*nearPt = minPt;
+				nearPt.Set(minPt);
 				return minDist;
 			}
 
@@ -217,13 +217,13 @@ namespace Math
 				return ret;
 			}
 
-			virtual Bool InsideVector(Math::Coord2DDbl coord) const
+			virtual Bool InsideOrTouch(Math::Coord2DDbl coord) const
 			{
 				UOSInt i = 0;
 				UOSInt j = this->GetCount();
 				while (i < j)
 				{
-					if (this->GetItem(i)->InsideVector(coord))
+					if (this->GetItem(i)->InsideOrTouch(coord))
 						return true;
 					i++;
 				}
@@ -256,6 +256,17 @@ namespace Math
 				{
 					this->GetItem(i)->SetSRID(srid);
 				}
+			}
+
+			virtual UOSInt GetPointCount() const
+			{
+				UOSInt ret = 0;
+				UOSInt j = this->GetCount();
+				while (j-- > 0)
+				{
+					ret += this->GetItem(j)->GetPointCount();
+				}
+				return ret;
 			}
 		};
 	}

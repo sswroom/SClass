@@ -23,7 +23,6 @@ namespace Math
 
 			void AddFromPtOfst(UInt32 *ptOfstList, UOSInt nPtOfst, Math::Coord2DDbl *pointList, UOSInt nPoint, Double *zList, Double *mList);
 			Double CalcLength() const;
-			UOSInt GetPointCount() const;
 			UOSInt FillPointOfstList(Math::Coord2DDbl *pointList, UInt32 *ptOfstList, Double *zList, Double *mList) const;
 			Math::Coord2DDbl CalcPosAtDistance(Double dist) const;
 

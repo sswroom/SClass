@@ -1887,30 +1887,64 @@ void Map::DrawMapRenderer::DrawLabel(NotNullPtr<DrawEnv> denv, NotNullPtr<Map::M
 						break;
 					}
 					case Math::Geometry::Vector2D::VectorType::Polyline:
-					case Math::Geometry::Vector2D::VectorType::Polygon:	
 					{
-						Math::Geometry::PointOfstCollection *ptOfst = (Math::Geometry::PointOfstCollection*)vec;
+						Math::Geometry::Polyline *pl = (Math::Geometry::Polyline*)vec;
 						UOSInt k;
-						UInt32 maxSize;
-						UInt32 maxPos;
-						UOSInt nPtOfst;
-						UInt32 *ptOfstArr = ptOfst->GetPtOfstList(nPtOfst);
+						UOSInt maxSize;
+						UOSInt maxPos;
 						UOSInt nPoint;
-						Math::Coord2DDbl *pointArr = ptOfst->GetPointList(nPoint);
-						maxSize = (UInt32)nPoint - (maxPos = ptOfstArr[nPtOfst - 1]);
-						k = nPtOfst;
+						Math::Coord2DDbl *pointArr;
+						maxSize = pl->GetItem(0)->GetPointCount();
+						maxPos = 0;
+						k = pl->GetCount();
 						while (k-- > 1)
 						{
-							if ((ptOfstArr[k] - ptOfstArr[k - 1]) > maxSize)
-								maxSize = (ptOfstArr[k] - (maxPos = ptOfstArr[k - 1]));
+							nPoint = pl->GetItem(k)->GetPointCount();
+							if (nPoint > maxSize)
+							{
+								maxSize = nPoint;
+								maxPos = k;
+							}
 						}
+						pointArr = pl->GetItem(maxPos)->GetPointList(nPoint);
 						if (vec->GetVectorType() == Math::Geometry::Vector2D::VectorType::Polygon)
 						{
-							AddLabel(denv->labels, maxLabel, &denv->labelCnt, CSTRP(sptr, sptrEnd), maxSize, &pointArr[maxPos], priority, Map::DRAW_LAYER_POLYGON, fontStyle, flags, denv->view, (OSInt)imgWidth, (OSInt)imgHeight, fontType);
+							AddLabel(denv->labels, maxLabel, &denv->labelCnt, CSTRP(sptr, sptrEnd), nPoint, pointArr, priority, Map::DRAW_LAYER_POLYGON, fontStyle, flags, denv->view, (OSInt)imgWidth, (OSInt)imgHeight, fontType);
 						}
 						else
 						{
-							AddLabel(denv->labels, maxLabel, &denv->labelCnt, CSTRP(sptr, sptrEnd), maxSize, &pointArr[maxPos], priority, Map::DRAW_LAYER_POLYLINE3D, fontStyle, flags, denv->view, (OSInt)imgWidth, (OSInt)imgHeight, fontType);
+							AddLabel(denv->labels, maxLabel, &denv->labelCnt, CSTRP(sptr, sptrEnd), nPoint, pointArr, priority, Map::DRAW_LAYER_POLYLINE3D, fontStyle, flags, denv->view, (OSInt)imgWidth, (OSInt)imgHeight, fontType);
+						}
+						break;
+					}
+					case Math::Geometry::Vector2D::VectorType::Polygon:	
+					{
+						Math::Geometry::Polygon *pg = (Math::Geometry::Polygon*)vec;
+						UOSInt k;
+						UOSInt maxSize;
+						UOSInt maxPos;
+						UOSInt nPoint;
+						Math::Coord2DDbl *pointArr;
+						maxSize = pg->GetItem(0)->GetPointCount();
+						maxPos = 0;
+						k = pg->GetCount();
+						while (k-- > 1)
+						{
+							nPoint = pg->GetItem(k)->GetPointCount();
+							if (nPoint > maxSize)
+							{
+								maxSize = nPoint;
+								maxPos = k;
+							}
+						}
+						pointArr = pg->GetItem(maxPos)->GetPointList(nPoint);
+						if (vec->GetVectorType() == Math::Geometry::Vector2D::VectorType::Polygon)
+						{
+							AddLabel(denv->labels, maxLabel, &denv->labelCnt, CSTRP(sptr, sptrEnd), nPoint, pointArr, priority, Map::DRAW_LAYER_POLYGON, fontStyle, flags, denv->view, (OSInt)imgWidth, (OSInt)imgHeight, fontType);
+						}
+						else
+						{
+							AddLabel(denv->labels, maxLabel, &denv->labelCnt, CSTRP(sptr, sptrEnd), nPoint, pointArr, priority, Map::DRAW_LAYER_POLYLINE3D, fontStyle, flags, denv->view, (OSInt)imgWidth, (OSInt)imgHeight, fontType);
 						}
 						break;
 					}
@@ -1981,11 +2015,7 @@ void Map::DrawMapRenderer::DrawLabel(NotNullPtr<DrawEnv> denv, NotNullPtr<Map::M
 					case Math::Geometry::Vector2D::VectorType::Polygon:
 					{
 						Math::Geometry::Polygon *pg = (Math::Geometry::Polygon*)vec;
-						UOSInt nPoint;
-						Math::Coord2DDbl *pointArr = pg->GetPointList(nPoint);
-						UOSInt nPtOfst;
-						UInt32 *ptOfstArr = pg->GetPtOfstList(nPtOfst);
-						pts = Math::GeometryTool::GetPolygonCenter(nPtOfst, nPoint, ptOfstArr, pointArr);
+						pts = pg->GetCenter();
 						if (denv->view->InViewXY(pts))
 						{
 							pts = denv->view->MapXYToScnXY(pts);

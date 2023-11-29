@@ -1325,13 +1325,16 @@ Map::MapDrawLayer *Map::OSM::OSMParser::ParseLayerNode(NotNullPtr<Text::XMLReade
 							NEW_CLASS(layers[elemType - 1], Map::VectorLayer(Map::DRAW_LAYER_POLYGON, fileName, colCnt, pgName, Math::CoordinateSystemManager::CreateDefaultCsys(), 0, layerNames[elemType - 1]));
 						}
 						NotNullPtr<Math::Geometry::Polygon> pg;
-						NEW_CLASSNN(pg, Math::Geometry::Polygon(4326, 1, latList.GetCount(), false, false));
-						Math::Coord2DDbl *points = pg->GetPointList(i);
+						NotNullPtr<Math::Geometry::LinearRing> lr;
+						NEW_CLASSNN(pg, Math::Geometry::Polygon(4326));
+						NEW_CLASSNN(lr, Math::Geometry::LinearRing(4326, latList.GetCount(), false, false));
+						Math::Coord2DDbl *points = lr->GetPointList(i);
 						while (i-- > 0)
 						{
 							points[i].x = lonList.GetItem(i);
 							points[i].y = latList.GetItem(i);
 						}
+						pg->AddGeometry(lr);
 						layers[elemType - 1]->AddVector(pg, names);
 					}
 					else

@@ -311,9 +311,9 @@ UOSInt Math::Geometry::VectorImage::GetCoordinates(NotNullPtr<Data::ArrayListA<M
 	return 4;
 }
 
-Bool Math::Geometry::VectorImage::InsideVector(Math::Coord2DDbl coord) const
+Bool Math::Geometry::VectorImage::InsideOrTouch(Math::Coord2DDbl coord) const
 {
-	return this->tl.x <= coord.x && this->tl.y <= coord.y && this->br.x > coord.x && this->br.y > coord.y;
+	return this->tl.x <= coord.x && this->tl.y <= coord.y && this->br.x >= coord.x && this->br.y >= coord.y;
 }
 
 void Math::Geometry::VectorImage::SwapXY()
@@ -328,6 +328,11 @@ void Math::Geometry::VectorImage::MultiplyCoordinatesXY(Double v)
 	this->tl = this->tl * v;
 	this->br = this->br * v;
 	this->size = this->size * v;
+}
+
+UOSInt Math::Geometry::VectorImage::GetPointCount() const
+{
+	return 4;
 }
 
 Text::String *Math::Geometry::VectorImage::GetSourceAddr() const

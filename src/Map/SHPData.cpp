@@ -550,7 +550,6 @@ void Map::SHPData::EndGetObject(GetObjectSess *session)
 Math::Geometry::Vector2D *Map::SHPData::GetNewVectorById(GetObjectSess *session, Int64 id)
 {
 	Map::SHPData::RecHdr *rec;
-	UOSInt nPoint;
 	NotNullPtr<Sync::Mutex> mut;
 
 	UInt32 srid = this->csys->GetSRID();
@@ -582,9 +581,14 @@ Math::Geometry::Vector2D *Map::SHPData::GetNewVectorById(GetObjectSess *session,
 		if (rec == 0)
 			return 0;
 		if (rec->vec) return rec->vec->Clone().Ptr();
-		NEW_CLASS(pg, Math::Geometry::Polygon(srid, rec->nPtOfst, rec->nPoint, false, false));
-		shpData->GetRealData(rec->ofst, rec->nPtOfst << 2, Data::ByteArray((UInt8*)pg->GetPtOfstList(nPoint), rec->nPtOfst << 2));
-		shpData->GetRealData(rec->ofst + (rec->nPtOfst << 2), rec->nPoint << 4, Data::ByteArray((UInt8*)pg->GetPointList(nPoint), rec->nPoint << 4));
+		NEW_CLASS(pg, Math::Geometry::Polygon(srid));
+		UInt32 *ptOfstList = MemAlloc(UInt32, rec->nPtOfst);
+		Math::Coord2DDbl *pointList = MemAllocA(Math::Coord2DDbl, rec->nPoint);
+		shpData->GetRealData(rec->ofst, rec->nPtOfst << 2, Data::ByteArray((UInt8*)ptOfstList, rec->nPtOfst << 2));
+		shpData->GetRealData(rec->ofst + (rec->nPtOfst << 2), rec->nPoint << 4, Data::ByteArray((UInt8*)pointList, rec->nPoint << 4));
+		pg->AddFromPtOfst(ptOfstList, rec->nPtOfst, pointList, rec->nPoint, 0, 0);
+		MemFreeA(pointList);
+		MemFree(ptOfstList);
 		rec->vec = pg->Clone().Ptr();
 		return pg;
 	}

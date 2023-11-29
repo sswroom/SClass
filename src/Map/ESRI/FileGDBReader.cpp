@@ -947,12 +947,20 @@ Math::Geometry::Vector2D *Map::ESRI::FileGDBReader::GetVector(UOSInt colIndex)
 			{
 				srid = this->tableInfo->csys->GetSRID();
 			}
-			NEW_CLASS(pg, Math::Geometry::Polygon(srid, (UOSInt)nParts, (UOSInt)nPoints, (this->tableInfo->geometryFlags & 0x80) != 0, (this->tableInfo->geometryFlags & 0x40) != 0));
+			NEW_CLASS(pg, Math::Geometry::Polygon(srid));
 			UOSInt i;
-			UInt32 *parts = pg->GetPtOfstList(i);
-			Math::Coord2DDbl *points = pg->GetPointList(i);
-			Double *zArr = pg->GetZList(i);
-			Double *mArr = pg->GetMList(i);
+			UInt32 *parts = MemAlloc(UInt32, (UOSInt)nParts);
+			Math::Coord2DDbl *points = MemAllocA(Math::Coord2DDbl, (UOSInt)nPoints);
+			Double *zArr = 0;
+			Double *mArr = 0;
+			if ((this->tableInfo->geometryFlags & 0x80) != 0)
+			{
+				zArr = MemAlloc(Double, (UOSInt)nPoints);
+			}
+			if ((this->tableInfo->geometryFlags & 0x40) != 0)
+			{
+				mArr = MemAlloc(Double, (UOSInt)nPoints);
+			}
 			parts[0] = 0;
 			UInt32 ptOfst = 0;
 			i = 1;
@@ -1005,6 +1013,13 @@ Math::Geometry::Vector2D *Map::ESRI::FileGDBReader::GetVector(UOSInt colIndex)
 					i++;
 				}
 			}
+			pg->AddFromPtOfst(parts, nParts, points, nPoints, zArr, mArr);
+			if (mArr)
+				MemFree(mArr);
+			if (zArr)
+				MemFree(zArr);
+			MemFreeA(points);
+			MemFree(parts);
 			NotNullPtr<Math::Geometry::MultiPolygon> mpg = pg->CreateMultiPolygon();
 			DEL_CLASS(pg);
 			return mpg.Ptr();
@@ -1156,11 +1171,15 @@ Math::Geometry::Vector2D *Map::ESRI::FileGDBReader::GetVector(UOSInt colIndex)
 			Math::Coord2DDbl *points;
 			Double *zArr;
 			Double *mArr;
-			NEW_CLASS(pg, Math::Geometry::Polygon(srid, (UOSInt)nParts, (UOSInt)nPoints, (geometryType & 0x80000000) != 0, (geometryType & 0x40000000) != 0));
-			parts = pg->GetPtOfstList(i);
-			points = pg->GetPointList(i);
-			zArr = pg->GetZList(i);
-			mArr = pg->GetMList(i);
+			NEW_CLASS(pg, Math::Geometry::Polygon(srid));
+			parts = MemAlloc(UInt32, (UOSInt)nParts);
+			points = MemAllocA(Math::Coord2DDbl, (UOSInt)nPoints);
+			zArr = 0;
+			mArr = 0;
+			if (geometryType & 0x80000000)
+				zArr = MemAlloc(Double, (UOSInt)nPoints);
+			if (geometryType & 0x40000000)
+				mArr = MemAlloc(Double, (UOSInt)nPoints);
 			parts[0] = 0;
 			UInt32 ptOfst = 0;
 			i = 1;
@@ -1229,6 +1248,13 @@ Math::Geometry::Vector2D *Map::ESRI::FileGDBReader::GetVector(UOSInt colIndex)
 				}
 				i++;
 			}
+			pg->AddFromPtOfst(parts, nParts, points, nPoints, zArr, mArr);
+			if (mArr)
+				MemFree(mArr);
+			if (zArr)
+				MemFree(zArr);
+			MemFreeA(points);
+			MemFree(parts);
 			NotNullPtr<Math::Geometry::MultiPolygon> mpg = pg->CreateMultiPolygon();
 			DEL_CLASS(pg);
 			return mpg.Ptr();

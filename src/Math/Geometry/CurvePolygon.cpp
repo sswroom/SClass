@@ -47,6 +47,9 @@ NotNullPtr<Math::Geometry::Vector2D> Math::Geometry::CurvePolygon::Clone() const
 
 NotNullPtr<Math::Geometry::Vector2D> Math::Geometry::CurvePolygon::CurveToLine() const
 {
+	NotNullPtr<Math::Geometry::Polygon> pg;
+	NEW_CLASSNN(pg, Math::Geometry::Polygon(this->srid));
+	NotNullPtr<Math::Geometry::LinearRing> lr;
 	Data::ArrayList<UInt32> ptOfst;
 	Data::ArrayListA<Math::Coord2DDbl> ptList;
 	UOSInt nPoint;
@@ -58,14 +61,16 @@ NotNullPtr<Math::Geometry::Vector2D> Math::Geometry::CurvePolygon::CurveToLine()
 		vec = this->GetItem(i);
 		if (vec->GetVectorType() == Math::Geometry::Vector2D::VectorType::CompoundCurve)
 		{
-			ptOfst.Add((UInt32)ptList.GetCount());
+			ptList.Clear();
 			((Math::Geometry::CompoundCurve*)vec)->GetDrawPoints(ptList);
+			NEW_CLASSNN(lr, LinearRing(this->srid, ptList.Ptr(), ptList.GetCount(), 0, 0));
+			pg->AddGeometry(lr);
 		}
 		else if (vec->GetVectorType() == Math::Geometry::Vector2D::VectorType::LineString)
 		{
-			ptOfst.Add((UInt32)ptList.GetCount());
 			const Math::Coord2DDbl *ptArr = ((Math::Geometry::LineString*)vec)->GetPointListRead(nPoint);
-			ptList.AddRange(ptArr, nPoint);
+			NEW_CLASSNN(lr, LinearRing(this->srid, ptArr, nPoint, 0, 0));
+			pg->AddGeometry(lr);
 		}
 		else
 		{
@@ -73,17 +78,13 @@ NotNullPtr<Math::Geometry::Vector2D> Math::Geometry::CurvePolygon::CurveToLine()
 		}
 		i++;
 	}
-	NotNullPtr<Math::Geometry::Polygon> pg;
-	NEW_CLASSNN(pg, Math::Geometry::Polygon(this->srid, ptOfst.GetCount(), ptList.GetCount(), false, false));
-	MemCopyNO(pg->GetPtOfstList(i), ptOfst.Ptr(), ptOfst.GetCount() * sizeof(UInt32));
-	MemCopyNO(pg->GetPointList(i), ptList.Ptr(), ptList.GetCount() * sizeof(Math::Coord2DDbl));
 	return pg;
 }
 
-Bool Math::Geometry::CurvePolygon::InsideVector(Math::Coord2DDbl coord) const
+Bool Math::Geometry::CurvePolygon::InsideOrTouch(Math::Coord2DDbl coord) const
 {
 	NotNullPtr<Vector2D> vec = this->CurveToLine();
-	Bool inside = vec->InsideVector(coord);
+	Bool inside = vec->InsideOrTouch(coord);
 	vec.Delete();
 	return inside;
 }
