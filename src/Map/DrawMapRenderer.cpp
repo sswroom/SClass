@@ -2,6 +2,7 @@
 #include "MyMemory.h"
 #include "Data/Sort/ArtificialQuickSortFunc.h"
 #include "Map/DrawMapRenderer.h"
+#include "Math/CoordinateSystemConverter.h"
 #include "Math/Math.h"
 #include "Math/GeometryTool.h"
 #include "Math/Geometry/VectorImage.h"
@@ -1564,6 +1565,7 @@ void Map::DrawMapRenderer::DrawShapes(NotNullPtr<Map::DrawMapRenderer::DrawEnv> 
 			b = denv->img->NewBrushARGB(this->colorConv->ConvRGB8(fillStyle));
 			this->mapSch.SetDrawType(layer, p, b, 0, 0.0, 0.0, &denv->isLayerEmpty);
 
+			Math::CoordinateSystemConverter converter(lyrCSys, envCSys);
 			session = layer->BeginGetObject();
 			lastId = -1;
 			while (i-- > 0)
@@ -1574,7 +1576,7 @@ void Map::DrawMapRenderer::DrawShapes(NotNullPtr<Map::DrawMapRenderer::DrawEnv> 
 					lastId = thisId;
 					if (vec.Set(layer->GetNewVectorById(session, thisId)))
 					{
-						vec->ConvCSys(lyrCSys, envCSys);
+						vec->Convert(converter);
 						this->mapSch.Draw(vec);
 					}
 				}
@@ -1745,13 +1747,13 @@ void Map::DrawMapRenderer::DrawShapesPoint(NotNullPtr<Map::DrawMapRenderer::Draw
 			this->mapSch.SetDrawType(layer, 0, 0, dimg, spotX, spotY, &denv->isLayerEmpty);
 			this->mapSch.SetDrawObjs(denv->objBounds, &denv->objCnt, maxLabel);
 			session = layer->BeginGetObject();
-
+			Math::CoordinateSystemConverter converter(lyrCSys, envCSys);
 			i = arri.GetCount();
 			while (i-- > 0)
 			{
 				if (vec.Set(layer->GetNewVectorById(session, arri.GetItem(i))))
 				{
-					vec->ConvCSys(lyrCSys, envCSys);
+					vec->Convert(converter);
 					this->mapSch.Draw(vec);
 				}
 			}
@@ -1853,6 +1855,7 @@ void Map::DrawMapRenderer::DrawLabel(NotNullPtr<DrawEnv> denv, NotNullPtr<Map::M
 		csysConv = true;
 	}
 
+	Math::CoordinateSystemConverter converter(lyrCSys, envCSys);
 	layer->GetObjectIdsMapXY(arri, &arr, Math::RectAreaDbl(tl, br), false);
 	session = layer->BeginGetObject();
 	i = arri.GetCount();
@@ -1865,7 +1868,7 @@ void Map::DrawMapRenderer::DrawLabel(NotNullPtr<DrawEnv> denv, NotNullPtr<Map::M
 			{
 				if (csysConv)
 				{
-					vec->ConvCSys(lyrCSys, envCSys);
+					vec->Convert(converter);
 				}
 				if (flags & Map::MapEnv::SFLG_TRIM)
 				{

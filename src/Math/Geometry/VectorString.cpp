@@ -67,10 +67,10 @@ Bool Math::Geometry::VectorString::HasZ() const
 	return false;
 }
 
-void Math::Geometry::VectorString::ConvCSys(NotNullPtr<const Math::CoordinateSystem> srcCSys, NotNullPtr<const Math::CoordinateSystem> destCSys)
+void Math::Geometry::VectorString::Convert(NotNullPtr<Math::CoordinateConverter> converter)
 {
-	this->pos = Math::CoordinateSystem::ConvertXYZ(srcCSys, destCSys, Math::Vector3(this->pos, 0)).GetXY();
-	this->srid = destCSys->GetSRID();
+	this->pos = converter->Convert2D(this->pos);
+	this->srid = converter->GetOutputSRID();
 }
 
 Bool Math::Geometry::VectorString::Equals(NotNullPtr<const Math::Geometry::Vector2D> vec, Bool sameTypeOnly, Bool nearlyVal) const

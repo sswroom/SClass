@@ -2,13 +2,12 @@
 #define _SM_MATH_GEOMETRY_VECTOR2D
 #include "Data/ArrayListA.h"
 #include "Math/Coord2DDbl.h"
+#include "Math/CoordinateConverter.h"
 #include "Math/RectAreaDbl.h"
 #include "Text/CString.h"
 
 namespace Math
 {
-	class CoordinateSystem;
-
 	namespace Geometry
 	{
 		class Vector2D
@@ -57,7 +56,7 @@ namespace Math
 			virtual Bool JoinVector(NotNullPtr<const Vector2D> vec) = 0;
 			virtual Bool HasZ() const { return false; };
 			virtual Bool HasM() const { return false; };
-			virtual void ConvCSys(NotNullPtr<const Math::CoordinateSystem> srcCSys, NotNullPtr<const Math::CoordinateSystem> destCSys) = 0;
+			virtual void Convert(NotNullPtr<Math::CoordinateConverter> converter) = 0;
 			virtual Bool Equals(NotNullPtr<const Vector2D> vec, Bool sameTypeOnly, Bool nearlyVal) const = 0;
 			virtual UOSInt GetCoordinates(NotNullPtr<Data::ArrayListA<Math::Coord2DDbl>> coordList) const = 0;
 			virtual Bool InsideOrTouch(Math::Coord2DDbl coord) const = 0;

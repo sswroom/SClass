@@ -2324,8 +2324,11 @@ Math/ComplexNumber.h: ../../src/Math/ComplexNumber.cpp
 @ComplexNumber.o
 Math/Coord2D.h:
 Math/Coord2DDbl.h:
+Math/CoordinateConverter.h:
 Math/CoordinateSystem.h: ../../src/Math/CoordinateSystem.cpp
 @CoordinateSystem.o
+Math/CoordinateSystemConverter.h: ../../src/Math/CoordinateSystemConverter.cpp
+@CoordinateSystemConverter.o
 Math/CoordinateSystemManager.h: ../../src/Math/CoordinateSystemManager.cpp
 @CoordinateSystemManager.o
 Math/Double2D.h:
@@ -5197,6 +5200,7 @@ BigIntLSB.o: ../../src/Math/BigIntLSB.cpp
 CesiumEntityWriter.o: ../../src/Math/CesiumEntityWriter.cpp
 ComplexNumber.o: ../../src/Math/ComplexNumber.cpp
 CoordinateSystem.o: ../../src/Math/CoordinateSystem.cpp
+CoordinateSystemConverter.o: ../../src/Math/CoordinateSystemConverter.cpp
 CoordinateSystemManager.o: ../../src/Math/CoordinateSystemManager.cpp
 EarthEllipsoid.o: ../../src/Math/EarthEllipsoid.cpp
 FFT.o: ../../src/Math/FFT.cpp

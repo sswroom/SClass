@@ -1,4 +1,5 @@
 #include "Stdafx.h"
+#include "Math/CoordinateSystemConverter.h"
 #include "SSWR/AVIRead/AVIRGISSearchForm.h"
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
@@ -35,7 +36,8 @@ void __stdcall SSWR::AVIRead::AVIRGISSearchForm::OnResultSelChg(void *userObj)
 			NotNullPtr<Math::CoordinateSystem> csys2 = me->layer->GetCoordinateSystem();
 			if (!csys1->Equals(csys2))
 			{
-				vec->ConvCSys(csys2, csys1);
+				Math::CoordinateSystemConverter converter(csys2, csys1);
+				vec->Convert(converter);
 			}
 
 			center = vec->GetCenter();

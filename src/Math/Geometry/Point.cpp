@@ -53,10 +53,10 @@ Bool Math::Geometry::Point::JoinVector(NotNullPtr<const Math::Geometry::Vector2D
 	return false;
 }
 
-void Math::Geometry::Point::ConvCSys(NotNullPtr<const Math::CoordinateSystem> srcCSys, NotNullPtr<const Math::CoordinateSystem> destCSys)
+void Math::Geometry::Point::Convert(NotNullPtr<Math::CoordinateConverter> converter)
 {
-	this->pos = Math::CoordinateSystem::ConvertXYZ(srcCSys, destCSys, Math::Vector3(this->pos, 0)).GetXY();
-	this->srid = destCSys->GetSRID();
+	this->pos = converter->Convert2D(this->pos);
+	this->srid = converter->GetOutputSRID();
 }
 
 Bool Math::Geometry::Point::Equals(NotNullPtr<const Math::Geometry::Vector2D> vec, Bool sameTypeOnly, Bool nearlyVal) const

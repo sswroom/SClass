@@ -269,16 +269,20 @@ Bool Math::Geometry::VectorImage::HasZ() const
 	return this->hasHeight;
 }
 
-void Math::Geometry::VectorImage::ConvCSys(NotNullPtr<const Math::CoordinateSystem> srcCSys, NotNullPtr<const Math::CoordinateSystem> destCSys)
+void Math::Geometry::VectorImage::Convert(NotNullPtr<Math::CoordinateConverter> converter)
 {
 	if (this->scnCoord)
 	{
+/*		if (converter->ConvertScreen())
+		{
+			this->srid = destCSys->GetSRID();
+		}*/
 	}
 	else
 	{
-		tl = Math::CoordinateSystem::ConvertXYZ(srcCSys, destCSys, Math::Vector3(tl, 0)).GetXY();
-		br = Math::CoordinateSystem::ConvertXYZ(srcCSys, destCSys, Math::Vector3(br, 0)).GetXY();
-		this->srid = destCSys->GetSRID();
+		tl = converter->Convert2D(tl);
+		br = converter->Convert2D(br);
+		this->srid = converter->GetOutputSRID();
 	}
 }
 

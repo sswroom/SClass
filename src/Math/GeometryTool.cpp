@@ -3,6 +3,7 @@
 #include "Data/ArrayListInt32.h"
 #include "Data/ArrayListDbl.h"
 #include "Data/IComparable.h"
+#include "Math/CoordinateSystemConverter.h"
 #include "Math/CoordinateSystemManager.h"
 #include "Math/GeometryTool.h"
 #include "Math/Math.h"
@@ -1030,6 +1031,7 @@ Math::Geometry::Polygon *Math::GeometryTool::CreateCircularPolygonWGS84(Math::Co
 	{
 		if (csys3857.Set(Math::CoordinateSystemManager::SRCreateCSys(3857)))
 		{
+			Math::CoordinateSystemConverter converter(csys3857, csys4326);
 			Math::Vector3 outPos = CoordinateSystem::ConvertXYZ(csys4326, csys3857, Math::Vector3(pt, 0));
 			NotNullPtr<Math::Geometry::LinearRing> lr;
 			NEW_CLASSNN(lr, Math::Geometry::LinearRing(3857, nPoints + 1, false, false));
@@ -1048,7 +1050,7 @@ Math::Geometry::Polygon *Math::GeometryTool::CreateCircularPolygonWGS84(Math::Co
 			ptArr[nPoints] = ptArr[0];
 			NEW_CLASS(pg, Math::Geometry::Polygon(3857));
 			pg->AddGeometry(lr);
-			pg->ConvCSys(csys3857, csys4326);
+			pg->Convert(converter);
 			csys3857.Delete();
 		}
 		csys4326.Delete();

@@ -163,14 +163,14 @@ namespace Math
 				return false;
 			}
 
-			virtual void ConvCSys(NotNullPtr<const Math::CoordinateSystem> srcCSys, NotNullPtr<const Math::CoordinateSystem> destCSys)
+			virtual void Convert(NotNullPtr<Math::CoordinateConverter> converter)
 			{
 				UOSInt i = this->GetCount();
 				while (i-- > 0)
 				{
-					this->GetItem(i)->ConvCSys(srcCSys, destCSys);
+					this->GetItem(i)->Convert(converter);
 				}
-				this->srid = destCSys->GetSRID();
+				this->srid = converter->GetOutputSRID();
 			}
 
 			virtual Bool Equals(NotNullPtr<const Vector2D> vec, Bool sameTypeOnly, Bool nearlyVal) const

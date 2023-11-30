@@ -56,13 +56,12 @@ Bool Math::Geometry::Ellipse::HasZ() const
 	return false;
 }
 
-void Math::Geometry::Ellipse::ConvCSys(NotNullPtr<const Math::CoordinateSystem> srcCSys, NotNullPtr<const Math::CoordinateSystem> destCSys)
+void Math::Geometry::Ellipse::Convert(NotNullPtr<Math::CoordinateConverter> converter)
 {
-	Math::Coord2DDbl br = this->tl + this->size;
-	this->tl = Math::CoordinateSystem::ConvertXYZ(srcCSys, destCSys, Math::Vector3(this->tl, 0)).GetXY();
-	br = Math::CoordinateSystem::ConvertXYZ(srcCSys, destCSys, Math::Vector3(br, 0)).GetXY();
+	Math::Coord2DDbl br = converter->Convert2D(this->tl + this->size);
+	this->tl = converter->Convert2D(this->tl);
 	this->size = br - this->tl;
-	this->srid = destCSys->GetSRID();
+	this->srid = converter->GetOutputSRID();
 }
 
 Bool Math::Geometry::Ellipse::Equals(NotNullPtr<const Math::Geometry::Vector2D> vec, Bool sameTypeOnly, Bool nearlyVal) const

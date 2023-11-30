@@ -57,10 +57,10 @@ Bool Math::Geometry::PieArea::HasZ() const
 	return false;
 }
 
-void Math::Geometry::PieArea::ConvCSys(NotNullPtr<const Math::CoordinateSystem> srcCSys, NotNullPtr<const Math::CoordinateSystem> destCSys)
+void Math::Geometry::PieArea::Convert(NotNullPtr<Math::CoordinateConverter> converter)
 {
-	this->center = Math::CoordinateSystem::ConvertXYZ(srcCSys, destCSys, Math::Vector3(this->center, 0)).GetXY();
-	this->srid = destCSys->GetSRID();
+	this->center = converter->Convert2D(this->center);
+	this->srid = converter->GetOutputSRID();
 }
 
 Bool Math::Geometry::PieArea::Equals(NotNullPtr<const Vector2D> vec, Bool sameTypeOnly, Bool nearlyVal) const

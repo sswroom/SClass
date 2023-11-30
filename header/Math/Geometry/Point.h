@@ -22,7 +22,7 @@ namespace Math
 			virtual Math::RectAreaDbl GetBounds() const;
 			virtual Double CalBoundarySqrDistance(Math::Coord2DDbl pt, OutParam<Math::Coord2DDbl> nearPt) const;
 			virtual Bool JoinVector(NotNullPtr<const Vector2D> vec);
-			virtual void ConvCSys(NotNullPtr<const Math::CoordinateSystem> srcCSys, NotNullPtr<const Math::CoordinateSystem> destCSys);
+			virtual void Convert(NotNullPtr<Math::CoordinateConverter> convert);
 			virtual Bool Equals(NotNullPtr<const Vector2D> vec, Bool sameTypeOnly, Bool nearlyVal) const;
 			virtual UOSInt GetCoordinates(NotNullPtr<Data::ArrayListA<Math::Coord2DDbl>> coordList) const;
 			virtual void SwapXY();

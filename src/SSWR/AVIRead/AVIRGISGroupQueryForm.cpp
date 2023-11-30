@@ -1,4 +1,5 @@
 #include "Stdafx.h"
+#include "Math/CoordinateSystemConverter.h"
 #include "SSWR/AVIRead/AVIRGISGroupQueryForm.h"
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
@@ -147,7 +148,8 @@ Bool __stdcall SSWR::AVIRead::AVIRGISGroupQueryForm::OnMouseUp(void *userObj, Ma
 			Math::Geometry::Vector2D *vec = lyr->GetNewVectorById(sess, id);
 			if (!csysEnv->Equals(csysLyr))
 			{
-				vec->ConvCSys(csysLyr, csysEnv);
+				Math::CoordinateSystemConverter converter(csysLyr, csysEnv);
+				vec->Convert(converter);
 			}
 			me->navi->SetSelectedVector(vec);
 			lyr->ReleaseNameArr(nameArr);

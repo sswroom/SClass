@@ -322,7 +322,7 @@ Bool Math::Geometry::LineString::HasM() const
 	return this->mArr != 0;
 }
 
-void Math::Geometry::LineString::ConvCSys(NotNullPtr<const Math::CoordinateSystem> srcCSys, NotNullPtr<const Math::CoordinateSystem> destCSys)
+void Math::Geometry::LineString::Convert(NotNullPtr<Math::CoordinateConverter> converter)
 {
 	if (this->zArr)
 	{
@@ -330,16 +330,16 @@ void Math::Geometry::LineString::ConvCSys(NotNullPtr<const Math::CoordinateSyste
 		UOSInt i = this->nPoint;
 		while (i-- > 0)
 		{
-			tmpPos = Math::CoordinateSystem::ConvertXYZ(srcCSys, destCSys, Math::Vector3(this->pointArr[i], this->zArr[i]));
+			tmpPos = converter->Convert3D(Math::Vector3(this->pointArr[i], this->zArr[i]));
 			this->pointArr[i] = tmpPos.GetXY();
 			this->zArr[i] = tmpPos.GetZ();
 		}
-		this->srid = destCSys->GetSRID();
+		this->srid = converter->GetOutputSRID();
 	}
 	else
 	{
-		Math::CoordinateSystem::ConvertXYArray(srcCSys, destCSys, this->pointArr, this->pointArr, this->nPoint);
-		this->srid = destCSys->GetSRID();
+		converter->Convert2DArr(this->pointArr, this->pointArr, this->nPoint);
+		this->srid = converter->GetOutputSRID();
 	}
 }
 

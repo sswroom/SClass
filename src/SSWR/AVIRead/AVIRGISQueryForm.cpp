@@ -1,4 +1,5 @@
 #include "Stdafx.h"
+#include "Math/CoordinateSystemConverter.h"
 #include "Math/GeometryTool.h"
 #include "Math/Geometry/Ellipse.h"
 #include "SSWR/AVIRead/AVIRGISQueryForm.h"
@@ -51,10 +52,11 @@ Bool __stdcall SSWR::AVIRead::AVIRGISQueryForm::OnMouseUp(void *userObj, Math::C
 
 				if (!csys->Equals(lyrCSys))
 				{
+					Math::CoordinateSystemConverter converter(lyrCSys, csys);
 					i = me->queryVecList.GetCount();
 					while (i-- > 0)
 					{
-						me->queryVecList.GetItem(i)->ConvCSys(lyrCSys, csys);
+						me->queryVecList.GetItem(i)->Convert(converter);
 					}
 				}
 
@@ -104,7 +106,8 @@ Bool __stdcall SSWR::AVIRead::AVIRGISQueryForm::OnMouseUp(void *userObj, Math::C
 				vec = me->lyr->GetNewVectorById(sess, obj->objId);
 				if (vec && !csys->Equals(lyrCSys))
 				{
-					vec->ConvCSys(lyrCSys, csys);
+					Math::CoordinateSystemConverter converter(lyrCSys, csys);
+					vec->Convert(converter);
 				}
 				if (vec)
 				{

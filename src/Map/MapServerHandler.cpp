@@ -6,6 +6,7 @@
 #include "Map/MapDrawLayer.h"
 #include "Map/MapLayerCollection.h"
 #include "Map/MapServerHandler.h"
+#include "Math/CoordinateSystemConverter.h"
 #include "Math/CoordinateSystemManager.h"
 #include "Math/GeoJSONWriter.h"
 #include "Math/Geometry/Polygon.h"
@@ -176,6 +177,7 @@ Bool __stdcall Map::MapServerHandler::GetLayerDataFunc(NotNullPtr<Net::WebServer
 				NotNullPtr<Math::CoordinateSystem> csys = layer->GetCoordinateSystem();
 				NotNullPtr<Math::CoordinateSystem> wgs84 = Math::CoordinateSystemManager::CreateDefaultCsys();
 				Bool needConv = !wgs84->Equals(csys);
+				Math::CoordinateSystemConverter converter(csys, wgs84);
 				Map::GetObjectSess *sess = layer->BeginGetObject();
 				i = 0;
 				j = objIds.GetCount();
@@ -213,7 +215,7 @@ Bool __stdcall Map::MapServerHandler::GetLayerDataFunc(NotNullPtr<Net::WebServer
 						json.ObjectBeginObject(CSTR("geometry"));
 						if (needConv)
 						{
-							vec->ConvCSys(csys, wgs84);
+							vec->Convert(converter);
 						}
 						writer.ToGeometry(json, vec);
 						vec.Delete();

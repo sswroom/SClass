@@ -34,12 +34,12 @@ Bool Math::Geometry::PointZ::HasZ() const
 	return true;
 }
 
-void Math::Geometry::PointZ::ConvCSys(NotNullPtr<const Math::CoordinateSystem> srcCSys, NotNullPtr<const Math::CoordinateSystem> destCSys)
+void Math::Geometry::PointZ::Convert(NotNullPtr<Math::CoordinateConverter> converter)
 {
-	Math::Vector3 tmpPos = Math::CoordinateSystem::ConvertXYZ(srcCSys, destCSys, Math::Vector3(this->pos, this->z));
+	Math::Vector3 tmpPos = converter->Convert3D(Math::Vector3(this->pos, this->z));
 	this->pos = tmpPos.GetXY();
 	this->z = tmpPos.GetZ();
-	this->srid = destCSys->GetSRID();
+	this->srid = converter->GetOutputSRID();
 }
 
 Bool Math::Geometry::PointZ::Equals(NotNullPtr<const Math::Geometry::Vector2D> vec, Bool sameTypeOnly, Bool nearlyVal) const

@@ -30,7 +30,7 @@ namespace Math
 			virtual Bool JoinVector(NotNullPtr<const Math::Geometry::Vector2D> vec);
 			virtual Bool HasZ() const;
 			virtual Bool HasM() const;
-			virtual void ConvCSys(NotNullPtr<const Math::CoordinateSystem> srcCSys, NotNullPtr<const Math::CoordinateSystem> destCSys);
+			virtual void Convert(NotNullPtr<Math::CoordinateConverter> converter);
 			virtual Bool Equals(NotNullPtr<const Vector2D> vec, Bool sameTypeOnly, Bool nearlyVal) const;
 			virtual UOSInt GetCoordinates(NotNullPtr<Data::ArrayListA<Math::Coord2DDbl>> coordList) const;
 			virtual Bool InsideOrTouch(Math::Coord2DDbl coord) const;

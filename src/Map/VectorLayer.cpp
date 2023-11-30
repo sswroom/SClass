@@ -2,6 +2,7 @@
 #include "MyMemory.h"
 #include "DB/ColDef.h"
 #include "Map/VectorLayer.h"
+#include "Math/CoordinateSystemConverter.h"
 #include "Math/Math.h"
 #include "Math/Geometry/Point.h"
 #include "Math/Geometry/Polyline.h"
@@ -922,16 +923,17 @@ void Map::VectorLayer::ReplaceVector(Int64 id, NotNullPtr<Math::Geometry::Vector
 void Map::VectorLayer::ConvCoordinateSystem(NotNullPtr<Math::CoordinateSystem> destCsys)
 {
 	Math::Geometry::Vector2D *v;
+	Math::CoordinateSystemConverter converter(this->csys, destCsys);
 	UOSInt i;
 	i = this->vectorList.GetCount();
 	while (i-- > 0)
 	{
 		v = this->vectorList.GetItem(i);
-		v->ConvCSys(this->csys, destCsys);
+		v->Convert(converter);
 	}
 
-	this->min = Math::CoordinateSystem::ConvertXYZ(this->csys, destCsys, Math::Vector3(this->min, 0)).GetXY();
-	this->max = Math::CoordinateSystem::ConvertXYZ(this->csys, destCsys, Math::Vector3(this->max, 0)).GetXY();
+	this->min = converter.Convert2D(this->min);
+	this->max = converter.Convert2D(this->max);
 	this->UpdateMapRate();
 
 	this->csys.Delete();
