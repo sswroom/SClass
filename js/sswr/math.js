@@ -156,7 +156,7 @@ export class EarthEllipsoid
 		var d = Math.acos(cLat1 * Math.cos(rLon1) * cLat2 * Math.cos(rLon2) + cLat1 * Math.sin(rLon1) * cLat2 * Math.sin(rLon2) + Math.sin(rLat1) * Math.sin(rLat2)) * r;
 		if (d > 0 || d < 0)
 		{
-			if (distUnit != null && distUnit != unit.Distance.DistanceUnit.METER)
+			if (distUnit != null && distUnit != unit.DistanceUnit.METER)
 			{
 				d = unit.Distance.convert(unit.DistanceUnit.METER, distUnit, d);
 			}
@@ -393,7 +393,7 @@ export class Mercator1SPProjectedCoordinateSystem extends ProjectedCoordinateSys
 	}
 }
 
-export default class CoordinateSystemManager
+export class CoordinateSystemManager
 {
 	static srCreateGeogCSys(srid, datumSrid, name)
 	{

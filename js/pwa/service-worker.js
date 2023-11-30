@@ -52,7 +52,12 @@ self.addEventListener("fetch", event => {
   // On fetch, go to the cache first, and then network.
   event.respondWith((async () => {
     const cache = await caches.open(CACHE_NAME);
-    const versionedUrl = `${event.request.url}?v=${VERSION}`;
+	var u = event.request.url;
+    var versionedUrl;
+	if (u.includes("?"))
+		versionedUrl = u+"&v="+VERSION;
+	else
+		versionedUrl = u+"?v="+VERSION;
     const cachedResponse = await cache.match(versionedUrl);
 
     if (cachedResponse) {

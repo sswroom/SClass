@@ -129,7 +129,7 @@ export class Timestamp {
 	static fromEpochMS(epochMS: number, tzQhr?: number): Timestamp;
 	static fromEpochUS(epochUS: number, tzQhr?: number): Timestamp;
 	static fromEpochNS(epochNS: number, tzQhr?: number): Timestamp;
-	static fromTimeValue(tval: any): Timestamp;
+	static fromTimeValue(tval: TimeValue): Timestamp;
 	static fromYMDHMS(ymdhms: number, tzQhr?: number): Timestamp;
 	addMonth(val: number): Timestamp;
 	addYear(val: number): Timestamp;
@@ -156,7 +156,7 @@ export class Timestamp {
 	toEpochSec(): number;
 	toEpochMS(): number;
 	toEpochNS(): number;
-	toString(pattern: string | null): string;
+	toString(pattern?: string): string;
 	toStringISO8601(): string;
 	toStringNoZone(): string;
 	toUTCTime(): Timestamp;
@@ -165,6 +165,6 @@ export class Timestamp {
 	setTimeZoneQHR(tzQhr: number): Timestamp;
 	getTimeZoneQHR(): number;
 	sameDate(ts: Timestamp): boolean;
-	toTimeValue(): any;
+	toTimeValue(): TimeValue;
 	roundToS(): Timestamp;
 }

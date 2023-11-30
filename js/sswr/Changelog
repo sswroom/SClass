@@ -1,5 +1,6 @@
 1.2.3
 -Fixed DateTimeUtil.toString infinity loop
+-Fixed Distance Calculation
 
 1.2.2
 -Added text.toAttrText(), text.toXMLTest();
