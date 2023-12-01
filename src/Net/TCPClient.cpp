@@ -445,7 +445,14 @@ UTF8Char *Net::TCPClient::GetLocalName(UTF8Char *buff) const
 
 Bool Net::TCPClient::GetRemoteAddr(NotNullPtr<Net::SocketUtil::AddressInfo> addr) const
 {
-	return this->sockf->GetRemoteAddr(this->s, addr, 0);
+	if (this->s)
+	{
+		return this->sockf->GetRemoteAddr(this->s, addr, 0);
+	}
+	else
+	{
+		return false;
+	}
 }
 
 UInt16 Net::TCPClient::GetRemotePort() const
@@ -460,19 +467,28 @@ UInt16 Net::TCPClient::GetLocalPort() const
 
 void Net::TCPClient::SetNoDelay(Bool val)
 {
-	this->sockf->SetNoDelay(this->s, val);
+	if ((this->flags & 4) == 0)
+	{
+		this->sockf->SetNoDelay(this->s, val);
+	}
 }
 
 void Net::TCPClient::ShutdownSend()
 {
-	this->flags |= 1;
-	this->sockf->ShutdownSend(this->s);
+	if ((this->flags & 4) == 0)
+	{
+		this->flags |= 1;
+		this->sockf->ShutdownSend(this->s);
+	}
 }
 
 void Net::TCPClient::SetTimeout(Data::Duration timeout)
 {
-	this->sockf->SetRecvTimeout(this->s, timeout);
-	this->timeout = timeout;
+	if ((this->flags & 4) == 0)
+	{
+		this->sockf->SetRecvTimeout(this->s, timeout);
+		this->timeout = timeout;
+	}
 }
 
 Data::Duration Net::TCPClient::GetTimeout()

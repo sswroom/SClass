@@ -81,24 +81,29 @@ void __stdcall SSWR::AVIRead::AVIREmailServerForm::OnPOP3StartClicked(void *user
 			return;
 		}
 		Net::SSLEngine *ssl = 0;
-		if (me->chkPOP3SSL->IsChecked())
+		Bool sslConn = me->chkPOP3SSL->IsChecked();
+		NotNullPtr<Crypto::Cert::X509Cert> pop3SSLCert;
+		NotNullPtr<Crypto::Cert::X509File> pop3SSLKey;
+		if (pop3SSLCert.Set(me->pop3SSLCert) && pop3SSLKey.Set(me->pop3SSLKey))
 		{
-			NotNullPtr<Crypto::Cert::X509Cert> pop3SSLCert;
-			NotNullPtr<Crypto::Cert::X509File> pop3SSLKey;
-			if (!pop3SSLCert.Set(me->pop3SSLCert) || !pop3SSLKey.Set(me->pop3SSLKey))
-			{
-				UI::MessageDialog::ShowDialog(CSTR("Please select SSL Cert/Key"), CSTR("SMTP Server"), me);
-				return;
-			}
 			ssl = me->pop3SSL;
 			ssl->ServerSetCertsASN1(pop3SSLCert, pop3SSLKey, me->pop3CACerts);
 		}
-		NEW_CLASS(me->pop3Svr, Net::Email::POP3Server(me->core->GetSocketFactory(), ssl, port, me->log, CSTR("Welcome to SSWR POP3 Server"), me, true));
+		else if (sslConn)
+		{
+			UI::MessageDialog::ShowDialog(CSTR("Please select SSL Cert/Key"), CSTR("SMTP Server"), me);
+			return;
+		}
+		NEW_CLASS(me->pop3Svr, Net::Email::POP3Server(me->core->GetSocketFactory(), ssl, sslConn, port, me->log, CSTR("Welcome to SSWR POP3 Server"), me, true));
 		if (me->pop3Svr->IsError())
 		{
 			DEL_CLASS(me->pop3Svr);
+			me->pop3Svr = 0;
 		}
-		me->txtPOP3Port->SetReadOnly(true);
+		else
+		{
+			me->txtPOP3Port->SetReadOnly(true);
+		}
 	}
 }
 

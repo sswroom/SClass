@@ -31,6 +31,7 @@ namespace Net
 		private:
 			NotNullPtr<Net::SocketFactory> sockf;
 			Net::SSLEngine *ssl;
+			Bool sslConn;
 			Net::TCPServer *svr;
 			Net::TCPClientMgr cliMgr;
 			NotNullPtr<IO::LogTool> log;
@@ -44,12 +45,12 @@ namespace Net
 			static void __stdcall ClientEvent(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData, Net::TCPClientMgr::TCPEventType evtType);
 			static void __stdcall ClientData(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData, const Data::ByteArrayR &buff);
 			static void __stdcall ClientTimeout(NotNullPtr<Net::TCPClient> cli, void *userObj, void *cliData);
-			UOSInt WriteMessage(NotNullPtr<Net::TCPClient> cli, Bool success, const UTF8Char *msg, UOSInt msgLen);
+			UOSInt WriteMessage(NotNullPtr<Net::TCPClient> cli, Bool success, Text::CString msg);
 			UOSInt WriteRAW(NotNullPtr<Net::TCPClient> cli, const UTF8Char *msg, UOSInt msgLen);
 			//static OSInt WriteMessage(Net::TCPClient *cli, Int32 statusCode, const Char *msg);
 			void ParseCmd(NotNullPtr<Net::TCPClient> cli, MailStatus *cliStatus, const UTF8Char *cmd, UOSInt cmdLen);
 		public:
-			POP3Server(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, UInt16 port, NotNullPtr<IO::LogTool> log, Text::CString greeting, Net::Email::MailController *mailCtrl, Bool autoStart);
+			POP3Server(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, Bool sslConn, UInt16 port, NotNullPtr<IO::LogTool> log, Text::CString greeting, Net::Email::MailController *mailCtrl, Bool autoStart);
 			~POP3Server();
 
 			Bool Start();
