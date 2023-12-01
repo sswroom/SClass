@@ -1,8 +1,7 @@
 #ifndef _SM_SSWR_AVIREAD_AVIRGISTILEDOWNLOADFORM
 #define _SM_SSWR_AVIREAD_AVIRGISTILEDOWNLOADFORM
-#include "IO/SPackageFile.h"
-#include "IO/ZIPBuilder.h"
 #include "Map/TileMapLayer.h"
+#include "Map/TileMapWriter.h"
 #include "SSWR/AVIRead/AVIRCore.h"
 #include "SSWR/AVIRead/IMapNavigator.h"
 #include "Sync/Mutex.h"
@@ -25,10 +24,7 @@ namespace SSWR
 				Int32 threadStat; //0 = not running, 1 = idle, 2 = has task, 3 = toStop
 				UOSInt lyrId;
 				Math::Coord2D<Int32> imageId;
-				Sync::Mutex *pkgMut;
-				IO::SPackageFile *spkg;
-				IO::ZIPBuilder *zip;
-				const UTF8Char *folderName;
+				Map::TileMapWriter *writer;
 				NotNullPtr<Map::TileMap> tileMap;
 			};
 		private:
@@ -74,8 +70,9 @@ namespace SSWR
 			static void __stdcall OnSaveFileClicked(void *userObj);
 			static void __stdcall OnStopClicked(void *userObj);
 
-			void SaveTilesDir(const UTF8Char *folderName, UOSInt userMinLevel, UOSInt userMaxLevel);
+			void SaveTilesDir(Text::CStringNN folderName, UOSInt userMinLevel, UOSInt userMaxLevel);
 			void SaveTilesFile(Text::CStringNN fileName, UOSInt fileType, UOSInt userMinLevel, UOSInt userMaxLevel);
+			void WriteTiles(NotNullPtr<Map::TileMapWriter> writer, UOSInt userMinLevel, UOSInt userMaxLevel);
 			Bool GetLevels(OutParam<UOSInt> minLevel, OutParam<UOSInt> maxLevel);
 			static UInt32 __stdcall ProcThread(void *userObj);
 		public:
@@ -84,6 +81,6 @@ namespace SSWR
 
 			virtual void OnMonitorChanged();
 		};
-	};
-};
+	}
+}
 #endif

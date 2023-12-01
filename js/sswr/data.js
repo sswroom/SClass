@@ -112,6 +112,130 @@ export function compare(a, b)
 	}
 }
 
+export function sort(arr, compareFunc, firstIndex, lastIndex)
+{
+    var levi = new Array();
+    var desni = new Array();
+
+	var index = 0;
+	var i = 0;
+	var j = 0;
+	var left = 0;
+	var right = 0;
+	var meja = 0;
+	var left1 = 0;
+	var right1 = 0;
+	var temp1 = 0;
+	var temp2 = 0;
+	var temp = 0;
+	if (compareFunc == null)
+	{
+		compareFunc = compare;
+	}
+	if (firstIndex == null || lastIndex == null)
+	{
+		firstIndex = 0;
+		lastIndex = arr.length - 1;
+	}
+    left = firstIndex;
+	right = lastIndex;
+
+	while (left < right)
+	{
+		if (compareFunc(arr[left], arr[right]) > 0)
+		{
+			temp = arr[left];
+			arr[left] = arr[right];
+			arr[right] = temp;
+		}
+		left++; right--;
+	}
+
+	index = 0;
+	levi[index] = firstIndex;
+	desni[index] = lastIndex;
+
+	while ( index >= 0 )
+	{
+		left = levi[index];
+		right = desni[index];
+		i = right - left;
+		if ( i > 15 )
+		{
+			temp1 = arr[left];
+			j = left + 1;
+			while (j <= right)
+			{
+				temp2 = arr[j];
+				if ( compareFunc(temp2, temp1) < 0)
+				{
+					meja = temp1;
+					if ( compareFunc(arr[ (left + right) >> 1], meja) > 0)
+					{
+						meja = arr[ (left + right) >> 1 ];
+					}
+					left1 = left;
+					right1 = right;
+					while (true)
+					{
+						while ( compareFunc(arr[right1], meja) >= 0) right1--;
+						while ( compareFunc(arr[left1], meja) < 0) left1++;
+						if (left1 > right1)
+							break;
+
+						temp = arr[right1];
+						arr[right1--] = arr[left1];
+						arr[left1++] = temp;
+					}
+					desni[index] = --left1;
+					levi[++index] = ++right1;
+					desni[index] = right;
+
+					index++;
+					break;
+				}
+				else
+				{
+					temp1 = temp2;
+				}
+				j++;
+			}
+		}
+		else
+		{
+			if ( i != 0 )
+			{
+				temp1 = arr[left];
+				i = left + 1;
+				while (i <= right)
+				{
+					temp2 = arr[i];
+					if ( compareFunc(temp1, temp2) > 0)
+					{
+						arr[i] = temp1;
+						j = i - 1;
+						while (j > left)
+						{
+							temp = arr[j-1];
+							if ( compareFunc(temp, temp2) > 0)
+								arr[j--] = temp;
+							else
+								break;
+						}
+						arr[j] = temp2;
+					}
+					else
+					{
+						temp1 = temp2;
+					}
+					i++;
+				}
+			}
+		}
+		index--;
+	}
+}
+
 export class DateValue
 {
 	constructor()

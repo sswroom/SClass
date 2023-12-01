@@ -1,13 +1,18 @@
 #ifndef _SM_MAP_MAPVIEW
 #define _SM_MAP_MAPVIEW
 #include "Math/Coord2D.h"
+#include "Math/CoordinateConverter.h"
 #include "Math/Size2DDbl.h"
 #include "Media/DrawEngine.h"
 
+#define SRID_SCREEN 999999999
+
 namespace Map
 {
-	class MapView
+	class MapView : public Math::CoordinateConverter
 	{
+	private:
+		Math::Coord2DDbl converterOfst;
 	protected:
 		Math::Size2DDbl scnSize;
 		
@@ -45,6 +50,12 @@ namespace Map
 		void SetDestImage(NotNullPtr<Media::DrawImage> img);
 		void ToPointCnt(Int32 *parts, Int32 nParts, Int32 nPoints) const;
 		void SetViewBounds(Math::RectAreaDbl bounds);
+
+		void SetConverterOfst(Math::Coord2DDbl ofst);
+		virtual UInt32 GetOutputSRID() const;
+		virtual Math::Coord2DDbl Convert2D(Math::Coord2DDbl coord) const;
+		virtual Math::Vector3 Convert3D(Math::Vector3 vec3) const;
+		virtual void Convert2DArr(const Math::Coord2DDbl *srcArr, Math::Coord2DDbl *destArr, UOSInt nPoints) const;
 	};
 }
 #endif

@@ -10,7 +10,6 @@ namespace Math
 	public:
 		virtual ~CoordinateConverter(){};
 
-		virtual UInt32 GetSourceSRID() const = 0;
 		virtual UInt32 GetOutputSRID() const = 0;
 		virtual Math::Coord2DDbl Convert2D(Math::Coord2DDbl coord) const = 0;
 		virtual Math::Vector3 Convert3D(Math::Vector3 vec3) const = 0;

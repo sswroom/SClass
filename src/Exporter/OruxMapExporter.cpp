@@ -158,7 +158,7 @@ Bool Exporter::OruxMapExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, T
 			level = 0;
 			while (level <= 18)
 			{
-				if (osm->GetTileBounds(level, &minX, &minY, &maxX, &maxY))
+				if (osm->GetTileBounds(level, minX, minY, maxX, maxY))
 				{
 					minLon = Map::OSM::OSMTileMap::TileX2Lon(minX, level);
 					maxLon = Map::OSM::OSMTileMap::TileX2Lon(maxX + 1, level);
@@ -246,7 +246,7 @@ Bool Exporter::OruxMapExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, T
 					writer->WriteStrC(UTF8STRC("</OruxTracker>\n"));
 				
 					imgIds.Clear();
-					osm->GetTileImageIDs(level, Math::RectAreaDbl(Math::Coord2DDbl(minLon, maxLat), Math::Coord2DDbl(maxLon, minLat)), &imgIds);
+					osm->GetTileImageIDs(level, Math::RectAreaDbl(Math::Coord2DDbl(minLon, minLat), Math::Coord2DDbl(maxLon, maxLat)), &imgIds);
 					void *sess = db->BeginTransaction();
 					j = imgIds.GetCount();
 					while (j-- > 0)

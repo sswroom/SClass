@@ -57,6 +57,7 @@ Math::Geometry::LineString::LineString(UInt32 srid, const Math::Coord2DDbl *poin
 
 Math::Geometry::LineString::~LineString()
 {
+	MemFreeA(this->pointArr);
 	if (this->zArr)
 		MemFreeA(this->zArr);
 	if (this->mArr)

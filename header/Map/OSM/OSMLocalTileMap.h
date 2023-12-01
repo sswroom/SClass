@@ -48,7 +48,7 @@ namespace Map
 			virtual UTF8Char *GetTileImageURL(UTF8Char *sbuff, UOSInt level, Math::Coord2D<Int32> tileId);
 			virtual Optional<IO::StreamData> LoadTileImageData(UOSInt level, Math::Coord2D<Int32> tileId, OutParam<Math::RectAreaDbl> bounds, Bool localOnly, OptOut<ImageType> it);
 
-			Bool GetTileBounds(UOSInt level, Int32 *minX, Int32 *minY, Int32 *maxX, Int32 *maxY);
+			Bool GetTileBounds(UOSInt level, OutParam<Int32> minX, OutParam<Int32> minY, OutParam<Int32> maxX, OutParam<Int32> maxY);
 		};
 	}
 }

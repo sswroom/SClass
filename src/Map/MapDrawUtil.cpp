@@ -57,6 +57,17 @@ Bool Map::MapDrawUtil::DrawPolyline(NotNullPtr<Math::Geometry::Polyline> pl, Not
 	return true;
 }
 
+Bool Map::MapDrawUtil::DrawLinearRing(NotNullPtr<Math::Geometry::LinearRing> lr, NotNullPtr<Media::DrawImage> img, NotNullPtr<Map::MapView> view, Optional<Media::DrawBrush> b, Optional<Media::DrawPen> p, Math::Coord2DDbl ofst)
+{
+	UOSInt nPoint;
+	Math::Coord2DDbl *points = lr->GetPointList(nPoint);
+	Math::Coord2DDbl *dpoints = MemAllocA(Math::Coord2DDbl, nPoint);
+	view->MapXYToScnXY(points, dpoints, nPoint, ofst);
+	img->DrawPolygon(dpoints, nPoint, p, b);
+	MemFreeA(dpoints);
+	return true;
+}
+
 Bool Map::MapDrawUtil::DrawPolygon(NotNullPtr<Math::Geometry::Polygon> pg, NotNullPtr<Media::DrawImage> img, NotNullPtr<Map::MapView> view, Optional<Media::DrawBrush> b, Optional<Media::DrawPen> p, Math::Coord2DDbl ofst)
 {
 	UOSInt nPoint = pg->GetPointCount();
@@ -311,10 +322,13 @@ Bool Map::MapDrawUtil::DrawPieArea(NotNullPtr<Math::Geometry::PieArea> pieArea, 
 
 Bool Map::MapDrawUtil::DrawVector(NotNullPtr<Math::Geometry::Vector2D> vec, NotNullPtr<Media::DrawImage> img, NotNullPtr<Map::MapView> view, Optional<Media::DrawBrush> b, Optional<Media::DrawPen> p, Math::Coord2DDbl ofst)
 {
-	switch (vec->GetVectorType())
+	Math::Geometry::Vector2D::VectorType vecType = vec->GetVectorType();
+	switch (vecType)
 	{
 	case Math::Geometry::Vector2D::VectorType::Point:
 		return DrawPoint(NotNullPtr<Math::Geometry::Point>::ConvertFrom(vec), img, view, b, p, ofst);
+	case Math::Geometry::Vector2D::VectorType::Image:
+		return DrawVectorImage(NotNullPtr<Math::Geometry::VectorImage>::ConvertFrom(vec), img, view, b, p, ofst);
 	case Math::Geometry::Vector2D::VectorType::Polyline:
 		return DrawPolyline(NotNullPtr<Math::Geometry::Polyline>::ConvertFrom(vec), img, view, b, p, ofst);
 	case Math::Geometry::Vector2D::VectorType::LineString:
@@ -331,8 +345,8 @@ Bool Map::MapDrawUtil::DrawVector(NotNullPtr<Math::Geometry::Vector2D> vec, NotN
 		return DrawCurvePolygon(NotNullPtr<Math::Geometry::CurvePolygon>::ConvertFrom(vec), img, view, b, p, ofst);
 	case Math::Geometry::Vector2D::VectorType::Ellipse:
 		return DrawEllipse(NotNullPtr<Math::Geometry::Ellipse>::ConvertFrom(vec), img, view, b, p, ofst);
-	case Math::Geometry::Vector2D::VectorType::Image:
-		return DrawVectorImage(NotNullPtr<Math::Geometry::VectorImage>::ConvertFrom(vec), img, view, b, p, ofst);
+	case Math::Geometry::Vector2D::VectorType::LinearRing:
+		return DrawLinearRing(NotNullPtr<Math::Geometry::LinearRing>::ConvertFrom(vec), img, view, b, p, ofst);
 	case Math::Geometry::Vector2D::VectorType::MultiPoint:
 	case Math::Geometry::Vector2D::VectorType::CircularString:
 	case Math::Geometry::Vector2D::VectorType::CompoundCurve:
@@ -342,7 +356,6 @@ Bool Map::MapDrawUtil::DrawVector(NotNullPtr<Math::Geometry::Vector2D> vec, NotN
 	case Math::Geometry::Vector2D::VectorType::PolyhedralSurface:
 	case Math::Geometry::Vector2D::VectorType::Tin:
 	case Math::Geometry::Vector2D::VectorType::Triangle:
-	case Math::Geometry::Vector2D::VectorType::LinearRing:
 	case Math::Geometry::Vector2D::VectorType::String:
 	case Math::Geometry::Vector2D::VectorType::PieArea:
 	case Math::Geometry::Vector2D::VectorType::Unknown:

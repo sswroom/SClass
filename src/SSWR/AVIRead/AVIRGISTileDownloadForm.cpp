@@ -1,6 +1,10 @@
 #include "Stdafx.h"
 #include "IO/FileStream.h"
 #include "IO/Path.h"
+#include "Map/TileMapFolderWriter.h"
+#include "Map/TileMapOruxWriter.h"
+#include "Map/TileMapSPKWriter.h"
+#include "Map/TileMapZipWriter.h"
 #include "Math/Geometry/Polygon.h"
 #include "SSWR/AVIRead/AVIRGISTileDownloadForm.h"
 #include "Sync/Interlocked.h"
@@ -143,7 +147,7 @@ void __stdcall SSWR::AVIRead::AVIRGISTileDownloadForm::OnSaveDirClicked(void *us
 		UI::FolderDialog dlg(L"SSWR", L"AVIRead", L"GISTileDown");
 		if (dlg.ShowDialog(me->GetHandle()))
 		{
-			me->SaveTilesDir(dlg.GetFolder()->v, minLevel, maxLevel);
+			me->SaveTilesDir(dlg.GetFolder()->ToCString(), minLevel, maxLevel);
 		}
 	}
 }
@@ -160,6 +164,7 @@ void __stdcall SSWR::AVIRead::AVIRGISTileDownloadForm::OnSaveFileClicked(void *u
 		UI::FileDialog dlg(L"SSWR", L"AVIRead", L"GISTileDownFile", true);
 		dlg.AddFilter(CSTR("*.spk"), CSTR("SPackage File"));
 		dlg.AddFilter(CSTR("*.zip"), CSTR("ZIP File"));
+		dlg.AddFilter(CSTR("*.otrk2.xml"), CSTR("Orux Map Tile"));
 		if (dlg.ShowDialog(me->GetHandle()))
 		{
 			me->SaveTilesFile(dlg.GetFileName()->ToCString(), dlg.GetFilterIndex(), minLevel, maxLevel);
@@ -173,12 +178,9 @@ void __stdcall SSWR::AVIRead::AVIRGISTileDownloadForm::OnStopClicked(void *userO
 	me->stopDownload = true;
 }
 
-void SSWR::AVIRead::AVIRGISTileDownloadForm::SaveTilesDir(const UTF8Char *folderName, UOSInt userMinLevel, UOSInt userMaxLevel)
+void SSWR::AVIRead::AVIRGISTileDownloadForm::SaveTilesDir(Text::CStringNN folderName, UOSInt userMinLevel, UOSInt userMaxLevel)
 {
 	NotNullPtr<Map::TileMap> tileMap = this->lyr->GetTileMap();
-	UTF8Char sbuff[32];
-	UTF8Char *sptr;
-	UOSInt currLyr;
 	UOSInt tileMinLevel = tileMap->GetMinLevel();
 	UOSInt tileMaxLevel = tileMap->GetMaxLevel();
 	if (userMinLevel > tileMaxLevel || userMaxLevel < tileMinLevel)
@@ -187,92 +189,13 @@ void SSWR::AVIRead::AVIRGISTileDownloadForm::SaveTilesDir(const UTF8Char *folder
 		userMinLevel = tileMinLevel;
 	if (userMaxLevel > tileMaxLevel)
 		userMaxLevel = tileMaxLevel;
-	Data::ArrayList<Math::Coord2D<Int32>> imgIdList;
-	UOSInt i;
-	UOSInt j;
-	UOSInt cnt;
-	OSInt err = 0;
-	Bool found;
-	this->errCnt = 0;
-	this->txtError->SetText(CSTR("0"));
-	this->stopDownload = false;
-	currLyr = tileMinLevel;
-	while (currLyr <= tileMaxLevel)
-	{
-		sptr = Text::StrUOSInt(sbuff, currLyr);
-		this->txtLayer->SetText(CSTRP(sbuff, sptr));
-
-		imgIdList.Clear();
-		tileMap->GetTileImageIDs(currLyr, Math::RectAreaDbl(this->sel1, this->sel2), &imgIdList);
-		cnt = imgIdList.GetCount();
-		i = cnt;
-		while (i-- > 0)
-		{
-			sptr = Text::StrUOSInt(Text::StrConcatC(Text::StrUOSInt(sbuff, cnt - i), UTF8STRC("/")), cnt);
-			this->txtImages->SetText(CSTRP(sbuff, sptr));
-			this->ui->ProcessMessages();
-
-			found = false;
-			while (!this->stopDownload)
-			{
-				j = this->threadCnt;
-				while (j-- > 0)
-				{
-					if (this->threadStat[j].threadStat == 1)
-					{
-						this->threadStat[j].lyrId = currLyr;
-						this->threadStat[j].imageId = imgIdList.GetItem(i);
-						this->threadStat[j].spkg = 0;
-						this->threadStat[j].zip = 0;
-						this->threadStat[j].pkgMut = 0;
-						this->threadStat[j].folderName = folderName;
-						this->threadStat[j].threadStat = 2;
-
-						found = true;
-						break;
-					}
-				}
-				if (found)
-					break;
-				this->mainEvt.Wait(100);
-			}
-			if (err != this->errCnt)
-			{
-				err = this->errCnt;
-				sptr = Text::StrOSInt(sbuff, err);
-				this->txtError->SetText(CSTRP(sbuff, sptr));
-			}
-			if (this->stopDownload)
-				break;
-		}
-		if (this->stopDownload)
-			break;
-		currLyr++;
-	}
-	while (true)
-	{
-		found = false;
-		j = this->threadCnt;
-		while (j-- > 0)
-		{
-			if (this->threadStat[j].threadStat != 1)
-			{
-				found = true;
-				break;
-			}
-		}
-		if (!found)
-			break;
-		this->mainEvt.Wait(100);
-	}
+	Map::TileMapFolderWriter writer(folderName, tileMap->GetImageType(), userMinLevel, userMaxLevel, Math::RectAreaDbl(this->sel1, this->sel2));
+	WriteTiles(writer, userMinLevel, userMaxLevel);
 }
 
 void SSWR::AVIRead::AVIRGISTileDownloadForm::SaveTilesFile(Text::CStringNN fileName, UOSInt fileType, UOSInt userMinLevel, UOSInt userMaxLevel)
 {
 	NotNullPtr<Map::TileMap> tileMap = this->lyr->GetTileMap();
-	UTF8Char sbuff[32];
-	UTF8Char *sptr;
-	UOSInt currLyr;
 	UOSInt tileMinLevel = tileMap->GetMinLevel();
 	UOSInt tileMaxLevel = tileMap->GetMaxLevel();
 	if (userMinLevel > tileMaxLevel || userMaxLevel < tileMinLevel)
@@ -281,8 +204,30 @@ void SSWR::AVIRead::AVIRGISTileDownloadForm::SaveTilesFile(Text::CStringNN fileN
 		userMinLevel = tileMinLevel;
 	if (userMaxLevel > tileMaxLevel)
 		userMaxLevel = tileMaxLevel;
+	NotNullPtr<Map::TileMapWriter> writer;
+	if (fileType == 1)
+	{
+		NEW_CLASSNN(writer, Map::TileMapZipWriter(fileName, tileMap->GetImageType(), userMinLevel, userMaxLevel, Math::RectAreaDbl(this->sel1, this->sel2)));
+	}
+	else if (fileType == 2)
+	{
+		NEW_CLASSNN(writer, Map::TileMapOruxWriter(fileName, userMinLevel, userMaxLevel, Math::RectAreaDbl(this->sel1, this->sel2)));
+	}
+	else
+	{
+		NEW_CLASSNN(writer, Map::TileMapSPKWriter(fileName));
+	}
+	WriteTiles(writer, userMinLevel, userMaxLevel);
+	writer.Delete();
+}
+
+void SSWR::AVIRead::AVIRGISTileDownloadForm::WriteTiles(NotNullPtr<Map::TileMapWriter> writer, UOSInt userMinLevel, UOSInt userMaxLevel)
+{
+	NotNullPtr<Map::TileMap> tileMap = this->lyr->GetTileMap();
+	UTF8Char sbuff[32];
+	UTF8Char *sptr;
+	UOSInt currLyr;
 	Data::ArrayList<Math::Coord2D<Int32>> imgIdList;
-	Data::ArrayListInt32 imgXList;
 	UOSInt i;
 	UOSInt j;
 	UOSInt cnt;
@@ -292,37 +237,12 @@ void SSWR::AVIRead::AVIRGISTileDownloadForm::SaveTilesFile(Text::CStringNN fileN
 	this->txtError->SetText(CSTR("0"));
 	this->stopDownload = false;
 
-	Sync::Mutex *spkgMut = 0;
-	IO::SPackageFile *spkg = 0;
-	IO::FileStream *zipFS = 0;
-	IO::ZIPBuilder *zip = 0;
-	if (fileType == 1)
-	{
-		NotNullPtr<IO::FileStream> fs;
-		NEW_CLASSNN(fs, IO::FileStream(fileName, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-		zipFS = fs.Ptr();
-		NEW_CLASS(zip, IO::ZIPBuilder(fs, IO::ZIPOS::UNIX));
-	}
-	else
-	{
-		NEW_CLASS(spkgMut, Sync::Mutex());
-		NEW_CLASS(spkg, IO::SPackageFile(fileName));
-	}
-	
 	currLyr = userMinLevel;
 	while (currLyr <= userMaxLevel)
 	{
 		sptr = Text::StrUOSInt(sbuff, currLyr);
 		this->txtLayer->SetText(CSTRP(sbuff, sptr));
-
-		if (zip)
-		{
-			*sptr++ = '/';
-			*sptr = 0;
-			Data::Timestamp t = Data::Timestamp::UtcNow();
-			zip->AddDir(CSTRP(sbuff, sptr), t, t, t, 0);
-			imgXList.Clear();
-		}
+		writer->BeginLevel(currLyr);
 
 		imgIdList.Clear();
 		tileMap->GetTileImageIDs(currLyr, Math::RectAreaDbl(this->sel1, this->sel2), &imgIdList);
@@ -334,21 +254,7 @@ void SSWR::AVIRead::AVIRGISTileDownloadForm::SaveTilesFile(Text::CStringNN fileN
 			this->txtImages->SetText(CSTRP(sbuff, sptr));
 			this->ui->ProcessMessages();
 			Math::Coord2D<Int32> imageId = imgIdList.GetItem(i);
-			if (zip)
-			{
-				OSInt k = imgXList.SortedIndexOf(imageId.x);
-				if (k < 0)
-				{
-					imgXList.Insert((UOSInt)~k, imageId.x);
-					sptr = Text::StrUOSInt(sbuff, currLyr);
-					*sptr++ = '/';
-					sptr = Text::StrInt32(sptr, imageId.x);
-					*sptr++ = '/';
-					*sptr = 0;
-					Data::Timestamp t = Data::Timestamp::UtcNow();
-					zip->AddDir(CSTRP(sbuff, sptr), t, t, t, 0);
-				}
-			}
+			writer->AddX(imageId.x);
 
 			found = false;
 			while (!this->stopDownload)
@@ -360,10 +266,7 @@ void SSWR::AVIRead::AVIRGISTileDownloadForm::SaveTilesFile(Text::CStringNN fileN
 					{
 						this->threadStat[j].lyrId = currLyr;
 						this->threadStat[j].imageId = imageId;
-						this->threadStat[j].spkg = spkg;
-						this->threadStat[j].pkgMut = spkgMut;
-						this->threadStat[j].zip = zip;
-						this->threadStat[j].folderName = 0;
+						this->threadStat[j].writer = writer.Ptr();
 						this->threadStat[j].threadStat = 2;
 						this->threadStat[j].threadEvt->Set();
 
@@ -403,52 +306,6 @@ void SSWR::AVIRead::AVIRGISTileDownloadForm::SaveTilesFile(Text::CStringNN fileN
 		if (!found)
 			break;
 		this->mainEvt.Wait(100);
-	}
-	if (fileType == 1)
-	{
-		if (!this->stopDownload)
-		{
-			Text::JSONBuilder json(Text::JSONBuilder::OT_OBJECT);
-			json.ObjectAddStr(CSTR("name"), this->lyr->GetName());
-			json.ObjectAddStr(CSTR("version"), CSTR("1.0"));
-			json.ObjectAddStr(CSTR("description"), CSTR(""));
-			json.ObjectAddStr(CSTR("attribution"), CSTR("Generated by AVIRead (sswroom)"));
-			json.ObjectAddStr(CSTR("type"), CSTR("overlay"));
-			switch (this->lyr->GetTileMap()->GetImageType())
-			{
-			case Map::TileMap::IT_WEBP:
-				json.ObjectAddStr(CSTR("format"), CSTR("webp"));
-				break;
-			case Map::TileMap::IT_JPG:
-				json.ObjectAddStr(CSTR("format"), CSTR("jpg"));
-				break;
-			case Map::TileMap::IT_PNG:
-				json.ObjectAddStr(CSTR("format"), CSTR("png"));
-				break;
-			}
-			sptr = Text::StrUOSInt(sbuff, userMinLevel);
-			json.ObjectAddStr(CSTR("minzoom"), CSTRP(sbuff, sptr));
-			sptr = Text::StrUOSInt(sbuff, userMaxLevel);
-			json.ObjectAddStr(CSTR("maxzoom"), CSTRP(sbuff, sptr));
-			json.ObjectAddStr(CSTR("scale"), CSTR("1.000000"));
-			json.ObjectBeginArray(CSTR("bounds"));
-			json.ArrayAddFloat64(this->sel1.x);
-			json.ArrayAddFloat64(this->sel1.y);
-			json.ArrayAddFloat64(this->sel2.x);
-			json.ArrayAddFloat64(this->sel2.y);
-			json.ArrayEnd();
-			json.ObjectAddStr(CSTR("profile"), CSTR("mercator"));
-			Text::CStringNN metadata = json.Build();
-			Data::Timestamp t = Data::Timestamp::UtcNow();
-			zip->AddFile(CSTR("metadata.json"), metadata.v, metadata.leng, t, t, t, Data::Compress::Inflate::CompressionLevel::BestCompression, 0);
-		}
-		DEL_CLASS(zip);
-		DEL_CLASS(zipFS);
-	}
-	else
-	{
-		DEL_CLASS(spkg);
-		DEL_CLASS(spkgMut);
 	}
 }
 
@@ -515,81 +372,9 @@ UInt32 __stdcall SSWR::AVIRead::AVIRGISTileDownloadForm::ProcThread(void *userOb
 					}
 					if (fd->GetRealData(0, (UOSInt)fileSize, fileBuff) == fileSize)
 					{
-						if (stat->spkg)
+						if (stat->writer)
 						{
-							sb.ClearStr();
-							sb.AppendUOSInt(stat->lyrId);
-							sb.AppendChar(IO::Path::PATH_SEPERATOR, 1);
-							sb.AppendI32(stat->imageId.x);
-							sb.AppendChar(IO::Path::PATH_SEPERATOR, 1);
-							sb.AppendI32(stat->imageId.y);
-							switch (it)
-							{
-							default:
-							case Map::TileMap::IT_PNG:
-								sb.AppendC(UTF8STRC(".png"));
-								break;
-							case Map::TileMap::IT_WEBP:
-								sb.AppendC(UTF8STRC(".webp"));
-								break;
-							case Map::TileMap::IT_JPG:
-								sb.AppendC(UTF8STRC(".jpg"));
-								break;
-							}
-	//						stat->pkgMut->Lock();
-							stat->spkg->AddFile(fileBuff.Ptr(), (UOSInt)fileSize, sb.ToCString(), Data::Timestamp::UtcNow());
-	//						stat->pkgMut->Unlock();
-						}
-						else if (stat->zip)
-						{
-							sb.ClearStr();
-							sb.AppendUOSInt(stat->lyrId);
-							sb.AppendChar(IO::Path::PATH_SEPERATOR, 1);
-							sb.AppendI32(stat->imageId.x);
-							sb.AppendChar(IO::Path::PATH_SEPERATOR, 1);
-							sb.AppendI32(stat->imageId.y);
-							switch (it)
-							{
-							default:
-							case Map::TileMap::IT_PNG:
-								sb.AppendC(UTF8STRC(".png"));
-								break;
-							case Map::TileMap::IT_WEBP:
-								sb.AppendC(UTF8STRC(".webp"));
-								break;
-							case Map::TileMap::IT_JPG:
-								sb.AppendC(UTF8STRC(".jpg"));
-								break;
-							}
-							Data::Timestamp t = Data::Timestamp::UtcNow();
-							stat->zip->AddFile(sb.ToCString(), fileBuff.Ptr(), (UOSInt)fileSize, t, t, t, Data::Compress::Inflate::CompressionLevel::BestCompression, 0);
-						}
-						else
-						{
-							sb.ClearStr();
-							sb.AppendSlow(stat->folderName);
-							sb.AppendChar(IO::Path::PATH_SEPERATOR, 1);
-							sb.AppendUOSInt(stat->lyrId);
-							sb.AppendChar(IO::Path::PATH_SEPERATOR, 1);
-							sb.AppendI32(stat->imageId.x);
-							IO::Path::CreateDirectory(sb.ToCString());
-							sb.AppendChar(IO::Path::PATH_SEPERATOR, 1);
-							sb.AppendI32(stat->imageId.y);
-							switch (it)
-							{
-							default:
-							case Map::TileMap::IT_PNG:
-								sb.AppendC(UTF8STRC(".png"));
-								break;
-							case Map::TileMap::IT_WEBP:
-								sb.AppendC(UTF8STRC(".webp"));
-								break;
-							case Map::TileMap::IT_JPG:
-								sb.AppendC(UTF8STRC(".jpg"));
-								break;
-							}
-							IO::FileStream fs(sb.ToCString(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer);
-							fs.Write(fileBuff.Ptr(), (UOSInt)fileSize);
+							stat->writer->AddImage(stat->lyrId, stat->imageId.x, stat->imageId.y, fileBuff.SubArray(0, (UOSInt)fileSize), it);
 						}
 					}
 					DEL_CLASS(fd);
@@ -696,10 +481,7 @@ SSWR::AVIRead::AVIRGISTileDownloadForm::AVIRGISTileDownloadForm(UI::GUIClientCon
 		this->threadStat[i].threadStat = 0;
 		this->threadStat[i].lyrId = 0;
 		this->threadStat[i].imageId = 0;
-		this->threadStat[i].spkg = 0;
-		this->threadStat[i].zip = 0;
-		this->threadStat[i].pkgMut = 0;
-		this->threadStat[i].folderName = 0;
+		this->threadStat[i].writer = 0;
 		this->threadStat[i].tileMap = this->lyr->GetTileMap();
 		Sync::ThreadUtil::Create(ProcThread, &this->threadStat[i]);
 		i++;

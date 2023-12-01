@@ -2261,14 +2261,23 @@ Map/SHPUtil.h: ../../src/Map/SHPUtil.cpp
 Map/SPDLayer.h: ../../src/Map/SPDLayer.cpp
 @SPDLayer.o
 Map/TileMap.h:
+Map/TileMapFolderWriter.h: ../../src/Map/TileMapFolderWriter.cpp
+@TileMapFolderWriter.o
 Map/TileMapGenerator.h: ../../src/Map/TileMapGenerator.cpp
 @TileMapGenerator.o
 Map/TileMapLayer.h: ../../src/Map/TileMapLayer.cpp
 @TileMapLayer.o
+Map/TileMapOruxWriter.h: ../../src/Map/TileMapOruxWriter.cpp
+@TileMapOruxWriter.o
 Map/TileMapServiceSource.h: ../../src/Map/TileMapServiceSource.cpp
 @TileMapServiceSource.o
+Map/TileMapSPKWriter.h: ../../src/Map/TileMapSPKWriter.cpp
+@TileMapSPKWriter.o
 Map/TileMapUtil.h: ../../src/Map/TileMapUtil.cpp
 @TileMapUtil.o
+Map/TileMapWriter.h:
+Map/TileMapZipWriter.h: ../../src/Map/TileMapZipWriter.cpp
+@TileMapZipWriter.o
 Map/VectorLayer.h: ../../src/Map/VectorLayer.cpp
 @VectorLayer.o
 Map/WebFeatureService.h: ../../src/Map/WebFeatureService.cpp
@@ -5169,10 +5178,14 @@ ScaledMapView.o: ../../src/Map/ScaledMapView.cpp
 SHPData.o: ../../src/Map/SHPData.cpp
 SHPUtil.o: ../../src/Map/SHPUtil.cpp
 SPDLayer.o: ../../src/Map/SPDLayer.cpp
+TileMapFolderWriter.o: ../../src/Map/TileMapFolderWriter.cpp
 TileMapGenerator.o: ../../src/Map/TileMapGenerator.cpp
 TileMapLayer.o: ../../src/Map/TileMapLayer.cpp
+TileMapOruxWriter.o: ../../src/Map/TileMapOruxWriter.cpp
 TileMapServiceSource.o: ../../src/Map/TileMapServiceSource.cpp
+TileMapSPKWriter.o: ../../src/Map/TileMapSPKWriter.cpp
 TileMapUtil.o: ../../src/Map/TileMapUtil.cpp
+TileMapZipWriter.o: ../../src/Map/TileMapZipWriter.cpp
 VectorLayer.o: ../../src/Map/VectorLayer.cpp
 WebFeatureService.o: ../../src/Map/WebFeatureService.cpp
 WebImageLayer.o: ../../src/Map/WebImageLayer.cpp

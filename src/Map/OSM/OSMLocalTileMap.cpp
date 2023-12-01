@@ -426,7 +426,7 @@ Optional<IO::StreamData> Map::OSM::OSMLocalTileMap::LoadTileImageData(UOSInt lev
 	return fd;
 }
 
-Bool Map::OSM::OSMLocalTileMap::GetTileBounds(UOSInt level, Int32 *minX, Int32 *minY, Int32 *maxX, Int32 *maxY)
+Bool Map::OSM::OSMLocalTileMap::GetTileBounds(UOSInt level, OutParam<Int32> minX, OutParam<Int32> minY, OutParam<Int32> maxX, OutParam<Int32> maxY)
 {
 	UOSInt i;
 	UOSInt j;
@@ -541,10 +541,10 @@ Bool Map::OSM::OSMLocalTileMap::GetTileBounds(UOSInt level, Int32 *minX, Int32 *
 		}
 		if (found)
 		{
-			*minX = thisMinX;
-			*maxX = thisMaxX;
-			*minY = thisMinY;
-			*maxY = thisMaxY;
+			minX.Set(thisMinX);
+			maxX.Set(thisMaxX);
+			minY.Set(thisMinY);
+			maxY.Set(thisMaxY);
 		}
 	}
 	return found;

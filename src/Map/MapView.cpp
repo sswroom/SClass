@@ -6,6 +6,7 @@
 Map::MapView::MapView(Math::Size2DDbl scnSize)
 {
 	this->scnSize = scnSize;
+	this->converterOfst = Math::Coord2DDbl(0, 0);
 }
 
 Map::MapView::~MapView()
@@ -70,4 +71,29 @@ void Map::MapView::SetViewBounds(Math::RectAreaDbl bounds)
 	{
 		ChangeViewXY(this->scnSize, bounds.GetCenter(), currScale / yRatio);
 	}
+}
+
+void Map::MapView::SetConverterOfst(Math::Coord2DDbl ofst)
+{
+	this->converterOfst = ofst;
+}
+
+UInt32 Map::MapView::GetOutputSRID() const
+{
+	return SRID_SCREEN;
+}
+
+Math::Coord2DDbl Map::MapView::Convert2D(Math::Coord2DDbl coord) const
+{
+	return this->MapXYToScnXY(coord) + this->converterOfst;
+}
+
+Math::Vector3 Map::MapView::Convert3D(Math::Vector3 vec3) const
+{
+	return Math::Vector3(this->MapXYToScnXY(vec3.GetXY()) + this->converterOfst, 0);
+}
+
+void Map::MapView::Convert2DArr(const Math::Coord2DDbl *srcArr, Math::Coord2DDbl *destArr, UOSInt nPoints) const
+{
+	this->MapXYToScnXY(srcArr, destArr, nPoints, this->converterOfst);
 }
