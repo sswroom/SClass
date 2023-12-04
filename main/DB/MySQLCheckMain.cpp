@@ -197,7 +197,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 			IO::LogWriter *writer;
 			NEW_CLASS(writer, IO::LogWriter(log, IO::LogHandler::LogLevel::Command));
 
-			Net::SSLEngine *ssl = Net::SSLEngineFactory::Create(sockf, true);
+			Optional<Net::SSLEngine> ssl = Net::SSLEngineFactory::Create(sockf, true);
 			Net::Email::SMTPClient *smtp;
 			Data::DateTime currTime;
 			currTime.SetCurrTime();
@@ -220,7 +220,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 				retNum = 8;
 			}
 			DEL_CLASS(smtp);
-			SDEL_CLASS(ssl);
+			ssl.Delete();
 			DEL_CLASS(writer);
 		}
 	}

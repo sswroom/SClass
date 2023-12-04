@@ -39,7 +39,7 @@ namespace SSWR
 			
 		private:
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
-			Net::SSLEngine *ssl;
+			Optional<Net::SSLEngine> ssl;
 			Net::MQTTConn *client;
 			IO::LogTool log;
 			NotNullPtr<UI::ListBoxLogger> logger;

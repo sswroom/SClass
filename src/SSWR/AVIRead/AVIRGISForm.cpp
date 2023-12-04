@@ -822,7 +822,7 @@ SSWR::AVIRead::AVIRGISForm::~AVIRGISForm()
 	DEL_CLASS(this->envRenderer);
 	this->env.Delete();
 	this->wgs84CSys.Delete();
-	SDEL_CLASS(this->ssl);
+	this->ssl.Delete();
 	this->ClearChildren();
 	this->core->GetColorMgr()->DeleteSess(this->colorSess);
 }

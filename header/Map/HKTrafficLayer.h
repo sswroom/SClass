@@ -55,7 +55,7 @@ namespace Map
 
 		NotNullPtr<Text::String> url;
 		NotNullPtr<Net::SocketFactory> sockf;
-		Net::SSLEngine *ssl;
+		Optional<Net::SSLEngine> ssl;
 		Text::EncodingFactory *encFact;
 		Sync::Mutex roadMut;
 		Data::FastMap<Int64, RoadInfo*> roadMap;
@@ -65,7 +65,7 @@ namespace Map
 		void SetSpeedMap(Int32 fromId, Int32 toId, SaturationLevel lev, Int32 trafficSpeed);
 		IO::Stream *OpenURLStream();
 	public:
-		HKTrafficLayer(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, Text::EncodingFactory *encFact);
+		HKTrafficLayer(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::EncodingFactory *encFact);
 		virtual ~HKTrafficLayer();
 
 		void SetURL(Text::String *url);

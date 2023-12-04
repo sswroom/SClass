@@ -25,7 +25,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPLoadBalanceForm::OnStartClick(void *userOb
 	Text::StrToUInt16S(sb.ToString(), port, 0);
 	sb.ClearStr();
 	me->txtFwdURL->GetText(sb);
-	Net::SSLEngine *ssl = 0;
+	Optional<Net::SSLEngine> ssl = 0;
 	if (!sb.StartsWith(UTF8STRC("http://")) && !sb.StartsWith(UTF8STRC("https://")))
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Invalid Forward URL"), CSTR("HTTP Load Balance"), me);
@@ -42,7 +42,11 @@ void __stdcall SSWR::AVIRead::AVIRHTTPLoadBalanceForm::OnStartClick(void *userOb
 			return;
 		}
 		ssl = me->ssl;
-		ssl->ServerSetCertsASN1(sslCert, sslKey, me->caCerts);
+		NotNullPtr<Net::SSLEngine> nnssl;
+		if (ssl.SetTo(nnssl))
+		{
+			nnssl->ServerSetCertsASN1(sslCert, sslKey, me->caCerts);
+		}
 	}
 	if (port > 0 && port < 65535)
 	{
@@ -431,7 +435,7 @@ SSWR::AVIRead::AVIRHTTPLoadBalanceForm::~AVIRHTTPLoadBalanceForm()
 	SDEL_CLASS(this->log);
 	SDEL_CLASS(this->logger);
 	SDEL_CLASS(this->reqLog);
-	SDEL_CLASS(this->ssl);
+	this->ssl.Delete();
 	SDEL_CLASS(this->sslCert);
 	SDEL_CLASS(this->sslKey);
 	this->ClearCACerts();

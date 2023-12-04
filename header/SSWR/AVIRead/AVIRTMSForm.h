@@ -22,13 +22,13 @@ namespace SSWR
 			UI::GUIButton *btnOK;
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
-			Net::SSLEngine *ssl;
+			Optional<Net::SSLEngine> ssl;
 			Map::TileMapServiceSource *tms;
 
 			static void __stdcall OnLoadClicked(void *userObj);
 			static void __stdcall OnOKClicked(void *userObj);
 		public:
-			AVIRTMSForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Net::SSLEngine *ssl);
+			AVIRTMSForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Optional<Net::SSLEngine> ssl);
 			virtual ~AVIRTMSForm();
 
 			virtual void OnMonitorChanged();

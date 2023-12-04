@@ -17,7 +17,7 @@
 #include "Text/MyStringFloat.h"
 #include "Text/TextBinEnc/Base64Enc.h"
 
-Map::GoogleMap::GoogleStaticMap::GoogleStaticMap(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, Text::String *gooKey, Text::String *gooCliId, Text::String *gooPrivKey)
+Map::GoogleMap::GoogleStaticMap::GoogleStaticMap(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::String *gooKey, Text::String *gooCliId, Text::String *gooPrivKey)
 {
 	this->sockf = sockf;
 	this->ssl = ssl;
@@ -37,7 +37,7 @@ Map::GoogleMap::GoogleStaticMap::GoogleStaticMap(NotNullPtr<Net::SocketFactory> 
 	}
 }
 
-Map::GoogleMap::GoogleStaticMap::GoogleStaticMap(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, Text::CString gooKey, Text::CString gooCliId, Text::CString gooPrivKey)
+Map::GoogleMap::GoogleStaticMap::GoogleStaticMap(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CString gooKey, Text::CString gooCliId, Text::CString gooPrivKey)
 {
 	this->sockf = sockf;
 	this->ssl = ssl;

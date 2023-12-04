@@ -14,7 +14,7 @@ namespace SSWR
 		private:
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			UI::GUIMainMenu *mnuMain;
-			Net::SSLEngine *ssl;
+			Optional<Net::SSLEngine> ssl;
 
 		private:
 			static void __stdcall FileHandler(void *userObj, NotNullPtr<Text::String> *files, UOSInt nFiles);

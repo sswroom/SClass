@@ -35,9 +35,10 @@ void __stdcall Net::Email::POP3Server::ConnReady(NotNullPtr<Net::TCPClient> cli,
 void __stdcall Net::Email::POP3Server::ConnHdlr(Socket *s, void *userObj)
 {
 	Net::Email::POP3Server *me = (Net::Email::POP3Server*)userObj;
-	if (me->sslConn && me->ssl)
+	NotNullPtr<Net::SSLEngine> ssl;
+	if (me->sslConn && me->ssl.SetTo(ssl))
 	{
-		me->ssl->ServerInit(s, ConnReady, me);
+		ssl->ServerInit(s, ConnReady, me);
 	}
 	else
 	{
@@ -186,7 +187,7 @@ void Net::Email::POP3Server::ParseCmd(NotNullPtr<Net::TCPClient> cli, MailStatus
 		WriteMessage(cli, true, CSTR("Capability list follows"));
 		Text::StringBuilderUTF8 sb;
 		sb.AppendC(UTF8STRC("CAPA\r\nTOP\r\nUSER\r\nUIDL\r\n"));
-		if (!this->sslConn && this->ssl && !cli->IsSSL())
+		if (!this->sslConn && !this->ssl.IsNull() && !cli->IsSSL())
 		{
 			sb.AppendC(UTF8STRC("STLS\r\n"));
 		}
@@ -210,15 +211,16 @@ void Net::Email::POP3Server::ParseCmd(NotNullPtr<Net::TCPClient> cli, MailStatus
 	}
 	else if (Text::StrEqualsC(cmd, cmdLen, UTF8STRC("STLS")))
 	{
+		NotNullPtr<Net::SSLEngine> ssl;
 		if (this->sslConn || cli->IsSSL())
 		{
 			WriteMessage(cli, false, CSTR("Command not permitted when TLS active"));
 		}
-		else if (this->ssl)
+		else if (this->ssl.SetTo(ssl))
 		{
 			WriteMessage(cli, true, CSTR("Begin TLS negotiation now."));
 			Socket *s = cli->RemoveSocket();
-			this->ssl->ServerInit(s, ConnReady, this);
+			ssl->ServerInit(s, ConnReady, this);
 		}
 		else
 		{
@@ -562,7 +564,7 @@ void Net::Email::POP3Server::ParseCmd(NotNullPtr<Net::TCPClient> cli, MailStatus
 	}
 }
 
-Net::Email::POP3Server::POP3Server(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, Bool sslConn, UInt16 port, NotNullPtr<IO::LogTool> log, Text::CString greeting, Net::Email::MailController *mailCtrl, Bool autoStart) : cliMgr(60, ClientEvent, ClientData, this, 4, ClientTimeout)
+Net::Email::POP3Server::POP3Server(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Bool sslConn, UInt16 port, NotNullPtr<IO::LogTool> log, Text::CString greeting, Net::Email::MailController *mailCtrl, Bool autoStart) : cliMgr(60, ClientEvent, ClientData, this, 4, ClientTimeout)
 {
 	this->sockf = sockf;
 	this->ssl = ssl;
@@ -589,7 +591,7 @@ Bool Net::Email::POP3Server::Start()
 
 Bool Net::Email::POP3Server::IsError()
 {
-	if (this->sslConn && this->ssl == 0)
+	if (this->sslConn && this->ssl.IsNull())
 		return true;
 	return this->svr->IsV4Error();
 }

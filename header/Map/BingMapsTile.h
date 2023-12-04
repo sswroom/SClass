@@ -41,7 +41,7 @@ namespace Map
 
 		Text::String *GetNextSubdomain();
 	public:
-		BingMapsTile(ImagerySet is, Text::CString key, Text::CString cacheDir, NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl);
+		BingMapsTile(ImagerySet is, Text::CString key, Text::CString cacheDir, NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl);
 		virtual ~BingMapsTile();
 
 		virtual Bool IsError() const;

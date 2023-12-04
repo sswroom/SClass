@@ -285,7 +285,7 @@ Bool Crypto::Cert::CertUtil::AppendExtensions(NotNullPtr<Net::ASN1PDUBuilder> bu
 	return true;
 }
 
-Bool Crypto::Cert::CertUtil::AppendSign(NotNullPtr<Net::ASN1PDUBuilder> builder, Net::SSLEngine *ssl, NotNullPtr<Crypto::Cert::X509Key> key, Crypto::Hash::HashType hashType)
+Bool Crypto::Cert::CertUtil::AppendSign(NotNullPtr<Net::ASN1PDUBuilder> builder, NotNullPtr<Net::SSLEngine> ssl, NotNullPtr<Crypto::Cert::X509Key> key, Crypto::Hash::HashType hashType)
 {
 	UOSInt itemLen;
 	UOSInt itemOfst;
@@ -315,7 +315,7 @@ Bool Crypto::Cert::CertUtil::AppendSign(NotNullPtr<Net::ASN1PDUBuilder> builder,
 	}
 }
 
-Crypto::Cert::X509CertReq *Crypto::Cert::CertUtil::CertReqCreate(Net::SSLEngine *ssl, NotNullPtr<const CertNames> names, NotNullPtr<Crypto::Cert::X509Key> key, const CertExtensions *ext)
+Crypto::Cert::X509CertReq *Crypto::Cert::CertUtil::CertReqCreate(NotNullPtr<Net::SSLEngine> ssl, NotNullPtr<const CertNames> names, NotNullPtr<Crypto::Cert::X509Key> key, const CertExtensions *ext)
 {
 	NotNullPtr<const CertExtensions> nnext;
 	Net::ASN1PDUBuilder builder;
@@ -349,7 +349,7 @@ Crypto::Cert::X509CertReq *Crypto::Cert::CertUtil::CertReqCreate(Net::SSLEngine 
 	return csr;
 }
 
-Crypto::Cert::X509Cert *Crypto::Cert::CertUtil::SelfSignedCertCreate(Net::SSLEngine *ssl, NotNullPtr<const CertNames> names, NotNullPtr<Crypto::Cert::X509Key> key, UOSInt validDays, const CertExtensions *ext)
+Crypto::Cert::X509Cert *Crypto::Cert::CertUtil::SelfSignedCertCreate(NotNullPtr<Net::SSLEngine> ssl, NotNullPtr<const CertNames> names, NotNullPtr<Crypto::Cert::X509Key> key, UOSInt validDays, const CertExtensions *ext)
 {
 	NotNullPtr<const CertExtensions> nnext;
 	Data::RandomBytesGenerator rndBytes;
@@ -405,7 +405,7 @@ Crypto::Cert::X509Cert *Crypto::Cert::CertUtil::SelfSignedCertCreate(Net::SSLEng
 	return cert;
 }
 
-Crypto::Cert::X509Cert *Crypto::Cert::CertUtil::IssueCert(Net::SSLEngine *ssl, Crypto::Cert::X509Cert *caCert, NotNullPtr<Crypto::Cert::X509Key> caKey, UOSInt validDays, Crypto::Cert::X509CertReq *csr)
+Crypto::Cert::X509Cert *Crypto::Cert::CertUtil::IssueCert(NotNullPtr<Net::SSLEngine> ssl, Crypto::Cert::X509Cert *caCert, NotNullPtr<Crypto::Cert::X509Key> caKey, UOSInt validDays, Crypto::Cert::X509CertReq *csr)
 {
 	UInt8 bSerial[20];
 	if (caCert == 0)

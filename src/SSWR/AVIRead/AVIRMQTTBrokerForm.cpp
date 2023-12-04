@@ -35,12 +35,13 @@ void __stdcall SSWR::AVIRead::AVIRMQTTBrokerForm::OnStartClicked(void *userObj)
 		}
 		else
 		{
-			Net::SSLEngine *ssl = 0;
+			Optional<Net::SSLEngine> ssl = 0;
 			if (sslEnable)
 			{
 				NotNullPtr<Crypto::Cert::X509Cert> sslCert;
 				NotNullPtr<Crypto::Cert::X509File> sslKey;
-				if (me->ssl == 0)
+				NotNullPtr<Net::SSLEngine> nnssl;
+				if (!me->ssl.SetTo(nnssl))
 				{
 					UI::MessageDialog::ShowDialog(CSTR("Error in initializing SSL engine"), CSTR("MQTT Broker"), me);
 					return;
@@ -51,7 +52,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTBrokerForm::OnStartClicked(void *userObj)
 					return;
 				}
 				ssl = me->ssl;
-				ssl->ServerSetCertsASN1(sslCert, sslKey, me->caCerts);
+				nnssl->ServerSetCertsASN1(sslCert, sslKey, me->caCerts);
 			}
 			NEW_CLASS(me->broker, Net::MQTTBroker(me->core->GetSocketFactory(), ssl, port, me->log, true, false));
 			if (me->broker->IsError())
@@ -328,7 +329,7 @@ SSWR::AVIRead::AVIRMQTTBrokerForm::~AVIRMQTTBrokerForm()
 		MemFree(topic->message);
 		MemFree(topic);
 	}
-	SDEL_CLASS(this->ssl);
+	this->ssl.Delete();
 	SDEL_CLASS(this->sslCert);
 	SDEL_CLASS(this->sslKey);
 	this->ClearCACerts();

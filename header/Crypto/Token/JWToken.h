@@ -48,13 +48,13 @@ namespace Crypto
 			Text::String *GetHeader() const;
 			Text::String *GetPayload() const;
 			VerifyType GetVerifyType(NotNullPtr<JWTParam> param) const;
-			Bool SignatureValid(Net::SSLEngine *ssl, const UInt8 *key, UOSInt keyLeng, Crypto::Cert::X509Key::KeyType keyType);
+			Bool SignatureValid(Optional<Net::SSLEngine> ssl, const UInt8 *key, UOSInt keyLeng, Crypto::Cert::X509Key::KeyType keyType);
 			void ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const;
 
 			Data::StringMap<Text::String*> *ParsePayload(NotNullPtr<JWTParam> param, Bool keepDefault, Text::StringBuilderUTF8 *sbErr);
 			void FreeResult(Data::StringMap<Text::String*> *result);
 
-			static JWToken *Generate(JWSignature::Algorithm alg, Text::CStringNN payload, Net::SSLEngine *ssl, const UInt8 *key, UOSInt keyLeng, Crypto::Cert::X509Key::KeyType keyType);
+			static JWToken *Generate(JWSignature::Algorithm alg, Text::CStringNN payload, Optional<Net::SSLEngine> ssl, const UInt8 *key, UOSInt keyLeng, Crypto::Cert::X509Key::KeyType keyType);
 			static JWToken *Parse(Text::CStringNN token, Text::StringBuilderUTF8 *sbErr);
 			static Text::CStringNN PayloadName(Text::CStringNN key);
 			static Text::CStringNN VerifyTypeGetName(VerifyType verifyType);

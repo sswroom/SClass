@@ -20,7 +20,7 @@ Text::String *Map::BingMapsTile::GetNextSubdomain()
 	return thisUrl;
 }
 
-Map::BingMapsTile::BingMapsTile(ImagerySet is, Text::CString key, Text::CString cacheDir, NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl) : Map::MercatorTileMap(cacheDir, 1, 19, sockf, ssl)
+Map::BingMapsTile::BingMapsTile(ImagerySet is, Text::CString key, Text::CString cacheDir, NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl) : Map::MercatorTileMap(cacheDir, 1, 19, sockf, ssl)
 {
 	this->url = 0;
 	this->key = Text::String::NewOrNull(key);
@@ -74,7 +74,7 @@ Map::BingMapsTile::BingMapsTile(ImagerySet is, Text::CString key, Text::CString 
 	if (this->brandLogoUri)
 	{
 		IO::MemoryStream mstm;
-		if (Net::HTTPClient::LoadContent(sockf, ssl, this->brandLogoUri->ToCString(), &mstm, 1048576))
+		if (Net::HTTPClient::LoadContent(sockf, ssl, this->brandLogoUri->ToCString(), mstm, 1048576))
 		{
 			Parser::FileParser::PNGParser parser;
 			IO::StmData::MemoryDataRef fd(mstm.GetBuff(), (UOSInt)mstm.GetLength());

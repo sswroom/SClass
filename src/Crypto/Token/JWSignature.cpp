@@ -8,7 +8,7 @@
 #include "Text/EnumFinder.h"
 #include "Text/TextBinEnc/Base64Enc.h"
 
-Crypto::Token::JWSignature::JWSignature(Net::SSLEngine *ssl, Algorithm alg, const UInt8 *privateKey, UOSInt privateKeyLeng, Crypto::Cert::X509Key::KeyType keyType)
+Crypto::Token::JWSignature::JWSignature(Optional<Net::SSLEngine> ssl, Algorithm alg, const UInt8 *privateKey, UOSInt privateKeyLeng, Crypto::Cert::X509Key::KeyType keyType)
 {
 	this->ssl = ssl;
 	this->alg = alg;
@@ -51,7 +51,8 @@ Bool Crypto::Token::JWSignature::CalcHash(const UInt8 *buff, UOSInt buffSize)
 	case Algorithm::RS384:
 	case Algorithm::RS512:
 		{
-			if (this->ssl == 0 || this->keyType != Crypto::Cert::X509Key::KeyType::RSA)
+			NotNullPtr<Net::SSLEngine> ssl;
+			if (!this->ssl.SetTo(ssl) || this->keyType != Crypto::Cert::X509Key::KeyType::RSA)
 			{
 				return false;
 			}
@@ -59,11 +60,11 @@ Bool Crypto::Token::JWSignature::CalcHash(const UInt8 *buff, UOSInt buffSize)
 			Bool succ = false;
 			NEW_CLASSNN(key, Crypto::Cert::X509Key(CSTR("rsakey"), Data::ByteArray(this->privateKey, this->privateKeyLeng), Crypto::Cert::X509Key::KeyType::RSA));
 			if (alg == Algorithm::RS256)
-				succ = this->ssl->Signature(key, Crypto::Hash::HashType::SHA256, buff, buffSize, this->hashVal, this->hashValSize);
+				succ = ssl->Signature(key, Crypto::Hash::HashType::SHA256, buff, buffSize, this->hashVal, this->hashValSize);
 			else if (alg == Algorithm::RS384)
-				succ = this->ssl->Signature(key, Crypto::Hash::HashType::SHA384, buff, buffSize, this->hashVal, this->hashValSize);
+				succ = ssl->Signature(key, Crypto::Hash::HashType::SHA384, buff, buffSize, this->hashVal, this->hashValSize);
 			if (alg == Algorithm::RS512)
-				succ = this->ssl->Signature(key, Crypto::Hash::HashType::SHA512, buff, buffSize, this->hashVal, this->hashValSize);
+				succ = ssl->Signature(key, Crypto::Hash::HashType::SHA512, buff, buffSize, this->hashVal, this->hashValSize);
 			key.Delete();
 			return succ;
 		}
@@ -115,7 +116,8 @@ Bool Crypto::Token::JWSignature::VerifyHash(const UInt8 *buff, UOSInt buffSize, 
 	case Algorithm::RS384:
 	case Algorithm::RS512:
 		{
-			if (this->ssl == 0 || (this->keyType != Crypto::Cert::X509Key::KeyType::RSA && this->keyType != Crypto::Cert::X509Key::KeyType::RSAPublic))
+			NotNullPtr<Net::SSLEngine> ssl;
+			if (!this->ssl.SetTo(ssl) || (this->keyType != Crypto::Cert::X509Key::KeyType::RSA && this->keyType != Crypto::Cert::X509Key::KeyType::RSAPublic))
 			{
 				return false;
 			}
@@ -123,11 +125,11 @@ Bool Crypto::Token::JWSignature::VerifyHash(const UInt8 *buff, UOSInt buffSize, 
 			Bool succ = false;
 			NEW_CLASSNN(key, Crypto::Cert::X509Key(CSTR("rsakey"), Data::ByteArray(this->privateKey, this->privateKeyLeng), this->keyType));
 			if (alg == Algorithm::RS256)
-				succ = this->ssl->SignatureVerify(key, Crypto::Hash::HashType::SHA256, buff, buffSize, signature, signatureSize);
+				succ = ssl->SignatureVerify(key, Crypto::Hash::HashType::SHA256, buff, buffSize, signature, signatureSize);
 			else if (alg == Algorithm::RS384)
-				succ = this->ssl->SignatureVerify(key, Crypto::Hash::HashType::SHA384, buff, buffSize, signature, signatureSize);
+				succ = ssl->SignatureVerify(key, Crypto::Hash::HashType::SHA384, buff, buffSize, signature, signatureSize);
 			else if (alg == Algorithm::RS512)
-				succ = this->ssl->SignatureVerify(key, Crypto::Hash::HashType::SHA512, buff, buffSize, signature, signatureSize);
+				succ = ssl->SignatureVerify(key, Crypto::Hash::HashType::SHA512, buff, buffSize, signature, signatureSize);
 			key.Delete();
 			return succ;
 		}

@@ -425,7 +425,7 @@ SSWR::AVIRead::AVIRHTTPTestForm::~AVIRHTTPTestForm()
 {
 	this->StopThreads();
 	this->ClearURLs();
-	SDEL_CLASS(this->ssl);
+	this->ssl.Delete();
 }
 
 void SSWR::AVIRead::AVIRHTTPTestForm::OnMonitorChanged()

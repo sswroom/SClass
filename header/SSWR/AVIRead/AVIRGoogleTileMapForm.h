@@ -16,7 +16,7 @@ namespace SSWR
 		{
 		private:
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
-			Net::SSLEngine *ssl;
+			Optional<Net::SSLEngine> ssl;
 
 			UI::GUILabel *lblMapType;
 			UI::GUIComboBox *cboMapType;
@@ -26,7 +26,7 @@ namespace SSWR
 
 			static void __stdcall OnOKClicked(void *userObj);
 		public:
-			AVIRGoogleTileMapForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Net::SSLEngine *ssl);
+			AVIRGoogleTileMapForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Optional<Net::SSLEngine> ssl);
 			virtual ~AVIRGoogleTileMapForm();
 
 			virtual void OnMonitorChanged();

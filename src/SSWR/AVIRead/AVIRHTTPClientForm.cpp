@@ -1452,7 +1452,7 @@ SSWR::AVIRead::AVIRHTTPClientForm::~AVIRHTTPClientForm()
 	SDEL_CLASS(this->cliCert);
 	SDEL_CLASS(this->cliKey);
 	this->userAgent->Release();
-	SDEL_CLASS(this->ssl);
+	this->ssl.Delete();
 }
 
 void SSWR::AVIRead::AVIRHTTPClientForm::OnMonitorChanged()

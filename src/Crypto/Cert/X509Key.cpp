@@ -32,7 +32,7 @@ void Crypto::Cert::X509Key::ToShortName(NotNullPtr<Text::StringBuilderUTF8> sb) 
 	sb->AppendC(UTF8STRC(" bits"));
 }
 
-Crypto::Cert::X509File::ValidStatus Crypto::Cert::X509Key::IsValid(Net::SSLEngine *ssl, Crypto::Cert::CertStore *trustStore) const
+Crypto::Cert::X509File::ValidStatus Crypto::Cert::X509Key::IsValid(NotNullPtr<Net::SSLEngine> ssl, Crypto::Cert::CertStore *trustStore) const
 {
 	if (this->keyType == KeyType::Unknown)
 	{

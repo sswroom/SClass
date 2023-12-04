@@ -29,14 +29,14 @@ namespace Map
 		Text::String *title;
 		NotNullPtr<Text::String> cacheDir;
 		NotNullPtr<Net::SocketFactory> sockf;
-		Net::SSLEngine *ssl;
+		Optional<Net::SSLEngine> ssl;
 		Data::ArrayList<TileLayer*> layers;
 		NotNullPtr<Math::CoordinateSystem> csys;
 		UOSInt concurrCnt;
 
 		void LoadXML();
 	public:
-		TileMapServiceSource(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, Text::EncodingFactory *encFact, Text::CString tmsURL);
+		TileMapServiceSource(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::EncodingFactory *encFact, Text::CString tmsURL);
 		virtual ~TileMapServiceSource();
 
 		virtual Text::CStringNN GetName() const;

@@ -43,7 +43,7 @@ namespace SSWR
 			Media::ColorManager colorMgr;
 			IO::SiLabDriver *siLabDriver;
 			NotNullPtr<Net::SocketFactory> sockf;
-			Net::SSLEngine *ssl;
+			Optional<Net::SSLEngine> ssl;
 			Net::WebBrowser *browser;
 			Text::EncodingFactory encFact;
 			NotNullPtr<Media::DrawEngine> eng;

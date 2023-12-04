@@ -20,7 +20,7 @@ namespace Net
 			typedef void (__stdcall *SendLogger)(void *userObj, UOSInt buffSize);
 		private:
 			NotNullPtr<Net::SocketFactory> sockf;
-			Net::SSLEngine *ssl;
+			Optional<Net::SSLEngine> ssl;
 			NotNullPtr<Net::TCPClient> cli;
 			IO::BufferedOutputStream *cstm;
 			NotNullPtr<Net::WebServer::WebListener> svr;
@@ -53,7 +53,7 @@ namespace Net
 
 			UOSInt SendData(const UInt8 *buff, UOSInt buffSize);
 		public:
-			WebConnection(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, NotNullPtr<Net::TCPClient> cli, NotNullPtr<WebListener> svr, NotNullPtr<IWebHandler> hdlr, Bool allowProxy, KeepAlive KeepAlive);
+			WebConnection(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, NotNullPtr<Net::TCPClient> cli, NotNullPtr<WebListener> svr, NotNullPtr<IWebHandler> hdlr, Bool allowProxy, KeepAlive KeepAlive);
 			virtual ~WebConnection();
 
 			void ReceivedData(const Data::ByteArrayR &buff);

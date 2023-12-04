@@ -116,7 +116,7 @@ SSWR::AVIRead::AVIRSNSManagerForm::AVIRSNSManagerForm(UI::GUIClientControl *pare
 SSWR::AVIRead::AVIRSNSManagerForm::~AVIRSNSManagerForm()
 {
 	DEL_CLASS(this->mgr);
-	SDEL_CLASS(this->ssl);
+	this->ssl.Delete();
 }
 
 void SSWR::AVIRead::AVIRSNSManagerForm::OnMonitorChanged()

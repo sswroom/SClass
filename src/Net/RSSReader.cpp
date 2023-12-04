@@ -88,7 +88,7 @@ UInt32 __stdcall Net::RSSReader::RSSThread(void *userObj)
 	return false;
 }
 
-Net::RSSReader::RSSReader(Text::CString url, NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, UInt32 refreshSecond, Net::RSSHandler *hdlr, Data::Duration timeout, NotNullPtr<IO::LogTool> log)
+Net::RSSReader::RSSReader(Text::CString url, NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, UInt32 refreshSecond, Net::RSSHandler *hdlr, Data::Duration timeout, NotNullPtr<IO::LogTool> log)
 {
 	this->url = Text::String::New(url);
 	this->timeout = timeout;

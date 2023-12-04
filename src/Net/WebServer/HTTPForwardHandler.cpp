@@ -13,7 +13,7 @@ Text::String *Net::WebServer::HTTPForwardHandler::GetNextURL(NotNullPtr<Net::Web
 	return this->forwardAddrs.GetItem(i);
 }
 
-Net::WebServer::HTTPForwardHandler::HTTPForwardHandler(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, Text::CString forwardURL, ForwardType fwdType)
+Net::WebServer::HTTPForwardHandler::HTTPForwardHandler(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CString forwardURL, ForwardType fwdType)
 {
 	this->sockf = sockf;
 	this->ssl = ssl;

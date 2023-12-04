@@ -213,7 +213,7 @@ SSWR::AVIRead::AVIRBYDC9RForm::AVIRBYDC9RForm(UI::GUIClientControl *parent, NotN
 SSWR::AVIRead::AVIRBYDC9RForm::~AVIRBYDC9RForm()
 {
 	SDEL_CLASS(this->listener);
-	DEL_CLASS(this->ssl);
+	this->ssl.Delete();
 }
 
 void SSWR::AVIRead::AVIRBYDC9RForm::OnMonitorChanged()

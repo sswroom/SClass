@@ -7,7 +7,7 @@
 #include <stdio.h>
 #endif
 
-Text::JSONBase *Net::HTTPJSONReader::Read(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, Text::CStringNN url)
+Text::JSONBase *Net::HTTPJSONReader::Read(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CStringNN url)
 {
 	NotNullPtr<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(sockf, ssl, url, Net::WebUtil::RequestMethod::HTTP_GET, false);
 	if (cli->IsError())

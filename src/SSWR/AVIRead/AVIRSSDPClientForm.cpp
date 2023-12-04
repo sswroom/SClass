@@ -282,7 +282,7 @@ SSWR::AVIRead::AVIRSSDPClientForm::~AVIRSSDPClientForm()
 	DEL_CLASS(this->ssdp);
 	LIST_FREE_FUNC(this->rootMap, Net::SSDPClient::SSDPRootFree);
 	DEL_CLASS(this->rootMap);
-	SDEL_CLASS(this->ssl);
+	this->ssl.Delete();
 }
 
 void SSWR::AVIRead::AVIRSSDPClientForm::OnMonitorChanged()

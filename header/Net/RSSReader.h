@@ -25,7 +25,7 @@ namespace Net
 	private:
 		NotNullPtr<Text::String> url;
 		NotNullPtr<Net::SocketFactory> sockf;
-		Net::SSLEngine *ssl;
+		Optional<Net::SSLEngine> ssl;
 		NotNullPtr<IO::LogTool> log;
 		RSSHandler *hdlr;
 		Data::FastStringMap<RSSStatus *> *currRSSMaps;
@@ -40,7 +40,7 @@ namespace Net
 
 		static UInt32 __stdcall RSSThread(void *userObj);
 	public:
-		RSSReader(Text::CString url, NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, UInt32 refreshSecond, RSSHandler *hdlr, Data::Duration timeout, NotNullPtr<IO::LogTool> log);
+		RSSReader(Text::CString url, NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, UInt32 refreshSecond, RSSHandler *hdlr, Data::Duration timeout, NotNullPtr<IO::LogTool> log);
 		~RSSReader();
 
 		Bool IsError();

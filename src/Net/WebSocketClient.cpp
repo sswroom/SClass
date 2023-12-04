@@ -279,7 +279,7 @@ const UInt8 *Net::WebSocketClient::NextPacket(NotNullPtr<Sync::MutexUsage> mutUs
 	}
 }
 
-Net::WebSocketClient::WebSocketClient(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, Text::CStringNN host, UInt16 port, Text::CString path, Text::CString origin, Protocol protocol, Data::Duration timeout) : Stream(CSTR("WebSocket"))
+Net::WebSocketClient::WebSocketClient(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CStringNN host, UInt16 port, Text::CString path, Text::CString origin, Protocol protocol, Data::Duration timeout) : Stream(CSTR("WebSocket"))
 {
 	this->recvCapacity = 4096;
 	this->recvBuff = MemAlloc(UInt8, this->recvCapacity);
@@ -290,9 +290,10 @@ Net::WebSocketClient::WebSocketClient(NotNullPtr<Net::SocketFactory> sockf, Net:
 	this->recvDataOfst = 0;
 	this->recvDataSize = 0;
 
-	if (ssl)
+	NotNullPtr<Net::SSLEngine> nnssl;
+	if (ssl.SetTo(nnssl))
 	{
-		this->cli = ssl->ClientConnect(host, port, 0, timeout);
+		this->cli = nnssl->ClientConnect(host, port, 0, timeout);
 	}
 	else
 	{
@@ -321,7 +322,7 @@ Net::WebSocketClient::WebSocketClient(NotNullPtr<Net::SocketFactory> sockf, Net:
 		sb.AppendC(UTF8STRC(" HTTP/1.1\r\n"));
 		sb.AppendC(UTF8STRC("Host: "));
 		sb.Append(host);
-		if ((ssl && port != 443) || (ssl == 0 && port != 80))
+		if ((!ssl.IsNull() && port != 443) || (ssl.IsNull() && port != 80))
 		{
 			sb.AppendUTF8Char(':');
 			sb.AppendU16(port);

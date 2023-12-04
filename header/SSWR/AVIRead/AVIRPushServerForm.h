@@ -21,7 +21,7 @@ namespace SSWR
 			UI::GUIButton *btnStart;
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
-			Net::SSLEngine *ssl;
+			Optional<Net::SSLEngine> ssl;
 			Net::PushServer *svr;
 			IO::LogTool log;
 

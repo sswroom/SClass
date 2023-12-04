@@ -38,7 +38,7 @@ void Map::WebMapService::LoadXML(Version version)
 		break;
 	}
 	IO::MemoryStream mstm;
-	if (!Net::HTTPClient::LoadContent(this->sockf, this->ssl, sb.ToCString(), &mstm, 1048576))
+	if (!Net::HTTPClient::LoadContent(this->sockf, this->ssl, sb.ToCString(), mstm, 1048576))
 		return;
 	mstm.SeekFromBeginning(0);
 	Text::XMLReader reader(this->encFact, mstm, Text::XMLReader::PM_XML);
@@ -382,7 +382,7 @@ void Map::WebMapService::LoadXMLLayers(NotNullPtr<Text::XMLReader> reader)
 	}
 }
 
-Map::WebMapService::WebMapService(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, Text::EncodingFactory *encFact, Text::CString wmsURL, Version version, NotNullPtr<Math::CoordinateSystem> envCsys)
+Map::WebMapService::WebMapService(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::EncodingFactory *encFact, Text::CString wmsURL, Version version, NotNullPtr<Math::CoordinateSystem> envCsys)
 {
 	this->sockf = sockf;
 	this->ssl = ssl;

@@ -5,7 +5,7 @@
 #include "Text/JSON.h"
 #include "Text/TextBinEnc/Base64Enc.h"
 
-Net::AzureManager::AzureManager(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl)
+Net::AzureManager::AzureManager(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl)
 {
 	this->sockf = sockf;
 	this->ssl = ssl;

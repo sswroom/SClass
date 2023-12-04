@@ -19,7 +19,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	Text::StringBuilderUTF8 sb;
 	Crypto::Token::JWTHandler *jwt;
 	Net::OSSocketFactory sockf(false);
-	Net::SSLEngine *ssl = Net::SSLEngineFactory::Create(sockf, true);
+	Optional<Net::SSLEngine> ssl = Net::SSLEngineFactory::Create(sockf, true);
 	NEW_CLASS(jwt, Crypto::Token::JWTHandler(ssl, Crypto::Token::JWSignature::Algorithm::HS256, UTF8STRC("your-256-bit-secret"), Crypto::Cert::X509Key::KeyType::Unknown));
 
 	Crypto::Token::JWTParam param;
@@ -33,7 +33,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	if (!sb.Equals(UTF8STRC("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiSm9obiBEb2UiLCJzdWIiOiIxMjM0NTY3ODkwIiwiaWF0IjoxNTE2MjM5MDIyfQ.3uGPWYtY_HtIcBGz4eUmTtcjZ4HnJZK9Z2uhx0Ks4n8")))
 	{
 		DEL_CLASS(jwt);
-		SDEL_CLASS(ssl);
+		ssl.Delete();
 		return 1;	
 	}
 	DEL_CLASS(jwt);
@@ -41,41 +41,41 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	Crypto::Token::JWToken *token = Crypto::Token::JWToken::Parse(CSTR("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiSm9obiBEb2UiLCJzdWIiOiIxMjM0NTY3ODkwIiwiaWF0IjoxNTE2MjM5MDIyfQ.3uGPWYtY_HtIcBGz4eUmTtcjZ4HnJZK9Z2uhx0Ks4n8"), 0);
 	if (token == 0)
 	{
-		SDEL_CLASS(ssl);
+		ssl.Delete();
 		return 1;
 	}
 	if (!token->SignatureValid(ssl, UTF8STRC("your-256-bit-secret"), Crypto::Cert::X509Key::KeyType::Unknown))
 	{
 		DEL_CLASS(token);
-		SDEL_CLASS(ssl);
+		ssl.Delete();
 		return 1;
 	}
 	Data::StringMap<Text::String*> *result = token->ParsePayload(param, false, 0);
 	if (result == 0)
 	{
 		DEL_CLASS(token);
-		SDEL_CLASS(ssl);
+		ssl.Delete();
 		return 1;
 	}
 	if (!s.Set(result->Get(CSTR("name"))) || !s->Equals(UTF8STRC("John Doe")))
 	{
 		token->FreeResult(result);
 		DEL_CLASS(token);
-		SDEL_CLASS(ssl);
+		ssl.Delete();
 		return 1;
 	}
 	if (!s.Set(param.GetSubject()) || !s->Equals(UTF8STRC("1234567890")))
 	{
 		token->FreeResult(result);
 		DEL_CLASS(token);
-		SDEL_CLASS(ssl);
+		ssl.Delete();
 		return 1;
 	}
 	if (param.GetIssuedAt() != 1516239022)
 	{
 		token->FreeResult(result);
 		DEL_CLASS(token);
-		SDEL_CLASS(ssl);
+		ssl.Delete();
 		return 1;
 	}
 	token->FreeResult(result);
@@ -87,7 +87,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	keySize = b64.DecodeBin(keyB64.v, keyB64.leng, keyBuff);
 	if (keySize == 0)
 	{
-		SDEL_CLASS(ssl);
+		ssl.Delete();
 		return 1;
 	}
 	else
@@ -99,7 +99,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 		s->Release();
 		if (x509 == 0)
 		{
-			SDEL_CLASS(ssl);
+			ssl.Delete();
 			return 1;
 		}
 		else
@@ -126,7 +126,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 			if (key == 0)
 			{
 				DEL_CLASS(x509);
-				SDEL_CLASS(ssl);
+				ssl.Delete();
 				return 1;
 			}
 			DEL_CLASS(x509);
@@ -140,7 +140,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 				{
 					DEL_CLASS(token);
 					SDEL_CLASS(key);
-					SDEL_CLASS(ssl);
+					ssl.Delete();
 					return 1;
 				}
 				DEL_CLASS(token);
@@ -148,6 +148,6 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 		}
 		SDEL_CLASS(key);
 	}
-	SDEL_CLASS(ssl);
+	ssl.Delete();
 	return 0;
 }

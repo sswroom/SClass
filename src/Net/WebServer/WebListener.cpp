@@ -26,9 +26,10 @@ void __stdcall Net::WebServer::WebListener::ConnHdlr(Socket *s, void *userObj)
 {
 	Net::WebServer::WebListener *me = (Net::WebServer::WebListener*)userObj;
 	NotNullPtr<Net::TCPClient> cli;
-	if (me->ssl)
+	NotNullPtr<Net::SSLEngine> ssl;
+	if (me->ssl.SetTo(ssl))
 	{
-		me->ssl->ServerInit(s, ClientReady, me);
+		ssl->ServerInit(s, ClientReady, me);
 	}
 	else
 	{
@@ -105,7 +106,7 @@ void __stdcall Net::WebServer::WebListener::OnDataSent(void *userObj, UOSInt buf
 	Interlocked_AddU64(&me->status.totalWrite, buffSize);
 }
 
-Net::WebServer::WebListener::WebListener(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, NotNullPtr<IWebHandler> hdlr, UInt16 port, Int32 timeoutSeconds, UOSInt mgrCnt, UOSInt workerCnt, Text::CString svrName, Bool allowProxy, KeepAlive keepAlive, Bool autoStart)
+Net::WebServer::WebListener::WebListener(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, NotNullPtr<IWebHandler> hdlr, UInt16 port, Int32 timeoutSeconds, UOSInt mgrCnt, UOSInt workerCnt, Text::CString svrName, Bool allowProxy, KeepAlive keepAlive, Bool autoStart)
 {
 	this->hdlr = hdlr;
 	UOSInt i = mgrCnt;
@@ -123,9 +124,10 @@ Net::WebServer::WebListener::WebListener(NotNullPtr<Net::SocketFactory> sockf, N
 	this->accLog = 0;
 	this->reqLog = 0;
 	this->ssl = ssl;
-	if (this->ssl)
+	NotNullPtr<Net::SSLEngine> nnssl;
+	if (this->ssl.SetTo(nnssl))
 	{
-		this->ssl->ServerAddALPNSupport(CSTR("http/1.1"));
+		nnssl->ServerAddALPNSupport(CSTR("http/1.1"));
 	}
 	this->allowProxy = allowProxy;
 	this->keepAlive = keepAlive;

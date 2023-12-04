@@ -17,7 +17,7 @@ namespace SSWR
 		private:
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			NotNullPtr<Net::SocketFactory> sockf;
-			Net::SSLEngine *ssl;
+			Optional<Net::SSLEngine> ssl;
 			Net::SSDPClient *ssdp;
 			Data::FastStringMap<Net::SSDPClient::SSDPRoot*> *rootMap;
 

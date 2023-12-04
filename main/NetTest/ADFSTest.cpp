@@ -15,7 +15,7 @@
 #define STR_HELPER(x) #x
 #define STR(x) STR_HELPER(x)
 
-Net::SSLEngine *ssl;
+Optional<Net::SSLEngine> ssl;
 Bool initSucc;
 NotNullPtr<Net::WebServer::PrintLogWebHandler> logHdlr;
 
@@ -53,13 +53,14 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	sptr3 = IO::Path::AppendPath(sbuff3, sptr3, CSTR("SAMLCert.crt"));
 	sptr4 = IO::Path::GetProcessFileName(sbuff4);
 	sptr4 = IO::Path::AppendPath(sbuff4, sptr4, CSTR("SAMLCert.key"));
-	if (ssl)
+	NotNullPtr<Net::SSLEngine> nnssl;
+	if (ssl.SetTo(nnssl))
 	{
 		sptr1 = IO::Path::GetProcessFileName(sbuff1);
 		sptr1 = IO::Path::AppendPath(sbuff1, sptr1, CSTR("ADFSCert.crt"));
 		sptr2 = IO::Path::GetProcessFileName(sbuff2);
 		sptr2 = IO::Path::AppendPath(sbuff2, sptr2, CSTR("ADFSCert.key"));
-		if (ssl->ServerSetCerts(CSTRP(sbuff1, sptr1), CSTRP(sbuff2, sptr2)))
+		if (nnssl->ServerSetCerts(CSTRP(sbuff1, sptr1), CSTRP(sbuff2, sptr2)))
 		{
 			Parser::FileParser::X509Parser parser;
 			IO::ParsedObject *pobj = parser.ParseFilePath(CSTRP(sbuff1, sptr1));
@@ -139,6 +140,6 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 		logHdlr.Delete();
 		DEL_CLASS(svcHdlr);
 	}
-	SDEL_CLASS(ssl);
+	ssl.Delete();
 	return 0;
 }

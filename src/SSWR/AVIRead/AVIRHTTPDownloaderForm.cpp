@@ -388,7 +388,7 @@ SSWR::AVIRead::AVIRHTTPDownloaderForm::~AVIRHTTPDownloaderForm()
 	this->ClearHeaders();
 	SDEL_STRING(this->downPath);
 	SDEL_STRING(this->reqHeader);
-	SDEL_CLASS(this->ssl);
+	this->ssl.Delete();
 }
 
 void SSWR::AVIRead::AVIRHTTPDownloaderForm::OnMonitorChanged()

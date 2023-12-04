@@ -146,7 +146,7 @@ SSWR::AVIRead::AVIROSMCacheCfgForm::AVIROSMCacheCfgForm(UI::GUIClientControl *pa
 
 SSWR::AVIRead::AVIROSMCacheCfgForm::~AVIROSMCacheCfgForm()
 {
-	SDEL_CLASS(this->ssl);
+	this->ssl.Delete();
 }
 
 void SSWR::AVIRead::AVIROSMCacheCfgForm::OnMonitorChanged()

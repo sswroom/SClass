@@ -48,7 +48,7 @@ private:
 	};
 private:
 	NotNullPtr<Net::SocketFactory> sockf;
-	Net::SSLEngine *ssl;
+	Optional<Net::SSLEngine> ssl;
 	UOSInt threadCount;
 	Bool threadToStop;
 	Sync::Event mainEvt;
@@ -294,7 +294,7 @@ public:
 			this->urlList.GetItem(i)->Release();
 		}
 		MemFree(this->stats);
-		SDEL_CLASS(this->ssl);
+		this->ssl.Delete();
 
 		this->ClearFiles();
 	}

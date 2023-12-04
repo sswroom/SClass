@@ -10,7 +10,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	IO::ConsoleWriter writer;
 
 	Net::OSSocketFactory sockf(false);
-	Net::SSLEngine *ssl = Net::SSLEngineFactory::Create(sockf, true);
+	Optional<Net::SSLEngine> ssl = Net::SSLEngineFactory::Create(sockf, true);
 	{
 		Net::Email::POP3Client client(sockf, ssl, CSTR("127.0.0.1"), 110, Net::Email::POP3Conn::CT_PLAIN, &writer, CSTR("sswroom@yahoo.com"), CSTR("sswroom@yahoo.com"), 30000);
 		if (!client.IsError())
@@ -26,6 +26,6 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 			}
 		}
 	}
-	SDEL_CLASS(ssl);
+	ssl.Delete();
 	return 0;
 }

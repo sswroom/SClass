@@ -84,7 +84,7 @@ Crypto::Cert::X509Cert *Crypto::Cert::X509FileList::GetNewCert(UOSInt index)
 	return 0;
 }
 
-Crypto::Cert::X509File::ValidStatus Crypto::Cert::X509FileList::IsValid(Net::SSLEngine *ssl, Crypto::Cert::CertStore *trustStore) const
+Crypto::Cert::X509File::ValidStatus Crypto::Cert::X509FileList::IsValid(NotNullPtr<Net::SSLEngine> ssl, Crypto::Cert::CertStore *trustStore) const
 {
 	Crypto::Cert::X509File::ValidStatus status;
 	UOSInt i = this->fileList.GetCount();

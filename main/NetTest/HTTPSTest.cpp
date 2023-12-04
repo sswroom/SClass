@@ -10,7 +10,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	Text::CStringNN url = CSTR("https://resource.data.one.gov.hk/td/speedmap.xml");
 	UInt8 buff[2048];
 	UOSInt readSize;
-	Net::SSLEngine *ssl;
+	Optional<Net::SSLEngine> ssl;
 	NotNullPtr<Net::HTTPClient> cli;
 	Net::OSSocketFactory sockf(false);
 	ssl = Net::SSLEngineFactory::Create(sockf, true);
@@ -24,6 +24,6 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	printf("Status code = %d\r\n", cli->GetRespStatus());
 
 	cli.Delete();
-	SDEL_CLASS(ssl);
+	ssl.Delete();
 	return 0;
 }

@@ -9,7 +9,7 @@
 #include "Text/MyStringFloat.h"
 #include "Text/XMLDOM.h"
 
-Map::GoogleMap::GoogleWSSearcherXML::GoogleWSSearcherXML(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, IO::Writer *errWriter, Text::EncodingFactory *encFact)
+Map::GoogleMap::GoogleWSSearcherXML::GoogleWSSearcherXML(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, IO::Writer *errWriter, Text::EncodingFactory *encFact)
 {
 	this->sockf = sockf;
 	this->ssl = ssl;

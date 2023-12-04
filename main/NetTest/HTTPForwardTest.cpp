@@ -20,19 +20,20 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	UTF8Char *sptr;
 
 	NEW_CLASS(console, IO::ConsoleWriter());
-	Net::SSLEngine *ssl;
+	Optional<Net::SSLEngine> ssl;
 	Bool succ = true;
 	Net::OSSocketFactory sockf(false);
 	ssl = Net::SSLEngineFactory::Create(sockf, true);
-	if (ssl == 0)
+	NotNullPtr<Net::SSLEngine> nnssl;
+	if (!ssl.SetTo(nnssl))
 	{
 		console->WriteLineC(UTF8STRC("Error in initializing SSL"));
 		succ = false;
 	}
-	else if (!ssl->ServerSetCerts(sslCert, sslKey))
+	else if (!nnssl->ServerSetCerts(sslCert, sslKey))
 	{
 		console->WriteLineC(UTF8STRC("Error in loading Cert/Key"));
-		sptr = ssl->GetErrorDetail(sbuff);
+		sptr = nnssl->GetErrorDetail(sbuff);
 		console->WriteLineC(sbuff, (UOSInt)(sptr - sbuff));
 		succ = false;
 	}
@@ -55,7 +56,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 		DEL_CLASS(svr);
 		hdlr.Delete();
 	}
-	SDEL_CLASS(ssl);
+	ssl.Delete();
 	DEL_CLASS(console);
 	return 0;
 }

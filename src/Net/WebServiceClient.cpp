@@ -10,7 +10,7 @@
 #include "Text/UTF8Writer.h"
 #include "Text/TextBinEnc/FormEncoding.h"
 
-Net::WebServiceClient::WebServiceClient(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, Text::CString serviceAddr, const UTF8Char *serviceName, const UTF8Char *targetNS)
+Net::WebServiceClient::WebServiceClient(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CString serviceAddr, const UTF8Char *serviceName, const UTF8Char *targetNS)
 {
 	this->sockf = sockf;
 	this->ssl = ssl;

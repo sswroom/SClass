@@ -48,6 +48,15 @@ public:
 		return this->p == 0;
 	}
 
+	void Delete()
+	{
+		if (this->p)
+		{
+			delete this->p;
+			this->p = 0;
+		}
+	}
+
 	template <typename V> static Optional<T> ConvertFrom(Optional<V> ptr)
 	{
 		NotNullPtr<V> p;

@@ -52,7 +52,7 @@ namespace SSWR
 			UI::GUIListView *lvHeaders;
 
 			NotNullPtr<Net::SocketFactory> sockf;
-			Net::SSLEngine *ssl;
+			Optional<Net::SSLEngine> ssl;
 			Bool threadRunning;
 			Bool threadToStop;
 			Sync::Event threadEvt;

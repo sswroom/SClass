@@ -154,9 +154,10 @@ void __stdcall SSWR::AVIRead::AVIRCertUtilForm::OnFileDrop(void *userObj, NotNul
 void __stdcall SSWR::AVIRead::AVIRCertUtilForm::OnKeyGenerateClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRCertUtilForm *me = (SSWR::AVIRead::AVIRCertUtilForm*)userObj;
-	if (me->ssl)
+	NotNullPtr<Net::SSLEngine> ssl;
+	if (me->ssl.SetTo(ssl))
 	{
-		Crypto::Cert::X509Key *key = me->ssl->GenerateRSAKey();
+		Crypto::Cert::X509Key *key = ssl->GenerateRSAKey();
 		if (key)
 		{
 			SDEL_CLASS(me->key);
@@ -209,6 +210,12 @@ void __stdcall SSWR::AVIRead::AVIRCertUtilForm::OnSANClearClicked(void *userObj)
 void __stdcall SSWR::AVIRead::AVIRCertUtilForm::OnCSRGenerateClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRCertUtilForm *me = (SSWR::AVIRead::AVIRCertUtilForm*)userObj;
+	NotNullPtr<Net::SSLEngine> ssl;
+	if (!me->ssl.SetTo(ssl))
+	{
+		UI::MessageDialog::ShowDialog(CSTR("SSL engine is not initiated"), CSTR("Cert Util"), me);
+		return;
+	}
 	NotNullPtr<Crypto::Cert::X509Key> key;
 	if (!key.Set(me->key))
 	{
@@ -230,11 +237,11 @@ void __stdcall SSWR::AVIRead::AVIRCertUtilForm::OnCSRGenerateClicked(void *userO
 	NotNullPtr<Crypto::Cert::X509CertReq> nncsr;
 	if (me->sanList->GetCount() > 0 || ext.caCert || ext.digitalSign)
 	{
-		csr = Crypto::Cert::CertUtil::CertReqCreate(me->ssl, names, key, &ext);
+		csr = Crypto::Cert::CertUtil::CertReqCreate(ssl, names, key, &ext);
 	}
 	else
 	{
-		csr = Crypto::Cert::CertUtil::CertReqCreate(me->ssl, names, key, 0);
+		csr = Crypto::Cert::CertUtil::CertReqCreate(ssl, names, key, 0);
 	}
 	if (nncsr.Set(csr))
 	{
@@ -250,6 +257,12 @@ void __stdcall SSWR::AVIRead::AVIRCertUtilForm::OnCSRGenerateClicked(void *userO
 void __stdcall SSWR::AVIRead::AVIRCertUtilForm::OnSelfSignedCertClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRCertUtilForm *me = (SSWR::AVIRead::AVIRCertUtilForm*)userObj;
+	NotNullPtr<Net::SSLEngine> ssl;
+	if (!me->ssl.SetTo(ssl))
+	{
+		UI::MessageDialog::ShowDialog(CSTR("SSL Engine is not initiated"), CSTR("Cert Util"), me);
+		return;
+	}
 	NotNullPtr<Crypto::Cert::X509Key> key;
 	if (!key.Set(me->key))
 	{
@@ -280,7 +293,7 @@ void __stdcall SSWR::AVIRead::AVIRCertUtilForm::OnSelfSignedCertClicked(void *us
 	ext.caCert = me->chkCACert->IsChecked();
 	ext.digitalSign = me->chkDigitalSign->IsChecked();
 	NotNullPtr<Crypto::Cert::X509Cert> cert;
-	if (cert.Set(Crypto::Cert::CertUtil::SelfSignedCertCreate(me->ssl, names, key, validDays, &ext)))
+	if (cert.Set(Crypto::Cert::CertUtil::SelfSignedCertCreate(ssl, names, key, validDays, &ext)))
 	{
 		me->core->OpenObject(cert);
 	}
@@ -516,7 +529,7 @@ SSWR::AVIRead::AVIRCertUtilForm::~AVIRCertUtilForm()
 	LIST_FREE_STRING(this->sanList);
 	DEL_CLASS(this->sanList);
 	SDEL_CLASS(this->key);
-	SDEL_CLASS(this->ssl);
+	this->ssl.Delete();
 }
 
 void SSWR::AVIRead::AVIRCertUtilForm::OnMonitorChanged()

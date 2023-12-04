@@ -36,7 +36,7 @@ void Parser::FileParser::SPKParser::SetSocketFactory(NotNullPtr<Net::SocketFacto
 	this->sockf = sockf.Ptr();
 }
 
-void Parser::FileParser::SPKParser::SetSSLEngine(Net::SSLEngine *ssl)
+void Parser::FileParser::SPKParser::SetSSLEngine(Optional<Net::SSLEngine> ssl)
 {
 	this->ssl = ssl;
 }

@@ -2,13 +2,13 @@
 #include "Net/SSLEngineFactory.h"
 #include "Net/OpenSSLEngine.h"
 
-Net::SSLEngine *Net::SSLEngineFactory::Create(NotNullPtr<Net::SocketFactory> sockf, Bool skipCertCheck)
+Optional<Net::SSLEngine> Net::SSLEngineFactory::Create(NotNullPtr<Net::SocketFactory> sockf, Bool skipCertCheck)
 {
-	Net::SSLEngine *ssl;
-	NEW_CLASS(ssl, Net::OpenSSLEngine(sockf, Net::SSLEngine::Method::Default));
+	NotNullPtr<Net::SSLEngine> ssl;
+	NEW_CLASSNN(ssl, Net::OpenSSLEngine(sockf, Net::SSLEngine::Method::Default));
 	if (ssl->IsError())
 	{
-		DEL_CLASS(ssl);
+		ssl.Delete();
 		return 0;
 	}
 	ssl->ClientSetSkipCertCheck(skipCertCheck);

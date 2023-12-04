@@ -53,25 +53,31 @@ SSWR::AVIRead::AVIRTrustStoreForm::AVIRTrustStoreForm(UI::GUIClientControl *pare
 	this->lvTrustCert->AddColumn(CSTR("NotValidAfter"), 150);
 	this->lvTrustCert->AddColumn(CSTR("Valid Status"), 150);
 
-	if (this->store == 0)
+	NotNullPtr<Net::SSLEngine> ssl;
+	if (this->store == 0 && this->ssl.SetTo(ssl))
 	{
-		store = this->ssl->GetTrustStore();
+		store = ssl->GetTrustStore();
 	}
 	Data::ArrayList<CertEntry*> certs;
 	Crypto::Cert::X509Cert *cert;
 	CertEntry *entry;
-	UOSInt i = 0;
-	UOSInt j = store->GetCount();
-	while (i < j)
+	UOSInt i;
+	UOSInt j;
+	if (store)
 	{
-		cert = store->GetItem(i);
-		sb.ClearStr();
-		cert->GetSubjectCN(sb);
-		entry = MemAlloc(CertEntry, 1);
-		entry->cert = cert;
-		entry->subjectCN = Text::String::New(sb.ToCString());
-		certs.Add(entry);
-		i++;
+		i = 0;
+		j = store->GetCount();
+		while (i < j)
+		{
+			cert = store->GetItem(i);
+			sb.ClearStr();
+			cert->GetSubjectCN(sb);
+			entry = MemAlloc(CertEntry, 1);
+			entry->cert = cert;
+			entry->subjectCN = Text::String::New(sb.ToCString());
+			certs.Add(entry);
+			i++;
+		}
 	}
 	CertComparator comp;
 	Data::Sort::ArtificialQuickSort::Sort(&certs, &comp);
@@ -99,7 +105,14 @@ SSWR::AVIRead::AVIRTrustStoreForm::AVIRTrustStoreForm(UI::GUIClientControl *pare
 			sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss");
 			this->lvTrustCert->SetSubItem(k, 3, CSTRP(sbuff, sptr));
 		}
-		this->lvTrustCert->SetSubItem(k, 4, Crypto::Cert::X509File::ValidStatusGetDesc(entry->cert->IsValid(ssl, store)));
+		if (this->ssl.SetTo(ssl))
+		{
+			this->lvTrustCert->SetSubItem(k, 4, Crypto::Cert::X509File::ValidStatusGetDesc(entry->cert->IsValid(ssl, store)));
+		}
+		else
+		{
+			this->lvTrustCert->SetSubItem(k, 4, CSTR("SSL engine error"));
+		}
 		entry->subjectCN->Release();
 		MemFree(entry);
 		i++;
@@ -108,7 +121,7 @@ SSWR::AVIRead::AVIRTrustStoreForm::AVIRTrustStoreForm(UI::GUIClientControl *pare
 
 SSWR::AVIRead::AVIRTrustStoreForm::~AVIRTrustStoreForm()
 {
-	SDEL_CLASS(this->ssl);
+	this->ssl.Delete();
 	SDEL_CLASS(this->store);
 }
 

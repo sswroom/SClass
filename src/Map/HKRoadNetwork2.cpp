@@ -148,7 +148,7 @@ Map::MapDrawLayer *Map::HKRoadNetwork2::CreateTonnesSignLayer()
 	return lyr;
 }
 
-Map::HKTrafficLayer2 *Map::HKRoadNetwork2::CreateTrafficLayer(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, Text::EncodingFactory *encFact)
+Map::HKTrafficLayer2 *Map::HKRoadNetwork2::CreateTrafficLayer(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::EncodingFactory *encFact)
 {
 	if (this->fgdb)
 	{

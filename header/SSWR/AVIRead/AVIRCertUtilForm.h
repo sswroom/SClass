@@ -16,7 +16,7 @@ namespace SSWR
 		{
 		private:
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
-			Net::SSLEngine *ssl;
+			Optional<Net::SSLEngine> ssl;
 			Data::ArrayListNN<Text::String> *sanList;
 			Crypto::Cert::X509Key *key;
 

@@ -28,7 +28,7 @@ namespace SSWR
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			IO::LogTool log;
 			IO::SiLabDriver *siLabDriver;
-			Net::SSLEngine *ssl;
+			Optional<Net::SSLEngine> ssl;
 			IO::DeviceManager devMgr;
 			Data::ArrayList<IO::DeviceInfo*> devList;
 
@@ -100,7 +100,7 @@ namespace SSWR
 			static void __stdcall OnFileBrowseClick(void *userObj);
 			static void __stdcall OnStmTypeChg(void *userObj);
 		public:
-			AVIRSelStreamForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Bool allowReadOnly, Net::SSLEngine *ssl);
+			AVIRSelStreamForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Bool allowReadOnly, Optional<Net::SSLEngine> ssl);
 			virtual ~AVIRSelStreamForm();
 
 			virtual void OnMonitorChanged();

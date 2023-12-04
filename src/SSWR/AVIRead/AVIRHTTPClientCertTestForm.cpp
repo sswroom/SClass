@@ -15,7 +15,8 @@
 void __stdcall SSWR::AVIRead::AVIRHTTPClientCertTestForm::OnStartClick(void *userObj)
 {
 	SSWR::AVIRead::AVIRHTTPClientCertTestForm *me = (SSWR::AVIRead::AVIRHTTPClientCertTestForm*)userObj;
-	if (me->svr)
+	NotNullPtr<Net::SSLEngine> ssl;
+	if (me->svr || !me->ssl.SetTo(ssl))
 	{
 		return;
 	}
@@ -24,7 +25,6 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientCertTestForm::OnStartClick(void *use
 	Text::StringBuilderUTF8 sb;
 	me->txtPort->GetText(sb);
 	Text::StrToUInt16S(sb.ToString(), port, 0);
-	Net::SSLEngine *ssl = me->ssl;
 	NotNullPtr<Crypto::Cert::X509Cert> sslCert;
 	NotNullPtr<Crypto::Cert::X509File> sslKey;
 	ssl->ServerSetRequireClientCert(Net::SSLEngine::ClientCertType::Optional);
@@ -219,7 +219,7 @@ SSWR::AVIRead::AVIRHTTPClientCertTestForm::~AVIRHTTPClientCertTestForm()
 {
 	SDEL_CLASS(this->svr);
 	SDEL_CLASS(this->log);
-	SDEL_CLASS(this->ssl);
+	this->ssl.Delete();
 	SDEL_CLASS(this->sslCert);
 	SDEL_CLASS(this->sslKey);
 	this->ClearCACerts();

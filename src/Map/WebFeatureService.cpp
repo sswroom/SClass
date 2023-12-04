@@ -299,7 +299,7 @@ void Map::WebFeatureService::LoadXMLFeatureType(NotNullPtr<Text::XMLReader> read
 	}
 }
 
-Map::WebFeatureService::WebFeatureService(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, Text::EncodingFactory *encFact, Text::CString wfsURL, Version version)
+Map::WebFeatureService::WebFeatureService(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::EncodingFactory *encFact, Text::CString wfsURL, Version version)
 {
 	this->sockf = sockf;
 	this->ssl = ssl;
@@ -378,7 +378,7 @@ Map::MapDrawLayer *Map::WebFeatureService::LoadAsLayer()
 			return 0;
 		}
 		IO::MemoryStream mstm;
-		if (!Net::HTTPClient::LoadContent(this->sockf, this->ssl, sb.ToCString(), &mstm, 104857600))
+		if (!Net::HTTPClient::LoadContent(this->sockf, this->ssl, sb.ToCString(), mstm, 104857600))
 		{
 			return 0;
 		}

@@ -26,7 +26,7 @@ namespace Net
 			UOSInt nextURL;
 			Sync::Mutex mut;
 			NotNullPtr<Net::SocketFactory> sockf;
-			Net::SSLEngine *ssl;
+			Optional<Net::SSLEngine> ssl;
 			ForwardType fwdType;
 			ReqHandler reqHdlr;
 			void *reqHdlrObj;
@@ -35,7 +35,7 @@ namespace Net
 
 			virtual Text::String *GetNextURL(NotNullPtr<Net::WebServer::IWebRequest> req);
 		public:
-			HTTPForwardHandler(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, Text::CString forwardURL, ForwardType fwdType);
+			HTTPForwardHandler(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CString forwardURL, ForwardType fwdType);
 			virtual ~HTTPForwardHandler();
 
 			virtual Bool ProcessRequest(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq);

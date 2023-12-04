@@ -34,7 +34,7 @@ namespace SSWR
 
 			Net::SNS::SNSManager *mgr;
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
-			Net::SSLEngine *ssl;
+			Optional<Net::SSLEngine> ssl;
 
 			static void __stdcall OnChannelAddClicked(void *userObj);
 			static void __stdcall OnChannelsSelChg(void *userObj);

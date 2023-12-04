@@ -922,7 +922,7 @@ SSWR::AVIRead::AVIRBaseForm::AVIRBaseForm(UI::GUIClientControl *parent, NotNullP
 SSWR::AVIRead::AVIRBaseForm::~AVIRBaseForm()
 {
 	this->core->CloseAllForm();
-	SDEL_CLASS(this->ssl);
+	this->ssl.Delete();
 }
 
 void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)

@@ -37,7 +37,7 @@ namespace Net
 		};
 
 		NotNullPtr<Net::SocketFactory> sockf;
-		Net::SSLEngine *ssl;
+		Optional<Net::SSLEngine> ssl;
 		NotNullPtr<Text::String> fcmKey;
 		NotNullPtr<IO::LogTool> log;
 
@@ -50,7 +50,7 @@ namespace Net
 		void LoadData();
 		void SaveData();
 	public:
-		PushManager(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, Text::CString fcmKey, NotNullPtr<IO::LogTool> log);
+		PushManager(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CString fcmKey, NotNullPtr<IO::LogTool> log);
 		~PushManager();
 
 		Bool Subscribe(Text::CStringNN token, Text::CStringNN userName, DeviceType devType, NotNullPtr<const Net::SocketUtil::AddressInfo> remoteAddr, Text::CString devModel);

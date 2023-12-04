@@ -65,7 +65,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 			Int32 httpStatus;
 			UOSInt totalSize = 0;
 			UOSInt writeSize;
-			Net::SSLEngine *ssl;
+			Optional<Net::SSLEngine> ssl;
 			NotNullPtr<Net::HTTPClient> cli;
 			Net::OSSocketFactory sockf(true);
 			ssl = Net::SSLEngineFactory::Create(sockf, true);
@@ -156,7 +156,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 				}
 			}
 			cli.Delete();	
-			SDEL_CLASS(ssl);
+			ssl.Delete();
 		}
 		else
 		{

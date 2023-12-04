@@ -16,7 +16,7 @@ namespace Net
 		PushManager mgr;
 
 	public:
-		PushServer(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, UInt16 port, Text::CString fcmKey, NotNullPtr<IO::LogTool> log);
+		PushServer(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, UInt16 port, Text::CString fcmKey, NotNullPtr<IO::LogTool> log);
 		~PushServer();
 
 		Bool IsError();

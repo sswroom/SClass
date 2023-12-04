@@ -15,19 +15,19 @@ namespace Crypto
 		class JWTHandler
 		{
 		private:
-			Net::SSLEngine *ssl;
+			Optional<Net::SSLEngine> ssl;
 			JWSignature::Algorithm alg;
 			UInt8 *key;
 			UOSInt keyLeng;
 			Crypto::Cert::X509Key::KeyType keyType;
 
 		public:
-			JWTHandler(Net::SSLEngine *ssl, JWSignature::Algorithm alg, const UInt8 *key, UOSInt keyLeng, Crypto::Cert::X509Key::KeyType keyType);
+			JWTHandler(Optional<Net::SSLEngine> ssl, JWSignature::Algorithm alg, const UInt8 *key, UOSInt keyLeng, Crypto::Cert::X509Key::KeyType keyType);
 			~JWTHandler();
 
 			Bool Generate(NotNullPtr<Text::StringBuilderUTF8> sb, Data::StringMap<const UTF8Char*> *payload, JWTParam *param);
 
-			static JWTHandler *CreateHMAC(Net::SSLEngine *ssl, JWSignature::Algorithm alg, const UInt8 *key, UOSInt keyLeng);
+			static JWTHandler *CreateHMAC(Optional<Net::SSLEngine> ssl, JWSignature::Algorithm alg, const UInt8 *key, UOSInt keyLeng);
 		};
 	}
 }

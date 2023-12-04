@@ -13,7 +13,7 @@ namespace SSWR
 		{
 		private:
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
-			Net::SSLEngine *ssl;
+			Optional<Net::SSLEngine> ssl;
 
 			UI::GUITextBox *txtDesc;
 			UI::GUIListView *lvMaps;
@@ -22,7 +22,7 @@ namespace SSWR
 			static void __stdcall OnMapsSelChg(void *userObj);
 			static void __stdcall OnMapsDblClk(void *userObj, UOSInt index);
 		public:
-			AVIRRegionalMapForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Net::SSLEngine *ssl);
+			AVIRRegionalMapForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Optional<Net::SSLEngine> ssl);
 			virtual ~AVIRRegionalMapForm();
 
 			virtual void OnMonitorChanged();

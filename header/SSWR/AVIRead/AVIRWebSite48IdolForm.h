@@ -43,7 +43,7 @@ namespace SSWR
 
 			Net::WebSite::WebSite48IdolControl *ctrl;
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
-			Net::SSLEngine *ssl;
+			Optional<Net::SSLEngine> ssl;
 
 			static void __stdcall OnRequestPageClicked(void *userObj);
 			static void __stdcall OnDownloadLinkClicked(void *userObj);

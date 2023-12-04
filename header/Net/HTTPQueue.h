@@ -18,13 +18,13 @@ namespace Net
 		} DomainStatus;
 	private:
 		NotNullPtr<Net::SocketFactory> sockf;
-		Net::SSLEngine *ssl;
+		Optional<Net::SSLEngine> ssl;
 		Data::StringUTF8Map<DomainStatus*> statusMap;
 		Sync::Mutex statusMut;
 		Sync::Event statusEvt;
 
 	public:
-		HTTPQueue(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl);
+		HTTPQueue(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl);
 		~HTTPQueue();
 
 		NotNullPtr<Net::HTTPClient> MakeRequest(Text::CStringNN url, Net::WebUtil::RequestMethod method, Bool noShutdown);

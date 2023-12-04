@@ -20,7 +20,7 @@ void __stdcall Net::MQTTFailoverClient::OnMessage(void *userObj, Text::CString t
 	}
 }
 
-Net::MQTTFailoverClient::MQTTFailoverClient(Net::FailoverType foType, NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, UInt16 kaSeconds) : foHdlr(foType)
+Net::MQTTFailoverClient::MQTTFailoverClient(Net::FailoverType foType, NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, UInt16 kaSeconds) : foHdlr(foType)
 {
 	this->sockf = sockf;
 	this->ssl = ssl;

@@ -126,7 +126,7 @@ void Parser::ParserList::SetSocketFactory(NotNullPtr<Net::SocketFactory> sockf)
 	}
 }
 
-void Parser::ParserList::SetSSLEngine(Net::SSLEngine *ssl)
+void Parser::ParserList::SetSSLEngine(Optional<Net::SSLEngine> ssl)
 {
 	IO::ParserBase *parser;
 	UOSInt i = this->filePArr.GetCount();

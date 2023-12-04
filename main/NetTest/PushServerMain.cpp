@@ -42,7 +42,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 	Net::OSSocketFactory sockf(true);
-	Net::SSLEngine *ssl = Net::SSLEngineFactory::Create(sockf, true);
+	Optional<Net::SSLEngine> ssl = Net::SSLEngineFactory::Create(sockf, true);
 	IO::LogTool log;
 	sptr = IO::Path::GetProcessFileName(sbuff);
 	sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("log"));
@@ -61,7 +61,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 			progCtrl->WaitForExit(progCtrl);
 		}
 	}
-	SDEL_CLASS(ssl);
+	ssl.Delete();
 	DEL_CLASS(cfg);
 	return 0;
 }

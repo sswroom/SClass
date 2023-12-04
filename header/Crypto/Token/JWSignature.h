@@ -32,7 +32,7 @@ namespace Crypto
 			};
 
 		private:
-			Net::SSLEngine *ssl;
+			Optional<Net::SSLEngine> ssl;
 			Algorithm alg;
 			Crypto::Cert::X509Key::KeyType keyType;
 			UInt8 *privateKey;
@@ -41,7 +41,7 @@ namespace Crypto
 			UOSInt hashValSize;
 
 		public:
-			JWSignature(Net::SSLEngine *ssl, Algorithm alg, const UInt8 *privateKey, UOSInt privateKeyLeng, Crypto::Cert::X509Key::KeyType keyType);
+			JWSignature(Optional<Net::SSLEngine> ssl, Algorithm alg, const UInt8 *privateKey, UOSInt privateKeyLeng, Crypto::Cert::X509Key::KeyType keyType);
 			~JWSignature();
 
 			Bool CalcHash(const UInt8 *buff, UOSInt buffSize);

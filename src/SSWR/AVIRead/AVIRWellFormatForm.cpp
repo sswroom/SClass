@@ -31,7 +31,7 @@ Bool SSWR::AVIRead::AVIRWellFormatForm::ParseFile(Text::CStringNN fileName, NotN
 	Bool reqSSL = false;
 	if (fileName.StartsWith(UTF8STRC("http://")) || (reqSSL = fileName.StartsWith(UTF8STRC("https://"))))
 	{
-		Net::SSLEngine *ssl = 0;
+		Optional<Net::SSLEngine> ssl = 0;
 		if (reqSSL)
 		{
 			ssl = Net::SSLEngineFactory::Create(this->core->GetSocketFactory(), false);
@@ -55,7 +55,7 @@ Bool SSWR::AVIRead::AVIRWellFormatForm::ParseFile(Text::CStringNN fileName, NotN
 			}
 		}
 		cli.Delete();
-		SDEL_CLASS(ssl);
+		ssl.Delete();
 	}
 	else if (fileName.EndsWithICase(UTF8STRC(".json")))
 	{

@@ -48,7 +48,7 @@ namespace SSWR
 			typedef void (__stdcall *FileEndHandler)(void *userObj, Int32 fileId, Int32 webType);
 		private:
 			NotNullPtr<Net::SocketFactory> sockf;
-			Net::SSLEngine *ssl;
+			Optional<Net::SSLEngine> ssl;
 			Sync::Thread thread;
 			CheckStatus chkStatus;
 			FileEndHandler fileEndHdlr;
@@ -81,7 +81,7 @@ namespace SSWR
 
 			Bool IsError();
 			NotNullPtr<Net::SocketFactory> GetSocketFactory();
-			Net::SSLEngine *GetSSLEngine();
+			Optional<Net::SSLEngine> GetSSLEngine();
 			CheckStatus GetCurrStatus();
 			void SetFileEndHandler(FileEndHandler hdlr, void *userObj);
 			Text::String *GetListFile();

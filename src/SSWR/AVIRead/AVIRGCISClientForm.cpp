@@ -192,7 +192,7 @@ SSWR::AVIRead::AVIRGCISClientForm::AVIRGCISClientForm(UI::GUIClientControl *pare
 
 SSWR::AVIRead::AVIRGCISClientForm::~AVIRGCISClientForm()
 {
-	SDEL_CLASS(this->ssl);
+	this->ssl.Delete();
 	this->ClearCliCACerts();
 	SDEL_CLASS(this->cliCert);
 	SDEL_CLASS(this->cliKey);

@@ -319,7 +319,7 @@ SSWR::AVIRead::AVIRSSLInfoForm::AVIRSSLInfoForm(UI::GUIClientControl *parent, No
 
 SSWR::AVIRead::AVIRSSLInfoForm::~AVIRSSLInfoForm()
 {
-	SDEL_CLASS(this->ssl);
+	this->ssl.Delete();
 	SDEL_CLASS(this->currCerts);
 	if (this->packetBuff)
 	{

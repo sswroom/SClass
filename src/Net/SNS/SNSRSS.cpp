@@ -14,7 +14,7 @@ void Net::SNS::SNSRSS::CalcCRC(const UInt8 *buff, UOSInt size, UInt8 *hashVal)
 	this->crc.GetValue(hashVal);
 }
 
-Net::SNS::SNSRSS::SNSRSS(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, Text::EncodingFactory *encFact, Text::String *userAgent, Text::CString channelId, NotNullPtr<IO::LogTool> log)
+Net::SNS::SNSRSS::SNSRSS(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::EncodingFactory *encFact, Text::String *userAgent, Text::CString channelId, NotNullPtr<IO::LogTool> log)
 {
 	this->sockf = sockf;
 	this->ssl = ssl;

@@ -20,7 +20,7 @@ namespace SSWR
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			IO::Device::BYDC9R c9r;
 			IO::CANListener *listener;
-			Net::SSLEngine *ssl;
+			Optional<Net::SSLEngine> ssl;
 
 			NotNullPtr<UI::GUIGroupBox> grpCANBus;
 			UI::GUILabel *lblCANBus;

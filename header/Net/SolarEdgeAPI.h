@@ -79,13 +79,13 @@ namespace Net
 		};
 	private:
 		NotNullPtr<Net::SocketFactory> sockf;
-		Net::SSLEngine *ssl;
+		Optional<Net::SSLEngine> ssl;
 		NotNullPtr<Text::String> apikey;
 
 		void BuildURL(NotNullPtr<Text::StringBuilderUTF8> sb, Text::CString path);
 		Text::JSONBase *GetJSON(Text::CStringNN url);
 	public:
-		SolarEdgeAPI(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, Text::CString apikey);
+		SolarEdgeAPI(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CString apikey);
 		~SolarEdgeAPI();
 
 		Text::String *GetCurrentVersion();

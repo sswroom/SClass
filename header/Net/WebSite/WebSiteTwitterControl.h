@@ -27,12 +27,12 @@ namespace Net
 			
 		private:
 			NotNullPtr<Net::SocketFactory> sockf;
-			Net::SSLEngine *ssl;
+			Optional<Net::SSLEngine> ssl;
 			Text::EncodingFactory *encFact;
 			Text::String *userAgent;
 
 		public:
-			WebSiteTwitterControl(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, Text::EncodingFactory *encFact, Text::String *userAgent);
+			WebSiteTwitterControl(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::EncodingFactory *encFact, Text::String *userAgent);
 			~WebSiteTwitterControl();
 
 			UOSInt GetChannelItems(NotNullPtr<Text::String> channelId, UOSInt pageNo, Data::ArrayList<ItemData*> *itemList, ChannelInfo *chInfo);

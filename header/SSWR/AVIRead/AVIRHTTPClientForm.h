@@ -120,7 +120,7 @@ namespace SSWR
 			UI::GUIListView *lvCookie;
 
 			NotNullPtr<Net::SocketFactory> sockf;
-			Net::SSLEngine *ssl;
+			Optional<Net::SSLEngine> ssl;
 			Text::String *reqURL;
 			const UTF8Char *reqBody;
 			UOSInt reqBodyLen;

@@ -20,7 +20,7 @@ namespace SSWR
 		{
 		private:
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
-			Net::SSLEngine *ssl;
+			Optional<Net::SSLEngine> ssl;
 			Net::AzureManager *azure;
 			Crypto::Token::JWToken *token;
 			Crypto::Token::JWToken::VerifyType verifyType;

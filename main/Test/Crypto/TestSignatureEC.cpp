@@ -21,18 +21,19 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	UInt8 signData[2048];
 	UOSInt signLen;
 	Net::OSSocketFactory sockf(true);
-	Net::SSLEngine *ssl = Net::SSLEngineFactory::Create(sockf, true);
+	Optional<Net::SSLEngine> ssl = Net::SSLEngineFactory::Create(sockf, true);
 	Crypto::Cert::X509File *x509 = 0;
-	if (ssl)
+	NotNullPtr<Net::SSLEngine> nnssl;
+	if (ssl.SetTo(nnssl))
 	{
 		NotNullPtr<Text::String> fileName = Text::String::New(UTF8STRC("Temp.key"));
 		x509 = Parser::FileParser::X509Parser::ParseBuff(Data::ByteArrayR((const UInt8*)key, sizeof(key) - 1), fileName);
 		fileName->Release();
 	}
 	NotNullPtr<Crypto::Cert::X509Key> key;
-	if (x509 && x509->GetFileType() == Crypto::Cert::X509File::FileType::Key && key.Set((Crypto::Cert::X509Key*)x509))
+	if (x509 && ssl.SetTo(nnssl) && x509->GetFileType() == Crypto::Cert::X509File::FileType::Key && key.Set((Crypto::Cert::X509Key*)x509))
 	{
-		if (!ssl->Signature(key, Crypto::Hash::HashType::SHA256, UTF8STRC("123456"), signData, signLen))
+		if (!nnssl->Signature(key, Crypto::Hash::HashType::SHA256, UTF8STRC("123456"), signData, signLen))
 		{
 			printf("Error in generating signature\r\n");
 		}
@@ -42,7 +43,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 			sb.AppendHexBuff(signData, signLen, ' ', Text::LineBreakType::CRLF);
 			printf("Signature:\r\n%s\r\n", sb.ToString());
 			
-			if (ssl->SignatureVerify(key, Crypto::Hash::HashType::SHA256, UTF8STRC("123456"), signData, signLen))
+			if (nnssl->SignatureVerify(key, Crypto::Hash::HashType::SHA256, UTF8STRC("123456"), signData, signLen))
 			{
 				printf("Signature verify success\r\n");
 				ret = 0;
@@ -58,6 +59,6 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 		printf("Error in parsing private key\r\n");
 	}
 	SDEL_CLASS(x509);
-	SDEL_CLASS(ssl);
+	ssl.Delete();
 	return ret;
 }

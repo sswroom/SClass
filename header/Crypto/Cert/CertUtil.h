@@ -17,10 +17,10 @@ namespace Crypto
 			static Bool AppendNames(NotNullPtr<Net::ASN1PDUBuilder> builder, NotNullPtr<const CertNames> names);
 			static Bool AppendPublicKey(NotNullPtr<Net::ASN1PDUBuilder> builder, NotNullPtr<Crypto::Cert::X509Key> key);
 			static Bool AppendExtensions(NotNullPtr<Net::ASN1PDUBuilder> builder, NotNullPtr<const CertExtensions> ext);
-			static Bool AppendSign(NotNullPtr<Net::ASN1PDUBuilder> builder, Net::SSLEngine *ssl, NotNullPtr<Crypto::Cert::X509Key> key, Crypto::Hash::HashType hashType);
-			static Crypto::Cert::X509CertReq *CertReqCreate(Net::SSLEngine *ssl, NotNullPtr<const CertNames> names, NotNullPtr<Crypto::Cert::X509Key> key, const CertExtensions *ext);
-			static Crypto::Cert::X509Cert *SelfSignedCertCreate(Net::SSLEngine *ssl, NotNullPtr<const CertNames> names, NotNullPtr<Crypto::Cert::X509Key> key, UOSInt validDays, const CertExtensions *ext);
-			static Crypto::Cert::X509Cert *IssueCert(Net::SSLEngine *ssl, Crypto::Cert::X509Cert *caCert, NotNullPtr<Crypto::Cert::X509Key> caKey, UOSInt validDays, Crypto::Cert::X509CertReq *csr);
+			static Bool AppendSign(NotNullPtr<Net::ASN1PDUBuilder> builder, NotNullPtr<Net::SSLEngine> ssl, NotNullPtr<Crypto::Cert::X509Key> key, Crypto::Hash::HashType hashType);
+			static Crypto::Cert::X509CertReq *CertReqCreate(NotNullPtr<Net::SSLEngine> ssl, NotNullPtr<const CertNames> names, NotNullPtr<Crypto::Cert::X509Key> key, const CertExtensions *ext);
+			static Crypto::Cert::X509Cert *SelfSignedCertCreate(NotNullPtr<Net::SSLEngine> ssl, NotNullPtr<const CertNames> names, NotNullPtr<Crypto::Cert::X509Key> key, UOSInt validDays, const CertExtensions *ext);
+			static Crypto::Cert::X509Cert *IssueCert(NotNullPtr<Net::SSLEngine> ssl, Crypto::Cert::X509Cert *caCert, NotNullPtr<Crypto::Cert::X509Key> caKey, UOSInt validDays, Crypto::Cert::X509CertReq *csr);
 			static Crypto::Cert::X509Cert *FindIssuer(NotNullPtr<Crypto::Cert::X509Cert> cert);
 		};
 	}

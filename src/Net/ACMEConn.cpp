@@ -88,7 +88,7 @@ Text::String *Net::ACMEConn::ProtectedJWK(Text::String *nonce, NotNullPtr<Text::
 	return Text::String::New(sb.ToCString()).Ptr();
 }
 
-NotNullPtr<Text::String> Net::ACMEConn::EncodeJWS(Net::SSLEngine *ssl, Text::CString protStr, Text::CString data, Crypto::Cert::X509Key *key, Crypto::Token::JWSignature::Algorithm alg)
+NotNullPtr<Text::String> Net::ACMEConn::EncodeJWS(Optional<Net::SSLEngine> ssl, Text::CString protStr, Text::CString data, Crypto::Cert::X509Key *key, Crypto::Token::JWSignature::Algorithm alg)
 {
 	Text::StringBuilderUTF8 sb;
 	Text::TextBinEnc::Base64Enc b64(Text::TextBinEnc::Base64Enc::Charset::URL, true);
@@ -339,7 +339,7 @@ Net::ACMEConn::ACMEConn(NotNullPtr<Net::SocketFactory> sockf, Text::CStringNN se
 
 Net::ACMEConn::~ACMEConn()
 {
-	SDEL_CLASS(this->ssl);
+	this->ssl.Delete();
 	this->serverHost->Release();
 	SDEL_STRING(this->urlNewNonce);
 	SDEL_STRING(this->urlNewAccount);
@@ -698,12 +698,16 @@ void Net::ACMEConn::ChallengeFree(Challenge *chall)
 
 Bool Net::ACMEConn::NewKey()
 {
-	Crypto::Cert::X509Key *key = this->ssl->GenerateRSAKey();
-	if (key)
+	NotNullPtr<Net::SSLEngine> ssl;
+	if (this->ssl.SetTo(ssl))
 	{
-		SDEL_CLASS(this->key);
-		this->key = key;
-		return true;
+		Crypto::Cert::X509Key *key = ssl->GenerateRSAKey();
+		if (key)
+		{
+			SDEL_CLASS(this->key);
+			this->key = key;
+			return true;
+		}
 	}
 	return false;
 }

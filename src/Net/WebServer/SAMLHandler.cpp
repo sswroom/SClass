@@ -153,7 +153,7 @@ Bool Net::WebServer::SAMLHandler::ProcessRequest(NotNullPtr<Net::WebServer::IWeb
 	return false;
 }
 
-Net::WebServer::SAMLHandler::SAMLHandler(SAMLConfig *cfg, Net::SSLEngine *ssl, WebStandardHandler *defHdlr)
+Net::WebServer::SAMLHandler::SAMLHandler(SAMLConfig *cfg, Optional<Net::SSLEngine> ssl, WebStandardHandler *defHdlr)
 {
 	this->defHdlr = defHdlr;
 	this->ssl = ssl;

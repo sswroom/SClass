@@ -87,7 +87,7 @@ SSWR::AVIRead::AVIRWebSite7gogoForm::AVIRWebSite7gogoForm(UI::GUIClientControl *
 SSWR::AVIRead::AVIRWebSite7gogoForm::~AVIRWebSite7gogoForm()
 {
 	DEL_CLASS(this->ctrl);
-	SDEL_CLASS(this->ssl);
+	this->ssl.Delete();
 }
 
 void SSWR::AVIRead::AVIRWebSite7gogoForm::OnMonitorChanged()

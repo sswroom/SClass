@@ -143,7 +143,7 @@ SSWR::AVIRead::AVIRHKOForecastForm::AVIRHKOForecastForm(UI::GUIClientControl *pa
 
 SSWR::AVIRead::AVIRHKOForecastForm::~AVIRHKOForecastForm()
 {
-	SDEL_CLASS(this->ssl);
+	this->ssl.Delete();
 }
 
 void SSWR::AVIRead::AVIRHKOForecastForm::OnMonitorChanged()

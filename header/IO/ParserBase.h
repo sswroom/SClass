@@ -44,7 +44,7 @@ namespace IO
 		virtual void SetEncFactory(Text::EncodingFactory *encFact) {};
 		virtual void SetProgressHandler(IO::ProgressHandler *progHdlr) {};
 		virtual void SetSocketFactory(NotNullPtr<Net::SocketFactory> sockf) {};
-		virtual void SetSSLEngine(Net::SSLEngine *ssl) {};
+		virtual void SetSSLEngine(Optional<Net::SSLEngine> ssl) {};
 		virtual void SetArcGISPRJParser(Math::ArcGISPRJParser *prjParser) {};
 		virtual void SetLogTool(IO::LogTool *log) {};
 		virtual void PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t) = 0;

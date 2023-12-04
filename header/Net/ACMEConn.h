@@ -53,7 +53,7 @@ namespace Net
 		};
 	private:
 		NotNullPtr<Net::SocketFactory> sockf;
-		Net::SSLEngine *ssl;
+		Optional<Net::SSLEngine> ssl;
 		Crypto::Cert::X509Key *key;
 		NotNullPtr<Text::String> serverHost;
 		UInt16 port;
@@ -70,7 +70,7 @@ namespace Net
 
 		static Text::String *JWK(Crypto::Cert::X509Key *key, Crypto::Token::JWSignature::Algorithm *alg);
 		static Text::String *ProtectedJWK(Text::String *nonce, NotNullPtr<Text::String> url, Crypto::Cert::X509Key *key, Crypto::Token::JWSignature::Algorithm *alg, Text::String *accountId);
-		static NotNullPtr<Text::String> EncodeJWS(Net::SSLEngine *ssl, Text::CString protStr, Text::CString data, Crypto::Cert::X509Key *key, Crypto::Token::JWSignature::Algorithm alg);
+		static NotNullPtr<Text::String> EncodeJWS(Optional<Net::SSLEngine> ssl, Text::CString protStr, Text::CString data, Crypto::Cert::X509Key *key, Crypto::Token::JWSignature::Algorithm alg);
 		static Bool KeyHash(Crypto::Cert::X509Key *key, NotNullPtr<Text::StringBuilderUTF8> sb);
 		Net::HTTPClient *ACMEPost(NotNullPtr<Text::String> url, Text::CString data);
 		Order *OrderParse(const UInt8 *buff, UOSInt buffSize);

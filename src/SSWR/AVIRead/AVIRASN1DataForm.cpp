@@ -103,16 +103,23 @@ void __stdcall SSWR::AVIRead::AVIRASN1DataForm::OnVerifyClicked(void *userObj)
 		UI::MessageDialog::ShowDialog(CSTR("Error in extracting key"), CSTR("Verify Signature"), me);
 		return;
 	}
-	Net::SSLEngine *ssl = Net::SSLEngineFactory::Create(me->core->GetSocketFactory(), true);
-	if (ssl->SignatureVerify(key, (Crypto::Hash::HashType)(OSInt)me->cboVerifyHash->GetSelectedItem(), mstm.GetBuff(), (UOSInt)mstm.GetLength(), signBuff, signLen))
+	NotNullPtr<Net::SSLEngine> ssl;
+	if (Net::SSLEngineFactory::Create(me->core->GetSocketFactory(), true).SetTo(ssl))
 	{
-		me->txtVerifyStatus->SetText(CSTR("Valid"));
+		if (ssl->SignatureVerify(key, (Crypto::Hash::HashType)(OSInt)me->cboVerifyHash->GetSelectedItem(), mstm.GetBuff(), (UOSInt)mstm.GetLength(), signBuff, signLen))
+		{
+			me->txtVerifyStatus->SetText(CSTR("Valid"));
+		}
+		else
+		{
+			me->txtVerifyStatus->SetText(CSTR("Invalid"));
+		}
+		ssl.Delete();
 	}
 	else
 	{
-		me->txtVerifyStatus->SetText(CSTR("Invalid"));
+		me->txtVerifyStatus->SetText(CSTR("SSL Engine Error"));
 	}
-	DEL_CLASS(ssl);
 	key.Delete();
 }
 
@@ -136,33 +143,40 @@ void __stdcall SSWR::AVIRead::AVIRASN1DataForm::OnVerifySignInfoClicked(void *us
 		UI::MessageDialog::ShowDialog(CSTR("Error in extracting key"), CSTR("Verify Signature"), me);
 		return;
 	}
-	Net::SSLEngine *ssl = Net::SSLEngineFactory::Create(me->core->GetSocketFactory(), true);
-	decLen = ssl->Decrypt(key, decBuff, signBuff, signLen, Crypto::Encrypt::RSACipher::Padding::PKCS1);
-	if (decLen > 0)
+	NotNullPtr<Net::SSLEngine> ssl;
+	if (Net::SSLEngineFactory::Create(me->core->GetSocketFactory(), true).SetTo(ssl))
 	{
-		Crypto::Cert::DigestInfo digestInfo;
-		if (Crypto::Cert::X509File::ParseDigestType(&digestInfo, decBuff, decBuff + decLen))
+		decLen = ssl->Decrypt(key, decBuff, signBuff, signLen, Crypto::Encrypt::RSACipher::Padding::PKCS1);
+		if (decLen > 0)
 		{
-			sb.ClearStr();
-			sb.AppendC(UTF8STRC("Hash Type: "));
-			sb.Append(Crypto::Hash::HashTypeGetName(digestInfo.hashType));
-			sb.AppendC(UTF8STRC("\r\nHash Value: "));
-			sb.AppendHexBuff(digestInfo.hashVal, digestInfo.hashLen, ' ', Text::LineBreakType::None);
-			me->txtVerifyStatus->SetText(sb.ToCString());
+			Crypto::Cert::DigestInfo digestInfo;
+			if (Crypto::Cert::X509File::ParseDigestType(&digestInfo, decBuff, decBuff + decLen))
+			{
+				sb.ClearStr();
+				sb.AppendC(UTF8STRC("Hash Type: "));
+				sb.Append(Crypto::Hash::HashTypeGetName(digestInfo.hashType));
+				sb.AppendC(UTF8STRC("\r\nHash Value: "));
+				sb.AppendHexBuff(digestInfo.hashVal, digestInfo.hashLen, ' ', Text::LineBreakType::None);
+				me->txtVerifyStatus->SetText(sb.ToCString());
+			}
+			else
+			{
+				me->txtVerifyStatus->SetText(CSTR("Signature is not a valid DigestInfo"));
+			}
 		}
 		else
 		{
-			me->txtVerifyStatus->SetText(CSTR("Signature is not a valid DigestInfo"));
+			sb.ClearStr();
+			sb.AppendC(UTF8STRC("Cannot decrypt signature, sign len = "));
+			sb.AppendUOSInt(signLen);
+			me->txtVerifyStatus->SetText(sb.ToCString());
 		}
+		ssl.Delete();
 	}
 	else
 	{
-		sb.ClearStr();
-		sb.AppendC(UTF8STRC("Cannot decrypt signature, sign len = "));
-		sb.AppendUOSInt(signLen);
-		me->txtVerifyStatus->SetText(sb.ToCString());
+		me->txtVerifyStatus->SetText(CSTR("SSL Engine problem"));
 	}
-	DEL_CLASS(ssl);
 	key.Delete();
 }
 
@@ -211,37 +225,47 @@ void __stdcall SSWR::AVIRead::AVIRASN1DataForm::OnEncryptEncryptClicked(void *us
 		UI::MessageDialog::ShowDialog(CSTR("Error in getting key from file"), CSTR("Encrypt"), me);
 		return;
 	}
-	Net::SSLEngine *ssl = Net::SSLEngineFactory::Create(me->core->GetSocketFactory(), true);
-	UInt8 *outData = MemAlloc(UInt8, 512);
-	UOSInt outSize = ssl->Encrypt(key, outData, buff, buffSize, (Crypto::Encrypt::RSACipher::Padding)(OSInt)me->cboEncryptRSAPadding->GetSelectedItem());
-	MemFree(buff);
-	key.Delete();
-	DEL_CLASS(ssl);
-	if (outSize == 0)
+	NotNullPtr<Net::SSLEngine> ssl;
+	if (Net::SSLEngineFactory::Create(me->core->GetSocketFactory(), true).SetTo(ssl))
 	{
+		UInt8 *outData = MemAlloc(UInt8, 512);
+		UOSInt outSize = ssl->Encrypt(key, outData, buff, buffSize, (Crypto::Encrypt::RSACipher::Padding)(OSInt)me->cboEncryptRSAPadding->GetSelectedItem());
+		MemFree(buff);
+		ssl.Delete();
+		key.Delete();
+		if (outSize == 0)
+		{
+			MemFree(outData);
+			UI::MessageDialog::ShowDialog(CSTR("Error in encrypting data"), CSTR("Encrypt"), me);
+			return;
+		}
+		type = me->cboEncryptOutputType->GetSelectedIndex();
+		sb.ClearStr();
+		if (type == 0)
+		{
+			Text::TextBinEnc::Base64Enc enc;
+			enc.EncodeBin(sb, outData, outSize);
+			me->txtEncryptOutput->SetText(sb.ToCString());
+		}
+		else if (type == 1)
+		{
+			Text::TextBinEnc::HexTextBinEnc enc;
+			enc.EncodeBin(sb, outData, outSize);
+			me->txtEncryptOutput->SetText(sb.ToCString());
+		}
+		else
+		{
+			UI::MessageDialog::ShowDialog(CSTR("Unknown Output Type"), CSTR("Encrypt"), me);
+		}
 		MemFree(outData);
-		UI::MessageDialog::ShowDialog(CSTR("Error in encrypting data"), CSTR("Encrypt"), me);
-		return;
-	}
-	type = me->cboEncryptOutputType->GetSelectedIndex();
-	sb.ClearStr();
-	if (type == 0)
-	{
-		Text::TextBinEnc::Base64Enc enc;
-		enc.EncodeBin(sb, outData, outSize);
-		me->txtEncryptOutput->SetText(sb.ToCString());
-	}
-	else if (type == 1)
-	{
-		Text::TextBinEnc::HexTextBinEnc enc;
-		enc.EncodeBin(sb, outData, outSize);
-		me->txtEncryptOutput->SetText(sb.ToCString());
 	}
 	else
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Unknown Output Type"), CSTR("Encrypt"), me);
+		key.Delete();
+		MemFree(buff);
+		UI::MessageDialog::ShowDialog(CSTR("Error in SSL engine"), CSTR("Encrypt"), me);
+		return;
 	}
-	MemFree(outData);
 }
 
 void __stdcall SSWR::AVIRead::AVIRASN1DataForm::OnEncryptDecryptClicked(void *userObj)
@@ -289,37 +313,46 @@ void __stdcall SSWR::AVIRead::AVIRASN1DataForm::OnEncryptDecryptClicked(void *us
 		UI::MessageDialog::ShowDialog(CSTR("Error in getting key from file"), CSTR("Decrypt"), me);
 		return;
 	}
-	Net::SSLEngine *ssl = Net::SSLEngineFactory::Create(me->core->GetSocketFactory(), true);
-	UInt8 *outData = MemAlloc(UInt8, 512);
-	UOSInt outSize = ssl->Decrypt(key, outData, buff, buffSize, (Crypto::Encrypt::RSACipher::Padding)(OSInt)me->cboEncryptRSAPadding->GetSelectedItem());
-	MemFree(buff);
-	key.Delete();
-	DEL_CLASS(ssl);
-	if (outSize == 0)
+	NotNullPtr<Net::SSLEngine> ssl;
+	if (Net::SSLEngineFactory::Create(me->core->GetSocketFactory(), true).SetTo(ssl))
 	{
+		UInt8 *outData = MemAlloc(UInt8, 512);
+		UOSInt outSize = ssl->Decrypt(key, outData, buff, buffSize, (Crypto::Encrypt::RSACipher::Padding)(OSInt)me->cboEncryptRSAPadding->GetSelectedItem());
+		MemFree(buff);
+		key.Delete();
+		ssl.Delete();
+		if (outSize == 0)
+		{
+			MemFree(outData);
+			UI::MessageDialog::ShowDialog(CSTR("Error in decrypting data"), CSTR("Decrypt"), me);
+			return;
+		}
+		type = me->cboEncryptOutputType->GetSelectedIndex();
+		sb.ClearStr();
+		if (type == 0)
+		{
+			Text::TextBinEnc::Base64Enc enc;
+			enc.EncodeBin(sb, outData, outSize);
+			me->txtEncryptOutput->SetText(sb.ToCString());
+		}
+		else if (type == 1)
+		{
+			Text::TextBinEnc::HexTextBinEnc enc;
+			enc.EncodeBin(sb, outData, outSize);
+			me->txtEncryptOutput->SetText(sb.ToCString());
+		}
+		else
+		{
+			UI::MessageDialog::ShowDialog(CSTR("Unknown Output Type"), CSTR("Decrypt"), me);
+		}
 		MemFree(outData);
-		UI::MessageDialog::ShowDialog(CSTR("Error in decrypting data"), CSTR("Decrypt"), me);
-		return;
-	}
-	type = me->cboEncryptOutputType->GetSelectedIndex();
-	sb.ClearStr();
-	if (type == 0)
-	{
-		Text::TextBinEnc::Base64Enc enc;
-		enc.EncodeBin(sb, outData, outSize);
-		me->txtEncryptOutput->SetText(sb.ToCString());
-	}
-	else if (type == 1)
-	{
-		Text::TextBinEnc::HexTextBinEnc enc;
-		enc.EncodeBin(sb, outData, outSize);
-		me->txtEncryptOutput->SetText(sb.ToCString());
 	}
 	else
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Unknown Output Type"), CSTR("Decrypt"), me);
+		MemFree(buff);
+		key.Delete();
+		UI::MessageDialog::ShowDialog(CSTR("Error in SSL engine"), CSTR("Encrypt"), me);
 	}
-	MemFree(outData);
 }
 
 void __stdcall SSWR::AVIRead::AVIRASN1DataForm::OnFileDrop(void *userObj, NotNullPtr<Text::String> *files, UOSInt nFiles)
@@ -562,9 +595,16 @@ SSWR::AVIRead::AVIRASN1DataForm::AVIRASN1DataForm(UI::GUIClientControl *parent, 
 	if (this->asn1->GetASN1Type() == Net::ASN1Data::ASN1Type::X509)
 	{
 		NotNullPtr<Crypto::Cert::X509File> x509 = NotNullPtr<Crypto::Cert::X509File>::ConvertFrom(this->asn1);
-		Net::SSLEngine *ssl = Net::SSLEngineFactory::Create(this->core->GetSocketFactory(), false);
-		this->txtStatus->SetText(Crypto::Cert::X509File::ValidStatusGetDesc(x509->IsValid(ssl, ssl->GetTrustStore())));
-		SDEL_CLASS(ssl);
+		NotNullPtr<Net::SSLEngine> ssl;
+		if (Net::SSLEngineFactory::Create(this->core->GetSocketFactory(), false).SetTo(ssl))
+		{
+			this->txtStatus->SetText(Crypto::Cert::X509File::ValidStatusGetDesc(x509->IsValid(ssl, ssl->GetTrustStore())));
+			ssl.Delete();
+		}
+		else
+		{
+			this->txtStatus->SetText(CSTR("Error in SSL Engine"));
+		}
 
 		Bool canSignature = false;
 		Bool canVerify = false;

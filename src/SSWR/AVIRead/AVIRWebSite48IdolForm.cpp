@@ -149,7 +149,7 @@ SSWR::AVIRead::AVIRWebSite48IdolForm::AVIRWebSite48IdolForm(UI::GUIClientControl
 SSWR::AVIRead::AVIRWebSite48IdolForm::~AVIRWebSite48IdolForm()
 {
 	DEL_CLASS(this->ctrl);
-	SDEL_CLASS(this->ssl);
+	this->ssl.Delete();
 }
 
 void SSWR::AVIRead::AVIRWebSite48IdolForm::OnMonitorChanged()

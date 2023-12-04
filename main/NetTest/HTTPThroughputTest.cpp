@@ -28,7 +28,7 @@ Int32 connLeft;
 Manage::HiResClock *clk;
 Double t;
 NotNullPtr<Net::SocketFactory> sockf;
-Net::SSLEngine *ssl;
+Optional<Net::SSLEngine> ssl;
 
 struct ThreadStatus
 {
@@ -328,6 +328,6 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	Text::StrConcatC(Math::Unit::Count::WellFormat(sbuff, ((Double)(recvSize + hdrSize) / t)), UTF8STRC("B/s"));
 	printf("Transfer/s = %s\r\n", sbuff);
 	
-	SDEL_CLASS(ssl);
+	ssl.Delete();
 	return 0;
 }

@@ -26,7 +26,7 @@ namespace SSWR
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			Manage::HiResClock clk;
 			NotNullPtr<Net::SocketFactory> sockf;
-			Net::SSLEngine *ssl;
+			Optional<Net::SSLEngine> ssl;
 			Sync::Thread **threads;
 			Sync::Mutex connMut;
 			Data::ArrayListNN<Text::String> connURLs;

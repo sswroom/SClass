@@ -60,7 +60,7 @@ void __stdcall SSWR::AVIRead::AVIRSAMLDecryptForm::OnDecryptClicked(void *userOb
 {
 	SSWR::AVIRead::AVIRSAMLDecryptForm *me = (SSWR::AVIRead::AVIRSAMLDecryptForm*)userObj;
 	Text::StringBuilderUTF8 sb;
-	Net::SSLEngine *ssl;
+	NotNullPtr<Net::SSLEngine> ssl;
 	Crypto::Cert::X509Key *key = 0;
 	IO::ParsedObject *pobj;
 	me->txtKey->GetText(sb);
@@ -131,9 +131,15 @@ void __stdcall SSWR::AVIRead::AVIRSAMLDecryptForm::OnDecryptClicked(void *userOb
 		return;
 	}
 	Text::StringBuilderUTF8 sbResult;
-	ssl = Net::SSLEngineFactory::Create(me->core->GetSocketFactory(), false);
-	Net::SAMLUtil::DecryptResponse(ssl, me->core->GetEncFactory(), keyNN, sb.ToCString(), sbResult);
-	DEL_CLASS(ssl);
+	if (Net::SSLEngineFactory::Create(me->core->GetSocketFactory(), false).SetTo(ssl))
+	{
+		Net::SAMLUtil::DecryptResponse(ssl, me->core->GetEncFactory(), keyNN, sb.ToCString(), sbResult);
+		ssl.Delete();
+	}
+	else
+	{
+		sbResult.Append(CSTR("SSL Engine error"));
+	}
 	keyNN.Delete();
 	me->txtResult->SetText(sbResult.ToCString());
 }

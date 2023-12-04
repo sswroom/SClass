@@ -526,7 +526,7 @@ SSWR::DownloadMonitor::DownMonCore::~DownMonCore()
 		this->FileFree(this->fileTypeMap.GetItem(i));
 	}
 
-	SDEL_CLASS(this->ssl);
+	this->ssl.Delete();
 	this->sockf.Delete();
 }
 
@@ -540,7 +540,7 @@ NotNullPtr<Net::SocketFactory> SSWR::DownloadMonitor::DownMonCore::GetSocketFact
 	return this->sockf;
 }
 
-Net::SSLEngine *SSWR::DownloadMonitor::DownMonCore::GetSSLEngine()
+Optional<Net::SSLEngine> SSWR::DownloadMonitor::DownMonCore::GetSSLEngine()
 {
 	return this->ssl;
 }

@@ -183,7 +183,7 @@ Net::HTTPData::HTTPData(const Net::HTTPData *fd, UInt64 offset, UInt64 length)
 	fdh->objectCnt++;
 }
 
-Net::HTTPData::HTTPData(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, Net::HTTPQueue *queue, Text::CString url, Text::CStringNN localFile, Bool forceReload)
+Net::HTTPData::HTTPData(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Net::HTTPQueue *queue, Text::CString url, Text::CStringNN localFile, Bool forceReload)
 {
 	UOSInt i;
 	Bool needReload = forceReload;

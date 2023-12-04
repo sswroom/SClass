@@ -60,7 +60,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 	Net::WebServer::WebListener *svr;
-	Net::SSLEngine *ssl;
+	Optional<Net::SSLEngine> ssl;
 	Text::StringBuilderUTF8 sb;
 	UInt16 port = 0;
 	Bool succ = true;
@@ -89,10 +89,11 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	Net::OSSocketFactory sockf(true);
 #if defined(USESSL)
 	ssl = Net::SSLEngineFactory::Create(sockf, true);
-	if (ssl == 0 || !ssl->ServerSetCerts(CSTR("test.crt"), CSTR("test.key")))
+	NotNullPtr<Net::SSLEngine> nnssl;
+	if (!ssl.SetTo(nnssl) || !nnssl->ServerSetCerts(CSTR("test.crt"), CSTR("test.key")))
 	{
 		console->WriteLineC(UTF8STRC("Error in initializing SSL"));
-		sptr = ssl->GetErrorDetail(sbuff);
+		sptr = nnssl->GetErrorDetail(sbuff);
 		console->WriteLineC(sbuff, (UOSInt)(sptr - sbuff));
 		succ = false;
 	}
@@ -123,7 +124,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 		DEL_CLASS(svr);
 		hdlr.Delete();
 	}
-	SDEL_CLASS(ssl);
+	ssl.Delete();
 	DEL_CLASS(console);
 	return 0;
 }

@@ -27,7 +27,7 @@ Sync::Event *evt;
 Sync::Event *httpEvt;
 IO::Device::AM2315 *am2315;
 NotNullPtr<Net::SocketFactory> sockf;
-Net::SSLEngine *ssl;
+Optional<Net::SSLEngine> ssl;
 IO::ConsoleWriter *consoleWriter;
 
 UInt32 __stdcall WatchdogThread(void *userObj)
@@ -203,7 +203,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	}
 	DEL_CLASS(evt);
 	DEL_CLASS(httpEvt);
-	SDEL_CLASS(ssl);
+	ssl.Delete();
 	sockf.Delete();
 	DEL_CLASS(am2315);
 	return 0;

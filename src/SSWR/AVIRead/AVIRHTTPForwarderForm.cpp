@@ -28,7 +28,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPForwarderForm::OnStartClick(void *userObj)
 		UI::MessageDialog::ShowDialog(CSTR("Forward URL must be started with http:// or https://"), CSTR("HTTP Forwarder"), me);
 		return;
 	}
-	Net::SSLEngine *ssl = 0;
+	Optional<Net::SSLEngine> ssl = 0;
 
 	if (me->chkSSL->IsChecked())
 	{
@@ -40,7 +40,8 @@ void __stdcall SSWR::AVIRead::AVIRHTTPForwarderForm::OnStartClick(void *userObj)
 			return;
 		}
 		ssl = me->ssl;
-		if (!ssl->ServerSetCertsASN1(sslCert, sslKey, me->caCerts))
+		NotNullPtr<Net::SSLEngine> nnssl;
+		if (!ssl.SetTo(nnssl) || !nnssl->ServerSetCertsASN1(sslCert, sslKey, me->caCerts))
 		{
 			UI::MessageDialog::ShowDialog(CSTR("Error in initializing Cert/Key"), CSTR("HTTP Forwarder"), me);
 			return;
@@ -199,7 +200,7 @@ SSWR::AVIRead::AVIRHTTPForwarderForm::~AVIRHTTPForwarderForm()
 	SDEL_CLASS(this->svr);
 	SDEL_CLASS(this->fwdHdlr);
 	SDEL_CLASS(this->fwdLog);
-	SDEL_CLASS(this->ssl);
+	this->ssl.Delete();
 	SDEL_CLASS(this->sslCert);
 	SDEL_CLASS(this->sslKey);
 	this->ClearCACerts();

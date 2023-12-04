@@ -781,7 +781,7 @@ SSWR::AVIRead::AVIRHQMPForm::~AVIRHQMPForm()
 		this->dbgFrm->Close();
 	this->ClearChildren();
 	this->core->GetColorMgr()->DeleteSess(this->colorSess);
-	SDEL_CLASS(this->ssl);
+	this->ssl.Delete();
 }
 
 void SSWR::AVIRead::AVIRHQMPForm::EventMenuClicked(UInt16 cmdId)

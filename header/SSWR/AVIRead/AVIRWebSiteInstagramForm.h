@@ -37,7 +37,7 @@ namespace SSWR
 
 			Net::WebSite::WebSiteInstagramControl *ctrl;
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
-			Net::SSLEngine *ssl;
+			Optional<Net::SSLEngine> ssl;
 
 			static void __stdcall OnRequestUserClicked(void *userObj);
 			static void __stdcall OnPageClicked(void *userObj);

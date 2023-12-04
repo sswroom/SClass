@@ -25,7 +25,7 @@ Bool Net::HTTPServerMonitor::CheckOnline()
 	return status == Net::WebStatus::SC_OK;
 }
 
-Net::HTTPServerMonitor::HTTPServerMonitor(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, NotNullPtr<Text::String> url)
+Net::HTTPServerMonitor::HTTPServerMonitor(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, NotNullPtr<Text::String> url)
 {
 	this->sockf = sockf;
 	this->ssl = ssl;
@@ -41,7 +41,7 @@ Net::HTTPServerMonitor::HTTPServerMonitor(NotNullPtr<Net::SocketFactory> sockf, 
 	}
 }
 
-Net::HTTPServerMonitor::HTTPServerMonitor(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, Text::CString url)
+Net::HTTPServerMonitor::HTTPServerMonitor(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CString url)
 {
 	this->sockf = sockf;
 	this->ssl = ssl;

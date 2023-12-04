@@ -15,7 +15,7 @@ namespace Map
 		Text::String *cacheDir;
 		IO::SPackageFile *spkg;
 		NotNullPtr<Net::SocketFactory> sockf;
-		Net::SSLEngine *ssl;
+		Optional<Net::SSLEngine> ssl;
 		UOSInt minLevel;
 		UOSInt maxLevel;
 
@@ -24,7 +24,7 @@ namespace Map
 		NotNullPtr<Math::CoordinateSystem> csys;
 
 	public:
-		MercatorTileMap(Text::CString cacheDir, UOSInt minLevel, UOSInt maxLevel, NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl);
+		MercatorTileMap(Text::CString cacheDir, UOSInt minLevel, UOSInt maxLevel, NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl);
 		virtual ~MercatorTileMap();
 
 		void SetSPackageFile(IO::SPackageFile *spkg);

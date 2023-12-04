@@ -161,7 +161,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPSvrForm::OnStartClick(void *userObj)
 	}
 	sb.ClearStr();
 	me->txtDocDir->GetText(sb);
-	Net::SSLEngine *ssl = 0;
+	Optional<Net::SSLEngine> ssl = 0;
 
 	if (me->chkSSL->IsChecked())
 	{
@@ -173,7 +173,8 @@ void __stdcall SSWR::AVIRead::AVIRHTTPSvrForm::OnStartClick(void *userObj)
 			return;
 		}
 		ssl = me->ssl;
-		if (!ssl->ServerSetCertsASN1(sslCert, sslKey, me->caCerts))
+		NotNullPtr<Net::SSLEngine> nnssl;
+		if (!ssl.SetTo(nnssl) || !nnssl->ServerSetCertsASN1(sslCert, sslKey, me->caCerts))
 		{
 			UI::MessageDialog::ShowDialog(CSTR("Error in initializing Cert/Key"), CSTR("HTTP Server"), me);
 			return;
@@ -639,7 +640,7 @@ SSWR::AVIRead::AVIRHTTPSvrForm::~AVIRHTTPSvrForm()
 	SDEL_CLASS(this->log);
 	SDEL_CLASS(this->logger);
 	SDEL_CLASS(this->reqLog);
-	SDEL_CLASS(this->ssl);
+	this->ssl.Delete();
 	SDEL_CLASS(this->sslCert);
 	SDEL_CLASS(this->sslKey);
 	this->ClearCACerts();

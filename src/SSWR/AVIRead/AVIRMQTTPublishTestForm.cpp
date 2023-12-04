@@ -76,14 +76,15 @@ void __stdcall SSWR::AVIRead::AVIRMQTTPublishTestForm::OnStartClicked(void *user
 			UI::MessageDialog::ShowDialog(CSTR("Please enter content to publish"), CSTR("Error"), me);
 			return;
 		}
-		Net::SSLEngine *ssl = me->ssl;
-		if (useSSL)
+		Optional<Net::SSLEngine> ssl = me->ssl;
+		NotNullPtr<Net::SSLEngine> nnssl;
+		if (useSSL && ssl.SetTo(nnssl))
 		{
 			NotNullPtr<Crypto::Cert::X509Cert> cliCert;
 			NotNullPtr<Crypto::Cert::X509File> cliKey;
 			if (cliCert.Set(me->cliCert) && cliKey.Set(me->cliKey))
 			{
-				ssl->ClientSetCertASN1(cliCert, cliKey);
+				nnssl->ClientSetCertASN1(cliCert, cliKey);
 			}
 		}
 		if (useWS)
@@ -443,7 +444,7 @@ SSWR::AVIRead::AVIRMQTTPublishTestForm::~AVIRMQTTPublishTestForm()
 	this->ServerStop();
 	SDEL_CLASS(this->cliCert);
 	SDEL_CLASS(this->cliKey);
-	SDEL_CLASS(this->ssl);
+	this->ssl.Delete();
 }
 
 void SSWR::AVIRead::AVIRMQTTPublishTestForm::OnMonitorChanged()

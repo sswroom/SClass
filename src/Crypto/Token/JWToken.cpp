@@ -170,7 +170,7 @@ Crypto::Token::JWToken::VerifyType Crypto::Token::JWToken::GetVerifyType(NotNull
 
 }
 
-Bool Crypto::Token::JWToken::SignatureValid(Net::SSLEngine *ssl, const UInt8 *key, UOSInt keyLeng, Crypto::Cert::X509Key::KeyType keyType)
+Bool Crypto::Token::JWToken::SignatureValid(Optional<Net::SSLEngine> ssl, const UInt8 *key, UOSInt keyLeng, Crypto::Cert::X509Key::KeyType keyType)
 {
 	Text::TextBinEnc::Base64Enc b64(Text::TextBinEnc::Base64Enc::Charset::URL, true);
 	Text::StringBuilderUTF8 sb;
@@ -309,7 +309,7 @@ void Crypto::Token::JWToken::ToString(NotNullPtr<Text::StringBuilderUTF8> sb) co
 	b64.EncodeBin(sb, this->sign, this->signSize);
 }
 
-Crypto::Token::JWToken *Crypto::Token::JWToken::Generate(JWSignature::Algorithm alg, Text::CStringNN payload, Net::SSLEngine *ssl, const UInt8 *key, UOSInt keyLeng, Crypto::Cert::X509Key::KeyType keyType)
+Crypto::Token::JWToken *Crypto::Token::JWToken::Generate(JWSignature::Algorithm alg, Text::CStringNN payload, Optional<Net::SSLEngine> ssl, const UInt8 *key, UOSInt keyLeng, Crypto::Cert::X509Key::KeyType keyType)
 {
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;

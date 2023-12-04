@@ -510,7 +510,7 @@ Net::Email::EmailMessage::Attachment *Net::Email::EmailMessage::AddAttachment(co
 	return attachment;
 }
 
-Bool Net::Email::EmailMessage::AddSignature(Net::SSLEngine *ssl, Crypto::Cert::X509Cert *cert, Crypto::Cert::X509Key *key)
+Bool Net::Email::EmailMessage::AddSignature(Optional<Net::SSLEngine> ssl, Crypto::Cert::X509Cert *cert, Crypto::Cert::X509Key *key)
 {
 	SDEL_CLASS(this->signCert);
 	SDEL_CLASS(this->signKey);
@@ -546,8 +546,9 @@ Bool Net::Email::EmailMessage::WriteToStream(NotNullPtr<IO::Stream> stm)
 		return false;
 	}
 	this->WriteHeaders(stm);
+	NotNullPtr<Net::SSLEngine> nnssl;
 	NotNullPtr<Crypto::Cert::X509Key> signKey;
-	if (this->signCert && signKey.Set(this->signKey))
+	if (this->signCert && signKey.Set(this->signKey) && this->ssl.SetTo(nnssl))
 	{
 		IO::MemoryStream mstm;
 		this->WriteContents(mstm);
@@ -691,7 +692,7 @@ Bool Net::Email::EmailMessage::WriteToStream(NotNullPtr<IO::Stream> stm)
 								builder.AppendNull();
 							builder.EndLevel();
 							///////////////////////////////////////
-							this->ssl->Signature(signKey, Crypto::Hash::HashType::SHA256, mstm.GetBuff(), (UOSInt)mstm.GetLength(), signData, signLen);
+							nnssl->Signature(signKey, Crypto::Hash::HashType::SHA256, mstm.GetBuff(), (UOSInt)mstm.GetLength(), signData, signLen);
 							builder.AppendOctetStringC(signData, signLen);
 						builder.EndLevel();
 					builder.EndLevel();

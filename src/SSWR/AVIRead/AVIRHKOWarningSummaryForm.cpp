@@ -68,7 +68,7 @@ SSWR::AVIRead::AVIRHKOWarningSummaryForm::AVIRHKOWarningSummaryForm(UI::GUIClien
 
 SSWR::AVIRead::AVIRHKOWarningSummaryForm::~AVIRHKOWarningSummaryForm()
 {
-	SDEL_CLASS(this->ssl);
+	this->ssl.Delete();
 }
 
 void SSWR::AVIRead::AVIRHKOWarningSummaryForm::OnMonitorChanged()

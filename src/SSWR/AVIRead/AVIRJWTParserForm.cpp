@@ -225,7 +225,7 @@ SSWR::AVIRead::AVIRJWTParserForm::AVIRJWTParserForm(UI::GUIClientControl *parent
 
 SSWR::AVIRead::AVIRJWTParserForm::~AVIRJWTParserForm()
 {
-	SDEL_CLASS(this->ssl);
+	this->ssl.Delete();
 	SDEL_CLASS(this->token);
 	DEL_CLASS(this->azure);
 }

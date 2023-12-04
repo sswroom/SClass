@@ -35,7 +35,7 @@ namespace SSWR
 		private:
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			NotNullPtr<Net::SocketFactory> sockf;
-			Net::SSLEngine *ssl;
+			Optional<Net::SSLEngine> ssl;
 			Data::StringMap<CountryInfo*> countries;
 
 			NotNullPtr<UI::GUIPanel> pnlRequest;

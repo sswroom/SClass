@@ -25,7 +25,7 @@ namespace SSWR
 			} QualityMode;
 		private:
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
-			Net::SSLEngine *ssl;
+			Optional<Net::SSLEngine> ssl;
 			NotNullPtr<Media::ColorManagerSess> colorSess;
 			Media::MediaPlayer *player;
 			Media::MediaFile *currFile;

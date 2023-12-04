@@ -18,7 +18,7 @@ namespace SSWR
 			};
 		private:
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
-			Net::SSLEngine *ssl;
+			Optional<Net::SSLEngine> ssl;
 			Crypto::Cert::CertStore *store;
 
 			UI::GUIListView *lvTrustCert;

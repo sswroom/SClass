@@ -592,7 +592,7 @@ SSWR::AVIRead::AVIRSolarEdgeForm::~AVIRSolarEdgeForm()
 		this->seAPI = 0;
 	}
 	this->ClearChildren();
-	SDEL_CLASS(this->ssl);
+	this->ssl.Delete();
 	SDEL_CLASS(this->imgSiteEnergy);
 	SDEL_CLASS(this->imgSitePower);
 }

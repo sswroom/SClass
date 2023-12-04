@@ -40,11 +40,12 @@ void __stdcall SSWR::AVIRead::AVIREmailServerForm::OnSMTPStartClicked(void *user
 			UI::MessageDialog::ShowDialog(CSTR("Please enter valid port number"), CSTR("Error"), me);
 			return;
 		}
+		NotNullPtr<Net::SSLEngine> ssl;
 		NotNullPtr<Crypto::Cert::X509Cert> smtpSSLCert;
 		NotNullPtr<Crypto::Cert::X509File> smtpSSLKey;
-		if (smtpSSLCert.Set(me->smtpSSLCert) && smtpSSLKey.Set(me->smtpSSLKey))
+		if (me->smtpSSL.SetTo(ssl) && smtpSSLCert.Set(me->smtpSSLCert) && smtpSSLKey.Set(me->smtpSSLKey))
 		{
-			me->smtpSSL->ServerSetCertsASN1(smtpSSLCert, smtpSSLKey, me->smtpCACerts);
+			ssl->ServerSetCertsASN1(smtpSSLCert, smtpSSLKey, me->smtpCACerts);
 		}
 		Net::Email::SMTPConn::ConnType connType = (Net::Email::SMTPConn::ConnType)(OSInt)me->cboSMTPType->GetSelectedItem();
 		NEW_CLASS(me->smtpSvr, Net::Email::SMTPServer(me->sockf, me->smtpSSL, port, connType, me->log, SERVER_DOMAIN, CSTR("SSWRSMTP"), OnMailReceived, OnMailLogin, me, true));
@@ -80,14 +81,18 @@ void __stdcall SSWR::AVIRead::AVIREmailServerForm::OnPOP3StartClicked(void *user
 			UI::MessageDialog::ShowDialog(CSTR("Please enter valid port number"), CSTR("Error"), me);
 			return;
 		}
-		Net::SSLEngine *ssl = 0;
+		Optional<Net::SSLEngine> ssl = 0;
 		Bool sslConn = me->chkPOP3SSL->IsChecked();
 		NotNullPtr<Crypto::Cert::X509Cert> pop3SSLCert;
 		NotNullPtr<Crypto::Cert::X509File> pop3SSLKey;
 		if (pop3SSLCert.Set(me->pop3SSLCert) && pop3SSLKey.Set(me->pop3SSLKey))
 		{
 			ssl = me->pop3SSL;
-			ssl->ServerSetCertsASN1(pop3SSLCert, pop3SSLKey, me->pop3CACerts);
+			NotNullPtr<Net::SSLEngine> nnssl;
+			if (ssl.SetTo(nnssl))
+			{
+				nnssl->ServerSetCertsASN1(pop3SSLCert, pop3SSLKey, me->pop3CACerts);
+			}
 		}
 		else if (sslConn)
 		{
@@ -150,7 +155,7 @@ void __stdcall SSWR::AVIRead::AVIREmailServerForm::OnGCISStartClicked(void *user
 			UI::MessageDialog::ShowDialog(CSTR("Please enter valid Batch Upload path"), CSTR("Error"), me);
 			return;
 		}
-		Net::SSLEngine *ssl = 0;
+		Optional<Net::SSLEngine> ssl = 0;
 		NotNullPtr<Crypto::Cert::X509Cert> gcisSSLCert;
 		NotNullPtr<Crypto::Cert::X509File> gcisSSLKey;
 		if (!gcisSSLCert.Set(me->gcisSSLCert) || !gcisSSLKey.Set(me->gcisSSLKey))
@@ -159,9 +164,13 @@ void __stdcall SSWR::AVIRead::AVIREmailServerForm::OnGCISStartClicked(void *user
 			return;
 		}
 		ssl = me->gcisSSL;
-		ssl->ServerSetRequireClientCert(Net::SSLEngine::ClientCertType::Optional);
+		NotNullPtr<Net::SSLEngine> nnssl;
 		Crypto::Cert::X509Cert *issuerCert = Crypto::Cert::CertUtil::FindIssuer(gcisSSLCert);
-		ssl->ServerSetCertsASN1(gcisSSLCert, gcisSSLKey, me->gcisCACerts);
+		if (ssl.SetTo(nnssl))
+		{
+			nnssl->ServerSetRequireClientCert(Net::SSLEngine::ClientCertType::Optional);
+			nnssl->ServerSetCertsASN1(gcisSSLCert, gcisSSLKey, me->gcisCACerts);
+		}
 		SDEL_CLASS(issuerCert);
 		NotNullPtr<Net::WebServer::GCISNotifyHandler> gcisHdlr;
 		NEW_CLASSNN(gcisHdlr, Net::WebServer::GCISNotifyHandler(sb.ToCString(), sb2.ToCString(), OnGCISMailReceived, me, me->log));
@@ -630,15 +639,15 @@ SSWR::AVIRead::AVIREmailServerForm::~AVIREmailServerForm()
 	this->logger.Delete();
 	
 	DEL_CLASS(this->store);
-	SDEL_CLASS(this->smtpSSL);
+	this->smtpSSL.Delete();
 	SDEL_CLASS(this->smtpSSLCert);
 	SDEL_CLASS(this->smtpSSLKey);
 	this->ClearSMTPCACerts();
-	SDEL_CLASS(this->pop3SSL);
+	this->pop3SSL.Delete();
 	SDEL_CLASS(this->pop3SSLCert);
 	SDEL_CLASS(this->pop3SSLKey);
 	this->ClearPOP3CACerts();
-	SDEL_CLASS(this->gcisSSL);
+	this->gcisSSL.Delete();
 	SDEL_CLASS(this->gcisSSLCert);
 	SDEL_CLASS(this->gcisSSLKey);
 	this->ClearGCISCACerts();

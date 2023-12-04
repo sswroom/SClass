@@ -186,7 +186,7 @@ namespace SSWR
 			Parser::FullParserList parsers;
 			NotNullPtr<Media::DrawEngine> drawEng;
 			NotNullPtr<Net::SocketFactory> sockf;
-			Net::SSLEngine *ssl;
+			Optional<Net::SSLEngine> ssl;
 			Media::MonitorMgr monMgr;
 			ErrorType errType;
 			IO::ConfigFile *langFile;
@@ -218,7 +218,7 @@ namespace SSWR
 			NotNullPtr<Media::DrawEngine> GetDrawEngine();
 			NotNullPtr<Parser::ParserList> GetParserList();
 			NotNullPtr<Net::SocketFactory> GetSocketFactory();
-			Net::SSLEngine *GetSSLEngine();
+			Optional<Net::SSLEngine> GetSSLEngine();
 			Media::ColorManager *GetColorMgr();
 			Media::MonitorMgr *GetMonitorMgr();
 			ErrorType GetErrorType();

@@ -77,7 +77,7 @@ SSWR::AVIRead::AVIRPushServerForm::AVIRPushServerForm(UI::GUIClientControl *pare
 SSWR::AVIRead::AVIRPushServerForm::~AVIRPushServerForm()
 {
 	SDEL_CLASS(this->svr);
-	SDEL_CLASS(this->ssl);
+	this->ssl.Delete();
 }
 
 void SSWR::AVIRead::AVIRPushServerForm::OnMonitorChanged()

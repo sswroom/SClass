@@ -113,7 +113,7 @@ UInt32 Net::Email::SMTPConn::WaitForResult(UTF8Char **msgRetEnd)
 		return 0;
 }
 
-Net::Email::SMTPConn::SMTPConn(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, Text::CStringNN host, UInt16 port, ConnType connType, IO::Writer *logWriter, Data::Duration timeout)
+Net::Email::SMTPConn::SMTPConn(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CStringNN host, UInt16 port, ConnType connType, IO::Writer *logWriter, Data::Duration timeout)
 {
 	this->threadStarted = false;
 	this->threadRunning = false;
@@ -129,7 +129,8 @@ Net::Email::SMTPConn::SMTPConn(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEng
 	this->logWriter = logWriter;
 	if (connType == ConnType::SSL)
 	{
-		if (!this->cli.Set(ssl->ClientConnect(host, port, 0, timeout)))
+		NotNullPtr<Net::SSLEngine> nnssl;
+		if (!ssl.SetTo(nnssl) || !this->cli.Set(nnssl->ClientConnect(host, port, 0, timeout)))
 		{
 			NEW_CLASSNN(this->cli, Net::TCPClient(sockf, addr, port, timeout));
 		}
@@ -164,8 +165,9 @@ Net::Email::SMTPConn::SMTPConn(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEng
 					this->logWriter->WriteLineC(UTF8STRC("SSL Handshake begin"));
 				}
 				Socket *s = this->cli->RemoveSocket();
-				NotNullPtr<Net::TCPClient> cli;				
-				if (cli.Set(ssl->ClientInit(s, host, 0)))
+				NotNullPtr<Net::TCPClient> cli;
+				NotNullPtr<Net::SSLEngine> nnssl;
+				if (ssl.SetTo(nnssl) && cli.Set(nnssl->ClientInit(s, host, 0)))
 				{
 					if (this->logWriter)
 					{

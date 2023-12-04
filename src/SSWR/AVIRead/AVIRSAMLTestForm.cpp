@@ -124,7 +124,7 @@ void __stdcall SSWR::AVIRead::AVIRSAMLTestForm::OnStartClicked(void *userObj)
 	Text::StringBuilderUTF8 sb;
 	me->txtPort->GetText(sb);
 	Text::StrToUInt16S(sb.ToString(), port, 0);
-	Net::SSLEngine *ssl = 0;
+	Optional<Net::SSLEngine> ssl = 0;
 	NotNullPtr<Crypto::Cert::X509Cert> sslCert;
 	NotNullPtr<Crypto::Cert::X509File> sslKey;
 
@@ -134,7 +134,8 @@ void __stdcall SSWR::AVIRead::AVIRSAMLTestForm::OnStartClicked(void *userObj)
 		return;
 	}
 	ssl = me->ssl;
-	if (!ssl->ServerSetCertsASN1(sslCert, sslKey, me->caCerts))
+	NotNullPtr<Net::SSLEngine> nnssl;
+	if (!ssl.SetTo(nnssl) || !nnssl->ServerSetCertsASN1(sslCert, sslKey, me->caCerts))
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Error in initializing Cert/Key"), CSTR("SAML Test"), me);
 		return;
@@ -304,16 +305,24 @@ void __stdcall SSWR::AVIRead::AVIRSAMLTestForm::OnTimerTick(void *userObj)
 		if (key.Set(me->samlHdlr->GetKey()->CreateKey()))
 		{
 			sb.ClearStr();
-			if (Net::SAMLUtil::DecryptResponse(me->ssl, me->core->GetEncFactory(), key, me->respNew->ToCString(), sb))
+			NotNullPtr<Net::SSLEngine> ssl;
+			if (me->ssl.SetTo(ssl))
 			{
-				IO::MemoryReadingStream mstm(sb.v, sb.GetLength());
-				Text::StringBuilderUTF8 sb2;
-				Text::XMLReader::XMLWellFormat(me->core->GetEncFactory(), mstm, 0, sb2);
-				me->txtSAMLDecrypt->SetText(sb2.ToCString());
+				if (Net::SAMLUtil::DecryptResponse(ssl, me->core->GetEncFactory(), key, me->respNew->ToCString(), sb))
+				{
+					IO::MemoryReadingStream mstm(sb.v, sb.GetLength());
+					Text::StringBuilderUTF8 sb2;
+					Text::XMLReader::XMLWellFormat(me->core->GetEncFactory(), mstm, 0, sb2);
+					me->txtSAMLDecrypt->SetText(sb2.ToCString());
+				}
+				else
+				{
+					me->txtSAMLDecrypt->SetText(sb.ToCString());
+				}
 			}
 			else
 			{
-				me->txtSAMLDecrypt->SetText(sb.ToCString());
+				me->txtSAMLDecrypt->SetText(CSTR("Error in SSL Engine"));
 			}
 			key.Delete();
 		}
@@ -339,7 +348,8 @@ Bool __stdcall SSWR::AVIRead::AVIRSAMLTestForm::OnLoginRequest(void *userObj, No
 	NotNullPtr<Crypto::Cert::X509Key> key;
 	if (key.Set(me->samlHdlr->GetKey()->CreateKey()))
 	{
-		if (Net::SAMLUtil::DecryptResponse(me->ssl, me->core->GetEncFactory(), key, msg->rawMessage, sb))
+		NotNullPtr<Net::SSLEngine> ssl;
+		if (me->ssl.SetTo(ssl) && Net::SAMLUtil::DecryptResponse(ssl, me->core->GetEncFactory(), key, msg->rawMessage, sb))
 		{
 			IO::MemoryReadingStream mstm(sb.v, sb.GetLength());
 			Text::StringBuilderUTF8 sb2;
@@ -493,7 +503,7 @@ SSWR::AVIRead::AVIRSAMLTestForm::~AVIRSAMLTestForm()
 	SDEL_CLASS(this->samlHdlr);
 	this->log.RemoveLogHandler(this->logger);
 	this->logger.Delete();
-	SDEL_CLASS(this->ssl);
+	this->ssl.Delete();
 	SDEL_CLASS(this->sslCert);
 	SDEL_CLASS(this->sslKey);
 	this->ClearCACerts();

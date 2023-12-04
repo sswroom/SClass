@@ -40,7 +40,7 @@ namespace SSWR
 			};
 		private:
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
-			Net::SSLEngine *ssl;
+			Optional<Net::SSLEngine> ssl;
 			NotNullPtr<IO::Stream> stm;
 			IO::SNBDongle *snb;
 			IO::LogTool log;

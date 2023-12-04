@@ -42,7 +42,7 @@ Data::DateTime *startDt;
 Text::String *audioDevice; //L"Realtek HD Audio output"
 IO::ConsoleWriter *console;
 NotNullPtr<Net::SocketFactory> sockf;
-Net::SSLEngine *ssl;
+Optional<Net::SSLEngine> ssl;
 Text::EncodingFactory *encFact;
 Net::NTPClient *timeCli;
 NotNullPtr<Data::DateTime> tmpDt;
@@ -340,7 +340,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	tmpDt.Delete();
 	DEL_CLASS(timeCli);
 	DEL_CLASS(encFact);
-	SDEL_CLASS(ssl);
+	ssl.Delete();
 	sockf.Delete();
 	DEL_CLASS(console);
 	return 0;

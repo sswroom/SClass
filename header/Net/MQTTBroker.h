@@ -18,7 +18,7 @@ namespace Net
 	public:
 		struct Listener
 		{
-			Net::SSLEngine *ssl;
+			Optional<Net::SSLEngine> ssl;
 			Net::TCPServer *svr;
 			Net::TCPClientMgr *cliMgr;
 			Net::WebServer::WebListener *listener;
@@ -108,11 +108,11 @@ namespace Net
 		virtual void StreamData(NotNullPtr<IO::Stream> stm, void *stmData, const Data::ByteArrayR &buff);
 		virtual void StreamClosed(NotNullPtr<IO::Stream> stm, void *stmData);
 	public:
-		MQTTBroker(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, UInt16 port, NotNullPtr<IO::LogTool> log, Bool sysInfo, Bool autoStart);
+		MQTTBroker(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, UInt16 port, NotNullPtr<IO::LogTool> log, Bool sysInfo, Bool autoStart);
 		virtual ~MQTTBroker();
 
-		Bool AddListener(Net::SSLEngine *ssl, UInt16 port, Bool autoStart);
-		Bool AddWSListener(Net::SSLEngine *ssl, UInt16 port, Bool autoStart);
+		Bool AddListener(Optional<Net::SSLEngine> ssl, UInt16 port, Bool autoStart);
+		Bool AddWSListener(Optional<Net::SSLEngine> ssl, UInt16 port, Bool autoStart);
 
 		Bool Start();
 		Bool IsError();

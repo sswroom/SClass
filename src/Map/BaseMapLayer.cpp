@@ -56,7 +56,7 @@ Text::CString Map::BaseMapLayer::BaseLayerTypeGetName(BaseLayerType blt)
 	}
 }
 
-Map::MapDrawLayer *Map::BaseMapLayer::CreateLayer(BaseLayerType blt, NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, NotNullPtr<Parser::ParserList> parsers)
+Map::MapDrawLayer *Map::BaseMapLayer::CreateLayer(BaseLayerType blt, NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, NotNullPtr<Parser::ParserList> parsers)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;

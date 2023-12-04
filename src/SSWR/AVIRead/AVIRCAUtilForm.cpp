@@ -50,9 +50,10 @@ void __stdcall SSWR::AVIRead::AVIRCAUtilForm::OnFileDrop(void *userObj, NotNullP
 							me->caCert = cert;
 							me->txtCACert->SetText(names.commonName->ToCString());
 							Crypto::Cert::CertNames::FreeNames(names);
-							if (key.Set(me->key))
+							NotNullPtr<Net::SSLEngine> ssl;
+							if (key.Set(me->key) && me->ssl.SetTo(ssl))
 							{
-								if (!me->caCert->IsSignatureKey(me->ssl, key))
+								if (!me->caCert->IsSignatureKey(ssl, key))
 								{
 									DEL_CLASS(me->key);
 									me->key = 0;
@@ -103,7 +104,8 @@ void __stdcall SSWR::AVIRead::AVIRCAUtilForm::OnFileDrop(void *userObj, NotNullP
 						{
 							if (key->IsPrivateKey())
 							{
-								if (me->caCert && !me->caCert->IsSignatureKey(me->ssl, key))
+								NotNullPtr<Net::SSLEngine> ssl;
+								if (me->caCert && (!me->ssl.SetTo(ssl) || !me->caCert->IsSignatureKey(ssl, key)))
 								{
 									UI::MessageDialog::ShowDialog(CSTR("Key is not match with CA cert"), CSTR("CA Util"), me);
 									key.Delete();
@@ -140,9 +142,10 @@ void __stdcall SSWR::AVIRead::AVIRCAUtilForm::OnFileDrop(void *userObj, NotNullP
 							me->caCert = (Crypto::Cert::X509Cert*)cert->Clone().Ptr();
 							me->txtCACert->SetText(names.commonName->ToCString());
 							Crypto::Cert::CertNames::FreeNames(names);
-							if (key.Set(me->key))
+							NotNullPtr<Net::SSLEngine> ssl;
+							if (key.Set(me->key) && me->ssl.SetTo(ssl))
 							{
-								if (!me->caCert->IsSignatureKey(me->ssl, key))
+								if (!me->caCert->IsSignatureKey(ssl, key))
 								{
 									DEL_CLASS(me->key);
 									me->key = 0;
@@ -234,8 +237,14 @@ void __stdcall SSWR::AVIRead::AVIRCAUtilForm::OnIssueClicked(void *userObj)
 		UI::MessageDialog::ShowDialog(CSTR("Valid Days not valid"), CSTR("CA Util"), me);
 		return;
 	}
+	NotNullPtr<Net::SSLEngine> ssl;
+	if (!me->ssl.SetTo(ssl))
+	{
+		UI::MessageDialog::ShowDialog(CSTR("SSL Engine is not initiated"), CSTR("CA Util"), me);
+		return;
+	}
 	NotNullPtr<Crypto::Cert::X509Cert> cert;
-	if (cert.Set(Crypto::Cert::CertUtil::IssueCert(me->ssl, me->caCert, key, validDays, me->csr)))
+	if (cert.Set(Crypto::Cert::CertUtil::IssueCert(ssl, me->caCert, key, validDays, me->csr)))
 	{
 		me->core->OpenObject(cert);
 	}
@@ -366,7 +375,7 @@ SSWR::AVIRead::AVIRCAUtilForm::~AVIRCAUtilForm()
 	SDEL_CLASS(this->caCert);
 	SDEL_CLASS(this->key);
 	SDEL_CLASS(this->csr);
-	SDEL_CLASS(this->ssl);
+	this->ssl.Delete();
 }
 
 void SSWR::AVIRead::AVIRCAUtilForm::OnMonitorChanged()

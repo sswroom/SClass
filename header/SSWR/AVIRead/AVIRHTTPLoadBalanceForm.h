@@ -27,7 +27,7 @@ namespace SSWR
 		{
 		private:
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
-			Net::SSLEngine *ssl;
+			Optional<Net::SSLEngine> ssl;
 			Net::WebServer::WebListener *svr;
 			IO::LogTool *log;
 			Net::WebServer::HTTPForwardHandler *fwdHdlr;

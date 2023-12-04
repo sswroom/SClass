@@ -110,7 +110,7 @@ SSWR::AVIRead::AVIRHKOLocalForecastForm::AVIRHKOLocalForecastForm(UI::GUIClientC
 
 SSWR::AVIRead::AVIRHKOLocalForecastForm::~AVIRHKOLocalForecastForm()
 {
-	SDEL_CLASS(this->ssl);
+	this->ssl.Delete();
 }
 
 void SSWR::AVIRead::AVIRHKOLocalForecastForm::OnMonitorChanged()

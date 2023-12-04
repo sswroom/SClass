@@ -164,6 +164,12 @@ void __stdcall SSWR::AVIRead::AVIRSelStreamForm::OnOKClick(void *userObj)
 		{
 			Text::StringBuilderUTF8 sb;
 			Net::SocketUtil::AddressInfo addr;
+			NotNullPtr<Net::SSLEngine> ssl;
+			if (!me->ssl.SetTo(ssl))
+			{
+				UI::MessageDialog::ShowDialog(CSTR("SSL Engine is not initiated"), CSTR("Error"), me);
+				return;
+			}
 			UInt16 port;
 			me->txtSSLCliPort->GetText(sb);
 			if (!sb.ToUInt16(port))
@@ -185,7 +191,7 @@ void __stdcall SSWR::AVIRead::AVIRSelStreamForm::OnOKClick(void *userObj)
 			}
 			Net::SSLEngine::ErrorType err;
 			Net::SSLClient *cli;
-			cli = me->ssl->ClientConnect(sb.ToCString(), port, err, NETTIMEOUT);
+			cli = ssl->ClientConnect(sb.ToCString(), port, err, NETTIMEOUT);
 			if (cli == 0)
 			{
 				sb.ClearStr();
@@ -396,7 +402,7 @@ void __stdcall SSWR::AVIRead::AVIRSelStreamForm::OnStmTypeChg(void *userObj)
 	}
 }
 
-SSWR::AVIRead::AVIRSelStreamForm::AVIRSelStreamForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Bool allowReadOnly, Net::SSLEngine *ssl) : UI::GUIForm(parent, 640, 300, ui)
+SSWR::AVIRead::AVIRSelStreamForm::AVIRSelStreamForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Bool allowReadOnly, Optional<Net::SSLEngine> ssl) : UI::GUIForm(parent, 640, 300, ui)
 {
 	UTF8Char sbuff[32];
 	UOSInt i;
@@ -427,7 +433,7 @@ SSWR::AVIRead::AVIRSelStreamForm::AVIRSelStreamForm(UI::GUIClientControl *parent
 	}
 	this->cboStreamType->AddItem(IO::StreamTypeGetName(IO::StreamType::TCPServer), (void*)IO::StreamType::TCPServer);
 	this->cboStreamType->AddItem(IO::StreamTypeGetName(IO::StreamType::TCPClient), (void*)IO::StreamType::TCPClient);
-	if (this->ssl)
+	if (!this->ssl.IsNull())
 	{
 		this->cboStreamType->AddItem(IO::StreamTypeGetName(IO::StreamType::SSLClient), (void*)IO::StreamType::SSLClient);
 	}
@@ -612,7 +618,7 @@ SSWR::AVIRead::AVIRSelStreamForm::AVIRSelStreamForm(UI::GUIClientControl *parent
 	NEW_CLASS(this->txtTCPCliPort, UI::GUITextBox(ui, this->tpTCPCli, CSTR("")));
 	this->txtTCPCliPort->SetRect(104, 28, 100, 23, false);
 
-	if (this->ssl)
+	if (!this->ssl.IsNull())
 	{
 		this->tpSSLCli = this->tcConfig->AddTabPage(CSTR("SSL Client"));
 		NEW_CLASS(this->lblSSLCliHost, UI::GUILabel(ui, this->tpSSLCli, CSTR("Host")));

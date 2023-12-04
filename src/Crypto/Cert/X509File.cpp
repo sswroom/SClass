@@ -3067,7 +3067,7 @@ void Crypto::Cert::X509File::ToShortString(NotNullPtr<Text::StringBuilderUTF8> s
 	this->ToShortName(sb);
 }
 
-Bool Crypto::Cert::X509File::IsSignatureKey(Net::SSLEngine *ssl, NotNullPtr<Crypto::Cert::X509Key> key) const
+Bool Crypto::Cert::X509File::IsSignatureKey(NotNullPtr<Net::SSLEngine> ssl, NotNullPtr<Crypto::Cert::X509Key> key) const
 {
 	UOSInt itemOfst;
 	UOSInt dataSize;

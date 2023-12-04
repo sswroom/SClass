@@ -24,7 +24,7 @@ namespace SSWR
 
 			Net::WebSite::WebSiteTwitterControl *ctrl;
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
-			Net::SSLEngine *ssl;
+			Optional<Net::SSLEngine> ssl;
 
 			static void __stdcall OnRequestPageClicked(void *userObj);
 		public:

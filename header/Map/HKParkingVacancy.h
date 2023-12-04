@@ -36,14 +36,14 @@ namespace Map
 		Data::FastStringMap<ParkingInfo*> parkingMap;
 		Sync::Mutex parkingMut;
 		NotNullPtr<Net::SocketFactory> sockf;
-		Net::SSLEngine *ssl;
+		Optional<Net::SSLEngine> ssl;
 		Math::RectAreaDbl bounds;
 
 		void LoadParkingInfo();
 		void LoadVacancy();
 		void ParkingInfoFree(ParkingInfo *parking);
 	public:
-		HKParkingVacancy(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl);
+		HKParkingVacancy(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl);
 		virtual ~HKParkingVacancy();
 
 		virtual DrawLayerType GetLayerType() const;

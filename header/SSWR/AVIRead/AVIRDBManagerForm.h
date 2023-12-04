@@ -87,7 +87,7 @@ namespace SSWR
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			NotNullPtr<UI::ListBoxLogger> logger;
 			Data::ArrayList<DB::DBManagerCtrl*> dbList;
-			Net::SSLEngine *ssl;
+			Optional<Net::SSLEngine> ssl;
 			IO::LogTool log;
 			DB::ReadingDB *currDB;
 			Data::QueryConditions *currCond;

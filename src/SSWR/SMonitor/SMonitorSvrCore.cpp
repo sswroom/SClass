@@ -1484,7 +1484,7 @@ SSWR::SMonitor::SMonitorSvrCore::~SMonitorSvrCore()
 
 	SDEL_CLASS(this->dataCRC);
 	this->parsers.Delete();
-	SDEL_CLASS(this->ssl);
+	this->ssl.Delete();
 	this->sockf.Delete();
 	this->deng.Delete();
 	SDEL_STRING(this->notifyPwd);

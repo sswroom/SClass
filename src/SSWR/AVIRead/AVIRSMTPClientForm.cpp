@@ -170,7 +170,7 @@ SSWR::AVIRead::AVIRSMTPClientForm::AVIRSMTPClientForm(UI::GUIClientControl *pare
 
 SSWR::AVIRead::AVIRSMTPClientForm::~AVIRSMTPClientForm()
 {
-	SDEL_CLASS(this->ssl);
+	this->ssl.Delete();
 }
 
 void SSWR::AVIRead::AVIRSMTPClientForm::OnMonitorChanged()

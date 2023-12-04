@@ -276,7 +276,7 @@ SSWR::AVIRead::AVIRCOVID19Form::AVIRCOVID19Form(UI::GUIClientControl *parent, No
 SSWR::AVIRead::AVIRCOVID19Form::~AVIRCOVID19Form()
 {
 	this->ClearRecords();
-	SDEL_CLASS(this->ssl);
+	this->ssl.Delete();
 }
 
 void SSWR::AVIRead::AVIRCOVID19Form::OnMonitorChanged()

@@ -29,7 +29,7 @@ namespace Parser
 		void SetWebBrowser(Net::WebBrowser *browser);
 		void SetProgressHandler(IO::ProgressHandler *progHdlr);
 		void SetSocketFactory(NotNullPtr<Net::SocketFactory> sockf);
-		void SetSSLEngine(Net::SSLEngine *ssl);
+		void SetSSLEngine(Optional<Net::SSLEngine> ssl);
 		void SetArcGISPRJParser(Math::ArcGISPRJParser *prjParser);
 		void SetLogTool(IO::LogTool *log);
 		void PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t);

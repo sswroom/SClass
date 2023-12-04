@@ -19,7 +19,7 @@ namespace Net
 		struct ClassData;
 		ClassData *clsData;
 	protected:
-		Net::SSLEngine *ssl;
+		Optional<Net::SSLEngine> ssl;
 		Net::TCPClient *cli;
 		Text::String *cliHost;
 		IO::MemoryStream reqMstm;
@@ -39,7 +39,7 @@ namespace Net
 
 		UOSInt ReadRAWInternal(Data::ByteArray buff);
 	public:
-		HTTPMyClient(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, Text::CString userAgent, Bool kaConn);
+		HTTPMyClient(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CString userAgent, Bool kaConn);
 		virtual ~HTTPMyClient();
 
 		virtual Bool IsError() const;

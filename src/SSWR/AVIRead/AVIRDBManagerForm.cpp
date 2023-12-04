@@ -1444,7 +1444,7 @@ SSWR::AVIRead::AVIRDBManagerForm::~AVIRDBManagerForm()
 		DEL_CLASS(ctrl);
 	}
 	SDEL_CLASS(this->currCond);
-	SDEL_CLASS(this->ssl);
+	this->ssl.Delete();
 }
 
 void SSWR::AVIRead::AVIRDBManagerForm::EventMenuClicked(UInt16 cmdId)

@@ -480,10 +480,10 @@ Data::Timestamp Net::HTTPClient::ParseDateStr(Text::CStringNN dateStr)
 	return 0;
 }
 
-NotNullPtr<Net::HTTPClient> Net::HTTPClient::CreateClient(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, Text::CString userAgent, Bool kaConn, Bool isSecure)
+NotNullPtr<Net::HTTPClient> Net::HTTPClient::CreateClient(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CString userAgent, Bool kaConn, Bool isSecure)
 {
 	NotNullPtr<Net::HTTPClient> cli;
-	if (isSecure && ssl == 0)
+	if (isSecure && ssl.IsNull())
 	{
 		NEW_CLASSNN(cli, Net::HTTPOSClient(sockf, userAgent, kaConn));
 	}
@@ -494,7 +494,7 @@ NotNullPtr<Net::HTTPClient> Net::HTTPClient::CreateClient(NotNullPtr<Net::Socket
 	return cli;
 }
 
-NotNullPtr<Net::HTTPClient> Net::HTTPClient::CreateConnect(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, Text::CStringNN url, Net::WebUtil::RequestMethod method, Bool kaConn)
+NotNullPtr<Net::HTTPClient> Net::HTTPClient::CreateConnect(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CStringNN url, Net::WebUtil::RequestMethod method, Bool kaConn)
 {
 	NotNullPtr<Net::HTTPClient> cli = Net::HTTPClient::CreateClient(sockf, ssl, CSTR_NULL, kaConn, url.StartsWithICase(UTF8STRC("HTTPS://")));
 	cli->Connect(url, method, 0, 0, true);
@@ -506,11 +506,11 @@ Bool Net::HTTPClient::IsHTTPURL(Text::CStringNN url)
 	return url.StartsWith(UTF8STRC("http://")) || url.StartsWith(UTF8STRC("https://"));
 }
 
-void Net::HTTPClient::PrepareSSL(Net::SSLEngine *ssl)
+void Net::HTTPClient::PrepareSSL(Optional<Net::SSLEngine> ssl)
 {
 }
 
-Bool Net::HTTPClient::LoadContent(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, Text::CStringNN url, IO::Stream *stm, UInt64 maxSize)
+Bool Net::HTTPClient::LoadContent(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CStringNN url, NotNullPtr<IO::Stream> stm, UInt64 maxSize)
 {
 	NotNullPtr<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(sockf, ssl, url, Net::WebUtil::RequestMethod::HTTP_GET, true);
 	if (cli->GetRespStatus() != Net::WebStatus::SC_OK)
@@ -534,7 +534,7 @@ Bool Net::HTTPClient::LoadContent(NotNullPtr<Net::SocketFactory> sockf, Net::SSL
 	return true;
 }
 
-Bool Net::HTTPClient::LoadContent(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, Text::CStringNN url, NotNullPtr<Text::StringBuilderUTF8> sb, UInt64 maxSize)
+Bool Net::HTTPClient::LoadContent(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CStringNN url, NotNullPtr<Text::StringBuilderUTF8> sb, UInt64 maxSize)
 {
 	NotNullPtr<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(sockf, ssl, url, Net::WebUtil::RequestMethod::HTTP_GET, true);
 	if (cli->GetRespStatus() != Net::WebStatus::SC_OK)

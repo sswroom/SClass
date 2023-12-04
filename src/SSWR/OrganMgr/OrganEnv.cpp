@@ -207,7 +207,7 @@ SSWR::OrganMgr::OrganEnv::~OrganEnv()
 	SDEL_CLASS(this->gpsTrk);
 	SDEL_CLASS(this->langFile);
 	this->drawEng.Delete();
-	SDEL_CLASS(this->ssl);
+	this->ssl.Delete();
 	this->sockf.Delete();
 }
 
@@ -226,7 +226,7 @@ NotNullPtr<Net::SocketFactory> SSWR::OrganMgr::OrganEnv::GetSocketFactory()
 	return this->sockf;
 }
 
-Net::SSLEngine *SSWR::OrganMgr::OrganEnv::GetSSLEngine()
+Optional<Net::SSLEngine> SSWR::OrganMgr::OrganEnv::GetSSLEngine()
 {
 	return this->ssl;
 }

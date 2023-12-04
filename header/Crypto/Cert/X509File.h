@@ -213,10 +213,10 @@ namespace Crypto
 			virtual UOSInt GetCertCount();
 			virtual Bool GetCertName(UOSInt index, NotNullPtr<Text::StringBuilderUTF8> sb);
 			virtual X509Cert *GetNewCert(UOSInt index);
-			virtual ValidStatus IsValid(Net::SSLEngine *ssl, Crypto::Cert::CertStore *trustStore) const = 0;
+			virtual ValidStatus IsValid(NotNullPtr<Net::SSLEngine> ssl, Crypto::Cert::CertStore *trustStore) const = 0;
 
 			void ToShortString(NotNullPtr<Text::StringBuilderUTF8> sb) const;
-			Bool IsSignatureKey(Net::SSLEngine *ssl, NotNullPtr<Crypto::Cert::X509Key> key) const;
+			Bool IsSignatureKey(NotNullPtr<Net::SSLEngine> ssl, NotNullPtr<Crypto::Cert::X509Key> key) const;
 			Bool GetSignedInfo(NotNullPtr<SignedInfo> signedInfo) const;
 
 			static Bool ParseDigestType(DigestInfo *digestInfo, const UInt8 *pdu, const UInt8 *pduEnd);

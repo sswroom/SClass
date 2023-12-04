@@ -39,7 +39,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 		DEL_CLASS(x509);
 		return 0;
 	}
-	Net::SSLEngine *ssl;
+	Optional<Net::SSLEngine> ssl;
 	Net::OSSocketFactory sockf(false);
 	ssl = Net::SSLEngineFactory::Create(sockf, true);
 	NotNullPtr<Crypto::Cert::X509Key> key;
@@ -59,7 +59,8 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	NEW_CLASS(ext.subjectAltName, Data::ArrayListNN<Text::String>());
 	ext.subjectAltName->Add(Text::String::New(UTF8STRC("sswroom.no-ip.org")));
 	NotNullPtr<Crypto::Cert::X509CertReq> csr;
-	if (csr.Set(Crypto::Cert::CertUtil::CertReqCreate(ssl, names, key, &ext)))
+	NotNullPtr<Net::SSLEngine> nnssl;
+	if (ssl.SetTo(nnssl) && csr.Set(Crypto::Cert::CertUtil::CertReqCreate(nnssl, names, key, &ext)))
 	{
 		sptr = IO::Path::GetProcessFileName(sbuff);
 		sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("CSRTestOut.pem"));
@@ -74,6 +75,6 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	DEL_CLASS(ext.subjectAltName);
 	Crypto::Cert::CertNames::FreeNames(names);
 	key.Delete();
-	SDEL_CLASS(ssl);
+	ssl.Delete();
 	return 0;
 }

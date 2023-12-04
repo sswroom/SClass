@@ -23,7 +23,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 		UInt32 scnSize = 0;
 		Int32 unorganizedGroupId = 0;
 		Net::OSSocketFactory sockf(true);
-		Net::SSLEngine *ssl = 0;
+		Optional<Net::SSLEngine> ssl = 0;
 		IO::LogTool log;
 		NotNullPtr<Text::String> s;
 		Text::CString osmCacheDir;
@@ -44,8 +44,9 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 			{
 				if (s->ToUInt16(sslPort) && sslPort != 0)
 				{
-					ssl =  Net::SSLEngineFactory::Create(sockf, false);
-					if (ssl == 0)
+					ssl = Net::SSLEngineFactory::Create(sockf, false);
+					NotNullPtr<Net::SSLEngine> nnssl;
+					if (!ssl.SetTo(nnssl))
 					{
 						console.WriteLineC(UTF8STRC("Error in initializing SSL engine"));
 					}
@@ -56,17 +57,17 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 						if (!cfg->GetValue(CSTR("SSLCert")).SetTo(certFile))
 						{
 							console.WriteLineC(UTF8STRC("SSLCert not found"));
-							SDEL_CLASS(ssl);
+							ssl.Delete();
 						}
 						else if (!cfg->GetValue(CSTR("SSLKey")).SetTo(keyFile))
 						{
 							console.WriteLineC(UTF8STRC("SSLKey not found"));
-							SDEL_CLASS(ssl);
+							ssl.Delete();
 						}
-						else if (!ssl->ServerSetCerts(certFile->ToCString(), keyFile->ToCString()))
+						else if (!nnssl->ServerSetCerts(certFile->ToCString(), keyFile->ToCString()))
 						{
 							console.WriteLineC(UTF8STRC("Error in loading SSL Cert/key"));
-							SDEL_CLASS(ssl);
+							ssl.Delete();
 						}
 					}
 				}
@@ -126,7 +127,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 			}
 		}
 
-		SDEL_CLASS(ssl);
+		ssl.Delete();
 		log.RemoveLogHandler(printLog);
 	}
 	return 0;

@@ -786,7 +786,7 @@ void SSWR::OrganWeb::OrganWebEnv::ClearUsers()
 	this->dataFileMap.Clear();
 }
 
-SSWR::OrganWeb::OrganWebEnv::OrganWebEnv(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, NotNullPtr<IO::LogTool> log, DB::DBTool *db, Optional<Text::String> imageDir, UInt16 port, UInt16 sslPort, Optional<Text::String> cacheDir, Optional<Text::String> dataDir, UInt32 scnSize, Optional<Text::String> reloadPwd, Int32 unorganizedGroupId, NotNullPtr<Media::DrawEngine> eng, Text::CString osmCachePath)
+SSWR::OrganWeb::OrganWebEnv::OrganWebEnv(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, NotNullPtr<IO::LogTool> log, DB::DBTool *db, Optional<Text::String> imageDir, UInt16 port, UInt16 sslPort, Optional<Text::String> cacheDir, Optional<Text::String> dataDir, UInt32 scnSize, Optional<Text::String> reloadPwd, Int32 unorganizedGroupId, NotNullPtr<Media::DrawEngine> eng, Text::CString osmCachePath)
 {
 	this->imageDir = Text::String::CopyOrNull(imageDir);
 	this->sockf = sockf;
@@ -837,7 +837,7 @@ SSWR::OrganWeb::OrganWebEnv::OrganWebEnv(NotNullPtr<Net::SocketFactory> sockf, N
 
 		this->webHdlr = webHdlr.Ptr();
 		NEW_CLASS(this->listener, Net::WebServer::WebListener(this->sockf, 0, webHdlr, port, 30, 1, 10, CSTR("OrganWeb/1.0"), false, Net::WebServer::KeepAlive::Default, true));
-		if (this->ssl && sslPort)
+		if (!this->ssl.IsNull() && sslPort)
 		{
 			NEW_CLASS(this->sslListener, Net::WebServer::WebListener(this->sockf, this->ssl, webHdlr, sslPort, 30, 1, 10, CSTR("OrganWeb/1.0"), false, Net::WebServer::KeepAlive::Default, true));
 		}

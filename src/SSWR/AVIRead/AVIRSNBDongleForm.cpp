@@ -584,7 +584,7 @@ SSWR::AVIRead::AVIRSNBDongleForm::~AVIRSNBDongleForm()
 		dev = this->devMap.GetItem(i);
 		DEL_CLASS(dev);
 	}
-	SDEL_CLASS(this->ssl);
+	this->ssl.Delete();
 }
 
 void SSWR::AVIRead::AVIRSNBDongleForm::OnMonitorChanged()

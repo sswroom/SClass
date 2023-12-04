@@ -15,7 +15,7 @@ namespace Map
 		{
 		private:
 			NotNullPtr<Net::SocketFactory> sockf;
-			Net::SSLEngine *ssl;
+			Optional<Net::SSLEngine> ssl;
 			IO::Writer *errWriter;
 			Data::DateTime lastSrchDate;
 			Sync::Mutex mut;
@@ -23,7 +23,7 @@ namespace Map
 			Bool lastIsError;
 			
 		public:
-			GoogleWSSearcherXML(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, IO::Writer *errWriter, Text::EncodingFactory *encFact);
+			GoogleWSSearcherXML(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, IO::Writer *errWriter, Text::EncodingFactory *encFact);
 			virtual ~GoogleWSSearcherXML();
 
 			UTF8Char *SearchName(UTF8Char *buff, UOSInt buffSize, Double lat, Double lon, Text::CString lang); //lang = en-us, zh-cn, zh-tw

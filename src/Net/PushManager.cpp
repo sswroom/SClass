@@ -131,7 +131,7 @@ void Net::PushManager::SaveData()
 	}
 }
 
-Net::PushManager::PushManager(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, Text::CString fcmKey, NotNullPtr<IO::LogTool> log)
+Net::PushManager::PushManager(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CString fcmKey, NotNullPtr<IO::LogTool> log)
 {
 	this->sockf = sockf;
 	this->ssl = ssl;

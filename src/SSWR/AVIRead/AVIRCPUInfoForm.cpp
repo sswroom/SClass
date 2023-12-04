@@ -235,7 +235,7 @@ SSWR::AVIRead::AVIRCPUInfoForm::AVIRCPUInfoForm(UI::GUIClientControl *parent, No
 
 SSWR::AVIRead::AVIRCPUInfoForm::~AVIRCPUInfoForm()
 {
-	SDEL_CLASS(this->ssl);
+	this->ssl.Delete();
 }
 
 void SSWR::AVIRead::AVIRCPUInfoForm::OnMonitorChanged()

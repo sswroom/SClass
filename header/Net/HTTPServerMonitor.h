@@ -10,7 +10,7 @@ namespace Net
 	{
 	private:
 		NotNullPtr<Net::SocketFactory> sockf;
-		Net::SSLEngine *ssl;
+		Optional<Net::SSLEngine> ssl;
 		NotNullPtr<Text::String> url;
 		Bool currOnline;
 		Bool threadRunning;
@@ -20,8 +20,8 @@ namespace Net
 		static UInt32 __stdcall ThreadProc(void *userObj);
 		Bool CheckOnline();
 	public:
-		HTTPServerMonitor(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, NotNullPtr<Text::String> url);
-		HTTPServerMonitor(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, Text::CString url);
+		HTTPServerMonitor(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, NotNullPtr<Text::String> url);
+		HTTPServerMonitor(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CString url);
 		~HTTPServerMonitor();
 
 		Bool IsOnline();

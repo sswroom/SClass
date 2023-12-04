@@ -14,7 +14,7 @@
 
 #include <stdio.h>
 
-Map::ESRI::ESRIMapServer::ESRIMapServer(Text::CString url, NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, Bool noResource)
+Map::ESRI::ESRIMapServer::ESRIMapServer(Text::CString url, NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Bool noResource)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;

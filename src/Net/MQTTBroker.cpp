@@ -63,9 +63,10 @@ void __stdcall Net::MQTTBroker::OnClientReady(NotNullPtr<Net::TCPClient> cli, vo
 void __stdcall Net::MQTTBroker::OnClientConn(Socket *s, void *userObj)
 {
 	Listener *listener = (Listener*)userObj;
-	if (listener->ssl)
+	NotNullPtr<Net::SSLEngine> ssl;
+	if (listener->ssl.SetTo(ssl))
 	{
-		listener->ssl->ServerInit(s, OnClientReady, listener);
+		ssl->ServerInit(s, OnClientReady, listener);
 	}
 	else
 	{
@@ -951,7 +952,7 @@ void Net::MQTTBroker::StreamClosed(NotNullPtr<IO::Stream> stm, void *stmData)
 	}
 }
 
-Net::MQTTBroker::MQTTBroker(NotNullPtr<Net::SocketFactory> sockf, Net::SSLEngine *ssl, UInt16 port, NotNullPtr<IO::LogTool> log, Bool sysInfo, Bool autoStart) : protoHdlr(*this), wsHdlr(this)
+Net::MQTTBroker::MQTTBroker(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, UInt16 port, NotNullPtr<IO::LogTool> log, Bool sysInfo, Bool autoStart) : protoHdlr(*this), wsHdlr(this)
 {
 	this->sockf = sockf;
 	this->log = log;
@@ -1036,7 +1037,7 @@ Net::MQTTBroker::~MQTTBroker()
 	}
 }
 
-Bool Net::MQTTBroker::AddListener(Net::SSLEngine *ssl, UInt16 port, Bool autoStart)
+Bool Net::MQTTBroker::AddListener(Optional<Net::SSLEngine> ssl, UInt16 port, Bool autoStart)
 {
 	Listener *listener = MemAlloc(Listener, 1);
 	listener->me = this;
@@ -1060,7 +1061,7 @@ Bool Net::MQTTBroker::AddListener(Net::SSLEngine *ssl, UInt16 port, Bool autoSta
 	}
 }
 
-Bool Net::MQTTBroker::AddWSListener(Net::SSLEngine *ssl, UInt16 port, Bool autoStart)
+Bool Net::MQTTBroker::AddWSListener(Optional<Net::SSLEngine> ssl, UInt16 port, Bool autoStart)
 {
 	Listener *listener = MemAlloc(Listener, 1);
 	listener->me = this;

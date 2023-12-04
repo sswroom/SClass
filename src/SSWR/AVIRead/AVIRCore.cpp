@@ -106,7 +106,7 @@ SSWR::AVIRead::AVIRCore::~AVIRCore()
 	this->CloseAllForm();
 	this->parsers.Delete();
 	DEL_CLASS(this->browser);
-	SDEL_CLASS(this->ssl);
+	this->ssl.Delete();
 	this->sockf.Delete();
 	this->eng.Delete();
 	this->ui->SetMonitorMgr(0);

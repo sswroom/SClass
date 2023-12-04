@@ -61,14 +61,15 @@ void __stdcall SSWR::AVIRead::AVIRMQTTExplorerForm::OnStartClicked(void *userObj
 			UI::MessageDialog::ShowDialog(CSTR("Error in parsing host"), CSTR("Error"), me);
 			return;
 		}
-		Net::SSLEngine *ssl = me->ssl;
-		if (useSSL)
+		Optional<Net::SSLEngine> ssl = me->ssl;
+		NotNullPtr<Net::SSLEngine> nnssl;
+		if (useSSL && ssl.SetTo(nnssl))
 		{
 			NotNullPtr<Crypto::Cert::X509Cert> cliCert;
 			NotNullPtr<Crypto::Cert::X509File> cliKey;
 			if (cliCert.Set(me->cliCert) && cliKey.Set(me->cliKey))
 			{
-				ssl->ClientSetCertASN1(cliCert, cliKey);
+				nnssl->ClientSetCertASN1(cliCert, cliKey);
 			}
 		}
 		if (useWS)
@@ -658,7 +659,7 @@ SSWR::AVIRead::AVIRMQTTExplorerForm::~AVIRMQTTExplorerForm()
 		this->core->GetDrawEngine()->DeleteImage(img);
 		this->dispImg = 0;
 	}
-	SDEL_CLASS(this->ssl);
+	this->ssl.Delete();
 }
 
 void SSWR::AVIRead::AVIRMQTTExplorerForm::OnMonitorChanged()

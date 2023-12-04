@@ -66,7 +66,7 @@ SSWR::AVIRead::AVIRFCMForm::AVIRFCMForm(UI::GUIClientControl *parent, NotNullPtr
 
 SSWR::AVIRead::AVIRFCMForm::~AVIRFCMForm()
 {
-	SDEL_CLASS(this->ssl);
+	this->ssl.Delete();
 }
 
 void SSWR::AVIRead::AVIRFCMForm::OnMonitorChanged()

@@ -252,7 +252,7 @@ SSWR::AVIRead::AVIRRSSReaderForm::~AVIRRSSReaderForm()
 		this->rssList.GetItem(i)->Release();
 	}
 	SDEL_CLASS(this->rss);
-	SDEL_CLASS(this->ssl);
+	this->ssl.Delete();
 }
 
 void SSWR::AVIRead::AVIRRSSReaderForm::OnMonitorChanged()

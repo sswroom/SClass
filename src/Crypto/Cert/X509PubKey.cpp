@@ -44,7 +44,7 @@ void Crypto::Cert::X509PubKey::ToShortName(NotNullPtr<Text::StringBuilderUTF8> s
 	}
 }
 
-Crypto::Cert::X509File::ValidStatus Crypto::Cert::X509PubKey::IsValid(Net::SSLEngine *ssl, Crypto::Cert::CertStore *trustStore) const
+Crypto::Cert::X509File::ValidStatus Crypto::Cert::X509PubKey::IsValid(NotNullPtr<Net::SSLEngine> ssl, Crypto::Cert::CertStore *trustStore) const
 {
 	return Crypto::Cert::X509File::ValidStatus::SignatureInvalid;
 }

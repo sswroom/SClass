@@ -37,7 +37,7 @@ namespace Net
 			UOSInt contentLen;
 			Data::ArrayList<Attachment*> attachments;
 
-			Net::SSLEngine *ssl;
+			Optional<Net::SSLEngine> ssl;
 			Crypto::Cert::X509Cert *signCert;
 			Crypto::Cert::X509Key *signKey;
 
@@ -66,7 +66,7 @@ namespace Net
 			Bool AddBcc(Text::CString addr);
 			Attachment *AddAttachment(Text::CStringNN fileName);
 			Attachment *AddAttachment(const UInt8 *content, UOSInt contentLen, Text::CString fileName);
-			Bool AddSignature(Net::SSLEngine *ssl, Crypto::Cert::X509Cert *cert, Crypto::Cert::X509Key *key);
+			Bool AddSignature(Optional<Net::SSLEngine> ssl, Crypto::Cert::X509Cert *cert, Crypto::Cert::X509Key *key);
 
 			Bool CompletedMessage();
 			Text::String *GetFromAddr();

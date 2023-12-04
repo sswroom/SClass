@@ -38,7 +38,7 @@ namespace SSWR
 
 		private:
 			NotNullPtr<Net::SocketFactory> sockf;
-			Net::SSLEngine *ssl;
+			Optional<Net::SSLEngine> ssl;
 			IO::LogTool log;
 			Net::TCPServer *cliSvr;
 			Net::TCPClientMgr *cliMgr;

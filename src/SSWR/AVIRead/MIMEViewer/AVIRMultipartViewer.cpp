@@ -103,8 +103,8 @@ SSWR::AVIRead::MIMEViewer::AVIRMultipartViewer::AVIRMultipartViewer(NotNullPtr<S
 											}
 											else
 											{
-												Net::SSLEngine *ssl = Net::SSLEngineFactory::Create(core->GetSocketFactory(), false);
-												if (ssl == 0)
+												NotNullPtr<Net::SSLEngine> ssl;
+												if (!Net::SSLEngineFactory::Create(core->GetSocketFactory(), false).SetTo(ssl))
 												{
 													this->txtSignState->SetText(CSTR("Error in initializing SSL Engine"));
 												}
@@ -138,7 +138,7 @@ SSWR::AVIRead::MIMEViewer::AVIRMultipartViewer::AVIRMultipartViewer(NotNullPtr<S
 													{
 														this->txtSignState->SetText(CSTR("Signature invalid"));
 													}
-													DEL_CLASS(ssl);
+													ssl.Delete();
 												}
 
 												key.Delete();
