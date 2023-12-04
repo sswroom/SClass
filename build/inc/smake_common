@@ -3120,6 +3120,8 @@ Net/MQTTStaticClient.h: ../../src/Net/MQTTStaticClient.cpp
 @MQTTStaticClient.o
 Net/MQTTUtil.h: ../../src/Net/MQTTUtil.cpp
 @MQTTUtil.o
+Net/MSGraphClient.h: ../../src/Net/MSGraphClient.cpp
+@MSGraphClient.o
 Net/MySQLServer.h: ../../src/Net/MySQLServer.cpp
 @MySQLServer.o
 Net/MySQLTCPClient.h: ../../src/Net/MySQLTCPClient.cpp
@@ -5562,6 +5564,7 @@ MQTTConn.o: ../../src/Net/MQTTConn.cpp
 MQTTFailoverClient.o: ../../src/Net/MQTTFailoverClient.cpp
 MQTTStaticClient.o: ../../src/Net/MQTTStaticClient.cpp
 MQTTUtil.o: ../../src/Net/MQTTUtil.cpp
+MSGraphClient.o: ../../src/Net/MSGraphClient.cpp
 MySQLServer.o: ../../src/Net/MySQLServer.cpp
 MySQLTCPClient.o: ../../src/Net/MySQLTCPClient.cpp
 MySQLUtil.o: ../../src/Net/MySQLUtil.cpp

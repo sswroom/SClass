@@ -49,7 +49,7 @@ UOSInt Net::HTTPMyClient::ReadRAWInternal(Data::ByteArray buff)
 		buff = buff.SubArray(0, (UOSInt)(this->contLeng - this->contRead));
 	}
 #ifdef SHOWDEBUG
-	printf("Read size = %d\r\n", (Int32)size);
+	printf("Read size = %d\r\n", (Int32)buff.GetSize());
 #endif
 
 	if (this->contEnc == 1)
@@ -699,7 +699,7 @@ Bool Net::HTTPMyClient::Connect(Text::CStringNN url, Net::WebUtil::RequestMethod
 		if (addr.addrType != Net::AddrType::Unknown)
 		{
 #if defined(SHOWDEBUG)
-			Net::SocketUtil::GetAddrName(svrname, &this->svrAddr);
+			Net::SocketUtil::GetAddrName(svrname, this->svrAddr);
 			printf("Server IP: %s:%d, t = %d\r\n", svrname, port, (Int32)this->svrAddr.addrType);
 #endif
 			NotNullPtr<Net::SSLEngine> ssl;
@@ -920,7 +920,12 @@ void Net::HTTPMyClient::AddHeaderC(Text::CStringNN name, Text::CString value)
 	UInt8 buff[512];
 	UTF8Char *sptr;
 	if (this->reqHeaders.SortedIndexOfPtr(name.v, name.leng) >= 0)
+	{
+#ifdef SHOWDEBUG
+		printf("Add Header Failed(duplicated): %s: %s\r\n", name.v, value.v);
+#endif
 		return;
+	}
 
 	if (this->cli && !this->writing)
 	{
@@ -952,6 +957,12 @@ void Net::HTTPMyClient::AddHeaderC(Text::CStringNN name, Text::CString value)
 			this->reqMstm.Write(buff, (UOSInt)(sptr - (UTF8Char*)buff));
 		}
 		this->reqHeaders.SortedInsert(Text::String::New(name).Ptr());
+	}
+	else
+	{
+#ifdef SHOWDEBUG
+		printf("Add Header Failed(Non-writing state): %s: %s\r\n", name.v, value.v);
+#endif
 	}
 }
 

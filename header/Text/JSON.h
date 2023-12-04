@@ -47,6 +47,7 @@ namespace Text
 		Text::String *GetValueString(Text::CStringNN path);
 		Text::String *GetValueNewString(Text::CStringNN path);
 		Int32 GetValueAsInt32(Text::CStringNN path);
+		Bool GetValueAsInt32(Text::CStringNN path, OutParam<Int32> val);
 		Int64 GetValueAsInt64(Text::CStringNN path);
 		Double GetValueAsDouble(Text::CStringNN path);
 		Bool GetValueAsDouble(Text::CStringNN path, OutParam<Double> val);
@@ -54,6 +55,7 @@ namespace Text
 		Text::JSONArray *GetValueArray(Text::CStringNN path);
 		Text::JSONObject *GetValueObject(Text::CStringNN path);
 		Int32 GetAsInt32();
+		Bool GetAsInt32(OutParam<Int32> val);
 		Int64 GetAsInt64();
 		Double GetAsDouble();
 		Bool GetAsDouble(OutParam<Double> val);

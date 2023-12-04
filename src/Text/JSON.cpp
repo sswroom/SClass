@@ -183,6 +183,16 @@ Int32 Text::JSONBase::GetValueAsInt32(Text::CStringNN path)
 	return 0;
 }
 
+Bool Text::JSONBase::GetValueAsInt32(Text::CStringNN path, OutParam<Int32> val)
+{
+	Text::JSONBase *json = this->GetValue(path);
+	if (json)
+	{
+		return json->GetAsInt32(val);
+	}
+	return false;
+}
+
 Int64 Text::JSONBase::GetValueAsInt64(Text::CStringNN path)
 {
 	Text::JSONBase *json = this->GetValue(path);
@@ -264,6 +274,39 @@ Int32 Text::JSONBase::GetAsInt32()
 		return 0;
 	}
 	return 0;
+}
+
+Bool Text::JSONBase::GetAsInt32(OutParam<Int32> val)
+{
+	switch (this->GetType())
+	{
+	case Text::JSONType::BOOL:
+		val.Set(((Text::JSONBool*)this)->GetValue()?1:0);
+		return true;
+	case Text::JSONType::INT32:
+		val.Set(((Text::JSONInt32*)this)->GetValue());
+		return true;
+	case Text::JSONType::INT64:
+		{
+			Int32 iv = (Int32)(((Text::JSONInt64*)this)->GetValue());
+			val.Set(iv);
+			return iv == ((Text::JSONInt64*)this)->GetValue();
+		}
+	case Text::JSONType::Number:
+		{
+			Int32 iv = Double2Int32(((Text::JSONNumber*)this)->GetValue());
+			val.Set(iv);
+			return iv == ((Text::JSONNumber*)this)->GetValue();
+		}
+	case Text::JSONType::String:
+		return ((Text::JSONString*)this)->GetValue()->ToInt32(val);
+	case Text::JSONType::StringWO:
+	case Text::JSONType::Array:
+	case Text::JSONType::Object:
+	case Text::JSONType::Null:
+		return false;
+	}
+	return false;
 }
 
 Int64 Text::JSONBase::GetAsInt64()
