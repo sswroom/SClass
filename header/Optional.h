@@ -4,6 +4,8 @@
 
 template <typename T> struct Optional
 {
+public:
+	typedef void (*FreeFunc)(NotNullPtr<T> v);
 private:
 	T *p;
 public:
@@ -53,6 +55,16 @@ public:
 		if (this->p)
 		{
 			delete this->p;
+			this->p = 0;
+		}
+	}
+
+	void FreeBy(FreeFunc freeFunc)
+	{
+		NotNullPtr<T> v;
+		if (v.Set(this->p))
+		{
+			freeFunc(v);
 			this->p = 0;
 		}
 	}

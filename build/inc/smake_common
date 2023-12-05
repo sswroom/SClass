@@ -3261,6 +3261,7 @@ Net/WOLClient.h: ../../src/Net/WOLClient.cpp
 @WOLClient.o
 Net/Email/EmailMessage.h: ../../src/Net/Email/EmailMessage.cpp
 @EmailMessage.o
+Net/Email/EmailSender.h:
 Net/Email/EmailStore.h: ../../src/Net/Email/EmailStore.cpp
 @EmailStore.o
 Net/Email/EmailUtil.h: ../../src/Net/Email/EmailUtil.cpp

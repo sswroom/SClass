@@ -4,13 +4,14 @@
 #include "Net/SocketFactory.h"
 #include "Net/SSLEngine.h"
 #include "Net/Email/EmailMessage.h"
+#include "Net/Email/EmailSender.h"
 #include "Net/Email/SMTPConn.h"
 
 namespace Net
 {
 	namespace Email
 	{
-		class SMTPClient
+		class SMTPClient : public EmailSender
 		{
 		private:
 			NotNullPtr<Net::SocketFactory> sockf;
@@ -24,11 +25,11 @@ namespace Net
 			Text::String *authPassword;
 
 		public:
-			SMTPClient(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CString host, UInt16 port, Net::Email::SMTPConn::ConnType connType, IO::Writer *logWriter, Data::Duration timeout);
-			~SMTPClient();
+			SMTPClient(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CStringNN host, UInt16 port, Net::Email::SMTPConn::ConnType connType, IO::Writer *logWriter, Data::Duration timeout);
+			virtual ~SMTPClient();
 
 			void SetPlainAuth(Text::CString userName, Text::CString password);
-			Bool Send(NotNullPtr<Net::Email::EmailMessage> message);
+			virtual Bool Send(NotNullPtr<Net::Email::EmailMessage> message);
 		};
 	}
 }

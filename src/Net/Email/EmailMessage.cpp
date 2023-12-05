@@ -256,12 +256,33 @@ void Net::Email::EmailMessage::WriteB64Data(NotNullPtr<IO::Stream> stm, const UI
 	stm->Write(sbuff, (UOSInt)(sptr - sbuff));
 }
 
-void Net::Email::EmailMessage::AttachmentFree(Attachment *attachment)
+void Net::Email::EmailMessage::AttachmentFree(NotNullPtr<Attachment> attachment)
 {
 	MemFree(attachment->content);
 	attachment->fileName->Release();
 	attachment->contentId->Release();
-	MemFree(attachment);
+	MemFreeNN(attachment);
+}
+
+void Net::Email::EmailMessage::EmailAddressFree(NotNullPtr<EmailAddress> addr)
+{
+	NotNullPtr<Text::String> s;
+	if (addr->name.SetTo(s))
+		s->Release();
+	addr->addr->Release();
+	MemFreeNN(addr);
+}
+
+NotNullPtr<Net::Email::EmailMessage::EmailAddress> Net::Email::EmailMessage::EmailAddressCreate(RecipientType type, Text::CString name, Text::CStringNN addr)
+{
+	NotNullPtr<EmailAddress> ret = MemAllocNN(EmailAddress, 1);
+	ret->type = type;
+	if (name.leng > 0)
+		ret->name = Text::String::New(name);
+	else
+		ret->name = 0;
+	ret->addr = Text::String::New(addr);
+	return ret;
 }
 
 Net::Email::EmailMessage::EmailMessage()
@@ -276,19 +297,15 @@ Net::Email::EmailMessage::EmailMessage()
 
 Net::Email::EmailMessage::~EmailMessage()
 {
-	SDEL_STRING(this->fromAddr);
-	LIST_FREE_STRING(&this->recpList);
+	this->fromAddr.FreeBy(EmailAddressFree);
+	this->recpList.FreeAll(EmailAddressFree);
 	LIST_FREE_STRING(&this->headerList);
 	SDEL_STRING(this->contentType);
 	if (this->content)
 	{
 		MemFree(this->content);
 	}
-	UOSInt i = this->attachments.GetCount();
-	while (i-- > 0)
-	{
-		AttachmentFree(this->attachments.GetItem(i));
-	}
+	this->attachments.FreeAll(AttachmentFree);
 	SDEL_CLASS(this->signCert);
 	SDEL_CLASS(this->signKey);
 }
@@ -337,7 +354,21 @@ Bool Net::Email::EmailMessage::SetMessageId(Text::CString msgId)
 	return this->SetHeader(UTF8STRC("Message-ID"), sb.ToString(), sb.GetLength());
 }
 
-Bool Net::Email::EmailMessage::SetFrom(Text::CString name, Text::CString addr)
+void Net::Email::EmailMessage::AddCustomHeader(Text::CStringNN name, Text::CStringNN value)
+{
+	if (Text::StringTool::IsNonASCII(value.v))
+	{
+		Text::StringBuilderUTF8 sb;
+		this->AppendUTF8Header(sb, value.v, value.leng);
+		this->SetHeader(name.v, name.leng, sb.ToString(), sb.GetLength());
+	}
+	else
+	{
+		this->SetHeader(name.v, name.leng, value.v, value.leng);
+	}
+}
+
+Bool Net::Email::EmailMessage::SetFrom(Text::CString name, Text::CStringNN addr)
 {
 	Text::StringBuilderUTF8 sb;
 	if (name.leng > 0)
@@ -358,12 +389,12 @@ Bool Net::Email::EmailMessage::SetFrom(Text::CString name, Text::CString addr)
 	sb.Append(addr);
 	sb.AppendUTF8Char('>');
 	this->SetHeader(UTF8STRC("From"), sb.ToString(), sb.GetLength());
-	SDEL_STRING(this->fromAddr);
-	this->fromAddr = Text::String::New(addr).Ptr();
+	this->fromAddr.FreeBy(EmailAddressFree);
+	this->fromAddr = EmailAddressCreate(RecipientType::From, name, addr);
 	return true;
 }
 
-Bool Net::Email::EmailMessage::AddTo(Text::CString name, Text::CString addr)
+Bool Net::Email::EmailMessage::AddTo(Text::CString name, Text::CStringNN addr)
 {
 	UOSInt i = this->GetHeaderIndex(UTF8STRC("To"));
 	Text::StringBuilderUTF8 sb;
@@ -390,11 +421,11 @@ Bool Net::Email::EmailMessage::AddTo(Text::CString name, Text::CString addr)
 	sb.Append(addr);
 	sb.AppendUTF8Char('>');
 	this->SetHeader(UTF8STRC("To"), sb.ToString(), sb.GetLength());
-	this->recpList.Add(Text::String::New(addr));
+	this->recpList.Add(EmailAddressCreate(RecipientType::To, name, addr));
 	return true;
 }
 
-Bool Net::Email::EmailMessage::AddToList(Text::CString addrs)
+Bool Net::Email::EmailMessage::AddToList(Text::CStringNN addrs)
 {
 	Bool succ;
 	UOSInt i;
@@ -420,7 +451,7 @@ Bool Net::Email::EmailMessage::AddToList(Text::CString addrs)
 	return succ;
 }
 
-Bool Net::Email::EmailMessage::AddCc(Text::CString name, Text::CString addr)
+Bool Net::Email::EmailMessage::AddCc(Text::CString name, Text::CStringNN addr)
 {
 	UOSInt i = this->GetHeaderIndex(UTF8STRC("Cc"));
 	Text::StringBuilderUTF8 sb;
@@ -448,17 +479,17 @@ Bool Net::Email::EmailMessage::AddCc(Text::CString name, Text::CString addr)
 	sb.Append(addr);
 	sb.AppendUTF8Char('>');
 	this->SetHeader(UTF8STRC("Cc"), sb.ToString(), sb.GetLength());
-	this->recpList.Add(Text::String::New(addr));
+	this->recpList.Add(EmailAddressCreate(RecipientType::Cc, name, addr));
 	return true;
 }
 
-Bool Net::Email::EmailMessage::AddBcc(Text::CString addr)
+Bool Net::Email::EmailMessage::AddBcc(Text::CStringNN addr)
 {
-	this->recpList.Add(Text::String::New(addr));
+	this->recpList.Add(EmailAddressCreate(RecipientType::Bcc, CSTR_NULL, addr));
 	return true;
 }
 
-Net::Email::EmailMessage::Attachment *Net::Email::EmailMessage::AddAttachment(Text::CStringNN fileName)
+Optional<Net::Email::EmailMessage::Attachment> Net::Email::EmailMessage::AddAttachment(Text::CStringNN fileName)
 {
 	IO::FileStream fs(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 	if (fs.IsError())
@@ -472,13 +503,13 @@ Net::Email::EmailMessage::Attachment *Net::Email::EmailMessage::AddAttachment(Te
 	}
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
-	Attachment *attachment = MemAlloc(Attachment, 1);
+	NotNullPtr<Attachment> attachment = MemAllocNN(Attachment, 1);
 	attachment->contentLen = (UOSInt)len;
 	attachment->content = MemAlloc(UInt8, attachment->contentLen);
 	if (fs.Read(Data::ByteArray(attachment->content, attachment->contentLen)) != attachment->contentLen)
 	{
 		MemFree(attachment->content);
-		MemFree(attachment);
+		MemFreeNN(attachment);
 		return 0;
 	}
 	attachment->createTime.SetValue(0, 0);
@@ -492,11 +523,11 @@ Net::Email::EmailMessage::Attachment *Net::Email::EmailMessage::AddAttachment(Te
 	return attachment;
 }
 
-Net::Email::EmailMessage::Attachment *Net::Email::EmailMessage::AddAttachment(const UInt8 *content, UOSInt contentLen, Text::CString fileName)
+NotNullPtr<Net::Email::EmailMessage::Attachment> Net::Email::EmailMessage::AddAttachment(const UInt8 *content, UOSInt contentLen, Text::CString fileName)
 {
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
-	Attachment *attachment = MemAlloc(Attachment, 1);
+	NotNullPtr<Attachment> attachment = MemAllocNN(Attachment, 1);
 	attachment->contentLen = contentLen;
 	attachment->content = MemAlloc(UInt8, attachment->contentLen);
 	MemCopyNO(attachment->content, content, contentLen);
@@ -522,19 +553,19 @@ Bool Net::Email::EmailMessage::AddSignature(Optional<Net::SSLEngine> ssl, Crypto
 
 Bool Net::Email::EmailMessage::CompletedMessage()
 {
-	if (this->fromAddr == 0 || this->recpList.GetCount() == 0 || this->contentLen == 0)
+	if (this->fromAddr.IsNull() || this->recpList.GetCount() == 0 || this->contentLen == 0)
 	{
 		return false;
 	}
 	return true;
 }
 
-Text::String *Net::Email::EmailMessage::GetFromAddr()
+Optional<Net::Email::EmailMessage::EmailAddress> Net::Email::EmailMessage::GetFrom()
 {
 	return this->fromAddr;
 }
 
-NotNullPtr<const Data::ArrayListNN<Text::String>> Net::Email::EmailMessage::GetRecpList()
+NotNullPtr<const Data::ArrayListNN<Net::Email::EmailMessage::EmailAddress>> Net::Email::EmailMessage::GetRecpList()
 {
 	return this->recpList;
 }

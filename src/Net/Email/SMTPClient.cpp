@@ -3,7 +3,7 @@
 #include "Net/Email/SMTPClient.h"
 #include "Sync/SimpleThread.h"
 
-Net::Email::SMTPClient::SMTPClient(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CString host, UInt16 port, Net::Email::SMTPConn::ConnType connType, IO::Writer *logWriter, Data::Duration timeout)
+Net::Email::SMTPClient::SMTPClient(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CStringNN host, UInt16 port, Net::Email::SMTPConn::ConnType connType, IO::Writer *logWriter, Data::Duration timeout)
 {
 	this->sockf = sockf;
 	this->ssl = ssl;
@@ -62,16 +62,17 @@ Bool Net::Email::SMTPClient::Send(NotNullPtr<Net::Email::EmailMessage> message)
 			return false;
 		}
 	}
-	if (!conn.SendMailFrom(message->GetFromAddr()->ToCString()))
+	NotNullPtr<Net::Email::EmailMessage::EmailAddress> addr;
+	if (!message->GetFrom().SetTo(addr) || !conn.SendMailFrom(addr->addr->ToCString()))
 	{
 		return false;
 	}
-	NotNullPtr<const Data::ArrayListNN<Text::String>> recpList = message->GetRecpList();
+	NotNullPtr<const Data::ArrayListNN<Net::Email::EmailMessage::EmailAddress>> recpList = message->GetRecpList();
 	UOSInt i = 0;
 	UOSInt j = recpList->GetCount();
 	while (i < j)
 	{
-		if (!conn.SendRcptTo(recpList->GetItem(i)->ToCString()))
+		if (!conn.SendRcptTo(recpList->GetItem(i)->addr->ToCString()))
 		{
 			return false;
 		}

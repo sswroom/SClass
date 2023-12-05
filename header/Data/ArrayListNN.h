@@ -9,6 +9,8 @@ namespace Data
 {
 	template <class T> class ArrayListNN : public ReadingList<T*>, public ArrayCollection<NotNullPtr<T>>
 	{
+	public:
+		typedef void (*FreeFunc)(NotNullPtr<T> v);
 	protected:
 		NotNullPtr<T> *arr;
 		UOSInt objCnt;
@@ -46,6 +48,7 @@ namespace Data
 		T *Pop();
 		ArrayListNN<T> &operator =(const ArrayListNN<T> &v);
 		void DeleteAll();
+		void FreeAll(FreeFunc freeFunc);
 	};
 
 
@@ -377,6 +380,16 @@ namespace Data
 		while (i-- > 0)
 		{
 			this->arr[i].Delete();
+		}
+		this->objCnt = 0;
+	}
+
+	template <class T> void ArrayListNN<T>::FreeAll(FreeFunc freeFunc)
+	{
+		UOSInt i = this->objCnt;
+		while (i-- > 0)
+		{
+			freeFunc(this->arr[i]);
 		}
 		this->objCnt = 0;
 	}

@@ -90,7 +90,12 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 #if defined(USESSL)
 	ssl = Net::SSLEngineFactory::Create(sockf, true);
 	NotNullPtr<Net::SSLEngine> nnssl;
-	if (!ssl.SetTo(nnssl) || !nnssl->ServerSetCerts(CSTR("test.crt"), CSTR("test.key")))
+	if (!ssl.SetTo(nnssl))
+	{
+		console->WriteLineC(UTF8STRC("Error in initializing SSL engine"));
+		succ = false;
+	}
+	else if (!nnssl->ServerSetCerts(CSTR("test.crt"), CSTR("test.key")))
 	{
 		console->WriteLineC(UTF8STRC("Error in initializing SSL"));
 		sptr = nnssl->GetErrorDetail(sbuff);

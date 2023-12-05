@@ -17,6 +17,21 @@ namespace Net
 		class EmailMessage
 		{
 		public:
+			enum class RecipientType
+			{
+				From,
+				To,
+				Cc,
+				Bcc
+			};
+
+			struct EmailAddress
+			{
+				RecipientType type;
+				Optional<Text::String> name;
+				NotNullPtr<Text::String> addr;
+			};
+
 			struct Attachment
 			{
 				UInt8 *content;
@@ -29,13 +44,13 @@ namespace Net
 			};
 			
 		private:
-			Text::String *fromAddr;
-			Data::ArrayListNN<Text::String> recpList;
+			Optional<EmailAddress> fromAddr;
+			Data::ArrayListNN<EmailAddress> recpList;
 			Data::ArrayListNN<Text::String> headerList;
 			Text::String *contentType;
 			UInt8 *content;
 			UOSInt contentLen;
-			Data::ArrayList<Attachment*> attachments;
+			Data::ArrayListNN<Attachment> attachments;
 
 			Optional<Net::SSLEngine> ssl;
 			Crypto::Cert::X509Cert *signCert;
@@ -50,7 +65,9 @@ namespace Net
 			void WriteContents(NotNullPtr<IO::Stream> stm);
 			static UTF8Char *GenBoundary(UTF8Char *sbuff, const UInt8 *data, UOSInt dataLen);
 			static void WriteB64Data(NotNullPtr<IO::Stream> stm, const UInt8 *data, UOSInt dataSize);
-			static void AttachmentFree(Attachment *attachment);
+			static void AttachmentFree(NotNullPtr<Attachment> attachment);
+			static void EmailAddressFree(NotNullPtr<EmailAddress> recipient);
+			static NotNullPtr<EmailAddress> EmailAddressCreate(RecipientType type, Text::CString name, Text::CStringNN addr);
 		public:
 			EmailMessage();
 			~EmailMessage();
@@ -59,18 +76,19 @@ namespace Net
 			Bool SetContent(Text::CStringNN content, Text::CStringNN contentType);
 			Bool SetSentDate(NotNullPtr<Data::DateTime> dt);
 			Bool SetMessageId(Text::CString msgId);
-			Bool SetFrom(Text::CString name, Text::CString addr);
-			Bool AddTo(Text::CString name, Text::CString addr);
-			Bool AddToList(Text::CString addrs);
-			Bool AddCc(Text::CString name, Text::CString addr);
-			Bool AddBcc(Text::CString addr);
-			Attachment *AddAttachment(Text::CStringNN fileName);
-			Attachment *AddAttachment(const UInt8 *content, UOSInt contentLen, Text::CString fileName);
+			Bool SetFrom(Text::CString name, Text::CStringNN addr);
+			Bool AddTo(Text::CString name, Text::CStringNN addr);
+			Bool AddToList(Text::CStringNN addrs);
+			Bool AddCc(Text::CString name, Text::CStringNN addr);
+			Bool AddBcc(Text::CStringNN addr);
+			void AddCustomHeader(Text::CStringNN name, Text::CStringNN value);
+			Optional<Attachment> AddAttachment(Text::CStringNN fileName);
+			NotNullPtr<Attachment> AddAttachment(const UInt8 *content, UOSInt contentLen, Text::CString fileName);
 			Bool AddSignature(Optional<Net::SSLEngine> ssl, Crypto::Cert::X509Cert *cert, Crypto::Cert::X509Key *key);
 
 			Bool CompletedMessage();
-			Text::String *GetFromAddr();
-			NotNullPtr<const Data::ArrayListNN<Text::String>> GetRecpList();
+			Optional<EmailAddress> GetFrom();
+			NotNullPtr<const Data::ArrayListNN<EmailAddress>> GetRecpList();
 			Bool WriteToStream(NotNullPtr<IO::Stream> stm);
 
 			static Bool GenerateMessageID(NotNullPtr<Text::StringBuilderUTF8> sb, Text::CString fromAddr);
