@@ -174,6 +174,10 @@ UTF8Char *Map::GPSTrack::GetString(UTF8Char *buff, UOSInt buffSize, NameArray *n
 	{
 		if (strIndex == 0)
 		{
+			if (this->currTrackName)
+			{
+				return this->currTrackName->ConcatToS(buff, buffSize);
+			}
 			dt.SetTicks(this->currTimes.GetItem(0));
 			sptr = dt.ToString(buff, "yyyy-MM-dd HH:mm:ss.fff");
 			sptr = Text::StrConcatC(sptr, UTF8STRC(" - "));
@@ -201,6 +205,10 @@ UTF8Char *Map::GPSTrack::GetString(UTF8Char *buff, UOSInt buffSize, NameArray *n
 		Map::GPSTrack::TrackRecord *track = this->currTracks.GetItem((UOSInt)id);
 		if (strIndex == 0)
 		{
+			if (track->name)
+			{
+				return track->name->ConcatToS(buff, buffSize);
+			}
 			dt.SetInstant(track->records[0].recTime);
 			sptr = dt.ToStringNoZone(buff);
 			sptr = Text::StrConcatC(sptr, UTF8STRC(" - "));

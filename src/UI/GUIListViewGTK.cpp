@@ -66,6 +66,12 @@ gboolean GUIListView_ButtonClick(GtkWidget *widget, GdkEventButton *event, gpoin
 	return false;
 }
 
+void GUIListView_Toggled(GtkCellRendererToggle* self, gchar* path, gpointer user_data)
+{
+	UI::GUIListView *me = (UI::GUIListView*)user_data;
+	me->OnNotify(0x1234, path);
+}
+
 UI::GUIListView::GUIListView(NotNullPtr<GUICore> ui, NotNullPtr<GUIClientControl> parent, ListViewStyle lvstyle, UOSInt colCount) : UI::GUIControl(ui, parent)
 {
 	GUIListViewData *data = MemAlloc(GUIListViewData, 1);
@@ -103,6 +109,17 @@ UI::GUIListView::GUIListView(NotNullPtr<GUICore> ui, NotNullPtr<GUIClientControl
 	if (lvstyle == UI::GUIListView::LVSTYLE_TABLE)
 	{
 		gtk_tree_view_set_headers_clickable((GtkTreeView*)data->treeView, true);
+	}
+	else if (lvstyle == UI::GUIListView::LVSTYLE_SMALLICON)
+	{
+		GtkCellRenderer *tickRenderer = gtk_cell_renderer_toggle_new();
+		GtkCellRenderer *renderer = gtk_cell_renderer_text_new();
+		GtkTreeViewColumn *col = gtk_tree_view_column_new_with_attributes("Tick", tickRenderer, "active", 1, (void*)0);
+		gtk_cell_renderer_toggle_set_activatable((GtkCellRendererToggle*)tickRenderer, true);
+		gtk_tree_view_append_column((GtkTreeView*)data->treeView, col);
+		col = gtk_tree_view_column_new_with_attributes("Name", renderer, "text", 0, (void*)0);
+		gtk_tree_view_append_column((GtkTreeView*)data->treeView, col);
+		g_signal_connect(tickRenderer, "toggled", G_CALLBACK(GUIListView_Toggled), this);
 	}
 	data->colCnt = colCount;
 	NEW_CLASS(data->rows, Data::ArrayList<MyRow*>());

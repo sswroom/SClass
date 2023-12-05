@@ -45,7 +45,7 @@ namespace Data
 		T *GetLast();
 		T *Pop();
 		ArrayListNN<T> &operator =(const ArrayListNN<T> &v);
-		void FreeAll();
+		void DeleteAll();
 	};
 
 
@@ -371,7 +371,7 @@ namespace Data
 		return *this;
 	}
 
-	template <class T> void ArrayListNN<T>::FreeAll()
+	template <class T> void ArrayListNN<T>::DeleteAll()
 	{
 		UOSInt i = this->objCnt;
 		while (i-- > 0)

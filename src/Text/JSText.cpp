@@ -913,6 +913,12 @@ Bool Text::JSText::JSONWellFormat(const UTF8Char *buff, UOSInt buffSize, UOSInt 
 			while (i < buffSize)
 			{
 				c = buff[i];
+				if (c == '\\')
+				{
+					i++;
+					if (i >= buffSize)
+						break;
+				}
 				if (c == '"')
 					break;
 				i++;

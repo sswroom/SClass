@@ -1485,7 +1485,7 @@ Data::QueryConditions *Data::QueryConditions::ParseStr(Text::CStringNN s, DB::SQ
 				sql = DB::SQL::SQLUtil::ParseNextWord(sql, sb, sqlType);
 				if (!item.Set(DB::SQL::SQLUtil::ParseValue(sb.ToCString(), sqlType)))
 				{
-					items.FreeAll();
+					items.DeleteAll();
 					DEL_CLASS(cond);
 					return 0;
 				}
@@ -1503,7 +1503,7 @@ Data::QueryConditions *Data::QueryConditions::ParseStr(Text::CStringNN s, DB::SQ
 						{
 							if (items.GetItem(i)->GetItemType() != itemType)
 							{
-								items.FreeAll();
+								items.DeleteAll();
 								DEL_CLASS(cond);
 								return 0;
 							}
@@ -1511,12 +1511,12 @@ Data::QueryConditions *Data::QueryConditions::ParseStr(Text::CStringNN s, DB::SQ
 							i++;
 						}
 						cond->StrIn(sbField.ToCString(), vals);
-						items.FreeAll();
+						items.DeleteAll();
 						break;
 					}
 					else
 					{
-						items.FreeAll();
+						items.DeleteAll();
 						DEL_CLASS(cond);
 						return 0;
 					}
@@ -1526,7 +1526,7 @@ Data::QueryConditions *Data::QueryConditions::ParseStr(Text::CStringNN s, DB::SQ
 				}
 				else
 				{
-					items.FreeAll();
+					items.DeleteAll();
 					DEL_CLASS(cond);
 					return 0;
 				}
@@ -1549,7 +1549,7 @@ Data::QueryConditions *Data::QueryConditions::ParseStr(Text::CStringNN s, DB::SQ
 					sql = DB::SQL::SQLUtil::ParseNextWord(sql, sb, sqlType);
 					if (!item.Set(DB::SQL::SQLUtil::ParseValue(sb.ToCString(), sqlType)))
 					{
-						items.FreeAll();
+						items.DeleteAll();
 						DEL_CLASS(cond);
 						return 0;
 					}
@@ -1567,7 +1567,7 @@ Data::QueryConditions *Data::QueryConditions::ParseStr(Text::CStringNN s, DB::SQ
 							{
 								if (items.GetItem(i)->GetItemType() != itemType)
 								{
-									items.FreeAll();
+									items.DeleteAll();
 									DEL_CLASS(cond);
 									return 0;
 								}
@@ -1575,12 +1575,12 @@ Data::QueryConditions *Data::QueryConditions::ParseStr(Text::CStringNN s, DB::SQ
 								i++;
 							}
 							cond->StrNotIn(sbField.ToCString(), vals);
-							items.FreeAll();
+							items.DeleteAll();
 							break;
 						}
 						else
 						{
-							items.FreeAll();
+							items.DeleteAll();
 							DEL_CLASS(cond);
 							return 0;
 						}
@@ -1590,7 +1590,7 @@ Data::QueryConditions *Data::QueryConditions::ParseStr(Text::CStringNN s, DB::SQ
 					}
 					else
 					{
-						items.FreeAll();
+						items.DeleteAll();
 						DEL_CLASS(cond);
 						return 0;
 					}

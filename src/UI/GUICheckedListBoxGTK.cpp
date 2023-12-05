@@ -56,5 +56,17 @@ Text::CStringNN UI::GUICheckedListBox::GetObjectClass() const
 
 OSInt UI::GUICheckedListBox::OnNotify(UInt32 code, void *lParam)
 {
+	if (code == 0x1234)
+	{
+		GUIListViewData *data = (GUIListViewData*)this->clsData;
+		GtkTreeIter iter;
+		if (gtk_tree_model_get_iter_from_string((GtkTreeModel*)data->listStore, &iter, (gchar*)lParam))
+		{
+			gboolean ret = false;
+			gtk_tree_model_get((GtkTreeModel*)data->listStore, &iter, 1, &ret, -1);
+			ret = !ret;
+			gtk_list_store_set(data->listStore, &iter, 1, ret, -1);
+		}
+	}
 	return 0;
 }
