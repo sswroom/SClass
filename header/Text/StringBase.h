@@ -70,6 +70,7 @@ namespace Text
 		Bool ToDouble(OutParam<Double> outVal) const;
 		Bool ToUInt16S(OutParam<UInt16> outVal, UInt16 failVal) const;
 		Bool ToUInt32S(OutParam<UInt32> outVal, UInt32 failVal) const;
+		Bool ToBool() const;
 		UOSInt Hex2Bytes(UInt8 *buff) const;
 		UOSInt CountChar(UTF8Char c) const;
 		UOSInt CountStr(const UTF8Char *s, UOSInt len) const;
@@ -477,6 +478,11 @@ template <typename T> Bool Text::StringBase<T>::ToUInt16S(OutParam<UInt16> outVa
 template <typename T> Bool Text::StringBase<T>::ToUInt32S(OutParam<UInt32> outVal, UInt32 failVal) const
 {
 	return Text::StrToUInt32S(this->v, outVal, failVal);
+}
+
+template <typename T> Bool Text::StringBase<T>::ToBool() const
+{
+	return Text::StrToBool(this->v);
 }
 
 template<typename T> UOSInt Text::StringBase<T>::Hex2Bytes(UInt8 *buff) const

@@ -216,7 +216,7 @@ void Map::DBMapLayer::ReleaseNameArr(NameArray *nameArr)
 	}
 }
 
-UTF8Char *Map::DBMapLayer::GetString(UTF8Char *buff, UOSInt buffSize, NameArray *nameArr, Int64 id, UOSInt strIndex)
+Bool Map::DBMapLayer::GetString(NotNullPtr<Text::StringBuilderUTF8> sb, NameArray *nameArr, Int64 id, UOSInt strIndex)
 {
 	if (nameArr)
 	{
@@ -224,7 +224,7 @@ UTF8Char *Map::DBMapLayer::GetString(UTF8Char *buff, UOSInt buffSize, NameArray 
 		UOSInt colCnt = this->tabDef->GetColCnt();
 		if (strIndex >= colCnt)
 		{
-			return 0;
+			return false;
 		}
 		if (narr->currId != id)
 		{
@@ -261,11 +261,12 @@ UTF8Char *Map::DBMapLayer::GetString(UTF8Char *buff, UOSInt buffSize, NameArray 
 		{
 			if (narr->names[strIndex])
 			{
-				return narr->names[strIndex]->ConcatToS(buff, buffSize);
+				sb->Append(narr->names[strIndex]);
+				return true;
 			}
 		}
 	}
-	return 0;
+	return false;
 }
 
 UOSInt Map::DBMapLayer::GetColumnCnt() const

@@ -47,3 +47,17 @@ UTF8Char *Map::GoogleMap::GoogleTileMap::GetTileImageURL(UTF8Char *sbuff, UOSInt
 	sptr = Text::StrUOSInt(sptr, level);
 	return sptr;
 }
+
+Bool Map::GoogleMap::GoogleTileMap::GetTileImageURL(NotNullPtr<Text::StringBuilderUTF8> sb, UOSInt level, Math::Coord2D<Int32> tileId)
+{
+	sb->AppendC(UTF8STRC(GMAPURL));
+	sb->AppendC(UTF8STRC("lyrs="));
+	sb->AppendUTF8Char((UTF8Char)this->mapType);
+	sb->AppendC(UTF8STRC("&x="));
+	sb->AppendI32(tileId.x);
+	sb->AppendC(UTF8STRC("&y="));
+	sb->AppendI32(tileId.y);
+	sb->AppendC(UTF8STRC("&z="));
+	sb->AppendUOSInt(level);
+	return true;
+}

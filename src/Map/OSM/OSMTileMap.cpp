@@ -77,3 +77,15 @@ UTF8Char *Map::OSM::OSMTileMap::GetTileImageURL(UTF8Char *sbuff, UOSInt level, M
 	sptr = Text::StrConcatC(sptr, UTF8STRC(".png"));
 	return sptr;
 }
+
+Bool Map::OSM::OSMTileMap::GetTileImageURL(NotNullPtr<Text::StringBuilderUTF8> sb, UOSInt level, Math::Coord2D<Int32> tileId)
+{
+	sb->Append(this->GetNextURL());
+	sb->AppendUOSInt(level);
+	sb->AppendUTF8Char('/');
+	sb->AppendI32(tileId.x);
+	sb->AppendUTF8Char('/');
+	sb->AppendI32(tileId.y);
+	sb->AppendC(UTF8STRC(".png"));
+	return true;
+}

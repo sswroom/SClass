@@ -453,7 +453,7 @@ Bool IO::FileAnalyse::EXEFileAnalyse::GetFrameDetail(UOSInt index, NotNullPtr<Te
 		sb->AppendC(UTF8STRC("\r\nTimeDateStamp = "));
 		sb->AppendU32(ReadUInt32(&packBuff[8]));
 		sb->AppendC(UTF8STRC(" ("));
-		sb->AppendTS(Data::Timestamp::FromEpochSec(ReadUInt32(&packBuff[8]), 0));
+		sb->AppendTSNoZone(Data::Timestamp::FromEpochSec(ReadUInt32(&packBuff[8]), 0));
 		sb->AppendC(UTF8STRC(")"));
 		sb->AppendC(UTF8STRC("\r\nPointerToSymbolTable = 0x"));
 		sb->AppendHex32(ReadUInt32(&packBuff[12]));
@@ -726,7 +726,7 @@ Bool IO::FileAnalyse::EXEFileAnalyse::GetFrameDetail(UOSInt index, NotNullPtr<Te
 		sb->AppendC(UTF8STRC("\r\nTimestamp = "));
 		sb->AppendU32(ReadUInt32(&this->imageBuff[(UOSInt)pack->fileOfst + 4]));
 		sb->AppendC(UTF8STRC(" ("));
-		sb->AppendTS(Data::Timestamp::FromEpochSec(ReadUInt32(&this->imageBuff[(UOSInt)pack->fileOfst + 4]), 0));
+		sb->AppendTSNoZone(Data::Timestamp::FromEpochSec(ReadUInt32(&this->imageBuff[(UOSInt)pack->fileOfst + 4]), 0));
 		sb->AppendUTF8Char(')');
 		sb->AppendC(UTF8STRC("\r\nVersion = "));
 		sb->AppendU16(ReadUInt16(&this->imageBuff[(UOSInt)pack->fileOfst + 8]));
@@ -770,7 +770,7 @@ Bool IO::FileAnalyse::EXEFileAnalyse::GetFrameDetail(UOSInt index, NotNullPtr<Te
 		sb->AppendC(UTF8STRC("\r\nTimestamp = "));
 		sb->AppendU32(ReadUInt32(&this->imageBuff[(UOSInt)pack->fileOfst + 4]));
 		sb->AppendC(UTF8STRC(" ("));
-		sb->AppendTS(Data::Timestamp::FromEpochSec(ReadUInt32(&this->imageBuff[(UOSInt)pack->fileOfst + 4]), 0));
+		sb->AppendTSNoZone(Data::Timestamp::FromEpochSec(ReadUInt32(&this->imageBuff[(UOSInt)pack->fileOfst + 4]), 0));
 		sb->AppendUTF8Char(')');
 		sb->AppendC(UTF8STRC("\r\nForwarder Chain = "));
 		sb->AppendU32(ReadUInt32(&this->imageBuff[(UOSInt)pack->fileOfst + 8]));

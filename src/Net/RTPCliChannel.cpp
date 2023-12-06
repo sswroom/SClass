@@ -146,7 +146,7 @@ void __stdcall Net::RTPCliChannel::PacketCtrlHdlr(NotNullPtr<const Net::SocketUt
 					if (size >= 28)
 					{
 						sb.AppendC(UTF8STRC(",NTP ts="));
-						sb.AppendTS(Data::Timestamp::FromNTPTime(ReadMUInt32(&buff[ofst + 8]), ReadMUInt32(&buff[ofst + 12]), 0));
+						sb.AppendTSNoZone(Data::Timestamp::FromNTPTime(ReadMUInt32(&buff[ofst + 8]), ReadMUInt32(&buff[ofst + 12]), 0));
 						sb.AppendC(UTF8STRC(",RTP ts="));
 						sb.AppendI32(ReadMInt32(&buff[ofst + 16]));
 						sb.AppendC(UTF8STRC(",nPacket="));

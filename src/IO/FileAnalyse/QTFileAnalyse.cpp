@@ -239,10 +239,10 @@ Bool IO::FileAnalyse::QTFileAnalyse::GetFrameDetail(UOSInt index, NotNullPtr<Tex
 			sb->AppendHex24(ReadMUInt32(&packBuff[0]));
 			sb->AppendC(UTF8STRC("\r\nCreation time = "));
 			ts = Data::Timestamp::FromEpochSec(ReadMUInt32(&packBuff[4]), 0);
-			sb->AppendTS(ts);
+			sb->AppendTSNoZone(ts);
 			sb->AppendC(UTF8STRC("\r\nModification time = "));
 			ts = Data::Timestamp::FromEpochSec(ReadMUInt32(&packBuff[8]), 0);
-			sb->AppendTS(ts);
+			sb->AppendTSNoZone(ts);
 			sb->AppendC(UTF8STRC("\r\nTime Scale = "));
 			sb->AppendI32(ReadMInt32(&packBuff[12]));
 			sb->AppendC(UTF8STRC("\r\nDuration = "));
@@ -302,10 +302,10 @@ Bool IO::FileAnalyse::QTFileAnalyse::GetFrameDetail(UOSInt index, NotNullPtr<Tex
 			sb->AppendHex24(ReadMUInt32(&packBuff[0]));
 			sb->AppendC(UTF8STRC("\r\nCreation time = "));
 			ts = Data::Timestamp::FromEpochSec(ReadMUInt32(&packBuff[4]), 0);
-			sb->AppendTS(ts);
+			sb->AppendTSNoZone(ts);
 			sb->AppendC(UTF8STRC("\r\nModification time = "));
 			ts = Data::Timestamp::FromEpochSec(ReadMUInt32(&packBuff[8]), 0);
-			sb->AppendTS(ts);
+			sb->AppendTSNoZone(ts);
 			sb->AppendC(UTF8STRC("\r\nTrack ID = "));
 			sb->AppendI32(ReadMInt32(&packBuff[12]));
 			sb->AppendC(UTF8STRC("\r\nReserved = "));
@@ -361,10 +361,10 @@ Bool IO::FileAnalyse::QTFileAnalyse::GetFrameDetail(UOSInt index, NotNullPtr<Tex
 			sb->AppendHex24(ReadMUInt32(&packBuff[0]));
 			sb->AppendC(UTF8STRC("\r\nCreation time = "));
 			ts = Data::Timestamp::FromEpochSec(ReadMUInt32(&packBuff[4]), 0);
-			sb->AppendTS(ts);
+			sb->AppendTSNoZone(ts);
 			sb->AppendC(UTF8STRC("\r\nModification time = "));
 			ts = Data::Timestamp::FromEpochSec(ReadMUInt32(&packBuff[8]), 0);
-			sb->AppendTS(ts);
+			sb->AppendTSNoZone(ts);
 			sb->AppendC(UTF8STRC("\r\nTime scale = "));
 			sb->AppendI32(ReadMInt32(&packBuff[12]));
 			sb->AppendC(UTF8STRC("\r\nDuration = "));

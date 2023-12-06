@@ -301,6 +301,18 @@ UTF8Char *Map::ESRI::ESRIMapServer::TileGetURL(UTF8Char *sbuff, UOSInt level, In
 	return sbuff;
 }
 
+Bool Map::ESRI::ESRIMapServer::TileGetURL(NotNullPtr<Text::StringBuilderUTF8> sb, UOSInt level, Int32 tileX, Int32 tileY) const
+{
+	sb->Append(this->url);
+	sb->AppendC(UTF8STRC("/tile/"));
+	sb->AppendUOSInt(level);
+	sb->AppendUTF8Char('/');
+	sb->AppendI32(tileY);
+	sb->AppendUTF8Char('/');
+	sb->AppendI32(tileX);
+	return true;
+}
+
 Bool Map::ESRI::ESRIMapServer::TileLoadToStream(IO::Stream *stm, UOSInt level, Int32 tileX, Int32 tileY) const
 {
 	UInt8 dataBuff[2048];

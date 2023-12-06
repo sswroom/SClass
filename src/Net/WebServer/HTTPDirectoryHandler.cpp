@@ -244,7 +244,7 @@ void Net::WebServer::HTTPDirectoryHandler::ResponsePackageFile(NotNullPtr<Net::W
 			}
 
 			sbOut.AppendNE(UTF8STRC("</td><td>"));
-			sbOut.AppendTS(packageFile->GetItemModTime(i));
+			sbOut.AppendTSNoZone(packageFile->GetItemModTime(i));
 			sbOut.AppendNE(UTF8STRC("</td></tr>\r\n"));
 		}
 		
@@ -1045,7 +1045,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::DoFileRequest(NotNullPtr<Net::WebServ
 								sbOut.AppendNE(UTF8STRC("</td><td>0"));
 							}
 							sbOut.AppendNE(UTF8STRC("</td><td>"));
-							sbOut.AppendTS(package->modTime);
+							sbOut.AppendTSNoZone(package->modTime);
 							sbOut.AppendNE(UTF8STRC("</td></tr>\r\n"));
 							
 							i++;
@@ -1140,7 +1140,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::DoFileRequest(NotNullPtr<Net::WebServ
 									sbOut.AppendU32(cnt);
 								}
 								sbOut.AppendNE(UTF8STRC("</td><td>"));
-								sbOut.AppendTS(modTime);
+								sbOut.AppendTSNoZone(modTime);
 								sbOut.AppendNE(UTF8STRC("</td></tr>\r\n"));
 							}
 						}
@@ -1240,7 +1240,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::DoFileRequest(NotNullPtr<Net::WebServ
 								sbOut.AppendU32(ent->cnt);
 							}
 							sbOut.AppendNE(UTF8STRC("</td><td>"));
-							sbOut.AppendTS(ent->modTime);
+							sbOut.AppendTSNoZone(ent->modTime);
 							sbOut.AppendNE(UTF8STRC("</td></tr>\r\n"));
 							ent->fileName->Release();
 							MemFree(ent);

@@ -42,11 +42,13 @@ Map::HKTDVehRestrict::HKTDVehRestrict(Map::MapDrawLayer *routeLyr, DB::DBTool *d
 
 		if (idCol != -1)
 		{
+			Text::StringBuilderUTF8 sb;
 			i = 0;
 			j = idArr.GetCount();
 			while (i < j)
 			{
-				if (routeLyr->GetString(sbuff, sizeof(sbuff), nameArr, idArr.GetItem(i), (UOSInt)idCol))
+				sb.ClearStr();
+				if (routeLyr->GetString(sb, nameArr, idArr.GetItem(i), (UOSInt)idCol))
 				{
 					vec = routeLyr->GetNewVectorById(sess, idArr.GetItem(i));
 					if (vec)
@@ -54,7 +56,7 @@ Map::HKTDVehRestrict::HKTDVehRestrict(Map::MapDrawLayer *routeLyr, DB::DBTool *d
 						if (vec->GetVectorType() == Math::Geometry::Vector2D::VectorType::Polyline)
 						{
 							route = MemAlloc(RouteInfo, 1);
-							route->routeId = Text::StrToInt32(sbuff);
+							route->routeId = sb.ToInt32();
 							route->pl = (Math::Geometry::Polyline*)vec;
 							route = this->routeMap.Put(route->routeId, route);
 							if (route)

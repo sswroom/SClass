@@ -375,6 +375,26 @@ UTF8Char *Map::OSM::OSMLocalTileMap::GetTileImageURL(UTF8Char *sbuff, UOSInt lev
 	return sptr;
 }
 
+Bool Map::OSM::OSMLocalTileMap::GetTileImageURL(NotNullPtr<Text::StringBuilderUTF8> sb, UOSInt level, Math::Coord2D<Int32> tileId)
+{
+	sb->AppendC(UTF8STRC("file:///"));
+	sb->Append(this->pkgFile->GetSourceNameObj());
+	if (!sb->EndsWith(IO::Path::PATH_SEPERATOR))
+		sb->AppendUTF8Char(IO::Path::PATH_SEPERATOR);
+	if (IO::Path::PATH_SEPERATOR == '\\')
+	{
+		sb->Replace('\\', '/');
+	}
+	sb->AppendUOSInt(level);
+	sb->AppendUTF8Char('/');
+	sb->AppendI32(tileId.x);
+	sb->AppendUTF8Char('/');
+	sb->AppendI32(tileId.y);
+	sb->AppendUTF8Char('.');
+	sb->Append(this->fmt);
+	return true;
+}
+
 Optional<IO::StreamData> Map::OSM::OSMLocalTileMap::LoadTileImageData(UOSInt level, Math::Coord2D<Int32> tileId, OutParam<Math::RectAreaDbl> bounds, Bool localOnly, OptOut<ImageType> it)
 {
 	UTF8Char sbuff[512];

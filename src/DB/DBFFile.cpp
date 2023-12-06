@@ -193,6 +193,32 @@ UTF8Char *DB::DBFFile::GetRecord(UTF8Char *buff, UOSInt row, UOSInt col)
 	}
 }
 
+Bool DB::DBFFile::GetRecord(NotNullPtr<Text::StringBuilderUTF8> sb, UOSInt row, UOSInt col)
+{
+	if (col >= this->colCnt)
+		return false;
+
+	if (this->enc.IsUTF8())
+	{
+		sb->AllocLeng(this->cols[col].colSize);
+		UOSInt readSize = this->stmData->GetRealData(this->refPos + this->rowSize * row + this->cols[col].colOfst, this->cols[col].colSize, Data::ByteArray(sb->GetEndPtr(), this->cols[col].colSize));
+		sb->SetEndPtr(sb->GetEndPtr() + readSize);
+		sb->GetEndPtr()[0] = 0;
+		return true;
+	}
+	else
+	{
+		UInt8 *cbuff = MemAlloc(UInt8, this->cols[col].colSize);
+		this->stmData->GetRealData(this->refPos + this->rowSize * row + this->cols[col].colOfst, this->cols[col].colSize, Data::ByteArray(cbuff, this->cols[col].colSize));
+		UOSInt size = this->enc.CountUTF8Chars(cbuff, this->cols[col].colSize);
+		sb->AllocLeng(size);
+		UTF8Char *ret = this->enc.UTF8FromBytes(sb->GetEndPtr(), cbuff, this->cols[col].colSize, 0);
+		MemFree(cbuff);
+		sb->SetEndPtr(ret);
+		return true;
+	}
+}
+
 UOSInt DB::DBFFile::GetColCount()
 {
 	return this->colCnt;

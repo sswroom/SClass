@@ -587,6 +587,7 @@ Math::Geometry::Vector2D *Parser::FileParser::JSONParser::ParseGeomJSON(Text::JS
 									if (altArr)
 										altArr[m] = altList.GetItem(k);
 									k++;
+									m++;
 								}
 								pg->AddGeometry(lr);
 								i++;

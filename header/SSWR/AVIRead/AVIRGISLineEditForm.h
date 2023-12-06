@@ -23,7 +23,7 @@ namespace SSWR
 			typedef struct
 			{
 				UInt32 color;
-				UOSInt thick;
+				Double thick;
 				UInt8 *pattern;
 				UOSInt nPattern;
 			} LineLayer;

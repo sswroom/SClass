@@ -274,9 +274,9 @@ Bool Map::MapDrawLayer::IsError() const
 	return false;
 }
 
-UTF8Char *Map::MapDrawLayer::GetPGLabel(UTF8Char *buff, UOSInt buffSize, Math::Coord2DDbl coord, OptOut<Math::Coord2DDbl> outCoord, UOSInt strIndex)
+Bool Map::MapDrawLayer::GetPGLabel(NotNullPtr<Text::StringBuilderUTF8> sb, Math::Coord2DDbl coord, OptOut<Math::Coord2DDbl> outCoord, UOSInt strIndex)
 {
-	UTF8Char *retVal = 0;
+	Bool retVal = false;
 
 	Map::DrawLayerType layerType = this->GetLayerType();
 	if (layerType != DRAW_LAYER_POLYGON && layerType != DRAW_LAYER_MIXED)
@@ -305,8 +305,8 @@ UTF8Char *Map::MapDrawLayer::GetPGLabel(UTF8Char *buff, UOSInt buffSize, Math::C
 					Math::Geometry::Polygon *pg = (Math::Geometry::Polygon*)vec;
 					if (pg->InsideOrTouch(coord))
 					{
-						retVal = this->GetString(buff, buffSize, names, lastId, strIndex);
-						if (buff != retVal)
+						retVal = this->GetString(sb, names, lastId, strIndex);
+						if (retVal)
 						{
 							outCoord.Set(coord);
 							DEL_CLASS(vec);
@@ -323,16 +323,15 @@ UTF8Char *Map::MapDrawLayer::GetPGLabel(UTF8Char *buff, UOSInt buffSize, Math::C
 	return retVal;
 }
 
-UTF8Char *Map::MapDrawLayer::GetPLLabel(UTF8Char *buff, UOSInt buffSize, Math::Coord2DDbl coord, OutParam<Math::Coord2DDbl> outCoord, UOSInt strIndex)
+Bool Map::MapDrawLayer::GetPLLabel(NotNullPtr<Text::StringBuilderUTF8> sb, Math::Coord2DDbl coord, OutParam<Math::Coord2DDbl> outCoord, UOSInt strIndex)
 {
-	UTF8Char *retVal = 0;
-	UTF8Char *tmpBuff;
+	Bool retVal = 0;
 	Map::DrawLayerType layerType = this->GetLayerType();
 	if (layerType != DRAW_LAYER_POLYLINE && layerType != DRAW_LAYER_POINT && layerType != DRAW_LAYER_MIXED && layerType != DRAW_LAYER_POINT3D && layerType != DRAW_LAYER_POLYLINE3D)
 		return retVal;
 
 	Map::GetObjectSess *sess = BeginGetObject();
-	tmpBuff = MemAlloc(UTF8Char, buffSize);
+	Text::StringBuilderUTF8 tmpSb;
 	Map::NameArray *names;
 	Data::ArrayListInt64 arr;
 	Int64 lastId;
@@ -356,14 +355,16 @@ UTF8Char *Map::MapDrawLayer::GetPLLabel(UTF8Char *buff, UOSInt buffSize, Math::C
 		{
 			lastId = thisId;
 			vec = this->GetNewVectorById(sess, thisId);
-			UTF8Char *sptr = this->GetString(tmpBuff, buffSize, names, thisId, strIndex);
-			if (sptr && sptr != tmpBuff)
+			Bool succ = this->GetString(tmpSb, names, thisId, strIndex);
+			if (succ && tmpSb.GetLength() > 0)
 			{
 				thisDist = vec->CalSqrDistance(coord, nearPt);
 				if (thisDist < dist)
 				{
 					dist = thisDist;
-					retVal = Text::StrConcat(buff, tmpBuff);
+					sb->ClearStr();
+					sb->Append(tmpSb);
+					retVal = true;
 					outCoord.Set(nearPt);
 				}
 			}
@@ -373,7 +374,6 @@ UTF8Char *Map::MapDrawLayer::GetPLLabel(UTF8Char *buff, UOSInt buffSize, Math::C
 
 	ReleaseNameArr(names);
 	EndGetObject(sess);
-	MemFree(tmpBuff);
 	return retVal;
 }
 
@@ -502,9 +502,10 @@ void Map::MapDrawLayer::FreeObjects(NotNullPtr<Data::ArrayList<ObjectInfo*>> obj
 
 NotNullPtr<Map::VectorLayer> Map::MapDrawLayer::CreateEditableLayer()
 {
-	UTF8Char *sbuff = MemAlloc(UTF8Char, 65536);
+	Text::StringBuilderUTF8 sb;
 	UTF8Char *sptr;
 	UTF8Char *sptr2;
+	UOSInt *ofsts;
 	const UTF8Char **sptrs;
 	NotNullPtr<Map::VectorLayer> lyr;
 	Data::ArrayListInt64 objIds;
@@ -519,8 +520,10 @@ NotNullPtr<Map::VectorLayer> Map::MapDrawLayer::CreateEditableLayer()
 
 	k = this->GetColumnCnt();
 	i = k;
+	ofsts = MemAlloc(UOSInt, k);
 	sptrs = MemAlloc(const UTF8Char*, k);
-	sptr = sbuff;
+	sb.AllocLeng(65536);
+	sptr = sb.v;
 	while (i-- > 0)
 	{
 		sptr2 = this->GetColumnName(sptr, i);
@@ -550,19 +553,30 @@ NotNullPtr<Map::VectorLayer> Map::MapDrawLayer::CreateEditableLayer()
 		}
 		if (nnvec.Set(vec))
 		{
-			sptr = sbuff;
+			sb.ClearStr();
 			l = k;
 			while (l-- > 0)
 			{
-				sptr2 = this->GetString(sptr, 65536, nameArr, objIds.GetItem(i), l);
-				if (sptr2)
+				ofsts[l] = sb.GetLength();
+				if (this->GetString(sb, nameArr, objIds.GetItem(i), l))
 				{
-					sptrs[l] = sptr;
-					sptr = sptr2 + 1;
+					sb.AppendUTF8Char('\0');
 				}
 				else
 				{
+					ofsts[l] = INVALID_INDEX;
+				}
+			}
+			l = k;
+			while (l-- > 0)
+			{
+				if (ofsts[l] == INVALID_INDEX)
+				{
 					sptrs[l] = 0;
+				}
+				else
+				{
+					sptrs[l] = &sb.v[ofsts[l]];
 				}
 			}
 			if (!lyr->AddVector(nnvec, sptrs))
@@ -575,7 +589,7 @@ NotNullPtr<Map::VectorLayer> Map::MapDrawLayer::CreateEditableLayer()
 	}
 
 	MemFree(sptrs);
-	MemFree(sbuff);
+	MemFree(ofsts);
 	return lyr;
 }
 
@@ -587,17 +601,18 @@ Text::SearchIndexer *Map::MapDrawLayer::CreateSearchIndexer(Text::TextAnalyzer *
 	Text::SearchIndexer *searching;
 	Data::ArrayListInt64 objIds;
 	NameArray *nameArr;
-	UTF8Char sbuff[256];
 	UOSInt i;
 
 	NEW_CLASS(searching, Text::SearchIndexer(ta));
 	this->GetAllObjectIds(objIds, &nameArr);
+	Text::StringBuilderUTF8 sb;
 	i = objIds.GetCount();
 	while (i-- > 0)
 	{
-		if (this->GetString(sbuff, sizeof(sbuff), nameArr, objIds.GetItem(i), strIndex))
+		sb.ClearStr();
+		if (this->GetString(sb, nameArr, objIds.GetItem(i), strIndex))
 		{
-			searching->IndexString(sbuff, objIds.GetItem(i));
+			searching->IndexString(sb.v, objIds.GetItem(i));
 		}
 	}
 	this->ReleaseNameArr(nameArr);
@@ -606,8 +621,6 @@ Text::SearchIndexer *Map::MapDrawLayer::CreateSearchIndexer(Text::TextAnalyzer *
 
 UOSInt Map::MapDrawLayer::SearchString(NotNullPtr<Data::ArrayListString> outArr, Text::SearchIndexer *srchInd, NameArray *nameArr, const UTF8Char *srchStr, UOSInt maxResult, UOSInt strIndex)
 {
-	UTF8Char sbuff[256];
-	UTF8Char *sptr;
 	Text::PString s;
 
 	if (maxResult <= 0)
@@ -617,18 +630,18 @@ UOSInt Map::MapDrawLayer::SearchString(NotNullPtr<Data::ArrayListString> outArr,
 	Data::ArrayListICaseString strList;
 	srchInd->SearchString(objIds, srchStr, maxResult * 10);
 	
+	Text::StringBuilderUTF8 sb;
 	UOSInt i = 0;
 	UOSInt j = objIds.GetCount();
 	OSInt k;
 	UOSInt resCnt = 0;
 	while (i < j)
 	{
-		sptr = this->GetString(sbuff, sizeof(sbuff), nameArr, objIds.GetItem(i), strIndex);
-		if (sptr)
+		sb.ClearStr();
+		if (this->GetString(sb, nameArr, objIds.GetItem(i), strIndex))
 		{
-			s.v = sbuff;
-			s.leng = (UOSInt)(sptr - sbuff);
-			s.Trim();
+			sb.Trim();
+			s = sb;
 			k = strList.SortedIndexOfPtr(s.v, s.leng);
 			if (k < 0)
 			{
@@ -650,21 +663,22 @@ void Map::MapDrawLayer::ReleaseSearchStr(NotNullPtr<Data::ArrayListString> strAr
 	LIST_FREE_STRING(strArr);
 }
 
-Math::Geometry::Vector2D *Map::MapDrawLayer::GetVectorByStr(Text::SearchIndexer *srchInd, Map::NameArray *nameArr, Map::GetObjectSess *session, const UTF8Char *srchStr, UOSInt strIndex)
+Math::Geometry::Vector2D *Map::MapDrawLayer::GetVectorByStr(Text::SearchIndexer *srchInd, Map::NameArray *nameArr, Map::GetObjectSess *session, Text::CStringNN srchStr, UOSInt strIndex)
 {
-	UTF8Char sbuff[256];
 	Math::Geometry::Vector2D *vec = 0;
 
 	Data::ArrayListInt64 objIds;
-	srchInd->SearchString(objIds, srchStr, 10000);
+	srchInd->SearchString(objIds, srchStr.v, 10000);
 
+	Text::StringBuilderUTF8 sb;
 	UOSInt i = 0;
 	UOSInt j = objIds.GetCount();
 	while (i < j)
 	{
-		this->GetString(sbuff, sizeof(sbuff), nameArr, objIds.GetItem(i), strIndex);
-		Text::StrTrim(sbuff);
-		if (Text::StrCompareICase(srchStr, sbuff) == 0)
+		sb.ClearStr();
+		this->GetString(sb, nameArr, objIds.GetItem(i), strIndex);
+		sb.Trim();
+		if (srchStr.EqualsICase(sb))
 		{
 			if (vec == 0)
 			{
@@ -700,7 +714,7 @@ Bool Map::MapDrawLayer::HasIconStyle()
 	return this->iconImg != 0;
 }
 
-void Map::MapDrawLayer::SetLineStyle(UInt32 lineColor, UInt32 lineWidth)
+void Map::MapDrawLayer::SetLineStyle(UInt32 lineColor, Double lineWidth)
 {
 	this->lineColor = lineColor;
 	this->lineWidth = lineWidth;
@@ -727,7 +741,7 @@ UInt32 Map::MapDrawLayer::GetLineStyleColor()
 	return this->lineColor;
 }
 
-UInt32 Map::MapDrawLayer::GetLineStyleWidth()
+Double Map::MapDrawLayer::GetLineStyleWidth()
 {
 	return this->lineWidth;
 }
@@ -844,25 +858,24 @@ OSInt Map::MapLayerReader::GetRowChanged()
 
 Int32 Map::MapLayerReader::GetInt32(UOSInt colIndex)
 {
-	UTF8Char sbuff[256];
 	if (colIndex <= 0)
 		return 0;
-	this->layer->GetString(sbuff, sizeof(sbuff), this->nameArr, this->GetCurrObjId(), colIndex - 1);
-	return Text::StrToInt32(sbuff);
+	Text::StringBuilderUTF8 sb;
+	this->layer->GetString(sb, this->nameArr, this->GetCurrObjId(), colIndex - 1);
+	return sb.ToInt32();
 }
 
 Int64 Map::MapLayerReader::GetInt64(UOSInt colIndex)
 {
-	UTF8Char sbuff[256];
 	if (colIndex == 0)
 		return 0;
-	this->layer->GetString(sbuff, sizeof(sbuff), this->nameArr, this->GetCurrObjId(), colIndex - 1);
-	return Text::StrToInt64(sbuff);
+	Text::StringBuilderUTF8 sb;
+	this->layer->GetString(sb, this->nameArr, this->GetCurrObjId(), colIndex - 1);
+	return sb.ToInt64();
 }
 
 WChar *Map::MapLayerReader::GetStr(UOSInt colIndex, WChar *buff)
 {
-	UTF8Char sbuff[256];
 	if (colIndex <= 0)
 	{
 		NotNullPtr<Math::Geometry::Vector2D> vec;
@@ -878,17 +891,16 @@ WChar *Map::MapLayerReader::GetStr(UOSInt colIndex, WChar *buff)
 		}
 		return Text::StrUTF8_WCharC(buff, sb.v, sb.leng, 0);
 	}
-	if (this->layer->GetString(sbuff, sizeof(sbuff), this->nameArr, this->GetCurrObjId(), colIndex - 1))
+	Text::StringBuilderUTF8 sb;
+	if (this->layer->GetString(sb, this->nameArr, this->GetCurrObjId(), colIndex - 1))
 	{
-		return Text::StrUTF8_WChar(buff, sbuff, 0);
+		return Text::StrUTF8_WCharC(buff, sb.v, sb.leng, 0);
 	}
 	return 0;
 }
 
 Bool Map::MapLayerReader::GetStr(UOSInt colIndex, NotNullPtr<Text::StringBuilderUTF8> sb)
 {
-	UTF8Char sbuff[256];
-	UTF8Char *sptr;
 	if (colIndex <= 0)
 	{
 		NotNullPtr<Math::Geometry::Vector2D> vec;
@@ -899,19 +911,11 @@ Bool Map::MapLayerReader::GetStr(UOSInt colIndex, NotNullPtr<Text::StringBuilder
 		vec.Delete();
 		return succ;
 	}
-	sptr = this->layer->GetString(sbuff, sizeof(sbuff), this->nameArr, this->GetCurrObjId(), colIndex - 1);
-	if (sptr == 0)
-	{
-		return false;
-	}
-	sb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
-	return true;
+	return this->layer->GetString(sb, this->nameArr, this->GetCurrObjId(), colIndex - 1);
 }
 
 Text::String *Map::MapLayerReader::GetNewStr(UOSInt colIndex)
 {
-	UTF8Char sbuff[256];
-	UTF8Char *sptr;
 	if (colIndex <= 0)
 	{
 		NotNullPtr<Math::Geometry::Vector2D> vec;
@@ -927,8 +931,10 @@ Text::String *Map::MapLayerReader::GetNewStr(UOSInt colIndex)
 		}
 		return Text::String::New(sb.ToCString()).Ptr();
 	}
-	sptr = this->layer->GetString(sbuff, sizeof(sbuff), this->nameArr, this->GetCurrObjId(), colIndex - 1);
-	return Text::String::NewP(sbuff, sptr).Ptr();
+	Text::StringBuilderUTF8 sb;
+	if (this->layer->GetString(sb, this->nameArr, this->GetCurrObjId(), colIndex - 1))
+		return Text::String::New(sb.ToCString()).Ptr();
+	return 0;
 }
 
 UTF8Char *Map::MapLayerReader::GetStr(UOSInt colIndex, UTF8Char *buff, UOSInt buffSize)
@@ -948,35 +954,38 @@ UTF8Char *Map::MapLayerReader::GetStr(UOSInt colIndex, UTF8Char *buff, UOSInt bu
 		}
 		return sb.ConcatToS(buff, buffSize);
 	}
-	return this->layer->GetString(buff, buffSize, this->nameArr, this->GetCurrObjId(), colIndex - 1);
+	Text::StringBuilderUTF8 sb;
+	if (this->layer->GetString(sb, this->nameArr, this->GetCurrObjId(), colIndex - 1))
+		return sb.ConcatToS(buff, buffSize);
+	return 0;
 }
 
 Data::Timestamp Map::MapLayerReader::GetTimestamp(UOSInt colIndex)
 {
-	UTF8Char sbuff[256];
-	UTF8Char *sptr;
 	if (colIndex <= 0)
 		return Data::Timestamp(0);
-	sptr = this->layer->GetString(sbuff, sizeof(sbuff), this->nameArr, this->GetCurrObjId(), colIndex - 1);
-	return Data::Timestamp(CSTRP(sbuff, sptr), Data::DateTimeUtil::GetLocalTzQhr());
+	Text::StringBuilderUTF8 sb;
+	if (this->layer->GetString(sb, this->nameArr, this->GetCurrObjId(), colIndex - 1))
+		return Data::Timestamp(sb.ToCString(), Data::DateTimeUtil::GetLocalTzQhr());
+	return 0;
 }
 
 Double Map::MapLayerReader::GetDbl(UOSInt colIndex)
 {
-	UTF8Char sbuff[256];
 	if (colIndex <= 0)
 		return 0;
-	this->layer->GetString(sbuff, sizeof(sbuff), this->nameArr, this->GetCurrObjId(), colIndex - 1);
-	return Text::StrToDouble(sbuff);
+	Text::StringBuilderUTF8 sb;
+	this->layer->GetString(sb, this->nameArr, this->GetCurrObjId(), colIndex - 1);
+	return sb.ToDouble();
 }
 
 Bool Map::MapLayerReader::GetBool(UOSInt colIndex)
 {
-	UTF8Char sbuff[256];
 	if (colIndex <= 0)
 		return 0;
-	this->layer->GetString(sbuff, sizeof(sbuff), this->nameArr, this->GetCurrObjId(), colIndex - 1);
-	return Text::StrToBool(sbuff);
+	Text::StringBuilderUTF8 sb;
+	this->layer->GetString(sb, this->nameArr, this->GetCurrObjId(), colIndex - 1);
+	return sb.ToBool() != 0;
 }
 
 UOSInt Map::MapLayerReader::GetBinarySize(UOSInt colIndex)
@@ -1009,10 +1018,10 @@ Bool Map::MapLayerReader::GetUUID(UOSInt colIndex, NotNullPtr<Data::UUID> uuid)
  
 Bool Map::MapLayerReader::IsNull(UOSInt colIndex)
 {
-	UTF8Char sbuff[256];
 	if (colIndex == 0)
 		return false;
-	return this->layer->GetString(sbuff, sizeof(sbuff), this->nameArr, this->GetCurrObjId(), colIndex - 1) == 0;
+	Text::StringBuilderUTF8 sb;
+	return !this->layer->GetString(sb, this->nameArr, this->GetCurrObjId(), colIndex - 1);
 }
 
 UTF8Char *Map::MapLayerReader::GetName(UOSInt colIndex, UTF8Char *buff)

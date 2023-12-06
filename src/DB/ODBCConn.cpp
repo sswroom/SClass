@@ -1915,7 +1915,7 @@ Bool DB::ODBCReader::GetStr(UOSInt colIndex, NotNullPtr<Text::StringBuilderUTF8>
 	case DB::DBUtil::CT_Date:
 	case DB::DBUtil::CT_DateTime:
 	case DB::DBUtil::CT_DateTimeTZ:
-		sb->AppendTS(*(Data::Timestamp*)this->colDatas[colIndex].colData);
+		sb->AppendTSNoZone(*(Data::Timestamp*)this->colDatas[colIndex].colData);
 		return true;
 	case DB::DBUtil::CT_Binary:
 		return false;

@@ -482,7 +482,7 @@ void Map::NetworkLinkLayer::ReleaseNameArr(NameArray *nameArr)
 		lyr->ReleaseNameArr(nameArr);*/
 }
 
-UTF8Char *Map::NetworkLinkLayer::GetString(UTF8Char *buff, UOSInt buffSize, NameArray *nameArr, Int64 id, UOSInt strIndex)
+Bool Map::NetworkLinkLayer::GetString(NotNullPtr<Text::StringBuilderUTF8> sb, NameArray *nameArr, Int64 id, UOSInt strIndex)
 {
 	UOSInt i;
 	UOSInt j;
@@ -499,13 +499,13 @@ UTF8Char *Map::NetworkLinkLayer::GetString(UTF8Char *buff, UOSInt buffSize, Name
 			maxId = link->innerLayer->GetObjectIdMax();
 			if (id >= currId && id <= currId + maxId)
 			{
-				return link->innerLayer->GetString(buff, buffSize, 0, id - currId, strIndex);
+				return link->innerLayer->GetString(sb, 0, id - currId, strIndex);
 			}
 			currId += maxId + 1;
 		}
 		i++;
 	}
-	return 0;
+	return false;
 }
 
 UOSInt Map::NetworkLinkLayer::GetColumnCnt() const

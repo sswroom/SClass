@@ -94,7 +94,6 @@ const UTF8Char **Map::VectorLayer::CopyStrs(Text::String **strs)
 	return newStrs;
 }
 
-
 const UTF8Char **Map::VectorLayer::CopyStrs(Text::PString *strs)
 {
 	UOSInt i = this->strCnt;
@@ -126,6 +125,49 @@ const UTF8Char **Map::VectorLayer::CopyStrs(Text::PString *strs)
 		{
 			newStrs[k] = sptr;
 			sptr = strs[k].ConcatTo(sptr) + 1;
+		}
+		else
+		{
+			newStrs[k] = 0;
+		}
+		k++;
+	}
+	return newStrs;
+}
+
+const UTF8Char **Map::VectorLayer::CopyStrs(NotNullPtr<Data::ArrayListNN<Text::String>> strs)
+{
+	UOSInt i = this->strCnt;
+	UOSInt j = 0;
+	UOSInt k;
+	Text::String *s;
+	UTF8Char *sptr = 0;
+	while (i-- > 0)
+	{
+		if ((s = strs->GetItem(i)) != 0)
+		{
+			k = s->leng;
+			j += k + 1;
+			if (this->maxStrLen[i] < k)
+			{
+				this->maxStrLen[i] = k;
+			}
+		}
+	}
+	const UTF8Char **newStrs = MemAlloc(const UTF8Char*, this->strCnt);
+	if (j > 0)
+	{
+		sptr = MemAlloc(UTF8Char, j);
+	}
+	i = this->strCnt;
+	k = 0;
+	while (k < i)
+	{
+		
+		if ((s = strs->GetItem(k)) != 0)
+		{
+			newStrs[k] = sptr;
+			sptr = s->ConcatTo(sptr) + 1;
 		}
 		else
 		{
@@ -181,7 +223,7 @@ Map::VectorLayer::VectorLayer(Map::DrawLayerType layerType, NotNullPtr<Text::Str
 	this->max = Math::Coord2DDbl(0, 0);
 	this->maxStrLen = MemAlloc(UOSInt, strCnt);
 	this->thisStrLen = 0;
-	this->colNames = MemAlloc(const UTF8Char*, strCnt);
+	this->colNames = MemAlloc(Text::String*, strCnt);
 	this->cols = 0;
 	this->tableName = 0;
 	this->mapRate = 10000000.0;
@@ -190,14 +232,7 @@ Map::VectorLayer::VectorLayer(Map::DrawLayerType layerType, NotNullPtr<Text::Str
 	while (i-- > 0)
 	{
 		maxStrLen[i] = 0;
-		if (colNames[i])
-		{
-			this->colNames[i] = Text::StrCopyNew(colNames[i]).Ptr();
-		}
-		else
-		{
-			this->colNames[i] = 0;
-		}
+		this->colNames[i] = Text::String::NewOrNullSlow(colNames[i]);
 	}
 }
 
@@ -210,7 +245,7 @@ Map::VectorLayer::VectorLayer(Map::DrawLayerType layerType, Text::CStringNN sour
 	this->max = Math::Coord2DDbl(0, 0);
 	this->maxStrLen = MemAlloc(UOSInt, strCnt);
 	this->thisStrLen = 0;
-	this->colNames = MemAlloc(const UTF8Char*, strCnt);
+	this->colNames = MemAlloc(Text::String*, strCnt);
 	this->cols = 0;
 	this->tableName = 0;
 	this->mapRate = 10000000.0;
@@ -219,14 +254,7 @@ Map::VectorLayer::VectorLayer(Map::DrawLayerType layerType, Text::CStringNN sour
 	while (i-- > 0)
 	{
 		maxStrLen[i] = 0;
-		if (colNames[i])
-		{
-			this->colNames[i] = Text::StrCopyNew(colNames[i]).Ptr();
-		}
-		else
-		{
-			this->colNames[i] = 0;
-		}
+		this->colNames[i] = Text::String::NewOrNullSlow(colNames[i]);
 	}
 }
 
@@ -239,7 +267,7 @@ Map::VectorLayer::VectorLayer(Map::DrawLayerType layerType, NotNullPtr<Text::Str
 	this->max = Math::Coord2DDbl(0, 0);
 	this->maxStrLen = MemAlloc(UOSInt, strCnt);
 	this->thisStrLen = 0;
-	this->colNames = MemAlloc(const UTF8Char*, strCnt);
+	this->colNames = MemAlloc(Text::String*, strCnt);
 	this->cols = MemAlloc(Map::VectorLayer::ColInfo, strCnt);
 	this->tableName = 0;
 	this->mapRate = 10000000.0;
@@ -248,14 +276,7 @@ Map::VectorLayer::VectorLayer(Map::DrawLayerType layerType, NotNullPtr<Text::Str
 	while (i-- > 0)
 	{
 		maxStrLen[i] = 0;
-		if (colNames[i])
-		{
-			this->colNames[i] = Text::StrCopyNew(colNames[i]).Ptr();
-		}
-		else
-		{
-			this->colNames[i] = 0;
-		}
+		this->colNames[i] = Text::String::NewOrNullSlow(colNames[i]);
 		cols[i].colType = colTypes[i];
 		cols[i].colSize = colSize[i];
 		cols[i].colDP = colDP[i];
@@ -271,7 +292,7 @@ Map::VectorLayer::VectorLayer(Map::DrawLayerType layerType, Text::CStringNN sour
 	this->max = Math::Coord2DDbl(0, 0);
 	this->maxStrLen = MemAlloc(UOSInt, strCnt);
 	this->thisStrLen = 0;
-	this->colNames = MemAlloc(const UTF8Char*, strCnt);
+	this->colNames = MemAlloc(Text::String*, strCnt);
 	this->cols = MemAlloc(Map::VectorLayer::ColInfo, strCnt);
 	this->tableName = 0;
 	this->mapRate = 10000000.0;
@@ -280,17 +301,42 @@ Map::VectorLayer::VectorLayer(Map::DrawLayerType layerType, Text::CStringNN sour
 	while (i-- > 0)
 	{
 		maxStrLen[i] = 0;
-		if (colNames[i])
-		{
-			this->colNames[i] = Text::StrCopyNew(colNames[i]).Ptr();
-		}
-		else
-		{
-			this->colNames[i] = 0;
-		}
+		this->colNames[i] = Text::String::NewOrNullSlow(colNames[i]);
 		cols[i].colType = colTypes[i];
 		cols[i].colSize = colSize[i];
 		cols[i].colDP = colDP[i];
+	}
+}
+
+Map::VectorLayer::VectorLayer(Map::DrawLayerType layerType, Text::CStringNN sourceName, NotNullPtr<Data::ArrayListNN<Text::String>> colNames, NotNullPtr<Math::CoordinateSystem> csys, NotNullPtr<Data::ArrayList<ColInfo>> colInfos, UOSInt nameCol, Text::CString layerName) : Map::MapDrawLayer(sourceName, nameCol, layerName, csys)
+{
+	UOSInt i;
+	this->layerType = layerType;
+	this->strCnt = colNames->GetCount();
+	this->min = Math::Coord2DDbl(0, 0);
+	this->max = Math::Coord2DDbl(0, 0);
+	this->maxStrLen = MemAlloc(UOSInt, this->strCnt);
+	this->thisStrLen = 0;
+	this->colNames = MemAlloc(Text::String*, this->strCnt);
+	this->cols = MemAlloc(Map::VectorLayer::ColInfo, this->strCnt);
+	this->tableName = 0;
+	this->mapRate = 10000000.0;
+	this->mixedData = MixedData::AllData;
+	i = strCnt;
+	while (i-- > 0)
+	{
+		maxStrLen[i] = 0;
+		this->colNames[i] = colNames->GetItem(i)->Clone().Ptr();
+		if (i < colInfos->GetCount())
+		{
+			cols[i] = colInfos->GetItem(i);
+		}
+		else
+		{
+			cols[i].colType = DB::DBUtil::CT_VarUTF8Char;
+			cols[i].colSize = 256;
+			cols[i].colDP = 0;
+		}
 	}
 }
 
@@ -313,10 +359,7 @@ Map::VectorLayer::~VectorLayer()
 		i = this->strCnt;
 		while (i-- > 0)
 		{
-			if (this->colNames[i])
-			{
-				Text::StrDelNew(this->colNames[i]);
-			}
+			SDEL_STRING(this->colNames[i]);
 		}
 		MemFree(this->colNames);
 		this->colNames = 0;
@@ -451,25 +494,23 @@ void Map::VectorLayer::ReleaseNameArr(NameArray *nameArr)
 {
 }
 
-UTF8Char *Map::VectorLayer::GetString(UTF8Char *buff, UOSInt buffSize, NameArray *nameArr, Int64 id, UOSInt strIndex)
+Bool Map::VectorLayer::GetString(NotNullPtr<Text::StringBuilderUTF8> sb, NameArray *nameArr, Int64 id, UOSInt strIndex)
 {
 	if (id < 0 || (UInt64)id >= this->strList.GetCount())
 	{
-		*buff = 0;
-		return 0;
+		return false;
 	}
 	if (strIndex >= this->strCnt)
 	{
-		*buff = 0;
-		return 0;
+		return false;
 	}
 	const UTF8Char **strs = this->strList.GetItem((UOSInt)id);
 	if (strs[strIndex] == 0)
 	{
-		*buff = 0;
-		return 0;
+		return false;
 	}
-	return Text::StrConcatS(buff, strs[strIndex], buffSize);
+	sb->AppendSlow(strs[strIndex]);
+	return true;
 }
 
 UOSInt Map::VectorLayer::GetColumnCnt() const
@@ -481,9 +522,9 @@ UTF8Char *Map::VectorLayer::GetColumnName(UTF8Char *buff, UOSInt colIndex)
 {
 	if (colIndex >= this->strCnt)
 		return 0;
-	const UTF8Char *name = this->colNames[colIndex];
+	Text::String *name = this->colNames[colIndex];
 	if (name)
-		return Text::StrConcat(buff, name);
+		return name->ConcatTo(buff);
 	else
 		return 0;
 }
@@ -519,9 +560,7 @@ Bool Map::VectorLayer::GetColumnDef(UOSInt colIndex, NotNullPtr<DB::ColDef> colD
 {
 	if (colIndex >= this->strCnt)
 		return false;
-	NotNullPtr<const UTF8Char> colName;
-	if (!colName.Set(this->colNames[colIndex])) colName.Set((const UTF8Char*)"");
-	colDef->SetColName(colName);
+	colDef->SetColName(Text::String::OrEmpty(this->colNames[colIndex]));
 	if (this->cols)
 	{
 		colDef->SetColType(this->cols[colIndex].colType);
@@ -746,6 +785,52 @@ Bool Map::VectorLayer::AddVector(NotNullPtr<Math::Geometry::Vector2D> vec, Text:
 }
 
 Bool Map::VectorLayer::AddVector(NotNullPtr<Math::Geometry::Vector2D> vec, const UTF8Char **strs)
+{
+	if (!this->VectorValid(vec))
+		return false;
+	const UTF8Char **newStrs = CopyStrs(strs);
+
+	Math::RectAreaDbl bounds;
+	Bool updated = false;
+	bounds = vec->GetBounds();
+	if (this->vectorList.GetCount() == 0)
+	{
+		this->min = bounds.tl;
+		this->max = bounds.br;
+		updated = true;
+	}
+	else
+	{
+		if (this->min.x > bounds.tl.x)
+		{
+			this->min.x = bounds.tl.x;
+			updated = true;
+		}
+		if (this->min.y > bounds.tl.y)
+		{
+			this->min.y = bounds.tl.y;
+			updated = true;
+		}
+		if (this->max.x < bounds.br.x)
+		{
+			this->max.x = bounds.br.x;
+			updated = true;
+		}
+		if (this->max.y < bounds.br.y)
+		{
+			this->max.y = bounds.br.y;
+			updated = true;
+		}
+	}
+
+	this->vectorList.Add(vec);
+	this->strList.Add(newStrs);
+	if (updated)
+		this->UpdateMapRate();
+	return true;
+}
+
+Bool Map::VectorLayer::AddVector(NotNullPtr<Math::Geometry::Vector2D> vec, NotNullPtr<Data::ArrayListNN<Text::String>> strs)
 {
 	if (!this->VectorValid(vec))
 		return false;

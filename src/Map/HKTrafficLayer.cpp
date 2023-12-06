@@ -929,13 +929,15 @@ Bool Map::HKTrafficLayer::AddRoadLayer(Map::MapDrawLayer *roadLayer)
 	}
 	if (idCol != (UOSInt)-1)
 	{
+		Text::StringBuilderUTF8 sb;
 		i = 0;
 		j = idArr.GetCount();
 		while (i < j)
 		{
-			if (roadLayer->GetString(sbuff, sizeof(sbuff), nameArr, idArr.GetItem(i), idCol))
+			sb.ClearStr();
+			if (roadLayer->GetString(sb, nameArr, idArr.GetItem(i), idCol))
 			{
-				if (Text::StrSplitTrim(sarr, 3, sbuff, '-') == 2)
+				if (Text::StrSplitTrim(sarr, 3, sb.v, '-') == 2)
 				{
 					fromId = Text::StrToInt32(sarr[0]);
 					toId = Text::StrToInt32(sarr[1]);

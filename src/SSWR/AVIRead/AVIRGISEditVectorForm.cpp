@@ -75,8 +75,9 @@ SSWR::AVIRead::AVIRGISEditVectorForm::AVIRGISEditVectorForm(UI::GUIClientControl
 		while (i < j)
 		{
 			objId = objIds.GetItem(i);
-			sptr = lyr->GetString(sbuff, sizeof(sbuff), nameArr, objId, nameCol);
-			this->lbObjects->AddItem(CSTRP(sbuff, sptr), (void*)(OSInt)objId);
+			sb.ClearStr();
+			lyr->GetString(sb, nameArr, objId, nameCol);
+			this->lbObjects->AddItem(sb.ToCString(), (void*)(OSInt)objId);
 			i++;
 		}
 	}

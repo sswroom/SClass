@@ -267,7 +267,7 @@ UTF8Char *Map::MapEnv::GetLineStyleName(UOSInt index, UTF8Char *buff) const
 	}
 }
 
-Bool Map::MapEnv::AddLineStyleLayer(UOSInt index, UInt32 color, UOSInt thick, const UInt8 *pattern, UOSInt npattern)
+Bool Map::MapEnv::AddLineStyleLayer(UOSInt index, UInt32 color, Double thick, const UInt8 *pattern, UOSInt npattern)
 {
 	Sync::MutexUsage mutUsage(this->mut);
 	UOSInt cnt = this->lineStyles.GetCount();
@@ -296,7 +296,7 @@ Bool Map::MapEnv::AddLineStyleLayer(UOSInt index, UInt32 color, UOSInt thick, co
 	return true;
 }
 
-Bool Map::MapEnv::ChgLineStyleLayer(UOSInt index, UOSInt layerId, UInt32 color, UOSInt thick, const UInt8 *pattern, UOSInt npattern)
+Bool Map::MapEnv::ChgLineStyleLayer(UOSInt index, UOSInt layerId, UInt32 color, Double thick, const UInt8 *pattern, UOSInt npattern)
 {
 	UOSInt cnt = this->lineStyles.GetCount();
 	if (index >= cnt)
@@ -387,7 +387,7 @@ UOSInt Map::MapEnv::GetLineStyleCount() const
 	return this->lineStyles.GetCount();
 }
 
-Bool Map::MapEnv::GetLineStyleLayer(UOSInt index, UOSInt layerId, OutParam<UInt32> color, OutParam<UOSInt> thick, OutParam<UInt8*> pattern, OutParam<UOSInt> npattern) const
+Bool Map::MapEnv::GetLineStyleLayer(UOSInt index, UOSInt layerId, OutParam<UInt32> color, OutParam<Double> thick, OutParam<UInt8*> pattern, OutParam<UOSInt> npattern) const
 {
 	UOSInt cnt = this->lineStyles.GetCount();
 	if (index >= cnt)

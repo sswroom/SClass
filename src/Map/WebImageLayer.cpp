@@ -98,10 +98,7 @@ void Map::WebImageLayer::LoadImage(Map::WebImageLayer::ImageStat *stat)
 	NotNullPtr<IO::StreamData> fd;
 	if (!fd.Set(stat->data))
 	{
-		if (stat->name)
-		{
-			Text::StrDelNew(stat->name);
-		}
+		SDEL_STRING(stat->name);
 		stat->url->Release();
 		DEL_CLASS(stat);
 	}
@@ -120,10 +117,7 @@ void Map::WebImageLayer::LoadImage(Map::WebImageLayer::ImageStat *stat)
 		}
 		if (pobj == 0 || pt != IO::ParserType::ImageList)
 		{
-			if (stat->name)
-			{
-				Text::StrDelNew(stat->name);
-			}
+			SDEL_STRING(stat->name);
 			stat->url->Release();
 			DEL_CLASS(stat);
 			if (pobj)
@@ -180,10 +174,7 @@ UInt32 __stdcall Map::WebImageLayer::LoadThread(void *userObj)
 				fd.Delete();
 				if (pobj == 0 || pt != IO::ParserType::ImageList)
 				{
-					if (stat->name)
-					{
-						Text::StrDelNew(stat->name);
-					}
+					SDEL_STRING(stat->name);
 					stat->url->Release();
 					DEL_CLASS(stat);
 					if (pobj)
@@ -266,10 +257,7 @@ Map::WebImageLayer::~WebImageLayer()
 	while (i-- > 0)
 	{
 		stat = this->pendingList.RemoveAt(i);
-		if (stat->name)
-		{
-			Text::StrDelNew(stat->name);
-		}
+		SDEL_STRING(stat->name);
 		stat->url->Release();
 		DEL_CLASS(stat);
 	}
@@ -278,10 +266,7 @@ Map::WebImageLayer::~WebImageLayer()
 	while (i-- > 0)
 	{
 		stat = this->loadingList.RemoveAt(i);
-		if (stat->name)
-		{
-			Text::StrDelNew(stat->name);
-		}
+		SDEL_STRING(stat->name);
 		stat->url->Release();
 		if (stat->data)
 		{
@@ -294,10 +279,7 @@ Map::WebImageLayer::~WebImageLayer()
 	while (i-- > 0)
 	{
 		stat = this->loadedList.RemoveAt(i);
-		if (stat->name)
-		{
-			Text::StrDelNew(stat->name);
-		}
+		SDEL_STRING(stat->name);
 		stat->url->Release();
 		if (stat->simg)
 		{
@@ -496,18 +478,19 @@ void Map::WebImageLayer::ReleaseNameArr(NameArray *nameArr)
 {
 }
 
-UTF8Char *Map::WebImageLayer::GetString(UTF8Char *buff, UOSInt buffSize, NameArray *nameArr, Int64 id, UOSInt colIndex)
+Bool Map::WebImageLayer::GetString(NotNullPtr<Text::StringBuilderUTF8> sb, NameArray *nameArr, Int64 id, UOSInt colIndex)
 {
 	if (colIndex != 0)
-		return 0;
+		return false;
 	Map::WebImageLayer::ImageStat *stat = GetImageStat((Int32)id);
 	if (stat)
 	{
-		return Text::StrConcatS(buff, stat->name, buffSize);
+		sb->Append(stat->name);
+		return true;
 	}
 	else
 	{
-		return 0;
+		return false;
 	}
 }
 
@@ -629,7 +612,7 @@ void Map::WebImageLayer::AddImage(Text::CString name, Text::CString url, Int32 z
 	stat->data = 0;
 	if (name.leng > 0)
 	{
-		stat->name = Text::StrCopyNewC(name.v, name.leng).Ptr();
+		stat->name = Text::String::New(name).Ptr();
 	}
 	else
 	{

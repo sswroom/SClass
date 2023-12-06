@@ -134,10 +134,10 @@ public:
 			Text::SBAppendF64(sb, extInfo->other3);
 			return true;
 		case 9:
-			sb->AppendTS(Data::Timestamp::FromEpochSec(extInfo->locTimeTS, Data::DateTimeUtil::GetLocalTzQhr()));
+			sb->AppendTSNoZone(Data::Timestamp::FromEpochSec(extInfo->locTimeTS, Data::DateTimeUtil::GetLocalTzQhr()));
 			return true;
 		case 10:
-			sb->AppendTS(Data::Timestamp::FromEpochSec(extInfo->recvTimeTS, Data::DateTimeUtil::GetLocalTzQhr()));
+			sb->AppendTSNoZone(Data::Timestamp::FromEpochSec(extInfo->recvTimeTS, Data::DateTimeUtil::GetLocalTzQhr()));
 			return true;
 		case 11:
 			{

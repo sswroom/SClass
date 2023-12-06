@@ -114,7 +114,7 @@ public:
 			switch (extIndex)
 			{
 			case 0:
-				sb->AppendTS(Data::Timestamp(ReadInt64(&buff[0]), Data::DateTimeUtil::GetLocalTzQhr()));
+				sb->AppendTSNoZone(Data::Timestamp(ReadInt64(&buff[0]), Data::DateTimeUtil::GetLocalTzQhr()));
 				return true;
 			case 1:
 				sb->AppendC(UTF8STRC("0x"));

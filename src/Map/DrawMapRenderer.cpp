@@ -1523,7 +1523,7 @@ void Map::DrawMapRenderer::DrawLayers(NotNullPtr<Map::DrawMapRenderer::DrawEnv> 
 	mutUsage.EndUse();
 }
 
-void Map::DrawMapRenderer::DrawShapes(NotNullPtr<Map::DrawMapRenderer::DrawEnv> denv, NotNullPtr<Map::MapDrawLayer> layer, UOSInt lineStyle, UInt32 fillStyle, UOSInt lineThick, UInt32 lineColor)
+void Map::DrawMapRenderer::DrawShapes(NotNullPtr<Map::DrawMapRenderer::DrawEnv> denv, NotNullPtr<Map::MapDrawLayer> layer, UOSInt lineStyle, UInt32 fillStyle, Double lineThick, UInt32 lineColor)
 {
 	UOSInt i;
 	Map::GetObjectSess *session;
@@ -1550,7 +1550,7 @@ void Map::DrawMapRenderer::DrawShapes(NotNullPtr<Map::DrawMapRenderer::DrawEnv> 
 		if ((i = denv->idArr.GetCount()) > 0)
 		{
 			UInt32 color;
-			UOSInt thick;
+			Double thick;
 			UInt8 *pattern;
 			UOSInt npattern;
 			Bool found;
@@ -1606,7 +1606,7 @@ void Map::DrawMapRenderer::DrawShapes(NotNullPtr<Map::DrawMapRenderer::DrawEnv> 
 		if ((i = denv->idArr.GetCount()) > 0)
 		{
 			UInt32 color;
-			UOSInt thick;
+			Double thick;
 			UInt8 *pattern;
 			UOSInt npattern;
 			Bool found;
@@ -1617,7 +1617,7 @@ void Map::DrawMapRenderer::DrawShapes(NotNullPtr<Map::DrawMapRenderer::DrawEnv> 
 				color = lineColor;
 				npattern = 0;
 			}
-			p = denv->img->NewPenARGB(this->colorConv->ConvRGB8(color), UOSInt2Double(thick) * denv->img->GetHDPI() / 96.0, pattern, npattern);
+			p = denv->img->NewPenARGB(this->colorConv->ConvRGB8(color), thick * denv->img->GetHDPI() / 96.0, pattern, npattern);
 			b = denv->img->NewBrushARGB(this->colorConv->ConvRGB8(fillStyle));
 			this->mapSch.SetDrawType(layer, p, b, 0, 0.0, 0.0, &denv->isLayerEmpty);
 
@@ -1835,9 +1835,7 @@ void Map::DrawMapRenderer::DrawLabel(NotNullPtr<DrawEnv> denv, NotNullPtr<Map::M
 	Double scaleW;
 	Double scaleH;
 	Math::Coord2DDbl pts;
-	UTF8Char *sptr;
-	UTF8Char *sptrEnd;
-	UTF8Char lblStr[256];
+	Text::StringBuilderUTF8 sbLbl;
 	Map::GetObjectSess *session;
 	UOSInt maxLabel = denv->env->GetNString();
 	Bool csysConv = false;;
@@ -1863,8 +1861,8 @@ void Map::DrawMapRenderer::DrawLabel(NotNullPtr<DrawEnv> denv, NotNullPtr<Map::M
 	{
 		if ((vec = layer->GetNewVectorById(session, arri.GetItem(i))) != 0)
 		{
-			sptrEnd = layer->GetString(sptr = lblStr, sizeof(lblStr), arr, arri.GetItem(i), labelCol);
-			if (sptrEnd)
+			sbLbl.ClearStr();
+			if (layer->GetString(sbLbl, arr, arri.GetItem(i), labelCol))
 			{
 				if (csysConv)
 				{
@@ -1872,11 +1870,11 @@ void Map::DrawMapRenderer::DrawLabel(NotNullPtr<DrawEnv> denv, NotNullPtr<Map::M
 				}
 				if (flags & Map::MapEnv::SFLG_TRIM)
 				{
-					sptrEnd = Text::StrTrim(lblStr);
+					sbLbl.Trim();
 				}
 				if (flags & Map::MapEnv::SFLG_CAPITAL)
 				{
-					Text::StrToCapital(lblStr, lblStr);
+					sbLbl.ToCapital();
 				}
 
 				if (flags & Map::MapEnv::SFLG_SMART)
@@ -1886,7 +1884,7 @@ void Map::DrawMapRenderer::DrawLabel(NotNullPtr<DrawEnv> denv, NotNullPtr<Map::M
 					case Math::Geometry::Vector2D::VectorType::Point:
 					{
 						Math::Coord2DDbl pt = vec->GetCenter();
-						AddLabel(denv->labels, maxLabel, &denv->labelCnt, CSTRP(sptr, sptrEnd), 1, &pt, priority, Map::DRAW_LAYER_POINT, fontStyle, flags, denv->view, (OSInt)imgWidth, (OSInt)imgHeight, fontType);
+						AddLabel(denv->labels, maxLabel, &denv->labelCnt, sbLbl.ToCString(), 1, &pt, priority, Map::DRAW_LAYER_POINT, fontStyle, flags, denv->view, (OSInt)imgWidth, (OSInt)imgHeight, fontType);
 						break;
 					}
 					case Math::Geometry::Vector2D::VectorType::Polyline:
@@ -1912,11 +1910,11 @@ void Map::DrawMapRenderer::DrawLabel(NotNullPtr<DrawEnv> denv, NotNullPtr<Map::M
 						pointArr = pl->GetItem(maxPos)->GetPointList(nPoint);
 						if (vec->GetVectorType() == Math::Geometry::Vector2D::VectorType::Polygon)
 						{
-							AddLabel(denv->labels, maxLabel, &denv->labelCnt, CSTRP(sptr, sptrEnd), nPoint, pointArr, priority, Map::DRAW_LAYER_POLYGON, fontStyle, flags, denv->view, (OSInt)imgWidth, (OSInt)imgHeight, fontType);
+							AddLabel(denv->labels, maxLabel, &denv->labelCnt, sbLbl.ToCString(), nPoint, pointArr, priority, Map::DRAW_LAYER_POLYGON, fontStyle, flags, denv->view, (OSInt)imgWidth, (OSInt)imgHeight, fontType);
 						}
 						else
 						{
-							AddLabel(denv->labels, maxLabel, &denv->labelCnt, CSTRP(sptr, sptrEnd), nPoint, pointArr, priority, Map::DRAW_LAYER_POLYLINE3D, fontStyle, flags, denv->view, (OSInt)imgWidth, (OSInt)imgHeight, fontType);
+							AddLabel(denv->labels, maxLabel, &denv->labelCnt, sbLbl.ToCString(), nPoint, pointArr, priority, Map::DRAW_LAYER_POLYLINE3D, fontStyle, flags, denv->view, (OSInt)imgWidth, (OSInt)imgHeight, fontType);
 						}
 						break;
 					}
@@ -1943,11 +1941,11 @@ void Map::DrawMapRenderer::DrawLabel(NotNullPtr<DrawEnv> denv, NotNullPtr<Map::M
 						pointArr = pg->GetItem(maxPos)->GetPointList(nPoint);
 						if (vec->GetVectorType() == Math::Geometry::Vector2D::VectorType::Polygon)
 						{
-							AddLabel(denv->labels, maxLabel, &denv->labelCnt, CSTRP(sptr, sptrEnd), nPoint, pointArr, priority, Map::DRAW_LAYER_POLYGON, fontStyle, flags, denv->view, (OSInt)imgWidth, (OSInt)imgHeight, fontType);
+							AddLabel(denv->labels, maxLabel, &denv->labelCnt, sbLbl.ToCString(), nPoint, pointArr, priority, Map::DRAW_LAYER_POLYGON, fontStyle, flags, denv->view, (OSInt)imgWidth, (OSInt)imgHeight, fontType);
 						}
 						else
 						{
-							AddLabel(denv->labels, maxLabel, &denv->labelCnt, CSTRP(sptr, sptrEnd), nPoint, pointArr, priority, Map::DRAW_LAYER_POLYLINE3D, fontStyle, flags, denv->view, (OSInt)imgWidth, (OSInt)imgHeight, fontType);
+							AddLabel(denv->labels, maxLabel, &denv->labelCnt, sbLbl.ToCString(), nPoint, pointArr, priority, Map::DRAW_LAYER_POLYLINE3D, fontStyle, flags, denv->view, (OSInt)imgWidth, (OSInt)imgHeight, fontType);
 						}
 						break;
 					}
@@ -2011,7 +2009,7 @@ void Map::DrawMapRenderer::DrawLabel(NotNullPtr<DrawEnv> denv, NotNullPtr<Map::M
 
 							if ((flags & Map::MapEnv::SFLG_ROTATE) == 0)
 								scaleW = scaleH = 0;
-							DrawChars(denv, CSTRP(sptr, sptrEnd), pts, scaleW, scaleH, fontType, fontStyle, (flags & Map::MapEnv::SFLG_ALIGN) != 0);
+							DrawChars(denv, sbLbl.ToCString(), pts, scaleW, scaleH, fontType, fontStyle, (flags & Map::MapEnv::SFLG_ALIGN) != 0);
 						}
 						break;
 					}
@@ -2022,7 +2020,7 @@ void Map::DrawMapRenderer::DrawLabel(NotNullPtr<DrawEnv> denv, NotNullPtr<Map::M
 						if (denv->view->InViewXY(pts))
 						{
 							pts = denv->view->MapXYToScnXY(pts);
-							DrawChars(denv, CSTRP(sptr, sptrEnd), pts, 0, 0, fontType, fontStyle, (flags & Map::MapEnv::SFLG_ALIGN) != 0);
+							DrawChars(denv, sbLbl.ToCString(), pts, 0, 0, fontType, fontStyle, (flags & Map::MapEnv::SFLG_ALIGN) != 0);
 						}
 						break;
 					}
@@ -2032,7 +2030,7 @@ void Map::DrawMapRenderer::DrawLabel(NotNullPtr<DrawEnv> denv, NotNullPtr<Map::M
 						if (denv->view->InViewXY(pts))
 						{
 							pts = denv->view->MapXYToScnXY(pts);
-							DrawChars(denv, CSTRP(sptr, sptrEnd), pts, 0, 0, fontType, fontStyle, (flags & Map::MapEnv::SFLG_ALIGN) != 0);
+							DrawChars(denv, sbLbl.ToCString(), pts, 0, 0, fontType, fontStyle, (flags & Map::MapEnv::SFLG_ALIGN) != 0);
 						}
 						break;
 					}

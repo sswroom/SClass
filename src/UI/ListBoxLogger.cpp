@@ -156,7 +156,7 @@ void UI::ListBoxLogger::LogAdded(const Data::Timestamp &logTime, Text::CStringNN
 	}
 	else
 	{
-		sb.AppendTS(logTime);
+		sb.AppendTSNoZone(logTime);
 	}
 	sb.AppendUTF8Char('\t');
 	sb.Append(logMsg);

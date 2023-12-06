@@ -50,7 +50,7 @@ namespace Map
 
 		UInt32 pgColor;
 		UInt32 lineColor;
-		UInt32 lineWidth;
+		Double lineWidth;
 		Media::SharedImage *iconImg;
 		OSInt iconSpotX;
 		OSInt iconSpotY;
@@ -105,7 +105,7 @@ namespace Map
 		virtual UOSInt GetObjectIdsMapXY(NotNullPtr<Data::ArrayListInt64> outArr, NameArray **nameArr, Math::RectAreaDbl rect, Bool keepEmpty) = 0;
 		virtual Int64 GetObjectIdMax() const = 0;
 		virtual void ReleaseNameArr(NameArray *nameArr) = 0;
-		virtual UTF8Char *GetString(UTF8Char *buff, UOSInt buffSize, NameArray *nameArr, Int64 id, UOSInt strIndex) = 0;
+		virtual Bool GetString(NotNullPtr<Text::StringBuilderUTF8> sb, NameArray *nameArr, Int64 id, UOSInt strIndex) = 0;
 		virtual UOSInt GetColumnCnt() const = 0;
 		virtual UTF8Char *GetColumnName(UTF8Char *buff, UOSInt colIndex) = 0;
 		virtual DB::DBUtil::ColType GetColumnType(UOSInt colIndex, OptOut<UOSInt> colSize) = 0;
@@ -140,8 +140,8 @@ namespace Map
 		void SetLayerName(Text::CString name);
 
 		virtual Bool IsError() const;
-		virtual UTF8Char *GetPGLabel(UTF8Char *buff, UOSInt buffSize, Math::Coord2DDbl coord, OptOut<Math::Coord2DDbl> outCoord, UOSInt strIndex);
-		virtual UTF8Char *GetPLLabel(UTF8Char *buff, UOSInt buffSize, Math::Coord2DDbl coord, OutParam<Math::Coord2DDbl> outCoord, UOSInt strIndex);
+		virtual Bool GetPGLabel(NotNullPtr<Text::StringBuilderUTF8> sb, Math::Coord2DDbl coord, OptOut<Math::Coord2DDbl> outCoord, UOSInt strIndex);
+		virtual Bool GetPLLabel(NotNullPtr<Text::StringBuilderUTF8> sb, Math::Coord2DDbl coord, OutParam<Math::Coord2DDbl> outCoord, UOSInt strIndex);
 		virtual Bool CanQuery();
 		virtual Bool QueryInfos(Math::Coord2DDbl coord, Data::ArrayList<Math::Geometry::Vector2D*> *vecList, Data::ArrayList<UOSInt> *valueOfstList, Data::ArrayListNN<Text::String> *nameList, Data::ArrayList<Text::String*> *valueList);
 
@@ -153,16 +153,16 @@ namespace Map
 		Text::SearchIndexer *CreateSearchIndexer(Text::TextAnalyzer *ta, UOSInt strIndex);
 		UOSInt SearchString(NotNullPtr<Data::ArrayListString> outArr, Text::SearchIndexer *srchInd, NameArray *nameArr, const UTF8Char *srchStr, UOSInt maxResult, UOSInt strIndex);
 		void ReleaseSearchStr(NotNullPtr<Data::ArrayListString> strArr);
-		Math::Geometry::Vector2D *GetVectorByStr(Text::SearchIndexer *srchInd, NameArray *nameArr, GetObjectSess *session, const UTF8Char *srchStr, UOSInt strIndex);
+		Math::Geometry::Vector2D *GetVectorByStr(Text::SearchIndexer *srchInd, NameArray *nameArr, GetObjectSess *session, Text::CStringNN srchStr, UOSInt strIndex);
 
 		Bool HasLineStyle();
 		Bool HasPGStyle();
 		Bool HasIconStyle();
-		void SetLineStyle(UInt32 lineColor, UInt32 lineWidth);
+		void SetLineStyle(UInt32 lineColor, Double lineWidth);
 		void SetPGStyle(UInt32 pgColor);
 		void SetIconStyle(Media::SharedImage *iconImg, OSInt iconSpotX, OSInt iconSpotY);
 		UInt32 GetLineStyleColor();
-		UInt32 GetLineStyleWidth();
+		Double GetLineStyleWidth();
 		UInt32 GetPGStyleColor();
 		Media::SharedImage *GetIconStyleImg();
 		OSInt GetIconStyleSpotX();

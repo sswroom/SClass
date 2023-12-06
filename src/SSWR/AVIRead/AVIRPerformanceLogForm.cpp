@@ -89,7 +89,7 @@ void SSWR::AVIRead::AVIRPerformanceLogForm::TestSpeed()
 	this->testTime = Data::Timestamp::UtcNow();
 	Text::StringBuilderUTF8 sb;
 	spd = TEST_SIZE / t * LOOP_CNT;
-	sb.AppendTS(this->testTime);
+	sb.AppendTSNoZone(this->testTime);
 	sb.AppendC(UTF8STRC("\t"));
 	sb.AppendDouble(spd);
 	this->writer->WriteLineC(sb.ToString(), sb.GetLength());

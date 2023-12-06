@@ -221,9 +221,9 @@ void Map::OruxDBLayer::ReleaseNameArr(NameArray *nameArr)
 {
 }
 
-UTF8Char *Map::OruxDBLayer::GetString(UTF8Char *buff, UOSInt buffSize, NameArray *nameArr, Int64 id, UOSInt strIndex)
+Bool Map::OruxDBLayer::GetString(NotNullPtr<Text::StringBuilderUTF8> sb, NameArray *nameArr, Int64 id, UOSInt strIndex)
 {
-	return 0;
+	return false;
 }
 
 UOSInt Map::OruxDBLayer::GetColumnCnt() const

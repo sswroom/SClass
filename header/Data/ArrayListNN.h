@@ -38,7 +38,7 @@ namespace Data
 		void EnsureCapacity(UOSInt capacity);
 
 		virtual T *GetItem(UOSInt index) const;
-		virtual void SetItem(UOSInt index, NotNullPtr<T> val);
+		virtual Optional<T> SetItem(UOSInt index, NotNullPtr<T> val);
 		void CopyItems(UOSInt destIndex, UOSInt srcIndex, UOSInt count);
 		UOSInt GetRange(NotNullPtr<T> *outArr, UOSInt index, UOSInt cnt) const;
 		UOSInt RemoveRange(UOSInt index, UOSInt cnt);
@@ -274,19 +274,22 @@ namespace Data
 		return this->arr[index].Ptr();
 	}
 
-	template <class T> void ArrayListNN<T>::SetItem(UOSInt index, NotNullPtr<T> Val)
+	template <class T> Optional<T> ArrayListNN<T>::SetItem(UOSInt index, NotNullPtr<T> val)
 	{
 		if (index == objCnt)
 		{
-			Add(Val);
+			Add(val);
+			return Optional<T>(nullptr);
 		}
 		else if (index < objCnt)
 		{
-			this->arr[index] = Val;
+			NotNullPtr<T> oriVal = this->arr[index];
+			this->arr[index] = val;
+			return oriVal;
 		}
 		else
 		{
-			return;
+			return Optional<T>(nullptr);
 		}
 	}
 

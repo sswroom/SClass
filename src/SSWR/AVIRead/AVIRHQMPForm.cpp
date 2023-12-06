@@ -946,7 +946,7 @@ void SSWR::AVIRead::AVIRHQMPForm::EventMenuClicked(UInt16 cmdId)
 			Math::Size2D<UOSInt> vSize;
 			IO::DebugWriter debug;
 			Text::StringBuilderUTF8 sb;
-			sb.AppendTS(Data::Timestamp::UtcNow());
+			sb.AppendTSNoZone(Data::Timestamp::UtcNow());
 			sb.AppendC(UTF8STRC(" a"));
 			debug.WriteLineC(sb.ToString(), sb.GetLength());
 			if (this->vbox->IsFullScreen())
@@ -954,7 +954,7 @@ void SSWR::AVIRead::AVIRHQMPForm::EventMenuClicked(UInt16 cmdId)
 				this->vbox->SwitchFullScreen(false, false);
 			}
 			sb.ClearStr();
-			sb.AppendTS(Data::Timestamp::UtcNow());
+			sb.AppendTSNoZone(Data::Timestamp::UtcNow());
 			sb.AppendC(UTF8STRC(" b"));
 			debug.WriteLineC(sb.ToString(), sb.GetLength());
 			if (this->player->GetVideoSize(&vSize.x, &vSize.y))
@@ -963,25 +963,25 @@ void SSWR::AVIRead::AVIRHQMPForm::EventMenuClicked(UInt16 cmdId)
 				Math::Size2D<UOSInt> sz2;
 
 				sb.ClearStr();
-				sb.AppendTS(Data::Timestamp::UtcNow());
+				sb.AppendTSNoZone(Data::Timestamp::UtcNow());
 				sb.AppendC(UTF8STRC(" c"));
 				debug.WriteLineC(sb.ToString(), sb.GetLength());
 				sz1 = this->vbox->GetSizeP();
 				sb.ClearStr();
-				sb.AppendTS(Data::Timestamp::UtcNow());
+				sb.AppendTSNoZone(Data::Timestamp::UtcNow());
 				sb.AppendC(UTF8STRC(" d"));
 				debug.WriteLineC(sb.ToString(), sb.GetLength());
 				sz2 = this->GetSizeP();
 
 				sb.ClearStr();
-				sb.AppendTS(Data::Timestamp::UtcNow());
+				sb.AppendTSNoZone(Data::Timestamp::UtcNow());
 				sb.AppendC(UTF8STRC(" e"));
 				debug.WriteLineC(sb.ToString(), sb.GetLength());
 				this->SetFormState(UI::GUIForm::FS_NORMAL);
 				if (sz1 == vSize)
 				{
 					sb.ClearStr();
-					sb.AppendTS(Data::Timestamp::UtcNow());
+					sb.AppendTSNoZone(Data::Timestamp::UtcNow());
 					sb.AppendC(UTF8STRC(" f"));
 					debug.WriteLineC(sb.ToString(), sb.GetLength());
 					this->vbox->OnSizeChanged(false);
@@ -989,13 +989,13 @@ void SSWR::AVIRead::AVIRHQMPForm::EventMenuClicked(UInt16 cmdId)
 				else
 				{
 					sb.ClearStr();
-					sb.AppendTS(Data::Timestamp::UtcNow());
+					sb.AppendTSNoZone(Data::Timestamp::UtcNow());
 					sb.AppendC(UTF8STRC(" g"));
 					debug.WriteLineC(sb.ToString(), sb.GetLength());
 					this->SetSizeP(sz2 - sz1 + vSize);
 				}
 				sb.ClearStr();
-				sb.AppendTS(Data::Timestamp::UtcNow());
+				sb.AppendTSNoZone(Data::Timestamp::UtcNow());
 				sb.AppendC(UTF8STRC(" h"));
 				debug.WriteLineC(sb.ToString(), sb.GetLength());
 			}

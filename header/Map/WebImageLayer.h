@@ -21,7 +21,7 @@ namespace Map
 			NotNullPtr<Text::String> url;
 			Media::SharedImage *simg;
 			IO::StreamData *data;
-			const UTF8Char *name;
+			Text::String *name;
 			Int64 timeStart;
 			Int64 timeEnd;
 			Int32 zIndex;
@@ -82,7 +82,7 @@ namespace Map
 		virtual UOSInt GetObjectIdsMapXY(NotNullPtr<Data::ArrayListInt64> outArr, NameArray **nameArr, Math::RectAreaDbl rect, Bool keepEmpty);
 		virtual Int64 GetObjectIdMax() const;
 		virtual void ReleaseNameArr(NameArray *nameArr);
-		virtual UTF8Char *GetString(UTF8Char *buff, UOSInt buffSize, NameArray *nameArr, Int64 id, UOSInt colIndex);
+		virtual Bool GetString(NotNullPtr<Text::StringBuilderUTF8> sb, NameArray *nameArr, Int64 id, UOSInt colIndex);
 		virtual UOSInt GetColumnCnt() const;
 		virtual UTF8Char *GetColumnName(UTF8Char *buff, UOSInt colIndex);
 		virtual DB::DBUtil::ColType GetColumnType(UOSInt colIndex, OptOut<UOSInt> colSize);

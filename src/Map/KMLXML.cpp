@@ -8,11 +8,19 @@
 #include "Map/VectorLayer.h"
 #include "Map/WebImageLayer.h"
 #include "Math/CoordinateSystemManager.h"
+#include "Math/Geometry/GeometryCollection.h"
 #include "Math/Geometry/LineString.h"
+#include "Math/Geometry/MultiPolygon.h"
 #include "Math/Geometry/PointZ.h"
 #include "Math/Geometry/Polygon.h"
+#include "Math/Geometry/Polyline.h"
 #include "Media/StaticImage.h"
 #include "Text/URLString.h"
+
+#define VERBOSE
+#if defined(VERBOSE)
+#include <stdio.h>
+#endif
 
 Map::MapDrawLayer *Map::KMLXML::ParseKMLRoot(NotNullPtr<Text::XMLReader> reader, Text::CStringNN fileName, Parser::ParserList *parsers, Net::WebBrowser *browser, IO::PackageFile *pkgFile)
 {
@@ -328,7 +336,7 @@ Map::MapDrawLayer *Map::KMLXML::ParseKMLContainer(NotNullPtr<Text::XMLReader> re
 						{
 							sb.ClearStr();
 							reader->ReadNodeText(sb);
-							sb.ToUInt32S(style->lineWidth, 0);
+							sb.ToDouble(style->lineWidth);
 							style->flags |= 2;
 						}
 						else
@@ -385,7 +393,7 @@ Map::MapDrawLayer *Map::KMLXML::ParseKMLContainer(NotNullPtr<Text::XMLReader> re
 							}
 							sb.ClearStr();
 							reader->ReadNodeText(sb);
-							sb.ToUInt32S(style->lineWidth, 0);
+							sb.ToDouble(style->lineWidth);
 						}
 						else
 						{
@@ -890,7 +898,7 @@ Map::MapDrawLayer *Map::KMLXML::ParseKMLContainer(NotNullPtr<Text::XMLReader> re
 	}
 }
 
-void Map::KMLXML::ParseKMLPlacemarkTrack(NotNullPtr<Text::XMLReader> reader, Map::GPSTrack *lyr, Data::StringMap<KMLStyle*> *styles)
+void Map::KMLXML::ParseKMLPlacemarkTrack(NotNullPtr<Text::XMLReader> reader, NotNullPtr<Map::GPSTrack> lyr, Data::StringMap<KMLStyle*> *styles)
 {
 	Data::ArrayListNN<Text::String> timeList;
 	Data::ArrayListNN<Text::String> coordList;
@@ -1267,19 +1275,30 @@ void Map::KMLXML::ParseKMLPlacemarkTrack(NotNullPtr<Text::XMLReader> reader, Map
 
 Map::MapDrawLayer *Map::KMLXML::ParseKMLPlacemarkLyr(NotNullPtr<Text::XMLReader> reader, Data::StringMap<KMLStyle*> *styles, Text::CStringNN sourceName, Parser::ParserList *parsers, Net::WebBrowser *browser, IO::PackageFile *basePF)
 {
-	Text::StringBuilderUTF8 lyrNameSb;
 	Text::StringBuilderUTF8 sb;
-	lyrNameSb.AppendC(UTF8STRC("Layer"));
+	Data::ArrayListNN<Text::String> colNames;
+	Data::ArrayListNN<Text::String> colValues;
+	Data::ArrayList<Map::VectorLayer::ColInfo> colInfos;
 	KMLStyle *style = 0;
-	Data::ArrayList<Map::MapDrawLayer*> layers;
+	Data::ArrayListNN<Map::MapDrawLayer> layers;
+	NotNullPtr<Math::Geometry::Vector2D> vec;
+	colNames.Add(Text::String::New(UTF8STRC("Name")));
+	colValues.Add(Text::String::New(UTF8STRC("Layer")));
+	colInfos.Add(Map::VectorLayer::ColInfo(DB::DBUtil::CT_VarUTF8Char, 256, 0));
+	NotNullPtr<Text::String> s;
 	while (reader->NextElement())
 	{
-		if (reader->GetNodeText()->EqualsICase(UTF8STRC("NAME")))
+		Text::String *nodeText = reader->GetNodeOriText();
+		if (nodeText->EqualsICase(UTF8STRC("NAME")))
 		{
-			lyrNameSb.ClearStr();
-			reader->ReadNodeText(lyrNameSb);
+			sb.ClearStr();
+			reader->ReadNodeText(sb);
+			if (colValues.SetItem(0, Text::String::New(sb.ToCString())).SetTo(s))
+			{
+				s->Release();
+			}
 		}
-		else if (reader->GetNodeText()->EqualsICase(UTF8STRC("STYLEURL")))
+		else if (nodeText->EqualsICase(UTF8STRC("STYLEURL")))
 		{
 			sb.ClearStr();
 			reader->ReadNodeText(sb);
@@ -1288,275 +1307,10 @@ Map::MapDrawLayer *Map::KMLXML::ParseKMLPlacemarkLyr(NotNullPtr<Text::XMLReader>
 				style = styles->Get({sb.ToString() + 1, sb.GetLength() - 1});
 			}
 		}
-		else if (reader->GetNodeText()->EqualsICase(UTF8STRC("LINESTRING")))
+		else if (nodeText->EqualsICase(UTF8STRC("GX:MULTITRACK")))
 		{
-			Map::VectorLayer *lyr;
-			const UTF8Char *cols = (const UTF8Char*)"Name";
-			DB::DBUtil::ColType colType = DB::DBUtil::CT_VarUTF8Char;
-			UOSInt colSize = 256;
-			UOSInt colDP = 0;
-			NEW_CLASS(lyr, Map::VectorLayer(Map::DRAW_LAYER_POLYLINE3D, sourceName, 1, &cols, Math::CoordinateSystemManager::CreateDefaultCsys(), &colType, &colSize, &colDP, 0, lyrNameSb.ToCString()));
-
-			while (reader->NextElement())
-			{
-				if (reader->GetNodeText()->EqualsICase(UTF8STRC("COORDINATES")))
-				{
-					Data::ArrayListA<Math::Coord2DDbl> coord;
-					Data::ArrayListDbl altList;
-					UTF8Char c;
-					UTF8Char *sptr;
-					UTF8Char *sptr2;
-					UTF8Char sbuff[256];
-					UTF8Char *sarr[4];
-					UOSInt i;
-
-					sb.ClearStr();
-					reader->ReadNodeText(sb);
-					sptr = sb.v;
-					while (true)
-					{
-						while ((c = *sptr) != 0)
-						{
-							if (c == 0x20 || c == 13 || c == 10)
-							{
-								sptr++;
-							}
-							else
-							{
-								break;
-							}
-						}
-						if (c == 0)
-							break;
-
-						sptr2 = sptr;
-						while ((c = *sptr2) != 0)
-						{
-							if (c == 0x20 || c == 13 || c == 10)
-								break;
-							sptr2++;
-						}
-						*sptr2 = 0;
-						Text::StrConcatC(sbuff, sptr, (UOSInt)(sptr2 - sptr));
-						*sptr2 = c;
-						sptr = sptr2;
-						i = Text::StrSplit(sarr, 4, sbuff, ',');
-						if (i == 3)
-						{
-							coord.Add(Math::Coord2DDbl(Text::StrToDouble(sarr[0]), Text::StrToDouble(sarr[1])));
-							altList.Add(Text::StrToDouble(sarr[2]));
-						}
-						else if (i == 2)
-						{
-							coord.Add(Math::Coord2DDbl(Text::StrToDouble(sarr[0]), Text::StrToDouble(sarr[1])));
-							altList.Add(0);
-						}
-					}
-					if (coord.GetCount() > 0)
-					{
-						NotNullPtr<Math::Geometry::LineString> pl;
-						UOSInt nPoints;
-						Math::Coord2DDbl *ptArr;
-						Double *altArr;
-
-						NEW_CLASSNN(pl, Math::Geometry::LineString(4326, altList.GetCount(), true, false));
-						altArr = pl->GetZList(nPoints);
-						ptArr = pl->GetPointList(nPoints);
-						i = altList.GetCount();
-						MemCopyAC(ptArr, coord.Ptr(), sizeof(Math::Coord2DDbl) * i);
-						MemCopyAC(altArr, altList.Ptr(), sizeof(Double) * i);
-						lyr->AddVector(pl, &lyrNameSb);
-					}
-				}
-				else
-				{
-					reader->SkipElement();
-				}
-			}
-
-			if (style)
-			{
-				if (style->flags & 1)
-				{
-					if (style->lineWidth == 0)
-					{
-						lyr->SetLineStyle(style->lineColor, 1);
-					}
-					else
-					{
-						lyr->SetLineStyle(style->lineColor, style->lineWidth);
-					}
-				}
-			}
-			layers.Add(lyr);
-		}
-		else if (reader->GetNodeText()->EqualsICase(UTF8STRC("POINT")))
-		{
-			Map::VectorLayer *lyr;
-			const UTF8Char *cols = (const UTF8Char*)"Name";
-			DB::DBUtil::ColType colType = DB::DBUtil::CT_VarUTF8Char;
-			UOSInt colSize = 256;
-			UOSInt colDP = 0;
-			NEW_CLASS(lyr, Map::VectorLayer(Map::DRAW_LAYER_POINT, sourceName, 1, &cols, Math::CoordinateSystemManager::CreateDefaultCsys(), &colType, &colSize, &colDP, 0, lyrNameSb.ToCString()));
-			lyr->SetLabelVisible(true);
-			while (reader->NextElement())
-			{
-				if (reader->GetNodeText()->EqualsICase(UTF8STRC("COORDINATES")))
-				{
-					sb.ClearStr();
-					reader->ReadNodeText(sb);
-
-					Double x;
-					Double y;
-					Double z;
-					UOSInt i;
-					UTF8Char *sarr[4];
-					i = Text::StrSplitTrim(sarr, 4, sb.v, ',');
-					if (i == 3)
-					{
-						NotNullPtr<Math::Geometry::PointZ> pt;
-						x = Text::StrToDouble(sarr[0]);
-						y = Text::StrToDouble(sarr[1]);
-						z = Text::StrToDouble(sarr[2]);
-						NEW_CLASSNN(pt, Math::Geometry::PointZ(4326, x, y, z));
-						lyr->AddVector(pt, &lyrNameSb);
-					}
-					else if (i == 2)
-					{
-						NotNullPtr<Math::Geometry::PointZ> pt;
-						x = Text::StrToDouble(sarr[0]);
-						y = Text::StrToDouble(sarr[1]);
-						NEW_CLASSNN(pt, Math::Geometry::PointZ(4326, x, y, 0));
-						lyr->AddVector(pt, &lyrNameSb);
-					}
-				}
-				else
-				{
-					reader->SkipElement();
-				}
-			}
-
-			if (style && style->iconURL && parsers)
-			{
-				if (style->img == 0)
-				{
-					Optional<IO::StreamData> fd = 0;
-					if (basePF)
-					{
-						fd = basePF->OpenStreamData(style->iconURL->ToCString());
-					}
-					if (fd.IsNull() && browser)
-					{
-						fd = browser->GetData(style->iconURL->ToCString(), false, 0);
-					}
-					NotNullPtr<IO::StreamData> nnfd;
-					if (fd.SetTo(nnfd))
-					{
-						Media::ImageList *imgList = (Media::ImageList*)parsers->ParseFileType(nnfd, IO::ParserType::ImageList);
-						if (imgList)
-						{
-							if (style->iconColor != 0)
-							{
-								UOSInt j = imgList->GetCount();
-								while (j-- > 0)
-								{
-									imgList->ToStaticImage(j);
-									Media::StaticImage *img = (Media::StaticImage *)imgList->GetImage(j, 0);
-									img->MultiplyColor(style->iconColor);
-								}
-							}
-							NEW_CLASS(style->img, Media::SharedImage(imgList, false));
-						}
-						nnfd.Delete();
-					}
-				}
-				if (style->img)
-				{
-					Media::Image *img = style->img->GetImage(0);
-					if (style->iconSpotX == -1 || style->iconSpotY == -1)
-					{
-						lyr->SetIconStyle(style->img, (OSInt)(img->info.dispSize.x >> 1), (OSInt)(img->info.dispSize.y >> 1));
-					}
-					else
-					{
-						lyr->SetIconStyle(style->img, style->iconSpotX, (OSInt)img->info.dispSize.y - style->iconSpotY);
-					}
-				}
-			}
-			layers.Add(lyr);
-		}
-		else if (reader->GetNodeText()->EqualsICase(UTF8STRC("POLYGON")))
-		{
-			Map::VectorLayer *lyr;
-			const UTF8Char *cols = (const UTF8Char*)"Name";
-			DB::DBUtil::ColType colType = DB::DBUtil::CT_VarUTF8Char;
-			UOSInt colSize = 256;
-			UOSInt colDP = 0;
-			Data::ArrayListDbl coord;
-			Data::ArrayListDbl altList;
-			NEW_CLASS(lyr, Map::VectorLayer(Map::DRAW_LAYER_POLYGON, sourceName, 1, &cols, Math::CoordinateSystemManager::CreateDefaultCsys(), &colType, &colSize, &colDP, 0, lyrNameSb.ToCString()));
-
-			while (reader->NextElement())
-			{
-				if (reader->GetNodeText()->EqualsICase(UTF8STRC("OUTERBOUNDARYIS")))
-				{
-					ParseCoordinates(reader, &coord, 0);
-				}
-				else if (reader->GetNodeText()->EqualsICase(UTF8STRC("INNERBOUNDARYIS")))
-				{
-					ParseCoordinates(reader, &altList, 0);
-				}
-				else
-				{
-					reader->SkipElement();
-				}
-			}
-			if (coord.GetCount() > 0)
-			{
-				NotNullPtr<Math::Geometry::Polygon> pg;
-				NotNullPtr<Math::Geometry::LinearRing> lr;
-				UOSInt nPoints;
-				Math::Coord2DDbl *ptArr;
-
-				NEW_CLASSNN(pg, Math::Geometry::Polygon(4326));
-				NEW_CLASSNN(lr, Math::Geometry::LinearRing(4326, coord.GetCount() >> 1, false, false));
-				ptArr = lr->GetPointList(nPoints);
-				MemCopyNO(ptArr, coord.Ptr(), sizeof(Double) * coord.GetCount());
-				pg->AddGeometry(lr);
-				if (altList.GetCount() > 0)
-				{
-					NEW_CLASSNN(lr, Math::Geometry::LinearRing(4326, altList.GetCount() >> 1, false, false));
-					ptArr = lr->GetPointList(nPoints);
-					MemCopyNO(ptArr, altList.Ptr(), sizeof(Double) * altList.GetCount());
-					pg->AddGeometry(lr);
-				}
-				lyr->AddVector(pg, &lyrNameSb);
-			}
-
-			if (style)
-			{
-				if (style->flags & 1)
-				{
-					if (style->lineWidth == 0)
-					{
-						lyr->SetLineStyle(style->lineColor, 1);
-					}
-					else
-					{
-						lyr->SetLineStyle(style->lineColor, style->lineWidth);
-					}
-				}
-				if (style->flags & 4)
-				{
-					lyr->SetPGStyle(style->fillColor);
-				}
-			}
-			layers.Add(lyr);
-		}
-		else if (reader->GetNodeText()->EqualsICase(UTF8STRC("GX:MULTITRACK")))
-		{
-			Map::GPSTrack *lyr;
-			NEW_CLASS(lyr, Map::GPSTrack(sourceName, true, 65001, lyrNameSb.ToCString()));
+			NotNullPtr<Map::GPSTrack> lyr;
+			NEW_CLASSNN(lyr, Map::GPSTrack(sourceName, true, 65001, colValues.GetItem(0)->ToCString()));
 			ParseKMLPlacemarkTrack(reader, lyr, styles);
 			if (style)
 			{
@@ -1567,11 +1321,123 @@ Map::MapDrawLayer *Map::KMLXML::ParseKMLPlacemarkLyr(NotNullPtr<Text::XMLReader>
 			}
 			layers.Add(lyr);
 		}
-		else
+		else if (ParseKMLVector(reader, colNames, colValues, colInfos).SetTo(vec))
 		{
-			reader->SkipElement();
+			Math::Geometry::Vector2D::VectorType vecType = vec->GetVectorType();
+			if (vecType == Math::Geometry::Vector2D::VectorType::LineString)
+			{
+				NotNullPtr<Map::VectorLayer> lyr;
+				NEW_CLASSNN(lyr, Map::VectorLayer(Map::DRAW_LAYER_POLYLINE3D, sourceName, colNames, Math::CoordinateSystemManager::CreateDefaultCsys(), colInfos, 0, colValues.GetItem(0)->ToCString()));
+				lyr->AddVector(vec, colValues);
+				if (style)
+				{
+					if (style->flags & 1)
+					{
+						if (style->lineWidth == 0)
+						{
+							lyr->SetLineStyle(style->lineColor, 1);
+						}
+						else
+						{
+							lyr->SetLineStyle(style->lineColor, style->lineWidth);
+						}
+					}
+				}
+				layers.Add(lyr);
+			}
+			else if (Math::Geometry::Vector2D::VectorTypeIsPoint(vecType))
+			{
+				NotNullPtr<Map::VectorLayer> lyr;
+				NEW_CLASSNN(lyr, Map::VectorLayer(Map::DRAW_LAYER_POINT, sourceName, colNames, Math::CoordinateSystemManager::CreateDefaultCsys(), colInfos, 0, colValues.GetItem(0)->ToCString()));
+				lyr->SetLabelVisible(true);
+				lyr->AddVector(vec, colValues);
+
+				if (style && style->iconURL && parsers)
+				{
+					if (style->img == 0)
+					{
+						Optional<IO::StreamData> fd = 0;
+						if (basePF)
+						{
+							fd = basePF->OpenStreamData(style->iconURL->ToCString());
+						}
+						if (fd.IsNull() && browser)
+						{
+							fd = browser->GetData(style->iconURL->ToCString(), false, 0);
+						}
+						NotNullPtr<IO::StreamData> nnfd;
+						if (fd.SetTo(nnfd))
+						{
+							Media::ImageList *imgList = (Media::ImageList*)parsers->ParseFileType(nnfd, IO::ParserType::ImageList);
+							if (imgList)
+							{
+								if (style->iconColor != 0)
+								{
+									UOSInt j = imgList->GetCount();
+									while (j-- > 0)
+									{
+										imgList->ToStaticImage(j);
+										Media::StaticImage *img = (Media::StaticImage *)imgList->GetImage(j, 0);
+										img->MultiplyColor(style->iconColor);
+									}
+								}
+								NEW_CLASS(style->img, Media::SharedImage(imgList, false));
+							}
+							nnfd.Delete();
+						}
+					}
+					if (style->img)
+					{
+						Media::Image *img = style->img->GetImage(0);
+						if (style->iconSpotX == -1 || style->iconSpotY == -1)
+						{
+							lyr->SetIconStyle(style->img, (OSInt)(img->info.dispSize.x >> 1), (OSInt)(img->info.dispSize.y >> 1));
+						}
+						else
+						{
+							lyr->SetIconStyle(style->img, style->iconSpotX, (OSInt)img->info.dispSize.y - style->iconSpotY);
+						}
+					}
+				}
+				layers.Add(lyr);
+			}
+			else if (vecType == Math::Geometry::Vector2D::VectorType::Polygon || vecType == Math::Geometry::Vector2D::VectorType::MultiPolygon)
+			{
+				NotNullPtr<Map::VectorLayer> lyr;
+				NEW_CLASSNN(lyr, Map::VectorLayer(Map::DRAW_LAYER_POLYGON, sourceName, colNames, Math::CoordinateSystemManager::CreateDefaultCsys(), colInfos, 0, colValues.GetItem(0)->ToCString()));
+				lyr->AddVector(vec, colValues);
+
+				if (style)
+				{
+					if (style->flags & 1)
+					{
+						if (style->lineWidth == 0)
+						{
+							lyr->SetLineStyle(style->lineColor, 1);
+						}
+						else
+						{
+							lyr->SetLineStyle(style->lineColor, style->lineWidth);
+						}
+					}
+					if (style->flags & 4)
+					{
+						lyr->SetPGStyle(style->fillColor);
+					}
+				}
+				layers.Add(lyr);
+			}
+			else
+			{
+#if defined(VERBOSE)
+				printf("KMLXML: ParseKMLPlacemarkLyr unsupport vector type: %s\r\n", Math::Geometry::Vector2D::VectorTypeGetName(vec->GetVectorType()).v);
+#endif
+				vec.Delete();
+			}
 		}
 	}
+	LIST_FREE_STRING(&colNames);
+	LIST_FREE_STRING(&colValues);
 	if (layers.GetCount() == 1)
 	{
 		return layers.GetItem(0);
@@ -1586,7 +1452,295 @@ Map::MapDrawLayer *Map::KMLXML::ParseKMLPlacemarkLyr(NotNullPtr<Text::XMLReader>
 	return 0;
 }
 
-void Map::KMLXML::ParseCoordinates(NotNullPtr<Text::XMLReader> reader, Data::ArrayList<Double> *coordList, Data::ArrayList<Double> *altList)
+Optional<Math::Geometry::Vector2D> Map::KMLXML::ParseKMLVector(NotNullPtr<Text::XMLReader> reader, NotNullPtr<Data::ArrayListNN<Text::String>> colNames, NotNullPtr<Data::ArrayListNN<Text::String>> colValues, NotNullPtr<Data::ArrayList<Map::VectorLayer::ColInfo>> colInfos)
+{
+	Text::String *nodeText = reader->GetNodeOriText();
+	Optional<Math::Geometry::Vector2D> vec = 0;
+	if (nodeText->EqualsICase(UTF8STRC("LINESTRING")))
+	{
+		while (reader->NextElement())
+		{
+			if (reader->GetNodeText()->EqualsICase(UTF8STRC("COORDINATES")))
+			{
+				Data::ArrayListA<Math::Coord2DDbl> coord;
+				Data::ArrayListDbl altList;
+				UTF8Char c;
+				UTF8Char *sptr;
+				UTF8Char *sptr2;
+				UTF8Char sbuff[256];
+				UTF8Char *sarr[4];
+				UOSInt i;
+
+				Text::StringBuilderUTF8 sb;
+				reader->ReadNodeText(sb);
+				sptr = sb.v;
+				while (true)
+				{
+					while ((c = *sptr) != 0)
+					{
+						if (c == 0x20 || c == 13 || c == 10)
+						{
+							sptr++;
+						}
+						else
+						{
+							break;
+						}
+					}
+					if (c == 0)
+						break;
+
+					sptr2 = sptr;
+					while ((c = *sptr2) != 0)
+					{
+						if (c == 0x20 || c == 13 || c == 10)
+							break;
+						sptr2++;
+					}
+					*sptr2 = 0;
+					Text::StrConcatC(sbuff, sptr, (UOSInt)(sptr2 - sptr));
+					*sptr2 = c;
+					sptr = sptr2;
+					i = Text::StrSplit(sarr, 4, sbuff, ',');
+					if (i == 3)
+					{
+						coord.Add(Math::Coord2DDbl(Text::StrToDouble(sarr[0]), Text::StrToDouble(sarr[1])));
+						altList.Add(Text::StrToDouble(sarr[2]));
+					}
+					else if (i == 2)
+					{
+						coord.Add(Math::Coord2DDbl(Text::StrToDouble(sarr[0]), Text::StrToDouble(sarr[1])));
+					}
+				}
+				if (coord.GetCount() > 0)
+				{
+					NotNullPtr<Math::Geometry::LineString> pl;
+					UOSInt nPoints;
+					Math::Coord2DDbl *ptArr;
+					Double *altArr;
+
+					NEW_CLASSNN(pl, Math::Geometry::LineString(4326, coord.GetCount(), coord.GetCount() == altList.GetCount(), false));
+					altArr = pl->GetZList(nPoints);
+					ptArr = pl->GetPointList(nPoints);
+					i = coord.GetCount();
+					MemCopyAC(ptArr, coord.Ptr(), sizeof(Math::Coord2DDbl) * i);
+					if (altArr)
+					{
+						MemCopyAC(altArr, altList.Ptr(), sizeof(Double) * i);
+					}
+					vec.Delete();
+					vec = Optional<Math::Geometry::Vector2D>(pl);
+				}
+			}
+			else
+			{
+				reader->SkipElement();
+			}
+		}
+		return vec;
+	}
+	else if (nodeText->EqualsICase(UTF8STRC("POINT")))
+	{
+		while (reader->NextElement())
+		{
+			if (reader->GetNodeText()->EqualsICase(UTF8STRC("COORDINATES")))
+			{
+				Text::StringBuilderUTF8 sb;
+				reader->ReadNodeText(sb);
+
+				Double x;
+				Double y;
+				Double z;
+				UOSInt i;
+				UTF8Char *sarr[4];
+				i = Text::StrSplitTrim(sarr, 4, sb.v, ',');
+				if (i == 3)
+				{
+					NotNullPtr<Math::Geometry::PointZ> pt;
+					x = Text::StrToDouble(sarr[0]);
+					y = Text::StrToDouble(sarr[1]);
+					z = Text::StrToDouble(sarr[2]);
+					NEW_CLASSNN(pt, Math::Geometry::PointZ(4326, x, y, z));
+					vec.Delete();
+					vec = Optional<Math::Geometry::Vector2D>(pt);
+				}
+				else if (i == 2)
+				{
+					NotNullPtr<Math::Geometry::PointZ> pt;
+					x = Text::StrToDouble(sarr[0]);
+					y = Text::StrToDouble(sarr[1]);
+					NEW_CLASSNN(pt, Math::Geometry::PointZ(4326, x, y, 0));
+					vec.Delete();
+					vec = Optional<Math::Geometry::Vector2D>(pt);
+				}
+			}
+			else
+			{
+				reader->SkipElement();
+			}
+		}
+		return vec;
+	}
+	else if (nodeText->EqualsICase(UTF8STRC("POLYGON")))
+	{
+		NotNullPtr<Math::Geometry::Polygon> pg;
+		NEW_CLASSNN(pg, Math::Geometry::Polygon(4326));
+
+		Data::ArrayListA<Math::Coord2DDbl> coord;
+		Data::ArrayListDbl altList;
+		while (reader->NextElement())
+		{
+			coord.Clear();
+			altList.Clear();
+			if (reader->GetNodeText()->EqualsICase(UTF8STRC("OUTERBOUNDARYIS")))
+			{
+				ParseCoordinates(reader, coord, altList);
+			}
+			else if (reader->GetNodeText()->EqualsICase(UTF8STRC("INNERBOUNDARYIS")))
+			{
+				ParseCoordinates(reader, coord, altList);
+			}
+			else
+			{
+				reader->SkipElement();
+			}
+			if (coord.GetCount() > 0)
+			{
+				NotNullPtr<Math::Geometry::LinearRing> lr;
+				UOSInt nPoints;
+				Math::Coord2DDbl *ptArr;
+
+				NEW_CLASSNN(lr, Math::Geometry::LinearRing(4326, coord.GetCount(), altList.GetCount() == coord.GetCount(), false));
+				ptArr = lr->GetPointList(nPoints);
+				MemCopyNO(ptArr, coord.Ptr(), sizeof(Math::Coord2DDbl) * coord.GetCount());
+				if (altList.GetCount() == coord.GetCount())
+				{
+					Double *zList = lr->GetZList(nPoints);
+					MemCopyNO(zList, altList.Ptr(), sizeof(Double) * nPoints);
+				}
+				pg->AddGeometry(lr);
+			}
+		}
+		if (pg->GetCount() > 0)
+		{
+			vec.Delete();
+			vec = Optional<Math::Geometry::Vector2D>(pg);
+		}
+		else
+		{
+			pg.Delete();
+		}
+		return vec;
+	}
+	else if (nodeText->EqualsICase(UTF8STRC("MULTIGEOMETRY")))
+	{
+		Data::ArrayListNN<Math::Geometry::Vector2D> vecList;
+		NotNullPtr<Math::Geometry::Vector2D> innerVec;
+		while (reader->NextElement())
+		{
+			if (ParseKMLVector(reader, colNames, colValues, colInfos).SetTo(innerVec))
+			{
+				vecList.Add(innerVec);
+			}
+		}
+		if (vecList.GetCount() == 0)
+			return 0;
+		
+		Bool allPG = true;
+		Bool allPL = true;
+//		Bool allPT = true;
+		Math::Geometry::Vector2D *v;
+		UOSInt i = vecList.GetCount();
+		UOSInt j;
+		while (i-- > 0)
+		{
+			v = vecList.GetItem(i);
+			if (Math::Geometry::Vector2D::VectorTypeIsPoint(v->GetVectorType()))
+			{
+				allPG = false;
+				allPL = false;
+			}
+			else if (v->GetVectorType() == Math::Geometry::Vector2D::VectorType::LineString)
+			{
+				allPG = false;
+//				allPT = false;
+			}
+			else if (v->GetVectorType() == Math::Geometry::Vector2D::VectorType::Polygon)
+			{
+				allPL = false;
+//				allPT = false;
+			}
+			else
+			{
+				allPG = false;
+				allPL = false;
+//				allPT = false;
+			}
+		}
+		if (allPG)
+		{
+			NotNullPtr<Math::Geometry::MultiPolygon> mpg;
+			NEW_CLASSNN(mpg, Math::Geometry::MultiPolygon(4326));
+			i = 0;
+			j = vecList.GetCount();
+			while (i < j)
+			{
+				if (innerVec.Set(vecList.GetItem(i)))
+				{
+					mpg->AddGeometry(NotNullPtr<Math::Geometry::Polygon>::ConvertFrom(innerVec));
+				}
+				i++;
+			}
+			return Optional<Math::Geometry::MultiPolygon>(mpg);
+		}
+		else if (allPL)
+		{
+			NotNullPtr<Math::Geometry::Polyline> pl;
+			NEW_CLASSNN(pl, Math::Geometry::Polyline(4326));
+			i = 0;
+			j = vecList.GetCount();
+			while (i < j)
+			{
+				if (innerVec.Set(vecList.GetItem(i)))
+				{
+					pl->AddGeometry(NotNullPtr<Math::Geometry::LineString>::ConvertFrom(innerVec));
+				}
+				i++;
+			}
+			return Optional<Math::Geometry::Polyline>(pl);
+		}
+		else
+		{
+			NotNullPtr<Math::Geometry::GeometryCollection> mpg;
+			NEW_CLASSNN(mpg, Math::Geometry::GeometryCollection(4326));
+			i = 0;
+			j = vecList.GetCount();
+			while (i < j)
+			{
+				if (innerVec.Set(vecList.GetItem(i)))
+				{
+					mpg->AddGeometry(innerVec);
+				}
+				i++;
+			}
+			return Optional<Math::Geometry::GeometryCollection>(mpg);
+		}
+	}
+	else
+	{
+		colNames->Add(nodeText->Clone());
+		Text::StringBuilderUTF8 sb;
+		reader->ReadNodeText(sb);
+		colValues->Add(Text::String::New(sb.ToCString()));
+		UOSInt len = sb.leng;
+		if (len < 256)
+			len = 256;
+		colInfos->Add(Map::VectorLayer::ColInfo(DB::DBUtil::CT_VarUTF8Char, len, 0));
+	}
+	return 0;
+}
+
+void Map::KMLXML::ParseCoordinates(NotNullPtr<Text::XMLReader> reader, NotNullPtr<Data::ArrayListA<Math::Coord2DDbl>> coordList, NotNullPtr<Data::ArrayList<Double>> altList)
 {
 	UOSInt i;
 	UTF8Char *sptr;
@@ -1636,21 +1790,12 @@ void Map::KMLXML::ParseCoordinates(NotNullPtr<Text::XMLReader> reader, Data::Arr
 				i = Text::StrSplit(sarr, 4, sbuff, ',');
 				if (i == 3)
 				{
-					coordList->Add(Text::StrToDouble(sarr[0]));
-					coordList->Add(Text::StrToDouble(sarr[1]));
-					if (altList)
-					{
-						altList->Add(Text::StrToDouble(sarr[2]));
-					}
+					coordList->Add(Math::Coord2DDbl(Text::StrToDouble(sarr[0]), Text::StrToDouble(sarr[1])));
+					altList->Add(Text::StrToDouble(sarr[2]));
 				}
 				else if (i == 2)
 				{
-					coordList->Add(Text::StrToDouble(sarr[0]));
-					coordList->Add(Text::StrToDouble(sarr[1]));
-					if (altList)
-					{
-						altList->Add(0);
-					}
+					coordList->Add(Math::Coord2DDbl(Text::StrToDouble(sarr[0]), Text::StrToDouble(sarr[1])));
 				}
 			}
 		}

@@ -9,11 +9,11 @@
 
 void __stdcall SSWR::AVIRead::AVIRGISLineForm::OnThickChanged(void *userObj, UOSInt newPos)
 {
-	UTF8Char sbuff[16];
+	UTF8Char sbuff[32];
 	UTF8Char *sptr;
 	SSWR::AVIRead::AVIRGISLineForm *me = (SSWR::AVIRead::AVIRGISLineForm*)userObj;
-	sptr = Text::StrUOSInt(sbuff, newPos);
-	me->lineThick = newPos;
+	me->lineThick = UOSInt2Double(newPos) * 0.1;
+	sptr = Text::StrDouble(sbuff, me->lineThick);
 	me->lblThickV->SetText(CSTRP(sbuff, sptr));
 	me->UpdatePreview();
 }
@@ -66,9 +66,9 @@ void SSWR::AVIRead::AVIRGISLineForm::UpdatePreview()
 	}
 }
 
-SSWR::AVIRead::AVIRGISLineForm::AVIRGISLineForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<Media::DrawEngine> eng, UOSInt lineThick, UInt32 lineColor) : UI::GUIForm(parent, 462, 334, ui)
+SSWR::AVIRead::AVIRGISLineForm::AVIRGISLineForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<Media::DrawEngine> eng, Double lineThick, UInt32 lineColor) : UI::GUIForm(parent, 462, 334, ui)
 {
-	UTF8Char sbuff[16];
+	UTF8Char sbuff[32];
 	UTF8Char *sptr;
 	this->core = core;
 	this->eng = eng;
@@ -94,10 +94,10 @@ SSWR::AVIRead::AVIRGISLineForm::AVIRGISLineForm(UI::GUIClientControl *parent, No
 	NEW_CLASS(this->lblThick, UI::GUILabel(ui, this->pnlMain, CSTR("Thick")));
 	this->lblThick->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->hsbThick, UI::GUIHScrollBar(ui, this->pnlMain, 16));
-	this->hsbThick->InitScrollBar(0, 60, this->lineThick, 10);
+	this->hsbThick->InitScrollBar(0, 600, (UOSInt)Double2OSInt(this->lineThick * 10), 10);
 	this->hsbThick->SetRect(104, 4, 150, 20, false);
 	this->hsbThick->HandlePosChanged(OnThickChanged, this);
-	sptr = Text::StrUOSInt(sbuff, this->lineThick);
+	sptr = Text::StrDouble(sbuff, this->lineThick);
 	NEW_CLASS(this->lblThickV, UI::GUILabel(ui, this->pnlMain, CSTRP(sbuff, sptr)));
 	this->lblThickV->SetRect(254, 4, 100, 23, false);
 	NEW_CLASS(this->lblColor, UI::GUILabel(ui, this->pnlMain, CSTR("Color")));
@@ -146,7 +146,7 @@ void SSWR::AVIRead::AVIRGISLineForm::RGBParamChanged(NotNullPtr<const Media::ICo
 	this->UpdatePreview();
 }
 
-UOSInt SSWR::AVIRead::AVIRGISLineForm::GetLineThick()
+Double SSWR::AVIRead::AVIRGISLineForm::GetLineThick()
 {
 	return this->lineThick;
 }

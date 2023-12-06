@@ -409,28 +409,30 @@ void Map::TileMapLayer::ReleaseNameArr(NameArray *nameArr)
 {
 }
 
-UTF8Char *Map::TileMapLayer::GetString(UTF8Char *buff, UOSInt buffSize, NameArray *nameArr, Int64 id, UOSInt strIndex)
+Bool Map::TileMapLayer::GetString(NotNullPtr<Text::StringBuilderUTF8> sb, NameArray *nameArr, Int64 id, UOSInt strIndex)
 {
 	switch (strIndex)
 	{
 	case 0:
-		return Text::StrInt64(buff, id);
+		sb->AppendI64(id);
+		return true;
 	case 1:
-		return Text::StrUOSInt(buff, this->tileMap->GetNearestLevel(scale));
+		sb->AppendUOSInt(this->tileMap->GetNearestLevel(scale));
+		return true;
 	case 2:
 	{
 		Math::Coord2D<Int32> tileId = IdToCoord(id);
 		if (tileId.x == (Int32)0x80000000)
 		{
-			return this->tileMap->GetScreenObjURL(buff, (UInt32)tileId.y);
+			return this->tileMap->GetScreenObjURL(sb, (UInt32)tileId.y);
 		}
 		else
 		{
-			return this->tileMap->GetTileImageURL(buff, this->tileMap->GetNearestLevel(scale), IdToCoord(id));
+			return this->tileMap->GetTileImageURL(sb, this->tileMap->GetNearestLevel(scale), IdToCoord(id));
 		}
 	}
 	}
-	return 0;
+	return false;
 }
 
 UOSInt Map::TileMapLayer::GetColumnCnt() const

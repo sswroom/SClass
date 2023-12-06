@@ -210,7 +210,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPLoadBalanceForm::OnTimerTick(void *userObj
 		{
 			log = logs.GetItem(i);
 			sb.ClearStr();
-			sb.AppendTS(Data::Timestamp(log->reqTime, Data::DateTimeUtil::GetLocalTzQhr()));
+			sb.AppendTSNoZone(Data::Timestamp(log->reqTime, Data::DateTimeUtil::GetLocalTzQhr()));
 			sb.AppendC(UTF8STRC(" "));
 			sptr = Net::SocketUtil::GetAddrName(sbuff, log->cliAddr, log->cliPort);
 			sb.AppendP(sbuff, sptr);
@@ -233,7 +233,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPLoadBalanceForm::OnAccessSelChg(void *user
 	UOSInt j;
 	SSWR::AVIRead::AVIRHTTPLog::LogEntry *log;
 	log = me->reqLog->GetEntry(i);
-	sb.AppendTS(Data::Timestamp(log->reqTime, Data::DateTimeUtil::GetLocalTzQhr()));
+	sb.AppendTSNoZone(Data::Timestamp(log->reqTime, Data::DateTimeUtil::GetLocalTzQhr()));
 	sb.AppendC(UTF8STRC(" "));
 	sptr = Net::SocketUtil::GetAddrName(sbuff, log->cliAddr, log->cliPort);
 	sb.AppendP(sbuff, sptr);

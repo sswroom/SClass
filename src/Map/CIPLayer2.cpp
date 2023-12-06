@@ -496,23 +496,22 @@ void Map::CIPLayer2::ReleaseNameArr(NameArray *nameArr)
 	DEL_CLASS(tmpMap);
 }
 
-UTF8Char *Map::CIPLayer2::GetString(UTF8Char *buff, UOSInt buffSize, NameArray *nameArr, Int64 id, UOSInt strIndex)
+Bool Map::CIPLayer2::GetString(NotNullPtr<Text::StringBuilderUTF8> sb, NameArray *nameArr, Int64 id, UOSInt strIndex)
 {
 	Data::FastMap<Int32, UTF16Char*> *tmpMap = (Data::FastMap<Int32, UTF16Char*>*)nameArr;
 	if (strIndex != 0)
 	{
-		*buff = 0;
-		return 0;
+		return false;
 	}
 	UTF16Char *s = tmpMap->Get((Int32)id);
 	if (s)
 	{
-		return Text::StrUTF16_UTF8(buff, s);
+		sb->AppendUTF16(s);
+		return true;
 	}
 	else
 	{
-		*buff = 0;
-		return 0;
+		return false;
 	}
 }
 

@@ -147,7 +147,7 @@ public:
 			sb->AppendI32(extInfo->devType);
 			return true;
 		case 2:
-			sb->AppendTS(Data::Timestamp::FromEpochSec(extInfo->recvTimeTS, Data::DateTimeUtil::GetLocalTzQhr()));
+			sb->AppendTSNoZone(Data::Timestamp::FromEpochSec(extInfo->recvTimeTS, Data::DateTimeUtil::GetLocalTzQhr()));
 			return true;
 		case 3:
 			sb->AppendC(UTF8STRC("0x"));

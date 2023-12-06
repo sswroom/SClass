@@ -834,7 +834,7 @@ Bool __stdcall Net::EthernetWebHandler::DHCPReq(EthernetWebHandler *me, NotNullP
 			sptr = Net::SocketUtil::GetIPv4Name(sbuff, dhcp->router);
 			sb.AppendP(sbuff, sptr);
 			sb.AppendC(UTF8STRC("</td><td>"));
-			sb.AppendTS(dhcp->ipAddrTime.ToLocalTime());
+			sb.AppendTSNoZone(dhcp->ipAddrTime.ToLocalTime());
 			sb.AppendC(UTF8STRC("</td><td>"));
 			sb.AppendU32(dhcp->ipAddrLease);
 			sb.AppendC(UTF8STRC("</td><td>"));

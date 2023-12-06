@@ -262,6 +262,11 @@ UTF8Char *Map::ESRI::ESRITileMap::GetTileImageURL(UTF8Char *sbuff, UOSInt level,
 	return this->esriMap->TileGetURL(sbuff, level, tileId.x, tileId.y);
 }
 
+Bool Map::ESRI::ESRITileMap::GetTileImageURL(NotNullPtr<Text::StringBuilderUTF8> sb, UOSInt level, Math::Coord2D<Int32> tileId)
+{
+	return this->esriMap->TileGetURL(sb, level, tileId.x, tileId.y);
+}
+
 Optional<IO::StreamData> Map::ESRI::ESRITileMap::LoadTileImageData(UOSInt level, Math::Coord2D<Int32> tileId, OutParam<Math::RectAreaDbl> bounds, Bool localOnly, OptOut<ImageType> it)
 {
 	UTF8Char filePath[512];

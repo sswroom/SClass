@@ -416,7 +416,7 @@ Bool Map::ESRI::FileGDBReader::GetStr(UOSInt colIndex, NotNullPtr<Text::StringBu
 		return true;
 	case 5:
 		{
-			sb->AppendTS(Text::XLSUtil::Number2Timestamp(ReadDouble(&this->rowData[this->fieldOfst[fieldIndex]])).RoundToS());
+			sb->AppendTSNoZone(Text::XLSUtil::Number2Timestamp(ReadDouble(&this->rowData[this->fieldOfst[fieldIndex]])).RoundToS());
 		}
 		return true;
 	case 6:

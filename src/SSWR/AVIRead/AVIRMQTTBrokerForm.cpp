@@ -163,7 +163,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTBrokerForm::OnTimerTick(void *userObj)
 			sb.AppendC(topicSt->message, topicSt->msgSize);
 			me->lvTopic->SetSubItem(i, 1, sb.ToCString());
 			sb.ClearStr();
-			sb.AppendTS(Data::Timestamp(topicSt->updateTime, Data::DateTimeUtil::GetLocalTzQhr()));
+			sb.AppendTSNoZone(Data::Timestamp(topicSt->updateTime, Data::DateTimeUtil::GetLocalTzQhr()));
 			me->lvTopic->SetSubItem(i, 2, sb.ToCString());
 			i++;
 		}
@@ -180,7 +180,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTBrokerForm::OnTimerTick(void *userObj)
 				sb.AppendC(topicSt->message, topicSt->msgSize);
 				me->lvTopic->SetSubItem(i, 1, sb.ToCString());
 				sb.ClearStr();
-				sb.AppendTS(Data::Timestamp(topicSt->updateTime, Data::DateTimeUtil::GetLocalTzQhr()));
+				sb.AppendTSNoZone(Data::Timestamp(topicSt->updateTime, Data::DateTimeUtil::GetLocalTzQhr()));
 				me->lvTopic->SetSubItem(i, 2, sb.ToCString());
 			}
 			i++;

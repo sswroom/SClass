@@ -17,6 +17,7 @@
 void SSWR::AVIRead::AVIRWellFormatForm::AddFilters(IO::FileSelector *selector)
 {
 	selector->AddFilter(CSTR("*.json"), CSTR("JSON File"));
+	selector->AddFilter(CSTR("*.geojson"), CSTR("GeoJSON File"));
 	selector->AddFilter(CSTR("*.html"), CSTR("HTML File"));
 	selector->AddFilter(CSTR("*.htm"), CSTR("HTML File"));
 	selector->AddFilter(CSTR("*.xml"), CSTR("XML File"));
@@ -57,11 +58,11 @@ Bool SSWR::AVIRead::AVIRWellFormatForm::ParseFile(Text::CStringNN fileName, NotN
 		cli.Delete();
 		ssl.Delete();
 	}
-	else if (fileName.EndsWithICase(UTF8STRC(".json")))
+	else if (fileName.EndsWithICase(UTF8STRC(".json")) || fileName.EndsWithICase(UTF8STRC(".geojson")))
 	{
 		IO::FileStream fs(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 		fileLen = fs.GetLength();
-		if (fileLen > 0 && fileLen < 1048576)
+		if (fileLen > 0 && fileLen < 10485760)
 		{
 			Data::ByteBuffer buff((UOSInt)fileLen);
 			if (fs.Read(buff) == fileLen)

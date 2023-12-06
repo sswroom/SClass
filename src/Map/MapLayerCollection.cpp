@@ -285,7 +285,7 @@ void Map::MapLayerCollection::ReleaseNameArr(NameArray *nameArr)
 {
 }
 
-UTF8Char *Map::MapLayerCollection::GetString(UTF8Char *buff, UOSInt buffSize, NameArray *nameArr, Int64 id, UOSInt strIndex)
+Bool Map::MapLayerCollection::GetString(NotNullPtr<Text::StringBuilderUTF8> sb, NameArray *nameArr, Int64 id, UOSInt strIndex)
 {
 	UOSInt k;
 	UOSInt l;
@@ -300,12 +300,12 @@ UTF8Char *Map::MapLayerCollection::GetString(UTF8Char *buff, UOSInt buffSize, Na
 		maxId = lyr->GetObjectIdMax();
 		if (id >= currId && id <= currId + maxId)
 		{
-			return lyr->GetString(buff, buffSize, 0, id - currId, strIndex);
+			return lyr->GetString(sb, 0, id - currId, strIndex);
 		}
 		currId += maxId + 1;
 		k++;
 	}
-	return 0;
+	return false;
 }
 
 UOSInt Map::MapLayerCollection::GetColumnCnt() const

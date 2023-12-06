@@ -228,16 +228,16 @@ void Map::GeoPackageLayer::ReleaseNameArr(NameArray *nameArr)
 	}
 }
 
-UTF8Char *Map::GeoPackageLayer::GetString(UTF8Char *buff, UOSInt buffSize, NameArray *nameArr, Int64 id, UOSInt strIndex)
+Bool Map::GeoPackageLayer::GetString(NotNullPtr<Text::StringBuilderUTF8> sb, NameArray *nameArr, Int64 id, UOSInt strIndex)
 {
 	StringSession *sess = (StringSession*)nameArr;
 	if (sess && sess->r)
 	{
 		if (!StringSessGoRow(sess, (UOSInt)id))
-			return 0;
-		return sess->r->GetStr(strIndex, buff, buffSize);
+			return false;
+		return sess->r->GetStr(strIndex, sb);
 	}
-	return 0;
+	return false;
 }
 
 UOSInt Map::GeoPackageLayer::GetColumnCnt() const

@@ -236,6 +236,7 @@ Bool __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnMapMouseUp(void *userObj, Mat
 			{
 				Data::ArrayListInt64 arr;
 				Map::NameArray *nameArr;
+				Text::StringBuilderUTF8 sb;
 				me->dbLayer->GetObjectIdsMapXY(arr, &nameArr, Math::RectAreaDbl(mapPt, mapPt), true);
 				i = 0;
 				j = me->dbLayer->GetColumnCnt();
@@ -243,9 +244,9 @@ Bool __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnMapMouseUp(void *userObj, Mat
 				{
 					sptr = me->dbLayer->GetColumnName(sbuff, i);
 					me->lvMapRecord->AddItem(CSTRP(sbuff, sptr), 0);
-					sbuff[0] = 0;
-					sptr = me->dbLayer->GetString(sbuff, sizeof(sbuff), nameArr, id, i);
-					me->lvMapRecord->SetSubItem(i, 1, CSTRP(sbuff, sptr));
+					sb.ClearStr();
+					me->dbLayer->GetString(sb, nameArr, id, i);
+					me->lvMapRecord->SetSubItem(i, 1, sb.ToCString());
 					i++;
 				}
 				me->dbLayer->ReleaseNameArr(nameArr);

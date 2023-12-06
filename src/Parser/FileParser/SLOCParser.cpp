@@ -176,7 +176,7 @@ public:
 			sb->AppendU16(extInfo->cliPort);
 			return true;
 		case 17:
-			sb->AppendTS(Data::Timestamp(Data::TimeInstant(extInfo->recvTimeTS, 0), Data::DateTimeUtil::GetLocalTzQhr()));
+			sb->AppendTSNoZone(Data::Timestamp(Data::TimeInstant(extInfo->recvTimeTS, 0), Data::DateTimeUtil::GetLocalTzQhr()));
 			return true;
 		}
 		return false;

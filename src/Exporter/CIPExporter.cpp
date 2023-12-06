@@ -289,6 +289,7 @@ Bool Exporter::CIPExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text:
 			OSInt l;
 			OSInt m;
 			OSInt n;
+			Text::StringBuilderUTF8 sb;
 			j = top;
 			while (j <= bottom)
 			{
@@ -321,9 +322,10 @@ Bool Exporter::CIPExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text:
 						{
 							strRec = MemAlloc(CIPStrRecord, 1);
 							strRec->recId = (Int32)i;
-							if (layer->GetString(sbuff, sizeof(sbuff), nameArr, objIds.GetItem(i), p->dispCol))
+							sb.ClearStr();
+							if (layer->GetString(sb, nameArr, objIds.GetItem(i), p->dispCol))
 							{
-								strRec->str = Text::StrCopyNew(sbuff).Ptr();
+								strRec->str = Text::StrCopyNewC(sb.v, sb.leng).Ptr();
 							}
 							else
 							{
@@ -344,9 +346,10 @@ Bool Exporter::CIPExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text:
 
 						strRec = MemAlloc(CIPStrRecord, 1);
 						strRec->recId = (Int32)i;
-						if (layer->GetString(sbuff, sizeof(sbuff), nameArr, objIds.GetItem(i), p->dispCol))
+						sb.ClearStr();
+						if (layer->GetString(sb, nameArr, objIds.GetItem(i), p->dispCol))
 						{
-							strRec->str = Text::StrCopyNew(sbuff).Ptr();
+							strRec->str = Text::StrCopyNewC(sb.v, sb.leng).Ptr();
 						}
 						else
 						{

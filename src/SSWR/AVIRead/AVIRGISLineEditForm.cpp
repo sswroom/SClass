@@ -110,7 +110,7 @@ void __stdcall SSWR::AVIRead::AVIRGISLineEditForm::LayerSelChanged(void *userObj
 		me->pbColor->SetBGColor(Media::ColorConv::ConvARGB(srcProfile, destProfile, me->colorSess.Ptr(), me->currLayer->color | 0xff000000));
 		me->pbColor->Redraw();
 		me->hsbAlpha->SetPos((me->currLayer->color >> 24) & 255);
-		sptr = Text::StrUOSInt(sbuff, me->currLayer->thick);
+		sptr = Text::StrDouble(sbuff, me->currLayer->thick);
 		me->txtThick->SetText(CSTRP(sbuff, sptr));
 		if (me->currLayer->nPattern == 0)
 		{
@@ -143,7 +143,7 @@ void __stdcall SSWR::AVIRead::AVIRGISLineEditForm::ThickChanged(void *userObj)
 			me->currLayer->thick = 0;
 		if (me->currLayer->thick >= 0 && me->currLayer->thick <= 20)
 		{
-			me->hsbThick->SetPos(me->currLayer->thick);
+			me->hsbThick->SetPos((UOSInt)Double2OSInt(me->currLayer->thick * 10));
 		}
 		me->thickChging = false;
 		me->UpdatePreview();
@@ -158,9 +158,9 @@ void __stdcall SSWR::AVIRead::AVIRGISLineEditForm::OnThickScrolled(void *userObj
 	if (me->currLayer && !me->thickChging)
 	{
 		me->thickChging = true;
-		sptr = Text::StrUOSInt(sbuff, newPos);
+		me->currLayer->thick = UOSInt2Double(newPos) * 0.1;
+		sptr = Text::StrDouble(sbuff, me->currLayer->thick);
 		me->txtThick->SetText(CSTRP(sbuff, sptr));
-		me->currLayer->thick = newPos;
 		me->thickChging = false;
 		me->UpdatePreview();
 	}
@@ -347,7 +347,7 @@ SSWR::AVIRead::AVIRGISLineEditForm::AVIRGISLineEditForm(UI::GUIClientControl *pa
 	this->txtThick->HandleTextChanged(ThickChanged, this);
 	NEW_CLASS(this->hsbThick, UI::GUIHScrollBar(ui, this->pnlLayer, 120));
 	this->hsbThick->SetPosition(136, 56);
-	this->hsbThick->InitScrollBar(0, 21, 1, 1);
+	this->hsbThick->InitScrollBar(0, 210, 10, 10);
 	this->hsbThick->HandlePosChanged(OnThickScrolled, this);
 	NEW_CLASS(this->txtPattern, UI::GUITextBox(ui, this->pnlLayer, CSTR("")));
 	this->txtPattern->SetRect(96, 80, 100, 23, false);
@@ -371,7 +371,7 @@ SSWR::AVIRead::AVIRGISLineEditForm::AVIRGISLineEditForm(UI::GUIClientControl *pa
 	while (i < j)
 	{
 		UInt32 color;
-		UOSInt thick;
+		Double thick;
 		UInt8 *pattern = 0;
 		UOSInt npattern;
 		this->env->GetLineStyleLayer(this->lineStyle, i, color, thick, pattern, npattern);

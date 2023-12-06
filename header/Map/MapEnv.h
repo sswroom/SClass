@@ -53,7 +53,7 @@ namespace Map
 			Bool needRelease;
 			Int32 lineType;
 			UOSInt lineStyle;
-			UOSInt lineThick;
+			Double lineThick;
 			UInt32 lineColor;
 			UInt32 fillStyle;
 			FontType fontType;
@@ -91,7 +91,7 @@ namespace Map
 		typedef struct
 		{
 			UInt32 color;
-			UOSInt thick;
+			Double thick;
 			UInt8 *pattern;
 			UOSInt npattern;
 		} LineStyleLayer;
@@ -154,12 +154,12 @@ namespace Map
 		UOSInt AddLineStyle();
 		Bool SetLineStyleName(UOSInt index, Text::CString name);
 		UTF8Char *GetLineStyleName(UOSInt index, UTF8Char *buff) const;
-		Bool AddLineStyleLayer(UOSInt index, UInt32 color, UOSInt thick, const UInt8 *pattern, UOSInt npattern);
-		Bool ChgLineStyleLayer(UOSInt index, UOSInt layerId, UInt32 color, UOSInt thick, const UInt8 *pattern, UOSInt npattern);
+		Bool AddLineStyleLayer(UOSInt index, UInt32 color, Double thick, const UInt8 *pattern, UOSInt npattern);
+		Bool ChgLineStyleLayer(UOSInt index, UOSInt layerId, UInt32 color, Double thick, const UInt8 *pattern, UOSInt npattern);
 		Bool RemoveLineStyleLayer(UOSInt index, UOSInt layerId);
 		Bool RemoveLineStyle(UOSInt index);
 		UOSInt GetLineStyleCount() const;
-		Bool GetLineStyleLayer(UOSInt index, UOSInt layerId, OutParam<UInt32> color, OutParam<UOSInt> thick, OutParam<UInt8*> pattern, OutParam<UOSInt> npattern) const;
+		Bool GetLineStyleLayer(UOSInt index, UOSInt layerId, OutParam<UInt32> color, OutParam<Double> thick, OutParam<UInt8*> pattern, OutParam<UOSInt> npattern) const;
 		UOSInt GetLineStyleLayerCnt(UOSInt index) const;
 
 		//-1 = error

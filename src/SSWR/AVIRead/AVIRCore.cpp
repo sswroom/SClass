@@ -400,7 +400,7 @@ Media::IAudioRenderer *SSWR::AVIRead::AVIRCore::BindAudio(Media::IAudioSource *a
 	return this->audDevice.BindAudio(audSrc);
 }
 
-Bool SSWR::AVIRead::AVIRCore::GenLinePreview(NotNullPtr<Media::DrawImage> img, NotNullPtr<Media::DrawEngine> eng, UOSInt lineThick, UInt32 lineColor, Media::ColorConv *colorConv)
+Bool SSWR::AVIRead::AVIRCore::GenLinePreview(NotNullPtr<Media::DrawImage> img, NotNullPtr<Media::DrawEngine> eng, Double lineThick, UInt32 lineColor, Media::ColorConv *colorConv)
 {
 	NotNullPtr<Media::DrawPen> p;
 	NotNullPtr<Media::DrawBrush> b;
@@ -409,7 +409,7 @@ Bool SSWR::AVIRead::AVIRCore::GenLinePreview(NotNullPtr<Media::DrawImage> img, N
 	img->DrawRect(Math::Coord2DDbl(0, 0), img->GetSize().ToDouble(), 0, b);
 	img->DelBrush(b);
 
-	p = img->NewPenARGB(colorConv->ConvRGB8(lineColor), UOSInt2Double(lineThick) * dpi / 96.0, 0, 0);
+	p = img->NewPenARGB(colorConv->ConvRGB8(lineColor), lineThick * dpi / 96.0, 0, 0);
 	img->DrawLine(0, UOSInt2Double(img->GetHeight()) * 0.5, UOSInt2Double(img->GetWidth()), UOSInt2Double(img->GetHeight()) * 0.5, p);
 	img->DelPen(p);
 	return true;
@@ -440,13 +440,13 @@ Bool SSWR::AVIRead::AVIRCore::GenLineStylePreview(NotNullPtr<Media::DrawImage> i
 
 	UInt32 color;
 	UOSInt layerId = 0;
-	UOSInt thick;
+	Double thick;
 	UInt8 *pattern;
 	UOSInt npattern;
 
 	while (env->GetLineStyleLayer(lineStyle, layerId++, color, thick, pattern, npattern))
 	{
-		p = img->NewPenARGB(colorConv->ConvRGB8(color), UOSInt2Double(thick) * dpi / 96.0, pattern, npattern);
+		p = img->NewPenARGB(colorConv->ConvRGB8(color), thick * dpi / 96.0, pattern, npattern);
 		img->DrawLine(0, UOSInt2Double(size.y >> 1), UOSInt2Double(size.x), UOSInt2Double(size.y >> 1), p);
 		img->DelPen(p);
 	}

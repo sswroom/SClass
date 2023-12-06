@@ -190,7 +190,7 @@ Bool IO::ProtoDec::TK109ProtocolDecoder::GetProtocolDetail(UInt8 *buff, UOSInt b
 		if (protoSize >= 27)
 		{
 			sb->AppendC(UTF8STRC("GPS Time="));
-			sb->AppendTS(Data::Timestamp::FromEpochSec(ReadMUInt32(&buff[7]), Data::DateTimeUtil::GetLocalTzQhr()));
+			sb->AppendTSNoZone(Data::Timestamp::FromEpochSec(ReadMUInt32(&buff[7]), Data::DateTimeUtil::GetLocalTzQhr()));
 			sb->AppendC(UTF8STRC("\r\n"));
 			sb->AppendC(UTF8STRC("Latitude="));
 			Text::SBAppendF64(sb, ReadMInt32(&buff[11]) / 1800000.0);
@@ -275,7 +275,7 @@ Bool IO::ProtoDec::TK109ProtocolDecoder::GetProtocolDetail(UInt8 *buff, UOSInt b
 		if (protoSize >= 27)
 		{
 			sb->AppendC(UTF8STRC("GPS Time="));
-			sb->AppendTS(Data::Timestamp::FromEpochSec(ReadMUInt32(&buff[7]), Data::DateTimeUtil::GetLocalTzQhr()));
+			sb->AppendTSNoZone(Data::Timestamp::FromEpochSec(ReadMUInt32(&buff[7]), Data::DateTimeUtil::GetLocalTzQhr()));
 			sb->AppendC(UTF8STRC("\r\n"));
 			sb->AppendC(UTF8STRC("Latitude="));
 			Text::SBAppendF64(sb, ReadMInt32(&buff[11]) / 1800000.0);
@@ -323,7 +323,7 @@ Bool IO::ProtoDec::TK109ProtocolDecoder::GetProtocolDetail(UInt8 *buff, UOSInt b
 				if (protoSize >= 32)
 				{
 					sb->AppendC(UTF8STRC("Status Time="));
-					sb->AppendTS(Data::Timestamp::FromEpochSec(ReadMUInt32(&buff[33]), Data::DateTimeUtil::GetLocalTzQhr()));
+					sb->AppendTSNoZone(Data::Timestamp::FromEpochSec(ReadMUInt32(&buff[33]), Data::DateTimeUtil::GetLocalTzQhr()));
 					sb->AppendC(UTF8STRC("\r\n"));
 				}
 				if (protoSize >= 34)
@@ -336,7 +336,7 @@ Bool IO::ProtoDec::TK109ProtocolDecoder::GetProtocolDetail(UInt8 *buff, UOSInt b
 				if (protoSize >= 32)
 				{
 					sb->AppendC(UTF8STRC("Status Time="));
-					sb->AppendTS(Data::Timestamp::FromEpochSec(ReadMUInt32(&buff[33]), Data::DateTimeUtil::GetLocalTzQhr()));
+					sb->AppendTSNoZone(Data::Timestamp::FromEpochSec(ReadMUInt32(&buff[33]), Data::DateTimeUtil::GetLocalTzQhr()));
 					sb->AppendC(UTF8STRC("\r\n"));
 				}
 				if (protoSize >= 34)
@@ -349,7 +349,7 @@ Bool IO::ProtoDec::TK109ProtocolDecoder::GetProtocolDetail(UInt8 *buff, UOSInt b
 				if (protoSize >= 32)
 				{
 					sb->AppendC(UTF8STRC("Status Time="));
-					sb->AppendTS(Data::Timestamp::FromEpochSec(ReadMUInt32(&buff[33]), Data::DateTimeUtil::GetLocalTzQhr()));
+					sb->AppendTSNoZone(Data::Timestamp::FromEpochSec(ReadMUInt32(&buff[33]), Data::DateTimeUtil::GetLocalTzQhr()));
 					sb->AppendC(UTF8STRC("\r\n"));
 				}
 				if (protoSize >= 34)
@@ -379,7 +379,7 @@ Bool IO::ProtoDec::TK109ProtocolDecoder::GetProtocolDetail(UInt8 *buff, UOSInt b
 		if (protoSize >= 27)
 		{
 			sb->AppendC(UTF8STRC("GPS Time="));
-			sb->AppendTS(Data::Timestamp::FromEpochSec(ReadMUInt32(&buff[7]), Data::DateTimeUtil::GetLocalTzQhr()));
+			sb->AppendTSNoZone(Data::Timestamp::FromEpochSec(ReadMUInt32(&buff[7]), Data::DateTimeUtil::GetLocalTzQhr()));
 			sb->AppendC(UTF8STRC("\r\n"));
 			sb->AppendC(UTF8STRC("Latitude="));
 			Text::SBAppendF64(sb, ReadMInt32(&buff[11]) / 1800000.0);

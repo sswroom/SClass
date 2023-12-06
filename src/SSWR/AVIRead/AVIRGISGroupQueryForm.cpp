@@ -132,6 +132,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISGroupQueryForm::OnMouseUp(void *userObj, Ma
 			{
 				mapLyrPos = mapEnvPos;
 			}
+			Text::StringBuilderUTF8 sb;
 			sess = lyr->BeginGetObject();
 			lyr->GetObjectIdsMapXY(arr, &nameArr, Math::RectAreaDbl(mapLyrPos, mapLyrPos), true);
 			i = 0;
@@ -141,8 +142,9 @@ Bool __stdcall SSWR::AVIRead::AVIRGISGroupQueryForm::OnMouseUp(void *userObj, Ma
 				sbuff[0] = 0;
 				sptr = lyr->GetColumnName(sbuff, i);
 				me->lvInfo->AddItem(CSTRP(sbuff, sptr), 0);
-				sptr = lyr->GetString(sbuff, sizeof(sbuff), nameArr, id, i);
-				me->lvInfo->SetSubItem(i, 1, CSTRP(sbuff, sptr));
+				sb.ClearStr();
+				lyr->GetString(sb, nameArr, id, i);
+				me->lvInfo->SetSubItem(i, 1, sb.ToCString());
 				i++;
 			}
 			Math::Geometry::Vector2D *vec = lyr->GetNewVectorById(sess, id);

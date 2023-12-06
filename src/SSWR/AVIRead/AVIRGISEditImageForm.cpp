@@ -825,8 +825,9 @@ SSWR::AVIRead::AVIRGISEditImageForm::AVIRGISEditImageForm(UI::GUIClientControl *
 		j = objIds.GetCount();
 		while (i < j)
 		{
-			sptr = lyr->GetString(sbuff, sizeof(sbuff), nameArr, objIds.GetItem(i), 0);
-			this->lbImages->AddItem(CSTRP(sbuff, sptr), (void*)(OSInt)objIds.GetItem(i));
+			sb.ClearStr();
+			lyr->GetString(sb, nameArr, objIds.GetItem(i), 0);
+			this->lbImages->AddItem(sb.ToCString(), (void*)(OSInt)objIds.GetItem(i));
 			i++;
 		}
 	}

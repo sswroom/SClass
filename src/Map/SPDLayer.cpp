@@ -393,23 +393,22 @@ void Map::SPDLayer::ReleaseNameArr(NameArray *nameArr)
 	DEL_CLASS(tmpArr);
 }
 
-UTF8Char *Map::SPDLayer::GetString(UTF8Char *buff, UOSInt buffSize, NameArray *nameArr, Int64 id, UOSInt strIndex)
+Bool Map::SPDLayer::GetString(NotNullPtr<Text::StringBuilderUTF8> sb, NameArray *nameArr, Int64 id, UOSInt strIndex)
 {
 	Data::ArrayList<WChar*> *tmpArr = (Data::ArrayList<WChar*>*)nameArr;
 	if (strIndex != 0)
 	{
-		*buff = 0;
-		return 0;
+		return false;
 	}
 	WChar *s = tmpArr->GetItem((UOSInt)id);
 	if (s)
 	{
-		return Text::StrWChar_UTF8(buff, s);
+		sb->AppendW(s);
+		return true;
 	}
 	else
 	{
-		*buff = 0;
-		return 0;
+		return false;
 	}
 }
 

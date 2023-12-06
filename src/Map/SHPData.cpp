@@ -501,10 +501,11 @@ void Map::SHPData::ReleaseNameArr(NameArray *nameArr)
 {
 }
 
-UTF8Char *Map::SHPData::GetString(UTF8Char *buff, UOSInt buffSize, NameArray *nameArr, Int64 id, UOSInt strIndex)
+Bool Map::SHPData::GetString(NotNullPtr<Text::StringBuilderUTF8> sb, NameArray *nameArr, Int64 id, UOSInt strIndex)
 {
-	UTF8Char *sptr = this->dbf->GetRecord(buff, (UOSInt)id, strIndex);
-	return Text::StrTrimC(buff, (UOSInt)(sptr - buff));
+	Bool ret = this->dbf->GetRecord(sb, (UOSInt)id, strIndex);
+	sb->Trim();
+	return ret;
 }
 
 UOSInt Map::SHPData::GetColumnCnt() const

@@ -67,7 +67,7 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnTimerTick(void *userObj)
 			{
 				me->lastMotion = 1;
 				sb.ClearStr();
-				sb.AppendTS(ts);
+				sb.AppendTSNoZone(ts);
 				sb.AppendC(UTF8STRC("\tMotion:Moving"));
 				me->captureWriter->WriteLineC(sb.ToString(), sb.GetLength());
 			}
@@ -81,7 +81,7 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnTimerTick(void *userObj)
 			{
 				me->lastMotion = 0;
 				sb.ClearStr();
-				sb.AppendTS(ts);
+				sb.AppendTSNoZone(ts);
 				sb.AppendC(UTF8STRC("\tMotion:Stopped"));
 				me->captureWriter->WriteLineC(sb.ToString(), sb.GetLength());
 			}
@@ -130,7 +130,7 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnTimerTick(void *userObj)
 				if (me->captureWriter)
 				{
 					sb.ClearStr();
-					sb.AppendTS(ts);
+					sb.AppendTSNoZone(ts);
 					sb.AppendC(UTF8STRC("\tWLAN:"));
 					i = 0;
 					j = bssList.GetCount();
@@ -753,7 +753,7 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnGPSData(void *userObj, NotN
 		if (me->captureWriter)
 		{
 			Text::StringBuilderUTF8 sb;
-			sb.AppendTS(Data::Timestamp::UtcNow());
+			sb.AppendTSNoZone(Data::Timestamp::UtcNow());
 			sb.AppendC(UTF8STRC("\tGPS:"));
 			if (record->valid == 0)
 			{

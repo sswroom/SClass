@@ -31,7 +31,7 @@ void __stdcall SSWR::AVIRead::AVIRJWTParserForm::OnParseClicked(void *userObj)
 			if ((t = param.GetExpirationTime()) != 0)
 			{
 				sbErr.ClearStr();
-				sbErr.AppendTS(Data::Timestamp(Data::TimeInstant(t, 0), Data::DateTimeUtil::GetLocalTzQhr()));
+				sbErr.AppendTSNoZone(Data::Timestamp(Data::TimeInstant(t, 0), Data::DateTimeUtil::GetLocalTzQhr()));
 				me->txtExpTime->SetText(sbErr.ToCString());
 			}
 			else
@@ -41,7 +41,7 @@ void __stdcall SSWR::AVIRead::AVIRJWTParserForm::OnParseClicked(void *userObj)
 			if ((t = param.GetNotBefore()) != 0)
 			{
 				sbErr.ClearStr();
-				sbErr.AppendTS(Data::Timestamp(Data::TimeInstant(t, 0), Data::DateTimeUtil::GetLocalTzQhr()));
+				sbErr.AppendTSNoZone(Data::Timestamp(Data::TimeInstant(t, 0), Data::DateTimeUtil::GetLocalTzQhr()));
 				me->txtNotBefore->SetText(sbErr.ToCString());
 			}
 			else
@@ -51,7 +51,7 @@ void __stdcall SSWR::AVIRead::AVIRJWTParserForm::OnParseClicked(void *userObj)
 			if ((t = param.GetIssuedAt()) != 0)
 			{
 				sbErr.ClearStr();
-				sbErr.AppendTS(Data::Timestamp(Data::TimeInstant(t, 0), Data::DateTimeUtil::GetLocalTzQhr()));
+				sbErr.AppendTSNoZone(Data::Timestamp(Data::TimeInstant(t, 0), Data::DateTimeUtil::GetLocalTzQhr()));
 				me->txtIssueAt->SetText(sbErr.ToCString());
 			}
 			else

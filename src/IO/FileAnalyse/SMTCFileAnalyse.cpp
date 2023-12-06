@@ -102,7 +102,7 @@ Bool IO::FileAnalyse::SMTCFileAnalyse::GetFrameName(UOSInt index, NotNullPtr<Tex
 	UInt32 ip;
 	UInt16 port;
 	Net::SocketFactory::FromSocketId(ReadUInt64(&hdr[12]), &ip, &port);
-	sb->AppendTS(ts);
+	sb->AppendTSNoZone(ts);
 	sb->AppendC(UTF8STRC(", "));
 	sptr = Net::SocketUtil::GetIPv4Name(sbuff, ip, port);
 	sb->AppendP(sbuff, sptr);

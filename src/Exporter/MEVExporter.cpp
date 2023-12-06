@@ -203,13 +203,13 @@ Bool Exporter::MEVExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text:
 		while (k < l)
 		{
 			UInt32 color;
-			UOSInt thick;
+			Double thick;
 			UOSInt npattern;
 			UInt8 *pattern;
 
 			env->GetLineStyleLayer(i, k, color, thick, pattern, npattern);
 			WriteUInt32(&buff[0], color);
-			*(Int32*)&buff[4] = (Int32)thick;
+			*(Int32*)&buff[4] = Double2Int32(thick);
 			WriteUInt32(&buff[8], (UInt32)npattern);
 
 			stm->Write(buff, 12);

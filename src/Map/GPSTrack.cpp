@@ -159,45 +159,42 @@ void Map::GPSTrack::ReleaseNameArr(NameArray *nameArr)
 {
 }
 
-UTF8Char *Map::GPSTrack::GetString(UTF8Char *buff, UOSInt buffSize, NameArray *nameArr, Int64 id, UOSInt strIndex)
+Bool Map::GPSTrack::GetString(NotNullPtr<Text::StringBuilderUTF8> sb, NameArray *nameArr, Int64 id, UOSInt strIndex)
 {
 	if (strIndex >= 3)
-		return 0;
+		return false;
 
 	if ((UInt64)id > this->currTracks.GetCount())
-		return 0;
+		return false;
 	if (id < 0)
-		return 0;
-	Data::DateTime dt;
-	UTF8Char *sptr;
+		return false;
 	if ((UInt64)id == this->currTracks.GetCount())
 	{
 		if (strIndex == 0)
 		{
 			if (this->currTrackName)
 			{
-				return this->currTrackName->ConcatToS(buff, buffSize);
+				sb->Append(this->currTrackName);
+				return true;
 			}
-			dt.SetTicks(this->currTimes.GetItem(0));
-			sptr = dt.ToString(buff, "yyyy-MM-dd HH:mm:ss.fff");
-			sptr = Text::StrConcatC(sptr, UTF8STRC(" - "));
-			dt.SetTicks(this->currTimes.GetItem(this->currTimes.GetCount() - 1));
-			sptr = dt.ToString(sptr, "yyyy-MM-dd HH:mm:ss.fff");
-			return sptr;
+			sb->AppendTS(Data::Timestamp(this->currTimes.GetItem(0), Data::DateTimeUtil::GetLocalTzQhr()), "yyyy-MM-dd HH:mm:ss.fff");
+			sb->AppendC(UTF8STRC(" - "));
+			sb->AppendTS(Data::Timestamp(this->currTimes.GetItem(this->currTimes.GetCount() - 1), Data::DateTimeUtil::GetLocalTzQhr()), "yyyy-MM-dd HH:mm:ss.fff");
+			return true;
 		}
 		else if (strIndex == 1)
 		{
-			dt.SetTicks(this->currTimes.GetItem(0));
-			return dt.ToString(buff, "yyyy-MM-dd HH:mm:ss.fff");
+			sb->AppendTS(Data::Timestamp(this->currTimes.GetItem(0), Data::DateTimeUtil::GetLocalTzQhr()), "yyyy-MM-dd HH:mm:ss.fff");
+			return true;
 		}
 		else if (strIndex == 2)
 		{
-			dt.SetTicks(this->currTimes.GetItem(this->currTimes.GetCount() - 1));
-			return dt.ToString(buff, "yyyy-MM-dd HH:mm:ss.fff");
+			sb->AppendTS(Data::Timestamp(this->currTimes.GetItem(this->currTimes.GetCount() - 1), Data::DateTimeUtil::GetLocalTzQhr()), "yyyy-MM-dd HH:mm:ss.fff");
+			return true;
 		}
 		else
 		{
-			return 0;
+			return false;
 		}
 	}
 	else
@@ -207,28 +204,27 @@ UTF8Char *Map::GPSTrack::GetString(UTF8Char *buff, UOSInt buffSize, NameArray *n
 		{
 			if (track->name)
 			{
-				return track->name->ConcatToS(buff, buffSize);
+				sb->Append(track->name);
+				return true;
 			}
-			dt.SetInstant(track->records[0].recTime);
-			sptr = dt.ToStringNoZone(buff);
-			sptr = Text::StrConcatC(sptr, UTF8STRC(" - "));
-			dt.SetInstant(track->records[track->nRecords - 1].recTime);
-			sptr = dt.ToStringNoZone(sptr);
-			return sptr;
+			sb->AppendTSNoZone(Data::Timestamp(track->records[0].recTime, Data::DateTimeUtil::GetLocalTzQhr()));
+			sb->AppendC(UTF8STRC(" - "));
+			sb->AppendTSNoZone(Data::Timestamp(track->records[track->nRecords - 1].recTime, Data::DateTimeUtil::GetLocalTzQhr()));
+			return true;
 		}
 		else if (strIndex == 1)
 		{
-			dt.SetInstant(track->records[0].recTime);
-			return dt.ToStringNoZone(buff);
+			sb->AppendTSNoZone(Data::Timestamp(track->records[0].recTime, Data::DateTimeUtil::GetLocalTzQhr()));
+			return true;
 		}
 		else if (strIndex == 2)
 		{
-			dt.SetInstant(track->records[track->nRecords - 1].recTime);
-			return dt.ToStringNoZone(buff);
+			sb->AppendTSNoZone(Data::Timestamp(track->records[track->nRecords - 1].recTime, Data::DateTimeUtil::GetLocalTzQhr()));
+			return true;
 		}
 		else
 		{
-			return 0;
+			return false;
 		}
 	}
 }

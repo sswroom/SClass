@@ -23,8 +23,6 @@ Bool __stdcall SSWR::AVIRead::AVIRGISQueryForm::OnMouseUp(void *userObj, Math::C
 		UOSInt i2;
 		UOSInt j;
 		UOSInt k;
-		UTF8Char sbuff[512];
-		UTF8Char *sptr;
 		Math::Coord2DDbl mapPt = me->navi->ScnXY2MapXY(scnPos);
 		NotNullPtr<Math::CoordinateSystem> csys = me->navi->GetCoordinateSystem();
 		NotNullPtr<Math::CoordinateSystem> lyrCSys = me->lyr->GetCoordinateSystem();
@@ -96,6 +94,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISQueryForm::OnMouseUp(void *userObj, Math::C
 			Math::Geometry::Vector2D *vec = 0;
 			Data::ArrayListInt64 arr;
 			Map::NameArray *nameArr;
+			Text::StringBuilderUTF8 sb;
 			me->lyr->GetObjectIdsMapXY(arr, &nameArr, Math::RectAreaDbl(mapPt, mapPt), true);
 			j = 0;
 			k = objList.GetCount();
@@ -111,11 +110,12 @@ Bool __stdcall SSWR::AVIRead::AVIRGISQueryForm::OnMouseUp(void *userObj, Math::C
 				}
 				if (vec)
 				{
-					sptr = me->lyr->GetString(sbuff, sizeof(sbuff), nameArr, obj->objId, me->lyr->GetNameCol());
-					if (sptr)
+					sb.ClearStr();
+					if (me->lyr->GetString(sb, nameArr, obj->objId, me->lyr->GetNameCol()))
 					{
-						sptr = Math::Geometry::Vector2D::VectorTypeGetName(vec->GetVectorType()).ConcatTo(Text::StrConcatC(sptr, UTF8STRC(" - ")));
-						me->cboObj->AddItem(CSTRP(sbuff, sptr), 0);
+						sb.AppendC(UTF8STRC(" - "));
+						sb.Append(Math::Geometry::Vector2D::VectorTypeGetName(vec->GetVectorType()));
+						me->cboObj->AddItem(sb.ToCString(), 0);
 					}
 					else
 					{
@@ -126,9 +126,9 @@ Bool __stdcall SSWR::AVIRead::AVIRGISQueryForm::OnMouseUp(void *userObj, Math::C
 					i2 = me->lyr->GetColumnCnt();
 					while (i < i2)
 					{
-						sbuff[0] = 0;
-						sptr = me->lyr->GetString(sbuff, sizeof(sbuff), nameArr, obj->objId, i);
-						me->queryValueList.Add(Text::String::NewP(sbuff, sptr).Ptr());
+						sb.ClearStr();
+						me->lyr->GetString(sb, nameArr, obj->objId, i);
+						me->queryValueList.Add(Text::String::New(sb.ToCString()).Ptr());
 						i++;
 					}
 				}

@@ -112,7 +112,7 @@ namespace SSWR
 			Int32 GetAudioAPIType();
 			Media::IAudioRenderer *BindAudio(Media::IAudioSource *audSrc);
 
-			Bool GenLinePreview(NotNullPtr<Media::DrawImage> img, NotNullPtr<Media::DrawEngine> eng, UOSInt lineThick, UInt32 lineColor, Media::ColorConv *colorConv);
+			Bool GenLinePreview(NotNullPtr<Media::DrawImage> img, NotNullPtr<Media::DrawEngine> eng, Double lineThick, UInt32 lineColor, Media::ColorConv *colorConv);
 			Bool GenLineStylePreview(NotNullPtr<Media::DrawImage> img, NotNullPtr<Media::DrawEngine> eng, NotNullPtr<Map::MapEnv> env, UOSInt lineStyle, Media::ColorConv *colorConv);
 			Bool GenFontStylePreview(NotNullPtr<Media::DrawImage> img, NotNullPtr<Media::DrawEngine> eng, NotNullPtr<Map::MapEnv> env, UOSInt fontStyle, Media::ColorConv *colorConv);
 			Bool GenFontPreview(NotNullPtr<Media::DrawImage> img, NotNullPtr<Media::DrawEngine> eng, Text::CStringNN fontName, Double fontSizePt, UInt32 fontColor, Media::ColorConv *colorConv);

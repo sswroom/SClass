@@ -958,12 +958,12 @@ Bool IO::SMake::CompileProgInternal(NotNullPtr<const ProgramItem> prog, Bool asm
 						sb.AppendC(UTF8STRC("Obj "));
 						sb.Append(subProg->name);
 						sb.AppendC(UTF8STRC(" Src time: "));
-						sb.AppendTS(dt2);
+						sb.AppendTSNoZone(dt2);
 						sb.AppendC(UTF8STRC(", Obj time: "));
-						sb.AppendTS(dt1);
+						sb.AppendTSNoZone(dt1);
 						sb.AppendC(UTF8STRC(", Last time: "));
 						dt1 = Data::Timestamp(lastTime, Data::DateTimeUtil::GetLocalTzQhr());
-						sb.AppendTS(dt1);
+						sb.AppendTSNoZone(dt1);
 						sb.AppendC(UTF8STRC(", Skip"));
 						this->messageWriter->WriteLineC(sb.ToString(), sb.GetLength());
 					}

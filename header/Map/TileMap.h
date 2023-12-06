@@ -55,11 +55,13 @@ namespace Map
 		virtual UOSInt GetTileImageIDs(UOSInt level, Math::RectAreaDbl rect, Data::ArrayList<Math::Coord2D<Int32>> *ids) = 0;
 		virtual Media::ImageList *LoadTileImage(UOSInt level, Math::Coord2D<Int32> tileId, NotNullPtr<Parser::ParserList> parsers, OutParam<Math::RectAreaDbl> bounds, Bool localOnly) = 0;
 		virtual UTF8Char *GetTileImageURL(UTF8Char *sbuff, UOSInt level, Math::Coord2D<Int32> tileId) = 0;
+		virtual Bool GetTileImageURL(NotNullPtr<Text::StringBuilderUTF8> sb, UOSInt level, Math::Coord2D<Int32> tileId) = 0;
 		virtual Optional<IO::StreamData> LoadTileImageData(UOSInt level, Math::Coord2D<Int32> tileId, OutParam<Math::RectAreaDbl> bounds, Bool localOnly, OptOut<ImageType> it) = 0;
 
 		virtual UOSInt GetScreenObjCnt() { return 0; };
 		virtual Math::Geometry::Vector2D *CreateScreenObjVector(UOSInt index) { return 0; };
 		virtual UTF8Char *GetScreenObjURL(UTF8Char *sbuff, UOSInt index) { return 0; };
+		virtual Bool GetScreenObjURL(NotNullPtr<Text::StringBuilderUTF8> sb, UOSInt index) {return false;};
 	};
 }
 #endif

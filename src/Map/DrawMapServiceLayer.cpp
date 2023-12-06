@@ -205,14 +205,15 @@ void Map::DrawMapServiceLayer::ReleaseNameArr(NameArray *nameArr)
 {
 }
 
-UTF8Char *Map::DrawMapServiceLayer::GetString(UTF8Char *buff, UOSInt buffSize, NameArray *nameArr, Int64 id, UOSInt strIndex)
+Bool Map::DrawMapServiceLayer::GetString(NotNullPtr<Text::StringBuilderUTF8> sb, NameArray *nameArr, Int64 id, UOSInt strIndex)
 {
 	switch (strIndex)
 	{
 	case 0:
-		return Text::StrInt64(buff, id);
+		sb->AppendI64(id);
+		return true;
 	}
-	return 0;
+	return false;
 }
 
 UOSInt Map::DrawMapServiceLayer::GetColumnCnt() const

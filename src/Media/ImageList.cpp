@@ -313,11 +313,11 @@ Bool Media::ImageList::ToValueString(NotNullPtr<Text::StringBuilderUTF8> sb) con
 			v = this->valI64.GetItem(i);
 			if (vt == VT_CAPTURE_DATE)
 			{
-				sb->AppendTS(Data::Timestamp(v, Data::DateTimeUtil::GetLocalTzQhr()));
+				sb->AppendTSNoZone(Data::Timestamp(v, Data::DateTimeUtil::GetLocalTzQhr()));
 			}
 			else if (vt == VT_FIRMWARE_DATE)
 			{
-				sb->AppendTS(Data::Timestamp(v, 0));
+				sb->AppendTSNoZone(Data::Timestamp(v, 0));
 			}
 			else
 			{

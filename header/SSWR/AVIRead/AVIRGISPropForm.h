@@ -56,7 +56,7 @@ namespace SSWR
 			UOSInt index;
 			Int32 lineType;
 			UOSInt lineStyle;
-			UOSInt lineThick;
+			Double lineThick;
 			UInt32 lineColor;
 			UInt32 fillStyle;
 			Map::MapEnv::FontType fontType;

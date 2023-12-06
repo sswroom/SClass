@@ -125,6 +125,7 @@ Bool Map::OWSFeatureParser::ParseGML(Text::CStringNN txt, UInt32 srid, Bool swap
 			layer->GetAllObjectIds(idArr, &nameArr);
 			if (idArr.GetCount() > 0)
 			{
+				Text::StringBuilderUTF8 sb;
 				Map::GetObjectSess *sess = layer->BeginGetObject();
 				UOSInt i = 0;
 				UOSInt j = idArr.GetCount();
@@ -144,8 +145,9 @@ Bool Map::OWSFeatureParser::ParseGML(Text::CStringNN txt, UInt32 srid, Bool swap
 						{
 							tmpPtr = layer->GetColumnName(tmpBuff, k);
 							nameList->Add(Text::String::NewP(tmpBuff, tmpPtr));
-							tmpPtr = layer->GetString(tmpBuff, sizeof(tmpBuff), nameArr, idArr.GetItem(i), k);
-							valueList->Add(Text::String::NewP(tmpBuff, tmpPtr).Ptr());
+							sb.ClearStr();
+							layer->GetString(sb, nameArr, idArr.GetItem(i), k);
+							valueList->Add(Text::String::New(sb.ToCString()).Ptr());
 							k++;
 						}
 						vecList->Add(vec);

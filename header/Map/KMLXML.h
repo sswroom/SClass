@@ -3,6 +3,7 @@
 #include "Data/ICaseStringMap.h"
 #include "Map/GPSTrack.h"
 #include "Map/MapDrawLayer.h"
+#include "Map/VectorLayer.h"
 #include "Media/SharedImage.h"
 #include "Net/WebBrowser.h"
 #include "Parser/ParserList.h"
@@ -17,7 +18,7 @@ namespace Map
 		struct KMLStyle
 		{
 			UInt32 lineColor;
-			UInt32 lineWidth;
+			Double lineWidth;
 			Text::String *iconURL;
 			Int32 iconSpotX;
 			Int32 iconSpotY;
@@ -30,9 +31,10 @@ namespace Map
 		static Map::MapDrawLayer *ParseKMLRoot(NotNullPtr<Text::XMLReader> reader, Text::CStringNN fileName, Parser::ParserList *parsers, Net::WebBrowser *browser, IO::PackageFile *pkgFile);
 	private:
 		static Map::MapDrawLayer *ParseKMLContainer(NotNullPtr<Text::XMLReader> reader, Data::ICaseStringMap<KMLStyle*> *styles, Text::CStringNN sourceName, Parser::ParserList *parsers, Net::WebBrowser *browser, IO::PackageFile *basePF);
-		static void ParseKMLPlacemarkTrack(NotNullPtr<Text::XMLReader> reader, Map::GPSTrack *lyr, Data::StringMap<KMLStyle*> *styles);
+		static void ParseKMLPlacemarkTrack(NotNullPtr<Text::XMLReader> reader, NotNullPtr<Map::GPSTrack> lyr, Data::StringMap<KMLStyle*> *styles);
 		static Map::MapDrawLayer *ParseKMLPlacemarkLyr(NotNullPtr<Text::XMLReader> reader, Data::StringMap<KMLStyle*> *styles, Text::CStringNN sourceName, Parser::ParserList *parsers, Net::WebBrowser *browser, IO::PackageFile *basePF);
-		static void ParseCoordinates(NotNullPtr<Text::XMLReader> reader, Data::ArrayList<Double> *coordList, Data::ArrayList<Double> *altList);
+		static Optional<Math::Geometry::Vector2D> ParseKMLVector(NotNullPtr<Text::XMLReader> reader, NotNullPtr<Data::ArrayListNN<Text::String>> colNames, NotNullPtr<Data::ArrayListNN<Text::String>> colValues, NotNullPtr<Data::ArrayList<Map::VectorLayer::ColInfo>> colInfos);
+		static void ParseCoordinates(NotNullPtr<Text::XMLReader> reader, NotNullPtr<Data::ArrayListA<Math::Coord2DDbl>> coordList, NotNullPtr<Data::ArrayList<Double>> altList);
 	};
 }
 #endif

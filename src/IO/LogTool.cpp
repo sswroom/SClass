@@ -109,7 +109,7 @@ void IO::LogTool::AddLogHandler(NotNullPtr<LogHandler> hdlr, IO::LogHandler::Log
 	sb.AppendC(sptr, (UOSInt)(sptr2 - sptr));
 	sb.AppendC(UTF8STRC(" started"));
 	sb.AppendC(UTF8STRC(", version: "));
-	sb.AppendTS(IO::BuildTime::GetBuildTime());
+	sb.AppendTSNoZone(IO::BuildTime::GetBuildTime());
 	hdlr->LogAdded(ts, sb.ToCString(), (LogHandler::LogLevel)0);
 }
 

@@ -372,7 +372,7 @@ Bool Manage::ExceptionLogger::LogToFile(NotNullPtr<Text::String> fileName, UInt3
 	sb.AppendC(UTF8STRC(" at "));
 	sb.AppendHexOS(exAddr);
 	sb.AppendC(UTF8STRC(", time = "));
-	sb.AppendTS(d);
+	sb.AppendTSNoZone(d);
 	sb.AppendC(UTF8STRC(", Type = "));
 	sb.Append(exName);
 	writer.WriteLineC(sb.ToString(), sb.GetLength());

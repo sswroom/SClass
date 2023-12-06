@@ -51,6 +51,7 @@ namespace DB
 		OSInt GetColIndex(const UTF8Char *name);
 		WChar *GetRecord(WChar *buff, UOSInt row, UOSInt col);
 		UTF8Char *GetRecord(UTF8Char *buff, UOSInt row, UOSInt col);
+		Bool GetRecord(NotNullPtr<Text::StringBuilderUTF8> sb, UOSInt row, UOSInt col);
 		UOSInt GetColCount();
 		UOSInt GetRowCnt();
 		UTF8Char *GetColumnName(UOSInt colIndex, UTF8Char *buff);

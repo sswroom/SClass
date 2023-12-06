@@ -498,6 +498,23 @@ UTF8Char *Map::TileMapServiceSource::GetTileImageURL(UTF8Char *sbuff, UOSInt lev
 	return 0;
 }
 
+Bool Map::TileMapServiceSource::GetTileImageURL(NotNullPtr<Text::StringBuilderUTF8> sb, UOSInt level, Math::Coord2D<Int32> tileId)
+{
+	TileLayer *layer = this->layers.GetItem(level);
+	if (layer)
+	{
+		sb->Append(layer->url);
+		sb->AppendUTF8Char('/');
+		sb->AppendI32(tileId.x);
+		sb->AppendUTF8Char('/');
+		sb->AppendI32(tileId.y);
+		sb->AppendUTF8Char('.');
+		sb->Append(this->tileExt);
+		return true;
+	}
+	return false;
+}
+
 Optional<IO::StreamData> Map::TileMapServiceSource::LoadTileImageData(UOSInt level, Math::Coord2D<Int32> tileId, OutParam<Math::RectAreaDbl> bounds, Bool localOnly, OptOut<ImageType> it)
 {
 	UTF8Char filePathU[512];

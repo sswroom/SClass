@@ -198,7 +198,7 @@ namespace Text
 			return *this;
 		}
 
-		NotNullPtr<StringBuilderUTF8> AppendTS(const Data::Timestamp &ts)
+		NotNullPtr<StringBuilderUTF8> AppendTSNoZone(const Data::Timestamp &ts)
 		{
 			if (ts.inst.nanosec == 0)
 			{
@@ -220,6 +220,13 @@ namespace Text
 				this->AllocLeng(29);
 				this->leng = (UOSInt)(ts.ToString(&this->v[this->leng], "yyyy-MM-dd HH:mm:ss.fffffffff") - this->v);
 			}
+			return *this;
+		}
+
+		NotNullPtr<StringBuilderUTF8> AppendTS(const Data::Timestamp &ts, const Char *pattern)
+		{
+			this->AllocLeng(40);
+			this->leng = (UOSInt)(ts.ToString(&this->v[this->leng], pattern) - this->v);
 			return *this;
 		}
 

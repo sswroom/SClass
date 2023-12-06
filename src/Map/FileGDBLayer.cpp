@@ -259,17 +259,18 @@ void Map::FileGDBLayer::ReleaseNameArr(NameArray *nameArr)
 	DEL_CLASS(names);
 }
 
-UTF8Char *Map::FileGDBLayer::GetString(UTF8Char *buff, UOSInt buffSize, NameArray *nameArr, Int64 id, UOSInt strIndex)
+Bool Map::FileGDBLayer::GetString(NotNullPtr<Text::StringBuilderUTF8> sb, NameArray *nameArr, Int64 id, UOSInt strIndex)
 {
 	Data::FastMap<Int32, const UTF8Char **> *names = (Data::FastMap<Int32, const UTF8Char **> *)nameArr;
 	if (names == 0)
-		return 0;
+		return false;
 	const UTF8Char **nameStrs = names->Get((Int32)id);
 	if (nameStrs == 0)
-		return 0;
+		return false;
 	if (nameStrs[strIndex] == 0)
-		return 0;
-	return Text::StrConcatS(buff, nameStrs[strIndex], buffSize);
+		return false;
+	sb->AppendSlow(nameStrs[strIndex]);
+	return true;
 }
 
 UOSInt Map::FileGDBLayer::GetColumnCnt() const

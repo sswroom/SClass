@@ -1,6 +1,7 @@
 #ifndef _SM_MAP_MAPSEARCHLAYER
 #define _SM_MAP_MAPSEARCHLAYER
 #include "Math/Coord2DDbl.h"
+#include "Text/StringBuilderUTF8.h"
 
 namespace Map
 {
@@ -10,8 +11,8 @@ namespace Map
 		virtual ~MapSearchLayer() {};
 
 		virtual Bool IsError() const = 0;
-		virtual UTF8Char *GetPGLabel(UTF8Char *buff, UOSInt buffSize, Math::Coord2DDbl coord, OptOut<Math::Coord2DDbl> outCoord, UOSInt strIndex) = 0;
-		virtual UTF8Char *GetPLLabel(UTF8Char *buff, UOSInt buffSize, Math::Coord2DDbl coord, OutParam<Math::Coord2DDbl> outCoord, UOSInt strIndex) = 0;
+		virtual Bool GetPGLabel(NotNullPtr<Text::StringBuilderUTF8> sb, Math::Coord2DDbl coord, OptOut<Math::Coord2DDbl> outCoord, UOSInt strIndex) = 0;
+		virtual Bool GetPLLabel(NotNullPtr<Text::StringBuilderUTF8> sb, Math::Coord2DDbl coord, OutParam<Math::Coord2DDbl> outCoord, UOSInt strIndex) = 0;
 	};
 }
 #endif

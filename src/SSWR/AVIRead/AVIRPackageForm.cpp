@@ -1260,8 +1260,8 @@ void SSWR::AVIRead::AVIRPackageForm::EventMenuClicked(UInt16 cmdId)
 			}
 			sb.Append(CSTR("\r\n"));
 			Data::Duration totalTime = endTime.Diff(startTime);
-			sb.Append(CSTR("Start Time = "))->AppendTS(startTime)->Append(CSTR("\r\n"));
-			sb.Append(CSTR("End Time = "))->AppendTS(endTime)->Append(CSTR("\r\n"));
+			sb.Append(CSTR("Start Time = "))->AppendTSNoZone(startTime)->Append(CSTR("\r\n"));
+			sb.Append(CSTR("End Time = "))->AppendTSNoZone(endTime)->Append(CSTR("\r\n"));
 			sb.Append(CSTR("Total Time = "))->AppendDur(totalTime)->Append(CSTR("\r\n"));
 			sb.Append(CSTR("File Count = "))->AppendUOSInt(sess.fileCnt)->Append(CSTR("\r\n"));
 			sb.Append(CSTR("Dir Count = "))->AppendUOSInt(sess.dirCnt)->Append(CSTR("\r\n"));

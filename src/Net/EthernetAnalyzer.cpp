@@ -829,7 +829,7 @@ Bool Net::EthernetAnalyzer::PacketIPv4(const UInt8 *packet, UOSInt packetSize, U
 				if (ipLog)
 				{
 					sb.ClearStr();
-					sb.AppendTS(ts);
+					sb.AppendTSNoZone(ts);
 					sb.AppendC(UTF8STRC(" ICMP "));
 					switch (ipData[0])
 					{
@@ -936,7 +936,7 @@ Bool Net::EthernetAnalyzer::PacketIPv4(const UInt8 *packet, UOSInt packetSize, U
 				if (ipLog)
 				{
 					sb.ClearStr();
-					sb.AppendTS(ts);
+					sb.AppendTSNoZone(ts);
 					sb.AppendC(UTF8STRC(" ICMP "));
 					switch (ipData[0])
 					{
@@ -1421,7 +1421,7 @@ Bool Net::EthernetAnalyzer::PacketIPv4(const UInt8 *packet, UOSInt packetSize, U
 										this->ipLogMap.Put(sortableIP, ipLog);
 									}
 									ipLogMutUsage.EndUse();
-									sb.AppendTS(Data::Timestamp::Now());
+									sb.AppendTSNoZone(Data::Timestamp::Now());
 									sb.AppendC(UTF8STRC(" UDP Port "));
 									sb.AppendU16(srcPort);
 									sb.AppendC(UTF8STRC(" NTP request to "));
@@ -1452,7 +1452,7 @@ Bool Net::EthernetAnalyzer::PacketIPv4(const UInt8 *packet, UOSInt packetSize, U
 										this->ipLogMap.Put(sortableIP, ipLog);
 									}
 									ipLogMutUsage.EndUse();
-									sb.AppendTS(Data::Timestamp::Now());
+									sb.AppendTSNoZone(Data::Timestamp::Now());
 									sb.AppendC(UTF8STRC(" UDP Port "));
 									sb.AppendU16(destPort);
 									sb.AppendC(UTF8STRC(" NTP reply from "));
@@ -1630,7 +1630,7 @@ FF FF FF FF FF FF 00 11 32 0A AB 9C 08 00 45 00
 								this->ipLogMap.Put(sortableIP, ipLog);
 							}
 							ipLogMutUsage.EndUse();
-							sb.AppendTS(Data::Timestamp::Now());
+							sb.AppendTSNoZone(Data::Timestamp::Now());
 							sb.AppendC(UTF8STRC(" UDP Port "));
 							sb.AppendU16(srcPort);
 							sb.AppendC(UTF8STRC(" SSDP to "));
