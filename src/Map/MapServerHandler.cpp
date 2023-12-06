@@ -49,8 +49,6 @@ Bool __stdcall Map::MapServerHandler::GetLayerDataFunc(NotNullPtr<Net::WebServer
 	NotNullPtr<Text::String> fmt;
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
-	UTF8Char sbuff2[256];
-	UTF8Char *sptr2;
 	Map::MapDrawLayer *layer;
 	if (!req->GetQueryValue(CSTR("name")).SetTo(name))
 	{
@@ -81,6 +79,7 @@ Bool __stdcall Map::MapServerHandler::GetLayerDataFunc(NotNullPtr<Net::WebServer
 			layer->GetAllObjectIds(objIds, &nameArr);
 			if (objIds.GetCount() > 0)
 			{
+				Text::StringBuilderUTF8 sbTmp;
 				NotNullPtr<Math::CoordinateSystem> csys = layer->GetCoordinateSystem();
 				Map::GetObjectSess *sess = layer->BeginGetObject();
 				i = 0;
@@ -109,10 +108,10 @@ Bool __stdcall Map::MapServerHandler::GetLayerDataFunc(NotNullPtr<Net::WebServer
 							sb.Append(s);
 							s->Release();
 							sb.AppendC(UTF8STRC(": "));
-							sptr = layer->GetString(sbuff, sizeof(sbuff), nameArr, objId, k);
-							if (sptr)
+							sbTmp.ClearStr();
+							if (layer->GetString(sbTmp, nameArr, objId, k))
 							{
-								s = Text::XML::ToNewHTMLBodyText(sbuff);
+								s = Text::XML::ToNewHTMLBodyText(sbTmp.v);
 								sb.Append(s);
 								s->Release();
 							}
@@ -178,6 +177,7 @@ Bool __stdcall Map::MapServerHandler::GetLayerDataFunc(NotNullPtr<Net::WebServer
 				NotNullPtr<Math::CoordinateSystem> wgs84 = Math::CoordinateSystemManager::CreateDefaultCsys();
 				Bool needConv = !wgs84->Equals(csys);
 				Math::CoordinateSystemConverter converter(csys, wgs84);
+				Text::StringBuilderUTF8 sbTmp;
 				Map::GetObjectSess *sess = layer->BeginGetObject();
 				i = 0;
 				j = objIds.GetCount();
@@ -197,10 +197,10 @@ Bool __stdcall Map::MapServerHandler::GetLayerDataFunc(NotNullPtr<Net::WebServer
 					while (k < l)
 					{
 						sptr = layer->GetColumnName(sbuff, k);
-						sptr2 = layer->GetString(sbuff2, sizeof(sbuff2), nameArr, objId, k);
-						if (sptr2)
+						sbTmp.ClearStr();
+						if (layer->GetString(sbTmp, nameArr, objId, k))
 						{
-							json.ObjectAddStr(CSTRP(sbuff, sptr), CSTRP(sbuff2, sptr2));
+							json.ObjectAddStr(CSTRP(sbuff, sptr), sbTmp.ToCString());
 						}
 						else
 						{

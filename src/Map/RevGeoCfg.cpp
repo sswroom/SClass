@@ -82,9 +82,16 @@ Map::RevGeoCfg::~RevGeoCfg()
 
 UTF8Char *Map::RevGeoCfg::GetStreetName(UTF8Char *buff, UOSInt buffSize, Math::Coord2DDbl pos)
 {
-	UTF8Char *buffEnd = buff + buffSize;
-	UTF8Char sbuff[256];
-	UTF8Char *tmpStr = 0;
+	Text::StringBuilderUTF8 sb;
+	if (GetStreetName(sb, pos))
+		return sb.ConcatToS(buff, buffSize);
+	return 0;
+}
+
+Bool Map::RevGeoCfg::GetStreetName(NotNullPtr<Text::StringBuilderUTF8> sb, Math::Coord2DDbl pos)
+{
+	Text::StringBuilderUTF8 sbTmp;
+	UOSInt lastStrPos = 0;
 	Bool hasStr = false;
 	UOSInt i = 0;
 	UOSInt j;
@@ -105,7 +112,8 @@ UTF8Char *Map::RevGeoCfg::GetStreetName(UTF8Char *buff, UOSInt buffSize, Math::C
 			layer = layers->GetItem(j);
 			if (layer->searchType == 1)
 			{
-				if (layer->data->GetPLLabel(sbuff, sizeof(sbuff), pos, posOut, layer->strIndex))
+				sbTmp.ClearStr();
+				if (layer->data->GetPLLabel(sbTmp, pos, posOut, layer->strIndex))
 				{
 					posOut = posOut - pos;
 					posOut = posOut * posOut;
@@ -115,19 +123,21 @@ UTF8Char *Map::RevGeoCfg::GetStreetName(UTF8Char *buff, UOSInt buffSize, Math::C
 						minDist = thisDist;
 						if (hasStr)
 						{
-							tmpStr = Text::StrConcatS(buff, (const UTF8Char*)", ", (UOSInt)(buffEnd - buff));
-							buff = Text::StrConcatS(tmpStr, sbuff, (UOSInt)(buffEnd - tmpStr));
+							sb->AppendC(UTF8STRC(", "));
+							lastStrPos = sb->leng;
+							sb->Append(sbTmp);
 						}
 						else
 						{
-							buff = Text::StrConcatS(tmpStr = buff, sbuff, (UOSInt)(buffEnd - buff));
+							sb->Append(sbTmp);
 							hasStr = true;
 						}
 					}
 					else if (thisDist < minDist)
 					{
 						minDist = thisDist;
-						buff = Text::StrConcatS(tmpStr, sbuff, (UOSInt)(buffEnd - tmpStr));
+						sb->TrimToLength(lastStrPos);
+						sb->Append(sbTmp);
 						if (thisDist == 0)
 							break;
 					}
@@ -135,24 +145,26 @@ UTF8Char *Map::RevGeoCfg::GetStreetName(UTF8Char *buff, UOSInt buffSize, Math::C
 			}
 			else if (layer->searchType == 2)
 			{
-				if (layer->data->GetPGLabel(sbuff, sizeof(sbuff), pos, posOut, layer->strIndex))
+				sbTmp.ClearStr();
+				if (layer->data->GetPGLabel(sbTmp, pos, posOut, layer->strIndex))
 				{
 					if (minDist < 0)
 					{
 						if (hasStr)
 						{
-							buff = Text::StrConcatS(buff, (const UTF8Char*)", ", (UOSInt)(buffEnd - buff));
-							buff = Text::StrConcatS(buff, sbuff, (UOSInt)(buffEnd - buff));
+							sb->AppendC(UTF8STRC(", "));
+							sb->Append(sbTmp);
 						}
 						else
 						{
-							buff = Text::StrConcatS(buff, sbuff, (UOSInt)(buffEnd - buff));
+							sb->Append(sbTmp);
 							hasStr = true;
 						}
 					}
 					else
 					{
-						buff = Text::StrConcatS(tmpStr, sbuff, (UOSInt)(buffEnd - tmpStr));
+						sb->TrimToLength(lastStrPos);
+						sb->Append(sbTmp);
 					}
 					break;
 				}
@@ -162,8 +174,5 @@ UTF8Char *Map::RevGeoCfg::GetStreetName(UTF8Char *buff, UOSInt buffSize, Math::C
 		
 		i++;
 	}
-	if (hasStr)
-		return buff;
-	*buff = 0;
-	return 0;
+	return hasStr;
 }

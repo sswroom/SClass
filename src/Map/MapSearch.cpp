@@ -171,9 +171,8 @@ UTF8Char *Map::MapSearch::SearchName(UTF8Char *buff, Math::Coord2DDbl pos)
 
 Int32 Map::MapSearch::SearchNames(UTF8Char *buff, Text::PString *outArrs, Math::Coord2DDbl *outPos, Int32 *resTypes, Math::Coord2DDbl pos)
 {
-	UTF8Char sbufftmp[128];
+	Text::StringBuilderUTF8 sbTmp;
 	UTF8Char *sptr;
-	UTF8Char *sptrtmp;
 	UTF8Char *outptr;
 	Int32 resType;
 	OSInt i;
@@ -201,15 +200,16 @@ Int32 Map::MapSearch::SearchNames(UTF8Char *buff, Text::PString *outArrs, Math::
 			Map::MapSearchLayerInfo *lyr = this->layersArr[i]->GetItem(k++);
 			if (lyr->searchType == 2)
 			{
-				if ((sptrtmp = lyr->mapLayer->GetPGLabel(sbufftmp, sizeof(sbufftmp), pos, 0, lyr->strIndex)) != 0)
+				sbTmp.ClearStr();
+				if (lyr->mapLayer->GetPGLabel(sbTmp, pos, 0, lyr->strIndex))
 				{
 					if (lyr->searchStr)
 					{
-						sptr = Text::StrConcatC(lyr->searchStr->ConcatTo(outptr), sbufftmp, (UOSInt)(sptrtmp - sbufftmp));
+						sptr = sbTmp.ConcatTo(lyr->searchStr->ConcatTo(outptr));
 					}
 					else
 					{
-						sptr = Text::StrConcatC(outptr, sbufftmp, (UOSInt)(sptrtmp - sbufftmp));
+						sptr = sbTmp.ConcatTo(outptr);
 					}
 					posNear = pos;
 					resType = 2;
@@ -219,7 +219,8 @@ Int32 Map::MapSearch::SearchNames(UTF8Char *buff, Text::PString *outArrs, Math::
 			else if (lyr->searchType == 1)
 			{
 				Math::Coord2DDbl posout;
-				if ((sptrtmp = lyr->mapLayer->GetPLLabel(sbufftmp, sizeof(sbufftmp), pos, posout, lyr->strIndex)) != 0)
+				sbTmp.ClearStr();
+				if (lyr->mapLayer->GetPLLabel(sbTmp, pos, posout, lyr->strIndex))
 				{
 					Math::Coord2DDbl tmp = posout - pos;
 					tmp = tmp * tmp;
@@ -232,11 +233,11 @@ Int32 Map::MapSearch::SearchNames(UTF8Char *buff, Text::PString *outArrs, Math::
 							minDist = thisDist;
 							if (lyr->searchStr)
 							{
-								sptr = Text::StrConcatC(lyr->searchStr->ConcatTo(outptr), sbufftmp, (UOSInt)(sptrtmp - sbufftmp));
+								sptr = sbTmp.ConcatTo(lyr->searchStr->ConcatTo(outptr));
 							}
 							else
 							{
-								sptr = Text::StrConcatC(outptr, sbufftmp, (UOSInt)(sptrtmp - sbufftmp));
+								sptr = sbTmp.ConcatTo(outptr);
 							}
 							posNear = posout;
 							resType = 1;
@@ -248,11 +249,11 @@ Int32 Map::MapSearch::SearchNames(UTF8Char *buff, Text::PString *outArrs, Math::
 						minDist = thisDist;
 						if (lyr->searchStr)
 						{
-							sptr = Text::StrConcatC(lyr->searchStr->ConcatTo(outptr), sbufftmp, (UOSInt)(sptrtmp - sbufftmp));
+							sptr = sbTmp.ConcatTo(lyr->searchStr->ConcatTo(outptr));
 						}
 						else
 						{
-							sptr = Text::StrConcatC(outptr, sbufftmp, (UOSInt)(sptrtmp - sbufftmp));
+							sptr = sbTmp.ConcatTo(outptr);
 						}
 						posNear = posout;
 						resType = 1;

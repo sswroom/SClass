@@ -1021,6 +1021,26 @@ UTF8Char *Map::WebMapTileServiceSource::GetTileImageURL(UTF8Char *sbuff, UOSInt 
 	return 0;
 }
 
+Bool Map::WebMapTileServiceSource::GetTileImageURL(NotNullPtr<Text::StringBuilderUTF8> sb, UOSInt level, Math::Coord2D<Int32> tileId)
+{
+	UTF8Char tmpBuff[32];
+	UTF8Char *tmpPtr;
+	TileMatrix *tileMatrix = this->GetTileMatrix(level);
+	if (tileMatrix && this->currResource)
+	{
+		sb->Append(this->currResource->templateURL);
+		tmpPtr = Text::StrInt32(tmpBuff, tileId.x);
+		sb->ReplaceStr(UTF8STRC("{TileCol}"), tmpBuff, (UOSInt)(tmpPtr - tmpBuff));
+		tmpPtr = Text::StrInt32(tmpBuff, tileId.y);
+		sb->ReplaceStr(UTF8STRC("{TileRow}"), tmpBuff, (UOSInt)(tmpPtr - tmpBuff));
+		sb->ReplaceStr(UTF8STRC("{TileMatrix}"), tileMatrix->id->v, tileMatrix->id->leng);
+		sb->ReplaceStr(UTF8STRC("{TileMatrixSet}"), this->currSet->id->v, this->currSet->id->leng);
+		sb->ReplaceStr(UTF8STRC("{style}"), UTF8STRC("generic"));
+		return true;
+	}
+	return false;
+}
+
 Optional<IO::StreamData> Map::WebMapTileServiceSource::LoadTileImageData(UOSInt level, Math::Coord2D<Int32> tileId, OutParam<Math::RectAreaDbl> bounds, Bool localOnly, OptOut<ImageType> it)
 {
 	UTF8Char filePathU[512];

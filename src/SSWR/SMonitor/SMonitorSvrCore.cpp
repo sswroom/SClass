@@ -609,7 +609,7 @@ void SSWR::SMonitor::SMonitorSvrCore::NewNotify(NotNullPtr<const Net::SocketUtil
 	sb.AppendC(UTF8STRC("\r\nSource Port: "));
 	sb.AppendU16(port);
 	sb.AppendC(UTF8STRC("\r\nAction Time: "));
-	sb.AppendTS(ts.ToLocalTime());
+	sb.AppendTSNoZone(ts.ToLocalTime());
 	sb.AppendC(UTF8STRC("\r\nAction Type: "));
 	sb.Append((type == 1)?CSTR("Update"):CSTR("Start"));
 	sb.AppendC(UTF8STRC("\r\nProcess Id: "));

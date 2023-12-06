@@ -28,6 +28,7 @@ namespace Map
 		~RevGeoCfg();
 
 		UTF8Char *GetStreetName(UTF8Char *buff, UOSInt buffSize, Math::Coord2DDbl pos);
+		Bool GetStreetName(NotNullPtr<Text::StringBuilderUTF8> sb, Math::Coord2DDbl pos);
 	};
 }
 #endif

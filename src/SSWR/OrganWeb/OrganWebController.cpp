@@ -925,9 +925,9 @@ void SSWR::OrganWeb::OrganWebController::WriteDataFiles(IO::Writer *writer, Data
 		{
 			sb.AppendC(UTF8STRC("Other: "));
 		}
-		sb.AppendTS(dataFile->startTime);
+		sb.AppendTSNoZone(dataFile->startTime);
 		sb.AppendC(UTF8STRC(" - "));
-		sb.AppendTS(dataFile->endTime);
+		sb.AppendTSNoZone(dataFile->endTime);
 		sb.AppendC(UTF8STRC("<br/>"));
 		writer->WriteLineC(sb.ToString(), sb.GetLength());
 		startIndex++;

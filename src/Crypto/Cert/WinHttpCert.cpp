@@ -51,9 +51,9 @@ void Crypto::Cert::WinHttpCert::ToString(NotNullPtr<Text::StringBuilderUTF8> sb)
 {
 	Data::DateTime dt;
 	sb->AppendC(UTF8STRC("Not Before: "));
-	sb->AppendTS(this->GetNotBefore());
+	sb->AppendTSNoZone(this->GetNotBefore());
 	sb->AppendC(UTF8STRC("\r\nNot After: "));
-	sb->AppendTS(this->GetNotAfter());
+	sb->AppendTSNoZone(this->GetNotAfter());
 	if (this->clsData->certInfo->lpszSubjectInfo)
 	{
 		sb->AppendC(UTF8STRC("\r\nSubject: "));

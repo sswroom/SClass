@@ -30,7 +30,7 @@ static UInt32 __stdcall SerialViewer(void *userObj)
 				break;
 			}
 			sb.ClearStr();
-			sb.AppendTS(Data::Timestamp::Now());
+			sb.AppendTSNoZone(Data::Timestamp::Now());
 			console->WriteLineC(sb.ToString(), sb.GetLength());
 			sb.ClearStr();
 			sb.AppendHexBuff(readBuff, readSize, ' ', Text::LineBreakType::CRLF);

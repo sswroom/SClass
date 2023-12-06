@@ -185,10 +185,10 @@ Bool Exporter::KMLExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text:
 					{
 						z = 0;
 					}
-
-					if (layer->GetString(sbuff, sizeof(sbuff), nameArr, currId, nameCol) == 0)
+					sb.ClearStr();
+					if (!layer->GetString(sb, nameArr, currId, nameCol))
 					{
-						Text::StrInt64(sbuff, currId);
+						sb.AppendI64(currId);
 					}
 					if (needConv)
 					{
@@ -199,7 +199,7 @@ Bool Exporter::KMLExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text:
 
 					sptr = Text::StrConcatC(sbuff2, UTF8STRC("<Placemark>"));
 					sptr = Text::StrConcatC(sptr, UTF8STRC("<name>"));
-					sptr = Text::XML::ToXMLText(sptr, sbuff);
+					sptr = Text::XML::ToXMLText(sptr, sb.v);
 					sptr = Text::StrConcatC(sptr, UTF8STRC("</name>"));
 					sptr = Text::StrConcatC(sptr, UTF8STRC("<Point><coordinates>"));
 					sptr = Text::StrDouble(sptr, coord.x);
@@ -215,14 +215,15 @@ Bool Exporter::KMLExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text:
 				{
 					UOSInt nPoints;
 					Math::Geometry::LineString *pl = (Math::Geometry::LineString*)vec;
-					if ((sptr = layer->GetString(sbuff, sizeof(sbuff), nameArr, currId, nameCol)) == 0)
+					sb.ClearStr();
+					if (!layer->GetString(sb, nameArr, currId, nameCol))
 					{
-						sptr = Text::StrInt64(sbuff, currId);
+						sb.AppendI64(currId);
 					}
 
+					sptr = Text::XML::ToXMLText(sbuff2, sb.v);
 					sb.ClearStr();
 					sb.AppendC(UTF8STRC("<Placemark><name>"));
-					sptr = Text::XML::ToXMLText(sbuff2, sbuff);
 					sb.AppendP(sbuff2, sptr);
 					sb.AppendC(UTF8STRC("</name><styleUrl>#lineLabel</styleUrl><LineString><coordinates>"));
 
@@ -319,14 +320,15 @@ Bool Exporter::KMLExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text:
 				{
 					UOSInt nPoints;
 					Math::Geometry::Polyline *pl = (Math::Geometry::Polyline*)vec;
-					if ((sptr = layer->GetString(sbuff, sizeof(sbuff), nameArr, currId, nameCol)) == 0)
+					sb.ClearStr();
+					if (!layer->GetString(sb, nameArr, currId, nameCol))
 					{
-						sptr = Text::StrInt64(sbuff, currId);
+						sb.AppendI64(currId);
 					}
 
+					sptr = Text::XML::ToXMLText(sbuff2, sb.v);
 					sb.ClearStr();
 					sb.AppendC(UTF8STRC("<Placemark><name>"));
-					sptr = Text::XML::ToXMLText(sbuff2, sbuff);
 					sb.AppendP(sbuff2, sptr);
 					sb.AppendC(UTF8STRC("</name><styleUrl>#lineLabel</styleUrl><LineString><coordinates>"));
 
@@ -431,15 +433,16 @@ Bool Exporter::KMLExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text:
 					UOSInt nPoints;
 					UOSInt nParts;
 					Math::Geometry::Polygon *pg = (Math::Geometry::Polygon*)vec;
-					if ((sptr = layer->GetString(sbuff, sizeof(sbuff), nameArr, currId, nameCol)) == 0)
+					sb.ClearStr();
+					if (!layer->GetString(sb, nameArr, currId, nameCol))
 					{
-						sptr = Text::StrInt64(sbuff, currId);
+						sb.AppendI64(currId);
 					}
 
+					sptr = Text::XML::ToXMLText(sbuff2, sb.v);
 					sb.ClearStr();
 					sb.AppendC(UTF8STRC("<Placemark>"));
 					sb.AppendC(UTF8STRC("<name>"));
-					sptr = Text::XML::ToXMLText(sbuff2, sbuff);
 					sb.AppendP(sbuff2, sptr);
 					sb.AppendC(UTF8STRC("</name>"));
 					sb.AppendC(UTF8STRC("<Polygon>"));
@@ -509,20 +512,21 @@ Bool Exporter::KMLExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text:
 				else if (vecType == Math::Geometry::Vector2D::VectorType::Image)
 				{
 					Math::Geometry::VectorImage *img = (Math::Geometry::VectorImage*)vec;
-					if ((sptr = layer->GetString(sbuff, sizeof(sbuff), nameArr, currId, nameCol)) == 0)
+					sb.ClearStr();
+					if (!layer->GetString(sb, nameArr, currId, nameCol))
 					{
-						sptr = Text::StrInt64(sbuff, currId);
+						sb.AppendI64(currId);
 					}
 
 					Math::RectAreaDbl bounds;
 					Int64 timeStart;
 					Int64 timeEnd;
+					sptr = Text::XML::ToXMLText(sbuff2, sb.v);
 					if (img->IsScnCoord())
 					{
 						sb.ClearStr();
 						sb.AppendC(UTF8STRC("<ScreenOverlay>"));
 						sb.AppendC(UTF8STRC("<name>"));
-						sptr = Text::XML::ToXMLText(sbuff2, sbuff);
 						sb.AppendP(sbuff2, sptr);
 						sb.AppendC(UTF8STRC("</name>"));
 						timeStart = img->GetTimeStart();
@@ -601,7 +605,6 @@ Bool Exporter::KMLExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text:
 						sb.ClearStr();
 						sb.AppendC(UTF8STRC("<GroundOverlay>"));
 						sb.AppendC(UTF8STRC("<name>"));
-						sptr = Text::XML::ToXMLText(sbuff2, sbuff);
 						sb.AppendP(sbuff2, sptr);
 						sb.AppendC(UTF8STRC("</name>"));
 						timeStart = img->GetTimeStart();

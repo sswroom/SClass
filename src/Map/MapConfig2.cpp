@@ -2383,9 +2383,6 @@ void Map::MapConfig2::DrawString(NotNullPtr<Media::DrawImage> img, MapLayerStyle
 	Double scaleW;
 	Double scaleH;
 	Math::Coord2DDbl pts;
-	UTF8Char *sptr;
-	UTF8Char *sptrEnd;
-	UTF8Char lblStr[128];
 	Map::GetObjectSess *session;
 	UOSInt imgWidth;
 	UOSInt imgHeight;
@@ -2402,6 +2399,7 @@ void Map::MapConfig2::DrawString(NotNullPtr<Media::DrawImage> img, MapLayerStyle
 	}
 
 	Data::ArrayListInt64 arri;
+	Text::StringBuilderUTF8 sb;
 	Math::RectAreaDbl rect = view->GetVerticalRect();
 	lyrs->lyr->GetObjectIdsMapXY(arri, &arr, rect, false);
 	session = lyrs->lyr->BeginGetObject();
@@ -2417,8 +2415,9 @@ void Map::MapConfig2::DrawString(NotNullPtr<Media::DrawImage> img, MapLayerStyle
 				case Math::Geometry::Vector2D::VectorType::Point:
 				{
 					Math::Coord2DDbl pt = vec->GetCenter();
-					sptrEnd = lyrs->lyr->GetString(sptr = lblStr, sizeof(lblStr), arr, arri.GetItem(i), 0);
-					AddLabel(labels, maxLabels, labelCnt, CSTRP(sptr, sptrEnd), 1, &pt, lyrs->priority, Map::DRAW_LAYER_POINT, lyrs->style, lyrs->bkColor, view, (UOSInt2Double(imgWidth) * view->GetHDPI() / view->GetDDPI()), (UOSInt2Double(imgHeight) * view->GetHDPI() / view->GetDDPI()));
+					sb.ClearStr();
+					lyrs->lyr->GetString(sb, arr, arri.GetItem(i), 0);
+					AddLabel(labels, maxLabels, labelCnt, sb.ToCString(), 1, &pt, lyrs->priority, Map::DRAW_LAYER_POINT, lyrs->style, lyrs->bkColor, view, (UOSInt2Double(imgWidth) * view->GetHDPI() / view->GetDDPI()), (UOSInt2Double(imgHeight) * view->GetHDPI() / view->GetDDPI()));
 					break;
 				}
 				case Math::Geometry::Vector2D::VectorType::Polyline:
@@ -2441,9 +2440,10 @@ void Map::MapConfig2::DrawString(NotNullPtr<Media::DrawImage> img, MapLayerStyle
 							maxPos = k;
 						}
 					}
-					sptrEnd = lyrs->lyr->GetString(sptr = lblStr, sizeof(lblStr), arr, arri.GetItem(i), 0);
+					sb.ClearStr();
+					lyrs->lyr->GetString(sb, arr, arri.GetItem(i), 0);
 					pointArr = pl->GetItem(maxPos)->GetPointList(nPoint);
-					AddLabel(labels, maxLabels, labelCnt, CSTRP(sptr, sptrEnd), nPoint, pointArr, lyrs->priority, lyrs->lyr->GetLayerType(), lyrs->style, lyrs->bkColor, view, (UOSInt2Double(imgWidth) * view->GetHDPI() / view->GetDDPI()), (UOSInt2Double(imgHeight) * view->GetHDPI() / view->GetDDPI()));
+					AddLabel(labels, maxLabels, labelCnt, sb.ToCString(), nPoint, pointArr, lyrs->priority, lyrs->lyr->GetLayerType(), lyrs->style, lyrs->bkColor, view, (UOSInt2Double(imgWidth) * view->GetHDPI() / view->GetDDPI()), (UOSInt2Double(imgHeight) * view->GetHDPI() / view->GetDDPI()));
 					break;
 				}
 				case Math::Geometry::Vector2D::VectorType::Polygon:	
@@ -2466,9 +2466,10 @@ void Map::MapConfig2::DrawString(NotNullPtr<Media::DrawImage> img, MapLayerStyle
 							maxPos = k;
 						}
 					}
-					sptrEnd = lyrs->lyr->GetString(sptr = lblStr, sizeof(lblStr), arr, arri.GetItem(i), 0);
+					sb.ClearStr();
+					lyrs->lyr->GetString(sb, arr, arri.GetItem(i), 0);
 					pointArr = pg->GetItem(maxPos)->GetPointList(nPoint);
-					AddLabel(labels, maxLabels, labelCnt, CSTRP(sptr, sptrEnd), nPoint, pointArr, lyrs->priority, lyrs->lyr->GetLayerType(), lyrs->style, lyrs->bkColor, view, (UOSInt2Double(imgWidth) * view->GetHDPI() / view->GetDDPI()), (UOSInt2Double(imgHeight) * view->GetHDPI() / view->GetDDPI()));
+					AddLabel(labels, maxLabels, labelCnt, sb.ToCString(), nPoint, pointArr, lyrs->priority, lyrs->lyr->GetLayerType(), lyrs->style, lyrs->bkColor, view, (UOSInt2Double(imgWidth) * view->GetHDPI() / view->GetDDPI()), (UOSInt2Double(imgHeight) * view->GetHDPI() / view->GetDDPI()));
 					break;
 				}
 				case Math::Geometry::Vector2D::VectorType::LineString:
@@ -2498,7 +2499,8 @@ void Map::MapConfig2::DrawString(NotNullPtr<Media::DrawImage> img, MapLayerStyle
 			}
 			else
 			{
-				sptrEnd = lyrs->lyr->GetString(sptr = lblStr, sizeof(lblStr), arr, arri.GetItem(i), 0);
+				sb.ClearStr();
+				lyrs->lyr->GetString(sb, arr, arri.GetItem(i), 0);
 				switch (vec->GetVectorType())
 				{
 				case Math::Geometry::Vector2D::VectorType::Polyline:
@@ -2530,7 +2532,7 @@ void Map::MapConfig2::DrawString(NotNullPtr<Media::DrawImage> img, MapLayerStyle
 
 						if ((lyrs->bkColor & SFLG_ROTATE) == 0)
 							scaleW = scaleH = 0;
-						DrawChars(img, CSTRP(sptr, sptrEnd), pts, scaleW, scaleH, fonts[lyrs->style], (lyrs->bkColor & SFLG_ALIGN) != 0);
+						DrawChars(img, sb.ToCString(), pts, scaleW, scaleH, fonts[lyrs->style], (lyrs->bkColor & SFLG_ALIGN) != 0);
 					}
 					break;
 				}
@@ -2541,7 +2543,7 @@ void Map::MapConfig2::DrawString(NotNullPtr<Media::DrawImage> img, MapLayerStyle
 					if (view->InViewXY(pts))
 					{
 						pts = view->MapXYToScnXY(pts);
-						DrawChars(img, CSTRP(sptr, sptrEnd), pts, 0, 0, fonts[lyrs->style], (lyrs->bkColor & SFLG_ALIGN) != 0);
+						DrawChars(img, sb.ToCString(), pts, 0, 0, fonts[lyrs->style], (lyrs->bkColor & SFLG_ALIGN) != 0);
 					}
 					break;
 				}
@@ -2551,7 +2553,7 @@ void Map::MapConfig2::DrawString(NotNullPtr<Media::DrawImage> img, MapLayerStyle
 					if (view->InViewXY(pts))
 					{
 						pts = view->MapXYToScnXY(pts);
-						DrawChars(img, CSTRP(sptr, sptrEnd), pts, 0, 0, fonts[lyrs->style], (lyrs->bkColor & SFLG_ALIGN) != 0);
+						DrawChars(img, sb.ToCString(), pts, 0, 0, fonts[lyrs->style], (lyrs->bkColor & SFLG_ALIGN) != 0);
 					}
 					break;
 				}
@@ -4759,14 +4761,14 @@ Bool Map::MapConfig2::SupportMCC(Int32 mcc)
 Int32 Map::MapConfig2::QueryMCC(Math::Coord2DDbl pos)
 {
 	UOSInt i = this->areaList.GetCount();
-	UTF8Char buff[256];
+	Text::StringBuilderUTF8 sb;
 	while (i-- > 0)
 	{
 		Map::MapConfig2::MapArea *area;
 		area = this->areaList.GetItem(i);
 		if (area->data)
 		{
-			if (area->data->GetPGLabel(buff, sizeof(buff), pos, 0, 0))
+			if (area->data->GetPGLabel(sb, pos, 0, 0))
 			{
 //				IO::Console::PrintStr(L"Area found: ");
 //				IO::Console::PrintStr(buff);

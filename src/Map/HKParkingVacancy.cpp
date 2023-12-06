@@ -317,86 +317,101 @@ void Map::HKParkingVacancy::ReleaseNameArr(NameArray *nameArr)
 {
 }
 
-UTF8Char *Map::HKParkingVacancy::GetString(UTF8Char *buff, UOSInt buffSize, NameArray *nameArr, Int64 id, UOSInt strIndex)
+Bool Map::HKParkingVacancy::GetString(NotNullPtr<Text::StringBuilderUTF8> sb, NameArray *nameArr, Int64 id, UOSInt strIndex)
 {
 	Sync::MutexUsage mutUsage(this->parkingMut);
 	ParkingInfo *parking = this->parkingMap.GetItem((UOSInt)id);
 	if (parking == 0)
 	{
-		return 0;
+		return false;
 	}
 	switch (strIndex)
 	{
 	case 0:
-		if (parking->parkId)
-			return parking->parkId->ConcatToS(buff, buffSize);
-		return 0;
+		if (parking->parkId == 0)
+			return false;
+		sb->Append(parking->parkId);
+		return true;
 	case 1:
-		if (parking->parkingNameEn)
-			return parking->parkingNameEn->ConcatToS(buff, buffSize);
-		return 0;
+		if (parking->parkingNameEn == 0)
+			return false;
+		sb->Append(parking->parkingNameEn);
+		return true;
 	case 2:
-		if (parking->parkingAddressEn)
-			return parking->parkingAddressEn->ConcatToS(buff, buffSize);
-		return 0;
+		if (parking->parkingAddressEn == 0)
+			return false;
+		sb->Append(parking->parkingAddressEn);
+		return true;
 	case 3:
-		if (parking->parkingDistictEn)
-			return parking->parkingDistictEn->ConcatToS(buff, buffSize);
-		return 0;
+		if (parking->parkingDistictEn == 0)
+			return false;
+		sb->Append(parking->parkingDistictEn);
+		return true;
 	case 4:
-		if (parking->parkingNameSc)
-			return parking->parkingNameSc->ConcatToS(buff, buffSize);
-		return 0;
+		if (parking->parkingNameSc == 0)
+			return false;
+		sb->Append(parking->parkingNameSc);
+		return true;
 	case 5:
-		if (parking->parkingAddressSc)
-			return parking->parkingAddressSc->ConcatToS(buff, buffSize);
-		return 0;
+		if (parking->parkingAddressSc == 0)
+			return false;
+		sb->Append(parking->parkingAddressSc);
+		return true;
 	case 6:
-		if (parking->parkingDistictSc)
-			return parking->parkingDistictSc->ConcatToS(buff, buffSize);
-		return 0;
+		if (parking->parkingDistictSc == 0)
+			return false;
+		sb->Append(parking->parkingDistictSc);
+		return true;
 	case 7:
-		if (parking->parkingNameTc)
-			return parking->parkingNameTc->ConcatToS(buff, buffSize);
-		return 0;
+		if (parking->parkingNameTc == 0)
+			return false;
+		sb->Append(parking->parkingNameTc);
+		return true;
 	case 8:
-		if (parking->parkingAddressTc)
-			return parking->parkingAddressTc->ConcatToS(buff, buffSize);
-		return 0;
+		if (parking->parkingAddressTc == 0)
+			return false;
+		sb->Append(parking->parkingAddressTc);
+		return true;
 	case 9:
-		if (parking->parkingDistictTc)
-			return parking->parkingDistictTc->ConcatToS(buff, buffSize);
-		return 0;
+		if (parking->parkingDistictTc == 0)
+			return false;
+		sb->Append(parking->parkingDistictTc);
+		return true;
 	case 10:
-		if (parking->parkingStarttime)
-			return parking->parkingStarttime->ConcatToS(buff, buffSize);
-		return 0;
+		if (parking->parkingStarttime == 0)
+			return false;
+		sb->Append(parking->parkingStarttime);
+		return true;
 	case 11:
-		if (parking->parkingEndtime)
-			return parking->parkingEndtime->ConcatToS(buff, buffSize);
-		return 0;
+		if (parking->parkingEndtime == 0)
+			return false;
+		sb->Append(parking->parkingEndtime);
+		return true;
 	case 12:
-		if (parking->parkingContactNo)
-			return parking->parkingContactNo->ConcatToS(buff, buffSize);
-		return 0;
+		if (parking->parkingContactNo == 0)
+			return false;
+		sb->Append(parking->parkingContactNo);
+		return true;
 	case 13:
-		return Text::StrDouble(buff, parking->parkingLatitude);
+		sb->AppendDouble(parking->parkingLatitude);
+		return true;
 	case 14:
-		return Text::StrDouble(buff, parking->parkingLongitude);
+		sb->AppendDouble(parking->parkingLongitude);
+		return true;
 	case 15:
 		{
 			Math::Geometry::Point pt(4326, parking->parkingLongitude, parking->parkingLatitude);
 			Math::WKTWriter wkt;
-			Text::StringBuilderUTF8 sb;
-			wkt.ToText(sb, pt);
-			return sb.ConcatToS(buff, buffSize);
+			return wkt.ToText(sb, pt);
 		}
 	case 16:
-		return Text::StrOSInt(buff, parking->vacancy);
+		sb->AppendOSInt(parking->vacancy);
+		return true;
 	case 17:
-		return parking->lastupdate.ToStringNoZone(buff);
+		sb->AppendTSNoZone(parking->lastupdate);
+		return true;
 	}
-	return 0;
+	return false;
 }
 
 UOSInt Map::HKParkingVacancy::GetColumnCnt() const

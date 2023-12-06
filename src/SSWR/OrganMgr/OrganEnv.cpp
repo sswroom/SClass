@@ -603,7 +603,7 @@ Text::String *SSWR::OrganMgr::OrganEnv::GetLocName(Int32 userId, const Data::Tim
 		{
 			OrganTripForm frm(0, ui, this);
 			sb.AppendC(UTF8STRC("Trip not found at "));
-			sb.AppendTS(ts);
+			sb.AppendTSNoZone(ts);
 			frm.SetText(sb.ToCString());
 			frm.SetTimes(ts, ts2, ts3);
 			frm.ShowDialog(ownerFrm);

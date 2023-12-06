@@ -1185,10 +1185,9 @@ void Map::HKTrafficLayer::ReleaseNameArr(NameArray *nameArr)
 {
 }
 
-UTF8Char *Map::HKTrafficLayer::GetString(UTF8Char *buff, UOSInt buffSize, NameArray *nameArr, Int64 id, UOSInt strIndex)
+Bool Map::HKTrafficLayer::GetString(NotNullPtr<Text::StringBuilderUTF8> sb, NameArray *nameArr, Int64 id, UOSInt strIndex)
 {
-	////////////////////////////
-	return 0;
+	return false;
 }
 
 UOSInt Map::HKTrafficLayer::GetColumnCnt() const

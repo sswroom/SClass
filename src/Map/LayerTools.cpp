@@ -16,7 +16,6 @@ Map::VectorLayer *Map::LayerTools::CombineLayers(Data::ArrayList<Map::MapDrawLay
 	OSInt si;
 	Map::MapDrawLayer *lyr;
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
 	NotNullPtr<Text::String> sourceName;
 
 	if (layerCnt <= 0)
@@ -81,12 +80,14 @@ Map::VectorLayer *Map::LayerTools::CombineLayers(Data::ArrayList<Map::MapDrawLay
 
 	Map::VectorLayer *newLyr;
 	const UTF8Char **namesArr;
+	UOSInt *ofsts;
 	DB::DBUtil::ColType *colTypes;
 	UOSInt *colSizes;
 	UOSInt *colDPs;
 	UOSInt nameCol = lyr->GetNameCol();
 	i = names.GetCount();
 	namesArr = MemAlloc(const UTF8Char *, i);
+	ofsts = MemAlloc(UOSInt, i);
 	colTypes = MemAlloc(DB::DBUtil::ColType, i);
 	colSizes = MemAlloc(UOSInt, i);
 	colDPs = MemAlloc(UOSInt, i);
@@ -129,45 +130,56 @@ Map::VectorLayer *Map::LayerTools::CombineLayers(Data::ArrayList<Map::MapDrawLay
 		while (l-- > 0)
 		{
 			namesArr[l] = 0;
+			ofsts[l] = INVALID_INDEX;
 		}
 
 		Map::NameArray *lyrNameArr;
 		Map::GetObjectSess *sess;
-		UTF8Char *sptr2;
 		Int64 id;
+		Text::StringBuilderUTF8 sb;
 
-		sptr = sbuff;
 		objIds.Clear();
 		sess = lyr->BeginGetObject();
 		lyr->GetAllObjectIds(objIds, &lyrNameArr);
-		l = nameDPs.GetCount();
+		l = objIds.GetCount();
 		while (l-- > 0)
 		{
 			id = objIds.GetItem(l);
+			sb.ClearStr();
 			j = 0;
 			while (j < k)
 			{
-				sptr2 = lyr->GetString(sptr, sizeof(sbuff), lyrNameArr, id, j);
-				if (sptr2)
+				ofsts[colDPs[j]] = sb.leng;
+				if (lyr->GetString(sb, lyrNameArr, id, j))
 				{
-					namesArr[colDPs[j]] = sptr;
-					sptr = sptr2 + 1;
+					sb.AppendUTF8Char(0);
 				}
 				else
 				{
-					namesArr[colDPs[j]] = 0;
+					ofsts[colDPs[j]] = INVALID_INDEX;
 				}
 
 				j++;
 			}
 			NotNullPtr<Math::Geometry::Vector2D> vec;
 			if (vec.Set(lyr->GetNewVectorById(sess, id)))
+			{
+				j = names.GetCount();
+				while (j-- > 0)
+				{
+					if (ofsts[j] == INVALID_INDEX)
+						namesArr[j] = 0;
+					else
+						namesArr[j] = &sb.v[ofsts[j]];
+				}
 				newLyr->AddVector(vec, namesArr);
+			}
 		}
 		lyr->EndGetObject(sess);
 		i++;
 	}
 	MemFree(colDPs);
+	MemFree(ofsts);
 	MemFree(namesArr);
 
 	i = names.GetCount();

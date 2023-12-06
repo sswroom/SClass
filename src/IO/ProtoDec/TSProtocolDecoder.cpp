@@ -384,7 +384,7 @@ Bool IO::ProtoDec::TSProtocolDecoder::GetProtocolDetail(UInt8 *buff, UOSInt buff
 			sb->AppendC(UTF8STRC("KA (Svr->Cli)"));
 			sb->AppendC(UTF8STRC("\r\n"));
 			sb->AppendC(UTF8STRC("Server Time="));
-			sb->AppendTS(Data::Timestamp(ReadInt64(&buff[8]), 0));
+			sb->AppendTSNoZone(Data::Timestamp(ReadInt64(&buff[8]), 0));
 			sb->AppendC(UTF8STRC("\r\n"));
 		}
 		break;
@@ -399,7 +399,7 @@ Bool IO::ProtoDec::TSProtocolDecoder::GetProtocolDetail(UInt8 *buff, UOSInt buff
 			if (buff[13] & 1)
 			{
 				sb->AppendC(UTF8STRC("Server Time="));
-				sb->AppendTS(Data::Timestamp(ReadInt64(&buff[ofst]), 0));
+				sb->AppendTSNoZone(Data::Timestamp(ReadInt64(&buff[ofst]), 0));
 				sb->AppendC(UTF8STRC("\r\n"));
 				ofst += 8;
 			}
@@ -555,13 +555,13 @@ Bool IO::ProtoDec::TSProtocolDecoder::GetProtocolDetail(UInt8 *buff, UOSInt buff
 				OSInt i;
 				OSInt j;
 				sb->AppendC(UTF8STRC("Start Time="));
-				sb->AppendTS(Data::Timestamp(ReadInt64(&buff[12]), 0));
+				sb->AppendTSNoZone(Data::Timestamp(ReadInt64(&buff[12]), 0));
 				sb->AppendC(UTF8STRC("\r\n"));
 				sb->AppendC(UTF8STRC("End Time="));
-				sb->AppendTS(Data::Timestamp(ReadInt64(&buff[20]), 0));
+				sb->AppendTSNoZone(Data::Timestamp(ReadInt64(&buff[20]), 0));
 				sb->AppendC(UTF8STRC("\r\n"));
 				sb->AppendC(UTF8STRC("Grid Size="));
-				sb->AppendTS(Data::Timestamp(ReadInt64(&buff[28]), 0));
+				sb->AppendTSNoZone(Data::Timestamp(ReadInt64(&buff[28]), 0));
 				sb->AppendC(UTF8STRC("\r\n"));
 				sb->AppendC(UTF8STRC("Area Cnt="));
 				sb->AppendI32((Int32)(j = ReadInt32(&buff[36])));
@@ -642,7 +642,7 @@ Bool IO::ProtoDec::TSProtocolDecoder::GetProtocolDetail(UInt8 *buff, UOSInt buff
 			if (cmdSize >= 30)
 			{
 				sb->AppendC(UTF8STRC("Complete Time="));
-				sb->AppendTS(Data::Timestamp(ReadInt64(&buff[20]), 0));
+				sb->AppendTSNoZone(Data::Timestamp(ReadInt64(&buff[20]), 0));
 				sb->AppendC(UTF8STRC("\r\n"));
 			}
 		}

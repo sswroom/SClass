@@ -21,7 +21,7 @@ Bool __stdcall Net::WebServer::CapturerWebHandler::IndexFunc(NotNullPtr<Net::Web
 	{
 		Data::Timestamp lastScanTime = me->wifiCapture->GetLastScanTime().ToLocalTime();
 		sb.AppendC(UTF8STRC("Wifi Last Scan Time = "));
-		sb.AppendTS(lastScanTime);
+		sb.AppendTSNoZone(lastScanTime);
 		sb.AppendC(UTF8STRC("<br/>\r\n"));
 		Sync::MutexUsage mutUsage;
 		NotNullPtr<Data::ArrayList<Net::WiFiLogFile::LogFileEntry*>> logList = me->wifiCapture->GetLogList(mutUsage);
@@ -210,7 +210,7 @@ Bool __stdcall Net::WebServer::CapturerWebHandler::WiFiCurrentFunc(NotNullPtr<Ne
 	sb.AppendC(UTF8STRC("<h2>Current WiFi List</h2>\r\n"));
 	Data::Timestamp lastScanTime = me->wifiCapture->GetLastScanTime().ToLocalTime();
 	sb.AppendC(UTF8STRC("Wifi Last Scan Time = "));
-	sb.AppendTS(lastScanTime);
+	sb.AppendTSNoZone(lastScanTime);
 	sb.AppendC(UTF8STRC("<br/>\r\n"));
 	AppendWiFiTable(sb, req, entryList, lastScanTime);
 	mutUsage.EndUse();
@@ -489,7 +489,7 @@ void Net::WebServer::CapturerWebHandler::AppendBTTable(NotNullPtr<Text::StringBu
 			sb->AppendC(UTF8STRC("</td><td>"));
 			sb->AppendC((const UTF8Char*)(entry->connected?"Y":"N"), 1);
 			sb->AppendC(UTF8STRC("</td><td>"));
-			sb->AppendTS(Data::Timestamp(entry->lastSeenTime, Data::DateTimeUtil::GetLocalTzQhr()));
+			sb->AppendTSNoZone(Data::Timestamp(entry->lastSeenTime, Data::DateTimeUtil::GetLocalTzQhr()));
 			sb->AppendC(UTF8STRC("</td><td>"));
 			if (entry->company == 0)
 			{

@@ -26,7 +26,7 @@ namespace SSWR
 			virtual UOSInt GetObjectIdsMapXY(NotNullPtr<Data::ArrayListInt64> outArr, Map::NameArray **nameArr, Math::RectAreaDbl rect, Bool keepEmpty);
 			virtual Int64 GetObjectIdMax() const;
 			virtual void ReleaseNameArr(Map::NameArray *nameArr);
-			virtual UTF8Char *GetString(UTF8Char *buff, UOSInt buffSize, Map::NameArray *nameArr, Int64 id, UOSInt strIndex);
+			virtual Bool GetString(NotNullPtr<Text::StringBuilderUTF8> sb, Map::NameArray *nameArr, Int64 id, UOSInt strIndex);
 			virtual UOSInt GetColumnCnt() const;
 			virtual UTF8Char *GetColumnName(UTF8Char *buff, UOSInt colIndex);
 			virtual DB::DBUtil::ColType GetColumnType(UOSInt colIndex, OptOut<UOSInt> colSize);

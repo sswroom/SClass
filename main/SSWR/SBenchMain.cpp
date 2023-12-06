@@ -263,13 +263,13 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	{
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("Build Time: "));
-		sb.AppendTS(IO::BuildTime::GetBuildTime().ToUTCTime());
+		sb.AppendTSNoZone(IO::BuildTime::GetBuildTime().ToUTCTime());
 		console->WriteLineC(sb.ToString(), sb.GetLength());
 		writer->WriteLineC(sb.ToString(), sb.GetLength());
 
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("Benchmark Time: "));
-		sb.AppendTS(Data::Timestamp::UtcNow());
+		sb.AppendTSNoZone(Data::Timestamp::UtcNow());
 		console->WriteLineC(sb.ToString(), sb.GetLength());
 		writer->WriteLineC(sb.ToString(), sb.GetLength());
 	}

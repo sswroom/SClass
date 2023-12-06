@@ -139,6 +139,18 @@ UTF8Char *Map::BingMapsTile::GetTileImageURL(UTF8Char *sbuff, UOSInt level, Math
 	return sptr;
 }
 
+Bool Map::BingMapsTile::GetTileImageURL(NotNullPtr<Text::StringBuilderUTF8> sb, UOSInt level, Math::Coord2D<Int32> imgId)
+{
+	Text::String *subdomain = this->GetNextSubdomain();
+	sb->Append(this->url);
+	UTF8Char sbuff2[32];
+	UTF8Char *sptr2;
+	sb->ReplaceStr(UTF8STRC("{subdomain}"), subdomain->v, subdomain->leng);
+	sptr2 = GenQuadkey(sbuff2, level, imgId.x, imgId.y);
+	sb->ReplaceStr(UTF8STRC("{quadkey}"), sbuff2, (UOSInt)(sptr2 - sbuff2));
+	return true;
+}
+
 UOSInt Map::BingMapsTile::GetScreenObjCnt()
 {
 	if (this->brandLogoImg && !this->hideLogo)
@@ -166,6 +178,16 @@ UTF8Char *Map::BingMapsTile::GetScreenObjURL(UTF8Char *sbuff, UOSInt index)
 		return this->brandLogoUri->ConcatTo(sbuff);
 	}
 	return 0;
+}
+
+Bool Map::BingMapsTile::GetScreenObjURL(NotNullPtr<Text::StringBuilderUTF8> sb, UOSInt index)
+{
+	if (index == 0 && this->brandLogoImg && !this->hideLogo)
+	{
+		sb->Append(this->brandLogoUri);
+		return true;
+	}
+	return false;
 }
 
 void Map::BingMapsTile::SetHideLogo(Bool hideLogo)

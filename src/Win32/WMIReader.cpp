@@ -441,7 +441,7 @@ Bool Win32::WMIReader::GetStr(UOSInt colIndex, NotNullPtr<Text::StringBuilderUTF
 				break;
 			case CIM_DATETIME:
 				{
-					sb->AppendTS(Data::Timestamp::FromVariTime(V_DATE(&v)));
+					sb->AppendTSNoZone(Data::Timestamp::FromVariTime(V_DATE(&v)));
 					ret = true;
 				}
 				break;

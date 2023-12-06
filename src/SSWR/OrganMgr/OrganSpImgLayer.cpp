@@ -65,26 +65,25 @@ void SSWR::OrganMgr::OrganSpImgLayer::ReleaseNameArr(Map::NameArray *nameArr)
 {
 }
 
-UTF8Char *SSWR::OrganMgr::OrganSpImgLayer::GetString(UTF8Char *buff, UOSInt buffSize, Map::NameArray *nameArr, Int64 id, UOSInt strIndex)
+Bool SSWR::OrganMgr::OrganSpImgLayer::GetString(NotNullPtr<Text::StringBuilderUTF8> sb, Map::NameArray *nameArr, Int64 id, UOSInt strIndex)
 {
 	UserFileInfo *ufile;
 	ufile = this->objList.GetItem((UOSInt)id);
 	if (ufile == 0)
-		return 0;
+		return false;
 	if (strIndex == 0)
 	{
 		if (ufile->descript)
 		{
-			return ufile->descript->ConcatToS(buff, buffSize);
+			sb->Append(ufile->descript);
+			return true;
 		}
 		else
 		{
-			buff[0] = 0;
-			return 0;
+			return false;
 		}
 	}
-	buff[0] = 0;
-	return 0;
+	return false;
 }
 
 UOSInt SSWR::OrganMgr::OrganSpImgLayer::GetColumnCnt() const

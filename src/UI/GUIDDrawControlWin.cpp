@@ -578,7 +578,7 @@ void UI::GUIDDrawControl::DrawToScreen()
 	{
 		Text::StringBuilderUTF8 sb;
 		sb.AppendC(UTF8STRC("DrawToScreen "));
-		sb.AppendTS(Data::Timestamp::Now());
+		sb.AppendTSNoZone(Data::Timestamp::Now());
 		this->debugWriter->WriteLineC(sb.ToString(), sb.GetLength());
 	}
 	if (this->currScnMode == SM_FS)

@@ -161,7 +161,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 			Data::DateTime dt;
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("Build Time: "));
-			sb.AppendTS(IO::BuildTime::GetBuildTime().ToUTCTime());
+			sb.AppendTSNoZone(IO::BuildTime::GetBuildTime().ToUTCTime());
 			console->WriteLineC(sb.ToString(), sb.GetLength());
 			writer->WriteLineC(sb.ToString(), sb.GetLength());
 		}

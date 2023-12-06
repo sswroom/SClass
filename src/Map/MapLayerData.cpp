@@ -54,7 +54,7 @@ Bool Map::MapLayerData::IsError() const
 	return this->cixFile == 0 || this->ciuFile == 0 || this->cipFile == 0 || this->blkFile == 0;
 }
 
-UTF8Char *Map::MapLayerData::GetPGLabel(UTF8Char *buff, UOSInt buffSize, Math::Coord2DDbl coord, OptOut<Math::Coord2DDbl> outCoord, UOSInt strIndex)
+Bool Map::MapLayerData::GetPGLabel(NotNullPtr<Text::StringBuilderUTF8> sb, Math::Coord2DDbl coord, OptOut<Math::Coord2DDbl> outCoord, UOSInt strIndex)
 {
 	Math::Coord2DDbl mapPos = coord * 200000.0;
 	Int32 blkx;
@@ -71,7 +71,7 @@ UTF8Char *Map::MapLayerData::GetPGLabel(UTF8Char *buff, UOSInt buffSize, Math::C
 	Int32 *hdr;
 	Int32 ofst;
 	if (this->cixFile == 0 || this->ciuFile == 0 || this->cipFile == 0 || this->blkFile == 0)
-		return 0;
+		return false;
 	blkCnt = *sfile++;
 	blkScale = *sfile++;
 	blkx = (Int32)(mapPos.x / blkScale);
@@ -203,10 +203,9 @@ UTF8Char *Map::MapLayerData::GetPGLabel(UTF8Char *buff, UOSInt buffSize, Math::C
 
 					if (n & 1)
 					{
-						buff = Text::StrUTF16_UTF8C(buff, (UTF16Char*)&strRec[5], (UOSInt)strRec[4] >> 1);
-						*buff = 0;
+						sb->AppendUTF16((UTF16Char*)&strRec[5], (UOSInt)strRec[4] >> 1);
 						outCoord.Set(coord);
-						return buff;
+						return true;
 					}
 				}
 				else
@@ -216,10 +215,10 @@ UTF8Char *Map::MapLayerData::GetPGLabel(UTF8Char *buff, UOSInt buffSize, Math::C
 		}
 		k++;
 	}
-	return 0;
+	return false;
 }
 
-UTF8Char *Map::MapLayerData::GetPLLabel(UTF8Char *sbuff, UOSInt sbuffSize, Math::Coord2DDbl coord, OutParam<Math::Coord2DDbl> outCoord, UOSInt strIndex)
+Bool Map::MapLayerData::GetPLLabel(NotNullPtr<Text::StringBuilderUTF8> sb, Math::Coord2DDbl coord, OutParam<Math::Coord2DDbl> outCoord, UOSInt strIndex)
 {
 	Math::Coord2DDbl mapPos = coord * 200000.0;
 	Int32 blkCnt;
@@ -230,7 +229,6 @@ UTF8Char *Map::MapLayerData::GetPLLabel(UTF8Char *sbuff, UOSInt sbuffSize, Math:
 	Int32 blky1;
 	Int32 blkx2;
 	Int32 blky2;
-	OSInt buffSize = 0;
 	Int32 *sfile = (Int32*)this->ciuFile;
 	Int32 *databuff;
 	UInt8 *strRec;
@@ -277,10 +275,9 @@ UTF8Char *Map::MapLayerData::GetPLLabel(UTF8Char *sbuff, UOSInt sbuffSize, Math:
 	}
 
 
-	Int32 foundRec;
-	Int32 currFound;
+	Bool foundRec = false;
+	Bool currFound;
 	Double dist = 63781370;
-	foundRec = 0;
 	while (k < (blkCnt << 2))
 	{
 		Int32 nRecs;
@@ -316,7 +313,7 @@ UTF8Char *Map::MapLayerData::GetPLLabel(UTF8Char *sbuff, UOSInt sbuffSize, Math:
 				i = nParts;
 				j = nPoints;
 
-				currFound = 0;
+				currFound = false;
 				Double calBase;
 				Double xDiff;
 				Double yDiff;
@@ -403,7 +400,7 @@ UTF8Char *Map::MapLayerData::GetPLLabel(UTF8Char *sbuff, UOSInt sbuffSize, Math:
 						calD = xDiff * xDiff + yDiff * yDiff;
 						if (calD < dist)
 						{
-							currFound = 1;
+							currFound = true;
 							dist = calD;
 							calPtX = calX;
 							calPtY = calY;
@@ -418,7 +415,7 @@ UTF8Char *Map::MapLayerData::GetPLLabel(UTF8Char *sbuff, UOSInt sbuffSize, Math:
 					calD = xDiff * xDiff + yDiff * yDiff;
 					if (calD < dist)
 					{
-						currFound = 1;
+						currFound = true;
 						dist = calD;
 						calPtX = calX;
 						calPtY = calY;
@@ -426,19 +423,14 @@ UTF8Char *Map::MapLayerData::GetPLLabel(UTF8Char *sbuff, UOSInt sbuffSize, Math:
 				}
 				if (currFound)
 				{
-					foundRec = 1;
-					buffSize = Text::StrUTF16_UTF8C(sbuff, (UTF16Char*)&strRec[5], (UOSInt)strRec[4] >> 1) - sbuff;
-					sbuff[buffSize] = 0;
+					foundRec = true;
+					sb->ClearStr();
+					sb->AppendUTF16((UTF16Char*)&strRec[5], (UOSInt)strRec[4] >> 1);
 					outCoord.Set(Math::Coord2DDbl(calPtX / 200000.0, calPtY / 200000.0));
 				}
 			}
 		}
 		k += 4;
 	}
-
-	if (foundRec)
-	{
-		return &sbuff[buffSize];
-	}
-	return 0;
+	return foundRec;
 }

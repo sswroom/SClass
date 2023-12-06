@@ -318,7 +318,7 @@ public:
 		case SYBDATETIME:
 		case SYBMSTIME:
 		case SYBMSDATETIME2:
-			sb->AppendTS(this->GetTimestamp(colIndex));
+			sb->AppendTSNoZone(this->GetTimestamp(colIndex));
 			return true;
 		case SYBGEOMETRY:
 			{

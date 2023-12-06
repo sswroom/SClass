@@ -66,9 +66,9 @@ void SSWR::OrganMgr::OrganTimeAdjLayer::ReleaseNameArr(Map::NameArray *nameArr)
 {
 }
 
-UTF8Char *SSWR::OrganMgr::OrganTimeAdjLayer::GetString(UTF8Char *buff, UOSInt buffSize, Map::NameArray *nameArr, Int64 id, UOSInt strIndex)
+Bool SSWR::OrganMgr::OrganTimeAdjLayer::GetString(NotNullPtr<Text::StringBuilderUTF8> sb, Map::NameArray *nameArr, Int64 id, UOSInt strIndex)
 {
-	return 0;
+	return false;
 }
 
 UOSInt SSWR::OrganMgr::OrganTimeAdjLayer::GetColumnCnt() const

@@ -591,6 +591,7 @@ Bool IO::SMake::ParseSource(Data::FastStringMap<Int32> *objList, Data::FastStrin
 								lastTime = thisTime;
 							}
 							NotNullPtr<Text::String> s;
+							///////////////////////////////////
 							if (s.Set(prog->srcFile))
 							{
 								if (!this->ParseSource(objList, libList, procList, headerList, &thisTime, prog->srcFile->ToCString(), tmpSb))
