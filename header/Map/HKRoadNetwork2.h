@@ -29,8 +29,8 @@ namespace Map
 		Map::MapDrawLayer *CreateTonnesSignLayer();
 		Map::HKTrafficLayer2 *CreateTrafficLayer(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::EncodingFactory *encFact);
 
-		static Text::CString GetDownloadURL();
-		static Text::CString GetDefFileName();
+		static Text::CStringNN GetDownloadURL();
+		static Text::CStringNN GetDefFileName();
 	};
 }
 #endif

@@ -96,7 +96,7 @@ namespace Map
 		virtual void AddUpdatedHandler(UpdatedHandler hdlr, void *obj);
 		virtual void RemoveUpdatedHandler(UpdatedHandler hdlr, void *obj);
 
-		UOSInt AddLink(Text::CString name, Text::CString url, Text::CString viewFormat, RefreshMode mode, Int32 seconds);
+		UOSInt AddLink(Text::CString name, Text::CStringNN url, Text::CString viewFormat, RefreshMode mode, Int32 seconds);
 		void SetBounds(Math::RectAreaDbl bounds);
 		void Reload();
 	};

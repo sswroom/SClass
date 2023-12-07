@@ -75,7 +75,7 @@ Bool Net::WebServer::MODBUSDevSimHandler::ProcessRequest(NotNullPtr<Net::WebServ
 			sb.AppendC(UTF8STRC("</table></body></html>"));
 
 			Text::CStringNN mime = CSTR("text/html");
-			resp->AddDefHeaders(req);
+			this->AddResponseHeaders(req, resp);
 			resp->AddContentType(mime);
 			Net::WebServer::HTTPServerUtil::SendContent(req, resp, mime, sb.GetLength(), sb.ToString());
 			return true;

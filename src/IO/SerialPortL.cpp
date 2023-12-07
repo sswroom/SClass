@@ -325,7 +325,7 @@ Bool IO::SerialPort::ResetPort(UOSInt portNum)
 			return false;
 		}
 		sbuff2[si] = 0;
-		sptr = IO::Path::AppendPath(sbuff, sptr, Text::CString(sbuff2, (UOSInt)si));
+		sptr = IO::Path::AppendPath(sbuff, sptr, Text::CStringNN(sbuff2, (UOSInt)si));
 		i = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), '/');
 		if (i == INVALID_INDEX)
 			return false;

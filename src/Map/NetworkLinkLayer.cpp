@@ -745,7 +745,7 @@ void Map::NetworkLinkLayer::RemoveUpdatedHandler(UpdatedHandler hdlr, void *obj)
 	}
 }
 
-UOSInt Map::NetworkLinkLayer::AddLink(Text::CString name, Text::CString url, Text::CString viewFormat, RefreshMode mode, Int32 seconds)
+UOSInt Map::NetworkLinkLayer::AddLink(Text::CString name, Text::CStringNN url, Text::CString viewFormat, RefreshMode mode, Int32 seconds)
 {
 	Text::StringBuilderUTF8 sb;
 	sb.Append(this->GetSourceNameObj());

@@ -14,7 +14,7 @@ Bool __stdcall Net::PushServerHandler::SendHandler(NotNullPtr<Net::WebServer::IW
 		me->ParseJSONSend(json);
 		json->EndUse();
 	}
-	resp->AddDefHeaders(req);
+	me->AddResponseHeaders(req, resp);
 	resp->AddCacheControl(0);
 	resp->AddContentLength(0);
 	resp->Write(0, 0);
@@ -43,7 +43,7 @@ Bool __stdcall Net::PushServerHandler::SendBatchHandler(NotNullPtr<Net::WebServe
 		}
 		json->EndUse();
 	}
-	resp->AddDefHeaders(req);
+	me->AddResponseHeaders(req, resp);
 	resp->AddCacheControl(0);
 	resp->AddContentLength(0);
 	resp->Write(0, 0);
@@ -105,7 +105,7 @@ Bool __stdcall Net::PushServerHandler::SubscribeHandler(NotNullPtr<Net::WebServe
 	{
 		me->mgr->LogMessage(CSTR("Not JSON"), IO::LogHandler::LogLevel::Error);
 	}
-	resp->AddDefHeaders(req);
+	me->AddResponseHeaders(req, resp);
 	resp->AddCacheControl(0);
 	resp->AddContentLength(0);
 	resp->Write(0, 0);
@@ -128,7 +128,7 @@ Bool __stdcall Net::PushServerHandler::UnsubscribeHandler(NotNullPtr<Net::WebSer
 		}
 		json->EndUse();
 	}
-	resp->AddDefHeaders(req);
+	me->AddResponseHeaders(req, resp);
 	resp->AddCacheControl(0);
 	resp->AddContentLength(0);
 	resp->Write(0, 0);
@@ -151,7 +151,7 @@ Bool __stdcall Net::PushServerHandler::UsersHandler(NotNullPtr<Net::WebServer::I
 	}
 	json.ArrayEnd();
 	json.ObjectEnd();
-	return resp->ResponseJSONStr(req, 0, json.Build());
+	return me->ResponseJSONStr(req, resp, 0, json.Build());
 }
 
 Bool __stdcall Net::PushServerHandler::ListDevicesHandler(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, WebServiceHandler *svc)

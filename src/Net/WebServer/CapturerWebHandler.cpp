@@ -86,7 +86,7 @@ Bool __stdcall Net::WebServer::CapturerWebHandler::IndexFunc(NotNullPtr<Net::Web
 	}
 	sb.AppendC(UTF8STRC("</table></body><html>"));
 
-	resp->AddDefHeaders(req);
+	me->AddResponseHeaders(req, resp);
 	resp->AddHeader(CSTR("Cache-Control"), CSTR("no-cache"));
 	resp->AddContentType(CSTR("text/html"));
 	resp->AddContentLength(sb.GetLength());
@@ -117,7 +117,7 @@ Bool __stdcall Net::WebServer::CapturerWebHandler::BTCurrentFunc(NotNullPtr<Net:
 	mutUsage.EndUse();
 	sb.AppendC(UTF8STRC("</body><html>"));
 
-	resp->AddDefHeaders(req);
+	me->AddResponseHeaders(req, resp);
 	resp->AddHeader(CSTR("Cache-Control"), CSTR("no-cache"));
 	resp->AddContentType(CSTR("text/html"));
 	resp->AddContentLength(sb.GetLength());
@@ -150,7 +150,7 @@ Bool __stdcall Net::WebServer::CapturerWebHandler::BTDetailFunc(NotNullPtr<Net::
 	mutUsage.EndUse();
 	sb.AppendC(UTF8STRC("</body><html>"));
 
-	resp->AddDefHeaders(req);
+	me->AddResponseHeaders(req, resp);
 	resp->AddHeader(CSTR("Cache-Control"), CSTR("no-cache"));
 	resp->AddContentType(CSTR("text/html"));
 	resp->AddContentLength(sb.GetLength());
@@ -182,7 +182,7 @@ Bool __stdcall Net::WebServer::CapturerWebHandler::BTDetailPubFunc(NotNullPtr<Ne
 	mutUsage.EndUse();
 	sb.AppendC(UTF8STRC("</body><html>"));
 
-	resp->AddDefHeaders(req);
+	me->AddResponseHeaders(req, resp);
 	resp->AddHeader(CSTR("Cache-Control"), CSTR("no-cache"));
 	resp->AddContentType(CSTR("text/html"));
 	resp->AddContentLength(sb.GetLength());
@@ -216,7 +216,7 @@ Bool __stdcall Net::WebServer::CapturerWebHandler::WiFiCurrentFunc(NotNullPtr<Ne
 	mutUsage.EndUse();
 	sb.AppendC(UTF8STRC("</body><html>"));
 
-	resp->AddDefHeaders(req);
+	me->AddResponseHeaders(req, resp);
 	resp->AddHeader(CSTR("Cache-Control"), CSTR("no-cache"));
 	resp->AddContentType(CSTR("text/html"));
 	resp->AddContentLength(sb.GetLength());
@@ -248,7 +248,7 @@ Bool __stdcall Net::WebServer::CapturerWebHandler::WiFiDetailFunc(NotNullPtr<Net
 	mutUsage.EndUse();
 	sb.AppendC(UTF8STRC("</body><html>"));
 
-	resp->AddDefHeaders(req);
+	me->AddResponseHeaders(req, resp);
 	resp->AddHeader(CSTR("Cache-Control"), CSTR("no-cache"));
 	resp->AddContentType(CSTR("text/html"));
 	resp->AddContentLength(sb.GetLength());
@@ -331,7 +331,7 @@ Bool __stdcall Net::WebServer::CapturerWebHandler::WiFiDownloadFunc(NotNullPtr<N
 	Data::DateTime dt;
 	dt.SetCurrTime();
 	Text::StrConcatC(dt.ToString(sbuff, "yyyyMMddHHmmss"), UTF8STRC(".txt"));
-	resp->AddDefHeaders(req);
+	me->AddResponseHeaders(req, resp);
 	resp->AddHeader(CSTR("Cache-Control"), CSTR("no-cache"));
 	resp->AddContentType(CSTR("text/plain"));
 	resp->AddContentLength(sb.GetLength());

@@ -357,7 +357,7 @@ WChar *IO::Path::GetFileExtW(WChar *fileBuff, const WChar *path)
 	}
 }
 
-UTF8Char *IO::Path::AppendPath(UTF8Char *path, UTF8Char *pathEnd, Text::CString toAppend)
+UTF8Char *IO::Path::AppendPath(UTF8Char *path, UTF8Char *pathEnd, Text::CStringNN toAppend)
 {
 	UTF8Char pathTmp[512];
 	UTF8Char *lastSep;

@@ -402,6 +402,11 @@ Bool Net::HTTPOSClient::Connect(Text::CStringNN url, Net::WebUtil::RequestMethod
 			this->canWrite = false;
 			this->writing = false;
 			break;
+		case Net::WebUtil::RequestMethod::HTTP_HEAD:
+			curl_easy_setopt(this->clsData->curl, CURLOPT_CUSTOMREQUEST, UTF8STRC("HEAD"));
+			this->canWrite = false;
+			this->writing = false;
+			break;
 		case Net::WebUtil::RequestMethod::Unknown:
 		case Net::WebUtil::RequestMethod::HTTP_GET:
 		case Net::WebUtil::RequestMethod::HTTP_CONNECT:

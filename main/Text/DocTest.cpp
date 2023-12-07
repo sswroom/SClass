@@ -13,7 +13,7 @@
 Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 {
 	Text::Doc::DocValidator *validator;
-	Text::CString fileName;
+	Text::CStringNN fileName;
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 

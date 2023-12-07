@@ -96,7 +96,7 @@ Bool Net::WebServer::SAMLHandler::ProcessRequest(NotNullPtr<Net::WebServer::IWeb
 			sb.AppendC(UTF8STRC("\" index=\"1\"/>"));
 			sb.AppendC(UTF8STRC("</md:SPSSODescriptor>"));
 			sb.AppendC(UTF8STRC("</md:EntityDescriptor>"));
-			resp->AddDefHeaders(req);
+			this->AddResponseHeaders(req, resp);
 			resp->AddCacheControl(0);
 			resp->AddContentType(CSTR("application/samlmetadata+xml"));
 			return Net::WebServer::HTTPServerUtil::SendContent(req, resp, CSTR("application/samlmetadata+xml"), sb.GetLength(), sb.ToString());

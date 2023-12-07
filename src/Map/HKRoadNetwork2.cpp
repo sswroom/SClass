@@ -157,12 +157,12 @@ Map::HKTrafficLayer2 *Map::HKRoadNetwork2::CreateTrafficLayer(NotNullPtr<Net::So
 	return 0;
 }
 
-Text::CString Map::HKRoadNetwork2::GetDownloadURL()
+Text::CStringNN Map::HKRoadNetwork2::GetDownloadURL()
 {
 	return CSTR("https://static.data.gov.hk/td/road-network-v2/RdNet_IRNP.gdb.zip");
 }
 
-Text::CString Map::HKRoadNetwork2::GetDefFileName()
+Text::CStringNN Map::HKRoadNetwork2::GetDefFileName()
 {
 	return CSTR("RdNet_IRNP.gdb");
 }

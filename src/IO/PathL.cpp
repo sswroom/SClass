@@ -287,7 +287,7 @@ WChar *IO::Path::GetFileExtW(WChar *fileBuff, const WChar *path)
 	}
 }
 
-UTF8Char *IO::Path::AppendPath(UTF8Char *path, UTF8Char *pathEnd, Text::CString toAppend)
+UTF8Char *IO::Path::AppendPath(UTF8Char *path, UTF8Char *pathEnd, Text::CStringNN toAppend)
 {
 	if (toAppend.v[0] == '/')
 		return toAppend.ConcatTo(path);
@@ -612,7 +612,7 @@ IO::Path::PathType IO::Path::GetPathType(Text::CStringNN path)
 		if (i != INVALID_INDEX)
 		{
 			pathBuff[i + 1] = 0;
-			pathBuffEnd = IO::Path::AppendPath(pathBuff, &pathBuff[i + 1], Text::CString((const UTF8Char*)cbuff, (UOSInt)size));
+			pathBuffEnd = IO::Path::AppendPath(pathBuff, &pathBuff[i + 1], Text::CStringNN((const UTF8Char*)cbuff, (UOSInt)size));
 		}
 		return GetPathType(CSTRP(pathBuff, pathBuffEnd));
 	}

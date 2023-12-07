@@ -176,7 +176,7 @@ void Net::WebServer::HTTPDirectoryHandler::ResponsePackageFile(NotNullPtr<Net::W
 		}
 	}*/
 
-	resp->AddDefHeaders(req);
+	this->AddResponseHeaders(req, resp);
 	resp->AddContentType(CSTR("text/html; charset=UTF-8"));
 	AddCacheHeader(resp);
 
@@ -271,7 +271,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ResponsePackageFileItem(NotNullPtr<Ne
 		if (pitem->compInfo->checkMethod == Crypto::Hash::HashType::CRC32R_IEEE && enc && enc->IndexOf(UTF8STRC("gzip")) != INVALID_INDEX && Net::WebServer::HTTPServerUtil::AllowGZip(browser, os))
 		{
 			resp->EnableWriteBuffer();
-			resp->AddDefHeaders(req);
+			this->AddResponseHeaders(req, resp);
 			resp->AddLastModified(pitem->modTime);
 			if (this->allowOrigin)
 			{
@@ -331,7 +331,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ResponsePackageFileItem(NotNullPtr<Ne
 		else if (enc && enc->IndexOf(UTF8STRC("deflate")) != INVALID_INDEX && Net::WebServer::HTTPServerUtil::AllowDeflate(browser, os))
 		{
 			resp->EnableWriteBuffer();
-			resp->AddDefHeaders(req);
+			this->AddResponseHeaders(req, resp);
 			resp->AddLastModified(pitem->modTime);
 			if (this->allowOrigin)
 			{
@@ -382,7 +382,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ResponsePackageFileItem(NotNullPtr<Ne
 		stmData.Delete();
 
 		resp->EnableWriteBuffer();
-		resp->AddDefHeaders(req);
+		this->AddResponseHeaders(req, resp);
 		resp->AddLastModified(pitem->modTime);
 		if (this->allowOrigin)
 		{
@@ -654,7 +654,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::DoFileRequest(NotNullPtr<Net::WebServ
 									mime = Net::MIME::GetMIMEFromExt(CSTR("html"));
 
 									resp->EnableWriteBuffer();
-									resp->AddDefHeaders(req);
+									this->AddResponseHeaders(req, resp);
 									resp->AddLastModified(innerPF->GetItemModTime(index2));
 									if (this->allowOrigin)
 									{
@@ -728,7 +728,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::DoFileRequest(NotNullPtr<Net::WebServ
 			statMutUsage.EndUse();
 		}
 		resp->EnableWriteBuffer();
-		resp->AddDefHeaders(req);
+		this->AddResponseHeaders(req, resp);
 		AddCacheHeader(resp);
 		resp->AddLastModified(cache->t);
 		i = subReq.IndexOf('?');
@@ -830,7 +830,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::DoFileRequest(NotNullPtr<Net::WebServ
 				if (t2.ToTicks() == t.ToTicks())
 				{
 					resp->SetStatusCode(Net::WebStatus::SC_NOT_MODIFIED);
-					resp->AddDefHeaders(req);
+					this->AddResponseHeaders(req, resp);
 					AddCacheHeader(resp);
 					resp->AddContentLength(0);
 					resp->Write(buff, 0);
@@ -839,7 +839,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::DoFileRequest(NotNullPtr<Net::WebServ
 			}
 
 			resp->EnableWriteBuffer();
-			resp->AddDefHeaders(req);
+			this->AddResponseHeaders(req, resp);
 			AddCacheHeader(resp);
 			resp->AddLastModified(t);
 			mime = Net::MIME::GetMIMEFromExt(CSTRP(sbuff, sptr3));
@@ -918,7 +918,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::DoFileRequest(NotNullPtr<Net::WebServ
 					if (!req->GetQueryValue(CSTR("uploadDirect")).IsNull())
 					{
 						resp->EnableWriteBuffer();
-						resp->AddDefHeaders(req);
+						this->AddResponseHeaders(req, resp);
 						resp->AddContentType(CSTR("text/plain"));
 						AddCacheHeader(resp);
 						resp->AddContentLength(2);
@@ -928,7 +928,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::DoFileRequest(NotNullPtr<Net::WebServ
 				}
 
 				resp->EnableWriteBuffer();
-				resp->AddDefHeaders(req);
+				this->AddResponseHeaders(req, resp);
 				resp->AddContentType(CSTR("text/html; charset=UTF-8"));
 				AddCacheHeader(resp);
 
@@ -1278,7 +1278,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::DoFileRequest(NotNullPtr<Net::WebServ
 			if (t2.ToTicks() == ts.ToTicks())
 			{
 				resp->SetStatusCode(Net::WebStatus::SC_NOT_MODIFIED);
-				resp->AddDefHeaders(req);
+				this->AddResponseHeaders(req, resp);
 				AddCacheHeader(resp);
 				resp->AddContentLength(0);
 				resp->Write(buff, 0);
@@ -1344,7 +1344,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::DoFileRequest(NotNullPtr<Net::WebServ
 			if (!sb2.StartsWith(UTF8STRC("bytes=")))
 			{
 				resp->SetStatusCode(Net::WebStatus::SC_REQUESTED_RANGE_NOT_SATISFIABLE);
-				resp->AddDefHeaders(req);
+				this->AddResponseHeaders(req, resp);
 				AddCacheHeader(resp);
 				resp->AddContentLength(0);
 				resp->Write(buff, 0);
@@ -1353,7 +1353,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::DoFileRequest(NotNullPtr<Net::WebServ
 			if (sb2.IndexOf(',') != INVALID_INDEX)
 			{
 				resp->SetStatusCode(Net::WebStatus::SC_REQUESTED_RANGE_NOT_SATISFIABLE);
-				resp->AddDefHeaders(req);
+				this->AddResponseHeaders(req, resp);
 				AddCacheHeader(resp);
 				resp->AddContentLength(0);
 				resp->Write(buff, 0);
@@ -1365,7 +1365,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::DoFileRequest(NotNullPtr<Net::WebServ
 			if (i == INVALID_INDEX)
 			{
 				resp->SetStatusCode(Net::WebStatus::SC_REQUESTED_RANGE_NOT_SATISFIABLE);
-				resp->AddDefHeaders(req);
+				this->AddResponseHeaders(req, resp);
 				AddCacheHeader(resp);
 				resp->AddContentLength(0);
 				resp->Write(buff, 0);
@@ -1376,7 +1376,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::DoFileRequest(NotNullPtr<Net::WebServ
 			if (!Text::StrToInt64(&sptr[6], start))
 			{
 				resp->SetStatusCode(Net::WebStatus::SC_REQUESTED_RANGE_NOT_SATISFIABLE);
-				resp->AddDefHeaders(req);
+				this->AddResponseHeaders(req, resp);
 				AddCacheHeader(resp);
 				resp->AddContentLength(0);
 				resp->Write(buff, 0);
@@ -1387,7 +1387,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::DoFileRequest(NotNullPtr<Net::WebServ
 				if (!Text::StrToInt64(&sptr[i + 1], end))
 				{
 					resp->SetStatusCode(Net::WebStatus::SC_REQUESTED_RANGE_NOT_SATISFIABLE);
-					resp->AddDefHeaders(req);
+					this->AddResponseHeaders(req, resp);
 					AddCacheHeader(resp);
 					resp->AddContentLength(0);
 					resp->Write(buff, 0);
@@ -1396,7 +1396,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::DoFileRequest(NotNullPtr<Net::WebServ
 				if (end <= start || (UInt64)end > sizeLeft)
 				{
 					resp->SetStatusCode(Net::WebStatus::SC_REQUESTED_RANGE_NOT_SATISFIABLE);
-					resp->AddDefHeaders(req);
+					this->AddResponseHeaders(req, resp);
 					AddCacheHeader(resp);
 					resp->AddContentLength(0);
 					resp->Write(buff, 0);
@@ -1422,7 +1422,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::DoFileRequest(NotNullPtr<Net::WebServ
 			partial = true;
 		}
 		resp->EnableWriteBuffer();
-		resp->AddDefHeaders(req);
+		this->AddResponseHeaders(req, resp);
 		AddCacheHeader(resp);
 		resp->AddLastModified(ts);
 		mime = Net::MIME::GetMIMEFromExt(CSTRP(sbuff, sptr3));

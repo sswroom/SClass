@@ -98,10 +98,3 @@ Bool Net::WebServer::IWebResponse::ResponseText(Text::CStringNN txt, Text::CStri
 	return true;
 }
 
-Bool Net::WebServer::IWebResponse::ResponseJSONStr(NotNullPtr<Net::WebServer::IWebRequest> req, OSInt cacheAge, Text::CStringNN json)
-{
-	this->AddDefHeaders(req);
-	this->AddCacheControl(cacheAge);
-	return this->ResponseText(json, CSTR("application/json"));
-}
-

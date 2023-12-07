@@ -198,11 +198,12 @@ Bool __stdcall Net::WebServer::GCISNotifyHandler::NotifyFunc(NotNullPtr<Net::Web
 			builder.ObjectAddStr(CSTR("ResultCd"), resultCd);
 		}
 	}
-	return resp->ResponseJSONStr(req, 0, builder.Build());
+	return me->ResponseJSONStr(req, resp, 0, builder.Build());
 }
 
-Bool __stdcall Net::WebServer::GCISNotifyHandler::BatchUplFunc(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, WebServiceHandler *me)
+Bool __stdcall Net::WebServer::GCISNotifyHandler::BatchUplFunc(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, WebServiceHandler *svcHdlr)
 {
+	GCISNotifyHandler *me = (GCISNotifyHandler*)svcHdlr;
 	UOSInt size;
 	const UInt8 *data = req->GetReqData(size);
 	Text::StringBuilderUTF8 sb;
@@ -215,7 +216,7 @@ Bool __stdcall Net::WebServer::GCISNotifyHandler::BatchUplFunc(NotNullPtr<Net::W
 	sptr = Text::StrInt64(sbuff, Data::DateTimeUtil::GetCurrTimeMillis());
 	builder.ObjectAddStr(CSTR("UploadRefNum"), CSTRP(sbuff, sptr));
 	builder.ObjectAddStr(CSTR("ResultCd"), CSTR("0000"));
-	return resp->ResponseJSONStr(req, 0, builder.Build());
+	return me->ResponseJSONStr(req, resp, 0, builder.Build());
 }
 
 Net::WebServer::GCISNotifyHandler::GCISNotifyHandler(Text::CStringNN notifyPath, Text::CStringNN batchUplPath, MailHandler hdlr, void *userObj, NotNullPtr<IO::LogTool> log)

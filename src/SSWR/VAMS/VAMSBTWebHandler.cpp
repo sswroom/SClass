@@ -18,7 +18,7 @@ Bool __stdcall SSWR::VAMS::VAMSBTWebHandler::DevData(NotNullPtr<Net::WebServer::
 	}
 
 	me->btList->AddItem(avlNo, progId, ts, rssi);
-	return resp->ResponseJSONStr(req, 0, CSTR("{\"status\":\"ok\"}"));
+	return me->ResponseJSONStr(req, resp, 0, CSTR("{\"status\":\"ok\"}"));
 }
 
 Bool __stdcall SSWR::VAMS::VAMSBTWebHandler::KAData(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, WebServiceHandler *hdlr)
@@ -32,7 +32,7 @@ Bool __stdcall SSWR::VAMS::VAMSBTWebHandler::KAData(NotNullPtr<Net::WebServer::I
 		return true;
 	}
 	me->btList->KARecv(progId);
-	return resp->ResponseJSONStr(req, 0, CSTR("{\"status\":\"ok\"}"));
+	return me->ResponseJSONStr(req, resp, 0, CSTR("{\"status\":\"ok\"}"));
 }
 
 Bool __stdcall SSWR::VAMS::VAMSBTWebHandler::LogData(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, WebServiceHandler *hdlr)
@@ -76,7 +76,7 @@ Bool __stdcall SSWR::VAMS::VAMSBTWebHandler::LogData(NotNullPtr<Net::WebServer::
 		sptr = Text::StrConcatC(sptr, UTF8STRC(".log"));
 		IO::FileStream fs(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 		fs.Write(reqData, dataSize);
-		return resp->ResponseJSONStr(req, 0, CSTR("{\"status\":\"ok\"}"));
+		return me->ResponseJSONStr(req, resp, 0, CSTR("{\"status\":\"ok\"}"));
 	}
 	else
 	{

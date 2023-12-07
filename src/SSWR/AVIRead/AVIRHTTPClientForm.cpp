@@ -1017,7 +1017,7 @@ void SSWR::AVIRead::AVIRHTTPClientForm::ClearFiles()
 	this->fileList.Clear();
 }
 
-SSWR::AVIRead::AVIRHTTPClientForm::HTTPCookie *SSWR::AVIRead::AVIRHTTPClientForm::SetCookie(Text::CString cookieStr, Text::CString reqURL)
+SSWR::AVIRead::AVIRHTTPClientForm::HTTPCookie *SSWR::AVIRead::AVIRHTTPClientForm::SetCookie(Text::CStringNN cookieStr, Text::CStringNN reqURL)
 {
 	UTF8Char domain[512];
 	UTF8Char path[512];
@@ -1153,7 +1153,7 @@ SSWR::AVIRead::AVIRHTTPClientForm::HTTPCookie *SSWR::AVIRead::AVIRHTTPClientForm
 	}
 }
 
-UTF8Char *SSWR::AVIRead::AVIRHTTPClientForm::AppendCookie(UTF8Char *sbuff, Text::CString reqURL)
+UTF8Char *SSWR::AVIRead::AVIRHTTPClientForm::AppendCookie(UTF8Char *sbuff, Text::CStringNN reqURL)
 {
 	UInt8 buff[4096];
 	UTF8Char *sptr;

@@ -439,7 +439,7 @@ Bool SSWR::AVIRead::AVIRImageControl::GetCameraName(NotNullPtr<Text::StringBuild
 	return true;
 }
 
-Double *SSWR::AVIRead::AVIRImageControl::GetCameraGamma(Text::CString cameraName, OutParam<UInt32> gammaCnt)
+Double *SSWR::AVIRead::AVIRImageControl::GetCameraGamma(Text::CStringNN cameraName, OutParam<UInt32> gammaCnt)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;

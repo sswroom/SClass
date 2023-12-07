@@ -63,6 +63,18 @@ Bool Net::WebServer::WebStandardHandler::DoRequest(NotNullPtr<Net::WebServer::IW
 	return false;
 }
 
+void Net::WebServer::WebStandardHandler::AddResponseHeaders(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp)
+{
+	resp->AddDefHeaders(req);
+}
+
+Bool Net::WebServer::WebStandardHandler::ResponseJSONStr(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, OSInt cacheAge, Text::CStringNN json)
+{
+	this->AddResponseHeaders(req, resp);
+	resp->AddCacheControl(cacheAge);
+	return resp->ResponseText(json, CSTR("application/json"));
+}
+
 Net::WebServer::WebStandardHandler::WebStandardHandler()
 {
 }

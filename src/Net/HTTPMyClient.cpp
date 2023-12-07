@@ -867,6 +867,13 @@ Bool Net::HTTPMyClient::Connect(Text::CStringNN url, Net::WebUtil::RequestMethod
 		cptr = ptr2.ConcatTo(cptr);
 		cptr = Text::StrConcatC(cptr, UTF8STRC(" HTTP/1.1\r\n"));
 		break;
+	case Net::WebUtil::RequestMethod::HTTP_HEAD:
+		this->canWrite = true;
+		this->writing = false;
+		cptr = Text::StrConcatC(dataBuff, UTF8STRC("HEAD "));
+		cptr = ptr2.ConcatTo(cptr);
+		cptr = Text::StrConcatC(cptr, UTF8STRC(" HTTP/1.1\r\n"));
+		break;
 	case Net::WebUtil::RequestMethod::HTTP_CONNECT:
 	case Net::WebUtil::RequestMethod::Unknown:
 	case Net::WebUtil::RequestMethod::HTTP_GET:

@@ -20,6 +20,10 @@ Net::WebUtil::RequestMethod Net::WebUtil::Str2RequestMethod(const UTF8Char *s, U
 		{
 			return RequestMethod::HTTP_POST;
 		}
+		else if (Text::StrEqualsC(s, len, UTF8STRC("HEAD")))
+		{
+			return RequestMethod::HTTP_HEAD;
+		}
 		else if (Text::StrEqualsC(s, len, UTF8STRC("PLAY")))
 		{
 			return RequestMethod::RTSP_PLAY;
@@ -107,6 +111,8 @@ Text::CString Net::WebUtil::RequestMethodGetName(RequestMethod reqMeth)
 		return CSTR("DELETE");
 	case RequestMethod::HTTP_CONNECT:
 		return CSTR("CONNECT");
+	case RequestMethod::HTTP_HEAD:
+		return CSTR("HEAD");
 	case RequestMethod::RTSP_DESCRIBE:
 		return CSTR("DESCRIBE");
 	case RequestMethod::RTSP_ANNOUNCE:

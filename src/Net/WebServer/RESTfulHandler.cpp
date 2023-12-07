@@ -113,7 +113,7 @@ Bool Net::WebServer::RESTfulHandler::ProcessRequest(NotNullPtr<Net::WebServer::I
 			{
 				tableName->Release();
 				resp->SetStatusCode(Net::WebStatus::SC_NOT_FOUND);
-				resp->AddDefHeaders(req);
+				this->AddResponseHeaders(req, resp);
 				resp->AddCacheControl(0);
 				resp->AddContentLength(0);
 				return true;
@@ -137,7 +137,7 @@ Bool Net::WebServer::RESTfulHandler::ProcessRequest(NotNullPtr<Net::WebServer::I
 			}
 			json.ObjectEnd();
 			this->dbCache->FreeTableItem(row);
-			resp->ResponseJSONStr(req, 0, json.Build());
+			this->ResponseJSONStr(req, resp, 0, json.Build());
 			return true;
 		}
 		else
@@ -145,7 +145,7 @@ Bool Net::WebServer::RESTfulHandler::ProcessRequest(NotNullPtr<Net::WebServer::I
 			if (!this->dbCache->IsTableExist(subReq))
 			{
 				resp->SetStatusCode(Net::WebStatus::SC_NOT_FOUND);
-				resp->AddDefHeaders(req);
+				this->AddResponseHeaders(req, resp);
 				resp->AddCacheControl(0);
 				resp->AddContentLength(0);
 				return true;
@@ -255,7 +255,7 @@ Bool Net::WebServer::RESTfulHandler::ProcessRequest(NotNullPtr<Net::WebServer::I
 
 				json.ObjectEnd();
 				DEL_CLASS(page);
-				return resp->ResponseJSONStr(req, 0, json.Build());
+				return this->ResponseJSONStr(req, resp, 0, json.Build());
 			}
 		}
 	}

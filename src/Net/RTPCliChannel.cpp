@@ -605,7 +605,7 @@ Net::RTPCliChannel *Net::RTPCliChannel::CreateChannel(NotNullPtr<Net::SocketFact
 			else
 			{
 				sptr = Text::StrConcatC(ctrlURL.ConcatTo(sbuff), UTF8STRC("/"));
-				sptr = Text::URLString::AppendURLPath(sbuff, sptr, Text::CString(&desc[10], descLen - 10));
+				sptr = Text::URLString::AppendURLPath(sbuff, sptr, Text::CStringNN(&desc[10], descLen - 10));
 				ch->SetControlURL(CSTRP(sbuff, sptr));
 			}
 		}

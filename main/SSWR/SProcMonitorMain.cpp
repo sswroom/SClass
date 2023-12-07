@@ -109,7 +109,7 @@ private:
 		if (progPath)
 		{
 			sptr = IO::Path::GetProcessFileName(sbuff);
-			sptr = IO::Path::AppendPath(sbuff, sptr, Text::CString(progPath, progPathLen));
+			sptr = IO::Path::AppendPath(sbuff, sptr, Text::CStringNN(progPath, progPathLen));
 			prog->progPath = Text::String::NewP(sbuff, sptr).Ptr();
 		}
 		else

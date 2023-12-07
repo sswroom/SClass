@@ -420,7 +420,7 @@ Bool Manage::Process::GetTrueProgramPath(NotNullPtr<Text::StringBuilderUTF8> sb)
 				OSInt dirSz = readlink((const Char*)sbuff2, (Char*)sbuff3, 511);
 				if (dirSz > 0)
 				{
-					sptr = IO::Path::AppendPath(sbuff3, &sbuff3[dirSz], Text::CString(&sbuff[i], j));
+					sptr = IO::Path::AppendPath(sbuff3, &sbuff3[dirSz], Text::CStringNN(&sbuff[i], j));
 					sb->AppendP(sbuff3, sptr);
 					return true;
 				}

@@ -125,7 +125,7 @@ UTF8Char *Text::URLString::GetURLHost(UTF8Char *sbuff, const UTF8Char *url, UOSI
 	}
 }
 
-UTF8Char *Text::URLString::GetURLPath(UTF8Char *sbuff, Text::CString url)
+UTF8Char *Text::URLString::GetURLPath(UTF8Char *sbuff, Text::CStringNN url)
 {
 	UOSInt i;
 	UTF8Char *tmpBuff;
@@ -205,7 +205,7 @@ UTF8Char *Text::URLString::GetURLPathSvr(UTF8Char *sbuff, const UTF8Char *url, U
 	}
 }
 
-UTF8Char *Text::URLString::AppendURLPath(UTF8Char *sbuff, UTF8Char *sbuffEnd, Text::CString path)
+UTF8Char *Text::URLString::AppendURLPath(UTF8Char *sbuff, UTF8Char *sbuffEnd, Text::CStringNN path)
 {
 	UOSInt i = path.IndexOf(UTF8STRC("://"));
 	if (i != INVALID_INDEX)

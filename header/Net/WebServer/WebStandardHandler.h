@@ -16,6 +16,8 @@ namespace Net
 
 		protected:
 			Bool DoRequest(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq);
+			void AddResponseHeaders(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp);
+			Bool ResponseJSONStr(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, OSInt cacheAge, Text::CStringNN json);
 		public:
 			WebStandardHandler();
 			virtual ~WebStandardHandler();

@@ -11,7 +11,7 @@ Bool Net::WebServer::WellKnownHandler::ProcessRequest(NotNullPtr<Net::WebServer:
 		Text::String *s = this->acmeMap.GetC(subReq.Substring(16));
 		if (s)
 		{
-			resp->AddDefHeaders(req);
+			this->AddResponseHeaders(req, resp);
 			return resp->ResponseText(s->ToCString(), CSTR("text/plain"));
 		}
 		return resp->ResponseError(req, Net::WebStatus::SC_NOT_FOUND);
@@ -34,7 +34,7 @@ Bool __stdcall Net::WebServer::WellKnownHandler::AddFunc(NotNullPtr<Net::WebServ
 			{
 				val->Release();
 			}
-			resp->AddDefHeaders(req);
+			me->AddResponseHeaders(req, resp);
 			return resp->ResponseText(CSTR("Acme added successfully"));
 		}
 	}

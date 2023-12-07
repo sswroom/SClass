@@ -53,7 +53,6 @@ namespace Net
 			Bool ResponseNotModified(NotNullPtr<Net::WebServer::IWebRequest> req, OSInt cacheAge);
 			Bool ResponseText(Text::CStringNN txt);
 			Bool ResponseText(Text::CStringNN txt, Text::CStringNN contentType);
-			Bool ResponseJSONStr(NotNullPtr<Net::WebServer::IWebRequest> req, OSInt cacheAge, Text::CStringNN json);
 
 			Bool AddHeaderS(Text::CStringNN name, NotNullPtr<Text::String> value)
 			{
