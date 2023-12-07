@@ -1,116 +1,116 @@
 
-Crypto/Cert/CurlCert.h: ../../src/Crypto/Cert/CurlCert.cpp
+Crypto/Cert/CurlCert.h:
 @CurlCert.o
-Crypto/Cert/TrustStore.h: ../../src/Crypto/Cert/TrustStore_Linux.cpp
+Crypto/Cert/TrustStore.h:
 @TrustStore.o
-Crypto/Encrypt/RSAEnc.h: ../../src/Crypto/Encrypt/RSAEnc.cpp
+Crypto/Encrypt/RSAEnc.h:
 @RSAEnc.o
 
-DB/MDBFileConn.h: ../../src/DB/MDBFileConnNul.cpp
+DB/MDBFileConn.h:
 @MDBFileConn.o
-DB/MongoDB.h: ../../src/DB/MongoDBNull.cpp
+DB/MongoDB.h:
 @MongoDB.o
-DB/MySQLConn.h: ../../src/DB/MySQLConnNull.cpp
+DB/MySQLConn.h:
 @MySQLConn.o
-DB/ODBCConn.h: ../../src/DB/ODBCConnNul.cpp
+DB/ODBCConn.h:
 @ODBCConn.o
-DB/PostgreSQLConn.h: ../../src/DB/PostgreSQLConnNul.cpp
+DB/PostgreSQLConn.h:
 @PostgreSQLConn.o
-DB/TDSConn.h: ../../src/DB/TDSConn_Null.cpp
+DB/TDSConn.h:
 @TDSConn.o
 
-Exporter/HEIFExporter.h: ../../src/Exporter/HEIFExporter.cpp
+Exporter/HEIFExporter.h:
 @HEIFExporter.o
-Exporter/WebPExporter.h: ../../src/Exporter/WebPExporter.cpp
+Exporter/WebPExporter.h:
 @WebPExporter.o
 
-IO/BTController.h: ../../src/IO/BTControllerNull.cpp
+IO/BTController.h:
 @BTController.o
-IO/BTManager.h: ../../src/IO/BTManagerNull.cpp
+IO/BTManager.h:
 @BTManager.o
-IO/BTScanner.h: ../../src/IO/BTScannerNull.cpp
+IO/BTScanner.h:
 @BTScanner.o
-IO/DebugWriter.h: ../../src/IO/DebugWriter_Null.cpp
+IO/DebugWriter.h:
 @DebugWriter.o
-IO/HIDInfo.h: ../../src/IO/HIDInfoL.cpp
+IO/HIDInfo.h:
 @HIDInfo.o
-IO/I2CChannelOS.h: ../../src/IO/I2CChannelOSL.cpp
+IO/I2CChannelOS.h:
 @I2CChannelOS.o
-IO/OS.h: ../../src/IO/OSAndroid.cpp
+IO/OS.h:
 @OS.o
-IO/PCIInfo.h: ../../src/IO/PCIInfoL.cpp
+IO/PCIInfo.h:
 @PCIInfo.o
-IO/PowerInfo.h: ../../src/IO/PowerInfoL.cpp
+IO/PowerInfo.h:
 @PowerInfo.o
-IO/SDCardMgr.h: ../../src/IO/SDCardMgrL.cpp
+IO/SDCardMgr.h:
 @SDCardMgr.o
-IO/SensorManager.h: ../../src/IO/SensorManagerNull.cpp
+IO/SensorManager.h:
 @SensorManager.o
-IO/ServiceManager.h: ../../src/IO/ServiceManagerNull.cpp
+IO/ServiceManager.h:
 @ServiceManager.o
-IO/USBInfo.h: ../../src/IO/USBInfoL.cpp
+IO/USBInfo.h:
 @USBInfo.o
-IO/Watchdog.h: ../../src/IO/WatchdogL.cpp
+IO/Watchdog.h:
 @Watchdog.o
 
-Manage/Computer.h: ../../src/Manage/ComputerL.cpp
+Manage/Computer.h:
 @Computer.o
-Manage/ComputerUser.h: ../../src/Manage/ComputerUserL.cpp
+Manage/ComputerUser.h:
 @ComputerUser.o
-Manage/SymbolResolver.h: ../../src/Manage/SymbolResolverL.cpp
+Manage/SymbolResolver.h:
 @SymbolResolver.o
-Manage/ThreadInfo.h: ../../src/Manage/ThreadInfoL.cpp
+Manage/ThreadInfo.h:
 @ThreadInfo.o
 
-Media/AndroidVideoCapture.h: ../../src/Media/AndroidVideoCaptureNull.cpp
+Media/AndroidVideoCapture.h:
 @AndroidVideoCapture.o
-Media/AudioDevice.h: ../../src/Media/AudioDeviceNull.cpp
+Media/AudioDevice.h:
 @AudioDevice.o
-Media/FBMonitorSurfaceMgr.h: ../../src/Media/FBMonitorSurfaceMgr_Null.cpp
+Media/FBMonitorSurfaceMgr.h:
 @FBMonitorSurfaceMgr.o
-Media/MonitorSurfaceMgrFactory.h: ../../src/Media/MonitorSurfaceMgrFactoryNull.cpp
+Media/MonitorSurfaceMgrFactory.h:
 @MonitorSurfaceMgrFactory.o
-Media/OCREngine.h: ../../src/Media/OCREngine.cpp
+Media/OCREngine.h:
 @OCREngine.o
-Media/Printer.h: ../../src/Media/PrinterNull.cpp
+Media/Printer.h:
 @Printer.o
-Media/ZXingWriter.h: ../../src/Media/ZXingWriter.cpp
+Media/ZXingWriter.h:
 @ZXingWriter.o
-Media/Decoder/FFMPEGDecoder.h: ../../src/Media/Decoder/FFMPEGDecoderNull.cpp
+Media/Decoder/FFMPEGDecoder.h:
 @FFMPEGDecoder.o
-Media/OpenCV/OCVFrame.h: ../../src/Media/OpenCV/OCVFrameNull.cpp
+Media/OpenCV/OCVFrame.h:
 @OCVFrame.o
-Media/OpenCV/OCVFrameFeeder.h: ../../src/Media/OpenCV/OCVFrameFeeder.cpp
+Media/OpenCV/OCVFrameFeeder.h:
 @OCVFrameFeeder.o
 Media/OpenCV/OCVInit.h:
-Media/OpenCV/OCVNumPlateFinder.h: ../../src/Media/OpenCV/OCVNumPlateFinder_Null.cpp
+Media/OpenCV/OCVNumPlateFinder.h:
 @OCVNumPlateFinder.o
-Media/OpenCV/OCVObjectDetector.h: ../../src/Media/OpenCV/OCVObjectDetectorNull.cpp
+Media/OpenCV/OCVObjectDetector.h:
 @OCVObjectDetector.o
-Media/OpenCV/OCVUtil.h: ../../src/Media/OpenCV/OCVUtil.cpp
+Media/OpenCV/OCVUtil.h:
 @OCVUtil.o
 
-Net/HTTPOSClient.h: ../../src/Net/HTTPOSClientL.cpp
+Net/HTTPOSClient.h:
 @HTTPOSClient.o
-Net/SSLEngineFactory.h: ../../src/Net/SSLEngineFactoryOpenSSL.cpp
+Net/SSLEngineFactory.h:
 @SSLEngineFactory.o
-Net/WirelessLAN.h: ../../src/Net/WirelessLANL.cpp
+Net/WirelessLAN.h:
 @WirelessLAN.o
-Net/WLANLinuxInterface.h: ../../src/Net/WLANLinuxInterface.cpp
+Net/WLANLinuxInterface.h:
 @WLANLinuxInterface.o
-Net/WLANLinuxMTKInterface.h: ../../src/Net/WLANLinuxMTKInterface.cpp
+Net/WLANLinuxMTKInterface.h:
 @WLANLinuxMTKInterface.o
 
-Parser/FileParser/HEIFParser.h: ../../src/Parser/FileParser/HEIFParser.cpp
+Parser/FileParser/HEIFParser.h:
 @HEIFParser.o
-Parser/FileParser/JP2Parser.h: ../../src/Parser/FileParser/JP2Parser_Null.cpp
+Parser/FileParser/JP2Parser.h:
 @JP2Parser.o
-Parser/FileParser/WebPParser.h: ../../src/Parser/FileParser/WebPParser.cpp
+Parser/FileParser/WebPParser.h:
 @WebPParser.o
 
-Sync/SimpleThread.h: ../../src/Sync/SimpleThreadU.cpp
+Sync/SimpleThread.h:
 @SimpleThread.o
-Sync/ThreadUtil.h: ../../src/Sync/ThreadUtilU.cpp
+Sync/ThreadUtil.h:
 @ThreadUtil.o
 
 

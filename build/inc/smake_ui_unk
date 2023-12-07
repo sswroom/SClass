@@ -1,26 +1,26 @@
 
-Exporter/GUIExporter.h: ../../src/Exporter/GUIExporterNull.cpp
+Exporter/GUIExporter.h:
 @GUIExporter.o
-Exporter/GUIGIFExporter.h: ../../src/Exporter/GUIGIFExporterNull.cpp
+Exporter/GUIGIFExporter.h:
 @GUIGIFExporter.o
-Exporter/GUIJPGExporter.h: ../../src/Exporter/GUIJPGExporterNull.cpp
+Exporter/GUIJPGExporter.h:
 @GUIJPGExporter.o
-Exporter/GUIPNGExporter.h: ../../src/Exporter/GUIPNGExporterNull.cpp
+Exporter/GUIPNGExporter.h:
 @GUIPNGExporter.o
-Exporter/GUITIFExporter.h: ../../src/Exporter/GUITIFExporterNull.cpp
+Exporter/GUITIFExporter.h:
 @GUITIFExporter.o
 
 Media/DDrawManager.h:
-Media/DrawEngineFactory.h: ../../src/Media/DrawEngineFactorySEng.cpp
+Media/DrawEngineFactory.h:
 @DrawEngineFactory.o
-Media/DrawEngineGUI.h: ../../src/Media/NoGUIDrawEngine.cpp
+Media/DrawEngineGUI.h:
 @DrawEngineGUI.o
-Media/MonitorInfo.h: ../../src/Media/MonitorInfoNul.cpp
+Media/MonitorInfo.h:
 @MonitorInfo.o
-Media/ScreenCapturer.h: ../../src/Media/ScreenCapturerNull.cpp
+Media/ScreenCapturer.h:
 @ScreenCapturer.o
 
-Parser/FileParser/GUIImgParser.h: ../../src/Parser/FileParser/GUIImgParserNul.cpp
+Parser/FileParser/GUIImgParser.h:
 @GUIImgParser.o
 
 GUIStartup.o: ../../startup/GtkStartup.cpp

@@ -17,9 +17,10 @@
 <name>: [!/@]<source>
 @<object>
 !<lib>
+!?(ANDROID_API >= 24)<lib>
 $<compileCfg>
 
-
+`<command>' means run command and replace as command result
 !<source> means force compile
 @<source> means skip dependency check
 */
@@ -504,6 +505,10 @@ Bool IO::SMake::ParseSource(NotNullPtr<Data::FastStringMap<Int32>> objList,
 	{
 		skipCheck = true;
 		sourceFile = sourceFile.Substring(1);
+	}
+	if (sourceFile.EndsWith(UTF8STRC(".asm")))
+	{
+		skipCheck = true;
 	}
 	Text::CStringNN fileName;
 	if (IO::Path::PATH_SEPERATOR == '\\')
@@ -1153,7 +1158,7 @@ Bool IO::SMake::CompileProgInternal(NotNullPtr<const ProgramItem> prog, Bool asm
 				sb.AppendUTF8Char(IO::Path::PATH_SEPERATOR);
 				sb.Append(subProg->name);
 				sb.AppendUTF8Char(' ');
-				if (srcFile->v[0] == '@')
+				if (srcFile->v[0] == '@' || srcFile->v[0] == '!')
 				{
 					sb.AppendC(&srcFile->v[1], srcFile->leng - 1);
 				}
@@ -1194,7 +1199,7 @@ Bool IO::SMake::CompileProgInternal(NotNullPtr<const ProgramItem> prog, Bool asm
 				sb.AppendUTF8Char(IO::Path::PATH_SEPERATOR);
 				sb.Append(subProg->name);
 				sb.AppendUTF8Char(' ');
-				if (srcFile->v[0] == '@')
+				if (srcFile->v[0] == '@' || srcFile->v[0] == '!')
 				{
 					sb.AppendC(&srcFile->v[1], srcFile->leng - 1);
 				}
@@ -1229,7 +1234,7 @@ Bool IO::SMake::CompileProgInternal(NotNullPtr<const ProgramItem> prog, Bool asm
 				sb.AppendUTF8Char(IO::Path::PATH_SEPERATOR);
 				sb.Append(subProg->name);
 				sb.AppendUTF8Char(' ');
-				if (srcFile->v[0] == '@')
+				if (srcFile->v[0] == '@' || srcFile->v[0] == '!')
 				{
 					sb.AppendC(&srcFile->v[1], srcFile->leng - 1);
 				}

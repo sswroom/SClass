@@ -1215,165 +1215,165 @@ Stdafx.h:
 SIMD.h:
 
 Core/ConsoleControl.h:
-Core/Core.h: ../../src/Core/Core.cpp
+Core/Core.h:
 @Core.o
 
-Crypto/HOTP.h: ../../src/Crypto/HOTP.cpp
+Crypto/HOTP.h:
 @HOTP.o
-Crypto/OTP.h: ../../src/Crypto/OTP.cpp
+Crypto/OTP.h:
 @OTP.o
-Crypto/PBKDF2.h: ../../src/Crypto/PBKDF2.cpp
+Crypto/PBKDF2.h:
 @PBKDF2.o
-Crypto/TOTP.h: ../../src/Crypto/TOTP.cpp
+Crypto/TOTP.h:
 @TOTP.o
 Crypto/Cert/Certificate.h:
-Crypto/Cert/CertStore.h: ../../src/Crypto/Cert/CertStore.cpp
+Crypto/Cert/CertStore.h:
 @CertStore.o
-Crypto/Cert/CertUtil.h: ../../src/Crypto/Cert/CertUtil.cpp
+Crypto/Cert/CertUtil.h:
 @CertUtil.o
-Crypto/Cert/X509Cert.h: ../../src/Crypto/Cert/X509Cert.cpp
+Crypto/Cert/X509Cert.h:
 @X509Cert.o
-Crypto/Cert/X509CertReq.h: ../../src/Crypto/Cert/X509CertReq.cpp
+Crypto/Cert/X509CertReq.h:
 @X509CertReq.o
-Crypto/Cert/X509CRL.h: ../../src/Crypto/Cert/X509CRL.cpp
+Crypto/Cert/X509CRL.h:
 @X509CRL.o
-Crypto/Cert/X509File.h: ../../src/Crypto/Cert/X509File.cpp
+Crypto/Cert/X509File.h:
 @X509File.o
-Crypto/Cert/X509FileList.h: ../../src/Crypto/Cert/X509FileList.cpp
+Crypto/Cert/X509FileList.h:
 @X509FileList.o
-Crypto/Cert/X509Key.h: ../../src/Crypto/Cert/X509Key.cpp
+Crypto/Cert/X509Key.h:
 @X509Key.o
-Crypto/Cert/X509PKCS7.h: ../../src/Crypto/Cert/X509PKCS7.cpp
+Crypto/Cert/X509PKCS7.h:
 @X509PKCS7.o
-Crypto/Cert/X509PKCS12.h: ../../src/Crypto/Cert/X509PKCS12.cpp
+Crypto/Cert/X509PKCS12.h:
 @X509PKCS12.o
-Crypto/Cert/X509PrivKey.h: ../../src/Crypto/Cert/X509PrivKey.cpp
+Crypto/Cert/X509PrivKey.h:
 @X509PrivKey.o
-Crypto/Cert/X509PubKey.h: ../../src/Crypto/Cert/X509PubKey.cpp
+Crypto/Cert/X509PubKey.h:
 @X509PubKey.o
-Crypto/Encrypt/AES128.h: ../../src/Crypto/Encrypt/AES128.cpp
+Crypto/Encrypt/AES128.h:
 @AES128.o
-Crypto/Encrypt/AES192.h: ../../src/Crypto/Encrypt/AES192.cpp
+Crypto/Encrypt/AES192.h:
 @AES192.o
-Crypto/Encrypt/AES256.h: ../../src/Crypto/Encrypt/AES256.cpp
+Crypto/Encrypt/AES256.h:
 @AES256.o
-Crypto/Encrypt/AESBase.h: ../../src/Crypto/Encrypt/AESBase.cpp
+Crypto/Encrypt/AESBase.h:
 @AESBase.o
-Crypto/Encrypt/Base64.h: ../../src/Crypto/Encrypt/Base64.cpp
+Crypto/Encrypt/Base64.h:
 @Base64.o
 @Base64_CPP.o
-Crypto/Encrypt/BlockCipher.h: ../../src/Crypto/Encrypt/BlockCipher.cpp
+Crypto/Encrypt/BlockCipher.h:
 @BlockCipher.o
-Crypto/Encrypt/Blowfish.h: ../../src/Crypto/Encrypt/Blowfish.cpp
+Crypto/Encrypt/Blowfish.h:
 @Blowfish.o
 Crypto/Encrypt/ICrypto.h:
-Crypto/Encrypt/JasyptConfigFile.h: ../../src/Crypto/Encrypt/JasyptConfigFile.cpp
+Crypto/Encrypt/JasyptConfigFile.h:
 @JasyptConfigFile.o
-Crypto/Encrypt/JasyptEncryptor.h: ../../src/Crypto/Encrypt/JasyptEncryptor.cpp
+Crypto/Encrypt/JasyptEncryptor.h:
 @JasyptEncryptor.o
-Crypto/Encrypt/RC2Cipher.h: ../../src/Crypto/Encrypt/RC2Cipher.cpp
+Crypto/Encrypt/RC2Cipher.h:
 @RC2Cipher.o
-Crypto/Encrypt/RC4Cipher.h: ../../src/Crypto/Encrypt/RC4Cipher.cpp
+Crypto/Encrypt/RC4Cipher.h:
 @RC4Cipher.o
-Crypto/Encrypt/RNCryptor.h: ../../src/Crypto/Encrypt/RNCryptor.cpp
+Crypto/Encrypt/RNCryptor.h:
 @RNCryptor.o
-Crypto/Encrypt/RSACipher.h: ../../src/Crypto/Encrypt/RSACipher.cpp
+Crypto/Encrypt/RSACipher.h:
 @RSACipher.o
-Crypto/Encrypt/XOREnc.h: ../../src/Crypto/Encrypt/XOREnc.cpp
+Crypto/Encrypt/XOREnc.h:
 @XOREnc.o
-Crypto/Hash/Adler32.h: ../../src/Crypto/Hash/Adler32.cpp
+Crypto/Hash/Adler32.h:
 @Adler32.o
 @Adler32_CPP.o
-Crypto/Hash/AESCMAC.h: ../../src/Crypto/Hash/AESCMAC.cpp
+Crypto/Hash/AESCMAC.h:
 @AESCMAC.o
-Crypto/Hash/BatchHashValidator.h: ../../src/Crypto/Hash/BatchHashValidator.cpp
+Crypto/Hash/BatchHashValidator.h:
 @BatchHashValidator.o
-Crypto/Hash/Bcrypt.h: ../../src/Crypto/Hash/Bcrypt.cpp
+Crypto/Hash/Bcrypt.h:
 @Bcrypt.o
-Crypto/Hash/BcryptValidator.h: ../../src/Crypto/Hash/BcryptValidator.cpp
+Crypto/Hash/BcryptValidator.h:
 @BcryptValidator.o
-Crypto/Hash/BruteForceAttack.h: ../../src/Crypto/Hash/BruteForceAttack.cpp
+Crypto/Hash/BruteForceAttack.h:
 @BruteForceAttack.o
-Crypto/Hash/CRC16.h: ../../src/Crypto/Hash/CRC16.cpp
+Crypto/Hash/CRC16.h:
 @CRC16.o
 @CRC16_CPP.o
-Crypto/Hash/CRC16R.h: ../../src/Crypto/Hash/CRC16R.cpp
+Crypto/Hash/CRC16R.h:
 @CRC16R.o
 @CRC16R_CPP.o
-Crypto/Hash/CRC32.h: ../../src/Crypto/Hash/CRC32.cpp
+Crypto/Hash/CRC32.h:
 @CRC32.o
 @CRC32_CPP.o
-Crypto/Hash/CRC32R.h: ../../src/Crypto/Hash/CRC32R.cpp
+Crypto/Hash/CRC32R.h:
 @CRC32R.o
 @CRC32R_CPP.o
-Crypto/Hash/CRC32RC.h: ../../src/Crypto/Hash/CRC32RC.cpp
+Crypto/Hash/CRC32RC.h:
 @CRC32RC.o
 @CRC32R_CPP.o
-Crypto/Hash/CRC32RIEEE.h: ../../src/Crypto/Hash/CRC32RIEEE.cpp
+Crypto/Hash/CRC32RIEEE.h:
 @CRC32RIEEE.o
 @CRC32R_CPP.o
-Crypto/Hash/DJB2.h: ../../src/Crypto/Hash/DJB2.cpp
+Crypto/Hash/DJB2.h:
 @DJB2.o
 @DJB2_CPP.o
-Crypto/Hash/DJB2a.h: ../../src/Crypto/Hash/DJB2a.cpp
+Crypto/Hash/DJB2a.h:
 @DJB2a.o
 @DJB2a_CPP.o
-Crypto/Hash/ExcelHash.h: ../../src/Crypto/Hash/ExcelHash.cpp
+Crypto/Hash/ExcelHash.h:
 @ExcelHash.o
-Crypto/Hash/FNV1.h: ../../src/Crypto/Hash/FNV1.cpp
+Crypto/Hash/FNV1.h:
 @FNV1.o
 @FNV1_CPP.o
-Crypto/Hash/FNV1a.h: ../../src/Crypto/Hash/FNV1a.cpp
+Crypto/Hash/FNV1a.h:
 @FNV1a.o
 @FNV1a_CPP.o
-Crypto/Hash/HashCalc.h: ../../src/Crypto/Hash/HashCalc.cpp
+Crypto/Hash/HashCalc.h:
 @HashCalc.o
-Crypto/Hash/HashCreator.h: ../../src/Crypto/Hash/HashCreator.cpp
+Crypto/Hash/HashCreator.h:
 @HashCreator.o
-Crypto/Hash/HashStream.h: ../../src/Crypto/Hash/HashStream.cpp
+Crypto/Hash/HashStream.h:
 @HashStream.o
 Crypto/Hash/HashValidator.h:
-Crypto/Hash/HMAC.h: ../../src/Crypto/Hash/HMAC.cpp
+Crypto/Hash/HMAC.h:
 @HMAC.o
-Crypto/Hash/IHash.h: ../../src/Crypto/Hash/IHash.cpp
+Crypto/Hash/IHash.h:
 @IHash.o
-Crypto/Hash/MD5.h: ../../src/Crypto/Hash/MD5.cpp
+Crypto/Hash/MD5.h:
 @MD5.o
 @MD5_CPP.o
-Crypto/Hash/RIPEMD128.h: ../../src/Crypto/Hash/RIPEMD128.cpp
+Crypto/Hash/RIPEMD128.h:
 @RIPEMD128.o
 @RIPEMD128_CPP.o
-Crypto/Hash/RIPEMD160.h: ../../src/Crypto/Hash/RIPEMD160.cpp
+Crypto/Hash/RIPEMD160.h:
 @RIPEMD160.o
 @RIPEMD160_CPP.o
-Crypto/Hash/SDBM.h: ../../src/Crypto/Hash/SDBM.cpp
+Crypto/Hash/SDBM.h:
 @SDBM.o
 @SDBM_CPP.o
-Crypto/Hash/SHA1.h: ../../src/Crypto/Hash/SHA1.cpp
+Crypto/Hash/SHA1.h:
 @SHA1.o
 @SHA1_CPP.o
-Crypto/Hash/SHA1_SHA1.h: ../../src/Crypto/Hash/SHA1_SHA1.cpp
+Crypto/Hash/SHA1_SHA1.h:
 @SHA1_SHA1.o
-Crypto/Hash/SHA224.h: ../../src/Crypto/Hash/SHA224.cpp
+Crypto/Hash/SHA224.h:
 @SHA224.o
 @SHA256_CPP.o
-Crypto/Hash/SHA256.h: ../../src/Crypto/Hash/SHA256.cpp
+Crypto/Hash/SHA256.h:
 @SHA256.o
 @SHA256_CPP.o
-Crypto/Hash/SHA384.h: ../../src/Crypto/Hash/SHA384.cpp
+Crypto/Hash/SHA384.h:
 @SHA384.o
 @SHA512_CPP.o
-Crypto/Hash/SHA512.h: ../../src/Crypto/Hash/SHA512.cpp
+Crypto/Hash/SHA512.h:
 @SHA512.o
 @SHA512_CPP.o
 Crypto/Hash/SuperFastHash.h:
-Crypto/Token/JWSignature.h: ../../src/Crypto/Token/JWSignature.cpp
+Crypto/Token/JWSignature.h:
 @JWSignature.o
-Crypto/Token/JWTHandler.h: ../../src/Crypto/Token/JWTHandler.cpp
+Crypto/Token/JWTHandler.h:
 @JWTHandler.o
-Crypto/Token/JWToken.h: ../../src/Crypto/Token/JWToken.cpp
+Crypto/Token/JWToken.h:
 @JWToken.o
-Crypto/Token/JWTParam.h: ../../src/Crypto/Token/JWTHandler.cpp
+Crypto/Token/JWTParam.h:
 @JWTParam.o
 
 Data/ArrayCmpMap.h:
@@ -1381,41 +1381,41 @@ Data/ArrayCollection.h:
 Data/ArrayIterator.h:
 Data/ArrayList.h:
 Data/ArrayListA.h:
-Data/ArrayListCmp.h: ../../src/Data/ArrayListCmp.cpp
+Data/ArrayListCmp.h:
 @ArrayListCmp.o
-Data/ArrayListCStr.h: ../../src/Data/ArrayListCStr.cpp
+Data/ArrayListCStr.h:
 @ArrayListCStr.o
-Data/ArrayListCStrFast.h: ../../src/Data/ArrayListCStrFast.cpp
+Data/ArrayListCStrFast.h:
 @ArrayListCStrFast.o
-Data/ArrayListDbl.h: ../../src/Data/ArrayListDbl.cpp
+Data/ArrayListDbl.h:
 @ArrayListDbl.o
-Data/ArrayListICaseString.h: ../../src/Data/ArrayListICaseString.cpp
+Data/ArrayListICaseString.h:
 @ArrayListICaseString.o
-Data/ArrayListICaseStrUTF8.h: ../../src/Data/ArrayListICaseStrUTF8.cpp
+Data/ArrayListICaseStrUTF8.h:
 @ArrayListICaseStrUTF8.o
-Data/ArrayListInt32.h: ../../src/Data/ArrayListInt32.cpp
+Data/ArrayListInt32.h:
 @ArrayListInt32.o
-Data/ArrayListInt64.h: ../../src/Data/ArrayListInt64.cpp
+Data/ArrayListInt64.h:
 @ArrayListInt64.o
 Data/ArrayListNN.h:
-Data/ArrayListStrC.h: ../../src/Data/ArrayListStrC.cpp
+Data/ArrayListStrC.h:
 @ArrayListStrC.o
-Data/ArrayListStrFast.h: ../../src/Data/ArrayListStrFast.cpp
+Data/ArrayListStrFast.h:
 @ArrayListStrFast.o
-Data/ArrayListStrFastNN.h: ../../src/Data/ArrayListStrFastNN.cpp
+Data/ArrayListStrFastNN.h:
 @ArrayListStrFastNN.o
-Data/ArrayListString.h: ../../src/Data/ArrayListString.cpp
+Data/ArrayListString.h:
 @ArrayListString.o
-Data/ArrayListStringNN.h: ../../src/Data/ArrayListStringNN.cpp
+Data/ArrayListStringNN.h:
 @ArrayListStringNN.o
-Data/ArrayListStrUTF8.h: ../../src/Data/ArrayListStrUTF8.cpp
+Data/ArrayListStrUTF8.h:
 @ArrayListStrUTF8.o
-Data/ArrayListUInt32.h: ../../src/Data/ArrayListUInt32.cpp
+Data/ArrayListUInt32.h:
 @ArrayListUInt32.o
-Data/ArrayListUInt64.h: ../../src/Data/ArrayListUInt64.cpp
+Data/ArrayListUInt64.h:
 @ArrayListUInt64.o
 Data/ArrayMap.h:
-Data/BinTool.h: ../../src/Data/BinTool.cpp
+Data/BinTool.h:
 @BinTool.o
 Data/BTreeMap.h:
 Data/BTreeUTF8Map.h:
@@ -1423,52 +1423,52 @@ Data/ByteArray.h:
 Data/ByteBuffer.h:
 Data/ByteBufferA.h:
 Data/ByteOrder.h:
-Data/ByteOrderLSB.h: ../../src/Data/ByteOrderLSB.cpp
+Data/ByteOrderLSB.h:
 @ByteOrderLSB.o
-Data/ByteOrderMSB.h: ../../src/Data/ByteOrderMSB.cpp
+Data/ByteOrderMSB.h:
 @ByteOrderMSB.o
-Data/ByteTool.h: ../../src/Data/ByteTool.cpp
+Data/ByteTool.h:
 @ByteTool.o
-Data/Chart.h: ../../src/Data/Chart.cpp
+Data/Chart.h:
 @Chart.o
-Data/CircularByteBuff.h: ../../src/Data/CircularByteBuff.cpp
+Data/CircularByteBuff.h:
 @CircularByteBuff.o
-Data/Class.h: ../../src/Data/Class.cpp
+Data/Class.h:
 @Class.o
 Data/Comparator.h:
 Data/DataArray.h:
-Data/DataComparer.h: ../../src/Data/DataComparer.cpp
+Data/DataComparer.h:
 @DataComparer.o
 Data/DataMap.h:
 Data/Date.h:
-Data/DateTime.h: ../../src/Data/DateTime.cpp
+Data/DateTime.h:
 @DateTime.o
-Data/DateTimeUtil.h: ../../src/Data/DateTimeUtil.cpp
+Data/DateTimeUtil.h:
 @DateTimeUtil.o
 Data/Duration.h:
 Data/FastMap.h:
 Data/FastStringMap.h:
-Data/FieldComparator.h: ../../src/Data/FieldComparator.cpp
+Data/FieldComparator.h:
 @FieldComparator.o
 Data/FixedCircularBuff.h:
 Data/ICaseBTreeUTF8Map.h:
 Data/ICaseStringMap.h:
 Data/ICaseStringUTF8Map.h:
 Data/IComparable.h:
-Data/LineChart.h: ../../src/Data/LineChart.cpp
+Data/LineChart.h:
 @LineChart.o
 Data/List.h:
 Data/ListMap.h:
 Data/NamedClass.h:
 Data/ObjectGetter.h:
-Data/QueryConditions.h: ../../src/Data/QueryConditions.cpp
+Data/QueryConditions.h:
 @QueryConditions.o
 Data/Random.h:
-Data/RandomBytesGenerator.h: ../../src/Data/RandomBytesGenerator.cpp
+Data/RandomBytesGenerator.h:
 @RandomBytesGenerator.o
-Data/RandomMT19937.h: ../../src/Data/RandomMT19937.cpp
+Data/RandomMT19937.h:
 @RandomMT19937.o
-Data/RandomOS.h: ../../src/Data/RandomOS.cpp
+Data/RandomOS.h:
 @RandomOS.o
 Data/ReadingList.h:
 Data/ReadonlyArray.h:
@@ -1481,396 +1481,396 @@ Data/StringMap.h:
 Data/StringUTF8Map.h:
 Data/SyncArrayList.h:
 Data/SyncCircularBuff.h:
-Data/SyncLinkedList.h: ../../src/Data/SyncLinkedList.cpp
+Data/SyncLinkedList.h:
 @SyncLinkedList.o
 Data/TimeInstant.h:
 Data/Timestamp.h:
 Data/TwinItem.h:
 Data/Usable.h:
-Data/Usage.h: ../../src/Data/Usage.cpp
+Data/Usage.h:
 @Usage.o
-Data/UUID.h: ../../src/Data/UUID.cpp
+Data/UUID.h:
 @UUID.o
-Data/VariItem.h: ../../src/Data/VariItem.cpp
+Data/VariItem.h:
 @VariItem.o
-Data/VariObject.h: ../../src/Data/VariObject.cpp
+Data/VariObject.h:
 @VariObject.o
-Data/Compress/Decompressor.h: ../../src/Data/Compress/Decompressor.cpp
+Data/Compress/Decompressor.h:
 @Decompressor.o
-Data/Compress/DeflateStream.h: ../../src/Data/Compress/DeflateStream.cpp
+Data/Compress/DeflateStream.h:
 @DeflateStream.o
-Data/Compress/Inflate.h: ../../src/Data/Compress/Inflate.cpp
+Data/Compress/Inflate.h:
 @Inflate.o
-Data/Compress/InflateStream.h: ../../src/Data/Compress/InflateStream.cpp
+Data/Compress/InflateStream.h:
 @InflateStream.o
-Data/Compress/LZODecompressor.h: ../../src/Data/Compress/LZODecompressor.cpp
+Data/Compress/LZODecompressor.h:
 @LZODecompressor.o
 @LZODecompressor_CPP.o
-Data/Compress/LZWDecompressor.h: ../../src/Data/Compress/LZWDecompressor.cpp
+Data/Compress/LZWDecompressor.h:
 @LZWDecompressor.o
-Data/Compress/LZWDecStream.h: ../../src/Data/Compress/LZWDecStream.cpp
+Data/Compress/LZWDecStream.h:
 @LZWDecStream.o
-Data/Compress/LZWEncStream.h: ../../src/Data/Compress/LZWEncStream.cpp
+Data/Compress/LZWEncStream.h:
 @LZWEncStream.o
-Data/Compress/LZWEncStream2.h: ../../src/Data/Compress/LZWEncStream2.cpp
+Data/Compress/LZWEncStream2.h:
 @LZWEncStream2.o
-Data/Compress/PackBits.h: ../../src/Data/Compress/PackBits.cpp
+Data/Compress/PackBits.h:
 @PackBits.o
-Data/Sort/ArtificialQuickSort.h: ../../src/Data/Sort/ArtificialQuickSort.cpp
+Data/Sort/ArtificialQuickSort.h:
 @ArtificialQuickSort.o
-Data/Sort/ArtificialQuickSortC.h: ../../src/Data/Sort/ArtificialQuickSort_CPP.cpp
+Data/Sort/ArtificialQuickSortC.h:
 @ArtificialQuickSort_CPP.o
 Data/Sort/ArtificialQuickSortCmp.h:
 Data/Sort/ArtificialQuickSortFunc.h:
-Data/Sort/BitonicSort.h: ../../src/Data/Sort/BitonicSort.cpp
+Data/Sort/BitonicSort.h:
 @BitonicSort.o
 Data/Sort/BitonicSortC.h:
 @BitonicSort_CPP.o
 Data/Sort/BubbleSort.h:
 @BubbleSort_CPP.o
-Data/Sort/ByteCountingSort.h: ../../src/Data/Sort/ByteCountingSort_CPP.cpp
+Data/Sort/ByteCountingSort.h:
 @ByteCountingSort_CPP.o
-Data/Sort/InsertionSort.h: ../../src/Data/Sort/InsertionSort_CPP.cpp
+Data/Sort/InsertionSort.h:
 @InsertionSort_CPP.o
 Data/Sort/InsertionSortCmp.h:
-Data/Sort/PigeonholeSort.h: ../../src/Data/Sort/PigeonholeSort.cpp
+Data/Sort/PigeonholeSort.h:
 @PigeonholeSort.o
-Data/Sort/QuickBubbleSort.h: ../../src/Data/Sort/QuickBubbleSort.cpp
+Data/Sort/QuickBubbleSort.h:
 @QuickBubbleSort.o
 
-DB/ColDef.h: ../../src/DB/ColDef.cpp
+DB/ColDef.h:
 @ColDef.o
-DB/CSVFile.h: ../../src/DB/CSVFile.cpp
+DB/CSVFile.h:
 @CSVFile.o
-DB/DBCache.h: ../../src/DB/DBCache.cpp
+DB/DBCache.h:
 @DBCache.o
-DB/DBClassBuilder.h: ../../src/DB/DBClassBuilder.cpp
+DB/DBClassBuilder.h:
 @DBClassBuilder.o
 DB/DBClassReader.h:
-DB/DBConfig.h: ../../src/DB/DBConfig.cpp
+DB/DBConfig.h:
 @DBConfig.o
-DB/DBConn.h: ../../src/DB/DBConn.cpp
+DB/DBConn.h:
 @DBConn.o
 DB/DBDataFile.h:
-DB/DBExporter.h: ../../src/DB/DBExporter.cpp
+DB/DBExporter.h:
 @DBExporter.o
-DB/DBFFile.h: ../../src/DB/DBFFile.cpp
+DB/DBFFile.h:
 @DBFFile.o
-DB/DBFFixWriter.h: ../../src/DB/DBFFixWriter.cpp
+DB/DBFFixWriter.h:
 @DBFFixWriter.o
-DB/DBList.h: ../../src/DB/DBList.cpp
+DB/DBList.h:
 @DBList.o
-DB/DBManager.h: ../../src/DB/DBManager.cpp
+DB/DBManager.h:
 @DBManager.o
-DB/DBManagerCtrl.h: ../../src/DB/DBManagerCtrl.cpp
+DB/DBManagerCtrl.h:
 @DBManagerCtrl.o
-DB/DBModel.h: ../../src/DB/DBModel.cpp
+DB/DBModel.h:
 @DBModel.o
-DB/DBMS.h: ../../src/DB/DBMS.cpp
+DB/DBMS.h:
 @DBMS.o
-DB/DBQueue.h: ../../src/DB/DBQueue.cpp
+DB/DBQueue.h:
 @DBQueue.o
-DB/DBReader.h: ../../src/DB/DBReader.cpp
+DB/DBReader.h:
 @DBReader.o
-DB/DBRow.h: ../../src/DB/DBRow.cpp
+DB/DBRow.h:
 @DBRow.o
-DB/DBTool.h: ../../src/DB/DBTool.cpp
+DB/DBTool.h:
 @DBTool.o
-DB/DBUtil.h: ../../src/DB/DBUtil.cpp
+DB/DBUtil.h:
 @DBUtil.o
-DB/JavaDBUtil.h: ../../src/DB/JavaDBUtil.cpp
+DB/JavaDBUtil.h:
 @JavaDBUtil.o
-DB/JSONDB.h: ../../src/DB/JSONDB.cpp
+DB/JSONDB.h:
 @JSONDB.o
-DB/MSSQLConn.h: ../../src/DB/MSSQLConn.cpp
+DB/MSSQLConn.h:
 @MSSQLConn.o
-DB/MySQLMaintance.h: ../../src/DB/MySQLMaintance.cpp
+DB/MySQLMaintance.h:
 @MySQLMaintance.o
-DB/PageRequest.h: ../../src/DB/PageRequest.cpp
+DB/PageRequest.h:
 @PageRequest.o
-DB/ReadingDB.h: ../../src/DB/ReadingDB.cpp
+DB/ReadingDB.h:
 @ReadingDB.o
-DB/ReadingDBTool.h: ../../src/DB/ReadingDBTool.cpp
+DB/ReadingDBTool.h:
 @ReadingDBTool.o
-DB/SDFFile.h: ../../src/DB/SDFFile.cpp
+DB/SDFFile.h:
 @SDFFile.o
-DB/SharedDBConn.h: ../../src/DB/SharedDBConn.cpp
+DB/SharedDBConn.h:
 @SharedDBConn.o
-DB/SharedReadingDB.h: ../../src/DB/SharedReadingDB.cpp
+DB/SharedReadingDB.h:
 @SharedReadingDB.o
-DB/SortableDBReader.h: ../../src/DB/SortableDBReader.cpp
+DB/SortableDBReader.h:
 @SortableDBReader.o
-DB/SQLBuilder.h: ../../src/DB/SQLBuilder.cpp
+DB/SQLBuilder.h:
 @SQLBuilder.o
-DB/SQLFileReader.h: ../../src/DB/SQLFileReader.cpp
+DB/SQLFileReader.h:
 @SQLFileReader.o
-DB/SQLGenerator.h: ../../src/DB/SQLGenerator.cpp
+DB/SQLGenerator.h:
 @SQLGenerator.o
-DB/SQLiteFile.h: ../../src/DB/SQLiteFile.cpp
+DB/SQLiteFile.h:
 @SQLiteFile.o
-DB/TableDef.h: ../../src/DB/TableDef.cpp
+DB/TableDef.h:
 @TableDef.o
-DB/TextDB.h: ../../src/DB/TextDB.cpp
+DB/TextDB.h:
 @TextDB.o
-DB/WorkbookDB.h: ../../src/DB/WorkbookDB.cpp
+DB/WorkbookDB.h:
 @WorkbookDB.o
-DB/SQL/CreateTableCommand.h: ../../src/DB/SQL/CreateTableCommand.cpp
+DB/SQL/CreateTableCommand.h:
 @CreateTableCommand.o
-DB/SQL/SQLCommand.h: ../../src/DB/SQL/SQLCommand.cpp
+DB/SQL/SQLCommand.h:
 @SQLCommand.o
-DB/SQL/SQLUtil.h: ../../src/DB/SQL/SQLUtil.cpp
+DB/SQL/SQLUtil.h:
 @SQLUtil.o
 
-Exporter/BMPExporter.h: ../../src/Exporter/BMPExporter.cpp
+Exporter/BMPExporter.h:
 @BMPExporter.o
-Exporter/CIPExporter.h: ../../src/Exporter/CIPExporter.cpp
+Exporter/CIPExporter.h:
 @CIPExporter.o
-Exporter/CURExporter.h: ../../src/Exporter/CURExporter.cpp
+Exporter/CURExporter.h:
 @CURExporter.o
-Exporter/DBCSVExporter.h: ../../src/Exporter/DBCSVExporter.cpp
+Exporter/DBCSVExporter.h:
 @DBCSVExporter.o
-Exporter/DBExcelXMLExporter.h: ../../src/Exporter/DBExcelXMLExporter.cpp
+Exporter/DBExcelXMLExporter.h:
 @DBExcelXMLExporter.o
-Exporter/DBFExporter.h: ../../src/Exporter/DBFExporter.cpp
+Exporter/DBFExporter.h:
 @DBFExporter.o
-Exporter/DBHTMLExporter.h: ../../src/Exporter/DBHTMLExporter.cpp
+Exporter/DBHTMLExporter.h:
 @DBHTMLExporter.o
-Exporter/DBPListExporter.h: ../../src/Exporter/DBPListExporter.cpp
+Exporter/DBPListExporter.h:
 @DBPListExporter.o
-Exporter/DocHTMLExporter.h: ../../src/Exporter/DocHTMLExporter.cpp
+Exporter/DocHTMLExporter.h:
 @DocHTMLExporter.o
-Exporter/ExcelXMLExporter.h: ../../src/Exporter/ExcelXMLExporter.cpp
+Exporter/ExcelXMLExporter.h:
 @ExcelXMLExporter.o
-Exporter/ExporterList.h: ../../src/Exporter/ExporterList.cpp
+Exporter/ExporterList.h:
 @ExporterList.o
-Exporter/GIFExporter.h: ../../src/Exporter/GIFExporter.cpp
+Exporter/GIFExporter.h:
 @GIFExporter.o
-Exporter/GPXExporter.h: ../../src/Exporter/GPXExporter.cpp
+Exporter/GPXExporter.h:
 @GPXExporter.o
-Exporter/ICOExporter.h: ../../src/Exporter/ICOExporter.cpp
+Exporter/ICOExporter.h:
 @ICOExporter.o
-Exporter/KMLExporter.h: ../../src/Exporter/KMLExporter.cpp
+Exporter/KMLExporter.h:
 @KMLExporter.o
-Exporter/MapCSVExporter.h: ../../src/Exporter/MapCSVExporter.cpp
+Exporter/MapCSVExporter.h:
 @MapCSVExporter.o
-Exporter/MD4Exporter.h: ../../src/Exporter/MD4Exporter.cpp
+Exporter/MD4Exporter.h:
 @MD4Exporter.o
-Exporter/MD5Exporter.h: ../../src/Exporter/MD5Exporter.cpp
+Exporter/MD5Exporter.h:
 @MD5Exporter.o
-Exporter/MDBExporter.h: ../../src/Exporter/MDBExporter.cpp
+Exporter/MDBExporter.h:
 @MDBExporter.o
-Exporter/MEVExporter.h: ../../src/Exporter/MEVExporter.cpp
+Exporter/MEVExporter.h:
 @MEVExporter.o
-Exporter/OruxMapExporter.h: ../../src/Exporter/OruxMapExporter.cpp
+Exporter/OruxMapExporter.h:
 @OruxMapExporter.o
-Exporter/PEMExporter.h: ../../src/Exporter/PEMExporter.cpp
+Exporter/PEMExporter.h:
 @PEMExporter.o
-Exporter/PLTExporter.h: ../../src/Exporter/PLTExporter.cpp
+Exporter/PLTExporter.h:
 @PLTExporter.o
-Exporter/PNGExporter.h: ../../src/Exporter/PNGExporter.cpp
+Exporter/PNGExporter.h:
 @PNGExporter.o
-Exporter/SFVExporter.h: ../../src/Exporter/SFVExporter.cpp
+Exporter/SFVExporter.h:
 @SFVExporter.o
-Exporter/SHA1Exporter.h: ../../src/Exporter/SHA1Exporter.cpp
+Exporter/SHA1Exporter.h:
 @SHA1Exporter.o
-Exporter/SHPExporter.h: ../../src/Exporter/SHPExporter.cpp
+Exporter/SHPExporter.h:
 @SHPExporter.o
-Exporter/SPKExporter.h: ../../src/Exporter/SPKExporter.cpp
+Exporter/SPKExporter.h:
 @SPKExporter.o
-Exporter/SQLiteExporter.h: ../../src/Exporter/SQLiteExporter.cpp
+Exporter/SQLiteExporter.h:
 @SQLiteExporter.o
-Exporter/TIFFExporter.h: ../../src/Exporter/TIFFExporter.cpp
+Exporter/TIFFExporter.h:
 @TIFFExporter.o
-Exporter/WAVExporter.h: ../../src/Exporter/WAVExporter.cpp
+Exporter/WAVExporter.h:
 @WAVExporter.o
-Exporter/XLSXExporter.h: ../../src/Exporter/XLSXExporter.cpp
+Exporter/XLSXExporter.h:
 @XLSXExporter.o
-Exporter/ZIPExporter.h: ../../src/Exporter/ZIPExporter.cpp
+Exporter/ZIPExporter.h:
 @ZIPExporter.o
 
-Game/Sudoku/SudokuBoard.h: ../../src/Game/Sudoku/SudokuBoard.cpp
+Game/Sudoku/SudokuBoard.h:
 @SudokuBoard.o
 
-IO/ActiveStreamReader.h: ../../src/IO/ActiveStreamReader.cpp
+IO/ActiveStreamReader.h:
 @ActiveStreamReader.o
-IO/AdvantechASCIIChannel.h: ../../src/IO/AdvantechASCIIChannel.cpp
+IO/AdvantechASCIIChannel.h:
 @AdvantechASCIIChannel.o
-IO/AndroidDB.h: ../../src/IO/AndroidDB.cpp
+IO/AndroidDB.h:
 @AndroidDB.o
-IO/ATCommandChannel.h: ../../src/IO/ATCommandChannel.cpp
+IO/ATCommandChannel.h:
 @ATCommandChannel.o
 IO/BitReader.h:
-IO/BitReaderLSB.h: ../../src/IO/BitReaderLSB.cpp
+IO/BitReaderLSB.h:
 @BitReaderLSB.o
-IO/BitReaderMSB.h: ../../src/IO/BitReaderMSB.cpp
+IO/BitReaderMSB.h:
 @BitReaderMSB.o
 IO/BitWriter.h:
-IO/BitWriterLSB.h: ../../src/IO/BitWriterLSB.cpp
+IO/BitWriterLSB.h:
 @BitWriterLSB.o
-IO/BitWriterMSB.h: ../../src/IO/BitWriterMSB.cpp
+IO/BitWriterMSB.h:
 @BitWriterMSB.o
-IO/BTCapturer.h: ../../src/IO/BTCapturer.cpp
+IO/BTCapturer.h:
 @BTCapturer.o
-IO/BTDevLog.h: ../../src/IO/BTDevLog.cpp
+IO/BTDevLog.h:
 @BTDevLog.o
-IO/BTScanLog.h: ../../src/IO/BTScanLog.cpp
+IO/BTScanLog.h:
 @BTScanLog.o
-IO/BTUtil.h: ../../src/IO/BTUtil.cpp
+IO/BTUtil.h:
 @BTUtil.o
-IO/BufferedInputStream.h: ../../src/IO/BufferedInputStream.cpp
+IO/BufferedInputStream.h:
 @BufferedInputStream.o
-IO/BufferedOutputStream.h: ../../src/IO/BufferedOutputStream.cpp
+IO/BufferedOutputStream.h:
 @BufferedOutputStream.o
 IO/CameraControl.h:
 IO/CANHandler.h:
 IO/CANListener.h:
-IO/CDXAData.h: ../../src/IO/CDXAData.cpp
+IO/CDXAData.h:
 @CDXAData.o
-IO/CDSectorData.h: ../../src/IO/CDSectorData.cpp
+IO/CDSectorData.h:
 @CDSectorData.o
-IO/CodeScanner.h: ../../src/IO/CodeScanner.cpp
+IO/CodeScanner.h:
 @CodeScanner.o
-IO/ConfigFile.h: ../../src/IO/ConfigFile.cpp
+IO/ConfigFile.h:
 @ConfigFile.o
-IO/ConsoleInput.h: ../../src/IO/ConsoleInput.cpp
+IO/ConsoleInput.h:
 @ConsoleInput.o
-IO/ConsoleLogHandler.h: ../../src/IO/ConsoleLogHandler.cpp
+IO/ConsoleLogHandler.h:
 @ConsoleLogHandler.o
-IO/CortexControl.h: ../../src/IO/CortexControl.cpp
+IO/CortexControl.h:
 @CortexControl.o
-IO/CyclicLogBuffer.h: ../../src/IO/CyclicLogBuffer.cpp
+IO/CyclicLogBuffer.h:
 @CyclicLogBuffer.o
-IO/DataCaptureStream.h: ../../src/IO/DataCaptureStream.cpp
+IO/DataCaptureStream.h:
 @DataCaptureStream.o
-IO/DeviceDB.h: ../../src/IO/DeviceDB.cpp
+IO/DeviceDB.h:
 @DeviceDB.o
-IO/DirectoryPackage.h: ../../src/IO/DirectoryPackage.cpp
+IO/DirectoryPackage.h:
 @DirectoryPackage.o
-IO/ED516Sim.h: ../../src/IO/ED516Sim.cpp
+IO/ED516Sim.h:
 @ED516Sim.o
-IO/ED527Sim.h: ../../src/IO/ED527Sim.cpp
+IO/ED527Sim.h:
 @ED527Sim.o
-IO/ED538Sim.h: ../../src/IO/ED538Sim.cpp
+IO/ED538Sim.h:
 @ED538Sim.o
-IO/ED588Sim.h: ../../src/IO/ED588Sim.cpp
+IO/ED588Sim.h:
 @ED588Sim.o
-IO/EXEFile.h: ../../src/IO/EXEFile.cpp
+IO/EXEFile.h:
 @EXEFile.o
-IO/FileCheck.h: ../../src/IO/FileCheck.cpp
+IO/FileCheck.h:
 @FileCheck.o
-IO/FileExporter.h: ../../src/IO/FileExporter.cpp
+IO/FileExporter.h:
 @FileExporter.o
-IO/FileFindRecur.h: ../../src/IO/FileFindRecur.cpp
+IO/FileFindRecur.h:
 @FileFindRecur.o
-IO/FileLog.h: ../../src/IO/FileLog.cpp
+IO/FileLog.h:
 @FileLog.o
 IO/FileMode.h:
-IO/FileParser.h: ../../src/IO/FileParser.cpp
+IO/FileParser.h:
 @FileParser.o
-IO/FileSectorData.h: ../../src/IO/FileSectorData.cpp
+IO/FileSectorData.h:
 @FileSectorData.o
 IO/FileSelector.h:
-IO/GPIOPin.h: ../../src/IO/GPIOPin.cpp
+IO/GPIOPin.h:
 @GPIOPin.o
 IO/GPSDevType.h:
-IO/GPSNMEA.h: ../../src/IO/GPSNMEA.cpp
+IO/GPSNMEA.h:
 @GPSNMEA.o
-IO/GSMModemController.h: ../../src/IO/GSMModemController.cpp
+IO/GSMModemController.h:
 @GSMModemController.o
-IO/HuaweiGSMModemController.h: ../../src/IO/HuaweiGSMModemController.cpp
+IO/HuaweiGSMModemController.h:
 @HuaweiGSMModemController.o
-IO/I2C.h: ../../src/IO/I2C.cpp
+IO/I2C.h:
 @I2C.o
 IO/I2CChannel.h:
-IO/I2CMODBUS.h: ../../src/IO/I2CMODBUS.cpp
+IO/I2CMODBUS.h:
 @I2CMODBUS.o
 IO/IFileBuffer.h:
 IO/IGPUControl.h:
-IO/IniFile.h: ../../src/IO/IniFile.cpp
+IO/IniFile.h:
 @IniFile.o
 IO/ObjectParser.h:
 IO/IOPin.h:
-IO/IOPinCapture.h: ../../src/IO/IOPinCapture.cpp
+IO/IOPinCapture.h:
 @IOPinCapture.o
-IO/IOTool.h: ../../src/IO/IOTool.cpp
+IO/IOTool.h:
 @IOTool.o
 IO/IProtocolHandler.h:
 IO/IProtocolParser.h:
 IO/ISectorData.h:
-IO/JavaClass.h: ../../src/IO/JavaClass.cpp
+IO/JavaClass.h:
 @JavaClass.o
-IO/JavaProperties.h: ../../src/IO/JavaProperties.cpp
+IO/JavaProperties.h:
 @JavaProperties.o
-IO/LNKFile.h: ../../src/IO/LNKFile.cpp
+IO/LNKFile.h:
 @LNKFile.o
-IO/LogFile.h: ../../src/IO/LogFile.cpp
+IO/LogFile.h:
 @LogFile.o
-IO/LogFileManager.h: ../../src/IO/LogFileManager.cpp
+IO/LogFileManager.h:
 @LogFileManager.o
-IO/LogTool.h: ../../src/IO/LogTool.cpp
+IO/LogTool.h:
 @LogTool.o
-IO/LogWriter.h: ../../src/IO/LogWriter.cpp
+IO/LogWriter.h:
 @LogWriter.o
-IO/LoopFileLog.h: ../../src/IO/LoopFileLog.cpp
+IO/LoopFileLog.h:
 @LoopFileLog.o
-IO/MemFileBuffer.h: ../../src/IO/MemFileBuffer.cpp
+IO/MemFileBuffer.h:
 @MemFileBuffer.o
-IO/MemoryReadingStream.h: ../../src/IO/MemoryReadingStream.cpp
+IO/MemoryReadingStream.h:
 @MemoryReadingStream.o
-IO/MemoryStream.h: ../../src/IO/MemoryStream.cpp
+IO/MemoryStream.h:
 @MemoryStream.o
-IO/MinizZIP.h: ../../src/IO/MinizZIP.cpp
+IO/MinizZIP.h:
 @MinizZIP.o
-IO/MODBUSController.h: ../../src/IO/MODBUSController.cpp
+IO/MODBUSController.h:
 @MODBUSController.o
-IO/MODBUSDevice.h: ../../src/IO/MODBUSDevice.cpp
+IO/MODBUSDevice.h:
 @MODBUSDevice.o
 IO/MODBUSDevSim.h:
 IO/MODBUSMaster.h:
-IO/MODBUSRTUMaster.h: ../../src/IO/MODBUSRTUMaster.cpp
+IO/MODBUSRTUMaster.h:
 @MODBUSRTUMaster.o
-IO/MODBUSTCPMaster.h: ../../src/IO/MODBUSTCPMaster.cpp
+IO/MODBUSTCPMaster.h:
 @MODBUSTCPMaster.o
-IO/ModemController.h: ../../src/IO/ModemController.cpp
+IO/ModemController.h:
 @ModemController.o
-IO/MotionDetectorAccelerometer.h: ../../src/IO/MotionDetectorAccelerometer.cpp
+IO/MotionDetectorAccelerometer.h:
 @MotionDetectorAccelerometer.o
-IO/MTFileLog.h: ../../src/IO/MTFileLog.cpp
+IO/MTFileLog.h:
 @MTFileLog.o
-IO/NullIOPin.h: ../../src/IO/NullIOPin.cpp
+IO/NullIOPin.h:
 @NullIOPin.o
-IO/NullStream.h: ../../src/IO/NullStream.cpp
+IO/NullStream.h:
 @NullStream.o
-IO/NullWriter.h: ../../src/IO/NullWriter.cpp
+IO/NullWriter.h:
 @NullWriter.o
-IO/OneWireGPIO.h: ../../src/IO/OneWireGPIO.cpp
+IO/OneWireGPIO.h:
 @OneWireGPIO.o
-IO/PackageFile.h: ../../src/IO/PackageFile.cpp
+IO/PackageFile.h:
 @PackageFile.o
 IO/PacketLogWriter.h:
-IO/ParsedObject.h: ../../src/IO/ParsedObject.cpp
+IO/ParsedObject.h:
 @ParsedObject.o
 IO/ParserBase.h:
-IO/PcapngWriter.h: ../../src/IO/PcapngWriter.cpp
+IO/PcapngWriter.h:
 @PcapngWriter.o
-IO/PcapWriter.h: ../../src/IO/PcapWriter.cpp
+IO/PcapWriter.h:
 @PcapWriter.o
-IO/PrintMODBUSDevSim.h: ../../src/IO/PrintMODBUSDevSim.cpp
+IO/PrintMODBUSDevSim.h:
 @PrintMODBUSDevSim.o
-IO/ProgramLink.h: ../../src/IO/ProgramLink.cpp
+IO/ProgramLink.h:
 @ProgramLink.o
 IO/ProgressHandler.h:
-IO/RadioSignalLogger.h: ../../src/IO/RadioSignalLogger.cpp
+IO/RadioSignalLogger.h:
 @RadioSignalLogger.o
-IO/RAWMonitor.h: ../../src/IO/RAWMonitor.cpp
+IO/RAWMonitor.h:
 @RAWMonitor.o
 IO/Reader.h:
-IO/RS232GPIO.h: ../../src/IO/RS232GPIO.cpp
+IO/RS232GPIO.h:
 @RS232GPIO.o
-IO/SDCardInfo.h: ../../src/IO/SDCardInfo.cpp
+IO/SDCardInfo.h:
 @SDCardInfo.o
 IO/SeekableStream.h:
-IO/Sensor.h: ../../src/IO/Sensor.cpp
+IO/Sensor.h:
 @Sensor.o
 IO/SensorAccelerometer.h:
 IO/SensorLight.h:
@@ -1878,699 +1878,699 @@ IO/SensorLocation.h:
 IO/SensorMagnetometer.h:
 IO/SensorOrientation.h:
 IO/SensorPressure.h:
-IO/ServiceInfo.h: ../../src/IO/ServiceInfo.cpp
+IO/ServiceInfo.h:
 @ServiceInfo.o
-IO/SiLabDriver.h: ../../src/IO/SiLabDriver.cpp
+IO/SiLabDriver.h:
 @SiLabDriver.o
-IO/SiLabSerialPort.h: ../../src/IO/SiLabSerialPort.cpp
+IO/SiLabSerialPort.h:
 @SiLabSerialPort.o
-IO/SMake.h: ../../src/IO/SMake.cpp
+IO/SMake.h:
 @SMake.o
-IO/SMBIOS.h: ../../src/IO/SMBIOS.cpp
+IO/SMBIOS.h:
 @SMBIOS.o
-IO/SMTCWriter.h: ../../src/IO/SMTCWriter.cpp
+IO/SMTCWriter.h:
 @SMTCWriter.o
-IO/SNBDongle.h: ../../src/IO/SNBDongle.cpp
+IO/SNBDongle.h:
 @SNBDongle.o
-IO/SNBProtocol.h: ../../src/IO/SNBProtocol.cpp
+IO/SNBProtocol.h:
 @SNBProtocol.o
-IO/SPackageFile.h: ../../src/IO/SPackageFile.cpp
+IO/SPackageFile.h:
 @SPackageFile.o
-IO/Stream.h: ../../src/IO/Stream.cpp
+IO/Stream.h:
 @Stream.o
 IO/StreamData.h:
-IO/StreamDataStream.h: ../../src/IO/StreamDataStream.cpp
+IO/StreamDataStream.h:
 @StreamDataStream.o
 IO/StreamHandler.h:
-IO/StreamLogger.h: ../../src/IO/StreamLogger.cpp
+IO/StreamLogger.h:
 @StreamLogger.o
-IO/StreamReader.h: ../../src/IO/StreamReader.cpp
+IO/StreamReader.h:
 @StreamReader.o
-IO/StreamRecorder.h: ../../src/IO/StreamRecorder.cpp
+IO/StreamRecorder.h:
 @StreamRecorder.o
-IO/StreamWriter.h: ../../src/IO/StreamWriter.cpp
+IO/StreamWriter.h:
 @StreamWriter.o
-IO/StringLogFile.h: ../../src/IO/StringLogFile.cpp
+IO/StringLogFile.h:
 @StringLogFile.o
-IO/StringLogger.h: ../../src/IO/StringLogger.cpp
+IO/StringLogger.h:
 @StringLogger.o
-IO/SystemInfoLog.h: ../../src/IO/SystemInfoLog.cpp
+IO/SystemInfoLog.h:
 @SystemInfoLog.o
-IO/TVControl.h: ../../src/IO/TVControl.cpp
+IO/TVControl.h:
 @TVControl.o
-IO/UDPFileLog.h: ../../src/IO/UDPFileLog.cpp
+IO/UDPFileLog.h:
 @UDPFileLog.o
-IO/UDPLog.h: ../../src/IO/UDPLog.cpp
+IO/UDPLog.h:
 @UDPLog.o
-IO/UnixConfigFile.h: ../../src/IO/UnixConfigFile.cpp
+IO/UnixConfigFile.h:
 @UnixConfigFile.o
-IO/VBoxManager.h: ../../src/IO/VBoxManager.cpp
+IO/VBoxManager.h:
 @VBoxManager.o
-IO/VBoxVMInfo.h: ../../src/IO/VBoxVMInfo.cpp
+IO/VBoxVMInfo.h:
 @VBoxVMInfo.o
-IO/VirtualIOPinMgr.h: ../../src/IO/VirtualIOPinMgr.cpp
+IO/VirtualIOPinMgr.h:
 @VirtualIOPinMgr.o
-IO/VirtualPackageFile.h: ../../src/IO/VirtualPackageFile.cpp
+IO/VirtualPackageFile.h:
 @VirtualPackageFile.o
-IO/VirtualPackageFileFast.h: ../../src/IO/VirtualPackageFileFast.cpp
+IO/VirtualPackageFileFast.h:
 @VirtualPackageFileFast.o
-IO/VirtualPackageFileICase.h: ../../src/IO/VirtualPackageFileICase.cpp
+IO/VirtualPackageFileICase.h:
 @VirtualPackageFileICase.o
-IO/WindowsError.h: ../../src/IO/WindowsError.cpp
+IO/WindowsError.h:
 @WindowsError.o
-IO/WriteCacheStream.h: ../../src/IO/WriteCacheStream.cpp
+IO/WriteCacheStream.h:
 @WriteCacheStream.o
 IO/Writer.h:
-IO/WriterLogHandler.h: ../../src/IO/WriterLogHandler.cpp
+IO/WriterLogHandler.h:
 @WriterLogHandler.o
-IO/WSConfigFile.h: ../../src/IO/WSConfigFile.cpp
+IO/WSConfigFile.h:
 @WSConfigFile.o
-IO/ZIPBuilder.h: ../../src/IO/ZIPBuilder.cpp
+IO/ZIPBuilder.h:
 @ZIPBuilder.o
-IO/ZIPMTBuilder.h: ../../src/IO/ZIPMTBuilder.cpp
+IO/ZIPMTBuilder.h:
 @ZIPMTBuilder.o
-IO/Device/AM2315.h: ../../src/IO/Device/AM2315.cpp
+IO/Device/AM2315.h:
 @AM2315.o
-IO/Device/AM2315GPIO.h: ../../src/IO/Device/AM2315GPIO.cpp
+IO/Device/AM2315GPIO.h:
 @AM2315GPIO.o
-IO/Device/AMGU4241.h: ../../src/IO/Device/AMGU4241.cpp
+IO/Device/AMGU4241.h:
 @AMGU4241.o
-IO/Device/AXCAN.h: ../../src/IO/Device/AXCAN.cpp
+IO/Device/AXCAN.h:
 @AXCAN.o
-IO/Device/BivocomTD210.h: ../../src/IO/Device/BivocomTD210.cpp
+IO/Device/BivocomTD210.h:
 @BivocomTD210.o
-IO/Device/BME280.h: ../../src/IO/Device/BME280.cpp
+IO/Device/BME280.h:
 @BME280.o
-IO/Device/BYDC9R.h: ../../src/IO/Device/BYDC9R.cpp
+IO/Device/BYDC9R.h:
 @BYDC9R.o
-IO/Device/BYDC9RHandler.h: ../../src/IO/Device/BYDC9RHandler.cpp
+IO/Device/BYDC9RHandler.h:
 @BYDC9RHandler.o
-IO/Device/DensoWaveQB30.h: ../../src/IO/Device/DensoWaveQB30.cpp
+IO/Device/DensoWaveQB30.h:
 @DensoWaveQB30.o
-IO/Device/DensoWaveQK30U.h: ../../src/IO/Device/DensoWaveQK30U.cpp
+IO/Device/DensoWaveQK30U.h:
 @DensoWaveQK30U.o
-IO/Device/DHT22.h: ../../src/IO/Device/DHT22.cpp
+IO/Device/DHT22.h:
 @DHT22.o
-IO/Device/DS18B20.h: ../../src/IO/Device/DS18B20.cpp
+IO/Device/DS18B20.h:
 @DS18B20.o
-IO/Device/ED516.h: ../../src/IO/Device/ED516.cpp
+IO/Device/ED516.h:
 @ED516.o
-IO/Device/ED527.h: ../../src/IO/Device/ED527.cpp
+IO/Device/ED527.h:
 @ED527.o
-IO/Device/ED538.h: ../../src/IO/Device/ED538.cpp
+IO/Device/ED538.h:
 @ED538.o
-IO/Device/ED588.h: ../../src/IO/Device/ED588.cpp
+IO/Device/ED588.h:
 @ED588.o
-IO/Device/GoProCameraControl.h: ../../src/IO/Device/GoProCameraControl.cpp
+IO/Device/GoProCameraControl.h:
 @GoProCameraControl.o
-IO/Device/IBuddy.h: ../../src/IO/Device/IBuddy.cpp
+IO/Device/IBuddy.h:
 @IBuddy.o
-IO/Device/MTKGPSNMEA.h: ../../src/IO/Device/MTKGPSNMEA.cpp
+IO/Device/MTKGPSNMEA.h:
 @MTKGPSNMEA.o
-IO/Device/OlympusCameraControl.h: ../../src/IO/Device/OlympusCameraControl.cpp
+IO/Device/OlympusCameraControl.h:
 @OlympusCameraControl.o
-IO/Device/QQZMSerialCamera.h: ../../src/IO/Device/QQZMSerialCamera.cpp
+IO/Device/QQZMSerialCamera.h:
 @QQZMSerialCamera.o
-IO/Device/RockwellModemController.h: ../../src/IO/Device/RockwellModemController.cpp
+IO/Device/RockwellModemController.h:
 @RockwellModemController.o
-IO/Device/SDM120M.h: ../../src/IO/Device/SDM120M.cpp
+IO/Device/SDM120M.h:
 @SDM120M.o
-IO/Device/SHT20.h: ../../src/IO/Device/SHT20.cpp
+IO/Device/SHT20.h:
 @SHT20.o
-IO/Device/SIM7000.h: ../../src/IO/Device/SIM7000.cpp
+IO/Device/SIM7000.h:
 @SIM7000.o
-IO/Device/SIM7000SocketFactory.h: ../../src/IO/Device/SIM7000SocketFactory.cpp
+IO/Device/SIM7000SocketFactory.h:
 @SIM7000SocketFactory.o
-IO/Device/TelitLE910.h: ../../src/IO/Device/TelitLE910.cpp
+IO/Device/TelitLE910.h:
 @TelitLE910.o
-IO/Device/TH10SB.h: ../../src/IO/Device/TH10SB.cpp
+IO/Device/TH10SB.h:
 @TH10SB.o
-IO/FileAnalyse/ASN1FileAnalyse.h: ../../src/IO/FileAnalyse/ASN1FileAnalyse.cpp
+IO/FileAnalyse/ASN1FileAnalyse.h:
 @ASN1FileAnalyse.o
-IO/FileAnalyse/DWGFileAnalyse.h: ../../src/IO/FileAnalyse/DWGFileAnalyse.cpp
+IO/FileAnalyse/DWGFileAnalyse.h:
 @DWGFileAnalyse.o
-IO/FileAnalyse/EBMLFileAnalyse.h: ../../src/IO/FileAnalyse/EBMLFileAnalyse.cpp
+IO/FileAnalyse/EBMLFileAnalyse.h:
 @EBMLFileAnalyse.o
-IO/FileAnalyse/EDIDFileAnalyse.h: ../../src/IO/FileAnalyse/EDIDFileAnalyse.cpp
+IO/FileAnalyse/EDIDFileAnalyse.h:
 @EDIDFileAnalyse.o
-IO/FileAnalyse/EXEFileAnalyse.h: ../../src/IO/FileAnalyse/EXEFileAnalyse.cpp
+IO/FileAnalyse/EXEFileAnalyse.h:
 @EXEFileAnalyse.o
-IO/FileAnalyse/FGDBFileAnalyse.h: ../../src/IO/FileAnalyse/FGDBFileAnalyse.cpp
+IO/FileAnalyse/FGDBFileAnalyse.h:
 @FGDBFileAnalyse.o
-IO/FileAnalyse/FLVFileAnalyse.h: ../../src/IO/FileAnalyse/FLVFileAnalyse.cpp
+IO/FileAnalyse/FLVFileAnalyse.h:
 @FLVFileAnalyse.o
-IO/FileAnalyse/FrameDetail.h: ../../src/IO/FileAnalyse/FrameDetail.cpp
+IO/FileAnalyse/FrameDetail.h:
 @FrameDetail.o
-IO/FileAnalyse/FrameDetailHandler.h: ../../src/IO/FileAnalyse/FrameDetailHandler.cpp
+IO/FileAnalyse/FrameDetailHandler.h:
 @FrameDetailHandler.o
-IO/FileAnalyse/IFileAnalyse.h: ../../src/IO/FileAnalyse/IFileAnalyse.cpp
+IO/FileAnalyse/IFileAnalyse.h:
 @IFileAnalyse.o
-IO/FileAnalyse/JPGFileAnalyse.h: ../../src/IO/FileAnalyse/JPGFileAnalyse.cpp
+IO/FileAnalyse/JPGFileAnalyse.h:
 @JPGFileAnalyse.o
-IO/FileAnalyse/JMVL01FileAnalyse.h: ../../src/IO/FileAnalyse/JMVL01FileAnalyse.cpp
+IO/FileAnalyse/JMVL01FileAnalyse.h:
 @JMVL01FileAnalyse.o
-IO/FileAnalyse/LNKFileAnalyse.h: ../../src/IO/FileAnalyse/LNKFileAnalyse.cpp
+IO/FileAnalyse/LNKFileAnalyse.h:
 @LNKFileAnalyse.o
-IO/FileAnalyse/MDBFileAnalyse.h: ../../src/IO/FileAnalyse/MDBFileAnalyse.cpp
+IO/FileAnalyse/MDBFileAnalyse.h:
 @MDBFileAnalyse.o
-IO/FileAnalyse/MPEGFileAnalyse.h: ../../src/IO/FileAnalyse/MPEGFileAnalyse.cpp
+IO/FileAnalyse/MPEGFileAnalyse.h:
 @MPEGFileAnalyse.o
-IO/FileAnalyse/NFDumpFileAnalyse.h: ../../src/IO/FileAnalyse/NFDumpFileAnalyse.cpp
+IO/FileAnalyse/NFDumpFileAnalyse.h:
 @NFDumpFileAnalyse.o
-IO/FileAnalyse/PCapFileAnalyse.h: ../../src/IO/FileAnalyse/PCapFileAnalyse.cpp
+IO/FileAnalyse/PCapFileAnalyse.h:
 @PCapFileAnalyse.o
-IO/FileAnalyse/PCapngFileAnalyse.h: ../../src/IO/FileAnalyse/PCapngFileAnalyse.cpp
+IO/FileAnalyse/PCapngFileAnalyse.h:
 @PCapngFileAnalyse.o
-IO/FileAnalyse/PNGFileAnalyse.h: ../../src/IO/FileAnalyse/PNGFileAnalyse.cpp
+IO/FileAnalyse/PNGFileAnalyse.h:
 @PNGFileAnalyse.o
-IO/FileAnalyse/QTFileAnalyse.h: ../../src/IO/FileAnalyse/QTFileAnalyse.cpp
+IO/FileAnalyse/QTFileAnalyse.h:
 @QTFileAnalyse.o
-IO/FileAnalyse/RAR5FileAnalyse.h: ../../src/IO/FileAnalyse/RAR5FileAnalyse.cpp
+IO/FileAnalyse/RAR5FileAnalyse.h:
 @RAR5FileAnalyse.o
-IO/FileAnalyse/RIFFFileAnalyse.h: ../../src/IO/FileAnalyse/RIFFFileAnalyse.cpp
+IO/FileAnalyse/RIFFFileAnalyse.h:
 @RIFFFileAnalyse.o
-IO/FileAnalyse/SBFrameDetail.h: ../../src/IO/FileAnalyse/SBFrameDetail.cpp
+IO/FileAnalyse/SBFrameDetail.h:
 @SBFrameDetail.o
-IO/FileAnalyse/SHPFileAnalyse.h: ../../src/IO/FileAnalyse/SHPFileAnalyse.cpp
+IO/FileAnalyse/SHPFileAnalyse.h:
 @SHPFileAnalyse.o
-IO/FileAnalyse/SMBIOSFileAnalyse.h: ../../src/IO/FileAnalyse/SMBIOSFileAnalyse.cpp
+IO/FileAnalyse/SMBIOSFileAnalyse.h:
 @SMBIOSFileAnalyse.o
-IO/FileAnalyse/SMTCFileAnalyse.h: ../../src/IO/FileAnalyse/SMTCFileAnalyse.cpp
+IO/FileAnalyse/SMTCFileAnalyse.h:
 @SMTCFileAnalyse.o
-IO/FileAnalyse/SPKFileAnalyse.h: ../../src/IO/FileAnalyse/SPKFileAnalyse.cpp
+IO/FileAnalyse/SPKFileAnalyse.h:
 @SPKFileAnalyse.o
-IO/FileAnalyse/SSLFileAnalyse.h: ../../src/IO/FileAnalyse/SSLFileAnalyse.cpp
+IO/FileAnalyse/SSLFileAnalyse.h:
 @SSLFileAnalyse.o
-IO/FileAnalyse/TIFFFileAnalyse.h: ../../src/IO/FileAnalyse/TIFFFileAnalyse.cpp
+IO/FileAnalyse/TIFFFileAnalyse.h:
 @TIFFFileAnalyse.o
-IO/FileAnalyse/TSFileAnalyse.h: ../../src/IO/FileAnalyse/TSFileAnalyse.cpp
+IO/FileAnalyse/TSFileAnalyse.h:
 @TSFileAnalyse.o
-IO/FileAnalyse/TXTFileAnalyse.h: ../../src/IO/FileAnalyse/TXTFileAnalyse.cpp
+IO/FileAnalyse/TXTFileAnalyse.h:
 @TXTFileAnalyse.o
-IO/FileAnalyse/ZIPFileAnalyse.h: ../../src/IO/FileAnalyse/ZIPFileAnalyse.cpp
+IO/FileAnalyse/ZIPFileAnalyse.h:
 @ZIPFileAnalyse.o
-IO/ProgCtrl/BluetoothCtlProgCtrl.h: ../../src/IO/ProgCtrl/BluetoothCtlProgCtrl.cpp
+IO/ProgCtrl/BluetoothCtlProgCtrl.h:
 @BluetoothCtlProgCtrl.o
 IO/ProtoDec/IProtocolDecoder.h:
-IO/ProtoDec/JTT808ProtocolDecoder.h: ../../src/IO/ProtoDec/JTT808ProtocolDecoder.cpp
+IO/ProtoDec/JTT808ProtocolDecoder.h:
 @JTT808ProtocolDecoder.o
-IO/ProtoDec/ProtoDecList.h: ../../src/IO/ProtoDec/ProtoDecList.cpp
+IO/ProtoDec/ProtoDecList.h:
 @ProtoDecList.o
-IO/ProtoDec/TK109ProtocolDecoder.h: ../../src/IO/ProtoDec/TK109ProtocolDecoder.cpp
+IO/ProtoDec/TK109ProtocolDecoder.h:
 @TK109ProtocolDecoder.o
-IO/ProtoDec/TSProtocolDecoder.h: ../../src/IO/ProtoDec/TSProtocolDecoder.cpp
+IO/ProtoDec/TSProtocolDecoder.h:
 @TSProtocolDecoder.o
-IO/ProtoHdlr/ProtoCortexHandler.h: ../../src/IO/ProtoHdlr/ProtoCortexHandler.cpp
+IO/ProtoHdlr/ProtoCortexHandler.h:
 @ProtoCortexHandler.o
-IO/ProtoHdlr/ProtoDUploadHandler.h: ../../src/IO/ProtoHdlr/ProtoDUploadHandler.cpp
+IO/ProtoHdlr/ProtoDUploadHandler.h:
 @ProtoDUploadHandler.o
-IO/ProtoHdlr/ProtoGPSDevInfoHandler.h: ../../src/IO/ProtoHdlr/ProtoGPSDevInfoHandler.cpp
+IO/ProtoHdlr/ProtoGPSDevInfoHandler.h:
 @ProtoGPSDevInfoHandler.o
-IO/ProtoHdlr/ProtoJMVL01Handler.h: ../../src/IO/ProtoHdlr/ProtoJMVL01Handler.cpp
+IO/ProtoHdlr/ProtoJMVL01Handler.h:
 @ProtoJMVL01Handler.o
-IO/ProtoHdlr/ProtoJTT808Handler.h: ../../src/IO/ProtoHdlr/ProtoJTT808Handler.cpp
+IO/ProtoHdlr/ProtoJTT808Handler.h:
 @ProtoJTT808Handler.o
-IO/ProtoHdlr/ProtoLogCliHandler.h: ../../src/IO/ProtoHdlr/ProtoLogCliHandler.cpp
+IO/ProtoHdlr/ProtoLogCliHandler.h:
 @ProtoLogCliHandler.o
-IO/ProtoHdlr/ProtoMDataHandler.h: ../../src/IO/ProtoHdlr/ProtoMDataHandler.cpp
+IO/ProtoHdlr/ProtoMDataHandler.h:
 @ProtoMDataHandler.o
-IO/ProtoHdlr/ProtoMDataLSHandler.h: ../../src/IO/ProtoHdlr/ProtoMDataLSHandler.cpp
+IO/ProtoHdlr/ProtoMDataLSHandler.h:
 @ProtoMDataLSHandler.o
-IO/ProtoHdlr/ProtoMQTTHandler.h: ../../src/IO/ProtoHdlr/ProtoMQTTHandler.cpp
+IO/ProtoHdlr/ProtoMQTTHandler.h:
 @ProtoMQTTHandler.o
-IO/ProtoHdlr/ProtoRevGeoHandler.h: ../../src/IO/ProtoHdlr/ProtoRevGeoHandler.cpp
+IO/ProtoHdlr/ProtoRevGeoHandler.h:
 @ProtoRevGeoHandler.o
-IO/ProtoHdlr/ProtoSMonHandler.h: ../../src/IO/ProtoHdlr/ProtoSMonHandler.cpp
+IO/ProtoHdlr/ProtoSMonHandler.h:
 @ProtoSMonHandler.o
-IO/ProtoHdlr/ProtoSyncHandler.h: ../../src/IO/ProtoHdlr/ProtoSyncHandler.cpp
+IO/ProtoHdlr/ProtoSyncHandler.h:
 @ProtoSyncHandler.o
-IO/StmData/BlockStreamData.h: ../../src/IO/StmData/BlockStreamData.cpp
+IO/StmData/BlockStreamData.h:
 @BlockStreamData.o
-IO/StmData/BufferedStreamData.h: ../../src/IO/StmData/BufferedStreamData.cpp
+IO/StmData/BufferedStreamData.h:
 @BufferedStreamData.o
-IO/StmData/ConcatStreamData.h: ../../src/IO/StmData/ConcatStreamData.cpp
+IO/StmData/ConcatStreamData.h:
 @ConcatStreamData.o
-IO/StmData/FileData.h: ../../src/IO/StmData/FileData.cpp
+IO/StmData/FileData.h:
 @FileData.o
-IO/StmData/MemoryDataCopy.h: ../../src/IO/StmData/MemoryDataCopy.cpp
+IO/StmData/MemoryDataCopy.h:
 @MemoryDataCopy.o
-IO/StmData/MemoryDataRef.h: ../../src/IO/StmData/MemoryDataRef.cpp
+IO/StmData/MemoryDataRef.h:
 @MemoryDataRef.o
-IO/TVCtrl/MDT701STVControl.h: ../../src/IO/TVCtrl/MDT701STVControl.cpp
+IO/TVCtrl/MDT701STVControl.h:
 @MDT701STVControl.o
-IO/TVCtrl/NECTVControl.h: ../../src/IO/TVCtrl/NECTVControl.cpp
+IO/TVCtrl/NECTVControl.h:
 @NECTVControl.o
 
-Manage/AddressResolver.h: ../../src/Manage/AddressResolver.cpp
+Manage/AddressResolver.h:
 @AddressResolver.o
 Manage/Benchmark.h:
 @Benchmark_CPP.o
-Manage/CPUDB.h: ../../src/Manage/CPUDB.cpp
+Manage/CPUDB.h:
 @CPUDB.o
-Manage/CPUInst.h: ../../src/Manage/CPUInst.cpp
+Manage/CPUInst.h:
 @CPUInst.o
-Manage/CPUVendor.h: ../../src/Manage/CPUVendor.cpp
+Manage/CPUVendor.h:
 @CPUVendor.o
-Manage/DasmBase.h: ../../src/Manage/DasmBase.cpp
+Manage/DasmBase.h:
 @DasmBase.o
-Manage/DasmX86_16.h: ../../src/Manage/DasmX86_16.cpp
+Manage/DasmX86_16.h:
 @DasmX86_16.o
-Manage/ExceptionLogger.h: ../../src/Manage/ExceptionLogger.cpp
+Manage/ExceptionLogger.h:
 @ExceptionLogger.o
-Manage/HandleType.h: ../../src/Manage/HandleType.cpp
+Manage/HandleType.h:
 @HandleType.o
 Manage/IMemoryReader.h:
-Manage/MonConn.h: ../../src/Manage/MonConn.cpp
+Manage/MonConn.h:
 @MonConn.o
-Manage/OSInfo.h: ../../src/Manage/OSInfo.cpp
+Manage/OSInfo.h:
 @OSInfo.o
-Manage/ThreadContext.h: ../../src/Manage/ThreadContext.cpp
+Manage/ThreadContext.h:
 @ThreadContext.o
 
-Map/AssistedReverseGeocoder.h: ../../src/Map/AssistedReverseGeocoder.cpp
+Map/AssistedReverseGeocoder.h:
 @AssistedReverseGeocoder.o
-Map/AssistedReverseGeocoderPL.h: ../../src/Map/AssistedReverseGeocoderPL.cpp
+Map/AssistedReverseGeocoderPL.h:
 @AssistedReverseGeocoderPL.o
-Map/BaseMapLayer.h: ../../src/Map/BaseMapLayer.cpp
+Map/BaseMapLayer.h:
 @BaseMapLayer.o
-Map/BingMapsTile.h: ../../src/Map/BingMapsTile.cpp
+Map/BingMapsTile.h:
 @BingMapsTile.o
-Map/CIPLayer2.h: ../../src/Map/CIPLayer2.cpp
+Map/CIPLayer2.h:
 @CIPLayer2.o
-Map/CSVMapParser.h: ../../src/Map/CSVMapParser.cpp
+Map/CSVMapParser.h:
 @CSVMapParser.o
-Map/CustomTileMap.h: ../../src/Map/CustomTileMap.cpp
+Map/CustomTileMap.h:
 @CustomTileMap.o
-Map/DBMapLayer.h: ../../src/Map/DBMapLayer.cpp
+Map/DBMapLayer.h:
 @DBMapLayer.o
-Map/DrawMapRenderer.h: ../../src/Map/DrawMapRenderer.cpp
+Map/DrawMapRenderer.h:
 @DrawMapRenderer.o
 Map/DrawMapService.h:
-Map/DrawMapServiceLayer.h: ../../src/Map/DrawMapServiceLayer.cpp
+Map/DrawMapServiceLayer.h:
 @DrawMapServiceLayer.o
-Map/FileGDBLayer.h: ../../src/Map/FileGDBLayer.cpp
+Map/FileGDBLayer.h:
 @FileGDBLayer.o
-Map/GeoPackage.h: ../../src/Map/GeoPackage.cpp
+Map/GeoPackage.h:
 @GeoPackage.o
-Map/GeoPackageLayer.h: ../../src/Map/GeoPackageLayer.cpp
+Map/GeoPackageLayer.h:
 @GeoPackageLayer.o
-Map/GMLXML.h: ../../src/Map/GMLXML.cpp
+Map/GMLXML.h:
 @GMLXML.o
-Map/GPSTrack.h: ../../src/Map/GPSTrack.cpp
+Map/GPSTrack.h:
 @GPSTrack.o
-Map/HKParkingVacancy.h: ../../src/Map/HKParkingVacancy.cpp
+Map/HKParkingVacancy.h:
 @HKParkingVacancy.o
-Map/HKRoadNetwork2.h: ../../src/Map/HKRoadNetwork2.cpp
+Map/HKRoadNetwork2.h:
 @HKRoadNetwork2.o
-Map/HKSpeedLimit.h: ../../src/Map/HKSpeedLimit.cpp
+Map/HKSpeedLimit.h:
 @HKSpeedLimit.o
-Map/HKTDVehRestrict.h: ../../src/Map/HKTDVehRestrict.cpp
+Map/HKTDVehRestrict.h:
 @HKTDVehRestrict.o
-Map/HKTrafficLayer.h: ../../src/Map/HKTrafficLayer.cpp
+Map/HKTrafficLayer.h:
 @HKTrafficLayer.o
-Map/HKTrafficLayer2.h: ../../src/Map/HKTrafficLayer2.cpp
+Map/HKTrafficLayer2.h:
 @HKTrafficLayer2.o
 Map/IAssistedReverseGeocoder.h:
-Map/ILocationService.h: ../../src/Map/ILocationService.cpp
+Map/ILocationService.h:
 @ILocationService.o
 Map/IReverseGeocoder.h:
-Map/KMLXML.h: ../../src/Map/KMLXML.cpp
+Map/KMLXML.h:
 @KMLXML.o
-Map/LayerTools.h: ../../src/Map/LayerTools.cpp
+Map/LayerTools.h:
 @LayerTools.o
-Map/LeveledMapView.h: ../../src/Map/LeveledMapView.cpp
+Map/LeveledMapView.h:
 @LeveledMapView.o
-Map/MapConfig2.h: ../../src/Map/MapConfig2.cpp
+Map/MapConfig2.h:
 @MapConfig2.o
-Map/MapConfig2TGen.h: ../../src/Map/MapConfig2TGen.cpp
+Map/MapConfig2TGen.h:
 @MapConfig2TGen.o
 Map/MapConfigBase.h:
-Map/MapDrawLayer.h: ../../src/Map/MapDrawLayer.cpp
+Map/MapDrawLayer.h:
 @MapDrawLayer.o
-Map/MapDrawUtil.h: ../../src/Map/MapDrawUtil.cpp
+Map/MapDrawUtil.h:
 @MapDrawUtil.o
-Map/MapEnv.h: ../../src/Map/MapEnv.cpp
+Map/MapEnv.h:
 @MapEnv.o
-Map/MapLayerCollection.h: ../../src/Map/MapLayerCollection.cpp
+Map/MapLayerCollection.h:
 @MapLayerCollection.o
-Map/MapLayerData.h: ../../src/Map/MapLayerData.cpp
+Map/MapLayerData.h:
 @MapLayerData.o
-Map/MapManager.h: ../../src/Map/MapManager.cpp
+Map/MapManager.h:
 @MapManager.o
-Map/MapPOI.h: ../../src/Map/MapPOI.cpp
+Map/MapPOI.h:
 @MapPOI.o
 Map/MapRenderer.h:
-Map/MapScheduler.h: ../../src/Map/MapScheduler.cpp
+Map/MapScheduler.h:
 @MapScheduler.o
-Map/MapSearch.h: ../../src/Map/MapSearch.cpp
+Map/MapSearch.h:
 @MapSearch.o
 Map/MapSearchLayer.h:
-Map/MapSearchManager.h: ../../src/Map/MapSearchManager.cpp
+Map/MapSearchManager.h:
 @MapSearchManager.o
-Map/MapServerHandler.h: ../../src/Map/MapServerHandler.cpp
+Map/MapServerHandler.h:
 @MapServerHandler.o
-Map/MapView.h: ../../src/Map/MapView.cpp
+Map/MapView.h:
 @MapView.o
-Map/MercatorMapView.h: ../../src/Map/MercatorMapView.cpp
+Map/MercatorMapView.h:
 @MercatorMapView.o
-Map/MercatorTileMap.h: ../../src/Map/MercatorTileMap.cpp
+Map/MercatorTileMap.h:
 @MercatorTileMap.o
-Map/NetworkLinkLayer.h: ../../src/Map/NetworkLinkLayer.cpp
+Map/NetworkLinkLayer.h:
 @NetworkLinkLayer.o
-Map/OruxDBLayer.h: ../../src/Map/OruxDBLayer.cpp
+Map/OruxDBLayer.h:
 @OruxDBLayer.o
-Map/OWSFeatureParser.h: ../../src/Map/OWSFeatureParser.cpp
+Map/OWSFeatureParser.h:
 @OWSFeatureParser.o
-Map/RegionalMapSource.h: ../../src/Map/RegionalMapSource.cpp
+Map/RegionalMapSource.h:
 @RegionalMapSource.o
-Map/ReverseGeocoderServer.h: ../../src/Map/ReverseGeocoderServer.cpp
+Map/ReverseGeocoderServer.h:
 @ReverseGeocoderServer.o
-Map/RevGeoCfg.h: ../../src/Map/RevGeoCfg.cpp
+Map/RevGeoCfg.h:
 @RevGeoCfg.o
-Map/RevGeoDir.h: ../../src/Map/RevGeoDir.cpp
+Map/RevGeoDir.h:
 @RevGeoDir.o
-Map/ScaledMapView.h: ../../src/Map/ScaledMapView.cpp
+Map/ScaledMapView.h:
 @ScaledMapView.o
 @ScaledMapView_CPP.o
-Map/ShortestPathFinder.h: ../../src/Map/ShortestPathFinder.cpp
+Map/ShortestPathFinder.h:
 @ShortestPathFinder.o
-Map/SHPData.h: ../../src/Map/SHPData.cpp
+Map/SHPData.h:
 @SHPData.o
-Map/SHPUtil.h: ../../src/Map/SHPUtil.cpp
+Map/SHPUtil.h:
 @SHPUtil.o
-Map/SPDLayer.h: ../../src/Map/SPDLayer.cpp
+Map/SPDLayer.h:
 @SPDLayer.o
 Map/TileMap.h:
-Map/TileMapFolderWriter.h: ../../src/Map/TileMapFolderWriter.cpp
+Map/TileMapFolderWriter.h:
 @TileMapFolderWriter.o
-Map/TileMapGenerator.h: ../../src/Map/TileMapGenerator.cpp
+Map/TileMapGenerator.h:
 @TileMapGenerator.o
-Map/TileMapLayer.h: ../../src/Map/TileMapLayer.cpp
+Map/TileMapLayer.h:
 @TileMapLayer.o
-Map/TileMapOruxWriter.h: ../../src/Map/TileMapOruxWriter.cpp
+Map/TileMapOruxWriter.h:
 @TileMapOruxWriter.o
-Map/TileMapServiceSource.h: ../../src/Map/TileMapServiceSource.cpp
+Map/TileMapServiceSource.h:
 @TileMapServiceSource.o
-Map/TileMapSPKWriter.h: ../../src/Map/TileMapSPKWriter.cpp
+Map/TileMapSPKWriter.h:
 @TileMapSPKWriter.o
-Map/TileMapUtil.h: ../../src/Map/TileMapUtil.cpp
+Map/TileMapUtil.h:
 @TileMapUtil.o
 Map/TileMapWriter.h:
-Map/TileMapZipWriter.h: ../../src/Map/TileMapZipWriter.cpp
+Map/TileMapZipWriter.h:
 @TileMapZipWriter.o
-Map/VectorLayer.h: ../../src/Map/VectorLayer.cpp
+Map/VectorLayer.h:
 @VectorLayer.o
-Map/WebFeatureService.h: ../../src/Map/WebFeatureService.cpp
+Map/WebFeatureService.h:
 @WebFeatureService.o
-Map/WebImageLayer.h: ../../src/Map/WebImageLayer.cpp
+Map/WebImageLayer.h:
 @WebImageLayer.o
-Map/WebMapService.h: ../../src/Map/WebMapService.cpp
+Map/WebMapService.h:
 @WebMapService.o
-Map/WebMapTileServiceSource.h: ../../src/Map/WebMapTileServiceSource.cpp
+Map/WebMapTileServiceSource.h:
 @WebMapTileServiceSource.o
-Map/ESRI/ESRIMapServer.h: ../../src/Map/ESRI/ESRIMapServer.cpp
+Map/ESRI/ESRIMapServer.h:
 @ESRIMapServer.o
-Map/ESRI/ESRIMDBLayer.h: ../../src/Map/ESRI/ESRIMDBLayer.cpp
+Map/ESRI/ESRIMDBLayer.h:
 @ESRIMDBLayer.o
-Map/ESRI/ESRITileMap.h: ../../src/Map/ESRI/ESRITileMap.cpp
+Map/ESRI/ESRITileMap.h:
 @ESRITileMap.o
-Map/ESRI/FileGDBDir.h: ../../src/Map/ESRI/FileGDBDir.cpp
+Map/ESRI/FileGDBDir.h:
 @FileGDBDir.o
-Map/ESRI/FileGDBReader.h: ../../src/Map/ESRI/FileGDBReader.cpp
+Map/ESRI/FileGDBReader.h:
 @FileGDBReader.o
-Map/ESRI/FileGDBTable.h: ../../src/Map/ESRI/FileGDBTable.cpp
+Map/ESRI/FileGDBTable.h:
 @FileGDBTable.o
-Map/ESRI/FileGDBUtil.h: ../../src/Map/ESRI/FileGDBUtil.cpp
+Map/ESRI/FileGDBUtil.h:
 @FileGDBUtil.o
-Map/GoogleMap/GoogleMapsUtil.h: ../../src/Map/GoogleMap/GoogleMapsUtil.cpp
+Map/GoogleMap/GoogleMapsUtil.h:
 @GoogleMapsUtil.o
-Map/GoogleMap/GoogleSearcher.h: ../../src/Map/GoogleMap/GoogleSearcher.cpp
+Map/GoogleMap/GoogleSearcher.h:
 @GoogleSearcher.o
-Map/GoogleMap/GoogleStaticMap.h: ../../src/Map/GoogleMap/GoogleStaticMap.cpp
+Map/GoogleMap/GoogleStaticMap.h:
 @GoogleStaticMap.o
-Map/GoogleMap/GoogleTileMap.h: ../../src/Map/GoogleMap/GoogleTileMap.cpp
+Map/GoogleMap/GoogleTileMap.h:
 @GoogleTileMap.o
-Map/GoogleMap/GoogleWSSearcherJSON.h: ../../src/Map/GoogleMap/GoogleWSSearcherJSON.cpp
+Map/GoogleMap/GoogleWSSearcherJSON.h:
 @GoogleWSSearcherJSON.o
-Map/OSM/OSMCacheHandler.h: ../../src/Map/OSM/OSMCacheHandler.cpp
+Map/OSM/OSMCacheHandler.h:
 @OSMCacheHandler.o
-Map/OSM/OSMLocalTileMap.h: ../../src/Map/OSM/OSMLocalTileMap.cpp
+Map/OSM/OSMLocalTileMap.h:
 @OSMLocalTileMap.o
-Map/OSM/OSMParser.h: ../../src/Map/OSM/OSMParser.cpp
+Map/OSM/OSMParser.h:
 @OSMParser.o
-Map/OSM/OSMTileMap.h: ../../src/Map/OSM/OSMTileMap.cpp
+Map/OSM/OSMTileMap.h:
 @OSMTileMap.o
 
-Math/ArcGISCSys.h: ../../src/Math/ArcGISCSys.cpp
+Math/ArcGISCSys.h:
 @ArcGISCSys.o
-Math/ArcGISPRJParser.h: ../../src/Math/ArcGISPRJParser.cpp
+Math/ArcGISPRJParser.h:
 @ArcGISPRJParser.o
-Math/BigIntLSB.h: ../../src/Math/BigIntLSB.cpp
+Math/BigIntLSB.h:
 @BigIntLSB.o
-Math/CesiumEntityWriter.h: ../../src/Math/CesiumEntityWriter.cpp
+Math/CesiumEntityWriter.h:
 @CesiumEntityWriter.o
-Math/ComplexNumber.h: ../../src/Math/ComplexNumber.cpp
+Math/ComplexNumber.h:
 @ComplexNumber.o
 Math/Coord2D.h:
 Math/Coord2DDbl.h:
 Math/CoordinateConverter.h:
-Math/CoordinateSystem.h: ../../src/Math/CoordinateSystem.cpp
+Math/CoordinateSystem.h:
 @CoordinateSystem.o
-Math/CoordinateSystemConverter.h: ../../src/Math/CoordinateSystemConverter.cpp
+Math/CoordinateSystemConverter.h:
 @CoordinateSystemConverter.o
-Math/CoordinateSystemManager.h: ../../src/Math/CoordinateSystemManager.cpp
+Math/CoordinateSystemManager.h:
 @CoordinateSystemManager.o
 Math/Double2D.h:
-Math/EarthEllipsoid.h: ../../src/Math/EarthEllipsoid.cpp
+Math/EarthEllipsoid.h:
 @EarthEllipsoid.o
-Math/FFT.h: ../../src/Math/FFT.cpp
+Math/FFT.h:
 @FFT.o
-Math/FFTCalc.h: ../../src/Math/FFTCalc.cpp
+Math/FFTCalc.h:
 @FFTCalc.o
 @FFTCalc_CPP.o
-Math/GeographicCoordinateSystem.h: ../../src/Math/GeographicCoordinateSystem.cpp
+Math/GeographicCoordinateSystem.h:
 @GeographicCoordinateSystem.o
-Math/GeoJSONWriter.h: ../../src/Math/GeoJSONWriter.cpp
+Math/GeoJSONWriter.h:
 @GeoJSONWriter.o
-Math/GeometryTool.h: ../../src/Math/GeometryTool.cpp
+Math/GeometryTool.h:
 @GeometryTool.o
-Math/LanczosFilter.h: ../../src/Math/LanczosFilter.cpp
+Math/LanczosFilter.h:
 @LanczosFilter.o
 Math/LithiumBattery.h:
-Math/Math.h: ../../src/Math/Math.cpp
+Math/Math.h:
 @Math.o
 @Math_CPP.o
-Math/Matrix3.h: ../../src/Math/Matrix3.cpp
+Math/Matrix3.h:
 @Matrix3.o
-Math/Mercator1SPProjectedCoordinateSystem.h: ../../src/Math/Mercator1SPProjectedCoordinateSystem.cpp
+Math/Mercator1SPProjectedCoordinateSystem.h:
 @Mercator1SPProjectedCoordinateSystem.o
-Math/MercatorProjectedCoordinateSystem.h: ../../src/Math/MercatorProjectedCoordinateSystem.cpp
+Math/MercatorProjectedCoordinateSystem.h:
 @MercatorProjectedCoordinateSystem.o
-Math/MSGeography.h: ../../src/Math/MSGeography.cpp
+Math/MSGeography.h:
 @MSGeography.o
-Math/PointMappingCoordinateSystem.h: ../../src/Math/PointMappingCoordinateSystem.cpp
+Math/PointMappingCoordinateSystem.h:
 @PointMappingCoordinateSystem.o
-Math/ProjectedCoordinateSystem.h: ../../src/Math/ProjectedCoordinateSystem.cpp
+Math/ProjectedCoordinateSystem.h:
 @ProjectedCoordinateSystem.o
-Math/Quadrilateral.h: ../../src/Math/Quadrilateral.cpp
+Math/Quadrilateral.h:
 @Quadrilateral.o
 Math/RectArea.h:
 Math/RectAreaDbl.h:
 Math/Size2D.h:
 Math/Size2DDbl.h:
-Math/SRESRIWKTWriter.h: ../../src/Math/SRESRIWKTWriter.cpp
+Math/SRESRIWKTWriter.h:
 @SRESRIWKTWriter.o
-Math/SROGCWKTWriter.h: ../../src/Math/SROGCWKTWriter.cpp
+Math/SROGCWKTWriter.h:
 @SROGCWKTWriter.o
-Math/SRWKTWriter.h: ../../src/Math/SRWKTWriter.cpp
+Math/SRWKTWriter.h:
 @SRWKTWriter.o
 Math/Triangle.h:
-Math/TSPFile.h: ../../src/Math/TSPFile.cpp
+Math/TSPFile.h:
 @TSPFile.o
-Math/UTMGridConvertDbl.h: ../../src/Math/UTMGridConvertDbl.cpp
+Math/UTMGridConvertDbl.h:
 @UTMGridConvertDbl.o
 Math/Value2D.h:
 Math/Vector3.h:
 Math/VectorTextWriter.h:
-Math/VectorTextWriterList.h: ../../src/Math/VectorTextWriterList.cpp
+Math/VectorTextWriterList.h:
 @VectorTextWriterList.o
-Math/WKBReader.h: ../../src/Math/WKBReader.cpp
+Math/WKBReader.h:
 @WKBReader.o
-Math/WKBWriter.h: ../../src/Math/WKBWriter.cpp
+Math/WKBWriter.h:
 @WKBWriter.o
-Math/WKTReader.h: ../../src/Math/WKTReader.cpp
+Math/WKTReader.h:
 @WKTReader.o
-Math/WKTWriter.h: ../../src/Math/WKTWriter.cpp
+Math/WKTWriter.h:
 @WKTWriter.o
-Math/Geometry/CircularString.h: ../../src/Math/Geometry/CircularString.cpp
+Math/Geometry/CircularString.h:
 @CircularString.o
-Math/Geometry/CompoundCurve.h: ../../src/Math/Geometry/CompoundCurve.cpp
+Math/Geometry/CompoundCurve.h:
 @CompoundCurve.o
-Math/Geometry/CurvePolygon.h: ../../src/Math/Geometry/CurvePolygon.cpp
+Math/Geometry/CurvePolygon.h:
 @CurvePolygon.o
-Math/Geometry/Ellipse.h: ../../src/Math/Geometry/Ellipse.cpp
+Math/Geometry/Ellipse.h:
 @Ellipse.o
-Math/Geometry/GeometryCollection.h: ../../src/Math/Geometry/GeometryCollection.cpp
+Math/Geometry/GeometryCollection.h:
 @GeometryCollection.o
-Math/Geometry/LinearRing.h: ../../src/Math/Geometry/LinearRing.cpp
+Math/Geometry/LinearRing.h:
 @LinearRing.o
-Math/Geometry/LineString.h: ../../src/Math/Geometry/LineString.cpp
+Math/Geometry/LineString.h:
 @LineString.o
 Math/Geometry/MultiGeometry.h:
-Math/Geometry/MultiPolygon.h: ../../src/Math/Geometry/MultiPolygon.cpp
+Math/Geometry/MultiPolygon.h:
 @MultiPolygon.o
-Math/Geometry/MultiSurface.h: ../../src/Math/Geometry/MultiSurface.cpp
+Math/Geometry/MultiSurface.h:
 @MultiSurface.o
 Math/Geometry/PieArea.h:
-Math/Geometry/Point.h: ../../src/Math/Geometry/Point.cpp
+Math/Geometry/Point.h:
 @Point.o
-Math/Geometry/PointM.h: ../../src/Math/Geometry/PointM.cpp
+Math/Geometry/PointM.h:
 @PointM.o
-Math/Geometry/PointZ.h: ../../src/Math/Geometry/PointZ.cpp
+Math/Geometry/PointZ.h:
 @PointZ.o
-Math/Geometry/PointZM.h: ../../src/Math/Geometry/PointZM.cpp
+Math/Geometry/PointZM.h:
 @PointZM.o
-Math/Geometry/Polygon.h: ../../src/Math/Geometry/Polygon.cpp
+Math/Geometry/Polygon.h:
 @Polygon.o
-Math/Geometry/Polyline.h: ../../src/Math/Geometry/Polyline.cpp
+Math/Geometry/Polyline.h:
 @Polyline.o
-Math/Geometry/Vector2D.h: ../../src/Math/Geometry/Vector2D.cpp
+Math/Geometry/Vector2D.h:
 @Vector2D.o
-Math/Geometry/VectorImage.h: ../../src/Math/Geometry/VectorImage.cpp
+Math/Geometry/VectorImage.h:
 @VectorImage.o
-Math/Geometry/VectorString.h: ../../src/Math/Geometry/VectorString.cpp
+Math/Geometry/VectorString.h:
 @VectorString.o
-Math/Unit/Acceleration.h: ../../src/Math/Unit/Acceleration.cpp
+Math/Unit/Acceleration.h:
 @Acceleration.o
-Math/Unit/Angle.h: ../../src/Math/Unit/Angle.cpp
+Math/Unit/Angle.h:
 @Angle.o
-Math/Unit/ApparentPower.h: ../../src/Math/Unit/ApparentPower.cpp
+Math/Unit/ApparentPower.h:
 @ApparentPower.o
-Math/Unit/Count.h: ../../src/Math/Unit/Count.cpp
+Math/Unit/Count.h:
 @Count.o
-Math/Unit/Distance.h: ../../src/Math/Unit/Distance.cpp
+Math/Unit/Distance.h:
 @Distance.o
-Math/Unit/ElectricCurrent.h: ../../src/Math/Unit/ElectricCurrent.cpp
+Math/Unit/ElectricCurrent.h:
 @ElectricCurrent.o
-Math/Unit/ElectricPotential.h: ../../src/Math/Unit/ElectricPotential.cpp
+Math/Unit/ElectricPotential.h:
 @ElectricPotential.o
-Math/Unit/Energy.h: ../../src/Math/Unit/Energy.cpp
+Math/Unit/Energy.h:
 @Energy.o
-Math/Unit/Frequency.h: ../../src/Math/Unit/Frequency.cpp
+Math/Unit/Frequency.h:
 @Frequency.o
-Math/Unit/MagneticField.h: ../../src/Math/Unit/MagneticField.cpp
+Math/Unit/MagneticField.h:
 @MagneticField.o
-Math/Unit/Mass.h: ../../src/Math/Unit/Mass.cpp
+Math/Unit/Mass.h:
 @Mass.o
-Math/Unit/Power.h: ../../src/Math/Unit/Power.cpp
+Math/Unit/Power.h:
 @Power.o
-Math/Unit/Pressure.h: ../../src/Math/Unit/Pressure.cpp
+Math/Unit/Pressure.h:
 @Pressure.o
-Math/Unit/Ratio.h: ../../src/Math/Unit/Ratio.cpp
+Math/Unit/Ratio.h:
 @Ratio.o
-Math/Unit/ReactiveEnergy.h: ../../src/Math/Unit/ReactiveEnergy.cpp
+Math/Unit/ReactiveEnergy.h:
 @ReactiveEnergy.o
-Math/Unit/ReactivePower.h: ../../src/Math/Unit/ReactivePower.cpp
+Math/Unit/ReactivePower.h:
 @ReactivePower.o
 Math/Unit/Substance.h:
-Math/Unit/Temperature.h: ../../src/Math/Unit/Temperature.cpp
+Math/Unit/Temperature.h:
 @Temperature.o
-Math/Unit/UnitBase.h: ../../src/Math/Unit/UnitBase.cpp
+Math/Unit/UnitBase.h:
 @UnitBase.o
 
-Media/AACFrameSource.h: ../../src/Media/AACFrameSource.cpp
+Media/AACFrameSource.h:
 @AACFrameSource.o
-Media/ANPR.h: ../../src/Media/ANPR.cpp
+Media/ANPR.h:
 @ANPR.o
-Media/AudioBlockParser.h: ../../src/Media/AudioBlockParser.cpp
+Media/AudioBlockParser.h:
 @AudioBlockParser.o
-Media/AudioBlockSource.h: ../../src/Media/AudioBlockSource.cpp
+Media/AudioBlockSource.h:
 @AudioBlockSource.o
-Media/AudioConcatSource.h: ../../src/Media/AudioConcatSource.cpp
+Media/AudioConcatSource.h:
 @AudioConcatSource.o
-Media/AudioFixBlockSource.h: ../../src/Media/AudioFixBlockSource.cpp
+Media/AudioFixBlockSource.h:
 @AudioFixBlockSource.o
-Media/AudioFormat.h: ../../src/Media/AudioFormat.cpp
+Media/AudioFormat.h:
 @AudioFormat.o
-Media/AudioFrameSource.h: ../../src/Media/AudioFrameSource.cpp
+Media/AudioFrameSource.h:
 @AudioFrameSource.o
-Media/AudioUtil.h: ../../src/Media/AudioUtil.cpp
+Media/AudioUtil.h:
 @AudioUtil.o
-Media/BitmapUtil.h: ../../src/Media/BitmapUtil.cpp
+Media/BitmapUtil.h:
 @BitmapUtil.o
-Media/ChapterInfo.h: ../../src/Media/ChapterInfo.cpp
+Media/ChapterInfo.h:
 @ChapterInfo.o
-Media/ClockSpeechCh.h: ../../src/Media/ClockSpeechCh.cpp
+Media/ClockSpeechCh.h:
 @ClockSpeechCh.o
-Media/ColorConv.h: ../../src/Media/ColorConv.cpp
+Media/ColorConv.h:
 @ColorConv.o
-Media/ColorProfile.h: ../../src/Media/ColorProfile.cpp
+Media/ColorProfile.h:
 @ColorProfile.o
 Media/ColorSess.h:
-Media/ConsoleMediaPlayer.h: ../../src/Media/ConsoleMediaPlayer.cpp
+Media/ConsoleMediaPlayer.h:
 @ConsoleMediaPlayer.o
-Media/ConsoleVideoRenderer.h: ../../src/Media/ConsoleVideoRenderer.cpp
+Media/ConsoleVideoRenderer.h:
 @ConsoleVideoRenderer.o
-Media/Deinterlace8.h: ../../src/Media/Deinterlace8.cpp
+Media/Deinterlace8.h:
 @Deinterlace8.o
 @Deinterlace8_CPP.o
-Media/DeinterlaceLR.h: ../../src/Media/DeinterlaceLR.cpp
+Media/DeinterlaceLR.h:
 @DeinterlaceLR.o
 @DeinterlaceLR_CPP.o
-Media/DrawEngine.h: ../../src/Media/DrawEngine.cpp
+Media/DrawEngine.h:
 @DrawEngine.o
-Media/DrawImageTool.h: ../../src/Media/DrawImageTool.cpp
+Media/DrawImageTool.h:
 @DrawImageTool.o
-Media/EDID.h: ../../src/Media/EDID.cpp
+Media/EDID.h:
 @EDID.o
-Media/EXIFData.h: ../../src/Media/EXIFData.cpp
+Media/EXIFData.h:
 @EXIFData.o
-Media/FileVideoSource.h: ../../src/Media/FileVideoSource.cpp
+Media/FileVideoSource.h:
 @FileVideoSource.o
-Media/FontRenderer.h: ../../src/Media/FontRenderer.cpp
+Media/FontRenderer.h:
 @FontRenderer.o
-Media/FrameInfo.h: ../../src/Media/FrameInfo.cpp
+Media/FrameInfo.h:
 @FrameInfo.o
-Media/FrequencyGraph.h: ../../src/Media/FrequencyGraph.cpp
+Media/FrequencyGraph.h:
 @FrequencyGraph.o
-Media/GRFilter.h: ../../src/Media/GRFilter.cpp
+Media/GRFilter.h:
 @GRFilter.o
 @GRFilter_CPP.o
-Media/H264Parser.h: ../../src/Media/H264Parser.cpp
+Media/H264Parser.h:
 @H264Parser.o
-Media/H265Parser.h: ../../src/Media/H265Parser.cpp
+Media/H265Parser.h:
 @H265Parser.o
-Media/HTRecFile.h: ../../src/Media/HTRecFile.cpp
+Media/HTRecFile.h:
 @HTRecFile.o
-Media/IAudioFilter.h: ../../src/Media/IAudioFilter.cpp
+Media/IAudioFilter.h:
 @IAudioFilter.o
 Media/IAudioFrameSource.h:
 Media/IAudioRenderer.h:
-Media/IAudioSource.h: ../../src/Media/IAudioSource.cpp
+Media/IAudioSource.h:
 @IAudioSource.o
-Media/ICCProfile.h: ../../src/Media/ICCProfile.cpp
+Media/ICCProfile.h:
 @ICCProfile.o
 Media/IColorHandler.h:
 Media/IDeinterlacer.h:
-Media/IDeintResizer.h: ../../src/Media/IDeintResizer.cpp
+Media/IDeintResizer.h:
 @IDeintResizer.o
 Media/IImgFilter.h:
-Media/IImgResizer.h: ../../src/Media/IImgResizer.cpp
+Media/IImgResizer.h:
 @IImgResizer.o
-Media/Image.h: ../../src/Media/Image.cpp
+Media/Image.h:
 @Image.o
-Media/ImageAlphaBlend.h: ../../src/Media/ImageAlphaBlend.cpp
+Media/ImageAlphaBlend.h:
 @ImageAlphaBlend.o
-Media/ImageCopy.h: ../../src/Media/ImageCopy.cpp
+Media/ImageCopy.h:
 @ImageCopy.o
-Media/ImageGenerator.h: ../../src/Media/ImageGenerator.cpp
+Media/ImageGenerator.h:
 @ImageGenerator.o
-Media/ImageList.h: ../../src/Media/ImageList.cpp
+Media/ImageList.h:
 @ImageList.o
-Media/ImageTo8Bit.h: ../../src/Media/ImageTo8Bit.cpp
+Media/ImageTo8Bit.h:
 @ImageTo8Bit.o
 @ImageTo8Bit_CPP.o
-Media/ImageUtil.h: ../../src/Media/ImageUtil.cpp
+Media/ImageUtil.h:
 @ImageUtil.o
 @ImageUtil_CPP.o
 Media/IMediaPlayer.h:
@@ -2579,2132 +2579,2132 @@ Media/IMediaStream.h:
 Media/IPBControl.h:
 Media/IPhotoCapture.h:
 Media/IPrintDocument.h:
-Media/IRealtimeVideoSource.h: ../../src/Media/IRealtimeVideoSource.cpp
+Media/IRealtimeVideoSource.h:
 @IRealtimeVideoSource.o
 Media/IStreamControl.h:
 Media/IVideoCapture.h:
-Media/IVideoSource.h: ../../src/Media/IVideoSource.cpp
+Media/IVideoSource.h:
 @IVideoSource.o
-Media/JPEGFile.h: ../../src/Media/JPEGFile.cpp
+Media/JPEGFile.h:
 @JPEGFile.o
-Media/LinearRectRemapper.h: ../../src/Media/LinearRectRemapper.cpp
+Media/LinearRectRemapper.h:
 @LinearRectRemapper.o
-Media/LPCMConverter.h: ../../src/Media/LPCMConverter.cpp
+Media/LPCMConverter.h:
 @LPCMConverter.o
-Media/LPCMSource.h: ../../src/Media/LPCMSource.cpp
+Media/LPCMSource.h:
 @LPCMSource.o
-Media/LRGBLimiter.h: ../../src/Media/LRGBLimiter.cpp
+Media/LRGBLimiter.h:
 @LRGBLimiter.o
 Media/LRGBLimiterC.h:
 @LRGBLimiter_CPP.o
-Media/LUT.h: ../../src/Media/LUT.cpp
+Media/LUT.h:
 @LUT.o
-Media/M2VFile.h: ../../src/Media/M2VFile.cpp
+Media/M2VFile.h:
 @M2VFile.o
-Media/M2VStreamSource.h: ../../src/Media/M2VStreamSource.cpp
+Media/M2VStreamSource.h:
 @M2VStreamSource.o
-Media/MediaFile.h: ../../src/Media/MediaFile.cpp
+Media/MediaFile.h:
 @MediaFile.o
-Media/MediaPlayer.h: ../../src/Media/MediaPlayer.cpp
+Media/MediaPlayer.h:
 @MediaPlayer.o
 @MediaPlayer_CPP.o
-Media/MediaPlayerInterface.h: ../../src/Media/MediaPlayerInterface.cpp
+Media/MediaPlayerInterface.h:
 @MediaPlayerInterface.o
-Media/MediaPlayerWebInterface.h: ../../src/Media/MediaPlayerWebInterface.cpp
+Media/MediaPlayerWebInterface.h:
 @MediaPlayerWebInterface.o
-Media/MemorySurface.h: ../../src/Media/MemorySurface.cpp
+Media/MemorySurface.h:
 @MemorySurface.o
-Media/MonitorMgr.h: ../../src/Media/MonitorMgr.cpp
+Media/MonitorMgr.h:
 @MonitorMgr.o
 Media/MonitorSurface.h:
 Media/MonitorSurfaceMgr.h:
-Media/MPAStreamSource.h: ../../src/Media/MPAStreamSource.cpp
+Media/MPAStreamSource.h:
 @MPAStreamSource.o
 Media/MPEG4V.h:
-Media/MPEGVideoParser.h: ../../src/Media/MPEGVideoParser.cpp
+Media/MPEGVideoParser.h:
 @MPEGVideoParser.o
-Media/MPGFile.h: ../../src/Media/MPGFile.cpp
+Media/MPGFile.h:
 @MPGFile.o
-Media/MSFontRenderer.h: ../../src/Media/MSFontRenderer.cpp
+Media/MSFontRenderer.h:
 @MSFontRenderer.o
-Media/NullRenderer.h: ../../src/Media/NullRenderer.cpp
+Media/NullRenderer.h:
 @NullRenderer.o
-Media/NWASource.h: ../../src/Media/NWASource.cpp
+Media/NWASource.h:
 @NWASource.o
-Media/PaperSize.h: ../../src/Media/PaperSize.cpp
+Media/PaperSize.h:
 @PaperSize.o
-Media/PDFDocument.h: ../../src/Media/PDFDocument.cpp
+Media/PDFDocument.h:
 @PDFDocument.o
-Media/PDFObject.h: ../../src/Media/PDFObject.cpp
+Media/PDFObject.h:
 @PDFObject.o
-Media/PDFParameter.h: ../../src/Media/PDFParameter.cpp
+Media/PDFParameter.h:
 @PDFParameter.o
-Media/PhotoInfo.h: ../../src/Media/PhotoInfo.cpp
+Media/PhotoInfo.h:
 @PhotoInfo.o
-Media/Playlist.h: ../../src/Media/Playlist.cpp
+Media/Playlist.h:
 @Playlist.o
-Media/ProfiledResizer.h: ../../src/Media/ProfiledResizer.cpp
+Media/ProfiledResizer.h:
 @ProfiledResizer.o
-Media/RefClock.h: ../../src/Media/RefClock.cpp
+Media/RefClock.h:
 @RefClock.o
-Media/RGBColorFilter.h: ../../src/Media/RGBColorFilter.cpp
+Media/RGBColorFilter.h:
 @RGBColorFilter.o
 @RGBColorFilter_CPP.o
-Media/RGBLUTGen.h: ../../src/Media/RGBLUTGen.cpp
+Media/RGBLUTGen.h:
 @RGBLUTGen.o
-Media/SharedImage.h: ../../src/Media/SharedImage.cpp
+Media/SharedImage.h:
 @SharedImage.o
-Media/SilentSource.h: ../../src/Media/SilentSource.cpp
+Media/SilentSource.h:
 @SilentSource.o
-Media/StaticEngine.h: ../../src/Media/StaticEngine.cpp
+Media/StaticEngine.h:
 @StaticEngine.o
-Media/StaticImage.h: ../../src/Media/StaticImage.cpp
+Media/StaticImage.h:
 @StaticImage.o
-Media/TimedImageList.h: ../../src/Media/TimedImageList.cpp
+Media/TimedImageList.h:
 @TimedImageList.o
-Media/V4LVideoCapture.h: ../../src/Media/V4LVideoCapture.cpp
+Media/V4LVideoCapture.h:
 @V4LVideoCapture.o
-Media/VCDMPGFile.h: ../../src/Media/VCDMPGFile.cpp
+Media/VCDMPGFile.h:
 @VCDMPGFile.o
-Media/VectorDocument.h: ../../src/Media/VectorDocument.cpp
+Media/VectorDocument.h:
 @VectorDocument.o
-Media/VectorGraph.h: ../../src/Media/VectorGraph.cpp
+Media/VectorGraph.h:
 @VectorGraph.o
-Media/VideoChecker.h: ../../src/Media/VideoChecker.cpp
+Media/VideoChecker.h:
 @VideoChecker.o
-Media/VideoRenderer.h: ../../src/Media/VideoRenderer.cpp
+Media/VideoRenderer.h:
 @VideoRenderer.o
-Media/VideoSourceBase.h: ../../src/Media/VideoSourceBase.cpp
+Media/VideoSourceBase.h:
 @VideoSourceBase.o
-Media/VOBAC3StreamSource.h: ../../src/Media/VOBAC3StreamSource.cpp
+Media/VOBAC3StreamSource.h:
 @VOBAC3StreamSource.o
-Media/VOBLPCMStreamSource.h: ../../src/Media/VOBLPCMStreamSource.cpp
+Media/VOBLPCMStreamSource.h:
 @VOBLPCMStreamSource.o
-Media/ABlend/AlphaBlend8_8.h: ../../src/Media/ABlend/AlphaBlend8_8.cpp
+Media/ABlend/AlphaBlend8_8.h:
 @AlphaBlend8_8.o
 @AlphaBlend8_8_CPP.o
-Media/ABlend/AlphaBlend8_C8.h: ../../src/Media/ABlend/AlphaBlend8_C8.cpp
+Media/ABlend/AlphaBlend8_C8.h:
 @AlphaBlend8_C8.o
 @AlphaBlend8_C8_CPP.o
-Media/AudioFilter/AudioAmplifier.h: ../../src/Media/AudioFilter/AudioAmplifier.cpp
+Media/AudioFilter/AudioAmplifier.h:
 @AudioAmplifier.o
-Media/AudioFilter/AudioCaptureFilter.h: ../../src/Media/AudioFilter/AudioCaptureFilter.cpp
+Media/AudioFilter/AudioCaptureFilter.h:
 @AudioCaptureFilter.o
-Media/AudioFilter/AudioLevelMeter.h: ../../src/Media/AudioFilter/AudioLevelMeter.cpp
+Media/AudioFilter/AudioLevelMeter.h:
 @AudioLevelMeter.o
-Media/AudioFilter/AudioSampleRipper.h: ../../src/Media/AudioFilter/AudioSampleRipper.cpp
+Media/AudioFilter/AudioSampleRipper.h:
 @AudioSampleRipper.o
-Media/AudioFilter/AudioSweepFilter.h: ../../src/Media/AudioFilter/AudioSweepFilter.cpp
+Media/AudioFilter/AudioSweepFilter.h:
 @AudioSweepFilter.o
-Media/AudioFilter/DTMFDecoder.h: ../../src/Media/AudioFilter/DTMFDecoder.cpp
+Media/AudioFilter/DTMFDecoder.h:
 @DTMFDecoder.o
-Media/AudioFilter/DTMFGenerator.h: ../../src/Media/AudioFilter/DTMFGenerator.cpp
+Media/AudioFilter/DTMFGenerator.h:
 @DTMFGenerator.o
-Media/AudioFilter/DynamicVolBooster.h: ../../src/Media/AudioFilter/DynamicVolBooster.cpp
+Media/AudioFilter/DynamicVolBooster.h:
 @DynamicVolBooster.o
-Media/AudioFilter/FileMixFilter.h: ../../src/Media/AudioFilter/FileMixFilter.cpp
+Media/AudioFilter/FileMixFilter.h:
 @FileMixFilter.o
-Media/AudioFilter/SoundGenerator.h: ../../src/Media/AudioFilter/SoundGenerator.cpp
+Media/AudioFilter/SoundGenerator.h:
 @SoundGenerator.o
 Media/AudioFilter/ToneGenerator.h:
-Media/AudioFilter/SoundGen/BellSoundGen.h: ../../src/Media/AudioFilter/SoundGen/BellSoundGen.cpp
+Media/AudioFilter/SoundGen/BellSoundGen.h:
 @BellSoundGen.o
-Media/AudioFilter/SoundGen/ISoundGen.h: ../../src/Media/AudioFilter/SoundGen/ISoundGen.cpp
+Media/AudioFilter/SoundGen/ISoundGen.h:
 @ISoundGen.o
 Media/Batch/BatchHandler.h:
-Media/Batch/BatchLimiter.h: ../../src/Media/Batch/BatchLimiter.cpp
+Media/Batch/BatchLimiter.h:
 @BatchLimiter.o
-Media/Batch/BatchLoader.h: ../../src/Media/Batch/BatchLoader.cpp
+Media/Batch/BatchLoader.h:
 @BatchLoader.o
-Media/Batch/BatchResizer.h: ../../src/Media/Batch/BatchResizer.cpp
+Media/Batch/BatchResizer.h:
 @BatchResizer.o
 Media/Batch/BatchSaver.h:
-Media/Batch/BatchSaveJPEG.h: ../../src/Media/Batch/BatchSaveJPEG.cpp
+Media/Batch/BatchSaveJPEG.h:
 @BatchSaveJPEG.o
-Media/Batch/BatchSaveJPEGSize.h: ../../src/Media/Batch/BatchSaveJPEGSize.cpp
+Media/Batch/BatchSaveJPEGSize.h:
 @BatchSaveJPEGSize.o
-Media/Batch/BatchSavePNG.h: ../../src/Media/Batch/BatchSavePNG.cpp
+Media/Batch/BatchSavePNG.h:
 @BatchSavePNG.o
-Media/Batch/BatchSaveTIFF.h: ../../src/Media/Batch/BatchSaveTIFF.cpp
+Media/Batch/BatchSaveTIFF.h:
 @BatchSaveTIFF.o
-Media/Batch/BatchSaveWebP.h: ../../src/Media/Batch/BatchSaveWebP.cpp
+Media/Batch/BatchSaveWebP.h:
 @BatchSaveWebP.o
-Media/Batch/BatchToLRGB.h: ../../src/Media/Batch/BatchToLRGB.cpp
+Media/Batch/BatchToLRGB.h:
 @BatchToLRGB.o
-Media/Batch/BatchWatermarker.h: ../../src/Media/Batch/BatchWatermarker.cpp
+Media/Batch/BatchWatermarker.h:
 @BatchWatermarker.o
-Media/BlockParser/AC3BlockParser.h: ../../src/Media/BlockParser/AC3BlockParser.cpp
+Media/BlockParser/AC3BlockParser.h:
 @AC3BlockParser.o
-Media/BlockParser/DTSBlockParser.h: ../../src/Media/BlockParser/DTSBlockParser.cpp
+Media/BlockParser/DTSBlockParser.h:
 @DTSBlockParser.o
-Media/BlockParser/MP2BlockParser.h: ../../src/Media/BlockParser/MP2BlockParser.cpp
+Media/BlockParser/MP2BlockParser.h:
 @MP2BlockParser.o
-Media/BlockParser/MP3BlockParser.h: ../../src/Media/BlockParser/MP3BlockParser.cpp
+Media/BlockParser/MP3BlockParser.h:
 @MP3BlockParser.o
-Media/CodeImageGen/CodeImageGen.h: ../../src/Media/CodeImageGen/CodeImageGen.cpp
+Media/CodeImageGen/CodeImageGen.h:
 @CodeImageGen.o
-Media/CodeImageGen/EAN2CodeImageGen.h: ../../src/Media/CodeImageGen/EAN2CodeImageGen.cpp
+Media/CodeImageGen/EAN2CodeImageGen.h:
 @EAN2CodeImageGen.o
-Media/CodeImageGen/EAN5CodeImageGen.h: ../../src/Media/CodeImageGen/EAN5CodeImageGen.cpp
+Media/CodeImageGen/EAN5CodeImageGen.h:
 @EAN5CodeImageGen.o
-Media/CodeImageGen/EAN8CodeImageGen.h: ../../src/Media/CodeImageGen/EAN8CodeImageGen.cpp
+Media/CodeImageGen/EAN8CodeImageGen.h:
 @EAN8CodeImageGen.o
-Media/CodeImageGen/EAN13CodeImageGen.h: ../../src/Media/CodeImageGen/EAN13CodeImageGen.cpp
+Media/CodeImageGen/EAN13CodeImageGen.h:
 @EAN13CodeImageGen.o
-Media/CodeImageGen/QRCodeImageGen.h: ../../src/Media/CodeImageGen/QRCodeImageGen.cpp
+Media/CodeImageGen/QRCodeImageGen.h:
 @QRCodeImageGen.o
-Media/CS/CSAYUV_RGB8.h: ../../src/Media/CS/CSAYUV_RGB8.cpp
+Media/CS/CSAYUV_RGB8.h:
 @CSAYUV_RGB8.o
 @CSAYUV_RGB8_CPP.o
-Media/CS/CSAYUV444_10_LRGBC.h: ../../src/Media/CS/CSAYUV444_10_LRGBC.cpp
+Media/CS/CSAYUV444_10_LRGBC.h:
 @CSAYUV444_10_LRGBC.o
 @CSAYUV444_10_LRGBC_CPP.o
-Media/CS/CSAYUV444_10_RGB32C.h: ../../src/Media/CS/CSAYUV444_10_RGB32C.cpp
+Media/CS/CSAYUV444_10_RGB32C.h:
 @CSAYUV444_10_RGB32C.o
 @CSAYUV444_10_RGB32C_CPP.o
-Media/CS/CSBI42_LRGBC.h: ../../src/Media/CS/CSBI42_LRGBC.cpp
+Media/CS/CSBI42_LRGBC.h:
 @CSBI42_LRGBC.o
-Media/CS/CSBI42_RGB32C.h: ../../src/Media/CS/CSBI42_RGB32C.cpp
+Media/CS/CSBI42_RGB32C.h:
 @CSBI42_RGB32C.o
-Media/CS/CSConverter.h: ../../src/Media/CS/CSConverter.cpp
+Media/CS/CSConverter.h:
 @CSConverter.o
-Media/CS/CSI420_LRGBC.h: ../../src/Media/CS/CSI420_LRGBC.cpp
+Media/CS/CSI420_LRGBC.h:
 @CSI420_LRGBC.o
-Media/CS/CSI420_RGB32C.h: ../../src/Media/CS/CSI420_RGB32C.cpp
+Media/CS/CSI420_RGB32C.h:
 @CSI420_RGB32C.o
-Media/CS/CSNV12_LRGBC.h: ../../src/Media/CS/CSNV12_LRGBC.cpp
+Media/CS/CSNV12_LRGBC.h:
 @CSNV12_LRGBC.o
 @CSNV12_LRGBC_CPP.o
-Media/CS/CSNV12_RGB8.h: ../../src/Media/CS/CSNV12_RGB8.cpp
+Media/CS/CSNV12_RGB8.h:
 @CSNV12_RGB8.o
 @CSNV12_RGB8_CPP.o
-Media/CS/CSNV12_RGB32C.h: ../../src/Media/CS/CSNV12_RGB32C.cpp
+Media/CS/CSNV12_RGB32C.h:
 @CSNV12_RGB32C.o
 @CSNV12_RGB32C_CPP.o
-Media/CS/CSP010_RGB8.h: ../../src/Media/CS/CSP010_RGB8.cpp
+Media/CS/CSP010_RGB8.h:
 @CSP010_RGB8.o
 @CSP010_RGB8_CPP.o
-Media/CS/CSP016_LRGBC.h: ../../src/Media/CS/CSP016_LRGBC.cpp
+Media/CS/CSP016_LRGBC.h:
 @CSP016_LRGBC.o
 @CSP016_LRGBC_CPP.o
-Media/CS/CSP016_RGB32C.h: ../../src/Media/CS/CSP016_RGB32C.cpp
+Media/CS/CSP016_RGB32C.h:
 @CSP016_RGB32C.o
 @CSP016_RGB32C_CPP.o
-Media/CS/CSP216_LRGBC.h: ../../src/Media/CS/CSP216_LRGBC.cpp
+Media/CS/CSP216_LRGBC.h:
 @CSP216_LRGBC.o
 @CSP216_LRGBC_CPP.o
-Media/CS/CSRGB16_LRGBC.h: ../../src/Media/CS/CSRGB16_LRGBC.cpp
+Media/CS/CSRGB16_LRGBC.h:
 @CSRGB16_LRGBC.o
 @CSRGB16_LRGBC_CPP.o
-Media/CS/CSRGB16_RGB8.h: ../../src/Media/CS/CSRGB16_RGB8.cpp
+Media/CS/CSRGB16_RGB8.h:
 @CSRGB16_RGB8.o
 @CSRGB16_RGB8_CPP.o
-Media/CS/CSRGB8_LRGBC.h: ../../src/Media/CS/CSRGB8_LRGBC.cpp
+Media/CS/CSRGB8_LRGBC.h:
 @CSRGB8_LRGBC.o
 @CSRGB8_LRGBC_CPP.o
-Media/CS/CSRGB8_RGB8.h: ../../src/Media/CS/CSRGB8_RGB8.cpp
+Media/CS/CSRGB8_RGB8.h:
 @CSRGB8_RGB8.o
 @CSRGB8_RGB8_CPP.o
-Media/CS/CSRGBF_LRGBC.h: ../../src/Media/CS/CSRGBF_LRGBC.cpp
+Media/CS/CSRGBF_LRGBC.h:
 @CSRGBF_LRGBC.o
 @CSRGBF_LRGBC_CPP.o
-Media/CS/CSUYVY_LRGBC.h: ../../src/Media/CS/CSUYVY_LRGBC.cpp
+Media/CS/CSUYVY_LRGBC.h:
 @CSUYVY_LRGBC.o
 @CSUYVY_LRGBC_CPP.o
-Media/CS/CSUYVY_RGB8.h: ../../src/Media/CS/CSUYVY_RGB8.cpp
+Media/CS/CSUYVY_RGB8.h:
 @CSUYVY_RGB8.o
 @CSUYVY_RGB8_CPP.o
-Media/CS/CSY416_LRGBC.h: ../../src/Media/CS/CSY416_LRGBC.cpp
+Media/CS/CSY416_LRGBC.h:
 @CSY416_LRGBC.o
 @CSY416_LRGBC_CPP.o
-Media/CS/CSY416_RGB32C.h: ../../src/Media/CS/CSY416_RGB32C.cpp
+Media/CS/CSY416_RGB32C.h:
 @CSY416_RGB32C.o
 @CSY416_RGB32C_CPP.o
-Media/CS/CSYUV_LRGB.h: ../../src/Media/CS/CSYUV_LRGB.cpp
+Media/CS/CSYUV_LRGB.h:
 @CSYUV_LRGB.o
-Media/CS/CSYUV_LRGBC.h: ../../src/Media/CS/CSYUV_LRGBC.cpp
+Media/CS/CSYUV_LRGBC.h:
 @CSYUV_LRGBC.o
-Media/CS/CSYUV_RGB32C.h: ../../src/Media/CS/CSYUV_RGB32C.cpp
+Media/CS/CSYUV_RGB32C.h:
 @CSYUV_RGB32C.o
-Media/CS/CSYUV_RGB8.h: ../../src/Media/CS/CSYUV_RGB8.cpp
+Media/CS/CSYUV_RGB8.h:
 @CSYUV_RGB8.o
-Media/CS/CSYUV_Y8.h: ../../src/Media/CS/CSYUV_Y8.cpp
+Media/CS/CSYUV_Y8.h:
 @CSYUV_Y8.o
-Media/CS/CSYUV10_RGB8.h: ../../src/Media/CS/CSYUV10_RGB8.cpp
+Media/CS/CSYUV10_RGB8.h:
 @CSYUV10_RGB8.o
-Media/CS/CSYUV16_LRGBC.h: ../../src/Media/CS/CSYUV16_LRGBC.cpp
+Media/CS/CSYUV16_LRGBC.h:
 @CSYUV16_LRGBC.o
-Media/CS/CSYUV16_RGB32C.h: ../../src/Media/CS/CSYUV16_RGB32C.cpp
+Media/CS/CSYUV16_RGB32C.h:
 @CSYUV16_RGB32C.o
-Media/CS/CSYUV420_LRGBC.h: ../../src/Media/CS/CSYUV420_LRGBC.cpp
+Media/CS/CSYUV420_LRGBC.h:
 @CSYUV420_LRGBC.o
 @CSYUV420_LRGBC_CPP.o
-Media/CS/CSYUV420_RGB32C.h: ../../src/Media/CS/CSYUV420_RGB32C.cpp
+Media/CS/CSYUV420_RGB32C.h:
 @CSYUV420_RGB32C.o
 @CSYUV420_RGB32C_CPP.o
-Media/CS/CSYUV420P8_LRGBC.h: ../../src/Media/CS/CSYUV420P8_LRGBC.cpp
+Media/CS/CSYUV420P8_LRGBC.h:
 @CSYUV420P8_LRGBC.o
-Media/CS/CSYUV420P8_RGB32C.h: ../../src/Media/CS/CSYUV420P8_RGB32C.cpp
+Media/CS/CSYUV420P8_RGB32C.h:
 @CSYUV420P8_RGB32C.o
-Media/CS/CSYUV444P10LEP_LRGBC.h: ../../src/Media/CS/CSYUV444P10LEP_LRGBC.cpp
+Media/CS/CSYUV444P10LEP_LRGBC.h:
 @CSYUV444P10LEP_LRGBC.o
 @CSYUV444P10LEP_LRGBC_CPP.o
-Media/CS/CSYUV444P10LEP_RGB32C.h: ../../src/Media/CS/CSYUV444P10LEP_RGB32C.cpp
+Media/CS/CSYUV444P10LEP_RGB32C.h:
 @CSYUV444P10LEP_RGB32C.o
 @CSYUV444P10LEP_RGB32C_CPP.o
-Media/CS/CSYUY2_LRGBC.h: ../../src/Media/CS/CSYUY2_LRGBC.cpp
+Media/CS/CSYUY2_LRGBC.h:
 @CSYUY2_LRGBC.o
 @CSYUY2_LRGBC_CPP.o
-Media/CS/CSYUY2_RGB8.h: ../../src/Media/CS/CSYUY2_RGB8.cpp
+Media/CS/CSYUY2_RGB8.h:
 @CSYUY2_RGB8.o
 @CSYUY2_RGB8_CPP.o
-Media/CS/CSYV12_LRGBC.h: ../../src/Media/CS/CSYV12_LRGBC.cpp
+Media/CS/CSYV12_LRGBC.h:
 @CSYV12_LRGBC.o
-Media/CS/CSYV12_RGB32C.h: ../../src/Media/CS/CSYV12_RGB32C.cpp
+Media/CS/CSYV12_RGB32C.h:
 @CSYV12_RGB32C.o
-Media/CS/CSYVU9_RGB8.h: ../../src/Media/CS/CSYVU9_RGB8.cpp
+Media/CS/CSYVU9_RGB8.h:
 @CSYVU9_RGB8.o
 @CSYVU9_RGB8_CPP.o
-Media/CS/TransferFunc.h: ../../src/Media/CS/TransferFunc.cpp
+Media/CS/TransferFunc.h:
 @TransferFunc.o
-Media/CS/TransferFuncBT709.h: ../../src/Media/CS/TransferFuncBT709.cpp
+Media/CS/TransferFuncBT709.h:
 @TransferFuncBT709.o
-Media/CS/TransferFuncBT1361.h: ../../src/Media/CS/TransferFuncBT1361.cpp
+Media/CS/TransferFuncBT1361.h:
 @TransferFuncBT1361.o
-Media/CS/TransferFuncBT2100.h: ../../src/Media/CS/TransferFuncBT2100.cpp
+Media/CS/TransferFuncBT2100.h:
 @TransferFuncBT2100.o
-Media/CS/TransferFuncCGamma.h: ../../src/Media/CS/TransferFuncCGamma.cpp
+Media/CS/TransferFuncCGamma.h:
 @TransferFuncCGamma.o
-Media/CS/TransferFuncHLG.h: ../../src/Media/CS/TransferFuncHLG.cpp
+Media/CS/TransferFuncHLG.h:
 @TransferFuncHLG.o
-Media/CS/TransferFuncLinear.h: ../../src/Media/CS/TransferFuncLinear.cpp
+Media/CS/TransferFuncLinear.h:
 @TransferFuncLinear.o
-Media/CS/TransferFuncLog100.h: ../../src/Media/CS/TransferFuncLog100.cpp
+Media/CS/TransferFuncLog100.h:
 @TransferFuncLog100.o
-Media/CS/TransferFuncLogSqrt10.h: ../../src/Media/CS/TransferFuncLogSqrt10.cpp
+Media/CS/TransferFuncLogSqrt10.h:
 @TransferFuncLogSqrt10.o
-Media/CS/TransferFuncLUT.h: ../../src/Media/CS/TransferFuncLUT.cpp
+Media/CS/TransferFuncLUT.h:
 @TransferFuncLUT.o
-Media/CS/TransferFuncNLog.h: ../../src/Media/CS/TransferFuncNLog.cpp
+Media/CS/TransferFuncNLog.h:
 @TransferFuncNLog.o
-Media/CS/TransferFuncNTSC.h: ../../src/Media/CS/TransferFuncNTSC.cpp
+Media/CS/TransferFuncNTSC.h:
 @TransferFuncNTSC.o
-Media/CS/TransferFuncParam1.h: ../../src/Media/CS/TransferFuncParam1.cpp
+Media/CS/TransferFuncParam1.h:
 @TransferFuncParam1.o
-Media/CS/TransferFuncProtune.h: ../../src/Media/CS/TransferFuncProtune.cpp
+Media/CS/TransferFuncProtune.h:
 @TransferFuncProtune.o
-Media/CS/TransferFuncSLog.h: ../../src/Media/CS/TransferFuncSLog.cpp
+Media/CS/TransferFuncSLog.h:
 @TransferFuncSLog.o
-Media/CS/TransferFuncSLog1.h: ../../src/Media/CS/TransferFuncSLog1.cpp
+Media/CS/TransferFuncSLog1.h:
 @TransferFuncSLog1.o
-Media/CS/TransferFuncSLog2.h: ../../src/Media/CS/TransferFuncSLog2.cpp
+Media/CS/TransferFuncSLog2.h:
 @TransferFuncSLog2.o
-Media/CS/TransferFuncSLog3.h: ../../src/Media/CS/TransferFuncSLog3.cpp
+Media/CS/TransferFuncSLog3.h:
 @TransferFuncSLog3.o
-Media/CS/TransferFuncSMPTE240.h: ../../src/Media/CS/TransferFuncSMPTE240.cpp
+Media/CS/TransferFuncSMPTE240.h:
 @TransferFuncSMPTE240.o
-Media/CS/TransferFuncSMPTE428.h: ../../src/Media/CS/TransferFuncSMPTE428.cpp
+Media/CS/TransferFuncSMPTE428.h:
 @TransferFuncSMPTE428.o
-Media/CS/TransferFuncSRGB.h: ../../src/Media/CS/TransferFuncSRGB.cpp
+Media/CS/TransferFuncSRGB.h:
 @TransferFuncSRGB.o
-Media/CS/TransferFuncVLog.h: ../../src/Media/CS/TransferFuncVLog.cpp
+Media/CS/TransferFuncVLog.h:
 @TransferFuncVLog.o
 Media/CS/TransferParam.h:
-Media/Decoder/ADecoderBase.h: ../../src/Media/Decoder/ADecoderBase.cpp
+Media/Decoder/ADecoderBase.h:
 @ADecoderBase.o
-Media/Decoder/ADXDecoder.h: ../../src/Media/Decoder/ADXDecoder.cpp
+Media/Decoder/ADXDecoder.h:
 @ADXDecoder.o
-Media/Decoder/AudioDecoderFinder.h: ../../src/Media/Decoder/AudioDecoderFinder.cpp
+Media/Decoder/AudioDecoderFinder.h:
 @AudioDecoderFinder.o
-Media/Decoder/G711muLawDecoder.h: ../../src/Media/Decoder/G711muLawDecoder.cpp
+Media/Decoder/G711muLawDecoder.h:
 @G711muLawDecoder.o
-Media/Decoder/M2VDecoder.h: ../../src/Media/Decoder/M2VDecoder.cpp
+Media/Decoder/M2VDecoder.h:
 @M2VDecoder.o
-Media/Decoder/MP2Decoder.h: ../../src/Media/Decoder/MP2Decoder.cpp
+Media/Decoder/MP2Decoder.h:
 @MP2Decoder.o
-Media/Decoder/MP2GDecoder.h: ../../src/Media/Decoder/MP2GDecoder.cpp
+Media/Decoder/MP2GDecoder.h:
 @MP2GDecoder.o
-Media/Decoder/PSSADecoder.h: ../../src/Media/Decoder/PSSADecoder.cpp
+Media/Decoder/PSSADecoder.h:
 @PSSADecoder.o
-Media/Decoder/RAVCDecoder.h: ../../src/Media/Decoder/RAVCDecoder.cpp
+Media/Decoder/RAVCDecoder.h:
 @RAVCDecoder.o
-Media/Decoder/RHVCDecoder.h: ../../src/Media/Decoder/RHVCDecoder.cpp
+Media/Decoder/RHVCDecoder.h:
 @RHVCDecoder.o
-Media/Decoder/VDecoderBase.h: ../../src/Media/Decoder/VDecoderBase.cpp
+Media/Decoder/VDecoderBase.h:
 @VDecoderBase.o
-Media/Decoder/VDecoderChain.h: ../../src/Media/Decoder/VDecoderChain.cpp
+Media/Decoder/VDecoderChain.h:
 @VDecoderChain.o
-Media/Decoder/VideoDecoderFinder.h: ../../src/Media/Decoder/VideoDecoderFinder.cpp
+Media/Decoder/VideoDecoderFinder.h:
 @VideoDecoderFinder.o
-Media/Decoder/VP09Decoder.h: ../../src/Media/Decoder/VP09Decoder.cpp
+Media/Decoder/VP09Decoder.h:
 @VP09Decoder.o
-Media/Decoder/XADecoder.h: ../../src/Media/Decoder/XADecoder.cpp
+Media/Decoder/XADecoder.h:
 @XADecoder.o
-Media/ImageFilter/BGImgFilter.h: ../../src/Media/ImageFilter/BGImgFilter.cpp
+Media/ImageFilter/BGImgFilter.h:
 @BGImgFilter.o
 @BGImgFilter_CPP.o
-Media/ImageFilter/BWImgFilter.h: ../../src/Media/ImageFilter/BWImgFilter.cpp
+Media/ImageFilter/BWImgFilter.h:
 @BWImgFilter.o
 @BWImgFilter_CPP.o
-Media/ImageGen/ColorImageGen.h: ../../src/Media/ImageGen/ColorImageGen.cpp
+Media/ImageGen/ColorImageGen.h:
 @ColorImageGen.o
-Media/ImageGen/Gamma64ImageGen.h: ../../src/Media/ImageGen/Gamma64ImageGen.cpp
+Media/ImageGen/Gamma64ImageGen.h:
 @Gamma64ImageGen.o
-Media/ImageGen/GammaImageGen.h: ../../src/Media/ImageGen/GammaImageGen.cpp
+Media/ImageGen/GammaImageGen.h:
 @GammaImageGen.o
-Media/ImageGen/Gradian32ImageGen.h: ../../src/Media/ImageGen/Gradian32ImageGen.cpp
+Media/ImageGen/Gradian32ImageGen.h:
 @Gradian32ImageGen.o
-Media/ImageGen/ImageGenMgr.h: ../../src/Media/ImageGen/ImageGenMgr.cpp
+Media/ImageGen/ImageGenMgr.h:
 @ImageGenMgr.o
-Media/ImageGen/LinesImageGen.h: ../../src/Media/ImageGen/LinesImageGen.cpp
+Media/ImageGen/LinesImageGen.h:
 @LinesImageGen.o
-Media/ImageGen/RingsImageGen.h: ../../src/Media/ImageGen/RingsImageGen.cpp
+Media/ImageGen/RingsImageGen.h:
 @RingsImageGen.o
-Media/Jasper/JasperBand.h: ../../src/Media/Jasper/JasperBand.cpp
+Media/Jasper/JasperBand.h:
 @JasperBand.o
 Media/Jasper/JasperElement.h:
-Media/Jasper/JasperReport.h: ../../src/Media/Jasper/JasperReport.cpp
+Media/Jasper/JasperReport.h:
 @JasperReport.o
-Media/Jasper/JasperReportElement.h: ../../src/Media/Jasper/JasperReportElement.cpp
+Media/Jasper/JasperReportElement.h:
 @JasperReportElement.o
-Media/Jasper/JasperXML.h: ../../src/Media/Jasper/JasperXML.cpp
+Media/Jasper/JasperXML.h:
 @JasperXML.o
-Media/Resizer/DeintResizerLR_C32.h: ../../src/Media/Resizer/DeintResizerLR_C32.cpp
+Media/Resizer/DeintResizerLR_C32.h:
 @DeintResizerLR_C32.o
-Media/Resizer/LanczosResizer8_C8.h: ../../src/Media/Resizer/LanczosResizer8_C8.cpp
+Media/Resizer/LanczosResizer8_C8.h:
 @LanczosResizer8_C8.o
 @LanczosResizer8_C8_CPP.o
-Media/Resizer/LanczosResizer16_C8.h: ../../src/Media/Resizer/LanczosResizer16_C8.cpp
+Media/Resizer/LanczosResizer16_C8.h:
 @LanczosResizer16_C8.o
 @LanczosResizer16_C8_CPP.o
-Media/Resizer/LanczosResizerH8_8.h: ../../src/Media/Resizer/LanczosResizerH8_8.cpp
+Media/Resizer/LanczosResizerH8_8.h:
 @LanczosResizerH8_8.o
 @LanczosResizerH8_8_CPP.o
-Media/Resizer/LanczosResizerH16_8.h: ../../src/Media/Resizer/LanczosResizerH16_8.cpp
+Media/Resizer/LanczosResizerH16_8.h:
 @LanczosResizerH16_8.o
-Media/Resizer/LanczosResizerLR_C16.h: ../../src/Media/Resizer/LanczosResizerLR_C16.cpp
+Media/Resizer/LanczosResizerLR_C16.h:
 @LanczosResizerLR_C16.o
 @LanczosResizerLR_C16_CPP.o
-Media/Resizer/LanczosResizerLR_C32.h: ../../src/Media/Resizer/LanczosResizerLR_C32.cpp
+Media/Resizer/LanczosResizerLR_C32.h:
 @LanczosResizerLR_C32.o
-Media/Resizer/LanczosResizerLR_C32_CPU.h: ../../src/Media/Resizer/LanczosResizerLR_C32_CPU.cpp
+Media/Resizer/LanczosResizerLR_C32_CPU.h:
 @LanczosResizerLR_C32_CPU.o
 @LanczosResizerLR_C32_CPU_CPP.o
 Media/Resizer/LanczosResizerLR_C32Action.h:
-Media/Resizer/NearestNeighbourResizer32_32.h: ../../src/Media/Resizer/NearestNeighbourResizer32_32.cpp
+Media/Resizer/NearestNeighbourResizer32_32.h:
 @NearestNeighbourResizer32_32.o
 @NearestNeighbourResizer32_32_CPP.o
-Media/Resizer/NearestNeighbourResizer64_64.h: ../../src/Media/Resizer/NearestNeighbourResizer64_64.cpp
+Media/Resizer/NearestNeighbourResizer64_64.h:
 @NearestNeighbourResizer64_64.o
 @NearestNeighbourResizer64_64_CPP.o
-Media/VideoFilter/AutoCropFilter.h: ../../src/Media/VideoFilter/AutoCropFilter.cpp
+Media/VideoFilter/AutoCropFilter.h:
 @AutoCropFilter.o
 @AutoCropFilter_CPP.o
-Media/VideoFilter/IVTCFilter.h: ../../src/Media/VideoFilter/IVTCFilter.cpp
+Media/VideoFilter/IVTCFilter.h:
 @IVTCFilter.o
 @IVTCFilter_CPP.o
-Media/VideoFilter/UVOffsetFilter.h: ../../src/Media/VideoFilter/UVOffsetFilter.cpp
+Media/VideoFilter/UVOffsetFilter.h:
 @UVOffsetFilter.o
-Media/VideoFilter/VideoFilterBase.h: ../../src/Media/VideoFilter/VideoFilterBase.cpp
+Media/VideoFilter/VideoFilterBase.h:
 @VideoFilterBase.o
 
-Net/ACMEClient.h: ../../src/Net/ACMEClient.cpp
+Net/ACMEClient.h:
 @ACMEClient.o
-Net/ACMEConn.h: ../../src/Net/ACMEConn.cpp
+Net/ACMEConn.h:
 @ACMEConn.o
-Net/AddressRange.h: ../../src/Net/AddressRange.cpp
+Net/AddressRange.h:
 @AddressRange.o
-Net/ARPHandler.h: ../../src/Net/ARPHandler.cpp
+Net/ARPHandler.h:
 @ARPHandler.o
-Net/ASN1Data.h: ../../src/Net/ASN1Data.cpp
+Net/ASN1Data.h:
 @ASN1Data.o
-Net/ASN1MIB.h: ../../src/Net/ASN1MIB.cpp
+Net/ASN1MIB.h:
 @ASN1MIB.o
-Net/ASN1Names.h: ../../src/Net/ASN1Names.cpp
+Net/ASN1Names.h:
 @ASN1Names.o
-Net/ASN1OIDDB.h: ../../src/Net/ASN1OIDDB.cpp
+Net/ASN1OIDDB.h:
 @ASN1OIDDB.o
-Net/ASN1PDUBuilder.h: ../../src/Net/ASN1PDUBuilder.cpp
+Net/ASN1PDUBuilder.h:
 @ASN1PDUBuilder.o
-Net/ASN1Util.h: ../../src/Net/ASN1Util.cpp
+Net/ASN1Util.h:
 @ASN1Util.o
-Net/AzureManager.h: ../../src/Net/AzureManager.cpp
+Net/AzureManager.h:
 @AzureManager.o
-Net/BrowserInfo.h: ../../src/Net/BrowserInfo.cpp
+Net/BrowserInfo.h:
 @BrowserInfo.o
-Net/ConnectionInfo.h: ../../src/Net/ConnectionInfo.cpp
+Net/ConnectionInfo.h:
 @ConnectionInfo.o
 @ConnectionInfo_CPP.o
-Net/DHCPServer.h: ../../src/Net/DHCPServer.cpp
+Net/DHCPServer.h:
 @DHCPServer.o
-Net/DNSClient.h: ../../src/Net/DNSClient.cpp
+Net/DNSClient.h:
 @DNSClient.o
-Net/DNSHandler.h: ../../src/Net/DNSHandler.cpp
+Net/DNSHandler.h:
 @DNSHandler.o
-Net/DNSProxy.h: ../../src/Net/DNSProxy.cpp
+Net/DNSProxy.h:
 @DNSProxy.o
-Net/DNSServer.h: ../../src/Net/DNSServer.cpp
+Net/DNSServer.h:
 @DNSServer.o
-Net/EthernetAnalyzer.h: ../../src/Net/EthernetAnalyzer.cpp
+Net/EthernetAnalyzer.h:
 @EthernetAnalyzer.o
-Net/EthernetWebHandler.h: ../../src/Net/EthernetWebHandler.cpp
+Net/EthernetWebHandler.h:
 @EthernetWebHandler.o
 Net/FailoverChannel.h:
 Net/FailoverHandler.h:
-Net/FTPClient.h: ../../src/Net/FTPClient.cpp
+Net/FTPClient.h:
 @FTPClient.o
-Net/FTPConn.h: ../../src/Net/FTPConn.cpp
+Net/FTPConn.h:
 @FTPConn.o
-Net/GoogleFCM.h: ../../src/Net/GoogleFCM.cpp
+Net/GoogleFCM.h:
 @GoogleFCM.o
-Net/GoogleQRCode.h: ../../src/Net/GoogleQRCode.cpp
+Net/GoogleQRCode.h:
 @GoogleQRCode.o
-Net/HKOWeather.h: ../../src/Net/HKOWeather.cpp
+Net/HKOWeather.h:
 @HKOWeather.o
-Net/HKTrafficImage.h: ../../src/Net/HKTrafficImage.cpp
+Net/HKTrafficImage.h:
 @HKTrafficImage.o
-Net/HTTPClient.h: ../../src/Net/HTTPClient.cpp
+Net/HTTPClient.h:
 @HTTPClient.o
-Net/HTTPData.h: ../../src/Net/HTTPData.cpp
+Net/HTTPData.h:
 @HTTPData.o
-Net/HTTPJSONReader.h: ../../src/Net/HTTPJSONReader.cpp
+Net/HTTPJSONReader.h:
 @HTTPJSONReader.o
-Net/HTTPMyClient.h: ../../src/Net/HTTPMyClient.cpp
+Net/HTTPMyClient.h:
 @HTTPMyClient.o
-Net/HTTPProxyClient.h: ../../src/Net/HTTPProxyClient.cpp
+Net/HTTPProxyClient.h:
 @HTTPProxyClient.o
-Net/HTTPProxyTCPClient.h: ../../src/Net/HTTPProxyTCPClient.cpp
+Net/HTTPProxyTCPClient.h:
 @HTTPProxyTCPClient.o
-Net/HTTPQueue.h: ../../src/Net/HTTPQueue.cpp
+Net/HTTPQueue.h:
 @HTTPQueue.o
-Net/HTTPServerMonitor.h: ../../src/Net/HTTPServerMonitor.cpp
+Net/HTTPServerMonitor.h:
 @HTTPServerMonitor.o
-Net/ICMPScanner.h: ../../src/Net/ICMPScanner.cpp
+Net/ICMPScanner.h:
 @ICMPScanner.o
-Net/IPScanDetector.h: ../../src/Net/IPScanDetector.cpp
+Net/IPScanDetector.h:
 @IPScanDetector.o
 Net/IRTPController.h:
 Net/IRTPPLHandler.h:
 Net/ISDPData.h:
 Net/ISDPMedia.h:
-Net/LDAPClient.h: ../../src/Net/LDAPClient.cpp
+Net/LDAPClient.h:
 @LDAPClient.o
-Net/LogClient.h: ../../src/Net/LogClient.cpp
+Net/LogClient.h:
 @LogClient.o
-Net/LogServer.h: ../../src/Net/LogServer.cpp
+Net/LogServer.h:
 @LogServer.o
-Net/LoRaGateway.h: ../../src/Net/LoRaGateway.cpp
+Net/LoRaGateway.h:
 @LoRaGateway.o
-Net/LoRaGWMonitor.h: ../../src/Net/LoRaGWMonitor.cpp
+Net/LoRaGWMonitor.h:
 @LoRaGWMonitor.o
-Net/LoRaGWUtil.h: ../../src/Net/LoRaGWUtil.cpp
+Net/LoRaGWUtil.h:
 @LoRaGWUtil.o
-Net/MACInfo.h: ../../src/Net/MACInfo.cpp
+Net/MACInfo.h:
 @MACInfo.o
-Net/MACInfoList.h: ../../src/Net/MACInfoList.cpp
+Net/MACInfoList.h:
 @MACInfoList.o
-Net/MIBReader.h: ../../src/Net/MIBReader.cpp
+Net/MIBReader.h:
 @MIBReader.o
-Net/MIME.h: ../../src/Net/MIME.cpp
+Net/MIME.h:
 @MIME.o
-Net/MODBUSTCPListener.h: ../../src/Net/MODBUSTCPListener.cpp
+Net/MODBUSTCPListener.h:
 @MODBUSTCPListener.o
-Net/MQTTBroker.h: ../../src/Net/MQTTBroker.cpp
+Net/MQTTBroker.h:
 @MQTTBroker.o
 Net/MQTTClient.h:
-Net/MQTTConn.h: ../../src/Net/MQTTConn.cpp
+Net/MQTTConn.h:
 @MQTTConn.o
-Net/MQTTFailoverClient.h: ../../src/Net/MQTTFailoverClient.cpp
+Net/MQTTFailoverClient.h:
 @MQTTFailoverClient.o
-Net/MQTTStaticClient.h: ../../src/Net/MQTTStaticClient.cpp
+Net/MQTTStaticClient.h:
 @MQTTStaticClient.o
-Net/MQTTUtil.h: ../../src/Net/MQTTUtil.cpp
+Net/MQTTUtil.h:
 @MQTTUtil.o
-Net/MSGraphClient.h: ../../src/Net/MSGraphClient.cpp
+Net/MSGraphClient.h:
 @MSGraphClient.o
-Net/MySQLServer.h: ../../src/Net/MySQLServer.cpp
+Net/MySQLServer.h:
 @MySQLServer.o
-Net/MySQLTCPClient.h: ../../src/Net/MySQLTCPClient.cpp
+Net/MySQLTCPClient.h:
 @MySQLTCPClient.o
-Net/MySQLUtil.h: ../../src/Net/MySQLUtil.cpp
+Net/MySQLUtil.h:
 @MySQLUtil.o
-Net/NetBIOSScanner.h: ../../src/Net/NetBIOSScanner.cpp
+Net/NetBIOSScanner.h:
 @NetBIOSScanner.o
-Net/NetBIOSUtil.h: ../../src/Net/NetBIOSUtil.cpp
+Net/NetBIOSUtil.h:
 @NetBIOSUtil.o
 Net/NetConnection.h:
-Net/NTPClient.h: ../../src/Net/NTPClient.cpp
+Net/NTPClient.h:
 @NTPClient.o
-Net/NTPServer.h: ../../src/Net/NTPServer.cpp
+Net/NTPServer.h:
 @NTPServer.o
-Net/PacketAnalyzer.h: ../../src/Net/PacketAnalyzer.cpp
+Net/PacketAnalyzer.h:
 @PacketAnalyzer.o
-Net/PacketAnalyzerBluetooth.h: ../../src/Net/PacketAnalyzerBluetooth.cpp
+Net/PacketAnalyzerBluetooth.h:
 @PacketAnalyzerBluetooth.o
-Net/PacketAnalyzerEthernet.h: ../../src/Net/PacketAnalyzerEthernet.cpp
+Net/PacketAnalyzerEthernet.h:
 @PacketAnalyzerEthernet.o
-Net/PacketExtractorEthernet.h: ../../src/Net/PacketExtractorEthernet.cpp
+Net/PacketExtractorEthernet.h:
 @PacketExtractorEthernet.o
-Net/PingMonitor.h: ../../src/Net/PingMonitor.cpp
+Net/PingMonitor.h:
 @PingMonitor.o
-Net/ProxyServer.h: ../../src/Net/ProxyServer.cpp
+Net/ProxyServer.h:
 @ProxyServer.o
-Net/PushManager.h: ../../src/Net/PushManager.cpp
+Net/PushManager.h:
 @PushManager.o
-Net/PushServer.h: ../../src/Net/PushServer.cpp
+Net/PushServer.h:
 @PushServer.o
-Net/PushServerHandler.h: ../../src/Net/PushServerHandler.cpp
+Net/PushServerHandler.h:
 @PushServerHandler.o
-Net/RAWAnalyzer.h: ../../src/Net/RAWAnalyzer.cpp
+Net/RAWAnalyzer.h:
 @RAWAnalyzer.o
-Net/RAWCapture.h: ../../src/Net/RAWCapture.cpp
+Net/RAWCapture.h:
 @RAWCapture.o
-Net/RSS.h: ../../src/Net/RSS.cpp
+Net/RSS.h:
 @RSS.o
-Net/RSSReader.h: ../../src/Net/RSSReader.cpp
+Net/RSSReader.h:
 @RSSReader.o
-Net/RTPAACHandler.h: ../../src/Net/RTPAACHandler.cpp
+Net/RTPAACHandler.h:
 @RTPAACHandler.o
 Net/RTPAPLHandler.h:
-Net/RTPASource.h: ../../src/Net/RTPASource.cpp
+Net/RTPASource.h:
 @RTPASource.o
-Net/RTPCliChannel.h: ../../src/Net/RTPCliChannel.cpp
+Net/RTPCliChannel.h:
 @RTPCliChannel.o
-Net/RTPH264Handler.h: ../../src/Net/RTPH264Handler.cpp
+Net/RTPH264Handler.h:
 @RTPH264Handler.o
 Net/RTPVPLHandler.h:
-Net/RTPVSource.h: ../../src/Net/RTPVSource.cpp
+Net/RTPVSource.h:
 @RTPVSource.o
-Net/RTSPClient.h: ../../src/Net/RTSPClient.cpp
+Net/RTSPClient.h:
 @RTSPClient.o
-Net/SAMLUtil.h: ../../src/Net/SAMLUtil.cpp
+Net/SAMLUtil.h:
 @SAMLUtil.o
-Net/SDPFile.h: ../../src/Net/SDPFile.cpp
+Net/SDPFile.h:
 @SDPFile.o
-Net/SNMPClient.h: ../../src/Net/SNMPClient.cpp
+Net/SNMPClient.h:
 @SNMPClient.o
-Net/SNMPInfo.h: ../../src/Net/SNMPInfo.cpp
+Net/SNMPInfo.h:
 @SNMPInfo.o
-Net/SNMPManager.h: ../../src/Net/SNMPManager.cpp
+Net/SNMPManager.h:
 @SNMPManager.o
-Net/SNMPTrapMonitor.h: ../../src/Net/SNMPTrapMonitor.cpp
+Net/SNMPTrapMonitor.h:
 @SNMPTrapMonitor.o
-Net/SNMPUtil.h: ../../src/Net/SNMPUtil.cpp
+Net/SNMPUtil.h:
 @SNMPUtil.o
-Net/SocketFactory.h: ../../src/Net/SocketFactory.cpp
+Net/SocketFactory.h:
 @SocketFactory.o
-Net/SocketMonitor.h: ../../src/Net/SocketMonitor.cpp
+Net/SocketMonitor.h:
 @SocketMonitor.o
-Net/SocketUtil.h: ../../src/Net/SocketUtil.cpp
+Net/SocketUtil.h:
 @SocketUtil.o
-Net/SolarEdgeAPI.h: ../../src/Net/SolarEdgeAPI.cpp
+Net/SolarEdgeAPI.h:
 @SolarEdgeAPI.o
-Net/SSDPClient.h: ../../src/Net/SSDPClient.cpp
+Net/SSDPClient.h:
 @SSDPClient.o
-Net/SSLClient.h: ../../src/Net/SSLClient.cpp
+Net/SSLClient.h:
 @SSLClient.o
-Net/SSLEngine.h: ../../src/Net/SSLEngine.cpp
+Net/SSLEngine.h:
 @SSLEngine.o
-Net/SSLUtil.h: ../../src/Net/SSLUtil.cpp
+Net/SSLUtil.h:
 @SSLUtil.o
-Net/SyslogServer.h: ../../src/Net/SyslogServer.cpp
+Net/SyslogServer.h:
 @SyslogServer.o
-Net/TCPBoardcastStream.h: ../../src/Net/TCPBoardcastStream.cpp
+Net/TCPBoardcastStream.h:
 @TCPBoardcastStream.o
-Net/TCPClient.h: ../../src/Net/TCPClient.cpp
+Net/TCPClient.h:
 @TCPClient.o
-Net/TCPPortScanner.h: ../../src/Net/TCPPortScanner.cpp
+Net/TCPPortScanner.h:
 @TCPPortScanner.o
-Net/TCPServer.h: ../../src/Net/TCPServer.cpp
+Net/TCPServer.h:
 @TCPServer.o
-Net/TCPServerController.h: ../../src/Net/TCPServerController.cpp
+Net/TCPServerController.h:
 @TCPServerController.o
-Net/TCPServerStream.h: ../../src/Net/TCPServerStream.cpp
+Net/TCPServerStream.h:
 @TCPServerStream.o
-Net/TFTPClient.h: ../../src/Net/TFTPClient.cpp
+Net/TFTPClient.h:
 @TFTPClient.o
-Net/TFTPServer.h: ../../src/Net/TFTPServer.cpp
+Net/TFTPServer.h:
 @TFTPServer.o
-Net/TraceRoute.h: ../../src/Net/TraceRoute.cpp
+Net/TraceRoute.h:
 @TraceRoute.o
-Net/UDPServer.h: ../../src/Net/UDPServer.cpp
+Net/UDPServer.h:
 @UDPServer.o
-Net/UDPServerStream.h: ../../src/Net/UDPServerStream.cpp
+Net/UDPServerStream.h:
 @UDPServerStream.o
-Net/URL.h: ../../src/Net/URL.cpp
+Net/URL.h:
 @URL.o
-Net/UserAgentDB.h: ../../src/Net/UserAgentDB.cpp
+Net/UserAgentDB.h:
 @UserAgentDB.o
-Net/WebBrowser.h: ../../src/Net/WebBrowser.cpp
+Net/WebBrowser.h:
 @WebBrowser.o
-Net/WebSocketClient.h: ../../src/Net/WebSocketClient.cpp
+Net/WebSocketClient.h:
 @WebSocketClient.o
-Net/WebStatus.h: ../../src/Net/WebStatus.cpp
+Net/WebStatus.h:
 @WebStatus.o
-Net/WebUtil.h: ../../src/Net/WebUtil.cpp
+Net/WebUtil.h:
 @WebUtil.o
-Net/WhoisClient.h: ../../src/Net/WhoisClient.cpp
+Net/WhoisClient.h:
 @WhoisClient.o
-Net/WhoisGlobalClient.h: ../../src/Net/WhoisGlobalClient.cpp
+Net/WhoisGlobalClient.h:
 @WhoisGlobalClient.o
-Net/WhoisHandler.h: ../../src/Net/WhoisHandler.cpp
+Net/WhoisHandler.h:
 @WhoisHandler.o
-Net/WhoisRecord.h: ../../src/Net/WhoisRecord.cpp
+Net/WhoisRecord.h:
 @WhoisRecord.o
-Net/WiFiCapturer.h: ../../src/Net/WiFiCapturer.cpp
+Net/WiFiCapturer.h:
 @WiFiCapturer.o
-Net/WiFiLogFile.h: ../../src/Net/WiFiLogFile.cpp
+Net/WiFiLogFile.h:
 @WiFiLogFile.o
-Net/WirelessLANIE.h: ../../src/Net/WirelessLANIE.cpp
+Net/WirelessLANIE.h:
 @WirelessLANIE.o
-Net/WOLClient.h: ../../src/Net/WOLClient.cpp
+Net/WOLClient.h:
 @WOLClient.o
-Net/Email/EmailMessage.h: ../../src/Net/Email/EmailMessage.cpp
+Net/Email/EmailMessage.h:
 @EmailMessage.o
 Net/Email/EmailSender.h:
-Net/Email/EmailStore.h: ../../src/Net/Email/EmailStore.cpp
+Net/Email/EmailStore.h:
 @EmailStore.o
-Net/Email/EmailUtil.h: ../../src/Net/Email/EmailUtil.cpp
+Net/Email/EmailUtil.h:
 @EmailUtil.o
-Net/Email/EmailValidator.h: ../../src/Net/Email/EmailValidator.cpp
+Net/Email/EmailValidator.h:
 @EmailValidator.o
-Net/Email/FileEmailStore.h: ../../src/Net/Email/FileEmailStore.cpp
+Net/Email/FileEmailStore.h:
 @FileEmailStore.o
-Net/Email/GCISClient.h: ../../src/Net/Email/GCISClient.cpp
+Net/Email/GCISClient.h:
 @GCISClient.o
 Net/Email/MailController.h:
-Net/Email/POP3Client.h: ../../src/Net/Email/POP3Client.cpp
+Net/Email/POP3Client.h:
 @POP3Client.o
-Net/Email/POP3Conn.h: ../../src/Net/Email/POP3Conn.cpp
+Net/Email/POP3Conn.h:
 @POP3Conn.o
-Net/Email/POP3Server.h: ../../src/Net/Email/POP3Server.cpp
+Net/Email/POP3Server.h:
 @POP3Server.o
-Net/Email/SMTPClient.h: ../../src/Net/Email/SMTPClient.cpp
+Net/Email/SMTPClient.h:
 @SMTPClient.o
-Net/Email/SMTPConn.h: ../../src/Net/Email/SMTPConn.cpp
+Net/Email/SMTPConn.h:
 @SMTPConn.o
-Net/Email/SMTPServer.h: ../../src/Net/Email/SMTPServer.cpp
+Net/Email/SMTPServer.h:
 @SMTPServer.o
-Net/Names/General.h: ../../src/Net/Names/General.cpp
+Net/Names/General.h:
 @NamesGeneral.o
-Net/Names/InformationFramework.h: ../../src/Net/Names/InformationFramework.cpp
+Net/Names/InformationFramework.h:
 @NamesInformationFramework.o
-Net/Names/PKCS1.h: ../../src/Net/Names/PKCS1.cpp
+Net/Names/PKCS1.h:
 @NamesPKCS1.o
-Net/Names/PKCS7.h: ../../src/Net/Names/PKCS7.cpp
+Net/Names/PKCS7.h:
 @NamesPKCS7.o
-Net/Names/PKCS8.h: ../../src/Net/Names/PKCS8.cpp
+Net/Names/PKCS8.h:
 @NamesPKCS8.o
-Net/Names/PKCS9.h: ../../src/Net/Names/PKCS9.cpp
+Net/Names/PKCS9.h:
 @NamesPKCS9.o
-Net/Names/PKCS10.h: ../../src/Net/Names/PKCS10.cpp
+Net/Names/PKCS10.h:
 @NamesPKCS10.o
-Net/Names/PKCS12.h: ../../src/Net/Names/PKCS12.cpp
+Net/Names/PKCS12.h:
 @NamesPKCS12.o
-Net/Names/PKIX1Explicit88.h: ../../src/Net/Names/PKIX1Explicit88.cpp
+Net/Names/PKIX1Explicit88.h:
 @NamesPKIX1Explicit88.o
-Net/Names/PKIX1Implicit88.h: ../../src/Net/Names/PKIX1Implicit88.cpp
+Net/Names/PKIX1Implicit88.h:
 @NamesPKIX1Implicit88.o
-Net/Names/RFC2459.h: ../../src/Net/Names/RFC2459.cpp
+Net/Names/RFC2459.h:
 @NamesRFC2459.o
-Net/Names/RFC8551.h: ../../src/Net/Names/RFC8551.cpp
+Net/Names/RFC8551.h:
 @NamesRFC8551.o
-Net/SNS/SNS7gogo.h: ../../src/Net/SNS/SNS7gogo.cpp
+Net/SNS/SNS7gogo.h:
 @SNS7gogo.o
-Net/SNS/SNSControl.h: ../../src/Net/SNS/SNSControl.cpp
+Net/SNS/SNSControl.h:
 @SNSControl.o
-Net/SNS/SNSInstagram.h: ../../src/Net/SNS/SNSInstagram.cpp
+Net/SNS/SNSInstagram.h:
 @SNSInstagram.o
-Net/SNS/SNSManager.h: ../../src/Net/SNS/SNSManager.cpp
+Net/SNS/SNSManager.h:
 @SNSManager.o
-Net/SNS/SNSRSS.h: ../../src/Net/SNS/SNSRSS.cpp
+Net/SNS/SNSRSS.h:
 @SNSRSS.o
-Net/SNS/SNSTwitter.h: ../../src/Net/SNS/SNSTwitter.cpp
+Net/SNS/SNSTwitter.h:
 @SNSTwitter.o
-Net/Spring/SpringBootApplication.h: ../../src/Net/Spring/SpringBootApplication.cpp
+Net/Spring/SpringBootApplication.h:
 @SpringBootApplication.o
-Net/WebServer/CapturerWebHandler.h: ../../src/Net/WebServer/CapturerWebHandler.cpp
+Net/WebServer/CapturerWebHandler.h:
 @CapturerWebHandler.o
-Net/WebServer/GCISNotifyHandler.h: ../../src/Net/WebServer/GCISNotifyHandler.cpp
+Net/WebServer/GCISNotifyHandler.h:
 @GCISNotifyHandler.o
-Net/WebServer/EGaugeHandler.h: ../../src/Net/WebServer/EGaugeHandler.cpp
+Net/WebServer/EGaugeHandler.h:
 @EGaugeHandler.o
-Net/WebServer/HTTPDirectoryHandler.h: ../../src/Net/WebServer/HTTPDirectoryHandler.cpp
+Net/WebServer/HTTPDirectoryHandler.h:
 @HTTPDirectoryHandler.o
 Net/WebServer/HTTPFormParser.h:
-Net/WebServer/HTTPForwardHandler.h: ../../src/Net/WebServer/HTTPForwardHandler.cpp
+Net/WebServer/HTTPForwardHandler.h:
 @HTTPForwardHandler.o
-Net/WebServer/HTTPServerUtil.h: ../../src/Net/WebServer/HTTPServerUtil.cpp
+Net/WebServer/HTTPServerUtil.h:
 @HTTPServerUtil.o
 Net/WebServer/IReqLogger.h:
 Net/WebServer/IWebHandler.h:
-Net/WebServer/IWebRequest.h: ../../src/Net/WebServer/IWebRequest.cpp
+Net/WebServer/IWebRequest.h:
 @IWebRequest.o
-Net/WebServer/IWebResponse.h: ../../src/Net/WebServer/IWebResponse.cpp
+Net/WebServer/IWebResponse.h:
 @IWebResponse.o
 Net/WebServer/IWebSession.h:
-Net/WebServer/IWebSessionManager.h: ../../src/Net/WebServer/IWebSessionManager.cpp
+Net/WebServer/IWebSessionManager.h:
 @IWebSessionManager.o
-Net/WebServer/MemoryWebSession.h: ../../src/Net/WebServer/MemoryWebSession.cpp
+Net/WebServer/MemoryWebSession.h:
 @MemoryWebSession.o
-Net/WebServer/MemoryWebSessionManager.h: ../../src/Net/WebServer/MemoryWebSessionManager.cpp
+Net/WebServer/MemoryWebSessionManager.h:
 @MemoryWebSessionManager.o
-Net/WebServer/MODBUSDevSimHandler.h: ../../src/Net/WebServer/MODBUSDevSimHandler.cpp
+Net/WebServer/MODBUSDevSimHandler.h:
 @MODBUSDevSimHandler.o
-Net/WebServer/NodeModuleHandler.h: ../../src/Net/WebServer/NodeModuleHandler.cpp
+Net/WebServer/NodeModuleHandler.h:
 @NodeModuleHandler.o
-Net/WebServer/OAuth2Handler.h: ../../src/Net/WebServer/OAuth2Handler.cpp
+Net/WebServer/OAuth2Handler.h:
 @OAuth2Handler.o
-Net/WebServer/PrintLogWebHandler.h: ../../src/Net/WebServer/PrintLogWebHandler.cpp
+Net/WebServer/PrintLogWebHandler.h:
 @PrintLogWebHandler.o
-Net/WebServer/PrintLogWebResponse.h: ../../src/Net/WebServer/PrintLogWebResponse.cpp
+Net/WebServer/PrintLogWebResponse.h:
 @PrintLogWebResponse.o
-Net/WebServer/RESTfulHandler.h: ../../src/Net/WebServer/RESTfulHandler.cpp
+Net/WebServer/RESTfulHandler.h:
 @RESTfulHandler.o
-Net/WebServer/SAMLHandler.h: ../../src/Net/WebServer/SAMLHandler.cpp
+Net/WebServer/SAMLHandler.h:
 @SAMLHandler.o
-Net/WebServer/SiteRootHandler.h: ../../src/Net/WebServer/SiteRootHandler.cpp
+Net/WebServer/SiteRootHandler.h:
 @SiteRootHandler.o
-Net/WebServer/WebConnection.h: ../../src/Net/WebServer/WebConnection.cpp
+Net/WebServer/WebConnection.h:
 @WebConnection.o
-Net/WebServer/WebController.h: ../../src/Net/WebServer/WebController.cpp
+Net/WebServer/WebController.h:
 @WebController.o
-Net/WebServer/WebControllerHandler.h: ../../src/Net/WebServer/WebControllerHandler.cpp
+Net/WebServer/WebControllerHandler.h:
 @WebControllerHandler.o
-Net/WebServer/WebListener.h: ../../src/Net/WebServer/WebListener.cpp
+Net/WebServer/WebListener.h:
 @WebListener.o
-Net/WebServer/WebRequest.h: ../../src/Net/WebServer/WebRequest.cpp
+Net/WebServer/WebRequest.h:
 @WebRequest.o
 Net/WebServer/WebServerBase.h:
-Net/WebServer/WebServiceHandler.h: ../../src/Net/WebServer/WebServiceHandler.cpp
+Net/WebServer/WebServiceHandler.h:
 @WebServiceHandler.o
-Net/WebServer/WebSessionUsage.h: ../../src/Net/WebServer/WebSessionUsage.cpp
+Net/WebServer/WebSessionUsage.h:
 @WebSessionUsage.o
-Net/WebServer/WebSocketHandler.h: ../../src/Net/WebServer/WebSocketHandler.cpp
+Net/WebServer/WebSocketHandler.h:
 @WebSocketHandler.o
-Net/WebServer/WebSocketServerStream.h: ../../src/Net/WebServer/WebSocketServerStream.cpp
+Net/WebServer/WebSocketServerStream.h:
 @WebSocketServerStream.o
-Net/WebServer/WebStandardHandler.h: ../../src/Net/WebServer/WebStandardHandler.cpp
+Net/WebServer/WebStandardHandler.h:
 @WebStandardHandler.o
-Net/WebServer/WellKnownHandler.h: ../../src/Net/WebServer/WellKnownHandler.cpp
+Net/WebServer/WellKnownHandler.h:
 @WellKnownHandler.o
-Net/WebSite/WebSite7gogoControl.h: ../../src/Net/WebSite/WebSite7gogoControl.cpp
+Net/WebSite/WebSite7gogoControl.h:
 @WebSite7gogoControl.o
-Net/WebSite/WebSite48IdolControl.h: ../../src/Net/WebSite/WebSite48IdolControl.cpp
+Net/WebSite/WebSite48IdolControl.h:
 @WebSite48IdolControl.o
-Net/WebSite/WebSiteInstagramControl.h: ../../src/Net/WebSite/WebSiteInstagramControl.cpp
+Net/WebSite/WebSiteInstagramControl.h:
 @WebSiteInstagramControl.o
-Net/WebSite/WebSiteTwitterControl.h: ../../src/Net/WebSite/WebSiteTwitterControl.cpp
+Net/WebSite/WebSiteTwitterControl.h:
 @WebSiteTwitterControl.o
 
-Parser/FullParserList.h: ../../src/Parser/FullParserList.cpp
+Parser/FullParserList.h:
 @FullParserList.o
-Parser/ParserList.h: ../../src/Parser/ParserList.cpp
+Parser/ParserList.h:
 @ParserList.o
-Parser/FileParser/AC3Parser.h: ../../src/Parser/FileParser/AC3Parser.cpp
+Parser/FileParser/AC3Parser.h:
 @AC3Parser.o
-Parser/FileParser/ADXParser.h: ../../src/Parser/FileParser/ADXParser.cpp
+Parser/FileParser/ADXParser.h:
 @ADXParser.o
-Parser/FileParser/AFSParser.h: ../../src/Parser/FileParser/AFSParser.cpp
+Parser/FileParser/AFSParser.h:
 @AFSParser.o
-Parser/FileParser/ANIParser.h: ../../src/Parser/FileParser/ANIParser.cpp
+Parser/FileParser/ANIParser.h:
 @ANIParser.o
-Parser/FileParser/AOSParser.h: ../../src/Parser/FileParser/AOSParser.cpp
+Parser/FileParser/AOSParser.h:
 @AOSParser.o
 Parser/FileParser/APEParser.h:
-Parser/FileParser/ASN1Parser.h: ../../src/Parser/FileParser/ASN1Parser.cpp
+Parser/FileParser/ASN1Parser.h:
 @ASN1Parser.o
-Parser/FileParser/AVIParser.h: ../../src/Parser/FileParser/AVIParser.cpp
+Parser/FileParser/AVIParser.h:
 @AVIParser.o
-Parser/FileParser/B3DMParser.h: ../../src/Parser/FileParser/B3DMParser.cpp
+Parser/FileParser/B3DMParser.h:
 @B3DMParser.o
-Parser/FileParser/BMPParser.h: ../../src/Parser/FileParser/BMPParser.cpp
+Parser/FileParser/BMPParser.h:
 @BMPParser.o
-Parser/FileParser/BSAParser.h: ../../src/Parser/FileParser/BSAParser.cpp
+Parser/FileParser/BSAParser.h:
 @BSAParser.o
-Parser/FileParser/BurikoArcParser.h: ../../src/Parser/FileParser/BurikoArcParser.cpp
+Parser/FileParser/BurikoArcParser.h:
 @BurikoArcParser.o
-Parser/FileParser/BurikoPackFileParser.h: ../../src/Parser/FileParser/BurikoPackFileParser.cpp
+Parser/FileParser/BurikoPackFileParser.h:
 @BurikoPackFileParser.o
-Parser/FileParser/CABParser.h: ../../src/Parser/FileParser/CABParser.cpp
+Parser/FileParser/CABParser.h:
 @CABParser.o
-Parser/FileParser/CDXAParser.h: ../../src/Parser/FileParser/CDXAParser.cpp
+Parser/FileParser/CDXAParser.h:
 @CDXAParser.o
-Parser/FileParser/CFBParser.h: ../../src/Parser/FileParser/CFBParser.cpp
+Parser/FileParser/CFBParser.h:
 @CFBParser.o
-Parser/FileParser/CIPParser.h: ../../src/Parser/FileParser/CIPParser.cpp
+Parser/FileParser/CIPParser.h:
 @CIPParser.o
-Parser/FileParser/ClassParser.h: ../../src/Parser/FileParser/ClassParser.cpp
+Parser/FileParser/ClassParser.h:
 @ClassParser.o
-Parser/FileParser/COMParser.h: ../../src/Parser/FileParser/COMParser.cpp
+Parser/FileParser/COMParser.h:
 @COMParser.o
-Parser/FileParser/CSVParser.h: ../../src/Parser/FileParser/CSVParser.cpp
+Parser/FileParser/CSVParser.h:
 @CSVParser.o
-Parser/FileParser/CUEParser.h: ../../src/Parser/FileParser/CUEParser.cpp
+Parser/FileParser/CUEParser.h:
 @CUEParser.o
-Parser/FileParser/DBFParser.h: ../../src/Parser/FileParser/DBFParser.cpp
+Parser/FileParser/DBFParser.h:
 @DBFParser.o
-Parser/FileParser/DCPackParser.h: ../../src/Parser/FileParser/DCPackParser.cpp
+Parser/FileParser/DCPackParser.h:
 @DCPackParser.o
-Parser/FileParser/DTSParser.h: ../../src/Parser/FileParser/DTSParser.cpp
+Parser/FileParser/DTSParser.h:
 @DTSParser.o
-Parser/FileParser/ELFParser.h: ../../src/Parser/FileParser/ELFParser.cpp
+Parser/FileParser/ELFParser.h:
 @ELFParser.o
-Parser/FileParser/EVTXParser.h: ../../src/Parser/FileParser/EVTXParser.cpp
+Parser/FileParser/EVTXParser.h:
 @EVTXParser.o
-Parser/FileParser/EXEParser.h: ../../src/Parser/FileParser/EXEParser.cpp
+Parser/FileParser/EXEParser.h:
 @EXEParser.o
-Parser/FileParser/FNTParser.h: ../../src/Parser/FileParser/FNTParser.cpp
+Parser/FileParser/FNTParser.h:
 @FNTParser.o
-Parser/FileParser/GamedatPac2Parser.h: ../../src/Parser/FileParser/GamedatPac2Parser.cpp
+Parser/FileParser/GamedatPac2Parser.h:
 @GamedatPac2Parser.o
-Parser/FileParser/GIFParser.h: ../../src/Parser/FileParser/GIFParser.cpp
+Parser/FileParser/GIFParser.h:
 @GIFParser.o
-Parser/FileParser/GLOCParser.h: ../../src/Parser/FileParser/GLOCParser.cpp
+Parser/FileParser/GLOCParser.h:
 @GLOCParser.o
-Parser/FileParser/GZIPParser.h: ../../src/Parser/FileParser/GZIPParser.cpp
+Parser/FileParser/GZIPParser.h:
 @GZIPParser.o
-Parser/FileParser/HTRecParser.h: ../../src/Parser/FileParser/HTRecParser.cpp
+Parser/FileParser/HTRecParser.h:
 @HTRecParser.o
-Parser/FileParser/ICOParser.h: ../../src/Parser/FileParser/ICOParser.cpp
+Parser/FileParser/ICOParser.h:
 @ICOParser.o
-Parser/FileParser/ID3Parser.h: ../../src/Parser/FileParser/ID3Parser.cpp
+Parser/FileParser/ID3Parser.h:
 @ID3Parser.o
-Parser/FileParser/IMGParser.h: ../../src/Parser/FileParser/IMGParser.cpp
+Parser/FileParser/IMGParser.h:
 @IMGParser.o
-Parser/FileParser/IPACParser.h: ../../src/Parser/FileParser/IPACParser.cpp
+Parser/FileParser/IPACParser.h:
 @IPACParser.o
-Parser/FileParser/IS2Parser.h: ../../src/Parser/FileParser/IS2Parser.cpp
+Parser/FileParser/IS2Parser.h:
 @IS2Parser.o
-Parser/FileParser/ISOParser.h: ../../src/Parser/FileParser/ISOParser.cpp
+Parser/FileParser/ISOParser.h:
 @ISOParser.o
-Parser/FileParser/JKSParser.h: ../../src/Parser/FileParser/JKSParser.cpp
+Parser/FileParser/JKSParser.h:
 @JKSParser.o
-Parser/FileParser/JSONParser.h: ../../src/Parser/FileParser/JSONParser.cpp
+Parser/FileParser/JSONParser.h:
 @JSONParser.o
-Parser/FileParser/LinkArcParser.h: ../../src/Parser/FileParser/LinkArcParser.cpp
+Parser/FileParser/LinkArcParser.h:
 @LinkArcParser.o
-Parser/FileParser/LOGParser.h: ../../src/Parser/FileParser/LOGParser.cpp
+Parser/FileParser/LOGParser.h:
 @LOGParser.o
-Parser/FileParser/LUTParser.h: ../../src/Parser/FileParser/LUTParser.cpp
+Parser/FileParser/LUTParser.h:
 @LUTParser.o
-Parser/FileParser/M2VParser.h: ../../src/Parser/FileParser/M2VParser.cpp
+Parser/FileParser/M2VParser.h:
 @M2VParser.o
-Parser/FileParser/M2VStmParser.h: ../../src/Parser/FileParser/M2VStmParser.cpp
+Parser/FileParser/M2VStmParser.h:
 @M2VStmParser.o
-Parser/FileParser/MAIPackParser.h: ../../src/Parser/FileParser/MAIPackParser.cpp
+Parser/FileParser/MAIPackParser.h:
 @MAIPackParser.o
-Parser/FileParser/MajiroArcParser.h: ../../src/Parser/FileParser/MajiroArcParser.cpp
+Parser/FileParser/MajiroArcParser.h:
 @MajiroArcParser.o
-Parser/FileParser/MD5Parser.h: ../../src/Parser/FileParser/MD5Parser.cpp
+Parser/FileParser/MD5Parser.h:
 @MD5Parser.o
-Parser/FileParser/MDBParser.h: ../../src/Parser/FileParser/MDBParser.cpp
+Parser/FileParser/MDBParser.h:
 @MDBParser.o
-Parser/FileParser/MEDParser.h: ../../src/Parser/FileParser/MEDParser.cpp
+Parser/FileParser/MEDParser.h:
 @MEDParser.o
-Parser/FileParser/MEVParser.h: ../../src/Parser/FileParser/MEVParser.cpp
+Parser/FileParser/MEVParser.h:
 @MEVParser.o
-Parser/FileParser/MIMEFileParser.h: ../../src/Parser/FileParser/MIMEFileParser.cpp
+Parser/FileParser/MIMEFileParser.h:
 @MIMEFileParser.o
-Parser/FileParser/MKVParser.h: ../../src/Parser/FileParser/MKVParser.cpp
+Parser/FileParser/MKVParser.h:
 @MKVParser.o
-Parser/FileParser/MLHParser.h: ../../src/Parser/FileParser/MLHParser.cpp
+Parser/FileParser/MLHParser.h:
 @MLHParser.o
-Parser/FileParser/MMSParser.h: ../../src/Parser/FileParser/MMSParser.cpp
+Parser/FileParser/MMSParser.h:
 @MMSParser.o
-Parser/FileParser/MP2Parser.h: ../../src/Parser/FileParser/MP2Parser.cpp
+Parser/FileParser/MP2Parser.h:
 @MP2Parser.o
-Parser/FileParser/MPGParser.h: ../../src/Parser/FileParser/MPGParser.cpp
+Parser/FileParser/MPGParser.h:
 @MPGParser.o
-Parser/FileParser/MRGParser.h: ../../src/Parser/FileParser/MRGParser.cpp
+Parser/FileParser/MRGParser.h:
 @MRGParser.o
-Parser/FileParser/MTKGPSParser.h: ../../src/Parser/FileParser/MTKGPSParser.cpp
+Parser/FileParser/MTKGPSParser.h:
 @MTKGPSParser.o
-Parser/FileParser/NFPParser.h: ../../src/Parser/FileParser/NFPParser.cpp
+Parser/FileParser/NFPParser.h:
 @NFPParser.o
-Parser/FileParser/NMEAParser.h: ../../src/Parser/FileParser/NMEAParser.cpp
+Parser/FileParser/NMEAParser.h:
 @NMEAParser.o
-Parser/FileParser/NOAParser.h: ../../src/Parser/FileParser/NOAParser.cpp
+Parser/FileParser/NOAParser.h:
 @NOAParser.o
-Parser/FileParser/NWAParser.h: ../../src/Parser/FileParser/NWAParser.cpp
+Parser/FileParser/NWAParser.h:
 @NWAParser.o
-Parser/FileParser/NS2Parser.h: ../../src/Parser/FileParser/NS2Parser.cpp
+Parser/FileParser/NS2Parser.h:
 @NS2Parser.o
-Parser/FileParser/OZF2Parser.h: ../../src/Parser/FileParser/OZF2Parser.cpp
+Parser/FileParser/OZF2Parser.h:
 @OZF2Parser.o
-Parser/FileParser/OziMapParser.h: ../../src/Parser/FileParser/OziMapParser.cpp
+Parser/FileParser/OziMapParser.h:
 @OziMapParser.o
-Parser/FileParser/PAC2Parser.h: ../../src/Parser/FileParser/PAC2Parser.cpp
+Parser/FileParser/PAC2Parser.h:
 @PAC2Parser.o
-Parser/FileParser/PACParser.h: ../../src/Parser/FileParser/PACParser.cpp
+Parser/FileParser/PACParser.h:
 @PACParser.o
-Parser/FileParser/PCAPNGParser.h: ../../src/Parser/FileParser/PCAPNGParser.cpp
+Parser/FileParser/PCAPNGParser.h:
 @PCAPNGParser.o
-Parser/FileParser/PCAPParser.h: ../../src/Parser/FileParser/PCAPParser.cpp
+Parser/FileParser/PCAPParser.h:
 @PCAPParser.o
-Parser/FileParser/PCXParser.h: ../../src/Parser/FileParser/PCXParser.cpp
+Parser/FileParser/PCXParser.h:
 @PCXParser.o
-Parser/FileParser/PDFParser.h: ../../src/Parser/FileParser/PDFParser.cpp
+Parser/FileParser/PDFParser.h:
 @PDFParser.o
-Parser/FileParser/PFS2Parser.h: ../../src/Parser/FileParser/PFS2Parser.cpp
+Parser/FileParser/PFS2Parser.h:
 @PFS2Parser.o
-Parser/FileParser/PLTParser.h: ../../src/Parser/FileParser/PLTParser.cpp
+Parser/FileParser/PLTParser.h:
 @PLTParser.o
-Parser/FileParser/PNGParser.h: ../../src/Parser/FileParser/PNGParser.cpp
+Parser/FileParser/PNGParser.h:
 @PNGParser.o
-Parser/FileParser/PSSParser.h: ../../src/Parser/FileParser/PSSParser.cpp
+Parser/FileParser/PSSParser.h:
 @PSSParser.o
-Parser/FileParser/QTParser.h: ../../src/Parser/FileParser/QTParser.cpp
+Parser/FileParser/QTParser.h:
 @QTParser.o
-Parser/FileParser/RAR5Parser.h: ../../src/Parser/FileParser/RAR5Parser.cpp
+Parser/FileParser/RAR5Parser.h:
 @RAR5Parser.o
-Parser/FileParser/RLOCParser.h: ../../src/Parser/FileParser/RLOCParser.cpp
+Parser/FileParser/RLOCParser.h:
 @RLOCParser.o
-Parser/FileParser/SakuotoArcParser.h: ../../src/Parser/FileParser/SakuotoArcParser.cpp
+Parser/FileParser/SakuotoArcParser.h:
 @SakuotoArcParser.o
-Parser/FileParser/SEGPackParser.h: ../../src/Parser/FileParser/SEGPackParser.cpp
+Parser/FileParser/SEGPackParser.h:
 @SEGPackParser.o
-Parser/FileParser/SFVParser.h: ../../src/Parser/FileParser/SFVParser.cpp
+Parser/FileParser/SFVParser.h:
 @SFVParser.o
-Parser/FileParser/SHPParser.h: ../../src/Parser/FileParser/SHPParser.cpp
+Parser/FileParser/SHPParser.h:
 @SHPParser.o
-Parser/FileParser/SLOCParser.h: ../../src/Parser/FileParser/SLOCParser.cpp
+Parser/FileParser/SLOCParser.h:
 @SLOCParser.o
-Parser/FileParser/SM2MPXParser.h: ../../src/Parser/FileParser/SM2MPXParser.cpp
+Parser/FileParser/SM2MPXParser.h:
 @SM2MPXParser.o
-Parser/FileParser/SMakeParser.h: ../../src/Parser/FileParser/SMakeParser.cpp
+Parser/FileParser/SMakeParser.h:
 @SMakeParser.o
-Parser/FileParser/SMDLParser.h: ../../src/Parser/FileParser/SMDLParser.cpp
+Parser/FileParser/SMDLParser.h:
 @SMDLParser.o
-Parser/FileParser/SPDParser.h: ../../src/Parser/FileParser/SPDParser.cpp
+Parser/FileParser/SPDParser.h:
 @SPDParser.o
-Parser/FileParser/SPKParser.h: ../../src/Parser/FileParser/SPKParser.cpp
+Parser/FileParser/SPKParser.h:
 @SPKParser.o
-Parser/FileParser/SPREDParser.h: ../../src/Parser/FileParser/SPREDParser.cpp
+Parser/FileParser/SPREDParser.h:
 @SPREDParser.o
-Parser/FileParser/SQLiteParser.h: ../../src/Parser/FileParser/SQLiteParser.cpp
+Parser/FileParser/SQLiteParser.h:
 @SQLiteParser.o
-Parser/FileParser/SZSParser.h: ../../src/Parser/FileParser/SZSParser.cpp
+Parser/FileParser/SZSParser.h:
 @SZSParser.o
-Parser/FileParser/TARParser.h: ../../src/Parser/FileParser/TARParser.cpp
+Parser/FileParser/TARParser.h:
 @TARParser.o
-Parser/FileParser/TGAParser.h: ../../src/Parser/FileParser/TGAParser.cpp
+Parser/FileParser/TGAParser.h:
 @TGAParser.o
-Parser/FileParser/TIFFParser.h: ../../src/Parser/FileParser/TIFFParser.cpp
+Parser/FileParser/TIFFParser.h:
 @TIFFParser.o
-Parser/FileParser/TILParser.h: ../../src/Parser/FileParser/TILParser.cpp
+Parser/FileParser/TILParser.h:
 @TILParser.o
-Parser/FileParser/TSPParser.h: ../../src/Parser/FileParser/TSPParser.cpp
+Parser/FileParser/TSPParser.h:
 @TSPParser.o
-Parser/FileParser/TsuyoshiArcParser.h: ../../src/Parser/FileParser/TsuyoshiArcParser.cpp
+Parser/FileParser/TsuyoshiArcParser.h:
 @TsuyoshiArcParser.o
-Parser/FileParser/TXTParser.h: ../../src/Parser/FileParser/TXTParser.cpp
+Parser/FileParser/TXTParser.h:
 @TXTParser.o
-Parser/FileParser/UDPParser.h: ../../src/Parser/FileParser/UDPParser.cpp
+Parser/FileParser/UDPParser.h:
 @UDPParser.o
-Parser/FileParser/WAVParser.h: ../../src/Parser/FileParser/WAVParser.cpp
+Parser/FileParser/WAVParser.h:
 @WAVParser.o
-Parser/FileParser/WPTParser.h: ../../src/Parser/FileParser/WPTParser.cpp
+Parser/FileParser/WPTParser.h:
 @WPTParser.o
-Parser/FileParser/X13Parser.h: ../../src/Parser/FileParser/X13Parser.cpp
+Parser/FileParser/X13Parser.h:
 @X13Parser.o
-Parser/FileParser/X509Parser.h: ../../src/Parser/FileParser/X509Parser.cpp
+Parser/FileParser/X509Parser.h:
 @X509Parser.o
-Parser/FileParser/XMLParser.h: ../../src/Parser/FileParser/XMLParser.cpp
+Parser/FileParser/XMLParser.h:
 @XMLParser.o
-Parser/FileParser/XPCMParser.h: ../../src/Parser/FileParser/XPCMParser.cpp
+Parser/FileParser/XPCMParser.h:
 @XPCMParser.o
-Parser/FileParser/YKCParser.h: ../../src/Parser/FileParser/YKCParser.cpp
+Parser/FileParser/YKCParser.h:
 @YKCParser.o
-Parser/FileParser/ZIPParser.h: ../../src/Parser/FileParser/ZIPParser.cpp
+Parser/FileParser/ZIPParser.h:
 @ZIPParser.o
-Parser/FileParser/ZWEIParser.h: ../../src/Parser/FileParser/ZWEIParser.cpp
+Parser/FileParser/ZWEIParser.h:
 @ZWEIParser.o
-Parser/ObjParser/DBITParser.h: ../../src/Parser/ObjParser/DBITParser.cpp
+Parser/ObjParser/DBITParser.h:
 @DBITParser.o
-Parser/ObjParser/FileGDB2Parser.h: ../../src/Parser/ObjParser/FileGDB2Parser.cpp
+Parser/ObjParser/FileGDB2Parser.h:
 @FileGDB2Parser.o
-Parser/ObjParser/ISO9660Parser.h: ../../src/Parser/ObjParser/ISO9660Parser.cpp
+Parser/ObjParser/ISO9660Parser.h:
 @ISO9660Parser.o
-Parser/ObjParser/ITMParser.h: ../../src/Parser/ObjParser/ITMParser.cpp
+Parser/ObjParser/ITMParser.h:
 @ITMParser.o
-Parser/ObjParser/KMZParser.h: ../../src/Parser/ObjParser/KMZParser.cpp
+Parser/ObjParser/KMZParser.h:
 @KMZParser.o
-Parser/ObjParser/MPGXAParser.h: ../../src/Parser/ObjParser/MPGXAParser.cpp
+Parser/ObjParser/MPGXAParser.h:
 @MPGXAParser.o
-Parser/ObjParser/OSMMapParser.h: ../../src/Parser/ObjParser/OSMMapParser.cpp
+Parser/ObjParser/OSMMapParser.h:
 @OSMMapParser.o
 
-SSWR/ProcMonForm.h: ../../src/SSWR/ProcMonForm.cpp
+SSWR/ProcMonForm.h:
 @ProcMonForm.o
-SSWR/AVIRead/AVIRAboutForm.h: ../../src/SSWR/AVIRead/AVIRAboutForm.cpp
+SSWR/AVIRead/AVIRAboutForm.h:
 @AVIRAboutForm.o
-SSWR/AVIRead/AVIRAccelerometerForm.h: ../../src/SSWR/AVIRead/AVIRAccelerometerForm.cpp
+SSWR/AVIRead/AVIRAccelerometerForm.h:
 @AVIRAccelerometerForm.o
-SSWR/AVIRead/AVIRAccessConnForm.h: ../../src/SSWR/AVIRead/AVIRAccessConnForm.cpp
+SSWR/AVIRead/AVIRAccessConnForm.h:
 @AVIRAccessConnForm.o
-SSWR/AVIRead/AVIRACMEClientForm.h: ../../src/SSWR/AVIRead/AVIRACMEClientForm.cpp
+SSWR/AVIRead/AVIRACMEClientForm.h:
 @AVIRACMEClientForm.o
-SSWR/AVIRead/AVIRADAMForm.h: ../../src/SSWR/AVIRead/AVIRADAMForm.cpp
+SSWR/AVIRead/AVIRADAMForm.h:
 @AVIRADAMForm.o
-SSWR/AVIRead/AVIRANPRForm.h: ../../src/SSWR/AVIRead/AVIRANPRForm.cpp
+SSWR/AVIRead/AVIRANPRForm.h:
 @AVIRANPRForm.o
-SSWR/AVIRead/AVIRARPPingForm.h: ../../src/SSWR/AVIRead/AVIRARPPingForm.cpp
+SSWR/AVIRead/AVIRARPPingForm.h:
 @AVIRARPPingForm.o
-SSWR/AVIRead/AVIRARPScanForm.h: ../../src/SSWR/AVIRead/AVIRARPScanForm.cpp
+SSWR/AVIRead/AVIRARPScanForm.h:
 @AVIRARPScanForm.o
-SSWR/AVIRead/AVIRAsmConvForm.h: ../../src/SSWR/AVIRead/AVIRAsmConvForm.cpp
+SSWR/AVIRead/AVIRAsmConvForm.h:
 @AVIRAsmConvForm.o
-SSWR/AVIRead/AVIRASN1DataForm.h: ../../src/SSWR/AVIRead/AVIRASN1DataForm.cpp
+SSWR/AVIRead/AVIRASN1DataForm.h:
 @AVIRASN1DataForm.o
-SSWR/AVIRead/AVIRASN1MIBForm.h: ../../src/SSWR/AVIRead/AVIRASN1MIBForm.cpp
+SSWR/AVIRead/AVIRASN1MIBForm.h:
 @AVIRASN1MIBForm.o
-SSWR/AVIRead/AVIRASN1OIDForm.h: ../../src/SSWR/AVIRead/AVIRASN1OIDForm.cpp
+SSWR/AVIRead/AVIRASN1OIDForm.h:
 @AVIRASN1OIDForm.o
-SSWR/AVIRead/AVIRASN1ParseForm.h: ../../src/SSWR/AVIRead/AVIRASN1ParseForm.cpp
+SSWR/AVIRead/AVIRASN1ParseForm.h:
 @AVIRASN1ParseForm.o
-SSWR/AVIRead/AVIRAudioFilterForm.h: ../../src/SSWR/AVIRead/AVIRAudioFilterForm.cpp
+SSWR/AVIRead/AVIRAudioFilterForm.h:
 @AVIRAudioFilterForm.o
-SSWR/AVIRead/AVIRAudioViewerForm.h: ../../src/SSWR/AVIRead/AVIRAudioViewerForm.cpp
+SSWR/AVIRead/AVIRAudioViewerForm.h:
 @AVIRAudioViewerForm.o
-SSWR/AVIRead/AVIRBaseForm.h: ../../src/SSWR/AVIRead/AVIRBaseForm.cpp
+SSWR/AVIRead/AVIRBaseForm.h:
 @AVIRBaseForm.o
-SSWR/AVIRead/AVIRBatchRenameForm.h: ../../src/SSWR/AVIRead/AVIRBatchRenameForm.cpp
+SSWR/AVIRead/AVIRBatchRenameForm.h:
 @AVIRBatchRenameForm.o
-SSWR/AVIRead/AVIRBCryptForm.h: ../../src/SSWR/AVIRead/AVIRBCryptForm.cpp
+SSWR/AVIRead/AVIRBCryptForm.h:
 @AVIRBCryptForm.o
-SSWR/AVIRead/AVIRBenchmarkForm.h: ../../src/SSWR/AVIRead/AVIRBenchmarkForm.cpp
+SSWR/AVIRead/AVIRBenchmarkForm.h:
 @AVIRBenchmarkForm.o
-SSWR/AVIRead/AVIRBingMapsForm.h: ../../src/SSWR/AVIRead/AVIRBingMapsForm.cpp
+SSWR/AVIRead/AVIRBingMapsForm.h:
 @AVIRBingMapsForm.o
-SSWR/AVIRead/AVIRBluetoothCtlForm.h: ../../src/SSWR/AVIRead/AVIRBluetoothCtlForm.cpp
+SSWR/AVIRead/AVIRBluetoothCtlForm.h:
 @AVIRBluetoothCtlForm.o
-SSWR/AVIRead/AVIRBluetoothForm.h: ../../src/SSWR/AVIRead/AVIRBluetoothForm.cpp
+SSWR/AVIRead/AVIRBluetoothForm.h:
 @AVIRBluetoothForm.o
-SSWR/AVIRead/AVIRBluetoothLEForm.h: ../../src/SSWR/AVIRead/AVIRBluetoothLEForm.cpp
+SSWR/AVIRead/AVIRBluetoothLEForm.h:
 @AVIRBluetoothLEForm.o
-SSWR/AVIRead/AVIRBluetoothLogForm.h: ../../src/SSWR/AVIRead/AVIRBluetoothLogForm.cpp
+SSWR/AVIRead/AVIRBluetoothLogForm.h:
 @AVIRBluetoothLogForm.o
-SSWR/AVIRead/AVIRBTScanLogDevForm.h: ../../src/SSWR/AVIRead/AVIRBTScanLogDevForm.cpp
+SSWR/AVIRead/AVIRBTScanLogDevForm.h:
 @AVIRBTScanLogDevForm.o
-SSWR/AVIRead/AVIRBTScanLogForm.h: ../../src/SSWR/AVIRead/AVIRBTScanLogForm.cpp
+SSWR/AVIRead/AVIRBTScanLogForm.h:
 @AVIRBTScanLogForm.o
-SSWR/AVIRead/AVIRBruteForceForm.h: ../../src/SSWR/AVIRead/AVIRBruteForceForm.cpp
+SSWR/AVIRead/AVIRBruteForceForm.h:
 @AVIRBruteForceForm.o
-SSWR/AVIRead/AVIRBYDC9RForm.h: ../../src/SSWR/AVIRead/AVIRBYDC9RForm.cpp
+SSWR/AVIRead/AVIRBYDC9RForm.h:
 @AVIRBYDC9RForm.o
-SSWR/AVIRead/AVIRCalculator1Form.h: ../../src/SSWR/AVIRead/AVIRCalculator1Form.cpp
+SSWR/AVIRead/AVIRCalculator1Form.h:
 @AVIRCalculator1Form.o
-SSWR/AVIRead/AVIRCameraControlForm.h: ../../src/SSWR/AVIRead/AVIRCameraControlForm.cpp
+SSWR/AVIRead/AVIRCameraControlForm.h:
 @AVIRCameraControlForm.o
-SSWR/AVIRead/AVIRCaptureDevForm.h: ../../src/SSWR/AVIRead/AVIRCaptureDevForm.cpp
+SSWR/AVIRead/AVIRCaptureDevForm.h:
 @AVIRCaptureDevForm.o
-SSWR/AVIRead/AVIRCAUtilForm.h: ../../src/SSWR/AVIRead/AVIRCAUtilForm.cpp
+SSWR/AVIRead/AVIRCAUtilForm.h:
 @AVIRCAUtilForm.o
-SSWR/AVIRead/AVIRCertTextForm.h: ../../src/SSWR/AVIRead/AVIRCertTextForm.cpp
+SSWR/AVIRead/AVIRCertTextForm.h:
 @AVIRCertTextForm.o
-SSWR/AVIRead/AVIRCertUtilForm.h: ../../src/SSWR/AVIRead/AVIRCertUtilForm.cpp
+SSWR/AVIRead/AVIRCertUtilForm.h:
 @AVIRCertUtilForm.o
-SSWR/AVIRead/AVIRChartForm.h: ../../src/SSWR/AVIRead/AVIRChartForm.cpp
+SSWR/AVIRead/AVIRChartForm.h:
 @AVIRChartForm.o
-SSWR/AVIRead/AVIRChineseForm.h: ../../src/SSWR/AVIRead/AVIRChineseForm.cpp
+SSWR/AVIRead/AVIRChineseForm.h:
 @AVIRChineseForm.o
-SSWR/AVIRead/AVIRClipboardViewerForm.h: ../../src/SSWR/AVIRead/AVIRClipboardViewerForm.cpp
+SSWR/AVIRead/AVIRClipboardViewerForm.h:
 @AVIRClipboardViewerForm.o
-SSWR/AVIRead/AVIRCodeImageGenForm.h: ../../src/SSWR/AVIRead/AVIRCodeImageGenForm.cpp
+SSWR/AVIRead/AVIRCodeImageGenForm.h:
 @AVIRCodeImageGenForm.o
-SSWR/AVIRead/AVIRCodePageForm.h: ../../src/SSWR/AVIRead/AVIRCodePageForm.cpp
+SSWR/AVIRead/AVIRCodePageForm.h:
 @AVIRCodePageForm.o
-SSWR/AVIRead/AVIRCodeProjectForm.h: ../../src/SSWR/AVIRead/AVIRCodeProjectForm.cpp
+SSWR/AVIRead/AVIRCodeProjectForm.h:
 @AVIRCodeProjectForm.o
-SSWR/AVIRead/AVIRColorCustomForm.h: ../../src/SSWR/AVIRead/AVIRColorCustomForm.cpp
+SSWR/AVIRead/AVIRColorCustomForm.h:
 @AVIRColorCustomForm.o
-SSWR/AVIRead/AVIRColorSettingForm.h: ../../src/SSWR/AVIRead/AVIRColorSettingForm.cpp
+SSWR/AVIRead/AVIRColorSettingForm.h:
 @AVIRColorSettingForm.o
-SSWR/AVIRead/AVIRConsoleMediaPlayerForm.h: ../../src/SSWR/AVIRead/AVIRConsoleMediaPlayerForm.cpp
+SSWR/AVIRead/AVIRConsoleMediaPlayerForm.h:
 @AVIRConsoleMediaPlayerForm.o
-SSWR/AVIRead/AVIRCoordConvForm.h: ../../src/SSWR/AVIRead/AVIRCoordConvForm.cpp
+SSWR/AVIRead/AVIRCoordConvForm.h:
 @AVIRCoordConvForm.o
-SSWR/AVIRead/AVIRCoordInfoForm.h: ../../src/SSWR/AVIRead/AVIRCoordInfoForm.cpp
+SSWR/AVIRead/AVIRCoordInfoForm.h:
 @AVIRCoordInfoForm.o
-SSWR/AVIRead/AVIRCoordSysForm.h: ../../src/SSWR/AVIRead/AVIRCoordSysForm.cpp
+SSWR/AVIRead/AVIRCoordSysForm.h:
 @AVIRCoordSysForm.o
-SSWR/AVIRead/AVIRCore.h: ../../src/SSWR/AVIRead/AVIRCore.cpp
+SSWR/AVIRead/AVIRCore.h:
 @AVIRCore.o
-SSWR/AVIRead/AVIRCOVID19Form.h: ../../src/SSWR/AVIRead/AVIRCOVID19Form.cpp
+SSWR/AVIRead/AVIRCOVID19Form.h:
 @AVIRCOVID19Form.o
-SSWR/AVIRead/AVIRCppEnumForm.h: ../../src/SSWR/AVIRead/AVIRCppEnumForm.cpp
+SSWR/AVIRead/AVIRCppEnumForm.h:
 @AVIRCppEnumForm.o
-SSWR/AVIRead/AVIRCPUInfoForm.h: ../../src/SSWR/AVIRead/AVIRCPUInfoForm.cpp
+SSWR/AVIRead/AVIRCPUInfoForm.h:
 @AVIRCPUInfoForm.o
-SSWR/AVIRead/AVIRCustomTileMapForm.h: ../../src/SSWR/AVIRead/AVIRCustomTileMapForm.cpp
+SSWR/AVIRead/AVIRCustomTileMapForm.h:
 @AVIRCustomTileMapForm.o
-SSWR/AVIRead/AVIRDBCheckChgForm.h: ../../src/SSWR/AVIRead/AVIRDBCheckChgForm.cpp
+SSWR/AVIRead/AVIRDBCheckChgForm.h:
 @AVIRDBCheckChgForm.o
-SSWR/AVIRead/AVIRDBCopyTablesForm.h: ../../src/SSWR/AVIRead/AVIRDBCopyTablesForm.cpp
+SSWR/AVIRead/AVIRDBCopyTablesForm.h:
 @AVIRDBCopyTablesForm.o
-SSWR/AVIRead/AVIRDBExportForm.h: ../../src/SSWR/AVIRead/AVIRDBExportForm.cpp
+SSWR/AVIRead/AVIRDBExportForm.h:
 @AVIRDBExportForm.o
-SSWR/AVIRead/AVIRDBForm.h: ../../src/SSWR/AVIRead/AVIRDBForm.cpp
+SSWR/AVIRead/AVIRDBForm.h:
 @AVIRDBForm.o
-SSWR/AVIRead/AVIRDBManagerForm.h: ../../src/SSWR/AVIRead/AVIRDBManagerForm.cpp
+SSWR/AVIRead/AVIRDBManagerForm.h:
 @AVIRDBManagerForm.o
-SSWR/AVIRead/AVIRDHCPServerForm.h: ../../src/SSWR/AVIRead/AVIRDHCPServerForm.cpp
+SSWR/AVIRead/AVIRDHCPServerForm.h:
 @AVIRDHCPServerForm.o
-SSWR/AVIRead/AVIRDHT22Form.h: ../../src/SSWR/AVIRead/AVIRDHT22Form.cpp
+SSWR/AVIRead/AVIRDHT22Form.h:
 @AVIRDHT22Form.o
-SSWR/AVIRead/AVIRDNSClientForm.h: ../../src/SSWR/AVIRead/AVIRDNSClientForm.cpp
+SSWR/AVIRead/AVIRDNSClientForm.h:
 @AVIRDNSClientForm.o
-SSWR/AVIRead/AVIRDNSProxyForm.h: ../../src/SSWR/AVIRead/AVIRDNSProxyForm.cpp
+SSWR/AVIRead/AVIRDNSProxyForm.h:
 @AVIRDNSProxyForm.o
-SSWR/AVIRead/AVIRDragDropViewerForm.h: ../../src/SSWR/AVIRead/AVIRDragDropViewerForm.cpp
+SSWR/AVIRead/AVIRDragDropViewerForm.h:
 @AVIRDragDropViewerForm.o
-SSWR/AVIRead/AVIRDS18B20Form.h: ../../src/SSWR/AVIRead/AVIRDS18B20Form.cpp
+SSWR/AVIRead/AVIRDS18B20Form.h:
 @AVIRDS18B20Form.o
-SSWR/AVIRead/AVIRDWQB30Form.h: ../../src/SSWR/AVIRead/AVIRDWQB30Form.cpp
+SSWR/AVIRead/AVIRDWQB30Form.h:
 @AVIRDWQB30Form.o
-SSWR/AVIRead/AVIREDIDViewerForm.h: ../../src/SSWR/AVIRead/AVIREDIDViewerForm.cpp
+SSWR/AVIRead/AVIREDIDViewerForm.h:
 @AVIREDIDViewerForm.o
-SSWR/AVIRead/AVIReGaugeSvrForm.h: ../../src/SSWR/AVIRead/AVIReGaugeSvrForm.cpp
+SSWR/AVIRead/AVIReGaugeSvrForm.h:
 @AVIReGaugeSvrForm.o
-SSWR/AVIRead/AVIRElectronicScaleForm.h: ../../src/SSWR/AVIRead/AVIRElectronicScaleForm.cpp
+SSWR/AVIRead/AVIRElectronicScaleForm.h:
 @AVIRElectronicScaleForm.o
-SSWR/AVIRead/AVIREmailAddrValidForm.h: ../../src/SSWR/AVIRead/AVIREmailAddrValidForm.cpp
+SSWR/AVIRead/AVIREmailAddrValidForm.h:
 @AVIREmailAddrValidForm.o
-SSWR/AVIRead/AVIREmailServerForm.h: ../../src/SSWR/AVIRead/AVIREmailServerForm.cpp
+SSWR/AVIRead/AVIREmailServerForm.h:
 @AVIREmailServerForm.o
-SSWR/AVIRead/AVIREncryptForm.h: ../../src/SSWR/AVIRead/AVIREncryptForm.cpp
+SSWR/AVIRead/AVIREncryptForm.h:
 @AVIREncryptForm.o
-SSWR/AVIRead/AVIREncryptMsgForm.h: ../../src/SSWR/AVIRead/AVIREncryptMsgForm.cpp
+SSWR/AVIRead/AVIREncryptMsgForm.h:
 @AVIREncryptMsgForm.o
-SSWR/AVIRead/AVIRESRIMapForm.h: ../../src/SSWR/AVIRead/AVIRESRIMapForm.cpp
+SSWR/AVIRead/AVIRESRIMapForm.h:
 @AVIRESRIMapForm.o
-SSWR/AVIRead/AVIREWDTU01Form.h: ../../src/SSWR/AVIRead/AVIREWDTU01Form.cpp
+SSWR/AVIRead/AVIREWDTU01Form.h:
 @AVIREWDTU01Form.o
-SSWR/AVIRead/AVIRExeForm.h: ../../src/SSWR/AVIRead/AVIRExeForm.cpp
+SSWR/AVIRead/AVIRExeForm.h:
 @AVIRExeForm.o
-SSWR/AVIRead/AVIRExportParamForm.h: ../../src/SSWR/AVIRead/AVIRExportParamForm.cpp
+SSWR/AVIRead/AVIRExportParamForm.h:
 @AVIRExportParamForm.o
-SSWR/AVIRead/AVIRFCMForm.h: ../../src/SSWR/AVIRead/AVIRFCMForm.cpp
+SSWR/AVIRead/AVIRFCMForm.h:
 @AVIRFCMForm.o
-SSWR/AVIRead/AVIRFileAnalyseForm.h: ../../src/SSWR/AVIRead/AVIRFileAnalyseForm.cpp
+SSWR/AVIRead/AVIRFileAnalyseForm.h:
 @AVIRFileAnalyseForm.o
-SSWR/AVIRead/AVIRFileChkForm.h: ../../src/SSWR/AVIRead/AVIRFileChkForm.cpp
+SSWR/AVIRead/AVIRFileChkForm.h:
 @AVIRFileChkForm.o
-SSWR/AVIRead/AVIRFileExForm.h: ../../src/SSWR/AVIRead/AVIRFileExForm.cpp
+SSWR/AVIRead/AVIRFileExForm.h:
 @AVIRFileExForm.o
-SSWR/AVIRead/AVIRFileHashForm.h: ../../src/SSWR/AVIRead/AVIRFileHashForm.cpp
+SSWR/AVIRead/AVIRFileHashForm.h:
 @AVIRFileHashForm.o
-SSWR/AVIRead/AVIRFileRenameForm.h: ../../src/SSWR/AVIRead/AVIRFileRenameForm.cpp
+SSWR/AVIRead/AVIRFileRenameForm.h:
 @AVIRFileRenameForm.o
-SSWR/AVIRead/AVIRFileSearchForm.h: ../../src/SSWR/AVIRead/AVIRFileSearchForm.cpp
+SSWR/AVIRead/AVIRFileSearchForm.h:
 @AVIRFileSearchForm.o
-SSWR/AVIRead/AVIRFileSizePackForm.h: ../../src/SSWR/AVIRead/AVIRFileSizePackForm.cpp
+SSWR/AVIRead/AVIRFileSizePackForm.h:
 @AVIRFileSizePackForm.o
-SSWR/AVIRead/AVIRFileTextEncryptForm.h: ../../src/SSWR/AVIRead/AVIRFileTextEncryptForm.cpp
+SSWR/AVIRead/AVIRFileTextEncryptForm.h:
 @AVIRFileTextEncryptForm.o
-SSWR/AVIRead/AVIRFontRendererForm.h: ../../src/SSWR/AVIRead/AVIRFontRendererForm.cpp
+SSWR/AVIRead/AVIRFontRendererForm.h:
 @AVIRFontRendererForm.o
-SSWR/AVIRead/AVIRFontSelector.h: ../../src/SSWR/AVIRead/AVIRFontSelector.cpp
+SSWR/AVIRead/AVIRFontSelector.h:
 @AVIRFontSelector.o
-SSWR/AVIRead/AVIRFunctionInfoForm.h: ../../src/SSWR/AVIRead/AVIRFunctionInfoForm.cpp
+SSWR/AVIRead/AVIRFunctionInfoForm.h:
 @AVIRFunctionInfoForm.o
-SSWR/AVIRead/AVIRGCISClientForm.h: ../../src/SSWR/AVIRead/AVIRGCISClientForm.cpp
+SSWR/AVIRead/AVIRGCISClientForm.h:
 @AVIRGCISClientForm.o
-SSWR/AVIRead/AVIRGenImageForm.h: ../../src/SSWR/AVIRead/AVIRGenImageForm.cpp
+SSWR/AVIRead/AVIRGenImageForm.h:
 @AVIRGenImageForm.o
-SSWR/AVIRead/AVIRGISCombineForm.h: ../../src/SSWR/AVIRead/AVIRGISCombineForm.cpp
+SSWR/AVIRead/AVIRGISCombineForm.h:
 @AVIRGISCombineForm.o
-SSWR/AVIRead/AVIRGISCSysForm.h: ../../src/SSWR/AVIRead/AVIRGISCSysForm.cpp
+SSWR/AVIRead/AVIRGISCSysForm.h:
 @AVIRGISCSysForm.o
-SSWR/AVIRead/AVIRGISDistanceForm.h: ../../src/SSWR/AVIRead/AVIRGISDistanceForm.cpp
+SSWR/AVIRead/AVIRGISDistanceForm.h:
 @AVIRGISDistanceForm.o
-SSWR/AVIRead/AVIRGISEditImageForm.h: ../../src/SSWR/AVIRead/AVIRGISEditImageForm.cpp
+SSWR/AVIRead/AVIRGISEditImageForm.h:
 @AVIRGISEditImageForm.o
-SSWR/AVIRead/AVIRGISEditVectorForm.h: ../../src/SSWR/AVIRead/AVIRGISEditVectorForm.cpp
+SSWR/AVIRead/AVIRGISEditVectorForm.h:
 @AVIRGISEditVectorForm.o
-SSWR/AVIRead/AVIRGISForm.h: ../../src/SSWR/AVIRead/AVIRGISForm.cpp
+SSWR/AVIRead/AVIRGISForm.h:
 @AVIRGISForm.o
-SSWR/AVIRead/AVIRGISFontEditForm.h: ../../src/SSWR/AVIRead/AVIRGISFontEditForm.cpp
+SSWR/AVIRead/AVIRGISFontEditForm.h:
 @AVIRGISFontEditForm.o
-SSWR/AVIRead/AVIRGISFontForm.h: ../../src/SSWR/AVIRead/AVIRGISFontForm.cpp
+SSWR/AVIRead/AVIRGISFontForm.h:
 @AVIRGISFontForm.o
-SSWR/AVIRead/AVIRGISFontStyleForm.h: ../../src/SSWR/AVIRead/AVIRGISFontStyleForm.cpp
+SSWR/AVIRead/AVIRGISFontStyleForm.h:
 @AVIRGISFontStyleForm.o
-SSWR/AVIRead/AVIRGISGroupQueryForm.h: ../../src/SSWR/AVIRead/AVIRGISGroupQueryForm.cpp
+SSWR/AVIRead/AVIRGISGroupQueryForm.h:
 @AVIRGISGroupQueryForm.o
-SSWR/AVIRead/AVIRGISHKTDTonnesForm.h: ../../src/SSWR/AVIRead/AVIRGISHKTDTonnesForm.cpp
+SSWR/AVIRead/AVIRGISHKTDTonnesForm.h:
 @AVIRGISHKTDTonnesForm.o
-SSWR/AVIRead/AVIRGISHKTrafficForm.h: ../../src/SSWR/AVIRead/AVIRGISHKTrafficForm.cpp
+SSWR/AVIRead/AVIRGISHKTrafficForm.h:
 @AVIRGISHKTrafficForm.o
-SSWR/AVIRead/AVIRGISImageForm.h: ../../src/SSWR/AVIRead/AVIRGISImageForm.cpp
+SSWR/AVIRead/AVIRGISImageForm.h:
 @AVIRGISImageForm.o
-SSWR/AVIRead/AVIRGISLineEditForm.h: ../../src/SSWR/AVIRead/AVIRGISLineEditForm.cpp
+SSWR/AVIRead/AVIRGISLineEditForm.h:
 @AVIRGISLineEditForm.o
-SSWR/AVIRead/AVIRGISLineForm.h: ../../src/SSWR/AVIRead/AVIRGISLineForm.cpp
+SSWR/AVIRead/AVIRGISLineForm.h:
 @AVIRGISLineForm.o
-SSWR/AVIRead/AVIRGISLineStyleForm.h: ../../src/SSWR/AVIRead/AVIRGISLineStyleForm.cpp
+SSWR/AVIRead/AVIRGISLineStyleForm.h:
 @AVIRGISLineStyleForm.o
-SSWR/AVIRead/AVIRGISPropForm.h: ../../src/SSWR/AVIRead/AVIRGISPropForm.cpp
+SSWR/AVIRead/AVIRGISPropForm.h:
 @AVIRGISPropForm.o
-SSWR/AVIRead/AVIRGISQueryForm.h: ../../src/SSWR/AVIRead/AVIRGISQueryForm.cpp
+SSWR/AVIRead/AVIRGISQueryForm.h:
 @AVIRGISQueryForm.o
-SSWR/AVIRead/AVIRGISRandomLocForm.h: ../../src/SSWR/AVIRead/AVIRGISRandomLocForm.cpp
+SSWR/AVIRead/AVIRGISRandomLocForm.h:
 @AVIRGISRandomLocForm.o
-SSWR/AVIRead/AVIRGISReplayForm.h: ../../src/SSWR/AVIRead/AVIRGISReplayForm.cpp
+SSWR/AVIRead/AVIRGISReplayForm.h:
 @AVIRGISReplayForm.o
-SSWR/AVIRead/AVIRGISSearchForm.h: ../../src/SSWR/AVIRead/AVIRGISSearchForm.cpp
+SSWR/AVIRead/AVIRGISSearchForm.h:
 @AVIRGISSearchForm.o
-SSWR/AVIRead/AVIRGISTileDownloadForm.h: ../../src/SSWR/AVIRead/AVIRGISTileDownloadForm.cpp
+SSWR/AVIRead/AVIRGISTileDownloadForm.h:
 @AVIRGISTileDownloadForm.o
-SSWR/AVIRead/AVIRGLBViewerForm.h: ../../src/SSWR/AVIRead/AVIRGLBViewerForm.cpp
+SSWR/AVIRead/AVIRGLBViewerForm.h:
 @AVIRGLBViewerForm.o
-SSWR/AVIRead/AVIRGooglePolylineForm.h: ../../src/SSWR/AVIRead/AVIRGooglePolylineForm.cpp
+SSWR/AVIRead/AVIRGooglePolylineForm.h:
 @AVIRGooglePolylineForm.o
-SSWR/AVIRead/AVIRGoogleTileMapForm.h: ../../src/SSWR/AVIRead/AVIRGoogleTileMapForm.cpp
+SSWR/AVIRead/AVIRGoogleTileMapForm.h:
 @AVIRGoogleTileMapForm.o
-SSWR/AVIRead/AVIRGPIOStatusForm.h: ../../src/SSWR/AVIRead/AVIRGPIOStatusForm.cpp
+SSWR/AVIRead/AVIRGPIOStatusForm.h:
 @AVIRGPIOStatusForm.o
-SSWR/AVIRead/AVIRGPSDevForm.h: ../../src/SSWR/AVIRead/AVIRGPSDevForm.cpp
+SSWR/AVIRead/AVIRGPSDevForm.h:
 @AVIRGPSDevForm.o
-SSWR/AVIRead/AVIRGPSSimulatorForm.h: ../../src/SSWR/AVIRead/AVIRGPSSimulatorForm.cpp
+SSWR/AVIRead/AVIRGPSSimulatorForm.h:
 @AVIRGPSSimulatorForm.o
-SSWR/AVIRead/AVIRGPSTrackerForm.h: ../../src/SSWR/AVIRead/AVIRGPSTrackerForm.cpp
+SSWR/AVIRead/AVIRGPSTrackerForm.h:
 @AVIRGPSTrackerForm.o
-SSWR/AVIRead/AVIRGPUInfoForm.h: ../../src/SSWR/AVIRead/AVIRGPUInfoForm.cpp
+SSWR/AVIRead/AVIRGPUInfoForm.h:
 @AVIRGPUInfoForm.o
-SSWR/AVIRead/AVIRGSMModemForm.h: ../../src/SSWR/AVIRead/AVIRGSMModemForm.cpp
+SSWR/AVIRead/AVIRGSMModemForm.h:
 @AVIRGSMModemForm.o
-SSWR/AVIRead/AVIRGUIEventForm.h: ../../src/SSWR/AVIRead/AVIRGUIEventForm.cpp
+SSWR/AVIRead/AVIRGUIEventForm.h:
 @AVIRGUIEventForm.o
-SSWR/AVIRead/AVIRHashTestForm.h: ../../src/SSWR/AVIRead/AVIRHashTestForm.cpp
+SSWR/AVIRead/AVIRHashTestForm.h:
 @AVIRHashTestForm.o
-SSWR/AVIRead/AVIRHexViewerForm.h: ../../src/SSWR/AVIRead/AVIRHexViewerForm.cpp
+SSWR/AVIRead/AVIRHexViewerForm.h:
 @AVIRHexViewerForm.o
-SSWR/AVIRead/AVIRHexViewerGoToForm.h: ../../src/SSWR/AVIRead/AVIRHexViewerGoToForm.cpp
+SSWR/AVIRead/AVIRHexViewerGoToForm.h:
 @AVIRHexViewerGoToForm.o
-SSWR/AVIRead/AVIRHIDDeviceForm.h: ../../src/SSWR/AVIRead/AVIRHIDDeviceForm.cpp
+SSWR/AVIRead/AVIRHIDDeviceForm.h:
 @AVIRHIDDeviceForm.o
-SSWR/AVIRead/AVIRHKOForecastForm.h: ../../src/SSWR/AVIRead/AVIRHKOForecastForm.cpp
+SSWR/AVIRead/AVIRHKOForecastForm.h:
 @AVIRHKOForecastForm.o
-SSWR/AVIRead/AVIRHKOLocalForecastForm.h: ../../src/SSWR/AVIRead/AVIRHKOLocalForecastForm.cpp
+SSWR/AVIRead/AVIRHKOLocalForecastForm.h:
 @AVIRHKOLocalForecastForm.o
-SSWR/AVIRead/AVIRHKOWarningSummaryForm.h: ../../src/SSWR/AVIRead/AVIRHKOWarningSummaryForm.cpp
+SSWR/AVIRead/AVIRHKOWarningSummaryForm.h:
 @AVIRHKOWarningSummaryForm.o
-SSWR/AVIRead/AVIRHQMPForm.h: ../../src/SSWR/AVIRead/AVIRHQMPForm.cpp
+SSWR/AVIRead/AVIRHQMPForm.h:
 @AVIRHQMPForm.o
-SSWR/AVIRead/AVIRHQMPPlaylistForm.h: ../../src/SSWR/AVIRead/AVIRHQMPPlaylistForm.cpp
+SSWR/AVIRead/AVIRHQMPPlaylistForm.h:
 @AVIRHQMPPlaylistForm.o
-SSWR/AVIRead/AVIRHTTPClientCertTestForm.h: ../../src/SSWR/AVIRead/AVIRHTTPClientCertTestForm.cpp
+SSWR/AVIRead/AVIRHTTPClientCertTestForm.h:
 @AVIRHTTPClientCertTestForm.o
-SSWR/AVIRead/AVIRHTTPClientForm.h: ../../src/SSWR/AVIRead/AVIRHTTPClientForm.cpp
+SSWR/AVIRead/AVIRHTTPClientForm.h:
 @AVIRHTTPClientForm.o
-SSWR/AVIRead/AVIRHTTPDownloaderForm.h: ../../src/SSWR/AVIRead/AVIRHTTPDownloaderForm.cpp
+SSWR/AVIRead/AVIRHTTPDownloaderForm.h:
 @AVIRHTTPDownloaderForm.o
-SSWR/AVIRead/AVIRHTTPForwarderForm.h: ../../src/SSWR/AVIRead/AVIRHTTPForwarderForm.cpp
+SSWR/AVIRead/AVIRHTTPForwarderForm.h:
 @AVIRHTTPForwarderForm.o
-SSWR/AVIRead/AVIRHTTPLoadBalanceForm.h: ../../src/SSWR/AVIRead/AVIRHTTPLoadBalanceForm.cpp
+SSWR/AVIRead/AVIRHTTPLoadBalanceForm.h:
 @AVIRHTTPLoadBalanceForm.o
-SSWR/AVIRead/AVIRHTTPProxyClientForm.h: ../../src/SSWR/AVIRead/AVIRHTTPProxyClientForm.cpp
+SSWR/AVIRead/AVIRHTTPProxyClientForm.h:
 @AVIRHTTPProxyClientForm.o
-SSWR/AVIRead/AVIRHTTPSvrForm.h: ../../src/SSWR/AVIRead/AVIRHTTPSvrForm.cpp
+SSWR/AVIRead/AVIRHTTPSvrForm.h:
 @AVIRHTTPSvrForm.o
-SSWR/AVIRead/AVIRHTTPTestForm.h: ../../src/SSWR/AVIRead/AVIRHTTPTestForm.cpp
+SSWR/AVIRead/AVIRHTTPTestForm.h:
 @AVIRHTTPTestForm.o
-SSWR/AVIRead/AVIRIBuddyForm.h: ../../src/SSWR/AVIRead/AVIRIBuddyForm.cpp
+SSWR/AVIRead/AVIRIBuddyForm.h:
 @AVIRIBuddyForm.o
-SSWR/AVIRead/AVIRICCInfoForm.h: ../../src/SSWR/AVIRead/AVIRICCInfoForm.cpp
+SSWR/AVIRead/AVIRICCInfoForm.h:
 @AVIRICCInfoForm.o
-SSWR/AVIRead/AVIRImageBatchConvForm.h: ../../src/SSWR/AVIRead/AVIRImageBatchConvForm.cpp
+SSWR/AVIRead/AVIRImageBatchConvForm.h:
 @AVIRImageBatchConvForm.o
-SSWR/AVIRead/AVIRImageBatchForm.h: ../../src/SSWR/AVIRead/AVIRImageBatchForm.cpp
+SSWR/AVIRead/AVIRImageBatchForm.h:
 @AVIRImageBatchForm.o
-SSWR/AVIRead/AVIRImageColorForm.h: ../../src/SSWR/AVIRead/AVIRImageColorForm.cpp
+SSWR/AVIRead/AVIRImageColorForm.h:
 @AVIRImageColorForm.o
-SSWR/AVIRead/AVIRImageControl.h: ../../src/SSWR/AVIRead/AVIRImageControl.cpp
+SSWR/AVIRead/AVIRImageControl.h:
 @AVIRImageControl.o
-SSWR/AVIRead/AVIRImageForm.h: ../../src/SSWR/AVIRead/AVIRImageForm.cpp
+SSWR/AVIRead/AVIRImageForm.h:
 @AVIRImageForm.o
-SSWR/AVIRead/AVIRImageGRForm.h: ../../src/SSWR/AVIRead/AVIRImageGRForm.cpp
+SSWR/AVIRead/AVIRImageGRForm.h:
 @AVIRImageGRForm.o
-SSWR/AVIRead/AVIRImagePSNRForm.h: ../../src/SSWR/AVIRead/AVIRImagePSNRForm.cpp
+SSWR/AVIRead/AVIRImagePSNRForm.h:
 @AVIRImagePSNRForm.o
-SSWR/AVIRead/AVIRImageResizeForm.h: ../../src/SSWR/AVIRead/AVIRImageResizeForm.cpp
+SSWR/AVIRead/AVIRImageResizeForm.h:
 @AVIRImageResizeForm.o
-SSWR/AVIRead/AVIRImageViewerForm.h: ../../src/SSWR/AVIRead/AVIRImageViewerForm.cpp
+SSWR/AVIRead/AVIRImageViewerForm.h:
 @AVIRImageViewerForm.o
-SSWR/AVIRead/AVIRIOPinTestForm.h: ../../src/SSWR/AVIRead/AVIRIOPinTestForm.cpp
+SSWR/AVIRead/AVIRIOPinTestForm.h:
 @AVIRIOPinTestForm.o
-SSWR/AVIRead/AVIRIPScanDetectorForm.h: ../../src/SSWR/AVIRead/AVIRIPScanDetectorForm.cpp
+SSWR/AVIRead/AVIRIPScanDetectorForm.h:
 @AVIRIPScanDetectorForm.o
-SSWR/AVIRead/AVIRIPScanForm.h: ../../src/SSWR/AVIRead/AVIRIPScanForm.cpp
+SSWR/AVIRead/AVIRIPScanForm.h:
 @AVIRIPScanForm.o
-SSWR/AVIRead/AVIRJasyptForm.h: ../../src/SSWR/AVIRead/AVIRJasyptForm.cpp
+SSWR/AVIRead/AVIRJasyptForm.h:
 @AVIRJasyptForm.o
-SSWR/AVIRead/AVIRJavaClassForm.h: ../../src/SSWR/AVIRead/AVIRJavaClassForm.cpp
+SSWR/AVIRead/AVIRJavaClassForm.h:
 @AVIRJavaClassForm.o
-SSWR/AVIRead/AVIRJSTextForm.h: ../../src/SSWR/AVIRead/AVIRJSTextForm.cpp
+SSWR/AVIRead/AVIRJSTextForm.h:
 @AVIRJSTextForm.o
-SSWR/AVIRead/AVIRJTT808ServerForm.h: ../../src/SSWR/AVIRead/AVIRJTT808ServerForm.cpp
+SSWR/AVIRead/AVIRJTT808ServerForm.h:
 @AVIRJTT808ServerForm.o
-SSWR/AVIRead/AVIRJWTParserForm.h: ../../src/SSWR/AVIRead/AVIRJWTParserForm.cpp
+SSWR/AVIRead/AVIRJWTParserForm.h:
 @AVIRJWTParserForm.o
-SSWR/AVIRead/AVIRLDAPClientForm.h: ../../src/SSWR/AVIRead/AVIRLDAPClientForm.cpp
+SSWR/AVIRead/AVIRLDAPClientForm.h:
 @AVIRLDAPClientForm.o
-SSWR/AVIRead/AVIRLDAPExplorerForm.h: ../../src/SSWR/AVIRead/AVIRLDAPExplorerForm.cpp
+SSWR/AVIRead/AVIRLDAPExplorerForm.h:
 @AVIRLDAPExplorerForm.o
-SSWR/AVIRead/AVIRLineChartForm.h: ../../src/SSWR/AVIRead/AVIRLineChartForm.cpp
+SSWR/AVIRead/AVIRLineChartForm.h:
 @AVIRLineChartForm.o
-SSWR/AVIRead/AVIRLineCounterForm.h: ../../src/SSWR/AVIRead/AVIRLineCounterForm.cpp
+SSWR/AVIRead/AVIRLineCounterForm.h:
 @AVIRLineCounterForm.o
-SSWR/AVIRead/AVIRLineSelector.h: ../../src/SSWR/AVIRead/AVIRLineSelector.cpp
+SSWR/AVIRead/AVIRLineSelector.h:
 @AVIRLineSelector.o
-SSWR/AVIRead/AVIRLogBackupForm.h: ../../src/SSWR/AVIRead/AVIRLogBackupForm.cpp
+SSWR/AVIRead/AVIRLogBackupForm.h:
 @AVIRLogBackupForm.o
-SSWR/AVIRead/AVIRLogExtractForm.h: ../../src/SSWR/AVIRead/AVIRLogExtractForm.cpp
+SSWR/AVIRead/AVIRLogExtractForm.h:
 @AVIRLogExtractForm.o
-SSWR/AVIRead/AVIRLogFileForm.h: ../../src/SSWR/AVIRead/AVIRLogFileForm.cpp
+SSWR/AVIRead/AVIRLogFileForm.h:
 @AVIRLogFileForm.o
-SSWR/AVIRead/AVIRLogMergeForm.h: ../../src/SSWR/AVIRead/AVIRLogMergeForm.cpp
+SSWR/AVIRead/AVIRLogMergeForm.h:
 @AVIRLogMergeForm.o
-SSWR/AVIRead/AVIRLogServerForm.h: ../../src/SSWR/AVIRead/AVIRLogServerForm.cpp
+SSWR/AVIRead/AVIRLogServerForm.h:
 @AVIRLogServerForm.o
-SSWR/AVIRead/AVIRLoraGWSimForm.h: ../../src/SSWR/AVIRead/AVIRLoraGWSimForm.cpp
+SSWR/AVIRead/AVIRLoraGWSimForm.h:
 @AVIRLoraGWSimForm.o
-SSWR/AVIRead/AVIRLoRaJSONForm.h: ../../src/SSWR/AVIRead/AVIRLoRaJSONForm.cpp
+SSWR/AVIRead/AVIRLoRaJSONForm.h:
 @AVIRLoRaJSONForm.o
-SSWR/AVIRead/AVIRLUTForm.h: ../../src/SSWR/AVIRead/AVIRLUTForm.cpp
+SSWR/AVIRead/AVIRLUTForm.h:
 @AVIRLUTForm.o
-SSWR/AVIRead/AVIRMACGenForm.h: ../../src/SSWR/AVIRead/AVIRMACGenForm.cpp
+SSWR/AVIRead/AVIRMACGenForm.h:
 @AVIRMACGenForm.o
-SSWR/AVIRead/AVIRMACManagerEntryForm.h: ../../src/SSWR/AVIRead/AVIRMACManagerEntryForm.cpp
+SSWR/AVIRead/AVIRMACManagerEntryForm.h:
 @AVIRMACManagerEntryForm.o
-SSWR/AVIRead/AVIRMACManagerForm.h: ../../src/SSWR/AVIRead/AVIRMACManagerForm.cpp
+SSWR/AVIRead/AVIRMACManagerForm.h:
 @AVIRMACManagerForm.o
-SSWR/AVIRead/AVIRMediaForm.h: ../../src/SSWR/AVIRead/AVIRMediaForm.cpp
+SSWR/AVIRead/AVIRMediaForm.h:
 @AVIRMediaForm.o
-SSWR/AVIRead/AVIRMIMEViewerForm.h: ../../src/SSWR/AVIRead/AVIRMIMEViewerForm.cpp
+SSWR/AVIRead/AVIRMIMEViewerForm.h:
 @AVIRMIMEViewerForm.o
-SSWR/AVIRead/AVIRMODBUSMasterForm.h: ../../src/SSWR/AVIRead/AVIRMODBUSMasterForm.cpp
+SSWR/AVIRead/AVIRMODBUSMasterForm.h:
 @AVIRMODBUSMasterForm.o
-SSWR/AVIRead/AVIRMODBUSTCPSimForm.h: ../../src/SSWR/AVIRead/AVIRMODBUSTCPSimForm.cpp
+SSWR/AVIRead/AVIRMODBUSTCPSimForm.h:
 @AVIRMODBUSTCPSimForm.o
-SSWR/AVIRead/AVIRMQTTBrokerForm.h: ../../src/SSWR/AVIRead/AVIRMQTTBrokerForm.cpp
+SSWR/AVIRead/AVIRMQTTBrokerForm.h:
 @AVIRMQTTBrokerForm.o
-SSWR/AVIRead/AVIRMQTTExplorerForm.h: ../../src/SSWR/AVIRead/AVIRMQTTExplorerForm.cpp
+SSWR/AVIRead/AVIRMQTTExplorerForm.h:
 @AVIRMQTTExplorerForm.o
-SSWR/AVIRead/AVIRMQTTPublishForm.h: ../../src/SSWR/AVIRead/AVIRMQTTPublishForm.cpp
+SSWR/AVIRead/AVIRMQTTPublishForm.h:
 @AVIRMQTTPublishForm.o
-SSWR/AVIRead/AVIRMQTTPublishTestForm.h: ../../src/SSWR/AVIRead/AVIRMQTTPublishTestForm.cpp
+SSWR/AVIRead/AVIRMQTTPublishTestForm.h:
 @AVIRMQTTPublishTestForm.o
-SSWR/AVIRead/AVIRMQTTSubscribeForm.h: ../../src/SSWR/AVIRead/AVIRMQTTSubscribeForm.cpp
+SSWR/AVIRead/AVIRMQTTSubscribeForm.h:
 @AVIRMQTTSubscribeForm.o
-SSWR/AVIRead/AVIRMQTTSubscribeTestForm.h: ../../src/SSWR/AVIRead/AVIRMQTTSubscribeTestForm.cpp
+SSWR/AVIRead/AVIRMQTTSubscribeTestForm.h:
 @AVIRMQTTSubscribeTestForm.o
-SSWR/AVIRead/AVIRMSSQLConnForm.h: ../../src/SSWR/AVIRead/AVIRMSSQLConnForm.cpp
+SSWR/AVIRead/AVIRMSSQLConnForm.h:
 @AVIRMSSQLConnForm.o
-SSWR/AVIRead/AVIRMySQLClientForm.h: ../../src/SSWR/AVIRead/AVIRMySQLClientForm.cpp
+SSWR/AVIRead/AVIRMySQLClientForm.h:
 @AVIRMySQLClientForm.o
-SSWR/AVIRead/AVIRMySQLConnForm.h: ../../src/SSWR/AVIRead/AVIRMySQLConnForm.cpp
+SSWR/AVIRead/AVIRMySQLConnForm.h:
 @AVIRMySQLConnForm.o
-SSWR/AVIRead/AVIRMySQLServerForm.h: ../../src/SSWR/AVIRead/AVIRMySQLServerForm.cpp
+SSWR/AVIRead/AVIRMySQLServerForm.h:
 @AVIRMySQLServerForm.o
-SSWR/AVIRead/AVIRNetBIOSScannerForm.h: ../../src/SSWR/AVIRead/AVIRNetBIOSScannerForm.cpp
+SSWR/AVIRead/AVIRNetBIOSScannerForm.h:
 @AVIRNetBIOSScannerForm.o
-SSWR/AVIRead/AVIRNetInfoForm.h: ../../src/SSWR/AVIRead/AVIRNetInfoForm.cpp
+SSWR/AVIRead/AVIRNetInfoForm.h:
 @AVIRNetInfoForm.o
-SSWR/AVIRead/AVIRNetPingForm.h: ../../src/SSWR/AVIRead/AVIRNetPingForm.cpp
+SSWR/AVIRead/AVIRNetPingForm.h:
 @AVIRNetPingForm.o
-SSWR/AVIRead/AVIRNetRAWCaptureForm.h: ../../src/SSWR/AVIRead/AVIRNetRAWCaptureForm.cpp
+SSWR/AVIRead/AVIRNetRAWCaptureForm.h:
 @AVIRNetRAWCaptureForm.o
-SSWR/AVIRead/AVIRNTPClientForm.h: ../../src/SSWR/AVIRead/AVIRNTPClientForm.cpp
+SSWR/AVIRead/AVIRNTPClientForm.h:
 @AVIRNTPClientForm.o
-SSWR/AVIRead/AVIRNTPServerForm.h: ../../src/SSWR/AVIRead/AVIRNTPServerForm.cpp
+SSWR/AVIRead/AVIRNTPServerForm.h:
 @AVIRNTPServerForm.o
-SSWR/AVIRead/AVIROCRForm.h: ../../src/SSWR/AVIRead/AVIROCRForm.cpp
+SSWR/AVIRead/AVIROCRForm.h:
 @AVIROCRForm.o
-SSWR/AVIRead/AVIRODBCDSNForm.h: ../../src/SSWR/AVIRead/AVIRODBCDSNForm.cpp
+SSWR/AVIRead/AVIRODBCDSNForm.h:
 @AVIRODBCDSNForm.o
-SSWR/AVIRead/AVIRODBCStrForm.h: ../../src/SSWR/AVIRead/AVIRODBCStrForm.cpp
+SSWR/AVIRead/AVIRODBCStrForm.h:
 @AVIRODBCStrForm.o
-SSWR/AVIRead/AVIROpenFileForm.h: ../../src/SSWR/AVIRead/AVIROpenFileForm.cpp
+SSWR/AVIRead/AVIROpenFileForm.h:
 @AVIROpenFileForm.o
-SSWR/AVIRead/AVIROSMCacheCfgForm.h: ../../src/SSWR/AVIRead/AVIROSMCacheCfgForm.cpp
+SSWR/AVIRead/AVIROSMCacheCfgForm.h:
 @AVIROSMCacheCfgForm.o
-SSWR/AVIRead/AVIROSMCacheForm.h: ../../src/SSWR/AVIRead/AVIROSMCacheForm.cpp
+SSWR/AVIRead/AVIROSMCacheForm.h:
 @AVIROSMCacheForm.o
-SSWR/AVIRead/AVIROTPForm.h: ../../src/SSWR/AVIRead/AVIROTPForm.cpp
+SSWR/AVIRead/AVIROTPForm.h:
 @AVIROTPForm.o
-SSWR/AVIRead/AVIRPackageForm.h: ../../src/SSWR/AVIRead/AVIRPackageForm.cpp
+SSWR/AVIRead/AVIRPackageForm.h:
 @AVIRPackageForm.o
-SSWR/AVIRead/AVIRPaintCntForm.h: ../../src/SSWR/AVIRead/AVIRPaintCntForm.cpp
+SSWR/AVIRead/AVIRPaintCntForm.h:
 @AVIRPaintCntForm.o
-SSWR/AVIRead/AVIRPCIDeviceForm.h: ../../src/SSWR/AVIRead/AVIRPCIDeviceForm.cpp
+SSWR/AVIRead/AVIRPCIDeviceForm.h:
 @AVIRPCIDeviceForm.o
-SSWR/AVIRead/AVIRPDFObjectForm.h: ../../src/SSWR/AVIRead/AVIRPDFObjectForm.cpp
+SSWR/AVIRead/AVIRPDFObjectForm.h:
 @AVIRPDFObjectForm.o
-SSWR/AVIRead/AVIRPerformanceLogForm.h: ../../src/SSWR/AVIRead/AVIRPerformanceLogForm.cpp
+SSWR/AVIRead/AVIRPerformanceLogForm.h:
 @AVIRPerformanceLogForm.o
-SSWR/AVIRead/AVIRPingMonitorForm.h: ../../src/SSWR/AVIRead/AVIRPingMonitorForm.cpp
+SSWR/AVIRead/AVIRPingMonitorForm.h:
 @AVIRPingMonitorForm.o
-SSWR/AVIRead/AVIRPlaylistForm.h: ../../src/SSWR/AVIRead/AVIRPlaylistForm.cpp
+SSWR/AVIRead/AVIRPlaylistForm.h:
 @AVIRPlaylistForm.o
-SSWR/AVIRead/AVIRPostgreSQLForm.h: ../../src/SSWR/AVIRead/AVIRPostgreSQLForm.cpp
+SSWR/AVIRead/AVIRPostgreSQLForm.h:
 @AVIRPostgreSQLForm.o
-SSWR/AVIRead/AVIRPowerForm.h: ../../src/SSWR/AVIRead/AVIRPowerForm.cpp
+SSWR/AVIRead/AVIRPowerForm.h:
 @AVIRPowerForm.o
-SSWR/AVIRead/AVIRProcInfoForm.h: ../../src/SSWR/AVIRead/AVIRProcInfoForm.cpp
+SSWR/AVIRead/AVIRProcInfoForm.h:
 @AVIRProcInfoForm.o
-SSWR/AVIRead/AVIRProfiledResizerForm.h: ../../src/SSWR/AVIRead/AVIRProfiledResizerForm.cpp
+SSWR/AVIRead/AVIRProfiledResizerForm.h:
 @AVIRProfiledResizerForm.o
-SSWR/AVIRead/AVIRProgramLinksCreateForm.h: ../../src/SSWR/AVIRead/AVIRProgramLinksCreateForm.cpp
+SSWR/AVIRead/AVIRProgramLinksCreateForm.h:
 @AVIRProgramLinksCreateForm.o
-SSWR/AVIRead/AVIRProgramLinksForm.h: ../../src/SSWR/AVIRead/AVIRProgramLinksForm.cpp
+SSWR/AVIRead/AVIRProgramLinksForm.h:
 @AVIRProgramLinksForm.o
-SSWR/AVIRead/AVIRProtoDecForm.h: ../../src/SSWR/AVIRead/AVIRProtoDecForm.cpp
+SSWR/AVIRead/AVIRProtoDecForm.h:
 @AVIRProtoDecForm.o
-SSWR/AVIRead/AVIRProxyServerForm.h: ../../src/SSWR/AVIRead/AVIRProxyServerForm.cpp
+SSWR/AVIRead/AVIRProxyServerForm.h:
 @AVIRProxyServerForm.o
-SSWR/AVIRead/AVIRPushServerForm.h: ../../src/SSWR/AVIRead/AVIRPushServerForm.cpp
+SSWR/AVIRead/AVIRPushServerForm.h:
 @AVIRPushServerForm.o
-SSWR/AVIRead/AVIRRAWMonitorForm.h: ../../src/SSWR/AVIRead/AVIRRAWMonitorForm.cpp
+SSWR/AVIRead/AVIRRAWMonitorForm.h:
 @AVIRRAWMonitorForm.o
-SSWR/AVIRead/AVIRRegionalMapForm.h: ../../src/SSWR/AVIRead/AVIRRegionalMapForm.cpp
+SSWR/AVIRead/AVIRRegionalMapForm.h:
 @AVIRRegionalMapForm.o
-SSWR/AVIRead/AVIRRESTfulForm.h: ../../src/SSWR/AVIRead/AVIRRESTfulForm.cpp
+SSWR/AVIRead/AVIRRESTfulForm.h:
 @AVIRRESTfulForm.o
-SSWR/AVIRead/AVIRRNCryptorForm.h: ../../src/SSWR/AVIRead/AVIRRNCryptorForm.cpp
+SSWR/AVIRead/AVIRRNCryptorForm.h:
 @AVIRRNCryptorForm.o
-SSWR/AVIRead/AVIRRSSItemForm.h: ../../src/SSWR/AVIRead/AVIRRSSItemForm.cpp
+SSWR/AVIRead/AVIRRSSItemForm.h:
 @AVIRRSSItemForm.o
-SSWR/AVIRead/AVIRRSSReaderForm.h: ../../src/SSWR/AVIRead/AVIRRSSReaderForm.cpp
+SSWR/AVIRead/AVIRRSSReaderForm.h:
 @AVIRRSSReaderForm.o
-SSWR/AVIRead/AVIRSAMLDecryptForm.h: ../../src/SSWR/AVIRead/AVIRSAMLDecryptForm.cpp
+SSWR/AVIRead/AVIRSAMLDecryptForm.h:
 @AVIRSAMLDecryptForm.o
-SSWR/AVIRead/AVIRSAMLReqDecodeForm.h: ../../src/SSWR/AVIRead/AVIRSAMLReqDecodeForm.cpp
+SSWR/AVIRead/AVIRSAMLReqDecodeForm.h:
 @AVIRSAMLReqDecodeForm.o
-SSWR/AVIRead/AVIRSAMLTestForm.h: ../../src/SSWR/AVIRead/AVIRSAMLTestForm.cpp
+SSWR/AVIRead/AVIRSAMLTestForm.h:
 @AVIRSAMLTestForm.o
-SSWR/AVIRead/AVIRSDCardForm.h: ../../src/SSWR/AVIRead/AVIRSDCardForm.cpp
+SSWR/AVIRead/AVIRSDCardForm.h:
 @AVIRSDCardForm.o
-SSWR/AVIRead/AVIRSectorForm.h: ../../src/SSWR/AVIRead/AVIRSectorForm.cpp
+SSWR/AVIRead/AVIRSectorForm.h:
 @AVIRSectorForm.o
-SSWR/AVIRead/AVIRSelCANForm.h: ../../src/SSWR/AVIRead/AVIRSelCANForm.cpp
+SSWR/AVIRead/AVIRSelCANForm.h:
 @AVIRSelCANForm.o
-SSWR/AVIRead/AVIRSelIOPinForm.h: ../../src/SSWR/AVIRead/AVIRSelIOPinForm.cpp
+SSWR/AVIRead/AVIRSelIOPinForm.h:
 @AVIRSelIOPinForm.o
-SSWR/AVIRead/AVIRSelPrinterForm.h: ../../src/SSWR/AVIRead/AVIRSelPrinterForm.cpp
+SSWR/AVIRead/AVIRSelPrinterForm.h:
 @AVIRSelPrinterForm.o
-SSWR/AVIRead/AVIRSelStreamForm.h: ../../src/SSWR/AVIRead/AVIRSelStreamForm.cpp
+SSWR/AVIRead/AVIRSelStreamForm.h:
 @AVIRSelStreamForm.o
-SSWR/AVIRead/AVIRServiceCreateForm.h: ../../src/SSWR/AVIRead/AVIRServiceCreateForm.cpp
+SSWR/AVIRead/AVIRServiceCreateForm.h:
 @AVIRServiceCreateForm.o
-SSWR/AVIRead/AVIRServiceForm.h: ../../src/SSWR/AVIRead/AVIRServiceForm.cpp
+SSWR/AVIRead/AVIRServiceForm.h:
 @AVIRServiceForm.o
-SSWR/AVIRead/AVIRSetAudioForm.h: ../../src/SSWR/AVIRead/AVIRSetAudioForm.cpp
+SSWR/AVIRead/AVIRSetAudioForm.h:
 @AVIRSetAudioForm.o
-SSWR/AVIRead/AVIRSetDPIForm.h: ../../src/SSWR/AVIRead/AVIRSetDPIForm.cpp
+SSWR/AVIRead/AVIRSetDPIForm.h:
 @AVIRSetDPIForm.o
-SSWR/AVIRead/AVIRSetLocationSvcForm.h: ../../src/SSWR/AVIRead/AVIRSetLocationSvcForm.cpp
+SSWR/AVIRead/AVIRSetLocationSvcForm.h:
 @AVIRSetLocationSvcForm.o
-SSWR/AVIRead/AVIRSMakeForm.h: ../../src/SSWR/AVIRead/AVIRSMakeForm.cpp
+SSWR/AVIRead/AVIRSMakeForm.h:
 @AVIRSMakeForm.o
-SSWR/AVIRead/AVIRSMBIOSForm.h: ../../src/SSWR/AVIRead/AVIRSMBIOSForm.cpp
+SSWR/AVIRead/AVIRSMBIOSForm.h:
 @AVIRSMBIOSForm.o
-SSWR/AVIRead/AVIRSMTPClientForm.h: ../../src/SSWR/AVIRead/AVIRSMTPClientForm.cpp
+SSWR/AVIRead/AVIRSMTPClientForm.h:
 @AVIRSMTPClientForm.o
-SSWR/AVIRead/AVIRSNBDongleForm.h: ../../src/SSWR/AVIRead/AVIRSNBDongleForm.cpp
+SSWR/AVIRead/AVIRSNBDongleForm.h:
 @AVIRSNBDongleForm.o
-SSWR/AVIRead/AVIRSNBHandlerForm.h: ../../src/SSWR/AVIRead/AVIRSNBHandlerForm.cpp
+SSWR/AVIRead/AVIRSNBHandlerForm.h:
 @AVIRSNBHandlerForm.o
-SSWR/AVIRead/AVIRSNMPClientForm.h: ../../src/SSWR/AVIRead/AVIRSNMPClientForm.cpp
+SSWR/AVIRead/AVIRSNMPClientForm.h:
 @AVIRSNMPClientForm.o
-SSWR/AVIRead/AVIRSNMPManagerForm.h: ../../src/SSWR/AVIRead/AVIRSNMPManagerForm.cpp
+SSWR/AVIRead/AVIRSNMPManagerForm.h:
 @AVIRSNMPManagerForm.o
-SSWR/AVIRead/AVIRSNMPTrapMonitorForm.h: ../../src/SSWR/AVIRead/AVIRSNMPTrapMonitorForm.cpp
+SSWR/AVIRead/AVIRSNMPTrapMonitorForm.h:
 @AVIRSNMPTrapMonitorForm.o
-SSWR/AVIRead/AVIRSNMPWalkForm.h: ../../src/SSWR/AVIRead/AVIRSNMPWalkForm.cpp
+SSWR/AVIRead/AVIRSNMPWalkForm.h:
 @AVIRSNMPWalkForm.o
-SSWR/AVIRead/AVIRSNSManagerForm.h: ../../src/SSWR/AVIRead/AVIRSNSManagerForm.cpp
+SSWR/AVIRead/AVIRSNSManagerForm.h:
 @AVIRSNSManagerForm.o
-SSWR/AVIRead/AVIRSolarEdgeForm.h: ../../src/SSWR/AVIRead/AVIRSolarEdgeForm.cpp
+SSWR/AVIRead/AVIRSolarEdgeForm.h:
 @AVIRSolarEdgeForm.o
-SSWR/AVIRead/AVIRSSDPClientForm.h: ../../src/SSWR/AVIRead/AVIRSSDPClientForm.cpp
+SSWR/AVIRead/AVIRSSDPClientForm.h:
 @AVIRSSDPClientForm.o
-SSWR/AVIRead/AVIRSSLCertKeyForm.h: ../../src/SSWR/AVIRead/AVIRSSLCertKeyForm.cpp
+SSWR/AVIRead/AVIRSSLCertKeyForm.h:
 @AVIRSSLCertKeyForm.o
-SSWR/AVIRead/AVIRSSLInfoForm.h: ../../src/SSWR/AVIRead/AVIRSSLInfoForm.cpp
+SSWR/AVIRead/AVIRSSLInfoForm.h:
 @AVIRSSLInfoForm.o
-SSWR/AVIRead/AVIRStreamConvForm.h: ../../src/SSWR/AVIRead/AVIRStreamConvForm.cpp
+SSWR/AVIRead/AVIRStreamConvForm.h:
 @AVIRStreamConvForm.o
-SSWR/AVIRead/AVIRStreamEchoForm.h: ../../src/SSWR/AVIRead/AVIRStreamEchoForm.cpp
+SSWR/AVIRead/AVIRStreamEchoForm.h:
 @AVIRStreamEchoForm.o
-SSWR/AVIRead/AVIRStreamLatencyForm.h: ../../src/SSWR/AVIRead/AVIRStreamLatencyForm.cpp
+SSWR/AVIRead/AVIRStreamLatencyForm.h:
 @AVIRStreamLatencyForm.o
-SSWR/AVIRead/AVIRStreamTermForm.h: ../../src/SSWR/AVIRead/AVIRStreamTermForm.cpp
+SSWR/AVIRead/AVIRStreamTermForm.h:
 @AVIRStreamTermForm.o
-SSWR/AVIRead/AVIRStringMsgForm.h: ../../src/SSWR/AVIRead/AVIRStringMsgForm.cpp
+SSWR/AVIRead/AVIRStringMsgForm.h:
 @AVIRStringMsgForm.o
-SSWR/AVIRead/AVIRSudokuForm.h: ../../src/SSWR/AVIRead/AVIRSudokuForm.cpp
+SSWR/AVIRead/AVIRSudokuForm.h:
 @AVIRSudokuForm.o
-SSWR/AVIRead/AVIRSyslogServerForm.h: ../../src/SSWR/AVIRead/AVIRSyslogServerForm.cpp
+SSWR/AVIRead/AVIRSyslogServerForm.h:
 @AVIRSyslogServerForm.o
-SSWR/AVIRead/AVIRSystemInfoLogForm.h: ../../src/SSWR/AVIRead/AVIRSystemInfoLogForm.cpp
+SSWR/AVIRead/AVIRSystemInfoLogForm.h:
 @AVIRSystemInfoLogForm.o
-SSWR/AVIRead/AVIRTableMsgForm.h: ../../src/SSWR/AVIRead/AVIRTableMsgForm.cpp
+SSWR/AVIRead/AVIRTableMsgForm.h:
 @AVIRTableMsgForm.o
-SSWR/AVIRead/AVIRTCPPortScanForm.h: ../../src/SSWR/AVIRead/AVIRTCPPortScanForm.cpp
+SSWR/AVIRead/AVIRTCPPortScanForm.h:
 @AVIRTCPPortScanForm.o
-SSWR/AVIRead/AVIRTCPSpdCliForm.h: ../../src/SSWR/AVIRead/AVIRTCPSpdCliForm.cpp
+SSWR/AVIRead/AVIRTCPSpdCliForm.h:
 @AVIRTCPSpdCliForm.o
-SSWR/AVIRead/AVIRTCPSpdSvrForm.h: ../../src/SSWR/AVIRead/AVIRTCPSpdSvrForm.cpp
+SSWR/AVIRead/AVIRTCPSpdSvrForm.h:
 @AVIRTCPSpdSvrForm.o
-SSWR/AVIRead/AVIRTCPTestForm.h: ../../src/SSWR/AVIRead/AVIRTCPTestForm.cpp
+SSWR/AVIRead/AVIRTCPTestForm.h:
 @AVIRTCPTestForm.o
-SSWR/AVIRead/AVIRTextHashForm.h: ../../src/SSWR/AVIRead/AVIRTextHashForm.cpp
+SSWR/AVIRead/AVIRTextHashForm.h:
 @AVIRTextHashForm.o
-SSWR/AVIRead/AVIRTFTPClientForm.h: ../../src/SSWR/AVIRead/AVIRTFTPClientForm.cpp
+SSWR/AVIRead/AVIRTFTPClientForm.h:
 @AVIRTFTPClientForm.o
-SSWR/AVIRead/AVIRTFTPServerForm.h: ../../src/SSWR/AVIRead/AVIRTFTPServerForm.cpp
+SSWR/AVIRead/AVIRTFTPServerForm.h:
 @AVIRTFTPServerForm.o
-SSWR/AVIRead/AVIRThreadInfoForm.h: ../../src/SSWR/AVIRead/AVIRThreadInfoForm.cpp
+SSWR/AVIRead/AVIRThreadInfoForm.h:
 @AVIRThreadInfoForm.o
-SSWR/AVIRead/AVIRThreadSpeedForm.h: ../../src/SSWR/AVIRead/AVIRThreadSpeedForm.cpp
+SSWR/AVIRead/AVIRThreadSpeedForm.h:
 @AVIRThreadSpeedForm.o
-SSWR/AVIRead/AVIRTimedCaptureForm.h: ../../src/SSWR/AVIRead/AVIRTimedCaptureForm.cpp
+SSWR/AVIRead/AVIRTimedCaptureForm.h:
 @AVIRTimedCaptureForm.o
-SSWR/AVIRead/AVIRTimedFileCopyForm.h: ../../src/SSWR/AVIRead/AVIRTimedFileCopyForm.cpp
+SSWR/AVIRead/AVIRTimedFileCopyForm.h:
 @AVIRTimedFileCopyForm.o
-SSWR/AVIRead/AVIRTimestampForm.h: ../../src/SSWR/AVIRead/AVIRTimestampForm.cpp
+SSWR/AVIRead/AVIRTimestampForm.h:
 @AVIRTimestampForm.o
-SSWR/AVIRead/AVIRTimeTestForm.h: ../../src/SSWR/AVIRead/AVIRTimeTestForm.cpp
+SSWR/AVIRead/AVIRTimeTestForm.h:
 @AVIRTimeTestForm.o
-SSWR/AVIRead/AVIRTMSForm.h: ../../src/SSWR/AVIRead/AVIRTMSForm.cpp
+SSWR/AVIRead/AVIRTMSForm.h:
 @AVIRTMSForm.o
-SSWR/AVIRead/AVIRTraceRouteForm.h: ../../src/SSWR/AVIRead/AVIRTraceRouteForm.cpp
+SSWR/AVIRead/AVIRTraceRouteForm.h:
 @AVIRTraceRouteForm.o
-SSWR/AVIRead/AVIRTrustStoreForm.h: ../../src/SSWR/AVIRead/AVIRTrustStoreForm.cpp
+SSWR/AVIRead/AVIRTrustStoreForm.h:
 @AVIRTrustStoreForm.o
-SSWR/AVIRead/AVIRTVControlForm.h: ../../src/SSWR/AVIRead/AVIRTVControlForm.cpp
+SSWR/AVIRead/AVIRTVControlForm.h:
 @AVIRTVControlForm.o
-SSWR/AVIRead/AVIRUDPCaptureForm.h: ../../src/SSWR/AVIRead/AVIRUDPCaptureForm.cpp
+SSWR/AVIRead/AVIRUDPCaptureForm.h:
 @AVIRUDPCaptureForm.o
-SSWR/AVIRead/AVIRUDPTestForm.h: ../../src/SSWR/AVIRead/AVIRUDPTestForm.cpp
+SSWR/AVIRead/AVIRUDPTestForm.h:
 @AVIRUDPTestForm.o
-SSWR/AVIRead/AVIRUSBDeviceForm.h: ../../src/SSWR/AVIRead/AVIRUSBDeviceForm.cpp
+SSWR/AVIRead/AVIRUSBDeviceForm.h:
 @AVIRUSBDeviceForm.o
-SSWR/AVIRead/AVIRUserAgentBatchForm.h: ../../src/SSWR/AVIRead/AVIRUserAgentBatchForm.cpp
+SSWR/AVIRead/AVIRUserAgentBatchForm.h:
 @AVIRUserAgentBatchForm.o
-SSWR/AVIRead/AVIRUserAgentParseForm.h: ../../src/SSWR/AVIRead/AVIRUserAgentParseForm.cpp
+SSWR/AVIRead/AVIRUserAgentParseForm.h:
 @AVIRUserAgentParseForm.o
-SSWR/AVIRead/AVIRUserAgentSelForm.h: ../../src/SSWR/AVIRead/AVIRUserAgentSelForm.cpp
+SSWR/AVIRead/AVIRUserAgentSelForm.h:
 @AVIRUserAgentSelForm.o
-SSWR/AVIRead/AVIRVBoxManagerForm.h: ../../src/SSWR/AVIRead/AVIRVBoxManagerForm.cpp
+SSWR/AVIRead/AVIRVBoxManagerForm.h:
 @AVIRVBoxManagerForm.o
-SSWR/AVIRead/AVIRVideoCheckerForm.h: ../../src/SSWR/AVIRead/AVIRVideoCheckerForm.cpp
+SSWR/AVIRead/AVIRVideoCheckerForm.h:
 @AVIRVideoCheckerForm.o
-SSWR/AVIRead/AVIRVideoInfoForm.h: ../../src/SSWR/AVIRead/AVIRVideoInfoForm.cpp
+SSWR/AVIRead/AVIRVideoInfoForm.h:
 @AVIRVideoInfoForm.o
-SSWR/AVIRead/AVIRVoiceModemForm.h: ../../src/SSWR/AVIRead/AVIRVoiceModemForm.cpp
+SSWR/AVIRead/AVIRVoiceModemForm.h:
 @AVIRVoiceModemForm.o
-SSWR/AVIRead/AVIRWebSite7gogoForm.h: ../../src/SSWR/AVIRead/AVIRWebSite7gogoForm.cpp
+SSWR/AVIRead/AVIRWebSite7gogoForm.h:
 @AVIRWebSite7gogoForm.o
-SSWR/AVIRead/AVIRWebSite48IdolForm.h: ../../src/SSWR/AVIRead/AVIRWebSite48IdolForm.cpp
+SSWR/AVIRead/AVIRWebSite48IdolForm.h:
 @AVIRWebSite48IdolForm.o
-SSWR/AVIRead/AVIRWebSiteInstagramForm.h: ../../src/SSWR/AVIRead/AVIRWebSiteInstagramForm.cpp
+SSWR/AVIRead/AVIRWebSiteInstagramForm.h:
 @AVIRWebSiteInstagramForm.o
-SSWR/AVIRead/AVIRWebSiteTwitterForm.h: ../../src/SSWR/AVIRead/AVIRWebSiteTwitterForm.cpp
+SSWR/AVIRead/AVIRWebSiteTwitterForm.h:
 @AVIRWebSiteTwitterForm.o
-SSWR/AVIRead/AVIRWellFormatForm.h: ../../src/SSWR/AVIRead/AVIRWellFormatForm.cpp
+SSWR/AVIRead/AVIRWellFormatForm.h:
 @AVIRWellFormatForm.o
-SSWR/AVIRead/AVIRWFSForm.h: ../../src/SSWR/AVIRead/AVIRWFSForm.cpp
+SSWR/AVIRead/AVIRWFSForm.h:
 @AVIRWFSForm.o
-SSWR/AVIRead/AVIRWHOISClientForm.h: ../../src/SSWR/AVIRead/AVIRWHOISClientForm.cpp
+SSWR/AVIRead/AVIRWHOISClientForm.h:
 @AVIRWHOISClientForm.o
-SSWR/AVIRead/AVIRWIADevForm.h: ../../src/SSWR/AVIRead/AVIRWIADevForm.cpp
+SSWR/AVIRead/AVIRWIADevForm.h:
 @AVIRWIADevForm.o
-SSWR/AVIRead/AVIRWifiCaptureForm.h: ../../src/SSWR/AVIRead/AVIRWifiCaptureForm.cpp
+SSWR/AVIRead/AVIRWifiCaptureForm.h:
 @AVIRWifiCaptureForm.o
-SSWR/AVIRead/AVIRWifiCaptureLiteForm.h: ../../src/SSWR/AVIRead/AVIRWifiCaptureLiteForm.cpp
+SSWR/AVIRead/AVIRWifiCaptureLiteForm.h:
 @AVIRWifiCaptureLiteForm.o
-SSWR/AVIRead/AVIRWiFiLogManagerForm.h: ../../src/SSWR/AVIRead/AVIRWiFiLogManagerForm.cpp
+SSWR/AVIRead/AVIRWiFiLogManagerForm.h:
 @AVIRWiFiLogManagerForm.o
-SSWR/AVIRead/AVIRWifiScanForm.h: ../../src/SSWR/AVIRead/AVIRWifiScanForm.cpp
+SSWR/AVIRead/AVIRWifiScanForm.h:
 @AVIRWifiScanForm.o
-SSWR/AVIRead/AVIRWindowsErrorForm.h: ../../src/SSWR/AVIRead/AVIRWindowsErrorForm.cpp
+SSWR/AVIRead/AVIRWindowsErrorForm.h:
 @AVIRWindowsErrorForm.o
-SSWR/AVIRead/AVIRWMIForm.h: ../../src/SSWR/AVIRead/AVIRWMIForm.cpp
+SSWR/AVIRead/AVIRWMIForm.h:
 @AVIRWMIForm.o
-SSWR/AVIRead/AVIRWMSForm.h: ../../src/SSWR/AVIRead/AVIRWMSForm.cpp
+SSWR/AVIRead/AVIRWMSForm.h:
 @AVIRWMSForm.o
-SSWR/AVIRead/AVIRWMTSForm.h: ../../src/SSWR/AVIRead/AVIRWMTSForm.cpp
+SSWR/AVIRead/AVIRWMTSForm.h:
 @AVIRWMTSForm.o
-SSWR/AVIRead/AVIRWOLForm.h: ../../src/SSWR/AVIRead/AVIRWOLForm.cpp
+SSWR/AVIRead/AVIRWOLForm.h:
 @AVIRWOLForm.o
-SSWR/AVIRead/AVIRXMLWalkForm.h: ../../src/SSWR/AVIRead/AVIRXMLWalkForm.cpp
+SSWR/AVIRead/AVIRXMLWalkForm.h:
 @AVIRXMLWalkForm.o
 SSWR/AVIRead/IMapNavigator.h:
-SSWR/AVIRead/MIMEViewer/AVIRMailViewer.h: ../../src/SSWR/AVIRead/MIMEViewer/AVIRMailViewer.cpp
+SSWR/AVIRead/MIMEViewer/AVIRMailViewer.h:
 @AVIRMailViewer.o
-SSWR/AVIRead/MIMEViewer/AVIRMIMEHTMLViewer.h: ../../src/SSWR/AVIRead/MIMEViewer/AVIRMIMEHTMLViewer.cpp
+SSWR/AVIRead/MIMEViewer/AVIRMIMEHTMLViewer.h:
 @AVIRMIMEHTMLViewer.o
-SSWR/AVIRead/MIMEViewer/AVIRMIMEImageViewer.h: ../../src/SSWR/AVIRead/MIMEViewer/AVIRMIMEImageViewer.cpp
+SSWR/AVIRead/MIMEViewer/AVIRMIMEImageViewer.h:
 @AVIRMIMEImageViewer.o
-SSWR/AVIRead/MIMEViewer/AVIRMIMEJSONViewer.h: ../../src/SSWR/AVIRead/MIMEViewer/AVIRMIMEJSONViewer.cpp
+SSWR/AVIRead/MIMEViewer/AVIRMIMEJSONViewer.h:
 @AVIRMIMEJSONViewer.o
-SSWR/AVIRead/MIMEViewer/AVIRMIMETextViewer.h: ../../src/SSWR/AVIRead/MIMEViewer/AVIRMIMETextViewer.cpp
+SSWR/AVIRead/MIMEViewer/AVIRMIMETextViewer.h:
 @AVIRMIMETextViewer.o
-SSWR/AVIRead/MIMEViewer/AVIRMIMEX509Viewer.h: ../../src/SSWR/AVIRead/MIMEViewer/AVIRMIMEX509Viewer.cpp
+SSWR/AVIRead/MIMEViewer/AVIRMIMEX509Viewer.h:
 @AVIRMIMEX509Viewer.o
-SSWR/AVIRead/MIMEViewer/AVIRMIMEXMLViewer.h: ../../src/SSWR/AVIRead/MIMEViewer/AVIRMIMEXMLViewer.cpp
+SSWR/AVIRead/MIMEViewer/AVIRMIMEXMLViewer.h:
 @AVIRMIMEXMLViewer.o
-SSWR/AVIRead/MIMEViewer/AVIRMIMEViewer.h: ../../src/SSWR/AVIRead/MIMEViewer/AVIRMIMEViewer.cpp
+SSWR/AVIRead/MIMEViewer/AVIRMIMEViewer.h:
 @AVIRMIMEViewer.o
-SSWR/AVIRead/MIMEViewer/AVIRMultipartViewer.h: ../../src/SSWR/AVIRead/MIMEViewer/AVIRMultipartViewer.cpp
+SSWR/AVIRead/MIMEViewer/AVIRMultipartViewer.h:
 @AVIRMultipartViewer.o
-SSWR/AVIRead/MIMEViewer/AVIRUnknownViewer.h: ../../src/SSWR/AVIRead/MIMEViewer/AVIRUnknownViewer.cpp
+SSWR/AVIRead/MIMEViewer/AVIRUnknownViewer.h:
 @AVIRUnknownViewer.o
-SSWR/Benchmark/BenchmarkWebHandler.h: ../../src/SSWR/Benchmark/BenchmarkWebHandler.cpp
+SSWR/Benchmark/BenchmarkWebHandler.h:
 @BenchmarkWebHandler.o
-SSWR/DataSync/SyncClient.h: ../../src/SSWR/DataSync/SyncClient.cpp
+SSWR/DataSync/SyncClient.h:
 @SyncClient.o
-SSWR/DataSync/SyncClientDataMgr.h: ../../src/SSWR/DataSync/SyncClientDataMgr.cpp
+SSWR/DataSync/SyncClientDataMgr.h:
 @SyncClientDataMgr.o
-SSWR/DataSync/SyncServer.h: ../../src/SSWR/DataSync/SyncServer.cpp
+SSWR/DataSync/SyncServer.h:
 @SyncServer.o
-SSWR/DiscDB/DiscDBBurntDiscForm.h: ../../src/SSWR/DiscDB/DiscDBBurntDiscForm.cpp
+SSWR/DiscDB/DiscDBBurntDiscForm.h:
 @DiscDBBurntDiscForm.o
-SSWR/DiscDB/DiscDBDVDTypeForm.h: ../../src/SSWR/DiscDB/DiscDBDVDTypeForm.cpp
+SSWR/DiscDB/DiscDBDVDTypeForm.h:
 @DiscDBDVDTypeForm.o
-SSWR/DiscDB/DiscDBEnv.h: ../../src/SSWR/DiscDB/DiscDBEnv.cpp
+SSWR/DiscDB/DiscDBEnv.h:
 @DiscDBEnv.o
-SSWR/DiscDB/DiscDBMainForm.h: ../../src/SSWR/DiscDB/DiscDBMainForm.cpp
+SSWR/DiscDB/DiscDBMainForm.h:
 @DiscDBMainForm.o
-SSWR/DiscDB/DiscDBSearchDiscForm.h: ../../src/SSWR/DiscDB/DiscDBSearchDiscForm.cpp
+SSWR/DiscDB/DiscDBSearchDiscForm.h:
 @DiscDBSearchDiscForm.o
-SSWR/DownloadMonitor/DownMonCore.h: ../../src/SSWR/DownloadMonitor/DownMonCore.cpp
+SSWR/DownloadMonitor/DownMonCore.h:
 @DownMonCore.o
-SSWR/DownloadMonitor/DownMonMainForm.h: ../../src/SSWR/DownloadMonitor/DownMonMainForm.cpp
+SSWR/DownloadMonitor/DownMonMainForm.h:
 @DownMonMainForm.o
-SSWR/OrganMgr/OrganBook.h: ../../src/SSWR/OrganMgr/OrganBook.cpp
+SSWR/OrganMgr/OrganBook.h:
 @OrganBook.o
-SSWR/OrganMgr/OrganBookForm.h: ../../src/SSWR/OrganMgr/OrganBookForm.cpp
+SSWR/OrganMgr/OrganBookForm.h:
 @OrganBookForm.o
-SSWR/OrganMgr/OrganDataFileForm.h: ../../src/SSWR/OrganMgr/OrganDataFileForm.cpp
+SSWR/OrganMgr/OrganDataFileForm.h:
 @OrganDataFileForm.o
-SSWR/OrganMgr/OrganEnv.h: ../../src/SSWR/OrganMgr/OrganEnv.cpp
+SSWR/OrganMgr/OrganEnv.h:
 @OrganEnv.o
-SSWR/OrganMgr/OrganEnvDB.h: ../../src/SSWR/OrganMgr/OrganEnvDB.cpp
+SSWR/OrganMgr/OrganEnvDB.h:
 @OrganEnvDB.o
-SSWR/OrganMgr/OrganGroup.h: ../../src/SSWR/OrganMgr/OrganGroup.cpp
+SSWR/OrganMgr/OrganGroup.h:
 @OrganGroup.o
 SSWR/OrganMgr/OrganGroupItem.h:
-SSWR/OrganMgr/OrganGroupType.h: ../../src/SSWR/OrganMgr/OrganGroupType.cpp
+SSWR/OrganMgr/OrganGroupType.h:
 @OrganGroupType.o
-SSWR/OrganMgr/OrganImageDetailForm.h: ../../src/SSWR/OrganMgr/OrganImageDetailForm.cpp
+SSWR/OrganMgr/OrganImageDetailForm.h:
 @OrganImageDetailForm.o
-SSWR/OrganMgr/OrganImageItem.h: ../../src/SSWR/OrganMgr/OrganImageItem.cpp
+SSWR/OrganMgr/OrganImageItem.h:
 @OrganImageItem.o
-SSWR/OrganMgr/OrganImages.h: ../../src/SSWR/OrganMgr/OrganImages.cpp
+SSWR/OrganMgr/OrganImages.h:
 @OrganImages.o
-SSWR/OrganMgr/OrganImageWebForm.h: ../../src/SSWR/OrganMgr/OrganImageWebForm.cpp
+SSWR/OrganMgr/OrganImageWebForm.h:
 @OrganImageWebForm.o
-SSWR/OrganMgr/OrganLocationForm.h: ../../src/SSWR/OrganMgr/OrganLocationForm.cpp
+SSWR/OrganMgr/OrganLocationForm.h:
 @OrganLocationForm.o
-SSWR/OrganMgr/OrganMainForm.h: ../../src/SSWR/OrganMgr/OrganMainForm.cpp
+SSWR/OrganMgr/OrganMainForm.h:
 @OrganMainForm.o
-SSWR/OrganMgr/OrganParentItem.h: ../../src/SSWR/OrganMgr/OrganParentItem.cpp
+SSWR/OrganMgr/OrganParentItem.h:
 @OrganParentItem.o
-SSWR/OrganMgr/OrganSearchForm.h: ../../src/SSWR/OrganMgr/OrganSearchForm.cpp
+SSWR/OrganMgr/OrganSearchForm.h:
 @OrganSearchForm.o
-SSWR/OrganMgr/OrganSelCategoryForm.h: ../../src/SSWR/OrganMgr/OrganSelCategoryForm.cpp
+SSWR/OrganMgr/OrganSelCategoryForm.h:
 @OrganSelCategoryForm.o
-SSWR/OrganMgr/OrganSpecies.h: ../../src/SSWR/OrganMgr/OrganSpecies.cpp
+SSWR/OrganMgr/OrganSpecies.h:
 @OrganSpecies.o
-SSWR/OrganMgr/OrganSpImgLayer.h: ../../src/SSWR/OrganMgr/OrganSpImgLayer.cpp
+SSWR/OrganMgr/OrganSpImgLayer.h:
 @OrganSpImgLayer.o
-SSWR/OrganMgr/OrganTimeAdjForm.h: ../../src/SSWR/OrganMgr/OrganTimeAdjForm.cpp
+SSWR/OrganMgr/OrganTimeAdjForm.h:
 @OrganTimeAdjForm.o
-SSWR/OrganMgr/OrganTimeAdjLayer.h: ../../src/SSWR/OrganMgr/OrganTimeAdjLayer.cpp
+SSWR/OrganMgr/OrganTimeAdjLayer.h:
 @OrganTimeAdjLayer.o
-SSWR/OrganMgr/OrganTripForm.h: ../../src/SSWR/OrganMgr/OrganTripForm.cpp
+SSWR/OrganMgr/OrganTripForm.h:
 @OrganTripForm.o
-SSWR/OrganMgr/OrganTripList.h: ../../src/SSWR/OrganMgr/OrganTripList.cpp
+SSWR/OrganMgr/OrganTripList.h:
 @OrganTripList.o
-SSWR/OrganMgr/OrganUserEditForm.h: ../../src/SSWR/OrganMgr/OrganUserEditForm.cpp
+SSWR/OrganMgr/OrganUserEditForm.h:
 @OrganUserEditForm.o
-SSWR/OrganMgr/OrganUserForm.h: ../../src/SSWR/OrganMgr/OrganUserForm.cpp
+SSWR/OrganMgr/OrganUserForm.h:
 @OrganUserForm.o
-SSWR/OrganWeb/OrganWebBookController.h: ../../src/SSWR/OrganWeb/OrganWebBookController.cpp
+SSWR/OrganWeb/OrganWebBookController.h:
 @OrganWebBookController.o
 SSWR/OrganWeb/OrganWebCommon.h:
-SSWR/OrganWeb/OrganWebController.h: ../../src/SSWR/OrganWeb/OrganWebController.cpp
+SSWR/OrganWeb/OrganWebController.h:
 @OrganWebController.o
-SSWR/OrganWeb/OrganWebEnv.h: ../../src/SSWR/OrganWeb/OrganWebEnv.cpp
+SSWR/OrganWeb/OrganWebEnv.h:
 @OrganWebEnv.o
-SSWR/OrganWeb/OrganWebHandler.h: ../../src/SSWR/OrganWeb/OrganWebHandler.cpp
+SSWR/OrganWeb/OrganWebHandler.h:
 @OrganWebHandler.o
-SSWR/OrganWeb/OrganWebMainController.h: ../../src/SSWR/OrganWeb/OrganWebMainController.cpp
+SSWR/OrganWeb/OrganWebMainController.h:
 @OrganWebMainController.o
-SSWR/OrganWeb/OrganWebPhotoController.h: ../../src/SSWR/OrganWeb/OrganWebPhotoController.cpp
+SSWR/OrganWeb/OrganWebPhotoController.h:
 @OrganWebPhotoController.o
-SSWR/OrganWeb/OrganWebPOIController.h: ../../src/SSWR/OrganWeb/OrganWebPOIController.cpp
+SSWR/OrganWeb/OrganWebPOIController.h:
 @OrganWebPOIController.o
-SSWR/SDNSProxy/SDNSProxyCore.h: ../../src/SSWR/SDNSProxy/SDNSProxyCore.cpp
+SSWR/SDNSProxy/SDNSProxyCore.h:
 @SDNSProxyCore.o
-SSWR/SDNSProxy/SDNSProxyWebHandler.h: ../../src/SSWR/SDNSProxy/SDNSProxyWebHandler.cpp
+SSWR/SDNSProxy/SDNSProxyWebHandler.h:
 @SDNSProxyWebHandler.o
-SSWR/SHPConv/ElevationFilter.h: ../../src/SSWR/SHPConv/ElevationFilter.cpp
+SSWR/SHPConv/ElevationFilter.h:
 @ElevationFilter.o
 SSWR/SHPConv/IMapEng.h:
 SSWR/SHPConv/MapFilter.h:
-SSWR/SHPConv/RangeFilter.h: ../../src/SSWR/SHPConv/RangeFilter.cpp
+SSWR/SHPConv/RangeFilter.h:
 @RangeFilter.o
-SSWR/SHPConv/SHPConvAddFilterForm.h: ../../src/SSWR/SHPConv/SHPConvAddFilterForm.cpp
+SSWR/SHPConv/SHPConvAddFilterForm.h:
 @SHPConvAddFilterForm.o
-SSWR/SHPConv/SHPConvCurrFilterForm.h: ../../src/SSWR/SHPConv/SHPConvCurrFilterForm.cpp
+SSWR/SHPConv/SHPConvCurrFilterForm.h:
 @SHPConvCurrFilterForm.o
-SSWR/SHPConv/SHPConvDBFViewForm.h: ../../src/SSWR/SHPConv/SHPConvDBFViewForm.cpp
+SSWR/SHPConv/SHPConvDBFViewForm.h:
 @SHPConvDBFViewForm.o
-SSWR/SHPConv/SHPConvElevationFilterForm.h: ../../src/SSWR/SHPConv/SHPConvElevationFilterForm.cpp
+SSWR/SHPConv/SHPConvElevationFilterForm.h:
 @SHPConvElevationFilterForm.o
-SSWR/SHPConv/SHPConvGroupForm.h: ../../src/SSWR/SHPConv/SHPConvGroupForm.cpp
+SSWR/SHPConv/SHPConvGroupForm.h:
 @SHPConvGroupForm.o
-SSWR/SHPConv/SHPConvMainForm.h: ../../src/SSWR/SHPConv/SHPConvMainForm.cpp
+SSWR/SHPConv/SHPConvMainForm.h:
 @SHPConvMainForm.o
-SSWR/SHPConv/SHPConvRangeFilterForm.h: ../../src/SSWR/SHPConv/SHPConvRangeFilterForm.cpp
+SSWR/SHPConv/SHPConvRangeFilterForm.h:
 @SHPConvRangeFilterForm.o
-SSWR/SHPConv/SHPConvValueFilterForm.h: ../../src/SSWR/SHPConv/SHPConvValueFilterForm.cpp
+SSWR/SHPConv/SHPConvValueFilterForm.h:
 @SHPConvValueFilterForm.o
-SSWR/SHPConv/ValueFilter.h: ../../src/SSWR/SHPConv/ValueFilter.cpp
+SSWR/SHPConv/ValueFilter.h:
 @ValueFilter.o
 SSWR/SMonitor/ISMonitorCore.h:
-SSWR/SMonitor/SAnalogSensor.h: ../../src/SSWR/SMonitor/SAnalogSensor.cpp
+SSWR/SMonitor/SAnalogSensor.h:
 @SAnalogSensor.o
-SSWR/SMonitor/SMonitorRedir.h: ../../src/SSWR/SMonitor/SMonitorRedir.cpp
+SSWR/SMonitor/SMonitorRedir.h:
 @SMonitorRedir.o
-SSWR/SMonitor/SMonitorSvrCore.h: ../../src/SSWR/SMonitor/SMonitorSvrCore.cpp
+SSWR/SMonitor/SMonitorSvrCore.h:
 @SMonitorSvrCore.o
-SSWR/SMonitor/SMonitorWebHandler.h: ../../src/SSWR/SMonitor/SMonitorWebHandler.cpp
+SSWR/SMonitor/SMonitorWebHandler.h:
 @SMonitorWebHandler.o
-SSWR/VAMS/VAMSBTList.h: ../../src/SSWR/VAMS/VAMSBTList.cpp
+SSWR/VAMS/VAMSBTList.h:
 @VAMSBTList.o
-SSWR/VAMS/VAMSBTWebHandler.h: ../../src/SSWR/VAMS/VAMSBTWebHandler.cpp
+SSWR/VAMS/VAMSBTWebHandler.h:
 @VAMSBTWebHandler.o
 
-Sync/Event.h: ../../src/Sync/Event.cpp
+Sync/Event.h:
 @Event.o
-Sync/Interlocked.h: ../../src/Sync/Interlocked.cpp
+Sync/Interlocked.h:
 @Interlocked.o
-Sync/Mutex.h: ../../src/Sync/Mutex.cpp
+Sync/Mutex.h:
 @Mutex.o
-Sync/MutexUsage.h: ../../src/Sync/MutexUsage.cpp
+Sync/MutexUsage.h:
 @MutexUsage.o
-Sync/ParallelTask.h: ../../src/Sync/ParallelTask.cpp
+Sync/ParallelTask.h:
 @ParallelTask.o
-Sync/RWMutexUsage.h: ../../src/Sync/RWMutexUsage.cpp
+Sync/RWMutexUsage.h:
 @RWMutexUsage.o
-Sync/Thread.h: ../../src/Sync/Thread.cpp
+Sync/Thread.h:
 @Thread.o
 
-Test/TestModem.h: ../../src/Test/TestModem.cpp
+Test/TestModem.h:
 @TestModem.o
-Test/TestSIM7000.h: ../../src/Test/TestSIM7000.cpp
+Test/TestSIM7000.h:
 @TestSIM7000.o
 
-Text/CPPText.h: ../../src/Text/CPPText.cpp
+Text/CPPText.h:
 @CPPText.o
-Text/CharUtil.h: ../../src/Text/CharUtil.cpp
+Text/CharUtil.h:
 @CharUtil.o
-Text/ChineseInfo.h: ../../src/Text/ChineseInfo.cpp
+Text/ChineseInfo.h:
 @ChineseInfo.o
-Text/CodeProject.h: ../../src/Text/CodeProject.cpp
+Text/CodeProject.h:
 @CodeProject.o
-Text/CSSBuilder.h: ../../src/Text/CSSBuilder.cpp
+Text/CSSBuilder.h:
 @CSSBuilder.o
 Text/CString.h:
 Text/CStringComparatorFast.h:
-Text/Encoding.h: ../../src/Text/Encoding.cpp
+Text/Encoding.h:
 @Encoding.o
-Text/EncodingFactory.h: ../../src/Text/EncodingFactory.cpp
+Text/EncodingFactory.h:
 @EncodingFactory.o
 Text/EnumFinder.h:
-Text/HKSCSFix.h: ../../src/Text/HKSCSFix.cpp
+Text/HKSCSFix.h:
 @HKSCSFix.o
-Text/HTMLUtil.h: ../../src/Text/HTMLUtil.cpp
+Text/HTMLUtil.h:
 @HTMLUtil.o
-Text/IMIMEObj.h: ../../src/Text/IMIMEObj.cpp
+Text/IMIMEObj.h:
 @IMIMEObj.o
-Text/JavaText.h: ../../src/Text/JavaText.cpp
+Text/JavaText.h:
 @JavaText.o
-Text/JSON.h: ../../src/Text/JSON.cpp
+Text/JSON.h:
 @JSON.o
-Text/JSONBuilder.h: ../../src/Text/JSONBuilder.cpp
+Text/JSONBuilder.h:
 @JSONBuilder.o
-Text/JSONUtil.h: ../../src/Text/JSONUtil.cpp
+Text/JSONUtil.h:
 @JSONUtil.o
-Text/JSText.h: ../../src/Text/JSText.cpp
+Text/JSText.h:
 @JSText.o
 Text/LineBreakType.h:
-Text/Locale.h: ../../src/Text/Locale.cpp
+Text/Locale.h:
 @Locale.o
-Text/MailBase64Stream.h: ../../src/Text/MailBase64Stream.cpp
+Text/MailBase64Stream.h:
 @MailBase64Stream.o
-Text/MailCreator.h: ../../src/Text/MailCreator.cpp
+Text/MailCreator.h:
 @MailCreator.o
-Text/MyString.h: ../../src/Text/MyString.cpp
+Text/MyString.h:
 @MyString.o
 @MyString_CPP.o
-Text/MyStringFloat.h: ../../src/Text/MyStringFloat.cpp
+Text/MyStringFloat.h:
 @MyStringFloat.o
-Text/MyStringW.h: ../../src/Text/MyStringW.cpp
+Text/MyStringW.h:
 @MyStringW.o
-Text/PString.h: ../../src/Text/PString.cpp
+Text/PString.h:
 @PString.o
-Text/ReportBuilder.h: ../../src/Text/ReportBuilder.cpp
+Text/ReportBuilder.h:
 @ReportBuilder.o
-Text/SearchIndexer.h: ../../src/Text/SearchIndexer.cpp
+Text/SearchIndexer.h:
 @SearchIndexer.o
-Text/SMSMessage.h: ../../src/Text/SMSMessage.cpp
+Text/SMSMessage.h:
 @SMSMessage.o
-Text/SMSUserData.h: ../../src/Text/SMSUserData.cpp
+Text/SMSUserData.h:
 @SMSUserData.o
-Text/SMSUtil.h: ../../src/Text/SMSUtil.cpp
+Text/SMSUtil.h:
 @SMSUtil.o
-Text/StandardColor.h: ../../src/Text/StandardColor.cpp
+Text/StandardColor.h:
 @StandardColor.o
-Text/String.h: ../../src/Text/String.cpp
+Text/String.h:
 @String.o
 Text/StringBase.h:
 Text/StringBuilder.h:
-Text/StringBuilderC.h: ../../src/Text/StringBuilderC.cpp
+Text/StringBuilderC.h:
 @StringBuilderC.o
 Text/StringBuilderUTF.h:
-Text/StringBuilderUTF8.h: ../../src/Text/StringBuilderUTF8.cpp
+Text/StringBuilderUTF8.h:
 @StringBuilderUTF8.o
-Text/StringBuilderUTF16.h: ../../src/Text/StringBuilderUTF16.cpp
+Text/StringBuilderUTF16.h:
 @StringBuilderUTF16.o
-Text/StringBuilderUTF32.h: ../../src/Text/StringBuilderUTF32.cpp
+Text/StringBuilderUTF32.h:
 @StringBuilderUTF32.o
 Text/StringBuilderW.h:
-Text/StringBuilderWriter.h: ../../src/Text/StringBuilderWriter.cpp
+Text/StringBuilderWriter.h:
 @StringBuilderWriter.o
 Text/StringComparatorFast.h:
 Text/StringComparatorFastNN.h:
-Text/StringTool.h: ../../src/Text/StringTool.cpp
+Text/StringTool.h:
 @StringTool.o
-Text/StringUtil.h: ../../src/Text/StringUtil.cpp
+Text/StringUtil.h:
 @StringUtil.o
 Text/StyledTextWriter.h:
-Text/TextAnalyzer.h: ../../src/Text/TextAnalyzer.cpp
+Text/TextAnalyzer.h:
 @TextAnalyzer.o
 Text/TextCommon.h:
 Text/TextEncoding.h:
-Text/URLString.h: ../../src/Text/URLString.cpp
+Text/URLString.h:
 @URLString.o
-Text/UTF8Reader.h: ../../src/Text/UTF8Reader.cpp
+Text/UTF8Reader.h:
 @UTF8Reader.o
-Text/UTF8Util.h: ../../src/Text/UTF8Util.cpp
+Text/UTF8Util.h:
 @UTF8Util.o
-Text/UTF8Writer.h: ../../src/Text/UTF8Writer.cpp
+Text/UTF8Writer.h:
 @UTF8Writer.o
-Text/VSProject.h: ../../src/Text/VSProject.cpp
+Text/VSProject.h:
 @VSProject.o
-Text/XLSUtil.h: ../../src/Text/XLSUtil.cpp
+Text/XLSUtil.h:
 @XLSUtil.o
-Text/XML.h: ../../src/Text/XML.cpp
+Text/XML.h:
 @XML.o
-Text/XMLDOM.h: ../../src/Text/XMLDOM.cpp
+Text/XMLDOM.h:
 @XMLDOM.o
-Text/XMLReader.h: ../../src/Text/XMLReader.cpp
+Text/XMLReader.h:
 @XMLReader.o
-Text/Builder/HTMLBodyBuilder.h: ../../src/Text/Builder/HTMLBodyBuilder.cpp
+Text/Builder/HTMLBodyBuilder.h:
 @HTMLBodyBuilder.o
-Text/Builder/HTMLBuilder.h: ../../src/Text/Builder/HTMLBuilder.cpp
+Text/Builder/HTMLBuilder.h:
 @HTMLBuilder.o
-Text/Builder/HTMLDocumentBuilder.h: ../../src/Text/Builder/HTMLDocumentBuilder.cpp
+Text/Builder/HTMLDocumentBuilder.h:
 @HTMLDocumentBuilder.o
-Text/Builder/HTMLHeaderBuilder.h: ../../src/Text/Builder/HTMLHeaderBuilder.cpp
+Text/Builder/HTMLHeaderBuilder.h:
 @HTMLHeaderBuilder.o
-Text/Cpp/CppCodeParser.h: ../../src/Text/Cpp/CppCodeParser.cpp
+Text/Cpp/CppCodeParser.h:
 @CppCodeParser.o
-Text/Cpp/CppEnv.h: ../../src/Text/Cpp/CppEnv.cpp
+Text/Cpp/CppEnv.h:
 @CppEnv.o
-Text/Cpp/CppParseStatus.h: ../../src/Text/Cpp/CppParseStatus.cpp
+Text/Cpp/CppParseStatus.h:
 @CppParseStatus.o
-Text/Cpp/CppReader.h: ../../src/Text/Cpp/CppReader.cpp
+Text/Cpp/CppReader.h:
 @CppReader.o
-Text/Doc/DocHeading.h: ../../src/Text/Doc/DocHeading.cpp
+Text/Doc/DocHeading.h:
 @DocHeading.o
-Text/Doc/DocItem.h: ../../src/Text/Doc/DocItem.cpp
+Text/Doc/DocItem.h:
 @DocItem.o
-Text/Doc/DocLink.h: ../../src/Text/Doc/DocLink.cpp
+Text/Doc/DocLink.h:
 @DocLink.o
-Text/Doc/DocSection.h: ../../src/Text/Doc/DocSection.cpp
+Text/Doc/DocSection.h:
 @DocSection.o
-Text/Doc/DocText.h: ../../src/Text/Doc/DocText.cpp
+Text/Doc/DocText.h:
 @DocText.o
-Text/Doc/DocValidator.h: ../../src/Text/Doc/DocValidator.cpp
+Text/Doc/DocValidator.h:
 @DocValidator.o
-Text/Doc/TextDocument.h: ../../src/Text/Doc/TextDocument.cpp
+Text/Doc/TextDocument.h:
 @TextDocument.o
-Text/MIMEObj/HTMLMIMEObj.h: ../../src/Text/MIMEObj/HTMLMIMEObj.cpp
+Text/MIMEObj/HTMLMIMEObj.h:
 @HTMLMIMEObj.o
-Text/MIMEObj/MailMessage.h: ../../src/Text/MIMEObj/MailMessage.cpp
+Text/MIMEObj/MailMessage.h:
 @MailMessage.o
-Text/MIMEObj/MIMEMessage.h: ../../src/Text/MIMEObj/MIMEMessage.cpp
+Text/MIMEObj/MIMEMessage.h:
 @MIMEMessage.o
-Text/MIMEObj/MultipartMIMEObj.h: ../../src/Text/MIMEObj/MultipartMIMEObj.cpp
+Text/MIMEObj/MultipartMIMEObj.h:
 @MultipartMIMEObj.o
-Text/MIMEObj/TextMIMEObj.h: ../../src/Text/MIMEObj/TextMIMEObj.cpp
+Text/MIMEObj/TextMIMEObj.h:
 @TextMIMEObj.o
-Text/MIMEObj/UnknownMIMEObj.h: ../../src/Text/MIMEObj/UnknownMIMEObj.cpp
+Text/MIMEObj/UnknownMIMEObj.h:
 @UnknownMIMEObj.o
-Text/SpreadSheet/CellStyle.h: ../../src/Text/SpreadSheet/CellStyle.cpp
+Text/SpreadSheet/CellStyle.h:
 @CellStyle.o
 Text/SpreadSheet/IStyleCtrl.h:
-Text/SpreadSheet/OfficeChart.h: ../../src/Text/SpreadSheet/OfficeChart.cpp
+Text/SpreadSheet/OfficeChart.h:
 @OfficeChart.o
-Text/SpreadSheet/OfficeChartAxis.h: ../../src/Text/SpreadSheet/OfficeChartAxis.cpp
+Text/SpreadSheet/OfficeChartAxis.h:
 @OfficeChartAxis.o
-Text/SpreadSheet/OfficeChartSeries.h: ../../src/Text/SpreadSheet/OfficeChartSeries.cpp
+Text/SpreadSheet/OfficeChartSeries.h:
 @OfficeChartSeries.o
-Text/SpreadSheet/OfficeColor.h: ../../src/Text/SpreadSheet/OfficeColor.cpp
+Text/SpreadSheet/OfficeColor.h:
 @OfficeColor.o
-Text/SpreadSheet/OfficeFill.h: ../../src/Text/SpreadSheet/OfficeFill.cpp
+Text/SpreadSheet/OfficeFill.h:
 @OfficeFill.o
-Text/SpreadSheet/OfficeLineStyle.h: ../../src/Text/SpreadSheet/OfficeLineStyle.cpp
+Text/SpreadSheet/OfficeLineStyle.h:
 @OfficeLineStyle.o
-Text/SpreadSheet/OfficeShapeProp.h: ../../src/Text/SpreadSheet/OfficeShapeProp.cpp
+Text/SpreadSheet/OfficeShapeProp.h:
 @OfficeShapeProp.o
-Text/SpreadSheet/Workbook.h: ../../src/Text/SpreadSheet/Workbook.cpp
+Text/SpreadSheet/Workbook.h:
 @Workbook.o
-Text/SpreadSheet/WorkbookDataSource.h: ../../src/Text/SpreadSheet/WorkbookDataSource.cpp
+Text/SpreadSheet/WorkbookDataSource.h:
 @WorkbookDataSource.o
-Text/SpreadSheet/WorkbookFont.h: ../../src/Text/SpreadSheet/WorkbookFont.cpp
+Text/SpreadSheet/WorkbookFont.h:
 @WorkbookFont.o
-Text/SpreadSheet/Worksheet.h: ../../src/Text/SpreadSheet/Worksheet.cpp
+Text/SpreadSheet/Worksheet.h:
 @Worksheet.o
-Text/TextBinEnc/ANSITextBinEnc.h: ../../src/Text/TextBinEnc/ANSITextBinEnc.cpp
+Text/TextBinEnc/ANSITextBinEnc.h:
 @ANSITextBinEnc.o
-Text/TextBinEnc/ASCII85Enc.h: ../../src/Text/TextBinEnc/ASCII85Enc.cpp
+Text/TextBinEnc/ASCII85Enc.h:
 @ASCII85Enc.o
-Text/TextBinEnc/ASN1OIDBinEnc.h: ../../src/Text/TextBinEnc/ASN1OIDBinEnc.cpp
+Text/TextBinEnc/ASN1OIDBinEnc.h:
 @ASN1OIDBinEnc.o
-Text/TextBinEnc/Base32Enc.h: ../../src/Text/TextBinEnc/Base32Enc.cpp
+Text/TextBinEnc/Base32Enc.h:
 @Base32Enc.o
-Text/TextBinEnc/Base64Enc.h: ../../src/Text/TextBinEnc/Base64Enc.cpp
+Text/TextBinEnc/Base64Enc.h:
 @Base64Enc.o
-Text/TextBinEnc/CodePageTextBinEnc.h: ../../src/Text/TextBinEnc/CodePageTextBinEnc.cpp
+Text/TextBinEnc/CodePageTextBinEnc.h:
 @CodePageTextBinEnc.o
-Text/TextBinEnc/CPPByteArrBinEnc.h: ../../src/Text/TextBinEnc/CPPByteArrBinEnc.cpp
+Text/TextBinEnc/CPPByteArrBinEnc.h:
 @CPPByteArrBinEnc.o
-Text/TextBinEnc/CPPTextBinEnc.h: ../../src/Text/TextBinEnc/CPPTextBinEnc.cpp
+Text/TextBinEnc/CPPTextBinEnc.h:
 @CPPTextBinEnc.o
-Text/TextBinEnc/FormEncoding.h: ../../src/Text/TextBinEnc/FormEncoding.cpp
+Text/TextBinEnc/FormEncoding.h:
 @FormEncoding.o
-Text/TextBinEnc/HexTextBinEnc.h: ../../src/Text/TextBinEnc/HexTextBinEnc.cpp
+Text/TextBinEnc/HexTextBinEnc.h:
 @HexTextBinEnc.o
-Text/TextBinEnc/IntegerMSBEnc.h: ../../src/Text/TextBinEnc/IntegerMSBEnc.cpp
+Text/TextBinEnc/IntegerMSBEnc.h:
 @IntegerMSBEnc.o
 Text/TextBinEnc/ITextBinEnc.h:
-Text/TextBinEnc/Punycode.h: ../../src/Text/TextBinEnc/Punycode.cpp
+Text/TextBinEnc/Punycode.h:
 @Punycode.o
-Text/TextBinEnc/QuotedPrintableEnc.h: ../../src/Text/TextBinEnc/QuotedPrintableEnc.cpp
+Text/TextBinEnc/QuotedPrintableEnc.h:
 @QuotedPrintableEnc.o
-Text/TextBinEnc/Radix64Enc.h: ../../src/Text/TextBinEnc/Radix64Enc.cpp
+Text/TextBinEnc/Radix64Enc.h:
 @Radix64Enc.o
-Text/TextBinEnc/TextBinEncList.h: ../../src/Text/TextBinEnc/TextBinEncList.cpp
+Text/TextBinEnc/TextBinEncList.h:
 @TextBinEncList.o
-Text/TextBinEnc/UCS2TextBinEnc.h: ../../src/Text/TextBinEnc/UCS2TextBinEnc.cpp
+Text/TextBinEnc/UCS2TextBinEnc.h:
 @UCS2TextBinEnc.o
-Text/TextBinEnc/URIEncoding.h: ../../src/Text/TextBinEnc/URIEncoding.cpp
+Text/TextBinEnc/URIEncoding.h:
 @URIEncoding.o
-Text/TextBinEnc/UTF8LCaseTextBinEnc.h: ../../src/Text/TextBinEnc/UTF8LCaseTextBinEnc.cpp
+Text/TextBinEnc/UTF8LCaseTextBinEnc.h:
 @UTF8LCaseTextBinEnc.o
-Text/TextBinEnc/UTF8TextBinEnc.h: ../../src/Text/TextBinEnc/UTF8TextBinEnc.cpp
+Text/TextBinEnc/UTF8TextBinEnc.h:
 @UTF8TextBinEnc.o
-Text/TextBinEnc/UTF8UCaseTextBinEnc.h: ../../src/Text/TextBinEnc/UTF8UCaseTextBinEnc.cpp
+Text/TextBinEnc/UTF8UCaseTextBinEnc.h:
 @UTF8UCaseTextBinEnc.o
 
 adl_defines.h:
 adl_sdk.h:
 adl_structures.h:
-miniz.h: ../../ThirdParty/miniz/miniz.c
+miniz.h:
 @miniz.o
 miniz_common.h:
 miniz_export.h:
-miniz_tdef.h: ../../ThirdParty/miniz/miniz_tdef.c
+miniz_tdef.h:
 @miniz_tdef.o
-miniz_tinfl.h: ../../ThirdParty/miniz/miniz_tinfl.c
+miniz_tinfl.h:
 @miniz_tinfl.o
-miniz_zip.h: ../../ThirdParty/miniz/miniz_zip.c
+miniz_zip.h:
 @miniz_zip.o
 
-UI/GUIComboBoxUtil.h: ../../src/UI/GUIComboBoxUtil.cpp
+UI/GUIComboBoxUtil.h:
 @GUIComboBoxUtil.o
-UI/GUIDObjArea.h: ../../src/UI/GUIDObjArea.cpp
+UI/GUIDObjArea.h:
 @GUIDObjArea.o
-UI/GUIHexFileView.h: ../../src/UI/GUIHexFileView.cpp
+UI/GUIHexFileView.h:
 @GUIHexFileView.o
-UI/GUIMapControl.h: ../../src/UI/GUIMapControl.cpp
+UI/GUIMapControl.h:
 @GUIMapControl.o
-UI/GUIMapTreeView.h: ../../src/UI/GUIMapTreeView.cpp
+UI/GUIMapTreeView.h:
 @GUIMapTreeView.o
-UI/GUIPictureBoxDD.h: ../../src/UI/GUIPictureBoxDD.cpp
+UI/GUIPictureBoxDD.h:
 @GUIPictureBoxDD.o
-UI/GUIPictureList.h: ../../src/UI/GUIPictureList.cpp
+UI/GUIPictureList.h:
 @GUIPictureList.o
-UI/GUISudokuViewer.h: ../../src/UI/GUISudokuViewer.cpp
+UI/GUISudokuViewer.h:
 @GUISudokuViewer.o
-UI/GUITextFileView.h: ../../src/UI/GUITextFileView.cpp
+UI/GUITextFileView.h:
 @GUITextFileView.o
-UI/GUIVideoBoxDD.h: ../../src/UI/GUIVideoBoxDD.cpp
+UI/GUIVideoBoxDD.h:
 @GUIVideoBoxDD.o
-UI/GUIVideoBoxDDLQ.h: ../../src/UI/GUIVideoBoxDDLQ.cpp
+UI/GUIVideoBoxDDLQ.h:
 @GUIVideoBoxDDLQ.o
-UI/ListBoxLogger.h: ../../src/UI/ListBoxLogger.cpp
+UI/ListBoxLogger.h:
 @ListBoxLogger.o
-UI/DObj/ButtonDObj.h: ../../src/UI/DObj/ButtonDObj.cpp
+UI/DObj/ButtonDObj.h:
 @ButtonDObj.o
-UI/DObj/ClickAreaDObj.h: ../../src/UI/DObj/ClickAreaDObj.cpp
+UI/DObj/ClickAreaDObj.h:
 @ClickAreaDObj.o
-UI/DObj/DirectObject.h: ../../src/UI/DObj/DirectObject.cpp
+UI/DObj/DirectObject.h:
 @DirectObject.o
-UI/DObj/DObjHandler.h: ../../src/UI/DObj/DObjHandler.cpp
+UI/DObj/DObjHandler.h:
 @DObjHandler.o
-UI/DObj/DownButtonDObj.h: ../../src/UI/DObj/DownButtonDObj.cpp
+UI/DObj/DownButtonDObj.h:
 @DownButtonDObj.o
-UI/DObj/DShowVideoDObjHandler.h: ../../src/UI/DObj/DShowVideoDObjHandler.cpp
+UI/DObj/DShowVideoDObjHandler.h:
 @DShowVideoDObjHandler.o
-UI/DObj/DynamicOverlayDObj.h: ../../src/UI/DObj/DynamicOverlayDObj.cpp
+UI/DObj/DynamicOverlayDObj.h:
 @DynamicOverlayDObj.o
-UI/DObj/ImageDObjHandler.h: ../../src/UI/DObj/ImageDObjHandler.cpp
+UI/DObj/ImageDObjHandler.h:
 @ImageDObjHandler.o
-UI/DObj/LabelDObj.h: ../../src/UI/DObj/LabelDObj.cpp
+UI/DObj/LabelDObj.h:
 @LabelDObj.o
-UI/DObj/OverlayDObj.h: ../../src/UI/DObj/OverlayDObj.cpp
+UI/DObj/OverlayDObj.h:
 @OverlayDObj.o
-UI/DObj/RollingMessageDObj.h: ../../src/UI/DObj/RollingMessageDObj.cpp
+UI/DObj/RollingMessageDObj.h:
 @RollingMessageDObj.o
-UI/DObj/RollingTextDObj.h: ../../src/UI/DObj/RollingTextDObj.cpp
+UI/DObj/RollingTextDObj.h:
 @RollingTextDObj.o
-UI/DObj/SizedOverlayDObj.h: ../../src/UI/DObj/SizedOverlayDObj.cpp
+UI/DObj/SizedOverlayDObj.h:
 @SizedOverlayDObj.o
-UI/DObj/TextDObj.h: ../../src/UI/DObj/TextDObj.cpp
+UI/DObj/TextDObj.h:
 @TextDObj.o
-UI/DObj/VideoDObjHandler.h: ../../src/UI/DObj/VideoDObjHandler.cpp
+UI/DObj/VideoDObjHandler.h:
 @VideoDObjHandler.o
 
-UtilUI/ColorDialog.h: ../../src/UtilUI/ColorDialog.cpp
+UtilUI/ColorDialog.h:
 @ColorDialog.o
-UtilUI/TextGotoDialog.h: ../../src/UtilUI/TextGotoDialog.cpp
+UtilUI/TextGotoDialog.h:
 @TextGotoDialog.o
-UtilUI/TextInputDialog.h: ../../src/UtilUI/TextInputDialog.cpp
+UtilUI/TextInputDialog.h:
 @TextInputDialog.o
-UtilUI/TextSearchForm.h: ../../src/UtilUI/TextSearchForm.cpp
+UtilUI/TextSearchForm.h:
 @TextSearchForm.o
-UtilUI/TextViewerForm.h: ../../src/UtilUI/TextViewerForm.cpp
+UtilUI/TextViewerForm.h:
 @TextViewerForm.o
 
 Core.o: ../../src/Core/Core.cpp

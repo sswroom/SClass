@@ -1,42 +1,42 @@
 
-MemTool.h: ../../src/MemToolX86.cpp
+MemTool.h:
 @MemTool.o
 @MemTool_CPP.o
 
 Core/X86Util.h:
 
-Manage/CPUInfo.h: ../../src/Manage/CPUInfoL.cpp
+Manage/CPUInfo.h:
 @CPUInfo.o
-Manage/CPUInfoDetail.h: ../../src/Manage/CPUInfoDetailL.cpp
+Manage/CPUInfoDetail.h:
 @CPUInfoDetail.o
 Manage/Dasm.h:
-Manage/DasmARM.h: ../../src/Manage/DasmUnk.cpp
+Manage/DasmARM.h:
 @Dasm.o
-Manage/DasmARM64.h: ../../src/Manage/DasmUnk.cpp
+Manage/DasmARM64.h:
 @Dasm.o
-Manage/DasmMIPS.h: ../../src/Manage/DasmUnk.cpp
+Manage/DasmMIPS.h:
 @Dasm.o
-Manage/DasmX86_32.h: ../../src/Manage/DasmUnk.cpp
+Manage/DasmX86_32.h:
 @Dasm.o
-Manage/DasmX86_64.h: ../../src/Manage/DasmUnk.cpp
+Manage/DasmX86_64.h:
 @Dasm.o
-Manage/ThreadContextARM.h: ../../src/Manage/ThreadContextUnk.cpp
+Manage/ThreadContextARM.h:
 @ThreadContextUnk.o
 @Dasm.o
-Manage/ThreadContextARM64.h: ../../src/Manage/ThreadContextUnk.cpp
+Manage/ThreadContextARM64.h:
 @ThreadContextUnk.o
 @Dasm.o
-Manage/ThreadContextMIPS.h: ../../src/Manage/ThreadContextUnk.cpp
+Manage/ThreadContextMIPS.h:
 @ThreadContextUnk.o
 @Dasm.o
-Manage/ThreadContextX86_32.h: ../../src/Manage/ThreadContextUnk.cpp
+Manage/ThreadContextX86_32.h:
 @ThreadContextUnk.o
 @Dasm.o
-Manage/ThreadContextX86_64.h: ../../src/Manage/ThreadContextUnk.cpp
+Manage/ThreadContextX86_64.h:
 @ThreadContextUnk.o
 @Dasm.o
 
-Media/ImageCopyC.h: ../../src/Media/ImageCopy_CPP.cpp
+Media/ImageCopyC.h:
 @ImageCopy_CPP.o
 
 MemTool.o: ../../src/MemToolX86.cpp

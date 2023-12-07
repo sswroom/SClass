@@ -1,116 +1,116 @@
 
-Exporter/GUIExporter.h: ../../src/Exporter/GUIExporterW.cpp
+Exporter/GUIExporter.h:
 @GUIExporter.o
-Exporter/GUIGIFExporter.h: ../../src/Exporter/GUIGIFExporterW.cpp
+Exporter/GUIGIFExporter.h:
 @GUIGIFExporter.o
-Exporter/GUIJPGExporter.h: ../../src/Exporter/GUIJPGExporterW.cpp
+Exporter/GUIJPGExporter.h:
 @GUIJPGExporter.o
-Exporter/GUIPNGExporter.h: ../../src/Exporter/GUIPNGExporterW.cpp
+Exporter/GUIPNGExporter.h:
 @GUIPNGExporter.o
-Exporter/GUITIFExporter.h: ../../src/Exporter/GUITIFExporterW.cpp
+Exporter/GUITIFExporter.h:
 @GUITIFExporter.o
 
-Media/DDrawManager.h: ../../src/Media/DDrawManager.cpp
+Media/DDrawManager.h:
 @DDrawManager.o
-Media/DrawEngineFactory.h: ../../src/Media/DrawEngineFactoryWin.cpp
+Media/DrawEngineFactory.h:
 @DrawEngineFactory.o
-Media/GDIEngine.h: ../../src/Media/GDIEngine.cpp
+Media/GDIEngine.h:
 @GDIEngine.o
-Media/MonitorInfo.h: ../../src/Media/MonitorInfoW.cpp
+Media/MonitorInfo.h:
 @MonitorInfo.o
-Media/ScreenCapturer.h: ../../src/Media/ScreenCapturerW.cpp
+Media/ScreenCapturer.h:
 @ScreenCapturer.o
 
-Parser/FileParser/GUIImgParser.h: ../../src/Parser/FileParser/GUIImgParserW.cpp
+Parser/FileParser/GUIImgParser.h:
 @GUIImgParser.o
 
-UI/Clipboard.h: ../../src/UI/ClipboardW.cpp
+UI/Clipboard.h:
 @Clipboard.o
-UI/FileDialog.h: ../../src/UI/FileDialogWin.cpp
+UI/FileDialog.h:
 @FileDialog.o
-UI/FolderDialog.h: ../../src/UI/FolderDialogWin.cpp
+UI/FolderDialog.h:
 @FolderDialog.o
-UI/FontDialog.h: ../../src/UI/FontDialogWin.cpp
+UI/FontDialog.h:
 @FontDialog.o
-UI/GUIButton.h: ../../src/UI/GUIButtonWin.cpp
+UI/GUIButton.h:
 @GUIButton.o
-UI/GUICheckBox.h: ../../src/UI/GUICheckBoxWin.cpp
+UI/GUICheckBox.h:
 @GUICheckBox.o
-UI/GUICheckedListBox.h: ../../src/UI/GUICheckedListBoxWin.cpp
+UI/GUICheckedListBox.h:
 @GUICheckedListBox.o
-UI/GUIClientControl.h: ../../src/UI/GUIClientControlWin.cpp
+UI/GUIClientControl.h:
 @GUIClientControl.o
-UI/GUIComboBox.h: ../../src/UI/GUIComboBoxWin.cpp
+UI/GUIComboBox.h:
 @GUIComboBox.o
-UI/GUIControl.h: ../../src/UI/GUIControlWin.cpp
+UI/GUIControl.h:
 @GUIControl.o
 UI/GUICore.h:
-UI/GUICoreWin.h: ../../src/UI/GUICoreWin.cpp
+UI/GUICoreWin.h:
 @GUICoreWin.o
-UI/GUICustomDraw.h: ../../src/UI/GUICustomDrawWin.cpp
+UI/GUICustomDraw.h:
 @GUICustomDraw.o
-UI/GUICustomDrawVScroll.h: ../../src/UI/GUICustomDrawVScrollWin.cpp
+UI/GUICustomDrawVScroll.h:
 @GUICustomDrawVScroll.o
-UI/GUIDateTimePicker.h: ../../src/UI/GUIDateTimePickerWin.cpp
+UI/GUIDateTimePicker.h:
 @GUIDateTimePicker.o
-UI/GUIDDrawControl.h: ../../src/UI/GUIDDrawControlWin.cpp
+UI/GUIDDrawControl.h:
 @GUIDDrawControl.o
-UI/GUIDragDrop.h: ../../src/UI/GUIDragDropWin.cpp
+UI/GUIDragDrop.h:
 @GUIDragDrop.o
-UI/GUIForm.h: ../../src/UI/GUIFormWin.cpp
+UI/GUIForm.h:
 @GUIForm.o
-UI/GUIGroupBox.h: ../../src/UI/GUIGroupBoxWin.cpp
+UI/GUIGroupBox.h:
 @GUIGroupBox.o
-UI/GUIHScrollBar.h: ../../src/UI/GUIHScrollBarWin.cpp
+UI/GUIHScrollBar.h:
 @GUIHScrollBar.o
-UI/GUIHSplitter.h: ../../src/UI/GUIHSplitterWin.cpp
+UI/GUIHSplitter.h:
 @GUIHSplitter.o
-UI/GUIIcon.h: ../../src/UI/GUIIconWin.cpp
+UI/GUIIcon.h:
 @GUIIcon.o
-UI/GUILabel.h: ../../src/UI/GUILabelWin.cpp
+UI/GUILabel.h:
 @GUILabel.o
-UI/GUIListBox.h: ../../src/UI/GUIListBoxWin.cpp
+UI/GUIListBox.h:
 @GUIListBox.o
-UI/GUIListView.h: ../../src/UI/GUIListViewWin.cpp
+UI/GUIListView.h:
 @GUIListView.o
-UI/GUIPanel.h: ../../src/UI/GUIPanelWin.cpp
+UI/GUIPanel.h:
 @GUIPanel.o
-UI/GUIMainMenu.h: ../../src/UI/GUIMainMenu.cpp
+UI/GUIMainMenu.h:
 @GUIMainMenu.o
-UI/GUIMenu.h: ../../src/UI/GUIMenuWin.cpp
+UI/GUIMenu.h:
 @GUIMenu.o
-UI/GUIPictureBox.h: ../../src/UI/GUIPictureBoxWin.cpp
+UI/GUIPictureBox.h:
 @GUIPictureBox.o
-UI/GUIPictureBoxSimple.h: ../../src/UI/GUIPictureBoxSimpleWin.cpp
+UI/GUIPictureBoxSimple.h:
 @GUIPictureBoxSimple.o
-UI/GUIPopupMenu.h: ../../src/UI/GUIPopupMenuWin.cpp
+UI/GUIPopupMenu.h:
 @GUIPopupMenu.o
-UI/GUIProgressBar.h: ../../src/UI/GUIProgressBarWin.cpp
+UI/GUIProgressBar.h:
 @GUIProgressBar.o
-UI/GUIRadioButton.h: ../../src/UI/GUIRadioButtonWin.cpp
+UI/GUIRadioButton.h:
 @GUIRadioButton.o
-UI/GUIRealtimeLineChart.h: ../../src/UI/GUIRealtimeLineChartWin.cpp
+UI/GUIRealtimeLineChart.h:
 @GUIRealtimeLineChart.o
-UI/GUITabControl.h: ../../src/UI/GUITabControlWin.cpp
+UI/GUITabControl.h:
 @GUITabControl.o
-UI/GUITabPage.h: ../../src/UI/GUITabPage.cpp
+UI/GUITabPage.h:
 @GUITabPage.o
-UI/GUITextBox.h: ../../src/UI/GUITextBoxWin.cpp
+UI/GUITextBox.h:
 @GUITextBox.o
-UI/GUITextView.h: ../../src/UI/GUITextViewWin.cpp
+UI/GUITextView.h:
 @GUITextView.o
-UI/GUITimer.h: ../../src/UI/GUITimerWin.cpp
+UI/GUITimer.h:
 @GUITimer.o
-UI/GUITrackBar.h: ../../src/UI/GUITrackBarWin.cpp
+UI/GUITrackBar.h:
 @GUITrackBar.o
-UI/GUITreeView.h: ../../src/UI/GUITreeViewWin.cpp
+UI/GUITreeView.h:
 @GUITreeView.o
-UI/GUIVSplitter.h: ../../src/UI/GUIVSplitterWin.cpp
+UI/GUIVSplitter.h:
 @GUIVSplitter.o
-UI/GUIWindowDragDrop.h: ../../src/UI/GUIWindowDragDrop.cpp
+UI/GUIWindowDragDrop.h:
 @GUIWindowDragDrop.o
 UI/IWindowSystem.h:
-UI/MessageDialog.h: ../../src/UI/MessageDialogW.cpp
+UI/MessageDialog.h:
 @MessageDialog.o
 
 GUIStartup.o: ../../startup/WinStartup.cpp

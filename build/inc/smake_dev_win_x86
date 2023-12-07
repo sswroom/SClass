@@ -1,18 +1,18 @@
 
-IO/GPUManager.h: ../../src/IO/GPUManagerW.cpp
+IO/GPUManager.h:
 @GPUManager.o
-IO/RobustelInfo.h: ../../src/IO/RobustelInfo_Null.cpp
+IO/RobustelInfo.h:
 @RobustelInfo.o
-IO/SMBIOSUtil.h: ../../src/IO/SMBIOSUtilW.cpp
+IO/SMBIOSUtil.h:
 @SMBIOSUtil.o
-IO/SystemInfo.h: ../../src/IO/SystemInfoW.cpp
+IO/SystemInfo.h:
 @SystemInfo.o
 
-Media/CameraManager.h: ../../src/Media/CameraManagerNul.cpp
+Media/CameraManager.h:
 @CameraManager.o
-Media/DDCReader.h: ../../src/Media/DDCReaderW.cpp
+Media/DDCReader.h:
 @DDCReader.o
-Media/VideoCaptureMgr.h: ../../src/Media/VideoCaptureMgrW.cpp
+Media/VideoCaptureMgr.h:
 @VideoCaptureMgr.o
 
 GPUManager.o: ../../src/IO/GPUManagerW.cpp

@@ -1,114 +1,114 @@
 
-Exporter/GUIExporter.h: ../../src/Exporter/GUIExporterGTK.cpp
+Exporter/GUIExporter.h:
 @GUIExporter.o
-Exporter/GUIGIFExporter.h: ../../src/Exporter/GUIGIFExporterGTK.cpp
+Exporter/GUIGIFExporter.h:
 @GUIGIFExporter.o
-Exporter/GUIJPGExporter.h: ../../src/Exporter/GUIJPGExporterGTK.cpp
+Exporter/GUIJPGExporter.h:
 @GUIJPGExporter.o
-Exporter/GUIPNGExporter.h: ../../src/Exporter/GUIPNGExporterGTK.cpp
+Exporter/GUIPNGExporter.h:
 @GUIPNGExporter.o
-Exporter/GUITIFExporter.h: ../../src/Exporter/GUITIFExporterGTK.cpp
+Exporter/GUITIFExporter.h:
 @GUITIFExporter.o
 
 Media/DDrawManager.h:
-Media/DrawEngineFactory.h: ../../src/Media/DrawEngineFactoryGTK.cpp
+Media/DrawEngineFactory.h:
 @DrawEngineFactory.o
-Media/DrawEngineGUI.h: ../../src/Media/GTKDrawEngine.cpp
+Media/DrawEngineGUI.h:
 @DrawEngineGUI.o
-Media/GTKDrawEngine.h: ../../src/Media/GTKDrawEngine.cpp
+Media/GTKDrawEngine.h:
 @DrawEngineGUI.o
-Media/MonitorInfo.h: ../../src/Media/MonitorInfoGTK.cpp
+Media/MonitorInfo.h:
 @MonitorInfo.o
-Media/ScreenCapturer.h: ../../src/Media/ScreenCapturerX11.cpp
+Media/ScreenCapturer.h:
 @ScreenCapturer.o
 
-Parser/FileParser/GUIImgParser.h: ../../src/Parser/FileParser/GUIImgParserGTK.cpp
+Parser/FileParser/GUIImgParser.h:
 @GUIImgParser.o
 
-UI/Clipboard.h: ../../src/UI/ClipboardGTK.cpp
+UI/Clipboard.h:
 @Clipboard.o
-UI/FileDialog.h: ../../src/UI/FileDialogGTK.cpp
+UI/FileDialog.h:
 @FileDialog.o
-UI/FolderDialog.h: ../../src/UI/FolderDialogGTK.cpp
+UI/FolderDialog.h:
 @FolderDialog.o
-UI/FontDialog.h: ../../src/UI/FontDialogGTK.cpp
+UI/FontDialog.h:
 @FontDialog.o
-UI/GUIButton.h: ../../src/UI/GUIButtonGTK.cpp
+UI/GUIButton.h:
 @GUIButton.o
-UI/GUICheckBox.h: ../../src/UI/GUICheckBoxGTK.cpp
+UI/GUICheckBox.h:
 @GUICheckBox.o
-UI/GUICheckedListBox.h: ../../src/UI/GUICheckedListBoxGTK.cpp
+UI/GUICheckedListBox.h:
 @GUICheckedListBox.o
-UI/GUIClientControl.h: ../../src/UI/GUIClientControlGTK.cpp
+UI/GUIClientControl.h:
 @GUIClientControl.o
-UI/GUIComboBox.h: ../../src/UI/GUIComboBoxGTK.cpp
+UI/GUIComboBox.h:
 @GUIComboBox.o
-UI/GUIControl.h: ../../src/UI/GUIControlGTK.cpp
+UI/GUIControl.h:
 @GUIControl.o
 UI/GUICore.h:
-UI/GUICoreGTK.h: ../../src/UI/GUICoreGTK.cpp
+UI/GUICoreGTK.h:
 @GUICore.o
-UI/GUICustomDraw.h: ../../src/UI/GUICustomDrawGTK.cpp
+UI/GUICustomDraw.h:
 @GUICustomDraw.o
-UI/GUICustomDrawVScroll.h: ../../src/UI/GUICustomDrawVScrollGTK.cpp
+UI/GUICustomDrawVScroll.h:
 @GUICustomDrawVScroll.o
-UI/GUIDateTimePicker.h: ../../src/UI/GUIDateTimePickerGTK.cpp
+UI/GUIDateTimePicker.h:
 @GUIDateTimePicker.o
-UI/GUIDDrawControl.h: ../../src/UI/GUIDDrawControlGtk.cpp
+UI/GUIDDrawControl.h:
 @GUIDDrawControl.o
-UI/GUIDragDrop.h: ../../src/UI/GUIDragDropGTK.cpp
+UI/GUIDragDrop.h:
 @GUIDragDrop.o
-UI/GUIDragDropGTK.h: ../../src/UI/GUIDragDropGTK.cpp
+UI/GUIDragDropGTK.h:
 @GUIDragDrop.o
-UI/GUIForm.h: ../../src/UI/GUIFormGTK.cpp
+UI/GUIForm.h:
 @GUIForm.o
-UI/GUIGroupBox.h: ../../src/UI/GUIGroupBoxGTK.cpp
+UI/GUIGroupBox.h:
 @GUIGroupBox.o
-UI/GUIHScrollBar.h: ../../src/UI/GUIHScrollBarGTK.cpp
+UI/GUIHScrollBar.h:
 @GUIHScrollBar.o
-UI/GUIHSplitter.h: ../../src/UI/GUIHSplitterGTK.cpp
+UI/GUIHSplitter.h:
 @GUIHSplitter.o
-UI/GUILabel.h: ../../src/UI/GUILabelGTK.cpp
+UI/GUILabel.h:
 @GUILabel.o
-UI/GUIListBox.h: ../../src/UI/GUIListBoxGTK.cpp
+UI/GUIListBox.h:
 @GUIListBox.o
-UI/GUIListView.h: ../../src/UI/GUIListViewGTK.cpp
+UI/GUIListView.h:
 @GUIListView.o
-UI/GUIPanel.h: ../../src/UI/GUIPanelGTK.cpp
+UI/GUIPanel.h:
 @GUIPanel.o
-UI/GUIMainMenu.h: ../../src/UI/GUIMainMenu.cpp
+UI/GUIMainMenu.h:
 @GUIMainMenu.o
-UI/GUIMenu.h: ../../src/UI/GUIMenuGTK.cpp
+UI/GUIMenu.h:
 @GUIMenu.o
-UI/GUIPictureBox.h: ../../src/UI/GUIPictureBoxGTK.cpp
+UI/GUIPictureBox.h:
 @GUIPictureBox.o
-UI/GUIPictureBoxSimple.h: ../../src/UI/GUIPictureBoxSimpleGTK.cpp
+UI/GUIPictureBoxSimple.h:
 @GUIPictureBoxSimple.o
-UI/GUIPopupMenu.h: ../../src/UI/GUIPopupMenuGTK.cpp
+UI/GUIPopupMenu.h:
 @GUIPopupMenu.o
-UI/GUIProgressBar.h: ../../src/UI/GUIProgressBarGTK.cpp
+UI/GUIProgressBar.h:
 @GUIProgressBar.o
-UI/GUIRadioButton.h: ../../src/UI/GUIRadioButtonGTK.cpp
+UI/GUIRadioButton.h:
 @GUIRadioButton.o
-UI/GUIRealtimeLineChart.h: ../../src/UI/GUIRealtimeLineChartGTK.cpp
+UI/GUIRealtimeLineChart.h:
 @GUIRealtimeLineChart.o
-UI/GUITabControl.h: ../../src/UI/GUITabControlGTK.cpp
+UI/GUITabControl.h:
 @GUITabControl.o
-UI/GUITabPage.h: ../../src/UI/GUITabPage.cpp
+UI/GUITabPage.h:
 @GUITabPage.o
-UI/GUITextBox.h: ../../src/UI/GUITextBoxGTK.cpp
+UI/GUITextBox.h:
 @GUITextBox.o
-UI/GUITextView.h: ../../src/UI/GUITextViewGTK.cpp
+UI/GUITextView.h:
 @GUITextView.o
-UI/GUITimer.h: ../../src/UI/GUITimerGTK.cpp
+UI/GUITimer.h:
 @GUITimer.o
-UI/GUITrackBar.h: ../../src/UI/GUITrackBarGTK.cpp
+UI/GUITrackBar.h:
 @GUITrackBar.o
-UI/GUITreeView.h: ../../src/UI/GUITreeViewGTK.cpp
+UI/GUITreeView.h:
 @GUITreeView.o
-UI/GUIVSplitter.h: ../../src/UI/GUIVSplitterGTK.cpp
+UI/GUIVSplitter.h:
 @GUIVSplitter.o
-UI/MessageDialog.h: ../../src/UI/MessageDialogL.cpp
+UI/MessageDialog.h:
 @MessageDialog.o
 
 GUIStartup.o: ../../startup/GtkStartup.cpp

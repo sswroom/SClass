@@ -1,102 +1,102 @@
 
-MyMemory.h: ../../src/MyMemoryL.cpp
+MyMemory.h:
 @MyMemory.o
 
-Crypto/Cert/OpenSSLCert.h: ../../src/Crypto/Cert/OpenSSLCert.cpp
+Crypto/Cert/OpenSSLCert.h:
 @OpenSSLCert.o
 
-DB/OLEDBConn.h: ../../src/DB/OLEDBConnNull.cpp
+DB/OLEDBConn.h:
 @OLEDBConn.o
 
-IO/BuildTime.h: ../../src/IO/BuildTime.cpp
+IO/BuildTime.h:
 @BuildTime.o
-IO/Console.h: ../../src/IO/ConsoleL.cpp
+IO/Console.h:
 @Console.o
-IO/ConsoleWriter.h: ../../src/IO/ConsoleWriterL.cpp
+IO/ConsoleWriter.h:
 @ConsoleWriter.o
-IO/DeviceInfo.h: ../../src/IO/DeviceInfoL.cpp
+IO/DeviceInfo.h:
 @DeviceInfo.o
-IO/DeviceManager.h: ../../src/IO/DeviceManagerL.cpp
+IO/DeviceManager.h:
 @DeviceManager.o
-IO/FileStream.h: ../../src/IO/FileStreamU.cpp
+IO/FileStream.h:
 @FileStream.o
-IO/FileUtil.h: ../../src/IO/FileUtilL.cpp
+IO/FileUtil.h:
 @FileUtil.o
-IO/Library.h: ../../src/IO/LibraryL.cpp
+IO/Library.h:
 @Library.o
-IO/Path.h: ../../src/IO/PathL.cpp
+IO/Path.h:
 @Path.o
-IO/PhysicalMem.h: ../../src/IO/PhysicalMemL.cpp
+IO/PhysicalMem.h:
 @PhysicalMem.o
-IO/Registry.h: ../../src/IO/RegistryLinux.cpp
+IO/Registry.h:
 @Registry.o
-IO/SerialPort.h: ../../src/IO/SerialPortL.cpp
+IO/SerialPort.h:
 @SerialPort.o
-IO/SimpleFileWriter.h: ../../src/IO/SimpleFileWriterL.cpp
+IO/SimpleFileWriter.h:
 @SimpleFileWriter.o
-IO/ViewFileBuffer.h: ../../src/IO/ViewFileBufferL.cpp
+IO/ViewFileBuffer.h:
 @ViewFileBuffer.o
 
-Manage/EnvironmentVar.h: ../../src/Manage/EnvironmentVarL.cpp
+Manage/EnvironmentVar.h:
 @EnvironmentVar.o
-Manage/ExceptionRecorder.h: ../../src/Manage/ExceptionRecorderL.cpp
+Manage/ExceptionRecorder.h:
 @ExceptionRecorder.o
-Manage/HiResClock.h: ../../src/Manage/HiResClockL.cpp
+Manage/HiResClock.h:
 @HiResClock.o
-Manage/ModuleInfo.h: ../../src/Manage/ModuleInfoL.cpp
+Manage/ModuleInfo.h:
 @ModuleInfo.o
-Manage/Process.h: ../../src/Manage/ProcessL.cpp
+Manage/Process.h:
 @Process.o
-Manage/ProcessExecution.h: ../../src/Manage/ProcessExecutionL.cpp
+Manage/ProcessExecution.h:
 @ProcessExecution.o
-Manage/StackTracer.h: ../../src/Manage/StackTracerL.cpp
+Manage/StackTracer.h:
 @StackTracer.o
 
-Media/ColorManager.h: ../../src/Media/ColorManager.cpp
+Media/ColorManager.h:
 @ColorManager.o
 Media/VFPManager.h:
-Media/WaveInSource.h: ../../src/Media/WaveInSourceNull.cpp
+Media/WaveInSource.h:
 @WaveInSource.o
-Media/WIAManager.h: ../../src/Media/WIAManagerNull.cpp
+Media/WIAManager.h:
 @WIAManager.o
 Media/AVIUtl/AUIManager.h:
 Media/AVIUtl/AUIPlugin.h:
-Media/Decoder/ACMDecoder.h: ../../src/Media/Decoder/ACMDecoderNull.cpp
+Media/Decoder/ACMDecoder.h:
 @ACMDecoder.o
 Media/Decoder/IMSDKDecoder.h:
-Media/Decoder/VFWDecoder.h: ../../src/Media/Decoder/VFWDecoderNull.cpp
+Media/Decoder/VFWDecoder.h:
 @VFWDecoder.o
-Media/Decoder/VPXDecoder.h: ../../src/Media/Decoder/VPXDecoder.cpp
+Media/Decoder/VPXDecoder.h:
 @VPXDecoder.o
 Media/Resizer/LanczosResizerLR_C32_OCL.h:
 
-Net/ARPInfo.h: ../../src/Net/ARPInfoL.cpp
+Net/ARPInfo.h:
 @ARPInfo.o
-Net/OpenSSLClient.h: ../../src/Net/OpenSSLClient.cpp
+Net/OpenSSLClient.h:
 @OpenSSLClient.o
-Net/OpenSSLCore.h: ../../src/Net/OpenSSLCore.cpp
+Net/OpenSSLCore.h:
 @OpenSSLCore.o
-Net/OpenSSLEngine.h: ../../src/Net/OpenSSLEngine.cpp
+Net/OpenSSLEngine.h:
 @OpenSSLEngine.o
-Net/OSSocketFactory.h: ../../src/Net/OSSocketFactoryL.cpp
+Net/OSSocketFactory.h:
 @OSSocketFactory.o
-Net/TCPClientMgr.h: ../../src/Net/TCPClientMgrL.cpp
+Net/TCPClientMgr.h:
 @TCPClientMgr.o
 
 Parser/FileParser/AUIParser.h:
 Parser/FileParser/VFPParser.h:
 
-SSWR/AVIRead/AVIRCoreWin.h: ../../src/SSWR/AVIRead/AVIRCoreWin.cpp
+SSWR/AVIRead/AVIRCoreWin.h:
 @AVIRCoreWin.o
 SSWR/AVIRead/AVIROLEDBForm.h:
 
-Sync/EventPool.h: ../../src/Sync/EventPoolL.cpp
+Sync/EventPool.h:
 @EventPool.o
-Sync/RWMutex.h: ../../src/Sync/RWMutexL.cpp
+Sync/RWMutex.h:
 @RWMutex.o
 
 Win32/StreamCOM.h:
-Win32/WMIQuery.h: ../../src/Win32/WMIQueryNull.cpp
+Win32/WMIQuery.h:
 @WMIQuery.o
 Win32/WMIReader.h:
 

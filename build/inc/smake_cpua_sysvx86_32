@@ -1,30 +1,30 @@
 
-MemTool.h: ../../src/MemToolX86.cpp
+MemTool.h:
 @MemTool.o
 @MemTool_CPP.o
 
 Core/X86Util.h:
 
-Manage/CPUInfo.h: ../../src/Manage/CPUInfox86.cpp
+Manage/CPUInfo.h:
 @CPUInfo.o
-Manage/CPUInfoDetail.h: ../../src/Manage/CPUInfoDetailx86.cpp
+Manage/CPUInfoDetail.h:
 @CPUInfoDetail.o
 Manage/Dasm.h:
 Manage/DasmARM.h:
-Manage/DasmARM64.h: ../../src/Manage/DasmARM64.cpp
+Manage/DasmARM64.h:
 @DasmARM64.o
-Manage/DasmX86_32.h: ../../src/Manage/DasmX86_32.cpp
+Manage/DasmX86_32.h:
 @DasmX86_32.o
-Manage/DasmX86_64.h: ../../src/Manage/DasmX86_64.cpp
+Manage/DasmX86_64.h:
 @DasmX86_64.o
 Manage/ThreadContextARM.h:
 Manage/ThreadContextARM64.h:
 Manage/ThreadContextMIPS.h:
-Manage/ThreadContextX86_32.h: ../../src/Manage/ThreadContextX86_32L.cpp
+Manage/ThreadContextX86_32.h:
 @ThreadContextX86_32L.o
 Manage/ThreadContextX86_64.h:
 
-Media/ImageCopyC.h: ../../src/Media/ImageCopy_CPP.cpp
+Media/ImageCopyC.h:
 @ImageCopy_CPP.o
 
 MemTool.o: ../../src/MemToolX86.cpp

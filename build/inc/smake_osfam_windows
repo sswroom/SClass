@@ -1,112 +1,112 @@
 
-MyMemory.h: ../../src/MyMemoryW.cpp
+MyMemory.h:
 @MyMemory.o
 
-IO/BuildTime.h: ../../src/IO/BuildTimeW.cpp
+IO/BuildTime.h:
 @BuildTime.o
-IO/Console.h: ../../src/IO/ConsoleW.cpp
+IO/Console.h:
 @Console.o
-IO/ConsoleWriter.h: ../../src/IO/ConsoleWriterW.cpp
+IO/ConsoleWriter.h:
 @ConsoleWriter.o
-IO/DeviceInfo.h: ../../src/IO/DeviceInfoW.cpp
+IO/DeviceInfo.h:
 @DeviceInfo.o
-IO/DeviceManager.h: ../../src/IO/DeviceManagerW.cpp
+IO/DeviceManager.h:
 @DeviceManager.o
-IO/DeviceStream.h: ../../src/IO/DeviceStreamW.cpp
+IO/DeviceStream.h:
 @DeviceStream.o
-IO/FileStream.h: ../../src/IO/FileStreamW.cpp
+IO/FileStream.h:
 @FileStream.o
-IO/FileUtil.h: ../../src/IO/FileUtilW.cpp
+IO/FileUtil.h:
 @FileUtil.o
-IO/Library.h: ../../src/IO/LibraryW.cpp
+IO/Library.h:
 @Library.o
-IO/Path.h: ../../src/IO/PathW.cpp
+IO/Path.h:
 @Path.o
-IO/PhysicalMem.h: ../../src/IO/PhysicalMemNull.cpp
+IO/PhysicalMem.h:
 @PhysicalMem.o
-IO/Registry.h: ../../src/IO/RegistryW.cpp
+IO/Registry.h:
 @Registry.o
-IO/SerialPort.h: ../../src/IO/SerialPortW.cpp
+IO/SerialPort.h:
 @SerialPort.o
-IO/SimpleFileWriter.h: ../../src/IO/SimpleFileWriterW.cpp
+IO/SimpleFileWriter.h:
 @SimpleFileWriter.o
-IO/ViewFileBuffer.h: ../../src/IO/ViewFileBufferW.cpp
+IO/ViewFileBuffer.h:
 @ViewFileBuffer.o
 
-Manage/EnvironmentVar.h: ../../src/Manage/EnvironmentVarW.cpp
+Manage/EnvironmentVar.h:
 @EnvironmentVar.o
-Manage/ExceptionRecorder.h: ../../src/Manage/ExceptionRecorderW.cpp
+Manage/ExceptionRecorder.h:
 @ExceptionRecorder.o
-Manage/HiResClock.h: ../../src/Manage/HiResClockW.cpp
+Manage/HiResClock.h:
 @HiResClock.o
-Manage/ModuleInfo.h: ../../src/Manage/ModuleInfoW.cpp
+Manage/ModuleInfo.h:
 @ModuleInfo.o
-Manage/Process.h: ../../src/Manage/ProcessW.cpp
+Manage/Process.h:
 @Process.o
-Manage/ProcessExecution.h: ../../src/Manage/ProcessExecutionW.cpp
+Manage/ProcessExecution.h:
 @ProcessExecution.o
-Manage/StackTracer.h: ../../src/Manage/StackTracerW.cpp
+Manage/StackTracer.h:
 @StackTracer.o
 
-Media/ColorManager.h: ../../src/Media/ColorManager.cpp
+Media/ColorManager.h:
 @ColorManager.o
 Media/VFAPI.h:
-Media/VFAudioStream.h: ../../src/Media/VFAudioStream.cpp
+Media/VFAudioStream.h:
 @VFAudioStream.o
-Media/VFPManager.h: ../../src/Media/VFPManager.cpp
+Media/VFPManager.h:
 @VFPManager.o
-Media/VFVideoStream.h: ../../src/Media/VFVideoStream.cpp
+Media/VFVideoStream.h:
 @VFVideoStream.o
-Media/WaveInSource.h: ../../src/Media/WaveInSource.cpp
+Media/WaveInSource.h:
 @WaveInSource.o
-Media/WaveOutRenderer.h: ../../src/Media/WaveOutRenderer.cpp
+Media/WaveOutRenderer.h:
 @WaveOutRenderer.o
-Media/WIAManager.h: ../../src/Media/WIAManager.cpp
+Media/WIAManager.h:
 @WIAManager.o
-Media/AVIUtl/AUIAudio.h: ../../src/Media/AVIUtl/AUIAudio.cpp
+Media/AVIUtl/AUIAudio.h:
 @AUIAudio.o
-Media/AVIUtl/AUIManager.h: ../../src/Media/AVIUtl/AUIManager.cpp
+Media/AVIUtl/AUIManager.h:
 @AUIManager.o
-Media/AVIUtl/AUIPlugin.h: ../../src/Media/AVIUtl/AUIPlugin.cpp
+Media/AVIUtl/AUIPlugin.h:
 @AUIPlugin.o
-Media/AVIUtl/AUIVideo.h: ../../src/Media/AVIUtl/AUIVideo.cpp
+Media/AVIUtl/AUIVideo.h:
 @AUIVideo.o
-Media/Decoder/ACMDecoder.h: ../../src/Media/Decoder/ACMDecoder.cpp
+Media/Decoder/ACMDecoder.h:
 @ACMDecoder.o
 Media/Decoder/IMSDKDecoder.h:
-Media/Decoder/VFWDecoder.h: ../../src/Media/Decoder/VFWDecoder.cpp
+Media/Decoder/VFWDecoder.h:
 @VFWDecoder.o
-Media/Decoder/VPXDecoder.h: ../../src/Media/Decoder/VPXDecoder.cpp
+Media/Decoder/VPXDecoder.h:
 @VPXDecoder.o
 Media/Resizer/LanczosResizerLR_C32_OCL.h:
 
-Net/ARPInfo.h: ../../src/Net/ARPInfoW.cpp
+Net/ARPInfo.h:
 @ARPInfo.o
-Net/OSSocketFactory.h: ../../src/Net/OSSocketFactoryW.cpp
+Net/OSSocketFactory.h:
 @OSSocketFactory.o
-Net/TCPClientMgr.h: ../../src/Net/TCPClientMgrW.cpp
+Net/TCPClientMgr.h:
 @TCPClientMgr.o
 
-Parser/FileParser/AUIParser.h: ../../src/Parser/FileParser/AUIParser.cpp
+Parser/FileParser/AUIParser.h:
 @AUIParser.o
-Parser/FileParser/VFPParser.h: ../../src/Parser/FileParser/VFPParser.cpp
+Parser/FileParser/VFPParser.h:
 @VFPParser.o
 
-SSWR/AVIRead/AVIRCoreWin.h: ../../src/SSWR/AVIRead/AVIRCoreWin.cpp
+SSWR/AVIRead/AVIRCoreWin.h:
 @AVIRCoreWin.o
-SSWR/AVIRead/AVIROLEDBForm.h: ../../src/SSWR/AVIRead/AVIROLEDBForm.cpp
+SSWR/AVIRead/AVIROLEDBForm.h:
 @AVIROLEDBForm.o
 
-Sync/EventPool.h: ../../src/Sync/EventPoolW.cpp
+Sync/EventPool.h:
 @EventPool.o
-Sync/RWMutex.h: ../../src/Sync/RWMutexW.cpp
+Sync/RWMutex.h:
 @RWMutex.o
 
-Win32/COMStream.h: ../../src/Win32/COMStream.cpp
+Win32/COMStream.h:
 @COMStream.o
-Win32/StreamCOM.h: ../../src/Win32/StreamCOM.cpp
+Win32/StreamCOM.h:
 @StreamCOM.o
-Win32/WMIReader.h: ../../src/Win32/WMIReader.cpp
+Win32/WMIReader.h:
 @WMIReader.o
 
 sqlite3.h:

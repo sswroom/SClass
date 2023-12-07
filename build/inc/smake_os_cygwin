@@ -3,98 +3,98 @@ INCLUDEPATH+=:../../ThirdParty/KSSample
 
 WinDebug.h:
 
-Crypto/Cert/TrustStore.h: ../../src/Crypto/Cert/TrustStore_Win.cpp
+Crypto/Cert/TrustStore.h:
 @TrustStore.o
-Crypto/Cert/WinHttpCert.h: ../../src/Crypto/Cert/WinHttpCert.cpp
+Crypto/Cert/WinHttpCert.h:
 @WinHttpCert.o
-Crypto/Encrypt/RSAEnc.h: ../../src/Crypto/Encrypt/RSAEncNull.cpp
+Crypto/Encrypt/RSAEnc.h:
 @RSAEnc.o
 
-DB/MDBFileConn.h: ../../src/DB/MDBFileConn.cpp
+DB/MDBFileConn.h:
 @MDBFileConn.o
-DB/MongoDB.h: ../../src/DB/MongoDBNull.cpp
+DB/MongoDB.h:
 @MongoDB.o
-DB/MySQLConn.h: ../../src/DB/MySQLConn.cpp
+DB/MySQLConn.h:
 @MySQLConn.o
-DB/ODBCConn.h: ../../src/DB/ODBCConn.cpp
+DB/ODBCConn.h:
 @ODBCConn.o
-DB/OLEDBConn.h: ../../src/DB/OLEDBConnNull.cpp
+DB/OLEDBConn.h:
 @OLEDBConn.o
-DB/PostgreSQLConn.h: ../../src/DB/PostgreSQLConn.cpp
+DB/PostgreSQLConn.h:
 @PostgreSQLConn.o
-DB/TDSConn.h: ../../src/DB/TDSConn.cpp
+DB/TDSConn.h:
 @TDSConn.o
 
-Exporter/HEIFExporter.h: ../../src/Exporter/HEIFExporter.cpp
+Exporter/HEIFExporter.h:
 @HEIFExporter.o
-Exporter/WebPExporter.h: ../../src/Exporter/WebPExporter.cpp
+Exporter/WebPExporter.h:
 @WebPExporter.o
 
-IO/AMDGPUControl.h: ../../src/IO/AMDGPUControl.cpp
+IO/AMDGPUControl.h:
 @AMDGPUControl.o
-IO/AMDGPUManager.h: ../../src/IO/AMDGPUManager.cpp
+IO/AMDGPUManager.h:
 @AMDGPUManager.o
-IO/BTController.h: ../../src/IO/BTControllerW.cpp
+IO/BTController.h:
 @BTController.o
-IO/BTManager.h: ../../src/IO/BTManagerW.cpp
+IO/BTManager.h:
 @BTManager.o
-IO/BTScanner.h: ../../src/IO/BTScannerNull.cpp
+IO/BTScanner.h:
 @BTScanner.o
-IO/DebugWriter.h: ../../src/IO/DebugWriterW.cpp
+IO/DebugWriter.h:
 @DebugWriter.o
-IO/FileVersion.h: ../../src/IO/FileVersionW.cpp
+IO/FileVersion.h:
 @FileVersion.o
-IO/HIDInfo.h: ../../src/IO/HIDInfoW.cpp
+IO/HIDInfo.h:
 @HIDInfo.o
-IO/I2CChannelOS.h: ../../src/IO/I2CChannelOSNull.cpp
+IO/I2CChannelOS.h:
 @I2CChannelOS.o
-IO/ProgramLinkManager.h: ../../src/IO/ProgramLinkManagerNull.cpp
+IO/ProgramLinkManager.h:
 @ProgramLinkManager.o
-IO/OS.h: ../../src/IO/OSW.cpp
+IO/OS.h:
 @OS.o
-IO/PCIInfo.h: ../../src/IO/PCIInfoW.cpp
+IO/PCIInfo.h:
 @PCIInfo.o
-IO/PowerInfo.h: ../../src/IO/PowerInfoW.cpp
+IO/PowerInfo.h:
 @PowerInfo.o
-IO/SDCardMgr.h: ../../src/IO/SDCardMgrW.cpp
+IO/SDCardMgr.h:
 @SDCardMgr.o
-IO/SensorAccelerometerW.h: ../../src/IO/SensorAccelerometerW.cpp
+IO/SensorAccelerometerW.h:
 @SensorAccelerometerW.o
-IO/SensorLightWin.h: ../../src/IO/SensorLightWin.cpp
+IO/SensorLightWin.h:
 @SensorLightWin.o
-IO/SensorLocationWin.h: ../../src/IO/SensorLocationWin.cpp
+IO/SensorLocationWin.h:
 @SensorLocationWin.o
-IO/SensorManager.h: ../../src/IO/SensorManagerW.cpp
+IO/SensorManager.h:
 @SensorManager.o
-IO/SensorOrientationWin.h: ../../src/IO/SensorOrientationWin.cpp
+IO/SensorOrientationWin.h:
 @SensorOrientationWin.o
-IO/SensorUnknownWin.h: ../../src/IO/SensorUnknownWin.cpp
+IO/SensorUnknownWin.h:
 @SensorUnknownWin.o
-IO/SensorWin.h: ../../src/IO/SensorWin.cpp
+IO/SensorWin.h:
 @SensorWin.o
-IO/ServiceManager.h: ../../src/IO/ServiceManagerW.cpp
+IO/ServiceManager.h:
 @ServiceManager.o
-IO/USBInfo.h: ../../src/IO/USBInfoW.cpp
+IO/USBInfo.h:
 @USBInfo.o
-IO/Watchdog.h: ../../src/IO/WatchdogNull.cpp
+IO/Watchdog.h:
 @Watchdog.o
 
-Manage/Computer.h: ../../src/Manage/ComputerW.cpp
+Manage/Computer.h:
 @Computer.o
-Manage/ComputerUser.h: ../../src/Manage/ComputerUserW.cpp
+Manage/ComputerUser.h:
 @ComputerUser.o
-Manage/SymbolResolver.h: ../../src/Manage/SymbolResolverW.cpp
+Manage/SymbolResolver.h:
 @SymbolResolver.o
-Manage/ThreadInfo.h: ../../src/Manage/ThreadInfoW.cpp
+Manage/ThreadInfo.h:
 @ThreadInfo.o
 
-Media/ASIOOutRenderer.h: ../../src/Media/ASIOOutRenderer.cpp
+Media/ASIOOutRenderer.h:
 @ASIOOutRenderer.o
-Media/AudioDevice.h: ../../src/Media/AudioDeviceW.cpp
+Media/AudioDevice.h:
 @AudioDevice.o
-Media/DDrawSurface.h: ../../src/Media/DDrawSurface.cpp
+Media/DDrawSurface.h:
 @DDrawSurface.o
-Media/KSRenderer.h: ../../src/Media/KSRenderer.cpp
+Media/KSRenderer.h:
 @KSRenderer.o
 @audfilter.o
 @audpin.o
@@ -104,18 +104,18 @@ Media/KSRenderer.h: ../../src/Media/KSRenderer.cpp
 @node.o
 @pin.o
 @util.o
-Media/MonitorSurfaceMgrFactory.h: ../../src/Media/MonitorSurfaceMgrFactoryWin.cpp
+Media/MonitorSurfaceMgrFactory.h:
 @MonitorSurfaceMgrFactory.o
-Media/OCREngine.h: ../../src/Media/OCREngine.cpp
+Media/OCREngine.h:
 @OCREngine.o
-Media/Printer.h: ../../src/Media/PrinterW.cpp
+Media/Printer.h:
 @Printer.o
-Media/ZXingWriter.h: ../../src/Media/ZXingWriter_Null.cpp
+Media/ZXingWriter.h:
 @ZXingWriter.o
-Media/Decoder/FFMPEGDecoder.h: ../../src/Media/Decoder/FFMPEGDecoder.cpp
+Media/Decoder/FFMPEGDecoder.h:
 @FFMPEGDecoder.o
 Media/DShow/DShowInit.h:
-Media/DShow/DShowVideoCapture.h: ../../src/Media/DShow/DShowVideoCapture.cpp
+Media/DShow/DShowVideoCapture.h:
 @DShowVideoCapture.o
 @amfilter.o
 @arithutil.o
@@ -126,16 +126,16 @@ Media/DShow/DShowVideoCapture.h: ../../src/Media/DShow/DShowVideoCapture.cpp
 @wxlist.o
 @wxutil.o
 Media/DShow/DShowVideoFilter.h:
-Media/OpenCV/OCVFrame.h: ../../src/Media/OpenCV/OCVFrame.cpp
+Media/OpenCV/OCVFrame.h:
 @OCVFrame.o
-Media/OpenCV/OCVFrameFeeder.h: ../../src/Media/OpenCV/OCVFrameFeeder.cpp
+Media/OpenCV/OCVFrameFeeder.h:
 @OCVFrameFeeder.o
 Media/OpenCV/OCVInit.h:
-Media/OpenCV/OCVNumPlateFinder.h: ../../src/Media/OpenCV/OCVNumPlateFinder.cpp
+Media/OpenCV/OCVNumPlateFinder.h:
 @OCVNumPlateFinder.o
-Media/OpenCV/OCVObjectDetector.h: ../../src/Media/OpenCV/OCVObjectDetector.cpp
+Media/OpenCV/OCVObjectDetector.h:
 @OCVObjectDetector.o
-Media/OpenCV/OCVUtil.h: ../../src/Media/OpenCV/OCVUtil.cpp
+Media/OpenCV/OCVUtil.h:
 @OCVUtil.o
 audfilter.h:
 audpin.h:
@@ -148,45 +148,45 @@ node.h:
 tlist.h:
 util.h:
 
-Net/HTTPOSClient.h: ../../src/Net/HTTPOSClientW.cpp
+Net/HTTPOSClient.h:
 @HTTPOSClient.o
 @WinSSLEngine.o
 @WinSSLClient.o
-Net/SSLEngineFactory.h: ../../src/Net/SSLEngineFactoryWin.cpp
+Net/SSLEngineFactory.h:
 @SSLEngineFactory.o
-Net/WinSSLClient.h: ../../src/Net/WinSSLClient.cpp
+Net/WinSSLClient.h:
 @WinSSLClient.o
-Net/WinSSLEngine.h: ../../src/Net/WinSSLEngine.cpp
+Net/WinSSLEngine.h:
 @WinSSLEngine.o
-Net/WirelessLAN.h: ../../src/Net/WirelessLANW.cpp
+Net/WirelessLAN.h:
 @WirelessLAN.o
-Net/WLANWindowsCore.h: ../../src/Net/WLANWindowsCore.cpp
+Net/WLANWindowsCore.h:
 @WLANWindowsCore.o
-Net/WLANWindowsInterface.h: ../../src/Net/WLANWindowsInterface.cpp
+Net/WLANWindowsInterface.h:
 @WLANWindowsInterface.o
 
-Parser/FileParser/HEIFParser.h: ../../src/Parser/FileParser/HEIFParser.cpp
+Parser/FileParser/HEIFParser.h:
 @HEIFParser.o
-Parser/FileParser/JP2Parser.h: ../../src/Parser/FileParser/JP2Parser.cpp
+Parser/FileParser/JP2Parser.h:
 @JP2Parser.o
-Parser/FileParser/WebPParser.h: ../../src/Parser/FileParser/WebPParser.cpp
+Parser/FileParser/WebPParser.h:
 @WebPParser.o
 
-Sync/SimpleThread.h: ../../src/Sync/ThreadUtilW.cpp
+Sync/SimpleThread.h:
 @SimpleThread.o
 @SimpleThread_CPP.o
-Sync/ThreadUtil.h: ../../src/Sync/ThreadUtilW.cpp
+Sync/ThreadUtil.h:
 @ThreadUtil.o
 
-Win32/ServiceControl.h: ../../src/Win32/ServiceControl.cpp
+Win32/ServiceControl.h:
 @ServiceControl.o
-Win32/WindowsBTScanner.h: ../../src/Win32/WindowsBTScanner.cpp
+Win32/WindowsBTScanner.h:
 @WindowsBTScanner.o
-Win32/WindowsEvent.h: ../../src/Win32/WindowsEvent.cpp
+Win32/WindowsEvent.h:
 @WindowsEvent.o
-Win32/WinRTCore.h: ../../src/Win32/WinRTCore.cpp
+Win32/WinRTCore.h:
 @WinRTCore.o
-Win32/WMIQuery.h: ../../src/Win32/WMIQueryNull.cpp
+Win32/WMIQuery.h:
 @WMIQuery.o
 
 TrustStore.o: ../../src/Crypto/Cert/TrustStore_Win.cpp
@@ -319,44 +319,44 @@ WinRTCore.o: ../../src/Win32/WinRTCore.cpp
 !-lWindowsApp
 WMIQuery.o: ../../src/Win32/WMIQueryNull.cpp
 
-amfilter.o: ../../ThirdParty/baseclasses/amfilter.cpp
+amfilter.o: !../../ThirdParty/baseclasses/amfilter.cpp
 $-I ../../ThirdParty/baseclasses
 $-fpermissive
 !-lstrmiids
 !-lole32
-arithutil.o: ../../ThirdParty/baseclasses/arithutil.cpp
+arithutil.o: !../../ThirdParty/baseclasses/arithutil.cpp
 $-I ../../ThirdParty/baseclasses
 $-fpermissive
-combase.o: ../../ThirdParty/baseclasses/combase.cpp
+combase.o: !../../ThirdParty/baseclasses/combase.cpp
 $-I ../../ThirdParty/baseclasses
 $-fpermissive
-ctlutil.o: ../../ThirdParty/baseclasses/ctlutil.cpp
+ctlutil.o: !../../ThirdParty/baseclasses/ctlutil.cpp
 $-I ../../ThirdParty/baseclasses
 $-fpermissive
 !-luuid
-mtype.o: ../../ThirdParty/baseclasses/mtype.cpp
+mtype.o: !../../ThirdParty/baseclasses/mtype.cpp
 $-I ../../ThirdParty/baseclasses
 $-fpermissive
 !-lole32
-renbase.o: ../../ThirdParty/baseclasses/renbase.cpp
+renbase.o: !../../ThirdParty/baseclasses/renbase.cpp
 $-I ../../ThirdParty/baseclasses
 $-fpermissive
 !-lwinmm
-wxlist.o: ../../ThirdParty/baseclasses/wxlist.cpp
+wxlist.o: !../../ThirdParty/baseclasses/wxlist.cpp
 $-I ../../ThirdParty/baseclasses
 $-fpermissive
-wxutil.o: ../../ThirdParty/baseclasses/wxutil.cpp
+wxutil.o: !../../ThirdParty/baseclasses/wxutil.cpp
 $-I ../../ThirdParty/baseclasses
 $-fpermissive
 !-lwinmm
 !-lole32
 !-loleaut32
-audfilter.o: ../../ThirdParty/KSSample/audfilter.cpp
-audpin.o: ../../ThirdParty/KSSample/audpin.cpp
-enum.o: ../../ThirdParty/KSSample/enum.cpp
+audfilter.o: !../../ThirdParty/KSSample/audfilter.cpp
+audpin.o: !../../ThirdParty/KSSample/audpin.cpp
+enum.o: !../../ThirdParty/KSSample/enum.cpp
 !-lsetupapi
-filter.o: ../../ThirdParty/KSSample/filter.cpp
-irptgt.o: ../../ThirdParty/KSSample/irptgt.cpp
-node.o: ../../ThirdParty/KSSample/node.cpp
-pin.o: ../../ThirdParty/KSSample/pin.cpp
-util.o: ../../ThirdParty/KSSample/util.cpp
+filter.o: !../../ThirdParty/KSSample/filter.cpp
+irptgt.o: !../../ThirdParty/KSSample/irptgt.cpp
+node.o: !../../ThirdParty/KSSample/node.cpp
+pin.o: !../../ThirdParty/KSSample/pin.cpp
+util.o: !../../ThirdParty/KSSample/util.cpp

@@ -1,5 +1,5 @@
 
-IO/GPIOControl.h: ../../src/IO/GPIOControl_MT7628.cpp
+IO/GPIOControl.h:
 @GPIOControl.o
 
 GPIOControl.o: ../../src/IO/GPIOControl_MT7628.cpp
