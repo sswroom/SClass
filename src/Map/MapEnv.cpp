@@ -1104,15 +1104,14 @@ OSInt Map::MapEnv::AddImage(Text::CStringNN fileName, NotNullPtr<Parser::ParserL
 	{
 		return (OSInt)imgInfo->index;
 	}
-	IO::ParserType pt;
 	IO::ParsedObject *pobj;
 	{
 		IO::StmData::FileData fd(fileName, false);
-		pobj = parserList->ParseFile(fd, &pt);
+		pobj = parserList->ParseFile(fd);
 	}
 	if (pobj)
 	{
-		if (pt == IO::ParserType::ImageList)
+		if (pobj->GetParserType() == IO::ParserType::ImageList)
 		{
 			UOSInt i;
 			imgInfo = MemAlloc(ImageInfo, 1);

@@ -221,12 +221,11 @@ Media::ImageList *Map::MercatorTileMap::LoadTileImage(UOSInt level, Math::Coord2
 			ts = fd->GetFileStream()->GetCreateTime();
 			if (ts > currTS)
 			{
-				IO::ParserType pt;
 				IO::StmData::BufferedStreamData bsd(fd);
-				pobj = parsers->ParseFile(bsd, &pt);
+				pobj = parsers->ParseFile(bsd);
 				if (pobj)
 				{
-					if (pt == IO::ParserType::ImageList)
+					if (pobj->GetParserType() == IO::ParserType::ImageList)
 					{
 						return (Media::ImageList*)pobj;
 					}
@@ -255,12 +254,11 @@ Media::ImageList *Map::MercatorTileMap::LoadTileImage(UOSInt level, Math::Coord2
 		NotNullPtr<IO::StreamData> fd;
 		if (fd.Set(this->spkg->CreateStreamData({filePathU, (UOSInt)(sptru - filePathU)})))
 		{
-			IO::ParserType pt;
 			IO::StmData::BufferedStreamData bsd(fd);
-			pobj = parsers->ParseFile(bsd, &pt);
+			pobj = parsers->ParseFile(bsd);
 			if (pobj)
 			{
-				if (pt == IO::ParserType::ImageList)
+				if (pobj->GetParserType() == IO::ParserType::ImageList)
 				{
 					return (Media::ImageList*)pobj;
 				}
@@ -339,12 +337,11 @@ Media::ImageList *Map::MercatorTileMap::LoadTileImage(UOSInt level, Math::Coord2
 	{
 		if (nnfd->GetDataSize() > 0)
 		{
-			IO::ParserType pt;
 			IO::StmData::BufferedStreamData bsd(nnfd);
-			pobj = parsers->ParseFile(bsd, &pt);
+			pobj = parsers->ParseFile(bsd);
 			if (pobj)
 			{
-				if (pt == IO::ParserType::ImageList)
+				if (pobj->GetParserType() == IO::ParserType::ImageList)
 				{
 					return (Media::ImageList*)pobj;
 				}

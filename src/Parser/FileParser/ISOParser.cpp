@@ -66,8 +66,7 @@ IO::ParsedObject *Parser::FileParser::ISOParser::ParseFileHdr(NotNullPtr<IO::Str
 
 	if (sd.Set(sectorData) && targetType != IO::ParserType::SectorData)
 	{
-		IO::ParserType pt;
-		IO::ParsedObject *pobj = this->parsers->ParseObject(sd, pt);
+		IO::ParsedObject *pobj = this->parsers->ParseObject(sd);
 		if (pobj)
 		{
 			sd.Delete();

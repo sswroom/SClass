@@ -378,12 +378,11 @@ IO::ParsedObject *Parser::FileParser::BMPParser::ParseFileHdr(NotNullPtr<IO::Str
 	if (biCompression == 4 || biCompression == 5) //BI_JPEG / BI_PNG)
 	{
 		IO::ParsedObject *pobj = 0;
-		IO::ParserType pt;
 		if (this->parsers)
 		{
 			UInt32 currOfst = ReadUInt32(&hdr[10]);
 			NotNullPtr<IO::StreamData> innerFd = fd->GetPartialData(currOfst, fd->GetDataSize() - currOfst);
-			pobj = this->parsers->ParseFile(innerFd, &pt);
+			pobj = this->parsers->ParseFile(innerFd);
 			innerFd.Delete();
 			return pobj;
 		}

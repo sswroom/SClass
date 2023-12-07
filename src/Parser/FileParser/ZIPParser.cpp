@@ -494,8 +494,7 @@ IO::ParsedObject *Parser::FileParser::ZIPParser::ParseFileHdr(NotNullPtr<IO::Str
 	}
 	if (targetType != IO::ParserType::PackageFile && this->parsers)
 	{
-		IO::ParserType pt;
-		IO::ParsedObject *newObj = this->parsers->ParseObjectType(pf, pt, targetType);
+		IO::ParsedObject *newObj = this->parsers->ParseObjectType(pf, targetType);
 		if (newObj)
 		{
 			pf.Delete();

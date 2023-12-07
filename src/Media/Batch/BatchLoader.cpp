@@ -16,7 +16,6 @@ UInt32 __stdcall Media::Batch::BatchLoader::ThreadProc(void *userObj)
 	UOSInt i;
 	IO::ParsedObject *pobj;
 	NotNullPtr<IO::ParsedObject> nnpobj;
-	IO::ParserType pt;
 
 	ThreadState *state = (ThreadState*)userObj;
 	state->running = true;
@@ -54,11 +53,11 @@ UInt32 __stdcall Media::Batch::BatchLoader::ThreadProc(void *userObj)
 				Sync::MutexUsage mutUsage(state->me->ioMut);
 				{
 					IO::StmData::FileData fd(fileNameStr, false);
-					pobj = state->me->parsers->ParseFile(fd, &pt);
+					pobj = state->me->parsers->ParseFile(fd);
 				}
 				if (nnpobj.Set(pobj))
 				{
-					if (pt == IO::ParserType::ImageList)
+					if (nnpobj->GetParserType() == IO::ParserType::ImageList)
 					{
 						NotNullPtr<Media::ImageList> imgList = NotNullPtr<Media::ImageList>::ConvertFrom(nnpobj);
 						i = imgList->GetCount();
@@ -93,10 +92,10 @@ UInt32 __stdcall Media::Batch::BatchLoader::ThreadProc(void *userObj)
 			else
 			{
 				Sync::MutexUsage mutUsage(state->me->ioMut);
-				pobj = state->me->parsers->ParseFile(info->data, &pt);
+				pobj = state->me->parsers->ParseFile(info->data);
 				if (nnpobj.Set(pobj))
 				{
-					if (pt == IO::ParserType::ImageList)
+					if (nnpobj->GetParserType() == IO::ParserType::ImageList)
 					{
 						NotNullPtr<Media::ImageList> imgList = NotNullPtr<Media::ImageList>::ConvertFrom(nnpobj);
 						i = imgList->GetCount();

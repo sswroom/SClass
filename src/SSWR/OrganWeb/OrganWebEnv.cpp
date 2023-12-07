@@ -2192,7 +2192,6 @@ Int32 SSWR::OrganWeb::OrganWebEnv::UserfileAdd(NotNullPtr<Sync::RWMutexUsage> mu
 	}
 	if (fileType == FileType::Image)
 	{
-		IO::ParserType t;
 		IO::ParsedObject *pobj;
 		Bool valid = false;
 		Data::Timestamp fileTime = Data::Timestamp(0, Data::DateTimeUtil::GetLocalTzQhr());
@@ -2206,11 +2205,11 @@ Int32 SSWR::OrganWeb::OrganWebEnv::UserfileAdd(NotNullPtr<Sync::RWMutexUsage> mu
 
 		{
 			IO::StmData::MemoryDataRef md(fileCont, fileSize);
-			pobj = this->parsers.ParseFile(md, &t);
+			pobj = this->parsers.ParseFile(md);
 		}
 		if (pobj)
 		{
-			if (t == IO::ParserType::ImageList)
+			if (pobj->GetParserType() == IO::ParserType::ImageList)
 			{
 				valid = !mustHaveCamera;
 
@@ -2469,7 +2468,6 @@ Int32 SSWR::OrganWeb::OrganWebEnv::UserfileAdd(NotNullPtr<Sync::RWMutexUsage> mu
 		NotNullPtr<Media::DrawImage> img;
 		UInt32 crcVal;
 		IO::ParsedObject *pobj;
-		IO::ParserType t;
 		Data::Timestamp fileTime = 0;
 		UserFileInfo *userFile;
 		Bool valid = false;
@@ -2481,11 +2479,11 @@ Int32 SSWR::OrganWeb::OrganWebEnv::UserfileAdd(NotNullPtr<Sync::RWMutexUsage> mu
 
 		{
 			IO::StmData::FileData fd(fileName, false);
-			pobj = this->parsers.ParseFile(fd, &t);
+			pobj = this->parsers.ParseFile(fd);
 		}
 		if (pobj)
 		{
-			if (t == IO::ParserType::MediaFile)
+			if (pobj->GetParserType() == IO::ParserType::MediaFile)
 			{
 				Media::MediaFile *mediaFile = (Media::MediaFile*)pobj;
 				Media::IMediaSource *msrc = mediaFile->GetStream(0, 0);

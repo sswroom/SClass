@@ -584,16 +584,15 @@ Bool Map::MapServerHandler::AddAsset(Text::CStringNN filePath)
 {
 	IO::Path::PathType pt = IO::Path::GetPathType(filePath);
 	IO::ParsedObject *pobj;
-	IO::ParserType t;
 	if (pt == IO::Path::PathType::File)
 	{
 		IO::StmData::FileData fd(filePath, false);
-		pobj = this->parsers->ParseFile(fd, &t);
+		pobj = this->parsers->ParseFile(fd);
 	}
 	else if (pt == IO::Path::PathType::Directory)
 	{
 		IO::DirectoryPackage dpkg(filePath);
-		pobj = this->parsers->ParseObject(dpkg, t);
+		pobj = this->parsers->ParseObject(dpkg);
 	}
 	else
 	{
@@ -604,7 +603,7 @@ Bool Map::MapServerHandler::AddAsset(Text::CStringNN filePath)
 		return false;
 	}
 
-	if (t == IO::ParserType::MapLayer)
+	if (pobj->GetParserType() == IO::ParserType::MapLayer)
 	{
 		Map::MapDrawLayer *layer = (Map::MapDrawLayer*)pobj;
 		this->AddLayer(layer);

@@ -4088,10 +4088,9 @@ Map::MapConfig2::MapConfig2(Text::CStringNN fileName, NotNullPtr<Media::DrawEngi
 				currLayer->img = 0;
 				{
 					IO::ParsedObject *obj;
-					IO::ParserType pt;
 					{
 						IO::StmData::FileData fd(strs[4].ToCString(), false);
-						obj = parserList->ParseFile(fd, &pt);
+						obj = parserList->ParseFile(fd);
 					}
 					if (obj)
 					{

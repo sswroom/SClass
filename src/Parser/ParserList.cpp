@@ -209,7 +209,7 @@ void Parser::ParserList::PrepareSelector(NotNullPtr<IO::FileSelector> selector, 
 	}
 }
 
-IO::ParsedObject *Parser::ParserList::ParseFile(NotNullPtr<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType *t, IO::ParserType targetType)
+IO::ParsedObject *Parser::ParserList::ParseFile(NotNullPtr<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
 {
 	UOSInt i = 0;
 	UOSInt j = this->filePArr.GetCount();
@@ -249,10 +249,6 @@ IO::ParsedObject *Parser::ParserList::ParseFile(NotNullPtr<IO::StreamData> fd, I
 		parser = this->filePArr.GetItem(i);
 		if ((result = parser->ParseFileHdr(fd, pkgFile, targetType, hdr.Ptr())) != 0)
 		{
-			if (t)
-			{
-				*t = result->GetParserType();
-			}
 			return result;
 		}
 		i++;
@@ -260,37 +256,36 @@ IO::ParsedObject *Parser::ParserList::ParseFile(NotNullPtr<IO::StreamData> fd, I
 	return 0;
 }
 
-IO::ParsedObject *Parser::ParserList::ParseFile(NotNullPtr<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType *t)
+IO::ParsedObject *Parser::ParserList::ParseFile(NotNullPtr<IO::StreamData> fd, IO::PackageFile *pkgFile)
 {
-	return ParseFile(fd, pkgFile, t, IO::ParserType::Unknown);
+	return ParseFile(fd, pkgFile, IO::ParserType::Unknown);
 }
 
-IO::ParsedObject *Parser::ParserList::ParseFile(NotNullPtr<IO::StreamData> fd, IO::ParserType *t)
+IO::ParsedObject *Parser::ParserList::ParseFile(NotNullPtr<IO::StreamData> fd)
 {
-	return ParseFile(fd, 0, t, IO::ParserType::Unknown);
+	return ParseFile(fd, 0, IO::ParserType::Unknown);
 }
 
 IO::ParsedObject *Parser::ParserList::ParseFileType(NotNullPtr<IO::StreamData> fd, IO::ParserType t)
 {
-	IO::ParserType pt;
 	NotNullPtr<IO::ParsedObject> pobj;
-	IO::ParsedObject *pobj2 = this->ParseFile(fd, 0, &pt, t);
+	IO::ParsedObject *pobj2 = this->ParseFile(fd, 0, t);
 	while (pobj.Set(pobj2))
 	{
-		if (pt == t)
+		if (pobj->GetParserType() == t)
 			return pobj.Ptr();
-		pobj2 = this->ParseObjectType(pobj, pt, t);
+		pobj2 = this->ParseObjectType(pobj, t);
 		pobj.Delete();
 	}
 	return 0;
 }
 
-IO::ParsedObject *Parser::ParserList::ParseObject(NotNullPtr<IO::ParsedObject> pobj, OptOut<IO::ParserType> t)
+IO::ParsedObject *Parser::ParserList::ParseObject(NotNullPtr<IO::ParsedObject> pobj)
 {
-	return ParseObjectType(pobj, t, IO::ParserType::Unknown);
+	return ParseObjectType(pobj, IO::ParserType::Unknown);
 }
 
-IO::ParsedObject *Parser::ParserList::ParseObjectType(NotNullPtr<IO::ParsedObject> pobj, OptOut<IO::ParserType> t, IO::ParserType targetType)
+IO::ParsedObject *Parser::ParserList::ParseObjectType(NotNullPtr<IO::ParsedObject> pobj, IO::ParserType targetType)
 {
 	UOSInt i = 0;
 	UOSInt j = this->objPArr.GetCount();
@@ -301,10 +296,6 @@ IO::ParsedObject *Parser::ParserList::ParseObjectType(NotNullPtr<IO::ParsedObjec
 		parser = this->objPArr.GetItem(i);
 		if ((result = parser->ParseObject(pobj, 0, targetType)) != 0)
 		{
-			if (t.IsNotNull())
-			{
-				t.SetNoCheck(result->GetParserType());
-			}
 			return result;
 		}
 		i++;

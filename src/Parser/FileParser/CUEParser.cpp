@@ -138,18 +138,17 @@ IO::ParsedObject *Parser::FileParser::CUEParser::ParseFileHdr(NotNullPtr<IO::Str
 
 	if (!errorFound && fileName)
 	{
-		IO::ParserType pt;
 		IO::ParsedObject *pobj;
 
 		sptr = fd->GetFullName()->ConcatTo(sbuff);
 		sptr = IO::Path::AppendPath(sbuff, sptr, fileName->ToCString());
 		{
 			IO::StmData::FileData data(CSTRP(sbuff, sptr), false);
-			pobj = this->parsers->ParseFile(data, &pt);
+			pobj = this->parsers->ParseFile(data);
 		}
 		if (pobj)
 		{
-			if (pt == IO::ParserType::MediaFile)
+			if (pobj->GetParserType() == IO::ParserType::MediaFile)
 			{
 				mf = (Media::MediaFile*)pobj;
 				Media::ChapterInfo *chapters;

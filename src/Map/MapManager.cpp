@@ -34,12 +34,11 @@ Map::MapDrawLayer *Map::MapManager::LoadLayer(Text::CStringNN fileName, Parser::
 		return info->layer;
 	}
 	IO::ParsedObject *pobj;
-	IO::ParserType pt;
 	{
 		IO::StmData::FileData fd(fileName, false);
-		pobj = parsers->ParseFile(fd, &pt);
+		pobj = parsers->ParseFile(fd);
 	}
-	if (pt != IO::ParserType::MapLayer)
+	if (pobj != 0 && pobj->GetParserType() != IO::ParserType::MapLayer)
 	{
 		if (pobj)
 		{

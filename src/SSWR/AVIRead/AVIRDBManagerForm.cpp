@@ -474,7 +474,7 @@ void __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnFileHandler(void *userObj, No
 			if (pt == IO::Path::PathType::Directory)
 			{
 				IO::DirectoryPackage dpkg(files[i]);
-				db = (DB::ReadingDB*)me->core->GetParserList()->ParseObjectType(dpkg, 0, IO::ParserType::ReadingDB);
+				db = (DB::ReadingDB*)me->core->GetParserList()->ParseObjectType(dpkg, IO::ParserType::ReadingDB);
 			}
 			else
 			{

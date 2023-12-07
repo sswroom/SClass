@@ -223,11 +223,10 @@ Media::ImageList *Map::ESRI::ESRITileMap::LoadTileImage(UOSInt level, Math::Coor
 		IO::StmData::FileData fd({filePath, (UOSInt)(filePathEnd - filePath)}, false);
 		if (fd.GetDataSize() > 0)
 		{
-			IO::ParserType pt;
-			pobj = parsers->ParseFile(fd, &pt);
+			pobj = parsers->ParseFile(fd);
 			if (pobj)
 			{
-				if (pt == IO::ParserType::ImageList)
+				if (pobj->GetParserType() == IO::ParserType::ImageList)
 				{
 					return (Media::ImageList*)pobj;
 				}
@@ -243,11 +242,10 @@ Media::ImageList *Map::ESRI::ESRITileMap::LoadTileImage(UOSInt level, Math::Coor
 	IO::StmData::FileData fd({filePath, (UOSInt)(filePathEnd - filePath)}, false);
 	if (fd.GetDataSize() > 0)
 	{
-		IO::ParserType pt;
-		pobj = parsers->ParseFile(fd, &pt);
+		pobj = parsers->ParseFile(fd);
 		if (pobj)
 		{
-			if (pt == IO::ParserType::ImageList)
+			if (pobj->GetParserType() == IO::ParserType::ImageList)
 			{
 				return (Media::ImageList*)pobj;
 			}

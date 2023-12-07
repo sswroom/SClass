@@ -15,17 +15,16 @@ void __stdcall SSWR::AVIRead::AVIRCertUtilForm::OnFileDrop(void *userObj, NotNul
 	NotNullPtr<Parser::ParserList> parsers = me->core->GetParserList();
 
 	UOSInt i = 0;
-	IO::ParserType t;
 	IO::ParsedObject *pobj;
 	while (i < nFiles)
 	{
 		{
 			IO::StmData::FileData fd(files[i], false);
-			pobj = parsers->ParseFile(fd, &t);
+			pobj = parsers->ParseFile(fd);
 		}
 		if (pobj)
 		{
-			if (t == IO::ParserType::ASN1Data)
+			if (pobj->GetParserType() == IO::ParserType::ASN1Data)
 			{
 				Net::ASN1Data *asn1 = (Net::ASN1Data*)pobj;
 				if (asn1->GetASN1Type() == Net::ASN1Data::ASN1Type::X509)

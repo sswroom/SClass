@@ -985,12 +985,11 @@ Media::ImageList *Map::WebMapTileServiceSource::LoadTileImage(UOSInt level, Math
 	IO::ParsedObject *pobj;
 	if (this->LoadTileImageData(level, tileId, bounds, localOnly, it).SetTo(fd))
 	{
-		IO::ParserType pt;
-		pobj = parsers->ParseFile(fd, &pt);
+		pobj = parsers->ParseFile(fd);
 		fd.Delete();
 		if (pobj)
 		{
-			if (pt == IO::ParserType::ImageList)
+			if (pobj->GetParserType() == IO::ParserType::ImageList)
 			{
 				return (Media::ImageList*)pobj;
 			}

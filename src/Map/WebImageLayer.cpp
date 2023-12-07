@@ -110,12 +110,11 @@ void Map::WebImageLayer::LoadImage(Map::WebImageLayer::ImageStat *stat)
 	else
 	{
 		IO::ParsedObject *pobj;
-		IO::ParserType pt;
 		{
 			IO::StmData::BufferedStreamData buffFd(fd);
-			pobj = this->parsers->ParseFile(buffFd, &pt);
+			pobj = this->parsers->ParseFile(buffFd);
 		}
-		if (pobj == 0 || pt != IO::ParserType::ImageList)
+		if (pobj == 0 || pobj->GetParserType() != IO::ParserType::ImageList)
 		{
 			SDEL_STRING(stat->name);
 			stat->url->Release();
@@ -155,7 +154,6 @@ UInt32 __stdcall Map::WebImageLayer::LoadThread(void *userObj)
 	Map::WebImageLayer *me = (Map::WebImageLayer*)userObj;
 	ImageStat *stat;
 	UOSInt i;
-	IO::ParserType pt;
 	IO::ParsedObject *pobj;
 	NotNullPtr<IO::StreamData> fd;
 
@@ -170,9 +168,9 @@ UInt32 __stdcall Map::WebImageLayer::LoadThread(void *userObj)
 			if (fd.Set(stat->data) && !stat->data->IsLoading())
 			{
 				me->loadingList.RemoveAt(i);
-				pobj = me->parsers->ParseFile(fd, &pt);
+				pobj = me->parsers->ParseFile(fd);
 				fd.Delete();
-				if (pobj == 0 || pt != IO::ParserType::ImageList)
+				if (pobj == 0 || pobj->GetParserType() != IO::ParserType::ImageList)
 				{
 					SDEL_STRING(stat->name);
 					stat->url->Release();

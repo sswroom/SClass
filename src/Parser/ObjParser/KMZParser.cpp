@@ -44,7 +44,6 @@ IO::ParsedObject *Parser::ObjParser::KMZParser::ParseObject(NotNullPtr<IO::Parse
 	if (this->parsers == 0)
 		return 0;
 	NotNullPtr<IO::PackageFile> pkg = NotNullPtr<IO::PackageFile>::ConvertFrom(pobj);
-	IO::ParserType pt;
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
 	Data::ArrayList<IO::ParsedObject*> *pobjList;
@@ -62,7 +61,7 @@ IO::ParsedObject *Parser::ObjParser::KMZParser::ParseObject(NotNullPtr<IO::Parse
 			NotNullPtr<IO::StreamData> fd;
 			if (pkg->GetItemStmDataNew(i).SetTo(fd))
 			{
-				pobj2 = this->parsers->ParseFile(fd, &pt);
+				pobj2 = this->parsers->ParseFile(fd);
 				fd.Delete();
 				if (pobj2)
 				{
@@ -70,7 +69,7 @@ IO::ParsedObject *Parser::ObjParser::KMZParser::ParseObject(NotNullPtr<IO::Parse
 					{
 						pobj2->SetSourceName(pobj->GetSourceNameObj());
 					}
-					if (pt == IO::ParserType::MapLayer)
+					if (pobj2->GetParserType() == IO::ParserType::MapLayer)
 					{
 						pobjList->Add(pobj2);
 					}

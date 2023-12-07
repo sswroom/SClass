@@ -294,12 +294,11 @@ Map::MapDrawLayer *Map::RegionalMapSource::OpenMap(const MapInfo *map, NotNullPt
 		NotNullPtr<IO::StreamData> fd;
 		if (fd.Set(browser->GetData(Text::CStringNN(map->url, map->urlLen), false, 0)))
 		{
-			IO::ParserType pt;
-			IO::ParsedObject *pobj = parsers->ParseFile(fd, &pt);
+			IO::ParsedObject *pobj = parsers->ParseFile(fd);
 			fd.Delete();
 			if (pobj)
 			{
-				if (pt == IO::ParserType::MapLayer)
+				if (pobj->GetParserType() == IO::ParserType::MapLayer)
 				{
 					return (Map::MapDrawLayer*)pobj;
 				}

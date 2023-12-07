@@ -16,7 +16,7 @@ void __stdcall SSWR::AVIRead::AVIRRSSItemForm::OnImageSelChg(void *userObj)
 	NotNullPtr<IO::StreamData> fd;
 	if (fd.Set(browser->GetData(CSTRP(sbuff, sptr), false, sbuff)))
 	{
-		Media::ImageList *imgList = (Media::ImageList*)me->core->GetParserList()->ParseFile(fd, 0, 0, IO::ParserType::ImageList);
+		Media::ImageList *imgList = (Media::ImageList*)me->core->GetParserList()->ParseFile(fd, 0, IO::ParserType::ImageList);
 		fd.Delete();
 		if (imgList)
 		{

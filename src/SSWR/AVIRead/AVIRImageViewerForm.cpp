@@ -435,7 +435,6 @@ void SSWR::AVIRead::AVIRImageViewerForm::SetImage(Media::ImageList *imgList, Boo
 Bool SSWR::AVIRead::AVIRImageViewerForm::ParseFile(NotNullPtr<IO::StreamData> fd)
 {
 	IO::ParsedObject *pobj;
-	IO::ParserType pt;
 	NotNullPtr<IO::StreamData> fd2;
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
@@ -468,11 +467,11 @@ Bool SSWR::AVIRead::AVIRImageViewerForm::ParseFile(NotNullPtr<IO::StreamData> fd
 				{
 					if (pf->GetItemStmDataNew(i).SetTo(fd2))
 					{
-						pobj2 = this->core->GetParserList()->ParseFile(fd2, &pt);
+						pobj2 = this->core->GetParserList()->ParseFile(fd2);
 						fd2.Delete();
 						if (pobj2)
 						{
-							if (pt == IO::ParserType::ImageList)
+							if (pobj2->GetParserType() == IO::ParserType::ImageList)
 							{
 								found = true;
 								SDEL_CLASS(this->pkgFile);

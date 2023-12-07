@@ -43,7 +43,6 @@ IO::ParsedObject *Parser::ObjParser::ITMParser::ParseObject(NotNullPtr<IO::Parse
 	if (this->parsers == 0)
 		return 0;
 	NotNullPtr<IO::PackageFile> pkg = NotNullPtr<IO::PackageFile>::ConvertFrom(pobj);
-	IO::ParserType pt;
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 	UOSInt i;
@@ -61,12 +60,12 @@ IO::ParsedObject *Parser::ObjParser::ITMParser::ParseObject(NotNullPtr<IO::Parse
 				IO::ParsedObject *pobj2 = 0;
 				if (pkg->GetItemStmDataNew(i).SetTo(fd))
 				{
-					pobj2 = parsers->ParseFile(fd, &pt);
+					pobj2 = parsers->ParseFile(fd);
 					fd.Delete();
 				}
 				if (pobj2)
 				{
-					if (pt == IO::ParserType::ReadingDB)
+					if (pobj2->GetParserType() == IO::ParserType::ReadingDB)
 					{
 						pobj2->SetSourceName(pobj->GetSourceNameObj());
 						return pobj2;

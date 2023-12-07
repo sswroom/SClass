@@ -1531,7 +1531,6 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesFil
 		}
 
 		Data::ByteArray readBuff = mstm->GetArray();
-		IO::ParserType t;
 		IO::ParsedObject *pobj;
 		Bool valid = false;
 		Data::Timestamp fileTime = Data::Timestamp(0, Data::DateTimeUtil::GetLocalTzQhr());
@@ -1543,11 +1542,11 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesFil
 
 		{
 			IO::StmData::MemoryDataRef md(readBuff);
-			pobj = this->parsers.ParseFile(md, &t);
+			pobj = this->parsers.ParseFile(md);
 		}
 		if (pobj)
 		{
-			if (t == IO::ParserType::ImageList)
+			if (pobj->GetParserType() == IO::ParserType::ImageList)
 			{
 				valid = true;
 
@@ -1796,7 +1795,6 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesFil
 		Crypto::Hash::CRC32R crc;
 		UInt32 crcVal;
 		IO::ParsedObject *pobj;
-		IO::ParserType t;
 		Data::Timestamp fileTime = 0;
 		UserFileInfo *userFile;
 		Bool valid = false;
@@ -1824,11 +1822,11 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesFil
 
 		{
 			IO::StmData::FileData fd(fileName, false);
-			pobj = this->parsers.ParseFile(fd, &t);
+			pobj = this->parsers.ParseFile(fd);
 		}
 		if (pobj)
 		{
-			if (t == IO::ParserType::MediaFile)
+			if (pobj->GetParserType() == IO::ParserType::MediaFile)
 			{
 				Media::MediaFile *mediaFile = (Media::MediaFile*)pobj;
 				Media::IMediaSource *msrc = mediaFile->GetStream(0, 0);
@@ -3206,11 +3204,10 @@ Bool SSWR::OrganMgr::OrganEnvDB::AddDataFile(Text::CStringNN fileName)
 	NotNullPtr<DB::DBTool> db;
 	if (!db.Set(this->db))
 		return false;
-	IO::ParserType t;
 	IO::ParsedObject *pobj;
 	{
 		IO::StmData::FileData fd(fileName, false);
-		pobj = this->parsers.ParseFile(fd, &t);
+		pobj = this->parsers.ParseFile(fd);
 	}
 	Data::Timestamp startTime;
 	Data::Timestamp endTime;
@@ -3233,6 +3230,7 @@ Bool SSWR::OrganMgr::OrganEnvDB::AddDataFile(Text::CStringNN fileName)
 
 	if (pobj)
 	{
+		IO::ParserType t = pobj->GetParserType();
 		if (t == IO::ParserType::MapLayer)
 		{
 			Map::MapDrawLayer *lyr = (Map::MapDrawLayer*)pobj;
@@ -3955,7 +3953,6 @@ void SSWR::OrganMgr::OrganEnvDB::BooksInit()
 
 Media::ImageList *SSWR::OrganMgr::OrganEnvDB::ParseImage(OrganImageItem *img, UserFileInfo **outUserFile, WebFileInfo **outWebFile)
 {
-	IO::ParserType pt;
 	if (img->GetFileType() == OrganImageItem::FileType::UserFile)
 	{
 		UserFileInfo *userFile = img->GetUserFile();
@@ -3997,13 +3994,13 @@ Media::ImageList *SSWR::OrganMgr::OrganEnvDB::ParseImage(OrganImageItem *img, Us
 			IO::ParsedObject *pobj;
 			{
 				IO::StmData::FileData fd(CSTRP(sbuff, sptr), false);
-				pobj = this->parsers.ParseFile(fd, &pt);
+				pobj = this->parsers.ParseFile(fd);
 			}
 			if (pobj == 0)
 			{
 				return 0;
 			}
-			if (pt == IO::ParserType::ImageList)
+			if (pobj->GetParserType() == IO::ParserType::ImageList)
 			{
 				Media::ImageList *imgList = (Media::ImageList*)pobj;
 				if (userFile->rotType != 0)
@@ -4065,13 +4062,13 @@ Media::ImageList *SSWR::OrganMgr::OrganEnvDB::ParseImage(OrganImageItem *img, Us
 			IO::ParsedObject *pobj;
 			{
 				IO::StmData::FileData fd(CSTRP(sbuff, sptr), false);
-				pobj = this->parsers.ParseFile(fd, &pt);
+				pobj = this->parsers.ParseFile(fd);
 			}
 			if (pobj == 0)
 			{
 				return 0;
 			}
-			if (pt == IO::ParserType::ImageList)
+			if (pobj->GetParserType() == IO::ParserType::ImageList)
 			{
 				Media::ImageList *imgList = (Media::ImageList*)pobj;
 /*				if (userFile->rotType != 0)
@@ -4116,13 +4113,13 @@ Media::ImageList *SSWR::OrganMgr::OrganEnvDB::ParseImage(OrganImageItem *img, Us
 		IO::ParsedObject *pobj;
 		{
 			IO::StmData::FileData fd(Text::String::OrEmpty(img->GetFullName()), false);
-			pobj = this->parsers.ParseFile(fd, &pt);
+			pobj = this->parsers.ParseFile(fd);
 		}
 		if (pobj == 0)
 		{
 			return 0;
 		}
-		if (pt == IO::ParserType::ImageList)
+		if (pobj->GetParserType() == IO::ParserType::ImageList)
 		{
 			return (Media::ImageList*)pobj;
 		}
@@ -4212,12 +4209,12 @@ Media::ImageList *SSWR::OrganMgr::OrganEnvDB::ParseSpImage(OrganSpecies *sp)
 				else if (Text::StrCompareICase(&sptr[i], (const UTF8Char*)".JPG") == 0)
 				{
 					IO::StmData::FileData fd(CSTRP(sbuff, sptr2), false);
-					pobj = this->parsers.ParseFile(fd, 0);
+					pobj = this->parsers.ParseFile(fd);
 				}
 				else if (Text::StrCompareICase(&sptr[i], (const UTF8Char*)".TIF") == 0)
 				{
 					IO::StmData::FileData fd(CSTRP(sbuff, sptr2), false);
-					pobj = this->parsers.ParseFile(fd, 0);
+					pobj = this->parsers.ParseFile(fd);
 				}
 				else if (Text::StrCompareICase(&sptr[i], (const UTF8Char*)".AVI") == 0)
 				{
@@ -4247,7 +4244,7 @@ Media::ImageList *SSWR::OrganMgr::OrganEnvDB::ParseSpImage(OrganSpecies *sp)
 						if (Text::StrStartsWith(sptr, coverName))
 						{
 							IO::StmData::FileData fd(CSTRP(sbuff, sptr2), false);
-							pobj = this->parsers.ParseFile(fd, 0);
+							pobj = this->parsers.ParseFile(fd);
 							break;
 						}
 					}
@@ -4272,7 +4269,6 @@ Media::ImageList *SSWR::OrganMgr::OrganEnvDB::ParseSpImage(OrganSpecies *sp)
 
 Media::ImageList *SSWR::OrganMgr::OrganEnvDB::ParseFileImage(UserFileInfo *userFile)
 {
-	IO::ParserType pt;
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 	IO::ParsedObject *pobj;
@@ -4291,13 +4287,13 @@ Media::ImageList *SSWR::OrganMgr::OrganEnvDB::ParseFileImage(UserFileInfo *userF
 	sptr = userFile->dataFileName->ConcatTo(sptr);
 	{
 		IO::StmData::FileData fd(CSTRP(sbuff, sptr), false);
-		pobj = this->parsers.ParseFile(fd, &pt);
+		pobj = this->parsers.ParseFile(fd);
 	}
 	if (pobj == 0)
 	{
 		return 0;
 	}
-	if (pt == IO::ParserType::ImageList)
+	if (pobj->GetParserType() == IO::ParserType::ImageList)
 	{
 		Media::ImageList *imgList = (Media::ImageList*)pobj;
 		if (userFile->rotType != 0)
@@ -4330,7 +4326,6 @@ Media::ImageList *SSWR::OrganMgr::OrganEnvDB::ParseFileImage(UserFileInfo *userF
 
 Media::ImageList *SSWR::OrganMgr::OrganEnvDB::ParseWebImage(WebFileInfo *wfile)
 {
-	IO::ParserType pt;
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 	IO::ParsedObject *pobj;
@@ -4347,13 +4342,13 @@ Media::ImageList *SSWR::OrganMgr::OrganEnvDB::ParseWebImage(WebFileInfo *wfile)
 	sptr = Text::StrConcatC(sptr, UTF8STRC(".jpg"));
 	{
 		IO::StmData::FileData fd(CSTRP(sbuff, sptr), false);
-		pobj = this->parsers.ParseFile(fd, &pt);
+		pobj = this->parsers.ParseFile(fd);
 	}
 	if (pobj == 0)
 	{
 		return 0;
 	}
-	if (pt == IO::ParserType::ImageList)
+	if (pobj->GetParserType() == IO::ParserType::ImageList)
 	{
 		Media::ImageList *imgList = (Media::ImageList*)pobj;
 /*		if (userFile->rotType != 0)

@@ -25,11 +25,10 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	NEW_CLASS(log, IO::LogTool());
 
 	Parser::FullParserList *parsers;
-	IO::ParserType pt;
 	IO::ParsedObject *pobj;
 	NEW_CLASS(parsers, Parser::FullParserList());
 	IO::StmData::FileData fd(fileName, false);
-	pobj = parsers->ParseFile(fd, &pt);
+	pobj = parsers->ParseFile(fd);
 	if (pobj)
 	{
 		UOSInt i;

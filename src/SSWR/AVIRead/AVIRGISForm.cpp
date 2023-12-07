@@ -135,7 +135,6 @@ void __stdcall SSWR::AVIRead::AVIRGISForm::FileHandler(void *userObj, NotNullPtr
 	NotNullPtr<Parser::ParserList> parsers = me->core->GetParserList();
 	IO::ParsedObject *pobj;
 	NotNullPtr<IO::ParsedObject> nnpobj;
-	IO::ParserType pt;
 	Data::ArrayList<Map::MapDrawLayer *> *layers;
 	Math::Size2D<UOSInt> sz;
 	Math::Coord2D<OSInt> mousePos = me->ui->GetCursorPos();
@@ -161,15 +160,16 @@ void __stdcall SSWR::AVIRead::AVIRGISForm::FileHandler(void *userObj, NotNullPtr
 		if (pathType == IO::Path::PathType::File)
 		{
 			IO::StmData::FileData fd(files[i], false);
-			pobj = parsers->ParseFile(fd, &pt);
+			pobj = parsers->ParseFile(fd);
 		}
 		else if (pathType == IO::Path::PathType::Directory)
 		{
 			IO::DirectoryPackage dpkg(files[i]);
-			pobj = parsers->ParseObject(dpkg, pt);
+			pobj = parsers->ParseObject(dpkg);
 		}
 		if (nnpobj.Set(pobj))
 		{
+			IO::ParserType pt = nnpobj->GetParserType();
 			if (pt == IO::ParserType::MapLayer)
 			{
 				layers->Add((Map::MapDrawLayer*)pobj);
@@ -517,19 +517,18 @@ void SSWR::AVIRead::AVIRGISForm::SetCtrlForm(UI::GUIForm *frm, UI::GUITreeView::
 Bool SSWR::AVIRead::AVIRGISForm::ParseObject(NotNullPtr<IO::ParsedObject> pobj)
 {
 	NotNullPtr<Parser::ParserList> parsers = this->core->GetParserList();
-	NotNullPtr<IO::ParsedObject> npobj;
-	IO::ParserType pt;
-	if (npobj.Set(parsers->ParseObject(pobj, pt)))
+	NotNullPtr<IO::ParsedObject> nnpobj;
+	if (nnpobj.Set(parsers->ParseObject(pobj)))
 	{
-		if (pt == IO::ParserType::MapLayer)
+		if (nnpobj->GetParserType() == IO::ParserType::MapLayer)
 		{
-			this->AddLayer(NotNullPtr<Map::MapDrawLayer>::ConvertFrom(npobj));
+			this->AddLayer(NotNullPtr<Map::MapDrawLayer>::ConvertFrom(nnpobj));
 			return true;
 		}
 		else
 		{
-			Bool succ = ParseObject(npobj);
-			npobj.Delete();
+			Bool succ = ParseObject(nnpobj);
+			nnpobj.Delete();
 			return succ;
 		}
 	}
@@ -546,11 +545,10 @@ void SSWR::AVIRead::AVIRGISForm::OpenURL(Text::CStringNN url, Text::CString cust
 		{
 			fd->SetFullName(customName);
 		}
-		IO::ParserType pt;
 		NotNullPtr<IO::ParsedObject> pobj;
-		if (pobj.Set(this->core->GetParserList()->ParseFile(fd, &pt)))
+		if (pobj.Set(this->core->GetParserList()->ParseFile(fd)))
 		{
-			if (pt == IO::ParserType::MapLayer)
+			if (pobj->GetParserType() == IO::ParserType::MapLayer)
 			{
 				this->AddLayer(NotNullPtr<Map::MapDrawLayer>::ConvertFrom(pobj));
 			}

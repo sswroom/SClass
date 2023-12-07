@@ -29,42 +29,10 @@ Map::MapDrawLayer *Map::KMLXML::ParseKMLRoot(NotNullPtr<Text::XMLReader> reader,
 	if (!reader->GetNodeText()->Equals(UTF8STRC("kml")))
 		return 0;
 	Data::ICaseStringMap<KMLStyle*> styles;
-/*	Data::ArrayList<Map::MapDrawLayer *> layers;
-	Map::MapDrawLayer *lyr;
-
-	while (reader->NextElement())
-	{
-		if (reader->GetNodeText()->EqualsICase(UTF8STRC("DOCUMENT") || reader->GetNodeText()->EqualsICase(UTF8STRC("FOLDER"))
-		{
-			lyr = ParseKMLContainer(reader, &styles, fileName, parsers, browser, pkgFile);
-			if (lyr)
-			{
-				layers.Add(lyr);
-			}
-		}
-		else
-		{
-			reader->SkipElement();
-		}
-	}*/
-	Map::MapDrawLayer *lyr = ParseKMLContainer(reader, &styles, fileName, parsers, browser, pkgFile);
+	Map::MapDrawLayer *lyr = ParseKMLContainer(reader, &styles, fileName, parsers, browser, pkgFile, true);
 
 	NotNullPtr<const Data::ArrayList<KMLStyle*>> styleList = styles.GetValues();
 	KMLStyle *style;
-/*		UOSInt i;
-	UOSInt j;
-	const UTF8Char *shortName;
-	i = Text::StrLastIndexOfCharC(fileName, IO::Path::PATH_SEPERATOR);
-	if (IO::Path::PATH_SEPERATOR == '\\')
-	{
-		j = Text::StrLastIndexOfCharC(fileName, '/');
-		if (i == INVALID_INDEX || (j != INVALID_INDEX && j > i))
-		{
-			i = j;
-		}
-	}
-	shortName = &fileName[i + 1];*/
-
 	UOSInt ui = styleList->GetCount();
 	while (ui-- > 0)
 	{
@@ -73,29 +41,11 @@ Map::MapDrawLayer *Map::KMLXML::ParseKMLRoot(NotNullPtr<Text::XMLReader> reader,
 		SDEL_CLASS(style->img);
 		MemFree(style);
 	}
-
-/*	if (layers.GetCount() == 0)
-	{
-	}
-	else
-	{
-		DEL_CLASS(reader);
-		Map::MapLayerCollection *lyrColl;
-		NEW_CLASS(lyrColl, Map::MapLayerCollection(fileName, shortName));
-		i = 0;
-		j = layers.GetCount();
-		while (i < j)
-		{
-			lyrColl->Add(layers.GetItem(i));
-			i++;
-		}
-		return lyrColl;
-	}*/
 	return lyr;
 }
 
 
-Map::MapDrawLayer *Map::KMLXML::ParseKMLContainer(NotNullPtr<Text::XMLReader> reader, Data::ICaseStringMap<KMLStyle*> *styles, Text::CStringNN sourceName, Parser::ParserList *parsers, Net::WebBrowser *browser, IO::PackageFile *basePF)
+Map::MapDrawLayer *Map::KMLXML::ParseKMLContainer(NotNullPtr<Text::XMLReader> reader, Data::ICaseStringMap<KMLStyle*> *styles, Text::CStringNN sourceName, Parser::ParserList *parsers, Net::WebBrowser *browser, IO::PackageFile *basePF, Bool rootKml)
 {
 	KMLStyle *style;
 	UOSInt i;
@@ -839,14 +789,14 @@ Map::MapDrawLayer *Map::KMLXML::ParseKMLContainer(NotNullPtr<Text::XMLReader> re
 		}
 		else if (nodeName->EqualsICase(UTF8STRC("FOLDER")))
 		{
-			if (lyr.Set(ParseKMLContainer(reader, styles, sourceName, parsers, browser, basePF)))
+			if (lyr.Set(ParseKMLContainer(reader, styles, sourceName, parsers, browser, basePF, false)))
 			{
 				layers.Add(lyr);
 			}
 		}
 		else if (nodeName->EqualsICase(UTF8STRC("DOCUMENT")))
 		{
-			if (lyr.Set(ParseKMLContainer(reader, styles, sourceName, parsers, browser, basePF)))
+			if (lyr.Set(ParseKMLContainer(reader, styles, sourceName, parsers, browser, basePF, false)))
 			{
 				layers.Add(lyr);
 			}
@@ -883,6 +833,10 @@ Map::MapDrawLayer *Map::KMLXML::ParseKMLContainer(NotNullPtr<Text::XMLReader> re
 	if (layers.GetCount() <= 0)
 	{
 		return 0;
+	}
+	else if (rootKml && layers.GetCount() == 1)
+	{
+		return layers.GetItem(0);
 	}
 	else
 	{

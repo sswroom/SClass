@@ -4561,13 +4561,12 @@ Map::MapConfig2TGen::MapConfig2TGen(Text::CStringNN fileName, NotNullPtr<Media::
 				currLayer->img = 0;
 				if (currLayer->minScale < maxScale && currLayer->maxScale >= minScale)
 				{
-					IO::ParserType pt;
 					IO::ParsedObject *obj;
 					sptr = fileName.ConcatTo(sbuff);
 					sptr = IO::Path::AppendPath(sbuff, sptr, strs[4].ToCString());
 					{
 						IO::StmData::FileData fd(CSTRP(sbuff, sptr), false);
-						obj = parserList->ParseFile(fd, &pt);
+						obj = parserList->ParseFile(fd);
 					}
 					if (obj)
 					{
