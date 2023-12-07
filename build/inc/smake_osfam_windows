@@ -174,4 +174,4 @@ COMStream.o: ../../src/Win32/COMStream.cpp
 !-lole32
 StreamCOM.o: ../../src/Win32/StreamCOM.cpp
 WMIReader.o: ../../src/Win32/WMIReader.cpp
-sqlite3.o: ../../ThirdParty/sqlite3/sqlite3.c
+sqlite3.o: !../../ThirdParty/sqlite3/sqlite3.c
