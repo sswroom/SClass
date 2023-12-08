@@ -760,19 +760,19 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	IO::ConsoleWriter console;
 	IO::LogTool log;
 	Net::OSSocketFactory sockf(false);
-	IO::ConfigFile *cfg = IO::JavaProperties::ParseAppProp();
+	NotNullPtr<IO::ConfigFile> cfg;
 	Text::StringBuilderUTF8 sb;
-	if (cfg)
+	if (IO::JavaProperties::ParseAppProp().SetTo(cfg))
 	{
 		Crypto::Encrypt::JasyptEncryptor jasypt(Crypto::Encrypt::JasyptEncryptor::KA_PBEWITHHMACSHA512, Crypto::Encrypt::JasyptEncryptor::CA_AES256, key.v, key.leng);
 		jasypt.Decrypt(cfg);
-		DB::DBTool *db = DB::JavaDBUtil::OpenJDBC(cfg->GetValue(CSTR("spring.datasource.url")).OrNull(),
-			cfg->GetValue(CSTR("spring.datasource.username")).OrNull(),
-			cfg->GetValue(CSTR("spring.datasource.password")).OrNull(), log, sockf);
+		NotNullPtr<DB::DBTool> db;
 //		console.WriteLine(Text::String::OrEmpty(cfg->GetValue(UTF8STRC("spring.datasource.url")))->v);
 //		console.WriteLine(Text::String::OrEmpty(cfg->GetValue(UTF8STRC("spring.datasource.username")))->v);
 //		console.WriteLine(Text::String::OrEmpty(cfg->GetValue(UTF8STRC("spring.datasource.password")))->v);
-		if (db)
+		if (DB::JavaDBUtil::OpenJDBC(cfg->GetValue(CSTR("spring.datasource.url")).OrNull(),
+			cfg->GetValue(CSTR("spring.datasource.username")).OrNull(),
+			cfg->GetValue(CSTR("spring.datasource.password")).OrNull(), log, sockf).SetTo(db))
 		{
 			UOSInt i;
 			Data::ArrayList<LamppostData*> dataList;
@@ -841,13 +841,13 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 			}
 
 			DEL_CLASS(cls);
-			DEL_CLASS(db);
+			db.Delete();
 		}
 		else
 		{
 			console.WriteLineC(UTF8STRC("Error in opening DB connection"));
 		}
-		DEL_CLASS(cfg);
+		cfg.Delete();
 	}
 	else
 	{

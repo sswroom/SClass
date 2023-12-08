@@ -12,7 +12,7 @@ namespace Net
 		class SpringBootApplication
 		{
 		private:
-			IO::ConfigFile *cfg;
+			Optional<IO::ConfigFile> cfg;
 			IO::ConsoleWriter console;
 			IO::ConsoleLogHandler consoleLog;
 			IO::LogTool log;

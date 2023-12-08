@@ -496,12 +496,12 @@ int Process_GetModulesCB(struct dl_phdr_info *info, size_t size, void *data)
 }
 #endif
 
-UOSInt Manage::Process::GetModules(Data::ArrayList<Manage::ModuleInfo *> *modList)
+UOSInt Manage::Process::GetModules(NotNullPtr<Data::ArrayListNN<Manage::ModuleInfo>> modList)
 {
 #if defined(__APPLE__)
 	if (this->procId == getpid())
 	{
-		Manage::ModuleInfo *mod;
+		NotNullPtr<Manage::ModuleInfo> mod;
 		ModuleInfoData midata;
 		OSInt i;
 		OSInt ret = (OSInt)_dyld_image_count;
@@ -522,7 +522,7 @@ UOSInt Manage::Process::GetModules(Data::ArrayList<Manage::ModuleInfo *> *modLis
 			}
 			midata.addr = (OSInt)_dyld_get_image_vmaddr_slide((UInt32)i);
 			midata.size = 0;
-			NEW_CLASS(mod, Manage::ModuleInfo(0, &midata));
+			NEW_CLASSNN(mod, Manage::ModuleInfo(0, &midata));
 			modList->Add(mod);
 			i++;
 		}
@@ -533,7 +533,7 @@ UOSInt Manage::Process::GetModules(Data::ArrayList<Manage::ModuleInfo *> *modLis
 	if (this->procId == (UOSInt)getpid())
 	{
 		UOSInt ret = modList->GetCount();
-		dl_iterate_phdr(Process_GetModulesCB, modList);
+		dl_iterate_phdr(Process_GetModulesCB, modList.Ptr());
 		return modList->GetCount() - ret;
 	}
 	else
@@ -545,7 +545,7 @@ UOSInt Manage::Process::GetModules(Data::ArrayList<Manage::ModuleInfo *> *modLis
 		UTF8Char *sarr2[2];
 		Data::FastMap<Int32, ModuleInfoData*> dataMap;
 		ModuleInfoData *data;
-		Manage::ModuleInfo *mod;
+		NotNullPtr<Manage::ModuleInfo> mod;
 		UOSInt ret = 0;
 		UOSInt i;
 		Text::StringBuilderUTF8 sb;
@@ -592,7 +592,7 @@ UOSInt Manage::Process::GetModules(Data::ArrayList<Manage::ModuleInfo *> *modLis
 		{
 			data = dataMap.GetItem(i);
 
-			NEW_CLASS(mod, Manage::ModuleInfo(0, data));
+			NEW_CLASSNN(mod, Manage::ModuleInfo(0, data));
 			modList->Add(mod);
 			Text::StrDelNew(data->fileName);
 			MemFree(data);

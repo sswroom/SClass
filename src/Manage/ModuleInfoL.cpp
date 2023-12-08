@@ -38,11 +38,11 @@ UTF8Char *Manage::ModuleInfo::GetModuleFileName(UTF8Char *buff)
 	return Text::StrConcat(buff, info->fileName);
 }
 
-Bool Manage::ModuleInfo::GetModuleAddress(UOSInt *baseAddr, UOSInt *size)
+Bool Manage::ModuleInfo::GetModuleAddress(OutParam<UOSInt> baseAddr, OutParam<UOSInt> size)
 {
 	ModuleInfoData *info = (ModuleInfoData*)this->hMod;
-	*baseAddr = info->addr;
-	*size = info->size;
+	baseAddr.Set(info->addr);
+	size.Set(info->size);
 	return true;
 }
 

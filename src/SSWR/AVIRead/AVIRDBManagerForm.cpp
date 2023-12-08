@@ -1491,7 +1491,7 @@ void SSWR::AVIRead::AVIRDBManagerForm::EventMenuClicked(UInt16 cmdId)
 			SSWR::AVIRead::AVIRMSSQLConnForm dlg(0, this->ui, this->core);
 			if (dlg.ShowDialog(this) == UI::GUIForm::DR_OK)
 			{
-				if (conn.Set(dlg.GetDBConn()))
+				if (dlg.GetDBConn().SetTo(conn))
 					this->ConnAdd(conn);
 			}
 		}

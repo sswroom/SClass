@@ -80,11 +80,11 @@ void __stdcall SSWR::AVIRead::AVIRImageColorForm::OnLastValueClick(void *userObj
 	if (reg)
 	{
 		Int32 v;
-		if (reg->GetValueI32(L"LastImgColorBright", &v))
+		if (reg->GetValueI32(L"LastImgColorBright", v))
 			me->hsbBright->SetPos((UInt32)v);
-		if (reg->GetValueI32(L"LastImgColorContr", &v))
+		if (reg->GetValueI32(L"LastImgColorContr", v))
 			me->hsbContr->SetPos((UInt32)v);
-		if (reg->GetValueI32(L"LastImgColorGamma", &v))
+		if (reg->GetValueI32(L"LastImgColorGamma", v))
 			me->hsbGamma->SetPos((UInt32)v);
 		IO::Registry::CloseRegistry(reg);
 	}

@@ -2,6 +2,7 @@
 #ifndef _SM_MANAGE_PROCESS
 #define _SM_MANAGE_PROCESS
 #include "Data/ArrayList.h"
+#include "Data/ArrayListNN.h"
 #include "Manage/HandleType.h"
 #include "Manage/IMemoryReader.h"
 #include "Manage/ModuleInfo.h"
@@ -92,7 +93,7 @@ namespace Manage
 		Bool SetMemorySize(UOSInt minSize, UOSInt maxSize);
 		UOSInt GetThreadIds(Data::ArrayList<UInt32> *threadList);
 		void *GetHandle();
-		UOSInt GetModules(Data::ArrayList<Manage::ModuleInfo *> *modList);
+		UOSInt GetModules(NotNullPtr<Data::ArrayListNN<Manage::ModuleInfo>> modList);
 		UOSInt GetThreads(NotNullPtr<Data::ArrayList<Manage::ThreadInfo *>> threadList);
 		UOSInt GetHeapLists(Data::ArrayList<UInt32> *heapList);
 		UOSInt GetHeaps(Data::ArrayList<HeapInfo*> *heapList, UInt32 heapListId, UOSInt maxCount);

@@ -664,9 +664,17 @@ Bool DB::PostgreSQLConn::Connect()
 			{
 				char *msg = PQerrorMessage(this->clsData->conn);
 				UOSInt msgLen = Text::StrCharCnt(msg);
+				while (msgLen > 0)
+				{
+					if (msg[msgLen - 1] != 13 && msg[msgLen - 1] != 10)
+						break;
+					msgLen--;
+					msg[msgLen] = 0;
+				}
 				this->log->LogMessage(Text::CStringNN((const UTF8Char*)msg, msgLen), IO::LogHandler::LogLevel::Error);
+				this->log->LogStackTrace(IO::LogHandler::LogLevel::ErrorDetail);
 #if defined(VERBOSE)
-				printf("PostgreSQL: Error, %s\r\n", msg);
+				printf("PostgreSQL: Error, \"%s\"\r\n", msg);
 #endif
 			}
 			return false;
@@ -1201,3 +1209,30 @@ Text::CString DB::PostgreSQLConn::ExecStatusTypeGetName(OSInt status)
 	}
 }
 
+Optional<DB::DBTool> DB::PostgreSQLConn::CreateDBTool(NotNullPtr<Text::String> serverName, UInt16 port, NotNullPtr<Text::String> dbName, Text::String *uid, Text::String *pwd, NotNullPtr<IO::LogTool> log, Text::CString logPrefix)
+{
+	NotNullPtr<DB::PostgreSQLConn> conn;
+	NEW_CLASSNN(conn, DB::PostgreSQLConn(serverName, port, uid, pwd, dbName, log));
+	if (conn->IsConnError())
+	{
+		conn.Delete();
+		return 0;
+	}
+	NotNullPtr<DB::DBTool> db;
+	NEW_CLASSNN(db, DB::DBTool(conn, true, log, logPrefix));
+	return db;
+}
+
+Optional<DB::DBTool> DB::PostgreSQLConn::CreateDBTool(Text::CStringNN serverName, UInt16 port, Text::CString dbName, Text::CString uid, Text::CString pwd, NotNullPtr<IO::LogTool> log, Text::CString logPrefix)
+{
+	NotNullPtr<DB::PostgreSQLConn> conn;
+	NEW_CLASSNN(conn, DB::PostgreSQLConn(serverName, port, uid, pwd, dbName, log));
+	if (conn->IsConnError())
+	{
+		conn.Delete();
+		return 0;
+	}
+	NotNullPtr<DB::DBTool> db;
+	NEW_CLASSNN(db, DB::DBTool(conn, true, log, logPrefix));
+	return db;
+}

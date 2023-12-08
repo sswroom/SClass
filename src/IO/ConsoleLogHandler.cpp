@@ -40,8 +40,7 @@ void IO::ConsoleLogHandler::LogAdded(const Data::Timestamp &logTime, Text::CStri
 	}
 	else if (logLev == IO::LogHandler::LogLevel::ErrorDetail)
 	{
-		this->console->SetBGColor(Text::StandardColor::DarkRed);
-		this->console->SetTextColor(Text::StandardColor::Black);
+		this->console->SetTextColor(Text::StandardColor::DarkRed);
 		this->console->WriteLineCStr(logMsg);
 	}
 	else

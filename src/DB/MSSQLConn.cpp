@@ -4,7 +4,7 @@
 #include "DB/TDSConn.h"
 #include "Text/MyString.h"
 
-DB::DBConn *DB::MSSQLConn::OpenConnTCP(Text::CStringNN serverHost, UInt16 port, Bool encrypt, Text::CString database, Text::CString userName, Text::CString password, NotNullPtr<IO::LogTool> log, Text::StringBuilderUTF8 *errMsg)
+Optional<DB::DBConn> DB::MSSQLConn::OpenConnTCP(Text::CStringNN serverHost, UInt16 port, Bool encrypt, Text::CString database, Text::CString userName, Text::CString password, NotNullPtr<IO::LogTool> log, Text::StringBuilderUTF8 *errMsg)
 {
 	if (IsNative())
 	{
@@ -18,8 +18,8 @@ DB::DBConn *DB::MSSQLConn::OpenConnTCP(Text::CStringNN serverHost, UInt16 port, 
 	else
 	{
 		DB::ODBCConn *conn;
-		Text::String *driverName = GetDriverNameNew();
-		if (driverName == 0)
+		NotNullPtr<Text::String> driverName;
+		if (!driverName.Set(GetDriverNameNew()))
 		{
 			return 0;
 		}
@@ -103,16 +103,16 @@ DB::DBConn *DB::MSSQLConn::OpenConnTCP(Text::CStringNN serverHost, UInt16 port, 
 	}
 }
 
-DB::DBTool *DB::MSSQLConn::CreateDBToolTCP(Text::CStringNN serverHost, UInt16 port, Bool encrypt, Text::CString database, Text::CString userName, Text::CString password, NotNullPtr<IO::LogTool> log, Text::CString logPrefix)
+Optional<DB::DBTool> DB::MSSQLConn::CreateDBToolTCP(Text::CStringNN serverHost, UInt16 port, Bool encrypt, Text::CString database, Text::CString userName, Text::CString password, NotNullPtr<IO::LogTool> log, Text::CString logPrefix)
 {
 	Text::StringBuilderUTF8 sb;
 	sb.Append(logPrefix);
 	sb.AppendC(UTF8STRC("Error in connecting to database: "));
-	DB::DBTool *db;
+	NotNullPtr<DB::DBTool> db;
 	NotNullPtr<DB::DBConn> conn;
-	if (conn.Set(OpenConnTCP(serverHost, port, encrypt, database, userName, password, log, &sb)))
+	if (OpenConnTCP(serverHost, port, encrypt, database, userName, password, log, &sb).SetTo(conn))
 	{
-		NEW_CLASS(db, DB::DBTool(conn, true, log, logPrefix));
+		NEW_CLASSNN(db, DB::DBTool(conn, true, log, logPrefix));
 		return db;
 	}
 	else

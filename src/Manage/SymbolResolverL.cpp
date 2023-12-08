@@ -20,7 +20,7 @@ char **backtrace_symbols(void **addrArr, int cnt)
 #include <execinfo.h>
 #endif
 
-Manage::SymbolResolver::SymbolResolver(Manage::Process *proc)
+Manage::SymbolResolver::SymbolResolver(NotNullPtr<Manage::Process> proc)
 {
 	UOSInt i;
 	UOSInt j;
@@ -30,26 +30,24 @@ Manage::SymbolResolver::SymbolResolver(Manage::Process *proc)
 	UTF8Char *sptr;
 	this->proc = proc;
 
-	Data::ArrayList<Manage::ModuleInfo*> *modList;
-	NEW_CLASS(modList, Data::ArrayList<Manage::ModuleInfo*>());
+	Data::ArrayListNN<Manage::ModuleInfo> modList;
 	this->proc->GetModules(modList);
 	i = 0;
-	j = modList->GetCount();
+	j = modList.GetCount();
 	while (i < j)
 	{
 		Manage::ModuleInfo *mod;
-		mod = modList->GetItem(i);
+		mod = modList.GetItem(i);
 
 		sptr = mod->GetModuleFileName(sbuff);
 		this->modNames.Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
-		mod->GetModuleAddress(&baseAddr, &size);
+		mod->GetModuleAddress(baseAddr, size);
 		this->modBaseAddrs.Add(baseAddr);
 		this->modSizes.Add(size);
 
 		DEL_CLASS(mod);
 		i++;
 	}
-	DEL_CLASS(modList);
 }
 
 Manage::SymbolResolver::~SymbolResolver()

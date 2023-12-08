@@ -334,12 +334,13 @@ Int32 IO::Registry::GetValueI32(const WChar *name)
 		return 0;
 	}
 	NotNullPtr<Text::String> s = Text::String::NewNotNull(name);
-	Text::String *csval = this->clsData->reg->cfg->GetCateValue(this->clsData->cate, s);
-	s->Release();
-	if (csval && csval->StartsWith(UTF8STRC("dword:")))
+	NotNullPtr<Text::String> csval;
+	if (this->clsData->reg->cfg->GetCateValue(this->clsData->cate, s).SetTo(csval) && csval->StartsWith(UTF8STRC("dword:")))
 	{
+		s->Release();
 		return Text::StrHex2Int32C(csval->v + 6);
 	}
+	s->Release();
 	return 0;
 }
 
@@ -351,16 +352,17 @@ WChar *IO::Registry::GetValueStr(const WChar *name, WChar *buff)
 		return 0;
 	}
 	NotNullPtr<Text::String> s = Text::String::NewNotNull(name);
-	Text::String *csval = this->clsData->reg->cfg->GetCateValue(this->clsData->cate, s);
-	s->Release();
-	if (csval && csval->StartsWith(UTF8STRC("sz:")))
+	NotNullPtr<Text::String> csval;
+	if (this->clsData->reg->cfg->GetCateValue(this->clsData->cate, s).SetTo(csval) && csval->StartsWith(UTF8STRC("sz:")))
 	{
+		s->Release();
 		return Text::StrUTF8_WChar(buff, csval->v + 3, 0);
 	}
+	s->Release();
 	return 0;
 }
 
-Bool IO::Registry::GetValueI32(const WChar *name, Int32 *value)
+Bool IO::Registry::GetValueI32(const WChar *name, OutParam<Int32> value)
 {
 	Sync::MutexUsage mutUsage(this->clsData->reg->mut);
 	if (this->clsData->reg->cfg == 0)
@@ -368,13 +370,14 @@ Bool IO::Registry::GetValueI32(const WChar *name, Int32 *value)
 		return false;
 	}
 	NotNullPtr<Text::String> s = Text::String::NewNotNull(name);
-	Text::String *csval = this->clsData->reg->cfg->GetCateValue(this->clsData->cate, s);
-	s->Release();
-	if (csval && csval->StartsWith(UTF8STRC("dword:")))
+	NotNullPtr<Text::String> csval;
+	if (this->clsData->reg->cfg->GetCateValue(this->clsData->cate, s).SetTo(csval) && csval->StartsWith(UTF8STRC("dword:")))
 	{
-		*value = Text::StrHex2Int32C(csval->v + 6);
+		s->Release();
+		value.Set(Text::StrHex2Int32C(csval->v + 6));
 		return true;
 	}
+	s->Release();
 	return false;
 }
 

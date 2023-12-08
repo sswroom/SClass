@@ -52,7 +52,7 @@ namespace Crypto
 			JasyptEncryptor(KeyAlgorithm keyAlg, CipherAlgorithm cipherAlg, const UInt8 *key, UOSInt keyLen);
 			~JasyptEncryptor();
 
-			Bool Decrypt(IO::ConfigFile *cfg);
+			Bool Decrypt(NotNullPtr<IO::ConfigFile> cfg);
 			UOSInt Decrypt(const UInt8 *srcBuff, UOSInt srcLen, UInt8 *outBuff);
 			UOSInt DecryptB64(Text::CString b64Str, UInt8 *outBuff);
 			UOSInt EncryptAsB64(NotNullPtr<Text::StringBuilderUTF8> sb, const UInt8 *srcBuff, UOSInt srcLen);

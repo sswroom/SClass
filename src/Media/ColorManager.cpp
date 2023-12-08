@@ -123,62 +123,62 @@ Bool Media::MonitorColorManager::Load()
 
 		Int32 tmpVal;
 
-		if (reg->GetValueI32(L"MonRB", &tmpVal))
+		if (reg->GetValueI32(L"MonRB", tmpVal))
 			this->rgb.MonRBright = tmpVal * 0.001;
-		if (reg->GetValueI32(L"MonRC", &tmpVal))
+		if (reg->GetValueI32(L"MonRC", tmpVal))
 			this->rgb.MonRContr = tmpVal * 0.001;
-		if (reg->GetValueI32(L"MonRG", &tmpVal))
+		if (reg->GetValueI32(L"MonRG", tmpVal))
 			this->rgb.MonRGamma = tmpVal * 0.001;
 
-		if (reg->GetValueI32(L"MonGB", &tmpVal))
+		if (reg->GetValueI32(L"MonGB", tmpVal))
 			this->rgb.MonGBright = tmpVal * 0.001;
-		if (reg->GetValueI32(L"MonGC", &tmpVal))
+		if (reg->GetValueI32(L"MonGC", tmpVal))
 			this->rgb.MonGContr = tmpVal * 0.001;
-		if (reg->GetValueI32(L"MonGG", &tmpVal))
+		if (reg->GetValueI32(L"MonGG", tmpVal))
 			this->rgb.MonGGamma = tmpVal * 0.001;
 
-		if (reg->GetValueI32(L"MonBB", &tmpVal))
+		if (reg->GetValueI32(L"MonBB", tmpVal))
 			this->rgb.MonBBright = tmpVal * 0.001;
-		if (reg->GetValueI32(L"MonBC", &tmpVal))
+		if (reg->GetValueI32(L"MonBC", tmpVal))
 			this->rgb.MonBContr = tmpVal * 0.001;
-		if (reg->GetValueI32(L"MonBG", &tmpVal))
+		if (reg->GetValueI32(L"MonBG", tmpVal))
 			this->rgb.MonBGamma = tmpVal * 0.001;
 
-		if (reg->GetValueI32(L"MonBright", &tmpVal))
+		if (reg->GetValueI32(L"MonBright", tmpVal))
 			this->rgb.MonVBrightness = tmpVal * 0.001;
-		if (reg->GetValueI32(L"MonPBright", &tmpVal))
+		if (reg->GetValueI32(L"MonPBright", tmpVal))
 			this->rgb.MonPBrightness = tmpVal * 0.001;
-		if (reg->GetValueI32(L"MonRBright", &tmpVal))
+		if (reg->GetValueI32(L"MonRBright", tmpVal))
 			this->rgb.MonRBrightness = tmpVal * 0.001;
-		if (reg->GetValueI32(L"MonGBright", &tmpVal))
+		if (reg->GetValueI32(L"MonGBright", tmpVal))
 			this->rgb.MonGBrightness = tmpVal * 0.001;
-		if (reg->GetValueI32(L"MonBBright", &tmpVal))
+		if (reg->GetValueI32(L"MonBBright", tmpVal))
 			this->rgb.MonBBrightness = tmpVal * 0.001;
 
-		if (reg->GetValueI32(L"MonTransfer", &tmpVal))
+		if (reg->GetValueI32(L"MonTransfer", tmpVal))
 		{
 			this->rgb.monProfile.GetRTranParam()->Set((Media::CS::TransferType)tmpVal, 2.2);
 			this->rgb.monProfile.GetGTranParam()->Set((Media::CS::TransferType)tmpVal, 2.2);
 			this->rgb.monProfile.GetBTranParam()->Set((Media::CS::TransferType)tmpVal, 2.2);
 		}
-		if (reg->GetValueI32(L"MonRX", &tmpVal))
+		if (reg->GetValueI32(L"MonRX", tmpVal))
 			this->rgb.monProfile.GetPrimaries()->r.x = tmpVal * 0.000000001;
-		if (reg->GetValueI32(L"MonRY", &tmpVal))
+		if (reg->GetValueI32(L"MonRY", tmpVal))
 			this->rgb.monProfile.GetPrimaries()->r.y = tmpVal * 0.000000001;
-		if (reg->GetValueI32(L"MonGX", &tmpVal))
+		if (reg->GetValueI32(L"MonGX", tmpVal))
 			this->rgb.monProfile.GetPrimaries()->g.x = tmpVal * 0.000000001;
-		if (reg->GetValueI32(L"MonGY", &tmpVal))
+		if (reg->GetValueI32(L"MonGY", tmpVal))
 			this->rgb.monProfile.GetPrimaries()->g.y = tmpVal * 0.000000001;
-		if (reg->GetValueI32(L"MonBX", &tmpVal))
+		if (reg->GetValueI32(L"MonBX", tmpVal))
 			this->rgb.monProfile.GetPrimaries()->b.x = tmpVal * 0.000000001;
-		if (reg->GetValueI32(L"MonBY", &tmpVal))
+		if (reg->GetValueI32(L"MonBY", tmpVal))
 			this->rgb.monProfile.GetPrimaries()->b.y = tmpVal * 0.000000001;
-		if (reg->GetValueI32(L"MonWX", &tmpVal))
+		if (reg->GetValueI32(L"MonWX", tmpVal))
 			this->rgb.monProfile.GetPrimaries()->w.x = tmpVal * 0.000000001;
-		if (reg->GetValueI32(L"MonWY", &tmpVal))
+		if (reg->GetValueI32(L"MonWY", tmpVal))
 			this->rgb.monProfile.GetPrimaries()->w.y = tmpVal * 0.000000001;
 
-		if (reg->GetValueI32(L"MonLuminance", &tmpVal))
+		if (reg->GetValueI32(L"MonLuminance", tmpVal))
 			this->rgb.monLuminance = tmpVal * 0.1;
 
 		if (reg->GetValueStr(L"MonProfileFile", wbuff))
@@ -186,7 +186,7 @@ Bool Media::MonitorColorManager::Load()
 			SDEL_STRING(this->monProfileFile);
 			this->monProfileFile = Text::String::NewNotNull(wbuff).Ptr();
 		}
-		if (reg->GetValueI32(L"MonProfileType", &tmpVal))
+		if (reg->GetValueI32(L"MonProfileType", tmpVal))
 		{
 			this->rgb.monProfileType = (Media::ColorProfile::CommonProfileType)tmpVal;
 			NotNullPtr<Text::String> fileName;
@@ -211,17 +211,17 @@ Bool Media::MonitorColorManager::Load()
 			}
 		}
 
-		if (reg->GetValueI32(L"Brightness", &tmpVal))
+		if (reg->GetValueI32(L"Brightness", tmpVal))
 			this->yuv.Brightness = tmpVal * 0.001;
-		if (reg->GetValueI32(L"Contrast", &tmpVal))
+		if (reg->GetValueI32(L"Contrast", tmpVal))
 			this->yuv.Contrast = tmpVal * 0.001;
-		if (reg->GetValueI32(L"Saturation", &tmpVal))
+		if (reg->GetValueI32(L"Saturation", tmpVal))
 			this->yuv.Saturation = tmpVal * 0.001;
-		if (reg->GetValueI32(L"YGamma", &tmpVal))
+		if (reg->GetValueI32(L"YGamma", tmpVal))
 			this->yuv.YGamma = tmpVal * 0.001;
-		if (reg->GetValueI32(L"CGamma", &tmpVal))
+		if (reg->GetValueI32(L"CGamma", tmpVal))
 			this->yuv.CGamma = tmpVal * 0.001;
-		if (reg->GetValueI32(L"Color10Bit", &tmpVal))
+		if (reg->GetValueI32(L"Color10Bit", tmpVal))
 			this->color10Bit = (tmpVal != 0);
 
 		IO::Registry::CloseRegistry(regBase);
@@ -775,17 +775,17 @@ Bool Media::ColorManager::LoadDef()
 
 		Int32 tmpVal;
 
-		if (reg->GetValueI32(L"DefVProfileType", &tmpVal))
+		if (reg->GetValueI32(L"DefVProfileType", tmpVal))
 		{
 			this->defVProfileType = (Media::ColorProfile::CommonProfileType)tmpVal;
 			this->defVProfile.SetCommonProfile(this->defVProfileType);
 		}
-		if (reg->GetValueI32(L"DefPProfileType", &tmpVal))
+		if (reg->GetValueI32(L"DefPProfileType", tmpVal))
 		{
 			this->defPProfileType = (Media::ColorProfile::CommonProfileType)tmpVal;
 			this->defPProfile.SetCommonProfile(this->defPProfileType);
 		}
-		if (reg->GetValueI32(L"YUVType", &tmpVal))
+		if (reg->GetValueI32(L"YUVType", tmpVal))
 			this->defYUVType = (Media::ColorProfile::YUVType)tmpVal;
 
 		IO::Registry::CloseRegistry(regBase);

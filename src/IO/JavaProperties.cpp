@@ -6,7 +6,7 @@
 #include "Text/MyString.h"
 #include "Text/MyStringW.h"
 
-IO::ConfigFile *IO::JavaProperties::ParseAppProp()
+Optional<IO::ConfigFile> IO::JavaProperties::ParseAppProp()
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
@@ -15,9 +15,9 @@ IO::ConfigFile *IO::JavaProperties::ParseAppProp()
 	return Parse(CSTRP(sbuff, sptr));
 }
 
-IO::ConfigFile *IO::JavaProperties::Parse(Text::CStringNN fileName)
+Optional<IO::ConfigFile> IO::JavaProperties::Parse(Text::CStringNN fileName)
 {
-	IO::ConfigFile *cfg;
+	Optional<IO::ConfigFile> cfg;
 	IO::FileStream fstm(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Sequential);
 	if (fstm.IsError())
 	{
@@ -26,12 +26,12 @@ IO::ConfigFile *IO::JavaProperties::Parse(Text::CStringNN fileName)
 	else
 	{
 		Text::UTF8Reader reader(fstm);
-		cfg = ParseReader(&reader);
+		cfg = ParseReader(reader);
 	}
 	return cfg;
 }
 
-IO::ConfigFile *IO::JavaProperties::ParseReader(Text::UTF8Reader *reader)
+Optional<IO::ConfigFile> IO::JavaProperties::ParseReader(NotNullPtr<Text::UTF8Reader> reader)
 {
 	UTF8Char buff[1024];
 	UTF8Char *name;

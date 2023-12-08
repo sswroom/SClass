@@ -597,9 +597,8 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	IO::LogTool log;
 	IO::ConsoleLogHandler logHdlr(console);
 	log.AddLogHandler(logHdlr, IO::LogHandler::LogLevel::Raw);
-	DB::DBTool *db;
-	db = DB::MSSQLConn::CreateDBToolTCP(serverHost, 1433, false, database, uid, pwd, log, CSTR("DB: "));
-	if (db)
+	NotNullPtr<DB::DBTool> db;
+	if (DB::MSSQLConn::CreateDBToolTCP(serverHost, 1433, false, database, uid, pwd, log, CSTR("DB: ")).SetTo(db))
 	{
 		NotNullPtr<DB::DBReader> r;
 		if (r.Set(db->QueryTableData(CSTR("dbo"), CSTR("Flight_Holdings_Period"), 0, 0, 0, CSTR_NULL, 0)))
@@ -631,7 +630,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 			console.WriteLineCStr(sb.ToCString());
 			DEL_CLASS(cls);
 		}
-		DEL_CLASS(db);
+		db.Delete();
 	}
 	else
 	{

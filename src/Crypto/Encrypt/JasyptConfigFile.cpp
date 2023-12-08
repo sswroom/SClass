@@ -26,24 +26,24 @@ Crypto::Encrypt::JasyptConfigFile::~JasyptConfigFile()
 	DEL_CLASS(this->cfg);
 }
 
-Text::String *Crypto::Encrypt::JasyptConfigFile::GetCateValue(Text::String *category, NotNullPtr<Text::String> name)
+Optional<Text::String> Crypto::Encrypt::JasyptConfigFile::GetCateValue(Text::String *category, NotNullPtr<Text::String> name)
 {
 	return GetCateValue(Text::String::OrEmpty(category), name);
 }
 
-Text::String *Crypto::Encrypt::JasyptConfigFile::GetCateValue(NotNullPtr<Text::String> category, NotNullPtr<Text::String> name)
+Optional<Text::String> Crypto::Encrypt::JasyptConfigFile::GetCateValue(NotNullPtr<Text::String> category, NotNullPtr<Text::String> name)
 {
 	UTF8Char sbuff[512];
-	Text::String *s;
+	NotNullPtr<Text::String> s;
 	Data::FastStringMap<Text::String*> *cate = this->decVals.GetNN(category);
 	if (cate)
 	{
-		s = cate->GetNN(name);
-		if (s)
+		if (s.Set(cate->GetNN(name)))
 			return s;
 	}
-	s = this->cfg->GetCateValue(category, name);
-	if (s && s->StartsWith(UTF8STRC("ENC(")) && s->EndsWith(')') && s->leng < 512)
+	if (!this->cfg->GetCateValue(category, name).SetTo(s))
+		return 0;
+	if (s->StartsWith(UTF8STRC("ENC(")) && s->EndsWith(')') && s->leng < 512)
 	{
 		UOSInt leng = this->enc.DecryptB64(Text::CString(&s->v[4], s->leng - 5), sbuff);
 		if (Text::StringTool::IsASCIIText(Data::ByteArrayR(sbuff, leng)))
@@ -54,8 +54,8 @@ Text::String *Crypto::Encrypt::JasyptConfigFile::GetCateValue(NotNullPtr<Text::S
 				NEW_CLASS(cate, Data::FastStringMap<Text::String*>());
 				this->decVals.PutNN(category, cate);
 			}
-			s = Text::String::New(sbuff, leng).Ptr();
-			cate->PutNN(name, s);
+			s = Text::String::New(sbuff, leng);
+			cate->PutNN(name, s.Ptr());
 			return s;
 		}
 		else
@@ -69,19 +69,19 @@ Text::String *Crypto::Encrypt::JasyptConfigFile::GetCateValue(NotNullPtr<Text::S
 	}
 }
 
-Text::String *Crypto::Encrypt::JasyptConfigFile::GetCateValue(Text::CStringNN category, Text::CStringNN name)
+Optional<Text::String> Crypto::Encrypt::JasyptConfigFile::GetCateValue(Text::CStringNN category, Text::CStringNN name)
 {
 	UTF8Char sbuff[512];
-	Text::String *s;
+	NotNullPtr<Text::String> s;
 	Data::FastStringMap<Text::String*> *cate = this->decVals.GetC(category);
 	if (cate)
 	{
-		s = cate->GetC(name);
-		if (s)
+		if (s.Set(cate->GetC(name)))
 			return s;
 	}
-	s = this->cfg->GetCateValue(category, name);
-	if (s && s->StartsWith(UTF8STRC("ENC(")) && s->EndsWith(')'))
+	if (!this->cfg->GetCateValue(category, name).SetTo(s))
+		return 0;
+	if (s->StartsWith(UTF8STRC("ENC(")) && s->EndsWith(')'))
 	{
 		UOSInt leng = this->enc.DecryptB64(Text::CString(&s->v[4], s->leng - 5), sbuff);
 		if (Text::StringTool::IsASCIIText(Data::ByteArrayR(sbuff, leng)))
@@ -92,8 +92,8 @@ Text::String *Crypto::Encrypt::JasyptConfigFile::GetCateValue(Text::CStringNN ca
 				NEW_CLASS(cate, Data::FastStringMap<Text::String*>());
 				this->decVals.PutC(category, cate);
 			}
-			s = Text::String::New(sbuff, leng).Ptr();
-			cate->PutC(name, s);
+			s = Text::String::New(sbuff, leng);
+			cate->PutC(name, s.Ptr());
 			return s;
 		}
 		else

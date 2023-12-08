@@ -15,7 +15,7 @@ namespace Manage
 		~ModuleInfo();
 
 		UTF8Char *GetModuleFileName(UTF8Char *buff);
-		Bool GetModuleAddress(UOSInt *baseAddr, UOSInt *size);
+		Bool GetModuleAddress(OutParam<UOSInt> baseAddr, OutParam<UOSInt> size);
 	};
 }
 #endif

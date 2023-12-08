@@ -104,13 +104,13 @@ Crypto::Encrypt::JasyptEncryptor::~JasyptEncryptor()
 	}
 }
 
-Bool Crypto::Encrypt::JasyptEncryptor::Decrypt(IO::ConfigFile *cfg)
+Bool Crypto::Encrypt::JasyptEncryptor::Decrypt(NotNullPtr<IO::ConfigFile> cfg)
 {
 	Data::ArrayListNN<Text::String> cateList;
 	Data::ArrayListNN<Text::String> keyList;
 	Text::String *cate;
 	NotNullPtr<Text::String> key;
-	Text::String *val;
+	NotNullPtr<Text::String> val;
 	UInt8 buff[256];
 	UOSInt buffSize;
 	UOSInt i = 0;
@@ -124,14 +124,13 @@ Bool Crypto::Encrypt::JasyptEncryptor::Decrypt(IO::ConfigFile *cfg)
 		while (it.HasNext())
 		{
 			key = it.Next();
-			val = cfg->GetCateValue(cate, key);
-			if (val && val->StartsWith(UTF8STRC("ENC(")) && val->EndsWith(')'))
+			if (cfg->GetCateValue(cate, key).SetTo(val) && val->StartsWith(UTF8STRC("ENC(")) && val->EndsWith(')'))
 			{
 				buffSize = this->DecryptB64(Text::CString(&val->v[4], val->leng - 5), buff);
 				if (buffSize > 0)
 				{
-					val = Text::String::New(buff, buffSize).Ptr();
-					cfg->SetValue(cate, key, val);
+					val = Text::String::New(buff, buffSize);
+					cfg->SetValue(cate, key, val.Ptr());
 					val->Release();
 				}
 			}

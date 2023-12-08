@@ -55,7 +55,7 @@ Optional<Text::String> IO::ConfigFile::GetValue(Text::CStringNN name)
 	return GetCateValue(this->defCate->ToCString(), name);
 }
 
-Text::String *IO::ConfigFile::GetCateValue(Text::String *category, NotNullPtr<Text::String> name)
+Optional<Text::String> IO::ConfigFile::GetCateValue(Text::String *category, NotNullPtr<Text::String> name)
 {
 	Data::FastStringMap<Text::String *> *cate = this->cfgVals.GetNN(Text::String::OrEmpty(category));
 	if (cate == 0)
@@ -65,7 +65,7 @@ Text::String *IO::ConfigFile::GetCateValue(Text::String *category, NotNullPtr<Te
 	return cate->GetNN(name);
 }
 
-Text::String *IO::ConfigFile::GetCateValue(NotNullPtr<Text::String> category, NotNullPtr<Text::String> name)
+Optional<Text::String> IO::ConfigFile::GetCateValue(NotNullPtr<Text::String> category, NotNullPtr<Text::String> name)
 {
 	Data::FastStringMap<Text::String *> *cate = this->cfgVals.GetNN(category);
 	if (cate == 0)
@@ -75,7 +75,7 @@ Text::String *IO::ConfigFile::GetCateValue(NotNullPtr<Text::String> category, No
 	return cate->GetNN(name);
 }
 
-Text::String *IO::ConfigFile::GetCateValue(Text::CStringNN category, Text::CStringNN name)
+Optional<Text::String> IO::ConfigFile::GetCateValue(Text::CStringNN category, Text::CStringNN name)
 {
 	Data::FastStringMap<Text::String *> *cate = this->cfgVals.GetC(category.OrEmpty());
 	if (cate == 0)
@@ -235,7 +235,7 @@ IO::ConfigFile *IO::ConfigFile::CloneCate(Text::CString category)
 	return cfg;
 }
 
-void IO::ConfigFile::MergeConfig(IO::ConfigFile *cfg)
+void IO::ConfigFile::MergeConfig(NotNullPtr<IO::ConfigFile> cfg)
 {
 	UOSInt i = cfg->cfgVals.GetCount();
 	Data::FastStringMap<Text::String*> *cate;

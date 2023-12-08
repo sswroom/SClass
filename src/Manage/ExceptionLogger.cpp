@@ -365,7 +365,7 @@ Bool Manage::ExceptionLogger::LogToFile(NotNullPtr<Text::String> fileName, UInt3
 	UTF8Char *sptr;
 	UOSInt i;
 	UOSInt j;
-	Manage::SymbolResolver symResol(&proc);
+	Manage::SymbolResolver symResol(proc);
 	writer.WriteLineC(UTF8STRC("----------------------------------"));
 	sb.AppendC(UTF8STRC("Exception occurs: Code = 0x"));
 	sb.AppendHex32(exCode);

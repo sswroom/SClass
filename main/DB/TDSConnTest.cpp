@@ -17,8 +17,8 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	IO::LogTool log;
 	log.AddLogHandler(logHdlr, IO::LogHandler::LogLevel::Raw);
 	Text::StringBuilderUTF8 errMsg;
-	DB::DBConn *conn;
-	conn = DB::MSSQLConn::OpenConnTCP(
+	NotNullPtr<DB::DBConn> conn;
+	if (DB::MSSQLConn::OpenConnTCP(
 		DBHOST,
 		DBPORT,
 		true,
@@ -27,8 +27,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 		DBPASSWORD,
 		log,
 		&errMsg
-	);
-	if (conn)
+	).SetTo(conn))
 	{
 		NotNullPtr<DB::DBReader> r;
 		if (r.Set(conn->ExecuteReader(CSTR("select * from table"))))
@@ -62,7 +61,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 			}
 			conn->CloseReader(r);
 		}
-		DEL_CLASS(conn);
+		conn.Delete();
 	}
 	else
 	{

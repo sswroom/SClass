@@ -81,7 +81,7 @@ void __stdcall SSWR::AVIRead::AVIRMSSQLConnForm::OnOKClicked(void *userObj)
 	}
 	sbPort.ClearStr();
 	me->conn = DB::MSSQLConn::OpenConnTCP(sbServer.ToCString(), port, me->chkEncrypt->IsChecked(), sbDatabase.ToCString(), sbUser.ToCString(), sbPassword.ToCString(), me->core->GetLog(), &sbPort);
-	if (me->conn)
+	if (!me->conn.IsNull())
 	{
 		me->SetDialogResult(UI::GUIForm::DR_OK);
 	}
@@ -178,7 +178,7 @@ Bool SSWR::AVIRead::AVIRMSSQLConnForm::IsDriverNotFound()
 	return this->isError;
 }
 
-DB::DBConn *SSWR::AVIRead::AVIRMSSQLConnForm::GetDBConn()
+Optional<DB::DBConn> SSWR::AVIRead::AVIRMSSQLConnForm::GetDBConn()
 {
 	return this->conn;
 }

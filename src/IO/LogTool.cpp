@@ -10,9 +10,14 @@
 #include "IO/MTFileLog.h"
 #include "IO/Path.h"
 #include "IO/Stream.h"
+#include "Manage/Process.h"
+#include "Manage/StackTracer.h"
+#include "Manage/SymbolResolver.h"
+#include "Manage/ThreadInfo.h"
 #include "Sync/Event.h"
 #include "Sync/Mutex.h"
 #include "Sync/MutexUsage.h"
+#include "Sync/Thread.h"
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
 #include "Text/UTF8Writer.h"
@@ -159,6 +164,36 @@ void IO::LogTool::LogMessage(Text::CStringNN logMsg, LogHandler::LogLevel level)
 		if (this->levArr.GetItem(i) >= level)
 			this->hdlrArr.GetItem(i)->LogAdded(ts, logMsg, level);
 	}
+}
+
+void IO::LogTool::LogStackTrace(LogHandler::LogLevel level)
+{
+	NotNullPtr<Manage::ThreadInfo> thread;
+	if (thread.Set(Manage::ThreadInfo::GetCurrThread()))
+	{
+		Manage::Process proc;
+		Manage::SymbolResolver addrResol(proc);
+		Optional<Manage::ThreadContext> tContext = thread->GetThreadContext();
+		Manage::StackTracer tracer(tContext);
+		if (tracer.IsSupported())
+		{
+			Text::StringBuilderUTF8 sb;
+			while (tracer.GoToNextLevel())
+			{
+				if (sb.leng > 0)
+				{
+					sb.Append(CSTR("\r\n\t"));
+				}
+				sb.AppendHex64(tracer.GetCurrentAddr());
+				sb.AppendC(UTF8STRC(" "));
+				addrResol.ResolveNameSB(sb, tracer.GetCurrentAddr());
+			}
+			this->LogMessage(sb.ToCString(), level);
+		}
+		tContext.Delete();
+		thread.Delete();
+	}
+
 }
 
 IO::LogHandler *IO::LogTool::GetLastFileLog()

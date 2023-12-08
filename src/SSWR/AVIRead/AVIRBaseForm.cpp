@@ -2380,7 +2380,7 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 			else if (dlg.ShowDialog(this) == UI::GUIForm::DR_OK)
 			{
 				NotNullPtr<DB::DBConn> db;
-				if (db.Set(dlg.GetDBConn()))
+				if (dlg.GetDBConn().SetTo(db))
 				{
 					this->core->OpenObject(db);
 				}

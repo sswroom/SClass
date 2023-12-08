@@ -11,10 +11,11 @@ Net::Spring::SpringBootApplication::SpringBootApplication(Text::CString appName)
 	this->log.AddLogHandler(this->consoleLog, IO::LogHandler::LogLevel::Raw);
 	this->cfg = IO::JavaProperties::ParseAppProp();
 	this->activeProfile = Text::String::New(UTF8STRC("default"));
-	if (this->cfg)
+	NotNullPtr<IO::ConfigFile> cfg;
+	if (this->cfg.SetTo(cfg))
 	{
 		NotNullPtr<Text::String> s;
-		if (this->cfg->GetValue(CSTR("spring.profiles.active")).SetTo(s))
+		if (cfg->GetValue(CSTR("spring.profiles.active")).SetTo(s))
 		{
 			this->activeProfile->Release();
 			this->activeProfile = s->Clone();
@@ -36,11 +37,11 @@ Net::Spring::SpringBootApplication::SpringBootApplication(Text::CString appName)
 		i = Text::StrSplitTrimP(sarr, 2, sarr[1], ',');
 		sptr2 = sarr[0].ConcatTo(sptr);
 		sptr2 = Text::StrConcatC(sptr2, UTF8STRC(".properties"));
-		IO::ConfigFile *cfg = IO::JavaProperties::Parse(CSTRP(sbuff, sptr2));
-		if (cfg)
+		NotNullPtr<IO::ConfigFile> nncfg;
+		if (this->cfg.SetTo(nncfg) && IO::JavaProperties::Parse(CSTRP(sbuff, sptr2)).SetTo(cfg))
 		{
-			this->cfg->MergeConfig(cfg);
-			DEL_CLASS(cfg);
+			nncfg->MergeConfig(cfg);
+			cfg.Delete();
 		}
 	}
 
@@ -77,6 +78,6 @@ Net::Spring::SpringBootApplication::SpringBootApplication(Text::CString appName)
 
 Net::Spring::SpringBootApplication::~SpringBootApplication()
 {
-	SDEL_CLASS(this->cfg);
+	this->cfg.Delete();
 	this->activeProfile->Release();
 }

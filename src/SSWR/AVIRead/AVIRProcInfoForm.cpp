@@ -39,8 +39,10 @@ void __stdcall SSWR::AVIRead::AVIRProcInfoForm::OnProcSelChg(void *userObj)
 	{
 		Text::StringBuilderUTF8 sb;
 		me->currProc = procInfo->procId;
-		NEW_CLASS(me->currProcObj, Manage::Process(procInfo->procId, false));
-		NEW_CLASS(me->currProcRes, Manage::SymbolResolver(me->currProcObj));
+		NotNullPtr<Manage::Process> procObj;
+		NEW_CLASSNN(procObj, Manage::Process(procInfo->procId, false));
+		me->currProcObj = procObj.Ptr();
+		NEW_CLASS(me->currProcRes, Manage::SymbolResolver(procObj));
 		Manage::Process proc(procInfo->procId, false);
 		sb.AppendU32(procInfo->procId);
 		me->txtDetProcId->SetText(sb.ToCString());
@@ -311,7 +313,7 @@ void SSWR::AVIRead::AVIRProcInfoForm::UpdateProcModules()
 	else
 	{
 		Manage::Process proc(this->currProc, false);
-		Data::ArrayList<Manage::ModuleInfo *> modList;
+		Data::ArrayListNN<Manage::ModuleInfo> modList;
 		Manage::ModuleInfo *module;
 		UTF8Char sbuff[512];
 		UTF8Char *sptr;
@@ -321,7 +323,7 @@ void SSWR::AVIRead::AVIRProcInfoForm::UpdateProcModules()
 		UOSInt addr;
 		UOSInt size;
 
-		proc.GetModules(&modList);
+		proc.GetModules(modList);
 
 		this->lvDetModule->ClearItems();
 		i = 0;
@@ -331,7 +333,7 @@ void SSWR::AVIRead::AVIRProcInfoForm::UpdateProcModules()
 			module = modList.GetItem(i);
 			sptr = module->GetModuleFileName(sbuff);
 			k = this->lvDetModule->AddItem(CSTRP(sbuff, sptr), 0);
-			if (module->GetModuleAddress(&addr, &size))
+			if (module->GetModuleAddress(addr, size))
 			{
 				sptr = Text::StrHexValOS(sbuff, addr);
 				this->lvDetModule->SetSubItem(k, 1, CSTRP(sbuff, sptr));

@@ -43,7 +43,7 @@ namespace IO
 		Int32 GetValueI32(const WChar *name);
 		WChar *GetValueStr(const WChar *name, WChar *buff);
 
-		Bool GetValueI32(const WChar *name, Int32 *value);
+		Bool GetValueI32(const WChar *name, OutParam<Int32> value);
 
 		WChar *GetName(WChar *nameBuff, UOSInt index);
 	};

@@ -119,7 +119,7 @@ Bool IO::IniFile::SaveConfig(IO::Writer *writer, IO::ConfigFile *cfg)
 	Data::ArrayListNN<Text::String> keyList;
 	NotNullPtr<Text::String> s;
 	NotNullPtr<Text::String> s2;
-	Text::String *s3;
+	NotNullPtr<Text::String> s3;
 	cfg->GetKeys((Text::String*)0, keyList);
 	Data::ArrayIterator<NotNullPtr<Text::String>> itCate;
 	Data::ArrayIterator<NotNullPtr<Text::String>> it = keyList.Iterator();
@@ -151,8 +151,7 @@ Bool IO::IniFile::SaveConfig(IO::Writer *writer, IO::ConfigFile *cfg)
 			s = it.Next();
 			writer->WriteStrC(s->v, s->leng);
 			writer->WriteStrC(UTF8STRC("="));
-			s3 = cfg->GetCateValue(s2, s);
-			if (s3)
+			if (cfg->GetCateValue(s2, s).SetTo(s3))
 				writer->WriteLineC(s3->v, s3->leng);
 			else
 				writer->WriteLine();

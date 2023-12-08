@@ -34,7 +34,7 @@ namespace SSWR
 			UI::GUIButton *btnCancel;
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
-			DB::DBConn *conn;
+			Optional<DB::DBConn> conn;
 			Bool isError;
 
 			static void __stdcall OnPasteJDBCClicked(void *userObj);
@@ -47,7 +47,7 @@ namespace SSWR
 			virtual void OnMonitorChanged();
 
 			Bool IsDriverNotFound();
-			DB::DBConn *GetDBConn();
+			Optional<DB::DBConn> GetDBConn();
 		};
 	}
 }

@@ -19,9 +19,9 @@ namespace IO
 
 		Optional<Text::String> GetValue(NotNullPtr<Text::String> name);
 		Optional<Text::String> GetValue(Text::CStringNN name);
-		virtual Text::String *GetCateValue(Text::String *category, NotNullPtr<Text::String> name);
-		virtual Text::String *GetCateValue(NotNullPtr<Text::String> category, NotNullPtr<Text::String> name);
-		virtual Text::String *GetCateValue(Text::CStringNN category, Text::CStringNN name);
+		virtual Optional<Text::String> GetCateValue(Text::String *category, NotNullPtr<Text::String> name);
+		virtual Optional<Text::String> GetCateValue(NotNullPtr<Text::String> category, NotNullPtr<Text::String> name);
+		virtual Optional<Text::String> GetCateValue(Text::CStringNN category, Text::CStringNN name);
 		Bool SetValue(Text::String *category, NotNullPtr<Text::String> name, Text::String *value);
 		Bool SetValue(Text::CString category, Text::CStringNN name, Text::CString value);
 		Bool RemoveValue(Text::CString category, Text::CStringNN name);
@@ -34,7 +34,7 @@ namespace IO
 		Bool HasCategory(Text::CString category) const;
 		IO::ConfigFile *CloneCate(Text::CString category);
 
-		void MergeConfig(IO::ConfigFile *cfg);
+		void MergeConfig(NotNullPtr<IO::ConfigFile> cfg);
 	};
 }
 #endif

@@ -68,8 +68,8 @@ namespace DB
 		DB::DBUtil::ColType DBType2ColType(UInt32 dbType);
 
 		static Text::CString ExecStatusTypeGetName(OSInt status);
-		static DBTool *CreateDBTool(NotNullPtr<Net::SocketFactory> sockf, Text::String *serverName, UInt16 port, Text::String *dbName, Text::String *uid, Text::String *pwd, IO::LogTool *log, Text::CString logPrefix);
-		static DBTool *CreateDBTool(NotNullPtr<Net::SocketFactory> sockf, Text::CString serverName, UInt16 port, Text::CString dbName, Text::CString uid, Text::CString pwd, IO::LogTool *log, Text::CString logPrefix);
+		static Optional<DBTool> CreateDBTool(NotNullPtr<Text::String> serverName, UInt16 port, NotNullPtr<Text::String> dbName, Text::String *uid, Text::String *pwd, NotNullPtr<IO::LogTool> log, Text::CString logPrefix);
+		static Optional<DBTool> CreateDBTool(Text::CStringNN serverName, UInt16 port, Text::CString dbName, Text::CString uid, Text::CString pwd, NotNullPtr<IO::LogTool> log, Text::CString logPrefix);
 	};
 }
 #endif
