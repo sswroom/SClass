@@ -57,7 +57,7 @@ namespace IO
 		Data::ArrayListNN<Text::String> linkCmds;
 		Data::ArrayListNN<const ProgramItem> testProgs;
 
-		void AppendCfgItem(NotNullPtr<Text::StringBuilderUTF8> sb, Text::CString val);
+		void AppendCfgItem(NotNullPtr<Text::StringBuilderUTF8> sb, Text::CStringNN val);
 		void AppendCfgPath(NotNullPtr<Text::StringBuilderUTF8> sb, Text::CString path);
 		void AppendCfg(NotNullPtr<Text::StringBuilderUTF8> sb, Text::CString compileCfg);
 

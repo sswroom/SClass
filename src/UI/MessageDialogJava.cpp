@@ -10,7 +10,7 @@ extern "C"
 	extern void *jniEnv;
 }
 
-void UI::MessageDialog::ShowDialog(const UTF8Char *message, const UTF8Char *title, UI::GUIControl *ctrl)
+void UI::MessageDialog::ShowDialog(Text::CStringNN message, Text::CStringNN title, UI::GUIControl *ctrl)
 {
 	JNIEnv *env = (JNIEnv*)jniEnv;
 	jclass cls = env->FindClass("javax/swing/JOptionPane");
@@ -20,10 +20,10 @@ void UI::MessageDialog::ShowDialog(const UTF8Char *message, const UTF8Char *titl
 	jfieldID fid = env->GetStaticFieldID(cls, "PLAIN_MESSAGE", "I");
 	if (meth == 0 || fid == 0)
 		return;
-	env->CallStaticVoidMethod(cls, meth, 0, env->NewStringUTF((const Char*)message), env->NewStringUTF((const Char*)title), env->GetStaticIntField(cls, fid));
+	env->CallStaticVoidMethod(cls, meth, 0, env->NewStringUTF((const Char*)message.v), env->NewStringUTF((const Char*)title.v), env->GetStaticIntField(cls, fid));
 }
 
-Bool UI::MessageDialog::ShowYesNoDialog(const UTF8Char *message, const UTF8Char *title, UI::GUIControl *ctrl)
+Bool UI::MessageDialog::ShowYesNoDialog(Text::CStringNN message, Text::CStringNN title, UI::GUIControl *ctrl)
 {
 	JNIEnv *env = (JNIEnv*)jniEnv;
 	jclass cls = env->FindClass("javax.swing.JOptionPane");
@@ -35,5 +35,5 @@ Bool UI::MessageDialog::ShowYesNoDialog(const UTF8Char *message, const UTF8Char 
 	jfieldID fid3 = env->GetStaticFieldID(cls, "YES_OPTION", "I");
 	if (meth == 0 || fid == 0 || fid2 == 0 || fid3 == 0)
 		return false;
-	return env->CallStaticIntMethod(cls, meth, 0, env->NewStringUTF((const Char*)message), env->NewStringUTF((const Char*)title), env->GetStaticIntField(cls, fid2), env->GetStaticIntField(cls, fid)) == env->GetStaticIntField(cls, fid3);
+	return env->CallStaticIntMethod(cls, meth, 0, env->NewStringUTF((const Char*)message.v), env->NewStringUTF((const Char*)title.v), env->GetStaticIntField(cls, fid2), env->GetStaticIntField(cls, fid)) == env->GetStaticIntField(cls, fid3);
 }

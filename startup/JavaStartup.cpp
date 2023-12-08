@@ -2,6 +2,7 @@
 #include "MyMemory.h"
 #include "Core/Core.h"
 #include "Text/MyString.h"
+#include "Text/MyStringW.h"
 #include "UI/GUICoreJava.h"
 #include <jni.h>
 #include <stdio.h>
@@ -39,10 +40,10 @@ UI::GUICore *__stdcall Core::IProgControl::CreateGUICore(NotNullPtr<Core::IProgC
 	return ui;
 }
 
-UTF8Char **__stdcall LinuxProgControl_GetCommandLines(NotNullPtr<Core::IProgControl> progCtrl, UOSInt *cmdCnt)
+UTF8Char **__stdcall LinuxProgControl_GetCommandLines(NotNullPtr<Core::IProgControl> progCtrl, OutParam<UOSInt> cmdCnt)
 {
-	LinuxProgControl *ctrl = (LinuxProgControl*)progCtrl;
-	*cmdCnt = ctrl->argc;
+	NotNullPtr<LinuxProgControl> ctrl = NotNullPtr<LinuxProgControl>::ConvertFrom(progCtrl);
+	cmdCnt.Set((UOSInt)ctrl->argc);
 	return ctrl->argv;
 }
 
@@ -79,12 +80,12 @@ extern "C"
 		{
 			sobj = env->GetObjectArrayElement(args, i - 1);
 			strArr = env->GetStringChars((jstring)sobj, &isCopy);
-			conCtrl.argv[i] = (UTF8Char*)Text::StrToUTF8New(strArr);
+			conCtrl.argv[i] = (UTF8Char*)Text::StrToUTF8New((const UTF16Char*)strArr);
 			i++;
 		}
 
 		LinuxProgControl_Create(&conCtrl);
-		ret = MyMain(&conCtrl);
+		ret = MyMain(conCtrl);
 		LinuxProgControl_Destroy(&conCtrl);
 		i = conCtrl.argc;
 		while (i-- > 0)

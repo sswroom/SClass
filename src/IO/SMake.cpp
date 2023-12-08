@@ -20,11 +20,14 @@
 !?(ANDROID_API >= 24)<lib>
 $<compileCfg>
 
+<var> := <value> means assign value to var
+<var> += <value> means append value to var
+$(<var>) means replace var as value
 `<command>' means run command and replace as command result
 !<source> means force compile
 @<source> means skip dependency check
 */
-void IO::SMake::AppendCfgItem(NotNullPtr<Text::StringBuilderUTF8> sb, Text::CString val)
+void IO::SMake::AppendCfgItem(NotNullPtr<Text::StringBuilderUTF8> sb, Text::CStringNN val)
 {
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
@@ -36,7 +39,7 @@ void IO::SMake::AppendCfgItem(NotNullPtr<Text::StringBuilderUTF8> sb, Text::CStr
 	{
 		if (j > 0)
 		{
-			sb->AppendC(&val.v[i], (UOSInt)j);
+			sb->AppendC(&val.v[i], j);
 			i += j;
 		}
 		j = Text::StrIndexOfCharC(&val.v[i], (UOSInt)(valEnd - &val.v[i]), ')');
@@ -279,7 +282,9 @@ Bool IO::SMake::LoadConfigFile(Text::CStringNN cfgFile)
 		else if (sb.ToString()[0] == '$')
 		{
 			Bool valid = true;
-			str1 = sb.SubstrTrim(1);
+			sb2.ClearStr();
+			AppendCfgItem(sb2, sb.ToCString().Substring(1));
+			str1 = sb2;
 			if (str1.StartsWith(UTF8STRC("@(")))
 			{
 				i = str1.IndexOf(')');
@@ -309,12 +314,12 @@ Bool IO::SMake::LoadConfigFile(Text::CStringNN cfgFile)
 				}
 				if (prog->compileCfg)
 				{
-					sb2.ClearStr();
-					sb2.Append(prog->compileCfg);
-					sb2.AppendUTF8Char(' ');
-					sb2.Append(ccfg);
+					sb.ClearStr();
+					sb.Append(prog->compileCfg);
+					sb.AppendUTF8Char(' ');
+					sb.Append(ccfg);
 					prog->compileCfg->Release();
-					prog->compileCfg = Text::String::New(sb2.ToString(), sb2.GetLength()).Ptr();
+					prog->compileCfg = Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
 				}
 				else
 				{
@@ -1124,6 +1129,15 @@ Bool IO::SMake::CompileProgInternal(NotNullPtr<const ProgramItem> prog, Bool asm
 		
 		if (!updateToDate)
 		{
+			if (this->messageWriter)
+			{
+				sb.ClearStr();
+				sb.AppendC(UTF8STRC("Obj "));
+				sb.Append(subProg->name);
+				sb.AppendC(UTF8STRC(" creating from "));
+				sb.Append(srcFile);
+				this->messageWriter->WriteLineC(sb.ToString(), sb.GetLength());
+			}
 			if (srcFile->EndsWith(UTF8STRC(".cpp")))
 			{
 				sb.ClearStr();

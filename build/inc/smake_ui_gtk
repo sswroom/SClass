@@ -1,221 +1,116 @@
 
 Exporter/GUIExporter.h:
-@GUIExporter.o
+@GUIExporterGTK.o
 Exporter/GUIGIFExporter.h:
-@GUIGIFExporter.o
+@GUIGIFExporterGTK.o
 Exporter/GUIJPGExporter.h:
-@GUIJPGExporter.o
+@GUIJPGExporterGTK.o
 Exporter/GUIPNGExporter.h:
-@GUIPNGExporter.o
+@GUIPNGExporterGTK.o
 Exporter/GUITIFExporter.h:
-@GUITIFExporter.o
+@GUITIFExporterGTK.o
 
 Media/DDrawManager.h:
 Media/DrawEngineFactory.h:
-@DrawEngineFactory.o
+@DrawEngineFactoryGTK.o
 Media/DrawEngineGUI.h:
-@DrawEngineGUI.o
+@GTKDrawEngine.o
 Media/GTKDrawEngine.h:
-@DrawEngineGUI.o
+@GTKDrawEngine.o
 Media/MonitorInfo.h:
-@MonitorInfo.o
+@MonitorInfoGTK.o
 Media/ScreenCapturer.h:
-@ScreenCapturer.o
+@ScreenCapturerX11.o
 
 Parser/FileParser/GUIImgParser.h:
-@GUIImgParser.o
+@GUIImgParserGTK.o
 
 UI/Clipboard.h:
-@Clipboard.o
+@ClipboardGTK.o
 UI/FileDialog.h:
-@FileDialog.o
+@FileDialogGTK.o
 UI/FolderDialog.h:
-@FolderDialog.o
+@FolderDialogGTK.o
 UI/FontDialog.h:
-@FontDialog.o
+@FontDialogGTK.o
 UI/GUIButton.h:
-@GUIButton.o
+@GUIButtonGTK.o
 UI/GUICheckBox.h:
-@GUICheckBox.o
+@GUICheckBoxGTK.o
 UI/GUICheckedListBox.h:
-@GUICheckedListBox.o
+@GUICheckedListBoxGTK.o
 UI/GUIClientControl.h:
-@GUIClientControl.o
+@GUIClientControlGTK.o
 UI/GUIComboBox.h:
-@GUIComboBox.o
+@GUIComboBoxGTK.o
 UI/GUIControl.h:
-@GUIControl.o
+@GUIControlGTK.o
 UI/GUICore.h:
 UI/GUICoreGTK.h:
-@GUICore.o
+@GUICoreGTK.o
 UI/GUICustomDraw.h:
-@GUICustomDraw.o
+@GUICustomDrawGTK.o
 UI/GUICustomDrawVScroll.h:
-@GUICustomDrawVScroll.o
+@GUICustomDrawVScrollGTK.o
 UI/GUIDateTimePicker.h:
-@GUIDateTimePicker.o
+@GUIDateTimePickerGTK.o
 UI/GUIDDrawControl.h:
-@GUIDDrawControl.o
+@GUIDDrawControlGtk.o
 UI/GUIDragDrop.h:
-@GUIDragDrop.o
+@GUIDragDropGTK.o
 UI/GUIDragDropGTK.h:
-@GUIDragDrop.o
+@GUIDragDropGTK.o
 UI/GUIForm.h:
-@GUIForm.o
+@GUIFormGTK.o
 UI/GUIGroupBox.h:
-@GUIGroupBox.o
+@GUIGroupBoxGTK.o
 UI/GUIHScrollBar.h:
-@GUIHScrollBar.o
+@GUIHScrollBarGTK.o
 UI/GUIHSplitter.h:
-@GUIHSplitter.o
+@GUIHSplitterGTK.o
 UI/GUILabel.h:
-@GUILabel.o
+@GUILabelGTK.o
 UI/GUIListBox.h:
-@GUIListBox.o
+@GUIListBoxGTK.o
 UI/GUIListView.h:
-@GUIListView.o
+@GUIListViewGTK.o
 UI/GUIPanel.h:
-@GUIPanel.o
+@GUIPanelGTK.o
 UI/GUIMainMenu.h:
 @GUIMainMenu.o
 UI/GUIMenu.h:
-@GUIMenu.o
+@GUIMenuGTK.o
 UI/GUIPictureBox.h:
-@GUIPictureBox.o
+@GUIPictureBoxGTK.o
 UI/GUIPictureBoxSimple.h:
-@GUIPictureBoxSimple.o
+@GUIPictureBoxSimpleGTK.o
 UI/GUIPopupMenu.h:
-@GUIPopupMenu.o
+@GUIPopupMenuGTK.o
 UI/GUIProgressBar.h:
-@GUIProgressBar.o
+@GUIProgressBarGTK.o
 UI/GUIRadioButton.h:
-@GUIRadioButton.o
+@GUIRadioButtonGTK.o
 UI/GUIRealtimeLineChart.h:
-@GUIRealtimeLineChart.o
+@GUIRealtimeLineChartGTK.o
 UI/GUITabControl.h:
-@GUITabControl.o
+@GUITabControlGTK.o
 UI/GUITabPage.h:
 @GUITabPage.o
 UI/GUITextBox.h:
-@GUITextBox.o
+@GUITextBoxGTK.o
 UI/GUITextView.h:
-@GUITextView.o
+@GUITextViewGTK.o
 UI/GUITimer.h:
-@GUITimer.o
+@GUITimerGTK.o
 UI/GUITrackBar.h:
-@GUITrackBar.o
+@GUITrackBarGTK.o
 UI/GUITreeView.h:
-@GUITreeView.o
+@GUITreeViewGTK.o
 UI/GUIVSplitter.h:
-@GUIVSplitter.o
+@GUIVSplitterGTK.o
 UI/MessageDialog.h:
-@MessageDialog.o
+@MessageDialogL.o
 
 GUIStartup.o: ../../startup/GtkStartup.cpp
 $`pkg-config --cflags gtk+-3.0`
 !`pkg-config --libs gtk+-3.0`
-GUIExporter.o: ../../src/Exporter/GUIExporterGTK.cpp
-$`pkg-config --cflags gtk+-3.0`
-!`pkg-config --libs gtk+-3.0`
-GUIGIFExporter.o: ../../src/Exporter/GUIGIFExporterGTK.cpp
-$`pkg-config --cflags gtk+-3.0`
-GUIJPGExporter.o: ../../src/Exporter/GUIJPGExporterGTK.cpp
-$`pkg-config --cflags gtk+-3.0`
-GUIPNGExporter.o: ../../src/Exporter/GUIPNGExporterGTK.cpp
-$`pkg-config --cflags gtk+-3.0`
-GUITIFExporter.o: ../../src/Exporter/GUITIFExporterGTK.cpp
-$`pkg-config --cflags gtk+-3.0`
-DrawEngineFactory.o: ../../src/Media/DrawEngineFactoryGTK.cpp
-DrawEngineGUI.o: ../../src/Media/GTKDrawEngine.cpp
-$`pkg-config --cflags gtk+-3.0`
-MonitorInfo.o: ../../src/Media/MonitorInfoGTK.cpp
-$`pkg-config --cflags gtk+-3.0`
-!`pkg-config --libs gtk+-3.0`
-ScreenCapturer.o: ../../src/Media/ScreenCapturerX11.cpp
-!-lX11
-GUIImgParser.o: ../../src/Parser/FileParser/GUIImgParserGTK.cpp
-$`pkg-config --cflags gtk+-3.0`
-!`pkg-config --libs gtk+-3.0`
-Clipboard.o: ../../src/UI/ClipboardGTK.cpp
-$`pkg-config --cflags gtk+-3.0`
-FileDialog.o: ../../src/UI/FileDialogGTK.cpp
-$`pkg-config --cflags gtk+-3.0`
-FolderDialog.o: ../../src/UI/FolderDialogGTK.cpp
-$`pkg-config --cflags gtk+-3.0`
-FontDialog.o: ../../src/UI/FontDialogGTK.cpp
-$`pkg-config --cflags gtk+-3.0`
-GUIButton.o: ../../src/UI/GUIButtonGTK.cpp
-$`pkg-config --cflags gtk+-3.0`
-GUICheckBox.o: ../../src/UI/GUICheckBoxGTK.cpp
-$`pkg-config --cflags gtk+-3.0`
-GUICheckedListBox.o: ../../src/UI/GUICheckedListBoxGTK.cpp
-$`pkg-config --cflags gtk+-3.0`
-GUIClientControl.o: ../../src/UI/GUIClientControlGTK.cpp
-$`pkg-config --cflags gtk+-3.0`
-GUIComboBox.o: ../../src/UI/GUIComboBoxGTK.cpp
-$`pkg-config --cflags gtk+-3.0`
-GUIControl.o: ../../src/UI/GUIControlGTK.cpp
-$`pkg-config --cflags gtk+-3.0`
-GUICore.o: ../../src/UI/GUICoreGTK.cpp
-$`pkg-config --cflags gtk+-3.0`
-!-lX11
-GUICustomDraw.o: ../../src/UI/GUICustomDrawGTK.cpp
-$`pkg-config --cflags gtk+-3.0`
-GUICustomDrawVScroll.o: ../../src/UI/GUICustomDrawVScrollGTK.cpp
-$`pkg-config --cflags gtk+-3.0`
-GUIDateTimePicker.o: ../../src/UI/GUIDateTimePickerGTK.cpp
-$`pkg-config --cflags gtk+-3.0`
-GUIDDrawControl.o: ../../src/UI/GUIDDrawControlGtk.cpp
-$`pkg-config --cflags gtk+-3.0`
-GUIDragDrop.o: ../../src/UI/GUIDragDropGTK.cpp
-$`pkg-config --cflags gtk+-3.0`
-GUIForm.o: ../../src/UI/GUIFormGTK.cpp
-$`pkg-config --cflags gtk+-3.0`
-GUIGroupBox.o: ../../src/UI/GUIGroupBoxGTK.cpp
-$`pkg-config --cflags gtk+-3.0`
-GUIHScrollBar.o: ../../src/UI/GUIHScrollBarGTK.cpp
-$`pkg-config --cflags gtk+-3.0`
-GUIHSplitter.o: ../../src/UI/GUIHSplitterGTK.cpp
-$`pkg-config --cflags gtk+-3.0`
-GUILabel.o: ../../src/UI/GUILabelGTK.cpp
-$`pkg-config --cflags gtk+-3.0`
-GUIListBox.o: ../../src/UI/GUIListBoxGTK.cpp
-$`pkg-config --cflags gtk+-3.0`
-GUIListView.o: ../../src/UI/GUIListViewGTK.cpp
-$`pkg-config --cflags gtk+-3.0`
-GUIPanel.o: ../../src/UI/GUIPanelGTK.cpp
-$`pkg-config --cflags gtk+-3.0`
-GUIMainMenu.o: ../../src/UI/GUIMainMenu.cpp
-$`pkg-config --cflags gtk+-3.0`
-GUIMenu.o: ../../src/UI/GUIMenuGTK.cpp
-$`pkg-config --cflags gtk+-3.0`
-GUIPictureBox.o: ../../src/UI/GUIPictureBoxGTK.cpp
-$`pkg-config --cflags gtk+-3.0`
-GUIPictureBoxSimple.o: ../../src/UI/GUIPictureBoxSimpleGTK.cpp
-$`pkg-config --cflags gtk+-3.0`
-GUIPopupMenu.o: ../../src/UI/GUIPopupMenuGTK.cpp
-$`pkg-config --cflags gtk+-3.0`
-GUIProgressBar.o: ../../src/UI/GUIProgressBarGTK.cpp
-$`pkg-config --cflags gtk+-3.0`
-GUIRadioButton.o: ../../src/UI/GUIRadioButtonGTK.cpp
-$`pkg-config --cflags gtk+-3.0`
-GUIRealtimeLineChart.o: ../../src/UI/GUIRealtimeLineChartGTK.cpp
-$`pkg-config --cflags gtk+-3.0`
-GUITabControl.o: ../../src/UI/GUITabControlGTK.cpp
-$`pkg-config --cflags gtk+-3.0`
-GUITabPage.o: ../../src/UI/GUITabPage.cpp
-$`pkg-config --cflags gtk+-3.0`
-GUITextBox.o: ../../src/UI/GUITextBoxGTK.cpp
-$`pkg-config --cflags gtk+-3.0`
-GUITextView.o: ../../src/UI/GUITextViewGTK.cpp
-$`pkg-config --cflags gtk+-3.0`
-GUITimer.o: ../../src/UI/GUITimerGTK.cpp
-$`pkg-config --cflags gtk+-3.0`
-GUITrackBar.o: ../../src/UI/GUITrackBarGTK.cpp
-$`pkg-config --cflags gtk+-3.0`
-GUITreeView.o: ../../src/UI/GUITreeViewGTK.cpp
-$`pkg-config --cflags gtk+-3.0`
-GUIVSplitter.o: ../../src/UI/GUIVSplitterGTK.cpp
-$`pkg-config --cflags gtk+-3.0`
-MessageDialog.o: ../../src/UI/MessageDialogL.cpp
-$`pkg-config --cflags gtk+-3.0`

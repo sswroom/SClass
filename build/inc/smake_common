@@ -1,9 +1,9 @@
-INCLUDEPATH:=../../header
+INCLUDEPATH :=../../header
 CFLAGS += -I ../../header
-INCLUDEPATH+=:../../ThirdParty/miniz
-INCLUDEPATH+=:../../ThirdParty/miniz/_build
-INCLUDEPATH+=:../../ThirdParty/sqlite3
-INCLUDEPATH+=:../../ThirdParty/adl
+INCLUDEPATH +=:../../ThirdParty/miniz
+INCLUDEPATH +=:../../ThirdParty/miniz/_build
+INCLUDEPATH +=:../../ThirdParty/sqlite3
+INCLUDEPATH +=:../../ThirdParty/adl
 
 mcu:
 @MCU_Console
@@ -4784,6 +4784,7 @@ JWSignature.o: ../../src/Crypto/Token/JWSignature.cpp
 JWTHandler.o: ../../src/Crypto/Token/JWTHandler.cpp
 JWToken.o: ../../src/Crypto/Token/JWToken.cpp
 JWTParam.o: ../../src/Crypto/Token/JWTParam.cpp
+
 ArrayListCmp.o: ../../src/Data/ArrayListCmp.cpp
 ArrayListCStr.o: ../../src/Data/ArrayListCStr.cpp
 ArrayListCStrFast.o: ../../src/Data/ArrayListCStrFast.cpp
@@ -4843,6 +4844,7 @@ BubbleSort.o: ../../src/Data/Sort/BubbleSort.cpp
 BubbleSort_CPP.o: ../../src/Data/Sort/BubbleSort_CPP.cpp
 ByteCountingSort_CPP.o: ../../src/Data/Sort/ByteCountingSort_CPP.cpp
 InsertionSort_CPP.o: ../../src/Data/Sort/InsertionSort_CPP.cpp
+
 ColDef.o: ../../src/DB/ColDef.cpp
 CSVFile.o: ../../src/DB/CSVFile.cpp
 DBCache.o: ../../src/DB/DBCache.cpp
@@ -4884,6 +4886,7 @@ WorkbookDB.o: ../../src/DB/WorkbookDB.cpp
 CreateTableCommand.o: ../../src/DB/SQL/CreateTableCommand.cpp
 SQLCommand.o: ../../src/DB/SQL/SQLCommand.cpp
 SQLUtil.o: ../../src/DB/SQL/SQLUtil.cpp
+
 BMPExporter.o: ../../src/Exporter/BMPExporter.cpp
 CIPExporter.o: ../../src/Exporter/CIPExporter.cpp
 CURExporter.o: ../../src/Exporter/CURExporter.cpp
@@ -4897,6 +4900,28 @@ ExcelXMLExporter.o: ../../src/Exporter/ExcelXMLExporter.cpp
 ExporterList.o: ../../src/Exporter/ExporterList.cpp
 GIFExporter.o: ../../src/Exporter/GIFExporter.cpp
 GPXExporter.o: ../../src/Exporter/GPXExporter.cpp
+GUIExporterGTK.o: ../../src/Exporter/GUIExporterGTK.cpp
+$`pkg-config --cflags gtk+-3.0`
+!`pkg-config --libs gtk+-3.0`
+GUIExporterNull.o: ../../src/Exporter/GUIExporterNull.cpp
+GUIExporterW.o: ../../src/Exporter/GUIExporterW.cpp
+!-lgdiplus
+GUIGIFExporterGTK.o: ../../src/Exporter/GUIGIFExporterGTK.cpp
+$`pkg-config --cflags gtk+-3.0`
+GUIGIFExporterNull.o: ../../src/Exporter/GUIGIFExporterNull.cpp
+GUIGIFExporterW.o: ../../src/Exporter/GUIGIFExporterW.cpp
+GUIJPGExporterGTK.o: ../../src/Exporter/GUIJPGExporterGTK.cpp
+$`pkg-config --cflags gtk+-3.0`
+GUIJPGExporterNull.o: ../../src/Exporter/GUIJPGExporterNull.cpp
+GUIJPGExporterW.o: ../../src/Exporter/GUIJPGExporterW.cpp
+GUIPNGExporterGTK.o: ../../src/Exporter/GUIPNGExporterGTK.cpp
+$`pkg-config --cflags gtk+-3.0`
+GUIPNGExporterNull.o: ../../src/Exporter/GUIPNGExporterNull.cpp
+GUIPNGExporterW.o: ../../src/Exporter/GUIPNGExporterW.cpp
+GUITIFExporterGTK.o: ../../src/Exporter/GUITIFExporterGTK.cpp
+$`pkg-config --cflags gtk+-3.0`
+GUITIFExporterNull.o: ../../src/Exporter/GUITIFExporterNull.cpp
+GUITIFExporterW.o: ../../src/Exporter/GUITIFExporterW.cpp
 ICOExporter.o: ../../src/Exporter/ICOExporter.cpp
 KMLExporter.o: ../../src/Exporter/KMLExporter.cpp
 MapCSVExporter.o: ../../src/Exporter/MapCSVExporter.cpp
@@ -4917,7 +4942,9 @@ TIFFExporter.o: ../../src/Exporter/TIFFExporter.cpp
 WAVExporter.o: ../../src/Exporter/WAVExporter.cpp
 XLSXExporter.o: ../../src/Exporter/XLSXExporter.cpp
 ZIPExporter.o: ../../src/Exporter/ZIPExporter.cpp
+
 SudokuBoard.o: ../../src/Game/Sudoku/SudokuBoard.cpp
+
 ActiveStreamReader.o: ../../src/IO/ActiveStreamReader.cpp
 AdvantechASCIIChannel.o: ../../src/IO/AdvantechASCIIChannel.cpp
 AndroidDB.o: ../../src/IO/AndroidDB.cpp
@@ -5118,6 +5145,7 @@ MemoryDataCopy.o: ../../src/IO/StmData/MemoryDataCopy.cpp
 MemoryDataRef.o: ../../src/IO/StmData/MemoryDataRef.cpp
 MDT701STVControl.o: ../../src/IO/TVCtrl/MDT701STVControl.cpp
 NECTVControl.o: ../../src/IO/TVCtrl/NECTVControl.cpp
+
 AddressResolver.o: ../../src/Manage/AddressResolver.cpp
 CPUDB.o: ../../src/Manage/CPUDB.cpp
 CPUInst.o: ../../src/Manage/CPUInst.cpp
@@ -5129,6 +5157,7 @@ HandleType.o: ../../src/Manage/HandleType.cpp
 MonConn.o: ../../src/Manage/MonConn.cpp
 OSInfo.o: ../../src/Manage/OSInfo.cpp
 ThreadContext.o: ../../src/Manage/ThreadContext.cpp
+
 AssistedReverseGeocoder.o: ../../src/Map/AssistedReverseGeocoder.cpp
 AssistedReverseGeocoderPL.o: ../../src/Map/AssistedReverseGeocoderPL.cpp
 BaseMapLayer.o: ../../src/Map/BaseMapLayer.cpp
@@ -5210,6 +5239,7 @@ OSMCacheHandler.o: ../../src/Map/OSM/OSMCacheHandler.cpp
 OSMLocalTileMap.o: ../../src/Map/OSM/OSMLocalTileMap.cpp
 OSMParser.o: ../../src/Map/OSM/OSMParser.cpp
 OSMTileMap.o: ../../src/Map/OSM/OSMTileMap.cpp
+
 ArcGISCSys.o: ../../src/Math/ArcGISCSys.cpp
 ArcGISPRJParser.o: ../../src/Math/ArcGISPRJParser.cpp
 BigIntLSB.o: ../../src/Math/BigIntLSB.cpp
@@ -5279,6 +5309,7 @@ ReactiveEnergy.o: ../../src/Math/Unit/ReactiveEnergy.cpp
 ReactivePower.o: ../../src/Math/Unit/ReactivePower.cpp
 Temperature.o: ../../src/Math/Unit/Temperature.cpp
 UnitBase.o: ../../src/Math/Unit/UnitBase.cpp
+
 AACFrameSource.o: ../../src/Media/AACFrameSource.cpp
 ANPR.o: ../../src/Media/ANPR.cpp
 AudioBlockParser.o: ../../src/Media/AudioBlockParser.cpp
@@ -5295,9 +5326,15 @@ ColorConv.o: ../../src/Media/ColorConv.cpp
 ColorProfile.o: ../../src/Media/ColorProfile.cpp
 ConsoleMediaPlayer.o: ../../src/Media/ConsoleMediaPlayer.cpp
 ConsoleVideoRenderer.o: ../../src/Media/ConsoleVideoRenderer.cpp
+DDrawManager.o: ../../src/Media/DDrawManager.cpp
+!-lddraw
+!-ldxguid
 Deinterlace8.o: ../../src/Media/Deinterlace8.cpp
 DeinterlaceLR.o: ../../src/Media/DeinterlaceLR.cpp
 DrawEngine.o: ../../src/Media/DrawEngine.cpp
+DrawEngineFactoryGTK.o: ../../src/Media/DrawEngineFactoryGTK.cpp
+DrawEngineFactorySEng.o: ../../src/Media/DrawEngineFactorySEng.cpp
+DrawEngineFactoryWin.o: ../../src/Media/DrawEngineFactoryWin.cpp
 DrawImageTool.o: ../../src/Media/DrawImageTool.cpp
 EDID.o: ../../src/Media/EDID.cpp
 EXIFData.o: ../../src/Media/EXIFData.cpp
@@ -5305,7 +5342,15 @@ FileVideoSource.o: ../../src/Media/FileVideoSource.cpp
 FontRenderer.o: ../../src/Media/FontRenderer.cpp
 FrameInfo.o: ../../src/Media/FrameInfo.cpp
 FrequencyGraph.o: ../../src/Media/FrequencyGraph.cpp
+GDIEngine.o: ../../src/Media/GDIEngine.cpp
+!-lgdi32
+!-lgdiplus
+!-lmsimg32
 GRFilter.o: ../../src/Media/GRFilter.cpp
+GTKDrawEngine.o: ../../src/Media/GTKDrawEngine.cpp
+$`pkg-config --cflags gtk+-3.0`
+GTKDrawEngineNoGDK.o: ../../src/Media/GTKDrawEngine.cpp
+!-lcairo
 H264Parser.o: ../../src/Media/H264Parser.cpp
 H265Parser.o: ../../src/Media/H265Parser.cpp
 HTRecFile.o: ../../src/Media/HTRecFile.cpp
@@ -5336,11 +5381,18 @@ MediaPlayer.o: ../../src/Media/MediaPlayer.cpp
 MediaPlayerInterface.o: ../../src/Media/MediaPlayerInterface.cpp
 MediaPlayerWebInterface.o: ../../src/Media/MediaPlayerWebInterface.cpp
 MemorySurface.o: ../../src/Media/MemorySurface.cpp
+MonitorInfoGTK.o: ../../src/Media/MonitorInfoGTK.cpp
+$`pkg-config --cflags gtk+-3.0`
+!`pkg-config --libs gtk+-3.0`
+MonitorInfoJava.o: ../../src/Media/MonitorInfoJava.cpp
+MonitorInfoNul.o: ../../src/Media/MonitorInfoNul.cpp
+MonitorInfoW.o: ../../src/Media/MonitorInfoW.cpp
 MonitorMgr.o: ../../src/Media/MonitorMgr.cpp
 MPAStreamSource.o: ../../src/Media/MPAStreamSource.cpp
 MPEGVideoParser.o: ../../src/Media/MPEGVideoParser.cpp
 MPGFile.o: ../../src/Media/MPGFile.cpp
 MSFontRenderer.o: ../../src/Media/MSFontRenderer.cpp
+NoGUIDrawEngine.o: ../../src/Media/NoGUIDrawEngine.cpp
 NullRenderer.o: ../../src/Media/NullRenderer.cpp
 NWASource.o: ../../src/Media/NWASource.cpp
 PaperSize.o: ../../src/Media/PaperSize.cpp
@@ -5353,6 +5405,10 @@ ProfiledResizer.o: ../../src/Media/ProfiledResizer.cpp
 RefClock.o: ../../src/Media/RefClock.cpp
 RGBColorFilter.o: ../../src/Media/RGBColorFilter.cpp
 RGBLUTGen.o: ../../src/Media/RGBLUTGen.cpp
+ScreenCapturerNull.o: ../../src/Media/ScreenCapturerNull.cpp
+ScreenCapturerW.o: ../../src/Media/ScreenCapturerW.cpp
+ScreenCapturerX11.o: ../../src/Media/ScreenCapturerX11.cpp
+!-lX11
 SharedImage.o: ../../src/Media/SharedImage.cpp
 SilentSource.o: ../../src/Media/SilentSource.cpp
 StaticEngine.o: ../../src/Media/StaticEngine.cpp
@@ -5513,6 +5569,7 @@ AutoCropFilter.o: ../../src/Media/VideoFilter/AutoCropFilter.cpp
 IVTCFilter.o: ../../src/Media/VideoFilter/IVTCFilter.cpp
 UVOffsetFilter.o: ../../src/Media/VideoFilter/UVOffsetFilter.cpp
 VideoFilterBase.o: ../../src/Media/VideoFilter/VideoFilterBase.cpp
+
 ACMEClient.o: ../../src/Net/ACMEClient.cpp
 ACMEConn.o: ../../src/Net/ACMEConn.cpp
 AddressRange.o: ../../src/Net/AddressRange.cpp
@@ -5700,6 +5757,7 @@ WebSite7gogoControl.o: ../../src/Net/WebSite/WebSite7gogoControl.cpp
 WebSite48IdolControl.o: ../../src/Net/WebSite/WebSite48IdolControl.cpp
 WebSiteInstagramControl.o: ../../src/Net/WebSite/WebSiteInstagramControl.cpp
 WebSiteTwitterControl.o: ../../src/Net/WebSite/WebSiteTwitterControl.cpp
+
 FullParserList.o: ../../src/Parser/FullParserList.cpp
 ParserList.o: ../../src/Parser/ParserList.cpp
 AC3Parser.o: ../../src/Parser/FileParser/AC3Parser.cpp
@@ -5732,6 +5790,12 @@ FNTParser.o: ../../src/Parser/FileParser/FNTParser.cpp
 GamedatPac2Parser.o: ../../src/Parser/FileParser/GamedatPac2Parser.cpp
 GIFParser.o: ../../src/Parser/FileParser/GIFParser.cpp
 GLOCParser.o: ../../src/Parser/FileParser/GLOCParser.cpp
+GUIImgParserGTK.o: ../../src/Parser/FileParser/GUIImgParserGTK.cpp
+$`pkg-config --cflags gtk+-3.0`
+!`pkg-config --libs gtk+-3.0`
+GUIImgParserNul.o: ../../src/Parser/FileParser/GUIImgParserNul.cpp
+GUIImgParserW.o: ../../src/Parser/FileParser/GUIImgParserW.cpp
+!-lgdiplus
 GZIPParser.o: ../../src/Parser/FileParser/GZIPParser.cpp
 HTRecParser.o: ../../src/Parser/FileParser/HTRecParser.cpp
 ICOParser.o: ../../src/Parser/FileParser/ICOParser.cpp
@@ -5817,6 +5881,7 @@ ITMParser.o: ../../src/Parser/ObjParser/ITMParser.cpp
 KMZParser.o: ../../src/Parser/ObjParser/KMZParser.cpp
 MPGXAParser.o: ../../src/Parser/ObjParser/MPGXAParser.cpp
 OSMMapParser.o: ../../src/Parser/ObjParser/OSMMapParser.cpp
+
 ProcMonForm.o: ../../src/SSWR/ProcMonForm.cpp
 AVIRAboutForm.o: ../../src/SSWR/AVIRead/AVIRAboutForm.cpp
 AVIRAccelerometerForm.o: ../../src/SSWR/AVIRead/AVIRAccelerometerForm.cpp
@@ -6192,6 +6257,7 @@ SMonitorSvrCore.o: ../../src/SSWR/SMonitor/SMonitorSvrCore.cpp
 SMonitorWebHandler.o: ../../src/SSWR/SMonitor/SMonitorWebHandler.cpp
 VAMSBTList.o: ../../src/SSWR/VAMS/VAMSBTList.cpp
 VAMSBTWebHandler.o: ../../src/SSWR/VAMS/VAMSBTWebHandler.cpp
+
 Event.o: ../../src/Sync/Event.cpp
 Interlocked.o: ../../src/Sync/Interlocked.cpp
 Mutex.o: ../../src/Sync/Mutex.cpp
@@ -6199,8 +6265,10 @@ MutexUsage.o: ../../src/Sync/MutexUsage.cpp
 ParallelTask.o: ../../src/Sync/ParallelTask.cpp
 RWMutexUsage.o: ../../src/Sync/RWMutexUsage.cpp
 Thread.o: ../../src/Sync/Thread.cpp
+
 TestModem.o: ../../src/Test/TestModem.cpp
 TestSIM7000.o: ../../src/Test/TestSIM7000.cpp
+
 CPPText.o: ../../src/Text/CPPText.cpp
 CharUtil.o: ../../src/Text/CharUtil.cpp
 ChineseInfo.o: ../../src/Text/ChineseInfo.cpp
@@ -6300,18 +6368,171 @@ URIEncoding.o: ../../src/Text/TextBinEnc/URIEncoding.cpp
 UTF8LCaseTextBinEnc.o: ../../src/Text/TextBinEnc/UTF8LCaseTextBinEnc.cpp
 UTF8TextBinEnc.o: ../../src/Text/TextBinEnc/UTF8TextBinEnc.cpp
 UTF8UCaseTextBinEnc.o: ../../src/Text/TextBinEnc/UTF8UCaseTextBinEnc.cpp
+
+ClipboardGTK.o: ../../src/UI/ClipboardGTK.cpp
+$`pkg-config --cflags gtk+-3.0`
+ClipboardJava.o: ../../src/UI/ClipboardJava.cpp
+$-I$(JAVA_HOME)/include
+$-I$(JAVA_HOME)/include/linux
+ClipboardW.o: ../../src/UI/ClipboardW.cpp
+FileDialogGTK.o: ../../src/UI/FileDialogGTK.cpp
+$`pkg-config --cflags gtk+-3.0`
+FileDialogWin.o: ../../src/UI/FileDialogWin.cpp
+FolderDialogGTK.o: ../../src/UI/FolderDialogGTK.cpp
+$`pkg-config --cflags gtk+-3.0`
+FolderDialogWin.o: ../../src/UI/FolderDialogWin.cpp
+FontDialogGTK.o: ../../src/UI/FontDialogGTK.cpp
+$`pkg-config --cflags gtk+-3.0`
+FontDialogWin.o: ../../src/UI/FontDialogWin.cpp
 ListBoxLogger.o: ../../src/UI/ListBoxLogger.cpp
+GUIButtonGTK.o: ../../src/UI/GUIButtonGTK.cpp
+$`pkg-config --cflags gtk+-3.0`
+GUIButtonWin.o: ../../src/UI/GUIButtonWin.cpp
+GUICheckBoxGTK.o: ../../src/UI/GUICheckBoxGTK.cpp
+$`pkg-config --cflags gtk+-3.0`
+GUICheckBoxWin.o: ../../src/UI/GUICheckBoxWin.cpp
+GUICheckedListBoxGTK.o: ../../src/UI/GUICheckedListBoxGTK.cpp
+$`pkg-config --cflags gtk+-3.0`
+GUICheckedListBoxWin.o: ../../src/UI/GUICheckedListBoxWin.cpp
+GUIClientControlGTK.o: ../../src/UI/GUIClientControlGTK.cpp
+$`pkg-config --cflags gtk+-3.0`
+GUIClientControlJava.o: ../../src/UI/GUIClientControlJava.cpp
+$-I$(JAVA_HOME)/include
+$-I$(JAVA_HOME)/include/linux
+GUIClientControlWin.o: ../../src/UI/GUIClientControlWin.cpp
+GUIComboBoxGTK.o: ../../src/UI/GUIComboBoxGTK.cpp
+$`pkg-config --cflags gtk+-3.0`
 GUIComboBoxUtil.o: ../../src/UI/GUIComboBoxUtil.cpp
+GUIComboBoxWin.o: ../../src/UI/GUIComboBoxWin.cpp
+GUIControlGTK.o: ../../src/UI/GUIControlGTK.cpp
+$`pkg-config --cflags gtk+-3.0`
+GUIControlJava.o: ../../src/UI/GUIControlJava.cpp
+$-I$(JAVA_HOME)/include
+$-I$(JAVA_HOME)/include/linux
+GUIControlWin.o: ../../src/UI/GUIControlWin.cpp
+GUICoreGTK.o: ../../src/UI/GUICoreGTK.cpp
+$`pkg-config --cflags gtk+-3.0`
+!-lX11
+GUICoreJava.o: ../../src/UI/GUICoreJava.cpp
+$-I$(JAVA_HOME)/include
+$-I$(JAVA_HOME)/include/linux
+GUICoreWin.o: ../../src/UI/GUICoreWin.cpp
+GUICustomDrawGTK.o: ../../src/UI/GUICustomDrawGTK.cpp
+$`pkg-config --cflags gtk+-3.0`
+GUICustomDrawVScrollGTK.o: ../../src/UI/GUICustomDrawVScrollGTK.cpp
+$`pkg-config --cflags gtk+-3.0`
+GUICustomDrawVScrollWin.o: ../../src/UI/GUICustomDrawVScrollWin.cpp
+GUICustomDrawWin.o: ../../src/UI/GUICustomDrawWin.cpp
+!-lwinmm
+GUIDateTimePickerGTK.o: ../../src/UI/GUIDateTimePickerGTK.cpp
+$`pkg-config --cflags gtk+-3.0`
+GUIDateTimePickerWin.o: ../../src/UI/GUIDateTimePickerWin.cpp
+GUIDDrawControlGtk.o: ../../src/UI/GUIDDrawControlGtk.cpp
+$`pkg-config --cflags gtk+-3.0`
+GUIDDrawControlWin.o: ../../src/UI/GUIDDrawControlWin.cpp
+!-lwinmm
 GUIDObjArea.o: ../../src/UI/GUIDObjArea.cpp
+GUIDragDropGTK.o: ../../src/UI/GUIDragDropGTK.cpp
+$`pkg-config --cflags gtk+-3.0`
+GUIDragDropWin.o: ../../src/UI/GUIDragDropWin.cpp
+GUIFormGTK.o: ../../src/UI/GUIFormGTK.cpp
+$`pkg-config --cflags gtk+-3.0`
+GUIFormJava.o: ../../src/UI/GUIFormJava.cpp
+$-I$(JAVA_HOME)/include
+$-I$(JAVA_HOME)/include/linux
+GUIFormWin.o: ../../src/UI/GUIFormWin.cpp
+GUIGroupBoxGTK.o: ../../src/UI/GUIGroupBoxGTK.cpp
+$`pkg-config --cflags gtk+-3.0`
+GUIGroupBoxWin.o: ../../src/UI/GUIGroupBoxWin.cpp
 GUIHexFileView.o: ../../src/UI/GUIHexFileView.cpp
+GUIHScrollBarGTK.o: ../../src/UI/GUIHScrollBarGTK.cpp
+$`pkg-config --cflags gtk+-3.0`
+GUIHScrollBarWin.o: ../../src/UI/GUIHScrollBarWin.cpp
+GUIHSplitterGTK.o: ../../src/UI/GUIHSplitterGTK.cpp
+$`pkg-config --cflags gtk+-3.0`
+GUIHSplitterWin.o: ../../src/UI/GUIHSplitterWin.cpp
+GUIIconWin.o: ../../src/UI/GUIIconWin.cpp
+GUILabelGTK.o: ../../src/UI/GUILabelGTK.cpp
+$`pkg-config --cflags gtk+-3.0`
+GUILabelWin.o: ../../src/UI/GUILabelWin.cpp
+GUIListBoxGTK.o: ../../src/UI/GUIListBoxGTK.cpp
+$`pkg-config --cflags gtk+-3.0`
+GUIListBoxWin.o: ../../src/UI/GUIListBoxWin.cpp
+GUIListViewGTK.o: ../../src/UI/GUIListViewGTK.cpp
+$`pkg-config --cflags gtk+-3.0`
+GUIListViewWin.o: ../../src/UI/GUIListViewWin.cpp
+!-lcomctl32
+GUIMainMenu.o: ../../src/UI/GUIMainMenu.cpp
 GUIMapControl.o: ../../src/UI/GUIMapControl.cpp
 GUIMapTreeView.o: ../../src/UI/GUIMapTreeView.cpp
+GUIMenuGTK.o: ../../src/UI/GUIMenuGTK.cpp
+$`pkg-config --cflags gtk+-3.0`
+GUIMenuJava.o: ../../src/UI/GUIMenuJava.cpp
+$-I$(JAVA_HOME)/include
+$-I$(JAVA_HOME)/include/linux
+GUIMenuWin.o: ../../src/UI/GUIMenuWin.cpp
+GUIPanelGTK.o: ../../src/UI/GUIPanelGTK.cpp
+$`pkg-config --cflags gtk+-3.0`
+GUIPanelWin.o: ../../src/UI/GUIPanelWin.cpp
 GUIPictureBoxDD.o: ../../src/UI/GUIPictureBoxDD.cpp
+GUIPictureBoxGTK.o: ../../src/UI/GUIPictureBoxGTK.cpp
+$`pkg-config --cflags gtk+-3.0`
+GUIPictureBoxSimpleGTK.o: ../../src/UI/GUIPictureBoxSimpleGTK.cpp
+$`pkg-config --cflags gtk+-3.0`
+GUIPictureBoxSimpleWin.o: ../../src/UI/GUIPictureBoxSimpleWin.cpp
+GUIPictureBoxWin.o: ../../src/UI/GUIPictureBoxWin.cpp
 GUIPictureList.o: ../../src/UI/GUIPictureList.cpp
+GUIPopupMenuGTK.o: ../../src/UI/GUIPopupMenuGTK.cpp
+$`pkg-config --cflags gtk+-3.0`
+GUIPopupMenuWin.o: ../../src/UI/GUIPopupMenuWin.cpp
+GUIProgressBarGTK.o: ../../src/UI/GUIProgressBarGTK.cpp
+$`pkg-config --cflags gtk+-3.0`
+GUIProgressBarWin.o: ../../src/UI/GUIProgressBarWin.cpp
+!-lcomctl32
+GUIRadioButtonGTK.o: ../../src/UI/GUIRadioButtonGTK.cpp
+$`pkg-config --cflags gtk+-3.0`
+GUIRadioButtonWin.o: ../../src/UI/GUIRadioButtonWin.cpp
+GUIRealtimeLineChartGTK.o: ../../src/UI/GUIRealtimeLineChartGTK.cpp
+$`pkg-config --cflags gtk+-3.0`
+GUIRealtimeLineChartWin.o: ../../src/UI/GUIRealtimeLineChartWin.cpp
 GUISudokuViewer.o: ../../src/UI/GUISudokuViewer.cpp
+GUITabControlGTK.o: ../../src/UI/GUITabControlGTK.cpp
+$`pkg-config --cflags gtk+-3.0`
+GUITabControlWin.o: ../../src/UI/GUITabControlWin.cpp
+!-lcomctl32
+GUITabPage.o: ../../src/UI/GUITabPage.cpp
+GUITextBoxGTK.o: ../../src/UI/GUITextBoxGTK.cpp
+$`pkg-config --cflags gtk+-3.0`
+GUITextBoxWin.o: ../../src/UI/GUITextBoxWin.cpp
 GUITextFileView.o: ../../src/UI/GUITextFileView.cpp
+GUITextViewGTK.o: ../../src/UI/GUITextViewGTK.cpp
+$`pkg-config --cflags gtk+-3.0`
+GUITextViewWin.o: ../../src/UI/GUITextViewWin.cpp
+GUITimerGTK.o: ../../src/UI/GUITimerGTK.cpp
+$`pkg-config --cflags gtk+-3.0`
+GUITimerJava.o: ../../src/UI/GUITimerJava.cpp
+$-I$(JAVA_HOME)/include
+$-I$(JAVA_HOME)/include/linux
+GUITimerWin.o: ../../src/UI/GUITimerWin.cpp
+GUITrackBarGTK.o: ../../src/UI/GUITrackBarGTK.cpp
+$`pkg-config --cflags gtk+-3.0`
+GUITrackBarWin.o: ../../src/UI/GUITrackBarWin.cpp
+!-lcomctl32
+GUITreeViewGTK.o: ../../src/UI/GUITreeViewGTK.cpp
+$`pkg-config --cflags gtk+-3.0`
+GUITreeViewWin.o: ../../src/UI/GUITreeViewWin.cpp
 GUIVideoBoxDD.o: ../../src/UI/GUIVideoBoxDD.cpp
 GUIVideoBoxDDLQ.o: ../../src/UI/GUIVideoBoxDDLQ.cpp
+GUIVSplitterGTK.o: ../../src/UI/GUIVSplitterGTK.cpp
+$`pkg-config --cflags gtk+-3.0`
+GUIVSplitterWin.o: ../../src/UI/GUIVSplitterWin.cpp
+GUIWindowDragDrop.o: ../../src/UI/GUIWindowDragDrop.cpp
+MessageDialogJava.o: ../../src/UI/MessageDialogJava.cpp
+$-I$(JAVA_HOME)/include
+$-I$(JAVA_HOME)/include/linux
+MessageDialogL.o: ../../src/UI/MessageDialogL.cpp
+$`pkg-config --cflags gtk+-3.0`
+MessageDialogW.o: ../../src/UI/MessageDialogW.cpp
 ButtonDObj.o: ../../src/UI/DObj/ButtonDObj.cpp
 ClickAreaDObj.o: ../../src/UI/DObj/ClickAreaDObj.cpp
 DirectObject.o: ../../src/UI/DObj/DirectObject.cpp
@@ -6327,11 +6548,13 @@ RollingTextDObj.o: ../../src/UI/DObj/RollingTextDObj.cpp
 SizedOverlayDObj.o: ../../src/UI/DObj/SizedOverlayDObj.cpp
 TextDObj.o: ../../src/UI/DObj/TextDObj.cpp
 VideoDObjHandler.o: ../../src/UI/DObj/VideoDObjHandler.cpp
+
 ColorDialog.o: ../../src/UtilUI/ColorDialog.cpp
 TextGotoDialog.o: ../../src/UtilUI/TextGotoDialog.cpp
 TextInputDialog.o: ../../src/UtilUI/TextInputDialog.cpp
 TextSearchForm.o: ../../src/UtilUI/TextSearchForm.cpp
 TextViewerForm.o: ../../src/UtilUI/TextViewerForm.cpp
+
 miniz.o: ../../ThirdParty/miniz/miniz.c
 $-I ../../ThirdParty/miniz/_build
 miniz_tdef.o: ../../ThirdParty/miniz/miniz_tdef.c

@@ -119,8 +119,8 @@ Sync/ThreadUtil.h:
 
 
 ConsoleStartup.o: ../../startup/JavaStartup.cpp
-$-I/usr/lib/jvm/java-11-openjdk-amd64/include
-$-I/usr/lib/jvm/java-11-openjdk-amd64/include/linux
+$-I$(JAVA_HOME)/include
+$-I$(JAVA_HOME)/include/linux
 CurlCert.o: ../../src/Crypto/Cert/CurlCert.cpp
 !-lcurl
 TrustStore.o: ../../src/Crypto/Cert/TrustStore_Linux.cpp

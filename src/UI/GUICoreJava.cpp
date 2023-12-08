@@ -2,6 +2,7 @@
 #include "MyMemory.h"
 #include "Math/Math.h"
 //#include "Media/JavaDrawEngine.h"
+#include "Media/DrawEngineFactory.h"
 #include "UI/GUICore.h"
 #include "UI/GUICoreJava.h"
 #include <jni.h>
@@ -77,9 +78,9 @@ void UI::GUICoreJava::Exit()
 
 NotNullPtr<Media::DrawEngine> UI::GUICoreJava::CreateDrawEngine()
 {
-	NotNullPtr<Media::DrawEngine> deng = 0;
+//	NotNullPtr<Media::DrawEngine> deng = 0;
 //	NEW_CLASS(deng, Media::GTKDrawEngine());
-	return deng;
+	return Media::DrawEngineFactory::CreateDrawEngine();
 }
 
 Double UI::GUICoreJava::GetMagnifyRatio(MonitorHandle *hMonitor)
@@ -173,6 +174,11 @@ void UI::GUICoreJava::GetMonitorDPIs(MonitorHandle *hMonitor, Double *hdpi, Doub
 void UI::GUICoreJava::SetMonitorMgr(Media::MonitorMgr *monMgr)
 {
 	this->monMgr = monMgr;
+}
+
+Media::MonitorMgr *UI::GUICoreJava::GetMonitorMgr()
+{
+	return this->monMgr;
 }
 
 Bool UI::GUICoreJava::IsForwarded()

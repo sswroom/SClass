@@ -11,7 +11,7 @@ extern "C"
 	extern void *jniEnv;
 }
 
-UI::GUIControl::GUIControl(UI::GUICore *ui, GUIClientControl *parent)
+UI::GUIControl::GUIControl(NotNullPtr<UI::GUICore> ui, Optional<GUIClientControl> parent)
 {
 	this->ui = ui;
 	this->parent = parent;
@@ -88,12 +88,9 @@ void UI::GUIControl::SetSizeP(Math::Size2D<UOSInt> size)
 	this->SetArea(this->lxPos, this->lyPos, this->lxPos + size.x * this->ddpi / this->hdpi, this->lyPos + size.y * this->ddpi / this->hdpi, true);
 }
 
-void UI::GUIControl::GetSize(Double *width, Double *height)
+Math::Size2DDbl UI::GUIControl::GetSize()
 {
-	if (width)
-		*width = this->lxPos2 - this->lxPos;
-	if (height)
-		*height = this->lyPos2 - this->lyPos;
+	return Math::Size2DDbl(this->lxPos2 - this->lxPos, this->lyPos2 - this->lyPos);
 //	printf("Control.GetSize %lf, %lf\r\n", *width, *height);
 }
 
@@ -109,16 +106,14 @@ void UI::GUIControl::SetPosition(Double x, Double y)
 	SetArea(x, y, x + this->lxPos2 - this->lxPos, y + this->lyPos2 - this->lyPos, true);
 }
 
-void UI::GUIControl::GetPositionP(OSInt *x, OSInt *y)
+Math::Coord2D<OSInt> UI::GUIControl::GetPositionP()
 {
-	if (x)
-		*x = Double2Int32(this->lxPos * this->hdpi / this->ddpi);
-	if (y)
-		*y = Double2Int32(this->lyPos * this->hdpi / this->ddpi);
+	return Math::Coord2D<OSInt>(Double2OSInt(this->lxPos * this->hdpi / this->ddpi), Double2OSInt(this->lyPos * this->hdpi / this->ddpi));
 }
 
-void UI::GUIControl::GetScreenPosP(OSInt *x, OSInt *y)
+Math::Coord2D<OSInt> UI::GUIControl::GetScreenPosP()
 {
+	return Math::Coord2D<OSInt>(0, 0);
 	///////////////////////////////
 }
 
@@ -127,9 +122,10 @@ void UI::GUIControl::SetArea(Double left, Double top, Double right, Double botto
 	if (left == this->lxPos && top == this->lyPos && right == this->lxPos2 && bottom == this->lyPos2)
 		return;
 	Math::Coord2DDbl ofst = Math::Coord2DDbl(0, 0);
-	if (this->parent)
+	NotNullPtr<GUIClientControl> parent;
+	if (this->parent.SetTo(parent))
 	{
-		ofst = this->parent->GetClientOfst();
+		ofst = parent->GetClientOfst();
 	}
 	this->lxPos = left;
 	this->lyPos = top;
@@ -170,9 +166,10 @@ void UI::GUIControl::SetAreaP(OSInt left, OSInt top, OSInt right, OSInt bottom, 
 	if (left == this->lxPos && top == this->lyPos && right == this->lxPos2 && bottom == this->lyPos2)
 		return;
 	Math::Coord2DDbl ofst = Math::Coord2DDbl(0, 0);
-	if (this->parent)
+	NotNullPtr<GUIClientControl> parent;
+	if (this->parent.SetTo(parent))
 	{
-		ofst = this->parent->GetClientOfst();
+		ofst = parent->GetClientOfst();
 	}
 	this->lxPos = left * this->ddpi / this->hdpi;
 	this->lyPos = top * this->ddpi / this->hdpi;
@@ -237,9 +234,10 @@ void UI::GUIControl::SetDockType(UI::GUIControl::DockType dockType)
 	if (this->dockType != dockType)
 	{
 		this->dockType = dockType;
-		if (this->parent)
+		NotNullPtr<GUIClientControl> parent;
+		if (this->parent.SetTo(parent))
 		{
-			this->parent->UpdateChildrenSize(true);
+			parent->UpdateChildrenSize(true);
 		}
 	}
 }
@@ -401,26 +399,26 @@ void UI::GUIControl::SetCursor(CursorType curType)
 	//gtk_window_set_cursor();
 }
 
-UI::GUIClientControl *UI::GUIControl::GetParent()
+Optional<UI::GUIClientControl> UI::GUIControl::GetParent()
 {
 	return this->parent;
 }
 
 UI::GUIForm *UI::GUIControl::GetRootForm()
 {
-	UI::GUIControl *ctrl = this;
+	NotNullPtr<UI::GUIControl> ctrl = *this;
 	Text::CString objCls;
-	while (ctrl)
+	while (true)
 	{
 		objCls = ctrl->GetObjectClass();
 		if (objCls.Equals(UTF8STRC("WinForm")))
 		{
-			if (ctrl->GetParent() == 0)
-				return (UI::GUIForm*)ctrl;
+			if (ctrl->GetParent().IsNull())
+				return (UI::GUIForm*)ctrl.Ptr();
 		}
-		ctrl = ctrl->GetParent();
+		if (!Optional<GUIControl>::ConvertFrom(ctrl->GetParent()).SetTo(ctrl))
+			return 0;
 	}
-	return 0;
 }
 
 ControlHandle *UI::GUIControl::GetHandle()
@@ -507,21 +505,20 @@ Double UI::GUIControl::GetDDPI()
 	return this->ddpi;
 }
 
-Media::DrawFont *UI::GUIControl::CreateDrawFont(Media::DrawImage *img)
+Media::DrawFont *UI::GUIControl::CreateDrawFont(NotNullPtr<Media::DrawImage> img)
 {
-	void *f = this->GetFont();
-	if (f == 0)
+	NotNullPtr<Media::DrawFont> fnt;
+	if (!fnt.Set((Media::DrawFont*)this->GetFont()))
 		return 0;
-	Media::DrawFont *fnt = (Media::DrawFont*)f;
 	if (this->fontName == 0)
 	{
-		return img->CloneFont(fnt);
+		return img->CloneFont(fnt).Ptr();
 	}
 	else
 	{
 		fnt = img->NewFontPt(this->fontName->ToCString(), this->fontHeightPt * this->hdpi / this->ddpi * 72.0 / img->GetHDPI(), this->fontIsBold?Media::DrawEngine::DFS_BOLD:Media::DrawEngine::DFS_NORMAL, 0);
 	}
-	return fnt;
+	return fnt.Ptr();
 }
 
 UInt32 UI::GUIControl::GUIKey2OSKey(UI::GUIControl::GUIKey guiKey)

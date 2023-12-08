@@ -1,179 +1,113 @@
 
 Exporter/GUIExporter.h:
-@GUIExporter.o
+@GUIExporterGTK.o
 Exporter/GUIGIFExporter.h:
-@GUIGIFExporter.o
+@GUIGIFExporterGTK.o
 Exporter/GUIJPGExporter.h:
-@GUIJPGExporter.o
+@GUIJPGExporterGTK.o
 Exporter/GUIPNGExporter.h:
-@GUIPNGExporter.o
+@GUIPNGExporterGTK.o
 Exporter/GUITIFExporter.h:
-@GUITIFExporter.o
+@GUITIFExporterGTK.o
 
 Media/DDrawManager.h:
 Media/DrawEngineFactory.h:
-@DrawEngineFactory.o
+@DrawEngineFactoryGTK.o
 Media/DrawEngineGUI.h:
-@DrawEngineGUI.o
+@GTKDrawEngine.o
 Media/GTKDrawEngine.h:
-@DrawEngineGUI.o
+@GTKDrawEngine.o
 Media/MonitorInfo.h:
-@MonitorInfo.o
+@MonitorInfoJava.o
 Media/ScreenCapturer.h:
-@ScreenCapturer.o
+@ScreenCapturerNull.o
 
 Parser/FileParser/GUIImgParser.h:
-@GUIImgParser.o
+@GUIImgParserGTK.o
 
 UI/Clipboard.h:
-@Clipboard.o
+@ClipboardJava.o
 UI/FileDialog.h:
-@FileDialog.o
+@FileDialogGTK.o
 UI/FolderDialog.h:
-@FolderDialog.o
+@FolderDialogGTK.o
 UI/FontDialog.h:
-@FontDialog.o
+@FontDialogGTK.o
 UI/GUIButton.h:
-@GUIButton.o
+@GUIButtonGTK.o
 UI/GUICheckBox.h:
-@GUICheckBox.o
+@GUICheckBoxGTK.o
 UI/GUICheckedListBox.h:
-@GUICheckedListBox.o
+@GUICheckedListBoxGTK.o
 UI/GUIClientControl.h:
-@GUIClientControl.o
+@GUIClientControlJava.o
 UI/GUIComboBox.h:
-@GUIComboBox.o
+@GUIComboBoxGTK.o
 UI/GUIControl.h:
-@GUIControl.o
+@GUIControlJava.o
 UI/GUICore.h:
-@GUICore.o
+@GUICoreJava.o
 UI/GUICoreJava.h:
-@GUICore.o
+@GUICoreJava.o
 UI/GUICustomDraw.h:
-@GUICustomDraw.o
+@GUICustomDrawGTK.o
 UI/GUICustomDrawVScroll.h:
-@GUICustomDrawVScroll.o
+@GUICustomDrawVScrollGTK.o
 UI/GUIDateTimePicker.h:
 UI/GUIDDrawControl.h:
-@GUIDDrawControl.o
+@GUIDDrawControlGtk.o
 UI/GUIDragDrop.h:
 UI/GUIForm.h:
-@GUIForm.o
+@GUIFormJava.o
 UI/GUIGroupBox.h:
-@GUIGroupBox.o
+@GUIGroupBoxGTK.o
 UI/GUIHScrollBar.h:
-@GUIHScrollBar.o
+@GUIHScrollBarGTK.o
 UI/GUIHSplitter.h:
-@GUIHSplitter.o
+@GUIHSplitterGTK.o
 UI/GUILabel.h:
-@GUILabel.o
+@GUILabelGTK.o
 UI/GUIListBox.h:
-@GUIListBox.o
+@GUIListBoxGTK.o
 UI/GUIListView.h:
-@GUIListView.o
+@GUIListViewGTK.o
 UI/GUIPanel.h:
-@GUIPanel.o
+@GUIPanelGTK.o
 UI/GUIMainMenu.h:
 @GUIMainMenu.o
 UI/GUIMenu.h:
-@GUIMenu.o
+@GUIMenuJava.o
 UI/GUIPictureBox.h:
-@GUIPictureBox.o
+@GUIPictureBoxGTK.o
 UI/GUIPictureBoxSimple.h:
-@GUIPictureBoxSimple.o
+@GUIPictureBoxSimpleGTK.o
 UI/GUIPopupMenu.h:
-@GUIPopupMenu.o
+@GUIPopupMenuGTK.o
 UI/GUIProgressBar.h:
-@GUIProgressBar.o
+@GUIProgressBarGTK.o
 UI/GUIRadioButton.h:
-@GUIRadioButton.o
+@GUIRadioButtonGTK.o
 UI/GUIRealtimeLineChart.h:
-@GUIRealtimeLineChart.o
+@GUIRealtimeLineChartGTK.o
 UI/GUITabControl.h:
-@GUITabControl.o
+@GUITabControlGTK.o
 UI/GUITabPage.h:
 @GUITabPage.o
 UI/GUITextBox.h:
-@GUITextBox.o
+@GUITextBoxGTK.o
 UI/GUITextView.h:
-@GUITextView.o
+@GUITextViewGTK.o
 UI/GUITimer.h:
-@GUITimer.o
+@GUITimerJava.o
 UI/GUITrackBar.h:
-@GUITrackBar.o
+@GUITrackBarGTK.o
 UI/GUITreeView.h:
-@GUITreeView.o
+@GUITreeViewGTK.o
 UI/GUIVSplitter.h:
-@GUIVSplitter.o
+@GUIVSplitterGTK.o
 UI/MessageDialog.h:
-@MessageDialog.o
+@MessageDialogJava.o
 
 GUIStartup.o: ../../startup/JavaStartup.cpp
-$-I/usr/lib/jvm/java-11-openjdk-amd64/include
-$-I/usr/lib/jvm/java-11-openjdk-amd64/include/linux
-GUIExporter.o: ../../src/Exporter/GUIExporterGTK.cpp
-GUIGIFExporter.o: ../../src/Exporter/GUIGIFExporterGTK.cpp
-GUIJPGExporter.o: ../../src/Exporter/GUIJPGExporterGTK.cpp
-GUIPNGExporter.o: ../../src/Exporter/GUIPNGExporterGTK.cpp
-GUITIFExporter.o: ../../src/Exporter/GUITIFExporterGTK.cpp
-DrawEngineFactory.o: ../../src/Media/DrawEngineFactoryGTK.cpp
-DrawEngineGUI.o: ../../src/Media/GTKDrawEngine.cpp
-MonitorInfo.o: ../../src/Media/MonitorInfoJava.cpp
-ScreenCapturer.o: ../../src/Media/ScreenCapturerNull.cpp
-GUIImgParser.o: ../../src/Parser/FileParser/GUIImgParserGTK.cpp
-Clipboard.o: ../../src/UI/ClipboardJava.cpp
-$-I/usr/lib/jvm/java-11-openjdk-amd64/include
-$-I/usr/lib/jvm/java-11-openjdk-amd64/include/linux
-FileDialog.o: ../../src/UI/FileDialogGTK.cpp
-FolderDialog.o: ../../src/UI/FolderDialogGTK.cpp
-FontDialog.o: ../../src/UI/FontDialogGTK.cpp
-GUIButton.o: ../../src/UI/GUIButtonGTK.cpp
-GUICheckBox.o: ../../src/UI/GUICheckBoxGTK.cpp
-GUICheckedListBox.o: ../../src/UI/GUICheckedListBoxGTK.cpp
-GUIClientControl.o: ../../src/UI/GUIClientControlJava.cpp
-$-I/usr/lib/jvm/java-11-openjdk-amd64/include
-$-I/usr/lib/jvm/java-11-openjdk-amd64/include/linux
-GUIComboBox.o: ../../src/UI/GUIComboBoxGTK.cpp
-GUIControl.o: ../../src/UI/GUIControlJava.cpp
-$-I/usr/lib/jvm/java-11-openjdk-amd64/include
-$-I/usr/lib/jvm/java-11-openjdk-amd64/include/linux
-GUICore.o: ../../src/UI/GUICoreJava.cpp
-$-I/usr/lib/jvm/java-11-openjdk-amd64/include
-$-I/usr/lib/jvm/java-11-openjdk-amd64/include/linux
-GUICustomDraw.o: ../../src/UI/GUICustomDrawGTK.cpp
-GUICustomDrawVScroll.o: ../../src/UI/GUICustomDrawVScrollGTK.cpp
-GUIDDrawControl.o: ../../src/UI/GUIDDrawControlGtk.cpp
-GUIDragDrop.o: ../../src/UI/GUIDragDropGTK.cpp
-GUIForm.o: ../../src/UI/GUIFormJava.cpp
-$-I/usr/lib/jvm/java-11-openjdk-amd64/include
-$-I/usr/lib/jvm/java-11-openjdk-amd64/include/linux
-GUIGroupBox.o: ../../src/UI/GUIGroupBoxGTK.cpp
-GUIHScrollBar.o: ../../src/UI/GUIHScrollBarGTK.cpp
-GUIHSplitter.o: ../../src/UI/GUIHSplitterGTK.cpp
-GUILabel.o: ../../src/UI/GUILabelGTK.cpp
-GUIListBox.o: ../../src/UI/GUIListBoxGTK.cpp
-GUIListView.o: ../../src/UI/GUIListViewGTK.cpp
-GUIPanel.o: ../../src/UI/GUIPanelGTK.cpp
-GUIMainMenu.o: ../../src/UI/GUIMainMenu.cpp
-GUIMenu.o: ../../src/UI/GUIMenuJava.cpp
-$-I/usr/lib/jvm/java-11-openjdk-amd64/include
-$-I/usr/lib/jvm/java-11-openjdk-amd64/include/linux
-GUIPictureBox.o: ../../src/UI/GUIPictureBoxGTK.cpp
-GUIPictureBoxSimple.o: ../../src/UI/GUIPictureBoxSimpleGTK.cpp
-GUIPopupMenu.o: ../../src/UI/GUIPopupMenuGTK.cpp
-GUIProgressBar.o: ../../src/UI/GUIProgressBarGTK.cpp
-GUIRadioButton.o: ../../src/UI/GUIRadioButtonGTK.cpp
-GUIRealtimeLineChart.o: ../../src/UI/GUIRealtimeLineChartGTK.cpp
-GUITabControl.o: ../../src/UI/GUITabControlGTK.cpp
-GUITabPage.o: ../../src/UI/GUITabPage.cpp
-GUITextBox.o: ../../src/UI/GUITextBoxGTK.cpp
-GUITextView.o: ../../src/UI/GUITextViewGTK.cpp
-GUITimer.o: ../../src/UI/GUITimerJava.cpp
-$-I/usr/lib/jvm/java-11-openjdk-amd64/include
-$-I/usr/lib/jvm/java-11-openjdk-amd64/include/linux
-GUITrackBar.o: ../../src/UI/GUITrackBarGTK.cpp
-GUITreeView.o: ../../src/UI/GUITreeViewGTK.cpp
-GUIVSplitter.o: ../../src/UI/GUIVSplitterGTK.cpp
-MessageDialog.o: ../../src/UI/MessageDialogJava.cpp
-$-I/usr/lib/jvm/java-11-openjdk-amd64/include
-$-I/usr/lib/jvm/java-11-openjdk-amd64/include/linux
+$-I$(JAVA_HOME)/include
+$-I$(JAVA_HOME)/include/linux
