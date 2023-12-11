@@ -30,19 +30,19 @@ UTF8Char *Manage::ModuleInfo::GetModuleFileName(UTF8Char *buff)
 	return Text::StrWChar_UTF8(buff, wbuff);
 }
 
-Bool Manage::ModuleInfo::GetModuleAddress(UOSInt *baseAddr, UOSInt *size)
+Bool Manage::ModuleInfo::GetModuleAddress(OutParam<UOSInt> baseAddr, OutParam<UOSInt> size)
 {
 	MODULEINFO modInfo;
 	if (GetModuleInformation((HANDLE)this->hProc, (HMODULE)this->hMod, &modInfo, sizeof(MODULEINFO)))
 	{
-		*baseAddr = (UOSInt)modInfo.lpBaseOfDll;
-		*size = modInfo.SizeOfImage;
+		baseAddr.Set((UOSInt)modInfo.lpBaseOfDll);
+		size.Set(modInfo.SizeOfImage);
 		return true;
 	}
 	else
 	{
-		*baseAddr = 0;
-		*size = 0;
+		baseAddr.Set(0);
+		size.Set(0);
 		return false;
 	}
 }

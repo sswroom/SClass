@@ -452,7 +452,7 @@ void *Manage::Process::GetHandle()
 	return this->handle;
 }
 
-UOSInt Manage::Process::GetModules(Data::ArrayList<Manage::ModuleInfo *> *modList)
+UOSInt Manage::Process::GetModules(NotNullPtr<Data::ArrayListNN<Manage::ModuleInfo>> modList)
 {
 #ifdef _WIN32_WCE
 	MODULEENTRY32 moduleInfo;
@@ -483,7 +483,7 @@ UOSInt Manage::Process::GetModules(Data::ArrayList<Manage::ModuleInfo *> *modLis
 	return i;
 #else
 	UOSInt i;
-	Manage::ModuleInfo *mod;
+	NotNullPtr<Manage::ModuleInfo> mod;
 	HMODULE mods[512];
 	UInt32 modCnt;
 	if (EnumProcessModules((HANDLE)this->handle, mods, sizeof(mods), (LPDWORD)&modCnt))
@@ -491,7 +491,7 @@ UOSInt Manage::Process::GetModules(Data::ArrayList<Manage::ModuleInfo *> *modLis
 		i = 0;
 		while (i < (modCnt / sizeof(HMODULE)))
 		{
-			NEW_CLASS(mod, Manage::ModuleInfo(this->handle, mods[i]));
+			NEW_CLASSNN(mod, Manage::ModuleInfo(this->handle, mods[i]));
 			modList->Add(mod);
 
 			i++;

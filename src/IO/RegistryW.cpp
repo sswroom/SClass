@@ -222,7 +222,7 @@ WChar *IO::Registry::GetValueStr(const WChar *name, WChar *buff)
 	}
 }
 
-Bool IO::Registry::GetValueI32(const WChar *name, Int32 *value)
+Bool IO::Registry::GetValueI32(const WChar *name, OutParam<Int32> value)
 {
 	DWORD regType;
 	BYTE buff[512];
@@ -231,7 +231,7 @@ Bool IO::Registry::GetValueI32(const WChar *name, Int32 *value)
 	{
 		if (regType == REG_DWORD)
 		{
-			*value = *(Int32*)buff;
+			value.Set(*(Int32*)buff);
 			return true;
 		}
 		else if (regType == REG_SZ)
@@ -240,7 +240,7 @@ Bool IO::Registry::GetValueI32(const WChar *name, Int32 *value)
 			{
 				*(WChar*)&buff[cbData] = 0;
 			}
-			*value = Text::StrToInt32((WChar*)buff);
+			value.Set(Text::StrToInt32((WChar*)buff));
 			return true;
 		}
 		else

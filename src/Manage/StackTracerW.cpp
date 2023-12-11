@@ -67,10 +67,8 @@ Bool Manage::StackTracer::GoToNextLevel()
 #else
 #include <dbghelp.h>
 
-Manage::StackTracer::StackTracer(NotNullPtr<Manage::ThreadContext> context)
+Manage::StackTracer::StackTracer(Optional<Manage::ThreadContext> context)
 {
-	hProc = OpenProcess(PROCESS_QUERY_INFORMATION | PROCESS_VM_READ, false, (DWORD)context->GetProcessId());
-	hThread = OpenThread(THREAD_GET_CONTEXT | THREAD_QUERY_INFORMATION, false, (DWORD)context->GetThreadId());
 	this->context = context;
 	this->winContext = 0;
 	NEW_CLASS(addrArr, Data::ArrayListUInt64());
@@ -80,10 +78,25 @@ Manage::StackTracer::StackTracer(NotNullPtr<Manage::ThreadContext> context)
 	sf->AddrPC.Mode = AddrModeFlat;
 	sf->AddrStack.Mode = AddrModeFlat;
 	sf->AddrFrame.Mode = AddrModeFlat;
-	this->winContext = this->context->Clone().Ptr();
-	sf->AddrPC.Offset = this->winContext->GetInstAddr();
-	sf->AddrStack.Offset = this->winContext->GetStackAddr();
-	sf->AddrFrame.Offset = this->winContext->GetFrameAddr();
+	NotNullPtr<Manage::ThreadContext> nncontext;
+	if (context.SetTo(nncontext))
+	{
+		this->winContext = nncontext->Clone().Ptr();
+		hProc = OpenProcess(PROCESS_QUERY_INFORMATION | PROCESS_VM_READ, false, (DWORD)winContext->GetProcessId());
+		hThread = OpenThread(THREAD_GET_CONTEXT | THREAD_QUERY_INFORMATION, false, (DWORD)winContext->GetThreadId());
+		sf->AddrPC.Offset = this->winContext->GetInstAddr();
+		sf->AddrStack.Offset = this->winContext->GetStackAddr();
+		sf->AddrFrame.Offset = this->winContext->GetFrameAddr();
+	}
+	else
+	{
+		this->winContext = 0;
+		hProc = 0;
+		hThread = 0;
+		sf->AddrPC.Offset = 0;
+		sf->AddrStack.Offset = 0;
+		sf->AddrFrame.Offset = 0;
+	}
 }
 
 Manage::StackTracer::~StackTracer()
