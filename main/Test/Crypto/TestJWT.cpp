@@ -42,41 +42,41 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	if (token == 0)
 	{
 		ssl.Delete();
-		return 1;
+		return 2;
 	}
 	if (!token->SignatureValid(ssl, UTF8STRC("your-256-bit-secret"), Crypto::Cert::X509Key::KeyType::Unknown))
 	{
 		DEL_CLASS(token);
 		ssl.Delete();
-		return 1;
+		return 3;
 	}
 	Data::StringMap<Text::String*> *result = token->ParsePayload(param, false, 0);
 	if (result == 0)
 	{
 		DEL_CLASS(token);
 		ssl.Delete();
-		return 1;
+		return 4;
 	}
 	if (!s.Set(result->Get(CSTR("name"))) || !s->Equals(UTF8STRC("John Doe")))
 	{
 		token->FreeResult(result);
 		DEL_CLASS(token);
 		ssl.Delete();
-		return 1;
+		return 5;
 	}
 	if (!s.Set(param.GetSubject()) || !s->Equals(UTF8STRC("1234567890")))
 	{
 		token->FreeResult(result);
 		DEL_CLASS(token);
 		ssl.Delete();
-		return 1;
+		return 6;
 	}
 	if (param.GetIssuedAt() != 1516239022)
 	{
 		token->FreeResult(result);
 		DEL_CLASS(token);
 		ssl.Delete();
-		return 1;
+		return 7;
 	}
 	token->FreeResult(result);
 	DEL_CLASS(token);
@@ -88,7 +88,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	if (keySize == 0)
 	{
 		ssl.Delete();
-		return 1;
+		return 8;
 	}
 	else
 	{
@@ -100,7 +100,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 		if (x509 == 0)
 		{
 			ssl.Delete();
-			return 1;
+			return 9;
 		}
 		else
 		{
@@ -127,7 +127,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 			{
 				DEL_CLASS(x509);
 				ssl.Delete();
-				return 1;
+				return 10;
 			}
 			DEL_CLASS(x509);
 		}
@@ -141,7 +141,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 					DEL_CLASS(token);
 					SDEL_CLASS(key);
 					ssl.Delete();
-					return 1;
+					return 11;
 				}
 				DEL_CLASS(token);
 			}
