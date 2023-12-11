@@ -187,7 +187,7 @@ Win32/WindowsEvent.h:
 Win32/WinRTCore.h:
 @WinRTCore.o
 Win32/WMIQuery.h:
-@WMIQuery.o
+@WMIQueryNull.o
 
 TrustStore.o: ../../src/Crypto/Cert/TrustStore_Win.cpp
 !-lcrypt32
@@ -317,7 +317,7 @@ WindowsBTScanner.o: ../../src/Win32/WindowsBTScanner.cpp
 WindowsEvent.o: ../../src/Win32/WindowsEvent.cpp
 WinRTCore.o: ../../src/Win32/WinRTCore.cpp
 !-lWindowsApp
-WMIQuery.o: ../../src/Win32/WMIQueryNull.cpp
+WMIQueryNull.o: ../../src/Win32/WMIQueryNull.cpp
 
 amfilter.o: !../../ThirdParty/baseclasses/amfilter.cpp
 $-I ../../ThirdParty/baseclasses
