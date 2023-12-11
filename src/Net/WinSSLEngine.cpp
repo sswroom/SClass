@@ -479,7 +479,7 @@ HCRYPTPROV WinSSLEngine_CreateProv(Crypto::Cert::X509File::KeyType keyType, cons
 
 	if (keyType == Crypto::Cert::X509File::KeyType::RSA || keyType == Crypto::Cert::X509File::KeyType::RSAPublic)
 	{
-		if (WinSSLEngine_CryptAcquireContextW(&hProv, containerName, MS_ENHANCED_PROV, PROV_RSA_FULL, flags))
+/*		if (WinSSLEngine_CryptAcquireContextW(&hProv, containerName, MS_ENHANCED_PROV, PROV_RSA_FULL, flags))
 		{
 			if (keyProvInfo)
 			{
@@ -492,7 +492,7 @@ HCRYPTPROV WinSSLEngine_CreateProv(Crypto::Cert::X509File::KeyType keyType, cons
 		}
 #if defined(VERBOSE_SVR) || defined(VERBOSE_CLI)
 		printf("SSL: CryptAcquireContext RSA (MS_ENHANCED_PROV) failed: 0x%x\r\n", GetLastError());
-#endif
+#endif*/
 		if (WinSSLEngine_CryptAcquireContextW(&hProv, containerName, MS_ENH_RSA_AES_PROV_W, PROV_RSA_AES, flags))
 		{
 			if (keyProvInfo)
