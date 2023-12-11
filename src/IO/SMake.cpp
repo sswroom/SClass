@@ -1461,6 +1461,8 @@ Bool IO::SMake::TestProg(NotNullPtr<const ProgramItem> prog, NotNullPtr<Text::St
 		sb->ClearStr();
 		sb->AppendC(UTF8STRC("Test failed: "));
 		sb->Append(prog->name);
+		sb->AppendC(UTF8STRC(", return "));
+		sb->AppendI32(ret);
 		this->SetErrorMsg(sb->ToCString());
 		this->error = true;
 		return false;
@@ -1658,7 +1660,6 @@ void IO::SMake::AsyncPostCompile()
 				{
 					if (!TestProg(prog, sb))
 					{
-						return;
 					}
 				}
 			}
