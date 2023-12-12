@@ -29,6 +29,7 @@ void __stdcall OnForwardRequest(void *userObj, NotNullPtr<Net::WebServer::IWebRe
 
 	Data::ArrayList<Text::String *> headerNames;
 	Text::String *headerName;
+	NotNullPtr<Text::String> headerVal;
 	UOSInt i = 0;
 	UOSInt j = req->GetHeaderNames(headerNames);
 	while (i < j)
@@ -39,7 +40,8 @@ void __stdcall OnForwardRequest(void *userObj, NotNullPtr<Net::WebServer::IWebRe
 		sb.AppendC(UTF8STRC(" Req "));
 		sb.Append(headerName);
 		sb.AppendC(UTF8STRC(": "));
-		sb.Append(req->GetSHeader(headerName->ToCString()));
+		if (req->GetSHeader(headerName->ToCString()).SetTo(headerVal))
+			sb.Append(headerVal);
 		logger->LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Raw);
 		i++;
 	}

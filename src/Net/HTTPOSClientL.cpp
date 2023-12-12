@@ -410,10 +410,10 @@ Bool Net::HTTPOSClient::Connect(Text::CStringNN url, Net::WebUtil::RequestMethod
 		case Net::WebUtil::RequestMethod::Unknown:
 		case Net::WebUtil::RequestMethod::HTTP_GET:
 		case Net::WebUtil::RequestMethod::HTTP_CONNECT:
+		case Net::WebUtil::RequestMethod::HTTP_OPTIONS:
 		case Net::WebUtil::RequestMethod::RTSP_DESCRIBE:
 		case Net::WebUtil::RequestMethod::RTSP_ANNOUNCE:
 		case Net::WebUtil::RequestMethod::RTSP_GET_PARAMETER:
-		case Net::WebUtil::RequestMethod::RTSP_OPTIONS:
 		case Net::WebUtil::RequestMethod::RTSP_PAUSE:
 		case Net::WebUtil::RequestMethod::RTSP_PLAY:
 		case Net::WebUtil::RequestMethod::RTSP_RECORD:

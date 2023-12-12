@@ -884,10 +884,10 @@ Bool Net::HTTPMyClient::Connect(Text::CStringNN url, Net::WebUtil::RequestMethod
 		cptr = Text::StrConcatC(cptr, UTF8STRC(" HTTP/1.1\r\n"));
 		break;
 
+	case Net::WebUtil::RequestMethod::HTTP_OPTIONS:
 	case Net::WebUtil::RequestMethod::RTSP_DESCRIBE:
 	case Net::WebUtil::RequestMethod::RTSP_ANNOUNCE:
 	case Net::WebUtil::RequestMethod::RTSP_GET_PARAMETER:
-	case Net::WebUtil::RequestMethod::RTSP_OPTIONS:
 	case Net::WebUtil::RequestMethod::RTSP_PAUSE:
 	case Net::WebUtil::RequestMethod::RTSP_PLAY:
 	case Net::WebUtil::RequestMethod::RTSP_RECORD:

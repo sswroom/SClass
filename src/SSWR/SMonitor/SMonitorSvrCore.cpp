@@ -2551,13 +2551,13 @@ Bool SSWR::SMonitor::SMonitorSvrCore::SendCapturePhoto(Int64 cliId)
 
 void SSWR::SMonitor::SMonitorSvrCore::LogRequest(NotNullPtr<Net::WebServer::IWebRequest> req)
 {
-	Text::String *s;
-	if ((s = req->GetSHeader(CSTR("User-Agent"))) != 0)
+	NotNullPtr<Text::String> s;
+	if (req->GetSHeader(CSTR("User-Agent")).SetTo(s))
 	{
 		this->UserAgentLog(s->v, s->leng);
 	}
 
-	if ((s = req->GetSHeader(CSTR("Referer"))) != 0)
+	if (req->GetSHeader(CSTR("Referer")).SetTo(s))
 	{
 		this->RefererLog(s->v, s->leng);
 	}

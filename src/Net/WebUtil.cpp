@@ -60,7 +60,7 @@ Net::WebUtil::RequestMethod Net::WebUtil::Str2RequestMethod(const UTF8Char *s, U
 		}
 		else if (Text::StrEqualsC(s, len, UTF8STRC("OPTIONS")))
 		{
-			return RequestMethod::RTSP_OPTIONS;
+			return RequestMethod::HTTP_OPTIONS;
 		}
 		break;
 	case 8:
@@ -113,14 +113,14 @@ Text::CString Net::WebUtil::RequestMethodGetName(RequestMethod reqMeth)
 		return CSTR("CONNECT");
 	case RequestMethod::HTTP_HEAD:
 		return CSTR("HEAD");
+	case RequestMethod::HTTP_OPTIONS:
+		return CSTR("OPTIONS");
 	case RequestMethod::RTSP_DESCRIBE:
 		return CSTR("DESCRIBE");
 	case RequestMethod::RTSP_ANNOUNCE:
 		return CSTR("ANNOUNCE");
 	case RequestMethod::RTSP_GET_PARAMETER:
 		return CSTR("GET_PARAMETER");
-	case RequestMethod::RTSP_OPTIONS:
-		return CSTR("OPTIONS");
 	case RequestMethod::RTSP_PAUSE:
 		return CSTR("PAUSE");
 	case RequestMethod::RTSP_PLAY:

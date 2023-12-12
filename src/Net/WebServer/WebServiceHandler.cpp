@@ -30,7 +30,23 @@ Bool Net::WebServer::WebServiceHandler::ProcessRequest(NotNullPtr<Net::WebServer
 	}
 	if (service != 0)
 	{
-
+		if (req->GetReqMethod() == Net::WebUtil::RequestMethod::HTTP_OPTIONS)
+		{
+			Text::StringBuilderUTF8 sb;
+			UOSInt i = 0;
+			UOSInt j = service->funcs.GetCount();
+			while (i < j)
+			{
+				if (i > 0)
+				{
+					sb.AppendC(UTF8STRC(", "));
+				}
+				Text::CString name = Net::WebUtil::RequestMethodGetName((Net::WebUtil::RequestMethod)service->funcs.GetKey(i));
+				sb.AppendC(name.v, name.leng);
+				i++;
+			}
+			return this->ResponseAllowOptions(req, resp, 86400, sb.ToCString());
+		}
 		ServiceFunc func = service->funcs.Get((Int32)req->GetReqMethod());
 		if (func)
 		{

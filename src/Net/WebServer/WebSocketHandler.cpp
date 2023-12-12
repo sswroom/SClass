@@ -16,12 +16,16 @@ Net::WebServer::WebSocketHandler::~WebSocketHandler()
 
 Bool Net::WebServer::WebSocketHandler::ProcessRequest(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq)
 {
-	Text::String *upgrade = req->GetSHeader(CSTR("Upgrade"));
-	Text::String *conn = req->GetSHeader(CSTR("Connection"));
-	Text::String *secWebSocketKey = req->GetSHeader(CSTR("Sec-WebSocket-Key"));
-	Text::String *secWebSocketProtocol = req->GetSHeader(CSTR("Sec-WebSocket-Protocol"));
-	Text::String *secWebSocketVersion = req->GetSHeader(CSTR("Sec-WebSocket-Version"));
-	if (upgrade == 0 || conn == 0 || secWebSocketKey == 0 || secWebSocketProtocol == 0 || secWebSocketVersion == 0)
+	NotNullPtr<Text::String> upgrade;
+	NotNullPtr<Text::String> conn;
+	NotNullPtr<Text::String> secWebSocketKey;
+	NotNullPtr<Text::String> secWebSocketProtocol;
+	NotNullPtr<Text::String> secWebSocketVersion;
+	if (!req->GetSHeader(CSTR("Upgrade")).SetTo(upgrade) ||
+		!req->GetSHeader(CSTR("Connection")).SetTo(conn) ||
+		!req->GetSHeader(CSTR("Sec-WebSocket-Key")).SetTo(secWebSocketKey) ||
+		!req->GetSHeader(CSTR("Sec-WebSocket-Protocol")).SetTo(secWebSocketProtocol) ||
+		!req->GetSHeader(CSTR("Sec-WebSocket-Version")).SetTo(secWebSocketVersion))
 	{
 		return resp->ResponseError(req, Net::WebStatus::SC_BAD_REQUEST);
 	}

@@ -119,10 +119,6 @@ void Net::WebServer::HTTPDirectoryHandler::AddCacheHeader(NotNullPtr<Net::WebSer
 		t.AddSecond(period);
 		resp->AddExpireTime(&t);
 	}
-	if (this->allowOrigin)
-	{
-		resp->AddHeader(CSTR("Access-Control-Allow-Origin"), this->allowOrigin->ToCString());
-	}
 }
 
 void Net::WebServer::HTTPDirectoryHandler::ResponsePackageFile(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, NotNullPtr<IO::PackageFile> packageFile)
@@ -267,16 +263,12 @@ Bool Net::WebServer::HTTPDirectoryHandler::ResponsePackageFileItem(NotNullPtr<Ne
 	{
 		Net::BrowserInfo::BrowserType browser = req->GetBrowser();
 		Manage::OSInfo::OSType os = req->GetOS();
-		Text::String *enc = req->GetSHeader(CSTR("Accept-Encoding"));
-		if (pitem->compInfo->checkMethod == Crypto::Hash::HashType::CRC32R_IEEE && enc && enc->IndexOf(UTF8STRC("gzip")) != INVALID_INDEX && Net::WebServer::HTTPServerUtil::AllowGZip(browser, os))
+		NotNullPtr<Text::String> enc;
+		if (pitem->compInfo->checkMethod == Crypto::Hash::HashType::CRC32R_IEEE && req->GetSHeader(CSTR("Accept-Encoding")).SetTo(enc) && enc->IndexOf(UTF8STRC("gzip")) != INVALID_INDEX && Net::WebServer::HTTPServerUtil::AllowGZip(browser, os))
 		{
 			resp->EnableWriteBuffer();
 			this->AddResponseHeaders(req, resp);
 			resp->AddLastModified(pitem->modTime);
-			if (this->allowOrigin)
-			{
-				resp->AddHeader(CSTR("Access-Control-Allow-Origin"), this->allowOrigin->ToCString());
-			}
 			resp->AddContentType(mime);
 			resp->AddHeader(CSTR("Content-Encoding"), CSTR("gzip"));
 			resp->AddHeader(CSTR("Transfer-Encoding"), CSTR("chunked"));
@@ -328,15 +320,11 @@ Bool Net::WebServer::HTTPDirectoryHandler::ResponsePackageFileItem(NotNullPtr<Ne
 
 			return true;
 		}
-		else if (enc && enc->IndexOf(UTF8STRC("deflate")) != INVALID_INDEX && Net::WebServer::HTTPServerUtil::AllowDeflate(browser, os))
+		else if (req->GetSHeader(CSTR("Accept-Encoding")).SetTo(enc) && enc->IndexOf(UTF8STRC("deflate")) != INVALID_INDEX && Net::WebServer::HTTPServerUtil::AllowDeflate(browser, os))
 		{
 			resp->EnableWriteBuffer();
 			this->AddResponseHeaders(req, resp);
 			resp->AddLastModified(pitem->modTime);
-			if (this->allowOrigin)
-			{
-				resp->AddHeader(CSTR("Access-Control-Allow-Origin"), this->allowOrigin->ToCString());
-			}
 			resp->AddContentType(mime);
 			resp->AddHeader(CSTR("Content-Encoding"), CSTR("deflate"));
 			resp->AddHeader(CSTR("Transfer-Encoding"), CSTR("chunked"));
@@ -384,10 +372,6 @@ Bool Net::WebServer::HTTPDirectoryHandler::ResponsePackageFileItem(NotNullPtr<Ne
 		resp->EnableWriteBuffer();
 		this->AddResponseHeaders(req, resp);
 		resp->AddLastModified(pitem->modTime);
-		if (this->allowOrigin)
-		{
-			resp->AddHeader(CSTR("Access-Control-Allow-Origin"), this->allowOrigin->ToCString());
-		}
 		resp->AddContentType(mime);
 		Net::WebServer::HTTPServerUtil::SendContent(req, resp, mime, dataLen, dataBuff.Ptr());
 		return true;
@@ -451,7 +435,6 @@ Net::WebServer::HTTPDirectoryHandler::HTTPDirectoryHandler(NotNullPtr<Text::Stri
 	this->expirePeriod = 0;
 	this->fileCacheSize = fileCacheSize;
 	this->fileCacheUsing = 0;
-	this->allowOrigin = 0;
 	this->packageMap = 0;
 	this->packageMut = 0;
 	this->statMap = 0;
@@ -467,7 +450,6 @@ Net::WebServer::HTTPDirectoryHandler::HTTPDirectoryHandler(Text::CStringNN rootD
 	this->expirePeriod = 0;
 	this->fileCacheSize = fileCacheSize;
 	this->fileCacheUsing = 0;
-	this->allowOrigin = 0;
 	this->packageMap = 0;
 	this->packageMut = 0;
 	this->statMap = 0;
@@ -500,7 +482,6 @@ Net::WebServer::HTTPDirectoryHandler::~HTTPDirectoryHandler()
 		DEL_CLASS(this->packageMap);
 		DEL_CLASS(this->packageMut);
 	}
-	SDEL_STRING(this->allowOrigin);
 	if (this->statMap)
 	{
 		Net::WebServer::HTTPDirectoryHandler::StatInfo *stat;
@@ -656,10 +637,6 @@ Bool Net::WebServer::HTTPDirectoryHandler::DoFileRequest(NotNullPtr<Net::WebServ
 									resp->EnableWriteBuffer();
 									this->AddResponseHeaders(req, resp);
 									resp->AddLastModified(innerPF->GetItemModTime(index2));
-									if (this->allowOrigin)
-									{
-										resp->AddHeader(CSTR("Access-Control-Allow-Origin"), this->allowOrigin->ToCString());
-									}
 									resp->AddContentType(mime);
 									Net::WebServer::HTTPServerUtil::SendContent(req, resp, mime, dataLen, dataBuff.Ptr());
 								}
@@ -815,14 +792,14 @@ Bool Net::WebServer::HTTPDirectoryHandler::DoFileRequest(NotNullPtr<Net::WebServ
 			sptr = sb.v;
 			sptrLen = sb.GetLength();
 			UInt64 sizeLeft;
-			Text::String *hdrVal;
+			NotNullPtr<Text::String> hdrVal;
 
 			sptr3 = IO::Path::GetFileExt(sbuff, sptr, sptrLen);
 			IO::FileStream fs({sptr, sptrLen}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Sequential);
 			Data::Timestamp t;
 			t = fs.GetModifyTime();
 
-			if ((hdrVal = req->GetSHeader(CSTR("If-Modified-Since"))) != 0)
+			if (req->GetSHeader(CSTR("If-Modified-Since")).SetTo(hdrVal))
 			{
 				Data::DateTime t2;
 				t2.SetValue(hdrVal->ToCString());
@@ -1264,13 +1241,13 @@ Bool Net::WebServer::HTTPDirectoryHandler::DoFileRequest(NotNullPtr<Net::WebServ
 	{
 		Text::StringBuilderUTF8 sb2;
 		UInt64 sizeLeft;
-		Text::String *hdrVal;
+		NotNullPtr<Text::String> hdrVal;
 		NotNullPtr<Sync::Mutex> statMut;
 
 		IO::FileStream fs({sptr, sptrLen}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Sequential);
 		Data::Timestamp ts = fs.GetModifyTime();
 
-		if ((hdrVal = req->GetSHeader(CSTR("If-Modified-Since"))) != 0)
+		if (req->GetSHeader(CSTR("If-Modified-Since")).SetTo(hdrVal))
 		{
 			Data::DateTime t2;
 			t2.SetValue(hdrVal->ToCString());
@@ -1578,12 +1555,6 @@ void Net::WebServer::HTTPDirectoryHandler::SetCacheType(CacheType ctype)
 void Net::WebServer::HTTPDirectoryHandler::SetExpirePeriod(Int32 period)
 {
 	this->expirePeriod = period;
-}
-
-void Net::WebServer::HTTPDirectoryHandler::SetAllowOrigin(Text::CString origin)
-{
-	SDEL_STRING(this->allowOrigin);
-	this->allowOrigin = Text::String::NewOrNull(origin);
 }
 
 void Net::WebServer::HTTPDirectoryHandler::ClearFileCache()

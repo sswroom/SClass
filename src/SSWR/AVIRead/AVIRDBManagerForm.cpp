@@ -972,7 +972,7 @@ void SSWR::AVIRead::AVIRDBManagerForm::ExportTableCSV()
 	if (dlg.ShowDialog(this->GetHandle()))
 	{
 		IO::FileStream fs(dlg.GetFileName(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
-		if (!DB::DBExporter::GenerateCSV(db, STR_CSTR(schemaName), tableName->ToCString(), this->currCond, CSTR("\"\""), fs, 65001))
+		if (!DB::DBExporter::GenerateCSV(db, STR_CSTR(schemaName), tableName->ToCString(), this->currCond, CSTR("\"null\""), fs, 65001))
 		{
 			UI::MessageDialog::ShowDialog(CSTR("Error in reading table data"), CSTR("DB Manager"), this);
 		}

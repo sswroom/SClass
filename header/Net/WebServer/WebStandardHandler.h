@@ -13,11 +13,13 @@ namespace Net
 		protected:
 			Data::FastStringMap<Net::WebServer::WebStandardHandler *> hdlrs;
 			Data::ArrayListNN<Net::WebServer::WebStandardHandler> relHdlrs;
+			Text::String *allowOrigin;
 
 		protected:
 			Bool DoRequest(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq);
 			void AddResponseHeaders(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp);
 			Bool ResponseJSONStr(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, OSInt cacheAge, Text::CStringNN json);
+			Bool ResponseAllowOptions(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, UOSInt maxAge, Text::CStringNN options);
 		public:
 			WebStandardHandler();
 			virtual ~WebStandardHandler();
@@ -27,6 +29,7 @@ namespace Net
 			virtual Bool ProcessRequest(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq);
 
 			void HandlePath(Text::CStringNN relativePath, NotNullPtr<Net::WebServer::WebStandardHandler> hdlr, Bool needRelease);
+			void SetAllowOrigin(Text::CString origin);
 		};
 	}
 }

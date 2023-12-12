@@ -689,8 +689,8 @@ void Net::WebServer::WebConnection::ProcessResponse()
 				}
 				else if (currReq->GetProtocol() == Net::WebServer::IWebRequest::RequestProtocol::HTTP1_0)
 				{
-					Text::String *connHdr = currReq->GetSHeader(CSTR("Connection"));
-					if (connHdr && connHdr->EqualsICase(UTF8STRC("keep-alive")))
+					NotNullPtr<Text::String> connHdr;
+					if (currReq->GetSHeader(CSTR("Connection")).SetTo(connHdr) && connHdr->EqualsICase(UTF8STRC("keep-alive")))
 					{
 					}
 					else
@@ -700,8 +700,8 @@ void Net::WebServer::WebConnection::ProcessResponse()
 				}
 				else
 				{
-					Text::String *connHdr = currReq->GetSHeader(CSTR("Connection"));
-					if (connHdr && connHdr->EqualsICase(UTF8STRC("close")))
+					NotNullPtr<Text::String> connHdr;
+					if (currReq->GetSHeader(CSTR("Connection")).SetTo(connHdr) && connHdr->EqualsICase(UTF8STRC("close")))
 					{
 						this->cli->ShutdownSend();
 					}
@@ -765,8 +765,8 @@ Bool Net::WebServer::WebConnection::AddDefHeaders(NotNullPtr<Net::WebServer::IWe
 	dt.SetCurrTimeUTC();
 	AddTimeHeader(CSTR("Date"), dt);
 	AddHeaderS(CSTR("Server"), this->svr->GetServerName());
-	Text::String *connHdr = req->GetSHeader(CSTR("Connection"));
-	if (connHdr && connHdr->Equals(UTF8STRC("keep-alive")) && (this->keepAlive == KeepAlive::Always || (this->keepAlive == KeepAlive::Default && Net::WebServer::HTTPServerUtil::AllowKA(req->GetBrowser()))))
+	NotNullPtr<Text::String> connHdr;
+	if (req->GetSHeader(CSTR("Connection")).SetTo(connHdr) && connHdr->Equals(UTF8STRC("keep-alive")) && (this->keepAlive == KeepAlive::Always || (this->keepAlive == KeepAlive::Default && Net::WebServer::HTTPServerUtil::AllowKA(req->GetBrowser()))))
 	{
 		AddHeader(CSTR("Connection"), CSTR("keep-alive"));
 		AddHeader(CSTR("Keep-Alive"), CSTR("timeout=10, max=1000"));

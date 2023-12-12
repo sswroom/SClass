@@ -66,6 +66,10 @@ Bool Net::WebServer::WebStandardHandler::DoRequest(NotNullPtr<Net::WebServer::IW
 void Net::WebServer::WebStandardHandler::AddResponseHeaders(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp)
 {
 	resp->AddDefHeaders(req);
+	if (this->allowOrigin)
+	{
+		resp->AddHeader(CSTR("Access-Control-Allow-Origin"), this->allowOrigin->ToCString());
+	}
 }
 
 Bool Net::WebServer::WebStandardHandler::ResponseJSONStr(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, OSInt cacheAge, Text::CStringNN json)
@@ -75,8 +79,44 @@ Bool Net::WebServer::WebStandardHandler::ResponseJSONStr(NotNullPtr<Net::WebServ
 	return resp->ResponseText(json, CSTR("application/json"));
 }
 
+Bool Net::WebServer::WebStandardHandler::ResponseAllowOptions(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, UOSInt maxAge, Text::CStringNN options)
+{
+	Text::StringBuilderUTF8 sb;
+	if (req->GetHeaderC(sb, CSTR("Access-Control-Request-Method")) && this->allowOrigin)
+	{
+		resp->SetStatusCode(Net::WebStatus::SC_NO_CONTENT);
+		resp->AddDefHeaders(req);
+		sb.ClearStr();
+		if (req->GetHeaderC(sb, CSTR("Origin")))
+		{
+			resp->AddHeader(CSTR("Access-Control-Allow-Origin"), sb.ToCString());
+		}
+		sb.ClearStr();
+		if (req->GetHeaderC(sb, CSTR("Access-Control-Request-Headers")))
+		{
+			resp->AddHeader(CSTR("Access-Control-Allow-Headers"), sb.ToCString());
+		}
+		resp->AddHeader(CSTR("Access-Control-Allow-Methods"), options);
+		sb.ClearStr();
+		sb.AppendUOSInt(maxAge);
+		resp->AddHeader(CSTR("Access-Control-Max-Age"), sb.ToCString());
+		resp->Write(0, 0);
+		return true;
+	}
+	else
+	{
+		resp->SetStatusCode(Net::WebStatus::SC_NO_CONTENT);
+		this->AddResponseHeaders(req, resp);
+		resp->AddHeader(CSTR("Allow"), options);
+		resp->Write(0, 0);
+		return true;
+	}
+
+}
+
 Net::WebServer::WebStandardHandler::WebStandardHandler()
 {
+	this->allowOrigin = 0;
 }
 
 Net::WebServer::WebStandardHandler::~WebStandardHandler()
@@ -88,51 +128,36 @@ Net::WebServer::WebStandardHandler::~WebStandardHandler()
 		hdlr = this->relHdlrs.GetItem(i);
 		DEL_CLASS(hdlr);
 	}
+	SDEL_STRING(this->allowOrigin);
 }
 
 void Net::WebServer::WebStandardHandler::WebRequest(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp)
 {
 	NotNullPtr<Text::String> reqURL = req->GetRequestURI();
-	Net::WebUtil::RequestMethod reqMeth = req->GetReqMethod();
-	if (reqMeth == Net::WebUtil::RequestMethod::RTSP_OPTIONS)
+	UTF8Char sbuff[512];
+	UTF8Char *sptr;
+	sptr = Text::URLString::GetURLPathSvr(sbuff, reqURL->v, reqURL->leng);
+	if (!this->ProcessRequest(req, resp, CSTRP(sbuff, sptr)))
 	{
-		UTF8Char sbuff[512];
-		UTF8Char *sptr;
-		if ((sptr = req->GetHeader(sbuff, CSTR("CSeq"), 512)) != 0)
+		resp->SetStatusCode(Net::WebStatus::SC_NOT_FOUND);
+		if (req->GetProtocol() == Net::WebServer::IWebRequest::RequestProtocol::HTTP1_0 || req->GetProtocol() == Net::WebServer::IWebRequest::RequestProtocol::HTTP1_1)
 		{
-			resp->AddHeader(CSTR("CSeq"), CSTRP(sbuff, sptr));
-		}
-		resp->AddContentLength(0);
-		resp->AddHeader(CSTR("Public"), CSTR("DESCRIBE,SETUP,TEARDOWN,PLAY,PAUSE"));
-		resp->SetStatusCode(Net::WebStatus::SC_OK);
-	}
-	else
-	{
-		UTF8Char sbuff[512];
-		UTF8Char *sptr;
-		sptr = Text::URLString::GetURLPathSvr(sbuff, reqURL->v, reqURL->leng);
-		if (!this->ProcessRequest(req, resp, CSTRP(sbuff, sptr)))
-		{
-			resp->SetStatusCode(Net::WebStatus::SC_NOT_FOUND);
-			if (req->GetProtocol() == Net::WebServer::IWebRequest::RequestProtocol::HTTP1_0 || req->GetProtocol() == Net::WebServer::IWebRequest::RequestProtocol::HTTP1_1)
-			{
-				resp->AddDefHeaders(req);
+			resp->AddDefHeaders(req);
 
-				IO::MemoryStream mstm;
-				Text::UTF8Writer writer(mstm);
-				writer.WriteLineC(UTF8STRC("<!DOCTYPE HTML PUBLIC \"-//IETF//DTD HTML 2.0//EN\">"));
-				writer.WriteLineC(UTF8STRC("<html><head>"));
-				writer.WriteLineC(UTF8STRC("<title>404 Not Found</title>"));
-				writer.WriteLineC(UTF8STRC("</head><body>"));
-				writer.WriteLineC(UTF8STRC("<h1>Not Found</h1>"));
-				writer.WriteStrC(UTF8STRC("<p>The requested URL "));
-				writer.WriteStrC(reqURL->v, reqURL->leng);
-				writer.WriteLineC(UTF8STRC(" was not found on this server.</p>"));
-				writer.WriteLineC(UTF8STRC("</body></html>"));
-				resp->AddContentType(CSTR("text/html"));
-				mstm.SeekFromBeginning(0);
-				Net::WebServer::HTTPServerUtil::SendContent(req, resp, CSTR("text/html"), mstm.GetLength(), mstm);
-			}
+			IO::MemoryStream mstm;
+			Text::UTF8Writer writer(mstm);
+			writer.WriteLineC(UTF8STRC("<!DOCTYPE HTML PUBLIC \"-//IETF//DTD HTML 2.0//EN\">"));
+			writer.WriteLineC(UTF8STRC("<html><head>"));
+			writer.WriteLineC(UTF8STRC("<title>404 Not Found</title>"));
+			writer.WriteLineC(UTF8STRC("</head><body>"));
+			writer.WriteLineC(UTF8STRC("<h1>Not Found</h1>"));
+			writer.WriteStrC(UTF8STRC("<p>The requested URL "));
+			writer.WriteStrC(reqURL->v, reqURL->leng);
+			writer.WriteLineC(UTF8STRC(" was not found on this server.</p>"));
+			writer.WriteLineC(UTF8STRC("</body></html>"));
+			resp->AddContentType(CSTR("text/html"));
+			mstm.SeekFromBeginning(0);
+			Net::WebServer::HTTPServerUtil::SendContent(req, resp, CSTR("text/html"), mstm.GetLength(), mstm);
 		}
 	}
 }
@@ -178,4 +203,10 @@ void Net::WebServer::WebStandardHandler::HandlePath(Text::CStringNN relativePath
 		MemFree(sbuff);
 		subHdlr->HandlePath(relativePath.Substring(i), hdlr, needRelease);
 	}
+}
+
+void Net::WebServer::WebStandardHandler::SetAllowOrigin(Text::CString origin)
+{
+	SDEL_STRING(this->allowOrigin);
+	this->allowOrigin = Text::String::NewOrNull(origin);
 }

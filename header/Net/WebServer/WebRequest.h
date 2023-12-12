@@ -51,7 +51,7 @@ namespace Net
 			virtual ~WebRequest();
 
 			void AddHeader(Text::CStringNN name, Text::CStringNN value);
-			virtual Text::String *GetSHeader(Text::CStringNN name);
+			virtual Optional<Text::String> GetSHeader(Text::CStringNN name);
 			virtual UTF8Char *GetHeader(UTF8Char *sbuff, Text::CStringNN name, UOSInt buffLen);
 			virtual Bool GetHeaderC(NotNullPtr<Text::StringBuilderUTF8> sb, Text::CStringNN name);
 			virtual UOSInt GetHeaderNames(NotNullPtr<Data::ArrayList<Text::String*>> names);

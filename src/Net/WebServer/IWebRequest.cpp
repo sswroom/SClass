@@ -14,8 +14,8 @@ void Net::WebServer::IWebRequest::ParseUserAgent()
 	this->uaParsed = true;
 	this->reqBrowser = Net::BrowserInfo::BT_UNKNOWN;
 
-	Text::String *uaHdr = this->GetSHeader(CSTR("User-Agent"));
-	if (uaHdr == 0)
+	NotNullPtr<Text::String> uaHdr;
+	if (!this->GetSHeader(CSTR("User-Agent")).SetTo(uaHdr))
 	{
 		return;
 	}
@@ -77,11 +77,10 @@ Net::WebServer::IWebRequest::~IWebRequest()
 
 Bool Net::WebServer::IWebRequest::GetRefererDomain(NotNullPtr<Text::StringBuilderUTF8> sb)
 {
-	Text::String *hdr;
+	NotNullPtr<Text::String> hdr;
 	UTF8Char domain[256];
 	UTF8Char *sptr;
-	hdr = this->GetSHeader(CSTR("Referer"));
-	if (hdr == 0)
+	if (!this->GetSHeader(CSTR("Referer")).SetTo(hdr))
 	{
 		return false;
 	}
@@ -99,8 +98,8 @@ Bool Net::WebServer::IWebRequest::GetRefererDomain(NotNullPtr<Text::StringBuilde
 
 Bool Net::WebServer::IWebRequest::GetIfModifiedSince(Data::DateTime *dt)
 {
-	Text::String *s = this->GetSHeader(CSTR("If-Modified-Since"));
-	if (s)
+	NotNullPtr<Text::String> s;
+	if (this->GetSHeader(CSTR("If-Modified-Since")).SetTo(s))
 	{
 		if (dt->SetValue(s->ToCString()))
 		{
@@ -112,8 +111,8 @@ Bool Net::WebServer::IWebRequest::GetIfModifiedSince(Data::DateTime *dt)
 
 Bool Net::WebServer::IWebRequest::GetCookie(Text::CStringNN name, NotNullPtr<Text::StringBuilderUTF8> sb)
 {
-	Text::String *cookie = this->GetSHeader(CSTR("Cookie"));
-	if (cookie == 0)
+	NotNullPtr<Text::String> cookie;
+	if (!this->GetSHeader(CSTR("Cookie")).SetTo(cookie))
 	{
 		return 0;
 	}
@@ -144,8 +143,8 @@ Bool Net::WebServer::IWebRequest::GetCookie(Text::CStringNN name, NotNullPtr<Tex
 
 Optional<Text::String> Net::WebServer::IWebRequest::GetCookieAsNew(Text::CStringNN name)
 {
-	Text::String *cookie = this->GetSHeader(CSTR("Cookie"));
-	if (cookie == 0)
+	NotNullPtr<Text::String> cookie;
+	if (!this->GetSHeader(CSTR("Cookie")).SetTo(cookie))
 	{
 		return 0;
 	}
@@ -339,6 +338,59 @@ Bool Net::WebServer::IWebRequest::GetHTTPFormDouble(Text::CStringNN name, OutPar
 		return false;
 	}
 	return s->ToDouble(valOut);
+}
+
+UTF8Char *Net::WebServer::IWebRequest::BuildURLHost(UTF8Char *sbuff)
+{
+	NotNullPtr<Text::String> s;
+	if (this->GetSHeader(CSTR("X-Forwarded-Proto")).SetTo(s))
+	{
+		sbuff = s->ConcatTo(sbuff);
+		sbuff = Text::StrConcatC(sbuff, UTF8STRC("://"));
+	}
+	else if (this->GetSHeader(CSTR("X-Forwarded-Protocol")).SetTo(s))
+	{
+		sbuff = s->ConcatTo(sbuff);
+		sbuff = Text::StrConcatC(sbuff, UTF8STRC("://"));
+	}
+	else if (this->GetSHeader(CSTR("X-Url-Scheme")).SetTo(s))
+	{
+		sbuff = s->ConcatTo(sbuff);
+		sbuff = Text::StrConcatC(sbuff, UTF8STRC("://"));
+	}
+	else if (this->GetSHeader(CSTR("X-Forwarded-Ssl")).SetTo(s))
+	{
+		if (s->Equals(CSTR("on")))
+		{
+			sbuff = Text::StrConcatC(sbuff, UTF8STRC("https://"));
+		}
+		else
+		{
+			sbuff = Text::StrConcatC(sbuff, UTF8STRC("http://"));
+		}
+	}
+	else if (this->IsSecure())
+	{
+		sbuff = Text::StrConcatC(sbuff, UTF8STRC("https://"));
+	}
+	else
+	{
+		sbuff = Text::StrConcatC(sbuff, UTF8STRC("http://"));
+	}
+
+	if (this->GetSHeader(CSTR("X-Forwarded-Host")).SetTo(s))
+	{
+		sbuff = s->ConcatTo(sbuff);
+	}
+	else if (this->GetSHeader(CSTR("Host")).SetTo(s))
+	{
+		sbuff = s->ConcatTo(sbuff);
+	}
+	else
+	{
+		sbuff = Text::StrConcatC(sbuff, UTF8STRC("localhost"));
+	}
+	return sbuff;
 }
 
 Text::CString Net::WebServer::IWebRequest::RequestProtocolGetName(RequestProtocol reqProto)

@@ -41,7 +41,7 @@ namespace Net
 			IWebRequest();
 			virtual ~IWebRequest();
 
-			virtual Text::String *GetSHeader(Text::CStringNN name) = 0;
+			virtual Optional<Text::String> GetSHeader(Text::CStringNN name) = 0;
 			virtual UTF8Char *GetHeader(UTF8Char *sbuff, Text::CStringNN name, UOSInt buffLen) = 0;
 			virtual Bool GetHeaderC(NotNullPtr<Text::StringBuilderUTF8> sb, Text::CStringNN name) = 0;
 			virtual UOSInt GetHeaderNames(NotNullPtr<Data::ArrayList<Text::String*>> names) = 0;
@@ -75,6 +75,7 @@ namespace Net
 			Bool GetHTTPFormUInt64(Text::CStringNN name, OutParam<UInt64> valOut);
 			Bool GetHTTPFormDouble(Text::CStringNN name, OutParam<Double> valOut);
 			virtual void GetRequestURLBase(NotNullPtr<Text::StringBuilderUTF8> sb) = 0;
+			UTF8Char *BuildURLHost(UTF8Char *sbuff);
 
 			virtual NotNullPtr<const Net::SocketUtil::AddressInfo> GetClientAddr() const = 0;
 			virtual NotNullPtr<Net::NetConnection> GetNetConn() const = 0;

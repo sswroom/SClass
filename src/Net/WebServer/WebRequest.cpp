@@ -369,7 +369,7 @@ void Net::WebServer::WebRequest::AddHeader(Text::CStringNN name, Text::CStringNN
 	SDEL_STRING(s);
 }
 
-Text::String *Net::WebServer::WebRequest::GetSHeader(Text::CStringNN name)
+Optional<Text::String> Net::WebServer::WebRequest::GetSHeader(Text::CStringNN name)
 {
 	return this->headers.GetC(name);
 }
@@ -472,7 +472,7 @@ void Net::WebServer::WebRequest::ParseHTTPForm()
 	Text::StringBuilderUTF8 sb;
 	if (this->GetHeaderC(sb, CSTR("Content-Type")))
 	{
-		if (sb.Equals(UTF8STRC("application/x-www-form-urlencoded")))
+		if (sb.StartsWith(UTF8STRC("application/x-www-form-urlencoded")))
 		{
 			NEW_CLASS(this->formMap, Data::FastStringMap<Text::String *>());
 			ParseFormStr(this->formMap, this->reqData, this->reqDataSize);
@@ -569,7 +569,7 @@ const UInt8 *Net::WebServer::WebRequest::GetHTTPFormFile(Text::CStringNN formNam
 void Net::WebServer::WebRequest::GetRequestURLBase(NotNullPtr<Text::StringBuilderUTF8> sb)
 {
 	UInt16 defPort;
-	Text::String *s;
+	NotNullPtr<Text::String> s;
 	switch (this->reqProto)
 	{
 	case RequestProtocol::HTTP1_0:
@@ -585,8 +585,7 @@ void Net::WebServer::WebRequest::GetRequestURLBase(NotNullPtr<Text::StringBuilde
 			sb->AppendC(UTF8STRC("http://"));
 			defPort=80;
 		}
-		s = this->GetSHeader(CSTR("Host"));
-		if (s)
+		if (this->GetSHeader(CSTR("Host")).SetTo(s))
 		{
 			sb->Append(s);
 		}
@@ -659,21 +658,18 @@ const UInt8 *Net::WebServer::WebRequest::GetReqData(OutParam<UOSInt> dataSize)
 
 Bool Net::WebServer::WebRequest::HasData()
 {
-	Text::String *contLeng;
-	contLeng = this->GetSHeader(CSTR("Content-Length"));
-	if (contLeng == 0)
+	NotNullPtr<Text::String> contLeng;
+	if (!this->GetSHeader(CSTR("Content-Length")).SetTo(contLeng))
 	{
 		if (this->GetReqMethod() != Net::WebUtil::RequestMethod::HTTP_POST)
 		{
 			return false;
 		}
-		contLeng = this->GetSHeader(CSTR("Connection"));
-		if (contLeng == 0 || !contLeng->Equals(UTF8STRC("close")))
+		if (!this->GetSHeader(CSTR("Connection")).SetTo(contLeng) || !contLeng->Equals(UTF8STRC("close")))
 		{
 			return false;
 		}
-		contLeng = this->GetSHeader(CSTR("Transfer-Encoding"));
-		if (contLeng == 0 || !contLeng->Equals(UTF8STRC("chunked")))
+		if (!this->GetSHeader(CSTR("Transfer-Encoding")).SetTo(contLeng) || !contLeng->Equals(UTF8STRC("chunked")))
 		{
 			return false;
 		}

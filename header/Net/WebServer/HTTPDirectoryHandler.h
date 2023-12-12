@@ -54,7 +54,6 @@ namespace Net
 			CacheType ctype;
 			Int32 expirePeriod;
 			UInt64 fileCacheSize;
-			Text::String *allowOrigin;
 			Data::BTreeUTF8Map<CacheInfo*> fileCache;
 			Sync::Mutex fileCacheMut;
 			Data::FastStringMap<StatInfo*> *statMap;
@@ -86,7 +85,6 @@ namespace Net
 			void SetRootDir(Text::CStringNN rootDir);
 			void SetCacheType(CacheType ctype);
 			void SetExpirePeriod(Int32 periodSec);
-			void SetAllowOrigin(Text::CString origin);
 			void ClearFileCache();
 			void ExpandPackageFiles(NotNullPtr<Parser::ParserList> parsers, Text::CStringNN searchPattern);
 			void EnableStats();

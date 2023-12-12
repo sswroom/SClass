@@ -618,11 +618,14 @@ Bool IO::SMake::ParseSource(NotNullPtr<Data::FastStringMap<Int32>> objList,
 								}
 								if (objList->PutNN(subItem, 1) != 1)
 								{
-									if (!this->ParseObject(objList, libList, procList, headerList, subItem, prog->name->ToCString(), tmpSb))
+									if (!this->ParseObject(objList, libList, procList, headerList, thisTime, subItem, prog->name->ToCString(), tmpSb))
 									{
 										return false;
 									}
-									/////////////////////////////////
+									if (thisTime > lastTime)
+									{
+										lastTime = thisTime;
+									}
 								}
 							}
 							it = prog->libs.Iterator();
@@ -761,10 +764,11 @@ Bool IO::SMake::ParseHeader(NotNullPtr<Data::FastStringMap<Int32>> objList,
 	return false;
 }
 
-Bool IO::SMake::ParseObject(NotNullPtr<Data::FastStringMap<Int32>> objList, NotNullPtr<Data::FastStringMap<Int32>> libList, NotNullPtr<Data::FastStringMap<Int32>> procList, Optional<Data::ArrayListStringNN> headerList, NotNullPtr<Text::String> objectFile, Text::CStringNN sourceFile, NotNullPtr<Text::StringBuilderUTF8> tmpSb)
+Bool IO::SMake::ParseObject(NotNullPtr<Data::FastStringMap<Int32>> objList, NotNullPtr<Data::FastStringMap<Int32>> libList, NotNullPtr<Data::FastStringMap<Int32>> procList, Optional<Data::ArrayListStringNN> headerList, OutParam<Int64> latestTime, NotNullPtr<Text::String> objectFile, Text::CStringNN sourceFile, NotNullPtr<Text::StringBuilderUTF8> tmpSb)
 {
 	if (!objectFile->EndsWith(UTF8STRC(".o")))
 	{
+		latestTime.Set(0);
 		return true;
 	}
 
@@ -795,7 +799,8 @@ Bool IO::SMake::ParseObject(NotNullPtr<Data::FastStringMap<Int32>> objList, NotN
 			}
 			if (objList->PutNN(subItem, 1) != 1)
 			{
-				if (!this->ParseObject(objList, libList, procList, headerList, subItem, objectFile->ToCString(), tmpSb))
+				Int64 thisTime;
+				if (!this->ParseObject(objList, libList, procList, headerList, thisTime, subItem, objectFile->ToCString(), tmpSb))
 				{
 					return false;
 				}
@@ -823,6 +828,7 @@ Bool IO::SMake::ParseObject(NotNullPtr<Data::FastStringMap<Int32>> objList, NotN
 				return false;
 			}
 			this->fileTimeMap.PutNN(s, thisTime);
+			latestTime.Set(thisTime);
 		}
 		return true;
 	}
