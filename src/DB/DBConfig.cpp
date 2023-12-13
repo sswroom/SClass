@@ -2,6 +2,7 @@
 #include "DB/DBConfig.h"
 #include "DB/MSSQLConn.h"
 #include "DB/PostgreSQLConn.h"
+#include "DB/SQLiteFile.h"
 
 Optional<DB::DBTool> DB::DBConfig::LoadFromConfig(NotNullPtr<Net::SocketFactory> sockf, NotNullPtr<IO::ConfigFile> cfg, Text::CString cfgCategory, NotNullPtr<IO::LogTool> log)
 {
@@ -107,6 +108,21 @@ Optional<DB::DBTool> DB::DBConfig::LoadFromConfig(NotNullPtr<Net::SocketFactory>
 		if (!DB::PostgreSQLConn::CreateDBTool(serverHost->ToCString(), port, database->ToCString(), userName->ToCString(), password->ToCString(), log, logPrefix).SetTo(db))
 		{
 			log->LogMessage(CSTR("Error in connecting to PostgreSQL database"), IO::LogHandler::LogLevel::Error);
+			return 0;
+		}
+		return db;
+	}
+	else if (s->Equals(UTF8STRC("SQLite")))
+	{
+		NotNullPtr<Text::String> filePath;
+		if (!cfg->GetCateValue(category, CSTR("SQLiteFile")).SetTo(filePath))
+		{
+			log->LogMessage(CSTR("SQLiteFile is missing"), IO::LogHandler::LogLevel::Error);
+			return 0;
+		}
+		if (!DB::SQLiteFile::CreateDBTool(filePath, log, logPrefix).SetTo(db))
+		{
+			log->LogMessage(CSTR("Error in opening to SQLite database"), IO::LogHandler::LogLevel::Error);
 			return 0;
 		}
 		return db;

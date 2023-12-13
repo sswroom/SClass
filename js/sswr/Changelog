@@ -2,6 +2,7 @@
 -Fixed DateTimeUtil.toString infinity loop
 -Fixed Distance Calculation
 -Added data.sort
+-Added CoordinateSystem.convert functions
 
 1.2.2
 -Added text.toAttrText(), text.toXMLTest();

@@ -188,12 +188,12 @@ Bool DB::DBManager::GetConnStr(NotNullPtr<DB::DBTool> db, NotNullPtr<Text::Strin
 	return false;
 }
 
-DB::ReadingDB *DB::DBManager::OpenConn(NotNullPtr<Text::String> connStr, NotNullPtr<IO::LogTool> log, NotNullPtr<Net::SocketFactory> sockf, Optional<Parser::ParserList> parsers)
+Optional<DB::ReadingDB> DB::DBManager::OpenConn(NotNullPtr<Text::String> connStr, NotNullPtr<IO::LogTool> log, NotNullPtr<Net::SocketFactory> sockf, Optional<Parser::ParserList> parsers)
 {
 	return OpenConn(connStr->ToCString(), log, sockf, parsers);
 }
 
-DB::ReadingDB *DB::DBManager::OpenConn(Text::CStringNN connStr, NotNullPtr<IO::LogTool> log, NotNullPtr<Net::SocketFactory> sockf, Optional<Parser::ParserList> parsers)
+Optional<DB::ReadingDB> DB::DBManager::OpenConn(Text::CStringNN connStr, NotNullPtr<IO::LogTool> log, NotNullPtr<Net::SocketFactory> sockf, Optional<Parser::ParserList> parsers)
 {
 	DB::DBTool *db;
 	if (connStr.StartsWith(UTF8STRC("odbc:")))
@@ -326,10 +326,10 @@ DB::ReadingDB *DB::DBManager::OpenConn(Text::CStringNN connStr, NotNullPtr<IO::L
 	{
 		if (connStr.Substring(7).StartsWithICase(UTF8STRC("FILE=")))
 		{
-			db = DB::SQLiteFile::CreateDBTool(connStr.Substring(12), log, DBPREFIX);
-			if (db)
+			NotNullPtr<DB::DBTool> db;
+			if (DB::SQLiteFile::CreateDBTool(connStr.Substring(12), log, DBPREFIX).SetTo(db))
 			{
-				return db;
+				return NotNullPtr<DB::ReadingDB>(db);
 			}
 		}
 	}

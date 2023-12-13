@@ -64,7 +64,7 @@ Bool Exporter::SQLiteExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Te
 	UOSInt i;
 	UOSInt j;
 	OSInt k;
-	if (!destDB.Set(DB::SQLiteFile::CreateDBTool(fileName.OrEmpty(), log, CSTR("DB: "))))
+	if (!DB::SQLiteFile::CreateDBTool(fileName.OrEmpty(), log, CSTR("DB: ")).SetTo(destDB))
 		return false;
 	Bool succ = true;
 	DB::SQLBuilder sql(destDB);

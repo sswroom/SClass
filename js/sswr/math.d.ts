@@ -14,6 +14,8 @@ export class Coord2D
 	constructor(x: number, y: number);
 	get lat(): number;
 	get lon(): number;
+
+	mul(val: number): Coord2D;
 }
 
 export class Vector3 extends Coord2D
@@ -21,6 +23,10 @@ export class Vector3 extends Coord2D
 	z: number;
 	constructor(x: number, y: number, z: number);
 	get height(): number;
+	mulXY(val: number): Vector3;
+	mul(val: number): Vector3;
+
+	static fromCoord2D(coord: Coord2D, z: number): Vector3;
 }
 
 export enum EarthEllipsoidType
@@ -61,8 +67,17 @@ export class EarthEllipsoid
 	eccentricity: number;
 	constructor(semiMajorAxis: number, inverseFlattening: number, eet: EarthEllipsoidType);
 	calSurfaceDistance(dLat1: number, dLon1: number, dLat2: number, dLon2: number, distUnit: DistanceUnit): number;
-	getSemiMinorAxis() : number;
+	getSemiMajorAxis(): number;
+	getSemiMinorAxis(): number;
+	getInverseFlattening(): number;
+	getEccentricity(): number;
+	equals(ellipsoid: EarthEllipsoid): boolean;
 	initEarthInfo(eet: EarthEllipsoidType): void;
+
+	toCartesianCoordRad(lonLatH: Vector3): Vector3;
+	fromCartesianCoordRad(coord: Vector3): Vector3;
+	toCartesianCoordDeg(lonLatH: Vector3): Vector3;
+	fromCartesianCoordDeg(coord: Vector3): Vector3;
 }
 
 export class Spheroid
@@ -109,6 +124,15 @@ export abstract class CoordinateSystem
 
 	constructor(srid: number, csysName: string);
 	abstract calcSurfaceDistance(x1: number, y1: number, x2: number, y2: number, distUnit: DistanceUnit) : number;
+	abstract getCoordSysType(): CoordinateSystemType;
+	abstract isProjected(): boolean;
+
+	equals(csys: CoordinateSystem): boolean;
+
+	static convert(srcCoord: CoordinateSystem, destCoord: CoordinateSystem, coord: Coord2D) : Coord2D;
+	static convert3D(srcCoord: CoordinateSystem, destCoord: CoordinateSystem, srcPos: Vector3) : Vector3;
+	static convertArray(srcCoord: CoordinateSystem, destCoord: CoordinateSystem, srcArr: Coord2D[]): Coord2D[];
+	static convertToCartesianCoord(srcCoord: CoordinateSystem, srcPos: Vector3): Vector3;
 }
 
 export class GeographicCoordinateSystem extends CoordinateSystem
@@ -117,6 +141,15 @@ export class GeographicCoordinateSystem extends CoordinateSystem
 	
 	constructor(srid: number, csysName: string, datumData: DatumData);
 	calcSurfaceDistance(x1: number, y1: number, x2: number, y2: number, unit: DistanceUnit): number;
+	getCoordSysType(): CoordinateSystemType;
+	isProjected(): boolean;
+
+	getEllipsoid() : EarthEllipsoid;
+
+	toCartesianCoordRad(lonLatH: Vector3): Vector3;
+	fromCartesianCoordRad(coord: Vector3): Vector3;
+	toCartesianCoordDeg(lonLatH: Vector3): Vector3;
+	fromCartesianCoordDeg(coord: Vector3): Vector3;
 }
 
 export class ProjectedCoordinateSystem extends CoordinateSystem
@@ -129,22 +162,41 @@ export class ProjectedCoordinateSystem extends CoordinateSystem
 	gcs: GeographicCoordinateSystem;
 	constructor(srid: number, csysName: string, falseEasting: number, falseNorthing: number, dcentralMeridian: number, dlatitudeOfOrigin: number, scaleFactor: number, gcs: GeographicCoordinateSystem);
 	calcSurfaceDistance(x1: number, y1: number, x2: number, y2: number, distUnit: DistanceUnit): number;
+	isProjected(): boolean;
+
+	getGeographicCoordinateSystem(): GeographicCoordinateSystem;
+	abstract toGeographicCoordinateRad(projPos: Coord2D): Coord2D;
+	abstract fromGeographicCoordinateRad(geoPos: Coord2D): Coord2D;
+	toGeographicCoordinateDeg(projPos: Coord2D): Coord2D;
+	fromGeographicCoordinateDeg(geoPos: Coord2D): Coord2D;
+	sameProjection(csys: ProjectedCoordinateSystem): boolean;
 }
 
 export class MercatorProjectedCoordinateSystem extends ProjectedCoordinateSystem
 {
 	constructor(srid: number, csysName: string, falseEasting: number, falseNorthing: number, dcentralMeridian: number, dlatitudeOfOrigin: number, scaleFactor: number, gcs: GeographicCoordinateSystem);
+	getCoordSysType(): CoordinateSystemType;
+
+	toGeographicCoordinateRad(projPos: Coord2D): Coord2D;
+	fromGeographicCoordinateRad(geoPos: Coord2D): Coord2D;
+	calcM(rLat: number): number;
 }
 
 export class Mercator1SPProjectedCoordinateSystem extends ProjectedCoordinateSystem
 {
 	constructor(srid: number, csysName: string, falseEasting: number, falseNorthing: number, dcentralMeridian: number, dlatitudeOfOrigin: number, scaleFactor: number, gcs: GeographicCoordinateSystem);
+	getCoordSysType(): CoordinateSystemType;
+
+	toGeographicCoordinateRad(projPos: Coord2D): Coord2D;
+	fromGeographicCoordinateRad(geoPos: Coord2D): Coord2D;
 }
 
 export class CoordinateSystemManager
 {
-	static srCreateGeogCSys(srid: number, datumSrid: number, name: string): GeographicCoordinateSystem | null;
-	static srCreateProjCSys(srid: number, geogcsSrid: number, csysType: CoordinateSystemType, projName: string, falseEasting: number, falseNorthing: number, centralMeridian: number, latitudeOfOrigin: number, scaleFactor: number): ProjectedCoordinateSystem | null;
+	static srCreateGeogCSysData(srid: number, datumSrid: number, name: string): GeographicCoordinateSystem | null;
+	static srCreateProjCSysData(srid: number, geogcsSrid: number, csysType: CoordinateSystemType, projName: string, falseEasting: number, falseNorthing: number, centralMeridian: number, latitudeOfOrigin: number, scaleFactor: number): ProjectedCoordinateSystem | null;
+	static srCreateGeogCSys(srid: number): GeographicCoordinateSystem | null;
+	static srCreateProjCSys(srid: number): ProjectedCoordinateSystem | null;
 	static srCreateCsys(srid: number) : CoordinateSystem | null;
 	static srGetDatumData(srid: number) : DatumData | null;
 	static srGetSpheroid(srid: number) : Spheroid | null;

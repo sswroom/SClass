@@ -27,7 +27,7 @@ Bool DB::DBManagerCtrl::Connect()
 	else
 	{
 		SDEL_CLASS(this->db);
-		this->db = DB::DBManager::OpenConn(this->connStr->ToCString(), this->log, this->sockf, this->parsers);
+		this->db = DB::DBManager::OpenConn(this->connStr->ToCString(), this->log, this->sockf, this->parsers).OrNull();
 		if (this->db)
 		{
 			this->status = ConnStatus::Connected;

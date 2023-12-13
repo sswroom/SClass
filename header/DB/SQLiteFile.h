@@ -50,8 +50,8 @@ namespace DB
 
 		static Math::Geometry::Vector2D *GPGeometryParse(const UInt8 *buff, UOSInt buffSize);
 		
-		static DBTool *CreateDBTool(NotNullPtr<Text::String> fileName, NotNullPtr<IO::LogTool> log, Text::CString logPrefix);
-		static DBTool *CreateDBTool(Text::CStringNN fileName, NotNullPtr<IO::LogTool> log, Text::CString logPrefix);
+		static Optional<DBTool> CreateDBTool(NotNullPtr<Text::String> fileName, NotNullPtr<IO::LogTool> log, Text::CString logPrefix);
+		static Optional<DBTool> CreateDBTool(Text::CStringNN fileName, NotNullPtr<IO::LogTool> log, Text::CString logPrefix);
 	};
 
 	class SQLiteReader : public DB::DBReader

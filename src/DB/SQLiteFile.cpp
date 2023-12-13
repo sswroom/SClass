@@ -159,6 +159,8 @@ DB::DBReader *DB::SQLiteFile::ExecuteReader(Text::CStringNN sql)
 		else
 		{
 			this->lastDataError = DE_EXEC_SQL_ERROR;
+			SDEL_STRING(this->lastErrMsg);
+			this->lastErrMsg = Text::String::NewNotNullSlow((const UTF8Char*)sqlite3_errmsg((sqlite3*)this->db)).Ptr();
 			return 0;
 		}
 	}
@@ -372,7 +374,7 @@ Math::Geometry::Vector2D *DB::SQLiteFile::GPGeometryParse(const UInt8 *buff, UOS
 	return reader.ParseWKB(buff + ofst, buffSize - ofst, 0);
 }
 
-DB::DBTool *DB::SQLiteFile::CreateDBTool(NotNullPtr<Text::String> fileName, NotNullPtr<IO::LogTool> log, Text::CString logPrefix)
+Optional<DB::DBTool> DB::SQLiteFile::CreateDBTool(NotNullPtr<Text::String> fileName, NotNullPtr<IO::LogTool> log, Text::CString logPrefix)
 {
 	NotNullPtr<DB::SQLiteFile> conn;
 	NEW_CLASSNN(conn, DB::SQLiteFile(fileName));
@@ -381,12 +383,12 @@ DB::DBTool *DB::SQLiteFile::CreateDBTool(NotNullPtr<Text::String> fileName, NotN
 		conn.Delete();
 		return 0;
 	}
-	DB::DBTool *db;
-	NEW_CLASS(db, DBTool(conn, true, log, logPrefix));
+	NotNullPtr<DB::DBTool> db;
+	NEW_CLASSNN(db, DBTool(conn, true, log, logPrefix));
 	return db;
 }
 
-DB::DBTool *DB::SQLiteFile::CreateDBTool(Text::CStringNN fileName, NotNullPtr<IO::LogTool> log, Text::CString logPrefix)
+Optional<DB::DBTool> DB::SQLiteFile::CreateDBTool(Text::CStringNN fileName, NotNullPtr<IO::LogTool> log, Text::CString logPrefix)
 {
 	NotNullPtr<DB::SQLiteFile> conn;
 	NEW_CLASSNN(conn, DB::SQLiteFile(fileName));
@@ -395,8 +397,8 @@ DB::DBTool *DB::SQLiteFile::CreateDBTool(Text::CStringNN fileName, NotNullPtr<IO
 		conn.Delete();
 		return 0;
 	}
-	DB::DBTool *db;
-	NEW_CLASS(db, DBTool(conn, true, log, logPrefix));
+	NotNullPtr<DB::DBTool> db;
+	NEW_CLASSNN(db, DBTool(conn, true, log, logPrefix));
 	return db;
 }
 

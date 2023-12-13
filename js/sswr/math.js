@@ -70,6 +70,11 @@ export class Coord2D
 	{
 		return this.x;
 	}
+
+	mul(val)
+	{
+		return new Coord2D(this.x * val, this.y * val);
+	}
 }
 
 export class Vector3 extends Coord2D
@@ -83,6 +88,21 @@ export class Vector3 extends Coord2D
 	get height()
 	{
 		return this.z;
+	}
+
+	mulXY(val)
+	{
+		return new Vector3(this.x * val, this.y * val, this.z);
+	}
+
+	mul(val)
+	{
+		return new Vector3(this.x * val, this.y * val, this.z * val);
+	}
+
+	static fromCoord2D(coord, z)
+	{
+		return new Vector3(coord.x, coord.y, z);
 	}
 }
 
@@ -168,9 +188,28 @@ export class EarthEllipsoid
 		return d;	
 	}
 
+	getSemiMajorAxis()
+	{
+		return this.semiMajorAxis;
+	}
 	getSemiMinorAxis()
 	{
 		return this.semiMinorAxis;
+	}
+
+	getInverseFlattening()
+	{
+		return this.inverseFlattening;
+	}
+
+	getEccentricity()
+	{
+		return this.eccentricity;
+	}
+
+	equals(ellipsoid)
+	{
+		return ellipsoid.semiMajorAxis == this.semiMajorAxis && ellipsoid.inverseFlattening == this.inverseFlattening;
 	}
 
 	initEarthInfo(eet)
@@ -284,6 +323,51 @@ export class EarthEllipsoid
 			return;
 		}
 	}
+	toCartesianCoordRad(lonLatH)
+	{
+		var cLat = Math.cos(lonLatH.lat);
+		var sLat = Math.sin(lonLatH.lat);
+		var cLon = Math.cos(lonLatH.lon);
+		var sLon = Math.sin(lonLatH.lon);
+		var e2 = this.eccentricity * this.eccentricity;
+		var v = this.semiMajorAxis / Math.sqrt(1 - e2 * sLat * sLat);
+		return new Vector3(
+			(v + lonLatH.z) * cLat * cLon,
+			(v + lonLatH.z) * cLat * sLon,
+			((1 - e2) * v + lonLatH.z) * sLat);
+	}
+
+	fromCartesianCoordRad(coord)
+	{
+		var e2 = this.eccentricity * this.eccentricity;
+		var rLon = Math.atan2(coord.y, coord.x);
+		var p = Math.sqrt(coord.x * coord.x + coord.y * coord.y);
+		var rLat = Math.atan2(coord.z, p * (1 - e2));
+		var sLat;
+		var thisLat;
+		var v = 0;
+		var i = 10;
+		while (i-- > 0)
+		{
+			sLat = Math.sin(rLat);
+			v = this.semiMajorAxis / Math.sqrt(1 - e2 * sLat * sLat);
+			thisLat = Math.atan2(coord.z + e2 * v * sLat, p);
+			if (thisLat == rLat)
+				break;
+			rLat = thisLat;
+		}
+		return new Vector3(rLon, rLat, p / Math.cos(rLat) - v);
+	}
+
+	toCartesianCoordDeg(lonLatH)
+	{
+		return this.toCartesianCoordRad(lonLatH.mulXY(Math.PI / 180.0));
+	}
+
+	fromCartesianCoordDeg(coord)
+	{
+		return this.fromCartesianCoordRad(coord).mulXY(180.0 / Math.PI);
+	}
 }
 
 export class Spheroid
@@ -332,7 +416,148 @@ export class CoordinateSystem
 	{
 		this.srid = srid;
 		this.csysName = csysName;
-	};
+	}
+
+	equals(csys)
+	{
+		if (this == csys)
+			return true;
+		var thisType = this.getCoordSysType();
+		var csysType = csys.getCoordSysType();
+		if (thisType != csysType)
+			return false;
+		if (csysType == CoordinateSystemType.Geographic)
+		{
+			return this.getEllipsoid().equals(csys.getEllipsoid());
+		}
+		else if (cst == CoordinateSystemType.PointMapping)
+		{
+			return false;
+		}
+		else
+		{
+			return this.sameProjection(csys);
+		}
+	}
+
+	static convert(srcCoord, destCoord, coord)
+	{
+		return CoordinateSystem.convert3D(srcCoord, destCoord, Vector3.fromCoord2D(coord, 0));
+	}
+
+	static convert3D(srcCoord, destCoord, srcPos)
+	{
+		if (srcCoord.isProjected())
+		{
+			srcPos = Vector3.fromCoord2D(srcCoord.toGeographicCoordinateDeg(srcPos), srcPos.z);
+			srcCoord = srcCoord.getGeographicCoordinateSystem();
+		}
+		if (srcCoord.equals(destCoord))
+		{
+			return srcPos;
+		}
+		srcPos = srcCoord.toCartesianCoordDeg(srcPos);
+	
+		if (destCoord.isProjected())
+		{
+			var gcs = destCoord.getGeographicCoordinateSystem();
+			srcPos = gcs.fromCartesianCoordRad(srcPos);
+			return Vector3.fromCoord2D(destCoord.fromGeographicCoordinateRad(srcPos), srcPos.z);
+		}
+		else
+		{
+			return destCoord.fromCartesianCoordDeg(srcPos);
+		}
+	}
+
+	static convertArray(srcCoord, destCoord, srcArr)
+	{
+		var i;
+		var srcRad = false;
+		var destArr = [];
+		if (srcCoord.isProjected())
+		{
+			for (i in srcArr)
+			{
+				destArr[i] = srcCoord.toGeographicCoordinateRad(srcArr[i]);
+			}
+			srcCoord = srcCoord.getGeographicCoordinateSystem();
+			srcArr = destArr;
+			srcRad = true;
+		}
+		if (srcCoord.equals(destCoord))
+		{
+			if (srcRad)
+			{
+				for (i in srcArr)
+				{
+					destArr[i] = srcArr[i].mul(180.0 / Math.PI);
+				}
+			}
+			if (srcArr != destArr)
+			{
+				for (i in srcArr)
+				{
+					destArr[i] = srcArr[i];
+				}
+			}
+			return destArr;
+		}
+		var tmpPos;
+		if (destCoord.isProjected())
+		{
+			var gcs = destCoord.getGeographicCoordinateSystem();
+			if (srcRad)
+			{
+				for (i in srcArr)
+				{
+					tmpPos = srcCoord.toCartesianCoordRad(Vector3.fromCoord2D(srcArr[i], 0));
+					tmpPos = gcs.fromCartesianCoordRad(tmpPos);
+					destArr[i] = destCoord.fromGeographicCoordinateRad(tmpPos);
+				}
+			}
+			else
+			{
+				for (i in srcArr)
+				{
+					tmpPos = srcCoord.toCartesianCoordDeg(Vector3.fromCoord2D(srcArr[i], 0));
+					tmpPos = gcs.fromCartesianCoordRad(tmpPos);
+					destArr[i] = destCoord.FromGeographicCoordinateRad(tmpPos);
+				}
+			}
+		}
+		else
+		{
+			if (srcRad)
+			{
+				for (i in srcArr)
+				{
+					tmpPos = srcCoord.toCartesianCoordRad(Vector3.fromCoord2D(srcArr[i], 0));
+					destArr[i] = destCoord.fromCartesianCoordDeg(tmpPos);
+				}
+			}
+			else
+			{
+				i = nPoints;
+				while (i-- > 0)
+				{
+					tmpPos = srcCoord.toCartesianCoordDeg(Vector3.fromCoord2D(srcArr[i], 0));
+					destArr[i] = destCoord.fromCartesianCoordDeg(tmpPos);
+				}
+			}
+		}
+		return destArr;
+	}
+
+	static convertToCartesianCoord(srcCoord, srcPos)
+	{
+		if (srcCoord.isProjected())
+		{
+			srcPos = Vector3.fromCoord2D(srcCoord.toGeographicCoordinateDeg(srcPos), srcPos.z);
+			srcCoord = srcCoord.getGeographicCoordinateSystem();
+		}
+		return srcCoord.toCartesianCoordDeg(srcPos);
+	}
 }
 
 export class GeographicCoordinateSystem extends CoordinateSystem
@@ -346,6 +571,78 @@ export class GeographicCoordinateSystem extends CoordinateSystem
 	calcSurfaceDistance(x1, y1, x2, y2, unit)
 	{
 		return this.datum.spheroid.ellipsoid.calSurfaceDistance(y1, x1, y2, x2, unit);
+	}
+
+	getCoordSysType()
+	{
+		return CoordinateSystemType.Geographic;
+	}
+
+	isProjected()
+	{
+		return false;
+	}
+
+	getEllipsoid()
+	{
+		return this.datum.spheroid.ellipsoid;
+	}
+
+	toCartesianCoordRad(lonLatH)
+	{
+		var tmpPos = this.datum.spheroid.ellipsoid.toCartesianCoordRad(lonLatH);
+		if (this.datum.scale == 0 && this.datum.xAngle == 0 && this.datum.yAngle == 0 && this.datum.zAngle == 0)
+		{
+			return new Vector3(
+				tmpPos.x + this.datum.cX,
+				tmpPos.y + this.datum.cY,
+				tmpPos.z + this.datum.cZ);
+		}
+		else
+		{
+			tmpPos.x -= this.datum.x0;
+			tmpPos.y -= this.datum.y0;
+			tmpPos.z -= this.datum.z0;
+			var s = 1 + this.datum.scale * 0.000001;
+			return new Vector3(
+				s * (                     tmpPos.x - this.datum.zAngle * tmpPos.y + this.datum.yAngle * tmpPos.z) + this.datum.cX + this.datum.x0,
+				s * ( this.datum.zAngle * tmpPos.x +                     tmpPos.y - this.datum.xAngle * tmpPos.z) + this.datum.cY + this.datum.y0,
+				s * (-this.datum.yAngle * tmpPos.x + this.datum.xAngle * tmpPos.y +                     tmpPos.z) + this.datum.cZ + this.datum.z0);
+		}
+	}
+
+	fromCartesianCoordRad(coord)
+	{
+		var tmpPos;
+		if (this.datum.scale == 0 && this.datum.xAngle == 0 && this.datum.yAngle == 0 && this.datum.zAngle == 0)
+		{
+			tmpPos = new Vector3(
+				coord.x - this.datum.cX,
+				coord.y - this.datum.cY,
+				coord.z - this.datum.cZ);
+		}
+		else
+		{
+			coord.x = coord.x - this.datum.x0 - this.datum.cX;
+			coord.y = coord.y - this.datum.y0 - this.datum.cY;
+			coord.z = coord.z - this.datum.z0 - this.datum.cZ;
+			var s = 1 / (1 + this.datum.scale * 0.000001);
+			tmpPos = new Vector3(
+				s * (                     coord.x + this.datum.zAngle * coord.y - this.datum.yAngle * coord.z) + this.datum.x0,
+				s * (-this.datum.zAngle * coord.x +                     coord.y + this.datum.xAngle * coord.z) + this.datum.y0,
+				s * ( this.datum.yAngle * coord.x - this.datum.xAngle * coord.y +                     coord.z) + this.datum.z0);
+		}
+		return this.datum.spheroid.ellipsoid.fromCartesianCoordRad(tmpPos);
+	}
+
+	toCartesianCoordDeg(lonLatH)
+	{
+		return this.toCartesianCoordRad(lonLatH.mulXY(Math.PI / 180.0));
+	}
+
+	fromCartesianCoordDeg(coord)
+	{
+		return this.fromCartesianCoordRad(coord).mulXY(180.0 / Math.PI);
 	}
 }
 
@@ -375,6 +672,41 @@ export class ProjectedCoordinateSystem extends CoordinateSystem
 		}
 		return d;
 	}
+
+	isProjected()
+	{
+		return true;
+	}
+
+	getGeographicCoordinateSystem()
+	{
+		return this.gcs;
+	}
+
+	toGeographicCoordinateDeg(projPos)
+	{
+		return this.toGeographicCoordinateRad(projPos).mul(180 / Math.PI);
+	}
+
+	fromGeographicCoordinateDeg(geoPos)
+	{
+		return this.fromGeographicCoordinateRad(geoPos.mul(Math.PI / 180.0));
+	}
+
+	sameProjection(csys)
+	{
+		if (this.falseEasting != csys.falseEasting)
+			return false;
+		if (this.falseNorthing != csys.falseNorthing)
+			return false;
+		if (this.rcentralMeridian != csys.rcentralMeridian)
+			return false;
+		if (this.rlatitudeOfOrigin != csys.rlatitudeOfOrigin)
+			return false;
+		if (this.scaleFactor != csys.scaleFactor)
+			return false;
+		return this.gcs.equals(csys.gcs);
+	}
 }
 
 export class MercatorProjectedCoordinateSystem extends ProjectedCoordinateSystem
@@ -382,6 +714,115 @@ export class MercatorProjectedCoordinateSystem extends ProjectedCoordinateSystem
 	constructor(srid, csysName, falseEasting, falseNorthing, dcentralMeridian, dlatitudeOfOrigin, scaleFactor, gcs)
 	{
 		super(srid, csysName, falseEasting, falseNorthing, dcentralMeridian, dlatitudeOfOrigin, scaleFactor, gcs);
+	}
+
+	getCoordSysType()
+	{
+		return CoordinateSystemType.MercatorProjected;
+	}
+
+	toGeographicCoordinateRad(projPos)
+	{
+		var ellipsoid = this.gcs.getEllipsoid();
+		var aF = ellipsoid.getSemiMajorAxis() * this.scaleFactor;
+		var rLatL = (projPos.y - this.falseNorthing) / aF + this.rlatitudeOfOrigin;
+		var rLastLat;
+		var e = ellipsoid.getEccentricity();
+		var e2 = e * e;
+		var tmpV;
+		var i = 20;
+		while (i-- > 0)
+		{
+			tmpV = projPos.y - this.falseNorthing - this.calcM(rLatL);
+			rLastLat = rLatL;
+			rLatL = rLatL + tmpV / aF;
+			if (rLastLat == rLatL || (tmpV < 0.000000001 && tmpV > -0.000000001))
+				break;
+		}
+		var sLat = Math.sin(rLatL);
+		var cLat = Math.cos(rLatL);
+		var secLat = 1 / cLat;
+		var tLat = sLat * secLat; //Math_Tan(rLatL);
+		var tLat2 = tLat * tLat;
+		var tLat4 = tLat2 * tLat2;
+		var tmp = 1 - e2 * sLat * sLat;
+		var v = aF / Math.sqrt(tmp);
+		var v2 = v * v;
+		var v3 = v * v2;
+		var v5 = v3 * v2;
+		var v7 = v5 * v2;
+		var p = v * (1 - e2) / tmp;
+		var nb2 = v / p - 1;
+	
+		var ser7 = tLat / (2 * p * v);
+		var ser8 = tLat / (24 * p * v3) * (5 + 3 * tLat2 + nb2 - 9 * tLat2 * nb2);
+		var ser9 = tLat / (720 * p * v5) * (61 + 90 * tLat2 + 45 * tLat4);
+		var ser10 = secLat / v;
+		var ser11 = secLat / (6 * v3) * (v / p + 2 * tLat2);
+		var ser12 = secLat / (120 * v5) * (5 + 28 * tLat2 + 24 * tLat4);
+		var ser12a = secLat / (5040 * v7) * (61 + 662 * tLat2 + 1320 * tLat4 + 720 * tLat4 * tLat2);
+	
+		var eDiff = projPos.x - this.falseEasting;
+		var eDiff2 = eDiff * eDiff;
+		var eDiff4 = eDiff2 * eDiff2;
+		var eDiff6 = eDiff4 * eDiff2;
+		return new Coord2D(this.rcentralMeridian + ser10 * eDiff - ser11 * (eDiff2 * eDiff) + ser12 * (eDiff4 * eDiff) - ser12a * (eDiff6 * eDiff),
+			rLatL - ser7 * eDiff2 + ser8 * eDiff4 - ser9 * eDiff6);
+	}
+	
+	fromGeographicCoordinateRad(geoPos)
+	{
+		var ellipsoid = this.gcs.getEllipsoid();
+		var rLat = geoPos.lat;
+		var rLon = geoPos.lon;
+		var rLon0 = this.rcentralMeridian;
+		var sLat = Math.sin(rLat);
+		var cLat = Math.cos(rLat);
+		var tLat = sLat / cLat; //Math_Tan(rLat);
+		var a = ellipsoid.getSemiMajorAxis();
+		var e = ellipsoid.getEccentricity();
+		var e2 = e * e;
+		var tmp = 1 - e2 * sLat * sLat;
+		var v = a * this.scaleFactor / Math.sqrt(tmp);
+		var p = v * (1 - e2) / tmp;
+		var nb2 = v / p - 1;
+		var m = this.calcM(rLat);
+		var tLat2 = tLat * tLat;
+		var tLat4 = tLat2 * tLat2;
+		var cLat3 = cLat * cLat * cLat;
+		var cLat5 = cLat3 * cLat * cLat;
+		
+		var ser1 = m + this.falseNorthing;
+		var ser2 = v * 0.5 * cLat * sLat;
+		var ser3 = v / 24 * sLat * cLat3 * (5 - tLat2 + 9 * nb2);
+		var ser3a = v / 720 * sLat * cLat5 * (61 - 58 * tLat2 + tLat4);
+		var ser4 = v * cLat;
+		var ser5 = v / 6 * cLat3 * (v / p - tLat2);
+		var ser6 = v / 120 * cLat5 * (5 - 18 * tLat2 + tLat4 + 14 * nb2 - 58 * tLat2 * nb2);
+		var dlon = rLon - rLon0;
+		var dlon2 = dlon * dlon;
+		var dlon4 = dlon2 * dlon2;
+	
+		return new Coord2D(this.falseEasting + ser4 * dlon + ser5 * dlon * dlon2 + ser6 * dlon * dlon4,
+			ser1 + ser2 * dlon2 + ser3 * dlon4 + ser3a * dlon4 * dlon2);
+	}
+	
+	calcM(rLat)
+	{
+		var ellipsoid = this.gcs.getEllipsoid();
+		var a = ellipsoid.getSemiMajorAxis();
+		var b = ellipsoid.getSemiMinorAxis();
+		var n = (a - b) / (a + b);
+		var n2 = n * n;
+		var n3 = n2 * n;
+		var rLat0 = this.rlatitudeOfOrigin;
+		var m;
+		m = (1 + n + 1.25 * n2 + 1.25 * n3) * (rLat - rLat0);
+		m = m - (3 * n + 3 * n2  + 2.625 * n3) * Math.sin(rLat - rLat0) * Math.cos(rLat + rLat0);
+		m = m + (1.875 * n2 + 1.875 * n3) * Math.sin(2 * (rLat - rLat0)) * Math.cos(2 * (rLat + rLat0));
+		m = m - 35 / 24 * n3 * Math.sin(3 * (rLat - rLat0)) * Math.cos(3 * (rLat + rLat0));
+		m = m * b * this.scaleFactor;
+		return m;
 	}
 }
 
@@ -391,11 +832,37 @@ export class Mercator1SPProjectedCoordinateSystem extends ProjectedCoordinateSys
 	{
 		super(srid, csysName, falseEasting, falseNorthing, dcentralMeridian, dlatitudeOfOrigin, scaleFactor, gcs);
 	}
+
+	getCoordSysType()
+	{
+		return CoordinateSystemType.Mercator1SPProjected;
+	}
+
+	toGeographicCoordinateRad(projPos)
+	{
+		var ellipsoid = this.gcs.getEllipsoid();
+		var rLon0 = this.rcentralMeridian;
+		var a = ellipsoid.getSemiMajorAxis();
+		return new Coord2D(((projPos.x - this.falseEasting) / a + rLon0),
+			(Math.atan(Math.exp((projPos.y - this.falseNorthing) / a)) - Math.PI * 0.25) * 2);
+	}
+	
+	fromGeographicCoordinateRad(geoPos)
+	{
+		var ellipsoid = this.gcs.getEllipsoid();
+		var rLat = geoPos.lat;
+		var rLon = geoPos.lon;
+		var rLon0 = this.rcentralMeridian;
+		var a = ellipsoid.getSemiMajorAxis();
+		var dlon = rLon - rLon0;
+		return new Coord2D(this.falseEasting + dlon * a,
+			this.falseNorthing + a * Math.log(Math.tan(Math.PI * 0.25 + rLat * 0.5)));
+	}
 }
 
 export class CoordinateSystemManager
 {
-	static srCreateGeogCSys(srid, datumSrid, name)
+	static srCreateGeogCSysData(srid, datumSrid, name)
 	{
 		var data = this.srGetDatumData(datumSrid);
 		if (data == null)
@@ -405,7 +872,7 @@ export class CoordinateSystemManager
 		return new GeographicCoordinateSystem(srid, name, data);
 	}
 	
-	static srCreateProjCSys(srid, geogcsSrid, csysType, projName, falseEasting, falseNorthing, centralMeridian, latitudeOfOrigin, scaleFactor)
+	static srCreateProjCSysData(srid, geogcsSrid, csysType, projName, falseEasting, falseNorthing, centralMeridian, latitudeOfOrigin, scaleFactor)
 	{
 		var gcsys = this.srCreateGeogCSys(geogcsSrid);
 		if (gcsys == null)
@@ -421,21 +888,49 @@ export class CoordinateSystemManager
 		return null;
 	}
 	
-	static srCreateCsys(srid)
+	static srCreateGeogCSys(srid)
+	{
+		switch (srid)
+		{
+		case 4326:
+			return this.srCreateGeogCSysData(srid, 6326, "WGS 84");
+		case 4611:
+			return this.srCreateGeogCSysData(srid, 6611, "Hong Kong 1980");
+		default:
+			console.log("Unsupported Geog SRID: "+srid);
+			return null;
+		}
+	}
+
+	static srCreateProjCSys(srid)
 	{
 		switch (srid)
 		{
 		case 2326:
 		case 102140:
-			return this.srCreateProjCSys(srid, 4611, CoordinateSystemType.MercatorProjected, "Hong Kong 1980 Grid System", 836694.05, 819069.80, 114.17855555555555555555555555556, 22.312133333333333333333333333333, 1);
+			return this.srCreateProjCSysData(srid, 4611, CoordinateSystemType.MercatorProjected, "Hong Kong 1980 Grid System", 836694.05, 819069.80, 114.17855555555555555555555555556, 22.312133333333333333333333333333, 1);
 		case 3857:
 		case 900913:
-			return this.srCreateProjCSys(srid, 4326, CoordinateSystemType.Mercator1SPProjected, "WGS 84 / Pseudo-Mercator", 0, 0, 0, 0, 1);
-		case 4326:
-			return this.srCreateGeogCSys(srid, 6326, "WGS 84");
-		case 4611:
-			return this.srCreateGeogCSys(srid, 6611, "Hong Kong 1980");
+			return this.srCreateProjCSysData(srid, 4326, CoordinateSystemType.Mercator1SPProjected, "WGS 84 / Pseudo-Mercator", 0, 0, 0, 0, 1);
 		default:
+			console.log("Unsupported Proj SRID: "+srid);
+			return null;
+		}
+	}
+	static srCreateCsys(srid)
+	{
+		switch (srid)
+		{
+		case 2326:
+		case 3857:
+		case 102140:
+		case 900913:
+			return this.srCreateProjCSys(srid);
+		case 4326:
+		case 4611:
+			return this.srCreateGeogCSys(srid);
+		default:
+			console.log("Unsupported SRID: "+srid);
 			return null;
 		}
 	}
