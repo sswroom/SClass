@@ -255,7 +255,7 @@ WChar *UI::GUIListBox::GetSelectedItemText(WChar *buff)
 	return GetItemText(buff, currSel);
 }
 
-Text::String *UI::GUIListBox::GetSelectedItemTextNew()
+Optional<Text::String> UI::GUIListBox::GetSelectedItemTextNew()
 {
 	UOSInt currSel = GetSelectedIndex();
 	if (currSel == INVALID_INDEX)
@@ -265,8 +265,8 @@ Text::String *UI::GUIListBox::GetSelectedItemTextNew()
 
 UTF8Char *UI::GUIListBox::GetItemText(UTF8Char *buff, UOSInt index)
 {
-	Text::String *s = this->GetItemTextNew(index);
-	if (s == 0)
+	NotNullPtr<Text::String> s;
+	if (!this->GetItemTextNew(index).SetTo(s))
 	{
 		return 0;
 	}
@@ -295,7 +295,7 @@ void UI::GUIListBox::SetItemText(UOSInt index, Text::CStringNN text)
 	this->InsertItem(index, text, item);
 }
 
-Text::String *UI::GUIListBox::GetItemTextNew(UOSInt index)
+Optional<Text::String> UI::GUIListBox::GetItemTextNew(UOSInt index)
 {
 	OSInt strLen = SendMessageW((HWND)hwnd, LB_GETTEXTLEN, index, 0);
 	if (strLen == LB_ERR)
