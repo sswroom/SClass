@@ -226,7 +226,7 @@ Bool __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnMapMouseUp(void *userObj, Mat
 			NotNullPtr<Math::CoordinateSystem> lyrCSys = me->dbLayer->GetCoordinateSystem();
 			if (!csys->Equals(lyrCSys))
 			{
-				mapPt = Math::CoordinateSystem::ConvertXYZ(csys, lyrCSys, Math::Vector3(mapPt, 0)).GetXY();
+				mapPt = Math::CoordinateSystem::Convert(csys, lyrCSys, mapPt);
 			}
 			sess = me->dbLayer->BeginGetObject();
 			id = me->dbLayer->GetNearestObjectId(sess, mapPt, mapPt);

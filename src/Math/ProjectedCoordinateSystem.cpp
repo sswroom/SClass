@@ -35,7 +35,7 @@ Math::ProjectedCoordinateSystem::~ProjectedCoordinateSystem()
 	this->gcs.Delete();
 }
 
-Double Math::ProjectedCoordinateSystem::CalSurfaceDistanceXY(Math::Coord2DDbl pos1, Math::Coord2DDbl pos2, Math::Unit::Distance::DistanceUnit unit) const
+Double Math::ProjectedCoordinateSystem::CalSurfaceDistance(Math::Coord2DDbl pos1, Math::Coord2DDbl pos2, Math::Unit::Distance::DistanceUnit unit) const
 {
 	Math::Coord2DDbl diff = pos2 - pos1;
 	diff = diff * diff;
@@ -61,7 +61,7 @@ Double Math::ProjectedCoordinateSystem::CalLineStringDistance(NotNullPtr<Math::G
 	{
 		if (hasLast)
 		{
-			totalDist += CalSurfaceDistanceXY(lastPt, points[j], unit);
+			totalDist += CalSurfaceDistance(lastPt, points[j], unit);
 		}
 		hasLast = true;
 		lastPt = points[j];
@@ -88,7 +88,7 @@ Double Math::ProjectedCoordinateSystem::CalLineStringDistance3D(NotNullPtr<Math:
 	{
 		if (hasLast)
 		{
-			dist = CalSurfaceDistanceXY(lastPt, points[j], unit);
+			dist = CalSurfaceDistance(lastPt, points[j], unit);
 			dist = Math_Sqrt(dist * dist + (alts[j] - lastH) * (alts[j] - lastH));
 			totalDist += dist;
 		}

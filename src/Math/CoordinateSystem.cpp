@@ -84,10 +84,10 @@ Bool Math::CoordinateSystem::Equals(NotNullPtr<const Math::CoordinateSystem> csy
 
 Math::Coord2DDbl Math::CoordinateSystem::Convert(NotNullPtr<const Math::CoordinateSystem> srcCoord, NotNullPtr<const Math::CoordinateSystem> destCoord, Math::Coord2DDbl coord)
 {
-	return ConvertXYZ(srcCoord, destCoord, Math::Vector3(coord, 0)).GetXY();
+	return Convert3D(srcCoord, destCoord, Math::Vector3(coord, 0)).GetXY();
 }
 
-Math::Vector3 Math::CoordinateSystem::ConvertXYZ(NotNullPtr<const Math::CoordinateSystem> srcCoord, NotNullPtr<const Math::CoordinateSystem> destCoord, Math::Vector3 srcPos)
+Math::Vector3 Math::CoordinateSystem::Convert3D(NotNullPtr<const Math::CoordinateSystem> srcCoord, NotNullPtr<const Math::CoordinateSystem> destCoord, Math::Vector3 srcPos)
 {
 	if (srcCoord->IsProjected())
 	{
@@ -115,7 +115,7 @@ Math::Vector3 Math::CoordinateSystem::ConvertXYZ(NotNullPtr<const Math::Coordina
 	}
 }
 
-void Math::CoordinateSystem::ConvertXYArray(NotNullPtr<const Math::CoordinateSystem> srcCoord, NotNullPtr<const Math::CoordinateSystem> destCoord, const Math::Coord2DDbl *srcArr, Math::Coord2DDbl *destArr, UOSInt nPoints)
+void Math::CoordinateSystem::ConvertArray(NotNullPtr<const Math::CoordinateSystem> srcCoord, NotNullPtr<const Math::CoordinateSystem> destCoord, const Math::Coord2DDbl *srcArr, Math::Coord2DDbl *destArr, UOSInt nPoints)
 {
 	UOSInt i;
 	Bool srcRad = false;
@@ -238,7 +238,7 @@ void Math::CoordinateSystem::DatumData1ToString(NotNullPtr<const DatumData1> dat
 	datum->spheroid.ellipsoid->ToString(sb);
 }
 
-Text::CString Math::CoordinateSystem::CoordinateSystemTypeGetName(CoordinateSystemType csysType)
+Text::CStringNN Math::CoordinateSystem::CoordinateSystemTypeGetName(CoordinateSystemType csysType)
 {
 	switch (csysType)
 	{

@@ -28,10 +28,10 @@ Math::Coord2DDbl Math::CoordinateSystemConverter::Convert2D(Math::Coord2DDbl coo
 
 Math::Vector3 Math::CoordinateSystemConverter::Convert3D(Math::Vector3 vec3) const
 {
-	return Math::CoordinateSystem::ConvertXYZ(this->srcCsys, this->destCsys, vec3);
+	return Math::CoordinateSystem::Convert3D(this->srcCsys, this->destCsys, vec3);
 }
 
 void Math::CoordinateSystemConverter::Convert2DArr(const Math::Coord2DDbl *srcArr, Math::Coord2DDbl *destArr, UOSInt nPoints) const
 {
-	Math::CoordinateSystem::ConvertXYArray(this->srcCsys, this->destCsys, srcArr, destArr, nPoints);
+	Math::CoordinateSystem::ConvertArray(this->srcCsys, this->destCsys, srcArr, destArr, nPoints);
 }

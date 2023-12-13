@@ -101,12 +101,12 @@ Math::Coord2DDbl Math::PointMappingCoordinateSystem::CalcBaseXY(Math::Coord2DDbl
 	return mapPt;
 }
 
-Double Math::PointMappingCoordinateSystem::CalSurfaceDistanceXY(Math::Coord2DDbl pos1, Math::Coord2DDbl pos2, Math::Unit::Distance::DistanceUnit unit) const
+Double Math::PointMappingCoordinateSystem::CalSurfaceDistance(Math::Coord2DDbl pos1, Math::Coord2DDbl pos2, Math::Unit::Distance::DistanceUnit unit) const
 {
 	Math::Coord2DDbl ptList[2];
 	ptList[0] = CalcBaseXY(pos1);
 	ptList[1] = CalcBaseXY(pos2);
-	return this->baseCSys->CalSurfaceDistanceXY(ptList[0], ptList[1], unit);
+	return this->baseCSys->CalSurfaceDistance(ptList[0], ptList[1], unit);
 }
 
 Double Math::PointMappingCoordinateSystem::CalLineStringDistance(NotNullPtr<Math::Geometry::LineString> lineString, Math::Unit::Distance::DistanceUnit unit) const

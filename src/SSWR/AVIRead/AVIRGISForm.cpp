@@ -266,7 +266,7 @@ void __stdcall SSWR::AVIRead::AVIRGISForm::OnMapMouseMove(void *userObj, Math::C
 	me->txtLatLon->SetText(CSTRP(sbuff, sptr));
 	
 	NotNullPtr<Math::CoordinateSystem> csys = me->env->GetCoordinateSystem();
-	latLon = Math::CoordinateSystem::ConvertXYZ(csys, me->wgs84CSys, Math::Vector3(mapPos, 0)).GetXY();
+	latLon = Math::CoordinateSystem::Convert(csys, me->wgs84CSys, mapPos);
 
 	Math::UTMGridConvertDbl conv;
 	sptr = conv.WGS84_Grid(sbuff, 5, 0, 0, 0, 0, latLon.GetLat(), latLon.GetLon());
@@ -962,7 +962,7 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 				lyrCSys = lyr->layer->GetCoordinateSystem();
 				if (!envCSys->Equals(lyrCSys))
 				{
-					center = Math::CoordinateSystem::ConvertXYZ(lyrCSys, envCSys, Math::Vector3(center, 0)).GetXY();
+					center = Math::CoordinateSystem::Convert(lyrCSys, envCSys, center);
 				}
 				this->mapCtrl->PanToMapXY(center);
 			}

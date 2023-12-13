@@ -1543,8 +1543,8 @@ void Map::DrawMapRenderer::DrawShapes(NotNullPtr<Map::DrawMapRenderer::DrawEnv> 
 		Math::RectAreaDbl rect = denv->view->GetVerticalRect();
 		tl = rect.tl;
 		br = rect.GetBR();
-		tl = Math::CoordinateSystem::ConvertXYZ(envCSys, lyrCSys, Math::Vector3(tl, 0)).GetXY();
-		br = Math::CoordinateSystem::ConvertXYZ(envCSys, lyrCSys, Math::Vector3(br, 0)).GetXY();
+		tl = Math::CoordinateSystem::Convert(envCSys, lyrCSys, tl);
+		br = Math::CoordinateSystem::Convert(envCSys, lyrCSys, br);
 		layer->GetObjectIdsMapXY(denv->idArr, 0, Math::RectAreaDbl(tl, br), true);
 
 		if ((i = denv->idArr.GetCount()) > 0)
@@ -1702,8 +1702,8 @@ void Map::DrawMapRenderer::DrawShapesPoint(NotNullPtr<Map::DrawMapRenderer::Draw
 	NotNullPtr<Math::CoordinateSystem> envCSys = this->env->GetCoordinateSystem();
 	if (!lyrCSys->Equals(envCSys))
 	{
-		tl = Math::CoordinateSystem::ConvertXYZ(envCSys, lyrCSys, Math::Vector3(tl, 0)).GetXY();
-		br = Math::CoordinateSystem::ConvertXYZ(envCSys, lyrCSys, Math::Vector3(br, 0)).GetXY();
+		tl = Math::CoordinateSystem::Convert(envCSys, lyrCSys, tl);
+		br = Math::CoordinateSystem::Convert(envCSys, lyrCSys, br);
 		layer->GetObjectIdsMapXY(arri, 0, Math::RectAreaDbl(tl - ((br - tl) * 0.5), br + ((br - tl) * 0.5)), true);
 		if (arri.GetCount() <= 0)
 		{
@@ -1848,8 +1848,8 @@ void Map::DrawMapRenderer::DrawLabel(NotNullPtr<DrawEnv> denv, NotNullPtr<Map::M
 	NotNullPtr<Math::CoordinateSystem> envCSys = this->env->GetCoordinateSystem();
 	if (!lyrCSys->Equals(envCSys))
 	{
-		tl = Math::CoordinateSystem::ConvertXYZ(envCSys, lyrCSys, Math::Vector3(tl, 0)).GetXY();
-		br = Math::CoordinateSystem::ConvertXYZ(envCSys, lyrCSys, Math::Vector3(br, 0)).GetXY();
+		tl = Math::CoordinateSystem::Convert(envCSys, lyrCSys, tl);
+		br = Math::CoordinateSystem::Convert(envCSys, lyrCSys, br);
 		csysConv = true;
 	}
 
@@ -2094,8 +2094,8 @@ void Map::DrawMapRenderer::DrawImageLayer(NotNullPtr<DrawEnv> denv, NotNullPtr<M
 	br = rect.br;
 	if (geoConv)
 	{
-		tl = Math::CoordinateSystem::ConvertXYZ(denv->env->GetCoordinateSystem(), coord, Math::Vector3(tl, 0)).GetXY();
-		br = Math::CoordinateSystem::ConvertXYZ(denv->env->GetCoordinateSystem(), coord, Math::Vector3(br, 0)).GetXY();
+		tl = Math::CoordinateSystem::Convert(denv->env->GetCoordinateSystem(), coord, tl);
+		br = Math::CoordinateSystem::Convert(denv->env->GetCoordinateSystem(), coord, br);
 		layer->GetObjectIdsMapXY(arri, 0, Math::RectAreaDbl(tl, br), false);
 	}
 	else
@@ -2143,8 +2143,8 @@ void Map::DrawMapRenderer::DrawImageLayer(NotNullPtr<DrawEnv> denv, NotNullPtr<M
 			mapCoords.br.y = t;
 			if (geoConv)
 			{
-				mapCoords.tl = Math::CoordinateSystem::ConvertXYZ(coord, denv->env->GetCoordinateSystem(), Math::Vector3(mapCoords.tl, 0)).GetXY();
-				mapCoords.br = Math::CoordinateSystem::ConvertXYZ(coord, denv->env->GetCoordinateSystem(), Math::Vector3(mapCoords.br, 0)).GetXY();
+				mapCoords.tl = Math::CoordinateSystem::Convert(coord, denv->env->GetCoordinateSystem(), mapCoords.tl);
+				mapCoords.br = Math::CoordinateSystem::Convert(coord, denv->env->GetCoordinateSystem(), mapCoords.br);
 			}
 			scnCoords[0] = denv->view->MapXYToScnXY(mapCoords.tl);
 			scnCoords[1] = denv->view->MapXYToScnXY(mapCoords.br);

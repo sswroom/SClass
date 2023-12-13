@@ -78,7 +78,7 @@ void Map::TileMapServiceSource::LoadXML()
 								if (srInfo)
 								{
 									NotNullPtr<Math::CoordinateSystem> wgs84 = Math::CoordinateSystemManager::CreateDefaultCsys();
-									this->csysOrigin = Math::CoordinateSystem::ConvertXYZ(wgs84, this->csys, Math::Vector3(srInfo->minXGeo, srInfo->minYGeo, 0)).GetXY();
+									this->csysOrigin = Math::CoordinateSystem::Convert(wgs84, this->csys, Math::Coord2DDbl(srInfo->minXGeo, srInfo->minYGeo));
 									wgs84.Delete();
 #if defined(VERBOSE)
 									printf("SR Origin = (%lf, %lf)\r\n", this->csysOrigin.x, this->csysOrigin.y);

@@ -502,14 +502,14 @@ Bool Map::MapServerHandler::InSphereRange(Text::JSONBase *sphere, Double x1, Dou
 	}
 	else if (x1 > pos.GetLon())
 	{
-		if (this->wgs84->CalSurfaceDistanceXY(pos.GetXY(), Math::Coord2DDbl(x1, pos.GetLat()), Math::Unit::Distance::DU_METER) > radius)
+		if (this->wgs84->CalSurfaceDistance(pos.GetXY(), Math::Coord2DDbl(x1, pos.GetLat()), Math::Unit::Distance::DU_METER) > radius)
 		{
 			return false;
 		}
 	}
 	else
 	{
-		if (this->wgs84->CalSurfaceDistanceXY(pos.GetXY(), Math::Coord2DDbl(x2, pos.GetLat()), Math::Unit::Distance::DU_METER) > radius)
+		if (this->wgs84->CalSurfaceDistance(pos.GetXY(), Math::Coord2DDbl(x2, pos.GetLat()), Math::Unit::Distance::DU_METER) > radius)
 		{
 			return false;
 		}
@@ -520,14 +520,14 @@ Bool Map::MapServerHandler::InSphereRange(Text::JSONBase *sphere, Double x1, Dou
 	}
 	else if (y1 > pos.GetLat())
 	{
-		if (this->wgs84->CalSurfaceDistanceXY(pos.GetXY(), Math::Coord2DDbl(pos.GetLon(), y1), Math::Unit::Distance::DU_METER) > radius)
+		if (this->wgs84->CalSurfaceDistance(pos.GetXY(), Math::Coord2DDbl(pos.GetLon(), y1), Math::Unit::Distance::DU_METER) > radius)
 		{
 			return false;
 		}
 	}
 	else
 	{
-		if (this->wgs84->CalSurfaceDistanceXY(pos.GetXY(), Math::Coord2DDbl(pos.GetLon(), y2), Math::Unit::Distance::DU_METER) > radius)
+		if (this->wgs84->CalSurfaceDistance(pos.GetXY(), Math::Coord2DDbl(pos.GetLon(), y2), Math::Unit::Distance::DU_METER) > radius)
 		{
 			return false;
 		}

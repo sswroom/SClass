@@ -19,7 +19,7 @@ namespace Math
 		void AddMappingPoint(Double mapX, Double mapY, Double baseX, Double baseY);
 		Math::Coord2DDbl CalcBaseXY(Math::Coord2DDbl mapPt) const;
 
-		virtual Double CalSurfaceDistanceXY(Math::Coord2DDbl pos1, Math::Coord2DDbl pos2, Math::Unit::Distance::DistanceUnit unit) const;
+		virtual Double CalSurfaceDistance(Math::Coord2DDbl pos1, Math::Coord2DDbl pos2, Math::Unit::Distance::DistanceUnit unit) const;
 		virtual Double CalLineStringDistance(NotNullPtr<Math::Geometry::LineString> lineString, Math::Unit::Distance::DistanceUnit unit) const;
 		virtual Double CalLineStringDistance3D(NotNullPtr<Math::Geometry::LineString> lineString, Math::Unit::Distance::DistanceUnit unit) const;
 		virtual NotNullPtr<CoordinateSystem> Clone() const;

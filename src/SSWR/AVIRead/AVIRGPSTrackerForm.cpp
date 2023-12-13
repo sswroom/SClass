@@ -40,7 +40,7 @@ void __stdcall SSWR::AVIRead::AVIRGPSTrackerForm::OnGPSUpdate(void *userObj, Not
 	{
 		if (!me->lastPos.IsZero())
 		{
-			dist = me->wgs84->CalSurfaceDistanceXY(me->lastPos, record->pos, Math::Unit::Distance::DU_METER);
+			dist = me->wgs84->CalSurfaceDistance(me->lastPos, record->pos, Math::Unit::Distance::DU_METER);
 			me->dist += dist;
 		}
 		me->lastPos = record->pos;

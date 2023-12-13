@@ -36,7 +36,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISDistanceForm::OnMapMouseDown(void *userObj,
 			me->ptList->Add(mapPt.y);
 			if (me->lastMapPos.x != 0 || me->lastMapPos.y != 0)
 			{
-				me->pathDist += me->csys->CalSurfaceDistanceXY(mapPt, me->lastMapPos, Math::Unit::Distance::DU_METER);
+				me->pathDist += me->csys->CalSurfaceDistance(mapPt, me->lastMapPos, Math::Unit::Distance::DU_METER);
 				me->dispDist = me->pathDist;
 				me->UpdateDistDisp();
 			}
@@ -49,7 +49,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISDistanceForm::OnMapMouseDown(void *userObj,
 				Math::Coord2DDbl pts[2];
 				pts[0] = mapPt;
 				pts[1] = me->lastMapPos;
-				Double dist = me->csys->CalSurfaceDistanceXY(mapPt, me->lastMapPos, Math::Unit::Distance::DU_METER);
+				Double dist = me->csys->CalSurfaceDistance(mapPt, me->lastMapPos, Math::Unit::Distance::DU_METER);
 				me->dispDist = dist;
 				me->UpdateDistDisp();
 				Math::Geometry::LineString *pl;
@@ -76,7 +76,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISDistanceForm::OnMapMouseMove(void *userObj,
 	{
 		Math::Coord2DDbl mapPt = me->navi->ScnXY2MapXY(scnPos);
 
-		Double dist = me->csys->CalSurfaceDistanceXY(mapPt, me->lastMapPos, Math::Unit::Distance::DU_METER);
+		Double dist = me->csys->CalSurfaceDistance(mapPt, me->lastMapPos, Math::Unit::Distance::DU_METER);
 		me->dispDist = me->pathDist + dist;
 		me->UpdateDistDisp();
 

@@ -973,7 +973,7 @@ Double Math::GeometryTool::CalcMaxDistanceFromPoint(Math::Coord2DDbl pt, Math::G
 	Math::CoordinateSystem *csys = Math::CoordinateSystemManager::SRCreateCSys(vec->GetSRID());
 	if (csys)
 	{
-		thisDist = csys->CalSurfaceDistanceXY(pt, maxPt, unit);
+		thisDist = csys->CalSurfaceDistance(pt, maxPt, unit);
 		DEL_CLASS(csys);
 		return thisDist;
 	}
@@ -1032,7 +1032,7 @@ Math::Geometry::Polygon *Math::GeometryTool::CreateCircularPolygonWGS84(Math::Co
 		if (csys3857.Set(Math::CoordinateSystemManager::SRCreateCSys(3857)))
 		{
 			Math::CoordinateSystemConverter converter(csys3857, csys4326);
-			Math::Vector3 outPos = CoordinateSystem::ConvertXYZ(csys4326, csys3857, Math::Vector3(pt, 0));
+			Math::Coord2DDbl outPos = CoordinateSystem::Convert(csys4326, csys3857, pt);
 			NotNullPtr<Math::Geometry::LinearRing> lr;
 			NEW_CLASSNN(lr, Math::Geometry::LinearRing(3857, nPoints + 1, false, false));
 			UOSInt pgNPt;
@@ -1043,8 +1043,8 @@ Math::Geometry::Polygon *Math::GeometryTool::CreateCircularPolygonWGS84(Math::Co
 			while (i < nPoints)
 			{
 				angle = UOSInt2Double(i) * pi2 / UOSInt2Double(nPoints);
-				ptArr[i].x = outPos.GetX() + Math_Sin(angle) * radiusMeter;
-				ptArr[i].y = outPos.GetY() + Math_Cos(angle) * radiusMeter;
+				ptArr[i].x = outPos.x + Math_Sin(angle) * radiusMeter;
+				ptArr[i].y = outPos.y + Math_Cos(angle) * radiusMeter;
 				i++;
 			}
 			ptArr[nPoints] = ptArr[0];

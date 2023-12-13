@@ -1025,11 +1025,11 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcUnfinPeak(NotNullPtr<Ne
 				json.ObjectAddStr(CSTR("district"), peak->district);
 				if (peak->csys == 1 && csys.Set(csysHK))
 				{
-					pt = Math::CoordinateSystem::ConvertXYZ(csys, csysWGS84, Math::Vector3(peak->mapX, peak->mapY, peak->markedHeight));
+					pt = Math::CoordinateSystem::Convert3D(csys, csysWGS84, Math::Vector3(peak->mapX, peak->mapY, peak->markedHeight));
 				}
 				else if (peak->csys == 2 && csys.Set(csysMO))
 				{
-					pt = Math::CoordinateSystem::ConvertXYZ(csys, csysWGS84, Math::Vector3(peak->mapX, peak->mapY, peak->markedHeight));
+					pt = Math::CoordinateSystem::Convert3D(csys, csysWGS84, Math::Vector3(peak->mapX, peak->mapY, peak->markedHeight));
 				}
 				else
 				{

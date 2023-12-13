@@ -1470,8 +1470,8 @@ Bool Map::MapEnv::GetBounds(Map::MapEnv::GroupItem *group, Math::RectAreaDbl *bo
 			lyrCSys = lyr->GetCoordinateSystem();
 			if (!this->csys->Equals(lyrCSys))
 			{
-				thisBounds.tl = Math::CoordinateSystem::ConvertXYZ(lyrCSys, this->csys, Math::Vector3(thisBounds.tl, 0)).GetXY();
-				thisBounds.br = Math::CoordinateSystem::ConvertXYZ(lyrCSys, this->csys, Math::Vector3(thisBounds.br, 0)).GetXY();
+				thisBounds.tl = Math::CoordinateSystem::Convert(lyrCSys, this->csys, thisBounds.tl);
+				thisBounds.br = Math::CoordinateSystem::Convert(lyrCSys, this->csys, thisBounds.br);
 			}
 			if (isFirst)
 			{

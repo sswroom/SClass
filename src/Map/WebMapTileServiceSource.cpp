@@ -202,8 +202,8 @@ void Map::WebMapTileServiceSource::ReadLayer(NotNullPtr<Text::XMLReader> reader)
 				TileMatrixSet *set = ReadTileMatrixSetLink(reader);
 				if (set)
 				{
-					set->bounds.tl = Math::CoordinateSystem::ConvertXYZ(this->wgs84, set->csys, Math::Vector3(layer->wgs84Bounds.tl, 0)).GetXY();
-					set->bounds.br = Math::CoordinateSystem::ConvertXYZ(this->wgs84, set->csys, Math::Vector3(layer->wgs84Bounds.br, 0)).GetXY();
+					set->bounds.tl = Math::CoordinateSystem::Convert(this->wgs84, set->csys, layer->wgs84Bounds.tl);
+					set->bounds.br = Math::CoordinateSystem::Convert(this->wgs84, set->csys, layer->wgs84Bounds.br);
 					layer->tileMatrixes.Add(set);
 				}
 			}

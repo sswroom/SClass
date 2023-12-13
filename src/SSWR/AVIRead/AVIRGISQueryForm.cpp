@@ -28,7 +28,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISQueryForm::OnMouseUp(void *userObj, Math::C
 		NotNullPtr<Math::CoordinateSystem> lyrCSys = me->lyr->GetCoordinateSystem();
 		if (!csys->Equals(lyrCSys))
 		{
-			mapPt = Math::CoordinateSystem::ConvertXYZ(csys, lyrCSys, Math::Vector3(mapPt, 0)).GetXY();
+			mapPt = Math::CoordinateSystem::Convert(csys, lyrCSys, mapPt);
 		}
 		me->ClearQueryResults();
 		if (me->lyr->CanQuery())
@@ -67,7 +67,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISQueryForm::OnMouseUp(void *userObj, Math::C
 		Math::Coord2DDbl mapPt2 = me->navi->ScnXY2MapXY(scnPos);
 		if (!csys->Equals(lyrCSys))
 		{
-			mapPt2 = Math::CoordinateSystem::ConvertXYZ(csys, lyrCSys, Math::Vector3(mapPt2, 0)).GetXY();
+			mapPt2 = Math::CoordinateSystem::Convert(csys, lyrCSys, mapPt2);
 		}
 		sess = me->lyr->BeginGetObject();
 		Data::ArrayList<Map::MapDrawLayer::ObjectInfo*> objList;
@@ -155,7 +155,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISQueryForm::OnMouseMove(void *userObj, Math:
 		Math::Coord2DDbl mapPos = me->navi->ScnXY2MapXY(scnPos);
 		Math::Coord2DDbl nearPos = mapPos;
 		me->currVec->CalBoundarySqrDistance(mapPos, nearPos);
-		Double d = csys->CalSurfaceDistanceXY(mapPos, nearPos, Math::Unit::Distance::DU_METER);
+		Double d = csys->CalSurfaceDistance(mapPos, nearPos, Math::Unit::Distance::DU_METER);
 		UTF8Char sbuff[64];
 		UTF8Char *sptr;
 		sptr = Text::StrDouble(sbuff, d);

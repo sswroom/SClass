@@ -24,7 +24,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGPSSimulatorForm::OnMouseDown(void *userObj, M
 	}
 	else
 	{
-		pos = Math::CoordinateSystem::ConvertXYZ(me->navi->GetCoordinateSystem(), me->wgs84, Math::Vector3(mapPos, 0)).GetXY();
+		pos = Math::CoordinateSystem::Convert(me->navi->GetCoordinateSystem(), me->wgs84, mapPos);
 	}
 	if (me->currPos.IsZero())
 	{
@@ -89,7 +89,7 @@ void __stdcall SSWR::AVIRead::AVIRGPSSimulatorForm::OnTimerTick(void *userObj)
 		{
 			Math::Coord2DDbl destPos = me->points.GetItem(0);
 			Double dir = Math_ArcTan2(destPos.y - me->currPos.y, destPos.x - me->currPos.x);
-			Double dist = me->wgs84->CalSurfaceDistanceXY(me->currPos, destPos, Math::Unit::Distance::DU_METER);
+			Double dist = me->wgs84->CalSurfaceDistance(me->currPos, destPos, Math::Unit::Distance::DU_METER);
 			Double maxDist = me->speed / 3.6;
 			if (dist < maxDist)
 			{

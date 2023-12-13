@@ -298,7 +298,7 @@ void __stdcall SSWR::AVIRead::AVIRCoordConvForm::OnConvFileClicked(void *userObj
 
 	Double inX;
 	Double inY;
-	Math::Vector3 outPos;
+	Math::Coord2DDbl outPos;
 	while (reader->ReadNext())
 	{
 		sptr = strBuff;
@@ -320,11 +320,11 @@ void __stdcall SSWR::AVIRead::AVIRCoordConvForm::OnConvFileClicked(void *userObj
 
 		if (srcCsys.Set(srcCoord) && destCsys.Set(destCoord) && Text::StrToDouble(sarr[xCol], inX) && Text::StrToDouble(sarr[yCol], inY))
 		{
-			outPos = Math::CoordinateSystem::ConvertXYZ(srcCsys, destCsys, Math::Vector3(inX, inY, 0));
+			outPos = Math::CoordinateSystem::Convert(srcCsys, destCsys, Math::Coord2DDbl(inX, inY));
 			sarr[colCnt] = sptr;
-			sptr = Text::StrDouble(sptr, outPos.GetX()) + 1;
+			sptr = Text::StrDouble(sptr, outPos.x) + 1;
 			sarr[colCnt + 1] = sptr;
-			sptr = Text::StrDouble(sptr, outPos.GetY()) + 1;
+			sptr = Text::StrDouble(sptr, outPos.y) + 1;
 		}
 		else
 		{
@@ -502,7 +502,7 @@ void SSWR::AVIRead::AVIRCoordConvForm::UpdateList()
 		this->lvCoord->SetSubItem(k, 3, CSTRP(sbuff, sptr));
 		if (srcCsys.Set(srcCoord) && destCsys.Set(destCoord))
 		{
-			destPos = Math::CoordinateSystem::ConvertXYZ(srcCsys, destCsys, Math::Vector3(x, y, z));
+			destPos = Math::CoordinateSystem::Convert3D(srcCsys, destCsys, Math::Vector3(x, y, z));
 			sptr = Text::StrDouble(sbuff, destPos.GetX());
 			this->lvCoord->SetSubItem(k, 4, CSTRP(sbuff, sptr));
 			sptr = Text::StrDouble(sbuff, destPos.GetY());

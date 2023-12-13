@@ -24,17 +24,17 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 				Math::Coord2DDbl pt = Math::Coord2DDbl(114.22122894202,22.362089455590);
 				Math::Coord2DDbl nearPt;
 				pg->CalBoundarySqrDistance(pt, nearPt);
-				printf("Dist WGS84 (4326) = %lf\r\n", wgs84Csys->CalSurfaceDistanceXY(pt, nearPt, Math::Unit::Distance::DU_METER));
+				printf("Dist WGS84 (4326) = %lf\r\n", wgs84Csys->CalSurfaceDistance(pt, nearPt, Math::Unit::Distance::DU_METER));
 
-				Math::Vector3 projPt;
-				Math::Vector3 projPt2;
-				projPt = Math::CoordinateSystem::ConvertXYZ(wgs84Csys, projCsys, Math::Vector3(pt, 0));
-				projPt2 = Math::CoordinateSystem::ConvertXYZ(wgs84Csys, projCsys, Math::Vector3(nearPt, 0));
-				printf("Dist WGS84 proj (3857) = %lf\r\n", projCsys->CalSurfaceDistanceXY(projPt.GetXY(), projPt2.GetXY(), Math::Unit::Distance::DU_METER));
+				Math::Coord2DDbl projPt;
+				Math::Coord2DDbl projPt2;
+				projPt = Math::CoordinateSystem::Convert(wgs84Csys, projCsys, pt);
+				projPt2 = Math::CoordinateSystem::Convert(wgs84Csys, projCsys, nearPt);
+				printf("Dist WGS84 proj (3857) = %lf\r\n", projCsys->CalSurfaceDistance(projPt, projPt2, Math::Unit::Distance::DU_METER));
 
-				projPt = Math::CoordinateSystem::ConvertXYZ(wgs84Csys, hk80Csys, Math::Vector3(pt, 0));
-				projPt2 = Math::CoordinateSystem::ConvertXYZ(wgs84Csys, hk80Csys, Math::Vector3(nearPt, 0));
-				printf("Dist HK80 proj (2326) = %lf\r\n", hk80Csys->CalSurfaceDistanceXY(projPt.GetXY(), projPt2.GetXY(), Math::Unit::Distance::DU_METER));
+				projPt = Math::CoordinateSystem::Convert(wgs84Csys, hk80Csys, pt);
+				projPt2 = Math::CoordinateSystem::Convert(wgs84Csys, hk80Csys, nearPt);
+				printf("Dist HK80 proj (2326) = %lf\r\n", hk80Csys->CalSurfaceDistance(projPt, projPt2, Math::Unit::Distance::DU_METER));
 
 				DEL_CLASS(pg);
 				hk80Csys.Delete();

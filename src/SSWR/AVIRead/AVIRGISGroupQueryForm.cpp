@@ -46,7 +46,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISGroupQueryForm::OnMouseUp(void *userObj, Ma
 			csysLyr = lyr->GetCoordinateSystem();
 			if (!csysEnv->Equals(csysLyr))
 			{
-				mapLyrPos = Math::CoordinateSystem::ConvertXYZ(csysEnv, csysLyr, Math::Vector3(mapEnvPos, 0)).GetXY();
+				mapLyrPos = Math::CoordinateSystem::Convert(csysEnv, csysLyr, mapEnvPos);
 			}
 			else
 			{
@@ -126,7 +126,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISGroupQueryForm::OnMouseUp(void *userObj, Ma
 			csysLyr = lyr->GetCoordinateSystem();
 			if (!csysEnv->Equals(csysLyr))
 			{
-				mapLyrPos = Math::CoordinateSystem::ConvertXYZ(csysEnv, csysLyr, Math::Vector3(mapEnvPos, 0)).GetXY();
+				mapLyrPos = Math::CoordinateSystem::Convert(csysEnv, csysLyr, mapEnvPos);
 			}
 			else
 			{
