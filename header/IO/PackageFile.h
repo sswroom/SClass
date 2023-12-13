@@ -41,6 +41,7 @@ namespace IO
 		Optional<IO::StreamData> GetItemStmDataNew(Text::CStringNN name) const;
 		virtual Optional<IO::PackageFile> GetItemPack(UOSInt index, OutParam<Bool> needRelease) const = 0;
 		virtual Optional<IO::ParsedObject> GetItemPObj(UOSInt index, OutParam<Bool> needRelease) const = 0;
+		Optional<IO::PackageFile> GetItemPack(Text::CStringNN path, OutParam<Bool> needRelease) const;
 		virtual Data::Timestamp GetItemModTime(UOSInt index) const = 0;
 		virtual Data::Timestamp GetItemAccTime(UOSInt index) const = 0;
 		virtual Data::Timestamp GetItemCreateTime(UOSInt index) const = 0;

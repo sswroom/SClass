@@ -19,12 +19,12 @@ void __stdcall SSWR::AVIRead::AVIRGISSearchForm::OnTextChg(void *userObj)
 void __stdcall SSWR::AVIRead::AVIRGISSearchForm::OnResultSelChg(void *userObj)
 {
 	SSWR::AVIRead::AVIRGISSearchForm *me = (SSWR::AVIRead::AVIRGISSearchForm*)userObj;
+	NotNullPtr<Text::String> s;
 	UOSInt i = me->lbResults->GetSelectedIndex();
-	if (i != INVALID_INDEX)
+	if (i != INVALID_INDEX && me->lbResults->GetItemTextNew(i).SetTo(s))
 	{
 		Math::Coord2DDbl center;
 		Map::GetObjectSess *sess;
-		Text::String *s = me->lbResults->GetItemTextNew(i);
 
 		sess = me->layer->BeginGetObject();
 		Math::Geometry::Vector2D *vec = me->layer->GetVectorByStr(me->searching, me->nameArr, sess, s->ToCString(), me->strIndex);

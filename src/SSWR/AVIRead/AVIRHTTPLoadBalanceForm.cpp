@@ -133,7 +133,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPLoadBalanceForm::OnLogSel(void *userObj)
 {
 	SSWR::AVIRead::AVIRHTTPLoadBalanceForm *me = (SSWR::AVIRead::AVIRHTTPLoadBalanceForm*)userObj;
 	NotNullPtr<Text::String> s;
-	if (s.Set(me->lbLog->GetSelectedItemTextNew()))
+	if (me->lbLog->GetSelectedItemTextNew().SetTo(s))
 	{
 		me->txtLog->SetText(s->ToCString());
 		s->Release();

@@ -47,8 +47,8 @@ void __stdcall SSWR::AVIRead::AVIRUDPCaptureForm::OnStartClicked(void *userObj)
 void __stdcall SSWR::AVIRead::AVIRUDPCaptureForm::OnLogSelChg(void *userObj)
 {
 	SSWR::AVIRead::AVIRUDPCaptureForm *me = (SSWR::AVIRead::AVIRUDPCaptureForm*)userObj;
-	Text::String *s = me->lbLog->GetSelectedItemTextNew();
-	if (s)
+	NotNullPtr<Text::String> s;
+	if (me->lbLog->GetSelectedItemTextNew().SetTo(s))
 	{
 		me->txtLog->SetText(s->ToCString());
 		s->Release();

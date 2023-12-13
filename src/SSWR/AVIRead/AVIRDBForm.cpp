@@ -66,28 +66,28 @@ void __stdcall SSWR::AVIRead::AVIRDBForm::OnTableSelChg(void *userObj)
 		me->lvTable->ClearItems();
 		return;
 	}
-	Text::String *schemaName = me->lbSchema->GetSelectedItemTextNew();
+	Optional<Text::String> schemaName = me->lbSchema->GetSelectedItemTextNew();
 	
 
 	DB::TableDef *tabDef = 0;
 	DB::DBReader *tmpr;
 	if (me->dbt)
 	{
-		tabDef = me->dbt->GetTableDef(STR_CSTR(schemaName), CSTRP(sbuff, sptr));
+		tabDef = me->dbt->GetTableDef(OPTSTR_CSTR(schemaName), CSTRP(sbuff, sptr));
 
-		tmpr = me->db->QueryTableData(STR_CSTR(schemaName), CSTRP(sbuff, sptr), 0, 0, MAX_ROW_CNT, CSTR_NULL, 0);
+		tmpr = me->db->QueryTableData(OPTSTR_CSTR(schemaName), CSTRP(sbuff, sptr), 0, 0, MAX_ROW_CNT, CSTR_NULL, 0);
 	}
 	else
 	{
-		tabDef = me->db->GetTableDef(STR_CSTR(schemaName), CSTRP(sbuff, sptr));
+		tabDef = me->db->GetTableDef(OPTSTR_CSTR(schemaName), CSTRP(sbuff, sptr));
 
-		tmpr = me->db->QueryTableData(STR_CSTR(schemaName), CSTRP(sbuff, sptr), 0, 0, MAX_ROW_CNT, CSTR_NULL, 0);
+		tmpr = me->db->QueryTableData(OPTSTR_CSTR(schemaName), CSTRP(sbuff, sptr), 0, 0, MAX_ROW_CNT, CSTR_NULL, 0);
 		if (tmpr && tabDef == 0)
 		{
-			tabDef = tmpr->GenTableDef(STR_CSTR(schemaName), CSTRP(sbuff, sptr));
+			tabDef = tmpr->GenTableDef(OPTSTR_CSTR(schemaName), CSTRP(sbuff, sptr));
 		}
 	}
-	SDEL_STRING(schemaName);
+	OPTSTR_DEL(schemaName);
 	NotNullPtr<DB::DBReader> r;
 	if (r.Set(tmpr))
 	{
@@ -261,248 +261,279 @@ void SSWR::AVIRead::AVIRDBForm::UpdateResult(NotNullPtr<DB::DBReader> r)
 
 void SSWR::AVIRead::AVIRDBForm::CopyTableCreate(DB::SQLType sqlType, Bool axisAware)
 {
-	Text::String *schemaName = this->lbSchema->GetSelectedItemTextNew();
-	Text::String *tableName = this->lbTable->GetSelectedItemTextNew();
-	DB::SQLBuilder sql(sqlType, axisAware, 0);
-	NotNullPtr<DB::TableDef> tabDef;
-	if (tabDef.Set(this->db->GetTableDef(STR_CSTR(schemaName), tableName->ToCString())))
+	Optional<Text::String> schemaName = this->lbSchema->GetSelectedItemTextNew();
+	NotNullPtr<Text::String> tableName;
+	if (this->lbTable->GetSelectedItemTextNew().SetTo(tableName))
 	{
-		if (!DB::SQLGenerator::GenCreateTableCmd(sql, STR_CSTR(schemaName), tableName->ToCString(), tabDef, true))
+		DB::SQLBuilder sql(sqlType, axisAware, 0);
+		NotNullPtr<DB::TableDef> tabDef;
+		if (tabDef.Set(this->db->GetTableDef(OPTSTR_CSTR(schemaName), tableName->ToCString())))
 		{
-			UI::MessageDialog::ShowDialog(CSTR("Error in generating Create SQL command"), CSTR("DB Manager"), this);
+			if (!DB::SQLGenerator::GenCreateTableCmd(sql, OPTSTR_CSTR(schemaName), tableName->ToCString(), tabDef, true))
+			{
+				UI::MessageDialog::ShowDialog(CSTR("Error in generating Create SQL command"), CSTR("DB Manager"), this);
+			}
+			else
+			{
+				UI::Clipboard::SetString(this->GetHandle(), sql.ToCString());
+			}
+			tabDef.Delete();
 		}
 		else
 		{
-			UI::Clipboard::SetString(this->GetHandle(), sql.ToCString());
+			UI::MessageDialog::ShowDialog(CSTR("Error in getting table definition"), CSTR("DB Manager"), this);
 		}
-		tabDef.Delete();
+		tableName->Release();
 	}
-	else
-	{
-		UI::MessageDialog::ShowDialog(CSTR("Error in getting table definition"), CSTR("DB Manager"), this);
-	}
-	tableName->Release();
-	SDEL_STRING(schemaName);
+	OPTSTR_DEL(schemaName);
 }
 
 void SSWR::AVIRead::AVIRDBForm::ExportTableData(DB::SQLType sqlType, Bool axisAware)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
-	Text::String *schemaName = this->lbSchema->GetSelectedItemTextNew();
-	Text::String *tableName = this->lbTable->GetSelectedItemTextNew();
-	sptr = sbuff;
-	if (schemaName->leng > 0)
+	Optional<Text::String> schemaName = this->lbSchema->GetSelectedItemTextNew();
+	NotNullPtr<Text::String> tableName;
+	NotNullPtr<Text::String> s;
+	if (this->lbTable->GetSelectedItemTextNew().SetTo(tableName))
 	{
-		sptr = schemaName->ConcatTo(sptr);
-		*sptr++ = '_';
-	}
-	sptr = tableName->ConcatTo(sptr);
-	*sptr++ = '_';
-	sptr = Data::Timestamp::Now().ToString(sptr, "yyyyMMdd_HHmmss");
-	sptr = Text::StrConcatC(sptr, UTF8STRC(".sql"));
-	UI::FileDialog dlg(L"SSWR", L"AVIRead", L"DBExportTable", true);
-	dlg.AddFilter(CSTR("*.sql"), CSTR("SQL File"));
-	dlg.SetFileName(CSTRP(sbuff, sptr));
-	if (dlg.ShowDialog(this->GetHandle()))
-	{
-		IO::FileStream fs(dlg.GetFileName(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
-		if (!DB::DBExporter::GenerateInsertSQLs(this->db, sqlType, axisAware, STR_CSTR(schemaName), tableName->ToCString(), this->currCond, fs))
+		sptr = sbuff;
+		if (schemaName.SetTo(s) && s->leng > 0)
 		{
-			UI::MessageDialog::ShowDialog(CSTR("Error in reading table data"), CSTR("DB Manager"), this);
+			sptr = s->ConcatTo(sptr);
+			*sptr++ = '_';
 		}
+		sptr = tableName->ConcatTo(sptr);
+		*sptr++ = '_';
+		sptr = Data::Timestamp::Now().ToString(sptr, "yyyyMMdd_HHmmss");
+		sptr = Text::StrConcatC(sptr, UTF8STRC(".sql"));
+		UI::FileDialog dlg(L"SSWR", L"AVIRead", L"DBExportTable", true);
+		dlg.AddFilter(CSTR("*.sql"), CSTR("SQL File"));
+		dlg.SetFileName(CSTRP(sbuff, sptr));
+		if (dlg.ShowDialog(this->GetHandle()))
+		{
+			IO::FileStream fs(dlg.GetFileName(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+			if (!DB::DBExporter::GenerateInsertSQLs(this->db, sqlType, axisAware, OPTSTR_CSTR(schemaName), tableName->ToCString(), this->currCond, fs))
+			{
+				UI::MessageDialog::ShowDialog(CSTR("Error in reading table data"), CSTR("DB Manager"), this);
+			}
+		}
+		tableName->Release();
 	}
-	tableName->Release();
-	SDEL_STRING(schemaName);
+	OPTSTR_DEL(schemaName);
 }
 
 void SSWR::AVIRead::AVIRDBForm::ExportTableCSV()
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
-	Text::String *schemaName = this->lbSchema->GetSelectedItemTextNew();
-	Text::String *tableName = this->lbTable->GetSelectedItemTextNew();
-	sptr = sbuff;
-	if (schemaName->leng > 0)
+	Optional<Text::String> schemaName = this->lbSchema->GetSelectedItemTextNew();
+	NotNullPtr<Text::String> tableName;
+	NotNullPtr<Text::String> s;
+	if (this->lbTable->GetSelectedItemTextNew().SetTo(tableName))
 	{
-		sptr = schemaName->ConcatTo(sptr);
-		*sptr++ = '_';
-	}
-	sptr = tableName->ConcatTo(sptr);
-	*sptr++ = '_';
-	sptr = Data::Timestamp::Now().ToString(sptr, "yyyyMMdd_HHmmss");
-	sptr = Text::StrConcatC(sptr, UTF8STRC(".csv"));
-	UI::FileDialog dlg(L"SSWR", L"AVIRead", L"DBExportCSV", true);
-	dlg.AddFilter(CSTR("*.csv"), CSTR("Comma-Seperated-Value File"));
-	dlg.SetFileName(CSTRP(sbuff, sptr));
-	if (dlg.ShowDialog(this->GetHandle()))
-	{
-		IO::FileStream fs(dlg.GetFileName(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
-		if (!DB::DBExporter::GenerateCSV(this->db, STR_CSTR(schemaName), tableName->ToCString(), this->currCond, CSTR("\"\""), fs, 65001))
+		sptr = sbuff;
+		if (schemaName.SetTo(s) && s->leng > 0)
 		{
-			UI::MessageDialog::ShowDialog(CSTR("Error in reading table data"), CSTR("DB Manager"), this);
+			sptr = s->ConcatTo(sptr);
+			*sptr++ = '_';
 		}
+		sptr = tableName->ConcatTo(sptr);
+		*sptr++ = '_';
+		sptr = Data::Timestamp::Now().ToString(sptr, "yyyyMMdd_HHmmss");
+		sptr = Text::StrConcatC(sptr, UTF8STRC(".csv"));
+		UI::FileDialog dlg(L"SSWR", L"AVIRead", L"DBExportCSV", true);
+		dlg.AddFilter(CSTR("*.csv"), CSTR("Comma-Seperated-Value File"));
+		dlg.SetFileName(CSTRP(sbuff, sptr));
+		if (dlg.ShowDialog(this->GetHandle()))
+		{
+			IO::FileStream fs(dlg.GetFileName(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+			if (!DB::DBExporter::GenerateCSV(this->db, OPTSTR_CSTR(schemaName), tableName->ToCString(), this->currCond, CSTR("\"\""), fs, 65001))
+			{
+				UI::MessageDialog::ShowDialog(CSTR("Error in reading table data"), CSTR("DB Manager"), this);
+			}
+		}
+		tableName->Release();
 	}
-	tableName->Release();
-	SDEL_STRING(schemaName);
+	OPTSTR_DEL(schemaName);
 }
 
 void SSWR::AVIRead::AVIRDBForm::ExportTableSQLite()
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
-	Text::String *schemaName = this->lbSchema->GetSelectedItemTextNew();
-	Text::String *tableName = this->lbTable->GetSelectedItemTextNew();
-	sptr = sbuff;
-	if (schemaName->leng > 0)
+	Optional<Text::String> schemaName = this->lbSchema->GetSelectedItemTextNew();
+	NotNullPtr<Text::String> tableName;
+	NotNullPtr<Text::String> s;
+	if (this->lbTable->GetSelectedItemTextNew().SetTo(tableName))
 	{
-		sptr = schemaName->ConcatTo(sptr);
-		*sptr++ = '_';
-	}
-	sptr = tableName->ConcatTo(sptr);
-	*sptr++ = '_';
-	sptr = Data::Timestamp::Now().ToString(sptr, "yyyyMMdd_HHmmss");
-	sptr = Text::StrConcatC(sptr, UTF8STRC(".sqlite"));
-	UI::FileDialog dlg(L"SSWR", L"AVIRead", L"DBExportSQLite", true);
-	dlg.AddFilter(CSTR("*.sqlite"), CSTR("SQLite File"));
-	dlg.SetFileName(CSTRP(sbuff, sptr));
-	if (dlg.ShowDialog(this->GetHandle()))
-	{
-		Text::StringBuilderUTF8 sb;
-		DB::SQLiteFile sqlite(dlg.GetFileName());
-		if (!DB::DBExporter::GenerateSQLite(this->db, STR_CSTR(schemaName), tableName->ToCString(), this->currCond, sqlite, &sb))
+		sptr = sbuff;
+		if (schemaName.SetTo(s) && s->leng > 0)
 		{
-			UI::MessageDialog::ShowDialog(sb.ToCString(), CSTR("DB Manager"), this);
+			sptr = s->ConcatTo(sptr);
+			*sptr++ = '_';
 		}
+		sptr = tableName->ConcatTo(sptr);
+		*sptr++ = '_';
+		sptr = Data::Timestamp::Now().ToString(sptr, "yyyyMMdd_HHmmss");
+		sptr = Text::StrConcatC(sptr, UTF8STRC(".sqlite"));
+		UI::FileDialog dlg(L"SSWR", L"AVIRead", L"DBExportSQLite", true);
+		dlg.AddFilter(CSTR("*.sqlite"), CSTR("SQLite File"));
+		dlg.SetFileName(CSTRP(sbuff, sptr));
+		if (dlg.ShowDialog(this->GetHandle()))
+		{
+			Text::StringBuilderUTF8 sb;
+			DB::SQLiteFile sqlite(dlg.GetFileName());
+			if (!DB::DBExporter::GenerateSQLite(this->db, OPTSTR_CSTR(schemaName), tableName->ToCString(), this->currCond, sqlite, &sb))
+			{
+				UI::MessageDialog::ShowDialog(sb.ToCString(), CSTR("DB Manager"), this);
+			}
+		}
+		tableName->Release();
 	}
-	tableName->Release();
-	SDEL_STRING(schemaName);
+	OPTSTR_DEL(schemaName);
 }
 
 void SSWR::AVIRead::AVIRDBForm::ExportTableHTML()
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
-	Text::String *schemaName = this->lbSchema->GetSelectedItemTextNew();
-	Text::String *tableName = this->lbTable->GetSelectedItemTextNew();
-	sptr = sbuff;
-	if (schemaName->leng > 0)
+	Optional<Text::String> schemaName = this->lbSchema->GetSelectedItemTextNew();
+	NotNullPtr<Text::String> tableName;
+	NotNullPtr<Text::String> s;
+	if (this->lbTable->GetSelectedItemTextNew().SetTo(tableName))
 	{
-		sptr = schemaName->ConcatTo(sptr);
-		*sptr++ = '_';
-	}
-	sptr = tableName->ConcatTo(sptr);
-	*sptr++ = '_';
-	sptr = Data::Timestamp::Now().ToString(sptr, "yyyyMMdd_HHmmss");
-	sptr = Text::StrConcatC(sptr, UTF8STRC(".html"));
-	UI::FileDialog dlg(L"SSWR", L"AVIRead", L"DBExportHTML", true);
-	dlg.AddFilter(CSTR("*.html"), CSTR("HTML File"));
-	dlg.SetFileName(CSTRP(sbuff, sptr));
-	if (dlg.ShowDialog(this->GetHandle()))
-	{
-		IO::FileStream fs(dlg.GetFileName(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
-		if (!DB::DBExporter::GenerateHTML(this->db, STR_CSTR(schemaName), tableName->ToCString(), this->currCond, fs, 65001))
+		sptr = sbuff;
+		if (schemaName.SetTo(s) && s->leng > 0)
 		{
-			UI::MessageDialog::ShowDialog(CSTR("Error in exporting as PList"), CSTR("DB Manager"), this);
+			sptr = s->ConcatTo(sptr);
+			*sptr++ = '_';
 		}
+		sptr = tableName->ConcatTo(sptr);
+		*sptr++ = '_';
+		sptr = Data::Timestamp::Now().ToString(sptr, "yyyyMMdd_HHmmss");
+		sptr = Text::StrConcatC(sptr, UTF8STRC(".html"));
+		UI::FileDialog dlg(L"SSWR", L"AVIRead", L"DBExportHTML", true);
+		dlg.AddFilter(CSTR("*.html"), CSTR("HTML File"));
+		dlg.SetFileName(CSTRP(sbuff, sptr));
+		if (dlg.ShowDialog(this->GetHandle()))
+		{
+			IO::FileStream fs(dlg.GetFileName(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+			if (!DB::DBExporter::GenerateHTML(this->db, OPTSTR_CSTR(schemaName), tableName->ToCString(), this->currCond, fs, 65001))
+			{
+				UI::MessageDialog::ShowDialog(CSTR("Error in exporting as PList"), CSTR("DB Manager"), this);
+			}
+		}
+		tableName->Release();
 	}
-	tableName->Release();
-	SDEL_STRING(schemaName);
+	OPTSTR_DEL(schemaName);
 }
 
 void SSWR::AVIRead::AVIRDBForm::ExportTablePList()
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
-	Text::String *schemaName = this->lbSchema->GetSelectedItemTextNew();
-	Text::String *tableName = this->lbTable->GetSelectedItemTextNew();
-	sptr = sbuff;
-	if (schemaName->leng > 0)
+	Optional<Text::String> schemaName = this->lbSchema->GetSelectedItemTextNew();
+	NotNullPtr<Text::String> tableName;
+	NotNullPtr<Text::String> s;
+	if (this->lbTable->GetSelectedItemTextNew().SetTo(tableName))
 	{
-		sptr = schemaName->ConcatTo(sptr);
-		*sptr++ = '_';
-	}
-	sptr = tableName->ConcatTo(sptr);
-	*sptr++ = '_';
-	sptr = Data::Timestamp::Now().ToString(sptr, "yyyyMMdd_HHmmss");
-	sptr = Text::StrConcatC(sptr, UTF8STRC(".plist"));
-	UI::FileDialog dlg(L"SSWR", L"AVIRead", L"DBExportPList", true);
-	dlg.AddFilter(CSTR("*.plist"), CSTR("PList File"));
-	dlg.SetFileName(CSTRP(sbuff, sptr));
-	if (dlg.ShowDialog(this->GetHandle()))
-	{
-		IO::FileStream fs(dlg.GetFileName(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
-		if (!DB::DBExporter::GeneratePList(this->db, STR_CSTR(schemaName), tableName->ToCString(), this->currCond, fs, 65001))
+		sptr = sbuff;
+		if (schemaName.SetTo(s) && s->leng > 0)
 		{
-			UI::MessageDialog::ShowDialog(CSTR("Error in exporting as PList"), CSTR("DB Manager"), this);
+			sptr = s->ConcatTo(sptr);
+			*sptr++ = '_';
 		}
+		sptr = tableName->ConcatTo(sptr);
+		*sptr++ = '_';
+		sptr = Data::Timestamp::Now().ToString(sptr, "yyyyMMdd_HHmmss");
+		sptr = Text::StrConcatC(sptr, UTF8STRC(".plist"));
+		UI::FileDialog dlg(L"SSWR", L"AVIRead", L"DBExportPList", true);
+		dlg.AddFilter(CSTR("*.plist"), CSTR("PList File"));
+		dlg.SetFileName(CSTRP(sbuff, sptr));
+		if (dlg.ShowDialog(this->GetHandle()))
+		{
+			IO::FileStream fs(dlg.GetFileName(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+			if (!DB::DBExporter::GeneratePList(this->db, OPTSTR_CSTR(schemaName), tableName->ToCString(), this->currCond, fs, 65001))
+			{
+				UI::MessageDialog::ShowDialog(CSTR("Error in exporting as PList"), CSTR("DB Manager"), this);
+			}
+		}
+		tableName->Release();
 	}
-	tableName->Release();
-	SDEL_STRING(schemaName);
+	OPTSTR_DEL(schemaName);
 }
 
 void SSWR::AVIRead::AVIRDBForm::ExportTableXLSX()
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
-	Text::String *schemaName = this->lbSchema->GetSelectedItemTextNew();
-	Text::String *tableName = this->lbTable->GetSelectedItemTextNew();
-	sptr = sbuff;
-	if (schemaName->leng > 0)
+	Optional<Text::String> schemaName = this->lbSchema->GetSelectedItemTextNew();
+	NotNullPtr<Text::String> tableName;
+	NotNullPtr<Text::String> s;
+	if (this->lbTable->GetSelectedItemTextNew().SetTo(tableName))
 	{
-		sptr = schemaName->ConcatTo(sptr);
-		*sptr++ = '_';
-	}
-	sptr = tableName->ConcatTo(sptr);
-	*sptr++ = '_';
-	sptr = Data::Timestamp::Now().ToString(sptr, "yyyyMMdd_HHmmss");
-	sptr = Text::StrConcatC(sptr, UTF8STRC(".xlsx"));
-	UI::FileDialog dlg(L"SSWR", L"AVIRead", L"DBExportXLSX", true);
-	dlg.AddFilter(CSTR("*.xlsx"), CSTR("Excel 2007 File"));
-	dlg.SetFileName(CSTRP(sbuff, sptr));
-	if (dlg.ShowDialog(this->GetHandle()))
-	{
-		Text::StringBuilderUTF8 sb;
-		IO::FileStream fs(dlg.GetFileName(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
-		if (!DB::DBExporter::GenerateXLSX(this->db, STR_CSTR(schemaName), tableName->ToCString(), this->currCond, fs, &sb))
+		sptr = sbuff;
+		if (schemaName.SetTo(s) && s->leng > 0)
 		{
-			UI::MessageDialog::ShowDialog(sb.ToCString(), CSTR("DB Manager"), this);
+			sptr = s->ConcatTo(sptr);
+			*sptr++ = '_';
 		}
+		sptr = tableName->ConcatTo(sptr);
+		*sptr++ = '_';
+		sptr = Data::Timestamp::Now().ToString(sptr, "yyyyMMdd_HHmmss");
+		sptr = Text::StrConcatC(sptr, UTF8STRC(".xlsx"));
+		UI::FileDialog dlg(L"SSWR", L"AVIRead", L"DBExportXLSX", true);
+		dlg.AddFilter(CSTR("*.xlsx"), CSTR("Excel 2007 File"));
+		dlg.SetFileName(CSTRP(sbuff, sptr));
+		if (dlg.ShowDialog(this->GetHandle()))
+		{
+			Text::StringBuilderUTF8 sb;
+			IO::FileStream fs(dlg.GetFileName(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+			if (!DB::DBExporter::GenerateXLSX(this->db, OPTSTR_CSTR(schemaName), tableName->ToCString(), this->currCond, fs, &sb))
+			{
+				UI::MessageDialog::ShowDialog(sb.ToCString(), CSTR("DB Manager"), this);
+			}
+		}
+		tableName->Release();
 	}
-	tableName->Release();
-	SDEL_STRING(schemaName);
+	OPTSTR_DEL(schemaName);
 }
 
 void SSWR::AVIRead::AVIRDBForm::ExportTableExcelXML()
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
-	Text::String *schemaName = this->lbSchema->GetSelectedItemTextNew();
-	Text::String *tableName = this->lbTable->GetSelectedItemTextNew();
-	sptr = sbuff;
-	if (schemaName->leng > 0)
+	Optional<Text::String> schemaName = this->lbSchema->GetSelectedItemTextNew();
+	NotNullPtr<Text::String> tableName;
+	NotNullPtr<Text::String> s;
+	if (this->lbTable->GetSelectedItemTextNew().SetTo(tableName))
 	{
-		sptr = schemaName->ConcatTo(sptr);
-		*sptr++ = '_';
-	}
-	sptr = tableName->ConcatTo(sptr);
-	*sptr++ = '_';
-	sptr = Data::Timestamp::Now().ToString(sptr, "yyyyMMdd_HHmmss");
-	sptr = Text::StrConcatC(sptr, UTF8STRC(".xml"));
-	UI::FileDialog dlg(L"SSWR", L"AVIRead", L"DBExportXML", true);
-	dlg.AddFilter(CSTR("*.xml"), CSTR("Excel XML File"));
-	dlg.SetFileName(CSTRP(sbuff, sptr));
-	if (dlg.ShowDialog(this->GetHandle()))
-	{
-		Text::StringBuilderUTF8 sb;
-		IO::FileStream fs(dlg.GetFileName(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
-		if (!DB::DBExporter::GenerateExcelXML(this->db, STR_CSTR(schemaName), tableName->ToCString(), this->currCond, fs, &sb))
+		sptr = sbuff;
+		if (schemaName.SetTo(s) && s->leng > 0)
 		{
-			UI::MessageDialog::ShowDialog(sb.ToCString(), CSTR("DB Manager"), this);
+			sptr = s->ConcatTo(sptr);
+			*sptr++ = '_';
 		}
+		sptr = tableName->ConcatTo(sptr);
+		*sptr++ = '_';
+		sptr = Data::Timestamp::Now().ToString(sptr, "yyyyMMdd_HHmmss");
+		sptr = Text::StrConcatC(sptr, UTF8STRC(".xml"));
+		UI::FileDialog dlg(L"SSWR", L"AVIRead", L"DBExportXML", true);
+		dlg.AddFilter(CSTR("*.xml"), CSTR("Excel XML File"));
+		dlg.SetFileName(CSTRP(sbuff, sptr));
+		if (dlg.ShowDialog(this->GetHandle()))
+		{
+			Text::StringBuilderUTF8 sb;
+			IO::FileStream fs(dlg.GetFileName(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+			if (!DB::DBExporter::GenerateExcelXML(this->db, OPTSTR_CSTR(schemaName), tableName->ToCString(), this->currCond, fs, &sb))
+			{
+				UI::MessageDialog::ShowDialog(sb.ToCString(), CSTR("DB Manager"), this);
+			}
+		}
+		tableName->Release();
 	}
-	tableName->Release();
-	SDEL_STRING(schemaName);
+	OPTSTR_DEL(schemaName);
 }
 
 SSWR::AVIRead::AVIRDBForm::AVIRDBForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<DB::ReadingDB> db, Bool needRelease) : UI::GUIForm(parent, 1024, 768, ui)
@@ -681,7 +712,7 @@ void SSWR::AVIRead::AVIRDBForm::UpdateSchemas()
 void SSWR::AVIRead::AVIRDBForm::UpdateTables()
 {
 	Text::StringBuilderUTF8 sb;
-	Text::String *schemaName = this->lbSchema->GetSelectedItemTextNew();
+	Optional<Text::String> schemaName = this->lbSchema->GetSelectedItemTextNew();
 	Data::ArrayListNN<Text::String> tableNames;
 	UOSInt i;
 	UOSInt j;
@@ -689,13 +720,13 @@ void SSWR::AVIRead::AVIRDBForm::UpdateTables()
 	this->lbTable->ClearItems();
 	if (this->dbt)
 	{
-		this->dbt->QueryTableNames(STR_CSTR(schemaName), tableNames);
+		this->dbt->QueryTableNames(OPTSTR_CSTR(schemaName), tableNames);
 	}
 	else
 	{
-		this->db->QueryTableNames(STR_CSTR(schemaName), tableNames);
+		this->db->QueryTableNames(OPTSTR_CSTR(schemaName), tableNames);
 	}
-	SDEL_STRING(schemaName);
+	OPTSTR_DEL(schemaName);
 	i = 0;
 	j = tableNames.GetCount();
 	while (i < j)
@@ -731,9 +762,9 @@ void SSWR::AVIRead::AVIRDBForm::EventMenuClicked(UInt16 cmdId)
 		{
 			Data::Chart *chart = 0;
 			{
-				Text::String *schemaName = this->lbSchema->GetSelectedItemTextNew();
-				SSWR::AVIRead::AVIRLineChartForm frm(0, this->ui, this->core, this->db.Ptr(), STR_CSTR(schemaName), CSTRP(sbuff, sptr));
-				SDEL_STRING(schemaName);
+				Optional<Text::String> schemaName = this->lbSchema->GetSelectedItemTextNew();
+				SSWR::AVIRead::AVIRLineChartForm frm(0, this->ui, this->core, this->db.Ptr(), OPTSTR_CSTR(schemaName), CSTRP(sbuff, sptr));
+				OPTSTR_DEL(schemaName);
 				if (frm.ShowDialog(this) == DR_OK)
 				{
 					chart = frm.GetChart();
@@ -750,9 +781,9 @@ void SSWR::AVIRead::AVIRDBForm::EventMenuClicked(UInt16 cmdId)
 	case MNU_TABLE_CPP_HEADER:
 		if ((sptr = this->lbTable->GetSelectedItemText(sbuff)) != 0)
 		{
-			Text::String *schemaName = this->lbSchema->GetSelectedItemTextNew();
-			Data::Class *cls = DB::DBExporter::CreateTableClass(this->db, STR_CSTR(schemaName), CSTRP(sbuff, sptr));
-			SDEL_STRING(schemaName);
+			Optional<Text::String> schemaName = this->lbSchema->GetSelectedItemTextNew();
+			Data::Class *cls = DB::DBExporter::CreateTableClass(this->db, OPTSTR_CSTR(schemaName), CSTRP(sbuff, sptr));
+			OPTSTR_DEL(schemaName);
 			if (cls)
 			{
 				Text::PString hdr = {sbuff2, 0};
@@ -769,9 +800,9 @@ void SSWR::AVIRead::AVIRDBForm::EventMenuClicked(UInt16 cmdId)
 	case MNU_TABLE_CPP_SOURCE:
 		if ((sptr = this->lbTable->GetSelectedItemText(sbuff)) != 0)
 		{
-			Text::String *schemaName = this->lbSchema->GetSelectedItemTextNew();
-			Data::Class *cls = DB::DBExporter::CreateTableClass(this->db, STR_CSTR(schemaName), CSTRP(sbuff, sptr));
-			SDEL_STRING(schemaName);
+			Optional<Text::String> schemaName = this->lbSchema->GetSelectedItemTextNew();
+			Data::Class *cls = DB::DBExporter::CreateTableClass(this->db, OPTSTR_CSTR(schemaName), CSTRP(sbuff, sptr));
+			OPTSTR_DEL(schemaName);
 			if (cls)
 			{
 				Text::PString hdr = {sbuff2, 0};
@@ -787,13 +818,16 @@ void SSWR::AVIRead::AVIRDBForm::EventMenuClicked(UInt16 cmdId)
 		break;
 	case MNU_TABLE_JAVA:
 		{
-			Text::String *schemaName = this->lbSchema->GetSelectedItemTextNew();
-			Text::String *tableName = this->lbTable->GetSelectedItemTextNew();
-			Text::StringBuilderUTF8 sb;
-			DB::JavaDBUtil::ToJavaEntity(sb, schemaName, tableName, 0, this->db);
-			tableName->Release();
-			SDEL_STRING(schemaName);
-			UI::Clipboard::SetString(this->GetHandle(), sb.ToCString());
+			Optional<Text::String> schemaName = this->lbSchema->GetSelectedItemTextNew();
+			NotNullPtr<Text::String> tableName;
+			if (this->lbTable->GetSelectedItemTextNew().SetTo(tableName))
+			{
+				Text::StringBuilderUTF8 sb;
+				DB::JavaDBUtil::ToJavaEntity(sb, schemaName, tableName, 0, this->db);
+				tableName->Release();
+				UI::Clipboard::SetString(this->GetHandle(), sb.ToCString());
+			}
+			OPTSTR_DEL(schemaName);
 		}
 		break;
 	case MNU_TABLE_CREATE_MYSQL:
@@ -822,12 +856,15 @@ void SSWR::AVIRead::AVIRDBForm::EventMenuClicked(UInt16 cmdId)
 		break;
 	case MNU_TABLE_EXPORT_OPTION:
 		{
-			Text::String *schemaName = this->lbSchema->GetSelectedItemTextNew();
-			Text::String *tableName = this->lbTable->GetSelectedItemTextNew();
-			SSWR::AVIRead::AVIRDBExportForm dlg(0, ui, this->core, this->db.Ptr(), STR_CSTR(schemaName), tableName->ToCString());
-			dlg.ShowDialog(this);
-			tableName->Release();
-			SDEL_STRING(schemaName);
+			Optional<Text::String> schemaName = this->lbSchema->GetSelectedItemTextNew();
+			NotNullPtr<Text::String> tableName;
+			if (this->lbTable->GetSelectedItemTextNew().SetTo(tableName))
+			{
+				SSWR::AVIRead::AVIRDBExportForm dlg(0, ui, this->core, this->db.Ptr(), OPTSTR_CSTR(schemaName), tableName->ToCString());
+				dlg.ShowDialog(this);
+				tableName->Release();
+			}
+			OPTSTR_DEL(schemaName);
 		}
 		break;
 	case MNU_TABLE_EXPORT_CSV:
@@ -850,12 +887,15 @@ void SSWR::AVIRead::AVIRDBForm::EventMenuClicked(UInt16 cmdId)
 		break;
 	case MNU_TABLE_CHECK_CHANGE:
 		{
-			Text::String *schemaName = this->lbSchema->GetSelectedItemTextNew();
-			Text::String *tableName = this->lbTable->GetSelectedItemTextNew();
-			SSWR::AVIRead::AVIRDBCheckChgForm dlg(0, ui, this->core, this->db.Ptr(), STR_CSTR(schemaName), tableName->ToCString());
-			dlg.ShowDialog(this);
-			tableName->Release();
-			SDEL_STRING(schemaName);
+			Optional<Text::String> schemaName = this->lbSchema->GetSelectedItemTextNew();
+			NotNullPtr<Text::String> tableName;
+			if (this->lbTable->GetSelectedItemTextNew().SetTo(tableName))
+			{
+				SSWR::AVIRead::AVIRDBCheckChgForm dlg(0, ui, this->core, this->db.Ptr(), OPTSTR_CSTR(schemaName), tableName->ToCString());
+				dlg.ShowDialog(this);
+				tableName->Release();
+			}
+			OPTSTR_DEL(schemaName);
 		}
 		break;
 	}

@@ -1473,18 +1473,21 @@ Optional<IO::PackageFile> Net::WebServer::HTTPDirectoryHandler::GetPackageFile(T
 	NotNullPtr<Sync::RWMutex> packageMut;
 	if (this->packageMap && packageMut.Set(this->packageMut))
 	{
+		Text::CStringNN subPath;
 		UOSInt i = path.IndexOf('/');
 		PackageInfo *pkgInfo;
 		Text::CStringNN pkgName;
 		if (i == INVALID_INDEX)
 		{
 			pkgName = path;
+			subPath = CSTR("");
 		}
 		else
 		{
 			sb.ClearStr();
 			sb.AppendC(path.v, i);
 			pkgName = sb.ToCString();
+			subPath = path.Substring(i + 1);
 		}
 		UTF8Char sbuff[512];
 		UTF8Char *sptr;
@@ -1493,17 +1496,30 @@ Optional<IO::PackageFile> Net::WebServer::HTTPDirectoryHandler::GetPackageFile(T
 		packageMutUsage.EndUse();
 		if (pkgInfo)
 		{
+			Bool thisNeedRelease = false;
 			NotNullPtr<IO::PackageFile> packageFile = pkgInfo->packageFile;
-			needRelease.Set(false);
 			if (packageFile->GetCount() == 1 && packageFile->GetItemType(0) == IO::PackageFile::PackObjectType::PackageFileType)
 			{
 				sptr = packageFile->GetItemName(sbuff, 0);
 				if (pkgName.Equals(sbuff, (UOSInt)(sptr - sbuff)))
 				{
-					return packageFile->GetItemPack(0, needRelease);
+					if (!packageFile->GetItemPack(0, thisNeedRelease).SetTo(packageFile))
+						return 0;
 				}
 			}
-			return packageFile;
+			if (subPath.leng > 0)
+			{
+				Optional<IO::PackageFile> ret;
+				ret = packageFile->GetItemPack(subPath, needRelease);
+				if (thisNeedRelease)
+					packageFile.Delete();
+				return ret;
+			}
+			else
+			{
+				needRelease.Set(thisNeedRelease);
+				return packageFile;
+			}
 		}
 	}
 

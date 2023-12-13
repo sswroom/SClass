@@ -11,9 +11,16 @@ UI::GUIListBox *lb;
 void __stdcall OnLBDblClick(void *userObj)
 {
 	UI::GUIForm *me = (UI::GUIForm*)userObj;
-	Text::String *s = lb->GetSelectedItemTextNew();
-	UI::MessageDialog::ShowDialog(s->ToCString(), CSTR("GUI Test 5 LB DblClick"), me);
-	s->Release();
+	NotNullPtr<Text::String> s;
+	if (lb->GetSelectedItemTextNew().SetTo(s))
+	{
+		UI::MessageDialog::ShowDialog(s->ToCString(), CSTR("GUI Test 5 LB DblClick"), me);
+		s->Release();
+	}
+	else
+	{
+		UI::MessageDialog::ShowDialog(CSTR("Error in getting the item value"), CSTR("GUI Test 5 LB DblClick"), me);
+	}
 }
 
 Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)

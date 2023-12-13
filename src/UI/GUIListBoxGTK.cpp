@@ -447,7 +447,7 @@ WChar *UI::GUIListBox::GetSelectedItemText(WChar *buff)
 	return GetItemText(buff, currSel);
 }
 
-Text::String *UI::GUIListBox::GetSelectedItemTextNew()
+Optional<Text::String> UI::GUIListBox::GetSelectedItemTextNew()
 {
 	UOSInt currSel = GetSelectedIndex();
 	if (currSel == INVALID_INDEX)
@@ -481,12 +481,12 @@ void UI::GUIListBox::SetItemText(UOSInt index, Text::CStringNN text)
 	item->txt = Text::String::New(text.v, text.leng);
 }
 
-Text::String *UI::GUIListBox::GetItemTextNew(UOSInt index)
+Optional<Text::String> UI::GUIListBox::GetItemTextNew(UOSInt index)
 {
 	ItemData *item = this->items.GetItem(index);
 	if (item == 0)
 		return 0;
-	return item->txt->Clone().Ptr();
+	return item->txt->Clone();
 }
 
 OSInt UI::GUIListBox::GetItemHeight()

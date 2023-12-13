@@ -126,7 +126,7 @@ void __stdcall SSWR::SHPConv::SHPConvMainForm::OnRecordsSelChg(void *userObj)
 void __stdcall SSWR::SHPConv::SHPConvMainForm::OnGroupClicked(void *userObj)
 {
 	SSWR::SHPConv::SHPConvMainForm *me = (SSWR::SHPConv::SHPConvMainForm*)userObj;
-	Text::String *s;
+	NotNullPtr<Text::String> s;
 	UOSInt i;
 	UOSInt j;
 	SSWR::SHPConv::SHPConvGroupForm frm(0, me->ui);
@@ -135,9 +135,11 @@ void __stdcall SSWR::SHPConv::SHPConvMainForm::OnGroupClicked(void *userObj)
 	j = me->lstRecords->GetCount();
 	while (i < j)
 	{
-		s = me->lstRecords->GetItemTextNew(i);
-		frm.AddGroup(s->ToCString());
-		s->Release();
+		if (me->lstRecords->GetItemTextNew(i).SetTo(s))
+		{
+			frm.AddGroup(s->ToCString());
+			s->Release();
+		}
 		i++;
 	}
 	frm.SetCurrGroup(me->currGroup);

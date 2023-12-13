@@ -129,8 +129,8 @@ void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeForm::OnSTopicClicked(void *userO
 void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeForm::OnLogSelChg(void *userObj)
 {
 	SSWR::AVIRead::AVIRMQTTSubscribeForm *me = (SSWR::AVIRead::AVIRMQTTSubscribeForm*)userObj;
-	Text::String *s = me->lbLog->GetSelectedItemTextNew();
-	if (s)
+	NotNullPtr<Text::String> s;
+	if (me->lbLog->GetSelectedItemTextNew().SetTo(s))
 	{
 		me->txtLog->SetText(s->ToCString());
 		s->Release();

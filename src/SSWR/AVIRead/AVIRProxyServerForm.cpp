@@ -40,8 +40,8 @@ void __stdcall SSWR::AVIRead::AVIRProxyServerForm::OnStartClicked(void *userObj)
 void __stdcall SSWR::AVIRead::AVIRProxyServerForm::OnLogSelChg(void *userObj)
 {
 	SSWR::AVIRead::AVIRProxyServerForm *me = (SSWR::AVIRead::AVIRProxyServerForm*)userObj;
-	Text::String *s = me->lbLog->GetSelectedItemTextNew();
-	if (s)
+	NotNullPtr<Text::String> s;
+	if (me->lbLog->GetSelectedItemTextNew().SetTo(s))
 	{
 		me->txtLog->SetText(s->ToCString());
 		s->Release();

@@ -3,11 +3,12 @@
 #include "DB/MSSQLConn.h"
 #include "DB/PostgreSQLConn.h"
 
-Optional<DB::DBTool> DB::DBConfig::LoadFromConfig(NotNullPtr<Net::SocketFactory> sockf, NotNullPtr<IO::ConfigFile> cfg, NotNullPtr<IO::LogTool> log)
+Optional<DB::DBTool> DB::DBConfig::LoadFromConfig(NotNullPtr<Net::SocketFactory> sockf, NotNullPtr<IO::ConfigFile> cfg, Text::CString cfgCategory, NotNullPtr<IO::LogTool> log)
 {
-	Text::CString logPrefix = CSTR("DB: ");
+	Text::CStringNN logPrefix = CSTR("DB: ");
+	Text::CStringNN category = cfgCategory.OrEmpty();
 	NotNullPtr<Text::String> s;
-	if (!cfg->GetValue(CSTR("DBType")).SetTo(s))
+	if (!cfg->GetCateValue(category, CSTR("DBType")).SetTo(s))
 	{
 		log->LogMessage(CSTR("DBType not found in config"), IO::LogHandler::LogLevel::Error);
 		return 0;
@@ -18,12 +19,12 @@ Optional<DB::DBTool> DB::DBConfig::LoadFromConfig(NotNullPtr<Net::SocketFactory>
 		UInt16 port;
 		NotNullPtr<Text::String> serverHost;
 		NotNullPtr<Text::String> sPort;
-		Text::String *sSSL = cfg->GetValue(CSTR("MSSQLEncrypt")).OrNull();
+		Text::String *sSSL = cfg->GetCateValue(category, CSTR("MSSQLEncrypt")).OrNull();
 		NotNullPtr<Text::String> database;
 		NotNullPtr<Text::String> userName;
 		NotNullPtr<Text::String> password;
 		Net::SocketUtil::AddressInfo addr;
-		if (!cfg->GetValue(CSTR("MSSQLHost")).SetTo(serverHost))
+		if (!cfg->GetCateValue(category, CSTR("MSSQLHost")).SetTo(serverHost))
 		{
 			log->LogMessage(CSTR("MSSQLHost is missing"), IO::LogHandler::LogLevel::Error);
 			return 0;
@@ -33,7 +34,7 @@ Optional<DB::DBTool> DB::DBConfig::LoadFromConfig(NotNullPtr<Net::SocketFactory>
 			log->LogMessage(CSTR("MSSQLHost is not valid"), IO::LogHandler::LogLevel::Error);
 			return 0;
 		}
-		if (!cfg->GetValue(CSTR("MSSQLPort")).SetTo(sPort))
+		if (!cfg->GetCateValue(category, CSTR("MSSQLPort")).SetTo(sPort))
 		{
 			log->LogMessage(CSTR("MSSQLPort is missing"), IO::LogHandler::LogLevel::Error);
 			return 0;
@@ -43,17 +44,17 @@ Optional<DB::DBTool> DB::DBConfig::LoadFromConfig(NotNullPtr<Net::SocketFactory>
 			log->LogMessage(CSTR("MSSQLPort is not valid"), IO::LogHandler::LogLevel::Error);
 			return 0;
 		}
-		if (!cfg->GetValue(CSTR("MSSQLDatabase")).SetTo(database) || database->leng == 0)
+		if (!cfg->GetCateValue(category, CSTR("MSSQLDatabase")).SetTo(database) || database->leng == 0)
 		{
 			log->LogMessage(CSTR("MSSQLDatabase is missing"), IO::LogHandler::LogLevel::Error);
 			return 0;
 		}
-		if (!cfg->GetValue(CSTR("MSSQLUser")).SetTo(userName) || userName->leng == 0)
+		if (!cfg->GetCateValue(category, CSTR("MSSQLUser")).SetTo(userName) || userName->leng == 0)
 		{
 			log->LogMessage(CSTR("MSSQLUser is missing"), IO::LogHandler::LogLevel::Error);
 			return 0;
 		}
-		if (!cfg->GetValue(CSTR("MSSQLPwd")).SetTo(password) || password->leng == 0)
+		if (!cfg->GetCateValue(category, CSTR("MSSQLPwd")).SetTo(password) || password->leng == 0)
 		{
 			log->LogMessage(CSTR("MSSQLPwd is missing"), IO::LogHandler::LogLevel::Error);
 			return 0;
@@ -73,12 +74,12 @@ Optional<DB::DBTool> DB::DBConfig::LoadFromConfig(NotNullPtr<Net::SocketFactory>
 		NotNullPtr<Text::String> database;
 		NotNullPtr<Text::String> userName;
 		NotNullPtr<Text::String> password;
-		if (!cfg->GetValue(CSTR("PSQLHost")).SetTo(serverHost))
+		if (!cfg->GetCateValue(category, CSTR("PSQLHost")).SetTo(serverHost))
 		{
 			log->LogMessage(CSTR("PSQLHost is missing"), IO::LogHandler::LogLevel::Error);
 			return 0;
 		}
-		if (!cfg->GetValue(CSTR("PSQLPort")).SetTo(sPort))
+		if (!cfg->GetCateValue(category, CSTR("PSQLPort")).SetTo(sPort))
 		{
 			log->LogMessage(CSTR("PSQLPort is missing"), IO::LogHandler::LogLevel::Error);
 			return 0;
@@ -88,17 +89,17 @@ Optional<DB::DBTool> DB::DBConfig::LoadFromConfig(NotNullPtr<Net::SocketFactory>
 			log->LogMessage(CSTR("PSQLPort is not valid"), IO::LogHandler::LogLevel::Error);
 			return 0;
 		}
-		if (!cfg->GetValue(CSTR("PSQLDatabase")).SetTo(database) || database->leng == 0)
+		if (!cfg->GetCateValue(category, CSTR("PSQLDatabase")).SetTo(database) || database->leng == 0)
 		{
 			log->LogMessage(CSTR("PSQLDatabase is missing"), IO::LogHandler::LogLevel::Error);
 			return 0;
 		}
-		if (!cfg->GetValue(CSTR("PSQLUser")).SetTo(userName) || userName->leng == 0)
+		if (!cfg->GetCateValue(category, CSTR("PSQLUser")).SetTo(userName) || userName->leng == 0)
 		{
 			log->LogMessage(CSTR("PSQLUser is missing"), IO::LogHandler::LogLevel::Error);
 			return 0;
 		}
-		if (!cfg->GetValue(CSTR("PSQLPwd")).SetTo(password) || password->leng == 0)
+		if (!cfg->GetCateValue(category, CSTR("PSQLPwd")).SetTo(password) || password->leng == 0)
 		{
 			log->LogMessage(CSTR("PSQLPwd is missing"), IO::LogHandler::LogLevel::Error);
 			return 0;

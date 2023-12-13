@@ -132,8 +132,8 @@ void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnV4ReqSelChg(void *userObj)
 	UOSInt j;
 
 	me->lbV4Answer->ClearItems();
-	Text::String *req = me->lbV4Request->GetSelectedItemTextNew();
-	if (req)
+	NotNullPtr<Text::String> req;
+	if (me->lbV4Request->GetSelectedItemTextNew().SetTo(req))
 	{
 		UTF8Char sbuff[32];
 		UTF8Char *sptr;
@@ -215,8 +215,8 @@ void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnV6ReqSelChg(void *userObj)
 	UOSInt j;
 
 	me->lbV6Answer->ClearItems();
-	Text::String *req = me->lbV6Request->GetSelectedItemTextNew();
-	if (req)
+	NotNullPtr<Text::String> req;
+	if (me->lbV6Request->GetSelectedItemTextNew().SetTo(req))
 	{
 		UTF8Char sbuff[32];
 		UTF8Char *sptr;
@@ -298,8 +298,8 @@ void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnOthReqSelChg(void *userObj)
 	UOSInt j;
 
 	me->lbOthAnswer->ClearItems();
-	Text::String *req = me->lbOthRequest->GetSelectedItemTextNew();
-	if (req)
+	NotNullPtr<Text::String> req;
+	if (me->lbOthRequest->GetSelectedItemTextNew().SetTo(req))
 	{
 		UTF8Char sbuff[32];
 		UTF8Char *sptr;
@@ -542,8 +542,8 @@ void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnSReqSelChg(void *userObj)
 	UOSInt j;
 
 	me->lbSAnswer->ClearItems();
-	Text::String *req = me->lbSearch->GetSelectedItemTextNew();
-	if (req)
+	NotNullPtr<Text::String> req;
+	if (me->lbSearch->GetSelectedItemTextNew().SetTo(req))
 	{
 		UTF8Char sbuff[32];
 		UTF8Char *sptr;

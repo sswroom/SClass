@@ -240,8 +240,8 @@ void __stdcall SSWR::AVIRead::AVIRExeForm::OnImportSelChg(void *userObj)
 void __stdcall SSWR::AVIRead::AVIRExeForm::OnExportDblClk(void *userObj)
 {
 	SSWR::AVIRead::AVIRExeForm *me = (SSWR::AVIRead::AVIRExeForm*)userObj;
-	Text::String *s = me->lbExport->GetSelectedItemTextNew();
-	if (s)
+	NotNullPtr<Text::String> s;
+	if (me->lbExport->GetSelectedItemTextNew().SetTo(s))
 	{
 		UI::Clipboard::SetString(me->GetHandle(), s->ToCString());
 		s->Release();

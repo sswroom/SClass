@@ -20,7 +20,7 @@ namespace DB
 		
 	public:
 		static Optional<DB::DBTool> OpenJDBC(Text::String *url, Text::String *username, Text::String *password, NotNullPtr<IO::LogTool> log, NotNullPtr<Net::SocketFactory> sockf);
-		static Bool ToJavaEntity(NotNullPtr<Text::StringBuilderUTF8> sb, Text::String *schemaName, Text::String *tableName, Text::String *databaseName, NotNullPtr<DB::ReadingDB> db);
+		static Bool ToJavaEntity(NotNullPtr<Text::StringBuilderUTF8> sb, Optional<Text::String> schemaName, NotNullPtr<Text::String> tableName, Optional<Text::String> databaseName, NotNullPtr<DB::ReadingDB> db);
 	};
 }
 #endif

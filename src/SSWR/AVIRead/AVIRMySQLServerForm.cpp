@@ -49,9 +49,9 @@ void __stdcall SSWR::AVIRead::AVIRMySQLServerForm::OnUserAddClicked(void *userOb
 void __stdcall SSWR::AVIRead::AVIRMySQLServerForm::OnLogSel(void *userObj)
 {
 	SSWR::AVIRead::AVIRMySQLServerForm *me = (SSWR::AVIRead::AVIRMySQLServerForm*)userObj;
-	Text::String *s = me->lbLog->GetSelectedItemTextNew();
-	me->txtLog->SetText(s->ToCString());
-	s->Release();
+	Optional<Text::String> s = me->lbLog->GetSelectedItemTextNew();
+	me->txtLog->SetText(Text::String::OrEmpty(s)->ToCString());
+	OPTSTR_DEL(s);
 }
 
 void __stdcall SSWR::AVIRead::AVIRMySQLServerForm::OnTimerTick(void *userObj)

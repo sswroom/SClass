@@ -69,11 +69,10 @@ void __stdcall SSWR::AVIRead::AVIRSAMLTestForm::OnFormFiles(void *userObj, NotNu
 
 void __stdcall SSWR::AVIRead::AVIRSAMLTestForm::OnLogSel(void *userObj)
 {
-	Text::String *s;
 	SSWR::AVIRead::AVIRSAMLTestForm *me = (SSWR::AVIRead::AVIRSAMLTestForm*)userObj;
-	s = me->lbLog->GetSelectedItemTextNew();
-	me->txtLog->SetText(s->ToCString());
-	s->Release();
+	Optional<Text::String> s = me->lbLog->GetSelectedItemTextNew();
+	me->txtLog->SetText(Text::String::OrEmpty(s)->ToCString());
+	OPTSTR_DEL(s);
 }
 
 void __stdcall SSWR::AVIRead::AVIRSAMLTestForm::OnSSLCertClicked(void *userObj)

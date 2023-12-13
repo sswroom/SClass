@@ -525,7 +525,7 @@ Bool Text::JSONBuilder::ObjectAddStr(Text::CStringNN name, Text::PString *val)
 	return true;
 }
 
-Bool Text::JSONBuilder::ObjectAddStr(Text::CStringNN name, NotNullPtr<Text::String> val)
+Bool Text::JSONBuilder::ObjectAddStr(Text::CStringNN name, NotNullPtr<const Text::String> val)
 {
 	if (this->currType != OT_OBJECT)
 		return false;

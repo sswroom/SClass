@@ -176,9 +176,9 @@ void __stdcall SSWR::AVIRead::AVIRLoraGWSimForm::OnSendULDataClick(void *userObj
 void __stdcall SSWR::AVIRead::AVIRLoraGWSimForm::OnLogSelChg(void *userObj)
 {
 	SSWR::AVIRead::AVIRLoraGWSimForm *me = (SSWR::AVIRead::AVIRLoraGWSimForm*)userObj;
-	Text::String *s = me->lbLog->GetSelectedItemTextNew();
+	Optional<Text::String> s = me->lbLog->GetSelectedItemTextNew();
 	me->lbLog->SetText(Text::String::OrEmpty(s)->ToCString());
-	SDEL_STRING(s);
+	OPTSTR_DEL(s);
 }
 
 SSWR::AVIRead::AVIRLoraGWSimForm::AVIRLoraGWSimForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)

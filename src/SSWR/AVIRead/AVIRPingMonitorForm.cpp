@@ -135,8 +135,8 @@ void __stdcall SSWR::AVIRead::AVIRPingMonitorForm::OnStartClicked(void *userObj)
 void __stdcall SSWR::AVIRead::AVIRPingMonitorForm::OnLogSelChg(void *userObj)
 {
 	SSWR::AVIRead::AVIRPingMonitorForm *me = (SSWR::AVIRead::AVIRPingMonitorForm*)userObj;
-	Text::String *s = me->lbLog->GetSelectedItemTextNew();
-	if (s)
+	NotNullPtr<Text::String> s;
+	if (me->lbLog->GetSelectedItemTextNew().SetTo(s))
 	{
 		me->txtLog->SetText(s->ToCString());
 		s->Release();

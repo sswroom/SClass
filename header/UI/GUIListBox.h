@@ -48,11 +48,11 @@ namespace UI
 		void *GetSelectedItem();
 		UTF8Char *GetSelectedItemText(UTF8Char *buff);
 		WChar *GetSelectedItemText(WChar *buff);
-		Text::String *GetSelectedItemTextNew();
+		Optional<Text::String> GetSelectedItemTextNew();
 		UTF8Char *GetItemText(UTF8Char *buff, UOSInt index);
 		WChar *GetItemText(WChar *buff, UOSInt index);
 		void SetItemText(UOSInt index, Text::CStringNN text);
-		Text::String *GetItemTextNew(UOSInt index);
+		Optional<Text::String> GetItemTextNew(UOSInt index);
 		OSInt GetItemHeight();
 
 		virtual Text::CStringNN GetObjectClass() const;

@@ -12,7 +12,7 @@
 
 Data::Class *DB::DBExporter::CreateTableClass(NotNullPtr<DB::ReadingDB> db, Text::CString schema, Text::CStringNN tableName)
 {
-	DB::TableDef *tab = db->GetTableDef(CSTR_NULL, tableName);
+	DB::TableDef *tab = db->GetTableDef(schema, tableName);
 	if (tab)
 	{
 		Data::Class *cls = tab->CreateTableClass().Ptr();

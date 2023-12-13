@@ -53,7 +53,7 @@ namespace Text
 		Bool ObjectAddUInt64(Text::CStringNN name, UInt64 val);
 		Bool ObjectAddBool(Text::CStringNN name, Bool val);
 		Bool ObjectAddStr(Text::CStringNN name, Text::PString *val);
-		Bool ObjectAddStr(Text::CStringNN name, NotNullPtr<Text::String> val);
+		Bool ObjectAddStr(Text::CStringNN name, NotNullPtr<const Text::String> val);
 		Bool ObjectAddStr(Text::CStringNN name, Text::CString val);
 		Bool ObjectAddStrUTF8(Text::CStringNN name, const UTF8Char *val);
 		Bool ObjectAddStrW(Text::CStringNN name, const WChar *val);

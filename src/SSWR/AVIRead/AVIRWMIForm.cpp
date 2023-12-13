@@ -8,8 +8,8 @@
 void __stdcall SSWR::AVIRead::AVIRWMIForm::OnOKClick(void *userObj)
 {
 	SSWR::AVIRead::AVIRWMIForm *me = (SSWR::AVIRead::AVIRWMIForm*)userObj;
-	Text::String *ns = me->lbNS->GetSelectedItemTextNew();
-	if (ns)
+	NotNullPtr<Text::String> ns;
+	if (me->lbNS->GetSelectedItemTextNew().SetTo(ns))
 	{
 		NotNullPtr<Win32::WMIQuery> db;
 		const WChar *wptr = Text::StrToWCharNew(ns->v);
@@ -38,8 +38,8 @@ void __stdcall SSWR::AVIRead::AVIRWMIForm::OnCancelClick(void *userObj)
 void __stdcall SSWR::AVIRead::AVIRWMIForm::OnDblClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRWMIForm *me = (SSWR::AVIRead::AVIRWMIForm*)userObj;
-	Text::String *ns = me->lbNS->GetSelectedItemTextNew();
-	if (ns)
+	NotNullPtr<Text::String> ns;
+	if (me->lbNS->GetSelectedItemTextNew().SetTo(ns))
 	{
 		NotNullPtr<Win32::WMIQuery> db;
 		const WChar *wptr = Text::StrToWCharNew(ns->v);

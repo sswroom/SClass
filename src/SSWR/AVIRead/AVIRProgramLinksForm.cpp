@@ -8,8 +8,8 @@
 void __stdcall SSWR::AVIRead::AVIRProgramLinksForm::OnItemsSelChg(void *userObj)
 {
 	SSWR::AVIRead::AVIRProgramLinksForm *me = (SSWR::AVIRead::AVIRProgramLinksForm *)userObj;
-	Text::String *s = me->lbItems->GetSelectedItemTextNew();
-	if (s)
+	NotNullPtr<Text::String> s;
+	if (me->lbItems->GetSelectedItemTextNew().SetTo(s))
 	{
 		IO::ProgramLink link;
 		me->txtLinkName->SetText(s->ToCString());
@@ -69,8 +69,8 @@ void __stdcall SSWR::AVIRead::AVIRProgramLinksForm::OnItemsSelChg(void *userObj)
 void __stdcall SSWR::AVIRead::AVIRProgramLinksForm::OnDeleteClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRProgramLinksForm *me = (SSWR::AVIRead::AVIRProgramLinksForm *)userObj;
-	Text::String *s = me->lbItems->GetSelectedItemTextNew();
-	if (s)
+	NotNullPtr<Text::String> s;
+	if (me->lbItems->GetSelectedItemTextNew().SetTo(s))
 	{
 		Text::StringBuilderUTF8 sb;
 		sb.AppendC(UTF8STRC("Are you sure to delete program link \""));

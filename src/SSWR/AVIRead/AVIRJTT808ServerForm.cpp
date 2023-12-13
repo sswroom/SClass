@@ -53,8 +53,8 @@ void __stdcall SSWR::AVIRead::AVIRJTT808ServerForm::OnStartClicked(void *userObj
 void __stdcall SSWR::AVIRead::AVIRJTT808ServerForm::OnLogSelChg(void *userObj)
 {
 	SSWR::AVIRead::AVIRJTT808ServerForm *me = (SSWR::AVIRead::AVIRJTT808ServerForm*)userObj;
-	Text::String *s = me->lbLog->GetSelectedItemTextNew();
-	if (s)
+	NotNullPtr<Text::String> s;
+	if (me->lbLog->GetSelectedItemTextNew().SetTo(s))
 	{
 		me->txtLog->SetText(s->ToCString());
 		s->Release();

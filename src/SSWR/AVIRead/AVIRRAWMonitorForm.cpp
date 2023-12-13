@@ -255,8 +255,8 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnIPTranSelChg(void *userObj)
 void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnLogSelChg(void *userObj)
 {
 	SSWR::AVIRead::AVIRRAWMonitorForm *me = (SSWR::AVIRead::AVIRRAWMonitorForm*)userObj;
-	Text::String *s = me->lbLog->GetSelectedItemTextNew();
-	if (s)
+	NotNullPtr<Text::String> s;
+	if (me->lbLog->GetSelectedItemTextNew().SetTo(s))
 	{
 		me->txtLog->SetText(s->ToCString());
 		s->Release();

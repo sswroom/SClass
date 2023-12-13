@@ -8,7 +8,7 @@ void __stdcall SSWR::AVIRead::AVIRSMakeForm::OnProgSelChg(void *userObj)
 	me->lbProgHeader->ClearItems();
 	me->lbProgObject->ClearItems();
 	me->lbProgSource->ClearItems();
-	if (progName.Set(me->lbProg->GetSelectedItemTextNew()))
+	if (me->lbProg->GetSelectedItemTextNew().SetTo(progName))
 	{
 		Data::FastStringMap<Int32> objList;
 		Data::FastStringMap<Int32> liblist;
@@ -68,9 +68,9 @@ void __stdcall SSWR::AVIRead::AVIRSMakeForm::OnProgSelChg(void *userObj)
 void __stdcall SSWR::AVIRead::AVIRSMakeForm::OnProgGroupSelChg(void *userObj)
 {
 	SSWR::AVIRead::AVIRSMakeForm *me = (SSWR::AVIRead::AVIRSMakeForm*)userObj;
-	Text::String *progName = me->lbProgGroup->GetSelectedItemTextNew();
+	NotNullPtr<Text::String> progName;
 	me->lbProgGroupItems->ClearItems();
-	if (progName)
+	if (me->lbProgGroup->GetSelectedItemTextNew().SetTo(progName))
 	{
 		const IO::SMake::ProgramItem *prog = me->smake->GetProgItem(progName->ToCString());
 		if (prog)

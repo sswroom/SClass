@@ -47,9 +47,9 @@ void __stdcall SSWR::AVIRead::AVIRTFTPServerForm::OnStartClick(void *userObj)
 void __stdcall SSWR::AVIRead::AVIRTFTPServerForm::OnLogSel(void *userObj)
 {
 	SSWR::AVIRead::AVIRTFTPServerForm *me = (SSWR::AVIRead::AVIRTFTPServerForm*)userObj;
-	Text::String *s = me->lbLog->GetSelectedItemTextNew();
-	me->txtLog->SetText(s->ToCString());
-	s->Release();
+	Optional<Text::String> s = me->lbLog->GetSelectedItemTextNew();
+	me->txtLog->SetText(Text::String::OrEmpty(s)->ToCString());
+	OPTSTR_DEL(s);
 }
 
 void __stdcall SSWR::AVIRead::AVIRTFTPServerForm::OnTimerTick(void *userObj)

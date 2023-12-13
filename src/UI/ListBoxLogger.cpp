@@ -91,8 +91,8 @@ void __stdcall UI::ListBoxLogger::OnListBoxSelChg(void *userObj)
 	UI::ListBoxLogger *me = (UI::ListBoxLogger*)userObj;
 	if (me->txt)
 	{
-		Text::String *s = me->lb->GetSelectedItemTextNew();
-		if (s)
+		NotNullPtr<Text::String> s;
+		if (me->lb->GetSelectedItemTextNew().SetTo(s))
 		{
 			me->txt->SetText(s->ToCString());
 			s->Release();

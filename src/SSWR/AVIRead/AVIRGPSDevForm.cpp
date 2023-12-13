@@ -123,8 +123,8 @@ void __stdcall SSWR::AVIRead::AVIRGPSDevForm::OnAlertRClicked(void *userObj)
 void __stdcall SSWR::AVIRead::AVIRGPSDevForm::OnDeviceSelChg(void *userObj)
 {
 	SSWR::AVIRead::AVIRGPSDevForm *me = (SSWR::AVIRead::AVIRGPSDevForm*)userObj;
-	Text::String *s = me->lbDevice->GetSelectedItemTextNew();
-	if (s)
+	NotNullPtr<Text::String> s;
+	if (me->lbDevice->GetSelectedItemTextNew().SetTo(s))
 	{
 		me->SendGetDevice(s->ToInt64());
 		s->Release();
@@ -134,8 +134,8 @@ void __stdcall SSWR::AVIRead::AVIRGPSDevForm::OnDeviceSelChg(void *userObj)
 void __stdcall SSWR::AVIRead::AVIRGPSDevForm::OnAlertSelChg(void *userObj)
 {
 	SSWR::AVIRead::AVIRGPSDevForm *me = (SSWR::AVIRead::AVIRGPSDevForm*)userObj;
-	Text::String *s = me->lbAlert->GetSelectedItemTextNew();
-	if (s)
+	NotNullPtr<Text::String> s;
+	if (me->lbAlert->GetSelectedItemTextNew().SetTo(s))
 	{
 		me->SendGetAlert(s->ToInt32());
 		s->Release();
@@ -145,8 +145,8 @@ void __stdcall SSWR::AVIRead::AVIRGPSDevForm::OnAlertSelChg(void *userObj)
 void __stdcall SSWR::AVIRead::AVIRGPSDevForm::OnUserSelChg(void *userObj)
 {
 	SSWR::AVIRead::AVIRGPSDevForm *me = (SSWR::AVIRead::AVIRGPSDevForm*)userObj;
-	Text::String *s = me->lbUser->GetSelectedItemTextNew();
-	if (s)
+	NotNullPtr<Text::String> s;
+	if (me->lbUser->GetSelectedItemTextNew().SetTo(s))
 	{
 		me->SendGetUser(s->ToInt32());
 		s->Release();
