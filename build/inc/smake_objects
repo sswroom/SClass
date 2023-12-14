@@ -189,7 +189,7 @@ MDBFileConnL.o: ../../src/DB/MDBFileConn.cpp
 !-lodbcinst
 MDBFileConnNul.o: ../../src/DB/MDBFileConnNul.cpp
 MongoDB.o: ../../src/DB/MongoDB.cpp
-$`pkg-config --cflags libmongoc-1.0`
+$`$(PKG-CONFIG) --cflags libmongoc-1.0`
 !-lmongoc-1.0
 !-lbson-1.0
 MongoDBFreeBSD.o: ../../src/DB/MongoDB.cpp
@@ -230,8 +230,8 @@ OLEDBConnW.o: ../../src/DB/OLEDBConnW.cpp
 OLEDBGuid.o: ../../src/DB/OLEDBGuid.cpp
 PageRequest.o: ../../src/DB/PageRequest.cpp
 PostgreSQLConn.o: ../../src/DB/PostgreSQLConn.cpp
-$`pkg-config --cflags libpq`
-!`pkg-config --libs libpq`
+$`$(PKG-CONFIG) --cflags libpq`
+!`$(PKG-CONFIG) --libs libpq`
 PostgreSQLConnNul.o: ../../src/DB/PostgreSQLConnNul.cpp
 ReadingDB.o: ../../src/DB/ReadingDB.cpp
 ReadingDBTool.o: ../../src/DB/ReadingDBTool.cpp
@@ -271,25 +271,25 @@ ExporterList.o: ../../src/Exporter/ExporterList.cpp
 GIFExporter.o: ../../src/Exporter/GIFExporter.cpp
 GPXExporter.o: ../../src/Exporter/GPXExporter.cpp
 GUIExporterGTK.o: ../../src/Exporter/GUIExporterGTK.cpp
-$`pkg-config --cflags gtk+-3.0`
-!`pkg-config --libs gtk+-3.0`
+$`$(PKG-CONFIG) --cflags gtk+-3.0`
+!`$(PKG-CONFIG) --libs gtk+-3.0`
 GUIExporterNull.o: ../../src/Exporter/GUIExporterNull.cpp
 GUIExporterW.o: ../../src/Exporter/GUIExporterW.cpp
 !-lgdiplus
 GUIGIFExporterGTK.o: ../../src/Exporter/GUIGIFExporterGTK.cpp
-$`pkg-config --cflags gtk+-3.0`
+$`$(PKG-CONFIG) --cflags gtk+-3.0`
 GUIGIFExporterNull.o: ../../src/Exporter/GUIGIFExporterNull.cpp
 GUIGIFExporterW.o: ../../src/Exporter/GUIGIFExporterW.cpp
 GUIJPGExporterGTK.o: ../../src/Exporter/GUIJPGExporterGTK.cpp
-$`pkg-config --cflags gtk+-3.0`
+$`$(PKG-CONFIG) --cflags gtk+-3.0`
 GUIJPGExporterNull.o: ../../src/Exporter/GUIJPGExporterNull.cpp
 GUIJPGExporterW.o: ../../src/Exporter/GUIJPGExporterW.cpp
 GUIPNGExporterGTK.o: ../../src/Exporter/GUIPNGExporterGTK.cpp
-$`pkg-config --cflags gtk+-3.0`
+$`$(PKG-CONFIG) --cflags gtk+-3.0`
 GUIPNGExporterNull.o: ../../src/Exporter/GUIPNGExporterNull.cpp
 GUIPNGExporterW.o: ../../src/Exporter/GUIPNGExporterW.cpp
 GUITIFExporterGTK.o: ../../src/Exporter/GUITIFExporterGTK.cpp
-$`pkg-config --cflags gtk+-3.0`
+$`$(PKG-CONFIG) --cflags gtk+-3.0`
 GUITIFExporterNull.o: ../../src/Exporter/GUITIFExporterNull.cpp
 GUITIFExporterW.o: ../../src/Exporter/GUITIFExporterW.cpp
 HEIFExporter.o: ../../src/Exporter/HEIFExporter.cpp
@@ -367,13 +367,13 @@ ConsoleWriterW.o: ../../src/IO/ConsoleWriterW.cpp
 CyclicLogBuffer.o: ../../src/IO/CyclicLogBuffer.cpp
 DataCaptureStream.o: ../../src/IO/DataCaptureStream.cpp
 DBusManager.o: ../../src/IO/DBusManager.cpp
-$`pkg-config --cflags dbus-1`
-$`pkg-config --cflags glib-2.0`
-!`pkg-config --libs dbus-1`
-!`pkg-config --libs glib-2.0`
+$`$(PKG-CONFIG) --cflags dbus-1`
+$`$(PKG-CONFIG) --cflags glib-2.0`
+!`$(PKG-CONFIG) --libs dbus-1`
+!`$(PKG-CONFIG) --libs glib-2.0`
 DBusClient.o: ../../src/IO/DBusClient.cpp
-$`pkg-config --cflags dbus-1`
-!`pkg-config --libs dbus-1`
+$`$(PKG-CONFIG) --cflags dbus-1`
+!`$(PKG-CONFIG) --libs dbus-1`
 DebugWriter_Null.o: ../../src/IO/DebugWriter_Null.cpp
 DebugWriterL.o: ../../src/IO/DebugWriterL.cpp
 DebugWriterW.o: ../../src/IO/DebugWriterW.cpp
@@ -933,11 +933,11 @@ DrawEngineFactorySEng.o: ../../src/Media/DrawEngineFactorySEng.cpp
 DrawEngineFactoryWin.o: ../../src/Media/DrawEngineFactoryWin.cpp
 DrawImageTool.o: ../../src/Media/DrawImageTool.cpp
 DRMMonitorSurfaceMgr.o: ../../src/Media/DRMMonitorSurfaceMgr.cpp
-$`pkg-config --cflags libdrm`
-!`pkg-config --libs libdrm`
+$`$(PKG-CONFIG) --cflags libdrm`
+!`$(PKG-CONFIG) --libs libdrm`
 DRMSurface.o: ../../src/Media/DRMSurface.cpp
-$`pkg-config --cflags libdrm`
-!`pkg-config --libs libdrm`
+$`$(PKG-CONFIG) --cflags libdrm`
+!`$(PKG-CONFIG) --libs libdrm`
 EDID.o: ../../src/Media/EDID.cpp
 EXIFData.o: ../../src/Media/EXIFData.cpp
 FBMonitorSurfaceMgr.o: ../../src/Media/FBMonitorSurfaceMgr.cpp
@@ -953,7 +953,7 @@ GDIEngine.o: ../../src/Media/GDIEngine.cpp
 !-lmsimg32
 GRFilter.o: ../../src/Media/GRFilter.cpp
 GTKDrawEngine.o: ../../src/Media/GTKDrawEngine.cpp
-$`pkg-config --cflags gtk+-3.0`
+$`$(PKG-CONFIG) --cflags gtk+-3.0`
 GTKDrawEngineNoGDK.o: ../../src/Media/GTKDrawEngine.cpp
 !-lcairo
 H264Parser.o: ../../src/Media/H264Parser.cpp
@@ -999,8 +999,8 @@ $-I/opt/vc/include/interface -I/opt/vc/include
 !-lmmal_core -lmmal -lmmal_util
 !-L/opt/vc/lib
 MonitorInfoGTK.o: ../../src/Media/MonitorInfoGTK.cpp
-$`pkg-config --cflags gtk+-3.0`
-!`pkg-config --libs gtk+-3.0`
+$`$(PKG-CONFIG) --cflags gtk+-3.0`
+!`$(PKG-CONFIG) --libs gtk+-3.0`
 MonitorInfoJava.o: ../../src/Media/MonitorInfoJava.cpp
 MonitorInfoNul.o: ../../src/Media/MonitorInfoNul.cpp
 MonitorInfoW.o: ../../src/Media/MonitorInfoW.cpp
@@ -1013,8 +1013,8 @@ MPEGVideoParser.o: ../../src/Media/MPEGVideoParser.cpp
 MPGFile.o: ../../src/Media/MPGFile.cpp
 MSFontRenderer.o: ../../src/Media/MSFontRenderer.cpp
 PulseAudioRenderer.o: ../../src/Media/PulseAudioRenderer.cpp
-$`pkg-config --cflags libpulse`
-!`pkg-config --libs libpulse`
+$`$(PKG-CONFIG) --cflags libpulse`
+!`$(PKG-CONFIG) --libs libpulse`
 NoGUIDrawEngine.o: ../../src/Media/NoGUIDrawEngine.cpp
 NullRenderer.o: ../../src/Media/NullRenderer.cpp
 NWASource.o: ../../src/Media/NWASource.cpp
@@ -1030,7 +1030,7 @@ PDFParameter.o: ../../src/Media/PDFParameter.cpp
 PhotoInfo.o: ../../src/Media/PhotoInfo.cpp
 Playlist.o: ../../src/Media/Playlist.cpp
 PrinterCUPS.o: ../../src/Media/PrinterCUPS.cpp
-$`pkg-config --cflags --libs cairo` `cups-config --cflags`
+$`$(PKG-CONFIG) --cflags --libs cairo` `cups-config --cflags`
 !`cups-config --libs`
 PrinterNull.o: ../../src/Media/PrinterNull.cpp
 PrinterW.o: ../../src/Media/PrinterW.cpp
@@ -1230,10 +1230,10 @@ JasperReport.o: ../../src/Media/Jasper/JasperReport.cpp
 JasperReportElement.o: ../../src/Media/Jasper/JasperReportElement.cpp
 JasperXML.o: ../../src/Media/Jasper/JasperXML.cpp
 OCVFrame.o: ../../src/Media/OpenCV/OCVFrame.cpp
-$@(pkg-config --exists opencv) `pkg-config --cflags opencv`
-$@(pkg-config --exists opencv4) `pkg-config --cflags opencv4`
-!@(pkg-config --exists opencv) `pkg-config --libs opencv`
-!@(pkg-config --exists opencv4) `pkg-config --libs opencv4`
+$@($(PKG-CONFIG) --exists opencv) `$(PKG-CONFIG) --cflags opencv`
+$@($(PKG-CONFIG) --exists opencv4) `$(PKG-CONFIG) --cflags opencv4`
+!@($(PKG-CONFIG) --exists opencv) `$(PKG-CONFIG) --libs opencv`
+!@($(PKG-CONFIG) --exists opencv4) `$(PKG-CONFIG) --libs opencv4`
 OCVFrameMac.o: ../../src/Media/OpenCV/OCVFrame.cpp
 $-I /opt/local/include/opencv4
 !-L /opt/local/lib/opencv4
@@ -1243,20 +1243,20 @@ $-I /opt/local/include/opencv4
 OCVFrameNull.o: ../../src/Media/OpenCV/OCVFrameNull.cpp
 OCVFrameFeeder.o: ../../src/Media/OpenCV/OCVFrameFeeder.cpp
 OCVNumPlateFinder.o: ../../src/Media/OpenCV/OCVNumPlateFinder.cpp
-$@(pkg-config --exists opencv) `pkg-config --cflags opencv`
-$@(pkg-config --exists opencv4) `pkg-config --cflags opencv4`
-!@(pkg-config --exists opencv) `pkg-config --libs opencv`
-!@(pkg-config --exists opencv4) `pkg-config --libs opencv4`
+$@($(PKG-CONFIG) --exists opencv) `$(PKG-CONFIG) --cflags opencv`
+$@($(PKG-CONFIG) --exists opencv4) `$(PKG-CONFIG) --cflags opencv4`
+!@($(PKG-CONFIG) --exists opencv) `$(PKG-CONFIG) --libs opencv`
+!@($(PKG-CONFIG) --exists opencv4) `$(PKG-CONFIG) --libs opencv4`
 OCVNumPlateFinder_Null.o: ../../src/Media/OpenCV/OCVNumPlateFinder_Null.cpp
 OCVNumPlateFinderMac.o: ../../src/Media/OpenCV/OCVNumPlateFinder.cpp
 $-I /opt/local/include/opencv4
 !-L /opt/local/lib/opencv4
 !-lopencv_core
 OCVObjectDetector.o: ../../src/Media/OpenCV/OCVObjectDetector.cpp
-$@(pkg-config --exists opencv) `pkg-config --cflags opencv`
-$@(pkg-config --exists opencv4) `pkg-config --cflags opencv4`
-!@(pkg-config --exists opencv) `pkg-config --libs opencv`
-!@(pkg-config --exists opencv4) `pkg-config --libs opencv4`
+$@($(PKG-CONFIG) --exists opencv) `$(PKG-CONFIG) --cflags opencv`
+$@($(PKG-CONFIG) --exists opencv4) `$(PKG-CONFIG) --cflags opencv4`
+!@($(PKG-CONFIG) --exists opencv) `$(PKG-CONFIG) --libs opencv`
+!@($(PKG-CONFIG) --exists opencv4) `$(PKG-CONFIG) --libs opencv4`
 OCVObjectDetectorMac.o: ../../src/Media/OpenCV/OCVObjectDetector.cpp
 $-I /opt/local/include/opencv4
 !-L /opt/local/lib/opencv4
@@ -1539,8 +1539,8 @@ GamedatPac2Parser.o: ../../src/Parser/FileParser/GamedatPac2Parser.cpp
 GIFParser.o: ../../src/Parser/FileParser/GIFParser.cpp
 GLOCParser.o: ../../src/Parser/FileParser/GLOCParser.cpp
 GUIImgParserGTK.o: ../../src/Parser/FileParser/GUIImgParserGTK.cpp
-$`pkg-config --cflags gtk+-3.0`
-!`pkg-config --libs gtk+-3.0`
+$`$(PKG-CONFIG) --cflags gtk+-3.0`
+!`$(PKG-CONFIG) --libs gtk+-3.0`
 GUIImgParserNul.o: ../../src/Parser/FileParser/GUIImgParserNul.cpp
 GUIImgParserW.o: ../../src/Parser/FileParser/GUIImgParserW.cpp
 !-lgdiplus
@@ -1557,14 +1557,9 @@ IS2Parser.o: ../../src/Parser/FileParser/IS2Parser.cpp
 ISOParser.o: ../../src/Parser/FileParser/ISOParser.cpp
 JKSParser.o: ../../src/Parser/FileParser/JKSParser.cpp
 JP2Parser.o: ../../src/Parser/FileParser/JP2Parser.cpp
-!-lopenjp2
+$`$(PKG-CONFIG) --cflags libopenjp2`
+!`$(PKG-CONFIG) --libs libopenjp2`
 JP2Parser_Null.o: ../../src/Parser/FileParser/JP2Parser_Null.cpp
-JP2ParserCyg.o: ../../src/Parser/FileParser/JP2Parser.cpp
-$`pkgconf --cflags libopenjp2`
-!`pkgconf --libs libopenjp2`
-JP2ParserL.o: ../../src/Parser/FileParser/JP2Parser.cpp
-$`pkg-config --cflags libopenjp2`
-!`pkg-config --libs libopenjp2`
 JSONParser.o: ../../src/Parser/FileParser/JSONParser.cpp
 LinkArcParser.o: ../../src/Parser/FileParser/LinkArcParser.cpp
 LOGParser.o: ../../src/Parser/FileParser/LOGParser.cpp
@@ -2147,168 +2142,168 @@ UTF8TextBinEnc.o: ../../src/Text/TextBinEnc/UTF8TextBinEnc.cpp
 UTF8UCaseTextBinEnc.o: ../../src/Text/TextBinEnc/UTF8UCaseTextBinEnc.cpp
 
 ClipboardGTK.o: ../../src/UI/ClipboardGTK.cpp
-$`pkg-config --cflags gtk+-3.0`
+$`$(PKG-CONFIG) --cflags gtk+-3.0`
 ClipboardJava.o: ../../src/UI/ClipboardJava.cpp
 $-I$(JAVA_HOME)/include
 $-I$(JAVA_HOME)/include/linux
 ClipboardW.o: ../../src/UI/ClipboardW.cpp
 FileDialogGTK.o: ../../src/UI/FileDialogGTK.cpp
-$`pkg-config --cflags gtk+-3.0`
+$`$(PKG-CONFIG) --cflags gtk+-3.0`
 FileDialogWin.o: ../../src/UI/FileDialogWin.cpp
 FolderDialogGTK.o: ../../src/UI/FolderDialogGTK.cpp
-$`pkg-config --cflags gtk+-3.0`
+$`$(PKG-CONFIG) --cflags gtk+-3.0`
 FolderDialogWin.o: ../../src/UI/FolderDialogWin.cpp
 FontDialogGTK.o: ../../src/UI/FontDialogGTK.cpp
-$`pkg-config --cflags gtk+-3.0`
+$`$(PKG-CONFIG) --cflags gtk+-3.0`
 FontDialogWin.o: ../../src/UI/FontDialogWin.cpp
 ListBoxLogger.o: ../../src/UI/ListBoxLogger.cpp
 GUIButtonGTK.o: ../../src/UI/GUIButtonGTK.cpp
-$`pkg-config --cflags gtk+-3.0`
+$`$(PKG-CONFIG) --cflags gtk+-3.0`
 GUIButtonWin.o: ../../src/UI/GUIButtonWin.cpp
 GUICheckBoxGTK.o: ../../src/UI/GUICheckBoxGTK.cpp
-$`pkg-config --cflags gtk+-3.0`
+$`$(PKG-CONFIG) --cflags gtk+-3.0`
 GUICheckBoxWin.o: ../../src/UI/GUICheckBoxWin.cpp
 GUICheckedListBoxGTK.o: ../../src/UI/GUICheckedListBoxGTK.cpp
-$`pkg-config --cflags gtk+-3.0`
+$`$(PKG-CONFIG) --cflags gtk+-3.0`
 GUICheckedListBoxWin.o: ../../src/UI/GUICheckedListBoxWin.cpp
 GUIClientControlGTK.o: ../../src/UI/GUIClientControlGTK.cpp
-$`pkg-config --cflags gtk+-3.0`
+$`$(PKG-CONFIG) --cflags gtk+-3.0`
 GUIClientControlJava.o: ../../src/UI/GUIClientControlJava.cpp
 $-I$(JAVA_HOME)/include
 $-I$(JAVA_HOME)/include/linux
 GUIClientControlWin.o: ../../src/UI/GUIClientControlWin.cpp
 GUIComboBoxGTK.o: ../../src/UI/GUIComboBoxGTK.cpp
-$`pkg-config --cflags gtk+-3.0`
+$`$(PKG-CONFIG) --cflags gtk+-3.0`
 GUIComboBoxUtil.o: ../../src/UI/GUIComboBoxUtil.cpp
 GUIComboBoxWin.o: ../../src/UI/GUIComboBoxWin.cpp
 GUIControlGTK.o: ../../src/UI/GUIControlGTK.cpp
-$`pkg-config --cflags gtk+-3.0`
+$`$(PKG-CONFIG) --cflags gtk+-3.0`
 GUIControlJava.o: ../../src/UI/GUIControlJava.cpp
 $-I$(JAVA_HOME)/include
 $-I$(JAVA_HOME)/include/linux
 GUIControlWin.o: ../../src/UI/GUIControlWin.cpp
 GUICoreGTK.o: ../../src/UI/GUICoreGTK.cpp
-$`pkg-config --cflags gtk+-3.0`
+$`$(PKG-CONFIG) --cflags gtk+-3.0`
 !-lX11
 GUICoreJava.o: ../../src/UI/GUICoreJava.cpp
 $-I$(JAVA_HOME)/include
 $-I$(JAVA_HOME)/include/linux
 GUICoreWin.o: ../../src/UI/GUICoreWin.cpp
 GUICustomDrawGTK.o: ../../src/UI/GUICustomDrawGTK.cpp
-$`pkg-config --cflags gtk+-3.0`
+$`$(PKG-CONFIG) --cflags gtk+-3.0`
 GUICustomDrawVScrollGTK.o: ../../src/UI/GUICustomDrawVScrollGTK.cpp
-$`pkg-config --cflags gtk+-3.0`
+$`$(PKG-CONFIG) --cflags gtk+-3.0`
 GUICustomDrawVScrollWin.o: ../../src/UI/GUICustomDrawVScrollWin.cpp
 GUICustomDrawWin.o: ../../src/UI/GUICustomDrawWin.cpp
 !-lwinmm
 GUIDateTimePickerGTK.o: ../../src/UI/GUIDateTimePickerGTK.cpp
-$`pkg-config --cflags gtk+-3.0`
+$`$(PKG-CONFIG) --cflags gtk+-3.0`
 GUIDateTimePickerWin.o: ../../src/UI/GUIDateTimePickerWin.cpp
 GUIDDrawControlGtk.o: ../../src/UI/GUIDDrawControlGtk.cpp
-$`pkg-config --cflags gtk+-3.0`
+$`$(PKG-CONFIG) --cflags gtk+-3.0`
 GUIDDrawControlWin.o: ../../src/UI/GUIDDrawControlWin.cpp
 !-lwinmm
 GUIDObjArea.o: ../../src/UI/GUIDObjArea.cpp
 GUIDragDropGTK.o: ../../src/UI/GUIDragDropGTK.cpp
-$`pkg-config --cflags gtk+-3.0`
+$`$(PKG-CONFIG) --cflags gtk+-3.0`
 GUIDragDropWin.o: ../../src/UI/GUIDragDropWin.cpp
 GUIFormGTK.o: ../../src/UI/GUIFormGTK.cpp
-$`pkg-config --cflags gtk+-3.0`
+$`$(PKG-CONFIG) --cflags gtk+-3.0`
 GUIFormJava.o: ../../src/UI/GUIFormJava.cpp
 $-I$(JAVA_HOME)/include
 $-I$(JAVA_HOME)/include/linux
 GUIFormWin.o: ../../src/UI/GUIFormWin.cpp
 GUIGroupBoxGTK.o: ../../src/UI/GUIGroupBoxGTK.cpp
-$`pkg-config --cflags gtk+-3.0`
+$`$(PKG-CONFIG) --cflags gtk+-3.0`
 GUIGroupBoxWin.o: ../../src/UI/GUIGroupBoxWin.cpp
 GUIHexFileView.o: ../../src/UI/GUIHexFileView.cpp
 GUIHScrollBarGTK.o: ../../src/UI/GUIHScrollBarGTK.cpp
-$`pkg-config --cflags gtk+-3.0`
+$`$(PKG-CONFIG) --cflags gtk+-3.0`
 GUIHScrollBarWin.o: ../../src/UI/GUIHScrollBarWin.cpp
 GUIHSplitterGTK.o: ../../src/UI/GUIHSplitterGTK.cpp
-$`pkg-config --cflags gtk+-3.0`
+$`$(PKG-CONFIG) --cflags gtk+-3.0`
 GUIHSplitterWin.o: ../../src/UI/GUIHSplitterWin.cpp
 GUIIconWin.o: ../../src/UI/GUIIconWin.cpp
 GUILabelGTK.o: ../../src/UI/GUILabelGTK.cpp
-$`pkg-config --cflags gtk+-3.0`
+$`$(PKG-CONFIG) --cflags gtk+-3.0`
 GUILabelWin.o: ../../src/UI/GUILabelWin.cpp
 GUIListBoxGTK.o: ../../src/UI/GUIListBoxGTK.cpp
-$`pkg-config --cflags gtk+-3.0`
+$`$(PKG-CONFIG) --cflags gtk+-3.0`
 GUIListBoxWin.o: ../../src/UI/GUIListBoxWin.cpp
 GUIListViewGTK.o: ../../src/UI/GUIListViewGTK.cpp
-$`pkg-config --cflags gtk+-3.0`
+$`$(PKG-CONFIG) --cflags gtk+-3.0`
 GUIListViewWin.o: ../../src/UI/GUIListViewWin.cpp
 !-lcomctl32
 GUIMainMenu.o: ../../src/UI/GUIMainMenu.cpp
 GUIMapControl.o: ../../src/UI/GUIMapControl.cpp
 GUIMapTreeView.o: ../../src/UI/GUIMapTreeView.cpp
 GUIMenuGTK.o: ../../src/UI/GUIMenuGTK.cpp
-$`pkg-config --cflags gtk+-3.0`
+$`$(PKG-CONFIG) --cflags gtk+-3.0`
 GUIMenuJava.o: ../../src/UI/GUIMenuJava.cpp
 $-I$(JAVA_HOME)/include
 $-I$(JAVA_HOME)/include/linux
 GUIMenuWin.o: ../../src/UI/GUIMenuWin.cpp
 GUIPanelGTK.o: ../../src/UI/GUIPanelGTK.cpp
-$`pkg-config --cflags gtk+-3.0`
+$`$(PKG-CONFIG) --cflags gtk+-3.0`
 GUIPanelWin.o: ../../src/UI/GUIPanelWin.cpp
 GUIPictureBoxDD.o: ../../src/UI/GUIPictureBoxDD.cpp
 GUIPictureBoxGTK.o: ../../src/UI/GUIPictureBoxGTK.cpp
-$`pkg-config --cflags gtk+-3.0`
+$`$(PKG-CONFIG) --cflags gtk+-3.0`
 GUIPictureBoxSimpleGTK.o: ../../src/UI/GUIPictureBoxSimpleGTK.cpp
-$`pkg-config --cflags gtk+-3.0`
+$`$(PKG-CONFIG) --cflags gtk+-3.0`
 GUIPictureBoxSimpleWin.o: ../../src/UI/GUIPictureBoxSimpleWin.cpp
 GUIPictureBoxWin.o: ../../src/UI/GUIPictureBoxWin.cpp
 GUIPictureList.o: ../../src/UI/GUIPictureList.cpp
 GUIPopupMenuGTK.o: ../../src/UI/GUIPopupMenuGTK.cpp
-$`pkg-config --cflags gtk+-3.0`
+$`$(PKG-CONFIG) --cflags gtk+-3.0`
 GUIPopupMenuWin.o: ../../src/UI/GUIPopupMenuWin.cpp
 GUIProgressBarGTK.o: ../../src/UI/GUIProgressBarGTK.cpp
-$`pkg-config --cflags gtk+-3.0`
+$`$(PKG-CONFIG) --cflags gtk+-3.0`
 GUIProgressBarWin.o: ../../src/UI/GUIProgressBarWin.cpp
 !-lcomctl32
 GUIRadioButtonGTK.o: ../../src/UI/GUIRadioButtonGTK.cpp
-$`pkg-config --cflags gtk+-3.0`
+$`$(PKG-CONFIG) --cflags gtk+-3.0`
 GUIRadioButtonWin.o: ../../src/UI/GUIRadioButtonWin.cpp
 GUIRealtimeLineChartGTK.o: ../../src/UI/GUIRealtimeLineChartGTK.cpp
-$`pkg-config --cflags gtk+-3.0`
+$`$(PKG-CONFIG) --cflags gtk+-3.0`
 GUIRealtimeLineChartWin.o: ../../src/UI/GUIRealtimeLineChartWin.cpp
 GUISudokuViewer.o: ../../src/UI/GUISudokuViewer.cpp
 GUITabControlGTK.o: ../../src/UI/GUITabControlGTK.cpp
-$`pkg-config --cflags gtk+-3.0`
+$`$(PKG-CONFIG) --cflags gtk+-3.0`
 GUITabControlWin.o: ../../src/UI/GUITabControlWin.cpp
 !-lcomctl32
 GUITabPage.o: ../../src/UI/GUITabPage.cpp
 GUITextBoxGTK.o: ../../src/UI/GUITextBoxGTK.cpp
-$`pkg-config --cflags gtk+-3.0`
+$`$(PKG-CONFIG) --cflags gtk+-3.0`
 GUITextBoxWin.o: ../../src/UI/GUITextBoxWin.cpp
 GUITextFileView.o: ../../src/UI/GUITextFileView.cpp
 GUITextViewGTK.o: ../../src/UI/GUITextViewGTK.cpp
-$`pkg-config --cflags gtk+-3.0`
+$`$(PKG-CONFIG) --cflags gtk+-3.0`
 GUITextViewWin.o: ../../src/UI/GUITextViewWin.cpp
 GUITimerGTK.o: ../../src/UI/GUITimerGTK.cpp
-$`pkg-config --cflags gtk+-3.0`
+$`$(PKG-CONFIG) --cflags gtk+-3.0`
 GUITimerJava.o: ../../src/UI/GUITimerJava.cpp
 $-I$(JAVA_HOME)/include
 $-I$(JAVA_HOME)/include/linux
 GUITimerWin.o: ../../src/UI/GUITimerWin.cpp
 GUITrackBarGTK.o: ../../src/UI/GUITrackBarGTK.cpp
-$`pkg-config --cflags gtk+-3.0`
+$`$(PKG-CONFIG) --cflags gtk+-3.0`
 GUITrackBarWin.o: ../../src/UI/GUITrackBarWin.cpp
 !-lcomctl32
 GUITreeViewGTK.o: ../../src/UI/GUITreeViewGTK.cpp
-$`pkg-config --cflags gtk+-3.0`
+$`$(PKG-CONFIG) --cflags gtk+-3.0`
 GUITreeViewWin.o: ../../src/UI/GUITreeViewWin.cpp
 GUIVideoBoxDD.o: ../../src/UI/GUIVideoBoxDD.cpp
 GUIVideoBoxDDLQ.o: ../../src/UI/GUIVideoBoxDDLQ.cpp
 GUIVSplitterGTK.o: ../../src/UI/GUIVSplitterGTK.cpp
-$`pkg-config --cflags gtk+-3.0`
+$`$(PKG-CONFIG) --cflags gtk+-3.0`
 GUIVSplitterWin.o: ../../src/UI/GUIVSplitterWin.cpp
 GUIWindowDragDrop.o: ../../src/UI/GUIWindowDragDrop.cpp
 MessageDialogJava.o: ../../src/UI/MessageDialogJava.cpp
 $-I$(JAVA_HOME)/include
 $-I$(JAVA_HOME)/include/linux
 MessageDialogL.o: ../../src/UI/MessageDialogL.cpp
-$`pkg-config --cflags gtk+-3.0`
+$`$(PKG-CONFIG) --cflags gtk+-3.0`
 MessageDialogW.o: ../../src/UI/MessageDialogW.cpp
 ButtonDObj.o: ../../src/UI/DObj/ButtonDObj.cpp
 ClickAreaDObj.o: ../../src/UI/DObj/ClickAreaDObj.cpp

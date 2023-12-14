@@ -168,7 +168,7 @@ Net/WLANWindowsInterface.h:
 Parser/FileParser/HEIFParser.h:
 @HEIFParser.o
 Parser/FileParser/JP2Parser.h:
-@JP2ParserCyg.o
+@JP2Parser.o
 Parser/FileParser/WebPParser.h:
 @WebPParser.o
 
