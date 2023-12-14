@@ -114,7 +114,7 @@ void IO::SMake::AppendCfg(NotNullPtr<Text::StringBuilderUTF8> sb, Text::CString 
 				break;
 			}
 			sb2.ClearStr();
-			sb2.AppendC(compileCfg.v, (UOSInt)i);
+			AppendCfgItem(sb2, Text::CStringNN(compileCfg.v, (UOSInt)i));
 			Manage::Process::ExecuteProcess(sb2.ToCString(), sb);
 			while (sb->EndsWith('\r') || sb->EndsWith('\n'))
 			{
@@ -257,13 +257,14 @@ Bool IO::SMake::LoadConfigFile(Text::CStringNN cfgFile)
 			}
 			else if (str1.StartsWith(UTF8STRC("@(")))
 			{
-				i = str1.IndexOf(')');
-				if (i != INVALID_INDEX && i > 1)
+				i = str1.BranketSearch(2, ')');
+				if (i != INVALID_INDEX)
 				{
+					Text::StringBuilderUTF8 sbCmd;
 					Text::StringBuilderUTF8 result;
-					NotNullPtr<Text::String> cmd = Text::String::New(&str1.v[2], i - 2);
+					AppendCfgItem(sbCmd, Text::CStringNN(&str1.v[2], i - 2));
 					Int32 ret;
-					if ((ret = Manage::Process::ExecuteProcess(cmd->ToCString(), result)) != 0)
+					if ((ret = Manage::Process::ExecuteProcess(sbCmd.ToCString(), result)) != 0)
 					{
 						valid = false;
 					}
@@ -271,7 +272,6 @@ Bool IO::SMake::LoadConfigFile(Text::CStringNN cfgFile)
 					{
 						str1 = str1.Substring(i + 1);
 					}
-					cmd->Release();
 				}
 			}
 			if (valid && prog)
@@ -290,10 +290,11 @@ Bool IO::SMake::LoadConfigFile(Text::CStringNN cfgFile)
 				i = str1.IndexOf(')');
 				if (i != INVALID_INDEX && i > 1)
 				{
+					Text::StringBuilderUTF8 sbCmd;
+					AppendCfgItem(sbCmd, Text::CStringNN(&str1.v[2], (UOSInt)i - 2));
 					Text::StringBuilderUTF8 result;
-					NotNullPtr<Text::String> cmd = Text::String::New(&str1.v[2], (UOSInt)i - 2);
 					Int32 ret;
-					if ((ret = Manage::Process::ExecuteProcess(cmd->ToCString(), result)) != 0)
+					if ((ret = Manage::Process::ExecuteProcess(sbCmd.ToCString(), result)) != 0)
 					{
 						valid = false;
 					}
@@ -301,7 +302,6 @@ Bool IO::SMake::LoadConfigFile(Text::CStringNN cfgFile)
 					{
 						str1 = str1.Substring(i + 1);
 					}
-					cmd->Release();
 				}
 			}
 			if (prog && valid)

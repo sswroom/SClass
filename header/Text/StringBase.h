@@ -82,6 +82,7 @@ namespace Text
 
 		Double MatchRating(NotNullPtr<StringBase<UTF8Char>> s) const;
 		Double MatchRating(const UTF8Char *targetStr, UOSInt strLen) const;
+		UOSInt BranketSearch(UOSInt startIndex, UTF8Char c) const;
 
 		Bool operator==(StringBase<T> s) const;
 	};
@@ -562,6 +563,58 @@ template <typename T> Double Text::StringBase<T>::MatchRating(const UTF8Char *ta
 	{
 		return 0.0;
 	}
+}
+
+template <typename T> UOSInt Text::StringBase<T>::BranketSearch(UOSInt startIndex, UTF8Char c) const
+{
+	if (leng <= startIndex)
+		return INVALID_INDEX;
+	UTF8Char branketList[20];
+	UOSInt branketCnt = 0;
+	UTF8Char thisC;
+	const T *curr = this->v + startIndex;
+	const T *endPtr = this->v + this->leng;
+	while (curr < endPtr)
+	{
+		thisC = *curr++;
+		if (thisC == c)
+		{
+			if (branketCnt == 0)
+				return (UOSInt)(curr - this->v - 1);
+			branketCnt--;
+			c = branketList[branketCnt];
+		}
+		else
+		{
+			switch (thisC)
+			{
+			case '\'':
+			case '\"':
+			case '`':
+				while (curr < endPtr && *curr++ != thisC);
+				break;
+			case '[':
+				if (branketCnt == 20)
+					return INVALID_INDEX;
+				branketList[branketCnt++] = c;
+				c = ']';
+				break;
+			case '(':
+				if (branketCnt == 20)
+					return INVALID_INDEX;
+				branketList[branketCnt++] = c;
+				c = ')';
+				break;
+			case '{':
+				if (branketCnt == 20)
+					return INVALID_INDEX;
+				branketList[branketCnt++] = c;
+				c = '}';
+				break;
+			}
+		}
+	}
+	return INVALID_INDEX;
 }
 
 template <typename T> Bool Text::StringBase<T>::operator==(StringBase<T> s) const
