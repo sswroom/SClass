@@ -1,5 +1,3 @@
 
 IO/GPIOControl.h:
-@GPIOControl.o
-
-GPIOControl.o: ../../src/IO/GPIOControl_BCM2708.cpp
+@GPIOControl_BCM2708.o

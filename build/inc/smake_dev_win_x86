@@ -1,25 +1,16 @@
 
 IO/GPUManager.h:
-@GPUManager.o
+@GPUManagerW.o
 IO/RobustelInfo.h:
-@RobustelInfo.o
+@RobustelInfo_Null.o
 IO/SMBIOSUtil.h:
-@SMBIOSUtil.o
+@SMBIOSUtilW.o
 IO/SystemInfo.h:
-@SystemInfo.o
+@SystemInfoW.o
 
 Media/CameraManager.h:
-@CameraManager.o
+@CameraManagerNul.o
 Media/DDCReader.h:
-@DDCReader.o
+@DDCReaderW.o
 Media/VideoCaptureMgr.h:
-@VideoCaptureMgr.o
-
-GPUManager.o: ../../src/IO/GPUManagerW.cpp
-RobustelInfo.o: ../../src/IO/RobustelInfo_Null.cpp
-SMBIOSUtil.o: ../../src/IO/SMBIOSUtilW.cpp
-SystemInfo.o: ../../src/IO/SystemInfoW.cpp
-CameraManager.o: ../../src/Media/CameraManagerNul.cpp
-DDCReader.o: ../../src/Media/DDCReaderW.cpp
-!-lsetupapi
-VideoCaptureMgr.o: ../../src/Media/VideoCaptureMgrW.cpp
+@VideoCaptureMgrW.o

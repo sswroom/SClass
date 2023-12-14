@@ -2,26 +2,19 @@
 DEPS := DeviceBase.o
 
 IO/GPUManager.h:
-@GPUManager.o
+@GPUManagerNull.o
 IO/RobustelInfo.h:
-@RobustelInfo.o
+@RobustelInfo_Null.o
 IO/SMBIOSUtil.h:
-@SMBIOSUtil.o
+@SMBIOSUtilNull.o
 IO/SystemInfo.h:
-@SystemInfo.o
+@SystemInfoMLW.o
 
 Media/CameraManager.h:
-@CameraManager.o
+@CameraManagerNul.o
 Media/DDCReader.h:
-@DDCReader.o
+@DDCReaderL.o
 Media/VideoCaptureMgr.h:
-@VideoCaptureMgr.o
+@VideoCaptureMgrL.o
 
 DeviceBase.o: ../../src/uClibcDeps.cpp
-GPUManager.o: ../../src/IO/GPUManagerNull.cpp
-RobustelInfo.o: ../../src/IO/RobustelInfo_Null.cpp
-SMBIOSUtil.o: ../../src/IO/SMBIOSUtilNull.cpp
-SystemInfo.o: ../../src/IO/SystemInfoMLW.cpp
-CameraManager.o: ../../src/Media/CameraManagerNul.cpp
-DDCReader.o: ../../src/Media/DDCReaderL.cpp
-VideoCaptureMgr.o: ../../src/Media/VideoCaptureMgrL.cpp

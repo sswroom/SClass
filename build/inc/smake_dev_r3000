@@ -11,29 +11,19 @@ rlib_types.h:
 rlib_uci.h:
 
 IO/GPUManager.h:
-@GPUManager.o
+@GPUManagerNull.o
 IO/RobustelInfo.h:
 @RobustelInfo.o
 IO/RobustelStatus.h:
 @RobustelStatus.o
 IO/SMBIOSUtil.h:
-@SMBIOSUtil.o
+@SMBIOSUtilNull.o
 IO/SystemInfo.h:
-@SystemInfo.o
+@SystemInfoEurotech.o
 
 Media/CameraManager.h:
-@CameraManager.o
+@CameraManagerNul.o
 Media/DDCReader.h:
-@DDCReader.o
+@DDCReaderNul.o
 Media/VideoCaptureMgr.h:
-@VideoCaptureMgr.o
-
-GPUManager.o: ../../src/IO/GPUManagerNull.cpp
-RobustelInfo.o: ../../src/IO/RobustelInfo.cpp
-RobustelStatus.o: ../../src/IO/RobustelStatus.cpp
-!-lrouter
-SMBIOSUtil.o: ../../src/IO/SMBIOSUtilNull.cpp
-SystemInfo.o: ../../src/IO/SystemInfoEurotech.cpp
-CameraManager.o: ../../src/Media/CameraManagerNul.cpp
-DDCReader.o: ../../src/Media/DDCReaderNul.cpp
-VideoCaptureMgr.o: ../../src/Media/VideoCaptureMgrL.cpp
+@VideoCaptureMgrL.o

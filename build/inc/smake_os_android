@@ -1,47 +1,46 @@
-
 Crypto/Cert/TrustStore.h:
-@TrustStore.o
+@TrustStore_Linux.o
 Crypto/Encrypt/RSAEnc.h:
-@RSAEnc.o
+@RSAEncNull.o
 
 DB/MDBFileConn.h:
-@MDBFileConn.o
+@MDBFileConnNul.o
 DB/MongoDB.h:
-@MongoDB.o
+@MongoDBNull.o
 DB/MySQLConn.h:
-@MySQLConn.o
+@MySQLConnNull.o
 DB/ODBCConn.h:
-@ODBCConn.o
+@ODBCConnNul.o
 DB/PostgreSQLConn.h:
-@PostgreSQLConn.o
+@PostgreSQLConnNul.o
 DB/TDSConn.h:
-@TDSConn.o
+@TDSConn_Null.o
 
 Exporter/HEIFExporter.h:
-@HEIFExporter.o
+@HEIFExporter_Null.o
 Exporter/WebPExporter.h:
-@WebPExporter.o
+@WebPExporter_Null.o
 
 IO/BTController.h:
-@BTController.o
+@BTControllerNull.o
 IO/BTManager.h:
-@BTManager.o
+@BTManagerNull.o
 IO/BTScanner.h:
-@BTScanner.o
+@BTScannerNull.o
 IO/DebugWriter.h:
-@DebugWriter.o
+@DebugWriter_Null.o
 IO/HIDInfo.h:
-@HIDInfo.o
+@HIDInfoL.o
 IO/I2CChannelOS.h:
-@I2CChannelOS.o
+@I2CChannelOSL.o
 IO/OS.h:
-@OS.o
+@OSAndroid.o
 IO/PCIInfo.h:
-@PCIInfo.o
+@PCIInfoL.o
 IO/PowerInfo.h:
-@PowerInfo.o
+@PowerInfoL.o
 IO/SDCardMgr.h:
-@SDCardMgr.o
+@SDCardMgrL.o
 IO/SensorAccelerometerAndroid.h:
 @SensorAccelerometerAndroid.o
 IO/SensorAndroid.h:
@@ -49,142 +48,81 @@ IO/SensorAndroid.h:
 IO/SensorMagnetometerAndroid.h:
 @SensorMagnetometerAndroid.o
 IO/SensorManager.h:
-@SensorManager.o
+@SensorManagerAndroid.o
 IO/SensorPressureAndroid.h:
 @SensorPressureAndroid.o
 IO/SensorUnknownAndroid.h:
 @SensorUnknownAndroid.o
 IO/ServiceManager.h:
-@ServiceManager.o
+@ServiceManagerNull.o
 IO/USBInfo.h:
-@USBInfo.o
+@USBInfoL.o
 IO/Watchdog.h:
-@Watchdog.o
+@WatchdogL.o
 
 Manage/Computer.h:
-@Computer.o
+@ComputerL.o
 Manage/ComputerUser.h:
-@ComputerUser.o
+@ComputerUserL.o
 Manage/SymbolResolver.h:
-@SymbolResolver.o
+@SymbolResolverL.o
 Manage/ThreadInfo.h:
-@ThreadInfo.o
+@ThreadInfoL.o
 
 Media/AAudioRenderer.h:
 @AAudioRenderer.o
 Media/AndroidVideoCapture.h:
 @AndroidVideoCapture.o
 Media/AudioDevice.h:
-@AudioDevice.o
+@AudioDeviceAndroid.o
 Media/FBMonitorSurfaceMgr.h:
-@FBMonitorSurfaceMgr.o
+@FBMonitorSurfaceMgr_Null.o
 Media/MonitorSurfaceMgrFactory.h:
-@MonitorSurfaceMgrFactory.o
+@MonitorSurfaceMgrFactoryNull.o
 Media/OCREngine.h:
-@OCREngine.o
+@OCREngine_Null.o
 Media/OpenSLESRenderer.h:
 @OpenSLESRenderer.o
 Media/Printer.h:
-@Printer.o
+@PrinterNull.o
 Media/ZXingWriter.h:
-@ZXingWriter.o
+@ZXingWriter_Null.o
 Media/Decoder/FFMPEGDecoder.h:
-@FFMPEGDecoder.o
+@FFMPEGDecoderNull.o
 Media/OpenCV/OCVFrame.h:
-@OCVFrame.o
+@OCVFrameNull.o
 Media/OpenCV/OCVFrameFeeder.h:
 @OCVFrameFeeder.o
 Media/OpenCV/OCVInit.h:
 Media/OpenCV/OCVNumPlateFinder.h:
-@OCVNumPlateFinder.o
+@OCVNumPlateFinder_Null.o
 Media/OpenCV/OCVObjectDetector.h:
-@OCVObjectDetector.o
+@OCVObjectDetectorNull.o
 Media/OpenCV/OCVUtil.h:
 @OCVUtil.o
 
 Net/HTTPOSClient.h:
-@HTTPOSClient.o
+@HTTPOSClientNull.o
 Net/SSLEngineFactory.h:
-@SSLEngineFactory.o
+@SSLEngineFactoryNull.o
 Net/WirelessLAN.h:
-@WirelessLAN.o
+@WirelessLANL.o
 Net/WLANLinuxInterface.h:
 @WLANLinuxInterface.o
 Net/WLANLinuxMTKInterface.h:
 @WLANLinuxMTKInterface.o
 
 Parser/FileParser/HEIFParser.h:
-@HEIFParser.o
+@HEIFParser_Null.o
 Parser/FileParser/JP2Parser.h:
-@JP2Parser.o
+@JP2Parser_Null.o
 Parser/FileParser/WebPParser.h:
-@WebPParser.o
+@WebPParser_Null.o
 
 Sync/SimpleThread.h:
-@SimpleThread.o
+@SimpleThreadU.o
 Sync/ThreadUtil.h:
-@ThreadUtil.o
+@ThreadUtilUL.o
 
 
 ConsoleStartup.o: ../../startup/LinuxConStartup.cpp
-TrustStore.o: ../../src/Crypto/Cert/TrustStore_Linux.cpp
-RSAEnc.o: ../../src/Crypto/Encrypt/RSAEncNull.cpp
-MDBFileConn.o: ../../src/DB/MDBFileConnNul.cpp
-MongoDB.o: ../../src/DB/MongoDBNull.cpp
-MySQLConn.o: ../../src/DB/MySQLConnNull.cpp
-ODBCConn.o: ../../src/DB/ODBCConnNul.cpp
-PostgreSQLConn.o: ../../src/DB/PostgreSQLConnNul.cpp
-TDSConn.o: ../../src/DB/TDSConn_Null.cpp
-HEIFExporter.o: ../../src/Exporter/HEIFExporter_Null.cpp
-WebPExporter.o: ../../src/Exporter/WebPExporter_Null.cpp
-BTController.o: ../../src/IO/BTControllerNull.cpp
-BTManager.o: ../../src/IO/BTManagerNull.cpp
-BTScanner.o: ../../src/IO/BTScannerNull.cpp
-DebugWriter.o: ../../src/IO/DebugWriter_Null.cpp
-HIDInfo.o: ../../src/IO/HIDInfoL.cpp
-I2CChannelOS.o: ../../src/IO/I2CChannelOSL.cpp
-OS.o: ../../src/IO/OSAndroid.cpp
-PCIInfo.o: ../../src/IO/PCIInfoL.cpp
-PowerInfo.o: ../../src/IO/PowerInfoL.cpp
-SDCardMgr.o: ../../src/IO/SDCardMgrL.cpp
-SensorAccelerometerAndroid.o: ../../src/IO/SensorAccelerometerAndroid.cpp
-SensorAndroid.o: ../../src/IO/SensorAndroid.cpp
-!-landroid
-SensorMagnetometerAndroid.o: ../../src/IO/SensorMagnetometerAndroid.cpp
-SensorManager.o: ../../src/IO/SensorManagerAndroid.cpp
-SensorPressureAndroid.o: ../../src/IO/SensorPressureAndroid.cpp
-SensorUnknownAndroid.o: ../../src/IO/SensorUnknownAndroid.cpp
-ServiceManager.o: ../../src/IO/ServiceManagerNull.cpp
-USBInfo.o: ../../src/IO/USBInfoL.cpp
-Watchdog.o: ../../src/IO/WatchdogL.cpp
-Computer.o: ../../src/Manage/ComputerL.cpp
-ComputerUser.o: ../../src/Manage/ComputerUserL.cpp
-SymbolResolver.o: ../../src/Manage/SymbolResolverL.cpp
-ThreadInfo.o: ../../src/Manage/ThreadInfoL.cpp
-AAudioRenderer.o: ../../src/Media/AAudioRenderer.cpp
-!-laaudio
-AndroidVideoCapture.o: ../../src/Media/AndroidVideoCapture.cpp
-!?(ANDROID_API >= 24) -lcamera2ndk -lmediandk
-AudioDevice.o: ../../src/Media/AudioDeviceAndroid.cpp
-FBMonitorSurfaceMgr.o: ../../src/Media/FBMonitorSurfaceMgr_Null.cpp
-MonitorSurfaceMgrFactory.o: ../../src/Media/MonitorSurfaceMgrFactoryNull.cpp
-OCREngine.o: ../../src/Media/OCREngine_Null.cpp
-OpenSLESRenderer.o: ../../src/Media/OpenSLESRenderer.cpp
-Printer.o: ../../src/Media/PrinterNull.cpp
-ZXingWriter.o: ../../src/Media/ZXingWriter_Null.cpp
-FFMPEGDecoder.o: ../../src/Media/Decoder/FFMPEGDecoderNull.cpp
-OCVFrame.o: ../../src/Media/OpenCV/OCVFrameNull.cpp
-OCVFrameFeeder.o: ../../src/Media/OpenCV/OCVFrameFeeder.cpp
-OCVNumPlateFinder.o: ../../src/Media/OpenCV/OCVNumPlateFinder_Null.cpp
-OCVObjectDetector.o: ../../src/Media/OpenCV/OCVObjectDetectorNull.cpp
-OCVUtil.o: ../../src/Media/OpenCV/OCVUtil.cpp
-HTTPOSClient.o: ../../src/Net/HTTPOSClientNull.cpp
-SSLEngineFactory.o: ../../src/Net/SSLEngineFactoryNull.cpp
-WirelessLAN.o: ../../src/Net/WirelessLANL.cpp
-WLANLinuxInterface.o: ../../src/Net/WLANLinuxInterface.cpp
-WLANLinuxMTKInterface.o: ../../src/Net/WLANLinuxMTKInterface.cpp
-HEIFParser.o: ../../src/Parser/FileParser/HEIFParser_Null.cpp
-JP2Parser.o: ../../src/Parser/FileParser/JP2Parser_Null.cpp
-WebPParser.o: ../../src/Parser/FileParser/WebPParser_Null.cpp
-SimpleThread.o: ../../src/Sync/SimpleThreadU.cpp
-ThreadUtil.o: ../../src/Sync/ThreadUtilU.cpp

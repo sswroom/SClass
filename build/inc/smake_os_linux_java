@@ -1,19 +1,18 @@
-
 Crypto/Cert/CurlCert.h:
 @CurlCert.o
 Crypto/Cert/TrustStore.h:
-@TrustStore.o
+@TrustStore_Linux.o
 Crypto/Encrypt/RSAEnc.h:
 @RSAEnc.o
 
 DB/MDBFileConn.h:
-@MDBFileConn.o
+@MDBFileConnL.o
 DB/MongoDB.h:
 @MongoDB.o
 DB/MySQLConn.h:
 @MySQLConn.o
 DB/ODBCConn.h:
-@ODBCConn.o
+@ODBCConnL.o
 DB/PostgreSQLConn.h:
 @PostgreSQLConn.o
 DB/TDSConn.h:
@@ -25,59 +24,59 @@ Exporter/WebPExporter.h:
 @WebPExporter.o
 
 IO/BTController.h:
-@BTController.o
+@BTControllerL.o
 IO/BTManager.h:
-@BTManager.o
+@BTManagerL.o
 IO/BTScanner.h:
-@BTScanner.o
+@BTScannerL.o
 IO/DebugWriter.h:
-@DebugWriter.o
+@DebugWriterL.o
 IO/HIDInfo.h:
-@HIDInfo.o
+@HIDInfoL.o
 IO/I2CChannelOS.h:
-@I2CChannelOS.o
+@I2CChannelOSL.o
 IO/OS.h:
-@OS.o
+@OSL.o
 IO/PCIInfo.h:
-@PCIInfo.o
+@PCIInfoL.o
 IO/PowerInfo.h:
-@PowerInfo.o
+@PowerInfoL.o
 IO/RAWBTMonitor.h:
 @RAWBTMonitor.o
 IO/RAWBTScanner.h:
 @RAWBTScanner.o
 IO/SDCardMgr.h:
-@SDCardMgr.o
+@SDCardMgrL.o
 IO/SensorManager.h:
-@SensorManager.o
+@SensorManagerNull.o
 IO/USBInfo.h:
-@USBInfo.o
+@USBInfoL.o
 IO/Watchdog.h:
-@Watchdog.o
+@WatchdogL.o
 
 Manage/Computer.h:
-@Computer.o
+@ComputerL.o
 Manage/ComputerUser.h:
-@ComputerUser.o
+@ComputerUserL.o
 Manage/SymbolResolver.h:
-@SymbolResolver.o
+@SymbolResolverL.o
 Manage/ThreadInfo.h:
-@ThreadInfo.o
+@ThreadInfoL.o
 
 Media/ALSARenderer.h:
 @ALSARenderer.o
 Media/AudioDevice.h:
-@AudioDevice.o
-Media/MonitorSurfaceMgrFactory.h:
-@MonitorSurfaceMgrFactory.o
+@AudioDeviceL.o
 Media/FBMonitorSurfaceMgr.h:
 @FBMonitorSurfaceMgr.o
 Media/FBSurface.h:
 @FBSurface.o
+Media/MonitorSurfaceMgrFactory.h:
+@MonitorSurfaceMgrFactoryLinux.o
 Media/OCREngine.h:
 @OCREngine.o
 Media/Printer.h:
-@Printer.o
+@PrinterCUPS.o
 Media/ZXingWriter.h:
 @ZXingWriter.o
 Media/Decoder/FFMPEGDecoder.h:
@@ -95,11 +94,11 @@ Media/OpenCV/OCVUtil.h:
 @OCVUtil.o
 
 Net/HTTPOSClient.h:
-@HTTPOSClient.o
+@HTTPOSClientL.o
 Net/SSLEngineFactory.h:
-@SSLEngineFactory.o
+@SSLEngineFactoryOpenSSL.o
 Net/WirelessLAN.h:
-@WirelessLAN.o
+@WirelessLANL.o
 Net/WLANLinuxInterface.h:
 @WLANLinuxInterface.o
 Net/WLANLinuxMTKInterface.h:
@@ -113,110 +112,11 @@ Parser/FileParser/WebPParser.h:
 @WebPParser.o
 
 Sync/SimpleThread.h:
-@SimpleThread.o
+@SimpleThreadU.o
 Sync/ThreadUtil.h:
-@ThreadUtil.o
+@ThreadUtilU.o
 
 
 ConsoleStartup.o: ../../startup/JavaStartup.cpp
 $-I$(JAVA_HOME)/include
 $-I$(JAVA_HOME)/include/linux
-CurlCert.o: ../../src/Crypto/Cert/CurlCert.cpp
-!-lcurl
-TrustStore.o: ../../src/Crypto/Cert/TrustStore_Linux.cpp
-RSAEnc.o: ../../src/Crypto/Encrypt/RSAEnc.cpp
-!-lcrypto
-MDBFileConn.o: ../../src/DB/MDBFileConn.cpp
-!-lodbc
-!-lodbcinst
-MongoDB.o: ../../src/DB/MongoDB.cpp
-$`pkg-config --cflags libmongoc-1.0`
-!-lmongoc-1.0
-!-lbson-1.0
-MySQLConn.o: ../../src/DB/MySQLConn.cpp
-$`mysql_config --cflags`
-!`mysql_config --libs`
-ODBCConn.o: ../../src/DB/ODBCConn.cpp
-!-lodbc
-!-lodbcinst
-PostgreSQLConn.o: ../../src/DB/PostgreSQLConn.cpp
-$`pkg-config --cflags libpq`
-!`pkg-config --libs libpq`
-TDSConn.o: ../../src/DB/TDSConn.cpp
-!-lsybdb
-HEIFExporter.o: ../../src/Exporter/HEIFExporter.cpp
-!-lheif
-WebPExporter.o: ../../src/Exporter/WebPExporter.cpp
-!-lwebp
-!-lwebpmux
-BTController.o: ../../src/IO/BTControllerL.cpp
-!-lbluetooth
-BTManager.o: ../../src/IO/BTManagerL.cpp
-!-lbluetooth
-BTScanner.o: ../../src/IO/BTScannerL.cpp
-DebugWriter.o: ../../src/IO/DebugWriterL.cpp
-HIDInfo.o: ../../src/IO/HIDInfoL.cpp
-I2CChannelOS.o: ../../src/IO/I2CChannelOSL.cpp
-OS.o: ../../src/IO/OSL.cpp
-PCIInfo.o: ../../src/IO/PCIInfoL.cpp
-PowerInfo.o: ../../src/IO/PowerInfoL.cpp
-RAWBTMonitor.o: ../../src/IO/RAWBTMonitor.cpp
-RAWBTScanner.o: ../../src/IO/RAWBTScanner.cpp
-SDCardMgr.o: ../../src/IO/SDCardMgrL.cpp
-SensorManager.o: ../../src/IO/SensorManagerNull.cpp
-USBInfo.o: ../../src/IO/USBInfoL.cpp
-Watchdog.o: ../../src/IO/WatchdogL.cpp
-Computer.o: ../../src/Manage/ComputerL.cpp
-ComputerUser.o: ../../src/Manage/ComputerUserL.cpp
-SymbolResolver.o: ../../src/Manage/SymbolResolverL.cpp
-ThreadInfo.o: ../../src/Manage/ThreadInfoL.cpp
-!-lpthread
-ALSARenderer.o: ../../src/Media/ALSARenderer.cpp
-!-lasound
-AudioDevice.o: ../../src/Media/AudioDeviceL.cpp
-MonitorSurfaceMgrFactory.o: ../../src/Media/MonitorSurfaceMgrFactoryLinux.cpp
-FBMonitorSurfaceMgr.o: ../../src/Media/FBMonitorSurfaceMgr.cpp
-FBSurface.o: ../../src/Media/FBSurface.cpp
-OCREngine.o: ../../src/Media/OCREngine.cpp
-!-llept
-!-ltesseract
-Printer.o: ../../src/Media/PrinterCUPS.cpp
-$`pkg-config --cflags --libs cairo` `cups-config --cflags`
-!`cups-config --libs`
-ZXingWriter.o: ../../src/Media/ZXingWriter.cpp
-!`pkg-config --libs zxing`
-FFMPEGDecoder.o: ../../src/Media/Decoder/FFMPEGDecoder.cpp
-!-lavutil
-!-lavcodec
-OCVFrame.o: ../../src/Media/OpenCV/OCVFrame.cpp
-#$`pkg-config --cflags opencv4`
-!`pkg-config --libs opencv`
-OCVFrameFeeder.o: ../../src/Media/OpenCV/OCVFrameFeeder.cpp
-#$`pkg-config --cflags opencv4`
-!`pkg-config --libs opencv`
-OCVNumPlateFinder.o: ../../src/Media/OpenCV/OCVNumPlateFinder.cpp
-#$@(pkg-config --exists opencv4) `pkg-config --cflags opencv4`
-!@(pkg-config --exists opencv) `pkg-config --libs opencv`
-!@(pkg-config --exists opencv4) `pkg-config --libs opencv4`
-OCVObjectDetector.o: ../../src/Media/OpenCV/OCVObjectDetector.cpp
-#$`pkg-config --cflags opencv4`
-!`pkg-config --libs opencv`
-OCVUtil.o: ../../src/Media/OpenCV/OCVUtil.cpp
-#$`pkg-config --cflags opencv4`
-!`pkg-config --libs opencv`
-HTTPOSClient.o: ../../src/Net/HTTPOSClientL.cpp
-!-lcurl
-SSLEngineFactory.o: ../../src/Net/SSLEngineFactoryOpenSSL.cpp
-WirelessLAN.o: ../../src/Net/WirelessLANL.cpp
-WLANLinuxInterface.o: ../../src/Net/WLANLinuxInterface.cpp
-WLANLinuxMTKInterface.o: ../../src/Net/WLANLinuxMTKInterface.cpp
-HEIFParser.o: ../../src/Parser/FileParser/HEIFParser.cpp
-!-lheif
-JP2Parser.o: ../../src/Parser/FileParser/JP2Parser.cpp
-!-lopenjp2
-WebPParser.o: ../../src/Parser/FileParser/WebPParser.cpp
-!-lwebp
-!-lwebpdemux
-SimpleThread.o: ../../src/Sync/SimpleThreadU.cpp
-ThreadUtil.o: ../../src/Sync/ThreadUtilU.cpp
-!-lpthread

@@ -1,19 +1,18 @@
-
 Crypto/Cert/CurlCert.h:
 @CurlCert.o
 Crypto/Cert/TrustStore.h:
-@TrustStore.o
+@TrustStore_Linux.o
 Crypto/Encrypt/RSAEnc.h:
 @RSAEnc.o
 
 DB/MDBFileConn.h:
-@MDBFileConn.o
+@MDBFileConnL.o
 DB/MongoDB.h:
-@MongoDB.o
+@MongoDBFreeBSD.o
 DB/MySQLConn.h:
-@MySQLConn.o
+@MySQLConnFreeBSD.o
 DB/ODBCConn.h:
-@ODBCConn.o
+@ODBCConnL.o
 DB/PostgreSQLConn.h:
 @PostgreSQLConn.o
 DB/TDSConn.h:
@@ -25,51 +24,51 @@ Exporter/WebPExporter.h:
 @WebPExporter.o
 
 IO/BTController.h:
-@BTController.o
+@BTControllerNull.o
 IO/BTManager.h:
-@BTManager.o
+@BTManagerNull.o
 IO/BTScanner.h:
-@BTScanner.o
+@BTScannerNull.o
 IO/DebugWriter.h:
-@DebugWriter.o
+@DebugWriter_Null.o
 IO/HIDInfo.h:
-@HIDInfo.o
+@HIDInfoNull.o
 IO/I2CChannelOS.h:
-@I2CChannelOS.o
+@I2CChannelOSNull.o
 IO/OS.h:
-@OS.o
+@OSFreeBSD.o
 IO/PCIInfo.h:
-@PCIInfo.o
+@PCIInfoL.o
 IO/PowerInfo.h:
-@PowerInfo.o
+@PowerInfoL.o
 IO/SDCardMgr.h:
-@SDCardMgr.o
+@SDCardMgrNull.o
 IO/SensorManager.h:
-@SensorManager.o
+@SensorManagerNull.o
 IO/USBInfo.h:
-@USBInfo.o
+@USBInfoL.o
 IO/Watchdog.h:
-@Watchdog.o
+@WatchdogNull.o
 
 Manage/Computer.h:
-@Computer.o
+@ComputerL.o
 Manage/ComputerUser.h:
-@ComputerUser.o
+@ComputerUserL.o
 Manage/SymbolResolver.h:
-@SymbolResolver.o
+@SymbolResolverFreeBSD.o
 Manage/ThreadInfo.h:
-@ThreadInfo.o
+@ThreadInfoL.o
 
 Media/AudioDevice.h:
-@AudioDevice.o
+@AudioDeviceNull.o
 Media/FBMonitorSurfaceMgr.h:
-@FBMonitorSurfaceMgr.o
+@FBMonitorSurfaceMgr_Null.o
 Media/MonitorSurfaceMgrFactory.h:
-@MonitorSurfaceMgrFactory.o
+@MonitorSurfaceMgrFactoryNull.o
 Media/OCREngine.h:
 @OCREngine.o
 Media/Printer.h:
-@Printer.o
+@PrinterCUPS.o
 Media/ZXingWriter.h:
 @ZXingWriter.o
 Media/Decoder/FFMPEGDecoder.h:
@@ -87,11 +86,11 @@ Media/OpenCV/OCVUtil.h:
 @OCVUtil.o
 
 Net/HTTPOSClient.h:
-@HTTPOSClient.o
+@HTTPOSClientL.o
 Net/SSLEngineFactory.h:
-@SSLEngineFactory.o
+@SSLEngineFactoryOpenSSL.o
 Net/WirelessLAN.h:
-@WirelessLAN.o
+@WirelessLANNull.o
 
 Parser/FileParser/HEIFParser.h:
 @HEIFParser.o
@@ -101,103 +100,9 @@ Parser/FileParser/WebPParser.h:
 @WebPParser.o
 
 Sync/SimpleThread.h:
-@SimpleThread.o
+@SimpleThreadU.o
 Sync/ThreadUtil.h:
-@ThreadUtil.o
+@ThreadUtilU.o
 
 
 ConsoleStartup.o: ../../startup/LinuxConStartup.cpp
-CurlCert.o: ../../src/Crypto/Cert/CurlCert.cpp
-!-lcurl
-TrustStore.o: ../../src/Crypto/Cert/TrustStore_Linux.cpp
-RSAEnc.o: ../../src/Crypto/Encrypt/RSAEnc.cpp
-!-lcrypto
-MDBFileConn.o: ../../src/DB/MDBFileConn.cpp
-!-lodbc
-!-lodbcinst
-MongoDB.o: ../../src/DB/MongoDB.cpp
-$-I /usr/local/include/libbson-1.0
-$-I /usr/local/include/libmongoc-1.0
-!-L /usr/local/lib/libbson-1.0
-!-L /usr/local/lib/libmongoc-1.0
-!-lmongoc-1.0
-!-lbson-1.0
-MySQLConn.o: ../../src/DB/MySQLConn.cpp
-$-I /usr/local/include/mariadb
-!-L /usr/local/lib/mariadb
-!-lmariadbclient
-!-lz
-!-lssl
-!-lcrypto
-ODBCConn.o: ../../src/DB/ODBCConn.cpp
-!-lodbc
-!-lodbcinst
-PostgreSQLConn.o: ../../src/DB/PostgreSQLConn.cpp
-$`pkg-config --cflags libpq`
-!`pkg-config --libs libpq`
-TDSConn.o: ../../src/DB/TDSConn.cpp
-!-lsybdb
-HEIFExporter.o: ../../src/Exporter/HEIFExporter.cpp
-!-lheif
-WebPExporter.o: ../../src/Exporter/WebPExporter.cpp
-!-lwebp
-!-lwebpmux
-BTController.o: ../../src/IO/BTControllerNull.cpp
-BTManager.o: ../../src/IO/BTManagerNull.cpp
-BTScanner.o: ../../src/IO/BTScannerNull.cpp
-DebugWriter.o: ../../src/IO/DebugWriter_Null.cpp
-HIDInfo.o: ../../src/IO/HIDInfoNull.cpp
-I2CChannelOS.o: ../../src/IO/I2CChannelOSNull.cpp
-OS.o: ../../src/IO/OSFreeBSD.cpp
-SDCardMgr.o: ../../src/IO/SDCardMgrNull.cpp
-SensorManager.o: ../../src/IO/SensorManagerNull.cpp
-SerialPort.o: ../../src/IO/SerialPortL.cpp
-PCIInfo.o: ../../src/IO/PCIInfoL.cpp
-PowerInfo.o: ../../src/IO/PowerInfoL.cpp
-USBInfo.o: ../../src/IO/USBInfoL.cpp
-Watchdog.o: ../../src/IO/WatchdogNull.cpp
-Computer.o: ../../src/Manage/ComputerL.cpp
-ComputerUser.o: ../../src/Manage/ComputerUserL.cpp
-SymbolResolver.o: ../../src/Manage/SymbolResolverL.cpp
-!-lexecinfo
-ThreadInfo.o: ../../src/Manage/ThreadInfoL.cpp
-!-lpthread
-AudioDevice.o: ../../src/Media/AudioDeviceNull.cpp
-FBMonitorSurfaceMgr.o: ../../src/Media/FBMonitorSurfaceMgr_Null.cpp
-MonitorSurfaceMgrFactory.o: ../../src/Media/MonitorSurfaceMgrFactoryNull.cpp
-OCREngine.o: ../../src/Media/OCREngine.cpp
-!-llept
-!-ltesseract
-Printer.o: ../../src/Media/PrinterCUPS.cpp
-$`pkg-config --cflags --libs cairo` `cups-config --cflags`
-!`cups-config --libs`
-ZXingWriter.o: ../../src/Media/ZXingWriter.cpp
-!-lZXing
-FFMPEGDecoder.o: ../../src/Media/Decoder/FFMPEGDecoder.cpp
-!-lavutil
-!-lavcodec
-OCVFrame.o: ../../src/Media/OpenCV/OCVFrame.cpp
-!-lopencv_core
-OCVFrameFeeder.o: ../../src/Media/OpenCV/OCVFrameFeeder.cpp
-OCVNumPlateFinder.o: ../../src/Media/OpenCV/OCVNumPlateFinder.cpp
-!@(pkg-config --exists opencv) `pkg-config --libs opencv`
-!@(pkg-config --exists opencv4) `pkg-config --libs opencv4`
-OCVObjectDetector.o: ../../src/Media/OpenCV/OCVObjectDetector.cpp
-!-lopencv_objdetect
-!-lopencv_imgproc
-!-lopencv_core
-OCVUtil.o: ../../src/Media/OpenCV/OCVUtil.cpp
-HTTPOSClient.o: ../../src/Net/HTTPOSClientL.cpp
-!-lcurl
-SSLEngineFactory.o: ../../src/Net/SSLEngineFactoryOpenSSL.cpp
-WirelessLAN.o: ../../src/Net/WirelessLANNull.cpp
-HEIFParser.o: ../../src/Parser/FileParser/HEIFParser.cpp
-!-lheif
-JP2Parser.o: ../../src/Parser/FileParser/JP2Parser.cpp
-!-lopenjp2
-WebPParser.o: ../../src/Parser/FileParser/WebPParser.cpp
-!-lwebp
-!-lwebpdemux
-SimpleThread.o: ../../src/Sync/SimpleThreadU.cpp
-ThreadUtil.o: ../../src/Sync/ThreadUtilU.cpp
-!-lpthread

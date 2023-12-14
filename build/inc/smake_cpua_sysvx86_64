@@ -1,14 +1,14 @@
 
 MemTool.h:
-@MemTool.o
-@MemTool_CPP.o
+@MemToolX86.o
+@MemTool_SysV64.o
 
 Core/X86Util.h:
 
 Manage/CPUInfo.h:
-@CPUInfo.o
+@CPUInfox86.o
 Manage/CPUInfoDetail.h:
-@CPUInfoDetail.o
+@CPUInfoDetailx86.o
 Manage/Dasm.h:
 Manage/DasmARM.h:
 Manage/DasmARM64.h:
@@ -27,8 +27,6 @@ Manage/ThreadContextX86_64.h:
 Media/ImageCopyC.h:
 @ImageCopy_CPP.o
 
-MemTool.o: ../../src/MemToolX86.cpp
-MemTool_CPP.o: ../../src/MemTool_SysV64.asm
 Base64_CPP.o: ../../src/Crypto/Encrypt/Base64_SysV64.asm
 CRC16_CPP.o: ../../src/Crypto/Hash/CRC16_SysV64.asm
 CRC16R_CPP.o: ../../src/Crypto/Hash/CRC16R_CPP.cpp
@@ -39,12 +37,6 @@ MD5_CPP.o: ../../src/Crypto/Hash/MD5_SysV64.asm
 SHA1_CPP.o: ../../src/Crypto/Hash/SHA1_SysV64.asm
 LZODecompressor_CPP.o: ../../src/Data/Compress/LZODecompressor_cpp.cpp
 Benchmark_CPP.o: ../../src/Manage/Benchmark_SysV64.asm
-CPUInfo.o: ../../src/Manage/CPUInfox86.cpp
-CPUInfoDetail.o: ../../src/Manage/CPUInfoDetailx86.cpp
-DasmARM64.o: ../../src/Manage/DasmARM64.cpp
-DasmX86_32.o: ../../src/Manage/DasmX86_32.cpp
-DasmX86_64.o: ../../src/Manage/DasmX86_64.cpp
-ThreadContextX86_64L.o: ../../src/Manage/ThreadContextX86_64L.cpp
 ScaledMapView_CPP.o: ../../src/Map/ScaledMapView_SysV64.asm
 FFTCalc_CPP.o: ../../src/Math/FFTCalc_CPP.cpp
 Math_CPP.o: ../../src/Math/Math_SysV64.asm

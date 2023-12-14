@@ -1,77 +1,77 @@
 
 MyMemory.h:
-@MyMemory.o
+@MyMemoryL.o
 
 Crypto/Cert/OpenSSLCert.h:
 @OpenSSLCert.o
 
 DB/OLEDBConn.h:
-@OLEDBConn.o
+@OLEDBConnNull.o
 
 IO/BuildTime.h:
 @BuildTime.o
 IO/Console.h:
-@Console.o
+@ConsoleL.o
 IO/ConsoleWriter.h:
-@ConsoleWriter.o
+@ConsoleWriterL.o
 IO/DeviceInfo.h:
-@DeviceInfo.o
+@DeviceInfoL.o
 IO/DeviceManager.h:
-@DeviceManager.o
+@DeviceManagerL.o
 IO/FileStream.h:
-@FileStream.o
+@FileStreamU.o
 IO/FileUtil.h:
-@FileUtil.o
+@FileUtilL.o
 IO/Library.h:
-@Library.o
+@LibraryL.o
 IO/Path.h:
-@Path.o
+@PathL.o
 IO/PhysicalMem.h:
-@PhysicalMem.o
+@PhysicalMemL.o
 IO/Registry.h:
-@Registry.o
+@RegistryLinux.o
 IO/SerialPort.h:
-@SerialPort.o
+@SerialPortL.o
 IO/SimpleFileWriter.h:
-@SimpleFileWriter.o
+@SimpleFileWriterL.o
 IO/ViewFileBuffer.h:
-@ViewFileBuffer.o
+@ViewFileBufferL.o
 
 Manage/EnvironmentVar.h:
-@EnvironmentVar.o
+@EnvironmentVarL.o
 Manage/ExceptionRecorder.h:
-@ExceptionRecorder.o
+@ExceptionRecorderL.o
 Manage/HiResClock.h:
-@HiResClock.o
+@HiResClockL.o
 Manage/ModuleInfo.h:
-@ModuleInfo.o
+@ModuleInfoL.o
 Manage/Process.h:
-@Process.o
+@ProcessL.o
 Manage/ProcessExecution.h:
-@ProcessExecution.o
+@ProcessExecutionL.o
 Manage/StackTracer.h:
-@StackTracer.o
+@StackTracerL.o
 
 Media/ColorManager.h:
 @ColorManager.o
 Media/VFPManager.h:
 Media/WaveInSource.h:
-@WaveInSource.o
+@WaveInSourceNull.o
 Media/WIAManager.h:
-@WIAManager.o
+@WIAManagerNull.o
 Media/AVIUtl/AUIManager.h:
 Media/AVIUtl/AUIPlugin.h:
 Media/Decoder/ACMDecoder.h:
-@ACMDecoder.o
+@ACMDecoderNull.o
 Media/Decoder/IMSDKDecoder.h:
 Media/Decoder/VFWDecoder.h:
-@VFWDecoder.o
+@VFWDecoderNull.o
 Media/Decoder/VPXDecoder.h:
 @VPXDecoder.o
 Media/Resizer/LanczosResizerLR_C32_OCL.h:
 
 Net/ARPInfo.h:
-@ARPInfo.o
+@ARPInfoL.o
 Net/OpenSSLClient.h:
 @OpenSSLClient.o
 Net/OpenSSLCore.h:
@@ -79,9 +79,9 @@ Net/OpenSSLCore.h:
 Net/OpenSSLEngine.h:
 @OpenSSLEngine.o
 Net/OSSocketFactory.h:
-@OSSocketFactory.o
+@OSSocketFactoryL.o
 Net/TCPClientMgr.h:
-@TCPClientMgr.o
+@TCPClientMgrL.o
 
 Parser/FileParser/AUIParser.h:
 Parser/FileParser/VFPParser.h:
@@ -91,62 +91,16 @@ SSWR/AVIRead/AVIRCoreWin.h:
 SSWR/AVIRead/AVIROLEDBForm.h:
 
 Sync/EventPool.h:
-@EventPool.o
+@EventPoolL.o
 Sync/RWMutex.h:
-@RWMutex.o
+@RWMutexL.o
 
 Win32/StreamCOM.h:
 Win32/WMIQuery.h:
-@WMIQuery.o
+@WMIQueryNull.o
 Win32/WMIReader.h:
 
 sqlite3.h:
-@sqlite3.o
+@sqlite3L.o
 
-
-MyMemory.o: ../../src/MyMemoryL.cpp
-OpenSSLCert.o: ../../src/Crypto/Cert/OpenSSLCert.cpp
-OLEDBConn.o: ../../src/DB/OLEDBConnNull.cpp
-BuildTime.o: @../../src/IO/BuildTime.cpp
-Console.o: ../../src/IO/ConsoleL.cpp
-ConsoleWriter.o: ../../src/IO/ConsoleWriterL.cpp
-DeviceInfo.o: ../../src/IO/DeviceInfoL.cpp
-DeviceManager.o: ../../src/IO/DeviceManagerL.cpp
-FileStream.o: ../../src/IO/FileStreamU.cpp
-FileUtil.o: ../../src/IO/FileUtilL.cpp
-Library.o: ../../src/IO/LibraryL.cpp
-!-ldl
-Path.o: ../../src/IO/PathL.cpp
-PhysicalMem.o: ../../src/IO/PhysicalMemL.cpp
-Registry.o: ../../src/IO/RegistryLinux.cpp
-SerialPort.o: ../../src/IO/SerialPortL.cpp
-SimpleFileWriter.o: ../../src/IO/SimpleFileWriterL.cpp
-ViewFileBuffer.o: ../../src/IO/ViewFileBufferL.cpp
-EnvironmentVar.o: ../../src/Manage/EnvironmentVarL.cpp
-ExceptionRecorder.o: ../../src/Manage/ExceptionRecorderL.cpp
-HiResClock.o: ../../src/Manage/HiResClockL.cpp
-ModuleInfo.o: ../../src/Manage/ModuleInfoL.cpp
-Process.o: ../../src/Manage/ProcessL.cpp
-ProcessExecution.o: ../../src/Manage/ProcessExecutionL.cpp
-StackTracer.o: ../../src/Manage/StackTracerL.cpp
-ColorManager.o: ../../src/Media/ColorManager.cpp
-WaveInSource.o: ../../src/Media/WaveInSourceNull.cpp
-WIAManager.o: ../../src/Media/WIAManagerNull.cpp
-ACMDecoder.o: ../../src/Media/Decoder/ACMDecoderNull.cpp
-VFWDecoder.o: ../../src/Media/Decoder/VFWDecoderNull.cpp
-VPXDecoder.o: ../../src/Media/Decoder/VPXDecoder.cpp
-ARPInfo.o: ../../src/Net/ARPInfoL.cpp
 ConnectionInfo_CPP.o: ../../src/Net/ConnectionInfoL.cpp
-OpenSSLClient.o: ../../src/Net/OpenSSLClient.cpp
-OpenSSLCore.o: ../../src/Net/OpenSSLCore.cpp
-!-lssl
-!-lcrypto
-OpenSSLEngine.o: ../../src/Net/OpenSSLEngine.cpp
-OSSocketFactory.o: ../../src/Net/OSSocketFactoryL.cpp
-TCPClientMgr.o: ../../src/Net/TCPClientMgrL.cpp
-AVIRCoreWin.o: ../../src/SSWR/AVIRead/AVIRCoreWin.cpp
-EventPool.o: ../../src/Sync/EventPoolL.cpp
-RWMutex.o: ../../src/Sync/RWMutexL.cpp
-WMIQuery.o: ../../src/Win32/WMIQueryNull.cpp
-sqlite3.o: !../../ThirdParty/sqlite3/sqlite3.c
-!-ldl

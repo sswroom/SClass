@@ -1,40 +1,22 @@
 
 IO/GPUManager.h:
-@GPUManager.o
+@GPUManagerNull.o
 IO/RobustelInfo.h:
-@RobustelInfo.o
+@RobustelInfo_Null.o
 IO/SMBIOSUtil.h:
-@SMBIOSUtil.o
+@SMBIOSUtilNull.o
 IO/SystemInfo.h:
-@SystemInfo.o
+@SystemInfoRPi.o
 
 Media/CameraManager.h:
-@CameraManager.o
+@CameraManagerRPi.o
 Media/DDCReader.h:
-@DDCReader.o
+@DDCReaderRPi.o
 Media/MMALStillCapture.h:
 @MMALStillCapture.o
 Media/MMALVideoCapture.h:
 @MMALVideoCapture.o
 Media/VideoCaptureMgr.h:
-@VideoCaptureMgr.o
+@VideoCaptureMgr_RPi.o
 
 DeviceBase.o: ../../src/DeviceBase_SUP.cpp
-GPUManager.o: ../../src/IO/GPUManagerNull.cpp
-RobustelInfo.o: ../../src/IO/RobustelInfo_Null.cpp
-SMBIOSUtil.o: ../../src/IO/SMBIOSUtilNull.cpp
-SystemInfo.o: ../../src/IO/SystemInfoRPi.cpp
-CameraManager.o: ../../src/Media/CameraManagerRPi.cpp
-DDCReader.o: ../../src/Media/DDCReaderRPi.cpp
-$-I/opt/vc/include/interface -I/opt/vc/include
-!-lvcos -lvchiq_arm
-!-L/opt/vc/lib
-MMALStillCapture.o: ../../src/Media/MMALStillCapture.cpp
-$-I/opt/vc/include/interface -I/opt/vc/include
-!-lmmal_core -lmmal -lmmal_util
-!-L/opt/vc/lib
-MMALVideoCapture.o: ../../src/Media/MMALVideoCapture.cpp
-$-I/opt/vc/include/interface -I/opt/vc/include
-!-lmmal_core -lmmal -lmmal_util
-!-L/opt/vc/lib
-VideoCaptureMgr.o: ../../src/Media/VideoCaptureMgr_RPi.cpp

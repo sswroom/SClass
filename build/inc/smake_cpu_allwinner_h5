@@ -1,5 +1,3 @@
 
 IO/GPIOControl.h:
-@GPIOControl.o
-
-GPIOControl.o: ../../src/IO/GPIOControl_AllwinnerH5.cpp
+@GPIOControl_AllwinnerH5.o

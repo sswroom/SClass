@@ -1,55 +1,55 @@
 
 MyMemory.h:
-@MyMemory.o
+@MyMemoryW.o
 
 IO/BuildTime.h:
-@BuildTime.o
+@BuildTimeW.o
 IO/Console.h:
-@Console.o
+@ConsoleW.o
 IO/ConsoleWriter.h:
-@ConsoleWriter.o
+@ConsoleWriterW.o
 IO/DeviceInfo.h:
-@DeviceInfo.o
+@DeviceInfoW.o
 IO/DeviceManager.h:
-@DeviceManager.o
+@DeviceManagerW.o
 IO/DeviceStream.h:
-@DeviceStream.o
+@DeviceStreamW.o
 IO/FileStream.h:
-@FileStream.o
+@FileStreamW.o
 IO/FileUtil.h:
-@FileUtil.o
+@FileUtilW.o
 IO/Library.h:
-@Library.o
+@LibraryW.o
 IO/Path.h:
-@Path.o
+@PathW.o
 IO/PhysicalMem.h:
-@PhysicalMem.o
+@PhysicalMemW.o
 IO/Registry.h:
-@Registry.o
+@RegistryW.o
 IO/SerialPort.h:
-@SerialPort.o
+@SerialPortW.o
 IO/SimpleFileWriter.h:
-@SimpleFileWriter.o
+@SimpleFileWriterW.o
 IO/ViewFileBuffer.h:
-@ViewFileBuffer.o
+@ViewFileBufferW.o
 
 Manage/EnvironmentVar.h:
-@EnvironmentVar.o
+@EnvironmentVarW.o
 Manage/ExceptionRecorder.h:
-@ExceptionRecorder.o
+@ExceptionRecorderW.o
 Manage/HiResClock.h:
-@HiResClock.o
+@HiResClockW.o
 Manage/ModuleInfo.h:
-@ModuleInfo.o
+@ModuleInfoW.o
 Manage/Process.h:
-@Process.o
+@ProcessW.o
 Manage/ProcessExecution.h:
-@ProcessExecution.o
+@ProcessExecutionW.o
 Manage/StackTracer.h:
-@StackTracer.o
+@StackTracerW.o
 
 Media/ColorManager.h:
-@ColorManager.o
+@ColorManagerW.o
 Media/VFAPI.h:
 Media/VFAudioStream.h:
 @VFAudioStream.o
@@ -81,11 +81,11 @@ Media/Decoder/VPXDecoder.h:
 Media/Resizer/LanczosResizerLR_C32_OCL.h:
 
 Net/ARPInfo.h:
-@ARPInfo.o
+@ARPInfoW.o
 Net/OSSocketFactory.h:
-@OSSocketFactory.o
+@OSSocketFactoryW.o
 Net/TCPClientMgr.h:
-@TCPClientMgr.o
+@TCPClientMgrW.o
 
 Parser/FileParser/AUIParser.h:
 @AUIParser.o
@@ -98,9 +98,9 @@ SSWR/AVIRead/AVIROLEDBForm.h:
 @AVIROLEDBForm.o
 
 Sync/EventPool.h:
-@EventPool.o
+@EventPoolW.o
 Sync/RWMutex.h:
-@RWMutex.o
+@RWMutexW.o
 
 Win32/COMStream.h:
 @COMStream.o
@@ -112,67 +112,4 @@ Win32/WMIReader.h:
 sqlite3.h:
 @sqlite3.o
 
-MyMemory.o: ../../src/MyMemoryW.cpp
-!-ldbghelp
-BuildTime.o: ../../src/IO/BuildTimeW.cpp
-Console.o: ../../src/IO/ConsoleW.cpp
-ConsoleWriter.o: ../../src/IO/ConsoleWriterW.cpp
-DeviceInfo.o: ../../src/IO/DeviceInfoW.cpp
-DeviceManager.o: ../../src/IO/DeviceManagerW.cpp
-DeviceStream.o: ../../src/IO/DeviceStreamW.cpp
-FileStream.o: ../../src/IO/FileStreamW.cpp
-FileUtil.o: ../../src/IO/FileUtilW.cpp
-Library.o: ../../src/IO/LibraryW.cpp
-Path.o: ../../src/IO/PathW.cpp
-!-lpsapi
-PhysicalMem.o: ../../src/IO/PhysicalMemW.cpp
-Registry.o: ../../src/IO/RegistryW.cpp
-SerialPort.o: ../../src/IO/SerialPortW.cpp
-SimpleFileWriter.o: ../../src/IO/SimpleFileWriterW.cpp
-ViewFileBuffer.o: ../../src/IO/ViewFileBufferW.cpp
-EnvironmentVar.o: ../../src/Manage/EnvironmentVarW.cpp
-ExceptionRecorder.o: ../../src/Manage/ExceptionRecorderW.cpp
-HiResClock.o: ../../src/Manage/HiResClockW.cpp
-ModuleInfo.o: ../../src/Manage/ModuleInfoW.cpp
-Process.o: ../../src/Manage/ProcessW.cpp
-!-lpsapi
-ProcessExecution.o: ../../src/Manage/ProcessExecutionW.cpp
-StackTracer.o: ../../src/Manage/StackTracerW.cpp
-ColorManager.o: ../../src/Media/ColorManager.cpp
-!-lgdi32
-VFAudioStream.o: ../../src/Media/VFAudioStream.cpp
-VFPManager.o: ../../src/Media/VFPManager.cpp
-VFVideoStream.o: ../../src/Media/VFVideoStream.cpp
-WaveInSource.o: ../../src/Media/WaveInSource.cpp
-WaveOutRenderer.o: ../../src/Media/WaveOutRenderer.cpp
-!-lwinmm
-WIAManager.o: ../../src/Media/WIAManager.cpp
-AUIAudio.o: ../../src/Media/AVIUtl/AUIAudio.cpp
-AUIManager.o: ../../src/Media/AVIUtl/AUIManager.cpp
-AUIPlugin.o: ../../src/Media/AVIUtl/AUIPlugin.cpp
-AUIVideo.o: ../../src/Media/AVIUtl/AUIVideo.cpp
-ACMDecoder.o: ../../src/Media/Decoder/ACMDecoder.cpp
-!-lmsacm32
-VFWDecoder.o: ../../src/Media/Decoder/VFWDecoder.cpp
-!-lvfw32
-VPXDecoder.o: ../../src/Media/Decoder/VPXDecoder.cpp
-ARPInfo.o: ../../src/Net/ARPInfoW.cpp
 ConnectionInfo_CPP.o: ../../src/Net/ConnectionInfoW.cpp
-OSSocketFactory.o: ../../src/Net/OSSocketFactoryW.cpp
-!-lws2_32
-!-liphlpapi
-!-ldnsapi
-TCPClientMgr.o: ../../src/Net/TCPClientMgrW.cpp
-AUIParser.o: ../../src/Parser/FileParser/AUIParser.cpp
-VFPParser.o: ../../src/Parser/FileParser/VFPParser.cpp
-AVIRCoreWin.o: ../../src/SSWR/AVIRead/AVIRCoreWin.cpp
-AVIROLEDBForm.o: ../../src/SSWR/AVIRead/AVIROLEDBForm.cpp
-EventPool.o: ../../src/Sync/EventPoolW.cpp
-RWMutex.o: ../../src/Sync/RWMutexW.cpp
-COMStream.o: ../../src/Win32/COMStream.cpp
-!-luuid
-!-lole32
-StreamCOM.o: ../../src/Win32/StreamCOM.cpp
-WMIReader.o: ../../src/Win32/WMIReader.cpp
-!-loleaut32
-sqlite3.o: !../../ThirdParty/sqlite3/sqlite3.c
