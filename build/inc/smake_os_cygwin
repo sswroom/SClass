@@ -79,11 +79,6 @@ IO/USBInfo.h:
 IO/Watchdog.h:
 @WatchdogNull.o
 
-AMDGPUControl.o: ../../src/IO/AMDGPUControl.cpp
-$-I ../../ThirdParty/adl
-AMDGPUManager.o: ../../src/IO/AMDGPUManager.cpp
-$-I ../../ThirdParty/adl
-
 Manage/Computer.h:
 @ComputerW.o
 Manage/ComputerUser.h:
