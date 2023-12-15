@@ -39,16 +39,16 @@ UOSInt Map::MapLayerCollection::Add(NotNullPtr<Map::MapDrawLayer> val)
 	return this->layerList.Add(val);
 }
 
-Map::MapDrawLayer *Map::MapLayerCollection::RemoveAt(UOSInt index)
+Optional<Map::MapDrawLayer> Map::MapLayerCollection::RemoveAt(UOSInt index)
 {
-	Map::MapDrawLayer *lyr;
+	NotNullPtr<Map::MapDrawLayer> lyr;
 	Sync::RWMutexUsage mutUsage(this->mut, true);
-	lyr = this->layerList.RemoveAt(index);
-	if (lyr)
+	if (this->layerList.RemoveAt(index).SetTo(lyr))
 	{
 		lyr->RemoveUpdatedHandler(InnerUpdated, this);
+		return lyr;
 	}
-	return lyr;
+	return 0;
 }
 
 void Map::MapLayerCollection::Clear()
@@ -463,13 +463,11 @@ void Map::MapLayerCollection::SetCoordinateSystem(NotNullPtr<Math::CoordinateSys
 
 void Map::MapLayerCollection::ReleaseAll()
 {
-	Map::MapDrawLayer *lyr;
 	Sync::RWMutexUsage mutUsage(this->mut, true);
 	UOSInt i = this->layerList.GetCount();
 	while (i-- > 0)
 	{
-		lyr = this->layerList.RemoveAt(i);
-		DEL_CLASS(lyr);
+		this->layerList.RemoveAt(i).Delete();
 	}
 }
 

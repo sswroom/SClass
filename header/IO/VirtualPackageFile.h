@@ -70,7 +70,7 @@ namespace IO
 		Data::FastMap<Int32, const UTF8Char *> infoMap;
 		PackageFile *parent;
 
-		void ReusePackFileItem(IO::PackFileItem *item);
+		void ReusePackFileItem(NotNullPtr<IO::PackFileItem> item);
 		VirtualPackageFile(NotNullPtr<Text::String> fileName);
 		VirtualPackageFile(Text::CStringNN fileName);
 

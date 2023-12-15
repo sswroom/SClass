@@ -147,7 +147,7 @@ void SSWR::AVIRead::AVIRUserAgentBatchForm::UpdateByText(Text::PString txt)
 	while (i < j)
 	{
 		UOSInt uaLen = Text::StrCharCnt(entList[i].userAgent);
-		k = uaList.SortedIndexOfC(Text::CString((const UTF8Char*)entList[i].userAgent, uaLen));
+		k = uaList.SortedIndexOfC(Text::CStringNN((const UTF8Char*)entList[i].userAgent, uaLen));
 		if (k < 0)
 		{
 			uaList.Insert((UOSInt)~k, Text::String::New((const UTF8Char*)entList[i].userAgent, uaLen));

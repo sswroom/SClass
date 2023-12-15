@@ -27,7 +27,7 @@ namespace Data
 		virtual UOSInt AddRange(const NotNullPtr<T> *arr, UOSInt cnt);
 		UOSInt AddAll(NotNullPtr<const ArrayListNN<T>> list);
 		virtual Bool Remove(NotNullPtr<T> val);
-		virtual T *RemoveAt(UOSInt index);
+		virtual Optional<T> RemoveAt(UOSInt index);
 		virtual void Insert(UOSInt index, NotNullPtr<T> val);
 		virtual UOSInt IndexOf(NotNullPtr<T> val) const;
 		virtual void Clear();
@@ -44,8 +44,8 @@ namespace Data
 		UOSInt RemoveRange(UOSInt index, UOSInt cnt);
 		virtual NotNullPtr<T> *GetPtr(OutParam<UOSInt> arraySize) const;
 		virtual NotNullPtr<T> *Ptr() const;
-		T *GetLast();
-		T *Pop();
+		Optional<T> GetLast();
+		Optional<T> Pop();
 		ArrayListNN<T> &operator =(const ArrayListNN<T> &v);
 		void DeleteAll();
 		void FreeAll(FreeFunc freeFunc);
@@ -173,10 +173,10 @@ namespace Data
 		return i != k;
 	}
 
-	template <class T> T *ArrayListNN<T>::RemoveAt(UOSInt index)
+	template <class T> Optional<T> ArrayListNN<T>::RemoveAt(UOSInt index)
 	{
 		if (index >= this->objCnt)
-			return (T*)0;
+			return nullptr;
 		UOSInt i = this->objCnt - index - 1;
 		NotNullPtr<T> o = arr[index];
 		if (i > 0)
@@ -185,7 +185,7 @@ namespace Data
 		}
 		this->objCnt--;
 		//arr[objCnt] = (T)0;
-		return o.Ptr();
+		return o;
 	}
 
 	template <class T> void ArrayListNN<T>::Insert(UOSInt Index, NotNullPtr<T> Val)
@@ -355,18 +355,18 @@ namespace Data
 		return this->arr;
 	}
 
-	template <class T> T *ArrayListNN<T>::GetLast()
+	template <class T> Optional<T> ArrayListNN<T>::GetLast()
 	{
 		if (this->objCnt == 0) return 0;
-		return arr[this->objCnt - 1].Ptr();
+		return arr[this->objCnt - 1];
 	}
 
-	template <class T> T *ArrayListNN<T>::Pop()
+	template <class T> Optional<T> ArrayListNN<T>::Pop()
 	{
 		if (this->objCnt == 0) return 0;
 		NotNullPtr<T> o = arr[this->objCnt - 1];
 		this->objCnt--;
-		return o.Ptr();
+		return o;
 	}
 
 	template <class T> ArrayListNN<T> &ArrayListNN<T>::operator =(const ArrayListNN<T> &v)

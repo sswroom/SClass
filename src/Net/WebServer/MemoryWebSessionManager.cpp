@@ -274,7 +274,7 @@ Net::WebServer::IWebSession *Net::WebServer::MemoryWebSessionManager::GetSession
 void Net::WebServer::MemoryWebSessionManager::DeleteSession(Int64 sessId)
 {
 	OSInt i;
-	Net::WebServer::MemoryWebSession *sess;
+	Optional<Net::WebServer::MemoryWebSession> sess;
 	NotNullPtr<MemoryWebSession> nnsess;
 	sess = 0;
 	Sync::MutexUsage mutUsage(this->mut);
@@ -285,7 +285,7 @@ void Net::WebServer::MemoryWebSessionManager::DeleteSession(Int64 sessId)
 		this->sessIds.RemoveAt((UOSInt)i);
 	}
 	mutUsage.EndUse();
-	if (nnsess.Set(sess))
+	if (sess.SetTo(nnsess))
 	{
 		nnsess->BeginUse();
 		this->delHdlr(nnsess, this->delHdlrObj);

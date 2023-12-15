@@ -173,7 +173,7 @@ DB::SortableDBReader::SortableDBReader(DB::ReadingDB *db, Text::CString schemaNa
 		i = this->objList.GetCount();
 		while (i-- > maxCnt)
 		{
-			if (obj.Set(this->objList.RemoveAt(i)))
+			if (this->objList.RemoveAt(i).SetTo(obj))
 				obj.Delete();
 		}
 	}

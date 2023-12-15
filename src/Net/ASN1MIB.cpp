@@ -86,7 +86,7 @@ Bool Net::ASN1MIB::ParseObjectOID(ModuleInfo *module, ObjectInfo *obj, Text::Str
 		{
 			break;
 		}
-		else if ((i = module->objKeys.SortedIndexOfC(Text::CString(csptr - 1, (UOSInt)(csptrEnd - csptr - 1)))) >= 0)
+		else if ((i = module->objKeys.SortedIndexOfC(Text::CStringNN(csptr - 1, (UOSInt)(csptrEnd - csptr - 1)))) >= 0)
 		{
 			ObjectInfo *refObj = module->objValues.GetItem((UOSInt)i);
 			if (!refObj->parsed)

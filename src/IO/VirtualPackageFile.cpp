@@ -17,7 +17,7 @@
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
 
-void IO::VirtualPackageFile::ReusePackFileItem(IO::PackFileItem *item)
+void IO::VirtualPackageFile::ReusePackFileItem(NotNullPtr<IO::PackFileItem> item)
 {
 	SDEL_CLASS(item->fd);
 	SDEL_CLASS(item->pobj);
@@ -164,12 +164,11 @@ Bool IO::VirtualPackageFile::AddPack(NotNullPtr<IO::PackageFile> pkg, Text::CStr
 
 Bool IO::VirtualPackageFile::AddOrReplaceData(NotNullPtr<StreamData> fd, UInt64 ofst, UInt64 length, Text::CStringNN name, const Data::Timestamp &modTime, const Data::Timestamp &accTime, const Data::Timestamp &createTime, UInt32 unixAttr)
 {
-	PackFileItem *item;
+	NotNullPtr<PackFileItem> item;
 	UOSInt i = GetItemIndex(name);
 	if (i != INVALID_INDEX)
 	{
-		item = this->items.GetItem(i);
-		if (item && (item->itemType == IO::PackFileItem::PackItemType::Uncompressed || item->itemType == IO::PackFileItem::PackItemType::Compressed))
+		if (item.Set(this->items.GetItem(i)) && (item->itemType == IO::PackFileItem::PackItemType::Uncompressed || item->itemType == IO::PackFileItem::PackItemType::Compressed))
 		{
 			ReusePackFileItem(item);
 			item->itemType = IO::PackFileItem::PackItemType::Uncompressed;
@@ -189,12 +188,11 @@ Bool IO::VirtualPackageFile::AddOrReplaceData(NotNullPtr<StreamData> fd, UInt64 
 
 Bool IO::VirtualPackageFile::AddOrReplaceObject(IO::ParsedObject *pobj, Text::CStringNN name, const Data::Timestamp &modTime, const Data::Timestamp &accTime, const Data::Timestamp &createTime, UInt32 unixAttr)
 {
-	PackFileItem *item;
+	NotNullPtr<PackFileItem> item;
 	UOSInt i = GetItemIndex(name);
 	if (i != INVALID_INDEX)
 	{
-		item = this->items.GetItem(i);
-		if (item && (item->itemType == IO::PackFileItem::PackItemType::Uncompressed || item->itemType == IO::PackFileItem::PackItemType::Compressed))
+		if (item.Set(this->items.GetItem(i)) && (item->itemType == IO::PackFileItem::PackItemType::Uncompressed || item->itemType == IO::PackFileItem::PackItemType::Compressed))
 		{
 			ReusePackFileItem(item);
 			item->itemType = IO::PackFileItem::PackItemType::ParsedObject;
@@ -215,12 +213,11 @@ Bool IO::VirtualPackageFile::AddOrReplaceObject(IO::ParsedObject *pobj, Text::CS
 
 Bool IO::VirtualPackageFile::AddOrReplaceCompData(NotNullPtr<StreamData> fd, UInt64 ofst, UInt64 length, PackFileItem::CompressInfo *compInfo, Text::CStringNN name, const Data::Timestamp &modTime, const Data::Timestamp &accTime, const Data::Timestamp &createTime, UInt32 unixAttr)
 {
-	PackFileItem *item;
+	NotNullPtr<PackFileItem> item;
 	UOSInt i = GetItemIndex(name);
 	if (i != INVALID_INDEX)
 	{
-		item = this->items.GetItem(i);
-		if (item && (item->itemType == IO::PackFileItem::PackItemType::Uncompressed || item->itemType == IO::PackFileItem::PackItemType::Compressed))
+		if (item.Set(this->items.GetItem(i)) && (item->itemType == IO::PackFileItem::PackItemType::Uncompressed || item->itemType == IO::PackFileItem::PackItemType::Compressed))
 		{
 			ReusePackFileItem(item);
 			item->itemType = IO::PackFileItem::PackItemType::Compressed;
@@ -1061,8 +1058,8 @@ IO::PackageFile *IO::VirtualPackageFile::GetParent(OutParam<Bool> needRelease) c
 
 Bool IO::VirtualPackageFile::DeleteItem(UOSInt index)
 {
-	IO::PackFileItem *item = this->items.RemoveAt(index);
-	if (item)
+	NotNullPtr<IO::PackFileItem> item;
+	if (this->items.RemoveAt(index).SetTo(item))
 	{
 		if (item->itemType == IO::PackFileItem::PackItemType::ParsedObject && item->pobj->GetParserType() == IO::ParserType::PackageFile)
 		{
@@ -1070,7 +1067,7 @@ Bool IO::VirtualPackageFile::DeleteItem(UOSInt index)
 		}
 		this->RemoveItem(item->name);
 		ReusePackFileItem(item);
-		MemFree(item);
+		MemFreeNN(item);
 		return true;
 	}
 	return false;

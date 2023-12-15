@@ -915,7 +915,7 @@ Bool Net::EthernetAnalyzer::PacketIPv4(const UInt8 *packet, UOSInt packetSize, U
 					Sync::MutexUsage mutUsage(ipLog->mut);
 					while (ipLog->logList.GetCount() >= IPLOGCNT)
 					{
-						ipLog->logList.RemoveAt(0)->Release();
+						OPTSTR_DEL(ipLog->logList.RemoveAt(0));
 					}
 					ipLog->logList.Add(Text::String::New(sb.ToCString()));
 					mutUsage.EndUse();
@@ -1022,7 +1022,7 @@ Bool Net::EthernetAnalyzer::PacketIPv4(const UInt8 *packet, UOSInt packetSize, U
 					Sync::MutexUsage mutUsage(ipLog->mut);
 					while (ipLog->logList.GetCount() >= IPLOGCNT)
 					{
-						ipLog->logList.RemoveAt(0)->Release();
+						OPTSTR_DEL(ipLog->logList.RemoveAt(0));
 					}
 					ipLog->logList.Add(Text::String::New(sb.ToString(), sb.GetLength()));
 					mutUsage.EndUse();
@@ -1430,7 +1430,7 @@ Bool Net::EthernetAnalyzer::PacketIPv4(const UInt8 *packet, UOSInt packetSize, U
 									Sync::MutexUsage mutUsage(ipLog->mut);
 									while (ipLog->logList.GetCount() >= IPLOGCNT)
 									{
-										ipLog->logList.RemoveAt(0)->Release();
+										OPTSTR_DEL(ipLog->logList.RemoveAt(0));
 									}
 									ipLog->logList.Add(Text::String::New(sb.ToString(), sb.GetLength()));
 									mutUsage.EndUse();
@@ -1464,7 +1464,7 @@ Bool Net::EthernetAnalyzer::PacketIPv4(const UInt8 *packet, UOSInt packetSize, U
 									Sync::MutexUsage mutUsage(ipLog->mut);
 									while (ipLog->logList.GetCount() >= IPLOGCNT)
 									{
-										ipLog->logList.RemoveAt(0)->Release();
+										OPTSTR_DEL(ipLog->logList.RemoveAt(0));
 									}
 									ipLog->logList.Add(Text::String::New(sb.ToString(), sb.GetLength()));
 									mutUsage.EndUse();
@@ -1646,7 +1646,7 @@ FF FF FF FF FF FF 00 11 32 0A AB 9C 08 00 45 00
 							Sync::MutexUsage mutUsage(ipLog->mut);
 							while (ipLog->logList.GetCount() >= IPLOGCNT)
 							{
-								ipLog->logList.RemoveAt(0)->Release();
+								OPTSTR_DEL(ipLog->logList.RemoveAt(0));
 							}
 							ipLog->logList.Add(Text::String::New(sb.ToString(), sb.GetLength()));
 							mutUsage.EndUse();

@@ -928,7 +928,7 @@ void Map::VectorLayer::OptimizePolylinePath()
 		while (i-- > 0)
 		{
 			tmpStr = this->strList.RemoveAt(i);
-			if (tmpPL.Set((Math::Geometry::Polyline*)this->vectorList.RemoveAt(i)))
+			if (Optional<Math::Geometry::Polyline>::ConvertFrom(this->vectorList.RemoveAt(i)).SetTo(tmpPL))
 			{
 				points = tmpPL->GetItem(0)->GetPointList(nPoints);
 				pt = *points;

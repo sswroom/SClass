@@ -213,7 +213,7 @@ Bool IO::GSMModemController::GSMGetAllowedOperators(Data::ArrayList<Operator*> *
 	const UTF8Char *sptr;
 	UTF8Char c;
 	Sync::MutexUsage mutUsage(this->cmdMut);
-	this->channel->SendATCommand(&this->cmdResults, UTF8STRC("AT+COPS=?"), 60000);
+	this->channel->SendATCommand(this->cmdResults, UTF8STRC("AT+COPS=?"), 60000);
 	UOSInt i;
 	UOSInt j = this->cmdResults.GetCount();
 	UOSInt k = 0;
@@ -454,7 +454,7 @@ IO::GSMModemController::SIMStatus IO::GSMModemController::GSMGetSIMStatus()
 	IO::GSMModemController::SIMStatus sims = IO::GSMModemController::SIMS_UNKNOWN;
 
 	Sync::MutexUsage mutUsage(this->cmdMut);
-	this->channel->SendATCommand(&this->cmdResults, UTF8STRC("AT+CPIN?"), 3000);
+	this->channel->SendATCommand(this->cmdResults, UTF8STRC("AT+CPIN?"), 3000);
 	UOSInt i = this->cmdResults.GetCount();
 	Text::String *val;
 	while (i-- > 0)
@@ -744,7 +744,7 @@ Bool IO::GSMModemController::GPRSGetPDPContext(Data::ArrayList<PDPContext*> *ctx
 	UTF8Char *sptr;
 	Text::PString sarr[5];
 	Sync::MutexUsage mutUsage(this->cmdMut);
-	this->channel->SendATCommand(&this->cmdResults, UTF8STRC("AT+CGDCONT?"), 3000);
+	this->channel->SendATCommand(this->cmdResults, UTF8STRC("AT+CGDCONT?"), 3000);
 	UOSInt i;
 	UOSInt j = this->cmdResults.GetCount();
 	Text::String *val;
@@ -855,7 +855,7 @@ Bool IO::GSMModemController::GPRSGetPDPActive(Data::ArrayList<ActiveState> *actL
 	UTF8Char *sptr;
 	Text::PString sarr[5];
 	Sync::MutexUsage mutUsage(this->cmdMut);
-	this->channel->SendATCommand(&this->cmdResults, UTF8STRC("AT+CGACT?"), 3000);
+	this->channel->SendATCommand(this->cmdResults, UTF8STRC("AT+CGACT?"), 3000);
 	UOSInt i;
 	UOSInt j = this->cmdResults.GetCount();
 	Text::String *val;
@@ -912,7 +912,7 @@ Bool IO::GSMModemController::SMSListMessages(Data::ArrayList<IO::GSMModemControl
 	}
 	sptr = Text::StrInt32(Text::StrConcatC(sbuff, UTF8STRC("AT+CMGL=")), (Int32)status);
 	Sync::MutexUsage mutUsage(this->cmdMut);
-	this->channel->SendATCommand(&this->cmdResults, sbuff, (UOSInt)(sptr - sbuff), 10000);
+	this->channel->SendATCommand(this->cmdResults, sbuff, (UOSInt)(sptr - sbuff), 10000);
 	UOSInt i;
 	UOSInt j = this->cmdResults.GetCount();
 	Int32 lastIndex = 0;
@@ -1030,7 +1030,7 @@ Bool IO::GSMModemController::SMSSendMessage(Text::SMSMessage *msg)
 		this->SetSMSFormat(IO::GSMModemController::SMSF_PDU);
 	}
 	Sync::MutexUsage mutUsage(this->cmdMut);
-	this->channel->SendATCommands(&this->cmdResults, sbuff1, (UOSInt)(sptr1 - sbuff1), sbuff2, 10000);
+	this->channel->SendATCommands(this->cmdResults, sbuff1, (UOSInt)(sptr1 - sbuff1), sbuff2, 10000);
 	isSucc = this->IsCmdSucceed();
 	ClearCmdResult();
 	mutUsage.EndUse();
@@ -1168,7 +1168,7 @@ UTF8Char *IO::GSMModemController::SMSGetSMSC(UTF8Char *buff)
 	UTF8Char *sarr[3];
 	UTF8Char *sptr = 0;
 	Sync::MutexUsage mutUsage(this->cmdMut);
-	this->channel->SendATCommand(&this->cmdResults, UTF8STRC("AT+CSCA?"), 3000);
+	this->channel->SendATCommand(this->cmdResults, UTF8STRC("AT+CSCA?"), 3000);
 	UOSInt i = this->cmdResults.GetCount();
 	Text::String *val;
 	while (i-- > 0)
@@ -1348,7 +1348,7 @@ Bool IO::GSMModemController::PBReadEntries(Data::ArrayList<PBEntry*> *phoneList,
 		sptr = Text::StrInt32(Text::StrConcatC(Text::StrInt32(Text::StrConcatC(sbuff, UTF8STRC("AT+CPBR=")), startEntry), UTF8STRC(",")), endEntry);
 	}
 	Sync::MutexUsage mutUsage(this->cmdMut);
-	this->channel->SendATCommand(&this->cmdResults, sbuff, (UOSInt)(sptr - sbuff), 10000);
+	this->channel->SendATCommand(this->cmdResults, sbuff, (UOSInt)(sptr - sbuff), 10000);
 	UOSInt i;
 	UOSInt j = this->cmdResults.GetCount();
 	Text::String *val;

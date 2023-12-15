@@ -891,13 +891,13 @@ Bool Text::XMLReader::ReadNext()
 					}
 					if (this->pathList.GetItem(this->pathList.GetCount() - 1)->Equals(nodeText))
 					{
-						this->pathList.RemoveAt(this->pathList.GetCount() - 1)->Release();
+						OPTSTR_DEL(this->pathList.Pop());
 						return true;
 					}
 					else if (this->mode == Text::XMLReader::PM_HTML && this->pathList.GetCount() >= 2 && this->pathList.GetItem(this->pathList.GetCount() - 2)->Equals(nodeText))
 					{
-						this->pathList.RemoveAt(this->pathList.GetCount() - 1)->Release();
-						this->pathList.RemoveAt(this->pathList.GetCount() - 1)->Release();
+						OPTSTR_DEL(this->pathList.Pop());
+						OPTSTR_DEL(this->pathList.Pop());
 						return true;
 					}
 					else

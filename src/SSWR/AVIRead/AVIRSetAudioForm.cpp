@@ -19,7 +19,7 @@ void __stdcall SSWR::AVIRead::AVIRSetAudioForm::OnOKClick(void *userObj)
 		Data::ArrayListNN<Text::String> audDevList;
 		audDevList.Add(Text::String::NewP(sbuff, sptr));
 		me->core->SetAudioDeviceList(&audDevList);
-		audDevList.RemoveAt(0)->Release();
+		OPTSTR_DEL(audDevList.RemoveAt(0));
 	}
 	me->SetDialogResult(UI::GUIForm::DR_OK);
 }

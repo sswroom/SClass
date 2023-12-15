@@ -193,7 +193,7 @@ Net::SDPFile::~SDPFile()
 	i = this->sessDesc.GetCount();
 	while (i-- > 0)
 	{
-		this->sessDesc.RemoveAt(i)->Release();
+		OPTSTR_DEL(this->sessDesc.RemoveAt(i));
 	}
 	i = this->mediaList.GetCount();
 	while (i-- > 0)

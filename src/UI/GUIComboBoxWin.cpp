@@ -194,9 +194,7 @@ void *UI::GUIComboBox::RemoveItem(UOSInt index)
 {
 	void *obj = (void*)SendMessage((HWND)hwnd, CB_GETITEMDATA, index, 0);
 	SendMessage((HWND)hwnd, CB_DELETESTRING, index, 0);
-	Text::String *s = this->itemTexts.RemoveAt(index);
-	if (s)
-		s->Release();
+	OPTSTR_DEL(this->itemTexts.RemoveAt(index));
 	return obj;
 }
 
@@ -206,7 +204,7 @@ void UI::GUIComboBox::ClearItems()
 	UOSInt i = this->itemTexts.GetCount();
 	while (i-- > 0)
 	{
-		this->itemTexts.RemoveAt(i)->Release();
+		OPTSTR_DEL(this->itemTexts.RemoveAt(i));
 	}
 }
 

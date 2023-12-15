@@ -52,8 +52,8 @@ UI::FileDialog::~FileDialog()
 	i = this->patterns.GetCount();
 	while (i-- > 0)
 	{
-		this->patterns.RemoveAt(i)->Release();
-		this->names.RemoveAt(i)->Release();
+		OPTSTR_DEL(this->patterns.RemoveAt(i));
+		OPTSTR_DEL(this->names.RemoveAt(i));
 	}
 	this->ClearFileNames();
 }

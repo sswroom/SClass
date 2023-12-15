@@ -33,7 +33,7 @@ void __stdcall SSWR::AVIRead::AVIRLineCounterForm::OnExtensionsRemoveClicked(voi
 	UOSInt i = me->lbExtensions->GetSelectedIndex();
 	if (i != INVALID_INDEX)
 	{
-		me->extList.RemoveAt(i)->Release();
+		OPTSTR_DEL(me->extList.RemoveAt(i));
 		me->lbExtensions->RemoveItem(i);
 	}
 }

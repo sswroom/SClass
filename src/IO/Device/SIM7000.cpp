@@ -154,7 +154,7 @@ void IO::Device::SIM7000::SetReceiveHandler(ReceiveHandler recvHdlr, void *userO
 Bool IO::Device::SIM7000::SIMCOMPowerDown()
 {
 	Sync::MutexUsage mutUsage(this->cmdMut);
-	this->channel->SendATCommand(&this->cmdResults, UTF8STRC("AT+CPOWD=1"), 2000);
+	this->channel->SendATCommand(this->cmdResults, UTF8STRC("AT+CPOWD=1"), 2000);
 	UOSInt i = this->cmdResults.GetCount();
 	Text::String *val;
 	if (i > 1)
@@ -309,7 +309,7 @@ Bool IO::Device::SIM7000::NetIPSend(UOSInt index, const UInt8 *buff, UOSInt buff
 {
 	Text::StringBuilderUTF8 sb;
 	Sync::MutexUsage mutUsage;
-	Text::String *cmdRes;
+	NotNullPtr<Text::String> cmdRes;
 	if (!this->channel->UseCmd(mutUsage))
 		return false;
 	sb.AppendC(UTF8STRC("AT+CIPSEND="));
@@ -324,7 +324,7 @@ Bool IO::Device::SIM7000::NetIPSend(UOSInt index, const UInt8 *buff, UOSInt buff
 	sb.AppendUTF8Char('\r');
 	this->channel->CmdSend(sb.ToString(), sb.GetCharCnt());
 	Bool ret = false;
-	while ((cmdRes = this->channel->CmdGetNextResult(5000)) != 0)
+	while (this->channel->CmdGetNextResult(5000).SetTo(cmdRes))
 	{
 		if (cmdRes->EndsWith(UTF8STRC(", SEND OK")))
 		{

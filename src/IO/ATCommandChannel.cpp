@@ -106,13 +106,10 @@ UInt32 __stdcall IO::ATCommandChannel::CmdThread(void *userObj)
 
 void IO::ATCommandChannel::ClearResults()
 {
-	Text::String *cmdRes;
 	while (this->cmdResults.GetCount() > 0)
 	{
 		Sync::MutexUsage mutUsage(this->cmdResultMut);
-		cmdRes = this->cmdResults.RemoveAt(0);
-		mutUsage.EndUse();
-		cmdRes->Release();
+		OPTSTR_DEL(this->cmdResults.RemoveAt(0));
 	}
 }
 
@@ -142,7 +139,7 @@ IO::ATCommandChannel::~ATCommandChannel()
 	i = this->cmdResults.GetCount();
 	while (i-- > 0)
 	{
-		this->cmdResults.RemoveAt(i)->Release();
+		OPTSTR_DEL(this->cmdResults.RemoveAt(i));
 	}
 	if (this->stmRelease)
 	{
@@ -155,14 +152,14 @@ NotNullPtr<IO::Stream> IO::ATCommandChannel::GetStream() const
 	return this->stm;
 }
 
-UOSInt IO::ATCommandChannel::SendATCommand(Data::ArrayList<Text::String *> *retArr, const UTF8Char *atCmd, UOSInt atCmdLen, Data::Duration timeout)
+UOSInt IO::ATCommandChannel::SendATCommand(NotNullPtr<Data::ArrayListNN<Text::String>> retArr, const UTF8Char *atCmd, UOSInt atCmdLen, Data::Duration timeout)
 {
 	Data::DateTime dt;
 	Data::DateTime dt2;
 	UOSInt retSize = 0;
 //	Bool cmdBegin = false;
 	Bool cmdEnd = false;
-	Text::String *cmdRes;
+	NotNullPtr<Text::String> cmdRes;
 	Sync::MutexUsage mutUsage;
 	if (!this->UseCmd(mutUsage))
 		return 0;
@@ -172,7 +169,7 @@ UOSInt IO::ATCommandChannel::SendATCommand(Data::ArrayList<Text::String *> *retA
 	dt.SetCurrTimeUTC();
 	while (true)
 	{
-		while ((cmdRes = this->CmdGetNextResult(1000)) != 0)
+		while (this->CmdGetNextResult(1000).SetTo(cmdRes))
 		{
 			dt.SetCurrTimeUTC();
 			retArr->Add(cmdRes);
@@ -203,14 +200,14 @@ UOSInt IO::ATCommandChannel::SendATCommand(Data::ArrayList<Text::String *> *retA
 	return retSize;
 }
 
-UOSInt IO::ATCommandChannel::SendATCommands(Data::ArrayList<Text::String *> *retArr, const UTF8Char *atCmd, UOSInt atCmdLen, const UTF8Char *atCmdSub, Data::Duration timeout)
+UOSInt IO::ATCommandChannel::SendATCommands(NotNullPtr<Data::ArrayListNN<Text::String>> retArr, const UTF8Char *atCmd, UOSInt atCmdLen, const UTF8Char *atCmdSub, Data::Duration timeout)
 {
 	Data::DateTime dt;
 	Data::DateTime dt2;
 	UOSInt retSize = 0;
 //	Bool cmdBegin = false;
 	Bool cmdEnd = false;
-	Text::String *cmdRes;
+	NotNullPtr<Text::String> cmdRes;
 	Sync::MutexUsage mutUsage;
 	if (!this->UseCmd(mutUsage))
 		return 0;
@@ -223,7 +220,7 @@ UOSInt IO::ATCommandChannel::SendATCommands(Data::ArrayList<Text::String *> *ret
 	dt.SetCurrTimeUTC();
 	while (true)
 	{
-		while ((cmdRes = this->CmdGetNextResult(1000)) != 0)
+		while (this->CmdGetNextResult(1000).SetTo(cmdRes))
 		{
 			dt.SetCurrTimeUTC();
 			retArr->Add(cmdRes);
@@ -253,14 +250,14 @@ UOSInt IO::ATCommandChannel::SendATCommands(Data::ArrayList<Text::String *> *ret
 	return retSize;
 }
 
-UOSInt IO::ATCommandChannel::SendDialCommand(Data::ArrayList<Text::String *> *retArr, const UTF8Char *atCmd, UOSInt atCmdLen, Data::Duration timeout)
+UOSInt IO::ATCommandChannel::SendDialCommand(NotNullPtr<Data::ArrayListNN<Text::String>> retArr, const UTF8Char *atCmd, UOSInt atCmdLen, Data::Duration timeout)
 {
 	Data::DateTime dt;
 	Data::DateTime dt2;
 	UOSInt retSize = 0;
 //	Bool cmdBegin = false;
 	Bool cmdEnd = false;
-	Text::String *cmdRes;
+	NotNullPtr<Text::String> cmdRes;
 	Sync::MutexUsage mutUsage;
 	if (!this->UseCmd(mutUsage))
 		return 0;
@@ -270,7 +267,7 @@ UOSInt IO::ATCommandChannel::SendDialCommand(Data::ArrayList<Text::String *> *re
 	dt.SetCurrTimeUTC();
 	while (true)
 	{
-		while ((cmdRes = this->CmdGetNextResult(1000)) != 0)
+		while (this->CmdGetNextResult(1000).SetTo(cmdRes))
 		{
 			dt.SetCurrTimeUTC();
 			retArr->Add(cmdRes);
@@ -334,9 +331,9 @@ UOSInt IO::ATCommandChannel::CmdSend(const UInt8 *data, UOSInt dataSize)
 	return this->stm->Write(data, dataSize);
 }
 
-Text::String *IO::ATCommandChannel::CmdGetNextResult(Data::Duration timeout)
+Optional<Text::String> IO::ATCommandChannel::CmdGetNextResult(Data::Duration timeout)
 {
-	Text::String *cmdRes = 0;
+	Optional<Text::String> cmdRes = 0;
 	this->cmdEvt.Clear();
 	if (this->cmdResults.GetCount() > 0)
 	{

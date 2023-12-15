@@ -478,11 +478,7 @@ Text::SpreadSheet::Worksheet *Text::SpreadSheet::Workbook::GetItem(UOSInt index)
 
 void Text::SpreadSheet::Workbook::RemoveAt(UOSInt index)
 {
-	Text::SpreadSheet::Worksheet *ws = this->sheets.RemoveAt(index);
-	if (ws)
-	{
-		DEL_CLASS(ws);
-	}
+	this->sheets.RemoveAt(index).Delete();
 }
 
 Text::SpreadSheet::Worksheet *Text::SpreadSheet::Workbook::GetWorksheetByName(Text::CString name)

@@ -114,7 +114,7 @@ IO::ParsedObject *Parser::ObjParser::KMZParser::ParseObject(NotNullPtr<IO::Parse
 					Map::MapLayerCollection *lyrColl = (Map::MapLayerCollection*)nnpobj2.Ptr();
 					while (lyrColl->GetCount() > 0)
 					{
-						if (layer.Set(lyrColl->RemoveAt(0)))
+						if (lyrColl->RemoveAt(0).SetTo(layer))
 							mapLyrColl->Add(layer);
 					}
 					nnpobj2.Delete();

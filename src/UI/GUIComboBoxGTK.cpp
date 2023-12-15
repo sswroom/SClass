@@ -216,9 +216,8 @@ void *UI::GUIComboBox::RemoveItem(UOSInt index)
 	UOSInt cnt = this->itemTexts.GetCount();
 	if (index >= cnt)
 		return 0;
-	Text::String *txt = this->itemTexts.RemoveAt(index);
+	OPTSTR_DEL(this->itemTexts.RemoveAt(index));
 	void *item = this->items.RemoveAt(index);
-	txt->Release();
 	gtk_combo_box_text_remove((GtkComboBoxText*)this->hwnd, (gint)index);
 	return item;
 }

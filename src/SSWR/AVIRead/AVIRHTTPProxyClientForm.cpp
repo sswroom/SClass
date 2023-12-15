@@ -177,7 +177,7 @@ void SSWR::AVIRead::AVIRHTTPProxyClientForm::ClearHeaders()
 	i = this->respHeaders.GetCount();
 	while (i-- > 0)
 	{
-		this->respHeaders.RemoveAt(i)->Release();
+		OPTSTR_DEL(this->respHeaders.RemoveAt(i));
 	}
 }
 

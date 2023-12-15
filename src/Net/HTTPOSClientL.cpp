@@ -364,7 +364,7 @@ Bool Net::HTTPOSClient::Connect(Text::CStringNN url, Net::WebUtil::RequestMethod
 		i = this->headers.GetCount();
 		while (i-- > 0)
 		{
-			this->headers.RemoveAt(i)->Release();
+			OPTSTR_DEL(this->headers.RemoveAt(i));
 		}
 		this->headers.Clear();
 	}

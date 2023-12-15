@@ -23,7 +23,7 @@ namespace IO
 	protected:
 		IO::ATCommandChannel *channel;
 		Bool needRelease;
-		Data::ArrayList<Text::String *> cmdResults;
+		Data::ArrayListNN<Text::String> cmdResults;
 		Sync::Mutex cmdMut;
 
 	protected:

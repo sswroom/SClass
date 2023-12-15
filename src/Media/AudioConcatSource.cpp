@@ -22,12 +22,10 @@ Media::AudioConcatSource::AudioConcatSource()
 
 Media::AudioConcatSource::~AudioConcatSource()
 {
-	Media::IAudioSource *audio;
 	UOSInt i = this->stmList.GetCount();
 	while (i-- > 0)
 	{
-		audio = (Media::IAudioSource*)this->stmList.RemoveAt(i);
-		DEL_CLASS(audio);
+		this->stmList.RemoveAt(i).Delete();
 	}
 }
 

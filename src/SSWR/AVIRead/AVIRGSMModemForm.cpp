@@ -1,5 +1,4 @@
 #include "Stdafx.h"
-#include "Text/MyString.h"
 #include "IO/FileStream.h"
 #include "IO/Path.h"
 #include "IO/SerialPort.h"
@@ -7,6 +6,7 @@
 #include "SSWR/AVIRead/AVIRGSMModemForm.h"
 #include "Sync/SimpleThread.h"
 #include "Sync/ThreadUtil.h"
+#include "Text/MyString.h"
 #include "Text/MyStringW.h"
 #include "Text/UTF8Writer.h"
 #include "UI/FileDialog.h"
@@ -509,8 +509,8 @@ void __stdcall SSWR::AVIRead::AVIRGSMModemForm::OnATCommandClicked(void *userObj
 	me->txtATCommand->GetText(sb);
 	if (sb.StartsWith(UTF8STRC("AT")))
 	{
-		Data::ArrayList<Text::String*> ret;
-		if (me->channel->SendATCommand(&ret, sb.ToString(), sb.GetLength(), 3000))
+		Data::ArrayListNN<Text::String> ret;
+		if (me->channel->SendATCommand(ret, sb.ToString(), sb.GetLength(), 3000))
 		{
 			Text::String *s;
 			UOSInt i = 0;

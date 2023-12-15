@@ -21,7 +21,7 @@ namespace Map
 		virtual ~MapLayerCollection();
 
 		virtual UOSInt Add(NotNullPtr<Map::MapDrawLayer> val);
-		virtual Map::MapDrawLayer *RemoveAt(UOSInt index);
+		virtual Optional<Map::MapDrawLayer> RemoveAt(UOSInt index);
 		virtual void Clear();
 		virtual UOSInt GetCount() const;
 		virtual Map::MapDrawLayer *GetItem(UOSInt Index);

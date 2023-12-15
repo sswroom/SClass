@@ -230,7 +230,7 @@ Math::Geometry::Polyline *Math::Geometry::Polyline::SplitByPoint(Math::Coord2DDb
 			if (i == 0)
 				return 0;
 			NEW_CLASS(newPL, Math::Geometry::Polyline(this->srid));
-			while ((nnLineString.Set(this->geometries.RemoveAt(i))))
+			while (this->geometries.RemoveAt(i).SetTo(nnLineString))
 			{
 				newPL->AddGeometry(nnLineString);
 			}
@@ -241,7 +241,7 @@ Math::Geometry::Polyline *Math::Geometry::Polyline::SplitByPoint(Math::Coord2DDb
 			if (i + 1 == j)
 				return 0;
 			NEW_CLASS(newPL, Math::Geometry::Polyline(this->srid));
-			while ((nnLineString.Set(this->geometries.RemoveAt(i + 1))))
+			while (this->geometries.RemoveAt(i + 1).SetTo(nnLineString))
 			{
 				newPL->AddGeometry(nnLineString);
 			}
@@ -254,7 +254,7 @@ Math::Geometry::Polyline *Math::Geometry::Polyline::SplitByPoint(Math::Coord2DDb
 			{
 				newPL->AddGeometry(nnLineString);
 			}
-			while ((nnLineString.Set(this->geometries.RemoveAt(i + 1))))
+			while (this->geometries.RemoveAt(i + 1).SetTo(nnLineString))
 			{
 				newPL->AddGeometry(nnLineString);
 			}

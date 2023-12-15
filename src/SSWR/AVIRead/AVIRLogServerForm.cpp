@@ -87,7 +87,7 @@ void __stdcall SSWR::AVIRead::AVIRLogServerForm::OnClientLog(void *userObj, UInt
 
 	while (ipLog->logMessage.GetCount() >= 100)
 	{
-		ipLog->logMessage.RemoveAt(0)->Release();
+		OPTSTR_DEL(ipLog->logMessage.RemoveAt(0));
 	}
 	ipLog->logMessage.Add(Text::String::New(message));
 	if (me->currIP == ip)

@@ -170,7 +170,7 @@ Map::FileGDBLayer::~FileGDBLayer()
 	i = this->colNames.GetCount();
 	while (i-- > 0)
 	{
-		this->colNames.RemoveAt(i)->Release();
+		OPTSTR_DEL(this->colNames.RemoveAt(i));
 	}
 	Math::Geometry::Vector2D *vec;
 	i = this->objects.GetCount();

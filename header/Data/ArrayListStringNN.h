@@ -13,7 +13,7 @@ namespace Data
 
 		virtual NotNullPtr<Data::ArrayListNN<Text::String>> Clone() const;
 		virtual OSInt Compare(NotNullPtr<Text::String> obj1, NotNullPtr<Text::String> obj2) const;
-		virtual OSInt SortedIndexOfC(Text::CString val) const;
+		virtual OSInt SortedIndexOfC(Text::CStringNN val) const;
 
 		NotNullPtr<Text::String> JoinString() const;
 	};

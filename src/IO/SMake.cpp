@@ -1646,7 +1646,7 @@ void IO::SMake::AsyncPostCompile()
 		if (i == 0)
 			break;
 		i--;
-		if (cmd.Set(this->linkCmds.RemoveAt(i)))
+		if (this->linkCmds.RemoveAt(i).SetTo(cmd))
 		{
 			CompileObject(cmd);
 		}
@@ -1662,7 +1662,7 @@ void IO::SMake::AsyncPostCompile()
 			NotNullPtr<const ProgramItem> prog;
 			while (i-- > 0)
 			{
-				if (prog.Set(this->testProgs.RemoveAt(i)))
+				if (this->testProgs.RemoveAt(i).SetTo(prog))
 				{
 					if (!TestProg(prog, sb))
 					{

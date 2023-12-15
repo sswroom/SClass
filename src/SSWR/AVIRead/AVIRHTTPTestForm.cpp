@@ -289,7 +289,7 @@ void SSWR::AVIRead::AVIRHTTPTestForm::ClearURLs()
 	i = this->connURLs.GetCount();
 	while (i-- > 0)
 	{
-		this->connURLs.RemoveAt(i)->Release();
+		OPTSTR_DEL(this->connURLs.RemoveAt(i));
 	}
 	if (this->children.GetCount() > 0)
 	{

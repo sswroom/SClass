@@ -24,7 +24,7 @@ OSInt Data::ArrayListStrFastNN::Compare(NotNullPtr<Text::String> obj1, NotNullPt
 	return obj1->CompareToFast(obj2->ToCString());
 }
 
-OSInt Data::ArrayListStrFastNN::SortedIndexOf(Text::CString val) const
+OSInt Data::ArrayListStrFastNN::SortedIndexOf(Text::CStringNN val) const
 {
 	OSInt i;
 	OSInt j;

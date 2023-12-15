@@ -41,13 +41,13 @@ namespace IO
 
 		NotNullPtr<IO::Stream> GetStream() const;
 
-		UOSInt SendATCommand(Data::ArrayList<Text::String *> *retArr, const UTF8Char *atCmd, UOSInt atCmdLen, Data::Duration timeout);
-		UOSInt SendATCommands(Data::ArrayList<Text::String *> *retArr, const UTF8Char *atCmd, UOSInt atCmdLen, const UTF8Char *atCmdSub, Data::Duration timeout);
-		UOSInt SendDialCommand(Data::ArrayList<Text::String *> *retArr, const UTF8Char *atCmd, UOSInt atCmdLen, Data::Duration timeout);
+		UOSInt SendATCommand(NotNullPtr<Data::ArrayListNN<Text::String>> retArr, const UTF8Char *atCmd, UOSInt atCmdLen, Data::Duration timeout);
+		UOSInt SendATCommands(NotNullPtr<Data::ArrayListNN<Text::String>> retArr, const UTF8Char *atCmd, UOSInt atCmdLen, const UTF8Char *atCmdSub, Data::Duration timeout);
+		UOSInt SendDialCommand(NotNullPtr<Data::ArrayListNN<Text::String>> retArr, const UTF8Char *atCmd, UOSInt atCmdLen, Data::Duration timeout);
 
 		Bool UseCmd(NotNullPtr<Sync::MutexUsage> mutUsage);
 		UOSInt CmdSend(const UInt8 *data, UOSInt dataSize);
-		Text::String *CmdGetNextResult(Data::Duration timeout);
+		Optional<Text::String> CmdGetNextResult(Data::Duration timeout);
 
 		void Close();
 

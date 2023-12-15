@@ -24,7 +24,7 @@ OSInt Data::ArrayListStringNN::Compare(NotNullPtr<Text::String> obj1, NotNullPtr
 	return obj1->CompareTo(obj2->ToCString());
 }
 
-OSInt Data::ArrayListStringNN::SortedIndexOfC(Text::CString val) const
+OSInt Data::ArrayListStringNN::SortedIndexOfC(Text::CStringNN val) const
 {
 	OSInt i;
 	OSInt j;

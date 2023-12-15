@@ -30,7 +30,7 @@ DB::TableDef::~TableDef()
 	i = this->cols.GetCount();
 	while (i-- > 0)
 	{
-		DEL_CLASS(this->cols.RemoveAt(i));
+		this->cols.RemoveAt(i).Delete();
 	}
 }
 

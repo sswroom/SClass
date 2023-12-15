@@ -361,7 +361,7 @@ void Net::SNS::SNSManager::ChannelUpdate(Net::SNS::SNSManager::ChannelData *chan
 		si = channel->currItems.SortedIndexOf(Text::String::OrEmpty(oldItems.GetItem(i)));
 		if (si >= 0)
 		{
-			channel->currItems.RemoveAt((UOSInt)si)->Release();
+			OPTSTR_DEL(channel->currItems.RemoveAt((UOSInt)si));
 			updated = true;
 		}
 	}
