@@ -37,16 +37,16 @@ UI::GUITabControl::GUITabControl(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIC
 
 UI::GUITabControl::~GUITabControl()
 {
-	UI::GUITabPage *tp;
+	NotNullPtr<UI::GUITabPage> tp;
 	PageInfo *page;
-	UOSInt i = this->tabPages.GetCount();
-	while (i-- > 0)
+	Data::ArrayIterator<NotNullPtr<GUITabPage>> it = this->tabPages.Iterator();
+	while (it.HasNext())
 	{
-		tp = this->tabPages.GetItem(i);
+		tp = it.Next();
 		page = (PageInfo*)tp->GetCustObj();
 		page->txt->Release();
 		MemFree(page);
-		DEL_CLASS(tp);
+		tp.Delete();
 	}
 }
 
@@ -108,7 +108,7 @@ void UI::GUITabControl::SetSelectedPage(NotNullPtr<UI::GUITabPage> page)
 	UOSInt i = this->tabPages.GetCount();
 	while (i-- > 0)
 	{
-		if (page.Ptr() == this->tabPages.GetItem(i))
+		if (page.Ptr() == this->tabPages.GetItem(i).OrNull())
 		{
 			SetSelectedIndex(i);
 		}
@@ -120,15 +120,15 @@ UOSInt UI::GUITabControl::GetSelectedIndex()
 	return this->selIndex;
 }
 
-UI::GUITabPage *UI::GUITabControl::GetSelectedPage()
+Optional<UI::GUITabPage> UI::GUITabControl::GetSelectedPage()
 {
 	return this->tabPages.GetItem(this->selIndex);
 }
 
 void UI::GUITabControl::SetTabPageName(UOSInt index, Text::CStringNN name)
 {
-	UI::GUITabPage *tp = this->tabPages.GetItem(index);
-	if (tp == 0)
+	NotNullPtr<UI::GUITabPage> tp;
+	if (!this->tabPages.GetItem(index).SetTo(tp))
 		return;
 	PageInfo *page = (PageInfo*)tp->GetCustObj();
 	gtk_label_set_text((GtkLabel*)page->lbl, (const Char*)name.v);
@@ -138,8 +138,8 @@ void UI::GUITabControl::SetTabPageName(UOSInt index, Text::CStringNN name)
 
 UTF8Char *UI::GUITabControl::GetTabPageName(UOSInt index, UTF8Char *buff)
 {
-	UI::GUITabPage *tp = this->tabPages.GetItem(index);
-	if (tp == 0)
+	NotNullPtr<UI::GUITabPage> tp;
+	if (!this->tabPages.GetItem(index).SetTo(tp))
 		return 0;
 	PageInfo *page = (PageInfo*)tp->GetCustObj();
 	return page->txt->ConcatTo(buff);
@@ -209,11 +209,13 @@ void UI::GUITabControl::OnSizeChanged(Bool updateScn)
 	Math::Size2D<UOSInt> sz2;
 	sz1 = GetSizeP();
 	GetTabPageRect(0, 0, &sz2.x, &sz2.y);
-	i = this->tabPages.GetCount();
-	while (i-- > 0)
+	NotNullPtr<GUITabPage> tp;
+	Data::ArrayIterator<NotNullPtr<GUITabPage>> it = this->tabPages.Iterator();
+	while (it.HasNext())
 	{
-		this->tabPages.GetItem(i)->SetSizeP(sz2);
-		this->tabPages.GetItem(i)->UpdateChildrenSize(false);
+		tp = it.Next();
+		tp->SetSizeP(sz2);
+		tp->UpdateChildrenSize(false);
 	}
 }
 
@@ -237,16 +239,16 @@ void UI::GUITabControl::SetDPI(Double hdpi, Double ddpi)
 		this->UpdateFont();
 	}
 
-	UOSInt i = this->tabPages.GetCount();
-	while (i-- > 0)
+	Data::ArrayIterator<NotNullPtr<GUITabPage>> it = this->tabPages.Iterator();
+	while (it.HasNext())
 	{
-		this->tabPages.GetItem(i)->SetDPI(hdpi, ddpi);
+		it.Next()->SetDPI(hdpi, ddpi);
 	}
 
-	i = this->tabPages.GetCount();
-	while (i-- > 0)
+	it = this->tabPages.Iterator();
+	while (it.HasNext())
 	{
-		this->tabPages.GetItem(i)->UpdateChildrenSize(false);
+		it.Next()->UpdateChildrenSize(false);
 	}
 }
 

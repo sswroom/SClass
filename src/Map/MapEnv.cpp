@@ -530,35 +530,29 @@ UOSInt Map::MapEnv::AddLayer(Map::MapEnv::GroupItem *group, NotNullPtr<Map::MapD
 		Map::MapEnv::GroupItem *grp = this->AddGroup(group, CSTRP(sptr2, sptr));
 
 		NotNullPtr<Map::MapDrawLayer> layer;
-		UOSInt i;
-		UOSInt j;
 		UOSInt k;
-		Data::ArrayList<Map::MapDrawLayer*> layers;
-		i = 0;
-		j = layerColl->GetCount();
-		while (i < j)
+		Data::ArrayListNN<Map::MapDrawLayer> layers;
+		Sync::RWMutexUsage mutUsage;
+		Data::ArrayIterator<NotNullPtr<Map::MapDrawLayer>> it = layerColl->Iterator(mutUsage);
+		while (it.HasNext())
 		{
-			layers.Add(layerColl->GetItem(i));
-			i++;
+			layers.Add(it.Next());
 		}
+		mutUsage.EndUse();
 		if (needRelease)
 		{
 			layerColl->Clear();
 		}
-		i = 0;
-		j = layers.GetCount();
-		while (i < j)
+		it = layers.Iterator();
+		while (it.HasNext())
 		{
-			if (layer.Set(layers.GetItem(i)))
+			layer = it.Next();
+			k = layerColl->GetUpdatedHandlerCnt();
+			while (k-- > 0)
 			{
-				k = layerColl->GetUpdatedHandlerCnt();
-				while (k-- > 0)
-				{
-					layer->AddUpdatedHandler(layerColl->GetUpdatedHandler(k), layerColl->GetUpdatedObject(k));
-				}
-				this->AddLayer(grp, layer, needRelease);
+				layer->AddUpdatedHandler(layerColl->GetUpdatedHandler(k), layerColl->GetUpdatedObject(k));
 			}
-			i++;
+			this->AddLayer(grp, layer, needRelease);
 		}
 		if (needRelease)
 		{

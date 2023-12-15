@@ -88,7 +88,7 @@ void __stdcall SSWR::AVIRead::AVIRDBCopyTablesForm::OnSourceSelectClicked(void *
 	{
 		me->dataConn = db->GetDB();
 		SDEL_STRING(me->dataSchema);
-		LIST_FREE_STRING(&me->dataTables);
+		LISTNN_FREE_STRING(&me->dataTables);
 		me->dataSchema = Text::String::NewP(sbuff, sptr).Ptr();
 		me->dataTables.AddAll(tableNames);
 		me->lvData->ClearItems();
@@ -183,7 +183,7 @@ void __stdcall SSWR::AVIRead::AVIRDBCopyTablesForm::OnCopyClicked(void *userObj)
 	Text::StringBuilderUTF8 sb;
 	DB::TableDef *tabDef;
 	NotNullPtr<DB::TableDef> nntabDef;
-	Text::String *tableName;
+	NotNullPtr<Text::String> tableName;
 	NotNullPtr<DB::DBReader> r;
 	if (destDBTool->GetSQLType() == DB::SQLType::MySQL)
 	{
@@ -222,12 +222,12 @@ void __stdcall SSWR::AVIRead::AVIRDBCopyTablesForm::OnCopyClicked(void *userObj)
 			return;
 		}
 	}
+	Data::ArrayIterator<NotNullPtr<Text::String>> it = me->dataTables.Iterator();
 	UOSInt i = 0;
-	UOSInt j = me->dataTables.GetCount();
-	while (i < j)
+	while (it.HasNext())
 	{
 		Bool succ = true;
-		tableName = me->dataTables.GetItem(i);
+		tableName = it.Next();
 		tabDef = me->dataConn->GetTableDef(STR_CSTR(me->dataSchema), tableName->ToCString());
 		if (succ && destTableType == 0)
 		{
@@ -468,7 +468,7 @@ SSWR::AVIRead::AVIRDBCopyTablesForm::AVIRDBCopyTablesForm(UI::GUIClientControl *
 SSWR::AVIRead::AVIRDBCopyTablesForm::~AVIRDBCopyTablesForm()
 {
 	SDEL_STRING(this->dataSchema);
-	LIST_FREE_STRING(&this->dataTables);
+	LISTNN_FREE_STRING(&this->dataTables);
 }
 
 void SSWR::AVIRead::AVIRDBCopyTablesForm::OnMonitorChanged()

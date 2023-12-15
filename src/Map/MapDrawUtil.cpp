@@ -30,15 +30,14 @@ Bool Map::MapDrawUtil::DrawPolyline(NotNullPtr<Math::Geometry::Polyline> pl, Not
 	NotNullPtr<Media::DrawPen> nnp;
 	if (!p.SetTo(nnp))
 		return false;
-	Math::Geometry::LineString *lineString;
+	NotNullPtr<Math::Geometry::LineString> lineString;
 	UOSInt nPoint;
 	UOSInt dpointsSize = 0;
 	Math::Coord2DDbl *dpoints = 0;
-	UOSInt i = 0;
-	UOSInt j = pl->GetCount();
-	while (i < j)
+	Data::ArrayIterator<NotNullPtr<Math::Geometry::LineString>> it = pl->Iterator();
+	while (it.HasNext())
 	{
-		lineString = pl->GetItem(i);
+		lineString = it.Next();
 		Math::Coord2DDbl *points = lineString->GetPointList(nPoint);
 		if (nPoint > dpointsSize)
 		{
@@ -71,17 +70,19 @@ Bool Map::MapDrawUtil::DrawLinearRing(NotNullPtr<Math::Geometry::LinearRing> lr,
 Bool Map::MapDrawUtil::DrawPolygon(NotNullPtr<Math::Geometry::Polygon> pg, NotNullPtr<Media::DrawImage> img, NotNullPtr<Map::MapView> view, Optional<Media::DrawBrush> b, Optional<Media::DrawPen> p, Math::Coord2DDbl ofst)
 {
 	UOSInt nPoint = pg->GetPointCount();
-	UOSInt nPtOfst = pg->GetCount();
 	UOSInt k;
 	Math::Coord2DDbl *points;
 	Math::Coord2DDbl *dpoints = MemAllocA(Math::Coord2DDbl, nPoint);
-	Math::Geometry::LinearRing *lr;
+	NotNullPtr<Math::Geometry::LinearRing> lr;
+	UOSInt nPtOfst = pg->GetCount();
 	UInt32 *myPtCnts = MemAlloc(UInt32, nPtOfst);
+
+	Data::ArrayIterator<NotNullPtr<Math::Geometry::LinearRing>> it = pg->Iterator();
 	UOSInt i = 0;
 	UOSInt j = 0;
-	while (i < nPtOfst)
+	while (it.HasNext())
 	{
-		lr = pg->GetItem(i);
+		lr = it.Next();
 		points = lr->GetPointList(k);
 		view->MapXYToScnXY(points, &dpoints[j], k, ofst);
 		myPtCnts[i] = (UInt32)k;
@@ -102,7 +103,7 @@ Bool Map::MapDrawUtil::DrawMultiPolygon(NotNullPtr<Math::Geometry::MultiPolygon>
 	UOSInt i = mpg->GetCount();
 	while (i-- > 0)
 	{
-		if (pg.Set(mpg->GetItem(i)))
+		if (mpg->GetItem(i).SetTo(pg))
 		{
 			succ = DrawPolygon(pg, img, view, b, p, ofst) || succ;
 		}
@@ -117,7 +118,7 @@ Bool Map::MapDrawUtil::DrawMultiSurface(NotNullPtr<Math::Geometry::MultiSurface>
 	UOSInt pgInd = ms->GetCount();
 	while (pgInd-- > 0)
 	{
-		if (vec.Set(ms->GetItem(pgInd)))
+		if (ms->GetItem(pgInd).SetTo(vec))
 		{
 			succ = DrawVector(vec, img, view, b, p, ofst) || succ;
 		}
@@ -130,28 +131,26 @@ Bool Map::MapDrawUtil::DrawCurvePolygon(NotNullPtr<Math::Geometry::CurvePolygon>
 	Data::ArrayList<UInt32> ptOfst;
 	Data::ArrayListA<Math::Coord2DDbl> ptList;
 	UOSInt nPoint;
-	Math::Geometry::Vector2D *vec;
-	UOSInt i = 0;
-	UOSInt j = cp->GetCount();
-	while (i < j)
+	NotNullPtr<Math::Geometry::Vector2D> vec;
+	Data::ArrayIterator<NotNullPtr<Math::Geometry::Vector2D>> it = cp->Iterator();
+	while (it.HasNext())
 	{
-		vec = cp->GetItem(i);
+		vec = it.Next();
 		if (vec->GetVectorType() == Math::Geometry::Vector2D::VectorType::CompoundCurve)
 		{
 			ptOfst.Add((UInt32)ptList.GetCount());
-			((Math::Geometry::CompoundCurve*)vec)->GetDrawPoints(ptList);
+			NotNullPtr<Math::Geometry::CompoundCurve>::ConvertFrom(vec)->GetDrawPoints(ptList);
 		}
 		else if (vec->GetVectorType() == Math::Geometry::Vector2D::VectorType::LineString)
 		{
 			ptOfst.Add((UInt32)ptList.GetCount());
-			const Math::Coord2DDbl *ptArr = ((Math::Geometry::LineString*)vec)->GetPointListRead(nPoint);
+			const Math::Coord2DDbl *ptArr = NotNullPtr<Math::Geometry::LineString>::ConvertFrom(vec)->GetPointListRead(nPoint);
 			ptList.AddRange(ptArr, nPoint);
 		}
 		else
 		{
 			printf("MapDrawUtil: DrawCurvePolygon unexpected type: %s\r\n", Math::Geometry::Vector2D::VectorTypeGetName(vec->GetVectorType()).v);
 		}
-		i++;
 	}
 	if (ptList.GetCount() > 0)
 	{
@@ -185,7 +184,7 @@ Bool Map::MapDrawUtil::DrawGeometryCollection(NotNullPtr<Math::Geometry::Geometr
 	UOSInt pgInd = geomColl->GetCount();
 	while (pgInd-- > 0)
 	{
-		if (vec.Set(geomColl->GetItem(pgInd)))
+		if (geomColl->GetItem(pgInd).SetTo(vec))
 		{
 			succ = DrawVector(vec, img, view, b, p, ofst) || succ;
 		}

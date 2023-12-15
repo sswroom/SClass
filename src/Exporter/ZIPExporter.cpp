@@ -69,8 +69,8 @@ Bool Exporter::ZIPExporter::ExportPackage(NotNullPtr<IO::ZIPMTBuilder> zip, UTF8
 		{
 			if (pkg->GetFileType() == IO::PackageFileType::Virtual)
 			{
-				const IO::PackFileItem *pitem = NotNullPtr<IO::VirtualPackageFile>::ConvertFrom(pkg)->GetPackFileItem(i);
-				if (pitem && pitem->itemType == IO::PackFileItem::PackItemType::Compressed && pitem->compInfo->compMethod == Data::Compress::Decompressor::CM_DEFLATE)
+				NotNullPtr<const IO::PackFileItem> pitem;
+				if (NotNullPtr<IO::VirtualPackageFile>::ConvertFrom(pkg)->GetPackFileItem(i).SetTo(pitem) && pitem->itemType == IO::PackFileItem::PackItemType::Compressed && pitem->compInfo->compMethod == Data::Compress::Decompressor::CM_DEFLATE)
 				{
 					UInt64 dataSize = pitem->fd->GetDataSize();
 					UOSInt readSize;

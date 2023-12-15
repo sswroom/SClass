@@ -253,7 +253,7 @@ Int32 SSWR::SHPConv::SHPConvMainForm::GroupConvert(Text::CStringNN sourceFile, T
 	Data::ArrayListStringNN names;
 	Int32 shpType = 0;
 	NotNullPtr<DB::DBReader> r;
-	Text::String *s;
+	NotNullPtr<Text::String> s;
 
 	sb.Append(sourceFile);
 	i = sb.LastIndexOf('.');
@@ -284,7 +284,7 @@ Int32 SSWR::SHPConv::SHPConvMainForm::GroupConvert(Text::CStringNN sourceFile, T
 	i = names.GetCount();
 	while (i-- > 0)
 	{
-		s = names.GetItem(i);
+		s = Text::String::OrEmpty(names.GetItem(i));
 
 		sb.ClearStr();
 		sb.Append(s);

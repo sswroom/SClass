@@ -460,7 +460,7 @@ void __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnFileHandler(void *userObj, No
 	{
 		db = (DB::ReadingDBTool*)me->currDB;
 	}
-	Bool isSQLTab = (me->tcMain->GetSelectedPage() == me->tpSQL.Ptr());
+	Bool isSQLTab = (me->tcMain->GetSelectedPage().OrNull() == me->tpSQL.Ptr());
 	UOSInt i = 0;
 	while (i < nFiles)
 	{
@@ -503,16 +503,15 @@ void SSWR::AVIRead::AVIRDBManagerForm::UpdateDatabaseList()
 	{
 		return;
 	}
-	Text::String *dbName;
+	NotNullPtr<Text::String> dbName;
 	Data::ArrayListNN<Text::String> dbNames;
-	UOSInt i = 0;
 	UOSInt j = this->currDB->GetDatabaseNames(dbNames);
 	ArtificialQuickSort_Sort(&dbNames, 0, (OSInt)(j - 1));
-	while (i < j)
+	Data::ArrayIterator<NotNullPtr<Text::String>> it = dbNames.Iterator();
+	while (it.HasNext())
 	{
-		dbName = dbNames.GetItem(i);
-		this->lbDatabase->AddItem(Text::String::OrEmpty(dbName), 0);
-		i++;
+		dbName = it.Next();
+		this->lbDatabase->AddItem(dbName, 0);
 	}
 	this->currDB->ReleaseDatabaseNames(dbNames);
 }
@@ -545,7 +544,7 @@ void SSWR::AVIRead::AVIRDBManagerForm::UpdateSchemaList()
 		i++;
 	}
 
-	LIST_FREE_STRING(&schemaNames);
+	LISTNN_FREE_STRING(&schemaNames);
 	this->lbSchema->SetSelectedIndex(0);
 	this->lbMapSchema->SetSelectedIndex(0);
 }
@@ -570,7 +569,7 @@ void SSWR::AVIRead::AVIRDBManagerForm::UpdateTableList()
 		this->lbTable->AddItem(tableName, 0);
 		i++;
 	}
-	LIST_FREE_STRING(&tableNames);
+	LISTNN_FREE_STRING(&tableNames);
 }
 
 void SSWR::AVIRead::AVIRDBManagerForm::UpdateMapTableList()
@@ -581,19 +580,18 @@ void SSWR::AVIRead::AVIRDBManagerForm::UpdateMapTableList()
 		return;
 	}
 	Optional<Text::String> schemaName = this->lbMapSchema->GetSelectedItemTextNew();
-	Text::String *tableName;
+	NotNullPtr<Text::String> tableName;
 	Data::ArrayListNN<Text::String> tableNames;
-	UOSInt i = 0;
 	UOSInt j = this->currDB->QueryTableNames(OPTSTR_CSTR(schemaName), tableNames);
 	OPTSTR_DEL(schemaName);
 	ArtificialQuickSort_Sort(&tableNames, 0, (OSInt)j - 1);
-	while (i < j)
+	Data::ArrayIterator<NotNullPtr<Text::String>> it = tableNames.Iterator();
+	while (it.HasNext())
 	{
-		tableName = tableNames.GetItem(i);
-		this->lbMapTable->AddItem(Text::String::OrEmpty(tableName), 0);
-		i++;
+		tableName = it.Next();
+		this->lbMapTable->AddItem(tableName, 0);
 	}
-	LIST_FREE_STRING(&tableNames);
+	LISTNN_FREE_STRING(&tableNames);
 }
 
 void SSWR::AVIRead::AVIRDBManagerForm::UpdateTableData(Text::CString schemaName, Optional<Text::String> tableName)
@@ -617,17 +615,14 @@ void SSWR::AVIRead::AVIRDBManagerForm::UpdateTableData(Text::CString schemaName,
 	{
 		UpdateResult(r, this->lvTableResult);
 
-		UOSInt i;
-		UOSInt j;
 		UOSInt k;
 		if (tabDef)
 		{
-			DB::ColDef *col;
-			j = tabDef->GetColCnt();
-			i = 0;
-			while (i < j)
+			NotNullPtr<DB::ColDef> col;
+			Data::ArrayIterator<NotNullPtr<DB::ColDef>> it = tabDef->ColIterator();
+			while (it.HasNext())
 			{
-				col = tabDef->GetCol(i);
+				col = it.Next();
 				k = this->lvTable->AddItem(col->GetColName(), 0);
 				sptr = col->ToColTypeStr(sbuff);
 				this->lvTable->SetSubItem(k, 1, CSTRP(sbuff, sptr));
@@ -640,8 +635,6 @@ void SSWR::AVIRead::AVIRDBManagerForm::UpdateTableData(Text::CString schemaName,
 					this->lvTable->SetSubItem(k, 6, s);
 				if (s.Set(col->GetAttr()))
 					this->lvTable->SetSubItem(k, 7, s);
-
-				i++;
 			}
 			
 			DEL_CLASS(tabDef);
@@ -649,8 +642,8 @@ void SSWR::AVIRead::AVIRDBManagerForm::UpdateTableData(Text::CString schemaName,
 		else
 		{
 			DB::ColDef col(Text::String::NewEmpty());
-			j = r->ColCount();
-			i = 0;
+			UOSInt j = r->ColCount();
+			UOSInt i = 0;
 			while (i < j)
 			{
 				r->GetColDef(i, col);

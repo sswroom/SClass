@@ -69,7 +69,6 @@ Bool Exporter::MDBExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text:
 	NotNullPtr<DB::ColDef> colDef;
 	Data::ArrayListNN<Text::String> tables;
 	UOSInt i;
-	UOSInt j;
 	UOSInt k;
 	UOSInt l;
 	if (!mdb.Set(DB::MDBFileConn::CreateDBTool(fileName, log, CSTR("DB: "))))

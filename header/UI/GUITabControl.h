@@ -28,7 +28,7 @@ namespace UI
 		void SetSelectedIndex(UOSInt index);
 		void SetSelectedPage(NotNullPtr<GUITabPage> page);
 		UOSInt GetSelectedIndex();
-		GUITabPage *GetSelectedPage();
+		Optional<GUITabPage> GetSelectedPage();
 		void SetTabPageName(UOSInt index, Text::CStringNN name);
 		UTF8Char *GetTabPageName(UOSInt index, UTF8Char *buff);
 		void GetTabPageRect(OSInt *x, OSInt *y, UOSInt *w, UOSInt *h);

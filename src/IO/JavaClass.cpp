@@ -127,17 +127,20 @@ void IO::JavaClass::DetailAccessFlags(UInt16 accessFlags, NotNullPtr<Text::Strin
 
 void IO::JavaClass::AppendCond(NotNullPtr<Text::StringBuilderUTF8> sb, DecompileEnv *env, UOSInt index, CondType ct, Bool inv)
 {
-	if (env->stackTypes->GetItem(index)->Equals(UTF8STRC("boolean")))
+	NotNullPtr<Text::String> s;
+	if (!env->stackTypes->GetItem(index).SetTo(s))
+		return;
+	if (s->Equals(UTF8STRC("boolean")))
 	{
-		Text::String *s = env->stacks->GetItem(index);
-		if ((ct == CondType::NE && !inv && env->stacks->GetItem(index + 1)->Equals(UTF8STRC("0"))) ||
-			(ct == CondType::EQ && inv && env->stacks->GetItem(index + 1)->Equals(UTF8STRC("0"))))
+		NotNullPtr<Text::String> s = Text::String::OrEmpty(env->stacks->GetItem(index));
+		if ((ct == CondType::NE && !inv && Text::String::OrEmpty(env->stacks->GetItem(index + 1))->Equals(UTF8STRC("0"))) ||
+			(ct == CondType::EQ && inv && Text::String::OrEmpty(env->stacks->GetItem(index + 1))->Equals(UTF8STRC("0"))))
 		{
 			sb->Append(s);
 			return;	
 		}
-		else if ((ct == CondType::EQ && !inv && env->stacks->GetItem(index + 1)->Equals(UTF8STRC("0"))) ||
-				(ct == CondType::NE && inv && env->stacks->GetItem(index + 1)->Equals(UTF8STRC("0"))))
+		else if ((ct == CondType::EQ && !inv && Text::String::OrEmpty(env->stacks->GetItem(index + 1))->Equals(UTF8STRC("0"))) ||
+				(ct == CondType::NE && inv && Text::String::OrEmpty(env->stacks->GetItem(index + 1))->Equals(UTF8STRC("0"))))
 		{
 			sb->AppendUTF8Char('!');
 			if (s->IndexOf(UTF8STRC(" instanceof ")) != INVALID_INDEX)
@@ -152,8 +155,8 @@ void IO::JavaClass::AppendCond(NotNullPtr<Text::StringBuilderUTF8> sb, Decompile
 			}
 			return;	
 		}
-		else if ((ct == CondType::EQ && inv && env->stacks->GetItem(index + 1)->Equals(UTF8STRC("1"))) ||
-				(ct == CondType::NE && !inv && env->stacks->GetItem(index + 1)->Equals(UTF8STRC("1"))))
+		else if ((ct == CondType::EQ && inv && Text::String::OrEmpty(env->stacks->GetItem(index + 1))->Equals(UTF8STRC("1"))) ||
+				(ct == CondType::NE && !inv && Text::String::OrEmpty(env->stacks->GetItem(index + 1))->Equals(UTF8STRC("1"))))
 		{
 			if (s->IndexOf(UTF8STRC(" instanceof ")) != INVALID_INDEX || s->ContainChars((const UTF8Char*)"><=|&^"))
 			{
@@ -165,12 +168,12 @@ void IO::JavaClass::AppendCond(NotNullPtr<Text::StringBuilderUTF8> sb, Decompile
 			{
 				sb->Append(s);
 			}
-			sb->Append(env->stacks->GetItem(index));
+			sb->Append(Text::String::OrEmpty(env->stacks->GetItem(index)));
 			sb->AppendC(UTF8STRC(" != true"));
 			return;	
 		}
-		else if ((ct == CondType::EQ && !inv && env->stacks->GetItem(index + 1)->Equals(UTF8STRC("1"))) ||
-				(ct == CondType::NE && inv && env->stacks->GetItem(index + 1)->Equals(UTF8STRC("1"))))
+		else if ((ct == CondType::EQ && !inv && Text::String::OrEmpty(env->stacks->GetItem(index + 1))->Equals(UTF8STRC("1"))) ||
+				(ct == CondType::NE && inv && Text::String::OrEmpty(env->stacks->GetItem(index + 1))->Equals(UTF8STRC("1"))))
 		{
 			if (s->IndexOf(UTF8STRC(" instanceof ")) != INVALID_INDEX || s->ContainChars((const UTF8Char*)"><=|&^"))
 			{
@@ -186,7 +189,7 @@ void IO::JavaClass::AppendCond(NotNullPtr<Text::StringBuilderUTF8> sb, Decompile
 			return;	
 		}
 	}
-	sb->Append(env->stacks->GetItem(index));
+	sb->Append(Text::String::OrEmpty(env->stacks->GetItem(index)));
 	sb->AppendUTF8Char(' ');
 	if (inv)
 	{
@@ -197,7 +200,7 @@ void IO::JavaClass::AppendCond(NotNullPtr<Text::StringBuilderUTF8> sb, Decompile
 		sb->Append(CondType2String(ct));
 	}
 	sb->AppendUTF8Char(' ');
-	sb->Append(env->stacks->GetItem(index + 1));
+	sb->Append(Text::String::OrEmpty(env->stacks->GetItem(index + 1)));
 }
 
 UInt32 IO::JavaClass::GetParamId(UInt32 paramIndex, const MethodInfo *method)
@@ -4605,18 +4608,18 @@ void IO::JavaClass::AppendCodeMethodCodes(NotNullPtr<Text::StringBuilderUTF8> sb
 		{
 			this->AppendIndent(sb, lev);
 			sb->AppendC(UTF8STRC("// Unprocessed stack: "));
-			sb->Append(stackVal.GetItem(i));
+			sb->Append(Text::String::OrEmpty(stackVal.GetItem(i)));
 			sb->AppendC(UTF8STRC("\r\n"));
-			stackVal.GetItem(i)->Release();
+			OPTSTR_DEL(stackVal.GetItem(i));
 		}
 		i = stackTypes.GetCount();
 		while (i-- > 0)
 		{
 			this->AppendIndent(sb, lev);
 			sb->AppendC(UTF8STRC("// Unprocessed stack type: "));
-			sb->Append(stackTypes.GetItem(i));
+			sb->Append(Text::String::OrEmpty(stackTypes.GetItem(i)));
 			sb->AppendC(UTF8STRC("\r\n"));
-			stackTypes.GetItem(i)->Release();
+			OPTSTR_DEL(stackTypes.GetItem(i));
 		}
 	}
 	else
@@ -4626,12 +4629,12 @@ void IO::JavaClass::AppendCodeMethodCodes(NotNullPtr<Text::StringBuilderUTF8> sb
 		{
 			this->AppendIndent(sb, lev);
 			sb->AppendC(UTF8STRC("// Unprocessed stack: "));
-			sb->Append(stackTypes.GetItem(i));
+			sb->Append(Text::String::OrEmpty(stackTypes.GetItem(i)));
 			sb->AppendC(UTF8STRC(" "));
-			sb->Append(stackVal.GetItem(i));
+			sb->Append(Text::String::OrEmpty(stackVal.GetItem(i)));
 			sb->AppendC(UTF8STRC("\r\n"));
-			stackTypes.GetItem(i)->Release();
-			stackVal.GetItem(i)->Release();
+			OPTSTR_DEL(stackTypes.GetItem(i));
+			OPTSTR_DEL(stackVal.GetItem(i));
 		}
 	}
 

@@ -100,12 +100,11 @@ void __stdcall SSWR::AVIRead::AVIRDBForm::OnTableSelChg(void *userObj)
 		UOSInt k;
 		if (tabDef)
 		{
-			DB::ColDef *col;
-			j = tabDef->GetColCnt();
-			i = 0;
-			while (i < j)
+			NotNullPtr<DB::ColDef> col;
+			Data::ArrayIterator<NotNullPtr<DB::ColDef>> it = tabDef->ColIterator();
+			while (it.HasNext())
 			{
-				col = tabDef->GetCol(i);
+				col = it.Next();
 				k = me->lvTable->AddItem(col->GetColName(), 0);
 				sptr = col->ToColTypeStr(sbuff);
 				me->lvTable->SetSubItem(k, 1, CSTRP(sbuff, sptr));
@@ -118,8 +117,6 @@ void __stdcall SSWR::AVIRead::AVIRDBForm::OnTableSelChg(void *userObj)
 					me->lvTable->SetSubItem(k, 6, s);
 				if (s.Set(col->GetAttr()))
 					me->lvTable->SetSubItem(k, 7, s);
-
-				i++;
 			}
 			
 			DEL_CLASS(tabDef);
@@ -641,12 +638,12 @@ SSWR::AVIRead::AVIRDBForm::AVIRDBForm(UI::GUIClientControl *parent, NotNullPtr<U
 	mnu->AddItem(CSTR("&Line Chart"), MNU_CHART_LINE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	if (this->dbt && this->dbt->GetDatabaseNames(&this->dbNames) > 0)
 	{
-		UOSInt i = 0;
-		UOSInt j = this->dbNames.GetCount();
 		mnu = this->mnuMain->AddSubMenu(CSTR("&Database"));
-		while (i < j)
+		Data::ArrayIterator<NotNullPtr<Text::String>> it = this->dbNames.Iterator();
+		UOSInt i = 0;
+		while (it.HasNext())
 		{
-			Text::String *dbName = this->dbNames.GetItem(i);
+			NotNullPtr<Text::String> dbName = it.Next();
 			mnu->AddItem(dbName->ToCString(), (UInt16)(MNU_DATABASE_START + i), UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 			i++;
 		}
@@ -700,12 +697,11 @@ void SSWR::AVIRead::AVIRDBForm::UpdateSchemas()
 	j = schemaNames.GetCount();
 	while (i < j)
 	{
-		Text::String *schemaName = schemaNames.GetItem(i);
-		this->lbSchema->AddItem(Text::String::OrEmpty(schemaName), 0);
+		this->lbSchema->AddItem(Text::String::OrEmpty(schemaNames.GetItem(i)), 0);
 		i++;
 	}
 
-	LIST_FREE_STRING(&schemaNames);
+	LISTNN_FREE_STRING(&schemaNames);
 	this->lbSchema->SetSelectedIndex(0);
 }
 
@@ -731,12 +727,11 @@ void SSWR::AVIRead::AVIRDBForm::UpdateTables()
 	j = tableNames.GetCount();
 	while (i < j)
 	{
-		Text::String *tableName = tableNames.GetItem(i);
-		this->lbTable->AddItem(Text::String::OrEmpty(tableName), 0);
+		this->lbTable->AddItem(Text::String::OrEmpty(tableNames.GetItem(i)), 0);
 		i++;
 	}
 
-	LIST_FREE_STRING(&tableNames);
+	LISTNN_FREE_STRING(&tableNames);
 }
 
 void SSWR::AVIRead::AVIRDBForm::EventMenuClicked(UInt16 cmdId)
@@ -746,7 +741,7 @@ void SSWR::AVIRead::AVIRDBForm::EventMenuClicked(UInt16 cmdId)
 	UTF8Char *sptr;
 	if (cmdId >= MNU_DATABASE_START)
 	{
-		if (this->dbt->ChangeDatabase(this->dbNames.GetItem((UOSInt)cmdId - MNU_DATABASE_START)->ToCString()))
+		if (this->dbt->ChangeDatabase(Text::String::OrEmpty(this->dbNames.GetItem((UOSInt)cmdId - MNU_DATABASE_START))->ToCString()))
 		{
 			this->UpdateTables();
 		}

@@ -41,13 +41,11 @@ IO::StmData::ConcatStreamData::~ConcatStreamData()
 	mutUsage.EndUse();
 	if (cnt == 1)
 	{
-		IO::StreamData *data;
 		UOSInt i;
 		i = this->cdb->dataList.GetCount();
 		while (i-- > 0)
 		{
-			data = this->cdb->dataList.GetItem(i);
-			SDEL_CLASS(data);
+			this->cdb->dataList.GetItem(i).Delete();
 		}
 		this->cdb->fileName->Release();
 		DEL_CLASS(this->cdb);
@@ -88,7 +86,7 @@ UOSInt IO::StmData::ConcatStreamData::GetRealData(UInt64 offset, UOSInt length, 
 	j = this->cdb->dataList.GetCount();
 	while (i < j)
 	{
-		if (data.Set(this->cdb->dataList.GetItem(i)))
+		if (this->cdb->dataList.GetItem(i).SetTo(data))
 		{
 			thisSize = data->GetDataSize() - offset;
 			if (thisSize > length)
@@ -177,7 +175,7 @@ UOSInt IO::StmData::ConcatStreamData::GetSeekCount()
 	i = this->cdb->dataList.GetCount();
 	while (i-- > 0)
 	{
-		if (data.Set(this->cdb->dataList.GetItem(i)))
+		if (this->cdb->dataList.GetItem(i).SetTo(data))
 			ret += data->GetSeekCount();
 	}
 	return ret;
@@ -189,5 +187,4 @@ void IO::StmData::ConcatStreamData::AddData(NotNullPtr<IO::StreamData> data)
 	this->cdb->dataList.Add(data);
 	this->cdb->ofstList.Add(this->cdb->totalSize);
 	this->cdb->totalSize += data->GetDataSize();
-	mutUsage.EndUse();
 }

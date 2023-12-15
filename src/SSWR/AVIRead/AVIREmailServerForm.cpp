@@ -308,8 +308,6 @@ void __stdcall SSWR::AVIRead::AVIREmailServerForm::OnTimerTick(void *userObj)
 	UOSInt i;
 	UOSInt j;
 	UOSInt k;
-	UOSInt l;
-	UOSInt m;
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
 	Text::StringBuilderUTF8 sb;
@@ -319,7 +317,7 @@ void __stdcall SSWR::AVIRead::AVIREmailServerForm::OnTimerTick(void *userObj)
 	{
 		me->mailChanged = false;
 		Data::ArrayList<Net::Email::EmailStore::EmailInfo*> emailList;
-		Data::ArrayList<Text::String*> rcptList;
+		Data::ArrayListNN<Text::String> rcptList;
 		me->store->GetAllEmails(&emailList);
 		me->lvEmail->ClearItems();
 		i = 0;
@@ -337,18 +335,16 @@ void __stdcall SSWR::AVIRead::AVIREmailServerForm::OnTimerTick(void *userObj)
 			sptr = Net::SocketUtil::GetAddrName(sbuff, email->remoteAddr);
 			me->lvEmail->SetSubItem(k, 3, CSTRP(sbuff, sptr));
 			rcptList.Clear();
-			me->store->GetRcptList(email->id, &rcptList);
+			me->store->GetRcptList(email->id, rcptList);
 			sb.ClearStr();
-			l = 0;
-			m = rcptList.GetCount();
-			while (l < m)
+			Data::ArrayIterator<NotNullPtr<Text::String>> it = rcptList.Iterator();
+			Bool found = false;
+			while (it.HasNext())
 			{
-				if (l != 0)
-				{
+				if (found)
 					sb.AppendC(UTF8STRC(", "));
-				}
-				sb.Append(rcptList.GetItem(l));
-				l++;
+				sb.Append(it.Next());
+				found = true;
 			}
 			me->lvEmail->SetSubItem(k, 4, sb.ToCString());
 			i++;
@@ -467,7 +463,7 @@ void __stdcall SSWR::AVIRead::AVIREmailServerForm::OnPOP3SSLChanged(void *userOb
 	}
 }
 
-Text::String *SSWR::AVIRead::AVIREmailServerForm::GetUserName(Int32 userId)
+Optional<Text::String> SSWR::AVIRead::AVIREmailServerForm::GetUserName(Int32 userId)
 {
 	Sync::MutexUsage mutUsage(this->userMut);
 	return this->userList.GetItem((UInt32)userId - 1);
@@ -478,8 +474,7 @@ void SSWR::AVIRead::AVIREmailServerForm::ClearSMTPCACerts()
 	UOSInt i = this->smtpCACerts.GetCount();
 	while (i-- > 0)
 	{
-		Crypto::Cert::X509Cert *cert = this->smtpCACerts.GetItem(i);
-		DEL_CLASS(cert);
+		this->smtpCACerts.GetItem(i).Delete();
 	}
 	this->smtpCACerts.Clear();
 }
@@ -489,8 +484,7 @@ void SSWR::AVIRead::AVIREmailServerForm::ClearPOP3CACerts()
 	UOSInt i = this->pop3CACerts.GetCount();
 	while (i-- > 0)
 	{
-		Crypto::Cert::X509Cert *cert = this->pop3CACerts.GetItem(i);
-		DEL_CLASS(cert);
+		this->pop3CACerts.GetItem(i).Delete();
 	}
 	this->pop3CACerts.Clear();
 }
@@ -500,8 +494,7 @@ void SSWR::AVIRead::AVIREmailServerForm::ClearGCISCACerts()
 	UOSInt i = this->gcisCACerts.GetCount();
 	while (i-- > 0)
 	{
-		Crypto::Cert::X509Cert *cert = this->gcisCACerts.GetItem(i);
-		DEL_CLASS(cert);
+		this->gcisCACerts.GetItem(i).Delete();
 	}
 	this->gcisCACerts.Clear();
 }
@@ -651,7 +644,7 @@ SSWR::AVIRead::AVIREmailServerForm::~AVIREmailServerForm()
 	SDEL_CLASS(this->gcisSSLCert);
 	SDEL_CLASS(this->gcisSSLKey);
 	this->ClearGCISCACerts();
-	LIST_FREE_STRING(&this->userList);
+	LISTNN_FREE_STRING(&this->userList);
 }
 
 void SSWR::AVIRead::AVIREmailServerForm::OnMonitorChanged()
@@ -676,8 +669,8 @@ Bool SSWR::AVIRead::AVIREmailServerForm::Login(Text::CStringNN user, Text::CStri
 UOSInt SSWR::AVIRead::AVIREmailServerForm::GetMessageStat(Int32 userId, UOSInt *size)
 {
 	Net::Email::EmailStore::MessageStat stat;
-	Text::String *userName = this->GetUserName(userId);
-	this->store->GetMessageStat(STR_CSTR(userName), &stat);
+	Optional<Text::String> userName = this->GetUserName(userId);
+	this->store->GetMessageStat(OPTSTR_CSTR(userName), &stat);
 	*size = (UOSInt)stat.unreadSize;
 	return stat.unreadCount;
 }
@@ -685,8 +678,8 @@ UOSInt SSWR::AVIRead::AVIREmailServerForm::GetMessageStat(Int32 userId, UOSInt *
 Bool SSWR::AVIRead::AVIREmailServerForm::GetUnreadList(Int32 userId, Data::ArrayList<UInt32> *unreadList)
 {
 	Data::ArrayList<UOSInt> unreadIndices;
-	Text::String *userName = this->GetUserName(userId);
-	this->store->GetUnreadIndices(STR_CSTR(userName), &unreadIndices);
+	Optional<Text::String> userName = this->GetUserName(userId);
+	this->store->GetUnreadIndices(OPTSTR_CSTR(userName), &unreadIndices);
 	UOSInt i = 0;
 	UOSInt j = unreadIndices.GetCount();
 	while (i < j)
@@ -699,8 +692,8 @@ Bool SSWR::AVIRead::AVIREmailServerForm::GetUnreadList(Int32 userId, Data::Array
 
 Bool SSWR::AVIRead::AVIREmailServerForm::GetMessageInfo(Int32 userId, UInt32 msgId, MessageInfo *info)
 {
-	Text::String *userName = this->GetUserName(userId);
-	Net::Email::EmailStore::EmailInfo *email = this->store->GetEmailByIndex(STR_CSTR(userName), msgId);
+	Optional<Text::String> userName = this->GetUserName(userId);
+	Net::Email::EmailStore::EmailInfo *email = this->store->GetEmailByIndex(OPTSTR_CSTR(userName), msgId);
 	if (email == 0)
 		return false;
 	info->size = email->fileSize;
@@ -710,8 +703,8 @@ Bool SSWR::AVIRead::AVIREmailServerForm::GetMessageInfo(Int32 userId, UInt32 msg
 
 Bool SSWR::AVIRead::AVIREmailServerForm::GetMessageContent(Int32 userId, UInt32 msgId, IO::Stream *stm)
 {
-	Text::String *userName = this->GetUserName(userId);
-	Net::Email::EmailStore::EmailInfo *email = this->store->GetEmailByIndex(STR_CSTR(userName), msgId);
+	Optional<Text::String> userName = this->GetUserName(userId);
+	Net::Email::EmailStore::EmailInfo *email = this->store->GetEmailByIndex(OPTSTR_CSTR(userName), msgId);
 	if (email == 0)
 		return false;
 	IO::StreamData *fd = this->store->OpenEmailData(email->id);
@@ -765,6 +758,6 @@ Bool SSWR::AVIRead::AVIREmailServerForm::GetMessageContent(Int32 userId, UInt32 
 
 Net::Email::MailController::RemoveStatus SSWR::AVIRead::AVIREmailServerForm::RemoveMessage(Int32 userId, UInt32 msgId)
 {
-	Text::String *userName = this->GetUserName(userId);
-	return this->store->RemoveMessage(STR_CSTR(userName), msgId);
+	Optional<Text::String> userName = this->GetUserName(userId);
+	return this->store->RemoveMessage(OPTSTR_CSTR(userName), msgId);
 }

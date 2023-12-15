@@ -103,7 +103,7 @@ void __stdcall SSWR::AVIRead::AVIRCertUtilForm::OnFileDrop(void *userObj, NotNul
 						DEL_CLASS(x509);
 						break;
 					case Crypto::Cert::X509File::FileType::FileList:
-						cert = (Crypto::Cert::X509Cert*)((Crypto::Cert::X509FileList*)x509)->GetFile(0);
+						cert = (Crypto::Cert::X509Cert*)((Crypto::Cert::X509FileList*)x509)->GetFile(0).OrNull();
 						MemClear(&names, sizeof(names));
 						if (cert->GetSubjNames(names))
 						{
@@ -201,7 +201,7 @@ void __stdcall SSWR::AVIRead::AVIRCertUtilForm::OnSANAddClicked(void *userObj)
 void __stdcall SSWR::AVIRead::AVIRCertUtilForm::OnSANClearClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRCertUtilForm *me = (SSWR::AVIRead::AVIRCertUtilForm*)userObj;
-	LIST_FREE_STRING(me->sanList);
+	LISTNN_FREE_STRING(me->sanList);
 	me->sanList->Clear();
 	me->lbSAN->ClearItems();
 }
@@ -409,22 +409,20 @@ void SSWR::AVIRead::AVIRCertUtilForm::DisplayExtensions(NotNullPtr<Crypto::Cert:
 	this->ClearExtensions();
 	if (exts->subjectAltName)
 	{
-		UOSInt i = 0;
-		UOSInt j = exts->subjectAltName->GetCount();
+		Data::ArrayIterator<NotNullPtr<Text::String>> it = exts->subjectAltName->Iterator();
 		NotNullPtr<Text::String> s;
-		while (i < j)
+		while (it.HasNext())
 		{
-			s = exts->subjectAltName->GetItem(i)->Clone();
+			s = it.Next()->Clone();
 			this->sanList->Add(s);
 			this->lbSAN->AddItem(s, 0);
-			i++;
 		}
 	}
 }
 
 void SSWR::AVIRead::AVIRCertUtilForm::ClearExtensions()
 {
-	LIST_FREE_STRING(this->sanList);
+	LISTNN_FREE_STRING(this->sanList);
 	this->sanList->Clear();
 	this->lbSAN->ClearItems();
 }
@@ -525,7 +523,7 @@ SSWR::AVIRead::AVIRCertUtilForm::AVIRCertUtilForm(UI::GUIClientControl *parent, 
 
 SSWR::AVIRead::AVIRCertUtilForm::~AVIRCertUtilForm()
 {
-	LIST_FREE_STRING(this->sanList);
+	LISTNN_FREE_STRING(this->sanList);
 	DEL_CLASS(this->sanList);
 	SDEL_CLASS(this->key);
 	this->ssl.Delete();

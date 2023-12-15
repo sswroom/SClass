@@ -51,7 +51,7 @@ namespace SSWR
 
 			DB::ReadingDB *dataConn;
 			Text::String *dataSchema;
-			Data::ArrayList<Text::String*> dataTables;
+			Data::ArrayListNN<Text::String> dataTables;
 
 			static void __stdcall OnSourceDBChg(void *userObj);
 			static void __stdcall OnSourceSelectClicked(void *userObj);

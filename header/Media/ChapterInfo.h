@@ -22,7 +22,7 @@ namespace Media
 		UOSInt GetChapterIndex(Data::Duration currTime);
 		UInt32 GetChapterTime(UOSInt index);
 		UOSInt GetChapterCnt();
-		Text::String *GetChapterName(UOSInt index);
+		Optional<Text::String> GetChapterName(UOSInt index);
 		Text::String *GetChapterArtist(UOSInt index);
 	};
 }

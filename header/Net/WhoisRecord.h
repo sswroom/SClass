@@ -17,7 +17,7 @@ namespace Net
 
 		void AddItem(const UTF8Char *item, UOSInt itemLen);
 		UOSInt GetCount();
-		Text::String *GetItem(UOSInt index);
+		Optional<Text::String> GetItem(UOSInt index);
 
 		UTF8Char *GetNetworkName(UTF8Char *buff);
 		UTF8Char *GetCountryCode(UTF8Char *buff);

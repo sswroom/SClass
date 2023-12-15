@@ -233,9 +233,16 @@ Bool Map::DBMapLayer::GetString(NotNullPtr<Text::StringBuilderUTF8> sb, NameArra
 			if (this->idCol != INVALID_INDEX)
 			{
 				Data::QueryConditions cond;
-				DB::ColDef *idCol = this->tabDef->GetCol(this->idCol);
-				cond.Int64Equals(idCol->GetColName()->ToCString(), id);
-				r = this->db->QueryTableData(STR_CSTR(this->schema), this->table->ToCString(), 0, 0, 0, 0, &cond);
+				NotNullPtr<DB::ColDef> idCol;
+				if (this->tabDef->GetCol(this->idCol).SetTo(idCol))
+				{
+					cond.Int64Equals(idCol->GetColName()->ToCString(), id);
+					r = this->db->QueryTableData(STR_CSTR(this->schema), this->table->ToCString(), 0, 0, 0, 0, &cond);
+				}
+				else
+				{
+					r = 0;
+				}
 			}
 			else
 			{
@@ -282,8 +289,8 @@ UTF8Char *Map::DBMapLayer::GetColumnName(UTF8Char *buff, UOSInt colIndex)
 {
 	if (this->tabDef)
 	{
-		DB::ColDef *col = this->tabDef->GetCol(colIndex);
-		if (col)
+		NotNullPtr<DB::ColDef> col;
+		if (this->tabDef->GetCol(colIndex).SetTo(col))
 		{
 			return col->GetColName()->ConcatTo(buff);
 		}
@@ -295,8 +302,8 @@ DB::DBUtil::ColType Map::DBMapLayer::GetColumnType(UOSInt colIndex, OptOut<UOSIn
 {
 	if (this->tabDef)
 	{
-		DB::ColDef *col = this->tabDef->GetCol(colIndex);
-		if (col)
+		NotNullPtr<DB::ColDef> col;
+		if (this->tabDef->GetCol(colIndex).SetTo(col))
 		{
 			colSize.Set(col->GetColSize());
 			return col->GetColType();
@@ -309,8 +316,8 @@ Bool Map::DBMapLayer::GetColumnDef(UOSInt colIndex, NotNullPtr<DB::ColDef> colDe
 {
 	if (this->tabDef)
 	{
-		DB::ColDef *col = this->tabDef->GetCol(colIndex);
-		if (col)
+		NotNullPtr<DB::ColDef> col;
+		if (this->tabDef->GetCol(colIndex).SetTo(col))
 		{
 			colDef->Set(col);
 			return true;
@@ -415,51 +422,53 @@ Bool Map::DBMapLayer::SetDatabase(DB::ReadingDB *db, Text::CString schemaName, T
 	UOSInt yCol = INVALID_INDEX;
 	UOSInt zCol = INVALID_INDEX;
 	UInt32 layerSrid = 0;
-	DB::ColDef *col;
+	NotNullPtr<DB::ColDef> col;
 	UOSInt i = 0;
 	UOSInt j = this->tabDef->GetColCnt();
 	while (i < j)
 	{
-		col = this->tabDef->GetCol(i);
-		DB::DBUtil::ColType colType = col->GetColType();
-		if (col->IsPK())
+		if (this->tabDef->GetCol(i).SetTo(col))
 		{
-			if (this->idCol != INVALID_INDEX)
+			DB::DBUtil::ColType colType = col->GetColType();
+			if (col->IsPK())
 			{
-				this->idCol = INVALID_INDEX;
-				return false;
+				if (this->idCol != INVALID_INDEX)
+				{
+					this->idCol = INVALID_INDEX;
+					return false;
+				}
+				if (colType != DB::DBUtil::CT_Int32 && colType != DB::DBUtil::CT_Int64)
+				{
+					return false;
+				}
+				this->idCol = i;
 			}
-			if (colType != DB::DBUtil::CT_Int32 && colType != DB::DBUtil::CT_Int64)
+			if (colType == DB::DBUtil::CT_Vector)
 			{
-				return false;
+				if (this->vecCol != INVALID_INDEX)
+				{
+					this->vecCol = INVALID_INDEX;
+					return false;
+				}
+				this->vecCol = i;
 			}
-			this->idCol = i;
-		}
-		if (colType == DB::DBUtil::CT_Vector)
-		{
-			if (this->vecCol != INVALID_INDEX)
+			else
 			{
-				this->vecCol = INVALID_INDEX;
-				return false;
-			}
-			this->vecCol = i;
-		}
-		else
-		{
-			NotNullPtr<Text::String> colName = col->GetColName();
-			if (colName->EqualsICase(UTF8STRC("LATITUDE")))
-			{
-				yCol = i;
-				layerSrid = 4326;
-			}
-			else if (colName->EqualsICase(UTF8STRC("LONGITUDE")))
-			{
-				xCol = i;
-				layerSrid = 4326;
-			}
-			else if (colName->EqualsICase(UTF8STRC("HEIGHT")))
-			{
-				zCol = i;
+				NotNullPtr<Text::String> colName = col->GetColName();
+				if (colName->EqualsICase(UTF8STRC("LATITUDE")))
+				{
+					yCol = i;
+					layerSrid = 4326;
+				}
+				else if (colName->EqualsICase(UTF8STRC("LONGITUDE")))
+				{
+					xCol = i;
+					layerSrid = 4326;
+				}
+				else if (colName->EqualsICase(UTF8STRC("HEIGHT")))
+				{
+					zCol = i;
+				}
 			}
 		}
 		i++;

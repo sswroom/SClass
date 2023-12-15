@@ -23,12 +23,14 @@ void Net::ASN1Names::FreeContainer(RuleContainer *container)
 	
 void Net::ASN1Names::ClearRules(NotNullPtr<Data::ArrayListNN<NameRule>> rules)
 {
-	NameRule *rule;
+	NotNullPtr<NameRule> rule;
 	UOSInt i = rules->GetCount();
 	while (i-- > 0)
 	{
-		rule = rules->GetItem(i);
-		MemFree(rule);
+		if (rules->GetItem(i).SetTo(rule))
+		{
+			MemFreeNN(rule);
+		}
 	}
 }
 
@@ -79,7 +81,8 @@ Text::CString Net::ASN1Names::ReadNameNoDef(Net::ASN1Util::ItemType itemType, UO
 	{
 		return CSTR_NULL;
 	}
-	NameRule *rule;
+	Optional<NameRule> rule;
+	NotNullPtr<NameRule> nnrule;
 	while (true)
 	{
 		if (this->readContainer)
@@ -90,25 +93,25 @@ Text::CString Net::ASN1Names::ReadNameNoDef(Net::ASN1Util::ItemType itemType, UO
 		{
 			rule = this->rules.GetItem(this->readIndex);
 		}
-		if (rule == 0)
+		if (!rule.SetTo(nnrule))
 		{
 			return CSTR_NULL;
 		}
-		switch (rule->cond)
+		switch (nnrule->cond)
 		{
 		default:
 		case RuleCond::Any:
 			this->readIndex++;
-			return rule->name;
+			return nnrule->name;
 		case RuleCond::TypeIsItemType:
 			this->readIndex++;
-			if (rule->itemType == itemType)
-				return rule->name;
+			if (nnrule->itemType == itemType)
+				return nnrule->name;
 			break;
 		case RuleCond::TypeIsTime:
 			this->readIndex++;
 			if (itemType == Net::ASN1Util::IT_UTCTIME || itemType == Net::ASN1Util::IT_GENERALIZEDTIME)
-				return rule->name;
+				return nnrule->name;
 			break;
 		case RuleCond::TypeIsString:
 			this->readIndex++;
@@ -117,28 +120,28 @@ Text::CString Net::ASN1Names::ReadNameNoDef(Net::ASN1Util::ItemType itemType, UO
 				itemType == Net::ASN1Util::IT_UNIVERSALSTRING ||
 				itemType == Net::ASN1Util::IT_PRINTABLESTRING ||
 				itemType == Net::ASN1Util::IT_T61STRING)
-				return rule->name;
+				return nnrule->name;
 			break;
 		case RuleCond::TypeIsOpt:
 			this->readIndex++;
-			if (itemType == rule->itemType + Net::ASN1Util::IT_CHOICE_0 ||
-				itemType == rule->itemType + Net::ASN1Util::IT_CONTEXT_SPECIFIC_0)
-				return rule->name;
+			if (itemType == nnrule->itemType + Net::ASN1Util::IT_CHOICE_0 ||
+				itemType == nnrule->itemType + Net::ASN1Util::IT_CONTEXT_SPECIFIC_0)
+				return nnrule->name;
 			break;
 		case RuleCond::LastOIDAndTypeIs:
 			this->readIndex++;
-			if (itemType == rule->itemType && Net::ASN1Util::OIDEqualsText(this->readLastOID, this->readLastOIDLen, rule->condParam.v, rule->condParam.leng))
-				return rule->name;
+			if (itemType == nnrule->itemType && Net::ASN1Util::OIDEqualsText(this->readLastOID, this->readLastOIDLen, nnrule->condParam.v, nnrule->condParam.leng))
+				return nnrule->name;
 			break;
 		case RuleCond::RepeatIfTypeIs:
-			if (itemType == rule->itemType)
-				return rule->name;
+			if (itemType == nnrule->itemType)
+				return nnrule->name;
 			this->readIndex++;
 			break;
 		case RuleCond::AllNotMatch:
 			this->readIndex = 0;
 			if (anyMatch)
-				return rule->name;
+				return nnrule->name;
 			anyMatch = true;
 			break;
 		}
@@ -147,7 +150,8 @@ Text::CString Net::ASN1Names::ReadNameNoDef(Net::ASN1Util::ItemType itemType, UO
 
 void Net::ASN1Names::ReadContainer()
 {
-	NameRule *rule;
+	Optional<NameRule> rule;
+	NotNullPtr<NameRule> nnrule;
 	if (this->readIndex == INVALID_INDEX)
 	{
 		this->readLev.Add(INVALID_INDEX);
@@ -169,7 +173,7 @@ void Net::ASN1Names::ReadContainer()
 				rule = this->rules.GetItem(this->readIndex - 1);
 		}
 		this->readLev.Add(this->readIndex);
-		if (rule == 0 || rule->contentFunc == 0)
+		if (!rule.SetTo(nnrule) || nnrule->contentFunc == 0)
 		{
 			this->readIndex = INVALID_INDEX;
 		}
@@ -180,7 +184,7 @@ void Net::ASN1Names::ReadContainer()
 			NEW_CLASS(container, RuleContainer());
 			container->parent = this->readContainer;
 			this->readContainer = container;
-			rule->contentFunc(*this);
+			nnrule->contentFunc(*this);
 		}
 	}
 }

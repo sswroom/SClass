@@ -571,12 +571,13 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 		i = printerList.GetCount();
 		if (i > 0)
 		{
-			Text::String *s;
+			NotNullPtr<Text::String> s;
 			Media::Printer *printer;
 			NotNullPtr<Media::DrawEngine> deng = Media::DrawEngineFactory::CreateDrawEngine();
-			while (i-- > 0)
+			Data::ArrayIterator<NotNullPtr<Text::String>> it = printerList.Iterator();
+			while (it.HasNext())
 			{
-				s = printerList.GetItem(i);
+				s = it.Next();
 
 				sb.ClearStr();
 				sb.AppendC(UTF8STRC("Test Printing with "));

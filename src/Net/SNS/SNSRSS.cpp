@@ -57,19 +57,17 @@ Net::SNS::SNSRSS::SNSRSS(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSL
 			{
 				sb2.Append(item->imgURL);
 			}
-			UOSInt j = 0;
-			UOSInt k = imgList.GetCount();
-			Text::String *s;
-			while (j < k)
+			Data::ArrayIterator<NotNullPtr<Text::String>> it = imgList.Iterator();
+			NotNullPtr<Text::String> s;
+			while (it.HasNext())
 			{
-				s = imgList.GetItem(j);
+				s = it.Next();
 				if (sb2.GetLength() > 0)
 				{
 					sb2.AppendUTF8Char(' ');
 				}
 				sb2.Append(s);
 				s->Release();
-				j++;
 			}
 			NotNullPtr<Text::String> nns;
 			NotNullPtr<Text::String> s2;
@@ -193,19 +191,17 @@ Bool Net::SNS::SNSRSS::Reload()
 					{
 						sb2.Append(item->imgURL);
 					}
-					UOSInt j = 0;
-					UOSInt k = imgList.GetCount();
-					Text::String *s;
-					while (j < k)
+					Data::ArrayIterator<NotNullPtr<Text::String>> it = imgList.Iterator();
+					NotNullPtr<Text::String> s;
+					while (it.HasNext())
 					{
-						s = imgList.GetItem(j);
+						s = it.Next();
 						if (sb2.GetLength() > 0)
 						{
 							sb2.AppendUTF8Char(' ');
 						}
 						sb2.Append(s);
 						s->Release();
-						j++;
 					}
 					NotNullPtr<Text::String> nns;
 					NotNullPtr<Text::String> s2;

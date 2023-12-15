@@ -3,6 +3,7 @@
 #include "Data/ArrayList.h"
 #include "Map/MapDrawLayer.h"
 #include "Sync/RWMutex.h"
+#include "Sync/RWMutexUsage.h"
 
 namespace Map
 {
@@ -24,8 +25,9 @@ namespace Map
 		virtual Optional<Map::MapDrawLayer> RemoveAt(UOSInt index);
 		virtual void Clear();
 		virtual UOSInt GetCount() const;
-		virtual Map::MapDrawLayer *GetItem(UOSInt Index);
-		virtual void SetItem(UOSInt Index, NotNullPtr<Map::MapDrawLayer> val);
+		virtual Optional<Map::MapDrawLayer> GetItem(UOSInt index) const;
+		virtual void SetItem(UOSInt index, NotNullPtr<Map::MapDrawLayer> val);
+		Data::ArrayIterator<NotNullPtr<Map::MapDrawLayer>> Iterator(NotNullPtr<Sync::RWMutexUsage> mutUsage) const;
 
 		virtual void SetCurrScale(Double scale);
 		virtual void SetCurrTimeTS(Int64 timeStamp);

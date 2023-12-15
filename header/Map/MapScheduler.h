@@ -55,15 +55,15 @@ namespace Map
 		static UInt32 __stdcall MapThread(void *obj);
 
 	private:
-		void DrawVector(Math::Geometry::Vector2D *vec);
-		void DrawPoint(Math::Geometry::Point *pt);
-		void DrawLineString(Math::Geometry::LineString *pl);
-		void DrawPolyline(Math::Geometry::Polyline *pl);
-		void DrawPolygon(Math::Geometry::Polygon *pg);
-		void DrawMultiPolygon(Math::Geometry::MultiPolygon *mpg);
-		void DrawMultiSurface(Math::Geometry::MultiSurface *ms);
-		void DrawCurvePolygon(Math::Geometry::CurvePolygon *cp);
-		void DrawGeometryCollection(Math::Geometry::GeometryCollection *geomColl);
+		void DrawVector(NotNullPtr<Math::Geometry::Vector2D> vec);
+		void DrawPoint(NotNullPtr<Math::Geometry::Point> pt);
+		void DrawLineString(NotNullPtr<Math::Geometry::LineString> pl);
+		void DrawPolyline(NotNullPtr<Math::Geometry::Polyline> pl);
+		void DrawPolygon(NotNullPtr<Math::Geometry::Polygon> pg);
+		void DrawMultiPolygon(NotNullPtr<Math::Geometry::MultiPolygon> mpg);
+		void DrawMultiSurface(NotNullPtr<Math::Geometry::MultiSurface> ms);
+		void DrawCurvePolygon(NotNullPtr<Math::Geometry::CurvePolygon> cp);
+		void DrawGeometryCollection(NotNullPtr<Math::Geometry::GeometryCollection> geomColl);
 	public:
 		MapScheduler();
 		virtual ~MapScheduler();

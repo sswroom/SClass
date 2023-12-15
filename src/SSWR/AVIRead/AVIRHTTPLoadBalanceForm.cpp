@@ -245,9 +245,9 @@ void __stdcall SSWR::AVIRead::AVIRHTTPLoadBalanceForm::OnAccessSelChg(void *user
 	while (i < j)
 	{
 		sb.AppendC(UTF8STRC("\r\n"));
-		sb.Append(log->headerName->GetItem(i));
+		sb.Append(Text::String::OrEmpty(log->headerName->GetItem(i)));
 		sb.AppendC(UTF8STRC("\t"));
-		sb.Append(log->headerVal->GetItem(i));
+		sb.Append(Text::String::OrEmpty(log->headerVal->GetItem(i)));
 		i++;
 	}
 	me->txtAccess->SetText(sb.ToCString());
@@ -278,8 +278,7 @@ void SSWR::AVIRead::AVIRHTTPLoadBalanceForm::ClearCACerts()
 	UOSInt i = this->caCerts.GetCount();
 	while (i-- > 0)
 	{
-		Crypto::Cert::X509Cert *cert = this->caCerts.GetItem(i);
-		DEL_CLASS(cert);
+		this->caCerts.GetItem(i).Delete();
 	}
 	this->caCerts.Clear();
 }

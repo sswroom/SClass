@@ -154,7 +154,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnRequestClicked(void *userObj
 		UOSInt j = me->params.GetCount();
 		UOSInt k;
 		SSWR::AVIRead::AVIRHTTPClientForm::ParamValue *param;
-		Text::String *s;
+		NotNullPtr<Text::String> s;
 		while (i < j)
 		{
 			param = me->params.GetItem(i);
@@ -173,11 +173,10 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnRequestClicked(void *userObj
 		sb2.ClearStr();
 		me->txtFileFormName->GetText(sb2);
 		UInt8 fileBuff[4096];
-		i = 0;
-		j = me->fileList.GetCount();
-		while (i < j)
+		Data::ArrayIterator<NotNullPtr<Text::String>> it = me->fileList.Iterator();
+		while (it.HasNext())
 		{
-			s = me->fileList.GetItem(i);
+			s = it.Next();
 			UInt64 fileLength;
 			UInt64 ofst;
 			IO::FileStream fs(s->ToCString(), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
@@ -219,7 +218,6 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnRequestClicked(void *userObj
 				}
 				mstm.Write((const UInt8*)"\r\n", 2);
 			}
-			i++;
 		}
 		mstm.Write((const UInt8*)"--", 2);
 		mstm.Write(sbBoundary.ToString(), sbBoundary.GetCharCnt());
@@ -317,10 +315,10 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnSaveClicked(void *userObj)
 		return;
 	}
 	UI::FileDialog dlg(L"SSWR", L"AVIRead", L"HTTPClientSave", true);
-	UOSInt i = me->respHeaders.GetCount();
-	while (i-- > 0)
+	Data::ArrayIterator<NotNullPtr<Text::String>> it = me->respHeaders.Iterator();
+	while (it.HasNext())
 	{
-		Text::String *hdr = me->respHeaders.GetItem(i);
+		NotNullPtr<Text::String> hdr = it.Next();
 		if (hdr->StartsWithICase(UTF8STRC("Content-Disposition: ")))
 		{
 			Text::StringBuilderUTF8 sb;
@@ -556,7 +554,6 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::ProcessThread(NotNullPtr<Sync:
 	UTF8Char *sbuff;
 	UTF8Char *sptr;
 	UOSInt i;
-	UOSInt j;
 	sbuff = MemAlloc(UTF8Char, 65536);
 	while (!thread->IsStopping())
 	{
@@ -739,12 +736,10 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::ProcessThread(NotNullPtr<Sync:
 					}
 				}
 				me->ClearHeaders();
-				i = 0;
-				j = cli->GetRespHeaderCnt();
-				while (i < j)
+				Data::ArrayIterator<NotNullPtr<Text::String>> it = cli->RespHeaderIterator();
+				while (it.HasNext())
 				{
-					me->respHeaders.Add(cli->GetRespHeader(i)->Clone());
-					i++;
+					me->respHeaders.Add(it.Next()->Clone());
 				}
 				Text::StringBuilderUTF8 sb;
 				if (cli->GetRespHeader(CSTR("Content-Type"), sb))
@@ -971,7 +966,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnTimerTick(void *userObj)
 
 void SSWR::AVIRead::AVIRHTTPClientForm::ClearHeaders()
 {
-	LIST_FREE_STRING(&this->respHeaders);
+	LISTNN_FREE_STRING(&this->respHeaders);
 }
 
 void SSWR::AVIRead::AVIRHTTPClientForm::ClearParams()
@@ -1012,7 +1007,7 @@ void SSWR::AVIRead::AVIRHTTPClientForm::ClearFiles()
 	UOSInt i = this->fileList.GetCount();
 	while (i-- > 0)
 	{
-		this->fileList.GetItem(i)->Release();
+		OPTSTR_DEL(this->fileList.GetItem(i));
 	}
 	this->fileList.Clear();
 }

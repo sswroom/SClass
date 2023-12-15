@@ -53,7 +53,7 @@ Bool Exporter::DBCSVExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Tex
 		return false;
 	}
 
-	Text::String *name = 0;
+	Optional<Text::String> name = 0;
 	if (param)
 	{
 		DBParam *dbParam = (DBParam*)param;
@@ -81,7 +81,7 @@ void *Exporter::DBCSVExporter::CreateParam(NotNullPtr<IO::ParsedObject> pobj)
 void Exporter::DBCSVExporter::DeleteParam(void *param)
 {
 	DBParam *dbParam = (DBParam*)param;
-	LIST_FREE_STRING(&dbParam->names);
+	LISTNN_FREE_STRING(&dbParam->names);
 	DEL_CLASS(dbParam);
 }
 
@@ -146,8 +146,8 @@ UTF8Char *Exporter::DBCSVExporter::GetParamSelItems(void *param, UOSInt index, U
 	if (index == 0)
 	{
 		DBParam *dbParam = (DBParam*)param;
-		Text::String *name = dbParam->names.GetItem(itemIndex);
-		if (name)
+		NotNullPtr<Text::String> name;
+		if (dbParam->names.GetItem(itemIndex).SetTo(name))
 		{
 			return name->ConcatTo(buff);
 		}

@@ -25,7 +25,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	
 	Data::ArrayListNN<Text::String> tableList;
 	Data::ArrayListNN<Text::String> dbList;
-	UOSInt i;
+	Data::ArrayIterator<NotNullPtr<Text::String>> it;
 	UOSInt j;
 	j = mongoDB->GetDatabaseNames(dbList);
 	if (j <= 0)
@@ -38,26 +38,22 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	else
 	{
 		console->WriteLineC(UTF8STRC("Database List:"));
-		i = 0;
-		j = dbList.GetCount();
-		while (i < j)
+		it = dbList.Iterator();
+		while (it.HasNext())
 		{
-			console->WriteLineCStr(dbList.GetItem(i)->ToCString());
-			i++;
+			console->WriteLineCStr(it.Next()->ToCString());
 		}
 		mongoDB->FreeDatabaseNames(dbList);
 	}
 	console->WriteLine();
 	console->WriteLineC(UTF8STRC("Table List:"));
 	mongoDB->QueryTableNames(CSTR_NULL, tableList);
-	i = 0;
-	j = tableList.GetCount();
-	while (i < j)
+	it = tableList.Iterator();
+	while (it.HasNext())
 	{
-		console->WriteLineCStr(tableList.GetItem(i)->ToCString());
-		i++;
+		console->WriteLineCStr(it.Next()->ToCString());
 	}
-	LIST_FREE_STRING(&tableList);
+	LISTNN_FREE_STRING(&tableList);
 
 	DEL_CLASS(mongoDB);
 	DEL_CLASS(log);

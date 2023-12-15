@@ -126,7 +126,6 @@ void SSWR::AVIRead::AVIRLineCounterForm::CalcDir(UTF8Char *pathBuff, UTF8Char *p
 	Text::StringBuilderUTF8 sb;
 	UOSInt lineCnt;
 	UOSInt i;
-	UOSInt j;
 	Bool found;
 	FileInfo *fi;
 

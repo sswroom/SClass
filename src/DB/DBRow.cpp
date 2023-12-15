@@ -321,22 +321,20 @@ const UInt8 *DB::DBRow::GetFieldBinary(DB::DBRow::Field *field, UOSInt *buffSize
 DB::DBRow::DBRow(TableDef *table)
 {
 	this->table = table;
-	DB::ColDef *col;
+	NotNullPtr<DB::ColDef> col;
 	DB::DBRow::Field *field;
-	UOSInt i = 0;
-	UOSInt j = table->GetColCnt();
-	while (i < j)
+	Data::ArrayIterator<NotNullPtr<DB::ColDef>> it = table->ColIterator();
+	while (it.HasNext())
 	{
-		col = table->GetCol(i);
+		col = it.Next();
 		field = MemAlloc(DB::DBRow::Field, 1);
-		field->def = col;
+		field->def = col.Ptr();
 		field->currentNull = true;
 		field->currentData.iVal = 0;
 		field->currentChanged = false;
 		field->committedNull = true;
 		field->committedData.iVal = 0;
 		this->dataMap.Put(field->def->GetColName()->v, field);
-		i++;
 	}
 }
 
@@ -348,13 +346,13 @@ DB::DBRow::~DBRow()
 
 Bool DB::DBRow::SetByReader(NotNullPtr<DB::DBReader> r, Bool commit)
 {
-	DB::ColDef *col;
+	NotNullPtr<DB::ColDef> col;
 	DB::DBRow::Field *field;
+	Data::ArrayIterator<NotNullPtr<DB::ColDef>> it = table->ColIterator();
 	UOSInt i = 0;
-	UOSInt j = this->table->GetColCnt();
-	while (i < j)
+	while (it.HasNext())
 	{
-		col = this->table->GetCol(i);
+		col = it.Next();
 		field = this->dataMap.Get(col->GetColName()->v);
 		if (field == 0)
 		{
@@ -706,28 +704,26 @@ void DB::DBRow::ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const
 {
 	UTF8Char sbuff[128];
 	UTF8Char *sptr;
-	DB::ColDef *col;
+	NotNullPtr<DB::ColDef> col;
 	DB::DBRow::Field *field;
 	const UInt8 *buff;
 	Math::WKTWriter wkt;
 	NotNullPtr<Math::Geometry::Vector2D> vec;
 	DataType dtype;
-	UOSInt i = 0;
-	UOSInt j = this->table->GetColCnt();
 	UOSInt k;
 	UOSInt strLen;
 	this->AppendTableName(sb);
+	Data::ArrayIterator<NotNullPtr<DB::ColDef>> it = this->table->ColIterator();
+	Bool found = false;
 	sb->AppendUTF8Char('[');
-	while (i < j)
+	while (it.HasNext())
 	{
-		col = this->table->GetCol(i);
+		col = it.Next();
 		field = this->dataMap.Get(col->GetColName()->v);
 		if (field)
 		{
-			if (i > 0)
-			{
+			if (found)
 				sb->AppendC(UTF8STRC(", "));
-			}
 			this->AppendVarNameForm(sb, col->GetColName()->v);
 			sb->AppendUTF8Char('=');
 			dtype = this->GetDataType(field);
@@ -797,9 +793,8 @@ void DB::DBRow::ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const
 					break;
 				}
 			}
+			found = true;
 		}
-
-		i++;
 	}
 	sb->AppendUTF8Char(']');
 }

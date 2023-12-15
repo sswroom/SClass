@@ -187,12 +187,12 @@ IO::ParsedObject *Parser::FileParser::MDBParser::ParseFileHdr(NotNullPtr<IO::Str
 		SDEL_CLASS(csys);
 		conn->UnuseObject();
 		LISTNN_FREE_STRING(&tableNames);
-		if (lyrColl->GetCount() == 1)
+		NotNullPtr<Map::MapDrawLayer> lyr1;
+		if (lyrColl->GetCount() == 1 && lyrColl->GetItem(0).SetTo(lyr1))
 		{
-			Map::MapDrawLayer *lyr = lyrColl->GetItem(0);
 			lyrColl->RemoveAt(0);
 			DEL_CLASS(lyrColl);
-			return lyr;
+			return lyr1.Ptr();
 		}
 		else
 		{

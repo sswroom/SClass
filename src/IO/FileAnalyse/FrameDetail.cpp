@@ -27,7 +27,7 @@ IO::FileAnalyse::FrameDetail::FrameDetail(UInt64 ofst, UInt64 size)
 
 IO::FileAnalyse::FrameDetail::~FrameDetail()
 {
-	LIST_FREE_STRING(&this->headers);
+	LISTNN_FREE_STRING(&this->headers);
 	LIST_FREE_FUNC(&this->fields, FreeFieldInfo);
 }
 
@@ -128,21 +128,19 @@ void IO::FileAnalyse::FrameDetail::ToString(NotNullPtr<Text::StringBuilderUTF8> 
 {
 	sb->AppendC(UTF8STRC("Offset="));
 	sb->AppendU64(this->ofst);
-	UOSInt i = 0;
-	UOSInt j = this->headers.GetCount();
-	while (i < j)
+	Data::ArrayIterator<NotNullPtr<Text::String>> it = this->headers.Iterator();
+	while (it.HasNext())
 	{
 		sb->AppendC(UTF8STRC("\r\n"));
-		sb->Append(this->headers.GetItem(i));
-		i++;
+		sb->Append(it.Next());
 	}
 
 	FieldInfo *field;
-	i = 0;
-	j = this->fields.GetCount();
+	UOSInt j = this->fields.GetCount();
 	if (j > 0)
 	{
 		sb->AppendC(UTF8STRC("\r\n"));
+		UOSInt i = 0;
 		while (i < j)
 		{
 			field = this->fields.GetItem(i);

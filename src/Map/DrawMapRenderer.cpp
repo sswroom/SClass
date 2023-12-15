@@ -1895,26 +1895,35 @@ void Map::DrawMapRenderer::DrawLabel(NotNullPtr<DrawEnv> denv, NotNullPtr<Map::M
 						UOSInt maxPos;
 						UOSInt nPoint;
 						Math::Coord2DDbl *pointArr;
-						maxSize = pl->GetItem(0)->GetPointCount();
-						maxPos = 0;
-						k = pl->GetCount();
-						while (k-- > 1)
+						Data::ArrayIterator<NotNullPtr<Math::Geometry::LineString>> it = pl->Iterator();
+						if (it.HasNext())
 						{
-							nPoint = pl->GetItem(k)->GetPointCount();
-							if (nPoint > maxSize)
+							maxSize = it.Next()->GetPointCount();
+							maxPos = 0;
+							k = 1;
+							while (it.HasNext())
 							{
-								maxSize = nPoint;
-								maxPos = k;
+								nPoint = it.Next()->GetPointCount();
+								if (nPoint > maxSize)
+								{
+									maxSize = nPoint;
+									maxPos = k;
+								}
+								k++;
 							}
-						}
-						pointArr = pl->GetItem(maxPos)->GetPointList(nPoint);
-						if (vec->GetVectorType() == Math::Geometry::Vector2D::VectorType::Polygon)
-						{
-							AddLabel(denv->labels, maxLabel, &denv->labelCnt, sbLbl.ToCString(), nPoint, pointArr, priority, Map::DRAW_LAYER_POLYGON, fontStyle, flags, denv->view, (OSInt)imgWidth, (OSInt)imgHeight, fontType);
-						}
-						else
-						{
-							AddLabel(denv->labels, maxLabel, &denv->labelCnt, sbLbl.ToCString(), nPoint, pointArr, priority, Map::DRAW_LAYER_POLYLINE3D, fontStyle, flags, denv->view, (OSInt)imgWidth, (OSInt)imgHeight, fontType);
+							NotNullPtr<Math::Geometry::LineString> ls;
+							if (pl->GetItem(maxPos).SetTo(ls))
+							{
+								pointArr = ls->GetPointList(nPoint);
+								if (pl->HasZ())
+								{
+									AddLabel(denv->labels, maxLabel, &denv->labelCnt, sbLbl.ToCString(), nPoint, pointArr, priority, Map::DRAW_LAYER_POLYLINE3D, fontStyle, flags, denv->view, (OSInt)imgWidth, (OSInt)imgHeight, fontType);
+								}
+								else
+								{
+									AddLabel(denv->labels, maxLabel, &denv->labelCnt, sbLbl.ToCString(), nPoint, pointArr, priority, Map::DRAW_LAYER_POLYLINE, fontStyle, flags, denv->view, (OSInt)imgWidth, (OSInt)imgHeight, fontType);
+								}
+							}
 						}
 						break;
 					}
@@ -1926,26 +1935,27 @@ void Map::DrawMapRenderer::DrawLabel(NotNullPtr<DrawEnv> denv, NotNullPtr<Map::M
 						UOSInt maxPos;
 						UOSInt nPoint;
 						Math::Coord2DDbl *pointArr;
-						maxSize = pg->GetItem(0)->GetPointCount();
-						maxPos = 0;
-						k = pg->GetCount();
-						while (k-- > 1)
+						Data::ArrayIterator<NotNullPtr<Math::Geometry::LinearRing>> it = pg->Iterator();
+						if (it.HasNext())
 						{
-							nPoint = pg->GetItem(k)->GetPointCount();
-							if (nPoint > maxSize)
+							maxSize = it.Next()->GetPointCount();
+							maxPos = 0;
+							k = 1;
+							while (it.HasNext())
 							{
-								maxSize = nPoint;
-								maxPos = k;
+								nPoint = it.Next()->GetPointCount();
+								if (nPoint > maxSize)
+								{
+									maxSize = nPoint;
+									maxPos = k;
+								}
 							}
-						}
-						pointArr = pg->GetItem(maxPos)->GetPointList(nPoint);
-						if (vec->GetVectorType() == Math::Geometry::Vector2D::VectorType::Polygon)
-						{
-							AddLabel(denv->labels, maxLabel, &denv->labelCnt, sbLbl.ToCString(), nPoint, pointArr, priority, Map::DRAW_LAYER_POLYGON, fontStyle, flags, denv->view, (OSInt)imgWidth, (OSInt)imgHeight, fontType);
-						}
-						else
-						{
-							AddLabel(denv->labels, maxLabel, &denv->labelCnt, sbLbl.ToCString(), nPoint, pointArr, priority, Map::DRAW_LAYER_POLYLINE3D, fontStyle, flags, denv->view, (OSInt)imgWidth, (OSInt)imgHeight, fontType);
+							NotNullPtr<Math::Geometry::LinearRing> lr;
+							if (pg->GetItem(maxPos).SetTo(lr))
+							{
+								pointArr = lr->GetPointList(nPoint);
+								AddLabel(denv->labels, maxLabel, &denv->labelCnt, sbLbl.ToCString(), nPoint, pointArr, priority, Map::DRAW_LAYER_POLYGON, fontStyle, flags, denv->view, (OSInt)imgWidth, (OSInt)imgHeight, fontType);
+							}
 						}
 						break;
 					}
@@ -1982,34 +1992,37 @@ void Map::DrawMapRenderer::DrawLabel(NotNullPtr<DrawEnv> denv, NotNullPtr<Map::M
 					case Math::Geometry::Vector2D::VectorType::Polyline:
 					{
 						Math::Geometry::Polyline *pl = (Math::Geometry::Polyline*)vec;
-						Math::Geometry::LineString *lineString = pl->GetItem(pl->GetCount() >> 1);
-						UOSInt nPoint;
-						Math::Coord2DDbl *pointArr = lineString->GetPointList(nPoint);
-						if (nPoint & 1)
+						NotNullPtr<Math::Geometry::LineString> lineString;
+						if (pl->GetItem(pl->GetCount() >> 1).SetTo(lineString))
 						{
-							UOSInt l = nPoint >> 1;
-							pts = pointArr[l];
+							UOSInt nPoint;
+							Math::Coord2DDbl *pointArr = lineString->GetPointList(nPoint);
+							if (nPoint & 1)
+							{
+								UOSInt l = nPoint >> 1;
+								pts = pointArr[l];
 
-							scaleW = pointArr[l + 1].x - pointArr[l - 1].x;
-							scaleH = pointArr[l + 1].y - pointArr[l - 1].y;
-						}
-						else
-						{
-							UOSInt l = nPoint >> 1;
-							pts.x = (pointArr[l - 1].x + pointArr[l].x) * 0.5;
-							pts.y = (pointArr[l - 1].y + pointArr[l].y) * 0.5;
+								scaleW = pointArr[l + 1].x - pointArr[l - 1].x;
+								scaleH = pointArr[l + 1].y - pointArr[l - 1].y;
+							}
+							else
+							{
+								UOSInt l = nPoint >> 1;
+								pts.x = (pointArr[l - 1].x + pointArr[l].x) * 0.5;
+								pts.y = (pointArr[l - 1].y + pointArr[l].y) * 0.5;
 
-							scaleW = pointArr[l].x - pointArr[l - 1].x;
-							scaleH = pointArr[l].y - pointArr[l - 1].y;
-						}
+								scaleW = pointArr[l].x - pointArr[l - 1].x;
+								scaleH = pointArr[l].y - pointArr[l - 1].y;
+							}
 
-						if (denv->view->InViewXY(pts))
-						{
-							pts = denv->view->MapXYToScnXY(pts);
+							if (denv->view->InViewXY(pts))
+							{
+								pts = denv->view->MapXYToScnXY(pts);
 
-							if ((flags & Map::MapEnv::SFLG_ROTATE) == 0)
-								scaleW = scaleH = 0;
-							DrawChars(denv, sbLbl.ToCString(), pts, scaleW, scaleH, fontType, fontStyle, (flags & Map::MapEnv::SFLG_ALIGN) != 0);
+								if ((flags & Map::MapEnv::SFLG_ROTATE) == 0)
+									scaleW = scaleH = 0;
+								DrawChars(denv, sbLbl.ToCString(), pts, scaleW, scaleH, fontType, fontStyle, (flags & Map::MapEnv::SFLG_ALIGN) != 0);
+							}
 						}
 						break;
 					}
@@ -2297,7 +2310,7 @@ void Map::DrawMapRenderer::GetCharsSize(NotNullPtr<DrawEnv> denv, Math::Coord2DD
 	NotNullPtr<Media::DrawFont> df;
 	if (fontType == Map::MapEnv::FontType::LayerStyle)
 	{
-		if (!df.Set(denv->layerFont.GetItem(fontStyle)))
+		if (!denv->layerFont.GetItem(fontStyle).SetTo(df))
 		{
 			size->x = 0;
 			size->y = 0;
@@ -2393,7 +2406,7 @@ void Map::DrawMapRenderer::DrawChars(NotNullPtr<DrawEnv> denv, Text::CStringNN s
 	else if (fontType == Map::MapEnv::FontType::LayerStyle)
 	{
 		font = 0;
-		if (!df.Set(denv->layerFont.GetItem(fontStyle)) || !db.Set(denv->layerFontColor.GetItem(fontStyle)))
+		if (!denv->layerFont.GetItem(fontStyle).SetTo(df) || !denv->layerFontColor.GetItem(fontStyle).SetTo(db))
 			return;
 	}
 	else
@@ -2614,7 +2627,7 @@ void Map::DrawMapRenderer::DrawCharsL(NotNullPtr<Map::DrawMapRenderer::DrawEnv> 
 	else if (fontType == Map::MapEnv::FontType::LayerStyle)
 	{
 		font = 0;
-		if (!df.Set(denv->layerFont.GetItem(fontStyle)) || !db.Set(denv->layerFontColor.GetItem(fontStyle)))
+		if (!denv->layerFont.GetItem(fontStyle).SetTo(df) || !denv->layerFontColor.GetItem(fontStyle).SetTo(db))
 			return;
 	}
 	else
@@ -3147,7 +3160,7 @@ void Map::DrawMapRenderer::DrawCharsLA(NotNullPtr<DrawEnv> denv, Text::CStringNN
 	else if (fontType == Map::MapEnv::FontType::LayerStyle)
 	{
 		font = 0;
-		if (!df.Set(denv->layerFont.GetItem(fontStyle)) || !db.Set(denv->layerFontColor.GetItem(fontStyle)))
+		if (!denv->layerFont.GetItem(fontStyle).SetTo(df) || !denv->layerFontColor.GetItem(fontStyle).SetTo(db))
 			return;
 	}
 	else
@@ -3776,9 +3789,9 @@ void Map::DrawMapRenderer::DrawMap(NotNullPtr<Media::DrawImage> img, NotNullPtr<
 	i = denv.layerFont.GetCount();
 	while (i-- > 0)
 	{
-		if (fnt.Set(denv.layerFont.GetItem(i)))
+		if (denv.layerFont.GetItem(i).SetTo(fnt))
 			img->DelFont(fnt);
-		if (b.Set(denv.layerFontColor.GetItem(i)))
+		if (denv.layerFontColor.GetItem(i).SetTo(b))
 			img->DelBrush(b);
 	}
 	MemFree(denv.fontStyles);

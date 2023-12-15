@@ -53,12 +53,11 @@ Optional<Map::MapDrawLayer> Map::MapLayerCollection::RemoveAt(UOSInt index)
 
 void Map::MapLayerCollection::Clear()
 {
-	UOSInt i;
 	Sync::RWMutexUsage mutUsage(this->mut, true);
-	i = this->layerList.GetCount();
-	while (i-- > 0)
+	Data::ArrayIterator<NotNullPtr<MapDrawLayer>> it = this->layerList.Iterator();
+	while (it.HasNext())
 	{
-		this->layerList.GetItem(i)->RemoveUpdatedHandler(InnerUpdated, this);
+		it.Next()->RemoveUpdatedHandler(InnerUpdated, this);
 	}
 	this->layerList.Clear();
 }
@@ -68,10 +67,16 @@ UOSInt Map::MapLayerCollection::GetCount() const
 	return this->layerList.GetCount();
 }
 
-Map::MapDrawLayer *Map::MapLayerCollection::GetItem(UOSInt Index)
+Optional<Map::MapDrawLayer> Map::MapLayerCollection::GetItem(UOSInt Index) const
 {
 	Sync::RWMutexUsage mutUsage(this->mut, false);
 	return this->layerList.GetItem(Index);
+}
+
+Data::ArrayIterator<NotNullPtr<Map::MapDrawLayer>> Map::MapLayerCollection::Iterator(NotNullPtr<Sync::RWMutexUsage> mutUsage) const
+{
+	mutUsage->ReplaceMutex(this->mut, false);
+	return this->layerList.Iterator();
 }
 
 void Map::MapLayerCollection::SetItem(UOSInt Index, NotNullPtr<Map::MapDrawLayer> val)
@@ -83,20 +88,20 @@ void Map::MapLayerCollection::SetItem(UOSInt Index, NotNullPtr<Map::MapDrawLayer
 void Map::MapLayerCollection::SetCurrScale(Double scale)
 {
 	Sync::RWMutexUsage mutUsage(this->mut, false);
-	UOSInt i = this->layerList.GetCount();
-	while (i-- > 0)
+	Data::ArrayIterator<NotNullPtr<MapDrawLayer>> it = this->layerList.Iterator();
+	while (it.HasNext())
 	{
-		this->layerList.GetItem(i)->SetCurrScale(scale);
+		it.Next()->SetCurrScale(scale);
 	}
 }
 
 void Map::MapLayerCollection::SetCurrTimeTS(Int64 timeStamp)
 {
 	Sync::RWMutexUsage mutUsage(this->mut, false);
-	UOSInt i = this->layerList.GetCount();
-	while (i-- > 0)
+	Data::ArrayIterator<NotNullPtr<MapDrawLayer>> it = this->layerList.Iterator();
+	while (it.HasNext())
 	{
-		this->layerList.GetItem(i)->SetCurrTimeTS(timeStamp);
+		it.Next()->SetCurrTimeTS(timeStamp);
 	}
 }
 
@@ -105,10 +110,10 @@ Int64 Map::MapLayerCollection::GetTimeStartTS() const
 	Int64 timeStart = 0;
 	Int64 v;
 	Sync::RWMutexUsage mutUsage(this->mut, false);
-	UOSInt i = this->layerList.GetCount();
-	while (i-- > 0)
+	Data::ArrayIterator<NotNullPtr<MapDrawLayer>> it = this->layerList.Iterator();
+	while (it.HasNext())
 	{
-		v = this->layerList.GetItem(i)->GetTimeStartTS();
+		v = it.Next()->GetTimeStartTS();
 		if (timeStart == 0)
 		{
 			timeStart = v;
@@ -126,10 +131,10 @@ Int64 Map::MapLayerCollection::GetTimeEndTS() const
 	Int64 timeEnd = 0;
 	Int64 v;
 	Sync::RWMutexUsage mutUsage(this->mut, false);
-	UOSInt i = this->layerList.GetCount();
-	while (i-- > 0)
+	Data::ArrayIterator<NotNullPtr<MapDrawLayer>> it = this->layerList.Iterator();
+	while (it.HasNext())
 	{
-		v = this->layerList.GetItem(i)->GetTimeEndTS();
+		v = it.Next()->GetTimeEndTS();
 		if (timeEnd == 0)
 		{
 			timeEnd = v;
@@ -146,14 +151,15 @@ Map::DrawLayerType Map::MapLayerCollection::GetLayerType() const
 {
 	Map::DrawLayerType lyrType = Map::DRAW_LAYER_UNKNOWN;
 	Sync::RWMutexUsage mutUsage(this->mut, false);
-	UOSInt i = this->layerList.GetCount();
-	while (i-- > 0)
+	Data::ArrayIterator<NotNullPtr<MapDrawLayer>> it = this->layerList.Iterator();
+	while (it.HasNext())
 	{
+		NotNullPtr<MapDrawLayer> layer = it.Next();
 		if (lyrType == Map::DRAW_LAYER_UNKNOWN)
 		{
-			lyrType = this->layerList.GetItem(i)->GetLayerType();
+			lyrType = layer->GetLayerType();
 		}
-		else if (lyrType != this->layerList.GetItem(i)->GetLayerType())
+		else if (lyrType != layer->GetLayerType())
 		{
 			lyrType = Map::DRAW_LAYER_MIXED;
 		}
@@ -163,10 +169,8 @@ Map::DrawLayerType Map::MapLayerCollection::GetLayerType() const
 
 UOSInt Map::MapLayerCollection::GetAllObjectIds(NotNullPtr<Data::ArrayListInt64> outArr, NameArray **nameArr)
 {
-	Map::MapDrawLayer *lyr;
+	NotNullPtr<Map::MapDrawLayer> lyr;
 	Data::ArrayListInt64 tmpArr;
-	UOSInt k;
-	UOSInt l;
 	UOSInt m1;
 	UOSInt m2;
 	UOSInt ret;
@@ -174,11 +178,10 @@ UOSInt Map::MapLayerCollection::GetAllObjectIds(NotNullPtr<Data::ArrayListInt64>
 	Int64 maxId;
 	Sync::RWMutexUsage mutUsage(this->mut, false);
 	ret = 0;
-	k = 0;
-	l = this->layerList.GetCount();
-	while (k < l)
+	Data::ArrayIterator<NotNullPtr<MapDrawLayer>> it = this->layerList.Iterator();
+	while (it.HasNext())
 	{
-		lyr = this->layerList.GetItem(k);
+		lyr = it.Next();
 		maxId = lyr->GetObjectIdMax();
 		tmpArr.Clear();
 		m2 = lyr->GetAllObjectIds(tmpArr, nameArr);
@@ -190,28 +193,24 @@ UOSInt Map::MapLayerCollection::GetAllObjectIds(NotNullPtr<Data::ArrayListInt64>
 		}
 		ret += m2;
 		currId += maxId + 1;
-		k++;
 	}
 	return ret;
 }
 
 UOSInt Map::MapLayerCollection::GetObjectIds(NotNullPtr<Data::ArrayListInt64> outArr, NameArray **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
 {
-	Map::MapDrawLayer *lyr;
+	NotNullPtr<Map::MapDrawLayer> lyr;
 	Data::ArrayListInt64 tmpArr;
-	UOSInt k;
-	UOSInt l;
 	UOSInt m1;
 	UOSInt m2;
 	UOSInt ret = 0;
 	Int64 currId = 0;
 	Int64 maxId;
 	Sync::RWMutexUsage mutUsage(this->mut, false);
-	k = 0;
-	l = this->layerList.GetCount();
-	while (k < l)
+	Data::ArrayIterator<NotNullPtr<MapDrawLayer>> it = this->layerList.Iterator();
+	while (it.HasNext())
 	{
-		lyr = this->layerList.GetItem(k);
+		lyr = it.Next();
 		maxId = lyr->GetObjectIdMax();
 		tmpArr.Clear();
 		m2 = lyr->GetObjectIds(tmpArr, nameArr, mapRate, rect, keepEmpty);
@@ -223,28 +222,24 @@ UOSInt Map::MapLayerCollection::GetObjectIds(NotNullPtr<Data::ArrayListInt64> ou
 		}
 		ret += m2;
 		currId += maxId + 1;
-		k++;
 	}
 	return ret;
 }
 
 UOSInt Map::MapLayerCollection::GetObjectIdsMapXY(NotNullPtr<Data::ArrayListInt64> outArr, NameArray **nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
 {
-	Map::MapDrawLayer *lyr;
+	NotNullPtr<Map::MapDrawLayer> lyr;
 	Data::ArrayListInt64 tmpArr;
-	UOSInt k;
-	UOSInt l;
 	UOSInt m1;
 	UOSInt m2;
 	UOSInt ret = 0;
 	Int64 currId = 0;
 	Int64 maxId;
 	Sync::RWMutexUsage mutUsage(this->mut, false);
-	k = 0;
-	l = this->layerList.GetCount();
-	while (k < l)
+	Data::ArrayIterator<NotNullPtr<MapDrawLayer>> it = this->layerList.Iterator();
+	while (it.HasNext())
 	{
-		lyr = this->layerList.GetItem(k);
+		lyr = it.Next();
 		maxId = lyr->GetObjectIdMax();
 		tmpArr.Clear();
 		m2 = lyr->GetObjectIdsMapXY(tmpArr, nameArr, rect, keepEmpty);
@@ -256,27 +251,22 @@ UOSInt Map::MapLayerCollection::GetObjectIdsMapXY(NotNullPtr<Data::ArrayListInt6
 		}
 		ret += m2;
 		currId += maxId + 1;
-		k++;
 	}
 	return ret;
 }
 
 Int64 Map::MapLayerCollection::GetObjectIdMax() const
 {
-	UOSInt k;
-	UOSInt l;
-	Map::MapDrawLayer *lyr;
+	NotNullPtr<Map::MapDrawLayer> lyr;
 	Int64 maxId;
 	Int64 currId = 0;
 	Sync::RWMutexUsage mutUsage(this->mut, false);
-	k = 0;
-	l = this->layerList.GetCount();
-	while (k < l)
+	Data::ArrayIterator<NotNullPtr<MapDrawLayer>> it = this->layerList.Iterator();
+	while (it.HasNext())
 	{
-		lyr = this->layerList.GetItem(k);
+		lyr = it.Next();
 		maxId = lyr->GetObjectIdMax();
 		currId += maxId + 1;
-		k++;
 	}
 	return currId - 1;
 }
@@ -287,23 +277,19 @@ void Map::MapLayerCollection::ReleaseNameArr(NameArray *nameArr)
 
 Bool Map::MapLayerCollection::GetString(NotNullPtr<Text::StringBuilderUTF8> sb, NameArray *nameArr, Int64 id, UOSInt strIndex)
 {
-	UOSInt k;
-	UOSInt l;
 	Int64 currId = 0;
 	Int64 maxId;
-	Map::MapDrawLayer *lyr;
-	k = 0;
-	l = this->layerList.GetCount();
-	while (k < l)
+	NotNullPtr<Map::MapDrawLayer> lyr;
+	Data::ArrayIterator<NotNullPtr<MapDrawLayer>> it = this->layerList.Iterator();
+	while (it.HasNext())
 	{
-		lyr = this->layerList.GetItem(k);
+		lyr = it.Next();
 		maxId = lyr->GetObjectIdMax();
 		if (id >= currId && id <= currId + maxId)
 		{
 			return lyr->GetString(sb, 0, id - currId, strIndex);
 		}
 		currId += maxId + 1;
-		k++;
 	}
 	return false;
 }
@@ -336,18 +322,15 @@ UInt32 Map::MapLayerCollection::GetCodePage() const
 Bool Map::MapLayerCollection::GetBounds(OutParam<Math::RectAreaDbl> bounds) const
 {
 	Bool isFirst = true;
-	UOSInt k;
-	UOSInt l;
 	Math::RectAreaDbl minMax;
 	Math::RectAreaDbl thisBounds;
 
 	Sync::RWMutexUsage mutUsage(NotNullPtr<Sync::RWMutex>::ConvertFrom(NotNullPtr<const Sync::RWMutex>(this->mut)), false);
-	Map::MapDrawLayer *lyr;
-	k = 0;
-	l = this->layerList.GetCount();
-	while (k < l)
+	NotNullPtr<Map::MapDrawLayer> lyr;
+	Data::ArrayIterator<NotNullPtr<MapDrawLayer>> it = this->layerList.Iterator();
+	while (it.HasNext())
 	{
-		lyr = this->layerList.GetItem(k);
+		lyr = it.Next();
 		if (isFirst)
 		{
 			if (lyr->GetBounds(minMax))
@@ -363,7 +346,6 @@ Bool Map::MapLayerCollection::GetBounds(OutParam<Math::RectAreaDbl> bounds) cons
 				minMax.br = minMax.br.Max(thisBounds.br);
 			}
 		}
-		k++;
 	}
 	if (isFirst)
 	{
@@ -387,18 +369,15 @@ void Map::MapLayerCollection::EndGetObject(GetObjectSess *session)
 
 Math::Geometry::Vector2D *Map::MapLayerCollection::GetNewVectorById(GetObjectSess *session, Int64 id)
 {
-	UOSInt k;
-	UOSInt l;
 	Int64 currId = 0;
 	Int64 maxId;
-	Map::MapDrawLayer *lyr;
+	NotNullPtr<Map::MapDrawLayer> lyr;
 	Math::Geometry::Vector2D *vec = 0;
 	Sync::RWMutexUsage mutUsage(this->mut, false);
-	k = 0;
-	l = this->layerList.GetCount();
-	while (k < l)
+	Data::ArrayIterator<NotNullPtr<MapDrawLayer>> it = this->layerList.Iterator();
+	while (it.HasNext())
 	{
-		lyr = this->layerList.GetItem(k);
+		lyr = it.Next();
 		maxId = lyr->GetObjectIdMax();
 		if (id >= currId && id <= currId + maxId)
 		{
@@ -409,7 +388,6 @@ Math::Geometry::Vector2D *Map::MapLayerCollection::GetNewVectorById(GetObjectSes
 		{
 			currId += maxId + 1;
 		}
-		k++;
 	}
 	return vec;
 }
@@ -443,8 +421,9 @@ Map::MapDrawLayer::ObjectClass Map::MapLayerCollection::GetObjectClass() const
 
 NotNullPtr<Math::CoordinateSystem> Map::MapLayerCollection::GetCoordinateSystem()
 {
-	if (this->layerList.GetCount() > 0)
-		return this->layerList.GetItem(0)->GetCoordinateSystem();
+	NotNullPtr<MapDrawLayer> lyr;
+	if (this->layerList.GetItem(0).SetTo(lyr))
+		return lyr->GetCoordinateSystem();
 	else
 		return this->csys;
 }
@@ -452,10 +431,10 @@ NotNullPtr<Math::CoordinateSystem> Map::MapLayerCollection::GetCoordinateSystem(
 void Map::MapLayerCollection::SetCoordinateSystem(NotNullPtr<Math::CoordinateSystem> csys)
 {
 	Sync::RWMutexUsage mutUsage(this->mut, false);
-	UOSInt i = this->layerList.GetCount();
-	while (i-- > 0)
+	Data::ArrayIterator<NotNullPtr<MapDrawLayer>> it = this->layerList.Iterator();
+	while (it.HasNext())
 	{
-		this->layerList.GetItem(i)->SetCoordinateSystem(csys->Clone());
+		it.Next()->SetCoordinateSystem(csys->Clone());
 	}
 	this->csys.Delete();
 	this->csys = csys;

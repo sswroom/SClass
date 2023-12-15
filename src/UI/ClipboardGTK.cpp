@@ -158,7 +158,7 @@ void UI::Clipboard::FreeDataFiles(Data::ArrayListNN<Text::String> *fileNames)
 	UOSInt i = fileNames->GetCount();;
 	while (i-- > 0)
 	{
-		fileNames->GetItem(i)->Release();
+		OPTSTR_DEL(fileNames->GetItem(i));
 	}
 }
 

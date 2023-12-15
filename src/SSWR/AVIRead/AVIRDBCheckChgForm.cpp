@@ -257,12 +257,12 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::LoadDataFile(Text::CStringNN fileName)
 	if (tableNames.GetCount() > 0)
 	{
 		UOSInt tableIndex = 0;
-		Text::String *name;
+		NotNullPtr<Text::String> name;
+		Data::ArrayIterator<NotNullPtr<Text::String>> it = tableNames.Iterator();
 		UOSInt i = 0;
-		UOSInt j = tableNames.GetCount();
-		while (i < j)
+		while (it.HasNext())
 		{
-			name = tableNames.GetItem(i);
+			name = it.Next();
 			if (name->EqualsICase(this->table))
 			{
 				tableIndex = i;
@@ -353,6 +353,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::CheckDataFile()
 	UOSInt l;
 	Data::FastStringMap<Text::String**> csvData;
 	Text::String** rowData;
+	NotNullPtr<DB::ColDef> col;
 	Bool found;
 	NotNullPtr<DB::DBReader> r;
 	if (!r.Set(this->dataFile->QueryTableData(CSTR_NULL, sbTable.ToCString(), 0, 0, 0, CSTR_NULL, dataDBCond)))
@@ -387,7 +388,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::CheckDataFile()
 					i = 0;
 					while (i < j)
 					{
-						if (table->GetCol(i)->GetColName()->EqualsICase(sbuff, (UOSInt)(sptr - sbuff)))
+						if (table->GetCol(i).SetTo(col) && col->GetColName()->EqualsICase(sbuff, (UOSInt)(sptr - sbuff)))
 						{
 							found = true;
 							colInd.SetItem(i, k);
@@ -505,9 +506,9 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::CheckDataFile()
 									rowData[i]->Release();
 									rowData[i] = 0;
 								}
-								else if (rowData[i]->leng == 0)
+								else if (rowData[i]->leng == 0 && table->GetCol(i).SetTo(col))
 								{
-									switch (table->GetCol(i)->GetColType())
+									switch (col->GetColType())
 									{
 									case DB::DBUtil::CT_VarUTF8Char:
 									case DB::DBUtil::CT_VarUTF16Char:
@@ -623,9 +624,8 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::CheckDataFile()
 							diff = true;
 							break;
 						}
-						else
+						else if (table->GetCol(i).SetTo(col))
 						{
-							DB::ColDef *col = table->GetCol(i);
 							switch (col->GetColType())
 							{
 							case DB::DBUtil::CT_VarUTF8Char:
@@ -764,6 +764,11 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::CheckDataFile()
 								break;
 							}
 						}
+						else
+						{
+							diff = true;
+							break;
+						}
 						i++;
 					}
 					if (diff)
@@ -885,6 +890,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool ax
 	Bool succ = true;
 	Data::ArrayList<UOSInt> colInd;
 	Bool intKey = false;
+	NotNullPtr<DB::ColDef> col;
 	UOSInt keyCol = (UOSInt)this->cboKeyCol->GetSelectedItem();
 	UOSInt keyDCol;
 	UOSInt i = 0;
@@ -892,9 +898,9 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool ax
 	while (i < j)
 	{
 		colInd.Add(this->dataFileNoHeader?i:INVALID_INDEX);
-		if (i == keyCol)
+		if (i == keyCol && table->GetCol(i).SetTo(col))
 		{
-			DB::DBUtil::ColType colType = table->GetCol(i)->GetColType();
+			DB::DBUtil::ColType colType = col->GetColType();
 			switch (colType)
 			{
 			case DB::DBUtil::CT_Bool:
@@ -966,7 +972,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool ax
 					i = 0;
 					while (i < j)
 					{
-						if (table->GetCol(i)->GetColName()->EqualsICase(sbuff, (UOSInt)(sptr - sbuff)))
+						if (table->GetCol(i).SetTo(col) && col->GetColName()->EqualsICase(sbuff, (UOSInt)(sptr - sbuff)))
 						{
 							found = true;
 							colInd.SetItem(i, k);
@@ -1086,7 +1092,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool ax
 								}
 								else if (rowData[i]->leng == 0)
 								{
-									switch (table->GetCol(i)->GetColType())
+									switch (table->GetCol(i).SetTo(col)?col->GetColType():DB::DBUtil::CT_Unknown)
 									{
 									case DB::DBUtil::CT_VarUTF8Char:
 									case DB::DBUtil::CT_VarUTF16Char:
@@ -1152,11 +1158,11 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool ax
 				i = 0;
 				while (i < j)
 				{
-					if (i != keyCol && colInd.GetItem(i) != INVALID_INDEX)
+					if (i != keyCol && colInd.GetItem(i) != INVALID_INDEX && table->GetCol(i).SetTo(col))
 					{
 						if (colFound) sql.AppendCmdC(CSTR(", "));
 						colFound = true;
-						sql.AppendCol(table->GetCol(i)->GetColName()->v);
+						sql.AppendCol(col->GetColName()->v);
 					}
 					i++;
 				}
@@ -1165,7 +1171,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool ax
 				i = 0;
 				while (i < j)
 				{
-					if (i != keyCol && colInd.GetItem(i) != INVALID_INDEX)
+					if (i != keyCol && colInd.GetItem(i) != INVALID_INDEX && table->GetCol(i).SetTo(col))
 					{
 						if (colFound) sql.AppendCmdC(CSTR(", "));
 						colFound = true;
@@ -1176,7 +1182,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool ax
 						}
 						else
 						{
-							AppendCol(&sql, table->GetCol(i)->GetColType(), s, this->dataFileTz);
+							AppendCol(&sql, col->GetColType(), s, this->dataFileTz);
 						}
 						SDEL_STRING(s);
 					}
@@ -1235,31 +1241,16 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool ax
 							}
 							else
 							{
-								switch (table->GetCol(i)->GetColType())
+								if (table->GetCol(i).SetTo(col))
 								{
-								case DB::DBUtil::CT_VarUTF8Char:
-								case DB::DBUtil::CT_VarUTF16Char:
-								case DB::DBUtil::CT_VarUTF32Char:
-								case DB::DBUtil::CT_UTF8Char:
-								case DB::DBUtil::CT_UTF16Char:
-								case DB::DBUtil::CT_UTF32Char:
-									if (diff)
+									switch (col->GetColType())
 									{
-										sql.AppendCmdC(CSTR(", "));
-									}
-									else
-									{
-										diff = true;
-									}
-									sql.AppendCol(table->GetCol(i)->GetColName()->v);
-									sql.AppendCmdC(CSTR(" = "));
-									sql.AppendStr(rowData[i]);
-									break;
-								case DB::DBUtil::CT_Date:
-								case DB::DBUtil::CT_DateTime:
-								case DB::DBUtil::CT_DateTimeTZ:
-									{
-										Data::Timestamp ts2 = Data::Timestamp::FromStr(rowData[i]->ToCString(), this->dataFileTz);
+									case DB::DBUtil::CT_VarUTF8Char:
+									case DB::DBUtil::CT_VarUTF16Char:
+									case DB::DBUtil::CT_VarUTF32Char:
+									case DB::DBUtil::CT_UTF8Char:
+									case DB::DBUtil::CT_UTF16Char:
+									case DB::DBUtil::CT_UTF32Char:
 										if (diff)
 										{
 											sql.AppendCmdC(CSTR(", "));
@@ -1268,92 +1259,15 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool ax
 										{
 											diff = true;
 										}
-										sql.AppendCol(table->GetCol(i)->GetColName()->v);
+										sql.AppendCol(col->GetColName()->v);
 										sql.AppendCmdC(CSTR(" = "));
-										sql.AppendTS(ts2);
-									}
-									break;
-								case DB::DBUtil::CT_Double:
-								case DB::DBUtil::CT_Float:
-								case DB::DBUtil::CT_Decimal:
-									{
-										Double v2 = rowData[i]->ToDouble();
-										if (diff)
+										sql.AppendStr(rowData[i]);
+										break;
+									case DB::DBUtil::CT_Date:
+									case DB::DBUtil::CT_DateTime:
+									case DB::DBUtil::CT_DateTimeTZ:
 										{
-											sql.AppendCmdC(CSTR(", "));
-										}
-										else
-										{
-											diff = true;
-										}
-										sql.AppendCol(table->GetCol(i)->GetColName()->v);
-										sql.AppendCmdC(CSTR(" = "));
-										sql.AppendDbl(v2);
-									}
-									break;
-								case DB::DBUtil::CT_UInt16:
-								case DB::DBUtil::CT_Int16:
-								case DB::DBUtil::CT_UInt32:
-								case DB::DBUtil::CT_Int32:
-								case DB::DBUtil::CT_Byte:
-									{
-										Int32 v2 = rowData[i]->ToInt32();
-										if (diff)
-										{
-											sql.AppendCmdC(CSTR(", "));
-										}
-										else
-										{
-											diff = true;
-										}
-										sql.AppendCol(table->GetCol(i)->GetColName()->v);
-										sql.AppendCmdC(CSTR(" = "));
-										sql.AppendInt32(v2);
-									}
-									break;
-								case DB::DBUtil::CT_UInt64:
-								case DB::DBUtil::CT_Int64:
-									{
-										Int64 v2 = rowData[i]->ToInt64();
-										if (diff)
-										{
-											sql.AppendCmdC(CSTR(", "));
-										}
-										else
-										{
-											diff = true;
-										}
-										sql.AppendCol(table->GetCol(i)->GetColName()->v);
-										sql.AppendCmdC(CSTR(" = "));
-										sql.AppendInt64(v2);
-									}
-									break;
-								case DB::DBUtil::CT_Bool:
-									{
-										Bool v2 = rowData[i]->v[0] == 't' || rowData[i]->v[0] == 'T' || rowData[i]->ToInt32() != 0;
-										if (diff)
-										{
-											sql.AppendCmdC(CSTR(", "));
-										}
-										else
-										{
-											diff = true;
-										}
-										sql.AppendCol(table->GetCol(i)->GetColName()->v);
-										sql.AppendCmdC(CSTR(" = "));
-										sql.AppendBool(v2);
-									}
-									break;
-								case DB::DBUtil::CT_Vector:
-									{
-										Math::Geometry::Vector2D *vec2;;
-										Math::WKTReader reader(SRID);
-										vec2 = reader.ParseWKT(rowData[i]->v);
-										if (vec2 == 0)
-										{
-										}
-										else
-										{
+											Data::Timestamp ts2 = Data::Timestamp::FromStr(rowData[i]->ToCString(), this->dataFileTz);
 											if (diff)
 											{
 												sql.AppendCmdC(CSTR(", "));
@@ -1362,24 +1276,119 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool ax
 											{
 												diff = true;
 											}
-											sql.AppendCol(table->GetCol(i)->GetColName()->v);
+											sql.AppendCol(col->GetColName()->v);
 											sql.AppendCmdC(CSTR(" = "));
-											sql.AppendVector(vec2);
-											SDEL_CLASS(vec2);
+											sql.AppendTS(ts2);
 										}
+										break;
+									case DB::DBUtil::CT_Double:
+									case DB::DBUtil::CT_Float:
+									case DB::DBUtil::CT_Decimal:
+										{
+											Double v2 = rowData[i]->ToDouble();
+											if (diff)
+											{
+												sql.AppendCmdC(CSTR(", "));
+											}
+											else
+											{
+												diff = true;
+											}
+											sql.AppendCol(col->GetColName()->v);
+											sql.AppendCmdC(CSTR(" = "));
+											sql.AppendDbl(v2);
+										}
+										break;
+									case DB::DBUtil::CT_UInt16:
+									case DB::DBUtil::CT_Int16:
+									case DB::DBUtil::CT_UInt32:
+									case DB::DBUtil::CT_Int32:
+									case DB::DBUtil::CT_Byte:
+										{
+											Int32 v2 = rowData[i]->ToInt32();
+											if (diff)
+											{
+												sql.AppendCmdC(CSTR(", "));
+											}
+											else
+											{
+												diff = true;
+											}
+											sql.AppendCol(col->GetColName()->v);
+											sql.AppendCmdC(CSTR(" = "));
+											sql.AppendInt32(v2);
+										}
+										break;
+									case DB::DBUtil::CT_UInt64:
+									case DB::DBUtil::CT_Int64:
+										{
+											Int64 v2 = rowData[i]->ToInt64();
+											if (diff)
+											{
+												sql.AppendCmdC(CSTR(", "));
+											}
+											else
+											{
+												diff = true;
+											}
+											sql.AppendCol(col->GetColName()->v);
+											sql.AppendCmdC(CSTR(" = "));
+											sql.AppendInt64(v2);
+										}
+										break;
+									case DB::DBUtil::CT_Bool:
+										{
+											Bool v2 = rowData[i]->v[0] == 't' || rowData[i]->v[0] == 'T' || rowData[i]->ToInt32() != 0;
+											if (diff)
+											{
+												sql.AppendCmdC(CSTR(", "));
+											}
+											else
+											{
+												diff = true;
+											}
+											sql.AppendCol(col->GetColName()->v);
+											sql.AppendCmdC(CSTR(" = "));
+											sql.AppendBool(v2);
+										}
+										break;
+									case DB::DBUtil::CT_Vector:
+										{
+											Math::Geometry::Vector2D *vec2;;
+											Math::WKTReader reader(SRID);
+											vec2 = reader.ParseWKT(rowData[i]->v);
+											if (vec2 == 0)
+											{
+											}
+											else
+											{
+												if (diff)
+												{
+													sql.AppendCmdC(CSTR(", "));
+												}
+												else
+												{
+													diff = true;
+												}
+												sql.AppendCol(col->GetColName()->v);
+												sql.AppendCmdC(CSTR(" = "));
+												sql.AppendVector(vec2);
+												SDEL_CLASS(vec2);
+											}
+										}
+										break;
+									case DB::DBUtil::CT_Binary:
+										break;
+									case DB::DBUtil::CT_UUID:
+										{
+											Data::UUID uuid2;
+											uuid2.SetValue(rowData[i]->ToCString());
+										}
+										break;
+									case DB::DBUtil::CT_Unknown:
+									default:
+										break;
 									}
-									break;
-								case DB::DBUtil::CT_Binary:
-									break;
-								case DB::DBUtil::CT_UUID:
-									{
-										Data::UUID uuid2;
-										uuid2.SetValue(rowData[i]->ToCString());
-									}
-									break;
-								case DB::DBUtil::CT_Unknown:
-								default:
-									break;
 								}
 							}
 						}
@@ -1393,13 +1402,13 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool ax
 							{
 								diff = true;
 							}
-							sql.AppendCol(table->GetCol(i)->GetColName()->v);
+							if (table->GetCol(i).SetTo(col))
+								sql.AppendCol(col->GetColName()->v);
 							sql.AppendCmdC(CSTR(" = "));
 							sql.AppendStr(0);
 						}
-						else
+						else if (table->GetCol(i).SetTo(col))
 						{
-							DB::ColDef *col = table->GetCol(i);
 							switch (col->GetColType())
 							{
 							case DB::DBUtil::CT_VarUTF8Char:
@@ -1419,7 +1428,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool ax
 									{
 										diff = true;
 									}
-									sql.AppendCol(table->GetCol(i)->GetColName()->v);
+									sql.AppendCol(col->GetColName()->v);
 									sql.AppendCmdC(CSTR(" = "));
 									sql.AppendStr(rowData[i]);
 								}
@@ -1441,7 +1450,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool ax
 										{
 											diff = true;
 										}
-										sql.AppendCol(table->GetCol(i)->GetColName()->v);
+										sql.AppendCol(col->GetColName()->v);
 										sql.AppendCmdC(CSTR(" = "));
 										sql.AppendTS(ts2);
 									}
@@ -1463,7 +1472,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool ax
 										{
 											diff = true;
 										}
-										sql.AppendCol(table->GetCol(i)->GetColName()->v);
+										sql.AppendCol(col->GetColName()->v);
 										sql.AppendCmdC(CSTR(" = "));
 										sql.AppendDbl(v2);
 									}
@@ -1487,7 +1496,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool ax
 										{
 											diff = true;
 										}
-										sql.AppendCol(table->GetCol(i)->GetColName()->v);
+										sql.AppendCol(col->GetColName()->v);
 										sql.AppendCmdC(CSTR(" = "));
 										sql.AppendInt32(v2);
 									}
@@ -1508,7 +1517,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool ax
 										{
 											diff = true;
 										}
-										sql.AppendCol(table->GetCol(i)->GetColName()->v);
+										sql.AppendCol(col->GetColName()->v);
 										sql.AppendCmdC(CSTR(" = "));
 										sql.AppendInt64(v2);
 									}
@@ -1528,7 +1537,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool ax
 										{
 											diff = true;
 										}
-										sql.AppendCol(table->GetCol(i)->GetColName()->v);
+										sql.AppendCol(col->GetColName()->v);
 										sql.AppendCmdC(CSTR(" = "));
 										sql.AppendBool(v2);
 									}
@@ -1557,7 +1566,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool ax
 												{
 													diff = true;
 												}
-												sql.AppendCol(table->GetCol(i)->GetColName()->v);
+												sql.AppendCol(col->GetColName()->v);
 												sql.AppendCmdC(CSTR(" = "));
 												sql.AppendVector(vec2.Ptr());
 											}
@@ -1590,7 +1599,8 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool ax
 					if (diff)
 					{
 						sql.AppendCmdC(CSTR(" where "));
-						sql.AppendCol(table->GetCol(keyCol)->GetColName()->v);
+						if (table->GetCol(keyCol).SetTo(col))
+							sql.AppendCol(col->GetColName()->v);
 						sql.AppendCmdC(CSTR(" = "));
 						if (intKey)
 						{
@@ -1618,7 +1628,8 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool ax
 					}
 					sql.AppendCol(this->table.v);
 					sql.AppendCmdC(CSTR(" where "));
-					sql.AppendCol(table->GetCol(keyCol)->GetColName()->v);
+					if (table->GetCol(keyCol).SetTo(col))
+						sql.AppendCol(col->GetColName()->v);
 					sql.AppendCmdC(CSTR(" = "));
 					if (intKey)
 					{
@@ -1660,9 +1671,12 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool ax
 						i = 0;
 						while (i < j)
 						{
-							if (colFound) sql.AppendCmdC(CSTR(", "));
-							colFound = true;
-							sql.AppendCol(table->GetCol(i)->GetColName()->v);
+							if (table->GetCol(i).SetTo(col))
+							{
+								if (colFound) sql.AppendCmdC(CSTR(", "));
+								colFound = true;
+								sql.AppendCol(col->GetColName()->v);
+							}
 							i++;
 						}
 						sql.AppendCmdC(CSTR(") values ("));
@@ -1670,9 +1684,12 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool ax
 						i = 0;
 						while (i < j)
 						{
-							if (colFound) sql.AppendCmdC(CSTR(", "));
-							colFound = true;
-							AppendCol(&sql, table->GetCol(i)->GetColType(), rowData[i], this->dataFileTz);
+							if (table->GetCol(i).SetTo(col))
+							{
+								if (colFound) sql.AppendCmdC(CSTR(", "));
+								colFound = true;
+								AppendCol(&sql, col->GetColType(), rowData[i], this->dataFileTz);
+							}
 							i++;
 						}
 						sql.AppendCmdC(CSTR(")"));
@@ -2060,12 +2077,14 @@ SSWR::AVIRead::AVIRDBCheckChgForm::AVIRDBCheckChgForm(UI::GUIClientControl *pare
 	if (tableDef)
 	{
 		Bool hasKey = false;
+		Data::ArrayIterator<NotNullPtr<DB::ColDef>> it = tableDef->ColIterator();
+		NotNullPtr<DB::ColDef> col;
 		UOSInt i = 0;
-		UOSInt j = tableDef->GetColCnt();
-		while (i < j)
+		while (it.HasNext())
 		{
-			this->cboKeyCol->AddItem(tableDef->GetCol(i)->GetColName(), (void*)i);
-			if (tableDef->GetCol(i)->IsPK())
+			col = it.Next();
+			this->cboKeyCol->AddItem(col->GetColName(), (void*)i);
+			if (col->IsPK())
 			{
 				hasKey = true;
 				this->cboKeyCol->SetSelectedIndex(i);

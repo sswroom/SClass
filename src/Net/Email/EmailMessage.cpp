@@ -20,12 +20,12 @@
 
 UOSInt Net::Email::EmailMessage::GetHeaderIndex(const UTF8Char *name, UOSInt nameLen)
 {
-	Text::String *header;
+	NotNullPtr<Text::String> header;
+	Data::ArrayIterator<NotNullPtr<Text::String>> it = this->headerList.Iterator();
 	UOSInt i = 0;
-	UOSInt j = this->headerList.GetCount();
-	while (i < j)
+	while (it.HasNext())
 	{
-		header = this->headerList.GetItem(i);
+		header = it.Next();
 		if (header->StartsWith(name, nameLen) && header->v[nameLen] == ':' && header->v[nameLen + 1] == ' ')
 		{
 			return i;
@@ -49,7 +49,7 @@ Bool Net::Email::EmailMessage::SetHeader(const UTF8Char *name, UOSInt nameLen, c
 	}
 	else
 	{
-		this->headerList.GetItem(i)->Release();
+		OPTSTR_DEL(this->headerList.GetItem(i));
 		this->headerList.SetItem(i, Text::String::New(sb.ToString(), sb.GetLength()));
 	}
 	return true;
@@ -75,14 +75,13 @@ void Net::Email::EmailMessage::GenMultipart(NotNullPtr<IO::Stream> stm, Text::CS
 
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
-	Attachment *att;
+	NotNullPtr<Attachment> att;
 	Text::CString mime;
 	UOSInt k;
-	UOSInt i = 0;
-	UOSInt j = this->attachments.GetCount();
-	while (i < j)
+	Data::ArrayIterator<NotNullPtr<Attachment>> it = this->attachments.Iterator();
+	while (it.HasNext())
 	{
-		att = this->attachments.GetItem(i);
+		att = it.Next();
 		stm->Write(UTF8STRC("--"));
 		stm->Write(boundary.v, boundary.leng);
 		stm->Write(UTF8STRC("\r\nContent-Type: "));
@@ -167,8 +166,6 @@ void Net::Email::EmailMessage::GenMultipart(NotNullPtr<IO::Stream> stm, Text::CS
 		stm->Write(att->contentId->v, att->contentId->leng);
 		stm->Write(UTF8STRC(">\r\nContent-Transfer-Encoding: base64\r\n\r\n"));
 		WriteB64Data(stm, att->content, att->contentLen);
-
-		i++;
 	}
 	stm->Write(UTF8STRC("--"));
 	stm->Write(boundary.v, boundary.leng);
@@ -177,15 +174,13 @@ void Net::Email::EmailMessage::GenMultipart(NotNullPtr<IO::Stream> stm, Text::CS
 
 void Net::Email::EmailMessage::WriteHeaders(NotNullPtr<IO::Stream> stm)
 {
-	Text::String *header;
-	UOSInt i = 0;
-	UOSInt j = this->headerList.GetCount();
-	while (i < j)
+	NotNullPtr<Text::String> header;
+	Data::ArrayIterator<NotNullPtr<Text::String>> it = this->headerList.Iterator();
+	while (it.HasNext())
 	{
-		header = this->headerList.GetItem(i);
+		header = it.Next();
 		stm->Write(header->v, header->leng);
 		stm->Write((const UInt8*)"\r\n", 2);
-		i++;
 	}
 }
 
@@ -299,7 +294,7 @@ Net::Email::EmailMessage::~EmailMessage()
 {
 	this->fromAddr.FreeBy(EmailAddressFree);
 	this->recpList.FreeAll(EmailAddressFree);
-	LIST_FREE_STRING(&this->headerList);
+	LISTNN_FREE_STRING(&this->headerList);
 	SDEL_STRING(this->contentType);
 	if (this->content)
 	{
@@ -398,9 +393,10 @@ Bool Net::Email::EmailMessage::AddTo(Text::CString name, Text::CStringNN addr)
 {
 	UOSInt i = this->GetHeaderIndex(UTF8STRC("To"));
 	Text::StringBuilderUTF8 sb;
-	if (i != INVALID_INDEX)
+	NotNullPtr<Text::String> s;
+	if (i != INVALID_INDEX && this->headerList.GetItem(i).SetTo(s))
 	{
-		sb.Append(this->headerList.GetItem(i)->ToCString().Substring(4));
+		sb.Append(s->ToCString().Substring(4));
 		sb.AppendC(UTF8STRC(", "));
 	}
 	if (name.leng > 0)
@@ -455,9 +451,9 @@ Bool Net::Email::EmailMessage::AddCc(Text::CString name, Text::CStringNN addr)
 {
 	UOSInt i = this->GetHeaderIndex(UTF8STRC("Cc"));
 	Text::StringBuilderUTF8 sb;
-	if (i != INVALID_INDEX)
+	NotNullPtr<Text::String> s;
+	if (i != INVALID_INDEX && this->headerList.GetItem(i).SetTo(s))
 	{
-		Text::String *s = this->headerList.GetItem(i);
 		sb.AppendC(s->v + 4, s->leng - 4);
 		sb.AppendC(UTF8STRC(", "));
 	}

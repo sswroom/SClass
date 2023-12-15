@@ -35,17 +35,17 @@ Data::FieldComparator::FieldComparator(Text::CString compareConds)
 
 Data::FieldComparator::~FieldComparator()
 {
-	LIST_FREE_STRING(&this->fieldNames);
+	LISTNN_FREE_STRING(&this->fieldNames);
 }
 
 OSInt Data::FieldComparator::Compare(NotNullPtr<VariObject> a, NotNullPtr<VariObject> b) const
 {
-	UOSInt i = 0;
-	UOSInt j = this->fieldNames.GetCount();
+	Data::ArrayIterator<NotNullPtr<Text::String>> it = this->fieldNames.Iterator();
 	OSInt k;
-	while (i < j)
+	UOSInt i = 0;
+	while (it.HasNext())
 	{
-		Text::String *fieldName = this->fieldNames.GetItem(i);
+		NotNullPtr<Text::String> fieldName = it.Next();
 		k = Compare(a->GetItem(fieldName->v), b->GetItem(fieldName->v)) * this->dirs.GetItem(i);
 		if (k != 0)
 		{
@@ -69,20 +69,20 @@ Bool Data::FieldComparator::ToOrderClause(NotNullPtr<Text::StringBuilderUTF8> sb
 	}
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
+	Data::ArrayIterator<NotNullPtr<Text::String>> it = this->fieldNames.Iterator();
+	Bool found = false;
 	UOSInt i = 0;
-	UOSInt j = this->fieldNames.GetCount();
-	while (i < j)
+	while (it.HasNext())
 	{
-		if (i > 0)
-		{
+		if (found)
 			sb->AppendC(UTF8STRC(", "));
-		}
-		sptr = DB::DBUtil::SDBColUTF8(sbuff, this->fieldNames.GetItem(i)->v, sqlType);
+		sptr = DB::DBUtil::SDBColUTF8(sbuff, it.Next()->v, sqlType);
 		sb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
 		if (this->dirs.GetItem(i) == -1)
 		{
 			sb->AppendC(UTF8STRC(" desc"));
 		}
+		found = true;
 		i++;
 	}
 	return true;

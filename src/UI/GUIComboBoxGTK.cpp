@@ -254,7 +254,7 @@ UTF8Char *UI::GUIComboBox::GetSelectedItemText(UTF8Char *sbuff)
 {
 	UOSInt i = this->GetSelectedIndex();
 	NotNullPtr<Text::String> s;
-	if (i == INVALID_INDEX && !this->itemTexts.GetItem(i).SetTo(s))
+	if (i == INVALID_INDEX || !this->itemTexts.GetItem(i).SetTo(s))
 		return 0;
 	return Text::StrConcatC(sbuff, s->v, s->leng);
 }

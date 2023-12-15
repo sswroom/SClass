@@ -54,7 +54,7 @@ Bool Exporter::DBPListExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, T
 		return false;
 	}
 
-	Text::String *name = 0;
+	Optional<Text::String> name = 0;
 	if (param)
 	{
 		DBParam *dbParam = (DBParam*)param;
@@ -82,7 +82,7 @@ void *Exporter::DBPListExporter::CreateParam(NotNullPtr<IO::ParsedObject> pobj)
 void Exporter::DBPListExporter::DeleteParam(void *param)
 {
 	DBParam *dbParam = (DBParam*)param;
-	LIST_FREE_STRING(&dbParam->names);
+	LISTNN_FREE_STRING(&dbParam->names);
 	DEL_CLASS(dbParam);
 }
 
@@ -147,8 +147,8 @@ UTF8Char *Exporter::DBPListExporter::GetParamSelItems(void *param, UOSInt index,
 	if (index == 0)
 	{
 		DBParam *dbParam = (DBParam*)param;
-		Text::String *name = dbParam->names.GetItem(itemIndex);
-		if (name)
+		NotNullPtr<Text::String> name;
+		if (dbParam->names.GetItem(itemIndex).SetTo(name))
 		{
 			return name->ConcatTo(buff);
 		}

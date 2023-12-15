@@ -32,7 +32,7 @@ IO::FileExporter::SupportType Exporter::DBFExporter::IsObjectSupported(NotNullPt
 	Data::ArrayListNN<Text::String> tableNames;
 	conn->QueryTableNames(CSTR_NULL, tableNames);
 	tableCnt = tableNames.GetCount();
-	LIST_FREE_STRING(&tableNames);
+	LISTNN_FREE_STRING(&tableNames);
 	if (tableCnt == 1)
 		return IO::FileExporter::SupportType::NormalStream;
 	return IO::FileExporter::SupportType::NotSupported;
@@ -66,12 +66,12 @@ Bool Exporter::DBFExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text:
 	Data::ArrayListNN<Text::String> tableNames;
 	conn->QueryTableNames(CSTR_NULL, tableNames);
 	tableCnt = tableNames.GetCount();
-	if (tableCnt != 1)
+	NotNullPtr<Text::String> tableName;
+	if (tableCnt != 1 || !tableNames.GetItem(0).SetTo(tableName))
 	{
-		LIST_FREE_STRING(&tableNames);
+		LISTNN_FREE_STRING(&tableNames);
 		return false;
 	}
-	Text::String *tableName = tableNames.GetItem(0);
 
 	NotNullPtr<DB::DBReader> r;
 	if (!r.Set(conn->QueryTableData(CSTR_NULL, tableName->ToCString(), 0, 0, 0, CSTR_NULL, 0)))

@@ -188,7 +188,7 @@ SSWR::AVIRead::AVIRLogServerForm::~AVIRLogServerForm()
 		j = ipLog->logMessage.GetCount();
 		while (j-- > 0)
 		{
-			ipLog->logMessage.GetItem(j)->Release();
+			OPTSTR_DEL(ipLog->logMessage.GetItem(j));
 		}
 		DEL_CLASS(ipLog);
 	}

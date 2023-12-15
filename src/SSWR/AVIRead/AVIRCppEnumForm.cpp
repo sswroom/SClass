@@ -42,31 +42,31 @@ void SSWR::AVIRead::AVIRCppEnumForm::ConvEnum()
 	this->txtSource->GetText(srcSb);
 	if (Text::CPPText::ParseEnum(&enumList, srcSb.ToCString(), sbPrefix))
 	{
-		UOSInt i = 0;
-		UOSInt j = enumList.GetCount();
+		Data::ArrayIterator<NotNullPtr<Text::String>> it = enumList.Iterator();
+		NotNullPtr<Text::String> s;
 		if (type == 0)
 		{
-			while (i < j)
+			while (it.HasNext())
 			{
+				s = it.Next();
 				destSb.AppendC(UTF8STRC("case "));
 				destSb.AppendC(sbPrefix.ToString(), sbPrefix.GetLength());
-				destSb.Append(enumList.GetItem(i));
+				destSb.Append(s);
 				destSb.AppendC(UTF8STRC(":\r\n"));
-				i++;
 			}
 		}
 		else if (type == 1)
 		{
-			while (i < j)
+			while (it.HasNext())
 			{
+				s = it.Next();
 				destSb.AppendC(UTF8STRC("case "));
 				destSb.AppendC(sbPrefix.ToString(), sbPrefix.GetLength());
-				destSb.Append(enumList.GetItem(i));
+				destSb.Append(s);
 				destSb.AppendC(UTF8STRC(":\r\n"));
 				destSb.AppendC(UTF8STRC("\treturn CSTR(\""));
-				destSb.Append(enumList.GetItem(i));
+				destSb.Append(s);
 				destSb.AppendC(UTF8STRC("\");\r\n"));
-				i++;
 			}
 		}
 		else if (type == 2)
@@ -75,14 +75,14 @@ void SSWR::AVIRead::AVIRCppEnumForm::ConvEnum()
 			{
 				sbPrefix.RemoveChars(2);
 			}
-			while (i < j)
+			while (it.HasNext())
 			{
+				s = it.Next();
 				destSb.AppendC(UTF8STRC("CBOADDENUM(cbo, "));
 				destSb.AppendC(sbPrefix.ToString(), sbPrefix.GetLength());
 				destSb.AppendC(UTF8STRC(", "));
-				destSb.Append(enumList.GetItem(i));
+				destSb.Append(s);
 				destSb.AppendC(UTF8STRC(");\r\n"));
-				i++;
 			}
 		}
 		else if (type == 3)
@@ -99,16 +99,16 @@ void SSWR::AVIRead::AVIRCppEnumForm::ConvEnum()
 				destSb.AppendC(UTF8STRC("{\r\n"));
 				destSb.AppendC(UTF8STRC("\tswitch (val)\r\n"));
 				destSb.AppendC(UTF8STRC("\t{\r\n"));
-				while (i < j)
+				while (it.HasNext())
 				{
+					s = it.Next();
 					destSb.AppendC(UTF8STRC("\tcase "));
 					destSb.AppendC(sbPrefix.ToString(), sbPrefix.GetLength());
-					destSb.Append(enumList.GetItem(i));
+					destSb.Append(s);
 					destSb.AppendC(UTF8STRC(":\r\n"));
 					destSb.AppendC(UTF8STRC("\t\treturn CSTR(\""));
-					destSb.Append(enumList.GetItem(i));
+					destSb.Append(s);
 					destSb.AppendC(UTF8STRC("\");\r\n"));
-					i++;
 				}
 				destSb.AppendC(UTF8STRC("\tdefault:\r\n"));
 				destSb.AppendC(UTF8STRC("\t\treturn CSTR_NULL;\r\n"));
@@ -122,7 +122,7 @@ void SSWR::AVIRead::AVIRCppEnumForm::ConvEnum()
 	{
 		this->txtDest->SetText(CSTR(""));
 	}
-	LIST_FREE_STRING(&enumList);
+	LISTNN_FREE_STRING(&enumList);
 }
 
 SSWR::AVIRead::AVIRCppEnumForm::AVIRCppEnumForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)

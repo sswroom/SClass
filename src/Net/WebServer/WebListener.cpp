@@ -13,11 +13,19 @@ void __stdcall Net::WebServer::WebListener::ClientReady(NotNullPtr<Net::TCPClien
 	if (me.Set((Net::WebServer::WebListener*)userObj))
 	{
 		UOSInt i = me->nextCli;
-		Net::WebServer::WebConnection *conn;
-		NEW_CLASS(conn, Net::WebServer::WebConnection(me->sockf, me->ssl, cli, me, me->hdlr, me->allowProxy, me->keepAlive));
-		conn->SetLogWriter(me->cliMgrs.GetItem(i)->GetLogWriter());
-		conn->SetSendLogger(OnDataSent, userObj);
-		me->cliMgrs.GetItem(i)->AddClient(cli, conn);
+		NotNullPtr<Net::TCPClientMgr> cliMgr;
+		if (me->cliMgrs.GetItem(i).SetTo(cliMgr))
+		{
+			Net::WebServer::WebConnection *conn;
+			NEW_CLASS(conn, Net::WebServer::WebConnection(me->sockf, me->ssl, cli, me, me->hdlr, me->allowProxy, me->keepAlive));
+			conn->SetLogWriter(cliMgr->GetLogWriter());
+			conn->SetSendLogger(OnDataSent, userObj);
+			cliMgr->AddClient(cli, conn);
+		}
+		else
+		{
+			cli.Delete();
+		}
 		me->nextCli = (i + 1) % me->cliMgrs.GetCount();
 	}
 }
@@ -160,8 +168,7 @@ Net::WebServer::WebListener::~WebListener()
 	UOSInt i = this->cliMgrs.GetCount();
 	while (i-- > 0)
 	{
-		Net::TCPClientMgr *mgr = this->cliMgrs.GetItem(i);
-		DEL_CLASS(mgr);
+		this->cliMgrs.GetItem(i).Delete();
 	}
 	SDEL_CLASS(this->proxyCliMgr);
 	this->svrName->Release();
@@ -184,10 +191,10 @@ NotNullPtr<Text::String> Net::WebServer::WebListener::GetServerName() const
 
 void Net::WebServer::WebListener::SetClientLog(Text::CStringNN logFile)
 {
-	UOSInt i = this->cliMgrs.GetCount();
-	while (i-- > 0)
+	Data::ArrayIterator<NotNullPtr<Net::TCPClientMgr>> it = this->cliMgrs.Iterator(); 
+	while (it.HasNext())
 	{
-		this->cliMgrs.GetItem(i)->SetLogFile(logFile);
+		it.Next()->SetLogFile(logFile);
 	}
 }
 
@@ -305,10 +312,10 @@ void Net::WebServer::WebListener::HandleTimeout(TimeoutHandler hdlr, void *userO
 
 void Net::WebServer::WebListener::ExtendTimeout(NotNullPtr<Net::TCPClient> cli)
 {
-	UOSInt i = this->cliMgrs.GetCount();
-	while (i-- > 0)
+	Data::ArrayIterator<NotNullPtr<Net::TCPClientMgr>> it = this->cliMgrs.Iterator();
+	while (it.HasNext())
 	{
-		this->cliMgrs.GetItem(i)->ExtendTimeout(cli);
+		it.Next()->ExtendTimeout(cli);
 	}
 }
 
@@ -321,10 +328,10 @@ void Net::WebServer::WebListener::GetStatus(SERVER_STATUS *status)
 UOSInt Net::WebServer::WebListener::GetClientCount() const
 {
 	UOSInt cnt = 0;
-	UOSInt i = this->cliMgrs.GetCount();
-	while (i-- > 0)
+	Data::ArrayIterator<NotNullPtr<Net::TCPClientMgr>> it = this->cliMgrs.Iterator();
+	while (it.HasNext())
 	{
-		cnt += this->cliMgrs.GetItem(i)->GetClientCount();
+		cnt += it.Next()->GetClientCount();
 	}
 	return cnt;
 }

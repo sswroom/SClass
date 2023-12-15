@@ -358,14 +358,14 @@ void __stdcall SSWR::AVIRead::AVIRASN1DataForm::OnEncryptDecryptClicked(void *us
 void __stdcall SSWR::AVIRead::AVIRASN1DataForm::OnFileDrop(void *userObj, NotNullPtr<Text::String> *files, UOSInt nFiles)
 {
 	SSWR::AVIRead::AVIRASN1DataForm *me = (SSWR::AVIRead::AVIRASN1DataForm*)userObj;
-	UI::GUITabPage *tp = me->tcMain->GetSelectedPage();
+	NotNullPtr<UI::GUITabPage> tp;
 	UOSInt i;
 	Bool isSign;
-	if (tp == 0)
+	if (!me->tcMain->GetSelectedPage().SetTo(tp))
 	{
 		return;
 	}
-	if (tp == me->tpVerify.Ptr())
+	if (tp == me->tpVerify)
 	{
 		i = 0;
 		while (i < nFiles)

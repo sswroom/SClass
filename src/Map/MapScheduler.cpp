@@ -20,15 +20,15 @@ UInt32 __stdcall Map::MapScheduler::MapThread(void *obj)
 	me->threadRunning = true;
 	while (!me->toStop)
 	{
-		Math::Geometry::Vector2D *vec;
+		NotNullPtr<Math::Geometry::Vector2D> vec;
 		if (me->dt == ThreadState::Clearing)
 		{
 			Sync::MutexUsage mutUsage(me->taskMut);
 			j = me->tasks.GetCount();
 			while (j-- > 0)
 			{
-				vec = me->tasks.GetItem(j);
-				DEL_CLASS(vec);
+				if (vec.Set(me->tasks.GetItem(j)))
+					vec.Delete();
 			}
 			me->tasks.Clear();
 			i = 0;
@@ -44,11 +44,11 @@ UInt32 __stdcall Map::MapScheduler::MapThread(void *obj)
 				j = me->tasks.GetCount();
 				if (i < j)
 				{
-					vec = me->tasks.GetItem(i);
-					if (vec)
+					if (vec.Set(me->tasks.GetItem(i)))
 					{
 						mutUsage.EndUse();
 						i++;
+						me->DrawVector(vec);
 					}
 					else
 					{
@@ -65,7 +65,6 @@ UInt32 __stdcall Map::MapScheduler::MapThread(void *obj)
 					me->finishEvt.Set();
 					break;
 				}
-				me->DrawVector(vec);
 			}
 		}
 		me->taskEvt.Wait();
@@ -75,33 +74,33 @@ UInt32 __stdcall Map::MapScheduler::MapThread(void *obj)
 	return 0;
 }
 
-void Map::MapScheduler::DrawVector(Math::Geometry::Vector2D *vec)
+void Map::MapScheduler::DrawVector(NotNullPtr<Math::Geometry::Vector2D> vec)
 {
 	switch (vec->GetVectorType())
 	{
 	case Math::Geometry::Vector2D::VectorType::Point:
-		this->DrawPoint((Math::Geometry::Point*)vec);
+		this->DrawPoint(NotNullPtr<Math::Geometry::Point>::ConvertFrom(vec));
 		break;
 	case Math::Geometry::Vector2D::VectorType::Polyline:
-		this->DrawPolyline((Math::Geometry::Polyline*)vec);
+		this->DrawPolyline(NotNullPtr<Math::Geometry::Polyline>::ConvertFrom(vec));
 		break;
 	case Math::Geometry::Vector2D::VectorType::LineString:
-		this->DrawLineString((Math::Geometry::LineString*)vec);
+		this->DrawLineString(NotNullPtr<Math::Geometry::LineString>::ConvertFrom(vec));
 		break;
 	case Math::Geometry::Vector2D::VectorType::Polygon:
-		this->DrawPolygon((Math::Geometry::Polygon*)vec);
+		this->DrawPolygon(NotNullPtr<Math::Geometry::Polygon>::ConvertFrom(vec));
 		break;
 	case Math::Geometry::Vector2D::VectorType::MultiPolygon:
-		this->DrawMultiPolygon((Math::Geometry::MultiPolygon*)vec);
+		this->DrawMultiPolygon(NotNullPtr<Math::Geometry::MultiPolygon>::ConvertFrom(vec));
 		break;
 	case Math::Geometry::Vector2D::VectorType::GeometryCollection:
-		this->DrawGeometryCollection((Math::Geometry::GeometryCollection*)vec);
+		this->DrawGeometryCollection(NotNullPtr<Math::Geometry::GeometryCollection>::ConvertFrom(vec));
 		break;
 	case Math::Geometry::Vector2D::VectorType::MultiSurface:
-		this->DrawMultiSurface((Math::Geometry::MultiSurface*)vec);
+		this->DrawMultiSurface(NotNullPtr<Math::Geometry::MultiSurface>::ConvertFrom(vec));
 		break;
 	case Math::Geometry::Vector2D::VectorType::CurvePolygon:
-		this->DrawCurvePolygon((Math::Geometry::CurvePolygon*)vec);
+		this->DrawCurvePolygon(NotNullPtr<Math::Geometry::CurvePolygon>::ConvertFrom(vec));
 		break;
 	case Math::Geometry::Vector2D::VectorType::MultiPoint:
 	case Math::Geometry::Vector2D::VectorType::CircularString:
@@ -123,7 +122,7 @@ void Map::MapScheduler::DrawVector(Math::Geometry::Vector2D *vec)
 	}
 }
 
-void Map::MapScheduler::DrawPoint(Math::Geometry::Point *pt)
+void Map::MapScheduler::DrawPoint(NotNullPtr<Math::Geometry::Point> pt)
 {
 	NotNullPtr<Media::DrawImage> img;
 	if (img.Set(this->ico))
@@ -166,7 +165,7 @@ void Map::MapScheduler::DrawPoint(Math::Geometry::Point *pt)
 	}
 }
 
-void Map::MapScheduler::DrawLineString(Math::Geometry::LineString *pl)
+void Map::MapScheduler::DrawLineString(NotNullPtr<Math::Geometry::LineString> pl)
 {
 	NotNullPtr<Media::DrawPen> nnp;
 	if (!this->p.SetTo(nnp))
@@ -184,77 +183,70 @@ void Map::MapScheduler::DrawLineString(Math::Geometry::LineString *pl)
 	this->img->DrawPolyline(pointArr, nPoint, nnp);
 }
 
-void Map::MapScheduler::DrawPolyline(Math::Geometry::Polyline *pl)
+void Map::MapScheduler::DrawPolyline(NotNullPtr<Math::Geometry::Polyline> pl)
 {
 	NotNullPtr<Media::DrawPen> nnp;
 	if (!this->p.SetTo(nnp))
 	{
 		return;
 	}
-	Math::Geometry::LineString *lineString;
+	NotNullPtr<Math::Geometry::LineString> lineString;
 	UOSInt nPoint;
 	Math::Coord2DDbl *pointArr;
-	UOSInt i;
-	UOSInt j;
+	Data::ArrayIterator<NotNullPtr<Math::Geometry::LineString>> it;
 	if (this->isFirst)
 	{
-		i = 0;
-		j = pl->GetCount();
-		while (i < j)
+		it = pl->Iterator();
+		while (it.HasNext())
 		{
-			lineString = pl->GetItem(i);
+			lineString = it.Next();
 			pointArr = lineString->GetPointList(nPoint);
 			if (this->map->MapXYToScnXY(pointArr, pointArr, nPoint, Math::Coord2DDbl(0, 0)))
 				*this->isLayerEmpty = false;
-			i++;
 		}
 	}
 
 	if (pl->HasColor())
 	{
 		NotNullPtr<Media::DrawPen> p = this->img->NewPenARGB(pl->GetColor(), nnp->GetThick(), 0 ,0);
-		i = 0;
-		j = pl->GetCount();
-		while (i < j)
+		it = pl->Iterator();
+		while (it.HasNext())
 		{
-			lineString = pl->GetItem(i);
+			lineString = it.Next();
 			pointArr = lineString->GetPointList(nPoint);
 			this->img->DrawPolyline(pointArr, nPoint, p);
-			i++;
 		}
 		this->img->DelPen(p);
 	}
 	else
 	{
-		i = 0;
-		j = pl->GetCount();
-		while (i < j)
+		it = pl->Iterator();
+		while (it.HasNext())
 		{
-			lineString = pl->GetItem(i);
+			lineString = it.Next();
 			pointArr = lineString->GetPointList(nPoint);
 			this->img->DrawPolyline(pointArr, nPoint, nnp);
-			i++;
 		}
 	}
 }
 
-void Map::MapScheduler::DrawPolygon(Math::Geometry::Polygon *pg)
+void Map::MapScheduler::DrawPolygon(NotNullPtr<Math::Geometry::Polygon> pg)
 {
 	UOSInt nPoint;
 	Math::Coord2DDbl *pointArr;
-	UOSInt nPtOfst;
+	Data::ArrayIterator<NotNullPtr<Math::Geometry::LinearRing>> it;
 	if (this->isFirst)
 	{
-		nPtOfst = pg->GetCount();
-		while (nPtOfst-- > 0)
+		it = pg->Iterator();
+		while (it.HasNext())
 		{
-			pointArr = pg->GetItem(nPtOfst)->GetPointList(nPoint);
+			pointArr = it.Next()->GetPointList(nPoint);
 			if (this->map->MapXYToScnXY(pointArr, pointArr, nPoint, Math::Coord2DDbl(0, 0)))
 				*this->isLayerEmpty = false;
 		}
 	}
 	UOSInt i = 0;
-	nPtOfst = pg->GetCount();
+	UOSInt nPtOfst = pg->GetCount();
 	UInt32 *ptOfstArr;
 	UInt32 *relArr = 0;
 	UInt32 cntArr[20];
@@ -266,9 +258,10 @@ void Map::MapScheduler::DrawPolygon(Math::Geometry::Polygon *pg)
 		ptOfstArr = relArr;
 	}
 	Data::ArrayListA<Math::Coord2DDbl> ptList;
-	while (i < nPtOfst)
+	it = pg->Iterator();
+	while (it.HasNext())
 	{
-		pointArr = pg->GetItem(i)->GetPointList(nPoint);
+		pointArr = it.Next()->GetPointList(nPoint);
 		ptList.AddRange(pointArr, nPoint);
 		ptOfstArr[i] = (UInt32)nPoint;
 		i++;
@@ -280,51 +273,49 @@ void Map::MapScheduler::DrawPolygon(Math::Geometry::Polygon *pg)
 	}
 }
 
-void Map::MapScheduler::DrawMultiPolygon(Math::Geometry::MultiPolygon *mpg)
+void Map::MapScheduler::DrawMultiPolygon(NotNullPtr<Math::Geometry::MultiPolygon> mpg)
 {
-	UOSInt pgInd = mpg->GetCount();
-	while (pgInd-- > 0)
+	Data::ArrayIterator<NotNullPtr<Math::Geometry::Polygon>> it = mpg->Iterator();
+	while (it.HasNext())
 	{
-		this->DrawPolygon(mpg->GetItem(pgInd));
+		this->DrawPolygon(it.Next());
 	}
 }
 
-void Map::MapScheduler::DrawMultiSurface(Math::Geometry::MultiSurface *ms)
+void Map::MapScheduler::DrawMultiSurface(NotNullPtr<Math::Geometry::MultiSurface> ms)
 {
-	UOSInt pgInd = ms->GetCount();
-	while (pgInd-- > 0)
+	Data::ArrayIterator<NotNullPtr<Math::Geometry::Vector2D>> it = ms->Iterator();
+	while (it.HasNext())
 	{
-		this->DrawVector(ms->GetItem(pgInd));
+		this->DrawVector(it.Next());
 	}
 }
 
-void Map::MapScheduler::DrawCurvePolygon(Math::Geometry::CurvePolygon *cp)
+void Map::MapScheduler::DrawCurvePolygon(NotNullPtr<Math::Geometry::CurvePolygon> cp)
 {
 	Data::ArrayList<UInt32> ptOfst;
 	Data::ArrayListA<Math::Coord2DDbl> ptList;
 	UOSInt nPoint;
-	Math::Geometry::Vector2D *vec;
-	UOSInt i = 0;
-	UOSInt j = cp->GetCount();
-	while (i < j)
+	NotNullPtr<Math::Geometry::Vector2D> vec;
+	Data::ArrayIterator<NotNullPtr<Math::Geometry::Vector2D>> it = cp->Iterator();
+	while (it.HasNext())
 	{
-		vec = cp->GetItem(i);
+		vec = it.Next();
 		if (vec->GetVectorType() == Math::Geometry::Vector2D::VectorType::CompoundCurve)
 		{
 			ptOfst.Add((UInt32)ptList.GetCount());
-			((Math::Geometry::CompoundCurve*)vec)->GetDrawPoints(ptList);
+			NotNullPtr<Math::Geometry::CompoundCurve>::ConvertFrom(vec)->GetDrawPoints(ptList);
 		}
 		else if (vec->GetVectorType() == Math::Geometry::Vector2D::VectorType::LineString)
 		{
 			ptOfst.Add((UInt32)ptList.GetCount());
-			const Math::Coord2DDbl *ptArr = ((Math::Geometry::LineString*)vec)->GetPointListRead(nPoint);
+			const Math::Coord2DDbl *ptArr = NotNullPtr<Math::Geometry::LineString>::ConvertFrom(vec)->GetPointListRead(nPoint);
 			ptList.AddRange(ptArr, nPoint);
 		}
 		else
 		{
 			printf("MapScheduler: DrawCurvePolygon unexpected type: %s\r\n", Math::Geometry::Vector2D::VectorTypeGetName(vec->GetVectorType()).v);
 		}
-		i++;
 	}
 	if (ptList.GetCount() > 0)
 	{
@@ -351,12 +342,12 @@ void Map::MapScheduler::DrawCurvePolygon(Math::Geometry::CurvePolygon *cp)
 	}
 }
 
-void Map::MapScheduler::DrawGeometryCollection(Math::Geometry::GeometryCollection *geomColl)
+void Map::MapScheduler::DrawGeometryCollection(NotNullPtr<Math::Geometry::GeometryCollection> geomColl)
 {
-	UOSInt pgInd = geomColl->GetCount();
-	while (pgInd-- > 0)
+	Data::ArrayIterator<NotNullPtr<Math::Geometry::Vector2D>> it = geomColl->Iterator();
+	while (it.HasNext())
 	{
-		this->DrawVector(geomColl->GetItem(pgInd));
+		this->DrawVector(it.Next());
 	}
 }
 

@@ -27,46 +27,48 @@ void Net::Email::FileEmailStore::AddMail(const Text::MIMEObj::MailMessage *mail,
 	UOSInt l;
 	while (i < j)
 	{
-		Text::String *name = mail->GetHeaderName(i);
-		Text::String *value = mail->GetHeaderValue(i);
-
-		if (name->EqualsICase(UTF8STRC("Received")))
+		NotNullPtr<Text::String> name;
+		NotNullPtr<Text::String> value;
+		if (mail->GetHeaderName(i).SetTo(name) && mail->GetHeaderValue(i).SetTo(value))
 		{
-			k = value->LastIndexOf(';');
-			if (k != INVALID_INDEX)
+			if (name->EqualsICase(UTF8STRC("Received")))
 			{
-				recvTime.SetValue(value->ToCString().Substring(k + 1).LTrim());
-			}
-			k = value->IndexOf(' ');
-			if (k != INVALID_INDEX)
-			{
-				l = value->IndexOf(' ', k + 1);
-				if (l != INVALID_INDEX)
+				k = value->LastIndexOf(';');
+				if (k != INVALID_INDEX)
 				{
-					SDEL_STRING(remoteIP);
-					remoteIP = Text::String::New(value->v + k + 1, l - k - 1).Ptr();
+					recvTime.SetValue(value->ToCString().Substring(k + 1).LTrim());
+				}
+				k = value->IndexOf(' ');
+				if (k != INVALID_INDEX)
+				{
+					l = value->IndexOf(' ', k + 1);
+					if (l != INVALID_INDEX)
+					{
+						SDEL_STRING(remoteIP);
+						remoteIP = Text::String::New(value->v + k + 1, l - k - 1).Ptr();
+					}
 				}
 			}
-		}
-		else if (name->EqualsICase(UTF8STRC("X-Apparently-To")))
-		{
-			k = value->IndexOf(';');
-			sb.ClearStr();
-			sb.AppendC(UTF8STRC("RCPT TO: <"));
-			if (k > 0)
+			else if (name->EqualsICase(UTF8STRC("X-Apparently-To")))
 			{
-				sb.AppendC(value->v, k);
+				k = value->IndexOf(';');
+				sb.ClearStr();
+				sb.AppendC(UTF8STRC("RCPT TO: <"));
+				if (k > 0)
+				{
+					sb.AppendC(value->v, k);
+				}
+				else
+				{
+					sb.Append(value);
+				}
+				sb.AppendUTF8Char('>');
+				rcptList.Add(Text::String::New(sb.ToCString()));
 			}
-			else
+			else if (name->EqualsICase(UTF8STRC("From")))
 			{
-				sb.Append(value);
+				fromAddr = value->Clone().Ptr();
 			}
-			sb.AppendUTF8Char('>');
-			rcptList.Add(Text::String::New(sb.ToCString()));
-		}
-		else if (name->EqualsICase(UTF8STRC("From")))
-		{
-			fromAddr = value->Clone().Ptr();
 		}
 		i++;
 	}
@@ -93,12 +95,10 @@ void Net::Email::FileEmailStore::AddMail(const Text::MIMEObj::MailMessage *mail,
 		file->fileName = Text::String::NewP(filePath, filePathEnd);
 		file->uid = Text::StrCopyNewC(sb.ToString(), sb.GetLength()).Ptr();
 
-		k = 0;
-		l = rcptList.GetCount();
-		while (k < l)
+		Data::ArrayIterator<NotNullPtr<Text::String>> it = rcptList.Iterator();
+		while (it.HasNext())
 		{
-			file->rcptList.Add(rcptList.GetItem(k)->Clone());
-			k++;
+			file->rcptList.Add(it.Next()->Clone());
 		}
 
 		Sync::MutexUsage mutUsage(this->mailMut);

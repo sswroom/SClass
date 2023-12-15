@@ -35,7 +35,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 		j = strs->GetCount();
 		while (j-- > 0)
 		{
-			strs->GetItem(j)->Release();
+			OPTSTR_DEL(strs->GetItem(j));
 		}
 		DEL_CLASS(strs);
 	}

@@ -542,8 +542,7 @@ UI::GUIForm::~GUIForm()
 		UOSInt i = this->timers.GetCount();
 		while (i-- > 0)
 		{
-			UI::GUITimer *tmr = this->timers.GetItem(i);
-			DEL_CLASS(tmr);
+			this->timers.GetItem(i).Delete();
 		}
 		if (this->menu)
 		{

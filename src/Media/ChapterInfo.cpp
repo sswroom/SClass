@@ -14,7 +14,7 @@ Media::ChapterInfo::~ChapterInfo()
 	i = this->chapterNames.GetCount();
 	while (i-- > 0)
 	{
-		this->chapterNames.GetItem(i)->Release();
+		OPTSTR_DEL(this->chapterNames.GetItem(i));
 		s = this->chapterArtists.GetItem(i);
 		SDEL_STRING(s);
 	}
@@ -53,7 +53,7 @@ UOSInt Media::ChapterInfo::GetChapterCnt()
 	return this->chapterTimes.GetCount();
 }
 
-Text::String *Media::ChapterInfo::GetChapterName(UOSInt index)
+Optional<Text::String> Media::ChapterInfo::GetChapterName(UOSInt index)
 {
 	return this->chapterNames.GetItem(index);
 }

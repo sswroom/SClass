@@ -114,7 +114,7 @@ namespace SSWR
 			static void __stdcall OnSMTPTypeSelChg(void *userObj);
 			static void __stdcall OnPOP3SSLChanged(void *userObj, Bool isChecked);
 
-			Text::String *GetUserName(Int32 userId);
+			Optional<Text::String> GetUserName(Int32 userId);
 			void ClearSMTPCACerts();
 			void ClearPOP3CACerts();
 			void ClearGCISCACerts();

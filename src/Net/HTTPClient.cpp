@@ -116,7 +116,7 @@ Bool Net::HTTPClient::WriteContent(Text::CStringNN contType, Text::CStringNN con
 	return this->Write(content.v, content.leng) == content.leng;
 }
 
-UOSInt Net::HTTPClient::GetRespHeaderCnt()
+UOSInt Net::HTTPClient::GetRespHeaderCnt() const
 {
 	return this->headers.GetCount();
 }
@@ -169,9 +169,14 @@ Text::CString Net::HTTPClient::GetRespHeader(Text::CStringNN name)
 	return CSTR_NULL;
 }
 
-Optional<Text::String> Net::HTTPClient::GetRespHeader(UOSInt index)
+Optional<Text::String> Net::HTTPClient::GetRespHeader(UOSInt index) const
 {
 	return this->headers.GetItem(index);
+}
+
+Data::ArrayIterator<NotNullPtr<Text::String>> Net::HTTPClient::RespHeaderIterator() const
+{
+	return this->headers.Iterator();
 }
 
 UInt64 Net::HTTPClient::GetContentLength()

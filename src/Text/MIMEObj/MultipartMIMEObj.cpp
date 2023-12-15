@@ -80,8 +80,8 @@ void Text::MIMEObj::MultipartMIMEObj::ParsePart(UInt8 *buff, UOSInt buffSize)
 		i = hdrNames.GetCount();
 		while (i-- > 0)
 		{
-			hdrNames.GetItem(i)->Release();
-			hdrValues.GetItem(i)->Release();
+			OPTSTR_DEL(hdrNames.GetItem(i));
+			OPTSTR_DEL(hdrValues.GetItem(i));
 		}
 		return;
 	}
@@ -138,9 +138,10 @@ void Text::MIMEObj::MultipartMIMEObj::ParsePart(UInt8 *buff, UOSInt buffSize)
 			k = hdrNames.GetCount();
 			while (j < k)
 			{
-				Text::String *name = hdrNames.GetItem(j);
-				Text::String *value = hdrValues.GetItem(j);
-				this->AddPartHeader(i, name->v, name->leng, value->v, value->leng);
+				NotNullPtr<Text::String> name;
+				NotNullPtr<Text::String> value;
+				if (hdrNames.GetItem(j).SetTo(name) && hdrValues.GetItem(j).SetTo(value))
+					this->AddPartHeader(i, name->v, name->leng, value->v, value->leng);
 				j++;
 			}
 		}
@@ -149,8 +150,8 @@ void Text::MIMEObj::MultipartMIMEObj::ParsePart(UInt8 *buff, UOSInt buffSize)
 	i = hdrNames.GetCount();
 	while (i-- > 0)
 	{
-		hdrNames.GetItem(i)->Release();
-		hdrValues.GetItem(i)->Release();
+		OPTSTR_DEL(hdrNames.GetItem(i));
+		OPTSTR_DEL(hdrValues.GetItem(i));
 	}
 }
 

@@ -403,12 +403,12 @@ Map::WebMapService::~WebMapService()
 	UOSInt i = this->mapImageTypeNames.GetCount();
 	while (i-- > 0)
 	{
-		this->mapImageTypeNames.GetItem(i)->Release();
+		OPTSTR_DEL(this->mapImageTypeNames.GetItem(i));
 	}
 	i = this->infoTypeNames.GetCount();
 	while (i-- > 0)
 	{
-		this->infoTypeNames.GetItem(i)->Release();
+		OPTSTR_DEL(this->infoTypeNames.GetItem(i));
 	}
 	i = this->layers.GetCount();
 	LayerInfo *layer;
@@ -470,9 +470,9 @@ Bool Map::WebMapService::CanQuery() const
 Bool Map::WebMapService::QueryInfos(Math::Coord2DDbl coord, Math::RectAreaDbl bounds, UInt32 width, UInt32 height, Double dpi, Data::ArrayList<Math::Geometry::Vector2D*> *vecList, Data::ArrayList<UOSInt> *valueOfstList, Data::ArrayListNN<Text::String> *nameList, Data::ArrayList<Text::String*> *valueList)
 {
 	LayerInfo *layer = this->layers.GetItem(this->layer);
-	Text::String *imgFormat = this->mapImageTypeNames.GetItem(this->mapImageType);
-	Text::String *infoFormat = this->infoTypeNames.GetItem(this->infoType);
-	if (layer == 0 || !layer->queryable || infoFormat == 0 || imgFormat == 0)
+	NotNullPtr<Text::String> imgFormat;
+	NotNullPtr<Text::String> infoFormat;
+	if (layer == 0 || !layer->queryable || !this->infoTypeNames.GetItem(this->infoType).SetTo(infoFormat) || !this->mapImageTypeNames.GetItem(this->mapImageType).SetTo(imgFormat))
 		return false;
 
 	Double x = (coord.x - bounds.tl.x) * width / bounds.GetWidth();
@@ -590,9 +590,9 @@ Bool Map::WebMapService::QueryInfos(Math::Coord2DDbl coord, Math::RectAreaDbl bo
 Media::ImageList *Map::WebMapService::DrawMap(Math::RectAreaDbl bounds, UInt32 width, UInt32 height, Double dpi, Text::StringBuilderUTF8 *sbUrl)
 {
 	Text::StringBuilderUTF8 sb;
-	Text::String *imgFormat = this->mapImageTypeNames.GetItem(this->mapImageType);
+	NotNullPtr<Text::String> imgFormat;
 	LayerInfo *layer = this->layers.GetItem(this->layer);
-	if (layer == 0 || imgFormat == 0)
+	if (layer == 0 || !this->mapImageTypeNames.GetItem(this->mapImageType).SetTo(imgFormat))
 		return 0;
 	if (this->currCRS->swapXY)
 	{

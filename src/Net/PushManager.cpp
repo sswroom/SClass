@@ -287,7 +287,7 @@ Bool Net::PushManager::Send(Data::ArrayListNN<Text::String> *userNames, NotNullP
 			ret |= Net::GoogleFCM::SendMessage(this->sockf, this->ssl, this->fcmKey->ToCString(), it.Next()->ToCString(), message->ToCString(), &sbResult);
 			this->log->LogMessage(sbResult.ToCString(), IO::LogHandler::LogLevel::Action);
 		}
-		LIST_FREE_STRING(&tokenList);
+		LISTNN_FREE_STRING(&tokenList);
 		return ret;
 	}
 }

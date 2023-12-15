@@ -40,19 +40,17 @@ void __stdcall SSWR::AVIRead::AVIRSolarEdgeForm::OnAPIKeyClicked(void *userObj)
 			if (me->seAPI->GetSupportedVersions(&vers))
 			{
 				sb.ClearStr();
-				i = 0;
-				j = vers.GetCount();
-				while (i < j)
+				Data::ArrayIterator<NotNullPtr<Text::String>> it = vers.Iterator();
+				Bool found = false;
+				while (it.HasNext())
 				{
-					if (i > 0)
-					{
+					if (found)
 						sb.AppendC(UTF8STRC(", "));
-					}
-					sb.Append(vers.GetItem(i));
-					i++;
+					sb.Append(it.Next());
+					found = true;
 				}
 				me->txtSuppVer->SetText(sb.ToCString());
-				LIST_FREE_STRING(&vers);
+				LISTNN_FREE_STRING(&vers);
 			}
 			else
 			{

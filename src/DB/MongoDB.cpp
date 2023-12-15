@@ -167,7 +167,7 @@ void DB::MongoDB::FreeDatabaseNames(NotNullPtr<Data::ArrayListNN<Text::String>> 
 	UOSInt i = names->GetCount();
 	while (i-- > 0)
 	{
-		names->GetItem(i)->Release();
+		OPTSTR_DEL(names->GetItem(i));
 	}
 	names->Clear();
 }

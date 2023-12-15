@@ -15,7 +15,7 @@ Net::WhoisRecord::WhoisRecord(UInt32 recordIP)
 
 Net::WhoisRecord::~WhoisRecord()
 {
-	LIST_FREE_STRING(&this->items);
+	LISTNN_FREE_STRING(&this->items);
 }
 
 void Net::WhoisRecord::AddItem(const UTF8Char *item, UOSInt itemLen)
@@ -111,7 +111,7 @@ UOSInt Net::WhoisRecord::GetCount()
 	return this->items.GetCount();
 }
 
-Text::String *Net::WhoisRecord::GetItem(UOSInt index)
+Optional<Text::String> Net::WhoisRecord::GetItem(UOSInt index)
 {
 	return this->items.GetItem(index);
 }
@@ -119,42 +119,34 @@ Text::String *Net::WhoisRecord::GetItem(UOSInt index)
 
 UTF8Char *Net::WhoisRecord::GetNetworkName(UTF8Char *buff)
 {
-	UOSInt i;
-	UOSInt j;
-	Text::String *s;
+	NotNullPtr<Text::String> s;
 	UTF8Char *sptr;
-	i = 0;
-	j = this->items.GetCount();
-	while (i < j)
+	Data::ArrayIterator<NotNullPtr<Text::String>> it = this->items.Iterator();
+	while (it.HasNext())
 	{
-		s = this->items.GetItem(i);
+		s = it.Next();
 		if (Text::StrStartsWithICaseC(s->v, s->leng, UTF8STRC("netname:")))
 		{
 			sptr = Text::StrConcatC(buff, &s->v[8], s->leng - 8);
 			return Text::StrTrimC(buff, (UOSInt)(sptr - buff));
 		}
-		i++;
 	}
 	return 0;
 }
 
 UTF8Char *Net::WhoisRecord::GetCountryCode(UTF8Char *buff)
 {
-	UOSInt i;
-	UOSInt j;
-	Text::String *s;
+	NotNullPtr<Text::String> s;
 	UTF8Char *sptr;
-	i = 0;
-	j = this->items.GetCount();
-	while (i < j)
+	Data::ArrayIterator<NotNullPtr<Text::String>> it = this->items.Iterator();
+	while (it.HasNext())
 	{
-		s = this->items.GetItem(i);
+		s = it.Next();
 		if (Text::StrStartsWithICaseC(s->v, s->leng, UTF8STRC("country:")))
 		{
 			sptr = Text::StrConcatC(buff, &s->v[8], s->leng - 8);
 			return Text::StrTrimC(buff, (UOSInt)(sptr - buff));
 		}
-		i++;
 	}
 	return 0;
 }

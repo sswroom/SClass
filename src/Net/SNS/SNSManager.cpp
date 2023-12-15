@@ -315,13 +315,11 @@ void Net::SNS::SNSManager::ChannelStoreCurr(Net::SNS::SNSManager::ChannelData *c
 	Text::StringBuilderUTF8 sb;
 	IO::FileStream fs(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 	Text::UTF8Writer writer(fs);
-	UOSInt i = 0;
-	UOSInt j = channel->currItems.GetCount();
-	while (i < j)
+	Data::ArrayIterator<NotNullPtr<Text::String>> it = channel->currItems.Iterator();
+	while (it.HasNext())
 	{
-		Text::String *s = channel->currItems.GetItem(i);
+		NotNullPtr<Text::String> s = it.Next();
 		writer.WriteLineC(s->v, s->leng);
-		i++;
 	}
 }
 
@@ -515,7 +513,7 @@ Net::SNS::SNSManager::~SNSManager()
 		j = channel->currItems.GetCount();
 		while (j-- > 0)
 		{
-			channel->currItems.GetItem(j)->Release();
+			OPTSTR_DEL(channel->currItems.GetItem(j));
 		}
 		DEL_CLASS(channel);
 	}

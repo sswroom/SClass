@@ -88,7 +88,7 @@ void SSWR::AVIRead::AVIRFileSearchForm::ClearFiles()
 	UOSInt i = this->fileList.GetCount();
 	while (i-- > 0)
 	{
-		this->fileList.GetItem(i)->Release();
+		OPTSTR_DEL(this->fileList.GetItem(i));
 	}
 	this->fileList.Clear();
 }

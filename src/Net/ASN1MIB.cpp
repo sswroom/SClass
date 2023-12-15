@@ -1517,8 +1517,8 @@ Bool Net::ASN1MIB::ApplyModuleOID(ModuleInfo *module, ObjectInfo *obj, NotNullPt
 		UOSInt ul = impObj->valName.GetCount();
 		while (uk < ul)
 		{
-			obj->valName.Add(impObj->valName.GetItem(uk)->Clone());
-			obj->valCont.Add(impObj->valCont.GetItem(uk)->Clone());
+			obj->valName.Add(Text::String::OrEmpty(impObj->valName.GetItem(uk))->Clone());
+			obj->valCont.Add(Text::String::OrEmpty(impObj->valCont.GetItem(uk))->Clone());
 			uk++;
 		}
 	}
@@ -2049,8 +2049,8 @@ void Net::ASN1MIB::UnloadAll()
 			k = obj->valName.GetCount();
 			while (k-- > 0)
 			{
-				obj->valName.GetItem(k)->Release();
-				obj->valCont.GetItem(k)->Release();
+				OPTSTR_DEL(obj->valName.GetItem(k));
+				OPTSTR_DEL(obj->valCont.GetItem(k));
 			}
 			DEL_CLASS(obj);
 		}

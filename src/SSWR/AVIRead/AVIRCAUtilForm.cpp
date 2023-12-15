@@ -133,7 +133,7 @@ void __stdcall SSWR::AVIRead::AVIRCAUtilForm::OnFileDrop(void *userObj, NotNullP
 						DEL_CLASS(x509);
 						break;
 					case Crypto::Cert::X509File::FileType::FileList:
-						cert = (Crypto::Cert::X509Cert*)((Crypto::Cert::X509FileList*)x509)->GetFile(0);
+						cert = (Crypto::Cert::X509Cert*)((Crypto::Cert::X509FileList*)x509)->GetFile(0).OrNull();
 						MemClear(&names, sizeof(names));
 						if (cert->GetSubjNames(names))
 						{

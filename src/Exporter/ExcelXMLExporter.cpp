@@ -64,10 +64,8 @@ Bool Exporter::ExcelXMLExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, 
 		return false;
 	}
 	NotNullPtr<Text::SpreadSheet::Workbook> wb;
-	Text::SpreadSheet::Worksheet *ws;
-	Text::SpreadSheet::CellStyle *style;
-	UOSInt i;
-	UOSInt j;
+	NotNullPtr<Text::SpreadSheet::Worksheet> ws;
+	NotNullPtr<Text::SpreadSheet::CellStyle> style;
 	UOSInt k;
 	UOSInt l;
 	UOSInt m;
@@ -215,11 +213,11 @@ Bool Exporter::ExcelXMLExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, 
 	wb->GetPalette(pal);
 	Text::SpreadSheet::Workbook::GetDefPalette(defPal);
 	found = false;
-	i = 0;
-	j = 56;
-	while (i < j)
+	k = 0;
+	l = 56;
+	while (k < l)
 	{
-		if (pal[i] != defPal[i])
+		if (pal[k] != defPal[k])
 		{
 			if (!found)
 			{
@@ -230,17 +228,17 @@ Bool Exporter::ExcelXMLExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, 
 			writer.WriteLineC(UTF8STRC("   <Color>"));
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("    <Index>"));
-			sb.AppendUOSInt(i);
+			sb.AppendUOSInt(k);
 			sb.AppendC(UTF8STRC("</Index>"));
 			writer.WriteLineC(sb.ToString(), sb.GetLength());
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("    <RGB>#"));
-			sb.AppendHex24(pal[i]);
+			sb.AppendHex24(pal[k]);
 			sb.AppendC(UTF8STRC("</RGB>"));
 			writer.WriteLineC(sb.ToString(), sb.GetLength());
 			writer.WriteLineC(UTF8STRC("   </Color>"));
 		}
-		i++;
+		k++;
 	}
 	if (found)
 	{
@@ -251,14 +249,13 @@ Bool Exporter::ExcelXMLExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, 
 	if (wb->HasCellStyle())
 	{
 		writer.WriteLineC(UTF8STRC(" <Styles>"));
-		i = 0;
-		j = wb->GetStyleCount();
-		while (i < j)
+		k = 0;
+		l = wb->GetStyleCount();
+		while (k < l)
 		{
-			style = wb->GetStyle(i);
-			if (style)
+			if (wb->GetStyle(k).SetTo(style))
 			{
-				if (i == 0)
+				if (k == 0)
 				{
 					style->SetID((const UTF8Char*)"Default");
 				}
@@ -266,7 +263,7 @@ Bool Exporter::ExcelXMLExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, 
 				{
 					sb.ClearStr();
 					sb.AppendC(UTF8STRC("s"));
-					sb.AppendUOSInt((20 + i));
+					sb.AppendUOSInt((20 + k));
 					style->SetID(sb.ToString());
 				}
 				sb.ClearStr();
@@ -409,16 +406,15 @@ Bool Exporter::ExcelXMLExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, 
 
 				writer.WriteLineC(UTF8STRC("  </Style>"));
 			}
-			i++;
+			k++;
 		}
 		writer.WriteLineC(UTF8STRC(" </Styles>"));
 	}
 
-	i = 0;
-	j = wb->GetCount();
-	while (i < j)
+	Data::ArrayIterator<NotNullPtr<Text::SpreadSheet::Worksheet>> it = wb->Iterator();
+	while (it.HasNext())
 	{
-		ws = wb->GetItem(i);
+		ws = it.Next();
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC(" <Worksheet ss:Name="));
 		s = Text::XML::ToNewAttrText(ws->GetName()->v);
@@ -595,9 +591,10 @@ Bool Exporter::ExcelXMLExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, 
 									sb.AppendC(UTF8STRC("\""));
 									lastDispCol += cell->mergeHori - 1;
 								}
-								if (cell->style)
+								NotNullPtr<Text::SpreadSheet::CellStyle> tmpStyle;
+								if (cell->style.SetTo(tmpStyle))
 								{
-									text = cell->style->GetID();
+									text = tmpStyle->GetID();
 									if (text)
 									{
 										sb.AppendC(UTF8STRC(" ss:StyleID="));
@@ -805,7 +802,6 @@ Bool Exporter::ExcelXMLExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, 
 			writer.WriteLineC(UTF8STRC("  </WorksheetOptions>"));
 		}
 		writer.WriteLineC(UTF8STRC(" </Worksheet>"));
-		i++;
 	}
 	writer.WriteLineC(UTF8STRC("</Workbook>"));
 	return true;

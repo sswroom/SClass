@@ -339,7 +339,6 @@ void SSWR::AVIRead::AVIRCore::SetAudioDeviceList(Data::ArrayListNN<Text::String>
 	IO::Registry *reg = IO::Registry::OpenSoftware(IO::Registry::REG_USER_THIS, L"SSWR", L"AVIRead");
 	WChar wbuff[32];
 	UOSInt i;
-	UOSInt j;
 	i = this->audDevList.GetCount();
 	while (i-- > 0)
 	{
@@ -355,14 +354,16 @@ void SSWR::AVIRead::AVIRCore::SetAudioDeviceList(Data::ArrayListNN<Text::String>
 		else
 		{
 			Data::ArrayIterator<NotNullPtr<Text::String>> it = devList->Iterator();
+			i = 0;
 			while (it.HasNext())
 			{
 				Text::StrUOSInt(Text::StrConcat(wbuff, L"AudioDevice"), i);
 				const WChar *wptr = Text::StrToWCharNew(it.Next()->v);
 				reg->SetValue(wbuff, wptr);
 				Text::StrDelNew(wptr);
+				i++;
 			}
-			Text::StrUOSInt(Text::StrConcat(wbuff, L"AudioDevice"), j);
+			Text::StrUOSInt(Text::StrConcat(wbuff, L"AudioDevice"), i);
 			reg->DelValue(wbuff);
 		}
 		IO::Registry::CloseRegistry(reg);

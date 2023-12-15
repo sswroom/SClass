@@ -63,12 +63,13 @@ namespace Net
 		void AddContentLength(UInt64 leng);
 		Bool WriteContent(Text::CStringNN contType, Text::CStringNN content);
 
-		UOSInt GetRespHeaderCnt();
+		UOSInt GetRespHeaderCnt() const;
 		UTF8Char *GetRespHeader(UOSInt index, UTF8Char *buff);
 		UTF8Char *GetRespHeader(Text::CStringNN name, UTF8Char *valueBuff);
 		Bool GetRespHeader(Text::CStringNN name, NotNullPtr<Text::StringBuilderUTF8> sb);
 		Text::CString GetRespHeader(Text::CStringNN name);
-		Optional<Text::String> GetRespHeader(UOSInt index);
+		Optional<Text::String> GetRespHeader(UOSInt index) const;
+		Data::ArrayIterator<NotNullPtr<Text::String>> RespHeaderIterator() const;
 		UInt64 GetContentLength();
 		UInt32 GetContentCodePage();
 		Bool GetLastModified(NotNullPtr<Data::DateTime> dt);

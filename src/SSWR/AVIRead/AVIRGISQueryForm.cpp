@@ -222,7 +222,7 @@ void SSWR::AVIRead::AVIRGISQueryForm::ClearQueryResults()
 	UOSInt i = this->queryNameList.GetCount();
 	while (i-- > 0)
 	{
-		this->queryNameList.GetItem(i)->Release();
+		OPTSTR_DEL(this->queryNameList.GetItem(i));
 	}
 	i = this->queryValueList.GetCount();
 	while (i-- > 0)
@@ -244,7 +244,7 @@ void SSWR::AVIRead::AVIRGISQueryForm::SetQueryItem(UOSInt index)
 	UOSInt i;
 	UOSInt j;
 	UOSInt k;
-	Text::String *name;
+	Optional<Text::String> name;
 	Text::String *value;
 	if (this->layerNames)
 	{
