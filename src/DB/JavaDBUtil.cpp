@@ -7,7 +7,7 @@
 
 #define LOGPREFIX CSTR("DB:")
 
-NotNullPtr<Text::String> DB::JavaDBUtil::AppendFieldAnno(NotNullPtr<Text::StringBuilderUTF8> sb, DB::ColDef *colDef, Data::StringMap<Bool> *importMap)
+NotNullPtr<Text::String> DB::JavaDBUtil::AppendFieldAnno(NotNullPtr<Text::StringBuilderUTF8> sb, NotNullPtr<DB::ColDef> colDef, NotNullPtr<Data::StringMap<Bool>> importMap)
 {
 	if (colDef->IsPK())
 	{
@@ -36,7 +36,7 @@ NotNullPtr<Text::String> DB::JavaDBUtil::AppendFieldAnno(NotNullPtr<Text::String
 	}
 }
 
-void DB::JavaDBUtil::AppendFieldDef(NotNullPtr<Text::StringBuilderUTF8> sb, DB::ColDef *col, NotNullPtr<Text::String> colName, Data::StringMap<Bool> *importMap)
+void DB::JavaDBUtil::AppendFieldDef(NotNullPtr<Text::StringBuilderUTF8> sb, NotNullPtr<DB::ColDef> col, NotNullPtr<Text::String> colName, NotNullPtr<Data::StringMap<Bool>> importMap)
 {
 	sb->AppendC(UTF8STRC("\tprivate "));
 	DB::DBUtil::ColType colType = col->GetColType();
@@ -58,7 +58,7 @@ void DB::JavaDBUtil::AppendFieldDef(NotNullPtr<Text::StringBuilderUTF8> sb, DB::
 	sb->AppendC(UTF8STRC(";\r\n"));
 }
 
-void DB::JavaDBUtil::AppendConstrHdr(NotNullPtr<Text::StringBuilderUTF8> sb, DB::ColDef *col, NotNullPtr<Text::String> colName, Bool isLast)
+void DB::JavaDBUtil::AppendConstrHdr(NotNullPtr<Text::StringBuilderUTF8> sb, NotNullPtr<DB::ColDef> col, NotNullPtr<Text::String> colName, Bool isLast)
 {
 	sb->Append(Text::JavaText::GetJavaTypeName(col->GetColType(), col->IsNotNull()));
 	sb->AppendUTF8Char(' ');
@@ -78,7 +78,7 @@ void DB::JavaDBUtil::AppendConstrItem(NotNullPtr<Text::StringBuilderUTF8> sb, No
 	sb->AppendC(UTF8STRC(";\r\n"));
 }
 
-void DB::JavaDBUtil::AppendGetterSetter(NotNullPtr<Text::StringBuilderUTF8> sb, DB::ColDef *col, NotNullPtr<Text::String> colName)
+void DB::JavaDBUtil::AppendGetterSetter(NotNullPtr<Text::StringBuilderUTF8> sb, NotNullPtr<DB::ColDef> col, NotNullPtr<Text::String> colName)
 {
 	sb->AppendC(UTF8STRC("\r\n"));
 	sb->AppendC(UTF8STRC("\tpublic "));
@@ -113,7 +113,7 @@ void DB::JavaDBUtil::AppendGetterSetter(NotNullPtr<Text::StringBuilderUTF8> sb, 
 	sb->AppendC(UTF8STRC("\t}\r\n"));
 }
 
-void DB::JavaDBUtil::AppendEqualsItem(NotNullPtr<Text::StringBuilderUTF8> sb, DB::ColDef *col, NotNullPtr<Text::String> colName, NotNullPtr<Text::String> clsName, Bool isLast)
+void DB::JavaDBUtil::AppendEqualsItem(NotNullPtr<Text::StringBuilderUTF8> sb, NotNullPtr<DB::ColDef> col, NotNullPtr<Text::String> colName, NotNullPtr<Text::String> clsName, Bool isLast)
 {
 	Bool isObj = true;
 	if (col->IsNotNull())
@@ -331,24 +331,20 @@ Bool DB::JavaDBUtil::ToJavaEntity(NotNullPtr<Text::StringBuilderUTF8> sb, Option
 	NotNullPtr<Text::String> colName;
 	if (tableDef)
 	{
-		UOSInt j;
-		UOSInt k;
-		DB::ColDef *colDef;
-		j = 0;
-		k = tableDef->GetColCnt();
-		while (j < k)
+		NotNullPtr<DB::ColDef> colDef;
+		Data::ArrayIterator<NotNullPtr<DB::ColDef>> it = tableDef->ColIterator();
+		while (it.HasNext())
 		{
-			colDef = tableDef->GetCol(j);
-			colName = AppendFieldAnno(sbCode, colDef, &importMap);
-			AppendFieldDef(sbCode, colDef, colName, &importMap);
-			AppendConstrHdr(sbConstrHdr, colDef, colName, j + 1 == k);
+			colDef = it.Next();
+			colName = AppendFieldAnno(sbCode, colDef, importMap);
+			AppendFieldDef(sbCode, colDef, colName, importMap);
+			AppendConstrHdr(sbConstrHdr, colDef, colName, !it.HasNext());
 			AppendConstrItem(sbConstrItem, colName);
 			AppendGetterSetter(sbGetterSetter, colDef, colName);
-			AppendEqualsItem(sbEquals, colDef, colName, clsName, j + 1 == k);
-			AppendHashCodeItem(sbHashCode, colName, j + 1 == k);
-			AppendFieldOrderItem(sbFieldOrder, colName, j + 1 == k);
+			AppendEqualsItem(sbEquals, colDef, colName, clsName, !it.HasNext());
+			AppendHashCodeItem(sbHashCode, colName, !it.HasNext());
+			AppendFieldOrderItem(sbFieldOrder, colName, !it.HasNext());
 			colName->Release();
-			j++;
 		}
 	}
 	else
@@ -363,12 +359,12 @@ Bool DB::JavaDBUtil::ToJavaEntity(NotNullPtr<Text::StringBuilderUTF8> sb, Option
 			{
 				if (r->GetColDef(j, colDef))
 				{
-					colName = AppendFieldAnno(sbCode, &colDef, &importMap);
-					AppendFieldDef(sbCode, &colDef, colName, &importMap);
-					AppendConstrHdr(sbConstrHdr, &colDef, colName, j + 1 == k);
+					colName = AppendFieldAnno(sbCode, colDef, importMap);
+					AppendFieldDef(sbCode, colDef, colName, importMap);
+					AppendConstrHdr(sbConstrHdr, colDef, colName, j + 1 == k);
 					AppendConstrItem(sbConstrItem, colName);
-					AppendGetterSetter(sbGetterSetter, &colDef, colName);
-					AppendEqualsItem(sbEquals, &colDef, colName, clsName, j + 1 == k);
+					AppendGetterSetter(sbGetterSetter, colDef, colName);
+					AppendEqualsItem(sbEquals, colDef, colName, clsName, j + 1 == k);
 					AppendHashCodeItem(sbHashCode, colName, j + 1 == k);
 					AppendFieldOrderItem(sbFieldOrder, colName, j + 1 == k);
 					colName->Release();

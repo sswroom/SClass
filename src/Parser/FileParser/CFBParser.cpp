@@ -270,8 +270,8 @@ IO::ParsedObject *Parser::FileParser::CFBParser::ParseFileHdr(NotNullPtr<IO::Str
 		{
 			Map::DBMapLayer *layer;
 			DB::WorkbookDB *db;
-			Text::SpreadSheet::Worksheet *sheet = wb->GetItem(0);
-			if (sheet == 0)
+			NotNullPtr<Text::SpreadSheet::Worksheet> sheet;
+			if (!wb->GetItem(0).SetTo(sheet))
 			{
 				if (targetType == IO::ParserType::Unknown)
 				{
@@ -775,8 +775,8 @@ Bool Parser::FileParser::CFBParser::ParseWorkbook(NotNullPtr<IO::StreamData> fd,
 					UInt16 ixfe = ReadUInt16(&readBuff[i + 18]);
 					Int16 cexts = ReadInt16(&readBuff[i + 22]);
 					UInt32 j;
-					Text::SpreadSheet::CellStyle *style = wb->GetStyle(ixfe);
-					if (style)
+					NotNullPtr<Text::SpreadSheet::CellStyle> style;
+					if (wb->GetStyle(ixfe).SetTo(style))
 					{
 						j = 24;
 						while (cexts-- > 0 && j < recLeng)
@@ -871,7 +871,7 @@ Bool Parser::FileParser::CFBParser::ParseWorkbook(NotNullPtr<IO::StreamData> fd,
 			readBuffSize -= i;
 		}
 	}
-	if (style.Set(wb->GetDefaultStyle()))
+	if (wb->GetDefaultStyle().SetTo(style))
 	{
 		font = status.fontList.GetItem(0);
 		if (font)
@@ -890,7 +890,7 @@ Bool Parser::FileParser::CFBParser::ParseWorkbook(NotNullPtr<IO::StreamData> fd,
 	i = status.sst.GetCount();
 	while (i-- > 0)
 	{
-		status.sst.GetItem(i)->Release();
+		OPTSTR_DEL(status.sst.GetItem(i));
 	}
 	i = status.fontList.GetCount();
 	while (i-- > 0)

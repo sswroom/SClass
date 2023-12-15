@@ -25,12 +25,14 @@
 void IO::LogTool::HandlerClose()
 {
 	Sync::MutexUsage mutUsage(this->hdlrMut);
-	UOSInt i = this->hdlrArr.GetCount();
+	Data::ArrayIterator<NotNullPtr<IO::LogHandler>> it = this->hdlrArr.Iterator();
+	NotNullPtr<IO::LogHandler> logHdlr;
 	Data::Timestamp ts = Data::Timestamp::Now();
-	while (i-- > 0)
+	while (it.HasNext())
 	{
-		this->hdlrArr.GetItem(i)->LogAdded(ts, CSTR("End logging normally"),  (IO::LogHandler::LogLevel)0);
-		this->hdlrArr.GetItem(i)->LogClosed();
+		logHdlr = it.Next();
+		logHdlr->LogAdded(ts, CSTR("End logging normally"),  (IO::LogHandler::LogLevel)0);
+		logHdlr->LogClosed();
 	}
 }
 
@@ -126,7 +128,7 @@ void IO::LogTool::RemoveLogHandler(NotNullPtr<LogHandler> hdlr)
 	UOSInt i = this->hdlrArr.GetCount();
 	while (i-- > 0)
 	{
-		if (this->hdlrArr.GetItem(i) == hdlr.Ptr())
+		if (this->hdlrArr.GetItem(i).OrNull() == hdlr.Ptr())
 		{
 			this->hdlrArr.RemoveAt(i);
 			this->levArr.RemoveAt(i);
@@ -148,8 +150,7 @@ void IO::LogTool::ClearHandlers()
 	UOSInt i = this->fileLogArr.GetCount();
 	while (i-- > 0)
 	{
-		IO::LogHandler *logHdlr = this->fileLogArr.GetItem(i);
-		DEL_CLASS(logHdlr);
+		this->fileLogArr.GetItem(i).Delete();
 	}
 	this->fileLogArr.Clear();
 }
@@ -158,11 +159,12 @@ void IO::LogTool::LogMessage(Text::CStringNN logMsg, LogHandler::LogLevel level)
 {
 	Data::Timestamp ts = Data::Timestamp::Now();
 	Sync::MutexUsage mutUsage(this->hdlrMut);
+	NotNullPtr<IO::LogHandler> logHdlr;
 	UOSInt i = this->hdlrArr.GetCount();
 	while (i-- > 0)
 	{
-		if (this->levArr.GetItem(i) >= level)
-			this->hdlrArr.GetItem(i)->LogAdded(ts, logMsg, level);
+		if (this->levArr.GetItem(i) >= level && this->hdlrArr.GetItem(i).SetTo(logHdlr))
+			logHdlr->LogAdded(ts, logMsg, level);
 	}
 }
 
@@ -196,7 +198,7 @@ void IO::LogTool::LogStackTrace(LogHandler::LogLevel level)
 
 }
 
-IO::LogHandler *IO::LogTool::GetLastFileLog()
+Optional<IO::LogHandler> IO::LogTool::GetLastFileLog()
 {
-	return this->fileLogArr.GetItem(this->fileLogArr.GetCount() - 1);
+	return this->fileLogArr.GetLast();
 }

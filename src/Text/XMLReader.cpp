@@ -149,7 +149,7 @@ Text::XMLReader::~XMLReader()
 	UOSInt i = this->pathList.GetCount();
 	while (i-- > 0)
 	{
-		this->pathList.GetItem(i)->Release();
+		OPTSTR_DEL(this->pathList.GetItem(i));
 	}
 	MemFree(this->readBuff);
 	MemFree(this->rawBuff);
@@ -158,18 +158,16 @@ Text::XMLReader::~XMLReader()
 
 void Text::XMLReader::GetCurrPath(NotNullPtr<Text::StringBuilderUTF8> sb) const
 {
-	UOSInt i = 0;
-	UOSInt j = this->pathList.GetCount();
-	if (j == 0)
+	Data::ArrayIterator<NotNullPtr<Text::String>> it = this->pathList.Iterator();
+	if (!it.HasNext())
 	{
 		sb->AppendUTF8Char('/');
 		return;
 	}
-	while (i < j)
+	while (it.HasNext())
 	{
 		sb->AppendUTF8Char('/');
-		sb->Append(this->pathList.GetItem(i));
-		i++;
+		sb->Append(it.Next());
 	}
 }
 
@@ -878,6 +876,7 @@ Bool Text::XMLReader::ReadNext()
 						}
 					}
 					NotNullPtr<Text::String> nodeText;
+					NotNullPtr<Text::String> s;
 					if (!nodeText.Set(this->nodeText))
 					{
 						this->parseError = 20;
@@ -889,12 +888,12 @@ Bool Text::XMLReader::ReadNext()
 						this->parseError = 21;
 						return false;
 					}
-					if (this->pathList.GetItem(this->pathList.GetCount() - 1)->Equals(nodeText))
+					if (this->pathList.GetLast().SetTo(s) && s->Equals(nodeText))
 					{
 						OPTSTR_DEL(this->pathList.Pop());
 						return true;
 					}
-					else if (this->mode == Text::XMLReader::PM_HTML && this->pathList.GetCount() >= 2 && this->pathList.GetItem(this->pathList.GetCount() - 2)->Equals(nodeText))
+					else if (this->mode == Text::XMLReader::PM_HTML && this->pathList.GetCount() >= 2 && this->pathList.GetItem(this->pathList.GetCount() - 2).SetTo(s) && s->Equals(nodeText))
 					{
 						OPTSTR_DEL(this->pathList.Pop());
 						OPTSTR_DEL(this->pathList.Pop());

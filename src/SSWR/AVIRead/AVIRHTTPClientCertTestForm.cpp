@@ -66,7 +66,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientCertTestForm::OnStartClick(void *use
 		key->GetKeyId(BYTEARR(ext.authKeyId));
 		me->sslCert = Crypto::Cert::CertUtil::SelfSignedCertCreate(ssl, names, key, 30, &ext);
 		Crypto::Cert::CertNames::FreeNames(names);
-		LIST_FREE_STRING(&sanList);
+		LISTNN_FREE_STRING(&sanList);
 		if (!sslCert.Set(me->sslCert))
 		{
 			UI::MessageDialog::ShowDialog(CSTR("Error in initializing Certificate"), CSTR("HTTP Client Cert Test"), me);
@@ -171,8 +171,7 @@ void SSWR::AVIRead::AVIRHTTPClientCertTestForm::ClearCACerts()
 	UOSInt i = this->caCerts.GetCount();
 	while (i-- > 0)
 	{
-		Crypto::Cert::X509Cert *cert = this->caCerts.GetItem(i);
-		DEL_CLASS(cert);
+		this->caCerts.GetItem(i).Delete();
 	}
 	this->caCerts.Clear();
 }

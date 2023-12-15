@@ -26,8 +26,6 @@ void __stdcall SSWR::AVIRead::AVIRLogBackupForm::OnStartClicked(void *userObj)
 	LogGroup *logGrp;
 	UOSInt i;
 	UOSInt j;
-	UOSInt k;
-	UOSInt l;
 	IO::MinizZIP *zip;
 	Bool succ;
 	IO::Path::PathType pt;
@@ -94,23 +92,20 @@ void __stdcall SSWR::AVIRead::AVIRLogBackupForm::OnStartClicked(void *userObj)
 		Text::StrConcatC(Text::StrConcat(filePath, logGrp->logName), UTF8STRC(".zip"));
 
 		NEW_CLASS(zip, IO::MinizZIP(sbuff));
-		k = 0;
-		l = logGrp->fileNames->GetCount();
-		while (succ && k < l)
+		Data::ArrayIterator<NotNullPtr<Text::String>> it = logGrp->fileNames->Iterator();
+		while (succ && it.HasNext())
 		{
-			Text::String *s = logGrp->fileNames->GetItem(k);
+			NotNullPtr<Text::String> s = it.Next();
 			succ = succ & zip->AddFile(s->ToCString());
-			k++;
 		}
 		DEL_CLASS(zip);
 
 		if (succ)
 		{
-			k = 0;
-			l = logGrp->fileNames->GetCount();
-			while (k < l)
+			it = logGrp->fileNames->Iterator();
+			while (it.HasNext())
 			{
-				Text::String *s = logGrp->fileNames->GetItem(k);
+				NotNullPtr<Text::String> s = it.Next();
 				pt = IO::Path::GetPathType(s->ToCString());
 				if (pt == IO::Path::PathType::File)
 				{
@@ -121,19 +116,12 @@ void __stdcall SSWR::AVIRead::AVIRLogBackupForm::OnStartClicked(void *userObj)
 					IO::FileUtil::DeleteFile(s->ToCString(), true);
 				}
 				s->Release();
-				k++;
 			}
 		}
 		else
 		{
 			IO::Path::DeleteFile(sbuff);
-			k = 0;
-			l = logGrp->fileNames->GetCount();
-			while (k < l)
-			{
-				logGrp->fileNames->GetItem(k)->Release();
-				k++;
-			}
+			LISTNN_FREE_STRING(logGrp->fileNames);
 		}
 		Text::StrDelNew(logGrp->logName);
 		DEL_CLASS(logGrp->fileNames);

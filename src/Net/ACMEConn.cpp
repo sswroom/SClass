@@ -635,7 +635,7 @@ void Net::ACMEConn::OrderFree(Order *order)
 	SDEL_STRING(order->orderURL);
 	if (order->authURLs)
 	{
-		LIST_FREE_STRING(order->authURLs);
+		LISTNN_FREE_STRING(order->authURLs);
 		DEL_CLASS(order->authURLs);
 	}
 	SDEL_STRING(order->finalizeURL);

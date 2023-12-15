@@ -39,7 +39,7 @@ namespace Map
 		Double dispDPI;
 		Bool hideLogo;
 
-		Text::String *GetNextSubdomain();
+		Optional<Text::String> GetNextSubdomain();
 	public:
 		BingMapsTile(ImagerySet is, Text::CString key, Text::CString cacheDir, NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl);
 		virtual ~BingMapsTile();

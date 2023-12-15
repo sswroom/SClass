@@ -133,13 +133,12 @@ Bool Crypto::Cert::CertUtil::AppendExtensions(NotNullPtr<Net::ASN1PDUBuilder> bu
 		builder->AppendOIDString(UTF8STRC("2.5.29.17"));
 		builder->BeginOther(Net::ASN1Util::IT_OCTET_STRING);
 		builder->BeginSequence();
-		UOSInt i = 0;
-		UOSInt j = ext->subjectAltName->GetCount();
-		Text::String *s;
+		Data::ArrayIterator<NotNullPtr<Text::String>> it = ext->subjectAltName->Iterator();
+		NotNullPtr<Text::String> s;
 		Net::SocketUtil::AddressInfo addr;
-		while (i < j)
+		while (it.HasNext())
 		{
-			s = ext->subjectAltName->GetItem(i);
+			s = it.Next();
 			if (Net::SocketUtil::GetIPAddr(s->ToCString(), addr))
 			{
 				if (addr.addrType == Net::AddrType::IPv4)
@@ -155,7 +154,6 @@ Bool Crypto::Cert::CertUtil::AppendExtensions(NotNullPtr<Net::ASN1PDUBuilder> bu
 			{
 				builder->AppendOther(0x82, s->v, s->leng);
 			}
-			i++;
 		}
 		builder->EndLevel();
 		builder->EndLevel();

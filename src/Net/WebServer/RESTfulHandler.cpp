@@ -12,17 +12,16 @@
 void Net::WebServer::RESTfulHandler::BuildJSON(NotNullPtr<Text::JSONBuilder> json, NotNullPtr<DB::DBRow> row)
 {
 	Text::StringBuilderUTF8 sb;
-	DB::ColDef *col;
+	NotNullPtr<DB::ColDef> col;
 	Data::Timestamp ts;
 	UTF8Char sbuff[64];
 	DB::DBRow::DataType dtype;
 	NotNullPtr<Math::Geometry::Vector2D> vec;
 	DB::TableDef *table = row->GetTableDef();
-	UOSInt i = 0;
-	UOSInt j = table->GetColCnt();
-	while (i < j)
+	Data::ArrayIterator<NotNullPtr<DB::ColDef>> it = table->ColIterator();
+	while (it.HasNext())
 	{
-		col = table->GetCol(i);
+		col = it.Next();
 		dtype = row->GetFieldDataType(col->GetColName()->v);
 		sb.ClearStr();
 		row->AppendVarNameForm(sb, col->GetColName()->v);
@@ -60,7 +59,6 @@ void Net::WebServer::RESTfulHandler::BuildJSON(NotNullPtr<Text::JSONBuilder> jso
 			json->ObjectAddStr(sb.ToCString(), CSTR("?"));
 			break;
 		}
-		i++;
 	}
 }
 

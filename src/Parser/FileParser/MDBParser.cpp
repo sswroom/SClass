@@ -90,7 +90,7 @@ IO::ParsedObject *Parser::FileParser::MDBParser::ParseFileHdr(NotNullPtr<IO::Str
 	}
 
 	Data::ArrayListNN<Text::String> tableNames;
-	Data::ArrayList<Text::String*> shpTables;
+	Data::ArrayListNN<Text::String> shpTables;
 	DB::ColDef colDef(CSTR(""));
 	UTF8Char sbuff[128];
 	UTF8Char *sptr;
@@ -100,39 +100,39 @@ IO::ParsedObject *Parser::FileParser::MDBParser::ParseFileHdr(NotNullPtr<IO::Str
 	UOSInt i = tableNames.GetCount();
 	while (i-- > 0)
 	{
-		Text::String *tableName = tableNames.GetItem(i);
+		NotNullPtr<Text::String> tableName;
 		NotNullPtr<DB::DBReader> rdr;
-		if (tableName->leng > 0 && tableName->EqualsICase(UTF8STRC("GDB_SpatialRefs")))
+		if (tableNames.GetItem(i).SetTo(tableName))
 		{
-			hasSpRef = true;
-		}
-
-		if (rdr.Set(mdb->QueryTableData(CSTR_NULL, tableName->ToCString(), 0, 0, 0, CSTR_NULL, 0)))
-		{
-			if (rdr->ColCount() >= 2)
+			if (tableName->leng > 0 && tableName->EqualsICase(UTF8STRC("GDB_SpatialRefs")))
+				hasSpRef = true;
+			if (rdr.Set(mdb->QueryTableData(CSTR_NULL, tableName->ToCString(), 0, 0, 0, CSTR_NULL, 0)))
 			{
-				OSInt objCol = -1;
-				OSInt shapeCol = -1;
-				UOSInt j;
-				j = rdr->ColCount();
-				while (j-- > 0)
+				if (rdr->ColCount() >= 2)
 				{
-					rdr->GetColDef(j, colDef);
-					if (colDef.GetColName()->EqualsICase(UTF8STRC("OBJECTID")) && colDef.GetColType() == DB::DBUtil::CT_Int32)
+					OSInt objCol = -1;
+					OSInt shapeCol = -1;
+					UOSInt j;
+					j = rdr->ColCount();
+					while (j-- > 0)
 					{
-						objCol = (OSInt)j;
+						rdr->GetColDef(j, colDef);
+						if (colDef.GetColName()->EqualsICase(UTF8STRC("OBJECTID")) && colDef.GetColType() == DB::DBUtil::CT_Int32)
+						{
+							objCol = (OSInt)j;
+						}
+						else if (colDef.GetColName()->EqualsICase(UTF8STRC("SHAPE")) && (colDef.GetColType() == DB::DBUtil::CT_Binary || colDef.GetColType() == DB::DBUtil::CT_VarUTF8Char))
+						{
+							shapeCol = (OSInt)j;
+						}
 					}
-					else if (colDef.GetColName()->EqualsICase(UTF8STRC("SHAPE")) && (colDef.GetColType() == DB::DBUtil::CT_Binary || colDef.GetColType() == DB::DBUtil::CT_VarUTF8Char))
+					if (objCol != -1 && shapeCol != -1)
 					{
-						shapeCol = (OSInt)j;
+						shpTables.Add(tableName);
 					}
 				}
-				if (objCol != -1 && shapeCol != -1)
-				{
-					shpTables.Add(tableName);
-				}
+				mdb->CloseReader(rdr);
 			}
-			mdb->CloseReader(rdr);
 		}
 	}
 
@@ -175,7 +175,7 @@ IO::ParsedObject *Parser::FileParser::MDBParser::ParseFileHdr(NotNullPtr<IO::Str
 		i = shpTables.GetCount();
 		while (i-- > 0)
 		{
-			NEW_CLASSNN(lyr, Map::ESRI::ESRIMDBLayer(conn, srid, fd->GetFullFileName(), shpTables.GetItem(i)->ToCString()));
+			NEW_CLASSNN(lyr, Map::ESRI::ESRIMDBLayer(conn, srid, fd->GetFullFileName(), Text::String::OrEmpty(shpTables.GetItem(i))->ToCString()));
 			
 			if (csys)
 			{
@@ -186,7 +186,7 @@ IO::ParsedObject *Parser::FileParser::MDBParser::ParseFileHdr(NotNullPtr<IO::Str
 		}
 		SDEL_CLASS(csys);
 		conn->UnuseObject();
-		LIST_FREE_STRING(&tableNames);
+		LISTNN_FREE_STRING(&tableNames);
 		if (lyrColl->GetCount() == 1)
 		{
 			Map::MapDrawLayer *lyr = lyrColl->GetItem(0);
@@ -201,7 +201,7 @@ IO::ParsedObject *Parser::FileParser::MDBParser::ParseFileHdr(NotNullPtr<IO::Str
 	}
 	else
 	{
-		LIST_FREE_STRING(&tableNames);
+		LISTNN_FREE_STRING(&tableNames);
 		return mdb.Ptr();
 	}
 #else

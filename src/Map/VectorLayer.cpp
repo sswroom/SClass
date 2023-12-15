@@ -140,11 +140,11 @@ const UTF8Char **Map::VectorLayer::CopyStrs(NotNullPtr<Data::ArrayListNN<Text::S
 	UOSInt i = this->strCnt;
 	UOSInt j = 0;
 	UOSInt k;
-	Text::String *s;
+	NotNullPtr<Text::String> s;
 	UTF8Char *sptr = 0;
 	while (i-- > 0)
 	{
-		if ((s = strs->GetItem(i)) != 0)
+		if (strs->GetItem(i).SetTo(s))
 		{
 			k = s->leng;
 			j += k + 1;
@@ -164,7 +164,7 @@ const UTF8Char **Map::VectorLayer::CopyStrs(NotNullPtr<Data::ArrayListNN<Text::S
 	while (k < i)
 	{
 		
-		if ((s = strs->GetItem(k)) != 0)
+		if (strs->GetItem(k).SetTo(s))
 		{
 			newStrs[k] = sptr;
 			sptr = s->ConcatTo(sptr) + 1;
@@ -326,7 +326,7 @@ Map::VectorLayer::VectorLayer(Map::DrawLayerType layerType, Text::CStringNN sour
 	while (i-- > 0)
 	{
 		maxStrLen[i] = 0;
-		this->colNames[i] = colNames->GetItem(i)->Clone().Ptr();
+		this->colNames[i] = Text::String::OrEmpty(colNames->GetItem(i))->Clone().Ptr();
 		if (i < colInfos->GetCount())
 		{
 			cols[i] = colInfos->GetItem(i);
@@ -367,7 +367,7 @@ Map::VectorLayer::~VectorLayer()
 	i = this->vectorList.GetCount();
 	while (i-- > 0)
 	{
-		DEL_CLASS(this->vectorList.GetItem(i));
+		this->vectorList.GetItem(i).Delete();
 	}
 
 	const UTF8Char **strs;
@@ -410,12 +410,11 @@ UOSInt Map::VectorLayer::GetAllObjectIds(NotNullPtr<Data::ArrayListInt64> outArr
 	UOSInt j = this->vectorList.GetCount();
 	if (this->layerType == Map::DRAW_LAYER_MIXED && this->mixedData != MixedData::AllData)
 	{
-		Math::Geometry::Vector2D *vec;
+		NotNullPtr<Math::Geometry::Vector2D> vec;
 		UOSInt ret = 0;
 		while (i < j)
 		{
-			vec = this->vectorList.GetItem(i);
-			if (Math::Geometry::Vector2D::VectorTypeIsPoint(vec->GetVectorType()) == (this->mixedData == MixedData::PointOnly))
+			if (this->vectorList.GetItem(i).SetTo(vec) && Math::Geometry::Vector2D::VectorTypeIsPoint(vec->GetVectorType()) == (this->mixedData == MixedData::PointOnly))
 			{
 				outArr->Add((OSInt)i);
 				ret++;
@@ -444,7 +443,7 @@ UOSInt Map::VectorLayer::GetObjectIdsMapXY(NotNullPtr<Data::ArrayListInt64> outA
 {
 	Math::RectAreaDbl vBounds;
 	UOSInt recCnt = 0;
-	Math::Geometry::Vector2D *vec;
+	NotNullPtr<Math::Geometry::Vector2D> vec;
 	UOSInt i;
 	UOSInt j;
 	if (this->layerType == Map::DRAW_LAYER_MIXED && this->mixedData != MixedData::AllData)
@@ -453,8 +452,7 @@ UOSInt Map::VectorLayer::GetObjectIdsMapXY(NotNullPtr<Data::ArrayListInt64> outA
 		j = this->vectorList.GetCount();
 		while (i < j)
 		{
-			vec = this->vectorList.GetItem(i);
-			if (Math::Geometry::Vector2D::VectorTypeIsPoint(vec->GetVectorType()) == (this->mixedData == MixedData::PointOnly))
+			if (this->vectorList.GetItem(i).SetTo(vec) && Math::Geometry::Vector2D::VectorTypeIsPoint(vec->GetVectorType()) == (this->mixedData == MixedData::PointOnly))
 			{
 				vBounds = vec->GetBounds();
 				if (rect.tl.x <= vBounds.br.x && rect.tl.y <= vBounds.br.y && rect.br.x >= vBounds.tl.x && rect.br.y >= vBounds.tl.y)
@@ -472,12 +470,14 @@ UOSInt Map::VectorLayer::GetObjectIdsMapXY(NotNullPtr<Data::ArrayListInt64> outA
 		j = this->vectorList.GetCount();
 		while (i < j)
 		{
-			vec = this->vectorList.GetItem(i);
-			vBounds = vec->GetBounds();
-			if (rect.tl.x <= vBounds.br.x && rect.tl.y <= vBounds.br.y && rect.br.x >= vBounds.tl.x && rect.br.y >= vBounds.tl.y)
+			if (this->vectorList.GetItem(i).SetTo(vec))
 			{
-				recCnt++;
-				outArr->Add((Int64)i);
+				vBounds = vec->GetBounds();
+				if (rect.tl.x <= vBounds.br.x && rect.tl.y <= vBounds.br.y && rect.br.x >= vBounds.tl.x && rect.br.y >= vBounds.tl.y)
+				{
+					recCnt++;
+					outArr->Add((Int64)i);
+				}
 			}
 			i++;
 		}
@@ -608,8 +608,8 @@ void Map::VectorLayer::EndGetObject(Map::GetObjectSess *session)
 
 Math::Geometry::Vector2D *Map::VectorLayer::GetNewVectorById(Map::GetObjectSess *session, Int64 id)
 {
-	Math::Geometry::Vector2D *vec = this->vectorList.GetItem((UOSInt)id);
-	if (vec)
+	NotNullPtr<Math::Geometry::Vector2D> vec;
+	if (this->vectorList.GetItem((UOSInt)id).SetTo(vec))
 	{
 		return vec->Clone().Ptr();
 	}
@@ -886,14 +886,16 @@ Bool Map::VectorLayer::SplitPolyline(Math::Coord2DDbl pt)
 	if (objId < 0)
 		return false;
 
-	Math::Geometry::Polyline *pl = (Math::Geometry::Polyline*)this->vectorList.GetItem((UOSInt)objId);
-	NotNullPtr<Math::Geometry::Polyline> pl2;
-	if (pl2.Set(pl->SplitByPoint(pt)))
+	NotNullPtr<Math::Geometry::Polyline> pl;
+	if (Optional<Math::Geometry::Polyline>::ConvertFrom(this->vectorList.GetItem((UOSInt)objId)).SetTo(pl))
 	{
-		this->vectorList.Add(pl2);
-		this->strList.Add(CopyStrs(this->strList.GetItem((UOSInt)objId)));
+		NotNullPtr<Math::Geometry::Polyline> pl2;
+		if (pl2.Set(pl->SplitByPoint(pt)))
+		{
+			this->vectorList.Add(pl2);
+			this->strList.Add(CopyStrs(this->strList.GetItem((UOSInt)objId)));
+		}
 	}
-
 	return false;
 }
 
@@ -903,6 +905,7 @@ void Map::VectorLayer::OptimizePolylinePath()
 		return;
 	const UTF8Char **tmpStr;
 	NotNullPtr<Math::Geometry::Polyline> tmpPL;
+	NotNullPtr<Math::Geometry::LineString> tmpLS;
 
 	Math::Coord2DDbl pt;
 	Math::Coord2DDbl nearPt;
@@ -928,9 +931,9 @@ void Map::VectorLayer::OptimizePolylinePath()
 		while (i-- > 0)
 		{
 			tmpStr = this->strList.RemoveAt(i);
-			if (Optional<Math::Geometry::Polyline>::ConvertFrom(this->vectorList.RemoveAt(i)).SetTo(tmpPL))
+			if (Optional<Math::Geometry::Polyline>::ConvertFrom(this->vectorList.RemoveAt(i)).SetTo(tmpPL) && tmpPL->GetItem(0).SetTo(tmpLS))
 			{
-				points = tmpPL->GetItem(0)->GetPointList(nPoints);
+				points = tmpLS->GetPointList(nPoints);
 				pt = *points;
 				objId = this->GetNearestObjectId(0, pt, nearPt);
 				if (objId >= 0)
@@ -941,9 +944,9 @@ void Map::VectorLayer::OptimizePolylinePath()
 					niy = (Int32)(nearPt.y * 200000.0);
 					if (ix == nix && iy == niy)
 					{
-						Math::Geometry::Polyline *pl = (Math::Geometry::Polyline*)this->vectorList.GetItem((UOSInt)objId);
+						NotNullPtr<Math::Geometry::Polyline> pl;
 						NotNullPtr<Math::Geometry::Polyline> pl2;
-						if (pl2.Set(pl->SplitByPoint(pt)))
+						if (Optional<Math::Geometry::Polyline>::ConvertFrom(this->vectorList.GetItem((UOSInt)objId)).SetTo(pl) && pl2.Set(pl->SplitByPoint(pt)))
 						{
 							this->vectorList.Add(pl2);
 							this->strList.Add(CopyStrs(this->strList.GetItem((UOSInt)objId)));
@@ -962,9 +965,9 @@ void Map::VectorLayer::OptimizePolylinePath()
 					niy = (Int32)(nearPt.y * 200000.0);
 					if (ix == nix && iy == niy)
 					{
-						Math::Geometry::Polyline *pl = (Math::Geometry::Polyline*)this->vectorList.GetItem((UOSInt)objId);
+						NotNullPtr<Math::Geometry::Polyline> pl;
 						NotNullPtr<Math::Geometry::Polyline> pl2;
-						if (pl2.Set(pl->SplitByPoint(pt)))
+						if (Optional<Math::Geometry::Polyline>::ConvertFrom(this->vectorList.GetItem((UOSInt)objId)).SetTo(pl) && pl2.Set(pl->SplitByPoint(pt)))
 						{
 							this->vectorList.Add(pl2);
 							this->strList.Add(CopyStrs(this->strList.GetItem((UOSInt)objId)));
@@ -999,22 +1002,18 @@ void Map::VectorLayer::ReplaceVector(Int64 id, NotNullPtr<Math::Geometry::Vector
 	}
 	else
 	{
-		Math::Geometry::Vector2D *v = this->vectorList.GetItem((UOSInt)id);
+		this->vectorList.GetItem((UOSInt)id).Delete();
 		this->vectorList.SetItem((UOSInt)id, vec);
-		DEL_CLASS(v);
 	}
 }
 
 void Map::VectorLayer::ConvCoordinateSystem(NotNullPtr<Math::CoordinateSystem> destCsys)
 {
-	Math::Geometry::Vector2D *v;
 	Math::CoordinateSystemConverter converter(this->csys, destCsys);
-	UOSInt i;
-	i = this->vectorList.GetCount();
-	while (i-- > 0)
+	Data::ArrayIterator<NotNullPtr<Math::Geometry::Vector2D>> it = this->vectorList.Iterator();
+	while (it.HasNext())
 	{
-		v = this->vectorList.GetItem(i);
-		v->Convert(converter);
+		it.Next()->Convert(converter);
 	}
 
 	this->min = converter.Convert2D(this->min);
@@ -1027,10 +1026,10 @@ void Map::VectorLayer::ConvCoordinateSystem(NotNullPtr<Math::CoordinateSystem> d
 
 void Map::VectorLayer::SwapXY()
 {
-	UOSInt i = this->vectorList.GetCount();
-	while (i-- > 0)
+	Data::ArrayIterator<NotNullPtr<Math::Geometry::Vector2D>> it = this->vectorList.Iterator();
+	while (it.HasNext())
 	{
-		this->vectorList.GetItem(i)->SwapXY();
+		it.Next()->SwapXY();
 	}
 	this->min = this->min.SwapXY();
 	this->max = this->max.SwapXY();

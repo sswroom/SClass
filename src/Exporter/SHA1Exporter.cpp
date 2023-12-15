@@ -65,6 +65,7 @@ Bool Exporter::SHA1Exporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text
 	UTF8Char *sptr;
 	UInt8 buff[20];
 	IO::StreamWriter writer(stm, this->codePage);
+	NotNullPtr<Text::String> name;
 	UOSInt i = 0;
 	UOSInt cnt = fchk->GetCount();
 	while (i < cnt)
@@ -72,7 +73,8 @@ Bool Exporter::SHA1Exporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text
 		fchk->GetEntryHash(i, buff);
 		sptr = Text::StrHexBytes(sbuff, buff, 20, 0);
 		sptr = Text::StrConcatC(sptr, UTF8STRC(" *"));
-		sptr = fchk->GetEntryName(i)->ConcatTo(sptr);
+		if (fchk->GetEntryName(i).SetTo(name))
+			sptr = name->ConcatTo(sptr);
 		writer.WriteLineC(sbuff, (UOSInt)(sptr - sbuff));
 		i++;
 	}

@@ -37,20 +37,16 @@ Text::SpreadSheet::Workbook::Workbook() : IO::ParsedObject(CSTR("Untitled"))
 
 Text::SpreadSheet::Workbook::~Workbook()
 {
-	Text::SpreadSheet::Worksheet *ws;
-	Text::SpreadSheet::CellStyle *style;
 	Text::SpreadSheet::WorkbookFont *font;
 	UOSInt i = this->sheets.GetCount();
 	while (i-- > 0)
 	{
-		ws = this->sheets.GetItem(i);
-		DEL_CLASS(ws);
+		this->sheets.GetItem(i).Delete();
 	}
 	i = this->styles.GetCount();
 	while (i-- > 0)
 	{
-		style = this->styles.GetItem(i);
-		SDEL_CLASS(style);
+		this->styles.GetItem(i).Delete();
 	}
 	i = this->fonts.GetCount();
 	while (i-- > 0)
@@ -97,18 +93,16 @@ Text::SpreadSheet::Workbook *Text::SpreadSheet::Workbook::Clone() const
 	newWB->activeSheet = this->activeSheet;
 	MemCopyNO(newWB->palette, this->palette, sizeof(defPalette));
 
-	i = 0;
-	j = this->styles.GetCount();
-	while (i < j)
+	Data::ArrayIterator<NotNullPtr<CellStyle>> itStyle = this->styles.Iterator();
+	while (itStyle.HasNext())
 	{
-		newWB->styles.Add(this->styles.GetItem(i)->Clone());
+		newWB->styles.Add(itStyle.Next()->Clone());
 		i++;
 	}
-	i = 0;
-	j = this->sheets.GetCount();
-	while (i < j)
+	Data::ArrayIterator<NotNullPtr<Worksheet>> itSheet = this->sheets.Iterator();
+	while (itSheet.HasNext())
 	{
-		newWB->sheets.Add(this->sheets.GetItem(i)->Clone(this, newWB));
+		newWB->sheets.Add(itSheet.Next()->Clone(this, newWB));
 		i++;
 	}
 	i = 0;
@@ -347,9 +341,7 @@ Bool Text::SpreadSheet::Workbook::HasWindowInfo()
 
 Bool Text::SpreadSheet::Workbook::HasCellStyle()
 {
-	if (this->styles.GetCount() > 1)
-		return true;
-	if (this->styles.GetItem(0))
+	if (this->styles.GetCount() > 0)
 		return true;
 	return false;
 }
@@ -379,18 +371,18 @@ UOSInt Text::SpreadSheet::Workbook::GetStyleCount() const
 	return this->styles.GetCount();
 }
 
-OSInt Text::SpreadSheet::Workbook::GetStyleIndex(CellStyle *style) const
+OSInt Text::SpreadSheet::Workbook::GetStyleIndex(NotNullPtr<CellStyle> style) const
 {
 	UOSInt i = this->styles.GetCount();
 	while (i-- > 0)
 	{
-		if (this->styles.GetItem(i) == style)
+		if (this->styles.GetItem(i).OrNull() == style.Ptr())
 			return (OSInt)i;
 	}
 	return -1;
 }
 
-Text::SpreadSheet::CellStyle *Text::SpreadSheet::Workbook::GetStyle(UOSInt index) const
+Optional<Text::SpreadSheet::CellStyle> Text::SpreadSheet::Workbook::GetStyle(UOSInt index) const
 {
 	return this->styles.GetItem(index);
 }
@@ -401,7 +393,7 @@ NotNullPtr<Text::SpreadSheet::CellStyle> Text::SpreadSheet::Workbook::FindOrCrea
 	UOSInt i = this->styles.GetCount();
 	while (i-- > 0)
 	{
-		if (style.Set(this->styles.GetItem(i)))
+		if (this->styles.GetItem(i).SetTo(style))
 		{
 			if (style->Equals(tmpStyle))
 			{
@@ -415,10 +407,14 @@ NotNullPtr<Text::SpreadSheet::CellStyle> Text::SpreadSheet::Workbook::FindOrCrea
 	return style;
 }
 
-Text::SpreadSheet::CellStyle *Text::SpreadSheet::Workbook::GetDefaultStyle()
+Data::ArrayIterator<NotNullPtr<Text::SpreadSheet::CellStyle>> Text::SpreadSheet::Workbook::StyleIterator() const
 {
-	Text::SpreadSheet::CellStyle *style = this->styles.GetItem(0);
-	return style;
+	return this->styles.Iterator();
+}
+
+Optional<Text::SpreadSheet::CellStyle> Text::SpreadSheet::Workbook::GetDefaultStyle()
+{
+	return this->styles.GetItem(0);
 }
 
 void Text::SpreadSheet::Workbook::GetPalette(UInt32 *palette)
@@ -466,14 +462,19 @@ NotNullPtr<Text::SpreadSheet::Worksheet> Text::SpreadSheet::Workbook::InsertWork
 	return ws;
 }
 
-UOSInt Text::SpreadSheet::Workbook::GetCount()
+UOSInt Text::SpreadSheet::Workbook::GetCount() const
 {
 	return this->sheets.GetCount();
 }
 
-Text::SpreadSheet::Worksheet *Text::SpreadSheet::Workbook::GetItem(UOSInt index)
+Optional<Text::SpreadSheet::Worksheet> Text::SpreadSheet::Workbook::GetItem(UOSInt index) const
 {
 	return this->sheets.GetItem(index);
+}
+
+Data::ArrayIterator<NotNullPtr<Text::SpreadSheet::Worksheet>> Text::SpreadSheet::Workbook::Iterator() const
+{
+	return this->sheets.Iterator();
 }
 
 void Text::SpreadSheet::Workbook::RemoveAt(UOSInt index)
@@ -481,13 +482,13 @@ void Text::SpreadSheet::Workbook::RemoveAt(UOSInt index)
 	this->sheets.RemoveAt(index).Delete();
 }
 
-Text::SpreadSheet::Worksheet *Text::SpreadSheet::Workbook::GetWorksheetByName(Text::CString name)
+Optional<Text::SpreadSheet::Worksheet> Text::SpreadSheet::Workbook::GetWorksheetByName(Text::CString name)
 {
-	UOSInt i = this->sheets.GetCount();
-	Worksheet *sheet;
-	while (i-- > 0)
+	Data::ArrayIterator<NotNullPtr<Worksheet>> it = this->sheets.Iterator();
+	NotNullPtr<Worksheet> sheet;
+	while (it.HasNext())
 	{
-		sheet = this->sheets.GetItem(i);
+		sheet = it.Next();
 		if (sheet->GetName()->Equals(name.v, name.leng))
 			return sheet;
 	}

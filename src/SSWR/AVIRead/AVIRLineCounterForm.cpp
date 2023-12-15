@@ -15,10 +15,10 @@ void __stdcall SSWR::AVIRead::AVIRLineCounterForm::OnExtensionsAddClicked(void *
 	me->txtExtensions->GetText(sb);
 	if (sb.GetLength() == 0)
 		return;
-	UOSInt i = me->extList.GetCount();
-	while (i-- > 0)
+	Data::ArrayIterator<NotNullPtr<Text::String>> it = me->extList.Iterator();
+	while (it.HasNext())
 	{
-		if (me->extList.GetItem(i)->EqualsICase(sb.ToString(), sb.GetLength()))
+		if (it.Next()->EqualsICase(sb.ToString(), sb.GetLength()))
 		{
 			return;
 		}
@@ -148,10 +148,10 @@ void SSWR::AVIRead::AVIRLineCounterForm::CalcDir(UTF8Char *pathBuff, UTF8Char *p
 			{
 				found = false;
 				i = Text::StrLastIndexOfCharC(pathBuffEnd, (UOSInt)(sptr - pathBuffEnd), '.') + 1;
-				j = this->extList.GetCount();
-				while (j-- > 0)
+				Data::ArrayIterator<NotNullPtr<Text::String>> it = this->extList.Iterator();
+				while (it.HasNext())
 				{
-					if (this->extList.GetItem(j)->EqualsICase(&pathBuffEnd[i], (UOSInt)(sptr - &pathBuffEnd[i])))
+					if (it.Next()->EqualsICase(&pathBuffEnd[i], (UOSInt)(sptr - &pathBuffEnd[i])))
 					{
 						found = true;
 						break;
@@ -190,14 +190,8 @@ void SSWR::AVIRead::AVIRLineCounterForm::CalcDir(UTF8Char *pathBuff, UTF8Char *p
 
 void SSWR::AVIRead::AVIRLineCounterForm::ClearExts()
 {
-	UOSInt i;
 	if (this->lbExtensions) this->lbExtensions->ClearItems();
-	i = this->extList.GetCount();
-	while (i-- > 0)
-	{
-		this->extList.GetItem(i)->Release();
-	}
-	this->extList.Clear();
+	LISTNN_FREE_STRING(&this->extList)
 }
 
 void SSWR::AVIRead::AVIRLineCounterForm::ClearResult()

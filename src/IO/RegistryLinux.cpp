@@ -236,17 +236,16 @@ WChar *IO::Registry::GetSubReg(WChar *buff, UOSInt index)
 	{
 		return 0;
 	}
-	Text::String *cate;
+	NotNullPtr<Text::String> cate;
 	this->clsData->reg->cfg->GetCateList(cateList, false);
 	WChar *ret = 0;
 	Text::StringBuilderUTF8 sbSubReg;
 	UOSInt thisCateLen = this->clsData->cate->leng;
-	UOSInt i = 0;
-	UOSInt j = cateList.GetCount();
+	Data::ArrayIterator<NotNullPtr<Text::String>> it = cateList.Iterator();
 	UOSInt k;
-	while (i < j)
+	while (it.HasNext())
 	{
-		cate = cateList.GetItem(i);
+		cate = it.Next();
 		if (cate->StartsWith(this->clsData->cate) && cate->v[thisCateLen] == '\\')
 		{
 			k = Text::StrIndexOfChar(&cate->v[thisCateLen + 1], '\\');
@@ -272,7 +271,6 @@ WChar *IO::Registry::GetSubReg(WChar *buff, UOSInt index)
 				}
 			}
 		}
-		i++;
 	}
 	LIST_FREE_FUNC(&names, Text::StrDelNew);
 	return ret;
@@ -390,8 +388,8 @@ WChar *IO::Registry::GetName(WChar *nameBuff, UOSInt index)
 	}
 	Data::ArrayListNN<Text::String> keys;
 	this->clsData->reg->cfg->GetKeys(this->clsData->cate->ToCString(), keys);
-	Text::String *key = keys.GetItem(index);
-	if (key)
+	NotNullPtr<Text::String> key;
+	if (keys.GetItem(index).SetTo(key))
 	{
 		return Text::StrUTF8_WChar(nameBuff, key->v, 0);
 	}

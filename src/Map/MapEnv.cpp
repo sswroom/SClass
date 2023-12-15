@@ -1453,18 +1453,18 @@ UOSInt Map::MapEnv::GetLayersInGroup(Map::MapEnv::GroupItem *group, NotNullPtr<D
 	return ret;
 }
 
-Bool Map::MapEnv::GetBounds(Map::MapEnv::GroupItem *group, Math::RectAreaDbl *bounds) const
+Bool Map::MapEnv::GetBounds(Map::MapEnv::GroupItem *group, OutParam<Math::RectAreaDbl> bounds) const
 {
 	Data::ArrayListNN<Map::MapDrawLayer> layers;
-	UOSInt i = 0;
-	UOSInt j = this->GetLayersInGroup(group, layers);
+	this->GetLayersInGroup(group, layers);
 	Math::RectAreaDbl minMax = Math::RectAreaDbl(0, 0, 0, 0);
 	Math::RectAreaDbl thisBounds;
 	NotNullPtr<Math::CoordinateSystem> lyrCSys;
 	Bool isFirst = true;
-	while (i < j)
+	Data::ArrayIterator<NotNullPtr<Map::MapDrawLayer>> it = layers.Iterator();
+	while (it.HasNext())
 	{
-		Map::MapDrawLayer *lyr = layers.GetItem(i);
+		NotNullPtr<Map::MapDrawLayer> lyr = it.Next();
 		if (lyr->GetBounds(thisBounds))
 		{
 			lyrCSys = lyr->GetCoordinateSystem();
@@ -1484,9 +1484,8 @@ Bool Map::MapEnv::GetBounds(Map::MapEnv::GroupItem *group, Math::RectAreaDbl *bo
 				minMax.br = minMax.br.Max(thisBounds.br);
 			}
 		}	
-		i++;
 	}
-	*bounds = minMax;
+	bounds.Set(minMax);
 	return !isFirst;
 }
 

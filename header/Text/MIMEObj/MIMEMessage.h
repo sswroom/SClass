@@ -33,11 +33,11 @@ namespace Text
 			void SetTransferData(const UInt8 *data, UOSInt dataSize);
 
 			void AddHeader(const UTF8Char *name, UOSInt nameLen, const UTF8Char *value, UOSInt valueLen);
-			void AddHeader(Text::String *name, Text::String *value);
-			Text::String *GetHeader(const UTF8Char *name, UOSInt nameLen) const;
+			void AddHeader(NotNullPtr<Text::String> name, NotNullPtr<Text::String> value);
+			Optional<Text::String> GetHeader(const UTF8Char *name, UOSInt nameLen) const;
 			UOSInt GetHeaderCount() const;
-			Text::String *GetHeaderName(UOSInt index) const;
-			Text::String *GetHeaderValue(UOSInt index) const;
+			Optional<Text::String> GetHeaderName(UOSInt index) const;
+			Optional<Text::String> GetHeaderValue(UOSInt index) const;
 
 			Bool ParseFromData(NotNullPtr<IO::StreamData> fd);
 

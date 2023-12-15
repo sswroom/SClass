@@ -132,10 +132,11 @@ void __stdcall SSWR::AVIRead::AVIRRSSReaderForm::OnRequestClicked(void *userObj)
 void __stdcall SSWR::AVIRead::AVIRRSSReaderForm::OnRecentSelChg(void *userObj)
 {
 	SSWR::AVIRead::AVIRRSSReaderForm *me = (SSWR::AVIRead::AVIRRSSReaderForm*)userObj;
+	NotNullPtr<Text::String> s;
 	UOSInt i = me->cboRecent->GetSelectedIndex();
-	if (i != INVALID_INDEX)
+	if (i != INVALID_INDEX && me->rssList.GetItem(i).SetTo(s))
 	{
-		me->txtURL->SetText(me->rssList.GetItem(i)->ToCString());
+		me->txtURL->SetText(s->ToCString());
 	}
 }
 
@@ -177,19 +178,14 @@ void SSWR::AVIRead::AVIRRSSReaderForm::RSSListStore()
 	UTF8Char *sptr;
 	sptr = IO::Path::GetProcessFileName(sbuff);
 	sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("RSSList.txt"));
-	UOSInt i;
-	UOSInt j;
 	IO::FileStream fs(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 	if (!fs.IsError())
 	{
 		Text::UTF8Writer writer(fs);
-		i = 0;
-		j = this->rssList.GetCount();
-		while (i < j)
+		Data::ArrayIterator<NotNullPtr<Text::String>> it = this->rssList.Iterator();
+		while (it.HasNext())
 		{
-			Text::String *s = rssList.GetItem(i);
-			writer.WriteLineC(s->v, s->leng);
-			i++;
+			writer.WriteLineCStr(it.Next()->ToCString());
 		}
 	}
 }
@@ -249,7 +245,7 @@ SSWR::AVIRead::AVIRRSSReaderForm::~AVIRRSSReaderForm()
 	i = this->rssList.GetCount();
 	while (i-- > 0)
 	{
-		this->rssList.GetItem(i)->Release();
+		OPTSTR_DEL(this->rssList.GetItem(i));
 	}
 	SDEL_CLASS(this->rss);
 	this->ssl.Delete();

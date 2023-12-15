@@ -33,7 +33,7 @@ Net::HTTPClient::HTTPClient(NotNullPtr<Net::SocketFactory> sockf, Bool kaConn) :
 
 Net::HTTPClient::~HTTPClient()
 {
-	LIST_FREE_STRING(&this->headers);
+	LISTNN_FREE_STRING(&this->headers);
 	SDEL_CLASS(this->formSb);
 	this->url->Release();
 }
@@ -123,7 +123,11 @@ UOSInt Net::HTTPClient::GetRespHeaderCnt()
 
 UTF8Char *Net::HTTPClient::GetRespHeader(UOSInt index, UTF8Char *buff)
 {
-	return this->headers.GetItem(index)->ConcatTo(buff);
+	NotNullPtr<Text::String> s;
+	if (this->headers.GetItem(index).SetTo(s))
+		return s->ConcatTo(buff);
+	else
+		return 0;
 }
 
 UTF8Char *Net::HTTPClient::GetRespHeader(Text::CStringNN name, UTF8Char *valueBuff)
@@ -151,13 +155,12 @@ Text::CString Net::HTTPClient::GetRespHeader(Text::CStringNN name)
 {
 	UTF8Char buff[256];
 	UTF8Char *s2;
-	Text::String *s;
-	UOSInt i;
+	NotNullPtr<Text::String> s;
 	s2 = Text::StrConcatC(name.ConcatTo(buff), UTF8STRC(": "));
-	i = this->headers.GetCount();
-	while (i-- > 0)
+	Data::ArrayIterator<NotNullPtr<Text::String>> it = this->headers.Iterator();
+	while (it.HasNext())
 	{
-		s = this->headers.GetItem(i);
+		s = it.Next();
 		if (s->StartsWithICase(buff, (UOSInt)(s2 - buff)))
 		{
 			return Text::CString(&s->v[s2-buff], s->leng - (UOSInt)(s2 - buff));
@@ -166,7 +169,7 @@ Text::CString Net::HTTPClient::GetRespHeader(Text::CStringNN name)
 	return CSTR_NULL;
 }
 
-Text::String *Net::HTTPClient::GetRespHeader(UOSInt index)
+Optional<Text::String> Net::HTTPClient::GetRespHeader(UOSInt index)
 {
 	return this->headers.GetItem(index);
 }

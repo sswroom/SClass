@@ -32,7 +32,7 @@ namespace IO
 		UOSInt GetHashSize() const;
 		Crypto::Hash::HashType GetCheckType() const;
 		UOSInt GetCount() const;
-		Text::String *GetEntryName(UOSInt index) const;
+		Optional<Text::String> GetEntryName(UOSInt index) const;
 		Bool GetEntryHash(UOSInt index, UInt8 *hashVal) const;
 		void AddEntry(Text::CString fileName, UInt8 *hashVal);
 		Bool CheckEntryHash(UOSInt index, UInt8 *hashVal) const;

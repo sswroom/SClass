@@ -15,14 +15,14 @@ namespace Map
 			UOSInt urlNext;
 			Sync::Mutex urlMut;
 
-			Text::String *GetNextURL();
+			Optional<Text::String> GetNextURL();
 		public:
 			OSMTileMap(Text::CStringNN url, Text::CString cacheDir, UOSInt minLevel, UOSInt maxLevel, NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl);
 			OSMTileMap(Text::CStringNN url, IO::SPackageFile *spkg, UOSInt minLevel, UOSInt maxLevel, NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl);
 			virtual ~OSMTileMap();
 
 			void AddAlternateURL(Text::CStringNN url);
-			Text::String *GetOSMURL(UOSInt index);
+			Optional<Text::String> GetOSMURL(UOSInt index);
 
 			virtual Text::CStringNN GetName() const;
 			virtual TileType GetTileType() const;

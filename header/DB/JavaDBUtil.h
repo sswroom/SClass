@@ -9,12 +9,12 @@ namespace DB
 	class JavaDBUtil
 	{
 	private:
-		static NotNullPtr<Text::String> AppendFieldAnno(NotNullPtr<Text::StringBuilderUTF8> sb, DB::ColDef *col, Data::StringMap<Bool> *importMap); //return colName, need release
-		static void AppendFieldDef(NotNullPtr<Text::StringBuilderUTF8> sb, DB::ColDef *col, NotNullPtr<Text::String> colName, Data::StringMap<Bool> *importMap);
-		static void AppendConstrHdr(NotNullPtr<Text::StringBuilderUTF8> sb, DB::ColDef *col, NotNullPtr<Text::String> colName, Bool isLast);
+		static NotNullPtr<Text::String> AppendFieldAnno(NotNullPtr<Text::StringBuilderUTF8> sb, NotNullPtr<DB::ColDef> col, NotNullPtr<Data::StringMap<Bool>> importMap); //return colName, need release
+		static void AppendFieldDef(NotNullPtr<Text::StringBuilderUTF8> sb, NotNullPtr<DB::ColDef> col, NotNullPtr<Text::String> colName, NotNullPtr<Data::StringMap<Bool>> importMap);
+		static void AppendConstrHdr(NotNullPtr<Text::StringBuilderUTF8> sb, NotNullPtr<DB::ColDef> col, NotNullPtr<Text::String> colName, Bool isLast);
 		static void AppendConstrItem(NotNullPtr<Text::StringBuilderUTF8> sb, NotNullPtr<Text::String> colName);
-		static void AppendGetterSetter(NotNullPtr<Text::StringBuilderUTF8> sb, DB::ColDef *col, NotNullPtr<Text::String> colName);
-		static void AppendEqualsItem(NotNullPtr<Text::StringBuilderUTF8> sb, DB::ColDef *col, NotNullPtr<Text::String> colName, NotNullPtr<Text::String> clsName, Bool isLast);
+		static void AppendGetterSetter(NotNullPtr<Text::StringBuilderUTF8> sb, NotNullPtr<DB::ColDef> col, NotNullPtr<Text::String> colName);
+		static void AppendEqualsItem(NotNullPtr<Text::StringBuilderUTF8> sb, NotNullPtr<DB::ColDef> col, NotNullPtr<Text::String> colName, NotNullPtr<Text::String> clsName, Bool isLast);
 		static void AppendHashCodeItem(NotNullPtr<Text::StringBuilderUTF8> sb, NotNullPtr<Text::String> colName, Bool isLast);
 		static void AppendFieldOrderItem(NotNullPtr<Text::StringBuilderUTF8> sb, NotNullPtr<Text::String> colName, Bool isLast);
 		

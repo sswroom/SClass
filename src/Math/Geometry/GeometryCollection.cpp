@@ -19,12 +19,10 @@ NotNullPtr<Math::Geometry::Vector2D> Math::Geometry::GeometryCollection::Clone()
 {
 	NotNullPtr<Math::Geometry::GeometryCollection> newObj;
 	NEW_CLASSNN(newObj, Math::Geometry::GeometryCollection(this->srid));
-	UOSInt i = 0;
-	UOSInt j = this->geometries.GetCount();
-	while (i < j)
+	Data::ArrayIterator<NotNullPtr<Math::Geometry::Vector2D>> it = this->geometries.Iterator();
+	while (it.HasNext())
 	{
-		newObj->AddGeometry(this->geometries.GetItem(i)->Clone());
-		i++;
+		newObj->AddGeometry(it.Next()->Clone());
 	}
 	return newObj;
 }

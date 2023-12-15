@@ -35,7 +35,7 @@ namespace Net
 			virtual Bool NewEmail(Int64 id, NotNullPtr<const Net::SocketUtil::AddressInfo> remoteAddr, Text::CStringNN serverName, NotNullPtr<const Text::MIMEObj::MailMessage> mail);
 			virtual IO::StreamData *OpenEmailData(Int64 id);
 			virtual const UTF8Char *GetEmailUid(Int64 id);
-			virtual UOSInt GetRcptList(Int64 id, Data::ArrayList<Text::String*> *rcptList);
+			virtual UOSInt GetRcptList(Int64 id, NotNullPtr<Data::ArrayListNN<Text::String>> rcptList);
 			virtual Net::Email::MailController::RemoveStatus RemoveMessage(Text::CString userName, UOSInt msgIndex);
 			virtual Net::Email::EmailStore::EmailInfo *GetEmailByIndex(Text::CString userName, UOSInt msgIndex);
 			virtual void GetMessageStat(Text::CString userName, MessageStat *stat);

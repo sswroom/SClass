@@ -72,7 +72,7 @@ namespace IO
 		void ClearHandlers();
 		virtual void LogMessage(Text::CStringNN logMsg, LogHandler::LogLevel level);
 		void LogStackTrace(LogHandler::LogLevel level);
-		LogHandler *GetLastFileLog();
+		Optional<LogHandler> GetLastFileLog();
 	};
 }
 #endif

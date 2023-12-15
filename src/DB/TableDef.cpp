@@ -79,29 +79,27 @@ UOSInt DB::TableDef::GetColCnt() const
 	return this->cols.GetCount();
 }
 
-DB::ColDef *DB::TableDef::GetCol(UOSInt index) const
+Optional<DB::ColDef> DB::TableDef::GetCol(UOSInt index) const
 {
 	return this->cols.GetItem(index);
 }
 
-DB::ColDef *DB::TableDef::GetSinglePKCol() const
+Optional<DB::ColDef> DB::TableDef::GetSinglePKCol() const
 {
-	DB::ColDef *retCol = 0;
-	DB::ColDef *col;
-	UOSInt i = 0;
-	UOSInt j = this->cols.GetCount();
-	while (i < j)
+	Optional<DB::ColDef> retCol = 0;
+	NotNullPtr<DB::ColDef> col;
+	Data::ArrayIterator<NotNullPtr<DB::ColDef>> it = this->cols.Iterator();
+	while (it.HasNext())
 	{
-		col = this->cols.GetItem(i);
+		col = it.Next();
 		if (col->IsPK())
 		{
-			if (retCol != 0)
+			if (!retCol.IsNull())
 			{
 				return 0;
 			}
 			retCol = col;
 		}
-		i++;
 	}
 	return retCol;
 }
@@ -109,13 +107,18 @@ DB::ColDef *DB::TableDef::GetSinglePKCol() const
 UOSInt DB::TableDef::CountPK() const
 {
 	UOSInt cnt = 0;
-	UOSInt i = this->cols.GetCount();
-	while (i-- > 0)
+	Data::ArrayIterator<NotNullPtr<DB::ColDef>> it = this->cols.Iterator();
+	while (it.HasNext())
 	{
-		if (this->cols.GetItem(i)->IsPK())
+		if (it.Next()->IsPK())
 			cnt++;
 	}
 	return cnt;
+}
+
+Data::ArrayIterator<NotNullPtr<DB::ColDef>> DB::TableDef::ColIterator() const
+{
+	return this->cols.Iterator();
 }
 
 DB::TableDef *DB::TableDef::AddCol(NotNullPtr<DB::ColDef> col)
@@ -203,12 +206,10 @@ NotNullPtr<DB::TableDef> DB::TableDef::Clone() const
 	newObj->SetAttr(this->attr);
 	newObj->SetComments(this->comments);
 	newObj->SetSQLType(this->sqlType);
-	UOSInt i = 0;
-	UOSInt j = this->cols.GetCount();
-	while (i < j)
+	Data::ArrayIterator<NotNullPtr<DB::ColDef>> it = this->cols.Iterator();
+	while (it.HasNext())
 	{
-		newObj->AddCol(this->cols.GetItem(i)->Clone());
-		i++;
+		newObj->AddCol(it.Next()->Clone());
 	}
 	return newObj;
 }
@@ -216,15 +217,11 @@ NotNullPtr<DB::TableDef> DB::TableDef::Clone() const
 NotNullPtr<Data::Class> DB::TableDef::CreateTableClass() const
 {
 	DB::DBClassBuilder builder;
-	UOSInt i;
-	UOSInt j;
-	i = 0;
-	j = this->cols.GetCount();
-	while (i < j)
+	Data::ArrayIterator<NotNullPtr<DB::ColDef>> it = this->cols.Iterator();
+	while (it.HasNext())
 	{
-		DB::ColDef *col = this->cols.GetItem(i);
+		NotNullPtr<DB::ColDef> col = it.Next();
 		builder.AddItem(col->GetColName()->v, col->GetColType());
-		i++;
 	}
 	return builder.GetResultClass();
 }

@@ -269,9 +269,9 @@ namespace Data
 
 		Bool IsValid(NotNullPtr<Data::VariObject> obj);
 		Bool IsValid(NotNullPtr<Data::ObjectGetter> getter);
-		Bool ToWhereClause(NotNullPtr<Text::StringBuilderUTF8> sb, DB::SQLType sqlType, Int8 tzQhr, UOSInt maxDBItem, Data::ArrayList<Condition*> *clientConditions);
+		Bool ToWhereClause(NotNullPtr<Text::StringBuilderUTF8> sb, DB::SQLType sqlType, Int8 tzQhr, UOSInt maxDBItem, NotNullPtr<Data::ArrayListNN<Condition>> clientConditions);
 		UOSInt GetCount();
-		Condition *GetItem(UOSInt index);
+		Optional<Condition> GetItem(UOSInt index);
 		NotNullPtr<Data::ArrayListNN<Condition>> GetList();
 		void GetFieldList(NotNullPtr<Data::ArrayListNN<Text::String>> fieldList);
 

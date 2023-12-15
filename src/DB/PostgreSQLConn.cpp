@@ -963,8 +963,6 @@ DB::DBReader *DB::PostgreSQLConn::QueryTableData(Text::CString schemaName, Text:
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 	Text::StringBuilderUTF8 sb;
-	UOSInt i;
-	UOSInt j;
 	sb.AppendC(UTF8STRC("select "));
 	if (columnNames == 0 || columnNames->GetCount() == 0)
 	{
@@ -972,17 +970,15 @@ DB::DBReader *DB::PostgreSQLConn::QueryTableData(Text::CString schemaName, Text:
 	}
 	else
 	{
-		i = 0;
-		j = columnNames->GetCount();
-		while (i < j)
+		Data::ArrayIterator<NotNullPtr<Text::String>> it = columnNames->Iterator();
+		Bool found = false;
+		while (it.HasNext())
 		{
-			if (i > 0)
-			{
+			if (found)
 				sb.AppendUTF8Char(',');
-			}
-			sptr = DB::DBUtil::SDBColUTF8(sbuff, columnNames->GetItem(i)->v, DB::SQLType::PostgreSQL);
+			sptr = DB::DBUtil::SDBColUTF8(sbuff, it.Next()->v, DB::SQLType::PostgreSQL);
 			sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
-			i++;
+			found = true;
 		}
 	}
 	sb.AppendC(UTF8STRC(" from "));
@@ -996,8 +992,9 @@ DB::DBReader *DB::PostgreSQLConn::QueryTableData(Text::CString schemaName, Text:
 		sb.AppendP(sbuff, sptr);
 	if (condition)
 	{
+		Data::ArrayListNN<Data::QueryConditions::Condition> cliCond;
 		sb.AppendC(UTF8STRC(" where "));
-		condition->ToWhereClause(sb, DB::SQLType::PostgreSQL, 0, 100, 0);
+		condition->ToWhereClause(sb, DB::SQLType::PostgreSQL, 0, 100, cliCond);
 	}
 	if (ordering.leng > 0)
 	{

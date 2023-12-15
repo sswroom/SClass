@@ -60,7 +60,7 @@ UI::GUIComboBox::~GUIComboBox()
 	UOSInt i = this->itemTexts.GetCount();
 	while (i-- > 0)
 	{
-		this->itemTexts.GetItem(i)->Release();
+		OPTSTR_DEL(this->itemTexts.GetItem(i));
 	}
 	MemFree(this->clsData);
 }
@@ -83,18 +83,18 @@ void UI::GUIComboBox::EventTextChanged()
 		if (sb.GetLength() > this->lastTextLeng)
 		{
 			this->nonUIEvent = true;
-			UOSInt i = 0;
-			UOSInt j = this->itemTexts.GetCount();
-			while (i < j)
+			Data::ArrayIterator<NotNullPtr<Text::String>> it = this->itemTexts.Iterator();
+			NotNullPtr<Text::String> s;
+			while (it.HasNext())
 			{
-				if (this->itemTexts.GetItem(i)->StartsWith(sb.ToString(), sb.GetLength()))
+				s = it.Next();
+				if (s->StartsWith(sb.ToString(), sb.GetLength()))
 				{
-					this->SetText(this->itemTexts.GetItem(i)->ToCString());
+					this->SetText(s->ToCString());
 					//this->SetSelectedIndex(i);
-					this->SetTextSelection(sb.GetLength(), this->itemTexts.GetItem(i)->leng);
+					this->SetTextSelection(sb.GetLength(), s->leng);
 					break;
 				}
-				i++;
 			}
 			this->nonUIEvent = false;
 		}
@@ -112,9 +112,10 @@ void UI::GUIComboBox::SetText(Text::CStringNN text)
 	else
 	{
 		UOSInt i = this->itemTexts.GetCount();
+		NotNullPtr<Text::String> s;
 		while (i-- > 0)
 		{
-			if (this->itemTexts.GetItem(i)->Equals(text.v, text.leng))
+			if (this->itemTexts.GetItem(i).SetTo(s) && s->Equals(text.v, text.leng))
 			{
 				this->SetSelectedIndex(i);
 				return;
@@ -227,7 +228,7 @@ void UI::GUIComboBox::ClearItems()
 	UOSInt i = this->itemTexts.GetCount();
 	while (i-- > 0)
 	{
-		this->itemTexts.GetItem(i)->Release();
+		OPTSTR_DEL(this->itemTexts.GetItem(i));
 	}
 	this->itemTexts.Clear();
 	this->items.Clear();
@@ -252,9 +253,9 @@ UOSInt UI::GUIComboBox::GetSelectedIndex()
 UTF8Char *UI::GUIComboBox::GetSelectedItemText(UTF8Char *sbuff)
 {
 	UOSInt i = this->GetSelectedIndex();
-	if (i == INVALID_INDEX)
+	NotNullPtr<Text::String> s;
+	if (i == INVALID_INDEX && !this->itemTexts.GetItem(i).SetTo(s))
 		return 0;
-	Text::String *s = this->itemTexts.GetItem(i);
 	return Text::StrConcatC(sbuff, s->v, s->leng);
 }
 
@@ -265,8 +266,8 @@ void *UI::GUIComboBox::GetSelectedItem()
 
 UTF8Char *UI::GUIComboBox::GetItemText(UTF8Char *buff, UOSInt index)
 {
-	Text::String *txt = this->itemTexts.GetItem(index);
-	if (txt == 0)
+	NotNullPtr<Text::String> txt;
+	if (!this->itemTexts.GetItem(index).SetTo(txt))
 		return 0;
 	return Text::StrConcatC(buff, txt->v, txt->leng);
 }

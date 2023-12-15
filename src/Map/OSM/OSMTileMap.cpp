@@ -3,10 +3,10 @@
 #include "Sync/MutexUsage.h"
 #include "Text/MyString.h"
 
-Text::String *Map::OSM::OSMTileMap::GetNextURL()
+Optional<Text::String> Map::OSM::OSMTileMap::GetNextURL()
 {
 	Sync::MutexUsage mutUsage(this->urlMut);
-	Text::String *thisUrl = this->urls.GetItem(this->urlNext);
+	Optional<Text::String> thisUrl = this->urls.GetItem(this->urlNext);
 	this->urlNext = (this->urlNext + 1) % this->urls.GetCount();
 	return thisUrl;
 }
@@ -26,12 +26,7 @@ Map::OSM::OSMTileMap::OSMTileMap(Text::CStringNN url, IO::SPackageFile *spkg, UO
 
 Map::OSM::OSMTileMap::~OSMTileMap()
 {
-	UOSInt i;
-	i = this->urls.GetCount();
-	while (i-- > 0)
-	{
-		this->urls.GetItem(i)->Release();
-	}
+	LISTNN_FREE_STRING(&this->urls);
 }
 
 void Map::OSM::OSMTileMap::AddAlternateURL(Text::CStringNN url)
@@ -39,7 +34,7 @@ void Map::OSM::OSMTileMap::AddAlternateURL(Text::CStringNN url)
 	this->urls.Add(Text::String::New(url));
 }
 
-Text::String *Map::OSM::OSMTileMap::GetOSMURL(UOSInt index)
+Optional<Text::String> Map::OSM::OSMTileMap::GetOSMURL(UOSInt index)
 {
 	return this->urls.GetItem(index);
 }
@@ -67,25 +62,37 @@ UOSInt Map::OSM::OSMTileMap::GetConcurrentCount() const
 UTF8Char *Map::OSM::OSMTileMap::GetTileImageURL(UTF8Char *sbuff, UOSInt level, Math::Coord2D<Int32> tileId)
 {
 	UTF8Char *sptr;
-	Text::String *thisUrl = this->GetNextURL();
-	sptr = thisUrl->ConcatTo(sbuff);
-	sptr = Text::StrUOSInt(sptr, level);
-	sptr = Text::StrConcatC(sptr, UTF8STRC("/"));
-	sptr = Text::StrInt32(sptr, tileId.x);
-	sptr = Text::StrConcatC(sptr, UTF8STRC("/"));
-	sptr = Text::StrInt32(sptr, tileId.y);
-	sptr = Text::StrConcatC(sptr, UTF8STRC(".png"));
-	return sptr;
+	NotNullPtr<Text::String> thisUrl;
+	if (this->GetNextURL().SetTo(thisUrl))
+	{
+		sptr = thisUrl->ConcatTo(sbuff);
+		sptr = Text::StrUOSInt(sptr, level);
+		sptr = Text::StrConcatC(sptr, UTF8STRC("/"));
+		sptr = Text::StrInt32(sptr, tileId.x);
+		sptr = Text::StrConcatC(sptr, UTF8STRC("/"));
+		sptr = Text::StrInt32(sptr, tileId.y);
+		sptr = Text::StrConcatC(sptr, UTF8STRC(".png"));
+		return sptr;
+	}
+	return 0;
 }
 
 Bool Map::OSM::OSMTileMap::GetTileImageURL(NotNullPtr<Text::StringBuilderUTF8> sb, UOSInt level, Math::Coord2D<Int32> tileId)
 {
-	sb->Append(this->GetNextURL());
-	sb->AppendUOSInt(level);
-	sb->AppendUTF8Char('/');
-	sb->AppendI32(tileId.x);
-	sb->AppendUTF8Char('/');
-	sb->AppendI32(tileId.y);
-	sb->AppendC(UTF8STRC(".png"));
-	return true;
+	NotNullPtr<Text::String> s;
+	if (this->GetNextURL().SetTo(s))
+	{
+		sb->Append(s);
+		sb->AppendUOSInt(level);
+		sb->AppendUTF8Char('/');
+		sb->AppendI32(tileId.x);
+		sb->AppendUTF8Char('/');
+		sb->AppendI32(tileId.y);
+		sb->AppendC(UTF8STRC(".png"));
+		return true;
+	}
+	else
+	{
+		return false;
+	}
 }

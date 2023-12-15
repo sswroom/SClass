@@ -80,12 +80,10 @@ Media::MonitorColorManager::MonitorColorManager(Text::CString profileName)
 Media::MonitorColorManager::~MonitorColorManager()
 {
 	UOSInt i;
-	Media::ColorManagerSess *colorSess;
 	i = this->sessList.GetCount();
 	while (i-- > 0)
 	{
-		colorSess = this->sessList.GetItem(i);
-		DEL_CLASS(colorSess);
+		this->sessList.GetItem(i).Delete();
 	}
 	SDEL_STRING(this->monProfileFile);
 	SDEL_STRING(this->profileName);
@@ -719,28 +717,22 @@ void Media::MonitorColorManager::SetEDIDProfile()
 
 void Media::MonitorColorManager::RGBUpdated()
 {
-	Media::ColorManagerSess *colorSess;
 	Sync::MutexUsage mutUsage(this->sessMut);
-	UOSInt i = this->sessList.GetCount();
-	while (i-- > 0)
+	Data::ArrayIterator<NotNullPtr<Media::ColorManagerSess>> it = this->sessList.Iterator();
+	while (it.HasNext())
 	{
-		colorSess = this->sessList.GetItem(i);
-		colorSess->RGBUpdated(this->rgb);
+		it.Next()->RGBUpdated(this->rgb);
 	}
-	mutUsage.EndUse();
 }
 
 void Media::MonitorColorManager::YUVUpdated()
 {
-	Media::ColorManagerSess *colorSess;
 	Sync::MutexUsage mutUsage(this->sessMut);
-	UOSInt i = this->sessList.GetCount();
-	while (i-- > 0)
+	Data::ArrayIterator<NotNullPtr<Media::ColorManagerSess>> it = this->sessList.Iterator();
+	while (it.HasNext())
 	{
-		colorSess = this->sessList.GetItem(i);
-		colorSess->YUVUpdated(this->yuv);
+		it.Next()->YUVUpdated(this->yuv);
 	}
-	mutUsage.EndUse();
 }
 
 Media::ColorManager::ColorManager()
@@ -1006,21 +998,19 @@ void Media::ColorManagerSess::ChangeMonitor(MonitorHandle *hMon)
 void Media::ColorManagerSess::RGBUpdated(NotNullPtr<const Media::IColorHandler::RGBPARAM2> rgbParam)
 {
 	Sync::MutexUsage mutUsage(this->hdlrMut);
-	UOSInt i = this->hdlrs.GetCount();
-	while (i-- > 0)
+	Data::ArrayIterator<NotNullPtr<Media::IColorHandler>> it = this->hdlrs.Iterator();
+	while (it.HasNext())
 	{
-		this->hdlrs.GetItem(i)->RGBParamChanged(rgbParam);
+		it.Next()->RGBParamChanged(rgbParam);
 	}
-	mutUsage.EndUse();
 }
 
 void Media::ColorManagerSess::YUVUpdated(NotNullPtr<const Media::IColorHandler::YUVPARAM> yuvParam)
 {
 	Sync::MutexUsage mutUsage(this->hdlrMut);
-	UOSInt i = this->hdlrs.GetCount();
-	while (i-- > 0)
+	Data::ArrayIterator<NotNullPtr<Media::IColorHandler>> it = this->hdlrs.Iterator();
+	while (it.HasNext())
 	{
-		this->hdlrs.GetItem(i)->YUVParamChanged(yuvParam);
+		it.Next()->YUVParamChanged(yuvParam);
 	}
-	mutUsage.EndUse();
 }

@@ -54,13 +54,12 @@ IO::SeekableStream *Map::OSM::OSMCacheHandler::GetTileData(Int32 lev, Int32 xTil
 	fs = 0;
 	mutUsage->EndUse();
 
-	Text::String *thisUrl;
+	NotNullPtr<Text::String> thisUrl;
 	Sync::MutexUsage urlMutUsage(this->urlMut);
-	if (this->urls.GetCount() == 0)
+	if (!this->urls.GetItem(this->urlNext).SetTo(thisUrl))
 	{
 		return 0;
 	}
-	thisUrl = this->urls.GetItem(this->urlNext);
 	this->urlNext = (this->urlNext + 1) % this->urls.GetCount();
 	urlMutUsage.EndUse();
 	Text::StringBuilderUTF8 urlSb;
@@ -151,7 +150,7 @@ Map::OSM::OSMCacheHandler::OSMCacheHandler(Text::CString url, Text::CString cach
 
 Map::OSM::OSMCacheHandler::~OSMCacheHandler()
 {
-	LIST_FREE_STRING(&this->urls);
+	LISTNN_FREE_STRING(&this->urls);
 	this->cacheDir->Release();
 }
 

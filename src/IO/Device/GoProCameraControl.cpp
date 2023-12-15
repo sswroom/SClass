@@ -222,13 +222,13 @@ void IO::Device::GoProCameraControl::FreeInfoList(Data::ArrayListNN<Text::String
 	UOSInt i = nameList->GetCount();
 	while (i-- > 0)
 	{
-		nameList->GetItem(i)->Release();
+		OPTSTR_DEL(nameList->GetItem(i));
 	}
 	nameList->Clear();
 	i = valueList->GetCount();
 	while (i-- > 0)
 	{
-		valueList->GetItem(i)->Release();
+		OPTSTR_DEL(valueList->GetItem(i));
 	}
 	valueList->Clear();
 }

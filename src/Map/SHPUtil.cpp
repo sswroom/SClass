@@ -222,7 +222,7 @@ Math::Geometry::Vector2D *Map::SHPUtil::ParseShpRecord(UInt32 srid, const UInt8 
 				i = 0;
 				while (i < nPtOfst)
 				{
-					if (lineString.Set(pl->GetItem(i)))
+					if (pl->GetItem(i).SetTo(lineString))
 					{
 						alts = lineString->GetZList(k);
 						j = 0;
@@ -308,7 +308,7 @@ Math::Geometry::Vector2D *Map::SHPUtil::ParseShpRecord(UInt32 srid, const UInt8 
 				i = 0;
 				while (i < nPtOfst)
 				{
-					if (lineString.Set(pl->GetItem(i)))
+					if (pl->GetItem(i).SetTo(lineString))
 					{
 						dArr = lineString->GetZList(k);
 						j = 0;
@@ -324,7 +324,7 @@ Math::Geometry::Vector2D *Map::SHPUtil::ParseShpRecord(UInt32 srid, const UInt8 
 				i = 0;
 				while (i < nPtOfst)
 				{
-					if (lineString.Set(pl->GetItem(i)))
+					if (pl->GetItem(i).SetTo(lineString))
 					{
 						dArr = lineString->GetMList(k);
 						j = 0;
@@ -528,7 +528,7 @@ Math::Geometry::Vector2D *Map::SHPUtil::ParseShpRecord(UInt32 srid, const UInt8 
 				i = 0;
 				while (i < nPtOfst)
 				{
-					if (lineString.Set(pl->GetItem(i)))
+					if (pl->GetItem(i).SetTo(lineString))
 					{
 						mArr = lineString->GetMList(k);
 						j = 0;

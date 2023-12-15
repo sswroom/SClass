@@ -115,7 +115,7 @@ SSWR::AVIRead::AVIRODBCStrForm::AVIRODBCStrForm(UI::GUIClientControl *parent, No
 	while (i < j)
 	{
 		this->cboDriver->AddItem(Text::String::OrEmpty(driverList.GetItem(i)), 0);
-		driverList.GetItem(i)->Release();
+		OPTSTR_DEL(driverList.GetItem(i));
 		i++;
 	}
 	if (j > 0)

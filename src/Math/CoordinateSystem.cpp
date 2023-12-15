@@ -30,7 +30,7 @@ Double Math::CoordinateSystem::CalPLDistance(NotNullPtr<Math::Geometry::Polyline
 	Double totalDist = 0;
 	while (i-- > 0)
 	{
-		if (lineString.Set(pl->GetItem(i)))
+		if (pl->GetItem(i).SetTo(lineString))
 		{
 			totalDist += CalLineStringDistance(lineString, unit);
 		}
@@ -45,7 +45,7 @@ Double Math::CoordinateSystem::CalPLDistance3D(NotNullPtr<Math::Geometry::Polyli
 	Double totalDist = 0;
 	while (i-- > 0)
 	{
-		if (lineString.Set(pl->GetItem(i)))
+		if (pl->GetItem(i).SetTo(lineString))
 		{
 			totalDist += CalLineStringDistance3D(lineString, unit);
 		}

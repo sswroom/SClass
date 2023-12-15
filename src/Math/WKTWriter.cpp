@@ -15,7 +15,7 @@ void Math::WKTWriter::SetLastError(Text::CString lastError)
 	this->lastError = Text::String::New(lastError).Ptr();
 }
 
-void Math::WKTWriter::AppendLineString(NotNullPtr<Text::StringBuilderUTF8> sb, Math::Geometry::LineString *pl, Bool reverseAxis)
+void Math::WKTWriter::AppendLineString(NotNullPtr<Text::StringBuilderUTF8> sb, NotNullPtr<Math::Geometry::LineString> pl, Bool reverseAxis)
 {
 	sb->AppendUTF8Char('(');
 	UOSInt nPoint;
@@ -127,338 +127,142 @@ void Math::WKTWriter::AppendLineString(NotNullPtr<Text::StringBuilderUTF8> sb, M
 	sb->AppendUTF8Char(')');
 }
 
-void Math::WKTWriter::AppendPolygon(NotNullPtr<Text::StringBuilderUTF8> sb, Math::Geometry::Polygon *pg, Bool reverseAxis)
+void Math::WKTWriter::AppendPolygon(NotNullPtr<Text::StringBuilderUTF8> sb, NotNullPtr<Math::Geometry::Polygon> pg, Bool reverseAxis)
 {
-	UOSInt nPoint;
-	Math::Geometry::LinearRing *lr;
-	UOSInt i;
-	UOSInt j;
-	UOSInt k;
-	i = 0;
-	j = pg->GetCount();
+	Data::ArrayIterator<NotNullPtr<Math::Geometry::LinearRing>> it = pg->Iterator();
+	Bool found = false;
 	sb->AppendUTF8Char('(');
-	while (i < j)
+	while (it.HasNext())
 	{
-		lr = pg->GetItem(i);
-		sb->AppendUTF8Char('(');
-		Math::Coord2DDbl *pointList = lr->GetPointList(nPoint);
-		k = 0;
-		while (k < nPoint)
-		{
-			if (reverseAxis)
-			{
-				sb->AppendDouble(pointList[k].y, &Text::DoubleStyleC);
-				sb->AppendUTF8Char(' ');
-				sb->AppendDouble(pointList[k].x, &Text::DoubleStyleC);
-			}
-			else
-			{
-				sb->AppendDouble(pointList[k].x, &Text::DoubleStyleC);
-				sb->AppendUTF8Char(' ');
-				sb->AppendDouble(pointList[k].y, &Text::DoubleStyleC);
-			}
-			k++;
-			if (k < nPoint)
-			{
-				sb->AppendUTF8Char(',');
-			}
-		}
-		sb->AppendUTF8Char(')');
-		i++;
-		if (i < j)
+		if (found)
 			sb->AppendUTF8Char(',');
+		AppendLineString(sb, it.Next(), reverseAxis);
+		found = true;
 	}
 	sb->AppendUTF8Char(')');
 }
 
-void Math::WKTWriter::AppendPolygonZ(NotNullPtr<Text::StringBuilderUTF8> sb, Math::Geometry::Polygon *pg, Bool reverseAxis)
+void Math::WKTWriter::AppendPolyline(NotNullPtr<Text::StringBuilderUTF8> sb, NotNullPtr<Math::Geometry::Polyline> pl, Bool reverseAxis)
 {
-	UOSInt nPoint;
-	Math::Geometry::LinearRing *lr;
-	UOSInt i;
-	UOSInt j;
-	UOSInt k;
-	i = 0;
-	j = pg->GetCount();
 	sb->AppendUTF8Char('(');
-	while (i < j)
+	Data::ArrayIterator<NotNullPtr<Math::Geometry::LineString>> it = pl->Iterator();
+	Bool found = false;
+	while (it.HasNext())
 	{
-		lr = pg->GetItem(i);
-		sb->AppendUTF8Char('(');
-		Math::Coord2DDbl *pointList = lr->GetPointList(nPoint);
-		Double *zList = lr->GetZList(nPoint);
-		k = 0;
-		while (k < nPoint)
-		{
-			if (reverseAxis)
-			{
-				sb->AppendDouble(pointList[k].y, &Text::DoubleStyleC);
-				sb->AppendUTF8Char(' ');
-				sb->AppendDouble(pointList[k].x, &Text::DoubleStyleC);
-			}
-			else
-			{
-				sb->AppendDouble(pointList[k].x, &Text::DoubleStyleC);
-				sb->AppendUTF8Char(' ');
-				sb->AppendDouble(pointList[k].y, &Text::DoubleStyleC);
-			}
-			sb->AppendUTF8Char(' ');
-			sb->AppendDouble(zList[k], &Text::DoubleStyleC);
-			k++;
-			if (k < nPoint)
-			{
-				sb->AppendUTF8Char(',');
-			}
-		}
-		sb->AppendUTF8Char(')');
-		i++;
-		if (i < j)
-			sb->AppendUTF8Char(',');
+		if (found) sb->AppendUTF8Char(',');
+		AppendLineString(sb, it.Next(), reverseAxis);
+		found = true;
 	}
 	sb->AppendUTF8Char(')');
 }
 
-void Math::WKTWriter::AppendPolyline(NotNullPtr<Text::StringBuilderUTF8> sb, Math::Geometry::Polyline *pl, Bool reverseAxis)
+void Math::WKTWriter::AppendCompoundCurve(NotNullPtr<Text::StringBuilderUTF8> sb, NotNullPtr<Math::Geometry::CompoundCurve> cc, Bool reverseAxis)
 {
 	sb->AppendUTF8Char('(');
-	Math::Coord2DDbl *pointList;
-	Math::Geometry::LineString *lineString;
-	UOSInt i;
-	UOSInt j;
-	UOSInt k;
-	UOSInt l;
-	k = 0;
-	i = 0;
-	j = pl->GetCount();
-	while (i < j)
+	NotNullPtr<Math::Geometry::LineString> pl;
+	Data::ArrayIterator<NotNullPtr<Math::Geometry::LineString>> it = cc->Iterator();
+	Bool found = false;
+	while (it.HasNext())
 	{
-		lineString = pl->GetItem(i);
-		k = 0;
-		pointList = lineString->GetPointList(l);
-		sb->AppendUTF8Char('(');
-		while (k < l)
-		{
-			if (reverseAxis)
-			{
-				sb->AppendDouble(pointList[k].y, &Text::DoubleStyleC);
-				sb->AppendUTF8Char(' ');
-				sb->AppendDouble(pointList[k].x, &Text::DoubleStyleC);
-			}
-			else
-			{
-				sb->AppendDouble(pointList[k].x, &Text::DoubleStyleC);
-				sb->AppendUTF8Char(' ');
-				sb->AppendDouble(pointList[k].y, &Text::DoubleStyleC);
-			}
-			k++;
-			if (k < l)
-				sb->AppendUTF8Char(',');
-		}
-		sb->AppendUTF8Char(')');
-		i++;
-		if (i < j)
-			sb->AppendUTF8Char(',');
-	}
-	sb->AppendUTF8Char(')');
-}
-
-void Math::WKTWriter::AppendPolylineZ(NotNullPtr<Text::StringBuilderUTF8> sb, Math::Geometry::Polyline *pl, Bool reverseAxis)
-{
-	sb->AppendUTF8Char('(');
-	Math::Coord2DDbl *pointList;
-	Double *zList;
-	Math::Geometry::LineString *lineString;
-	UOSInt i;
-	UOSInt j;
-	UOSInt k;
-	UOSInt l;
-	k = 0;
-	i = 0;
-	j = pl->GetCount();
-	while (i < j)
-	{
-		lineString = pl->GetItem(i);
-		pointList = lineString->GetPointList(l);
-		zList = lineString->GetZList(l);
-		k = 0;
-		sb->AppendUTF8Char('(');
-		while (k < l)
-		{
-			if (reverseAxis)
-			{
-				sb->AppendDouble(pointList[k].y, &Text::DoubleStyleC);
-				sb->AppendUTF8Char(' ');
-				sb->AppendDouble(pointList[k].x, &Text::DoubleStyleC);
-			}
-			else
-			{
-				sb->AppendDouble(pointList[k].x, &Text::DoubleStyleC);
-				sb->AppendUTF8Char(' ');
-				sb->AppendDouble(pointList[k].y, &Text::DoubleStyleC);
-			}
-			sb->AppendUTF8Char(' ');
-			sb->AppendDouble(zList[k], &Text::DoubleStyleC);
-			k++;
-			if (k < l)
-				sb->AppendUTF8Char(',');
-		}
-		sb->AppendUTF8Char(')');
-		i++;
-		if (i < j)
-			sb->AppendUTF8Char(',');
-	}
-	sb->AppendUTF8Char(')');
-}
-
-void Math::WKTWriter::AppendPolylineZM(NotNullPtr<Text::StringBuilderUTF8> sb, Math::Geometry::Polyline *pl, Bool reverseAxis)
-{
-	sb->AppendUTF8Char('(');
-	Math::Coord2DDbl *pointList;
-	Double *zList;
-	Double *mList;
-	Math::Geometry::LineString *lineString;
-	UOSInt i;
-	UOSInt j;
-	UOSInt k;
-	UOSInt l;
-	k = 0;
-	i = 0;
-	j = pl->GetCount();
-	while (i < j)
-	{
-		lineString = pl->GetItem(i);
-		pointList = lineString->GetPointList(l);
-		zList = lineString->GetZList(l);
-		mList = lineString->GetMList(l);
-		k = 0;
-		sb->AppendUTF8Char('(');
-		while (k < l)
-		{
-			if (reverseAxis)
-			{
-				sb->AppendDouble(pointList[k].y, &Text::DoubleStyleC);
-				sb->AppendUTF8Char(' ');
-				sb->AppendDouble(pointList[k].x, &Text::DoubleStyleC);
-			}
-			else
-			{
-				sb->AppendDouble(pointList[k].x, &Text::DoubleStyleC);
-				sb->AppendUTF8Char(' ');
-				sb->AppendDouble(pointList[k].y, &Text::DoubleStyleC);
-			}
-			sb->AppendUTF8Char(' ');
-			sb->AppendDouble(zList[k], &Text::DoubleStyleC);
-			sb->AppendUTF8Char(' ');
-			sb->AppendDouble(mList[k], &Text::DoubleStyleC);
-			k++;
-			if (k < l)
-				sb->AppendUTF8Char(',');
-		}
-		sb->AppendUTF8Char(')');
-		i++;
-		if (i < j)
-			sb->AppendUTF8Char(',');
-	}
-	sb->AppendUTF8Char(')');
-}
-
-void Math::WKTWriter::AppendCompoundCurve(NotNullPtr<Text::StringBuilderUTF8> sb, Math::Geometry::CompoundCurve *cc, Bool reverseAxis)
-{
-	sb->AppendUTF8Char('(');
-	Math::Geometry::LineString *pl;
-	UOSInt i = 0;
-	UOSInt j = cc->GetCount();
-	while (i < j)
-	{
-		if (i > 0) sb->AppendUTF8Char(',');
-		pl = cc->GetItem(i);
+		if (found) sb->AppendUTF8Char(',');
+		pl = it.Next();
 		if (pl->GetVectorType() == Math::Geometry::Vector2D::VectorType::CircularString)
 		{
 			sb->AppendC(UTF8STRC("CIRCULARSTRING"));
 		}
 		AppendLineString(sb, pl, reverseAxis);
-		i++;
+		found = true;
 	}
 	sb->AppendUTF8Char(')');
 }
 
-void Math::WKTWriter::AppendCurvePolygon(NotNullPtr<Text::StringBuilderUTF8> sb, Math::Geometry::CurvePolygon *cpg, Bool reverseAxis)
+void Math::WKTWriter::AppendCurvePolygon(NotNullPtr<Text::StringBuilderUTF8> sb, NotNullPtr<Math::Geometry::CurvePolygon> cpg, Bool reverseAxis)
 {
 	sb->AppendUTF8Char('(');
-	Math::Geometry::Vector2D *geometry;
-	UOSInt i = 0;
-	UOSInt j = cpg->GetCount();
-	while (i < j)
+	NotNullPtr<Math::Geometry::Vector2D> geometry;
+	Data::ArrayIterator<NotNullPtr<Math::Geometry::Vector2D>> it = cpg->Iterator();
+	Bool found = false;
+	while (it.HasNext())
 	{
-		if (i > 0) sb->AppendUTF8Char(',');
-		geometry = cpg->GetItem(i);
+		if (found) sb->AppendUTF8Char(',');
+		geometry = it.Next();
 		Math::Geometry::Vector2D::VectorType t = geometry->GetVectorType();
 		if (t == Math::Geometry::Vector2D::VectorType::LineString)
 		{
-			AppendLineString(sb, (Math::Geometry::LineString*)geometry, reverseAxis);
+			AppendLineString(sb, NotNullPtr<Math::Geometry::LineString>::ConvertFrom(geometry), reverseAxis);
 		}
 		else if (t == Math::Geometry::Vector2D::VectorType::CircularString)
 		{
 			sb->AppendC(UTF8STRC("CIRCULARSTRING"));
-			AppendLineString(sb, (Math::Geometry::LineString*)geometry, reverseAxis);
+			AppendLineString(sb, NotNullPtr<Math::Geometry::LineString>::ConvertFrom(geometry), reverseAxis);
 		}
 		else if (t == Math::Geometry::Vector2D::VectorType::CompoundCurve)
 		{
 			sb->AppendC(UTF8STRC("COMPOUNDCURVE"));
-			AppendCompoundCurve(sb, (Math::Geometry::CompoundCurve*)geometry, reverseAxis);
+			AppendCompoundCurve(sb, NotNullPtr<Math::Geometry::CompoundCurve>::ConvertFrom(geometry), reverseAxis);
 		}
-		i++;
+		found = true;
 	}
 	sb->AppendUTF8Char(')');
 }
 
-void Math::WKTWriter::AppendMultiSurface(NotNullPtr<Text::StringBuilderUTF8> sb, Math::Geometry::MultiSurface *ms, Bool reverseAxis)
+void Math::WKTWriter::AppendMultiPolygon(NotNullPtr<Text::StringBuilderUTF8> sb, NotNullPtr<Math::Geometry::MultiPolygon> mpg, Bool reverseAxis)
+{
+	Data::ArrayIterator<NotNullPtr<Math::Geometry::Polygon>> it = mpg->Iterator();
+	Bool found = false;
+	sb->AppendUTF8Char('(');
+	while (it.HasNext())
+	{
+		if (found) sb->AppendUTF8Char(',');
+		AppendPolygon(sb, it.Next(), reverseAxis);
+		found = true;
+	}
+	sb->AppendUTF8Char(')');
+}
+
+void Math::WKTWriter::AppendMultiSurface(NotNullPtr<Text::StringBuilderUTF8> sb, NotNullPtr<Math::Geometry::MultiSurface> ms, Bool reverseAxis)
 {
 	sb->AppendUTF8Char('(');
-	Math::Geometry::Vector2D *geometry;
-	UOSInt i = 0;
-	UOSInt j = ms->GetCount();
-	while (i < j)
+	NotNullPtr<Math::Geometry::Vector2D> geometry;
+	Data::ArrayIterator<NotNullPtr<Math::Geometry::Vector2D>> it = ms->Iterator();
+	Bool found = false;
+	while (it.HasNext())
 	{
-		if (i > 0) sb->AppendUTF8Char(',');
-		geometry = ms->GetItem(i);
+		if (found) sb->AppendUTF8Char(',');
+		geometry = it.Next();
 		Math::Geometry::Vector2D::VectorType t = geometry->GetVectorType();
 		if (t == Math::Geometry::Vector2D::VectorType::CurvePolygon)
 		{
 			sb->AppendC(UTF8STRC("CURVEPOLYGON"));
-			AppendCurvePolygon(sb, (Math::Geometry::CurvePolygon*)geometry, reverseAxis);
+			AppendCurvePolygon(sb, NotNullPtr<Math::Geometry::CurvePolygon>::ConvertFrom(geometry), reverseAxis);
 		}
 		else if (t == Math::Geometry::Vector2D::VectorType::Polygon)
 		{
 			sb->AppendC(UTF8STRC("POLYGON"));
-			if (geometry->HasZ())
-			{
-				AppendPolygonZ(sb, (Math::Geometry::Polygon*)geometry, reverseAxis);
-			}
-			else
-			{
-				AppendPolygon(sb, (Math::Geometry::Polygon*)geometry, reverseAxis);
-			}
+			AppendPolygon(sb, NotNullPtr<Math::Geometry::Polygon>::ConvertFrom(geometry), reverseAxis);
 		}
-		i++;
+		else
+		{
+			printf("Unknown type in multisurface: %s\r\n", Math::Geometry::Vector2D::VectorTypeGetName(t).v);
+		}
+		found = true;
 	}
 	sb->AppendUTF8Char(')');
 }
 
-Bool Math::WKTWriter::AppendGeometryCollection(NotNullPtr<Text::StringBuilderUTF8> sb, Math::Geometry::GeometryCollection *geoColl)
+Bool Math::WKTWriter::AppendGeometryCollection(NotNullPtr<Text::StringBuilderUTF8> sb, NotNullPtr<Math::Geometry::GeometryCollection> geoColl)
 {
 	sb->AppendUTF8Char('(');
 	NotNullPtr<Math::Geometry::Vector2D> geometry;
-	UOSInt i = 0;
-	UOSInt j = geoColl->GetCount();
-	while (i < j)
+	Data::ArrayIterator<NotNullPtr<Math::Geometry::Vector2D>> it = geoColl->Iterator();
+	Bool found = false;
+	while (it.HasNext())
 	{
-		if (i > 0) sb->AppendUTF8Char(',');
-		if (!geometry.Set(geoColl->GetItem(i)))
-			return false;
+		if (found) sb->AppendUTF8Char(',');
+		geometry = it.Next();
 		if (!ToText(sb, geometry))
 			return false;
-		i++;
+		found = true;
 	}
 	sb->AppendUTF8Char(')');
 	return true;
@@ -529,7 +333,7 @@ Bool Math::WKTWriter::ToText(NotNullPtr<Text::StringBuilderUTF8> sb, NotNullPtr<
 			}
 			if (vec->HasM())
 			{
-				sb->AppendC(UTF8STRC(" NULL "));
+				sb->AppendC(UTF8STRC(" NAN "));
 				sb->AppendDouble(((Math::Geometry::PointM*)pt)->GetM(), &Text::DoubleStyleC);
 			}
 		}
@@ -537,85 +341,39 @@ Bool Math::WKTWriter::ToText(NotNullPtr<Text::StringBuilderUTF8> sb, NotNullPtr<
 		return true;
 	case Math::Geometry::Vector2D::VectorType::Polygon:
 		sb->AppendC(UTF8STRC("POLYGON"));
-		if (vec->HasZ())
-		{
-			AppendPolygonZ(sb, (Math::Geometry::Polygon*)vec.Ptr(), this->reverseAxis);
-		}
-		else
-		{
-			AppendPolygon(sb, (Math::Geometry::Polygon*)vec.Ptr(), this->reverseAxis);
-		}
+		AppendPolygon(sb, NotNullPtr<Math::Geometry::Polygon>::ConvertFrom(vec), this->reverseAxis);
 		return true;
 	case Math::Geometry::Vector2D::VectorType::Polyline:
 		sb->AppendC(UTF8STRC("MULTILINESTRING"));
-		{
-			Math::Geometry::Polyline *pl = (Math::Geometry::Polyline*)vec.Ptr();
-			if (pl->HasZ())
-			{
-				if (pl->HasM())
-				{
-					AppendPolylineZM(sb, pl, this->reverseAxis);
-				}
-				else
-				{
-					AppendPolylineZ(sb, pl, this->reverseAxis);
-				}
-			}
-			else
-			{
-				AppendPolyline(sb, pl, this->reverseAxis);
-			}
-		}
+		AppendPolyline(sb, NotNullPtr<Math::Geometry::Polyline>::ConvertFrom(vec), this->reverseAxis);
 		return true;
 	case Math::Geometry::Vector2D::VectorType::MultiPolygon:
 		sb->AppendC(UTF8STRC("MULTIPOLYGON"));
-		{
-			Math::Geometry::MultiPolygon *mpg = (Math::Geometry::MultiPolygon*)vec.Ptr();
-			UOSInt i = 0;
-			UOSInt j = mpg->GetCount();
-			sb->AppendUTF8Char('(');
-			while (i < j)
-			{
-				if (i > 0)
-				{
-					sb->AppendUTF8Char(',');
-				}
-				if (mpg->HasZ())
-				{
-					AppendPolygonZ(sb, mpg->GetItem(i), this->reverseAxis);
-				}
-				else
-				{
-					AppendPolygon(sb, mpg->GetItem(i), this->reverseAxis);
-				}
-				i++;
-			}
-			sb->AppendUTF8Char(')');
-		}
+		AppendMultiPolygon(sb, NotNullPtr<Math::Geometry::MultiPolygon>::ConvertFrom(vec), this->reverseAxis);
 		return true;
 	case Math::Geometry::Vector2D::VectorType::LineString:
 		sb->AppendC(UTF8STRC("LINESTRING"));
-		AppendLineString(sb, (Math::Geometry::LineString*)vec.Ptr(), this->reverseAxis);
+		AppendLineString(sb, NotNullPtr<Math::Geometry::LineString>::ConvertFrom(vec), this->reverseAxis);
 		return true;
 	case Math::Geometry::Vector2D::VectorType::CircularString:
 		sb->AppendC(UTF8STRC("CIRCULARSTRING"));
-		AppendLineString(sb, (Math::Geometry::LineString*)vec.Ptr(), this->reverseAxis);
+		AppendLineString(sb, NotNullPtr<Math::Geometry::LineString>::ConvertFrom(vec), this->reverseAxis);
 		return true;
 	case Math::Geometry::Vector2D::VectorType::CompoundCurve:
 		sb->AppendC(UTF8STRC("COMPOUNDCURVE"));
-		AppendCompoundCurve(sb, (Math::Geometry::CompoundCurve*)vec.Ptr(), this->reverseAxis);
+		AppendCompoundCurve(sb, NotNullPtr<Math::Geometry::CompoundCurve>::ConvertFrom(vec), this->reverseAxis);
 		return true;
 	case Math::Geometry::Vector2D::VectorType::CurvePolygon:
 		sb->AppendC(UTF8STRC("CURVEPOLYGON"));
-		AppendCurvePolygon(sb, (Math::Geometry::CurvePolygon*)vec.Ptr(), this->reverseAxis);
+		AppendCurvePolygon(sb, NotNullPtr<Math::Geometry::CurvePolygon>::ConvertFrom(vec), this->reverseAxis);
 		return true;
 	case Math::Geometry::Vector2D::VectorType::MultiSurface:
 		sb->AppendC(UTF8STRC("MULTISURFACE"));
-		AppendMultiSurface(sb, (Math::Geometry::MultiSurface*)vec.Ptr(), this->reverseAxis);
+		AppendMultiSurface(sb, NotNullPtr<Math::Geometry::MultiSurface>::ConvertFrom(vec), this->reverseAxis);
 		return true;
 	case Math::Geometry::Vector2D::VectorType::GeometryCollection:
 		sb->AppendC(UTF8STRC("GEOMETRYCOLLECTION"));
-		return AppendGeometryCollection(sb, (Math::Geometry::GeometryCollection*)vec.Ptr());
+		return AppendGeometryCollection(sb, NotNullPtr<Math::Geometry::GeometryCollection>::ConvertFrom(vec));
 	case Math::Geometry::Vector2D::VectorType::MultiPoint:
 	case Math::Geometry::Vector2D::VectorType::MultiCurve:
 	case Math::Geometry::Vector2D::VectorType::Curve:

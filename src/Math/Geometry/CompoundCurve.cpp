@@ -32,12 +32,10 @@ NotNullPtr<Math::Geometry::Vector2D> Math::Geometry::CompoundCurve::Clone() cons
 {
 	NotNullPtr<Math::Geometry::CompoundCurve> newObj;
 	NEW_CLASSNN(newObj, Math::Geometry::CompoundCurve(this->srid));
-	UOSInt i = 0;
-	UOSInt j = this->geometries.GetCount();
-	while (i < j)
+	Data::ArrayIterator<NotNullPtr<Math::Geometry::LineString>> it = this->Iterator();
+	while (it.HasNext())
 	{
-		newObj->AddGeometry(NotNullPtr<LineString>::ConvertFrom(this->geometries.GetItem(i)->Clone()));
-		i++;
+		newObj->AddGeometry(NotNullPtr<LineString>::ConvertFrom(it.Next()->Clone()));
 	}
 	return newObj;
 }
@@ -45,16 +43,15 @@ NotNullPtr<Math::Geometry::Vector2D> Math::Geometry::CompoundCurve::Clone() cons
 UOSInt Math::Geometry::CompoundCurve::GetDrawPoints(NotNullPtr<Data::ArrayListA<Math::Coord2DDbl>> ptList)
 {
 	UOSInt ret = 0;
-	LineString *ls;
+	NotNullPtr<LineString> ls;
 	UOSInt nPoint;
 	const Math::Coord2DDbl *ptArr;
-	UOSInt i = 0;
-	UOSInt j = this->GetCount();
-	while (i < j)
+	Data::ArrayIterator<NotNullPtr<LineString>> it = this->Iterator();
+	while (it.HasNext())
 	{
-		ls = this->GetItem(i);
+		ls = it.Next();
 		ptArr = ls->GetPointListRead(nPoint);
-		if (i == 0 || ptList->GetItem(ptList->GetCount() - 1) != ptArr[0])
+		if (ret == 0 || ptList->GetItem(ptList->GetCount() - 1) != ptArr[0])
 		{
 			ret += nPoint;
 			ptList->AddRange(ptArr, nPoint);
@@ -64,7 +61,6 @@ UOSInt Math::Geometry::CompoundCurve::GetDrawPoints(NotNullPtr<Data::ArrayListA<
 			ret += nPoint - 1;
 			ptList->AddRange(&ptArr[1], nPoint - 1);
 		}
-		i++;
 	}
 	return ret;
 }

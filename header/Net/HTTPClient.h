@@ -68,7 +68,7 @@ namespace Net
 		UTF8Char *GetRespHeader(Text::CStringNN name, UTF8Char *valueBuff);
 		Bool GetRespHeader(Text::CStringNN name, NotNullPtr<Text::StringBuilderUTF8> sb);
 		Text::CString GetRespHeader(Text::CStringNN name);
-		Text::String *GetRespHeader(UOSInt index);
+		Optional<Text::String> GetRespHeader(UOSInt index);
 		UInt64 GetContentLength();
 		UInt32 GetContentCodePage();
 		Bool GetLastModified(NotNullPtr<Data::DateTime> dt);

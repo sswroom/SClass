@@ -12,10 +12,10 @@
 
 #include <stdio.h>
 
-Text::String *Map::BingMapsTile::GetNextSubdomain()
+Optional<Text::String> Map::BingMapsTile::GetNextSubdomain()
 {
 	Sync::MutexUsage mutUsage(this->urlMut);
-	Text::String *thisUrl = this->subdomains.GetItem(this->urlNext);
+	Optional<Text::String> thisUrl = this->subdomains.GetItem(this->urlNext);
 	this->urlNext = (this->urlNext + 1) % this->subdomains.GetCount();
 	return thisUrl;
 }
@@ -93,7 +93,7 @@ Map::BingMapsTile::~BingMapsTile()
 	SDEL_STRING(this->key);
 	SDEL_STRING(this->brandLogoUri);
 	SDEL_CLASS(this->brandLogoImg);
-	LIST_FREE_STRING(&this->subdomains);
+	LISTNN_FREE_STRING(&this->subdomains);
 }
 
 Bool Map::BingMapsTile::IsError() const
@@ -129,11 +129,14 @@ void Map::BingMapsTile::SetDispSize(Math::Size2DDbl size, Double dpi)
 
 UTF8Char *Map::BingMapsTile::GetTileImageURL(UTF8Char *sbuff, UOSInt level, Math::Coord2D<Int32> tileId)
 {
-	Text::String *subdomain = this->GetNextSubdomain();
+	NotNullPtr<Text::String> subdomain;
 	UTF8Char *sptr = this->url->ConcatTo(sbuff);
 	UTF8Char sbuff2[32];
 	UTF8Char *sptr2;
-	sptr = Text::StrReplaceC(sbuff, sptr, UTF8STRC("{subdomain}"), subdomain->v, subdomain->leng);
+	if (this->GetNextSubdomain().SetTo(subdomain))
+	{
+		sptr = Text::StrReplaceC(sbuff, sptr, UTF8STRC("{subdomain}"), subdomain->v, subdomain->leng);
+	}
 	sptr2 = GenQuadkey(sbuff2, level, tileId.x, tileId.y);
 	sptr = Text::StrReplaceC(sbuff, sptr, UTF8STRC("{quadkey}"), sbuff2, (UOSInt)(sptr2 - sbuff2));
 	return sptr;
@@ -141,11 +144,12 @@ UTF8Char *Map::BingMapsTile::GetTileImageURL(UTF8Char *sbuff, UOSInt level, Math
 
 Bool Map::BingMapsTile::GetTileImageURL(NotNullPtr<Text::StringBuilderUTF8> sb, UOSInt level, Math::Coord2D<Int32> imgId)
 {
-	Text::String *subdomain = this->GetNextSubdomain();
+	NotNullPtr<Text::String> subdomain;
 	sb->Append(this->url);
 	UTF8Char sbuff2[32];
 	UTF8Char *sptr2;
-	sb->ReplaceStr(UTF8STRC("{subdomain}"), subdomain->v, subdomain->leng);
+	if (this->GetNextSubdomain().SetTo(subdomain))
+		sb->ReplaceStr(UTF8STRC("{subdomain}"), subdomain->v, subdomain->leng);
 	sptr2 = GenQuadkey(sbuff2, level, imgId.x, imgId.y);
 	sb->ReplaceStr(UTF8STRC("{quadkey}"), sbuff2, (UOSInt)(sptr2 - sbuff2));
 	return true;

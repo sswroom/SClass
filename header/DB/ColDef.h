@@ -107,7 +107,7 @@ namespace DB
 		void SetAttr(Text::CString attr);
 		void SetAttr(Text::String *attr);
 
-		void Set(const ColDef *colDef);
+		void Set(NotNullPtr<const ColDef> colDef);
 
 		UTF8Char *ToColTypeStr(UTF8Char *sbuff) const;
 		NotNullPtr<ColDef> Clone() const;

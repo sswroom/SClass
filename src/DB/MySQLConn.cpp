@@ -318,20 +318,17 @@ DB::DBReader *DB::MySQLConn::QueryTableData(Text::CString schemaName, Text::CStr
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 	Text::StringBuilderUTF8 sb;
-	UOSInt i;
-	UOSInt j;
+	Data::ArrayIterator<NotNullPtr<Text::String>> it;
 	sb.AppendC(UTF8STRC("select "));
-	if (columnNames != 0 && (j = columnNames->GetCount()) > 0)
+	if (columnNames != 0 && (it = columnNames->Iterator()).HasNext())
 	{
-		sptr = DB::DBUtil::SDBColUTF8(sbuff, columnNames->GetItem(0)->v, DB::SQLType::MySQL);
+		sptr = DB::DBUtil::SDBColUTF8(sbuff, it.Next()->v, DB::SQLType::MySQL);
 		sb.AppendP(sbuff, sptr);
-		i = 1;
-		while (i < j)
+		while (it.HasNext())
 		{
 			sb.AppendUTF8Char(',');
-			sptr = DB::DBUtil::SDBColUTF8(sbuff, columnNames->GetItem(i)->v, DB::SQLType::MySQL);
+			sptr = DB::DBUtil::SDBColUTF8(sbuff, it.Next()->v, DB::SQLType::MySQL);
 			sb.AppendP(sbuff, sptr);
-			i++;
 		}
 	}
 	else
@@ -350,7 +347,8 @@ DB::DBReader *DB::MySQLConn::QueryTableData(Text::CString schemaName, Text::CStr
 	if (condition)
 	{
 		sb.AppendC(UTF8STRC(" where "));
-		condition->ToWhereClause(sb, DB::SQLType::MySQL, 0, 100, 0);
+		Data::ArrayListNN<Data::QueryConditions::Condition> cliCond;
+		condition->ToWhereClause(sb, DB::SQLType::MySQL, 0, 100, cliCond);
 	}
 	if (ordering.leng > 0)
 	{

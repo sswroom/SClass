@@ -74,10 +74,11 @@ namespace Text
 			NotNullPtr<CellStyle> NewCellStyle();
 			NotNullPtr<CellStyle> NewCellStyle(WorkbookFont *font, HAlignment halign, VAlignment valign, Text::CString dataFormat);
 			UOSInt GetStyleCount() const;
-			virtual OSInt GetStyleIndex(CellStyle *style) const;
-			virtual CellStyle *GetStyle(UOSInt index) const;
+			virtual OSInt GetStyleIndex(NotNullPtr<CellStyle> style) const;
+			virtual Optional<CellStyle> GetStyle(UOSInt index) const;
 			virtual NotNullPtr<CellStyle> FindOrCreateStyle(NotNullPtr<const CellStyle> tmpStyle);
-			CellStyle *GetDefaultStyle();
+			Data::ArrayIterator<NotNullPtr<CellStyle>> StyleIterator() const;
+			Optional<CellStyle> GetDefaultStyle();
 			void GetPalette(UInt32 *palette);
 			void SetPalette(UInt32 *palette);
 
@@ -85,10 +86,11 @@ namespace Text
 			NotNullPtr<Worksheet> AddWorksheet(NotNullPtr<Text::String> name);
 			NotNullPtr<Worksheet> AddWorksheet(Text::CStringNN name);
 			NotNullPtr<Worksheet> InsertWorksheet(UOSInt index, Text::CStringNN name);
-			UOSInt GetCount();
-			Worksheet *GetItem(UOSInt index);
+			UOSInt GetCount() const;
+			Optional<Worksheet> GetItem(UOSInt index) const;
+			Data::ArrayIterator<NotNullPtr<Worksheet>> Iterator() const;
 			void RemoveAt(UOSInt index);
-			Worksheet *GetWorksheetByName(Text::CString name);
+			Optional<Worksheet> GetWorksheetByName(Text::CString name);
 
 			UOSInt GetFontCount();
 			WorkbookFont *GetFont(UOSInt index);

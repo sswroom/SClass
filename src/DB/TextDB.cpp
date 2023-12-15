@@ -199,10 +199,10 @@ public:
 
 	virtual UTF8Char *GetName(UOSInt colIndex, UTF8Char *buff)
 	{
-		const UTF8Char *name = this->data->colList.GetItem(colIndex);
-		if (name)
+		NotNullPtr<const UTF8Char> name;
+		if (this->data->colList.GetItem(colIndex).SetTo(name))
 		{
-			return Text::StrConcat(buff, name);
+			return Text::StrConcat(buff, name.Ptr());
 		}
 		return 0;
 	}
@@ -223,7 +223,7 @@ public:
 			return false;
 		}
 		NotNullPtr<const UTF8Char> colName;
-		if (!colName.Set(this->data->colList.GetItem(colIndex)))
+		if (!this->data->colList.GetItem(colIndex).SetTo(colName))
 		{
 			colDef->SetColType(DB::DBUtil::CT_Unknown);
 			return false;
@@ -254,6 +254,7 @@ DB::TextDB::~TextDB()
 	NotNullPtr<const Data::ArrayList<DBData*>> dbList = this->dbMap.GetValues();
 	DBData *data;
 	Text::String **vals;
+	NotNullPtr<const UTF8Char> sptr;
 	k = dbList->GetCount();
 	while (k-- > 0)
 	{
@@ -272,7 +273,8 @@ DB::TextDB::~TextDB()
 		i = data->colList.GetCount();
 		while (i-- > 0)
 		{
-			Text::StrDelNew(data->colList.GetItem(i));
+			if (data->colList.GetItem(i).SetTo(sptr))
+				Text::StrDelNew(sptr.Ptr());
 		}
 		data->name->Release();
 		DEL_CLASS(data);

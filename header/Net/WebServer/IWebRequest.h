@@ -44,7 +44,7 @@ namespace Net
 			virtual Optional<Text::String> GetSHeader(Text::CStringNN name) = 0;
 			virtual UTF8Char *GetHeader(UTF8Char *sbuff, Text::CStringNN name, UOSInt buffLen) = 0;
 			virtual Bool GetHeaderC(NotNullPtr<Text::StringBuilderUTF8> sb, Text::CStringNN name) = 0;
-			virtual UOSInt GetHeaderNames(NotNullPtr<Data::ArrayList<Text::String*>> names) = 0;
+			virtual UOSInt GetHeaderNames(NotNullPtr<Data::ArrayListNN<Text::String>> names) = 0;
 			Bool GetRefererDomain(NotNullPtr<Text::StringBuilderUTF8> sb);
 			Bool GetIfModifiedSince(Data::DateTime *dt);
 			Bool GetCookie(Text::CStringNN name, NotNullPtr<Text::StringBuilderUTF8> sb);

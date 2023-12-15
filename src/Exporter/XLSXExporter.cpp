@@ -57,7 +57,8 @@ Bool Exporter::XLSXExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text
 		return false;
 	}
 	NotNullPtr<Text::SpreadSheet::Workbook> workbook = NotNullPtr<Text::SpreadSheet::Workbook>::ConvertFrom(pobj);
-	Text::SpreadSheet::Worksheet *sheet;
+	NotNullPtr<Text::SpreadSheet::Worksheet> sheet;
+	NotNullPtr<Text::SpreadSheet::CellStyle> tmpStyle;
 	Text::StringBuilderUTF8 sb;
 	Text::StringBuilderUTF8 sbContTypes;
 	UTF8Char sbuff[256];
@@ -70,7 +71,6 @@ Bool Exporter::XLSXExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text
 	const UTF8Char *csptr;
 	IO::ZIPBuilder *zip;
 	UOSInt i;
-	UOSInt j = workbook->GetCount();
 	UOSInt k;
 	UOSInt l;
 	UOSInt m;
@@ -98,11 +98,11 @@ Bool Exporter::XLSXExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text
 	sbContTypes.AppendC(UTF8STRC("<Default Extension=\"png\" ContentType=\"image/png\"/>"));
 	sbContTypes.AppendC(UTF8STRC("<Default Extension=\"jpeg\" ContentType=\"image/jpeg\"/>"));
 
+	Data::ArrayIterator<NotNullPtr<Text::SpreadSheet::Worksheet>> itSheet = workbook->Iterator();
 	i = 0;
-	j = workbook->GetCount();
-	while (i < j)
+	while (itSheet.HasNext())
 	{
-		sheet = workbook->GetItem(i);
+		sheet = itSheet.Next();
 
 		Data::ArrayList<LinkInfo*> links;
 		LinkInfo *link;
@@ -222,10 +222,10 @@ Bool Exporter::XLSXExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text
 							sptr = Text::StrUOSInt(Text::SpreadSheet::Workbook::ColCode(sbuff, m), k + 1);
 							sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
 							sb.AppendUTF8Char('"');
-							if (cell->style)
+							if (cell->style.SetTo(tmpStyle))
 							{
 								sb.AppendC(UTF8STRC(" s=\""));
-								sb.AppendUOSInt(cell->style->GetIndex());
+								sb.AppendUOSInt(tmpStyle->GetIndex());
 								sb.AppendUTF8Char('"');
 							}
 							switch (cell->cdt)
@@ -286,14 +286,14 @@ Bool Exporter::XLSXExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text
 							
 							sb.AppendC(UTF8STRC("</v></c>"));
 						}
-						else if (cell && cell->style)
+						else if (cell && cell->style.SetTo(tmpStyle))
 						{
 							sb.AppendC(UTF8STRC("<c r=\""));
 							sptr = Text::StrUOSInt(Text::SpreadSheet::Workbook::ColCode(sbuff, m), k + 1);
 							sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
 							sb.AppendUTF8Char('"');
 							sb.AppendC(UTF8STRC(" s=\""));
-							sb.AppendUOSInt(cell->style->GetIndex());
+							sb.AppendUOSInt(tmpStyle->GetIndex());
 							sb.AppendUTF8Char('"');
 							sb.AppendC(UTF8STRC("></c>"));
 						}
@@ -729,11 +729,11 @@ Bool Exporter::XLSXExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text
 	sb.AppendC(UTF8STRC("<workbookView showHorizontalScroll=\"true\" showVerticalScroll=\"true\" showSheetTabs=\"true\" xWindow=\"0\" yWindow=\"0\" windowWidth=\"16384\" windowHeight=\"8192\" tabRatio=\"500\" firstSheet=\"0\" activeTab=\"0\"/>"));
 	sb.AppendC(UTF8STRC("</bookViews>"));
 	sb.AppendC(UTF8STRC("<sheets>"));
+	itSheet = workbook->Iterator();
 	i = 0;
-	j = workbook->GetCount();
-	while (i < j)
+	while (itSheet.HasNext())
 	{
-		Text::SpreadSheet::Worksheet *sheet = workbook->GetItem(i);
+		sheet = itSheet.Next();
 		sb.AppendC(UTF8STRC("<sheet name="));
 		s = sheet->GetName();
 		s2 = Text::XML::ToNewAttrText(s->v);
@@ -793,11 +793,11 @@ Bool Exporter::XLSXExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text
 		numFmtMap.Put(csptr, numFmts.GetCount());
 		numFmts.Add(csptr);
 
+		Data::ArrayIterator<NotNullPtr<Text::SpreadSheet::CellStyle>> itStyle = workbook->StyleIterator();
 		i = 0;
-		j = workbook->GetStyleCount();
-		while (i < j)
+		while (itStyle.HasNext())
 		{
-			Text::SpreadSheet::CellStyle *style = workbook->GetStyle(i);
+			NotNullPtr<Text::SpreadSheet::CellStyle> style = itStyle.Next();
 			Text::String *optS = style->GetDataFormat();
 			if (optS == 0)
 			{
@@ -835,7 +835,6 @@ Bool Exporter::XLSXExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text
 				border->bottom = style->GetBorderBottom();
 				borders.Add(border);
 			}
-			i++;
 		}
 		if (numFmts.GetCount() > 0)
 		{
@@ -843,8 +842,8 @@ Bool Exporter::XLSXExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text
 			sb.AppendUOSInt(numFmts.GetCount());
 			sb.AppendC(UTF8STRC("\">"));
 			i = 0;
-			j = numFmts.GetCount();
-			while (i < j)
+			k = numFmts.GetCount();
+			while (i < k)
 			{
 				sb.AppendC(UTF8STRC("<numFmt numFmtId=\""));
 				sb.AppendUOSInt(i + 164);
@@ -864,8 +863,8 @@ Bool Exporter::XLSXExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text
 			sb.AppendUOSInt(workbook->GetFontCount());
 			sb.AppendC(UTF8STRC("\">"));
 			i = 0;
-			j = workbook->GetFontCount();
-			while (i < j)
+			k = workbook->GetFontCount();
+			while (i < k)
 			{
 				Text::SpreadSheet::WorkbookFont *font = workbook->GetFont(i);
 				sb.AppendC(UTF8STRC("<font>"));
@@ -920,11 +919,11 @@ Bool Exporter::XLSXExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text
 		sb.AppendC(UTF8STRC("</fills>"));
 
 		i = 0;
-		j = borders.GetCount();
+		k = borders.GetCount();
 		sb.AppendC(UTF8STRC("<borders count=\""));
-		sb.AppendUOSInt(j);
+		sb.AppendUOSInt(k);
 		sb.AppendC(UTF8STRC("\">"));
-		while (i < j)
+		while (i < k)
 		{
 			border = borders.GetItem(i);
 			sb.AppendC(UTF8STRC("<border diagonalUp=\"false\" diagonalDown=\"false\">"));
@@ -989,11 +988,11 @@ Bool Exporter::XLSXExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text
 			sb.AppendUOSInt(workbook->GetStyleCount());
 			sb.AppendC(UTF8STRC("\">"));
 			i = 0;
-			j = workbook->GetStyleCount();
-			while (i < j)
+			k = workbook->GetStyleCount();
+			while (i < k)
 			{
 				NotNullPtr<Text::SpreadSheet::CellStyle> style;
-				if (style.Set(workbook->GetStyle(i)))
+				if (workbook->GetStyle(i).SetTo(style))
 				{
 					AppendXF(sb, style, borders, workbook, numFmtMap);
 				}
@@ -1012,8 +1011,8 @@ Bool Exporter::XLSXExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text
 		sb.AppendC(UTF8STRC("</cellStyles>"));
 
 		i = 0;
-		j = borders.GetCount();
-		while (i < j)
+		k = borders.GetCount();
+		while (i < k)
 		{
 			MemFree(borders.GetItem(i));
 			i++;
@@ -1033,8 +1032,8 @@ Bool Exporter::XLSXExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text
 		sb.AppendUOSInt(sharedStrings.GetCount());
 		sb.AppendC(UTF8STRC("\">"));
 		i = 0;
-		j = sharedStrings.GetCount();
-		while (i < j)
+		k = sharedStrings.GetCount();
+		while (i < k)
 		{
 			sb.AppendC(UTF8STRC("<si><t xml:space=\"preserve\">"));
 			s = Text::XML::ToNewXMLText(sharedStrings.GetItem(i)->v);
@@ -1053,8 +1052,8 @@ Bool Exporter::XLSXExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text
 	sb.AppendC(UTF8STRC("<Relationships xmlns=\"http://schemas.openxmlformats.org/package/2006/relationships\">"));
 	sb.AppendC(UTF8STRC("<Relationship Id=\"rId1\" Type=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles\" Target=\"styles.xml\"/>"));
 	i = 0;
-	j = workbook->GetCount();
-	while (i < j)
+	k = workbook->GetCount();
+	while (i < k)
 	{
 		sb.AppendC(UTF8STRC("<Relationship Id=\"rId"));
 		sb.AppendUOSInt(i + 2);

@@ -80,7 +80,7 @@ namespace SSWR
 			static void __stdcall OnTimerTick(void *userObj);
 			void StopThreads();
 			void ClearURLs();
-			Text::String *GetNextURL();
+			Optional<Text::String> GetNextURL();
 		public:
 			AVIRHTTPTestForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRHTTPTestForm();

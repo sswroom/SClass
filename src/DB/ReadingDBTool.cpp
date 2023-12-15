@@ -897,7 +897,7 @@ UOSInt DB::ReadingDBTool::GetDatabaseNames(Data::ArrayListNN<Text::String> *arr)
 
 void DB::ReadingDBTool::ReleaseDatabaseNames(Data::ArrayListNN<Text::String> *arr)
 {
-	LIST_FREE_STRING(arr);
+	LISTNN_FREE_STRING(arr);
 }
 
 Bool DB::ReadingDBTool::ChangeDatabase(Text::CString databaseName)

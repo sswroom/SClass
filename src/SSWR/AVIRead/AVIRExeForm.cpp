@@ -211,7 +211,7 @@ void __stdcall SSWR::AVIRead::AVIRExeForm::On16BitFuncsChg(void *userObj)
 		j = addr->codeList->GetCount();
 		while (i < j)
 		{
-			me->lb16BitCont->AddItem(NotNullPtr<Text::String>::FromPtr(addr->codeList->GetItem(i)), 0);
+			me->lb16BitCont->AddItem(Text::String::OrEmpty(addr->codeList->GetItem(i)), 0);
 			i++;
 		}
 	}
@@ -232,7 +232,7 @@ void __stdcall SSWR::AVIRead::AVIRExeForm::OnImportSelChg(void *userObj)
 	j = me->exeFile->GetImportFuncCount(modIndex);
 	while (i < j)
 	{
-		me->lvImport->AddItem(NotNullPtr<Text::String>::FromPtr(me->exeFile->GetImportFunc(modIndex, i)), 0);
+		me->lvImport->AddItem(Text::String::OrEmpty(me->exeFile->GetImportFunc(modIndex, i)), 0);
 		i++;
 	}
 }
@@ -331,13 +331,11 @@ SSWR::AVIRead::AVIRExeForm::AVIRExeForm(UI::GUIClientControl *parent, NotNullPtr
 	this->lvProp->AddColumn(CSTR("Value"), 250);
 
 	UOSInt k;
-	Text::String *s;
 	i = 0;
 	j = this->exeFile->GetPropCount();
 	while (i < j)
 	{
-		s = this->exeFile->GetPropName(i);
-		k = this->lvProp->AddItem(Text::String::OrEmpty(s), 0);
+		k = this->lvProp->AddItem(Text::String::OrEmpty(this->exeFile->GetPropName(i)), 0);
 		this->lvProp->SetSubItem(k, 1, Text::String::OrEmpty(this->exeFile->GetPropValue(i)));
 
 		i++;
@@ -438,7 +436,7 @@ SSWR::AVIRead::AVIRExeForm::~AVIRExeForm()
 			j = codes->GetCount();
 			while (j-- > 0)
 			{
-				codes->GetItem(j)->Release();
+				OPTSTR_DEL(codes->GetItem(j));
 			}
 			DEL_CLASS(codes);
 		}

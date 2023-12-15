@@ -7,13 +7,13 @@
 class WorkbookReader : public DB::DBReader
 {
 private:
-	Text::SpreadSheet::Worksheet *sheet;
+	NotNullPtr<Text::SpreadSheet::Worksheet> sheet;
 	DB::TableDef *tabDef;
 	Text::SpreadSheet::Worksheet::RowData *row;
 	UOSInt currIndex;
 	UOSInt maxIndex;
 public:
-	WorkbookReader(Text::SpreadSheet::Worksheet *sheet, DB::TableDef *tabDef, UOSInt initOfst, UOSInt maxOfst)
+	WorkbookReader(NotNullPtr<Text::SpreadSheet::Worksheet> sheet, DB::TableDef *tabDef, UOSInt initOfst, UOSInt maxOfst)
 	{
 		this->sheet = sheet;
 		this->tabDef = tabDef;
@@ -189,29 +189,31 @@ public:
 
 	virtual UTF8Char *GetName(UOSInt colIndex, UTF8Char *buff)
 	{
-		if (colIndex < this->tabDef->GetColCnt())
+		NotNullPtr<DB::ColDef> col;
+		if (this->tabDef->GetCol(colIndex).SetTo(col))
 		{
-			return this->tabDef->GetCol(colIndex)->GetColName()->ConcatTo(buff);
+			return col->GetColName()->ConcatTo(buff);
 		}
 		return 0;
 	}
 
 	virtual DB::DBUtil::ColType GetColType(UOSInt colIndex, OptOut<UOSInt> colSize)
 	{
-		if (colIndex < this->tabDef->GetColCnt())
+		NotNullPtr<DB::ColDef> col;
+		if (this->tabDef->GetCol(colIndex).SetTo(col))
 		{
-			DB::ColDef *colDef = this->tabDef->GetCol(colIndex);
-			colSize.Set(colDef->GetColSize());
-			return colDef->GetColType();
+			colSize.Set(col->GetColSize());
+			return col->GetColType();
 		}
 		return DB::DBUtil::ColType::CT_Unknown;
 	}
 
 	virtual Bool GetColDef(UOSInt colIndex, NotNullPtr<DB::ColDef> colDef)
 	{
-		if (colIndex < this->tabDef->GetColCnt())
+		NotNullPtr<DB::ColDef> col;
+		if (this->tabDef->GetCol(colIndex).SetTo(col))
 		{
-			colDef->Set(this->tabDef->GetCol(colIndex));
+			colDef->Set(col);
 			return true;
 		}
 		return false;
@@ -235,20 +237,18 @@ UOSInt DB::WorkbookDB::QueryTableNames(Text::CString schemaName, NotNullPtr<Data
 	{
 		return 0;
 	}
-	UOSInt i = 0;
-	UOSInt j = this->wb->GetCount();
-	while (i < j)
+	Data::ArrayIterator<NotNullPtr<Text::SpreadSheet::Worksheet>> it = this->wb->Iterator();
+	while (it.HasNext())
 	{
-		names->Add(this->wb->GetItem(i)->GetName()->Clone());
-		i++;
+		names->Add(it.Next()->GetName()->Clone());
 	}
-	return j;
+	return this->wb->GetCount();
 }
 
 DB::DBReader *DB::WorkbookDB::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListNN<Text::String> *colNames, UOSInt dataOfst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
 {
-	Text::SpreadSheet::Worksheet *sheet = this->wb->GetWorksheetByName(tableName);
-	if (sheet == 0)
+	NotNullPtr<Text::SpreadSheet::Worksheet> sheet;
+	if (!this->wb->GetWorksheetByName(tableName).SetTo(sheet))
 	{
 		return 0;
 	}
@@ -272,8 +272,8 @@ DB::DBReader *DB::WorkbookDB::QueryTableData(Text::CString schemaName, Text::CSt
 
 DB::TableDef *DB::WorkbookDB::GetTableDef(Text::CString schemaName, Text::CString tableName)
 {
-	Text::SpreadSheet::Worksheet *sheet = this->wb->GetWorksheetByName(tableName);
-	if (sheet == 0)
+	NotNullPtr<Text::SpreadSheet::Worksheet> sheet;
+	if (!this->wb->GetWorksheetByName(tableName).SetTo(sheet))
 	{
 		return 0;
 	}

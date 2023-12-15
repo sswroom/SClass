@@ -33,7 +33,7 @@ namespace Crypto
 
 			void AddFile(NotNullPtr<Crypto::Cert::X509File> file);
 			UOSInt GetFileCount() const;
-			Crypto::Cert::X509File *GetFile(UOSInt index) const;
+			Optional<Crypto::Cert::X509File> GetFile(UOSInt index) const;
 			void SetDefaultSourceName();
 		};
 	}

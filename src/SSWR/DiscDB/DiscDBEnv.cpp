@@ -638,17 +638,20 @@ Bool SSWR::DiscDB::DiscDBEnv::AddMD5(NotNullPtr<IO::StreamData> fd)
 		sql.AppendStrUTF8(sbuff);
 		sql.AppendCmdC(CSTR(" where DiscID = "));
 		sql.AppendStrUTF8(sbDiscId.ToString());
-		Text::String *fileName = fileChk->GetEntryName(i);
-		k = fileName->IndexOf('\\', 1);
-		if (nameMap.GetIndex(&fileName->v[k + 1]) >= 0)
+		NotNullPtr<Text::String> fileName;
+		if (fileChk->GetEntryName(i).SetTo(fileName))
 		{
-			sql.AppendCmdC(CSTR(" and FileID = "));
-			sql.AppendInt32(nameMap.Get(&fileName->v[k + 1]));
-		}
-		else
-		{
-			sql.AppendCmdC(CSTR(" and Name = "));
-			sql.AppendStrUTF8(&fileName->v[k + 1]);
+			k = fileName->IndexOf('\\', 1);
+			if (nameMap.GetIndex(&fileName->v[k + 1]) >= 0)
+			{
+				sql.AppendCmdC(CSTR(" and FileID = "));
+				sql.AppendInt32(nameMap.Get(&fileName->v[k + 1]));
+			}
+			else
+			{
+				sql.AppendCmdC(CSTR(" and Name = "));
+				sql.AppendStrUTF8(&fileName->v[k + 1]);
+			}
 		}
 		db->ExecuteNonQuery(sql.ToCString());
 		i++;

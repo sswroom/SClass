@@ -83,6 +83,7 @@ void Map::ESRI::ESRIMDBLayer::Init(DB::SharedDBConn *conn, UInt32 srid, Text::CS
 	{
 		UOSInt i;
 		UOSInt j;
+		NotNullPtr<Text::String> s;
 		i = 0;
 		j = r->ColCount();
 		while (i < j)
@@ -103,7 +104,7 @@ void Map::ESRI::ESRIMDBLayer::Init(DB::SharedDBConn *conn, UInt32 srid, Text::CS
 		j = this->colNames.GetCount();
 		while (j-- > 0)
 		{
-			if (this->colNames.GetItem(j)->EndsWithICase(UTF8STRC("NAME")))
+			if (this->colNames.GetItem(j).SetTo(s) && s->EndsWithICase(UTF8STRC("NAME")))
 			{
 				nameCol = j;
 			}
@@ -201,7 +202,7 @@ Map::ESRI::ESRIMDBLayer::~ESRIMDBLayer()
 	UOSInt i;
 
 	this->conn->UnuseObject();
-	LIST_FREE_STRING(&this->colNames);
+	LISTNN_FREE_STRING(&this->colNames);
 	Math::Geometry::Vector2D *vec;
 	i = this->objects.GetCount();
 	while (i-- > 0)
@@ -312,8 +313,8 @@ UOSInt Map::ESRI::ESRIMDBLayer::GetColumnCnt() const
 
 UTF8Char *Map::ESRI::ESRIMDBLayer::GetColumnName(UTF8Char *buff, UOSInt colIndex)
 {
-	Text::String *colName = this->colNames.GetItem(colIndex);
-	if (colName)
+	NotNullPtr<Text::String> colName;
+	if (this->colNames.GetItem(colIndex).SetTo(colName))
 	{
 		return colName->ConcatTo(buff);
 	}

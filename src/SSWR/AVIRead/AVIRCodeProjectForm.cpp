@@ -16,8 +16,6 @@ void __stdcall SSWR::AVIRead::AVIRCodeProjectForm::OnItemSelected(void *userObj)
 		Text::CodeObject *obj = (Text::CodeObject*)tvi->GetItemObj();
 		if (obj->GetObjectType() == Text::CodeObject::OT_FILE)
 		{
-			UOSInt i;
-			UOSInt j;
 			Text::Cpp::CppEnv *env;
 			Text::Cpp::CppParseStatus *status;
 			Text::Cpp::CppCodeParser *parser;
@@ -39,16 +37,14 @@ void __stdcall SSWR::AVIRead::AVIRCodeProjectForm::OnItemSelected(void *userObj)
 				status->AddGlobalDef(CSTR("__STDC__"), CSTR("0"));
 				status->AddGlobalDef(CSTR("__cplusplus"), CSTR("201103"));
 				parser->ParseFile(sbuff, (UOSInt)(sptr - sbuff), &errMsgs, status);
-				i = 0;
-				j = errMsgs.GetCount();
-				if (j > 0)
+				if (errMsgs.GetCount() > 0)
 				{
 					sb.AppendC(UTF8STRC("Parse Error:\r\n"));
-					while (i < j)
+					Data::ArrayIterator<NotNullPtr<Text::String>> it = errMsgs.Iterator();
+					while (it.HasNext())
 					{
-						sb.Append(errMsgs.GetItem(i));
+						sb.Append(it.Next());
 						sb.AppendC(UTF8STRC("\r\n"));
-						i++;
 					}
 					sb.AppendC(UTF8STRC("\r\n"));
 					sb.AppendC(UTF8STRC("\r\n"));
@@ -70,19 +66,17 @@ void __stdcall SSWR::AVIRead::AVIRCodeProjectForm::OnItemSelected(void *userObj)
 				env->InitEnvStatus(status);
 				status->AddGlobalDef(CSTR("__STDC__"), CSTR("1"));
 				parser->ParseFile(sbuff, (UOSInt)(sptr - sbuff), &errMsgs, status);
-				i = 0;
-				j = errMsgs.GetCount();
-				if (j == 0)
+				if (errMsgs.GetCount() == 0)
 				{
 					me->DisplayStatus(sb, status);
 				}
 				else
 				{
-					while (i < j)
+					Data::ArrayIterator<NotNullPtr<Text::String>> it = errMsgs.Iterator();
+					while (it.HasNext())
 					{
-						sb.Append(errMsgs.GetItem(i));
+						sb.Append(it.Next());
 						sb.AppendC(UTF8STRC("\r\n"));
-						i++;
 					}
 				}
 				me->txtMessage->SetText(sb.ToCString());

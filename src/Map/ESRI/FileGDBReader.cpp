@@ -65,7 +65,7 @@ Map::ESRI::FileGDBReader::FileGDBReader(NotNullPtr<IO::StreamData> fd, UInt64 of
 		{
 			Bool found = false;
 			NotNullPtr<Text::String> name;
-			if (name.Set(columnNames->GetItem(i)))
+			if (columnNames->GetItem(i).SetTo(name))
 			{
 				k = this->tableInfo->fields->GetCount();
 				while (k-- > 0)

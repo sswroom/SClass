@@ -67,16 +67,16 @@ Bool Math::GeoJSONWriter::ToText(NotNullPtr<Text::StringBuilderUTF8> sb, NotNull
 		sb->AppendC(UTF8STRC("\t\t\"coordinates\": [\r\n"));
 		{
 			Math::Geometry::Polygon *pg = (Math::Geometry::Polygon*)vec.Ptr();
-			UOSInt nGeom = pg->GetCount();
+			NotNullPtr<Math::Geometry::LinearRing> lr;
 			UOSInt nPoint;
 			Math::Coord2DDbl *pointList;
 			Math::Coord2DDbl initPt;
-			UOSInt i = 0;
 			UOSInt j;
-			Math::Geometry::LinearRing *lr;
-			while (i < nGeom)
+			Data::ArrayIterator<NotNullPtr<Math::Geometry::LinearRing>> it = pg->Iterator();
+			Bool found = false;
+			while (it.HasNext())
 			{
-				if (i == 0)
+				if (!found)
 				{
 					sb->AppendC(UTF8STRC("\t\t\t[\r\n"));
 				}
@@ -84,7 +84,7 @@ Bool Math::GeoJSONWriter::ToText(NotNullPtr<Text::StringBuilderUTF8> sb, NotNull
 				{
 					sb->AppendC(UTF8STRC(",\r\n\t\t\t[\r\n"));
 				}
-				lr = pg->GetItem(i);
+				lr = it.Next();
 				pointList = lr->GetPointList(nPoint);
 				sb->AppendC(UTF8STRC("\t\t\t\t["));
 				sb->AppendDouble(pointList[0].x);
@@ -111,7 +111,7 @@ Bool Math::GeoJSONWriter::ToText(NotNullPtr<Text::StringBuilderUTF8> sb, NotNull
 					sb->AppendUTF8Char(']');
 				}
 				sb->AppendC(UTF8STRC("\r\n\t\t\t]"));
-				i++;
+				found = true;
 			}
 			sb->AppendC(UTF8STRC("\r\n\t\t]\r\n"));
 			sb->AppendC(UTF8STRC("\t}"));
@@ -151,16 +151,16 @@ Bool Math::GeoJSONWriter::ToText(NotNullPtr<Text::StringBuilderUTF8> sb, NotNull
 			sb->AppendC(UTF8STRC("\t\"geometry\": {\r\n"));
 			sb->AppendC(UTF8STRC("\t\t\"type\": \"MultiLineString\",\r\n"));
 			sb->AppendC(UTF8STRC("\t\t\"coordinates\": [\r\n"));
-			UOSInt i = 0;
-			UOSInt j = pl->GetCount();
-			while (i < j)
+			Data::ArrayIterator<NotNullPtr<Math::Geometry::LineString>> it = pl->Iterator();
+			Bool found = false;
+			while (it.HasNext())
 			{
-				Math::Geometry::LineString *lineString = pl->GetItem(i);
+				NotNullPtr<Math::Geometry::LineString> lineString = it.Next();
 				UOSInt nPoint;
 				Math::Coord2DDbl *pointList = lineString->GetPointList(nPoint);
 				Math::Coord2DDbl initPt;
 				UOSInt k;
-				if (i == 0)
+				if (!found)
 				{
 					sb->AppendC(UTF8STRC("\t\t\t[\r\n"));
 				}
@@ -194,7 +194,7 @@ Bool Math::GeoJSONWriter::ToText(NotNullPtr<Text::StringBuilderUTF8> sb, NotNull
 					sb->AppendUTF8Char(']');
 				}
 				sb->AppendC(UTF8STRC("\r\n\t\t\t]"));
-				i++;
+				found = true;
 			}
 			sb->AppendC(UTF8STRC("\r\n\t\t]\r\n"));
 			sb->AppendC(UTF8STRC("\t}"));
@@ -206,11 +206,11 @@ Bool Math::GeoJSONWriter::ToText(NotNullPtr<Text::StringBuilderUTF8> sb, NotNull
 		sb->AppendC(UTF8STRC("\t\t\"coordinates\": [\r\n"));
 		{
 			Math::Geometry::MultiPolygon *mpg = (Math::Geometry::MultiPolygon*)vec.Ptr();
-			UOSInt pgIndex = 0;
-			UOSInt pgCnt = mpg->GetCount();
-			while (pgIndex < pgCnt)
+			Data::ArrayIterator<NotNullPtr<Math::Geometry::Polygon>> itPG = mpg->Iterator();
+			Bool found = false;
+			while (itPG.HasNext())
 			{
-				if (pgIndex == 0)
+				if (!found)
 				{
 					sb->AppendC(UTF8STRC("\t\t\t[\r\n"));
 				}
@@ -218,17 +218,17 @@ Bool Math::GeoJSONWriter::ToText(NotNullPtr<Text::StringBuilderUTF8> sb, NotNull
 				{
 					sb->AppendC(UTF8STRC(",\r\n\t\t\t[\r\n"));
 				}
-				Math::Geometry::Polygon *pg = mpg->GetItem(pgIndex);
-				UOSInt nGeom = pg->GetCount();
+				NotNullPtr<Math::Geometry::Polygon> pg = itPG.Next();
 				UOSInt nPoint;
 				Math::Coord2DDbl *pointList;
 				Math::Coord2DDbl initPt;
-				Math::Geometry::LinearRing *lr;
-				UOSInt i = 0;
+				NotNullPtr<Math::Geometry::LinearRing> lr;
+				Data::ArrayIterator<NotNullPtr<Math::Geometry::LinearRing>> itLR = pg->Iterator();
+				Bool foundLR = false;
 				UOSInt j = 0;
-				while (i < nGeom)
+				while (itLR.HasNext())
 				{
-					if (i == 0)
+					if (!foundLR)
 					{
 						sb->AppendC(UTF8STRC("\t\t\t\t[\r\n"));
 					}
@@ -236,7 +236,7 @@ Bool Math::GeoJSONWriter::ToText(NotNullPtr<Text::StringBuilderUTF8> sb, NotNull
 					{
 						sb->AppendC(UTF8STRC(",\r\n\t\t\t\t[\r\n"));
 					}
-					lr = pg->GetItem(i);
+					lr = itLR.Next();
 					pointList = lr->GetPointList(nPoint);
 					sb->AppendC(UTF8STRC("\t\t\t\t\t["));
 					sb->AppendDouble(pointList[0].x);
@@ -263,10 +263,10 @@ Bool Math::GeoJSONWriter::ToText(NotNullPtr<Text::StringBuilderUTF8> sb, NotNull
 						sb->AppendUTF8Char(']');
 					}
 					sb->AppendC(UTF8STRC("\r\n\t\t\t\t]"));
-					i++;
+					foundLR = true;
 				}
 				sb->AppendC(UTF8STRC("\r\n\t\t\t]"));
-				pgIndex++;
+				found = true;
 			}
 			sb->AppendC(UTF8STRC("\r\n\t\t]\r\n"));
 			sb->AppendC(UTF8STRC("\t}"));
@@ -325,16 +325,15 @@ Bool Math::GeoJSONWriter::ToGeometry(NotNullPtr<Text::JSONBuilder> json, NotNull
 		json->ObjectBeginArray(CSTR("coordinates"));
 		{
 			NotNullPtr<Math::Geometry::Polygon> pg = NotNullPtr<Math::Geometry::Polygon>::ConvertFrom(vec);
-			UOSInt nGeom = pg->GetCount();
 			UOSInt nPoint;
+			UOSInt j;
 			Math::Coord2DDbl *pointList;
 			Math::Coord2DDbl initPt;
-			Math::Geometry::LinearRing *lr;
-			UOSInt i = 0;
-			UOSInt j = 0;
-			while (i < nGeom)
+			NotNullPtr<Math::Geometry::LinearRing> lr;
+			Data::ArrayIterator<NotNullPtr<Math::Geometry::LinearRing>> it = pg->Iterator();
+			while (it.HasNext())
 			{
-				lr = pg->GetItem(i);
+				lr = it.Next();
 				pointList = lr->GetPointList(nPoint);
 				json->ArrayBeginArray();
 				json->ArrayAddCoord2D(pointList[0]);
@@ -350,7 +349,6 @@ Bool Math::GeoJSONWriter::ToGeometry(NotNullPtr<Text::JSONBuilder> json, NotNull
 					json->ArrayAddCoord2D(initPt);
 				}
 				json->ArrayEnd();
-				i++;
 			}
 		}
 		json->ArrayEnd();
@@ -377,26 +375,22 @@ Bool Math::GeoJSONWriter::ToGeometry(NotNullPtr<Text::JSONBuilder> json, NotNull
 		{
 			Math::Geometry::Polyline *pl = (Math::Geometry::Polyline*)vec.Ptr();
 			NotNullPtr<Math::Geometry::LineString> lineString;
-			UOSInt j = pl->GetCount();
 			Math::Coord2DDbl *pointList;
-			UOSInt i = 0;
 			UOSInt k;
 			UOSInt l;
-			while (i < j)
+			Data::ArrayIterator<NotNullPtr<Math::Geometry::LineString>> it = pl->Iterator();
+			while (it.HasNext())
 			{
-				if (lineString.Set(pl->GetItem(i)))
+				lineString = it.Next();
+				json->ArrayBeginArray();
+				k = 0;
+				pointList = lineString->GetPointList(l);
+				while (k < l)
 				{
-					json->ArrayBeginArray();
-					k = 0;
-					pointList = lineString->GetPointList(l);
-					while (k < l)
-					{
-						json->ArrayAddCoord2D(pointList[k]);
-						k++;
-					}
-					json->ArrayEnd();
+					json->ArrayAddCoord2D(pointList[k]);
+					k++;
 				}
-				i++;
+				json->ArrayEnd();
 			}
 		}
 		json->ArrayEnd();

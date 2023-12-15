@@ -89,14 +89,15 @@ namespace IO
 		Bool AddOrReplaceCompData(NotNullPtr<StreamData> fd, UInt64 ofst, UInt64 length, PackFileItem::CompressInfo *compInfo, Text::CStringNN name, const Data::Timestamp &modTime, const Data::Timestamp &accTime, const Data::Timestamp &createTime, UInt32 unixAttr);
 		Bool AddOrReplacePack(NotNullPtr<IO::PackageFile> pkg, Text::CStringNN name, const Data::Timestamp &modTime, const Data::Timestamp &accTime, const Data::Timestamp &createTime, UInt32 unixAttr);
 		IO::PackageFile *GetPackFile(Text::CStringNN name) const;
-		Bool UpdateCompInfo(const UTF8Char *name, NotNullPtr<IO::StreamData> fd, UInt64 ofst, Int32 crc, UOSInt compSize, UInt32 decSize);
+		Bool UpdateCompInfo(Text::CStringNN name, NotNullPtr<IO::StreamData> fd, UInt64 ofst, Int32 crc, UOSInt compSize, UInt32 decSize);
 		Bool MergePackage(NotNullPtr<IO::PackageFile> pkg);
 
 		Optional<const PackFileItem> GetPackFileItem(const UTF8Char *name) const;
-		const PackFileItem *GetPackFileItem(UOSInt index) const;
+		Optional<const PackFileItem> GetPackFileItem(UOSInt index) const;
 		PackObjectType GetPItemType(NotNullPtr<const PackFileItem> itemObj) const;
 		Optional<IO::StreamData> GetPItemStmDataNew(NotNullPtr<const PackFileItem> itemObj) const;
 		Optional<IO::PackageFile> GetPItemPack(NotNullPtr<const PackFileItem> itemObj, OutParam<Bool> needRelease) const;
+		Data::ArrayIterator<NotNullPtr<PackFileItem>> PackFileIterator() const;
 
 		virtual UOSInt GetCount() const;
 		virtual PackObjectType GetItemType(UOSInt index) const;

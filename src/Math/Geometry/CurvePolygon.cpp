@@ -35,12 +35,10 @@ NotNullPtr<Math::Geometry::Vector2D> Math::Geometry::CurvePolygon::Clone() const
 {
 	NotNullPtr<Math::Geometry::CurvePolygon> newObj;
 	NEW_CLASSNN(newObj, Math::Geometry::CurvePolygon(this->srid));
-	UOSInt i = 0;
-	UOSInt j = this->geometries.GetCount();
-	while (i < j)
+	Data::ArrayIterator<NotNullPtr<Math::Geometry::Vector2D>> it = this->geometries.Iterator();
+	while (it.HasNext())
 	{
-		newObj->AddGeometry(this->geometries.GetItem(i)->Clone());
-		i++;
+		newObj->AddGeometry(it.Next()->Clone());
 	}
 	return newObj;
 }
@@ -53,22 +51,21 @@ NotNullPtr<Math::Geometry::Vector2D> Math::Geometry::CurvePolygon::CurveToLine()
 	Data::ArrayList<UInt32> ptOfst;
 	Data::ArrayListA<Math::Coord2DDbl> ptList;
 	UOSInt nPoint;
-	Math::Geometry::Vector2D *vec;
-	UOSInt i = 0;
-	UOSInt j = this->GetCount();
-	while (i < j)
+	NotNullPtr<Math::Geometry::Vector2D> vec;
+	Data::ArrayIterator<NotNullPtr<Math::Geometry::Vector2D>> it = this->Iterator();
+	while (it.HasNext())
 	{
-		vec = this->GetItem(i);
+		vec = it.Next();
 		if (vec->GetVectorType() == Math::Geometry::Vector2D::VectorType::CompoundCurve)
 		{
 			ptList.Clear();
-			((Math::Geometry::CompoundCurve*)vec)->GetDrawPoints(ptList);
+			NotNullPtr<Math::Geometry::CompoundCurve>::ConvertFrom(vec)->GetDrawPoints(ptList);
 			NEW_CLASSNN(lr, LinearRing(this->srid, ptList.Ptr(), ptList.GetCount(), 0, 0));
 			pg->AddGeometry(lr);
 		}
 		else if (vec->GetVectorType() == Math::Geometry::Vector2D::VectorType::LineString)
 		{
-			const Math::Coord2DDbl *ptArr = ((Math::Geometry::LineString*)vec)->GetPointListRead(nPoint);
+			const Math::Coord2DDbl *ptArr = NotNullPtr<Math::Geometry::LineString>::ConvertFrom(vec)->GetPointListRead(nPoint);
 			NEW_CLASSNN(lr, LinearRing(this->srid, ptArr, nPoint, 0, 0));
 			pg->AddGeometry(lr);
 		}
@@ -76,7 +73,6 @@ NotNullPtr<Math::Geometry::Vector2D> Math::Geometry::CurvePolygon::CurveToLine()
 		{
 			printf("CurvePolygon: CurveToLine unexpected type: %s\r\n", Math::Geometry::Vector2D::VectorTypeGetName(vec->GetVectorType()).v);
 		}
-		i++;
 	}
 	return pg;
 }

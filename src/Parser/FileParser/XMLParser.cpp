@@ -143,7 +143,7 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 	nodeText = reader.GetNodeText();
 	if (nodeText->Equals(UTF8STRC("kml")))
 	{
-		return Map::KMLXML::ParseKMLRoot(reader, fileName, parsers, browser, pkgFile);
+		return Map::KMLXML::ParseKMLRoot(reader, fileName, parsers, browser, pkgFile).OrNull();
 	}
 	else if (nodeText->Equals(UTF8STRC("gpx")))
 	{

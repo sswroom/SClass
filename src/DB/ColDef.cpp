@@ -292,7 +292,7 @@ void DB::ColDef::SetAttr(Text::String *attr)
 	if (attr) this->attr = attr->Clone().Ptr();
 }
 
-void DB::ColDef::Set(const ColDef *colDef)
+void DB::ColDef::Set(NotNullPtr<const ColDef> colDef)
 {
 	this->SetColName(colDef->colName);
 	this->SetColType(colDef->colType);
@@ -315,7 +315,7 @@ NotNullPtr<DB::ColDef> DB::ColDef::Clone() const
 {
 	NotNullPtr<DB::ColDef> newObj;
 	NEW_CLASSNN(newObj, DB::ColDef(this->colName));
-	newObj->Set(this);
+	newObj->Set(*this);
 	return newObj;
 }
 

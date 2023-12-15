@@ -231,22 +231,19 @@ DB::TableDef *DB::DBConn::GetTableDef(Text::CString schemaName, Text::CString ta
 		if (!r.Set(tmpr))
 			return tab;
 
-		UOSInt j;
-		UOSInt k;
+		Data::ArrayIterator<NotNullPtr<DB::ColDef>> it;
 		while (r->ReadNext())
 		{
 			ptr = r->GetStr(0, buff, sizeof(buff));
-			j = 0;
-			k = tab->GetColCnt();
-			while (j < k)
+			it = tab->ColIterator();
+			while (it.HasNext())
 			{
-				DB::ColDef *col = tab->GetCol(j);
+				NotNullPtr<DB::ColDef> col = it.Next();
 				if (col->GetColName()->Equals(buff, (UOSInt)(ptr - buff)))
 				{
 					col->SetPK(true);
 					break;
 				}
-				j++;
 			}
 		}
 		this->CloseReader(r);

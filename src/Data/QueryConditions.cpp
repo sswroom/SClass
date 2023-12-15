@@ -1062,9 +1062,9 @@ Data::QueryConditions::ConditionType Data::QueryConditions::InnerCondition::GetT
 
 Bool Data::QueryConditions::InnerCondition::ToWhereClause(NotNullPtr<Text::StringBuilderUTF8> sb, DB::SQLType sqlType, Int8 tzQhr, UOSInt maxDBItem)
 {
-	Data::ArrayList<Condition*> clientConditions;
+	Data::ArrayListNN<Condition> clientConditions;
 	Text::StringBuilderUTF8 sbTmp;
-	this->innerCond->ToWhereClause(sbTmp, sqlType, tzQhr, maxDBItem, &clientConditions);
+	this->innerCond->ToWhereClause(sbTmp, sqlType, tzQhr, maxDBItem, clientConditions);
 	if (clientConditions.GetCount() > 0)
 	{
 		return false;
@@ -1137,7 +1137,7 @@ Data::QueryConditions::QueryConditions()
 
 Data::QueryConditions::~QueryConditions()
 {
-	LIST_FREE_FUNC(&this->conditionList, DEL_CLASS);
+	this->conditionList.DeleteAll();
 }
 
 Bool Data::QueryConditions::IsValid(NotNullPtr<Data::VariObject> obj)
@@ -1150,31 +1150,29 @@ Bool Data::QueryConditions::IsValid(NotNullPtr<Data::ObjectGetter> getter)
 	return ObjectValid(getter, this->conditionList);
 }
 
-Bool Data::QueryConditions::ToWhereClause(NotNullPtr<Text::StringBuilderUTF8> sb, DB::SQLType sqlType, Int8 tzQhr, UOSInt maxDBItem, Data::ArrayList<Condition*> *clientConditions)
+Bool Data::QueryConditions::ToWhereClause(NotNullPtr<Text::StringBuilderUTF8> sb, DB::SQLType sqlType, Int8 tzQhr, UOSInt maxDBItem, NotNullPtr<Data::ArrayListNN<Condition>> clientConditions)
 {
 	Text::StringBuilderUTF8 sbTmp;
 	Bool hasOr = false;
-	UOSInt i = 0;
-	UOSInt j = this->conditionList.GetCount();
-	while (i < j)
+	Data::ArrayIterator<NotNullPtr<Condition>> it = this->conditionList.Iterator();
+	NotNullPtr<Condition> condition;
+	while (it.HasNext())
 	{
-		Condition *condition = this->conditionList.GetItem(i);
+		condition = it.Next();
 		if (condition->GetType() == ConditionType::Or)
 		{
 			hasOr = true;
 			break;
 		}
-		i++;
 	}
 
 	if (hasOr)
 	{
 		UOSInt splitType = 1;
-		i = 0;
-		j = this->conditionList.GetCount();
-		while (i < j)
+		it = this->conditionList.Iterator();
+		while (it.HasNext())
 		{
-			Condition *condition = this->conditionList.GetItem(i);
+			condition = it.Next();
 			if (condition->GetType() == ConditionType::Or)
 			{
 				if (splitType != 0)
@@ -1213,7 +1211,6 @@ Bool Data::QueryConditions::ToWhereClause(NotNullPtr<Text::StringBuilderUTF8> sb
 					sb->AppendC(sbTmp.ToString(), sbTmp.GetLength());
 				}
 			}
-			i++;
 		}
 		if (splitType == 0)
 		{
@@ -1223,11 +1220,10 @@ Bool Data::QueryConditions::ToWhereClause(NotNullPtr<Text::StringBuilderUTF8> sb
 	else
 	{
 		Bool hasCond = false;
-		i = 0;
-		j = this->conditionList.GetCount();
-		while (i < j)
+		it = this->conditionList.Iterator();
+		while (it.HasNext())
 		{
-			Condition *condition = this->conditionList.GetItem(i);
+			condition = it.Next();
 			sbTmp.ClearStr();
 			if (!condition->ToWhereClause(sbTmp, sqlType, tzQhr, maxDBItem))
 			{
@@ -1242,7 +1238,6 @@ Bool Data::QueryConditions::ToWhereClause(NotNullPtr<Text::StringBuilderUTF8> sb
 				sb->AppendC(sbTmp.ToString(), sbTmp.GetLength());
 				hasCond = true;
 			}
-			i++;
 		}
 	}
 	return true;
@@ -1253,7 +1248,7 @@ UOSInt Data::QueryConditions::GetCount()
 	return this->conditionList.GetCount();
 }
 
-Data::QueryConditions::Condition *Data::QueryConditions::GetItem(UOSInt index)
+Optional<Data::QueryConditions::Condition> Data::QueryConditions::GetItem(UOSInt index)
 {
 	return this->conditionList.GetItem(index);
 }
@@ -1265,12 +1260,10 @@ NotNullPtr<Data::ArrayListNN<Data::QueryConditions::Condition>> Data::QueryCondi
 
 void Data::QueryConditions::GetFieldList(NotNullPtr<Data::ArrayListNN<Text::String>> fieldList)
 {
-	UOSInt i = 0;
-	UOSInt j = this->conditionList.GetCount();
-	while (i < j)
+	Data::ArrayIterator<NotNullPtr<Condition>> it = this->conditionList.Iterator();
+	while (it.HasNext())
 	{
-		this->conditionList.GetItem(i)->GetFieldList(fieldList);
-		i++;
+		it.Next()->GetFieldList(fieldList);
 	}
 }
 
@@ -1409,12 +1402,11 @@ Text::CStringNN Data::QueryConditions::CompareConditionGetStr(CompareCondition c
 Bool Data::QueryConditions::ObjectValid(NotNullPtr<Data::VariObject> obj, NotNullPtr<Data::ArrayListNN<Condition>> conditionList)
 {
 	Bool ret = true;
-	Condition *cond;
-	UOSInt i = 0;
-	UOSInt j = conditionList->GetCount();
-	while (i < j)
+	NotNullPtr<Condition> cond;
+	Data::ArrayIterator<NotNullPtr<Condition>> it = conditionList->Iterator();
+	while (it.HasNext())
 	{
-		cond = conditionList->GetItem(i);
+		cond = it.Next();
 		if (cond->GetType() == ConditionType::Or)
 		{
 			if (ret)
@@ -1425,7 +1417,6 @@ Bool Data::QueryConditions::ObjectValid(NotNullPtr<Data::VariObject> obj, NotNul
 		{
 			ret = ret && cond->IsValid(obj);
 		}
-		i++;
 	}
 	return ret;
 }
@@ -1460,7 +1451,6 @@ Data::QueryConditions *Data::QueryConditions::ParseStr(Text::CStringNN s, DB::SQ
 	NotNullPtr<Data::VariItem> item;
 	Data::QueryConditions *cond;
 	UOSInt i;
-	UOSInt j;
 	NEW_CLASS(cond, Data::QueryConditions());
 	while (true)
 	{
@@ -1497,17 +1487,18 @@ Data::QueryConditions *Data::QueryConditions::ParseStr(Text::CStringNN s, DB::SQ
 					if (itemType == Data::VariItem::ItemType::Str)
 					{
 						Data::ArrayList<const UTF8Char*> vals;
-						i = 0;
-						j = items.GetCount();
-						while (i < j)
+						Data::ArrayIterator<NotNullPtr<Data::VariItem>> it = items.Iterator();
+						NotNullPtr<Data::VariItem> item;
+						while (it.HasNext())
 						{
-							if (items.GetItem(i)->GetItemType() != itemType)
+							item = it.Next();
+							if (item->GetItemType() != itemType)
 							{
 								items.DeleteAll();
 								DEL_CLASS(cond);
 								return 0;
 							}
-							vals.Add(items.GetItem(i)->GetItemValue().str->v);
+							vals.Add(item->GetItemValue().str->v);
 							i++;
 						}
 						cond->StrIn(sbField.ToCString(), vals);
@@ -1561,17 +1552,18 @@ Data::QueryConditions *Data::QueryConditions::ParseStr(Text::CStringNN s, DB::SQ
 						if (itemType == Data::VariItem::ItemType::Str)
 						{
 							Data::ArrayList<const UTF8Char*> vals;
-							i = 0;
-							j = items.GetCount();
-							while (i < j)
+							Data::ArrayIterator<NotNullPtr<Data::VariItem>> it = items.Iterator();
+							NotNullPtr<Data::VariItem> item;
+							while (it.HasNext())
 							{
-								if (items.GetItem(i)->GetItemType() != itemType)
+								item = it.Next();
+								if (item->GetItemType() != itemType)
 								{
 									items.DeleteAll();
 									DEL_CLASS(cond);
 									return 0;
 								}
-								vals.Add(items.GetItem(i)->GetItemValue().str->v);
+								vals.Add(item->GetItemValue().str->v);
 								i++;
 							}
 							cond->StrNotIn(sbField.ToCString(), vals);

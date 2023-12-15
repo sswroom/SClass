@@ -28,11 +28,11 @@ namespace Map
 			Media::SharedImage *img;
 		};
 	public:
-		static Map::MapDrawLayer *ParseKMLRoot(NotNullPtr<Text::XMLReader> reader, Text::CStringNN fileName, Parser::ParserList *parsers, Net::WebBrowser *browser, IO::PackageFile *pkgFile);
+		static Optional<Map::MapDrawLayer> ParseKMLRoot(NotNullPtr<Text::XMLReader> reader, Text::CStringNN fileName, Parser::ParserList *parsers, Net::WebBrowser *browser, IO::PackageFile *pkgFile);
 	private:
-		static Map::MapDrawLayer *ParseKMLContainer(NotNullPtr<Text::XMLReader> reader, Data::ICaseStringMap<KMLStyle*> *styles, Text::CStringNN sourceName, Parser::ParserList *parsers, Net::WebBrowser *browser, IO::PackageFile *basePF, Bool rootKml);
+		static Optional<Map::MapDrawLayer> ParseKMLContainer(NotNullPtr<Text::XMLReader> reader, Data::ICaseStringMap<KMLStyle*> *styles, Text::CStringNN sourceName, Parser::ParserList *parsers, Net::WebBrowser *browser, IO::PackageFile *basePF, Bool rootKml);
 		static void ParseKMLPlacemarkTrack(NotNullPtr<Text::XMLReader> reader, NotNullPtr<Map::GPSTrack> lyr, Data::StringMap<KMLStyle*> *styles);
-		static Map::MapDrawLayer *ParseKMLPlacemarkLyr(NotNullPtr<Text::XMLReader> reader, Data::StringMap<KMLStyle*> *styles, Text::CStringNN sourceName, Parser::ParserList *parsers, Net::WebBrowser *browser, IO::PackageFile *basePF);
+		static Optional<Map::MapDrawLayer> ParseKMLPlacemarkLyr(NotNullPtr<Text::XMLReader> reader, Data::StringMap<KMLStyle*> *styles, Text::CStringNN sourceName, Parser::ParserList *parsers, Net::WebBrowser *browser, IO::PackageFile *basePF);
 		static Optional<Math::Geometry::Vector2D> ParseKMLVector(NotNullPtr<Text::XMLReader> reader, NotNullPtr<Data::ArrayListNN<Text::String>> colNames, NotNullPtr<Data::ArrayListNN<Text::String>> colValues, NotNullPtr<Data::ArrayList<Map::VectorLayer::ColInfo>> colInfos);
 		static void ParseCoordinates(NotNullPtr<Text::XMLReader> reader, NotNullPtr<Data::ArrayListA<Math::Coord2DDbl>> coordList, NotNullPtr<Data::ArrayList<Double>> altList);
 	};

@@ -186,7 +186,7 @@ Net::EthernetAnalyzer::~EthernetAnalyzer()
 		j = ipLog->logList.GetCount();
 		while (j-- > 0)
 		{
-			ipLog->logList.GetItem(j)->Release();
+			OPTSTR_DEL(ipLog->logList.GetItem(j));
 		}
 		DEL_CLASS(ipLog);
 	}

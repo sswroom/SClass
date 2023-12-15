@@ -230,7 +230,7 @@ Text::MailCreator::~MailCreator()
 	i = this->attachName.GetCount();
 	while (i-- > 0)
 	{
-		this->attachName.GetItem(i)->Release();
+		OPTSTR_DEL(this->attachName.GetItem(i));
 		obj = this->attachObj.GetItem(i);
 		DEL_CLASS(obj);
 	}
@@ -524,7 +524,7 @@ NotNullPtr<Text::MIMEObj::MailMessage> Text::MailCreator::CreateMail()
 		UOSInt j;
 		UOSInt k;
 		UOSInt l;
-		Text::String *fname;
+		NotNullPtr<Text::String> fname;
 		NEW_CLASS(mpart, Text::MIMEObj::MultipartMIMEObj(CSTR("multipart/mixed"), CSTR("This is a multi-part message in MIME format.")));
 		if (this->content)
 		{
@@ -537,23 +537,25 @@ NotNullPtr<Text::MIMEObj::MailMessage> Text::MailCreator::CreateMail()
 		j = this->attachName.GetCount();
 		while (i < j)
 		{
-			obj = this->attachObj.GetItem(i);
-			fname = this->attachName.GetItem(i);
-			k = mpart->AddPart(obj->Clone());
-			l = fname->LastIndexOf(IO::Path::PATH_SEPERATOR);
-			sbc.ClearStr();
-			contType = obj->GetContentType();
-			sbc.AppendC(contType.v, contType.leng);
-			sbc.AppendC(UTF8STRC(";\r\n\tname=\""));
-			this->AppendStr(sbc, fname->ToCString().Substring(l + 1));
-			sbc.AppendC(UTF8STRC("\""));
-			mpart->AddPartHeader(k, UTF8STRC("Content-Type"), sbc.ToString(), sbc.GetLength());
-			mpart->AddPartHeader(k, UTF8STRC("Content-Transfer-Encoding"), UTF8STRC("base64"));
-			sbc.ClearStr();
-			sbc.AppendC(UTF8STRC("attachment; \r\n\tfilename=\""));
-			this->AppendStr(sbc, fname->ToCString().Substring(l + 1));
-			sbc.AppendC(UTF8STRC("\""));
-			mpart->AddPartHeader(k, UTF8STRC("Content-Disposition"), sbc.ToString(), sbc.GetLength());
+			if (this->attachName.GetItem(i).SetTo(fname))
+			{
+				obj = this->attachObj.GetItem(i);
+				k = mpart->AddPart(obj->Clone());
+				l = fname->LastIndexOf(IO::Path::PATH_SEPERATOR);
+				sbc.ClearStr();
+				contType = obj->GetContentType();
+				sbc.AppendC(contType.v, contType.leng);
+				sbc.AppendC(UTF8STRC(";\r\n\tname=\""));
+				this->AppendStr(sbc, fname->ToCString().Substring(l + 1));
+				sbc.AppendC(UTF8STRC("\""));
+				mpart->AddPartHeader(k, UTF8STRC("Content-Type"), sbc.ToString(), sbc.GetLength());
+				mpart->AddPartHeader(k, UTF8STRC("Content-Transfer-Encoding"), UTF8STRC("base64"));
+				sbc.ClearStr();
+				sbc.AppendC(UTF8STRC("attachment; \r\n\tfilename=\""));
+				this->AppendStr(sbc, fname->ToCString().Substring(l + 1));
+				sbc.AppendC(UTF8STRC("\""));
+				mpart->AddPartHeader(k, UTF8STRC("Content-Disposition"), sbc.ToString(), sbc.GetLength());
+			}
 			i++;
 		}
 		msg->SetContent(mpart);

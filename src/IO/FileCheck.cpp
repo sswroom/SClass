@@ -263,7 +263,7 @@ IO::FileCheck::FileCheck(Text::CStringNN name, Crypto::Hash::HashType chkType) :
 
 IO::FileCheck::~FileCheck()
 {
-	LIST_FREE_STRING(&this->fileNames);
+	LISTNN_FREE_STRING(&this->fileNames);
 	MemFree(this->chkValues);
 }
 
@@ -282,7 +282,7 @@ UOSInt IO::FileCheck::GetCount() const
 	return this->fileNames.GetCount();
 }
 
-Text::String *IO::FileCheck::GetEntryName(UOSInt index) const
+Optional<Text::String> IO::FileCheck::GetEntryName(UOSInt index) const
 {
 	return this->fileNames.GetItem(index);
 }
@@ -317,8 +317,8 @@ Bool IO::FileCheck::CheckEntryHash(UOSInt index, UInt8 *hashVal) const
 	UOSInt i;
 	Crypto::Hash::IHash *hash;
 
-	Text::String *fileName = this->fileNames.GetItem(index);
-	if (fileName == 0)
+	NotNullPtr<Text::String> fileName;
+	if (!this->fileNames.GetItem(index).SetTo(fileName))
 		return false;
 	sptr = this->sourceName->ConcatTo(sbuff);
 	i = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), IO::Path::PATH_SEPERATOR);

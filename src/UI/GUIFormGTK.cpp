@@ -61,7 +61,7 @@ void GUIForm_OnFileDrop(GtkWidget *widget, GdkDragContext *context, gint x, gint
 		me->OnFileDrop(files.Ptr(), i);
 		while (i-- > 0)
 		{
-			files.GetItem(i)->Release();
+			OPTSTR_DEL(files.GetItem(i));
 		}
 	}
 }
@@ -192,13 +192,11 @@ UI::GUIForm::GUIForm(Optional<GUIClientControl> parent, Double initW, Double ini
 
 UI::GUIForm::~GUIForm()
 {
-	GUITimer *tmr;
 	UOSInt i;
 	i = this->timers.GetCount();
 	while (i-- > 0)
 	{
-		tmr = this->timers.GetItem(i);
-		DEL_CLASS(tmr);
+		this->timers.GetItem(i).Delete();
 	}
 	this->isDialog = true;
 	GtkWidget *widget = (GtkWidget*)this->hwnd;
@@ -354,7 +352,7 @@ void UI::GUIForm::RemoveTimer(NotNullPtr<UI::GUITimer> tmr)
 	i = this->timers.GetCount();	
 	while (i-- > 0)
 	{
-		if (tmr.Ptr() == this->timers.GetItem(i))
+		if (tmr.Ptr() == this->timers.GetItem(i).OrNull())
 		{
 			this->timers.RemoveAt(i);
 			tmr.Delete();

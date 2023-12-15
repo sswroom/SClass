@@ -22,8 +22,6 @@ char **backtrace_symbols(void **addrArr, int cnt)
 
 Manage::SymbolResolver::SymbolResolver(NotNullPtr<Manage::Process> proc)
 {
-	UOSInt i;
-	UOSInt j;
 	UOSInt baseAddr;
 	UOSInt size;
 	UTF8Char sbuff[256];
@@ -32,12 +30,10 @@ Manage::SymbolResolver::SymbolResolver(NotNullPtr<Manage::Process> proc)
 
 	Data::ArrayListNN<Manage::ModuleInfo> modList;
 	this->proc->GetModules(modList);
-	i = 0;
-	j = modList.GetCount();
-	while (i < j)
+	Data::ArrayIterator<NotNullPtr<Manage::ModuleInfo>> it = modList.Iterator();
+	while (it.HasNext())
 	{
-		Manage::ModuleInfo *mod;
-		mod = modList.GetItem(i);
+		NotNullPtr<Manage::ModuleInfo> mod = it.Next();
 
 		sptr = mod->GetModuleFileName(sbuff);
 		this->modNames.Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
@@ -45,8 +41,7 @@ Manage::SymbolResolver::SymbolResolver(NotNullPtr<Manage::Process> proc)
 		this->modBaseAddrs.Add(baseAddr);
 		this->modSizes.Add(size);
 
-		DEL_CLASS(mod);
-		i++;
+		mod.Delete();
 	}
 }
 
@@ -55,7 +50,7 @@ Manage::SymbolResolver::~SymbolResolver()
 	UOSInt i = this->modNames.GetCount();
 	while (i-- > 0)
 	{
-		this->modNames.GetItem(i)->Release();
+		OPTSTR_DEL(this->modNames.GetItem(i));
 	}
 }
 
@@ -77,7 +72,7 @@ UOSInt Manage::SymbolResolver::GetModuleCount()
 	return this->modNames.GetCount();
 }
 
-Text::String *Manage::SymbolResolver::GetModuleName(UOSInt index)
+Optional<Text::String> Manage::SymbolResolver::GetModuleName(UOSInt index)
 {
 	return this->modNames.GetItem(index);
 }

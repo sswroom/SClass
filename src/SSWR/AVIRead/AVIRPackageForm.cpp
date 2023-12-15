@@ -49,7 +49,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRPackageForm::ProcessThread(void *userObj)
 	SSWR::AVIRead::AVIRPackageForm *me = (SSWR::AVIRead::AVIRPackageForm*)userObj;
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
-	Text::String *fname = 0;
+	NotNullPtr<Text::String> fname;
 	Text::CStringNN fileName;
 	ActionType atype = AT_COPY;
 	UOSInt i;
@@ -65,29 +65,31 @@ UInt32 __stdcall SSWR::AVIRead::AVIRPackageForm::ProcessThread(void *userObj)
 		j = me->fileNames.GetCount();
 		while (!found && i < j)
 		{
-			fname = me->fileNames.GetItem(i);
-			atype = me->fileAction.GetItem(i);
-			switch (atype)
+			if (me->fileNames.GetItem(i).SetTo(fname))
 			{
-			case AT_COPY:
-				found = true;
-				break;
-			case AT_MOVE:
-				found = true;
-				break;
-			case AT_RETRYCOPY:
-				found = true;
-				break;
-			case AT_RETRYMOVE:
-				found = true;
-				break;
-			case AT_DELETE:
-			case AT_DELETEFAIL:
-			case AT_COPYFAIL:
-			case AT_MOVEFAIL:
-			case AT_SUCCEED:
-			default:
-				break;
+				atype = me->fileAction.GetItem(i);
+				switch (atype)
+				{
+				case AT_COPY:
+					found = true;
+					break;
+				case AT_MOVE:
+					found = true;
+					break;
+				case AT_RETRYCOPY:
+					found = true;
+					break;
+				case AT_RETRYMOVE:
+					found = true;
+					break;
+				case AT_DELETE:
+				case AT_DELETEFAIL:
+				case AT_COPYFAIL:
+				case AT_MOVEFAIL:
+				case AT_SUCCEED:
+				default:
+					break;
+				}
 			}
 			i++;
 		}
@@ -112,7 +114,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRPackageForm::ProcessThread(void *userObj)
 				i = me->fileNames.GetCount();
 				while (i-- > 0)
 				{
-					if (me->fileNames.GetItem(i) == fname)
+					if (me->fileNames.GetItem(i).OrNull() == fname.Ptr())
 					{
 						if (found)
 						{
@@ -135,7 +137,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRPackageForm::ProcessThread(void *userObj)
 				i = me->fileNames.GetCount();
 				while (i-- > 0)
 				{
-					if (me->fileNames.GetItem(i) == fname)
+					if (me->fileNames.GetItem(i).OrNull() == fname.Ptr())
 					{
 						if (found)
 						{
@@ -158,7 +160,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRPackageForm::ProcessThread(void *userObj)
 				i = me->fileNames.GetCount();
 				while (i-- > 0)
 				{
-					if (me->fileNames.GetItem(i) == fname)
+					if (me->fileNames.GetItem(i).OrNull() == fname.Ptr())
 					{
 						if (found)
 						{
@@ -181,7 +183,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRPackageForm::ProcessThread(void *userObj)
 				i = me->fileNames.GetCount();
 				while (i-- > 0)
 				{
-					if (me->fileNames.GetItem(i) == fname)
+					if (me->fileNames.GetItem(i).OrNull() == fname.Ptr())
 					{
 						if (found)
 						{
@@ -219,19 +221,17 @@ void __stdcall SSWR::AVIRead::AVIRPackageForm::OnTimerTick(void *userObj)
 	UTF8Char *sptr;
 	if (me->statusChg)
 	{
-		UOSInt i;
-		UOSInt j;
 		UOSInt k;
 		OSInt scrVPos = me->lvStatus->GetScrollVPos();
-		Text::String *fname;
+		NotNullPtr<Text::String> fname;
 		me->statusChg = false;
 		me->lvStatus->ClearItems();
 		Sync::MutexUsage mutUsage(me->fileMut);
-		i = 0;
-		j = me->fileNames.GetCount();
-		while (i < j)
+		Data::ArrayIterator<NotNullPtr<Text::String>> it = me->fileNames.Iterator();
+		UOSInt i = 0;
+		while (it.HasNext())
 		{
-			fname = me->fileNames.GetItem(i);
+			fname = it.Next();
 			k = fname->LastIndexOf(IO::Path::PATH_SEPERATOR);
 			k = me->lvStatus->AddItem(fname->ToCString().Substring(k + 1), (void*)fname->v);
 			switch (me->fileAction.GetItem(i))
@@ -770,8 +770,6 @@ void SSWR::AVIRead::AVIRPackageForm::UpdatePackFile(NotNullPtr<IO::PackageFile> 
 
 void SSWR::AVIRead::AVIRPackageForm::PasteFiles(NotNullPtr<Data::ArrayListNN<Text::String>> files, Bool move)
 {
-	UOSInt i;
-	UOSInt j;
 	if (move)
 	{
 		if (this->packFile->GetFileType() == IO::PackageFileType::Virtual)
@@ -781,13 +779,11 @@ void SSWR::AVIRead::AVIRPackageForm::PasteFiles(NotNullPtr<Data::ArrayListNN<Tex
 		else
 		{
 			Sync::MutexUsage mutUsage(this->fileMut);
-			i = 0;
-			j = files->GetCount();
-			while (i < j)
+			Data::ArrayIterator<NotNullPtr<Text::String>> it = files->Iterator();
+			while (it.HasNext())
 			{
-				this->fileNames.Add(files->GetItem(i)->Clone());
+				this->fileNames.Add(it.Next()->Clone());
 				this->fileAction.Add(AT_MOVE);
-				i++;
 			}
 			this->statusChg = true;
 		}
@@ -797,15 +793,16 @@ void SSWR::AVIRead::AVIRPackageForm::PasteFiles(NotNullPtr<Data::ArrayListNN<Tex
 		if (this->packFile->GetFileType() == IO::PackageFileType::Virtual)
 		{
 			Bool changed = false;
-			i = 0;
-			j = files->GetCount();
-			while (i < j)
+			Data::ArrayIterator<NotNullPtr<Text::String>> it = files->Iterator();
+			NotNullPtr<Text::String> s;
+			while (it.HasNext())
 			{
-				if (!this->packFile->CopyFrom(files->GetItem(i)->ToCString(), 0, 0))
+				s = it.Next();
+				if (!this->packFile->CopyFrom(s->ToCString(), 0, 0))
 				{
 					Text::StringBuilderUTF8 sb;
 					sb.Append(CSTR("Failed to copy "));
-					sb.Append(files->GetItem(i));
+					sb.Append(s);
 					sb.Append(CSTR(", do you want to continue?"));
 					if (!UI::MessageDialog::ShowYesNoDialog(sb.ToCString(), CSTR("Package"), this))
 					{
@@ -816,7 +813,6 @@ void SSWR::AVIRead::AVIRPackageForm::PasteFiles(NotNullPtr<Data::ArrayListNN<Tex
 				{
 					changed = true;
 				}
-				i++;
 			}
 			if (changed)
 			{
@@ -826,13 +822,11 @@ void SSWR::AVIRead::AVIRPackageForm::PasteFiles(NotNullPtr<Data::ArrayListNN<Tex
 		else
 		{
 			Sync::MutexUsage mutUsage(this->fileMut);
-			i = 0;
-			j = files->GetCount();
-			while (i < j)
+			Data::ArrayIterator<NotNullPtr<Text::String>> it = files->Iterator();
+			while (it.HasNext())
 			{
-				this->fileNames.Add(files->GetItem(i)->Clone());
+				this->fileNames.Add(it.Next()->Clone());
 				this->fileAction.Add(AT_COPY);
-				i++;
 			}
 			this->statusChg = true;
 		}
@@ -1010,7 +1004,7 @@ SSWR::AVIRead::AVIRPackageForm::~AVIRPackageForm()
 		this->packFile.Delete();
 	}
 	SDEL_CLASS(this->rootPackFile);
-	LIST_FREE_STRING(&this->fileNames);
+	LISTNN_FREE_STRING(&this->fileNames);
 	SDEL_STRING(this->statusFile);
 	DEL_CLASS(this->mnuPopup);
 	SDEL_STRING(this->progName);

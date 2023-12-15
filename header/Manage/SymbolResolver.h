@@ -22,7 +22,7 @@ namespace Manage
 		virtual UTF8Char *ResolveName(UTF8Char *buff, UInt64 address);
 
 		UOSInt GetModuleCount();
-		Text::String *GetModuleName(UOSInt index);
+		Optional<Text::String> GetModuleName(UOSInt index);
 		UInt64 GetModuleAddr(UOSInt index);
 		UInt64 GetModuleSize(UOSInt index);
 	};

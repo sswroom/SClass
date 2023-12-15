@@ -86,7 +86,7 @@ DB::SQL::SQLCommand *DB::SQL::SQLCommand::Parse(const UTF8Char *sql, DB::SQLType
 							}
 							sql = SQLUtil::ParseNextWord(sql, sb, sqlType);
 							Bool err = false;
-							UOSInt i;
+							Data::ArrayIterator<NotNullPtr<DB::ColDef>> it;
 							while (true)
 							{
 								if (sb.GetLength() == 0 || IsPunctuation(sb.ToString()))
@@ -95,11 +95,11 @@ DB::SQL::SQLCommand *DB::SQL::SQLCommand::Parse(const UTF8Char *sql, DB::SQLType
 									err = true;
 									break;
 								}
-								i = tab->GetColCnt();
-								while (i-- > 0)
+								it = tab->ColIterator();
+								while (it.HasNext())
 								{
-									DB::ColDef *col;
-									col = tab->GetCol(i);
+									NotNullPtr<DB::ColDef> col;
+									col = it.Next();
 									if (sb.Equals(col->GetColName()))
 									{
 										col->SetPK(true);

@@ -8,10 +8,13 @@
 
 Data::VariItem *DB::SortableDBReader::GetItem(UOSInt colIndex)
 {
-	Data::VariObject *obj = this->objList.GetItem(this->currIndex);
-	if (obj == 0)
+	NotNullPtr<Data::VariObject> obj;
+	if (!this->objList.GetItem(this->currIndex).SetTo(obj))
 		return 0;
-	return obj->GetItem(this->cols.GetItem(colIndex)->GetColName()->v);
+	NotNullPtr<DB::ColDef> col;
+	if (!this->cols.GetItem(colIndex).SetTo(col))
+		return 0;
+	return obj->GetItem(col->GetColName()->v);
 }
 
 DB::SortableDBReader::SortableDBReader(DB::ReadingDB *db, Text::CString schemaName, Text::CString tableName, Data::ArrayListNN<Text::String> *colNames, UOSInt dataOfst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
@@ -63,7 +66,7 @@ DB::SortableDBReader::SortableDBReader(DB::ReadingDB *db, Text::CString schemaNa
 		while (i < j)
 		{
 			NotNullPtr<Text::String> colName;
-			if (colName.Set(colNames->GetItem(i)) && dbColNames.SortedIndexOf(colName) < 0)
+			if (colNames->GetItem(i).SetTo(colName) && dbColNames.SortedIndexOf(colName) < 0)
 			{
 				dbColNames.SortedInsert(colName);
 			}
@@ -78,7 +81,7 @@ DB::SortableDBReader::SortableDBReader(DB::ReadingDB *db, Text::CString schemaNa
 			while (i < j)
 			{
 				NotNullPtr<Text::String> colName;
-				if (colName.Set(condColNames.GetItem(i)) && dbColNames.SortedIndexOf(colName) < 0)
+				if (condColNames.GetItem(i).SetTo(colName) && dbColNames.SortedIndexOf(colName) < 0)
 				{
 					dbColNames.SortedInsert(colName);
 				}
@@ -119,11 +122,10 @@ DB::SortableDBReader::SortableDBReader(DB::ReadingDB *db, Text::CString schemaNa
 		db->CloseReader(r);
 
 		DB::ColDef *col;
-		i = 0;
-		j = colNames->GetCount();
-		while (i < j)
+		Data::ArrayIterator<NotNullPtr<Text::String>> it = colNames->Iterator();
+		while (it.HasNext())
 		{
-			col = tmpCols.Get(colNames->GetItem(i));
+			col = tmpCols.GetNN(it.Next());
 			if (col)
 			{
 				this->cols.Add(col->Clone());
@@ -152,8 +154,7 @@ DB::SortableDBReader::SortableDBReader(DB::ReadingDB *db, Text::CString schemaNa
 			dataOfst = this->objList.GetCount();
 			while (dataOfst-- > 0)
 			{
-				if (obj.Set(this->objList.GetItem(dataOfst)))
-					obj.Delete();
+				this->objList.GetItem(dataOfst).Delete();
 			}
 			this->objList.Clear();
 		}
@@ -162,8 +163,7 @@ DB::SortableDBReader::SortableDBReader(DB::ReadingDB *db, Text::CString schemaNa
 			i = dataOfst;
 			while (i-- > 0)
 			{
-				if (obj.Set(this->objList.GetItem(i)))
-					obj.Delete();
+				this->objList.GetItem(i).Delete();
 			}
 			this->objList.RemoveRange(0, dataOfst);
 		}
@@ -182,19 +182,15 @@ DB::SortableDBReader::SortableDBReader(DB::ReadingDB *db, Text::CString schemaNa
 DB::SortableDBReader::~SortableDBReader()
 {
 	UOSInt i;
-	Data::VariObject *obj;
-	DB::ColDef *col;
 	i = this->objList.GetCount();
 	while (i-- > 0)
 	{
-		obj = this->objList.GetItem(i);
-		DEL_CLASS(obj);
+		this->objList.GetItem(i).Delete();
 	}
 	i = this->cols.GetCount();
 	while (i-- > 0)
 	{
-		col = this->cols.GetItem(i);
-		DEL_CLASS(col);
+		this->cols.GetItem(i).Delete();
 	}
 }
 
@@ -484,8 +480,8 @@ Bool DB::SortableDBReader::IsNull(UOSInt colIndex)
 
 UTF8Char *DB::SortableDBReader::GetName(UOSInt colIndex, UTF8Char *buff)
 {
-	DB::ColDef *col = this->cols.GetItem(colIndex);
-	if (col)
+	NotNullPtr<DB::ColDef> col;
+	if (this->cols.GetItem(colIndex).SetTo(col))
 	{
 		NotNullPtr<Text::String> colName = col->GetColName();
 		return Text::StrConcatC(buff, colName->v, colName->leng);
@@ -495,8 +491,8 @@ UTF8Char *DB::SortableDBReader::GetName(UOSInt colIndex, UTF8Char *buff)
 
 DB::DBUtil::ColType DB::SortableDBReader::GetColType(UOSInt colIndex, OptOut<UOSInt> colSize)
 {
-	DB::ColDef *col = this->cols.GetItem(colIndex);
-	if (col)
+	NotNullPtr<DB::ColDef> col;
+	if (this->cols.GetItem(colIndex).SetTo(col))
 	{
 		colSize.Set(col->GetColSize());
 		return col->GetColType();
@@ -506,8 +502,8 @@ DB::DBUtil::ColType DB::SortableDBReader::GetColType(UOSInt colIndex, OptOut<UOS
 
 Bool DB::SortableDBReader::GetColDef(UOSInt colIndex, NotNullPtr<DB::ColDef> colDef)
 {
-	DB::ColDef *c = this->cols.GetItem(colIndex);
-	if (c == 0)
+	NotNullPtr<DB::ColDef> c;
+	if (!this->cols.GetItem(colIndex).SetTo(c))
 	{
 		return false;
 	}

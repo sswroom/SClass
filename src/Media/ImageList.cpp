@@ -30,7 +30,7 @@ Media::ImageList::~ImageList()
 	i = this->valStr.GetCount();
 	while (i-- > 0)
 	{
-		this->valStr.GetItem(i)->Release();
+		OPTSTR_DEL(this->valStr.GetItem(i));
 	}
 	if (this->thermoPtr)
 	{
@@ -250,6 +250,7 @@ Bool Media::ImageList::ToValueString(NotNullPtr<Text::StringBuilderUTF8> sb) con
 	UOSInt j;
 	Bool found = false;
 	ValueType vt;
+	NotNullPtr<Text::String> s;
 	if ((j = this->valStr.GetCount()) != 0)
 	{
 		i = 0;
@@ -262,7 +263,8 @@ Bool Media::ImageList::ToValueString(NotNullPtr<Text::StringBuilderUTF8> sb) con
 			vt = this->valTypeStr.GetItem(i);
 			sb->Append(GetValueTypeName(vt));
 			sb->AppendC(UTF8STRC(" = "));
-			sb->Append(this->valStr.GetItem(i));
+			if (this->valStr.GetItem(i).SetTo(s))
+				sb->Append(s);
 			found = true;
 			i++;
 		}

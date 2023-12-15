@@ -36,9 +36,10 @@ namespace DB
 		const UTF8Char *GetComments() const;
 		DB::SQLType GetSQLType() const;
 		UOSInt GetColCnt() const;
-		DB::ColDef *GetCol(UOSInt index) const;
-		DB::ColDef *GetSinglePKCol() const;
+		Optional<DB::ColDef> GetCol(UOSInt index) const;
+		Optional<DB::ColDef> GetSinglePKCol() const;
 		UOSInt CountPK() const;
+		Data::ArrayIterator<NotNullPtr<DB::ColDef>> ColIterator() const;
 
 		TableDef *AddCol(NotNullPtr<DB::ColDef> col);
 		TableDef *SetDatabaseName(Text::CString databaseName);

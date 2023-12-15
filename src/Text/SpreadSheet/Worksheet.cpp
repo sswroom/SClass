@@ -113,8 +113,12 @@ Text::SpreadSheet::Worksheet::RowData *Text::SpreadSheet::Worksheet::CloneRow(Ro
 	CellData *cell;
 	UOSInt i;
 	UOSInt j;
+	NotNullPtr<CellStyle> tmpStyle;
 	newRow = MemAlloc(RowData, 1);
-	newRow->style = newCtrl->GetStyle((UOSInt)srcCtrl->GetStyleIndex(row->style));
+	if (row->style.SetTo(tmpStyle))
+		newRow->style = newCtrl->GetStyle((UOSInt)srcCtrl->GetStyleIndex(tmpStyle));
+	else
+		newRow->style = 0;
 	NEW_CLASS(newRow->cells, Data::ArrayList<CellData*>());
 	newRow->height = row->height;
 	i = 0;
@@ -148,7 +152,11 @@ Text::SpreadSheet::Worksheet::CellData *Text::SpreadSheet::Worksheet::CloneCell(
 	{
 		newCell->cellValue = 0;
 	}
-	newCell->style = newCtrl->GetStyle((UOSInt)srcCtrl->GetStyleIndex(cell->style));
+	NotNullPtr<CellStyle> tmpStyle;
+	if (cell->style.SetTo(tmpStyle))
+		newCell->style = newCtrl->GetStyle((UOSInt)srcCtrl->GetStyleIndex(tmpStyle));
+	else
+		newCell->style = 0;
 	newCell->mergeHori = cell->mergeHori;
 	newCell->mergeVert = cell->mergeVert;
 	newCell->hidden = cell->hidden;
@@ -442,7 +450,7 @@ Bool Text::SpreadSheet::Worksheet::SetCellInt64(UOSInt row, UOSInt col, Int64 va
 	return this->SetCellInt64(row, col, 0, val);
 }
 
-Bool Text::SpreadSheet::Worksheet::SetCellStyle(UOSInt row, UOSInt col, Text::SpreadSheet::CellStyle *style)
+Bool Text::SpreadSheet::Worksheet::SetCellStyle(UOSInt row, UOSInt col, Optional<Text::SpreadSheet::CellStyle> style)
 {
 	CellData *cell;
 	cell = GetCellData(row, col, false);
@@ -459,7 +467,7 @@ Bool Text::SpreadSheet::Worksheet::SetCellStyleHAlign(UOSInt row, UOSInt col, IS
 	if (cell == 0)
 		return false;
 	NotNullPtr<CellStyle> tmpStyle;
-	if (cell->style == 0)
+	if (!cell->style.SetTo(tmpStyle))
 	{
 		if (hAlign == Text::HAlignment::Unknown)
 			return true;
@@ -470,11 +478,11 @@ Bool Text::SpreadSheet::Worksheet::SetCellStyleHAlign(UOSInt row, UOSInt col, IS
 	}
 	else
 	{
-		if (cell->style->GetHAlign() == hAlign)
+		if (tmpStyle->GetHAlign() == hAlign)
 			return true;
-		tmpStyle = cell->style->Clone();
+		tmpStyle = tmpStyle->Clone();
 		tmpStyle->SetHAlign(hAlign);
-		cell->style = wb->FindOrCreateStyle(tmpStyle).Ptr();
+		cell->style = wb->FindOrCreateStyle(tmpStyle);
 		tmpStyle.Delete();
 	}
 	return true;
@@ -487,23 +495,23 @@ Bool Text::SpreadSheet::Worksheet::SetCellStyleBorderBottom(UOSInt row, UOSInt c
 	if (cell == 0)
 		return false;
 	NotNullPtr<CellStyle> tmpStyle;
-	if (cell->style == 0)
+	if (!cell->style.SetTo(tmpStyle))
 	{
 		if (borderType == Text::SpreadSheet::BorderType::None)
 			return true;
 		NEW_CLASSNN(tmpStyle, CellStyle(0));
 		tmpStyle->SetBorderBottom(Text::SpreadSheet::CellStyle::BorderStyle(color, borderType));
-		cell->style = wb->FindOrCreateStyle(tmpStyle).Ptr();
+		cell->style = wb->FindOrCreateStyle(tmpStyle);
 		tmpStyle.Delete();
 	}
 	else
 	{
 		
-		if (cell->style->GetBorderBottom() == Text::SpreadSheet::CellStyle::BorderStyle(color, borderType))
+		if (tmpStyle->GetBorderBottom() == Text::SpreadSheet::CellStyle::BorderStyle(color, borderType))
 			return true;
-		tmpStyle = cell->style->Clone();
+		tmpStyle = tmpStyle->Clone();
 		tmpStyle->SetBorderBottom(Text::SpreadSheet::CellStyle::BorderStyle(color, borderType));
-		cell->style = wb->FindOrCreateStyle(tmpStyle).Ptr();
+		cell->style = wb->FindOrCreateStyle(tmpStyle);
 		tmpStyle.Delete();
 	}
 	return true;

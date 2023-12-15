@@ -651,12 +651,12 @@ void Map::WebMapTileServiceSource::ReleaseLayer(TileLayer *layer)
 	i = layer->format.GetCount();
 	while (i-- > 0)
 	{
-		layer->format.GetItem(i)->Release();
+		OPTSTR_DEL(layer->format.GetItem(i));
 	}
 	i = layer->infoFormat.GetCount();
 	while (i-- > 0)
 	{
-		layer->infoFormat.GetItem(i)->Release();
+		OPTSTR_DEL(layer->infoFormat.GetItem(i));
 	}
 	i = layer->resourceURLs.GetCount();
 	while (i-- > 0)

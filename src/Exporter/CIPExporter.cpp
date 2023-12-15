@@ -166,10 +166,14 @@ Bool Exporter::CIPExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text:
 			WriteUInt32(&buff[4], (UInt32)nPtOfst);
 			ptOfstArr[0] = 0;
 			UOSInt i = 0;
+			NotNullPtr<Math::Geometry::LineString> ls;
 			while (i < nPtOfst)
 			{
 				i++;
-				ptOfstArr[i] = ptOfstArr[i - 1] + (UInt32)pl->GetItem(i)->GetPointCount();
+				if (pl->GetItem(i).SetTo(ls))
+					ptOfstArr[i] = ptOfstArr[i - 1] + (UInt32)ls->GetPointCount();
+				else
+					ptOfstArr[i] = ptOfstArr[i - 1];
 			}
 			stm->Write(buff, 8);
 			stm->Write((UInt8*)ptOfstArr, nPtOfst * 4);
@@ -181,19 +185,21 @@ Bool Exporter::CIPExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text:
 			UOSInt j = 0;
 			UOSInt k;
 			UOSInt l;
-			Math::Geometry::LineString *lineString;
+			NotNullPtr<Math::Geometry::LineString> lineString;
 			i = 0;
 			while (i < nPtOfst)
 			{
-				lineString = pl->GetItem(i);
-				k = 0;
-				Math::Coord2DDbl *pointArr = lineString->GetPointList(l);
-				while (k < l)
+				if (pl->GetItem(i).SetTo(lineString))
 				{
-					ptArr[j] = Double2Int32(pointArr[k].x * 200000.0);
-					ptArr[j + 1] = Double2Int32(pointArr[k].y * 200000.0);
-					j += 2;
-					k++;
+					k = 0;
+					Math::Coord2DDbl *pointArr = lineString->GetPointList(l);
+					while (k < l)
+					{
+						ptArr[j] = Double2Int32(pointArr[k].x * 200000.0);
+						ptArr[j + 1] = Double2Int32(pointArr[k].y * 200000.0);
+						j += 2;
+						k++;
+					}
 				}
 				i++;
 			}
@@ -228,11 +234,13 @@ Bool Exporter::CIPExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text:
 			UOSInt nPtOfst = pg->GetCount();
 			UInt32 *ptOfstArr = MemAlloc(UInt32, nPtOfst);
 			Data::ArrayListA<Math::Coord2DDbl> pointArr;
+			NotNullPtr<Math::Geometry::LinearRing> lr;
 			j = 0;
 			while (j < nPtOfst)
 			{
 				ptOfstArr[j] = (UInt32)pointArr.GetCount();
-				pg->GetItem(j)->GetCoordinates(pointArr);
+				if (pg->GetItem(j).SetTo(lr))
+					lr->GetCoordinates(pointArr);
 				j++;
 			}
 			WriteUInt32(&buff[4], (UInt32)nPtOfst);

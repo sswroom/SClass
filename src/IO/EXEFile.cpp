@@ -36,8 +36,8 @@ IO::EXEFile::~EXEFile()
 	i = this->propNames.GetCount();
 	while (i-- > 0)
 	{
-		this->propNames.GetItem(i)->Release();
-		this->propValues.GetItem(i)->Release();
+		OPTSTR_DEL(this->propNames.GetItem(i));
+		OPTSTR_DEL(this->propValues.GetItem(i));
 	}
 
 	i = this->importList.GetCount();
@@ -48,7 +48,7 @@ IO::EXEFile::~EXEFile()
 		j = imp->funcs->GetCount();
 		while (j-- > 0)
 		{
-			imp->funcs->GetItem(j)->Release();
+			OPTSTR_DEL(imp->funcs->GetItem(j));
 		}
 		DEL_CLASS(imp->funcs);
 		MemFree(imp);
@@ -91,12 +91,12 @@ UOSInt IO::EXEFile::GetPropCount() const
 	return this->propNames.GetCount();
 }
 
-Text::String *IO::EXEFile::GetPropName(UOSInt index) const
+Optional<Text::String> IO::EXEFile::GetPropName(UOSInt index) const
 {
 	return this->propNames.GetItem(index);
 }
 
-Text::String *IO::EXEFile::GetPropValue(UOSInt index) const
+Optional<Text::String> IO::EXEFile::GetPropValue(UOSInt index) const
 {
 	return this->propValues.GetItem(index);
 }
@@ -145,7 +145,7 @@ UOSInt IO::EXEFile::GetImportFuncCount(UOSInt modIndex) const
 	return 0;
 }
 
-Text::String *IO::EXEFile::GetImportFunc(UOSInt modIndex, UOSInt funcIndex) const
+Optional<Text::String> IO::EXEFile::GetImportFunc(UOSInt modIndex, UOSInt funcIndex) const
 {
 	ImportInfo *imp = this->importList.GetItem(modIndex);
 	if (imp)

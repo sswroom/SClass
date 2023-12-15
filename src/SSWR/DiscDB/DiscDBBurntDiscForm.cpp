@@ -68,7 +68,7 @@ void SSWR::DiscDB::DiscDBBurntDiscForm::UpdateAnimeName()
 	SSWR::DiscDB::DiscDBEnv::DVDVideoInfo *dvdVideo;
 	Data::ArrayList<SSWR::DiscDB::DiscDBEnv::DVDVideoInfo *> dvdVideoList;
 	Data::ArrayListStringNN animeList;
-	Text::String *anime;
+	NotNullPtr<Text::String> anime;
 	this->cboDVDName->ClearItems();
 	this->env->GetDVDVideos(&dvdVideoList);
 	i = 0;
@@ -83,12 +83,11 @@ void SSWR::DiscDB::DiscDBBurntDiscForm::UpdateAnimeName()
 		}
 		i++;
 	}
-	i = 0;
-	j = animeList.GetCount();
-	while (i < j)
+	Data::ArrayIterator<NotNullPtr<Text::String>> it = animeList.Iterator();
+	while (it.HasNext())
 	{
-		anime = animeList.GetItem(i);
-		this->cboDVDName->AddItem(NotNullPtr<Text::String>::FromPtr(anime), 0);
+		anime = it.Next();
+		this->cboDVDName->AddItem(anime, 0);
 		anime->Release();
 		i++;
 	}

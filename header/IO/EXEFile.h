@@ -129,8 +129,8 @@ namespace IO
 
 		void AddProp(Text::CString name, Text::CString value);
 		UOSInt GetPropCount() const;
-		Text::String *GetPropName(UOSInt index) const;
-		Text::String *GetPropValue(UOSInt index) const;
+		Optional<Text::String> GetPropName(UOSInt index) const;
+		Optional<Text::String> GetPropValue(UOSInt index) const;
 		
 
 		UOSInt AddImportModule(Text::CString moduleName);
@@ -138,7 +138,7 @@ namespace IO
 		UOSInt GetImportCount() const;
 		Text::String *GetImportName(UOSInt modIndex) const;
 		UOSInt GetImportFuncCount(UOSInt modIndex) const;
-		Text::String *GetImportFunc(UOSInt modIndex, UOSInt funcIndex) const;
+		Optional<Text::String> GetImportFunc(UOSInt modIndex, UOSInt funcIndex) const;
 
 		void AddExportFunc(Text::CString funcName);
 		UOSInt GetExportCount() const;

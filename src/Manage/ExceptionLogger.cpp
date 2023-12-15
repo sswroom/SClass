@@ -377,14 +377,15 @@ Bool Manage::ExceptionLogger::LogToFile(NotNullPtr<Text::String> fileName, UInt3
 	sb.Append(exName);
 	writer.WriteLineC(sb.ToString(), sb.GetLength());
 
-
+	NotNullPtr<Text::String> s;
 	j = symResol.GetModuleCount();
 	writer.WriteLineC(UTF8STRC("\r\nLoaded modules:"));
 	i = 0;
 	while (i < j)
 	{
 		sb.ClearStr();
-		sb.Append(symResol.GetModuleName(i));
+		if (symResol.GetModuleName(i).SetTo(s))
+			sb.Append(s);
 		sb.AppendC(UTF8STRC(", Addr="));
 		sb.AppendHexOS((UOSInt)symResol.GetModuleAddr(i));
 		sb.AppendC(UTF8STRC(",size="));

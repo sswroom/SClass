@@ -179,7 +179,7 @@ Text::Cpp::CppEnv::~CppEnv()
 	UOSInt i = this->includePaths.GetCount();
 	while (i-- > 0)
 	{
-		this->includePaths.GetItem(i)->Release();
+		OPTSTR_DEL(this->includePaths.GetItem(i));
 	}
 	SDEL_STRING(this->baseFile);
 }
@@ -194,7 +194,6 @@ UTF8Char *Text::Cpp::CppEnv::GetIncludeFilePath(UTF8Char *buff, Text::CString in
 	UTF8Char *sptr;
 	UTF8Char *sptr2;
 	UOSInt i;
-	UOSInt j;
 /*	if (includeFile.IndexOf(UTF8STRC("opengl.hpp")) != INVALID_INDEX)
 	{
 		i = 0;
@@ -207,20 +206,20 @@ UTF8Char *Text::Cpp::CppEnv::GetIncludeFilePath(UTF8Char *buff, Text::CString in
 		if (IO::Path::GetPathType(CSTRP(buff, sptr2)) == IO::Path::PathType::File)
 			return sptr2;
 	}
-	i = 0;
-	j = this->includePaths.GetCount();
-	while (i < j)
+	Data::ArrayIterator<NotNullPtr<Text::String>> it = this->includePaths.Iterator();
+	NotNullPtr<Text::String> s;
+	while (it.HasNext())
 	{
+		s = it.Next();
 		if (this->baseFile)
 		{
 			sptr = this->baseFile->ConcatTo(buff);
-			Text::String *s = this->includePaths.GetItem(i);
 			sptr = IO::Path::AppendPath(buff, sptr, s->ToCString());
 			*sptr++ = IO::Path::PATH_SEPERATOR;
 		}
 		else
 		{
-			sptr = this->includePaths.GetItem(i)->ConcatTo(buff);
+			sptr = s->ConcatTo(buff);
 			*sptr++ = IO::Path::PATH_SEPERATOR;
 		}
 		sptr2 = includeFile.ConcatTo(sptr);
@@ -228,7 +227,6 @@ UTF8Char *Text::Cpp::CppEnv::GetIncludeFilePath(UTF8Char *buff, Text::CString in
 			Text::StrReplace(sptr, '/', IO::Path::PATH_SEPERATOR);
 		if (IO::Path::GetPathType(CSTRP(buff, sptr2)) == IO::Path::PathType::File)
 			return sptr2;
-		i++;
 	}
 	return 0;
 }

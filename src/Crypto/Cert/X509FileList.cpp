@@ -14,12 +14,10 @@ Crypto::Cert::X509FileList::X509FileList(Text::CStringNN sourceName, NotNullPtr<
 
 Crypto::Cert::X509FileList::~X509FileList()
 {
-	Crypto::Cert::X509File *file;
 	UOSInt i = this->fileList.GetCount();
 	while (i-- > 0)
 	{
-		file = this->fileList.GetItem(i);
-		DEL_CLASS(file);
+		this->fileList.GetItem(i).Delete();
 	}
 }
 
@@ -30,56 +28,52 @@ Crypto::Cert::X509File::FileType Crypto::Cert::X509FileList::GetFileType() const
 
 void Crypto::Cert::X509FileList::ToShortName(NotNullPtr<Text::StringBuilderUTF8> sb) const
 {
-	return this->fileList.GetItem(0)->ToShortName(sb);
+	return this->fileList.GetItem(0).OrNull()->ToShortName(sb);
 }
 
 UOSInt Crypto::Cert::X509FileList::GetCertCount()
 {
 	UOSInt ret = 0;
-	UOSInt i = this->fileList.GetCount();
-	while (i-- > 0)
+	Data::ArrayIterator<NotNullPtr<X509File>> it = this->fileList.Iterator();
+	while (it.HasNext())
 	{
-		ret += this->fileList.GetItem(i)->GetCertCount();
+		ret += it.Next()->GetCertCount();
 	}
 	return ret;
 }
 
 Bool Crypto::Cert::X509FileList::GetCertName(UOSInt index, NotNullPtr<Text::StringBuilderUTF8> sb)
 {
-	UOSInt i = 0;
-	UOSInt j = this->fileList.GetCount();
+	Data::ArrayIterator<NotNullPtr<X509File>> it = this->fileList.Iterator();
 	UOSInt cnt;
-	Crypto::Cert::X509File *file;
-	while (i < j)
+	NotNullPtr<Crypto::Cert::X509File> file;
+	while (it.HasNext())
 	{
-		file = this->fileList.GetItem(i);
+		file = it.Next();
 		cnt = file->GetCertCount();
 		if (index < cnt)
 		{
 			return file->GetCertName(index, sb);
 		}
 		index -= cnt;
-		i++;
 	}
 	return false;
 }
 
 Crypto::Cert::X509Cert *Crypto::Cert::X509FileList::GetNewCert(UOSInt index)
 {
-	UOSInt i = 0;
-	UOSInt j = this->fileList.GetCount();
+	Data::ArrayIterator<NotNullPtr<X509File>> it = this->fileList.Iterator();
 	UOSInt cnt;
-	Crypto::Cert::X509File *file;
-	while (i < j)
+	NotNullPtr<Crypto::Cert::X509File> file;
+	while (it.HasNext())
 	{
-		file = this->fileList.GetItem(i);
+		file = it.Next();
 		cnt = file->GetCertCount();
 		if (index < cnt)
 		{
 			return file->GetNewCert(index);
 		}
 		index -= cnt;
-		i++;
 	}
 	return 0;
 }
@@ -90,15 +84,16 @@ Crypto::Cert::X509File::ValidStatus Crypto::Cert::X509FileList::IsValid(NotNullP
 	UOSInt i = this->fileList.GetCount();
 	if (i > 1)
 	{
-		Crypto::Cert::X509File *file;
+		NotNullPtr<Crypto::Cert::X509File> file;
 		if (trustStore == 0)
 		{
 			trustStore = ssl->GetTrustStore();
 		}
 		trustStore = trustStore->Clone().Ptr();
-		while (i-- > 0)
+		Data::ArrayIterator<NotNullPtr<X509File>> it = this->fileList.Iterator();
+		while (it.HasNext())
 		{
-			file = this->fileList.GetItem(i);
+			file = it.Next();
 			status = file->IsValid(ssl, trustStore);
 			if (status != Crypto::Cert::X509File::ValidStatus::Valid)
 			{
@@ -115,45 +110,42 @@ Crypto::Cert::X509File::ValidStatus Crypto::Cert::X509FileList::IsValid(NotNullP
 	}
 	else
 	{
-		return this->fileList.GetItem(0)->IsValid(ssl, trustStore);
+		return this->fileList.GetItem(0).OrNull()->IsValid(ssl, trustStore);
 	}
 }
 
 NotNullPtr<Net::ASN1Data> Crypto::Cert::X509FileList::Clone() const
 {
 	NotNullPtr<Crypto::Cert::X509FileList> fileList;
-	NEW_CLASSNN(fileList, Crypto::Cert::X509FileList(this->GetSourceNameObj(), NotNullPtr<Crypto::Cert::X509Cert>::ConvertFrom(this->fileList.GetItem(0)->Clone())));
-	UOSInt i = 1;
-	UOSInt j = this->fileList.GetCount();
-	while (i < j)
+	Data::ArrayIterator<NotNullPtr<X509File>> it = this->fileList.Iterator();
+	NEW_CLASSNN(fileList, Crypto::Cert::X509FileList(this->GetSourceNameObj(), NotNullPtr<Crypto::Cert::X509Cert>::ConvertFrom(it.Next()->Clone())));
+	while (it.HasNext())
 	{
-		fileList->AddFile(NotNullPtr<Crypto::Cert::X509File>::ConvertFrom(this->fileList.GetItem(i)->Clone()));
-		i++;
+		fileList->AddFile(NotNullPtr<Crypto::Cert::X509File>::ConvertFrom(it.Next()->Clone()));
 	}
 	return fileList;
 }
 
 Crypto::Cert::X509Cert *Crypto::Cert::X509FileList::CreateX509Cert() const
 {
-	if (this->fileList.GetCount() == 0)
+	NotNullPtr<Crypto::Cert::X509File> file;
+	if (!this->fileList.GetItem(0).SetTo(file))
 		return 0;
-	return (Crypto::Cert::X509Cert*)this->fileList.GetItem(0)->Clone().Ptr();
+	return NotNullPtr<Crypto::Cert::X509Cert>::ConvertFrom(file->Clone()).Ptr();
 }
 
 void Crypto::Cert::X509FileList::ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const
 {
-	UOSInt i = 0;
-	UOSInt j = this->fileList.GetCount();
-	while (i < j)
+	Data::ArrayIterator<NotNullPtr<X509File>> it = this->fileList.Iterator();
+	while (it.HasNext())
 	{
-		this->fileList.GetItem(i)->ToString(sb);
-		i++;
+		it.Next()->ToString(sb);
 	}
 }
 
 Net::ASN1Names *Crypto::Cert::X509FileList::CreateNames() const
 {
-	return this->fileList.GetItem(0)->CreateNames();
+	return this->fileList.GetItem(0).OrNull()->CreateNames();
 }
 
 void Crypto::Cert::X509FileList::AddFile(NotNullPtr<Crypto::Cert::X509File> file)
@@ -166,27 +158,26 @@ UOSInt Crypto::Cert::X509FileList::GetFileCount() const
 	return this->fileList.GetCount();
 }
 
-Crypto::Cert::X509File *Crypto::Cert::X509FileList::GetFile(UOSInt index) const
+Optional<Crypto::Cert::X509File> Crypto::Cert::X509FileList::GetFile(UOSInt index) const
 {
 	return this->fileList.GetItem(index);
 }
 
 void Crypto::Cert::X509FileList::SetDefaultSourceName()
 {
-	Crypto::Cert::X509File *file;
+	NotNullPtr<Crypto::Cert::X509File> file;
 	UOSInt j = INVALID_INDEX;
 	UOSInt i = this->fileList.GetCount();
 	while (i-- > 0)
 	{
-		file = this->fileList.GetItem(i);
-		if (file->GetFileType() == Crypto::Cert::X509File::FileType::Cert)
+		if (this->fileList.GetItem(i).SetTo(file) && file->GetFileType() == Crypto::Cert::X509File::FileType::Cert)
 		{
-			((Crypto::Cert::X509Cert*)file)->SetDefaultSourceName();
+			NotNullPtr<Crypto::Cert::X509Cert>::ConvertFrom(file)->SetDefaultSourceName();
 			j = i;
 		}
 	}
 	if (j != INVALID_INDEX)
 	{
-		this->SetSourceName(this->fileList.GetItem(j)->GetSourceNameObj());
+		this->SetSourceName(this->fileList.GetItem(j).OrNull()->GetSourceNameObj());
 	}
 }

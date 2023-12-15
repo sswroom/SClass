@@ -62,16 +62,18 @@ Map::GeoPackageLayer::GeoPackageLayer(Map::GeoPackage *gpkg, NotNullPtr<Map::Geo
 	this->mixedData = MixedData::AllData;
 	if (this->tabDef)
 	{
-		DB::ColDef *col;
-		UOSInt i = this->tabDef->GetColCnt();
-		while (i-- > 0)
+		NotNullPtr<DB::ColDef> col;
+		Data::ArrayIterator<NotNullPtr<DB::ColDef>> it = this->tabDef->ColIterator();
+		UOSInt i = 0;
+		while (it.HasNext())
 		{
-			col = this->tabDef->GetCol(i);
+			col = it.Next();
 			if (col->GetColType() == DB::DBUtil::CT_Vector)
 			{
 				this->geomCol = i;
 				break;
 			}
+			i++;
 		}
 
 		if (this->geomCol != INVALID_INDEX)
@@ -250,8 +252,8 @@ UTF8Char *Map::GeoPackageLayer::GetColumnName(UTF8Char *buff, UOSInt colIndex)
 {
 	if (this->tabDef == 0)
 		return 0;
-	DB::ColDef *col = this->tabDef->GetCol(colIndex);
-	if (col == 0)
+	NotNullPtr<DB::ColDef> col;
+	if (!this->tabDef->GetCol(colIndex).SetTo(col))
 		return 0;
 	return col->GetColName()->ConcatTo(buff);
 }
@@ -260,8 +262,8 @@ DB::DBUtil::ColType Map::GeoPackageLayer::GetColumnType(UOSInt colIndex, OptOut<
 {
 	if (this->tabDef == 0)
 		return DB::DBUtil::CT_Unknown;
-	DB::ColDef *col = this->tabDef->GetCol(colIndex);
-	if (col == 0)
+	NotNullPtr<DB::ColDef> col;
+	if (!this->tabDef->GetCol(colIndex).SetTo(col))
 		return DB::DBUtil::CT_Unknown;
 	colSize.Set(col->GetColSize());
 	return col->GetColType();
@@ -271,8 +273,8 @@ Bool Map::GeoPackageLayer::GetColumnDef(UOSInt colIndex, NotNullPtr<DB::ColDef> 
 {
 	if (this->tabDef == 0)
 		return false;
-	DB::ColDef *col = this->tabDef->GetCol(colIndex);
-	if (col == 0)
+	NotNullPtr<DB::ColDef> col;
+	if (!this->tabDef->GetCol(colIndex).SetTo(col))
 		return false;
 	colDef->Set(col);
 	return true;

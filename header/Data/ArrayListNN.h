@@ -7,7 +7,7 @@
 
 namespace Data
 {
-	template <class T> class ArrayListNN : public ReadingList<T*>, public ArrayCollection<NotNullPtr<T>>
+	template <class T> class ArrayListNN : public ReadingList<Optional<T>>, public ArrayCollection<NotNullPtr<T>>
 	{
 	public:
 		typedef void (*FreeFunc)(NotNullPtr<T> v);
@@ -37,7 +37,7 @@ namespace Data
 		virtual UOSInt GetCapacity() const;
 		void EnsureCapacity(UOSInt capacity);
 
-		virtual T *GetItem(UOSInt index) const;
+		virtual Optional<T> GetItem(UOSInt index) const;
 		virtual Optional<T> SetItem(UOSInt index, NotNullPtr<T> val);
 		void CopyItems(UOSInt destIndex, UOSInt srcIndex, UOSInt count);
 		UOSInt GetRange(NotNullPtr<T> *outArr, UOSInt index, UOSInt cnt) const;
@@ -267,11 +267,11 @@ namespace Data
 		}
 	}
 
-	template <class T> T *ArrayListNN<T>::GetItem(UOSInt index) const
+	template <class T> Optional<T> ArrayListNN<T>::GetItem(UOSInt index) const
 	{
 		if (index >= this->objCnt || index < 0)
-			return 0;
-		return this->arr[index].Ptr();
+			return nullptr;
+		return this->arr[index];
 	}
 
 	template <class T> Optional<T> ArrayListNN<T>::SetItem(UOSInt index, NotNullPtr<T> val)
@@ -398,4 +398,5 @@ namespace Data
 	}
 }
 
+#define LISTNN_FREE_STRING(list) { Data::ArrayIterator<NotNullPtr<Text::String>> it = (list)->Iterator(); while (it.HasNext()) it.Next()->Release(); (list)->Clear(); }
 #endif

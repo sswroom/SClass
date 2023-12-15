@@ -48,7 +48,7 @@ Media::Jasper::JasperReport::~JasperReport()
 	i = this->importList.GetCount();
 	while (i-- > 0)
 	{
-		this->importList.GetItem(i)->Release();
+		OPTSTR_DEL(this->importList.GetItem(i));
 	}
 	i = this->params.GetCount();
 	while (i-- > 0)

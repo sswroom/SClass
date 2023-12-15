@@ -29,10 +29,10 @@ Map::GeoPackage::GeoPackage(DB::DBConn *conn)
 	Text::StringTool::SplitAsNewString(CSTR("table_name,data_type,min_x,min_y,max_x,max_y,srs_id"), ',', colList);
 	if (!r.Set(this->conn->QueryTableData(CSTR_NULL, CSTR("gpkg_contents"), &colList, 0, 0, CSTR_NULL, 0)))
 	{
-		LIST_FREE_STRING(&colList);
+		LISTNN_FREE_STRING(&colList);
 		return;
 	}
-	LIST_FREE_STRING(&colList);
+	LISTNN_FREE_STRING(&colList);
 	Text::StringBuilderUTF8 sb;
 	ContentInfo *cont;
 	while (r->ReadNext())
@@ -61,7 +61,7 @@ Map::GeoPackage::GeoPackage(DB::DBConn *conn)
 	Text::StringTool::SplitAsNewString(CSTR("table_name,z,m"), ',', colList);
 	if (r.Set(this->conn->QueryTableData(CSTR_NULL, CSTR("gpkg_geometry_columns"), &colList, 0, 0, CSTR_NULL, 0)))
 	{
-		LIST_FREE_STRING(&colList);
+		LISTNN_FREE_STRING(&colList);
 		while (r->ReadNext())
 		{
 			sb.ClearStr();
@@ -77,7 +77,7 @@ Map::GeoPackage::GeoPackage(DB::DBConn *conn)
 	}
 	else
 	{
-		LIST_FREE_STRING(&colList);
+		LISTNN_FREE_STRING(&colList);
 	}
 }
 
@@ -119,10 +119,10 @@ DB::TableDef *Map::GeoPackage::GetTableDef(Text::CString schemaName, Text::CStri
 		ContentInfo *cont = this->tableList.GetC(tableName.OrEmpty());
 		if (cont)
 		{
-			UOSInt i = tabDef->GetColCnt();
-			while (i-- > 0)
+			Data::ArrayIterator<NotNullPtr<DB::ColDef>> it = tabDef->ColIterator();
+			while (it.HasNext())
 			{
-				DB::ColDef *col = tabDef->GetCol(i);
+				NotNullPtr<DB::ColDef> col = it.Next();
 				if (col->GetColType() == DB::DBUtil::CT_Vector)
 				{
 					col->SetColSize((UOSInt)DB::ColDef::GeometryTypeAdjust((DB::ColDef::GeometryType)col->GetColSize(), cont->hasZ, cont->hasM));

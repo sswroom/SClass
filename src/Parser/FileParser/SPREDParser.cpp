@@ -44,7 +44,6 @@ IO::ParsedObject *Parser::FileParser::SPREDParser::ParseFileHdr(NotNullPtr<IO::S
 	UTF8Char sbuff[256];
 	const UTF8Char *sptr;
 	UOSInt i;
-	UOSInt j;
 	UOSInt currPos;
 	UOSInt readSize;
 	UOSInt buffSize;
@@ -201,10 +200,10 @@ IO::ParsedObject *Parser::FileParser::SPREDParser::ParseFileHdr(NotNullPtr<IO::S
 		while (i-- > 0)
 		{
 			currDev = devRecs.GetItem(i);
-			j = currDev->GetCount();
-			while (j-- > 0)
+			Data::ArrayIterator<NotNullPtr<Map::GPSTrack::GPSRecord3>> it = currDev->Iterator();
+			while (it.HasNext())
 			{
-				MemFreeA(currDev->GetItem(j));
+				MemFreeA(it.Next().Ptr());
 			}
 			DEL_CLASS(currDev);
 		}

@@ -292,11 +292,10 @@ Bool Net::OpenSSLEngine::ServerSetCertsASN1(NotNullPtr<Crypto::Cert::X509Cert> c
 	{
 		return false;
 	}
-	UOSInt i = 0;
-	UOSInt j = caCerts->GetCount();
-	while (i < j)
+	Data::ArrayIterator<NotNullPtr<Crypto::Cert::X509Cert>> it = caCerts->Iterator();
+	while (it.HasNext())
 	{
-		Crypto::Cert::X509Cert *caCert = caCerts->GetItem(i);
+		NotNullPtr<Crypto::Cert::X509Cert> caCert = it.Next();
 		const UInt8 *asn1 = caCert->GetASN1Buff();
 		X509 *x509 = d2i_X509(0, &asn1, (long)caCert->GetASN1BuffSize());
 		if (x509 == 0)
@@ -304,7 +303,6 @@ Bool Net::OpenSSLEngine::ServerSetCertsASN1(NotNullPtr<Crypto::Cert::X509Cert> c
 			return false;
 		}
 		SSL_CTX_add_extra_chain_cert(this->clsData->ctx, x509);
-		i++;
 	}
 
 	if (keyASN1->GetFileType() == Crypto::Cert::X509File::FileType::PrivateKey)

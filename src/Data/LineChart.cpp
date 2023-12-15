@@ -578,7 +578,7 @@ void Data::LineChart::Plot(NotNullPtr<Media::DrawImage> img, Double x, Double y,
 	Bool y2show;
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
-	Text::String *s;
+	NotNullPtr<Text::String> s;
 
 	UOSInt i;
 	UOSInt j;
@@ -1259,7 +1259,8 @@ void Data::LineChart::Plot(NotNullPtr<Media::DrawImage> img, Double x, Double y,
 	i = 0;
 	while (i < locations.GetCount())
 	{
-		Math::Size2DDbl strSize = img->GetTextSize(fnt, labels.GetItem(i)->ToCString());
+		s = Text::String::OrEmpty(labels.GetItem(i));
+		Math::Size2DDbl strSize = img->GetTextSize(fnt, s->ToCString());
 		img->DrawStringRot(Math::Coord2DDbl((x + y1Leng + this->pointSize + locations.GetItem(i)) - strSize.y * 0.5, (y + height - xLeng + barLeng) + strSize.x), Text::String::OrEmpty(labels.GetItem(i)), fnt, fontBrush, 90);
 		i += 1;
 	}
@@ -1268,7 +1269,7 @@ void Data::LineChart::Plot(NotNullPtr<Media::DrawImage> img, Double x, Double y,
 	i = labels.GetCount();
 	while (i-- > 0)
 	{
-		labels.GetItem(i)->Release();
+		OPTSTR_DEL(labels.GetItem(i));
 	}
 	labels.Clear();
 
@@ -1300,7 +1301,7 @@ void Data::LineChart::Plot(NotNullPtr<Media::DrawImage> img, Double x, Double y,
 			img->DrawLine((Double)(x + y1Leng), (Double)(y + height - this->pointSize - xLeng - locations.GetItem(i)), (Double)(x + width - y2Leng), (Double)(y + height - this->pointSize - xLeng - locations.GetItem(i)), gridPen);
 		}
 		img->DrawLine((Double)(x + y1Leng), (Double)(y + height - this->pointSize - xLeng - locations.GetItem(i)), (Double)(x + y1Leng - barLeng), (Double)(y + height - this->pointSize - xLeng - locations.GetItem(i)), boundPen);
-		s = labels.GetItem(i);
+		s = Text::String::OrEmpty(labels.GetItem(i));
 		rcSize = img->GetTextSize(fnt, s->ToCString());
 		img->DrawString(Math::Coord2DDbl(x + y1Leng - barLeng - rcSize.x, y + height - this->pointSize - xLeng - locations.GetItem(i) - fntH / 2), s->ToCString(), fnt, fontBrush);
 		i++;
@@ -1322,7 +1323,7 @@ void Data::LineChart::Plot(NotNullPtr<Media::DrawImage> img, Double x, Double y,
 	i = labels.GetCount();
 	while (i-- > 0)
 	{
-		labels.GetItem(i)->Release();
+		OPTSTR_DEL(labels.GetItem(i));
 	}
 	labels.Clear();
 

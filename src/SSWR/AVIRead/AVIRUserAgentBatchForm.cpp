@@ -178,12 +178,10 @@ void SSWR::AVIRead::AVIRUserAgentBatchForm::UpdateByText(Text::PString txt)
 	{
 		Text::StringBuilderUTF8 sb;
 		sb.ClearStr();
-		i = 0;
-		j = uaList.GetCount();
-		while (i < j)
+		Data::ArrayIterator<NotNullPtr<Text::String>> it = uaList.Iterator();
+		while (it.HasNext())
 		{
-			UserAgent2Output(uaList.GetItem(i)->ToCString(), sb);
-			i++;
+			UserAgent2Output(it.Next()->ToCString(), sb);
 		}
 		this->txtOutput->SetText(sb.ToCString());
 		this->txtOutput->SelectAll();
@@ -194,7 +192,7 @@ void SSWR::AVIRead::AVIRUserAgentBatchForm::UpdateByText(Text::PString txt)
 		UI::MessageDialog::ShowDialog(CSTR("Nothing to update"), CSTR("User Agent Update"), this);
 	}
 	
-	LIST_FREE_STRING(&uaList);
+	LISTNN_FREE_STRING(&uaList);
 }
 
 SSWR::AVIRead::AVIRUserAgentBatchForm::AVIRUserAgentBatchForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)

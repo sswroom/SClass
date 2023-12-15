@@ -22,14 +22,14 @@
 #include <stdio.h>
 #endif
 
-Map::MapDrawLayer *Map::KMLXML::ParseKMLRoot(NotNullPtr<Text::XMLReader> reader, Text::CStringNN fileName, Parser::ParserList *parsers, Net::WebBrowser *browser, IO::PackageFile *pkgFile)
+Optional<Map::MapDrawLayer> Map::KMLXML::ParseKMLRoot(NotNullPtr<Text::XMLReader> reader, Text::CStringNN fileName, Parser::ParserList *parsers, Net::WebBrowser *browser, IO::PackageFile *pkgFile)
 {
 	if (reader->GetNodeType() != Text::XMLNode::NodeType::Element)
 		return 0;
 	if (!reader->GetNodeText()->Equals(UTF8STRC("kml")))
 		return 0;
 	Data::ICaseStringMap<KMLStyle*> styles;
-	Map::MapDrawLayer *lyr = ParseKMLContainer(reader, &styles, fileName, parsers, browser, pkgFile, true);
+	Optional<Map::MapDrawLayer> lyr = ParseKMLContainer(reader, &styles, fileName, parsers, browser, pkgFile, true);
 
 	NotNullPtr<const Data::ArrayList<KMLStyle*>> styleList = styles.GetValues();
 	KMLStyle *style;
@@ -45,7 +45,7 @@ Map::MapDrawLayer *Map::KMLXML::ParseKMLRoot(NotNullPtr<Text::XMLReader> reader,
 }
 
 
-Map::MapDrawLayer *Map::KMLXML::ParseKMLContainer(NotNullPtr<Text::XMLReader> reader, Data::ICaseStringMap<KMLStyle*> *styles, Text::CStringNN sourceName, Parser::ParserList *parsers, Net::WebBrowser *browser, IO::PackageFile *basePF, Bool rootKml)
+Optional<Map::MapDrawLayer> Map::KMLXML::ParseKMLContainer(NotNullPtr<Text::XMLReader> reader, Data::ICaseStringMap<KMLStyle*> *styles, Text::CStringNN sourceName, Parser::ParserList *parsers, Net::WebBrowser *browser, IO::PackageFile *basePF, Bool rootKml)
 {
 	KMLStyle *style;
 	UOSInt i;
@@ -484,7 +484,7 @@ Map::MapDrawLayer *Map::KMLXML::ParseKMLContainer(NotNullPtr<Text::XMLReader> re
 		}
 		else if (nodeName->EqualsICase(UTF8STRC("PLACEMARK")))
 		{
-			if (lyr.Set(ParseKMLPlacemarkLyr(reader, styles, sourceName, parsers, browser, basePF)))
+			if (ParseKMLPlacemarkLyr(reader, styles, sourceName, parsers, browser, basePF).SetTo(lyr))
 			{
 				layers.Add(lyr);
 			}
@@ -789,14 +789,14 @@ Map::MapDrawLayer *Map::KMLXML::ParseKMLContainer(NotNullPtr<Text::XMLReader> re
 		}
 		else if (nodeName->EqualsICase(UTF8STRC("FOLDER")))
 		{
-			if (lyr.Set(ParseKMLContainer(reader, styles, sourceName, parsers, browser, basePF, false)))
+			if (ParseKMLContainer(reader, styles, sourceName, parsers, browser, basePF, false).SetTo(lyr))
 			{
 				layers.Add(lyr);
 			}
 		}
 		else if (nodeName->EqualsICase(UTF8STRC("DOCUMENT")))
 		{
-			if (lyr.Set(ParseKMLContainer(reader, styles, sourceName, parsers, browser, basePF, false)))
+			if (ParseKMLContainer(reader, styles, sourceName, parsers, browser, basePF, false).SetTo(lyr))
 			{
 				layers.Add(lyr);
 			}
@@ -909,19 +909,25 @@ void Map::KMLXML::ParseKMLPlacemarkTrack(NotNullPtr<Text::XMLReader> reader, Not
 								UOSInt j = timeList.GetCount();
 								while (i < j)
 								{
-									Text::String *s = timeList.GetItem(i);
-									dt.SetValue(s->ToCString());
-									rec.recTime = dt.ToInstant();
-									
-									coordList.GetItem(i)->ConcatTo(sbuff);
-									if (Text::StrSplit(strs, 4, sbuff, ' ') == 3)
+									NotNullPtr<Text::String> s;
+									if (timeList.GetItem(i).SetTo(s))
 									{
-										rec.pos = Math::Coord2DDbl(Text::StrToDouble(strs[1]), Text::StrToDouble(strs[0]));
-										rec.altitude = Text::StrToDouble(strs[2]);
-										lyr->AddRecord(rec);
+										dt.SetValue(s->ToCString());
+										rec.recTime = dt.ToInstant();
 									}
-									timeList.GetItem(i)->Release();
-									coordList.GetItem(i)->Release();
+									
+									if (coordList.GetItem(i).SetTo(s))
+									{
+										s->ConcatTo(sbuff);
+										if (Text::StrSplit(strs, 4, sbuff, ' ') == 3)
+										{
+											rec.pos = Math::Coord2DDbl(Text::StrToDouble(strs[1]), Text::StrToDouble(strs[0]));
+											rec.altitude = Text::StrToDouble(strs[2]);
+											lyr->AddRecord(rec);
+										}
+									}
+									OPTSTR_DEL(timeList.GetItem(i));
+									OPTSTR_DEL(coordList.GetItem(i));
 									i++;
 								}
 								timeList.Clear();
@@ -932,12 +938,12 @@ void Map::KMLXML::ParseKMLPlacemarkTrack(NotNullPtr<Text::XMLReader> reader, Not
 								UOSInt i = timeList.GetCount();
 								while (i-- > 0)
 								{
-									timeList.GetItem(i)->Release();
+									OPTSTR_DEL(timeList.GetItem(i));
 								}
 								i = coordList.GetCount();
 								while (i-- > 0)
 								{
-									coordList.GetItem(i)->Release();
+									OPTSTR_DEL(coordList.GetItem(i));
 								}
 								timeList.Clear();
 								coordList.Clear();
@@ -1078,19 +1084,25 @@ void Map::KMLXML::ParseKMLPlacemarkTrack(NotNullPtr<Text::XMLReader> reader, Not
 						UOSInt j = timeList.GetCount();
 						while (i < j)
 						{
-							Text::String *s = timeList.GetItem(i);
-							dt.SetValue(s->ToCString());
-							rec.recTime = dt.ToInstant();
-							
-							coordList.GetItem(i)->ConcatTo(sbuff);
-							if (Text::StrSplit(strs, 4, sbuff, ' ') == 3)
+							NotNullPtr<Text::String> s;
+							if (timeList.GetItem(i).SetTo(s))
 							{
-								rec.pos = Math::Coord2DDbl(Text::StrToDouble(strs[1]), Text::StrToDouble(strs[0]));
-								rec.altitude = Text::StrToDouble(strs[2]);
-								lyr->AddRecord(rec);
+								dt.SetValue(s->ToCString());
+								rec.recTime = dt.ToInstant();
 							}
-							timeList.GetItem(i)->Release();
-							coordList.GetItem(i)->Release();
+							
+							if (coordList.GetItem(i).SetTo(s))
+							{
+								s->ConcatTo(sbuff);
+								if (Text::StrSplit(strs, 4, sbuff, ' ') == 3)
+								{
+									rec.pos = Math::Coord2DDbl(Text::StrToDouble(strs[1]), Text::StrToDouble(strs[0]));
+									rec.altitude = Text::StrToDouble(strs[2]);
+									lyr->AddRecord(rec);
+								}
+							}
+							OPTSTR_DEL(timeList.GetItem(i));
+							OPTSTR_DEL(coordList.GetItem(i));
 							i++;
 						}
 						timeList.Clear();
@@ -1101,12 +1113,12 @@ void Map::KMLXML::ParseKMLPlacemarkTrack(NotNullPtr<Text::XMLReader> reader, Not
 						UOSInt i = timeList.GetCount();
 						while (i-- > 0)
 						{
-							timeList.GetItem(i)->Release();
+							OPTSTR_DEL(timeList.GetItem(i));
 						}
 						i = coordList.GetCount();
 						while (i-- > 0)
 						{
-							coordList.GetItem(i)->Release();
+							OPTSTR_DEL(coordList.GetItem(i));
 						}
 						timeList.Clear();
 						coordList.Clear();
@@ -1169,20 +1181,26 @@ void Map::KMLXML::ParseKMLPlacemarkTrack(NotNullPtr<Text::XMLReader> reader, Not
 				UOSInt j = timeList.GetCount();
 				while (i < j)
 				{
-					Text::String *s = timeList.GetItem(i);
-					dt.SetValue(s->ToCString());
-					rec.recTime = dt.ToInstant();
-					
-					coordList.GetItem(i)->ConcatTo(sbuff);
-					if (Text::StrSplit(strs, 4, sbuff, ' ') == 3)
+					NotNullPtr<Text::String> s;
+					if (timeList.GetItem(i).SetTo(s))
 					{
-						rec.pos.x = Text::StrToDouble(strs[0]);
-						rec.pos.y = Text::StrToDouble(strs[1]);
-						rec.altitude = Text::StrToDouble(strs[2]);
-						lyr->AddRecord(rec);
+						dt.SetValue(s->ToCString());
+						rec.recTime = dt.ToInstant();
 					}
-					timeList.GetItem(i)->Release();
-					coordList.GetItem(i)->Release();
+					
+					if (coordList.GetItem(i).SetTo(s))
+					{
+						s->ConcatTo(sbuff);
+						if (Text::StrSplit(strs, 4, sbuff, ' ') == 3)
+						{
+							rec.pos.x = Text::StrToDouble(strs[0]);
+							rec.pos.y = Text::StrToDouble(strs[1]);
+							rec.altitude = Text::StrToDouble(strs[2]);
+							lyr->AddRecord(rec);
+						}
+					}
+					OPTSTR_DEL(timeList.GetItem(i));
+					OPTSTR_DEL(coordList.GetItem(i));
 					i++;
 				}
 			}
@@ -1191,12 +1209,12 @@ void Map::KMLXML::ParseKMLPlacemarkTrack(NotNullPtr<Text::XMLReader> reader, Not
 				UOSInt i = timeList.GetCount();
 				while (i-- > 0)
 				{
-					timeList.GetItem(i)->Release();
+					OPTSTR_DEL(timeList.GetItem(i));
 				}
 				i = coordList.GetCount();
 				while (i-- > 0)
 				{
-					coordList.GetItem(i)->Release();
+					OPTSTR_DEL(coordList.GetItem(i));
 				}
 			}
 			timeList.Clear();
@@ -1227,7 +1245,7 @@ void Map::KMLXML::ParseKMLPlacemarkTrack(NotNullPtr<Text::XMLReader> reader, Not
 	}
 }
 
-Map::MapDrawLayer *Map::KMLXML::ParseKMLPlacemarkLyr(NotNullPtr<Text::XMLReader> reader, Data::StringMap<KMLStyle*> *styles, Text::CStringNN sourceName, Parser::ParserList *parsers, Net::WebBrowser *browser, IO::PackageFile *basePF)
+Optional<Map::MapDrawLayer> Map::KMLXML::ParseKMLPlacemarkLyr(NotNullPtr<Text::XMLReader> reader, Data::StringMap<KMLStyle*> *styles, Text::CStringNN sourceName, Parser::ParserList *parsers, Net::WebBrowser *browser, IO::PackageFile *basePF)
 {
 	Text::StringBuilderUTF8 sb;
 	Data::ArrayListNN<Text::String> colNames;
@@ -1264,122 +1282,135 @@ Map::MapDrawLayer *Map::KMLXML::ParseKMLPlacemarkLyr(NotNullPtr<Text::XMLReader>
 		else if (nodeText->EqualsICase(UTF8STRC("GX:MULTITRACK")))
 		{
 			NotNullPtr<Map::GPSTrack> lyr;
-			NEW_CLASSNN(lyr, Map::GPSTrack(sourceName, true, 65001, colValues.GetItem(0)->ToCString()));
-			ParseKMLPlacemarkTrack(reader, lyr, styles);
-			if (style)
+			if (colValues.GetItem(0).SetTo(s))
 			{
-				if (style->lineColor != 0 && style->flags & 1)
+				NEW_CLASSNN(lyr, Map::GPSTrack(sourceName, true, 65001, s->ToCString()));
+				ParseKMLPlacemarkTrack(reader, lyr, styles);
+				if (style)
 				{
-					lyr->SetLineStyle(style->lineColor, style->lineWidth);
+					if (style->lineColor != 0 && style->flags & 1)
+					{
+						lyr->SetLineStyle(style->lineColor, style->lineWidth);
+					}
 				}
+				layers.Add(lyr);
 			}
-			layers.Add(lyr);
 		}
 		else if (ParseKMLVector(reader, colNames, colValues, colInfos).SetTo(vec))
 		{
+
 			Math::Geometry::Vector2D::VectorType vecType = vec->GetVectorType();
 			if (vecType == Math::Geometry::Vector2D::VectorType::LineString)
 			{
 				NotNullPtr<Map::VectorLayer> lyr;
-				NEW_CLASSNN(lyr, Map::VectorLayer(Map::DRAW_LAYER_POLYLINE3D, sourceName, colNames, Math::CoordinateSystemManager::CreateDefaultCsys(), colInfos, 0, colValues.GetItem(0)->ToCString()));
-				lyr->AddVector(vec, colValues);
-				if (style)
+				if (colValues.GetItem(0).SetTo(s))
 				{
-					if (style->flags & 1)
+					NEW_CLASSNN(lyr, Map::VectorLayer(Map::DRAW_LAYER_POLYLINE3D, sourceName, colNames, Math::CoordinateSystemManager::CreateDefaultCsys(), colInfos, 0, s->ToCString()));
+					lyr->AddVector(vec, colValues);
+					if (style)
 					{
-						if (style->lineWidth == 0)
+						if (style->flags & 1)
 						{
-							lyr->SetLineStyle(style->lineColor, 1);
-						}
-						else
-						{
-							lyr->SetLineStyle(style->lineColor, style->lineWidth);
+							if (style->lineWidth == 0)
+							{
+								lyr->SetLineStyle(style->lineColor, 1);
+							}
+							else
+							{
+								lyr->SetLineStyle(style->lineColor, style->lineWidth);
+							}
 						}
 					}
+					layers.Add(lyr);
 				}
-				layers.Add(lyr);
 			}
 			else if (Math::Geometry::Vector2D::VectorTypeIsPoint(vecType))
 			{
 				NotNullPtr<Map::VectorLayer> lyr;
-				NEW_CLASSNN(lyr, Map::VectorLayer(Map::DRAW_LAYER_POINT, sourceName, colNames, Math::CoordinateSystemManager::CreateDefaultCsys(), colInfos, 0, colValues.GetItem(0)->ToCString()));
-				lyr->SetLabelVisible(true);
-				lyr->AddVector(vec, colValues);
-
-				if (style && style->iconURL && parsers)
+				if (colValues.GetItem(0).SetTo(s))
 				{
-					if (style->img == 0)
+					NEW_CLASSNN(lyr, Map::VectorLayer(Map::DRAW_LAYER_POINT, sourceName, colNames, Math::CoordinateSystemManager::CreateDefaultCsys(), colInfos, 0, s->ToCString()));
+					lyr->SetLabelVisible(true);
+					lyr->AddVector(vec, colValues);
+
+					if (style && style->iconURL && parsers)
 					{
-						Optional<IO::StreamData> fd = 0;
-						if (basePF)
+						if (style->img == 0)
 						{
-							fd = basePF->OpenStreamData(style->iconURL->ToCString());
-						}
-						if (fd.IsNull() && browser)
-						{
-							fd = browser->GetData(style->iconURL->ToCString(), false, 0);
-						}
-						NotNullPtr<IO::StreamData> nnfd;
-						if (fd.SetTo(nnfd))
-						{
-							Media::ImageList *imgList = (Media::ImageList*)parsers->ParseFileType(nnfd, IO::ParserType::ImageList);
-							if (imgList)
+							Optional<IO::StreamData> fd = 0;
+							if (basePF)
 							{
-								if (style->iconColor != 0)
-								{
-									UOSInt j = imgList->GetCount();
-									while (j-- > 0)
-									{
-										imgList->ToStaticImage(j);
-										Media::StaticImage *img = (Media::StaticImage *)imgList->GetImage(j, 0);
-										img->MultiplyColor(style->iconColor);
-									}
-								}
-								NEW_CLASS(style->img, Media::SharedImage(imgList, false));
+								fd = basePF->OpenStreamData(style->iconURL->ToCString());
 							}
-							nnfd.Delete();
+							if (fd.IsNull() && browser)
+							{
+								fd = browser->GetData(style->iconURL->ToCString(), false, 0);
+							}
+							NotNullPtr<IO::StreamData> nnfd;
+							if (fd.SetTo(nnfd))
+							{
+								Media::ImageList *imgList = (Media::ImageList*)parsers->ParseFileType(nnfd, IO::ParserType::ImageList);
+								if (imgList)
+								{
+									if (style->iconColor != 0)
+									{
+										UOSInt j = imgList->GetCount();
+										while (j-- > 0)
+										{
+											imgList->ToStaticImage(j);
+											Media::StaticImage *img = (Media::StaticImage *)imgList->GetImage(j, 0);
+											img->MultiplyColor(style->iconColor);
+										}
+									}
+									NEW_CLASS(style->img, Media::SharedImage(imgList, false));
+								}
+								nnfd.Delete();
+							}
+						}
+						if (style->img)
+						{
+							Media::Image *img = style->img->GetImage(0);
+							if (style->iconSpotX == -1 || style->iconSpotY == -1)
+							{
+								lyr->SetIconStyle(style->img, (OSInt)(img->info.dispSize.x >> 1), (OSInt)(img->info.dispSize.y >> 1));
+							}
+							else
+							{
+								lyr->SetIconStyle(style->img, style->iconSpotX, (OSInt)img->info.dispSize.y - style->iconSpotY);
+							}
 						}
 					}
-					if (style->img)
-					{
-						Media::Image *img = style->img->GetImage(0);
-						if (style->iconSpotX == -1 || style->iconSpotY == -1)
-						{
-							lyr->SetIconStyle(style->img, (OSInt)(img->info.dispSize.x >> 1), (OSInt)(img->info.dispSize.y >> 1));
-						}
-						else
-						{
-							lyr->SetIconStyle(style->img, style->iconSpotX, (OSInt)img->info.dispSize.y - style->iconSpotY);
-						}
-					}
+					layers.Add(lyr);
 				}
-				layers.Add(lyr);
 			}
 			else if (vecType == Math::Geometry::Vector2D::VectorType::Polygon || vecType == Math::Geometry::Vector2D::VectorType::MultiPolygon)
 			{
 				NotNullPtr<Map::VectorLayer> lyr;
-				NEW_CLASSNN(lyr, Map::VectorLayer(Map::DRAW_LAYER_POLYGON, sourceName, colNames, Math::CoordinateSystemManager::CreateDefaultCsys(), colInfos, 0, colValues.GetItem(0)->ToCString()));
-				lyr->AddVector(vec, colValues);
-
-				if (style)
+				if (colValues.GetItem(0).SetTo(s))
 				{
-					if (style->flags & 1)
+					NEW_CLASSNN(lyr, Map::VectorLayer(Map::DRAW_LAYER_POLYGON, sourceName, colNames, Math::CoordinateSystemManager::CreateDefaultCsys(), colInfos, 0, s->ToCString()));
+					lyr->AddVector(vec, colValues);
+
+					if (style)
 					{
-						if (style->lineWidth == 0)
+						if (style->flags & 1)
 						{
-							lyr->SetLineStyle(style->lineColor, 1);
+							if (style->lineWidth == 0)
+							{
+								lyr->SetLineStyle(style->lineColor, 1);
+							}
+							else
+							{
+								lyr->SetLineStyle(style->lineColor, style->lineWidth);
+							}
 						}
-						else
+						if (style->flags & 4)
 						{
-							lyr->SetLineStyle(style->lineColor, style->lineWidth);
+							lyr->SetPGStyle(style->fillColor);
 						}
 					}
-					if (style->flags & 4)
-					{
-						lyr->SetPGStyle(style->fillColor);
-					}
+					layers.Add(lyr);
 				}
-				layers.Add(lyr);
 			}
 			else
 			{
@@ -1390,18 +1421,16 @@ Map::MapDrawLayer *Map::KMLXML::ParseKMLPlacemarkLyr(NotNullPtr<Text::XMLReader>
 			}
 		}
 	}
-	LIST_FREE_STRING(&colNames);
-	LIST_FREE_STRING(&colValues);
+	LISTNN_FREE_STRING(&colNames);
+	LISTNN_FREE_STRING(&colValues);
 	if (layers.GetCount() == 1)
 	{
 		return layers.GetItem(0);
 	}
 	UOSInt i = layers.GetCount();
-	Map::MapDrawLayer *lyr;
 	while (i-- > 0)
 	{
-		lyr = layers.GetItem(i);
-		DEL_CLASS(lyr);
+		layers.GetItem(i).Delete();
 	}
 	return 0;
 }
@@ -1603,12 +1632,11 @@ Optional<Math::Geometry::Vector2D> Map::KMLXML::ParseKMLVector(NotNullPtr<Text::
 		Bool allPG = true;
 		Bool allPL = true;
 //		Bool allPT = true;
-		Math::Geometry::Vector2D *v;
-		UOSInt i = vecList.GetCount();
-		UOSInt j;
-		while (i-- > 0)
+		NotNullPtr<Math::Geometry::Vector2D> v;
+		Data::ArrayIterator<NotNullPtr<Math::Geometry::Vector2D>> it = vecList.Iterator();
+		while (it.HasNext())
 		{
-			v = vecList.GetItem(i);
+			v = it.Next();
 			if (Math::Geometry::Vector2D::VectorTypeIsPoint(v->GetVectorType()))
 			{
 				allPG = false;
@@ -1635,15 +1663,10 @@ Optional<Math::Geometry::Vector2D> Map::KMLXML::ParseKMLVector(NotNullPtr<Text::
 		{
 			NotNullPtr<Math::Geometry::MultiPolygon> mpg;
 			NEW_CLASSNN(mpg, Math::Geometry::MultiPolygon(4326));
-			i = 0;
-			j = vecList.GetCount();
-			while (i < j)
+			it = vecList.Iterator();
+			while (it.HasNext())
 			{
-				if (innerVec.Set(vecList.GetItem(i)))
-				{
-					mpg->AddGeometry(NotNullPtr<Math::Geometry::Polygon>::ConvertFrom(innerVec));
-				}
-				i++;
+				mpg->AddGeometry(NotNullPtr<Math::Geometry::Polygon>::ConvertFrom(it.Next()));
 			}
 			return Optional<Math::Geometry::MultiPolygon>(mpg);
 		}
@@ -1651,15 +1674,10 @@ Optional<Math::Geometry::Vector2D> Map::KMLXML::ParseKMLVector(NotNullPtr<Text::
 		{
 			NotNullPtr<Math::Geometry::Polyline> pl;
 			NEW_CLASSNN(pl, Math::Geometry::Polyline(4326));
-			i = 0;
-			j = vecList.GetCount();
-			while (i < j)
+			it = vecList.Iterator();
+			while (it.HasNext())
 			{
-				if (innerVec.Set(vecList.GetItem(i)))
-				{
-					pl->AddGeometry(NotNullPtr<Math::Geometry::LineString>::ConvertFrom(innerVec));
-				}
-				i++;
+				pl->AddGeometry(NotNullPtr<Math::Geometry::LineString>::ConvertFrom(it.Next()));
 			}
 			return Optional<Math::Geometry::Polyline>(pl);
 		}
@@ -1667,15 +1685,10 @@ Optional<Math::Geometry::Vector2D> Map::KMLXML::ParseKMLVector(NotNullPtr<Text::
 		{
 			NotNullPtr<Math::Geometry::GeometryCollection> mpg;
 			NEW_CLASSNN(mpg, Math::Geometry::GeometryCollection(4326));
-			i = 0;
-			j = vecList.GetCount();
-			while (i < j)
+			it = vecList.Iterator();
+			while (it.HasNext())
 			{
-				if (innerVec.Set(vecList.GetItem(i)))
-				{
-					mpg->AddGeometry(innerVec);
-				}
-				i++;
+				mpg->AddGeometry(it.Next());
 			}
 			return Optional<Math::Geometry::GeometryCollection>(mpg);
 		}

@@ -172,20 +172,14 @@ void __stdcall SSWR::AVIRead::AVIRHTTPDownloaderForm::OnTimerTick(void *userObj)
 	SSWR::AVIRead::AVIRHTTPDownloaderForm *me = (SSWR::AVIRead::AVIRHTTPDownloaderForm*)userObj;
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
-	UOSInt i;
-	UOSInt j;
 	Text::StringBuilderUTF8 sb;
 	if (me->respHdrChanged)
 	{
 		me->lvHeaders->ClearItems();
-		i = 0;
-		j = me->respHeaders.GetCount();
-		while (i < j)
+		Data::ArrayIterator<NotNullPtr<Text::String>> it = me->respHeaders.Iterator();
+		while (it.HasNext())
 		{
-			sb.ClearStr();
-			sb.Append(me->respHeaders.GetItem(i));
-			me->lvHeaders->AddItem(sb.ToCString(), 0);
-			i++;
+			me->lvHeaders->AddItem(it.Next(), 0);
 		}
 		me->respHdrChanged = false;
 	}

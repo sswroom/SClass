@@ -115,7 +115,7 @@ SSWR::AVIRead::AVIRCore::~AVIRCore()
 	i = this->audDevList.GetCount();
 	while (i-- > 0)
 	{
-		this->audDevList.GetItem(i)->Release();
+		OPTSTR_DEL(this->audDevList.GetItem(i));
 	}
 }
 
@@ -343,7 +343,7 @@ void SSWR::AVIRead::AVIRCore::SetAudioDeviceList(Data::ArrayListNN<Text::String>
 	i = this->audDevList.GetCount();
 	while (i-- > 0)
 	{
-		this->audDevList.GetItem(i)->Release();
+		OPTSTR_DEL(this->audDevList.GetItem(i));
 	}
 	this->audDevList.Clear();
 	if (reg)
@@ -354,15 +354,13 @@ void SSWR::AVIRead::AVIRCore::SetAudioDeviceList(Data::ArrayListNN<Text::String>
 		}
 		else
 		{
-			i = 0;
-			j = devList->GetCount();
-			while (i < j)
+			Data::ArrayIterator<NotNullPtr<Text::String>> it = devList->Iterator();
+			while (it.HasNext())
 			{
 				Text::StrUOSInt(Text::StrConcat(wbuff, L"AudioDevice"), i);
-				const WChar *wptr = Text::StrToWCharNew(devList->GetItem(i)->v);
+				const WChar *wptr = Text::StrToWCharNew(it.Next()->v);
 				reg->SetValue(wbuff, wptr);
 				Text::StrDelNew(wptr);
-				i++;
 			}
 			Text::StrUOSInt(Text::StrConcat(wbuff, L"AudioDevice"), j);
 			reg->DelValue(wbuff);
@@ -372,12 +370,13 @@ void SSWR::AVIRead::AVIRCore::SetAudioDeviceList(Data::ArrayListNN<Text::String>
 	this->audDevice.ClearDevices();
 	if (devList)
 	{
-		i = 0;
-		j = devList->GetCount();
-		while (i < j)
+		Data::ArrayIterator<NotNullPtr<Text::String>> it = devList->Iterator();
+		NotNullPtr<Text::String> s;
+		while (it.HasNext())
 		{
-			this->audDevice.AddDevice(devList->GetItem(i)->ToCString());
-			this->audDevList.Add(devList->GetItem(i)->Clone());
+			s = it.Next();
+			this->audDevice.AddDevice(s->ToCString());
+			this->audDevList.Add(s->Clone());
 			i++;
 		}
 	}

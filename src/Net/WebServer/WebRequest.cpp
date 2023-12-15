@@ -396,14 +396,16 @@ Bool Net::WebServer::WebRequest::GetHeaderC(NotNullPtr<Text::StringBuilderUTF8> 
 	return true;
 }
 
-UOSInt Net::WebServer::WebRequest::GetHeaderNames(NotNullPtr<Data::ArrayList<Text::String*>> names)
+UOSInt Net::WebServer::WebRequest::GetHeaderNames(NotNullPtr<Data::ArrayListNN<Text::String>> names)
 {
+	NotNullPtr<Text::String> s;
 	UOSInt i = 0;
 	UOSInt j = this->headers.GetCount();
 	names->EnsureCapacity(j);
 	while (i < j)
 	{
-		names->Add(this->headers.GetKey(i));
+		if (s.Set(this->headers.GetKey(i)))
+			names->Add(s);
 		i++;
 	}
 	return j;

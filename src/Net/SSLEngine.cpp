@@ -132,13 +132,12 @@ Bool Net::SSLEngine::ServerSetCerts(Text::CStringNN certFile, Text::CStringNN ke
 		{
 			Bool found = false;
 			Crypto::Cert::X509FileList *fileList = (Crypto::Cert::X509FileList*)certASN1.Ptr();
-			Crypto::Cert::X509File *file;
+			NotNullPtr<Crypto::Cert::X509File> file;
 			i = 0;
 			j = fileList->GetFileCount();
 			while (i < j)
 			{
-				file = fileList->GetFile(i);
-				if (file && file->GetFileType() == Crypto::Cert::X509File::FileType::Cert)
+				if (fileList->GetFile(i).SetTo(file) && file->GetFileType() == Crypto::Cert::X509File::FileType::Cert)
 				{
 					if (!found)
 					{
@@ -174,8 +173,7 @@ Bool Net::SSLEngine::ServerSetCerts(Text::CStringNN certFile, Text::CStringNN ke
 			i = cacerts.GetCount();
 			while (i-- > 0)
 			{
-				Crypto::Cert::X509Cert *cert = cacerts.GetItem(i);
-				DEL_CLASS(cert);	
+				cacerts.GetItem(i).Delete();
 			}
 			return false;
 		}
@@ -186,8 +184,7 @@ Bool Net::SSLEngine::ServerSetCerts(Text::CStringNN certFile, Text::CStringNN ke
 		i = cacerts.GetCount();
 		while (i-- > 0)
 		{
-			Crypto::Cert::X509Cert *cert = cacerts.GetItem(i);
-			DEL_CLASS(cert);	
+			cacerts.GetItem(i).Delete();
 		}
 		return false;
 	}
@@ -205,8 +202,7 @@ Bool Net::SSLEngine::ServerSetCerts(Text::CStringNN certFile, Text::CStringNN ke
 	i = cacerts.GetCount();
 	while (i-- > 0)
 	{
-		Crypto::Cert::X509Cert *cert = cacerts.GetItem(i);
-		DEL_CLASS(cert);	
+		cacerts.GetItem(i).Delete();
 	}
 	return ret;
 }

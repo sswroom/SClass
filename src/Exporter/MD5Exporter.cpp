@@ -66,6 +66,7 @@ Bool Exporter::MD5Exporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text:
 	UTF8Char *sptr2;
 	UInt8 buff[16];
 	IO::StreamWriter writer(stm, this->codePage);
+	NotNullPtr<Text::String> s;
 	UOSInt i = 0;
 	UOSInt cnt = fchk->GetCount();
 	while (i < cnt)
@@ -74,7 +75,8 @@ Bool Exporter::MD5Exporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text:
 		sptr = Text::StrHexBytes(sbuff, buff, 16, 0);
 		sptr = Text::StrConcatC(sptr, UTF8STRC(" *"));
 		sptr2 = sptr;
-		sptr = fchk->GetEntryName(i)->ConcatTo(sptr);
+		if (fchk->GetEntryName(i).SetTo(s))
+			sptr = s->ConcatTo(sptr);
 		Text::StrReplace(sptr2, '/', '\\');
 		writer.WriteLineC(sbuff, (UOSInt)(sptr - sbuff));
 		i++;

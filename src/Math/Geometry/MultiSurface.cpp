@@ -32,12 +32,10 @@ NotNullPtr<Math::Geometry::Vector2D> Math::Geometry::MultiSurface::Clone() const
 {
 	NotNullPtr<Math::Geometry::MultiSurface> newObj;
 	NEW_CLASSNN(newObj, Math::Geometry::MultiSurface(this->srid));
-	UOSInt i = 0;
-	UOSInt j = this->geometries.GetCount();
-	while (i < j)
+	Data::ArrayIterator<NotNullPtr<Vector2D>> it = this->Iterator();
+	while (it.HasNext())
 	{
-		newObj->AddGeometry(this->geometries.GetItem(i)->Clone());
-		i++;
+		newObj->AddGeometry(it.Next()->Clone());
 	}
 	return newObj;
 }

@@ -1010,8 +1010,6 @@ DB::DBReader *DB::ODBCConn::QueryTableData(Text::CString schemaName, Text::CStri
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
-	UOSInt i;
-	UOSInt j;
 	Text::StringBuilderUTF8 sb;
 	sb.AppendC(UTF8STRC("select "));
 	if (this->sqlType == DB::SQLType::MSSQL || this->sqlType == DB::SQLType::Access)
@@ -1029,17 +1027,17 @@ DB::DBReader *DB::ODBCConn::QueryTableData(Text::CString schemaName, Text::CStri
 	}
 	else
 	{
-		i = 0;
-		j = columnNames->GetCount();
-		while (i < j)
+		Data::ArrayIterator<NotNullPtr<Text::String>> it = columnNames->Iterator();
+		Bool found = false;
+		while (it.HasNext())
 		{
-			if (i > 0)
+			if (found)
 			{
 				sb.AppendC(UTF8STRC(","));
 			}
-			sptr = DB::DBUtil::SDBColUTF8(sbuff, columnNames->GetItem(i)->v, this->sqlType);
+			found = true;
+			sptr = DB::DBUtil::SDBColUTF8(sbuff, it.Next()->v, this->sqlType);
 			sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
-			i++;
 		}
 	}
 	sb.AppendC(UTF8STRC(" from "));
@@ -1140,15 +1138,14 @@ UOSInt DB::ODBCConn::GetDriverList(Data::ArrayListNN<Text::String> *driverList)
 	if (cfg)
 	{
 		Data::ArrayListNN<Text::String> cateList;
-		UOSInt i = 0;
-		UOSInt j = cfg->GetCateList(cateList, false);
-		while (i < j)
+		cfg->GetCateList(cateList, false);
+		Data::ArrayIterator<NotNullPtr<Text::String>> it = cateList.Iterator();
+		while (it.HasNext())
 		{
-			driverList->Add(cateList.GetItem(i)->Clone());
-			i++;
+			driverList->Add(it.Next()->Clone());
 		}
 		DEL_CLASS(cfg);
-		return j;
+		return cateList.GetCount();
 	}
 	return 0;
 #endif

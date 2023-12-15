@@ -118,8 +118,7 @@ void SSWR::AVIRead::AVIRGCISClientForm::ClearCliCACerts()
 	UOSInt i = this->cliCACerts.GetCount();
 	while (i-- > 0)
 	{
-		Crypto::Cert::X509Cert *cert = this->cliCACerts.GetItem(i);
-		DEL_CLASS(cert);
+		this->cliCACerts.GetItem(i).Delete();
 	}
 	this->cliCACerts.Clear();
 }

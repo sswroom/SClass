@@ -41,6 +41,8 @@ Media::DrawImage *Media::FrequencyGraph::CreateGraph(NotNullPtr<Media::DrawEngin
 	Double dfftSize = UOSInt2Double(fftSize);
 	Media::AudioFormat fmt;
 	Math::FFTCalc fft(fftSize, wtype);
+	Data::ArrayIterator<NotNullPtr<Text::String>> it;
+	NotNullPtr<Text::String> s;
 	audio->GetFormat(fmt);
 	if (fmt.formatId == 1)
 	{
@@ -58,34 +60,36 @@ Media::DrawImage *Media::FrequencyGraph::CreateGraph(NotNullPtr<Media::DrawEngin
 		f = tmpImg->NewFontPx(CSTR("Arial"), fontSizePx, Media::DrawEngine::DFS_NORMAL, 0);
 		Data::Chart::CalScaleMarkDbl(&chartPos, &chartLabels, 0, fmt.frequency * 0.0005, dfftSize * 0.5, fontSizePx, "0", 1, 0);
 		yAxis = 0;
-		j = chartLabels.GetCount();
-		while (j-- > 0)
+		it = chartLabels.Iterator();
+		while (it.HasNext())
 		{
-			i = (UOSInt)(Text::StrConcatC(chartLabels.GetItem(j)->ConcatTo(sbuff), UTF8STRC("kHz")) - sbuff);
+			s = it.Next();
+			i = (UOSInt)(Text::StrConcatC(s->ConcatTo(sbuff), UTF8STRC("kHz")) - sbuff);
 			sz = tmpImg->GetTextSize(f, {sbuff, i});
 			iVal = (UInt32)Double2Int32(sz.x);
 			if (iVal > yAxis)
 			{
 				yAxis = iVal;
 			}
-			chartLabels.GetItem(j)->Release();
+			s->Release();
 		}
 
 		chartPos.Clear();
 		chartLabels.Clear();
 		Data::Chart::CalScaleMarkDbl(&chartPos, &chartLabels, 0, (Double)sampleCnt / (Double)fmt.frequency, UOSInt2Double(timeRes), fontSizePx, "0.#", 1, 0);
 		xAxis = 0;
-		j = chartLabels.GetCount();
-		while (j-- > 0)
+		it = chartLabels.Iterator();
+		while (it.HasNext())
 		{
-			i = (UOSInt)(Text::StrConcatC(chartLabels.GetItem(j)->ConcatTo(sbuff), UTF8STRC("s")) - sbuff);
+			s = it.Next();
+			i = (UOSInt)(Text::StrConcatC(s->ConcatTo(sbuff), UTF8STRC("s")) - sbuff);
 			sz = tmpImg->GetTextSize(f, {sbuff, i});
 			iVal = (UInt32)Double2Int32(sz.x);
 			if (iVal > xAxis)
 			{
 				xAxis = iVal;
 			}
-			chartLabels.GetItem(j)->Release();
+			s->Release();
 		}
 
 		tmpImg->DelFont(f);
@@ -264,31 +268,33 @@ Media::DrawImage *Media::FrequencyGraph::CreateGraph(NotNullPtr<Media::DrawEngin
 			chartPos.Clear();
 			chartLabels.Clear();
 			Data::Chart::CalScaleMarkDbl(&chartPos, &chartLabels, 0, fmt.frequency * 0.0005, dfftSize * 0.5, fontSizePx, "0", 1, 0);
-			j = chartLabels.GetCount();
-			while (j-- > 0)
+			it = chartLabels.Iterator();
+			while (it.HasNext())
 			{
-				i = (UOSInt)(Text::StrConcatC(chartLabels.GetItem(j)->ConcatTo(sbuff), UTF8STRC("kHz")) - sbuff);
+				s = it.Next();
+				i = (UOSInt)(Text::StrConcatC(s->ConcatTo(sbuff), UTF8STRC("kHz")) - sbuff);
 				sz = tmpImg->GetTextSize(f, {sbuff, i});
 				k = (UInt32)Double2Int32(sz.x);
 				tmpImg->DrawString(Math::Coord2DDbl(yAxis - UOSInt2Double(k), dfftSize * 0.5 - chartPos.GetItem(j)), {sbuff, i}, f, b);
 				tmpImg->DrawLine(yAxis, dfftSize * 0.5 - chartPos.GetItem(j) + ihFontSize, yAxis + 4, UOSInt2Double(fftSize >> 1) - chartPos.GetItem(j) + ihFontSize, p);
 
-				chartLabels.GetItem(j)->Release();
+				s->Release();
 			}
 
 			chartPos.Clear();
 			chartLabels.Clear();
 			Data::Chart::CalScaleMarkDbl(&chartPos, &chartLabels, 0, UInt64_Double(sampleCnt) / (Double)fmt.frequency, UOSInt2Double(timeRes), fontSizePx, "0.#", 1, 0);
-			j = chartLabels.GetCount();
-			while (j-- > 0)
+			it = chartLabels.Iterator();
+			while (it.HasNext())
 			{
-				i = (UOSInt)(Text::StrConcatC(chartLabels.GetItem(j)->ConcatTo(sbuff), UTF8STRC("s")) - sbuff);
+				s = it.Next();
+				i = (UOSInt)(Text::StrConcatC(s->ConcatTo(sbuff), UTF8STRC("s")) - sbuff);
 				sz = tmpImg->GetTextSize(f, {sbuff, i});
 				k = (UInt32)Double2Int32(sz.x);
 				tmpImg->DrawStringRot(Math::Coord2DDbl(yAxis + 4 + chartPos.GetItem(j) + ihFontSize, ihFontSize + dfftSize * 0.5 + 4), {sbuff, i}, f, b, 270.0);
 				tmpImg->DrawLine(yAxis + 4 + chartPos.GetItem(j), ihFontSize + dfftSize * 0.5, yAxis + 4 + chartPos.GetItem(j), ihFontSize + dfftSize * 0.5 + 4, p);
 
-				chartLabels.GetItem(j)->Release();
+				s->Release();
 			}
 			tmpImg->DelBrush(b);
 			tmpImg->DelPen(p);

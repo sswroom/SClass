@@ -51,7 +51,7 @@ namespace Text
 			{
 				CellDataType cdt;
 				Text::String *cellValue;
-				CellStyle *style;
+				Optional<CellStyle> style;
 				UInt32 mergeHori;
 				UInt32 mergeVert;
 				Bool hidden;
@@ -60,7 +60,7 @@ namespace Text
 
 			typedef struct
 			{
-				CellStyle *style;
+				Optional<CellStyle> style;
 				Data::ArrayList<CellData*> *cells;
 				Double height;
 			} RowData;
@@ -134,7 +134,7 @@ namespace Text
 			Bool SetCellDouble(UOSInt row, UOSInt col, Double val);
 			Bool SetCellInt32(UOSInt row, UOSInt col, Int32 val);
 			Bool SetCellInt64(UOSInt row, UOSInt col, Int64 val);
-			Bool SetCellStyle(UOSInt row, UOSInt col, CellStyle *style);
+			Bool SetCellStyle(UOSInt row, UOSInt col, Optional<CellStyle> style);
 			Bool SetCellStyleHAlign(UOSInt row, UOSInt col, IStyleCtrl *wb, HAlignment hAlign);
 			Bool SetCellStyleBorderBottom(UOSInt row, UOSInt col, IStyleCtrl *wb, UInt32 color, BorderType borderType);
 			Bool SetCellURL(UOSInt row, UOSInt col, Text::String *url);

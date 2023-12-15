@@ -118,6 +118,8 @@ Bool UI::FileDialog::ShowDialog(ControlHandle *ownerHandle)
 	Text::StringBuilderUTF8 sb;
 	UOSInt i = 0;
 	UOSInt filterCnt = this->names.GetCount();
+	NotNullPtr<Text::String> name;
+	NotNullPtr<Text::String> pattern;
 
 	GtkWidget *dialog;
 	GtkFileChooser *chooser;
@@ -141,7 +143,8 @@ Bool UI::FileDialog::ShowDialog(ControlHandle *ownerHandle)
 		gtk_file_filter_set_name(filter, "Supported Files");
 		while (i < filterCnt)
 		{
-			gtk_file_filter_add_pattern(filter, (const Char*)this->patterns.GetItem(i++)->v);
+			if (this->patterns.GetItem(i++).SetTo(pattern))
+				gtk_file_filter_add_pattern(filter, (const Char*)pattern->v);
 		}
 		gtk_file_chooser_add_filter(chooser, filter);
 	}
@@ -149,15 +152,19 @@ Bool UI::FileDialog::ShowDialog(ControlHandle *ownerHandle)
 	i = 0;
 	while (i < filterCnt)
 	{
-		filter = gtk_file_filter_new();
-		sb.ClearStr();
-		sb.Append(this->names.GetItem(i));
-		sb.AppendC(UTF8STRC(" ("));
-		sb.Append(this->patterns.GetItem(i));
-		sb.AppendUTF8Char(')');
-		gtk_file_filter_set_name(filter, (const Char*)sb.ToString());
-		gtk_file_filter_add_pattern(filter, (const Char*)this->patterns.GetItem(i++)->v);
-		gtk_file_chooser_add_filter(chooser, filter);
+		if (this->names.GetItem(i).SetTo(name) && this->patterns.GetItem(i).SetTo(pattern))
+		{
+			filter = gtk_file_filter_new();
+			sb.ClearStr();
+			sb.Append(name);
+			sb.AppendC(UTF8STRC(" ("));
+			sb.Append(pattern);
+			sb.AppendUTF8Char(')');
+			gtk_file_filter_set_name(filter, (const Char*)sb.ToString());
+			gtk_file_filter_add_pattern(filter, (const Char*)pattern->v);
+			gtk_file_chooser_add_filter(chooser, filter);
+		}
+		i++;
 	}
 	if (!this->isSave)
 	{
@@ -286,8 +293,8 @@ Bool UI::FileDialog::ShowDialog(ControlHandle *ownerHandle)
 			i = 0;
 			while (i < filterCnt)
 			{
-				Text::String *pattern = this->patterns.GetItem(i);
-				if (IO::Path::FilePathMatch(u8fname->v, u8fname->leng, pattern->v, pattern->leng))
+				NotNullPtr<Text::String> pattern;
+				if (this->patterns.GetItem(i).SetTo(pattern) && IO::Path::FilePathMatch(u8fname->v, u8fname->leng, pattern->v, pattern->leng))
 				{
 					if (!found)
 					{

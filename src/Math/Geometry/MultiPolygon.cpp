@@ -19,12 +19,10 @@ NotNullPtr<Math::Geometry::Vector2D> Math::Geometry::MultiPolygon::Clone() const
 {
 	NotNullPtr<Math::Geometry::MultiPolygon> newObj;
 	NEW_CLASSNN(newObj, Math::Geometry::MultiPolygon(this->srid));
-	UOSInt i = 0;
-	UOSInt j = this->geometries.GetCount();
-	while (i < j)
+	Data::ArrayIterator<NotNullPtr<Polygon>> it = this->Iterator();
+	while (it.HasNext())
 	{
-		newObj->AddGeometry(NotNullPtr<Math::Geometry::Polygon>::ConvertFrom(this->geometries.GetItem(i)->Clone()));
-		i++;
+		newObj->AddGeometry(NotNullPtr<Math::Geometry::Polygon>::ConvertFrom(it.Next()->Clone()));
 	}
 	return newObj;
 }

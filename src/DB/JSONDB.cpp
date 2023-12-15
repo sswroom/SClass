@@ -55,8 +55,8 @@ public:
 	{
 		if (this->obj == 0)
 			return 0;
-		DB::ColDef *col = this->tab->GetCol(colIndex);
-		if (col == 0)
+		NotNullPtr<DB::ColDef> col;
+		if (!this->tab->GetCol(colIndex).SetTo(col))
 			return 0;
 		return this->obj->GetValueAsInt32(col->GetColName()->ToCString());
 	}
@@ -65,8 +65,8 @@ public:
 	{
 		if (this->obj == 0)
 			return 0;
-		DB::ColDef *col = this->tab->GetCol(colIndex);
-		if (col == 0)
+		NotNullPtr<DB::ColDef> col;
+		if (!this->tab->GetCol(colIndex).SetTo(col))
 			return 0;
 		return this->obj->GetValueAsInt64(col->GetColName()->ToCString());
 	}
@@ -75,8 +75,8 @@ public:
 	{
 		if (this->obj == 0)
 			return 0;
-		DB::ColDef *col = this->tab->GetCol(colIndex);
-		if (col == 0)
+		NotNullPtr<DB::ColDef> col;
+		if (!this->tab->GetCol(colIndex).SetTo(col))
 			return 0;
 		Text::String *s = this->obj->GetValueString(col->GetColName()->ToCString());
 		if (s)
@@ -97,8 +97,8 @@ public:
 	{
 		if (this->obj == 0)
 			return false;
-		DB::ColDef *col = this->tab->GetCol(colIndex);
-		if (col == 0)
+		NotNullPtr<DB::ColDef> col;
+		if (!this->tab->GetCol(colIndex).SetTo(col))
 			return false;
 		Text::String *s = this->obj->GetValueString(col->GetColName()->ToCString());
 		if (s)
@@ -120,8 +120,8 @@ public:
 	{
 		if (this->obj == 0)
 			return 0;
-		DB::ColDef *col = this->tab->GetCol(colIndex);
-		if (col == 0)
+		NotNullPtr<DB::ColDef> col;
+		if (!this->tab->GetCol(colIndex).SetTo(col))
 			return 0;
 		return this->obj->GetValueNewString(col->GetColName()->ToCString());
 	}
@@ -130,8 +130,8 @@ public:
 	{
 		if (this->obj == 0)
 			return 0;
-		DB::ColDef *col = this->tab->GetCol(colIndex);
-		if (col == 0)
+		NotNullPtr<DB::ColDef> col;
+		if (!this->tab->GetCol(colIndex).SetTo(col))
 			return 0;
 		Text::String *s = this->obj->GetValueString(col->GetColName()->ToCString());
 		if (s)
@@ -152,8 +152,8 @@ public:
 	{
 		if (this->obj == 0)
 			return 0;
-		DB::ColDef *col = this->tab->GetCol(colIndex);
-		if (col == 0)
+		NotNullPtr<DB::ColDef> col;
+		if (!this->tab->GetCol(colIndex).SetTo(col))
 			return 0;
 		Text::String *s = this->obj->GetValueString(col->GetColName()->ToCString());
 		if (s)
@@ -167,8 +167,8 @@ public:
 	{
 		if (this->obj == 0)
 			return 0;
-		DB::ColDef *col = this->tab->GetCol(colIndex);
-		if (col == 0)
+		NotNullPtr<DB::ColDef> col;
+		if (!this->tab->GetCol(colIndex).SetTo(col))
 			return 0;
 		return this->obj->GetValueAsDouble(col->GetColName()->ToCString());
 	}
@@ -177,8 +177,8 @@ public:
 	{
 		if (this->obj == 0)
 			return 0;
-		DB::ColDef *col = this->tab->GetCol(colIndex);
-		if (col == 0)
+		NotNullPtr<DB::ColDef> col;
+		if (!this->tab->GetCol(colIndex).SetTo(col))
 			return 0;
 		return this->obj->GetValueAsBool(col->GetColName()->ToCString());
 	}
@@ -207,8 +207,8 @@ public:
 	{
 		if (this->obj == 0)
 			return true;
-		DB::ColDef *col = this->tab->GetCol(colIndex);
-		if (col == 0)
+		NotNullPtr<DB::ColDef> col;
+		if (!this->tab->GetCol(colIndex).SetTo(col))
 			return true;
 		Text::JSONBase *o = this->obj->GetObjectValue(col->GetColName()->ToCString());
 		return o == 0 || o->GetType() == Text::JSONType::Null;
@@ -216,16 +216,16 @@ public:
 
 	virtual UTF8Char *GetName(UOSInt colIndex, UTF8Char *buff)
 	{
-		DB::ColDef *col = this->tab->GetCol(colIndex);
-		if (col == 0)
+		NotNullPtr<DB::ColDef> col;
+		if (!this->tab->GetCol(colIndex).SetTo(col))
 			return 0;
 		return col->GetColName()->ConcatTo(buff);
 	}
 
 	virtual DB::DBUtil::ColType GetColType(UOSInt colIndex, OptOut<UOSInt> colSize)
 	{
-		DB::ColDef *col = this->tab->GetCol(colIndex);
-		if (col == 0)
+		NotNullPtr<DB::ColDef> col;
+		if (!this->tab->GetCol(colIndex).SetTo(col))
 			return DB::DBUtil::CT_Unknown;
 		colSize.Set(col->GetColSize());
 		return col->GetColType();
@@ -233,8 +233,8 @@ public:
 
 	virtual Bool GetColDef(UOSInt colIndex, NotNullPtr<DB::ColDef> colDef)
 	{
-		DB::ColDef *col = this->tab->GetCol(colIndex);
-		if (col == 0)
+		NotNullPtr<DB::ColDef> col;
+		if (!this->tab->GetCol(colIndex).SetTo(col))
 			return false;
 		colDef->Set(col);
 		return true;

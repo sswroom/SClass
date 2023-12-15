@@ -255,14 +255,14 @@ DB::DBReader *DB::SQLiteFile::QueryTableData(Text::CString schemaName, Text::CSt
 	}
 	else
 	{
-		UOSInt i = 0;
-		UOSInt j = columnNames->GetCount();
-		while (i < j)
+		Bool found = false;
+		Data::ArrayIterator<NotNullPtr<Text::String>> it = columnNames->Iterator();
+		while (it.HasNext())
 		{
-			if (i > 0) sb.AppendC(UTF8STRC(","));
-			sptr = DB::DBUtil::SDBColUTF8(sbuff, columnNames->GetItem(i)->v, DB::SQLType::SQLite);
+			if (found) sb.AppendC(UTF8STRC(","));
+			sptr = DB::DBUtil::SDBColUTF8(sbuff, it.Next()->v, DB::SQLType::SQLite);
 			sb.Append(CSTRP(sbuff, sptr));
-			i++;
+			found = true;
 		}
 	}
 	sb.AppendC(UTF8STRC(" from "));

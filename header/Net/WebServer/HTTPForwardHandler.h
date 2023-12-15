@@ -33,7 +33,7 @@ namespace Net
 			IO::LogTool *log;
 			Bool logContent;
 
-			virtual Text::String *GetNextURL(NotNullPtr<Net::WebServer::IWebRequest> req);
+			virtual Optional<Text::String> GetNextURL(NotNullPtr<Net::WebServer::IWebRequest> req);
 		public:
 			HTTPForwardHandler(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CString forwardURL, ForwardType fwdType);
 			virtual ~HTTPForwardHandler();

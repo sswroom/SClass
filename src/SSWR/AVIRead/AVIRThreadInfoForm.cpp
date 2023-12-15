@@ -22,8 +22,8 @@ void __stdcall SSWR::AVIRead::AVIRThreadInfoForm::OnMyStackChg(void *userObj)
 {
 	SSWR::AVIRead::AVIRThreadInfoForm *me = (SSWR::AVIRead::AVIRThreadInfoForm*)userObj;
 	UOSInt i = me->lbMyStack->GetSelectedIndex();
-	const UTF8Char *s = me->stacks.GetItem(i);
-	const UTF8Char *sMem = me->stacksMem.GetItem(i);
+	const UTF8Char *s = me->stacks.GetItem(i).OrNull();
+	const UTF8Char *sMem = me->stacksMem.GetItem(i).OrNull();
 	UOSInt slen;
 	UTF8Char *sbuff;
 	Text::PString sline[2];
@@ -637,8 +637,8 @@ SSWR::AVIRead::AVIRThreadInfoForm::~AVIRThreadInfoForm()
 	i = this->stacks.GetCount();
 	while (i-- > 0)
 	{
-		Text::StrDelNew(this->stacks.GetItem(i));
-		Text::StrDelNew(this->stacksMem.GetItem(i));
+		Text::StrDelNew(this->stacks.GetItem(i).OrNull());
+		Text::StrDelNew(this->stacksMem.GetItem(i).OrNull());
 	}
 }
 

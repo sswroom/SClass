@@ -142,7 +142,7 @@ Bool Exporter::PEMExporter::ExportStream(NotNullPtr<IO::SeekableStream> stm, Not
 		UOSInt j = fileList->GetFileCount();
 		while (i < j)
 		{
-			if (file.Set(fileList->GetFile(i)))
+			if (fileList->GetFile(i).SetTo(file))
 				if (!ExportStream(stm, file))
 					return false;
 			i++;

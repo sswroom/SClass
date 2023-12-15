@@ -61,8 +61,6 @@ Bool Exporter::SQLiteExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Te
 	DB::TableDef *tabDef;
 	NotNullPtr<DB::TableDef> nntabDef;
 	Data::ArrayListNN<Text::String> tables;
-	UOSInt i;
-	UOSInt j;
 	OSInt k;
 	if (!DB::SQLiteFile::CreateDBTool(fileName.OrEmpty(), log, CSTR("DB: ")).SetTo(destDB))
 		return false;
@@ -79,16 +77,17 @@ Bool Exporter::SQLiteExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Te
 	{
 		srcDB = 0;
 	}
-	i = 0;
-	j = tables.GetCount();
-	while (i < j)
+	Data::ArrayIterator<NotNullPtr<Text::String>> it = tables.Iterator();
+	NotNullPtr<Text::String> tabName;
+	while (it.HasNext())
 	{
+		tabName = it.Next();
 		if (srcDB)
 		{
-			tabDef = srcDB->GetTableDef(CSTR_NULL, tables.GetItem(i)->ToCString());
+			tabDef = srcDB->GetTableDef(CSTR_NULL, tabName->ToCString());
 			if (tabDef)
 			{
-				r = srcDB->QueryTableData(CSTR_NULL, tables.GetItem(i)->ToCString(), 0, 0, 0, CSTR_NULL, 0);
+				r = srcDB->QueryTableData(CSTR_NULL, tabName->ToCString(), 0, 0, 0, CSTR_NULL, 0);
 				if (r == 0)
 				{
 					DEL_CLASS(tabDef);
@@ -104,10 +103,10 @@ Bool Exporter::SQLiteExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Te
 		}
 		else
 		{
-			r = sDB->QueryTableData(CSTR_NULL, tables.GetItem(i)->ToCString(), 0, 0, 0, CSTR_NULL, 0);
+			r = sDB->QueryTableData(CSTR_NULL, tabName->ToCString(), 0, 0, 0, CSTR_NULL, 0);
 			if (r)
 			{
-				tabDef = r->GenTableDef(CSTR_NULL, tables.GetItem(i)->ToCString());
+				tabDef = r->GenTableDef(CSTR_NULL, tabName->ToCString());
 			}
 			else
 			{
@@ -129,7 +128,7 @@ Bool Exporter::SQLiteExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Te
 				break;
 			}
 			sql.Clear();
-			DB::SQLGenerator::GenCreateTableCmd(sql, CSTR_NULL, tables.GetItem(i)->ToCString(), nntabDef, false);
+			DB::SQLGenerator::GenCreateTableCmd(sql, CSTR_NULL, tabName->ToCString(), nntabDef, false);
 			if (destDB->ExecuteNonQuery(sql.ToCString()) <= -2)
 			{
 				{
@@ -156,7 +155,7 @@ Bool Exporter::SQLiteExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Te
 					k = 10000;
 				}
 				sql.Clear();
-				DB::SQLGenerator::GenInsertCmd(sql, CSTR_NULL, tables.GetItem(i)->ToCString(), nnr);
+				DB::SQLGenerator::GenInsertCmd(sql, CSTR_NULL, tabName->ToCString(), nnr);
 				if (destDB->ExecuteNonQuery(sql.ToCString()) <= 0)
 				{
 					sb.ClearStr();
@@ -183,10 +182,9 @@ Bool Exporter::SQLiteExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Te
 		{
 			break;
 		}
-		i++;
 	}
 
-	LIST_FREE_STRING(&tables);
+	LISTNN_FREE_STRING(&tables);
 	SDEL_CLASS(srcDB);
 	destDB.Delete();
 	return succ;

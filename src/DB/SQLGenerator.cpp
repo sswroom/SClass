@@ -3,7 +3,7 @@
 #include "DB/SQLGenerator.h"
 
 
-void DB::SQLGenerator::AppendColDef(DB::SQLType sqlType, NotNullPtr<DB::SQLBuilder> sql, DB::ColDef *col, UOSInt pkCount)
+void DB::SQLGenerator::AppendColDef(DB::SQLType sqlType, NotNullPtr<DB::SQLBuilder> sql, NotNullPtr<DB::ColDef> col, UOSInt pkCount)
 {
 	sql->AppendCol(col->GetColName()->v);
 	sql->AppendCmdC(CSTR(" "));
@@ -883,11 +883,10 @@ void DB::SQLGenerator::AppendColType(DB::SQLType sqlType, NotNullPtr<DB::SQLBuil
 Bool DB::SQLGenerator::GenCreateTableCmd(NotNullPtr<DB::SQLBuilder> sql, Text::CString schemaName, Text::CString tableName, NotNullPtr<DB::TableDef> tabDef, Bool multiline)
 {
 	DB::SQLType sqlType = sql->GetSQLType();
-	UOSInt i;
-	UOSInt j;
-	UOSInt k;
+	Data::ArrayIterator<NotNullPtr<DB::ColDef>> it;
+	Bool found;
 	UOSInt pkCnt = tabDef->CountPK();
-	DB::ColDef *col;
+	NotNullPtr<DB::ColDef> col;
 	sql->AppendCmdC(CSTR("create table "));
 	if (schemaName.leng > 0)
 	{
@@ -898,55 +897,51 @@ Bool DB::SQLGenerator::GenCreateTableCmd(NotNullPtr<DB::SQLBuilder> sql, Text::C
 	sql->AppendCmdC(CSTR(" ("));
 	if (sqlType == DB::SQLType::Access || sqlType == DB::SQLType::MDBTools)
 	{
-		j = tabDef->GetColCnt();
-		i = 0;
-		while (i < j)
+		found = false;
+		it = tabDef->ColIterator();
+		while (it.HasNext())
 		{
-			if (i > 0)
-			{
+			if (found)
 				sql->AppendCmdC(CSTR(", "));
-			}
 			if (multiline) sql->AppendCmdC(CSTR("\r\n\t"));
-			col = tabDef->GetCol(i++);
+			col = it.Next();
 			AppendColDef(sqlType, sql, col, pkCnt);
+			found = true;
 		}
 	}
 	else if (sqlType == DB::SQLType::SQLite)
 	{
 		Bool hasAutoInc = false;
-		j = tabDef->GetColCnt();
-		i = 0;
-		while (i < j)
+		found = false;
+		it = tabDef->ColIterator();
+		while (it.HasNext())
 		{
+			if (found)
+				sql->AppendCmdC(CSTR(", "));
 			if (multiline) sql->AppendCmdC(CSTR("\r\n\t"));
-			col = tabDef->GetCol(i++);
+			col = it.Next();
 			AppendColDef(sqlType, sql, col, pkCnt);
 			if (col->IsAutoInc())
 			{
 				hasAutoInc = true;
 			}
-			if (i < j)
-			{
-				sql->AppendCmdC(CSTR(", "));
-			}
+			found = true;
 		}
 		if (!hasAutoInc && pkCnt > 1)
 		{
-			i = 0;
-			k = 0;
 			sql->AppendCmdC(CSTR(", "));
 			sql->AppendCmdC(CSTR("PRIMARY KEY ("));
-			while (i < j)
+			it = tabDef->ColIterator();
+			found = false;
+			while (it.HasNext())
 			{
-				col = tabDef->GetCol(i++);
+				col = it.Next();
 				if (col->IsPK())
 				{
-					if (k > 0)
-					{
+					if (found)
 						sql->AppendCmdC(CSTR(", "));
-					}
 					sql->AppendCol(col->GetColName()->v);
-					k++;
+					found = true;
 				}
 			}
 			sql->AppendCmdC(CSTR(")"));
@@ -954,26 +949,24 @@ Bool DB::SQLGenerator::GenCreateTableCmd(NotNullPtr<DB::SQLBuilder> sql, Text::C
 	}
 	else
 	{
-		j = tabDef->GetColCnt();
-		i = 0;
-		while (i < j)
+		it = tabDef->ColIterator();
+		found = false;
+		while (it.HasNext())
 		{
-			col = tabDef->GetCol(i++);
+			col = it.Next();
+			if (found) sql->AppendCmdC(CSTR(", "));
 			if (multiline) sql->AppendCmdC(CSTR("\r\n\t"));
 			AppendColDef(sqlType, sql, col, pkCnt);
-			if (i < j)
-			{
-				sql->AppendCmdC(CSTR(", "));
-			}
+			found = true;
 		}
-		i = 0;
-		k = 0;
-		while (i < j)
+		it = tabDef->ColIterator();
+		found = false;
+		while (it.HasNext())
 		{
-			col = tabDef->GetCol(i++);
+			col = it.Next();
 			if (col->IsPK())
 			{
-				if (k > 0)
+				if (found)
 				{
 					sql->AppendCmdC(CSTR(", "));
 				}
@@ -984,10 +977,10 @@ Bool DB::SQLGenerator::GenCreateTableCmd(NotNullPtr<DB::SQLBuilder> sql, Text::C
 					sql->AppendCmdC(CSTR("PRIMARY KEY ("));
 				}
 				sql->AppendCol(col->GetColName()->v);
-				k++;
+				found = true;
 			}
 		}
-		if (k > 0)
+		if (found)
 		{
 			sql->AppendCmdC(CSTR(")"));
 		}
@@ -1052,11 +1045,11 @@ Bool DB::SQLGenerator::GenInsertCmd(NotNullPtr<DB::SQLBuilder> sql, Text::CStrin
 	if (tabDef && sql->GetSQLType() == DB::SQLType::PostgreSQL)
 	{
 		Bool hasAutoIncAlways = false;
-		DB::ColDef *col;
-		i = tabDef->GetColCnt();
-		while (i-- > 0)
+		NotNullPtr<DB::ColDef> col;
+		Data::ArrayIterator<NotNullPtr<DB::ColDef>> it = tabDef->ColIterator();
+		while (it.HasNext())
 		{
-			col = tabDef->GetCol(i);
+			col = it.Next();
 			if (col->GetAutoIncType() == DB::ColDef::AutoIncType::Always)
 			{
 				hasAutoIncAlways = true;
@@ -1252,9 +1245,10 @@ DB::SQLGenerator::PageStatus DB::SQLGenerator::GenSelectCmdPage(NotNullPtr<DB::S
 	{
 		status = PageStatus::Succ;
 	}
-	DB::ColDef *col;
-	UOSInt i = 0;
-	UOSInt j = tabDef->GetColCnt();
+	NotNullPtr<DB::ColDef> col;
+	Data::ArrayIterator<NotNullPtr<DB::ColDef>> it;
+	it = tabDef->ColIterator();
+	Bool found = false;
 	sql->AppendCmdC(CSTR("select "));
 	if (page && (sql->GetSQLType() == DB::SQLType::Access))
 	{
@@ -1262,23 +1256,21 @@ DB::SQLGenerator::PageStatus DB::SQLGenerator::GenSelectCmdPage(NotNullPtr<DB::S
 		sql->AppendInt32((Int32)((page->GetPageNum() + 1) * page->GetPageSize()));
 		status = PageStatus::NoOffset;
 	}
-	while (i < j)
+	while (it.HasNext())
 	{
-		col = tabDef->GetCol(i);
-		if (i > 0)
-		{
+		col = it.Next();
+		if (found)
 			sql->AppendCmdC(CSTR(", "));
-		}
 		sql->AppendCol(col->GetColName()->v);
-		i++;
+		found = true;
 	}
 	sql->AppendCmdC(CSTR(" from "));
 	sql->AppendTableName(tabDef);
 	if (page)
 	{
 		Bool hasOrder = false;
-		i = 1;
-		j = page->GetSortingCount();
+		UOSInt i = 1;
+		UOSInt j = page->GetSortingCount();
 		if (j > 0)
 		{
 			hasOrder = true;
@@ -1312,11 +1304,10 @@ DB::SQLGenerator::PageStatus DB::SQLGenerator::GenSelectCmdPage(NotNullPtr<DB::S
 		{
 			if (!hasOrder)
 			{
-				i = 0;
-				j = tabDef->GetColCnt();
-				while (i < j)
+				it = tabDef->ColIterator();
+				while (it.HasNext())
 				{
-					col = tabDef->GetCol(i);
+					col = it.Next();
 					if (col->IsPK())
 					{
 						if (hasOrder)

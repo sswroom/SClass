@@ -1541,12 +1541,12 @@ IO::SMake::~SMake()
 		j = prog->subItems.GetCount();
 		while (j-- > 0)
 		{
-			prog->subItems.GetItem(j)->Release();
+			OPTSTR_DEL(prog->subItems.GetItem(j));
 		}
 		j = prog->libs.GetCount();
 		while (j-- > 0)
 		{
-			prog->libs.GetItem(j)->Release();
+			OPTSTR_DEL(prog->libs.GetItem(j));
 		}
 		DEL_CLASS(prog);
 	}
@@ -1563,7 +1563,7 @@ IO::ParserType IO::SMake::GetParserType() const
 
 void IO::SMake::ClearLinks()
 {
-	LIST_FREE_STRING(&this->linkCmds);
+	LISTNN_FREE_STRING(&this->linkCmds);
 	this->testProgs.Clear();
 }
 
@@ -1784,12 +1784,10 @@ Bool IO::SMake::IsProgGroup(Text::CStringNN progName) const
 		return false;
 	}
 
-	Text::String *subItem;
-	UOSInt i = prog->subItems.GetCount();
-	while (i-- > 0)
+	Data::ArrayIterator<NotNullPtr<Text::String>> it = prog->subItems.Iterator();;
+	while (it.HasNext())
 	{
-		subItem = prog->subItems.GetItem(i);
-		if (subItem->EndsWith(UTF8STRC(".o")))
+		if (it.Next()->EndsWith(UTF8STRC(".o")))
 		{
 			return false;
 		}

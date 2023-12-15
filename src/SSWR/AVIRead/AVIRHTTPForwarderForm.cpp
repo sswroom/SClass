@@ -137,12 +137,10 @@ void __stdcall SSWR::AVIRead::AVIRHTTPForwarderForm::OnSSLCertClicked(void *user
 void SSWR::AVIRead::AVIRHTTPForwarderForm::ClearCACerts()
 {
 	UOSInt i;
-	Crypto::Cert::X509Cert *cert;
 	i = this->caCerts.GetCount();
 	while (i-- > 0)
 	{
-		cert = this->caCerts.GetItem(i);
-		DEL_CLASS(cert);
+		this->caCerts.GetItem(i).Delete();
 	}
 	this->caCerts.Clear();
 }

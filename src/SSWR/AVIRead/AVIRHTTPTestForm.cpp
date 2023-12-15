@@ -119,7 +119,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPTestForm::ProcessThread(NotNullPtr<Sync::T
 {
 	SSWR::AVIRead::AVIRHTTPTestForm *me = (SSWR::AVIRead::AVIRHTTPTestForm*)thread->GetUserObj();
 //	UInt8 buff[2048];
-	Text::String *url;
+	NotNullPtr<Text::String> url;
 	Double timeDNS;
 	Double timeConn;
 	Double timeReq;
@@ -135,8 +135,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPTestForm::ProcessThread(NotNullPtr<Sync::T
 		NotNullPtr<Net::HTTPClient> cli = Net::HTTPClient::CreateClient(me->sockf, me->ssl, CSTR_NULL, true, false);
 		while (!thread->IsStopping())
 		{
-			url = me->GetNextURL();
-			if (url == 0)
+			if (!me->GetNextURL().SetTo(url))
 				break;
 			if (cli->Connect(url->ToCString(), me->method, &timeDNS, &timeConn, false))
 			{
@@ -204,8 +203,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPTestForm::ProcessThread(NotNullPtr<Sync::T
 	{
 		while (!thread->IsStopping())
 		{
-			url = me->GetNextURL();
-			if (url == 0)
+			if (!me->GetNextURL().SetTo(url))
 				break;
 			NotNullPtr<Net::HTTPClient> cli = Net::HTTPClient::CreateClient(me->sockf, me->ssl, CSTR_NULL, true, url->StartsWith(UTF8STRC("https://")));
 			if (cli->Connect(url->ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, &timeDNS, &timeConn, false))
@@ -297,13 +295,12 @@ void SSWR::AVIRead::AVIRHTTPTestForm::ClearURLs()
 	}
 }
 
-Text::String *SSWR::AVIRead::AVIRHTTPTestForm::GetNextURL()
+Optional<Text::String> SSWR::AVIRead::AVIRHTTPTestForm::GetNextURL()
 {
-	Text::String *url;
+	Optional<Text::String> url;
 	Sync::MutexUsage mutUsage(this->connMut);
 	if (this->connLeftCnt <= 0)
 	{
-		mutUsage.EndUse();
 		return 0;
 	}
 	url = this->connURLs.GetItem(this->connCurrIndex);
@@ -311,7 +308,6 @@ Text::String *SSWR::AVIRead::AVIRHTTPTestForm::GetNextURL()
 		this->connCurrIndex = 0;
 
 	this->connLeftCnt -= 1;
-	mutUsage.EndUse();
 	return url;
 }
 

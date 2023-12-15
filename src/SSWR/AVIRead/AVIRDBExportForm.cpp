@@ -72,7 +72,7 @@ void __stdcall SSWR::AVIRead::AVIRDBExportForm::OnExportClicked(void *userObj)
 			fs.Write(sql.ToString(), sql.GetLength());
 		}
 		me->db->CloseReader(r);
-		LIST_FREE_STRING(&cols);
+		LISTNN_FREE_STRING(&cols);
 		me->SetDialogResult(UI::GUIForm::DR_OK);
 	}
 }
@@ -129,17 +129,16 @@ SSWR::AVIRead::AVIRDBExportForm::AVIRDBExportForm(UI::GUIClientControl *parent, 
 	{
 		UTF8Char sbuff[128];
 		UTF8Char *sptr;
-		DB::ColDef *col;
-		UOSInt i = 0;
-		UOSInt j = tab->GetColCnt();
-		while (i < j)
+		NotNullPtr<DB::ColDef> col;
+		Data::ArrayIterator<NotNullPtr<DB::ColDef>> it = tab->ColIterator();
+		UOSInt i;
+		while (it.HasNext())
 		{
-			col = tab->GetCol(i);
-			this->lvTables->AddItem(col->GetColName(), (void*)1);
+			col = it.Next();
+			i = this->lvTables->AddItem(col->GetColName(), (void*)1);
 			this->lvTables->SetSubItem(i, 1, CSTR("yes"));
 			sptr = DB::DBUtil::ColTypeGetString(sbuff, col->GetColType(), col->GetColSize(), col->GetColDP());
 			this->lvTables->SetSubItem(i, 2, CSTRP(sbuff, sptr));
-			i++;
 		}
 		DEL_CLASS(tab);
 	}

@@ -487,7 +487,7 @@ Crypto::Cert::X509Key *SSWR::AVIRead::AVIRASN1DataForm::GetNewKey()
 	switch (x509->GetFileType())
 	{
 	case Crypto::Cert::X509File::FileType::FileList:
-		return ((Crypto::Cert::X509Cert*)NotNullPtr<Crypto::Cert::X509FileList>::ConvertFrom(x509)->GetFile(0))->GetNewPublicKey();
+		return ((Crypto::Cert::X509Cert*)NotNullPtr<Crypto::Cert::X509FileList>::ConvertFrom(x509)->GetFile(0).OrNull())->GetNewPublicKey();
 	case Crypto::Cert::X509File::FileType::Cert:
 		return NotNullPtr<Crypto::Cert::X509Cert>::ConvertFrom(x509)->GetNewPublicKey();
 	case Crypto::Cert::X509File::FileType::Key:
@@ -619,7 +619,7 @@ SSWR::AVIRead::AVIRASN1DataForm::AVIRASN1DataForm(UI::GUIClientControl *parent, 
 			canVerify = true;
 			hasPubKey = true;
 			sb.ClearStr();
-			Crypto::Cert::X509Cert *cert = (Crypto::Cert::X509Cert*)fileList->GetFile(0);
+			Crypto::Cert::X509Cert *cert = (Crypto::Cert::X509Cert*)fileList->GetFile(0).OrNull();
 			if (cert->GetSubjectCN(sb))
 			{
 				this->tcMain->SetTabPageName(1, sb.ToCString());
@@ -631,20 +631,21 @@ SSWR::AVIRead::AVIRASN1DataForm::AVIRASN1DataForm(UI::GUIClientControl *parent, 
 			}
 			NotNullPtr<UI::GUITabPage> tp;
 			UI::GUITextBox *txt;
-			Crypto::Cert::X509File *file;
+			NotNullPtr<Crypto::Cert::X509File> file;
 			UOSInt i = 1;
 			UOSInt j = fileList->GetFileCount();
 			while (i < j)
 			{
-				file = fileList->GetFile(i);
-				sb.ClearStr();
-				file->ToShortName(sb);
-				tp = this->tcMain->AddTabPage(sb.ToCString());
-				sb.ClearStr();
-				file->ToASN1String(sb);
-				NEW_CLASS(txt, UI::GUITextBox(ui, tp, sb.ToCString(), true));
-				txt->SetDockType(UI::GUIControl::DOCK_FILL);
-
+				if (fileList->GetFile(i).SetTo(file))
+				{
+					sb.ClearStr();
+					file->ToShortName(sb);
+					tp = this->tcMain->AddTabPage(sb.ToCString());
+					sb.ClearStr();
+					file->ToASN1String(sb);
+					NEW_CLASS(txt, UI::GUITextBox(ui, tp, sb.ToCString(), true));
+					txt->SetDockType(UI::GUIControl::DOCK_FILL);
+				}
 				i++;
 			}
 			break;

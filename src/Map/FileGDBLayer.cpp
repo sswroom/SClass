@@ -117,7 +117,8 @@ Map::FileGDBLayer::FileGDBLayer(DB::SharedReadingDB *conn, Text::CStringNN sourc
 		j = this->colNames.GetCount();
 		while (j-- > 0)
 		{
-			if (this->colNames.GetItem(j)->EndsWithICase(UTF8STRC("NAME")))
+			NotNullPtr<Text::String> s;
+			if (this->colNames.GetItem(j).SetTo(s) && s->EndsWithICase(UTF8STRC("NAME")))
 			{
 				nameCol = j;
 			}
@@ -280,8 +281,8 @@ UOSInt Map::FileGDBLayer::GetColumnCnt() const
 
 UTF8Char *Map::FileGDBLayer::GetColumnName(UTF8Char *buff, UOSInt colIndex)
 {
-	Text::String *colName = this->colNames.GetItem(colIndex);
-	if (colName)
+	NotNullPtr<Text::String> colName;
+	if (this->colNames.GetItem(colIndex).SetTo(colName))
 	{
 		return Text::StrConcatC(buff, colName->v, colName->leng);
 	}
