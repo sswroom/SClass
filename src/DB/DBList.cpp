@@ -37,7 +37,8 @@ void DB::DBList::AddDB(NotNullPtr<DB::DBTool> db)
 
 Optional<DB::DBTool> DB::DBList::UseDB()
 {
-	DBInfo *dbInfo;
+	Optional<DBInfo> dbInfo;
+	NotNullPtr<DBInfo> nndbInfo;
 	UOSInt i;
 	UOSInt j;
 	UOSInt k;
@@ -59,12 +60,11 @@ Optional<DB::DBTool> DB::DBList::UseDB()
 				k -= j;
 			}
 
-			if (!dbInfo->isUsing)
+			if (dbInfo.SetTo(nndbInfo) && !nndbInfo->isUsing)
 			{
-				dbInfo->isUsing = true;
+				nndbInfo->isUsing = true;
 				this->nextIndex = k;
-				mutUsage.EndUse();
-				return dbInfo->db;
+				return nndbInfo->db;
 			}
 		}
 		mutUsage.EndUse();
@@ -76,13 +76,12 @@ Optional<DB::DBTool> DB::DBList::UseDB()
 void DB::DBList::UnuseDB(NotNullPtr<DB::DBTool> db)
 {
 	UOSInt i;
-	DBInfo *dbInfo;
+	NotNullPtr<DBInfo> dbInfo;
 	Sync::MutexUsage mutUsage(this->dbMut);
 	i = this->dbList.GetCount();
 	while (i-- > 0)
 	{
-		dbInfo = this->dbList.GetItem(i);
-		if (dbInfo->db == db)
+		if (this->dbList.GetItem(i).SetTo(dbInfo) && dbInfo->db == db)
 		{
 			dbInfo->isUsing = false;
 			this->dbEvt.Set();
