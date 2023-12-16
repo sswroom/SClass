@@ -188,7 +188,7 @@ SSWR::AVIRead::AVIRHTTPClientCertTestForm::AVIRHTTPClientCertTestForm(UI::GUICli
 	this->log = 0;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASSNN(this->grpParam, UI::GUIGroupBox(ui, *this, CSTR("Parameters")));
+	this->grpParam = ui->NewGroupBox(*this, CSTR("Parameters"));
 	this->grpParam->SetRect(0, 0, 620, 96, false);
 	this->grpParam->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->lblPort, UI::GUILabel(ui, this->grpParam, CSTR("Port")));

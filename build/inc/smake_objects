@@ -2213,9 +2213,7 @@ GUIFormJava.o: ../../src/UI/GUIFormJava.cpp
 $-I$(JAVA_HOME)/include
 $-I$(JAVA_HOME)/include/linux
 GUIFormWin.o: ../../src/UI/GUIFormWin.cpp
-GUIGroupBoxGTK.o: ../../src/UI/GUIGroupBoxGTK.cpp
-$`$(PKG-CONFIG) --cflags gtk+-3.0`
-GUIGroupBoxWin.o: ../../src/UI/GUIGroupBoxWin.cpp
+GUIGroupBox.o: ../../src/UI/GUIGroupBox.cpp
 GUIHexFileView.o: ../../src/UI/GUIHexFileView.cpp
 GUIHScrollBarGTK.o: ../../src/UI/GUIHScrollBarGTK.cpp
 $`$(PKG-CONFIG) --cflags gtk+-3.0`
@@ -2320,6 +2318,9 @@ RollingTextDObj.o: ../../src/UI/DObj/RollingTextDObj.cpp
 SizedOverlayDObj.o: ../../src/UI/DObj/SizedOverlayDObj.cpp
 TextDObj.o: ../../src/UI/DObj/TextDObj.cpp
 VideoDObjHandler.o: ../../src/UI/DObj/VideoDObjHandler.cpp
+GTKGroupBox.o: ../../src/UI/GTK/GTKGroupBox.cpp
+$`$(PKG-CONFIG) --cflags gtk+-3.0`
+WinGroupBox.o: ../../src/UI/Win/WinGroupBox.cpp
 
 ColorDialog.o: ../../src/UtilUI/ColorDialog.cpp
 TextGotoDialog.o: ../../src/UtilUI/TextGotoDialog.cpp

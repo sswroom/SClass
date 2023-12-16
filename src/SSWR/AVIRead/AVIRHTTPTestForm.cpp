@@ -333,7 +333,7 @@ SSWR::AVIRead::AVIRHTTPTestForm::AVIRHTTPTestForm(UI::GUIClientControl *parent, 
 	this->postSize = 0;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASSNN(this->grpStatus, UI::GUIGroupBox(ui, *this, CSTR("Status")));
+	this->grpStatus = ui->NewGroupBox(*this, CSTR("Status"));
 	this->grpStatus->SetRect(0, 0, 100, 136, false);
 	this->grpStatus->SetDockType(UI::GUIControl::DOCK_BOTTOM);
 	NEW_CLASS(this->lblConnLeftCnt, UI::GUILabel(ui, this->grpStatus, CSTR("Conn Left")));
@@ -392,7 +392,7 @@ SSWR::AVIRead::AVIRHTTPTestForm::AVIRHTTPTestForm(UI::GUIClientControl *parent, 
 	this->btnStart->SetRect(104, 100, 75, 23, false);
 	this->btnStart->HandleButtonClick(OnStartClicked, this);
 	
-	NEW_CLASSNN(this->grpURL, UI::GUIGroupBox(ui, *this, CSTR("URL")));
+	this->grpURL = ui->NewGroupBox(*this, CSTR("URL"));
 	this->grpURL->SetDockType(UI::GUIControl::DOCK_FILL);
 	NEW_CLASSNN(this->pnlURL, UI::GUIPanel(ui, this->grpURL));
 	this->pnlURL->SetRect(0, 0, 100, 23, false);

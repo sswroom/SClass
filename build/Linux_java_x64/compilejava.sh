@@ -1,3 +1,3 @@
 #!/bin/sh
-javac -d . ../../Java/*.java
+javac -d bin ../../Java/*.java
 

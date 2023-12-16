@@ -522,6 +522,7 @@ UOSInt UI::GUIMenu::AddItem(Text::CString name, UInt16 cmdId, KeyModifier keyMod
 	g_signal_connect(menuItem, "activate", G_CALLBACK(GUIMenu_Clicked), mnuItem);
 	gtk_widget_show(menuItem);
 	return id;*/
+	return INVALID_INDEX;
 }
 
 void UI::GUIMenu::AddSeperator()
@@ -567,6 +568,7 @@ UI::GUIMenu *UI::GUIMenu::AddSubMenu(Text::CString name)
 	gtk_menu_shell_append(GTK_MENU_SHELL(this->hMenu), menuItem);
 	gtk_widget_show(menuItem);
 	return subMenu;*/
+	return 0;
 }
 
 void *UI::GUIMenu::GetHMenu()
@@ -574,10 +576,10 @@ void *UI::GUIMenu::GetHMenu()
 	return this->hMenu;
 }
 
-UOSInt UI::GUIMenu::GetAllKeys(Data::ArrayList<ShortcutKey*> *keys)
+UOSInt UI::GUIMenu::GetAllKeys(NotNullPtr<Data::ArrayList<ShortcutKey*>> keys)
 {
 	UOSInt keyCnt = this->keys.GetCount();
-	keys->AddAll(&this->keys);
+	keys->AddAll(this->keys);
 	UOSInt j = this->subMenus.GetCount();
 	UOSInt i = 0;
 	while (i < j)

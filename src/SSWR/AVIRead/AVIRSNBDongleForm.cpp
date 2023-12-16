@@ -520,7 +520,7 @@ SSWR::AVIRead::AVIRSNBDongleForm::AVIRSNBDongleForm(UI::GUIClientControl *parent
 	NEW_CLASS(this->btnUpload, UI::GUIButton(ui, this->pnlDevice, CSTR("Upload")));
 	this->btnUpload->SetRect(704, 76, 75, 23, false);
 	this->btnUpload->HandleButtonClick(OnUploadClicked, this);
-	NEW_CLASSNN(this->grpDevice, UI::GUIGroupBox(ui, this->tpDevice, CSTR("Device")));
+	this->grpDevice = ui->NewGroupBox(this->tpDevice, CSTR("Device"));
 	this->grpDevice->SetDockType(UI::GUIControl::DOCK_FILL);
 	NEW_CLASSNN(this->pnlDevCtrl, UI::GUIPanel(ui, this->grpDevice));
 	this->pnlDevCtrl->SetRect(0, 0, 100, 31, false);

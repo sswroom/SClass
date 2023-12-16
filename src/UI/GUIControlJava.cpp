@@ -428,6 +428,7 @@ ControlHandle *UI::GUIControl::GetHandle()
 
 MonitorHandle *UI::GUIControl::GetHMonitor()
 {
+	return 0;
 /*
 #if GDK_MAJOR_VERSION > 3 || (GDK_MAJOR_VERSION == 3 && GDK_MINOR_VERSION >= 22)
 	GdkDisplay *display = gtk_widget_get_display((GtkWidget*)this->hwnd);
@@ -523,6 +524,7 @@ Media::DrawFont *UI::GUIControl::CreateDrawFont(NotNullPtr<Media::DrawImage> img
 
 UInt32 UI::GUIControl::GUIKey2OSKey(UI::GUIControl::GUIKey guiKey)
 {
+	return 0;
 /*	switch (guiKey)
 	{
 	case UI::GUIControl::GK_BACKSPACE:

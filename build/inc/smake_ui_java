@@ -59,8 +59,6 @@ UI/GUIDDrawControl.h:
 UI/GUIDragDrop.h:
 UI/GUIForm.h:
 @GUIFormJava.o
-UI/GUIGroupBox.h:
-@GUIGroupBoxGTK.o
 UI/GUIHScrollBar.h:
 @GUIHScrollBarGTK.o
 UI/GUIHSplitter.h:
@@ -107,6 +105,8 @@ UI/GUIVSplitter.h:
 @GUIVSplitterGTK.o
 UI/MessageDialog.h:
 @MessageDialogJava.o
+UI/Java/JavaGroupBox.h:
+JavaGroupBox.o
 
 GUIStartup.o: ../../startup/JavaStartup.cpp
 $-I$(JAVA_HOME)/include

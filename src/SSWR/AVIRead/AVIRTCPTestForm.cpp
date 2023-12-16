@@ -197,7 +197,7 @@ SSWR::AVIRead::AVIRTCPTestForm::AVIRTCPTestForm(UI::GUIClientControl *parent, No
 	NEW_CLASS(this->btnStart, UI::GUIButton(ui, this->pnlRequest, CSTR("Request")));
 	this->btnStart->SetRect(104, 100, 75, 23, false);
 	this->btnStart->HandleButtonClick(OnStartClicked, this);
-	NEW_CLASSNN(this->grpStatus, UI::GUIGroupBox(ui, *this, CSTR("Status")));
+	this->grpStatus = ui->NewGroupBox(*this, CSTR("Status"));
 	this->grpStatus->SetDockType(UI::GUIControl::DOCK_FILL);
 	NEW_CLASS(this->lblConnLeftCnt, UI::GUILabel(ui, this->grpStatus, CSTR("Conn Left")));
 	this->lblConnLeftCnt->SetRect(4, 4, 100, 23, false);

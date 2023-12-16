@@ -62,8 +62,6 @@ UI/GUIDragDropGTK.h:
 @GUIDragDropGTK.o
 UI/GUIForm.h:
 @GUIFormGTK.o
-UI/GUIGroupBox.h:
-@GUIGroupBoxGTK.o
 UI/GUIHScrollBar.h:
 @GUIHScrollBarGTK.o
 UI/GUIHSplitter.h:
@@ -110,6 +108,8 @@ UI/GUIVSplitter.h:
 @GUIVSplitterGTK.o
 UI/MessageDialog.h:
 @MessageDialogL.o
+UI/GTK/GTKGroupBox.h:
+@GTKGroupBox.o
 
 GUIStartup.o: ../../startup/GtkStartup.cpp
 $`pkg-config --cflags gtk+-3.0`

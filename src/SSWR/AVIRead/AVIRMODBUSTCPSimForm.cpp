@@ -205,7 +205,7 @@ SSWR::AVIRead::AVIRMODBUSTCPSimForm::AVIRMODBUSTCPSimForm(UI::GUIClientControl *
 	NEW_CLASS(this->btnListen, UI::GUIButton(ui, this->pnlCtrl, CSTR("Listen")));
 	this->btnListen->SetRect(204, 4, 75, 23, false);
 	this->btnListen->HandleButtonClick(OnListenClicked, this);
-	NEW_CLASSNN(this->grpDev, UI::GUIGroupBox(ui, this->pnlCtrl, CSTR("Device")));
+	this->grpDev = ui->NewGroupBox(this->pnlCtrl, CSTR("Device"));
 	this->grpDev->SetRect(0, 28, 400, 64, false);
 	NEW_CLASS(this->lblAddr, UI::GUILabel(ui, this->grpDev, CSTR("Address")));
 	this->lblAddr->SetRect(4, 4, 100, 23, false);

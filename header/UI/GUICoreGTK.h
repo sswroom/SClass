@@ -29,6 +29,8 @@ namespace UI
 		virtual void SetMonitorMgr(Media::MonitorMgr *monMgr);
 		virtual Media::MonitorMgr *GetMonitorMgr();
 		virtual Bool IsForwarded();
+
+		virtual NotNullPtr<GUIGroupBox> NewGroupBox(NotNullPtr<GUIClientControl> parent, Text::CStringNN text);
 	};
 }
 #endif

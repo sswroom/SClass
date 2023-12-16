@@ -255,6 +255,7 @@ void UI::GUIClientControl::SetDPI(Double hdpi, Double ddpi)
 
 void *UI::GUIClientControl::GetContainer()
 {
+	return 0;
 /*	if (this->container == 0) this->InitContainer();
 	ClientControlData *data = (ClientControlData*)this->container;
 	return data->container;*/

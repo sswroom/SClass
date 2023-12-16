@@ -5,6 +5,7 @@
 #include "Media/DrawEngineFactory.h"
 #include "UI/GUICore.h"
 #include "UI/GUICoreJava.h"
+#include "UI/Java/JavaGroupBox.h"
 #include <jni.h>
 #include <stdio.h>
 
@@ -184,4 +185,11 @@ Media::MonitorMgr *UI::GUICoreJava::GetMonitorMgr()
 Bool UI::GUICoreJava::IsForwarded()
 {
 	return getenv("SSH_CLIENT") != 0;
+}
+
+NotNullPtr<UI::GUIGroupBox> UI::GUICoreJava::NewGroupBox(NotNullPtr<GUIClientControl> parent, Text::CStringNN text)
+{
+	NotNullPtr<UI::Java::JavaGroupBox> ctrl;
+	NEW_CLASSNN(ctrl, UI::Java::JavaGroupBox(*this, parent, text));
+	return ctrl;
 }

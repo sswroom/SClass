@@ -467,7 +467,7 @@ SSWR::AVIRead::AVIRHTTPSvrForm::AVIRHTTPSvrForm(UI::GUIClientControl *parent, No
 	this->tpAccess = this->tcMain->AddTabPage(CSTR("Access"));
 	this->tpLog = this->tcMain->AddTabPage(CSTR("Log"));
 
-	NEW_CLASSNN(this->grpParam, UI::GUIGroupBox(ui, this->tpControl, CSTR("Parameters")));
+	this->grpParam = ui->NewGroupBox(this->tpControl, CSTR("Parameters"));
 	this->grpParam->SetRect(0, 0, 620, 344, false);
 	this->grpParam->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->lblPort, UI::GUILabel(ui, this->grpParam, CSTR("Port")));

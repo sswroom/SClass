@@ -1,6 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Math/Math.h"
+#include "Sync/SimpleThread.h"
 #include "Sync/ThreadUtil.h"
 #include "Text/MyString.h"
 #include "Text/TextBinEnc/URIEncoding.h"
@@ -147,12 +148,11 @@ JNIEXPORT void JNICALL Java_JFrameWindowListener_windowOpened(JNIEnv *env, jobje
 	}
 }*/
 
-UI::GUIForm::GUIForm(GUIClientControl *parent, Double initW, Double initH, GUICore *ui) : UI::GUIClientControl(ui, parent)
+UI::GUIForm::GUIForm(Optional<GUIClientControl> parent, Double initW, Double initH, NotNullPtr<GUICore> ui) : UI::GUIClientControl(ui, parent)
 {
 	this->exitOnClose = false;
 	this->isDialog = false;
 	this->dialogResult = DR_UNKNOWN;
-	this->timers = 0;
 	this->okBtn = 0;
 	this->cancelBtn = 0;
 	this->closingHdlr = 0;
@@ -179,23 +179,24 @@ UI::GUIForm::GUIForm(GUIClientControl *parent, Double initW, Double initH, GUICo
 	{
 		this->container = env->CallObjectMethod((jobject)this->hwnd, mid);
 	}
-	cls = env->FindClass("JFrameWindowListener");
+/*	cls = env->FindClass("JFrameWindowListener");
 	mid = env->GetMethodID(cls, "<init>", "(J)V");
 	jobject listener = env->NewObject(cls, mid, this);
 	cls = env->GetObjectClass((jobject)this->hwnd);
 	mid = env->GetMethodID(cls, "addWindowListener", "(Ljava/awt/event/WindowListener;)V");
-	env->CallVoidMethod((jobject)this->hwnd, mid, listener);
+	env->CallVoidMethod((jobject)this->hwnd, mid, listener);*/
 
 	this->selfResize = true;
 	Double w;
 	Double h;
 	Double initX;
 	Double initY;
-	if (parent)
+	NotNullPtr<GUIClientControl> nnparent;
+	if (parent.SetTo(nnparent))
 	{
-		parent->GetClientSize(&w, &h);
-		initX = (w - initW) * 0.5;
-		initY = (h - initH) * 0.5;
+		Math::Size2DDbl size = nnparent->GetClientSize();
+		initX = (size.x - initW) * 0.5;
+		initY = (size.y - initH) * 0.5;
 	}
 	else
 	{
@@ -233,19 +234,8 @@ UI::GUIForm::GUIForm(GUIClientControl *parent, Double initW, Double initH, GUICo
 
 UI::GUIForm::~GUIForm()
 {
-	GUITimer *tmr;
-	UOSInt i;
-	i = this->timers.GetCount();
-	while (i-- > 0)
-	{
-		tmr = this->timers.GetItem(i);
-		DEL_CLASS(tmr);
-	}
-	if (this->menu)
-	{
-		DEL_CLASS(this->menu);
-		this->menu = 0;
-	}
+	this->timers.DeleteAll();
+	SDEL_CLASS(this->menu);
 }
 
 /*void UI::GUIForm::SetText(const WChar *text)
@@ -332,7 +322,7 @@ void UI::GUIForm::Close()
 	env->CallVoidMethod((jobject)this->hwnd, mid, false);
 }
 
-void UI::GUIForm::SetText(Text::CString text)
+void UI::GUIForm::SetText(Text::CStringNN text)
 {
 	JNIEnv *env = (JNIEnv*)jniEnv;
 	jclass cls = env->GetObjectClass((jobject)this->hwnd);
@@ -340,21 +330,16 @@ void UI::GUIForm::SetText(Text::CString text)
 	env->CallVoidMethod((jobject)this->hwnd, mid, env->NewStringUTF((const Char*)text.v));
 }
 
-void UI::GUIForm::GetSizeP(UOSInt *width, UOSInt *height)
+Math::Size2D<UOSInt> UI::GUIForm::GetSizeP()
 {
 	JNIEnv *env = (JNIEnv*)jniEnv;
 	jclass cls = env->GetObjectClass((jobject)this->hwnd);
 	jmethodID mid;
-	if (width)
-	{
-		mid = env->GetMethodID(cls, "getWidth", "()I");
-		*width = env->CallIntMethod((jobject)this->hwnd, mid) * this->ddpi / this->hdpi;
-	}
-	if (height)
-	{
-		mid = env->GetMethodID(cls, "getHeight", "()I");
-		*height = env->CallIntMethod((jobject)this->hwnd, mid) * this->ddpi / this->hdpi;
-	}
+	mid = env->GetMethodID(cls, "getWidth", "()I");
+	Int32 width = env->CallIntMethod((jobject)this->hwnd, mid) * this->ddpi / this->hdpi;
+	mid = env->GetMethodID(cls, "getHeight", "()I");
+	Int32 height = env->CallIntMethod((jobject)this->hwnd, mid) * this->ddpi / this->hdpi;
+	return Math::Size2D<UOSInt>((UOSInt)width, (UOSInt)height);
 //	printf("Form GetSizeP: %ld, %ld\r\n", (Int32)*width, (Int32)*height);
 }
 
@@ -375,24 +360,24 @@ void UI::GUIForm::SetNoResize(Bool noResize)
 	}
 }
 
-UI::GUITimer *UI::GUIForm::AddTimer(UInt32 interval, UI::UIEvent handler, void *userObj)
+NotNullPtr<UI::GUITimer> UI::GUIForm::AddTimer(UInt32 interval, UI::UIEvent handler, void *userObj)
 {
-	UI::GUITimer *tmr;
-	NEW_CLASS(tmr, UI::GUITimer(this->ui, this, 0, interval, handler, userObj));
+	NotNullPtr<UI::GUITimer> tmr;
+	NEW_CLASSNN(tmr, UI::GUITimer(this->ui, *this, 0, interval, handler, userObj));
 	this->timers.Add(tmr);
 	return tmr;
 }
 
-void UI::GUIForm::RemoveTimer(UI::GUITimer *tmr)
+void UI::GUIForm::RemoveTimer(NotNullPtr<UI::GUITimer> tmr)
 {
 	UOSInt i;
 	i = this->timers.GetCount();	
 	while (i-- > 0)
 	{
-		if (tmr == this->timers.GetItem(i))
+		if (tmr.Ptr() == this->timers.GetItem(i).OrNull())
 		{
 			this->timers.RemoveAt(i);
-			DEL_CLASS(tmr);
+			tmr.Delete();
 			break;
 		}
 	}
@@ -440,12 +425,24 @@ void UI::GUIForm::SetCancelButton(UI::GUIButton *btn)
 	this->cancelBtn = btn;
 }
 
+Math::Size2DDbl UI::GUIForm::GetClientSize()
+{
+	JNIEnv *env = (JNIEnv*)jniEnv;
+	jclass cls = env->GetObjectClass((jobject)this->container);
+	jmethodID mid;
+	mid = env->GetMethodID(cls, "getWidth", "()I");
+	Int32 width = env->CallIntMethod((jobject)this->container, mid) * this->ddpi / this->hdpi;
+	mid = env->GetMethodID(cls, "getHeight", "()I");
+	Int32 height = env->CallIntMethod((jobject)this->container, mid) * this->ddpi / this->hdpi;
+	return Math::Size2DDbl(width, height);
+}
+
 Bool UI::GUIForm::IsChildVisible()
 {
 	return true;
 }
 
-Text::CString UI::GUIForm::GetObjectClass()
+Text::CStringNN UI::GUIForm::GetObjectClass() const
 {
 	return CSTR("WinForm");
 }
@@ -584,10 +581,10 @@ void UI::GUIForm::SetDPI(Double hdpi, Double ddpi)
 	{
 		this->menu->SetDPI(hdpi, ddpi);
 	}*/
-	OSInt i = this->children->GetCount();
+	UOSInt i = this->children.GetCount();
 	while (i-- > 0)
 	{
-		this->children->GetItem(i)->SetDPI(hdpi, ddpi);
+		this->children.GetItem(i)->SetDPI(hdpi, ddpi);
 	}
 	this->UpdateChildrenSize(true);
 }
@@ -627,7 +624,7 @@ void UI::GUIForm::OnDisplaySizeChange(UOSInt dispWidth, UOSInt dispHeight)
 {
 }
 
-void UI::GUIForm::OnFileDrop(Text::String **files, UOSInt nFiles)
+void UI::GUIForm::OnFileDrop(NotNullPtr<Text::String> *files, UOSInt nFiles)
 {
 	OSInt i;
 	i = this->dropFileHandlers.GetCount();
@@ -647,7 +644,7 @@ void UI::GUIForm::FromFullScn()
 //	gtk_window_unfullscreen((GtkWindow*)this->hwnd);
 }
 
-UI::GUICore *UI::GUIForm::GetUI()
+NotNullPtr<UI::GUICore> UI::GUIForm::GetUI()
 {
 	return this->ui;
 }

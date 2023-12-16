@@ -563,7 +563,7 @@ SSWR::AVIRead::AVIRMODBUSMasterForm::AVIRMODBUSMasterForm(UI::GUIClientControl *
 	this->sendUpdated = false;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASSNN(this->grpStream, UI::GUIGroupBox(ui, *this, CSTR("Stream")));
+	this->grpStream = ui->NewGroupBox(*this, CSTR("Stream"));
 	this->grpStream->SetRect(0, 0, 100, 96, false);
 	this->grpStream->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->lblStream, UI::GUILabel(ui, this->grpStream, CSTR("Stream Type")));

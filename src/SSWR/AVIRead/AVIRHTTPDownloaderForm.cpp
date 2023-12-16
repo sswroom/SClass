@@ -299,7 +299,7 @@ SSWR::AVIRead::AVIRHTTPDownloaderForm::AVIRHTTPDownloaderForm(UI::GUIClientContr
 	NEW_CLASS(this->btnRequest, UI::GUIButton(ui, this->pnlRequest, CSTR("Request")));
 	this->btnRequest->SetRect(104, 128, 75, 23, false);
 	this->btnRequest->HandleButtonClick(OnRequestClicked, this);
-	NEW_CLASSNN(this->grpStatus, UI::GUIGroupBox(ui, *this, CSTR("Status")));
+	this->grpStatus = ui->NewGroupBox(*this, CSTR("Status"));
 	this->grpStatus->SetRect(0, 0, 100, 67, false);
 	this->grpStatus->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->lblCurrSpeed, UI::GUILabel(ui, this->grpStatus, CSTR("Curr Speed")));
@@ -312,7 +312,7 @@ SSWR::AVIRead::AVIRHTTPDownloaderForm::AVIRHTTPDownloaderForm(UI::GUIClientContr
 	NEW_CLASS(this->txtTotalSize, UI::GUITextBox(ui, this->grpStatus, CSTR("")));
 	this->txtTotalSize->SetRect(104, 24, 200, 23, false);
 	this->txtTotalSize->SetReadOnly(true);
-	NEW_CLASSNN(this->grpResponse, UI::GUIGroupBox(ui, *this, CSTR("Response")));
+	this->grpResponse = ui->NewGroupBox(*this, CSTR("Response"));
 	this->grpResponse->SetDockType(UI::GUIControl::DOCK_FILL);
 	NEW_CLASSNN(this->pnlResponse, UI::GUIPanel(ui, this->grpResponse));
 	this->pnlResponse->SetRect(0, 0, 100, 151, false);

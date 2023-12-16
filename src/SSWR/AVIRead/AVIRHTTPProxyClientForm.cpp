@@ -213,7 +213,7 @@ SSWR::AVIRead::AVIRHTTPProxyClientForm::AVIRHTTPProxyClientForm(UI::GUIClientCon
 	NEW_CLASS(this->btnRequest, UI::GUIButton(ui, this->pnlRequest, CSTR("Request")));
 	this->btnRequest->SetRect(104, 56, 75, 23, false);
 	this->btnRequest->HandleButtonClick(OnRequestClicked, this);
-	NEW_CLASSNN(this->grpResponse, UI::GUIGroupBox(ui, *this, CSTR("Response")));
+	this->grpResponse = ui->NewGroupBox(*this, CSTR("Response"));
 	this->grpResponse->SetDockType(UI::GUIControl::DOCK_FILL);
 	NEW_CLASSNN(this->pnlResponse, UI::GUIPanel(ui, this->grpResponse));
 	this->pnlResponse->SetRect(0, 0, 100, 151, false);

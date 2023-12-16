@@ -124,7 +124,7 @@ SSWR::AVIRead::AVIROTPForm::AVIROTPForm(UI::GUIClientControl *parent, NotNullPtr
 
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASSNN(this->grpNew, UI::GUIGroupBox(ui, *this, CSTR("New Entry")));
+	this->grpNew = ui->NewGroupBox(*this, CSTR("New Entry"));
 	this->grpNew->SetRect(0, 0, 100, 112, false);
 	this->grpNew->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->lblName, UI::GUILabel(ui, this->grpNew, CSTR("Name")));

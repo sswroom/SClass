@@ -77,6 +77,10 @@ Media/OCREngine.h:
 @OCREngine.o
 Media/Printer.h:
 @PrinterCUPS.o
+Media/PulseAudioRenderer.h:
+@PulseAudioRenderer.o
+Media/SOXRFilter.h:
+@SOXRFilter.o
 Media/ZXingWriter.h:
 @ZXingWriter.o
 Media/Decoder/FFMPEGDecoder.h:

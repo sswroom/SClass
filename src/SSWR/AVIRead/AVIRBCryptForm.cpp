@@ -55,7 +55,7 @@ SSWR::AVIRead::AVIRBCryptForm::AVIRBCryptForm(UI::GUIClientControl *parent, NotN
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASSNN(this->grpGenerate, UI::GUIGroupBox(ui, *this, CSTR("Generate")));
+	this->grpGenerate = ui->NewGroupBox(*this, CSTR("Generate"));
 	this->grpGenerate->SetRect(0, 0, 100, 120, false);
 	this->grpGenerate->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->lblCost, UI::GUILabel(ui, this->grpGenerate, CSTR("Cost")));
@@ -75,7 +75,7 @@ SSWR::AVIRead::AVIRBCryptForm::AVIRBCryptForm(UI::GUIClientControl *parent, NotN
 	this->txtGenHash->SetRect(104, 76, 500, 23, false);
 	this->txtGenHash->SetReadOnly(true);
 
-	NEW_CLASSNN(this->grpCheck, UI::GUIGroupBox(ui, *this, CSTR("Check")));
+	this->grpCheck = ui->NewGroupBox(*this, CSTR("Check"));
 	this->grpCheck->SetDockType(UI::GUIControl::DOCK_FILL);
 	NEW_CLASS(this->lblCheckHash, UI::GUILabel(ui, this->grpCheck, CSTR("Hash")));
 	this->lblCheckHash->SetRect(4, 4, 100, 23, false);

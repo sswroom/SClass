@@ -1971,7 +1971,7 @@ SSWR::AVIRead::AVIRDBCheckChgForm::AVIRDBCheckChgForm(UI::GUIClientControl *pare
 	this->lblSrcFilter->SetRect(0, 48, 100, 23, false);
 	NEW_CLASSNN(this->txtSrcFilter, UI::GUITextBox(ui, *this, CSTR("")));
 	this->txtSrcFilter->SetRect(100, 48, 200, 23, false);
-	NEW_CLASSNN(this->grpData, UI::GUIGroupBox(ui, *this, CSTR("Data Source")));
+	this->grpData = ui->NewGroupBox(*this, CSTR("Data Source"));
 	this->grpData->SetRect(0, 72, 800, 216, false);
 	NEW_CLASSNN(this->chkNoHeader, UI::GUICheckBox(ui, this->grpData, CSTR("CSV No Header"), false));
 	this->chkNoHeader->SetRect(100, 0, 200, 23, false);

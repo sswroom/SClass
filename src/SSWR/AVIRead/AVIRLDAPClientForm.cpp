@@ -175,7 +175,7 @@ SSWR::AVIRead::AVIRLDAPClientForm::AVIRLDAPClientForm(UI::GUIClientControl *pare
 	this->btnConnect->SetRect(104, 124, 75, 23, false);
 	this->btnConnect->HandleButtonClick(OnConnectClicked, this);
 
-	NEW_CLASSNN(this->grpSearch, UI::GUIGroupBox(ui, *this, CSTR("Search")));
+	this->grpSearch = ui->NewGroupBox(*this, CSTR("Search"));
 	this->grpSearch->SetDockType(UI::GUIControl::DOCK_FILL);
 	NEW_CLASSNN(this->pnlSearchRequest, UI::GUIPanel(ui, this->grpSearch));
 	this->pnlSearchRequest->SetRect(0, 0, 100, 124, false);

@@ -272,7 +272,7 @@ SSWR::AVIRead::AVIRProfiledResizerForm::AVIRProfiledResizerForm(UI::GUIClientCon
 	lbl->SetRect(0, 19, 60, 19, false);
 	NEW_CLASS(this->txtSuffix, UI::GUITextBox(ui, this->pnlProfile2, CSTR("")));
 	this->txtSuffix->SetRect(60, 19, 50, 19, false);
-	NEW_CLASSNN(this->grpSize, UI::GUIGroupBox(ui, this->pnlProfile2, CSTR("Size")));
+	this->grpSize = ui->NewGroupBox(this->pnlProfile2, CSTR("Size"));
 	this->grpSize->SetRect(0, 38, 200, 83, false);
 	NEW_CLASS(this->radSize, UI::GUIRadioButton(ui, this->grpSize, CSTR("Size"), true));
 	this->radSize->SetRect(0, 0, 60, 19, false);

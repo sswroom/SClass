@@ -1328,7 +1328,7 @@ SSWR::AVIRead::AVIRGSMModemForm::AVIRGSMModemForm(UI::GUIClientControl *parent, 
 	NEW_CLASS(this->txtHuaweiCSQ4, UI::GUITextBox(ui, this->tpHuawei, CSTR("")));
 	this->txtHuaweiCSQ4->SetRect(100, 288, 150, 23, false);
 	this->txtHuaweiCSQ4->SetReadOnly(true);
-	NEW_CLASSNN(this->grpHuaweiDHCP, UI::GUIGroupBox(ui, this->tpHuawei, CSTR("DHCP")));
+	this->grpHuaweiDHCP = ui->NewGroupBox(this->tpHuawei, CSTR("DHCP"));
 	this->grpHuaweiDHCP->SetRect(280, 0, 300, 248, false);
 	NEW_CLASS(this->btnHuaweiDHCP, UI::GUIButton(ui, this->grpHuaweiDHCP, CSTR("Update")));
 	this->btnHuaweiDHCP->SetRect(0, 0, 75, 23, false);

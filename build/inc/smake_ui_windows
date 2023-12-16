@@ -59,8 +59,6 @@ UI/GUIDragDrop.h:
 @GUIDragDropWin.o
 UI/GUIForm.h:
 @GUIFormWin.o
-UI/GUIGroupBox.h:
-@GUIGroupBoxWin.o
 UI/GUIHScrollBar.h:
 @GUIHScrollBarWin.o
 UI/GUIHSplitter.h:
@@ -112,6 +110,8 @@ UI/GUIWindowDragDrop.h:
 UI/IWindowSystem.h:
 UI/MessageDialog.h:
 @MessageDialogW.o
+UI/Win/WinGroupBox.h:
+@WinGroupBox.o
 
 GUIStartup.o: ../../startup/WinStartup.cpp
 !-Wl,--subsystem,windows

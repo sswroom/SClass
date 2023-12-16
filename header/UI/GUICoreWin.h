@@ -37,6 +37,8 @@ namespace UI
 		virtual Media::MonitorMgr *GetMonitorMgr();
 		virtual Bool IsForwarded();
 
+		virtual NotNullPtr<GUIGroupBox> NewGroupBox(NotNullPtr<GUIClientControl> parent, Text::CStringNN text);
+
 		void SetFocusWnd(void *hWnd, void *hAcc);
 		void *GetHInst();
 

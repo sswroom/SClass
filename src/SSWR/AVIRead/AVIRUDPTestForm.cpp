@@ -229,7 +229,7 @@ SSWR::AVIRead::AVIRUDPTestForm::AVIRUDPTestForm(UI::GUIClientControl *parent, No
 	this->lastTime.SetCurrTimeUTC();
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASSNN(this->grpServer, UI::GUIGroupBox(ui, *this, CSTR("Server")));
+	this->grpServer = ui->NewGroupBox(*this, CSTR("Server"));
 	this->grpServer->SetRect(0, 0, 200, 23, false);
 	this->grpServer->SetDockType(UI::GUIControl::DOCK_LEFT);
 	NEW_CLASS(this->lblServerPort, UI::GUILabel(ui, this->grpServer, CSTR("Port")));
@@ -242,7 +242,7 @@ SSWR::AVIRead::AVIRUDPTestForm::AVIRUDPTestForm(UI::GUIClientControl *parent, No
 	NEW_CLASS(this->chkAutoReply, UI::GUICheckBox(ui, this->grpServer, CSTR("Auto Reply"), false));
 	this->chkAutoReply->SetRect(54, 52, 100, 23, false);
 	this->chkAutoReply->HandleCheckedChange(OnAutoReplyChanged, this);
-	NEW_CLASSNN(this->grpDest, UI::GUIGroupBox(ui, *this, CSTR("Dest")));
+	this->grpDest = ui->NewGroupBox(*this, CSTR("Dest"));
 	this->grpDest->SetRect(0, 0, 250, 23, false);
 	this->grpDest->SetDockType(UI::GUIControl::DOCK_LEFT);
 	NEW_CLASS(this->lblDestHost, UI::GUILabel(ui, this->grpDest, CSTR("Host")));
@@ -260,7 +260,7 @@ SSWR::AVIRead::AVIRUDPTestForm::AVIRUDPTestForm(UI::GUIClientControl *parent, No
 	NEW_CLASS(this->btnSend, UI::GUIButton(ui, this->grpDest, CSTR("Send")));
 	this->btnSend->SetRect(54, 76, 75, 23, false);
 	this->btnSend->HandleButtonClick(OnSendClicked, this);
-	NEW_CLASSNN(this->grpStatus, UI::GUIGroupBox(ui, *this, CSTR("Status")));
+	this->grpStatus = ui->NewGroupBox(*this, CSTR("Status"));
 	this->grpStatus->SetDockType(UI::GUIControl::DOCK_FILL);
 	NEW_CLASS(this->lblRecvCnt, UI::GUILabel(ui, this->grpStatus, CSTR("Recv Count")));
 	this->lblRecvCnt->SetRect(4, 4, 100, 23, false);

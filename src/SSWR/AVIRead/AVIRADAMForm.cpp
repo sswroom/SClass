@@ -167,7 +167,7 @@ SSWR::AVIRead::AVIRADAMForm::AVIRADAMForm(UI::GUIClientControl *parent, NotNullP
 	NEW_CLASSNN(this->pnlMain, UI::GUIPanel(ui, *this));
 	this->pnlMain->SetRect(0, 0, 100, 316, false);
 	this->pnlMain->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASSNN(this->grpStream, UI::GUIGroupBox(ui, this->pnlMain, CSTR("Stream")));
+	this->grpStream = ui->NewGroupBox(this->pnlMain, CSTR("Stream"));
 	this->grpStream->SetRect(0, 0, 100, 72, false);
 	this->grpStream->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->lblAddress, UI::GUILabel(ui, this->grpStream, CSTR("Address")));

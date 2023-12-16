@@ -30,7 +30,7 @@ namespace SSWR
 			typedef struct
 			{
 				UInt32 procId;
-				Text::String *procName;
+				NotNullPtr<Text::String> procName;
 				UInt32 parentProcId;
 				Bool found;
 			} ProcessInfo;
@@ -97,8 +97,8 @@ namespace SSWR
 			Manage::Process *currProcObj;
 			Manage::SymbolResolver *currProcRes;
 			Manage::HiResClock *clk;
-			Data::DateTime *lastUserTime;
-			Data::DateTime *lastKernelTime;
+			Data::Timestamp lastUserTime;
+			Data::Timestamp lastKernelTime;
 			Int32 threadCnt;
 
 			static void __stdcall OnSumDblClicked(void *userObj, UOSInt index);

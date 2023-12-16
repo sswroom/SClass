@@ -328,7 +328,7 @@ SSWR::AVIRead::AVIRLineChartForm::AVIRLineChartForm(UI::GUIClientControl *parent
 	NEW_CLASS(this->btnCancel, UI::GUIButton(ui, this->pnlControl, CSTR("Cancel")));
 	this->btnCancel->SetRect(84, 4, 75, 23, false);
 	this->btnCancel->HandleButtonClick(OnCancelClicked, this);
-	NEW_CLASSNN(this->grpYAxis, UI::GUIGroupBox(ui, *this, CSTR("Y-Axis")));
+	this->grpYAxis = ui->NewGroupBox(*this, CSTR("Y-Axis"));
 	this->grpYAxis->SetDockType(UI::GUIControl::DOCK_FILL);
 	NEW_CLASSNN(this->pnlYAxis, UI::GUIPanel(ui, this->grpYAxis));
 	this->pnlYAxis->SetRect(0, 0, 100, 32, false);

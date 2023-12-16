@@ -436,7 +436,7 @@ SSWR::AVIRead::AVIRChineseForm::AVIRChineseForm(UI::GUIClientControl *parent, No
 	this->pbChar->SetRect(240, 4, 256, 256, false);
 	this->pbChar->HandleMouseDown(OnCharMouseDown, this);
 
-	NEW_CLASSNN(this->grpCharInfo, UI::GUIGroupBox(ui, *this, CSTR("Char Info")));
+	this->grpCharInfo = ui->NewGroupBox(*this, CSTR("Char Info"));
 	this->grpCharInfo->SetRect(0, 0, 640, 448, false);
 	this->grpCharInfo->SetDockType(UI::GUIControl::DOCK_BOTTOM);
 	NEW_CLASS(this->lblRadical, UI::GUILabel(ui, this->grpCharInfo, CSTR("Radical")));

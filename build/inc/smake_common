@@ -4642,6 +4642,8 @@ UI/GUIComboBoxUtil.h:
 @GUIComboBoxUtil.o
 UI/GUIDObjArea.h:
 @GUIDObjArea.o
+UI/GUIGroupBox.h:
+@GUIGroupBox.o
 UI/GUIHexFileView.h:
 @GUIHexFileView.o
 UI/GUIMapControl.h:

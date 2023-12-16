@@ -294,7 +294,7 @@ SSWR::AVIRead::AVIRGISLineEditForm::AVIRGISLineEditForm(UI::GUIClientControl *pa
 	NEW_CLASSNN(this->pnlStyle, UI::GUIPanel(ui, *this));
 	this->pnlStyle->SetRect(0, 0, 456, 56, false);
 	this->pnlStyle->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASSNN(this->grpLayer, UI::GUIGroupBox(ui, *this, CSTR("Layers")));
+	this->grpLayer = ui->NewGroupBox(*this, CSTR("Layers"));
 	this->grpLayer->SetDockType(UI::GUIControl::DOCK_FILL);
 	NEW_CLASSNN(this->pnlLayers, UI::GUIPanel(ui, this->grpLayer));
 	this->pnlLayers->SetRect(0, 0, 152, 157, false);

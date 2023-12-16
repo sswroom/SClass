@@ -89,7 +89,7 @@ SSWR::AVIRead::AVIRGISLineStyleForm::AVIRGISLineStyleForm(UI::GUIClientControl *
 	NEW_CLASSNN(this->pnlButtons, UI::GUIPanel(ui, *this));
 	this->pnlButtons->SetRect(0, 0, 456, 32, false);
 	this->pnlButtons->SetDockType(UI::GUIControl::DOCK_BOTTOM);
-	NEW_CLASSNN(this->grpStyle, UI::GUIGroupBox(ui, *this, CSTR("Style")));
+	this->grpStyle = ui->NewGroupBox(*this, CSTR("Style"));
 	this->grpStyle->SetRect(0, 0, 456, 160, false);
 	this->grpStyle->SetDockType(UI::GUIControl::DOCK_FILL);
 	NEW_CLASSNN(this->pnlStyle, UI::GUIPanel(ui, this->grpStyle));

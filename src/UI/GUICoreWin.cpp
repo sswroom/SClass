@@ -4,6 +4,7 @@
 #include "IO/Library.h"
 #include "Media/GDIEngine.h"
 #include "UI/GUICoreWin.h"
+#include "UI/Win/WinGroupBox.h"
 #ifdef _WIN32_WCE
 #include "Sync/ThreadUtil.h"
 #endif
@@ -227,6 +228,13 @@ void UI::GUICoreWin::SetMonitorMgr(Media::MonitorMgr *monMgr)
 Media::MonitorMgr *UI::GUICoreWin::GetMonitorMgr()
 {
 	return this->monMgr;
+}
+
+NotNullPtr<UI::GUIGroupBox> UI::GUICoreWin::NewGroupBox(NotNullPtr<GUIClientControl> parent, Text::CStringNN text)
+{
+	NotNullPtr<UI::Win::WinGroupBox> ctrl;
+	NEW_CLASSNN(ctrl, UI::Win::WinGroupBox(*this, parent, text));
+	return ctrl;
 }
 
 Bool UI::GUICoreWin::IsForwarded()

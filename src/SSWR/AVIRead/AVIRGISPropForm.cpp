@@ -325,7 +325,7 @@ SSWR::AVIRead::AVIRGISPropForm::AVIRGISPropForm(UI::GUIClientControl *parent, No
 	NEW_CLASS(this->pbIcon, UI::GUIPictureBox(ui, *this, this->core->GetDrawEngine(), true, true));
 	this->pbIcon->SetRect(112, 168, 200, 128, false);
 
-	NEW_CLASSNN(this->grpLabel, UI::GUIGroupBox(ui, *this, CSTR("Label")));
+	this->grpLabel = ui->NewGroupBox(*this, CSTR("Label"));
 	this->grpLabel->SetRect(352, 92, 120, 144, false);
 	NEW_CLASS(this->chkSmart, UI::GUICheckBox(ui, this->grpLabel, CSTR("Smart"), false));
 	this->chkSmart->SetRect(4, 4, 104, 24, false);

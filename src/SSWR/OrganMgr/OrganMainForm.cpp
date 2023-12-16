@@ -2658,7 +2658,7 @@ SSWR::OrganMgr::OrganMainForm::OrganMainForm(NotNullPtr<UI::GUICore> ui, UI::GUI
 	NEW_CLASS(this->btnSpeciesColor, UI::GUIButton(ui, this->pnlSpecies, this->env->GetLang(CSTR("MainFormTabSpeciesColor"))));
 	this->btnSpeciesColor->SetRect(360, 124, 75, 23, false);
 	this->btnSpeciesColor->HandleButtonClick(OnSpeciesColorClicked, this);
-	NEW_CLASSNN(this->grpSpBook, UI::GUIGroupBox(ui, this->tpSpecies, this->env->GetLang(CSTR("MainFormTabSpeciesBook"))));
+	this->grpSpBook = ui->NewGroupBox(this->tpSpecies, this->env->GetLang(CSTR("MainFormTabSpeciesBook")));
 	this->grpSpBook->SetDockType(UI::GUIControl::DOCK_FILL);
 	NEW_CLASSNN(this->pnlSpBook, UI::GUIPanel(ui, this->grpSpBook));
 	this->pnlSpBook->SetRect(0, 0, 474, 49, false);

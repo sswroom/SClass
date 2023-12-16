@@ -421,7 +421,7 @@ SSWR::AVIRead::AVIRGPSTrackerForm::AVIRGPSTrackerForm(UI::GUIClientControl *pare
 	if (this->locSvc->GetServiceType() == Map::ILocationService::ST_MTK)
 	{
 		this->tpMTK = this->tcMain->AddTabPage(CSTR("MTK"));
-		NEW_CLASSNN(this->grpMTKFirmware, UI::GUIGroupBox(ui, this->tpMTK, CSTR("Firmware")));
+		this->grpMTKFirmware = ui->NewGroupBox(this->tpMTK, CSTR("Firmware"));
 		this->grpMTKFirmware->SetRect(0, 0, 340, 116, false);
 		NEW_CLASS(this->lblMTKRelease, UI::GUILabel(ui, this->grpMTKFirmware, CSTR("Release")));
 		this->lblMTKRelease->SetRect(0, 0, 100, 23, false);

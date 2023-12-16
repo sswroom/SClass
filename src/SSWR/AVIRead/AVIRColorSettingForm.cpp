@@ -554,7 +554,7 @@ SSWR::AVIRead::AVIRColorSettingForm::AVIRColorSettingForm(UI::GUIClientControl *
 	NEW_CLASS(this->btnMonProfile, UI::GUIButton(ui, this->tpSetting, CSTR("B&rowse")));
 	this->btnMonProfile->SetRect(300, 0, 75, 23, false);
 	this->btnMonProfile->HandleButtonClick(OnMonProfileClicked, this);
-	NEW_CLASSNN(this->grpMonProfile, UI::GUIGroupBox(ui, this->tpSetting, CSTR("Monitor Profile")));
+	this->grpMonProfile = ui->NewGroupBox(this->tpSetting, CSTR("Monitor Profile"));
 	this->grpMonProfile->SetRect(0, 24, 500, 72, false);
 	NEW_CLASS(this->lblMonTran, UI::GUILabel(ui, this->grpMonProfile, CSTR("Transfer Characteristics")));
 	this->lblMonTran->SetRect(0, 0, 150, 23, false);
@@ -613,7 +613,7 @@ SSWR::AVIRead::AVIRColorSettingForm::AVIRColorSettingForm(UI::GUIClientControl *
 	this->txtLuminance->SetRect(100, 176, 50, 23, false);
 	NEW_CLASS(this->lblLuminanceUnit, UI::GUILabel(ui, this->tpSetting, CSTR("cd/m2")));
 	this->lblLuminanceUnit->SetRect(150, 176, 100, 23, false);
-	NEW_CLASSNN(this->grpYUVDef, UI::GUIGroupBox(ui, this->tpSetting, CSTR("Default YUV Type")));
+	this->grpYUVDef = ui->NewGroupBox(this->tpSetting, CSTR("Default YUV Type"));
 	this->grpYUVDef->SetRect(0, 208, 280, 96, false);
 	NEW_CLASS(this->radYUVDefBT601, UI::GUIRadioButton(ui, this->grpYUVDef, CSTR("BT601"), false));
 	this->radYUVDefBT601->SetRect(8, 0, 100, 23, false);

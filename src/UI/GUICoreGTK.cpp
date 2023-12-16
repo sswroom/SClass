@@ -3,6 +3,7 @@
 #include "Media/GTKDrawEngine.h"
 #include "UI/GUICore.h"
 #include "UI/GUICoreGTK.h"
+#include "UI/GTK/GTKGroupBox.h"
 #include <gtk/gtk.h>
 #include <X11/Xlib.h>
 #undef Bool
@@ -177,4 +178,11 @@ Media::MonitorMgr *UI::GUICoreGTK::GetMonitorMgr()
 Bool UI::GUICoreGTK::IsForwarded()
 {
 	return getenv("SSH_CLIENT") != 0;
+}
+
+NotNullPtr<UI::GUIGroupBox> UI::GUICoreGTK::NewGroupBox(NotNullPtr<GUIClientControl> parent, Text::CStringNN text)
+{
+	NotNullPtr<UI::GTK::GTKGroupBox> ctrl;
+	NEW_CLASSNN(ctrl, UI::GTK::GTKGroupBox(*this, parent, text));
+	return ctrl;
 }

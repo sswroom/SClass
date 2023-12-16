@@ -6,18 +6,14 @@ namespace UI
 {
 	class GUIGroupBox : public GUIClientControl
 	{
-	private:
-		void *oriWndProc;
-
-		static OSInt __stdcall GBWndProc(void *hWnd, UInt32 msg, UOSInt wParam, OSInt lParam);
 	public:
-		GUIGroupBox(NotNullPtr<GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, Text::CStringNN name);
+		GUIGroupBox(NotNullPtr<GUICore> ui, NotNullPtr<UI::GUIClientControl> parent);
 		virtual ~GUIGroupBox();
 
-		virtual Math::Coord2DDbl GetClientOfst();
-		virtual Math::Size2DDbl GetClientSize();
-		virtual Bool IsChildVisible();
+		virtual Math::Coord2DDbl GetClientOfst() = 0;
+		virtual Math::Size2DDbl GetClientSize() = 0;
 
+		virtual Bool IsChildVisible();
 		virtual Text::CStringNN GetObjectClass() const;
 		virtual OSInt OnNotify(UInt32 code, void *lParam);
 		virtual void OnSizeChanged(Bool updateScn);

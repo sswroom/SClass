@@ -294,7 +294,7 @@ SSWR::AVIRead::AVIRDWQB30Form::AVIRDWQB30Form(UI::GUIClientControl *parent, NotN
 	this->cmdMin = 0;
 	this->cmdMax = 0;
 
-	NEW_CLASSNN(this->grpConn, UI::GUIGroupBox(ui, *this, CSTR("Connect")));
+	this->grpConn = ui->NewGroupBox(*this, CSTR("Connect"));
 	this->grpConn->SetRect(0, 0, 100, 68, false);
 	this->grpConn->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->lblDevType, UI::GUILabel(ui, this->grpConn, CSTR("Type")));
@@ -312,7 +312,7 @@ SSWR::AVIRead::AVIRDWQB30Form::AVIRDWQB30Form(UI::GUIClientControl *parent, NotN
 	NEW_CLASS(this->btnPort, UI::GUIButton(ui, this->grpConn, CSTR("Open")));
 	this->btnPort->SetRect(360, 24, 75, 23, false);
 	this->btnPort->HandleButtonClick(OnPortClicked, this);
-	NEW_CLASSNN(this->grpCtrl, UI::GUIGroupBox(ui, *this, CSTR("Control")));
+	this->grpCtrl = ui->NewGroupBox(*this, CSTR("Control"));
 	this->grpCtrl->SetRect(0, 0, 100, 68, false);
 	this->grpCtrl->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->lblMode, UI::GUILabel(ui, this->grpCtrl, CSTR("Mode")));
