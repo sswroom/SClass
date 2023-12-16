@@ -166,6 +166,9 @@ ArrayListStrW.o: $(CLASSDIR)src/Data/ArrayListStrW.cpp
 ArrayListString.o: $(CLASSDIR)src/Data/ArrayListString.cpp
 	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
 
+ArrayListStringNN.o: $(CLASSDIR)src/Data/ArrayListStringNN.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
 ArrayListStrUTF8.o: $(CLASSDIR)src/Data/ArrayListStrUTF8.cpp
 	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
 
