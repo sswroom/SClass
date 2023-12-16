@@ -29,7 +29,7 @@ global _ImageCopy_ImgCopy
 	align 16
 ImageCopy_ImgCopyR:
 _ImageCopy_ImgCopyR:
-	cmp dword [rsp+8],0
+	cmp byte [rsp+8],0
 	jz ImageCopy_ImgCopy
 	mov r10,rdx
 	mov r9,rax

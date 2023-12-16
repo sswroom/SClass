@@ -70,17 +70,31 @@ Media::StaticImage *HEIFParser_DecodeImage(heif_image_handle *imgHdlr)
 	{
 		if (hasAlpha)
 		{
-			heif_decode_image(imgHdlr, &img, heif_colorspace_RGB, heif_chroma_interleaved_RGBA, options);
-			data = heif_image_get_plane_readonly(img, heif_channel_interleaved, &stride);
-			NEW_CLASS(simg, Media::StaticImage(Math::Size2D<UOSInt>((UOSInt)width, (UOSInt)height), 0, 32, Media::PF_R8G8B8A8, (UOSInt)width * (UOSInt)height * 4, color, Media::ColorProfile::YUVT_UNKNOWN, Media::AT_ALPHA, Media::YCOFST_C_CENTER_LEFT));
-			ImageCopy_ImgCopyR(data, simg->data, (UOSInt)width * 4, (UOSInt)height, (UOSInt)stride, simg->GetDataBpl(), false);
+			heif_error err = heif_decode_image(imgHdlr, &img, heif_colorspace_RGB, heif_chroma_interleaved_RGBA, options);
+			if (err.code == heif_error_Ok)
+			{
+				data = heif_image_get_plane_readonly(img, heif_channel_interleaved, &stride);
+				NEW_CLASS(simg, Media::StaticImage(Math::Size2D<UOSInt>((UOSInt)width, (UOSInt)height), 0, 32, Media::PF_R8G8B8A8, (UOSInt)width * (UOSInt)height * 4, color, Media::ColorProfile::YUVT_UNKNOWN, Media::AT_ALPHA, Media::YCOFST_C_CENTER_LEFT));
+				ImageCopy_ImgCopyR(data, simg->data, (UOSInt)width * 4, (UOSInt)height, (UOSInt)stride, simg->GetDataBpl(), false);
+			}
+			else
+			{
+				printf("heif: %s\r\n", err.message);
+			}
 		}
 		else
 		{
-			heif_decode_image(imgHdlr, &img, heif_colorspace_RGB, heif_chroma_interleaved_RGB, options);
-			data = heif_image_get_plane_readonly(img, heif_channel_interleaved, &stride);
-			NEW_CLASS(simg, Media::StaticImage(Math::Size2D<UOSInt>((UOSInt)width, (UOSInt)height), 0, 24, Media::PF_R8G8B8, (UOSInt)width * (UOSInt)height * 3, color, Media::ColorProfile::YUVT_UNKNOWN, Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
-			ImageCopy_ImgCopyR(data, simg->data, (UOSInt)width * 3, (UOSInt)height, (UOSInt)stride, simg->GetDataBpl(), false);
+			heif_error err = heif_decode_image(imgHdlr, &img, heif_colorspace_RGB, heif_chroma_interleaved_RGB, options);
+			if (err.code == heif_error_Ok)
+			{
+				data = heif_image_get_plane_readonly(img, heif_channel_interleaved, &stride);
+				NEW_CLASS(simg, Media::StaticImage(Math::Size2D<UOSInt>((UOSInt)width, (UOSInt)height), 0, 24, Media::PF_R8G8B8, (UOSInt)width * (UOSInt)height * 3, color, Media::ColorProfile::YUVT_UNKNOWN, Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
+				ImageCopy_ImgCopyR(data, simg->data, (UOSInt)width * 3, (UOSInt)height, (UOSInt)stride, simg->GetDataBpl(), false);
+			}
+			else
+			{
+				printf("heif: %s\r\n", err.message);
+			}
 		}
 	}
 #if LIBHEIF_HAVE_VERSION(1, 4, 0)
@@ -88,19 +102,33 @@ Media::StaticImage *HEIFParser_DecodeImage(heif_image_handle *imgHdlr)
 	{
 		if (hasAlpha)
 		{
-			heif_decode_image(imgHdlr, &img, heif_colorspace_RGB, heif_chroma_interleaved_RRGGBBAA_LE, options);
-			data = heif_image_get_plane_readonly(img, heif_channel_interleaved, &stride);
-			NEW_CLASS(simg, Media::StaticImage(Math::Size2D<UOSInt>((UOSInt)width, (UOSInt)height), 0, 64, Media::PF_LE_B16G16R16A16, (UOSInt)width * (UOSInt)height * 8, color, Media::ColorProfile::YUVT_UNKNOWN, Media::AT_ALPHA, Media::YCOFST_C_CENTER_LEFT));
-			ImageCopy_ImgCopyR(data, simg->data, (UOSInt)width * 8, (UOSInt)height, (UOSInt)stride, simg->GetDataBpl(), false);
-			ImageUtil_SwapRGB(simg->data, (UOSInt)width * (UOSInt)height, 64);
+			heif_error err = heif_decode_image(imgHdlr, &img, heif_colorspace_RGB, heif_chroma_interleaved_RRGGBBAA_LE, options);
+			if (err.code == heif_error_Ok)
+			{
+				data = heif_image_get_plane_readonly(img, heif_channel_interleaved, &stride);
+				NEW_CLASS(simg, Media::StaticImage(Math::Size2D<UOSInt>((UOSInt)width, (UOSInt)height), 0, 64, Media::PF_LE_B16G16R16A16, (UOSInt)width * (UOSInt)height * 8, color, Media::ColorProfile::YUVT_UNKNOWN, Media::AT_ALPHA, Media::YCOFST_C_CENTER_LEFT));
+				ImageCopy_ImgCopyR(data, simg->data, (UOSInt)width * 8, (UOSInt)height, (UOSInt)stride, simg->GetDataBpl(), false);
+				ImageUtil_SwapRGB(simg->data, (UOSInt)width * (UOSInt)height, 64);
+			}
+			else
+			{
+				printf("heif: %s\r\n", err.message);
+			}
 		}
 		else
 		{
-			heif_decode_image(imgHdlr, &img, heif_colorspace_RGB, heif_chroma_interleaved_RRGGBB_LE, options);
-			data = heif_image_get_plane_readonly(img, heif_channel_interleaved, &stride);
-			NEW_CLASS(simg, Media::StaticImage(Math::Size2D<UOSInt>((UOSInt)width, (UOSInt)height), 0, 48, Media::PF_R8G8B8, (UOSInt)width * (UOSInt)height * 6, color, Media::ColorProfile::YUVT_UNKNOWN, Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
-			ImageCopy_ImgCopyR(data, simg->data, (UOSInt)width * 6, (UOSInt)height, (UOSInt)stride, simg->GetDataBpl(), false);
-			ImageUtil_SwapRGB(simg->data, (UOSInt)width * (UOSInt)height, 48);
+			heif_error err = heif_decode_image(imgHdlr, &img, heif_colorspace_RGB, heif_chroma_interleaved_RRGGBB_LE, options);
+			if (err.code == heif_error_Ok)
+			{
+				data = heif_image_get_plane_readonly(img, heif_channel_interleaved, &stride);
+				NEW_CLASS(simg, Media::StaticImage(Math::Size2D<UOSInt>((UOSInt)width, (UOSInt)height), 0, 48, Media::PF_R8G8B8, (UOSInt)width * (UOSInt)height * 6, color, Media::ColorProfile::YUVT_UNKNOWN, Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
+				ImageCopy_ImgCopyR(data, simg->data, (UOSInt)width * 6, (UOSInt)height, (UOSInt)stride, simg->GetDataBpl(), false);
+				ImageUtil_SwapRGB(simg->data, (UOSInt)width * (UOSInt)height, 48);
+			}
+			else
+			{
+				printf("heif: %s\r\n", err.message);
+			}
 		}
 	}
 #endif
