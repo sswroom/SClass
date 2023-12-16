@@ -1279,7 +1279,7 @@ Bool Parser::FileParser::XMLParser::ParseVSConfFile(NotNullPtr<Text::XMLReader> 
 										}
 										else
 										{
-											cfg->SetValue(0, name, attr->value);
+											cfg->SetValue(Text::String::NewEmpty(), name, attr->value);
 										}
 									}
 								}

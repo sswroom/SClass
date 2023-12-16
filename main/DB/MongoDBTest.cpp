@@ -23,8 +23,8 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	DB::MongoDB::BuildURL(sb, username, password, serverhost, serverport);
 	NEW_CLASS(mongoDB, DB::MongoDB(sb.ToCString(), database, log));
 	
-	Data::ArrayListNN<Text::String> tableList;
-	Data::ArrayListNN<Text::String> dbList;
+	Data::ArrayListStringNN tableList;
+	Data::ArrayListStringNN dbList;
 	Data::ArrayIterator<NotNullPtr<Text::String>> it;
 	UOSInt j;
 	j = mongoDB->GetDatabaseNames(dbList);
@@ -53,7 +53,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	{
 		console->WriteLineCStr(it.Next()->ToCString());
 	}
-	LISTNN_FREE_STRING(&tableList);
+	tableList.FreeAll();
 
 	DEL_CLASS(mongoDB);
 	DEL_CLASS(log);

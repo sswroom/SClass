@@ -2,7 +2,7 @@
 #define _SM_NET_EMAIL_EMAILMESSAGE
 #include "Crypto/Cert/X509Cert.h"
 #include "Data/ArrayList.h"
-#include "Data/ArrayListNN.h"
+#include "Data/ArrayListStringNN.h"
 #include "Data/DateTime.h"
 #include "Data/Timestamp.h"
 #include "IO/Stream.h"
@@ -46,7 +46,7 @@ namespace Net
 		private:
 			Optional<EmailAddress> fromAddr;
 			Data::ArrayListNN<EmailAddress> recpList;
-			Data::ArrayListNN<Text::String> headerList;
+			Data::ArrayListStringNN headerList;
 			Text::String *contentType;
 			UInt8 *content;
 			UOSInt contentLen;

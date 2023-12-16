@@ -55,7 +55,7 @@ Bool UI::Clipboard::GetDataText(UInt32 fmtId, NotNullPtr<Text::StringBuilderUTF8
 	return GetDataTextH(hand, fmtId, sb, 1);
 }
 
-UI::Clipboard::FilePasteType UI::Clipboard::GetDataFiles(Data::ArrayListNN<Text::String> *fileNames)
+UI::Clipboard::FilePasteType UI::Clipboard::GetDataFiles(Data::ArrayListStringNN *fileNames)
 {
 	if (!this->succ)
 		return UI::Clipboard::FPT_NONE;
@@ -118,13 +118,9 @@ UI::Clipboard::FilePasteType UI::Clipboard::GetDataFiles(Data::ArrayListNN<Text:
 	return ret;
 }
 
-void UI::Clipboard::FreeDataFiles(Data::ArrayListNN<Text::String> *fileNames)
+void UI::Clipboard::FreeDataFiles(Data::ArrayListStringNN *fileNames)
 {
-	UOSInt i = fileNames->GetCount();;
-	while (i-- > 0)
-	{
-		fileNames->GetItem(i)->Release();
-	}
+	fileNames->FreeAll();
 }
 
 Bool UI::Clipboard::GetDataTextH(void *hand, UInt32 fmtId, NotNullPtr<Text::StringBuilderUTF8> sb, UInt32 tymed)

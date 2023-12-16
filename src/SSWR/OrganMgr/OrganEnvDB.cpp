@@ -2844,7 +2844,7 @@ Bool SSWR::OrganMgr::OrganEnvDB::MoveImages(Data::ArrayList<OrganImages*> *imgLi
 			sptr = Text::StrConcat(sbuff, srcDir);
 			*sptr++ = IO::Path::PATH_SEPERATOR;
 			sptr = Text::StrConcatC(sptr, UTF8STRC("web.txt"));
-			Data::ArrayListNN<Text::String> webLines;
+			Data::ArrayListStringNN webLines;
 			Text::PString sarr[4];
 			Bool found;
 			{
@@ -2887,14 +2887,8 @@ Bool SSWR::OrganMgr::OrganEnvDB::MoveImages(Data::ArrayList<OrganImages*> *imgLi
 			{
 				IO::FileStream fs(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 				Text::UTF8Writer writer(fs);
-				i = 0;
-				j = webLines.GetCount();
-				while (i < j)
-				{
-					writer.WriteLine(webLines.GetItem(i)->ToCString());
-					webLines.GetItem(i)->Release();
-					i++;
-				}
+				writer.WriteLines(webLines.Iterator());
+				webLines.FreeAll();
 			}
 			else
 			{
@@ -3275,11 +3269,13 @@ Bool SSWR::OrganMgr::OrganEnvDB::AddDataFile(Text::CStringNN fileName)
 		else if (t == IO::ParserType::ReadingDB)
 		{
 			DB::ReadingDB *db = (DB::ReadingDB*)pobj;
-			Data::ArrayListNN<Text::String> tables;
+			Data::ArrayListStringNN tables;
 			db->QueryTableNames(CSTR_NULL, tables);
 			if (tables.GetCount() == 2)
 			{
-				if (tables.GetItem(0)->Equals(UTF8STRC("Setting")) && tables.GetItem(1)->Equals(UTF8STRC("Records")))
+				NotNullPtr<Text::String> t1;
+				NotNullPtr<Text::String> t2;
+				if (tables.GetItem(0).SetTo(t1) && t1->Equals(UTF8STRC("Setting")) && tables.GetItem(1).SetTo(t2) && t2->Equals(UTF8STRC("Records")))
 				{
 					NotNullPtr<DB::DBReader> reader;
 					Bool found = false;
@@ -3303,7 +3299,7 @@ Bool SSWR::OrganMgr::OrganEnvDB::AddDataFile(Text::CStringNN fileName)
 					}
 				}
 			}
-			LIST_FREE_STRING(&tables);
+			tables.FreeAll();
 		}
 		DEL_CLASS(pobj);
 	}

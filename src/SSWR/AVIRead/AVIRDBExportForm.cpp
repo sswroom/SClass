@@ -46,7 +46,7 @@ void __stdcall SSWR::AVIRead::AVIRDBExportForm::OnExportClicked(void *userObj)
 	if (dlg.ShowDialog(me->GetHandle()))
 	{
 		DB::SQLBuilder sql((DB::SQLType)(OSInt)me->cboDBType->GetSelectedItem(), me->chkAxisAware->IsChecked(), 0);
-		Data::ArrayListNN<Text::String> cols;
+		Data::ArrayListStringNN cols;
 		UOSInt i = 0;
 		UOSInt j = me->lvTables->GetCount();
 		while (i < j)
@@ -72,7 +72,7 @@ void __stdcall SSWR::AVIRead::AVIRDBExportForm::OnExportClicked(void *userObj)
 			fs.Write(sql.ToString(), sql.GetLength());
 		}
 		me->db->CloseReader(r);
-		LISTNN_FREE_STRING(&cols);
+		cols.FreeAll();
 		me->SetDialogResult(UI::GUIForm::DR_OK);
 	}
 }

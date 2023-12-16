@@ -3543,16 +3543,16 @@ Bool SSWR::OrganWeb::OrganWebEnv::PeakUpdateStatus(NotNullPtr<Sync::RWMutexUsage
 
 void SSWR::OrganWeb::OrganWebEnv::PeakFreeAll(NotNullPtr<Data::ArrayListNN<PeakInfo>> peaks)
 {
-	PeakInfo *peak;
-	UOSInt i = peaks->GetCount();
-	while (i-- > 0)
+	NotNullPtr<PeakInfo> peak;
+	Data::ArrayIterator<NotNullPtr<PeakInfo>> it = peaks->Iterator();
+	while (it.HasNext())
 	{
-		peak = peaks->GetItem(i);
+		peak = it.Next();
 		peak->refId->Release();
 		peak->district->Release();
 		SDEL_STRING(peak->name);
 		SDEL_STRING(peak->type);
-		MemFree(peak);
+		MemFreeNN(peak);
 	}
 	peaks->Clear();
 }

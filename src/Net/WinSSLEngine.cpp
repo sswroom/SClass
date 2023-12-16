@@ -1320,16 +1320,14 @@ Bool Net::WinSSLEngine::ServerSetCertsASN1(NotNullPtr<Crypto::Cert::X509Cert> ce
 	WinSSLEngine_PrintCERT_CONTEXT(svrCert);
 
 	HCERTSTORE certStore = 0;
-	UOSInt i = 0;
-	UOSInt j = cacerts->GetCount();
-	if (j > 0)
+	if (cacerts->GetCount() > 0)
 	{
 		certStore = CertOpenStore(CERT_STORE_PROV_MEMORY, 0, 0, 0, 0);
-		while (i < j)
+		Data::ArrayIterator<NotNullPtr<Crypto::Cert::X509Cert>> it = cacerts->Iterator();
+		while (it.HasNext())
 		{
-			Crypto::Cert::X509Cert* caCert = cacerts->GetItem(i);
+			NotNullPtr<Crypto::Cert::X509Cert> caCert = it.Next();
 			CertAddCertificateContextToStore(certStore, CertCreateCertificateContext(X509_ASN_ENCODING, caCert->GetASN1Buff(), (DWORD)caCert->GetASN1BuffSize()), CERT_STORE_ADD_NEW, 0);
-			i++;
 		}
 	}
 	if (!this->InitServer(this->clsData->method, &svrCert, certStore))

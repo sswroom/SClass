@@ -72,7 +72,7 @@ void __stdcall SSWR::AVIRead::AVIRSyslogServerForm::OnClientLog(void *userObj, U
 	{
 		ipLog = MemAlloc(IPLog, 1);
 		ipLog->ip = ip;
-		NEW_CLASS(ipLog->logMessage, Data::ArrayListNN<Text::String>());
+		NEW_CLASS(ipLog->logMessage, Data::ArrayListStringNN());
 		me->ipMap.Put(ip, ipLog);
 		me->ipListUpd = true;
 	}

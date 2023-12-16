@@ -1,7 +1,7 @@
 #ifndef _SM_IO_FILEANALYSE_FRAMEDETAIL
 #define _SM_IO_FILEANALYSE_FRAMEDETAIL
 #include "Data/ArrayList.h"
-#include "Data/ArrayListNN.h"
+#include "Data/ArrayListStringNN.h"
 #include "IO/FileAnalyse/FrameDetailHandler.h"
 #include "Text/String.h"
 #include "Text/StringBuilderUTF8.h"
@@ -35,7 +35,7 @@ namespace IO
 			UInt64 ofst;
 			UInt64 size;
 
-			Data::ArrayListNN<Text::String> headers;
+			Data::ArrayListStringNN headers;
 			Data::ArrayList<FieldInfo*> fields;
 			
 			void FreeFieldInfo(FieldInfo *field);

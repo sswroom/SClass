@@ -31,7 +31,6 @@ void __stdcall SSWR::AVIRead::AVIRRSSItemForm::OnImageSelChg(void *userObj)
 SSWR::AVIRead::AVIRRSSItemForm::AVIRRSSItemForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Net::RSSItem *rssItem) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	UOSInt i;
-	UOSInt j;
 	UTF8Char sbuff[128];
 	UTF8Char *sptr;
 	this->SetText(CSTR("RSS Item"));
@@ -127,8 +126,8 @@ SSWR::AVIRead::AVIRRSSItemForm::AVIRRSSItemForm(UI::GUIClientControl *parent, No
 
 	if (rssItem->description)
 	{
-		Data::ArrayListNN<Text::String> imgList;
-		Text::String *url;
+		Data::ArrayListStringNN imgList;
+		NotNullPtr<Text::String> url;
 		if (rssItem->descHTML)
 		{
 			Text::StringBuilderUTF8 sb;
@@ -144,20 +143,17 @@ SSWR::AVIRead::AVIRRSSItemForm::AVIRRSSItemForm(UI::GUIClientControl *parent, No
 			this->txtText->SetText(rssItem->description->ToCString());
 		}
 
-		i = 0;
-		j = imgList.GetCount();
-		while (i < j)
+		Data::ArrayIterator<NotNullPtr<Text::String>> it = imgList.Iterator();
+		while (it.HasNext())
 		{
-			url = imgList.GetItem(i);
+			url = it.Next();
 			if (this->cboImage)
 			{
-				this->cboImage->AddItem(Text::String::OrEmpty(url), 0);
+				this->cboImage->AddItem(url, 0);
 			}
-
 			url->Release();
-			i++;
 		}
-		if (j > 0 && this->cboImage)
+		if (imgList.GetCount() > 0 && this->cboImage)
 		{
 			this->cboImage->SetSelectedIndex(0);
 		}

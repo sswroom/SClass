@@ -1,4 +1,5 @@
 #include "Stdafx.h"
+#include "Data/ArrayListStringNN.h"
 #include "DB/DBReader.h"
 #include "DB/TableDef.h"
 #include "IO/Path.h"
@@ -24,15 +25,15 @@ Map::GeoPackage::GeoPackage(DB::DBConn *conn)
 	this->conn = conn;
 	this->useCnt = 1;
 	Text::String *tableName;
-	Data::ArrayListNN<Text::String> colList;
+	Data::ArrayListStringNN colList;
 	NotNullPtr<DB::DBReader> r;
 	Text::StringTool::SplitAsNewString(CSTR("table_name,data_type,min_x,min_y,max_x,max_y,srs_id"), ',', colList);
 	if (!r.Set(this->conn->QueryTableData(CSTR_NULL, CSTR("gpkg_contents"), &colList, 0, 0, CSTR_NULL, 0)))
 	{
-		LISTNN_FREE_STRING(&colList);
+		colList.FreeAll();
 		return;
 	}
-	LISTNN_FREE_STRING(&colList);
+	colList.FreeAll();
 	Text::StringBuilderUTF8 sb;
 	ContentInfo *cont;
 	while (r->ReadNext())
@@ -61,7 +62,7 @@ Map::GeoPackage::GeoPackage(DB::DBConn *conn)
 	Text::StringTool::SplitAsNewString(CSTR("table_name,z,m"), ',', colList);
 	if (r.Set(this->conn->QueryTableData(CSTR_NULL, CSTR("gpkg_geometry_columns"), &colList, 0, 0, CSTR_NULL, 0)))
 	{
-		LISTNN_FREE_STRING(&colList);
+		colList.FreeAll();
 		while (r->ReadNext())
 		{
 			sb.ClearStr();
@@ -77,7 +78,7 @@ Map::GeoPackage::GeoPackage(DB::DBConn *conn)
 	}
 	else
 	{
-		LISTNN_FREE_STRING(&colList);
+		colList.FreeAll();
 	}
 }
 
@@ -106,7 +107,7 @@ UOSInt Map::GeoPackage::QueryTableNames(Text::CString schemaName, NotNullPtr<Dat
 	return j;
 }
 
-DB::DBReader *Map::GeoPackage::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListNN<Text::String> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
+DB::DBReader *Map::GeoPackage::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListStringNN *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
 {
 	return this->conn->QueryTableData(schemaName, tableName, columnNames, ofst, maxCnt, ordering, condition);
 }

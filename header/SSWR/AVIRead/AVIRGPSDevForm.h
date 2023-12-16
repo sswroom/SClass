@@ -112,7 +112,7 @@ namespace SSWR
 
 			Bool devContUpd;
 			Sync::Mutex devContMut;
-			Data::ArrayListNN<Text::String> devConts;
+			Data::ArrayListStringNN devConts;
 			UOSInt devContACnt;
 			DevAlert *devContAlerts;
 			UOSInt devContGCnt;
@@ -120,12 +120,12 @@ namespace SSWR
 
 			Bool alertContUpd;
 			Sync::Mutex alertContMut;
-			Data::ArrayListNN<Text::String> alertConts;
+			Data::ArrayListStringNN alertConts;
 			Data::ArrayList<Int64> alertContDevs;
 
 			Bool userContUpd;
 			Sync::Mutex userContMut;
-			Data::ArrayListNN<Text::String> userConts;
+			Data::ArrayListStringNN userConts;
 			Data::ArrayList<Int64> userContDevs;
 
 			static UInt32 __stdcall ClientThread(void *userObj);

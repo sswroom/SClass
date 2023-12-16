@@ -17,7 +17,7 @@ Data::VariItem *DB::SortableDBReader::GetItem(UOSInt colIndex)
 	return obj->GetItem(col->GetColName()->v);
 }
 
-DB::SortableDBReader::SortableDBReader(DB::ReadingDB *db, Text::CString schemaName, Text::CString tableName, Data::ArrayListNN<Text::String> *colNames, UOSInt dataOfst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
+DB::SortableDBReader::SortableDBReader(DB::ReadingDB *db, Text::CString schemaName, Text::CString tableName, Data::ArrayListStringNN *colNames, UOSInt dataOfst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
 {
 	this->currIndex = INVALID_INDEX;
 	UOSInt i;
@@ -74,7 +74,7 @@ DB::SortableDBReader::SortableDBReader(DB::ReadingDB *db, Text::CString schemaNa
 		}
 		if (condition)
 		{
-			Data::ArrayListNN<Text::String> condColNames;
+			Data::ArrayListStringNN condColNames;
 			condition->GetFieldList(condColNames);
 			i = 0;
 			j = condColNames.GetCount();

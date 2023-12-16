@@ -71,7 +71,7 @@ UOSInt DB::CSVFile::QueryTableNames(Text::CString schemaName, NotNullPtr<Data::A
 	return 1;
 }
 
-DB::DBReader *DB::CSVFile::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListNN<Text::String> *columnName, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
+DB::DBReader *DB::CSVFile::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListStringNN *columnName, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
 {
 	NotNullPtr<IO::Stream> stm;
 	if (stm.Set(this->stm))

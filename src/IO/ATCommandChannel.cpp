@@ -152,7 +152,7 @@ NotNullPtr<IO::Stream> IO::ATCommandChannel::GetStream() const
 	return this->stm;
 }
 
-UOSInt IO::ATCommandChannel::SendATCommand(NotNullPtr<Data::ArrayListNN<Text::String>> retArr, const UTF8Char *atCmd, UOSInt atCmdLen, Data::Duration timeout)
+UOSInt IO::ATCommandChannel::SendATCommand(NotNullPtr<Data::ArrayListStringNN> retArr, const UTF8Char *atCmd, UOSInt atCmdLen, Data::Duration timeout)
 {
 	Data::DateTime dt;
 	Data::DateTime dt2;
@@ -200,7 +200,7 @@ UOSInt IO::ATCommandChannel::SendATCommand(NotNullPtr<Data::ArrayListNN<Text::St
 	return retSize;
 }
 
-UOSInt IO::ATCommandChannel::SendATCommands(NotNullPtr<Data::ArrayListNN<Text::String>> retArr, const UTF8Char *atCmd, UOSInt atCmdLen, const UTF8Char *atCmdSub, Data::Duration timeout)
+UOSInt IO::ATCommandChannel::SendATCommands(NotNullPtr<Data::ArrayListStringNN> retArr, const UTF8Char *atCmd, UOSInt atCmdLen, const UTF8Char *atCmdSub, Data::Duration timeout)
 {
 	Data::DateTime dt;
 	Data::DateTime dt2;
@@ -250,7 +250,7 @@ UOSInt IO::ATCommandChannel::SendATCommands(NotNullPtr<Data::ArrayListNN<Text::S
 	return retSize;
 }
 
-UOSInt IO::ATCommandChannel::SendDialCommand(NotNullPtr<Data::ArrayListNN<Text::String>> retArr, const UTF8Char *atCmd, UOSInt atCmdLen, Data::Duration timeout)
+UOSInt IO::ATCommandChannel::SendDialCommand(NotNullPtr<Data::ArrayListStringNN> retArr, const UTF8Char *atCmd, UOSInt atCmdLen, Data::Duration timeout)
 {
 	Data::DateTime dt;
 	Data::DateTime dt2;

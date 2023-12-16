@@ -1006,7 +1006,7 @@ UOSInt DB::ODBCConn::QueryTableNames(Text::CString schemaName, NotNullPtr<Data::
 	return names->GetCount() - initCnt;
 }
 
-DB::DBReader *DB::ODBCConn::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListNN<Text::String> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
+DB::DBReader *DB::ODBCConn::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListStringNN *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
@@ -1117,7 +1117,7 @@ void DB::ODBCConn::ForceTz(Int8 tzQhr)
 	this->tzQhr = tzQhr;
 }
 
-UOSInt DB::ODBCConn::GetDriverList(Data::ArrayListNN<Text::String> *driverList)
+UOSInt DB::ODBCConn::GetDriverList(NotNullPtr<Data::ArrayListStringNN> driverList)
 {
 #if defined(WIN32) || defined(_WIN64) || defined(__CYGWIN__) || defined(__MINGW32__)
 	WChar wbuff[512];
@@ -1137,7 +1137,7 @@ UOSInt DB::ODBCConn::GetDriverList(Data::ArrayListNN<Text::String> *driverList)
 	IO::ConfigFile *cfg = IO::IniFile::Parse(CSTR("/etc/odbcinst.ini"), 65001);
 	if (cfg)
 	{
-		Data::ArrayListNN<Text::String> cateList;
+		Data::ArrayListStringNN cateList;
 		cfg->GetCateList(cateList, false);
 		Data::ArrayIterator<NotNullPtr<Text::String>> it = cateList.Iterator();
 		while (it.HasNext())

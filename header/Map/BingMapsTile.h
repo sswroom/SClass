@@ -30,7 +30,7 @@ namespace Map
 	private:
 		Text::String *url;
 		Text::String *key;
-		Data::ArrayListNN<Text::String> subdomains;
+		Data::ArrayListStringNN subdomains;
 		UOSInt urlNext;
 		Sync::Mutex urlMut;
 		Text::String *brandLogoUri;

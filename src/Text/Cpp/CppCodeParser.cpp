@@ -35,7 +35,7 @@ void Text::Cpp::CppCodeParser::LogError(Text::Cpp::CppParseStatus *status, const
 	errMsgs->Add(Text::String::New(sb.ToString(), sb.GetLength()));
 }
 
-Bool Text::Cpp::CppCodeParser::ParseSharpIfParam(Text::CString condStr, Text::Cpp::CppParseStatus *status, Data::ArrayListStringNN *errMsgs, Data::ArrayListNN<Text::String> *codePhases, UOSInt cpIndex)
+Bool Text::Cpp::CppCodeParser::ParseSharpIfParam(Text::CString condStr, Text::Cpp::CppParseStatus *status, Data::ArrayListStringNN *errMsgs, Data::ArrayListStringNN *codePhases, UOSInt cpIndex)
 {
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
@@ -197,7 +197,7 @@ Bool Text::Cpp::CppCodeParser::ParseSharpIfParam(Text::CString condStr, Text::Cp
 	return succ;
 }
 
-Bool Text::Cpp::CppCodeParser::EvalSharpIfVal(Data::ArrayListNN<Text::String> *codePhases, Text::Cpp::CppParseStatus *status, Data::ArrayListStringNN *errMsgs, UOSInt cpIndex, Int32 *outVal, OSInt priority)
+Bool Text::Cpp::CppCodeParser::EvalSharpIfVal(Data::ArrayListStringNN *codePhases, Text::Cpp::CppParseStatus *status, Data::ArrayListStringNN *errMsgs, UOSInt cpIndex, Int32 *outVal, OSInt priority)
 {
 /*
 	Priority:
@@ -219,17 +219,10 @@ Bool Text::Cpp::CppCodeParser::EvalSharpIfVal(Data::ArrayListNN<Text::String> *c
 
 	Text::StringBuilderUTF8 debugSB;
 	UOSInt i;
-	UOSInt j;
 	NotNullPtr<Text::String> phase;
-	i = 0;
-	j = codePhases->GetCount();
-	while (i < j)
-	{
-		debugSB.Append(codePhases->GetItem(i));
-		debugSB.AppendC(UTF8STRC(" "));
-		i++;
-	}
-
+	NotNullPtr<Text::String> phase1;
+	NotNullPtr<Text::String> phase2;
+	debugSB.AppendJoin(codePhases->Iterator(), ' ');
 	Int32 val = 0;
 	if (!codePhases->RemoveAt(cpIndex).SetTo(phase))
 	{
@@ -239,9 +232,9 @@ Bool Text::Cpp::CppCodeParser::EvalSharpIfVal(Data::ArrayListNN<Text::String> *c
 	if (phase->Equals(UTF8STRC("defined")))
 	{
 		phase->Release();
-		if (cpIndex + 3 <= codePhases->GetCount())
+		if (cpIndex + 3 <= codePhases->GetCount() && codePhases->GetItem(cpIndex).SetTo(phase1) && codePhases->GetItem(cpIndex + 2).SetTo(phase2))
 		{
-			if (codePhases->GetItem(cpIndex)->Equals(UTF8STRC("(")) && codePhases->GetItem(cpIndex + 2)->Equals(UTF8STRC(")")))
+			if (phase1->Equals(UTF8STRC("(")) && phase2->Equals(UTF8STRC(")")))
 			{
 				OPTSTR_DEL(codePhases->RemoveAt(cpIndex + 2));
 				OPTSTR_DEL(codePhases->RemoveAt(cpIndex));
@@ -299,9 +292,9 @@ Bool Text::Cpp::CppCodeParser::EvalSharpIfVal(Data::ArrayListNN<Text::String> *c
 	else if (phase->Equals(UTF8STRC("__has_feature")))
 	{
 		phase->Release();
-		if (cpIndex + 3 <= codePhases->GetCount())
+		if (cpIndex + 3 <= codePhases->GetCount() && codePhases->GetItem(cpIndex).SetTo(phase1) && codePhases->GetItem(cpIndex + 2).SetTo(phase2))
 		{
-			if (codePhases->GetItem(cpIndex)->Equals(UTF8STRC("(")) && codePhases->GetItem(cpIndex + 2)->Equals(UTF8STRC(")")))
+			if (phase1->Equals(UTF8STRC("(")) && phase2->Equals(UTF8STRC(")")))
 			{
 				OPTSTR_DEL(codePhases->RemoveAt(cpIndex + 2));
 				OPTSTR_DEL(codePhases->RemoveAt(cpIndex));
@@ -375,7 +368,7 @@ Bool Text::Cpp::CppCodeParser::EvalSharpIfVal(Data::ArrayListNN<Text::String> *c
 	}
 	else if (status->IsDefined(phase->ToCString()))
 	{
-		if (codePhases->GetCount() <= cpIndex || !codePhases->GetItem(cpIndex)->Equals(UTF8STRC("(")))
+		if (codePhases->GetCount() <= cpIndex || !codePhases->GetItem(cpIndex).SetTo(phase1) || !phase1->Equals(UTF8STRC("(")))
 		{
 			Text::StringBuilderUTF8 sb;
 			status->GetDefineVal(phase->ToCString(), CSTR_NULL, sb);
@@ -385,33 +378,34 @@ Bool Text::Cpp::CppCodeParser::EvalSharpIfVal(Data::ArrayListNN<Text::String> *c
 		}
 		else
 		{
-			Text::String *phase2;
 			Int32 lev;
 			Text::StringBuilderUTF8 params;
 			OPTSTR_DEL(codePhases->RemoveAt(cpIndex));
 			lev = 1;
 			while (cpIndex < codePhases->GetCount())
 			{
-				phase2 = codePhases->GetItem(cpIndex);
-				if (phase2->Equals(UTF8STRC(")")))
+				if (codePhases->GetItem(cpIndex).SetTo(phase2))
 				{
-					OPTSTR_DEL(codePhases->RemoveAt(cpIndex));
-					if (--lev <= 0)
+					if (phase2->Equals(UTF8STRC(")")))
 					{
-						break;
+						OPTSTR_DEL(codePhases->RemoveAt(cpIndex));
+						if (--lev <= 0)
+						{
+							break;
+						}
+						params.AppendC(UTF8STRC(")"));
 					}
-					params.AppendC(UTF8STRC(")"));
-				}
-				else if (phase2->Equals(UTF8STRC("(")))
-				{
-					lev++;
-					params.AppendC(UTF8STRC("("));
-					OPTSTR_DEL(codePhases->RemoveAt(cpIndex));
-				}
-				else
-				{
-					params.Append(phase2);
-					OPTSTR_DEL(codePhases->RemoveAt(cpIndex));
+					else if (phase2->Equals(UTF8STRC("(")))
+					{
+						lev++;
+						params.AppendC(UTF8STRC("("));
+						OPTSTR_DEL(codePhases->RemoveAt(cpIndex));
+					}
+					else
+					{
+						params.Append(phase2);
+						OPTSTR_DEL(codePhases->RemoveAt(cpIndex));
+					}
 				}
 			}
 			if (lev != 0)
@@ -444,7 +438,7 @@ Bool Text::Cpp::CppCodeParser::EvalSharpIfVal(Data::ArrayListNN<Text::String> *c
 
 	while (codePhases->GetCount() > cpIndex)
 	{
-		if (phase.Set(codePhases->GetItem(cpIndex)))
+		if (codePhases->GetItem(cpIndex).SetTo(phase))
 		{
 			if (phase->Equals(UTF8STRC(")")))
 			{
@@ -662,7 +656,7 @@ Bool Text::Cpp::CppCodeParser::EvalSharpIfVal(Data::ArrayListNN<Text::String> *c
 					i = 0;
 					while (cpIndex < codePhases->GetCount())
 					{
-						if (phase.Set(codePhases->GetItem(i)))
+						if (codePhases->GetItem(i).SetTo(phase))
 						{
 							if (phase->Equals(UTF8STRC("(")))
 							{
@@ -710,7 +704,7 @@ Bool Text::Cpp::CppCodeParser::EvalSharpIfVal(Data::ArrayListNN<Text::String> *c
 					i = 0;
 					while (cpIndex < codePhases->GetCount())
 					{
-						if (phase.Set(codePhases->GetItem(i)))
+						if (codePhases->GetItem(i).SetTo(phase))
 						{
 							if (phase->Equals(UTF8STRC("(")))
 							{
@@ -764,10 +758,8 @@ Bool Text::Cpp::CppCodeParser::EvalSharpIfVal(Data::ArrayListNN<Text::String> *c
 Bool Text::Cpp::CppCodeParser::EvalSharpIf(Text::CString cond, Text::Cpp::CppParseStatus *status, Data::ArrayListStringNN *errMsgs, Bool *result)
 {
 	Bool succ = true;
-	UOSInt i;
 	UOSInt j;
-	Text::String *phase;
-	Data::ArrayListNN<Text::String> codePhase;
+	Data::ArrayListStringNN codePhase;
 	if (!ParseSharpIfParam(cond, status, errMsgs, &codePhase, 0))
 	{
 		succ = false;
@@ -775,14 +767,7 @@ Bool Text::Cpp::CppCodeParser::EvalSharpIf(Text::CString cond, Text::Cpp::CppPar
 
 	if (!succ)
 	{
-		i = 0;
-		j = codePhase.GetCount();
-		while (i < j)
-		{
-			phase = codePhase.GetItem(i);
-			phase->Release();
-			i++;
-		}
+		codePhase.FreeAll();
 	}
 	else
 	{
@@ -798,27 +783,14 @@ Bool Text::Cpp::CppCodeParser::EvalSharpIf(Text::CString cond, Text::Cpp::CppPar
 			{
 				*result = (val != 0);
 			}
-			i = 0;
-			j = codePhase.GetCount();
-			if (succ && j > 0)
+			if (succ && codePhase.GetCount() > 0)
 			{
 				Text::StringBuilderUTF8 sb;
 				sb.Append(cond);
-				sb.AppendC(UTF8STRC(": unknown phases found:"));
-				while (i < j)
-				{
-					sb.AppendC(UTF8STRC(" "));
-					sb.Append(codePhase.GetItem(i));
-					i++;
-				}
+				sb.AppendC(UTF8STRC(": unknown phases found: "));
+				sb.AppendJoin(codePhase.Iterator(), ' ');
 			}
-
-			while (i < j)
-			{
-				phase = codePhase.GetItem(i);
-				phase->Release();
-				i++;
-			}
+			codePhase.FreeAll();
 		}
 		else
 		{

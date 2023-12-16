@@ -67,7 +67,7 @@ Bool Exporter::MDBExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text:
 	NotNullPtr<DB::ReadingDB> srcDB;
 	NotNullPtr<DB::DBReader> r;
 	NotNullPtr<DB::ColDef> colDef;
-	Data::ArrayListNN<Text::String> tables;
+	Data::ArrayListStringNN tables;
 	UOSInt i;
 	UOSInt k;
 	UOSInt l;
@@ -126,7 +126,7 @@ Bool Exporter::MDBExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text:
 		}
 		i++;
 	}
-	LISTNN_FREE_STRING(&tables);
+	tables.FreeAll();
 	mdb.Delete();
 	return succ;
 #endif

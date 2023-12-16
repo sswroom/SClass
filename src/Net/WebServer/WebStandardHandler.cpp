@@ -121,12 +121,10 @@ Net::WebServer::WebStandardHandler::WebStandardHandler()
 
 Net::WebServer::WebStandardHandler::~WebStandardHandler()
 {
-	Net::WebServer::WebStandardHandler *hdlr;
 	UOSInt i = this->relHdlrs.GetCount();
 	while (i-- > 0)
 	{
-		hdlr = this->relHdlrs.GetItem(i);
-		DEL_CLASS(hdlr);
+		this->relHdlrs.GetItem(i).Delete();
 	}
 	SDEL_STRING(this->allowOrigin);
 }

@@ -1,7 +1,7 @@
 #ifndef _SM_NET_DNSPROXY
 #define _SM_NET_DNSPROXY
 #include "Data/ArrayListICaseString.h"
-#include "Data/ArrayListNN.h"
+#include "Data/ArrayListStringNN.h"
 #include "Data/ICaseStringMap.h"
 #include "Net/DNSClient.h"
 #include "Net/DNSServer.h"
@@ -84,7 +84,7 @@ namespace Net
 		Data::ArrayList<void *> hdlrObjs;
 
 		Sync::Mutex blackListMut;
-		Data::ArrayListNN<Text::String> blackList;
+		Data::ArrayListStringNN blackList;
 
 //		Sync::Mutex *whiteListMut;
 //		Data::ArrayList<const UTF8Char *> *whiteList;
@@ -121,7 +121,7 @@ namespace Net
 		void SwitchDNS();
 		Bool IsDisableV6();
 		void SetDisableV6(Bool disableV6);
-		UOSInt GetBlackList(Data::ArrayList<Text::String*> *blackList);
+		UOSInt GetBlackList(NotNullPtr<Data::ArrayListNN<Text::String>> blackList);
 		Bool AddBlackList(NotNullPtr<Text::String> blackList);
 		Bool AddBlackList(Text::CStringNN blackList);
 		void HandleDNSRequest(DNSProxyRequest hdlr, void *userObj);

@@ -924,15 +924,12 @@ Bool __stdcall Net::EthernetWebHandler::IPLogReq(EthernetWebHandler *me, NotNull
 			sptr = Net::SocketUtil::GetIPv4Name(sbuff, ipLog->ip);
 			sb.AppendP(sbuff, sptr);
 			Sync::MutexUsage mutUsage(ipLog->mut);
-			i = 0;
-			j = ipLog->logList.GetCount();
-			while (i < j)
+			Data::ArrayIterator<NotNullPtr<Text::String>> it = ipLog->logList.Iterator();
+			while (it.HasNext())
 			{
 				sb.AppendC(UTF8STRC("<br/>"));
-				sb.Append(ipLog->logList.GetItem(i));
-				i++;
+				sb.Append(it.Next());
 			}
-			mutUsage.EndUse();
 		}
 		sb.AppendC(UTF8STRC("</td></tr>\r\n"));
 		mutUsage.EndUse();

@@ -85,7 +85,7 @@ UOSInt DB::MongoDB::QueryTableNames(Text::CString schemaName, NotNullPtr<Data::A
 	return names->GetCount() - initCnt;
 }
 
-DB::DBReader *DB::MongoDB::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListNN<Text::String> *columNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
+DB::DBReader *DB::MongoDB::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListStringNN *columNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
 {
 	if (this->database && this->client)
 	{
@@ -137,7 +137,7 @@ void DB::MongoDB::Reconnect()
 
 }
 
-UOSInt DB::MongoDB::GetDatabaseNames(NotNullPtr<Data::ArrayListNN<Text::String>> names)
+UOSInt DB::MongoDB::GetDatabaseNames(NotNullPtr<Data::ArrayListStringNN> names)
 {
 	bson_error_t error;
 	SDEL_STRING(this->errorMsg);
@@ -162,7 +162,7 @@ UOSInt DB::MongoDB::GetDatabaseNames(NotNullPtr<Data::ArrayListNN<Text::String>>
 	}
 }
 
-void DB::MongoDB::FreeDatabaseNames(NotNullPtr<Data::ArrayListNN<Text::String>> names)
+void DB::MongoDB::FreeDatabaseNames(NotNullPtr<Data::ArrayListStringNN> names)
 {
 	UOSInt i = names->GetCount();
 	while (i-- > 0)

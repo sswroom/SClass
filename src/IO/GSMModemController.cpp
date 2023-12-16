@@ -108,7 +108,7 @@ Bool IO::GSMModemController::GSMSetTECharset(const UTF8Char *cs)
 	return this->SendBoolCommandC(sbuff, (UOSInt)(sptr - sbuff));
 }
 
-Bool IO::GSMModemController::GSMGetTECharsetsSupported(Data::ArrayListNN<Text::String> *csList)
+Bool IO::GSMModemController::GSMGetTECharsetsSupported(Data::ArrayListStringNN *csList)
 {
 	UTF8Char sbuff[128];
 	UTF8Char *sptr2;
@@ -222,10 +222,9 @@ Bool IO::GSMModemController::GSMGetAllowedOperators(Data::ArrayList<Operator*> *
 	Bool quoteStarted;
 	Bool operExist;
 	Bool operError = false;
-	Text::String *val;
-	if (j > 1)
+	NotNullPtr<Text::String> val;
+	if (j > 1 && this->cmdResults.GetItem(j - 1).SetTo(val))
 	{
-		val = this->cmdResults.GetItem(j - 1);
 		if (val->Equals(UTF8STRC("OK")))
 		{
 			Int32 status;
@@ -235,8 +234,7 @@ Bool IO::GSMModemController::GSMGetAllowedOperators(Data::ArrayList<Operator*> *
 			i = 1;
 			while (i < j)
 			{
-				val = this->cmdResults.GetItem(i);
-				if (val->StartsWith(UTF8STRC("+COPS: ")))
+				if (this->cmdResults.GetItem(i).SetTo(val) && val->StartsWith(UTF8STRC("+COPS: ")))
 				{
 					sptr = &val->v[7];
 					operStarted = false;
@@ -456,23 +454,25 @@ IO::GSMModemController::SIMStatus IO::GSMModemController::GSMGetSIMStatus()
 	Sync::MutexUsage mutUsage(this->cmdMut);
 	this->channel->SendATCommand(this->cmdResults, UTF8STRC("AT+CPIN?"), 3000);
 	UOSInt i = this->cmdResults.GetCount();
-	Text::String *val;
+	NotNullPtr<Text::String> val;
 	while (i-- > 0)
 	{
-		val = this->cmdResults.GetItem(i);
-		if (val->Equals(UTF8STRC("+CPIN: READY")))
+		if (this->cmdResults.GetItem(i).SetTo(val))
 		{
-			sims = IO::GSMModemController::SIMS_READY;
-			break;
-		}
-		else if (val->Equals(UTF8STRC("+CME ERROR: SIM not inserted")))
-		{
-			sims = IO::GSMModemController::SIMS_ABSENT;
-			break;
-		}
-		else if (val->StartsWith(UTF8STRC("+CME ERROR: ")))
-		{
-			break;
+			if (val->Equals(UTF8STRC("+CPIN: READY")))
+			{
+				sims = IO::GSMModemController::SIMS_READY;
+				break;
+			}
+			else if (val->Equals(UTF8STRC("+CME ERROR: SIM not inserted")))
+			{
+				sims = IO::GSMModemController::SIMS_ABSENT;
+				break;
+			}
+			else if (val->StartsWith(UTF8STRC("+CME ERROR: ")))
+			{
+				break;
+			}
 		}
 	}
 	ClearCmdResult();
@@ -747,21 +747,18 @@ Bool IO::GSMModemController::GPRSGetPDPContext(Data::ArrayList<PDPContext*> *ctx
 	this->channel->SendATCommand(this->cmdResults, UTF8STRC("AT+CGDCONT?"), 3000);
 	UOSInt i;
 	UOSInt j = this->cmdResults.GetCount();
-	Text::String *val;
+	NotNullPtr<Text::String> val;
 	PDPContext *ctx;
 
 	if (j > 1)
 	{
-		val = this->cmdResults.GetItem(j - 1);
-		if (val->Equals(UTF8STRC("OK")))
+		if (this->cmdResults.GetItem(j - 1).SetTo(val) && val->Equals(UTF8STRC("OK")))
 		{
 			j -= 1;
 			i = 0;
 			while (i < j)
 			{
-				val = this->cmdResults.GetItem(i);
-
-				if (val->StartsWith(UTF8STRC("+CGDCONT: ")))
+				if (this->cmdResults.GetItem(i).SetTo(val) && val->StartsWith(UTF8STRC("+CGDCONT: ")))
 				{
 					sptr = Text::StrConcatC(sbuff, &val->v[10], val->leng - 10);
 					if (Text::StrSplitP(sarr, 4, Text::PString(sbuff, (UOSInt)(sptr - sbuff)), ',') >= 3)
@@ -858,21 +855,18 @@ Bool IO::GSMModemController::GPRSGetPDPActive(Data::ArrayList<ActiveState> *actL
 	this->channel->SendATCommand(this->cmdResults, UTF8STRC("AT+CGACT?"), 3000);
 	UOSInt i;
 	UOSInt j = this->cmdResults.GetCount();
-	Text::String *val;
+	NotNullPtr<Text::String> val;
 	ActiveState act;
 
 	if (j > 1)
 	{
-		val = this->cmdResults.GetItem(j - 1);
-		if (val->Equals(UTF8STRC("OK")))
+		if (this->cmdResults.GetItem(j - 1).SetTo(val) && val->Equals(UTF8STRC("OK")))
 		{
 			j -= 1;
 			i = 0;
 			while (i < j)
 			{
-				val = this->cmdResults.GetItem(i);
-
-				if (val->StartsWith(UTF8STRC("+CGACT: ")))
+				if (this->cmdResults.GetItem(i).SetTo(val) && val->StartsWith(UTF8STRC("+CGACT: ")))
 				{
 					sptr = Text::StrConcatC(sbuff, &val->v[8], val->leng - 8);
 					if (Text::StrSplitP(sarr, 3, Text::PString(sbuff, (UOSInt)(sptr - sbuff)), ',') >= 2)
@@ -916,17 +910,16 @@ Bool IO::GSMModemController::SMSListMessages(Data::ArrayList<IO::GSMModemControl
 	UOSInt i;
 	UOSInt j = this->cmdResults.GetCount();
 	Int32 lastIndex = 0;
-	Text::String *val;
-	Text::String *val2;
+	NotNullPtr<Text::String> val;
+	NotNullPtr<Text::String> val2;
 	IO::GSMModemController::SMSMessage *msg;
 
 	if (j > 1)
 	{
-		val = this->cmdResults.GetItem(j - 1);
-		if (val->Equals(UTF8STRC("OK")))
+		if (this->cmdResults.GetItem(j - 1).SetTo(val) && val->Equals(UTF8STRC("OK")))
 		{
 			j -= 1;
-			if (this->cmdResults.GetItem(0)->StartsWith(UTF8STRC("+CMGL: ")))
+			if (this->cmdResults.GetItem(0).SetTo(val2) && val2->StartsWith(UTF8STRC("+CMGL: ")))
 			{
 				i = 0;
 			}
@@ -936,37 +929,37 @@ Bool IO::GSMModemController::SMSListMessages(Data::ArrayList<IO::GSMModemControl
 			}
 			while (i < j)
 			{
-				val = this->cmdResults.GetItem(i);
-				val2 = this->cmdResults.GetItem(i + 1);
-
-				if (val->StartsWith(UTF8STRC("+CMGL: ")))
+				if (this->cmdResults.GetItem(i).SetTo(val) && this->cmdResults.GetItem(i + 1).SetTo(val2))
 				{
-					Text::StrConcatC(sbuff, &val->v[7], val->leng - 7);
-					if (Text::StrSplit(sbuffs, 5, sbuff, ',') == 4)
+					if (val->StartsWith(UTF8STRC("+CMGL: ")))
 					{
-						strLen = val2->leng;
-						msg = MemAlloc(IO::GSMModemController::SMSMessage, 1);
-						lastIndex = msg->index = Text::StrToInt32(sbuffs[0]);
-						msg->status = (SMSStatus)Text::StrToInt32(sbuffs[1]);
-						msg->pduLeng = (strLen >> 1);
-						msg->pduMessage = MemAlloc(UInt8, strLen >> 1);
-						Text::StrHex2Bytes(val2->v, msg->pduMessage);
-						msgList->Add(msg);
+						Text::StrConcatC(sbuff, &val->v[7], val->leng - 7);
+						if (Text::StrSplit(sbuffs, 5, sbuff, ',') == 4)
+						{
+							strLen = val2->leng;
+							msg = MemAlloc(IO::GSMModemController::SMSMessage, 1);
+							lastIndex = msg->index = Text::StrToInt32(sbuffs[0]);
+							msg->status = (SMSStatus)Text::StrToInt32(sbuffs[1]);
+							msg->pduLeng = (strLen >> 1);
+							msg->pduMessage = MemAlloc(UInt8, strLen >> 1);
+							Text::StrHex2Bytes(val2->v, msg->pduMessage);
+							msgList->Add(msg);
+						}
 					}
-				}
-				else
-				{
-					if (Text::StrIndexOfChar(val->v, ',') == INVALID_INDEX)
+					else
 					{
-						strLen = val->leng;
-						lastIndex++;
-						msg = MemAlloc(IO::GSMModemController::SMSMessage, 1);
-						msg->index = lastIndex + 1;
-						msg->status = (SMSStatus)0;
-						msg->pduLeng = (strLen >> 1);
-						msg->pduMessage = MemAlloc(UInt8, strLen >> 1);
-						Text::StrHex2Bytes(val->v, msg->pduMessage);
-						msgList->Add(msg);
+						if (Text::StrIndexOfChar(val->v, ',') == INVALID_INDEX)
+						{
+							strLen = val->leng;
+							lastIndex++;
+							msg = MemAlloc(IO::GSMModemController::SMSMessage, 1);
+							msg->index = lastIndex + 1;
+							msg->status = (SMSStatus)0;
+							msg->pduLeng = (strLen >> 1);
+							msg->pduMessage = MemAlloc(UInt8, strLen >> 1);
+							Text::StrHex2Bytes(val->v, msg->pduMessage);
+							msgList->Add(msg);
+						}
 					}
 				}
 				///////////////////////////////////////
@@ -1170,11 +1163,10 @@ UTF8Char *IO::GSMModemController::SMSGetSMSC(UTF8Char *buff)
 	Sync::MutexUsage mutUsage(this->cmdMut);
 	this->channel->SendATCommand(this->cmdResults, UTF8STRC("AT+CSCA?"), 3000);
 	UOSInt i = this->cmdResults.GetCount();
-	Text::String *val;
+	NotNullPtr<Text::String> val;
 	while (i-- > 0)
 	{
-		val = this->cmdResults.GetItem(i);
-		if (val->StartsWith(UTF8STRC("+CSCA: ")))
+		if (this->cmdResults.GetItem(i).SetTo(val) && val->StartsWith(UTF8STRC("+CSCA: ")))
 		{
 			Text::StrConcatC(sbuff, &val->v[7], val->leng - 7);
 			Text::StrCSVSplit(sarr, 3, sbuff);
@@ -1351,19 +1343,17 @@ Bool IO::GSMModemController::PBReadEntries(Data::ArrayList<PBEntry*> *phoneList,
 	this->channel->SendATCommand(this->cmdResults, sbuff, (UOSInt)(sptr - sbuff), 10000);
 	UOSInt i;
 	UOSInt j = this->cmdResults.GetCount();
-	Text::String *val;
+	NotNullPtr<Text::String> val;
 	IO::GSMModemController::PBEntry *ent;
 	if (j > 1)
 	{
-		val = this->cmdResults.GetItem(j - 1);
-		if (val->Equals(UTF8STRC("OK")))
+		if (this->cmdResults.GetItem(j - 1).SetTo(val) && val->Equals(UTF8STRC("OK")))
 		{
 			j -= 1;
 			i = 1;
 			while (i < j)
 			{
-				val = this->cmdResults.GetItem(i);
-				if (val->Equals(UTF8STRC("+CPBR: ")))
+				if (this->cmdResults.GetItem(i).SetTo(val) && val->Equals(UTF8STRC("+CPBR: ")))
 				{
 					sptr = Text::StrConcatC(sbuff, &val->v[7], val->leng - 7);
 					if (Text::StrCSVSplitP(sbuffs, 5, sbuff) >= 4)

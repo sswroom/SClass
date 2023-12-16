@@ -1,6 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Data/ArrayListDbl.h"
+#include "Data/ArrayListStringNN.h"
 #include "Data/ByteBuffer.h"
 #include "Data/Chart.h"
 #include "Math/FFT.h"
@@ -23,7 +24,7 @@ Media::DrawImage *Media::FrequencyGraph::CreateGraph(NotNullPtr<Media::DrawEngin
 	NotNullPtr<Media::DrawBrush> b;
 	NotNullPtr<Media::DrawFont> f;
 	Data::ArrayListDbl chartPos;
-	Data::ArrayListNN<Text::String> chartLabels;
+	Data::ArrayListStringNN chartLabels;
 	UInt32 ihFontSize = (UInt32)Double2Int32(fontSizePx * 0.5);
 	UInt32 yAxis;
 	UInt32 xAxis;

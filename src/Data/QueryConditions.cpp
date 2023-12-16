@@ -36,7 +36,7 @@ Bool Data::QueryConditions::FieldCondition::IsValid(NotNullPtr<Data::ObjectGette
 	return ret;
 }
 
-void Data::QueryConditions::FieldCondition::GetFieldList(NotNullPtr<Data::ArrayListNN<Text::String>> fieldList)
+void Data::QueryConditions::FieldCondition::GetFieldList(NotNullPtr<Data::ArrayListStringNN> fieldList)
 {
 	fieldList->Add(this->fieldName);
 }
@@ -1088,7 +1088,7 @@ Bool Data::QueryConditions::InnerCondition::IsValid(NotNullPtr<Data::ObjectGette
 	return this->innerCond->IsValid(getter);
 }
 
-void Data::QueryConditions::InnerCondition::GetFieldList(NotNullPtr<Data::ArrayListNN<Text::String>> fieldList)
+void Data::QueryConditions::InnerCondition::GetFieldList(NotNullPtr<Data::ArrayListStringNN> fieldList)
 {
 	this->innerCond->GetFieldList(fieldList);	
 }
@@ -1127,7 +1127,7 @@ Bool Data::QueryConditions::OrCondition::IsValid(NotNullPtr<Data::ObjectGetter> 
 	return true;
 }
 
-void Data::QueryConditions::OrCondition::GetFieldList(NotNullPtr<Data::ArrayListNN<Text::String>> fieldList)
+void Data::QueryConditions::OrCondition::GetFieldList(NotNullPtr<Data::ArrayListStringNN> fieldList)
 {
 }
 
@@ -1258,7 +1258,7 @@ NotNullPtr<Data::ArrayListNN<Data::QueryConditions::Condition>> Data::QueryCondi
 	return this->conditionList;
 }
 
-void Data::QueryConditions::GetFieldList(NotNullPtr<Data::ArrayListNN<Text::String>> fieldList)
+void Data::QueryConditions::GetFieldList(NotNullPtr<Data::ArrayListStringNN> fieldList)
 {
 	Data::ArrayIterator<NotNullPtr<Condition>> it = this->conditionList.Iterator();
 	while (it.HasNext())

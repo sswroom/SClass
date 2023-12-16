@@ -1,6 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Data/ArrayListString.h"
+#include "Data/ArrayListStringNN.h"
 #include "Data/FastStringMap.h"
 #include "IO/StmData/MemoryDataRef.h"
 #include "Text/MailBase64Stream.h"
@@ -17,8 +18,8 @@ void Text::MIMEObj::MultipartMIMEObj::ParsePart(UInt8 *buff, UOSInt buffSize)
 	UOSInt i;
 	UOSInt j;
 	UOSInt k;
-	Data::ArrayListNN<Text::String> hdrNames;
-	Data::ArrayListNN<Text::String> hdrValues;
+	Data::ArrayListStringNN hdrNames;
+	Data::ArrayListStringNN hdrValues;
 	Data::FastStringMap<Text::String*> hdrMap;
 	Text::StringBuilderUTF8 sb;
 	Text::PString sarr[2];

@@ -19,7 +19,7 @@ Optional<DB::DBConn> DB::MSSQLConn::OpenConnTCP(Text::CStringNN serverHost, UInt
 	{
 		DB::ODBCConn *conn;
 		NotNullPtr<Text::String> driverName;
-		if (!driverName.Set(GetDriverNameNew()))
+		if (!GetDriverNameNew().SetTo(driverName))
 		{
 			return 0;
 		}
@@ -122,35 +122,34 @@ Optional<DB::DBTool> DB::MSSQLConn::CreateDBToolTCP(Text::CStringNN serverHost, 
 	}
 }
 
-Text::String *DB::MSSQLConn::GetDriverNameNew()
+Optional<Text::String> DB::MSSQLConn::GetDriverNameNew()
 {
 	if (IsNative())
 	{
-		return Text::String::New(UTF8STRC("FreeTDS (Native)")).Ptr();
+		return Text::String::New(UTF8STRC("FreeTDS (Native)"));
 	}
-	Text::String *driverName = 0;
-	Text::String *driver;
-	Data::ArrayListNN<Text::String> driverList;
-	UOSInt i = 0;
-	UOSInt j = DB::ODBCConn::GetDriverList(&driverList);
-	while (i < j)
+	Optional<Text::String> driverName = 0;
+	NotNullPtr<Text::String> driver;
+	Data::ArrayListStringNN driverList;
+	DB::ODBCConn::GetDriverList(driverList);
+	Data::ArrayIterator<NotNullPtr<Text::String>> it = driverList.Iterator();
+	while (it.HasNext())
 	{
-		driver = driverList.GetItem(i);
+		driver = it.Next();
 		if (driver->StartsWith(UTF8STRC("ODBC Driver ")) && driver->EndsWith(UTF8STRC(" for SQL Server"))) //ODBC Driver 17 for SQL Server
 		{
-			SDEL_STRING(driverName);
+			OPTSTR_DEL(driverName);
 			driverName = driver;
 		}
 		else if (driver->Equals(UTF8STRC("FreeTDS")))
 		{
-			SDEL_STRING(driverName);
+			OPTSTR_DEL(driverName);
 			driverName = driver;
 		}
 		else
 		{
 			driver->Release();
 		}
-		i++;
 	}
 	return driverName;
 }

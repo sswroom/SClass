@@ -1563,7 +1563,7 @@ IO::ParserType IO::SMake::GetParserType() const
 
 void IO::SMake::ClearLinks()
 {
-	LISTNN_FREE_STRING(&this->linkCmds);
+	this->linkCmds.FreeAll();
 	this->testProgs.Clear();
 }
 

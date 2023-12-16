@@ -152,8 +152,8 @@ SSWR::AVIRead::AVIRMSSQLConnForm::AVIRMSSQLConnForm(UI::GUIClientControl *parent
 	this->SetDefaultButton(this->btnOK);
 	this->SetCancelButton(this->btnCancel);
 
-	Text::String *driverName = DB::MSSQLConn::GetDriverNameNew();
-	if (driverName)
+	NotNullPtr<Text::String> driverName;
+	if (DB::MSSQLConn::GetDriverNameNew().SetTo(driverName))
 	{
 		this->txtDriver->SetText(driverName->ToCString());
 		driverName->Release();

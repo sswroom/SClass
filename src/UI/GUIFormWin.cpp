@@ -703,7 +703,7 @@ void UI::GUIForm::RemoveTimer(NotNullPtr<UI::GUITimer> tmr)
 	UOSInt i = this->timers.GetCount();
 	while (i-- > 0)
 	{
-		if (tmr.Ptr() == this->timers.GetItem(i))
+		if (tmr.Ptr() == this->timers.GetItem(i).OrNull())
 		{
 			this->timers.RemoveAt(i);
 			tmr.Delete();
@@ -944,11 +944,11 @@ void UI::GUIForm::EventClosed()
 
 void UI::GUIForm::EventTimer(UOSInt tmrId)
 {
-	UI::GUITimer *tmr;
-	UOSInt i = this->timers.GetCount();
-	while (i-- > 0)
+	NotNullPtr<UI::GUITimer> tmr;
+	Data::ArrayIterator<NotNullPtr<UI::GUITimer>> it = this->timers.Iterator();
+	while (it.HasNext())
 	{
-		tmr = this->timers.GetItem(i);
+		tmr = it.Next();
 		if (tmr->GetId() == tmrId)
 		{
 			tmr->OnTick();

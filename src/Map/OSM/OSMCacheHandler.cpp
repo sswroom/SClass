@@ -150,7 +150,7 @@ Map::OSM::OSMCacheHandler::OSMCacheHandler(Text::CString url, Text::CString cach
 
 Map::OSM::OSMCacheHandler::~OSMCacheHandler()
 {
-	LISTNN_FREE_STRING(&this->urls);
+	this->urls.FreeAll();
 	this->cacheDir->Release();
 }
 

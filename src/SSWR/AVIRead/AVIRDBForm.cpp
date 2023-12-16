@@ -636,7 +636,7 @@ SSWR::AVIRead::AVIRDBForm::AVIRDBForm(UI::GUIClientControl *parent, NotNullPtr<U
 	mnu->AddItem(CSTR("Check Table Changes"), MNU_TABLE_CHECK_CHANGE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu = this->mnuMain->AddSubMenu(CSTR("&Chart"));
 	mnu->AddItem(CSTR("&Line Chart"), MNU_CHART_LINE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
-	if (this->dbt && this->dbt->GetDatabaseNames(&this->dbNames) > 0)
+	if (this->dbt && this->dbt->GetDatabaseNames(this->dbNames) > 0)
 	{
 		mnu = this->mnuMain->AddSubMenu(CSTR("&Database"));
 		Data::ArrayIterator<NotNullPtr<Text::String>> it = this->dbNames.Iterator();
@@ -657,7 +657,7 @@ SSWR::AVIRead::AVIRDBForm::~AVIRDBForm()
 {
 	if (this->dbt)
 	{
-		this->dbt->ReleaseDatabaseNames(&this->dbNames);
+		this->dbt->ReleaseDatabaseNames(this->dbNames);
 		DEL_CLASS(this->dbt);
 	}
 	else if (this->needRelease)
@@ -676,7 +676,7 @@ SSWR::AVIRead::AVIRDBForm::~AVIRDBForm()
 
 void SSWR::AVIRead::AVIRDBForm::UpdateSchemas()
 {
-	Data::ArrayListNN<Text::String> schemaNames;
+	Data::ArrayListStringNN schemaNames;
 	UOSInt i;
 	UOSInt j;
 
@@ -701,7 +701,7 @@ void SSWR::AVIRead::AVIRDBForm::UpdateSchemas()
 		i++;
 	}
 
-	LISTNN_FREE_STRING(&schemaNames);
+	schemaNames.FreeAll();
 	this->lbSchema->SetSelectedIndex(0);
 }
 
@@ -709,7 +709,7 @@ void SSWR::AVIRead::AVIRDBForm::UpdateTables()
 {
 	Text::StringBuilderUTF8 sb;
 	Optional<Text::String> schemaName = this->lbSchema->GetSelectedItemTextNew();
-	Data::ArrayListNN<Text::String> tableNames;
+	Data::ArrayListStringNN tableNames;
 	UOSInt i;
 	UOSInt j;
 
@@ -731,7 +731,7 @@ void SSWR::AVIRead::AVIRDBForm::UpdateTables()
 		i++;
 	}
 
-	LISTNN_FREE_STRING(&tableNames);
+	tableNames.FreeAll();
 }
 
 void SSWR::AVIRead::AVIRDBForm::EventMenuClicked(UInt16 cmdId)

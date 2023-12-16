@@ -21,8 +21,8 @@ namespace Net
 			Text::String *typeVal;
 			UInt8 oid[32];
 			UOSInt oidLen;
-			Data::ArrayListNN<Text::String> valName;
-			Data::ArrayListNN<Text::String> valCont;
+			Data::ArrayListStringNN valName;
+			Data::ArrayListStringNN valCont;
 			ModuleInfo *impModule;
 			Bool parsed;
 		};

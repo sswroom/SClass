@@ -210,8 +210,8 @@ SSWR::AVIRead::AVIRCameraControlForm::AVIRCameraControlForm(UI::GUIClientControl
 	this->lvFiles->HandleDblClk(OnFilesDblClick, this);
 	this->lvFiles->HandleSelChg(OnFilesSelChg, this);
 
-	Data::ArrayListNN<Text::String> nameList;
-	Data::ArrayListNN<Text::String> valueList;
+	Data::ArrayListStringNN nameList;
+	Data::ArrayListStringNN valueList;
 	UOSInt i;
 	UOSInt j;
 	this->camera->GetInfoList(&nameList, &valueList);

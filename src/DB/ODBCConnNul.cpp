@@ -270,12 +270,12 @@ DB::DBReader *DB::ODBCConn::GetTablesInfo(Text::CString schemaName)
 	return 0;
 }
 
-UOSInt DB::ODBCConn::QueryTableNames(Text::CString schemaName, Data::ArrayListNN<Text::String> *names)
+UOSInt DB::ODBCConn::QueryTableNames(Text::CString schemaName, Data::ArrayListStringNN *names)
 {
 	return 0;
 }
 
-DB::DBReader *DB::ODBCConn::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListNN<Text::String> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
+DB::DBReader *DB::ODBCConn::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListStringNN *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
 {
 	return 0;
 }
@@ -323,7 +323,7 @@ Text::String *DB::ODBCConn::GetConnSchema()
 	return this->schema;
 }
 
-UOSInt DB::ODBCConn::GetDriverList(Data::ArrayListNN<Text::String> *driverList)
+UOSInt DB::ODBCConn::GetDriverList(Data::ArrayListStringNN *driverList)
 {
 	return 0;
 }

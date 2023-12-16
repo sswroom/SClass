@@ -62,8 +62,8 @@ void __stdcall SSWR::AVIRead::AVIRWebSiteInstagramForm::OnPageClicked(void *user
 	me->lbImageURL->ClearItems();
 	if (sb.GetLength() > 0)
 	{
-		Data::ArrayListNN<Text::String> imageList;
-		Data::ArrayListNN<Text::String> videoList;
+		Data::ArrayListStringNN imageList;
+		Data::ArrayListStringNN videoList;
 		NotNullPtr<Text::String> s = Text::String::New(sb.ToString(), sb.GetLength());
 		me->ctrl->GetPageImages(s, &imageList, &videoList);
 		s->Release();

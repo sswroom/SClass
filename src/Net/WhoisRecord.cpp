@@ -15,7 +15,7 @@ Net::WhoisRecord::WhoisRecord(UInt32 recordIP)
 
 Net::WhoisRecord::~WhoisRecord()
 {
-	LISTNN_FREE_STRING(&this->items);
+	this->items.FreeAll();
 }
 
 void Net::WhoisRecord::AddItem(const UTF8Char *item, UOSInt itemLen)
@@ -106,16 +106,20 @@ void Net::WhoisRecord::AddItem(const UTF8Char *item, UOSInt itemLen)
 	this->items.Add(Text::String::New(item, itemLen));
 }
 
-UOSInt Net::WhoisRecord::GetCount()
+UOSInt Net::WhoisRecord::GetCount() const
 {
 	return this->items.GetCount();
 }
 
-Optional<Text::String> Net::WhoisRecord::GetItem(UOSInt index)
+Optional<Text::String> Net::WhoisRecord::GetItem(UOSInt index) const
 {
 	return this->items.GetItem(index);
 }
 
+Data::ArrayIterator<NotNullPtr<Text::String>> Net::WhoisRecord::Iterator() const
+{
+	return this->items.Iterator();
+}
 
 UTF8Char *Net::WhoisRecord::GetNetworkName(UTF8Char *buff)
 {

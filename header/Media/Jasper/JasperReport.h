@@ -1,7 +1,7 @@
 #ifndef _SM_MEDIA_JASPER_JASPERREPORT
 #define _SM_MEDIA_JASPER_JASPERREPORT
 #include "Data/ArrayList.h"
-#include "Data/ArrayListNN.h"
+#include "Data/ArrayListStringNN.h"
 #include "IO/ParsedObject.h"
 #include "Media/Jasper/JasperBand.h"
 
@@ -31,7 +31,7 @@ namespace Media
 			};
 		private:
 			Data::ArrayList<JasperProperty*> properties;
-			Data::ArrayListNN<Text::String> importList;
+			Data::ArrayListStringNN importList;
 			Data::ArrayList<JasperParameter*> params;
 			Text::String *queryString;
 			JasperBand *title;

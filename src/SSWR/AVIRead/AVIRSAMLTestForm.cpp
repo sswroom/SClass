@@ -386,13 +386,7 @@ Bool __stdcall SSWR::AVIRead::AVIRSAMLTestForm::OnLoginRequest(void *userObj, No
 
 void SSWR::AVIRead::AVIRSAMLTestForm::ClearCACerts()
 {
-	UOSInt i = this->caCerts.GetCount();
-	while (i-- > 0)
-	{
-		Crypto::Cert::X509Cert *cert = this->caCerts.GetItem(i);
-		DEL_CLASS(cert);
-	}
-	this->caCerts.Clear();
+	this->caCerts.DeleteAll();
 }
 
 SSWR::AVIRead::AVIRSAMLTestForm::AVIRSAMLTestForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)

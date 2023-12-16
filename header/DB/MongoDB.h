@@ -23,14 +23,14 @@ namespace DB
 		virtual ~MongoDB();
 		
 		virtual UOSInt QueryTableNames(Text::CString schemaName, NotNullPtr<Data::ArrayListNN<Text::String>> names);
-		virtual DBReader *QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListNN<Text::String> *columNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition);
+		virtual DBReader *QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListStringNN *columNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition);
 		virtual TableDef *GetTableDef(Text::CString schemaName, Text::CString tableName);
 		virtual void CloseReader(NotNullPtr<DBReader> r);
 		virtual void GetLastErrorMsg(NotNullPtr<Text::StringBuilderUTF8> str);
 		virtual void Reconnect();
 
-		UOSInt GetDatabaseNames(NotNullPtr<Data::ArrayListNN<Text::String>> names);
-		void FreeDatabaseNames(NotNullPtr<Data::ArrayListNN<Text::String>> names);
+		UOSInt GetDatabaseNames(NotNullPtr<Data::ArrayListStringNN> names);
+		void FreeDatabaseNames(NotNullPtr<Data::ArrayListStringNN> names);
 
 		static void BuildURL(NotNullPtr<Text::StringBuilderUTF8> out, Text::CString userName, Text::CString password, Text::CString host, UInt16 port);
 	};

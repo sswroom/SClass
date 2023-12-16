@@ -119,7 +119,7 @@ void IO::Device::GoProCameraControl::GetMediaList()
 	}
 }
 
-Bool IO::Device::GoProCameraControl::GetInfo(Data::ArrayListNN<Text::String> *nameList, Data::ArrayListNN<Text::String> *valueList)
+Bool IO::Device::GoProCameraControl::GetInfo(Data::ArrayListStringNN *nameList, Data::ArrayListStringNN *valueList)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
@@ -209,7 +209,7 @@ IO::Device::GoProCameraControl::~GoProCameraControl()
 	}
 }
 
-UOSInt IO::Device::GoProCameraControl::GetInfoList(Data::ArrayListNN<Text::String> *nameList, Data::ArrayListNN<Text::String> *valueList)
+UOSInt IO::Device::GoProCameraControl::GetInfoList(Data::ArrayListStringNN *nameList, Data::ArrayListStringNN *valueList)
 {
 	Text::StringBuilderUTF8 sb;
 	UOSInt initCnt = nameList->GetCount();
@@ -217,7 +217,7 @@ UOSInt IO::Device::GoProCameraControl::GetInfoList(Data::ArrayListNN<Text::Strin
 	return nameList->GetCount() - initCnt;
 }
 
-void IO::Device::GoProCameraControl::FreeInfoList(Data::ArrayListNN<Text::String> *nameList, Data::ArrayListNN<Text::String> *valueList)
+void IO::Device::GoProCameraControl::FreeInfoList(Data::ArrayListStringNN *nameList, Data::ArrayListStringNN *valueList)
 {
 	UOSInt i = nameList->GetCount();
 	while (i-- > 0)

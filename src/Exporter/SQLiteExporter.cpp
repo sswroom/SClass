@@ -60,7 +60,7 @@ Bool Exporter::SQLiteExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Te
 	NotNullPtr<DB::DBReader> nnr;
 	DB::TableDef *tabDef;
 	NotNullPtr<DB::TableDef> nntabDef;
-	Data::ArrayListNN<Text::String> tables;
+	Data::ArrayListStringNN tables;
 	OSInt k;
 	if (!DB::SQLiteFile::CreateDBTool(fileName.OrEmpty(), log, CSTR("DB: ")).SetTo(destDB))
 		return false;
@@ -184,7 +184,7 @@ Bool Exporter::SQLiteExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Te
 		}
 	}
 
-	LISTNN_FREE_STRING(&tables);
+	tables.FreeAll();
 	SDEL_CLASS(srcDB);
 	destDB.Delete();
 	return succ;

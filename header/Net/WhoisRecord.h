@@ -16,8 +16,9 @@ namespace Net
 		~WhoisRecord();
 
 		void AddItem(const UTF8Char *item, UOSInt itemLen);
-		UOSInt GetCount();
-		Optional<Text::String> GetItem(UOSInt index);
+		UOSInt GetCount() const;
+		Optional<Text::String> GetItem(UOSInt index) const;
+		Data::ArrayIterator<NotNullPtr<Text::String>> Iterator() const;
 
 		UTF8Char *GetNetworkName(UTF8Char *buff);
 		UTF8Char *GetCountryCode(UTF8Char *buff);

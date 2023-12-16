@@ -44,7 +44,7 @@ void __stdcall SSWR::AVIRead::AVIRDBCopyTablesForm::OnSourceDBChg(void *userObj)
 			me->txtSourceDB->SetText(CSTR(""));
 			me->txtSourceCollation->SetText(CSTR(""));
 		}
-		Data::ArrayListNN<Text::String> schemaNames;
+		Data::ArrayListStringNN schemaNames;
 		NotNullPtr<Text::String> s;
 		db->QuerySchemaNames(schemaNames);
 		UOSInt i = 0;
@@ -78,7 +78,7 @@ void __stdcall SSWR::AVIRead::AVIRDBCopyTablesForm::OnSourceSelectClicked(void *
 	sptr = me->cboSourceSchema->GetSelectedItemText(sbuff);
 	if (sptr == 0)
 		return;
-	Data::ArrayListNN<Text::String> tableNames;
+	Data::ArrayListStringNN tableNames;
 	db->GetDB()->QueryTableNames(CSTRP(sbuff, sptr), tableNames);
 	if (tableNames.GetCount() == 0)
 	{
@@ -88,7 +88,7 @@ void __stdcall SSWR::AVIRead::AVIRDBCopyTablesForm::OnSourceSelectClicked(void *
 	{
 		me->dataConn = db->GetDB();
 		SDEL_STRING(me->dataSchema);
-		LISTNN_FREE_STRING(&me->dataTables);
+		me->dataTables.FreeAll();
 		me->dataSchema = Text::String::NewP(sbuff, sptr).Ptr();
 		me->dataTables.AddAll(tableNames);
 		me->lvData->ClearItems();
@@ -115,7 +115,7 @@ void __stdcall SSWR::AVIRead::AVIRDBCopyTablesForm::OnDestDBChg(void *userObj)
 			UI::MessageDialog::ShowDialog(CSTR("Error in connecting to database"), CSTR("Copy Tables"), me);
 			return;
 		}
-		Data::ArrayListNN<Text::String> schemaNames;
+		Data::ArrayListStringNN schemaNames;
 		NotNullPtr<Text::String> s;
 		ctrl->GetDB()->QuerySchemaNames(schemaNames);
 		UOSInt i = 0;
@@ -468,7 +468,7 @@ SSWR::AVIRead::AVIRDBCopyTablesForm::AVIRDBCopyTablesForm(UI::GUIClientControl *
 SSWR::AVIRead::AVIRDBCopyTablesForm::~AVIRDBCopyTablesForm()
 {
 	SDEL_STRING(this->dataSchema);
-	LISTNN_FREE_STRING(&this->dataTables);
+	this->dataTables.FreeAll();
 }
 
 void SSWR::AVIRead::AVIRDBCopyTablesForm::OnMonitorChanged()

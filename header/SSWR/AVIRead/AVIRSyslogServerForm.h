@@ -23,7 +23,7 @@ namespace SSWR
 			typedef struct
 			{
 				UInt32 ip;
-				Data::ArrayListNN<Text::String> *logMessage;
+				Data::ArrayListStringNN *logMessage;
 			} IPLog;
 		private:
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;

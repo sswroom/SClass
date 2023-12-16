@@ -104,7 +104,6 @@ Bool Exporter::KMLExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text:
 	UOSInt i;
 	UOSInt j;
 	UOSInt k;
-	UOSInt l;
 	Int64 currId;
 	Int64 lastId;
 	Map::NameArray *nameArr;
@@ -332,12 +331,11 @@ Bool Exporter::KMLExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text:
 					sb.AppendP(sbuff2, sptr);
 					sb.AppendC(UTF8STRC("</name><styleUrl>#lineLabel</styleUrl><LineString><coordinates>"));
 
-					UOSInt i = 0;
-					UOSInt j = pl->GetCount();
-					Math::Geometry::LineString *lineString;
-					while (i < j)
+					NotNullPtr<Math::Geometry::LineString> lineString;
+					Data::ArrayIterator<NotNullPtr<Math::Geometry::LineString>> it = pl->Iterator();
+					while (it.HasNext())
 					{
-						lineString = pl->GetItem(i);
+						lineString = it.Next();
 						Math::Coord2DDbl *points = lineString->GetPointList(nPoints);
 						if (needConv)
 						{
@@ -431,7 +429,6 @@ Bool Exporter::KMLExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text:
 				else if (vecType == Math::Geometry::Vector2D::VectorType::Polygon)
 				{
 					UOSInt nPoints;
-					UOSInt nParts;
 					Math::Geometry::Polygon *pg = (Math::Geometry::Polygon*)vec;
 					sb.ClearStr();
 					if (!layer->GetString(sb, nameArr, currId, nameCol))
@@ -450,16 +447,15 @@ Bool Exporter::KMLExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text:
 					sb.AppendC(UTF8STRC("<altitudeMode>relativeToGround</altitudeMode>"));
 
 					Math::Coord2DDbl *points;
-					Math::Geometry::LinearRing *lr;
+					NotNullPtr<Math::Geometry::LinearRing> lr;
 
 					if (needConv)
 					{
 						Math::Vector3 v;
-						l = 0;
-						nParts = pg->GetCount();
-						while (l < nParts)
+						Data::ArrayIterator<NotNullPtr<Math::Geometry::LinearRing>> it = pg->Iterator();
+						while (it.HasNext())
 						{
-							lr = pg->GetItem(l);
+							lr = it.Next();
 							sb.AppendC(UTF8STRC("<outerBoundaryIs><LinearRing><coordinates>"));
 							k = 0;
 							points = lr->GetPointList(nPoints);
@@ -476,16 +472,14 @@ Bool Exporter::KMLExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text:
 								k++;
 							}
 							sb.AppendC(UTF8STRC("</coordinates></LinearRing></outerBoundaryIs>"));
-							l++;
 						}
 					}
 					else
 					{
-						l = 0;
-						nParts = pg->GetCount();
-						while (l < nParts)
+						Data::ArrayIterator<NotNullPtr<Math::Geometry::LinearRing>> it = pg->Iterator();
+						while (it.HasNext())
 						{
-							lr = pg->GetItem(l);
+							lr = it.Next();
 							sb.AppendC(UTF8STRC("<outerBoundaryIs><LinearRing><coordinates>"));
 							k = 0;
 							points = lr->GetPointList(nPoints);
@@ -501,7 +495,6 @@ Bool Exporter::KMLExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text:
 								k++;
 							}
 							sb.AppendC(UTF8STRC("</coordinates></LinearRing></outerBoundaryIs>"));
-							l++;
 						}
 					}
 

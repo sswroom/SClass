@@ -22,7 +22,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcLang(NotNullPtr<Net::We
 	Text::JSONBuilder json(Text::JSONBuilder::OT_OBJECT);
 	if (lang)
 	{
-		Data::ArrayListNN<Text::String> keys;
+		Data::ArrayListStringNN keys;
 		NotNullPtr<Text::String> key;
 		lang->GetKeys(CSTR(""), keys);
 		Data::ArrayIterator<NotNullPtr<Text::String>> it = keys.Iterator();
@@ -308,8 +308,6 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcDayList(NotNullPtr<Net:
 		Data::ArrayListStringNN locList;
 		NotNullPtr<Text::String> unkLoc = Text::String::New(UTF8STRC("?"));
 		OSInt si;
-		UOSInt i;
-		UOSInt j;
 
 		while (startIndex < endIndex)
 		{
@@ -328,12 +326,10 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcDayList(NotNullPtr<Net:
 					json.ObjectAddInt32(CSTR("photoFileId"), userFile->id);
 					json.ObjectAddInt32(CSTR("count"), (Int32)(startIndex - dayStartIndex));
 					json.ObjectBeginArray(CSTR("locs"));
-					i = 0;
-					j = locList.GetCount();
-					while (i < j)
+					Data::ArrayIterator<NotNullPtr<Text::String>> it = locList.Iterator();
+					while (it.HasNext())
 					{
-						json.ArrayAddStr(locList.GetItem(i));
-						i++;
+						json.ArrayAddStr(it.Next());
 					}
 					json.ArrayEnd();
 					json.ObjectEnd();
@@ -368,12 +364,10 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcDayList(NotNullPtr<Net:
 			json.ObjectAddInt32(CSTR("photoFileId"), userFile->id);
 			json.ObjectAddInt32(CSTR("count"), (Int32)(startIndex - dayStartIndex));
 			json.ObjectBeginArray(CSTR("locs"));
-			i = 0;
-			j = locList.GetCount();
-			while (i < j)
+			Data::ArrayIterator<NotNullPtr<Text::String>> it = locList.Iterator();
+			while (it.HasNext())
 			{
-				json.ArrayAddStr(locList.GetItem(i));
-				i++;
+				json.ArrayAddStr(it.Next());
 			}
 			json.ArrayEnd();
 			json.ObjectEnd();
@@ -1005,20 +999,19 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcUnfinPeak(NotNullPtr<Ne
 		Sync::RWMutexUsage mutUsage;
 		Data::ArrayListNN<PeakInfo> peaks;
 		Text::JSONBuilder json(Text::JSONBuilder::ObjectType::OT_ARRAY);
-		PeakInfo *peak;
+		NotNullPtr<PeakInfo> peak;
 		Math::Vector3 pt;
 		me->env->PeakGetUnfin(mutUsage, peaks);
-		UOSInt i = 0;
-		UOSInt j = peaks.GetCount();
-		if (j > 0)
+		if (peaks.GetCount() > 0)
 		{
 			Math::CoordinateSystem *csysHK = Math::CoordinateSystemManager::CreateProjCoordinateSystemDefName(Math::CoordinateSystemManager::PCST_HK80);
 			Math::CoordinateSystem *csysMO = Math::CoordinateSystemManager::CreateProjCoordinateSystemDefName(Math::CoordinateSystemManager::PCST_MACAU_GRID);
 			NotNullPtr<Math::CoordinateSystem> csysWGS84 = Math::CoordinateSystemManager::CreateDefaultCsys();
 			NotNullPtr<Math::CoordinateSystem> csys;
-			while (i < j)
+			Data::ArrayIterator<NotNullPtr<PeakInfo>> it = peaks.Iterator();
+			while (it.HasNext())
 			{
-				peak = peaks.GetItem(i);
+				peak = it.Next();
 				json.ArrayBeginObject();
 				json.ObjectAddInt32(CSTR("id"), peak->id);
 				json.ObjectAddStr(CSTR("refId"), peak->refId);
@@ -1042,7 +1035,6 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcUnfinPeak(NotNullPtr<Ne
 				json.ObjectAddStr(CSTR("name"), peak->name);
 				json.ObjectAddStr(CSTR("type"), peak->type);
 				json.ObjectEnd();
-				i++;
 			}
 			SDEL_CLASS(csysHK);
 			SDEL_CLASS(csysMO);

@@ -103,7 +103,7 @@ namespace SSWR
 			IO::ActiveStreamReader::BottleNeckType statusDispBNT;
 
 			Sync::Mutex fileMut;
-			Data::ArrayListNN<Text::String> fileNames;
+			Data::ArrayListStringNN fileNames;
 			Data::ArrayList<ActionType> fileAction;
 			Bool statusChg;
 			Bool threadRunning;
@@ -141,7 +141,7 @@ namespace SSWR
 			void DisplayPackFile(NotNullPtr<IO::PackageFile> packFile);
 			UOSInt PackFileIndex(UOSInt lvIndex);
 			void UpdatePackFile(NotNullPtr<IO::PackageFile> packFile, Bool needDelete, Text::CString initSel);
-			void PasteFiles(NotNullPtr<Data::ArrayListNN<Text::String>> files, Bool move);
+			void PasteFiles(NotNullPtr<Data::ArrayListStringNN> files, Bool move);
 		public:
 			AVIRPackageForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<IO::PackageFile> packFile);
 			virtual ~AVIRPackageForm();

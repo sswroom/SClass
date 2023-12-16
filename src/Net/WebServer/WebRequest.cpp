@@ -396,7 +396,7 @@ Bool Net::WebServer::WebRequest::GetHeaderC(NotNullPtr<Text::StringBuilderUTF8> 
 	return true;
 }
 
-UOSInt Net::WebServer::WebRequest::GetHeaderNames(NotNullPtr<Data::ArrayListNN<Text::String>> names)
+UOSInt Net::WebServer::WebRequest::GetHeaderNames(NotNullPtr<Data::ArrayListStringNN> names)
 {
 	NotNullPtr<Text::String> s;
 	UOSInt i = 0;

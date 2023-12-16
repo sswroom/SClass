@@ -314,11 +314,9 @@ void SSWR::AVIRead::AVIRProcInfoForm::UpdateProcModules()
 	{
 		Manage::Process proc(this->currProc, false);
 		Data::ArrayListNN<Manage::ModuleInfo> modList;
-		Manage::ModuleInfo *module;
+		NotNullPtr<Manage::ModuleInfo> module;
 		UTF8Char sbuff[512];
 		UTF8Char *sptr;
-		UOSInt i;
-		UOSInt j;
 		UOSInt k;
 		UOSInt addr;
 		UOSInt size;
@@ -326,11 +324,10 @@ void SSWR::AVIRead::AVIRProcInfoForm::UpdateProcModules()
 		proc.GetModules(modList);
 
 		this->lvDetModule->ClearItems();
-		i = 0;
-		j = modList.GetCount();
-		while (i < j)
+		Data::ArrayIterator<NotNullPtr<Manage::ModuleInfo>> it = modList.Iterator();
+		while (it.HasNext())
 		{
-			module = modList.GetItem(i);
+			module = it.Next();
 			sptr = module->GetModuleFileName(sbuff);
 			k = this->lvDetModule->AddItem(CSTRP(sbuff, sptr), 0);
 			if (module->GetModuleAddress(addr, size))
@@ -340,8 +337,7 @@ void SSWR::AVIRead::AVIRProcInfoForm::UpdateProcModules()
 				sptr = Text::StrHexValOS(sbuff, size);
 				this->lvDetModule->SetSubItem(k, 2, CSTRP(sbuff, sptr));
 			}
-			DEL_CLASS(module);
-			i++;
+			module.Delete();
 		}
 	}
 }

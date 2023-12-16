@@ -24,7 +24,7 @@ void Crypto::Cert::CertExtensions::FreeExtensions(NotNullPtr<CertExtensions> ext
 {
 	if (ext->subjectAltName)
 	{
-		LISTNN_FREE_STRING(ext->subjectAltName);
+		ext->subjectAltName->FreeAll();
 		DEL_CLASS(ext->subjectAltName);
 		ext->subjectAltName = 0;
 	}
@@ -2704,10 +2704,10 @@ Bool Crypto::Cert::X509File::ExtensionsGet(const UInt8 *pdu, const UInt8 *pduEnd
 						{
 							if (ext->subjectAltName)
 							{
-								LISTNN_FREE_STRING(ext->subjectAltName);
+								ext->subjectAltName->FreeAll();
 								SDEL_CLASS(ext->subjectAltName)
 							}
-							NEW_CLASS(ext->subjectAltName, Data::ArrayListNN<Text::String>());
+							NEW_CLASS(ext->subjectAltName, Data::ArrayListStringNN());
 							UOSInt j = 0;
 							UOSInt k = Net::ASN1Util::PDUCountItem(strPDU, strPDU + strLen, "1");
 							while (j < k)

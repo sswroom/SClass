@@ -665,7 +665,7 @@ UOSInt Media::HTRecFile::QueryTableNames(Text::CString schemaName, NotNullPtr<Da
 	}
 }
 
-DB::DBReader *Media::HTRecFile::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListNN<Text::String> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
+DB::DBReader *Media::HTRecFile::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListStringNN *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
 {
 	if (tableName.Equals(UTF8STRC("Setting")))
 	{

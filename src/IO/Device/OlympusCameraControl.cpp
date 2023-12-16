@@ -251,15 +251,11 @@ IO::Device::OlympusCameraControl::OlympusCameraControl(NotNullPtr<Net::SocketFac
 
 IO::Device::OlympusCameraControl::~OlympusCameraControl()
 {
-	UOSInt i = this->cmdList.GetCount();
-	while (i-- > 0)
-	{
-		this->cmdList.GetItem(i)->Release();
-	}
+	this->cmdList.FreeAll();
 	if (this->fileList)
 	{
 		IO::CameraControl::FileInfo *file;
-		i = this->fileList->GetCount();
+		UOSInt i = this->fileList->GetCount();
 		while (i-- > 0)
 		{
 			file = this->fileList->GetItem(i);
@@ -271,7 +267,7 @@ IO::Device::OlympusCameraControl::~OlympusCameraControl()
 	SDEL_STRING(this->oiTrackVersion);
 }
 
-UOSInt IO::Device::OlympusCameraControl::GetInfoList(Data::ArrayListNN<Text::String> *nameList, Data::ArrayListNN<Text::String> *valueList)
+UOSInt IO::Device::OlympusCameraControl::GetInfoList(Data::ArrayListStringNN *nameList, Data::ArrayListStringNN *valueList)
 {
 	Text::StringBuilderUTF8 sb;
 	UOSInt initCnt = nameList->GetCount();
@@ -293,10 +289,10 @@ UOSInt IO::Device::OlympusCameraControl::GetInfoList(Data::ArrayListNN<Text::Str
 	return nameList->GetCount() - initCnt;
 }
 
-void IO::Device::OlympusCameraControl::FreeInfoList(Data::ArrayListNN<Text::String> *nameList, Data::ArrayListNN<Text::String> *valueList)
+void IO::Device::OlympusCameraControl::FreeInfoList(Data::ArrayListStringNN *nameList, Data::ArrayListStringNN *valueList)
 {
-	LIST_FREE_STRING(nameList);
-	LIST_FREE_STRING(valueList);
+	nameList->FreeAll();
+	valueList->FreeAll();
 }
 
 UOSInt IO::Device::OlympusCameraControl::GetFileList(Data::ArrayList<IO::Device::OlympusCameraControl::FileInfo*> *fileList)

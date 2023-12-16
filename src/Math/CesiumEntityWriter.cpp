@@ -115,14 +115,13 @@ Bool Math::CesiumEntityWriter::ToText(NotNullPtr<Text::StringBuilderUTF8> sb, No
 		sb->AppendC(UTF8STRC("{\r\n"));
 		{
 			Math::Geometry::Polyline *pl = (Math::Geometry::Polyline*)vec.Ptr();
-			Math::Geometry::LineString *lineString;
+			NotNullPtr<Math::Geometry::LineString> lineString;
 			sb->AppendC(UTF8STRC("\tpolyline : {\r\n"));
 			sb->AppendC(UTF8STRC("\t\tpositions : Cesium.Cartesian3.fromDegreesArray([\r\n"));
-			UOSInt i = 0;
-			UOSInt j = pl->GetCount();
-			while (i < j)
+			Data::ArrayIterator<NotNullPtr<Math::Geometry::LineString>> it = pl->Iterator();
+			while (it.HasNext())
 			{
-				lineString = pl->GetItem(i);
+				lineString = it.Next();
 				UOSInt nPoint;
 				Math::Coord2DDbl *pointList = lineString->GetPointList(nPoint);
 				UOSInt k;

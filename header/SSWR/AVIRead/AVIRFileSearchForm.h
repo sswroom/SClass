@@ -20,7 +20,7 @@ namespace SSWR
 		private:
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			Text::TextBinEnc::TextBinEncList encList;
-			Data::ArrayListNN<Text::String> fileList;
+			Data::ArrayListStringNN fileList;
 
 			NotNullPtr<UI::GUIPanel> pnlControl;
 			UI::GUILabel *lblDir;

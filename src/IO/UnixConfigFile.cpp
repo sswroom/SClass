@@ -76,14 +76,14 @@ IO::ConfigFile *IO::UnixConfigFile::ParseReader(NotNullPtr<Text::UTF8Reader> rea
 						{
 							src[-1] = 0;
 							valueEnd = &src[-1];
-							cfg->SetValue(CSTR_NULL, CSTRP(name, nameEnd), CSTRP(value, valueEnd));
+							cfg->SetValue(CSTR(""), CSTRP(name, nameEnd), CSTRP(value, valueEnd));
 							break;
 						}
 					}
 				}
 				else
 				{
-					cfg->SetValue(CSTR_NULL, CSTRP(name, nameEnd), CSTRP(src, valueEnd));
+					cfg->SetValue(CSTR(""), CSTRP(name, nameEnd), CSTRP(src, valueEnd));
 				}
 			}
 		}

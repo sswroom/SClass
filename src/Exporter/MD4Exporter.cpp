@@ -73,7 +73,7 @@ Bool Exporter::MD4Exporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text:
 		fchk->GetEntryHash(i, buff);
 		sptr = Text::StrHexBytes(sbuff, buff, 16, 0);
 		sptr = Text::StrConcatC(sptr, UTF8STRC(" *"));
-		sptr = fchk->GetEntryName(i)->ConcatTo(sptr);
+		sptr = Text::String::OrEmpty(fchk->GetEntryName(i))->ConcatTo(sptr);
 		writer.WriteLineC(sbuff, (UOSInt)(sptr - sbuff));
 		i++;
 	}

@@ -72,7 +72,7 @@ namespace SSWR
 			Double respTimeReq;
 			Double respTimeResp;
 			Double respTimeTotal;
-			Data::ArrayListNN<Text::String> respHeaders;
+			Data::ArrayListStringNN respHeaders;
 
 			static void __stdcall OnRequestClicked(void *userObj);
 			static UInt32 __stdcall ProcessThread(void *userObj);

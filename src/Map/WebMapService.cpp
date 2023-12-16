@@ -467,7 +467,7 @@ Bool Map::WebMapService::CanQuery() const
 	return layer && layer->queryable;
 }
 
-Bool Map::WebMapService::QueryInfos(Math::Coord2DDbl coord, Math::RectAreaDbl bounds, UInt32 width, UInt32 height, Double dpi, Data::ArrayList<Math::Geometry::Vector2D*> *vecList, Data::ArrayList<UOSInt> *valueOfstList, Data::ArrayListNN<Text::String> *nameList, Data::ArrayList<Text::String*> *valueList)
+Bool Map::WebMapService::QueryInfos(Math::Coord2DDbl coord, Math::RectAreaDbl bounds, UInt32 width, UInt32 height, Double dpi, Data::ArrayList<Math::Geometry::Vector2D*> *vecList, Data::ArrayList<UOSInt> *valueOfstList, Data::ArrayListStringNN *nameList, Data::ArrayList<Text::String*> *valueList)
 {
 	LayerInfo *layer = this->layers.GetItem(this->layer);
 	NotNullPtr<Text::String> imgFormat;
@@ -785,7 +785,7 @@ void Map::WebMapService::SetLayerCRS(UOSInt index)
 	}
 }
 
-UOSInt Map::WebMapService::GetLayerNames(Data::ArrayListNN<Text::String> *nameList) const
+UOSInt Map::WebMapService::GetLayerNames(Data::ArrayListStringNN *nameList) const
 {
 	UOSInt i = 0;
 	UOSInt j = this->layers.GetCount();
@@ -797,12 +797,12 @@ UOSInt Map::WebMapService::GetLayerNames(Data::ArrayListNN<Text::String> *nameLi
 	return j;
 }
 
-UOSInt Map::WebMapService::GetMapImageTypeNames(Data::ArrayListNN<Text::String> *nameList) const
+UOSInt Map::WebMapService::GetMapImageTypeNames(Data::ArrayListStringNN *nameList) const
 {
 	return nameList->AddAll(this->mapImageTypeNames);
 }
 
-UOSInt Map::WebMapService::GetInfoTypeNames(Data::ArrayListNN<Text::String> *nameList) const
+UOSInt Map::WebMapService::GetInfoTypeNames(Data::ArrayListStringNN *nameList) const
 {
 	return nameList->AddAll(this->infoTypeNames);
 }

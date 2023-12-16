@@ -31,8 +31,8 @@ namespace IO
 		CameraControl() {};
 		virtual ~CameraControl() {};
 
-		virtual UOSInt GetInfoList(Data::ArrayListNN<Text::String> *nameList, Data::ArrayListNN<Text::String> *valueList) = 0;
-		virtual void FreeInfoList(Data::ArrayListNN<Text::String> *nameList, Data::ArrayListNN<Text::String> *valueList) = 0;
+		virtual UOSInt GetInfoList(Data::ArrayListStringNN *nameList, Data::ArrayListStringNN *valueList) = 0;
+		virtual void FreeInfoList(Data::ArrayListStringNN *nameList, Data::ArrayListStringNN *valueList) = 0;
 		virtual UOSInt GetFileList(Data::ArrayList<FileInfo*> *fileList) = 0;
 		virtual Bool GetFile(FileInfo *file, IO::Stream *outStm) = 0;
 		virtual Bool GetThumbnailFile(FileInfo *file, IO::Stream *outStm) = 0;

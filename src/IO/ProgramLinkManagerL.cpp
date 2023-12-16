@@ -6,7 +6,7 @@
 
 #include <stdio.h>
 
-UOSInt IO::ProgramLinkManager::GetLinkNamesDir(Data::ArrayListNN<Text::String> *nameList, UTF8Char *linkPath, UTF8Char *linkPathEnd, UTF8Char *filePath, UTF8Char *filePathEnd)
+UOSInt IO::ProgramLinkManager::GetLinkNamesDir(Data::ArrayListStringNN *nameList, UTF8Char *linkPath, UTF8Char *linkPathEnd, UTF8Char *filePath, UTF8Char *filePathEnd)
 {
 	UOSInt ret = 0;
 	UTF8Char *sptr;
@@ -67,7 +67,7 @@ UTF8Char *IO::ProgramLinkManager::GetLinkPath(UTF8Char *buff, Bool thisUser)
 	return sptr;
 }
 
-UOSInt IO::ProgramLinkManager::GetLinkNames(Data::ArrayListNN<Text::String> *nameList, Bool allUser, Bool thisUser)
+UOSInt IO::ProgramLinkManager::GetLinkNames(Data::ArrayListStringNN *nameList, Bool allUser, Bool thisUser)
 {
 	UTF8Char linkPath[512];
 	UTF8Char *linkPathEnd;

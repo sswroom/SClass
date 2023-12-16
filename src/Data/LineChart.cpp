@@ -1227,7 +1227,7 @@ void Data::LineChart::Plot(NotNullPtr<Media::DrawImage> img, Double x, Double y,
 	}
 	
 	Data::ArrayListDbl locations;
-	Data::ArrayListNN<Text::String> labels;
+	Data::ArrayListStringNN labels;
 	if (xType == Data::Chart::DataType::Integer)
 	{
 		Data::Chart::CalScaleMarkInt(&locations, &labels, xMinInt, xMaxInt, width - y1Leng - y2Leng - this->pointSize * 2, fntH, 0);

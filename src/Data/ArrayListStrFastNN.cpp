@@ -51,3 +51,13 @@ OSInt Data::ArrayListStrFastNN::SortedIndexOf(Text::CStringNN val) const
 	}
 	return -i - 1;
 }
+
+void Data::ArrayListStrFastNN::FreeAll()
+{
+	UOSInt i = this->objCnt;
+	while (i-- > 0)
+	{
+		this->arr[i]->Release();
+	}
+	this->objCnt = 0;
+}

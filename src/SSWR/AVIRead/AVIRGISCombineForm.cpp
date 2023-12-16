@@ -31,19 +31,20 @@ void __stdcall SSWR::AVIRead::AVIRGISCombineForm::OnCombineClick(void *userObj)
 	SSWR::AVIRead::AVIRGISCombineForm *me = (SSWR::AVIRead::AVIRGISCombineForm*)userObj;
 	UOSInt i;
 	UOSInt j;
-	me->selLayers->Clear();
+	NotNullPtr<Map::MapDrawLayer> lyr;
+	me->selLayers.Clear();
 	i = 0;
 	j = me->layers->GetCount();
 	while (i < j)
 	{
-		if (me->lbLayers->GetItemChecked(i))
+		if (me->lbLayers->GetItemChecked(i) && me->layers->GetItem(i).SetTo(lyr))
 		{
-			me->selLayers->Add(me->layers->GetItem(i));
+			me->selLayers.Add(lyr);
 		}
 		i++;
 	}
 
-	if (me->selLayers->GetCount() > 0)
+	if (me->selLayers.GetCount() > 0)
 	{
 		me->SetDialogResult(UI::GUIForm::DR_OK);
 	}
@@ -66,8 +67,6 @@ SSWR::AVIRead::AVIRGISCombineForm::AVIRGISCombineForm(UI::GUIClientControl *pare
 	this->layers = layers;
 	this->SetText(CSTR("Combine Layers"));
 	this->SetFont(0, 0, 8.25, false);
-
-	NEW_CLASS(this->selLayers, Data::ArrayList<Map::MapDrawLayer*>());
 
 	UI::GUILabel *lbl;
 	NotNullPtr<UI::GUIPanel> pnl;
@@ -97,15 +96,14 @@ SSWR::AVIRead::AVIRGISCombineForm::AVIRGISCombineForm(UI::GUIClientControl *pare
 	this->lbLayers->SetDockType(UI::GUIControl::DOCK_FILL);
 
 
-	UOSInt i = 0;
-	UOSInt cnt = this->layers->GetCount();
 	UOSInt j;
-	Map::MapDrawLayer *lyr;
+	NotNullPtr<Map::MapDrawLayer> lyr;
 	NotNullPtr<Text::String> name;
 	this->lbLayers->ClearItems();
-	while (i < cnt)
+	Data::ArrayIterator<NotNullPtr<Map::MapDrawLayer>> it = this->layers->Iterator();
+	while (it.HasNext())
 	{
-		lyr = this->layers->GetItem(i);
+		lyr = it.Next();
 		name = lyr->GetName();
 		j = name->LastIndexOf(IO::Path::PATH_SEPERATOR);
 		if (j != INVALID_INDEX)
@@ -116,13 +114,11 @@ SSWR::AVIRead::AVIRGISCombineForm::AVIRGISCombineForm(UI::GUIClientControl *pare
 		{
 			this->lbLayers->AddItem(name, 0);
 		}
-		i++;
 	}
 }
 
 SSWR::AVIRead::AVIRGISCombineForm::~AVIRGISCombineForm()
 {
-	DEL_CLASS(this->selLayers);
 }
 
 void SSWR::AVIRead::AVIRGISCombineForm::OnMonitorChanged()

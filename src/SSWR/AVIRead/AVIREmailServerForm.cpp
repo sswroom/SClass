@@ -317,7 +317,7 @@ void __stdcall SSWR::AVIRead::AVIREmailServerForm::OnTimerTick(void *userObj)
 	{
 		me->mailChanged = false;
 		Data::ArrayList<Net::Email::EmailStore::EmailInfo*> emailList;
-		Data::ArrayListNN<Text::String> rcptList;
+		Data::ArrayListStringNN rcptList;
 		me->store->GetAllEmails(&emailList);
 		me->lvEmail->ClearItems();
 		i = 0;
@@ -644,7 +644,7 @@ SSWR::AVIRead::AVIREmailServerForm::~AVIREmailServerForm()
 	SDEL_CLASS(this->gcisSSLCert);
 	SDEL_CLASS(this->gcisSSLKey);
 	this->ClearGCISCACerts();
-	LISTNN_FREE_STRING(&this->userList);
+	this->userList.FreeAll();
 }
 
 void SSWR::AVIRead::AVIREmailServerForm::OnMonitorChanged()

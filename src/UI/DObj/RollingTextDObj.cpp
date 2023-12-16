@@ -19,7 +19,7 @@ void UI::DObj::RollingTextDObj::UpdateBGImg()
 		NotNullPtr<Media::DrawImage> dimg;
 		NotNullPtr<Media::DrawFont> f;
 		NotNullPtr<Media::DrawBrush> b;
-		Data::ArrayListNN<Text::String> lines;
+		Data::ArrayListStringNN lines;
 		NotNullPtr<Text::String> s;
 		Double currY;
 		if (dimg.Set(this->deng->CreateImage32(this->size, Media::AT_NO_ALPHA)))

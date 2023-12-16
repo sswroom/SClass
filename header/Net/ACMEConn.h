@@ -3,7 +3,7 @@
 #include "Crypto/Cert/X509CertReq.h"
 #include "Crypto/Cert/X509Key.h"
 #include "Crypto/Token/JWSignature.h"
-#include "Data/ArrayListNN.h"
+#include "Data/ArrayListStringNN.h"
 #include "Net/HTTPClient.h"
 #include "Net/SocketFactory.h"
 #include "Net/SSLEngine.h"
@@ -39,7 +39,7 @@ namespace Net
 			ACMEStatus status;
 			Int64 expires;
 			Text::String *orderURL;
-			Data::ArrayListNN<Text::String> *authURLs;
+			Data::ArrayListStringNN *authURLs;
 			Text::String *finalizeURL;
 			Text::String *certificateURL;
 		};

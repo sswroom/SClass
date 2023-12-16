@@ -1,6 +1,8 @@
 #ifndef _SM_IO_WRITER
 #define _SM_IO_WRITER
+#include "Data/ArrayIterator.h"
 #include "Text/CString.h"
+#include "Text/String.h"
 
 namespace IO
 {
@@ -21,6 +23,18 @@ namespace IO
 		Bool WriteLineCStr(Text::CString str)
 		{
 			return WriteLineC(str.v, str.leng);
+		}
+
+		Bool WriteLines(Data::ArrayIterator<NotNullPtr<Text::String>> it)
+		{
+			NotNullPtr<Text::String> s;
+			while (it.HasNext())
+			{
+				s = it.Next();
+				if (!WriteLineC(s->v, s->leng))
+					return false;
+			}
+			return true;
 		}
 	};
 }

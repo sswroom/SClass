@@ -1036,12 +1036,10 @@ UOSInt DB::TDSConn::QueryTableNames(Text::CString schemaName, NotNullPtr<Data::A
 	return 0;
 }
 
-DB::DBReader *DB::TDSConn::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListNN<Text::String> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
+DB::DBReader *DB::TDSConn::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListStringNN *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
-	UOSInt i;
-	UOSInt j;
 	Text::StringBuilderUTF8 sb;
 	sb.AppendC(UTF8STRC("select "));
 	if (this->sqlType == DB::SQLType::MSSQL || this->sqlType == DB::SQLType::Access)
@@ -1059,17 +1057,15 @@ DB::DBReader *DB::TDSConn::QueryTableData(Text::CString schemaName, Text::CStrin
 	}
 	else
 	{
-		i = 0;
-		j = columnNames->GetCount();
-		while (i < j)
+		Data::ArrayIterator<NotNullPtr<Text::String>> it = columnNames->Iterator();
+		Bool found = false;
+		while (it.HasNext())
 		{
-			if (i > 0)
-			{
+			if (found)
 				sb.AppendC(UTF8STRC(","));
-			}
-			sptr = DB::DBUtil::SDBColUTF8(sbuff, columnNames->GetItem(i)->v, this->sqlType);
+			sptr = DB::DBUtil::SDBColUTF8(sbuff, it.Next()->v, this->sqlType);
 			sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
-			i++;
+			found = true;
 		}
 	}
 	sb.AppendC(UTF8STRC(" from "));

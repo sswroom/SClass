@@ -854,8 +854,8 @@ Optional<Map::MapDrawLayer> Map::KMLXML::ParseKMLContainer(NotNullPtr<Text::XMLR
 
 void Map::KMLXML::ParseKMLPlacemarkTrack(NotNullPtr<Text::XMLReader> reader, NotNullPtr<Map::GPSTrack> lyr, Data::StringMap<KMLStyle*> *styles)
 {
-	Data::ArrayListNN<Text::String> timeList;
-	Data::ArrayListNN<Text::String> coordList;
+	Data::ArrayListStringNN timeList;
+	Data::ArrayListStringNN coordList;
 	Bool lastTrack = false;
 	while (reader->NextElement())
 	{
@@ -1248,8 +1248,8 @@ void Map::KMLXML::ParseKMLPlacemarkTrack(NotNullPtr<Text::XMLReader> reader, Not
 Optional<Map::MapDrawLayer> Map::KMLXML::ParseKMLPlacemarkLyr(NotNullPtr<Text::XMLReader> reader, Data::StringMap<KMLStyle*> *styles, Text::CStringNN sourceName, Parser::ParserList *parsers, Net::WebBrowser *browser, IO::PackageFile *basePF)
 {
 	Text::StringBuilderUTF8 sb;
-	Data::ArrayListNN<Text::String> colNames;
-	Data::ArrayListNN<Text::String> colValues;
+	Data::ArrayListStringNN colNames;
+	Data::ArrayListStringNN colValues;
 	Data::ArrayList<Map::VectorLayer::ColInfo> colInfos;
 	KMLStyle *style = 0;
 	Data::ArrayListNN<Map::MapDrawLayer> layers;
@@ -1421,8 +1421,8 @@ Optional<Map::MapDrawLayer> Map::KMLXML::ParseKMLPlacemarkLyr(NotNullPtr<Text::X
 			}
 		}
 	}
-	LISTNN_FREE_STRING(&colNames);
-	LISTNN_FREE_STRING(&colValues);
+	colNames.FreeAll();
+	colValues.FreeAll();
 	if (layers.GetCount() == 1)
 	{
 		return layers.GetItem(0);
@@ -1435,7 +1435,7 @@ Optional<Map::MapDrawLayer> Map::KMLXML::ParseKMLPlacemarkLyr(NotNullPtr<Text::X
 	return 0;
 }
 
-Optional<Math::Geometry::Vector2D> Map::KMLXML::ParseKMLVector(NotNullPtr<Text::XMLReader> reader, NotNullPtr<Data::ArrayListNN<Text::String>> colNames, NotNullPtr<Data::ArrayListNN<Text::String>> colValues, NotNullPtr<Data::ArrayList<Map::VectorLayer::ColInfo>> colInfos)
+Optional<Math::Geometry::Vector2D> Map::KMLXML::ParseKMLVector(NotNullPtr<Text::XMLReader> reader, NotNullPtr<Data::ArrayListStringNN> colNames, NotNullPtr<Data::ArrayListStringNN> colValues, NotNullPtr<Data::ArrayList<Map::VectorLayer::ColInfo>> colInfos)
 {
 	Text::String *nodeText = reader->GetNodeOriText();
 	Optional<Math::Geometry::Vector2D> vec = 0;

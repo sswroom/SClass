@@ -46,7 +46,7 @@ namespace SSWR
 			UI::GUITextBox *txtStatus;
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
-			Data::ArrayListNN<Text::String> nameList;
+			Data::ArrayListStringNN nameList;
 			Data::ArrayList<Double> xList;
 			Data::ArrayList<Double> yList;
 			Data::ArrayList<Double> zList;

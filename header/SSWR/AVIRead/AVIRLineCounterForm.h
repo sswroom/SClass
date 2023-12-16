@@ -40,7 +40,7 @@ namespace SSWR
 			UI::GUIListView *lvResult;
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
-			Data::ArrayListNN<Text::String> extList;
+			Data::ArrayListStringNN extList;
 			Data::ArrayList<FileInfo *> resList;
 
 			static void __stdcall OnExtensionsAddClicked(void *userObj);

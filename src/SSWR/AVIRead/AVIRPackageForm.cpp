@@ -413,7 +413,7 @@ void __stdcall SSWR::AVIRead::AVIRPackageForm::OnFilesRightClick(void *userObj, 
 void __stdcall SSWR::AVIRead::AVIRPackageForm::OnFiles(void *userObj, NotNullPtr<Text::String> *files, UOSInt nFiles)
 {
 	SSWR::AVIRead::AVIRPackageForm *me = (SSWR::AVIRead::AVIRPackageForm*)userObj;
-	Data::ArrayListNN<Text::String> fileNames(nFiles);
+	Data::ArrayListStringNN fileNames(nFiles);
 	UOSInt i = 0;
 	while (i < nFiles)
 	{
@@ -768,7 +768,7 @@ void SSWR::AVIRead::AVIRPackageForm::UpdatePackFile(NotNullPtr<IO::PackageFile> 
 	this->DisplayPackFile(packFile);
 }
 
-void SSWR::AVIRead::AVIRPackageForm::PasteFiles(NotNullPtr<Data::ArrayListNN<Text::String>> files, Bool move)
+void SSWR::AVIRead::AVIRPackageForm::PasteFiles(NotNullPtr<Data::ArrayListStringNN> files, Bool move)
 {
 	if (move)
 	{
@@ -1004,7 +1004,7 @@ SSWR::AVIRead::AVIRPackageForm::~AVIRPackageForm()
 		this->packFile.Delete();
 	}
 	SDEL_CLASS(this->rootPackFile);
-	LISTNN_FREE_STRING(&this->fileNames);
+	this->fileNames.FreeAll();
 	SDEL_STRING(this->statusFile);
 	DEL_CLASS(this->mnuPopup);
 	SDEL_STRING(this->progName);
@@ -1018,7 +1018,7 @@ void SSWR::AVIRead::AVIRPackageForm::EventMenuClicked(UInt16 cmdId)
 	case MNU_PASTE:
 		{
 			UI::Clipboard clipboard(this->hwnd);
-			Data::ArrayListNN<Text::String> fileNames;
+			Data::ArrayListStringNN fileNames;
 			UI::Clipboard::FilePasteType fpt;
 			fpt = clipboard.GetDataFiles(&fileNames);
 			this->PasteFiles(fileNames, fpt == UI::Clipboard::FPT_MOVE);

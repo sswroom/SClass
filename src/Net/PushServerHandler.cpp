@@ -141,13 +141,12 @@ Bool __stdcall Net::PushServerHandler::UsersHandler(NotNullPtr<Net::WebServer::I
 	Text::JSONBuilder json(Text::JSONBuilder::OT_OBJECT);
 	json.ObjectBeginArray(CSTR("users"));
 	Sync::MutexUsage mutUsage;
-	Data::ArrayListNN<Text::String> userList;
-	UOSInt i = 0;
-	UOSInt j = me->mgr->GetUsers(&userList, mutUsage);
-	while (i < j)
+	Data::ArrayListStringNN userList;
+	me->mgr->GetUsers(&userList, mutUsage);
+	Data::ArrayIterator<NotNullPtr<Text::String>> it = userList.Iterator();
+	while (it.HasNext())
 	{
-		json.ArrayAddStr(userList.GetItem(i));
-		i++;
+		json.ArrayAddStr(it.Next());
 	}
 	json.ArrayEnd();
 	json.ObjectEnd();
@@ -212,7 +211,7 @@ void Net::PushServerHandler::ParseJSONSend(Text::JSONBase *sendJson)
 	if (usersBase && androidBase && usersBase->GetType() == Text::JSONType::Array)
 	{
 		Text::String *message = androidBase->GetValueString(CSTR("data.message"));
-		Data::ArrayListNN<Text::String> userList;
+		Data::ArrayListStringNN userList;
 		Text::JSONArray *usersArr = (Text::JSONArray*)usersBase;
 		succ = true;
 		UOSInt i = 0;

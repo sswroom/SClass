@@ -16,6 +16,7 @@ namespace Data
 		virtual OSInt SortedIndexOfC(Text::CStringNN val) const;
 
 		NotNullPtr<Text::String> JoinString() const;
+		void FreeAll();
 	};
 }
 #endif

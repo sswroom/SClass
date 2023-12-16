@@ -190,7 +190,7 @@ Net::ACMEConn::Order *Net::ACMEConn::OrderParse(const UInt8 *buff, UOSInt buffSi
 			if (auth && auth->GetType() == Text::JSONType::Array)
 			{
 				Text::JSONArray *authArr = (Text::JSONArray*)auth;
-				NEW_CLASS(order->authURLs, Data::ArrayListNN<Text::String>());
+				NEW_CLASS(order->authURLs, Data::ArrayListStringNN());
 				UOSInt i = 0;
 				UOSInt j = authArr->GetArrayLength();
 				while (i < j)
@@ -635,7 +635,7 @@ void Net::ACMEConn::OrderFree(Order *order)
 	SDEL_STRING(order->orderURL);
 	if (order->authURLs)
 	{
-		LISTNN_FREE_STRING(order->authURLs);
+		order->authURLs->FreeAll();
 		DEL_CLASS(order->authURLs);
 	}
 	SDEL_STRING(order->finalizeURL);

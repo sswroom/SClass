@@ -69,7 +69,7 @@ namespace DB
 		class SQLGroup : public IDBCmd
 		{
 		public:
-			Data::ArrayListNN<Text::String> strs;
+			Data::ArrayListStringNN strs;
 			DBReadHdlr hdlr;
 			Int32 progId;
 			void *userData;
@@ -110,7 +110,7 @@ namespace DB
 		};
 
 	private:
-		DBTool *db1;
+		Optional<DBTool> db1;
 		Data::ArrayList<DB::DBHandler *> dbList;
 
 	public:

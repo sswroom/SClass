@@ -365,7 +365,7 @@ UOSInt Map::DBMapLayer::QueryTableNames(Text::CString schemaName, NotNullPtr<Dat
 	return this->db->QueryTableNames(schemaName, names);
 }
 
-DB::DBReader *Map::DBMapLayer::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListNN<Text::String> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
+DB::DBReader *Map::DBMapLayer::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListStringNN *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
 {
 	if (this->db)
 	{

@@ -108,7 +108,7 @@ void __stdcall SSWR::AVIRead::AVIRProgramLinksForm::OnCreateClicked(void *userOb
 void SSWR::AVIRead::AVIRProgramLinksForm::UpdateLinkList()
 {
 	this->lbItems->ClearItems();
-	Data::ArrayListNN<Text::String> nameList;
+	Data::ArrayListStringNN nameList;
 	Text::StringComparatorFastNN comparator;
 	this->progMgr.GetLinkNames(&nameList, true, true);
 	Data::Sort::ArtificialQuickSort::Sort(&nameList, &comparator);

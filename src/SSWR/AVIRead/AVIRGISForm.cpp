@@ -922,7 +922,7 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 		{
 			UI::GUIMapTreeView::ItemIndex *ind = (UI::GUIMapTreeView::ItemIndex*)this->popNode->GetItemObj();
 			Math::RectAreaDbl bounds;
-			if (this->env->GetBounds((Map::MapEnv::GroupItem*)ind->item, &bounds))
+			if (this->env->GetBounds((Map::MapEnv::GroupItem*)ind->item, bounds))
 			{
 				this->mapCtrl->PanToMapXY(bounds.GetCenter());
 			}

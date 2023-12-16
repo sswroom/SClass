@@ -19,16 +19,15 @@ Bool DB::DBModel::LoadDatabase(DB::DBTool *db, Text::CString dbName, Text::CStri
 		return false;
 	}
 	Text::StringBuilderUTF8 sb;
-	Data::ArrayListNN<Text::String> tableNames;
+	Data::ArrayListStringNN tableNames;
 	DB::TableDef *table;
 	Text::String *tableName;
-	UOSInt i;
 	UOSInt j;
 	db->QueryTableNames(schemaName, tableNames);
-	i = tableNames.GetCount();
-	while (i-- > 0)
+	Data::ArrayIterator<NotNullPtr<Text::String>> it = tableNames.Iterator();
+	while (it.HasNext())
 	{
-		table = db->GetTableDef(schemaName, tableNames.GetItem(i)->ToCString());
+		table = db->GetTableDef(schemaName, it.Next()->ToCString());
 		if (table)
 		{
 			table->SetDatabaseName(dbName);
@@ -46,7 +45,7 @@ Bool DB::DBModel::LoadDatabase(DB::DBTool *db, Text::CString dbName, Text::CStri
 			this->tableMap.Put(tableName->ToCString().Substring(j + 1), table);
 		}
 	}
-	LIST_FREE_STRING(&tableNames);
+	tableNames.FreeAll();
 	return true;
 }
 

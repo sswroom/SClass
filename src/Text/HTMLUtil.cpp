@@ -227,7 +227,7 @@ Bool Text::HTMLUtil::CSSWellFormat(const UInt8 *buff, UOSInt buffSize, UOSInt le
 	return currLev == 0;
 }
 
-Bool Text::HTMLUtil::HTMLGetText(Text::EncodingFactory *encFact, const UInt8 *buff, UOSInt buffSize, Bool singleLine, NotNullPtr<Text::StringBuilderUTF8> sb, Data::ArrayListNN<Text::String> *imgList)
+Bool Text::HTMLUtil::HTMLGetText(Text::EncodingFactory *encFact, const UInt8 *buff, UOSInt buffSize, Bool singleLine, NotNullPtr<Text::StringBuilderUTF8> sb, Data::ArrayListStringNN *imgList)
 {
 	UOSInt len;
 	Text::XMLNode::NodeType nt;

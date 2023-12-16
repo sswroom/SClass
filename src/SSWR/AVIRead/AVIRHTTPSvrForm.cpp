@@ -21,7 +21,7 @@ SSWR::AVIRead::AVIRHTTPLog::AVIRHTTPLog(UOSInt logCnt)
 	{
 		this->entries[i].reqTime = 0;
 		NEW_CLASS(this->entries[i].headerName, Data::ArrayListStringNN());
-		NEW_CLASS(this->entries[i].headerVal, Data::ArrayListNN<Text::String>());
+		NEW_CLASS(this->entries[i].headerVal, Data::ArrayListStringNN());
 		this->entries[i].reqURI = 0;
 		this->entries[i].cliAddr.addrType = Net::AddrType::Unknown;
 		this->entries[i].cliPort = 0;
@@ -30,17 +30,12 @@ SSWR::AVIRead::AVIRHTTPLog::AVIRHTTPLog(UOSInt logCnt)
 
 SSWR::AVIRead::AVIRHTTPLog::~AVIRHTTPLog()
 {
-	UOSInt j;
 	UOSInt i = this->logCnt;
 	while (i-- > 0)
 	{
 		SDEL_STRING(this->entries[i].reqURI);
-		j = this->entries[i].headerName->GetCount();
-		while (j-- > 0)
-		{
-			this->entries[i].headerName->GetItem(j)->Release();
-			this->entries[i].headerVal->GetItem(j)->Release();
-		}
+		this->entries[i].headerName->FreeAll();
+		this->entries[i].headerVal->FreeAll();
 		DEL_CLASS(this->entries[i].headerName);
 		DEL_CLASS(this->entries[i].headerVal);
 	}
@@ -52,8 +47,6 @@ void SSWR::AVIRead::AVIRHTTPLog::LogRequest(NotNullPtr<Net::WebServer::IWebReque
 	Data::DateTime dt;
 	dt.SetCurrTimeUTC();
 	UOSInt i;
-	UOSInt j;
-	UOSInt k;
 	Sync::MutexUsage mutUsage(this->entMut);
 	i = this->currEnt;
 	this->currEnt++;
@@ -66,28 +59,20 @@ void SSWR::AVIRead::AVIRHTTPLog::LogRequest(NotNullPtr<Net::WebServer::IWebReque
 	this->entries[i].cliAddr = req->GetClientAddr().Ptr()[0];
 	this->entries[i].cliPort = req->GetClientPort();
 	this->entries[i].reqTime = dt.ToTicks();
-	j = this->entries[i].headerName->GetCount();
-	while (j-- > 0)
-	{
-		this->entries[i].headerName->GetItem(j)->Release();
-		this->entries[i].headerVal->GetItem(j)->Release();
-	}
-	this->entries[i].headerName->Clear();
-	this->entries[i].headerVal->Clear();
-	Data::ArrayList<Text::String *> names;
-	Text::String *name;
+	this->entries[i].headerName->FreeAll();
+	this->entries[i].headerVal->FreeAll();
+	Data::ArrayListStringNN names;
+	NotNullPtr<Text::String> name;
 	Text::StringBuilderUTF8 sb;
 	req->GetHeaderNames(names);
-	j = names.GetCount();
-	k = 0;
-	while (k < j)
+	Data::ArrayIterator<NotNullPtr<Text::String>> it = names.Iterator();
+	while (it.HasNext())
 	{
-		this->entries[i].headerName->Add(names.GetItem(k)->Clone());
+		name = it.Next();
+		this->entries[i].headerName->Add(name->Clone());
 		sb.ClearStr();
-		name = names.GetItem(k);
 		req->GetHeaderC(sb, name->ToCString());
 		this->entries[i].headerVal->Add(Text::String::New(sb.ToString(), sb.GetLength()));
-		k++;
 	}
 	mutUsage.EndUse();
 }
@@ -418,9 +403,9 @@ void __stdcall SSWR::AVIRead::AVIRHTTPSvrForm::OnAccessSelChg(void *userObj)
 	while (i < j)
 	{
 		sb.AppendC(UTF8STRC("\r\n"));
-		sb.Append(log->headerName->GetItem(i));
+		sb.AppendOpt(log->headerName->GetItem(i));
 		sb.AppendC(UTF8STRC("\t"));
-		sb.Append(log->headerVal->GetItem(i));
+		sb.AppendOpt(log->headerVal->GetItem(i));
 		i++;
 	}
 	me->txtAccess->SetText(sb.ToCString());
@@ -448,13 +433,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPSvrForm::OnSSLCertClicked(void *userObj)
 
 void SSWR::AVIRead::AVIRHTTPSvrForm::ClearCACerts()
 {
-	UOSInt i = this->caCerts.GetCount();
-	while (i-- > 0)
-	{
-		Crypto::Cert::X509Cert *cert = this->caCerts.GetItem(i);
-		DEL_CLASS(cert);
-	}
-	this->caCerts.Clear();
+	this->caCerts.DeleteAll();
 }
 
 SSWR::AVIRead::AVIRHTTPSvrForm::AVIRHTTPSvrForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)

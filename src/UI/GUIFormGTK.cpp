@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Data/ArrayListNN.h"
+#include "Data/ArrayListStringNN.h"
 #include "Math/Math.h"
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
@@ -33,7 +33,7 @@ void GUIForm_OnFileDrop(GtkWidget *widget, GdkDragContext *context, gint x, gint
 {
 	UI::GUIForm *me = (UI::GUIForm *)userData;
 	Text::StringBuilderUTF8 sb;
-	Data::ArrayListNN<Text::String> files;
+	Data::ArrayListStringNN files;
 	sb.AppendSlow((const UTF8Char*)gtk_selection_data_get_data(data));
 	Text::PString sarr[2];
 	UTF8Char sbuff[512];

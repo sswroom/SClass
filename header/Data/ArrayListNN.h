@@ -398,5 +398,4 @@ namespace Data
 	}
 }
 
-#define LISTNN_FREE_STRING(list) { Data::ArrayIterator<NotNullPtr<Text::String>> it = (list)->Iterator(); while (it.HasNext()) it.Next()->Release(); (list)->Clear(); }
 #endif

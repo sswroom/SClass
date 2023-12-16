@@ -88,7 +88,7 @@ Bool Media::Playlist::AddFile(Text::CStringNN fileName)
 
 			ent = MemAlloc(PlaylistEntry, 1);
 			ent->fileName = Text::String::New(fileName.v, fileName.leng);
-			ent->title = chap->GetChapterName(i)->Clone();
+			ent->title = Text::String::OrEmpty(chap->GetChapterName(i))->Clone();
 			artist = chap->GetChapterArtist(i);
 			if (artist)
 			{

@@ -28,7 +28,7 @@ namespace UI
 			Double lineHeight;
 			UInt32 currPage;
 			Bool pageChg;
-			Data::ArrayListNN<Text::String> lines;
+			Data::ArrayListStringNN lines;
 
 		public:
 			TextDObj(NotNullPtr<Media::DrawEngine> deng, Text::CString txt, Text::CString fontName, Double fontSize, Media::DrawEngine::DrawFontStyle fontStyle, UInt32 fontColor, UInt32 codePage, Math::Coord2D<OSInt> tl, Math::Size2D<UOSInt> size);

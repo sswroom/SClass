@@ -596,7 +596,7 @@ Bool Map::TileMapLayer::CanQuery()
 	return this->tileMap->CanQuery();
 }
 
-Bool Map::TileMapLayer::QueryInfos(Math::Coord2DDbl coord, Data::ArrayList<Math::Geometry::Vector2D*> *vecList, Data::ArrayList<UOSInt> *valueOfstList, Data::ArrayListNN<Text::String> *nameList, Data::ArrayList<Text::String*> *valueList)
+Bool Map::TileMapLayer::QueryInfos(Math::Coord2DDbl coord, Data::ArrayList<Math::Geometry::Vector2D*> *vecList, Data::ArrayList<UOSInt> *valueOfstList, Data::ArrayListStringNN *nameList, Data::ArrayList<Text::String*> *valueList)
 {
 	UOSInt level = this->tileMap->GetNearestLevel(scale);
 	return this->tileMap->QueryInfos(coord, level, vecList, valueOfstList, nameList, valueList);

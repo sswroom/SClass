@@ -1,5 +1,6 @@
 #ifndef _SM_PARSER_FILEPARSER_CFBPARSER
 #define _SM_PARSER_FILEPARSER_CFBPARSER
+#include "Data/ArrayListStringNN.h"
 #include "Data/FastMap.h"
 #include "IO/FileParser.h"
 #include "Text/SpreadSheet/Workbook.h"
@@ -32,7 +33,7 @@ namespace Parser
 
 			struct WorkbookStatus
 			{
-				Data::ArrayListNN<Text::String> sst;
+				Data::ArrayListStringNN sst;
 				Data::ArrayList<WorksheetStatus*> wsList;
 				Data::ArrayList<FontInfo *> fontList;
 				Data::FastMap<Int32, Text::String *> formatMap;

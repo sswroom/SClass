@@ -966,7 +966,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnTimerTick(void *userObj)
 
 void SSWR::AVIRead::AVIRHTTPClientForm::ClearHeaders()
 {
-	LISTNN_FREE_STRING(&this->respHeaders);
+	this->respHeaders.FreeAll();
 }
 
 void SSWR::AVIRead::AVIRHTTPClientForm::ClearParams()

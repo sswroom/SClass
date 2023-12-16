@@ -1,7 +1,7 @@
 #ifndef _SM_IO_MTFILELOG
 #define _SM_IO_MTFILELOG
 #include "Data/ArrayListInt64.h"
-#include "Data/ArrayListNN.h"
+#include "Data/ArrayListStringNN.h"
 #include "IO/BufferedOutputStream.h"
 #include "IO/FileStream.h"
 #include "IO/LogTool.h"
@@ -17,7 +17,7 @@ namespace IO
 	private:
 		Sync::Mutex mut;
 		Data::ArrayList<Data::Timestamp> dateList;
-		Data::ArrayListNN<Text::String> msgList;
+		Data::ArrayListStringNN msgList;
 		Sync::Event evt;
 
 		IO::LogHandler::LogType logStyle;

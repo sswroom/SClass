@@ -202,7 +202,7 @@ Map::ESRI::ESRIMDBLayer::~ESRIMDBLayer()
 	UOSInt i;
 
 	this->conn->UnuseObject();
-	LISTNN_FREE_STRING(&this->colNames);
+	this->colNames.FreeAll();
 	Math::Geometry::Vector2D *vec;
 	i = this->objects.GetCount();
 	while (i-- > 0)
@@ -367,7 +367,7 @@ void Map::ESRI::ESRIMDBLayer::RemoveUpdatedHandler(UpdatedHandler hdlr, void *ob
 {
 }
 
-UOSInt Map::ESRI::ESRIMDBLayer::QueryTableNames(Text::CString schemaName, Data::ArrayListNN<Text::String> *names)
+UOSInt Map::ESRI::ESRIMDBLayer::QueryTableNames(Text::CString schemaName, NotNullPtr<Data::ArrayListNN<Text::String>> names)
 {
 	if (schemaName.leng != 0)
 		return 0;
@@ -375,7 +375,7 @@ UOSInt Map::ESRI::ESRIMDBLayer::QueryTableNames(Text::CString schemaName, Data::
 	return 1;
 }
 
-DB::DBReader *Map::ESRI::ESRIMDBLayer::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListNN<Text::String> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
+DB::DBReader *Map::ESRI::ESRIMDBLayer::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListStringNN *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
 {
 	NotNullPtr<Sync::MutexUsage> mutUsage;
 	NEW_CLASSNN(mutUsage, Sync::MutexUsage());

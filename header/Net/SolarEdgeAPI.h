@@ -89,7 +89,7 @@ namespace Net
 		~SolarEdgeAPI();
 
 		Text::String *GetCurrentVersion();
-		Bool GetSupportedVersions(Data::ArrayListNN<Text::String> *versions);
+		Bool GetSupportedVersions(Data::ArrayListStringNN *versions);
 		Bool GetSiteList(Data::ArrayList<Site*> *versions, UOSInt maxCount, UOSInt startOfst, UOSInt *totalCount);
 		void FreeSiteList(Data::ArrayList<Site*> *versions);
 		Bool GetSiteOverview(Int32 siteId, SiteOverview *overview);

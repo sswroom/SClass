@@ -1,6 +1,6 @@
 #ifndef _SM_NET_WEBSERVER_HTTPFORWARDHANDLER
 #define _SM_NET_WEBSERVER_HTTPFORWARDHANDLER
-#include "Data/ArrayListNN.h"
+#include "Data/ArrayListStringNN.h"
 #include "IO/LogTool.h"
 #include "Net/SSLEngine.h"
 #include "Net/WebServer/WebStandardHandler.h"
@@ -21,8 +21,8 @@ namespace Net
 
 			typedef void (__stdcall *ReqHandler)(void *userObj, NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp);
 		private:
-			Data::ArrayListNN<Text::String> forwardAddrs;
-			Data::ArrayListNN<Text::String> injHeaders;
+			Data::ArrayListStringNN forwardAddrs;
+			Data::ArrayListStringNN injHeaders;
 			UOSInt nextURL;
 			Sync::Mutex mut;
 			NotNullPtr<Net::SocketFactory> sockf;

@@ -251,7 +251,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::LoadDataFile(Text::CStringNN fileName)
 			return false;
 		}
 	}
-	Data::ArrayListNN<Text::String> tableNames;
+	Data::ArrayListStringNN tableNames;
 	this->dataFile->QueryTableNames(CSTR_NULL, tableNames);
 	this->cboDataTable->ClearItems();
 	if (tableNames.GetCount() > 0)

@@ -418,13 +418,7 @@ void __stdcall SSWR::AVIRead::AVIRCoordConvForm::OnFileDrop(void *userObj, NotNu
 
 void SSWR::AVIRead::AVIRCoordConvForm::ClearItems(Bool updateList)
 {
-	UOSInt i;
-	i = this->nameList.GetCount();
-	while (i-- > 0)
-	{
-		this->nameList.GetItem(i)->Release();
-	}
-	this->nameList.Clear();
+	this->nameList.FreeAll();
 	this->xList.Clear();
 	this->yList.Clear();
 	this->zList.Clear();
@@ -490,7 +484,7 @@ void SSWR::AVIRead::AVIRCoordConvForm::UpdateList()
 	j = this->nameList.GetCount();
 	while (i < j)
 	{
-		k = this->lvCoord->AddItem(this->nameList.GetItem(i)->ToCString(), 0);
+		k = this->lvCoord->AddItem(Text::String::OrEmpty(this->nameList.GetItem(i))->ToCString(), 0);
 		x = this->xList.GetItem(i);
 		y = this->yList.GetItem(i);
 		z = this->zList.GetItem(i);

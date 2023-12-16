@@ -79,9 +79,10 @@ Bool Media::AudioConcatSource::AppendSilent(UInt32 time)
 
 UTF8Char *Media::AudioConcatSource::GetSourceName(UTF8Char *buff)
 {
-	if (this->stmList.GetCount() > 0)
+	NotNullPtr<Media::IAudioSource> audSrc;
+	if (this->stmList.GetItem(0).SetTo(audSrc))
 	{
-		return ((Media::IAudioSource*)this->stmList.GetItem(0))->GetSourceName(buff);
+		return audSrc->GetSourceName(buff);
 	}
 	return 0;
 }
@@ -110,6 +111,8 @@ Data::Duration Media::AudioConcatSource::SeekToTime(Data::Duration time)
 {
 	Data::Duration stmTotal;
 	Data::Duration stmTime = 0;
+	NotNullPtr<Media::IAudioSource> audSrc1;
+	NotNullPtr<Media::IAudioSource> audSrc2;
 	UOSInt stmIndex;
 	UOSInt stmCnt;
 	stmTotal = 0;
@@ -120,22 +123,33 @@ Data::Duration Media::AudioConcatSource::SeekToTime(Data::Duration time)
 
 	while (stmIndex < stmCnt)
 	{
-		stmTime = ((Media::IAudioSource *)this->stmList.GetItem(stmIndex))->GetStreamTime();
-		if (stmTime > time)
+		if (this->stmList.GetItem(stmIndex).SetTo(audSrc1))
 		{
-			if (this->currStm != stmIndex && this->readEvt)
+			stmTime = audSrc1->GetStreamTime();
+			if (stmTime > time)
 			{
-				((Media::IAudioSource*)this->stmList.GetItem(this->currStm))->Stop();
-				this->currStm = stmIndex;
-				((Media::IAudioSource*)this->stmList.GetItem(this->currStm))->Start(this->readEvt, this->readBlkSize);
-			}
+				if (this->stmList.GetItem(this->currStm).SetTo(audSrc2))
+				{
+					if (this->currStm != stmIndex && this->readEvt)
+					{
+						audSrc2->Stop();
+						this->currStm = stmIndex;
+						audSrc2 = audSrc1;
+						audSrc2->Start(this->readEvt, this->readBlkSize);
+					}
 
-			return ((Media::IAudioSource*)this->stmList.GetItem(this->currStm))->SeekToTime(time) + stmTotal;
-		}
-		else
-		{
-			time -= stmTime;
-			stmTotal += stmTime;
+					return audSrc2->SeekToTime(time) + stmTotal;
+				}
+				else
+				{
+					return 0;
+				}
+			}
+			else
+			{
+				time -= stmTime;
+				stmTotal += stmTime;
+			}
 		}
 		stmIndex++;
 	}
@@ -143,43 +157,57 @@ Data::Duration Media::AudioConcatSource::SeekToTime(Data::Duration time)
 	time += stmTime;
 	stmTotal -= stmTime;
 
-	if (this->currStm != stmIndex && this->readEvt)
+	if (this->stmList.GetItem(this->currStm).SetTo(audSrc2))
 	{
-		((Media::IAudioSource*)this->stmList.GetItem(this->currStm))->Stop();
-		this->currStm = stmIndex;
-		((Media::IAudioSource*)this->stmList.GetItem(this->currStm))->Start(this->readEvt, this->readBlkSize);
-	}
+		if (this->currStm != stmIndex && this->readEvt && this->stmList.GetItem(stmIndex).SetTo(audSrc1))
+		{
+			audSrc2->Stop();
+			this->currStm = stmIndex;
+			audSrc2 = audSrc1;
+			audSrc2->Start(this->readEvt, this->readBlkSize);
+		}
 
-	return ((Media::IAudioSource*)this->stmList.GetItem(this->currStm))->SeekToTime(time) + stmTotal;
+		return audSrc2->SeekToTime(time) + stmTotal;
+	}
+	return stmTotal;
 }
 
 Bool Media::AudioConcatSource::Start(Sync::Event *evt, UOSInt blkSize)
 {
-	if (this->readEvt && this->currStm > 0)
+	NotNullPtr<Media::IAudioSource> audSrc;
+	if (this->readEvt && this->currStm > 0 && this->stmList.GetItem(this->currStm).SetTo(audSrc))
 	{
-		((Media::IAudioSource*)this->stmList.GetItem(this->currStm))->Stop();
+		audSrc->Stop();
 	}
 	this->readEvt = evt;
 	this->readBlkSize = blkSize;
 
 	this->readOfst = 0;
 	this->currStm = 0;
-	((Media::IAudioSource*)this->stmList.GetItem(this->currStm))->Start(this->readEvt, this->readBlkSize);
-	return true;
+	if (this->stmList.GetItem(this->currStm).SetTo(audSrc))
+	{
+		audSrc->Start(this->readEvt, this->readBlkSize);
+		return true;
+	}
+	return false;
 }
 
 void Media::AudioConcatSource::Stop()
 {
-	if (this->readEvt && this->currStm < this->stmList.GetCount())
+	NotNullPtr<Media::IAudioSource> audSrc;
+	if (this->readEvt && this->stmList.GetItem(this->currStm).SetTo(audSrc))
 	{
-		((Media::IAudioSource*)this->stmList.GetItem(this->currStm))->Stop();
+		audSrc->Stop();
 	}
 	this->readEvt = 0;
 }
 
 UOSInt Media::AudioConcatSource::ReadBlock(Data::ByteArray blk)
 {
-	UOSInt readSize = ((Media::IAudioSource*)this->stmList.GetItem(this->currStm))->ReadBlock(blk);
+	NotNullPtr<Media::IAudioSource> audSrc;
+	if (!this->stmList.GetItem(this->currStm).SetTo(audSrc))
+		return 0;
+	UOSInt readSize = audSrc->ReadBlock(blk);
 	if (readSize > 0)
 		return readSize;
 	if (this->currStm + 1 >= this->stmList.GetCount())
@@ -188,30 +216,33 @@ UOSInt Media::AudioConcatSource::ReadBlock(Data::ByteArray blk)
 	}
 	if (this->readEvt)
 	{
-		((Media::IAudioSource*)this->stmList.GetItem(this->currStm))->Stop();
+		audSrc->Stop();
 		this->currStm++;
-		((Media::IAudioSource*)this->stmList.GetItem(this->currStm))->Start(this->readEvt, this->readBlkSize);
+		if (!this->stmList.GetItem(this->currStm).SetTo(audSrc))
+			return 0;
+		audSrc->Start(this->readEvt, this->readBlkSize);
 	}
 	else
 	{
 		this->currStm++;
+		if (!this->stmList.GetItem(this->currStm).SetTo(audSrc))
+			return 0;
 	}
-	return ((Media::IAudioSource*)this->stmList.GetItem(this->currStm))->ReadBlock(blk);
+	return audSrc->ReadBlock(blk);
 }
 
 Data::Duration Media::AudioConcatSource::GetCurrTime()
 {
 	Data::Duration totalTime = 0;
 	UOSInt i = this->currStm;
-	Media::IAudioSource *astm = this->stmList.GetItem(i);
-	if (astm)
+	NotNullPtr<Media::IAudioSource> astm;
+	if (this->stmList.GetItem(i).SetTo(astm))
 	{
 		totalTime = astm->GetCurrTime();
 	}
 	while (i-- > 0)
 	{
-		astm = this->stmList.GetItem(i);
-		if (astm)
+		if (this->stmList.GetItem(i).SetTo(astm))
 		{
 			totalTime = totalTime + astm->GetStreamTime();
 		}
@@ -228,8 +259,8 @@ Bool Media::AudioConcatSource::IsEnd()
 {
 	if (this->currStm + 1 >= this->stmList.GetCount())
 	{
-		Media::IAudioSource *audioSrc = this->stmList.GetItem(this->currStm);
-		if (audioSrc == 0 || audioSrc->IsEnd())
+		NotNullPtr<Media::IAudioSource> audioSrc;
+		if (!this->stmList.GetItem(this->currStm).SetTo(audioSrc) || audioSrc->IsEnd())
 		{
 			return true;
 		}

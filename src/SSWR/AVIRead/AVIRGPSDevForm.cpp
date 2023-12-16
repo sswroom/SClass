@@ -343,14 +343,8 @@ void SSWR::AVIRead::AVIRGPSDevForm::ToStop()
 
 void SSWR::AVIRead::AVIRGPSDevForm::ClearDevConts()
 {
-	UOSInt i;
 	Sync::MutexUsage mutUsage(this->devContMut);
-	i = this->devConts.GetCount();
-	while (i-- > 0)
-	{
-		this->devConts.GetItem(i)->Release();
-	}
-	this->devConts.Clear();
+	this->devConts.FreeAll();
 	if (this->devContAlerts)
 	{
 		MemFree(this->devContAlerts);
@@ -363,32 +357,19 @@ void SSWR::AVIRead::AVIRGPSDevForm::ClearDevConts()
 		this->devContGuards = 0;
 	}
 	this->devContGCnt = 0;
-	mutUsage.EndUse();
 }
 
 void SSWR::AVIRead::AVIRGPSDevForm::ClearAlertConts()
 {
-	UOSInt i;
 	Sync::MutexUsage mutUsage(this->alertContMut);
-	i = this->alertConts.GetCount();
-	while (i-- > 0)
-	{
-		this->alertConts.GetItem(i)->Release();
-	}
-	this->alertConts.Clear();
+	this->alertConts.FreeAll();
 	this->alertContDevs.Clear();
 }
 
 void SSWR::AVIRead::AVIRGPSDevForm::ClearUserConts()
 {
-	UOSInt i;
 	Sync::MutexUsage mutUsage(this->userContMut);
-	i = this->userConts.GetCount();
-	while (i-- > 0)
-	{
-		this->userConts.GetItem(i)->Release();
-	}
-	this->userConts.Clear();
+	this->userConts.FreeAll();
 	this->userContDevs.Clear();
 }
 

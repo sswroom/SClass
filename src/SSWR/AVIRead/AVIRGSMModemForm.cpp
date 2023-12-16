@@ -509,20 +509,12 @@ void __stdcall SSWR::AVIRead::AVIRGSMModemForm::OnATCommandClicked(void *userObj
 	me->txtATCommand->GetText(sb);
 	if (sb.StartsWith(UTF8STRC("AT")))
 	{
-		Data::ArrayListNN<Text::String> ret;
+		Data::ArrayListStringNN ret;
 		if (me->channel->SendATCommand(ret, sb.ToString(), sb.GetLength(), 3000))
 		{
-			Text::String *s;
-			UOSInt i = 0;
-			UOSInt j = ret.GetCount();
-			while (i < j)
-			{
-				s = ret.GetItem(i);
-				sb.AppendC(UTF8STRC("\r\n"));
-				sb.Append(s);
-				s->Release();
-				i++;
-			}
+			sb.Append(CSTR("\r\n"));
+			sb.AppendJoin(ret.Iterator(), CSTR("\r\n"));
+			ret.FreeAll();
 			me->txtATCommand->SetText(CSTR(""));
 			me->txtATCommandRep->SetText(sb.ToCString());
 		}

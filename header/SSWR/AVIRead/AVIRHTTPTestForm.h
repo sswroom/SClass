@@ -29,7 +29,7 @@ namespace SSWR
 			Optional<Net::SSLEngine> ssl;
 			Sync::Thread **threads;
 			Sync::Mutex connMut;
-			Data::ArrayListNN<Text::String> connURLs;
+			Data::ArrayListStringNN connURLs;
 			Net::WebUtil::RequestMethod method;
 			UInt32 postSize;
 			UOSInt connCurrIndex;

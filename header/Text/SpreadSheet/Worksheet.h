@@ -139,8 +139,8 @@ namespace Text
 			Bool SetCellStyleBorderBottom(UOSInt row, UOSInt col, IStyleCtrl *wb, UInt32 color, BorderType borderType);
 			Bool SetCellURL(UOSInt row, UOSInt col, Text::String *url);
 			Bool SetCellURL(UOSInt row, UOSInt col, Text::CString url);
-			Bool SetCellString(UOSInt row, UOSInt col, CellStyle *style, NotNullPtr<Text::String> val);
-			Bool SetCellString(UOSInt row, UOSInt col, CellStyle *style, Text::CStringNN val);
+			Bool SetCellString(UOSInt row, UOSInt col, Optional<CellStyle> style, NotNullPtr<Text::String> val);
+			Bool SetCellString(UOSInt row, UOSInt col, Optional<CellStyle> style, Text::CStringNN val);
 			Bool SetCellTS(UOSInt row, UOSInt col, CellStyle *style, Data::Timestamp val);
 			Bool SetCellDateTime(UOSInt row, UOSInt col, CellStyle *style, NotNullPtr<Data::DateTime> val);
 			Bool SetCellDouble(UOSInt row, UOSInt col, CellStyle *style, Double val);

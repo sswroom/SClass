@@ -78,3 +78,13 @@ NotNullPtr<Text::String> Data::ArrayListStringNN::JoinString() const
 	*sptr = 0;
 	return newStr;
 }
+
+void Data::ArrayListStringNN::FreeAll()
+{
+	UOSInt i = this->objCnt;
+	while (i-- > 0)
+	{
+		this->arr[i]->Release();
+	}
+	this->objCnt = 0;
+}

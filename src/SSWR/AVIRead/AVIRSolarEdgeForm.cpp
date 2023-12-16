@@ -36,7 +36,7 @@ void __stdcall SSWR::AVIRead::AVIRSolarEdgeForm::OnAPIKeyClicked(void *userObj)
 			me->txtCurrVer->SetText(s->ToCString());
 			s->Release();
 
-			Data::ArrayListNN<Text::String> vers;
+			Data::ArrayListStringNN vers;
 			if (me->seAPI->GetSupportedVersions(&vers))
 			{
 				sb.ClearStr();
@@ -50,7 +50,7 @@ void __stdcall SSWR::AVIRead::AVIRSolarEdgeForm::OnAPIKeyClicked(void *userObj)
 					found = true;
 				}
 				me->txtSuppVer->SetText(sb.ToCString());
-				LISTNN_FREE_STRING(&vers);
+				vers.FreeAll();
 			}
 			else
 			{

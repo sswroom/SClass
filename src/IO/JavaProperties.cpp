@@ -68,7 +68,7 @@ Optional<IO::ConfigFile> IO::JavaProperties::ParseReader(NotNullPtr<Text::UTF8Re
 			}
 			nameEnd = EscapeStr(name, nameEnd);
 			valueEnd = EscapeStr(value, valueEnd);
-			cfg->SetValue(0, CSTRP(name, nameEnd), CSTRP(value, valueEnd));
+			cfg->SetValue(CSTR(""), CSTRP(name, nameEnd), CSTRP(value, valueEnd));
 		}
 	}
 	return cfg;

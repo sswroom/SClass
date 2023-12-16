@@ -42,7 +42,7 @@ namespace SSWR
 			UI::GUIMainMenu *mnuMain;
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
-			Data::ArrayListNN<Text::String> dbNames;
+			Data::ArrayListStringNN dbNames;
 			NotNullPtr<DB::ReadingDB> db;
 			Bool needRelease;
 			DB::ReadingDBTool *dbt;

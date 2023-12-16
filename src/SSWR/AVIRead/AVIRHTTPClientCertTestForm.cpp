@@ -46,7 +46,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientCertTestForm::OnStartClick(void *use
 		me->sslKey = key.Ptr();
 		Crypto::Cert::CertNames names;
 		Crypto::Cert::CertExtensions ext;
-		Data::ArrayListNN<Text::String> sanList;
+		Data::ArrayListStringNN sanList;
 		MemClear(&names, sizeof(names));
 		MemClear(&ext, sizeof(ext));
 		names.countryName = Text::String::New(UTF8STRC("HK")).Ptr();
@@ -66,7 +66,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientCertTestForm::OnStartClick(void *use
 		key->GetKeyId(BYTEARR(ext.authKeyId));
 		me->sslCert = Crypto::Cert::CertUtil::SelfSignedCertCreate(ssl, names, key, 30, &ext);
 		Crypto::Cert::CertNames::FreeNames(names);
-		LISTNN_FREE_STRING(&sanList);
+		sanList.FreeAll();
 		if (!sslCert.Set(me->sslCert))
 		{
 			UI::MessageDialog::ShowDialog(CSTR("Error in initializing Certificate"), CSTR("HTTP Client Cert Test"), me);

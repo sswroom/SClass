@@ -29,10 +29,10 @@ IO::FileExporter::SupportType Exporter::DBFExporter::IsObjectSupported(NotNullPt
 	}
 	NotNullPtr<DB::ReadingDB> conn = NotNullPtr<DB::ReadingDB>::ConvertFrom(pobj);
 	UOSInt tableCnt;
-	Data::ArrayListNN<Text::String> tableNames;
+	Data::ArrayListStringNN tableNames;
 	conn->QueryTableNames(CSTR_NULL, tableNames);
 	tableCnt = tableNames.GetCount();
-	LISTNN_FREE_STRING(&tableNames);
+	tableNames.FreeAll();
 	if (tableCnt == 1)
 		return IO::FileExporter::SupportType::NormalStream;
 	return IO::FileExporter::SupportType::NotSupported;
@@ -63,13 +63,13 @@ Bool Exporter::DBFExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text:
 	UTF8Char sbuff[1024];
 	NotNullPtr<DB::ReadingDB> conn = NotNullPtr<DB::ReadingDB>::ConvertFrom(pobj);
 	UOSInt tableCnt;
-	Data::ArrayListNN<Text::String> tableNames;
+	Data::ArrayListStringNN tableNames;
 	conn->QueryTableNames(CSTR_NULL, tableNames);
 	tableCnt = tableNames.GetCount();
 	NotNullPtr<Text::String> tableName;
 	if (tableCnt != 1 || !tableNames.GetItem(0).SetTo(tableName))
 	{
-		LISTNN_FREE_STRING(&tableNames);
+		tableNames.FreeAll();
 		return false;
 	}
 

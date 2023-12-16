@@ -28,7 +28,7 @@ namespace SSWR
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			NotNullPtr<Data::ArrayListNN<Map::MapDrawLayer>> layers;
-			Data::ArrayList<Map::MapDrawLayer*> *selLayers;
+			Data::ArrayListNN<Map::MapDrawLayer> selLayers;
 
 		private:
 			static void __stdcall OnCheckAllClick(void *userObj);

@@ -340,7 +340,7 @@ UOSInt Map::OruxDBLayer::QueryTableNames(Text::CString schemaName, NotNullPtr<Da
 	return this->db->QueryTableNames(schemaName, names);
 }
 
-DB::DBReader *Map::OruxDBLayer::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListNN<Text::String> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
+DB::DBReader *Map::OruxDBLayer::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListStringNN *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
 {
 	return this->db->QueryTableData(schemaName, tableName, columnNames, ofst, maxCnt, ordering, condition);
 }

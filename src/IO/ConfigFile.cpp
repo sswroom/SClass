@@ -55,16 +55,6 @@ Optional<Text::String> IO::ConfigFile::GetValue(Text::CStringNN name)
 	return GetCateValue(this->defCate->ToCString(), name);
 }
 
-Optional<Text::String> IO::ConfigFile::GetCateValue(Text::String *category, NotNullPtr<Text::String> name)
-{
-	Data::FastStringMap<Text::String *> *cate = this->cfgVals.GetNN(Text::String::OrEmpty(category));
-	if (cate == 0)
-	{
-		return 0;
-	}
-	return cate->GetNN(name);
-}
-
 Optional<Text::String> IO::ConfigFile::GetCateValue(NotNullPtr<Text::String> category, NotNullPtr<Text::String> name)
 {
 	Data::FastStringMap<Text::String *> *cate = this->cfgVals.GetNN(category);
@@ -85,37 +75,31 @@ Optional<Text::String> IO::ConfigFile::GetCateValue(Text::CStringNN category, Te
 	return cate->GetC(name);
 }
 
-Bool IO::ConfigFile::SetValue(Text::String *category, NotNullPtr<Text::String> name, Text::String *value)
+Bool IO::ConfigFile::SetValue(NotNullPtr<Text::String> category, NotNullPtr<Text::String> name, Optional<Text::String> value)
 {
 	Data::FastStringMap<Text::String *> *cate;
 	Text::String *s;
-
-	NotNullPtr<Text::String> cateNN;
-	if (!cateNN.Set(category))
-	{
-		cateNN = Text::String::NewEmpty();
-	}
-	cate = this->cfgVals.GetNN(cateNN);
+	cate = this->cfgVals.GetNN(category);
 	if (cate == 0)
 	{
 		NEW_CLASS(cate, Data::FastStringMap<Text::String *>());
-		this->cfgVals.PutNN(cateNN, cate);
+		this->cfgVals.PutNN(category, cate);
 	}
-	s = cate->PutNN(name, SCOPY_STRING(value));
+	NotNullPtr<Text::String> nns;
+	s = cate->PutNN(name, value.SetTo(nns)?nns->Clone().Ptr():0);
 	SDEL_STRING(s);
 	return true;
 }
 
-Bool IO::ConfigFile::SetValue(Text::CString category, Text::CStringNN name, Text::CString value)
+Bool IO::ConfigFile::SetValue(Text::CStringNN category, Text::CStringNN name, Text::CString value)
 {
 	Data::FastStringMap<Text::String *> *cate;
 	Text::String *s;
-	Text::CStringNN categoryNN = category.OrEmpty();
-	cate = this->cfgVals.GetC(categoryNN);
+	cate = this->cfgVals.GetC(category);
 	if (cate == 0)
 	{
 		NEW_CLASS(cate, Data::FastStringMap<Text::String *>());
-		this->cfgVals.PutC(categoryNN, cate);
+		this->cfgVals.PutC(category, cate);
 	}
 	s = cate->PutC(name, Text::String::NewOrNull(value));
 	SDEL_STRING(s);
@@ -144,7 +128,7 @@ UOSInt IO::ConfigFile::GetCateCount() const
 	return this->cfgVals.GetCount();
 }
 
-UOSInt IO::ConfigFile::GetCateList(NotNullPtr<Data::ArrayListNN<Text::String>> cateList, Bool withEmpty)
+UOSInt IO::ConfigFile::GetCateList(NotNullPtr<Data::ArrayListStringNN> cateList, Bool withEmpty)
 {
 	UOSInt retCnt = 0;
 	Data::FastStringKeyIterator<Data::FastStringMap<Text::String*>*> it = this->cfgVals.KeyIterator();
@@ -161,10 +145,10 @@ UOSInt IO::ConfigFile::GetCateList(NotNullPtr<Data::ArrayListNN<Text::String>> c
 	return retCnt;
 }
 
-UOSInt IO::ConfigFile::GetKeys(Text::String *category, NotNullPtr<Data::ArrayListNN<Text::String>> keyList)
+UOSInt IO::ConfigFile::GetKeys(NotNullPtr<Text::String> category, NotNullPtr<Data::ArrayListStringNN> keyList)
 {
 	Data::FastStringMap<Text::String *> *cate;
-	cate = this->cfgVals.GetNN(Text::String::OrEmpty(category));
+	cate = this->cfgVals.GetNN(category);
 	if (cate == 0)
 		return 0;
 	UOSInt cnt = cate->GetCount();
@@ -177,10 +161,10 @@ UOSInt IO::ConfigFile::GetKeys(Text::String *category, NotNullPtr<Data::ArrayLis
 	return cnt;
 }
 
-UOSInt IO::ConfigFile::GetKeys(Text::CString category, NotNullPtr<Data::ArrayListNN<Text::String>> keyList)
+UOSInt IO::ConfigFile::GetKeys(Text::CStringNN category, NotNullPtr<Data::ArrayListStringNN> keyList)
 {
 	Data::FastStringMap<Text::String *> *cate;
-	cate = this->cfgVals.GetC(category.OrEmpty());
+	cate = this->cfgVals.GetC(category);
 	if (cate == 0)
 		return 0;
 	UOSInt cnt = cate->GetCount();
@@ -230,7 +214,7 @@ IO::ConfigFile *IO::ConfigFile::CloneCate(Text::CString category)
 	while (it.HasNext())
 	{
 		key = it.Next();
-		cfg->SetValue(0, key, cate->GetNN(key));
+		cfg->SetValue(Text::String::NewEmpty(), key, cate->GetNN(key));
 	}
 	return cfg;
 }

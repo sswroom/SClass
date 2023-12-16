@@ -35,7 +35,7 @@ Data::FieldComparator::FieldComparator(Text::CString compareConds)
 
 Data::FieldComparator::~FieldComparator()
 {
-	LISTNN_FREE_STRING(&this->fieldNames);
+	this->fieldNames.FreeAll();
 }
 
 OSInt Data::FieldComparator::Compare(NotNullPtr<VariObject> a, NotNullPtr<VariObject> b) const

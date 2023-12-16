@@ -263,7 +263,7 @@ IO::FileCheck::FileCheck(Text::CStringNN name, Crypto::Hash::HashType chkType) :
 
 IO::FileCheck::~FileCheck()
 {
-	LISTNN_FREE_STRING(&this->fileNames);
+	this->fileNames.FreeAll();
 	MemFree(this->chkValues);
 }
 

@@ -295,7 +295,7 @@ void Text::CPPText::FromCPPString(NotNullPtr<Text::StringBuilderUTF8> sb, const 
 	}
 }
 
-Bool Text::CPPText::ParseEnum(Data::ArrayListNN<Text::String> *enumEntries, Text::CString cppEnumStr, NotNullPtr<Text::StringBuilderUTF8> sbPrefix)
+Bool Text::CPPText::ParseEnum(Data::ArrayListStringNN *enumEntries, Text::CString cppEnumStr, NotNullPtr<Text::StringBuilderUTF8> sbPrefix)
 {
 	IO::MemoryReadingStream mstm(cppEnumStr.v, cppEnumStr.leng);
 	Text::Cpp::CppReader reader(mstm);

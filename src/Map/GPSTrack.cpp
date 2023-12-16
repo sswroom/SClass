@@ -498,7 +498,7 @@ void Map::GPSTrack::RemoveUpdatedHandler(UpdatedHandler hdlr, void *obj)
 	mutUsage.EndUse();
 }
 
-UOSInt Map::GPSTrack::QueryTableNames(Text::CString schemaName, Data::ArrayListNN<Text::String> *names)
+UOSInt Map::GPSTrack::QueryTableNames(Text::CString schemaName, NotNullPtr<Data::ArrayListNN<Text::String>> names)
 {
 	if (schemaName.leng != 0)
 		return 0;
@@ -507,7 +507,7 @@ UOSInt Map::GPSTrack::QueryTableNames(Text::CString schemaName, Data::ArrayListN
 	return 2;
 }
 
-DB::DBReader *Map::GPSTrack::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListNN<Text::String> *columnName, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
+DB::DBReader *Map::GPSTrack::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListStringNN *columnName, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
 {
 	DB::DBReader *r;
 	if (tableName.v != 0 && tableName.Equals(UTF8STRC("GPSData")))

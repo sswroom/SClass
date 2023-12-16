@@ -149,7 +149,7 @@ namespace SSWR
 			UInt64 respULSize;
 			Int32 respStatus;
 			Text::String *respReqURL;
-			Data::ArrayListNN<Text::String> respHeaders;
+			Data::ArrayListStringNN respHeaders;
 			Sync::Mutex respMut;
 			Text::String *respContType;
 			IO::MemoryStream *respData;
@@ -158,7 +158,7 @@ namespace SSWR
 			Data::ArrayList<ParamValue*> params;
 			Data::ArrayList<HTTPCookie *> cookieList;
 			Sync::Mutex cookieMut;
-			Data::ArrayListNN<Text::String> fileList;
+			Data::ArrayListStringNN fileList;
 			Sync::Thread procThread;
 
 			static void __stdcall OnUserAgentClicked(void *userObj);

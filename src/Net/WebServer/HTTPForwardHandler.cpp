@@ -28,8 +28,8 @@ Net::WebServer::HTTPForwardHandler::HTTPForwardHandler(NotNullPtr<Net::SocketFac
 
 Net::WebServer::HTTPForwardHandler::~HTTPForwardHandler()
 {
-	LISTNN_FREE_STRING(&this->forwardAddrs);
-	LISTNN_FREE_STRING(&this->injHeaders);
+	this->forwardAddrs.FreeAll();
+	this->injHeaders.FreeAll();
 }
 
 Bool Net::WebServer::HTTPForwardHandler::ProcessRequest(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq)
@@ -84,7 +84,7 @@ Bool Net::WebServer::HTTPForwardHandler::ProcessRequest(NotNullPtr<Net::WebServe
 		return true;
 	}
 	NotNullPtr<Text::String> hdr;
-	Data::ArrayListNN<Text::String> hdrNames;
+	Data::ArrayListStringNN hdrNames;
 	req->GetHeaderNames(hdrNames);
 	Data::ArrayIterator<NotNullPtr<Text::String>> it;
 

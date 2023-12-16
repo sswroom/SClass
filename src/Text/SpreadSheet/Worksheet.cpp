@@ -545,7 +545,7 @@ Bool Text::SpreadSheet::Worksheet::SetCellURL(UOSInt row, UOSInt col, Text::CStr
 	return true;
 }
 
-Bool Text::SpreadSheet::Worksheet::SetCellString(UOSInt row, UOSInt col, CellStyle *style, NotNullPtr<Text::String> val)
+Bool Text::SpreadSheet::Worksheet::SetCellString(UOSInt row, UOSInt col, Optional<CellStyle> style, NotNullPtr<Text::String> val)
 {
 	CellData *cell;
 	cell = GetCellData(row, col, false);
@@ -554,11 +554,11 @@ Bool Text::SpreadSheet::Worksheet::SetCellString(UOSInt row, UOSInt col, CellSty
 	cell->cdt = CellDataType::String;
 	SDEL_STRING(cell->cellValue);
 	cell->cellValue = val->Clone().Ptr();
-	if (style) cell->style = style;
+	if (!style.IsNull()) cell->style = style;
 	return true;
 }
 
-Bool Text::SpreadSheet::Worksheet::SetCellString(UOSInt row, UOSInt col, CellStyle *style, Text::CStringNN val)
+Bool Text::SpreadSheet::Worksheet::SetCellString(UOSInt row, UOSInt col, Optional<CellStyle> style, Text::CStringNN val)
 {
 	CellData *cell;
 	cell = GetCellData(row, col, false);
@@ -570,7 +570,7 @@ Bool Text::SpreadSheet::Worksheet::SetCellString(UOSInt row, UOSInt col, CellSty
 	{
 		cell->cellValue = Text::String::New(val).Ptr();
 	}
-	if (style) cell->style = style;
+	if (!style.IsNull()) cell->style = style;
 	return true;
 }
 

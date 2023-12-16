@@ -19,7 +19,7 @@ struct Net::HTTPOSClient::ClassData
 {
 	CURL *curl;
 	struct curl_slist *headers;
-	Data::ArrayListNN<Text::String> *respHeaders;
+	Data::ArrayListStringNN *respHeaders;
 	NotNullPtr<Text::String> userAgent;
 	IO::MemoryStream *respData;
 	UInt64 contLen;

@@ -55,7 +55,7 @@ DB::DBQueue::SQLGroup::SQLGroup(Data::ArrayList<Text::String*> *strs, Int32 prog
 
 DB::DBQueue::SQLGroup::~SQLGroup()
 {
-	LIST_FREE_STRING(&this->strs);
+	this->strs.FreeAll();
 }
 
 DB::DBQueue::CmdType DB::DBQueue::SQLGroup::GetCmdType() const
@@ -436,17 +436,26 @@ UTF8Char *DB::DBQueue::ToString(UTF8Char *buff)
 
 DB::SQLType DB::DBQueue::GetSQLType() const
 {
-	return this->db1->GetSQLType();
+	NotNullPtr<DB::DBTool> db;
+	if (this->db1.SetTo(db))
+		return db->GetSQLType();
+	return DB::SQLType::Unknown;
 }
 
 Bool DB::DBQueue::IsAxisAware() const
 {
-	return this->db1->IsAxisAware();
+	NotNullPtr<DB::DBTool> db;
+	if (this->db1.SetTo(db))
+		return db->IsAxisAware();
+	return false;
 }
 
 Int8 DB::DBQueue::GetTzQhr() const
 {
-	return this->db1->GetTzQhr();
+	NotNullPtr<DB::DBTool> db;
+	if (this->db1.SetTo(db))
+		return db->GetTzQhr();
+	return 0;
 }
 
 UOSInt DB::DBQueue::GetNextCmds(IDBCmd **cmds)
@@ -489,32 +498,35 @@ UOSInt DB::DBQueue::GetNextCmds(IDBCmd **cmds)
 
 UTF8Char *DB::DBQueue::DBDateTime(UTF8Char *buff, Data::DateTime *dat)
 {
-	return db1->DBDateTime(buff, dat);
+	NotNullPtr<DB::DBTool> db;
+	if (this->db1.SetTo(db))
+		return db->DBDateTime(buff, dat);
+	return DB::DBUtil::SDBDateTime(buff, dat, DB::SQLType::Unknown, 0);
 }
 
 UTF8Char *DB::DBQueue::DBInt32(UTF8Char *buff, Int32 val)
 {
-	return db1->DBInt32(buff, val);
+	return DB::DBUtil::SDBInt32(buff, val, this->GetSQLType());
 }
 
 UTF8Char *DB::DBQueue::DBInt64(UTF8Char *buff, Int64 val)
 {
-	return db1->DBInt64(buff, val);
+	return DB::DBUtil::SDBInt64(buff, val, this->GetSQLType());
 }
 
 UTF8Char *DB::DBQueue::DBStrW(UTF8Char *buff, const WChar *val)
 {
-	return db1->DBStrW(buff, val);
+	return DB::DBUtil::SDBStrW(buff, val, this->GetSQLType());
 }
 
 UTF8Char *DB::DBQueue::DBDbl(UTF8Char *buff, Double val)
 {
-	return db1->DBDbl(buff, val);
+	return DB::DBUtil::SDBDbl(buff, val, this->GetSQLType());
 }
 
 UTF8Char *DB::DBQueue::DBBool(UTF8Char *buff, Bool val)
 {
-	return db1->DBBool(buff, val);
+	return DB::DBUtil::SDBBool(buff, val, this->GetSQLType());
 }
 
 Bool DB::DBQueue::IsExecTimeout()

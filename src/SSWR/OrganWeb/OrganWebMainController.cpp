@@ -1499,12 +1499,11 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSpecies(NotNullPtr<Net
 		if (refURLList.GetCount() > 0)
 		{
 			writer.WriteLineC(UTF8STRC("Reference URL:<br/>"));
-			Text::String *url;
-			i = 0;
-			j = refURLList.GetCount();
-			while (i < j)
+			NotNullPtr<Text::String> url;
+			Data::ArrayIterator<NotNullPtr<Text::String>> it = refURLList.Iterator();
+			while (it.HasNext())
 			{
-				url = refURLList.GetItem(i);
+				url = it.Next();
 
 				writer.WriteStrC(UTF8STRC("<a href="));
 				s = Text::XML::ToNewAttrText(url->v);
@@ -1517,7 +1516,6 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSpecies(NotNullPtr<Net
 				writer.WriteLineC(UTF8STRC("</a><br/>"));
 
 				url->Release();
-				i++;
 			}
 			writer.WriteLineC(UTF8STRC("<hr/>"));
 		}

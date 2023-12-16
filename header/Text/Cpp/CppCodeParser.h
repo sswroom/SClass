@@ -33,8 +33,8 @@ namespace Text
 			
 			static UTF8Char *RemoveSpace(UTF8Char *sptr);
 			void LogError(Text::Cpp::CppParseStatus *status, const UTF8Char *errMsg, UOSInt msgLen, Data::ArrayListStringNN *errMsgs);
-			Bool ParseSharpIfParam(Text::CString cond, Text::Cpp::CppParseStatus *status, Data::ArrayListStringNN *errMsgs, Data::ArrayListNN<Text::String> *codePhases, UOSInt cpIndex);
-			Bool EvalSharpIfVal(Data::ArrayListNN<Text::String> *codePhases, Text::Cpp::CppParseStatus *status, Data::ArrayListStringNN *errMsgs, UOSInt cpIndex, Int32 *outVal, OSInt priority);
+			Bool ParseSharpIfParam(Text::CString cond, Text::Cpp::CppParseStatus *status, Data::ArrayListStringNN *errMsgs, Data::ArrayListStringNN *codePhases, UOSInt cpIndex);
+			Bool EvalSharpIfVal(Data::ArrayListStringNN *codePhases, Text::Cpp::CppParseStatus *status, Data::ArrayListStringNN *errMsgs, UOSInt cpIndex, Int32 *outVal, OSInt priority);
 			Bool EvalSharpIf(Text::CString cond, Text::Cpp::CppParseStatus *status, Data::ArrayListStringNN *errMsgs, Bool *result);
 			Bool ParseLine(UTF8Char *lineBuff, UTF8Char *lineBuffEnd, Text::Cpp::CppParseStatus *status, Data::ArrayListStringNN *errMsgs);
 		public:

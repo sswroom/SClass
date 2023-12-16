@@ -84,7 +84,7 @@ namespace DB
 
 		DBReader *GetTablesInfo(Text::CString schemaName);
 		virtual UOSInt QueryTableNames(Text::CString schemaName, NotNullPtr<Data::ArrayListNN<Text::String>> names);
-		virtual DBReader *QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListNN<Text::String> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition);
+		virtual DBReader *QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListStringNN *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition);
 
 	public:
 		void ShowSQLError(const UTF16Char *state, const UTF16Char *errMsg);
@@ -96,7 +96,7 @@ namespace DB
 		Text::String *GetConnPWD();
 		Text::String *GetConnSchema();
 
-		static UOSInt GetDriverList(Data::ArrayListNN<Text::String> *driverList);
+		static UOSInt GetDriverList(NotNullPtr<Data::ArrayListStringNN> driverList);
 		static IO::ConfigFile *GetDriverInfo(Text::CString driverName);
 		static Optional<DBTool> CreateDBTool(NotNullPtr<Text::String> dsn, Optional<Text::String> uid, Optional<Text::String> pwd, Optional<Text::String> schema, NotNullPtr<IO::LogTool> log, Text::CString logPrefix);
 		static Optional<DBTool> CreateDBTool(Text::CStringNN dsn, Text::CString uid, Text::CString pwd, Text::CString schema, NotNullPtr<IO::LogTool> log, Text::CString logPrefix);

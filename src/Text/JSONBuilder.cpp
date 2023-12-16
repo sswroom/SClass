@@ -248,6 +248,20 @@ Bool Text::JSONBuilder::ArrayAddStr(Text::CString val)
 	return true;
 }
 
+Bool Text::JSONBuilder::ArrayAddStr(NotNullPtr<Text::String> val)
+{
+	if (this->currType != OT_ARRAY)
+		return false;
+	if (this->isFirst)
+		this->isFirst = false;
+	else
+	{
+		this->sb.AppendC(UTF8STRC(","));
+	}
+	this->AppendStrUTF8(val->v);
+	return true;
+}
+
 Bool Text::JSONBuilder::ArrayAddStrUTF8(const UTF8Char *val)
 {
 	if (this->currType != OT_ARRAY)

@@ -33,7 +33,7 @@ Net::HTTPClient::HTTPClient(NotNullPtr<Net::SocketFactory> sockf, Bool kaConn) :
 
 Net::HTTPClient::~HTTPClient()
 {
-	LISTNN_FREE_STRING(&this->headers);
+	this->headers.FreeAll();
 	SDEL_CLASS(this->formSb);
 	this->url->Release();
 }

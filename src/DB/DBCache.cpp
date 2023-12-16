@@ -143,8 +143,8 @@ DB::DBRow *DB::DBCache::GetTableItem(Text::CString tableName, Int64 pk)
 	DB::DBCache::TableInfo *tableInfo = this->GetTableInfo(tableName);
 	if (tableInfo == 0)
 		return 0;
-	DB::ColDef *col = tableInfo->def->GetSinglePKCol();
-	if (col == 0)
+	NotNullPtr<DB::ColDef> col;
+	if (!tableInfo->def->GetSinglePKCol().SetTo(col))
 	{
 		return 0;
 	}
@@ -200,18 +200,19 @@ DB::DBRow *DB::DBCache::GetTableItem(Text::CString tableName, Int64 pk)
 
 void DB::DBCache::FreeTableData(NotNullPtr<Data::ArrayListNN<DB::DBRow>> rows)
 {
-	if (rows->GetCount() > 0)
+	NotNullPtr<DB::DBRow> row;
+	if (rows->GetCount() > 0 && rows->GetItem(0).SetTo(row))
 	{
-		DB::TableDef *table = rows->GetItem(0)->GetTableDef();
+		DB::TableDef *table = row->GetTableDef();
 		DB::DBCache::TableInfo *tableInfo = this->GetTableInfo(table);
 		if (tableInfo->dataCnt >= this->cacheCnt)
 		{
-			LIST_FREE_FUNC(rows, DEL_CLASS);
+			rows->DeleteAll();
 		}
 		else
 		{
 			/////////////////////////////
-			LIST_FREE_FUNC(rows, DEL_CLASS);
+			rows->DeleteAll();
 		}
 	}
 }

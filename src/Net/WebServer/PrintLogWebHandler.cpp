@@ -28,21 +28,19 @@ void Net::WebServer::PrintLogWebHandler::WebRequest(NotNullPtr<IWebRequest> req,
 	sb.AppendUTF8Char(' ');
 	sb.Append(Net::WebServer::IWebRequest::RequestProtocolGetName(req->GetProtocol()));
 	this->writer->WriteLineC(sb.ToString(), sb.GetLength());
-	Data::ArrayList<Text::String*> headers;
+	Data::ArrayListStringNN headers;
 	req->GetHeaderNames(headers);
-	Text::String *header;
-	UOSInt i = 0;
-	UOSInt j = headers.GetCount();
-	while (i < j)
+	NotNullPtr<Text::String> header;
+	Data::ArrayIterator<NotNullPtr<Text::String>> it = headers.Iterator();
+	while (it.HasNext())
 	{
 		sb.ClearStr();
 		sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
-		header = headers.GetItem(i);
+		header = it.Next();
 		sb.Append(header);
 		sb.AppendC(UTF8STRC(": "));
 		req->GetHeaderC(sb, header->ToCString());
 		this->writer->WriteLineC(sb.ToString(), sb.GetLength());
-		i++;
 	}
 	this->writer->WriteLineC(sbuff, (UOSInt)(sptr - sbuff));
 	Net::WebServer::PrintLogWebResponse plResp(resp, this->writer, CSTRP(sbuff, sptr));

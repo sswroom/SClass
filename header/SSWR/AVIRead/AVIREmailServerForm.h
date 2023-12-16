@@ -92,7 +92,7 @@ namespace SSWR
 
 			Sync::Mutex userMut;
 			Data::FastStringMap<UOSInt> userMap;
-			Data::ArrayListNN<Text::String> userList;
+			Data::ArrayListStringNN userList;
 
 			Net::Email::EmailStore *store;
 			UOSInt totalSize;

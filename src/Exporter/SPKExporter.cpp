@@ -91,11 +91,10 @@ Bool Exporter::SPKExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text:
 				UOSInt buffSize = 1;
 				UOSInt i = 0;
 				UOSInt bSize;
-				Text::String *url;
+				NotNullPtr<Text::String> url;
 				while (true)
 				{
-					url = osm->GetOSMURL(i);
-					if (url == 0)
+					if (!osm->GetOSMURL(i).SetTo(url))
 						break;
 
 					bSize = url->leng;

@@ -190,7 +190,7 @@ void SSWR::AVIRead::AVIRLineCounterForm::CalcDir(UTF8Char *pathBuff, UTF8Char *p
 void SSWR::AVIRead::AVIRLineCounterForm::ClearExts()
 {
 	if (this->lbExtensions) this->lbExtensions->ClearItems();
-	LISTNN_FREE_STRING(&this->extList)
+	this->extList.FreeAll();
 }
 
 void SSWR::AVIRead::AVIRLineCounterForm::ClearResult()

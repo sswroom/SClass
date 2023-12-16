@@ -16,7 +16,7 @@ namespace Text
 		Text::StringBuilderUTF8 ccVals;
 		Text::IMIMEObj *content;
 		Data::ArrayList<Text::IMIMEObj *> attachObj;
-		Data::ArrayListNN<Text::String> attachName;
+		Data::ArrayListStringNN attachName;
 
 		void AppendStr(NotNullPtr<Text::StringBuilderUTF8> sbc, Text::CString s);
 		void AppendStr(NotNullPtr<Text::StringBuilderUTF8> sbc, const WChar *s);

@@ -68,18 +68,16 @@ Bool Net::Email::SMTPClient::Send(NotNullPtr<Net::Email::EmailMessage> message)
 		return false;
 	}
 	NotNullPtr<const Data::ArrayListNN<Net::Email::EmailMessage::EmailAddress>> recpList = message->GetRecpList();
-	UOSInt i = 0;
-	UOSInt j = recpList->GetCount();
-	while (i < j)
+	Data::ArrayIterator<NotNullPtr<Net::Email::EmailMessage::EmailAddress>> it = recpList->Iterator();
+	while (it.HasNext())
 	{
-		if (!conn.SendRcptTo(recpList->GetItem(i)->addr->ToCString()))
+		if (!conn.SendRcptTo(it.Next()->addr->ToCString()))
 		{
 			return false;
 		}
-		i++;
 	}
-	const UInt8 *content = mstm.GetBuff(i);
-	Bool succ = conn.SendData(content, i);
+	const UInt8 *content = mstm.GetBuff();
+	Bool succ = conn.SendData(content, (UOSInt)mstm.GetLength());
 	conn.SendQuit();
 	return succ;
 }

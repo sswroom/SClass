@@ -404,14 +404,7 @@ void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnTargetSelChg(void *userObj)
 				me->txtTargetCountry->SetText(CSTR("Unk"));
 			}
 			Text::StringBuilderUTF8 sb;
-			i = 0;
-			j = rec->GetCount();
-			while (i < j)
-			{
-				sb.Append(rec->GetItem(i));
-				sb.AppendC(UTF8STRC("\r\n"));
-				i++;
-			}
+			sb.AppendJoin(rec->Iterator(), CSTR("\r\n"));
 			me->txtTargetWhois->SetText(sb.ToCString());
 		}
 		else
@@ -772,20 +765,13 @@ void SSWR::AVIRead::AVIRDNSProxyForm::UpdateDNSList()
 
 void SSWR::AVIRead::AVIRDNSProxyForm::UpdateBlackList()
 {
-	Data::ArrayList<Text::String *> blackList;
-	UOSInt i;
-	UOSInt j;
-	Text::StringBuilderUTF8 sb;
-	this->proxy->GetBlackList(&blackList);
+	Data::ArrayListStringNN blackList;
+	this->proxy->GetBlackList(blackList);
 	this->lbBlackList->ClearItems();
-	i = 0;
-	j = blackList.GetCount();
-	while (i < j)
+	Data::ArrayIterator<NotNullPtr<Text::String>> it = blackList.Iterator();
+	while (it.HasNext())
 	{
-		sb.ClearStr();
-		sb.Append(blackList.GetItem(i));
-		this->lbBlackList->AddItem(sb.ToCString(), 0);
-		i++;
+		this->lbBlackList->AddItem(it.Next(), 0);
 	}
 	
 }

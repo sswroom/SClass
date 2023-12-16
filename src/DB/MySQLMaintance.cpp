@@ -18,7 +18,7 @@ DB::MySQLMaintance::~MySQLMaintance()
 
 void DB::MySQLMaintance::RepairSchema(const UTF8Char *schema, NotNullPtr<Text::StringBuilderUTF8> sb)
 {
-	Data::ArrayListNN<Text::String> tableNames;
+	Data::ArrayListStringNN tableNames;
 	if (!this->cli->ChangeSchema(schema))
 	{
 		this->cli->GetLastErrorMsg(sb);

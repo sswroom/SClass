@@ -42,7 +42,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 		i = 0;
 		while (i < j)
 		{
-			if (lyr.Set(lyrColl->GetItem(i)))
+			if (lyrColl->GetItem(i).SetTo(lyr))
 			{
 				sptr = lyr->GetName()->ConcatTo(sbuff);
 				sptr = &sbuff[Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), IO::Path::PATH_SEPERATOR) + 1];

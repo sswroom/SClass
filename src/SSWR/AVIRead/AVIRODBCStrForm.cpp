@@ -30,12 +30,12 @@ void __stdcall SSWR::AVIRead::AVIRODBCStrForm::OnDriverInfoClicked(void *userObj
 		IO::ConfigFile *driver = DB::ODBCConn::GetDriverInfo(sb.ToCString());
 		if (driver)
 		{
-			Data::ArrayListNN<Text::String> keys;
+			Data::ArrayListStringNN keys;
 			const UTF8Char *sarr[2];
 			sarr[0] = (const UTF8Char*)"Name";
 			sarr[1] = (const UTF8Char*)"Value";
 			SSWR::AVIRead::AVIRTableMsgForm frm(0, me->ui, me->core, sb.ToCString(), 2, sarr);
-			driver->GetKeys((Text::String*)0, keys);
+			driver->GetKeys(CSTR(""), keys);
 			Data::ArrayIterator<NotNullPtr<Text::String>> it = keys.Iterator();
 			while (it.HasNext())
 			{
@@ -109,9 +109,9 @@ SSWR::AVIRead::AVIRODBCStrForm::AVIRODBCStrForm(UI::GUIClientControl *parent, No
 	this->SetDefaultButton(this->btnOK);
 	this->SetCancelButton(this->btnCancel);
 
-	Data::ArrayListNN<Text::String> driverList;
+	Data::ArrayListStringNN driverList;
 	UOSInt i = 0;
-	UOSInt j = DB::ODBCConn::GetDriverList(&driverList);
+	UOSInt j = DB::ODBCConn::GetDriverList(driverList);
 	while (i < j)
 	{
 		this->cboDriver->AddItem(Text::String::OrEmpty(driverList.GetItem(i)), 0);

@@ -38,6 +38,7 @@ namespace Text
 		Bool ArrayAddBool(Bool val);
 		Bool ArrayAddStr(Text::PString *val);
 		Bool ArrayAddStr(Text::CString val);
+		Bool ArrayAddStr(NotNullPtr<Text::String> val);
 		Bool ArrayAddStrUTF8(const UTF8Char *val);
 		Bool ArrayAddNull();
 		Bool ArrayAddCoord2D(Math::Coord2DDbl coord);

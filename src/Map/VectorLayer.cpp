@@ -135,7 +135,7 @@ const UTF8Char **Map::VectorLayer::CopyStrs(Text::PString *strs)
 	return newStrs;
 }
 
-const UTF8Char **Map::VectorLayer::CopyStrs(NotNullPtr<Data::ArrayListNN<Text::String>> strs)
+const UTF8Char **Map::VectorLayer::CopyStrs(NotNullPtr<Data::ArrayListStringNN> strs)
 {
 	UOSInt i = this->strCnt;
 	UOSInt j = 0;
@@ -308,7 +308,7 @@ Map::VectorLayer::VectorLayer(Map::DrawLayerType layerType, Text::CStringNN sour
 	}
 }
 
-Map::VectorLayer::VectorLayer(Map::DrawLayerType layerType, Text::CStringNN sourceName, NotNullPtr<Data::ArrayListNN<Text::String>> colNames, NotNullPtr<Math::CoordinateSystem> csys, NotNullPtr<Data::ArrayList<ColInfo>> colInfos, UOSInt nameCol, Text::CString layerName) : Map::MapDrawLayer(sourceName, nameCol, layerName, csys)
+Map::VectorLayer::VectorLayer(Map::DrawLayerType layerType, Text::CStringNN sourceName, NotNullPtr<Data::ArrayListStringNN> colNames, NotNullPtr<Math::CoordinateSystem> csys, NotNullPtr<Data::ArrayList<ColInfo>> colInfos, UOSInt nameCol, Text::CString layerName) : Map::MapDrawLayer(sourceName, nameCol, layerName, csys)
 {
 	UOSInt i;
 	this->layerType = layerType;
@@ -628,7 +628,7 @@ void Map::VectorLayer::SetTableName(Text::String *tableName)
 	}
 }
 
-UOSInt Map::VectorLayer::QueryTableNames(Text::CString schemaName, Data::ArrayListNN<Text::String> *names)
+UOSInt Map::VectorLayer::QueryTableNames(Text::CString schemaName, Data::ArrayListStringNN *names)
 {
 	if (schemaName.leng != 0)
 		return 0;
@@ -830,7 +830,7 @@ Bool Map::VectorLayer::AddVector(NotNullPtr<Math::Geometry::Vector2D> vec, const
 	return true;
 }
 
-Bool Map::VectorLayer::AddVector(NotNullPtr<Math::Geometry::Vector2D> vec, NotNullPtr<Data::ArrayListNN<Text::String>> strs)
+Bool Map::VectorLayer::AddVector(NotNullPtr<Math::Geometry::Vector2D> vec, NotNullPtr<Data::ArrayListStringNN> strs)
 {
 	if (!this->VectorValid(vec))
 		return false;

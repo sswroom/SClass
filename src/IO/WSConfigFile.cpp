@@ -28,7 +28,7 @@ IO::ConfigFile *IO::WSConfigFile::Parse(Text::CStringNN fileName)
 		sb.TrimWSCRLF();
 		if (Text::StrSplitWSP(sarr, 2, sb) == 2)
 		{
-			cfg->SetValue(CSTR_NULL, sarr[0].ToCString(), sarr[1].ToCString());
+			cfg->SetValue(CSTR(""), sarr[0].ToCString(), sarr[1].ToCString());
 		}
 	}
 	return cfg;

@@ -201,8 +201,7 @@ void __stdcall SSWR::AVIRead::AVIRCertUtilForm::OnSANAddClicked(void *userObj)
 void __stdcall SSWR::AVIRead::AVIRCertUtilForm::OnSANClearClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRCertUtilForm *me = (SSWR::AVIRead::AVIRCertUtilForm*)userObj;
-	LISTNN_FREE_STRING(me->sanList);
-	me->sanList->Clear();
+	me->sanList->FreeAll();
 	me->lbSAN->ClearItems();
 }
 
@@ -422,8 +421,7 @@ void SSWR::AVIRead::AVIRCertUtilForm::DisplayExtensions(NotNullPtr<Crypto::Cert:
 
 void SSWR::AVIRead::AVIRCertUtilForm::ClearExtensions()
 {
-	LISTNN_FREE_STRING(this->sanList);
-	this->sanList->Clear();
+	this->sanList->FreeAll();
 	this->lbSAN->ClearItems();
 }
 
@@ -434,7 +432,7 @@ SSWR::AVIRead::AVIRCertUtilForm::AVIRCertUtilForm(UI::GUIClientControl *parent, 
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 	this->ssl = Net::SSLEngineFactory::Create(this->core->GetSocketFactory(), true);
-	NEW_CLASS(this->sanList, Data::ArrayListNN<Text::String>());
+	NEW_CLASS(this->sanList, Data::ArrayListStringNN());
 	this->key = 0;
 
 	NEW_CLASS(this->lblKey, UI::GUILabel(ui, *this, CSTR("Key")));
@@ -523,7 +521,7 @@ SSWR::AVIRead::AVIRCertUtilForm::AVIRCertUtilForm(UI::GUIClientControl *parent, 
 
 SSWR::AVIRead::AVIRCertUtilForm::~AVIRCertUtilForm()
 {
-	LISTNN_FREE_STRING(this->sanList);
+	this->sanList->FreeAll();
 	DEL_CLASS(this->sanList);
 	SDEL_CLASS(this->key);
 	this->ssl.Delete();

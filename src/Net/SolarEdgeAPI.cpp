@@ -69,7 +69,7 @@ Text::String *Net::SolarEdgeAPI::GetCurrentVersion()
 	return s;
 }
 
-Bool Net::SolarEdgeAPI::GetSupportedVersions(Data::ArrayListNN<Text::String> *versions)
+Bool Net::SolarEdgeAPI::GetSupportedVersions(Data::ArrayListStringNN *versions)
 {
 	Text::StringBuilderUTF8 sbURL;
 	this->BuildURL(sbURL, CSTR("/version/supported"));

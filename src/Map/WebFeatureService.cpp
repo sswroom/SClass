@@ -335,7 +335,7 @@ void Map::WebFeatureService::SetFeature(UOSInt index)
 	this->currFeature = this->features.GetItem(index);
 }
 
-UOSInt Map::WebFeatureService::GetFeatureNames(Data::ArrayListNN<Text::String> *nameList) const
+UOSInt Map::WebFeatureService::GetFeatureNames(Data::ArrayListStringNN *nameList) const
 {
 	UOSInt i = 0;
 	UOSInt j = this->features.GetCount();

@@ -2,7 +2,7 @@
 #define _SM_CRYPTO_CERT_X509FILE
 #include "Crypto/Hash/IHash.h"
 #include "Data/ArrayList.h"
-#include "Data/ArrayListNN.h"
+#include "Data/ArrayListStringNN.h"
 #include "Net/ASN1Data.h"
 #include "Text/CString.h"
 
@@ -37,7 +37,7 @@ namespace Crypto
 
 		struct CertExtensions
 		{
-			Data::ArrayListNN<Text::String> *subjectAltName;
+			Data::ArrayListStringNN *subjectAltName;
 			Data::ArrayList<Text::String *> *issuerAltName;
 			Bool useSubjKeyId;
 			UInt8 subjKeyId[20];

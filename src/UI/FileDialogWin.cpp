@@ -154,7 +154,7 @@ Bool UI::FileDialog::ShowDialog(ControlHandle *ownerHandle)
 			{
 				sb.AppendC(UTF8STRC(";"));
 			}
-			sb.Append(this->patterns.GetItem(i++));
+			sb.Append(Text::String::OrEmpty(this->patterns.GetItem(i++)).Ptr());
 		}
 		sb.AppendChar('\0', 1);
 	}
@@ -162,11 +162,11 @@ Bool UI::FileDialog::ShowDialog(ControlHandle *ownerHandle)
 	i = 0;
 	while (i < filterCnt)
 	{
-		sb.Append(this->names.GetItem(i));
+		sb.Append(this->names.GetItem(i).OrNull());
 		sb.AppendC(UTF8STRC(" ("));
-		sb.Append(this->patterns.GetItem(i));
+		sb.Append(this->patterns.GetItem(i).OrNull());
 		sb.AppendChar('\0', 2);
-		sb.Append(this->patterns.GetItem(i++));
+		sb.Append(this->patterns.GetItem(i++).OrNull());
 		sb.AppendChar('\0', 1);
 	}
 	if (!this->isSave)
@@ -273,11 +273,11 @@ Bool UI::FileDialog::ShowDialog(ControlHandle *ownerHandle)
 			Bool found = false;
 			UOSInt foundIndexLeng = 0;
 			NotNullPtr<Text::String> u8fname = Text::String::NewNotNull(fnameBuff);
+			NotNullPtr<Text::String> pattern;
 			i = 0;
 			while (i < filterCnt)
 			{
-				Text::String *pattern = this->patterns.GetItem(i);
-				if (IO::Path::FilePathMatch(u8fname->v, u8fname->leng, pattern->v, pattern->leng))
+				if (this->patterns.GetItem(i).SetTo(pattern) && IO::Path::FilePathMatch(u8fname->v, u8fname->leng, pattern->v, pattern->leng))
 				{
 					if (!found)
 					{
@@ -344,8 +344,8 @@ Bool UI::FileDialog::ShowDialog(ControlHandle *ownerHandle)
 		this->filterIndex = ofn.nFilterIndex - 1;
 		if (isSave && ofn.nFileExtension == 0)
 		{
-			Text::String *pattern = this->patterns.GetItem(this->filterIndex);
-			if (pattern && Text::StrStartsWithC(pattern->v, pattern->leng, UTF8STRC("*.")))
+			NotNullPtr<Text::String> pattern;
+			if (this->patterns.GetItem(this->filterIndex).SetTo(pattern) && Text::StrStartsWithC(pattern->v, pattern->leng, UTF8STRC("*.")))
 			{
 				Text::StrUTF8_WChar(&fnameBuff[Text::StrCharCnt(fnameBuff)], &pattern->v[1], 0);
 			}

@@ -163,29 +163,11 @@ Media::VectorGraph::VectorGraph(UInt32 srid, Double width, Double height, Math::
 
 Media::VectorGraph::~VectorGraph()
 {
-	Media::VectorGraph::VectorPenStyle *pen;
-	Media::VectorGraph::VectorFontStyle *font;
-	VectorBrushStyle *brush;
 	Math::Geometry::Vector2D *vec;
 	UOSInt i;
-	i = this->penStyles.GetCount();
-	while (i-- > 0)
-	{
-		pen = this->penStyles.GetItem(i);
-		DEL_CLASS(pen);
-	}
-	i = this->fontStyles.GetCount();
-	while (i-- > 0)
-	{
-		font = this->fontStyles.GetItem(i);
-		DEL_CLASS(font);
-	}
-	i = this->brushStyles.GetCount();
-	while (i-- > 0)
-	{
-		brush = this->brushStyles.GetItem(i);
-		DEL_CLASS(brush);
-	}
+	this->penStyles.DeleteAll();
+	this->fontStyles.DeleteAll();
+	this->brushStyles.DeleteAll();
 	i = this->itemStyle.GetCount();
 	while (i-- > 0)
 	{
@@ -554,15 +536,12 @@ Bool Media::VectorGraph::DrawImagePt3(NotNullPtr<DrawImage> img, Math::Coord2DDb
 NotNullPtr<Media::DrawPen> Media::VectorGraph::NewPenARGB(UInt32 color, Double thick, UInt8 *pattern, UOSInt nPattern)
 {
 	NotNullPtr<Media::VectorGraph::VectorPenStyle> pen;
-	UOSInt i;
-	UOSInt j;
-	i = 0;
-	j = this->penStyles.GetCount();
-	while (i < j)
+	Data::ArrayIterator<NotNullPtr<Media::VectorGraph::VectorPenStyle>> it = this->penStyles.Iterator();
+	while (it.HasNext())
 	{
-		if (pen.Set(this->penStyles.GetItem(i)) && pen->IsSame(color, thick, pattern, nPattern))
+		pen = it.Next();
+		if (pen->IsSame(color, thick, pattern, nPattern))
 			return pen;
-		i++;
 	}
 	NEW_CLASSNN(pen, Media::VectorGraph::VectorPenStyle(this->penStyles.GetCount(), color, thick, pattern, nPattern));
 	this->penStyles.Add(pen);
@@ -572,16 +551,12 @@ NotNullPtr<Media::DrawPen> Media::VectorGraph::NewPenARGB(UInt32 color, Double t
 NotNullPtr<Media::DrawBrush> Media::VectorGraph::NewBrushARGB(UInt32 color)
 {
 	NotNullPtr<Media::VectorGraph::VectorBrushStyle> brush;
-	UOSInt i;
-	UOSInt j;
-	i = 0;
-	j = this->brushStyles.GetCount();
-	while (i < j)
+	Data::ArrayIterator<NotNullPtr<Media::VectorGraph::VectorBrushStyle>> it = this->brushStyles.Iterator();
+	while (it.HasNext())
 	{
-		if (brush.Set(this->brushStyles.GetItem(i)))
-			if (brush->IsSame(color))
-				return brush;
-		i++;
+		brush = it.Next();
+		if (brush->IsSame(color))
+			return brush;
 	}
 	NEW_CLASSNN(brush, Media::VectorGraph::VectorBrushStyle(this->brushStyles.GetCount(), color));
 	this->brushStyles.Add(brush);
@@ -591,15 +566,12 @@ NotNullPtr<Media::DrawBrush> Media::VectorGraph::NewBrushARGB(UInt32 color)
 NotNullPtr<Media::DrawFont> Media::VectorGraph::NewFontPt(Text::CString name, Double ptSize, Media::DrawEngine::DrawFontStyle fontStyle, UInt32 codePage)
 {
 	NotNullPtr<Media::VectorGraph::VectorFontStyle> font;
-	UOSInt i;
-	UOSInt j;
-	i = 0;
-	j = this->fontStyles.GetCount();
-	while (i < j)
+	Data::ArrayIterator<NotNullPtr<VectorFontStyle>> it = this->fontStyles.Iterator();
+	while (it.HasNext())
 	{
-		if (font.Set(this->fontStyles.GetItem(i)) && font->IsSame(name, ptSize, fontStyle, 0))
+		font = it.Next();
+		if (font->IsSame(name, ptSize, fontStyle, 0))
 			return font;
-		i++;
 	}
 	NEW_CLASSNN(font, Media::VectorGraph::VectorFontStyle(this->fontStyles.GetCount(), name, ptSize, fontStyle, 0));
 	this->fontStyles.Add(font);
@@ -610,15 +582,12 @@ NotNullPtr<Media::DrawFont> Media::VectorGraph::NewFontPx(Text::CString name, Do
 {
 	NotNullPtr<Media::VectorGraph::VectorFontStyle> font;
 	Double ptSize = pxSize * 96.0 / 72.0;
-	UOSInt i;
-	UOSInt j;
-	i = 0;
-	j = this->fontStyles.GetCount();
-	while (i < j)
+	Data::ArrayIterator<NotNullPtr<VectorFontStyle>> it = this->fontStyles.Iterator();
+	while (it.HasNext())
 	{
-		if (font.Set(this->fontStyles.GetItem(i)) && font->IsSame(name, ptSize, fontStyle, codePage))
+		font = it.Next();
+		if (font->IsSame(name, ptSize, fontStyle, codePage))
 			return font;
-		i++;
 	}
 	NEW_CLASSNN(font, Media::VectorGraph::VectorFontStyle(this->fontStyles.GetCount(), name, ptSize, fontStyle, codePage));
 	this->fontStyles.Add(font);
@@ -747,9 +716,9 @@ void Media::VectorGraph::DrawTo(NotNullPtr<Media::DrawImage> dimg, OptOut<UInt32
 	Data::ArrayListNN<Media::DrawFont> dfonts;
 	Data::ArrayListNN<Media::DrawBrush> dbrushes;
 	Data::ArrayListNN<Media::DrawPen> dpens;
-	VectorPenStyle *pen;
-	VectorFontStyle *font;
-	VectorBrushStyle *brush;
+	NotNullPtr<VectorPenStyle> pen;
+	NotNullPtr<VectorFontStyle> font;
+	NotNullPtr<VectorBrushStyle> brush;
 	VectorStyles *styles;
 	Math::Geometry::Vector2D *vec;
 	NotNullPtr<Media::DrawPen> p;
@@ -758,34 +727,26 @@ void Media::VectorGraph::DrawTo(NotNullPtr<Media::DrawImage> dimg, OptOut<UInt32
 	Optional<Media::DrawBrush> ob;
 	NotNullPtr<Media::DrawFont> f;
 	Optional<Media::DrawFont> df;
-	NotNullPtr<VectorPenStyle> vpen;
-	NotNullPtr<VectorFontStyle> vfnt;
-	i = 0;
-	j = this->fontStyles.GetCount();
-	while (i < j)
+	Data::ArrayIterator<NotNullPtr<VectorFontStyle>> itFont = this->fontStyles.Iterator();
+	while (itFont.HasNext())
 	{
-		font = this->fontStyles.GetItem(i);
+		font = itFont.Next();
 		f = font->CreateDrawFont(dpi, dimg);
 		dfonts.Add(f);
-		i++;
 	}
-	i = 0;
-	j = this->penStyles.GetCount();
-	while (i < j)
+	Data::ArrayIterator<NotNullPtr<VectorPenStyle>> itPen = this->penStyles.Iterator();
+	while (itPen.HasNext())
 	{
-		pen = this->penStyles.GetItem(i);
+		pen = itPen.Next();
 		p = pen->CreateDrawPen(dpi, dimg);
 		dpens.Add(p);
-		i++;
 	}
-	i = 0;
-	j = this->brushStyles.GetCount();
-	while (i < j)
+	Data::ArrayIterator<NotNullPtr<VectorBrushStyle>> itBrush = this->brushStyles.Iterator();
+	while (itBrush.HasNext())
 	{
-		brush = this->brushStyles.GetItem(i);
+		brush = itBrush.Next();
 		b = brush->CreateDrawBrush(dpi, dimg);
 		dbrushes.Add(b);
-		i++;
 	}
 
 
@@ -795,17 +756,17 @@ void Media::VectorGraph::DrawTo(NotNullPtr<Media::DrawImage> dimg, OptOut<UInt32
 	{
 		vec = this->items.GetItem(i);
 		styles = this->itemStyle.GetItem(i);
-		if (styles->pen.SetTo(vpen))
+		if (styles->pen.SetTo(pen))
 		{
-			dp = dpens.GetItem(vpen->GetIndex());
+			dp = dpens.GetItem(pen->GetIndex());
 		}
 		else
 		{
 			dp = 0;
 		}
-		if (styles->font.SetTo(vfnt))
+		if (styles->font.SetTo(font))
 		{
-			df = dfonts.GetItem(vfnt->GetIndex());
+			df = dfonts.GetItem(font->GetIndex());
 		}
 		else
 		{
@@ -829,12 +790,11 @@ void Media::VectorGraph::DrawTo(NotNullPtr<Media::DrawImage> dimg, OptOut<UInt32
 				UOSInt nPoints;
 				Math::Coord2DDbl *points;
 				Math::Coord2DDbl *dpoints;
-				UOSInt i = 0;
-				UOSInt j = pl->GetCount();
-				Math::Geometry::LineString *lineString;
-				while (i < j)
+				NotNullPtr<Math::Geometry::LineString> lineString;
+				Data::ArrayIterator<NotNullPtr<Math::Geometry::LineString>> it = pl->Iterator();
+				while (it.HasNext())
 				{
-					lineString = pl->GetItem(i);
+					lineString = it.Next();
 					dpoints = lineString->GetPointList(nPoints);
 					points = MemAllocA(Math::Coord2DDbl, nPoints);
 					Math::Coord2DDbl dScale = Math::Coord2DDbl(scale, scale);
@@ -845,7 +805,6 @@ void Media::VectorGraph::DrawTo(NotNullPtr<Media::DrawImage> dimg, OptOut<UInt32
 					}
 					dimg->DrawPolyline(points, nPoints, p);
 					MemFreeA(points);
-					i++;
 				}
 			}
 		}
@@ -942,19 +901,19 @@ void Media::VectorGraph::DrawTo(NotNullPtr<Media::DrawImage> dimg, OptOut<UInt32
 	i = dpens.GetCount();
 	while (i-- > 0)
 	{
-		if (p.Set(dpens.GetItem(i)))
+		if (dpens.GetItem(i).SetTo(p))
 			dimg->DelPen(p);
 	}
 	i = dbrushes.GetCount();
 	while (i-- > 0)
 	{
-		if (b.Set(dbrushes.GetItem(i)))
+		if (dbrushes.GetItem(i).SetTo(b))
 			dimg->DelBrush(b);
 	}
 	i = dfonts.GetCount();
 	while (i-- > 0)
 	{
-		if (f.Set(dfonts.GetItem(i)))
+		if (dfonts.GetItem(i).SetTo(f))
 			dimg->DelFont(f);
 	}
 	imgDurMS.Set(imgTimeMS);

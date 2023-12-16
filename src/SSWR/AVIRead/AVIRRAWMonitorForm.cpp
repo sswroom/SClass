@@ -234,14 +234,7 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnIPTranSelChg(void *userObj)
 		Net::WhoisRecord *rec = me->whois.RequestIP(ipTran->ip);
 		if (rec)
 		{
-			UOSInt i = 0;
-			UOSInt j = rec->GetCount();
-			while (i < j)
-			{
-				sb.Append(rec->GetItem(i));
-				sb.AppendC(UTF8STRC("\r\n"));
-				i++;
-			}
+			sb.AppendJoin(rec->Iterator(), CSTR("\r\n"));
 		}
 		me->txtIPTranWhois->SetText(sb.ToCString());
 		me->dataUpdated = true;
@@ -281,14 +274,7 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnPingIPSelChg(void *userObj)
 		Net::WhoisRecord *rec = me->whois.RequestIP(me->currPingIP->ip);
 		if (rec)
 		{
-			UOSInt i = 0;
-			UOSInt j = rec->GetCount();
-			while (i < j)
-			{
-				sb.Append(rec->GetItem(i));
-				sb.AppendC(UTF8STRC("\r\n"));
-				i++;
-			}
+			sb.AppendJoin(rec->Iterator(), CSTR("\r\n"));
 		}
 		me->txtPingIPWhois->SetText(sb.ToCString());
 	}
@@ -451,14 +437,7 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnDNSTargetSelChg(void *userOb
 		if (rec)
 		{
 			Text::StringBuilderUTF8 sb;
-			i = 0;
-			j = rec->GetCount();
-			while (i < j)
-			{
-				sb.Append(rec->GetItem(i));
-				sb.AppendC(UTF8STRC("\r\n"));
-				i++;
-			}
+			sb.AppendJoin(rec->Iterator(), CSTR("\r\n"));
 			me->txtDNSTargetWhois->SetText(sb.ToCString());
 		}
 		else

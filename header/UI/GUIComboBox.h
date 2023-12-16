@@ -1,6 +1,6 @@
 #ifndef _SM_UI_GUICOMBOBOX
 #define _SM_UI_GUICOMBOBOX
-#include "Data/ArrayListNN.h"
+#include "Data/ArrayListStringNN.h"
 #include "Text/String.h"
 #include "UI/GUIClientControl.h"
 
@@ -16,7 +16,7 @@ namespace UI
 		Data::ArrayList<void *> selChgObjs;
 		UOSInt minVisible;
 		Data::ArrayList<void *> items;
-		Data::ArrayListNN<Text::String> itemTexts;
+		Data::ArrayListStringNN itemTexts;
 		Bool allowEdit;
 		Bool autoComplete;
 		UOSInt lastTextLeng;

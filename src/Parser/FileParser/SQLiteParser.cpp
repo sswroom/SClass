@@ -120,11 +120,11 @@ IO::ParsedObject *Parser::FileParser::SQLiteParser::ParseAsMap(DB::DBConn *conn)
 		tableNames.SortedIndexOf(CSTR("gpkg_tile_matrix_set")) < 0 ||
 		tableNames.SortedIndexOf(CSTR("gpkg_tile_matrix")) < 0)
 	{
-		LISTNN_FREE_STRING(&tableNames);
+		tableNames.FreeAll();
 		return conn;
 	}
 	
-	LISTNN_FREE_STRING(&tableNames);
+	tableNames.FreeAll();
 
 	Map::GeoPackage *gpkg;
 	NEW_CLASS(gpkg, Map::GeoPackage(conn));

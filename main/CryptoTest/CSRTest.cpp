@@ -56,7 +56,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	names.commonName = Text::String::New(UTF8STRC("sswroom.no-ip.org")).Ptr();
 	names.emailAddress = Text::String::New(UTF8STRC("sswroom@yahoo.com")).Ptr();
 
-	NEW_CLASS(ext.subjectAltName, Data::ArrayListNN<Text::String>());
+	NEW_CLASS(ext.subjectAltName, Data::ArrayListStringNN());
 	ext.subjectAltName->Add(Text::String::New(UTF8STRC("sswroom.no-ip.org")));
 	NotNullPtr<Crypto::Cert::X509CertReq> csr;
 	NotNullPtr<Net::SSLEngine> nnssl;
@@ -71,7 +71,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	{
 		console.WriteLineC(UTF8STRC("Error in creating csr"));
 	}
-	LIST_FREE_STRING(ext.subjectAltName);
+	ext.subjectAltName->FreeAll();
 	DEL_CLASS(ext.subjectAltName);
 	Crypto::Cert::CertNames::FreeNames(names);
 	key.Delete();

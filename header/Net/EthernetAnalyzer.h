@@ -1,6 +1,6 @@
 #ifndef _SM_NET_ETHERNETANALYZER
 #define _SM_NET_ETHERNETANALYZER
-#include "Data/ArrayListNN.h"
+#include "Data/ArrayListStringNN.h"
 #include "Data/FastMap.h"
 #include "Data/FixedCircularBuff.h"
 #include "Data/ICaseStringMap.h"
@@ -103,7 +103,7 @@ namespace Net
 		{
 			UInt32 ip;
 			Sync::Mutex mut;
-			Data::ArrayListNN<Text::String> logList;
+			Data::ArrayListStringNN logList;
 		};
 
 		struct DHCPInfo

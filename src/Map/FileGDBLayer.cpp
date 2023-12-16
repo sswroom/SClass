@@ -337,7 +337,7 @@ void Map::FileGDBLayer::RemoveUpdatedHandler(UpdatedHandler hdlr, void *obj)
 {
 }
 
-UOSInt Map::FileGDBLayer::QueryTableNames(Text::CString schemaName, Data::ArrayListNN<Text::String> *names)
+UOSInt Map::FileGDBLayer::QueryTableNames(Text::CString schemaName, Data::ArrayListStringNN *names)
 {
 	if (schemaName.leng != 0)
 		return 0;
@@ -345,7 +345,7 @@ UOSInt Map::FileGDBLayer::QueryTableNames(Text::CString schemaName, Data::ArrayL
 	return 1;
 }
 
-DB::DBReader *Map::FileGDBLayer::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListNN<Text::String> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
+DB::DBReader *Map::FileGDBLayer::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListStringNN *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
 {
 	NotNullPtr<Sync::MutexUsage> mutUsage;
 	NEW_CLASSNN(mutUsage, Sync::MutexUsage());

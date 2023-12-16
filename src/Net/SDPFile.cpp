@@ -348,16 +348,16 @@ Bool Net::SDPFile::BuildBuff()
 	sb.Append(this->sessName);
 	writer.WriteLineC(sb.ToString(), sb.GetLength());
 
+	Data::ArrayIterator<NotNullPtr<Text::String>> it = this->sessDesc.Iterator();
 	i = 0;
-	j = this->sessDesc.GetCount();
-	while (i < j)
+	while (it.HasNext())
 	{
 		sb.ClearStr();
 		sbuff[0] = (UTF8Char)this->sessDescType.GetItem(i);
 		sbuff[1] = '=';
 		sbuff[2] = 0;
 		sb.AppendC(sbuff, 2);
-		sb.Append(this->sessDesc.GetItem(i));
+		sb.Append(it.Next());
 		i++;
 	}
 

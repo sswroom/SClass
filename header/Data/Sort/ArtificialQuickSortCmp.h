@@ -1,15 +1,15 @@
 #ifndef _SM_DATA_SORT_ARTIFICIALQUICKSORTCMP
 #define _SM_DATA_SORT_ARTIFICIALQUICKSORTCMP
 #include "Data/ArrayList.h"
-#include "Data/ArrayListNN.h"
+#include "Data/ArrayListStringNN.h"
 #include "Data/DataComparer.h"
 #include "Data/Sort/InsertionSortCmp.h"
 
 template <class T> void ArtificialQuickSort_PreSort(T *arr, OSInt left, OSInt right);
 template <class T> void ArtificialQuickSort_Sort(T *arr, OSInt firstIndex, OSInt lastIndex);
 
-template <class T> void ArtificialQuickSort_Sort(Data::ArrayList<T> *arr, OSInt firstIndex, OSInt lastIndex);
-template <class T> void ArtificialQuickSort_Sort(Data::ArrayListNN<T> *arr, OSInt firstIndex, OSInt lastIndex);
+template <class T> void ArtificialQuickSort_SortAList(Data::ArrayListNN<T> *arr);
+template <class T> void ArtificialQuickSort_SortAList(Data::ArrayList<T> *arr);
 
 template <class T> void ArtificialQuickSort_PreSort(T *arr, OSInt left, OSInt right)
 {
@@ -114,15 +114,16 @@ template <class T> void ArtificialQuickSort_Sort(T *arr, OSInt firstIndex, OSInt
 #endif
 }
 
-template <class T> void ArtificialQuickSort_Sort(Data::ArrayList<T> *arr, OSInt firstIndex, OSInt lastIndex)
+template <class T> void ArtificialQuickSort_SortAList(Data::ArrayList<T> *arr)
 {
 	UOSInt size;
 	T *a = arr->GetArray(&size);
-	ArtificialQuickSort_Sort(a, firstIndex, lastIndex);
+	ArtificialQuickSort_Sort(a, 0, (OSInt)size - 1);
 }
 
-template <class T> void ArtificialQuickSort_Sort(Data::ArrayListNN<T> *arr, OSInt firstIndex, OSInt lastIndex)
+template <class T> void ArtificialQuickSort_SortAList(Data::ArrayListNN<T> *arr)
 {
-	ArtificialQuickSort_Sort(arr->Ptr(), firstIndex, lastIndex);
+	ArtificialQuickSort_Sort(arr->Ptr(), 0, (OSInt)arr->GetCount() - 1);
 }
+
 #endif

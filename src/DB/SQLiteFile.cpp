@@ -243,7 +243,7 @@ UOSInt DB::SQLiteFile::QueryTableNames(Text::CString schemaName, NotNullPtr<Data
 	return names->GetCount() - initCnt;
 }
 
-DB::DBReader *DB::SQLiteFile::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListNN<Text::String> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
+DB::DBReader *DB::SQLiteFile::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListStringNN *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
 {
 	Text::StringBuilderUTF8 sb;
 	UTF8Char sbuff[512];

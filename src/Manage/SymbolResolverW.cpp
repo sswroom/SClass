@@ -11,8 +11,6 @@
 
 Manage::SymbolResolver::SymbolResolver(NotNullPtr<Manage::Process> proc)
 {
-	UOSInt i;
-	UOSInt j;
 	UOSInt baseAddr;
 	UOSInt size;
 	UTF8Char sbuff[256];
@@ -22,12 +20,10 @@ Manage::SymbolResolver::SymbolResolver(NotNullPtr<Manage::Process> proc)
 
 	Data::ArrayListNN<Manage::ModuleInfo> modList;
 	this->proc->GetModules(modList);
-	i = 0;
-	j = modList.GetCount();
-	while (i < j)
+	Data::ArrayIterator<NotNullPtr<Manage::ModuleInfo>> it = modList.Iterator();
+	while (it.HasNext())
 	{
-		Manage::ModuleInfo *mod;
-		mod = modList.GetItem(i);
+		NotNullPtr<Manage::ModuleInfo> mod = it.Next();
 
 		sptr = mod->GetModuleFileName(sbuff);
 		this->modNames.Add(Text::String::NewP(sbuff, sptr));
@@ -35,18 +31,13 @@ Manage::SymbolResolver::SymbolResolver(NotNullPtr<Manage::Process> proc)
 		this->modBaseAddrs.Add(baseAddr);
 		this->modSizes.Add(size);
 
-		DEL_CLASS(mod);
-		i++;
+		mod.Delete();
 	}
 }
 
 Manage::SymbolResolver::~SymbolResolver()
 {
-	UOSInt i = this->modNames.GetCount();
-	while (i-- > 0)
-	{
-		this->modNames.GetItem(i)->Release();
-	}
+	this->modNames.FreeAll();
 	SymCleanup((HANDLE)this->proc->GetHandle());
 }
 
@@ -58,14 +49,14 @@ UTF8Char *Manage::SymbolResolver::ResolveName(UTF8Char *buff, UInt64 address)
 	UInt8 tmpBuff[sizeof(SYMBOL_INFO) + 256];
 	DWORD64 disp;
 	Bool found = false;
-	Text::String *name;
+	NotNullPtr<Text::String> name;
 
 	i = this->modNames.GetCount();
 	while (i-- > 0)
 	{
 		if (((UInt64)address) >= (UInt64)this->modBaseAddrs.GetItem(i) && ((UInt64)address) < (UInt64)(this->modBaseAddrs.GetItem(i) + this->modSizes.GetItem(i)))
 		{
-			name = this->modNames.GetItem(i);
+			name = Text::String::OrEmpty(this->modNames.GetItem(i));
 			j = name->LastIndexOf('\\');
 			buff = Text::StrConcatC(buff, &name->v[j + 1], name->leng - j - 1);
 			found = true;
@@ -142,7 +133,7 @@ UOSInt Manage::SymbolResolver::GetModuleCount()
 	return this->modNames.GetCount();
 }
 
-Text::String *Manage::SymbolResolver::GetModuleName(UOSInt index)
+Optional<Text::String> Manage::SymbolResolver::GetModuleName(UOSInt index)
 {
 	return this->modNames.GetItem(index);
 }

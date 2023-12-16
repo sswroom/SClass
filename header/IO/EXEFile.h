@@ -1,6 +1,6 @@
 #ifndef _SM_IO_EXEFILE
 #define _SM_IO_EXEFILE
-#include "Data/ArrayListNN.h"
+#include "Data/ArrayListStringNN.h"
 #include "Data/DateTime.h"
 #include "Data/Timestamp.h"
 #include "IO/ParsedObject.h"
@@ -96,7 +96,7 @@ namespace IO
 		typedef struct
 		{
 			NotNullPtr<Text::String> moduleName;
-			Data::ArrayListNN<Text::String> *funcs;
+			Data::ArrayListStringNN *funcs;
 		} ImportInfo;
 
 		typedef struct
@@ -113,8 +113,8 @@ namespace IO
 			UOSInt dataSize;
 		} ResourceInfo;
 	private:
-		Data::ArrayListNN<Text::String> propNames;
-		Data::ArrayListNN<Text::String> propValues;
+		Data::ArrayListStringNN propNames;
+		Data::ArrayListStringNN propValues;
 		Data::ArrayList<ImportInfo*> importList;
 		Data::ArrayList<ExportInfo*> exportList;
 		Data::ArrayList<ResourceInfo*> resList;

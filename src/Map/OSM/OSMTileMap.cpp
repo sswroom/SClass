@@ -26,7 +26,7 @@ Map::OSM::OSMTileMap::OSMTileMap(Text::CStringNN url, IO::SPackageFile *spkg, UO
 
 Map::OSM::OSMTileMap::~OSMTileMap()
 {
-	LISTNN_FREE_STRING(&this->urls);
+	this->urls.FreeAll();
 }
 
 void Map::OSM::OSMTileMap::AddAlternateURL(Text::CStringNN url)

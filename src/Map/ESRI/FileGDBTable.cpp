@@ -80,7 +80,7 @@ NotNullPtr<Text::String> Map::ESRI::FileGDBTable::GetName() const
 	return this->tableName;
 }
 
-DB::DBReader *Map::ESRI::FileGDBTable::OpenReader(Data::ArrayListNN<Text::String> *columnNames, UOSInt dataOfst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *conditions)
+DB::DBReader *Map::ESRI::FileGDBTable::OpenReader(Data::ArrayListStringNN *columnNames, UOSInt dataOfst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *conditions)
 {
 	if (this->tableInfo == 0)
 	{

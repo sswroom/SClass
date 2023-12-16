@@ -234,13 +234,7 @@ void SSWR::AVIRead::AVIRMQTTBrokerForm::ServerStop()
 
 void SSWR::AVIRead::AVIRMQTTBrokerForm::ClearCACerts()
 {
-	UOSInt i = this->caCerts.GetCount();
-	while (i-- > 0)
-	{
-		Crypto::Cert::X509Cert *cert = this->caCerts.GetItem(i);
-		DEL_CLASS(cert);
-	}
-	this->caCerts.Clear();
+	this->caCerts.DeleteAll();
 }
 
 SSWR::AVIRead::AVIRMQTTBrokerForm::AVIRMQTTBrokerForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)

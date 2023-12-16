@@ -140,15 +140,14 @@ void SSWR::AVIRead::AVIRSSLCertKeyForm::LoadFile(Text::CStringNN fileName)
 	{
 		Bool found = false;
 		Crypto::Cert::X509FileList *fileList = (Crypto::Cert::X509FileList*)x509.Ptr();
-		Crypto::Cert::X509File *file;
+		NotNullPtr<Crypto::Cert::X509File> file;
 		UOSInt i;
 		UOSInt j;
 		i = 0;
 		j = fileList->GetFileCount();
 		while (i < j)
 		{
-			file = fileList->GetFile(i);
-			if (file && file->GetFileType() == Crypto::Cert::X509File::FileType::Cert)
+			if (fileList->GetFile(i).SetTo(file) && file->GetFileType() == Crypto::Cert::X509File::FileType::Cert)
 			{
 				if (!found)
 				{
@@ -190,13 +189,7 @@ void SSWR::AVIRead::AVIRSSLCertKeyForm::LoadFile(Text::CStringNN fileName)
 
 void SSWR::AVIRead::AVIRSSLCertKeyForm::ClearCACerts()
 {
-	UOSInt i = this->caCerts.GetCount();
-	while (i-- > 0)
-	{
-		Crypto::Cert::X509Cert *cert = this->caCerts.GetItem(i);
-		DEL_CLASS(cert);
-	}
-	this->caCerts.Clear();
+	this->caCerts.DeleteAll();
 }
 
 SSWR::AVIRead::AVIRSSLCertKeyForm::AVIRSSLCertKeyForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Optional<Net::SSLEngine> ssl, Crypto::Cert::X509Cert *cert, Crypto::Cert::X509File *key, NotNullPtr<Data::ArrayListNN<Crypto::Cert::X509Cert>> caCerts) : UI::GUIForm(parent, 456, 200, ui)
@@ -209,12 +202,10 @@ SSWR::AVIRead::AVIRSSLCertKeyForm::AVIRSSLCertKeyForm(UI::GUIClientControl *pare
 	this->ssl = ssl;
 	this->initCert = cert;
 	this->initKey = key;
-	UOSInt i = 0;
-	UOSInt j = caCerts->GetCount();
-	while (i < j)
+	Data::ArrayIterator<NotNullPtr<Crypto::Cert::X509Cert>> it = caCerts->Iterator();
+	while (it.HasNext())
 	{
-		this->caCerts.Add(NotNullPtr<Crypto::Cert::X509Cert>::ConvertFrom(caCerts->GetItem(i)->Clone()));
-		i++;
+		this->caCerts.Add(NotNullPtr<Crypto::Cert::X509Cert>::ConvertFrom(it.Next()->Clone()));
 	}
 	this->cert = 0;
 	this->key = 0;
@@ -306,12 +297,10 @@ Crypto::Cert::X509File *SSWR::AVIRead::AVIRSSLCertKeyForm::GetKey()
 
 UOSInt SSWR::AVIRead::AVIRSSLCertKeyForm::GetCACerts(NotNullPtr<Data::ArrayListNN<Crypto::Cert::X509Cert>> caCerts)
 {
-	UOSInt i = 0;
-	UOSInt j = this->caCerts.GetCount();
-	while (i < j)
+	Data::ArrayIterator<NotNullPtr<Crypto::Cert::X509Cert>> it = this->caCerts.Iterator();
+	while (it.HasNext())
 	{
-		caCerts->Add(NotNullPtr<Crypto::Cert::X509Cert>::ConvertFrom(this->caCerts.GetItem(i)->Clone()));
-		i++;
+		caCerts->Add(NotNullPtr<Crypto::Cert::X509Cert>::ConvertFrom(it.Next()->Clone()));
 	}
-	return j;
+	return this->caCerts.GetCount();
 }

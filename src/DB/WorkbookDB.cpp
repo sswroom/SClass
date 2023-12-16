@@ -245,7 +245,7 @@ UOSInt DB::WorkbookDB::QueryTableNames(Text::CString schemaName, NotNullPtr<Data
 	return this->wb->GetCount();
 }
 
-DB::DBReader *DB::WorkbookDB::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListNN<Text::String> *colNames, UOSInt dataOfst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
+DB::DBReader *DB::WorkbookDB::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListStringNN *colNames, UOSInt dataOfst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
 {
 	NotNullPtr<Text::SpreadSheet::Worksheet> sheet;
 	if (!this->wb->GetWorksheetByName(tableName).SetTo(sheet))

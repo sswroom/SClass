@@ -251,17 +251,15 @@ void UI::GUIMapTreeView::ExpandColl(UI::GUIMapTreeView::ItemIndex *ind)
 			Map::MapEnv::GroupItem *grp;
 			NotNullPtr<Map::MapDrawLayer> layer;
 			UOSInt i = this->env->GetItemCount(ind->group);
-			UOSInt j;
-			UOSInt k;
 			grp = this->env->AddGroup(ind->group, lyrColl->GetName());
-			j = 0;
-			k = lyrColl->GetCount();
-			while (j < k)
+			Sync::RWMutexUsage mutUsage;
+			Data::ArrayIterator<NotNullPtr<Map::MapDrawLayer>> it = lyrColl->Iterator(mutUsage);
+			while (it.HasNext())
 			{
-				if (layer.Set(lyrColl->GetItem(j)))
-					this->env->AddLayer(grp, layer, true);
-				j++;
+				layer = it.Next();
+				this->env->AddLayer(grp, layer, true);
 			}
+			mutUsage.EndUse();
 			lyrColl->Clear();
 			this->env->RemoveItem(ind->group, ind->index);
 			this->env->MoveItem(ind->group, i - 1, ind->group, ind->index);

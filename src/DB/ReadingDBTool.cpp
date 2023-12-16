@@ -550,7 +550,7 @@ UInt32 DB::ReadingDBTool::GetDataCnt()
 	return this->dataCnt;
 }
 
-DB::DBReader *DB::ReadingDBTool::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListNN<Text::String> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
+DB::DBReader *DB::ReadingDBTool::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListStringNN *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
 {
 	{
 		Text::StringBuilderUTF8 logMsg;
@@ -743,7 +743,7 @@ UOSInt DB::ReadingDBTool::QueryTableNames(Text::CString schemaName, NotNullPtr<D
 	}
 }
 
-UOSInt DB::ReadingDBTool::QuerySchemaNames(NotNullPtr<Data::ArrayListNN<Text::String>> arr)
+UOSInt DB::ReadingDBTool::QuerySchemaNames(NotNullPtr<Data::ArrayListStringNN> arr)
 {
 	if (this->sqlType == DB::SQLType::PostgreSQL)
 	{
@@ -803,7 +803,7 @@ DB::TableDef *DB::ReadingDBTool::GetTableDef(Text::CString schemaName, Text::CSt
 	return this->db->GetTableDef(schemaName, tableName);
 }
 
-UOSInt DB::ReadingDBTool::GetDatabaseNames(Data::ArrayListNN<Text::String> *arr)
+UOSInt DB::ReadingDBTool::GetDatabaseNames(NotNullPtr<Data::ArrayListStringNN> arr)
 {
 	NotNullPtr<DB::DBReader> r;
 	switch (this->sqlType)
@@ -895,9 +895,9 @@ UOSInt DB::ReadingDBTool::GetDatabaseNames(Data::ArrayListNN<Text::String> *arr)
 	}
 }
 
-void DB::ReadingDBTool::ReleaseDatabaseNames(Data::ArrayListNN<Text::String> *arr)
+void DB::ReadingDBTool::ReleaseDatabaseNames(NotNullPtr<Data::ArrayListStringNN> arr)
 {
-	LISTNN_FREE_STRING(arr);
+	arr->FreeAll();
 }
 
 Bool DB::ReadingDBTool::ChangeDatabase(Text::CString databaseName)

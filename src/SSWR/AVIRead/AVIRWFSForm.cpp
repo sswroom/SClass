@@ -15,7 +15,7 @@ void __stdcall SSWR::AVIRead::AVIRWFSForm::OnLoadClicked(void *userObj)
 	else
 	{
 		me->txtStatus->SetText(CSTR("Success"));
-		Data::ArrayListNN<Text::String> nameList;
+		Data::ArrayListStringNN nameList;
 		UOSInt i = 0;
 		UOSInt j = me->wfs->GetFeatureNames(&nameList);
 		me->cboFeature->ClearItems();

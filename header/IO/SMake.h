@@ -36,8 +36,8 @@ namespace IO
 			NotNullPtr<Text::String> name;
 			Text::String *srcFile;
 			Text::String *compileCfg;
-			Data::ArrayListNN<Text::String> subItems;
-			Data::ArrayListNN<Text::String> libs;
+			Data::ArrayListStringNN subItems;
+			Data::ArrayListStringNN libs;
 			Bool compiled;
 		};
 
@@ -54,7 +54,7 @@ namespace IO
 		Sync::ParallelTask *tasks;
 		Bool error;
 		Bool asyncMode;
-		Data::ArrayListNN<Text::String> linkCmds;
+		Data::ArrayListStringNN linkCmds;
 		Data::ArrayListNN<const ProgramItem> testProgs;
 
 		void AppendCfgItem(NotNullPtr<Text::StringBuilderUTF8> sb, Text::CStringNN val);

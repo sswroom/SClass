@@ -2427,7 +2427,7 @@ UOSInt Net::MySQLTCPClient::QueryTableNames(Text::CString schemaName, NotNullPtr
 	return names->GetCount() - initCnt;
 }
 
-DB::DBReader *Net::MySQLTCPClient::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListNN<Text::String> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
+DB::DBReader *Net::MySQLTCPClient::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListStringNN *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;

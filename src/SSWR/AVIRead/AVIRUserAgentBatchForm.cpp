@@ -192,7 +192,7 @@ void SSWR::AVIRead::AVIRUserAgentBatchForm::UpdateByText(Text::PString txt)
 		UI::MessageDialog::ShowDialog(CSTR("Nothing to update"), CSTR("User Agent Update"), this);
 	}
 	
-	LISTNN_FREE_STRING(&uaList);
+	uaList.FreeAll();
 }
 
 SSWR::AVIRead::AVIRUserAgentBatchForm::AVIRUserAgentBatchForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)

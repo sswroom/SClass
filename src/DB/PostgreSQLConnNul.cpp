@@ -140,7 +140,7 @@ void DB::PostgreSQLConn::Rollback(void *tran)
 	}
 }
 
-UOSInt DB::PostgreSQLConn::QuerySchemaNames(NotNullPtr<Data::ArrayListNN<Text::String>> names)
+UOSInt DB::PostgreSQLConn::QuerySchemaNames(NotNullPtr<Data::ArrayListStringNN> names)
 {
 	UOSInt initCnt = names->GetCount();
 	NotNullPtr<DB::DBReader> r;
@@ -177,7 +177,7 @@ UOSInt DB::PostgreSQLConn::QueryTableNames(Text::CString schemaName, NotNullPtr<
 	return names->GetCount() - initCnt;
 }
 
-DB::DBReader *DB::PostgreSQLConn::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListNN<Text::String> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
+DB::DBReader *DB::PostgreSQLConn::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListStringNN *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
@@ -192,17 +192,15 @@ DB::DBReader *DB::PostgreSQLConn::QueryTableData(Text::CString schemaName, Text:
 	}
 	else
 	{
-		i = 0;
-		j = columnNames->GetCount();
-		while (i < j)
+		Data::ArrayIterator<NotNullPtr<Text::String>> it = columnNames->Iterator();
+		Bool found = false;
+		while (it.HasNext())
 		{
-			if (i > 0)
-			{
+			if (found)
 				sb.AppendUTF8Char(',');
-			}
-			sptr = DB::DBUtil::SDBColUTF8(sbuff, columnNames->GetItem(i)->v, DB::SQLType::PostgreSQL);
+			sptr = DB::DBUtil::SDBColUTF8(sbuff, it.Next()->v, DB::SQLType::PostgreSQL);
 			sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
-			i++;
+			found = true;
 		}
 	}
 	sb.AppendC(UTF8STRC(" from "));
@@ -225,7 +223,8 @@ DB::DBReader *DB::PostgreSQLConn::QueryTableData(Text::CString schemaName, Text:
 	if (condition)
 	{
 		sb.AppendC(UTF8STRC(" where "));
-		condition->ToWhereClause(sb, DB::SQLType::PostgreSQL, 0, 100, 0);
+		Data::ArrayListNN<Data::QueryConditions::Condition> cliCond;
+		condition->ToWhereClause(sb, DB::SQLType::PostgreSQL, 0, 100, cliCond);
 	}
 	if (ordering.leng > 0)
 	{

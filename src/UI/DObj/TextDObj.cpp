@@ -48,14 +48,9 @@ UI::DObj::TextDObj::TextDObj(NotNullPtr<Media::DrawEngine> deng, Text::CString t
 
 UI::DObj::TextDObj::~TextDObj()
 {
-	UOSInt i;
 	SDEL_STRING(this->txt);
 	this->fontName->Release();
-	i = this->lines.GetCount();
-	while (i-- > 0)
-	{
-		this->lines.GetItem(i)->Release();
-	}
+	this->lines.FreeAll();
 }
 
 Bool UI::DObj::TextDObj::IsChanged()
@@ -90,12 +85,12 @@ void UI::DObj::TextDObj::DrawObject(NotNullPtr<Media::DrawImage> dimg)
 		}
 		else if (this->talign == TA_CENTER)
 		{
-			sz = dimg->GetTextSize(f, this->lines.GetItem(currLine)->ToCString());
-			dimg->DrawString(Math::Coord2DDbl(OSInt2Double(tl.x) + (UOSInt2Double(this->size.x) - sz.x) * 0.5, currPos), this->lines.GetItem(currLine)->ToCString(), f, b);
+			sz = dimg->GetTextSize(f, Text::String::OrEmpty(this->lines.GetItem(currLine))->ToCString());
+			dimg->DrawString(Math::Coord2DDbl(OSInt2Double(tl.x) + (UOSInt2Double(this->size.x) - sz.x) * 0.5, currPos), Text::String::OrEmpty(this->lines.GetItem(currLine))->ToCString(), f, b);
 		}
 		else if (this->talign == TA_RIGHT)
 		{
-			sz = dimg->GetTextSize(f, this->lines.GetItem(currLine)->ToCString());
+			sz = dimg->GetTextSize(f, Text::String::OrEmpty(this->lines.GetItem(currLine))->ToCString());
 			dimg->DrawString(Math::Coord2DDbl(OSInt2Double(tl.x + (OSInt)this->size.x) - sz.x, currPos), Text::String::OrEmpty(this->lines.GetItem(currLine)), f, b);
 		}
 		currLine++;

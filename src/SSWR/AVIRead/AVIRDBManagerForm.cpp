@@ -504,9 +504,9 @@ void SSWR::AVIRead::AVIRDBManagerForm::UpdateDatabaseList()
 		return;
 	}
 	NotNullPtr<Text::String> dbName;
-	Data::ArrayListNN<Text::String> dbNames;
-	UOSInt j = this->currDB->GetDatabaseNames(dbNames);
-	ArtificialQuickSort_Sort(&dbNames, 0, (OSInt)(j - 1));
+	Data::ArrayListStringNN dbNames;
+	this->currDB->GetDatabaseNames(dbNames);
+	ArtificialQuickSort_SortAList(&dbNames);
 	Data::ArrayIterator<NotNullPtr<Text::String>> it = dbNames.Iterator();
 	while (it.HasNext())
 	{
@@ -524,7 +524,7 @@ void SSWR::AVIRead::AVIRDBManagerForm::UpdateSchemaList()
 	{
 		return;
 	}
-	Data::ArrayListNN<Text::String> schemaNames;
+	Data::ArrayListStringNN schemaNames;
 	UOSInt i;
 	UOSInt j;
 
@@ -544,7 +544,7 @@ void SSWR::AVIRead::AVIRDBManagerForm::UpdateSchemaList()
 		i++;
 	}
 
-	LISTNN_FREE_STRING(&schemaNames);
+	schemaNames.FreeAll();
 	this->lbSchema->SetSelectedIndex(0);
 	this->lbMapSchema->SetSelectedIndex(0);
 }
@@ -558,18 +558,18 @@ void SSWR::AVIRead::AVIRDBManagerForm::UpdateTableList()
 	}
 	Optional<Text::String> schemaName = this->lbSchema->GetSelectedItemTextNew();
 	NotNullPtr<Text::String> tableName;
-	Data::ArrayListNN<Text::String> tableNames;
+	Data::ArrayListStringNN tableNames;
 	UOSInt i = 0;
 	UOSInt j = this->currDB->QueryTableNames(OPTSTR_CSTR(schemaName), tableNames);
 	OPTSTR_DEL(schemaName);
-	ArtificialQuickSort_Sort(&tableNames, 0, (OSInt)j - 1);
+	ArtificialQuickSort_SortAList(&tableNames);
 	while (i < j)
 	{
 		tableName = Text::String::OrEmpty(tableNames.GetItem(i));
 		this->lbTable->AddItem(tableName, 0);
 		i++;
 	}
-	LISTNN_FREE_STRING(&tableNames);
+	tableNames.FreeAll();
 }
 
 void SSWR::AVIRead::AVIRDBManagerForm::UpdateMapTableList()
@@ -581,17 +581,17 @@ void SSWR::AVIRead::AVIRDBManagerForm::UpdateMapTableList()
 	}
 	Optional<Text::String> schemaName = this->lbMapSchema->GetSelectedItemTextNew();
 	NotNullPtr<Text::String> tableName;
-	Data::ArrayListNN<Text::String> tableNames;
-	UOSInt j = this->currDB->QueryTableNames(OPTSTR_CSTR(schemaName), tableNames);
+	Data::ArrayListStringNN tableNames;
+	this->currDB->QueryTableNames(OPTSTR_CSTR(schemaName), tableNames);
 	OPTSTR_DEL(schemaName);
-	ArtificialQuickSort_Sort(&tableNames, 0, (OSInt)j - 1);
+	ArtificialQuickSort_SortAList(&tableNames);
 	Data::ArrayIterator<NotNullPtr<Text::String>> it = tableNames.Iterator();
 	while (it.HasNext())
 	{
 		tableName = it.Next();
 		this->lbMapTable->AddItem(tableName, 0);
 	}
-	LISTNN_FREE_STRING(&tableNames);
+	tableNames.FreeAll();
 }
 
 void SSWR::AVIRead::AVIRDBManagerForm::UpdateTableData(Text::CString schemaName, Optional<Text::String> tableName)

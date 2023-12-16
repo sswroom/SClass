@@ -93,7 +93,7 @@ Map::BingMapsTile::~BingMapsTile()
 	SDEL_STRING(this->key);
 	SDEL_STRING(this->brandLogoUri);
 	SDEL_CLASS(this->brandLogoImg);
-	LISTNN_FREE_STRING(&this->subdomains);
+	this->subdomains.FreeAll();
 }
 
 Bool Map::BingMapsTile::IsError() const

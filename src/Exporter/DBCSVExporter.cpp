@@ -81,7 +81,7 @@ void *Exporter::DBCSVExporter::CreateParam(NotNullPtr<IO::ParsedObject> pobj)
 void Exporter::DBCSVExporter::DeleteParam(void *param)
 {
 	DBParam *dbParam = (DBParam*)param;
-	LISTNN_FREE_STRING(&dbParam->names);
+	dbParam->names.FreeAll();
 	DEL_CLASS(dbParam);
 }
 

@@ -876,7 +876,7 @@ Bool Map::WebMapTileServiceSource::CanQuery() const
 	return this->currResourceInfo != 0;
 }
 
-Bool Map::WebMapTileServiceSource::QueryInfos(Math::Coord2DDbl coord, UOSInt level, Data::ArrayList<Math::Geometry::Vector2D*> *vecList, Data::ArrayList<UOSInt> *valueOfstList, Data::ArrayListNN<Text::String> *nameList, Data::ArrayList<Text::String*> *valueList) const
+Bool Map::WebMapTileServiceSource::QueryInfos(Math::Coord2DDbl coord, UOSInt level, Data::ArrayList<Math::Geometry::Vector2D*> *vecList, Data::ArrayList<UOSInt> *valueOfstList, Data::ArrayListStringNN *nameList, Data::ArrayList<Text::String*> *valueList) const
 {
 	if (this->currResourceInfo == 0)
 		return false;
@@ -1302,7 +1302,7 @@ UOSInt Map::WebMapTileServiceSource::GetLayerNames(Data::ArrayList<Text::String*
 	return j;
 }
 
-UOSInt Map::WebMapTileServiceSource::GetMatrixSetNames(Data::ArrayListNN<Text::String> *matrixSetNames)
+UOSInt Map::WebMapTileServiceSource::GetMatrixSetNames(Data::ArrayListStringNN *matrixSetNames)
 {
 	if (this->currLayer == 0)
 	{
@@ -1318,7 +1318,7 @@ UOSInt Map::WebMapTileServiceSource::GetMatrixSetNames(Data::ArrayListNN<Text::S
 	return j;
 }
 
-UOSInt Map::WebMapTileServiceSource::GetResourceTileTypeNames(Data::ArrayListNN<Text::String> *resourceTypeNames)
+UOSInt Map::WebMapTileServiceSource::GetResourceTileTypeNames(Data::ArrayListStringNN *resourceTypeNames)
 {
 	if (this->currLayer == 0)
 		return 0;
@@ -1338,7 +1338,7 @@ UOSInt Map::WebMapTileServiceSource::GetResourceTileTypeNames(Data::ArrayListNN<
 	return resourceTypeNames->GetCount() - initCnt;
 }
 
-UOSInt Map::WebMapTileServiceSource::GetResourceInfoTypeNames(Data::ArrayListNN<Text::String> *resourceTypeNames)
+UOSInt Map::WebMapTileServiceSource::GetResourceInfoTypeNames(Data::ArrayListStringNN *resourceTypeNames)
 {
 	if (this->currLayer == 0)
 		return 0;

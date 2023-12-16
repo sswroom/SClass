@@ -253,11 +253,11 @@ Bool Net::PushManager::Unsubscribe(Text::CStringNN token)
 	}
 }
 
-Bool Net::PushManager::Send(Data::ArrayListNN<Text::String> *userNames, NotNullPtr<Text::String> message)
+Bool Net::PushManager::Send(Data::ArrayListStringNN *userNames, NotNullPtr<Text::String> message)
 {
 	Sync::MutexUsage mutUsage(this->dataMut);
 	UserInfo *user;
-	Data::ArrayListNN<Text::String> tokenList;
+	Data::ArrayListStringNN tokenList;
 	Data::ArrayIterator<NotNullPtr<Text::String>> it = userNames->Iterator();
 	while (it.HasNext())
 	{
@@ -287,12 +287,12 @@ Bool Net::PushManager::Send(Data::ArrayListNN<Text::String> *userNames, NotNullP
 			ret |= Net::GoogleFCM::SendMessage(this->sockf, this->ssl, this->fcmKey->ToCString(), it.Next()->ToCString(), message->ToCString(), &sbResult);
 			this->log->LogMessage(sbResult.ToCString(), IO::LogHandler::LogLevel::Action);
 		}
-		LISTNN_FREE_STRING(&tokenList);
+		tokenList.FreeAll();
 		return ret;
 	}
 }
 
-UOSInt Net::PushManager::GetUsers(Data::ArrayListNN<Text::String> *users, NotNullPtr<Sync::MutexUsage> mutUsage)
+UOSInt Net::PushManager::GetUsers(Data::ArrayListStringNN *users, NotNullPtr<Sync::MutexUsage> mutUsage)
 {
 	mutUsage->ReplaceMutex(this->dataMut);
 	UOSInt i = 0;

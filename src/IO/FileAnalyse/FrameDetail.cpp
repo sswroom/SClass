@@ -27,7 +27,7 @@ IO::FileAnalyse::FrameDetail::FrameDetail(UInt64 ofst, UInt64 size)
 
 IO::FileAnalyse::FrameDetail::~FrameDetail()
 {
-	LISTNN_FREE_STRING(&this->headers);
+	this->headers.FreeAll();
 	LIST_FREE_FUNC(&this->fields, FreeFieldInfo);
 }
 

@@ -89,8 +89,8 @@ IO::ParsedObject *Parser::FileParser::MDBParser::ParseFileHdr(NotNullPtr<IO::Str
 		return 0;
 	}
 
-	Data::ArrayListNN<Text::String> tableNames;
-	Data::ArrayListNN<Text::String> shpTables;
+	Data::ArrayListStringNN tableNames;
+	Data::ArrayListStringNN shpTables;
 	DB::ColDef colDef(CSTR(""));
 	UTF8Char sbuff[128];
 	UTF8Char *sptr;
@@ -186,7 +186,7 @@ IO::ParsedObject *Parser::FileParser::MDBParser::ParseFileHdr(NotNullPtr<IO::Str
 		}
 		SDEL_CLASS(csys);
 		conn->UnuseObject();
-		LISTNN_FREE_STRING(&tableNames);
+		tableNames.FreeAll();
 		NotNullPtr<Map::MapDrawLayer> lyr1;
 		if (lyrColl->GetCount() == 1 && lyrColl->GetItem(0).SetTo(lyr1))
 		{
@@ -201,7 +201,7 @@ IO::ParsedObject *Parser::FileParser::MDBParser::ParseFileHdr(NotNullPtr<IO::Str
 	}
 	else
 	{
-		LISTNN_FREE_STRING(&tableNames);
+		tableNames.FreeAll();
 		return mdb.Ptr();
 	}
 #else

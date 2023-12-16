@@ -1,6 +1,6 @@
 #ifndef _SM_IO_ATCOMMANDCHANNEL
 #define _SM_IO_ATCOMMANDCHANNEL
-#include "Data/ArrayListNN.h"
+#include "Data/ArrayListStringNN.h"
 #include "Data/Duration.h"
 #include "IO/LogTool.h"
 #include "IO/Stream.h"
@@ -27,7 +27,7 @@ namespace IO
 		void *cmdHdlrObj;
 		IO::ILogger *log;
 
-		Data::ArrayListNN<Text::String> cmdResults;
+		Data::ArrayListStringNN cmdResults;
 		Sync::Mutex cmdResultMut;
 
 		Bool threadRunning;
@@ -41,9 +41,9 @@ namespace IO
 
 		NotNullPtr<IO::Stream> GetStream() const;
 
-		UOSInt SendATCommand(NotNullPtr<Data::ArrayListNN<Text::String>> retArr, const UTF8Char *atCmd, UOSInt atCmdLen, Data::Duration timeout);
-		UOSInt SendATCommands(NotNullPtr<Data::ArrayListNN<Text::String>> retArr, const UTF8Char *atCmd, UOSInt atCmdLen, const UTF8Char *atCmdSub, Data::Duration timeout);
-		UOSInt SendDialCommand(NotNullPtr<Data::ArrayListNN<Text::String>> retArr, const UTF8Char *atCmd, UOSInt atCmdLen, Data::Duration timeout);
+		UOSInt SendATCommand(NotNullPtr<Data::ArrayListStringNN> retArr, const UTF8Char *atCmd, UOSInt atCmdLen, Data::Duration timeout);
+		UOSInt SendATCommands(NotNullPtr<Data::ArrayListStringNN> retArr, const UTF8Char *atCmd, UOSInt atCmdLen, const UTF8Char *atCmdSub, Data::Duration timeout);
+		UOSInt SendDialCommand(NotNullPtr<Data::ArrayListStringNN> retArr, const UTF8Char *atCmd, UOSInt atCmdLen, Data::Duration timeout);
 
 		Bool UseCmd(NotNullPtr<Sync::MutexUsage> mutUsage);
 		UOSInt CmdSend(const UInt8 *data, UOSInt dataSize);

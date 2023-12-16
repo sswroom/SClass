@@ -313,7 +313,7 @@ UOSInt Map::GeoPackageLayer::QueryTableNames(Text::CString schemaName, NotNullPt
 	return this->gpkg->QueryTableNames(schemaName, names);
 }
 
-DB::DBReader *Map::GeoPackageLayer::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListNN<Text::String> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
+DB::DBReader *Map::GeoPackageLayer::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListStringNN *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
 {
 	return this->gpkg->QueryTableData(schemaName, tableName, columnNames, ofst, maxCnt, ordering, condition);
 }

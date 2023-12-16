@@ -71,7 +71,7 @@ void __stdcall SSWR::AVIRead::AVIRLogBackupForm::OnStartClicked(void *userObj)
 						{
 							logGrp = MemAlloc(LogGroup, 1);
 							logGrp->logName = Text::StrCopyNew(sbuff2).Ptr();
-							NEW_CLASS(logGrp->fileNames, Data::ArrayListNN<Text::String>());
+							NEW_CLASS(logGrp->fileNames, Data::ArrayListStringNN());
 							logGrps.Put(sbuff2, logGrp);
 						}
 						logGrp->fileNames->Add(Text::String::NewP(sbuff, filePathEnd));
@@ -121,7 +121,7 @@ void __stdcall SSWR::AVIRead::AVIRLogBackupForm::OnStartClicked(void *userObj)
 		else
 		{
 			IO::Path::DeleteFile(sbuff);
-			LISTNN_FREE_STRING(logGrp->fileNames);
+			logGrp->fileNames->FreeAll();
 		}
 		Text::StrDelNew(logGrp->logName);
 		DEL_CLASS(logGrp->fileNames);

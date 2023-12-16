@@ -1,5 +1,6 @@
 #ifndef _SM_IO_DEVICE_GOPROCAMERACONTROL
 #define _SM_IO_DEVICE_GOPROCAMERACONTROL
+#include "Data/ArrayListStringNN.h"
 #include "IO/CameraControl.h"
 #include "Net/SocketFactory.h"
 #include "Net/SocketUtil.h"
@@ -16,13 +17,13 @@ namespace IO
 			Data::ArrayList<IO::CameraControl::FileInfo*> *fileList;
 
 			void GetMediaList();
-			Bool GetInfo(Data::ArrayListNN<Text::String> *nameList, Data::ArrayListNN<Text::String> *valueList);			
+			Bool GetInfo(Data::ArrayListStringNN *nameList, Data::ArrayListStringNN *valueList);			
 		public:
 			GoProCameraControl(NotNullPtr<Net::SocketFactory> sockf, const Net::SocketUtil::AddressInfo *addr);
 			virtual ~GoProCameraControl();
 
-			virtual UOSInt GetInfoList(Data::ArrayListNN<Text::String> *nameList, Data::ArrayListNN<Text::String> *valueList);
-			virtual void FreeInfoList(Data::ArrayListNN<Text::String> *nameList, Data::ArrayListNN<Text::String> *valueList);
+			virtual UOSInt GetInfoList(Data::ArrayListStringNN *nameList, Data::ArrayListStringNN *valueList);
+			virtual void FreeInfoList(Data::ArrayListStringNN *nameList, Data::ArrayListStringNN *valueList);
 			virtual UOSInt GetFileList(Data::ArrayList<FileInfo*> *fileList);
 			virtual Bool GetFile(FileInfo *file, IO::Stream *outStm);
 			virtual Bool GetThumbnailFile(FileInfo *file, IO::Stream *outStm);

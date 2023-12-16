@@ -14,7 +14,7 @@ Net::Email::FileEmailStore::FileInfo *Net::Email::FileEmailStore::GetFileInfo(In
 
 void Net::Email::FileEmailStore::AddMail(const Text::MIMEObj::MailMessage *mail, UTF8Char *filePath, UTF8Char *fileNameStart, UTF8Char *filePathEnd, UInt64 fileSize)
 {
-	Data::ArrayListNN<Text::String> rcptList;
+	Data::ArrayListStringNN rcptList;
 	Text::StringBuilderUTF8 sb;
 	Data::DateTime recvTime;
 	Text::String *remoteIP = 0;
@@ -108,7 +108,7 @@ void Net::Email::FileEmailStore::AddMail(const Text::MIMEObj::MailMessage *mail,
 	}
 	SDEL_STRING(remoteIP);
 	SDEL_STRING(fromAddr);
-	LISTNN_FREE_STRING(&rcptList);
+	rcptList.FreeAll();
 }
 
 Net::Email::FileEmailStore::FileEmailStore()
@@ -358,7 +358,7 @@ const UTF8Char *Net::Email::FileEmailStore::GetEmailUid(Int64 id)
 	return fileInfo->uid;
 }
 
-UOSInt Net::Email::FileEmailStore::GetRcptList(Int64 id, NotNullPtr<Data::ArrayListNN<Text::String>> rcptList)
+UOSInt Net::Email::FileEmailStore::GetRcptList(Int64 id, NotNullPtr<Data::ArrayListStringNN> rcptList)
 {
 	Sync::MutexUsage mutUsage(this->fileMut);
 	FileInfo *fileInfo = this->fileMap.Get(id);

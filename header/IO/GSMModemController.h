@@ -220,7 +220,7 @@ namespace IO
 		UTF8Char *GSMGetIMEI(UTF8Char *imei); //AT+CGSN
 		UTF8Char *GSMGetTECharset(UTF8Char *cs); //AT+CSCS
 		Bool GSMSetTECharset(const UTF8Char *cs); //AT+CSCS
-		Bool GSMGetTECharsetsSupported(Data::ArrayListNN<Text::String> *csList); //AT+CSCS
+		Bool GSMGetTECharsetsSupported(Data::ArrayListStringNN *csList); //AT+CSCS
 		UTF8Char *GSMGetIMSI(UTF8Char *imsi); //AT+CIMI
 		UTF8Char *GSMGetCurrOperator(UTF8Char *oper); //AT+COPS
 		UTF8Char *GSMGetCurrPLMN(UTF8Char *plmn); //AT+COPS

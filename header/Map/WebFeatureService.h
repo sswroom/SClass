@@ -46,7 +46,7 @@ namespace Map
 
 		Bool IsError() const;
 		void SetFeature(UOSInt index);
-		UOSInt GetFeatureNames(Data::ArrayListNN<Text::String> *nameList) const;
+		UOSInt GetFeatureNames(Data::ArrayListStringNN *nameList) const;
 
 		Map::MapDrawLayer *LoadAsLayer();
 	};

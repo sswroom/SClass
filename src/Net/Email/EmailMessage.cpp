@@ -294,7 +294,7 @@ Net::Email::EmailMessage::~EmailMessage()
 {
 	this->fromAddr.FreeBy(EmailAddressFree);
 	this->recpList.FreeAll(EmailAddressFree);
-	LISTNN_FREE_STRING(&this->headerList);
+	this->headerList.FreeAll();
 	SDEL_STRING(this->contentType);
 	if (this->content)
 	{

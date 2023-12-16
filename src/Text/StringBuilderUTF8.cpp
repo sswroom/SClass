@@ -24,12 +24,9 @@ NotNullPtr<Text::StringBuilderUTF8> Text::StringBuilderUTF8::Append(Text::String
 
 NotNullPtr<Text::StringBuilderUTF8> Text::StringBuilderUTF8::Append(NotNullPtr<Text::String> s)
 {
-//	if (s->leng > 0)
-//	{
-		STRINGBUILDER_ALLOCLENG(s->leng);
-		MemCopyNO(&this->v[this->leng], s->v, s->leng + 1);
-		this->leng += s->leng;
-//	}
+	STRINGBUILDER_ALLOCLENG(s->leng);
+	MemCopyNO(&this->v[this->leng], s->v, s->leng + 1);
+	this->leng += s->leng;
 	return *this;
 }
 
@@ -68,6 +65,23 @@ NotNullPtr<Text::StringBuilderUTF8> Text::StringBuilderUTF8::Append(const Text::
 		this->leng += s.leng;
 	}
 	return *this;
+}
+
+NotNullPtr<Text::StringBuilderUTF8> Text::StringBuilderUTF8::AppendOpt(Optional<Text::String> s)
+{
+	NotNullPtr<Text::String> ns;
+	if (!s.SetTo(ns))
+	{
+		return *this;
+	}
+	if (ns->leng > 0)
+	{
+		STRINGBUILDER_ALLOCLENG(ns->leng);
+		MemCopyNO(&this->v[this->leng], ns->v, ns->leng + 1);
+		this->leng += ns->leng;
+	}
+	return *this;
+
 }
 
 NotNullPtr<Text::StringBuilderUTF8> Text::StringBuilderUTF8::AppendW(const WChar *s)

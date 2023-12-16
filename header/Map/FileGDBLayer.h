@@ -17,7 +17,7 @@ namespace Map
 		DB::ReadingDB *currDB;
 		DB::ReadingDB *lastDB;
 		Map::DrawLayerType layerType;
-		Data::ArrayListNN<Text::String> colNames;
+		Data::ArrayListStringNN colNames;
 		Math::Coord2DDbl minPos;
 		Math::Coord2DDbl maxPos;
 		UOSInt objIdCol;
@@ -50,8 +50,8 @@ namespace Map
 		virtual void AddUpdatedHandler(UpdatedHandler hdlr, void *obj);
 		virtual void RemoveUpdatedHandler(UpdatedHandler hdlr, void *obj);
 
-		virtual UOSInt QueryTableNames(Text::CString schemaName, Data::ArrayListNN<Text::String> *names);
-		virtual DB::DBReader *QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListNN<Text::String> *columnName, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition);
+		virtual UOSInt QueryTableNames(Text::CString schemaName, Data::ArrayListStringNN *names);
+		virtual DB::DBReader *QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListStringNN *columnName, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition);
 		virtual DB::TableDef *GetTableDef(Text::CString schemaName, Text::CString tableName);
 		virtual void CloseReader(DB::DBReader *r);
 		virtual void GetLastErrorMsg(NotNullPtr<Text::StringBuilderUTF8> str);

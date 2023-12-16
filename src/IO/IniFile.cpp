@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Data/ArrayList.h"
+#include "Data/ArrayListStringNN.h"
 #include "IO/FileStream.h"
 #include "IO/IniFile.h"
 #include "IO/Path.h"
@@ -115,12 +115,12 @@ Bool IO::IniFile::SaveConfig(NotNullPtr<IO::Stream> stm, UInt32 codePage, IO::Co
 
 Bool IO::IniFile::SaveConfig(IO::Writer *writer, IO::ConfigFile *cfg)
 {
-	Data::ArrayListNN<Text::String> cateList;
-	Data::ArrayListNN<Text::String> keyList;
+	Data::ArrayListStringNN cateList;
+	Data::ArrayListStringNN keyList;
 	NotNullPtr<Text::String> s;
 	NotNullPtr<Text::String> s2;
 	NotNullPtr<Text::String> s3;
-	cfg->GetKeys((Text::String*)0, keyList);
+	cfg->GetKeys(CSTR(""), keyList);
 	Data::ArrayIterator<NotNullPtr<Text::String>> itCate;
 	Data::ArrayIterator<NotNullPtr<Text::String>> it = keyList.Iterator();
 	while (it.HasNext())
@@ -144,7 +144,7 @@ Bool IO::IniFile::SaveConfig(IO::Writer *writer, IO::ConfigFile *cfg)
 		writer->WriteLineC(UTF8STRC("]"));
 
 		keyList.Clear();
-		cfg->GetKeys(s2.Ptr(), keyList);
+		cfg->GetKeys(s2, keyList);
 		it = keyList.Iterator();
 		while (it.HasNext())
 		{

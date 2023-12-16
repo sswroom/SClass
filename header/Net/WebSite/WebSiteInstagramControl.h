@@ -46,7 +46,7 @@ namespace Net
 			OSInt GetChannelItems(NotNullPtr<Text::String> channelId, OSInt pageNo, Data::ArrayList<ItemData*> *itemList, ChannelInfo *chInfo);
 			void FreeItems(Data::ArrayList<ItemData*> *itemList);
 			void FreeChannelInfo(ChannelInfo *chInfo);
-			OSInt GetPageImages(NotNullPtr<Text::String> shortCode, Data::ArrayListNN<Text::String> *imageList, Data::ArrayListNN<Text::String> *videoList);
+			OSInt GetPageImages(NotNullPtr<Text::String> shortCode, Data::ArrayListStringNN *imageList, Data::ArrayListStringNN *videoList);
 			Text::String *GetUserAgent();
 		};
 	}

@@ -1,7 +1,7 @@
 #ifndef _SM_NET_SDPFILE
 #define _SM_NET_SDPFILE
 #include "Data/ArrayList.h"
-#include "Data/ArrayListNN.h"
+#include "Data/ArrayListStringNN.h"
 #include "IO/Stream.h"
 #include "Net/ISDPMedia.h"
 
@@ -30,7 +30,7 @@ namespace Net
 		Bool sessSend;
 		Text::String *reqUserAgent;
 
-		Data::ArrayListNN<Text::String> sessDesc;
+		Data::ArrayListStringNN sessDesc;
 		Data::ArrayList<Int32> sessDescType;
 		Data::ArrayList<Net::ISDPMedia *> sessMedia;
 

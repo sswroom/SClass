@@ -93,7 +93,7 @@ void __stdcall Net::DNSProxy::OnDNSRequest(void *userObj, Text::CString reqName,
 			while (i-- > 0)
 			{
 				NotNullPtr<Text::String> blName;
-				if (blName.Set(me->blackList.GetItem(i)))
+				if (me->blackList.GetItem(i).SetTo(blName))
 				{
 					if (reqName.Equals(blName))
 					{
@@ -678,12 +678,7 @@ Net::DNSProxy::~DNSProxy()
 		req = reqList->GetItem(i);
 		DEL_CLASS(req);
 	}
-
-	i = this->blackList.GetCount();
-	while (i-- > 0)
-	{
-		this->blackList.GetItem(i)->Release();
-	}
+	this->blackList.FreeAll();
 	
 	if (this->targetMap)
 	{
@@ -941,14 +936,10 @@ void Net::DNSProxy::SetDisableV6(Bool disableV6)
 	this->disableV6 = disableV6;
 }
 
-UOSInt Net::DNSProxy::GetBlackList(Data::ArrayList<Text::String*> *blackList)
+UOSInt Net::DNSProxy::GetBlackList(NotNullPtr<Data::ArrayListNN<Text::String>> blackList)
 {
-	UOSInt ret;
 	Sync::MutexUsage mutUsage(this->blackListMut);
-	ret = this->blackList.GetCount();
-	blackList->AddAll(this->blackList);
-	mutUsage.EndUse();
-	return ret;
+	return blackList->AddAll(this->blackList);
 }
 
 Bool Net::DNSProxy::AddBlackList(NotNullPtr<Text::String> blackList)

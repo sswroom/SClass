@@ -105,7 +105,7 @@ UOSInt IO::EXEFile::AddImportModule(Text::CString moduleName)
 {
 	ImportInfo *imp;
 	imp = MemAlloc(ImportInfo, 1);
-	NEW_CLASS(imp->funcs, Data::ArrayListNN<Text::String>());
+	NEW_CLASS(imp->funcs, Data::ArrayListStringNN());
 	imp->moduleName = Text::String::New(moduleName);
 	return this->importList.Add(imp);
 }

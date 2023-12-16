@@ -47,7 +47,7 @@ void __stdcall SSWR::AVIRead::AVIRWMTSForm::OnLayerSelChg(void *userObj)
 	if (me->wmts && !me->wmts->IsError())
 	{
 		me->wmts->SetLayer(me->cboLayer->GetSelectedIndex());
-		Data::ArrayListNN<Text::String> nameList;
+		Data::ArrayListStringNN nameList;
 		UOSInt i = 0;
 		UOSInt j = me->wmts->GetMatrixSetNames(&nameList);
 		me->cboMatrixSet->ClearItems();

@@ -25,12 +25,12 @@ Int8 DB::ReadingDB::GetTzQhr() const
 	return Data::DateTimeUtil::GetLocalTzQhr();
 }
 
-UOSInt DB::ReadingDB::GetDatabaseNames(NotNullPtr<Data::ArrayListNN<Text::String>> arr)
+UOSInt DB::ReadingDB::GetDatabaseNames(NotNullPtr<Data::ArrayListStringNN> arr)
 {
 	return 0;
 }
 
-void DB::ReadingDB::ReleaseDatabaseNames(NotNullPtr<Data::ArrayListNN<Text::String>> arr)
+void DB::ReadingDB::ReleaseDatabaseNames(NotNullPtr<Data::ArrayListStringNN> arr)
 {
 
 }

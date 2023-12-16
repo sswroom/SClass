@@ -49,7 +49,7 @@ Net::SNS::SNSRSS::SNSRSS(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSL
 		item = rss->GetItem(i);
 		if (item->descHTML)
 		{
-			Data::ArrayListNN<Text::String> imgList;
+			Data::ArrayListStringNN imgList;
 			sb.ClearStr();
 			Text::HTMLUtil::HTMLGetText(this->encFact, item->description->v, item->description->leng, false, sb, &imgList);
 			sb2.ClearStr();
@@ -183,7 +183,7 @@ Bool Net::SNS::SNSRSS::Reload()
 			{
 				if (item->descHTML)
 				{
-					Data::ArrayListNN<Text::String> imgList;
+					Data::ArrayListStringNN imgList;
 					sb.ClearStr();
 					Text::HTMLUtil::HTMLGetText(this->encFact, item->description->v, item->description->leng, false, sb, &imgList);
 					sb2.ClearStr();

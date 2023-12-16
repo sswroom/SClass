@@ -1,7 +1,7 @@
 #ifndef _SM_DATA_QUERYCONDITIONS
 #define _SM_DATA_QUERYCONDITIONS
 #include "Data/ArrayList.h"
-#include "Data/ArrayListNN.h"
+#include "Data/ArrayListStringNN.h"
 #include "Data/ObjectGetter.h"
 #include "Data/VariObject.h"
 #include "DB/DBUtil.h"
@@ -38,7 +38,7 @@ namespace Data
 			virtual Bool ToWhereClause(NotNullPtr<Text::StringBuilderUTF8> sb, DB::SQLType sqlType, Int8 tzQhr, UOSInt maxDBItem) = 0;
 			virtual Bool IsValid(NotNullPtr<Data::VariObject> obj) = 0;
 			virtual Bool IsValid(NotNullPtr<Data::ObjectGetter> getter) = 0;
-			virtual void GetFieldList(NotNullPtr<Data::ArrayListNN<Text::String>> fieldList) = 0;
+			virtual void GetFieldList(NotNullPtr<Data::ArrayListStringNN> fieldList) = 0;
 		};
 
 		class FieldCondition : public Condition
@@ -52,7 +52,7 @@ namespace Data
 
 			virtual Bool IsValid(NotNullPtr<Data::VariObject> obj);
 			virtual Bool IsValid(NotNullPtr<Data::ObjectGetter> getter);
-			virtual void GetFieldList(NotNullPtr<Data::ArrayListNN<Text::String>> fieldList);
+			virtual void GetFieldList(NotNullPtr<Data::ArrayListStringNN> fieldList);
 
 			virtual Bool TestValid(NotNullPtr<Data::VariItem> item) = 0;
 		};
@@ -243,7 +243,7 @@ namespace Data
 			virtual Bool ToWhereClause(NotNullPtr<Text::StringBuilderUTF8> sb, DB::SQLType sqlType, Int8 tzQhr, UOSInt maxDBItem);
 			virtual Bool IsValid(NotNullPtr<Data::VariObject> obj);
 			virtual Bool IsValid(NotNullPtr<Data::ObjectGetter> getter);
-			virtual void GetFieldList(NotNullPtr<Data::ArrayListNN<Text::String>> fieldList);
+			virtual void GetFieldList(NotNullPtr<Data::ArrayListStringNN> fieldList);
 
 			NotNullPtr<QueryConditions> GetConditions();
 		};
@@ -258,7 +258,7 @@ namespace Data
 			virtual Bool ToWhereClause(NotNullPtr<Text::StringBuilderUTF8> sb, DB::SQLType sqlType, Int8 tzQhr, UOSInt maxDBItem);
 			virtual Bool IsValid(NotNullPtr<Data::VariObject> obj);
 			virtual Bool IsValid(NotNullPtr<Data::ObjectGetter> getter);
-			virtual void GetFieldList(NotNullPtr<Data::ArrayListNN<Text::String>> fieldList);
+			virtual void GetFieldList(NotNullPtr<Data::ArrayListStringNN> fieldList);
 		};
 
 	private:
@@ -273,7 +273,7 @@ namespace Data
 		UOSInt GetCount();
 		Optional<Condition> GetItem(UOSInt index);
 		NotNullPtr<Data::ArrayListNN<Condition>> GetList();
-		void GetFieldList(NotNullPtr<Data::ArrayListNN<Text::String>> fieldList);
+		void GetFieldList(NotNullPtr<Data::ArrayListStringNN> fieldList);
 
 		NotNullPtr<QueryConditions> TimeBetween(Text::CStringNN fieldName, const Data::Timestamp &t1, const Data::Timestamp &t2);
 		NotNullPtr<QueryConditions> Or();

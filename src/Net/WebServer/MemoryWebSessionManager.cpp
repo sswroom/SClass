@@ -127,14 +127,12 @@ Net::WebServer::MemoryWebSessionManager::~MemoryWebSessionManager()
 		Sync::SimpleThread::Sleep(10);
 	}
 
-	UOSInt i = this->sesses.GetCount();
-	while (i-- > 0)
+	Data::ArrayIterator<NotNullPtr<MemoryWebSession>> it = this->sesses.Iterator();
+	while (it.HasNext())
 	{
-		if (sess.Set(this->sesses.GetItem(i)))
-		{
-			this->delHdlr(sess, this->delHdlrObj);
-			sess.Delete();
-		}
+		sess = it.Next();
+		this->delHdlr(sess, this->delHdlrObj);
+		sess.Delete();
 	}
 	this->path->Release();
 	this->cookieName->Release();
@@ -145,16 +143,17 @@ Optional<Net::WebServer::IWebSession> Net::WebServer::MemoryWebSessionManager::G
 	Int64 sessId = this->GetSessId(req);
 	if (sessId == 0)
 		return 0;
-	Net::WebServer::MemoryWebSession *sess = (Net::WebServer::MemoryWebSession*)this->GetSession(sessId);
-	if (sess)
+	NotNullPtr<Net::WebServer::MemoryWebSession> sess;
+	if (Optional<Net::WebServer::MemoryWebSession>::ConvertFrom(this->GetSession(sessId)).SetTo(sess))
 	{
 		if (!sess->RequestValid(req->GetBrowser(), req->GetOS()))
 		{
 			sess->EndUse();
-			sess = 0;
+			return 0;
 		}
+		return NotNullPtr<Net::WebServer::IWebSession>(sess);
 	}
-	return sess;
+	return 0;
 }
 
 NotNullPtr<Net::WebServer::IWebSession> Net::WebServer::MemoryWebSessionManager::CreateSession(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp)
@@ -237,7 +236,7 @@ NotNullPtr<Net::WebServer::IWebSession> Net::WebServer::MemoryWebSessionManager:
 	NotNullPtr<Net::WebServer::MemoryWebSession> sess;
 	Sync::MutexUsage mutUsage(this->mut);
 	si = this->sessIds.SortedIndexOf(sessId);
-	if (si >= 0 && sess.Set(this->sesses.GetItem((UOSInt)si)))
+	if (si >= 0 && this->sesses.GetItem((UOSInt)si).SetTo(sess))
 	{
 
 	}
@@ -252,9 +251,9 @@ NotNullPtr<Net::WebServer::IWebSession> Net::WebServer::MemoryWebSessionManager:
 	return sess;
 }
 
-Net::WebServer::IWebSession *Net::WebServer::MemoryWebSessionManager::GetSession(Int64 sessId)
+Optional<Net::WebServer::IWebSession> Net::WebServer::MemoryWebSessionManager::GetSession(Int64 sessId)
 {
-	Net::WebServer::IWebSession *sess;
+	Optional<Net::WebServer::IWebSession> sess;
 	OSInt i;
 	sess = 0;
 	Sync::MutexUsage mutUsage(this->mut);
@@ -264,9 +263,9 @@ Net::WebServer::IWebSession *Net::WebServer::MemoryWebSessionManager::GetSession
 		sess = this->sesses.GetItem((UOSInt)i);
 	}
 	mutUsage.EndUse();
-	if (sess)
+	if (!sess.IsNull())
 	{
-		((Net::WebServer::MemoryWebSession*)sess)->BeginUse();
+		((Net::WebServer::MemoryWebSession*)sess.OrNull())->BeginUse();
 	}
 	return sess;
 }

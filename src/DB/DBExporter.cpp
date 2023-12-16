@@ -539,10 +539,8 @@ Bool DB::DBExporter::GenerateExcelXMLAllTables(NotNullPtr<DB::ReadingDB> db, Tex
 	UTF8Char *lineBuff1;
 	UTF8Char *lineBuff2;
 	UTF8Char *sptr;
-	UOSInt tableCnt;
 	UOSInt colCnt;
 	UOSInt i;
-	UOSInt j;
 
 	IO::BufferedOutputStream cstm(outStm, 65536);
 	IO::StreamWriter writer(cstm, codePage);
@@ -560,12 +558,12 @@ Bool DB::DBExporter::GenerateExcelXMLAllTables(NotNullPtr<DB::ReadingDB> db, Tex
 	writer.WriteLineC(UTF8STRC(" xmlns:ss=\"urn:schemas-microsoft-com:office:spreadsheet\""));
 	writer.WriteLineC(UTF8STRC(" xmlns:html=\"http://www.w3.org/TR/REC-html40\">"));
 
-	Data::ArrayListNN<Text::String> names;
-	tableCnt = db->QueryTableNames(CSTR_NULL, names);
-	j = 0;
-	while (j < tableCnt)
+	Data::ArrayListStringNN names;
+	db->QueryTableNames(CSTR_NULL, names);
+	Data::ArrayIterator<NotNullPtr<Text::String>> it = names.Iterator();
+	while (it.HasNext())
 	{
-		Text::String *tableName = names.GetItem(j);
+		NotNullPtr<Text::String> tableName = it.Next();
 		if (r.Set(db->QueryTableData(CSTR_NULL, tableName->ToCString(), 0, 0, 0, CSTR_NULL, 0)))
 		{
 			UOSInt ind = tableName->LastIndexOf('\\');
@@ -660,10 +658,9 @@ Bool DB::DBExporter::GenerateExcelXMLAllTables(NotNullPtr<DB::ReadingDB> db, Tex
 			writer.WriteLineC(UTF8STRC(" </Worksheet>"));
 			db->CloseReader(r);
 		}
-		j++;
 	}
 	writer.WriteLineC(UTF8STRC("</Workbook>"));
-	LIST_FREE_STRING(&names);
+	names.FreeAll();
 
 	MemFree(lineBuff2);
 	MemFree(lineBuff1);

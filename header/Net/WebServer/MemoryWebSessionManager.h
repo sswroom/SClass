@@ -38,7 +38,7 @@ namespace Net
 
 			Int64 GenSessId(NotNullPtr<Net::WebServer::IWebRequest> req);
 			NotNullPtr<IWebSession> CreateSession(Int64 sessId);
-			IWebSession *GetSession(Int64 sessId);
+			Optional<IWebSession> GetSession(Int64 sessId);
 			void DeleteSession(Int64 sessId);
 
 			void GetSessionIds(Data::ArrayList<Int64> *sessIds);

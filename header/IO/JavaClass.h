@@ -1,8 +1,8 @@
 #ifndef _SM_IO_JAVACLASS
 #define _SM_IO_JAVACLASS
 #include "Data/ArrayList.h"
-#include "Data/ArrayListNN.h"
 #include "Data/ArrayListString.h"
+#include "Data/ArrayListStringNN.h"
 #include "Data/ArrayListStrUTF8.h"
 #include "IO/ParsedObject.h"
 #include "Text/CString.h"
@@ -83,8 +83,8 @@ namespace IO
 		
 		struct DecompileEnv
 		{
-			Data::ArrayListNN<Text::String> *stacks;
-			Data::ArrayListNN<Text::String> *stackTypes;
+			Data::ArrayListStringNN *stacks;
+			Data::ArrayListStringNN *stackTypes;
 			Text::String **localTypes;
 			const MethodInfo *method;
 			const UInt8 *codeStart;

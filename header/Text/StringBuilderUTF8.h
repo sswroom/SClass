@@ -1,6 +1,7 @@
 #ifndef _SM_TEXT_STRINGBUILDERUTF8
 #define _SM_TEXT_STRINGBUILDERUTF8
 #include "MyMemory.h"
+#include "Data/ArrayIterator.h"
 #include "Data/ByteArray.h"
 #include "Data/DateTime.h"
 #include "Data/Timestamp.h"
@@ -49,6 +50,7 @@ namespace Text
 		NotNullPtr<StringBuilderUTF8> Append(Text::StringBase<const UTF8Char> *s);
 		NotNullPtr<StringBuilderUTF8> Append(const Text::StringBase<UTF8Char> &s);
 		NotNullPtr<StringBuilderUTF8> Append(const Text::StringBase<const UTF8Char> &s);
+		NotNullPtr<StringBuilderUTF8> AppendOpt(Optional<Text::String> s);
 		NotNullPtr<StringBuilderUTF8> AppendW(const WChar *s);
 		NotNullPtr<StringBuilderUTF8> AppendW(const WChar *s, UOSInt len);
 		NotNullPtr<StringBuilderUTF8> AppendUTF16(const UTF16Char *s);
@@ -670,6 +672,33 @@ namespace Text
 				return *this;
 			}
 		}
+
+		NotNullPtr<StringBuilderUTF8> AppendJoin(Data::ArrayIterator<NotNullPtr<Text::String>> it, Text::CStringNN seperator)
+		{
+			if (!it.HasNext())
+				return *this;
+			this->Append(it.Next());
+			while (it.HasNext())
+			{
+				this->Append(seperator);
+				this->Append(it.Next());
+			}
+			return *this;
+		}
+
+		NotNullPtr<StringBuilderUTF8> AppendJoin(Data::ArrayIterator<NotNullPtr<Text::String>> it, UTF8Char seperator)
+		{
+			if (!it.HasNext())
+				return *this;
+			this->Append(it.Next());
+			while (it.HasNext())
+			{
+				this->AppendUTF8Char(seperator);
+				this->Append(it.Next());
+			}
+			return *this;
+		}
+
 		NotNullPtr<StringBuilderUTF8> AppendCSV(const UTF8Char **sarr, UOSInt nStr);
 		NotNullPtr<StringBuilderUTF8> AppendToUpper(const UTF8Char *s, UOSInt len);
 		NotNullPtr<StringBuilderUTF8> AppendToLower(const UTF8Char *s, UOSInt len);

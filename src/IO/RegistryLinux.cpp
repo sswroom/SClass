@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
+#include "Data/ArrayListStringNN.h"
 #include "Data/ArrayListStrUTF8.h"
 #include "IO/FileStream.h"
 #include "IO/IniFile.h"
@@ -230,7 +231,7 @@ IO::Registry *IO::Registry::OpenSubReg(const WChar *name)
 WChar *IO::Registry::GetSubReg(WChar *buff, UOSInt index)
 {
 	Data::ArrayListStrUTF8 names;
-	Data::ArrayListNN<Text::String> cateList;
+	Data::ArrayListStringNN cateList;
 	Sync::MutexUsage mutUsage(this->clsData->reg->mut);
 	if (this->clsData->reg->cfg == 0)
 	{
@@ -386,7 +387,7 @@ WChar *IO::Registry::GetName(WChar *nameBuff, UOSInt index)
 	{
 		return 0;
 	}
-	Data::ArrayListNN<Text::String> keys;
+	Data::ArrayListStringNN keys;
 	this->clsData->reg->cfg->GetKeys(this->clsData->cate->ToCString(), keys);
 	NotNullPtr<Text::String> key;
 	if (keys.GetItem(index).SetTo(key))

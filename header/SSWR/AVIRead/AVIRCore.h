@@ -51,7 +51,7 @@ namespace SSWR
 			Exporter::ExporterList exporters;
 			UInt32 currCodePage;
 			IO::LogTool log;
-			Data::ArrayListNN<Text::String> audDevList;
+			Data::ArrayListStringNN audDevList;
 			Media::AudioDevice audDevice;
 			Int32 audAPIType;
 			Media::MonitorMgr monMgr;
@@ -107,8 +107,8 @@ namespace SSWR
 			void SetMonitorDDPI(MonitorHandle *hMonitor, Double monitorDDPI);
 			Media::MonitorMgr *GetMonitorMgr();
 			
-			void SetAudioDeviceList(Data::ArrayListNN<Text::String> *audDevList);
-			Data::ArrayListNN<Text::String> *GetAudioDeviceList();
+			void SetAudioDeviceList(Data::ArrayListStringNN *audDevList);
+			Data::ArrayListStringNN *GetAudioDeviceList();
 			Int32 GetAudioAPIType();
 			Media::IAudioRenderer *BindAudio(Media::IAudioSource *audSrc);
 

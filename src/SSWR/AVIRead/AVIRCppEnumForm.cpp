@@ -35,7 +35,7 @@ void SSWR::AVIRead::AVIRCppEnumForm::ConvEnum()
 	Text::StringBuilderUTF8 srcSb;
 	Text::StringBuilderUTF8 destSb;
 	Text::StringBuilderUTF8 sbPrefix;
-	Data::ArrayListNN<Text::String> enumList;
+	Data::ArrayListStringNN enumList;
 
 	UOSInt type = this->cboType->GetSelectedIndex();
 	this->txtPrefix->GetText(sbPrefix);
@@ -122,7 +122,7 @@ void SSWR::AVIRead::AVIRCppEnumForm::ConvEnum()
 	{
 		this->txtDest->SetText(CSTR(""));
 	}
-	LISTNN_FREE_STRING(&enumList);
+	enumList.FreeAll();
 }
 
 SSWR::AVIRead::AVIRCppEnumForm::AVIRCppEnumForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)

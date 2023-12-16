@@ -464,19 +464,9 @@ Bool __stdcall SSWR::SDNSProxy::SDNSProxyWebHandler::BlacklistReq(SSWR::SDNSProx
 	sbOut.AppendC(UTF8STRC("<form method=\"POST\" action=\"/blacklist\"><input type=\"text\" name=\"blacklist\" />"));
 	sbOut.AppendC(UTF8STRC("<input type=\"submit\" value=\"Add\" /></form>\r\n"));
 
-	UOSInt i;
-	UOSInt j;
-	Data::ArrayList<Text::String*> blkList;
-	me->proxy->GetBlackList(&blkList);
-	i = 0;
-	j = blkList.GetCount();
-	while (i < j)
-	{
-		sbOut.AppendC(UTF8STRC("<br/>\r\n"));
-		sbOut.Append(blkList.GetItem(i));
-		i++;
-	}
-
+	Data::ArrayListNN<Text::String> blkList;
+	me->proxy->GetBlackList(blkList);
+	sbOut.AppendJoin(blkList.Iterator(), CSTR("<br/>\r\n"));
 	AppendFooter(sbOut);
 
 	resp->SetStatusCode(Net::WebStatus::SC_OK);

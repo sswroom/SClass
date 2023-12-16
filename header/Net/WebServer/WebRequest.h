@@ -54,7 +54,7 @@ namespace Net
 			virtual Optional<Text::String> GetSHeader(Text::CStringNN name);
 			virtual UTF8Char *GetHeader(UTF8Char *sbuff, Text::CStringNN name, UOSInt buffLen);
 			virtual Bool GetHeaderC(NotNullPtr<Text::StringBuilderUTF8> sb, Text::CStringNN name);
-			virtual UOSInt GetHeaderNames(NotNullPtr<Data::ArrayListNN<Text::String>> names);
+			virtual UOSInt GetHeaderNames(NotNullPtr<Data::ArrayListStringNN> names);
 			UOSInt GetHeaderCnt();
 			Text::String *GetHeaderName(UOSInt index);
 			Text::String *GetHeaderValue(UOSInt index);

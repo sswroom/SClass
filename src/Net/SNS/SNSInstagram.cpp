@@ -37,11 +37,8 @@ Net::SNS::SNSInstagram::SNSInstagram(NotNullPtr<Net::SocketFactory> sockf, Optio
 		item = itemList.GetItem(i);
 		if (item->moreImages)
 		{
-			Data::ArrayListNN<Text::String> imgList;
-			Data::ArrayListNN<Text::String> videoList;
-			UOSInt j;
-			UOSInt k;
-			Text::String *s;
+			Data::ArrayListStringNN imgList;
+			Data::ArrayListStringNN videoList;
 			if (this->ctrl->GetPageImages(item->shortCode, &imgList, &videoList))
 			{
 				SDEL_STRING(item->imgURL);
@@ -49,38 +46,16 @@ Net::SNS::SNSInstagram::SNSInstagram(NotNullPtr<Net::SocketFactory> sockf, Optio
 				if (imgList.GetCount() > 0)
 				{
 					sb.ClearStr();
-					j = 0;
-					k = imgList.GetCount();
-					while (j < k)
-					{
-						s = imgList.GetItem(j);
-						if (j > 0)
-						{
-							sb.AppendUTF8Char(' ');
-						}
-						sb.Append(s);
-						s->Release();
-						j++;
-					}
+					sb.AppendJoin(imgList.Iterator(), ' ');
+					imgList.FreeAll();
 					item->imgURL = Text::String::New(sb.ToCString()).Ptr();
 				}
 
 				if (videoList.GetCount() > 0)
 				{
 					sb.ClearStr();
-					j = 0;
-					k = videoList.GetCount();
-					while (j < k)
-					{
-						s = videoList.GetItem(j);
-						if (j > 0)
-						{
-							sb.AppendUTF8Char(' ');
-						}
-						sb.Append(s);
-						s->Release();
-						j++;
-					}
+					sb.AppendJoin(videoList.Iterator(), ' ');
+					videoList.FreeAll();
 					item->videoURL = Text::String::New(sb.ToCString()).Ptr();
 				}
 			}
@@ -189,11 +164,8 @@ Bool Net::SNS::SNSInstagram::Reload()
 			{
 				if (item->moreImages)
 				{
-					Data::ArrayListNN<Text::String> imgList;
-					Data::ArrayListNN<Text::String> videoList;
-					UOSInt j;
-					UOSInt k;
-					Text::String *s;
+					Data::ArrayListStringNN imgList;
+					Data::ArrayListStringNN videoList;
 					if (this->ctrl->GetPageImages(item->shortCode, &imgList, &videoList))
 					{
 						SDEL_STRING(item->imgURL);
@@ -201,38 +173,16 @@ Bool Net::SNS::SNSInstagram::Reload()
 						if (imgList.GetCount() > 0)
 						{
 							sb.ClearStr();
-							j = 0;
-							k = imgList.GetCount();
-							while (j < k)
-							{
-								s = imgList.GetItem(j);
-								if (j > 0)
-								{
-									sb.AppendUTF8Char(' ');
-								}
-								sb.Append(s);
-								s->Release();
-								j++;
-							}
+							sb.AppendJoin(imgList.Iterator(), ' ');
+							imgList.FreeAll();
 							item->imgURL = Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
 						}
 
 						if (videoList.GetCount() > 0)
 						{
 							sb.ClearStr();
-							j = 0;
-							k = videoList.GetCount();
-							while (j < k)
-							{
-								s = videoList.GetItem(j);
-								if (j > 0)
-								{
-									sb.AppendUTF8Char(' ');
-								}
-								sb.Append(s);
-								s->Release();
-								j++;
-							}
+							sb.AppendJoin(videoList.Iterator(), ' ');
+							videoList.FreeAll();
 							item->videoURL = Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
 						}
 					}

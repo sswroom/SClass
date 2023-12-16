@@ -161,14 +161,7 @@ void __stdcall SSWR::AVIRead::AVIRPingMonitorForm::OnIPSelChg(void *userObj)
 		Net::WhoisRecord *rec = me->whois.RequestIP(me->currIP->ip);
 		if (rec)
 		{
-			UOSInt i = 0;
-			UOSInt j = rec->GetCount();
-			while (i < j)
-			{
-				sb.Append(rec->GetItem(i));
-				sb.AppendC(UTF8STRC("\r\n"));
-				i++;
-			}
+			sb.AppendJoin(rec->Iterator(), CSTR("\r\n"));
 		}
 		me->txtIPWhois->SetText(sb.ToCString());
 	}

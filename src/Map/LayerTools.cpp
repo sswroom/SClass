@@ -6,7 +6,7 @@
 #include "DB/ColDef.h"
 #include "Map/LayerTools.h"
 
-Map::VectorLayer *Map::LayerTools::CombineLayers(Data::ArrayList<Map::MapDrawLayer*> *layers, Text::String *lyrName)
+Map::VectorLayer *Map::LayerTools::CombineLayers(NotNullPtr<Data::ArrayListNN<Map::MapDrawLayer>> layers, Text::String *lyrName)
 {
 	UOSInt layerCnt = layers->GetCount();
 	UOSInt i;
@@ -14,22 +14,20 @@ Map::VectorLayer *Map::LayerTools::CombineLayers(Data::ArrayList<Map::MapDrawLay
 	UOSInt k;
 	UOSInt l;
 	OSInt si;
-	Map::MapDrawLayer *lyr;
+	NotNullPtr<Map::MapDrawLayer> lyr;
 	UTF8Char sbuff[512];
 	NotNullPtr<Text::String> sourceName;
 
-	if (layerCnt <= 0)
+	if (layerCnt <= 0 || !layers->GetItem(0).SetTo(lyr))
 		return 0;
 
-	lyr = layers->GetItem(0);
 	Map::DrawLayerType lyrType = lyr->GetLayerType();
 	sourceName = lyr->GetSourceNameObj();
 	NotNullPtr<Math::CoordinateSystem> csys = lyr->GetCoordinateSystem();
 	i = layerCnt;
 	while (i-- > 0)
 	{
-		lyr = layers->GetItem(i);
-		if (lyr->GetLayerType() != lyrType)
+		if (!layers->GetItem(i).SetTo(lyr) || lyr->GetLayerType() != lyrType)
 			return 0;
 	}
 
@@ -44,8 +42,7 @@ Map::VectorLayer *Map::LayerTools::CombineLayers(Data::ArrayList<Map::MapDrawLay
 	i = 0;
 	while (i < layerCnt)
 	{
-		lyr = layers->GetItem(i);
-		if (r.Set(lyr->QueryTableData(CSTR_NULL, CSTR_NULL, 0, 0, 0, CSTR_NULL, 0)))
+		if (layers->GetItem(i).SetTo(lyr) && r.Set(lyr->QueryTableData(CSTR_NULL, CSTR_NULL, 0, 0, 0, CSTR_NULL, 0)))
 		{
 			k = r->ColCount();
 			j = 0;
@@ -104,10 +101,10 @@ Map::VectorLayer *Map::LayerTools::CombineLayers(Data::ArrayList<Map::MapDrawLay
 	MemFree(colSizes);
 
 	Data::ArrayListInt64 objIds;
-	i = 0;
-	while (i < layerCnt)
+	Data::ArrayIterator<NotNullPtr<Map::MapDrawLayer>> it = layers->Iterator();
+	while (it.HasNext())
 	{
-		lyr = layers->GetItem(i);
+		lyr = it.Next();
 
 		k = lyr->GetColumnCnt();
 		j = 0;
@@ -176,7 +173,6 @@ Map::VectorLayer *Map::LayerTools::CombineLayers(Data::ArrayList<Map::MapDrawLay
 			}
 		}
 		lyr->EndGetObject(sess);
-		i++;
 	}
 	MemFree(colDPs);
 	MemFree(ofsts);

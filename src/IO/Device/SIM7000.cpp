@@ -156,10 +156,9 @@ Bool IO::Device::SIM7000::SIMCOMPowerDown()
 	Sync::MutexUsage mutUsage(this->cmdMut);
 	this->channel->SendATCommand(this->cmdResults, UTF8STRC("AT+CPOWD=1"), 2000);
 	UOSInt i = this->cmdResults.GetCount();
-	Text::String *val;
-	if (i > 1)
+	NotNullPtr<Text::String> val;
+	if (i > 1 && this->cmdResults.GetItem(i - 1).SetTo(val))
 	{
-		val = this->cmdResults.GetItem(i - 1);
 		if (val->Equals(UTF8STRC("OK")) || val->Equals(UTF8STRC("NORMAL POWER DOWN")))
 		{
 			ClearCmdResult();
@@ -391,7 +390,7 @@ UTF8Char *IO::Device::SIM7000::NetGetIFAddr(UTF8Char *addr)
 
 Bool IO::Device::SIM7000::NetGetDNSList(Data::ArrayList<UInt32> *dnsList)
 {
-	Data::ArrayListNN<Text::String> resList;
+	Data::ArrayListStringNN resList;
 	if (this->SendStringCommand(&resList, UTF8STRC("AT+CDNSCFG?"), 3000))
 	{
 		UOSInt i = 0;
@@ -399,14 +398,16 @@ Bool IO::Device::SIM7000::NetGetDNSList(Data::ArrayList<UInt32> *dnsList)
 		UOSInt k;
 		while (i < j)
 		{
-			Text::String *s;
-			s = resList.GetItem(i);
-			k = s->IndexOf(UTF8STRC("Dns: "));
-			if (k != INVALID_INDEX && k > 0)
+			NotNullPtr<Text::String> s;
+			if (resList.GetItem(i).SetTo(s))
 			{
-				dnsList->Add(Net::SocketUtil::GetIPAddr(s->ToCString().Substring(k + 5)));
+				k = s->IndexOf(UTF8STRC("Dns: "));
+				if (k != INVALID_INDEX && k > 0)
+				{
+					dnsList->Add(Net::SocketUtil::GetIPAddr(s->ToCString().Substring(k + 5)));
+				}
+				s->Release();
 			}
-			s->Release();
 			i++;
 		}
 		return true;
