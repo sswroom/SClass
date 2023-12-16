@@ -97,8 +97,6 @@ UI/GUITextBox.h:
 @GUITextBoxWin.o
 UI/GUITextView.h:
 @GUITextViewWin.o
-UI/GUITimer.h:
-@GUITimerWin.o
 UI/GUITrackBar.h:
 @GUITrackBarWin.o
 UI/GUITreeView.h:
@@ -106,12 +104,6 @@ UI/GUITreeView.h:
 UI/GUIVSplitter.h:
 @GUIVSplitterWin.o
 UI/IWindowSystem.h:
-UI/Win/WinDragDrop.h:
-@WinDragDrop.o
-UI/Win/WinGroupBox.h:
-@WinGroupBox.o
-UI/Win/WinMessageDialog.h:
-@WinMessageDialog.o
 
 GUIStartup.o: ../../startup/WinStartup.cpp
 !-Wl,--subsystem,windows

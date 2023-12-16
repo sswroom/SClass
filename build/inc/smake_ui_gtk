@@ -96,20 +96,12 @@ UI/GUITextBox.h:
 @GUITextBoxGTK.o
 UI/GUITextView.h:
 @GUITextViewGTK.o
-UI/GUITimer.h:
-@GUITimerGTK.o
 UI/GUITrackBar.h:
 @GUITrackBarGTK.o
 UI/GUITreeView.h:
 @GUITreeViewGTK.o
 UI/GUIVSplitter.h:
 @GUIVSplitterGTK.o
-UI/GTK/GTKDragDrop.h:
-@GTKDragDrop.o
-UI/GTK/GTKGroupBox.h:
-@GTKGroupBox.o
-UI/GTK/GTKMessageDialog.h:
-@GTKMessageDialog.o
 
 GUIStartup.o: ../../startup/GtkStartup.cpp
 $`pkg-config --cflags gtk+-3.0`

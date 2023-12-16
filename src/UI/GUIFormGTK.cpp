@@ -6,7 +6,7 @@
 #include "Text/StringBuilderUTF8.h"
 #include "Text/TextBinEnc/URIEncoding.h"
 #include "UI/GUIForm.h"
-#include "UI/GUITimer.h"
+#include "UI/GTK/GTKTimer.h"
 #include <gtk/gtk.h>
 
 typedef struct
@@ -340,8 +340,8 @@ void UI::GUIForm::SetNoResize(Bool noResize)
 
 NotNullPtr<UI::GUITimer> UI::GUIForm::AddTimer(UInt32 interval, UI::UIEvent handler, void *userObj)
 {
-	NotNullPtr<UI::GUITimer> tmr;
-	NEW_CLASSNN(tmr, UI::GUITimer(this->ui, *this, 0, interval, handler, userObj));
+	NotNullPtr<UI::GTK::GTKTimer> tmr;
+	NEW_CLASSNN(tmr, UI::GTK::GTKTimer(interval, handler, userObj));
 	this->timers.Add(tmr);
 	return tmr;
 }

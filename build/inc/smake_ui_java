@@ -95,18 +95,12 @@ UI/GUITextBox.h:
 @GUITextBoxGTK.o
 UI/GUITextView.h:
 @GUITextViewGTK.o
-UI/GUITimer.h:
-@GUITimerJava.o
 UI/GUITrackBar.h:
 @GUITrackBarGTK.o
 UI/GUITreeView.h:
 @GUITreeViewGTK.o
 UI/GUIVSplitter.h:
 @GUIVSplitterGTK.o
-UI/Java/JavaGroupBox.h:
-JavaGroupBox.o
-UI/Java/JavaMessageDialog.h:
-@JavaMessageDialog.o
 
 GUIStartup.o: ../../startup/JavaStartup.cpp
 $-I$(JAVA_HOME)/include

@@ -2275,12 +2275,7 @@ GUITextFileView.o: ../../src/UI/GUITextFileView.cpp
 GUITextViewGTK.o: ../../src/UI/GUITextViewGTK.cpp
 $`$(PKG-CONFIG) --cflags gtk+-3.0`
 GUITextViewWin.o: ../../src/UI/GUITextViewWin.cpp
-GUITimerGTK.o: ../../src/UI/GUITimerGTK.cpp
-$`$(PKG-CONFIG) --cflags gtk+-3.0`
-GUITimerJava.o: ../../src/UI/GUITimerJava.cpp
-$-I$(JAVA_HOME)/include
-$-I$(JAVA_HOME)/include/linux
-GUITimerWin.o: ../../src/UI/GUITimerWin.cpp
+GUITimer.o: ../../src/UI/GUITimer.cpp
 GUITrackBarGTK.o: ../../src/UI/GUITrackBarGTK.cpp
 $`$(PKG-CONFIG) --cflags gtk+-3.0`
 GUITrackBarWin.o: ../../src/UI/GUITrackBarWin.cpp
@@ -2314,12 +2309,18 @@ GTKGroupBox.o: ../../src/UI/GTK/GTKGroupBox.cpp
 $`$(PKG-CONFIG) --cflags gtk+-3.0`
 GTKMessageDialog.o: ../../src/UI/GTK/GTKMessageDialog.cpp
 $`$(PKG-CONFIG) --cflags gtk+-3.0`
+GTKTimer.o: ../../src/UI/GTK/GTKTimer.cpp
+$`$(PKG-CONFIG) --cflags gtk+-3.0`
 JavaMessageDialog.o: ../../src/UI/GTK/JavaMessageDialog.cpp
+$-I$(JAVA_HOME)/include
+$-I$(JAVA_HOME)/include/linux
+JavaTimer.o: ../../src/UI/Java/JavaTimer.cpp
 $-I$(JAVA_HOME)/include
 $-I$(JAVA_HOME)/include/linux
 WinDragDrop.o: ../../src/UI/Win/WinDragDrop.cpp
 WinGroupBox.o: ../../src/UI/Win/WinGroupBox.cpp
 WinMessageDialog.o: ../../src/UI/Win/WinMessageDialog.cpp
+WinTimer.o: ../../src/UI/Win/WinTimer.cpp
 
 ColorDialog.o: ../../src/UtilUI/ColorDialog.cpp
 TextGotoDialog.o: ../../src/UtilUI/TextGotoDialog.cpp

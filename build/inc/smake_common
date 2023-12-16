@@ -4658,6 +4658,8 @@ UI/GUISudokuViewer.h:
 @GUISudokuViewer.o
 UI/GUITextFileView.h:
 @GUITextFileView.o
+UI/GUITimer.h:
+@GUITimer.o
 UI/GUIVideoBoxDD.h:
 @GUIVideoBoxDD.o
 UI/GUIVideoBoxDDLQ.h:
@@ -4694,6 +4696,28 @@ UI/DObj/TextDObj.h:
 @TextDObj.o
 UI/DObj/VideoDObjHandler.h:
 @VideoDObjHandler.o
+UI/GTK/GTKDragDrop.h:
+@GTKDragDrop.o
+UI/GTK/GTKGroupBox.h:
+@GTKGroupBox.o
+UI/GTK/GTKMessageDialog.h:
+@GTKMessageDialog.o
+UI/GTK/GTKTimer.h:
+@GTKTimer.o
+UI/Java/JavaGroupBox.h:
+JavaGroupBox.o
+UI/Java/JavaMessageDialog.h:
+@JavaMessageDialog.o
+UI/Java/JavaTimer.h:
+@JavaTimer.o
+UI/Win/WinDragDrop.h:
+@WinDragDrop.o
+UI/Win/WinGroupBox.h:
+@WinGroupBox.o
+UI/Win/WinMessageDialog.h:
+@WinMessageDialog.o
+UI/Win/WinTimer.h:
+@WinTimer.o
 
 UtilUI/ColorDialog.h:
 @ColorDialog.o
