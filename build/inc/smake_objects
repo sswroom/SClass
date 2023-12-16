@@ -2311,7 +2311,7 @@ GTKMessageDialog.o: ../../src/UI/GTK/GTKMessageDialog.cpp
 $`$(PKG-CONFIG) --cflags gtk+-3.0`
 GTKTimer.o: ../../src/UI/GTK/GTKTimer.cpp
 $`$(PKG-CONFIG) --cflags gtk+-3.0`
-JavaMessageDialog.o: ../../src/UI/GTK/JavaMessageDialog.cpp
+JavaMessageDialog.o: ../../src/UI/Java/JavaMessageDialog.cpp
 $-I$(JAVA_HOME)/include
 $-I$(JAVA_HOME)/include/linux
 JavaTimer.o: ../../src/UI/Java/JavaTimer.cpp

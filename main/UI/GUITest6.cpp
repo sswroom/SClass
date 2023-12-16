@@ -22,7 +22,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 		UI::GUITreeView::TreeItem *item2;
 		NotNullPtr<UI::GUIForm> frm;
 		NEW_CLASSNN(frm, UI::GUIForm(0, 640, 480, core));
-		frm->SetText(CSTR("GUI Test 6"));
+		frm->SetText(CSTR("Test 6 - TreeView"));
 		NEW_CLASS(tv, UI::GUITreeView(core, frm));
 		tv->SetDockType(UI::GUIControl::DOCK_FILL);
 		tv->SetHasLines(true);

@@ -8,14 +8,14 @@
 
 Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 {
-	UI::GUICore *core = progCtrl->CreateGUICore(progCtrl);
-	if (core)
+	NotNullPtr<UI::GUICore> core;
+	if (core.Set(progCtrl->CreateGUICore(progCtrl)))
 	{
 		UI::GUIButton *btn;
-		UI::GUIForm *frm;
+		NotNullPtr<UI::GUIForm> frm;
 		UI::GUILabel *lbl;
-		NEW_CLASS(frm, UI::GUIForm(0, 640, 480, core));
-		frm->SetText(CSTR("GUI Test 7"));
+		NEW_CLASSNN(frm, UI::GUIForm(0, 640, 480, core));
+		frm->SetText(CSTR("Test 7 - Font and Color"));
 		NEW_CLASS(btn, UI::GUIButton(core, frm, CSTR("Button")));
 		btn->SetRect(4, 4, 75, 23, false);
 		btn->SetFont(UTF8STRC("Arial"), 5, true);
@@ -26,7 +26,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 		frm->SetExitOnClose(true);
 		frm->Show();
 		core->Run();
-		DEL_CLASS(core);
+		core.Delete();
 	}
 	return 0;
 }

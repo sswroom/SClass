@@ -86,14 +86,14 @@ void UI::GUIButton::SetText(Text::CStringNN text)
 	Text::StrDelNew(lbl);
 }
 
-void UI::GUIButton::SetFont(const UTF8Char *name, UOSInt nameLen, Double fontHeight, Bool isBold)
+void UI::GUIButton::SetFont(const UTF8Char *name, UOSInt nameLen, Double fontHeightPt, Bool isBold)
 {
 	GtkWidget *widget = gtk_bin_get_child((GtkBin*)this->hwnd);
 #if GDK_VERSION_AFTER(3, 16)
 	Text::CSSBuilder builder(Text::CSSBuilder::PM_SPACE);
 	builder.NewStyle(CSTR("label"), CSTR_NULL);
 	if (name) builder.AddFontFamily(name);
-	if (fontHeight != 0) builder.AddFontSize(fontHeight, Math::Unit::Distance::DU_PIXEL);
+	if (fontHeightPt != 0) builder.AddFontSize(fontHeightPt * this->hdpi / this->ddpi, Math::Unit::Distance::DU_PIXEL);
 	if (isBold) builder.AddFontWeight(Text::CSSBuilder::FONT_WEIGHT_BOLD);
 
 	GtkStyleContext *style = gtk_widget_get_style_context(widget);
@@ -107,7 +107,7 @@ void UI::GUIButton::SetFont(const UTF8Char *name, UOSInt nameLen, Double fontHei
 	{
 		pango_font_description_set_family(font, (const Char*)name);
 	}
-	pango_font_description_set_absolute_size(font, fontHeight * PANGO_SCALE);
+	pango_font_description_set_absolute_size(font, fontHeightPt * this->hdpi / this->ddpi * PANGO_SCALE / 0.75);
 	if (isBold)
 		pango_font_description_set_weight(font, PANGO_WEIGHT_BOLD);
 	gtk_widget_override_font(widget, font); 	

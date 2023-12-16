@@ -29,7 +29,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	{
 		NotNullPtr<UI::GUIForm> frm;
 		NEW_CLASSNN(frm, UI::GUIForm(0, 640, 480, core));
-		frm->SetText(CSTR("GUI Test 5"));
+		frm->SetText(CSTR("Test 5 - ListBox"));
 		NEW_CLASS(lb, UI::GUIListBox(core, frm, false));
 		lb->SetDockType(UI::GUIControl::DOCK_FILL);
 		lb->AddItem(CSTR("Item 1"), 0);

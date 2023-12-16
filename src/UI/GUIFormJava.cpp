@@ -6,7 +6,7 @@
 #include "Text/MyString.h"
 #include "Text/TextBinEnc/URIEncoding.h"
 #include "UI/GUIForm.h"
-#include "UI/GUITimer.h"
+#include "UI/Java/JavaTimer.h"
 #include <jni.h>
 #include <stdio.h>
 
@@ -179,12 +179,12 @@ UI::GUIForm::GUIForm(Optional<GUIClientControl> parent, Double initW, Double ini
 	{
 		this->container = env->CallObjectMethod((jobject)this->hwnd, mid);
 	}
-/*	cls = env->FindClass("JFrameWindowListener");
+	cls = env->FindClass("JFrameWindowListener");
 	mid = env->GetMethodID(cls, "<init>", "(J)V");
 	jobject listener = env->NewObject(cls, mid, this);
 	cls = env->GetObjectClass((jobject)this->hwnd);
 	mid = env->GetMethodID(cls, "addWindowListener", "(Ljava/awt/event/WindowListener;)V");
-	env->CallVoidMethod((jobject)this->hwnd, mid, listener);*/
+	env->CallVoidMethod((jobject)this->hwnd, mid, listener);
 
 	this->selfResize = true;
 	Double w;
@@ -362,8 +362,8 @@ void UI::GUIForm::SetNoResize(Bool noResize)
 
 NotNullPtr<UI::GUITimer> UI::GUIForm::AddTimer(UInt32 interval, UI::UIEvent handler, void *userObj)
 {
-	NotNullPtr<UI::GUITimer> tmr;
-	NEW_CLASSNN(tmr, UI::GUITimer(this->ui, *this, 0, interval, handler, userObj));
+	NotNullPtr<UI::Java::JavaTimer> tmr;
+	NEW_CLASSNN(tmr, UI::Java::JavaTimer((JNIEnv*)jniEnv, interval, handler, userObj));
 	this->timers.Add(tmr);
 	return tmr;
 }
