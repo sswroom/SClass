@@ -12,7 +12,6 @@
 #include "Sync/MutexUsage.h"
 #include "Text/MIMEObj/MailMessage.h"
 #include "Text/MyString.h"
-#include "UI/MessageDialog.h"
 
 #define SERVER_DOMAIN CSTR("127.0.0.1")
 
@@ -32,12 +31,12 @@ void __stdcall SSWR::AVIRead::AVIREmailServerForm::OnSMTPStartClicked(void *user
 		me->txtSMTPPort->GetText(sb);
 		if (!sb.ToUInt16(port))
 		{
-			UI::MessageDialog::ShowDialog(CSTR("Please enter valid port number"), CSTR("Error"), me);
+			me->ui->ShowMsgOK(CSTR("Please enter valid port number"), CSTR("Error"), me);
 			return;
 		}
 		if (port == 0 || port > 65535)
 		{
-			UI::MessageDialog::ShowDialog(CSTR("Please enter valid port number"), CSTR("Error"), me);
+			me->ui->ShowMsgOK(CSTR("Please enter valid port number"), CSTR("Error"), me);
 			return;
 		}
 		NotNullPtr<Net::SSLEngine> ssl;
@@ -73,12 +72,12 @@ void __stdcall SSWR::AVIRead::AVIREmailServerForm::OnPOP3StartClicked(void *user
 		me->txtPOP3Port->GetText(sb);
 		if (!sb.ToUInt16(port))
 		{
-			UI::MessageDialog::ShowDialog(CSTR("Please enter valid port number"), CSTR("Error"), me);
+			me->ui->ShowMsgOK(CSTR("Please enter valid port number"), CSTR("Error"), me);
 			return;
 		}
 		if (port == 0 || port > 65535)
 		{
-			UI::MessageDialog::ShowDialog(CSTR("Please enter valid port number"), CSTR("Error"), me);
+			me->ui->ShowMsgOK(CSTR("Please enter valid port number"), CSTR("Error"), me);
 			return;
 		}
 		Optional<Net::SSLEngine> ssl = 0;
@@ -96,7 +95,7 @@ void __stdcall SSWR::AVIRead::AVIREmailServerForm::OnPOP3StartClicked(void *user
 		}
 		else if (sslConn)
 		{
-			UI::MessageDialog::ShowDialog(CSTR("Please select SSL Cert/Key"), CSTR("SMTP Server"), me);
+			me->ui->ShowMsgOK(CSTR("Please select SSL Cert/Key"), CSTR("SMTP Server"), me);
 			return;
 		}
 		NEW_CLASS(me->pop3Svr, Net::Email::POP3Server(me->core->GetSocketFactory(), ssl, sslConn, port, me->log, CSTR("Welcome to SSWR POP3 Server"), me, true));
@@ -134,25 +133,25 @@ void __stdcall SSWR::AVIRead::AVIREmailServerForm::OnGCISStartClicked(void *user
 		me->txtGCISPort->GetText(sb);
 		if (!sb.ToUInt16(port))
 		{
-			UI::MessageDialog::ShowDialog(CSTR("Please enter valid port number"), CSTR("Error"), me);
+			me->ui->ShowMsgOK(CSTR("Please enter valid port number"), CSTR("Error"), me);
 			return;
 		}
 		if (port == 0 || port > 65535)
 		{
-			UI::MessageDialog::ShowDialog(CSTR("Please enter valid port number"), CSTR("Error"), me);
+			me->ui->ShowMsgOK(CSTR("Please enter valid port number"), CSTR("Error"), me);
 			return;
 		}
 		sb.ClearStr();
 		me->txtGCISNotifPath->GetText(sb);
 		if (!sb.StartsWith('/'))
 		{
-			UI::MessageDialog::ShowDialog(CSTR("Please enter valid Notif path"), CSTR("Error"), me);
+			me->ui->ShowMsgOK(CSTR("Please enter valid Notif path"), CSTR("Error"), me);
 			return;
 		}
 		me->txtGCISBatchUplPath->GetText(sb2);
 		if (!sb2.StartsWith('/'))
 		{
-			UI::MessageDialog::ShowDialog(CSTR("Please enter valid Batch Upload path"), CSTR("Error"), me);
+			me->ui->ShowMsgOK(CSTR("Please enter valid Batch Upload path"), CSTR("Error"), me);
 			return;
 		}
 		Optional<Net::SSLEngine> ssl = 0;
@@ -160,7 +159,7 @@ void __stdcall SSWR::AVIRead::AVIREmailServerForm::OnGCISStartClicked(void *user
 		NotNullPtr<Crypto::Cert::X509File> gcisSSLKey;
 		if (!gcisSSLCert.Set(me->gcisSSLCert) || !gcisSSLKey.Set(me->gcisSSLKey))
 		{
-			UI::MessageDialog::ShowDialog(CSTR("Please select SSL Cert/Key"), CSTR("SMTP Server"), me);
+			me->ui->ShowMsgOK(CSTR("Please select SSL Cert/Key"), CSTR("SMTP Server"), me);
 			return;
 		}
 		ssl = me->gcisSSL;
@@ -234,7 +233,7 @@ void __stdcall SSWR::AVIRead::AVIREmailServerForm::OnEmailDblClicked(void *userO
 		}
 		else
 		{
-			UI::MessageDialog::ShowDialog(CSTR("Error in loading file"), CSTR("Error"), me);
+			me->ui->ShowMsgOK(CSTR("Error in loading file"), CSTR("Error"), me);
 		}
 	}
 }
@@ -357,7 +356,7 @@ void __stdcall SSWR::AVIRead::AVIREmailServerForm::OnSMTPCertKeyClicked(void *us
 	SSWR::AVIRead::AVIREmailServerForm *me = (SSWR::AVIRead::AVIREmailServerForm*)userObj;
 	if (me->smtpSvr)
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Cannot change Cert/Key when SMTP server is started"), CSTR("SMTP Server"), me);
+		me->ui->ShowMsgOK(CSTR("Cannot change Cert/Key when SMTP server is started"), CSTR("SMTP Server"), me);
 		return;
 	}
 	SSWR::AVIRead::AVIRSSLCertKeyForm frm(0, me->ui, me->core, me->smtpSSL, me->smtpSSLCert, me->smtpSSLKey, me->smtpCACerts);
@@ -382,7 +381,7 @@ void __stdcall SSWR::AVIRead::AVIREmailServerForm::OnPOP3CertKeyClicked(void *us
 	SSWR::AVIRead::AVIREmailServerForm *me = (SSWR::AVIRead::AVIREmailServerForm*)userObj;
 	if (me->pop3Svr)
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Cannot change Cert/Key when POP3 server is started"), CSTR("SMTP Server"), me);
+		me->ui->ShowMsgOK(CSTR("Cannot change Cert/Key when POP3 server is started"), CSTR("SMTP Server"), me);
 		return;
 	}
 	SSWR::AVIRead::AVIRSSLCertKeyForm frm(0, me->ui, me->core, me->pop3SSL, me->pop3SSLCert, me->pop3SSLKey, me->pop3CACerts);
@@ -407,7 +406,7 @@ void __stdcall SSWR::AVIRead::AVIREmailServerForm::OnGCISCertKeyClicked(void *us
 	SSWR::AVIRead::AVIREmailServerForm *me = (SSWR::AVIRead::AVIREmailServerForm*)userObj;
 	if (me->gcisListener)
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Cannot change Cert/Key when GCIS server is started"), CSTR("SMTP Server"), me);
+		me->ui->ShowMsgOK(CSTR("Cannot change Cert/Key when GCIS server is started"), CSTR("SMTP Server"), me);
 		return;
 	}
 	SSWR::AVIRead::AVIRSSLCertKeyForm frm(0, me->ui, me->core, me->gcisSSL, me->gcisSSLCert, me->gcisSSLKey, me->gcisCACerts);

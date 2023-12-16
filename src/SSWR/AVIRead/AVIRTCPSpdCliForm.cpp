@@ -6,7 +6,6 @@
 #include "Sync/ThreadUtil.h"
 #include "Text/MyStringFloat.h"
 #include "Text/StringBuilderUTF8.h"
-#include "UI/MessageDialog.h"
 
 #define SENDBUFFSIZE 65536//9000
 #define RECVBUFFSIZE 65536//9000
@@ -34,19 +33,19 @@ void __stdcall SSWR::AVIRead::AVIRTCPSpdCliForm::OnConnClick(void *userObj)
 	me->txtHost->GetText(sb);
 	if (!me->core->GetSocketFactory()->DNSResolveIP(sb.ToCString(), addr))
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Host is not valid"), CSTR("Error"), me);
+		me->ui->ShowMsgOK(CSTR("Host is not valid"), CSTR("Error"), me);
 		return;
 	}
 	sb.ClearStr();
 	me->txtPort->GetText(sb);
 	if (!sb.ToUInt16(port))
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Port is not a number"), CSTR("Error"), me);
+		me->ui->ShowMsgOK(CSTR("Port is not a number"), CSTR("Error"), me);
 		return;
 	}
 	if (port <= 0 || port > 65535)
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Port is out of range"), CSTR("Error"), me);
+		me->ui->ShowMsgOK(CSTR("Port is out of range"), CSTR("Error"), me);
 		return;
 	}
 	Net::TCPClient *cli;
@@ -54,7 +53,7 @@ void __stdcall SSWR::AVIRead::AVIRTCPSpdCliForm::OnConnClick(void *userObj)
 	if (cli->IsConnectError())
 	{
 		DEL_CLASS(cli);
-		UI::MessageDialog::ShowDialog(CSTR("Error in connect to server"), CSTR("Error"), me);
+		me->ui->ShowMsgOK(CSTR("Error in connect to server"), CSTR("Error"), me);
 		return;
 	}
 	else

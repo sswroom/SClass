@@ -16,7 +16,6 @@
 #include "Text/StringBuilderUTF8.h"
 #include "UI/GUIClientControl.h"
 #include "UI/GUIMapControl.h"
-#include "UI/MessageDialog.h"
 
 #include <stdio.h>
 

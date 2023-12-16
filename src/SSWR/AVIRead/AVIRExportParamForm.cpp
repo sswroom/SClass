@@ -2,7 +2,6 @@
 #include "Text/MyString.h"
 #include "Text/StringUtil.h"
 #include "Math/Math.h"
-#include "UI/MessageDialog.h"
 #include "SSWR/AVIRead/AVIRExportParamForm.h"
 
 void __stdcall SSWR::AVIRead::AVIRExportParamForm::OnOKClicked(void *userObj)
@@ -27,7 +26,7 @@ void __stdcall SSWR::AVIRead::AVIRExportParamForm::OnOKClicked(void *userObj)
 			if (!me->exporter->SetParamInt32(me->param, i, val))
 			{
 				sptr = Text::StrConcatC(pi.name.ConcatTo(Text::StrConcatC(sbuff, UTF8STRC("Parameter \""))), UTF8STRC("\" out of range"));
-				UI::MessageDialog::ShowDialog(CSTRP(sbuff, sptr), CSTR("Export Parameter"), me);
+				me->ui->ShowMsgOK(CSTRP(sbuff, sptr), CSTR("Export Parameter"), me);
 				return;
 			}
 		}
@@ -40,7 +39,7 @@ void __stdcall SSWR::AVIRead::AVIRExportParamForm::OnOKClicked(void *userObj)
 			if (!me->exporter->SetParamSel(me->param, i, j))
 			{
 				sptr = Text::StrConcatC(pi.name.ConcatTo(Text::StrConcatC(sbuff, UTF8STRC("Parameter \""))), UTF8STRC("\" out of range"));
-				UI::MessageDialog::ShowDialog(CSTRP(sbuff, sptr), CSTR("Export Parameter"), me);
+				me->ui->ShowMsgOK(CSTRP(sbuff, sptr), CSTR("Export Parameter"), me);
 				return;
 			}
 		}

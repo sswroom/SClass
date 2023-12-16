@@ -56,7 +56,6 @@
 #include "SSWR/AVIReadCE/AVIRCEAboutForm.h"
 #include "SSWR/AVIReadCE/AVIRCEBaseForm.h"
 #include "SSWR/AVIReadCE/AVIRCEProcInfoForm.h"
-#include "UI/MessageDialog.h"
 #include "UI/GUITextBox.h"
 #include "UtilUI/TextViewerForm.h"
 

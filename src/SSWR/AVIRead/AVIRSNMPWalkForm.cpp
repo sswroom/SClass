@@ -5,7 +5,6 @@
 #include "Net/SNMPClient.h"
 #include "Net/SNMPInfo.h"
 #include "SSWR/AVIRead/AVIRSNMPWalkForm.h"
-#include "UI/MessageDialog.h"
 
 SSWR::AVIRead::AVIRSNMPWalkForm::AVIRSNMPWalkForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<const Net::SocketUtil::AddressInfo> addr, NotNullPtr<Text::String> community) : UI::GUIForm(parent, 1024, 768, ui)
 {

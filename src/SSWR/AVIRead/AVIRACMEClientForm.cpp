@@ -1,7 +1,6 @@
 #include "Stdafx.h"
 #include "IO/Path.h"
 #include "SSWR/AVIRead/AVIRACMEClientForm.h"
-#include "UI/MessageDialog.h"
 
 void __stdcall SSWR::AVIRead::AVIRACMEClientForm::OnStartClicked(void *userObj)
 {
@@ -21,7 +20,7 @@ void __stdcall SSWR::AVIRead::AVIRACMEClientForm::OnStartClicked(void *userObj)
 	me->txtHost->GetText(sb);
 	if (sb.GetLength() == 0)
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Please enter host"), CSTR("ACME Client"), me);
+		me->ui->ShowMsgOK(CSTR("Please enter host"), CSTR("ACME Client"), me);
 		return;
 	}
 	i = sb.IndexOf(':');
@@ -29,7 +28,7 @@ void __stdcall SSWR::AVIRead::AVIRACMEClientForm::OnStartClicked(void *userObj)
 	{
 		if (!Text::StrToUInt16(sb.ToString() + i + 1, port))
 		{
-			UI::MessageDialog::ShowDialog(CSTR("Port number in host name is not valid"), CSTR("ACME Client"), me);
+			me->ui->ShowMsgOK(CSTR("Port number in host name is not valid"), CSTR("ACME Client"), me);
 			return;
 		}
 		sb.TrimToLength(i);
@@ -37,13 +36,13 @@ void __stdcall SSWR::AVIRead::AVIRACMEClientForm::OnStartClicked(void *userObj)
 	me->txtKeyFile->GetText(sbKey);
 	if (sbKey.GetLength() == 0)
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Please enter key file"), CSTR("ACME Client"), me);
+		me->ui->ShowMsgOK(CSTR("Please enter key file"), CSTR("ACME Client"), me);
 		return;
 	}
 	NEW_CLASS(me->client, Net::ACMEClient(me->sockf, sb.ToCString(), port, sbKey.ToCString()));
 	if (me->client->IsError())
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Server does not have valid response"), CSTR("ACME Client"), me);
+		me->ui->ShowMsgOK(CSTR("Server does not have valid response"), CSTR("ACME Client"), me);
 		DEL_CLASS(me->client);
 		me->client = 0;
 		return;

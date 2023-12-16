@@ -1,7 +1,6 @@
 #include "Stdafx.h"
 #include "IO/SerialPort.h"
 #include "Text/StringBuilder.h"
-#include "UI/MessageDialog.h"
 #include "SSWR/AVIRead/AVIRWIADevForm.h"
 
 void __stdcall SSWR::AVIRead::AVIRWIADevForm::OnOKClick(void *userObj)
@@ -9,13 +8,13 @@ void __stdcall SSWR::AVIRead::AVIRWIADevForm::OnOKClick(void *userObj)
 	SSWR::AVIRead::AVIRWIADevForm *me = (SSWR::AVIRead::AVIRWIADevForm*)userObj;
 /*	if (me->currCapture == 0)
 	{
-		UI::MessageDialog::ShowDialog(L"Please select a device", L"Select Capture Device");
+		me->ui->ShowMsgOK(L"Please select a device", L"Select Capture Device");
 		return;
 	}
 	CaptureFormat *fmt = (CaptureFormat*)me->cboFormat->GetItem(me->cboFormat->GetSelectedIndex());
 	if (fmt == 0)
 	{
-		UI::MessageDialog::ShowDialog(L"Please select a format", L"Select Capture Device");
+		me->ui->ShowMsgOK(L"Please select a format", L"Select Capture Device");
 		return;
 	}
 

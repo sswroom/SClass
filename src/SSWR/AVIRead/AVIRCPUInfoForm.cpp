@@ -7,7 +7,6 @@
 #include "Text/MyStringFloat.h"
 #include "Text/StringBuilderUTF8.h"
 #include "UI/Clipboard.h"
-#include "UI/MessageDialog.h"
 
 void __stdcall SSWR::AVIRead::AVIRCPUInfoForm::OnUploadClick(void *userObj)
 {
@@ -18,7 +17,7 @@ void __stdcall SSWR::AVIRead::AVIRCPUInfoForm::OnUploadClick(void *userObj)
 	Manage::CPUInfo cpu;
 	if ((sptr = cpu.GetCPUName(sbuff)) == 0)
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Error in getting CPU Name"), CSTR("Error"), me);
+		me->ui->ShowMsgOK(CSTR("Error in getting CPU Name"), CSTR("Error"), me);
 	}
 	else
 	{
@@ -45,16 +44,16 @@ void __stdcall SSWR::AVIRead::AVIRCPUInfoForm::OnUploadClick(void *userObj)
 			cli.Delete();
 			if (respStatus == 200)
 			{
-				UI::MessageDialog::ShowDialog(CSTR("Upload success"), CSTR("CPUInfo"), me);
+				me->ui->ShowMsgOK(CSTR("Upload success"), CSTR("CPUInfo"), me);
 			}
 			else
 			{
-				UI::MessageDialog::ShowDialog(CSTR("Error in uploading to server"), CSTR("CPUInfo"), me);
+				me->ui->ShowMsgOK(CSTR("Error in uploading to server"), CSTR("CPUInfo"), me);
 			}
 		}
 		else
 		{
-			UI::MessageDialog::ShowDialog(CSTR("CPU Info already exist"), CSTR("CPUInfo"), me);
+			me->ui->ShowMsgOK(CSTR("CPU Info already exist"), CSTR("CPUInfo"), me);
 		}
 	}
 
@@ -70,7 +69,7 @@ void __stdcall SSWR::AVIRead::AVIRCPUInfoForm::OnCopyInfoClick(void *userObj)
 	Manage::CPUInfo cpu;
 	if ((sptr = cpu.GetCPUName(sbuff)) == 0)
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Error in getting CPU Name"), CSTR("Error"), me);
+		me->ui->ShowMsgOK(CSTR("Error in getting CPU Name"), CSTR("Error"), me);
 	}
 	else
 	{

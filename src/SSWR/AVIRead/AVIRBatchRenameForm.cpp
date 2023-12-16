@@ -2,7 +2,6 @@
 #include "IO/FileUtil.h"
 #include "IO/Path.h"
 #include "SSWR/AVIRead/AVIRBatchRenameForm.h"
-#include "UI/MessageDialog.h"
 
 void __stdcall SSWR::AVIRead::AVIRBatchRenameForm::OnRenameExtUpperClicked(void *userObj)
 {
@@ -17,7 +16,7 @@ void __stdcall SSWR::AVIRead::AVIRBatchRenameForm::OnRenameExtUpperClicked(void 
 	me->txtDirectory->GetText(sb);
 	if (IO::Path::GetPathType(sb.ToCString()) != IO::Path::PathType::Directory)
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Please enter valid directory path"), CSTR("Batch Rename"), me);
+		me->ui->ShowMsgOK(CSTR("Please enter valid directory path"), CSTR("Batch Rename"), me);
 		return;
 	}
 	if (!sb.EndsWith(IO::Path::PATH_SEPERATOR))
@@ -62,7 +61,7 @@ void __stdcall SSWR::AVIRead::AVIRBatchRenameForm::OnRenameExtLowerClicked(void 
 	me->txtDirectory->GetText(sb);
 	if (IO::Path::GetPathType(sb.ToCString()) != IO::Path::PathType::Directory)
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Please enter valid directory path"), CSTR("Batch Rename"), me);
+		me->ui->ShowMsgOK(CSTR("Please enter valid directory path"), CSTR("Batch Rename"), me);
 		return;
 	}
 	if (!sb.EndsWith(IO::Path::PATH_SEPERATOR))

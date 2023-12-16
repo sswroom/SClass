@@ -1,7 +1,6 @@
 #include "Stdafx.h"
 #include "DB/SQLGenerator.h"
 #include "SSWR/AVIRead/AVIRDBCopyTablesForm.h"
-#include "UI/MessageDialog.h"
 
 #define VERBOSE
 #if defined(VERBOSE)
@@ -17,7 +16,7 @@ void __stdcall SSWR::AVIRead::AVIRDBCopyTablesForm::OnSourceDBChg(void *userObj)
 		me->cboSourceSchema->ClearItems();
 		if (!ctrl->Connect())
 		{
-			UI::MessageDialog::ShowDialog(CSTR("Error in connecting to database"), CSTR("Copy Tables"), me);
+			me->ui->ShowMsgOK(CSTR("Error in connecting to database"), CSTR("Copy Tables"), me);
 			return;
 		}
 		DB::ReadingDB *db = ctrl->GetDB();
@@ -82,7 +81,7 @@ void __stdcall SSWR::AVIRead::AVIRDBCopyTablesForm::OnSourceSelectClicked(void *
 	db->GetDB()->QueryTableNames(CSTRP(sbuff, sptr), tableNames);
 	if (tableNames.GetCount() == 0)
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Tables not found"), CSTR("Copy Tables"), me);
+		me->ui->ShowMsgOK(CSTR("Tables not found"), CSTR("Copy Tables"), me);
 	}
 	else
 	{
@@ -112,7 +111,7 @@ void __stdcall SSWR::AVIRead::AVIRDBCopyTablesForm::OnDestDBChg(void *userObj)
 		me->cboDestSchema->ClearItems();
 		if (!ctrl->Connect())
 		{
-			UI::MessageDialog::ShowDialog(CSTR("Error in connecting to database"), CSTR("Copy Tables"), me);
+			me->ui->ShowMsgOK(CSTR("Error in connecting to database"), CSTR("Copy Tables"), me);
 			return;
 		}
 		Data::ArrayListStringNN schemaNames;
@@ -148,24 +147,24 @@ void __stdcall SSWR::AVIRead::AVIRDBCopyTablesForm::OnCopyClicked(void *userObj)
 	DB::DBManagerCtrl *destDB = (DB::DBManagerCtrl *)me->cboDestDB->GetSelectedItem();
 	if (destDB == 0)
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Please select a destination DB first"), CSTR("Copy Tables"), me);
+		me->ui->ShowMsgOK(CSTR("Please select a destination DB first"), CSTR("Copy Tables"), me);
 		return;
 	}
 	if (!destDB->Connect())
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Error in connecting destination DB"), CSTR("Copy Tables"), me);
+		me->ui->ShowMsgOK(CSTR("Error in connecting destination DB"), CSTR("Copy Tables"), me);
 		return;
 	}
 	NotNullPtr<DB::ReadingDB> destConn;
 	if (!destConn.Set(destDB->GetDB()))
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Error in getting destination DB"), CSTR("Copy Tables"), me);
+		me->ui->ShowMsgOK(CSTR("Error in getting destination DB"), CSTR("Copy Tables"), me);
 		return;
 	}
 	NotNullPtr<DB::DBTool> destDBTool;
 	if (!destConn->IsDBTool() || !((DB::ReadingDBTool*)destConn.Ptr())->CanModify())
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Destination DB is read-onlyl"), CSTR("Copy Tables"), me);
+		me->ui->ShowMsgOK(CSTR("Destination DB is read-onlyl"), CSTR("Copy Tables"), me);
 		return;
 	}
 	destDBTool = NotNullPtr<DB::DBTool>::ConvertFrom(destConn);
@@ -173,7 +172,7 @@ void __stdcall SSWR::AVIRead::AVIRDBCopyTablesForm::OnCopyClicked(void *userObj)
 	UTF8Char *destSchemaEnd = me->cboDestSchema->GetSelectedItemText(destSchema);
 	if (destSchemaEnd == 0)
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Please select a destination Schema first"), CSTR("Copy Tables"), me);
+		me->ui->ShowMsgOK(CSTR("Please select a destination Schema first"), CSTR("Copy Tables"), me);
 		return;
 	}
 	UOSInt destTableType = me->cboDestTableType->GetSelectedIndex();
@@ -201,24 +200,24 @@ void __stdcall SSWR::AVIRead::AVIRDBCopyTablesForm::OnCopyClicked(void *userObj)
 			{
 				if (!destDBTool->CreateDatabase(dbName->ToCString(), &collation))
 				{
-					UI::MessageDialog::ShowDialog(CSTR("Error in creating database"), CSTR("Copy Tables"), me);
+					me->ui->ShowMsgOK(CSTR("Error in creating database"), CSTR("Copy Tables"), me);
 					return;
 				}
 				if (!destDBTool->ChangeDatabase(dbName->ToCString()))
 				{
-					UI::MessageDialog::ShowDialog(CSTR("Error in changing to new database"), CSTR("Copy Tables"), me);
+					me->ui->ShowMsgOK(CSTR("Error in changing to new database"), CSTR("Copy Tables"), me);
 					return;
 				}
 			}
 			else
 			{
-				UI::MessageDialog::ShowDialog(CSTR("Error in parsing database collation"), CSTR("Copy Tables"), me);
+				me->ui->ShowMsgOK(CSTR("Error in parsing database collation"), CSTR("Copy Tables"), me);
 				return;
 			}
 		}
 		else
 		{
-			UI::MessageDialog::ShowDialog(CSTR("Source Database does not support getting database collation"), CSTR("Copy Tables"), me);
+			me->ui->ShowMsgOK(CSTR("Source Database does not support getting database collation"), CSTR("Copy Tables"), me);
 			return;
 		}
 	}

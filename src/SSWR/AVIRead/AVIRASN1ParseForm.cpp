@@ -4,7 +4,6 @@
 #include "Net/ASN1Util.h"
 #include "SSWR/AVIRead/AVIRASN1ParseForm.h"
 #include "Text/TextBinEnc/Base64Enc.h"
-#include "UI/MessageDialog.h"
 
 void __stdcall SSWR::AVIRead::AVIRASN1ParseForm::OnParseClicked(void *userObj)
 {
@@ -13,7 +12,7 @@ void __stdcall SSWR::AVIRead::AVIRASN1ParseForm::OnParseClicked(void *userObj)
 	me->txtData->GetText(sb);
 	if (sb.GetLength() == 0)
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Please input data"), CSTR("ASN.1 Parse"), me);
+		me->ui->ShowMsgOK(CSTR("Please input data"), CSTR("ASN.1 Parse"), me);
 		return;
 	}
 	Text::TextBinEnc::Base64Enc b64;
@@ -21,12 +20,12 @@ void __stdcall SSWR::AVIRead::AVIRASN1ParseForm::OnParseClicked(void *userObj)
 	Data::ByteBuffer buff(len);
 	if (b64.DecodeBin(sb.ToString(), sb.GetLength(), buff.Ptr()) != len)
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Error in decoding Base64 data"), CSTR("ASN.1 Parse"), me);
+		me->ui->ShowMsgOK(CSTR("Error in decoding Base64 data"), CSTR("ASN.1 Parse"), me);
 		return;
 	}
 	if (buff[0] != 0x30)
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Data is not valid ASN.1 format"), CSTR("ASN.1 Parse"), me);
+		me->ui->ShowMsgOK(CSTR("Data is not valid ASN.1 format"), CSTR("ASN.1 Parse"), me);
 		return;
 	}
 	UInt32 baseLen;
@@ -47,12 +46,12 @@ void __stdcall SSWR::AVIRead::AVIRASN1ParseForm::OnParseClicked(void *userObj)
 		}
 		else
 		{
-			UI::MessageDialog::ShowDialog(CSTR("Unknown Type"), CSTR("ASN.1 Parse"), me);
+			me->ui->ShowMsgOK(CSTR("Unknown Type"), CSTR("ASN.1 Parse"), me);
 		}
 	}
 	else
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Data seems not valid ASN.1 format"), CSTR("ASN.1 Parse"), me);
+		me->ui->ShowMsgOK(CSTR("Data seems not valid ASN.1 format"), CSTR("ASN.1 Parse"), me);
 	}
 }
 

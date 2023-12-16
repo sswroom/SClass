@@ -7,7 +7,6 @@
 #include "Text/StringBuilderUTF8.h"
 #include "Text/UTF8Writer.h"
 #include "UI/Clipboard.h"
-#include "UI/MessageDialog.h"
 #include <stdio.h>
 
 void __stdcall SSWR::AVIRead::AVIRBluetoothLEForm::OnStartClicked(void *userObj)
@@ -34,7 +33,7 @@ void __stdcall SSWR::AVIRead::AVIRBluetoothLEForm::OnStartClicked(void *userObj)
 	}
 	else
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Error in starting LE Scan"), CSTR("Bluetooth LE"), me);
+		me->ui->ShowMsgOK(CSTR("Error in starting LE Scan"), CSTR("Bluetooth LE"), me);
 	}
 	
 }

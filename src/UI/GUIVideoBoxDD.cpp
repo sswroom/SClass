@@ -18,7 +18,6 @@
 #include "Text/UTF8Writer.h"
 #include "UI/GUIClientControl.h"
 #include "UI/GUIVideoBoxDD.h"
-#include "UI/MessageDialog.h"
 
 //DeinterlaceResizer
 //#define _DEBUG

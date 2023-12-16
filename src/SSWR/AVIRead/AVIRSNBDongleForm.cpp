@@ -11,7 +11,6 @@
 #include "Text/MyStringFloat.h"
 #include "Text/StringBuilderUTF8.h"
 #include "UI/Clipboard.h"
-#include "UI/MessageDialog.h"
 
 void __stdcall SSWR::AVIRead::AVIRSNBDongleForm::OnProtocolReceived(void *userObj, UInt8 cmdType, UOSInt cmdSize, UInt8 *cmd)
 {
@@ -308,14 +307,14 @@ void __stdcall SSWR::AVIRead::AVIRSNBDongleForm::OnUploadClicked(void *userObj)
 	UInt32 baudRate = me->snb->GetBaudRate();
 	if (dongleId == 0 || baudRate == 0)
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Dongle info missing"), CSTR("Error"), me);
+		me->ui->ShowMsgOK(CSTR("Dongle info missing"), CSTR("Error"), me);
 		return;
 	}
 	Text::StringBuilderUTF8 url;
 	me->txtURL->GetText(url);
 	if (!url.StartsWith(UTF8STRC("http://")))
 	{
-		UI::MessageDialog::ShowDialog(CSTR("URL is not valid"), CSTR("Error"), me);
+		me->ui->ShowMsgOK(CSTR("URL is not valid"), CSTR("Error"), me);
 		return;
 	}
 
@@ -323,7 +322,7 @@ void __stdcall SSWR::AVIRead::AVIRSNBDongleForm::OnUploadClicked(void *userObj)
 	me->txtRemarks->GetText(remarks);
 	if (remarks.IndexOf('\r') != INVALID_INDEX || remarks.IndexOf('\n') != INVALID_INDEX || remarks.IndexOf('\'') != INVALID_INDEX)
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Remarks contain invalid characters"), CSTR("Error"), me);
+		me->ui->ShowMsgOK(CSTR("Remarks contain invalid characters"), CSTR("Error"), me);
 		return;
 	}
 	Text::StringBuilderUTF8 sb;
@@ -344,7 +343,7 @@ void __stdcall SSWR::AVIRead::AVIRSNBDongleForm::OnUploadClicked(void *userObj)
 	if (me->devMap.GetCount() == 0)
 	{
 		me->devMut.UnlockRead();
-		UI::MessageDialog::ShowDialog(CSTR("No devices found"), CSTR("Error"), me);
+		me->ui->ShowMsgOK(CSTR("No devices found"), CSTR("Error"), me);
 		return;
 	}
 	i = 0;
@@ -355,7 +354,7 @@ void __stdcall SSWR::AVIRead::AVIRSNBDongleForm::OnUploadClicked(void *userObj)
 		if (dev->readingTime == 0 || dev->nReading == 0)
 		{
 			me->devMut.UnlockRead();
-			UI::MessageDialog::ShowDialog(CSTR("Some devices do not have reading yet"), CSTR("Error"), me);
+			me->ui->ShowMsgOK(CSTR("Some devices do not have reading yet"), CSTR("Error"), me);
 			return;
 		}
 		if (i > 0)
@@ -381,7 +380,7 @@ void __stdcall SSWR::AVIRead::AVIRSNBDongleForm::OnUploadClicked(void *userObj)
 	cli->AddHeaderC(CSTR("Iot-Program"), CSTR("margorpnomis"));
 	if (cli->IsError())
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Some devices do not have reading yet"), CSTR("Error"), me);
+		me->ui->ShowMsgOK(CSTR("Some devices do not have reading yet"), CSTR("Error"), me);
 		status = -1;
 	}
 	else
@@ -398,14 +397,14 @@ void __stdcall SSWR::AVIRead::AVIRSNBDongleForm::OnUploadClicked(void *userObj)
 	}
 	else if (status == 200)
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Uploaded successfully"), CSTR("Upload"), me);
+		me->ui->ShowMsgOK(CSTR("Uploaded successfully"), CSTR("Upload"), me);
 	}
 	else
 	{
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("Error, server response "));
 		sb.AppendI32(status);
-		UI::MessageDialog::ShowDialog(sb.ToCString(), CSTR("Upload"), me);
+		me->ui->ShowMsgOK(sb.ToCString(), CSTR("Upload"), me);
 	}
 }
 

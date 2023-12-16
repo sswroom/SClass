@@ -3,7 +3,6 @@
 #include "SSWR/AVIRead/AVIRMQTTPublishForm.h"
 #include "Sync/ThreadUtil.h"
 #include "Text/StringBuilderUTF8.h"
-#include "UI/MessageDialog.h"
 
 void __stdcall SSWR::AVIRead::AVIRMQTTPublishForm::OnPublishClicked(void *userObj)
 {
@@ -19,14 +18,14 @@ void __stdcall SSWR::AVIRead::AVIRMQTTPublishForm::OnPublishClicked(void *userOb
 	me->txtHost->GetText(sbHost);
 	if (!me->core->GetSocketFactory()->DNSResolveIP(sbHost.ToCString(), addr))
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Error in parsing host"), CSTR("MQTT Publish"), me);
+		me->ui->ShowMsgOK(CSTR("Error in parsing host"), CSTR("MQTT Publish"), me);
 		return;
 	}
 	sb.ClearStr();
 	me->txtPort->GetText(sb);
 	if (!sb.ToUInt16(port))
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Port is not valid"), CSTR("MQTT Publish"), me);
+		me->ui->ShowMsgOK(CSTR("Port is not valid"), CSTR("MQTT Publish"), me);
 		return;
 	}
 
@@ -34,7 +33,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTPublishForm::OnPublishClicked(void *userOb
 	me->txtTopic->GetText(sb);
 	if (sb.GetLength() == 0)
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Please enter topic"), CSTR("MQTT Publish"), me);
+		me->ui->ShowMsgOK(CSTR("Please enter topic"), CSTR("MQTT Publish"), me);
 		return;
 	}
 	topic = Text::String::New(sb.ToCString());
@@ -43,7 +42,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTPublishForm::OnPublishClicked(void *userOb
 	if (sb.GetLength() == 0)
 	{
 		topic->Release();
-		UI::MessageDialog::ShowDialog(CSTR("Please enter message"), CSTR("MQTT Publish"), me);
+		me->ui->ShowMsgOK(CSTR("Please enter message"), CSTR("MQTT Publish"), me);
 		return;
 	}
 	message = Text::String::New(sb.ToCString());

@@ -9,7 +9,6 @@
 #include "Text/StringBuilderUTF8.h"
 #include "Text/UTF8Writer.h"
 #include "UI/Clipboard.h"
-#include "UI/MessageDialog.h"
 #include <stdio.h>
 
 void __stdcall SSWR::AVIRead::AVIRBluetoothCtlForm::OnStartClicked(void *userObj)
@@ -46,11 +45,11 @@ void __stdcall SSWR::AVIRead::AVIRBluetoothCtlForm::OnStoreListClicked(void *use
 		Text::StringBuilderUTF8 sb;
 		sb.AppendC(UTF8STRC("Stored as "));
 		sb.AppendP(sbuff, sptr);
-		UI::MessageDialog::ShowDialog(sb.ToCString(), CSTR("Bluetooth Ctrl"), me);
+		me->ui->ShowMsgOK(sb.ToCString(), CSTR("Bluetooth Ctrl"), me);
 	}
 	else
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Error in storing file"), CSTR("Bluetooth Ctrl"), me);
+		me->ui->ShowMsgOK(CSTR("Error in storing file"), CSTR("Bluetooth Ctrl"), me);
 	}
 }
 
@@ -228,7 +227,7 @@ SSWR::AVIRead::AVIRBluetoothCtlForm::AVIRBluetoothCtlForm(UI::GUIClientControl *
 	}
 	else
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Error in starting bluetoothctl"), CSTR("Bluetooth Ctrl"), this);
+		this->ui->ShowMsgOK(CSTR("Error in starting bluetoothctl"), CSTR("Bluetooth Ctrl"), this);
 	}
 	this->AddTimer(500, OnTimerTick, this);
 }

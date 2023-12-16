@@ -12,7 +12,6 @@
 #include "Text/StringBuilderUTF8.h"
 #include "Text/UTF8Writer.h"
 #include "UI/Clipboard.h"
-#include "UI/MessageDialog.h"
 
 void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnTimerTick(void *userObj)
 {
@@ -497,17 +496,17 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnCaptureClicked(void *userOb
 	{
 		if (me->motion == 0)
 		{
-			UI::MessageDialog::ShowDialog(CSTR("Accelerator not found"), CSTR("Error"), me);
+			me->ui->ShowMsgOK(CSTR("Accelerator not found"), CSTR("Error"), me);
 			return;
 		}
 		else if (me->locSvc == 0)
 		{
-			UI::MessageDialog::ShowDialog(CSTR("GPS not connected"), CSTR("Error"), me);
+			me->ui->ShowMsgOK(CSTR("GPS not connected"), CSTR("Error"), me);
 			return;
 		}
 		else if (me->wlanInterf == 0)
 		{
-			UI::MessageDialog::ShowDialog(CSTR("Wifi adapter not found"), CSTR("Error"), me);
+			me->ui->ShowMsgOK(CSTR("Wifi adapter not found"), CSTR("Error"), me);
 			return;
 		}
 
@@ -649,14 +648,14 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnLogWifiSaveClicked(void *us
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("File saved to "));
 		sb.AppendP(sbuff, sptr);
-		UI::MessageDialog::ShowDialog(sb.ToCString(), CSTR("Save"), me);
+		me->ui->ShowMsgOK(sb.ToCString(), CSTR("Save"), me);
 	}
 	else
 	{
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("Error in saving to "));
 		sb.AppendP(sbuff, sptr);
-		UI::MessageDialog::ShowDialog(sb.ToCString(), CSTR("Save"), me);
+		me->ui->ShowMsgOK(sb.ToCString(), CSTR("Save"), me);
 	}
 }
 
@@ -719,14 +718,14 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnLogWifiSaveFClicked(void *u
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("File saved to "));
 		sb.AppendP(sbuff, sptr);
-		UI::MessageDialog::ShowDialog(sb.ToCString(), CSTR("Save Unk"), me);
+		me->ui->ShowMsgOK(sb.ToCString(), CSTR("Save Unk"), me);
 	}
 	else
 	{
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("Error in saving to "));
 		sb.AppendP(sbuff, sptr);
-		UI::MessageDialog::ShowDialog(sb.ToCString(), CSTR("Save Unk"), me);
+		me->ui->ShowMsgOK(sb.ToCString(), CSTR("Save Unk"), me);
 	}
 }
 
@@ -734,7 +733,7 @@ Bool __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnFormClosing(void *userObj, 
 {
 	SSWR::AVIRead::AVIRWifiCaptureForm *me = (SSWR::AVIRead::AVIRWifiCaptureForm*)userObj;
 	Manage::HiResClock clk;
-	if (UI::MessageDialog::ShowYesNoDialog(CSTR("Are you sure to close?"), CSTR("Question"), me))
+	if (me->ui->ShowMsgYesNo(CSTR("Are you sure to close?"), CSTR("Question"), me))
 	{
 		if (clk.GetTimeDiff() < 30)
 		{

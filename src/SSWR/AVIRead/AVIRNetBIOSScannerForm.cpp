@@ -5,7 +5,6 @@
 #include "Net/MACInfo.h"
 #include "Net/NetBIOSUtil.h"
 #include "SSWR/AVIRead/AVIRNetBIOSScannerForm.h"
-#include "UI/MessageDialog.h"
 
 void __stdcall SSWR::AVIRead::AVIRNetBIOSScannerForm::OnRequestClicked(void *userObj)
 {
@@ -16,12 +15,12 @@ void __stdcall SSWR::AVIRead::AVIRNetBIOSScannerForm::OnRequestClicked(void *use
 	Net::AddressRange range(sb.ToString(), sb.GetLength(), me->chkTargetScan->IsChecked());
 	if (range.GetCount() == 0)
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Error in parsing Target Address"), CSTR("NetBIOS Scanner"), me);
+		me->ui->ShowMsgOK(CSTR("Error in parsing Target Address"), CSTR("NetBIOS Scanner"), me);
 		return;
 	}
 	if (range.GetCount() > 1024)
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Too many address to send"), CSTR("NetBIOS Scanner"), me);
+		me->ui->ShowMsgOK(CSTR("Too many address to send"), CSTR("NetBIOS Scanner"), me);
 		return;
 	}
 
@@ -160,7 +159,7 @@ SSWR::AVIRead::AVIRNetBIOSScannerForm::AVIRNetBIOSScannerForm(UI::GUIClientContr
 	NEW_CLASS(this->netbios, Net::NetBIOSScanner(sockf, this->core->GetLog()));
 	if (this->netbios->IsError())
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Error in starting NetBIOS Scanner"), CSTR("NetBIOS Scanner"), this);
+		this->ui->ShowMsgOK(CSTR("Error in starting NetBIOS Scanner"), CSTR("NetBIOS Scanner"), this);
 	}
 	this->netbios->SetAnswerHandler(OnAnswerUpdated, this);
 

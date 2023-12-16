@@ -11,6 +11,7 @@ namespace UI
 	typedef Bool (__stdcall *KeyEvent)(void *userObj, UInt32 osKey);
 
 	class GUIClientControl;
+	class GUIControl;
 	class GUIGroupBox;
 	class GUICore
 	{
@@ -43,6 +44,8 @@ namespace UI
 		virtual Media::MonitorMgr *GetMonitorMgr() = 0;
 		virtual Bool IsForwarded() = 0;
 
+		virtual void ShowMsgOK(Text::CStringNN message, Text::CStringNN title, Optional<UI::GUIControl> ctrl) = 0;
+		virtual Bool ShowMsgYesNo(Text::CStringNN message, Text::CStringNN title, Optional<UI::GUIControl> ctrl) = 0;
 		virtual NotNullPtr<GUIGroupBox> NewGroupBox(NotNullPtr<GUIClientControl> parent, Text::CStringNN text) = 0;
 	};
 }

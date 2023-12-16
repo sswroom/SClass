@@ -13,7 +13,6 @@
 #include "Text/UTF8Writer.h"
 #include "UI/Clipboard.h"
 #include "UI/FileDialog.h"
-#include "UI/MessageDialog.h"
 
 void __stdcall SSWR::AVIRead::AVIRCoordConvForm::OnSrcRadChanged(void *userObj, Bool newValue)
 {
@@ -153,14 +152,14 @@ void __stdcall SSWR::AVIRead::AVIRCoordConvForm::OnConvFileClicked(void *userObj
 	i = me->cboSrc->GetSelectedIndex();
 	if (i == INVALID_INDEX)
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Please select source coordinate system"), CSTR("Error"), me);
+		me->ui->ShowMsgOK(CSTR("Please select source coordinate system"), CSTR("Error"), me);
 		return;
 	}
 
 	i = me->cboDest->GetSelectedIndex();
 	if (i == INVALID_INDEX)
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Please select dest coordinate system"), CSTR("Error"), me);
+		me->ui->ShowMsgOK(CSTR("Please select dest coordinate system"), CSTR("Error"), me);
 		return;
 	}
 
@@ -187,14 +186,14 @@ void __stdcall SSWR::AVIRead::AVIRCoordConvForm::OnConvFileClicked(void *userObj
 			db = (DB::ReadingDB*)parsers->ParseFileType(fd, IO::ParserType::ReadingDB);
 			if (db == 0)
 			{
-				UI::MessageDialog::ShowDialog(CSTR("File is not a database file"), CSTR("Error"), me);
+				me->ui->ShowMsgOK(CSTR("File is not a database file"), CSTR("Error"), me);
 				return;
 			}
 		}
 		NotNullPtr<DB::DBReader> reader;
 		if (!reader.Set(db->QueryTableData(CSTR_NULL, CSTR_NULL, 0, 0, 0, CSTR_NULL, 0)))
 		{
-			UI::MessageDialog::ShowDialog(CSTR("Unsupported database format"), CSTR("Error"), me);
+			me->ui->ShowMsgOK(CSTR("Unsupported database format"), CSTR("Error"), me);
 			DEL_CLASS(db);
 			return;
 		}
@@ -218,7 +217,7 @@ void __stdcall SSWR::AVIRead::AVIRCoordConvForm::OnConvFileClicked(void *userObj
 		if (xCol == (UOSInt)-1 || yCol == (UOSInt)-1)
 		{
 			DEL_CLASS(db);
-			UI::MessageDialog::ShowDialog(CSTR("XY Database column not found"), CSTR("Error"), me);
+			me->ui->ShowMsgOK(CSTR("XY Database column not found"), CSTR("Error"), me);
 			return;
 		}
 	}
@@ -234,7 +233,7 @@ void __stdcall SSWR::AVIRead::AVIRCoordConvForm::OnConvFileClicked(void *userObj
 	if (fs.IsError())
 	{
 		DEL_CLASS(db);
-		UI::MessageDialog::ShowDialog(CSTR("Error in creating output file"), CSTR("Error"), me);
+		me->ui->ShowMsgOK(CSTR("Error in creating output file"), CSTR("Error"), me);
 		return;
 	}
 	Text::StringBuilderUTF8 sb;
@@ -246,7 +245,7 @@ void __stdcall SSWR::AVIRead::AVIRCoordConvForm::OnConvFileClicked(void *userObj
 	{
 		MemFree(sarr);
 		DEL_CLASS(db);
-		UI::MessageDialog::ShowDialog(CSTR("Error in reading source file"), CSTR("Error"), me);
+		me->ui->ShowMsgOK(CSTR("Error in reading source file"), CSTR("Error"), me);
 		return;
 	}
 

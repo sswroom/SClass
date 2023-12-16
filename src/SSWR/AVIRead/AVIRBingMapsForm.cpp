@@ -1,7 +1,6 @@
 #include "Stdafx.h"
 #include "Map/BingMapsTile.h"
 #include "SSWR/AVIRead/AVIRBingMapsForm.h"
-#include "UI/MessageDialog.h"
 
 void __stdcall SSWR::AVIRead::AVIRBingMapsForm::OnOKClicked(void *userObj)
 {
@@ -13,14 +12,14 @@ void __stdcall SSWR::AVIRead::AVIRBingMapsForm::OnOKClicked(void *userObj)
 	me->txtKey->GetText(sbKey);
 	if (sbKey.GetLength() == 0)
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Please enter the key"), CSTR("Bing Maps"), me);
+		me->ui->ShowMsgOK(CSTR("Please enter the key"), CSTR("Bing Maps"), me);
 		return;
 	}
 	Map::BingMapsTile *tileMap;
 	NEW_CLASS(tileMap, Map::BingMapsTile(is, sbKey.ToCString(), sb.ToCString(), me->core->GetSocketFactory(), me->ssl));
 	if (tileMap->IsError())
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Error in initializing Bing Maps"), CSTR("Bing Maps"), me);
+		me->ui->ShowMsgOK(CSTR("Error in initializing Bing Maps"), CSTR("Bing Maps"), me);
 		DEL_CLASS(tileMap);
 		return;
 	}

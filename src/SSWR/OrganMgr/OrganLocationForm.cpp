@@ -1,6 +1,5 @@
 ﻿#include "Stdafx.h"
 #include "SSWR/OrganMgr/OrganLocationForm.h"
-#include "UI/MessageDialog.h"
 
 void SSWR::OrganMgr::OrganLocationForm::DispId(Int32 id)
 {
@@ -70,12 +69,12 @@ Bool SSWR::OrganMgr::OrganLocationForm::ToSave()
 
 	if ((sbuffEnd = this->txtEName->GetText(sbuff)) == sbuff)
 	{
-		Bool ret = UI::MessageDialog::ShowYesNoDialog(this->env->GetLang(CSTR("LocationQuestionEName")), this->env->GetLang(CSTR("LocationQuestion")), this);
+		Bool ret = this->ui->ShowMsgYesNo(this->env->GetLang(CSTR("LocationQuestionEName")), this->env->GetLang(CSTR("LocationQuestion")), this);
 		return !ret;
 	}
 	if ((sbuff2End = this->txtCName->GetText(sbuff2)) == sbuff2)
 	{
-		Bool ret = UI::MessageDialog::ShowYesNoDialog(this->env->GetLang(CSTR("LocationQuestionCName")), this->env->GetLang(CSTR("LocationQuestion")), this);
+		Bool ret = this->ui->ShowMsgYesNo(this->env->GetLang(CSTR("LocationQuestionCName")), this->env->GetLang(CSTR("LocationQuestion")), this);
 		return !ret;
 	}
 
@@ -89,7 +88,7 @@ Bool SSWR::OrganMgr::OrganLocationForm::ToSave()
 	}
 	else
 	{
-		Bool ret = UI::MessageDialog::ShowYesNoDialog(this->env->GetLang(CSTR("LocationQuestionError")), this->env->GetLang(CSTR("LocationQuestion")), this);
+		Bool ret = this->ui->ShowMsgYesNo(this->env->GetLang(CSTR("LocationQuestionError")), this->env->GetLang(CSTR("LocationQuestion")), this);
 		return !ret;
 	}
 }
@@ -176,12 +175,12 @@ void __stdcall SSWR::OrganMgr::OrganLocationForm::OnAddClicked(void *userObj)
 	UTF8Char *sbuff2End;
 	if ((sbuffEnd = me->txtEName->GetText(sbuff)) == sbuff)
 	{
-		UI::MessageDialog::ShowDialog(me->env->GetLang(CSTR("LocationInputEName")), me->env->GetLang(CSTR("LocationTitle")), me);
+		me->ui->ShowMsgOK(me->env->GetLang(CSTR("LocationInputEName")), me->env->GetLang(CSTR("LocationTitle")), me);
 		return;
 	}
 	if ((sbuff2End = me->txtCName->GetText(sbuff2)) == sbuff2)
 	{
-		UI::MessageDialog::ShowDialog(me->env->GetLang(CSTR("LocationInputCName")), me->env->GetLang(CSTR("LocationTitle")), me);
+		me->ui->ShowMsgOK(me->env->GetLang(CSTR("LocationInputCName")), me->env->GetLang(CSTR("LocationTitle")), me);
 		return;
 	}
 	Location *parLoc = me->GetParentLoc();
@@ -204,7 +203,7 @@ void __stdcall SSWR::OrganMgr::OrganLocationForm::OnAddClicked(void *userObj)
 	}
 	else
 	{
-		UI::MessageDialog::ShowDialog(me->env->GetLang(CSTR("LocationAddError")), me->env->GetLang(CSTR("LocationTitle")), me);
+		me->ui->ShowMsgOK(me->env->GetLang(CSTR("LocationAddError")), me->env->GetLang(CSTR("LocationTitle")), me);
 		return;
 	}
 }
@@ -218,7 +217,7 @@ void __stdcall SSWR::OrganMgr::OrganLocationForm::OnOkClicked(void *userObj)
 	{
 		if (me->lbSublocations->GetCount() > 0)
 		{
-			UI::MessageDialog::ShowDialog(me->env->GetLang(CSTR("LocationSelectLocation")), me->env->GetLang(CSTR("LocationTitle")), me);
+			me->ui->ShowMsgOK(me->env->GetLang(CSTR("LocationSelectLocation")), me->env->GetLang(CSTR("LocationTitle")), me);
 			return;
 		}
 		else
@@ -226,7 +225,7 @@ void __stdcall SSWR::OrganMgr::OrganLocationForm::OnOkClicked(void *userObj)
 			Location *o = me->GetParentLoc();
 			if (o == 0)
 			{
-				UI::MessageDialog::ShowDialog(me->env->GetLang(CSTR("LocationSelectLocation")), me->env->GetLang(CSTR("LocationTitle")), me);
+				me->ui->ShowMsgOK(me->env->GetLang(CSTR("LocationSelectLocation")), me->env->GetLang(CSTR("LocationTitle")), me);
 				return;
 			}
 			else
@@ -244,7 +243,7 @@ void __stdcall SSWR::OrganMgr::OrganLocationForm::OnOkClicked(void *userObj)
 		}
 		else if (me->lbSublocations->GetCount() > 0)
 		{
-			UI::MessageDialog::ShowDialog(me->env->GetLang(CSTR("LocationSelectLocation")), me->env->GetLang(CSTR("LocationTitle")), me);
+			me->ui->ShowMsgOK(me->env->GetLang(CSTR("LocationSelectLocation")), me->env->GetLang(CSTR("LocationTitle")), me);
 			return;
 		}
 		else
@@ -252,7 +251,7 @@ void __stdcall SSWR::OrganMgr::OrganLocationForm::OnOkClicked(void *userObj)
 			l = me->GetParentLoc();
 			if (l == 0)
 			{
-				UI::MessageDialog::ShowDialog(me->env->GetLang(CSTR("LocationSelectLocation")), me->env->GetLang(CSTR("LocationTitle")), me);
+				me->ui->ShowMsgOK(me->env->GetLang(CSTR("LocationSelectLocation")), me->env->GetLang(CSTR("LocationTitle")), me);
 				return;
 			}
 			else

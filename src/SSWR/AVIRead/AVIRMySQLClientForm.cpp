@@ -6,7 +6,6 @@
 #include "Sync/ThreadUtil.h"
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
-#include "UI/MessageDialog.h"
 
 void __stdcall SSWR::AVIRead::AVIRMySQLClientForm::OnStartClicked(void *userObj)
 {
@@ -33,25 +32,25 @@ void __stdcall SSWR::AVIRead::AVIRMySQLClientForm::OnStartClicked(void *userObj)
 	me->txtPort->GetText(sbPwd);
 	if (sbUser.GetLength() == 0)
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Please enter the host"), CSTR("MySQL Client"), me);
+		me->ui->ShowMsgOK(CSTR("Please enter the host"), CSTR("MySQL Client"), me);
 		me->txtHost->Focus();
 		return;
 	}
 	if (sbPwd.GetLength() == 0)
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Please enter the port"), CSTR("MySQL Client"), me);
+		me->ui->ShowMsgOK(CSTR("Please enter the port"), CSTR("MySQL Client"), me);
 		me->txtPort->Focus();
 		return;
 	}
 	if (!me->core->GetSocketFactory()->DNSResolveIP(sbUser.ToCString(), addr))
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Error in resolving host"), CSTR("MySQL Client"), me);
+		me->ui->ShowMsgOK(CSTR("Error in resolving host"), CSTR("MySQL Client"), me);
 		me->txtHost->Focus();
 		return;
 	}
 	if (!Text::StrToUInt16(sbPwd.ToString(), port))
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Port invalid"), CSTR("MySQL Client"), me);
+		me->ui->ShowMsgOK(CSTR("Port invalid"), CSTR("MySQL Client"), me);
 		me->txtHost->Focus();
 		return;
 	}
@@ -62,13 +61,13 @@ void __stdcall SSWR::AVIRead::AVIRMySQLClientForm::OnStartClicked(void *userObj)
 	me->txtDatabase->GetText(sbDatabase);
 	if (sbUser.GetLength() == 0)
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Please enter the user name"), CSTR("MySQL Client"), me);
+		me->ui->ShowMsgOK(CSTR("Please enter the user name"), CSTR("MySQL Client"), me);
 		me->txtUserName->Focus();
 		return;
 	}
 	if (sbPwd.GetLength() == 0)
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Please enter the password"), CSTR("MySQL Client"), me);
+		me->ui->ShowMsgOK(CSTR("Please enter the password"), CSTR("MySQL Client"), me);
 		me->txtPassword->Focus();
 		return;
 	}
@@ -90,7 +89,7 @@ void __stdcall SSWR::AVIRead::AVIRMySQLClientForm::OnStartClicked(void *userObj)
 		me->cli->GetLastErrorMsg(sbUser);
 		DEL_CLASS(me->cli);
 		me->cli = 0;
-		UI::MessageDialog::ShowDialog(sbUser.ToCString(), CSTR("MySQL Client"), me);
+		me->ui->ShowMsgOK(sbUser.ToCString(), CSTR("MySQL Client"), me);
 	}
 	else
 	{

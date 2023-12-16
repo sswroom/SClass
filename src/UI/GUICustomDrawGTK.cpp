@@ -10,7 +10,6 @@
 #include "Sync/Interlocked.h"
 #include "UI/GUIClientControl.h"
 #include "UI/GUICustomDraw.h"
-#include "UI/MessageDialog.h"
 #include <gtk/gtk.h>
 #include <stdio.h>
 

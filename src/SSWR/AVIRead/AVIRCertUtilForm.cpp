@@ -7,7 +7,6 @@
 #include "Net/SSLEngineFactory.h"
 #include "SSWR/AVIRead/AVIRCertUtilForm.h"
 #include "Text/StringTool.h"
-#include "UI/MessageDialog.h"
 
 void __stdcall SSWR::AVIRead::AVIRCertUtilForm::OnFileDrop(void *userObj, NotNullPtr<Text::String> *files, UOSInt nFiles)
 {
@@ -211,13 +210,13 @@ void __stdcall SSWR::AVIRead::AVIRCertUtilForm::OnCSRGenerateClicked(void *userO
 	NotNullPtr<Net::SSLEngine> ssl;
 	if (!me->ssl.SetTo(ssl))
 	{
-		UI::MessageDialog::ShowDialog(CSTR("SSL engine is not initiated"), CSTR("Cert Util"), me);
+		me->ui->ShowMsgOK(CSTR("SSL engine is not initiated"), CSTR("Cert Util"), me);
 		return;
 	}
 	NotNullPtr<Crypto::Cert::X509Key> key;
 	if (!key.Set(me->key))
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Key not exist"), CSTR("Cert Util"), me);
+		me->ui->ShowMsgOK(CSTR("Key not exist"), CSTR("Cert Util"), me);
 		return;
 	}
 	Crypto::Cert::CertNames names;
@@ -247,7 +246,7 @@ void __stdcall SSWR::AVIRead::AVIRCertUtilForm::OnCSRGenerateClicked(void *userO
 	}
 	else
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Error in creating cert request"), CSTR("Cert Util"), me);
+		me->ui->ShowMsgOK(CSTR("Error in creating cert request"), CSTR("Cert Util"), me);
 	}
 	Crypto::Cert::CertNames::FreeNames(names);
 }
@@ -258,13 +257,13 @@ void __stdcall SSWR::AVIRead::AVIRCertUtilForm::OnSelfSignedCertClicked(void *us
 	NotNullPtr<Net::SSLEngine> ssl;
 	if (!me->ssl.SetTo(ssl))
 	{
-		UI::MessageDialog::ShowDialog(CSTR("SSL Engine is not initiated"), CSTR("Cert Util"), me);
+		me->ui->ShowMsgOK(CSTR("SSL Engine is not initiated"), CSTR("Cert Util"), me);
 		return;
 	}
 	NotNullPtr<Crypto::Cert::X509Key> key;
 	if (!key.Set(me->key))
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Key not exist"), CSTR("Cert Util"), me);
+		me->ui->ShowMsgOK(CSTR("Key not exist"), CSTR("Cert Util"), me);
 		return;
 	}
 	UOSInt validDays;
@@ -272,7 +271,7 @@ void __stdcall SSWR::AVIRead::AVIRCertUtilForm::OnSelfSignedCertClicked(void *us
 	me->txtValidDays->GetText(sb);
 	if (!sb.ToUOSInt(validDays))
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Valid days not valid"), CSTR("Cert Util"), me);
+		me->ui->ShowMsgOK(CSTR("Valid days not valid"), CSTR("Cert Util"), me);
 		return;
 	}
 	Crypto::Cert::CertNames names;
@@ -297,7 +296,7 @@ void __stdcall SSWR::AVIRead::AVIRCertUtilForm::OnSelfSignedCertClicked(void *us
 	}
 	else
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Error in creating self-signed certificate"), CSTR("Cert Util"), me);
+		me->ui->ShowMsgOK(CSTR("Error in creating self-signed certificate"), CSTR("Cert Util"), me);
 	}
 	Crypto::Cert::CertNames::FreeNames(names);
 }
@@ -310,7 +309,7 @@ Bool SSWR::AVIRead::AVIRCertUtilForm::GetNames(Crypto::Cert::CertNames *names)
 	{
 		if (sb.GetLength() != 2)
 		{
-			UI::MessageDialog::ShowDialog(CSTR("C must be 2 chars"), CSTR("Cert Util"), this);
+			this->ui->ShowMsgOK(CSTR("C must be 2 chars"), CSTR("Cert Util"), this);
 			return false;
 		}
 		SDEL_STRING(names->countryName);
@@ -348,7 +347,7 @@ Bool SSWR::AVIRead::AVIRCertUtilForm::GetNames(Crypto::Cert::CertNames *names)
 	this->txtCommonName->GetText(sb);
 	if (sb.GetLength() == 0)
 	{
-		UI::MessageDialog::ShowDialog(CSTR("CN cannot be null"), CSTR("Cert Util"), this);
+		this->ui->ShowMsgOK(CSTR("CN cannot be null"), CSTR("Cert Util"), this);
 		return false;
 	}
 	SDEL_STRING(names->commonName);
@@ -360,7 +359,7 @@ Bool SSWR::AVIRead::AVIRCertUtilForm::GetNames(Crypto::Cert::CertNames *names)
 	{
 		if (!Text::StringTool::IsEmailAddress(sb.ToString()))
 		{
-			UI::MessageDialog::ShowDialog(CSTR("Email address is not valid"), CSTR("Cert Util"), this);
+			this->ui->ShowMsgOK(CSTR("Email address is not valid"), CSTR("Cert Util"), this);
 			return false;
 		}
 		SDEL_STRING(names->emailAddress);

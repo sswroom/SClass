@@ -3,7 +3,6 @@
 #include "SSWR/AVIRead/AVIRDNSClientForm.h"
 #include "Text/MyStringFloat.h"
 #include "Text/StringBuilderUTF8.h"
-#include "UI/MessageDialog.h"
 
 void __stdcall SSWR::AVIRead::AVIRDNSClientForm::OnRequestClicked(void *userObj)
 {
@@ -20,14 +19,14 @@ void __stdcall SSWR::AVIRead::AVIRDNSClientForm::OnRequestClicked(void *userObj)
 	me->txtServer->GetText(sb);
 	if (!Net::SocketUtil::GetIPAddr(sb.ToCString(), dnsAddr))
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Invalid server input"), CSTR("Error"), me);
+		me->ui->ShowMsgOK(CSTR("Invalid server input"), CSTR("Error"), me);
 		return;
 	}
 	sb.ClearStr();
 	me->txtRequest->GetText(sb);
 	if (sb.GetLength() == 0)
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Please enter request"), CSTR("Error"), me);
+		me->ui->ShowMsgOK(CSTR("Please enter request"), CSTR("Error"), me);
 		return;
 	}
 	reqIP = Net::SocketUtil::GetIPAddr(sb.ToCString());

@@ -3,7 +3,6 @@
 #include "IO/Path.h"
 #include "SSWR/AVIRead/AVIRFileSearchForm.h"
 #include "UtilUI/TextViewerForm.h"
-#include "UI/MessageDialog.h"
 
 #define FILEBUFFSIZE 65536
 
@@ -18,29 +17,29 @@ void __stdcall SSWR::AVIRead::AVIRFileSearchForm::OnSearchClicked(void *userObj)
 	me->txtText->GetText(sbText);
 	if (sbText.GetLength() == 0)
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Please enter text to search"), CSTR("File Search"), me);
+		me->ui->ShowMsgOK(CSTR("Please enter text to search"), CSTR("File Search"), me);
 		return;
 	}
 	me->txtDir->GetText(sbDir);
 	if (sbDir.GetLength() == 0)
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Please enter Directory to search"), CSTR("File Search"), me);
+		me->ui->ShowMsgOK(CSTR("Please enter Directory to search"), CSTR("File Search"), me);
 		return;
 	}
 	if (sbDir.GetLength() >= 512)
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Directory is too long"), CSTR("File Search"), me);
+		me->ui->ShowMsgOK(CSTR("Directory is too long"), CSTR("File Search"), me);
 		return;
 	}
 	if (IO::Path::GetPathType(sbDir.ToCString()) != IO::Path::PathType::Directory)
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Directory is not valid"), CSTR("File Search"), me);
+		me->ui->ShowMsgOK(CSTR("Directory is not valid"), CSTR("File Search"), me);
 		return;
 	}
 	dataSize = enc->DecodeBin(sbText.v, sbText.leng, dataBuff);
 	if (dataSize == 0)
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Error in decoding text"), CSTR("File Search"), me);
+		me->ui->ShowMsgOK(CSTR("Error in decoding text"), CSTR("File Search"), me);
 		return;
 	}
 	me->ClearFiles();

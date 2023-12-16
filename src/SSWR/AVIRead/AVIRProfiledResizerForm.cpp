@@ -1,7 +1,6 @@
 #include "Stdafx.h"
 #include "SSWR/AVIRead/AVIRProfiledResizerForm.h"
 #include "Text/StringBuilderUTF8.h"
-#include "UI/MessageDialog.h"
 
 void __stdcall SSWR::AVIRead::AVIRProfiledResizerForm::OnChgClicked(void *userObj)
 {
@@ -56,7 +55,7 @@ void __stdcall SSWR::AVIRead::AVIRProfiledResizerForm::OnClickedAddProfile(void 
 	sptr = me->txtProfileName->GetText(sbuff);
 	if (sbuff[0] == 0)
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Please enter profile name"), CSTR("Error"), me);
+		me->ui->ShowMsgOK(CSTR("Please enter profile name"), CSTR("Error"), me);
 		return;
 	}
 	if (me->radSize->IsSelected())
@@ -65,13 +64,13 @@ void __stdcall SSWR::AVIRead::AVIRProfiledResizerForm::OnClickedAddProfile(void 
 		me->txtWidth->GetText(sbuff2);
 		if (!Text::StrToUInt32(sbuff2, targetSizeX))
 		{
-			UI::MessageDialog::ShowDialog(CSTR("Please enter max width"), CSTR("Error"), me);
+			me->ui->ShowMsgOK(CSTR("Please enter max width"), CSTR("Error"), me);
 			return;
 		}
 		me->txtHeight->GetText(sbuff2);
 		if (!Text::StrToUInt32(sbuff2, targetSizeY))
 		{
-			UI::MessageDialog::ShowDialog(CSTR("Please enter max height"), CSTR("Error"), me);
+			me->ui->ShowMsgOK(CSTR("Please enter max height"), CSTR("Error"), me);
 			return;
 		}
 		if (targetSizeX == 0 && targetSizeY == 0)
@@ -80,7 +79,7 @@ void __stdcall SSWR::AVIRead::AVIRProfiledResizerForm::OnClickedAddProfile(void 
 		}
 		else if (targetSizeX == 0 || targetSizeY == 0)
 		{
-			UI::MessageDialog::ShowDialog(CSTR("Max width and max height cannot be zero"), CSTR("Error"), me);
+			me->ui->ShowMsgOK(CSTR("Max width and max height cannot be zero"), CSTR("Error"), me);
 			return;
 		}
 	}
@@ -91,20 +90,20 @@ void __stdcall SSWR::AVIRead::AVIRProfiledResizerForm::OnClickedAddProfile(void 
 		targetSizeX = Text::StrToUInt32(sbuff2);
 		if (targetSizeX <= 0)
 		{
-			UI::MessageDialog::ShowDialog(CSTR("Please enter H-DPI"), CSTR("Error"), me);
+			me->ui->ShowMsgOK(CSTR("Please enter H-DPI"), CSTR("Error"), me);
 			return;
 		}
 		me->txtVDPI->GetText(sbuff2);
 		targetSizeY = Text::StrToUInt32(sbuff2);
 		if (targetSizeY <= 0)
 		{
-			UI::MessageDialog::ShowDialog(CSTR("Please enter V-DPI"), CSTR("Error"), me);
+			me->ui->ShowMsgOK(CSTR("Please enter V-DPI"), CSTR("Error"), me);
 			return;
 		}
 	}
 	else
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Please select Size Type"), CSTR("Error"), me);
+		me->ui->ShowMsgOK(CSTR("Please select Size Type"), CSTR("Error"), me);
 		return;
 	}
 	
@@ -120,7 +119,7 @@ void __stdcall SSWR::AVIRead::AVIRProfiledResizerForm::OnClickedAddProfile(void 
 		outParam = Text::StrToUInt32(sbuff2);
 		if (outParam <= 0 || outParam > 100)
 		{
-			UI::MessageDialog::ShowDialog(CSTR("Please enter quality"), CSTR("Error"), me);
+			me->ui->ShowMsgOK(CSTR("Please enter quality"), CSTR("Error"), me);
 			return;
 		}
 	}
@@ -131,7 +130,7 @@ void __stdcall SSWR::AVIRead::AVIRProfiledResizerForm::OnClickedAddProfile(void 
 		outParam = Text::StrToUInt32(sbuff2);
 		if (outParam <= 0 || outParam > 300)
 		{
-			UI::MessageDialog::ShowDialog(CSTR("Please enter size ratio"), CSTR("Error"), me);
+			me->ui->ShowMsgOK(CSTR("Please enter size ratio"), CSTR("Error"), me);
 			return;
 		}
 	}
@@ -147,19 +146,19 @@ void __stdcall SSWR::AVIRead::AVIRProfiledResizerForm::OnClickedAddProfile(void 
 		outParam = Text::StrToUInt32(sbuff2);
 		if (outParam <= 0 || outParam > 100)
 		{
-			UI::MessageDialog::ShowDialog(CSTR("Please enter quality"), CSTR("Error"), me);
+			me->ui->ShowMsgOK(CSTR("Please enter quality"), CSTR("Error"), me);
 			return;
 		}
 	}
 	else
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Please select output type"), CSTR("Error"), me);
+		me->ui->ShowMsgOK(CSTR("Please select output type"), CSTR("Error"), me);
 		return;
 	}
 	sptr2 = me->txtSuffix->GetText(sbuff2);
 	if (sbuff2[0] == 0)
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Please enter suffix"), CSTR("Error"), me);
+		me->ui->ShowMsgOK(CSTR("Please enter suffix"), CSTR("Error"), me);
 		return;
 	}
 	me->txtWatermark->GetText(sb);
@@ -171,7 +170,7 @@ void __stdcall SSWR::AVIRead::AVIRProfiledResizerForm::OnClickedAddProfile(void 
 	}
 	else
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Error in adding profile"), CSTR("Error"), me);
+		me->ui->ShowMsgOK(CSTR("Error in adding profile"), CSTR("Error"), me);
 		return;
 	}
 }

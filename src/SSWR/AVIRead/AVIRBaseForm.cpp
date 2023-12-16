@@ -257,7 +257,6 @@
 #include "UI/FileDialog.h"
 #include "UI/FolderDialog.h"
 #include "UI/GUITextBox.h"
-#include "UI/MessageDialog.h"
 #include "UtilUI/TextViewerForm.h"
 
 typedef enum
@@ -578,7 +577,7 @@ void __stdcall SSWR::AVIRead::AVIRBaseForm::FileHandler(void *userObj, NotNullPt
 	me->core->EndLoad();
 	if (found)
 	{
-		UI::MessageDialog::ShowDialog(sb.ToCString(), CSTR("Error"), me);
+		me->ui->ShowMsgOK(sb.ToCString(), CSTR("Error"), me);
 	}
 }
 
@@ -1014,13 +1013,13 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 					}
 					else
 					{
-						UI::MessageDialog::ShowDialog(CSTR("Error in parsing log"), CSTR("MTK Tracker"), this);
+						this->ui->ShowMsgOK(CSTR("Error in parsing log"), CSTR("MTK Tracker"), this);
 						trk.Delete();
 					}
 				}
 				else
 				{
-					UI::MessageDialog::ShowDialog(CSTR("MTK Tracker not found"), CSTR("MTK Tracker"), this);
+					this->ui->ShowMsgOK(CSTR("MTK Tracker not found"), CSTR("MTK Tracker"), this);
 				}
 			}
 		}
@@ -1172,7 +1171,7 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 						IO::StmData::FileData fd(fname, false);
 						if (fd.GetDataSize() == 0)
 						{
-							UI::MessageDialog::ShowDialog(CSTR("Error in loading file"), CSTR("AVIRead"), this);
+							this->ui->ShowMsgOK(CSTR("Error in loading file"), CSTR("AVIRead"), this);
 						}
 						else
 						{
@@ -1185,7 +1184,7 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 					NotNullPtr<IO::ParsedObject> pobj;
 					if (!pobj.Set(Net::URL::OpenObject(fname->ToCString(), CSTR_NULL, this->core->GetSocketFactory(), this->ssl, 30000, this->core->GetLog())))
 					{
-						UI::MessageDialog::ShowDialog(CSTR("Error in loading file"), CSTR("AVIRead"), this);
+						this->ui->ShowMsgOK(CSTR("Error in loading file"), CSTR("AVIRead"), this);
 					}
 					else
 					{
@@ -1276,7 +1275,7 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 			NEW_CLASS(frm, SSWR::AVIRead::AVIRDNSProxyForm(0, this->ui, this->core));
 			if (frm->IsError())
 			{
-				UI::MessageDialog::ShowDialog(CSTR("Error in starting DNS proxy. Port is in use?"), CSTR("Error"), this);
+				this->ui->ShowMsgOK(CSTR("Error in starting DNS proxy. Port is in use?"), CSTR("Error"), this);
 				DEL_CLASS(frm);
 			}
 			else
@@ -1677,12 +1676,12 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 				}
 				else
 				{
-					UI::MessageDialog::ShowDialog(CSTR("Error in accessing accelerometer"), CSTR("Accelerometer"), this);
+					this->ui->ShowMsgOK(CSTR("Error in accessing accelerometer"), CSTR("Accelerometer"), this);
 				}
 			}
 			else
 			{
-				UI::MessageDialog::ShowDialog(CSTR("No accelerometers found"), CSTR("Accelerometer"), this);
+				this->ui->ShowMsgOK(CSTR("No accelerometers found"), CSTR("Accelerometer"), this);
 			}
 		}
 		break;
@@ -2145,7 +2144,7 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 			}
 			else
 			{
-				UI::MessageDialog::ShowDialog(CSTR("Olympus Camera not found"), CSTR("Olympus Camera"), this);
+				this->ui->ShowMsgOK(CSTR("Olympus Camera not found"), CSTR("Olympus Camera"), this);
 			}
 		}
 		break;
@@ -2176,7 +2175,7 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 			}
 			else
 			{
-				UI::MessageDialog::ShowDialog(CSTR("Camera not found"), CSTR("Camera Control"), this);
+				this->ui->ShowMsgOK(CSTR("Camera not found"), CSTR("Camera Control"), this);
 			}
 		}
 		break;
@@ -2191,7 +2190,7 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 			}
 			else
 			{
-				UI::MessageDialog::ShowDialog(CSTR("GoPro Camera not found"), CSTR("GoPro Camera"), this);
+				this->ui->ShowMsgOK(CSTR("GoPro Camera not found"), CSTR("GoPro Camera"), this);
 			}
 		}
 		break;
@@ -2375,7 +2374,7 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 			SSWR::AVIRead::AVIRMSSQLConnForm dlg(0, this->ui, this->core);
 			if (dlg.IsDriverNotFound())
 			{
-				UI::MessageDialog::ShowDialog(CSTR("No known driver found"), CSTR("MSSQL Conn"), this);
+				this->ui->ShowMsgOK(CSTR("No known driver found"), CSTR("MSSQL Conn"), this);
 			}
 			else if (dlg.ShowDialog(this) == UI::GUIForm::DR_OK)
 			{

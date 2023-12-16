@@ -2,7 +2,6 @@
 #include "IO/Path.h"
 #include "Net/SSLEngineFactory.h"
 #include "SSWR/AVIRead/AVIRPushServerForm.h"
-#include "UI/MessageDialog.h"
 
 void __stdcall SSWR::AVIRead::AVIRPushServerForm::OnStartClicked(void *userObj)
 {
@@ -21,14 +20,14 @@ void __stdcall SSWR::AVIRead::AVIRPushServerForm::OnStartClicked(void *userObj)
 	me->txtPort->GetText(sbAPIKey);
 	if (!sbAPIKey.ToUInt16(port))
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Please enter valid port number"), CSTR("PushServer"), me);
+		me->ui->ShowMsgOK(CSTR("Please enter valid port number"), CSTR("PushServer"), me);
 		return;
 	}
 	sbAPIKey.ClearStr();
 	me->txtAPIKey->GetText(sbAPIKey);
 	if (sbAPIKey.leng == 0)
 	{
-		UI::MessageDialog::ShowDialog(CSTR("API Key is empty"), CSTR("PushServer"), me);
+		me->ui->ShowMsgOK(CSTR("API Key is empty"), CSTR("PushServer"), me);
 		return;
 	}
 	UTF8Char sbuff[512];
@@ -44,7 +43,7 @@ void __stdcall SSWR::AVIRead::AVIRPushServerForm::OnStartClicked(void *userObj)
 		DEL_CLASS(me->svr);
 		me->svr = 0;
 		me->log.ClearHandlers();
-		UI::MessageDialog::ShowDialog(CSTR("Error in listening to port"), CSTR("PushServer"), me);
+		me->ui->ShowMsgOK(CSTR("Error in listening to port"), CSTR("PushServer"), me);
 		return;
 	}
 	me->txtAPIKey->SetReadOnly(true);

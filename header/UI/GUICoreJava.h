@@ -33,6 +33,8 @@ namespace UI
 		virtual Media::MonitorMgr *GetMonitorMgr();
 		virtual Bool IsForwarded();
 
+		virtual void ShowMsgOK(Text::CStringNN message, Text::CStringNN title, Optional<UI::GUIControl> ctrl);
+		virtual Bool ShowMsgYesNo(Text::CStringNN message, Text::CStringNN title, Optional<UI::GUIControl> ctrl);
 		virtual NotNullPtr<GUIGroupBox> NewGroupBox(NotNullPtr<GUIClientControl> parent, Text::CStringNN text);
 	};
 }

@@ -5,7 +5,6 @@
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
 #include "UI/FolderDialog.h"
-#include "UI/MessageDialog.h"
 
 typedef enum
 {
@@ -106,7 +105,7 @@ Bool __stdcall SSWR::AVIRead::AVIRImageBatchForm::OnFormClosing(void *userObj, C
 	SSWR::AVIRead::AVIRImageBatchForm *me = (SSWR::AVIRead::AVIRImageBatchForm*)userObj;
 	if (me->icMain->IsLoadingDir())
 	{
-		return !UI::MessageDialog::ShowYesNoDialog(CSTR("Still loading directory, setting will be lost. Continue?"), CSTR("Question"), me);
+		return !me->ui->ShowMsgYesNo(CSTR("Still loading directory, setting will be lost. Continue?"), CSTR("Question"), me);
 	}
 	return false;
 }

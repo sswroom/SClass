@@ -2,7 +2,6 @@
 #include "IO/FileUtil.h"
 #include "IO/Path.h"
 #include "SSWR/AVIRead/AVIRFileRenameForm.h"
-#include "UI/MessageDialog.h"
 
 void __stdcall SSWR::AVIRead::AVIRFileRenameForm::OnRenameClicked(void *userObj)
 {
@@ -14,7 +13,7 @@ void __stdcall SSWR::AVIRead::AVIRFileRenameForm::OnRenameClicked(void *userObj)
 	me->txtNewExt->GetText(sbExt);
 	if (sbName.GetLength() == 0)
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Please enter file name"), CSTR("File Rename"), me);
+		me->ui->ShowMsgOK(CSTR("Please enter file name"), CSTR("File Rename"), me);
 		return;
 	}
 	sbPath.Append(me->fileName);
@@ -28,7 +27,7 @@ void __stdcall SSWR::AVIRead::AVIRFileRenameForm::OnRenameClicked(void *userObj)
 	}
 	if (sbPath.Equals(me->fileName))
 	{
-		UI::MessageDialog::ShowDialog(CSTR("File name not changed"), CSTR("File Rename"), me);
+		me->ui->ShowMsgOK(CSTR("File name not changed"), CSTR("File Rename"), me);
 		return;
 	}
 	if (IO::FileUtil::RenameFile(me->fileName->v, sbPath.ToString()))
@@ -39,7 +38,7 @@ void __stdcall SSWR::AVIRead::AVIRFileRenameForm::OnRenameClicked(void *userObj)
 	}
 	else
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Error in renaming file"), CSTR("File Rename"), me);
+		me->ui->ShowMsgOK(CSTR("Error in renaming file"), CSTR("File Rename"), me);
 	}
 }
 

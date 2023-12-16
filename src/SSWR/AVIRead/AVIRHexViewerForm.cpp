@@ -9,7 +9,6 @@
 #include "Text/MyStringW.h"
 #include "UI/FileDialog.h"
 #include "UI/FontDialog.h"
-#include "UI/MessageDialog.h"
 
 typedef enum
 {
@@ -222,7 +221,7 @@ void __stdcall SSWR::AVIRead::AVIRHexViewerForm::OnNextUnkClicked(void *userObj)
 	SSWR::AVIRead::AVIRHexViewerForm *me = (SSWR::AVIRead::AVIRHexViewerForm*)userObj;
 	if (!me->hexView->GoToNextUnkField())
 	{
-		UI::MessageDialog::ShowDialog(CSTR("No unknown field found"), CSTR("Hex Viewer"), me);
+		me->ui->ShowMsgOK(CSTR("No unknown field found"), CSTR("Hex Viewer"), me);
 	}
 }
 
@@ -264,18 +263,18 @@ void __stdcall SSWR::AVIRead::AVIRHexViewerForm::OnExtractClicked(void *userObj)
 	me->txtExtractBegin->GetText(sbuff);
 	if (!Text::StrHex2UInt64V(sbuff, beginOfst))
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Error in parsing begin offset"), CSTR("Hex Viewer"), me);
+		me->ui->ShowMsgOK(CSTR("Error in parsing begin offset"), CSTR("Hex Viewer"), me);
 		return;
 	}
 	me->txtExtractEnd->GetText(sbuff);
 	if (!Text::StrHex2UInt64V(sbuff, endOfst))
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Error in parsing end offset"), CSTR("Hex Viewer"), me);
+		me->ui->ShowMsgOK(CSTR("Error in parsing end offset"), CSTR("Hex Viewer"), me);
 		return;
 	}
 	if (beginOfst >= endOfst)
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Current Offsets are not valid to extract file"), CSTR("Hex Viewer"), me);
+		me->ui->ShowMsgOK(CSTR("Current Offsets are not valid to extract file"), CSTR("Hex Viewer"), me);
 		return;
 	}
 	endOfst -= beginOfst;
@@ -319,7 +318,7 @@ void __stdcall SSWR::AVIRead::AVIRHexViewerForm::OnExtractClicked(void *userObj)
 			}
 			if (hasError)
 			{
-				UI::MessageDialog::ShowDialog(CSTR("Error in reading from source file"), CSTR("Hex Viewer"), me);
+				me->ui->ShowMsgOK(CSTR("Error in reading from source file"), CSTR("Hex Viewer"), me);
 			}
 		}
 	}

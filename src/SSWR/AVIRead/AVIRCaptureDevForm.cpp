@@ -2,20 +2,19 @@
 #include "Media/CS/CSConverter.h"
 #include "SSWR/AVIRead/AVIRCaptureDevForm.h"
 #include "Text/MyStringFloat.h"
-#include "UI/MessageDialog.h"
 
 void __stdcall SSWR::AVIRead::AVIRCaptureDevForm::OnOKClick(void *userObj)
 {
 	SSWR::AVIRead::AVIRCaptureDevForm *me = (SSWR::AVIRead::AVIRCaptureDevForm*)userObj;
 	if (me->currCapture == 0)
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Please select a device"), CSTR("Select Capture Device"), me);
+		me->ui->ShowMsgOK(CSTR("Please select a device"), CSTR("Select Capture Device"), me);
 		return;
 	}
 	CaptureFormat *fmt = (CaptureFormat*)me->cboFormat->GetItem((UOSInt)me->cboFormat->GetSelectedIndex());
 	if (fmt == 0)
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Please select a format"), CSTR("Select Capture Device"), me);
+		me->ui->ShowMsgOK(CSTR("Please select a format"), CSTR("Select Capture Device"), me);
 		return;
 	}
 

@@ -8,7 +8,6 @@
 #include "Sync/ThreadUtil.h"
 #include "Text/MyStringFloat.h"
 #include "Text/StringBuilderUTF8.h"
-#include "UI/MessageDialog.h"
 
 void __stdcall SSWR::AVIRead::AVIRIPScanForm::OnStartClicked(void *userObj)
 {
@@ -28,7 +27,7 @@ void __stdcall SSWR::AVIRead::AVIRIPScanForm::OnStartClicked(void *userObj)
 		}
 		else
 		{
-			UI::MessageDialog::ShowDialog(CSTR("To many ip address"), CSTR("Error"), me);
+			me->ui->ShowMsgOK(CSTR("To many ip address"), CSTR("Error"), me);
 			return;
 		}
 

@@ -2204,9 +2204,6 @@ $`$(PKG-CONFIG) --cflags gtk+-3.0`
 GUIDDrawControlWin.o: ../../src/UI/GUIDDrawControlWin.cpp
 !-lwinmm
 GUIDObjArea.o: ../../src/UI/GUIDObjArea.cpp
-GUIDragDropGTK.o: ../../src/UI/GUIDragDropGTK.cpp
-$`$(PKG-CONFIG) --cflags gtk+-3.0`
-GUIDragDropWin.o: ../../src/UI/GUIDragDropWin.cpp
 GUIFormGTK.o: ../../src/UI/GUIFormGTK.cpp
 $`$(PKG-CONFIG) --cflags gtk+-3.0`
 GUIFormJava.o: ../../src/UI/GUIFormJava.cpp
@@ -2296,13 +2293,6 @@ GUIVideoBoxDDLQ.o: ../../src/UI/GUIVideoBoxDDLQ.cpp
 GUIVSplitterGTK.o: ../../src/UI/GUIVSplitterGTK.cpp
 $`$(PKG-CONFIG) --cflags gtk+-3.0`
 GUIVSplitterWin.o: ../../src/UI/GUIVSplitterWin.cpp
-GUIWindowDragDrop.o: ../../src/UI/GUIWindowDragDrop.cpp
-MessageDialogJava.o: ../../src/UI/MessageDialogJava.cpp
-$-I$(JAVA_HOME)/include
-$-I$(JAVA_HOME)/include/linux
-MessageDialogL.o: ../../src/UI/MessageDialogL.cpp
-$`$(PKG-CONFIG) --cflags gtk+-3.0`
-MessageDialogW.o: ../../src/UI/MessageDialogW.cpp
 ButtonDObj.o: ../../src/UI/DObj/ButtonDObj.cpp
 ClickAreaDObj.o: ../../src/UI/DObj/ClickAreaDObj.cpp
 DirectObject.o: ../../src/UI/DObj/DirectObject.cpp
@@ -2318,9 +2308,18 @@ RollingTextDObj.o: ../../src/UI/DObj/RollingTextDObj.cpp
 SizedOverlayDObj.o: ../../src/UI/DObj/SizedOverlayDObj.cpp
 TextDObj.o: ../../src/UI/DObj/TextDObj.cpp
 VideoDObjHandler.o: ../../src/UI/DObj/VideoDObjHandler.cpp
+GTKDragDrop.o: ../../src/UI/GTK/GTKDragDrop.cpp
+$`$(PKG-CONFIG) --cflags gtk+-3.0`
 GTKGroupBox.o: ../../src/UI/GTK/GTKGroupBox.cpp
 $`$(PKG-CONFIG) --cflags gtk+-3.0`
+GTKMessageDialog.o: ../../src/UI/GTK/GTKMessageDialog.cpp
+$`$(PKG-CONFIG) --cflags gtk+-3.0`
+JavaMessageDialog.o: ../../src/UI/GTK/JavaMessageDialog.cpp
+$-I$(JAVA_HOME)/include
+$-I$(JAVA_HOME)/include/linux
+WinDragDrop.o: ../../src/UI/Win/WinDragDrop.cpp
 WinGroupBox.o: ../../src/UI/Win/WinGroupBox.cpp
+WinMessageDialog.o: ../../src/UI/Win/WinMessageDialog.cpp
 
 ColorDialog.o: ../../src/UtilUI/ColorDialog.cpp
 TextGotoDialog.o: ../../src/UtilUI/TextGotoDialog.cpp

@@ -6,7 +6,6 @@
 #include "Net/WebServer/WebListener.h"
 #include "SSWR/AVIRead/AVIROSMCacheCfgForm.h"
 #include "SSWR/AVIRead/AVIROSMCacheForm.h"
-#include "UI/MessageDialog.h"
 
 void __stdcall SSWR::AVIRead::AVIROSMCacheCfgForm::OnOKClick(void *userObj)
 {
@@ -18,7 +17,7 @@ void __stdcall SSWR::AVIRead::AVIROSMCacheCfgForm::OnOKClick(void *userObj)
 	me->txtHTTPPort->GetText(sb);
 	if (!sb.ToUInt16(port) || port <= 0)
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Please enter valid HTTP port number"), CSTR("Error"), me);
+		me->ui->ShowMsgOK(CSTR("Please enter valid HTTP port number"), CSTR("Error"), me);
 		return;
 	}
 	NotNullPtr<Map::OSM::OSMCacheHandler> hdlr;
@@ -90,7 +89,7 @@ void __stdcall SSWR::AVIRead::AVIROSMCacheCfgForm::OnOKClick(void *userObj)
 	{
 		listener.Delete();
 		hdlr.Delete();
-		UI::MessageDialog::ShowDialog(CSTR("Error in listening to the port"), CSTR("Error"), me);
+		me->ui->ShowMsgOK(CSTR("Error in listening to the port"), CSTR("Error"), me);
 		return;
 	}
 

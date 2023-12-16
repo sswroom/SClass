@@ -31,7 +31,6 @@
 #include "SSWR/AVIRead/AVIRSMakeForm.h"
 #include "SSWR/AVIRead/AVIRSystemInfoLogForm.h"
 #include "UI/FileDialog.h"
-#include "UI/MessageDialog.h"
 
 SSWR::AVIRead::AVIRCoreWin::AVIRCoreWin(NotNullPtr<UI::GUICore> ui) : SSWR::AVIRead::AVIRCore(ui)
 {
@@ -270,7 +269,7 @@ void SSWR::AVIRead::AVIRCoreWin::SaveData(UI::GUIForm *ownerForm, NotNullPtr<IO:
 	this->exporters.GetSupportedExporters(&exp, pobj);
 	if (exp.GetCount() == 0)
 	{
-		UI::MessageDialog::ShowDialog(CSTR("No supported exporter found"), CSTR("Save"), ownerForm);
+		this->ui->ShowMsgOK(CSTR("No supported exporter found"), CSTR("Save"), ownerForm);
 	}
 	else
 	{
@@ -317,7 +316,7 @@ void SSWR::AVIRead::AVIRCoreWin::SaveData(UI::GUIForm *ownerForm, NotNullPtr<IO:
 				param = fileExp->CreateParam(pobj);
 				if (param == 0)
 				{
-					UI::MessageDialog::ShowDialog(CSTR("Error in initializing parameters"), CSTR("Save Data"), ownerForm);
+					this->ui->ShowMsgOK(CSTR("Error in initializing parameters"), CSTR("Save Data"), ownerForm);
 				}
 				else
 				{
@@ -329,7 +328,7 @@ void SSWR::AVIRead::AVIRCoreWin::SaveData(UI::GUIForm *ownerForm, NotNullPtr<IO:
 							IO::NullStream stm;
 							if (!fileExp->ExportFile(stm, sfd.GetFileName()->ToCString(), pobj, param))
 							{
-								UI::MessageDialog::ShowDialog(CSTR("Error in saving file"), CSTR("Save Data"), ownerForm);
+								this->ui->ShowMsgOK(CSTR("Error in saving file"), CSTR("Save Data"), ownerForm);
 							}
 						}
 						else
@@ -337,7 +336,7 @@ void SSWR::AVIRead::AVIRCoreWin::SaveData(UI::GUIForm *ownerForm, NotNullPtr<IO:
 							IO::FileStream fs(sfd.GetFileName(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 							if (!fileExp->ExportFile(fs, sfd.GetFileName()->ToCString(), pobj, param))
 							{
-								UI::MessageDialog::ShowDialog(CSTR("Error in saving file"), CSTR("Save Data"), ownerForm);
+								this->ui->ShowMsgOK(CSTR("Error in saving file"), CSTR("Save Data"), ownerForm);
 							}
 						}
 					}
@@ -351,7 +350,7 @@ void SSWR::AVIRead::AVIRCoreWin::SaveData(UI::GUIForm *ownerForm, NotNullPtr<IO:
 					IO::NullStream stm;
 					if (!fileExp->ExportFile(stm, sfd.GetFileName()->ToCString(), pobj, 0))
 					{
-						UI::MessageDialog::ShowDialog(CSTR("Error in saving file"), CSTR("Save Data"), ownerForm);
+						this->ui->ShowMsgOK(CSTR("Error in saving file"), CSTR("Save Data"), ownerForm);
 					}
 				}
 				else
@@ -359,7 +358,7 @@ void SSWR::AVIRead::AVIRCoreWin::SaveData(UI::GUIForm *ownerForm, NotNullPtr<IO:
 					IO::FileStream fs(sfd.GetFileName(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 					if (!fileExp->ExportFile(fs, sfd.GetFileName()->ToCString(), pobj, 0))
 					{
-						UI::MessageDialog::ShowDialog(CSTR("Error in saving file"), CSTR("Save Data"), ownerForm);
+						this->ui->ShowMsgOK(CSTR("Error in saving file"), CSTR("Save Data"), ownerForm);
 					}
 				}
 			}

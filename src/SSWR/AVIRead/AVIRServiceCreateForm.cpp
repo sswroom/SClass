@@ -1,7 +1,6 @@
 #include "Stdafx.h"
 #include "IO/Path.h"
 #include "SSWR/AVIRead/AVIRServiceCreateForm.h"
-#include "UI/MessageDialog.h"
 
 void __stdcall SSWR::AVIRead::AVIRServiceCreateForm::OnCreateClicked(void *userObj)
 {
@@ -14,23 +13,23 @@ void __stdcall SSWR::AVIRead::AVIRServiceCreateForm::OnCreateClicked(void *userO
 	me->txtCmdLine->GetText(sbCmdLine);
 	if (sbName.GetLength() == 0)
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Please enter name"), CSTR("Create Service"), me);
+		me->ui->ShowMsgOK(CSTR("Please enter name"), CSTR("Create Service"), me);
 		return;
 	}
 	if (sbName.IndexOf('.') != INVALID_INDEX)
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Name cannot contain . character"), CSTR("Create Service"), me);
+		me->ui->ShowMsgOK(CSTR("Name cannot contain . character"), CSTR("Create Service"), me);
 		return;
 	}
 	IO::ServiceManager::ServiceDetail sd;
 	if (me->svcMgr.ServiceGetDetail(sbName.ToCString(), &sd))
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Service Name already exist"), CSTR("Create Service"), me);
+		me->ui->ShowMsgOK(CSTR("Service Name already exist"), CSTR("Create Service"), me);
 		return;
 	}
 	if (sbCmdLine.GetLength() == 0)
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Please enter command line"), CSTR("Create Service"), me);
+		me->ui->ShowMsgOK(CSTR("Please enter command line"), CSTR("Create Service"), me);
 		return;
 	}
 	if (me->svcMgr.ServiceCreate(sbName.ToCString(), sbDesc.ToCString(), sbCmdLine.ToCString(), (IO::ServiceInfo::ServiceState)(OSInt)me->cboState->GetSelectedItem()))
@@ -39,7 +38,7 @@ void __stdcall SSWR::AVIRead::AVIRServiceCreateForm::OnCreateClicked(void *userO
 	}
 	else
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Error in creating service"), CSTR("Create Service"), me);
+		me->ui->ShowMsgOK(CSTR("Error in creating service"), CSTR("Create Service"), me);
 		return;
 	}
 }

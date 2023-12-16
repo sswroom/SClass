@@ -4,7 +4,6 @@
 #include "Net/ASN1Util.h"
 #include "Net/SNMPInfo.h"
 #include "SSWR/AVIRead/AVIRSNMPClientForm.h"
-#include "UI/MessageDialog.h"
 
 void __stdcall SSWR::AVIRead::AVIRSNMPClientForm::OnRequestClicked(void *userObj)
 {
@@ -15,7 +14,7 @@ void __stdcall SSWR::AVIRead::AVIRSNMPClientForm::OnRequestClicked(void *userObj
 	me->txtAgent->GetText(sbComm);
 	if (!me->core->GetSocketFactory()->DNSResolveIP(sbComm.ToCString(), addr))
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Error in resolving Agent Address"), CSTR("SNMP Client"), me);
+		me->ui->ShowMsgOK(CSTR("Error in resolving Agent Address"), CSTR("SNMP Client"), me);
 		return;
 	}
 	sbComm.ClearStr();
@@ -23,12 +22,12 @@ void __stdcall SSWR::AVIRead::AVIRSNMPClientForm::OnRequestClicked(void *userObj
 	me->txtOID->GetText(sbOID);
 	if (sbComm.GetLength() <= 0)
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Please enter community"), CSTR("SNMP Client"), me);
+		me->ui->ShowMsgOK(CSTR("Please enter community"), CSTR("SNMP Client"), me);
 		return;
 	}
 	if (sbOID.GetLength() <= 0)
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Please enter OID"), CSTR("SNMP Client"), me);
+		me->ui->ShowMsgOK(CSTR("Please enter OID"), CSTR("SNMP Client"), me);
 		return;
 	}
 	UOSInt i = me->cboCommandType->GetSelectedIndex();
@@ -57,7 +56,7 @@ void __stdcall SSWR::AVIRead::AVIRSNMPClientForm::OnRequestClicked(void *userObj
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("Error in requesting to the server, error code = "));
 		sb.Append(Net::SNMPUtil::ErrorStatusToString(err));
-		UI::MessageDialog::ShowDialog(sb.ToCString(), CSTR("SNMP Client"), me);
+		me->ui->ShowMsgOK(sb.ToCString(), CSTR("SNMP Client"), me);
 	}
 	else
 	{
@@ -143,7 +142,7 @@ SSWR::AVIRead::AVIRSNMPClientForm::AVIRSNMPClientForm(UI::GUIClientControl *pare
 	NEW_CLASS(this->cli, Net::SNMPClient(this->core->GetSocketFactory(), this->core->GetLog()));
 	if (this->cli->IsError())
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Error in starting SNMP Client"), CSTR("Error"), this);
+		this->ui->ShowMsgOK(CSTR("Error in starting SNMP Client"), CSTR("Error"), this);
 	}
 }
 

@@ -2,7 +2,6 @@
 #include "Net/ARPInfo.h"
 #include "SSWR/AVIRead/AVIRNetInfoForm.h"
 #include "Text/MyStringFloat.h"
-#include "UI/MessageDialog.h"
 
 void __stdcall SSWR::AVIRead::AVIRNetInfoForm::OnAdaptorSelChg(void *userObj)
 {
@@ -177,7 +176,7 @@ void __stdcall SSWR::AVIRead::AVIRNetInfoForm::OnAdaptorEnableClicked(void *user
 		}
 		else
 		{
-			UI::MessageDialog::ShowDialog(CSTR("Error in enabling adaptor"), CSTR("Network Info"), me);
+			me->ui->ShowMsgOK(CSTR("Error in enabling adaptor"), CSTR("Network Info"), me);
 		}
 	}
 }
@@ -199,7 +198,7 @@ void __stdcall SSWR::AVIRead::AVIRNetInfoForm::OnAdaptorDisableClicked(void *use
 		}
 		else
 		{
-			UI::MessageDialog::ShowDialog(CSTR("Error in disable adaptor"), CSTR("Network Info"), me);
+			me->ui->ShowMsgOK(CSTR("Error in disable adaptor"), CSTR("Network Info"), me);
 		}
 	}
 }

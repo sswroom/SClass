@@ -5,7 +5,6 @@
 #include "Net/MySQLTCPClient.h"
 #include "Net/OSSocketFactory.h"
 #include "SSWR/OrganMgr/OrganWebForm.h"
-#include "UI/MessageDialog.h"
 
 void __stdcall SSWR::OrganMgr::OrganWebForm::OnReloadClicked(void *userObj)
 {

@@ -4,7 +4,6 @@
 #include "SSWR/AVIRead/AVIRTableMsgForm.h"
 #include "Text/MyString.h"
 #include "UI/Clipboard.h"
-#include "UI/MessageDialog.h"
 
 void __stdcall SSWR::AVIRead::AVIRMSSQLConnForm::OnPasteJDBCClicked(void *userObj)
 {
@@ -56,27 +55,27 @@ void __stdcall SSWR::AVIRead::AVIRMSSQLConnForm::OnOKClicked(void *userObj)
 
 	if (sbServer.GetCharCnt() == 0)
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Please enter server"), CSTR("MSSQL Conn"), me);
+		me->ui->ShowMsgOK(CSTR("Please enter server"), CSTR("MSSQL Conn"), me);
 		return;
 	}	
 	if (!sbPort.ToUInt16(port))
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Please enter valid port number"), CSTR("MSSQL Conn"), me);
+		me->ui->ShowMsgOK(CSTR("Please enter valid port number"), CSTR("MSSQL Conn"), me);
 		return;
 	}	
 	if (sbDatabase.GetCharCnt() == 0)
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Please enter database"), CSTR("MSSQL Conn"), me);
+		me->ui->ShowMsgOK(CSTR("Please enter database"), CSTR("MSSQL Conn"), me);
 		return;
 	}	
 	if (sbUser.GetCharCnt() == 0)
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Please enter user"), CSTR("MSSQL Conn"), me);
+		me->ui->ShowMsgOK(CSTR("Please enter user"), CSTR("MSSQL Conn"), me);
 		return;
 	}	
 	if (sbPassword.GetCharCnt() == 0)
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Please enter password"), CSTR("MSSQL Conn"), me);
+		me->ui->ShowMsgOK(CSTR("Please enter password"), CSTR("MSSQL Conn"), me);
 		return;
 	}
 	sbPort.ClearStr();
@@ -90,7 +89,7 @@ void __stdcall SSWR::AVIRead::AVIRMSSQLConnForm::OnOKClicked(void *userObj)
 		sbUser.ClearStr();
 		sbUser.AppendC(UTF8STRC("Error in opening ODBC connection\r\n"));
 		sbUser.AppendC(sbPort.ToString(), sbPort.GetLength());
-		UI::MessageDialog::ShowDialog(sbUser.ToCString(), CSTR("MSSQL Conn"), me);
+		me->ui->ShowMsgOK(sbUser.ToCString(), CSTR("MSSQL Conn"), me);
 	}
 }
 

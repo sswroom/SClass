@@ -11,7 +11,6 @@
 #include "Text/MyStringFloat.h"
 #include "Text/PString.h"
 #include "Text/StringBuilderUTF8.h"
-#include "UI/MessageDialog.h"
 
 void __stdcall SSWR::AVIRead::AVIRHTTPDownloaderForm::OnRequestClicked(void *userObj)
 {
@@ -20,7 +19,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPDownloaderForm::OnRequestClicked(void *use
 	me->txtDownloadDir->GetText(sb);
 	if (IO::Path::GetPathType(sb.ToCString()) != IO::Path::PathType::Directory)
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Please enter valid download path"), CSTR("Request"), me);
+		me->ui->ShowMsgOK(CSTR("Please enter valid download path"), CSTR("Request"), me);
 		return;
 	}
 	SDEL_STRING(me->downPath);
@@ -38,7 +37,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPDownloaderForm::OnRequestClicked(void *use
 	me->txtURL->GetText(sb);
 	if (!sb.StartsWith(UTF8STRC("http://")) && !sb.StartsWith(UTF8STRC("https://")))
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Please enter valid http URL"), CSTR("Request"), me);
+		me->ui->ShowMsgOK(CSTR("Please enter valid http URL"), CSTR("Request"), me);
 		return;
 	}
 

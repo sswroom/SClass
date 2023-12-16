@@ -3,7 +3,6 @@
 #include "SSWR/OrganMgr/OrganBookForm.h"
 #include "Text/StringTool.h"
 #include "UI/Clipboard.h"
-#include "UI/MessageDialog.h"
 
 SSWR::OrganMgr::BookArrayList::BookArrayList() : Data::SortableArrayList<OrganBook*>()
 {
@@ -37,7 +36,7 @@ OSInt SSWR::OrganMgr::BookArrayList::Compare(OrganBook *book1, OrganBook *book2)
 	return CompareBook(book1, book2);
 }
 
-void __stdcall SSWR::OrganMgr::OrganBookForm::OnBookPublishChg(void *userObj, Data::DateTime *newDate)
+void __stdcall SSWR::OrganMgr::OrganBookForm::OnBookPublishChg(void *userObj, NotNullPtr<Data::DateTime> newDate)
 {
 	OrganBookForm *me = (OrganBookForm*)userObj;
 	Data::Timestamp currTime = Data::DateTime(newDate->GetYear(), 1, 1, 0, 0, 0).ToTimestamp();
@@ -102,24 +101,24 @@ void __stdcall SSWR::OrganMgr::OrganBookForm::OnBookAddClicked(void *userObj)
 	me->txtBookURL->GetText(sb4);
 	if (sb.GetLength() <= 0)
 	{
-		UI::MessageDialog::ShowDialog(me->env->GetLang(CSTR("BookFormInputAuthor")), CSTR("Error"), me);
+		me->ui->ShowMsgOK(me->env->GetLang(CSTR("BookFormInputAuthor")), CSTR("Error"), me);
 		return;
 	}
 	if (sb2.GetLength() <= 0)
 	{
-		UI::MessageDialog::ShowDialog(me->env->GetLang(CSTR("BookFormInputName")), CSTR("Error"), me);
+		me->ui->ShowMsgOK(me->env->GetLang(CSTR("BookFormInputName")), CSTR("Error"), me);
 		return;
 	}
 	if (sb3.GetLength() <= 0)
 	{
-		UI::MessageDialog::ShowDialog(me->env->GetLang(CSTR("BookFormInputSource")), CSTR("Error"), me);
+		me->ui->ShowMsgOK(me->env->GetLang(CSTR("BookFormInputSource")), CSTR("Error"), me);
 		return;
 	}
 	Data::DateTime publishDate;
 	me->dtpBookPublish->GetSelectedTime(publishDate);
 	if (!me->env->NewBook(sb2.ToCString(), sb.ToCString(), sb3.ToCString(), publishDate.ToTimestamp(), sb4.ToCString()))
 	{
-		UI::MessageDialog::ShowDialog(me->env->GetLang(CSTR("BookFormDBError")), CSTR("Error"), me);
+		me->ui->ShowMsgOK(me->env->GetLang(CSTR("BookFormDBError")), CSTR("Error"), me);
 		return;
 	}
 

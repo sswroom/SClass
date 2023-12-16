@@ -9,7 +9,6 @@
 #include "Sync/ThreadUtil.h"
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
-#include "UI/MessageDialog.h"
 
 void __stdcall SSWR::AVIRead::AVIRHTTPLoadBalanceForm::OnStartClick(void *userObj)
 {
@@ -28,7 +27,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPLoadBalanceForm::OnStartClick(void *userOb
 	Optional<Net::SSLEngine> ssl = 0;
 	if (!sb.StartsWith(UTF8STRC("http://")) && !sb.StartsWith(UTF8STRC("https://")))
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Invalid Forward URL"), CSTR("HTTP Load Balance"), me);
+		me->ui->ShowMsgOK(CSTR("Invalid Forward URL"), CSTR("HTTP Load Balance"), me);
 		return;
 	}
 
@@ -38,7 +37,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPLoadBalanceForm::OnStartClick(void *userOb
 		NotNullPtr<Crypto::Cert::X509File> sslKey;
 		if (!sslCert.Set(me->sslCert) || !sslKey.Set(me->sslKey))
 		{
-			UI::MessageDialog::ShowDialog(CSTR("Please select SSL Cert/Key First"), CSTR("HTTP Load Balance"), me);
+			me->ui->ShowMsgOK(CSTR("Please select SSL Cert/Key First"), CSTR("HTTP Load Balance"), me);
 			return;
 		}
 		ssl = me->ssl;

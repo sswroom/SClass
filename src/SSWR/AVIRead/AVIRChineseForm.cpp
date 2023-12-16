@@ -6,7 +6,6 @@
 #include "Text/MyStringW.h"
 #include "Text/StringBuilderUTF8.h"
 #include "UI/FontDialog.h"
-#include "UI/MessageDialog.h"
 #include <wchar.h>
 
 typedef enum
@@ -133,7 +132,7 @@ void __stdcall SSWR::AVIRead::AVIRChineseForm::OnRelatedAddChg(void *userObj)
 				*sptr = 0;
 				sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
 				sb.AppendC(UTF8STRC("\"?"));
-				if (UI::MessageDialog::ShowYesNoDialog(sb.ToCString(), CSTR("Add Relation"), me))
+				if (me->ui->ShowMsgYesNo(sb.ToCString(), CSTR("Add Relation"), me))
 				{
 					me->chinese->AddRelation(me->currChar, (UInt32)v);
 					me->UpdateRelation();
@@ -310,7 +309,7 @@ void SSWR::AVIRead::AVIRChineseForm::UpdateChar(UInt32 charCode)
 	}
 	else
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Error in saving char"), CSTR("Error"), this);
+		this->ui->ShowMsgOK(CSTR("Error in saving char"), CSTR("Error"), this);
 	}
 }
 

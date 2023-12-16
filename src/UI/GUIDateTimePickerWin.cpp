@@ -60,7 +60,7 @@ OSInt UI::GUIDateTimePicker::OnNotify(UInt32 code, void *lParam)
 		i = this->dateChangedHdlrs.GetCount();
 		while (i-- > 0)
 		{
-			this->dateChangedHdlrs.GetItem(i)(this->dateChangedObjs.GetItem(i), &dt);
+			this->dateChangedHdlrs.GetItem(i)(this->dateChangedObjs.GetItem(i), dt);
 		}
 		break;
 	case DTN_DROPDOWN:

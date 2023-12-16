@@ -4,6 +4,7 @@
 #include "UI/GUICore.h"
 #include "UI/GUICoreGTK.h"
 #include "UI/GTK/GTKGroupBox.h"
+#include "UI/GTK/GTKMessageDialog.h"
 #include <gtk/gtk.h>
 #include <X11/Xlib.h>
 #undef Bool
@@ -178,6 +179,16 @@ Media::MonitorMgr *UI::GUICoreGTK::GetMonitorMgr()
 Bool UI::GUICoreGTK::IsForwarded()
 {
 	return getenv("SSH_CLIENT") != 0;
+}
+
+void UI::GUICoreGTK::ShowMsgOK(Text::CStringNN message, Text::CStringNN title, Optional<UI::GUIControl> ctrl)
+{
+	UI::GTK::GTKMessageDialog::ShowOK(message, title, ctrl);
+}
+
+Bool UI::GUICoreGTK::ShowMsgYesNo(Text::CStringNN message, Text::CStringNN title, Optional<UI::GUIControl> ctrl)
+{
+	return UI::GTK::GTKMessageDialog::ShowYesNo(message, title, ctrl);
 }
 
 NotNullPtr<UI::GUIGroupBox> UI::GUICoreGTK::NewGroupBox(NotNullPtr<GUIClientControl> parent, Text::CStringNN text)

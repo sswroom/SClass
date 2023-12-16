@@ -3,7 +3,6 @@
 #include "Net/SAMLUtil.h"
 #include "SSWR/AVIRead/AVIRSAMLReqDecodeForm.h"
 #include "Text/XMLReader.h"
-#include "UI/MessageDialog.h"
 
 void __stdcall SSWR::AVIRead::AVIRSAMLReqDecodeForm::OnDecodeClicked(void *userObj)
 {
@@ -12,7 +11,7 @@ void __stdcall SSWR::AVIRead::AVIRSAMLReqDecodeForm::OnDecodeClicked(void *userO
 	me->txtRAWRequest->GetText(sb);
 	if (sb.GetLength() == 0)
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Please input raw response"), CSTR("SAML Response Decrypt"), me);
+		me->ui->ShowMsgOK(CSTR("Please input raw response"), CSTR("SAML Response Decrypt"), me);
 		return;
 	}
 	Text::StringBuilderUTF8 sbResult;

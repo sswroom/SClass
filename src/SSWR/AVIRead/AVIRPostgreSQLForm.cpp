@@ -2,7 +2,6 @@
 #include "DB/PostgreSQLConn.h"
 #include "SSWR/AVIRead/AVIRPostgreSQLForm.h"
 #include "Text/MyString.h"
-#include "UI/MessageDialog.h"
 
 void __stdcall SSWR::AVIRead::AVIRPostgreSQLForm::OnOKClicked(void *userObj)
 {
@@ -22,14 +21,14 @@ void __stdcall SSWR::AVIRead::AVIRPostgreSQLForm::OnOKClicked(void *userObj)
 	DB::PostgreSQLConn *conn;
 	if (!sbPort.ToUInt16(port))
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Port is not valid"), CSTR("PostgreSQL Connection"), me);
+		me->ui->ShowMsgOK(CSTR("Port is not valid"), CSTR("PostgreSQL Connection"), me);
 		return;
 	}
 	NEW_CLASS(conn, DB::PostgreSQLConn(sb.ToCString(), port, sb2.ToCString(), sb3.ToCString(), sb4.ToCString(), me->core->GetLog()));
 	if (conn->IsConnError())
 	{
 		DEL_CLASS(conn);
-		UI::MessageDialog::ShowDialog(CSTR("Error in opening PostgreSQL connection"), CSTR("PostgreSQL Connection"), me);
+		me->ui->ShowMsgOK(CSTR("Error in opening PostgreSQL connection"), CSTR("PostgreSQL Connection"), me);
 		return;
 	}
 	me->conn = conn;

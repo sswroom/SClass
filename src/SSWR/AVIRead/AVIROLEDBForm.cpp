@@ -3,7 +3,6 @@
 #include "SSWR/AVIRead/AVIROLEDBForm.h"
 #include "Text/MyStringW.h"
 #include "Text/StringBuilderUTF8.h"
-#include "UI/MessageDialog.h"
 
 void __stdcall SSWR::AVIRead::AVIROLEDBForm::OnOKClicked(void *userObj)
 {
@@ -18,7 +17,7 @@ void __stdcall SSWR::AVIRead::AVIROLEDBForm::OnOKClicked(void *userObj)
 	if (conn->GetConnError() != DB::OLEDBConn::CE_NONE)
 	{
 		DEL_CLASS(conn);
-		UI::MessageDialog::ShowDialog(CSTR("Error in opening OLEDB connection"), CSTR("OLEDB Connection"), me);
+		me->ui->ShowMsgOK(CSTR("Error in opening OLEDB connection"), CSTR("OLEDB Connection"), me);
 		return;
 	}
 	me->conn = conn;

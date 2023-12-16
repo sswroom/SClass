@@ -7,7 +7,6 @@
 #include "SSWR/AVIRead/AVIRARPScanForm.h"
 #include "Sync/MutexUsage.h"
 #include "Sync/SimpleThread.h"
-#include "UI/MessageDialog.h"
 
 //#include <stdio.h>
 
@@ -63,14 +62,14 @@ void __stdcall SSWR::AVIRead::AVIRARPScanForm::OnScanClicked(void *userObj)
 		}
 		else
 		{
-			UI::MessageDialog::ShowDialog(CSTR("To many ip address"), CSTR("ARP Scan"), me);
+			me->ui->ShowMsgOK(CSTR("To many ip address"), CSTR("ARP Scan"), me);
 			return;
 		}
 		Net::ARPHandler *arp;
 		NEW_CLASS(arp, Net::ARPHandler(me->core->GetSocketFactory(), adapter->ifName, adapter->hwAddr, adapter->ipAddr, OnARPHandler, me, 1));
 		if (arp->IsError())
 		{
-			UI::MessageDialog::ShowDialog(CSTR("Error in listening to ARP data"), CSTR("ARP Scan"), me);
+			me->ui->ShowMsgOK(CSTR("Error in listening to ARP data"), CSTR("ARP Scan"), me);
 		}
 		else
 		{

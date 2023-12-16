@@ -1,7 +1,6 @@
 #include "Stdafx.h"
 #include "SSWR/AVIRead/AVIRUDPCaptureForm.h"
 #include "Sync/MutexUsage.h"
-#include "UI/MessageDialog.h"
 
 #define PACKETCOUNT 128
 
@@ -22,12 +21,12 @@ void __stdcall SSWR::AVIRead::AVIRUDPCaptureForm::OnStartClicked(void *userObj)
 		me->txtPort->GetText(sb);
 		if (!sb.ToUInt16(port))
 		{
-			UI::MessageDialog::ShowDialog(CSTR("Please enter valid port"), CSTR("Error"), me);
+			me->ui->ShowMsgOK(CSTR("Please enter valid port"), CSTR("Error"), me);
 			return;
 		}
 		if (port <= 0 || port > 65535)
 		{
-			UI::MessageDialog::ShowDialog(CSTR("Please enter valid port"), CSTR("Error"), me);
+			me->ui->ShowMsgOK(CSTR("Please enter valid port"), CSTR("Error"), me);
 			return;
 		}
 		NEW_CLASS(me->svr, Net::UDPServer(me->core->GetSocketFactory(), 0, port, CSTR_NULL, OnUDPPacket, me, me->log, CSTR("UDP: "), 4, me->chkReuseAddr->IsChecked()));
@@ -35,7 +34,7 @@ void __stdcall SSWR::AVIRead::AVIRUDPCaptureForm::OnStartClicked(void *userObj)
 		{
 			DEL_CLASS(me->svr);
 			me->svr = 0;
-			UI::MessageDialog::ShowDialog(CSTR("Error in listening to the port"), CSTR("Error"), me);
+			me->ui->ShowMsgOK(CSTR("Error in listening to the port"), CSTR("Error"), me);
 			return;
 		}
 		me->svr->AddMulticastIP(Net::SocketUtil::GetIPAddr(CSTR("239.255.255.250")));

@@ -5,7 +5,6 @@
 #include "SSWR/DiscDB/DiscDBMainForm.h"
 #include "SSWR/DiscDB/DiscDBSearchDiscForm.h"
 #include "Text/StringBuilderUTF8.h"
-#include "UI/MessageDialog.h"
 
 typedef enum
 {
@@ -38,14 +37,14 @@ void __stdcall SSWR::DiscDB::DiscDBMainForm::OnFileDrop(void *userObj, NotNullPt
 				sb.AppendC(UTF8STRC("Error in parsing "));
 				sb.Append(files[i]);
 				failed = true;
-				UI::MessageDialog::ShowDialog(sb.ToCString(), CSTR("DiscDB"), me);
+				me->ui->ShowMsgOK(sb.ToCString(), CSTR("DiscDB"), me);
 			}
 			else
 			{
 				sb.AppendC(UTF8STRC("Error in parsing "));
 				sb.Append(files[i]);
 				sb.AppendC(UTF8STRC(", do you want to continue?"));
-				if (!UI::MessageDialog::ShowYesNoDialog(sb.ToCString(), CSTR("DiscDB"), me))
+				if (!me->ui->ShowMsgYesNo(sb.ToCString(), CSTR("DiscDB"), me))
 				{
 					failed = true;
 					break;
@@ -56,7 +55,7 @@ void __stdcall SSWR::DiscDB::DiscDBMainForm::OnFileDrop(void *userObj, NotNullPt
 	}
 	if (!failed)
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Finished inputting to database"), CSTR("DiscDB"), me);
+		me->ui->ShowMsgOK(CSTR("Finished inputting to database"), CSTR("DiscDB"), me);
 	}
 }
 

@@ -8,7 +8,7 @@
 #include "UI/GUIClientControl.h"
 #include "UI/GUIControl.h"
 #include "UI/GUICoreWin.h"
-#include "UI/GUIWindowDragDrop.h"
+#include "UI/Win/WinDragDrop.h"
 #include <windows.h>
 #undef GetForm
 #undef GetMonitorInfo
@@ -142,7 +142,7 @@ UI::GUIControl::~GUIControl()
 	}
 	if (this->dropHdlr)
 	{
-		UI::GUIWindowDragDrop *dragDrop = (UI::GUIWindowDragDrop *)this->dropHdlr;
+		UI::Win::WinDragDrop *dragDrop = (UI::Win::WinDragDrop *)this->dropHdlr;
 		DEL_CLASS(dragDrop);
 #if !defined(_WIN32_WCE)
 		OleUninitialize();
@@ -1595,14 +1595,14 @@ UI::GUIControl::DragErrorType UI::GUIControl::HandleDropEvents(UI::GUIDropHandle
 {
 	if (this->dropHdlr)
 	{
-		UI::GUIWindowDragDrop *dragDrop = (UI::GUIWindowDragDrop *)this->dropHdlr;
+		UI::Win::WinDragDrop *dragDrop = (UI::Win::WinDragDrop *)this->dropHdlr;
 		dragDrop->SetHandler(hdlr);
 		return UI::GUIControl::DET_NOERROR;
 	}
 	else
 	{
-		UI::GUIWindowDragDrop *dragDrop;
-		NEW_CLASS(dragDrop, UI::GUIWindowDragDrop((HWND)this->GetHandle(), hdlr));
+		UI::Win::WinDragDrop *dragDrop;
+		NEW_CLASS(dragDrop, UI::Win::WinDragDrop((HWND)this->GetHandle(), hdlr));
 
 		UI::GUIControl::DragErrorType errType;
 #if !defined(_WIN32_WCE)

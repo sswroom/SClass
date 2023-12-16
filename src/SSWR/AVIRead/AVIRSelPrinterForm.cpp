@@ -1,5 +1,4 @@
 #include "Stdafx.h"
-#include "UI/MessageDialog.h"
 #include "SSWR/AVIRead/AVIRSelPrinterForm.h"
 
 void __stdcall SSWR::AVIRead::AVIRSelPrinterForm::OnSettingClick(void *userObj)

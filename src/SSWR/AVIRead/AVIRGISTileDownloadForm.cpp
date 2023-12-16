@@ -13,7 +13,6 @@
 #include "Text/StringBuilderUTF8.h"
 #include "UI/FileDialog.h"
 #include "UI/FolderDialog.h"
-#include "UI/MessageDialog.h"
 
 Bool __stdcall SSWR::AVIRead::AVIRGISTileDownloadForm::OnMouseDown(void *userObj, Math::Coord2D<OSInt> scnPos)
 {
@@ -318,19 +317,19 @@ Bool SSWR::AVIRead::AVIRGISTileDownloadForm::GetLevels(OutParam<UOSInt> minLevel
 	this->txtMinLevel->GetText(sb);
 	if (!sb.ToUInt32(userMinLevel))
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Min Level invalid"), CSTR("Tile Downloader"), this);
+		this->ui->ShowMsgOK(CSTR("Min Level invalid"), CSTR("Tile Downloader"), this);
 		return false;
 	}
 	sb.ClearStr();
 	this->txtMaxLevel->GetText(sb);
 	if (!sb.ToUInt32(userMaxLevel))
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Max Level invalid"), CSTR("Tile Downloader"), this);
+		this->ui->ShowMsgOK(CSTR("Max Level invalid"), CSTR("Tile Downloader"), this);
 		return false;
 	}
 	if (userMinLevel > tileMap->GetMaxLevel() || userMaxLevel < tileMap->GetMinLevel())
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Input level is not within tile map range"), CSTR("Tile Downloader"), this);
+		this->ui->ShowMsgOK(CSTR("Input level is not within tile map range"), CSTR("Tile Downloader"), this);
 		return false;
 	}
 

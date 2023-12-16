@@ -6,7 +6,6 @@
 #include "Net/UDPServerStream.h"
 #include "SSWR/AVIRead/AVIRSelStreamForm.h"
 #include "UI/FileDialog.h"
-#include "UI/MessageDialog.h"
 
 #define NETTIMEOUT 30000
 
@@ -24,14 +23,14 @@ void __stdcall SSWR::AVIRead::AVIRSelStreamForm::OnOKClick(void *userObj)
 			UInt32 portNum = (UInt32)(UOSInt)me->cboSerialPort->GetItem(i);
 			if (portNum == 0)
 			{
-				UI::MessageDialog::ShowDialog(CSTR("Please select a port"), CSTR("Select Serial Port"), me);
+				me->ui->ShowMsgOK(CSTR("Please select a port"), CSTR("Select Serial Port"), me);
 				return;
 			}
 			me->txtBaudRate->GetText(sbuff);
 			UInt32 baudRate = Text::StrToUInt32(sbuff);
 			if (baudRate == 0)
 			{
-				UI::MessageDialog::ShowDialog(CSTR("Please input a valid baud rate"), CSTR("Select Serial Port"), me);
+				me->ui->ShowMsgOK(CSTR("Please input a valid baud rate"), CSTR("Select Serial Port"), me);
 				return;
 			}
 			IO::SerialPort::ParityType parity = (IO::SerialPort::ParityType)(OSInt)me->cboParity->GetSelectedItem();
@@ -40,7 +39,7 @@ void __stdcall SSWR::AVIRead::AVIRSelStreamForm::OnOKClick(void *userObj)
 			if (port->IsError())
 			{
 				DEL_CLASS(port);
-				UI::MessageDialog::ShowDialog(CSTR("Error in opening the port"), CSTR("Select Serial Port"), me);
+				me->ui->ShowMsgOK(CSTR("Error in opening the port"), CSTR("Select Serial Port"), me);
 				return;
 			}
 			me->stm = port;
@@ -55,7 +54,7 @@ void __stdcall SSWR::AVIRead::AVIRSelStreamForm::OnOKClick(void *userObj)
 			me->txtSLBaudRate->GetText(sb);
 			if (!sb.ToUInt32(baudRate) || baudRate == 0)
 			{
-				UI::MessageDialog::ShowDialog(CSTR("Please input baud rate"), CSTR("Error"), me);
+				me->ui->ShowMsgOK(CSTR("Please input baud rate"), CSTR("Error"), me);
 				return;
 			}
 			me->stm = me->siLabDriver->OpenPort((UInt32)(OSInt)me->lvSLPort->GetSelectedItem(), baudRate);
@@ -66,7 +65,7 @@ void __stdcall SSWR::AVIRead::AVIRSelStreamForm::OnOKClick(void *userObj)
 			}
 			else
 			{
-				UI::MessageDialog::ShowDialog(CSTR("Error in opening the port"), CSTR("Error"), me);
+				me->ui->ShowMsgOK(CSTR("Error in opening the port"), CSTR("Error"), me);
 			}
 		}
 		break;
@@ -77,12 +76,12 @@ void __stdcall SSWR::AVIRead::AVIRSelStreamForm::OnOKClick(void *userObj)
 			me->txtTCPSvrPort->GetText(sb);
 			if (!sb.ToUInt16(port))
 			{
-				UI::MessageDialog::ShowDialog(CSTR("Port is not a number"), CSTR("Error"), me);
+				me->ui->ShowMsgOK(CSTR("Port is not a number"), CSTR("Error"), me);
 				return;
 			}
 			if (port <= 0 || port >= 65535)
 			{
-				UI::MessageDialog::ShowDialog(CSTR("Port is out of range"), CSTR("Error"), me);
+				me->ui->ShowMsgOK(CSTR("Port is out of range"), CSTR("Error"), me);
 				return;
 			}
 			if (me->chkBoardcast->IsChecked())
@@ -92,7 +91,7 @@ void __stdcall SSWR::AVIRead::AVIRSelStreamForm::OnOKClick(void *userObj)
 				if (stm->IsError())
 				{
 					DEL_CLASS(stm);
-					UI::MessageDialog::ShowDialog(CSTR("Error in listening to the port"), CSTR("Error"), me);
+					me->ui->ShowMsgOK(CSTR("Error in listening to the port"), CSTR("Error"), me);
 					return;
 				}
 				else
@@ -109,7 +108,7 @@ void __stdcall SSWR::AVIRead::AVIRSelStreamForm::OnOKClick(void *userObj)
 				if (stm->IsError())
 				{
 					DEL_CLASS(stm);
-					UI::MessageDialog::ShowDialog(CSTR("Error in listening to the port"), CSTR("Error"), me);
+					me->ui->ShowMsgOK(CSTR("Error in listening to the port"), CSTR("Error"), me);
 					return;
 				}
 				else
@@ -129,19 +128,19 @@ void __stdcall SSWR::AVIRead::AVIRSelStreamForm::OnOKClick(void *userObj)
 			me->txtTCPCliHost->GetText(sb);
 			if (!me->core->GetSocketFactory()->DNSResolveIP(sb.ToCString(), addr))
 			{
-				UI::MessageDialog::ShowDialog(CSTR("Host is not valid"), CSTR("Error"), me);
+				me->ui->ShowMsgOK(CSTR("Host is not valid"), CSTR("Error"), me);
 				return;
 			}
 			sb.ClearStr();
 			me->txtTCPCliPort->GetText(sb);
 			if (!sb.ToUInt16(port))
 			{
-				UI::MessageDialog::ShowDialog(CSTR("Port is not a number"), CSTR("Error"), me);
+				me->ui->ShowMsgOK(CSTR("Port is not a number"), CSTR("Error"), me);
 				return;
 			}
 			if (port <= 0 || port > 65535)
 			{
-				UI::MessageDialog::ShowDialog(CSTR("Port is out of range"), CSTR("Error"), me);
+				me->ui->ShowMsgOK(CSTR("Port is out of range"), CSTR("Error"), me);
 				return;
 			}
 			Net::TCPClient *cli;
@@ -149,7 +148,7 @@ void __stdcall SSWR::AVIRead::AVIRSelStreamForm::OnOKClick(void *userObj)
 			if (cli->IsConnectError())
 			{
 				DEL_CLASS(cli);
-				UI::MessageDialog::ShowDialog(CSTR("Error in connect to server"), CSTR("Error"), me);
+				me->ui->ShowMsgOK(CSTR("Error in connect to server"), CSTR("Error"), me);
 				return;
 			}
 			else
@@ -167,26 +166,26 @@ void __stdcall SSWR::AVIRead::AVIRSelStreamForm::OnOKClick(void *userObj)
 			NotNullPtr<Net::SSLEngine> ssl;
 			if (!me->ssl.SetTo(ssl))
 			{
-				UI::MessageDialog::ShowDialog(CSTR("SSL Engine is not initiated"), CSTR("Error"), me);
+				me->ui->ShowMsgOK(CSTR("SSL Engine is not initiated"), CSTR("Error"), me);
 				return;
 			}
 			UInt16 port;
 			me->txtSSLCliPort->GetText(sb);
 			if (!sb.ToUInt16(port))
 			{
-				UI::MessageDialog::ShowDialog(CSTR("Port is not a number"), CSTR("Error"), me);
+				me->ui->ShowMsgOK(CSTR("Port is not a number"), CSTR("Error"), me);
 				return;
 			}
 			if (port <= 0 || port > 65535)
 			{
-				UI::MessageDialog::ShowDialog(CSTR("Port is out of range"), CSTR("Error"), me);
+				me->ui->ShowMsgOK(CSTR("Port is out of range"), CSTR("Error"), me);
 				return;
 			}
 			sb.ClearStr();
 			me->txtSSLCliHost->GetText(sb);
 			if (!me->core->GetSocketFactory()->DNSResolveIP(sb.ToCString(), addr))
 			{
-				UI::MessageDialog::ShowDialog(CSTR("Host is not valid"), CSTR("Error"), me);
+				me->ui->ShowMsgOK(CSTR("Host is not valid"), CSTR("Error"), me);
 				return;
 			}
 			Net::SSLEngine::ErrorType err;
@@ -197,7 +196,7 @@ void __stdcall SSWR::AVIRead::AVIRSelStreamForm::OnOKClick(void *userObj)
 				sb.ClearStr();
 				sb.AppendC(UTF8STRC("Error in connect to server: "));
 				sb.Append(Net::SSLEngine::ErrorTypeGetName(err));
-				UI::MessageDialog::ShowDialog(sb.ToCString(), CSTR("Error"), me);
+				me->ui->ShowMsgOK(sb.ToCString(), CSTR("Error"), me);
 				return;
 			}
 			else
@@ -219,7 +218,7 @@ void __stdcall SSWR::AVIRead::AVIRSelStreamForm::OnOKClick(void *userObj)
 				if (fs->IsError())
 				{
 					DEL_CLASS(fs);
-					UI::MessageDialog::ShowDialog(CSTR("Error in opening the file"), CSTR("Open Stream"), me);
+					me->ui->ShowMsgOK(CSTR("Error in opening the file"), CSTR("Open Stream"), me);
 				}
 				else
 				{
@@ -251,12 +250,12 @@ void __stdcall SSWR::AVIRead::AVIRSelStreamForm::OnOKClick(void *userObj)
 			me->txtUDPSvrPort->GetText(sb);
 			if (!sb.ToUInt16(port))
 			{
-				UI::MessageDialog::ShowDialog(CSTR("Port is not a number"), CSTR("Error"), me);
+				me->ui->ShowMsgOK(CSTR("Port is not a number"), CSTR("Error"), me);
 				return;
 			}
 			if (port <= 0 || port >= 65535)
 			{
-				UI::MessageDialog::ShowDialog(CSTR("Port is out of range"), CSTR("Error"), me);
+				me->ui->ShowMsgOK(CSTR("Port is out of range"), CSTR("Error"), me);
 				return;
 			}
 
@@ -265,7 +264,7 @@ void __stdcall SSWR::AVIRead::AVIRSelStreamForm::OnOKClick(void *userObj)
 			if (stm->IsError())
 			{
 				DEL_CLASS(stm);
-				UI::MessageDialog::ShowDialog(CSTR("Error in listening to the port"), CSTR("Error"), me);
+				me->ui->ShowMsgOK(CSTR("Error in listening to the port"), CSTR("Error"), me);
 				return;
 			}
 			else
@@ -284,19 +283,19 @@ void __stdcall SSWR::AVIRead::AVIRSelStreamForm::OnOKClick(void *userObj)
 			me->txtUDPCliHost->GetText(sb);
 			if (!me->core->GetSocketFactory()->DNSResolveIP(sb.ToCString(), addr))
 			{
-				UI::MessageDialog::ShowDialog(CSTR("Error in resolving host"), CSTR("Error"), me);
+				me->ui->ShowMsgOK(CSTR("Error in resolving host"), CSTR("Error"), me);
 				return;
 			}
 			sb.ClearStr();
 			me->txtUDPCliPort->GetText(sb);
 			if (!sb.ToUInt16(port))
 			{
-				UI::MessageDialog::ShowDialog(CSTR("Port is not a number"), CSTR("Error"), me);
+				me->ui->ShowMsgOK(CSTR("Port is not a number"), CSTR("Error"), me);
 				return;
 			}
 			if (port <= 0 || port >= 65535)
 			{
-				UI::MessageDialog::ShowDialog(CSTR("Port is out of range"), CSTR("Error"), me);
+				me->ui->ShowMsgOK(CSTR("Port is out of range"), CSTR("Error"), me);
 				return;
 			}
 
@@ -305,7 +304,7 @@ void __stdcall SSWR::AVIRead::AVIRSelStreamForm::OnOKClick(void *userObj)
 			if (stm->IsError())
 			{
 				DEL_CLASS(stm);
-				UI::MessageDialog::ShowDialog(CSTR("Error in listening to the port"), CSTR("Error"), me);
+				me->ui->ShowMsgOK(CSTR("Error in listening to the port"), CSTR("Error"), me);
 				return;
 			}
 			else

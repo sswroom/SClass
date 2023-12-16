@@ -2,7 +2,6 @@
 #include "SSWR/OrganMgr/OrganDataFileForm.h"
 #include "SSWR/OrganMgr/OrganTimeAdjForm.h"
 #include "UI/Clipboard.h"
-#include "UI/MessageDialog.h"
 
 void __stdcall SSWR::OrganMgr::OrganDataFileForm::OnFileDrop(void *userObj, NotNullPtr<Text::String> *files, UOSInt nFiles)
 {
@@ -46,7 +45,7 @@ void __stdcall SSWR::OrganMgr::OrganDataFileForm::OnDeleteClicked(void *userObj)
 	sb.AppendC(UTF8STRC("Are you sure to delete "));
 	sb.AppendC(dataFile->fileName->v, dataFile->fileName->leng);
 	sb.AppendC(UTF8STRC("?"));
-	if (UI::MessageDialog::ShowYesNoDialog(sb.ToCString(), CSTR("Question"), me))
+	if (me->ui->ShowMsgYesNo(sb.ToCString(), CSTR("Question"), me))
 	{
 		if (me->env->DelDataFile(dataFile))
 		{

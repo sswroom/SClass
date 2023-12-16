@@ -20,7 +20,6 @@
 #include "UI/GUILabel.h"
 #include "UI/GUIMenu.h"
 #include "UI/GUITimer.h"
-#include "UI/MessageDialog.h"
 
 #include <windows.h>
 #undef GetMonitorInfo

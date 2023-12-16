@@ -15,7 +15,6 @@
 #include "Text/CharUtil.h"
 #include "UI/Clipboard.h"
 #include "UI/FileDialog.h"
-#include "UI/MessageDialog.h"
 
 //#define VERBOSE
 #if defined(VERBOSE)
@@ -174,7 +173,7 @@ void __stdcall SSWR::AVIRead::AVIRDBForm::OnSQLClicked(void *userObj)
 		{
 			sb.ClearStr();
 			me->dbt->GetLastErrorMsg(sb);
-			UI::MessageDialog::ShowDialog(sb.ToCString(), CSTR("Database"), me);
+			me->ui->ShowMsgOK(sb.ToCString(), CSTR("Database"), me);
 		}
 	}
 }
@@ -268,7 +267,7 @@ void SSWR::AVIRead::AVIRDBForm::CopyTableCreate(DB::SQLType sqlType, Bool axisAw
 		{
 			if (!DB::SQLGenerator::GenCreateTableCmd(sql, OPTSTR_CSTR(schemaName), tableName->ToCString(), tabDef, true))
 			{
-				UI::MessageDialog::ShowDialog(CSTR("Error in generating Create SQL command"), CSTR("DB Manager"), this);
+				this->ui->ShowMsgOK(CSTR("Error in generating Create SQL command"), CSTR("DB Manager"), this);
 			}
 			else
 			{
@@ -278,7 +277,7 @@ void SSWR::AVIRead::AVIRDBForm::CopyTableCreate(DB::SQLType sqlType, Bool axisAw
 		}
 		else
 		{
-			UI::MessageDialog::ShowDialog(CSTR("Error in getting table definition"), CSTR("DB Manager"), this);
+			this->ui->ShowMsgOK(CSTR("Error in getting table definition"), CSTR("DB Manager"), this);
 		}
 		tableName->Release();
 	}
@@ -312,7 +311,7 @@ void SSWR::AVIRead::AVIRDBForm::ExportTableData(DB::SQLType sqlType, Bool axisAw
 			IO::FileStream fs(dlg.GetFileName(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 			if (!DB::DBExporter::GenerateInsertSQLs(this->db, sqlType, axisAware, OPTSTR_CSTR(schemaName), tableName->ToCString(), this->currCond, fs))
 			{
-				UI::MessageDialog::ShowDialog(CSTR("Error in reading table data"), CSTR("DB Manager"), this);
+				this->ui->ShowMsgOK(CSTR("Error in reading table data"), CSTR("DB Manager"), this);
 			}
 		}
 		tableName->Release();
@@ -347,7 +346,7 @@ void SSWR::AVIRead::AVIRDBForm::ExportTableCSV()
 			IO::FileStream fs(dlg.GetFileName(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 			if (!DB::DBExporter::GenerateCSV(this->db, OPTSTR_CSTR(schemaName), tableName->ToCString(), this->currCond, CSTR("\"\""), fs, 65001))
 			{
-				UI::MessageDialog::ShowDialog(CSTR("Error in reading table data"), CSTR("DB Manager"), this);
+				this->ui->ShowMsgOK(CSTR("Error in reading table data"), CSTR("DB Manager"), this);
 			}
 		}
 		tableName->Release();
@@ -383,7 +382,7 @@ void SSWR::AVIRead::AVIRDBForm::ExportTableSQLite()
 			DB::SQLiteFile sqlite(dlg.GetFileName());
 			if (!DB::DBExporter::GenerateSQLite(this->db, OPTSTR_CSTR(schemaName), tableName->ToCString(), this->currCond, sqlite, &sb))
 			{
-				UI::MessageDialog::ShowDialog(sb.ToCString(), CSTR("DB Manager"), this);
+				this->ui->ShowMsgOK(sb.ToCString(), CSTR("DB Manager"), this);
 			}
 		}
 		tableName->Release();
@@ -418,7 +417,7 @@ void SSWR::AVIRead::AVIRDBForm::ExportTableHTML()
 			IO::FileStream fs(dlg.GetFileName(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 			if (!DB::DBExporter::GenerateHTML(this->db, OPTSTR_CSTR(schemaName), tableName->ToCString(), this->currCond, fs, 65001))
 			{
-				UI::MessageDialog::ShowDialog(CSTR("Error in exporting as PList"), CSTR("DB Manager"), this);
+				this->ui->ShowMsgOK(CSTR("Error in exporting as PList"), CSTR("DB Manager"), this);
 			}
 		}
 		tableName->Release();
@@ -453,7 +452,7 @@ void SSWR::AVIRead::AVIRDBForm::ExportTablePList()
 			IO::FileStream fs(dlg.GetFileName(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 			if (!DB::DBExporter::GeneratePList(this->db, OPTSTR_CSTR(schemaName), tableName->ToCString(), this->currCond, fs, 65001))
 			{
-				UI::MessageDialog::ShowDialog(CSTR("Error in exporting as PList"), CSTR("DB Manager"), this);
+				this->ui->ShowMsgOK(CSTR("Error in exporting as PList"), CSTR("DB Manager"), this);
 			}
 		}
 		tableName->Release();
@@ -489,7 +488,7 @@ void SSWR::AVIRead::AVIRDBForm::ExportTableXLSX()
 			IO::FileStream fs(dlg.GetFileName(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 			if (!DB::DBExporter::GenerateXLSX(this->db, OPTSTR_CSTR(schemaName), tableName->ToCString(), this->currCond, fs, &sb))
 			{
-				UI::MessageDialog::ShowDialog(sb.ToCString(), CSTR("DB Manager"), this);
+				this->ui->ShowMsgOK(sb.ToCString(), CSTR("DB Manager"), this);
 			}
 		}
 		tableName->Release();
@@ -525,7 +524,7 @@ void SSWR::AVIRead::AVIRDBForm::ExportTableExcelXML()
 			IO::FileStream fs(dlg.GetFileName(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 			if (!DB::DBExporter::GenerateExcelXML(this->db, OPTSTR_CSTR(schemaName), tableName->ToCString(), this->currCond, fs, &sb))
 			{
-				UI::MessageDialog::ShowDialog(sb.ToCString(), CSTR("DB Manager"), this);
+				this->ui->ShowMsgOK(sb.ToCString(), CSTR("DB Manager"), this);
 			}
 		}
 		tableName->Release();

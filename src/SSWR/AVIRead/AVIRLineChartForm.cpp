@@ -4,7 +4,6 @@
 #include "DB/ColDef.h"
 #include "SSWR/AVIRead/AVIRLineChartForm.h"
 #include "Text/MyString.h"
-#include "UI/MessageDialog.h"
 
 void __stdcall SSWR::AVIRead::AVIRLineChartForm::OnPlotClicked(void *userObj)
 {
@@ -15,13 +14,13 @@ void __stdcall SSWR::AVIRead::AVIRLineChartForm::OnPlotClicked(void *userObj)
 	Data::DateTime dt;
 	if (me->yCols->GetCount() == 0)
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Please add a data column first"), CSTR("Error"), me);
+		me->ui->ShowMsgOK(CSTR("Please add a data column first"), CSTR("Error"), me);
 		return;
 	}
 	xCol = (OSInt)me->cboXAxis->GetSelectedItem();
 	if (xCol < 0)
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Current Version does not support integer X-Axis"), CSTR("Error"), me);
+		me->ui->ShowMsgOK(CSTR("Current Version does not support integer X-Axis"), CSTR("Error"), me);
 		return;
 	}
 
@@ -30,7 +29,7 @@ void __stdcall SSWR::AVIRead::AVIRLineChartForm::OnPlotClicked(void *userObj)
 	NotNullPtr<DB::DBReader> reader;
 	if (!reader.Set(me->db->QueryTableData(STR_CSTR(me->schemaName), me->tableName->ToCString(), 0, 0, 0, CSTR_NULL, 0)))
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Error in getting database data"), CSTR("Error"), me);
+		me->ui->ShowMsgOK(CSTR("Error in getting database data"), CSTR("Error"), me);
 		return;
 	}
 	colCount = me->yCols->GetCount() + 1;
@@ -245,7 +244,7 @@ void __stdcall SSWR::AVIRead::AVIRLineChartForm::OnYAxisClicked(void *userObj)
 	UOSInt col;
 	if (i == INVALID_INDEX)
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Please select a column first"), CSTR("Error"), me);
+		me->ui->ShowMsgOK(CSTR("Please select a column first"), CSTR("Error"), me);
 		return;
 	}
 	col = (UOSInt)me->cboYAxis->GetItem(i);

@@ -6,7 +6,6 @@
 #include "SSWR/AVIRead/AVIRImageResizeForm.h"
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
-#include "UI/MessageDialog.h"
 
 void __stdcall SSWR::AVIRead::AVIRImageResizeForm::OnOKClicked(void *userObj)
 {
@@ -25,7 +24,7 @@ void __stdcall SSWR::AVIRead::AVIRImageResizeForm::OnOKClicked(void *userObj)
 	sb.ToUOSInt(nTap);
 	if (outSize.x == 0 || outSize.y == 0 || nTap < 3 || nTap > 32)
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Invalid input"), CSTR("Error"), me);
+		me->ui->ShowMsgOK(CSTR("Invalid input"), CSTR("Error"), me);
 		return;
 	}
 	if (me->srcImg->info.pf == Media::PF_B8G8R8A8)
@@ -44,7 +43,7 @@ void __stdcall SSWR::AVIRead::AVIRImageResizeForm::OnOKClicked(void *userObj)
 	}
 	else
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Unsupported image"), CSTR("Error"), me);
+		me->ui->ShowMsgOK(CSTR("Unsupported image"), CSTR("Error"), me);
 		return;
 	}
 	me->SetDialogResult(UI::GUIForm::DR_OK);

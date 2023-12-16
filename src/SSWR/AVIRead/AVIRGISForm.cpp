@@ -56,7 +56,6 @@
 #include "Text/UTF8Reader.h"
 #include "UI/Clipboard.h"
 #include "UI/FileDialog.h"
-#include "UI/MessageDialog.h"
 #include "UtilUI/TextInputDialog.h"
 
 #include <stdio.h>
@@ -852,7 +851,7 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 				if (doc == 0)
 				{
 					DEL_CLASS(printer);
-					UI::MessageDialog::ShowDialog(CSTR("Error in printing the map"), CSTR("GISForm"), this);
+					this->ui->ShowMsgOK(CSTR("Error in printing the map"), CSTR("GISForm"), this);
 				}
 				doc->WaitForEnd();
 				printer->EndPrint(doc);
@@ -984,7 +983,7 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 			UI::GUIMapTreeView::ItemIndex *ind = (UI::GUIMapTreeView::ItemIndex *)this->popNode->GetItemObj();
 			Text::StringBuilderUTF8 sb;
 			sb.Append(((Map::MapEnv::LayerItem*)ind->item)->layer->GetName());
-			UI::MessageDialog::ShowDialog(sb.ToCString(), CSTR("Layer Path"), this);
+			this->ui->ShowMsgOK(sb.ToCString(), CSTR("Layer Path"), this);
 		}
 		break;
 	case MNU_LAYER_SEARCH:
@@ -1077,12 +1076,12 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 						}
 						else
 						{
-							UI::MessageDialog::ShowDialog(CSTR("Input is not valid floating point number"), CSTR("Multiply Coordinate"), this);
+							this->ui->ShowMsgOK(CSTR("Input is not valid floating point number"), CSTR("Multiply Coordinate"), this);
 						}
 					}
 					else
 					{
-						UI::MessageDialog::ShowDialog(CSTR("Error in getting input string"), CSTR("Multiply Coordinate"), this);
+						this->ui->ShowMsgOK(CSTR("Error in getting input string"), CSTR("Multiply Coordinate"), this);
 					}
 				}
 			}
@@ -1097,7 +1096,7 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 			}
 			else
 			{
-				UI::MessageDialog::ShowDialog(CSTR("This layer does not support Replay"), CSTR("GIS Form"), this);
+				this->ui->ShowMsgOK(CSTR("This layer does not support Replay"), CSTR("GIS Form"), this);
 			}
 		}
 		break;
@@ -1250,20 +1249,20 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 					}
 					else
 					{
-						UI::MessageDialog::ShowDialog(CSTR("Error in parsing log"), CSTR("MTK Tracker"), this);
+						this->ui->ShowMsgOK(CSTR("Error in parsing log"), CSTR("MTK Tracker"), this);
 						trk.Delete();
 					}
 				}
 				else
 				{
-					UI::MessageDialog::ShowDialog(CSTR("MTK Tracker not found"), CSTR("MTK Tracker"), this);
+					this->ui->ShowMsgOK(CSTR("MTK Tracker not found"), CSTR("MTK Tracker"), this);
 				}
 				DEL_CLASS(mtk);
 			}
 			else
 			{
 				port.Delete();
-				UI::MessageDialog::ShowDialog(CSTR("MTK GPS Tracker not found"), CSTR("MTK Tracker"), this);
+				this->ui->ShowMsgOK(CSTR("MTK GPS Tracker not found"), CSTR("MTK Tracker"), this);
 			}
 		}
 		break;
@@ -1361,7 +1360,7 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 					IO::StmData::FileData fd(fname, false);
 					if (fd.GetDataSize() == 0)
 					{
-						UI::MessageDialog::ShowDialog(CSTR("Error in loading file"), CSTR("AVIRead"), this);
+						this->ui->ShowMsgOK(CSTR("Error in loading file"), CSTR("AVIRead"), this);
 					}
 					else
 					{

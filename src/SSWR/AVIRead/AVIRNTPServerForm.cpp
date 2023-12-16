@@ -4,7 +4,6 @@
 #include "Sync/ThreadUtil.h"
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
-#include "UI/MessageDialog.h"
 
 void __stdcall SSWR::AVIRead::AVIRNTPServerForm::OnStartClick(void *userObj)
 {
@@ -33,7 +32,7 @@ void __stdcall SSWR::AVIRead::AVIRNTPServerForm::OnStartClick(void *userObj)
 	NotNullPtr<Net::SocketFactory> sockf = me->core->GetSocketFactory();
 	if (!sockf->DNSResolveIP(sb.ToCString(), addr))
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Cannot resolve the time server"), CSTR("Resolve"), me);
+		me->ui->ShowMsgOK(CSTR("Cannot resolve the time server"), CSTR("Resolve"), me);
 		return;
 	}
 	NEW_CLASS(me->svr, Net::NTPServer(me->core->GetSocketFactory(), port, me->log, sb.ToCString()));

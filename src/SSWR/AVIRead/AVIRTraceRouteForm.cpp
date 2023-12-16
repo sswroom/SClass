@@ -3,7 +3,6 @@
 #include "Net/ConnectionInfo.h"
 #include "Net/TraceRoute.h"
 #include "SSWR/AVIRead/AVIRTraceRouteForm.h"
-#include "UI/MessageDialog.h"
 
 void __stdcall SSWR::AVIRead::AVIRTraceRouteForm::OnStartClicked(void *userObj)
 {
@@ -18,7 +17,7 @@ void __stdcall SSWR::AVIRead::AVIRTraceRouteForm::OnStartClicked(void *userObj)
 	targetIP = me->sockf->DNSResolveIPv4(sb.ToCString());
 	if (targetIP == 0)
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Error in resolving target host"), CSTR("Trace Route"), me);
+		me->ui->ShowMsgOK(CSTR("Error in resolving target host"), CSTR("Trace Route"), me);
 		return;
 	}
 	UInt32 ip = (UInt32)(OSInt)me->cboSelfIP->GetSelectedItem();
@@ -29,7 +28,7 @@ void __stdcall SSWR::AVIRead::AVIRTraceRouteForm::OnStartClicked(void *userObj)
 		NEW_CLASS(tracert, Net::TraceRoute(me->sockf, ip));
 		if (tracert->IsError())
 		{
-			UI::MessageDialog::ShowDialog(CSTR("Error in creating ICMP socket"), CSTR("Trace Route"), me);
+			me->ui->ShowMsgOK(CSTR("Error in creating ICMP socket"), CSTR("Trace Route"), me);
 		}
 		else
 		{
@@ -48,7 +47,7 @@ void __stdcall SSWR::AVIRead::AVIRTraceRouteForm::OnStartClicked(void *userObj)
 			}
 			else
 			{
-				UI::MessageDialog::ShowDialog(CSTR("Error in tracing to target"), CSTR("Trace Route"), me);
+				me->ui->ShowMsgOK(CSTR("Error in tracing to target"), CSTR("Trace Route"), me);
 			}
 		}
 		DEL_CLASS(tracert);

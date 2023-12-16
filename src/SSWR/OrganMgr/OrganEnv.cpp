@@ -30,7 +30,6 @@
 #include "Text/UTF8Reader.h"
 #include "Text/UTF8Writer.h"
 #include "Text/XML.h"
-#include "UI/MessageDialog.h"
 #include "UI/GUICore.h"
 
 SSWR::OrganMgr::UserFileComparator::~UserFileComparator()

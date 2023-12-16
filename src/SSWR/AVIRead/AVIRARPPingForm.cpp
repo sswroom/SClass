@@ -6,7 +6,6 @@
 #include "Sync/ThreadUtil.h"
 #include "Text/MyStringFloat.h"
 #include "Text/StringBuilderUTF8.h"
-#include "UI/MessageDialog.h"
 
 void __stdcall SSWR::AVIRead::AVIRARPPingForm::OnARPHandler(const UInt8 *hwAddr, UInt32 ipAddr, void *userObj)
 {
@@ -51,14 +50,14 @@ void __stdcall SSWR::AVIRead::AVIRARPPingForm::OnPingClicked(void *userObj)
 		me->txtTarget->GetText(sb);
 		if (!me->sockf->DNSResolveIP(sb.ToCString(), addr))
 		{
-			UI::MessageDialog::ShowDialog(CSTR("Error, target name is not valid"), CSTR("Error"), me);
+			me->ui->ShowMsgOK(CSTR("Error, target name is not valid"), CSTR("Error"), me);
 			return;
 		}
 		SSWR::AVIRead::AVIRARPPingForm::AdapterInfo *adapter;
 		adapter = (SSWR::AVIRead::AVIRARPPingForm::AdapterInfo*)me->cboAdapter->GetSelectedItem();
 		if (adapter == 0)
 		{
-			UI::MessageDialog::ShowDialog(CSTR("Error, no adapter is selected"), CSTR("Error"), me);
+			me->ui->ShowMsgOK(CSTR("Error, no adapter is selected"), CSTR("Error"), me);
 			return;
 		}
 		NEW_CLASS(me->arpHdlr, Net::ARPHandler(me->core->GetSocketFactory(), adapter->ifName->v, adapter->hwAddr, adapter->ipAddr, OnARPHandler, me, 1));
@@ -66,7 +65,7 @@ void __stdcall SSWR::AVIRead::AVIRARPPingForm::OnPingClicked(void *userObj)
 		{
 			DEL_CLASS(me->arpHdlr);
 			me->arpHdlr = 0;
-			UI::MessageDialog::ShowDialog(CSTR("Error in listening to ARP data"), CSTR("ARP Ping"), me);
+			me->ui->ShowMsgOK(CSTR("Error in listening to ARP data"), CSTR("ARP Ping"), me);
 			return;
 		}
 

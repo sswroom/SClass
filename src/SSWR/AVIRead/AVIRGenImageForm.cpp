@@ -1,7 +1,6 @@
 #include "Stdafx.h"
 #include "SSWR/AVIRead/AVIRGenImageForm.h"
 #include "Text/MyString.h"
-#include "UI/MessageDialog.h"
 #include "UI/GUILabel.h"
 
 void __stdcall SSWR::AVIRead::AVIRGenImageForm::GenerateClicked(void *userObj)
@@ -16,7 +15,7 @@ void __stdcall SSWR::AVIRead::AVIRGenImageForm::GenerateClicked(void *userObj)
 	height = Text::StrToUInt32(sbuff);
 	if (width <= 0 || height <= 0)
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Error in parsing output size"), CSTR("Error"), me);
+		me->ui->ShowMsgOK(CSTR("Error in parsing output size"), CSTR("Error"), me);
 		return;
 	}
 
@@ -37,12 +36,12 @@ void __stdcall SSWR::AVIRead::AVIRGenImageForm::GenerateClicked(void *userObj)
 		}
 		else
 		{
-			UI::MessageDialog::ShowDialog(CSTR("This parameters are not supported"), CSTR("Error"), me);
+			me->ui->ShowMsgOK(CSTR("This parameters are not supported"), CSTR("Error"), me);
 		}
 	}
 	else
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Please select a generator"), CSTR("Error"), me);
+		me->ui->ShowMsgOK(CSTR("Please select a generator"), CSTR("Error"), me);
 	}
 }
 

@@ -10,7 +10,7 @@ namespace UI
 	class GUIDateTimePicker : public GUIControl
 	{
 	public:
-		typedef void (__stdcall *DateChangedHandler)(void *userObj, Data::DateTime *newDate);
+		typedef void (__stdcall *DateChangedHandler)(void *userObj, NotNullPtr<Data::DateTime> newDate);
 		typedef enum
 		{
 			ST_UPDOWN,

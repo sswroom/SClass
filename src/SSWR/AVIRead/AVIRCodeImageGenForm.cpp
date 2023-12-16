@@ -3,7 +3,6 @@
 #include "SSWR/AVIRead/AVIRCodeImageGenForm.h"
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
-#include "UI/MessageDialog.h"
 
 void __stdcall SSWR::AVIRead::AVIRCodeImageGenForm::OnCodeTypeChanged(void *userObj)
 {
@@ -44,12 +43,12 @@ void __stdcall SSWR::AVIRead::AVIRCodeImageGenForm::OnCodeGenClicked(void *userO
 			}
 			else
 			{
-				UI::MessageDialog::ShowDialog(CSTR("Error in generating the code"), CSTR("Code Image Generator"), me);
+				me->ui->ShowMsgOK(CSTR("Error in generating the code"), CSTR("Code Image Generator"), me);
 			}
 		}
 		else
 		{
-			UI::MessageDialog::ShowDialog(CSTR("Code size is not valid"), CSTR("Code Image Generator"), me);
+			me->ui->ShowMsgOK(CSTR("Code size is not valid"), CSTR("Code Image Generator"), me);
 		}
 	}
 }

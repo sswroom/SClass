@@ -2,10 +2,10 @@
 #include "MyMemory.h"
 #include "Text/MyString.h"
 #include "UI/Clipboard.h"
-#include "UI/GUIWindowDragDrop.h"
+#include "UI/Win/WinDragDrop.h"
 #include "Win32/StreamCOM.h"
 
-void UI::GUIWindowDragData::LoadData()
+void UI::Win::WinDropData::LoadData()
 {
 	UTF8Char sbuff[512];
 	FORMATETC fmt;
@@ -30,13 +30,13 @@ void UI::GUIWindowDragData::LoadData()
 	}
 }
 
-UI::GUIWindowDragData::GUIWindowDragData(IDataObject *pDataObj)
+UI::Win::WinDropData::WinDropData(IDataObject *pDataObj)
 {
 	this->pDataObj = pDataObj;
 	this->dataMap = 0;
 }
 
-UI::GUIWindowDragData::~GUIWindowDragData()
+UI::Win::WinDropData::~WinDropData()
 {
 	if (this->dataMap)
 	{
@@ -52,7 +52,7 @@ UI::GUIWindowDragData::~GUIWindowDragData()
 	}
 }
 
-UOSInt UI::GUIWindowDragData::GetCount()
+UOSInt UI::Win::WinDropData::GetCount()
 {
 	if (this->dataMap == 0)
 	{
@@ -61,7 +61,7 @@ UOSInt UI::GUIWindowDragData::GetCount()
 	return this->dataMap->GetCount();
 }
 
-const UTF8Char *UI::GUIWindowDragData::GetName(UOSInt index)
+const UTF8Char *UI::Win::WinDropData::GetName(UOSInt index)
 {
 	if (this->dataMap == 0)
 	{
@@ -70,7 +70,7 @@ const UTF8Char *UI::GUIWindowDragData::GetName(UOSInt index)
 	return this->dataMap->GetKey(index);
 }
 
-Bool UI::GUIWindowDragData::GetDataText(const UTF8Char *name, NotNullPtr<Text::StringBuilderUTF8> sb)
+Bool UI::Win::WinDropData::GetDataText(const UTF8Char *name, NotNullPtr<Text::StringBuilderUTF8> sb)
 {
 	if (this->dataMap == 0)
 	{
@@ -100,7 +100,7 @@ Bool UI::GUIWindowDragData::GetDataText(const UTF8Char *name, NotNullPtr<Text::S
 	}
 }
 
-IO::Stream *UI::GUIWindowDragData::GetDataStream(const UTF8Char *name)
+IO::Stream *UI::Win::WinDropData::GetDataStream(const UTF8Char *name)
 {
 	if (this->dataMap == 0)
 	{
@@ -129,7 +129,7 @@ IO::Stream *UI::GUIWindowDragData::GetDataStream(const UTF8Char *name)
 	}
 }
 
-UI::GUIWindowDragDrop::GUIWindowDragDrop(void *hWnd, UI::GUIDropHandler *hdlr)
+UI::Win::WinDragDrop::WinDragDrop(void *hWnd, UI::GUIDropHandler *hdlr)
 {
 	this->hWnd = hWnd;
 	this->hdlr = hdlr;
@@ -137,30 +137,30 @@ UI::GUIWindowDragDrop::GUIWindowDragDrop(void *hWnd, UI::GUIDropHandler *hdlr)
 	this->currEff = UI::GUIDropHandler::DE_NONE;
 }
 
-UI::GUIWindowDragDrop::~GUIWindowDragDrop()
+UI::Win::WinDragDrop::~WinDragDrop()
 {
 }
 
-HRESULT STDMETHODCALLTYPE UI::GUIWindowDragDrop::QueryInterface(REFIID riid, void **ppvObject)
+HRESULT STDMETHODCALLTYPE UI::Win::WinDragDrop::QueryInterface(REFIID riid, void **ppvObject)
 {
 	return E_NOINTERFACE;
 }
 
-ULONG STDMETHODCALLTYPE UI::GUIWindowDragDrop::AddRef()
+ULONG STDMETHODCALLTYPE UI::Win::WinDragDrop::AddRef()
 {
 	return ++this->unkCnt;
 }
 
-ULONG STDMETHODCALLTYPE UI::GUIWindowDragDrop::Release()
+ULONG STDMETHODCALLTYPE UI::Win::WinDragDrop::Release()
 {
 	return --this->unkCnt;
 }
 
-HRESULT STDMETHODCALLTYPE UI::GUIWindowDragDrop::DragEnter(IDataObject *pDataObj, DWORD grfKeyState, POINTL pt, DWORD *pdwEffect)
+HRESULT STDMETHODCALLTYPE UI::Win::WinDragDrop::DragEnter(IDataObject *pDataObj, DWORD grfKeyState, POINTL pt, DWORD *pdwEffect)
 {
-	UI::GUIWindowDragData *data;
+	UI::Win::WinDropData *data;
 	UI::GUIDropHandler::DragEffect eff;
-	NEW_CLASS(data, GUIWindowDragData(pDataObj));
+	NEW_CLASS(data, WinDropData(pDataObj));
 	eff = this->hdlr->DragEnter(data);
 	DEL_CLASS(data);
 	this->currEff = eff;
@@ -183,7 +183,7 @@ HRESULT STDMETHODCALLTYPE UI::GUIWindowDragDrop::DragEnter(IDataObject *pDataObj
 	return S_OK;
 }
 
-HRESULT STDMETHODCALLTYPE UI::GUIWindowDragDrop::DragOver(DWORD grfKeyState, POINTL pt, DWORD *pdwEffect)
+HRESULT STDMETHODCALLTYPE UI::Win::WinDragDrop::DragOver(DWORD grfKeyState, POINTL pt, DWORD *pdwEffect)
 {
 	if (this->currEff == UI::GUIDropHandler::DE_COPY)
 	{
@@ -204,21 +204,21 @@ HRESULT STDMETHODCALLTYPE UI::GUIWindowDragDrop::DragOver(DWORD grfKeyState, POI
 	return S_OK;
 }
 
-HRESULT STDMETHODCALLTYPE UI::GUIWindowDragDrop::DragLeave()
+HRESULT STDMETHODCALLTYPE UI::Win::WinDragDrop::DragLeave()
 {
 	return S_OK;
 }
 
-HRESULT STDMETHODCALLTYPE UI::GUIWindowDragDrop::Drop(IDataObject *pDataObj, DWORD grfKeyState, POINTL pt, DWORD *pdwEffect)
+HRESULT STDMETHODCALLTYPE UI::Win::WinDragDrop::Drop(IDataObject *pDataObj, DWORD grfKeyState, POINTL pt, DWORD *pdwEffect)
 {
-	GUIWindowDragData *data;
-	NEW_CLASS(data, GUIWindowDragData(pDataObj));
+	WinDropData *data;
+	NEW_CLASS(data, WinDropData(pDataObj));
 	this->hdlr->DropData(data, pt.x, pt.y);
 	DEL_CLASS(data);
 	return S_OK;
 }
 
-void UI::GUIWindowDragDrop::SetHandler(UI::GUIDropHandler *hdlr)
+void UI::Win::WinDragDrop::SetHandler(UI::GUIDropHandler *hdlr)
 {
 	this->hdlr = hdlr;
 }

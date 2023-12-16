@@ -9,7 +9,6 @@
 #include "Sync/Interlocked.h"
 #include "UI/GUIClientControl.h"
 #include "UI/GUICustomDrawVScroll.h"
-#include "UI/MessageDialog.h"
 #include <gtk/gtk.h>
 
 #define SCROLLWIDTH 8

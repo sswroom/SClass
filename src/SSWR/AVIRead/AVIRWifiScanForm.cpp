@@ -5,7 +5,6 @@
 #include "SSWR/AVIRead/AVIRWifiScanForm.h"
 #include "Sync/SimpleThread.h"
 #include "Text/MyStringFloat.h"
-#include "UI/MessageDialog.h"
 
 void __stdcall SSWR::AVIRead::AVIRWifiScanForm::OnScanClicked(void *userObj)
 {
@@ -137,7 +136,7 @@ void SSWR::AVIRead::AVIRWifiScanForm::WifiScan()
 	}
 	else
 	{
-		UI::MessageDialog::ShowDialog(CSTR("No WiFi interface found"), CSTR("WiFi Scan"), this);
+		this->ui->ShowMsgOK(CSTR("No WiFi interface found"), CSTR("WiFi Scan"), this);
 	}	
 }
 

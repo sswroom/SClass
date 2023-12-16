@@ -33,7 +33,6 @@
 #include "UI/FileDialog.h"
 #include "UI/FolderDialog.h"
 #include "UI/GUICore.h"
-#include "UI/MessageDialog.h"
 #include "UtilUI/ColorDialog.h"
 
 #include <stdio.h>
@@ -159,7 +158,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnGroupRemoveClicked(void *userObj
 
 			if (i == 0)
 			{
-				if (UI::MessageDialog::ShowYesNoDialog(me->env->GetLang(CSTR("MainFormGroupRemoveQuestMsg")), me->env->GetLang(CSTR("MainFormGroupRemoveQuest")), me))
+				if (me->ui->ShowMsgYesNo(me->env->GetLang(CSTR("MainFormGroupRemoveQuestMsg")), me->env->GetLang(CSTR("MainFormGroupRemoveQuest")), me))
 				{
 					me->env->DelGroup(obj->GetGroupId());
 					me->lastGroupObj = 0;
@@ -171,7 +170,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnGroupRemoveClicked(void *userObj
 				sb.Append(me->env->GetLang(CSTR("MainFormGroupRemoveMsg1")));
 				sb.AppendUOSInt(i);
 				sb.Append(me->env->GetLang(CSTR("MainFormGroupRemoveMsg2")));
-				UI::MessageDialog::ShowDialog(sb.ToCString(), me->env->GetLang(CSTR("MainFormGroupRemoveTitle")), me);
+				me->ui->ShowMsgOK(sb.ToCString(), me->env->GetLang(CSTR("MainFormGroupRemoveTitle")), me);
 			}
 		}
         else
@@ -179,7 +178,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnGroupRemoveClicked(void *userObj
 			sb.Append(me->env->GetLang(CSTR("MainFormGroupRemoveMsg1")));
 			sb.AppendUOSInt(i);
 			sb.Append(me->env->GetLang(CSTR("MainFormGroupRemoveMsg2")));
-			UI::MessageDialog::ShowDialog(sb.ToCString(), me->env->GetLang(CSTR("MainFormGroupRemoveTitle")), me);
+			me->ui->ShowMsgOK(sb.ToCString(), me->env->GetLang(CSTR("MainFormGroupRemoveTitle")), me);
 		}
 	}
 }
@@ -912,7 +911,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnImageClipboardClicked(void *user
 								sb.Append(s);
 								s->Release();
 								s = Text::String::NewNotNull(L"錯誤");
-								if (!UI::MessageDialog::ShowYesNoDialog(sb.ToCString(), s->ToCString(), me))
+								if (!me->ui->ShowMsgYesNo(sb.ToCString(), s->ToCString(), me))
 								{
 									s->Release();
 									break;
@@ -950,14 +949,14 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnSpAddClicked(void *userObj)
 			me->txtSpeciesSName->GetText(sb);
 			if (me->env->IsSpeciesExist(sb.ToString()))
 			{
-				UI::MessageDialog::ShowDialog(CSTR("Species already exist"), CSTR("Add Species"), me);
+				me->ui->ShowMsgOK(CSTR("Species already exist"), CSTR("Add Species"), me);
 				return;
 			}
 			sb2.AppendC(UTF8STRC("Species already exist in book:\r\n"));
 			if (me->env->IsBookSpeciesExist(sb.ToString(), sb2))
 			{
 				sb2.AppendC(UTF8STRC("\r\n, continue?"));
-				if (!UI::MessageDialog::ShowYesNoDialog(sb2.ToCString(), CSTR("Add Species"), me))
+				if (!me->ui->ShowMsgYesNo(sb2.ToCString(), CSTR("Add Species"), me))
 				{
 					return;
 				}
@@ -1026,7 +1025,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnSpRemoveClicked(void *userObj)
 		i = me->lbObj->GetSelectedIndex();
 		if (i != INVALID_INDEX)
 		{
-			if (UI::MessageDialog::ShowYesNoDialog(CSTR("Are you sure to remove the species?"), CSTR("Remove Species"), me))
+			if (me->ui->ShowMsgYesNo(CSTR("Are you sure to remove the species?"), CSTR("Remove Species"), me))
 			{
 				OrganSpecies *o = (OrganSpecies*)me->lbObj->GetItem(i);;
 				if (me->env->DelSpecies(o))
@@ -1156,7 +1155,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnSpBookAddClicked(void *userObj)
 	UOSInt i = me->cboSpBook->GetSelectedIndex();
 	if (i == INVALID_INDEX)
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Please select a book to add"), CSTR("Add Book"), me);
+		me->ui->ShowMsgOK(CSTR("Please select a book to add"), CSTR("Add Book"), me);
 		return;
 	}
 	OrganBook *bk = (OrganBook*)me->cboSpBook->GetItem(i);
@@ -1164,13 +1163,13 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnSpBookAddClicked(void *userObj)
 	me->txtSpBook->GetText(sb);
 	if (sb.ToString()[0] == 0)
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Please enter display name to add"), CSTR("Add Book"), me);
+		me->ui->ShowMsgOK(CSTR("Please enter display name to add"), CSTR("Add Book"), me);
 		return;
 	}
 
 	if (me->env->IsSpeciesBookExist(me->lastSpeciesObj->GetSpeciesId(), bk->GetBookId()))
 	{
-		if (!UI::MessageDialog::ShowYesNoDialog(CSTR("The book is already exist. Are you sure to add this book?"), CSTR("Question"), me))
+		if (!me->ui->ShowMsgYesNo(CSTR("The book is already exist. Are you sure to add this book?"), CSTR("Question"), me))
 		{
 			return;
 		}
@@ -1417,13 +1416,13 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnObjPlaceClicked(void *userObj)
 		me->lbObj->GetSelectedIndices(&sels);
 		if (sels.GetCount() != 1 && me->inputMode != IM_GROUP)
 		{
-			UI::MessageDialog::ShowDialog(me->env->GetLang(CSTR("MainFormObjPlaceErrorNonSp")), me->env->GetLang(CSTR("MainFormObjPlaceErrorTitle")), me);
+			me->ui->ShowMsgOK(me->env->GetLang(CSTR("MainFormObjPlaceErrorNonSp")), me->env->GetLang(CSTR("MainFormObjPlaceErrorTitle")), me);
 			return;
 		}
 		gi = (OrganGroupItem*)me->lbObj->GetSelectedItem();
 		if (gi->GetItemType() != OrganGroupItem::IT_SPECIES)
 		{
-			UI::MessageDialog::ShowDialog(me->env->GetLang(CSTR("MainFormObjPlaceErrorGroupNonSp")), me->env->GetLang(CSTR("MainFormObjPlaceErrorTitle")), me);
+			me->ui->ShowMsgOK(me->env->GetLang(CSTR("MainFormObjPlaceErrorGroupNonSp")), me->env->GetLang(CSTR("MainFormObjPlaceErrorTitle")), me);
 			return;
 		}
 		SDEL_STRING(me->initSelImg);
@@ -1456,7 +1455,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnObjPlaceClicked(void *userObj)
 	{
 		if (me->inputMode != IM_SPECIES && me->inputMode != IM_EMPTY)
 		{
-			UI::MessageDialog::ShowDialog(me->env->GetLang(CSTR("MainFormObjPlaceErrorNotSpAvail")), me->env->GetLang(CSTR("MainFormObjPlaceErrorTitle")), me);
+			me->ui->ShowMsgOK(me->env->GetLang(CSTR("MainFormObjPlaceErrorNotSpAvail")), me->env->GetLang(CSTR("MainFormObjPlaceErrorTitle")), me);
 			return;
 		}
 
@@ -1479,14 +1478,14 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnObjPlaceClicked(void *userObj)
 		}
 		else
 		{
-			UI::MessageDialog::ShowDialog(me->env->GetLang(CSTR("MainFormObjPlaceErrorTitle")), me->env->GetLang(CSTR("MainFormObjPlaceErrorTitle")), me);
+			me->ui->ShowMsgOK(me->env->GetLang(CSTR("MainFormObjPlaceErrorTitle")), me->env->GetLang(CSTR("MainFormObjPlaceErrorTitle")), me);
 		}
 	}
 	else if (gi->GetItemType() == OrganGroupItem::IT_GROUP)
 	{
 		if (me->inputMode != IM_GROUP && me->inputMode != IM_EMPTY)
 		{
-			UI::MessageDialog::ShowDialog(me->env->GetLang(CSTR("MainFormObjPlaceErrorNotGrpAvail")), me->env->GetLang(CSTR("MainFormObjPlaceErrorTitle")), me);
+			me->ui->ShowMsgOK(me->env->GetLang(CSTR("MainFormObjPlaceErrorNotGrpAvail")), me->env->GetLang(CSTR("MainFormObjPlaceErrorTitle")), me);
 			return;
 		}
 
@@ -1509,7 +1508,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnObjPlaceClicked(void *userObj)
 		}
 		else
 		{
-			UI::MessageDialog::ShowDialog(me->env->GetLang(CSTR("MainFormObjPlaceErrorTitle")), me->env->GetLang(CSTR("MainFormObjPlaceErrorTitle")), me);
+			me->ui->ShowMsgOK(me->env->GetLang(CSTR("MainFormObjPlaceErrorTitle")), me->env->GetLang(CSTR("MainFormObjPlaceErrorTitle")), me);
 		}
 	}
 }
@@ -1521,7 +1520,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnObjCombineClicked(void *userObj)
 		return;
 	if (me->lastSpeciesObj == 0 || me->pickObjs.GetCount() != 1)
 	{
-		UI::MessageDialog::ShowDialog(CSTR("You can only combine single species"), CSTR("Error"), me);
+		me->ui->ShowMsgOK(CSTR("You can only combine single species"), CSTR("Error"), me);
 		return;
 	}
 	if (me->inputMode == IM_SPECIES)
@@ -1537,17 +1536,17 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnObjCombineClicked(void *userObj)
 			}
 			else
 			{
-				UI::MessageDialog::ShowDialog(CSTR("Error in combining books"), CSTR("Error"), me);
+				me->ui->ShowMsgOK(CSTR("Error in combining books"), CSTR("Error"), me);
 			}
 		}
 		else
 		{
-			UI::MessageDialog::ShowDialog(CSTR("You can only combine single species"), CSTR("Error"), me);
+			me->ui->ShowMsgOK(CSTR("You can only combine single species"), CSTR("Error"), me);
 		}
 	}
 	else
 	{
-		UI::MessageDialog::ShowDialog(CSTR("You can only combine species"), CSTR("Error"), me);
+		me->ui->ShowMsgOK(CSTR("You can only combine species"), CSTR("Error"), me);
 		return;
 	}
 }
@@ -2214,7 +2213,7 @@ Bool SSWR::OrganMgr::OrganMainForm::ToSaveGroup()
 			this->lastGroupObj->SetAdminOnly(this->chkGroupAdmin->IsChecked());
 			if (!this->env->SaveGroup(this->lastGroupObj))
 			{
-				UI::MessageDialog::ShowDialog(this->env->GetLang(CSTR("MainFormSaveGroupError")), this->env->GetLang(CSTR("MainFormSaveGroupTitle")), this);
+				this->ui->ShowMsgOK(this->env->GetLang(CSTR("MainFormSaveGroupError")), this->env->GetLang(CSTR("MainFormSaveGroupTitle")), this);
 				return true;
 			}
 		}
@@ -2258,7 +2257,7 @@ Bool SSWR::OrganMgr::OrganMainForm::ToSaveSpecies()
 					}
 					else
 					{
-						UI::MessageDialog::ShowDialog(this->env->GetLang(CSTR("MainFormSaveSpExist")), this->env->GetLang(CSTR("MainFormTitleSp")), this);
+						this->ui->ShowMsgOK(this->env->GetLang(CSTR("MainFormSaveSpExist")), this->env->GetLang(CSTR("MainFormTitleSp")), this);
 						return true;
 					}
 				}
@@ -2285,7 +2284,7 @@ Bool SSWR::OrganMgr::OrganMainForm::ToSaveSpecies()
 			this->lastSpeciesObj->SetIDKey(sb.ToCString());
 			if (!this->env->SaveSpecies(this->lastSpeciesObj))
 			{
-				UI::MessageDialog::ShowDialog(this->env->GetLang(CSTR("MainFormSaveSpError")), this->env->GetLang(CSTR("MainFormTitleSp")), this);
+				this->ui->ShowMsgOK(this->env->GetLang(CSTR("MainFormSaveSpError")), this->env->GetLang(CSTR("MainFormTitleSp")), this);
 				return true;
 			}
 		}
@@ -2302,25 +2301,25 @@ Bool SSWR::OrganMgr::OrganMainForm::GroupFormValid()
 	UTF8Char sbuff[512];
 	if (this->lbDir->GetSelectedIndex() == INVALID_INDEX)
 	{
-		UI::MessageDialog::ShowDialog(this->env->GetLang(CSTR("MainFormGroupErrorLoc")), this->env->GetLang(CSTR("MainFormTitleGroup")), this);
+		this->ui->ShowMsgOK(this->env->GetLang(CSTR("MainFormGroupErrorLoc")), this->env->GetLang(CSTR("MainFormTitleGroup")), this);
 		return false;
 	}
 
     if (this->cboGroupType->GetSelectedIndex() == INVALID_INDEX)
 	{
-		UI::MessageDialog::ShowDialog(this->env->GetLang(CSTR("MainFormGroupErrorGrpType")), this->env->GetLang(CSTR("MainFormTitleGroup")), this);
+		this->ui->ShowMsgOK(this->env->GetLang(CSTR("MainFormGroupErrorGrpType")), this->env->GetLang(CSTR("MainFormTitleGroup")), this);
 		return false;
 	}
 
 	if (this->txtGroupCName->GetText(sbuff) == sbuff)
 	{
-		UI::MessageDialog::ShowDialog(this->env->GetLang(CSTR("MainFormGroupErrorCName")), this->env->GetLang(CSTR("MainFormTitleGroup")), this);
+		this->ui->ShowMsgOK(this->env->GetLang(CSTR("MainFormGroupErrorCName")), this->env->GetLang(CSTR("MainFormTitleGroup")), this);
         return false;
 	}
 
 	if (this->txtGroupEName->GetText(sbuff) == sbuff)
 	{
-		UI::MessageDialog::ShowDialog(this->env->GetLang(CSTR("MainFormGroupErrorEName")), this->env->GetLang(CSTR("MainFormTitleGroup")), this);
+		this->ui->ShowMsgOK(this->env->GetLang(CSTR("MainFormGroupErrorEName")), this->env->GetLang(CSTR("MainFormTitleGroup")), this);
         return false;
 	}
     return true;
@@ -2331,19 +2330,19 @@ Bool SSWR::OrganMgr::OrganMainForm::SpeciesFormValid()
 	UTF8Char sbuff[512];
 	if (this->txtSpeciesCName->GetText(sbuff) == sbuff)
 	{
-		UI::MessageDialog::ShowDialog(this->env->GetLang(CSTR("MainFormSpeciesErrorCName")), this->env->GetLang(CSTR("MainFormTitleSp")), this);
+		this->ui->ShowMsgOK(this->env->GetLang(CSTR("MainFormSpeciesErrorCName")), this->env->GetLang(CSTR("MainFormTitleSp")), this);
 		return false;
 	}
 
 	if (this->txtSpeciesSName->GetText(sbuff) == sbuff)
 	{
-		UI::MessageDialog::ShowDialog(this->env->GetLang(CSTR("MainFormSpeciesErrorSName")), this->env->GetLang(CSTR("MainFormTitleSp")), this);
+		this->ui->ShowMsgOK(this->env->GetLang(CSTR("MainFormSpeciesErrorSName")), this->env->GetLang(CSTR("MainFormTitleSp")), this);
 		return false;
 	}
 
 	if (this->txtSpeciesDName->GetText(sbuff) == sbuff)
 	{
-		UI::MessageDialog::ShowDialog(this->env->GetLang(CSTR("MainFormSpeciesErrorDName")), this->env->GetLang(CSTR("MainFormTitleSp")), this);
+		this->ui->ShowMsgOK(this->env->GetLang(CSTR("MainFormSpeciesErrorDName")), this->env->GetLang(CSTR("MainFormTitleSp")), this);
         return false;
 	}
 	return true;
@@ -3474,7 +3473,7 @@ void SSWR::OrganMgr::OrganMainForm::DropData(UI::GUIDropData *data, OSInt x, OSI
 								sb.Append(s);
 								s->Release();
 								s = Text::String::NewNotNull(L"錯誤");
-								if (!UI::MessageDialog::ShowYesNoDialog(sb.ToCString(), s->ToCString(), this))
+								if (!this->ui->ShowMsgYesNo(sb.ToCString(), s->ToCString(), this))
 								{
 									s->Release();
 									break;

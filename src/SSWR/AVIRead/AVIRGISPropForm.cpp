@@ -8,7 +8,6 @@
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
 #include "Text/StringUtil.h"
-#include "UI/MessageDialog.h"
 #include "UtilUI/ColorDialog.h"
 
 void __stdcall SSWR::AVIRead::AVIRGISPropForm::OnOKClicked(void *userObj)
@@ -57,7 +56,7 @@ void __stdcall SSWR::AVIRead::AVIRGISPropForm::OnOKClicked(void *userObj)
 		setting.priority = Text::StrToInt32(sbuff);
 		if (setting.minScale == 0 || setting.maxScale == 0 || (setting.priority == 0 && !Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("0"))))
 		{
-			UI::MessageDialog::ShowDialog(CSTR("Input value invalid"), CSTR("Properties"), me);
+			me->ui->ShowMsgOK(CSTR("Input value invalid"), CSTR("Properties"), me);
 			return;
 		}
 		setting.lineType = me->lineType;
@@ -77,7 +76,7 @@ void __stdcall SSWR::AVIRead::AVIRGISPropForm::OnOKClicked(void *userObj)
 		}
 		else
 		{
-			UI::MessageDialog::ShowDialog(CSTR("Error in storing properties"), CSTR("Properties"), me);
+			me->ui->ShowMsgOK(CSTR("Error in storing properties"), CSTR("Properties"), me);
 		}
 	}	
 }
@@ -512,7 +511,7 @@ SSWR::AVIRead::AVIRGISPropForm::AVIRGISPropForm(UI::GUIClientControl *parent, No
 	}
 	else
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Error in getting layer properties"), CSTR("Properties"), this);
+		this->ui->ShowMsgOK(CSTR("Error in getting layer properties"), CSTR("Properties"), this);
 		this->SetDialogResult(UI::GUIForm::DR_CANCEL);
 	}
 }

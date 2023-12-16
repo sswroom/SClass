@@ -3,27 +3,22 @@
 #include "Text/MyString.h"
 #include "Text/MyStringW.h"
 #include "Text/StringBuilderUTF8.h"
-#include "UI/GUIDragDropGTK.h"
+#include "UI/GTK/GTKDragDrop.h"
 #include <gtk/gtk.h>
 #include <stdio.h>
 
-UI::GUIDragDataGTK *GUIDragDataGTK_currData = 0;
-
-void GUIDragDataGTK_AppendWC(NotNullPtr<Text::StringBuilderUTF8> sb, const UTF16Char *s, UOSInt slen)
+void UI::GTK::GTKDropData::AppendWC(NotNullPtr<Text::StringBuilderUTF8> sb, const UTF16Char *s, UOSInt slen)
 {
 	NotNullPtr<Text::String> str = Text::String::New(s, slen);
 	sb->Append(str);
 	str->Release();
 }
 
-UI::GUIDragDataGTK::GUIDragDataGTK(void *widget, void *context, UInt32 time, Bool readData)
+UI::GTK::GTKDropData::GTKDropData(void *widget, void *context, UInt32 time, Bool readData)
 {
 	this->widget = widget;
 	this->context = context;
 	this->time = time;
-	NEW_CLASS(this->targetMap, Data::StringUTF8Map<OSInt>());
-	NEW_CLASS(this->targetText, Data::Int32FastMap<Text::String *>());
-	GUIDragDataGTK_currData = this;
 
 	UTF8Char sbuff[128];
 	GList *list = gdk_drag_context_list_targets((GdkDragContext*)context);
@@ -47,7 +42,7 @@ UI::GUIDragDataGTK::GUIDragDataGTK(void *widget, void *context, UInt32 time, Boo
 				Text::StrOSInt(Text::StrConcatC(sbuff, UTF8STRC("Format ")), (OSInt)target);
 			}
 //			printf("%s\r\n", sbuff);
-			this->targetMap->Put(sbuff, (OSInt)target);
+			this->targetMap.Put(sbuff, (OSInt)target);
 
 			if (readData)
 			{
@@ -60,16 +55,13 @@ UI::GUIDragDataGTK::GUIDragDataGTK(void *widget, void *context, UInt32 time, Boo
 //	printf("GUIDragDataGTK Init End\r\n");
 }
 
-UI::GUIDragDataGTK::~GUIDragDataGTK()
+UI::GTK::GTKDropData::~GTKDropData()
 {
-	GUIDragDataGTK_currData = 0;
-	DEL_CLASS(this->targetMap);
-	UOSInt i = this->targetText->GetCount();
+	UOSInt i = this->targetText.GetCount();
 	while (i-- > 0)
 	{
-		this->targetText->GetItem(i)->Release();
+		this->targetText.GetItem(i)->Release();
 	}
-	DEL_CLASS(this->targetText);
 }
 
 /*void UI::GUIDragDataGTK::ReadData()
@@ -83,22 +75,22 @@ UI::GUIDragDataGTK::~GUIDragDataGTK()
 	}
 }*/
 
-UOSInt UI::GUIDragDataGTK::GetCount()
+UOSInt UI::GTK::GTKDropData::GetCount()
 {
-	return this->targetMap->GetCount();
+	return this->targetMap.GetCount();
 }
 
-const UTF8Char *UI::GUIDragDataGTK::GetName(UOSInt index)
+const UTF8Char *UI::GTK::GTKDropData::GetName(UOSInt index)
 {
-	return this->targetMap->GetKey(index);
+	return this->targetMap.GetKey(index);
 }
 
-Bool UI::GUIDragDataGTK::GetDataText(const UTF8Char *name, NotNullPtr<Text::StringBuilderUTF8> sb)
+Bool UI::GTK::GTKDropData::GetDataText(const UTF8Char *name, NotNullPtr<Text::StringBuilderUTF8> sb)
 {
-	OSInt fmt = this->targetMap->Get(name);
+	OSInt fmt = this->targetMap.Get(name);
 	if (fmt == 0)
 		return false;
-	Text::String *txt = this->targetText->Get((Int32)fmt);
+	Text::String *txt = this->targetText.Get((Int32)fmt);
 	if (txt)
 	{
 		sb->Append(txt);
@@ -110,12 +102,12 @@ Bool UI::GUIDragDataGTK::GetDataText(const UTF8Char *name, NotNullPtr<Text::Stri
 	}
 }
 
-IO::Stream *UI::GUIDragDataGTK::GetDataStream(const UTF8Char *name)
+IO::Stream *UI::GTK::GTKDropData::GetDataStream(const UTF8Char *name)
 {
 	return 0;
 }
 
-void UI::GUIDragDataGTK::OnDataReceived(void *selData)
+void UI::GTK::GTKDropData::OnDataReceived(void *selData)
 {
 	GdkAtom target = gtk_selection_data_get_target((GtkSelectionData*)selData);
 	Int32 itarget = (Int32)(OSInt)target;
@@ -134,7 +126,7 @@ void UI::GUIDragDataGTK::OnDataReceived(void *selData)
 	}
 	GdkAtom sel = gtk_selection_data_get_selection((GtkSelectionData*)selData);
 //	printf("Selection = %d, Target = %d (%s), Data Type = %d (%s), size = %d\r\n", sel, itarget, csptr, (Int32)(OSInt)dataType, csptr2, (Int32)dataSize);
-	if (this->targetText->Get(itarget))
+	if (this->targetText.Get(itarget))
 	{
 		return;
 	}
@@ -154,39 +146,39 @@ void UI::GUIDragDataGTK::OnDataReceived(void *selData)
 		}
 		else if (Text::StrEquals(csptr, "text/html"))
 		{
-			GUIDragDataGTK_AppendWC(sb, (const UTF16Char*)data, dataSize / 2);
+			AppendWC(sb, (const UTF16Char*)data, dataSize / 2);
 		}
 		else if (Text::StrEquals(csptr, "text/unicode"))
 		{
-			GUIDragDataGTK_AppendWC(sb, (const UTF16Char*)data, dataSize / 2);
+			AppendWC(sb, (const UTF16Char*)data, dataSize / 2);
 		}
 		else if (Text::StrEquals(csptr, "text/x-moz-url"))
 		{
-			GUIDragDataGTK_AppendWC(sb, (const UTF16Char*)data, dataSize / 2);
+			AppendWC(sb, (const UTF16Char*)data, dataSize / 2);
 		}
 		else if (Text::StrEquals(csptr, "text/x-moz-url-data"))
 		{
-			GUIDragDataGTK_AppendWC(sb, (const UTF16Char*)data, dataSize / 2);
+			AppendWC(sb, (const UTF16Char*)data, dataSize / 2);
 		}
 		else if (Text::StrEquals(csptr, "text/x-moz-url-desc"))
 		{
-			GUIDragDataGTK_AppendWC(sb, (const UTF16Char*)data, dataSize / 2);
+			AppendWC(sb, (const UTF16Char*)data, dataSize / 2);
 		}
 		else if (Text::StrEquals(csptr, "text/_moz_htmlcontext"))
 		{
-			GUIDragDataGTK_AppendWC(sb, (const UTF16Char*)data, dataSize / 2);
+			AppendWC(sb, (const UTF16Char*)data, dataSize / 2);
 		}
 		else if (Text::StrEquals(csptr, "text/_moz_htmlinfo"))
 		{
-			GUIDragDataGTK_AppendWC(sb, (const UTF16Char*)data, dataSize / 2);
+			AppendWC(sb, (const UTF16Char*)data, dataSize / 2);
 		}
 		else if (Text::StrEquals(csptr, "application/x-moz-file-promise-url"))
 		{
-			GUIDragDataGTK_AppendWC(sb, (const UTF16Char*)data, dataSize / 2);
+			AppendWC(sb, (const UTF16Char*)data, dataSize / 2);
 		}
 		else if (Text::StrEquals(csptr, "application/x-moz-file-promise-dest-filename"))
 		{
-			GUIDragDataGTK_AppendWC(sb, (const UTF16Char*)data, dataSize / 2);
+			AppendWC(sb, (const UTF16Char*)data, dataSize / 2);
 		}
 		else if (Text::StrEquals(csptr, "application/x-moz-custom-clipdata"))
 		{
@@ -196,85 +188,85 @@ void UI::GUIDragDataGTK::OnDataReceived(void *selData)
 		{
 			sb.AppendC((const UTF8Char*)data, dataSize);
 		}
-		this->targetText->Put(itarget, Text::String::New(sb.ToString(), sb.GetLength()).Ptr());
+		this->targetText.Put(itarget, Text::String::New(sb.ToString(), sb.GetLength()).Ptr());
 	}
 	else
 	{
-		this->targetText->Put(itarget, Text::String::NewEmpty().Ptr());
+		this->targetText.Put(itarget, Text::String::NewEmpty().Ptr());
 	}
 	
 }
 
-gboolean GUIDragDropGTK_OnDragMotion(GtkWidget *widget, GdkDragContext *context, gint x, gint y, guint time, gpointer user_data)
+gboolean UI::GTK::GTKDragDrop::OnDragMotion(GtkWidget *widget, GdkDragContext *context, gint x, gint y, guint time, gpointer user_data)
 {
-	UI::GUIDragDropGTK *me = (UI::GUIDragDropGTK *)user_data;
+	UI::GTK::GTKDragDrop *me = (UI::GTK::GTKDragDrop *)user_data;
 //	printf("DragMotion\r\n");
-	gdk_drag_status(context, (GdkDragAction)me->OnDragMotion(context, x, y, time), time);
+	gdk_drag_status(context, (GdkDragAction)me->EventDragMotion(context, x, y, time), time);
 	return true;
 }
 
-void GUIDragDropGTK_OnDragLeave(GtkWidget *widget, GdkDragContext *context, guint time, gpointer user_data)
+void UI::GTK::GTKDragDrop::OnDragLeave(GtkWidget *widget, GdkDragContext *context, guint time, gpointer user_data)
 {
-	UI::GUIDragDropGTK *me = (UI::GUIDragDropGTK *)user_data;
+	UI::GTK::GTKDragDrop *me = (UI::GTK::GTKDragDrop *)user_data;
 //	printf("DragLeave\r\n");
-	me->OnDragLeave();
+	me->EventDragLeave();
 }
 
-gboolean GUIDragDropGTK_OnDragDrop(GtkWidget *widget, GdkDragContext *context, gint x, gint y, guint time, gpointer user_data)
+gboolean UI::GTK::GTKDragDrop::OnDragDrop(GtkWidget *widget, GdkDragContext *context, gint x, gint y, guint time, gpointer user_data)
 {
-	UI::GUIDragDropGTK *me = (UI::GUIDragDropGTK *)user_data;
+	UI::GTK::GTKDragDrop *me = (UI::GTK::GTKDragDrop *)user_data;
 //	printf("DragDrop\r\n");
 
-	me->OnDragDrop(context, x, y, time);
+	me->EventDragDrop(context, x, y, time);
 	gtk_drag_finish(context, true, true, time);
 	return true;
 }
 
-void GUIDragDropGTK_OnDropData(GtkWidget *widget, GdkDragContext *context, gint x, gint y, GtkSelectionData *data, guint info, guint time, gpointer user_data)
+void UI::GTK::GTKDragDrop::OnDropData(GtkWidget *widget, GdkDragContext *context, gint x, gint y, GtkSelectionData *data, guint info, guint time, gpointer user_data)
 {
-//	UI::GUIDragDropGTK *me = (UI::GUIDragDropGTK *)user_data;
+	UI::GTK::GTKDragDrop *me = (UI::GTK::GTKDragDrop*)user_data;
 //	printf("DropData\r\n");
-	if (GUIDragDataGTK_currData)
+	if (me->dragData)
 	{
 //		printf("DropData->OnDataReceived\r\n");
-		GUIDragDataGTK_currData->OnDataReceived(data);
+		me->dragData->OnDataReceived(data);
 	}
 }
 
-UI::GUIDragDropGTK::GUIDragDropGTK(void *hWnd, UI::GUIDropHandler *hdlr)
+UI::GTK::GTKDragDrop::GTKDragDrop(void *hWnd, UI::GUIDropHandler *hdlr)
 {
 	this->hWnd = hWnd;
 	this->hdlr = hdlr;
 	this->currEff = UI::GUIDropHandler::DE_NONE;
-	this->dragStarted = false;
+	this->dragData = 0;
 
 	gtk_drag_dest_set((GtkWidget*)this->hWnd, (GtkDestDefaults)0, 0, 0, GDK_ACTION_COPY);
-	g_signal_connect((GtkWindow*)this->hWnd, "drag-motion", G_CALLBACK(GUIDragDropGTK_OnDragMotion), this);
-	g_signal_connect((GtkWindow*)this->hWnd, "drag-leave", G_CALLBACK(GUIDragDropGTK_OnDragLeave), this);
-	g_signal_connect((GtkWindow*)this->hWnd, "drag-drop", G_CALLBACK(GUIDragDropGTK_OnDragDrop), this);
-	g_signal_connect((GtkWindow*)this->hWnd, "drag-data-received", G_CALLBACK(GUIDragDropGTK_OnDropData), this);
+	g_signal_connect((GtkWindow*)this->hWnd, "drag-motion", G_CALLBACK(OnDragMotion), this);
+	g_signal_connect((GtkWindow*)this->hWnd, "drag-leave", G_CALLBACK(OnDragLeave), this);
+	g_signal_connect((GtkWindow*)this->hWnd, "drag-drop", G_CALLBACK(OnDragDrop), this);
+	g_signal_connect((GtkWindow*)this->hWnd, "drag-data-received", G_CALLBACK(OnDropData), this);
 }
 
-UI::GUIDragDropGTK::~GUIDragDropGTK()
+UI::GTK::GTKDragDrop::~GTKDragDrop()
 {
+	SDEL_CLASS(this->dragData);
 }
 
-void UI::GUIDragDropGTK::SetHandler(UI::GUIDropHandler *hdlr)
+void UI::GTK::GTKDragDrop::SetHandler(UI::GUIDropHandler *hdlr)
 {
 	this->hdlr = hdlr;
 }
 
-Int32 UI::GUIDragDropGTK::OnDragMotion(void *context, OSInt x, OSInt y, UInt32 time)
+Int32 UI::GTK::GTKDragDrop::EventDragMotion(void *context, OSInt x, OSInt y, UInt32 time)
 {
-	if (this->dragStarted)
+	if (this->dragData)
 	{
 	}
 	else
 	{
-		UI::GUIDragDataGTK dragData(this->hWnd, context, time, false);
-//		printf("OnDragEnter\r\n");
-		this->currEff = this->hdlr->DragEnter(&dragData);
-		this->dragStarted = true;
+		
+		NEW_CLASS(this->dragData, UI::GTK::GTKDropData(this->hWnd, context, time, false));
+		this->currEff = this->hdlr->DragEnter(this->dragData);
 	}
 	if (this->currEff == UI::GUIDropHandler::DE_COPY)
 		return GDK_ACTION_COPY;
@@ -286,20 +278,25 @@ Int32 UI::GUIDragDropGTK::OnDragMotion(void *context, OSInt x, OSInt y, UInt32 t
 		return GDK_ACTION_DEFAULT;
 }
 
-void UI::GUIDragDropGTK::OnDragLeave()
+void UI::GTK::GTKDragDrop::EventDragLeave()
 {
-	this->dragStarted = false;
+	SDEL_CLASS(this->dragData);
 }
 
-Bool UI::GUIDragDropGTK::OnDragDrop(void *context, OSInt x, OSInt y, UInt32 time)
+Bool UI::GTK::GTKDragDrop::EventDragDrop(void *context, OSInt x, OSInt y, UInt32 time)
 {
-
-	UI::GUIDragDataGTK dragData(this->hWnd, context, time, true);
+	if (this->dragData)
+	{
+	}
+	else
+	{
+		NEW_CLASS(this->dragData, UI::GTK::GTKDropData(this->hWnd, context, time, false));
+	}
 	while (gtk_events_pending())
 	{
 		gtk_main_iteration();
 	}
 //	printf("OnDragDrop\r\n");
-	this->hdlr->DropData(&dragData, x, y);
+	this->hdlr->DropData(this->dragData, x, y);
 	return true;
 }

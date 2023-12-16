@@ -5,7 +5,6 @@
 #include "SSWR/AVIRead/AVIRFileExForm.h"
 #include "Text/StringBuilderUTF8.h"
 #include "UI/FileDialog.h"
-#include "UI/MessageDialog.h"
 
 void __stdcall SSWR::AVIRead::AVIRFileExForm::OnSrcChanged(void *userObj)
 {
@@ -70,19 +69,19 @@ void __stdcall SSWR::AVIRead::AVIRFileExForm::OnStartClicked(void *userObj)
 	me->txtStartOfst->GetText(sb);
 	if (!sb.ToUInt64(startOfst))
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Start Offset is not valid"), CSTR("Error"), me);
+		me->ui->ShowMsgOK(CSTR("Start Offset is not valid"), CSTR("Error"), me);
 		return;
 	}
 	sb.ClearStr();
 	me->txtEndOfst->GetText(sb);
 	if (!sb.ToUInt64(endOfst))
 	{
-		UI::MessageDialog::ShowDialog(CSTR("End Offset is not valid"), CSTR("Error"), me);
+		me->ui->ShowMsgOK(CSTR("End Offset is not valid"), CSTR("Error"), me);
 		return;
 	}
 	if (startOfst >= endOfst)
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Start Offset is out of range"), CSTR("Error"), me);
+		me->ui->ShowMsgOK(CSTR("Start Offset is out of range"), CSTR("Error"), me);
 		return;
 	}
 	sb.ClearStr();
@@ -91,14 +90,14 @@ void __stdcall SSWR::AVIRead::AVIRFileExForm::OnStartClicked(void *userObj)
 	if (srcFS->IsError())
 	{
 		DEL_CLASS(srcFS);
-		UI::MessageDialog::ShowDialog(CSTR("Error in opening source file"), CSTR("Error"), me);
+		me->ui->ShowMsgOK(CSTR("Error in opening source file"), CSTR("Error"), me);
 		return;
 	}
 	fileSize = srcFS->GetLength();
 	if (endOfst > fileSize)
 	{
 		DEL_CLASS(srcFS);
-		UI::MessageDialog::ShowDialog(CSTR("End Offset is out of range"), CSTR("Error"), me);
+		me->ui->ShowMsgOK(CSTR("End Offset is out of range"), CSTR("Error"), me);
 		return;
 	}
 	sb.ClearStr();
@@ -108,7 +107,7 @@ void __stdcall SSWR::AVIRead::AVIRFileExForm::OnStartClicked(void *userObj)
 	{
 		DEL_CLASS(destFS);
 		DEL_CLASS(srcFS);
-		UI::MessageDialog::ShowDialog(CSTR("Error in opening dest file"), CSTR("Error"), me);
+		me->ui->ShowMsgOK(CSTR("Error in opening dest file"), CSTR("Error"), me);
 		return;
 	}
 	srcFS->SeekFromBeginning(startOfst);

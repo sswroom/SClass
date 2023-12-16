@@ -36,7 +36,6 @@
 #include "Text/UTF8Reader.h"
 #include "Text/UTF8Writer.h"
 #include "Text/XML.h"
-#include "UI/MessageDialog.h"
 #include "UI/GUICore.h"
 
 SSWR::OrganMgr::OrganEnvDB::OrganEnvDB() : OrganEnv()
@@ -2795,7 +2794,7 @@ Bool SSWR::OrganMgr::OrganEnvDB::MoveImages(Data::ArrayList<OrganImages*> *imgLi
 				sb.Append(s);
 				s->Release();
 				s = Text::String::NewNotNull(L"錯誤");
-				if (!UI::MessageDialog::ShowYesNoDialog(sb.ToCString(), s->ToCString(), frm))
+				if (!frm->GetUI()->ShowMsgYesNo(sb.ToCString(), s->ToCString(), frm))
 				{
 					s->Release();
 					break;

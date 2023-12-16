@@ -21,7 +21,6 @@
 #include "UI/GUIClientControl.h"
 #include "UI/GUICoreWin.h"
 #include "UI/GUICustomDraw.h"
-#include "UI/MessageDialog.h"
 #include <windows.h>
 
 #define CLASSNAME L"CustomDraw"

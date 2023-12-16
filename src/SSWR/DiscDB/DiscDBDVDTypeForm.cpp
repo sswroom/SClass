@@ -1,6 +1,5 @@
 #include "Stdafx.h"
 #include "SSWR/DiscDB/DiscDBDVDTypeForm.h"
-#include "UI/MessageDialog.h"
 
 void SSWR::DiscDB::DiscDBDVDTypeForm::ShowStatus()
 {
@@ -32,21 +31,21 @@ Bool SSWR::DiscDB::DiscDBDVDTypeForm::UpdateRow()
 	this->txtID->GetText(sbID);
 	if (sbID.GetLength() <= 0)
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Please enter the id"), CSTR("DVDType"), this);
+		this->ui->ShowMsgOK(CSTR("Please enter the id"), CSTR("DVDType"), this);
 		this->txtID->Focus();
 		return false;
 	}
 	this->txtName->GetText(sbName);
 	if (sbName.GetLength() <= 0)
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Please enter the name"), CSTR("DVDType"), this);
+		this->ui->ShowMsgOK(CSTR("Please enter the name"), CSTR("DVDType"), this);
 		this->txtName->Focus();
 		return false;
 	}
 	this->txtDescription->GetText(sbDesc);
 	if (sbDesc.GetLength() <= 0)
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Please enter the description"), CSTR("DVDType"), this);
+		this->ui->ShowMsgOK(CSTR("Please enter the description"), CSTR("DVDType"), this);
 		this->txtDescription->Focus();
 		return false;
 	}
@@ -66,7 +65,7 @@ Bool SSWR::DiscDB::DiscDBDVDTypeForm::UpdateRow()
 		}
 		else
 		{
-			UI::MessageDialog::ShowDialog(CSTR("ID Already exist"), CSTR("DVDType"), this);
+			this->ui->ShowMsgOK(CSTR("ID Already exist"), CSTR("DVDType"), this);
 			return false;
 		}
 	}

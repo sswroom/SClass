@@ -3,7 +3,6 @@
 #include "SSWR/AVIRead/AVIRCodeProjectForm.h"
 #include "Text/MyString.h"
 #include "Text/Cpp/CppEnv.h"
-#include "UI/MessageDialog.h"
 
 
 void __stdcall SSWR::AVIRead::AVIRCodeProjectForm::OnItemSelected(void *userObj)

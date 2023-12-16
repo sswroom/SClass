@@ -5,7 +5,6 @@
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
 #include "UI/FileDialog.h"
-#include "UI/MessageDialog.h"
 
 #define PER_PAGE 10000
 
@@ -48,7 +47,7 @@ void __stdcall SSWR::AVIRead::AVIRFileAnalyseForm::OnTrimPaddingClicked(void *us
 		}
 		else
 		{
-			UI::MessageDialog::ShowDialog(CSTR("Error in saving the file"), CSTR("Error"), me);
+			me->ui->ShowMsgOK(CSTR("Error in saving the file"), CSTR("Error"), me);
 		}
 	}
 }

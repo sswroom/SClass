@@ -4,7 +4,6 @@
 #include "Sync/ThreadUtil.h"
 #include "Text/MyString.h"
 #include "UI/FileDialog.h"
-#include "UI/MessageDialog.h"
 
 void __stdcall SSWR::AVIRead::AVIREncryptForm::OnConvertClicked(void *userObj)
 {
@@ -17,15 +16,15 @@ void __stdcall SSWR::AVIRead::AVIREncryptForm::OnConvertClicked(void *userObj)
 	me->txtSrc->GetText(sb);
 	if (srcEnc == 0)
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Please select source encryption"), CSTR("Encrypt"), me);
+		me->ui->ShowMsgOK(CSTR("Please select source encryption"), CSTR("Encrypt"), me);
 	}
 	else if (destEnc == 0 && me->cboDest->GetSelectedIndex() != me->fileIndex)
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Please select dest encryption"), CSTR("Encrypt"), me);
+		me->ui->ShowMsgOK(CSTR("Please select dest encryption"), CSTR("Encrypt"), me);
 	}
 	else if (sb.GetLength() == 0)
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Please enter source text"), CSTR("Encrypt"), me);
+		me->ui->ShowMsgOK(CSTR("Please enter source text"), CSTR("Encrypt"), me);
 	}
 	else
 	{
@@ -35,7 +34,7 @@ void __stdcall SSWR::AVIRead::AVIREncryptForm::OnConvertClicked(void *userObj)
 			decBuff = MemAlloc(UInt8, buffSize);
 			if (srcEnc->DecodeBin(sb.ToString(), sb.GetLength(), decBuff) != buffSize)
 			{
-				UI::MessageDialog::ShowDialog(CSTR("Error in decrypting the text"), CSTR("Encrypt"), me);
+				me->ui->ShowMsgOK(CSTR("Error in decrypting the text"), CSTR("Encrypt"), me);
 			}
 			else if (destEnc == 0)
 			{
@@ -45,7 +44,7 @@ void __stdcall SSWR::AVIRead::AVIREncryptForm::OnConvertClicked(void *userObj)
 					IO::FileStream fs(dlg.GetFileName(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 					if (fs.Write(decBuff, buffSize) != buffSize)
 					{
-						UI::MessageDialog::ShowDialog(CSTR("Error in writing to file"), CSTR("Encrypt"), me);
+						me->ui->ShowMsgOK(CSTR("Error in writing to file"), CSTR("Encrypt"), me);
 					}
 				}
 			}
@@ -59,7 +58,7 @@ void __stdcall SSWR::AVIRead::AVIREncryptForm::OnConvertClicked(void *userObj)
 		}
 		else
 		{
-			UI::MessageDialog::ShowDialog(CSTR("Unsupported decryption"), CSTR("Encrypt"), me);
+			me->ui->ShowMsgOK(CSTR("Unsupported decryption"), CSTR("Encrypt"), me);
 		}
 	}
 }

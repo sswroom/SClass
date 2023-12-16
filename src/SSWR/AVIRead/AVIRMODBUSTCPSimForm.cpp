@@ -5,7 +5,6 @@
 #include "IO/ED588Sim.h"
 #include "IO/PrintMODBUSDevSim.h"
 #include "SSWR/AVIRead/AVIRMODBUSTCPSimForm.h"
-#include "UI/MessageDialog.h"
 
 void __stdcall SSWR::AVIRead::AVIRMODBUSTCPSimForm::OnListenClicked(void *userObj)
 {
@@ -26,7 +25,7 @@ void __stdcall SSWR::AVIRead::AVIRMODBUSTCPSimForm::OnListenClicked(void *userOb
 		me->txtPort->GetText(sb);
 		if (!sb.ToUInt16(port))
 		{
-			UI::MessageDialog::ShowDialog(CSTR("Error in parsing port number"), CSTR("MODBUS TCP Simulator"), me);
+			me->ui->ShowMsgOK(CSTR("Error in parsing port number"), CSTR("MODBUS TCP Simulator"), me);
 			return;
 		}
 		NEW_CLASS(me->listener, Net::MODBUSTCPListener(me->core->GetSocketFactory(), port, me->log, true));
@@ -34,7 +33,7 @@ void __stdcall SSWR::AVIRead::AVIRMODBUSTCPSimForm::OnListenClicked(void *userOb
 		{
 			DEL_CLASS(me->listener);
 			me->listener = 0;
-			UI::MessageDialog::ShowDialog(CSTR("Error in listening to the port"), CSTR("MODBUS TCP Simulator"), me);
+			me->ui->ShowMsgOK(CSTR("Error in listening to the port"), CSTR("MODBUS TCP Simulator"), me);
 			return;
 		}
 		else
@@ -89,7 +88,7 @@ void __stdcall SSWR::AVIRead::AVIRMODBUSTCPSimForm::OnDevAddClicked(void *userOb
 	}
 	else
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Error in parsing address"), CSTR("MODBUS TCP Simulator"), me);
+		me->ui->ShowMsgOK(CSTR("Error in parsing address"), CSTR("MODBUS TCP Simulator"), me);
 	}
 }
 

@@ -15,7 +15,6 @@
 #include "Text/MyStringFloat.h"
 #include "Text/StringBuilderUTF8.h"
 #include "UI/FileDialog.h"
-#include "UI/MessageDialog.h"
 
 void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeTestForm::OnStartClicked(void *userObj)
 {
@@ -44,25 +43,25 @@ void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeTestForm::OnStartClicked(void *us
 		me->txtPort->GetText(sb);
 		if (!sb.ToUInt16(port))
 		{
-			UI::MessageDialog::ShowDialog(CSTR("Port is not valid"), CSTR("Error"), me);
+			me->ui->ShowMsgOK(CSTR("Port is not valid"), CSTR("Error"), me);
 			return;
 		}
 		else if (port <= 0)
 		{
-			UI::MessageDialog::ShowDialog(CSTR("Port is out of range"), CSTR("Error"), me);
+			me->ui->ShowMsgOK(CSTR("Port is out of range"), CSTR("Error"), me);
 			return;
 		}
 		sb.ClearStr();
 		me->txtHost->GetText(sb);
 		if (!me->core->GetSocketFactory()->DNSResolveIP(sb.ToCString(), addr))
 		{
-			UI::MessageDialog::ShowDialog(CSTR("Error in parsing host"), CSTR("Error"), me);
+			me->ui->ShowMsgOK(CSTR("Error in parsing host"), CSTR("Error"), me);
 			return;
 		}
 		me->txtTopic->GetText(sbTopic);
 		if (sbTopic.leng == 0)
 		{
-			UI::MessageDialog::ShowDialog(CSTR("Please enter topic to subscribe"), CSTR("Error"), me);
+			me->ui->ShowMsgOK(CSTR("Please enter topic to subscribe"), CSTR("Error"), me);
 			return;
 		}
 		Optional<Net::SSLEngine> ssl = me->ssl;
@@ -83,7 +82,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeTestForm::OnStartClicked(void *us
 			if (ws->IsDown())
 			{
 				ws.Delete();
-				UI::MessageDialog::ShowDialog(CSTR("Error in initializing websocket"), CSTR("Error"), me);
+				me->ui->ShowMsgOK(CSTR("Error in initializing websocket"), CSTR("Error"), me);
 				return;
 			}
 			NEW_CLASS(me->client, Net::MQTTConn(ws, 0, 0));
@@ -94,7 +93,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeTestForm::OnStartClicked(void *us
 		}
 		if (me->client->IsError())
 		{
-			UI::MessageDialog::ShowDialog(CSTR("Error in connecting to server"), CSTR("Error"), me);
+			me->ui->ShowMsgOK(CSTR("Error in connecting to server"), CSTR("Error"), me);
 			DEL_CLASS(me->client);
 			me->client = 0;
 			return;
@@ -159,7 +158,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeTestForm::OnStartClicked(void *us
 		{
 			DEL_CLASS(me->client);
 			me->client = 0;
-			UI::MessageDialog::ShowDialog(CSTR("Error in communicating with server"), CSTR("Error"), me);
+			me->ui->ShowMsgOK(CSTR("Error in communicating with server"), CSTR("Error"), me);
 			return;
 		}
 	}
@@ -180,20 +179,20 @@ void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeTestForm::OnCliCertClicked(void *
 		}
 		if (asn1 == 0)
 		{
-			UI::MessageDialog::ShowDialog(CSTR("Error in parsing file"), CSTR("MQTT Subscribe Test"), me);
+			me->ui->ShowMsgOK(CSTR("Error in parsing file"), CSTR("MQTT Subscribe Test"), me);
 			return;
 		}
 		if (asn1->GetASN1Type() != Net::ASN1Data::ASN1Type::X509)
 		{
 			DEL_CLASS(asn1);
-			UI::MessageDialog::ShowDialog(CSTR("Error in parsing file"), CSTR("MQTT Subscribe Test"), me);
+			me->ui->ShowMsgOK(CSTR("Error in parsing file"), CSTR("MQTT Subscribe Test"), me);
 			return;
 		}
 		Crypto::Cert::X509File *x509 = (Crypto::Cert::X509File*)asn1;
 		if (x509->GetFileType() != Crypto::Cert::X509File::FileType::Cert)
 		{
 			DEL_CLASS(asn1);
-			UI::MessageDialog::ShowDialog(CSTR("It is not a cert file"), CSTR("MQTT Subscribe Test"), me);
+			me->ui->ShowMsgOK(CSTR("It is not a cert file"), CSTR("MQTT Subscribe Test"), me);
 			return;
 		}
 		SDEL_CLASS(me->cliCert);
@@ -219,13 +218,13 @@ void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeTestForm::OnCliKeyClicked(void *u
 		}
 		if (asn1 == 0)
 		{
-			UI::MessageDialog::ShowDialog(CSTR("Error in parsing file"), CSTR("MQTT Subscribe Test"), me);
+			me->ui->ShowMsgOK(CSTR("Error in parsing file"), CSTR("MQTT Subscribe Test"), me);
 			return;
 		}
 		if (asn1->GetASN1Type() != Net::ASN1Data::ASN1Type::X509)
 		{
 			DEL_CLASS(asn1);
-			UI::MessageDialog::ShowDialog(CSTR("Error in parsing file"), CSTR("MQTT Subscribe Test"), me);
+			me->ui->ShowMsgOK(CSTR("Error in parsing file"), CSTR("MQTT Subscribe Test"), me);
 			return;
 		}
 		SDEL_CLASS(me->cliKey);

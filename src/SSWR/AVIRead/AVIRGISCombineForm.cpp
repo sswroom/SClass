@@ -4,7 +4,6 @@
 #include "SSWR/AVIRead/AVIRGISCombineForm.h"
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
-#include "UI/MessageDialog.h"
 
 void __stdcall SSWR::AVIRead::AVIRGISCombineForm::OnCheckAllClick(void *userObj)
 {
@@ -50,7 +49,7 @@ void __stdcall SSWR::AVIRead::AVIRGISCombineForm::OnCombineClick(void *userObj)
 	}
 	else
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Error in combining layers"), CSTR("Combine Layer"), me);
+		me->ui->ShowMsgOK(CSTR("Error in combining layers"), CSTR("Combine Layer"), me);
 	}
 }
 

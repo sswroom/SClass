@@ -3,7 +3,6 @@
 #include "SSWR/AVIRead/AVIRLoraGWSimForm.h"
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
-#include "UI/MessageDialog.h"
 
 #include <stdio.h>
 
@@ -33,28 +32,28 @@ void __stdcall SSWR::AVIRead::AVIRLoraGWSimForm::OnStartClick(void *userObj)
 		me->txtServerPort->GetText(sb);
 		if (!sb.ToUInt16(svrPort))
 		{
-			UI::MessageDialog::ShowDialog(CSTR("Error in parsing Server Port"), CSTR("LoRa Gateway Simulator"), me);
+			me->ui->ShowMsgOK(CSTR("Error in parsing Server Port"), CSTR("LoRa Gateway Simulator"), me);
 			return;
 		}
 		sb.ClearStr();
 		me->txtServerIP->GetText(sb);
 		if (!me->sockf->DNSResolveIP(sb.ToCString(), svrAddr))
 		{
-			UI::MessageDialog::ShowDialog(CSTR("Error in parsing Server IP"), CSTR("LoRa Gateway Simulator"), me);
+			me->ui->ShowMsgOK(CSTR("Error in parsing Server IP"), CSTR("LoRa Gateway Simulator"), me);
 			return;
 		}
 		sb.ClearStr();
 		me->txtGatewayEUI->GetText(sb);
 		if (sb.GetLength() != 16 || sb.Hex2Bytes(gatewayEUI) != 8)
 		{
-			UI::MessageDialog::ShowDialog(CSTR("Error in parsing Gateway EUI"), CSTR("LoRa Gateway Simulator"), me);
+			me->ui->ShowMsgOK(CSTR("Error in parsing Gateway EUI"), CSTR("LoRa Gateway Simulator"), me);
 			return;
 		}
 		NEW_CLASS(me->lora, Net::LoRaGateway(me->sockf, svrAddr, svrPort, gatewayEUI, me->log));
 		if (me->lora->IsError())
 		{
 			DEL_CLASS(me->lora);
-			UI::MessageDialog::ShowDialog(CSTR("Error in Listening to UDP"), CSTR("LoRa Gateway Simulator"), me);
+			me->ui->ShowMsgOK(CSTR("Error in Listening to UDP"), CSTR("LoRa Gateway Simulator"), me);
 			return;
 		}
 		me->txtGatewayEUI->SetReadOnly(true);
@@ -101,7 +100,7 @@ void __stdcall SSWR::AVIRead::AVIRLoraGWSimForm::OnSendULDataClick(void *userObj
 	me->txtDevAddr->GetText(sb);
 	if (sb.GetLength() != 8 || sb.Hex2Bytes(payload) != 4)
 	{
-		UI::MessageDialog::ShowDialog(CSTR("DevAddr invalid"), CSTR("LoRa Gateway Simulator"), me);
+		me->ui->ShowMsgOK(CSTR("DevAddr invalid"), CSTR("LoRa Gateway Simulator"), me);
 		return;
 	}
 	devAddr = ReadMUInt32(payload);
@@ -109,28 +108,28 @@ void __stdcall SSWR::AVIRead::AVIRLoraGWSimForm::OnSendULDataClick(void *userObj
 	me->txtNwkSKey->GetText(sb);
 	if (sb.GetLength() != 32 || sb.Hex2Bytes(nwkSKey) != 16)
 	{
-		UI::MessageDialog::ShowDialog(CSTR("NwkSKey invalid"), CSTR("LoRa Gateway Simulator"), me);
+		me->ui->ShowMsgOK(CSTR("NwkSKey invalid"), CSTR("LoRa Gateway Simulator"), me);
 		return;
 	}
 	sb.ClearStr();
 	me->txtAppSKey->GetText(sb);
 	if (sb.GetLength() != 32 || sb.Hex2Bytes(appSKey) != 16)
 	{
-		UI::MessageDialog::ShowDialog(CSTR("AppSKey invalid"), CSTR("LoRa Gateway Simulator"), me);
+		me->ui->ShowMsgOK(CSTR("AppSKey invalid"), CSTR("LoRa Gateway Simulator"), me);
 		return;
 	}
 	sb.ClearStr();
 	me->txtFCnt->GetText(sb);
 	if (!sb.ToUInt32(fCnt))
 	{
-		UI::MessageDialog::ShowDialog(CSTR("FCnt invalid"), CSTR("LoRa Gateway Simulator"), me);
+		me->ui->ShowMsgOK(CSTR("FCnt invalid"), CSTR("LoRa Gateway Simulator"), me);
 		return;
 	}
 	sb.ClearStr();
 	me->txtRSSI->GetText(sb);
 	if (!sb.ToInt32(rssi))
 	{
-		UI::MessageDialog::ShowDialog(CSTR("RSSI invalid"), CSTR("LoRa Gateway Simulator"), me);
+		me->ui->ShowMsgOK(CSTR("RSSI invalid"), CSTR("LoRa Gateway Simulator"), me);
 		return;
 	}
 	Double dlsnr;
@@ -138,7 +137,7 @@ void __stdcall SSWR::AVIRead::AVIRLoraGWSimForm::OnSendULDataClick(void *userObj
 	me->txtLSNR->GetText(sb);
 	if (!sb.ToDouble(dlsnr))
 	{
-		UI::MessageDialog::ShowDialog(CSTR("LSNR invalid"), CSTR("LoRa Gateway Simulator"), me);
+		me->ui->ShowMsgOK(CSTR("LSNR invalid"), CSTR("LoRa Gateway Simulator"), me);
 		return;
 	}
 	lsnr = Double2Int32(dlsnr * 10);
@@ -146,14 +145,14 @@ void __stdcall SSWR::AVIRead::AVIRLoraGWSimForm::OnSendULDataClick(void *userObj
 	me->txtFPort->GetText(sb);
 	if (!sb.ToUInt8(fPort))
 	{
-		UI::MessageDialog::ShowDialog(CSTR("FPort invalid"), CSTR("LoRa Gateway Simulator"), me);
+		me->ui->ShowMsgOK(CSTR("FPort invalid"), CSTR("LoRa Gateway Simulator"), me);
 		return;
 	}
 	sb.ClearStr();
 	me->txtData->GetText(sb);
 	if (sb.GetLength() > 64 || (buffLen = sb.Hex2Bytes(buff)) != (sb.GetLength() >> 1))
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Data invalid"), CSTR("LoRa Gateway Simulator"), me);
+		me->ui->ShowMsgOK(CSTR("Data invalid"), CSTR("LoRa Gateway Simulator"), me);
 		return;
 	}
 
@@ -163,7 +162,7 @@ void __stdcall SSWR::AVIRead::AVIRLoraGWSimForm::OnSendULDataClick(void *userObj
 
 	if (!me->lora->SendPushData(sb.ToString(), sb.GetLength()))
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Error in sending UL data"), CSTR("LoRa Gateway Simulator"), me);
+		me->ui->ShowMsgOK(CSTR("Error in sending UL data"), CSTR("LoRa Gateway Simulator"), me);
 	}
 	else
 	{

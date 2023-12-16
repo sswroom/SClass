@@ -3,7 +3,6 @@
 #include "SSWR/AVIRead/AVIRTextHashForm.h"
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
-#include "UI/MessageDialog.h"
 
 void __stdcall SSWR::AVIRead::AVIRTextHashForm::OnGenerateClicked(void *userObj)
 {
@@ -25,7 +24,7 @@ void __stdcall SSWR::AVIRead::AVIRTextHashForm::OnGenerateClicked(void *userObj)
 	Text::TextBinEnc::ITextBinEnc *srcEnc = (Text::TextBinEnc::ITextBinEnc*)me->cboEncrypt->GetSelectedItem();
 	if (srcEnc == 0)
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Please select text encryption"), CSTR("Text Hash"), me);
+		me->ui->ShowMsgOK(CSTR("Please select text encryption"), CSTR("Text Hash"), me);
 		return;
 	}
 	UOSInt buffSize = srcEnc->CalcBinSize(sb.ToString(), sb.GetLength());
@@ -34,7 +33,7 @@ void __stdcall SSWR::AVIRead::AVIRTextHashForm::OnGenerateClicked(void *userObj)
 		UInt8 *decBuff = MemAlloc(UInt8, buffSize);
 		if (srcEnc->DecodeBin(sb.ToString(), sb.GetLength(), decBuff) != buffSize)
 		{
-			UI::MessageDialog::ShowDialog(CSTR("Error in decrypting the text"), CSTR("Text Hash"), me);
+			me->ui->ShowMsgOK(CSTR("Error in decrypting the text"), CSTR("Text Hash"), me);
 		}
 		else
 		{
@@ -51,7 +50,7 @@ void __stdcall SSWR::AVIRead::AVIRTextHashForm::OnGenerateClicked(void *userObj)
 	}
 	else
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Unsupported decryption"), CSTR("Text Hash"), me);
+		me->ui->ShowMsgOK(CSTR("Unsupported decryption"), CSTR("Text Hash"), me);
 	}
 }
 

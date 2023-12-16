@@ -3,7 +3,6 @@
 #include "Text/MyString.h"
 #include "UI/GUIForm.h"
 #include "UI/GUIMenu.h"
-#include "UI/MessageDialog.h"
 
 #include <gtk/gtk.h>
 

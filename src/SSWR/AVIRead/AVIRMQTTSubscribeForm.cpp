@@ -9,7 +9,6 @@
 #include "Sync/ThreadUtil.h"
 #include "Text/MyStringFloat.h"
 #include "Text/StringBuilderUTF8.h"
-#include "UI/MessageDialog.h"
 
 void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeForm::OnStartClicked(void *userObj)
 {
@@ -31,26 +30,26 @@ void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeForm::OnStartClicked(void *userOb
 		me->txtPort->GetText(sb);
 		if (!sb.ToInt32(port))
 		{
-			UI::MessageDialog::ShowDialog(CSTR("Port is not valid"), CSTR("Error"), me);
+			me->ui->ShowMsgOK(CSTR("Port is not valid"), CSTR("Error"), me);
 			return;
 		}
 		else if (port <= 0 || port >= 65536)
 		{
-			UI::MessageDialog::ShowDialog(CSTR("Port is out of range"), CSTR("Error"), me);
+			me->ui->ShowMsgOK(CSTR("Port is out of range"), CSTR("Error"), me);
 			return;
 		}
 		sb.ClearStr();
 		me->txtHost->GetText(sb);
 		if (!me->core->GetSocketFactory()->DNSResolveIP(sb.ToCString(), addr))
 		{
-			UI::MessageDialog::ShowDialog(CSTR("Error in parsing host"), CSTR("Error"), me);
+			me->ui->ShowMsgOK(CSTR("Error in parsing host"), CSTR("Error"), me);
 			return;
 		}
 
 		NEW_CLASS(me->client, Net::MQTTConn(me->core->GetSocketFactory(), 0, sb.ToCString(), (UInt16)port, 0, 0, 30000));
 		if (me->client->IsError())
 		{
-			UI::MessageDialog::ShowDialog(CSTR("Error in connecting to server"), CSTR("Error"), me);
+			me->ui->ShowMsgOK(CSTR("Error in connecting to server"), CSTR("Error"), me);
 			DEL_CLASS(me->client);
 			me->client = 0;
 			return;
@@ -99,7 +98,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeForm::OnStartClicked(void *userOb
 		{
 			DEL_CLASS(me->client);
 			me->client = 0;
-			UI::MessageDialog::ShowDialog(CSTR("Error in communicating with server"), CSTR("Error"), me);
+			me->ui->ShowMsgOK(CSTR("Error in communicating with server"), CSTR("Error"), me);
 			return;
 		}
 	}

@@ -4,7 +4,6 @@
 #include "Net/ASN1Util.h"
 #include "SSWR/AVIRead/AVIRASN1MIBForm.h"
 #include "UI/FileDialog.h"
-#include "UI/MessageDialog.h"
 
 void __stdcall SSWR::AVIRead::AVIRASN1MIBForm::OnFileDroped(void *userObj, NotNullPtr<Text::String> *files, UOSInt nFiles)
 {
@@ -57,7 +56,7 @@ void SSWR::AVIRead::AVIRASN1MIBForm::LoadFile(Text::CStringNN fileName)
 	}
 	else
 	{
-		UI::MessageDialog::ShowDialog(sb.ToCString(), CSTR("SNMP MIB"), this);
+		this->ui->ShowMsgOK(sb.ToCString(), CSTR("SNMP MIB"), this);
 	}
 	this->lvObjects->ClearItems();
 	this->lvOID->ClearItems();

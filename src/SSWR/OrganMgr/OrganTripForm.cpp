@@ -2,7 +2,6 @@
 #include "IO/Registry.h"
 #include "SSWR/OrganMgr/OrganLocationForm.h"
 #include "SSWR/OrganMgr/OrganTripForm.h"
-#include "UI/MessageDialog.h"
 #include "UI/GUICore.h"
 
 void SSWR::OrganMgr::OrganTripForm::UpdateList()
@@ -72,12 +71,12 @@ void __stdcall SSWR::OrganMgr::OrganTripForm::OnAddClicked(void *userObj)
 	itoDate = toDate.ToTimestamp();
 	if (frDate > toDate)
 	{
-		UI::MessageDialog::ShowDialog(me->env->GetLang(CSTR("TripFormErrorTime")), me->env->GetLang(CSTR("TripFormTitle")), me);
+		me->ui->ShowMsgOK(me->env->GetLang(CSTR("TripFormErrorTime")), me->env->GetLang(CSTR("TripFormTitle")), me);
 		return;
 	}
 	if (me->locId <= 0)
 	{
-		UI::MessageDialog::ShowDialog(me->env->GetLang(CSTR("TripFormErrorLocation")), me->env->GetLang(CSTR("TripFormTitle")), me);
+		me->ui->ShowMsgOK(me->env->GetLang(CSTR("TripFormErrorLocation")), me->env->GetLang(CSTR("TripFormTitle")), me);
 		return;
 	}
 
@@ -92,7 +91,7 @@ void __stdcall SSWR::OrganMgr::OrganTripForm::OnAddClicked(void *userObj)
 		if (t->fromDate <= itoDate && t->toDate >= ifrDate)
 		{
 			sptr = me->env->LocationGet(t->locId)->cname->ConcatTo(Text::StrConcatC(me->env->GetLang(CSTR("TripFormErrorExist")).ConcatTo(sbuff), UTF8STRC(": ")));
-			UI::MessageDialog::ShowDialog(CSTRP(sbuff, sptr), me->env->GetLang(CSTR("TripFormTitle")), me);
+			me->ui->ShowMsgOK(CSTRP(sbuff, sptr), me->env->GetLang(CSTR("TripFormTitle")), me);
 			return;
 		}
 		if (t->fromDate > ifrDate)
@@ -114,7 +113,7 @@ void __stdcall SSWR::OrganMgr::OrganTripForm::OnAddClicked(void *userObj)
 	}
 	else
 	{
-		UI::MessageDialog::ShowDialog(me->env->GetLang(CSTR("TripFormErrorUnk")), me->env->GetLang(CSTR("TripFormTitle")), me);
+		me->ui->ShowMsgOK(me->env->GetLang(CSTR("TripFormErrorUnk")), me->env->GetLang(CSTR("TripFormTitle")), me);
 		return;
 	}
 }

@@ -2,7 +2,6 @@
 #include "Data/ByteBuffer.h"
 #include "SSWR/AVIRead/AVIRTCPSpdSvrForm.h"
 #include "Sync/ThreadUtil.h"
-#include "UI/MessageDialog.h"
 
 struct ClientStatus
 {
@@ -28,12 +27,12 @@ void __stdcall SSWR::AVIRead::AVIRTCPSpdSvrForm::OnStartClick(void *userObj)
 	me->txtPort->GetText(sb);
 	if (!sb.ToUInt16(port))
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Port is not a number"), CSTR("Error"), me);
+		me->ui->ShowMsgOK(CSTR("Port is not a number"), CSTR("Error"), me);
 		return;
 	}
 	if (port <= 0 || port > 65535)
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Port is out of range"), CSTR("Error"), me);
+		me->ui->ShowMsgOK(CSTR("Port is out of range"), CSTR("Error"), me);
 		return;
 	}
 	me->echo = me->chkEcho->IsChecked();
@@ -48,7 +47,7 @@ void __stdcall SSWR::AVIRead::AVIRTCPSpdSvrForm::OnStartClick(void *userObj)
 		SDEL_CLASS(me->cliMgr);
 		me->svr = 0;
 		me->cliMgr = 0;
-		UI::MessageDialog::ShowDialog(CSTR("Error in listening to the port"), CSTR("Error"), me);
+		me->ui->ShowMsgOK(CSTR("Error in listening to the port"), CSTR("Error"), me);
 		return;
 	}
 	me->txtPort->SetReadOnly(true);

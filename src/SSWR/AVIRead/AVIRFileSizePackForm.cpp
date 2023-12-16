@@ -3,7 +3,6 @@
 #include "IO/FileUtil.h"
 #include "IO/Path.h"
 #include "SSWR/AVIRead/AVIRFileSizePackForm.h"
-#include "UI/MessageDialog.h"
 
 SSWR::AVIRead::AVIRFileSizePackForm::MyFile::MyFile(Text::CString fileName, UInt64 fileSize)
 {
@@ -137,7 +136,7 @@ void SSWR::AVIRead::AVIRFileSizePackForm::GenList()
 	maxSize = sb.ToUInt64();
 	if (maxSize <= 0)
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Error in parsing the size"), CSTR("Error"), this);
+		this->ui->ShowMsgOK(CSTR("Error in parsing the size"), CSTR("Error"), this);
 		this->cboMaxSize->Focus();
 		return;
 	}
@@ -147,13 +146,13 @@ void SSWR::AVIRead::AVIRFileSizePackForm::GenList()
 	this->txtDir->GetText(sb);
 	if (sb.GetLength() == 0)
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Please input directory"), CSTR("Error"), this);
+		this->ui->ShowMsgOK(CSTR("Please input directory"), CSTR("Error"), this);
 		this->txtDir->Focus();
 		return;
 	}
 	if (IO::Path::GetPathType(sb.ToCString()) != IO::Path::PathType::Directory)
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Please input directory"), CSTR("Error"), this);
+		this->ui->ShowMsgOK(CSTR("Please input directory"), CSTR("Error"), this);
 		this->txtDir->Focus();
 		return;
 	}

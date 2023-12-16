@@ -5,7 +5,6 @@
 #include "IO/Path.h"
 //#include "IO/WindowZIP.h"
 #include "SSWR/AVIRead/AVIRLogBackupForm.h"
-#include "UI/MessageDialog.h"
 
 void __stdcall SSWR::AVIRead::AVIRLogBackupForm::OnStartClicked(void *userObj)
 {
@@ -33,12 +32,12 @@ void __stdcall SSWR::AVIRead::AVIRLogBackupForm::OnStartClicked(void *userObj)
 	filePath = me->txtLogDir->GetText(sbuff);
 	if (filePath == sbuff)
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Please enter Log Dir"), CSTR("Log Backup"), me);
+		me->ui->ShowMsgOK(CSTR("Please enter Log Dir"), CSTR("Log Backup"), me);
 		return;
 	}
 	if (IO::Path::GetPathType(CSTRP(sbuff, filePath)) != IO::Path::PathType::Directory)
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Invalid Log Dir"), CSTR("Log Backup"), me);
+		me->ui->ShowMsgOK(CSTR("Invalid Log Dir"), CSTR("Log Backup"), me);
 		return;
 	}
 	currTime.SetCurrTimeUTC();

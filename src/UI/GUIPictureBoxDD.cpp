@@ -10,7 +10,6 @@
 #include "Sync/MutexUsage.h"
 #include "UI/GUIClientControl.h"
 #include "UI/GUIPictureBoxDD.h"
-#include "UI/MessageDialog.h"
 
 void UI::GUIPictureBoxDD::UpdateSubSurface()
 {

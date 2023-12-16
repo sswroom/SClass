@@ -3,7 +3,6 @@
 #include "IO/Path.h"
 #include "Map/CustomTileMap.h"
 #include "SSWR/AVIRead/AVIRCustomTileMapForm.h"
-#include "UI/MessageDialog.h"
 
 void __stdcall SSWR::AVIRead::AVIRCustomTileMapForm::OnOKClicked(void *userObj)
 {
@@ -16,41 +15,41 @@ void __stdcall SSWR::AVIRead::AVIRCustomTileMapForm::OnOKClicked(void *userObj)
 	me->txtMinLevel->GetText(sb);
 	if (!sb.ToInt32(minLevel) || (minLevel < 0) || (minLevel > 18))
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Min Level must be between 0 to 18"), CSTR("Custom Tile Map"), me);
+		me->ui->ShowMsgOK(CSTR("Min Level must be between 0 to 18"), CSTR("Custom Tile Map"), me);
 		return;
 	}
 	sb.ClearStr();
 	me->txtMaxLevel->GetText(sb);
 	if (!sb.ToInt32(maxLevel) || (maxLevel < 0) || (maxLevel > 22))
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Max Level must be between 0 to 22"), CSTR("Custom Tile Map"), me);
+		me->ui->ShowMsgOK(CSTR("Max Level must be between 0 to 22"), CSTR("Custom Tile Map"), me);
 		return;
 	}
 	if (maxLevel < minLevel)
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Max Level must be large than or equals to Min Level"), CSTR("Custom Tile Map"), me);
+		me->ui->ShowMsgOK(CSTR("Max Level must be large than or equals to Min Level"), CSTR("Custom Tile Map"), me);
 		return;
 	}
 	sb.ClearStr();
 	me->txtURL->GetText(sb);
 	if (!sb.StartsWith(UTF8STRC("http://")) && !sb.StartsWith(UTF8STRC("https://")) && !sb.StartsWith(UTF8STRC("file://")))
 	{
-		UI::MessageDialog::ShowDialog(CSTR("URL is not valid"), CSTR("Custom Tile Map"), me);
+		me->ui->ShowMsgOK(CSTR("URL is not valid"), CSTR("Custom Tile Map"), me);
 		return;
 	}
 	if (sb.IndexOf(UTF8STRC("{x}")) == INVALID_INDEX)
 	{
-		UI::MessageDialog::ShowDialog(CSTR("{x} not found in URL"), CSTR("Custom Tile Map"), me);
+		me->ui->ShowMsgOK(CSTR("{x} not found in URL"), CSTR("Custom Tile Map"), me);
 		return;
 	}
 	if (sb.IndexOf(UTF8STRC("{y}")) == INVALID_INDEX)
 	{
-		UI::MessageDialog::ShowDialog(CSTR("{y} not found in URL"), CSTR("Custom Tile Map"), me);
+		me->ui->ShowMsgOK(CSTR("{y} not found in URL"), CSTR("Custom Tile Map"), me);
 		return;
 	}
 	if (sb.IndexOf(UTF8STRC("{z}")) == INVALID_INDEX)
 	{
-		UI::MessageDialog::ShowDialog(CSTR("{z} not found in URL"), CSTR("Custom Tile Map"), me);
+		me->ui->ShowMsgOK(CSTR("{z} not found in URL"), CSTR("Custom Tile Map"), me);
 		return;
 	}
 	Crypto::Hash::CRC32RC crc;

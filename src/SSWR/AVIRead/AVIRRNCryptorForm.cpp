@@ -3,7 +3,6 @@
 #include "IO/FileStream.h"
 #include "IO/Path.h"
 #include "SSWR/AVIRead/AVIRRNCryptorForm.h"
-#include "UI/MessageDialog.h"
 
 void __stdcall SSWR::AVIRead::AVIRRNCryptorForm::OnProcessClicked(void *userObj)
 {
@@ -14,12 +13,12 @@ void __stdcall SSWR::AVIRead::AVIRRNCryptorForm::OnProcessClicked(void *userObj)
 	me->txtPassword->GetText(sbPassword);
 	if (sbSrcFile.GetLength() == 0)
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Please drag and drop source file first"), CSTR("RNCryptor"), me);
+		me->ui->ShowMsgOK(CSTR("Please drag and drop source file first"), CSTR("RNCryptor"), me);
 		return;
 	}
 	if (sbPassword.GetLength() == 0)
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Please input password"), CSTR("RNCryptor"), me);
+		me->ui->ShowMsgOK(CSTR("Please input password"), CSTR("RNCryptor"), me);
 		return;
 	}
 	if (sbSrcFile.EndsWith(UTF8STRC(".aes")))
@@ -33,7 +32,7 @@ void __stdcall SSWR::AVIRead::AVIRRNCryptorForm::OnProcessClicked(void *userObj)
 		}
 		if (!succ)
 		{
-			UI::MessageDialog::ShowDialog(CSTR("Error in decrypting file"), CSTR("RNCryptor"), me);
+			me->ui->ShowMsgOK(CSTR("Error in decrypting file"), CSTR("RNCryptor"), me);
 			IO::Path::DeleteFile(sbSrcFile.ToString());
 		}
 	}
@@ -48,7 +47,7 @@ void __stdcall SSWR::AVIRead::AVIRRNCryptorForm::OnProcessClicked(void *userObj)
 		}
 		if (!succ)
 		{
-			UI::MessageDialog::ShowDialog(CSTR("Error in encrypting file"), CSTR("RNCryptor"), me);
+			me->ui->ShowMsgOK(CSTR("Error in encrypting file"), CSTR("RNCryptor"), me);
 			IO::Path::DeleteFile(sbSrcFile.ToString());
 		}
 	}

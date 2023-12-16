@@ -8,7 +8,6 @@
 #include "Sync/MutexUsage.h"
 #include "Sync/ThreadUtil.h"
 #include "Text/StringBuilderUTF8.h"
-#include "UI/MessageDialog.h"
 
 void __stdcall SSWR::AVIRead::AVIRMQTTBrokerForm::OnStartClicked(void *userObj)
 {
@@ -27,11 +26,11 @@ void __stdcall SSWR::AVIRead::AVIRMQTTBrokerForm::OnStartClicked(void *userObj)
 		me->txtPort->GetText(sb);
 		if (!sb.ToUInt16(port))
 		{
-			UI::MessageDialog::ShowDialog(CSTR("Port is not valid"), CSTR("Error"), me);
+			me->ui->ShowMsgOK(CSTR("Port is not valid"), CSTR("Error"), me);
 		}
 		else if (port <= 0)
 		{
-			UI::MessageDialog::ShowDialog(CSTR("Port is out of range"), CSTR("Error"), me);
+			me->ui->ShowMsgOK(CSTR("Port is out of range"), CSTR("Error"), me);
 		}
 		else
 		{
@@ -43,12 +42,12 @@ void __stdcall SSWR::AVIRead::AVIRMQTTBrokerForm::OnStartClicked(void *userObj)
 				NotNullPtr<Net::SSLEngine> nnssl;
 				if (!me->ssl.SetTo(nnssl))
 				{
-					UI::MessageDialog::ShowDialog(CSTR("Error in initializing SSL engine"), CSTR("MQTT Broker"), me);
+					me->ui->ShowMsgOK(CSTR("Error in initializing SSL engine"), CSTR("MQTT Broker"), me);
 					return;
 				}
 				if (!sslCert.Set(me->sslCert) || !sslKey.Set(me->sslKey))
 				{
-					UI::MessageDialog::ShowDialog(CSTR("Please select SSL Cert/Key to enable SSL"), CSTR("MQTT Broker"), me);
+					me->ui->ShowMsgOK(CSTR("Please select SSL Cert/Key to enable SSL"), CSTR("MQTT Broker"), me);
 					return;
 				}
 				ssl = me->ssl;
@@ -57,7 +56,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTBrokerForm::OnStartClicked(void *userObj)
 			NEW_CLASS(me->broker, Net::MQTTBroker(me->core->GetSocketFactory(), ssl, port, me->log, true, false));
 			if (me->broker->IsError())
 			{
-				UI::MessageDialog::ShowDialog(CSTR("Error in initing server"), CSTR("Error"), me);
+				me->ui->ShowMsgOK(CSTR("Error in initing server"), CSTR("Error"), me);
 				DEL_CLASS(me->broker);
 				me->broker = 0;
 			}
@@ -72,7 +71,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTBrokerForm::OnStartClicked(void *userObj)
 				}
 				else
 				{
-					UI::MessageDialog::ShowDialog(CSTR("Error in starting server"), CSTR("Error"), me);
+					me->ui->ShowMsgOK(CSTR("Error in starting server"), CSTR("Error"), me);
 					DEL_CLASS(me->broker);
 					me->broker = 0;
 				}
@@ -86,7 +85,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTBrokerForm::OnSSLCertClicked(void *userObj
 	SSWR::AVIRead::AVIRMQTTBrokerForm *me = (SSWR::AVIRead::AVIRMQTTBrokerForm*)userObj;
 	if (me->broker)
 	{
-		UI::MessageDialog::ShowDialog(CSTR("You cannot change cert when server is started"), CSTR("MQTT Broker"), me);
+		me->ui->ShowMsgOK(CSTR("You cannot change cert when server is started"), CSTR("MQTT Broker"), me);
 		return;
 	}
 	SSWR::AVIRead::AVIRSSLCertKeyForm frm(0, me->ui, me->core, me->ssl, me->sslCert, me->sslKey, me->caCerts);

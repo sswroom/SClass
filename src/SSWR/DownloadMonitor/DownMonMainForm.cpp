@@ -8,7 +8,6 @@
 #include "Text/UTF8Util.h"
 #include "Text/UTF8Writer.h"
 #include "UI/Clipboard.h"
-#include "UI/MessageDialog.h"
 #include <stdio.h>
 
 void __stdcall SSWR::DownloadMonitor::DownMonMainForm::OnTimerTick(void *userObj)
@@ -332,7 +331,7 @@ void __stdcall SSWR::DownloadMonitor::DownMonMainForm::OnFileEndClicked(void *us
 	Int32 id = (Int32)(OSInt)me->lvFiles->GetSelectedItem();
 	if (id > 0)
 	{
-		if (UI::MessageDialog::ShowYesNoDialog(CSTR("Are you sure to remove selected file?"), CSTR("Question"), me))
+		if (me->ui->ShowMsgYesNo(CSTR("Are you sure to remove selected file?"), CSTR("Question"), me))
 		{
 			me->core->FileEnd(id & 0xffffff, id >> 24);
 			Sync::MutexUsage mutUsage(me->endedMut);

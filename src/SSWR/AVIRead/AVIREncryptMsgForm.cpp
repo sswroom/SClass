@@ -8,7 +8,6 @@
 #include "Text/TextBinEnc/HexTextBinEnc.h"
 #include "Text/TextBinEnc/UTF8TextBinEnc.h"
 #include "UI/GUIComboBoxUtil.h"
-#include "UI/MessageDialog.h"
 
 Crypto::Encrypt::ICrypto *SSWR::AVIRead::AVIREncryptMsgForm::InitCrypto()
 {
@@ -26,14 +25,14 @@ Crypto::Encrypt::ICrypto *SSWR::AVIRead::AVIREncryptMsgForm::InitCrypto()
 		keySize = 32;
 		break;
 	default:
-		UI::MessageDialog::ShowDialog(CSTR("Unknown Algorithm"), CSTR("Encrypt Message"), this);
+		this->ui->ShowMsgOK(CSTR("Unknown Algorithm"), CSTR("Encrypt Message"), this);
 		return 0;
 	}
 	Text::StringBuilderUTF8 sb;
 	this->txtKey->GetText(sb);
 	if (sb.GetLength() == 0)
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Key cannot be empty"), CSTR("Encrypt Message"), this);
+		this->ui->ShowMsgOK(CSTR("Key cannot be empty"), CSTR("Encrypt Message"), this);
 		return 0;
 	}
 	Text::TextBinEnc::ITextBinEnc *enc = GetTextEncType(this->cboKeyType);
@@ -41,13 +40,13 @@ Crypto::Encrypt::ICrypto *SSWR::AVIRead::AVIREncryptMsgForm::InitCrypto()
 	if (buffSize == 0)
 	{
 		DEL_CLASS(enc);
-		UI::MessageDialog::ShowDialog(CSTR("Error in parsing key"), CSTR("Encrypt Message"), this);
+		this->ui->ShowMsgOK(CSTR("Error in parsing key"), CSTR("Encrypt Message"), this);
 		return 0;
 	}
 	else if (buffSize > keySize)
 	{
 		DEL_CLASS(enc);
-		UI::MessageDialog::ShowDialog(CSTR("Key size is too long"), CSTR("Encrypt Message"), this);
+		this->ui->ShowMsgOK(CSTR("Key size is too long"), CSTR("Encrypt Message"), this);
 		return 0;
 	}
 	UInt8 key[32];
@@ -79,13 +78,13 @@ UInt8 *SSWR::AVIRead::AVIREncryptMsgForm::InitInput(UOSInt blockSize, UOSInt *da
 	this->txtInputMsg->GetText(sb);
 	if (sb.GetLength() == 0)
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Input Msg is empty"), CSTR("Encrypt Message"), this);
+		this->ui->ShowMsgOK(CSTR("Input Msg is empty"), CSTR("Encrypt Message"), this);
 	}
 	Text::TextBinEnc::ITextBinEnc *enc = GetTextEncType(this->cboInputType);
 	UOSInt buffSize = enc->CalcBinSize(sb.ToString(), sb.GetLength());
 	if (buffSize == 0)
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Error in parsing Input Msg"), CSTR("Encrypt Message"), this);
+		this->ui->ShowMsgOK(CSTR("Error in parsing Input Msg"), CSTR("Encrypt Message"), this);
 		DEL_CLASS(enc);
 		return 0;
 	}
@@ -112,7 +111,7 @@ UInt8 *SSWR::AVIRead::AVIREncryptMsgForm::InitIV(Crypto::Encrypt::ICrypto *crypt
 			this->txtIV->GetText(sb);
 			if (sb.GetLength() > sizeof(tmpbuff) || sb.Hex2Bytes(tmpbuff) != blockSize)
 			{
-				UI::MessageDialog::ShowDialog(CSTR("IV input length not valid"), CSTR("Encrypt Message"), this);
+				this->ui->ShowMsgOK(CSTR("IV input length not valid"), CSTR("Encrypt Message"), this);
 				return 0;
 			}
 			((Crypto::Encrypt::BlockCipher*)crypto)->SetIV(tmpbuff);
@@ -124,13 +123,13 @@ UInt8 *SSWR::AVIRead::AVIREncryptMsgForm::InitIV(Crypto::Encrypt::ICrypto *crypt
 			this->txtIV->GetText(sb);
 			if (sb.GetLength() > sizeof(tmpbuff))
 			{
-				UI::MessageDialog::ShowDialog(CSTR("IV input length too long"), CSTR("Encrypt Message"), this);
+				this->ui->ShowMsgOK(CSTR("IV input length too long"), CSTR("Encrypt Message"), this);
 				return 0;
 			}
 			Text::TextBinEnc::Base64Enc b64;
 			if (b64.DecodeBin(sb.ToString(), sb.GetLength(), tmpbuff) != blockSize)
 			{
-				UI::MessageDialog::ShowDialog(CSTR("IV input length not valid"), CSTR("Encrypt Message"), this);
+				this->ui->ShowMsgOK(CSTR("IV input length not valid"), CSTR("Encrypt Message"), this);
 				return 0;
 			}
 			((Crypto::Encrypt::BlockCipher*)crypto)->SetIV(tmpbuff);
@@ -149,7 +148,7 @@ UInt8 *SSWR::AVIRead::AVIREncryptMsgForm::InitIV(Crypto::Encrypt::ICrypto *crypt
 		{
 			if (*buffSize < blockSize)
 			{
-				UI::MessageDialog::ShowDialog(CSTR("Data input length too short"), CSTR("Encrypt Message"), this);
+				this->ui->ShowMsgOK(CSTR("Data input length too short"), CSTR("Encrypt Message"), this);
 				return 0;
 			}
 			((Crypto::Encrypt::BlockCipher*)crypto)->SetIV(dataBuff);

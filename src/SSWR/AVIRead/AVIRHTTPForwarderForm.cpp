@@ -7,7 +7,6 @@
 #include "Sync/ThreadUtil.h"
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
-#include "UI/MessageDialog.h"
 
 void __stdcall SSWR::AVIRead::AVIRHTTPForwarderForm::OnStartClick(void *userObj)
 {
@@ -25,7 +24,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPForwarderForm::OnStartClick(void *userObj)
 	me->txtFwdURL->GetText(sb);
 	if (!sb.StartsWith(UTF8STRC("http://")) && !sb.StartsWith(UTF8STRC("https://")))
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Forward URL must be started with http:// or https://"), CSTR("HTTP Forwarder"), me);
+		me->ui->ShowMsgOK(CSTR("Forward URL must be started with http:// or https://"), CSTR("HTTP Forwarder"), me);
 		return;
 	}
 	Optional<Net::SSLEngine> ssl = 0;
@@ -36,14 +35,14 @@ void __stdcall SSWR::AVIRead::AVIRHTTPForwarderForm::OnStartClick(void *userObj)
 		NotNullPtr<Crypto::Cert::X509File> sslKey;
 		if (!sslCert.Set(me->sslCert) || !sslKey.Set(me->sslKey))
 		{
-			UI::MessageDialog::ShowDialog(CSTR("Please select SSL Cert/Key First"), CSTR("HTTP Forwarder"), me);
+			me->ui->ShowMsgOK(CSTR("Please select SSL Cert/Key First"), CSTR("HTTP Forwarder"), me);
 			return;
 		}
 		ssl = me->ssl;
 		NotNullPtr<Net::SSLEngine> nnssl;
 		if (!ssl.SetTo(nnssl) || !nnssl->ServerSetCertsASN1(sslCert, sslKey, me->caCerts))
 		{
-			UI::MessageDialog::ShowDialog(CSTR("Error in initializing Cert/Key"), CSTR("HTTP Forwarder"), me);
+			me->ui->ShowMsgOK(CSTR("Error in initializing Cert/Key"), CSTR("HTTP Forwarder"), me);
 			return;
 		}
 	}
@@ -57,7 +56,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPForwarderForm::OnStartClick(void *userObj)
 			valid = false;
 			SDEL_CLASS(me->svr);
 			fwdHdlr.Delete();
-			UI::MessageDialog::ShowDialog(CSTR("Error in listening to port"), CSTR("HTTP Forwarder"), me);
+			me->ui->ShowMsgOK(CSTR("Error in listening to port"), CSTR("HTTP Forwarder"), me);
 		}
 		else
 		{
@@ -76,7 +75,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPForwarderForm::OnStartClick(void *userObj)
 			if (!me->svr->Start())
 			{
 				valid = false;
-				UI::MessageDialog::ShowDialog(CSTR("Error in starting HTTP Server"), CSTR("HTTP Forwarder"), me);
+				me->ui->ShowMsgOK(CSTR("Error in starting HTTP Server"), CSTR("HTTP Forwarder"), me);
 			}
 		}
 	}

@@ -1,7 +1,6 @@
 #include "Stdafx.h"
 #include "SSWR/AVIRead/AVIRGISImageForm.h"
 #include "Text/StringBuilderUTF8.h"
-#include "UI/MessageDialog.h"
 
 void __stdcall SSWR::AVIRead::AVIRGISImageForm::OnOKClick(void *userObj)
 {
@@ -14,7 +13,7 @@ void __stdcall SSWR::AVIRead::AVIRGISImageForm::OnOKClick(void *userObj)
 	}
 	else
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Select an image first"), CSTR("Select Image"), me);
+		me->ui->ShowMsgOK(CSTR("Select an image first"), CSTR("Select Image"), me);
 	}
 }
 

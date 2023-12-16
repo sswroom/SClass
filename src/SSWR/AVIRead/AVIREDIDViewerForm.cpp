@@ -10,7 +10,6 @@
 #include "Text/MyStringFloat.h"
 #include "Text/StringBuilderUTF8.h"
 #include "UI/FileDialog.h"
-#include "UI/MessageDialog.h"
 
 void SSWR::AVIRead::AVIREDIDViewerForm::UpdateEDIDDisp()
 {

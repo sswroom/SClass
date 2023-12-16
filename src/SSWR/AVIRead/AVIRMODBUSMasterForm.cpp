@@ -11,7 +11,6 @@
 #include "SSWR/AVIRead/AVIRMODBUSMasterForm.h"
 #include "Sync/ThreadUtil.h"
 #include "Text/MyStringFloat.h"
-#include "UI/MessageDialog.h"
 
 void __stdcall SSWR::AVIRead::AVIRMODBUSMasterForm::OnStreamClicked(void *userObj)
 {
@@ -282,7 +281,7 @@ void __stdcall SSWR::AVIRead::AVIRMODBUSMasterForm::OnTimeoutClicked(void *userO
 	SSWR::AVIRead::AVIRMODBUSMasterForm *me = (SSWR::AVIRead::AVIRMODBUSMasterForm *)userObj;
 	if (me->modbusCtrl == 0)
 	{
-		UI::MessageDialog::ShowDialog(CSTR("You must open the stream first"), CSTR("MODBUS Master"), me);
+		me->ui->ShowMsgOK(CSTR("You must open the stream first"), CSTR("MODBUS Master"), me);
 	}
 	else
 	{
@@ -295,7 +294,7 @@ void __stdcall SSWR::AVIRead::AVIRMODBUSMasterForm::OnTimeoutClicked(void *userO
 		}
 		else
 		{
-			UI::MessageDialog::ShowDialog(CSTR("Timeout value is not valid number"), CSTR("MODBUS Master"), me);
+			me->ui->ShowMsgOK(CSTR("Timeout value is not valid number"), CSTR("MODBUS Master"), me);
 		}
 	}
 }

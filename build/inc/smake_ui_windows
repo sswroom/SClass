@@ -105,13 +105,13 @@ UI/GUITreeView.h:
 @GUITreeViewWin.o
 UI/GUIVSplitter.h:
 @GUIVSplitterWin.o
-UI/GUIWindowDragDrop.h:
-@GUIWindowDragDrop.o
 UI/IWindowSystem.h:
-UI/MessageDialog.h:
-@MessageDialogW.o
+UI/Win/WinDragDrop.h:
+@WinDragDrop.o
 UI/Win/WinGroupBox.h:
 @WinGroupBox.o
+UI/Win/WinMessageDialog.h:
+@WinMessageDialog.o
 
 GUIStartup.o: ../../startup/WinStartup.cpp
 !-Wl,--subsystem,windows

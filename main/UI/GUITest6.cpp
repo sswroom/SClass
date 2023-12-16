@@ -4,25 +4,24 @@
 #include "UI/GUICore.h"
 #include "UI/GUIForm.h"
 #include "UI/GUITreeView.h"
-#include "UI/MessageDialog.h"
 
 UI::GUITreeView *tv;
 
 void __stdcall OnTVDblClick(void *userObj)
 {
 	UI::GUIForm *me = (UI::GUIForm*)userObj;
-	UI::MessageDialog::ShowDialog(CSTR("Test"), CSTR("GUI Test 6 TV DblClick"), me);
+	me->GetUI()->ShowMsgOK(CSTR("Test"), CSTR("GUI Test 6 TV DblClick"), me);
 }
 
 Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 {
-	UI::GUICore *core = progCtrl->CreateGUICore(progCtrl);
-	if (core)
+	NotNullPtr<UI::GUICore> core;
+	if (core.Set(progCtrl->CreateGUICore(progCtrl)))
 	{
 		UI::GUITreeView::TreeItem *item1;
 		UI::GUITreeView::TreeItem *item2;
-		UI::GUIForm *frm;
-		NEW_CLASS(frm, UI::GUIForm(0, 640, 480, core));
+		NotNullPtr<UI::GUIForm> frm;
+		NEW_CLASSNN(frm, UI::GUIForm(0, 640, 480, core));
 		frm->SetText(CSTR("GUI Test 6"));
 		NEW_CLASS(tv, UI::GUITreeView(core, frm));
 		tv->SetDockType(UI::GUIControl::DOCK_FILL);
@@ -40,7 +39,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 		frm->SetExitOnClose(true);
 		frm->Show();
 		core->Run();
-		DEL_CLASS(core);
+		core.Delete();
 	}
 	return 0;
 }

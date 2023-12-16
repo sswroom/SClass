@@ -3,7 +3,6 @@
 #include "SSWR/AVIRead/AVIRODBCStrForm.h"
 #include "SSWR/AVIRead/AVIRTableMsgForm.h"
 #include "Text/MyString.h"
-#include "UI/MessageDialog.h"
 
 void __stdcall SSWR::AVIRead::AVIRODBCStrForm::OnDriverSelChg(void *userObj)
 {
@@ -63,7 +62,7 @@ void __stdcall SSWR::AVIRead::AVIRODBCStrForm::OnOKClicked(void *userObj)
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("Error in opening ODBC connection\r\n"));
 		conn->GetLastErrorMsg(sb);
-		UI::MessageDialog::ShowDialog(sb.ToCString(), CSTR("ODBC String Connection"), me);
+		me->ui->ShowMsgOK(sb.ToCString(), CSTR("ODBC String Connection"), me);
 		DEL_CLASS(conn);
 		return;
 	}

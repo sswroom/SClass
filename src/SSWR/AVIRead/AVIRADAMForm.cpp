@@ -1,7 +1,6 @@
 #include "Stdafx.h"
 #include "IO/SerialPort.h"
 #include "SSWR/AVIRead/AVIRADAMForm.h"
-#include "UI/MessageDialog.h"
 
 void __stdcall SSWR::AVIRead::AVIRADAMForm::OnStreamClicked(void *userObj)
 {
@@ -16,7 +15,7 @@ void __stdcall SSWR::AVIRead::AVIRADAMForm::OnStreamClicked(void *userObj)
 		me->txtAddress->GetText(sb);
 		if (!sb.ToUInt8(me->channelAddr))
 		{
-			UI::MessageDialog::ShowDialog(CSTR("Address out of range (0-255)"), CSTR("ADAM"), me);
+			me->ui->ShowMsgOK(CSTR("Address out of range (0-255)"), CSTR("ADAM"), me);
 			return;
 		}
 		IO::StreamType st;

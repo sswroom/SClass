@@ -4,7 +4,6 @@
 #include "Sync/MutexUsage.h"
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
-#include "UI/MessageDialog.h"
 
 void __stdcall SSWR::AVIRead::AVIRSyslogServerForm::OnStartClick(void *userObj)
 {
@@ -29,7 +28,7 @@ void __stdcall SSWR::AVIRead::AVIRSyslogServerForm::OnStartClick(void *userObj)
 			NEW_CLASS(me->svr, Net::SyslogServer(me->core->GetSocketFactory(), port, CSTRP(sbuff, sptr), me->core->GetLog(), false));
 			if (me->svr->IsError())
 			{
-				UI::MessageDialog::ShowDialog(CSTR("Error in listening the port"), CSTR("Error"), me);
+				me->ui->ShowMsgOK(CSTR("Error in listening the port"), CSTR("Error"), me);
 				DEL_CLASS(me->svr);
 				me->svr = 0;
 			}
@@ -41,7 +40,7 @@ void __stdcall SSWR::AVIRead::AVIRSyslogServerForm::OnStartClick(void *userObj)
 		}
 		else
 		{
-			UI::MessageDialog::ShowDialog(CSTR("Invalid port number"), CSTR("Error"), me);
+			me->ui->ShowMsgOK(CSTR("Invalid port number"), CSTR("Error"), me);
 		}
 	}
 }

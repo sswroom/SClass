@@ -1,7 +1,6 @@
 #include "Stdafx.h"
 #include "Data/ByteTool.h"
 #include "SSWR/AVIRead/AVIRLDAPExplorerForm.h"
-#include "UI/MessageDialog.h"
 
 void __stdcall SSWR::AVIRead::AVIRLDAPExplorerForm::OnConnectClicked(void *userObj)
 {
@@ -25,19 +24,19 @@ void __stdcall SSWR::AVIRead::AVIRLDAPExplorerForm::OnConnectClicked(void *userO
 	me->txtHost->GetText(sb);
 	if (sb.GetLength() == 0)
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Please enter Host"), CSTR("LDAP Explorer"), me);
+		me->ui->ShowMsgOK(CSTR("Please enter Host"), CSTR("LDAP Explorer"), me);
 		return;
 	}
 	if (!sockf->DNSResolveIP(sb.ToCString(), addr))
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Error in resolving host"), CSTR("LDAP Explorer"), me);
+		me->ui->ShowMsgOK(CSTR("Error in resolving host"), CSTR("LDAP Explorer"), me);
 		return;
 	}
 	sb.ClearStr();
 	me->txtPort->GetText(sb);
 	if (!sb.ToUInt16(port))
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Please enter valid Port number"), CSTR("LDAP Explorer"), me);
+		me->ui->ShowMsgOK(CSTR("Please enter valid Port number"), CSTR("LDAP Explorer"), me);
 		return;
 	}
 	NEW_CLASS(me->cli, Net::LDAPClient(sockf, addr, port, 30000));
@@ -45,7 +44,7 @@ void __stdcall SSWR::AVIRead::AVIRLDAPExplorerForm::OnConnectClicked(void *userO
 	{
 		DEL_CLASS(me->cli);
 		me->cli = 0;
-		UI::MessageDialog::ShowDialog(CSTR("Error in connecting to LDAP Server"), CSTR("LDAP Explorer"), me);
+		me->ui->ShowMsgOK(CSTR("Error in connecting to LDAP Server"), CSTR("LDAP Explorer"), me);
 		return;
 	}
 	Bool succ = false;
@@ -65,7 +64,7 @@ void __stdcall SSWR::AVIRead::AVIRLDAPExplorerForm::OnConnectClicked(void *userO
 	{
 		DEL_CLASS(me->cli);
 		me->cli = 0;
-		UI::MessageDialog::ShowDialog(CSTR("Error in binding to LDAP Server"), CSTR("LDAP Explorer"), me);
+		me->ui->ShowMsgOK(CSTR("Error in binding to LDAP Server"), CSTR("LDAP Explorer"), me);
 		return;
 	}
 
@@ -75,7 +74,7 @@ void __stdcall SSWR::AVIRead::AVIRLDAPExplorerForm::OnConnectClicked(void *userO
 	{
 		DEL_CLASS(me->cli);
 		me->cli = 0;
-		UI::MessageDialog::ShowDialog(CSTR("Error in searching for <ROOT> in LDAP Server"), CSTR("LDAP Explorer"), me);
+		me->ui->ShowMsgOK(CSTR("Error in searching for <ROOT> in LDAP Server"), CSTR("LDAP Explorer"), me);
 		return;
 	}
 	Net::LDAPClient::SearchResObject *obj;
@@ -85,7 +84,7 @@ void __stdcall SSWR::AVIRead::AVIRLDAPExplorerForm::OnConnectClicked(void *userO
 		Net::LDAPClient::SearchResultsFree(&results);
 		DEL_CLASS(me->cli);
 		me->cli = 0;
-		UI::MessageDialog::ShowDialog(CSTR("Unsupported <ROOT> information in LDAP Server"), CSTR("LDAP Explorer"), me);
+		me->ui->ShowMsgOK(CSTR("Unsupported <ROOT> information in LDAP Server"), CSTR("LDAP Explorer"), me);
 		return;
 	}
 	succ = false;
@@ -117,7 +116,7 @@ void __stdcall SSWR::AVIRead::AVIRLDAPExplorerForm::OnConnectClicked(void *userO
 		Net::LDAPClient::SearchResultsFree(&results);
 		DEL_CLASS(me->cli);
 		me->cli = 0;
-		UI::MessageDialog::ShowDialog(CSTR("rootDomainNamingContext not found in LDAP Server"), CSTR("LDAP Explorer"), me);
+		me->ui->ShowMsgOK(CSTR("rootDomainNamingContext not found in LDAP Server"), CSTR("LDAP Explorer"), me);
 		return;
 	}
 	me->btnConnect->SetText(CSTR("Disconnect"));

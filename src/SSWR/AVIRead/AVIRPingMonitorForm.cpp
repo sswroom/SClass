@@ -4,7 +4,6 @@
 #include "SSWR/AVIRead/AVIRPingMonitorForm.h"
 #include "Sync/MutexUsage.h"
 #include "Text/StringBuilderUTF8.h"
-#include "UI/MessageDialog.h"
 
 void __stdcall SSWR::AVIRead::AVIRPingMonitorForm::OnPingPacket(void *userData, UInt32 srcIP, UInt32 destIP, UInt8 ttl, UOSInt packetSize)
 {
@@ -85,7 +84,7 @@ void __stdcall SSWR::AVIRead::AVIRPingMonitorForm::OnInfoClicked(void *userObj)
 	me->txtInfo->GetText(sb);
 	if (!sb.ToUInt16(port))
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Info port is not valid"), CSTR("Ping Monitor"), me);
+		me->ui->ShowMsgOK(CSTR("Info port is not valid"), CSTR("Ping Monitor"), me);
 		return;
 	}
 	NotNullPtr<Net::EthernetWebHandler> webHdlr;
@@ -97,7 +96,7 @@ void __stdcall SSWR::AVIRead::AVIRPingMonitorForm::OnInfoClicked(void *userObj)
 		webHdlr.Delete();
 		me->listener = 0;
 		me->webHdlr = 0;
-		UI::MessageDialog::ShowDialog(CSTR("Error in listening to info port"), CSTR("Ping Monitor"), me);
+		me->ui->ShowMsgOK(CSTR("Error in listening to info port"), CSTR("Ping Monitor"), me);
 		return;
 	}
 	me->webHdlr = webHdlr.Ptr();
@@ -126,7 +125,7 @@ void __stdcall SSWR::AVIRead::AVIRPingMonitorForm::OnStartClicked(void *userObj)
 		}
 		else
 		{
-			UI::MessageDialog::ShowDialog(CSTR("Error in listening to ping"), CSTR("Error"), me);
+			me->ui->ShowMsgOK(CSTR("Error in listening to ping"), CSTR("Error"), me);
 			return;
 		}
 	}

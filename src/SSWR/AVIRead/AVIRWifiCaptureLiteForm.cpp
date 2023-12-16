@@ -10,7 +10,6 @@
 #include "Text/StringBuilderUTF8.h"
 #include "Text/UTF8Writer.h"
 #include "UI/Clipboard.h"
-#include "UI/MessageDialog.h"
 
 void __stdcall SSWR::AVIRead::AVIRWifiCaptureLiteForm::OnTimerTick(void *userObj)
 {
@@ -494,14 +493,14 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureLiteForm::OnLogWifiSaveClicked(void
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("File saved to "));
 		sb.AppendP(sbuff, sptr);
-		UI::MessageDialog::ShowDialog(sb.ToCString(), CSTR("Save"), me);
+		me->ui->ShowMsgOK(sb.ToCString(), CSTR("Save"), me);
 	}
 	else
 	{
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("Error in saving to "));
 		sb.AppendP(sbuff, sptr);
-		UI::MessageDialog::ShowDialog(sb.ToCString(), CSTR("Save"), me);
+		me->ui->ShowMsgOK(sb.ToCString(), CSTR("Save"), me);
 	}
 }
 
@@ -564,14 +563,14 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureLiteForm::OnLogWifiSaveFClicked(voi
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("File saved to "));
 		sb.AppendP(sbuff, sptr);
-		UI::MessageDialog::ShowDialog(sb.ToCString(), CSTR("Save Unk"), me);
+		me->ui->ShowMsgOK(sb.ToCString(), CSTR("Save Unk"), me);
 	}
 	else
 	{
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("Error in saving to "));
 		sb.AppendP(sbuff, sptr);
-		UI::MessageDialog::ShowDialog(sb.ToCString(), CSTR("Save Unk"), me);
+		me->ui->ShowMsgOK(sb.ToCString(), CSTR("Save Unk"), me);
 	}
 }
 
@@ -579,7 +578,7 @@ Bool __stdcall SSWR::AVIRead::AVIRWifiCaptureLiteForm::OnFormClosing(void *userO
 {
 	SSWR::AVIRead::AVIRWifiCaptureLiteForm *me = (SSWR::AVIRead::AVIRWifiCaptureLiteForm*)userObj;
 	Manage::HiResClock clk;
-	if (UI::MessageDialog::ShowYesNoDialog(CSTR("Are you sure to close?"), CSTR("Question"), me))
+	if (me->ui->ShowMsgYesNo(CSTR("Are you sure to close?"), CSTR("Question"), me))
 	{
 		if (clk.GetTimeDiff() < 30)
 		{

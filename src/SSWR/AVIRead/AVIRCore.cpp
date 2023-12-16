@@ -19,7 +19,6 @@
 #include "SSWR/AVIRead/AVIRSelStreamForm.h"
 #include "Text/MyStringW.h"
 #include "UI/FileDialog.h"
-#include "UI/MessageDialog.h"
 #include "UI/GUIForm.h"
 
 void __stdcall SSWR::AVIRead::AVIRCore::FormClosed(void *userObj, UI::GUIForm *frm)

@@ -3,7 +3,6 @@
 #include "SSWR/AVIRead/AVIRJTT808ServerForm.h"
 #include "Sync/ThreadUtil.h"
 #include "Text/MyStringFloat.h"
-#include "UI/MessageDialog.h"
 
 typedef struct
 {
@@ -28,11 +27,11 @@ void __stdcall SSWR::AVIRead::AVIRJTT808ServerForm::OnStartClicked(void *userObj
 		me->txtPort->GetText(sb);
 		if (!sb.ToUInt16(port))
 		{
-			UI::MessageDialog::ShowDialog(CSTR("Port is not valid"), CSTR("Error"), me);
+			me->ui->ShowMsgOK(CSTR("Port is not valid"), CSTR("Error"), me);
 		}
 		else if (port <= 0)
 		{
-			UI::MessageDialog::ShowDialog(CSTR("Port is out of range"), CSTR("Error"), me);
+			me->ui->ShowMsgOK(CSTR("Port is out of range"), CSTR("Error"), me);
 		}
 		else
 		{
@@ -40,7 +39,7 @@ void __stdcall SSWR::AVIRead::AVIRJTT808ServerForm::OnStartClicked(void *userObj
 			NEW_CLASS(me->svr, Net::TCPServer(me->core->GetSocketFactory(), port, me->log, OnClientConn, me, CSTR("TCP: "), true));
 			if (me->svr->IsV4Error())
 			{
-				UI::MessageDialog::ShowDialog(CSTR("Error in starting server"), CSTR("Error"), me);
+				me->ui->ShowMsgOK(CSTR("Error in starting server"), CSTR("Error"), me);
 			}
 			else
 			{

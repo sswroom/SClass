@@ -1,6 +1,5 @@
 #include "Stdafx.h"
 #include "SSWR/AVIRead/AVIRHexViewerGoToForm.h"
-#include "UI/MessageDialog.h"
 
 void __stdcall SSWR::AVIRead::AVIRHexViewerGoToForm::OnOKClicked(void *userObj)
 {
@@ -11,21 +10,21 @@ void __stdcall SSWR::AVIRead::AVIRHexViewerGoToForm::OnOKClicked(void *userObj)
 	UInt64 destOfst;
 	if (sb.GetLength() == 0)
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Please enter offset to go to"), CSTR("Hex Viewer"), me);
+		me->ui->ShowMsgOK(CSTR("Please enter offset to go to"), CSTR("Hex Viewer"), me);
 		return;
 	}
 	if (sb.v[0] == '+' || sb.v[0] == '-')
 	{
 		if (!Text::StrToUInt64(&sb.v[1], destOfst))
 		{
-			UI::MessageDialog::ShowDialog(CSTR("The offset is not in valid format"), CSTR("Hex Viewer"), me);
+			me->ui->ShowMsgOK(CSTR("The offset is not in valid format"), CSTR("Hex Viewer"), me);
 			return;
 		}
 		if (sb.v[0] == '-')
 		{
 			if (destOfst > me->currOfst)
 			{
-				UI::MessageDialog::ShowDialog(CSTR("The offset is out of range"), CSTR("Hex Viewer"), me);
+				me->ui->ShowMsgOK(CSTR("The offset is out of range"), CSTR("Hex Viewer"), me);
 				return;
 			}
 			destOfst -= me->currOfst;
@@ -39,13 +38,13 @@ void __stdcall SSWR::AVIRead::AVIRHexViewerGoToForm::OnOKClicked(void *userObj)
 	{
 		if (!sb.ToUInt64(destOfst))
 		{
-			UI::MessageDialog::ShowDialog(CSTR("The offset is not in valid format"), CSTR("Hex Viewer"), me);
+			me->ui->ShowMsgOK(CSTR("The offset is not in valid format"), CSTR("Hex Viewer"), me);
 			return;
 		}
 	}
 	if (destOfst > me->fileLen)
 	{
-		UI::MessageDialog::ShowDialog(CSTR("The offset is out of range"), CSTR("Hex Viewer"), me);
+		me->ui->ShowMsgOK(CSTR("The offset is out of range"), CSTR("Hex Viewer"), me);
 		return;
 	}
 	me->currOfst = destOfst;

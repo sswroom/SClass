@@ -4,7 +4,6 @@
 #include "UI/GUICore.h"
 #include "UI/GUIForm.h"
 #include "UI/GUIListBox.h"
-#include "UI/MessageDialog.h"
 
 UI::GUIListBox *lb;
 
@@ -14,12 +13,12 @@ void __stdcall OnLBDblClick(void *userObj)
 	NotNullPtr<Text::String> s;
 	if (lb->GetSelectedItemTextNew().SetTo(s))
 	{
-		UI::MessageDialog::ShowDialog(s->ToCString(), CSTR("GUI Test 5 LB DblClick"), me);
+		me->GetUI()->ShowMsgOK(s->ToCString(), CSTR("GUI Test 5 LB DblClick"), me);
 		s->Release();
 	}
 	else
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Error in getting the item value"), CSTR("GUI Test 5 LB DblClick"), me);
+		me->GetUI()->ShowMsgOK(CSTR("Error in getting the item value"), CSTR("GUI Test 5 LB DblClick"), me);
 	}
 }
 

@@ -5,7 +5,6 @@
 #include "Text/StringBuilderUTF8.h"
 #include "Text/UTF8Writer.h"
 #include "UI/FileDialog.h"
-#include "UI/MessageDialog.h"
 
 typedef enum
 {
@@ -43,7 +42,7 @@ void __stdcall SSWR::AVIRead::AVIRLogFileForm::OnLogsDblClk(void *userObj, UOSIn
 	SSWR::AVIRead::AVIRLogFileForm *me = (SSWR::AVIRead::AVIRLogFileForm *)userObj;
 	Text::StringBuilderUTF8 sb;
 	me->logFile->GetLogDescription(me->logLevel, itemIndex, sb);
-	UI::MessageDialog::ShowDialog(sb.ToCString(), CSTR("Log Detail"), me);
+	me->ui->ShowMsgOK(sb.ToCString(), CSTR("Log Detail"), me);
 }
 
 SSWR::AVIRead::AVIRLogFileForm::AVIRLogFileForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, IO::LogFile *logFile) : UI::GUIForm(parent, 1024, 768, ui)

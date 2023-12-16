@@ -13,7 +13,6 @@
 #include "Text/StringBuilderUTF8.h"
 #include "UI/Clipboard.h"
 #include "UI/GUITextFileView.h"
-#include "UI/MessageDialog.h"
 
 #define READBUFFSIZE 1048576
 
@@ -758,7 +757,7 @@ void UI::GUITextFileView::CopySelected()
 		{
 			mutUsage.EndUse();
 			DEL_CLASS(enc);
-			UI::MessageDialog::ShowDialog(CSTR("Failed to copy because selected area is too long"), CSTR("TextViewer"), this);
+			this->ui->ShowMsgOK(CSTR("Failed to copy because selected area is too long"), CSTR("TextViewer"), this);
 			return;
 		}
 		Data::ByteBuffer rbuff((UOSInt)(endOfst - startOfst));

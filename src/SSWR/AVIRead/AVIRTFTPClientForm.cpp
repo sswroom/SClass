@@ -6,7 +6,6 @@
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
 #include "UI/FileDialog.h"
-#include "UI/MessageDialog.h"
 
 void __stdcall SSWR::AVIRead::AVIRTFTPClientForm::OnRecvClick(void *userObj)
 {
@@ -17,7 +16,7 @@ void __stdcall SSWR::AVIRead::AVIRTFTPClientForm::OnRecvClick(void *userObj)
 	me->txtHost->GetText(sb);
 	if (!me->core->GetSocketFactory()->DNSResolveIP(sb.ToCString(), addr))
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Unknown Host"), CSTR("TFTP Client"), me);
+		me->ui->ShowMsgOK(CSTR("Unknown Host"), CSTR("TFTP Client"), me);
 		me->txtHost->Focus();
 		return;
 	}
@@ -25,7 +24,7 @@ void __stdcall SSWR::AVIRead::AVIRTFTPClientForm::OnRecvClick(void *userObj)
 	me->txtPort->GetText(sb);
 	if (!sb.ToUInt16(port))
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Port is not valid"), CSTR("TFTP Client"), me);
+		me->ui->ShowMsgOK(CSTR("Port is not valid"), CSTR("TFTP Client"), me);
 		me->txtPort->Focus();
 		return;
 	}
@@ -33,13 +32,13 @@ void __stdcall SSWR::AVIRead::AVIRTFTPClientForm::OnRecvClick(void *userObj)
 	me->txtFileName->GetText(sb);
 	if (sb.GetLength() <= 0)
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Please enter file name"), CSTR("TFTP Client"), me);
+		me->ui->ShowMsgOK(CSTR("Please enter file name"), CSTR("TFTP Client"), me);
 		me->txtFileName->Focus();
 		return;
 	}
 	if (sb.IndexOf(IO::Path::PATH_SEPERATOR) != INVALID_INDEX)
 	{
-		UI::MessageDialog::ShowDialog(CSTR("File Name is not valid"), CSTR("TFTP Client"), me);
+		me->ui->ShowMsgOK(CSTR("File Name is not valid"), CSTR("TFTP Client"), me);
 		me->txtFileName->Focus();
 		return;
 	}
@@ -49,14 +48,14 @@ void __stdcall SSWR::AVIRead::AVIRTFTPClientForm::OnRecvClick(void *userObj)
 	sptr = IO::Path::AppendPath(sbuff, sptr, sb.ToCString());
 	if (IO::Path::GetPathType(CSTRP(sbuff, sptr)) != IO::Path::PathType::Unknown)
 	{
-		UI::MessageDialog::ShowDialog(CSTR("File is already exist"), CSTR("TFTP Client"), me);
+		me->ui->ShowMsgOK(CSTR("File is already exist"), CSTR("TFTP Client"), me);
 		me->txtFileName->Focus();
 		return;
 	}
 	Net::TFTPClient cli(me->core->GetSocketFactory(), addr, port, me->core->GetLog());
 	if (cli.IsError())
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Error in starting client"), CSTR("TFTP Client"), me);
+		me->ui->ShowMsgOK(CSTR("Error in starting client"), CSTR("TFTP Client"), me);
 	}
 	else
 	{
@@ -69,22 +68,22 @@ void __stdcall SSWR::AVIRead::AVIRTFTPClientForm::OnRecvClick(void *userObj)
 			IO::FileStream fs(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 			if (fs.IsError())
 			{
-				UI::MessageDialog::ShowDialog(CSTR("Error in creating file"), CSTR("TFTP Client"), me);
+				me->ui->ShowMsgOK(CSTR("Error in creating file"), CSTR("TFTP Client"), me);
 			}
 			else if (fs.Write(buff, buffSize) == buffSize)
 			{
-				UI::MessageDialog::ShowDialog(CSTR("File received successfully"), CSTR("TFTP Client"), me);
+				me->ui->ShowMsgOK(CSTR("File received successfully"), CSTR("TFTP Client"), me);
 			}
 			else
 			{
 				fs.Close();
 				IO::Path::DeleteFile(sbuff);
-				UI::MessageDialog::ShowDialog(CSTR("Error in saving file"), CSTR("TFTP Client"), me);
+				me->ui->ShowMsgOK(CSTR("Error in saving file"), CSTR("TFTP Client"), me);
 			}
 		}
 		else
 		{
-			UI::MessageDialog::ShowDialog(CSTR("File receive failed"), CSTR("TFTP Client"), me);
+			me->ui->ShowMsgOK(CSTR("File receive failed"), CSTR("TFTP Client"), me);
 		}
 	}
 }
@@ -98,7 +97,7 @@ void __stdcall SSWR::AVIRead::AVIRTFTPClientForm::OnSendClick(void *userObj)
 	me->txtHost->GetText(sb);
 	if (!me->core->GetSocketFactory()->DNSResolveIP(sb.ToCString(), addr))
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Unknown Host"), CSTR("TFTP Client"), me);
+		me->ui->ShowMsgOK(CSTR("Unknown Host"), CSTR("TFTP Client"), me);
 		me->txtHost->Focus();
 		return;
 	}
@@ -106,7 +105,7 @@ void __stdcall SSWR::AVIRead::AVIRTFTPClientForm::OnSendClick(void *userObj)
 	me->txtPort->GetText(sb);
 	if (!sb.ToUInt16(port))
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Port is not valid"), CSTR("TFTP Client"), me);
+		me->ui->ShowMsgOK(CSTR("Port is not valid"), CSTR("TFTP Client"), me);
 		me->txtPort->Focus();
 		return;
 	}
@@ -119,22 +118,22 @@ void __stdcall SSWR::AVIRead::AVIRTFTPClientForm::OnSendClick(void *userObj)
 		Net::TFTPClient cli(me->core->GetSocketFactory(), addr, port, me->core->GetLog());
 		if (cli.IsError())
 		{
-			UI::MessageDialog::ShowDialog(CSTR("Error in starting client"), CSTR("TFTP Client"), me);
+			me->ui->ShowMsgOK(CSTR("Error in starting client"), CSTR("TFTP Client"), me);
 		}
 		else
 		{
 			IO::FileStream fs(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 			if (fs.IsError())
 			{
-				UI::MessageDialog::ShowDialog(CSTR("Error in opening file"), CSTR("TFTP Client"), me);
+				me->ui->ShowMsgOK(CSTR("Error in opening file"), CSTR("TFTP Client"), me);
 			}
 			else if (cli.SendFile(&fileName->v[i + 1], &fs))
 			{
-				UI::MessageDialog::ShowDialog(CSTR("File sent successfully"), CSTR("TFTP Client"), me);
+				me->ui->ShowMsgOK(CSTR("File sent successfully"), CSTR("TFTP Client"), me);
 			}
 			else
 			{
-				UI::MessageDialog::ShowDialog(CSTR("File sent failed"), CSTR("TFTP Client"), me);
+				me->ui->ShowMsgOK(CSTR("File sent failed"), CSTR("TFTP Client"), me);
 			}
 		}
 	}

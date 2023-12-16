@@ -4,7 +4,6 @@
 #include "SSWR/AVIRead/AVIRMACManagerEntryForm.h"
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
-#include "UI/MessageDialog.h"
 
 void __stdcall SSWR::AVIRead::AVIRMACManagerEntryForm::OnOKClicked(void *userObj)
 {
@@ -17,7 +16,7 @@ void __stdcall SSWR::AVIRead::AVIRMACManagerEntryForm::OnOKClicked(void *userObj
 	{
 		if (sb.ToString()[i] >= 0x80)
 		{
-			UI::MessageDialog::ShowDialog(CSTR("Non-ASCII Char found"), CSTR("MAC Entry"), me);
+			me->ui->ShowMsgOK(CSTR("Non-ASCII Char found"), CSTR("MAC Entry"), me);
 			return;
 		}
 	}

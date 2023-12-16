@@ -2,7 +2,6 @@
 #include "SSWR/AVIRead/AVIRWMIForm.h"
 #include "Text/MyStringW.h"
 #include "Text/StringBuilder.h"
-#include "UI/MessageDialog.h"
 #include "Win32/WMIQuery.h"
 
 void __stdcall SSWR::AVIRead::AVIRWMIForm::OnOKClick(void *userObj)
@@ -19,7 +18,7 @@ void __stdcall SSWR::AVIRead::AVIRWMIForm::OnOKClick(void *userObj)
 		if (db->IsError())
 		{
 			db.Delete();
-			UI::MessageDialog::ShowDialog(CSTR("Error in opening the namespace"), CSTR("Error"), me);
+			me->ui->ShowMsgOK(CSTR("Error in opening the namespace"), CSTR("Error"), me);
 		}
 		else
 		{
@@ -49,7 +48,7 @@ void __stdcall SSWR::AVIRead::AVIRWMIForm::OnDblClicked(void *userObj)
 		if (db->IsError())
 		{
 			db.Delete();
-			UI::MessageDialog::ShowDialog(CSTR("Error in opening the namespace"), CSTR("Error"), me);
+			me->ui->ShowMsgOK(CSTR("Error in opening the namespace"), CSTR("Error"), me);
 		}
 		else
 		{

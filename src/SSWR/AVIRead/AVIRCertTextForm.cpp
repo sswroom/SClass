@@ -3,7 +3,6 @@
 #include "SSWR/AVIRead/AVIRCertTextForm.h"
 #include "Text/TextBinEnc/Base64Enc.h"
 #include "Text/TextBinEnc/HexTextBinEnc.h"
-#include "UI/MessageDialog.h"
 
 void __stdcall SSWR::AVIRead::AVIRCertTextForm::OnLoadClicked(void *userObj)
 {
@@ -12,7 +11,7 @@ void __stdcall SSWR::AVIRead::AVIRCertTextForm::OnLoadClicked(void *userObj)
 	me->txtText->GetText(sb);
 	if (sb.GetLength() == 0)
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Please enter text to load first"), CSTR("Certificate Load from Text"), me);
+		me->ui->ShowMsgOK(CSTR("Please enter text to load first"), CSTR("Certificate Load from Text"), me);
 		return;
 	}
 	UOSInt encType = me->cboEncType->GetSelectedIndex();
@@ -24,7 +23,7 @@ void __stdcall SSWR::AVIRead::AVIRCertTextForm::OnLoadClicked(void *userObj)
 		buffSize = b64.CalcBinSize(sb.ToString(), sb.GetLength());
 		if (buffSize < 20)
 		{
-			UI::MessageDialog::ShowDialog(CSTR("Data too short"), CSTR("Certificate Load from Text"), me);
+			me->ui->ShowMsgOK(CSTR("Data too short"), CSTR("Certificate Load from Text"), me);
 			return;
 		}
 		buff = MemAlloc(UInt8, buffSize);
@@ -36,7 +35,7 @@ void __stdcall SSWR::AVIRead::AVIRCertTextForm::OnLoadClicked(void *userObj)
 		buffSize = hexEnc.CalcBinSize(sb.ToString(), sb.GetLength());
 		if (buffSize < 20)
 		{
-			UI::MessageDialog::ShowDialog(CSTR("Data too short"), CSTR("Certificate Load from Text"), me);
+			me->ui->ShowMsgOK(CSTR("Data too short"), CSTR("Certificate Load from Text"), me);
 			return;
 		}
 		buff = MemAlloc(UInt8, buffSize);
@@ -44,7 +43,7 @@ void __stdcall SSWR::AVIRead::AVIRCertTextForm::OnLoadClicked(void *userObj)
 	}
 	else
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Unknown Enc Type"), CSTR("Certificate Load from Text"), me);
+		me->ui->ShowMsgOK(CSTR("Unknown Enc Type"), CSTR("Certificate Load from Text"), me);
 		return;
 	}
 	NotNullPtr<Crypto::Cert::X509File> file;
@@ -57,7 +56,7 @@ void __stdcall SSWR::AVIRead::AVIRCertTextForm::OnLoadClicked(void *userObj)
 	else
 	{
 		MemFree(buff);
-		UI::MessageDialog::ShowDialog(CSTR("Unknown Format"), CSTR("Certificate Load from Text"), me);
+		me->ui->ShowMsgOK(CSTR("Unknown Format"), CSTR("Certificate Load from Text"), me);
 		return;
 	}
 }

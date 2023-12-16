@@ -2,7 +2,6 @@
 #include "Data/Sort/ArtificialQuickSort.h"
 #include "SSWR/AVIRead/AVIRServiceCreateForm.h"
 #include "SSWR/AVIRead/AVIRServiceForm.h"
-#include "UI/MessageDialog.h"
 
 void __stdcall SSWR::AVIRead::AVIRServiceForm::OnServiceSelChg(void *userObj)
 {
@@ -103,11 +102,11 @@ void __stdcall SSWR::AVIRead::AVIRServiceForm::OnDeleteClicked(void *userObj)
 		sb.AppendC(UTF8STRC("Are you sure to delete service \""));
 		sb.Append(s);
 		sb.AppendC(UTF8STRC("\"?"));
-		if (UI::MessageDialog::ShowYesNoDialog(sb.ToCString(), CSTR("Service"), me))
+		if (me->ui->ShowMsgYesNo(sb.ToCString(), CSTR("Service"), me))
 		{
 			if (!me->svcMgr.ServiceDelete(s->ToCString()))
 			{
-				UI::MessageDialog::ShowDialog(CSTR("Error in deleting service"), CSTR("Service"), me);
+				me->ui->ShowMsgOK(CSTR("Error in deleting service"), CSTR("Service"), me);
 			}
 			else
 			{

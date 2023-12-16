@@ -1,7 +1,6 @@
 #include "Stdafx.h"
 #include "Data/ByteTool.h"
 #include "SSWR/AVIRead/AVIRLDAPClientForm.h"
-#include "UI/MessageDialog.h"
 
 void __stdcall SSWR::AVIRead::AVIRLDAPClientForm::OnConnectClicked(void *userObj)
 {
@@ -21,19 +20,19 @@ void __stdcall SSWR::AVIRead::AVIRLDAPClientForm::OnConnectClicked(void *userObj
 	me->txtHost->GetText(sb);
 	if (sb.GetLength() == 0)
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Please enter Host"), CSTR("LDAP Client"), me);
+		me->ui->ShowMsgOK(CSTR("Please enter Host"), CSTR("LDAP Client"), me);
 		return;
 	}
 	if (!sockf->DNSResolveIP(sb.ToCString(), addr))
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Error in resolving host"), CSTR("LDAP Client"), me);
+		me->ui->ShowMsgOK(CSTR("Error in resolving host"), CSTR("LDAP Client"), me);
 		return;
 	}
 	sb.ClearStr();
 	me->txtPort->GetText(sb);
 	if (!sb.ToUInt16(port))
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Please enter valid Port number"), CSTR("LDAP Client"), me);
+		me->ui->ShowMsgOK(CSTR("Please enter valid Port number"), CSTR("LDAP Client"), me);
 		return;
 	}
 	NEW_CLASS(me->cli, Net::LDAPClient(sockf, addr, port, 15000));
@@ -41,7 +40,7 @@ void __stdcall SSWR::AVIRead::AVIRLDAPClientForm::OnConnectClicked(void *userObj
 	{
 		DEL_CLASS(me->cli);
 		me->cli = 0;
-		UI::MessageDialog::ShowDialog(CSTR("Error in connecting to LDAP Server"), CSTR("LDAP Client"), me);
+		me->ui->ShowMsgOK(CSTR("Error in connecting to LDAP Server"), CSTR("LDAP Client"), me);
 		return;
 	}
 	Bool succ = false;
@@ -65,7 +64,7 @@ void __stdcall SSWR::AVIRead::AVIRLDAPClientForm::OnConnectClicked(void *userObj
 	{
 		DEL_CLASS(me->cli);
 		me->cli = 0;
-		UI::MessageDialog::ShowDialog(CSTR("Error in binding to LDAP Server"), CSTR("LDAP Client"), me);
+		me->ui->ShowMsgOK(CSTR("Error in binding to LDAP Server"), CSTR("LDAP Client"), me);
 		return;
 	}
 }
@@ -84,7 +83,7 @@ void __stdcall SSWR::AVIRead::AVIRLDAPClientForm::OnSearchClicked(void *userObj)
 	me->txtSearchFilter->GetText(sb2);
 	if (!me->cli->Search(sb.ToCString(), (Net::LDAPClient::ScopeType)(OSInt)me->cboSearchScope->GetSelectedItem(), (Net::LDAPClient::DerefType)(OSInt)me->cboSearchDerefAliases->GetSelectedItem(), 0, 0, false, sb2.ToString(), &results))
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Error in searching from server"), CSTR("LDAP Client"), me);
+		me->ui->ShowMsgOK(CSTR("Error in searching from server"), CSTR("LDAP Client"), me);
 	}
 	else
 	{

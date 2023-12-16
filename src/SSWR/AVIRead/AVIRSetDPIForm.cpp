@@ -2,7 +2,6 @@
 #include "Math/Math.h"
 #include "SSWR/AVIRead/AVIRSetDPIForm.h"
 #include "Text/MyStringFloat.h"
-#include "UI/MessageDialog.h"
 
 void __stdcall SSWR::AVIRead::AVIRSetDPIForm::OnOKClicked(void *userObj)
 {
@@ -13,18 +12,18 @@ void __stdcall SSWR::AVIRead::AVIRSetDPIForm::OnOKClicked(void *userObj)
 	me->txtDesktopDPI->GetText(sb);
 	if (!Text::StrToDouble(sb.ToString(), ddpi))
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Desktop DPI is not number"), CSTR("Error"), me);
+		me->ui->ShowMsgOK(CSTR("Desktop DPI is not number"), CSTR("Error"), me);
 		return;
 	}
 	if (ddpi <= 0)
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Desktop DPI is not valid"), CSTR("Error"), me);
+		me->ui->ShowMsgOK(CSTR("Desktop DPI is not valid"), CSTR("Error"), me);
 		return;
 	}
 	hdpi = UOSInt2Double(me->hsbDPI->GetPos()) * 0.1;
 	if (ddpi > hdpi)
 	{
-		if (!UI::MessageDialog::ShowYesNoDialog(CSTR("Are you sure to set larger desktop DPI (reducing object size)?"), CSTR("Confirm"), me))
+		if (!me->ui->ShowMsgYesNo(CSTR("Are you sure to set larger desktop DPI (reducing object size)?"), CSTR("Confirm"), me))
 		{
 			return;
 		}

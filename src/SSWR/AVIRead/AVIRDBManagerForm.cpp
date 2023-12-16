@@ -30,7 +30,6 @@
 #include "Text/MyString.h"
 #include "UI/Clipboard.h"
 #include "UI/FileDialog.h"
-#include "UI/MessageDialog.h"
 #include "UtilUI/TextInputDialog.h"
 
 #define MAX_ROW_CNT 1000
@@ -114,7 +113,7 @@ void __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnConnDblClicked(void *userObj)
 		}
 		else
 		{
-			UI::MessageDialog::ShowDialog(CSTR("Error in connecting to database"), CSTR("DB Manager"), me);
+			me->ui->ShowMsgOK(CSTR("Error in connecting to database"), CSTR("DB Manager"), me);
 		}
 	}
 }
@@ -292,7 +291,7 @@ void __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnDatabaseDeleteClicked(void *u
 				sb.AppendC(UTF8STRC("Are you sure to delete database "));
 				sb.Append(dbName);
 				sb.AppendC(UTF8STRC("? This process cannot be undo."));
-				if (UI::MessageDialog::ShowYesNoDialog(sb.ToCString(), CSTR("DB Manager"), me))
+				if (me->ui->ShowMsgYesNo(sb.ToCString(), CSTR("DB Manager"), me))
 				{
 					if (((DB::DBTool*)me->currDB)->DeleteDatabase(dbName->ToCString()))
 					{
@@ -305,7 +304,7 @@ void __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnDatabaseDeleteClicked(void *u
 						sb.Append(dbName);
 						sb.AppendC(UTF8STRC(": "));
 						me->currDB->GetLastErrorMsg(sb);
-						UI::MessageDialog::ShowDialog(sb.ToCString(), CSTR("DB Manager"), me);
+						me->ui->ShowMsgOK(sb.ToCString(), CSTR("DB Manager"), me);
 					}
 				}
 				dbName->Release();
@@ -313,7 +312,7 @@ void __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnDatabaseDeleteClicked(void *u
 		}
 		else
 		{
-			UI::MessageDialog::ShowDialog(CSTR("Selected database is read-only"), CSTR("DB Manager"), me);
+			me->ui->ShowMsgOK(CSTR("Selected database is read-only"), CSTR("DB Manager"), me);
 		}
 	}
 }
@@ -340,14 +339,14 @@ void __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnDatabaseNewClicked(void *user
 						sb.ClearStr();
 						sb.AppendC(UTF8STRC("Error in creating database: "));
 						me->currDB->GetLastErrorMsg(sb);
-						UI::MessageDialog::ShowDialog(sb.ToCString(), CSTR("DB Manager"), me);
+						me->ui->ShowMsgOK(sb.ToCString(), CSTR("DB Manager"), me);
 					}
 				}
 			}
 		}
 		else
 		{
-			UI::MessageDialog::ShowDialog(CSTR("Selected database is read-only"), CSTR("DB Manager"), me);
+			me->ui->ShowMsgOK(CSTR("Selected database is read-only"), CSTR("DB Manager"), me);
 		}
 	}
 }
@@ -387,7 +386,7 @@ void __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnSQLExecClicked(void *userObj)
 				{
 					sb.ClearStr();
 					me->currDB->GetLastErrorMsg(sb);
-					UI::MessageDialog::ShowDialog(sb.ToCString(), CSTR("DB Manager"), me);
+					me->ui->ShowMsgOK(sb.ToCString(), CSTR("DB Manager"), me);
 				}
 			}
 		}
@@ -855,7 +854,7 @@ void SSWR::AVIRead::AVIRDBManagerForm::RunSQLFile(DB::ReadingDBTool *db, NotNull
 			{
 				sb.ClearStr();
 				this->currDB->GetLastErrorMsg(sb);
-				UI::MessageDialog::ShowDialog(sb.ToCString(), CSTR("DB Manager"), this);
+				this->ui->ShowMsgOK(sb.ToCString(), CSTR("DB Manager"), this);
 				break;
 			}
 			sb.ClearStr();
@@ -888,7 +887,7 @@ void SSWR::AVIRead::AVIRDBManagerForm::CopyTableCreate(DB::SQLType sqlType, Bool
 	{
 		if (!DB::SQLGenerator::GenCreateTableCmd(sql, OPTSTR_CSTR(schemaName), nntableName->ToCString(), tabDef, true))
 		{
-			UI::MessageDialog::ShowDialog(CSTR("Error in generating Create SQL command"), CSTR("DB Manager"), this);
+			this->ui->ShowMsgOK(CSTR("Error in generating Create SQL command"), CSTR("DB Manager"), this);
 		}
 		else
 		{
@@ -898,7 +897,7 @@ void SSWR::AVIRead::AVIRDBManagerForm::CopyTableCreate(DB::SQLType sqlType, Bool
 	}
 	else
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Error in getting table definition"), CSTR("DB Manager"), this);
+		this->ui->ShowMsgOK(CSTR("Error in getting table definition"), CSTR("DB Manager"), this);
 	}
 	OPTSTR_DEL(tableName);
 	OPTSTR_DEL(schemaName);
@@ -911,7 +910,7 @@ void SSWR::AVIRead::AVIRDBManagerForm::ExportTableData(DB::SQLType sqlType, Bool
 	NotNullPtr<DB::ReadingDB> db;
 	if (!db.Set(this->currDB))
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Please select database first"), CSTR("DB Manager"), this);
+		this->ui->ShowMsgOK(CSTR("Please select database first"), CSTR("DB Manager"), this);
 		return;
 	}
 	Optional<Text::String> schemaName = this->lbSchema->GetSelectedItemTextNew();
@@ -925,7 +924,7 @@ void SSWR::AVIRead::AVIRDBManagerForm::ExportTableData(DB::SQLType sqlType, Bool
 	}
 	if (!tableName.SetTo(s))
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Please select table first"), CSTR("DB Manager"), this);
+		this->ui->ShowMsgOK(CSTR("Please select table first"), CSTR("DB Manager"), this);
 		return;
 	}
 	sptr = s->ConcatTo(sptr);
@@ -940,7 +939,7 @@ void SSWR::AVIRead::AVIRDBManagerForm::ExportTableData(DB::SQLType sqlType, Bool
 		IO::FileStream fs(dlg.GetFileName(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 		if (!DB::DBExporter::GenerateInsertSQLs(db, sqlType, axisAware, OPTSTR_CSTR(schemaName), s->ToCString(), this->currCond, fs))
 		{
-			UI::MessageDialog::ShowDialog(CSTR("Error in reading table data"), CSTR("DB Manager"), this);
+			this->ui->ShowMsgOK(CSTR("Error in reading table data"), CSTR("DB Manager"), this);
 		}
 	}
 	OPTSTR_DEL(tableName);
@@ -954,7 +953,7 @@ void SSWR::AVIRead::AVIRDBManagerForm::ExportTableCSV()
 	NotNullPtr<DB::ReadingDB> db;
 	if (!db.Set(this->currDB))
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Please select database first"), CSTR("DB Manager"), this);
+		this->ui->ShowMsgOK(CSTR("Please select database first"), CSTR("DB Manager"), this);
 		return;
 	}
 	Optional<Text::String> schemaName = this->lbSchema->GetSelectedItemTextNew();
@@ -980,7 +979,7 @@ void SSWR::AVIRead::AVIRDBManagerForm::ExportTableCSV()
 			IO::FileStream fs(dlg.GetFileName(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 			if (!DB::DBExporter::GenerateCSV(db, OPTSTR_CSTR(schemaName), tableName->ToCString(), this->currCond, CSTR("\"null\""), fs, 65001))
 			{
-				UI::MessageDialog::ShowDialog(CSTR("Error in reading table data"), CSTR("DB Manager"), this);
+				this->ui->ShowMsgOK(CSTR("Error in reading table data"), CSTR("DB Manager"), this);
 			}
 		}
 		tableName->Release();
@@ -995,7 +994,7 @@ void SSWR::AVIRead::AVIRDBManagerForm::ExportTableSQLite()
 	NotNullPtr<DB::ReadingDB> db;
 	if (!db.Set(this->currDB))
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Please select database first"), CSTR("DB Manager"), this);
+		this->ui->ShowMsgOK(CSTR("Please select database first"), CSTR("DB Manager"), this);
 		return;
 	}
 	Optional<Text::String> schemaName = this->lbSchema->GetSelectedItemTextNew();
@@ -1022,7 +1021,7 @@ void SSWR::AVIRead::AVIRDBManagerForm::ExportTableSQLite()
 			DB::SQLiteFile sqlite(dlg.GetFileName());
 			if (!DB::DBExporter::GenerateSQLite(db, OPTSTR_CSTR(schemaName), tableName->ToCString(), this->currCond, sqlite, &sb))
 			{
-				UI::MessageDialog::ShowDialog(sb.ToCString(), CSTR("DB Manager"), this);
+				this->ui->ShowMsgOK(sb.ToCString(), CSTR("DB Manager"), this);
 			}
 		}
 		tableName->Release();
@@ -1037,7 +1036,7 @@ void SSWR::AVIRead::AVIRDBManagerForm::ExportTableHTML()
 	NotNullPtr<DB::ReadingDB> db;
 	if (!db.Set(this->currDB))
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Please select database first"), CSTR("DB Manager"), this);
+		this->ui->ShowMsgOK(CSTR("Please select database first"), CSTR("DB Manager"), this);
 		return;
 	}
 	Optional<Text::String> schemaName = this->lbSchema->GetSelectedItemTextNew();
@@ -1063,7 +1062,7 @@ void SSWR::AVIRead::AVIRDBManagerForm::ExportTableHTML()
 			IO::FileStream fs(dlg.GetFileName(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 			if (!DB::DBExporter::GenerateHTML(db, OPTSTR_CSTR(schemaName), tableName->ToCString(), this->currCond, fs, 65001))
 			{
-				UI::MessageDialog::ShowDialog(CSTR("Error in exporting as PList"), CSTR("DB Manager"), this);
+				this->ui->ShowMsgOK(CSTR("Error in exporting as PList"), CSTR("DB Manager"), this);
 			}
 		}
 		tableName->Release();
@@ -1078,7 +1077,7 @@ void SSWR::AVIRead::AVIRDBManagerForm::ExportTablePList()
 	NotNullPtr<DB::ReadingDB> db;
 	if (!db.Set(this->currDB))
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Please select database first"), CSTR("DB Manager"), this);
+		this->ui->ShowMsgOK(CSTR("Please select database first"), CSTR("DB Manager"), this);
 		return;
 	}
 	Optional<Text::String> schemaName = this->lbSchema->GetSelectedItemTextNew();
@@ -1104,7 +1103,7 @@ void SSWR::AVIRead::AVIRDBManagerForm::ExportTablePList()
 			IO::FileStream fs(dlg.GetFileName(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 			if (!DB::DBExporter::GeneratePList(db, OPTSTR_CSTR(schemaName), tableName->ToCString(), this->currCond, fs, 65001))
 			{
-				UI::MessageDialog::ShowDialog(CSTR("Error in exporting as PList"), CSTR("DB Manager"), this);
+				this->ui->ShowMsgOK(CSTR("Error in exporting as PList"), CSTR("DB Manager"), this);
 			}
 		}
 		tableName->Release();
@@ -1119,7 +1118,7 @@ void SSWR::AVIRead::AVIRDBManagerForm::ExportTableXLSX()
 	NotNullPtr<DB::ReadingDB> db;
 	if (!db.Set(this->currDB))
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Please select database first"), CSTR("DB Manager"), this);
+		this->ui->ShowMsgOK(CSTR("Please select database first"), CSTR("DB Manager"), this);
 		return;
 	}
 	Optional<Text::String> schemaName = this->lbSchema->GetSelectedItemTextNew();
@@ -1146,7 +1145,7 @@ void SSWR::AVIRead::AVIRDBManagerForm::ExportTableXLSX()
 			IO::FileStream fs(dlg.GetFileName(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 			if (!DB::DBExporter::GenerateXLSX(db, OPTSTR_CSTR(schemaName), tableName->ToCString(), this->currCond, fs, &sb))
 			{
-				UI::MessageDialog::ShowDialog(sb.ToCString(), CSTR("DB Manager"), this);
+				this->ui->ShowMsgOK(sb.ToCString(), CSTR("DB Manager"), this);
 			}
 		}
 		tableName->Release();
@@ -1161,7 +1160,7 @@ void SSWR::AVIRead::AVIRDBManagerForm::ExportTableExcelXML()
 	NotNullPtr<DB::ReadingDB> db;
 	if (!db.Set(this->currDB))
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Please select database first"), CSTR("DB Manager"), this);
+		this->ui->ShowMsgOK(CSTR("Please select database first"), CSTR("DB Manager"), this);
 		return;
 	}
 	Optional<Text::String> schemaName = this->lbSchema->GetSelectedItemTextNew();
@@ -1188,7 +1187,7 @@ void SSWR::AVIRead::AVIRDBManagerForm::ExportTableExcelXML()
 			IO::FileStream fs(dlg.GetFileName(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 			if (!DB::DBExporter::GenerateExcelXML(db, OPTSTR_CSTR(schemaName), tableName->ToCString(), this->currCond, fs, &sb))
 			{
-				UI::MessageDialog::ShowDialog(sb.ToCString(), CSTR("DB Manager"), this);
+				this->ui->ShowMsgOK(sb.ToCString(), CSTR("DB Manager"), this);
 			}
 		}
 		tableName->Release();
@@ -1578,7 +1577,7 @@ void SSWR::AVIRead::AVIRDBManagerForm::EventMenuClicked(UInt16 cmdId)
 				}
 				else
 				{
-					UI::MessageDialog::ShowDialog(CSTR("This connection is not supported"), CSTR("DB Manager"), this);
+					this->ui->ShowMsgOK(CSTR("This connection is not supported"), CSTR("DB Manager"), this);
 				}
 			}
 		}
@@ -1601,7 +1600,7 @@ void SSWR::AVIRead::AVIRDBManagerForm::EventMenuClicked(UInt16 cmdId)
 						sb.ClearStr();
 						sb.AppendC(UTF8STRC("Error in creating schema: "));
 						this->currDB->GetLastErrorMsg(sb);
-						UI::MessageDialog::ShowDialog(sb.ToCString(), CSTR("DB Manager"), this);
+						this->ui->ShowMsgOK(sb.ToCString(), CSTR("DB Manager"), this);
 					}
 				}
 			}
@@ -1619,7 +1618,7 @@ void SSWR::AVIRead::AVIRDBManagerForm::EventMenuClicked(UInt16 cmdId)
 					sb.AppendC(UTF8STRC("Are you sure to delete schema "));
 					sb.Append(schemaName);
 					sb.AppendC(UTF8STRC("? This process cannot be undo."));
-					if (UI::MessageDialog::ShowYesNoDialog(sb.ToCString(), CSTR("DB Manager"), this))
+					if (this->ui->ShowMsgYesNo(sb.ToCString(), CSTR("DB Manager"), this))
 					{
 						if (((DB::DBTool*)this->currDB)->DeleteSchema(schemaName->ToCString()))
 						{
@@ -1632,7 +1631,7 @@ void SSWR::AVIRead::AVIRDBManagerForm::EventMenuClicked(UInt16 cmdId)
 							sb.Append(schemaName);
 							sb.AppendC(UTF8STRC(": "));
 							this->currDB->GetLastErrorMsg(sb);
-							UI::MessageDialog::ShowDialog(sb.ToCString(), CSTR("DB Manager"), this);
+							this->ui->ShowMsgOK(sb.ToCString(), CSTR("DB Manager"), this);
 						}
 					}
 				}
@@ -1649,7 +1648,7 @@ void SSWR::AVIRead::AVIRDBManagerForm::EventMenuClicked(UInt16 cmdId)
 			NotNullPtr<Text::String> nntableName;
 			if (!tableName.SetTo(nntableName))
 			{
-				UI::MessageDialog::ShowDialog(CSTR("Select table first"), CSTR("DB Manager"), this);
+				this->ui->ShowMsgOK(CSTR("Select table first"), CSTR("DB Manager"), this);
 			}
 			else if (db.Set(this->currDB))
 			{
@@ -1660,7 +1659,7 @@ void SSWR::AVIRead::AVIRDBManagerForm::EventMenuClicked(UInt16 cmdId)
 			}
 			else
 			{
-				UI::MessageDialog::ShowDialog(CSTR("Select database first"), CSTR("DB Manager"), this);
+				this->ui->ShowMsgOK(CSTR("Select database first"), CSTR("DB Manager"), this);
 			}
 			OPTSTR_DEL(tableName);
 			OPTSTR_DEL(schemaName);

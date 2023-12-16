@@ -4,7 +4,6 @@
 #include "Net/SSLEngineFactory.h"
 #include "SSWR/AVIRead/AVIRSolarEdgeForm.h"
 #include "UI/GUIComboBoxUtil.h"
-#include "UI/MessageDialog.h"
 
 void __stdcall SSWR::AVIRead::AVIRSolarEdgeForm::OnAPIKeyClicked(void *userObj)
 {
@@ -26,7 +25,7 @@ void __stdcall SSWR::AVIRead::AVIRSolarEdgeForm::OnAPIKeyClicked(void *userObj)
 		me->txtAPIKey->GetText(sb);
 		if (sb.GetLength() == 0)
 		{
-			UI::MessageDialog::ShowDialog(CSTR("Please enter API Key"), CSTR("SolarEdge API"), me);
+			me->ui->ShowMsgOK(CSTR("Please enter API Key"), CSTR("SolarEdge API"), me);
 			return;
 		}
 		NEW_CLASS(me->seAPI, Net::SolarEdgeAPI(me->core->GetSocketFactory(), me->ssl, sb.ToCString()));
@@ -112,7 +111,7 @@ void __stdcall SSWR::AVIRead::AVIRSolarEdgeForm::OnAPIKeyClicked(void *userObj)
 		{
 			DEL_CLASS(me->seAPI);
 			me->seAPI = 0;
-			UI::MessageDialog::ShowDialog(CSTR("API Key error"), CSTR("SolarEdge API"), me);
+			me->ui->ShowMsgOK(CSTR("API Key error"), CSTR("SolarEdge API"), me);
 			return;
 		}
 	}

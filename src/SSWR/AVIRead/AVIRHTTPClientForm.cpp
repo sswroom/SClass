@@ -22,7 +22,6 @@
 #include "Text/TextBinEnc/Base64Enc.h"
 #include "Text/TextBinEnc/FormEncoding.h"
 #include "UI/FileDialog.h"
-#include "UI/MessageDialog.h"
 
 void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnUserAgentClicked(void *userObj)
 {
@@ -50,7 +49,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnRequestClicked(void *userObj
 	me->txtURL->GetText(sb);
 	if (!sb.StartsWith(UTF8STRC("http://")) && !sb.StartsWith(UTF8STRC("https://")))
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Please enter valid http URL"), CSTR("Request"), me);
+		me->ui->ShowMsgOK(CSTR("Please enter valid http URL"), CSTR("Request"), me);
 		return;
 	}
 
@@ -372,7 +371,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnSaveClicked(void *userObj)
 		}
 		if (!succ)
 		{
-			UI::MessageDialog::ShowDialog(CSTR("Error in storing to file"), CSTR("HTTP Client"), me);
+			me->ui->ShowMsgOK(CSTR("Error in storing to file"), CSTR("HTTP Client"), me);
 		}
 	}
 }

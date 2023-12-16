@@ -7,7 +7,7 @@
 #include "Text/MyStringFloat.h"
 #include "UI/GUIClientControl.h"
 #include "UI/GUIControl.h"
-#include "UI/GUIDragDropGTK.h"
+#include "UI/GTK/GTKDragDrop.h"
 #include <gtk/gtk.h>
 #include <stdio.h>
 
@@ -68,7 +68,7 @@ UI::GUIControl::~GUIControl()
 {
 	if (this->dropHdlr)
 	{
-		UI::GUIDragDropGTK *dragDrop = (UI::GUIDragDropGTK*)this->dropHdlr;
+		UI::GTK::GTKDragDrop *dragDrop = (UI::GTK::GTKDragDrop*)this->dropHdlr;
 		DEL_CLASS(dragDrop);
 	}
 	SDEL_STRING(this->fontName);
@@ -1613,13 +1613,13 @@ UI::GUIControl::DragErrorType UI::GUIControl::HandleDropEvents(UI::GUIDropHandle
 {
 	if (this->dropHdlr)
 	{
-		UI::GUIDragDropGTK *dragDrop = (UI::GUIDragDropGTK*)this->dropHdlr;
+		UI::GTK::GTKDragDrop *dragDrop = (UI::GTK::GTKDragDrop*)this->dropHdlr;
 		dragDrop->SetHandler(hdlr);
 	}
 	else
 	{
-		UI::GUIDragDropGTK *dragDrop;
-		NEW_CLASS(dragDrop, UI::GUIDragDropGTK(this->hwnd, hdlr));
+		UI::GTK::GTKDragDrop *dragDrop;
+		NEW_CLASS(dragDrop, UI::GTK::GTKDragDrop(this->hwnd, hdlr));
 		this->dropHdlr = dragDrop;
 	}
 	return UI::GUIControl::DET_NOERROR;

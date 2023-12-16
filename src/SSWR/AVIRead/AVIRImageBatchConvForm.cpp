@@ -11,7 +11,6 @@
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
 #include "UI/FolderDialog.h"
-#include "UI/MessageDialog.h"
 
 void __stdcall SSWR::AVIRead::AVIRImageBatchConvForm::OnBrowseClicked(void *userObj)
 {
@@ -45,13 +44,13 @@ void __stdcall SSWR::AVIRead::AVIRImageBatchConvForm::OnConvertClicked(void *use
 	csess.quality = Text::StrToInt32(sbuff);
 	if (csess.quality <= 0 || csess.quality > 100)
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Invalid Quality"), CSTR("Error"), me);
+		me->ui->ShowMsgOK(CSTR("Invalid Quality"), CSTR("Error"), me);
 		return;
 	}
 	sptr = me->txtDir->GetText(sbuff);
 	if (IO::Path::GetPathType(CSTRP(sbuff, sptr)) != IO::Path::PathType::Directory)
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Not a directory"), CSTR("Error"), me);
+		me->ui->ShowMsgOK(CSTR("Not a directory"), CSTR("Error"), me);
 		return;
 	}
 	if (sptr[-1] != IO::Path::PATH_SEPERATOR)
@@ -110,7 +109,7 @@ void __stdcall SSWR::AVIRead::AVIRImageBatchConvForm::OnConvertClicked(void *use
 	DEL_CLASS(csess.exporter);
 	if (csess.errMsg)
 	{
-		UI::MessageDialog::ShowDialog(csess.errMsg->ToCString(), CSTR("Image Batch Convert"), me);
+		me->ui->ShowMsgOK(csess.errMsg->ToCString(), CSTR("Image Batch Convert"), me);
 		csess.errMsg->Release();
 		csess.errMsg = 0;
 	}

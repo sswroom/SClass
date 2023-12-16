@@ -3,7 +3,6 @@
 #include "SSWR/AVIRead/AVIRProgramLinksCreateForm.h"
 #include "SSWR/AVIRead/AVIRProgramLinksForm.h"
 #include "Text/StringComparatorFastNN.h"
-#include "UI/MessageDialog.h"
 
 void __stdcall SSWR::AVIRead::AVIRProgramLinksForm::OnItemsSelChg(void *userObj)
 {
@@ -76,7 +75,7 @@ void __stdcall SSWR::AVIRead::AVIRProgramLinksForm::OnDeleteClicked(void *userOb
 		sb.AppendC(UTF8STRC("Are you sure to delete program link \""));
 		sb.Append(s);
 		sb.AppendUTF8Char('\"');
-		if (UI::MessageDialog::ShowYesNoDialog(sb.ToCString(), CSTR("Program Links"), me))
+		if (me->ui->ShowMsgYesNo(sb.ToCString(), CSTR("Program Links"), me))
 		{
 			if (!me->progMgr.DeleteLink(s->ToCString()))
 			{
@@ -84,7 +83,7 @@ void __stdcall SSWR::AVIRead::AVIRProgramLinksForm::OnDeleteClicked(void *userOb
 				sb.AppendC(UTF8STRC("Error in deleting program link \""));
 				sb.Append(s);
 				sb.AppendUTF8Char('\"');
-				UI::MessageDialog::ShowDialog(sb.ToCString(), CSTR("Program Links"), me);
+				me->ui->ShowMsgOK(sb.ToCString(), CSTR("Program Links"), me);
 			}
 			else
 			{

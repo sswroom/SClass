@@ -4,7 +4,6 @@
 #include "Sync/MutexUsage.h"
 #include "Text/MyStringFloat.h"
 #include "Text/StringBuilderUTF8.h"
-#include "UI/MessageDialog.h"
 
 void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnTimerTick(void *userObj)
 {
@@ -447,7 +446,7 @@ void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnDNSSetClicked(void *userObj)
 	UInt32 svrIP = Net::SocketUtil::GetIPAddr(sb.ToCString());
 	if (svrIP == 0)
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Error in parsing server ip"), CSTR("Error"), me);
+		me->ui->ShowMsgOK(CSTR("Error in parsing server ip"), CSTR("Error"), me);
 		return;
 	}
 	else
@@ -465,7 +464,7 @@ void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnDNSAddClicked(void *userObj)
 	UInt32 svrIP = Net::SocketUtil::GetIPAddr(sb.ToCString());
 	if (svrIP == 0)
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Error in parsing server ip"), CSTR("Error"), me);
+		me->ui->ShowMsgOK(CSTR("Error in parsing server ip"), CSTR("Error"), me);
 		return;
 	}
 	else
@@ -488,7 +487,7 @@ void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnSearchClicked(void *userObj)
 	ip = Net::SocketUtil::GetIPAddr(sb.ToCString());
 	if (ip == 0)
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Please enter IP Range"), CSTR("Search"), me);
+		me->ui->ShowMsgOK(CSTR("Please enter IP Range"), CSTR("Search"), me);
 		return;
 	}
 	sb.ClearStr();
@@ -510,7 +509,7 @@ void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnSearchClicked(void *userObj)
 	}
 	else
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Please enter valid mask"), CSTR("Search"), me);
+		me->ui->ShowMsgOK(CSTR("Please enter valid mask"), CSTR("Search"), me);
 		return;
 	}
 	me->proxy->SearchIPv4(&nameList, ip, mask);
@@ -678,7 +677,7 @@ void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnWPADClicked(void *userObj)
 		}
 		else
 		{
-			UI::MessageDialog::ShowDialog(CSTR("Please input a valid IP address in WPAD"), CSTR("DNS Proxy"), me);
+			me->ui->ShowMsgOK(CSTR("Please input a valid IP address in WPAD"), CSTR("DNS Proxy"), me);
 		}
 	}
 }

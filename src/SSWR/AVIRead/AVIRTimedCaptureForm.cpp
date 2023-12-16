@@ -5,7 +5,6 @@
 #include "SSWR/AVIRead/AVIRTimedCaptureForm.h"
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
-#include "UI/MessageDialog.h"
 
 void __stdcall SSWR::AVIRead::AVIRTimedCaptureForm::OnDevChg(void *userObj)
 {

@@ -3,7 +3,6 @@
 #include "Net/SSLEngineFactory.h"
 #include "SSWR/AVIRead/AVIRSSDPClientForm.h"
 #include "Text/StringTool.h"
-#include "UI/MessageDialog.h"
 
 void __stdcall SSWR::AVIRead::AVIRSSDPClientForm::OnTimerTick(void *userObj)
 {
@@ -268,11 +267,11 @@ SSWR::AVIRead::AVIRSSDPClientForm::AVIRSSDPClientForm(UI::GUIClientControl *pare
 
 	if (this->ssdp->IsError())
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Error in initializing SSDP Client"), CSTR("SSDP Client"), this);
+		this->ui->ShowMsgOK(CSTR("Error in initializing SSDP Client"), CSTR("SSDP Client"), this);
 	}
 	else if (!this->ssdp->Scan())
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Error in scanning SSDP Client"), CSTR("SSDP Client"), this);
+		this->ui->ShowMsgOK(CSTR("Error in scanning SSDP Client"), CSTR("SSDP Client"), this);
 	}
 	this->AddTimer(1000, OnTimerTick, this);
 }

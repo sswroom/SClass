@@ -4,7 +4,6 @@
 #include "SSWR/AVIRead/AVIRProtoDecForm.h"
 #include "Text/MyString.h"
 #include "UI/FileDialog.h"
-#include "UI/MessageDialog.h"
 
 void __stdcall SSWR::AVIRead::AVIRProtoDecForm::OnLogSelChg(void *userObj)
 {
@@ -59,7 +58,7 @@ void __stdcall SSWR::AVIRead::AVIRProtoDecForm::OnLoadClicked(void *userObj)
 		if (me->currFile->IsError())
 		{
 			DEL_CLASS(me->currFile);
-			UI::MessageDialog::ShowDialog(CSTR("Error in opening the file"), CSTR("Protocol Decoder"), me);
+			me->ui->ShowMsgOK(CSTR("Error in opening the file"), CSTR("Protocol Decoder"), me);
 			return;
 		}
 		me->currDec = protoDec;

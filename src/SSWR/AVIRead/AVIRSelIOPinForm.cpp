@@ -1,7 +1,6 @@
 #include "Stdafx.h"
 #include "IO/GPIOPin.h"
 #include "SSWR/AVIRead/AVIRSelIOPinForm.h"
-#include "UI/MessageDialog.h"
 
 void __stdcall SSWR::AVIRead::AVIRSelIOPinForm::OnOKClick(void *userObj)
 {
@@ -14,13 +13,13 @@ void __stdcall SSWR::AVIRead::AVIRSelIOPinForm::OnOKClick(void *userObj)
 		UInt16 pinNum = (UInt16)(UOSInt)me->cboGPIO->GetItem((UOSInt)i);
 		if (i == INVALID_INDEX)
 		{
-			UI::MessageDialog::ShowDialog(CSTR("Please select a GPIO"), CSTR("Select GPIO"), me);
+			me->ui->ShowMsgOK(CSTR("Please select a GPIO"), CSTR("Select GPIO"), me);
 			return;
 		}
 		NotNullPtr<IO::GPIOControl> gpioPin;
 		if (!gpioPin.Set(me->gpioPin))
 		{
-			UI::MessageDialog::ShowDialog(CSTR("System does not have GPIO"), CSTR("Select GPIO"), me);
+			me->ui->ShowMsgOK(CSTR("System does not have GPIO"), CSTR("Select GPIO"), me);
 			return;
 		}
 		IO::GPIOPin *pin;
@@ -28,7 +27,7 @@ void __stdcall SSWR::AVIRead::AVIRSelIOPinForm::OnOKClick(void *userObj)
 		if (pin->IsError())
 		{
 			DEL_CLASS(pin);
-			UI::MessageDialog::ShowDialog(CSTR("Error in opening the pin"), CSTR("Select GPIO"), me);
+			me->ui->ShowMsgOK(CSTR("Error in opening the pin"), CSTR("Select GPIO"), me);
 			return;
 		}
 		me->ioPin = pin;
@@ -41,14 +40,14 @@ void __stdcall SSWR::AVIRead::AVIRSelIOPinForm::OnOKClick(void *userObj)
 		UInt16 pinNum = (UInt16)(UOSInt)me->cboVirtualPin->GetItem(i);
 		if (i == INVALID_INDEX)
 		{
-			UI::MessageDialog::ShowDialog(CSTR("Please select a VirtualPin"), CSTR("Select VirtualPin"), me);
+			me->ui->ShowMsgOK(CSTR("Please select a VirtualPin"), CSTR("Select VirtualPin"), me);
 			return;
 		}
 		IO::IOPin *pin;
 		pin = me->vioPinMgr->CreatePin(pinNum);
 		if (pin == 0)
 		{
-			UI::MessageDialog::ShowDialog(CSTR("Error in opening the pin"), CSTR("Select VirtualPin"), me);
+			me->ui->ShowMsgOK(CSTR("Error in opening the pin"), CSTR("Select VirtualPin"), me);
 			return;
 		}
 		me->ioPin = pin;

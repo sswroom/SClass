@@ -4,7 +4,6 @@
 #include "Net/Email/GCISClient.h"
 #include "SSWR/AVIRead/AVIRGCISClientForm.h"
 #include "SSWR/AVIRead/AVIRSSLCertKeyForm.h"
-#include "UI/MessageDialog.h"
 
 void __stdcall SSWR::AVIRead::AVIRGCISClientForm::OnClientCertClicked(void *userObj)
 {
@@ -33,14 +32,14 @@ void __stdcall SSWR::AVIRead::AVIRGCISClientForm::OnSendClicked(void *userObj)
 	NotNullPtr<Crypto::Cert::X509File> cliKey;
 	if (!cliCert.Set(me->cliCert) || !cliKey.Set(me->cliKey))
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Please select client cert and key first"), CSTR("GCIS Client"), me);
+		me->ui->ShowMsgOK(CSTR("Please select client cert and key first"), CSTR("GCIS Client"), me);
 		return;
 	}
 	Text::StringBuilderUTF8 sbURL;
 	me->txtURL->GetText(sbURL);
 	if (!sbURL.StartsWith(CSTR("https://")))
 	{
-		UI::MessageDialog::ShowDialog(CSTR("URL must starts with https://"), CSTR("GCIS Client"), me);
+		me->ui->ShowMsgOK(CSTR("URL must starts with https://"), CSTR("GCIS Client"), me);
 		return;
 	}
 	Text::StringBuilderUTF8 sbTo;
@@ -51,28 +50,28 @@ void __stdcall SSWR::AVIRead::AVIRGCISClientForm::OnSendClicked(void *userObj)
 	me->txtBCC->GetText(sbBCC);
 	if (sbTo.GetLength() == 0)
 	{
-		UI::MessageDialog::ShowDialog(CSTR("URL must starts with https://"), CSTR("GCIS Client"), me);
+		me->ui->ShowMsgOK(CSTR("URL must starts with https://"), CSTR("GCIS Client"), me);
 		return;
 	}
 	Text::StringBuilderUTF8 sbContType;
 	me->txtContentType->GetText(sbContType);
 	if (sbContType.GetLength() == 0)
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Content Type cannot be empty"), CSTR("GCIS Client"), me);
+		me->ui->ShowMsgOK(CSTR("Content Type cannot be empty"), CSTR("GCIS Client"), me);
 		return;
 	}
 	Text::StringBuilderUTF8 sbSubject;
 	me->txtSubject->GetText(sbSubject);
 	if (sbSubject.GetLength() == 0)
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Subject cannot be empty"), CSTR("GCIS Client"), me);
+		me->ui->ShowMsgOK(CSTR("Subject cannot be empty"), CSTR("GCIS Client"), me);
 		return;
 	}
 	Text::StringBuilderUTF8 sbContent;
 	me->txtContent->GetText(sbContent);
 	if (sbContent.GetLength() == 0)
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Content cannot be empty"), CSTR("GCIS Client"), me);
+		me->ui->ShowMsgOK(CSTR("Content cannot be empty"), CSTR("GCIS Client"), me);
 		return;
 	}
 	Net::Email::GCISClient cli(me->core->GetSocketFactory(), me->ssl, sbURL.ToCString(), cliCert, cliKey);

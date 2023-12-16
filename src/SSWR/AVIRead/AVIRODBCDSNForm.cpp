@@ -2,7 +2,6 @@
 #include "DB/ODBCConn.h"
 #include "SSWR/AVIRead/AVIRODBCDSNForm.h"
 #include "Text/MyString.h"
-#include "UI/MessageDialog.h"
 
 void __stdcall SSWR::AVIRead::AVIRODBCDSNForm::OnOKClicked(void *userObj)
 {
@@ -21,7 +20,7 @@ void __stdcall SSWR::AVIRead::AVIRODBCDSNForm::OnOKClicked(void *userObj)
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("Error in opening ODBC connection\r\n"));
 		conn->GetLastErrorMsg(sb);
-		UI::MessageDialog::ShowDialog(sb.ToCString(), CSTR("ODBC DSN Connection"), me);
+		me->ui->ShowMsgOK(sb.ToCString(), CSTR("ODBC DSN Connection"), me);
 		DEL_CLASS(conn);
 		return;
 	}

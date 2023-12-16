@@ -3,7 +3,6 @@
 #include "Media/ICCProfile.h"
 #include "SSWR/AVIRead/AVIRCaptureDevForm.h"
 #include "SSWR/AVIRead/AVIRConsoleMediaPlayerForm.h"
-#include "UI/MessageDialog.h"
 
 void __stdcall SSWR::AVIRead::AVIRConsoleMediaPlayerForm::OnStopClicked(void *userObj)
 {
@@ -49,7 +48,7 @@ void __stdcall SSWR::AVIRead::AVIRConsoleMediaPlayerForm::OnFileDrop(void *userO
 		}
 		i++;
 	}
-	UI::MessageDialog::ShowDialog(CSTR("Error in loading files"), CSTR("Console Media Player"), me);
+	me->ui->ShowMsgOK(CSTR("Error in loading files"), CSTR("Console Media Player"), me);
 }
 
 void __stdcall SSWR::AVIRead::AVIRConsoleMediaPlayerForm::OnRotateChg(void *userObj)
@@ -289,7 +288,7 @@ SSWR::AVIRead::AVIRConsoleMediaPlayerForm::AVIRConsoleMediaPlayerForm(UI::GUICli
 
 	if (this->player->IsError())
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Error in initialize player"), CSTR("Console Media Player"), this);
+		this->ui->ShowMsgOK(CSTR("Error in initialize player"), CSTR("Console Media Player"), this);
 	}
 	this->player->SetSurfaceBugMode(true);
 

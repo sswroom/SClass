@@ -5,7 +5,6 @@
 #include "Net/SNMPInfo.h"
 #include "SSWR/AVIRead/AVIRSNMPTrapMonitorForm.h"
 #include "Sync/MutexUsage.h"
-#include "UI/MessageDialog.h"
 
 void __stdcall SSWR::AVIRead::AVIRSNMPTrapMonitorForm::OnResultSelChg(void *userObj)
 {
@@ -203,7 +202,7 @@ SSWR::AVIRead::AVIRSNMPTrapMonitorForm::AVIRSNMPTrapMonitorForm(UI::GUIClientCon
 	NEW_CLASS(this->mon, Net::SNMPTrapMonitor(this->core->GetSocketFactory(), OnSNMPTrapPacket, this, this->core->GetLog()));
 	if (this->mon->IsError())
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Error in starting SNMP Trap Monitor"), CSTR("Error"), this);
+		this->ui->ShowMsgOK(CSTR("Error in starting SNMP Trap Monitor"), CSTR("Error"), this);
 	}
 }
 

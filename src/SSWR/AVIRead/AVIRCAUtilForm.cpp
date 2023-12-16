@@ -9,7 +9,6 @@
 #include "SSWR/AVIRead/AVIRCAUtilForm.h"
 #include "Text/StringBuilderUTF8.h"
 #include "Text/StringTool.h"
-#include "UI/MessageDialog.h"
 
 void __stdcall SSWR::AVIRead::AVIRCAUtilForm::OnFileDrop(void *userObj, NotNullPtr<Text::String> *files, UOSInt nFiles)
 {
@@ -106,7 +105,7 @@ void __stdcall SSWR::AVIRead::AVIRCAUtilForm::OnFileDrop(void *userObj, NotNullP
 								NotNullPtr<Net::SSLEngine> ssl;
 								if (me->caCert && (!me->ssl.SetTo(ssl) || !me->caCert->IsSignatureKey(ssl, key)))
 								{
-									UI::MessageDialog::ShowDialog(CSTR("Key is not match with CA cert"), CSTR("CA Util"), me);
+									me->ui->ShowMsgOK(CSTR("Key is not match with CA cert"), CSTR("CA Util"), me);
 									key.Delete();
 								}
 								else
@@ -215,17 +214,17 @@ void __stdcall SSWR::AVIRead::AVIRCAUtilForm::OnIssueClicked(void *userObj)
 	NotNullPtr<Crypto::Cert::X509Key> key;
 	if (!key.Set(me->key))
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Key not exist"), CSTR("CA Util"), me);
+		me->ui->ShowMsgOK(CSTR("Key not exist"), CSTR("CA Util"), me);
 		return;
 	}
 	if (me->caCert == 0)
 	{
-		UI::MessageDialog::ShowDialog(CSTR("CA Cert not exist"), CSTR("CA Util"), me);
+		me->ui->ShowMsgOK(CSTR("CA Cert not exist"), CSTR("CA Util"), me);
 		return;
 	}
 	if (me->csr == 0)
 	{
-		UI::MessageDialog::ShowDialog(CSTR("CSR not exist"), CSTR("CA Util"), me);
+		me->ui->ShowMsgOK(CSTR("CSR not exist"), CSTR("CA Util"), me);
 		return;
 	}
 	UOSInt validDays;
@@ -233,13 +232,13 @@ void __stdcall SSWR::AVIRead::AVIRCAUtilForm::OnIssueClicked(void *userObj)
 	me->txtValidDays->GetText(sb);
 	if (!sb.ToUOSInt(validDays))
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Valid Days not valid"), CSTR("CA Util"), me);
+		me->ui->ShowMsgOK(CSTR("Valid Days not valid"), CSTR("CA Util"), me);
 		return;
 	}
 	NotNullPtr<Net::SSLEngine> ssl;
 	if (!me->ssl.SetTo(ssl))
 	{
-		UI::MessageDialog::ShowDialog(CSTR("SSL Engine is not initiated"), CSTR("CA Util"), me);
+		me->ui->ShowMsgOK(CSTR("SSL Engine is not initiated"), CSTR("CA Util"), me);
 		return;
 	}
 	NotNullPtr<Crypto::Cert::X509Cert> cert;
@@ -249,7 +248,7 @@ void __stdcall SSWR::AVIRead::AVIRCAUtilForm::OnIssueClicked(void *userObj)
 	}
 	else
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Error in issuing certificate"), CSTR("CA Util"), me);
+		me->ui->ShowMsgOK(CSTR("Error in issuing certificate"), CSTR("CA Util"), me);
 	}
 }
 

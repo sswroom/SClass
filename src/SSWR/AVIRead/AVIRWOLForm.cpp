@@ -2,7 +2,6 @@
 #include "Net/ConnectionInfo.h"
 #include "Net/WOLClient.h"
 #include "SSWR/AVIRead/AVIRWOLForm.h"
-#include "UI/MessageDialog.h"
 
 void __stdcall SSWR::AVIRead::AVIRWOLForm::OnSendClicked(void *userObj)
 {
@@ -13,7 +12,7 @@ void __stdcall SSWR::AVIRead::AVIRWOLForm::OnSendClicked(void *userObj)
 	UInt32 ip = (UInt32)(OSInt)me->cboAdapter->GetSelectedItem();
 	if (ip == 0)
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Please select an adapter"), CSTR("WOL"), me);
+		me->ui->ShowMsgOK(CSTR("Please select an adapter"), CSTR("WOL"), me);
 		return;
 	}
 	me->txtDeviceMac->GetText(sb);
@@ -22,21 +21,21 @@ void __stdcall SSWR::AVIRead::AVIRWOLForm::OnSendClicked(void *userObj)
 		NEW_CLASS(cli, Net::WOLClient(me->core->GetSocketFactory(), ip, me->core->GetLog()));
 		if (cli->IsError())
 		{
-			UI::MessageDialog::ShowDialog(CSTR("Error in listening to the port"), CSTR("WOL"), me);
+			me->ui->ShowMsgOK(CSTR("Error in listening to the port"), CSTR("WOL"), me);
 		}
 		else if (!cli->WakeDevice(macBuff))
 		{
-			UI::MessageDialog::ShowDialog(CSTR("Error sending the packet"), CSTR("WOL"), me);
+			me->ui->ShowMsgOK(CSTR("Error sending the packet"), CSTR("WOL"), me);
 		}
 		else
 		{
-			UI::MessageDialog::ShowDialog(CSTR("Packet sent"), CSTR("WOL"), me);
+			me->ui->ShowMsgOK(CSTR("Packet sent"), CSTR("WOL"), me);
 		}
 		DEL_CLASS(cli);
 	}
 	else
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Please select valid device MAC"), CSTR("WOL"), me);
+		me->ui->ShowMsgOK(CSTR("Please select valid device MAC"), CSTR("WOL"), me);
 		return;
 	}
 }

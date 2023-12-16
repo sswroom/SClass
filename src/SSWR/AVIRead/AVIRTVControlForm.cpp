@@ -2,7 +2,6 @@
 #include "IO/SerialPort.h"
 #include "IO/StreamLogger.h"
 #include "SSWR/AVIRead/AVIRTVControlForm.h"
-#include "UI/MessageDialog.h"
 
 void __stdcall SSWR::AVIRead::AVIRTVControlForm::OnStartClick(void *userObj)
 {
@@ -26,7 +25,7 @@ void __stdcall SSWR::AVIRead::AVIRTVControlForm::OnStartClick(void *userObj)
 	UInt32 portNum = (UInt32)(UOSInt)me->cboPort->GetItem(i);
 	if (portNum == 0)
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Please select a port"), CSTR("TV Control"), me);
+		me->ui->ShowMsgOK(CSTR("Please select a port"), CSTR("TV Control"), me);
 		return;
 	}
 
@@ -34,14 +33,14 @@ void __stdcall SSWR::AVIRead::AVIRTVControlForm::OnStartClick(void *userObj)
 	IO::TVControl::TVInfo info;
 	if (!IO::TVControl::GetTVInfo(tvType, &info))
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Please select a valid TV Type"), CSTR("TV Control"), me);
+		me->ui->ShowMsgOK(CSTR("Please select a valid TV Type"), CSTR("TV Control"), me);
 		return;
 	}
 	NEW_CLASS(port, IO::SerialPort(portNum, info.defBaudRate, IO::SerialPort::PARITY_NONE, false));
 	if (port->IsError())
 	{
 		DEL_CLASS(port);
-		UI::MessageDialog::ShowDialog(CSTR("Error in opening the port"), CSTR("TV Control"), me);
+		me->ui->ShowMsgOK(CSTR("Error in opening the port"), CSTR("TV Control"), me);
 		return;
 	}
 	if (me->chkLogFile->IsChecked())

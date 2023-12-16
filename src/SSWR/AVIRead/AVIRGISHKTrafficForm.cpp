@@ -5,7 +5,6 @@
 #include "SSWR/AVIRead/AVIRGISHKTrafficForm.h"
 #include "Text/StringBuilderUTF8.h"
 #include "UI/FileDialog.h"
-#include "UI/MessageDialog.h"
 
 void __stdcall SSWR::AVIRead::AVIRGISHKTrafficForm::OnRoadCenterlineClicked(void *userObj)
 {
@@ -50,12 +49,12 @@ void __stdcall SSWR::AVIRead::AVIRGISHKTrafficForm::OnOKClicked(void *userObj)
 		else
 		{
 			DEL_CLASS(lyr);
-			UI::MessageDialog::ShowDialog(CSTR("The file is not a polyline layer"), CSTR("HK Traffic"), me);
+			me->ui->ShowMsgOK(CSTR("The file is not a polyline layer"), CSTR("HK Traffic"), me);
 		}
 	}
 	else
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Error in parsing the file"), CSTR("HK Traffic"), me);
+		me->ui->ShowMsgOK(CSTR("Error in parsing the file"), CSTR("HK Traffic"), me);
 	}
 }
 

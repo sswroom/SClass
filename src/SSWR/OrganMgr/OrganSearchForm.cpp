@@ -1,6 +1,5 @@
 ﻿#include "Stdafx.h"
 #include "SSWR/OrganMgr/OrganSearchForm.h"
-#include "UI/MessageDialog.h"
 
 void __stdcall SSWR::OrganMgr::OrganSearchForm::OnOKClicked(void *userObj)
 {
@@ -21,7 +20,7 @@ void __stdcall SSWR::OrganMgr::OrganSearchForm::OnOKClicked(void *userObj)
 	}
 	else
 	{
-		UI::MessageDialog::ShowDialog(me->env->GetLang(CSTR("SearchNotFound")), me->env->GetLang(CSTR("SearchTitle")), me);
+		me->ui->ShowMsgOK(me->env->GetLang(CSTR("SearchNotFound")), me->env->GetLang(CSTR("SearchTitle")), me);
 		me->txt->Focus();
 	}
 }

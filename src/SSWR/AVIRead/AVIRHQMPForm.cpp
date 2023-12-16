@@ -21,7 +21,6 @@
 #include "Text/UTF8Writer.h"
 #include "Text/XML.h"
 #include "UI/GUIVideoBoxDDLQ.h"
-#include "UI/MessageDialog.h"
 
 #include "IO/DebugWriter.h"
 
@@ -815,7 +814,7 @@ void SSWR::AVIRead::AVIRHQMPForm::EventMenuClicked(UInt16 cmdId)
 					IO::ParsedObject *pobj = Net::URL::OpenObject(fname->ToCString(), CSTR_NULL, this->core->GetSocketFactory(), this->ssl, 30000, this->core->GetLog());
 					if (pobj == 0)
 					{
-						UI::MessageDialog::ShowDialog(CSTR("Error in loading file"), CSTR("HQMP"), this);
+						this->ui->ShowMsgOK(CSTR("Error in loading file"), CSTR("HQMP"), this);
 					}
 					else
 					{
@@ -901,7 +900,7 @@ void SSWR::AVIRead::AVIRHQMPForm::EventMenuClicked(UInt16 cmdId)
 			{
 				DEL_CLASS(this->listener);
 				this->listener = 0;
-				UI::MessageDialog::ShowDialog(CSTR("Error in listening to the port 8080"), CSTR("HQMP Error"), this);
+				this->ui->ShowMsgOK(CSTR("Error in listening to the port 8080"), CSTR("HQMP Error"), this);
 			}
 		}
 		break;

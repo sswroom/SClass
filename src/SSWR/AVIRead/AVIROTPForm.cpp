@@ -5,7 +5,6 @@
 #include "SSWR/AVIRead/AVIROTPForm.h"
 #include "Text/StringBuilderUTF8.h"
 #include "Text/TextBinEnc/Base32Enc.h"
-#include "UI/MessageDialog.h"
 
 void SSWR::AVIRead::AVIROTPForm::RandBytes(UOSInt len)
 {
@@ -39,22 +38,22 @@ void __stdcall SSWR::AVIRead::AVIROTPForm::OnNewClicked(void *userObj)
 	me->txtKey->GetText(sbKey);
 	if (sbName.GetLength() == 0)
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Please enter name"), CSTR("One-Time Password (OTP)"), me);
+		me->ui->ShowMsgOK(CSTR("Please enter name"), CSTR("One-Time Password (OTP)"), me);
 		return;
 	}
 	if (sbKey.GetLength() == 0)
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Please enter key"), CSTR("One-Time Password (OTP)"), me);
+		me->ui->ShowMsgOK(CSTR("Please enter key"), CSTR("One-Time Password (OTP)"), me);
 		return;
 	}
 	if (sbKey.GetLength() > 32)
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Key is too long"), CSTR("One-Time Password (OTP)"), me);
+		me->ui->ShowMsgOK(CSTR("Key is too long"), CSTR("One-Time Password (OTP)"), me);
 		return;
 	}
 	if (!Text::TextBinEnc::Base32Enc::IsValid(sbKey.ToString()))
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Key is not valid"), CSTR("One-Time Password (OTP)"), me);
+		me->ui->ShowMsgOK(CSTR("Key is not valid"), CSTR("One-Time Password (OTP)"), me);
 		return;
 	}
 

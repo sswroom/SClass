@@ -6,6 +6,7 @@
 #include "UI/GUICore.h"
 #include "UI/GUICoreJava.h"
 #include "UI/Java/JavaGroupBox.h"
+#include "UI/Java/JavaMessageDialog.h"
 #include <jni.h>
 #include <stdio.h>
 
@@ -185,6 +186,16 @@ Media::MonitorMgr *UI::GUICoreJava::GetMonitorMgr()
 Bool UI::GUICoreJava::IsForwarded()
 {
 	return getenv("SSH_CLIENT") != 0;
+}
+
+void UI::GUICoreJava::ShowMsgOK(Text::CStringNN message, Text::CStringNN title, Optional<UI::GUIControl> ctrl)
+{
+	UI::Java::JavaMessageDialog::ShowOK((JNIEnv*)jniEnv, message, title, ctrl);
+}
+
+Bool UI::GUICoreJava::ShowMsgYesNo(Text::CStringNN message, Text::CStringNN title, Optional<UI::GUIControl> ctrl)
+{
+	return UI::Java::JavaMessageDialog::ShowYesNo((JNIEnv*)jniEnv, message, title, ctrl);
 }
 
 NotNullPtr<UI::GUIGroupBox> UI::GUICoreJava::NewGroupBox(NotNullPtr<GUIClientControl> parent, Text::CStringNN text)

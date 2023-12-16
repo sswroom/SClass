@@ -1,7 +1,6 @@
 #include "Stdafx.h"
 #include "IO/Path.h"
 #include "SSWR/AVIRead/AVIRProgramLinksCreateForm.h"
-#include "UI/MessageDialog.h"
 
 void __stdcall SSWR::AVIRead::AVIRProgramLinksCreateForm::OnCreateClicked(void *userObj)
 {
@@ -18,17 +17,17 @@ void __stdcall SSWR::AVIRead::AVIRProgramLinksCreateForm::OnCreateClicked(void *
 	me->txtCmdLine->GetText(sbCmdLine);
 	if (sbShortName.GetLength() == 0)
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Please enter Short Name"), CSTR("Program Links Create"), me);
+		me->ui->ShowMsgOK(CSTR("Please enter Short Name"), CSTR("Program Links Create"), me);
 		return;
 	}
 	if (sbName.GetLength() == 0)
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Please enter Name"), CSTR("Program Links Create"), me);
+		me->ui->ShowMsgOK(CSTR("Please enter Name"), CSTR("Program Links Create"), me);
 		return;
 	}
 	if (sbCmdLine.GetLength() == 0)
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Please enter Command Line"), CSTR("Program Links Create"), me);
+		me->ui->ShowMsgOK(CSTR("Please enter Command Line"), CSTR("Program Links Create"), me);
 		return;
 	}
 	if (me->progMgr->CreateLink(me->chkThisUser->IsChecked(), sbShortName.ToCString(), sbName.ToCString(), sbComment.ToCString(), sbCategories.ToCString(), sbCmdLine.ToCString()))
@@ -37,7 +36,7 @@ void __stdcall SSWR::AVIRead::AVIRProgramLinksCreateForm::OnCreateClicked(void *
 	}
 	else
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Failed to create program link"), CSTR("Program Links Create"), me);
+		me->ui->ShowMsgOK(CSTR("Failed to create program link"), CSTR("Program Links Create"), me);
 		return;
 	}
 }

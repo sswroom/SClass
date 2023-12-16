@@ -1,6 +1,5 @@
 #include "Stdafx.h"
 #include "SSWR/OrganMgr/OrganUserEditForm.h"
-#include "UI/MessageDialog.h"
 
 void __stdcall SSWR::OrganMgr::OrganUserEditForm::OnOKClicked(void *userObj)
 {
@@ -12,7 +11,7 @@ void __stdcall SSWR::OrganMgr::OrganUserEditForm::OnOKClicked(void *userObj)
 	me->txtRetype->GetText(sb2);
 	if (!sb1.Equals(sb2))
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Password and retype password do not match"), CSTR("Error"), me);
+		me->ui->ShowMsgOK(CSTR("Password and retype password do not match"), CSTR("Error"), me);
 		return;
 	}
 	sb1.ClearStr();
@@ -20,19 +19,19 @@ void __stdcall SSWR::OrganMgr::OrganUserEditForm::OnOKClicked(void *userObj)
 	me->txtWatermark->GetText(sb3);
 	if (sb1.GetLength() == 0)
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Please enter user name"), CSTR("Error"), me);
+		me->ui->ShowMsgOK(CSTR("Please enter user name"), CSTR("Error"), me);
 		return;
 	}
 	if (sb3.GetLength() == 0)
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Please enter watermark"), CSTR("Error"), me);
+		me->ui->ShowMsgOK(CSTR("Please enter watermark"), CSTR("Error"), me);
 		return;
 	}
 	if (me->user == 0)
 	{
 		if (sb2.GetLength() == 0)
 		{
-			UI::MessageDialog::ShowDialog(CSTR("Please enter password"), CSTR("Error"), me);
+			me->ui->ShowMsgOK(CSTR("Please enter password"), CSTR("Error"), me);
 			return;
 		}
 		if (me->env->AddWebUser(sb1.ToString(), sb2.ToString(), sb3.ToString(), SSWR::OrganMgr::UT_USER))

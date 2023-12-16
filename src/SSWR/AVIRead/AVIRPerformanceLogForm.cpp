@@ -9,7 +9,6 @@
 #include "Text/StringBuilderUTF8.h"
 #include "Text/UTF8Writer.h"
 #include "UI/FileDialog.h"
-#include "UI/MessageDialog.h"
 
 #define TEST_SIZE (32768*1024)
 #define LOOP_CNT 128
@@ -28,7 +27,7 @@ void __stdcall SSWR::AVIRead::AVIRPerformanceLogForm::OnStartClicked(void *userO
 	}
 	else
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Error in starting logger"), CSTR("Error"), me);
+		me->ui->ShowMsgOK(CSTR("Error in starting logger"), CSTR("Error"), me);
 	}
 }
 

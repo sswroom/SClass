@@ -5,6 +5,7 @@
 #include "Media/GDIEngine.h"
 #include "UI/GUICoreWin.h"
 #include "UI/Win/WinGroupBox.h"
+#include "UI/Win/WinMessageDialog.h"
 #ifdef _WIN32_WCE
 #include "Sync/ThreadUtil.h"
 #endif
@@ -228,6 +229,16 @@ void UI::GUICoreWin::SetMonitorMgr(Media::MonitorMgr *monMgr)
 Media::MonitorMgr *UI::GUICoreWin::GetMonitorMgr()
 {
 	return this->monMgr;
+}
+
+void UI::GUICoreWin::ShowMsgOK(Text::CStringNN message, Text::CStringNN title, Optional<UI::GUIControl> ctrl)
+{
+	UI::Win::WinMessageDialog::ShowOK(message, title, ctrl);
+}
+
+Bool UI::GUICoreWin::ShowMsgYesNo(Text::CStringNN message, Text::CStringNN title, Optional<UI::GUIControl> ctrl)
+{
+	return UI::Win::WinMessageDialog::ShowYesNo(message, title, ctrl);
 }
 
 NotNullPtr<UI::GUIGroupBox> UI::GUICoreWin::NewGroupBox(NotNullPtr<GUIClientControl> parent, Text::CStringNN text)

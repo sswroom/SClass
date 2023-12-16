@@ -57,9 +57,7 @@ UI/GUIDateTimePicker.h:
 UI/GUIDDrawControl.h:
 @GUIDDrawControlGtk.o
 UI/GUIDragDrop.h:
-@GUIDragDropGTK.o
-UI/GUIDragDropGTK.h:
-@GUIDragDropGTK.o
+@GTKDragDrop.o
 UI/GUIForm.h:
 @GUIFormGTK.o
 UI/GUIHScrollBar.h:
@@ -106,10 +104,12 @@ UI/GUITreeView.h:
 @GUITreeViewGTK.o
 UI/GUIVSplitter.h:
 @GUIVSplitterGTK.o
-UI/MessageDialog.h:
-@MessageDialogL.o
+UI/GTK/GTKDragDrop.h:
+@GTKDragDrop.o
 UI/GTK/GTKGroupBox.h:
 @GTKGroupBox.o
+UI/GTK/GTKMessageDialog.h:
+@GTKMessageDialog.o
 
 GUIStartup.o: ../../startup/GtkStartup.cpp
 $`pkg-config --cflags gtk+-3.0`

@@ -3,7 +3,6 @@
 #include "SSWR/AVIRead/AVIRXMLWalkForm.h"
 #include "Text/XMLReader.h"
 #include "UI/FileDialog.h"
-#include "UI/MessageDialog.h"
 
 void __stdcall SSWR::AVIRead::AVIRXMLWalkForm::OnBrowseClick(void *userObj)
 {
@@ -62,7 +61,7 @@ void SSWR::AVIRead::AVIRXMLWalkForm::LoadFile(Text::CStringNN fileName)
 		Text::StringBuilderUTF8 sb;
 		sb.AppendC(UTF8STRC("Error in parsing the file, code = "));
 		sb.AppendUOSInt(reader.GetErrorCode());
-		UI::MessageDialog::ShowDialog(sb.ToCString(), CSTR("XML Walk"), this);
+		this->ui->ShowMsgOK(sb.ToCString(), CSTR("XML Walk"), this);
 	}
 }
 

@@ -3,7 +3,6 @@
 #include "Net/ConnectionInfo.h"
 #include "SSWR/AVIRead/AVIRNetRAWCaptureForm.h"
 #include "UI/FileDialog.h"
-#include "UI/MessageDialog.h"
 
 void __stdcall SSWR::AVIRead::AVIRNetRAWCaptureForm::OnAutoGenClicked(void *userObj)
 {
@@ -65,7 +64,7 @@ void __stdcall SSWR::AVIRead::AVIRNetRAWCaptureForm::OnStartClicked(void *userOb
 		{
 			DEL_CLASS(me->capture);
 			me->capture = 0;
-			UI::MessageDialog::ShowDialog(CSTR("Error in creating socket"), CSTR("RAW Capture"), me);
+			me->ui->ShowMsgOK(CSTR("Error in creating socket"), CSTR("RAW Capture"), me);
 		}
 		else
 		{

@@ -7,7 +7,6 @@
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
 #include "Text/StringBuilderUTF8.h"
-#include "UI/MessageDialog.h"
 
 void __stdcall SSWR::AVIRead::AVIRHTTPProxyClientForm::OnRequestClicked(void *userObj)
 {
@@ -20,7 +19,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPProxyClientForm::OnRequestClicked(void *us
 	sb.ToUInt16(port);
 	if (port <= 0)
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Please enter valid proxy port"), CSTR("Request"), me);
+		me->ui->ShowMsgOK(CSTR("Please enter valid proxy port"), CSTR("Request"), me);
 		return;
 	}
 	sb.ClearStr();
@@ -28,7 +27,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPProxyClientForm::OnRequestClicked(void *us
 	ip = me->sockf->DNSResolveIPv4(sb.ToCString());
 	if (ip == 0)
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Please enter valid proxy server"), CSTR("Request"), me);
+		me->ui->ShowMsgOK(CSTR("Please enter valid proxy server"), CSTR("Request"), me);
 		return;
 	}
 
@@ -36,7 +35,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPProxyClientForm::OnRequestClicked(void *us
 	me->txtURL->GetText(sb);
 	if (!sb.StartsWith(UTF8STRC("http://")))
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Please enter valid http URL"), CSTR("Request"), me);
+		me->ui->ShowMsgOK(CSTR("Please enter valid http URL"), CSTR("Request"), me);
 		return;
 	}
 

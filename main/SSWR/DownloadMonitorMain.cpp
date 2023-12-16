@@ -2,7 +2,6 @@
 #include "Core/Core.h"
 #include "Media/Decoder/FFMPEGDecoder.h"
 #include "SSWR/DownloadMonitor/DownMonMainForm.h"
-#include "UI/MessageDialog.h"
 
 Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 {
@@ -17,7 +16,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 		NEW_CLASS(core, SSWR::DownloadMonitor::DownMonCore());
 		if (core->IsError())
 		{
-			UI::MessageDialog::ShowDialog(CSTR("Error in initializing the core"), CSTR("Download Monitor"), 0);
+			ui->ShowMsgOK(CSTR("Error in initializing the core"), CSTR("Download Monitor"), 0);
 		}
 		else
 		{

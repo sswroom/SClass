@@ -5,7 +5,6 @@
 #include "Sync/MutexUsage.h"
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
-#include "UI/MessageDialog.h"
 
 #define NMEAMAXSIZE 128
 
@@ -204,7 +203,7 @@ void __stdcall SSWR::AVIRead::AVIRGPSTrackerForm::OnMTKLogDownloadClicked(void *
 		else
 		{
 			gpsTrk.Delete();
-			UI::MessageDialog::ShowDialog(CSTR("Error in downloading log data"), CSTR("MTK GPS Tracker"), me);
+			me->ui->ShowMsgOK(CSTR("Error in downloading log data"), CSTR("MTK GPS Tracker"), me);
 		}
 	}
 }
@@ -213,15 +212,15 @@ void __stdcall SSWR::AVIRead::AVIRGPSTrackerForm::OnMTKLogDeleteClicked(void *us
 {
 	SSWR::AVIRead::AVIRGPSTrackerForm *me = (SSWR::AVIRead::AVIRGPSTrackerForm*)userObj;
 	IO::Device::MTKGPSNMEA *mtk = (IO::Device::MTKGPSNMEA*)me->locSvc;
-	if (UI::MessageDialog::ShowYesNoDialog(CSTR("Are you sure to delete GPS log data?"), CSTR("MTK GPS Tracker"), me))
+	if (me->ui->ShowMsgYesNo(CSTR("Are you sure to delete GPS log data?"), CSTR("MTK GPS Tracker"), me))
 	{
 		if (mtk->DelLogData())
 		{
-			UI::MessageDialog::ShowDialog(CSTR("Log data is deleted"), CSTR("MTK GPS Tracker"), me);
+			me->ui->ShowMsgOK(CSTR("Log data is deleted"), CSTR("MTK GPS Tracker"), me);
 		}
 		else
 		{
-			UI::MessageDialog::ShowDialog(CSTR("Error in deleting log data"), CSTR("MTK GPS Tracker"), me);
+			me->ui->ShowMsgOK(CSTR("Error in deleting log data"), CSTR("MTK GPS Tracker"), me);
 		}
 	}
 }
@@ -236,7 +235,7 @@ void __stdcall SSWR::AVIRead::AVIRGPSTrackerForm::OnMTKTestClicked(void *userObj
 void __stdcall SSWR::AVIRead::AVIRGPSTrackerForm::OnMTKFactoryResetClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRGPSTrackerForm *me = (SSWR::AVIRead::AVIRGPSTrackerForm*)userObj;
-	if (UI::MessageDialog::ShowYesNoDialog(CSTR("Are you sure to factory reset the device?"), CSTR("Question"), me))
+	if (me->ui->ShowMsgYesNo(CSTR("Are you sure to factory reset the device?"), CSTR("Question"), me))
 	{
 		IO::Device::MTKGPSNMEA *mtk = (IO::Device::MTKGPSNMEA*)me->locSvc;
 		mtk->FactoryReset();

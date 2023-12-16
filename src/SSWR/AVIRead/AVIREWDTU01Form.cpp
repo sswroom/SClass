@@ -5,7 +5,6 @@
 #include "Text/JSON.h"
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
-#include "UI/MessageDialog.h"
 
 #include <stdio.h>
 
@@ -104,18 +103,18 @@ void __stdcall SSWR::AVIRead::AVIREWDTU01Form::OnConnectClicked(void *userObj)
 	UInt16 port;
 	if (!me->core->GetSocketFactory()->DNSResolveIP(sbHost.ToCString(), addr))
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Error in resolving host name"), CSTR("EqasyWay EW-DTU01"), me);
+		me->ui->ShowMsgOK(CSTR("Error in resolving host name"), CSTR("EqasyWay EW-DTU01"), me);
 		return;
 	}
 	if (!sbPort.ToUInt16(port))
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Invalid port number"), CSTR("EqasyWay EW-DTU01"), me);
+		me->ui->ShowMsgOK(CSTR("Invalid port number"), CSTR("EqasyWay EW-DTU01"), me);
 		return;
 	}
 	NEW_CLASS(me->cli, Net::MQTTStaticClient(me->core->GetSocketFactory(), 0, sbHost.ToCString(), port, CSTR_NULL, CSTR_NULL, false, OnMQTTMessage, me, 30, 0));
 	if (me->cli->ChannelFailure())
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Error in connecting to MQTT server"), CSTR("EasyWay EW-DTU01"), me);
+		me->ui->ShowMsgOK(CSTR("Error in connecting to MQTT server"), CSTR("EasyWay EW-DTU01"), me);
 		SDEL_CLASS(me->cli);
 		return;
 	}

@@ -5,7 +5,6 @@
 #include "Sync/ThreadUtil.h"
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
-#include "UI/MessageDialog.h"
 
 void __stdcall SSWR::AVIRead::AVIRWHOISClientForm::OnRequestClicked(void *userObj)
 {
@@ -19,7 +18,7 @@ void __stdcall SSWR::AVIRead::AVIRWHOISClientForm::OnRequestClicked(void *userOb
 	ip = Net::SocketUtil::GetIPAddr(sb.ToCString());
 	if (ip == 0)
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Please enter valid IP"), CSTR("Request"), me);
+		me->ui->ShowMsgOK(CSTR("Please enter valid IP"), CSTR("Request"), me);
 		return;
 	}
 

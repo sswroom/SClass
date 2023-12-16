@@ -8,7 +8,6 @@
 #include "SSWR/AVIRead/AVIRSNMPWalkForm.h"
 #include "Sync/SimpleThread.h"
 #include "Text/MyStringFloat.h"
-#include "UI/MessageDialog.h"
 
 void __stdcall SSWR::AVIRead::AVIRSNMPManagerForm::OnAgentAddClicked(void *userObj)
 {
@@ -20,7 +19,7 @@ void __stdcall SSWR::AVIRead::AVIRSNMPManagerForm::OnAgentAddClicked(void *userO
 	me->txtAgentAddr->GetText(sb);
 	if (!me->core->GetSocketFactory()->DNSResolveIP(sb.ToCString(), addr))
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Error in parsing Agent Address"), CSTR("SNMP Manager"), me);
+		me->ui->ShowMsgOK(CSTR("Error in parsing Agent Address"), CSTR("SNMP Manager"), me);
 		return;
 	}
 
@@ -28,7 +27,7 @@ void __stdcall SSWR::AVIRead::AVIRSNMPManagerForm::OnAgentAddClicked(void *userO
 	me->txtCommunity->GetText(sb);
 	if (sb.GetLength() <= 0)
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Please enter community"), CSTR("SNMP Manager"), me);
+		me->ui->ShowMsgOK(CSTR("Please enter community"), CSTR("SNMP Manager"), me);
 		return;
 	}
 	UOSInt i;
@@ -40,7 +39,7 @@ void __stdcall SSWR::AVIRead::AVIRSNMPManagerForm::OnAgentAddClicked(void *userO
 	community->Release();
 	if (j <= 0)
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Error in Adding Agent"), CSTR("SNMP Manager"), me);
+		me->ui->ShowMsgOK(CSTR("Error in Adding Agent"), CSTR("SNMP Manager"), me);
 	}
 	else
 	{
@@ -381,7 +380,7 @@ SSWR::AVIRead::AVIRSNMPManagerForm::AVIRSNMPManagerForm(UI::GUIClientControl *pa
 	NEW_CLASS(this->mgr, Net::SNMPManager(sockf, this->core->GetLog()));
 	if (this->mgr->IsError())
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Error in starting SNMP Manager"), CSTR("Error"), this);
+		this->ui->ShowMsgOK(CSTR("Error in starting SNMP Manager"), CSTR("Error"), this);
 	}
 
 	Data::ArrayList<Net::ConnectionInfo*> connInfoList;

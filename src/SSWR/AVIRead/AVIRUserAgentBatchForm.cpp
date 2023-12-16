@@ -5,7 +5,6 @@
 #include "Text/JSText.h"
 #include "Text/StringBuilderUTF8.h"
 #include "UI/Clipboard.h"
-#include "UI/MessageDialog.h"
 
 void SSWR::AVIRead::AVIRUserAgentBatchForm::UserAgent2Output(Text::CString userAgent, NotNullPtr<Text::StringBuilderUTF8> outSb)
 {
@@ -130,7 +129,7 @@ void __stdcall SSWR::AVIRead::AVIRUserAgentBatchForm::OnUpdateCBClicked(void *us
 	}
 	else
 	{
-		UI::MessageDialog::ShowDialog(CSTR("No text in clipboard"), CSTR("User Agent Update"), me);
+		me->ui->ShowMsgOK(CSTR("No text in clipboard"), CSTR("User Agent Update"), me);
 	}
 }
 
@@ -189,7 +188,7 @@ void SSWR::AVIRead::AVIRUserAgentBatchForm::UpdateByText(Text::PString txt)
 	}
 	else
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Nothing to update"), CSTR("User Agent Update"), this);
+		this->ui->ShowMsgOK(CSTR("Nothing to update"), CSTR("User Agent Update"), this);
 	}
 	
 	uaList.FreeAll();

@@ -6,7 +6,6 @@
 #include "Text/UTF8Reader.h"
 #include "Text/UTF8Writer.h"
 #include "UI/FileDialog.h"
-#include "UI/MessageDialog.h"
 
 void __stdcall SSWR::AVIRead::AVIRLogMergeForm::OnFile1Clicked(void *userObj)
 {
@@ -73,15 +72,15 @@ void __stdcall SSWR::AVIRead::AVIRLogMergeForm::OnConvertClicked(void *userObj)
 	me->txtOFile->GetText(sb3);
 	if (IO::Path::GetPathType(sb1.ToCString()) != IO::Path::PathType::File)
 	{
-		UI::MessageDialog::ShowDialog(CSTR("File1 not found"), CSTR("Error"), me);
+		me->ui->ShowMsgOK(CSTR("File1 not found"), CSTR("Error"), me);
 	}
 	else if (IO::Path::GetPathType(sb2.ToCString()) != IO::Path::PathType::File)
 	{
-		UI::MessageDialog::ShowDialog(CSTR("File2 not found"), CSTR("Error"), me);
+		me->ui->ShowMsgOK(CSTR("File2 not found"), CSTR("Error"), me);
 	}
 	else if (sb3.GetLength() <= 0)
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Please enter Output"), CSTR("Error"), me);
+		me->ui->ShowMsgOK(CSTR("Please enter Output"), CSTR("Error"), me);
 	}
 	else
 	{
@@ -105,7 +104,7 @@ void __stdcall SSWR::AVIRead::AVIRLogMergeForm::OnConvertClicked(void *userObj)
 		NEW_CLASSNN(fs3, IO::FileStream(sb3.ToCString(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 		if (fs3->IsError())
 		{
-			UI::MessageDialog::ShowDialog(CSTR("Error in creating Output file"), CSTR("Error"), me);
+			me->ui->ShowMsgOK(CSTR("Error in creating Output file"), CSTR("Error"), me);
 		}
 		else
 		{
@@ -204,7 +203,7 @@ void __stdcall SSWR::AVIRead::AVIRLogMergeForm::OnConvertClicked(void *userObj)
 					succ2 = reader2->ReadLine(sb2, 1024);
 				}
 			}
-			UI::MessageDialog::ShowDialog(CSTR("Complete log merge"), CSTR("Success"), me);
+			me->ui->ShowMsgOK(CSTR("Complete log merge"), CSTR("Success"), me);
 			writer.Delete();
 		}
 		fs3.Delete();

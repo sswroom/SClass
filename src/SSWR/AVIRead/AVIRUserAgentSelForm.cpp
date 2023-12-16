@@ -4,7 +4,6 @@
 #include "Net/UserAgentDB.h"
 #include "SSWR/AVIRead/AVIRUserAgentSelForm.h"
 #include "Text/StringBuilderUTF8.h"
-#include "UI/MessageDialog.h"
 
 void __stdcall SSWR::AVIRead::AVIRUserAgentSelForm::OnOkClicked(void *userObj)
 {

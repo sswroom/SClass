@@ -7,7 +7,6 @@
 #include "SSWR/AVIRead/AVIRSDCardForm.h"
 #include "Text/MyString.h"
 #include "UI/FileDialog.h"
-#include "UI/MessageDialog.h"
 
 void __stdcall SSWR::AVIRead::AVIRSDCardForm::OnDevicesSelChg(void *userObj)
 {

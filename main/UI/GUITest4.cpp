@@ -5,7 +5,6 @@
 #include "UI/GUICore.h"
 #include "UI/GUIForm.h"
 #include "UI/GUIMainMenu.h"
-#include "UI/MessageDialog.h"
 
 typedef enum
 {
@@ -24,13 +23,13 @@ void __stdcall OnMenuEvent(void *userObj, UInt16 cmdId)
 		me->Close();
 		break;
 	case MNU_ITEM1:
-		UI::MessageDialog::ShowDialog(CSTR("Item 1 Clicked"), CSTR("GUITest4"), me);
+		me->GetUI()->ShowMsgOK(CSTR("Item 1 Clicked"), CSTR("GUITest4"), me);
 		break;
 	case MNU_ITEM2:
-		UI::MessageDialog::ShowDialog(CSTR("Item 2 Clicked"), CSTR("GUITest4"), me);
+		me->GetUI()->ShowMsgOK(CSTR("Item 2 Clicked"), CSTR("GUITest4"), me);
 		break;
 	case MNU_ITEM3:
-		UI::MessageDialog::ShowDialog(CSTR("Item 3 Clicked"), CSTR("GUITest4"), me);
+		me->GetUI()->ShowMsgOK(CSTR("Item 3 Clicked"), CSTR("GUITest4"), me);
 		break;
 	}
 }
@@ -48,7 +47,7 @@ void __stdcall OnFileDrop(void *userObj, NotNullPtr<Text::String> *files, UOSInt
 		sb.Append(files[i]);
 		i++;
 	}
-	UI::MessageDialog::ShowDialog(sb.ToCString(), CSTR("Drop Files"), me);
+	me->GetUI()->ShowMsgOK(sb.ToCString(), CSTR("Drop Files"), me);
 }
 
 Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)

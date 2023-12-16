@@ -1,18 +1,11 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Text/MyString.h"
-#include "UI/MessageDialog.h"
-#include <jni.h>
+#include "UI/Java/JavaMessageDialog.h"
 #include <stdio.h>
 
-extern "C"
+void UI::Java::JavaMessageDialog::ShowOK(JNIEnv *env, Text::CStringNN message, Text::CStringNN title, Optional<UI::GUIControl> ctrl)
 {
-	extern void *jniEnv;
-}
-
-void UI::MessageDialog::ShowDialog(Text::CStringNN message, Text::CStringNN title, UI::GUIControl *ctrl)
-{
-	JNIEnv *env = (JNIEnv*)jniEnv;
 	jclass cls = env->FindClass("javax/swing/JOptionPane");
 	if (cls == 0)
 		return;
@@ -23,9 +16,8 @@ void UI::MessageDialog::ShowDialog(Text::CStringNN message, Text::CStringNN titl
 	env->CallStaticVoidMethod(cls, meth, 0, env->NewStringUTF((const Char*)message.v), env->NewStringUTF((const Char*)title.v), env->GetStaticIntField(cls, fid));
 }
 
-Bool UI::MessageDialog::ShowYesNoDialog(Text::CStringNN message, Text::CStringNN title, UI::GUIControl *ctrl)
+Bool UI::Java::JavaMessageDialog::ShowYesNo(JNIEnv *env, Text::CStringNN message, Text::CStringNN title, Optional<UI::GUIControl> ctrl)
 {
-	JNIEnv *env = (JNIEnv*)jniEnv;
 	jclass cls = env->FindClass("javax.swing.JOptionPane");
 	if (cls == 0)
 		return false;

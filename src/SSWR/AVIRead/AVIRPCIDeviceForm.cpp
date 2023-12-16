@@ -6,7 +6,6 @@
 #include "SSWR/AVIRead/AVIRPCIDeviceForm.h"
 #include "Text/MyString.h"
 #include "UI/FileDialog.h"
-#include "UI/MessageDialog.h"
 
 void __stdcall SSWR::AVIRead::AVIRPCIDeviceForm::OnDevicesSelChg(void *userObj)
 {

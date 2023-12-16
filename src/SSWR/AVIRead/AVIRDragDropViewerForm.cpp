@@ -1,7 +1,6 @@
 #include "Stdafx.h"
 #include "SSWR/AVIRead/AVIRDragDropViewerForm.h"
 #include "Text/MyStringW.h"
-#include "UI/MessageDialog.h"
 
 void __stdcall SSWR::AVIRead::AVIRDragDropViewerForm::OnTypeSelChg(void *userObj)
 {
@@ -61,19 +60,19 @@ SSWR::AVIRead::AVIRDragDropViewerForm::AVIRDragDropViewerForm(UI::GUIClientContr
 	}
 	else if (errType == UI::GUIControl::DET_INVALIDCONTROL)
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Error in registering Drag Drop, Invalid HWND"), CSTR("Error"), this);
+		this->ui->ShowMsgOK(CSTR("Error in registering Drag Drop, Invalid HWND"), CSTR("Error"), this);
 	}
 	else if (errType == UI::GUIControl::DET_ALREADYREGISTER)
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Error in registering Drag Drop, Already Registered"), CSTR("Error"), this);
+		this->ui->ShowMsgOK(CSTR("Error in registering Drag Drop, Already Registered"), CSTR("Error"), this);
 	}
 	else if (errType == UI::GUIControl::DET_OUTOFMEMORY)
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Error in registering Drag Drop, Out of Memory"), CSTR("Error"), this);
+		this->ui->ShowMsgOK(CSTR("Error in registering Drag Drop, Out of Memory"), CSTR("Error"), this);
 	}
 	else
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Error in registering Drag Drop"), CSTR("Error"), this);
+		this->ui->ShowMsgOK(CSTR("Error in registering Drag Drop"), CSTR("Error"), this);
 	}
 }
 

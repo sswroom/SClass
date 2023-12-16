@@ -2,7 +2,6 @@
 #include "Media/AudioDevice.h"
 #include "SSWR/AVIRead/AVIRSetAudioForm.h"
 #include "Text/StringBuilder.h"
-#include "UI/MessageDialog.h"
 
 void __stdcall SSWR::AVIRead::AVIRSetAudioForm::OnOKClick(void *userObj)
 {

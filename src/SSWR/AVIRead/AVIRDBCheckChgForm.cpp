@@ -13,7 +13,6 @@
 #include "SSWR/AVIRead/AVIRDBCheckChgForm.h"
 #include "Text/UTF8Writer.h"
 #include "UI/FileDialog.h"
-#include "UI/MessageDialog.h"
 
 #define SRID 4326
 
@@ -65,7 +64,7 @@ void __stdcall SSWR::AVIRead::AVIRDBCheckChgForm::OnSQLClicked(void *userObj)
 	UTF8Char *sptr;
 	if (me->dataFile == 0)
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Please input Data file first"), CSTR("Check Table Changes"), me);
+		me->ui->ShowMsgOK(CSTR("Please input Data file first"), CSTR("Check Table Changes"), me);
 		return;
 	}
 	DB::SQLType sqlType = (DB::SQLType)(OSInt)me->cboDBType->GetSelectedItem();
@@ -123,7 +122,7 @@ void __stdcall SSWR::AVIRead::AVIRDBCheckChgForm::OnExecuteClicked(void *userObj
 	SSWR::AVIRead::AVIRDBCheckChgForm *me = (SSWR::AVIRead::AVIRDBCheckChgForm*)userObj;
 	if (me->dataFile == 0)
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Please load data file first"), CSTR("Check Table Changes"), me);
+		me->ui->ShowMsgOK(CSTR("Please load data file first"), CSTR("Check Table Changes"), me);
 		return;
 	}
 	DB::DBConn *db;
@@ -137,7 +136,7 @@ void __stdcall SSWR::AVIRead::AVIRDBCheckChgForm::OnExecuteClicked(void *userObj
 	}
 	else
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Connection does not support SQL Execution"), CSTR("Check Table Changes"), me);
+		me->ui->ShowMsgOK(CSTR("Connection does not support SQL Execution"), CSTR("Check Table Changes"), me);
 		return;
 	}
 	DB::SQLType sqlType = (DB::SQLType)(OSInt)me->cboDBType->GetSelectedItem();
@@ -197,7 +196,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::LoadDataFile(Text::CStringNN fileName)
 	DB::TableDef *table = this->db->GetTableDef(this->schema, this->table);
 	if (table == 0)
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Error in getting table structure"), CSTR("Check Table Changes"), this);
+		this->ui->ShowMsgOK(CSTR("Error in getting table structure"), CSTR("Check Table Changes"), this);
 		return false;
 	}
 	DEL_CLASS(table);
@@ -212,7 +211,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::LoadDataFile(Text::CStringNN fileName)
 		if (!r.Set(csv->QueryTableData(CSTR_NULL, CSTR_NULL, 0, 0, 0, CSTR_NULL, 0)))
 		{
 			DEL_CLASS(csv);
-			UI::MessageDialog::ShowDialog(CSTR("Error in reading CSV file"), CSTR("Check Table Changes"), this);
+			this->ui->ShowMsgOK(CSTR("Error in reading CSV file"), CSTR("Check Table Changes"), this);
 			return false;
 		}
 		csv->CloseReader(r);
@@ -247,7 +246,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::LoadDataFile(Text::CStringNN fileName)
 		}
 		else
 		{
-			UI::MessageDialog::ShowDialog(CSTR("Error in parsing file"), CSTR("Check Table Changes"), this);
+			this->ui->ShowMsgOK(CSTR("Error in parsing file"), CSTR("Check Table Changes"), this);
 			return false;
 		}
 	}
@@ -283,13 +282,13 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::CheckDataFile()
 	UTF8Char *sptr;
 	if (this->dataFile == 0)
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Please load data file first"), CSTR("Check Table Changes"), this);
+		this->ui->ShowMsgOK(CSTR("Please load data file first"), CSTR("Check Table Changes"), this);
 		return false;
 	}
 	Text::StringBuilderUTF8 sbTable;
 	if (!this->cboDataTable->GetText(sbTable))
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Error in getting table name"), CSTR("Check Table Changes"), this);
+		this->ui->ShowMsgOK(CSTR("Error in getting table name"), CSTR("Check Table Changes"), this);
 		return false;
 	}
 	Data::QueryConditions *srcDBCond = 0;
@@ -301,7 +300,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::CheckDataFile()
 		srcDBCond = Data::QueryConditions::ParseStr(sbFilter.ToCString(), this->GetDBSQLType());
 		if (srcDBCond == 0)
 		{
-			UI::MessageDialog::ShowDialog(CSTR("Error in parsing source filter"), CSTR("Check Table Changes"), this);
+			this->ui->ShowMsgOK(CSTR("Error in parsing source filter"), CSTR("Check Table Changes"), this);
 			return false;
 		}
 	}
@@ -313,7 +312,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::CheckDataFile()
 		if (dataDBCond == 0)
 		{
 			SDEL_CLASS(srcDBCond);
-			UI::MessageDialog::ShowDialog(CSTR("Error in parsing data filter"), CSTR("Check Table Changes"), this);
+			this->ui->ShowMsgOK(CSTR("Error in parsing data filter"), CSTR("Check Table Changes"), this);
 			return false;
 		}
 	}
@@ -336,7 +335,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::CheckDataFile()
 	{
 		SDEL_CLASS(srcDBCond);
 		SDEL_CLASS(dataDBCond);
-		UI::MessageDialog::ShowDialog(CSTR("Error in getting table structure"), CSTR("Check Table Changes"), this);
+		this->ui->ShowMsgOK(CSTR("Error in getting table structure"), CSTR("Check Table Changes"), this);
 		return false;
 	}
 	Data::ArrayList<UOSInt> colInd;
@@ -361,7 +360,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::CheckDataFile()
 		SDEL_CLASS(srcDBCond);
 		SDEL_CLASS(dataDBCond);
 		DEL_CLASS(table);
-		UI::MessageDialog::ShowDialog(CSTR("Error in reading data file"), CSTR("Check Table Changes"), this);
+		this->ui->ShowMsgOK(CSTR("Error in reading data file"), CSTR("Check Table Changes"), this);
 		return false;
 	}
 	l = r->ColCount();
@@ -414,7 +413,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::CheckDataFile()
 				DEL_CLASS(table);
 				SDEL_CLASS(srcDBCond);
 				SDEL_CLASS(dataDBCond);
-				UI::MessageDialog::ShowDialog(sb.ToCString(), CSTR("Check Table Changes"), this);
+				this->ui->ShowMsgOK(sb.ToCString(), CSTR("Check Table Changes"), this);
 				return false;
 			}
 			k++;
@@ -426,7 +425,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::CheckDataFile()
 	{
 		if (j != l)
 		{
-			UI::MessageDialog::ShowDialog(CSTR("Column Count does not match"), CSTR("Check Table Changes"), this);
+			this->ui->ShowMsgOK(CSTR("Column Count does not match"), CSTR("Check Table Changes"), this);
 			this->dataFile->CloseReader(r);
 			DEL_CLASS(table);
 			SDEL_CLASS(srcDBCond);
@@ -438,7 +437,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::CheckDataFile()
 	{
 		if (keyCol != INVALID_INDEX && keyDCol == INVALID_INDEX)
 		{
-			UI::MessageDialog::ShowDialog(CSTR("Key Column not found in data file"), CSTR("Check Table Changes"), this);
+			this->ui->ShowMsgOK(CSTR("Key Column not found in data file"), CSTR("Check Table Changes"), this);
 			this->dataFile->CloseReader(r);
 			DEL_CLASS(table);
 			SDEL_CLASS(srcDBCond);
@@ -453,7 +452,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::CheckDataFile()
 				sptr = Text::StrConcatC(sbuff, UTF8STRC("Column "));
 				sptr = table->GetCol(i)->GetColName()->ConcatTo(sptr);
 				sptr = Text::StrConcatC(sptr, UTF8STRC(" not found in Data File"));
-				UI::MessageDialog::ShowDialog(CSTRP(sbuff, sptr), CSTR("Check Table Changes"), this);
+				this->ui->ShowMsgOK(CSTRP(sbuff, sptr), CSTR("Check Table Changes"), this);
 				this->dataFile->CloseReader(r);
 				DEL_CLASS(table);
 				SDEL_CLASS(dbCond);
@@ -556,7 +555,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::CheckDataFile()
 						}
 						MemFree(rowData);
 
-						UI::MessageDialog::ShowDialog(CSTR("Data File Key duplicate"), CSTR("Check Table Changes"), this);
+						this->ui->ShowMsgOK(CSTR("Data File Key duplicate"), CSTR("Check Table Changes"), this);
 						succ = false;
 						break;
 					}
@@ -570,7 +569,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::CheckDataFile()
 	{
 		if (!r.Set(this->db->QueryTableData(this->schema, this->table, 0, 0, 0, CSTR_NULL, srcDBCond)))
 		{
-			UI::MessageDialog::ShowDialog(CSTR("Error in getting table data"), CSTR("Check Table Changes"), this);
+			this->ui->ShowMsgOK(CSTR("Error in getting table data"), CSTR("Check Table Changes"), this);
 			succ = false;
 		}
 		else
@@ -581,7 +580,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::CheckDataFile()
 				id = r->GetNewStr(keyCol);
 				if (id == 0)
 				{
-					UI::MessageDialog::ShowDialog(CSTR("Source Key is null"), CSTR("Check Table Changes"), this);
+					this->ui->ShowMsgOK(CSTR("Source Key is null"), CSTR("Check Table Changes"), this);
 					succ = false;
 					break;
 				}
@@ -591,7 +590,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::CheckDataFile()
 					sbFilter.AppendC(UTF8STRC("Source Key duplicate ("));
 					sbFilter.Append(id);
 					sbFilter.AppendUTF8Char(')');
-					UI::MessageDialog::ShowDialog(sbFilter.ToCString(), CSTR("Check Table Changes"), this);
+					this->ui->ShowMsgOK(sbFilter.ToCString(), CSTR("Check Table Changes"), this);
 					succ = false;
 					break;
 				}
@@ -833,13 +832,13 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool ax
 	UTF8Char *sptr;
 	if (this->dataFile == 0)
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Please load data file first"), CSTR("Check Table Changes"), this);
+		this->ui->ShowMsgOK(CSTR("Please load data file first"), CSTR("Check Table Changes"), this);
 		return false;
 	}
 	Text::StringBuilderUTF8 sbTable;
 	if (!this->cboDataTable->GetText(sbTable))
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Error in getting table name"), CSTR("Check Table Changes"), this);
+		this->ui->ShowMsgOK(CSTR("Error in getting table name"), CSTR("Check Table Changes"), this);
 		return false;
 	}
 	Data::QueryConditions *srcDBCond = 0;
@@ -851,7 +850,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool ax
 		srcDBCond = Data::QueryConditions::ParseStr(sbFilter.ToCString(), this->GetDBSQLType());
 		if (srcDBCond == 0)
 		{
-			UI::MessageDialog::ShowDialog(CSTR("Error in parsing source filter"), CSTR("Check Table Changes"), this);
+			this->ui->ShowMsgOK(CSTR("Error in parsing source filter"), CSTR("Check Table Changes"), this);
 			return false;
 		}
 	}
@@ -862,7 +861,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool ax
 		dataDBCond = Data::QueryConditions::ParseStr(sbFilter.ToCString(), this->GetDBSQLType());
 		if (dataDBCond == 0)
 		{
-			UI::MessageDialog::ShowDialog(CSTR("Error in parsing data filter"), CSTR("Check Table Changes"), this);
+			this->ui->ShowMsgOK(CSTR("Error in parsing data filter"), CSTR("Check Table Changes"), this);
 			SDEL_CLASS(srcDBCond);
 			return false;
 		}
@@ -882,7 +881,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool ax
 	DB::TableDef *table = this->db->GetTableDef(this->schema, this->table);
 	if (table == 0)
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Error in getting table structure"), CSTR("Check Table Changes"), this);
+		this->ui->ShowMsgOK(CSTR("Error in getting table structure"), CSTR("Check Table Changes"), this);
 		SDEL_CLASS(srcDBCond);
 		SDEL_CLASS(dataDBCond);
 		return false;
@@ -945,7 +944,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool ax
 		DEL_CLASS(table);
 		SDEL_CLASS(srcDBCond);
 		SDEL_CLASS(dataDBCond);
-		UI::MessageDialog::ShowDialog(CSTR("Error in reading data file"), CSTR("Check Table Changes"), this);
+		this->ui->ShowMsgOK(CSTR("Error in reading data file"), CSTR("Check Table Changes"), this);
 		return false;
 	}
 	l = r->ColCount();
@@ -998,7 +997,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool ax
 				DEL_CLASS(table);
 				SDEL_CLASS(srcDBCond);
 				SDEL_CLASS(dataDBCond);
-				UI::MessageDialog::ShowDialog(sb.ToCString(), CSTR("Check Table Changes"), this);
+				this->ui->ShowMsgOK(sb.ToCString(), CSTR("Check Table Changes"), this);
 				return false;
 			}
 			k++;
@@ -1010,7 +1009,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool ax
 	{
 		if (j != l)
 		{
-			UI::MessageDialog::ShowDialog(CSTR("Column Count does not match"), CSTR("Check Table Changes"), this);
+			this->ui->ShowMsgOK(CSTR("Column Count does not match"), CSTR("Check Table Changes"), this);
 			this->dataFile->CloseReader(r);
 			DEL_CLASS(table);
 			SDEL_CLASS(srcDBCond);
@@ -1022,7 +1021,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool ax
 	{
 		if (keyCol != INVALID_INDEX && keyDCol == INVALID_INDEX)
 		{
-			UI::MessageDialog::ShowDialog(CSTR("Key Column not found in data file"), CSTR("Check Table Changes"), this);
+			this->ui->ShowMsgOK(CSTR("Key Column not found in data file"), CSTR("Check Table Changes"), this);
 			this->dataFile->CloseReader(r);
 			DEL_CLASS(table);
 			SDEL_CLASS(srcDBCond);
@@ -1037,7 +1036,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool ax
 				sptr = Text::StrConcatC(sbuff, UTF8STRC("Column "));
 				sptr = table->GetCol(i)->GetColName()->ConcatTo(sptr);
 				sptr = Text::StrConcatC(sptr, UTF8STRC(" not found in Data File"));
-				UI::MessageDialog::ShowDialog(CSTRP(sbuff, sptr), CSTR("Check Table Changes"), this);
+				this->ui->ShowMsgOK(CSTRP(sbuff, sptr), CSTR("Check Table Changes"), this);
 				this->dataFile->CloseReader(r);
 				DEL_CLASS(table);
 				SDEL_CLASS(srcDBCond);
@@ -1203,7 +1202,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool ax
 	{
 		if (!r.Set(this->db->QueryTableData(this->schema, this->table, 0, 0, 0, CSTR_NULL, srcDBCond)))
 		{
-			UI::MessageDialog::ShowDialog(CSTR("Error in getting table data"), CSTR("Check Table Changes"), this);
+			this->ui->ShowMsgOK(CSTR("Error in getting table data"), CSTR("Check Table Changes"), this);
 		}
 		else
 		{
@@ -1748,7 +1747,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::NextSQL(Text::CStringNN sql, SQLSession 
 		}
 		Text::StringBuilderUTF8 sb;
 		db->GetLastErrorMsg(sb);
-		UI::MessageDialog::ShowDialog(sb.ToCString(), CSTR("Check Table Changes"), this);
+		this->ui->ShowMsgOK(sb.ToCString(), CSTR("Check Table Changes"), this);
 		return false;
 	}
 	else if (sess->mode == 2)
@@ -1768,7 +1767,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::NextSQL(Text::CStringNN sql, SQLSession 
 				{
 					Text::StringBuilderUTF8 sb;
 					sess->db->GetLastErrorMsg(sb);
-					UI::MessageDialog::ShowDialog(sb.ToCString(), CSTR("Check Table Changes"), this);
+					this->ui->ShowMsgOK(sb.ToCString(), CSTR("Check Table Changes"), this);
 					return false;
 				}
 			}
@@ -1796,7 +1795,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::NextSQL(Text::CStringNN sql, SQLSession 
 				{
 					Text::StringBuilderUTF8 sb;
 					db->GetLastErrorMsg(sb);
-					UI::MessageDialog::ShowDialog(sb.ToCString(), CSTR("Check Table Changes"), this);
+					this->ui->ShowMsgOK(sb.ToCString(), CSTR("Check Table Changes"), this);
 					return false;
 				}
 			}
@@ -1810,7 +1809,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::NextSQL(Text::CStringNN sql, SQLSession 
 		}
 		Text::StringBuilderUTF8 sb;
 		db->GetLastErrorMsg(sb);
-		UI::MessageDialog::ShowDialog(sb.ToCString(), CSTR("Check Table Changes"), this);
+		this->ui->ShowMsgOK(sb.ToCString(), CSTR("Check Table Changes"), this);
 		return false;
 	}
 	else

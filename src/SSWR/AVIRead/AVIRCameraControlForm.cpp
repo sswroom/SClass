@@ -9,7 +9,6 @@
 #include "Text/MyString.h"
 #include "UI/FileDialog.h"
 #include "UI/FolderDialog.h"
-#include "UI/MessageDialog.h"
 
 void __stdcall SSWR::AVIRead::AVIRCameraControlForm::OnDownloadClicked(void *userObj)
 {
@@ -41,7 +40,7 @@ void __stdcall SSWR::AVIRead::AVIRCameraControlForm::OnDownloadClicked(void *use
 			if (!succ)
 			{
 				IO::Path::DeleteFile(dlg.GetFileName()->v);
-				UI::MessageDialog::ShowDialog(CSTR("Error in downloading the file"), CSTR("Camera Control"), me);
+				me->ui->ShowMsgOK(CSTR("Error in downloading the file"), CSTR("Camera Control"), me);
 			}
 		}
 	}
@@ -82,7 +81,7 @@ void __stdcall SSWR::AVIRead::AVIRCameraControlForm::OnDownloadClicked(void *use
 					sb.AppendC(UTF8STRC("Error in downloading "));
 					sb.AppendSlow(file->fileName);
 					sb.AppendC(UTF8STRC(", continue?"));
-					if (!UI::MessageDialog::ShowYesNoDialog(sb.ToCString(), CSTR("Camera Control"), me))
+					if (!me->ui->ShowMsgYesNo(sb.ToCString(), CSTR("Camera Control"), me))
 					{
 						break;
 					}
@@ -91,7 +90,7 @@ void __stdcall SSWR::AVIRead::AVIRCameraControlForm::OnDownloadClicked(void *use
 			}
 			if (succ)
 			{
-				UI::MessageDialog::ShowDialog(CSTR("Finish downloading selected files"), CSTR("Camera Control"), me);
+				me->ui->ShowMsgOK(CSTR("Finish downloading selected files"), CSTR("Camera Control"), me);
 			}
 		}
 	}

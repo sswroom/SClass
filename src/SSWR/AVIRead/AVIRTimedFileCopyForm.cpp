@@ -4,7 +4,6 @@
 #include "IO/ZIPBuilder.h"
 #include "SSWR/AVIRead/AVIRTimedFileCopyForm.h"
 #include "UI/FileDialog.h"
-#include "UI/MessageDialog.h"
 
 void __stdcall SSWR::AVIRead::AVIRTimedFileCopyForm::OnStartClicked(void *userObj)
 {
@@ -19,20 +18,20 @@ void __stdcall SSWR::AVIRead::AVIRTimedFileCopyForm::OnStartClicked(void *userOb
 	me->txtFileDir->GetText(sb);
 	if (IO::Path::GetPathType(sb.ToCString()) != IO::Path::PathType::Directory)
 	{
-		UI::MessageDialog::ShowDialog(CSTR("The file dir is not a directory"), me->GetFormName(), me);
+		me->ui->ShowMsgOK(CSTR("The file dir is not a directory"), me->GetFormName(), me);
 		return;
 	}
 	dt1.ClearTime();
 	dt2.ClearTime();
 	if (dt1.CompareTo(dt2) > 0)
 	{
-		UI::MessageDialog::ShowDialog(CSTR("The start time is after end time"), me->GetFormName(), me);
+		me->ui->ShowMsgOK(CSTR("The start time is after end time"), me->GetFormName(), me);
 		return;
 	}
 	Double days = Data::DateTimeUtil::MS2Days(dt2.DiffMS(dt1));
 	if (days > 90)
 	{
-		UI::MessageDialog::ShowDialog(CSTR("The time range is longer than 90 days"), me->GetFormName(), me);
+		me->ui->ShowMsgOK(CSTR("The time range is longer than 90 days"), me->GetFormName(), me);
 		return;
 	}
 
@@ -70,7 +69,7 @@ void __stdcall SSWR::AVIRead::AVIRTimedFileCopyForm::OnStartClicked(void *userOb
 		IO::FileStream fs(dlg.GetFileName(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 		if (fs.IsError())
 		{
-			UI::MessageDialog::ShowDialog(CSTR("Error in creating zip file"), me->GetFormName(), me);
+			me->ui->ShowMsgOK(CSTR("Error in creating zip file"), me->GetFormName(), me);
 		}
 		else
 		{
@@ -173,7 +172,7 @@ Bool SSWR::AVIRead::AVIRTimedFileCopyForm::CopyToZip(IO::ZIPMTBuilder *zip, cons
 							Text::StringBuilderUTF8 sb;
 							sb.AppendC(UTF8STRC("Error in copying "));
 							sb.AppendP(buffStart, sptr);
-							UI::MessageDialog::ShowDialog(sb.ToCString(), this->GetFormName(), this);
+							this->ui->ShowMsgOK(sb.ToCString(), this->GetFormName(), this);
 							return false;
 						}
 					}

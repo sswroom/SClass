@@ -10,7 +10,6 @@
 #include "Sync/ThreadUtil.h"
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
-#include "UI/MessageDialog.h"
 
 void __stdcall SSWR::AVIRead::AVIRHTTPClientCertTestForm::OnStartClick(void *userObj)
 {
@@ -40,7 +39,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientCertTestForm::OnStartClick(void *use
 		NotNullPtr<Crypto::Cert::X509Key> key;
 		if (!key.Set(ssl->GenerateRSAKey()))
 		{
-			UI::MessageDialog::ShowDialog(CSTR("Error in initializing Key"), CSTR("HTTP Client Cert Test"), me);
+			me->ui->ShowMsgOK(CSTR("Error in initializing Key"), CSTR("HTTP Client Cert Test"), me);
 			return;
 		}
 		me->sslKey = key.Ptr();
@@ -69,7 +68,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientCertTestForm::OnStartClick(void *use
 		sanList.FreeAll();
 		if (!sslCert.Set(me->sslCert))
 		{
-			UI::MessageDialog::ShowDialog(CSTR("Error in initializing Certificate"), CSTR("HTTP Client Cert Test"), me);
+			me->ui->ShowMsgOK(CSTR("Error in initializing Certificate"), CSTR("HTTP Client Cert Test"), me);
 			return;
 		}
 
@@ -82,7 +81,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientCertTestForm::OnStartClick(void *use
 		Data::ArrayListNN<Crypto::Cert::X509Cert> caCerts;
 		if (!ssl->ServerSetCertsASN1(sslCert, key, caCerts))
 		{
-			UI::MessageDialog::ShowDialog(CSTR("Error in initializing Cert/Key"), CSTR("HTTP Client Cert Test"), me);
+			me->ui->ShowMsgOK(CSTR("Error in initializing Cert/Key"), CSTR("HTTP Client Cert Test"), me);
 			return;
 		}
 	}
@@ -90,7 +89,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientCertTestForm::OnStartClick(void *use
 	{
 		if (!ssl->ServerSetCertsASN1(sslCert, sslKey, me->caCerts))
 		{
-			UI::MessageDialog::ShowDialog(CSTR("Error in initializing Cert/Key"), CSTR("HTTP Client Cert Test"), me);
+			me->ui->ShowMsgOK(CSTR("Error in initializing Cert/Key"), CSTR("HTTP Client Cert Test"), me);
 			return;
 		}
 	}
@@ -107,14 +106,14 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientCertTestForm::OnStartClick(void *use
 		{
 			valid = false;
 			SDEL_CLASS(me->svr);
-			UI::MessageDialog::ShowDialog(CSTR("Error in listening to port"), CSTR("HTTP Client Cert Test"), me);
+			me->ui->ShowMsgOK(CSTR("Error in listening to port"), CSTR("HTTP Client Cert Test"), me);
 		}
 		else
 		{
 			if (!me->svr->Start())
 			{
 				valid = false;
-				UI::MessageDialog::ShowDialog(CSTR("Error in starting HTTP Server"), CSTR("HTTP Client Cert Test"), me);
+				me->ui->ShowMsgOK(CSTR("Error in starting HTTP Server"), CSTR("HTTP Client Cert Test"), me);
 			}
 		}
 	}

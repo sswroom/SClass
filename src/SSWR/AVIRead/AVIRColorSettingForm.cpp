@@ -7,7 +7,6 @@
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
 #include "UI/FileDialog.h"
-#include "UI/MessageDialog.h"
 
 void __stdcall SSWR::AVIRead::AVIRColorSettingForm::OnMonProfileChg(void *userObj)
 {
@@ -131,7 +130,7 @@ void __stdcall SSWR::AVIRead::AVIRColorSettingForm::OnOKClicked(void *userObj)
 	}
 	else
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Luminance is not valid"), CSTR("Error"), me);
+		me->ui->ShowMsgOK(CSTR("Luminance is not valid"), CSTR("Error"), me);
 		return;
 	}
 	me->monColor->Save();

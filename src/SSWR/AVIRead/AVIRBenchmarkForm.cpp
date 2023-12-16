@@ -10,7 +10,6 @@
 #include "Text/StringBuilderUTF8.h"
 #include "Text/UTF8Writer.h"
 #include "UI/FileDialog.h"
-#include "UI/MessageDialog.h"
 
 UTF8Char *SSWR::AVIRead::AVIRBenchmarkForm::ByteDisp(UTF8Char *sbuff, UOSInt byteSize)
 {
@@ -229,7 +228,7 @@ void __stdcall SSWR::AVIRead::AVIRBenchmarkForm::OnSaveClicked(void *userObj)
 
 	if (me->resultList->GetCount() <= 0)
 	{
-		UI::MessageDialog::ShowDialog(CSTR("No result"), CSTR("Error"), me);
+		me->ui->ShowMsgOK(CSTR("No result"), CSTR("Error"), me);
 		return;
 	}
 	UI::FileDialog dlg(L"SSWR", L"AVIRead", L"BenchmarkSave", true);

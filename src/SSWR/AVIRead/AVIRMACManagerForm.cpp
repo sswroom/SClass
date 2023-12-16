@@ -11,7 +11,6 @@
 #include "Text/UTF8Reader.h"
 #include "Text/UTF8Writer.h"
 #include "UI/FileDialog.h"
-#include "UI/MessageDialog.h"
 
 #include <stdio.h>
 void __stdcall SSWR::AVIRead::AVIRMACManagerForm::OnFileClicked(void *userObj)
@@ -31,11 +30,11 @@ void __stdcall SSWR::AVIRead::AVIRMACManagerForm::OnStoreClicked(void *userObj)
 	SSWR::AVIRead::AVIRMACManagerForm *me = (SSWR::AVIRead::AVIRMACManagerForm*)userObj;
 	if (me->macList.Store())
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Data Stored"), CSTR("MAC Manager"), me);
+		me->ui->ShowMsgOK(CSTR("Data Stored"), CSTR("MAC Manager"), me);
 	}
 	else
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Error in storing data"), CSTR("MAC Manager"), me);
+		me->ui->ShowMsgOK(CSTR("Error in storing data"), CSTR("MAC Manager"), me);
 	}
 }
 
@@ -109,7 +108,7 @@ void __stdcall SSWR::AVIRead::AVIRMACManagerForm::OnInputClicked(void *userObj)
 	me->txtInput->GetText(sb);
 	if (sb.GetLength() < 6 || sb.GetLength() > 28)
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Invalid input"), CSTR("MAC Manager"), me);
+		me->ui->ShowMsgOK(CSTR("Invalid input"), CSTR("MAC Manager"), me);
 		return;
 	}
 	sbuff[0] = sb.ToString()[2];
@@ -135,7 +134,7 @@ void __stdcall SSWR::AVIRead::AVIRMACManagerForm::OnInputClicked(void *userObj)
 	i = sb.Hex2Bytes(&buff[2]);
 	if (i < 3)
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Invalid input"), CSTR("MAC Manager"), me);
+		me->ui->ShowMsgOK(CSTR("Invalid input"), CSTR("MAC Manager"), me);
 		return;
 	}
 	while (i < 6)

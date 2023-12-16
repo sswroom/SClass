@@ -6,7 +6,6 @@
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
 #include "UI/FileDialog.h"
-#include "UI/MessageDialog.h"
 
 void __stdcall SSWR::AVIRead::AVIRColorCustomForm::OnRXDownClicked(void *userObj)
 {

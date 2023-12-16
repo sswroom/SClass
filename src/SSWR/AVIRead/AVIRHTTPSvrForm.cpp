@@ -9,7 +9,6 @@
 #include "Sync/ThreadUtil.h"
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
-#include "UI/MessageDialog.h"
 
 SSWR::AVIRead::AVIRHTTPLog::AVIRHTTPLog(UOSInt logCnt)
 {
@@ -141,7 +140,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPSvrForm::OnStartClick(void *userObj)
 	me->txtWorkerCnt->GetText(sb);
 	if (!sb.ToUOSInt(workerCnt))
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Please enter valid worker count"), CSTR("HTTP Server"), me);
+		me->ui->ShowMsgOK(CSTR("Please enter valid worker count"), CSTR("HTTP Server"), me);
 		return;
 	}
 	sb.ClearStr();
@@ -154,14 +153,14 @@ void __stdcall SSWR::AVIRead::AVIRHTTPSvrForm::OnStartClick(void *userObj)
 		NotNullPtr<Crypto::Cert::X509File> sslKey;
 		if (!sslCert.Set(me->sslCert) || !sslKey.Set(me->sslKey))
 		{
-			UI::MessageDialog::ShowDialog(CSTR("Please select SSL Cert/Key First"), CSTR("HTTP Server"), me);
+			me->ui->ShowMsgOK(CSTR("Please select SSL Cert/Key First"), CSTR("HTTP Server"), me);
 			return;
 		}
 		ssl = me->ssl;
 		NotNullPtr<Net::SSLEngine> nnssl;
 		if (!ssl.SetTo(nnssl) || !nnssl->ServerSetCertsASN1(sslCert, sslKey, me->caCerts))
 		{
-			UI::MessageDialog::ShowDialog(CSTR("Error in initializing Cert/Key"), CSTR("HTTP Server"), me);
+			me->ui->ShowMsgOK(CSTR("Error in initializing Cert/Key"), CSTR("HTTP Server"), me);
 			return;
 		}
 	}
@@ -186,7 +185,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPSvrForm::OnStartClick(void *userObj)
 			valid = false;
 			SDEL_CLASS(me->svr);
 			dirHdlr.Delete();
-			UI::MessageDialog::ShowDialog(CSTR("Error in listening to port"), CSTR("HTTP Server"), me);
+			me->ui->ShowMsgOK(CSTR("Error in listening to port"), CSTR("HTTP Server"), me);
 		}
 		else
 		{
@@ -229,7 +228,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPSvrForm::OnStartClick(void *userObj)
 			if (!me->svr->Start())
 			{
 				valid = false;
-				UI::MessageDialog::ShowDialog(CSTR("Error in starting HTTP Server"), CSTR("HTTP Server"), me);
+				me->ui->ShowMsgOK(CSTR("Error in starting HTTP Server"), CSTR("HTTP Server"), me);
 			}
 		}
 	}

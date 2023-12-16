@@ -6,7 +6,6 @@
 #include "Text/UTF8Reader.h"
 #include "Text/UTF8Writer.h"
 #include "UI/FileDialog.h"
-#include "UI/MessageDialog.h"
 
 void __stdcall SSWR::AVIRead::AVIRLogExtractForm::OnSFileClicked(void *userObj)
 {
@@ -58,15 +57,15 @@ void __stdcall SSWR::AVIRead::AVIRLogExtractForm::OnExtractClicked(void *userObj
 	me->txtSuffix->GetText(sbSuffix);
 	if (IO::Path::GetPathType(sb1.ToCString()) != IO::Path::PathType::File)
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Source File not found"), CSTR("Error"), me);
+		me->ui->ShowMsgOK(CSTR("Source File not found"), CSTR("Error"), me);
 	}
 	else if (sb2.GetLength() <= 0)
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Please enter Prefix"), CSTR("Error"), me);
+		me->ui->ShowMsgOK(CSTR("Please enter Prefix"), CSTR("Error"), me);
 	}
 	else if (sb3.GetLength() <= 0)
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Please enter Output"), CSTR("Error"), me);
+		me->ui->ShowMsgOK(CSTR("Please enter Output"), CSTR("Error"), me);
 	}
 	else
 	{
@@ -78,7 +77,7 @@ void __stdcall SSWR::AVIRead::AVIRLogExtractForm::OnExtractClicked(void *userObj
 		IO::FileStream fs2(sb3.ToCString(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 		if (fs2.IsError())
 		{
-			UI::MessageDialog::ShowDialog(CSTR("Error in creating Output file"), CSTR("Error"), me);
+			me->ui->ShowMsgOK(CSTR("Error in creating Output file"), CSTR("Error"), me);
 		}
 		else
 		{
@@ -120,7 +119,7 @@ void __stdcall SSWR::AVIRead::AVIRLogExtractForm::OnExtractClicked(void *userObj
 				hasData = reader.ReadLine(sb1, 1024);
 			}
 
-			UI::MessageDialog::ShowDialog(CSTR("Complete log extract"), CSTR("Success"), me);
+			me->ui->ShowMsgOK(CSTR("Complete log extract"), CSTR("Success"), me);
 		}
 	}
 }

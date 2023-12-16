@@ -12,7 +12,6 @@
 #include "Text/UTF8Reader.h"
 #include "Text/UTF8Writer.h"
 #include "UI/FileDialog.h"
-#include "UI/MessageDialog.h"
 
 void __stdcall SSWR::AVIRead::AVIRBTScanLogForm::OnFileClicked(void *userObj)
 {
@@ -39,11 +38,11 @@ void __stdcall SSWR::AVIRead::AVIRBTScanLogForm::OnStoreClicked(void *userObj)
 	SSWR::AVIRead::AVIRBTScanLogForm *me = (SSWR::AVIRead::AVIRBTScanLogForm*)userObj;
 	if (me->macList->Store())
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Data Stored"), CSTR("MAC Manager"), me);
+		me->ui->ShowMsgOK(CSTR("Data Stored"), CSTR("MAC Manager"), me);
 	}
 	else
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Error in storing data"), CSTR("MAC Manager"), me);
+		me->ui->ShowMsgOK(CSTR("Error in storing data"), CSTR("MAC Manager"), me);
 	}
 }
 

@@ -18,7 +18,6 @@
 #include "Text/StringBuilderUTF8.h"
 #include "Text/StringBuilderUTF16.h"
 #include "UI/FileDialog.h"
-#include "UI/MessageDialog.h"
 #define LATSCALE 200000
 
 Text::CStringNN SSWR::SHPConv::SHPConvMainForm::typeName[] = {
@@ -197,7 +196,7 @@ void __stdcall SSWR::SHPConv::SHPConvMainForm::OnConvertClicked(void *userObj)
 	me->txtBlkScale->GetText(sb);
 	if (!sb.ToInt32(blkScale))
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Block scale is not integer"), CSTR("Error"), me);
+		me->ui->ShowMsgOK(CSTR("Block scale is not integer"), CSTR("Error"), me);
 		return;
 	}
 
@@ -359,7 +358,7 @@ Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(Text::CStringNN sourceFile, Tex
 		Text::StringBuilderUTF8 sb;
 		sb.AppendC(UTF8STRC("Failed in converting "));
 		sb.Append(sourceFile);
-		UI::MessageDialog::ShowDialog(sb.ToCString(), CSTR("Error"), this);
+		this->ui->ShowMsgOK(sb.ToCString(), CSTR("Error"), this);
 		return 0;
 	}
 	fs.Read(Data::ByteArray(buff, 100));
@@ -782,7 +781,7 @@ Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(Text::CStringNN sourceFile, Tex
 		}
 		else
 		{
-			UI::MessageDialog::ShowDialog(CSTR("Error in writing output files"), CSTR("Error"), this);
+			this->ui->ShowMsgOK(CSTR("Error in writing output files"), CSTR("Error"), this);
 		}
 		progress->ProgressEnd();
 	}
@@ -1103,13 +1102,13 @@ Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(Text::CStringNN sourceFile, Tex
 		}
 		else
 		{
-			UI::MessageDialog::ShowDialog(CSTR("Error in writing output files"), CSTR("Error"), this);
+			this->ui->ShowMsgOK(CSTR("Error in writing output files"), CSTR("Error"), this);
 		}
 		progress->ProgressEnd();
 	}
 	else
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Unsupported shape type"), CSTR("Error"), this);
+		this->ui->ShowMsgOK(CSTR("Unsupported shape type"), CSTR("Error"), this);
 	}
 	return shpType;
 }
@@ -1130,14 +1129,14 @@ Int32 SSWR::SHPConv::SHPConvMainForm::LoadShape(Text::CStringNN fileName, Bool u
 		IO::FileStream fs(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 		if (fs.IsError())
 		{
-			UI::MessageDialog::ShowDialog(CSTR("Failed opening the file"), CSTR("Error"), this);
+			this->ui->ShowMsgOK(CSTR("Failed opening the file"), CSTR("Error"), this);
 			return 0;
 		}
 
 		fs.Read(BYTEARR(buff));
 		if (ReadMInt32(buff) != 9994)
 		{
-			UI::MessageDialog::ShowDialog(CSTR("File is not valid shape file"), CSTR("Error"), this);
+			this->ui->ShowMsgOK(CSTR("File is not valid shape file"), CSTR("Error"), this);
 			return 0;
 		}
 		xMin = ReadDouble(&buff[36]);

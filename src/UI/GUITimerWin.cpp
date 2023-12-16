@@ -5,7 +5,6 @@
 #include "UI/GUITimer.h"
 
 #include "Text/MyString.h"
-#include "UI/MessageDialog.h"
 
 #include <windows.h>
 

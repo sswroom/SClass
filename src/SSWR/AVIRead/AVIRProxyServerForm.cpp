@@ -2,7 +2,6 @@
 #include "SSWR/AVIRead/AVIRProxyServerForm.h"
 #include "Sync/ThreadUtil.h"
 #include "Text/MyString.h"
-#include "UI/MessageDialog.h"
 
 void __stdcall SSWR::AVIRead::AVIRProxyServerForm::OnStartClicked(void *userObj)
 {
@@ -14,7 +13,7 @@ void __stdcall SSWR::AVIRead::AVIRProxyServerForm::OnStartClicked(void *userObj)
 		Int32 port = sb.ToInt32();
 		if (port <= 0 || port >= 65536)
 		{
-			UI::MessageDialog::ShowDialog(CSTR("Please enter valid port number"), CSTR("Start"), me);
+			me->ui->ShowMsgOK(CSTR("Please enter valid port number"), CSTR("Start"), me);
 			return;
 		}
 		NEW_CLASS(me->svr, Net::ProxyServer(me->sockf, (UInt16)port, me->log, true));
@@ -22,7 +21,7 @@ void __stdcall SSWR::AVIRead::AVIRProxyServerForm::OnStartClicked(void *userObj)
 		{
 			DEL_CLASS(me->svr);
 			me->svr = 0;
-			UI::MessageDialog::ShowDialog(CSTR("Error in starting proxy server. Maybe port is in use."), CSTR("Start"), me);
+			me->ui->ShowMsgOK(CSTR("Error in starting proxy server. Maybe port is in use."), CSTR("Start"), me);
 		}
 		else
 		{

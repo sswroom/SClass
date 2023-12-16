@@ -12,7 +12,6 @@
 #include "Text/StringBuilderUTF8.h"
 #include "Text/XML.h"
 #include "Text/XMLReader.h"
-#include "UI/MessageDialog.h"
 
 void __stdcall SSWR::AVIRead::AVIRSAMLTestForm::OnFormFiles(void *userObj, NotNullPtr<Text::String> *files, UOSInt nFiles)
 {
@@ -129,14 +128,14 @@ void __stdcall SSWR::AVIRead::AVIRSAMLTestForm::OnStartClicked(void *userObj)
 
 	if (!sslCert.Set(me->sslCert) || !sslKey.Set(me->sslKey))
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Please select SSL Cert/Key First"), CSTR("SAML Test"), me);
+		me->ui->ShowMsgOK(CSTR("Please select SSL Cert/Key First"), CSTR("SAML Test"), me);
 		return;
 	}
 	ssl = me->ssl;
 	NotNullPtr<Net::SSLEngine> nnssl;
 	if (!ssl.SetTo(nnssl) || !nnssl->ServerSetCertsASN1(sslCert, sslKey, me->caCerts))
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Error in initializing Cert/Key"), CSTR("SAML Test"), me);
+		me->ui->ShowMsgOK(CSTR("Error in initializing Cert/Key"), CSTR("SAML Test"), me);
 		return;
 	}
 	
@@ -147,7 +146,7 @@ void __stdcall SSWR::AVIRead::AVIRSAMLTestForm::OnStartClicked(void *userObj)
 		me->txtHost->GetText(sb);
 		if (sb.GetLength() == 0)
 		{
-			UI::MessageDialog::ShowDialog(CSTR("Please enter host"), CSTR("SAML Test"), me);
+			me->ui->ShowMsgOK(CSTR("Please enter host"), CSTR("SAML Test"), me);
 			return;
 		}
 		cfg.serverHost = sb.ToCString();
@@ -156,12 +155,12 @@ void __stdcall SSWR::AVIRead::AVIRSAMLTestForm::OnStartClicked(void *userObj)
 		me->txtSignCert->GetText(sbSignCert);
 		if (sbSignCert.GetLength() == 0)
 		{
-			UI::MessageDialog::ShowDialog(CSTR("Please enter Signature Cert"), CSTR("SAML Test"), me);
+			me->ui->ShowMsgOK(CSTR("Please enter Signature Cert"), CSTR("SAML Test"), me);
 			return;
 		}
 		else if (IO::Path::GetPathType(sbSignCert.ToCString()) != IO::Path::PathType::File)
 		{
-			UI::MessageDialog::ShowDialog(CSTR("Signature Cert file path not valid"), CSTR("SAML Test"), me);
+			me->ui->ShowMsgOK(CSTR("Signature Cert file path not valid"), CSTR("SAML Test"), me);
 			return;
 		}
 		cfg.signCertPath = sbSignCert.ToCString();
@@ -170,12 +169,12 @@ void __stdcall SSWR::AVIRead::AVIRSAMLTestForm::OnStartClicked(void *userObj)
 		me->txtSignKey->GetText(sbSignKey);
 		if (sbSignKey.GetLength() == 0)
 		{
-			UI::MessageDialog::ShowDialog(CSTR("Please enter Signature Key"), CSTR("SAML Test"), me);
+			me->ui->ShowMsgOK(CSTR("Please enter Signature Key"), CSTR("SAML Test"), me);
 			return;
 		}
 		else if (IO::Path::GetPathType(sbSignKey.ToCString()) != IO::Path::PathType::File)
 		{
-			UI::MessageDialog::ShowDialog(CSTR("Signature Key file path not valid"), CSTR("SAML Test"), me);
+			me->ui->ShowMsgOK(CSTR("Signature Key file path not valid"), CSTR("SAML Test"), me);
 			return;
 		}
 		cfg.signKeyPath = sbSignKey.ToCString();
@@ -184,12 +183,12 @@ void __stdcall SSWR::AVIRead::AVIRSAMLTestForm::OnStartClicked(void *userObj)
 		me->txtLogoutPath->GetText(sbLogoutPath);
 		if (sbLogoutPath.GetLength() == 0)
 		{
-			UI::MessageDialog::ShowDialog(CSTR("Please enter Logout Path"), CSTR("SAML Test"), me);
+			me->ui->ShowMsgOK(CSTR("Please enter Logout Path"), CSTR("SAML Test"), me);
 			return;
 		}
 		else if (sbLogoutPath.v[0] != '/')
 		{
-			UI::MessageDialog::ShowDialog(CSTR("Logout Path is not valid"), CSTR("SAML Test"), me);
+			me->ui->ShowMsgOK(CSTR("Logout Path is not valid"), CSTR("SAML Test"), me);
 			return;
 		}
 		cfg.logoutPath = sbLogoutPath.ToCString();
@@ -198,12 +197,12 @@ void __stdcall SSWR::AVIRead::AVIRSAMLTestForm::OnStartClicked(void *userObj)
 		me->txtMetadataPath->GetText(sbMetadataPath);
 		if (sbMetadataPath.GetLength() == 0)
 		{
-			UI::MessageDialog::ShowDialog(CSTR("Please enter Metadata Path"), CSTR("SAML Test"), me);
+			me->ui->ShowMsgOK(CSTR("Please enter Metadata Path"), CSTR("SAML Test"), me);
 			return;
 		}
 		else if (sbMetadataPath.v[0] != '/')
 		{
-			UI::MessageDialog::ShowDialog(CSTR("Metadata Path is not valid"), CSTR("SAML Test"), me);
+			me->ui->ShowMsgOK(CSTR("Metadata Path is not valid"), CSTR("SAML Test"), me);
 			return;
 		}
 		cfg.metadataPath = sbMetadataPath.ToCString();
@@ -212,12 +211,12 @@ void __stdcall SSWR::AVIRead::AVIRSAMLTestForm::OnStartClicked(void *userObj)
 		me->txtSSOPath->GetText(sbSSOPath);
 		if (sbSSOPath.GetLength() == 0)
 		{
-			UI::MessageDialog::ShowDialog(CSTR("Please enter SSO Path"), CSTR("SAML Test"), me);
+			me->ui->ShowMsgOK(CSTR("Please enter SSO Path"), CSTR("SAML Test"), me);
 			return;
 		}
 		else if (sbSSOPath.v[0] != '/')
 		{
-			UI::MessageDialog::ShowDialog(CSTR("SSO Path is not valid"), CSTR("SAML Test"), me);
+			me->ui->ShowMsgOK(CSTR("SSO Path is not valid"), CSTR("SAML Test"), me);
 			return;
 		}
 		cfg.ssoPath = sbSSOPath.ToCString();
@@ -229,7 +228,7 @@ void __stdcall SSWR::AVIRead::AVIRSAMLTestForm::OnStartClicked(void *userObj)
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("Error in initializing SAML: "));
 			sb.Append(Net::WebServer::SAMLErrorGetName(samlHdlr->GetInitError()));
-			UI::MessageDialog::ShowDialog(sb.ToCString(), CSTR("SAML Test"), me);
+			me->ui->ShowMsgOK(sb.ToCString(), CSTR("SAML Test"), me);
 			samlHdlr.Delete();
 			return;
 		}
@@ -240,14 +239,14 @@ void __stdcall SSWR::AVIRead::AVIRSAMLTestForm::OnStartClicked(void *userObj)
 		{
 			SDEL_CLASS(me->svr);
 			samlHdlr.Delete();
-			UI::MessageDialog::ShowDialog(CSTR("Error in listening to port"), CSTR("SAML Test"), me);
+			me->ui->ShowMsgOK(CSTR("Error in listening to port"), CSTR("SAML Test"), me);
 			valid = false;
 		}
 		else if (!me->svr->Start())
 		{
 			SDEL_CLASS(me->svr);
 			samlHdlr.Delete();
-			UI::MessageDialog::ShowDialog(CSTR("Error in starting HTTP Server"), CSTR("SAML Test"), me);
+			me->ui->ShowMsgOK(CSTR("Error in starting HTTP Server"), CSTR("SAML Test"), me);
 			valid = false;
 		}
 		else

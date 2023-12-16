@@ -5,7 +5,6 @@
 #include "SSWR/AVIRead/AVIRMACGenForm.h"
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
-#include "UI/MessageDialog.h"
 
 void __stdcall SSWR::AVIRead::AVIRMACGenForm::OnGenerateClicked(void *userObj)
 {
@@ -48,11 +47,11 @@ void __stdcall SSWR::AVIRead::AVIRMACGenForm::OnAdapterSetClicked(void *userObj)
 		Text::StrHex2Bytes(sb1.ToString(), buff);
 		if (me->core->GetSocketFactory()->AdapterSetHWAddr(sb2.ToCString(), buff))
 		{
-			UI::MessageDialog::ShowDialog(CSTR("Address set"), CSTR("MAC Generator"), me);
+			me->ui->ShowMsgOK(CSTR("Address set"), CSTR("MAC Generator"), me);
 		}
 		else
 		{
-			UI::MessageDialog::ShowDialog(CSTR("Error in setting address"), CSTR("MAC Generator"), me);
+			me->ui->ShowMsgOK(CSTR("Error in setting address"), CSTR("MAC Generator"), me);
 		}
 	}	
 }

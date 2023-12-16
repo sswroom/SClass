@@ -14,7 +14,6 @@
 #include "UI/Clipboard.h"
 #include "UI/FileDialog.h"
 #include "UI/FolderDialog.h"
-#include "UI/MessageDialog.h"
 #include "UtilUI/TextViewerForm.h"
 
 #include <stdio.h>
@@ -774,7 +773,7 @@ void SSWR::AVIRead::AVIRPackageForm::PasteFiles(NotNullPtr<Data::ArrayListString
 	{
 		if (this->packFile->GetFileType() == IO::PackageFileType::Virtual)
 		{
-			UI::MessageDialog::ShowDialog(CSTR("Virtual Package does not support move"), CSTR("Package"), this);
+			this->ui->ShowMsgOK(CSTR("Virtual Package does not support move"), CSTR("Package"), this);
 		}
 		else
 		{
@@ -804,7 +803,7 @@ void SSWR::AVIRead::AVIRPackageForm::PasteFiles(NotNullPtr<Data::ArrayListString
 					sb.Append(CSTR("Failed to copy "));
 					sb.Append(s);
 					sb.Append(CSTR(", do you want to continue?"));
-					if (!UI::MessageDialog::ShowYesNoDialog(sb.ToCString(), CSTR("Package"), this))
+					if (!this->ui->ShowMsgYesNo(sb.ToCString(), CSTR("Package"), this))
 					{
 						break;
 					}
@@ -1041,7 +1040,7 @@ void SSWR::AVIRead::AVIRPackageForm::EventMenuClicked(UInt16 cmdId)
 					{
 						if (!packFile->CopyTo(PackFileIndex(selIndices.GetItem(j)), dlg.GetFolder()->ToCString(), false))
 						{
-							UI::MessageDialog::ShowDialog(CSTR("Error in copying"), CSTR("Copy To"), this);
+							this->ui->ShowMsgOK(CSTR("Error in copying"), CSTR("Copy To"), this);
 							break;
 						}
 						j++;
@@ -1062,7 +1061,7 @@ void SSWR::AVIRead::AVIRPackageForm::EventMenuClicked(UInt16 cmdId)
 				{
 					if (!packFile->CopyTo(i, dlg.GetFolder()->ToCString(), false))
 					{
-						UI::MessageDialog::ShowDialog(CSTR("Error in copying"), CSTR("Copy To"), this);
+						this->ui->ShowMsgOK(CSTR("Error in copying"), CSTR("Copy To"), this);
 						break;
 					}
 					i++;
@@ -1083,7 +1082,7 @@ void SSWR::AVIRead::AVIRPackageForm::EventMenuClicked(UInt16 cmdId)
 				IO::PackageFile::PackObjectType pot = packFile->GetItemType(i);
 				if (pot == IO::PackageFile::PackObjectType::PackageFileType)
 				{
-					UI::MessageDialog::ShowDialog(CSTR("Viewing directory is not supported"), CSTR("Package"), this);
+					this->ui->ShowMsgOK(CSTR("Viewing directory is not supported"), CSTR("Package"), this);
 					return;
 				}
 				else if (pot == IO::PackageFile::PackObjectType::StreamData)
@@ -1091,7 +1090,7 @@ void SSWR::AVIRead::AVIRPackageForm::EventMenuClicked(UInt16 cmdId)
 					NotNullPtr<IO::StreamData> fd;
 					if (!packFile->GetItemStmDataNew(i).SetTo(fd))
 					{
-						UI::MessageDialog::ShowDialog(CSTR("Error in opening file"), CSTR("Package"), this);
+						this->ui->ShowMsgOK(CSTR("Error in opening file"), CSTR("Package"), this);
 						return;
 					}
 					else
@@ -1105,7 +1104,7 @@ void SSWR::AVIRead::AVIRPackageForm::EventMenuClicked(UInt16 cmdId)
 				}
 				else
 				{
-					UI::MessageDialog::ShowDialog(CSTR("Viewing of this file is not supported"), CSTR("Package"), this);
+					this->ui->ShowMsgOK(CSTR("Viewing of this file is not supported"), CSTR("Package"), this);
 					return;
 				}
 			}
@@ -1119,7 +1118,7 @@ void SSWR::AVIRead::AVIRPackageForm::EventMenuClicked(UInt16 cmdId)
 				IO::PackageFile::PackObjectType pot = packFile->GetItemType(i);
 				if (pot == IO::PackageFile::PackObjectType::PackageFileType)
 				{
-					UI::MessageDialog::ShowDialog(CSTR("Viewing directory is not supported"), CSTR("Package"), this);
+					this->ui->ShowMsgOK(CSTR("Viewing directory is not supported"), CSTR("Package"), this);
 					return;
 				}
 				else if (pot == IO::PackageFile::PackObjectType::StreamData)
@@ -1127,7 +1126,7 @@ void SSWR::AVIRead::AVIRPackageForm::EventMenuClicked(UInt16 cmdId)
 					NotNullPtr<IO::StreamData> fd;
 					if (!packFile->GetItemStmDataNew(i).SetTo(fd))
 					{
-						UI::MessageDialog::ShowDialog(CSTR("Error in opening file"), CSTR("Package"), this);
+						this->ui->ShowMsgOK(CSTR("Error in opening file"), CSTR("Package"), this);
 						return;
 					}
 					else
@@ -1136,13 +1135,13 @@ void SSWR::AVIRead::AVIRPackageForm::EventMenuClicked(UInt16 cmdId)
 						UOSInt buffSize = fd->GetRealData(0, 2048, BYTEARR(buff));
 						if (buffSize == 0)
 						{
-							UI::MessageDialog::ShowDialog(CSTR("Cannot read content of the file"), CSTR("Package"), this);
+							this->ui->ShowMsgOK(CSTR("Cannot read content of the file"), CSTR("Package"), this);
 							fd.Delete();
 							return;
 						}
 						if (!Text::StringTool::IsASCIIText(Data::ByteArrayR(buff, buffSize)))
 						{
-							UI::MessageDialog::ShowDialog(CSTR("The file seems not a text file"), CSTR("Package"), this);
+							this->ui->ShowMsgOK(CSTR("The file seems not a text file"), CSTR("Package"), this);
 							fd.Delete();
 							return;
 						}
@@ -1155,7 +1154,7 @@ void SSWR::AVIRead::AVIRPackageForm::EventMenuClicked(UInt16 cmdId)
 				}
 				else
 				{
-					UI::MessageDialog::ShowDialog(CSTR("Viewing of this file is not supported"), CSTR("Package"), this);
+					this->ui->ShowMsgOK(CSTR("Viewing of this file is not supported"), CSTR("Package"), this);
 					return;
 				}
 			}
@@ -1173,11 +1172,11 @@ void SSWR::AVIRead::AVIRPackageForm::EventMenuClicked(UInt16 cmdId)
 				sb.Append(CSTR("Are you sure to delete \""));
 				sb.AppendP(sbuff, sptr);
 				sb.Append(CSTR("\"?"));
-				if (UI::MessageDialog::ShowYesNoDialog(sb.ToCString(), CSTR("Package"), this))
+				if (this->ui->ShowMsgYesNo(sb.ToCString(), CSTR("Package"), this))
 				{
 					if (!this->packFile->DeleteItem(i))
 					{
-						UI::MessageDialog::ShowDialog(CSTR("Cannot delete item"), CSTR("Package"), this);
+						this->ui->ShowMsgOK(CSTR("Cannot delete item"), CSTR("Package"), this);
 					}
 					else
 					{
@@ -1203,20 +1202,20 @@ void SSWR::AVIRead::AVIRPackageForm::EventMenuClicked(UInt16 cmdId)
 				{
 					if (!vpkg->MergePackage(zipPkg))
 					{
-						UI::MessageDialog::ShowDialog(CSTR("Error occurs during append zip file"), CSTR("Package"), this);
+						this->ui->ShowMsgOK(CSTR("Error occurs during append zip file"), CSTR("Package"), this);
 					}
 					zipPkg.Delete();
 					this->DisplayPackFile(this->packFile);
 				}
 				else
 				{
-					UI::MessageDialog::ShowDialog(CSTR("Cannot parse file as Zip"), CSTR("Package"), this);
+					this->ui->ShowMsgOK(CSTR("Cannot parse file as Zip"), CSTR("Package"), this);
 				}
 			}
 		}
 		else
 		{
-			UI::MessageDialog::ShowDialog(CSTR("This directory is not supported to append zip content"), CSTR("Package"), this);
+			this->ui->ShowMsgOK(CSTR("This directory is not supported to append zip content"), CSTR("Package"), this);
 		}
 		break;
 	case MNU_TEST:

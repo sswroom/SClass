@@ -9,7 +9,6 @@
 #include "Sync/ThreadUtil.h"
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
-#include "UI/MessageDialog.h"
 
 void __stdcall SSWR::AVIRead::AVIRHTTPTestForm::OnStartClicked(void *userObj)
 {
@@ -23,14 +22,14 @@ void __stdcall SSWR::AVIRead::AVIRHTTPTestForm::OnStartClicked(void *userObj)
 	Text::StringBuilderUTF8 sb;
 	if (me->connURLs.GetCount() <= 0)
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Please enter at least 1 URL"), CSTR("Start"), me);
+		me->ui->ShowMsgOK(CSTR("Please enter at least 1 URL"), CSTR("Start"), me);
 		return;
 	}
 	me->txtConcurrCnt->GetText(sb);
 	if (!sb.ToUInt32(me->threadCnt) || me->threadCnt <= 0 || me->threadCnt >= 1000)
 	{
 		me->threadCnt = 0;
-		UI::MessageDialog::ShowDialog(CSTR("Please enter valid Concurrent Count"), CSTR("Start"), me);
+		me->ui->ShowMsgOK(CSTR("Please enter valid Concurrent Count"), CSTR("Start"), me);
 		return;
 	}
 	sb.ClearStr();
@@ -39,7 +38,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPTestForm::OnStartClicked(void *userObj)
 	{
 		me->threadCnt = 0;
 		me->connLeftCnt = 0;
-		UI::MessageDialog::ShowDialog(CSTR("Please enter valid Total Connection Count"), CSTR("Start"), me);
+		me->ui->ShowMsgOK(CSTR("Please enter valid Total Connection Count"), CSTR("Start"), me);
 		return;
 	}
 	me->kaConn = me->chkKAConn->IsChecked();
@@ -53,7 +52,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPTestForm::OnStartClicked(void *userObj)
 		{
 			me->threadCnt = 0;
 			me->connLeftCnt = 0;
-			UI::MessageDialog::ShowDialog(CSTR("POST Size must be > 0"), CSTR("Start"), me);
+			me->ui->ShowMsgOK(CSTR("POST Size must be > 0"), CSTR("Start"), me);
 			return;
 		}
 	}
@@ -87,7 +86,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPTestForm::OnURLAddClicked(void *userObj)
 	Text::StringBuilderUTF8 sb;
 	if (me->threadCurrCnt > 0)
 	{
-		UI::MessageDialog::ShowDialog(CSTR("You cannot add URL while running"), CSTR("Add"), me);
+		me->ui->ShowMsgOK(CSTR("You cannot add URL while running"), CSTR("Add"), me);
 		return;
 	}
 	me->txtURL->GetText(sb);
@@ -99,7 +98,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPTestForm::OnURLAddClicked(void *userObj)
 	}
 	else
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Please enter valid HTTP url"), CSTR("Add"), me);
+		me->ui->ShowMsgOK(CSTR("Please enter valid HTTP url"), CSTR("Add"), me);
 		return;
 	}
 }
@@ -109,7 +108,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPTestForm::OnURLClearClicked(void *userObj)
 	SSWR::AVIRead::AVIRHTTPTestForm *me = (SSWR::AVIRead::AVIRHTTPTestForm*)userObj;
 	if (me->threadCurrCnt > 0)
 	{
-		UI::MessageDialog::ShowDialog(CSTR("You cannot add URL while running"), CSTR("Add"), me);
+		me->ui->ShowMsgOK(CSTR("You cannot add URL while running"), CSTR("Add"), me);
 		return;
 	}
 	me->ClearURLs();

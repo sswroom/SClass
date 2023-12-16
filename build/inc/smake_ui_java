@@ -103,10 +103,10 @@ UI/GUITreeView.h:
 @GUITreeViewGTK.o
 UI/GUIVSplitter.h:
 @GUIVSplitterGTK.o
-UI/MessageDialog.h:
-@MessageDialogJava.o
 UI/Java/JavaGroupBox.h:
 JavaGroupBox.o
+UI/Java/JavaMessageDialog.h:
+@JavaMessageDialog.o
 
 GUIStartup.o: ../../startup/JavaStartup.cpp
 $-I$(JAVA_HOME)/include

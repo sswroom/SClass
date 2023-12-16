@@ -5,7 +5,6 @@
 #include "SSWR/AVIRead/AVIRSelStreamForm.h"
 #include "Sync/Mutex.h"
 #include "Sync/MutexUsage.h"
-#include "UI/MessageDialog.h"
 
 void __stdcall SSWR::AVIRead::AVIRDWQB30Form::OnPortClicked(void *userObj)
 {

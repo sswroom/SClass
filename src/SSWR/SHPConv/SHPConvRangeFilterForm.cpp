@@ -3,7 +3,6 @@
 #include "SSWR/SHPConv/SHPConvRangeFilterForm.h"
 #include "Text/MyStringFloat.h"
 #include "Text/StringBuilderUTF8.h"
-#include "UI/MessageDialog.h"
 
 void __stdcall SSWR::SHPConv::SHPConvRangeFilterForm::OnOKClicked(void *userObj)
 {
@@ -18,39 +17,39 @@ void __stdcall SSWR::SHPConv::SHPConvRangeFilterForm::OnOKClicked(void *userObj)
 	me->txtX1->GetText(sb);
 	if (!Text::StrToDouble(sb.ToString(), x1))
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Invalid input values"), CSTR("Error"), me);
+		me->ui->ShowMsgOK(CSTR("Invalid input values"), CSTR("Error"), me);
 		return;
 	}
 	sb.ClearStr();
 	me->txtY1->GetText(sb);
 	if (!Text::StrToDouble(sb.ToString(), y1))
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Invalid input values"), CSTR("Error"), me);
+		me->ui->ShowMsgOK(CSTR("Invalid input values"), CSTR("Error"), me);
 		return;
 	}
 	sb.ClearStr();
 	me->txtX2->GetText(sb);
 	if (!Text::StrToDouble(sb.ToString(), x2))
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Invalid input values"), CSTR("Error"), me);
+		me->ui->ShowMsgOK(CSTR("Invalid input values"), CSTR("Error"), me);
 		return;
 	}
 	sb.ClearStr();
 	me->txtY2->GetText(sb);
 	if (!Text::StrToDouble(sb.ToString(), y2))
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Invalid input values"), CSTR("Error"), me);
+		me->ui->ShowMsgOK(CSTR("Invalid input values"), CSTR("Error"), me);
 		return;
 	}
 
 	if (x1 >= x2)
 	{
-		UI::MessageDialog::ShowDialog(CSTR("X value is not valid"), CSTR("Error"), me);
+		me->ui->ShowMsgOK(CSTR("X value is not valid"), CSTR("Error"), me);
 		return;
 	}
 	if (y1 >= y2)
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Y value is not valid"), CSTR("Error"), me);
+		me->ui->ShowMsgOK(CSTR("Y value is not valid"), CSTR("Error"), me);
 		return;
 	}
 	Int32 typ;

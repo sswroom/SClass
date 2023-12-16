@@ -6,7 +6,6 @@
 #include "Crypto/Hash/IHash.h"
 #include "SSWR/AVIRead/AVIRBruteForceForm.h"
 #include "Text/MyString.h"
-#include "UI/MessageDialog.h"
 
 /*
 Test Keys:
@@ -37,7 +36,7 @@ void __stdcall SSWR::AVIRead::AVIRBruteForceForm::OnStartClicked(void *userObj)
 	sb.ToUInt32(maxLeng);
 	if (minLeng <= 0 || maxLeng < minLeng)
 	{
-		UI::MessageDialog::ShowDialog(CSTR("MinLeng or MaxLeng is not valid"), CSTR("Brute Force"), me);
+		me->ui->ShowMsgOK(CSTR("MinLeng or MaxLeng is not valid"), CSTR("Brute Force"), me);
 		return;
 	}
 	sb.ClearStr();
@@ -49,7 +48,7 @@ void __stdcall SSWR::AVIRead::AVIRBruteForceForm::OnStartClicked(void *userObj)
 		hash = Crypto::Hash::HashCreator::CreateHash((Crypto::Hash::HashType)hashType);
 		if (hash == 0)
 		{
-			UI::MessageDialog::ShowDialog(CSTR("Unsupported Hash Type"), CSTR("Brute Force"), me);
+			me->ui->ShowMsgOK(CSTR("Unsupported Hash Type"), CSTR("Brute Force"), me);
 			return;
 		}
 		NEW_CLASS(validator, Crypto::Hash::BatchHashValidator(hash, true));
@@ -60,7 +59,7 @@ void __stdcall SSWR::AVIRead::AVIRBruteForceForm::OnStartClicked(void *userObj)
 	}
 	else
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Unsupported Hash Type"), CSTR("Brute Force"), me);
+		me->ui->ShowMsgOK(CSTR("Unsupported Hash Type"), CSTR("Brute Force"), me);
 		return;
 	}
 	Crypto::Hash::BruteForceAttack *bforce;
@@ -71,7 +70,7 @@ void __stdcall SSWR::AVIRead::AVIRBruteForceForm::OnStartClicked(void *userObj)
 	if (!bforce->Start(sb.ToString(), sb.GetLength(), minLeng, maxLeng))
 	{
 		DEL_CLASS(bforce);
-		UI::MessageDialog::ShowDialog(CSTR("Hash value is not valid for this Hash Type"), CSTR("Brute Force"), me);
+		me->ui->ShowMsgOK(CSTR("Hash value is not valid for this Hash Type"), CSTR("Brute Force"), me);
 	}
 	else
 	{

@@ -8,7 +8,6 @@
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
 #include "Text/StringBuilderUTF8.h"
-#include "UI/MessageDialog.h"
 
 void __stdcall SSWR::AVIRead::AVIRUDPTestForm::OnUDPPacket(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, void *userData)
 {
@@ -71,27 +70,27 @@ void __stdcall SSWR::AVIRead::AVIRUDPTestForm::OnSendClicked(void *userObj)
 	Text::StringBuilderUTF8 sb;
 	if (me->udp == 0)
 	{
-		UI::MessageDialog::ShowDialog(CSTR("You should start server first"), CSTR("UDP Test"), me);
+		me->ui->ShowMsgOK(CSTR("You should start server first"), CSTR("UDP Test"), me);
 		return;
 	}
 	me->txtDestHost->GetText(sb);
 	if (!me->sockf->DNSResolveIP(sb.ToCString(), addr))
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Host is not valid"), CSTR("UDP Test"), me);
+		me->ui->ShowMsgOK(CSTR("Host is not valid"), CSTR("UDP Test"), me);
 		return;
 	}
 	sb.ClearStr();
 	me->txtDestPort->GetText(sb);
 	if (!sb.ToUInt16(port) || port <= 0)
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Port is not valid"), CSTR("UDP Test"), me);
+		me->ui->ShowMsgOK(CSTR("Port is not valid"), CSTR("UDP Test"), me);
 		return;
 	}
 	sb.ClearStr();
 	me->txtDestCount->GetText(sb);
 	if (!sb.ToUInt32(cnt) || cnt <= 0 || cnt > 10000000)
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Count is not valid"), CSTR("UDP Test"), me);
+		me->ui->ShowMsgOK(CSTR("Count is not valid"), CSTR("UDP Test"), me);
 		return;
 	}
 	UOSInt i = me->threadCnt;

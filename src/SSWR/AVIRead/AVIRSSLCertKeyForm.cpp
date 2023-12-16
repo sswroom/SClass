@@ -4,7 +4,6 @@
 #include "IO/StmData/FileData.h"
 #include "SSWR/AVIRead/AVIRSSLCertKeyForm.h"
 #include "UI/FileDialog.h"
-#include "UI/MessageDialog.h"
 
 void __stdcall SSWR::AVIRead::AVIRSSLCertKeyForm::OnFormClosed(void *userObj, UI::GUIForm *frm)
 {
@@ -60,17 +59,17 @@ void __stdcall SSWR::AVIRead::AVIRSSLCertKeyForm::OnGenerateClicked(void *userOb
 	me->txtGenCommonName->GetText(sbCommonName);
 	if (sbCountry.GetLength() != 2)
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Country must be 2 characters"), CSTR("SSL Cert/Key"), me);
+		me->ui->ShowMsgOK(CSTR("Country must be 2 characters"), CSTR("SSL Cert/Key"), me);
 		return;
 	}
 	if (sbCompany.GetLength() == 0)
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Please enter company"), CSTR("SSL Cert/Key"), me);
+		me->ui->ShowMsgOK(CSTR("Please enter company"), CSTR("SSL Cert/Key"), me);
 		return;
 	}
 	if (sbCommonName.GetLength() == 0)
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Please enter common name"), CSTR("SSL Cert/Key"), me);
+		me->ui->ShowMsgOK(CSTR("Please enter common name"), CSTR("SSL Cert/Key"), me);
 		return;
 	}
 	Crypto::Cert::X509Cert *certASN1;
@@ -86,7 +85,7 @@ void __stdcall SSWR::AVIRead::AVIRSSLCertKeyForm::OnGenerateClicked(void *userOb
 	}
 	else
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Error in generating certs"), CSTR("SSL Cert/Key"), me);
+		me->ui->ShowMsgOK(CSTR("Error in generating certs"), CSTR("SSL Cert/Key"), me);
 		return;
 	}	
 }
@@ -108,14 +107,14 @@ void SSWR::AVIRead::AVIRSSLCertKeyForm::LoadFile(Text::CStringNN fileName)
 		IO::StmData::FileData fd(fileName, false);
 		if (!asn1.Set((Net::ASN1Data*)this->core->GetParserList()->ParseFileType(fd, IO::ParserType::ASN1Data)))
 		{
-			UI::MessageDialog::ShowDialog(CSTR("Error in parsing file"), CSTR("SSL Cert/Key"), this);
+			this->ui->ShowMsgOK(CSTR("Error in parsing file"), CSTR("SSL Cert/Key"), this);
 			return;
 		}
 	}
 	if (asn1->GetASN1Type() != Net::ASN1Data::ASN1Type::X509)
 	{
 		asn1.Delete();
-		UI::MessageDialog::ShowDialog(CSTR("Error in parsing file"), CSTR("SSL Cert/Key"), this);
+		this->ui->ShowMsgOK(CSTR("Error in parsing file"), CSTR("SSL Cert/Key"), this);
 		return;
 	}
 	NotNullPtr<Crypto::Cert::X509File> x509 = NotNullPtr<Crypto::Cert::X509File>::ConvertFrom(asn1);

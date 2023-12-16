@@ -6,7 +6,6 @@
 #include "SSWR/AVIRead/AVIRDHCPServerForm.h"
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
-#include "UI/MessageDialog.h"
 
 void __stdcall SSWR::AVIRead::AVIRDHCPServerForm::OnStartClicked(void *userObj)
 {
@@ -34,7 +33,7 @@ void __stdcall SSWR::AVIRead::AVIRDHCPServerForm::OnStartClicked(void *userObj)
 		Text::StringBuilderUTF8 sb;
 		if (ifIp == 0)
 		{
-			UI::MessageDialog::ShowDialog(CSTR("Please select an interface"), CSTR("Error"), me);
+			me->ui->ShowMsgOK(CSTR("Please select an interface"), CSTR("Error"), me);
 			return;
 		}
 
@@ -43,7 +42,7 @@ void __stdcall SSWR::AVIRead::AVIRDHCPServerForm::OnStartClicked(void *userObj)
 		subnet = Net::SocketUtil::GetIPAddr(sb.ToCString());
 		if (!Net::SocketUtil::IPv4SubnetValid(subnet))
 		{
-			UI::MessageDialog::ShowDialog(CSTR("Subnet is not valid"), CSTR("Error"), me);
+			me->ui->ShowMsgOK(CSTR("Subnet is not valid"), CSTR("Error"), me);
 			return;
 		}
 
@@ -51,12 +50,12 @@ void __stdcall SSWR::AVIRead::AVIRDHCPServerForm::OnStartClicked(void *userObj)
 		me->txtFirstIP->GetText(sb);
 		if (!sb.ToUInt32(firstIP))
 		{
-			UI::MessageDialog::ShowDialog(CSTR("First IP is not valid"), CSTR("Error"), me);
+			me->ui->ShowMsgOK(CSTR("First IP is not valid"), CSTR("Error"), me);
 			return;
 		}
 		else if (firstIP == 0)
 		{
-			UI::MessageDialog::ShowDialog(CSTR("First IP is not valid"), CSTR("Error"), me);
+			me->ui->ShowMsgOK(CSTR("First IP is not valid"), CSTR("Error"), me);
 			return;
 		}
 
@@ -64,12 +63,12 @@ void __stdcall SSWR::AVIRead::AVIRDHCPServerForm::OnStartClicked(void *userObj)
 		me->txtDevCount->GetText(sb);
 		if (!sb.ToUInt32(devCount))
 		{
-			UI::MessageDialog::ShowDialog(CSTR("Device Count is not valid"), CSTR("Error"), me);
+			me->ui->ShowMsgOK(CSTR("Device Count is not valid"), CSTR("Error"), me);
 			return;
 		}
 		else if (devCount == 0)
 		{
-			UI::MessageDialog::ShowDialog(CSTR("Device Count is not valid"), CSTR("Error"), me);
+			me->ui->ShowMsgOK(CSTR("Device Count is not valid"), CSTR("Error"), me);
 			return;
 		}
 
@@ -81,7 +80,7 @@ void __stdcall SSWR::AVIRead::AVIRDHCPServerForm::OnStartClicked(void *userObj)
 		}
 		else if ((gateway = Net::SocketUtil::GetIPAddr(sb.ToCString())) == 0)
 		{
-			UI::MessageDialog::ShowDialog(CSTR("Gateway is not valid"), CSTR("Error"), me);
+			me->ui->ShowMsgOK(CSTR("Gateway is not valid"), CSTR("Error"), me);
 			return;
 		}
 
@@ -93,7 +92,7 @@ void __stdcall SSWR::AVIRead::AVIRDHCPServerForm::OnStartClicked(void *userObj)
 		}
 		else if ((tmpIP = Net::SocketUtil::GetIPAddr(sb.ToCString())) == 0)
 		{
-			UI::MessageDialog::ShowDialog(CSTR("DNS1 is not valid"), CSTR("Error"), me);
+			me->ui->ShowMsgOK(CSTR("DNS1 is not valid"), CSTR("Error"), me);
 			return;
 		}
 		else
@@ -108,7 +107,7 @@ void __stdcall SSWR::AVIRead::AVIRDHCPServerForm::OnStartClicked(void *userObj)
 		}
 		else if ((tmpIP = Net::SocketUtil::GetIPAddr(sb.ToCString())) == 0)
 		{
-			UI::MessageDialog::ShowDialog(CSTR("DNS2 is not valid"), CSTR("Error"), me);
+			me->ui->ShowMsgOK(CSTR("DNS2 is not valid"), CSTR("Error"), me);
 			return;
 		}
 		else
@@ -121,7 +120,7 @@ void __stdcall SSWR::AVIRead::AVIRDHCPServerForm::OnStartClicked(void *userObj)
 		{
 			DEL_CLASS(me->svr);
 			me->svr = 0;
-			UI::MessageDialog::ShowDialog(CSTR("Error in starting server"), CSTR("Error"), me);
+			me->ui->ShowMsgOK(CSTR("Error in starting server"), CSTR("Error"), me);
 		}
 		else
 		{

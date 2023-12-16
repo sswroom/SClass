@@ -12,7 +12,6 @@
 #include "Text/UTF8Writer.h"
 #include "UI/Clipboard.h"
 #include "UI/FileDialog.h"
-#include "UI/MessageDialog.h"
 
 #define MAX_ROW 5000
 
@@ -42,11 +41,11 @@ void __stdcall SSWR::AVIRead::AVIRWiFiLogManagerForm::OnStoreClicked(void *userO
 	SSWR::AVIRead::AVIRWiFiLogManagerForm *me = (SSWR::AVIRead::AVIRWiFiLogManagerForm*)userObj;
 	if (me->macList->Store())
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Data Stored"), CSTR("MAC Manager"), me);
+		me->ui->ShowMsgOK(CSTR("Data Stored"), CSTR("MAC Manager"), me);
 	}
 	else
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Error in storing data"), CSTR("MAC Manager"), me);
+		me->ui->ShowMsgOK(CSTR("Error in storing data"), CSTR("MAC Manager"), me);
 	}
 }
 

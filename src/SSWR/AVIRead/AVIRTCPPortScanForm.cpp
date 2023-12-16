@@ -2,7 +2,6 @@
 #include "Net/PacketAnalyzerEthernet.h"
 #include "SSWR/AVIRead/AVIRTCPPortScanForm.h"
 #include "Text/StringBuilderUTF8.h"
-#include "UI/MessageDialog.h"
 
 void __stdcall SSWR::AVIRead::AVIRTCPPortScanForm::OnStartClicked(void *userObj)
 {

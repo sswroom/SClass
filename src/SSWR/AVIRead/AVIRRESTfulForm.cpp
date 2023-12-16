@@ -7,7 +7,6 @@
 #include "Sync/ThreadUtil.h"
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
-#include "UI/MessageDialog.h"
 
 void __stdcall SSWR::AVIRead::AVIRRESTfulForm::OnDatabaseMySQLClicked(void *userObj)
 {
@@ -48,7 +47,7 @@ void __stdcall SSWR::AVIRead::AVIRRESTfulForm::OnStartClick(void *userObj)
 	}
 	if (me->dbConn == 0)
 	{
-		UI::MessageDialog::ShowDialog(CSTR("No database is connected"), CSTR("RESTful Server"), me);
+		me->ui->ShowMsgOK(CSTR("No database is connected"), CSTR("RESTful Server"), me);
 		return;
 	}
 	UInt16 port = 0;
@@ -65,7 +64,7 @@ void __stdcall SSWR::AVIRead::AVIRRESTfulForm::OnStartClick(void *userObj)
 			valid = false;
 			SDEL_CLASS(me->svr);
 			restHdlr.Delete();
-			UI::MessageDialog::ShowDialog(CSTR("Error in listening to port"), CSTR("RESTful Server"), me);
+			me->ui->ShowMsgOK(CSTR("Error in listening to port"), CSTR("RESTful Server"), me);
 		}
 		else
 		{
@@ -111,7 +110,7 @@ void __stdcall SSWR::AVIRead::AVIRRESTfulForm::OnStartClick(void *userObj)
 			if (!me->svr->Start())
 			{
 				valid = false;
-				UI::MessageDialog::ShowDialog(CSTR("Error in starting server"), CSTR("RESTful Server"), me);
+				me->ui->ShowMsgOK(CSTR("Error in starting server"), CSTR("RESTful Server"), me);
 			}
 		}
 
@@ -139,7 +138,7 @@ void __stdcall SSWR::AVIRead::AVIRRESTfulForm::OnStartClick(void *userObj)
 	}
 	else
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Port is not valid"), CSTR("RESTful Server"), me);
+		me->ui->ShowMsgOK(CSTR("Port is not valid"), CSTR("RESTful Server"), me);
 	}
 }
 

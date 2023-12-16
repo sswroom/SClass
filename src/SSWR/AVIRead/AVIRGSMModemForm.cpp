@@ -11,7 +11,6 @@
 #include "Text/UTF8Writer.h"
 #include "UI/FileDialog.h"
 #include "UI/FolderDialog.h"
-#include "UI/MessageDialog.h"
 
 UInt32 __stdcall SSWR::AVIRead::AVIRGSMModemForm::ModemThread(void *userObj)
 {

@@ -2,7 +2,6 @@
 #include "Data/ByteTool.h"
 #include "Net/ASN1Util.h"
 #include "SSWR/AVIRead/AVIRASN1OIDForm.h"
-#include "UI/MessageDialog.h"
 
 void __stdcall SSWR::AVIRead::AVIRASN1OIDForm::OnConvertClicked(void *userObj)
 {
@@ -33,7 +32,7 @@ void __stdcall SSWR::AVIRead::AVIRASN1OIDForm::OnConvertClicked(void *userObj)
 	}
 	if (oidCol == 10)
 	{
-		UI::MessageDialog::ShowDialog(CSTR("OID Column not found"), CSTR("ASN.1 OID"), me);
+		me->ui->ShowMsgOK(CSTR("OID Column not found"), CSTR("ASN.1 OID"), me);
 		return;
 	}
 	if (oidCol == 0)

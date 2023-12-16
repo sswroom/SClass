@@ -12,7 +12,6 @@
 #include "Text/MyStringFloat.h"
 #include "Text/StringBuilderUTF8.h"
 #include "UI/FileDialog.h"
-#include "UI/MessageDialog.h"
 
 #define FFTSAMPLE 1024
 #define FFTAVG 1
@@ -37,60 +36,60 @@ void __stdcall SSWR::AVIRead::AVIRAudioFilterForm::OnStartClicked(void *userObj)
 		me->txtBuffSize->GetText(sb);
 		if (!sb.ToUInt32(buffSize))
 		{
-			UI::MessageDialog::ShowDialog(CSTR("Error found in buffer size"), CSTR("Error"), me);
+			me->ui->ShowMsgOK(CSTR("Error found in buffer size"), CSTR("Error"), me);
 			return;
 		}
 		sb.ClearStr();
 		me->txtFrequency->GetText(sb);
 		if (!sb.ToUInt32(frequency))
 		{
-			UI::MessageDialog::ShowDialog(CSTR("Error found in sampling rate"), CSTR("Error"), me);
+			me->ui->ShowMsgOK(CSTR("Error found in sampling rate"), CSTR("Error"), me);
 			return;
 		}
 		sb.ClearStr();
 		me->txtChannel->GetText(sb);
 		if (!sb.ToUInt16(nChannel))
 		{
-			UI::MessageDialog::ShowDialog(CSTR("Error found in no. of channels"), CSTR("Error"), me);
+			me->ui->ShowMsgOK(CSTR("Error found in no. of channels"), CSTR("Error"), me);
 			return;
 		}
 		sb.ClearStr();
 		me->txtBitCount->GetText(sb);
 		if (!sb.ToUInt16(bitCount))
 		{
-			UI::MessageDialog::ShowDialog(CSTR("Error found in bit per sample"), CSTR("Error"), me);
+			me->ui->ShowMsgOK(CSTR("Error found in bit per sample"), CSTR("Error"), me);
 			return;
 		}
 		sb.ClearStr();
 		me->txtDTMFInterval->GetText(sb);
 		if (!sb.ToUInt32(dtmfMS))
 		{
-			UI::MessageDialog::ShowDialog(CSTR("Error found in DTMF decode interval"), CSTR("Error"), me);
+			me->ui->ShowMsgOK(CSTR("Error found in DTMF decode interval"), CSTR("Error"), me);
 			return;
 		}
 		if (buffSize < 10 || buffSize > 1000)
 		{
-			UI::MessageDialog::ShowDialog(CSTR("Buffer size out of range"), CSTR("Error"), me);
+			me->ui->ShowMsgOK(CSTR("Buffer size out of range"), CSTR("Error"), me);
 			return;
 		}
 		if (frequency < 8000 || frequency > 192000)
 		{
-			UI::MessageDialog::ShowDialog(CSTR("Sampling rate out of range"), CSTR("Error"), me);
+			me->ui->ShowMsgOK(CSTR("Sampling rate out of range"), CSTR("Error"), me);
 			return;
 		}
 		if (nChannel <= 0 || nChannel > 10)
 		{
-			UI::MessageDialog::ShowDialog(CSTR("No. of channels out of range"), CSTR("Error"), me);
+			me->ui->ShowMsgOK(CSTR("No. of channels out of range"), CSTR("Error"), me);
 			return;
 		}
 		if (bitCount != 8 && bitCount != 16 && bitCount != 24 && bitCount != 32)
 		{
-			UI::MessageDialog::ShowDialog(CSTR("Bit per sample out of range"), CSTR("Error"), me);
+			me->ui->ShowMsgOK(CSTR("Bit per sample out of range"), CSTR("Error"), me);
 			return;
 		}
 		if (dtmfMS < 1 || dtmfMS > 1000)
 		{
-			UI::MessageDialog::ShowDialog(CSTR("DTMF decode interval out of range"), CSTR("Error"), me);
+			me->ui->ShowMsgOK(CSTR("DTMF decode interval out of range"), CSTR("Error"), me);
 			return;
 		}
 		if (me->radInputSilent->IsSelected())
@@ -542,36 +541,36 @@ void __stdcall SSWR::AVIRead::AVIRAudioFilterForm::OnDTMFTonesClicked(void *user
 	me->txtDTMFSignalTime->GetText(sb);
 	if (!sb.ToUInt32(signalTime))
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Signal Time is not valid"), CSTR("Generate Tones"), me);
+		me->ui->ShowMsgOK(CSTR("Signal Time is not valid"), CSTR("Generate Tones"), me);
 		return;
 	}
 	if (signalTime <= 0)
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Signal Time is out of range"), CSTR("Generate Tones"), me);
+		me->ui->ShowMsgOK(CSTR("Signal Time is out of range"), CSTR("Generate Tones"), me);
 		return;
 	}
 	sb.ClearStr();
 	me->txtDTMFBreakTime->GetText(sb);
 	if (!sb.ToUInt32(breakTime))
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Break Time is not valid"), CSTR("Generate Tones"), me);
+		me->ui->ShowMsgOK(CSTR("Break Time is not valid"), CSTR("Generate Tones"), me);
 		return;
 	}
 	if (breakTime <= 0)
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Break Time is out of range"), CSTR("Generate Tones"), me);
+		me->ui->ShowMsgOK(CSTR("Break Time is out of range"), CSTR("Generate Tones"), me);
 		return;
 	}
 	sb.ClearStr();
 	me->txtDTMFTones->GetText(sb);
 	if (sb.GetLength() == 0)
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Please enter tones"), CSTR("Generate Tones"), me);
+		me->ui->ShowMsgOK(CSTR("Please enter tones"), CSTR("Generate Tones"), me);
 		return;
 	}
 	if (!me->dtmfGen->GenTones(signalTime, breakTime, vol, sb.ToString()))
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Error in generating tones"), CSTR("Generate Tones"), me);
+		me->ui->ShowMsgOK(CSTR("Error in generating tones"), CSTR("Generate Tones"), me);
 		return;
 	}
 }
@@ -912,21 +911,21 @@ void __stdcall SSWR::AVIRead::AVIRAudioFilterForm::OnSweepStartClicked(void *use
 	me->txtSweepStartFreq->GetText(sb);
 	if (!Text::StrToDouble(sb.ToString(), startFreq))
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Error in start frequency"), CSTR("Error"), me);
+		me->ui->ShowMsgOK(CSTR("Error in start frequency"), CSTR("Error"), me);
 		return;
 	}
 	sb.ClearStr();
 	me->txtSweepEndFreq->GetText(sb);
 	if (!Text::StrToDouble(sb.ToString(), endFreq))
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Error in end frequency"), CSTR("Error"), me);
+		me->ui->ShowMsgOK(CSTR("Error in end frequency"), CSTR("Error"), me);
 		return;
 	}
 	sb.ClearStr();
 	me->txtSweepDur->GetText(sb);
 	if (!sb.ToUInt32(timeSeconds))
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Error in duration"), CSTR("Error"), me);
+		me->ui->ShowMsgOK(CSTR("Error in duration"), CSTR("Error"), me);
 		return;
 	}
 	me->sweepFilter->StartSweep(startFreq, endFreq, timeSeconds);

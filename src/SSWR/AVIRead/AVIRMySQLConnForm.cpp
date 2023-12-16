@@ -2,7 +2,6 @@
 #include "Net/MySQLTCPClient.h"
 #include "SSWR/AVIRead/AVIRMySQLConnForm.h"
 #include "Text/MyString.h"
-#include "UI/MessageDialog.h"
 
 void __stdcall SSWR::AVIRead::AVIRMySQLConnForm::OnOKClicked(void *userObj)
 {
@@ -24,19 +23,19 @@ void __stdcall SSWR::AVIRead::AVIRMySQLConnForm::OnOKClicked(void *userObj)
 	Net::SocketUtil::AddressInfo addr;
 	if (!sbPort.ToUInt16(port))
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Port is not valid"), CSTR("MySQL Connection"), me);
+		me->ui->ShowMsgOK(CSTR("Port is not valid"), CSTR("MySQL Connection"), me);
 		return;
 	}
 	else if (!sockf->DNSResolveIP(sb.ToCString(), addr))
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Error in resolving server host"), CSTR("MySQL Connection"), me);
+		me->ui->ShowMsgOK(CSTR("Error in resolving server host"), CSTR("MySQL Connection"), me);
 		return;
 	}
 	NEW_CLASS(conn, Net::MySQLTCPClient(sockf, addr, port, sb2.ToCString(), sb3.ToCString(), sb4.ToCString()));
 	if (conn->IsError())
 	{
 		DEL_CLASS(conn);
-		UI::MessageDialog::ShowDialog(CSTR("Error in opening MySQL connection"), CSTR("MySQL Connection"), me);
+		me->ui->ShowMsgOK(CSTR("Error in opening MySQL connection"), CSTR("MySQL Connection"), me);
 		return;
 	}
 	me->conn = conn;

@@ -2,7 +2,6 @@
 #include "Data/ByteBuffer.h"
 #include "IO/FileStream.h"
 #include "SSWR/AVIRead/AVIRFileTextEncryptForm.h"
-#include "UI/MessageDialog.h"
 
 void __stdcall SSWR::AVIRead::AVIRFileTextEncryptForm::OnFileDrop(void *userObj, NotNullPtr<Text::String> *files, UOSInt nFiles)
 {
@@ -27,19 +26,19 @@ void __stdcall SSWR::AVIRead::AVIRFileTextEncryptForm::OnConvertClicked(void *us
 	me->txtDestFile->GetText(sbDest);
 	if (destEnc == 0)
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Please select encryption"), CSTR("File Text Encrypt"), me);
+		me->ui->ShowMsgOK(CSTR("Please select encryption"), CSTR("File Text Encrypt"), me);
 	}
 	else if (sbSrc.GetLength() == 0)
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Please enter source file"), CSTR("File Text Encrypt"), me);
+		me->ui->ShowMsgOK(CSTR("Please enter source file"), CSTR("File Text Encrypt"), me);
 	}
 	else if (sbDest.GetLength() == 0)
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Please enter dest file"), CSTR("File Text Encrypt"), me);
+		me->ui->ShowMsgOK(CSTR("Please enter dest file"), CSTR("File Text Encrypt"), me);
 	}
 	else if (sbSrc.Equals(sbDest.v, sbDest.leng))
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Source file cannot be same as dest file"), CSTR("File Text Encrypt"), me);
+		me->ui->ShowMsgOK(CSTR("Source file cannot be same as dest file"), CSTR("File Text Encrypt"), me);
 	}
 	else
 	{
@@ -48,19 +47,19 @@ void __stdcall SSWR::AVIRead::AVIRFileTextEncryptForm::OnConvertClicked(void *us
 		len = fs.GetLength();
 		if (len == 0)
 		{
-			UI::MessageDialog::ShowDialog(CSTR("Error in opening source file"), CSTR("File Text Encrypt"), me);
+			me->ui->ShowMsgOK(CSTR("Error in opening source file"), CSTR("File Text Encrypt"), me);
 			return;
 		}
 		if (len > 1048576)
 		{
-			UI::MessageDialog::ShowDialog(CSTR("Source file is too large"), CSTR("File Text Encrypt"), me);
+			me->ui->ShowMsgOK(CSTR("Source file is too large"), CSTR("File Text Encrypt"), me);
 			return;
 		}
 		UOSInt buffSize = (UOSInt)len;
 		Data::ByteBuffer decBuff(buffSize);
 		if (fs.Read(decBuff) != buffSize)
 		{
-			UI::MessageDialog::ShowDialog(CSTR("Error in reading source file"), CSTR("File Text Encrypt"), me);
+			me->ui->ShowMsgOK(CSTR("Error in reading source file"), CSTR("File Text Encrypt"), me);
 			return;
 		}
 		sbSrc.ClearStr();

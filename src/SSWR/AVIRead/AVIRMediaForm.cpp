@@ -11,7 +11,6 @@
 #include "Text/MyStringFloat.h"
 #include "Text/UTF8Writer.h"
 #include "UI/FileDialog.h"
-#include "UI/MessageDialog.h"
 
 extern "C"
 {
@@ -627,7 +626,7 @@ void SSWR::AVIRead::AVIRMediaForm::EventMenuClicked(UInt16 cmdId)
 				Text::StringBuilderUTF8 sb;
 				sb.AppendC(UTF8STRC("t="));
 				sb.AppendDouble(t);
-				UI::MessageDialog::ShowDialog(sb.ToCString(), CSTR("Test"), this);
+				this->ui->ShowMsgOK(sb.ToCString(), CSTR("Test"), this);
 
 				UTF8Char sbuff[512];
 				UTF8Char *sptr;

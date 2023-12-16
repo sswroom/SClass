@@ -7,7 +7,6 @@
 #include "Text/MyStringW.h"
 #include "UI/GUIClientControl.h"
 #include "UI/GUITextView.h"
-#include "UI/MessageDialog.h"
 #include <gtk/gtk.h>
 
 struct UI::GUITextView::ClassData

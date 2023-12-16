@@ -3,7 +3,6 @@
 #include "SSWR/AVIRead/AVIRAccessConnForm.h"
 #include "Text/MyString.h"
 #include "UI/FileDialog.h"
-#include "UI/MessageDialog.h"
 
 void __stdcall SSWR::AVIRead::AVIRAccessConnForm::OnBrowseClicked(void *userObj)
 {
@@ -28,7 +27,7 @@ void __stdcall SSWR::AVIRead::AVIRAccessConnForm::OnOKClicked(void *userObj)
 	me->txtFileName->GetText(sbFileName);
 	if (sbFileName.GetCharCnt() == 0)
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Please enter file name"), CSTR("Access Conn"), me);
+		me->ui->ShowMsgOK(CSTR("Please enter file name"), CSTR("Access Conn"), me);
 		return;
 	}
 	NEW_CLASS(me->conn, DB::MDBFileConn(sbFileName.ToCString(), me->core->GetLog(), 0, 0, 0));
@@ -41,7 +40,7 @@ void __stdcall SSWR::AVIRead::AVIRAccessConnForm::OnOKClicked(void *userObj)
 		sbFileName.ClearStr();
 		sbFileName.AppendC(UTF8STRC("Error in opening ODBC connection\r\n"));
 		me->conn->GetLastErrorMsg(sbFileName);
-		UI::MessageDialog::ShowDialog(sbFileName.ToCString(), CSTR("Access Conn"), me);
+		me->ui->ShowMsgOK(sbFileName.ToCString(), CSTR("Access Conn"), me);
 		DEL_CLASS(me->conn);
 	}
 }

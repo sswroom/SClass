@@ -59,7 +59,7 @@ namespace SSWR
 			BookArrayList bookList;
 			Bool changed;
 
-			static void __stdcall OnBookPublishChg(void *userObj, Data::DateTime *newDate);
+			static void __stdcall OnBookPublishChg(void *userObj, NotNullPtr<Data::DateTime> newDate);
 			static void __stdcall OnBookAddClicked(void *userObj);
 			static void __stdcall OnBookPasteClicked(void *userObj);
 

@@ -6,7 +6,6 @@
 #include "SSWR/AVIRead/AVIRGISHKTDTonnesForm.h"
 #include "Text/StringBuilderUTF8.h"
 #include "UI/FileDialog.h"
-#include "UI/MessageDialog.h"
 
 void __stdcall SSWR::AVIRead::AVIRGISHKTDTonnesForm::OnRoadRouteClicked(void *userObj)
 {
@@ -53,11 +52,11 @@ void __stdcall SSWR::AVIRead::AVIRGISHKTDTonnesForm::OnOKClicked(void *userObj)
 	me->txtVehicleRes->GetText(sb2);
 	if (sb.GetLength() == 0)
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Please input Road Route"), CSTR("HK Tonnes Sign"), me);
+		me->ui->ShowMsgOK(CSTR("Please input Road Route"), CSTR("HK Tonnes Sign"), me);
 	}
 	else if (sb2.GetLength() == 0)
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Please input Vehicle Restriction"), CSTR("HK Tonnes Sign"), me);
+		me->ui->ShowMsgOK(CSTR("Please input Vehicle Restriction"), CSTR("HK Tonnes Sign"), me);
 	}
 	else
 	{
@@ -81,7 +80,7 @@ void __stdcall SSWR::AVIRead::AVIRGISHKTDTonnesForm::OnOKClicked(void *userObj)
 				}
 				else
 				{
-					UI::MessageDialog::ShowDialog(CSTR("Error in creating layer"), CSTR("HK Tonnes Sign"), me);
+					me->ui->ShowMsgOK(CSTR("Error in creating layer"), CSTR("HK Tonnes Sign"), me);
 				}
 				DEL_CLASS(vehRestrict);
 			}
@@ -89,13 +88,13 @@ void __stdcall SSWR::AVIRead::AVIRGISHKTDTonnesForm::OnOKClicked(void *userObj)
 			{
 				DEL_CLASS(db);
 				DEL_CLASS(lyr);
-				UI::MessageDialog::ShowDialog(CSTR("The file is not a polyline layer"), CSTR("HK Tonnes Sign"), me);
+				me->ui->ShowMsgOK(CSTR("The file is not a polyline layer"), CSTR("HK Tonnes Sign"), me);
 			}
 		}
 		else if (lyr)
 		{
 			DEL_CLASS(lyr);
-			UI::MessageDialog::ShowDialog(CSTR("Error in opening file"), CSTR("HK Tonnes Sign"), me);
+			me->ui->ShowMsgOK(CSTR("Error in opening file"), CSTR("HK Tonnes Sign"), me);
 		}
 		else
 		{
@@ -103,7 +102,7 @@ void __stdcall SSWR::AVIRead::AVIRGISHKTDTonnesForm::OnOKClicked(void *userObj)
 			{
 				DEL_CLASS(db);
 			}
-			UI::MessageDialog::ShowDialog(CSTR("Error in parsing the file"), CSTR("HK Tonnes Sign"), me);
+			me->ui->ShowMsgOK(CSTR("Error in parsing the file"), CSTR("HK Tonnes Sign"), me);
 		}
 	}
 }

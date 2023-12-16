@@ -1,7 +1,6 @@
 #include "Stdafx.h"
 #include "Crypto/Hash/Bcrypt.h"
 #include "SSWR/AVIRead/AVIRBCryptForm.h"
-#include "UI/MessageDialog.h"
 
 void __stdcall SSWR::AVIRead::AVIRBCryptForm::OnGenHashClicked(void *userObj)
 {
@@ -13,13 +12,13 @@ void __stdcall SSWR::AVIRead::AVIRBCryptForm::OnGenHashClicked(void *userObj)
 	me->txtGenPassword->GetText(sbPassword);
 	if (!sbCost.ToUInt32(cost))
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Please enter valid cost (4-31)"), CSTR("BCrypt"), me);
+		me->ui->ShowMsgOK(CSTR("Please enter valid cost (4-31)"), CSTR("BCrypt"), me);
 		me->txtCost->Focus();
 		return;
 	}
 	if (cost < 4 || cost > 31)
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Cost must be within 4-31"), CSTR("BCrypt"), me);
+		me->ui->ShowMsgOK(CSTR("Cost must be within 4-31"), CSTR("BCrypt"), me);
 		me->txtCost->Focus();
 		return;
 	}

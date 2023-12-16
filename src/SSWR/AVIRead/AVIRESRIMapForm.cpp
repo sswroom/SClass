@@ -7,7 +7,6 @@
 #include "Map/OSM/OSMTileMap.h"
 #include "SSWR/AVIRead/AVIRESRIMapForm.h"
 #include "Text/StringBuilder.h"
-#include "UI/MessageDialog.h"
 #include "UI/GUITextBox.h"
 
 SSWR::AVIRead::AVIRESRIMapForm::MapServer SSWR::AVIRead::AVIRESRIMapForm::mapSvrs[] = {
@@ -60,7 +59,7 @@ void __stdcall SSWR::AVIRead::AVIRESRIMapForm::OKClicked(void *userObj)
 			sptr = me->txtSRID->GetText(sbuff);
 			if (!Text::StrToUInt32(sbuff, srid))
 			{
-				UI::MessageDialog::ShowDialog(CSTR("Please enter valid SRID"), CSTR("ESRI Map"), me);
+				me->ui->ShowMsgOK(CSTR("Please enter valid SRID"), CSTR("ESRI Map"), me);
 				return;
 			}
 		}
@@ -85,7 +84,7 @@ void __stdcall SSWR::AVIRead::AVIRESRIMapForm::OKClicked(void *userObj)
 	}
 	if (esriMap->IsError())
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Error in loading server info"), CSTR("ESRI Map"), me);
+		me->ui->ShowMsgOK(CSTR("Error in loading server info"), CSTR("ESRI Map"), me);
 		return;
 	}
 	me->esriMap = esriMap;

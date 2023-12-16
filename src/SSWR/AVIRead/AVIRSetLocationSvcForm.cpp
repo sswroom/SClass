@@ -1,7 +1,6 @@
 #include "Stdafx.h"
 #include "SSWR/AVIRead/AVIRSetLocationSvcForm.h"
 #include "Text/StringBuilder.h"
-#include "UI/MessageDialog.h"
 
 void __stdcall SSWR::AVIRead::AVIRSetLocationSvcForm::OnOKClick(void *userObj)
 {

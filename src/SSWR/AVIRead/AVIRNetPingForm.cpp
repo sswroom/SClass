@@ -3,7 +3,6 @@
 #include "SSWR/AVIRead/AVIRNetPingForm.h"
 #include "Text/MyStringFloat.h"
 #include "Text/StringBuilderUTF8.h"
-#include "UI/MessageDialog.h"
 
 void __stdcall SSWR::AVIRead::AVIRNetPingForm::OnPingClicked(void *userObj)
 {
@@ -21,7 +20,7 @@ void __stdcall SSWR::AVIRead::AVIRNetPingForm::OnPingClicked(void *userObj)
 		me->txtTarget->GetText(sb);
 		if (!me->sockf->DNSResolveIP(sb.ToCString(), addr))
 		{
-			UI::MessageDialog::ShowDialog(CSTR("Error, target name is not valid"), CSTR("Error"), me);
+			me->ui->ShowMsgOK(CSTR("Error, target name is not valid"), CSTR("Error"), me);
 			return;
 		}
 		if (me->chkRepeat->IsChecked())

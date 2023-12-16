@@ -14,7 +14,6 @@
 #include "Text/TextBinEnc/Base64Enc.h"
 #include "Text/TextBinEnc/HexTextBinEnc.h"
 #include "UI/GUIComboBoxUtil.h"
-#include "UI/MessageDialog.h"
 
 #include <stdio.h>
 
@@ -85,14 +84,14 @@ void __stdcall SSWR::AVIRead::AVIRASN1DataForm::OnVerifyClicked(void *userObj)
 	me->txtVerifyPayloadFile->GetText(sb);
 	if (sb.GetLength() == 0)
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Please enter Payload"), CSTR("Verify Signature"), me);
+		me->ui->ShowMsgOK(CSTR("Please enter Payload"), CSTR("Verify Signature"), me);
 		return;
 	}
 
 	IO::FileStream fs(sb.ToCString(), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 	if (fs.GetLength() == 0)
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Payload Invalid"), CSTR("Verify Signature"), me);
+		me->ui->ShowMsgOK(CSTR("Payload Invalid"), CSTR("Verify Signature"), me);
 		return;
 	}
 	IO::MemoryStream mstm;
@@ -100,7 +99,7 @@ void __stdcall SSWR::AVIRead::AVIRASN1DataForm::OnVerifyClicked(void *userObj)
 	NotNullPtr<Crypto::Cert::X509Key> key;
 	if (!key.Set(me->GetNewKey()))
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Error in extracting key"), CSTR("Verify Signature"), me);
+		me->ui->ShowMsgOK(CSTR("Error in extracting key"), CSTR("Verify Signature"), me);
 		return;
 	}
 	NotNullPtr<Net::SSLEngine> ssl;
@@ -140,7 +139,7 @@ void __stdcall SSWR::AVIRead::AVIRASN1DataForm::OnVerifySignInfoClicked(void *us
 	NotNullPtr<Crypto::Cert::X509Key> key;
 	if (!key.Set(me->GetNewKey()))
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Error in extracting key"), CSTR("Verify Signature"), me);
+		me->ui->ShowMsgOK(CSTR("Error in extracting key"), CSTR("Verify Signature"), me);
 		return;
 	}
 	NotNullPtr<Net::SSLEngine> ssl;
@@ -187,7 +186,7 @@ void __stdcall SSWR::AVIRead::AVIRASN1DataForm::OnEncryptEncryptClicked(void *us
 	me->txtEncryptInput->GetText(sb);
 	if (sb.GetLength() == 0)
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Input is empty"), CSTR("Encrypt"), me);
+		me->ui->ShowMsgOK(CSTR("Input is empty"), CSTR("Encrypt"), me);
 		return;
 	}
 	UInt8 *buff;
@@ -209,20 +208,20 @@ void __stdcall SSWR::AVIRead::AVIRASN1DataForm::OnEncryptEncryptClicked(void *us
 	}
 	else
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Unknown Input Type"), CSTR("Encrypt"), me);
+		me->ui->ShowMsgOK(CSTR("Unknown Input Type"), CSTR("Encrypt"), me);
 		return;
 	}
 	if (buffSize == 0)
 	{
 		MemFree(buff);
-		UI::MessageDialog::ShowDialog(CSTR("Binary value is empty"), CSTR("Encrypt"), me);
+		me->ui->ShowMsgOK(CSTR("Binary value is empty"), CSTR("Encrypt"), me);
 		return;
 	}
 	NotNullPtr<Crypto::Cert::X509Key> key;
 	if (!key.Set(me->GetNewKey()))
 	{
 		MemFree(buff);
-		UI::MessageDialog::ShowDialog(CSTR("Error in getting key from file"), CSTR("Encrypt"), me);
+		me->ui->ShowMsgOK(CSTR("Error in getting key from file"), CSTR("Encrypt"), me);
 		return;
 	}
 	NotNullPtr<Net::SSLEngine> ssl;
@@ -236,7 +235,7 @@ void __stdcall SSWR::AVIRead::AVIRASN1DataForm::OnEncryptEncryptClicked(void *us
 		if (outSize == 0)
 		{
 			MemFree(outData);
-			UI::MessageDialog::ShowDialog(CSTR("Error in encrypting data"), CSTR("Encrypt"), me);
+			me->ui->ShowMsgOK(CSTR("Error in encrypting data"), CSTR("Encrypt"), me);
 			return;
 		}
 		type = me->cboEncryptOutputType->GetSelectedIndex();
@@ -255,7 +254,7 @@ void __stdcall SSWR::AVIRead::AVIRASN1DataForm::OnEncryptEncryptClicked(void *us
 		}
 		else
 		{
-			UI::MessageDialog::ShowDialog(CSTR("Unknown Output Type"), CSTR("Encrypt"), me);
+			me->ui->ShowMsgOK(CSTR("Unknown Output Type"), CSTR("Encrypt"), me);
 		}
 		MemFree(outData);
 	}
@@ -263,7 +262,7 @@ void __stdcall SSWR::AVIRead::AVIRASN1DataForm::OnEncryptEncryptClicked(void *us
 	{
 		key.Delete();
 		MemFree(buff);
-		UI::MessageDialog::ShowDialog(CSTR("Error in SSL engine"), CSTR("Encrypt"), me);
+		me->ui->ShowMsgOK(CSTR("Error in SSL engine"), CSTR("Encrypt"), me);
 		return;
 	}
 }
@@ -275,7 +274,7 @@ void __stdcall SSWR::AVIRead::AVIRASN1DataForm::OnEncryptDecryptClicked(void *us
 	me->txtEncryptInput->GetText(sb);
 	if (sb.GetLength() == 0)
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Input is empty"), CSTR("Decrypt"), me);
+		me->ui->ShowMsgOK(CSTR("Input is empty"), CSTR("Decrypt"), me);
 		return;
 	}
 	UInt8 *buff;
@@ -297,20 +296,20 @@ void __stdcall SSWR::AVIRead::AVIRASN1DataForm::OnEncryptDecryptClicked(void *us
 	}
 	else
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Unknown Input Type"), CSTR("Decrypt"), me);
+		me->ui->ShowMsgOK(CSTR("Unknown Input Type"), CSTR("Decrypt"), me);
 		return;
 	}
 	if (buffSize == 0)
 	{
 		MemFree(buff);
-		UI::MessageDialog::ShowDialog(CSTR("Binary value is empty"), CSTR("Decrypt"), me);
+		me->ui->ShowMsgOK(CSTR("Binary value is empty"), CSTR("Decrypt"), me);
 		return;
 	}
 	NotNullPtr<Crypto::Cert::X509Key> key;
 	if (!key.Set(me->GetNewKey()))
 	{
 		MemFree(buff);
-		UI::MessageDialog::ShowDialog(CSTR("Error in getting key from file"), CSTR("Decrypt"), me);
+		me->ui->ShowMsgOK(CSTR("Error in getting key from file"), CSTR("Decrypt"), me);
 		return;
 	}
 	NotNullPtr<Net::SSLEngine> ssl;
@@ -324,7 +323,7 @@ void __stdcall SSWR::AVIRead::AVIRASN1DataForm::OnEncryptDecryptClicked(void *us
 		if (outSize == 0)
 		{
 			MemFree(outData);
-			UI::MessageDialog::ShowDialog(CSTR("Error in decrypting data"), CSTR("Decrypt"), me);
+			me->ui->ShowMsgOK(CSTR("Error in decrypting data"), CSTR("Decrypt"), me);
 			return;
 		}
 		type = me->cboEncryptOutputType->GetSelectedIndex();
@@ -343,7 +342,7 @@ void __stdcall SSWR::AVIRead::AVIRASN1DataForm::OnEncryptDecryptClicked(void *us
 		}
 		else
 		{
-			UI::MessageDialog::ShowDialog(CSTR("Unknown Output Type"), CSTR("Decrypt"), me);
+			me->ui->ShowMsgOK(CSTR("Unknown Output Type"), CSTR("Decrypt"), me);
 		}
 		MemFree(outData);
 	}
@@ -351,7 +350,7 @@ void __stdcall SSWR::AVIRead::AVIRASN1DataForm::OnEncryptDecryptClicked(void *us
 	{
 		MemFree(buff);
 		key.Delete();
-		UI::MessageDialog::ShowDialog(CSTR("Error in SSL engine"), CSTR("Encrypt"), me);
+		me->ui->ShowMsgOK(CSTR("Error in SSL engine"), CSTR("Encrypt"), me);
 	}
 }
 
@@ -394,7 +393,7 @@ UOSInt SSWR::AVIRead::AVIRASN1DataForm::ParseSignature(Text::PString *s, UInt8 *
 	UOSInt signLen = 0;
 	if (s->leng == 0)
 	{
-		UI::MessageDialog::ShowDialog(CSTR("Please enter Signature"), CSTR("Verify Signature"), this);
+		this->ui->ShowMsgOK(CSTR("Please enter Signature"), CSTR("Verify Signature"), this);
 		return 0;
 	}
 	if (IO::Path::GetPathType(s->ToCString()) == IO::Path::PathType::File)
@@ -428,7 +427,7 @@ UOSInt SSWR::AVIRead::AVIRASN1DataForm::ParseSignature(Text::PString *s, UInt8 *
 		}
 		if (!succ)
 		{
-			UI::MessageDialog::ShowDialog(CSTR("Please enter valid Signature (Invalid file format)"), CSTR("Verify Signature"), this);
+			this->ui->ShowMsgOK(CSTR("Please enter valid Signature (Invalid file format)"), CSTR("Verify Signature"), this);
 			return 0;
 		}
 	}
@@ -438,7 +437,7 @@ UOSInt SSWR::AVIRead::AVIRASN1DataForm::ParseSignature(Text::PString *s, UInt8 *
 		signLen = enc.DecodeBin(s->v, 172, signBuff);
 		if (signLen != 128)
 		{
-			UI::MessageDialog::ShowDialog(CSTR("Please enter valid Signature (Invalid base64 format)"), CSTR("Verify Signature"), this);
+			this->ui->ShowMsgOK(CSTR("Please enter valid Signature (Invalid base64 format)"), CSTR("Verify Signature"), this);
 			return 0;
 		}
 	}
@@ -446,7 +445,7 @@ UOSInt SSWR::AVIRead::AVIRASN1DataForm::ParseSignature(Text::PString *s, UInt8 *
 	{
 		if (Text::StrHex2Bytes(s->v, signBuff) != 128)
 		{
-			UI::MessageDialog::ShowDialog(CSTR("Please enter valid Signature (Invalid hex format)"), CSTR("Verify Signature"), this);
+			this->ui->ShowMsgOK(CSTR("Please enter valid Signature (Invalid hex format)"), CSTR("Verify Signature"), this);
 			return 0;
 		}
 		signLen = 128;
@@ -457,7 +456,7 @@ UOSInt SSWR::AVIRead::AVIRASN1DataForm::ParseSignature(Text::PString *s, UInt8 *
 		signLen = enc.DecodeBin(s->v, 344, signBuff);
 		if (signLen != 256)
 		{
-			UI::MessageDialog::ShowDialog(CSTR("Please enter valid Signature (Invalid base64 format2)"), CSTR("Verify Signature"), this);
+			this->ui->ShowMsgOK(CSTR("Please enter valid Signature (Invalid base64 format2)"), CSTR("Verify Signature"), this);
 			return 0;
 		}
 	}
@@ -465,7 +464,7 @@ UOSInt SSWR::AVIRead::AVIRASN1DataForm::ParseSignature(Text::PString *s, UInt8 *
 	{
 		if (Text::StrHex2BytesS(s->v, signBuff, s->v[2]) != 256)
 		{
-			UI::MessageDialog::ShowDialog(CSTR("Please enter valid Signature (Invalid hex formats)"), CSTR("Verify Signature"), this);
+			this->ui->ShowMsgOK(CSTR("Please enter valid Signature (Invalid hex formats)"), CSTR("Verify Signature"), this);
 			return 0;
 		}
 		signLen = 256;
@@ -475,7 +474,7 @@ UOSInt SSWR::AVIRead::AVIRASN1DataForm::ParseSignature(Text::PString *s, UInt8 *
 		Text::StringBuilderUTF8 sb;
 		sb.Append(CSTR("Please enter valid Signature (Unknown format), length = "));
 		sb.AppendUOSInt(s->leng);
-		UI::MessageDialog::ShowDialog(sb.ToCString(), CSTR("Verify Signature"), this);
+		this->ui->ShowMsgOK(sb.ToCString(), CSTR("Verify Signature"), this);
 		return 0;
 	}
 	return signLen;

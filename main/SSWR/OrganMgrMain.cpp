@@ -7,7 +7,6 @@
 #include "SSWR/OrganMgr/OrganMainForm.h"
 #include "SSWR/OrganMgr/OrganSelCategoryForm.h"
 #include "UI/GUICore.h"
-#include "UI/MessageDialog.h"
 
 Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 {
@@ -43,15 +42,15 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 			}
 			else if (env.GetErrorType() == SSWR::OrganMgr::OrganEnv::ERR_CONFIG)
 			{
-				UI::MessageDialog::ShowDialog(CSTR("Please prepare the config file"), CSTR("Error"), 0);
+				ui->ShowMsgOK(CSTR("Please prepare the config file"), CSTR("Error"), 0);
 			}
 			else if (env.GetErrorType() == SSWR::OrganMgr::OrganEnv::ERR_DB)
 			{
-				UI::MessageDialog::ShowDialog(CSTR("Cannot connect to the database"), CSTR("Error"), 0);
+				ui->ShowMsgOK(CSTR("Cannot connect to the database"), CSTR("Error"), 0);
 			}
 			else
 			{
-				UI::MessageDialog::ShowDialog(CSTR("Unknown error occurs"), CSTR("Error"), 0);
+				ui->ShowMsgOK(CSTR("Unknown error occurs"), CSTR("Error"), 0);
 			}
 			ui.Delete();
 		}
