@@ -1,8 +1,11 @@
 #include "Stdafx.h"
 #include "Crypto/Encrypt/RNCryptor.h"
 #include "IO/FileStream.h"
+#include "IO/MemoryStream.h"
+#include "IO/MemoryReadingStream.h"
 #include "IO/Path.h"
 #include "SSWR/AVIRead/AVIRRNCryptorForm.h"
+#include "Text/TextBinEnc/Base64Enc.h"
 
 void __stdcall SSWR::AVIRead::AVIRRNCryptorForm::OnProcessClicked(void *userObj)
 {
@@ -26,9 +29,25 @@ void __stdcall SSWR::AVIRead::AVIRRNCryptorForm::OnProcessClicked(void *userObj)
 		IO::FileStream srcFS(sbSrcFile.ToCString(), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 		sbSrcFile.RemoveChars(4);
 		Bool succ;
+		if (me->chkBase64->IsChecked())
+		{
+			IO::MemoryStream mstm;
+			succ = Crypto::Encrypt::RNCryptor::Decrypt(srcFS, mstm, sbPassword.ToCString());
+			if (succ)
+			{
+				Text::TextBinEnc::Base64Enc enc;
+				UOSInt outLen = (UOSInt)(mstm.GetLength() >> 2) * 3;
+				UInt8 *destBuff = MemAlloc(UInt8, outLen);
+				UOSInt retSize = enc.DecodeBin(mstm.GetBuff(), (UOSInt)mstm.GetLength(), destBuff);
+				IO::FileStream destFS(sbSrcFile.ToCString(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+				succ = destFS.WriteCont(destBuff, retSize);
+				MemFree(destBuff);
+			}
+		}
+		else
 		{
 			IO::FileStream destFS(sbSrcFile.ToCString(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
-			succ = Crypto::Encrypt::RNCryptor::Decrypt(&srcFS, &destFS, sbPassword.ToCString());
+			succ = Crypto::Encrypt::RNCryptor::Decrypt(srcFS, destFS, sbPassword.ToCString());
 		}
 		if (!succ)
 		{
@@ -41,9 +60,35 @@ void __stdcall SSWR::AVIRead::AVIRRNCryptorForm::OnProcessClicked(void *userObj)
 		IO::FileStream srcFS(sbSrcFile.ToCString(), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 		sbSrcFile.AppendC(UTF8STRC(".aes"));
 		Bool succ;
+		if (me->chkBase64->IsChecked())
+		{
+			UInt64 fileLen = srcFS.GetLength();
+			if (fileLen > 1048576)
+			{
+				succ = false;
+			}
+			else
+			{
+				Data::ByteBuffer fileBuff((UOSInt)fileLen);
+				Text::TextBinEnc::Base64Enc enc;
+				if (srcFS.Read(fileBuff) == fileLen)
+				{
+					Text::StringBuilderUTF8 sb;
+					enc.EncodeBin(sb, fileBuff.Ptr(), fileBuff.GetSize());
+					IO::MemoryReadingStream mstm(sb.v, sb.leng);
+					IO::FileStream destFS(sbSrcFile.ToCString(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+					succ = Crypto::Encrypt::RNCryptor::Encrypt(mstm, destFS, sbPassword.ToCString());
+				}
+				else
+				{
+					succ = false;
+				}
+			}
+		}
+		else
 		{
 			IO::FileStream destFS(sbSrcFile.ToCString(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
-			succ = Crypto::Encrypt::RNCryptor::Encrypt(&srcFS, &destFS, sbPassword.ToCString());
+			succ = Crypto::Encrypt::RNCryptor::Encrypt(srcFS, destFS, sbPassword.ToCString());
 		}
 		if (!succ)
 		{
@@ -97,8 +142,12 @@ SSWR::AVIRead::AVIRRNCryptorForm::AVIRRNCryptorForm(UI::GUIClientControl *parent
 	this->lblPassword->SetRect(4, 52, 100, 23, false);
 	NEW_CLASS(this->txtPassword, UI::GUITextBox(ui, *this, CSTR("")));
 	this->txtPassword->SetRect(104, 52, 200, 23, false);
+	NEW_CLASS(this->lblOptions, UI::GUILabel(ui, *this, CSTR("Options")));
+	this->lblOptions->SetRect(4, 76, 100, 23, false);
+	NEW_CLASS(this->chkBase64, UI::GUICheckBox(ui, *this, CSTR("With Base64"), false));
+	this->chkBase64->SetRect(104, 76, 200, 23, false);
 	this->btnProcess = ui->NewButton(*this, CSTR("Process"));
-	this->btnProcess->SetRect(104, 76, 75, 23, false);
+	this->btnProcess->SetRect(104, 100, 75, 23, false);
 	this->btnProcess->HandleButtonClick(OnProcessClicked, this);
 
 	this->HandleDropFiles(OnFiles, this);

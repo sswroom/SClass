@@ -11,8 +11,8 @@ namespace Crypto
 		private:
 			static UOSInt RemovePadding(UInt8 *buff, UOSInt buffSize);
 		public:
-			static Bool Decrypt(IO::SeekableStream *srcStream, IO::Stream *destStream, Text::CString password);
-			static Bool Encrypt(IO::SeekableStream *srcStream, IO::Stream *destStream, Text::CString password);
+			static Bool Decrypt(NotNullPtr<IO::SeekableStream> srcStream, NotNullPtr<IO::Stream> destStream, Text::CStringNN password);
+			static Bool Encrypt(NotNullPtr<IO::SeekableStream> srcStream, NotNullPtr<IO::Stream> destStream, Text::CStringNN password);
 		};
 	}
 }

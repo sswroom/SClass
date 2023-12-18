@@ -8,11 +8,8 @@ void __stdcall SSWR::AVIRead::AVIRFileTextEncryptForm::OnFileDrop(void *userObj,
 	SSWR::AVIRead::AVIRFileTextEncryptForm *me = (SSWR::AVIRead::AVIRFileTextEncryptForm *)userObj;
 	if (nFiles > 0)
 	{
-		Text::StringBuilderUTF8 sb;
-		sb.Append(files[0]);
-		sb.AppendC(UTF8STRC(".enc"));
 		me->txtSrcFile->SetText(files[0]->ToCString());
-		me->txtDestFile->SetText(sb.ToCString());
+		me->GenDestFileName(files[0]->ToCString(), me->chkDecrypt->IsChecked());
 	}
 }
 
@@ -56,21 +53,65 @@ void __stdcall SSWR::AVIRead::AVIRFileTextEncryptForm::OnConvertClicked(void *us
 			return;
 		}
 		UOSInt buffSize = (UOSInt)len;
-		Data::ByteBuffer decBuff(buffSize);
-		if (fs.Read(decBuff) != buffSize)
+		Data::ByteBuffer srcBuff(buffSize);
+		if (fs.Read(srcBuff) != buffSize)
 		{
 			me->ui->ShowMsgOK(CSTR("Error in reading source file"), CSTR("File Text Encrypt"), me);
 			return;
 		}
-		sbSrc.ClearStr();
-		destEnc->EncodeBin(sbSrc, decBuff.Ptr(), buffSize);
+		if (me->chkDecrypt->IsChecked())
+		{
+			UInt8 *destBuff = MemAlloc(UInt8, buffSize << 1);
+			UOSInt destSize = destEnc->DecodeBin(srcBuff.Ptr(), buffSize, destBuff);
+			if (destSize == 0)
+			{
+				me->ui->ShowMsgOK(CSTR("Error in decrypting file"), CSTR("File Text Encrypt"), me);
+				MemFree(destBuff);
+				return;
+			}
+			IO::FileStream fs2(sbDest.ToCString(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+			fs2.WriteCont(destBuff, destSize);
+			MemFree(destBuff);
+		}
+		else
+		{
+			sbSrc.ClearStr();
+			destEnc->EncodeBin(sbSrc, srcBuff.Ptr(), buffSize);
+			IO::FileStream fs2(sbDest.ToCString(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+			fs2.Write(sbSrc.v, sbSrc.leng);
+		}
 
-		IO::FileStream fs2(sbDest.ToCString(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
-		fs2.Write(sbSrc.v, sbSrc.leng);
 	}
 }
 
-SSWR::AVIRead::AVIRFileTextEncryptForm::AVIRFileTextEncryptForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 800, 120, ui)
+void __stdcall SSWR::AVIRead::AVIRFileTextEncryptForm::OnDecryptChange(void *userObj, Bool newState)
+{
+	SSWR::AVIRead::AVIRFileTextEncryptForm *me = (SSWR::AVIRead::AVIRFileTextEncryptForm *)userObj;
+	Text::StringBuilderUTF8 sb;
+	me->txtSrcFile->GetText(sb);
+	if (sb.leng > 0)
+		me->GenDestFileName(sb.ToCString(), newState);
+}
+
+void SSWR::AVIRead::AVIRFileTextEncryptForm::GenDestFileName(Text::CStringNN fileName, Bool decrypt)
+{
+	Text::StringBuilderUTF8 sb;
+	sb.Append(fileName);
+	if (decrypt)
+	{
+		if (sb.EndsWith(UTF8STRC(".enc")))
+			sb.RemoveChars(4);
+		else
+			sb.Append(CSTR(".dec"));
+	}
+	else
+	{
+		sb.AppendC(UTF8STRC(".enc"));
+	}
+	this->txtDestFile->SetText(sb.ToCString());
+}
+
+SSWR::AVIRead::AVIRFileTextEncryptForm::AVIRFileTextEncryptForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 800, 144, ui)
 {
 	this->SetText(CSTR("File Text Encrypt"));
 	this->SetFont(0, 0, 8.25, false);
@@ -87,12 +128,17 @@ SSWR::AVIRead::AVIRFileTextEncryptForm::AVIRFileTextEncryptForm(UI::GUIClientCon
 	this->lblDestFile->SetRect(4, 28, 100, 23, false);
 	NEW_CLASS(this->txtDestFile, UI::GUITextBox(ui, *this, CSTR(""), true));
 	this->txtDestFile->SetRect(104, 28, 600, 23, false);
+	NEW_CLASS(this->lblDecrypt, UI::GUILabel(ui, *this, CSTR("Mode")));
+	this->lblDecrypt->SetRect(4, 52, 100, 23, false);
+	NEW_CLASS(this->chkDecrypt, UI::GUICheckBox(ui, *this, CSTR("Decrypt"), false));
+	this->chkDecrypt->SetRect(104, 52, 150, 23, false);
+	this->chkDecrypt->HandleCheckedChange(OnDecryptChange, this);
 	NEW_CLASS(this->lblEncrypt, UI::GUILabel(ui, *this, CSTR("Encryption")));
-	this->lblEncrypt->SetRect(4, 52, 100, 23, false);
+	this->lblEncrypt->SetRect(4, 76, 100, 23, false);
 	this->cboEncrypt = ui->NewComboBox(*this, false);
-	this->cboEncrypt->SetRect(104, 52, 200, 23, false);
+	this->cboEncrypt->SetRect(104, 76, 200, 23, false);
 	this->btnConvert = ui->NewButton(*this, CSTR("&Convert"));
-	this->btnConvert->SetRect(104, 76, 75, 23, false);
+	this->btnConvert->SetRect(104, 100, 75, 23, false);
 	this->btnConvert->HandleButtonClick(OnConvertClicked, this);
 
 	Data::ArrayList<Text::TextBinEnc::ITextBinEnc*> *encs = this->encList.GetEncList();

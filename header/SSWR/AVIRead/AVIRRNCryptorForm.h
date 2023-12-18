@@ -2,6 +2,7 @@
 #define _SM_SSWR_AVIREAD_AVIRRNCRYPTORFORM
 #include "SSWR/AVIRead/AVIRCore.h"
 #include "UI/GUIButton.h"
+#include "UI/GUICheckBox.h"
 #include "UI/GUIComboBox.h"
 #include "UI/GUIForm.h"
 #include "UI/GUILabel.h"
@@ -24,6 +25,8 @@ namespace SSWR
 			UI::GUITextBox *txtDestFile;
 			UI::GUILabel *lblPassword;
 			UI::GUITextBox *txtPassword;
+			UI::GUILabel *lblOptions;
+			UI::GUICheckBox *chkBase64;
 			NotNullPtr<UI::GUIButton> btnProcess;
 
 			static void __stdcall OnProcessClicked(void *userObj);
