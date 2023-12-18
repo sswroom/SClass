@@ -123,7 +123,7 @@ SSWR::AVIRead::AVIRTCPSpdSvrForm::AVIRTCPSpdSvrForm(UI::GUIClientControl *parent
 	this->cliMgr = 0;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASS(this->lblPort, UI::GUILabel(ui, *this, CSTR("Port")));
+	this->lblPort = ui->NewLabel(*this, CSTR("Port"));
 	this->lblPort->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtPort, UI::GUITextBox(ui, *this, CSTR("1234")));
 	this->txtPort->SetRect(104, 4, 100, 23, false);

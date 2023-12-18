@@ -67,7 +67,7 @@ SSWR::AVIRead::AVIRExportParamForm::AVIRExportParamForm(UI::GUIClientControl *pa
 	UTF8Char *sptr;
 	UOSInt cnt = this->exporter->GetParamCnt();
 	UOSInt i;
-	UI::GUILabel *lbl;
+	NotNullPtr<UI::GUILabel> lbl;
 	IO::FileExporter::ParamInfo pi;
 
 	SetSize(298, (Int32)(88 + cnt * 24));
@@ -77,7 +77,7 @@ SSWR::AVIRead::AVIRExportParamForm::AVIRExportParamForm(UI::GUIClientControl *pa
 	while (i < cnt)
 	{
 		this->exporter->GetParamInfo(i, pi);
-		NEW_CLASS(lbl, UI::GUILabel(ui, *this, pi.name));
+		lbl = ui->NewLabel(*this, pi.name);
 		lbl->SetRect(20, (Int32)i * 24, 120, 23, false);
 		//lbl->TextAlign = System::Drawing::ContentAlignment::MiddleLeft;
 

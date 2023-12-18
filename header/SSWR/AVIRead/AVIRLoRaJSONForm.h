@@ -23,11 +23,11 @@ namespace SSWR
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 
 			NotNullPtr<UI::GUIPanel> pnlJSON;
-			UI::GUILabel *lblJSON;
+			NotNullPtr<UI::GUILabel> lblJSON;
 			UI::GUITextBox *txtJSON;
 			NotNullPtr<UI::GUIPanel> pnlJSONCtrl;
 			NotNullPtr<UI::GUIButton> btnJSONParse;
-			UI::GUILabel *lblInfo;
+			NotNullPtr<UI::GUILabel> lblInfo;
 			UI::GUITextBox *txtInfo;
 
 		private:

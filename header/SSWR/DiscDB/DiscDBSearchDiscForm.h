@@ -18,15 +18,15 @@ namespace SSWR
 			SSWR::DiscDB::DiscDBEnv *env;
 
 			NotNullPtr<UI::GUIPanel> pnlDiscId;
-			UI::GUILabel *lblDiscId;
+			NotNullPtr<UI::GUILabel> lblDiscId;
 			UI::GUITextBox *txtDiscId;
 			NotNullPtr<UI::GUIButton> btnSearch;
 			NotNullPtr<UI::GUIPanel> pnlOut;
-			UI::GUILabel *lblDiscIdOut;
+			NotNullPtr<UI::GUILabel> lblDiscIdOut;
 			UI::GUITextBox *txtDiscIdOut;
-			UI::GUILabel *lblDiscType;
+			NotNullPtr<UI::GUILabel> lblDiscType;
 			UI::GUITextBox *txtDiscType;
-			UI::GUILabel *lblBurntDate;
+			NotNullPtr<UI::GUILabel> lblBurntDate;
 			UI::GUITextBox *txtBurntDate;
 			UI::GUIListView *lvFiles;
 

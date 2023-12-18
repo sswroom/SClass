@@ -17,19 +17,19 @@ namespace SSWR
 			OrganEnv *env;
 			const UTF8Char *descript;
 
-			UI::GUILabel *lblId;
+			NotNullPtr<UI::GUILabel> lblId;
 			UI::GUITextBox *txtId;
-			UI::GUILabel *lblFileName;
+			NotNullPtr<UI::GUILabel> lblFileName;
 			UI::GUITextBox *txtFileName;
-			UI::GUILabel *lblDescript;
+			NotNullPtr<UI::GUILabel> lblDescript;
 			UI::GUITextBox *txtDescript;
-			UI::GUILabel *lblCamera;
+			NotNullPtr<UI::GUILabel> lblCamera;
 			UI::GUITextBox *txtCamera;
-			UI::GUILabel *lblFileTime;
+			NotNullPtr<UI::GUILabel> lblFileTime;
 			UI::GUITextBox *txtFileTime;
-			UI::GUILabel *lblLat;
+			NotNullPtr<UI::GUILabel> lblLat;
 			UI::GUITextBox *txtLat;
-			UI::GUILabel *lblLon;
+			NotNullPtr<UI::GUILabel> lblLon;
 			UI::GUITextBox *txtLon;
 			NotNullPtr<UI::GUIButton> btnOK;
 			NotNullPtr<UI::GUIButton> btnCancel;

@@ -21,13 +21,13 @@ namespace SSWR
 		{
 		private:
 			NotNullPtr<UI::GUIGroupBox> grpConn;
-			UI::GUILabel *lblDevType;
+			NotNullPtr<UI::GUILabel> lblDevType;
 			NotNullPtr<UI::GUIComboBox> cboDevType;
-			UI::GUILabel *lblPort;
+			NotNullPtr<UI::GUILabel> lblPort;
 			UI::GUITextBox *txtPort;
 			NotNullPtr<UI::GUIButton> btnPort;
 			NotNullPtr<UI::GUIGroupBox> grpCtrl;
-			UI::GUILabel *lblMode;
+			NotNullPtr<UI::GUILabel> lblMode;
 			UI::GUITextBox *txtMode;
 			NotNullPtr<UI::GUIButton> btnModeScan;
 			NotNullPtr<UI::GUIButton> btnModeSetting;
@@ -38,12 +38,12 @@ namespace SSWR
 
 			NotNullPtr<UI::GUITabPage> tpScan;
 			NotNullPtr<UI::GUIPanel> pnlScan;
-			UI::GUILabel *lblScan;
+			NotNullPtr<UI::GUILabel> lblScan;
 			UI::GUITextBox *txtScan;
 			UI::GUIListBox *lbScan;
 
 			NotNullPtr<UI::GUITabPage> tpSetting;
-			UI::GUILabel *lblSetCmd;
+			NotNullPtr<UI::GUILabel> lblSetCmd;
 			NotNullPtr<UI::GUIComboBox> cboSetCmd;
 			NotNullPtr<UI::GUIComboBox> cboSetParam;
 			NotNullPtr<UI::GUIButton> btnSetCmd;

@@ -684,7 +684,7 @@ SSWR::AVIRead::AVIRGISForm::AVIRGISForm(UI::GUIClientControl *parent, NotNullPtr
 	this->chkTime->SetEnabled(false);
 	this->chkTime->SetRect(0, 0, 150, 24, false);
 	this->chkTime->HandleCheckedChange(OnTimeChecked, this);
-	NEW_CLASS(this->lblVAngle, UI::GUILabel(ui, this->pnlControl, CSTR("VAngle")));
+	this->lblVAngle = ui->NewLabel(this->pnlControl, CSTR("VAngle"));
 	this->lblVAngle->SetRect(250, 0, 100, 23, false);
 	NEW_CLASS(this->tbVAngle, UI::GUITrackBar(ui, this->pnlControl, 0, 90, 0));
 	this->tbVAngle->SetRect(350, 0, 100, 23, false);

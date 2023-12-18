@@ -135,7 +135,7 @@ SSWR::AVIRead::AVIRGISDistanceForm::AVIRGISDistanceForm(UI::GUIClientControl *pa
 	this->lastMapPos = {0, 0};
 	this->csys = this->navi->GetCoordinateSystem()->Clone();
 
-	NEW_CLASS(this->lblType, UI::GUILabel(ui, *this, CSTR("Type")));
+	this->lblType = ui->NewLabel(*this, CSTR("Type"));
 	this->lblType->SetRect(4, 4, 100, 23, false);
 	NEW_CLASSNN(this->pnlType, UI::GUIPanel(ui, *this));
 	this->pnlType->SetRect(104, 4, 200, 24, false);
@@ -144,7 +144,7 @@ SSWR::AVIRead::AVIRGISDistanceForm::AVIRGISDistanceForm(UI::GUIClientControl *pa
 	NEW_CLASS(this->radTypePath, UI::GUIRadioButton(ui, this->pnlType, CSTR("Path"), false));
 	this->radTypePath->SetRect(100, 0, 100, 23, false);
 	this->radTypePath->HandleSelectedChange(OnTypeSelChg, this);
-	NEW_CLASS(this->lblAction, UI::GUILabel(ui, *this, CSTR("Action")));
+	this->lblAction = ui->NewLabel(*this, CSTR("Action"));
 	this->lblAction->SetRect(4, 28, 100, 23, false);
 	NEW_CLASSNN(this->pnlAction, UI::GUIPanel(ui, *this));
 	this->pnlAction->SetRect(104, 28, 200, 24, false);
@@ -153,7 +153,7 @@ SSWR::AVIRead::AVIRGISDistanceForm::AVIRGISDistanceForm(UI::GUIClientControl *pa
 	NEW_CLASS(this->radActionMeasure, UI::GUIRadioButton(ui, this->pnlAction, CSTR("Measure"), true));
 	this->radActionMeasure->SetRect(100, 0, 100, 23, false);
 	this->radActionMeasure->HandleSelectedChange(OnMeasureSelChg, this);
-	NEW_CLASS(this->lblDistance, UI::GUILabel(ui, *this, CSTR("Distance")));
+	this->lblDistance = ui->NewLabel(*this, CSTR("Distance"));
 	this->lblDistance->SetRect(4, 52, 100, 23, false);
 	NEW_CLASS(this->txtDistance, UI::GUITextBox(ui, *this, CSTR("")));
 	this->txtDistance->SetRect(104, 52, 140, 23, false);

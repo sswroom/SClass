@@ -49,29 +49,29 @@ namespace SSWR
 			Sync::Event mainEvt;
 
 			NotNullPtr<UI::GUIGroupBox> grpServer;
-			UI::GUILabel *lblServerPort;
+			NotNullPtr<UI::GUILabel> lblServerPort;
 			UI::GUITextBox *txtServerPort;
 			NotNullPtr<UI::GUIButton> btnStart;
 			UI::GUICheckBox *chkAutoReply;
 			NotNullPtr<UI::GUIGroupBox> grpDest;
-			UI::GUILabel *lblDestHost;
+			NotNullPtr<UI::GUILabel> lblDestHost;
 			UI::GUITextBox *txtDestHost;
-			UI::GUILabel *lblDestPort;
+			NotNullPtr<UI::GUILabel> lblDestPort;
 			UI::GUITextBox *txtDestPort;
-			UI::GUILabel *lblDestCount;
+			NotNullPtr<UI::GUILabel> lblDestCount;
 			UI::GUITextBox *txtDestCount;
 			NotNullPtr<UI::GUIButton> btnSend;
 			NotNullPtr<UI::GUIGroupBox> grpStatus;
-			UI::GUILabel *lblRecvCnt;
+			NotNullPtr<UI::GUILabel> lblRecvCnt;
 			UI::GUITextBox *txtRecvCnt;
 			UI::GUITextBox *txtRecvCntRate;
-			UI::GUILabel *lblRecvSize;
+			NotNullPtr<UI::GUILabel> lblRecvSize;
 			UI::GUITextBox *txtRecvSize;
 			UI::GUITextBox *txtRecvSizeRate;
-			UI::GUILabel *lblSentSuccCnt;
+			NotNullPtr<UI::GUILabel> lblSentSuccCnt;
 			UI::GUITextBox *txtSentSuccCnt;
 			UI::GUITextBox *txtSentSuccCntRate;
-			UI::GUILabel *lblSentFailCnt;
+			NotNullPtr<UI::GUILabel> lblSentFailCnt;
 			UI::GUITextBox *txtSentFailCnt;
 			UI::GUITextBox *txtSentFailCntRate;
 

@@ -16,15 +16,15 @@ namespace SSWR
 		class AVIRDHT22Form : public UI::GUIForm
 		{
 		private:
-			UI::GUILabel *lblTemp;
+			NotNullPtr<UI::GUILabel> lblTemp;
 			UI::GUITextBox *txtTemp;
-			UI::GUILabel *lblRH;
+			NotNullPtr<UI::GUILabel> lblRH;
 			UI::GUITextBox *txtRH;
-			UI::GUILabel *lblHumidity;
+			NotNullPtr<UI::GUILabel> lblHumidity;
 			UI::GUITextBox *txtHumidity;
 			NotNullPtr<UI::GUIButton> btnRead;
 			UI::GUICheckBox *chkAutoRead;
-			UI::GUILabel *lblStatus;
+			NotNullPtr<UI::GUILabel> lblStatus;
 			UI::GUITextBox *txtStatus;
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;

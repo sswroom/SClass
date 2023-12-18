@@ -13,7 +13,7 @@ namespace SSWR
 		class SHPConvGroupForm : public UI::GUIForm
 		{
 		private:
-			UI::GUILabel *lblGroup;
+			NotNullPtr<UI::GUILabel> lblGroup;
 			UI::GUIListBox *lbGroup;
 			NotNullPtr<UI::GUIButton> btnOk;
 			NotNullPtr<UI::GUIButton> btnCancel;

@@ -296,14 +296,14 @@ SSWR::AVIRead::AVIRDWQB30Form::AVIRDWQB30Form(UI::GUIClientControl *parent, NotN
 	this->grpConn = ui->NewGroupBox(*this, CSTR("Connect"));
 	this->grpConn->SetRect(0, 0, 100, 68, false);
 	this->grpConn->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->lblDevType, UI::GUILabel(ui, this->grpConn, CSTR("Type")));
+	this->lblDevType = ui->NewLabel(this->grpConn, CSTR("Type"));
 	this->lblDevType->SetRect(160, 0, 100, 23, false);
 	this->cboDevType = ui->NewComboBox(this->grpConn, false);
 	this->cboDevType->SetRect(260, 0, 150, 23, false);
 	this->cboDevType->AddItem(CSTR("Denso Wave QB30"), 0);
 	this->cboDevType->AddItem(CSTR("Denso Wave QK30-U"), 0);
 	this->cboDevType->SetSelectedIndex(0);
-	NEW_CLASS(this->lblPort, UI::GUILabel(ui, this->grpConn, CSTR("Port")));
+	this->lblPort = ui->NewLabel(this->grpConn, CSTR("Port"));
 	this->lblPort->SetRect(160, 24, 100, 23, false);
 	NEW_CLASS(this->txtPort, UI::GUITextBox(ui, this->grpConn, CSTR(""), false));
 	this->txtPort->SetRect(260, 24, 100, 23, false);
@@ -314,7 +314,7 @@ SSWR::AVIRead::AVIRDWQB30Form::AVIRDWQB30Form(UI::GUIClientControl *parent, NotN
 	this->grpCtrl = ui->NewGroupBox(*this, CSTR("Control"));
 	this->grpCtrl->SetRect(0, 0, 100, 68, false);
 	this->grpCtrl->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->lblMode, UI::GUILabel(ui, this->grpCtrl, CSTR("Mode")));
+	this->lblMode = ui->NewLabel(this->grpCtrl, CSTR("Mode"));
 	this->lblMode->SetRect(160, 0, 100, 23, false);
 	NEW_CLASS(this->txtMode, UI::GUITextBox(ui, this->grpCtrl, CSTR("")));
 	this->txtMode->SetRect(260, 0, 100, 23, false);
@@ -342,7 +342,7 @@ SSWR::AVIRead::AVIRDWQB30Form::AVIRDWQB30Form(UI::GUIClientControl *parent, NotN
 	NEW_CLASSNN(this->pnlScan, UI::GUIPanel(ui, this->tpScan));
 	this->pnlScan->SetRect(0, 0, 100, 32, false);
 	this->pnlScan->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->lblScan, UI::GUILabel(ui, this->pnlScan, CSTR("Last Result")));
+	this->lblScan = ui->NewLabel(this->pnlScan, CSTR("Last Result"));
 	this->lblScan->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtScan, UI::GUITextBox(ui, this->pnlScan, CSTR(""), false));
 	this->txtScan->SetReadOnly(true);
@@ -351,7 +351,7 @@ SSWR::AVIRead::AVIRDWQB30Form::AVIRDWQB30Form(UI::GUIClientControl *parent, NotN
 	this->lbScan->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	this->tpSetting = this->tcMain->AddTabPage(CSTR("Setting"));
-	NEW_CLASS(this->lblSetCmd, UI::GUILabel(ui, this->tpSetting, CSTR("Command")));
+	this->lblSetCmd = ui->NewLabel(this->tpSetting, CSTR("Command"));
 	this->lblSetCmd->SetRect(4, 4, 100, 23, false);
 	this->cboSetCmd = ui->NewComboBox(this->tpSetting, false);
 	this->cboSetCmd->SetRect(104, 4, 150, 23, false);

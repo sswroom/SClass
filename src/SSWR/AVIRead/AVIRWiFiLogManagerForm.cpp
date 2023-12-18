@@ -341,9 +341,9 @@ SSWR::AVIRead::AVIRWiFiLogManagerForm::AVIRWiFiLogManagerForm(UI::GUIClientContr
 	this->btnStore = ui->NewButton(this->pnlControl, CSTR("Store MACList"));
 	this->btnStore->SetRect(414, 4, 75, 23, false);
 	this->btnStore->HandleButtonClick(OnStoreClicked, this);
-	NEW_CLASS(this->lblInfo, UI::GUILabel(ui, this->pnlControl, CSTR("")));
+	this->lblInfo = ui->NewLabel(this->pnlControl, CSTR(""));
 	this->lblInfo->SetRect(494, 4, 200, 23, false);
-	NEW_CLASS(this->lblDblClk, UI::GUILabel(ui, this->pnlControl, CSTR("Dbl-Clk Action")));
+	this->lblDblClk = ui->NewLabel(this->pnlControl, CSTR("Dbl-Clk Action"));
 	this->lblDblClk->SetRect(694, 4, 100, 23, false);
 	this->cboDblClk = ui->NewComboBox(this->pnlControl, false);
 	this->cboDblClk->SetRect(794, 4, 100, 23, false);

@@ -16,9 +16,9 @@ namespace SSWR
 		private:
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 
-			UI::GUILabel *lblBattery;
+			NotNullPtr<UI::GUILabel> lblBattery;
 			UI::GUITextBox *txtBattery;
-			UI::GUILabel *lblTimeLeft;
+			NotNullPtr<UI::GUILabel> lblTimeLeft;
 			UI::GUITextBox *txtTimeLeft;
 			UI::GUICheckBox *chkNoSleep;
 			UI::GUICheckBox *chkNoDispOff;

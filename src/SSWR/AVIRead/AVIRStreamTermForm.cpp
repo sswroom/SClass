@@ -272,7 +272,7 @@ SSWR::AVIRead::AVIRStreamTermForm::AVIRStreamTermForm(UI::GUIClientControl *pare
 	this->grpStream = ui->NewGroupBox(*this, CSTR("Stream"));
 	this->grpStream->SetRect(0, 0, 100, 48, false);
 	this->grpStream->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->lblStream, UI::GUILabel(ui, this->grpStream, CSTR("Stream Type")));
+	this->lblStream = ui->NewLabel(this->grpStream, CSTR("Stream Type"));
 	this->lblStream->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtStream, UI::GUITextBox(ui, this->grpStream, CSTR("-")));
 	this->txtStream->SetRect(104, 4, 200, 23, false);
@@ -307,7 +307,7 @@ SSWR::AVIRead::AVIRStreamTermForm::AVIRStreamTermForm(UI::GUIClientControl *pare
 	this->btnSend->SetRect(0, 0, 75, 23, false);
 	this->btnSend->SetDockType(UI::GUIControl::DOCK_RIGHT);
 	this->btnSend->HandleButtonClick(OnSendClicked, this);
-	NEW_CLASS(this->lblSendLBreak, UI::GUILabel(ui, this->pnlSendOption, CSTR("Line Break")));
+	this->lblSendLBreak = ui->NewLabel(this->pnlSendOption, CSTR("Line Break"));
 	this->lblSendLBreak->SetRect(0, 24, 100, 23, false);
 	this->cboSendLBreak = ui->NewComboBox(this->pnlSendOption, false);
 	this->cboSendLBreak->SetRect(100, 24, 100, 23, false);

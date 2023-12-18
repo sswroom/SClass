@@ -81,21 +81,21 @@ SSWR::OrganMgr::OrganUserEditForm::OrganUserEditForm(UI::GUIClientControl *paren
 		this->SetText(this->env->GetLang(CSTR("UserEditTitleModify")));
 	}
 
-	NEW_CLASS(this->lblUserName, UI::GUILabel(ui, *this, this->env->GetLang(CSTR("UserEditUserName"))));
+	this->lblUserName = ui->NewLabel(*this, this->env->GetLang(CSTR("UserEditUserName")));
 	this->lblUserName->SetRect(64, 4, 100, 23, false);
 	NEW_CLASS(this->txtUserName, UI::GUITextBox(ui, *this, CSTR("")));
 	this->txtUserName->SetRect(164, 4, 200, 23, false);
-	NEW_CLASS(this->lblPassword, UI::GUILabel(ui, *this, this->env->GetLang(CSTR("UserEditPassword"))));
+	this->lblPassword = ui->NewLabel(*this, this->env->GetLang(CSTR("UserEditPassword")));
 	this->lblPassword->SetRect(64, 28, 100, 23, false);
 	NEW_CLASS(this->txtPassword, UI::GUITextBox(ui, *this, CSTR("")));
 	this->txtPassword->SetRect(164, 28, 200, 23, false);
 	this->txtPassword->SetPasswordChar('*');
-	NEW_CLASS(this->lblRetype, UI::GUILabel(ui, *this, this->env->GetLang(CSTR("UserEditRetype"))));
+	this->lblRetype = ui->NewLabel(*this, this->env->GetLang(CSTR("UserEditRetype")));
 	this->lblRetype->SetRect(64, 52, 100, 23, false);
 	NEW_CLASS(this->txtRetype, UI::GUITextBox(ui, *this, CSTR("")));
 	this->txtRetype->SetRect(164, 52, 200, 23, false);
 	this->txtRetype->SetPasswordChar('*');
-	NEW_CLASS(this->lblWatermark, UI::GUILabel(ui, *this, this->env->GetLang(CSTR("UserEditWatermark"))));
+	this->lblWatermark = ui->NewLabel(*this, this->env->GetLang(CSTR("UserEditWatermark")));
 	this->lblWatermark->SetRect(64, 76, 100, 23, false);
 	NEW_CLASS(this->txtWatermark, UI::GUITextBox(ui, *this, CSTR("")));
 	this->txtWatermark->SetRect(164, 76, 200, 23, false);

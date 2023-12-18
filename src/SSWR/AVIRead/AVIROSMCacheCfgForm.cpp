@@ -114,7 +114,7 @@ SSWR::AVIRead::AVIROSMCacheCfgForm::AVIROSMCacheCfgForm(UI::GUIClientControl *pa
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 	this->ssl = Net::SSLEngineFactory::Create(this->core->GetSocketFactory(), true);
-	NEW_CLASS(this->lblMapType, UI::GUILabel(ui, *this, CSTR("Map Type")));
+	this->lblMapType = ui->NewLabel(*this, CSTR("Map Type"));
 	this->lblMapType->SetRect(8, 8, 100, 23, false);
 	this->cboMapType = ui->NewComboBox(*this, false);
 	this->cboMapType->SetRect(108, 8, 100, 23, false);
@@ -128,7 +128,7 @@ SSWR::AVIRead::AVIROSMCacheCfgForm::AVIROSMCacheCfgForm(UI::GUIClientControl *pa
 	this->cboMapType->AddItem(CSTR("Spinal Map"), (void*)7);
 	this->cboMapType->SetSelectedIndex(0);
 
-	NEW_CLASS(this->lblHTTPPort, UI::GUILabel(ui, *this, CSTR("HTTP Port")));
+	this->lblHTTPPort = ui->NewLabel(*this, CSTR("HTTP Port"));
 	this->lblHTTPPort->SetRect(8, 32, 100, 23, false);
 	NEW_CLASS(this->txtHTTPPort, UI::GUITextBox(ui, *this, CSTR("80")));
 	this->txtHTTPPort->SetRect(108, 32, 100, 23, false);

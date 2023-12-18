@@ -139,11 +139,11 @@ SSWR::AVIRead::AVIRLogBackupForm::AVIRLogBackupForm(UI::GUIClientControl *parent
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASS(this->lblLogDir, UI::GUILabel(ui, *this, CSTR("Log Dir")));
+	this->lblLogDir = ui->NewLabel(*this, CSTR("Log Dir"));
 	this->lblLogDir->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtLogDir, UI::GUITextBox(ui, *this, CSTR(""), false));
 	this->txtLogDir->SetRect(104, 4, 600, 23, false);
-	NEW_CLASS(this->lblLogName, UI::GUILabel(ui, *this, CSTR("Log Name")));
+	this->lblLogName = ui->NewLabel(*this, CSTR("Log Name"));
 	this->lblLogName->SetRect(4, 28, 100, 23, false);
 	NEW_CLASS(this->txtLogName, UI::GUITextBox(ui, *this, CSTR(""), false));
 	this->txtLogName->SetRect(104, 28, 600, 23, false);

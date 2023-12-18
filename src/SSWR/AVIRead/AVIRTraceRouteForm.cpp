@@ -87,11 +87,11 @@ SSWR::AVIRead::AVIRTraceRouteForm::AVIRTraceRouteForm(UI::GUIClientControl *pare
 	NEW_CLASSNN(this->pnlControl, UI::GUIPanel(ui, *this));
 	this->pnlControl->SetRect(0, 0, 100, 55, false);
 	this->pnlControl->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->lblSelfIP, UI::GUILabel(ui, this->pnlControl, CSTR("Self IP")));
+	this->lblSelfIP = ui->NewLabel(this->pnlControl, CSTR("Self IP"));
 	this->lblSelfIP->SetRect(4, 4, 100, 23, false);
 	this->cboSelfIP = ui->NewComboBox(this->pnlControl, false);
 	this->cboSelfIP->SetRect(104, 4, 150, 23, false);
-	NEW_CLASS(this->lblTargetIP, UI::GUILabel(ui, this->pnlControl, CSTR("Target IP")));
+	this->lblTargetIP = ui->NewLabel(this->pnlControl, CSTR("Target IP"));
 	this->lblTargetIP->SetRect(4, 28, 100, 23, false);
 	NEW_CLASS(this->txtTargetIP, UI::GUITextBox(ui, this->pnlControl, CSTR("")));
 	this->txtTargetIP->SetRect(104, 28, 150, 23, false);

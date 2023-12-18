@@ -16,12 +16,12 @@ namespace SSWR
 		private:
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 
-			UI::GUILabel *lblGPS;
+			NotNullPtr<UI::GUILabel> lblGPS;
 			UI::GUICheckBox *chkGPS;
 			NotNullPtr<UI::GUIButton> btnGPS;
 			UI::GUITextBox *txtGPS;
 
-			UI::GUILabel *lblWifi;
+			NotNullPtr<UI::GUILabel> lblWifi;
 			UI::GUICheckBox *chkWifi;
 
 			NotNullPtr<UI::GUIButton> btnOK;

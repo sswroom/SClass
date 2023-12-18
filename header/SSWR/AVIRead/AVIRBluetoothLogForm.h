@@ -24,7 +24,7 @@ namespace SSWR
 			NotNullPtr<UI::GUIButton> btnFile;
 			UI::GUICheckBox *chkUnkOnly;
 			NotNullPtr<UI::GUIButton> btnStore;
-			UI::GUILabel *lblInfo;
+			NotNullPtr<UI::GUILabel> lblInfo;
 			UI::GUIListView *lvContent;
 
 			IO::BTDevLog btLog;

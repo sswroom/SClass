@@ -37,7 +37,7 @@ namespace SSWR
 			Data::FastMap<UInt64, BTDevice*> devMap;
 
 			NotNullPtr<UI::GUIPanel> pnlControl;
-			UI::GUILabel *lblInterface;
+			NotNullPtr<UI::GUILabel> lblInterface;
 			NotNullPtr<UI::GUIComboBox> cboInterface;
 			NotNullPtr<UI::GUIButton> btnStart;
 			NotNullPtr<UI::GUIButton> btnStoreList;

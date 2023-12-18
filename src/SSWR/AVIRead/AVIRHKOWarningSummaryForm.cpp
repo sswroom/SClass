@@ -47,7 +47,7 @@ SSWR::AVIRead::AVIRHKOWarningSummaryForm::AVIRHKOWarningSummaryForm(UI::GUIClien
 	NEW_CLASSNN(this->pnlReqTime, UI::GUIPanel(ui, *this));
 	this->pnlReqTime->SetRect(0, 0, 100, 31, false);
 	this->pnlReqTime->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->lblReqTime, UI::GUILabel(ui, this->pnlReqTime, CSTR("Request Time")));
+	this->lblReqTime = ui->NewLabel(this->pnlReqTime, CSTR("Request Time"));
 	this->lblReqTime->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtReqTime, UI::GUITextBox(ui, *this, CSTR("")));
 	this->txtReqTime->SetRect(104, 4, 160, 23, false);

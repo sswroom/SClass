@@ -30,7 +30,7 @@ SSWR::OrganMgr::OrganSelCategoryForm::OrganSelCategoryForm(UI::GUIClientControl 
 
 	this->SetText(this->env->GetLang(CSTR("SelCategoryTitle")));
 
-	NEW_CLASS(this->lbl, UI::GUILabel(ui, *this, this->env->GetLang(CSTR("SelCategoryDB"))));
+	this->lbl = ui->NewLabel(*this, this->env->GetLang(CSTR("SelCategoryDB")));
 	this->lbl->SetRect(16, 8, 100, 23, false);
 	NEW_CLASS(this->lbCategory, UI::GUIListBox(ui, *this, false));
 	this->lbCategory->SetRect(8, 32, 344, 136, false);

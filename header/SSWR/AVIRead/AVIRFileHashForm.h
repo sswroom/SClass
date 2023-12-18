@@ -30,7 +30,7 @@ namespace SSWR
 
 		private:
 			NotNullPtr<UI::GUIPanel> pnlCheckType;
-			UI::GUILabel *lblCheckType;
+			NotNullPtr<UI::GUILabel> lblCheckType;
 			NotNullPtr<UI::GUIComboBox> cboCheckType;
 			UI::GUITabControl *tcMain;
 			NotNullPtr<UI::GUITabPage> tpStatus;
@@ -39,11 +39,11 @@ namespace SSWR
 
 			NotNullPtr<UI::GUIPanel> pnlStatus;
 			NotNullPtr<UI::GUIPanel> pnlStatusFile;
-			UI::GUILabel *lblFile;
+			NotNullPtr<UI::GUILabel> lblFile;
 			UI::GUITextBox *txtFileName;
-			UI::GUILabel *lblSpeed;
+			NotNullPtr<UI::GUILabel> lblSpeed;
 			UI::GUITextBox *txtSpeed;
-			UI::GUILabel *lblTotalSize;
+			NotNullPtr<UI::GUILabel> lblTotalSize;
 			UI::GUITextBox *txtTotalSize;
 			UI::GUIProgressBar *prgFile;
 			UI::GUIRealtimeLineChart *rlcSpeed;

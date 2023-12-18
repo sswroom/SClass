@@ -55,9 +55,9 @@ namespace SSWR
 
 			NotNullPtr<UI::GUITabPage> tpInfo;
 			NotNullPtr<UI::GUIPanel> pnlInfo;
-			UI::GUILabel *lblPlatform;
+			NotNullPtr<UI::GUILabel> lblPlatform;
 			UI::GUITextBox *txtPlatform;
-			UI::GUILabel *lblCPU;
+			NotNullPtr<UI::GUILabel> lblCPU;
 			UI::GUITextBox *txtCPU;
 			UI::GUIListView *lvRAM;
 

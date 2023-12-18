@@ -44,15 +44,15 @@ SSWR::AVIRead::AVIRODBCDSNForm::AVIRODBCDSNForm(UI::GUIClientControl *parent, No
 	this->conn = 0;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASS(this->lblDSN, UI::GUILabel(ui, *this, CSTR("DSN")));
+	this->lblDSN = ui->NewLabel(*this, CSTR("DSN"));
 	this->lblDSN->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtDSN, UI::GUITextBox(ui, *this, CSTR("")));
 	this->txtDSN->SetRect(104, 4, 200, 23, false);
-	NEW_CLASS(this->lblUID, UI::GUILabel(ui, *this, CSTR("User Name")));
+	this->lblUID = ui->NewLabel(*this, CSTR("User Name"));
 	this->lblUID->SetRect(4, 28, 100, 23, false);
 	NEW_CLASS(this->txtUID, UI::GUITextBox(ui, *this, CSTR("")));
 	this->txtUID->SetRect(104, 28, 200, 23, false);
-	NEW_CLASS(this->lblPWD, UI::GUILabel(ui, *this, CSTR("Password")));
+	this->lblPWD = ui->NewLabel(*this, CSTR("Password"));
 	this->lblPWD->SetRect(4, 52, 100, 23, false);
 	NEW_CLASS(this->txtPWD, UI::GUITextBox(ui, *this, CSTR("")));
 	this->txtPWD->SetRect(104, 52, 200, 23, false);

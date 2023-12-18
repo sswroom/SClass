@@ -14,9 +14,9 @@ namespace SSWR
 		class AVIRICCInfoForm : public UI::GUIForm
 		{
 		private:
-			UI::GUILabel *lblFileName;
+			NotNullPtr<UI::GUILabel> lblFileName;
 			UI::GUITextBox *txtFileName;
-			UI::GUILabel *lblInfo;
+			NotNullPtr<UI::GUILabel> lblInfo;
 			UI::GUITextBox *txtInfo;
 			NotNullPtr<UI::GUIButton> btnRLUT;
 			NotNullPtr<UI::GUIButton> btnGLUT;

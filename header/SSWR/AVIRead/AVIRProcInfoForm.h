@@ -48,23 +48,23 @@ namespace SSWR
 			UI::GUITabControl *tcDetail;
 
 			NotNullPtr<UI::GUITabPage> tpDetInfo;
-			UI::GUILabel *lblDetProcId;
+			NotNullPtr<UI::GUILabel> lblDetProcId;
 			UI::GUITextBox *txtDetProcId;
-			UI::GUILabel *lblDetParentId;
+			NotNullPtr<UI::GUILabel> lblDetParentId;
 			UI::GUITextBox *txtDetParentId;
-			UI::GUILabel *lblDetName;
+			NotNullPtr<UI::GUILabel> lblDetName;
 			UI::GUITextBox *txtDetName;
-			UI::GUILabel *lblDetPath;
+			NotNullPtr<UI::GUILabel> lblDetPath;
 			UI::GUITextBox *txtDetPath;
-			UI::GUILabel *lblDetCmdLine;
+			NotNullPtr<UI::GUILabel> lblDetCmdLine;
 			UI::GUITextBox *txtDetCmdLine;
-			UI::GUILabel *lblDetWorkingDir;
+			NotNullPtr<UI::GUILabel> lblDetWorkingDir;
 			UI::GUITextBox *txtDetWorkingDir;
-			UI::GUILabel *lblDetTrueProgPath;
+			NotNullPtr<UI::GUILabel> lblDetTrueProgPath;
 			UI::GUITextBox *txtDetTrueProgPath;
-			UI::GUILabel *lblDetPriority;
+			NotNullPtr<UI::GUILabel> lblDetPriority;
 			UI::GUITextBox *txtDetPriority;
-			UI::GUILabel* lblDetArchitecture;
+			NotNullPtr<UI::GUILabel> lblDetArchitecture;
 			UI::GUITextBox* txtDetArchitecture;
 
 			NotNullPtr<UI::GUITabPage> tpDetModule;

@@ -26,10 +26,10 @@ namespace SSWR
 
 			NotNullPtr<UI::GUIPanel> pnlCtrl;
 			NotNullPtr<UI::GUIGroupBox> grpStream;
-			UI::GUILabel *lblStream;
+			NotNullPtr<UI::GUILabel> lblStream;
 			UI::GUITextBox *txtStream;
 			NotNullPtr<UI::GUIButton> btnStream;
-			UI::GUILabel *lblWeight;
+			NotNullPtr<UI::GUILabel> lblWeight;
 			UI::GUITextBox *txtWeight;
 			UI::GUITabControl *tcMain;
 

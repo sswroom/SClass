@@ -14,13 +14,13 @@ namespace SSWR
 		class AVIRIOPinTestForm : public UI::GUIForm
 		{
 		private:
-			UI::GUILabel *lblPullType;
+			NotNullPtr<UI::GUILabel> lblPullType;
 			NotNullPtr<UI::GUIButton> btnPullUp;
 			NotNullPtr<UI::GUIButton> btnPullDown;
-			UI::GUILabel *lblPinMode;
+			NotNullPtr<UI::GUILabel> lblPinMode;
 			NotNullPtr<UI::GUIButton> btnPinModeInput;
 			NotNullPtr<UI::GUIButton> btnPinModeOutput;
-			UI::GUILabel *lblPinState;
+			NotNullPtr<UI::GUILabel> lblPinState;
 			UI::GUITextBox *txtPinState;
 			NotNullPtr<UI::GUIButton> btnPinHigh;
 			NotNullPtr<UI::GUIButton> btnPinLow;

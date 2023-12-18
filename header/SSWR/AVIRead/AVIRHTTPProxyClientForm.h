@@ -21,26 +21,26 @@ namespace SSWR
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 
 			NotNullPtr<UI::GUIPanel> pnlRequest;
-			UI::GUILabel *lblURL;
+			NotNullPtr<UI::GUILabel> lblURL;
 			UI::GUITextBox *txtURL;
-			UI::GUILabel *lblProxySvr;
+			NotNullPtr<UI::GUILabel> lblProxySvr;
 			UI::GUITextBox *txtProxySvr;
-			UI::GUILabel *lblProxyPort;
+			NotNullPtr<UI::GUILabel> lblProxyPort;
 			UI::GUITextBox *txtProxyPort;
 			NotNullPtr<UI::GUIButton> btnRequest;
 			NotNullPtr<UI::GUIGroupBox> grpResponse;
 			NotNullPtr<UI::GUIPanel> pnlResponse;
-			UI::GUILabel *lblSvrIP;
+			NotNullPtr<UI::GUILabel> lblSvrIP;
 			UI::GUITextBox *txtSvrIP;
-			UI::GUILabel *lblTimeDNS;
+			NotNullPtr<UI::GUILabel> lblTimeDNS;
 			UI::GUITextBox *txtTimeDNS;
-			UI::GUILabel *lblTimeConn;
+			NotNullPtr<UI::GUILabel> lblTimeConn;
 			UI::GUITextBox *txtTimeConn;
-			UI::GUILabel *lblTimeSendHdr;
+			NotNullPtr<UI::GUILabel> lblTimeSendHdr;
 			UI::GUITextBox *txtTimeSendHdr;
-			UI::GUILabel *lblTimeResp;
+			NotNullPtr<UI::GUILabel> lblTimeResp;
 			UI::GUITextBox *txtTimeResp;
-			UI::GUILabel *lblTimeTotal;
+			NotNullPtr<UI::GUILabel> lblTimeTotal;
 			UI::GUITextBox *txtTimeTotal;
 			UI::GUIListView *lvHeaders;
 

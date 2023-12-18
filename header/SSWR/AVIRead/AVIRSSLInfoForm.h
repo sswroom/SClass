@@ -23,19 +23,19 @@ namespace SSWR
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			NotNullPtr<Net::SocketFactory> sockf;
 			Optional<Net::SSLEngine> ssl;
-			UI::GUILabel *lblHost;
+			NotNullPtr<UI::GUILabel> lblHost;
 			UI::GUITextBox *txtHost;
-			UI::GUILabel *lblPort;
+			NotNullPtr<UI::GUILabel> lblPort;
 			UI::GUITextBox *txtPort;
-			UI::GUILabel *lblMode;
+			NotNullPtr<UI::GUILabel> lblMode;
 			NotNullPtr<UI::GUIComboBox> cboMode;
-			UI::GUILabel *lblVersion;
+			NotNullPtr<UI::GUILabel> lblVersion;
 			NotNullPtr<UI::GUIComboBox> cboVersion;
 			NotNullPtr<UI::GUIButton> btnCheck;
 
-			UI::GUILabel *lblStatus;
+			NotNullPtr<UI::GUILabel> lblStatus;
 			UI::GUITextBox *txtStatus;
-			UI::GUILabel *lblCert;
+			NotNullPtr<UI::GUILabel> lblCert;
 			UI::GUITextBox *txtCert;
 			NotNullPtr<UI::GUIButton> btnCert;
 			NotNullPtr<UI::GUIButton> btnRAW;

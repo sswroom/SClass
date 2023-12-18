@@ -301,11 +301,11 @@ SSWR::OrganMgr::OrganLocationForm::OrganLocationForm(UI::GUIClientControl *paren
 	this->lbSublocations->HandleDoubleClicked(OnSubLocDblClk, this);
 	NEW_CLASSNN(this->pnlLocation, UI::GUIPanel(ui, *this));
 	this->pnlLocation->SetDockType(UI::GUIControl::DOCK_FILL);
-	NEW_CLASS(this->lblID, UI::GUILabel(ui, this->pnlLocation, this->env->GetLang(CSTR("LocationId"))));
+	this->lblID = ui->NewLabel(this->pnlLocation, this->env->GetLang(CSTR("LocationId")));
 	this->lblID->SetRect(11, 16, 80, 23, false);
-	NEW_CLASS(this->lblEName, UI::GUILabel(ui, this->pnlLocation, this->env->GetLang(CSTR("LocationEName"))));
+	this->lblEName = ui->NewLabel(this->pnlLocation, this->env->GetLang(CSTR("LocationEName")));
 	this->lblEName->SetRect(11, 48, 80, 23, false);
-	NEW_CLASS(this->lblCName, UI::GUILabel(ui, this->pnlLocation, this->env->GetLang(CSTR("LocationCName"))));
+	this->lblCName = ui->NewLabel(this->pnlLocation, this->env->GetLang(CSTR("LocationCName")));
 	this->lblCName->SetRect(11, 80, 80, 23, false);
 	NEW_CLASS(this->txtID, UI::GUITextBox(ui, this->pnlLocation, CSTR("")));	
 	this->txtID->SetRect(99, 16, 88, 23, false);

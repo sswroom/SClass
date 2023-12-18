@@ -23,7 +23,7 @@ namespace SSWR
 			Net::ICMPScanner *scanner;
 
 			NotNullPtr<UI::GUIPanel> pnlControl;
-			UI::GUILabel *lblIP;
+			NotNullPtr<UI::GUILabel> lblIP;
 			NotNullPtr<UI::GUIComboBox> cboIP;
 			NotNullPtr<UI::GUIButton> btnStart;
 			UI::GUIListView *lvIP;

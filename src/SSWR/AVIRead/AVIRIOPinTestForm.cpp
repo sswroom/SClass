@@ -77,7 +77,7 @@ SSWR::AVIRead::AVIRIOPinTestForm::AVIRIOPinTestForm(UI::GUIClientControl *parent
 	this->SetNoResize(true);
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASS(this->lblPullType, UI::GUILabel(ui, *this, CSTR("Pull Type")));
+	this->lblPullType = ui->NewLabel(*this, CSTR("Pull Type"));
 	this->lblPullType->SetRect(4, 4, 100, 23, false);
 	this->btnPullUp = ui->NewButton(*this, CSTR("Pull Up"));
 	this->btnPullUp->SetRect(104, 4, 75, 23, false);
@@ -85,7 +85,7 @@ SSWR::AVIRead::AVIRIOPinTestForm::AVIRIOPinTestForm(UI::GUIClientControl *parent
 	this->btnPullDown = ui->NewButton(*this, CSTR("Pull Down"));
 	this->btnPullDown->SetRect(184, 4, 75, 23, false);
 	this->btnPullDown->HandleButtonClick(OnPullDownClicked, this);
-	NEW_CLASS(this->lblPinMode, UI::GUILabel(ui, *this, CSTR("Pin Mode")));
+	this->lblPinMode = ui->NewLabel(*this, CSTR("Pin Mode"));
 	this->lblPinMode->SetRect(4, 28, 100, 23, false);
 	this->btnPinModeInput = ui->NewButton(*this, CSTR("Input"));
 	this->btnPinModeInput->SetRect(104, 28, 75, 23, false);
@@ -93,7 +93,7 @@ SSWR::AVIRead::AVIRIOPinTestForm::AVIRIOPinTestForm(UI::GUIClientControl *parent
 	this->btnPinModeOutput = ui->NewButton(*this, CSTR("Output"));
 	this->btnPinModeOutput->SetRect(184, 28, 75, 23, false);
 	this->btnPinModeOutput->HandleButtonClick(OnPinModeOutputClicked, this);
-	NEW_CLASS(this->lblPinState, UI::GUILabel(ui, *this, CSTR("Pin State")));
+	this->lblPinState = ui->NewLabel(*this, CSTR("Pin State"));
 	this->lblPinState->SetRect(4, 52, 100, 23, false);
 	NEW_CLASS(this->txtPinState, UI::GUITextBox(ui, *this, CSTR("")));
 	this->txtPinState->SetRect(104, 52, 100, 23, false);

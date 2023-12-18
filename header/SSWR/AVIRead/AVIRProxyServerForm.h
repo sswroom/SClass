@@ -25,7 +25,7 @@ namespace SSWR
 			Net::ProxyServer *svr;
 
 			NotNullPtr<UI::GUIPanel> pnlRequest;
-			UI::GUILabel *lblPort;
+			NotNullPtr<UI::GUILabel> lblPort;
 			UI::GUITextBox *txtPort;
 			NotNullPtr<UI::GUIButton> btnStart;
 			UI::GUITextBox *txtLog;

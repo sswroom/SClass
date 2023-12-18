@@ -23,11 +23,11 @@ namespace SSWR
 			Bool listUpdated;
 
 			NotNullPtr<UI::GUIPanel> pnlControl;
-			UI::GUILabel *lblIP;
+			NotNullPtr<UI::GUILabel> lblIP;
 			UI::GUITextBox *txtIP;
-			UI::GUILabel *lblThreadCnt;
+			NotNullPtr<UI::GUILabel> lblThreadCnt;
 			UI::GUITextBox *txtThreadCnt;
-			UI::GUILabel *lblMaxPort;
+			NotNullPtr<UI::GUILabel> lblMaxPort;
 			UI::GUITextBox *txtMaxPort;
 			NotNullPtr<UI::GUIButton> btnStart;
 			UI::GUIListView *lvPort;

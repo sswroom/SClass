@@ -18,7 +18,7 @@ namespace SSWR
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			Media::WIAManager *wiaMgr;
 
-			UI::GUILabel *lblDevice;
+			NotNullPtr<UI::GUILabel> lblDevice;
 			UI::GUIListBox *lbDevice;
 
 			NotNullPtr<UI::GUIButton> btnOK;

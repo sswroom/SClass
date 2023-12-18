@@ -13,11 +13,11 @@ namespace SSWR
 		class AVIRODBCDSNForm : public UI::GUIForm
 		{
 		private:
-			UI::GUILabel *lblDSN;
+			NotNullPtr<UI::GUILabel> lblDSN;
 			UI::GUITextBox *txtDSN;
-			UI::GUILabel *lblUID;
+			NotNullPtr<UI::GUILabel> lblUID;
 			UI::GUITextBox *txtUID;
-			UI::GUILabel *lblPWD;
+			NotNullPtr<UI::GUILabel> lblPWD;
 			UI::GUITextBox *txtPWD;
 			NotNullPtr<UI::GUIButton> btnOK;
 			NotNullPtr<UI::GUIButton> btnCancel;

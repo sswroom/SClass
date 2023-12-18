@@ -20,12 +20,12 @@ namespace SSWR
 		private:
 			NotNullPtr<UI::GUIPanel> pnlMain;
 			UI::GUIListView *lvTables;
-			UI::GUILabel *lblDBType;
+			NotNullPtr<UI::GUILabel> lblDBType;
 			NotNullPtr<UI::GUIComboBox> cboDBType;
 			UI::GUICheckBox *chkAxisAware;
-			UI::GUILabel *lblSchema;
+			NotNullPtr<UI::GUILabel> lblSchema;
 			UI::GUITextBox *txtSchema;
-			UI::GUILabel *lblTable;
+			NotNullPtr<UI::GUILabel> lblTable;
 			UI::GUITextBox *txtTable;
 			NotNullPtr<UI::GUIButton> btnExport;
 

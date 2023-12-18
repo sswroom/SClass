@@ -21,15 +21,15 @@ namespace SSWR
 			IO::VBoxManager vbox;
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			NotNullPtr<UI::GUIPanel> pnlVersion;
-			UI::GUILabel *lblVersion;
+			NotNullPtr<UI::GUILabel> lblVersion;
 			UI::GUITextBox *txtVersion;
 			UI::GUIListBox *lbVMS;
 			NotNullPtr<UI::GUIHSplitter> hspVM;
 			UI::GUITabControl *tcVM;
 			NotNullPtr<UI::GUITabPage> tpControl;
-			UI::GUILabel *lblState;
+			NotNullPtr<UI::GUILabel> lblState;
 			UI::GUITextBox *txtState;
-			UI::GUILabel *lblStateSince;
+			NotNullPtr<UI::GUILabel> lblStateSince;
 			UI::GUITextBox *txtStateSince;
 
 			static void __stdcall OnVMSSelChg(void *userObj);

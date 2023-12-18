@@ -18,14 +18,14 @@ namespace SSWR
 		private:
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 
-			UI::GUILabel *lblVendor;
+			NotNullPtr<UI::GUILabel> lblVendor;
 			NotNullPtr<UI::GUIComboBox> cboVendor;
 			NotNullPtr<UI::GUIButton> btnGenerate;
-			UI::GUILabel *lblColonFormat;
+			NotNullPtr<UI::GUILabel> lblColonFormat;
 			UI::GUITextBox *txtColonFormat;
-			UI::GUILabel *lblPlainFormat;
+			NotNullPtr<UI::GUILabel> lblPlainFormat;
 			UI::GUITextBox *txtPlainFormat;
-			UI::GUILabel *lblAdapter;
+			NotNullPtr<UI::GUILabel> lblAdapter;
 			NotNullPtr<UI::GUIComboBox> cboAdapter;
 			NotNullPtr<UI::GUIButton> btnAdapterSet;
 

@@ -35,7 +35,7 @@ namespace SSWR
 			NotNullPtr<UI::GUIComboBox> cboPredefine;
 			UI::GUITextBox *txtOther;
 			UI::GUICheckBox *chkNoResource;
-			UI::GUILabel *lblSRID;
+			NotNullPtr<UI::GUILabel> lblSRID;
 			UI::GUITextBox *txtSRID;
 			NotNullPtr<UI::GUIButton> btnOK;
 			NotNullPtr<UI::GUIButton> btnCancel;

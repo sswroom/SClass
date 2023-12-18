@@ -124,7 +124,7 @@ SSWR::AVIRead::AVIRNetBIOSScannerForm::AVIRNetBIOSScannerForm(UI::GUIClientContr
 	NEW_CLASSNN(this->pnlControl, UI::GUIPanel(ui, *this));
 	this->pnlControl->SetRect(0, 0, 100, 104, false);
 	this->pnlControl->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->lblTargetAddr, UI::GUILabel(ui, this->pnlControl, CSTR("Target Addr")));
+	this->lblTargetAddr = ui->NewLabel(this->pnlControl, CSTR("Target Addr"));
 	this->lblTargetAddr->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtTargetAddr, UI::GUITextBox(ui, this->pnlControl, CSTR("")));
 	this->txtTargetAddr->SetRect(104, 4, 200, 23, false);

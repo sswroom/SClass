@@ -15,7 +15,7 @@ namespace SSWR
 		class SHPConvAddFilterForm : public UI::GUIForm
 		{
 		private:
-			UI::GUILabel *lblFilter;
+			NotNullPtr<UI::GUILabel> lblFilter;
 			NotNullPtr<UI::GUIComboBox> cboFilter;
 			NotNullPtr<UI::GUIButton> btnOK;
 			NotNullPtr<UI::GUIButton> btnCancel;

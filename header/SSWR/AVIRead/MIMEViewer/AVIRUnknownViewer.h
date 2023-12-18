@@ -14,7 +14,7 @@ namespace SSWR
 			class AVIRUnknownViewer : public AVIRMIMEViewer
 			{
 			private:
-				UI::GUILabel *lblMessage;
+				NotNullPtr<UI::GUILabel> lblMessage;
 
 				Text::IMIMEObj *obj;
 

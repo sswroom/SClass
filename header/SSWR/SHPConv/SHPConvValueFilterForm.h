@@ -17,12 +17,12 @@ namespace SSWR
 		class SHPConvValueFilterForm : public UI::GUIForm
 		{
 		private:
-			UI::GUILabel *lblCol;
+			NotNullPtr<UI::GUILabel> lblCol;
 			NotNullPtr<UI::GUIComboBox> cboCol;
-			UI::GUILabel *lblType;
+			NotNullPtr<UI::GUILabel> lblType;
 			UI::GUIRadioButton *radEqual;
 			UI::GUIRadioButton *radNotEq;
-			UI::GUILabel *lblValue;
+			NotNullPtr<UI::GUILabel> lblValue;
 			UI::GUITextBox *txtValue;
 			NotNullPtr<UI::GUIButton> btnOK;
 			NotNullPtr<UI::GUIButton> btnCancel;

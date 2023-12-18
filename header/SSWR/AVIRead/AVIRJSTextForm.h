@@ -13,10 +13,10 @@ namespace SSWR
 		class AVIRJSTextForm : public UI::GUIForm
 		{
 		private:
-			UI::GUILabel *lblJSText;
+			NotNullPtr<UI::GUILabel> lblJSText;
 			UI::GUITextBox *txtJSText;
 			NotNullPtr<UI::GUIButton> btnExtract;
-			UI::GUILabel *lblOriText;
+			NotNullPtr<UI::GUILabel> lblOriText;
 			UI::GUITextBox *txtOriText;
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;

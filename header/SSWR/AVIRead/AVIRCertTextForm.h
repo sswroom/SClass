@@ -19,9 +19,9 @@ namespace SSWR
 
 			NotNullPtr<UI::GUIPanel> pnlButton;
 			NotNullPtr<UI::GUIPanel> pnlLabel;
-			UI::GUILabel *lblEncType;
+			NotNullPtr<UI::GUILabel> lblEncType;
 			NotNullPtr<UI::GUIComboBox> cboEncType;
-			UI::GUILabel *lblText;
+			NotNullPtr<UI::GUILabel> lblText;
 			UI::GUITextBox *txtText;
 			NotNullPtr<UI::GUIButton> btnLoad;
 

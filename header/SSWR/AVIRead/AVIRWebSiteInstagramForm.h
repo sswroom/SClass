@@ -23,14 +23,14 @@ namespace SSWR
 
 			NotNullPtr<UI::GUITabPage> tpUser;
 			NotNullPtr<UI::GUIPanel> pnlRequest;
-			UI::GUILabel *lblChannelId;
+			NotNullPtr<UI::GUILabel> lblChannelId;
 			UI::GUITextBox *txtChannelId;
 			NotNullPtr<UI::GUIButton> btnRequestUser;
 			UI::GUIListView *lvItems;
 
 			NotNullPtr<UI::GUITabPage> tpPage;
 			NotNullPtr<UI::GUIPanel> pnlPage;
-			UI::GUILabel *lblShortCode;
+			NotNullPtr<UI::GUILabel> lblShortCode;
 			UI::GUITextBox *txtShortCode;
 			NotNullPtr<UI::GUIButton> btnPage;
 			UI::GUIListBox *lbImageURL;

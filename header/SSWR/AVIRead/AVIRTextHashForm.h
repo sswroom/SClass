@@ -19,15 +19,15 @@ namespace SSWR
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			Text::TextBinEnc::TextBinEncList encList;
 
-			UI::GUILabel *lblText;
+			NotNullPtr<UI::GUILabel> lblText;
 			UI::GUITextBox *txtText;
 			NotNullPtr<UI::GUIPanel> pnlControl;
-			UI::GUILabel *lblEncrypt;
+			NotNullPtr<UI::GUILabel> lblEncrypt;
 			NotNullPtr<UI::GUIComboBox> cboEncrypt;
-			UI::GUILabel *lblHashType;
+			NotNullPtr<UI::GUILabel> lblHashType;
 			NotNullPtr<UI::GUIComboBox> cboHashType;
 			NotNullPtr<UI::GUIButton> btnGenerate;
-			UI::GUILabel *lblHashValue;
+			NotNullPtr<UI::GUILabel> lblHashValue;
 			UI::GUITextBox *txtHashValue;
 
 			static void __stdcall OnGenerateClicked(void *userObj);

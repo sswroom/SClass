@@ -56,15 +56,15 @@ namespace SSWR
 			NotNullPtr<UI::GUITabPage> tpDevice;
 			NotNullPtr<UI::GUIPanel> pnlDevice;
 			NotNullPtr<UI::GUIButton> btnDongleInfo;
-			UI::GUILabel *lblDongleId;
+			NotNullPtr<UI::GUILabel> lblDongleId;
 			UI::GUITextBox *txtDongleId;
 			NotNullPtr<UI::GUIButton> btnCheckDongle;
 			NotNullPtr<UI::GUIButton> btnCheckDevices;
 			NotNullPtr<UI::GUIButton> btnResetNetwork;
 			NotNullPtr<UI::GUIButton> btnAddDevice;
-			UI::GUILabel *lblRemarks;
+			NotNullPtr<UI::GUILabel> lblRemarks;
 			UI::GUITextBox *txtRemarks;
-			UI::GUILabel *lblURL;
+			NotNullPtr<UI::GUILabel> lblURL;
 			UI::GUITextBox *txtURL;
 			NotNullPtr<UI::GUIButton> btnUpload;
 			NotNullPtr<UI::GUIGroupBox> grpDevice;

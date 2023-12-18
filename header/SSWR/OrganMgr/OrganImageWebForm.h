@@ -18,15 +18,15 @@ namespace SSWR
 			Text::String *srcURL;
 			Text::String *location;
 
-			UI::GUILabel *lblId;
+			NotNullPtr<UI::GUILabel> lblId;
 			UI::GUITextBox *txtId;
-			UI::GUILabel *lblFileName;
+			NotNullPtr<UI::GUILabel> lblFileName;
 			UI::GUITextBox *txtFileName;
-			UI::GUILabel *lblImageURL;
+			NotNullPtr<UI::GUILabel> lblImageURL;
 			UI::GUITextBox *txtImageURL;
-			UI::GUILabel *lblSourceURL;
+			NotNullPtr<UI::GUILabel> lblSourceURL;
 			UI::GUITextBox *txtSourceURL;
-			UI::GUILabel *lblLocation;
+			NotNullPtr<UI::GUILabel> lblLocation;
 			UI::GUITextBox *txtLocation;
 			NotNullPtr<UI::GUIButton> btnOK;
 			NotNullPtr<UI::GUIButton> btnCancel;

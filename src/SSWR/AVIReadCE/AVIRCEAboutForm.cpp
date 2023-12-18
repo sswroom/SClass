@@ -21,12 +21,12 @@ SSWR::AVIReadCE::AVIRCEAboutForm::AVIRCEAboutForm(UI::GUIClientControl *parent, 
 	UTF8Char sbuff[512];
 	UI::GUILabel *lbl;
 	Data::DateTime t;
-	NEW_CLASS(lbl, UI::GUILabel(ui, this, CSTR("AVIReadCE by sswroom")));
+	NEW_CLASS(lbl = ui->NewLabel(this, CSTR("AVIReadCE by sswroom")));
 	lbl->SetRect(8, 8, 220, 23, false);
 	IO::Path::GetProcessFileName(sbuff);
 	IO::EXEFile::GetFileTime(sbuff, &t);
 	t.ToString(Text::StrConcatC(sbuff, UTF8STRC("Build date: ")), "yyyy-MM-dd HH:mm:ss");
-	NEW_CLASS(lbl, UI::GUILabel(ui, this, sbuff));
+	NEW_CLASS(lbl = ui->NewLabel(this, sbuff));
 	lbl->SetRect(8, 32, 220, 23, false);
 	NEW_CLASS(btn = ui->NewButton(this, CSTR("OK")));
 	btn->SetRect(160, 60, 75, 23, false);

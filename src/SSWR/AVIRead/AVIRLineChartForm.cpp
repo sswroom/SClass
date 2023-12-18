@@ -301,7 +301,7 @@ SSWR::AVIRead::AVIRLineChartForm::AVIRLineChartForm(UI::GUIClientControl *parent
 	NEW_CLASSNN(this->pnlStrCols, UI::GUIPanel(ui, *this));
 	this->pnlStrCols->SetRect(0, 0, 100, 128, false);
 	this->pnlStrCols->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->lblStrCols, UI::GUILabel(ui, this->pnlStrCols, CSTR("String Columns")));
+	this->lblStrCols = ui->NewLabel(this->pnlStrCols, CSTR("String Columns"));
 	this->lblStrCols->SetRect(0, 4, 100, 23, false);
 	NEW_CLASS(this->lbStrCols, UI::GUIListBox(ui, this->pnlStrCols, false));
 	this->lbStrCols->SetRect(100, 0, 200, 128, false);
@@ -314,7 +314,7 @@ SSWR::AVIRead::AVIRLineChartForm::AVIRLineChartForm(UI::GUIClientControl *parent
 	NEW_CLASSNN(this->pnlXAxis, UI::GUIPanel(ui, *this));
 	this->pnlXAxis->SetRect(0, 0 , 100, 32, false);
 	this->pnlXAxis->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->lblXAxis, UI::GUILabel(ui, this->pnlXAxis, CSTR("X-Axis")));
+	this->lblXAxis = ui->NewLabel(this->pnlXAxis, CSTR("X-Axis"));
 	this->lblXAxis->SetRect(4, 4, 100, 23, false);
 	this->cboXAxis = ui->NewComboBox(this->pnlXAxis, false);
 	this->cboXAxis->SetRect(104, 4, 200, 23, false);
@@ -332,7 +332,7 @@ SSWR::AVIRead::AVIRLineChartForm::AVIRLineChartForm(UI::GUIClientControl *parent
 	NEW_CLASSNN(this->pnlYAxis, UI::GUIPanel(ui, this->grpYAxis));
 	this->pnlYAxis->SetRect(0, 0, 100, 32, false);
 	this->pnlYAxis->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->lblYAxis, UI::GUILabel(ui, this->pnlYAxis, CSTR("Column")));
+	this->lblYAxis = ui->NewLabel(this->pnlYAxis, CSTR("Column"));
 	this->lblYAxis->SetRect(4, 4, 100, 23, false);
 	this->cboYAxis = ui->NewComboBox(this->pnlYAxis, false);
 	this->cboYAxis->SetRect(104, 4, 200, 23, false);

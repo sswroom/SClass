@@ -63,7 +63,7 @@ SSWR::AVIRead::AVIRGISImageForm::AVIRGISImageForm(UI::GUIClientControl *parent, 
 
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
-	NEW_CLASS(this->lbl, UI::GUILabel(ui, *this, CSTR("Drag and drop to add icons")));
+	this->lbl = ui->NewLabel(*this, CSTR("Drag and drop to add icons"));
 	this->lbl->SetRect(0, 0, 100, 23, false);
 	this->lbl->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASSNN(this->pnlButtons, UI::GUIPanel(ui, *this));

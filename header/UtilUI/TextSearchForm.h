@@ -12,7 +12,7 @@ namespace UtilUI
 	class TextSearchForm : public UI::GUIForm
 	{
 	private:
-		UI::GUILabel *lblSearch;
+		NotNullPtr<UI::GUILabel> lblSearch;
 		UI::GUITextBox *txtSearch;
 		NotNullPtr<UI::GUIButton> btnSearch;
 		NotNullPtr<UI::GUIButton> btnClose;

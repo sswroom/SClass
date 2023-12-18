@@ -33,9 +33,9 @@ SSWR::AVIRead::AVIRCodePageForm::AVIRCodePageForm(UI::GUIClientControl *parent, 
 	
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
-	UI::GUILabel *lbl;
+	NotNullPtr<UI::GUILabel> lbl;
 	
-	NEW_CLASS(lbl, UI::GUILabel(ui, *this, CSTR("Code Pages")));
+	lbl = ui->NewLabel(*this, CSTR("Code Pages"));
 	lbl->SetRect(8, 8, 120, 23, false);
 
 	NEW_CLASS(this->lbCodePages, UI::GUIListBox(ui, *this, false));

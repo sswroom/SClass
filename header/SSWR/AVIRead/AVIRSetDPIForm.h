@@ -20,12 +20,12 @@ namespace SSWR
 			UI::GUIPictureBoxSimple *pbPreview;
 			NotNullPtr<UI::GUIPanel> pnlDPI;
 			NotNullPtr<UI::GUIPanel> pnlBtn;
-			UI::GUILabel *lblDPI;
+			NotNullPtr<UI::GUILabel> lblDPI;
 			UI::GUIHScrollBar *hsbDPI;
-			UI::GUILabel *lblDPIV;
-			UI::GUILabel *lblMagnifyRatio;
+			NotNullPtr<UI::GUILabel> lblDPIV;
+			NotNullPtr<UI::GUILabel> lblMagnifyRatio;
 			UI::GUITextBox *txtMagnifyRatio;
-			UI::GUILabel *lblDesktopDPI;
+			NotNullPtr<UI::GUILabel> lblDesktopDPI;
 			UI::GUITextBox *txtDesktopDPI;
 			NotNullPtr<UI::GUIButton> btnStandard;
 			NotNullPtr<UI::GUIButton> btn1x;

@@ -308,19 +308,19 @@ SSWR::AVIRead::AVIRTimedCaptureForm::AVIRTimedCaptureForm(UI::GUIClientControl *
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	this->tpControl = this->tcMain->AddTabPage(CSTR("Control"));
-	NEW_CLASS(this->lblFormat, UI::GUILabel(ui, this->tpControl, CSTR("Capture Format")));
+	this->lblFormat = ui->NewLabel(this->tpControl, CSTR("Capture Format"));
 	this->lblFormat->SetRect(4, 4, 100, 23, false);
 	this->cboFormat = ui->NewComboBox(this->tpControl, false);
 	this->cboFormat->SetRect(104, 4, 264, 23, false);
-	NEW_CLASS(this->lblInterval, UI::GUILabel(ui, this->tpControl, CSTR("Capture Interval(ms)")));
+	this->lblInterval = ui->NewLabel(this->tpControl, CSTR("Capture Interval(ms)"));
 	this->lblInterval->SetRect(4, 28, 100, 23, false);
 	NEW_CLASS(this->txtInterval, UI::GUITextBox(ui, this->tpControl, CSTR("60000")));
 	this->txtInterval->SetRect(104, 28, 100, 23, false);
-	NEW_CLASS(this->lblJPGQuality, UI::GUILabel(ui, this->tpControl, CSTR("JPG Quality(%)")));
+	this->lblJPGQuality = ui->NewLabel(this->tpControl, CSTR("JPG Quality(%)"));
 	this->lblJPGQuality->SetRect(4, 52, 100, 23, false);
 	NEW_CLASS(this->txtJPGQuality, UI::GUITextBox(ui, this->tpControl, CSTR("95")));
 	this->txtJPGQuality->SetRect(104, 52, 100, 23, false);
-	NEW_CLASS(this->lblFileName, UI::GUILabel(ui, this->tpControl, CSTR("File Name")));
+	this->lblFileName = ui->NewLabel(this->tpControl, CSTR("File Name"));
 	this->lblFileName->SetRect(4, 76, 100, 23, false);
 	NEW_CLASS(this->txtFileName, UI::GUITextBox(ui, this->tpControl, CSTR("TimedCapture.til")));
 	this->txtFileName->SetRect(104, 76, 260, 23, false);
@@ -333,12 +333,12 @@ SSWR::AVIRead::AVIRTimedCaptureForm::AVIRTimedCaptureForm(UI::GUIClientControl *
 	this->txtDeviceInfo->SetDockType(UI::GUIControl::DOCK_BOTTOM);
 
 	this->tpStatus = this->tcMain->AddTabPage(CSTR("Status"));
-	NEW_CLASS(this->lblFrameCnt, UI::GUILabel(ui, this->tpStatus, CSTR("Frame Count")));
+	this->lblFrameCnt = ui->NewLabel(this->tpStatus, CSTR("Frame Count"));
 	this->lblFrameCnt->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtFrameCnt, UI::GUITextBox(ui, this->tpStatus, CSTR("")));
 	this->txtFrameCnt->SetReadOnly(true);
 	this->txtFrameCnt->SetRect(104, 4, 100, 23, false);
-	NEW_CLASS(this->lblSaveCnt, UI::GUILabel(ui, this->tpStatus, CSTR("Save Count")));
+	this->lblSaveCnt = ui->NewLabel(this->tpStatus, CSTR("Save Count"));
 	this->lblSaveCnt->SetRect(4, 28, 100, 23, false);
 	NEW_CLASS(this->txtSaveCnt, UI::GUITextBox(ui, this->tpStatus, CSTR("")));
 	this->txtSaveCnt->SetReadOnly(true);

@@ -405,19 +405,19 @@ SSWR::AVIRead::AVIRMQTTSubscribeForm::AVIRMQTTSubscribeForm(UI::GUIClientControl
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	this->tpStatus = this->tcMain->AddTabPage(CSTR("Status"));
-	NEW_CLASS(this->lblHost, UI::GUILabel(ui, this->tpStatus, CSTR("Host")));
+	this->lblHost = ui->NewLabel(this->tpStatus, CSTR("Host"));
 	this->lblHost->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtHost, UI::GUITextBox(ui, this->tpStatus, CSTR("127.0.0.1")));
 	this->txtHost->SetRect(104, 4, 100, 23, false);
-	NEW_CLASS(this->lblPort, UI::GUILabel(ui, this->tpStatus, CSTR("Port")));
+	this->lblPort = ui->NewLabel(this->tpStatus, CSTR("Port"));
 	this->lblPort->SetRect(4, 28, 100, 23, false);
 	NEW_CLASS(this->txtPort, UI::GUITextBox(ui, this->tpStatus, CSTR("1883")));
 	this->txtPort->SetRect(104, 28, 100, 23, false);
-	NEW_CLASS(this->lblUsername, UI::GUILabel(ui, this->tpStatus, CSTR("User Name")));
+	this->lblUsername = ui->NewLabel(this->tpStatus, CSTR("User Name"));
 	this->lblUsername->SetRect(4, 52, 100, 23, false);
 	NEW_CLASS(this->txtUsername, UI::GUITextBox(ui, this->tpStatus, CSTR("")));
 	this->txtUsername->SetRect(104, 52, 100, 23, false);
-	NEW_CLASS(this->lblPassword, UI::GUILabel(ui, this->tpStatus, CSTR("Password")));
+	this->lblPassword = ui->NewLabel(this->tpStatus, CSTR("Password"));
 	this->lblPassword->SetRect(4, 76, 100, 23, false);
 	NEW_CLASS(this->txtPassword, UI::GUITextBox(ui, this->tpStatus, CSTR("")));
 	this->txtPassword->SetRect(104, 76, 100, 23, false);
@@ -426,7 +426,7 @@ SSWR::AVIRead::AVIRMQTTSubscribeForm::AVIRMQTTSubscribeForm(UI::GUIClientControl
 	this->btnStart->HandleButtonClick(OnStartClicked, this);
 
 	this->tpSTopic = this->tcMain->AddTabPage(CSTR("Subscribe Topic"));
-	NEW_CLASS(this->lblSTopic, UI::GUILabel(ui, this->tpSTopic, CSTR("Topic")));
+	this->lblSTopic = ui->NewLabel(this->tpSTopic, CSTR("Topic"));
 	this->lblSTopic->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtSTopic, UI::GUITextBox(ui, this->tpSTopic, CSTR("")));
 	this->txtSTopic->SetRect(104, 4, 150, 23, false);
@@ -437,11 +437,11 @@ SSWR::AVIRead::AVIRMQTTSubscribeForm::AVIRMQTTSubscribeForm(UI::GUIClientControl
 	this->lbSTopic->SetRect(104, 28, 150, 119, false);
 
 	this->tpPublish = this->tcMain->AddTabPage(CSTR("Publish"));
-	NEW_CLASS(this->lblPublishTopic, UI::GUILabel(ui, this->tpPublish, CSTR("Topic")));
+	this->lblPublishTopic = ui->NewLabel(this->tpPublish, CSTR("Topic"));
 	this->lblPublishTopic->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtPublishTopic, UI::GUITextBox(ui, this->tpPublish, CSTR("")));
 	this->txtPublishTopic->SetRect(104, 4, 200, 23, false);
-	NEW_CLASS(this->lblPublishMessage, UI::GUILabel(ui, this->tpPublish, CSTR("Message")));
+	this->lblPublishMessage = ui->NewLabel(this->tpPublish, CSTR("Message"));
 	this->lblPublishMessage->SetRect(4, 28, 100, 23, false);
 	NEW_CLASS(this->txtPublishMessage, UI::GUITextBox(ui, this->tpPublish, CSTR("")));
 	this->txtPublishMessage->SetRect(104, 28, 200, 23, false);

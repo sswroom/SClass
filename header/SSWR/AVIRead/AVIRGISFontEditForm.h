@@ -35,16 +35,16 @@ namespace SSWR
 			Media::StaticImage *previewImage;
 
 			UI::GUIPictureBox *pbFontPreview;
-			UI::GUILabel *lblStyleName;
+			NotNullPtr<UI::GUILabel> lblStyleName;
 			UI::GUITextBox *txtStyleName;
-			UI::GUILabel *lblFontName;
+			NotNullPtr<UI::GUILabel> lblFontName;
 			UI::GUITextBox *txtFontName;
 			NotNullPtr<UI::GUIButton> btnFontName;
-			UI::GUILabel *lblFontColor;
+			NotNullPtr<UI::GUILabel> lblFontColor;
 			UI::GUIPictureBox *pbFontColor;
-			UI::GUILabel *lblBufferSize;
+			NotNullPtr<UI::GUILabel> lblBufferSize;
 			UI::GUIHScrollBar *hsbBufferSize;
-			UI::GUILabel *lblBufferColor;
+			NotNullPtr<UI::GUILabel> lblBufferColor;
 			UI::GUIPictureBox *pbBufferColor;
 			NotNullPtr<UI::GUIButton> btnOK;
 			NotNullPtr<UI::GUIButton> btnCancel;

@@ -566,7 +566,7 @@ SSWR::AVIRead::AVIRASN1DataForm::AVIRASN1DataForm(UI::GUIClientControl *parent, 
 	NEW_CLASSNN(this->pnlStatus, UI::GUIPanel(ui, *this));
 	this->pnlStatus->SetRect(0, 0, 100, 31, false);
 	this->pnlStatus->SetDockType(UI::GUIControl::DOCK_BOTTOM);
-	NEW_CLASS(this->lblStatus, UI::GUILabel(ui, this->pnlStatus, CSTR("Valid Status")));
+	this->lblStatus = ui->NewLabel(this->pnlStatus, CSTR("Valid Status"));
 	this->lblStatus->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtStatus, UI::GUITextBox(ui, this->pnlStatus, CSTR("")));
 	this->txtStatus->SetRect(104, 4, 200, 23, false);
@@ -689,16 +689,16 @@ SSWR::AVIRead::AVIRASN1DataForm::AVIRASN1DataForm(UI::GUIClientControl *parent, 
 		if (canVerify)
 		{
 			this->tpVerify = this->tcMain->AddTabPage(CSTR("Verify"));
-			NEW_CLASS(this->lblVerifyHash, UI::GUILabel(ui, this->tpVerify, CSTR("Hash Type")));
+			this->lblVerifyHash = ui->NewLabel(this->tpVerify, CSTR("Hash Type"));
 			this->lblVerifyHash->SetRect(4, 4, 100, 23, false);
 			this->cboVerifyHash = ui->NewComboBox(this->tpVerify, false);
 			this->cboVerifyHash->SetRect(104, 4, 200, 23, false);
 			AddHashTypes(this->cboVerifyHash, hashType);
-			NEW_CLASS(this->lblVerifyPayloadFile, UI::GUILabel(ui, this->tpVerify, CSTR("Payload File")));
+			this->lblVerifyPayloadFile = ui->NewLabel(this->tpVerify, CSTR("Payload File"));
 			this->lblVerifyPayloadFile->SetRect(4, 28, 100, 23, false);
 			NEW_CLASS(this->txtVerifyPayloadFile, UI::GUITextBox(ui, this->tpVerify, CSTR("")));
 			this->txtVerifyPayloadFile->SetRect(104, 28, 300, 23, false);
-			NEW_CLASS(this->lblVerifySignature, UI::GUILabel(ui, this->tpVerify, CSTR("Signature")));
+			this->lblVerifySignature = ui->NewLabel(this->tpVerify, CSTR("Signature"));
 			this->lblVerifySignature->SetRect(4, 52, 100, 23, false);
 			NEW_CLASS(this->txtVerifySignature, UI::GUITextBox(ui, this->tpVerify, CSTR("")));
 			this->txtVerifySignature->SetRect(104, 52, 300, 23, false);
@@ -708,7 +708,7 @@ SSWR::AVIRead::AVIRASN1DataForm::AVIRASN1DataForm(UI::GUIClientControl *parent, 
 			this->btnVerifySignInfo = ui->NewButton(this->tpVerify, CSTR("Sign Info"));
 			this->btnVerifySignInfo->SetRect(184, 76, 75, 23, false);
 			this->btnVerifySignInfo->HandleButtonClick(OnVerifySignInfoClicked, this);
-			NEW_CLASS(this->lblVerifyStatus, UI::GUILabel(ui, this->tpVerify, CSTR("Status")));
+			this->lblVerifyStatus = ui->NewLabel(this->tpVerify, CSTR("Status"));
 			this->lblVerifyStatus->SetRect(4, 100, 100, 23, false);
 			NEW_CLASS(this->txtVerifyStatus, UI::GUITextBox(ui, this->tpVerify, CSTR(""), true));
 			this->txtVerifyStatus->SetRect(104, 100, 600, 47, false);
@@ -730,21 +730,21 @@ SSWR::AVIRead::AVIRASN1DataForm::AVIRASN1DataForm(UI::GUIClientControl *parent, 
 		if (hasPrivKey || hasPubKey)
 		{
 			this->tpEncrypt = this->tcMain->AddTabPage(CSTR("Encrypt"));
-			NEW_CLASS(this->lblEncryptInputType, UI::GUILabel(ui, this->tpEncrypt, CSTR("Input Type")));
+			this->lblEncryptInputType = ui->NewLabel(this->tpEncrypt, CSTR("Input Type"));
 			this->lblEncryptInputType->SetRect(4, 4, 100, 23, false);
 			this->cboEncryptInputType = ui->NewComboBox(this->tpEncrypt, false);
 			this->cboEncryptInputType->SetRect(104, 4, 100, 23, false);
 			this->cboEncryptInputType->AddItem(CSTR("Base64"), 0);
 			this->cboEncryptInputType->AddItem(CSTR("Hex"), 0);
 			this->cboEncryptInputType->SetSelectedIndex(0);
-			NEW_CLASS(this->lblEncryptOutputType, UI::GUILabel(ui, this->tpEncrypt, CSTR("Output Type")));
+			this->lblEncryptOutputType = ui->NewLabel(this->tpEncrypt, CSTR("Output Type"));
 			this->lblEncryptOutputType->SetRect(4, 28, 100, 23, false);
 			this->cboEncryptOutputType = ui->NewComboBox(this->tpEncrypt, false);
 			this->cboEncryptOutputType->SetRect(104, 28, 100, 23, false);
 			this->cboEncryptOutputType->AddItem(CSTR("Base64"), 0);
 			this->cboEncryptOutputType->AddItem(CSTR("Hex"), 0);
 			this->cboEncryptOutputType->SetSelectedIndex(0);
-			NEW_CLASS(this->lblEncryptRSAPadding, UI::GUILabel(ui, this->tpEncrypt, CSTR("RSA Padding")));
+			this->lblEncryptRSAPadding = ui->NewLabel(this->tpEncrypt, CSTR("RSA Padding"));
 			this->lblEncryptRSAPadding->SetRect(4, 52, 100, 23, false);
 			this->cboEncryptRSAPadding = ui->NewComboBox(this->tpEncrypt, false);
 			this->cboEncryptRSAPadding->SetRect(104, 52, 150, 23, false);
@@ -755,7 +755,7 @@ SSWR::AVIRead::AVIRASN1DataForm::AVIRASN1DataForm(UI::GUIClientControl *parent, 
 			CBOADDENUM(this->cboEncryptRSAPadding, Crypto::Encrypt::RSACipher::Padding, PKCS1_PSS);
 			CBOADDENUM(this->cboEncryptRSAPadding, Crypto::Encrypt::RSACipher::Padding, PKCS1_WithTLS);
 			this->cboEncryptRSAPadding->SetSelectedIndex(0);
-			NEW_CLASS(this->lblEncryptInput, UI::GUILabel(ui, this->tpEncrypt, CSTR("Input")));
+			this->lblEncryptInput = ui->NewLabel(this->tpEncrypt, CSTR("Input"));
 			this->lblEncryptInput->SetRect(4, 76, 100, 23, false);
 			NEW_CLASS(this->txtEncryptInput, UI::GUITextBox(ui, this->tpEncrypt, CSTR(""), true));
 			this->txtEncryptInput->SetRect(104, 76, 500, 95, false);
@@ -768,7 +768,7 @@ SSWR::AVIRead::AVIRASN1DataForm::AVIRASN1DataForm(UI::GUIClientControl *parent, 
 				this->btnEncryptDecrypt->SetRect(184, 172, 75, 23, false);
 				this->btnEncryptDecrypt->HandleButtonClick(OnEncryptDecryptClicked, this);
 			}
-			NEW_CLASS(this->lblEncryptOutput, UI::GUILabel(ui, this->tpEncrypt, CSTR("Output")));
+			this->lblEncryptOutput = ui->NewLabel(this->tpEncrypt, CSTR("Output"));
 			this->lblEncryptOutput->SetRect(4, 196, 100, 23, false);
 			NEW_CLASS(this->txtEncryptOutput, UI::GUITextBox(ui, this->tpEncrypt, CSTR(""), true));
 			this->txtEncryptOutput->SetRect(104, 196, 500, 95, false);

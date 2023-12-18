@@ -27,8 +27,8 @@ namespace SSWR
 			UI::GUITextBox *txtFilter;
 			NotNullPtr<UI::GUIButton> btnFilter;
 			NotNullPtr<UI::GUIButton> btnStore;
-			UI::GUILabel *lblInfo;
-			UI::GUILabel *lblDblClk;
+			NotNullPtr<UI::GUILabel> lblInfo;
+			NotNullPtr<UI::GUILabel> lblDblClk;
 			NotNullPtr<UI::GUIComboBox> cboDblClk;
 			UI::GUITextBox *txtFileIE;
 			NotNullPtr<UI::GUIVSplitter> vspFile;

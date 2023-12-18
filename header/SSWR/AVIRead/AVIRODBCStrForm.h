@@ -14,10 +14,10 @@ namespace SSWR
 		class AVIRODBCStrForm : public UI::GUIForm
 		{
 		private:
-			UI::GUILabel *lblDriver;
+			NotNullPtr<UI::GUILabel> lblDriver;
 			NotNullPtr<UI::GUIComboBox> cboDriver;
 			NotNullPtr<UI::GUIButton> btnDriverInfo;
-			UI::GUILabel *lblConnStr;
+			NotNullPtr<UI::GUILabel> lblConnStr;
 			UI::GUITextBox *txtConnStr;
 			NotNullPtr<UI::GUIButton> btnOK;
 			NotNullPtr<UI::GUIButton> btnCancel;

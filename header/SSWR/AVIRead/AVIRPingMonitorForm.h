@@ -52,10 +52,10 @@ namespace SSWR
 			IPInfo *currIP;
 
 			NotNullPtr<UI::GUIPanel> pnlControl;
-			UI::GUILabel *lblInfo;
+			NotNullPtr<UI::GUILabel> lblInfo;
 			UI::GUITextBox *txtInfo;
 			NotNullPtr<UI::GUIButton> btnInfo;
-			UI::GUILabel *lblIP;
+			NotNullPtr<UI::GUILabel> lblIP;
 			NotNullPtr<UI::GUIComboBox> cboIP;
 			NotNullPtr<UI::GUIButton> btnStart;
 			UI::GUITabControl *tcMain;
@@ -65,11 +65,11 @@ namespace SSWR
 			NotNullPtr<UI::GUIHSplitter> hspIP;
 			UI::GUITabControl *tcIP;
 			NotNullPtr<UI::GUITabPage> tpIPInfo;
-			UI::GUILabel *lblIPCount;
+			NotNullPtr<UI::GUILabel> lblIPCount;
 			UI::GUITextBox *txtIPCount;
-			UI::GUILabel *lblIPName;
+			NotNullPtr<UI::GUILabel> lblIPName;
 			UI::GUITextBox *txtIPName;
-			UI::GUILabel *lblIPCountry;
+			NotNullPtr<UI::GUILabel> lblIPCountry;
 			UI::GUITextBox *txtIPCountry;
 			NotNullPtr<UI::GUITabPage> tpIPWhois;
 			UI::GUITextBox *txtIPWhois;

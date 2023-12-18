@@ -19,29 +19,29 @@ namespace SSWR
 			UI::GUITabControl *tcMain;
 
 			NotNullPtr<UI::GUITabPage> tpValue;
-			UI::GUILabel *lblValue;
+			NotNullPtr<UI::GUILabel> lblValue;
 			UI::GUITextBox *txtValue;
 			NotNullPtr<UI::GUIButton> btnEpochSec;
 			NotNullPtr<UI::GUIButton> btnEpochMS;
 			NotNullPtr<UI::GUIButton> btnEpochUS;
 			NotNullPtr<UI::GUIButton> btnEpochNS;
 			NotNullPtr<UI::GUIButton> btnDotNetTicks;
-			UI::GUILabel *lblUTCTime;
+			NotNullPtr<UI::GUILabel> lblUTCTime;
 			UI::GUITextBox *txtUTCTime;
-			UI::GUILabel *lblLocalTime;
+			NotNullPtr<UI::GUILabel> lblLocalTime;
 			UI::GUITextBox *txtLocalTime;
 			
 			NotNullPtr<UI::GUITabPage> tpStr;
-			UI::GUILabel *lblStr;
+			NotNullPtr<UI::GUILabel> lblStr;
 			UI::GUITextBox *txtStr;
 			NotNullPtr<UI::GUIButton> btnStrConv;
-			UI::GUILabel *lblStrEpochSec;
+			NotNullPtr<UI::GUILabel> lblStrEpochSec;
 			UI::GUITextBox *txtStrEpochSec;
-			UI::GUILabel *lblStrEpochMS;
+			NotNullPtr<UI::GUILabel> lblStrEpochMS;
 			UI::GUITextBox *txtStrEpochMS;
-			UI::GUILabel *lblStrEpochNS;
+			NotNullPtr<UI::GUILabel> lblStrEpochNS;
 			UI::GUITextBox *txtStrEpochNS;
-			UI::GUILabel *lblStrDotNetTicks;
+			NotNullPtr<UI::GUILabel> lblStrDotNetTicks;
 			UI::GUITextBox *txtStrDotNetTicks;
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;

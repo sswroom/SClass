@@ -26,14 +26,14 @@ namespace SSWR
 
 			UI::GUIListBox *lbDevice;
 			NotNullPtr<UI::GUIPanel> pnlMain;
-			UI::GUILabel *lblHead;
+			NotNullPtr<UI::GUILabel> lblHead;
 			UI::GUIListBox *lbHead;
-			UI::GUILabel *lblHeart;
+			NotNullPtr<UI::GUILabel> lblHeart;
 			UI::GUICheckBox *chkHeart;
-			UI::GUILabel *lblTurn;
+			NotNullPtr<UI::GUILabel> lblTurn;
 			NotNullPtr<UI::GUIButton> btnTurnLeft;
 			NotNullPtr<UI::GUIButton> btnTurnRight;
-			UI::GUILabel *lblWing;
+			NotNullPtr<UI::GUILabel> lblWing;
 			NotNullPtr<UI::GUIButton> btnWingUp;
 			NotNullPtr<UI::GUIButton> btnWingDown;
 

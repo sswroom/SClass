@@ -21,15 +21,15 @@ namespace SSWR
 			UI::GUIListBox *lbDevices;
 			NotNullPtr<UI::GUIHSplitter> hspDevices;
 			NotNullPtr<UI::GUIPanel> pnlDevices;
-			UI::GUILabel *lblVendorId;
+			NotNullPtr<UI::GUILabel> lblVendorId;
 			UI::GUITextBox *txtVendorId;
-			UI::GUILabel *lblVendorName;
+			NotNullPtr<UI::GUILabel> lblVendorName;
 			UI::GUITextBox *txtVendorName;
-			UI::GUILabel *lblProductId;
+			NotNullPtr<UI::GUILabel> lblProductId;
 			UI::GUITextBox *txtProductId;
-			UI::GUILabel *lblDispName;
+			NotNullPtr<UI::GUILabel> lblDispName;
 			UI::GUITextBox *txtDispName;
-			UI::GUILabel *lblDBName;
+			NotNullPtr<UI::GUILabel> lblDBName;
 			UI::GUITextBox *txtDBName;
 			
 			static void __stdcall OnDevicesSelChg(void *userObj);

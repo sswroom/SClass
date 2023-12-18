@@ -16,11 +16,11 @@ namespace SSWR
 		{
 		private:
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
-			UI::GUILabel *lblFileDir;
+			NotNullPtr<UI::GUILabel> lblFileDir;
 			UI::GUITextBox *txtFileDir;
-			UI::GUILabel *lblStartTime;
+			NotNullPtr<UI::GUILabel> lblStartTime;
 			UI::GUIDateTimePicker *dtpStartTime;
-			UI::GUILabel *lblEndTime;
+			NotNullPtr<UI::GUILabel> lblEndTime;
 			UI::GUIDateTimePicker *dtpEndTime;
 			NotNullPtr<UI::GUIButton> btnStart;
 

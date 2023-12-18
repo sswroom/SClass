@@ -13,7 +13,7 @@ namespace SSWR
 		class AVIRHexViewerGoToForm : public UI::GUIForm
 		{
 		private:
-			UI::GUILabel *lblMessage;
+			NotNullPtr<UI::GUILabel> lblMessage;
 			UI::GUITextBox *txtInput;
 			NotNullPtr<UI::GUIButton> btnCancel;
 			NotNullPtr<UI::GUIButton> btnOK;

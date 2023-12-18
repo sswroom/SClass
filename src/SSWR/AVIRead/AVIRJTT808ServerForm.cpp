@@ -146,7 +146,7 @@ SSWR::AVIRead::AVIRJTT808ServerForm::AVIRJTT808ServerForm(UI::GUIClientControl *
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	this->tpStatus = this->tcMain->AddTabPage(CSTR("Status"));
-	NEW_CLASS(this->lblPort, UI::GUILabel(ui, this->tpStatus, CSTR("Port")));
+	this->lblPort = ui->NewLabel(this->tpStatus, CSTR("Port"));
 	this->lblPort->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtPort, UI::GUITextBox(ui, this->tpStatus, CSTR("42463")));
 	this->txtPort->SetRect(104, 4, 100, 23, false);

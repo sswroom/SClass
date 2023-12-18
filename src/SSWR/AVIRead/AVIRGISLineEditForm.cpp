@@ -312,7 +312,7 @@ SSWR::AVIRead::AVIRGISLineEditForm::AVIRGISLineEditForm(UI::GUIClientControl *pa
 	sz = this->pbPreview->GetSizeP();
 	this->prevImage = this->eng->CreateImage32(sz, Media::AT_NO_ALPHA);
 	this->prevImage->SetHDPI(this->GetHDPI() / this->GetDDPI() * 96.0);
-	NEW_CLASS(this->lblName, UI::GUILabel(ui, this->pnlStyle, CSTR("Name:")));
+	this->lblName = ui->NewLabel(this->pnlStyle, CSTR("Name:"));
 	this->lblName->SetRect(0, 32, 100, 23, false);
 	NEW_CLASS(this->txtName, UI::GUITextBox(ui, this->pnlStyle, CSTR("")));
 	this->txtName->SetRect(100, 32, 112, 23, false);
@@ -327,13 +327,13 @@ SSWR::AVIRead::AVIRGISLineEditForm::AVIRGISLineEditForm(UI::GUIClientControl *pa
 	this->btnRemoveLayer->SetRect(80, 8, 64, 23, false);
 	this->btnRemoveLayer->HandleButtonClick(RemoveLayerClicked, this);
 
-	NEW_CLASS(this->lblColor, UI::GUILabel(ui, this->pnlLayer, CSTR("Color")));
+	this->lblColor = ui->NewLabel(this->pnlLayer, CSTR("Color"));
 	this->lblColor->SetRect(0, 8, 88, 23, false);
-	NEW_CLASS(this->lblAlpha, UI::GUILabel(ui, this->pnlLayer, CSTR("Alpha")));
+	this->lblAlpha = ui->NewLabel(this->pnlLayer, CSTR("Alpha"));
 	this->lblAlpha->SetRect(0, 32, 88, 23, false);
-	NEW_CLASS(this->lblThick, UI::GUILabel(ui, this->pnlLayer, CSTR("Thick")));
+	this->lblThick = ui->NewLabel(this->pnlLayer, CSTR("Thick"));
 	this->lblThick->SetRect(0, 56, 88, 23, false);
-	NEW_CLASS(this->lblPattern, UI::GUILabel(ui, this->pnlLayer, CSTR("Pattern")));
+	this->lblPattern = ui->NewLabel(this->pnlLayer, CSTR("Pattern"));
 	this->lblPattern->SetRect(0, 80, 88, 23, false);
 	NEW_CLASS(this->pbColor, UI::GUIPictureBox(ui, this->pnlLayer, this->eng, true, false));
 	this->pbColor->SetRect(96, 8, 72, 24, false);

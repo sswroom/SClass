@@ -27,25 +27,25 @@ namespace SSWR
 			Data::ArrayListNN<Crypto::Cert::X509Cert> caCerts;
 
 			NotNullPtr<UI::GUIPanel> pnlCurr;
-			UI::GUILabel *lblCurrCert;
+			NotNullPtr<UI::GUILabel> lblCurrCert;
 			UI::GUITextBox *txtCurrCert;
-			UI::GUILabel *lblCurrKey;
+			NotNullPtr<UI::GUILabel> lblCurrKey;
 			UI::GUITextBox *txtCurrKey;
 			UI::GUITabControl *tcMain;
 
 			NotNullPtr<UI::GUITabPage> tpFile;
 			NotNullPtr<UI::GUIButton> btnFileCert;
-			UI::GUILabel *lblFileCert;
+			NotNullPtr<UI::GUILabel> lblFileCert;
 			NotNullPtr<UI::GUIButton> btnFileKey;
-			UI::GUILabel *lblFileKey;
+			NotNullPtr<UI::GUILabel> lblFileKey;
 			NotNullPtr<UI::GUIButton> btnFileConfirm;
 
 			NotNullPtr<UI::GUITabPage> tpGenerate;
-			UI::GUILabel *lblGenCountry;
+			NotNullPtr<UI::GUILabel> lblGenCountry;
 			UI::GUITextBox *txtGenCountry;
-			UI::GUILabel *lblGenCompany;
+			NotNullPtr<UI::GUILabel> lblGenCompany;
 			UI::GUITextBox *txtGenCompany;
-			UI::GUILabel *lblGenCommonName;
+			NotNullPtr<UI::GUILabel> lblGenCommonName;
 			UI::GUITextBox *txtGenCommonName;
 			NotNullPtr<UI::GUIButton> btnGenerate;
 

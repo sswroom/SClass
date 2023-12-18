@@ -30,13 +30,13 @@ namespace SSWR
 			Data::ArrayList<EntryInfo*> *entryList;
 
 			NotNullPtr<UI::GUIGroupBox> grpNew;
-			UI::GUILabel *lblName;
+			NotNullPtr<UI::GUILabel> lblName;
 			UI::GUITextBox *txtName;
-			UI::GUILabel *lblKey;
+			NotNullPtr<UI::GUILabel> lblKey;
 			UI::GUITextBox *txtKey;
 			NotNullPtr<UI::GUIButton> btnKeyRand80;
 			NotNullPtr<UI::GUIButton> btnKeyRand160;
-			UI::GUILabel *lblType;
+			NotNullPtr<UI::GUILabel> lblType;
 			NotNullPtr<UI::GUIComboBox> cboType;
 			NotNullPtr<UI::GUIButton> btnNew;
 			UI::GUIListView *lvEntry;

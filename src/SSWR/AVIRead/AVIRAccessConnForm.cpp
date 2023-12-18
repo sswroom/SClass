@@ -61,7 +61,7 @@ SSWR::AVIRead::AVIRAccessConnForm::AVIRAccessConnForm(UI::GUIClientControl *pare
 	this->conn = 0;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASS(this->lblFileName, UI::GUILabel(ui, *this, CSTR("File Name")));
+	this->lblFileName = ui->NewLabel(*this, CSTR("File Name"));
 	this->lblFileName->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtFileName, UI::GUITextBox(ui, *this, CSTR("")));
 	this->txtFileName->SetRect(104, 4, 500, 23, false);

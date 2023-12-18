@@ -4652,6 +4652,8 @@ UI/GUIHexFileView.h:
 @GUIHexFileView.o
 UI/GUIHSplitter.h:
 @GUIHSplitter.o
+UI/GUILabel.h:
+@GUILabel.o
 UI/GUIMapControl.h:
 @GUIMapControl.o
 UI/GUIMapTreeView.h:
@@ -4714,6 +4716,8 @@ UI/GTK/GTKGroupBox.h:
 @GTKGroupBox.o
 UI/GTK/GTKHSplitter.h:
 @GTKHSplitter.o
+UI/GTK/GTKLabel.h:
+@GTKLabel.o
 UI/GTK/GTKMessageDialog.h:
 @GTKMessageDialog.o
 UI/GTK/GTKTimer.h:
@@ -4728,6 +4732,8 @@ UI/Java/JavaGroupBox.h:
 JavaGroupBox.o
 UI/Java/JavaHSplitter.h:
 @JavaHSplitter.o
+UI/Java/JavaLabel.h:
+@JavaLabel.o
 UI/Java/JavaMessageDialog.h:
 @JavaMessageDialog.o
 UI/Java/JavaTimer.h:
@@ -4744,6 +4750,8 @@ UI/Win/WinGroupBox.h:
 @WinGroupBox.o
 UI/Win/WinHSplitter.h:
 @WinHSplitter.o
+UI/Win/WinLabel.h:
+@WinLabel.o
 UI/Win/WinMessageDialog.h:
 @WinMessageDialog.o
 UI/Win/WinTimer.h:

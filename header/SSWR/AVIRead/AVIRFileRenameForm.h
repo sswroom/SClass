@@ -16,7 +16,7 @@ namespace SSWR
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			NotNullPtr<Text::String> fileName;
 
-			UI::GUILabel *lblNewName;
+			NotNullPtr<UI::GUILabel> lblNewName;
 			UI::GUITextBox *txtNewName;
 			UI::GUITextBox *txtNewExt;
 			NotNullPtr<UI::GUIButton> btnRename;

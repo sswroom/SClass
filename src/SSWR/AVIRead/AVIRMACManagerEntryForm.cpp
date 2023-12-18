@@ -45,12 +45,12 @@ SSWR::AVIRead::AVIRMACManagerEntryForm::AVIRMACManagerEntryForm(UI::GUIClientCon
 	this->core = core;
 	this->name = Text::String::NewEmpty();
 
-	NEW_CLASS(this->lblMAC, UI::GUILabel(ui, *this, CSTR("MAC")));
+	this->lblMAC = ui->NewLabel(*this, CSTR("MAC"));
 	this->lblMAC->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtMAC, UI::GUITextBox(ui, *this, CSTR("")));
 	this->txtMAC->SetRect(104, 4, 200, 23, false);
 	this->txtMAC->SetReadOnly(true);
-	NEW_CLASS(this->lblName, UI::GUILabel(ui, *this, CSTR("Name")));
+	this->lblName = ui->NewLabel(*this, CSTR("Name"));
 	this->lblName->SetRect(4, 28, 100, 23, false);
 	this->cboName = ui->NewComboBox(*this, true);
 	this->cboName->SetRect(104, 28, 400, 23, false);

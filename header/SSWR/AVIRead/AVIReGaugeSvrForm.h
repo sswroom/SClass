@@ -34,7 +34,7 @@ namespace SSWR
 			UI::GUITabControl *tcMain;
 
 			NotNullPtr<UI::GUITabPage> tpControl;
-			UI::GUILabel *lblPort;
+			NotNullPtr<UI::GUILabel> lblPort;
 			UI::GUITextBox *txtPort;
 			NotNullPtr<UI::GUIButton> btnStart;
 

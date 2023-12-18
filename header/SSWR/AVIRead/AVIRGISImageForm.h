@@ -22,7 +22,7 @@ namespace SSWR
 			NotNullPtr<Parser::ParserList> parsers;
 			UOSInt imgIndex;
 
-			UI::GUILabel *lbl;
+			NotNullPtr<UI::GUILabel> lbl;
 			NotNullPtr<UI::GUIPanel> pnlButtons;
 			UI::GUIPictureList *plIcons;
 			NotNullPtr<UI::GUIButton> btnOK;

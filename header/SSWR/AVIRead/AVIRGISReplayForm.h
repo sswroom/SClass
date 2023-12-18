@@ -35,9 +35,9 @@ namespace SSWR
 			UI::GUITextBox *txtStartMark;
 			UI::GUIPopupMenu *mnuRecord;
 			UI::GUITextBox *txtAddress;
-			UI::GUILabel *lblAddress;
+			NotNullPtr<UI::GUILabel> lblAddress;
 			NotNullPtr<UI::GUIComboBox> cboName;
-			UI::GUILabel *lblDist;
+			NotNullPtr<UI::GUILabel> lblDist;
 			UI::GUIListView *lvExtra;
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;

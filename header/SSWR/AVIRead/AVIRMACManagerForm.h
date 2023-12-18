@@ -40,12 +40,12 @@ namespace SSWR
 
 			NotNullPtr<UI::GUIPanel> pnlControl;
 			NotNullPtr<UI::GUIButton> btnStore;
-			UI::GUILabel *lblInfo;
+			NotNullPtr<UI::GUILabel> lblInfo;
 			UI::GUITabControl *tcMain;
 
 			NotNullPtr<UI::GUITabPage> tpFile;
 			NotNullPtr<UI::GUIPanel> pnlFile;
-			UI::GUILabel *lblFile;
+			NotNullPtr<UI::GUILabel> lblFile;
 			UI::GUITextBox *txtFile;
 			NotNullPtr<UI::GUIButton> btnFile;
 			UI::GUITextBox *txtFileIE;
@@ -53,7 +53,7 @@ namespace SSWR
 			UI::GUIListView *lvContent;
 
 			NotNullPtr<UI::GUITabPage> tpInput;
-			UI::GUILabel *lblInput;
+			NotNullPtr<UI::GUILabel> lblInput;
 			UI::GUITextBox *txtInput;
 			NotNullPtr<UI::GUIButton> btnInput;
 

@@ -60,7 +60,7 @@ SSWR::AVIRead::AVIRProxyServerForm::AVIRProxyServerForm(UI::GUIClientControl *pa
 	NEW_CLASSNN(this->pnlRequest, UI::GUIPanel(ui, *this));
 	this->pnlRequest->SetRect(0, 0, 100, 55, false);
 	this->pnlRequest->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->lblPort, UI::GUILabel(ui, this->pnlRequest, CSTR("Port")));
+	this->lblPort = ui->NewLabel(this->pnlRequest, CSTR("Port"));
 	this->lblPort->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtPort, UI::GUITextBox(ui, this->pnlRequest, CSTR("8080")));
 	this->txtPort->SetRect(104, 4, 100, 23, false);

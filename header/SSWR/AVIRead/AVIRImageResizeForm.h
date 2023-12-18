@@ -25,15 +25,15 @@ namespace SSWR
 			NotNullPtr<Media::StaticImage> srcImg;
 			Media::StaticImage *outImg;
 
-			UI::GUILabel *lblOriW;
+			NotNullPtr<UI::GUILabel> lblOriW;
 			UI::GUITextBox *txtOriW;
-			UI::GUILabel *lblOriH;
+			NotNullPtr<UI::GUILabel> lblOriH;
 			UI::GUITextBox *txtOriH;
-			UI::GUILabel *lblOutW;
+			NotNullPtr<UI::GUILabel> lblOutW;
 			UI::GUITextBox *txtOutW;
-			UI::GUILabel *lblOutH;
+			NotNullPtr<UI::GUILabel> lblOutH;
 			UI::GUITextBox *txtOutH;
-			UI::GUILabel *lblNTap;
+			NotNullPtr<UI::GUILabel> lblNTap;
 			UI::GUITextBox *txtNTap;
 			NotNullPtr<UI::GUIButton> btnOK;
 			NotNullPtr<UI::GUIButton> btnCancel;

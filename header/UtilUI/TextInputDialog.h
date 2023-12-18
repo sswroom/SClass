@@ -11,7 +11,7 @@ namespace UtilUI
 	class TextInputDialog : public UI::GUIForm
 	{
 	private:
-		UI::GUILabel *lblMessage;
+		NotNullPtr<UI::GUILabel> lblMessage;
 		UI::GUITextBox *txtInput;
 		NotNullPtr<UI::GUIButton> btnOk;
 		NotNullPtr<UI::GUIButton> btnCancel;

@@ -97,7 +97,7 @@ SSWR::AVIRead::AVIRDBExportForm::AVIRDBExportForm(UI::GUIClientControl *parent, 
 	this->lvTables->AddColumn(CSTR("Export?"), 60);
 	this->lvTables->AddColumn(CSTR("Column Type"), 100);
 	this->lvTables->HandleDblClk(OnTablesDblClk, this);
-	NEW_CLASS(this->lblDBType, UI::GUILabel(ui, this->pnlMain, CSTR("DB Type")));
+	this->lblDBType = ui->NewLabel(this->pnlMain, CSTR("DB Type"));
 	this->lblDBType->SetRect(0, 0, 100, 23, false);
 	this->cboDBType = ui->NewComboBox(this->pnlMain, false);
 	this->cboDBType->SetRect(100, 0, 100, 23, false);
@@ -107,7 +107,7 @@ SSWR::AVIRead::AVIRDBExportForm::AVIRDBExportForm(UI::GUIClientControl *parent, 
 	this->cboDBType->SetSelectedIndex(0);
 	NEW_CLASS(this->chkAxisAware, UI::GUICheckBox(ui, this->pnlMain, CSTR("Axis-Aware (MySQL >=8)"), false));
 	this->chkAxisAware->SetRect(200, 0, 150, 23, false);
-	NEW_CLASS(this->lblSchema, UI::GUILabel(ui, this->pnlMain, CSTR("Schema")));
+	this->lblSchema = ui->NewLabel(this->pnlMain, CSTR("Schema"));
 	this->lblSchema->SetRect(0, 24, 100, 23, false);
 	if (schema.v == 0)
 	{
@@ -115,7 +115,7 @@ SSWR::AVIRead::AVIRDBExportForm::AVIRDBExportForm(UI::GUIClientControl *parent, 
 	}
 	NEW_CLASS(this->txtSchema, UI::GUITextBox(ui, this->pnlMain, schema.OrEmpty()));
 	this->txtSchema->SetRect(100, 24, 200, 23, false);
-	NEW_CLASS(this->lblTable, UI::GUILabel(ui, this->pnlMain, CSTR("Table")));
+	this->lblTable = ui->NewLabel(this->pnlMain, CSTR("Table"));
 	this->lblTable->SetRect(0, 48, 100, 23, false);
 	NEW_CLASS(this->txtTable, UI::GUITextBox(ui, this->pnlMain, table.OrEmpty()));
 	this->txtTable->SetRect(100, 48, 200, 23, false);

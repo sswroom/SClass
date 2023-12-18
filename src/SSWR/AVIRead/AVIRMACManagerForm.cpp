@@ -496,7 +496,7 @@ SSWR::AVIRead::AVIRMACManagerForm::AVIRMACManagerForm(UI::GUIClientControl *pare
 	this->btnStore = ui->NewButton(this->pnlControl, CSTR("Store"));
 	this->btnStore->SetRect(4, 4, 75, 23, false);
 	this->btnStore->HandleButtonClick(OnStoreClicked, this);
-	NEW_CLASS(this->lblInfo, UI::GUILabel(ui, this->pnlControl, CSTR("")));
+	this->lblInfo = ui->NewLabel(this->pnlControl, CSTR(""));
 	this->lblInfo->SetRect(84, 4, 200, 23, false);
 	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, *this));
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
@@ -505,7 +505,7 @@ SSWR::AVIRead::AVIRMACManagerForm::AVIRMACManagerForm(UI::GUIClientControl *pare
 	NEW_CLASSNN(this->pnlFile, UI::GUIPanel(ui, this->tpFile));
 	this->pnlFile->SetRect(0, 0, 100, 31, false);
 	this->pnlFile->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->lblFile, UI::GUILabel(ui, this->pnlFile, CSTR("Log File")));
+	this->lblFile = ui->NewLabel(this->pnlFile, CSTR("Log File"));
 	this->lblFile->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtFile, UI::GUITextBox(ui, this->pnlFile, CSTR("")));
 	this->txtFile->SetRect(104, 4, 400, 23, false);
@@ -538,7 +538,7 @@ SSWR::AVIRead::AVIRMACManagerForm::AVIRMACManagerForm(UI::GUIClientControl *pare
 	this->lvContent->AddColumn(CSTR("Country"), 50);
 
 	this->tpInput = this->tcMain->AddTabPage(CSTR("Input"));
-	NEW_CLASS(this->lblInput, UI::GUILabel(ui, this->tpInput, CSTR("MAC Input")));
+	this->lblInput = ui->NewLabel(this->tpInput, CSTR("MAC Input"));
 	this->lblInput->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtInput, UI::GUITextBox(ui, this->tpInput, CSTR("")));
 	this->txtInput->SetRect(104, 4, 150, 23, false);

@@ -1,6 +1,6 @@
 #ifndef _SM_SSWR_AVIREADCE_AVIRCETHREADINFOFORM
 #define _SM_SSWR_AVIREADCE_AVIRCETHREADINFOFORM
-
+#include "Data/ArrayListStringNN.h"
 #include "Manage/SymbolResolver.h"
 #include "Text/String.h"
 #include "UI/GUIButton.h"
@@ -29,11 +29,11 @@ namespace SSWR
 			NotNullPtr<UI::GUITabPage> tpStack;
 			NotNullPtr<UI::GUITabPage> tpMyStack;
 
-			UI::GUILabel *lblThreadId;
+			NotNullPtr<UI::GUILabel> lblThreadId;
 			UI::GUITextBox *txtThreadId;
-			UI::GUILabel *lblStartAddr;
+			NotNullPtr<UI::GUILabel> lblStartAddr;
 			UI::GUITextBox *txtStartAddr;
-			UI::GUILabel *lblStartName;
+			NotNullPtr<UI::GUILabel> lblStartName;
 			UI::GUITextBox *txtStartName;
 
 			UI::GUIListView *lvContext;
@@ -47,8 +47,8 @@ namespace SSWR
 			NotNullPtr<UI::GUIVSplitter> vspMyStack;
 			UI::GUIListView *lvMyStack;
 
-			Data::ArrayList<Text::String *> *stacks;
-			Data::ArrayList<Text::String *> *stacksMem;
+			Data::ArrayListStringNN stacks;
+			Data::ArrayListStringNN stacksMem;
 			Manage::Process *proc;
 			Manage::SymbolResolver *symbol;
 
@@ -58,6 +58,6 @@ namespace SSWR
 			AVIRCEThreadInfoForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, Manage::Process *proc, Manage::SymbolResolver *symbol, Int32 threadId);
 			virtual ~AVIRCEThreadInfoForm();
 		};
-	};
-};
+	}
+}
 #endif

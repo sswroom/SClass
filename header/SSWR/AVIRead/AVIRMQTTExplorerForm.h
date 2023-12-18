@@ -52,21 +52,21 @@ namespace SSWR
 			Crypto::Cert::X509File *cliKey;
 
 			NotNullPtr<UI::GUIPanel> pnlConnect;
-			UI::GUILabel *lblHost;
+			NotNullPtr<UI::GUILabel> lblHost;
 			UI::GUITextBox *txtHost;
-			UI::GUILabel *lblPort;
+			NotNullPtr<UI::GUILabel> lblPort;
 			UI::GUITextBox *txtPort;
-			UI::GUILabel *lblUsername;
+			NotNullPtr<UI::GUILabel> lblUsername;
 			UI::GUITextBox *txtUsername;
-			UI::GUILabel *lblPassword;
+			NotNullPtr<UI::GUILabel> lblPassword;
 			UI::GUITextBox *txtPassword;
 			UI::GUICheckBox *chkSSL;
 			UI::GUICheckBox *chkWebSocket;
 			NotNullPtr<UI::GUIButton> btnCliCert;
-			UI::GUILabel *lblCliCert;
+			NotNullPtr<UI::GUILabel> lblCliCert;
 			NotNullPtr<UI::GUIButton> btnCliKey;
-			UI::GUILabel *lblCliKey;
-			UI::GUILabel *lblStatus;
+			NotNullPtr<UI::GUILabel> lblCliKey;
+			NotNullPtr<UI::GUILabel> lblStatus;
 			NotNullPtr<UI::GUIButton> btnStart;
 			UI::GUITabControl *tcDetail;
 
@@ -77,7 +77,7 @@ namespace SSWR
 
 			NotNullPtr<UI::GUITabPage> tpPublish;
 			NotNullPtr<UI::GUIPanel> pnlPubTopic;
-			UI::GUILabel *lblPubTopic;
+			NotNullPtr<UI::GUILabel> lblPubTopic;
 			UI::GUITextBox *txtPubTopic;
 			NotNullPtr<UI::GUIPanel> pnlPubCtrl;
 			NotNullPtr<UI::GUIButton> btnPublish;

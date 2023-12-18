@@ -25,13 +25,13 @@ namespace SSWR
 			UI::GUIListBox *lbImages;
 			NotNullPtr<UI::GUIHSplitter> hspMain;
 			NotNullPtr<UI::GUIPanel> pnlMain;
-			UI::GUILabel *lblLeft;
+			NotNullPtr<UI::GUILabel> lblLeft;
 			UI::GUITextBox *txtLeft;
-			UI::GUILabel *lblTop;
+			NotNullPtr<UI::GUILabel> lblTop;
 			UI::GUITextBox *txtTop;
-			UI::GUILabel *lblRight;
+			NotNullPtr<UI::GUILabel> lblRight;
 			UI::GUITextBox *txtRight;
-			UI::GUILabel *lblBottom;
+			NotNullPtr<UI::GUILabel> lblBottom;
 			UI::GUITextBox *txtBottom;
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;

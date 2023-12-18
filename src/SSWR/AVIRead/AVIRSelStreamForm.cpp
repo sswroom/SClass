@@ -421,7 +421,7 @@ SSWR::AVIRead::AVIRSelStreamForm::AVIRSelStreamForm(UI::GUIClientControl *parent
 	NEW_CLASSNN(this->pnlStreamType, UI::GUIPanel(ui, *this));
 	this->pnlStreamType->SetRect(0, 0, 100, 31, false);
 	this->pnlStreamType->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->lblStreamType, UI::GUILabel(ui, this->pnlStreamType, CSTR("Stream Type")));
+	this->lblStreamType = ui->NewLabel(this->pnlStreamType, CSTR("Stream Type"));
 	this->lblStreamType->SetRect(4, 4, 100, 23, false);
 	this->cboStreamType = ui->NewComboBox(this->pnlStreamType, false);
 	this->cboStreamType->SetRect(104, 4, 200, 23, false);
@@ -459,7 +459,7 @@ SSWR::AVIRead::AVIRSelStreamForm::AVIRSelStreamForm(UI::GUIClientControl *parent
 	this->tcConfig->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	this->tpSerialPort = this->tcConfig->AddTabPage(CSTR("Serial Port"));
-	NEW_CLASS(this->lblSerialPort, UI::GUILabel(ui, this->tpSerialPort, CSTR("Port")));
+	this->lblSerialPort = ui->NewLabel(this->tpSerialPort, CSTR("Port"));
 	this->lblSerialPort->SetRect(8, 8, 100, 23, false);
 	this->cboSerialPort = ui->NewComboBox(this->tpSerialPort, false);
 	this->cboSerialPort->SetRect(108, 8, 100, 23, false);
@@ -486,11 +486,11 @@ SSWR::AVIRead::AVIRSelStreamForm::AVIRSelStreamForm(UI::GUIClientControl *parent
 			this->cboSerialPort->SetSelectedIndex(0);
 		}
 	}
-	NEW_CLASS(this->lblBaudRate, UI::GUILabel(ui, this->tpSerialPort, CSTR("Baud Rate")));
+	this->lblBaudRate = ui->NewLabel(this->tpSerialPort, CSTR("Baud Rate"));
 	this->lblBaudRate->SetRect(8, 32, 100, 23, false);
 	NEW_CLASS(this->txtBaudRate, UI::GUITextBox(ui, this->tpSerialPort, CSTR("115200")));
 	this->txtBaudRate->SetRect(108, 32, 100, 23, false);
-	NEW_CLASS(this->lblParity, UI::GUILabel(ui, this->tpSerialPort, CSTR("Parity")));
+	this->lblParity = ui->NewLabel(this->tpSerialPort, CSTR("Parity"));
 	this->lblParity->SetRect(8, 56, 100, 23, false);
 	this->cboParity = ui->NewComboBox(this->tpSerialPort, false);
 	this->cboParity->SetRect(108, 56, 100, 23, false);
@@ -505,12 +505,12 @@ SSWR::AVIRead::AVIRSelStreamForm::AVIRSelStreamForm(UI::GUIClientControl *parent
 		NEW_CLASSNN(this->pnlSLInfo, UI::GUIPanel(ui, this->tpSiLabPort));
 		this->pnlSLInfo->SetRect(0, 0, 100, 55, false);
 		this->pnlSLInfo->SetDockType(UI::GUIControl::DOCK_TOP);
-		NEW_CLASS(this->lblDLLVer, UI::GUILabel(ui, this->pnlSLInfo, CSTR("DLL Version")));
+		this->lblDLLVer = ui->NewLabel(this->pnlSLInfo, CSTR("DLL Version"));
 		this->lblDLLVer->SetRect(4, 4, 100, 23, false);
 		NEW_CLASS(this->txtDLLVer, UI::GUITextBox(ui, this->pnlSLInfo, CSTR("")));
 		this->txtDLLVer->SetRect(104, 4, 100, 23, false);
 		this->txtDLLVer->SetReadOnly(true);
-		NEW_CLASS(this->lblDriverVer, UI::GUILabel(ui, this->pnlSLInfo, CSTR("Driver Version")));
+		this->lblDriverVer = ui->NewLabel(this->pnlSLInfo, CSTR("Driver Version"));
 		this->lblDriverVer->SetRect(4, 28, 100, 23, false);
 		NEW_CLASS(this->txtDriverVer, UI::GUITextBox(ui, this->pnlSLInfo, CSTR("")));
 		this->txtDriverVer->SetRect(104, 28, 100, 23, false);
@@ -519,7 +519,7 @@ SSWR::AVIRead::AVIRSelStreamForm::AVIRSelStreamForm(UI::GUIClientControl *parent
 		NEW_CLASSNN(this->pnlSLControl, UI::GUIPanel(ui, this->tpSiLabPort));
 		this->pnlSLControl->SetRect(0, 0, 100, 67, false);
 		this->pnlSLControl->SetDockType(UI::GUIControl::DOCK_BOTTOM);
-		NEW_CLASS(this->lblSLBaudRate, UI::GUILabel(ui, this->pnlSLControl, CSTR("Baud Rate")));
+		this->lblSLBaudRate = ui->NewLabel(this->pnlSLControl, CSTR("Baud Rate"));
 		this->lblSLBaudRate->SetRect(4, 4, 100, 23, false);
 		NEW_CLASS(this->txtSLBaudRate, UI::GUITextBox(ui, this->pnlSLControl, CSTR("115200")));
 		this->txtSLBaudRate->SetRect(104, 4, 100, 23, false);
@@ -600,7 +600,7 @@ SSWR::AVIRead::AVIRSelStreamForm::AVIRSelStreamForm(UI::GUIClientControl *parent
 	}
 
 	this->tpTCPSvr = this->tcConfig->AddTabPage(CSTR("TCP Server"));
-	NEW_CLASS(this->lblTCPSvrPort, UI::GUILabel(ui, this->tpTCPSvr, CSTR("Port")));
+	this->lblTCPSvrPort = ui->NewLabel(this->tpTCPSvr, CSTR("Port"));
 	this->lblTCPSvrPort->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtTCPSvrPort, UI::GUITextBox(ui, this->tpTCPSvr, CSTR("")));
 	this->txtTCPSvrPort->SetRect(104, 4, 100, 23, false);
@@ -608,11 +608,11 @@ SSWR::AVIRead::AVIRSelStreamForm::AVIRSelStreamForm(UI::GUIClientControl *parent
 	this->chkBoardcast->SetRect(104, 28, 100, 23, false);
 
 	this->tpTCPCli = this->tcConfig->AddTabPage(CSTR("TCP Client"));
-	NEW_CLASS(this->lblTCPCliHost, UI::GUILabel(ui, this->tpTCPCli, CSTR("Host")));
+	this->lblTCPCliHost = ui->NewLabel(this->tpTCPCli, CSTR("Host"));
 	this->lblTCPCliHost->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtTCPCliHost, UI::GUITextBox(ui, this->tpTCPCli, CSTR("")));
 	this->txtTCPCliHost->SetRect(104, 4, 100, 23, false);
-	NEW_CLASS(this->lblTCPCliPort, UI::GUILabel(ui, this->tpTCPCli, CSTR("Port")));
+	this->lblTCPCliPort = ui->NewLabel(this->tpTCPCli, CSTR("Port"));
 	this->lblTCPCliPort->SetRect(4, 28, 100, 23, false);
 	NEW_CLASS(this->txtTCPCliPort, UI::GUITextBox(ui, this->tpTCPCli, CSTR("")));
 	this->txtTCPCliPort->SetRect(104, 28, 100, 23, false);
@@ -620,28 +620,28 @@ SSWR::AVIRead::AVIRSelStreamForm::AVIRSelStreamForm(UI::GUIClientControl *parent
 	if (!this->ssl.IsNull())
 	{
 		this->tpSSLCli = this->tcConfig->AddTabPage(CSTR("SSL Client"));
-		NEW_CLASS(this->lblSSLCliHost, UI::GUILabel(ui, this->tpSSLCli, CSTR("Host")));
+		this->lblSSLCliHost = ui->NewLabel(this->tpSSLCli, CSTR("Host"));
 		this->lblSSLCliHost->SetRect(4, 4, 100, 23, false);
 		NEW_CLASS(this->txtSSLCliHost, UI::GUITextBox(ui, this->tpSSLCli, CSTR("")));
 		this->txtSSLCliHost->SetRect(104, 4, 100, 23, false);
-		NEW_CLASS(this->lblSSLCliPort, UI::GUILabel(ui, this->tpSSLCli, CSTR("Port")));
+		this->lblSSLCliPort = ui->NewLabel(this->tpSSLCli, CSTR("Port"));
 		this->lblSSLCliPort->SetRect(4, 28, 100, 23, false);
 		NEW_CLASS(this->txtSSLCliPort, UI::GUITextBox(ui, this->tpSSLCli, CSTR("")));
 		this->txtSSLCliPort->SetRect(104, 28, 100, 23, false);
 	}
 
 	this->tpUDPSvr = this->tcConfig->AddTabPage(CSTR("UDP Server"));
-	NEW_CLASS(this->lblUDPSvrPort, UI::GUILabel(ui, this->tpUDPSvr, CSTR("Port")));
+	this->lblUDPSvrPort = ui->NewLabel(this->tpUDPSvr, CSTR("Port"));
 	this->lblUDPSvrPort->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtUDPSvrPort, UI::GUITextBox(ui, this->tpUDPSvr, CSTR("")));
 	this->txtUDPSvrPort->SetRect(104, 4, 100, 23, false);
 
 	this->tpUDPCli = this->tcConfig->AddTabPage(CSTR("UDP Client"));
-	NEW_CLASS(this->lblUDPCliHost, UI::GUILabel(ui, this->tpUDPCli, CSTR("Host")));
+	this->lblUDPCliHost = ui->NewLabel(this->tpUDPCli, CSTR("Host"));
 	this->lblUDPCliHost->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtUDPCliHost, UI::GUITextBox(ui, this->tpUDPCli, CSTR("")));
 	this->txtUDPCliHost->SetRect(104, 4, 100, 23, false);
-	NEW_CLASS(this->lblUDPCliPort, UI::GUILabel(ui, this->tpUDPCli, CSTR("Port")));
+	this->lblUDPCliPort = ui->NewLabel(this->tpUDPCli, CSTR("Port"));
 	this->lblUDPCliPort->SetRect(4, 28, 100, 23, false);
 	NEW_CLASS(this->txtUDPCliPort, UI::GUITextBox(ui, this->tpUDPCli, CSTR("")));
 	this->txtUDPCliPort->SetRect(104, 28, 100, 23, false);
@@ -649,7 +649,7 @@ SSWR::AVIRead::AVIRSelStreamForm::AVIRSelStreamForm(UI::GUIClientControl *parent
 	if (allowReadOnly)
 	{
 		this->tpFile = this->tcConfig->AddTabPage(CSTR("File"));
-		NEW_CLASS(this->lblFileName, UI::GUILabel(ui, this->tpFile, CSTR("File Name")));
+		this->lblFileName = ui->NewLabel(this->tpFile, CSTR("File Name"));
 		this->lblFileName->SetRect(4, 4, 100, 23, false);
 		NEW_CLASS(this->txtFileName, UI::GUITextBox(ui, this->tpFile, CSTR("")));
 		this->txtFileName->SetRect(104, 4, 400, 23, false);

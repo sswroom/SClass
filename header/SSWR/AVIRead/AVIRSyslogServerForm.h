@@ -30,7 +30,7 @@ namespace SSWR
 			Net::SyslogServer *svr;
 
 			NotNullPtr<UI::GUIPanel> pnlControl;
-			UI::GUILabel *lblPort;
+			NotNullPtr<UI::GUILabel> lblPort;
 			UI::GUITextBox *txtPort;
 			NotNullPtr<UI::GUIButton> btnStart;
 			UI::GUIListBox *lbClient;

@@ -38,7 +38,7 @@ SSWR::AVIRead::AVIRSetAudioForm::AVIRSetAudioForm(UI::GUIClientControl *parent, 
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASS(this->lblDevice, UI::GUILabel(ui, *this, CSTR("Audio Device")));
+	this->lblDevice = ui->NewLabel(*this, CSTR("Audio Device"));
 	this->lblDevice->SetRect(8, 8, 100, 23, false);
 	NEW_CLASS(this->lbDevice, UI::GUIListBox(ui, *this, false));
 	this->lbDevice->SetRect(112, 8, 256, 112, false);

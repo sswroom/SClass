@@ -18,7 +18,7 @@ namespace SSWR
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 
 			NotNullPtr<UI::GUIPanel> pnlRequest;
-			UI::GUILabel *lblAgent;
+			NotNullPtr<UI::GUILabel> lblAgent;
 			UI::GUITextBox *txtAgent;
 			UI::GUIListView *lvResults;
 

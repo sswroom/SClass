@@ -65,11 +65,11 @@ SSWR::AVIRead::AVIRImageUploaderForm::AVIRImageUploaderForm(UI::GUIClientControl
 	NEW_CLASSNN(this->pnlCtrl, UI::GUIPanel(ui, *this));
 	this->pnlCtrl->SetRect(0, 0, 100, 55, false);
 	this->pnlCtrl->SetDockType(UI::GUIControl::DOCK_BOTTOM);
-	NEW_CLASS(this->lblUsername, UI::GUILabel(ui, this->pnlCtrl, CSTR("Username")));
+	this->lblUsername = ui->NewLabel(this->pnlCtrl, CSTR("Username"));
 	this->lblUsername->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtUsername, UI::GUITextBox(ui, this->pnlCtrl, CSTR("")));
 	this->txtUsername->SetRect(104, 4, 100, 23, false);
-	NEW_CLASS(this->lblPassword, UI::GUILabel(ui, this->pnlCtrl, CSTR("Password")));
+	this->lblPassword = ui->NewLabel(this->pnlCtrl, CSTR("Password"));
 	this->lblPassword->SetRect(4, 28, 100, 23, false);
 	NEW_CLASS(this->txtPassword, UI::GUITextBox(ui, this->pnlCtrl, CSTR("")));
 	this->txtPassword->SetPasswordChar('*');

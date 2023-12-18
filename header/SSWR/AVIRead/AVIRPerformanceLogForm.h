@@ -30,7 +30,7 @@ namespace SSWR
 
 			NotNullPtr<UI::GUIPanel> pnlCtrl;
 			NotNullPtr<UI::GUIButton> btnStart;
-			UI::GUILabel *lblCurrWRate;
+			NotNullPtr<UI::GUILabel> lblCurrWRate;
 			UI::GUITextBox *txtCurrWRate;
 			UI::GUIRealtimeLineChart *rlcWRate;
 

@@ -54,9 +54,9 @@ namespace UtilUI
 		UI::GUIPictureBox *pbMain;
 		UI::GUIPictureBox *pbSub;
 		UI::GUIPictureBox *pbColor;
-		UI::GUILabel *lblTrans;
+		NotNullPtr<UI::GUILabel> lblTrans;
 		UI::GUITextBox *txtTrans;
-		UI::GUILabel *lblPrimaries;
+		NotNullPtr<UI::GUILabel> lblPrimaries;
 		UI::GUITextBox *txtPrimaries;
 		UI::GUIRadioButton *radR;
 		UI::GUIRadioButton *radG;
@@ -77,7 +77,7 @@ namespace UtilUI
 		UI::GUITextBox *txtHSVH;
 		UI::GUITextBox *txtHSVS;
 		UI::GUITextBox *txtHSVV;
-		UI::GUILabel *lblAlpha;
+		NotNullPtr<UI::GUILabel> lblAlpha;
 		UI::GUITextBox *txtAlpha;
 
 		NotNullPtr<UI::GUIButton> btnOk;
@@ -92,6 +92,7 @@ namespace UtilUI
 		ColorType textUpdating;
 		ColorCorrType colorCorr;
 		Media::ColorProfile *colorProfile;
+		Bool alphaShown;
 
 		Double mainX;
 		Double mainY;

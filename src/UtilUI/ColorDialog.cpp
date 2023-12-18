@@ -1521,12 +1521,12 @@ UtilUI::ColorDialog::ColorDialog(UI::GUIClientControl *parent, NotNullPtr<UI::GU
 	this->txtHSVV->SetRect(668, 404, 48, 23, false);
 	this->txtHSVV->HandleTextChanged(OnHSVVTChange, this);
 
-	NEW_CLASS(this->lblTrans, UI::GUILabel(ui, *this, CSTR("RGB Transfer Func")));
+	this->lblTrans = ui->NewLabel(*this, CSTR("RGB Transfer Func"));
 	this->lblTrans->SetRect(16, 546, 150, 23, false);
 	NEW_CLASS(this->txtTrans, UI::GUITextBox(ui, *this, Media::CS::TransferTypeGetName(this->colorProfile->GetRTranParam()->GetTranType())));
 	this->txtTrans->SetRect(166, 546, 100, 23, false);
 	this->txtTrans->SetReadOnly(true);
-	NEW_CLASS(this->lblPrimaries, UI::GUILabel(ui, *this, CSTR("RGB Primaries")));
+	this->lblPrimaries = ui->NewLabel(*this, CSTR("RGB Primaries"));
 	this->lblPrimaries->SetRect(16, 570, 150, 23, false);
 	NEW_CLASS(this->txtPrimaries, UI::GUITextBox(ui, *this, Media::ColorProfile::ColorTypeGetName(this->colorProfile->GetPrimaries()->colorType)));
 	this->txtPrimaries->SetRect(166, 570, 100, 23, false);
@@ -1540,8 +1540,7 @@ UtilUI::ColorDialog::ColorDialog(UI::GUIClientControl *parent, NotNullPtr<UI::GU
 	this->SetDefaultButton(this->btnOk);
 	this->SetCancelButton(this->btnCancel);
 
-	this->lblAlpha = 0;
-	this->txtAlpha = 0;
+	this->alphaShown = false;
 
 	this->genThreadCnt = Sync::ThreadUtil::GetThreadCnt();
 	NEW_CLASS(this->genEvt, Sync::Event(true));
@@ -1679,11 +1678,12 @@ UInt32 UtilUI::ColorDialog::GetColor32()
 
 void UtilUI::ColorDialog::ShowAlpha()
 {
-	if (this->lblAlpha == 0)
+	if (!this->alphaShown)
 	{
+		this->alphaShown = true;
 		UTF8Char sbuff[64];
 		UTF8Char *sptr;
-		NEW_CLASS(this->lblAlpha, UI::GUILabel(ui, *this, CSTR("Alpha")));
+		this->lblAlpha = ui->NewLabel(*this, CSTR("Alpha"));
 		this->lblAlpha->SetRect(504, 548, 100, 23, false);
 		sptr = Text::StrDouble(sbuff, this->aVal * 255.0);
 		NEW_CLASS(this->txtAlpha, UI::GUITextBox(ui, *this, CSTRP(sbuff, sptr)));

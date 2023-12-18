@@ -24,12 +24,12 @@ namespace SSWR
 			Data::ArrayListNN<Crypto::Cert::X509Cert> caCerts;
 
 			NotNullPtr<UI::GUIGroupBox> grpParam;
-			UI::GUILabel *lblPort;
+			NotNullPtr<UI::GUILabel> lblPort;
 			UI::GUITextBox *txtPort;
-			UI::GUILabel *lblSSL;
+			NotNullPtr<UI::GUILabel> lblSSL;
 			NotNullPtr<UI::GUIButton> btnSSLCert;
-			UI::GUILabel *lblSSLCert;
-			UI::GUILabel *lblClientCA;
+			NotNullPtr<UI::GUILabel> lblSSLCert;
+			NotNullPtr<UI::GUILabel> lblClientCA;
 			UI::GUITextBox *txtClientCA;
 			NotNullPtr<UI::GUIButton> btnStart;
 			NotNullPtr<UI::GUIButton> btnStop;

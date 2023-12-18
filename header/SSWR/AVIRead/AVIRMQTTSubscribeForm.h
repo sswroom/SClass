@@ -50,26 +50,26 @@ namespace SSWR
 			UI::GUITabControl *tcMain;
 
 			NotNullPtr<UI::GUITabPage> tpStatus;
-			UI::GUILabel *lblHost;
+			NotNullPtr<UI::GUILabel> lblHost;
 			UI::GUITextBox *txtHost;
-			UI::GUILabel *lblPort;
+			NotNullPtr<UI::GUILabel> lblPort;
 			UI::GUITextBox *txtPort;
-			UI::GUILabel *lblUsername;
+			NotNullPtr<UI::GUILabel> lblUsername;
 			UI::GUITextBox *txtUsername;
-			UI::GUILabel *lblPassword;
+			NotNullPtr<UI::GUILabel> lblPassword;
 			UI::GUITextBox *txtPassword;
 			NotNullPtr<UI::GUIButton> btnStart;
 
 			NotNullPtr<UI::GUITabPage> tpSTopic;
-			UI::GUILabel *lblSTopic;
+			NotNullPtr<UI::GUILabel> lblSTopic;
 			UI::GUITextBox *txtSTopic;
 			NotNullPtr<UI::GUIButton> btnSTopic;
 			UI::GUIListBox *lbSTopic;
 
 			NotNullPtr<UI::GUITabPage> tpPublish;
-			UI::GUILabel *lblPublishTopic;
+			NotNullPtr<UI::GUILabel> lblPublishTopic;
 			UI::GUITextBox *txtPublishTopic;
-			UI::GUILabel *lblPublishMessage;
+			NotNullPtr<UI::GUILabel> lblPublishMessage;
 			UI::GUITextBox *txtPublishMessage;
 			NotNullPtr<UI::GUIButton> btnPublish;
 

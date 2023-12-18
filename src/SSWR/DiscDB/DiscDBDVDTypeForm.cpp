@@ -84,7 +84,7 @@ SSWR::DiscDB::DiscDBDVDTypeForm::DiscDBDVDTypeForm(UI::GUIClientControl *parent,
 	this->env = env;
 	this->SetDPI(this->env->GetMonitorHDPI(this->GetHMonitor()), this->env->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASS(this->lblID, UI::GUILabel(ui, *this, CSTR("ID")));
+	this->lblID = ui->NewLabel(*this, CSTR("ID"));
 	this->lblID->SetRect(8, 9, 80, 25, false);
 	NEW_CLASS(this->txtID, UI::GUITextBox(ui, *this, CSTR("")));
 	this->txtID->SetRect(96, 9, 100, 20, false);
@@ -94,15 +94,15 @@ SSWR::DiscDB::DiscDBDVDTypeForm::DiscDBDVDTypeForm(UI::GUIClientControl *parent,
 	this->btnCancel = ui->NewButton(*this, CSTR("&Cancel"));
 	this->btnCancel->SetRect(224, 43, 80, 25, false);
 	this->btnCancel->SetVisible(false);
-	NEW_CLASS(this->lblName, UI::GUILabel(ui, *this, CSTR("Name")));
+	this->lblName = ui->NewLabel(*this, CSTR("Name"));
 	this->lblName->SetRect(8, 43, 80, 25, false);
 	NEW_CLASS(this->txtName, UI::GUITextBox(ui, *this, CSTR("")));
 	this->txtName->SetRect(96, 43, 100, 20, false);
-	NEW_CLASS(this->lblDescription, UI::GUILabel(ui, *this, CSTR("Description")));
+	this->lblDescription = ui->NewLabel(*this, CSTR("Description"));
 	this->lblDescription->SetRect(8, 78, 80, 25, false);
 	NEW_CLASS(this->txtDescription, UI::GUITextBox(ui, *this, CSTR("")));
 	this->txtDescription->SetRect(96, 78, 216, 20, false);
-	NEW_CLASS(this->lblDisplay, UI::GUILabel(ui, *this, CSTR("")));
+	this->lblDisplay = ui->NewLabel(*this, CSTR(""));
 	this->lblDisplay->SetRect(8, 113, 304, 26, false);
 	this->btnPrev = ui->NewButton(*this, CSTR("&Prev"));
 	this->btnPrev->SetRect(8, 147, 75, 25, false);

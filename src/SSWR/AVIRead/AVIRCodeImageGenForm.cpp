@@ -70,23 +70,23 @@ SSWR::AVIRead::AVIRCodeImageGenForm::AVIRCodeImageGenForm(UI::GUIClientControl *
 	this->pnlMain->SetDockType(UI::GUIControl::DOCK_BOTTOM);
 	NEW_CLASS(this->pbMain, UI::GUIPictureBoxDD(ui, *this, this->colorSess, true, false));
 	this->pbMain->SetDockType(UI::GUIControl::DOCK_FILL);
-	NEW_CLASS(this->lblCodeType, UI::GUILabel(ui, this->pnlMain, CSTR("Code Type")));
+	this->lblCodeType = ui->NewLabel(this->pnlMain, CSTR("Code Type"));
 	this->lblCodeType->SetRect(4, 4, 100, 23, false);
 	this->cboCodeType = ui->NewComboBox(this->pnlMain, false);
 	this->cboCodeType->SetRect(104, 4, 100, 23, false);
 	this->cboCodeType->HandleSelectionChange(OnCodeTypeChanged, this);
-	NEW_CLASS(this->lblCodeSize, UI::GUILabel(ui, this->pnlMain, CSTR("Code Width")));
+	this->lblCodeSize = ui->NewLabel(this->pnlMain, CSTR("Code Width"));
 	this->lblCodeSize->SetRect(4, 28, 100, 23, false);
 	NEW_CLASS(this->txtCodeSize, UI::GUITextBox(ui, this->pnlMain, CSTR("1")));
 	this->txtCodeSize->SetRect(104, 28, 100, 23, false);
-	NEW_CLASS(this->lblCode, UI::GUILabel(ui, this->pnlMain, CSTR("Code")));
+	this->lblCode = ui->NewLabel(this->pnlMain, CSTR("Code"));
 	this->lblCode->SetRect(4, 52, 100, 23, false);
 	NEW_CLASS(this->txtCode, UI::GUITextBox(ui, this->pnlMain, CSTR("")));
 	this->txtCode->SetRect(104, 52, 400, 23, false);
 	this->btnCodeGen = ui->NewButton(this->pnlMain, CSTR("Generate"));
 	this->btnCodeGen->SetRect(504, 52, 75, 23, false);
 	this->btnCodeGen->HandleButtonClick(OnCodeGenClicked, this);
-	NEW_CLASS(this->lblCodeInfo, UI::GUILabel(ui, this->pnlMain, CSTR("")));
+	this->lblCodeInfo = ui->NewLabel(this->pnlMain, CSTR(""));
 	this->lblCodeInfo->SetRect(584, 52, 100, 23, false);
 
 	OSInt i;

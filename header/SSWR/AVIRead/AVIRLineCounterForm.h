@@ -23,17 +23,17 @@ namespace SSWR
 			} FileInfo;
 		private:
 			NotNullPtr<UI::GUIPanel> pnlConfig;
-			UI::GUILabel *lblPath;
+			NotNullPtr<UI::GUILabel> lblPath;
 			UI::GUITextBox *txtPath;
-			UI::GUILabel *lblExtensions;
+			NotNullPtr<UI::GUILabel> lblExtensions;
 			UI::GUITextBox *txtExtensions;
 			NotNullPtr<UI::GUIButton> btnExtensionsAdd;
 			UI::GUIListBox *lbExtensions;
 			NotNullPtr<UI::GUIButton> btnExtensionsRemove;
 			NotNullPtr<UI::GUIButton> btnExtensionsClear;
 			NotNullPtr<UI::GUIButton> btnCalc;
-			UI::GUILabel *lblResult;
-			UI::GUILabel *lblTotalLine;
+			NotNullPtr<UI::GUILabel> lblResult;
+			NotNullPtr<UI::GUILabel> lblTotalLine;
 			UI::GUITextBox *txtTotalLine;
 			NotNullPtr<UI::GUIButton> btnResultSave;
 

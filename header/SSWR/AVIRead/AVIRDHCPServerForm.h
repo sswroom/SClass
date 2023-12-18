@@ -22,19 +22,19 @@ namespace SSWR
 			Net::DHCPServer *svr;
 
 			NotNullPtr<UI::GUIPanel> pnlControl;
-			UI::GUILabel *lblIP;
+			NotNullPtr<UI::GUILabel> lblIP;
 			NotNullPtr<UI::GUIComboBox> cboIP;
-			UI::GUILabel *lblSubnet;
+			NotNullPtr<UI::GUILabel> lblSubnet;
 			UI::GUITextBox *txtSubnet;
-			UI::GUILabel *lblFirstIP;
+			NotNullPtr<UI::GUILabel> lblFirstIP;
 			UI::GUITextBox *txtFirstIP;
-			UI::GUILabel *lblDevCount;
+			NotNullPtr<UI::GUILabel> lblDevCount;
 			UI::GUITextBox *txtDevCount;
-			UI::GUILabel *lblGateway;
+			NotNullPtr<UI::GUILabel> lblGateway;
 			UI::GUITextBox *txtGateway;
-			UI::GUILabel *lblDNS1;
+			NotNullPtr<UI::GUILabel> lblDNS1;
 			UI::GUITextBox *txtDNS1;
-			UI::GUILabel *lblDNS2;
+			NotNullPtr<UI::GUILabel> lblDNS2;
 			UI::GUITextBox *txtDNS2;
 			NotNullPtr<UI::GUIButton> btnStart;
 			UI::GUIListView *lvDevices;

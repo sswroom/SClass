@@ -25,7 +25,7 @@ namespace SSWR
 
 			NotNullPtr<UI::GUITabPage> tpMain;
 			NotNullPtr<UI::GUIButton> btnChgProfile;
-			UI::GUILabel *lblProfile;
+			NotNullPtr<UI::GUILabel> lblProfile;
 			
 			NotNullPtr<UI::GUITabPage> tpProfile;
 			NotNullPtr<UI::GUIPanel> pnlProfile1;

@@ -72,11 +72,11 @@ SSWR::AVIRead::AVIRNTPServerForm::AVIRNTPServerForm(UI::GUIClientControl *parent
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	this->tpControl = this->tcMain->AddTabPage(CSTR("Control"));
-	NEW_CLASS(this->lblPort, UI::GUILabel(ui, this->tpControl, CSTR("Port")));
+	this->lblPort = ui->NewLabel(this->tpControl, CSTR("Port"));
 	this->lblPort->SetRect(8, 8, 100, 23, false);
 	NEW_CLASS(this->txtPort, UI::GUITextBox(ui, this->tpControl, CSTR("123")));
 	this->txtPort->SetRect(108, 8, 50, 23, false);
-	NEW_CLASS(this->lblTimeServer, UI::GUILabel(ui, this->tpControl, CSTR("Time Server")));
+	this->lblTimeServer = ui->NewLabel(this->tpControl, CSTR("Time Server"));
 	this->lblTimeServer->SetRect(8, 32, 100, 23, false);
 	NEW_CLASS(this->txtTimeServer, UI::GUITextBox(ui, this->tpControl, CSTR("stdtime.gov.hk")));
 	this->txtTimeServer->SetRect(108, 32, 500, 23, false);

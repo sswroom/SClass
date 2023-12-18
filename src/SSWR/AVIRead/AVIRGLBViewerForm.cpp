@@ -115,13 +115,13 @@ SSWR::AVIRead::AVIRGLBViewerForm::AVIRGLBViewerForm(UI::GUIClientControl *parent
 	this->vspMain = ui->NewVSplitter(*this, 3, true);
 	NEW_CLASSNN(this->pnlJSON, UI::GUIPanel(ui, *this));
 	this->pnlJSON->SetDockType(UI::GUIControl::DOCK_FILL);
-	NEW_CLASS(this->lblJSON, UI::GUILabel(ui, this->pnlJSON, CSTR("JSON")));
+	this->lblJSON = ui->NewLabel(this->pnlJSON, CSTR("JSON"));
 	this->lblJSON->SetRect(0, 0, 100, 23, false);
 	this->lblJSON->SetDockType(UI::GUIControl::DOCK_LEFT);
 	NEW_CLASS(this->txtJSON, UI::GUITextBox(ui, this->pnlJSON, CSTR(""), true));
 	this->txtJSON->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->txtJSON->SetReadOnly(true);
-	NEW_CLASS(this->lblBinBuff, UI::GUILabel(ui, this->pnlBinBuff, CSTR("Binary Buffer")));
+	this->lblBinBuff = ui->NewLabel(this->pnlBinBuff, CSTR("Binary Buffer"));
 	this->lblBinBuff->SetRect(0, 0, 100, 23, false);
 	this->lblBinBuff->SetDockType(UI::GUIControl::DOCK_LEFT);
 	NEW_CLASS(this->hfvBinBuff, UI::GUIHexFileView(ui, this->pnlBinBuff, this->core->GetDrawEngine()));

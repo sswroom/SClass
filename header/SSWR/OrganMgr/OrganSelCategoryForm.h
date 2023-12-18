@@ -14,7 +14,7 @@ namespace SSWR
 		class OrganSelCategoryForm : public UI::GUIForm
 		{
 		private:
-			UI::GUILabel *lbl;
+			NotNullPtr<UI::GUILabel> lbl;
 			UI::GUIListBox *lbCategory;
 			NotNullPtr<UI::GUIButton> btnOK;
 			NotNullPtr<UI::GUIButton> btnCancel;

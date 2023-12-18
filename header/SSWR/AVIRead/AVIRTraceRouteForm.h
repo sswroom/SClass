@@ -27,9 +27,9 @@ namespace SSWR
 			Net::WhoisHandler whois;
 
 			NotNullPtr<UI::GUIPanel> pnlControl;
-			UI::GUILabel *lblSelfIP;
+			NotNullPtr<UI::GUILabel> lblSelfIP;
 			NotNullPtr<UI::GUIComboBox> cboSelfIP;
-			UI::GUILabel *lblTargetIP;
+			NotNullPtr<UI::GUILabel> lblTargetIP;
 			UI::GUITextBox *txtTargetIP;
 			NotNullPtr<UI::GUIButton> btnStart;
 

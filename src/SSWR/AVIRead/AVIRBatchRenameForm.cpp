@@ -101,7 +101,7 @@ SSWR::AVIRead::AVIRBatchRenameForm::AVIRBatchRenameForm(UI::GUIClientControl *pa
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASS(this->lblDirectory, UI::GUILabel(ui, *this, CSTR("Directory")));
+	this->lblDirectory = ui->NewLabel(*this, CSTR("Directory"));
 	this->lblDirectory->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtDirectory, UI::GUITextBox(ui, *this, CSTR("")));
 	this->txtDirectory->SetRect(104, 4, 600, 23, false);

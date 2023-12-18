@@ -30,24 +30,24 @@ namespace SSWR
 
 			NotNullPtr<UI::GUITabPage> tpShape;
 			NotNullPtr<UI::GUIPanel> pnlShape;
-			UI::GUILabel *lblShapeFmt;
+			NotNullPtr<UI::GUILabel> lblShapeFmt;
 			NotNullPtr<UI::GUIComboBox> cboShapeFmt;
 			UI::GUITextBox *txtShape;
 
 			NotNullPtr<UI::GUITabPage> tpBounds;
-			UI::GUILabel *lblMinX;
+			NotNullPtr<UI::GUILabel> lblMinX;
 			UI::GUITextBox *txtMinX;
-			UI::GUILabel *lblMinY;
+			NotNullPtr<UI::GUILabel> lblMinY;
 			UI::GUITextBox *txtMinY;
-			UI::GUILabel *lblMaxX;
+			NotNullPtr<UI::GUILabel> lblMaxX;
 			UI::GUITextBox *txtMaxX;
-			UI::GUILabel *lblMaxY;
+			NotNullPtr<UI::GUILabel> lblMaxY;
 			UI::GUITextBox *txtMaxY;
 
 			NotNullPtr<UI::GUITabPage> tpDist;
-			UI::GUILabel *lblDist;
+			NotNullPtr<UI::GUILabel> lblDist;
 			UI::GUITextBox *txtDist;
-			UI::GUILabel *lblInside;
+			NotNullPtr<UI::GUILabel> lblInside;
 			UI::GUITextBox *txtInside;
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;

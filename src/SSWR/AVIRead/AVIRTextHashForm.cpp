@@ -61,7 +61,7 @@ SSWR::AVIRead::AVIRTextHashForm::AVIRTextHashForm(UI::GUIClientControl *parent, 
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASS(this->lblText, UI::GUILabel(ui, *this, CSTR("Text")));
+	this->lblText = ui->NewLabel(*this, CSTR("Text"));
 	this->lblText->SetRect(4, 4, 100, 23, false);
 	this->lblText->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASSNN(this->pnlControl, UI::GUIPanel(ui, *this));
@@ -69,18 +69,18 @@ SSWR::AVIRead::AVIRTextHashForm::AVIRTextHashForm(UI::GUIClientControl *parent, 
 	this->pnlControl->SetDockType(UI::GUIControl::DOCK_BOTTOM);
 	NEW_CLASS(this->txtText, UI::GUITextBox(ui, *this, CSTR(""), true));
 	this->txtText->SetDockType(UI::GUIControl::DOCK_FILL);
-	NEW_CLASS(this->lblEncrypt, UI::GUILabel(ui, this->pnlControl, CSTR("Text Encrypt")));
+	this->lblEncrypt = ui->NewLabel(this->pnlControl, CSTR("Text Encrypt"));
 	this->lblEncrypt->SetRect(4, 4, 100, 23, false);
 	this->cboEncrypt = ui->NewComboBox(this->pnlControl, false);
 	this->cboEncrypt->SetRect(104, 4, 300, 23, false);
-	NEW_CLASS(this->lblHashType, UI::GUILabel(ui, this->pnlControl, CSTR("Hash Type")));
+	this->lblHashType = ui->NewLabel(this->pnlControl, CSTR("Hash Type"));
 	this->lblHashType->SetRect(4, 28, 100, 23, false);
 	this->cboHashType = ui->NewComboBox(this->pnlControl, false);
 	this->cboHashType->SetRect(104, 28, 300, 23, false);
 	this->btnGenerate = ui->NewButton(this->pnlControl, CSTR("Generate"));
 	this->btnGenerate->SetRect(104, 52, 75, 23, false);
 	this->btnGenerate->HandleButtonClick(OnGenerateClicked, this);
-	NEW_CLASS(this->lblHashValue, UI::GUILabel(ui, this->pnlControl, CSTR("Hash Value")));
+	this->lblHashValue = ui->NewLabel(this->pnlControl, CSTR("Hash Value"));
 	this->lblHashValue->SetRect(4, 76, 100, 23, false);
 	NEW_CLASS(this->txtHashValue, UI::GUITextBox(ui, this->pnlControl, CSTR("")));
 	this->txtHashValue->SetRect(104, 76, 400, 23, false);

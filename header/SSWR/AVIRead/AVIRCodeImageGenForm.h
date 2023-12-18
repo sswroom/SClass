@@ -25,13 +25,13 @@ namespace SSWR
 
 			UI::GUIPictureBoxDD *pbMain;
 			NotNullPtr<UI::GUIPanel> pnlMain;
-			UI::GUILabel *lblCodeType;
+			NotNullPtr<UI::GUILabel> lblCodeType;
 			NotNullPtr<UI::GUIComboBox> cboCodeType;
-			UI::GUILabel *lblCodeSize;
+			NotNullPtr<UI::GUILabel> lblCodeSize;
 			UI::GUITextBox *txtCodeSize;
-			UI::GUILabel *lblCode;
+			NotNullPtr<UI::GUILabel> lblCode;
 			UI::GUITextBox *txtCode;
-			UI::GUILabel *lblCodeInfo;
+			NotNullPtr<UI::GUILabel> lblCodeInfo;
 			NotNullPtr<UI::GUIButton> btnCodeGen;
 
 			static void __stdcall OnCodeTypeChanged(void *userObj);

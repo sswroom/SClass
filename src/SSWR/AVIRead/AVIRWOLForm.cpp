@@ -49,11 +49,11 @@ SSWR::AVIRead::AVIRWOLForm::AVIRWOLForm(UI::GUIClientControl *parent, NotNullPtr
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASS(this->lblAdapter, UI::GUILabel(ui, *this, CSTR("Adapter")));
+	this->lblAdapter = ui->NewLabel(*this, CSTR("Adapter"));
 	this->lblAdapter->SetRect(4, 4, 100, 23, false);
 	this->cboAdapter = ui->NewComboBox(*this, false);
 	this->cboAdapter->SetRect(104, 4, 300, 23, false);
-	NEW_CLASS(this->lblDeviceMac, UI::GUILabel(ui, *this, CSTR("MAC Address")));
+	this->lblDeviceMac = ui->NewLabel(*this, CSTR("MAC Address"));
 	this->lblDeviceMac->SetRect(4, 28, 100, 23, false);
 	NEW_CLASS(this->txtDeviceMac, UI::GUITextBox(ui, *this, CSTR(""), false));
 	this->txtDeviceMac->SetRect(104, 28, 200, 23, false);

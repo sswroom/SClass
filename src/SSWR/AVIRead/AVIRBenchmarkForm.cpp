@@ -403,12 +403,12 @@ SSWR::AVIRead::AVIRBenchmarkForm::AVIRBenchmarkForm(UI::GUIClientControl *parent
 	NEW_CLASSNN(this->pnlInfo, UI::GUIPanel(ui, this->tpInfo));
 	this->pnlInfo->SetRect(0, 0, 100, 52, false);
 	this->pnlInfo->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->lblPlatform, UI::GUILabel(ui, this->pnlInfo, CSTR("Platform")));
+	this->lblPlatform = ui->NewLabel(this->pnlInfo, CSTR("Platform"));
 	this->lblPlatform->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtPlatform, UI::GUITextBox(ui, this->pnlInfo, CSTR("")));
 	this->txtPlatform->SetRect(104, 4, 300, 23, false);
 	this->txtPlatform->SetReadOnly(true);
-	NEW_CLASS(this->lblCPU, UI::GUILabel(ui, this->pnlInfo, CSTR("CPU")));
+	this->lblCPU = ui->NewLabel(this->pnlInfo, CSTR("CPU"));
 	this->lblCPU->SetRect(4, 28, 100, 23, false);
 	NEW_CLASS(this->txtCPU, UI::GUITextBox(ui, this->pnlInfo, CSTR("")));
 	this->txtCPU->SetRect(104, 28, 300, 23, false);

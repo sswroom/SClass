@@ -604,7 +604,7 @@ SSWR::DownloadMonitor::DownMonMainForm::DownMonMainForm(UI::GUIClientControl *pa
 	NEW_CLASSNN(this->pnlButtons, UI::GUIPanel(ui, *this));
 	this->pnlButtons->SetRect(0, 0, 100, 55, false);
 	this->pnlButtons->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->lblStatus, UI::GUILabel(ui, this->pnlButtons, CSTR("Status")));
+	this->lblStatus = ui->NewLabel(this->pnlButtons, CSTR("Status"));
 	this->lblStatus->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtStatus, UI::GUITextBox(ui, this->pnlButtons, CSTR("Idle")));
 	this->txtStatus->SetRect(104, 4, 100, 23, false);
@@ -626,7 +626,7 @@ SSWR::DownloadMonitor::DownMonMainForm::DownMonMainForm(UI::GUIClientControl *pa
 	this->btnWebUpdate = ui->NewButton(this->pnlButtons, CSTR("Web Update"));
 	this->btnWebUpdate->SetRect(624, 4, 75, 23, false);
 	this->btnWebUpdate->HandleButtonClick(OnWebUpdateClicked, this);
-	NEW_CLASS(this->lblAlarm, UI::GUILabel(ui, this->pnlButtons, CSTR("")));
+	this->lblAlarm = ui->NewLabel(this->pnlButtons, CSTR(""));
 	this->lblAlarm->SetRect(4, 28, 100, 23, false);
 	this->btn30Minutes = ui->NewButton(this->pnlButtons, CSTR("30 Minutes"));
 	this->btn30Minutes->SetRect(104, 28, 75, 23, false);

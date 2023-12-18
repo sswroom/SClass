@@ -22,10 +22,10 @@ namespace SSWR
 			UI::GUITabControl *tcMain;
 
 			NotNullPtr<UI::GUITabPage> tpAlgorithm;
-			UI::GUILabel *lblAlgorithm;
+			NotNullPtr<UI::GUILabel> lblAlgorithm;
 			NotNullPtr<UI::GUIComboBox> cboAlgorithm;
 			NotNullPtr<UI::GUIButton> btnSpeed;
-			UI::GUILabel *lblSpeed;
+			NotNullPtr<UI::GUILabel> lblSpeed;
 			UI::GUITextBox *txtSpeed;
 
 			NotNullPtr<UI::GUITabPage> tpCompare;

@@ -126,11 +126,11 @@ SSWR::AVIRead::AVIROTPForm::AVIROTPForm(UI::GUIClientControl *parent, NotNullPtr
 	this->grpNew = ui->NewGroupBox(*this, CSTR("New Entry"));
 	this->grpNew->SetRect(0, 0, 100, 112, false);
 	this->grpNew->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->lblName, UI::GUILabel(ui, this->grpNew, CSTR("Name")));
+	this->lblName = ui->NewLabel(this->grpNew, CSTR("Name"));
 	this->lblName->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtName, UI::GUITextBox(ui, this->grpNew, CSTR("")));
 	this->txtName->SetRect(104, 4, 150, 23, false);
-	NEW_CLASS(this->lblKey, UI::GUILabel(ui, this->grpNew, CSTR("Key")));
+	this->lblKey = ui->NewLabel(this->grpNew, CSTR("Key"));
 	this->lblKey->SetRect(4, 28, 100, 23, false);
 	NEW_CLASS(this->txtKey, UI::GUITextBox(ui, this->grpNew, CSTR("")));
 	this->txtKey->SetRect(104, 28, 300, 23, false);
@@ -140,7 +140,7 @@ SSWR::AVIRead::AVIROTPForm::AVIROTPForm(UI::GUIClientControl *parent, NotNullPtr
 	this->btnKeyRand160 = ui->NewButton(this->grpNew, CSTR("Random 160-bit"));
 	this->btnKeyRand160->SetRect(484, 28, 75, 23, false);
 	this->btnKeyRand160->HandleButtonClick(OnKeyRand160Clicked, this);
-	NEW_CLASS(this->lblType, UI::GUILabel(ui, this->grpNew, CSTR("Type")));
+	this->lblType = ui->NewLabel(this->grpNew, CSTR("Type"));
 	this->lblType->SetRect(4, 52, 100, 23, false);
 	this->cboType = ui->NewComboBox(this->grpNew, false);
 	this->cboType->SetRect(104, 52, 150, 23, false);

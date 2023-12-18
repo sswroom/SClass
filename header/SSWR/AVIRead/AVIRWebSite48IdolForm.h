@@ -22,23 +22,23 @@ namespace SSWR
 			
 			NotNullPtr<UI::GUITabPage> tpItems;
 			NotNullPtr<UI::GUIPanel> pnlRequest;
-			UI::GUILabel *lblPageNo;
+			NotNullPtr<UI::GUILabel> lblPageNo;
 			UI::GUITextBox *txtPageNo;
 			NotNullPtr<UI::GUIButton> btnRequestPage;
 			UI::GUIListView *lvItems;
 
 			NotNullPtr<UI::GUITabPage> tpDownloadLink;
-			UI::GUILabel *lblVideoId;
+			NotNullPtr<UI::GUILabel> lblVideoId;
 			UI::GUITextBox *txtVideoId;
 			NotNullPtr<UI::GUIButton> btnDownloadLink;
-			UI::GUILabel *lblDownloadLink;
+			NotNullPtr<UI::GUILabel> lblDownloadLink;
 			UI::GUITextBox *txtDownloadLink;
 
 			NotNullPtr<UI::GUITabPage> tpVideoName;
-			UI::GUILabel *lblNameVideoId;
+			NotNullPtr<UI::GUILabel> lblNameVideoId;
 			UI::GUITextBox *txtNameVideoId;
 			NotNullPtr<UI::GUIButton> btnVideoName;
-			UI::GUILabel *lblVideoName;
+			NotNullPtr<UI::GUILabel> lblVideoName;
 			UI::GUITextBox *txtVideoName;
 
 			Net::WebSite::WebSite48IdolControl *ctrl;

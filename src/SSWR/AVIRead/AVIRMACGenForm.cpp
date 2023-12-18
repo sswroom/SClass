@@ -71,24 +71,24 @@ SSWR::AVIRead::AVIRMACGenForm::AVIRMACGenForm(UI::GUIClientControl *parent, NotN
 
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASS(this->lblVendor, UI::GUILabel(ui, *this, CSTR("Vendor")));
+	this->lblVendor = ui->NewLabel(*this, CSTR("Vendor"));
 	this->lblVendor->SetRect(4, 4, 100, 23, false);
 	this->cboVendor = ui->NewComboBox(*this, false);
 	this->cboVendor->SetRect(104, 4, 300, 23, false);
 	this->btnGenerate = ui->NewButton(*this, CSTR("Generate"));
 	this->btnGenerate->SetRect(104, 28, 75, 23, false);
 	this->btnGenerate->HandleButtonClick(OnGenerateClicked, this);
-	NEW_CLASS(this->lblColonFormat, UI::GUILabel(ui, *this, CSTR("Colon Format")));
+	this->lblColonFormat = ui->NewLabel(*this, CSTR("Colon Format"));
 	this->lblColonFormat->SetRect(4, 52, 100, 23, false);
 	NEW_CLASS(this->txtColonFormat, UI::GUITextBox(ui, *this, CSTR("")));
 	this->txtColonFormat->SetRect(104, 52, 150, 23, false);
 	this->txtColonFormat->SetReadOnly(true);
-	NEW_CLASS(this->lblPlainFormat, UI::GUILabel(ui, *this, CSTR("Plain Format")));
+	this->lblPlainFormat = ui->NewLabel(*this, CSTR("Plain Format"));
 	this->lblPlainFormat->SetRect(4, 76, 100, 23, false);
 	NEW_CLASS(this->txtPlainFormat, UI::GUITextBox(ui, *this, CSTR("")));
 	this->txtPlainFormat->SetRect(104, 76, 150, 23, false);
 	this->txtPlainFormat->SetReadOnly(true);
-	NEW_CLASS(this->lblAdapter, UI::GUILabel(ui, *this, CSTR("Adapter")));
+	this->lblAdapter = ui->NewLabel(*this, CSTR("Adapter"));
 	this->lblAdapter->SetRect(4, 100, 100, 23, false);
 	this->cboAdapter = ui->NewComboBox(*this, false);
 	this->cboAdapter->SetRect(104, 100, 200, 23, false);

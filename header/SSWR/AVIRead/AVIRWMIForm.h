@@ -16,7 +16,7 @@ namespace SSWR
 		private:
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 
-			UI::GUILabel *lblNS;
+			NotNullPtr<UI::GUILabel> lblNS;
 			UI::GUIListBox *lbNS;
 
 			NotNullPtr<UI::GUIButton> btnOK;

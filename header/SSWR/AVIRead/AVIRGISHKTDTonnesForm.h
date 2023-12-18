@@ -15,10 +15,10 @@ namespace SSWR
 		private:
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 
-			UI::GUILabel *lblRoadRoute;
+			NotNullPtr<UI::GUILabel> lblRoadRoute;
 			UI::GUITextBox *txtRoadRoute;
 			NotNullPtr<UI::GUIButton> btnRoadRoute;
-			UI::GUILabel *lblVehicleRes;
+			NotNullPtr<UI::GUILabel> lblVehicleRes;
 			UI::GUITextBox *txtVehicleRes;
 			NotNullPtr<UI::GUIButton> btnVehicleRes;
 			NotNullPtr<UI::GUIButton> btnOK;

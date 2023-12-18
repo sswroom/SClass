@@ -18,17 +18,17 @@ namespace SSWR
 			NotNullPtr<Net::SocketFactory> sockf;
 			Net::ACMEClient *client;
 
-			UI::GUILabel *lblHost;
+			NotNullPtr<UI::GUILabel> lblHost;
 			UI::GUITextBox *txtHost;
-			UI::GUILabel *lblKeyFile;
+			NotNullPtr<UI::GUILabel> lblKeyFile;
 			UI::GUITextBox *txtKeyFile;
 			NotNullPtr<UI::GUIButton> btnStart;
 
-			UI::GUILabel *lblTermOfService;
+			NotNullPtr<UI::GUILabel> lblTermOfService;
 			UI::GUITextBox *txtTermOfService;
-			UI::GUILabel *lblWebsite;
+			NotNullPtr<UI::GUILabel> lblWebsite;
 			UI::GUITextBox *txtWebsite;
-			UI::GUILabel *lblAccount;
+			NotNullPtr<UI::GUILabel> lblAccount;
 			UI::GUITextBox *txtAccount;
 
 			static void __stdcall OnStartClicked(void *userObj);

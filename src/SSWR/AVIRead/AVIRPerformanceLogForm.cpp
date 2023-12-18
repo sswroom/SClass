@@ -115,7 +115,7 @@ SSWR::AVIRead::AVIRPerformanceLogForm::AVIRPerformanceLogForm(UI::GUIClientContr
 	this->btnStart = ui->NewButton(this->pnlCtrl, CSTR("Start"));
 	this->btnStart->SetRect(104, 4, 75, 23, false);
 	this->btnStart->HandleButtonClick(OnStartClicked, this);
-	NEW_CLASS(this->lblCurrWRate, UI::GUILabel(ui, this->pnlCtrl, CSTR("W Rate")));
+	this->lblCurrWRate = ui->NewLabel(this->pnlCtrl, CSTR("W Rate"));
 	this->lblCurrWRate->SetRect(4, 28, 100, 23, false);
 	NEW_CLASS(this->txtCurrWRate, UI::GUITextBox(ui, this->pnlCtrl, CSTR("")));
 	this->txtCurrWRate->SetRect(104, 28, 150, 23, false);

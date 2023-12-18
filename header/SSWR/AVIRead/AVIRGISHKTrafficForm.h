@@ -16,7 +16,7 @@ namespace SSWR
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			Optional<Net::SSLEngine> ssl;
 
-			UI::GUILabel *lblRoadCenterline;
+			NotNullPtr<UI::GUILabel> lblRoadCenterline;
 			UI::GUITextBox *txtRoadCenterline;
 			NotNullPtr<UI::GUIButton> btnRoadCenterline;
 			NotNullPtr<UI::GUIButton> btnOK;

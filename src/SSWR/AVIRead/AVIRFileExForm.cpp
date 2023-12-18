@@ -145,7 +145,7 @@ SSWR::AVIRead::AVIRFileExForm::AVIRFileExForm(UI::GUIClientControl *parent, NotN
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASS(this->lblSrc, UI::GUILabel(ui, *this, CSTR("Source File")));
+	this->lblSrc = ui->NewLabel(*this, CSTR("Source File"));
 	this->lblSrc->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtSrc, UI::GUITextBox(ui, *this, CSTR("")));
 	this->txtSrc->SetRect(104, 4, 600, 23, false);
@@ -153,23 +153,23 @@ SSWR::AVIRead::AVIRFileExForm::AVIRFileExForm(UI::GUIClientControl *parent, NotN
 	this->btnSrc = ui->NewButton(*this, CSTR("B&rowse"));
 	this->btnSrc->SetRect(704, 4, 75, 23, false);
 	this->btnSrc->HandleButtonClick(OnSrcClicked, this);
-	NEW_CLASS(this->lblDest, UI::GUILabel(ui, *this, CSTR("Dest File")));
+	this->lblDest = ui->NewLabel(*this, CSTR("Dest File"));
 	this->lblDest->SetRect(4, 28, 100, 23, false);
 	NEW_CLASS(this->txtDest, UI::GUITextBox(ui, *this, CSTR("")));
 	this->txtDest->SetRect(104, 28, 600, 23, false);
 	this->btnDest = ui->NewButton(*this, CSTR("&Browse"));
 	this->btnDest->SetRect(704, 28, 75, 23, false);
 	this->btnDest->HandleButtonClick(OnDestClicked, this);
-	NEW_CLASS(this->lblFileSize, UI::GUILabel(ui, *this, CSTR("File Size")));
+	this->lblFileSize = ui->NewLabel(*this, CSTR("File Size"));
 	this->lblFileSize->SetRect(4, 52, 100, 23, false);
 	NEW_CLASS(this->txtFileSize, UI::GUITextBox(ui, *this, CSTR("Unknown")));
 	this->txtFileSize->SetRect(104, 52, 160, 23, false);
 	this->txtFileSize->SetReadOnly(true);
-	NEW_CLASS(this->lblStartOfst, UI::GUILabel(ui, *this, CSTR("Start Offset")));
+	this->lblStartOfst = ui->NewLabel(*this, CSTR("Start Offset"));
 	this->lblStartOfst->SetRect(4, 76, 100, 23, false);
 	NEW_CLASS(this->txtStartOfst, UI::GUITextBox(ui, *this, CSTR("0")));
 	this->txtStartOfst->SetRect(104, 76, 160, 23, false);
-	NEW_CLASS(this->lblEndOfst, UI::GUILabel(ui, *this, CSTR("End Offset")));
+	this->lblEndOfst = ui->NewLabel(*this, CSTR("End Offset"));
 	this->lblEndOfst->SetRect(4, 100, 100, 23, false);
 	NEW_CLASS(this->txtEndOfst, UI::GUITextBox(ui, *this, CSTR("")));
 	this->txtEndOfst->SetRect(104, 100, 160, 23, false);

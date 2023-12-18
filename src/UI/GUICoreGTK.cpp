@@ -7,6 +7,7 @@
 #include "UI/GTK/GTKComboBox.h"
 #include "UI/GTK/GTKGroupBox.h"
 #include "UI/GTK/GTKHSplitter.h"
+#include "UI/GTK/GTKLabel.h"
 #include "UI/GTK/GTKMessageDialog.h"
 #include "UI/GTK/GTKVSplitter.h"
 #include <gtk/gtk.h>
@@ -213,6 +214,13 @@ NotNullPtr<UI::GUIGroupBox> UI::GUICoreGTK::NewGroupBox(NotNullPtr<GUIClientCont
 {
 	NotNullPtr<UI::GTK::GTKGroupBox> ctrl;
 	NEW_CLASSNN(ctrl, UI::GTK::GTKGroupBox(*this, parent, text));
+	return ctrl;
+}
+
+NotNullPtr<UI::GUILabel> UI::GUICoreGTK::NewLabel(NotNullPtr<GUIClientControl> parent, Text::CStringNN text)
+{
+	NotNullPtr<UI::GTK::GTKLabel> ctrl;
+	NEW_CLASSNN(ctrl, UI::GTK::GTKLabel(*this, parent, text));
 	return ctrl;
 }
 

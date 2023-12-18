@@ -26,7 +26,7 @@ namespace SSWR
 			NotNullPtr<UI::ListBoxLogger> logger;
 
 			NotNullPtr<UI::GUIPanel> pnlCtrl;
-			UI::GUILabel *lblPort;
+			NotNullPtr<UI::GUILabel> lblPort;
 			UI::GUITextBox *txtPort;
 			NotNullPtr<UI::GUIButton> btnStart;
 			UI::GUITabControl *tcMain;
@@ -35,9 +35,9 @@ namespace SSWR
 			UI::GUIListBox *lbUser;
 			NotNullPtr<UI::GUIHSplitter> hspUser;
 			NotNullPtr<UI::GUIPanel> pnlUser;
-			UI::GUILabel *lblUserName;
+			NotNullPtr<UI::GUILabel> lblUserName;
 			UI::GUITextBox *txtUserName;
-			UI::GUILabel *lblPassword;
+			NotNullPtr<UI::GUILabel> lblPassword;
 			UI::GUITextBox *txtPassword;
 			NotNullPtr<UI::GUIButton> btnUserAdd;
 

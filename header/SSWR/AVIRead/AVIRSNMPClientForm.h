@@ -26,13 +26,13 @@ namespace SSWR
 			Net::SNMPClient *cli;
 
 			NotNullPtr<UI::GUIPanel> pnlRequest;
-			UI::GUILabel *lblAgent;
+			NotNullPtr<UI::GUILabel> lblAgent;
 			UI::GUITextBox *txtAgent;
-			UI::GUILabel *lblCommunity;
+			NotNullPtr<UI::GUILabel> lblCommunity;
 			UI::GUITextBox *txtCommunity;
-			UI::GUILabel *lblOID;
+			NotNullPtr<UI::GUILabel> lblOID;
 			UI::GUITextBox *txtOID;
-			UI::GUILabel *lblCommandType;
+			NotNullPtr<UI::GUILabel> lblCommandType;
 			NotNullPtr<UI::GUIComboBox> cboCommandType;
 			NotNullPtr<UI::GUIButton> btnRequest;
 			UI::GUIListView *lvResults;

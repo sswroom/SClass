@@ -136,7 +136,7 @@ SSWR::AVIRead::AVIRCppEnumForm::AVIRCppEnumForm(UI::GUIClientControl *parent, No
 	NEW_CLASSNN(this->pnlCtrl, UI::GUIPanel(ui, *this));
 	this->pnlCtrl->SetRect(0, 0, 100, 55, false);
 	this->pnlCtrl->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->lblType, UI::GUILabel(ui, this->pnlCtrl, CSTR("Type")));
+	this->lblType = ui->NewLabel(this->pnlCtrl, CSTR("Type"));
 	this->lblType->SetRect(4, 4, 100, 23, false);
 	this->cboType = ui->NewComboBox(this->pnlCtrl, false);
 	this->cboType->SetRect(104, 4, 150, 23, false);
@@ -151,7 +151,7 @@ SSWR::AVIRead::AVIRCppEnumForm::AVIRCppEnumForm(UI::GUIClientControl *parent, No
 	this->btnConv2 = ui->NewButton(this->pnlCtrl, CSTR("Paste-Conv-Copy"));
 	this->btnConv2->SetRect(84, 28, 150, 23, false);
 	this->btnConv2->HandleButtonClick(OnConv2Clicked, this);
-	NEW_CLASS(this->lblPrefix, UI::GUILabel(ui, this->pnlCtrl, CSTR("Prefix")));
+	this->lblPrefix = ui->NewLabel(this->pnlCtrl, CSTR("Prefix"));
 	this->lblPrefix->SetRect(234, 28, 100, 23, false);
 	NEW_CLASS(this->txtPrefix, UI::GUITextBox(ui, this->pnlCtrl, CSTR("")));
 	this->txtPrefix->SetRect(334, 28, 100, 23, false);

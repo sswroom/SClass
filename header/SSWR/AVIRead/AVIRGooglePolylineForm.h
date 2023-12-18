@@ -16,7 +16,7 @@ namespace SSWR
 		private:
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 
-			UI::GUILabel *lblPolylineText;
+			NotNullPtr<UI::GUILabel> lblPolylineText;
 			UI::GUITextBox *txtPolylineText;
 			NotNullPtr<UI::GUIButton> btnOK;
 			NotNullPtr<UI::GUIButton> btnCancel;

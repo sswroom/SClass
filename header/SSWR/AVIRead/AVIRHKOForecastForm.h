@@ -21,20 +21,20 @@ namespace SSWR
 			Optional<Net::SSLEngine> ssl;
 
 			NotNullPtr<UI::GUIPanel> pnlMain;
-			UI::GUILabel *lblLang;
+			NotNullPtr<UI::GUILabel> lblLang;
 			NotNullPtr<UI::GUIComboBox> cboLang;
 			NotNullPtr<UI::GUIButton> btnReload;
-			UI::GUILabel *lblReqTime;
+			NotNullPtr<UI::GUILabel> lblReqTime;
 			UI::GUITextBox *txtReqTime;
-			UI::GUILabel *lblUpdateTime;
+			NotNullPtr<UI::GUILabel> lblUpdateTime;
 			UI::GUITextBox *txtUpdateTime;
-			UI::GUILabel *lblSeaTemp;
+			NotNullPtr<UI::GUILabel> lblSeaTemp;
 			UI::GUITextBox *txtSeaTemp;
-			UI::GUILabel *lblSeaTempPlace;
+			NotNullPtr<UI::GUILabel> lblSeaTempPlace;
 			UI::GUITextBox *txtSeaTempPlace;
-			UI::GUILabel *lblSeaTempTime;
+			NotNullPtr<UI::GUILabel> lblSeaTempTime;
 			UI::GUITextBox *txtSeaTempTime;
-			UI::GUILabel *lblGeneralSituation;
+			NotNullPtr<UI::GUILabel> lblGeneralSituation;
 			UI::GUITextBox *txtGeneralSituation;
 			UI::GUIListView *lvForecast;
 

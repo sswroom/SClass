@@ -9,6 +9,7 @@
 #include "UI/Java/JavaComboBox.h"
 #include "UI/Java/JavaGroupBox.h"
 #include "UI/Java/JavaHSplitter.h"
+#include "UI/Java/JavaLabel.h"
 #include "UI/Java/JavaMessageDialog.h"
 #include "UI/Java/JavaVSplitter.h"
 #include <jni.h>
@@ -220,6 +221,13 @@ NotNullPtr<UI::GUIGroupBox> UI::GUICoreJava::NewGroupBox(NotNullPtr<GUIClientCon
 {
 	NotNullPtr<UI::Java::JavaGroupBox> ctrl;
 	NEW_CLASSNN(ctrl, UI::Java::JavaGroupBox(*this, parent, text));
+	return ctrl;
+}
+
+NotNullPtr<UI::GUILabel> UI::GUICoreJava::NewLabel(NotNullPtr<GUIClientControl> parent, Text::CStringNN text)
+{
+	NotNullPtr<UI::Java::JavaLabel> ctrl;
+	NEW_CLASSNN(ctrl, UI::Java::JavaLabel(*this, parent, text));
 	return ctrl;
 }
 

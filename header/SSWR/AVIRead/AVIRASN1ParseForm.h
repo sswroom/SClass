@@ -18,9 +18,9 @@ namespace SSWR
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 
 			NotNullPtr<UI::GUIPanel> pnlOptions;
-			UI::GUILabel *lblType;
+			NotNullPtr<UI::GUILabel> lblType;
 			NotNullPtr<UI::GUIComboBox> cboType;
-			UI::GUILabel *lblData;
+			NotNullPtr<UI::GUILabel> lblData;
 			UI::GUITextBox *txtData;
 			NotNullPtr<UI::GUIPanel> pnlControl;
 			NotNullPtr<UI::GUIButton> btnParse;

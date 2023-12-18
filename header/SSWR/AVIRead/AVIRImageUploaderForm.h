@@ -35,9 +35,9 @@ namespace SSWR
 			Data::ArrayList<FileItem *> *items;
 
 			NotNullPtr<UI::GUIPanel> pnlCtrl;
-			UI::GUILabel *lblUsername;
+			NotNullPtr<UI::GUILabel> lblUsername;
 			UI::GUITextBox *txtUsername;
-			UI::GUILabel *lblPassword;
+			NotNullPtr<UI::GUILabel> lblPassword;
 			UI::GUITextBox *txtPassword;
 			UI::GUICheckBox *chkErrorCont;
 			NotNullPtr<UI::GUIButton> btnUpload;

@@ -22,7 +22,7 @@ namespace SSWR
 			Media::ImageList *simg;
 
 			NotNullPtr<UI::GUIPanel> pnlControl;
-			UI::GUILabel *lblType;
+			NotNullPtr<UI::GUILabel> lblType;
 			NotNullPtr<UI::GUIComboBox> cboType;
 			NotNullPtr<UI::GUIButton> btnOk;
 			NotNullPtr<UI::GUIButton> btnCancel;

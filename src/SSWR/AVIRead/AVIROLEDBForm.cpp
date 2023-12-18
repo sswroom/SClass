@@ -40,7 +40,7 @@ SSWR::AVIRead::AVIROLEDBForm::AVIROLEDBForm(UI::GUIClientControl *parent, NotNul
 	this->conn = 0;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASS(this->lblConnStr, UI::GUILabel(ui, *this, CSTR("Conn String")));
+	this->lblConnStr = ui->NewLabel(*this, CSTR("Conn String"));
 	this->lblConnStr->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtConnStr, UI::GUITextBox(ui, *this, CSTR("")));
 	this->txtConnStr->SetRect(104, 4, 800, 23, false);

@@ -48,16 +48,16 @@ namespace SSWR
 			NotNullPtr<UI::GUIPanel> pnlLayer;
 
 			UI::GUIPictureBox *pbPreview;
-			UI::GUILabel *lblName;
+			NotNullPtr<UI::GUILabel> lblName;
 			UI::GUITextBox *txtName;
 			UI::GUIListBox *lbLayer;
 			NotNullPtr<UI::GUIButton> btnNewLayer;
 			NotNullPtr<UI::GUIButton> btnRemoveLayer;
 
-			UI::GUILabel *lblColor;
-			UI::GUILabel *lblAlpha;
-			UI::GUILabel *lblThick;
-			UI::GUILabel *lblPattern;
+			NotNullPtr<UI::GUILabel> lblColor;
+			NotNullPtr<UI::GUILabel> lblAlpha;
+			NotNullPtr<UI::GUILabel> lblThick;
+			NotNullPtr<UI::GUILabel> lblPattern;
 			UI::GUIPictureBox *pbColor;
 			UI::GUIHScrollBar *hsbAlpha;
 			UI::GUITextBox *txtThick;

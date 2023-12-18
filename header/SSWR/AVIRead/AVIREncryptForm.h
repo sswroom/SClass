@@ -22,10 +22,10 @@ namespace SSWR
 			NotNullPtr<UI::GUIPanel> pnlDest;
 			NotNullPtr<UI::GUIPanel> pnlDestCtrl;
 			NotNullPtr<UI::GUIHSplitter> hspMain;
-			UI::GUILabel *lblSrc;
+			NotNullPtr<UI::GUILabel> lblSrc;
 			NotNullPtr<UI::GUIComboBox> cboSrc;
 			UI::GUITextBox *txtSrc;
-			UI::GUILabel *lblDest;
+			NotNullPtr<UI::GUILabel> lblDest;
 			NotNullPtr<UI::GUIComboBox> cboDest;
 			UI::GUITextBox *txtDest;
 			NotNullPtr<UI::GUIButton> btnConvert;

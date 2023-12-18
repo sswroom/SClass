@@ -38,14 +38,14 @@ SSWR::AVIRead::AVIRTMSForm::AVIRTMSForm(UI::GUIClientControl *parent, NotNullPtr
 	this->SetNoResize(true);
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASS(this->lblTMSURL, UI::GUILabel(ui, *this, CSTR("TMS URL")));
+	this->lblTMSURL = ui->NewLabel(*this, CSTR("TMS URL"));
 	this->lblTMSURL->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtTMSURL, UI::GUITextBox(ui, *this, CSTR("")));
 	this->txtTMSURL->SetRect(104, 4, 500, 23, false);
 	this->btnLoad = ui->NewButton(*this, CSTR("Load"));
 	this->btnLoad->SetRect(104, 28, 75, 23, false);
 	this->btnLoad->HandleButtonClick(OnLoadClicked, this);
-	NEW_CLASS(this->lblStatus, UI::GUILabel(ui, *this, CSTR("Status")));
+	this->lblStatus = ui->NewLabel(*this, CSTR("Status"));
 	this->lblStatus->SetRect(4, 52, 100, 23, false);
 	NEW_CLASS(this->txtStatus, UI::GUITextBox(ui, *this, CSTR("")));
 	this->txtStatus->SetRect(104, 52, 100, 23, false);

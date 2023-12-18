@@ -54,7 +54,7 @@ SSWR::SHPConv::SHPConvAddFilterForm::SHPConvAddFilterForm(UI::GUIClientControl *
 	this->dbf = dbf;
 	this->filter = 0;
 	
-	NEW_CLASS(this->lblFilter, UI::GUILabel(ui, *this, CSTR("Filter Type")));
+	this->lblFilter = ui->NewLabel(*this, CSTR("Filter Type"));
 	this->lblFilter->SetRect(8, 16, 64, 23, false);
 	this->cboFilter = ui->NewComboBox(*this, false);
 	this->cboFilter->SetRect(80, 16, 121, 21, false);

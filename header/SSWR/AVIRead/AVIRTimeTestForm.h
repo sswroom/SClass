@@ -13,13 +13,13 @@ namespace SSWR
 		class AVIRTimeTestForm : public UI::GUIForm
 		{
 		private:
-			UI::GUILabel *lblSleepMS;
+			NotNullPtr<UI::GUILabel> lblSleepMS;
 			UI::GUITextBox *txtSleepMS;
 			NotNullPtr<UI::GUIButton> btnSleepMS;
-			UI::GUILabel *lblSleepUS;
+			NotNullPtr<UI::GUILabel> lblSleepUS;
 			UI::GUITextBox *txtSleepUS;
 			NotNullPtr<UI::GUIButton> btnSleepUS;
-			UI::GUILabel *lblActualTime;
+			NotNullPtr<UI::GUILabel> lblActualTime;
 			UI::GUITextBox *txtActualTime;
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;

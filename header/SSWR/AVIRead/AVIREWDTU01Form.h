@@ -30,9 +30,9 @@ namespace SSWR
 
 		private:
 			NotNullPtr<UI::GUIPanel> pnlMQTT;
-			UI::GUILabel *lblServer;
+			NotNullPtr<UI::GUILabel> lblServer;
 			UI::GUITextBox *txtServer;
-			UI::GUILabel *lblPort;
+			NotNullPtr<UI::GUILabel> lblPort;
 			UI::GUITextBox *txtPort;
 			NotNullPtr<UI::GUIButton> btnConnect;
 			UI::GUIListView *lvDevices;

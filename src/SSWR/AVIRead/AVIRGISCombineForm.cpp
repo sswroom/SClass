@@ -67,12 +67,12 @@ SSWR::AVIRead::AVIRGISCombineForm::AVIRGISCombineForm(UI::GUIClientControl *pare
 	this->SetText(CSTR("Combine Layers"));
 	this->SetFont(0, 0, 8.25, false);
 
-	UI::GUILabel *lbl;
+	NotNullPtr<UI::GUILabel> lbl;
 	NotNullPtr<UI::GUIPanel> pnl;
 	NEW_CLASSNN(pnl, UI::GUIPanel(ui, *this));
 	pnl->SetRect(0, 0, 448, 48, false);
 	pnl->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(lbl, UI::GUILabel(ui, pnl, CSTR("Select layers to combine")));
+	lbl = ui->NewLabel(pnl, CSTR("Select layers to combine"));
 	lbl->SetRect(0, 0, 280, 23, false);
 	this->btnCheckAll = ui->NewButton(pnl, CSTR("Check All"));
 	this->btnCheckAll->SetRect(0, 24, 80, 23, false);

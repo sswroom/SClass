@@ -86,7 +86,7 @@ SSWR::AVIRead::AVIRODBCStrForm::AVIRODBCStrForm(UI::GUIClientControl *parent, No
 	this->conn = 0;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASS(this->lblDriver, UI::GUILabel(ui, *this, CSTR("Driver")));
+	this->lblDriver = ui->NewLabel(*this, CSTR("Driver"));
 	this->lblDriver->SetRect(4, 4, 100, 23, false);
 	this->cboDriver = ui->NewComboBox(*this, false);
 	this->cboDriver->SetRect(104, 4, 200, 23, false);
@@ -94,7 +94,7 @@ SSWR::AVIRead::AVIRODBCStrForm::AVIRODBCStrForm(UI::GUIClientControl *parent, No
 	this->btnDriverInfo = ui->NewButton(*this, CSTR("Info"));
 	this->btnDriverInfo->SetRect(304, 4, 75, 23, false);
 	this->btnDriverInfo->HandleButtonClick(OnDriverInfoClicked, this);
-	NEW_CLASS(this->lblConnStr, UI::GUILabel(ui, *this, CSTR("Conn Str")));
+	this->lblConnStr = ui->NewLabel(*this, CSTR("Conn Str"));
 	this->lblConnStr->SetRect(4, 28, 100, 23, false);
 	NEW_CLASS(this->txtConnStr, UI::GUITextBox(ui, *this, CSTR("")));
 	this->txtConnStr->SetRect(104, 28, 800, 23, false);

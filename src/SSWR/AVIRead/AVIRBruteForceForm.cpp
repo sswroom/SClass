@@ -127,7 +127,7 @@ SSWR::AVIRead::AVIRBruteForceForm::AVIRBruteForceForm(UI::GUIClientControl *pare
 	Crypto::Hash::HashType currHash;
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
-	NEW_CLASS(this->lblHashType, UI::GUILabel(ui, *this, CSTR("Hash Type")));
+	this->lblHashType = ui->NewLabel(*this, CSTR("Hash Type"));
 	this->lblHashType->SetRect(4, 4, 100, 23, false);
 	this->cboHashType = ui->NewComboBox(*this, false);
 	this->cboHashType->SetRect(104, 4, 150, 23, false);
@@ -144,11 +144,11 @@ SSWR::AVIRead::AVIRBruteForceForm::AVIRBruteForceForm(UI::GUIClientControl *pare
 	}
 	this->cboHashType->AddItem(CSTR("Bcrypt"), (void*)1000);
 	this->cboHashType->SetSelectedIndex(0);
-	NEW_CLASS(this->lblHashValue, UI::GUILabel(ui, *this, CSTR("Hash Value")));
+	this->lblHashValue = ui->NewLabel(*this, CSTR("Hash Value"));
 	this->lblHashValue->SetRect(4, 28, 100, 23, false);
 	NEW_CLASS(this->txtHashValue, UI::GUITextBox(ui, *this, CSTR("")));
 	this->txtHashValue->SetRect(104, 28, 200, 23, false);
-	NEW_CLASS(this->lblEncoding, UI::GUILabel(ui, *this, CSTR("Encoding")));
+	this->lblEncoding = ui->NewLabel(*this, CSTR("Encoding"));
 	this->lblEncoding->SetRect(4, 52, 100, 23, false);
 	this->cboEncoding = ui->NewComboBox(*this, false);
 	this->cboEncoding->SetRect(104, 52, 150, 23, false);
@@ -156,15 +156,15 @@ SSWR::AVIRead::AVIRBruteForceForm::AVIRBruteForceForm(UI::GUIClientControl *pare
 	this->cboEncoding->AddItem(CSTR("UTF-16LE"), (void*)Crypto::Hash::BruteForceAttack::CharEncoding::UTF16LE);
 	this->cboEncoding->AddItem(CSTR("UTF-32LE"), (void*)Crypto::Hash::BruteForceAttack::CharEncoding::UTF32LE);
 	this->cboEncoding->SetSelectedIndex(0);
-	NEW_CLASS(this->lblMinLen, UI::GUILabel(ui, *this, CSTR("Min Length")));
+	this->lblMinLen = ui->NewLabel(*this, CSTR("Min Length"));
 	this->lblMinLen->SetRect(4, 76, 100, 23, false);
 	NEW_CLASS(this->txtMinLen, UI::GUITextBox(ui, *this, CSTR("4")));
 	this->txtMinLen->SetRect(104, 76, 100, 23, false);
-	NEW_CLASS(this->lblMaxLen, UI::GUILabel(ui, *this, CSTR("Max Length")));
+	this->lblMaxLen = ui->NewLabel(*this, CSTR("Max Length"));
 	this->lblMaxLen->SetRect(4, 100, 100, 23, false);
 	NEW_CLASS(this->txtMaxLen, UI::GUITextBox(ui, *this, CSTR("16")));
 	this->txtMaxLen->SetRect(104, 100, 100, 23, false);
-	NEW_CLASS(this->lblCharType, UI::GUILabel(ui, *this, CSTR("Char Type")));
+	this->lblCharType = ui->NewLabel(*this, CSTR("Char Type"));
 	this->lblCharType->SetRect(4, 124, 100, 23, false);
 	this->cboCharType = ui->NewComboBox(*this, false);
 	this->cboCharType->SetRect(104, 124, 200, 23, false);
@@ -178,7 +178,7 @@ SSWR::AVIRead::AVIRBruteForceForm::AVIRBruteForceForm(UI::GUIClientControl *pare
 	this->btnStart = ui->NewButton(*this, CSTR("Start"));
 	this->btnStart->SetRect(104, 148, 75, 23, false);
 	this->btnStart->HandleButtonClick(OnStartClicked, this);
-	NEW_CLASS(this->lblStatus, UI::GUILabel(ui, *this, CSTR("Status")));
+	this->lblStatus = ui->NewLabel(*this, CSTR("Status"));
 	this->lblStatus->SetRect(4, 172, 100, 23, false);
 	NEW_CLASS(this->txtStatus, UI::GUITextBox(ui, *this, CSTR("")));
 	this->txtStatus->SetRect(104, 172, 250, 23, false);

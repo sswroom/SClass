@@ -14,7 +14,7 @@ namespace SSWR
 		class OrganSearchForm : public UI::GUIForm
 		{
 		private:
-			UI::GUILabel *lbl;
+			NotNullPtr<UI::GUILabel> lbl;
 			UI::GUITextBox *txt;
 			NotNullPtr<UI::GUIButton> btnOK;
 			NotNullPtr<UI::GUIButton> btnCancel;

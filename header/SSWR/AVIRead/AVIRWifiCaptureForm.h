@@ -72,26 +72,26 @@ namespace SSWR
 			UI::GUITabControl *tcMain;
 
 			NotNullPtr<UI::GUITabPage> tpStatus;
-			UI::GUILabel *lblMotion;
+			NotNullPtr<UI::GUILabel> lblMotion;
 			UI::GUITextBox *txtMotion;
-			UI::GUILabel *lblGPS;
+			NotNullPtr<UI::GUILabel> lblGPS;
 			UI::GUITextBox *txtGPS;
 			NotNullPtr<UI::GUIButton> btnGPS;
-			UI::GUILabel *lblGPSTime;
+			NotNullPtr<UI::GUILabel> lblGPSTime;
 			UI::GUITextBox *txtGPSTime;
-			UI::GUILabel *lblGPSLat;
+			NotNullPtr<UI::GUILabel> lblGPSLat;
 			UI::GUITextBox *txtGPSLat;
-			UI::GUILabel *lblGPSLon;
+			NotNullPtr<UI::GUILabel> lblGPSLon;
 			UI::GUITextBox *txtGPSLon;
-			UI::GUILabel *lblGPSAlt;
+			NotNullPtr<UI::GUILabel> lblGPSAlt;
 			UI::GUITextBox *txtGPSAlt;
-			UI::GUILabel *lblGPSActive;
+			NotNullPtr<UI::GUILabel> lblGPSActive;
 			UI::GUITextBox *txtGPSActive;
-			UI::GUILabel *lblBattery;
+			NotNullPtr<UI::GUILabel> lblBattery;
 			UI::GUITextBox *txtBattery;
-			UI::GUILabel *lblCurrWifiCnt;
+			NotNullPtr<UI::GUILabel> lblCurrWifiCnt;
 			UI::GUITextBox *txtCurrWifiCnt;
-			UI::GUILabel *lblBSSCount;
+			NotNullPtr<UI::GUILabel> lblBSSCount;
 			UI::GUITextBox *txtBSSCount;
 			NotNullPtr<UI::GUIButton> btnCapture;
 

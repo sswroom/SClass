@@ -18,9 +18,9 @@ namespace SSWR
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			Optional<Net::SSLEngine> ssl;
 
-			UI::GUILabel *lblKey;
+			NotNullPtr<UI::GUILabel> lblKey;
 			UI::GUITextBox *txtKey;
-			UI::GUILabel *lblImagerySet;
+			NotNullPtr<UI::GUILabel> lblImagerySet;
 			NotNullPtr<UI::GUIComboBox> cboImagerySet;
 			NotNullPtr<UI::GUIButton> btnOK;
 			Map::TileMap *tileMap;

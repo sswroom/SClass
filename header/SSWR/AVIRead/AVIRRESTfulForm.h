@@ -38,17 +38,17 @@ namespace SSWR
 
 			NotNullPtr<UI::GUITabPage> tpControl;
 			NotNullPtr<UI::GUIGroupBox> grpParam;
-			UI::GUILabel *lblPort;
+			NotNullPtr<UI::GUILabel> lblPort;
 			UI::GUITextBox *txtPort;
-			UI::GUILabel *lblLogDir;
+			NotNullPtr<UI::GUILabel> lblLogDir;
 			UI::GUITextBox *txtLogDir;
-			UI::GUILabel *lblAllowProxy;
+			NotNullPtr<UI::GUILabel> lblAllowProxy;
 			UI::GUICheckBox *chkAllowProxy;
-			UI::GUILabel *lblSkipLog;
+			NotNullPtr<UI::GUILabel> lblSkipLog;
 			UI::GUICheckBox *chkSkipLog;
-			UI::GUILabel *lblAllowKA;
+			NotNullPtr<UI::GUILabel> lblAllowKA;
 			UI::GUICheckBox *chkAllowKA;
-			UI::GUILabel *lblDatabase;
+			NotNullPtr<UI::GUILabel> lblDatabase;
 			UI::GUITextBox *txtDatabase;
 			NotNullPtr<UI::GUIButton> btnDatabaseMySQL;
 			NotNullPtr<UI::GUIButton> btnDatabaseODBCDSN;

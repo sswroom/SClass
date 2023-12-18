@@ -23,11 +23,11 @@ namespace SSWR
 			Data::ArrayListStringNN fileList;
 
 			NotNullPtr<UI::GUIPanel> pnlControl;
-			UI::GUILabel *lblDir;
+			NotNullPtr<UI::GUILabel> lblDir;
 			UI::GUITextBox *txtDir;
-			UI::GUILabel *lblEncoding;
+			NotNullPtr<UI::GUILabel> lblEncoding;
 			NotNullPtr<UI::GUIComboBox> cboEncoding;
-			UI::GUILabel *lblText;
+			NotNullPtr<UI::GUILabel> lblText;
 			UI::GUITextBox *txtText;
 			NotNullPtr<UI::GUIButton> btnSearch;
 			UI::GUIListView *lvFiles;

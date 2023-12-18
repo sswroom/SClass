@@ -18,9 +18,9 @@ namespace SSWR
 		{
 		private:
 			NotNullPtr<UI::GUIPanel> pnlDetail;
-			UI::GUILabel *lblFrom;
-			UI::GUILabel *lblTo;
-			UI::GUILabel *lblLocation;
+			NotNullPtr<UI::GUILabel> lblFrom;
+			NotNullPtr<UI::GUILabel> lblTo;
+			NotNullPtr<UI::GUILabel> lblLocation;
 			UI::GUIDateTimePicker *dtpFrom;
 			UI::GUIDateTimePicker *dtpTo;
 			NotNullPtr<UI::GUIButton> btnDate1Hr;

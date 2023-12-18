@@ -20,14 +20,14 @@ namespace SSWR
 		private:
 			UI::GUIRadioButton *radInRange;
 			UI::GUIRadioButton *radOutRange;
-			UI::GUILabel *lblX1;
+			NotNullPtr<UI::GUILabel> lblX1;
 			UI::GUITextBox *txtX1;
-			UI::GUILabel *lblY1;
+			NotNullPtr<UI::GUILabel> lblY1;
 			UI::GUITextBox *txtY1;
 			UI::GUIPictureBoxSimple *pbBox;
-			UI::GUILabel *lblX2;
+			NotNullPtr<UI::GUILabel> lblX2;
 			UI::GUITextBox *txtX2;
-			UI::GUILabel *lblY2;
+			NotNullPtr<UI::GUILabel> lblY2;
 			UI::GUITextBox *txtY2;
 			NotNullPtr<UI::GUIButton> btnOK;
 			NotNullPtr<UI::GUIButton> btnCancel;

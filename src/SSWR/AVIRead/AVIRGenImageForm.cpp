@@ -59,22 +59,22 @@ SSWR::AVIRead::AVIRGenImageForm::AVIRGenImageForm(UI::GUIClientControl *parent, 
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 	
-	UI::GUILabel *lbl;
+	NotNullPtr<UI::GUILabel> lbl;
 	
-	NEW_CLASS(lbl, UI::GUILabel(ui, *this, CSTR("Generator")));
+	lbl = ui->NewLabel(*this, CSTR("Generator"));
 	lbl->SetRect(8, 8, 100, 23, false);
 	this->cboGenerator = ui->NewComboBox(*this, false);
 	this->cboGenerator->SetRect(112, 8, 224, 23, false);
-	NEW_CLASS(lbl, UI::GUILabel(ui, *this, CSTR("Color Profile")));
+	lbl = ui->NewLabel(*this, CSTR("Color Profile"));
 	lbl->SetRect(8, 32, 100, 23, false);
 	this->cboColorProfile = ui->NewComboBox(*this, false);
 	this->cboColorProfile->SetRect(112, 32, 224, 23, false);
 
-	NEW_CLASS(lbl, UI::GUILabel(ui, *this, CSTR("Output Size")));
+	lbl = ui->NewLabel(*this, CSTR("Output Size"));
 	lbl->SetRect(8, 200, 100, 23, false);
 	NEW_CLASS(this->txtWidth, UI::GUITextBox(ui, *this, CSTR("640")));
 	this->txtWidth->SetRect(112, 200, 56, 23, false);
-	NEW_CLASS(lbl, UI::GUILabel(ui, *this, CSTR("x")));
+	lbl = ui->NewLabel(*this, CSTR("x"));
 	lbl->SetRect(168, 200, 24, 23, false);
 	NEW_CLASS(this->txtHeight, UI::GUITextBox(ui, *this, CSTR("480")));
 	this->txtHeight->SetRect(192, 200, 56, 23, false);

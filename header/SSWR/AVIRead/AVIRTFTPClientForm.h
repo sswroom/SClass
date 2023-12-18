@@ -15,11 +15,11 @@ namespace SSWR
 		private:
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 
-			UI::GUILabel *lblHost;
+			NotNullPtr<UI::GUILabel> lblHost;
 			UI::GUITextBox *txtHost;
-			UI::GUILabel *lblPort;
+			NotNullPtr<UI::GUILabel> lblPort;
 			UI::GUITextBox *txtPort;
-			UI::GUILabel *lblFileName;
+			NotNullPtr<UI::GUILabel> lblFileName;
 			UI::GUITextBox *txtFileName;
 			NotNullPtr<UI::GUIButton> btnRecv;
 			NotNullPtr<UI::GUIButton> btnSend;

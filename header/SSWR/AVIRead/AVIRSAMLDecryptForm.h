@@ -20,12 +20,12 @@ namespace SSWR
 		private:
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 
-			UI::GUILabel *lblKey;
+			NotNullPtr<UI::GUILabel> lblKey;
 			UI::GUITextBox *txtKey;
-			UI::GUILabel *lblRAWResponse;
+			NotNullPtr<UI::GUILabel> lblRAWResponse;
 			UI::GUITextBox *txtRAWResponse;
 			NotNullPtr<UI::GUIButton> btnDecrypt;
-			UI::GUILabel *lblResult;
+			NotNullPtr<UI::GUILabel> lblResult;
 			UI::GUITextBox *txtResult;
 
 		private:

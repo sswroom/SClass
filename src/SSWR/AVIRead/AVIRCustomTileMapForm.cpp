@@ -71,15 +71,15 @@ SSWR::AVIRead::AVIRCustomTileMapForm::AVIRCustomTileMapForm(UI::GUIClientControl
 	this->tileMap = 0;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASS(this->lblURL, UI::GUILabel(ui, *this, CSTR("URL")));
+	this->lblURL = ui->NewLabel(*this, CSTR("URL"));
 	this->lblURL->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtURL, UI::GUITextBox(ui, *this, CSTR("")));
 	this->txtURL->SetRect(104, 4, 800, 23, false);
-	NEW_CLASS(this->lblMinLevel, UI::GUILabel(ui, *this, CSTR("Min Level")));
+	this->lblMinLevel = ui->NewLabel(*this, CSTR("Min Level"));
 	this->lblMinLevel->SetRect(4, 28, 100, 23, false);
 	NEW_CLASS(this->txtMinLevel, UI::GUITextBox(ui, *this, CSTR("0")));
 	this->txtMinLevel->SetRect(104, 28, 100, 23, false);
-	NEW_CLASS(this->lblMaxLevel, UI::GUILabel(ui, *this, CSTR("Max Level")));
+	this->lblMaxLevel = ui->NewLabel(*this, CSTR("Max Level"));
 	this->lblMaxLevel->SetRect(4, 52, 100, 23, false);
 	NEW_CLASS(this->txtMaxLevel, UI::GUITextBox(ui, *this, CSTR("18")));
 	this->txtMaxLevel->SetRect(104, 52, 100, 23, false);

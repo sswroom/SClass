@@ -15,20 +15,20 @@ namespace SSWR
 		class AVIRWMSForm : public UI::GUIForm
 		{
 		private:
-			UI::GUILabel *lblWMSURL;
+			NotNullPtr<UI::GUILabel> lblWMSURL;
 			UI::GUITextBox *txtWMSURL;
-			UI::GUILabel *lblWMSVersion;
+			NotNullPtr<UI::GUILabel> lblWMSVersion;
 			NotNullPtr<UI::GUIComboBox> cboWMSVersion;
 			NotNullPtr<UI::GUIButton> btnLoad;
-			UI::GUILabel *lblStatus;
+			NotNullPtr<UI::GUILabel> lblStatus;
 			UI::GUITextBox *txtStatus;
-			UI::GUILabel *lblLayer;
+			NotNullPtr<UI::GUILabel> lblLayer;
 			NotNullPtr<UI::GUIComboBox> cboLayer;
-			UI::GUILabel *lblLayerCRS;
+			NotNullPtr<UI::GUILabel> lblLayerCRS;
 			NotNullPtr<UI::GUIComboBox> cboLayerCRS;
-			UI::GUILabel *lblMapImageType;
+			NotNullPtr<UI::GUILabel> lblMapImageType;
 			NotNullPtr<UI::GUIComboBox> cboMapImageType;
-			UI::GUILabel *lblInfoType;
+			NotNullPtr<UI::GUILabel> lblInfoType;
 			NotNullPtr<UI::GUIComboBox> cboInfoType;
 			NotNullPtr<UI::GUIButton> btnOK;
 

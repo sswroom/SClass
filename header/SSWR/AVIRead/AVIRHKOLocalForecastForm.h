@@ -18,24 +18,24 @@ namespace SSWR
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			Optional<Net::SSLEngine> ssl;
 
-			UI::GUILabel *lblLang;
+			NotNullPtr<UI::GUILabel> lblLang;
 			NotNullPtr<UI::GUIComboBox> cboLang;
 			NotNullPtr<UI::GUIButton> btnReload;
-			UI::GUILabel *lblReqTime;
+			NotNullPtr<UI::GUILabel> lblReqTime;
 			UI::GUITextBox *txtReqTime;
-			UI::GUILabel *lblUpdateTime;
+			NotNullPtr<UI::GUILabel> lblUpdateTime;
 			UI::GUITextBox *txtUpdateTime;
-			UI::GUILabel *lblGeneralSituation;
+			NotNullPtr<UI::GUILabel> lblGeneralSituation;
 			UI::GUITextBox *txtGeneralSituation;
-			UI::GUILabel *lblTCInfo;
+			NotNullPtr<UI::GUILabel> lblTCInfo;
 			UI::GUITextBox *txtTCInfo;
-			UI::GUILabel *lblFireDangerWarning;
+			NotNullPtr<UI::GUILabel> lblFireDangerWarning;
 			UI::GUITextBox *txtFireDangerWarning;
-			UI::GUILabel *lblForecastPeriod;
+			NotNullPtr<UI::GUILabel> lblForecastPeriod;
 			UI::GUITextBox *txtForecastPeriod;
-			UI::GUILabel *lblForecastDesc;
+			NotNullPtr<UI::GUILabel> lblForecastDesc;
 			UI::GUITextBox *txtForecastDesc;
-			UI::GUILabel *lblOutlook;
+			NotNullPtr<UI::GUILabel> lblOutlook;
 			UI::GUITextBox *txtOutlook;
 
 			static void __stdcall OnReloadClicked(void *userObj);

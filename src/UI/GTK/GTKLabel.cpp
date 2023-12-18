@@ -2,13 +2,13 @@
 #include "MyMemory.h"
 #include "Text/CSSBuilder.h"
 #include "Text/MyString.h"
-#include "UI/GUILabel.h"
 #include "UI/GUIClientControl.h"
+#include "UI/GTK/GTKLabel.h"
 #include <gtk/gtk.h>
 
 #define GDK_VERSION_AFTER(major, minor) (GDK_MAJOR_VERSION > major || (GDK_MAJOR_VERSION == major && GDK_MINOR_VERSION >= minor))
 
-UI::GUILabel::GUILabel(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, Text::CStringNN label) : UI::GUIControl(ui, parent)
+UI::GTK::GTKLabel::GTKLabel(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, Text::CStringNN label) : UI::GUILabel(ui, parent)
 {
 	this->hwnd = (ControlHandle*)gtk_label_new((const Char*)label.v);
 	parent->AddChild(this);
@@ -24,36 +24,31 @@ UI::GUILabel::GUILabel(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIClientContr
 	this->textColor = 0;
 }
 
-UI::GUILabel::~GUILabel()
+UI::GTK::GTKLabel::~GTKLabel()
 {
 }
 
-void UI::GUILabel::SetText(Text::CStringNN text)
+void UI::GTK::GTKLabel::SetText(Text::CStringNN text)
 {
 	gtk_label_set_text((GtkLabel*)this->hwnd, (const Char*)text.v);
 }
 
-Text::CStringNN UI::GUILabel::GetObjectClass() const
-{
-	return CSTR("Label");
-}
-
-OSInt UI::GUILabel::OnNotify(UInt32 code, void *lParam)
+OSInt UI::GTK::GTKLabel::OnNotify(UInt32 code, void *lParam)
 {
 	return 0;
 }
 
-Bool UI::GUILabel::HasTextColor()
+Bool UI::GTK::GTKLabel::HasTextColor()
 {
 	return this->hasTextColor;
 }
 
-UInt32 UI::GUILabel::GetTextColor()
+UInt32 UI::GTK::GTKLabel::GetTextColor()
 {
 	return this->textColor;
 }
 
-void UI::GUILabel::SetTextColor(UInt32 textColor)
+void UI::GTK::GTKLabel::SetTextColor(UInt32 textColor)
 {
 	this->textColor = textColor;
 	this->hasTextColor = true;

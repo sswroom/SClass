@@ -187,7 +187,7 @@ SSWR::AVIRead::AVIRConsoleMediaPlayerForm::AVIRConsoleMediaPlayerForm(UI::GUICli
 	NEW_CLASS(this->player, Media::ConsoleMediaPlayer(this->core->GetMonitorMgr(), this->core->GetColorMgr(), this->core->GetParserList(), this->core->GetAudioDevice()));
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASS(this->lblPort, UI::GUILabel(ui, *this, CSTR("Control Port")));
+	this->lblPort = ui->NewLabel(*this, CSTR("Control Port"));
 	this->lblPort->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtPort, UI::GUITextBox(ui, *this, CSTR("")));
 	this->txtPort->SetRect(104, 4, 60, 23, false);
@@ -198,7 +198,7 @@ SSWR::AVIRead::AVIRConsoleMediaPlayerForm::AVIRConsoleMediaPlayerForm(UI::GUICli
 	this->btnCaptureDev = ui->NewButton(*this, CSTR("Capture Device"));
 	this->btnCaptureDev->SetRect(4, 52, 150, 23, false);
 	this->btnCaptureDev->HandleButtonClick(OnCaptureDevClicked, this);
-	NEW_CLASS(this->lblRotate, UI::GUILabel(ui, *this, CSTR("Rotate")));
+	this->lblRotate = ui->NewLabel(*this, CSTR("Rotate"));
 	this->lblRotate->SetRect(4, 76, 100, 23, false);
 	this->cboRotate = ui->NewComboBox(*this, false);
 	this->cboRotate->SetRect(104, 76, 100, 23, false);
@@ -215,7 +215,7 @@ SSWR::AVIRead::AVIRConsoleMediaPlayerForm::AVIRConsoleMediaPlayerForm(UI::GUICli
 	NEW_CLASS(this->chkSurfaceBug, UI::GUICheckBox(ui, *this, CSTR("Surface Bug"), true));
 	this->chkSurfaceBug->SetRect(4, 100, 200, 23, false);
 	this->chkSurfaceBug->HandleCheckedChange(OnSurfaceBugChg, this);
-	NEW_CLASS(this->lblYUVType, UI::GUILabel(ui, *this, CSTR("YUV Type")));
+	this->lblYUVType = ui->NewLabel(*this, CSTR("YUV Type"));
 	this->lblYUVType->SetRect(4, 124, 100, 23, false);
 	this->cboYUVType = ui->NewComboBox(*this, false);
 	this->cboYUVType->SetRect(104, 124, 150, 23, false);
@@ -235,7 +235,7 @@ SSWR::AVIRead::AVIRConsoleMediaPlayerForm::AVIRConsoleMediaPlayerForm(UI::GUICli
 	this->AddYUVType((Media::ColorProfile::YUVType)(Media::ColorProfile::YUVT_FLAG_YUV_0_255 | Media::ColorProfile::YUVT_BT2020));
 	this->cboYUVType->SetSelectedIndex(0);
 	this->cboYUVType->HandleSelectionChange(OnYUVTypeChg, this);
-	NEW_CLASS(this->lblRGBTrans, UI::GUILabel(ui, *this, CSTR("RGB Transfer")));
+	this->lblRGBTrans = ui->NewLabel(*this, CSTR("RGB Transfer"));
 	this->lblRGBTrans->SetRect(4, 148, 100, 23, false);
 	this->cboRGBTrans = ui->NewComboBox(*this, false);
 	this->cboRGBTrans->SetRect(104, 148, 150, 23, false);
@@ -259,7 +259,7 @@ SSWR::AVIRead::AVIRConsoleMediaPlayerForm::AVIRConsoleMediaPlayerForm(UI::GUICli
 	this->AddRGBTrans(Media::CS::TRANT_NLOG);
 	this->cboRGBTrans->SetSelectedIndex(0);
 	this->cboRGBTrans->HandleSelectionChange(OnRGBTransChg, this);
-	NEW_CLASS(this->lblColorPrimaries, UI::GUILabel(ui, *this, CSTR("Color Primaries")));
+	this->lblColorPrimaries = ui->NewLabel(*this, CSTR("Color Primaries"));
 	this->lblColorPrimaries->SetRect(4, 172, 100, 23, false);
 	this->cboColorPrimaries = ui->NewComboBox(*this, false);
 	this->cboColorPrimaries->SetRect(104, 172, 150, 23, false);

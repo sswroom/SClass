@@ -64,16 +64,16 @@ namespace SSWR
 
 			NotNullPtr<UI::GUITabPage> tpStatus;
 			NotNullPtr<UI::GUIPanel> pnlStatus;
-			UI::GUILabel *lblStatusFile;
+			NotNullPtr<UI::GUILabel> lblStatusFile;
 			UI::GUITextBox *txtStatusFile;
 			NotNullPtr<UI::GUIPanel> pnlStatusBNT;
-			UI::GUILabel *lblStatusFileSize;
+			NotNullPtr<UI::GUILabel> lblStatusFileSize;
 			UI::GUITextBox *txtStatusFileSize;
-			UI::GUILabel *lblStatusCurrSize;
+			NotNullPtr<UI::GUILabel> lblStatusCurrSize;
 			UI::GUITextBox *txtStatusCurrSize;
-			UI::GUILabel *lblStatusCurrSpeed;
+			NotNullPtr<UI::GUILabel> lblStatusCurrSpeed;
 			UI::GUITextBox *txtStatusCurrSpeed;
-			UI::GUILabel *lblStatusTimeLeft;
+			NotNullPtr<UI::GUILabel> lblStatusTimeLeft;
 			UI::GUITextBox *txtStatusTimeLeft;
 			UI::GUIListView *lvStatus;
 			NotNullPtr<UI::GUIVSplitter> vspStatus;

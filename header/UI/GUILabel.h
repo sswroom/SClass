@@ -6,19 +6,16 @@ namespace UI
 {
 	class GUILabel : public GUIControl
 	{
-	private:
-		Bool hasTextColor;
-		UInt32 textColor;
 	public:
-		GUILabel(NotNullPtr<GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, Text::CStringNN initText);
+		GUILabel(NotNullPtr<GUICore> ui, NotNullPtr<UI::GUIClientControl> parent);
 		virtual ~GUILabel();
 
-		virtual void SetText(Text::CStringNN text);
 		virtual Text::CStringNN GetObjectClass() const;
-		virtual OSInt OnNotify(UInt32 code, void *lParam);
-		Bool HasTextColor();
-		UInt32 GetTextColor();
-		void SetTextColor(UInt32 textColor);
+		virtual void SetText(Text::CStringNN text) = 0;
+		virtual OSInt OnNotify(UInt32 code, void *lParam) = 0;
+		virtual Bool HasTextColor() = 0;
+		virtual UInt32 GetTextColor() = 0;
+		virtual void SetTextColor(UInt32 textColor) = 0;
 	};
 }
 

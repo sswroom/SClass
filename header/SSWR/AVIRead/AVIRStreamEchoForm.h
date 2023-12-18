@@ -20,12 +20,12 @@ namespace SSWR
 			IO::SiLabDriver *siLabDriver;
 
 			NotNullPtr<UI::GUIGroupBox> grpStream;
-			UI::GUILabel *lblStream;
+			NotNullPtr<UI::GUILabel> lblStream;
 			UI::GUITextBox *txtStream;
 			NotNullPtr<UI::GUIButton> btnStream;
 
 			NotNullPtr<UI::GUIGroupBox> grpStatus;
-			UI::GUILabel *lblDataSize;
+			NotNullPtr<UI::GUILabel> lblDataSize;
 			UI::GUITextBox *txtDataSize;
 
 			IO::Stream *stm;

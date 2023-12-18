@@ -82,14 +82,14 @@ SSWR::AVIRead::AVIREncryptForm::AVIREncryptForm(UI::GUIClientControl *parent, No
 	NEW_CLASSNN(this->pnlDestCtrl, UI::GUIPanel(ui, this->pnlDest));
 	this->pnlDestCtrl->SetRect(0, 0, 100, 23, false);
 	this->pnlDestCtrl->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->lblSrc, UI::GUILabel(ui, this->pnlSrcCtrl, CSTR("Source Encryption")));
+	this->lblSrc = ui->NewLabel(this->pnlSrcCtrl, CSTR("Source Encryption"));
 	this->lblSrc->SetRect(0, 0, 100, 23, false);
 	this->lblSrc->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->cboSrc = ui->NewComboBox(this->pnlSrcCtrl, false);
 	this->cboSrc->SetDockType(UI::GUIControl::DOCK_FILL);
 	NEW_CLASS(this->txtSrc, UI::GUITextBox(ui, this->pnlSrc, CSTR(""), true));
 	this->txtSrc->SetDockType(UI::GUIControl::DOCK_FILL);
-	NEW_CLASS(this->lblDest, UI::GUILabel(ui, this->pnlDestCtrl, CSTR("Dest Encryption")));
+	this->lblDest = ui->NewLabel(this->pnlDestCtrl, CSTR("Dest Encryption"));
 	this->lblDest->SetRect(0, 0, 100, 23, false);
 	this->lblDest->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->btnConvert = ui->NewButton(this->pnlDestCtrl, CSTR("&Convert"));

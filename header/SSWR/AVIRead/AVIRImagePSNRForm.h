@@ -15,19 +15,19 @@ namespace SSWR
 		{
 		private:
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
-			UI::GUILabel *lblOriFile;
+			NotNullPtr<UI::GUILabel> lblOriFile;
 			UI::GUITextBox *txtOriFile;
 			NotNullPtr<UI::GUIButton> btnOriFile;
-			UI::GUILabel *lblLossyFile;
+			NotNullPtr<UI::GUILabel> lblLossyFile;
 			UI::GUITextBox *txtLossyFile;
 			NotNullPtr<UI::GUIButton> btnLossyFile;
-			UI::GUILabel *lblMode;
+			NotNullPtr<UI::GUILabel> lblMode;
 			UI::GUIRadioButton *radMode16Bit;
 			UI::GUIRadioButton *radMode8Bit;
 			NotNullPtr<UI::GUIButton> btnCompare;
-			UI::GUILabel *lblPSNR;
+			NotNullPtr<UI::GUILabel> lblPSNR;
 			UI::GUITextBox *txtPSNR;
-			UI::GUILabel *lblPSNRDB;
+			NotNullPtr<UI::GUILabel> lblPSNRDB;
 
 			static void __stdcall OnOriFileClicked(void *userObj);
 			static void __stdcall OnLossyFileClicked(void *userObj);

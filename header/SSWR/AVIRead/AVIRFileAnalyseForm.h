@@ -20,7 +20,7 @@ namespace SSWR
 		{
 		private:
 			NotNullPtr<UI::GUIPanel> pnlCtrl;
-			UI::GUILabel *lblFile;
+			NotNullPtr<UI::GUILabel> lblFile;
 			UI::GUITextBox *txtFile;
 			NotNullPtr<UI::GUIButton> btnFile;
 			UI::GUITabControl *tcMain;

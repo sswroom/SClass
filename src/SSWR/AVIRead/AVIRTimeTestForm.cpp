@@ -58,21 +58,21 @@ SSWR::AVIRead::AVIRTimeTestForm::AVIRTimeTestForm(UI::GUIClientControl *parent, 
 	this->SetNoResize(true);
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASS(this->lblSleepMS, UI::GUILabel(ui, *this, CSTR("Sleep Time (ms)")));
+	this->lblSleepMS = ui->NewLabel(*this, CSTR("Sleep Time (ms)"));
 	this->lblSleepMS->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtSleepMS, UI::GUITextBox(ui, *this, CSTR("100")));
 	this->txtSleepMS->SetRect(104, 4, 100, 23, false);
 	this->btnSleepMS = ui->NewButton(*this, CSTR("Test"));
 	this->btnSleepMS->SetRect(204, 4, 75, 23, false);
 	this->btnSleepMS->HandleButtonClick(OnSleepMSClicked, this);
-	NEW_CLASS(this->lblSleepUS, UI::GUILabel(ui, *this, CSTR("Sleep Time (us)")));
+	this->lblSleepUS = ui->NewLabel(*this, CSTR("Sleep Time (us)"));
 	this->lblSleepUS->SetRect(4, 28, 100, 23, false);
 	NEW_CLASS(this->txtSleepUS, UI::GUITextBox(ui, *this, CSTR("100")));
 	this->txtSleepUS->SetRect(104, 28, 100, 23, false);
 	this->btnSleepUS = ui->NewButton(*this, CSTR("Test"));
 	this->btnSleepUS->SetRect(204, 28, 75, 23, false);
 	this->btnSleepUS->HandleButtonClick(OnSleepUSClicked, this);
-	NEW_CLASS(this->lblActualTime, UI::GUILabel(ui, *this, CSTR("Actual Time (s)")));
+	this->lblActualTime = ui->NewLabel(*this, CSTR("Actual Time (s)"));
 	this->lblActualTime->SetRect(4, 52, 100, 23, false);
 	NEW_CLASS(this->txtActualTime, UI::GUITextBox(ui, *this, CSTR("")));
 	this->txtActualTime->SetRect(104, 52, 150, 23, false);

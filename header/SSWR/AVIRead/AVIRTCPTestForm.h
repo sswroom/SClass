@@ -34,23 +34,23 @@ namespace SSWR
 			UInt32 failCnt;
 
 			NotNullPtr<UI::GUIPanel> pnlRequest;
-			UI::GUILabel *lblIP;
+			NotNullPtr<UI::GUILabel> lblIP;
 			UI::GUITextBox *txtIP;
-			UI::GUILabel *lblPort;
+			NotNullPtr<UI::GUILabel> lblPort;
 			UI::GUITextBox *txtPort;
-			UI::GUILabel *lblConcurrCnt;
+			NotNullPtr<UI::GUILabel> lblConcurrCnt;
 			UI::GUITextBox *txtConcurrCnt;
-			UI::GUILabel *lblTotalConnCnt;
+			NotNullPtr<UI::GUILabel> lblTotalConnCnt;
 			UI::GUITextBox *txtTotalConnCnt;
 			NotNullPtr<UI::GUIButton> btnStart;
 			NotNullPtr<UI::GUIGroupBox> grpStatus;
-			UI::GUILabel *lblConnLeftCnt;
+			NotNullPtr<UI::GUILabel> lblConnLeftCnt;
 			UI::GUITextBox *txtConnLeftCnt;
-			UI::GUILabel *lblThreadCnt;
+			NotNullPtr<UI::GUILabel> lblThreadCnt;
 			UI::GUITextBox *txtThreadCnt;
-			UI::GUILabel *lblSuccCnt;
+			NotNullPtr<UI::GUILabel> lblSuccCnt;
 			UI::GUITextBox *txtSuccCnt;
-			UI::GUILabel *lblFailCnt;
+			NotNullPtr<UI::GUILabel> lblFailCnt;
 			UI::GUITextBox *txtFailCnt;
 
 			static void __stdcall OnStartClicked(void *userObj);

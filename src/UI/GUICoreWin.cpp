@@ -8,6 +8,7 @@
 #include "UI/Win/WinComboBox.h"
 #include "UI/Win/WinGroupBox.h"
 #include "UI/Win/WinHSplitter.h"
+#include "UI/Win/WinLabel.h"
 #include "UI/Win/WinMessageDialog.h"
 #include "UI/Win/WinVSplitter.h"
 #ifdef _WIN32_WCE
@@ -263,6 +264,13 @@ NotNullPtr<UI::GUIGroupBox> UI::GUICoreWin::NewGroupBox(NotNullPtr<GUIClientCont
 {
 	NotNullPtr<UI::Win::WinGroupBox> ctrl;
 	NEW_CLASSNN(ctrl, UI::Win::WinGroupBox(*this, parent, text));
+	return ctrl;
+}
+
+NotNullPtr<UI::GUILabel> UI::GUICoreWin::NewLabel(NotNullPtr<GUIClientControl> parent, Text::CStringNN text)
+{
+	NotNullPtr<UI::Win::WinLabel> ctrl;
+	NEW_CLASSNN(ctrl, UI::Win::WinLabel(*this, parent, text));
 	return ctrl;
 }
 

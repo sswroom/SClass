@@ -19,11 +19,11 @@ namespace SSWR
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 
 			NotNullPtr<UI::GUIPanel> pnlCtrl;
-			UI::GUILabel *lblType;
+			NotNullPtr<UI::GUILabel> lblType;
 			NotNullPtr<UI::GUIComboBox> cboType;
 			NotNullPtr<UI::GUIButton> btnConv;
 			NotNullPtr<UI::GUIButton> btnConv2;
-			UI::GUILabel *lblPrefix;
+			NotNullPtr<UI::GUILabel> lblPrefix;
 			UI::GUITextBox *txtPrefix;
 			UI::GUITextBox *txtSource;
 			NotNullPtr<UI::GUIHSplitter> hspMain;

@@ -71,7 +71,7 @@ SSWR::AVIRead::AVIRIPScanForm::AVIRIPScanForm(UI::GUIClientControl *parent, NotN
 	NEW_CLASSNN(this->pnlControl, UI::GUIPanel(ui, *this));
 	this->pnlControl->SetRect(0, 0, 100, 31, false);
 	this->pnlControl->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->lblIP, UI::GUILabel(ui, this->pnlControl, CSTR("IP")));
+	this->lblIP = ui->NewLabel(this->pnlControl, CSTR("IP"));
 	this->lblIP->SetRect(4, 4, 100, 23, false);
 	this->cboIP = ui->NewComboBox(this->pnlControl, false);
 	this->cboIP->SetRect(104, 4, 150, 23, false);

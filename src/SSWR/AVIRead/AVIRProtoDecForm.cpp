@@ -137,7 +137,7 @@ SSWR::AVIRead::AVIRProtoDecForm::AVIRProtoDecForm(UI::GUIClientControl *parent, 
 	NEW_CLASSNN(this->pnlCtrl, UI::GUIPanel(ui, *this));
 	this->pnlCtrl->SetRect(0, 0, 100, 80, false);
 	this->pnlCtrl->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->lblFile, UI::GUILabel(ui, this->pnlCtrl, CSTR("File")));
+	this->lblFile = ui->NewLabel(this->pnlCtrl, CSTR("File"));
 	this->lblFile->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtFile, UI::GUITextBox(ui, this->pnlCtrl, CSTR("")));
 	this->txtFile->SetRect(104, 4, 400, 23, false);
@@ -145,7 +145,7 @@ SSWR::AVIRead::AVIRProtoDecForm::AVIRProtoDecForm(UI::GUIClientControl *parent, 
 	this->btnFile = ui->NewButton(this->pnlCtrl, CSTR("B&rowse"));
 	this->btnFile->SetRect(504, 4, 75, 23, false);
 	this->btnFile->HandleButtonClick(OnFileClicked, this);
-	NEW_CLASS(this->lblDecoder, UI::GUILabel(ui, this->pnlCtrl, CSTR("Decoder")));
+	this->lblDecoder = ui->NewLabel(this->pnlCtrl, CSTR("Decoder"));
 	this->lblDecoder->SetRect(4, 28, 100, 23, false);
 	this->cboDecoder = ui->NewComboBox(this->pnlCtrl, false);
 	this->cboDecoder->SetRect(104, 28, 200, 23, false);

@@ -182,7 +182,7 @@ SSWR::AVIRead::AVIRLUTForm::AVIRLUTForm(UI::GUIClientControl *parent, NotNullPtr
 	NEW_CLASSNN(this->pnlInfo, UI::GUIPanel(ui, this->tpInfo));
 	this->pnlInfo->SetRect(0, 0, 100, 36, false);
 	this->pnlInfo->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->lblFileName, UI::GUILabel(ui, this->pnlInfo, CSTR("File Name")));
+	this->lblFileName = ui->NewLabel(this->pnlInfo, CSTR("File Name"));
 	this->lblFileName->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtFileName, UI::GUITextBox(ui, this->pnlInfo, CSTR("")));
 	this->txtFileName->SetRect(104, 4, 500, 23, false);

@@ -16,9 +16,9 @@ namespace SSWR
 		class SHPConvElevationFilterForm : public UI::GUIForm
 		{
 		private:
-			UI::GUILabel *lblCol;
+			NotNullPtr<UI::GUILabel> lblCol;
 			NotNullPtr<UI::GUIComboBox> cboCol;
-			UI::GUILabel *lblHeight;
+			NotNullPtr<UI::GUILabel> lblHeight;
 			UI::GUITextBox *txtHeight;
 			NotNullPtr<UI::GUIButton> btnOK;
 			NotNullPtr<UI::GUIButton> btnCancel;

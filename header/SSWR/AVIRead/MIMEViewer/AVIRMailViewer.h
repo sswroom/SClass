@@ -23,13 +23,13 @@ namespace SSWR
 				NotNullPtr<UI::GUITabPage> tpHeading;
 				UI::GUIListView *lvRecp;
 				NotNullPtr<UI::GUIPanel> pnlFrom;
-				UI::GUILabel *lblFrom;
+				NotNullPtr<UI::GUILabel> lblFrom;
 				UI::GUITextBox *txtFrom;
 				NotNullPtr<UI::GUIPanel> pnlSubject;
-				UI::GUILabel *lblSubject;
+				NotNullPtr<UI::GUILabel> lblSubject;
 				UI::GUITextBox *txtSubject;
 				NotNullPtr<UI::GUIPanel> pnlDate;
-				UI::GUILabel *lblDate;
+				NotNullPtr<UI::GUILabel> lblDate;
 				UI::GUITextBox *txtDate;
 
 				NotNullPtr<UI::GUITabPage> tpRAW;

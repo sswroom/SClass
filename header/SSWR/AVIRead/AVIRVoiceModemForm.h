@@ -25,23 +25,23 @@ namespace SSWR
 
 			UI::GUITabControl *tcMain;
 			NotNullPtr<UI::GUITabPage> tpInfo;
-			UI::GUILabel *lblModemManu;
+			NotNullPtr<UI::GUILabel> lblModemManu;
 			UI::GUITextBox *txtModemManu;
-			UI::GUILabel *lblModemModel;
+			NotNullPtr<UI::GUILabel> lblModemModel;
 			UI::GUITextBox *txtModemModel;
-			UI::GUILabel *lblModemRev;
+			NotNullPtr<UI::GUILabel> lblModemRev;
 			UI::GUITextBox *txtModemRev;
-			UI::GUILabel *lblModemIMEI;
+			NotNullPtr<UI::GUILabel> lblModemIMEI;
 			UI::GUITextBox *txtModemIMEI;
 
 			NotNullPtr<UI::GUITabPage> tpDial;
-			UI::GUILabel *lblDialNum;
+			NotNullPtr<UI::GUILabel> lblDialNum;
 			UI::GUITextBox *txtDialNum;
 			NotNullPtr<UI::GUIButton> btnDial;
 			NotNullPtr<UI::GUIButton> btnHangUp;
-			UI::GUILabel *lblDialStatus;
+			NotNullPtr<UI::GUILabel> lblDialStatus;
 			UI::GUITextBox *txtDialStatus;
-			UI::GUILabel *lblDialTones;
+			NotNullPtr<UI::GUILabel> lblDialTones;
 			UI::GUITextBox *txtDialTones;
 
 			Sync::Mutex toneMut;

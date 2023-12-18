@@ -15,18 +15,18 @@ namespace SSWR
 		class AVIRWMTSForm : public UI::GUIForm
 		{
 		private:
-			UI::GUILabel *lblWMTSURL;
+			NotNullPtr<UI::GUILabel> lblWMTSURL;
 			UI::GUITextBox *txtWMTSURL;
 			NotNullPtr<UI::GUIButton> btnLoad;
-			UI::GUILabel *lblStatus;
+			NotNullPtr<UI::GUILabel> lblStatus;
 			UI::GUITextBox *txtStatus;
-			UI::GUILabel *lblLayer;
+			NotNullPtr<UI::GUILabel> lblLayer;
 			NotNullPtr<UI::GUIComboBox> cboLayer;
-			UI::GUILabel *lblMatrixSet;
+			NotNullPtr<UI::GUILabel> lblMatrixSet;
 			NotNullPtr<UI::GUIComboBox> cboMatrixSet;
-			UI::GUILabel *lblResourceTileType;
+			NotNullPtr<UI::GUILabel> lblResourceTileType;
 			NotNullPtr<UI::GUIComboBox> cboResourceTileType;
-			UI::GUILabel *lblResourceInfoType;
+			NotNullPtr<UI::GUILabel> lblResourceInfoType;
 			NotNullPtr<UI::GUIComboBox> cboResourceInfoType;
 			NotNullPtr<UI::GUIButton> btnOK;
 

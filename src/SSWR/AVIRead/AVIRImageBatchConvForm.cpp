@@ -291,20 +291,20 @@ SSWR::AVIRead::AVIRImageBatchConvForm::AVIRImageBatchConvForm(UI::GUIClientContr
 	this->nThreads = 0;
 	this->threadStates = 0;
 
-	NEW_CLASS(this->lblDir, UI::GUILabel(ui, *this, CSTR("Folder")));
+	this->lblDir = ui->NewLabel(*this, CSTR("Folder"));
 	this->lblDir->SetRect(0, 0, 100, 23, false);
 	NEW_CLASS(this->txtDir, UI::GUITextBox(ui, *this, CSTR("")));
 	this->txtDir->SetRect(100, 0, 450, 23, false);
 	this->btnBrowse = ui->NewButton(*this, CSTR("&Browse"));
 	this->btnBrowse->SetRect(550, 0, 75, 23, false);
 	this->btnBrowse->HandleButtonClick(OnBrowseClicked, this);
-	NEW_CLASS(this->lblOutFormat, UI::GUILabel(ui, *this, CSTR("Output Format")));
+	this->lblOutFormat = ui->NewLabel(*this, CSTR("Output Format"));
 	this->lblOutFormat->SetRect(0, 24, 100, 23, false);
 	NEW_CLASS(this->radFormatJPG, UI::GUIRadioButton(ui, *this, CSTR("JPEG"), true));
 	this->radFormatJPG->SetRect(100, 24, 100, 23, false);
 	NEW_CLASS(this->radFormatWebP, UI::GUIRadioButton(ui, *this, CSTR("WebP"), false));
 	this->radFormatWebP->SetRect(100, 48, 100, 23, false);
-	NEW_CLASS(this->lblQuality, UI::GUILabel(ui, *this, CSTR("Quality")));
+	this->lblQuality = ui->NewLabel(*this, CSTR("Quality"));
 	this->lblQuality->SetRect(0, 72, 100, 23, false);
 	NEW_CLASS(this->txtQuality, UI::GUITextBox(ui, *this, CSTR("100")));
 	this->txtQuality->SetRect(100, 72, 100, 23, false);

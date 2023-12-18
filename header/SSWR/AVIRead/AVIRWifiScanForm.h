@@ -23,9 +23,9 @@ namespace SSWR
 
 			NotNullPtr<UI::GUIPanel> pnlControl;
 			NotNullPtr<UI::GUIButton> btnScan;
-			UI::GUILabel *lblScanTime;
+			NotNullPtr<UI::GUILabel> lblScanTime;
 			UI::GUITextBox *txtScanTime;
-			UI::GUILabel *lblResultTime;
+			NotNullPtr<UI::GUILabel> lblResultTime;
 			UI::GUITextBox *txtResultTime;
 			UI::GUIListView *lvWifi;
 			NotNullPtr<UI::GUIVSplitter> vspWifi;

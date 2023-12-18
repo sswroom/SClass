@@ -20,24 +20,24 @@ namespace SSWR
 		{
 		private:
 			NotNullPtr<UI::GUIPanel> pnlSrc;
-			UI::GUILabel *lblSrc;
+			NotNullPtr<UI::GUILabel> lblSrc;
 			UI::GUIRadioButton *radSrcGeo;
 			UI::GUIRadioButton *radSrcProj;
 			NotNullPtr<UI::GUIComboBox> cboSrc;
 			NotNullPtr<UI::GUIPanel> pnlDest;
-			UI::GUILabel *lblDest;
+			NotNullPtr<UI::GUILabel> lblDest;
 			UI::GUIRadioButton *radDestGeo;
 			UI::GUIRadioButton *radDestProj;
 			NotNullPtr<UI::GUIComboBox> cboDest;
 			NotNullPtr<UI::GUIButton> btnConvFile;
 			NotNullPtr<UI::GUIPanel> pnlCoord;
-			UI::GUILabel *lblName;
+			NotNullPtr<UI::GUILabel> lblName;
 			UI::GUITextBox *txtName;
-			UI::GUILabel *lblEasting;
+			NotNullPtr<UI::GUILabel> lblEasting;
 			UI::GUITextBox *txtEasting;
-			UI::GUILabel *lblNorthing;
+			NotNullPtr<UI::GUILabel> lblNorthing;
 			UI::GUITextBox *txtNorthing;
-			UI::GUILabel *lblHeight;
+			NotNullPtr<UI::GUILabel> lblHeight;
 			UI::GUITextBox *txtHeight;
 			NotNullPtr<UI::GUIButton> btnAdd;
 			NotNullPtr<UI::GUIButton> btnClear;

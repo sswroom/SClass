@@ -14,11 +14,11 @@ namespace SSWR
 		class AVIRAccelerometerForm : public UI::GUIForm
 		{
 		private:
-			UI::GUILabel *lblX;
+			NotNullPtr<UI::GUILabel> lblX;
 			UI::GUITextBox *txtX;
-			UI::GUILabel *lblY;
+			NotNullPtr<UI::GUILabel> lblY;
 			UI::GUITextBox *txtY;
-			UI::GUILabel *lblZ;
+			NotNullPtr<UI::GUILabel> lblZ;
 			UI::GUITextBox *txtZ;
 			NotNullPtr<UI::GUIPanel> pnlMoving;
 

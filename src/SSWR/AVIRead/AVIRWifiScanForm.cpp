@@ -176,12 +176,12 @@ SSWR::AVIRead::AVIRWifiScanForm::AVIRWifiScanForm(UI::GUIClientControl *parent, 
 	this->btnScan = ui->NewButton(this->pnlControl, CSTR("Scan"));
 	this->btnScan->SetRect(4, 4, 75, 23, false);
 	this->btnScan->HandleButtonClick(OnScanClicked, this);
-	NEW_CLASS(this->lblScanTime, UI::GUILabel(ui, this->pnlControl, CSTR("Scan Time")));
+	this->lblScanTime = ui->NewLabel(this->pnlControl, CSTR("Scan Time"));
 	this->lblScanTime->SetRect(104, 4, 100, 23, false);
 	NEW_CLASS(this->txtScanTime, UI::GUITextBox(ui, this->pnlControl, CSTR("")));
 	this->txtScanTime->SetReadOnly(true);
 	this->txtScanTime->SetRect(204, 4, 100, 23, false);
-	NEW_CLASS(this->lblResultTime, UI::GUILabel(ui, this->pnlControl, CSTR("Result Time")));
+	this->lblResultTime = ui->NewLabel(this->pnlControl, CSTR("Result Time"));
 	this->lblResultTime->SetRect(304, 4, 100, 23, false);
 	NEW_CLASS(this->txtResultTime, UI::GUITextBox(ui, this->pnlControl, CSTR("")));
 	this->txtResultTime->SetReadOnly(true);

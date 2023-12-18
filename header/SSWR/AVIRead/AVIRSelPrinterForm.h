@@ -18,7 +18,7 @@ namespace SSWR
 		private:
 			Media::Printer *currPrinter;
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
-			UI::GUILabel *lblPrinter;
+			NotNullPtr<UI::GUILabel> lblPrinter;
 			NotNullPtr<UI::GUIComboBox> cboPrinter;
 			NotNullPtr<UI::GUIButton> btnSetting;
 

@@ -58,11 +58,11 @@ SSWR::AVIRead::AVIRWFSForm::AVIRWFSForm(UI::GUIClientControl *parent, NotNullPtr
 	this->SetNoResize(true);
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASS(this->lblWFSURL, UI::GUILabel(ui, *this, CSTR("WFS URL")));
+	this->lblWFSURL = ui->NewLabel(*this, CSTR("WFS URL"));
 	this->lblWFSURL->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtWFSURL, UI::GUITextBox(ui, *this, CSTR("")));
 	this->txtWFSURL->SetRect(104, 4, 500, 23, false);
-	NEW_CLASS(this->lblWFSVersion, UI::GUILabel(ui, *this, CSTR("Version")));
+	this->lblWFSVersion = ui->NewLabel(*this, CSTR("Version"));
 	this->lblWFSVersion->SetRect(4, 28, 100, 23, false);
 	this->cboWFSVersion = ui->NewComboBox(*this, false);
 	this->cboWFSVersion->SetRect(104, 28, 100, 23, false);
@@ -74,12 +74,12 @@ SSWR::AVIRead::AVIRWFSForm::AVIRWFSForm(UI::GUIClientControl *parent, NotNullPtr
 	this->btnLoad = ui->NewButton(*this, CSTR("Load"));
 	this->btnLoad->SetRect(104, 52, 75, 23, false);
 	this->btnLoad->HandleButtonClick(OnLoadClicked, this);
-	NEW_CLASS(this->lblStatus, UI::GUILabel(ui, *this, CSTR("Status")));
+	this->lblStatus = ui->NewLabel(*this, CSTR("Status"));
 	this->lblStatus->SetRect(4, 76, 100, 23, false);
 	NEW_CLASS(this->txtStatus, UI::GUITextBox(ui, *this, CSTR("")));
 	this->txtStatus->SetRect(104, 76, 100, 23, false);
 	this->txtStatus->SetReadOnly(true);
-	NEW_CLASS(this->lblFeature, UI::GUILabel(ui, *this, CSTR("Feature")));
+	this->lblFeature = ui->NewLabel(*this, CSTR("Feature"));
 	this->lblFeature->SetRect(4, 100, 100, 23, false);
 	this->cboFeature = ui->NewComboBox(*this, false);
 	this->cboFeature->SetRect(104, 100, 200, 23, false);

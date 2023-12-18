@@ -133,7 +133,7 @@ SSWR::AVIRead::AVIRESRIMapForm::AVIRESRIMapForm(UI::GUIClientControl *parent, No
 	NEW_CLASS(this->chkNoResource, UI::GUICheckBox(ui, *this, CSTR("No Resource"), false));
 	this->chkNoResource->SetRect(108, 56, 120, 23, false);
 	this->chkNoResource->HandleCheckedChange(OnNoResourceChg, this);
-	NEW_CLASS(this->lblSRID, UI::GUILabel(ui, *this, CSTR("SRID")));
+	this->lblSRID = ui->NewLabel(*this, CSTR("SRID"));
 	this->lblSRID->SetRect(228, 56, 100, 23, false);
 	NEW_CLASS(this->txtSRID, UI::GUITextBox(ui, *this, CSTR("4326")));
 	this->txtSRID->SetRect(328, 56, 100, 23, false);

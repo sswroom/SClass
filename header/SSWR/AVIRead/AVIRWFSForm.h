@@ -15,14 +15,14 @@ namespace SSWR
 		class AVIRWFSForm : public UI::GUIForm
 		{
 		private:
-			UI::GUILabel *lblWFSURL;
+			NotNullPtr<UI::GUILabel> lblWFSURL;
 			UI::GUITextBox *txtWFSURL;
-			UI::GUILabel *lblWFSVersion;
+			NotNullPtr<UI::GUILabel> lblWFSVersion;
 			NotNullPtr<UI::GUIComboBox> cboWFSVersion;
 			NotNullPtr<UI::GUIButton> btnLoad;
-			UI::GUILabel *lblStatus;
+			NotNullPtr<UI::GUILabel> lblStatus;
 			UI::GUITextBox *txtStatus;
-			UI::GUILabel *lblFeature;
+			NotNullPtr<UI::GUILabel> lblFeature;
 			NotNullPtr<UI::GUIComboBox> cboFeature;
 			NotNullPtr<UI::GUIButton> btnOK;
 

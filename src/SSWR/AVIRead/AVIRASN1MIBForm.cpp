@@ -125,7 +125,7 @@ SSWR::AVIRead::AVIRASN1MIBForm::AVIRASN1MIBForm(UI::GUIClientControl *parent, No
 	NEW_CLASSNN(this->pnlRequest, UI::GUIPanel(ui, *this));
 	this->pnlRequest->SetRect(0, 0, 100, 31, false);
 	this->pnlRequest->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->lblFile, UI::GUILabel(ui, this->pnlRequest, CSTR("MIB File")));
+	this->lblFile = ui->NewLabel(this->pnlRequest, CSTR("MIB File"));
 	this->lblFile->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtFile, UI::GUITextBox(ui, this->pnlRequest, CSTR("")));
 	this->txtFile->SetRect(104, 4, 500, 23, false);

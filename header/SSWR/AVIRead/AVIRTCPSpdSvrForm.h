@@ -22,7 +22,7 @@ namespace SSWR
 			Net::TCPClientMgr *cliMgr;
 			IO::LogTool log;
 
-			UI::GUILabel *lblPort;
+			NotNullPtr<UI::GUILabel> lblPort;
 			UI::GUITextBox *txtPort;
 			UI::GUICheckBox *chkMultiThread;
 			UI::GUICheckBox *chkEcho;

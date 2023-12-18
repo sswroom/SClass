@@ -37,15 +37,15 @@ namespace SSWR
 			IO::MODBUSDevSim *currDev;
 
 			NotNullPtr<UI::GUIPanel> pnlCtrl;
-			UI::GUILabel *lblPort;
+			NotNullPtr<UI::GUILabel> lblPort;
 			UI::GUITextBox *txtPort;
 			NotNullPtr<UI::GUIButton> btnListen;
 			NotNullPtr<UI::GUIGroupBox> grpDev;
-			UI::GUILabel *lblAddr;
+			NotNullPtr<UI::GUILabel> lblAddr;
 			UI::GUITextBox *txtAddr;
 			NotNullPtr<UI::GUIComboBox> cboDevType;
 			NotNullPtr<UI::GUIButton> btnDev;
-			UI::GUILabel *lblDelay;
+			NotNullPtr<UI::GUILabel> lblDelay;
 			UI::GUITextBox *txtDelay;
 			NotNullPtr<UI::GUIButton> btnDelay;
 			UI::GUIListBox *lbDevice;

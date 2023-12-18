@@ -51,16 +51,16 @@ namespace SSWR
 			UI::GUITabControl *tcMain;
 
 			NotNullPtr<UI::GUITabPage> tpStatus;
-			UI::GUILabel *lblSSL;
+			NotNullPtr<UI::GUILabel> lblSSL;
 			UI::GUICheckBox *chkSSL;
 			NotNullPtr<UI::GUIButton> btnSSLCert;
-			UI::GUILabel *lblSSLCert;
-			UI::GUILabel *lblPort;
+			NotNullPtr<UI::GUILabel> lblSSLCert;
+			NotNullPtr<UI::GUILabel> lblPort;
 			UI::GUITextBox *txtPort;
 			NotNullPtr<UI::GUIButton> btnStart;
-			UI::GUILabel *lblTotalCount;
+			NotNullPtr<UI::GUILabel> lblTotalCount;
 			UI::GUITextBox *txtTotalCount;
-			UI::GUILabel *lblDataRate;
+			NotNullPtr<UI::GUILabel> lblDataRate;
 			UI::GUITextBox *txtDataRate;
 
 			NotNullPtr<UI::GUITabPage> tpTopic;

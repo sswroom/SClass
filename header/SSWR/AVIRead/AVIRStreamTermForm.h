@@ -25,7 +25,7 @@ namespace SSWR
 			IO::SiLabDriver *siLabDriver;
 
 			NotNullPtr<UI::GUIGroupBox> grpStream;
-			UI::GUILabel *lblStream;
+			NotNullPtr<UI::GUILabel> lblStream;
 			UI::GUITextBox *txtStream;
 			NotNullPtr<UI::GUIButton> btnStream;
 
@@ -40,7 +40,7 @@ namespace SSWR
 			NotNullPtr<UI::GUIComboBox> cboRecvType;
 			UI::GUITextBox *txtRecvDisp;
 			NotNullPtr<UI::GUIPanel> pnlSendOption;
-			UI::GUILabel *lblSendLBreak;
+			NotNullPtr<UI::GUILabel> lblSendLBreak;
 			NotNullPtr<UI::GUIComboBox> cboSendLBreak;
 			UI::GUIRadioButton *radSendText;
 			UI::GUIRadioButton *radSendHex;

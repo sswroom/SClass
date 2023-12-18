@@ -25,30 +25,30 @@ namespace SSWR
 			UI::GUITabControl *tcMain;
 
 			NotNullPtr<UI::GUITabPage> tpControl;
-			UI::GUILabel *lblHost;
+			NotNullPtr<UI::GUILabel> lblHost;
 			UI::GUITextBox *txtHost;
-			UI::GUILabel *lblPort;
+			NotNullPtr<UI::GUILabel> lblPort;
 			UI::GUITextBox *txtPort;
-			UI::GUILabel *lblUserName;
+			NotNullPtr<UI::GUILabel> lblUserName;
 			UI::GUITextBox *txtUserName;
-			UI::GUILabel *lblPassword;
+			NotNullPtr<UI::GUILabel> lblPassword;
 			UI::GUITextBox *txtPassword;
-			UI::GUILabel *lblDatabase;
+			NotNullPtr<UI::GUILabel> lblDatabase;
 			UI::GUITextBox *txtDatabase;
 			NotNullPtr<UI::GUIButton> btnStart;
-			UI::GUILabel *lblStatus;
+			NotNullPtr<UI::GUILabel> lblStatus;
 			UI::GUITextBox *txtStatus;
 
 			NotNullPtr<UI::GUITabPage> tpInfo;
-			UI::GUILabel *lblServerVer;
+			NotNullPtr<UI::GUILabel> lblServerVer;
 			UI::GUITextBox *txtServerVer;
-			UI::GUILabel *lblConnId;
+			NotNullPtr<UI::GUILabel> lblConnId;
 			UI::GUITextBox *txtConnId;
-			UI::GUILabel *lblAuthPluginData;
+			NotNullPtr<UI::GUILabel> lblAuthPluginData;
 			UI::GUITextBox *txtAuthPluginData;
-			UI::GUILabel *lblServerCap;
+			NotNullPtr<UI::GUILabel> lblServerCap;
 			UI::GUITextBox *txtServerCap;
-			UI::GUILabel *lblServerCS;
+			NotNullPtr<UI::GUILabel> lblServerCS;
 			UI::GUITextBox *txtServerCS;
 
 			NotNullPtr<UI::GUITabPage> tpQuery;

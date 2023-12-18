@@ -47,15 +47,15 @@ namespace SSWR
 			} DevGuard;
 		private:
 			NotNullPtr<UI::GUIPanel> pnlConn;
-			UI::GUILabel *lblHost;
+			NotNullPtr<UI::GUILabel> lblHost;
 			UI::GUITextBox *txtHost;
-			UI::GUILabel *lblPort;
+			NotNullPtr<UI::GUILabel> lblPort;
 			UI::GUITextBox *txtPort;
 			NotNullPtr<UI::GUIButton> btnConn;
 			UI::GUITabControl *tcMain;
 
 			NotNullPtr<UI::GUITabPage> tpStatus;
-			UI::GUILabel *lblStatusConn;
+			NotNullPtr<UI::GUILabel> lblStatusConn;
 			UI::GUITextBox *txtStatusConn;
 
 			NotNullPtr<UI::GUITabPage> tpDevice;

@@ -17,21 +17,21 @@ namespace SSWR
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 
 			NotNullPtr<UI::GUIGroupBox> grpGenerate;
-			UI::GUILabel *lblCost;
+			NotNullPtr<UI::GUILabel> lblCost;
 			UI::GUITextBox *txtCost;
-			UI::GUILabel *lblGenPassword;
+			NotNullPtr<UI::GUILabel> lblGenPassword;
 			UI::GUITextBox *txtGenPassword;
 			NotNullPtr<UI::GUIButton> btnGenerate;
-			UI::GUILabel *lblGenHash;
+			NotNullPtr<UI::GUILabel> lblGenHash;
 			UI::GUITextBox *txtGenHash;
 
 			NotNullPtr<UI::GUIGroupBox> grpCheck;
-			UI::GUILabel *lblCheckHash;
+			NotNullPtr<UI::GUILabel> lblCheckHash;
 			UI::GUITextBox *txtCheckHash;
-			UI::GUILabel *lblCheckPassword;
+			NotNullPtr<UI::GUILabel> lblCheckPassword;
 			UI::GUITextBox *txtCheckPassword;
 			NotNullPtr<UI::GUIButton> btnCheck;
-			UI::GUILabel *lblCheckResult;
+			NotNullPtr<UI::GUILabel> lblCheckResult;
 			UI::GUITextBox *txtCheckResult;
 
 			static void __stdcall OnGenHashClicked(void *userObj);

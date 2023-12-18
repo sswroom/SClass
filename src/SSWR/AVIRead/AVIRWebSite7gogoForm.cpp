@@ -67,7 +67,7 @@ SSWR::AVIRead::AVIRWebSite7gogoForm::AVIRWebSite7gogoForm(UI::GUIClientControl *
 	NEW_CLASSNN(this->pnlRequest, UI::GUIPanel(ui, *this));
 	this->pnlRequest->SetRect(0, 0, 100, 31, false);
 	this->pnlRequest->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->lblChannelId, UI::GUILabel(ui, this->pnlRequest, CSTR("ChannelId")));
+	this->lblChannelId = ui->NewLabel(this->pnlRequest, CSTR("ChannelId"));
 	this->lblChannelId->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtChannelId, UI::GUITextBox(ui, this->pnlRequest, CSTR("")));
 	this->txtChannelId->SetRect(104, 4, 150, 23, false);

@@ -113,19 +113,19 @@ SSWR::AVIRead::AVIRNetRAWCaptureForm::AVIRNetRAWCaptureForm(UI::GUIClientControl
 	this->currDataSize = (UInt64)-1;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASS(this->lblIP, UI::GUILabel(ui, *this, CSTR("IP")));
+	this->lblIP = ui->NewLabel(*this, CSTR("IP"));
 	this->lblIP->SetRect(4, 4, 100, 23, false);
 	this->cboIP = ui->NewComboBox(*this, false);
 	this->cboIP->SetRect(104, 4, 150, 23, false);
-	NEW_CLASS(this->lblType, UI::GUILabel(ui, *this, CSTR("Type")));
+	this->lblType = ui->NewLabel(*this, CSTR("Type"));
 	this->lblType->SetRect(4, 28, 100, 23, false);
 	this->cboType = ui->NewComboBox(*this, false);
 	this->cboType->SetRect(104, 28, 150, 23, false);
-	NEW_CLASS(this->lblFormat, UI::GUILabel(ui, *this, CSTR("Format")));
+	this->lblFormat = ui->NewLabel(*this, CSTR("Format"));
 	this->lblFormat->SetRect(4, 52, 100, 23, false);
 	this->cboFormat = ui->NewComboBox(*this, false);
 	this->cboFormat->SetRect(104, 52, 150, 23, false);
-	NEW_CLASS(this->lblFileName, UI::GUILabel(ui, *this, CSTR("File Name")));
+	this->lblFileName = ui->NewLabel(*this, CSTR("File Name"));
 	this->lblFileName->SetRect(4, 76, 100, 23, false);
 	NEW_CLASS(this->txtFileName, UI::GUITextBox(ui, *this, CSTR("")));
 	this->txtFileName->SetRect(104, 76, 500, 23, false);
@@ -138,12 +138,12 @@ SSWR::AVIRead::AVIRNetRAWCaptureForm::AVIRNetRAWCaptureForm(UI::GUIClientControl
 	this->btnStart = ui->NewButton(*this, CSTR("Start"));
 	this->btnStart->SetRect(104, 100, 75, 23, false);
 	this->btnStart->HandleButtonClick(OnStartClicked, this);
-	NEW_CLASS(this->lblPacketCnt, UI::GUILabel(ui, *this, CSTR("Packet Count")));
+	this->lblPacketCnt = ui->NewLabel(*this, CSTR("Packet Count"));
 	this->lblPacketCnt->SetRect(4, 124, 100, 23, false);
 	NEW_CLASS(this->txtPacketCnt, UI::GUITextBox(ui, *this, CSTR("")));
 	this->txtPacketCnt->SetReadOnly(true);
 	this->txtPacketCnt->SetRect(104, 124, 150, 23, false);
-	NEW_CLASS(this->lblDataSize, UI::GUILabel(ui, *this, CSTR("Data Size")));
+	this->lblDataSize = ui->NewLabel(*this, CSTR("Data Size"));
 	this->lblDataSize->SetRect(4, 148, 100, 23, false);
 	NEW_CLASS(this->txtDataSize, UI::GUITextBox(ui, *this, CSTR("")));
 	this->txtDataSize->SetReadOnly(true);

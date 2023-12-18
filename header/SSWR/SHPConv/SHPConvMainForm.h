@@ -36,54 +36,54 @@ namespace SSWR
 
 			static Text::CStringNN typeName[];
 		private:
-			UI::GUILabel *lblDirectory;
+			NotNullPtr<UI::GUILabel> lblDirectory;
 			UI::GUITextBox *txtDirectory;
 			NotNullPtr<UI::GUIButton> btnDirectory;
-			UI::GUILabel *lblSource;
+			NotNullPtr<UI::GUILabel> lblSource;
 			UI::GUITextBox *txtSource;
 			NotNullPtr<UI::GUIButton> btnSBrowse;
 
-			UI::GUILabel *lblFileLength;
+			NotNullPtr<UI::GUILabel> lblFileLength;
 			UI::GUITextBox *txtFileLength;
-			UI::GUILabel *lblVersion;
+			NotNullPtr<UI::GUILabel> lblVersion;
 			UI::GUITextBox *txtVersion;
-			UI::GUILabel *lblShpType;
+			NotNullPtr<UI::GUILabel> lblShpType;
 			UI::GUITextBox *txtShpType;
-			UI::GUILabel *lblMMin;
+			NotNullPtr<UI::GUILabel> lblMMin;
 			UI::GUITextBox *txtMMin;
-			UI::GUILabel *lblMMax;
+			NotNullPtr<UI::GUILabel> lblMMax;
 			UI::GUITextBox *txtMMax;
 			UI::GUIListBox *lstRecords;
 
-			UI::GUILabel *lblXMin;
+			NotNullPtr<UI::GUILabel> lblXMin;
 			UI::GUITextBox *txtXMin;
-			UI::GUILabel *lblXMax;
+			NotNullPtr<UI::GUILabel> lblXMax;
 			UI::GUITextBox *txtXMax;
-			UI::GUILabel *lblYMin;
+			NotNullPtr<UI::GUILabel> lblYMin;
 			UI::GUITextBox *txtYMin;
-			UI::GUILabel *lblYMax;
+			NotNullPtr<UI::GUILabel> lblYMax;
 			UI::GUITextBox *txtYMax;
-			UI::GUILabel *lblZMin;
+			NotNullPtr<UI::GUILabel> lblZMin;
 			UI::GUITextBox *txtZMin;
-			UI::GUILabel *lblZMax;
+			NotNullPtr<UI::GUILabel> lblZMax;
 			UI::GUITextBox *txtZMax;
-			UI::GUILabel *lblRecCnt;
+			NotNullPtr<UI::GUILabel> lblRecCnt;
 			UI::GUITextBox *txtRecCnt;
-			UI::GUILabel *lblBlkScale;
+			NotNullPtr<UI::GUILabel> lblBlkScale;
 			UI::GUITextBox *txtBlkScale;
 
 			UI::GUIListBox *lstLang;
 			UI::GUITextBox *txtCodePage;
 
-			UI::GUILabel *lblSeperator;
+			NotNullPtr<UI::GUILabel> lblSeperator;
 			NotNullPtr<UI::GUIComboBox> cboSeperator;
 			NotNullPtr<UI::GUIButton> btnGroup;
 			NotNullPtr<UI::GUIButton> btnFilter;
 			NotNullPtr<UI::GUIButton> btnPreview;
 			NotNullPtr<UI::GUIButton> btnConvert;
 			UI::GUITextBox *txtLabel;
-			UI::GUILabel *lblLabelLegend;
-			UI::GUILabel *lblProgress;
+			NotNullPtr<UI::GUILabel> lblLabelLegend;
+			NotNullPtr<UI::GUILabel> lblProgress;
 
 			NotNullPtr<Media::DrawEngine> deng;
 			Media::MonitorMgr *monMgr;

@@ -41,15 +41,15 @@ namespace SSWR
 
 		private:
 			NotNullPtr<UI::GUIPanel> pnlLeft;
-			UI::GUILabel *lblLeft;
+			NotNullPtr<UI::GUILabel> lblLeft;
 			UI::GUIListBox *lbDir;
 			NotNullPtr<UI::GUIHSplitter> hsbLeft;
 
 			NotNullPtr<UI::GUIPanel> pnlMid;
-			UI::GUILabel *lblMid;
+			NotNullPtr<UI::GUILabel> lblMid;
 			UI::GUIListBox *lbObj;
 			NotNullPtr<UI::GUIPanel> pnlMidBottom;
-			UI::GUILabel *lblPickMsg;
+			NotNullPtr<UI::GUILabel> lblPickMsg;
 			NotNullPtr<UI::GUIButton> btnObjPick;
 			NotNullPtr<UI::GUIButton> btnObjPlace;
 			NotNullPtr<UI::GUIButton> btnObjCombine;

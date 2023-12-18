@@ -18,15 +18,15 @@ namespace SSWR
 			NotNullPtr<Net::WebServer::WebListener> listener;
 			NotNullPtr<Map::OSM::OSMCacheHandler> hdlr;
 
-			UI::GUILabel *lblReqCnt;
+			NotNullPtr<UI::GUILabel> lblReqCnt;
 			UI::GUITextBox *txtReqCnt;
-			UI::GUILabel *lblRemoteSuccCnt;
+			NotNullPtr<UI::GUILabel> lblRemoteSuccCnt;
 			UI::GUITextBox *txtRemoteSuccCnt;
-			UI::GUILabel *lblRemoteErrCnt;
+			NotNullPtr<UI::GUILabel> lblRemoteErrCnt;
 			UI::GUITextBox *txtRemoteErrCnt;
-			UI::GUILabel *lblLocalCnt;
+			NotNullPtr<UI::GUILabel> lblLocalCnt;
 			UI::GUITextBox *txtLocalCnt;
-			UI::GUILabel *lblCacheCnt;
+			NotNullPtr<UI::GUILabel> lblCacheCnt;
 			UI::GUITextBox *txtCacheCnt;
 
 			static void __stdcall OnTimerTick(void *userObj);

@@ -35,15 +35,15 @@ namespace SSWR
 		UI::GUIListBox *lbProg;
 		NotNullPtr<UI::GUIPanel> pnlProg;
 		NotNullPtr<UI::GUIGroupBox> grpProgAdd;
-		UI::GUILabel *lblProgAddName;
+		NotNullPtr<UI::GUILabel> lblProgAddName;
 		UI::GUITextBox *txtProgAddName;
-		UI::GUILabel *lblProgAddId;
+		NotNullPtr<UI::GUILabel> lblProgAddId;
 		UI::GUITextBox *txtProgAddId;
 		NotNullPtr<UI::GUIButton> btnProgAdd;
-		UI::GUILabel *lblProcId;
+		NotNullPtr<UI::GUILabel> lblProcId;
 		UI::GUITextBox *txtProcId;
 		NotNullPtr<UI::GUIButton> btnProcId;
-		UI::GUILabel *lblProgPath;
+		NotNullPtr<UI::GUILabel> lblProgPath;
 		UI::GUITextBox *txtProgPath;
 
 		Data::ArrayList<ProgInfo*> *progList;

@@ -18,11 +18,11 @@ namespace SSWR
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			Optional<Net::SSLEngine> ssl;
 
-			UI::GUILabel *lblURL;
+			NotNullPtr<UI::GUILabel> lblURL;
 			UI::GUITextBox *txtURL;
-			UI::GUILabel *lblMinLevel;
+			NotNullPtr<UI::GUILabel> lblMinLevel;
 			UI::GUITextBox *txtMinLevel;
-			UI::GUILabel *lblMaxLevel;
+			NotNullPtr<UI::GUILabel> lblMaxLevel;
 			UI::GUITextBox *txtMaxLevel;
 			NotNullPtr<UI::GUIButton> btnOK;
 			Map::TileMap *tileMap;

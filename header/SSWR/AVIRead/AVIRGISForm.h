@@ -46,7 +46,7 @@ namespace SSWR
 			UI::GUIPopupMenu *mnuGroup;
 			UI::GUITrackBar *tbTimeRange;
 			UI::GUICheckBox *chkTime;
-			UI::GUILabel *lblVAngle;
+			NotNullPtr<UI::GUILabel> lblVAngle;
 			UI::GUITrackBar *tbVAngle;
 			NotNullPtr<Map::MapEnv> env;
 			Map::DrawMapRenderer *envRenderer;

@@ -17,7 +17,7 @@ namespace SSWR
 		{
 		private:
 			NotNullPtr<UI::GUIPanel> pnlRequest;
-			UI::GUILabel *lblChannelId;
+			NotNullPtr<UI::GUILabel> lblChannelId;
 			UI::GUITextBox *txtChannelId;
 			NotNullPtr<UI::GUIButton> btnRequestPage;
 			UI::GUIListView *lvItems;

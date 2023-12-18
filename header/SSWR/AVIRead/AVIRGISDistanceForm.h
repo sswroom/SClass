@@ -16,15 +16,15 @@ namespace SSWR
 		class AVIRGISDistanceForm : public UI::GUIForm
 		{
 		private:
-			UI::GUILabel *lblType;
+			NotNullPtr<UI::GUILabel> lblType;
 			NotNullPtr<UI::GUIPanel> pnlType;
 			UI::GUIRadioButton *radTypeLine;
 			UI::GUIRadioButton *radTypePath;
-			UI::GUILabel *lblAction;
+			NotNullPtr<UI::GUILabel> lblAction;
 			NotNullPtr<UI::GUIPanel> pnlAction;
 			UI::GUIRadioButton *radActionPause;
 			UI::GUIRadioButton *radActionMeasure;
-			UI::GUILabel *lblDistance;
+			NotNullPtr<UI::GUILabel> lblDistance;
 			UI::GUITextBox *txtDistance;
 			NotNullPtr<UI::GUIComboBox> cboDistanceUnit;
 

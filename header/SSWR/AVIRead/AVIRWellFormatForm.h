@@ -15,7 +15,7 @@ namespace SSWR
 		{
 		private:
 			NotNullPtr<UI::GUIPanel> pnlFile;
-			UI::GUILabel *lblFile;
+			NotNullPtr<UI::GUILabel> lblFile;
 			UI::GUITextBox *txtFile;
 			NotNullPtr<UI::GUIButton> btnBrowse;
 			NotNullPtr<UI::GUIButton> btnParseToText;

@@ -14,17 +14,17 @@ namespace SSWR
 		class AVIRJasyptForm : public UI::GUIForm
 		{
 		private:
-			UI::GUILabel *lblKeyAlg;
+			NotNullPtr<UI::GUILabel> lblKeyAlg;
 			NotNullPtr<UI::GUIComboBox> cboKeyAlg;
-			UI::GUILabel *lblEncAlg;
+			NotNullPtr<UI::GUILabel> lblEncAlg;
 			NotNullPtr<UI::GUIComboBox> cboEncAlg;
-			UI::GUILabel *lblPassword;
+			NotNullPtr<UI::GUILabel> lblPassword;
 			UI::GUITextBox *txtPassword;
-			UI::GUILabel *lblMessage;
+			NotNullPtr<UI::GUILabel> lblMessage;
 			UI::GUITextBox *txtMessage;
 			NotNullPtr<UI::GUIButton> btnDecrypt;
 			NotNullPtr<UI::GUIButton> btnEncrypt;
-			UI::GUILabel *lblResult;
+			NotNullPtr<UI::GUILabel> lblResult;
 			UI::GUITextBox *txtResult;
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;

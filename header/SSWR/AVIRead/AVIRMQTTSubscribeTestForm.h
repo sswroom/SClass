@@ -26,28 +26,28 @@ namespace SSWR
 			UInt64 dispCount;
 			Data::Timestamp lastDispTime;
 
-			UI::GUILabel *lblHost;
+			NotNullPtr<UI::GUILabel> lblHost;
 			UI::GUITextBox *txtHost;
-			UI::GUILabel *lblPort;
+			NotNullPtr<UI::GUILabel> lblPort;
 			UI::GUITextBox *txtPort;
-			UI::GUILabel *lblUsername;
+			NotNullPtr<UI::GUILabel> lblUsername;
 			UI::GUITextBox *txtUsername;
-			UI::GUILabel *lblPassword;
+			NotNullPtr<UI::GUILabel> lblPassword;
 			UI::GUITextBox *txtPassword;
 			UI::GUICheckBox *chkSSL;
 			UI::GUICheckBox *chkWebSocket;
 			NotNullPtr<UI::GUIButton> btnCliCert;
-			UI::GUILabel *lblCliCert;
+			NotNullPtr<UI::GUILabel> lblCliCert;
 			NotNullPtr<UI::GUIButton> btnCliKey;
-			UI::GUILabel *lblCliKey;
-			UI::GUILabel *lblTopic;
+			NotNullPtr<UI::GUILabel> lblCliKey;
+			NotNullPtr<UI::GUILabel> lblTopic;
 			UI::GUITextBox *txtTopic;
 			NotNullPtr<UI::GUIButton> btnStart;
-			UI::GUILabel *lblTotalCount;
+			NotNullPtr<UI::GUILabel> lblTotalCount;
 			UI::GUITextBox *txtTotalCount;
-			UI::GUILabel *lblRecvRate;
+			NotNullPtr<UI::GUILabel> lblRecvRate;
 			UI::GUITextBox *txtRecvRate;
-			UI::GUILabel *lblStatus;
+			NotNullPtr<UI::GUILabel> lblStatus;
 
 			static void __stdcall OnStartClicked(void *userObj);
 			static void __stdcall OnCliCertClicked(void *userObj);

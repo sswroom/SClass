@@ -33,58 +33,58 @@ namespace SSWR
 			Data::ArrayList<IO::DeviceInfo*> devList;
 
 			NotNullPtr<UI::GUIPanel> pnlStreamType;
-			UI::GUILabel *lblStreamType;
+			NotNullPtr<UI::GUILabel> lblStreamType;
 			NotNullPtr<UI::GUIComboBox> cboStreamType;
 			UI::GUITabControl *tcConfig;
 
 			NotNullPtr<UI::GUITabPage> tpSerialPort;
-			UI::GUILabel *lblSerialPort;
+			NotNullPtr<UI::GUILabel> lblSerialPort;
 			NotNullPtr<UI::GUIComboBox> cboSerialPort;
-			UI::GUILabel *lblBaudRate;
+			NotNullPtr<UI::GUILabel> lblBaudRate;
 			UI::GUITextBox *txtBaudRate;
-			UI::GUILabel *lblParity;
+			NotNullPtr<UI::GUILabel> lblParity;
 			NotNullPtr<UI::GUIComboBox> cboParity;
 
 			NotNullPtr<UI::GUITabPage> tpSiLabPort;
 			NotNullPtr<UI::GUIPanel> pnlSLInfo;
-			UI::GUILabel *lblDLLVer;
+			NotNullPtr<UI::GUILabel> lblDLLVer;
 			UI::GUITextBox *txtDLLVer;
-			UI::GUILabel *lblDriverVer;
+			NotNullPtr<UI::GUILabel> lblDriverVer;
 			UI::GUITextBox *txtDriverVer;
 			NotNullPtr<UI::GUIPanel> pnlSLControl;
-			UI::GUILabel *lblSLBaudRate;
+			NotNullPtr<UI::GUILabel> lblSLBaudRate;
 			UI::GUITextBox *txtSLBaudRate;
 			UI::GUIListView *lvSLPort;
 
 			NotNullPtr<UI::GUITabPage> tpTCPSvr;
-			UI::GUILabel *lblTCPSvrPort;
+			NotNullPtr<UI::GUILabel> lblTCPSvrPort;
 			UI::GUITextBox *txtTCPSvrPort;
 			UI::GUICheckBox *chkBoardcast;
 
 			NotNullPtr<UI::GUITabPage> tpTCPCli;
-			UI::GUILabel *lblTCPCliHost;
+			NotNullPtr<UI::GUILabel> lblTCPCliHost;
 			UI::GUITextBox *txtTCPCliHost;
-			UI::GUILabel *lblTCPCliPort;
+			NotNullPtr<UI::GUILabel> lblTCPCliPort;
 			UI::GUITextBox *txtTCPCliPort;
 
 			NotNullPtr<UI::GUITabPage> tpSSLCli;
-			UI::GUILabel *lblSSLCliHost;
+			NotNullPtr<UI::GUILabel> lblSSLCliHost;
 			UI::GUITextBox *txtSSLCliHost;
-			UI::GUILabel *lblSSLCliPort;
+			NotNullPtr<UI::GUILabel> lblSSLCliPort;
 			UI::GUITextBox *txtSSLCliPort;
 
 			NotNullPtr<UI::GUITabPage> tpUDPSvr;
-			UI::GUILabel *lblUDPSvrPort;
+			NotNullPtr<UI::GUILabel> lblUDPSvrPort;
 			UI::GUITextBox *txtUDPSvrPort;
 
 			NotNullPtr<UI::GUITabPage> tpUDPCli;
-			UI::GUILabel *lblUDPCliHost;
+			NotNullPtr<UI::GUILabel> lblUDPCliHost;
 			UI::GUITextBox *txtUDPCliHost;
-			UI::GUILabel *lblUDPCliPort;
+			NotNullPtr<UI::GUILabel> lblUDPCliPort;
 			UI::GUITextBox *txtUDPCliPort;
 
 			NotNullPtr<UI::GUITabPage> tpFile;
-			UI::GUILabel *lblFileName;
+			NotNullPtr<UI::GUILabel> lblFileName;
 			UI::GUITextBox *txtFileName;
 			NotNullPtr<UI::GUIButton> btnFileBrowse;
 

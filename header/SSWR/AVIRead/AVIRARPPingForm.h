@@ -46,11 +46,11 @@ namespace SSWR
 
 			NotNullPtr<UI::GUIPanel> pnlRequest;
 			NotNullPtr<UI::GUIVSplitter> vspRequest;
-			UI::GUILabel *lblAdapter;
+			NotNullPtr<UI::GUILabel> lblAdapter;
 			NotNullPtr<UI::GUIComboBox> cboAdapter;
-			UI::GUILabel *lblTarget;
+			NotNullPtr<UI::GUILabel> lblTarget;
 			UI::GUITextBox *txtTarget;
-			UI::GUILabel *lblRepeat;
+			NotNullPtr<UI::GUILabel> lblRepeat;
 			UI::GUICheckBox *chkRepeat;
 			NotNullPtr<UI::GUIButton> btnPing;
 			UI::GUIRealtimeLineChart *rlcPing;

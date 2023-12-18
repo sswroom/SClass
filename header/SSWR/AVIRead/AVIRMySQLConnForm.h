@@ -13,15 +13,15 @@ namespace SSWR
 		class AVIRMySQLConnForm : public UI::GUIForm
 		{
 		private:
-			UI::GUILabel *lblServer;
+			NotNullPtr<UI::GUILabel> lblServer;
 			UI::GUITextBox *txtServer;
-			UI::GUILabel *lblPort;
+			NotNullPtr<UI::GUILabel> lblPort;
 			UI::GUITextBox *txtPort;
-			UI::GUILabel *lblUID;
+			NotNullPtr<UI::GUILabel> lblUID;
 			UI::GUITextBox *txtUID;
-			UI::GUILabel *lblPWD;
+			NotNullPtr<UI::GUILabel> lblPWD;
 			UI::GUITextBox *txtPWD;
-			UI::GUILabel *lblDatabase;
+			NotNullPtr<UI::GUILabel> lblDatabase;
 			UI::GUITextBox *txtDatabase;
 			NotNullPtr<UI::GUIButton> btnOK;
 			NotNullPtr<UI::GUIButton> btnCancel;

@@ -23,7 +23,7 @@ namespace SSWR
 			Net::ASN1MIB mib;
 
 			NotNullPtr<UI::GUIPanel> pnlRequest;
-			UI::GUILabel *lblFile;
+			NotNullPtr<UI::GUILabel> lblFile;
 			UI::GUITextBox *txtFile;
 			NotNullPtr<UI::GUIButton> btnBrowse;
 			UI::GUITabControl *tcMain;

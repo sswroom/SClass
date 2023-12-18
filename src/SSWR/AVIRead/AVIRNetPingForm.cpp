@@ -108,11 +108,11 @@ SSWR::AVIRead::AVIRNetPingForm::AVIRNetPingForm(UI::GUIClientControl *parent, No
 	this->pnlRequest->SetRect(0, 0, 100, 80, false);
 	this->pnlRequest->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->vspRequest = ui->NewVSplitter(*this, 3, false);
-	NEW_CLASS(this->lblTarget, UI::GUILabel(ui, this->pnlRequest, CSTR("Target")));
+	this->lblTarget = ui->NewLabel(this->pnlRequest, CSTR("Target"));
 	this->lblTarget->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtTarget, UI::GUITextBox(ui, this->pnlRequest, CSTR("")));
 	this->txtTarget->SetRect(104, 4, 150, 23, false);
-	NEW_CLASS(this->lblRepeat, UI::GUILabel(ui, this->pnlRequest, CSTR("Repeat")));
+	this->lblRepeat = ui->NewLabel(this->pnlRequest, CSTR("Repeat"));
 	this->lblRepeat->SetRect(4, 28, 100, 23, false);
 	NEW_CLASS(this->chkRepeat, UI::GUICheckBox(ui, this->pnlRequest, CSTR(""), false));
 	this->chkRepeat->SetRect(104, 28, 100, 23, false);

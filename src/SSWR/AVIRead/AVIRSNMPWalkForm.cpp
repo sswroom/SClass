@@ -19,7 +19,7 @@ SSWR::AVIRead::AVIRSNMPWalkForm::AVIRSNMPWalkForm(UI::GUIClientControl *parent, 
 	NEW_CLASSNN(this->pnlRequest, UI::GUIPanel(ui, *this));
 	this->pnlRequest->SetRect(0, 0, 100, 31, false);
 	this->pnlRequest->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->lblAgent, UI::GUILabel(ui, this->pnlRequest, CSTR("Agent")));
+	this->lblAgent = ui->NewLabel(this->pnlRequest, CSTR("Agent"));
 	this->lblAgent->SetRect(4, 4, 100, 23, false);
 	sptr=  Net::SocketUtil::GetAddrName(sbuff, addr);
 	NEW_CLASS(this->txtAgent, UI::GUITextBox(ui, this->pnlRequest, CSTRP(sbuff, sptr)));

@@ -12,24 +12,25 @@ void __stdcall SSWR::AVIReadCE::AVIRCEThreadInfoForm::OnMyStackChg(void *userObj
 {
 	SSWR::AVIReadCE::AVIRCEThreadInfoForm *me = (SSWR::AVIReadCE::AVIRCEThreadInfoForm*)userObj;
 	OSInt i = me->lbMyStack->GetSelectedIndex();
-	Text::String *s = me->stacks->GetItem(i);
-	Text::String *sMem = me->stacksMem->GetItem(i);
+	NotNullPtr<Text::String> s;
+	Optional<Text::String> st = me->stacks.GetItem(i);
+	Optional<Text::String> sMem = me->stacksMem.GetItem(i);
 	UOSInt slen;
 	UTF8Char *sbuff;
 	Text::PString sline[2];
 	Text::PString sarr[10];
 	Bool hasNext;
 
-	if (sMem)
+	if (sMem.SetTo(s))
 	{
-		me->txtMyStackMem->SetText(sMem->ToCString());
+		me->txtMyStackMem->SetText(s->ToCString());
 	}
 	else
 	{
 		me->txtMyStackMem->SetText(CSTR(""));
 	}
 	me->lvMyStack->ClearItems();
-	if (s)
+	if (st.SetTo(s))
 	{
 		slen = s->leng;
 		sbuff = MemAlloc(UTF8Char, slen + 1);
@@ -66,7 +67,7 @@ void __stdcall SSWR::AVIReadCE::AVIRCEThreadInfoForm::OnMyStackDblClk(void *user
 	UOSInt i;
 	Int64 funcOfst;
 	Text::StringBuilderUTF8 sb;
-	me->lvMyStack->GetSubItem(index, 3, &sb);
+	me->lvMyStack->GetSubItem(index, 3, sb);
 	if (sb.StartsWith(UTF8STRC("call 0x")))
 	{
 		Text::StrConcatC(sbuff, sb.ToString() + 7, 17);
@@ -88,8 +89,6 @@ SSWR::AVIReadCE::AVIRCEThreadInfoForm::AVIRCEThreadInfoForm(UI::GUIClientControl
 	this->SetText(CSTR("Thread Info"));
 	this->SetFormState(UI::GUIForm::FS_MAXIMIZED);
 
-	NEW_CLASS(this->stacks, Data::ArrayList<Text::String *>());
-	NEW_CLASS(this->stacksMem, Data::ArrayList<Text::String *>());
 	this->proc = proc;
 	this->symbol = symbol;
 
@@ -100,17 +99,17 @@ SSWR::AVIReadCE::AVIRCEThreadInfoForm::AVIRCEThreadInfoForm(UI::GUIClientControl
 	this->tpStack = this->tcMain->AddTabPage(CSTR("Stack"));
 	this->tpMyStack = this->tcMain->AddTabPage(CSTR("My Stack"));
 
-	NEW_CLASS(this->lblThreadId, UI::GUILabel(ui, this->tpInfo, CSTR("Thread Id")));
+	this->lblThreadId = ui->NewLabel(this->tpInfo, CSTR("Thread Id"));
 	this->lblThreadId->SetRect(0, 0, 100, 23, false);
 	NEW_CLASS(this->txtThreadId, UI::GUITextBox(ui, this->tpInfo, CSTR(""), false));
 	this->txtThreadId->SetRect(100, 0, 100, 23, false);
 	this->txtThreadId->SetReadOnly(true);
-	NEW_CLASS(this->lblStartAddr, UI::GUILabel(ui, this->tpInfo, CSTR("Start Address")));
+	this->lblStartAddr = ui->NewLabel(this->tpInfo, CSTR("Start Address"));
 	this->lblStartAddr->SetRect(0, 24, 100, 23, false);
 	NEW_CLASS(this->txtStartAddr, UI::GUITextBox(ui, this->tpInfo, CSTR(""), false));
 	this->txtStartAddr->SetRect(100, 24, 120, 23, false);
 	this->txtStartAddr->SetReadOnly(true);
-	NEW_CLASS(this->lblStartName, UI::GUILabel(ui, this->tpInfo, CSTR("Start Name")));
+	this->lblStartName = ui->NewLabel(this->tpInfo, CSTR("Start Name"));
 	this->lblStartName->SetRect(0, 48, 100, 23, false);
 	NEW_CLASS(this->txtStartName, UI::GUITextBox(ui, this->tpInfo, CSTR(""), false));
 	this->txtStartName->SetRect(100, 48, 500, 23, false);
@@ -134,14 +133,14 @@ SSWR::AVIReadCE::AVIRCEThreadInfoForm::AVIRCEThreadInfoForm(UI::GUIClientControl
 	this->lbMyStack->SetRect(0, 0, 300, 23, false);
 	this->lbMyStack->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbMyStack->HandleSelectionChange(OnMyStackChg, this);
-	NEW_CLASS(this->hspMyStack = ui->NewHSplitter(this->tpMyStack, 3, false));
+	this->hspMyStack = ui->NewHSplitter(this->tpMyStack, 3, false);
 	NEW_CLASSNN(this->pnlMyStack, UI::GUIPanel(ui, this->tpMyStack));
 	this->pnlMyStack->SetDockType(UI::GUIControl::DOCK_FILL);
 	NEW_CLASS(this->txtMyStackMem, UI::GUITextBox(ui, this->pnlMyStack, CSTR(""), true));
 	this->txtMyStackMem->SetRect(0, 0, 100, 200, false);
 	this->txtMyStackMem->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->txtMyStackMem->SetReadOnly(true);
-	NEW_CLASS(this->vspMyStack = ui->NewVSplitter(this->pnlMyStack, 3, false));
+	this->vspMyStack = ui->NewVSplitter(this->pnlMyStack, 3, false);
 	NEW_CLASS(this->lvMyStack, UI::GUIListView(ui, this->pnlMyStack, UI::GUIListView::LVSTYLE_TABLE, 10));
 	this->lvMyStack->SetShowGrid(true);
 	this->lvMyStack->SetFullRowSelect(true);
@@ -259,14 +258,14 @@ SSWR::AVIReadCE::AVIRCEThreadInfoForm::AVIRCEThreadInfoForm(UI::GUIClientControl
 					sb.AppendHexBuff(buff, buffSize, ' ', Text::LineBreakType::CRLF);
 					sb.AppendC(UTF8STRC("\r\n"));
 				}
-				this->stacksMem->Add(Text::String::New(sb.ToCString()));
+				this->stacksMem.Add(Text::String::New(sb.ToCString()));
 
 				sb.ClearStr();
 				Text::StringBuilderWriter writer(sb);
 				Manage::DasmX86_32::Dasm_Regs regs;
 				((Manage::ThreadContextX86_32*)context)->GetRegs(&regs);
-				ret = dasm->Disasm32(&writer, symbol, &eip, &esp, &ebp, callAddrs, jmpAddrs, &blockStart, &blockEnd, &regs, proc, true);
-				this->stacks->Add(Text::String::New(sb.ToCString()));
+				ret = dasm->Disasm32(writer, symbol, &eip, &esp, &ebp, callAddrs, jmpAddrs, &blockStart, &blockEnd, &regs, proc, true);
+				this->stacks.Add(Text::String::New(sb.ToCString()));
 				if (!ret)
 					break;
 				if (++callLev > 50)
@@ -340,13 +339,6 @@ SSWR::AVIReadCE::AVIRCEThreadInfoForm::AVIRCEThreadInfoForm(UI::GUIClientControl
 
 SSWR::AVIReadCE::AVIRCEThreadInfoForm::~AVIRCEThreadInfoForm()
 {
-	OSInt i;
-	i = this->stacks->GetCount();
-	while (i-- > 0)
-	{
-		this->stacks->GetItem(i)->Release();
-		this->stacksMem->GetItem(i)->Release();
-	}
-	DEL_CLASS(this->stacks);
-	DEL_CLASS(this->stacksMem);
+	this->stacks.FreeAll();
+	this->stacksMem.FreeAll();
 }

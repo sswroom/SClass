@@ -189,7 +189,7 @@ SSWR::AVIRead::AVIRFileAnalyseForm::AVIRFileAnalyseForm(UI::GUIClientControl *pa
 	this->pnlCtrl->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, *this));
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
-	NEW_CLASS(this->lblFile, UI::GUILabel(ui, this->pnlCtrl, CSTR("MPEG File")));
+	this->lblFile = ui->NewLabel(this->pnlCtrl, CSTR("MPEG File"));
 	this->lblFile->SetRect(8, 8, 100, 23, false);
 	NEW_CLASS(this->txtFile, UI::GUITextBox(ui, this->pnlCtrl, CSTR("")));
 	this->txtFile->SetRect(108, 8, 500, 23, false);

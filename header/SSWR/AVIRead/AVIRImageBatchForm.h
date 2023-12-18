@@ -24,27 +24,27 @@ namespace SSWR
 
 			NotNullPtr<UI::GUIPanel> pnlCtrl;
 			NotNullPtr<UI::GUIButton> btnFolder;
-			UI::GUILabel *lblFolder;
+			NotNullPtr<UI::GUILabel> lblFolder;
 			UI::GUIProgressBar *prgMain;
 			SSWR::AVIRead::AVIRImageControl *icMain;
 			NotNullPtr<UI::GUIHSplitter> hspLeft;
 			NotNullPtr<UI::GUIPanel> pnlImage;
 			UI::GUIPictureBoxDD *pbMain;
 
-			UI::GUILabel *lblBright;
+			NotNullPtr<UI::GUILabel> lblBright;
 			UI::GUIHScrollBar *hsbBright;
-			UI::GUILabel *lblBrightV;
+			NotNullPtr<UI::GUILabel> lblBrightV;
 			NotNullPtr<UI::GUIButton> btnBrightReset;
-			UI::GUILabel *lblContr;
+			NotNullPtr<UI::GUILabel> lblContr;
 			UI::GUIHScrollBar *hsbContr;
-			UI::GUILabel *lblContrV;
-			UI::GUILabel *lblGamma;
+			NotNullPtr<UI::GUILabel> lblContrV;
+			NotNullPtr<UI::GUILabel> lblGamma;
 			UI::GUIHScrollBar *hsbGamma;
-			UI::GUILabel *lblGammaV;
+			NotNullPtr<UI::GUILabel> lblGammaV;
 			NotNullPtr<UI::GUIButton> btnGammaReset;
-			UI::GUILabel *lblHDRLev;
+			NotNullPtr<UI::GUILabel> lblHDRLev;
 			UI::GUIHScrollBar *hsbHDRLev;
-			UI::GUILabel *lblHDRLevV;
+			NotNullPtr<UI::GUILabel> lblHDRLevV;
 			
 			NotNullPtr<Media::ColorManagerSess> colorSess;
 			Media::Resizer::LanczosResizer8_C8 *resizer;

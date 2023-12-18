@@ -15,17 +15,17 @@ namespace SSWR
 		{
 		private:
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
-			UI::GUILabel *lblSFile;
+			NotNullPtr<UI::GUILabel> lblSFile;
 			UI::GUITextBox *txtSFile;
 			NotNullPtr<UI::GUIButton> btnSFile;
-			UI::GUILabel *lblPrefix;
+			NotNullPtr<UI::GUILabel> lblPrefix;
 			UI::GUITextBox *txtPrefix;
-			UI::GUILabel *lblOFile;
+			NotNullPtr<UI::GUILabel> lblOFile;
 			UI::GUITextBox *txtOFile;
 			NotNullPtr<UI::GUIButton> btnOFile;
-			UI::GUILabel *lblType;
+			NotNullPtr<UI::GUILabel> lblType;
 			NotNullPtr<UI::GUIComboBox> cboType;
-			UI::GUILabel *lblSuffix;
+			NotNullPtr<UI::GUILabel> lblSuffix;
 			UI::GUITextBox *txtSuffix;
 			NotNullPtr<UI::GUIButton> btnExtract;
 

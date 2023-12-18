@@ -108,7 +108,7 @@ SSWR::ColorDemo::ColorDemoForm::ColorDemoForm(void *hInst, UI::MSWindowClientCon
 	NEW_CLASS(this->pnlMain, UI::MSWindowPanel(hInst, this));
 	this->pnlMain->SetRect(0, 0, 10, UI::MSWindowHScrollBar::GetSystemSize() + 1, false);
 	this->pnlMain->SetDockType(UI::MSWindowControl::DOCK_TOP);
-	NEW_CLASS(this->lblValue, UI::MSWindowLabel(hInst, this->pnlMain, L"0"));
+	this->lblValue, UI::MSWindowLabel(hInst, this->pnlMain, L"0");
 	this->lblValue->SetRect(0, 0, 50, 24, false);
 	this->lblValue->SetDockType(UI::MSWindowControl::DOCK_RIGHT);
 /*	NEW_CLASS(this->tbValue, UI::MSWindowTrackBar(hInst, this->pnlMain, 0, 800, 400));

@@ -42,22 +42,22 @@ SSWR::AVIRead::AVIRFCMForm::AVIRFCMForm(UI::GUIClientControl *parent, NotNullPtr
 	this->ssl = Net::SSLEngineFactory::Create(this->core->GetSocketFactory(), true);
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASS(this->lblAPIKey, UI::GUILabel(ui, *this, CSTR("API Key")));
+	this->lblAPIKey = ui->NewLabel(*this, CSTR("API Key"));
 	this->lblAPIKey->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtAPIKey, UI::GUITextBox(ui, *this, CSTR("")));
 	this->txtAPIKey->SetRect(104, 4, 300, 23, false);
-	NEW_CLASS(this->lblDeviceToken, UI::GUILabel(ui, *this, CSTR("Device Token")));
+	this->lblDeviceToken = ui->NewLabel(*this, CSTR("Device Token"));
 	this->lblDeviceToken->SetRect(4, 28, 100, 23, false);
 	NEW_CLASS(this->txtDeviceToken, UI::GUITextBox(ui, *this, CSTR("")));
 	this->txtDeviceToken->SetRect(104, 28, 600, 23, false);
-	NEW_CLASS(this->lblMessage, UI::GUILabel(ui, *this, CSTR("Message")));
+	this->lblMessage = ui->NewLabel(*this, CSTR("Message"));
 	this->lblMessage->SetRect(4, 52, 100, 23, false);
 	NEW_CLASS(this->txtMessage, UI::GUITextBox(ui, *this, CSTR("")));
 	this->txtMessage->SetRect(104, 52, 600, 23, false);
 	this->btnSend = ui->NewButton(*this, CSTR("Send"));
 	this->btnSend->SetRect(104, 76, 75, 23, false);
 	this->btnSend->HandleButtonClick(OnSendClicked, this);
-	NEW_CLASS(this->lblStatus, UI::GUILabel(ui, *this, CSTR("Dest File")));
+	this->lblStatus = ui->NewLabel(*this, CSTR("Dest File"));
 	this->lblStatus->SetRect(4, 100, 100, 23, false);
 	NEW_CLASS(this->txtStatus, UI::GUITextBox(ui, *this, CSTR("")));
 	this->txtStatus->SetRect(104, 100, 300, 23, false);

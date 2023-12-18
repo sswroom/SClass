@@ -15,10 +15,10 @@ namespace SSWR
 		class AVIROpenFileForm : public UI::GUIForm
 		{
 		private:
-			UI::GUILabel *lblName;
+			NotNullPtr<UI::GUILabel> lblName;
 			UI::GUITextBox *txtName;
 			NotNullPtr<UI::GUIButton> btnBrowse;
-			UI::GUILabel *lblType;
+			NotNullPtr<UI::GUILabel> lblType;
 			NotNullPtr<UI::GUIComboBox> cboType;
 			NotNullPtr<UI::GUIButton> btnOK;
 			NotNullPtr<UI::GUIButton> btnCancel;

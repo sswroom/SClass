@@ -26,15 +26,15 @@ namespace SSWR
 			UOSInt rootLev;
 
 			NotNullPtr<UI::GUIPanel> pnlRequest;
-			UI::GUILabel *lblHost;
+			NotNullPtr<UI::GUILabel> lblHost;
 			UI::GUITextBox *txtHost;
-			UI::GUILabel *lblPort;
+			NotNullPtr<UI::GUILabel> lblPort;
 			UI::GUITextBox *txtPort;
-			UI::GUILabel *lblAuthType;
+			NotNullPtr<UI::GUILabel> lblAuthType;
 			NotNullPtr<UI::GUIComboBox> cboAuthType;
-			UI::GUILabel *lblUserDN;
+			NotNullPtr<UI::GUILabel> lblUserDN;
 			UI::GUITextBox *txtUserDN;
-			UI::GUILabel *lblPassword;
+			NotNullPtr<UI::GUILabel> lblPassword;
 			UI::GUITextBox *txtPassword;
 			NotNullPtr<UI::GUIButton> btnConnect;
 			UI::GUIListBox *lbPath;

@@ -39,14 +39,14 @@ namespace SSWR
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 
 			NotNullPtr<UI::GUIPanel> pnlFile;
-			UI::GUILabel *lblDir;
+			NotNullPtr<UI::GUILabel> lblDir;
 			UI::GUITextBox *txtDir;
 			NotNullPtr<UI::GUIButton> btnStart;
-			UI::GUILabel *lblMaxSize;
+			NotNullPtr<UI::GUILabel> lblMaxSize;
 			NotNullPtr<UI::GUIComboBox> cboMaxSize;
-			UI::GUILabel *lblTotalSize;
+			NotNullPtr<UI::GUILabel> lblTotalSize;
 			UI::GUITextBox *txtTotalSize;
-			UI::GUILabel *lblDirName;
+			NotNullPtr<UI::GUILabel> lblDirName;
 			UI::GUITextBox *txtDirName;
 			NotNullPtr<UI::GUIButton> btnMove;
 			UI::GUIListBox *lbFilePack;

@@ -25,7 +25,7 @@ namespace SSWR
 			Int64 alarmTime;
 
 			NotNullPtr<UI::GUIPanel> pnlButtons;
-			UI::GUILabel *lblStatus;
+			NotNullPtr<UI::GUILabel> lblStatus;
 			UI::GUITextBox *txtStatus;
 			UI::GUICheckBox *chkAutoStart;
 			NotNullPtr<UI::GUIButton> btnPasteTable;
@@ -33,7 +33,7 @@ namespace SSWR
 			NotNullPtr<UI::GUIButton> btnCopyTable;
 			NotNullPtr<UI::GUIButton> btnFileEnd;
 			NotNullPtr<UI::GUIButton> btnWebUpdate;
-			UI::GUILabel *lblAlarm;
+			NotNullPtr<UI::GUILabel> lblAlarm;
 			NotNullPtr<UI::GUIButton> btn30Minutes;
 			UI::GUIListView *lvFiles;
 

@@ -35,11 +35,11 @@ SSWR::SHPConv::SHPConvElevationFilterForm::SHPConvElevationFilterForm(UI::GUICli
 	this->dbf = dbf;
 	this->filter = 0;
 	
-	NEW_CLASS(this->lblCol, UI::GUILabel(ui, *this, CSTR("Column")));
+	this->lblCol = ui->NewLabel(*this, CSTR("Column"));
 	this->lblCol->SetRect(8, 8, 56, 23, false);
 	this->cboCol = ui->NewComboBox(*this, false);
 	this->cboCol->SetRect(72, 8, 176, 21, false);
-	NEW_CLASS(this->lblHeight, UI::GUILabel(ui, *this, CSTR("Height")));
+	this->lblHeight = ui->NewLabel(*this, CSTR("Height"));
 	this->lblHeight->SetRect(8, 32, 56, 23, false);
 	NEW_CLASS(this->txtHeight, UI::GUITextBox(ui, *this, CSTR("20")));
 	this->txtHeight->SetRect(72, 32, 80, 20, false);

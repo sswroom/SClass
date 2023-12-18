@@ -70,7 +70,7 @@ SSWR::AVIRead::AVIRMySQLServerForm::AVIRMySQLServerForm(UI::GUIClientControl *pa
 	NEW_CLASSNN(this->pnlCtrl, UI::GUIPanel(ui, *this));
 	this->pnlCtrl->SetRect(0, 0, 100, 31, false);
 	this->pnlCtrl->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->lblPort, UI::GUILabel(ui, this->pnlCtrl, CSTR("Port")));
+	this->lblPort = ui->NewLabel(this->pnlCtrl, CSTR("Port"));
 	this->lblPort->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtPort, UI::GUITextBox(ui, this->pnlCtrl, CSTR("3306")));
 	this->txtPort->SetRect(104, 4, 80, 23, false);
@@ -87,11 +87,11 @@ SSWR::AVIRead::AVIRMySQLServerForm::AVIRMySQLServerForm(UI::GUIClientControl *pa
 	this->hspUser = ui->NewHSplitter(this->tpUser, 3, false);
 	NEW_CLASSNN(this->pnlUser, UI::GUIPanel(ui, this->tpUser));
 	this->pnlUser->SetDockType(UI::GUIControl::DOCK_FILL);
-	NEW_CLASS(this->lblUserName, UI::GUILabel(ui, this->pnlUser, CSTR("User Name")));
+	this->lblUserName = ui->NewLabel(this->pnlUser, CSTR("User Name"));
 	this->lblUserName->SetRect(8, 8, 100, 23, false);
 	NEW_CLASS(this->txtUserName, UI::GUITextBox(ui, this->pnlUser, CSTR("root")));
 	this->txtUserName->SetRect(108, 8, 200, 23, false);
-	NEW_CLASS(this->lblPassword, UI::GUILabel(ui, this->pnlUser, CSTR("Password")));
+	this->lblPassword = ui->NewLabel(this->pnlUser, CSTR("Password"));
 	this->lblPassword->SetRect(8, 32, 100, 23, false);
 	NEW_CLASS(this->txtPassword, UI::GUITextBox(ui, this->pnlUser, CSTR("")));
 	this->txtPassword->SetRect(108, 32, 200, 23, false);

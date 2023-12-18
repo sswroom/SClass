@@ -21,20 +21,20 @@ namespace SSWR
 			UInt64 lastCnt;
 			Int64 lastTime;
 
-			UI::GUILabel *lblHashType;
+			NotNullPtr<UI::GUILabel> lblHashType;
 			NotNullPtr<UI::GUIComboBox> cboHashType;
-			UI::GUILabel *lblHashValue;
+			NotNullPtr<UI::GUILabel> lblHashValue;
 			UI::GUITextBox *txtHashValue;
-			UI::GUILabel *lblEncoding;
+			NotNullPtr<UI::GUILabel> lblEncoding;
 			NotNullPtr<UI::GUIComboBox> cboEncoding;
-			UI::GUILabel *lblMinLen;
+			NotNullPtr<UI::GUILabel> lblMinLen;
 			UI::GUITextBox *txtMinLen;
-			UI::GUILabel *lblMaxLen;
+			NotNullPtr<UI::GUILabel> lblMaxLen;
 			UI::GUITextBox *txtMaxLen;
-			UI::GUILabel *lblCharType;
+			NotNullPtr<UI::GUILabel> lblCharType;
 			NotNullPtr<UI::GUIComboBox> cboCharType;
 			NotNullPtr<UI::GUIButton> btnStart;
-			UI::GUILabel *lblStatus;
+			NotNullPtr<UI::GUILabel> lblStatus;
 			UI::GUITextBox *txtStatus;
 
 			static void __stdcall OnStartClicked(void *userObj);

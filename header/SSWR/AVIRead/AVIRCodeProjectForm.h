@@ -22,7 +22,7 @@ namespace SSWR
 			Text::CodeProject *proj;
 
 			NotNullPtr<UI::GUIPanel> pnlCtrl;
-			UI::GUILabel *lblConfig;
+			NotNullPtr<UI::GUILabel> lblConfig;
 			NotNullPtr<UI::GUIComboBox> cboConfig;
 			UI::GUITreeView *tvMain;
 			NotNullPtr<UI::GUIHSplitter> hspMain;

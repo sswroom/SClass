@@ -31,10 +31,10 @@ namespace SSWR
 
 			UI::GUIPictureBox *pbPreview;
 			NotNullPtr<UI::GUIPanel> pnlMain;
-			UI::GUILabel *lblFont;
+			NotNullPtr<UI::GUILabel> lblFont;
 			UI::GUITextBox *txtFont;
 			NotNullPtr<UI::GUIButton> btnFont;
-			UI::GUILabel *lblColor;
+			NotNullPtr<UI::GUILabel> lblColor;
 			UI::GUIPictureBox *pbColor;
 			NotNullPtr<UI::GUIButton> btnOK;
 			NotNullPtr<UI::GUIButton> btnCancel;

@@ -259,7 +259,7 @@ void __stdcall SSWR::AVIRead::AVIRGISPropForm::OnFontStyleClicked(void *userObj)
 
 SSWR::AVIRead::AVIRGISPropForm::AVIRGISPropForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<Map::MapEnv> env, Map::MapEnv::GroupItem *group, UOSInt index) : UI::GUIForm(parent, 512, 320, ui)
 {
-	UI::GUILabel *lbl;
+	NotNullPtr<UI::GUILabel> lbl;
 	this->SetNoResize(true);
 	this->env = env;
 	this->group = group;
@@ -279,17 +279,17 @@ SSWR::AVIRead::AVIRGISPropForm::AVIRGISPropForm(UI::GUIClientControl *parent, No
 	this->SetSize(512, 320);
 
 
-	NEW_CLASS(lbl, UI::GUILabel(ui, *this, CSTR("Min Visible Scale")));
+	lbl = ui->NewLabel(*this, CSTR("Min Visible Scale"));
 	lbl->SetRect(8, 0, 100, 23, false);
 	NEW_CLASS(this->txtMinScale, UI::GUITextBox(ui, *this, CSTR("")));
 	this->txtMinScale->SetRect(112, 0, 100, 21, false);
-	NEW_CLASS(lbl, UI::GUILabel(ui, *this, CSTR("Max Visible Scale")));
+	lbl = ui->NewLabel(*this, CSTR("Max Visible Scale"));
 	lbl->SetRect(8, 24, 100, 23, false);
 	NEW_CLASS(this->txtMaxScale, UI::GUITextBox(ui, *this, CSTR("")));
 	this->txtMaxScale->SetRect(112, 24, 100, 21, false);
 	NEW_CLASS(this->chkHide, UI::GUICheckBox(ui, *this, CSTR("Hide"), false));
 	this->chkHide->SetRect(240, 8, 104, 24, false);
-	NEW_CLASS(lbl, UI::GUILabel(ui, *this, CSTR("Font Style")));
+	lbl = ui->NewLabel(*this, CSTR("Font Style"));
 	lbl->SetRect(8, 48, 100, 23, false);
 	NEW_CLASS(this->pbFontStyle, UI::GUIPictureBox(ui, *this, this->core->GetDrawEngine(), true, false));
 	this->pbFontStyle->SetRect(112, 48, 160, 20, false);
@@ -297,7 +297,7 @@ SSWR::AVIRead::AVIRGISPropForm::AVIRGISPropForm(UI::GUIClientControl *parent, No
 	this->btnFontModify->SetRect(280, 48, 75, 20, false);
 	this->btnFontStyle = ui->NewButton(*this, CSTR("Style"));
 	this->btnFontStyle->SetRect(360, 48, 75, 20, false);
-	NEW_CLASS(this->lblLineStyle, UI::GUILabel(ui, *this, CSTR("Line Style")));
+	this->lblLineStyle = ui->NewLabel(*this, CSTR("Line Style"));
 	this->lblLineStyle->SetRect(8, 72, 100, 23, false);
 	NEW_CLASS(this->pbLineStyle, UI::GUIPictureBox(ui, *this, this->core->GetDrawEngine(), true, false));
 	this->pbLineStyle->SetRect(112, 72, 160, 20, false);
@@ -305,21 +305,21 @@ SSWR::AVIRead::AVIRGISPropForm::AVIRGISPropForm(UI::GUIClientControl *parent, No
 	this->btnLineModify->SetRect(280, 72, 75, 20, false);
 	this->btnLineStyle = ui->NewButton(*this, CSTR("Style"));
 	this->btnLineStyle->SetRect(360, 72, 75, 20, false);
-	NEW_CLASS(this->lblFillStyle, UI::GUILabel(ui, *this, CSTR("Fill Style")));
+	this->lblFillStyle = ui->NewLabel(*this, CSTR("Fill Style"));
 	this->lblFillStyle->SetRect(8, 96, 100, 23, false);
 	NEW_CLASS(this->pbFillStyle, UI::GUIPictureBox(ui, *this, this->core->GetDrawEngine(), true, false));
 	this->pbFillStyle->SetRect(112, 96, 160, 20, false);
-	NEW_CLASS(lbl, UI::GUILabel(ui, *this, CSTR("Label Column")));
+	lbl = ui->NewLabel(*this, CSTR("Label Column"));
 	lbl->SetRect(8, 120, 100, 23, false);
 	this->cboColName = ui->NewComboBox(*this, false);
 	this->cboColName->SetRect(112, 120, 121, 20, false);
 	NEW_CLASS(this->chkShowLabel, UI::GUICheckBox(ui, *this, CSTR("Show Label"), false));
 	this->chkShowLabel->SetRect(240, 120, 104, 24, false);
-	NEW_CLASS(lbl, UI::GUILabel(ui, *this, CSTR("Label Priority")));
+	lbl = ui->NewLabel(*this, CSTR("Label Priority"));
 	lbl->SetRect(8, 144, 100, 23, false);
 	NEW_CLASS(this->txtPriority, UI::GUITextBox(ui, *this, CSTR("")));
 	this->txtPriority->SetRect(112, 144, 100, 21, false);
-	NEW_CLASS(this->lblIcon, UI::GUILabel(ui, *this, CSTR("Point Icon")));
+	this->lblIcon = ui->NewLabel(*this, CSTR("Point Icon"));
 	this->lblIcon->SetRect(8, 168, 72, 23, false);
 	NEW_CLASS(this->pbIcon, UI::GUIPictureBox(ui, *this, this->core->GetDrawEngine(), true, true));
 	this->pbIcon->SetRect(112, 168, 200, 128, false);

@@ -231,7 +231,7 @@ SSWR::AVIRead::AVIRUDPTestForm::AVIRUDPTestForm(UI::GUIClientControl *parent, No
 	this->grpServer = ui->NewGroupBox(*this, CSTR("Server"));
 	this->grpServer->SetRect(0, 0, 200, 23, false);
 	this->grpServer->SetDockType(UI::GUIControl::DOCK_LEFT);
-	NEW_CLASS(this->lblServerPort, UI::GUILabel(ui, this->grpServer, CSTR("Port")));
+	this->lblServerPort = ui->NewLabel(this->grpServer, CSTR("Port"));
 	this->lblServerPort->SetRect(4, 4, 50, 23, false);
 	NEW_CLASS(this->txtServerPort, UI::GUITextBox(ui, this->grpServer, CSTR("")));
 	this->txtServerPort->SetRect(54, 4, 75, 23, false);
@@ -244,15 +244,15 @@ SSWR::AVIRead::AVIRUDPTestForm::AVIRUDPTestForm(UI::GUIClientControl *parent, No
 	this->grpDest = ui->NewGroupBox(*this, CSTR("Dest"));
 	this->grpDest->SetRect(0, 0, 250, 23, false);
 	this->grpDest->SetDockType(UI::GUIControl::DOCK_LEFT);
-	NEW_CLASS(this->lblDestHost, UI::GUILabel(ui, this->grpDest, CSTR("Host")));
+	this->lblDestHost = ui->NewLabel(this->grpDest, CSTR("Host"));
 	this->lblDestHost->SetRect(4, 4, 50, 23, false);
 	NEW_CLASS(this->txtDestHost, UI::GUITextBox(ui, this->grpDest, CSTR("127.0.0.1")));
 	this->txtDestHost->SetRect(54, 4, 100, 23, false);
-	NEW_CLASS(this->lblDestPort, UI::GUILabel(ui, this->grpDest, CSTR("Port")));
+	this->lblDestPort = ui->NewLabel(this->grpDest, CSTR("Port"));
 	this->lblDestPort->SetRect(4, 28, 50, 23, false);
 	NEW_CLASS(this->txtDestPort, UI::GUITextBox(ui, this->grpDest, CSTR("")));
 	this->txtDestPort->SetRect(54, 28, 50, 23, false);
-	NEW_CLASS(this->lblDestCount, UI::GUILabel(ui, this->grpDest, CSTR("Count")));
+	this->lblDestCount = ui->NewLabel(this->grpDest, CSTR("Count"));
 	this->lblDestCount->SetRect(4, 52, 50, 23, false);
 	NEW_CLASS(this->txtDestCount, UI::GUITextBox(ui, this->grpDest, CSTR("10000")));
 	this->txtDestCount->SetRect(54, 52, 75, 23, false);
@@ -261,7 +261,7 @@ SSWR::AVIRead::AVIRUDPTestForm::AVIRUDPTestForm(UI::GUIClientControl *parent, No
 	this->btnSend->HandleButtonClick(OnSendClicked, this);
 	this->grpStatus = ui->NewGroupBox(*this, CSTR("Status"));
 	this->grpStatus->SetDockType(UI::GUIControl::DOCK_FILL);
-	NEW_CLASS(this->lblRecvCnt, UI::GUILabel(ui, this->grpStatus, CSTR("Recv Count")));
+	this->lblRecvCnt = ui->NewLabel(this->grpStatus, CSTR("Recv Count"));
 	this->lblRecvCnt->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtRecvCnt, UI::GUITextBox(ui, this->grpStatus, CSTR("")));
 	this->txtRecvCnt->SetReadOnly(true);
@@ -269,7 +269,7 @@ SSWR::AVIRead::AVIRUDPTestForm::AVIRUDPTestForm(UI::GUIClientControl *parent, No
 	NEW_CLASS(this->txtRecvCntRate, UI::GUITextBox(ui, this->grpStatus, CSTR("")));
 	this->txtRecvCntRate->SetReadOnly(true);
 	this->txtRecvCntRate->SetRect(254, 4, 150, 23, false);
-	NEW_CLASS(this->lblRecvSize, UI::GUILabel(ui, this->grpStatus, CSTR("Recv Size")));
+	this->lblRecvSize = ui->NewLabel(this->grpStatus, CSTR("Recv Size"));
 	this->lblRecvSize->SetRect(4, 28, 100, 23, false);
 	NEW_CLASS(this->txtRecvSize, UI::GUITextBox(ui, this->grpStatus, CSTR("")));
 	this->txtRecvSize->SetReadOnly(true);
@@ -277,7 +277,7 @@ SSWR::AVIRead::AVIRUDPTestForm::AVIRUDPTestForm(UI::GUIClientControl *parent, No
 	NEW_CLASS(this->txtRecvSizeRate, UI::GUITextBox(ui, this->grpStatus, CSTR("")));
 	this->txtRecvSizeRate->SetReadOnly(true);
 	this->txtRecvSizeRate->SetRect(254, 28, 150, 23, false);
-	NEW_CLASS(this->lblSentSuccCnt, UI::GUILabel(ui, this->grpStatus, CSTR("Sent Succ Cnt")));
+	this->lblSentSuccCnt = ui->NewLabel(this->grpStatus, CSTR("Sent Succ Cnt"));
 	this->lblSentSuccCnt->SetRect(4, 52, 100, 23, false);
 	NEW_CLASS(this->txtSentSuccCnt, UI::GUITextBox(ui, this->grpStatus, CSTR("")));
 	this->txtSentSuccCnt->SetReadOnly(true);
@@ -285,7 +285,7 @@ SSWR::AVIRead::AVIRUDPTestForm::AVIRUDPTestForm(UI::GUIClientControl *parent, No
 	NEW_CLASS(this->txtSentSuccCntRate, UI::GUITextBox(ui, this->grpStatus, CSTR("")));
 	this->txtSentSuccCntRate->SetReadOnly(true);
 	this->txtSentSuccCntRate->SetRect(254, 52, 150, 23, false);
-	NEW_CLASS(this->lblSentFailCnt, UI::GUILabel(ui, this->grpStatus, CSTR("Sent Fail Cnt")));
+	this->lblSentFailCnt = ui->NewLabel(this->grpStatus, CSTR("Sent Fail Cnt"));
 	this->lblSentFailCnt->SetRect(4, 76, 100, 23, false);
 	NEW_CLASS(this->txtSentFailCnt, UI::GUITextBox(ui, this->grpStatus, CSTR("")));
 	this->txtSentFailCnt->SetReadOnly(true);

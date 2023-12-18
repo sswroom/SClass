@@ -181,11 +181,11 @@ SSWR::AVIRead::AVIRFileSearchForm::AVIRFileSearchForm(UI::GUIClientControl *pare
 	NEW_CLASSNN(this->pnlControl, UI::GUIPanel(ui, *this));
 	this->pnlControl->SetRect(0, 0, 100, 103, false);
 	this->pnlControl->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->lblDir, UI::GUILabel(ui, this->pnlControl, CSTR("Directory")));
+	this->lblDir = ui->NewLabel(this->pnlControl, CSTR("Directory"));
 	this->lblDir->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtDir, UI::GUITextBox(ui, this->pnlControl, CSTR("")));
 	this->txtDir->SetRect(104, 4, 600, 23, false);
-	NEW_CLASS(this->lblEncoding, UI::GUILabel(ui, this->pnlControl, CSTR("Encoding")));
+	this->lblEncoding = ui->NewLabel(this->pnlControl, CSTR("Encoding"));
 	this->lblEncoding->SetRect(4, 28, 100, 23, false);
 	this->cboEncoding = ui->NewComboBox(this->pnlControl, false);
 	this->cboEncoding->SetRect(104, 28, 200, 23, false);
@@ -209,7 +209,7 @@ SSWR::AVIRead::AVIRFileSearchForm::AVIRFileSearchForm(UI::GUIClientControl *pare
 	{
 		this->cboEncoding->SetSelectedIndex(0);
 	}
-	NEW_CLASS(this->lblText, UI::GUILabel(ui, this->pnlControl, CSTR("Text")));
+	this->lblText = ui->NewLabel(this->pnlControl, CSTR("Text"));
 	this->lblText->SetRect(4, 52, 100, 23, false);
 	NEW_CLASS(this->txtText, UI::GUITextBox(ui, this->pnlControl, CSTR("")));
 	this->txtText->SetRect(104, 52, 600, 23, false);

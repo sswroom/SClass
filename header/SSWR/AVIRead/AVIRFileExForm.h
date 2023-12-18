@@ -14,17 +14,17 @@ namespace SSWR
 		class AVIRFileExForm : public UI::GUIForm
 		{
 		private:
-			UI::GUILabel *lblSrc;
+			NotNullPtr<UI::GUILabel> lblSrc;
 			UI::GUITextBox *txtSrc;
 			NotNullPtr<UI::GUIButton> btnSrc;
-			UI::GUILabel *lblDest;
+			NotNullPtr<UI::GUILabel> lblDest;
 			UI::GUITextBox *txtDest;
 			NotNullPtr<UI::GUIButton> btnDest;
-			UI::GUILabel *lblFileSize;
+			NotNullPtr<UI::GUILabel> lblFileSize;
 			UI::GUITextBox *txtFileSize;
-			UI::GUILabel *lblStartOfst;
+			NotNullPtr<UI::GUILabel> lblStartOfst;
 			UI::GUITextBox *txtStartOfst;
-			UI::GUILabel *lblEndOfst;
+			NotNullPtr<UI::GUILabel> lblEndOfst;
 			UI::GUITextBox *txtEndOfst;
 			NotNullPtr<UI::GUIButton> btnStart;
 

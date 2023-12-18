@@ -190,7 +190,7 @@ SSWR::AVIRead::AVIRStreamLatencyForm::AVIRStreamLatencyForm(UI::GUIClientControl
 	this->grpStream = ui->NewGroupBox(*this, CSTR("Stream"));
 	this->grpStream->SetRect(0, 0, 100, 48, false);
 	this->grpStream->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->lblStream, UI::GUILabel(ui, this->grpStream, CSTR("Stream Type")));
+	this->lblStream = ui->NewLabel(this->grpStream, CSTR("Stream Type"));
 	this->lblStream->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtStream, UI::GUITextBox(ui, this->grpStream, CSTR("-")));
 	this->txtStream->SetRect(104, 4, 200, 23, false);
@@ -202,7 +202,7 @@ SSWR::AVIRead::AVIRStreamLatencyForm::AVIRStreamLatencyForm(UI::GUIClientControl
 	this->grpControl = ui->NewGroupBox(*this, CSTR("Control"));
 	this->grpControl->SetRect(0, 0, 100, 48, false);
 	this->grpControl->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->lblReqInterval, UI::GUILabel(ui, this->grpControl, CSTR("Req Interval")));
+	this->lblReqInterval = ui->NewLabel(this->grpControl, CSTR("Req Interval"));
 	this->lblReqInterval->SetRect(4, 4, 100, 23, false);
 	this->cboReqInterval = ui->NewComboBox(this->grpControl, false);
 	this->cboReqInterval->SetRect(104, 4, 100, 23, false);
@@ -236,12 +236,12 @@ SSWR::AVIRead::AVIRStreamLatencyForm::AVIRStreamLatencyForm(UI::GUIClientControl
 	this->lbLog->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	this->tpStatus = this->tcMain->AddTabPage(CSTR("Status"));
-	NEW_CLASS(this->lblSentCnt, UI::GUILabel(ui, this->tpStatus, CSTR("Sent Cnt")));
+	this->lblSentCnt = ui->NewLabel(this->tpStatus, CSTR("Sent Cnt"));
 	this->lblSentCnt->SetRect(0, 0, 100, 23, false);
 	NEW_CLASS(this->txtSentCnt, UI::GUITextBox(ui, this->tpStatus, CSTR("0")));
 	this->txtSentCnt->SetRect(100, 0, 150, 23, false);
 	this->txtSentCnt->SetReadOnly(true);
-	NEW_CLASS(this->lblRecvCnt, UI::GUILabel(ui, this->tpStatus, CSTR("Recv Cnt")));
+	this->lblRecvCnt = ui->NewLabel(this->tpStatus, CSTR("Recv Cnt"));
 	this->lblRecvCnt->SetRect(0, 24, 100, 23, false);
 	NEW_CLASS(this->txtRecvCnt, UI::GUITextBox(ui, this->tpStatus, CSTR("0")));
 	this->txtRecvCnt->SetRect(100, 24, 150, 23, false);

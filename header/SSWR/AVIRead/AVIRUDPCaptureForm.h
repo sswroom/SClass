@@ -34,7 +34,7 @@ namespace SSWR
 			} PacketInfo;
 		private:
 			NotNullPtr<UI::GUIPanel> pnlControl;
-			UI::GUILabel *lblPort;
+			NotNullPtr<UI::GUILabel> lblPort;
 			UI::GUITextBox *txtPort;
 			UI::GUICheckBox *chkReuseAddr;
 			NotNullPtr<UI::GUIButton> btnStart;
@@ -54,12 +54,12 @@ namespace SSWR
 
 			NotNullPtr<UI::GUITabPage> tpMulticast;
 			NotNullPtr<UI::GUIPanel> pnlMulticastCommon;
-			UI::GUILabel *lblMulticastCommon;
+			NotNullPtr<UI::GUILabel> lblMulticastCommon;
 			UI::GUIListBox *lbMulticastCommon;
 			NotNullPtr<UI::GUIHSplitter> hspMulticast;
 			NotNullPtr<UI::GUIPanel> pnlMulticast;
 			NotNullPtr<UI::GUIPanel> pnlMulticastCtrl;
-			UI::GUILabel *lblMulticastCurr;
+			NotNullPtr<UI::GUILabel> lblMulticastCurr;
 			UI::GUITextBox *txtMulticastCurr;
 			NotNullPtr<UI::GUIButton> btnMulticastAdd;
 			UI::GUIListBox *lbMulticastCurr;

@@ -27,15 +27,15 @@ namespace SSWR
 			Double currCVal;
 			Double currGVal;
 
-			UI::GUILabel *lblBright;
+			NotNullPtr<UI::GUILabel> lblBright;
 			UI::GUIHScrollBar *hsbBright;
-			UI::GUILabel *lblBrightV;
-			UI::GUILabel *lblContr;
+			NotNullPtr<UI::GUILabel> lblBrightV;
+			NotNullPtr<UI::GUILabel> lblContr;
 			UI::GUIHScrollBar *hsbContr;
-			UI::GUILabel *lblContrV;
-			UI::GUILabel *lblGamma;
+			NotNullPtr<UI::GUILabel> lblContrV;
+			NotNullPtr<UI::GUILabel> lblGamma;
 			UI::GUIHScrollBar *hsbGamma;
-			UI::GUILabel *lblGammaV;
+			NotNullPtr<UI::GUILabel> lblGammaV;
 			NotNullPtr<UI::GUIButton> btnOK;
 			NotNullPtr<UI::GUIButton> btnCancel;
 			NotNullPtr<UI::GUIButton> btnLastValue;

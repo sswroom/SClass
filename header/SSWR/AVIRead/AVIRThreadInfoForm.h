@@ -26,13 +26,13 @@ namespace SSWR
 			UI::GUITabControl *tcMain;
 
 			NotNullPtr<UI::GUITabPage> tpInfo;
-			UI::GUILabel *lblThreadId;
+			NotNullPtr<UI::GUILabel> lblThreadId;
 			UI::GUITextBox *txtThreadId;
-			UI::GUILabel *lblStartAddr;
+			NotNullPtr<UI::GUILabel> lblStartAddr;
 			UI::GUITextBox *txtStartAddr;
-			UI::GUILabel *lblStartName;
+			NotNullPtr<UI::GUILabel> lblStartName;
 			UI::GUITextBox *txtStartName;
-			UI::GUILabel *lblThreadName;
+			NotNullPtr<UI::GUILabel> lblThreadName;
 			UI::GUITextBox *txtThreadName;
 
 			NotNullPtr<UI::GUITabPage> tpContext;

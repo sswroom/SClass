@@ -74,7 +74,7 @@ SSWR::AVIRead::AVIRCertTextForm::AVIRCertTextForm(UI::GUIClientControl *parent, 
 	NEW_CLASSNN(this->pnlLabel, UI::GUIPanel(ui, *this));
 	this->pnlLabel->SetRect(0, 0, 100, 23, false);
 	this->pnlLabel->SetDockType(UI::GUIControl::DOCK_LEFT);
-	NEW_CLASS(this->lblEncType, UI::GUILabel(ui, this->pnlLabel, CSTR("Enc Type")));
+	this->lblEncType = ui->NewLabel(this->pnlLabel, CSTR("Enc Type"));
 	this->lblEncType->SetRect(0, 0, 100, 23, false);
 	this->cboEncType = ui->NewComboBox(*this, false);
 	this->cboEncType->SetRect(0, 0, 100, 23, false);
@@ -82,7 +82,7 @@ SSWR::AVIRead::AVIRCertTextForm::AVIRCertTextForm(UI::GUIClientControl *parent, 
 	this->cboEncType->AddItem(CSTR("Base64"), 0);
 	this->cboEncType->AddItem(CSTR("Hex"), 0);
 	this->cboEncType->SetSelectedIndex(0);
-	NEW_CLASS(this->lblText, UI::GUILabel(ui, this->pnlLabel, CSTR("Text")));
+	this->lblText = ui->NewLabel(this->pnlLabel, CSTR("Text"));
 	this->lblText->SetRect(0, 24, 100, 23, false);
 	NEW_CLASS(this->txtText, UI::GUITextBox(ui, *this, CSTR(""), true));
 	this->txtText->SetDockType(UI::GUIControl::DOCK_FILL);

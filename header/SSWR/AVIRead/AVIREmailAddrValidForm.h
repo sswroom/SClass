@@ -14,10 +14,10 @@ namespace SSWR
 		class AVIREmailAddrValidForm : public UI::GUIForm
 		{
 		private:
-			UI::GUILabel *lblAddr;
+			NotNullPtr<UI::GUILabel> lblAddr;
 			UI::GUITextBox *txtAddr;
 			NotNullPtr<UI::GUIButton> btnValidate;
-			UI::GUILabel *lblStatus;
+			NotNullPtr<UI::GUILabel> lblStatus;
 			UI::GUITextBox *txtStatus;
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;

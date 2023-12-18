@@ -38,11 +38,11 @@ SSWR::AVIRead::AVIRBingMapsForm::AVIRBingMapsForm(UI::GUIClientControl *parent, 
 	this->tileMap = 0;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASS(this->lblKey, UI::GUILabel(ui, *this, CSTR("Key")));
+	this->lblKey = ui->NewLabel(*this, CSTR("Key"));
 	this->lblKey->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtKey, UI::GUITextBox(ui, *this, CSTR("")));
 	this->txtKey->SetRect(104, 4, 800, 23, false);
-	NEW_CLASS(this->lblImagerySet, UI::GUILabel(ui, *this, CSTR("Min Level")));
+	this->lblImagerySet = ui->NewLabel(*this, CSTR("Min Level"));
 	this->lblImagerySet->SetRect(4, 28, 100, 23, false);
 	this->cboImagerySet = ui->NewComboBox(*this, false);
 	this->cboImagerySet->SetRect(104, 28, 200, 23, false);

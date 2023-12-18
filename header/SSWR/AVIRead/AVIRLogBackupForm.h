@@ -22,9 +22,9 @@ namespace SSWR
 		private:
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 
-			UI::GUILabel *lblLogDir;
+			NotNullPtr<UI::GUILabel> lblLogDir;
 			UI::GUITextBox *txtLogDir;
-			UI::GUILabel *lblLogName;
+			NotNullPtr<UI::GUILabel> lblLogName;
 			UI::GUITextBox *txtLogName;
 			NotNullPtr<UI::GUIButton> btnStart;
 

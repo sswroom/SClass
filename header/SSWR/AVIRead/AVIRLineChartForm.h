@@ -25,16 +25,16 @@ namespace SSWR
 			} ColInfo;
 		private:
 			NotNullPtr<UI::GUIPanel> pnlStrCols;
-			UI::GUILabel *lblStrCols;
+			NotNullPtr<UI::GUILabel> lblStrCols;
 			UI::GUIListBox *lbStrCols;
 			NotNullPtr<UI::GUIButton> btnStrColsDbl;
 			NotNullPtr<UI::GUIButton> btnStrColsInt32;
 			NotNullPtr<UI::GUIPanel> pnlXAxis;
-			UI::GUILabel *lblXAxis;
+			NotNullPtr<UI::GUILabel> lblXAxis;
 			NotNullPtr<UI::GUIComboBox> cboXAxis;
 			NotNullPtr<UI::GUIGroupBox> grpYAxis;
 			NotNullPtr<UI::GUIPanel> pnlYAxis;
-			UI::GUILabel *lblYAxis;
+			NotNullPtr<UI::GUILabel> lblYAxis;
 			NotNullPtr<UI::GUIComboBox> cboYAxis;
 			NotNullPtr<UI::GUIButton> btnYAxis;
 			UI::GUIListBox *lbYAxis;

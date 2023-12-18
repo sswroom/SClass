@@ -51,15 +51,15 @@ namespace SSWR
 			NotNullPtr<UI::GUITabPage> tpDetHeap;
 			NotNullPtr<UI::GUITabPage> tpDetChart;
 
-			UI::GUILabel *lblDetProcId;
+			NotNullPtr<UI::GUILabel> lblDetProcId;
 			UI::GUITextBox *txtDetProcId;
-			UI::GUILabel *lblDetParentId;
+			NotNullPtr<UI::GUILabel> lblDetParentId;
 			UI::GUITextBox *txtDetParentId;
-			UI::GUILabel *lblDetName;
+			NotNullPtr<UI::GUILabel> lblDetName;
 			UI::GUITextBox *txtDetName;
-			UI::GUILabel *lblDetPath;
+			NotNullPtr<UI::GUILabel> lblDetPath;
 			UI::GUITextBox *txtDetPath;
-			UI::GUILabel *lblDetPriority;
+			NotNullPtr<UI::GUILabel> lblDetPriority;
 			UI::GUITextBox *txtDetPriority;
 			
 			NotNullPtr<UI::GUIPanel> pnlDetModule;

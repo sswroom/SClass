@@ -18,26 +18,26 @@ namespace SSWR
 		private:
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 
-			UI::GUILabel *lblAlgorithm;
+			NotNullPtr<UI::GUILabel> lblAlgorithm;
 			NotNullPtr<UI::GUIComboBox> cboAlgorithm;
-			UI::GUILabel *lblKeyType;
+			NotNullPtr<UI::GUILabel> lblKeyType;
 			NotNullPtr<UI::GUIComboBox> cboKeyType;
-			UI::GUILabel *lblKey;
+			NotNullPtr<UI::GUILabel> lblKey;
 			UI::GUITextBox *txtKey;
-			UI::GUILabel *lblIV;
+			NotNullPtr<UI::GUILabel> lblIV;
 			NotNullPtr<UI::GUIComboBox> cboIV;
 			UI::GUITextBox *txtIV;
-			UI::GUILabel *lblChainMode;
+			NotNullPtr<UI::GUILabel> lblChainMode;
 			NotNullPtr<UI::GUIComboBox> cboChainMode;
-			UI::GUILabel *lblInputType;
+			NotNullPtr<UI::GUILabel> lblInputType;
 			NotNullPtr<UI::GUIComboBox> cboInputType;
-			UI::GUILabel *lblInputMsg;
+			NotNullPtr<UI::GUILabel> lblInputMsg;
 			UI::GUITextBox *txtInputMsg;
-			UI::GUILabel *lblOutputType;
+			NotNullPtr<UI::GUILabel> lblOutputType;
 			NotNullPtr<UI::GUIComboBox> cboOutputType;
 			NotNullPtr<UI::GUIButton> btnEncrypt;
 			NotNullPtr<UI::GUIButton> btnDecrypt;
-			UI::GUILabel *lblOutputMsg;
+			NotNullPtr<UI::GUILabel> lblOutputMsg;
 			UI::GUITextBox *txtOutputMsg;
 
 			Crypto::Encrypt::ICrypto *InitCrypto();

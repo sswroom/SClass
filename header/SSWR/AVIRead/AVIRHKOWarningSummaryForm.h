@@ -18,7 +18,7 @@ namespace SSWR
 			Optional<Net::SSLEngine> ssl;
 
 			NotNullPtr<UI::GUIPanel> pnlReqTime;
-			UI::GUILabel *lblReqTime;
+			NotNullPtr<UI::GUILabel> lblReqTime;
 			UI::GUITextBox *txtReqTime;
 			UI::GUIListView *lvWarning;
 

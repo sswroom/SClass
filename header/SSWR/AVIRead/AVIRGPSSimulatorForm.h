@@ -20,19 +20,19 @@ namespace SSWR
 		class AVIRGPSSimulatorForm : public UI::GUIForm
 		{
 		private:
-			UI::GUILabel *lblStreamType;
+			NotNullPtr<UI::GUILabel> lblStreamType;
 			UI::GUITextBox *txtStreamType;
 			NotNullPtr<UI::GUIButton> btnStream;
 			UI::GUICheckBox *chkAddPoints;
-			UI::GUILabel *lblSpeed;
+			NotNullPtr<UI::GUILabel> lblSpeed;
 			UI::GUITextBox *txtSpeed;
 			UI::GUITextBox *txtSpeedInput;
 			NotNullPtr<UI::GUIButton> btnSpeed;
-			UI::GUILabel *lblCurrLat;
+			NotNullPtr<UI::GUILabel> lblCurrLat;
 			UI::GUITextBox *txtCurrLat;
-			UI::GUILabel *lblCurrLon;
+			NotNullPtr<UI::GUILabel> lblCurrLon;
 			UI::GUITextBox *txtCurrLon;
-			UI::GUILabel *lblPoints;
+			NotNullPtr<UI::GUILabel> lblPoints;
 			UI::GUIListBox *lbPoints;
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;

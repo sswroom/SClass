@@ -35,9 +35,9 @@ namespace SSWR
 			CommandInfo *cmdInfos;
 
 			NotNullPtr<UI::GUIPanel> pnlPort;
-			UI::GUILabel *lblTVType;
+			NotNullPtr<UI::GUILabel> lblTVType;
 			NotNullPtr<UI::GUIComboBox> cboTVType;
-			UI::GUILabel *lblPort;
+			NotNullPtr<UI::GUILabel> lblPort;
 			NotNullPtr<UI::GUIComboBox> cboPort;
 			UI::GUICheckBox *chkLogFile;
 			NotNullPtr<UI::GUIButton> btnStart;
@@ -48,7 +48,7 @@ namespace SSWR
 			NotNullPtr<UI::GUIListBox> lbLog;
 			UI::GUITextBox *txtLog;
 
-			UI::GUILabel *lblCommand;
+			NotNullPtr<UI::GUILabel> lblCommand;
 			NotNullPtr<UI::GUIComboBox> cboCommand;
 			NotNullPtr<UI::GUIButton> btnCommand;
 			UI::GUITextBox *txtCommand;

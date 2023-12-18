@@ -22,7 +22,7 @@ namespace SSWR
 			Bool tableUpdated;
 
 			NotNullPtr<UI::GUIPanel> pnlControl;
-			UI::GUILabel *lblTargetAddr;
+			NotNullPtr<UI::GUILabel> lblTargetAddr;
 			UI::GUITextBox *txtTargetAddr;
 			UI::GUICheckBox *chkTargetScan;
 			NotNullPtr<UI::GUIButton> btnRequest;

@@ -226,7 +226,7 @@ SSWR::AVIRead::AVIRStreamConvForm::AVIRStreamConvForm(UI::GUIClientControl *pare
 	NEW_CLASSNN(this->pnlStream1, UI::GUIPanel(ui, this->grpStream1));
 	this->pnlStream1->SetRect(0, 0, 100, 104, false);
 	this->pnlStream1->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->lblStream1, UI::GUILabel(ui, this->pnlStream1, CSTR("Stream Type")));
+	this->lblStream1 = ui->NewLabel(this->pnlStream1, CSTR("Stream Type"));
 	this->lblStream1->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtStream1, UI::GUITextBox(ui, this->pnlStream1, CSTR("-")));
 	this->txtStream1->SetRect(4, 28, 200, 23, false);
@@ -245,7 +245,7 @@ SSWR::AVIRead::AVIRStreamConvForm::AVIRStreamConvForm(UI::GUIClientControl *pare
 	NEW_CLASSNN(this->pnlStream2, UI::GUIPanel(ui, this->grpStream2));
 	this->pnlStream2->SetRect(0, 0, 100, 104, false);
 	this->pnlStream2->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->lblStream2, UI::GUILabel(ui, this->pnlStream2, CSTR("Stream Type")));
+	this->lblStream2 = ui->NewLabel(this->pnlStream2, CSTR("Stream Type"));
 	this->lblStream2->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtStream2, UI::GUITextBox(ui, this->pnlStream2, CSTR("-")));
 	this->txtStream2->SetRect(4, 28, 200, 23, false);

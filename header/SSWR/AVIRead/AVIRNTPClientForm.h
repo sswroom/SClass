@@ -14,11 +14,11 @@ namespace SSWR
 		class AVIRNTPClientForm : public UI::GUIForm
 		{
 		private:
-			UI::GUILabel *lblServer;
+			NotNullPtr<UI::GUILabel> lblServer;
 			NotNullPtr<UI::GUIComboBox> cboServer;
-			UI::GUILabel *lblServerTime;
+			NotNullPtr<UI::GUILabel> lblServerTime;
 			UI::GUITextBox *txtServerTime;
-			UI::GUILabel *lblStatus;
+			NotNullPtr<UI::GUILabel> lblStatus;
 			UI::GUITextBox *txtStatus;
 			NotNullPtr<UI::GUIButton> btnGetTime;
 			NotNullPtr<UI::GUIButton> btnSyncTime;

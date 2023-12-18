@@ -13,7 +13,7 @@ namespace SSWR
 		class AVIROLEDBForm : public UI::GUIForm
 		{
 		private:
-			UI::GUILabel *lblConnStr;
+			NotNullPtr<UI::GUILabel> lblConnStr;
 			UI::GUITextBox *txtConnStr;
 			NotNullPtr<UI::GUIButton> btnOK;
 			NotNullPtr<UI::GUIButton> btnCancel;

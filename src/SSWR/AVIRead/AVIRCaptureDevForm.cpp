@@ -178,12 +178,12 @@ SSWR::AVIRead::AVIRCaptureDevForm::AVIRCaptureDevForm(UI::GUIClientControl *pare
 
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
-	NEW_CLASS(this->lblDevice, UI::GUILabel(ui, *this, CSTR("Capture Device")));
+	this->lblDevice = ui->NewLabel(*this, CSTR("Capture Device"));
 	this->lblDevice->SetRect(8, 8, 100, 23, false);
 	NEW_CLASS(this->lbDevice, UI::GUIListBox(ui, *this, false));
 	this->lbDevice->SetRect(112, 8, 256, 88, false);
 	this->lbDevice->HandleSelectionChange(OnDevChg, this);
-	NEW_CLASS(this->lblFormat, UI::GUILabel(ui, *this, CSTR("Capture Format")));
+	this->lblFormat = ui->NewLabel(*this, CSTR("Capture Format"));
 	this->lblFormat->SetRect(8, 96, 100, 23, false);
 	this->cboFormat = ui->NewComboBox(*this, false);
 	this->cboFormat->SetRect(112, 96, 264, 23, false);

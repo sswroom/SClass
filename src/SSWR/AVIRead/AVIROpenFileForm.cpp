@@ -57,14 +57,14 @@ SSWR::AVIRead::AVIROpenFileForm::AVIROpenFileForm(UI::GUIClientControl *parent, 
 	this->t = t;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 	
-	NEW_CLASS(this->lblName, UI::GUILabel(ui, *this, CSTR("File Name")));
+	this->lblName = ui->NewLabel(*this, CSTR("File Name"));
 	this->lblName->SetRect(8, 16, 100, 23, false);
 	NEW_CLASS(this->txtName, UI::GUITextBox(ui, *this, CSTR("")));
 	this->txtName->SetRect(108, 16, 450, 23, false);
 	this->btnBrowse = ui->NewButton(*this, CSTR("B&rowse"));
 	this->btnBrowse->SetRect(550, 16, 75, 23, false);
 	this->btnBrowse->HandleButtonClick(OnBrowseClicked, this);
-	NEW_CLASS(this->lblType, UI::GUILabel(ui, *this, CSTR("Type")));
+	this->lblType = ui->NewLabel(*this, CSTR("Type"));
 	this->lblType->SetRect(8, 40, 100, 23, false);
 	this->cboType = ui->NewComboBox(*this, false);
 	this->cboType->SetRect(108, 40, 200, 23, false);

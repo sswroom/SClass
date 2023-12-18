@@ -57,23 +57,23 @@ SSWR::AVIRead::AVIRProgramLinksCreateForm::AVIRProgramLinksCreateForm(UI::GUICli
 
 	NEW_CLASS(this->chkThisUser, UI::GUICheckBox(ui, *this, CSTR("This User"), true));
 	this->chkThisUser->SetRect(104, 4, 100, 23, false);
-	NEW_CLASS(this->lblShortName, UI::GUILabel(ui, *this, CSTR("Short Name")));
+	this->lblShortName = ui->NewLabel(*this, CSTR("Short Name"));
 	this->lblShortName->SetRect(4, 28, 100, 23, false);
 	NEW_CLASS(this->txtShortName, UI::GUITextBox(ui, *this, CSTR("")));
 	this->txtShortName->SetRect(104, 28, 100, 23, false);
-	NEW_CLASS(this->lblName, UI::GUILabel(ui, *this, CSTR("Name")));
+	this->lblName = ui->NewLabel(*this, CSTR("Name"));
 	this->lblName->SetRect(4, 52, 100, 23, false);
 	NEW_CLASS(this->txtName, UI::GUITextBox(ui, *this, CSTR("")));
 	this->txtName->SetRect(104, 52, 200, 23, false);
-	NEW_CLASS(this->lblComment, UI::GUILabel(ui, *this, CSTR("Comment")));
+	this->lblComment = ui->NewLabel(*this, CSTR("Comment"));
 	this->lblComment->SetRect(4, 76, 100, 23, false);
 	NEW_CLASS(this->txtComment, UI::GUITextBox(ui, *this, CSTR("")));
 	this->txtComment->SetRect(104, 76, 500, 23, false);
-	NEW_CLASS(this->lblCategories, UI::GUILabel(ui, *this, CSTR("Categories")));
+	this->lblCategories = ui->NewLabel(*this, CSTR("Categories"));
 	this->lblCategories->SetRect(4, 100, 100, 23, false);
 	NEW_CLASS(this->txtCategories, UI::GUITextBox(ui, *this, CSTR("")));
 	this->txtCategories->SetRect(104, 100, 500, 23, false);
-	NEW_CLASS(this->lblCmdLine, UI::GUILabel(ui, *this, CSTR("Command Line")));
+	this->lblCmdLine = ui->NewLabel(*this, CSTR("Command Line"));
 	this->lblCmdLine->SetRect(4, 124, 100, 23, false);
 	NEW_CLASS(this->txtCmdLine, UI::GUITextBox(ui, *this, CSTR("")));
 	this->txtCmdLine->SetRect(104, 124, 500, 23, false);

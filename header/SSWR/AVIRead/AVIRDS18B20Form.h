@@ -16,14 +16,14 @@ namespace SSWR
 		class AVIRDS18B20Form : public UI::GUIForm
 		{
 		private:
-			UI::GUILabel *lblSN;
+			NotNullPtr<UI::GUILabel> lblSN;
 			UI::GUITextBox *txtSN;
 			NotNullPtr<UI::GUIButton> btnSN;
-			UI::GUILabel *lblTemp;
+			NotNullPtr<UI::GUILabel> lblTemp;
 			UI::GUITextBox *txtTemp;
 			NotNullPtr<UI::GUIButton> btnRead;
 			UI::GUICheckBox *chkAutoRead;
-			UI::GUILabel *lblStatus;
+			NotNullPtr<UI::GUILabel> lblStatus;
 			UI::GUITextBox *txtStatus;
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;

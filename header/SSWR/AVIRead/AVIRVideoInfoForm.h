@@ -35,10 +35,10 @@ namespace SSWR
 			Data::ArrayList<DecodeStatus*> *decStatus;
 
 			NotNullPtr<UI::GUIPanel> pnlFile;
-			UI::GUILabel *lblFile;
+			NotNullPtr<UI::GUILabel> lblFile;
 			UI::GUITextBox *txtFile;
 			NotNullPtr<UI::GUIButton> btnDecode;
-			UI::GUILabel *lblDecode;
+			NotNullPtr<UI::GUILabel> lblDecode;
 			UI::GUIListBox *lbStream;
 			NotNullPtr<UI::GUIHSplitter> hspStream;
 			UI::GUITextBox *txtStream;

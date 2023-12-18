@@ -58,8 +58,6 @@ UI/GUIForm.h:
 @GUIFormGTK.o
 UI/GUIHScrollBar.h:
 @GUIHScrollBarGTK.o
-UI/GUILabel.h:
-@GUILabelGTK.o
 UI/GUIListBox.h:
 @GUIListBoxGTK.o
 UI/GUIListView.h:

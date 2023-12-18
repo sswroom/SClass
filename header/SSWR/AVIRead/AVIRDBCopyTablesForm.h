@@ -23,24 +23,24 @@ namespace SSWR
 			UI::GUITabControl *tcMain;
 
 			NotNullPtr<UI::GUITabPage> tpSource;
-			UI::GUILabel *lblSourceConn;
+			NotNullPtr<UI::GUILabel> lblSourceConn;
 			NotNullPtr<UI::GUIComboBox> cboSourceConn;
-			UI::GUILabel *lblSourceDB;
+			NotNullPtr<UI::GUILabel> lblSourceDB;
 			UI::GUITextBox *txtSourceDB;
-			UI::GUILabel *lblSourceCollation;
+			NotNullPtr<UI::GUILabel> lblSourceCollation;
 			UI::GUITextBox *txtSourceCollation;
-			UI::GUILabel *lblSourceSchema;
+			NotNullPtr<UI::GUILabel> lblSourceSchema;
 			NotNullPtr<UI::GUIComboBox> cboSourceSchema;
 			NotNullPtr<UI::GUIButton> btnSourceSelect;
 
 			NotNullPtr<UI::GUITabPage> tpData;
 			NotNullPtr<UI::GUIGroupBox> grpDest;
 			UI::GUIListView *lvData;
-			UI::GUILabel *lblDestDB;
+			NotNullPtr<UI::GUILabel> lblDestDB;
 			NotNullPtr<UI::GUIComboBox> cboDestDB;
-			UI::GUILabel *lblDestSchema;
+			NotNullPtr<UI::GUILabel> lblDestSchema;
 			NotNullPtr<UI::GUIComboBox> cboDestSchema;
-			UI::GUILabel *lblDestOptions;
+			NotNullPtr<UI::GUILabel> lblDestOptions;
 			NotNullPtr<UI::GUIComboBox> cboDestTableType;
 			UI::GUICheckBox *chkDestCopyData;
 			UI::GUICheckBox *chkDestCreateDDB;

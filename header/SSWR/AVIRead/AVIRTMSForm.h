@@ -14,10 +14,10 @@ namespace SSWR
 		class AVIRTMSForm : public UI::GUIForm
 		{
 		private:
-			UI::GUILabel *lblTMSURL;
+			NotNullPtr<UI::GUILabel> lblTMSURL;
 			UI::GUITextBox *txtTMSURL;
 			NotNullPtr<UI::GUIButton> btnLoad;
-			UI::GUILabel *lblStatus;
+			NotNullPtr<UI::GUILabel> lblStatus;
 			UI::GUITextBox *txtStatus;
 			NotNullPtr<UI::GUIButton> btnOK;
 

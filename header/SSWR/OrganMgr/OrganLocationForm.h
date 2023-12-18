@@ -26,9 +26,9 @@ namespace SSWR
 			UI::GUIListBox *lbLocation;
 			UI::GUIListBox *lbSublocations;
 			NotNullPtr<UI::GUIPanel> pnlLocation;
-			UI::GUILabel *lblID;
-			UI::GUILabel *lblEName;
-			UI::GUILabel *lblCName;
+			NotNullPtr<UI::GUILabel> lblID;
+			NotNullPtr<UI::GUILabel> lblEName;
+			NotNullPtr<UI::GUILabel> lblCName;
 			UI::GUITextBox *txtID;
 			UI::GUITextBox *txtEName;
 			UI::GUITextBox *txtCName;

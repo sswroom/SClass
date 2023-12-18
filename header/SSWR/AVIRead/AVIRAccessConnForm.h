@@ -13,7 +13,7 @@ namespace SSWR
 		class AVIRAccessConnForm : public UI::GUIForm
 		{
 		private:
-			UI::GUILabel *lblFileName;
+			NotNullPtr<UI::GUILabel> lblFileName;
 			UI::GUITextBox *txtFileName;
 			NotNullPtr<UI::GUIButton> btnBrowse;
 			NotNullPtr<UI::GUIButton> btnOK;

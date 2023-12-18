@@ -20,9 +20,9 @@ namespace SSWR
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 
 			NotNullPtr<UI::GUIPanel> pnlRequest;
-			UI::GUILabel *lblIP;
+			NotNullPtr<UI::GUILabel> lblIP;
 			UI::GUITextBox *txtIP;
-			UI::GUILabel *lblRespTime;
+			NotNullPtr<UI::GUILabel> lblRespTime;
 			UI::GUITextBox *txtRespTime;
 			NotNullPtr<UI::GUIButton> btnRequest;
 			UI::GUIListBox *lbResponse;

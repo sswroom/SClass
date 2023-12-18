@@ -87,14 +87,14 @@ SSWR::AVIRead::AVIRHashTestForm::AVIRHashTestForm(UI::GUIClientControl *parent, 
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	this->tpAlgorithm = this->tcMain->AddTabPage(CSTR("Algorithm"));
-	NEW_CLASS(this->lblAlgorithm, UI::GUILabel(ui, this->tpAlgorithm, CSTR("Function")));
+	this->lblAlgorithm = ui->NewLabel(this->tpAlgorithm, CSTR("Function"));
 	this->lblAlgorithm->SetRect(4, 4, 100, 23, false);
 	this->cboAlgorithm = ui->NewComboBox(this->tpAlgorithm, false);
 	this->cboAlgorithm->SetRect(104, 4, 200, 23, false);
 	this->btnSpeed = ui->NewButton(this->tpAlgorithm, CSTR("Test Speed"));
 	this->btnSpeed->SetRect(304, 4, 75, 23, false);
 	this->btnSpeed->HandleButtonClick(OnSpeedClicked, this);
-	NEW_CLASS(this->lblSpeed, UI::GUILabel(ui, this->tpAlgorithm, CSTR("Speed")));
+	this->lblSpeed = ui->NewLabel(this->tpAlgorithm, CSTR("Speed"));
 	this->lblSpeed->SetRect(4, 28, 100, 23, false);
 	NEW_CLASS(this->txtSpeed, UI::GUITextBox(ui, this->tpAlgorithm, CSTR("")));
 	this->txtSpeed->SetRect(104, 28, 200, 23, false);

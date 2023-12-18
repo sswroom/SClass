@@ -217,7 +217,7 @@ void SSWR::AVIRead::AVIRProfiledResizerForm::UpdateProfileList()
 
 SSWR::AVIRead::AVIRProfiledResizerForm::AVIRProfiledResizerForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 320, 320, ui)
 {
-	UI::GUILabel *lbl;
+	NotNullPtr<UI::GUILabel> lbl;
 	this->SetText(CSTR("Profiled Resizer"));
 	this->SetNoResize(true);
 	this->SetFont(0, 0, 8.25, false);
@@ -239,15 +239,15 @@ SSWR::AVIRead::AVIRProfiledResizerForm::AVIRProfiledResizerForm(UI::GUIClientCon
 	this->btnChgProfile->SetRect(60, 200, 180, 22, false);
 	this->btnChgProfile->HandleButtonClick(OnChgClicked, this);
 
-	NEW_CLASS(this->lblProfile, UI::GUILabel(ui, this->tpMain, CSTR("Profile: ")));
+	this->lblProfile = ui->NewLabel(this->tpMain, CSTR("Profile: "));
 	this->lblProfile->SetRect(60, 150, 180, 22, false);
 
-	NEW_CLASS(lbl, UI::GUILabel(ui, this->tpMain, CSTR("sswroom presents")));
+	lbl = ui->NewLabel(this->tpMain, CSTR("sswroom presents"));
 	lbl->SetRect(105, 0, 150, 22, false);
 	
-	NEW_CLASS(lbl, UI::GUILabel(ui, this->tpMain, CSTR("Add resize profile first")));
+	lbl = ui->NewLabel(this->tpMain, CSTR("Add resize profile first"));
 	lbl->SetRect(95, 30, 200, 19, false);
-	NEW_CLASS(lbl, UI::GUILabel(ui, this->tpMain, CSTR("And then Drag and Drop file to resize")));
+	lbl = ui->NewLabel(this->tpMain, CSTR("And then Drag and Drop file to resize"));
 	lbl->SetRect(60, 50, 200, 19, false);
 
 	
@@ -263,11 +263,11 @@ SSWR::AVIRead::AVIRProfiledResizerForm::AVIRProfiledResizerForm(UI::GUIClientCon
 
 	NEW_CLASSNN(this->pnlProfile2, UI::GUIPanel(ui, this->tpProfile));
 	this->pnlProfile2->SetDockType(UI::GUIControl::DOCK_FILL);
-	NEW_CLASS(lbl, UI::GUILabel(ui, this->pnlProfile2, CSTR("Name")));
+	lbl = ui->NewLabel(this->pnlProfile2, CSTR("Name"));
 	lbl->SetRect(0, 0, 60, 19, false);
 	NEW_CLASS(this->txtProfileName, UI::GUITextBox(ui, this->pnlProfile2, CSTR("")));
 	this->txtProfileName->SetRect(60, 0, 140, 19, false);
-	NEW_CLASS(lbl, UI::GUILabel(ui, this->pnlProfile2, CSTR("Suffix")));
+	lbl = ui->NewLabel(this->pnlProfile2, CSTR("Suffix"));
 	lbl->SetRect(0, 19, 60, 19, false);
 	NEW_CLASS(this->txtSuffix, UI::GUITextBox(ui, this->pnlProfile2, CSTR("")));
 	this->txtSuffix->SetRect(60, 19, 50, 19, false);
@@ -275,25 +275,25 @@ SSWR::AVIRead::AVIRProfiledResizerForm::AVIRProfiledResizerForm(UI::GUIClientCon
 	this->grpSize->SetRect(0, 38, 200, 83, false);
 	NEW_CLASS(this->radSize, UI::GUIRadioButton(ui, this->grpSize, CSTR("Size"), true));
 	this->radSize->SetRect(0, 0, 60, 19, false);
-	NEW_CLASS(lbl, UI::GUILabel(ui, this->grpSize, CSTR("Max W")));
+	lbl = ui->NewLabel(this->grpSize, CSTR("Max W"));
 	lbl->SetRect(0, 19, 40, 19, false);
 	NEW_CLASS(this->txtWidth, UI::GUITextBox(ui, this->grpSize, CSTR("800")));
 	this->txtWidth->SetRect(40, 19, 50, 19, false);
-	NEW_CLASS(lbl, UI::GUILabel(ui, this->grpSize, CSTR("Max H")));
+	lbl = ui->NewLabel(this->grpSize, CSTR("Max H"));
 	lbl->SetRect(0, 38, 40, 19, false);
 	NEW_CLASS(this->txtHeight, UI::GUITextBox(ui, this->grpSize, CSTR("800")));
 	this->txtHeight->SetRect(40, 38, 50, 19, false);
 	NEW_CLASS(this->radDPI, UI::GUIRadioButton(ui, this->grpSize, CSTR("DPI"), false));
 	this->radDPI->SetRect(100, 0, 60, 19, false);
-	NEW_CLASS(lbl, UI::GUILabel(ui, this->grpSize, CSTR("H-DPI")));
+	lbl = ui->NewLabel(this->grpSize, CSTR("H-DPI"));
 	lbl->SetRect(100, 19, 40, 19, false);
 	NEW_CLASS(this->txtHDPI, UI::GUITextBox(ui, this->grpSize, CSTR("300")));
 	this->txtHDPI->SetRect(140, 19, 50, 19, false);
-	NEW_CLASS(lbl, UI::GUILabel(ui, this->grpSize, CSTR("V-DPI")));
+	lbl = ui->NewLabel(this->grpSize, CSTR("V-DPI"));
 	lbl->SetRect(100, 38, 40, 19, false);
 	NEW_CLASS(this->txtVDPI, UI::GUITextBox(ui, this->grpSize, CSTR("300")));
 	this->txtVDPI->SetRect(140, 38, 50, 19, false);
-	NEW_CLASS(lbl, UI::GUILabel(ui, this->pnlProfile2, CSTR("Watermark")));
+	lbl = ui->NewLabel(this->pnlProfile2, CSTR("Watermark"));
 	lbl->SetRect(0, 121, 60, 19, false);
 	NEW_CLASS(this->txtWatermark, UI::GUITextBox(ui, this->pnlProfile2, CSTR("")));
 	this->txtWatermark->SetRect(60, 121, 140, 19, false);

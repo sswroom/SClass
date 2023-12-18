@@ -21,9 +21,9 @@ namespace SSWR
 		{
 		private:
 			NotNullPtr<UI::GUIPanel> pnlURL;
-			UI::GUILabel *lblRecent;
+			NotNullPtr<UI::GUILabel> lblRecent;
 			NotNullPtr<UI::GUIComboBox> cboRecent;
-			UI::GUILabel *lblURL;
+			NotNullPtr<UI::GUILabel> lblURL;
 			UI::GUITextBox *txtURL;
 			NotNullPtr<UI::GUIButton> btnRequest;
 			UI::GUITabControl *tcRSS;

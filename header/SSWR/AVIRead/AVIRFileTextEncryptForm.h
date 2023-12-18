@@ -16,13 +16,13 @@ namespace SSWR
 		class AVIRFileTextEncryptForm : public UI::GUIForm
 		{
 		private:
-			UI::GUILabel *lblSrcFile;
+			NotNullPtr<UI::GUILabel> lblSrcFile;
 			UI::GUITextBox *txtSrcFile;
-			UI::GUILabel *lblDestFile;
+			NotNullPtr<UI::GUILabel> lblDestFile;
 			UI::GUITextBox *txtDestFile;
-			UI::GUILabel *lblDecrypt;
+			NotNullPtr<UI::GUILabel> lblDecrypt;
 			UI::GUICheckBox *chkDecrypt;
-			UI::GUILabel *lblEncrypt;
+			NotNullPtr<UI::GUILabel> lblEncrypt;
 			NotNullPtr<UI::GUIComboBox> cboEncrypt;
 			NotNullPtr<UI::GUIButton> btnConvert;
 

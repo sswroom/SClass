@@ -11,7 +11,7 @@ namespace UtilUI
 	class TextGotoDialog : public UI::GUIForm
 	{
 	private:
-		UI::GUILabel *lblLine;
+		NotNullPtr<UI::GUILabel> lblLine;
 		UI::GUITextBox *txtLine;
 		NotNullPtr<UI::GUIButton> btnOk;
 		NotNullPtr<UI::GUIButton> btnCancel;

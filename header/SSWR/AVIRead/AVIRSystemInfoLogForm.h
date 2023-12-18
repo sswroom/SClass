@@ -19,15 +19,15 @@ namespace SSWR
 			UI::GUITabControl *tcMain;
 
 			NotNullPtr<UI::GUITabPage> tpSystem;
-			UI::GUILabel *lblOSName;
+			NotNullPtr<UI::GUILabel> lblOSName;
 			UI::GUITextBox *txtOSName;
-			UI::GUILabel *lblOSVer;
+			NotNullPtr<UI::GUILabel> lblOSVer;
 			UI::GUITextBox *txtOSVer;
-			UI::GUILabel *lblOSLocale;
+			NotNullPtr<UI::GUILabel> lblOSLocale;
 			UI::GUITextBox *txtOSLocale;
-			UI::GUILabel *lblArchitecture;
+			NotNullPtr<UI::GUILabel> lblArchitecture;
 			UI::GUITextBox *txtArchitecture;
-			UI::GUILabel *lblProductType;
+			NotNullPtr<UI::GUILabel> lblProductType;
 			UI::GUITextBox *txtProductType;
 
 			NotNullPtr<UI::GUITabPage> tpDevices;

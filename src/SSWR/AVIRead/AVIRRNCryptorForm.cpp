@@ -128,21 +128,21 @@ SSWR::AVIRead::AVIRRNCryptorForm::AVIRRNCryptorForm(UI::GUIClientControl *parent
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASS(this->lblSourceFile, UI::GUILabel(ui, *this, CSTR("Source File")));
+	this->lblSourceFile = ui->NewLabel(*this, CSTR("Source File"));
 	this->lblSourceFile->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtSourceFile, UI::GUITextBox(ui, *this, CSTR("")));
 	this->txtSourceFile->SetRect(104, 4, 400, 23, false);
 	this->txtSourceFile->SetReadOnly(true);
-	NEW_CLASS(this->lblDestFile, UI::GUILabel(ui, *this, CSTR("Dest File")));
+	this->lblDestFile = ui->NewLabel(*this, CSTR("Dest File"));
 	this->lblDestFile->SetRect(4, 28, 100, 23, false);
 	NEW_CLASS(this->txtDestFile, UI::GUITextBox(ui, *this, CSTR("")));
 	this->txtDestFile->SetRect(104, 28, 400, 23, false);
 	this->txtDestFile->SetReadOnly(true);
-	NEW_CLASS(this->lblPassword, UI::GUILabel(ui, *this, CSTR("Password")));
+	this->lblPassword = ui->NewLabel(*this, CSTR("Password"));
 	this->lblPassword->SetRect(4, 52, 100, 23, false);
 	NEW_CLASS(this->txtPassword, UI::GUITextBox(ui, *this, CSTR("")));
 	this->txtPassword->SetRect(104, 52, 200, 23, false);
-	NEW_CLASS(this->lblOptions, UI::GUILabel(ui, *this, CSTR("Options")));
+	this->lblOptions = ui->NewLabel(*this, CSTR("Options"));
 	this->lblOptions->SetRect(4, 76, 100, 23, false);
 	NEW_CLASS(this->chkBase64, UI::GUICheckBox(ui, *this, CSTR("With Base64"), false));
 	this->chkBase64->SetRect(104, 76, 200, 23, false);

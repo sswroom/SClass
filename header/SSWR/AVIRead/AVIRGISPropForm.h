@@ -24,16 +24,16 @@ namespace SSWR
 			UI::GUIPictureBox *pbFontStyle;
 			NotNullPtr<UI::GUIButton> btnFontModify;
 			NotNullPtr<UI::GUIButton> btnFontStyle;
-			UI::GUILabel *lblLineStyle;
+			NotNullPtr<UI::GUILabel> lblLineStyle;
 			UI::GUIPictureBox *pbLineStyle;
 			NotNullPtr<UI::GUIButton> btnLineModify;
 			NotNullPtr<UI::GUIButton> btnLineStyle;
-			UI::GUILabel *lblFillStyle;
+			NotNullPtr<UI::GUILabel> lblFillStyle;
 			UI::GUIPictureBox *pbFillStyle;
 			NotNullPtr<UI::GUIComboBox> cboColName;
 			UI::GUICheckBox *chkShowLabel;
 			UI::GUITextBox *txtPriority;
-			UI::GUILabel *lblIcon;
+			NotNullPtr<UI::GUILabel> lblIcon;
 			UI::GUIPictureBox *pbIcon;
 
 			NotNullPtr<UI::GUIGroupBox> grpLabel;

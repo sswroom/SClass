@@ -37,7 +37,7 @@ SSWR::AVIRead::AVIRGoogleTileMapForm::AVIRGoogleTileMapForm(UI::GUIClientControl
 	this->layer = 0;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASS(this->lblMapType, UI::GUILabel(ui, *this, CSTR("Map Type")));
+	this->lblMapType = ui->NewLabel(*this, CSTR("Map Type"));
 	this->lblMapType->SetRect(4, 4, 100, 23, false);
 	this->cboMapType = ui->NewComboBox(*this, false);
 	this->cboMapType->SetRect(104, 4, 200, 23, false);

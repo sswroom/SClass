@@ -58,22 +58,22 @@ SSWR::AVIRead::AVIRServiceCreateForm::AVIRServiceCreateForm(UI::GUIClientControl
 
 	this->core = core;
 
-	NEW_CLASS(this->lblName, UI::GUILabel(ui, *this, CSTR("Name")));
+	this->lblName = ui->NewLabel(*this, CSTR("Name"));
 	this->lblName->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtName, UI::GUITextBox(ui, *this, CSTR("AVIRead")));
 	this->txtName->SetRect(104, 4, 200, 23, false);
-	NEW_CLASS(this->lblDesc, UI::GUILabel(ui, *this, CSTR("Description")));
+	this->lblDesc = ui->NewLabel(*this, CSTR("Description"));
 	this->lblDesc->SetRect(4, 28, 100, 23, false);
 	NEW_CLASS(this->txtDesc, UI::GUITextBox(ui, *this, CSTR("")));
 	this->txtDesc->SetRect(104, 28, 500, 23, false);
-	NEW_CLASS(this->lblState, UI::GUILabel(ui, *this, CSTR("State")));
+	this->lblState = ui->NewLabel(*this, CSTR("State"));
 	this->lblState->SetRect(4, 52, 100, 23, false);
 	this->cboState = ui->NewComboBox(*this, false);
 	this->cboState->SetRect(104, 52, 100, 23, false);
 	this->cboState->AddItem(CSTR("Active"), (void*)IO::ServiceInfo::ServiceState::Active);
 	this->cboState->AddItem(CSTR("Inactive"), (void*)IO::ServiceInfo::ServiceState::Inactive);
 	this->cboState->AddItem(CSTR("Manual Start"), (void*)IO::ServiceInfo::ServiceState::ManualStart);
-	NEW_CLASS(this->lblCmdLine, UI::GUILabel(ui, *this, CSTR("Command Line")));
+	this->lblCmdLine = ui->NewLabel(*this, CSTR("Command Line"));
 	this->lblCmdLine->SetRect(4, 76, 100, 23, false);
 	sptr = IO::Path::GetProcessFileName(sbuff);
 	NEW_CLASS(this->txtCmdLine, UI::GUITextBox(ui, *this, CSTRP(sbuff, sptr)));

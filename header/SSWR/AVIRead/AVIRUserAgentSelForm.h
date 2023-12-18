@@ -32,9 +32,9 @@ namespace SSWR
 			Data::ArrayList<OSItem*> *osList;
 
 			NotNullPtr<UI::GUIPanel> pnlFilter;
-			UI::GUILabel *lblFilterOS;
+			NotNullPtr<UI::GUILabel> lblFilterOS;
 			NotNullPtr<UI::GUIComboBox> cboFilterOS;
-			UI::GUILabel *lblFilterBrowser;
+			NotNullPtr<UI::GUILabel> lblFilterBrowser;
 			NotNullPtr<UI::GUIComboBox> cboFilterBrowser;
 			NotNullPtr<UI::GUIPanel> pnlControl;
 			NotNullPtr<UI::GUIButton> btnOk;

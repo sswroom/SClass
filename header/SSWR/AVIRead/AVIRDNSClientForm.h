@@ -23,28 +23,28 @@ namespace SSWR
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 
 			NotNullPtr<UI::GUIPanel> pnlRequest;
-			UI::GUILabel *lblServer;
+			NotNullPtr<UI::GUILabel> lblServer;
 			UI::GUITextBox *txtServer;
-			UI::GUILabel *lblRequest;
+			NotNullPtr<UI::GUILabel> lblRequest;
 			UI::GUITextBox *txtRequest;
 			NotNullPtr<UI::GUIComboBox> cboRequest;
 //			UI::GUIRadioButton *radRequestNormal;
 //			UI::GUIRadioButton *radRequestMX;
 			NotNullPtr<UI::GUIButton> btnRequest;
-			UI::GUILabel *lblRequestTime;
+			NotNullPtr<UI::GUILabel> lblRequestTime;
 			UI::GUITextBox *txtRequestTime;
 			UI::GUIListBox *lbAnswer;
 			NotNullPtr<UI::GUIHSplitter> hspAnswer;
 			NotNullPtr<UI::GUIPanel> pnlAnswer;
-			UI::GUILabel *lblAnsName;
+			NotNullPtr<UI::GUILabel> lblAnsName;
 			UI::GUITextBox *txtAnsName;
-			UI::GUILabel *lblAnsType;
+			NotNullPtr<UI::GUILabel> lblAnsType;
 			UI::GUITextBox *txtAnsType;
-			UI::GUILabel *lblAnsClass;
+			NotNullPtr<UI::GUILabel> lblAnsClass;
 			UI::GUITextBox *txtAnsClass;
-			UI::GUILabel *lblAnsTTL;
+			NotNullPtr<UI::GUILabel> lblAnsTTL;
 			UI::GUITextBox *txtAnsTTL;
-			UI::GUILabel *lblAnsRD;
+			NotNullPtr<UI::GUILabel> lblAnsRD;
 			UI::GUITextBox *txtAnsRD;
 
 			Data::ArrayList<Net::DNSClient::RequestAnswer*> ansList;

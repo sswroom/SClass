@@ -16,13 +16,13 @@ namespace SSWR
 		private:
 			OrganEnv *env;
 			OrganWebUser *user;
-			UI::GUILabel *lblUserName;
+			NotNullPtr<UI::GUILabel> lblUserName;
 			UI::GUITextBox *txtUserName;
-			UI::GUILabel *lblPassword;
+			NotNullPtr<UI::GUILabel> lblPassword;
 			UI::GUITextBox *txtPassword;
-			UI::GUILabel *lblRetype;
+			NotNullPtr<UI::GUILabel> lblRetype;
 			UI::GUITextBox *txtRetype;
-			UI::GUILabel *lblWatermark;
+			NotNullPtr<UI::GUILabel> lblWatermark;
 			UI::GUITextBox *txtWatermark;
 
 			NotNullPtr<UI::GUIButton> btnOK;

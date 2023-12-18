@@ -17,7 +17,7 @@ namespace SSWR
 		{
 		private:
 			NotNullPtr<UI::GUIPanel> pnlCoord;
-			UI::GUILabel *lblSRID;
+			NotNullPtr<UI::GUILabel> lblSRID;
 			UI::GUITextBox *txtSRID;
 			NotNullPtr<UI::GUIButton> btnSRID;
 			NotNullPtr<UI::GUIButton> btnSRIDPrev;

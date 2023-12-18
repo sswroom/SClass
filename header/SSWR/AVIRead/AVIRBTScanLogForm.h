@@ -23,7 +23,7 @@ namespace SSWR
 			NotNullPtr<UI::GUIPanel> pnlControl;
 			NotNullPtr<UI::GUIButton> btnFile;
 			NotNullPtr<UI::GUIButton> btnStore;
-			UI::GUILabel *lblInfo;
+			NotNullPtr<UI::GUILabel> lblInfo;
 			UI::GUIListView *lvContent;
 
 			IO::BTScanLog *btLog;

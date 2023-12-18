@@ -54,21 +54,21 @@ namespace SSWR
 			UI::GUITabControl *tcMain;
 
 			NotNullPtr<UI::GUITabPage> tpControl;
-			UI::GUILabel *lblFormat;
+			NotNullPtr<UI::GUILabel> lblFormat;
 			NotNullPtr<UI::GUIComboBox> cboFormat;
-			UI::GUILabel *lblInterval;
+			NotNullPtr<UI::GUILabel> lblInterval;
 			UI::GUITextBox *txtInterval;
-			UI::GUILabel *lblJPGQuality;
+			NotNullPtr<UI::GUILabel> lblJPGQuality;
 			UI::GUITextBox *txtJPGQuality;
-			UI::GUILabel *lblFileName;
+			NotNullPtr<UI::GUILabel> lblFileName;
 			UI::GUITextBox *txtFileName;
 			NotNullPtr<UI::GUIButton> btnStart;
 			UI::GUITextBox *txtDeviceInfo;
 
 			NotNullPtr<UI::GUITabPage> tpStatus;
-			UI::GUILabel *lblFrameCnt;
+			NotNullPtr<UI::GUILabel> lblFrameCnt;
 			UI::GUITextBox *txtFrameCnt;
-			UI::GUILabel *lblSaveCnt;
+			NotNullPtr<UI::GUILabel> lblSaveCnt;
 			UI::GUITextBox *txtSaveCnt;
 
 			static void __stdcall OnDevChg(void *userObj);

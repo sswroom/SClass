@@ -16,19 +16,19 @@ namespace SSWR
 		class AVIRMSSQLConnForm : public UI::GUIForm
 		{
 		private:
-			UI::GUILabel *lblDriver;
+			NotNullPtr<UI::GUILabel> lblDriver;
 			UI::GUITextBox *txtDriver;
-			UI::GUILabel *lblServer;
+			NotNullPtr<UI::GUILabel> lblServer;
 			UI::GUITextBox *txtServer;
 			NotNullPtr<UI::GUIButton> btnPasteJDBC;
-			UI::GUILabel *lblPort;
+			NotNullPtr<UI::GUILabel> lblPort;
 			UI::GUITextBox *txtPort;
 			UI::GUICheckBox *chkEncrypt;
-			UI::GUILabel *lblDatabase;
+			NotNullPtr<UI::GUILabel> lblDatabase;
 			UI::GUITextBox *txtDatabase;
-			UI::GUILabel *lblUser;
+			NotNullPtr<UI::GUILabel> lblUser;
 			UI::GUITextBox *txtUser;
-			UI::GUILabel *lblPassword;
+			NotNullPtr<UI::GUILabel> lblPassword;
 			UI::GUITextBox *txtPassword;
 			NotNullPtr<UI::GUIButton> btnOK;
 			NotNullPtr<UI::GUIButton> btnCancel;

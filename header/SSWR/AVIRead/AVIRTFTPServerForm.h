@@ -28,9 +28,9 @@ namespace SSWR
 			UI::GUITabControl *tcMain;
 
 			NotNullPtr<UI::GUITabPage> tpControl;
-			UI::GUILabel *lblPort;
+			NotNullPtr<UI::GUILabel> lblPort;
 			UI::GUITextBox *txtPort;
-			UI::GUILabel *lblFilePath;
+			NotNullPtr<UI::GUILabel> lblFilePath;
 			UI::GUITextBox *txtFilePath;
 			NotNullPtr<UI::GUIButton> btnStart;
 

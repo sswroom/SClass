@@ -40,35 +40,35 @@ namespace SSWR
 			NotNullPtr<UI::GUIPanel> pnlInput;
 			UI::GUITabControl *tcFilter;
 			NotNullPtr<UI::GUIPanel> pnlAudioSource;
-			UI::GUILabel *lblAudioSource;
+			NotNullPtr<UI::GUILabel> lblAudioSource;
 			UI::GUIRadioButton *radInputWaveIn;
 			UI::GUIRadioButton *radInputSilent;
 			NotNullPtr<UI::GUIPanel> pnlAudioOutput;
-			UI::GUILabel *lblAudioOutput;
+			NotNullPtr<UI::GUILabel> lblAudioOutput;
 			UI::GUIRadioButton *radOutputDevice;
 			UI::GUIRadioButton *radOutputSilent;
-			UI::GUILabel *lblBuffSize;
+			NotNullPtr<UI::GUILabel> lblBuffSize;
 			UI::GUITextBox *txtBuffSize;
-			UI::GUILabel *lblFrequency;
+			NotNullPtr<UI::GUILabel> lblFrequency;
 			UI::GUITextBox *txtFrequency;
-			UI::GUILabel *lblChannel;
+			NotNullPtr<UI::GUILabel> lblChannel;
 			UI::GUITextBox *txtChannel;
-			UI::GUILabel *lblBitCount;
+			NotNullPtr<UI::GUILabel> lblBitCount;
 			UI::GUITextBox *txtBitCount;
 			NotNullPtr<UI::GUIButton> btnStart;
 
 			NotNullPtr<UI::GUITabPage> tpVolBoost;
 			UI::GUICheckBox *chkVolBoost;
-			UI::GUILabel *lblVolBoostBG;
+			NotNullPtr<UI::GUILabel> lblVolBoostBG;
 			UI::GUITrackBar *tbVolBoostBG;
-			UI::GUILabel *lblVolBoostBGVol;
+			NotNullPtr<UI::GUILabel> lblVolBoostBGVol;
 
 			NotNullPtr<UI::GUITabPage> tpDTMF;
 			NotNullPtr<UI::GUIPanel> pnlDTMF;
-			UI::GUILabel *lblDTMFInterval;
+			NotNullPtr<UI::GUILabel> lblDTMFInterval;
 			UI::GUITextBox *txtDTMFInterval;
-			UI::GUILabel *lblDTMFIntervalMS;
-			UI::GUILabel *lblDTMFDecode;
+			NotNullPtr<UI::GUILabel> lblDTMFIntervalMS;
+			NotNullPtr<UI::GUILabel> lblDTMFDecode;
 			UI::GUITextBox *txtDTMFDecode;
 			NotNullPtr<UI::GUIButton> btnDTMFClear;
 			UI::GUITabControl *tcDTMF;
@@ -89,19 +89,19 @@ namespace SSWR
 			NotNullPtr<UI::GUIButton> btnDTMFB;
 			NotNullPtr<UI::GUIButton> btnDTMFC;
 			NotNullPtr<UI::GUIButton> btnDTMFD;
-			UI::GUILabel *lblDTMFVol;
+			NotNullPtr<UI::GUILabel> lblDTMFVol;
 			UI::GUITrackBar *tbDTMFVol;
-			UI::GUILabel *lblDTMFVolV;
+			NotNullPtr<UI::GUILabel> lblDTMFVolV;
 			NotNullPtr<UI::GUITabPage> tpDTMFGen2;
-			UI::GUILabel *lblDTMFSignalTime;
+			NotNullPtr<UI::GUILabel> lblDTMFSignalTime;
 			UI::GUITextBox *txtDTMFSignalTime;
-			UI::GUILabel *lblDTMFSignalTimeMS;
-			UI::GUILabel *lblDTMFBreakTime;
+			NotNullPtr<UI::GUILabel> lblDTMFSignalTimeMS;
+			NotNullPtr<UI::GUILabel> lblDTMFBreakTime;
 			UI::GUITextBox *txtDTMFBreakTime;
-			UI::GUILabel *lblDTMFBreakTimeMS;
-			UI::GUILabel *lblDTMFTonesVol;
+			NotNullPtr<UI::GUILabel> lblDTMFBreakTimeMS;
+			NotNullPtr<UI::GUILabel> lblDTMFTonesVol;
 			UI::GUITrackBar *tbDTMFTonesVol;
-			UI::GUILabel *lblDTMFTones;
+			NotNullPtr<UI::GUILabel> lblDTMFTones;
 			UI::GUITextBox *txtDTMFTones;
 			NotNullPtr<UI::GUIButton> btnDTMFTones;
 
@@ -113,7 +113,7 @@ namespace SSWR
 			UI::GUIPictureBoxSimple *pbsFFT;
 
 			NotNullPtr<UI::GUITabPage> tpFileMix;
-			UI::GUILabel *lblFileMix;
+			NotNullPtr<UI::GUILabel> lblFileMix;
 			UI::GUITextBox *txtFileMix;
 			NotNullPtr<UI::GUIButton> btnFileMix;
 			NotNullPtr<UI::GUIButton> btnFileMixStart;
@@ -127,21 +127,21 @@ namespace SSWR
 			NotNullPtr<UI::GUIButton> btnSoundGenBell;
 
 			NotNullPtr<UI::GUITabPage> tpSweep;
-			UI::GUILabel *lblSweepVol;
+			NotNullPtr<UI::GUILabel> lblSweepVol;
 			UI::GUITrackBar *tbSweepVol;
-			UI::GUILabel *lblSweepVolV;
-			UI::GUILabel *lblSweepStartFreq;
+			NotNullPtr<UI::GUILabel> lblSweepVolV;
+			NotNullPtr<UI::GUILabel> lblSweepStartFreq;
 			UI::GUITextBox *txtSweepStartFreq;
-			UI::GUILabel *lblSweepEndFreq;
+			NotNullPtr<UI::GUILabel> lblSweepEndFreq;
 			UI::GUITextBox *txtSweepEndFreq;
-			UI::GUILabel *lblSweepDur;
+			NotNullPtr<UI::GUILabel> lblSweepDur;
 			UI::GUITextBox *txtSweepDur;
 			NotNullPtr<UI::GUIButton> btnSweepStart;
 
 			NotNullPtr<UI::GUITabPage> tpAmplifier;
-			UI::GUILabel *lblAmplifierVol;
+			NotNullPtr<UI::GUILabel> lblAmplifierVol;
 			UI::GUITrackBar *tbAmplifierVol;
-			UI::GUILabel *lblAmplifierVolV;
+			NotNullPtr<UI::GUILabel> lblAmplifierVolV;
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			Math::FFTCalc fft;

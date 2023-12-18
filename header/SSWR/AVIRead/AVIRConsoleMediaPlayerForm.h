@@ -18,18 +18,18 @@ namespace SSWR
 		class AVIRConsoleMediaPlayerForm : public UI::GUIForm
 		{
 		private:
-			UI::GUILabel *lblPort;
+			NotNullPtr<UI::GUILabel> lblPort;
 			UI::GUITextBox *txtPort;
 			NotNullPtr<UI::GUIButton> btnStop;
 			NotNullPtr<UI::GUIButton> btnCaptureDev;
-			UI::GUILabel *lblRotate;
+			NotNullPtr<UI::GUILabel> lblRotate;
 			NotNullPtr<UI::GUIComboBox> cboRotate;
 			UI::GUICheckBox *chkSurfaceBug;
-			UI::GUILabel *lblYUVType;
+			NotNullPtr<UI::GUILabel> lblYUVType;
 			NotNullPtr<UI::GUIComboBox> cboYUVType;
-			UI::GUILabel *lblRGBTrans;
+			NotNullPtr<UI::GUILabel> lblRGBTrans;
 			NotNullPtr<UI::GUIComboBox> cboRGBTrans;
-			UI::GUILabel *lblColorPrimaries;
+			NotNullPtr<UI::GUILabel> lblColorPrimaries;
 			NotNullPtr<UI::GUIComboBox> cboColorPrimaries;
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;

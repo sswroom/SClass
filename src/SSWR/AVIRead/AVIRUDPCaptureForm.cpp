@@ -209,7 +209,7 @@ SSWR::AVIRead::AVIRUDPCaptureForm::AVIRUDPCaptureForm(UI::GUIClientControl *pare
 	NEW_CLASSNN(this->pnlControl, UI::GUIPanel(ui, *this));
 	this->pnlControl->SetRect(0, 0, 100, 32, false);
 	this->pnlControl->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->lblPort, UI::GUILabel(ui, this->pnlControl, CSTR("UDP Port")));
+	this->lblPort = ui->NewLabel(this->pnlControl, CSTR("UDP Port"));
 	this->lblPort->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtPort, UI::GUITextBox(ui, this->pnlControl, CSTR("")));
 	this->txtPort->SetRect(104, 4, 60, 23, false);
@@ -277,7 +277,7 @@ SSWR::AVIRead::AVIRUDPCaptureForm::AVIRUDPCaptureForm(UI::GUIClientControl *pare
 	NEW_CLASSNN(this->pnlMulticastCommon, UI::GUIPanel(ui, this->tpMulticast));
 	this->pnlMulticastCommon->SetRect(0, 0, 100, 23, false);
 	this->pnlMulticastCommon->SetDockType(UI::GUIControl::DOCK_LEFT);
-	NEW_CLASS(this->lblMulticastCommon, UI::GUILabel(ui, this->pnlMulticastCommon, CSTR("Common IP")));
+	this->lblMulticastCommon = ui->NewLabel(this->pnlMulticastCommon, CSTR("Common IP"));
 	this->lblMulticastCommon->SetRect(0, 0, 100, 23, false);
 	this->lblMulticastCommon->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->lbMulticastCommon, UI::GUIListBox(ui, this->pnlMulticastCommon, false));
@@ -289,7 +289,7 @@ SSWR::AVIRead::AVIRUDPCaptureForm::AVIRUDPCaptureForm(UI::GUIClientControl *pare
 	NEW_CLASSNN(this->pnlMulticastCtrl, UI::GUIPanel(ui, this->pnlMulticast));
 	this->pnlMulticastCtrl->SetRect(0, 0, 100, 23, false);
 	this->pnlMulticastCtrl->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->lblMulticastCurr, UI::GUILabel(ui, this->pnlMulticastCtrl, CSTR("Multicast IP")));
+	this->lblMulticastCurr = ui->NewLabel(this->pnlMulticastCtrl, CSTR("Multicast IP"));
 	this->lblMulticastCurr->SetRect(0, 0, 100, 23, false);
 	NEW_CLASS(this->txtMulticastCurr, UI::GUITextBox(ui, this->pnlMulticastCtrl, CSTR("")));
 	this->txtMulticastCurr->SetRect(100, 0, 100, 23, false);

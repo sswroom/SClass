@@ -13,14 +13,14 @@ namespace SSWR
 		class AVIRFCMForm : public UI::GUIForm
 		{
 		private:
-			UI::GUILabel *lblAPIKey;
+			NotNullPtr<UI::GUILabel> lblAPIKey;
 			UI::GUITextBox *txtAPIKey;
-			UI::GUILabel *lblDeviceToken;
+			NotNullPtr<UI::GUILabel> lblDeviceToken;
 			UI::GUITextBox *txtDeviceToken;
-			UI::GUILabel *lblMessage;
+			NotNullPtr<UI::GUILabel> lblMessage;
 			UI::GUITextBox *txtMessage;
 			NotNullPtr<UI::GUIButton> btnSend;
-			UI::GUILabel *lblStatus;
+			NotNullPtr<UI::GUILabel> lblStatus;
 			UI::GUITextBox *txtStatus;
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;

@@ -490,7 +490,7 @@ SSWR::AVIRead::AVIRSNBDongleForm::AVIRSNBDongleForm(UI::GUIClientControl *parent
 	this->btnDongleInfo = ui->NewButton(this->pnlDevice, CSTR("Get Dongle Info"));
 	this->btnDongleInfo->SetRect(4, 4, 95, 23, false);
 	this->btnDongleInfo->HandleButtonClick(OnDongleInfoClicked, this);
-	NEW_CLASS(this->lblDongleId, UI::GUILabel(ui, this->pnlDevice, CSTR("Dongle Id")));
+	this->lblDongleId = ui->NewLabel(this->pnlDevice, CSTR("Dongle Id"));
 	this->lblDongleId->SetRect(104, 4, 80, 23, false);
 	NEW_CLASS(this->txtDongleId, UI::GUITextBox(ui, this->pnlDevice, CSTR("")));
 	this->txtDongleId->SetRect(184, 4, 200, 23, false);
@@ -508,11 +508,11 @@ SSWR::AVIRead::AVIRSNBDongleForm::AVIRSNBDongleForm(UI::GUIClientControl *parent
 	this->btnAddDevice = ui->NewButton(this->pnlDevice, CSTR("AddDevice"));
 	this->btnAddDevice->SetRect(244, 28, 75, 23, false);
 	this->btnAddDevice->HandleButtonClick(OnAddDeviceClicked, this);
-	NEW_CLASS(this->lblRemarks, UI::GUILabel(ui, this->pnlDevice, CSTR("Remarks")));
+	this->lblRemarks = ui->NewLabel(this->pnlDevice, CSTR("Remarks"));
 	this->lblRemarks->SetRect(4, 52, 100, 23, false);
 	NEW_CLASS(this->txtRemarks, UI::GUITextBox(ui, this->pnlDevice, CSTR("")));
 	this->txtRemarks->SetRect(104, 52, 600, 23, false);
-	NEW_CLASS(this->lblURL, UI::GUILabel(ui, this->pnlDevice, CSTR("URL")));
+	this->lblURL = ui->NewLabel(this->pnlDevice, CSTR("URL"));
 	this->lblURL->SetRect(4, 76, 100, 23, false);
 	NEW_CLASS(this->txtURL, UI::GUITextBox(ui, this->pnlDevice, CSTR("")));
 	this->txtURL->SetRect(104, 76, 600, 23, false);

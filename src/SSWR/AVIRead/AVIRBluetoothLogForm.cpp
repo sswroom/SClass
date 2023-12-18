@@ -214,7 +214,7 @@ SSWR::AVIRead::AVIRBluetoothLogForm::AVIRBluetoothLogForm(UI::GUIClientControl *
 	this->btnStore = ui->NewButton(this->pnlControl, CSTR("Store MACList"));
 	this->btnStore->SetRect(184, 4, 75, 23, false);
 	this->btnStore->HandleButtonClick(OnStoreClicked, this);
-	NEW_CLASS(this->lblInfo, UI::GUILabel(ui, this->pnlControl, CSTR("")));
+	this->lblInfo = ui->NewLabel(this->pnlControl, CSTR(""));
 	this->lblInfo->SetRect(264, 4, 200, 23, false);
 	NEW_CLASS(this->lvContent, UI::GUIListView(ui, *this, UI::GUIListView::LVSTYLE_TABLE, 8));
 	this->lvContent->SetDockType(UI::GUIControl::DOCK_FILL);

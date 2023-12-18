@@ -29,18 +29,18 @@ namespace SSWR
 			Crypto::Cert::X509File *sslKey;
 			Data::ArrayListNN<Crypto::Cert::X509Cert> caCerts;
 
-			UI::GUILabel *lblPort;
+			NotNullPtr<UI::GUILabel> lblPort;
 			UI::GUITextBox *txtPort;
-			UI::GUILabel *lblFwdURL;
+			NotNullPtr<UI::GUILabel> lblFwdURL;
 			UI::GUITextBox *txtFwdURL;
-			UI::GUILabel *lblLog;
+			NotNullPtr<UI::GUILabel> lblLog;
 			UI::GUICheckBox *chkLog;
 			UI::GUICheckBox *chkLogContent;
-			UI::GUILabel *lblSSL;
+			NotNullPtr<UI::GUILabel> lblSSL;
 			UI::GUICheckBox *chkSSL;
 			NotNullPtr<UI::GUIButton> btnSSLCert;
-			UI::GUILabel *lblSSLCert;
-			UI::GUILabel *lblAllowKA;
+			NotNullPtr<UI::GUILabel> lblSSLCert;
+			NotNullPtr<UI::GUILabel> lblAllowKA;
 			UI::GUICheckBox *chkAllowKA;
 			NotNullPtr<UI::GUIButton> btnStart;
 			NotNullPtr<UI::GUIButton> btnStop;

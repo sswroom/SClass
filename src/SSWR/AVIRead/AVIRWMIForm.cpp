@@ -66,7 +66,7 @@ SSWR::AVIRead::AVIRWMIForm::AVIRWMIForm(UI::GUIClientControl *parent, NotNullPtr
 
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
-	NEW_CLASS(this->lblNS, UI::GUILabel(ui, *this, CSTR("WMI Namespace")));
+	this->lblNS = ui->NewLabel(*this, CSTR("WMI Namespace"));
 	this->lblNS->SetRect(8, 8, 100, 23, false);
 	NEW_CLASS(this->lbNS, UI::GUIListBox(ui, *this, false));
 	this->lbNS->SetRect(112, 8, 256, 112, false);

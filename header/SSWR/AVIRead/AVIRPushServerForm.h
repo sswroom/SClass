@@ -14,9 +14,9 @@ namespace SSWR
 		class AVIRPushServerForm : public UI::GUIForm
 		{
 		private:
-			UI::GUILabel *lblPort;
+			NotNullPtr<UI::GUILabel> lblPort;
 			UI::GUITextBox *txtPort;
-			UI::GUILabel *lblAPIKey;
+			NotNullPtr<UI::GUILabel> lblAPIKey;
 			UI::GUITextBox *txtAPIKey;
 			NotNullPtr<UI::GUIButton> btnStart;
 

@@ -14,9 +14,9 @@ namespace SSWR
 		class AVIRWOLForm : public UI::GUIForm
 		{
 		private:
-			UI::GUILabel *lblAdapter;
+			NotNullPtr<UI::GUILabel> lblAdapter;
 			NotNullPtr<UI::GUIComboBox> cboAdapter;
-			UI::GUILabel *lblDeviceMac;
+			NotNullPtr<UI::GUILabel> lblDeviceMac;
 			UI::GUITextBox *txtDeviceMac;
 			NotNullPtr<UI::GUIButton> btnSend;
 

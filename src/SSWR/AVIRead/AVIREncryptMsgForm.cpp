@@ -242,7 +242,7 @@ SSWR::AVIRead::AVIREncryptMsgForm::AVIREncryptMsgForm(UI::GUIClientControl *pare
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASS(this->lblAlgorithm, UI::GUILabel(ui, *this, CSTR("Algorithm")));
+	this->lblAlgorithm = ui->NewLabel(*this, CSTR("Algorithm"));
 	this->lblAlgorithm->SetRect(4, 4, 100, 23, false);
 	this->cboAlgorithm = ui->NewComboBox(*this, false);
 	this->cboAlgorithm->SetRect(104, 4, 150, 23, false);
@@ -250,16 +250,16 @@ SSWR::AVIRead::AVIREncryptMsgForm::AVIREncryptMsgForm(UI::GUIClientControl *pare
 	this->cboAlgorithm->AddItem(CSTR("AES 192-bit"), 0);
 	this->cboAlgorithm->AddItem(CSTR("AES 256-bit"), 0);
 	this->cboAlgorithm->SetSelectedIndex(0);
-	NEW_CLASS(this->lblKeyType, UI::GUILabel(ui, *this, CSTR("Key Type")));
+	this->lblKeyType = ui->NewLabel(*this, CSTR("Key Type"));
 	this->lblKeyType->SetRect(4, 28, 100, 23, false);
 	this->cboKeyType = ui->NewComboBox(*this, false);
 	this->cboKeyType->SetRect(104, 28, 100, 23, false);
 	AddTextEncType(this->cboKeyType);
-	NEW_CLASS(this->lblKey, UI::GUILabel(ui, *this, CSTR("Key")));
+	this->lblKey = ui->NewLabel(*this, CSTR("Key"));
 	this->lblKey->SetRect(4, 52, 100, 23, false);
 	NEW_CLASS(this->txtKey, UI::GUITextBox(ui, *this, CSTR("")));
 	this->txtKey->SetRect(104, 52, 300, 23, false);
-	NEW_CLASS(this->lblIV, UI::GUILabel(ui, *this, CSTR("IV")));
+	this->lblIV = ui->NewLabel(*this, CSTR("IV"));
 	this->lblIV->SetRect(4, 76, 100, 23, false);
 	this->cboIV = ui->NewComboBox(*this, false);
 	this->cboIV->SetRect(104, 76, 100, 23, false);
@@ -270,7 +270,7 @@ SSWR::AVIRead::AVIREncryptMsgForm::AVIREncryptMsgForm(UI::GUIClientControl *pare
 	this->cboIV->SetSelectedIndex(0);
 	NEW_CLASS(this->txtIV, UI::GUITextBox(ui, *this, CSTR("")));
 	this->txtIV->SetRect(204, 76, 300, 23, false);
-	NEW_CLASS(this->lblChainMode, UI::GUILabel(ui, *this, CSTR("Chain Mode")));
+	this->lblChainMode = ui->NewLabel(*this, CSTR("Chain Mode"));
 	this->lblChainMode->SetRect(4, 100, 100, 23, false);
 	this->cboChainMode = ui->NewComboBox(*this, false);
 	this->cboChainMode->SetRect(104, 100, 100, 23, false);
@@ -280,16 +280,16 @@ SSWR::AVIRead::AVIREncryptMsgForm::AVIREncryptMsgForm(UI::GUIClientControl *pare
 	CBOADDENUM(this->cboChainMode, Crypto::Encrypt::ChainMode, CFB);
 	CBOADDENUM(this->cboChainMode, Crypto::Encrypt::ChainMode, OFB);
 	this->cboChainMode->SetSelectedIndex(0);
-	NEW_CLASS(this->lblInputType, UI::GUILabel(ui, *this, CSTR("Input Type")));
+	this->lblInputType = ui->NewLabel(*this, CSTR("Input Type"));
 	this->lblInputType->SetRect(4, 124, 100, 23, false);
 	this->cboInputType = ui->NewComboBox(*this, false);
 	this->cboInputType->SetRect(104, 124, 100, 23, false);
 	AddTextEncType(this->cboInputType);
-	NEW_CLASS(this->lblInputMsg, UI::GUILabel(ui, *this, CSTR("Input Msg")));
+	this->lblInputMsg = ui->NewLabel(*this, CSTR("Input Msg"));
 	this->lblInputMsg->SetRect(4, 148, 100, 23, false);
 	NEW_CLASS(this->txtInputMsg, UI::GUITextBox(ui, *this, CSTR(""), true));
 	this->txtInputMsg->SetRect(104, 148, 400, 71, false);
-	NEW_CLASS(this->lblOutputType, UI::GUILabel(ui, *this, CSTR("Output Type")));
+	this->lblOutputType = ui->NewLabel(*this, CSTR("Output Type"));
 	this->lblOutputType->SetRect(4, 220, 100, 23, false);
 	this->cboOutputType = ui->NewComboBox(*this, false);
 	this->cboOutputType->SetRect(104, 220, 100, 23, false);
@@ -300,7 +300,7 @@ SSWR::AVIRead::AVIREncryptMsgForm::AVIREncryptMsgForm(UI::GUIClientControl *pare
 	this->btnDecrypt = ui->NewButton(*this, CSTR("Decrypt"));
 	this->btnDecrypt->SetRect(184, 244, 75, 23, false);
 	this->btnDecrypt->HandleButtonClick(OnDecryptClicked, this);
-	NEW_CLASS(this->lblOutputMsg, UI::GUILabel(ui, *this, CSTR("Output Msg")));
+	this->lblOutputMsg = ui->NewLabel(*this, CSTR("Output Msg"));
 	this->lblOutputMsg->SetRect(4, 268, 100, 23, false);
 	NEW_CLASS(this->txtOutputMsg, UI::GUITextBox(ui, *this, CSTR(""), true));
 	this->txtOutputMsg->SetRect(104, 268, 400, 71, false);

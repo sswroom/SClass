@@ -15,13 +15,13 @@ namespace SSWR
 		class AVIRServiceCreateForm : public UI::GUIForm
 		{
 		private:
-			UI::GUILabel *lblName;
+			NotNullPtr<UI::GUILabel> lblName;
 			UI::GUITextBox *txtName;
-			UI::GUILabel *lblDesc;
+			NotNullPtr<UI::GUILabel> lblDesc;
 			UI::GUITextBox *txtDesc;
-			UI::GUILabel *lblState;
+			NotNullPtr<UI::GUILabel> lblState;
 			NotNullPtr<UI::GUIComboBox> cboState;
-			UI::GUILabel *lblCmdLine;
+			NotNullPtr<UI::GUILabel> lblCmdLine;
 			UI::GUITextBox *txtCmdLine;
 			NotNullPtr<UI::GUIButton> btnCreate;
 			NotNullPtr<UI::GUIButton> btnCancel;

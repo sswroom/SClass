@@ -32,15 +32,15 @@ namespace SSWR
 			UI::GUITabControl *tcMain;
 
 			NotNullPtr<UI::GUITabPage> tpInfo;
-			UI::GUILabel *lblRadioName;
+			NotNullPtr<UI::GUILabel> lblRadioName;
 			UI::GUITextBox *txtRadioName;
-			UI::GUILabel *lblAddr;
+			NotNullPtr<UI::GUILabel> lblAddr;
 			UI::GUITextBox *txtAddr;
-			UI::GUILabel *lblManu;
+			NotNullPtr<UI::GUILabel> lblManu;
 			UI::GUITextBox *txtManu;
-			UI::GUILabel *lblSubver;
+			NotNullPtr<UI::GUILabel> lblSubver;
 			UI::GUITextBox *txtSubver;
-			UI::GUILabel *lblClass;
+			NotNullPtr<UI::GUILabel> lblClass;
 			UI::GUITextBox *txtClass;
 
 			NotNullPtr<UI::GUITabPage> tpDevice;

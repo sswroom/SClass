@@ -18,15 +18,15 @@ namespace SSWR
 			Bool newRec;
 			const SSWR::DiscDB::DiscDBEnv::DVDTypeInfo *currRec;
 
-			UI::GUILabel *lblID;
+			NotNullPtr<UI::GUILabel> lblID;
 			UI::GUITextBox *txtID;
 			NotNullPtr<UI::GUIButton> btnNew;
 			NotNullPtr<UI::GUIButton> btnCancel;
-			UI::GUILabel *lblName;
+			NotNullPtr<UI::GUILabel> lblName;
 			UI::GUITextBox *txtName;
-			UI::GUILabel *lblDescription;
+			NotNullPtr<UI::GUILabel> lblDescription;
 			UI::GUITextBox *txtDescription;
-			UI::GUILabel *lblDisplay;
+			NotNullPtr<UI::GUILabel> lblDisplay;
 			NotNullPtr<UI::GUIButton> btnPrev;
 			NotNullPtr<UI::GUIButton> btnSave;
 			NotNullPtr<UI::GUIButton> btnNext;

@@ -21,20 +21,20 @@ namespace SSWR
 			UInt64 currCnt;
 			UInt64 currDataSize;
 
-			UI::GUILabel *lblIP;
+			NotNullPtr<UI::GUILabel> lblIP;
 			NotNullPtr<UI::GUIComboBox> cboIP;
-			UI::GUILabel *lblType;
+			NotNullPtr<UI::GUILabel> lblType;
 			NotNullPtr<UI::GUIComboBox> cboType;
-			UI::GUILabel *lblFormat;
+			NotNullPtr<UI::GUILabel> lblFormat;
 			NotNullPtr<UI::GUIComboBox> cboFormat;
-			UI::GUILabel *lblFileName;
+			NotNullPtr<UI::GUILabel> lblFileName;
 			UI::GUITextBox *txtFileName;
 			NotNullPtr<UI::GUIButton> btnAutoGen;
 			NotNullPtr<UI::GUIButton> btnBrowse;
 			NotNullPtr<UI::GUIButton> btnStart;
-			UI::GUILabel *lblPacketCnt;
+			NotNullPtr<UI::GUILabel> lblPacketCnt;
 			UI::GUITextBox *txtPacketCnt;
-			UI::GUILabel *lblDataSize;
+			NotNullPtr<UI::GUILabel> lblDataSize;
 			UI::GUITextBox *txtDataSize;
 
 			static void __stdcall OnAutoGenClicked(void *userObj);

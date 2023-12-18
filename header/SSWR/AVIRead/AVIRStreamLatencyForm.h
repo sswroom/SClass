@@ -26,12 +26,12 @@ namespace SSWR
 			IO::SiLabDriver *siLabDriver;
 
 			NotNullPtr<UI::GUIGroupBox> grpStream;
-			UI::GUILabel *lblStream;
+			NotNullPtr<UI::GUILabel> lblStream;
 			UI::GUITextBox *txtStream;
 			NotNullPtr<UI::GUIButton> btnStream;
 
 			NotNullPtr<UI::GUIGroupBox> grpControl;
-			UI::GUILabel *lblReqInterval;
+			NotNullPtr<UI::GUILabel> lblReqInterval;
 			NotNullPtr<UI::GUIComboBox> cboReqInterval;
 
 			UI::GUITabControl *tcMain;
@@ -44,9 +44,9 @@ namespace SSWR
 			NotNullPtr<UI::GUIListBox> lbLog;
 
 			NotNullPtr<UI::GUITabPage> tpStatus;
-			UI::GUILabel *lblSentCnt;
+			NotNullPtr<UI::GUILabel> lblSentCnt;
 			UI::GUITextBox *txtSentCnt;
-			UI::GUILabel *lblRecvCnt;
+			NotNullPtr<UI::GUILabel> lblRecvCnt;
 			UI::GUITextBox *txtRecvCnt;
 
 			IO::Stream *stm;

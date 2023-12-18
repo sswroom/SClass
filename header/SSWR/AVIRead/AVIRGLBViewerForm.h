@@ -22,9 +22,9 @@ namespace SSWR
 			NotNullPtr<UI::GUIPanel> pnlBinBuff;
 			NotNullPtr<UI::GUIVSplitter> vspMain;
 			NotNullPtr<UI::GUIPanel> pnlJSON;
-			UI::GUILabel *lblJSON;
+			NotNullPtr<UI::GUILabel> lblJSON;
 			UI::GUITextBox *txtJSON;
-			UI::GUILabel *lblBinBuff;
+			NotNullPtr<UI::GUILabel> lblBinBuff;
 			UI::GUIHexFileView *hfvBinBuff;
 
 			static void __stdcall OnFileDrop(void *userObj, NotNullPtr<Text::String> *files, UOSInt nFiles);

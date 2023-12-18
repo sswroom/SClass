@@ -147,15 +147,15 @@ SSWR::AVIRead::AVIRTFTPClientForm::AVIRTFTPClientForm(UI::GUIClientControl *pare
 	this->SetNoResize(true);
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASS(this->lblHost, UI::GUILabel(ui, *this, CSTR("Host")));
+	this->lblHost = ui->NewLabel(*this, CSTR("Host"));
 	this->lblHost->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtHost, UI::GUITextBox(ui, *this, CSTR("127.0.0.1")));
 	this->txtHost->SetRect(104, 4, 150, 23, false);
-	NEW_CLASS(this->lblPort, UI::GUILabel(ui, *this, CSTR("Port")));
+	this->lblPort = ui->NewLabel(*this, CSTR("Port"));
 	this->lblPort->SetRect(4, 28, 100, 23, false);
 	NEW_CLASS(this->txtPort, UI::GUITextBox(ui, *this, CSTR("69")));
 	this->txtPort->SetRect(104, 28, 50, 23, false);
-	NEW_CLASS(this->lblFileName, UI::GUILabel(ui, *this, CSTR("FileName")));
+	this->lblFileName = ui->NewLabel(*this, CSTR("FileName"));
 	this->lblFileName->SetRect(4, 52, 100, 23, false);
 	NEW_CLASS(this->txtFileName, UI::GUITextBox(ui, *this, CSTR("File.dat")));
 	this->txtFileName->SetRect(104, 52, 200, 23, false);

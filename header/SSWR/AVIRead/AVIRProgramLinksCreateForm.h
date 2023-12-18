@@ -20,15 +20,15 @@ namespace SSWR
 		private:
 			IO::ProgramLinkManager *progMgr;
 			UI::GUICheckBox *chkThisUser;
-			UI::GUILabel *lblShortName;
+			NotNullPtr<UI::GUILabel> lblShortName;
 			UI::GUITextBox *txtShortName;
-			UI::GUILabel *lblName;
+			NotNullPtr<UI::GUILabel> lblName;
 			UI::GUITextBox *txtName;
-			UI::GUILabel *lblComment;
+			NotNullPtr<UI::GUILabel> lblComment;
 			UI::GUITextBox *txtComment;
-			UI::GUILabel *lblCategories;
+			NotNullPtr<UI::GUILabel> lblCategories;
 			UI::GUITextBox *txtCategories;
-			UI::GUILabel *lblCmdLine;
+			NotNullPtr<UI::GUILabel> lblCmdLine;
 			UI::GUITextBox *txtCmdLine;
 			NotNullPtr<UI::GUIButton> btnCreate;
 			NotNullPtr<UI::GUIButton> btnCancel;

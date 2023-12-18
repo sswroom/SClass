@@ -53,7 +53,7 @@ SSWR::AVIRead::AVIRVBoxManagerForm::AVIRVBoxManagerForm(UI::GUIClientControl *pa
 	NEW_CLASSNN(this->pnlVersion, UI::GUIPanel(ui, *this));
 	this->pnlVersion->SetRect(0, 0, 100, 31, false);
 	this->pnlVersion->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->lblVersion, UI::GUILabel(ui, this->pnlVersion, CSTR("Version")));
+	this->lblVersion = ui->NewLabel(this->pnlVersion, CSTR("Version"));
 	this->lblVersion->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtVersion, UI::GUITextBox(ui, this->pnlVersion, CSTR("")));
 	this->txtVersion->SetReadOnly(true);
@@ -67,12 +67,12 @@ SSWR::AVIRead::AVIRVBoxManagerForm::AVIRVBoxManagerForm(UI::GUIClientControl *pa
 	this->tcVM->SetDockType(UI::GUIControl::DOCK_FILL);
 	
 	this->tpControl = this->tcVM->AddTabPage(CSTR("Control"));
-	NEW_CLASS(this->lblState, UI::GUILabel(ui, this->tpControl, CSTR("State")));
+	this->lblState = ui->NewLabel(this->tpControl, CSTR("State"));
 	this->lblState->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtState, UI::GUITextBox(ui, this->tpControl, CSTR("")));
 	this->txtState->SetRect(104, 4, 150, 23, false);
 	this->txtState->SetReadOnly(true);
-	NEW_CLASS(this->lblStateSince, UI::GUILabel(ui, this->tpControl, CSTR("Since")));
+	this->lblStateSince = ui->NewLabel(this->tpControl, CSTR("Since"));
 	this->lblStateSince->SetRect(4, 28, 100, 23, false);
 	NEW_CLASS(this->txtStateSince, UI::GUITextBox(ui, this->tpControl, CSTR("")));
 	this->txtStateSince->SetRect(104, 28, 150, 23, false);

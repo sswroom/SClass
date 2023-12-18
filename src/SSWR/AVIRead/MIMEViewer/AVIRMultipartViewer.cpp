@@ -26,7 +26,7 @@ SSWR::AVIRead::MIMEViewer::AVIRMultipartViewer::AVIRMultipartViewer(NotNullPtr<S
 		NEW_CLASSNN(this->pnlSMIME, UI::GUIPanel(ui, ctrl));
 		this->pnlSMIME->SetRect(0, 0, 100, 31, false);
 		this->pnlSMIME->SetDockType(UI::GUIControl::DOCK_BOTTOM);
-		NEW_CLASS(this->lblSignState, UI::GUILabel(ui, this->pnlSMIME, CSTR("Signature")));
+		this->lblSignState = ui->NewLabel(this->pnlSMIME, CSTR("Signature"));
 		this->lblSignState->SetRect(4, 4, 100, 23, false);
 		NEW_CLASS(this->txtSignState, UI::GUITextBox(ui, this->pnlSMIME, CSTR("")));
 		this->txtSignState->SetRect(104, 4, 200, 23, false);

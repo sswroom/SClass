@@ -48,7 +48,7 @@ namespace SSWR
 			NotNullPtr<UI::GUIPanel> pnlCtrl;
 			NotNullPtr<UI::GUIButton> btnSelPlate;
 			NotNullPtr<UI::GUIButton> btnSelCorners;
-			UI::GUILabel *lblSelStatus;
+			NotNullPtr<UI::GUILabel> lblSelStatus;
 			NotNullPtr<UI::GUIPanel> pnlPlate;
 			UI::GUIPictureBoxSimple *pbPlate;
 			UI::GUIListView *lvPlate;
