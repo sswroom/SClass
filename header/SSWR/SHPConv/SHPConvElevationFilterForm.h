@@ -20,8 +20,8 @@ namespace SSWR
 			UI::GUIComboBox *cboCol;
 			UI::GUILabel *lblHeight;
 			UI::GUITextBox *txtHeight;
-			UI::GUIButton *btnOK;
-			UI::GUIButton *btnCancel;
+			NotNullPtr<UI::GUIButton> btnOK;
+			NotNullPtr<UI::GUIButton> btnCancel;
 			DB::DBFFile *dbf;
 			Media::MonitorMgr *monMgr;
 			MapFilter *filter;

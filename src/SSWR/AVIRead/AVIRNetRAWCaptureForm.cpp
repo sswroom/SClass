@@ -129,13 +129,13 @@ SSWR::AVIRead::AVIRNetRAWCaptureForm::AVIRNetRAWCaptureForm(UI::GUIClientControl
 	this->lblFileName->SetRect(4, 76, 100, 23, false);
 	NEW_CLASS(this->txtFileName, UI::GUITextBox(ui, *this, CSTR("")));
 	this->txtFileName->SetRect(104, 76, 500, 23, false);
-	NEW_CLASS(this->btnAutoGen, UI::GUIButton(ui, *this, CSTR("Auto Gen")));
+	this->btnAutoGen = ui->NewButton(*this, CSTR("Auto Gen"));
 	this->btnAutoGen->SetRect(604, 76, 75, 23, false);
 	this->btnAutoGen->HandleButtonClick(OnAutoGenClicked, this);
-	NEW_CLASS(this->btnBrowse, UI::GUIButton(ui, *this, CSTR("&Browse")));
+	this->btnBrowse = ui->NewButton(*this, CSTR("&Browse"));
 	this->btnBrowse->SetRect(684, 76, 75, 23, false);
 	this->btnBrowse->HandleButtonClick(OnBrowseClicked, this);
-	NEW_CLASS(this->btnStart, UI::GUIButton(ui, *this, CSTR("Start")));
+	this->btnStart = ui->NewButton(*this, CSTR("Start"));
 	this->btnStart->SetRect(104, 100, 75, 23, false);
 	this->btnStart->HandleButtonClick(OnStartClicked, this);
 	NEW_CLASS(this->lblPacketCnt, UI::GUILabel(ui, *this, CSTR("Packet Count")));

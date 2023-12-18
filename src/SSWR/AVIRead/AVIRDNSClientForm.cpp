@@ -159,7 +159,7 @@ SSWR::AVIRead::AVIRDNSClientForm::AVIRDNSClientForm(UI::GUIClientControl *parent
 	this->cboRequest->AddItem(CSTR("28 - AAAA (IPv6)"), (void*)28);
 	this->cboRequest->AddItem(CSTR("257 - CAA"), (void*)257);
 	this->cboRequest->SetSelectedIndex(0);
-	NEW_CLASS(this->btnRequest, UI::GUIButton(ui, this->pnlRequest, CSTR("&Request")));
+	this->btnRequest = ui->NewButton(this->pnlRequest, CSTR("&Request"));
 	this->btnRequest->SetRect(324, 52, 75, 23, false);
 	this->btnRequest->HandleButtonClick(OnRequestClicked, this);
 	NEW_CLASS(this->lblRequestTime, UI::GUILabel(ui, this->pnlRequest, CSTR("Response Time(sec.)")));

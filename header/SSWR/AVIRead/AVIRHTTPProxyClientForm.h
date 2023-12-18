@@ -27,7 +27,7 @@ namespace SSWR
 			UI::GUITextBox *txtProxySvr;
 			UI::GUILabel *lblProxyPort;
 			UI::GUITextBox *txtProxyPort;
-			UI::GUIButton *btnRequest;
+			NotNullPtr<UI::GUIButton> btnRequest;
 			NotNullPtr<UI::GUIGroupBox> grpResponse;
 			NotNullPtr<UI::GUIPanel> pnlResponse;
 			UI::GUILabel *lblSvrIP;

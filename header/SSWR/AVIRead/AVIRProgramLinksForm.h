@@ -20,8 +20,8 @@ namespace SSWR
 			UI::GUIListBox *lbItems;
 			UI::GUIHSplitter *hspItems;
 			NotNullPtr<UI::GUIPanel> pnlItem;
-			UI::GUIButton *btnDelete;
-			UI::GUIButton *btnCreate;
+			NotNullPtr<UI::GUIButton> btnDelete;
+			NotNullPtr<UI::GUIButton> btnCreate;
 			UI::GUILabel *lblLinkName;
 			UI::GUITextBox *txtLinkName;
 			UI::GUILabel *lblType;

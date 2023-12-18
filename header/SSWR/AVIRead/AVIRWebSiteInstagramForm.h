@@ -25,14 +25,14 @@ namespace SSWR
 			NotNullPtr<UI::GUIPanel> pnlRequest;
 			UI::GUILabel *lblChannelId;
 			UI::GUITextBox *txtChannelId;
-			UI::GUIButton *btnRequestUser;
+			NotNullPtr<UI::GUIButton> btnRequestUser;
 			UI::GUIListView *lvItems;
 
 			NotNullPtr<UI::GUITabPage> tpPage;
 			NotNullPtr<UI::GUIPanel> pnlPage;
 			UI::GUILabel *lblShortCode;
 			UI::GUITextBox *txtShortCode;
-			UI::GUIButton *btnPage;
+			NotNullPtr<UI::GUIButton> btnPage;
 			UI::GUIListBox *lbImageURL;
 
 			Net::WebSite::WebSiteInstagramControl *ctrl;

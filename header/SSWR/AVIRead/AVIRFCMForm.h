@@ -19,7 +19,7 @@ namespace SSWR
 			UI::GUITextBox *txtDeviceToken;
 			UI::GUILabel *lblMessage;
 			UI::GUITextBox *txtMessage;
-			UI::GUIButton *btnSend;
+			NotNullPtr<UI::GUIButton> btnSend;
 			UI::GUILabel *lblStatus;
 			UI::GUITextBox *txtStatus;
 

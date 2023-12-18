@@ -806,7 +806,7 @@ SSWR::AVIRead::AVIRDNSProxyForm::AVIRDNSProxyForm(UI::GUIClientControl *parent, 
 	NEW_CLASS(this->txtDNSServer, UI::GUITextBox(ui, this->tpStatus, CSTR("")));
 	this->txtDNSServer->SetRect(104, 52, 200, 23, false);
 	this->txtDNSServer->SetReadOnly(true);
-	NEW_CLASS(this->btnDNSSwitch, UI::GUIButton(ui, this->tpStatus, CSTR("Switch")));
+	this->btnDNSSwitch = ui->NewButton(this->tpStatus, CSTR("Switch"));
 	this->btnDNSSwitch->SetRect(304, 52, 75, 23, false);
 	this->btnDNSSwitch->HandleButtonClick(OnDNSSwitchClicked, this);
 	NEW_CLASS(this->lblDNSList, UI::GUILabel(ui, this->tpStatus, CSTR("DNS List")));
@@ -815,17 +815,17 @@ SSWR::AVIRead::AVIRDNSProxyForm::AVIRDNSProxyForm(UI::GUIClientControl *parent, 
 	this->lbDNSList->SetRect(104, 76, 100, 240, false);
 	NEW_CLASS(this->txtDNSServer2, UI::GUITextBox(ui, this->tpStatus, CSTR("")));
 	this->txtDNSServer2->SetRect(104, 316, 100, 23, false);
-	NEW_CLASS(this->btnDNSAdd, UI::GUIButton(ui, this->tpStatus, CSTR("&Add")));
+	this->btnDNSAdd = ui->NewButton(this->tpStatus, CSTR("&Add"));
 	this->btnDNSAdd->SetRect(204, 316, 75, 23, false);
 	this->btnDNSAdd->HandleButtonClick(OnDNSAddClicked, this);
-	NEW_CLASS(this->btnDNSSet, UI::GUIButton(ui, this->tpStatus, CSTR("&Set")));
+	this->btnDNSSet = ui->NewButton(this->tpStatus, CSTR("&Set"));
 	this->btnDNSSet->SetRect(284, 316, 75, 23, false);
 	this->btnDNSSet->HandleButtonClick(OnDNSSetClicked, this);
 	NEW_CLASS(this->lblWPAD, UI::GUILabel(ui, this->tpStatus, CSTR("WPAD Address")));
 	this->lblWPAD->SetRect(4, 340, 100, 23, false);
 	NEW_CLASS(this->txtWPAD, UI::GUITextBox(ui, this->tpStatus, CSTR("")));
 	this->txtWPAD->SetRect(104, 340, 100, 23, false);
-	NEW_CLASS(this->btnWPAD, UI::GUIButton(ui, this->tpStatus, CSTR("Set")));
+	this->btnWPAD = ui->NewButton(this->tpStatus, CSTR("Set"));
 	this->btnWPAD->SetRect(204, 340, 75, 23, false);
 	this->btnWPAD->HandleButtonClick(OnWPADClicked, this);
 
@@ -1025,7 +1025,7 @@ SSWR::AVIRead::AVIRDNSProxyForm::AVIRDNSProxyForm(UI::GUIClientControl *parent, 
 	this->lblSearchMask->SetRect(204, 4, 100, 23, false);
 	NEW_CLASS(this->txtSearchMask, UI::GUITextBox(ui, this->pnlSearch, CSTR("19")));
 	this->txtSearchMask->SetRect(304, 4, 100, 23, false);
-	NEW_CLASS(this->btnSearch, UI::GUIButton(ui, this->pnlSearch, CSTR("Search")));
+	this->btnSearch = ui->NewButton(this->pnlSearch, CSTR("Search"));
 	this->btnSearch->SetRect(404, 4, 75, 23, false);
 	this->btnSearch->HandleButtonClick(OnSearchClicked, this);
 	NEW_CLASS(this->lbSearch, UI::GUIListBox(ui, this->tpSearch, false));
@@ -1087,7 +1087,7 @@ SSWR::AVIRead::AVIRDNSProxyForm::AVIRDNSProxyForm(UI::GUIClientControl *parent, 
 	this->lbBlackList->SetDockType(UI::GUIControl::DOCK_FILL);
 	NEW_CLASS(this->txtBlackList, UI::GUITextBox(ui, this->pnlBlackList, CSTR("")));
 	this->txtBlackList->SetRect(4, 4, 200, 23, false);
-	NEW_CLASS(this->btnBlackList, UI::GUIButton(ui, this->pnlBlackList, CSTR("Add")));
+	this->btnBlackList = ui->NewButton(this->pnlBlackList, CSTR("Add"));
 	this->btnBlackList->SetRect(204, 4, 75, 23, false);
 	this->btnBlackList->HandleButtonClick(OnBlackListClicked, this);
 

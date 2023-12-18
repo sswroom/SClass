@@ -52,7 +52,7 @@ namespace SSWR
 			UI::GUITextBox *txtLogDir;
 			UI::GUILabel *lblSSL;
 			UI::GUICheckBox *chkSSL;
-			UI::GUIButton *btnSSLCert;
+			NotNullPtr<UI::GUIButton> btnSSLCert;
 			UI::GUILabel *lblSSLCert;
 			UI::GUILabel *lblAllowProxy;
 			UI::GUICheckBox *chkAllowProxy;
@@ -64,8 +64,8 @@ namespace SSWR
 			UI::GUITextBox *txtFwdURL;
 			UI::GUILabel *lblFwdType;
 			UI::GUIComboBox *cboFwdType;
-			UI::GUIButton *btnStart;
-			UI::GUIButton *btnStop;
+			NotNullPtr<UI::GUIButton> btnStart;
+			NotNullPtr<UI::GUIButton> btnStop;
 
 			UI::GUILabel *lblConnCurr;
 			UI::GUITextBox *txtConnCurr;

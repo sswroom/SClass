@@ -421,7 +421,7 @@ SSWR::AVIRead::AVIRMQTTSubscribeForm::AVIRMQTTSubscribeForm(UI::GUIClientControl
 	this->lblPassword->SetRect(4, 76, 100, 23, false);
 	NEW_CLASS(this->txtPassword, UI::GUITextBox(ui, this->tpStatus, CSTR("")));
 	this->txtPassword->SetRect(104, 76, 100, 23, false);
-	NEW_CLASS(this->btnStart, UI::GUIButton(ui, this->tpStatus, CSTR("Start")));
+	this->btnStart = ui->NewButton(this->tpStatus, CSTR("Start"));
 	this->btnStart->SetRect(104, 100, 75, 23, false);
 	this->btnStart->HandleButtonClick(OnStartClicked, this);
 
@@ -430,7 +430,7 @@ SSWR::AVIRead::AVIRMQTTSubscribeForm::AVIRMQTTSubscribeForm(UI::GUIClientControl
 	this->lblSTopic->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtSTopic, UI::GUITextBox(ui, this->tpSTopic, CSTR("")));
 	this->txtSTopic->SetRect(104, 4, 150, 23, false);
-	NEW_CLASS(this->btnSTopic, UI::GUIButton(ui, this->tpSTopic, CSTR("Subscribe")));
+	this->btnSTopic = ui->NewButton(this->tpSTopic, CSTR("Subscribe"));
 	this->btnSTopic->SetRect(254, 4, 75, 23, false);
 	this->btnSTopic->HandleButtonClick(OnSTopicClicked, this);
 	NEW_CLASS(this->lbSTopic, UI::GUIListBox(ui, this->tpSTopic, false));
@@ -445,7 +445,7 @@ SSWR::AVIRead::AVIRMQTTSubscribeForm::AVIRMQTTSubscribeForm(UI::GUIClientControl
 	this->lblPublishMessage->SetRect(4, 28, 100, 23, false);
 	NEW_CLASS(this->txtPublishMessage, UI::GUITextBox(ui, this->tpPublish, CSTR("")));
 	this->txtPublishMessage->SetRect(104, 28, 200, 23, false);
-	NEW_CLASS(this->btnPublish, UI::GUIButton(ui, this->tpPublish, CSTR("Publish")));
+	this->btnPublish = ui->NewButton(this->tpPublish, CSTR("Publish"));
 	this->btnPublish->SetRect(104, 52, 75, 23, false);
 	this->btnPublish->HandleButtonClick(OnPublishClicked, this);
 

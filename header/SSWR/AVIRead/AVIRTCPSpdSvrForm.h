@@ -26,7 +26,7 @@ namespace SSWR
 			UI::GUITextBox *txtPort;
 			UI::GUICheckBox *chkMultiThread;
 			UI::GUICheckBox *chkEcho;
-			UI::GUIButton *btnStart;
+			NotNullPtr<UI::GUIButton> btnStart;
 
 			static void __stdcall OnStartClick(void *userObj);
 			static void __stdcall OnClientConn(Socket *s, void *userObj);

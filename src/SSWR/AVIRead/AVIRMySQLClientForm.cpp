@@ -293,7 +293,7 @@ SSWR::AVIRead::AVIRMySQLClientForm::AVIRMySQLClientForm(UI::GUIClientControl *pa
 	this->lblDatabase->SetRect(4, 100, 100, 23, false);
 	NEW_CLASS(this->txtDatabase, UI::GUITextBox(ui, this->tpControl, CSTR("")));
 	this->txtDatabase->SetRect(104, 100, 200, 23, false);
-	NEW_CLASS(this->btnStart, UI::GUIButton(ui, this->tpControl, CSTR("Start")));
+	this->btnStart = ui->NewButton(this->tpControl, CSTR("Start"));
 	this->btnStart->SetRect(104, 124, 75, 23, false);
 	this->btnStart->HandleButtonClick(OnStartClicked, this);
 	NEW_CLASS(this->lblStatus, UI::GUILabel(ui, this->tpControl, CSTR("Status")));
@@ -333,7 +333,7 @@ SSWR::AVIRead::AVIRMySQLClientForm::AVIRMySQLClientForm(UI::GUIClientControl *pa
 	NEW_CLASSNN(this->pnlQuery, UI::GUIPanel(ui, this->tpQuery));
 	this->pnlQuery->SetRect(0, 0, 100, 31, false);
 	this->pnlQuery->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->btnQuery, UI::GUIButton(ui, this->pnlQuery, CSTR("Query")));
+	this->btnQuery = ui->NewButton(this->pnlQuery, CSTR("Query"));
 	this->btnQuery->SetRect(4, 4, 75, 23, false);
 	this->btnQuery->HandleButtonClick(OnQueryClicked, this);
 	NEW_CLASS(this->txtQuery, UI::GUITextBox(ui, this->tpQuery, CSTR(""), true));

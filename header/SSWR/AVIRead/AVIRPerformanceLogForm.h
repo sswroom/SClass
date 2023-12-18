@@ -29,7 +29,7 @@ namespace SSWR
 			Data::Timestamp testTime;
 
 			NotNullPtr<UI::GUIPanel> pnlCtrl;
-			UI::GUIButton *btnStart;
+			NotNullPtr<UI::GUIButton> btnStart;
 			UI::GUILabel *lblCurrWRate;
 			UI::GUITextBox *txtCurrWRate;
 			UI::GUIRealtimeLineChart *rlcWRate;

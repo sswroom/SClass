@@ -113,14 +113,14 @@ SSWR::AVIRead::AVIRImagePSNRForm::AVIRImagePSNRForm(UI::GUIClientControl *parent
 	this->lblOriFile->SetRect(0, 0, 100, 23, false);
 	NEW_CLASS(this->txtOriFile, UI::GUITextBox(ui, *this, CSTR("")));
 	this->txtOriFile->SetRect(100, 0, 450, 23, false);
-	NEW_CLASS(this->btnOriFile, UI::GUIButton(ui, *this, CSTR("&Browse")));
+	this->btnOriFile = ui->NewButton(*this, CSTR("&Browse"));
 	this->btnOriFile->SetRect(550, 0, 75, 23, false);
 	this->btnOriFile->HandleButtonClick(OnOriFileClicked, this);
 	NEW_CLASS(this->lblLossyFile, UI::GUILabel(ui, *this, CSTR("Lossy File")));
 	this->lblLossyFile->SetRect(0, 24, 100, 23, false);
 	NEW_CLASS(this->txtLossyFile, UI::GUITextBox(ui, *this, CSTR("")));
 	this->txtLossyFile->SetRect(100, 24, 450, 23, false);
-	NEW_CLASS(this->btnLossyFile, UI::GUIButton(ui, *this, CSTR("B&rowse")));
+	this->btnLossyFile = ui->NewButton(*this, CSTR("B&rowse"));
 	this->btnLossyFile->SetRect(550, 24, 75, 23, false);
 	this->btnLossyFile->HandleButtonClick(OnLossyFileClicked, this);
 	NEW_CLASS(this->lblMode, UI::GUILabel(ui, *this, CSTR("Mode")));
@@ -129,7 +129,7 @@ SSWR::AVIRead::AVIRImagePSNRForm::AVIRImagePSNRForm(UI::GUIClientControl *parent
 	this->radMode16Bit->SetRect(100, 48, 100, 23, false);
 	NEW_CLASS(this->radMode8Bit, UI::GUIRadioButton(ui, *this, CSTR("8Bit"), false));
 	this->radMode8Bit->SetRect(200, 48, 100, 23, false);
-	NEW_CLASS(this->btnCompare, UI::GUIButton(ui, *this, CSTR("&Compare")));
+	this->btnCompare = ui->NewButton(*this, CSTR("&Compare"));
 	this->btnCompare->SetRect(100, 72, 75, 23, false);
 	this->btnCompare->HandleButtonClick(OnCompareClicked, this);
 	NEW_CLASS(this->lblPSNR, UI::GUILabel(ui, *this, CSTR("PSNR")));

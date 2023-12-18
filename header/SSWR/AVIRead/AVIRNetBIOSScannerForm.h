@@ -25,7 +25,7 @@ namespace SSWR
 			UI::GUILabel *lblTargetAddr;
 			UI::GUITextBox *txtTargetAddr;
 			UI::GUICheckBox *chkTargetScan;
-			UI::GUIButton *btnRequest;
+			NotNullPtr<UI::GUIButton> btnRequest;
 			UI::GUIListView *lvAnswers;
 			UI::GUIVSplitter *vspAnswers;
 			UI::GUIListView *lvEntries;

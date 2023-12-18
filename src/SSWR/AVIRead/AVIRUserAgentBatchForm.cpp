@@ -209,13 +209,13 @@ SSWR::AVIRead::AVIRUserAgentBatchForm::AVIRUserAgentBatchForm(UI::GUIClientContr
 	this->pnlControl->SetDockType(UI::GUIControl::DOCK_BOTTOM);
 	NEW_CLASS(this->txtSource, UI::GUITextBox(ui, this->pnlSource, CSTR(""), true));
 	this->txtSource->SetDockType(UI::GUIControl::DOCK_FILL);
-	NEW_CLASS(this->btnParse, UI::GUIButton(ui, this->pnlControl, CSTR("Parse")));
+	this->btnParse = ui->NewButton(this->pnlControl, CSTR("Parse"));
 	this->btnParse->SetRect(4, 4, 75, 23, false);
 	this->btnParse->HandleButtonClick(OnParseClicked, this);
-	NEW_CLASS(this->btnUpdate, UI::GUIButton(ui, this->pnlControl, CSTR("Update")));
+	this->btnUpdate = ui->NewButton(this->pnlControl, CSTR("Update"));
 	this->btnUpdate->SetRect(84, 4, 75, 23, false);
 	this->btnUpdate->HandleButtonClick(OnUpdateClicked, this);
-	NEW_CLASS(this->btnUpdateCB, UI::GUIButton(ui, this->pnlControl, CSTR("Update from Clipboard")));
+	this->btnUpdateCB = ui->NewButton(this->pnlControl, CSTR("Update from Clipboard"));
 	this->btnUpdateCB->SetRect(164, 4, 150, 23, false);
 	this->btnUpdateCB->HandleButtonClick(OnUpdateCBClicked, this);
 	NEW_CLASS(this->vspControl, UI::GUIVSplitter(ui, *this, 3, false));

@@ -91,7 +91,7 @@ SSWR::AVIRead::AVIRFileTextEncryptForm::AVIRFileTextEncryptForm(UI::GUIClientCon
 	this->lblEncrypt->SetRect(4, 52, 100, 23, false);
 	NEW_CLASS(this->cboEncrypt, UI::GUIComboBox(ui, *this, false));
 	this->cboEncrypt->SetRect(104, 52, 200, 23, false);
-	NEW_CLASS(this->btnConvert, UI::GUIButton(ui, *this, CSTR("&Convert")));
+	this->btnConvert = ui->NewButton(*this, CSTR("&Convert"));
 	this->btnConvert->SetRect(104, 76, 75, 23, false);
 	this->btnConvert->HandleButtonClick(OnConvertClicked, this);
 

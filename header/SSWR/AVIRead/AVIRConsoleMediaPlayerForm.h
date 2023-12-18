@@ -20,8 +20,8 @@ namespace SSWR
 		private:
 			UI::GUILabel *lblPort;
 			UI::GUITextBox *txtPort;
-			UI::GUIButton *btnStop;
-			UI::GUIButton *btnCaptureDev;
+			NotNullPtr<UI::GUIButton> btnStop;
+			NotNullPtr<UI::GUIButton> btnCaptureDev;
 			UI::GUILabel *lblRotate;
 			UI::GUIComboBox *cboRotate;
 			UI::GUICheckBox *chkSurfaceBug;

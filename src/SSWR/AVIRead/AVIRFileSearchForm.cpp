@@ -213,7 +213,7 @@ SSWR::AVIRead::AVIRFileSearchForm::AVIRFileSearchForm(UI::GUIClientControl *pare
 	this->lblText->SetRect(4, 52, 100, 23, false);
 	NEW_CLASS(this->txtText, UI::GUITextBox(ui, this->pnlControl, CSTR("")));
 	this->txtText->SetRect(104, 52, 600, 23, false);
-	NEW_CLASS(this->btnSearch, UI::GUIButton(ui, this->pnlControl, CSTR("Search")));
+	this->btnSearch = ui->NewButton(this->pnlControl, CSTR("Search"));
 	this->btnSearch->SetRect(104, 76, 75, 23, false);
 	this->btnSearch->HandleButtonClick(OnSearchClicked, this);
 	NEW_CLASS(this->lvFiles, UI::GUIListView(ui, *this, UI::GUIListView::LVSTYLE_TABLE, 2));

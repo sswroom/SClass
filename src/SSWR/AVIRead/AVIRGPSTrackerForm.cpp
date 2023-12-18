@@ -8,20 +8,6 @@
 
 #define NMEAMAXSIZE 128
 
-SSWR::AVIRead::AVIRGPSTrackerForm::DisplayOffButton::DisplayOffButton(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, Text::CStringNN txt, AVIRGPSTrackerForm *frm) : UI::GUIButton(ui, parent, txt)
-{
-	this->frm = frm;
-}
-
-SSWR::AVIRead::AVIRGPSTrackerForm::DisplayOffButton::~DisplayOffButton()
-{
-}
-
-void SSWR::AVIRead::AVIRGPSTrackerForm::DisplayOffButton::OnFocusLost()
-{
-	this->frm->DispOffFocusLost();
-}
-
 void __stdcall SSWR::AVIRead::AVIRGPSTrackerForm::OnGPSUpdate(void *userObj, NotNullPtr<Map::GPSTrack::GPSRecord3> record, Data::DataArray<Map::ILocationService::SateStatus> sates)
 {
 	SSWR::AVIRead::AVIRGPSTrackerForm *me = (SSWR::AVIRead::AVIRGPSTrackerForm*)userObj;
@@ -268,6 +254,19 @@ void __stdcall SSWR::AVIRead::AVIRGPSTrackerForm::OnNMEALine(void *userObj, cons
 	me->nmeaUpdated = true;
 }
 
+void __stdcall SSWR::AVIRead::AVIRGPSTrackerForm::SignalFocusLost(void *userObj)
+{
+	SSWR::AVIRead::AVIRGPSTrackerForm *me = (SSWR::AVIRead::AVIRGPSTrackerForm*)userObj;
+	me->DispOffFocusLost();
+}
+
+NotNullPtr<UI::GUIButton> SSWR::AVIRead::AVIRGPSTrackerForm::NewDisplayOffButton(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, Text::CStringNN txt)
+{
+	NotNullPtr<UI::GUIButton> btn = ui->NewButton(parent, txt);
+	btn->HandleFocusLost(SignalFocusLost, this);
+	return btn;
+}
+
 SSWR::AVIRead::AVIRGPSTrackerForm::AVIRGPSTrackerForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Map::ILocationService *locSvc, Bool toRelease) : UI::GUIForm(parent, 340, 540, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
@@ -391,7 +390,7 @@ SSWR::AVIRead::AVIRGPSTrackerForm::AVIRGPSTrackerForm(UI::GUIClientControl *pare
 	this->chkTopMost->HandleCheckedChange(OnTopMostChg, this);
 	NEW_CLASS(this->chkNoSleep, UI::GUICheckBox(ui, this->tpLocation, CSTR("Prevent Sleep"), true));
 	this->chkNoSleep->SetRect(108, 440, 100, 23, false);
-	NEW_CLASS(this->btnDispOff, DisplayOffButton(ui, this->tpLocation, CSTR("Display Off"), this));
+	this->btnDispOff = NewDisplayOffButton(ui, this->tpLocation, CSTR("Display Off"));
 	this->btnDispOff->SetRect(208, 440, 100, 23, false);
 	this->btnDispOff->HandleButtonClick(OnDispOffClicked, this);
 	NEW_CLASS(this->lblDistance, UI::GUILabel(ui, this->tpLocation, CSTR("H-Distance")));
@@ -442,20 +441,20 @@ SSWR::AVIRead::AVIRGPSTrackerForm::AVIRGPSTrackerForm(UI::GUIClientControl *pare
 		NEW_CLASS(this->txtMTKSDKVer, UI::GUITextBox(ui, this->grpMTKFirmware, CSTR("")));
 		this->txtMTKSDKVer->SetRect(100, 72, 100, 23, false);
 		this->txtMTKSDKVer->SetReadOnly(true);
-		NEW_CLASS(this->btnMTKFirmware, UI::GUIButton(ui, this->grpMTKFirmware, CSTR("Query")));
+		this->btnMTKFirmware = ui->NewButton(this->grpMTKFirmware, CSTR("Query"));
 		this->btnMTKFirmware->SetRect(200, 72, 75, 23, false);
 		this->btnMTKFirmware->HandleButtonClick(OnMTKFirmwareClicked, this);
-		NEW_CLASS(this->btnMTKLogDownload, UI::GUIButton(ui, this->tpMTK, CSTR("Download Log")));
+		this->btnMTKLogDownload = ui->NewButton(this->tpMTK, CSTR("Download Log"));
 		this->btnMTKLogDownload->SetRect(0, 116, 75, 23, false);
 		this->btnMTKLogDownload->HandleButtonClick(OnMTKLogDownloadClicked, this);
-		NEW_CLASS(this->btnMTKLogDelete, UI::GUIButton(ui, this->tpMTK, CSTR("Delete Log")));
+		this->btnMTKLogDelete = ui->NewButton(this->tpMTK, CSTR("Delete Log"));
 		this->btnMTKLogDelete->SetRect(80, 116, 75, 23, false);
 		this->btnMTKLogDelete->HandleButtonClick(OnMTKLogDeleteClicked, this);
-		NEW_CLASS(this->btnMTKFactoryReset, UI::GUIButton(ui, this->tpMTK, CSTR("Factory Reset")));
+		this->btnMTKFactoryReset = ui->NewButton(this->tpMTK, CSTR("Factory Reset"));
 		this->btnMTKFactoryReset->SetRect(0, 140, 75, 23, false);
 		this->btnMTKFactoryReset->HandleButtonClick(OnMTKFactoryResetClicked, this);
 
-/*		NEW_CLASS(this->btnMTKTest, UI::GUIButton(ui, this->tpMTK, CSTR("Test")));
+/*		this->btnMTKTest = ui->NewButton(this->tpMTK, CSTR("Test"));
 		this->btnMTKTest->SetRect(0, 140, 75, 23, false);
 		this->btnMTKTest->HandleButtonClick(OnMTKTestClicked, this);*/
 	}

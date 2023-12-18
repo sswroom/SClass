@@ -40,7 +40,7 @@ namespace SSWR
 			UI::GUILabel *lblPort;
 			UI::GUITextBox *txtPort;
 			UI::GUILabel *lblSSL;
-			UI::GUIButton *btnSSLCert;
+			NotNullPtr<UI::GUIButton> btnSSLCert;
 			UI::GUILabel *lblSSLCert;
 			UI::GUILabel *lblHost;
 			UI::GUITextBox *txtHost;
@@ -54,7 +54,7 @@ namespace SSWR
 			UI::GUITextBox *txtMetadataPath;
 			UI::GUILabel *lblLogoutPath;
 			UI::GUITextBox *txtLogoutPath;
-			UI::GUIButton *btnStart;
+			NotNullPtr<UI::GUIButton> btnStart;
 			UI::GUILabel *lblSSOURL;
 			UI::GUITextBox *txtSSOURL;
 			UI::GUILabel *lblMetadataURL;

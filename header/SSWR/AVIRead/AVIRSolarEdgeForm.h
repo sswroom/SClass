@@ -31,7 +31,7 @@ namespace SSWR
 			NotNullPtr<UI::GUIPanel> pnlAPIKey;
 			UI::GUILabel *lblAPIKey;
 			UI::GUITextBox *txtAPIKey;
-			UI::GUIButton *btnAPIKey;
+			NotNullPtr<UI::GUIButton> btnAPIKey;
 			UI::GUITabControl *tcMain;
 			
 			NotNullPtr<UI::GUITabPage> tpVersion;
@@ -84,7 +84,7 @@ namespace SSWR
 			NotNullPtr<UI::GUIComboBox> cboSiteEnergyYear;
 			NotNullPtr<UI::GUIComboBox> cboSiteEnergyMonth;
 			NotNullPtr<UI::GUIComboBox> cboSiteEnergyDay;
-			UI::GUIButton *btnSiteEnergy;
+			NotNullPtr<UI::GUIButton> btnSiteEnergy;
 			UI::GUIPictureBox *pbSiteEnergy;
 
 			NotNullPtr<UI::GUITabPage> tpSitePower;
@@ -95,7 +95,7 @@ namespace SSWR
 			NotNullPtr<UI::GUIComboBox> cboSitePowerYear;
 			NotNullPtr<UI::GUIComboBox> cboSitePowerMonth;
 			NotNullPtr<UI::GUIComboBox> cboSitePowerDay;
-			UI::GUIButton *btnSitePower;
+			NotNullPtr<UI::GUIButton> btnSitePower;
 			UI::GUIPictureBox *pbSitePower;
 
 			static void __stdcall OnAPIKeyClicked(void *userObj);

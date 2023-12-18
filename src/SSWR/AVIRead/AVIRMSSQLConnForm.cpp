@@ -119,7 +119,7 @@ SSWR::AVIRead::AVIRMSSQLConnForm::AVIRMSSQLConnForm(UI::GUIClientControl *parent
 	this->lblServer->SetRect(4, 28, 100, 23, false);
 	NEW_CLASS(this->txtServer, UI::GUITextBox(ui, *this, CSTR("localhost")));
 	this->txtServer->SetRect(104, 28, 200, 23, false);
-	NEW_CLASS(this->btnPasteJDBC, UI::GUIButton(ui, *this, CSTR("Paste from JDBC Str")));
+	this->btnPasteJDBC = ui->NewButton(*this, CSTR("Paste from JDBC Str"));
 	this->btnPasteJDBC->SetRect(304, 28, 150, 23, false);
 	this->btnPasteJDBC->HandleButtonClick(OnPasteJDBCClicked, this);
 	NEW_CLASS(this->lblPort, UI::GUILabel(ui, *this, CSTR("Port")));
@@ -141,10 +141,10 @@ SSWR::AVIRead::AVIRMSSQLConnForm::AVIRMSSQLConnForm(UI::GUIClientControl *parent
 	NEW_CLASS(this->txtPassword, UI::GUITextBox(ui, *this, CSTR("")));
 	this->txtPassword->SetRect(104, 124, 200, 23, false);
 	this->txtPassword->SetPasswordChar('*');
-	NEW_CLASS(this->btnOK, UI::GUIButton(ui, *this, CSTR("OK")));
+	this->btnOK = ui->NewButton(*this, CSTR("OK"));
 	this->btnOK->SetRect(104, 148, 75, 23, false);
 	this->btnOK->HandleButtonClick(OnOKClicked, this);
-	NEW_CLASS(this->btnCancel, UI::GUIButton(ui, *this, CSTR("Cancel")));
+	this->btnCancel = ui->NewButton(*this, CSTR("Cancel"));
 	this->btnCancel->SetRect(184, 148, 75, 23, false);
 	this->btnCancel->HandleButtonClick(OnCancelClicked, this);
 

@@ -12,7 +12,7 @@ namespace SSWR
 		class OrganWebForm : public UI::GUIForm
 		{
 		private:
-			UI::GUIButton *btnReload;
+			NotNullPtr<UI::GUIButton> btnReload;
 
 			NotNullPtr<Net::SocketFactory> sockf;
 			IO::LogTool log;

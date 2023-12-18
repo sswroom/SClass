@@ -317,7 +317,7 @@ SSWR::AVIRead::AVIRLDAPExplorerForm::AVIRLDAPExplorerForm(UI::GUIClientControl *
 	NEW_CLASS(this->txtPassword, UI::GUITextBox(ui, this->pnlRequest, CSTR("")));
 	this->txtPassword->SetRect(104, 100, 200, 23, false);
 	this->txtPassword->SetPasswordChar('*');
-	NEW_CLASS(this->btnConnect, UI::GUIButton(ui, this->pnlRequest, CSTR("Connect")));
+	this->btnConnect = ui->NewButton(this->pnlRequest, CSTR("Connect"));
 	this->btnConnect->SetRect(104, 124, 75, 23, false);
 	this->btnConnect->HandleButtonClick(OnConnectClicked, this);
 

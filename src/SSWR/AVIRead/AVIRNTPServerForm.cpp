@@ -80,7 +80,7 @@ SSWR::AVIRead::AVIRNTPServerForm::AVIRNTPServerForm(UI::GUIClientControl *parent
 	this->lblTimeServer->SetRect(8, 32, 100, 23, false);
 	NEW_CLASS(this->txtTimeServer, UI::GUITextBox(ui, this->tpControl, CSTR("stdtime.gov.hk")));
 	this->txtTimeServer->SetRect(108, 32, 500, 23, false);
-	NEW_CLASS(this->btnStart, UI::GUIButton(ui, this->tpControl, CSTR("Start")));
+	this->btnStart = ui->NewButton(this->tpControl, CSTR("Start"));
 	this->btnStart->SetRect(100, 56, 75, 23, false);
 	this->btnStart->HandleButtonClick(OnStartClick, this);
 

@@ -10,6 +10,7 @@ namespace UI
 	typedef void (__stdcall *UIEvent)(void *userObj);
 	typedef Bool (__stdcall *KeyEvent)(void *userObj, UInt32 osKey);
 
+	class GUIButton;
 	class GUIClientControl;
 	class GUIControl;
 	class GUIGroupBox;
@@ -46,6 +47,7 @@ namespace UI
 
 		virtual void ShowMsgOK(Text::CStringNN message, Text::CStringNN title, Optional<UI::GUIControl> ctrl) = 0;
 		virtual Bool ShowMsgYesNo(Text::CStringNN message, Text::CStringNN title, Optional<UI::GUIControl> ctrl) = 0;
+		virtual NotNullPtr<GUIButton> NewButton(NotNullPtr<GUIClientControl> parent, Text::CStringNN text) = 0;
 		virtual NotNullPtr<GUIGroupBox> NewGroupBox(NotNullPtr<GUIClientControl> parent, Text::CStringNN text) = 0;
 	};
 }

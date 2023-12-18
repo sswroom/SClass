@@ -22,7 +22,7 @@ namespace SSWR
 			
 			NotNullPtr<UI::GUITabPage> tpSource;
 			NotNullPtr<UI::GUIPanel> pnlSource;
-			UI::GUIButton *btnConvert;
+			NotNullPtr<UI::GUIButton> btnConvert;
 			UI::GUITextBox *txtSource;
 
 			NotNullPtr<UI::GUITabPage> tpCPP;

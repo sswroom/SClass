@@ -69,10 +69,10 @@ SSWR::OrganMgr::OrganImageDetailForm::OrganImageDetailForm(UI::GUIClientControl 
 	NEW_CLASS(this->txtLon, UI::GUITextBox(ui, *this, CSTRP(sbuff, sptr)));
 	this->txtLon->SetRect(100, 144, 150, 23, false);
 	this->txtLon->SetReadOnly(true);
-	NEW_CLASS(this->btnOK, UI::GUIButton(ui, *this, this->env->GetLang(CSTR("ImageDetailOk"))));
+	this->btnOK = ui->NewButton(*this, this->env->GetLang(CSTR("ImageDetailOk")));
 	this->btnOK->SetRect(120, 168, 75, 23, false);
 	this->btnOK->HandleButtonClick(OnOKClicked, this);
-	NEW_CLASS(this->btnCancel, UI::GUIButton(ui, *this, this->env->GetLang(CSTR("ImageDetailCancel"))));
+	this->btnCancel = ui->NewButton(*this, this->env->GetLang(CSTR("ImageDetailCancel")));
 	this->btnCancel->SetRect(200, 168, 75, 23, false);
 	this->btnCancel->HandleButtonClick(OnCancelClicked, this);
 

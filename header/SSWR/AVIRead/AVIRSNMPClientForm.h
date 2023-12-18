@@ -34,7 +34,7 @@ namespace SSWR
 			UI::GUITextBox *txtOID;
 			UI::GUILabel *lblCommandType;
 			UI::GUIComboBox *cboCommandType;
-			UI::GUIButton *btnRequest;
+			NotNullPtr<UI::GUIButton> btnRequest;
 			UI::GUIListView *lvResults;
 
 			static void __stdcall OnRequestClicked(void *userObj);

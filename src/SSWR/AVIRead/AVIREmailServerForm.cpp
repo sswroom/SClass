@@ -529,7 +529,7 @@ SSWR::AVIRead::AVIREmailServerForm::AVIREmailServerForm(UI::GUIClientControl *pa
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	this->tpSMTP = this->tcMain->AddTabPage(CSTR("SMTP"));
-	NEW_CLASS(this->btnSMTPCertKey, UI::GUIButton(ui, this->tpSMTP, CSTR("Cert/Key")));
+	this->btnSMTPCertKey = ui->NewButton(this->tpSMTP, CSTR("Cert/Key"));
 	this->btnSMTPCertKey->SetRect(0, 0, 75, 23, false);
 	this->btnSMTPCertKey->HandleButtonClick(OnSMTPCertKeyClicked, this);
 	NEW_CLASS(this->lblSMTPCertKey, UI::GUILabel(ui, this->tpSMTP, CSTR("No Cert/Keys")));
@@ -547,15 +547,15 @@ SSWR::AVIRead::AVIREmailServerForm::AVIREmailServerForm(UI::GUIClientControl *pa
 	this->cboSMTPType->AddItem(CSTR("SSL"), (void*)(OSInt)Net::Email::SMTPConn::ConnType::SSL);
 	this->cboSMTPType->SetSelectedIndex(0);
 	this->cboSMTPType->HandleSelectionChange(OnSMTPTypeSelChg, this);
-	NEW_CLASS(this->btnSMTPStart, UI::GUIButton(ui, this->tpSMTP, CSTR("Start")));
+	this->btnSMTPStart = ui->NewButton(this->tpSMTP, CSTR("Start"));
 	this->btnSMTPStart->SetRect(100, 72, 75, 23, false);
 	this->btnSMTPStart->HandleButtonClick(OnSMTPStartClicked, this);
-	NEW_CLASS(this->btnLogFile, UI::GUIButton(ui, this->tpSMTP, CSTR("Log To File")));
+	this->btnLogFile = ui->NewButton(this->tpSMTP, CSTR("Log To File"));
 	this->btnLogFile->SetRect(4, 96, 75, 23, false);
 	this->btnLogFile->HandleButtonClick(OnLogFileClicked, this);
 
 	this->tpPOP3 = this->tcMain->AddTabPage(CSTR("POP3"));
-	NEW_CLASS(this->btnPOP3CertKey, UI::GUIButton(ui, this->tpPOP3, CSTR("Cert/Key")));
+	this->btnPOP3CertKey = ui->NewButton(this->tpPOP3, CSTR("Cert/Key"));
 	this->btnPOP3CertKey->SetRect(0, 0, 75, 23, false);
 	this->btnPOP3CertKey->HandleButtonClick(OnPOP3CertKeyClicked, this);
 	NEW_CLASS(this->lblPOP3CertKey, UI::GUILabel(ui, this->tpPOP3, CSTR("No Cert/Keys")));
@@ -567,12 +567,12 @@ SSWR::AVIRead::AVIREmailServerForm::AVIREmailServerForm(UI::GUIClientControl *pa
 	NEW_CLASS(this->chkPOP3SSL, UI::GUICheckBox(ui, this->tpPOP3, CSTR("Enable SSL"), false));
 	this->chkPOP3SSL->SetRect(100, 48, 100, 23, false);
 	this->chkPOP3SSL->HandleCheckedChange(OnPOP3SSLChanged, this);
-	NEW_CLASS(this->btnPOP3Start, UI::GUIButton(ui, this->tpPOP3, CSTR("Start")));
+	this->btnPOP3Start = ui->NewButton(this->tpPOP3, CSTR("Start"));
 	this->btnPOP3Start->SetRect(100, 72, 75, 23, false);
 	this->btnPOP3Start->HandleButtonClick(OnPOP3StartClicked, this);
 
 	this->tpGCIS = this->tcMain->AddTabPage(CSTR("GCIS"));
-	NEW_CLASS(this->btnGCISCertKey, UI::GUIButton(ui, this->tpGCIS, CSTR("Cert/Key")));
+	this->btnGCISCertKey = ui->NewButton(this->tpGCIS, CSTR("Cert/Key"));
 	this->btnGCISCertKey->SetRect(0, 0, 75, 23, false);
 	this->btnGCISCertKey->HandleButtonClick(OnGCISCertKeyClicked, this);
 	NEW_CLASS(this->lblGCISCertKey, UI::GUILabel(ui, this->tpGCIS, CSTR("No Cert/Keys")));
@@ -589,7 +589,7 @@ SSWR::AVIRead::AVIREmailServerForm::AVIREmailServerForm(UI::GUIClientControl *pa
 	this->lblGCISBatchUplPath->SetRect(0, 72, 100, 23, false);
 	NEW_CLASS(this->txtGCISBatchUplPath, UI::GUITextBox(ui, this->tpGCIS, CSTR("/messaging/ssl/RESTful/BatchUploadRest")));
 	this->txtGCISBatchUplPath->SetRect(100, 72, 400, 23, false);
-	NEW_CLASS(this->btnGCISStart, UI::GUIButton(ui, this->tpGCIS, CSTR("Start")));
+	this->btnGCISStart = ui->NewButton(this->tpGCIS, CSTR("Start"));
 	this->btnGCISStart->SetRect(100, 96, 75, 23, false);
 	this->btnGCISStart->HandleButtonClick(OnGCISStartClicked, this);
 

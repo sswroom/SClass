@@ -398,12 +398,12 @@ SSWR::AVIRead::AVIRMQTTPublishTestForm::AVIRMQTTPublishTestForm(UI::GUIClientCon
 	this->chkSSL->SetRect(504, 4, 100, 23, false);
 	NEW_CLASS(this->chkWebSocket, UI::GUICheckBox(ui, *this, CSTR("WebSocket"), false));
 	this->chkWebSocket->SetRect(504, 28, 100, 23, false);
-	NEW_CLASS(this->btnCliCert, UI::GUIButton(ui, *this, CSTR("Client Cert")));
+	this->btnCliCert = ui->NewButton(*this, CSTR("Client Cert"));
 	this->btnCliCert->SetRect(604, 4, 75, 23, false);
 	this->btnCliCert->HandleButtonClick(OnCliCertClicked, this);
 	NEW_CLASS(this->lblCliCert, UI::GUILabel(ui, *this, CSTR("")));
 	this->lblCliCert->SetRect(684, 4, 100, 23, false);
-	NEW_CLASS(this->btnCliKey, UI::GUIButton(ui, *this, CSTR("Client Key")));
+	this->btnCliKey = ui->NewButton(*this, CSTR("Client Key"));
 	this->btnCliKey->SetRect(604, 28, 75, 23, false);
 	this->btnCliKey->HandleButtonClick(OnCliKeyClicked, this);
 	NEW_CLASS(this->lblCliKey, UI::GUILabel(ui, *this, CSTR("")));
@@ -416,7 +416,7 @@ SSWR::AVIRead::AVIRMQTTPublishTestForm::AVIRMQTTPublishTestForm(UI::GUIClientCon
 	this->lblContent->SetRect(4, 76, 100, 23, false);
 	NEW_CLASS(this->txtContent, UI::GUITextBox(ui, *this, CSTR("")));
 	this->txtContent->SetRect(104, 76, 200, 23, false);
-	NEW_CLASS(this->btnStart, UI::GUIButton(ui, *this, CSTR("Start")));
+	this->btnStart = ui->NewButton(*this, CSTR("Start"));
 	this->btnStart->SetRect(104, 100, 75, 23, false);
 	this->btnStart->HandleButtonClick(OnStartClicked, this);
 	NEW_CLASS(this->lblTotalCount, UI::GUILabel(ui, *this, CSTR("Total Count")));

@@ -150,7 +150,7 @@ SSWR::AVIRead::AVIRJWTParserForm::AVIRJWTParserForm(UI::GUIClientControl *parent
 	this->pnlMain->SetDockType(UI::GUIControl::DOCK_FILL);
 	NEW_CLASSNN(this->pnlResult, UI::GUIPanel(ui, this->pnlMain));
 	this->pnlResult->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->btnParse, UI::GUIButton(ui, this->pnlResult, CSTR("Parse")));
+	this->btnParse = ui->NewButton(this->pnlResult, CSTR("Parse"));
 	this->btnParse->SetRect(4, 4, 75, 23, false);
 	this->btnParse->HandleButtonClick(OnParseClicked, this);
 	NEW_CLASS(this->lblParseStatus, UI::GUILabel(ui, this->pnlResult, CSTR("Parse Status")));

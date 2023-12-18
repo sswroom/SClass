@@ -72,13 +72,13 @@ namespace SSWR
 			NotNullPtr<UI::GUIPanel> pnlControl;
 			UI::GUILabel *lblInfo;
 			UI::GUITextBox *txtInfo;
-			UI::GUIButton *btnInfo;
+			NotNullPtr<UI::GUIButton> btnInfo;
 			UI::GUILabel *lblIP;
 			UI::GUIComboBox *cboIP;
-			UI::GUIButton *btnStart;
+			NotNullPtr<UI::GUIButton> btnStart;
 			UI::GUILabel *lblPLog;
 			UI::GUIComboBox *cboPLog;
-			UI::GUIButton *btnPLog;
+			NotNullPtr<UI::GUIButton> btnPLog;
 			UI::GUITextBox *txtPLog;
 			UI::GUITabControl *tcMain;
 

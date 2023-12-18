@@ -30,7 +30,7 @@ namespace SSWR
 			UI::GUIComboBox *cboRequest;
 //			UI::GUIRadioButton *radRequestNormal;
 //			UI::GUIRadioButton *radRequestMX;
-			UI::GUIButton *btnRequest;
+			NotNullPtr<UI::GUIButton> btnRequest;
 			UI::GUILabel *lblRequestTime;
 			UI::GUITextBox *txtRequestTime;
 			UI::GUIListBox *lbAnswer;

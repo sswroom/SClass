@@ -68,7 +68,7 @@ SSWR::AVIRead::AVIRPushServerForm::AVIRPushServerForm(UI::GUIClientControl *pare
 	this->lblAPIKey->SetRect(4, 28, 100, 23, false);
 	NEW_CLASS(this->txtAPIKey, UI::GUITextBox(ui, *this, CSTR("")));
 	this->txtAPIKey->SetRect(104, 28, 300, 23, false);
-	NEW_CLASS(this->btnStart, UI::GUIButton(ui, *this, CSTR("Start")));
+	this->btnStart = ui->NewButton(*this, CSTR("Start"));
 	this->btnStart->SetRect(104, 52, 75, 23, false);
 	this->btnStart->HandleButtonClick(OnStartClicked, this);
 }

@@ -31,7 +31,7 @@ namespace SSWR
 			NotNullPtr<UI::GUIPanel> pnlControl;
 			UI::GUILabel *lblPort;
 			UI::GUITextBox *txtPort;
-			UI::GUIButton *btnStart;
+			NotNullPtr<UI::GUIButton> btnStart;
 			UI::GUIListBox *lbClient;
 			UI::GUIHSplitter *hspClient;
 			UI::GUITextBox *txtLog;

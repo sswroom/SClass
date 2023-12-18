@@ -142,14 +142,14 @@ SSWR::AVIRead::AVIRProtoDecForm::AVIRProtoDecForm(UI::GUIClientControl *parent, 
 	NEW_CLASS(this->txtFile, UI::GUITextBox(ui, this->pnlCtrl, CSTR("")));
 	this->txtFile->SetRect(104, 4, 400, 23, false);
 	this->txtFile->SetReadOnly(true);
-	NEW_CLASS(this->btnFile, UI::GUIButton(ui, this->pnlCtrl, CSTR("B&rowse")));
+	this->btnFile = ui->NewButton(this->pnlCtrl, CSTR("B&rowse"));
 	this->btnFile->SetRect(504, 4, 75, 23, false);
 	this->btnFile->HandleButtonClick(OnFileClicked, this);
 	NEW_CLASS(this->lblDecoder, UI::GUILabel(ui, this->pnlCtrl, CSTR("Decoder")));
 	this->lblDecoder->SetRect(4, 28, 100, 23, false);
 	NEW_CLASS(this->cboDecoder, UI::GUIComboBox(ui, this->pnlCtrl, false));
 	this->cboDecoder->SetRect(104, 28, 200, 23, false);
-	NEW_CLASS(this->btnLoad, UI::GUIButton(ui, this->pnlCtrl, CSTR("&Load")));
+	this->btnLoad = ui->NewButton(this->pnlCtrl, CSTR("&Load"));
 	this->btnLoad->SetRect(104, 52, 75, 23, false);
 	this->btnLoad->HandleButtonClick(OnLoadClicked, this);
 	NEW_CLASS(this->txtLogs, UI::GUITextBox(ui, *this, CSTR(""), true));

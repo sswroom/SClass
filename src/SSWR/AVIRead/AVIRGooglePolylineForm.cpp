@@ -35,10 +35,10 @@ SSWR::AVIRead::AVIRGooglePolylineForm::AVIRGooglePolylineForm(UI::GUIClientContr
 	this->lblPolylineText->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtPolylineText, UI::GUITextBox(ui, *this, CSTR("")));
 	this->txtPolylineText->SetRect(104, 4, 800, 23, false);
-	NEW_CLASS(this->btnCancel, UI::GUIButton(ui, *this, CSTR("Cancel")));
+	this->btnCancel = ui->NewButton(*this, CSTR("Cancel"));
 	this->btnCancel->SetRect(104, 28, 75, 23, false);
 	this->btnCancel->HandleButtonClick(OnCancelClicked, this);
-	NEW_CLASS(this->btnOK, UI::GUIButton(ui, *this, CSTR("OK")));
+	this->btnOK = ui->NewButton(*this, CSTR("OK"));
 	this->btnOK->SetRect(184, 28, 75, 23, false);
 	this->btnOK->HandleButtonClick(OnOKClicked, this);
 }

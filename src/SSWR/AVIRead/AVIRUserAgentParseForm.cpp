@@ -44,7 +44,7 @@ SSWR::AVIRead::AVIRUserAgentParseForm::AVIRUserAgentParseForm(UI::GUIClientContr
 	this->lblUserAgent->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtUserAgent, UI::GUITextBox(ui, *this, CSTR("")));
 	this->txtUserAgent->SetRect(104, 4, 600, 23, false);
-	NEW_CLASS(this->btnParse, UI::GUIButton(ui, *this, CSTR("Parse")));
+	this->btnParse = ui->NewButton(*this, CSTR("Parse"));
 	this->btnParse->SetRect(104, 28, 75, 23, false);
 	this->btnParse->HandleButtonClick(OnParseClicked, this);
 	NEW_CLASS(this->lblBrowser, UI::GUILabel(ui, *this, CSTR("Browser")));

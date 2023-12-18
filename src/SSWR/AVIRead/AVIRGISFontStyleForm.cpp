@@ -92,11 +92,11 @@ SSWR::AVIRead::AVIRGISFontStyleForm::AVIRGISFontStyleForm(UI::GUIClientControl *
 	NEW_CLASSNN(this->pnlBtn, UI::GUIPanel(ui, *this));
 	this->pnlBtn->SetRect(0, 0, 100, 48, false);
 	this->pnlBtn->SetDockType(UI::GUIControl::DOCK_BOTTOM);
-	NEW_CLASS(this->btnOK, UI::GUIButton(ui, this->pnlBtn, CSTR("OK")));
+	this->btnOK = ui->NewButton(this->pnlBtn, CSTR("OK"));
 	this->btnOK->SetRect(130, 12, 100, 23, false);
 	this->btnOK->HandleButtonClick(OKClicked, this);
 	this->SetDefaultButton(this->btnOK);
-	NEW_CLASS(this->btnCancel, UI::GUIButton(ui, this->pnlBtn, CSTR("Cancel")));
+	this->btnCancel = ui->NewButton(this->pnlBtn, CSTR("Cancel"));
 	this->btnCancel->SetRect(250, 12, 100, 23, false);
 	this->btnCancel->HandleButtonClick(CancelClicked, this);
 	this->SetCancelButton(this->btnCancel);
@@ -106,13 +106,13 @@ SSWR::AVIRead::AVIRGISFontStyleForm::AVIRGISFontStyleForm(UI::GUIClientControl *
 	NEW_CLASSNN(this->pnlStyle, UI::GUIPanel(ui, this->grpStyle));
 	this->pnlStyle->SetRect(0, 0, 100, 32, false);
 	this->pnlStyle->SetDockType(UI::GUIControl::DOCK_BOTTOM);
-	NEW_CLASS(this->btnAddStyle, UI::GUIButton(ui, this->pnlStyle, CSTR("New Style")));
+	this->btnAddStyle = ui->NewButton(this->pnlStyle, CSTR("New Style"));
 	this->btnAddStyle->SetRect(8, 8, 75, 23, false);
 	this->btnAddStyle->HandleButtonClick(AddStyleClicked, this);
-	NEW_CLASS(this->btnRemoveStyle, UI::GUIButton(ui, this->pnlStyle, CSTR("Remove Style")));
+	this->btnRemoveStyle = ui->NewButton(this->pnlStyle, CSTR("Remove Style"));
 	this->btnRemoveStyle->SetRect(88, 8, 88, 23, false);
 	this->btnRemoveStyle->HandleButtonClick(RemoveStyleClicked, this);
-	NEW_CLASS(this->btnEditStyle, UI::GUIButton(ui, this->pnlStyle, CSTR("Edit Style")));
+	this->btnEditStyle = ui->NewButton(this->pnlStyle, CSTR("Edit Style"));
 	this->btnEditStyle->SetRect(181, 8, 88, 23, false);
 	this->btnEditStyle->HandleButtonClick(EditStyleClicked, this);
 

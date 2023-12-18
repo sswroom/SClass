@@ -22,11 +22,11 @@ namespace SSWR
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 
 			NotNullPtr<UI::GUIPanel> pnlControl;
-			UI::GUIButton *btnFile;
+			NotNullPtr<UI::GUIButton> btnFile;
 			UI::GUICheckBox *chkUnkOnly;
 			UI::GUITextBox *txtFilter;
-			UI::GUIButton *btnFilter;
-			UI::GUIButton *btnStore;
+			NotNullPtr<UI::GUIButton> btnFilter;
+			NotNullPtr<UI::GUIButton> btnStore;
 			UI::GUILabel *lblInfo;
 			UI::GUILabel *lblDblClk;
 			UI::GUIComboBox *cboDblClk;

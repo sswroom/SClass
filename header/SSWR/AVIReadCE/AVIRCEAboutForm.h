@@ -10,7 +10,7 @@ namespace SSWR
 		class AVIRCEAboutForm : public UI::GUIForm
 		{
 		private:
-			UI::GUIButton *btn;
+			NotNullPtr<UI::GUIButton> btn;
 
 			static void __stdcall OKClicked(void *userObj);
 		public:

@@ -22,12 +22,12 @@ namespace SSWR
 		private:
 			UI::GUILabel *lblStreamType;
 			UI::GUITextBox *txtStreamType;
-			UI::GUIButton *btnStream;
+			NotNullPtr<UI::GUIButton> btnStream;
 			UI::GUICheckBox *chkAddPoints;
 			UI::GUILabel *lblSpeed;
 			UI::GUITextBox *txtSpeed;
 			UI::GUITextBox *txtSpeedInput;
-			UI::GUIButton *btnSpeed;
+			NotNullPtr<UI::GUIButton> btnSpeed;
 			UI::GUILabel *lblCurrLat;
 			UI::GUITextBox *txtCurrLat;
 			UI::GUILabel *lblCurrLon;

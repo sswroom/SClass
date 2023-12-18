@@ -131,15 +131,15 @@ namespace SSWR
 			UI::GUICheckBox *chkDisableV6;
 			UI::GUILabel *lblDNSServer;
 			UI::GUITextBox *txtDNSServer;
-			UI::GUIButton *btnDNSSwitch;
+			NotNullPtr<UI::GUIButton> btnDNSSwitch;
 			UI::GUILabel *lblDNSList;
 			UI::GUIListBox *lbDNSList;
 			UI::GUITextBox *txtDNSServer2;
-			UI::GUIButton *btnDNSAdd;
-			UI::GUIButton *btnDNSSet;
+			NotNullPtr<UI::GUIButton> btnDNSAdd;
+			NotNullPtr<UI::GUIButton> btnDNSSet;
 			UI::GUILabel *lblWPAD;
 			UI::GUITextBox *txtWPAD;
-			UI::GUIButton *btnWPAD;
+			NotNullPtr<UI::GUIButton> btnWPAD;
 
 			NotNullPtr<UI::GUITabPage> tpSearch;
 			NotNullPtr<UI::GUIPanel> pnlSearch;
@@ -147,7 +147,7 @@ namespace SSWR
 			UI::GUITextBox *txtSearchIPRange;
 			UI::GUILabel *lblSearchMask;
 			UI::GUITextBox *txtSearchMask;
-			UI::GUIButton *btnSearch;
+			NotNullPtr<UI::GUIButton> btnSearch;
 			UI::GUIListBox *lbSearch;
 			UI::GUIHSplitter *hspSearch;
 			NotNullPtr<UI::GUIPanel> pnlSRequest;
@@ -173,7 +173,7 @@ namespace SSWR
 			NotNullPtr<UI::GUIPanel> pnlBlackList;
 			UI::GUIListBox *lbBlackList;
 			UI::GUITextBox *txtBlackList;
-			UI::GUIButton *btnBlackList;
+			NotNullPtr<UI::GUIButton> btnBlackList;
 
 			NotNullPtr<UI::GUITabPage> tpClient;
 			UI::GUIListBox *lbClientIP;

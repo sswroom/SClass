@@ -14,7 +14,7 @@ namespace SSWR
 		{
 		private:
 			NotNullPtr<UI::GUIPanel> pnlCtrl;
-			UI::GUIButton *btnParse;
+			NotNullPtr<UI::GUIButton> btnParse;
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			NotNullPtr<IO::ISectorData> data;

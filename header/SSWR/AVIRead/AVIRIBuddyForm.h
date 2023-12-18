@@ -31,11 +31,11 @@ namespace SSWR
 			UI::GUILabel *lblHeart;
 			UI::GUICheckBox *chkHeart;
 			UI::GUILabel *lblTurn;
-			UI::GUIButton *btnTurnLeft;
-			UI::GUIButton *btnTurnRight;
+			NotNullPtr<UI::GUIButton> btnTurnLeft;
+			NotNullPtr<UI::GUIButton> btnTurnRight;
 			UI::GUILabel *lblWing;
-			UI::GUIButton *btnWingUp;
-			UI::GUIButton *btnWingDown;
+			NotNullPtr<UI::GUIButton> btnWingUp;
+			NotNullPtr<UI::GUIButton> btnWingDown;
 
 			static void __stdcall OnHeadChanged(void *userObj);
 			static void __stdcall OnHeartChanged(void *userObj, Bool newState);

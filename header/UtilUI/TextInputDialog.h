@@ -13,8 +13,8 @@ namespace UtilUI
 	private:
 		UI::GUILabel *lblMessage;
 		UI::GUITextBox *txtInput;
-		UI::GUIButton *btnOk;
-		UI::GUIButton *btnCancel;
+		NotNullPtr<UI::GUIButton> btnOk;
+		NotNullPtr<UI::GUIButton> btnCancel;
 		Media::MonitorMgr *monMgr;
 		Text::String *retInput;
 

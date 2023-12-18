@@ -54,7 +54,7 @@ SSWR::AVIRead::AVIRFCMForm::AVIRFCMForm(UI::GUIClientControl *parent, NotNullPtr
 	this->lblMessage->SetRect(4, 52, 100, 23, false);
 	NEW_CLASS(this->txtMessage, UI::GUITextBox(ui, *this, CSTR("")));
 	this->txtMessage->SetRect(104, 52, 600, 23, false);
-	NEW_CLASS(this->btnSend, UI::GUIButton(ui, *this, CSTR("Send")));
+	this->btnSend = ui->NewButton(*this, CSTR("Send"));
 	this->btnSend->SetRect(104, 76, 75, 23, false);
 	this->btnSend->HandleButtonClick(OnSendClicked, this);
 	NEW_CLASS(this->lblStatus, UI::GUILabel(ui, *this, CSTR("Dest File")));

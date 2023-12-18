@@ -24,7 +24,7 @@ namespace SSWR
 			UI::GUIListView *lvFiles;
 			NotNullPtr<UI::GUIPanel> pnlControl;
 			UI::GUIPictureBoxSimple *pbPreview;
-			UI::GUIButton *btnDownload;
+			NotNullPtr<UI::GUIButton> btnDownload;
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			IO::CameraControl *camera;

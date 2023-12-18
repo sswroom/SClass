@@ -30,8 +30,8 @@ namespace SSWR
 			UI::GUITextBox *txtCategories;
 			UI::GUILabel *lblCmdLine;
 			UI::GUITextBox *txtCmdLine;
-			UI::GUIButton *btnCreate;
-			UI::GUIButton *btnCancel;
+			NotNullPtr<UI::GUIButton> btnCreate;
+			NotNullPtr<UI::GUIButton> btnCancel;
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 

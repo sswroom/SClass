@@ -193,7 +193,7 @@ SSWR::AVIRead::AVIRTCPTestForm::AVIRTCPTestForm(UI::GUIClientControl *parent, No
 	this->lblTotalConnCnt->SetRect(4, 76, 100, 23, false);
 	NEW_CLASS(this->txtTotalConnCnt, UI::GUITextBox(ui, this->pnlRequest, CSTR("100000")));
 	this->txtTotalConnCnt->SetRect(104, 76, 100, 23, false);
-	NEW_CLASS(this->btnStart, UI::GUIButton(ui, this->pnlRequest, CSTR("Request")));
+	this->btnStart = ui->NewButton(this->pnlRequest, CSTR("Request"));
 	this->btnStart->SetRect(104, 100, 75, 23, false);
 	this->btnStart->HandleButtonClick(OnStartClicked, this);
 	this->grpStatus = ui->NewGroupBox(*this, CSTR("Status"));

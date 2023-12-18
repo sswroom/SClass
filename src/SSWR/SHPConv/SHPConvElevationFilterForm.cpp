@@ -43,10 +43,10 @@ SSWR::SHPConv::SHPConvElevationFilterForm::SHPConvElevationFilterForm(UI::GUICli
 	this->lblHeight->SetRect(8, 32, 56, 23, false);
 	NEW_CLASS(this->txtHeight, UI::GUITextBox(ui, *this, CSTR("20")));
 	this->txtHeight->SetRect(72, 32, 80, 20, false);
-	NEW_CLASS(this->btnOK, UI::GUIButton(ui, *this, CSTR("OK")));
+	this->btnOK = ui->NewButton(*this, CSTR("OK"));
 	this->btnOK->SetRect(72, 56, 75, 23, false);
 	this->btnOK->HandleButtonClick(OnOKClicked, this);
-	NEW_CLASS(this->btnCancel, UI::GUIButton(ui, *this, CSTR("Cancel")));
+	this->btnCancel = ui->NewButton(*this, CSTR("Cancel"));
 	this->btnCancel->SetRect(152, 56, 75, 23, false);
 	this->btnCancel->HandleButtonClick(OnCancelClicked, this);
 	this->SetDefaultButton(this->btnOK);

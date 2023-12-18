@@ -27,7 +27,7 @@ namespace SSWR
 
 			NotNullPtr<UI::GUITabPage> tpInfo;
 			NotNullPtr<UI::GUIPanel> pnlInfo;
-			UI::GUIButton *btnInfoICC;
+			NotNullPtr<UI::GUIButton> btnInfoICC;
 			UI::GUITextBox *txtInfo;
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;

@@ -19,7 +19,7 @@ namespace SSWR
 			UI::GUITextBox *txtWMSURL;
 			UI::GUILabel *lblWMSVersion;
 			UI::GUIComboBox *cboWMSVersion;
-			UI::GUIButton *btnLoad;
+			NotNullPtr<UI::GUIButton> btnLoad;
 			UI::GUILabel *lblStatus;
 			UI::GUITextBox *txtStatus;
 			UI::GUILabel *lblLayer;
@@ -30,7 +30,7 @@ namespace SSWR
 			UI::GUIComboBox *cboMapImageType;
 			UI::GUILabel *lblInfoType;
 			UI::GUIComboBox *cboInfoType;
-			UI::GUIButton *btnOK;
+			NotNullPtr<UI::GUIButton> btnOK;
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			Optional<Net::SSLEngine> ssl;

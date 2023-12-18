@@ -26,7 +26,7 @@ namespace SSWR
 			UI::GUIComboBox *cboEncrypt;
 			UI::GUILabel *lblHashType;
 			UI::GUIComboBox *cboHashType;
-			UI::GUIButton *btnGenerate;
+			NotNullPtr<UI::GUIButton> btnGenerate;
 			UI::GUILabel *lblHashValue;
 			UI::GUITextBox *txtHashValue;
 

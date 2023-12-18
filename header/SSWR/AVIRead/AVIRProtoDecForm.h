@@ -29,10 +29,10 @@ namespace SSWR
 			NotNullPtr<UI::GUIPanel> pnlCtrl;
 			UI::GUILabel *lblFile;
 			UI::GUITextBox *txtFile;
-			UI::GUIButton *btnFile;
+			NotNullPtr<UI::GUIButton> btnFile;
 			UI::GUILabel *lblDecoder;
 			UI::GUIComboBox *cboDecoder;
-			UI::GUIButton *btnLoad;
+			NotNullPtr<UI::GUIButton> btnLoad;
 			UI::GUIListView *lvLogs;
 			UI::GUIVSplitter *vspLogs;
 			UI::GUITextBox *txtLogs;

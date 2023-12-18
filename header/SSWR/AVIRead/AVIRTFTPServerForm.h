@@ -32,7 +32,7 @@ namespace SSWR
 			UI::GUITextBox *txtPort;
 			UI::GUILabel *lblFilePath;
 			UI::GUITextBox *txtFilePath;
-			UI::GUIButton *btnStart;
+			NotNullPtr<UI::GUIButton> btnStart;
 
 			NotNullPtr<UI::GUITabPage> tpLog;
 			NotNullPtr<UI::GUIListBox> lbLog;

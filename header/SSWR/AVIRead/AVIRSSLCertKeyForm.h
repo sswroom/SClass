@@ -34,11 +34,11 @@ namespace SSWR
 			UI::GUITabControl *tcMain;
 
 			NotNullPtr<UI::GUITabPage> tpFile;
-			UI::GUIButton *btnFileCert;
+			NotNullPtr<UI::GUIButton> btnFileCert;
 			UI::GUILabel *lblFileCert;
-			UI::GUIButton *btnFileKey;
+			NotNullPtr<UI::GUIButton> btnFileKey;
 			UI::GUILabel *lblFileKey;
-			UI::GUIButton *btnFileConfirm;
+			NotNullPtr<UI::GUIButton> btnFileConfirm;
 
 			NotNullPtr<UI::GUITabPage> tpGenerate;
 			UI::GUILabel *lblGenCountry;
@@ -47,7 +47,7 @@ namespace SSWR
 			UI::GUITextBox *txtGenCompany;
 			UI::GUILabel *lblGenCommonName;
 			UI::GUITextBox *txtGenCommonName;
-			UI::GUIButton *btnGenerate;
+			NotNullPtr<UI::GUIButton> btnGenerate;
 
 			static void __stdcall OnFormClosed(void *userObj, UI::GUIForm *frm);
 			static void __stdcall OnFileCertClicked(void *userObj);

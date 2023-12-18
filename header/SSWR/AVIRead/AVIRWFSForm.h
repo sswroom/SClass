@@ -19,12 +19,12 @@ namespace SSWR
 			UI::GUITextBox *txtWFSURL;
 			UI::GUILabel *lblWFSVersion;
 			UI::GUIComboBox *cboWFSVersion;
-			UI::GUIButton *btnLoad;
+			NotNullPtr<UI::GUIButton> btnLoad;
 			UI::GUILabel *lblStatus;
 			UI::GUITextBox *txtStatus;
 			UI::GUILabel *lblFeature;
 			UI::GUIComboBox *cboFeature;
-			UI::GUIButton *btnOK;
+			NotNullPtr<UI::GUIButton> btnOK;
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			Map::WebFeatureService *wfs;

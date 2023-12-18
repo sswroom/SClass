@@ -51,7 +51,7 @@ namespace SSWR
 			NotNullPtr<UI::GUIGroupBox> grpServer;
 			UI::GUILabel *lblServerPort;
 			UI::GUITextBox *txtServerPort;
-			UI::GUIButton *btnStart;
+			NotNullPtr<UI::GUIButton> btnStart;
 			UI::GUICheckBox *chkAutoReply;
 			NotNullPtr<UI::GUIGroupBox> grpDest;
 			UI::GUILabel *lblDestHost;
@@ -60,7 +60,7 @@ namespace SSWR
 			UI::GUITextBox *txtDestPort;
 			UI::GUILabel *lblDestCount;
 			UI::GUITextBox *txtDestCount;
-			UI::GUIButton *btnSend;
+			NotNullPtr<UI::GUIButton> btnSend;
 			NotNullPtr<UI::GUIGroupBox> grpStatus;
 			UI::GUILabel *lblRecvCnt;
 			UI::GUITextBox *txtRecvCnt;

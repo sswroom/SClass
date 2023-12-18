@@ -18,10 +18,10 @@ namespace SSWR
 		private:
 			UI::GUILabel *lblSN;
 			UI::GUITextBox *txtSN;
-			UI::GUIButton *btnSN;
+			NotNullPtr<UI::GUIButton> btnSN;
 			UI::GUILabel *lblTemp;
 			UI::GUITextBox *txtTemp;
-			UI::GUIButton *btnRead;
+			NotNullPtr<UI::GUIButton> btnRead;
 			UI::GUICheckBox *chkAutoRead;
 			UI::GUILabel *lblStatus;
 			UI::GUITextBox *txtStatus;

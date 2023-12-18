@@ -79,18 +79,18 @@ SSWR::AVIRead::AVIRIOPinTestForm::AVIRIOPinTestForm(UI::GUIClientControl *parent
 
 	NEW_CLASS(this->lblPullType, UI::GUILabel(ui, *this, CSTR("Pull Type")));
 	this->lblPullType->SetRect(4, 4, 100, 23, false);
-	NEW_CLASS(this->btnPullUp, UI::GUIButton(ui, *this, CSTR("Pull Up")));
+	this->btnPullUp = ui->NewButton(*this, CSTR("Pull Up"));
 	this->btnPullUp->SetRect(104, 4, 75, 23, false);
 	this->btnPullUp->HandleButtonClick(OnPullUpClicked, this);
-	NEW_CLASS(this->btnPullDown, UI::GUIButton(ui, *this, CSTR("Pull Down")));
+	this->btnPullDown = ui->NewButton(*this, CSTR("Pull Down"));
 	this->btnPullDown->SetRect(184, 4, 75, 23, false);
 	this->btnPullDown->HandleButtonClick(OnPullDownClicked, this);
 	NEW_CLASS(this->lblPinMode, UI::GUILabel(ui, *this, CSTR("Pin Mode")));
 	this->lblPinMode->SetRect(4, 28, 100, 23, false);
-	NEW_CLASS(this->btnPinModeInput, UI::GUIButton(ui, *this, CSTR("Input")));
+	this->btnPinModeInput = ui->NewButton(*this, CSTR("Input"));
 	this->btnPinModeInput->SetRect(104, 28, 75, 23, false);
 	this->btnPinModeInput->HandleButtonClick(OnPinModeInputClicked, this);
-	NEW_CLASS(this->btnPinModeOutput, UI::GUIButton(ui, *this, CSTR("Output")));
+	this->btnPinModeOutput = ui->NewButton(*this, CSTR("Output"));
 	this->btnPinModeOutput->SetRect(184, 28, 75, 23, false);
 	this->btnPinModeOutput->HandleButtonClick(OnPinModeOutputClicked, this);
 	NEW_CLASS(this->lblPinState, UI::GUILabel(ui, *this, CSTR("Pin State")));
@@ -98,10 +98,10 @@ SSWR::AVIRead::AVIRIOPinTestForm::AVIRIOPinTestForm(UI::GUIClientControl *parent
 	NEW_CLASS(this->txtPinState, UI::GUITextBox(ui, *this, CSTR("")));
 	this->txtPinState->SetRect(104, 52, 100, 23, false);
 	this->txtPinState->SetReadOnly(true);
-	NEW_CLASS(this->btnPinHigh, UI::GUIButton(ui, *this, CSTR("High")));
+	this->btnPinHigh = ui->NewButton(*this, CSTR("High"));
 	this->btnPinHigh->SetRect(204, 52, 75, 23, false);
 	this->btnPinHigh->HandleButtonClick(OnPinHighClicked, this);
-	NEW_CLASS(this->btnPinLow, UI::GUIButton(ui, *this, CSTR("Low")));
+	this->btnPinLow = ui->NewButton(*this, CSTR("Low"));
 	this->btnPinLow->SetRect(284, 52, 75, 23, false);
 	this->btnPinLow->HandleButtonClick(OnPinLowClicked, this);
 

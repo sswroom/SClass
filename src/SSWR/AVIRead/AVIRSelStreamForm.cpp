@@ -448,10 +448,10 @@ SSWR::AVIRead::AVIRSelStreamForm::AVIRSelStreamForm(UI::GUIClientControl *parent
 	NEW_CLASSNN(this->pnlButtons, UI::GUIPanel(ui, *this));
 	this->pnlButtons->SetRect(0, 0, 100, 31, false);
 	this->pnlButtons->SetDockType(UI::GUIControl::DOCK_BOTTOM);
-	NEW_CLASS(this->btnOK, UI::GUIButton(ui, this->pnlButtons, CSTR("&OK")));
+	this->btnOK = ui->NewButton(this->pnlButtons, CSTR("&OK"));
 	this->btnOK->SetRect(49, 4, 75, 23, false);
 	this->btnOK->HandleButtonClick(OnOKClick, this);
-	NEW_CLASS(this->btnCancel, UI::GUIButton(ui, this->pnlButtons, CSTR("&Cancel")));
+	this->btnCancel = ui->NewButton(this->pnlButtons, CSTR("&Cancel"));
 	this->btnCancel->SetRect(132, 4, 75, 23, false);
 	this->btnCancel->HandleButtonClick(OnCancelClick, this);
 
@@ -654,7 +654,7 @@ SSWR::AVIRead::AVIRSelStreamForm::AVIRSelStreamForm(UI::GUIClientControl *parent
 		NEW_CLASS(this->txtFileName, UI::GUITextBox(ui, this->tpFile, CSTR("")));
 		this->txtFileName->SetRect(104, 4, 400, 23, false);
 		this->txtFileName->SetReadOnly(true);
-		NEW_CLASS(this->btnFileBrowse, UI::GUIButton(ui, this->tpFile, CSTR("Browse")));
+		this->btnFileBrowse = ui->NewButton(this->tpFile, CSTR("Browse"));
 		this->btnFileBrowse->SetRect(504, 4, 75, 23, false);
 		this->btnFileBrowse->HandleButtonClick(OnFileBrowseClick, this);
 	}

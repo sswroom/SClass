@@ -27,11 +27,11 @@ namespace SSWR
 			UI::GUITextBox *txtMagnifyRatio;
 			UI::GUILabel *lblDesktopDPI;
 			UI::GUITextBox *txtDesktopDPI;
-			UI::GUIButton *btnStandard;
-			UI::GUIButton *btn1x;
-			UI::GUIButton *btnLaptop;
-			UI::GUIButton *btnOK;
-			UI::GUIButton *btnCancel;
+			NotNullPtr<UI::GUIButton> btnStandard;
+			NotNullPtr<UI::GUIButton> btn1x;
+			NotNullPtr<UI::GUIButton> btnLaptop;
+			NotNullPtr<UI::GUIButton> btnOK;
+			NotNullPtr<UI::GUIButton> btnCancel;
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			Media::StaticImage *pimg;

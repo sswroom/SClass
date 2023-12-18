@@ -23,11 +23,11 @@ namespace SSWR
 			UI::GUILabel *lblLocation;
 			UI::GUIDateTimePicker *dtpFrom;
 			UI::GUIDateTimePicker *dtpTo;
-			UI::GUIButton *btnDate1Hr;
+			NotNullPtr<UI::GUIButton> btnDate1Hr;
 			UI::GUITextBox *txtLocation;
-			UI::GUIButton *btnLocation;
-			UI::GUIButton *btnLocationLast;
-			UI::GUIButton *btnAdd;
+			NotNullPtr<UI::GUIButton> btnLocation;
+			NotNullPtr<UI::GUIButton> btnLocationLast;
+			NotNullPtr<UI::GUIButton> btnAdd;
 			UI::GUIListBox *lbTrips;
 			OrganEnv *env;
 			Int32 locId;

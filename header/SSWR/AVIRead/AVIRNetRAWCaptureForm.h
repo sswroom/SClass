@@ -29,9 +29,9 @@ namespace SSWR
 			UI::GUIComboBox *cboFormat;
 			UI::GUILabel *lblFileName;
 			UI::GUITextBox *txtFileName;
-			UI::GUIButton *btnAutoGen;
-			UI::GUIButton *btnBrowse;
-			UI::GUIButton *btnStart;
+			NotNullPtr<UI::GUIButton> btnAutoGen;
+			NotNullPtr<UI::GUIButton> btnBrowse;
+			NotNullPtr<UI::GUIButton> btnStart;
 			UI::GUILabel *lblPacketCnt;
 			UI::GUITextBox *txtPacketCnt;
 			UI::GUILabel *lblDataSize;

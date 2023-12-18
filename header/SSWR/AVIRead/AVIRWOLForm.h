@@ -18,7 +18,7 @@ namespace SSWR
 			UI::GUIComboBox *cboAdapter;
 			UI::GUILabel *lblDeviceMac;
 			UI::GUITextBox *txtDeviceMac;
-			UI::GUIButton *btnSend;
+			NotNullPtr<UI::GUIButton> btnSend;
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 

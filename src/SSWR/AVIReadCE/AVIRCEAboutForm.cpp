@@ -28,7 +28,7 @@ SSWR::AVIReadCE::AVIRCEAboutForm::AVIRCEAboutForm(UI::GUIClientControl *parent, 
 	t.ToString(Text::StrConcatC(sbuff, UTF8STRC("Build date: ")), "yyyy-MM-dd HH:mm:ss");
 	NEW_CLASS(lbl, UI::GUILabel(ui, this, sbuff));
 	lbl->SetRect(8, 32, 220, 23, false);
-	NEW_CLASS(btn, UI::GUIButton(ui, this, CSTR("OK")));
+	NEW_CLASS(btn = ui->NewButton(this, CSTR("OK")));
 	btn->SetRect(160, 60, 75, 23, false);
 	btn->HandleButtonClick(OKClicked, this);
 }

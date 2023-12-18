@@ -14,8 +14,8 @@ namespace SSWR
 		private:
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			NotNullPtr<UI::GUIPanel> pnlCtrl;
-			UI::GUIButton *btnSave;
-			UI::GUIButton *btnHex;
+			NotNullPtr<UI::GUIButton> btnSave;
+			NotNullPtr<UI::GUIButton> btnHex;
 			UI::GUITextBox *txtEDID;
 			UInt8 *edid;
 			UOSInt edidSize;

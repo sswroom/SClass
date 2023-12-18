@@ -95,7 +95,7 @@ SSWR::AVIRead::AVIRTraceRouteForm::AVIRTraceRouteForm(UI::GUIClientControl *pare
 	this->lblTargetIP->SetRect(4, 28, 100, 23, false);
 	NEW_CLASS(this->txtTargetIP, UI::GUITextBox(ui, this->pnlControl, CSTR("")));
 	this->txtTargetIP->SetRect(104, 28, 150, 23, false);
-	NEW_CLASS(this->btnStart, UI::GUIButton(ui, this->pnlControl, CSTR("Start")));
+	this->btnStart = ui->NewButton(this->pnlControl, CSTR("Start"));
 	this->btnStart->SetRect(254, 28, 75, 23, false);
 	this->btnStart->HandleButtonClick(OnStartClicked, this);
 	

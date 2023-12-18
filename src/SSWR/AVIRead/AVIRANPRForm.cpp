@@ -157,10 +157,10 @@ SSWR::AVIRead::AVIRANPRForm::AVIRANPRForm(UI::GUIClientControl *parent, NotNullP
 	NEW_CLASSNN(this->pnlCtrl, UI::GUIPanel(ui, *this));
 	this->pnlCtrl->SetRect(0, 0, 100, 31, false);
 	this->pnlCtrl->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->btnSelPlate, UI::GUIButton(ui, this->pnlCtrl, CSTR("Sel Plate")));
+	this->btnSelPlate = ui->NewButton(this->pnlCtrl, CSTR("Sel Plate"));
 	this->btnSelPlate->SetRect(4, 4, 75, 23, false);
 	this->btnSelPlate->HandleButtonClick(OnSelPlateClicked, this);
-	NEW_CLASS(this->btnSelCorners, UI::GUIButton(ui, this->pnlCtrl, CSTR("Sel Corners")));
+	this->btnSelCorners = ui->NewButton(this->pnlCtrl, CSTR("Sel Corners"));
 	this->btnSelCorners->SetRect(84, 4, 75, 23, false);
 	this->btnSelCorners->HandleButtonClick(OnSelCornersClicked, this);
 	NEW_CLASS(this->lblSelStatus, UI::GUILabel(ui, this->pnlCtrl, CSTR("")));

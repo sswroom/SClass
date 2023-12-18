@@ -21,7 +21,7 @@ namespace SSWR
 			UI::GUILabel *lblMapType;
 			UI::GUIComboBox *cboMapType;
 			UI::GUITextBox *txtDeclare;
-			UI::GUIButton *btnOK;
+			NotNullPtr<UI::GUIButton> btnOK;
 			Map::MapDrawLayer *layer;
 
 			static void __stdcall OnOKClicked(void *userObj);

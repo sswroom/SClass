@@ -314,13 +314,13 @@ SSWR::OrganMgr::OrganLocationForm::OrganLocationForm(UI::GUIClientControl *paren
 	this->txtEName->SetRect(99, 48, 96, 23, false);
 	NEW_CLASS(this->txtCName, UI::GUITextBox(ui, this->pnlLocation, CSTR("")));	
 	this->txtCName->SetRect(99, 80, 96, 23, false);
-	NEW_CLASS(this->btnAdd, UI::GUIButton(ui, this->pnlLocation, this->env->GetLang(CSTR("LocationAdd"))));
+	this->btnAdd = ui->NewButton(this->pnlLocation, this->env->GetLang(CSTR("LocationAdd")));
 	this->btnAdd->SetRect(99, 120, 75, 23, false);
 	this->btnAdd->HandleButtonClick(OnAddClicked, this);
-	NEW_CLASS(this->btnOk, UI::GUIButton(ui, this->pnlLocation, this->env->GetLang(CSTR("LocationOk"))));
+	this->btnOk = ui->NewButton(this->pnlLocation, this->env->GetLang(CSTR("LocationOk")));
 	this->btnOk->SetRect(41, 368, 75, 23, false);
 	this->btnOk->HandleButtonClick(OnOkClicked, this);
-	NEW_CLASS(this->btnCancel, UI::GUIButton(ui, this->pnlLocation, this->env->GetLang(CSTR("LocationCancel"))));
+	this->btnCancel = ui->NewButton(this->pnlLocation, this->env->GetLang(CSTR("LocationCancel")));
 	this->btnCancel->SetRect(131, 368, 75, 23, false);
 	this->btnCancel->HandleButtonClick(OnCancelClicked, this);
 

@@ -24,8 +24,8 @@ namespace SSWR
 			IO::BTScanner *bt;
 
 			NotNullPtr<UI::GUIPanel> pnlControl;
-			UI::GUIButton *btnStart;
-			UI::GUIButton *btnStoreList;
+			NotNullPtr<UI::GUIButton> btnStart;
+			NotNullPtr<UI::GUIButton> btnStoreList;
 			UI::GUIListView *lvDevices;
 
 			static void __stdcall OnStartClicked(void *userObj);

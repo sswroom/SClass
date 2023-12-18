@@ -35,8 +35,8 @@ namespace SSWR
 			UI::GUILabel *lblColor;
 			UI::GUIPictureBox *pbColor;
             
-			UI::GUIButton *btnOK;
-			UI::GUIButton *btnCancel;
+			NotNullPtr<UI::GUIButton> btnOK;
+			NotNullPtr<UI::GUIButton> btnCancel;
 
 			static void __stdcall OnThickChanged(void *userObj, UOSInt newPos);
 			static Bool __stdcall OnColorDown(void *userObj, Math::Coord2D<OSInt> scnPos, MouseButton btn);

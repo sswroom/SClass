@@ -16,11 +16,11 @@ namespace SSWR
 		private:
 			NotNullPtr<UI::GUIPanel> pnlCtrl;
 			UI::GUIListBox *lbPlaylist;
-			UI::GUIButton *btnAdd;
-			UI::GUIButton *btnAddDir;
-			UI::GUIButton *btnClear;
-			UI::GUIButton *btnOK;
-			UI::GUIButton *btnCancel;
+			NotNullPtr<UI::GUIButton> btnAdd;
+			NotNullPtr<UI::GUIButton> btnAddDir;
+			NotNullPtr<UI::GUIButton> btnClear;
+			NotNullPtr<UI::GUIButton> btnOK;
+			NotNullPtr<UI::GUIButton> btnCancel;
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			Media::Playlist *playlist;

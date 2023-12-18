@@ -295,7 +295,7 @@ SSWR::AVIRead::AVIRImageBatchConvForm::AVIRImageBatchConvForm(UI::GUIClientContr
 	this->lblDir->SetRect(0, 0, 100, 23, false);
 	NEW_CLASS(this->txtDir, UI::GUITextBox(ui, *this, CSTR("")));
 	this->txtDir->SetRect(100, 0, 450, 23, false);
-	NEW_CLASS(this->btnBrowse, UI::GUIButton(ui, *this, CSTR("&Browse")));
+	this->btnBrowse = ui->NewButton(*this, CSTR("&Browse"));
 	this->btnBrowse->SetRect(550, 0, 75, 23, false);
 	this->btnBrowse->HandleButtonClick(OnBrowseClicked, this);
 	NEW_CLASS(this->lblOutFormat, UI::GUILabel(ui, *this, CSTR("Output Format")));
@@ -312,7 +312,7 @@ SSWR::AVIRead::AVIRImageBatchConvForm::AVIRImageBatchConvForm(UI::GUIClientContr
 	this->chkSubdir->SetRect(0, 96, 100, 23, false);
 	NEW_CLASS(this->txtSubdir, UI::GUITextBox(ui, *this, CSTR("JPEG")));
 	this->txtSubdir->SetRect(100, 96, 100, 23, false);
-	NEW_CLASS(this->btnConvert, UI::GUIButton(ui, *this, CSTR("&Convert")));
+	this->btnConvert = ui->NewButton(*this, CSTR("&Convert"));
 	this->btnConvert->SetRect(100, 120, 75, 23, false);
 	this->btnConvert->HandleButtonClick(OnConvertClicked, this);
 }

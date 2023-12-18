@@ -27,7 +27,7 @@ namespace SSWR
 			UI::GUITextBox *txtSchema;
 			UI::GUILabel *lblTable;
 			UI::GUITextBox *txtTable;
-			UI::GUIButton *btnExport;
+			NotNullPtr<UI::GUIButton> btnExport;
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			DB::ReadingDB *db;

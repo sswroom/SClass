@@ -159,10 +159,10 @@ SSWR::AVIRead::AVIRTFTPClientForm::AVIRTFTPClientForm(UI::GUIClientControl *pare
 	this->lblFileName->SetRect(4, 52, 100, 23, false);
 	NEW_CLASS(this->txtFileName, UI::GUITextBox(ui, *this, CSTR("File.dat")));
 	this->txtFileName->SetRect(104, 52, 200, 23, false);
-	NEW_CLASS(this->btnRecv, UI::GUIButton(ui, *this, CSTR("Receive")));
+	this->btnRecv = ui->NewButton(*this, CSTR("Receive"));
 	this->btnRecv->SetRect(104, 76, 75, 23, false);
 	this->btnRecv->HandleButtonClick(OnRecvClick, this);
-	NEW_CLASS(this->btnSend, UI::GUIButton(ui, *this, CSTR("Send")));
+	this->btnSend = ui->NewButton(*this, CSTR("Send"));
 	this->btnSend->SetRect(184, 76, 75, 23, false);
 	this->btnSend->HandleButtonClick(OnSendClick, this);
 }

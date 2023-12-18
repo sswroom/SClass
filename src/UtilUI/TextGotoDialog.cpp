@@ -37,10 +37,10 @@ UtilUI::TextGotoDialog::TextGotoDialog(UI::GUIClientControl *parent, NotNullPtr<
 	this->lblLine->SetRect(8, 16, 80, 21, false);
 	NEW_CLASS(this->txtLine, UI::GUITextBox(ui, *this, CSTR("0")));
 	this->txtLine->SetRect(88, 14, 100, 23, false);
-	NEW_CLASS(this->btnOk, UI::GUIButton(ui, *this, CSTR("&Ok")));
+	this->btnOk = ui->NewButton(*this, CSTR("&Ok"));
 	this->btnOk->SetRect(8, 56, 100, 23, false);
 	this->btnOk->HandleButtonClick(OnOKClicked, this);
-	NEW_CLASS(this->btnCancel, UI::GUIButton(ui, *this, CSTR("&Cancel")));
+	this->btnCancel = ui->NewButton(*this, CSTR("&Cancel"));
 	this->btnCancel->SetRect(128, 56, 100, 23, false);
 	this->btnCancel->HandleButtonClick(OnCancelClicked, this);
 	this->SetDefaultButton(this->btnOk);

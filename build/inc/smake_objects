@@ -2157,9 +2157,7 @@ FontDialogGTK.o: ../../src/UI/FontDialogGTK.cpp
 $`$(PKG-CONFIG) --cflags gtk+-3.0`
 FontDialogWin.o: ../../src/UI/FontDialogWin.cpp
 ListBoxLogger.o: ../../src/UI/ListBoxLogger.cpp
-GUIButtonGTK.o: ../../src/UI/GUIButtonGTK.cpp
-$`$(PKG-CONFIG) --cflags gtk+-3.0`
-GUIButtonWin.o: ../../src/UI/GUIButtonWin.cpp
+GUIButton.o: ../../src/UI/GUIButton.cpp
 GUICheckBoxGTK.o: ../../src/UI/GUICheckBoxGTK.cpp
 $`$(PKG-CONFIG) --cflags gtk+-3.0`
 GUICheckBoxWin.o: ../../src/UI/GUICheckBoxWin.cpp
@@ -2303,6 +2301,8 @@ RollingTextDObj.o: ../../src/UI/DObj/RollingTextDObj.cpp
 SizedOverlayDObj.o: ../../src/UI/DObj/SizedOverlayDObj.cpp
 TextDObj.o: ../../src/UI/DObj/TextDObj.cpp
 VideoDObjHandler.o: ../../src/UI/DObj/VideoDObjHandler.cpp
+GTKButton.o: ../../src/UI/GTK/GTKButton.cpp
+$`$(PKG-CONFIG) --cflags gtk+-3.0`
 GTKDragDrop.o: ../../src/UI/GTK/GTKDragDrop.cpp
 $`$(PKG-CONFIG) --cflags gtk+-3.0`
 GTKGroupBox.o: ../../src/UI/GTK/GTKGroupBox.cpp
@@ -2317,6 +2317,7 @@ $-I$(JAVA_HOME)/include/linux
 JavaTimer.o: ../../src/UI/Java/JavaTimer.cpp
 $-I$(JAVA_HOME)/include
 $-I$(JAVA_HOME)/include/linux
+WinButton.o: ../../src/UI/Win/WinButton.cpp
 WinDragDrop.o: ../../src/UI/Win/WinDragDrop.cpp
 WinGroupBox.o: ../../src/UI/Win/WinGroupBox.cpp
 WinMessageDialog.o: ../../src/UI/Win/WinMessageDialog.cpp

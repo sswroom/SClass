@@ -17,7 +17,7 @@ namespace SSWR
 		private:
 			UI::GUILabel *lblWMTSURL;
 			UI::GUITextBox *txtWMTSURL;
-			UI::GUIButton *btnLoad;
+			NotNullPtr<UI::GUIButton> btnLoad;
 			UI::GUILabel *lblStatus;
 			UI::GUITextBox *txtStatus;
 			UI::GUILabel *lblLayer;
@@ -28,7 +28,7 @@ namespace SSWR
 			UI::GUIComboBox *cboResourceTileType;
 			UI::GUILabel *lblResourceInfoType;
 			UI::GUIComboBox *cboResourceInfoType;
-			UI::GUIButton *btnOK;
+			NotNullPtr<UI::GUIButton> btnOK;
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			Optional<Net::SSLEngine> ssl;

@@ -138,10 +138,10 @@ SSWR::AVIRead::AVIRESRIMapForm::AVIRESRIMapForm(UI::GUIClientControl *parent, No
 	NEW_CLASS(this->txtSRID, UI::GUITextBox(ui, *this, CSTR("4326")));
 	this->txtSRID->SetRect(328, 56, 100, 23, false);
 	this->txtSRID->SetReadOnly(true);
-	NEW_CLASS(this->btnOK, UI::GUIButton(ui, *this, CSTR("OK")));
+	this->btnOK = ui->NewButton(*this, CSTR("OK"));
 	this->btnOK->SetRect(250, 88, 75, 23, false);
 	this->btnOK->HandleButtonClick(OKClicked, this);
-	NEW_CLASS(this->btnCancel, UI::GUIButton(ui, *this, CSTR("Cancel")));
+	this->btnCancel = ui->NewButton(*this, CSTR("Cancel"));
 	this->btnCancel->SetRect(330, 88, 75, 23, false);
 	this->btnCancel->HandleButtonClick(CancelClicked, this);
 

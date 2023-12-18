@@ -38,10 +38,10 @@ namespace SSWR
 		private:
 			UI::GUILabel *lblDirectory;
 			UI::GUITextBox *txtDirectory;
-			UI::GUIButton *btnDirectory;
+			NotNullPtr<UI::GUIButton> btnDirectory;
 			UI::GUILabel *lblSource;
 			UI::GUITextBox *txtSource;
-			UI::GUIButton *btnSBrowse;
+			NotNullPtr<UI::GUIButton> btnSBrowse;
 
 			UI::GUILabel *lblFileLength;
 			UI::GUITextBox *txtFileLength;
@@ -77,10 +77,10 @@ namespace SSWR
 
 			UI::GUILabel *lblSeperator;
 			UI::GUIComboBox *cboSeperator;
-			UI::GUIButton *btnGroup;
-			UI::GUIButton *btnFilter;
-			UI::GUIButton *btnPreview;
-			UI::GUIButton *btnConvert;
+			NotNullPtr<UI::GUIButton> btnGroup;
+			NotNullPtr<UI::GUIButton> btnFilter;
+			NotNullPtr<UI::GUIButton> btnPreview;
+			NotNullPtr<UI::GUIButton> btnConvert;
 			UI::GUITextBox *txtLabel;
 			UI::GUILabel *lblLabelLegend;
 			UI::GUILabel *lblProgress;

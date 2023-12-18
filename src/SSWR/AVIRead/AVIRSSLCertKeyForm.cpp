@@ -228,17 +228,17 @@ SSWR::AVIRead::AVIRSSLCertKeyForm::AVIRSSLCertKeyForm(UI::GUIClientControl *pare
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	this->tpFile = this->tcMain->AddTabPage(CSTR("File"));
-	NEW_CLASS(this->btnFileCert, UI::GUIButton(ui, this->tpFile, CSTR("Cert")));
+	this->btnFileCert = ui->NewButton(this->tpFile, CSTR("Cert"));
 	this->btnFileCert->SetRect(4, 4, 75, 23, false);
 	this->btnFileCert->HandleButtonClick(OnFileCertClicked, this);
 	NEW_CLASS(this->lblFileCert, UI::GUILabel(ui, this->tpFile, CSTR("")));
 	this->lblFileCert->SetRect(84, 4, 200, 23, false);
-	NEW_CLASS(this->btnFileKey, UI::GUIButton(ui, this->tpFile, CSTR("Key")));
+	this->btnFileKey = ui->NewButton(this->tpFile, CSTR("Key"));
 	this->btnFileKey->SetRect(4, 28, 75, 23, false);
 	this->btnFileKey->HandleButtonClick(OnFileKeyClicked, this);
 	NEW_CLASS(this->lblFileKey, UI::GUILabel(ui, this->tpFile, CSTR("")));
 	this->lblFileKey->SetRect(84, 28, 200, 23, false);
-	NEW_CLASS(this->btnFileConfirm, UI::GUIButton(ui, this->tpFile, CSTR("OK")));
+	this->btnFileConfirm = ui->NewButton(this->tpFile, CSTR("OK"));
 	this->btnFileConfirm->SetRect(4, 52, 75, 23, false);
 	this->btnFileConfirm->HandleButtonClick(OnFileConfirmClicked, this);
 
@@ -255,7 +255,7 @@ SSWR::AVIRead::AVIRSSLCertKeyForm::AVIRSSLCertKeyForm(UI::GUIClientControl *pare
 	this->lblGenCommonName->SetRect(4, 52, 100, 23, false);
 	NEW_CLASS(this->txtGenCommonName, UI::GUITextBox(ui, this->tpGenerate, CSTR("localhost")));
 	this->txtGenCommonName->SetRect(104, 52, 200, 23, false);
-	NEW_CLASS(this->btnGenerate, UI::GUIButton(ui, this->tpGenerate, CSTR("Generate")));
+	this->btnGenerate = ui->NewButton(this->tpGenerate, CSTR("Generate"));
 	this->btnGenerate->SetRect(104, 76, 75, 23, false);
 	this->btnGenerate->HandleButtonClick(OnGenerateClicked, this);
 

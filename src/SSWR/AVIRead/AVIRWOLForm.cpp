@@ -57,7 +57,7 @@ SSWR::AVIRead::AVIRWOLForm::AVIRWOLForm(UI::GUIClientControl *parent, NotNullPtr
 	this->lblDeviceMac->SetRect(4, 28, 100, 23, false);
 	NEW_CLASS(this->txtDeviceMac, UI::GUITextBox(ui, *this, CSTR(""), false));
 	this->txtDeviceMac->SetRect(104, 28, 200, 23, false);
-	NEW_CLASS(this->btnSend, UI::GUIButton(ui, *this, CSTR("&Send")));
+	this->btnSend = ui->NewButton(*this, CSTR("&Send"));
 	this->btnSend->SetRect(104, 52, 100, 23, false);
 	this->btnSend->HandleButtonClick(OnSendClicked, this);
 

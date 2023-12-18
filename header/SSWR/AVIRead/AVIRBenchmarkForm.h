@@ -38,9 +38,9 @@ namespace SSWR
 			Bool processing;
 
 			NotNullPtr<UI::GUIPanel> pnlCtrl;
-			UI::GUIButton *btnStart;
-			UI::GUIButton *btnQuick;
-			UI::GUIButton *btnSave;
+			NotNullPtr<UI::GUIButton> btnStart;
+			NotNullPtr<UI::GUIButton> btnQuick;
+			NotNullPtr<UI::GUIButton> btnSave;
 			UI::GUIProgressBar *pbMain;
 			UI::GUITabControl *tcMain;
 

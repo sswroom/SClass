@@ -46,8 +46,8 @@ namespace SSWR
 			Data::ArrayListA<Math::Coord2DDbl> points;
 
 			NotNullPtr<UI::GUIPanel> pnlCtrl;
-			UI::GUIButton *btnSelPlate;
-			UI::GUIButton *btnSelCorners;
+			NotNullPtr<UI::GUIButton> btnSelPlate;
+			NotNullPtr<UI::GUIButton> btnSelCorners;
 			UI::GUILabel *lblSelStatus;
 			NotNullPtr<UI::GUIPanel> pnlPlate;
 			UI::GUIPictureBoxSimple *pbPlate;

@@ -28,13 +28,13 @@ namespace SSWR
 			UI::GUILabel *lblStatus;
 			UI::GUITextBox *txtStatus;
 			UI::GUICheckBox *chkAutoStart;
-			UI::GUIButton *btnPasteTable;
-			UI::GUIButton *btnPasteHTML;
-			UI::GUIButton *btnCopyTable;
-			UI::GUIButton *btnFileEnd;
-			UI::GUIButton *btnWebUpdate;
+			NotNullPtr<UI::GUIButton> btnPasteTable;
+			NotNullPtr<UI::GUIButton> btnPasteHTML;
+			NotNullPtr<UI::GUIButton> btnCopyTable;
+			NotNullPtr<UI::GUIButton> btnFileEnd;
+			NotNullPtr<UI::GUIButton> btnWebUpdate;
 			UI::GUILabel *lblAlarm;
-			UI::GUIButton *btn30Minutes;
+			NotNullPtr<UI::GUIButton> btn30Minutes;
 			UI::GUIListView *lvFiles;
 
 			static void __stdcall OnTimerTick(void *userObj);

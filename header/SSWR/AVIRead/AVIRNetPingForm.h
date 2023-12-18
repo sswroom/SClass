@@ -33,7 +33,7 @@ namespace SSWR
 			UI::GUITextBox *txtTarget;
 			UI::GUILabel *lblRepeat;
 			UI::GUICheckBox *chkRepeat;
-			UI::GUIButton *btnPing;
+			NotNullPtr<UI::GUIButton> btnPing;
 			UI::GUIRealtimeLineChart *rlcPing;
 			UI::GUIVSplitter *vspPing;
 			NotNullPtr<UI::GUIListBox> lbLog;

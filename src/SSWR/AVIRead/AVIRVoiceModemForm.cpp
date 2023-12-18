@@ -207,10 +207,10 @@ SSWR::AVIRead::AVIRVoiceModemForm::AVIRVoiceModemForm(UI::GUIClientControl *pare
 	this->lblDialNum->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtDialNum, UI::GUITextBox(ui, this->tpDial, CSTR("")));
 	this->txtDialNum->SetRect(104, 4, 200, 23, false);
-	NEW_CLASS(this->btnDial, UI::GUIButton(ui, this->tpDial, CSTR("Dial")));
+	this->btnDial = ui->NewButton(this->tpDial, CSTR("Dial"));
 	this->btnDial->SetRect(104, 28, 75, 23, false);
 	this->btnDial->HandleButtonClick(OnDialClicked, this);
-	NEW_CLASS(this->btnHangUp, UI::GUIButton(ui, this->tpDial, CSTR("Hang Up")));
+	this->btnHangUp = ui->NewButton(this->tpDial, CSTR("Hang Up"));
 	this->btnHangUp->SetRect(184, 28, 75, 23, false);
 	this->btnHangUp->HandleButtonClick(OnHangUpClicked, this);
 	NEW_CLASS(this->lblDialStatus, UI::GUILabel(ui, this->tpDial, CSTR("Status")));

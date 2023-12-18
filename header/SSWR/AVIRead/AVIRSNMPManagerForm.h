@@ -30,14 +30,14 @@ namespace SSWR
 			UI::GUICheckBox *chkAgentScan;
 			UI::GUILabel *lblCommunity;
 			UI::GUITextBox *txtCommunity;
-			UI::GUIButton *btnAgentAdd;
+			NotNullPtr<UI::GUIButton> btnAgentAdd;
 			UI::GUICheckBox *chkSendToSvr;
 			UI::GUIListBox *lbAgent;
 			UI::GUIHSplitter *hspAgent;
 			NotNullPtr<UI::GUIPanel> pnlAgent;
 			UI::GUILabel *lblAgentDAddr;
 			UI::GUITextBox *txtAgentDAddr;
-			UI::GUIButton *btnAgentWalk;
+			NotNullPtr<UI::GUIButton> btnAgentWalk;
 			UI::GUILabel *lblAgentDescr;
 			UI::GUITextBox *txtAgentDescr;
 			UI::GUILabel *lblAgentOID;

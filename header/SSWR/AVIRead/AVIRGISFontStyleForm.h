@@ -27,14 +27,14 @@ namespace SSWR
 			NotNullPtr<Media::DrawEngine> eng;
 
 			NotNullPtr<UI::GUIPanel> pnlBtn;
-			UI::GUIButton *btnOK;
-			UI::GUIButton *btnCancel;
+			NotNullPtr<UI::GUIButton> btnOK;
+			NotNullPtr<UI::GUIButton> btnCancel;
 
 			NotNullPtr<UI::GUIGroupBox> grpStyle;
 			NotNullPtr<UI::GUIPanel> pnlStyle;
-			UI::GUIButton *btnAddStyle;
-			UI::GUIButton *btnRemoveStyle;
-			UI::GUIButton *btnEditStyle;
+			NotNullPtr<UI::GUIButton> btnAddStyle;
+			NotNullPtr<UI::GUIButton> btnRemoveStyle;
+			NotNullPtr<UI::GUIButton> btnEditStyle;
 			SSWR::AVIRead::AVIRFontSelector *fsFonts;
 
 			static void __stdcall AddStyleClicked(void *userObj);

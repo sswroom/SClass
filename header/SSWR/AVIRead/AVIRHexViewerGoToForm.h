@@ -15,8 +15,8 @@ namespace SSWR
 		private:
 			UI::GUILabel *lblMessage;
 			UI::GUITextBox *txtInput;
-			UI::GUIButton *btnCancel;
-			UI::GUIButton *btnOK;
+			NotNullPtr<UI::GUIButton> btnCancel;
+			NotNullPtr<UI::GUIButton> btnOK;
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			UInt64 currOfst;

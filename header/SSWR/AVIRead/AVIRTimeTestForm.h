@@ -15,10 +15,10 @@ namespace SSWR
 		private:
 			UI::GUILabel *lblSleepMS;
 			UI::GUITextBox *txtSleepMS;
-			UI::GUIButton *btnSleepMS;
+			NotNullPtr<UI::GUIButton> btnSleepMS;
 			UI::GUILabel *lblSleepUS;
 			UI::GUITextBox *txtSleepUS;
-			UI::GUIButton *btnSleepUS;
+			NotNullPtr<UI::GUIButton> btnSleepUS;
 			UI::GUILabel *lblActualTime;
 			UI::GUITextBox *txtActualTime;
 

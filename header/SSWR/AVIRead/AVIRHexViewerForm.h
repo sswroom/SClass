@@ -52,10 +52,10 @@ namespace SSWR
 			UI::GUITextBox *txtFloat64;
 			UI::GUILabel *lblUTF8CharCode;
 			UI::GUITextBox *txtUTF8CharCode;
-			UI::GUIButton *btnFont;
-			UI::GUIButton *btnNextUnk;
+			NotNullPtr<UI::GUIButton> btnFont;
+			NotNullPtr<UI::GUIButton> btnNextUnk;
 			UI::GUICheckBox *chkDynamicSize;
-			UI::GUIButton *btnOpenFile;
+			NotNullPtr<UI::GUIButton> btnOpenFile;
 
 			NotNullPtr<UI::GUITabPage> tpAnalyse;
 			UI::GUILabel *lblFileFormat;
@@ -68,11 +68,11 @@ namespace SSWR
 			NotNullPtr<UI::GUITabPage> tpExtract;
 			UI::GUILabel *lblExtractBegin;
 			UI::GUITextBox *txtExtractBegin;
-			UI::GUIButton *btnExtractBegin;
+			NotNullPtr<UI::GUIButton> btnExtractBegin;
 			UI::GUILabel *lblExtractEnd;
 			UI::GUITextBox *txtExtractEnd;
-			UI::GUIButton *btnExtractEnd;
-			UI::GUIButton *btnExtract;
+			NotNullPtr<UI::GUIButton> btnExtractEnd;
+			NotNullPtr<UI::GUIButton> btnExtract;
 
 			static void __stdcall OnFilesDrop(void *userObj, NotNullPtr<Text::String> *files, UOSInt nFiles);
 			static void __stdcall OnEndianChg(void *userObj, Bool newState);

@@ -27,7 +27,7 @@ namespace SSWR
 			NotNullPtr<UI::GUIGroupBox> grpStream;
 			UI::GUILabel *lblStream;
 			UI::GUITextBox *txtStream;
-			UI::GUIButton *btnStream;
+			NotNullPtr<UI::GUIButton> btnStream;
 
 			UI::GUIHSplitter *hspMain;
 			NotNullPtr<UI::GUIGroupBox> grpSend;
@@ -35,7 +35,7 @@ namespace SSWR
 			UI::GUITextBox *txtSendDisp;
 			NotNullPtr<UI::GUIPanel> pnlSend;
 			UI::GUITextBox *txtSendValue;
-			UI::GUIButton *btnSend;
+			NotNullPtr<UI::GUIButton> btnSend;
 			NotNullPtr<UI::GUIGroupBox> grpRecv;
 			UI::GUIComboBox *cboRecvType;
 			UI::GUITextBox *txtRecvDisp;

@@ -1531,10 +1531,10 @@ UtilUI::ColorDialog::ColorDialog(UI::GUIClientControl *parent, NotNullPtr<UI::GU
 	NEW_CLASS(this->txtPrimaries, UI::GUITextBox(ui, *this, Media::ColorProfile::ColorTypeGetName(this->colorProfile->GetPrimaries()->colorType)));
 	this->txtPrimaries->SetRect(166, 570, 100, 23, false);
 	this->txtPrimaries->SetReadOnly(true);
-	NEW_CLASS(this->btnOk, UI::GUIButton(ui, *this, CSTR("&Ok")));
+	this->btnOk = ui->NewButton(*this, CSTR("&Ok"));
 	this->btnOk->SetRect(604, 452, 100, 23, false);
 	this->btnOk->HandleButtonClick(OnOKClicked, this);
-	NEW_CLASS(this->btnCancel, UI::GUIButton(ui, *this, CSTR("&Cancel")));
+	this->btnCancel = ui->NewButton(*this, CSTR("&Cancel"));
 	this->btnCancel->SetRect(604, 500, 100, 23, false);
 	this->btnCancel->HandleButtonClick(OnCancelClicked, this);
 	this->SetDefaultButton(this->btnOk);

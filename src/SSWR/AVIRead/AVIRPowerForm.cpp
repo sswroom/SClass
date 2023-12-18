@@ -70,10 +70,10 @@ SSWR::AVIRead::AVIRPowerForm::AVIRPowerForm(UI::GUIClientControl *parent, NotNul
 	this->chkNoSleep->SetRect(104, 52, 200, 23, false);
 	NEW_CLASS(this->chkNoDispOff, UI::GUICheckBox(ui, *this, CSTR("No Disp Off"), false));
 	this->chkNoDispOff->SetRect(104, 76, 200, 23, false);
-	NEW_CLASS(this->btnSleep, UI::GUIButton(ui, *this, CSTR("Sleep")));
+	this->btnSleep = ui->NewButton(*this, CSTR("Sleep"));
 	this->btnSleep->SetRect(104, 100, 75, 23, false);
 	this->btnSleep->HandleButtonClick(OnSleepClicked, this);
-	NEW_CLASS(this->btnDisplayOff, UI::GUIButton(ui, *this, CSTR("Display Off")));
+	this->btnDisplayOff = ui->NewButton(*this, CSTR("Display Off"));
 	this->btnDisplayOff->SetRect(184, 100, 75, 23, false);
 	this->btnDisplayOff->HandleButtonClick(OnDisplayOffClicked, this);
 

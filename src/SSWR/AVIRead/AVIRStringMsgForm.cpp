@@ -23,7 +23,7 @@ SSWR::AVIRead::AVIRStringMsgForm::AVIRStringMsgForm(UI::GUIClientControl *parent
 	NEW_CLASSNN(this->pnlButton, UI::GUIPanel(ui, *this));
 	this->pnlButton->SetRect(0, 0, 100, 32, false);
 	this->pnlButton->SetDockType(UI::GUIControl::DOCK_BOTTOM);
-	NEW_CLASS(this->btnOK, UI::GUIButton(ui, this->pnlButton, CSTR("OK")));
+	this->btnOK = ui->NewButton(this->pnlButton, CSTR("OK"));
 	this->btnOK->SetRect(24, 4, 75, 23, false);
 	this->btnOK->HandleButtonClick(OnOKClicked, this);
 	NEW_CLASS(this->txtMessage, UI::GUITextBox(ui, *this, msg, true));

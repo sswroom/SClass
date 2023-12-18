@@ -86,14 +86,14 @@ namespace SSWR
 			NotNullPtr<UI::GUITabPage> tpFile;
 			UI::GUILabel *lblFileName;
 			UI::GUITextBox *txtFileName;
-			UI::GUIButton *btnFileBrowse;
+			NotNullPtr<UI::GUIButton> btnFileBrowse;
 
 			NotNullPtr<UI::GUITabPage> tpHID;
 			UI::GUIListBox *lbHIDDevice;
 
 			NotNullPtr<UI::GUIPanel> pnlButtons;
-			UI::GUIButton *btnOK;
-			UI::GUIButton *btnCancel;
+			NotNullPtr<UI::GUIButton> btnOK;
+			NotNullPtr<UI::GUIButton> btnCancel;
 
 			static void __stdcall OnOKClick(void *userObj);
 			static void __stdcall OnCancelClick(void *userObj);

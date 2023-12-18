@@ -570,7 +570,7 @@ SSWR::AVIRead::AVIRMODBUSMasterForm::AVIRMODBUSMasterForm(UI::GUIClientControl *
 	NEW_CLASS(this->txtStream, UI::GUITextBox(ui, this->grpStream, CSTR("-")));
 	this->txtStream->SetRect(104, 4, 200, 23, false);
 	this->txtStream->SetReadOnly(true);
-	NEW_CLASS(this->btnStream, UI::GUIButton(ui, this->grpStream, CSTR("&Open")));
+	this->btnStream = ui->NewButton(this->grpStream, CSTR("&Open"));
 	this->btnStream->SetRect(304, 4, 75, 23, false);
 	this->btnStream->HandleButtonClick(OnStreamClicked, this);
 	NEW_CLASS(this->radMODBUSRTU, UI::GUIRadioButton(ui, this->grpStream, CSTR("MODBUS RTU"), true));
@@ -581,7 +581,7 @@ SSWR::AVIRead::AVIRMODBUSMasterForm::AVIRMODBUSMasterForm(UI::GUIClientControl *
 	this->lblTimeout->SetRect(4, 52, 100, 23, false);
 	NEW_CLASS(this->txtTimeout, UI::GUITextBox(ui, this->grpStream, CSTR("200")));
 	this->txtTimeout->SetRect(104, 52, 100, 23, false);
-	NEW_CLASS(this->btnTimeout, UI::GUIButton(ui, this->grpStream, CSTR("Set")));
+	this->btnTimeout = ui->NewButton(this->grpStream, CSTR("Set"));
 	this->btnTimeout->SetRect(204, 52, 75, 23, false);
 	this->btnTimeout->HandleButtonClick(OnTimeoutClicked, this);
 	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, *this));
@@ -600,7 +600,7 @@ SSWR::AVIRead::AVIRMODBUSMasterForm::AVIRMODBUSMasterForm(UI::GUIClientControl *
 	this->txtU8DevAddr->SetRect(104, 28, 100, 23, false);
 	NEW_CLASS(this->txtU8RegAddr, UI::GUITextBox(ui, this->tpGetValue, CSTR("00001")));
 	this->txtU8RegAddr->SetRect(204, 28, 100, 23, false);
-	NEW_CLASS(this->btnU8Get, UI::GUIButton(ui, this->tpGetValue, CSTR("Get")));
+	this->btnU8Get = ui->NewButton(this->tpGetValue, CSTR("Get"));
 	this->btnU8Get->SetRect(304, 28, 75, 23, false);
 	this->btnU8Get->HandleButtonClick(OnU8GetClicked, this);
 	NEW_CLASS(this->txtU8Value, UI::GUITextBox(ui, this->tpGetValue, CSTR("")));
@@ -612,7 +612,7 @@ SSWR::AVIRead::AVIRMODBUSMasterForm::AVIRMODBUSMasterForm(UI::GUIClientControl *
 	this->txtU16DevAddr->SetRect(104, 52, 100, 23, false);
 	NEW_CLASS(this->txtU16RegAddr, UI::GUITextBox(ui, this->tpGetValue, CSTR("30001")));
 	this->txtU16RegAddr->SetRect(204, 52, 100, 23, false);
-	NEW_CLASS(this->btnU16Get, UI::GUIButton(ui, this->tpGetValue, CSTR("Get")));
+	this->btnU16Get = ui->NewButton(this->tpGetValue, CSTR("Get"));
 	this->btnU16Get->SetRect(304, 52, 75, 23, false);
 	this->btnU16Get->HandleButtonClick(OnU16GetClicked, this);
 	NEW_CLASS(this->txtU16Value, UI::GUITextBox(ui, this->tpGetValue, CSTR("")));
@@ -624,7 +624,7 @@ SSWR::AVIRead::AVIRMODBUSMasterForm::AVIRMODBUSMasterForm(UI::GUIClientControl *
 	this->txtI32DevAddr->SetRect(104, 76, 100, 23, false);
 	NEW_CLASS(this->txtI32RegAddr, UI::GUITextBox(ui, this->tpGetValue, CSTR("30001")));
 	this->txtI32RegAddr->SetRect(204, 76, 100, 23, false);
-	NEW_CLASS(this->btnI32Get, UI::GUIButton(ui, this->tpGetValue, CSTR("Get")));
+	this->btnI32Get = ui->NewButton(this->tpGetValue, CSTR("Get"));
 	this->btnI32Get->SetRect(304, 76, 75, 23, false);
 	this->btnI32Get->HandleButtonClick(OnI32GetClicked, this);
 	NEW_CLASS(this->txtI32Value, UI::GUITextBox(ui, this->tpGetValue, CSTR("")));
@@ -636,7 +636,7 @@ SSWR::AVIRead::AVIRMODBUSMasterForm::AVIRMODBUSMasterForm(UI::GUIClientControl *
 	this->txtF32DevAddr->SetRect(104, 100, 100, 23, false);
 	NEW_CLASS(this->txtF32RegAddr, UI::GUITextBox(ui, this->tpGetValue, CSTR("30001")));
 	this->txtF32RegAddr->SetRect(204, 100, 100, 23, false);
-	NEW_CLASS(this->btnF32Get, UI::GUIButton(ui, this->tpGetValue, CSTR("Get")));
+	this->btnF32Get = ui->NewButton(this->tpGetValue, CSTR("Get"));
 	this->btnF32Get->SetRect(304, 100, 75, 23, false);
 	this->btnF32Get->HandleButtonClick(OnF32GetClicked, this);
 	NEW_CLASS(this->txtF32Value, UI::GUITextBox(ui, this->tpGetValue, CSTR("")));
@@ -656,10 +656,10 @@ SSWR::AVIRead::AVIRMODBUSMasterForm::AVIRMODBUSMasterForm(UI::GUIClientControl *
 	this->txtSetU8DevAddr->SetRect(104, 28, 100, 23, false);
 	NEW_CLASS(this->txtSetU8RegAddr, UI::GUITextBox(ui, this->tpSetValue, CSTR("00001")));
 	this->txtSetU8RegAddr->SetRect(204, 28, 100, 23, false);
-	NEW_CLASS(this->btnSetU8Low, UI::GUIButton(ui, this->tpSetValue, CSTR("Set Low")));
+	this->btnSetU8Low = ui->NewButton(this->tpSetValue, CSTR("Set Low"));
 	this->btnSetU8Low->SetRect(304, 28, 75, 23, false);
 	this->btnSetU8Low->HandleButtonClick(OnSetU8LowClicked, this);
-	NEW_CLASS(this->btnSetU8High, UI::GUIButton(ui, this->tpSetValue, CSTR("Set High")));
+	this->btnSetU8High = ui->NewButton(this->tpSetValue, CSTR("Set High"));
 	this->btnSetU8High->SetRect(384, 28, 75, 23, false);
 	this->btnSetU8High->HandleButtonClick(OnSetU8HighClicked, this);
 	NEW_CLASS(this->txtSetU8Value, UI::GUITextBox(ui, this->tpSetValue, CSTR("")));
@@ -686,7 +686,7 @@ SSWR::AVIRead::AVIRMODBUSMasterForm::AVIRMODBUSMasterForm(UI::GUIClientControl *
 		dt = (DeviceType)(dt + 1);
 	}
 	this->cboDevice->SetSelectedIndex(0);
-	NEW_CLASS(this->btnDeviceAdd, UI::GUIButton(ui, this->pnlDevice, CSTR("Add")));
+	this->btnDeviceAdd = ui->NewButton(this->pnlDevice, CSTR("Add"));
 	this->btnDeviceAdd->SetRect(404, 4, 75, 23, false);
 	this->btnDeviceAdd->HandleButtonClick(OnDeviceAddClicked, this);
 	NEW_CLASS(this->lvDevice, UI::GUIListView(ui, this->tpDevice, UI::GUIListView::LVSTYLE_TABLE, 4));

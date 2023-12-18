@@ -22,8 +22,8 @@ namespace SSWR
 			UI::GUITextBox *txtWidth;
 			UI::GUITextBox *txtHeight;
 
-			UI::GUIButton *btnGenerate;
-			UI::GUIButton *btnCancel;
+			NotNullPtr<UI::GUIButton> btnGenerate;
+			NotNullPtr<UI::GUIButton> btnCancel;
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			Media::ImageGen::ImageGenMgr *imgGenMgr;
 

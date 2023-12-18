@@ -39,10 +39,10 @@ namespace SSWR
 		UI::GUITextBox *txtProgAddName;
 		UI::GUILabel *lblProgAddId;
 		UI::GUITextBox *txtProgAddId;
-		UI::GUIButton *btnProgAdd;
+		NotNullPtr<UI::GUIButton> btnProgAdd;
 		UI::GUILabel *lblProcId;
 		UI::GUITextBox *txtProcId;
-		UI::GUIButton *btnProcId;
+		NotNullPtr<UI::GUIButton> btnProcId;
 		UI::GUILabel *lblProgPath;
 		UI::GUITextBox *txtProgPath;
 

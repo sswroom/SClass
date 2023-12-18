@@ -209,7 +209,7 @@ SSWR::OrganMgr::OrganTripForm::OrganTripForm(UI::GUIClientControl *parent, NotNu
 	this->lblTo->SetRect(0, 56, 72, 23, false);
 	NEW_CLASS(this->dtpTo, UI::GUIDateTimePicker(ui, this->pnlDetail, UI::GUIDateTimePicker::ST_UPDOWN));
 	this->dtpTo->SetRect(72, 56, 176, 23, false);
-	NEW_CLASS(this->btnDate1Hr, UI::GUIButton(ui, this->pnlDetail, this->env->GetLang(CSTR("TripForm1Hr"))));
+	this->btnDate1Hr = ui->NewButton(this->pnlDetail, this->env->GetLang(CSTR("TripForm1Hr")));
 	this->btnDate1Hr->SetRect(248, 56, 75, 23, false);
 	this->btnDate1Hr->HandleButtonClick(OnDate1HrClicked, this);
 	NEW_CLASS(this->lblLocation, UI::GUILabel(ui, this->pnlDetail, this->env->GetLang(CSTR("TripFormLocation"))));
@@ -217,13 +217,13 @@ SSWR::OrganMgr::OrganTripForm::OrganTripForm(UI::GUIClientControl *parent, NotNu
 	NEW_CLASS(this->txtLocation, UI::GUITextBox(ui, this->pnlDetail, CSTR("")));
 	this->txtLocation->SetRect(72, 88, 88, 23, false);
 	this->txtLocation->SetReadOnly(true);
-	NEW_CLASS(this->btnLocation, UI::GUIButton(ui, this->pnlDetail, this->env->GetLang(CSTR("TripFormSelect"))));
+	this->btnLocation = ui->NewButton(this->pnlDetail, this->env->GetLang(CSTR("TripFormSelect")));
 	this->btnLocation->SetRect(168, 88, 75, 23, false);
 	this->btnLocation->HandleButtonClick(OnLocationClicked, this);
-	NEW_CLASS(this->btnLocationLast, UI::GUIButton(ui, this->pnlDetail, this->env->GetLang(CSTR("TripFormLastLoc"))));
+	this->btnLocationLast = ui->NewButton(this->pnlDetail, this->env->GetLang(CSTR("TripFormLastLoc")));
 	this->btnLocationLast->SetRect(248, 88, 75, 23, false);
 	this->btnLocationLast->HandleButtonClick(OnLocationLastClicked, this);
-	NEW_CLASS(this->btnAdd, UI::GUIButton(ui, this->pnlDetail, this->env->GetLang(CSTR("TripFormAdd"))));
+	this->btnAdd = ui->NewButton(this->pnlDetail, this->env->GetLang(CSTR("TripFormAdd")));
 	this->btnAdd->SetRect(72, 128, 75, 23, false);
 	this->btnAdd->HandleButtonClick(OnAddClicked, this);
 

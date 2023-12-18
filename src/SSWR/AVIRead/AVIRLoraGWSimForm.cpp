@@ -208,7 +208,7 @@ SSWR::AVIRead::AVIRLoraGWSimForm::AVIRLoraGWSimForm(UI::GUIClientControl *parent
 	this->lblGatewayEUI->SetRect(4, 52, 100, 23, false);
 	NEW_CLASS(this->txtGatewayEUI, UI::GUITextBox(ui, this->pnlControl, CSTR("1122334455667788")));
 	this->txtGatewayEUI->SetRect(104, 52, 150, 23, false);
-	NEW_CLASS(this->btnStart, UI::GUIButton(ui, this->pnlControl, CSTR("Start")));
+	this->btnStart = ui->NewButton(this->pnlControl, CSTR("Start"));
 	this->btnStart->SetRect(104, 76, 75, 23, false);
 	this->btnStart->HandleButtonClick(OnStartClick, this);
 	NEW_CLASSNN(this->pnlDevice, UI::GUIPanel(ui, this->tpControl));
@@ -241,7 +241,7 @@ SSWR::AVIRead::AVIRLoraGWSimForm::AVIRLoraGWSimForm(UI::GUIClientControl *parent
 	this->lblPredef->SetRect(4, 148, 100, 23, false);
 	NEW_CLASS(this->cboPredef, UI::GUIComboBox(ui, this->pnlDevice, false));
 	this->cboPredef->SetRect(104, 148, 250, 23, false);
-	NEW_CLASS(this->btnPredef, UI::GUIButton(ui, this->pnlDevice, CSTR("Set")));
+	this->btnPredef = ui->NewButton(this->pnlDevice, CSTR("Set"));
 	this->btnPredef->SetRect(354, 148, 75, 23, false);
 	this->btnPredef->HandleButtonClick(OnPredefClicked, this);
 	NEW_CLASS(this->lblFPort, UI::GUILabel(ui, this->pnlDevice, CSTR("FPort")));
@@ -252,7 +252,7 @@ SSWR::AVIRead::AVIRLoraGWSimForm::AVIRLoraGWSimForm(UI::GUIClientControl *parent
 	this->lblData->SetRect(4, 196, 100, 23, false);
 	NEW_CLASS(this->txtData, UI::GUITextBox(ui, this->pnlDevice, CSTR("00000000")));
 	this->txtData->SetRect(104, 196, 300, 23, false);
-	NEW_CLASS(this->btnSendULData, UI::GUIButton(ui, this->pnlDevice, CSTR("Send UL Data")));
+	this->btnSendULData = ui->NewButton(this->pnlDevice, CSTR("Send UL Data"));
 	this->btnSendULData->SetRect(104, 220, 75, 23, false);
 	this->btnSendULData->HandleButtonClick(OnSendULDataClick, this);
 

@@ -214,10 +214,10 @@ SSWR::AVIRead::AVIRBluetoothForm::AVIRBluetoothForm(UI::GUIClientControl *parent
 	NEW_CLASSNN(this->pnlDevice, UI::GUIPanel(ui, this->tpDevice));
 	this->pnlDevice->SetRect(0, 0, 100, 31, false);
 	this->pnlDevice->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->btnDeviceSrch, UI::GUIButton(ui, this->pnlDevice, CSTR("Search")));
+	this->btnDeviceSrch = ui->NewButton(this->pnlDevice, CSTR("Search"));
 	this->btnDeviceSrch->SetRect(4, 4, 75, 23, false);
 	this->btnDeviceSrch->HandleButtonClick(OnDeviceSrchClicked, this);
-	NEW_CLASS(this->btnDeviceUpdate, UI::GUIButton(ui, this->pnlDevice, CSTR("Update")));
+	this->btnDeviceUpdate = ui->NewButton(this->pnlDevice, CSTR("Update"));
 	this->btnDeviceUpdate->SetRect(84, 4, 75, 23, false);
 	this->btnDeviceUpdate->HandleButtonClick(OnDeviceUpdateClicked, this);
 	NEW_CLASSNN(this->pnlDevDetail, UI::GUIPanel(ui, this->tpDevice));
@@ -227,10 +227,10 @@ SSWR::AVIRead::AVIRBluetoothForm::AVIRBluetoothForm(UI::GUIClientControl *parent
 	NEW_CLASSNN(this->pnlDevCtrl, UI::GUIPanel(ui, this->pnlDevDetail));
 	this->pnlDevCtrl->SetRect(0, 0, 100, 31, false);
 	this->pnlDevCtrl->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->btnDevAuthen, UI::GUIButton(ui, this->pnlDevCtrl, CSTR("Pair")));
+	this->btnDevAuthen = ui->NewButton(this->pnlDevCtrl, CSTR("Pair"));
 	this->btnDevAuthen->SetRect(4, 4, 75, 23, false);
 	this->btnDevAuthen->HandleButtonClick(OnDevAuthenClicked, this);
-	NEW_CLASS(this->btnDevUnauthen, UI::GUIButton(ui, this->pnlDevCtrl, CSTR("Unpair")));
+	this->btnDevUnauthen = ui->NewButton(this->pnlDevCtrl, CSTR("Unpair"));
 	this->btnDevUnauthen->SetRect(84, 4, 75, 23, false);
 	this->btnDevUnauthen->HandleButtonClick(OnDevUnauthenClicked, this);
 	NEW_CLASS(this->lbDevServices, UI::GUIListBox(ui, this->pnlDevDetail, false));

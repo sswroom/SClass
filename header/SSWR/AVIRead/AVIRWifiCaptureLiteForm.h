@@ -62,8 +62,8 @@ namespace SSWR
 			NotNullPtr<UI::GUITabPage> tpLogWifi;
 			UI::GUIListView *lvLogWifi;
 			NotNullPtr<UI::GUIPanel> pnlLogWifi;
-			UI::GUIButton *btnLogWifiSave;
-			UI::GUIButton *btnLogWifiSaveF;
+			NotNullPtr<UI::GUIButton> btnLogWifiSave;
+			NotNullPtr<UI::GUIButton> btnLogWifiSaveF;
 
 			static void __stdcall OnTimerTick(void *userObj);
 			static void __stdcall OnLogWifiDblClicked(void *userObj, UOSInt index);

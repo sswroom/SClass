@@ -21,11 +21,11 @@ namespace SSWR
 			NotNullPtr<UI::GUITabPage> tpValue;
 			UI::GUILabel *lblValue;
 			UI::GUITextBox *txtValue;
-			UI::GUIButton *btnEpochSec;
-			UI::GUIButton *btnEpochMS;
-			UI::GUIButton *btnEpochUS;
-			UI::GUIButton *btnEpochNS;
-			UI::GUIButton *btnDotNetTicks;
+			NotNullPtr<UI::GUIButton> btnEpochSec;
+			NotNullPtr<UI::GUIButton> btnEpochMS;
+			NotNullPtr<UI::GUIButton> btnEpochUS;
+			NotNullPtr<UI::GUIButton> btnEpochNS;
+			NotNullPtr<UI::GUIButton> btnDotNetTicks;
 			UI::GUILabel *lblUTCTime;
 			UI::GUITextBox *txtUTCTime;
 			UI::GUILabel *lblLocalTime;
@@ -34,7 +34,7 @@ namespace SSWR
 			NotNullPtr<UI::GUITabPage> tpStr;
 			UI::GUILabel *lblStr;
 			UI::GUITextBox *txtStr;
-			UI::GUIButton *btnStrConv;
+			NotNullPtr<UI::GUIButton> btnStrConv;
 			UI::GUILabel *lblStrEpochSec;
 			UI::GUITextBox *txtStrEpochSec;
 			UI::GUILabel *lblStrEpochMS;

@@ -18,8 +18,8 @@ namespace SSWR
 
 			UI::GUILabel *lblPolylineText;
 			UI::GUITextBox *txtPolylineText;
-			UI::GUIButton *btnOK;
-			UI::GUIButton *btnCancel;
+			NotNullPtr<UI::GUIButton> btnOK;
+			NotNullPtr<UI::GUIButton> btnCancel;
 			Math::Geometry::LineString *polyline;
 
 			static void __stdcall OnOKClicked(void *userObj);

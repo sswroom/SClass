@@ -16,10 +16,10 @@ namespace SSWR
 		private:
 			UI::GUILabel *lblTMSURL;
 			UI::GUITextBox *txtTMSURL;
-			UI::GUIButton *btnLoad;
+			NotNullPtr<UI::GUIButton> btnLoad;
 			UI::GUILabel *lblStatus;
 			UI::GUITextBox *txtStatus;
-			UI::GUIButton *btnOK;
+			NotNullPtr<UI::GUIButton> btnOK;
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			Optional<Net::SSLEngine> ssl;

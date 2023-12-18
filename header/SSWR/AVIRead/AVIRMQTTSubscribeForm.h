@@ -58,12 +58,12 @@ namespace SSWR
 			UI::GUITextBox *txtUsername;
 			UI::GUILabel *lblPassword;
 			UI::GUITextBox *txtPassword;
-			UI::GUIButton *btnStart;
+			NotNullPtr<UI::GUIButton> btnStart;
 
 			NotNullPtr<UI::GUITabPage> tpSTopic;
 			UI::GUILabel *lblSTopic;
 			UI::GUITextBox *txtSTopic;
-			UI::GUIButton *btnSTopic;
+			NotNullPtr<UI::GUIButton> btnSTopic;
 			UI::GUIListBox *lbSTopic;
 
 			NotNullPtr<UI::GUITabPage> tpPublish;
@@ -71,7 +71,7 @@ namespace SSWR
 			UI::GUITextBox *txtPublishTopic;
 			UI::GUILabel *lblPublishMessage;
 			UI::GUITextBox *txtPublishMessage;
-			UI::GUIButton *btnPublish;
+			NotNullPtr<UI::GUIButton> btnPublish;
 
 			NotNullPtr<UI::GUITabPage> tpTopic;
 			UI::GUIListView *lvTopic;

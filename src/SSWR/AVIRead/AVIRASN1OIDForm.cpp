@@ -76,7 +76,7 @@ SSWR::AVIRead::AVIRASN1OIDForm::AVIRASN1OIDForm(UI::GUIClientControl *parent, No
 	NEW_CLASSNN(this->pnlSource, UI::GUIPanel(ui, this->tpSource));
 	this->pnlSource->SetRect(0, 0, 100, 31, false);
 	this->pnlSource->SetDockType(UI::GUIControl::DOCK_BOTTOM);
-	NEW_CLASS(this->btnConvert, UI::GUIButton(ui, this->pnlSource, CSTR("Convert")));
+	this->btnConvert = ui->NewButton(this->pnlSource, CSTR("Convert"));
 	this->btnConvert->SetRect(4, 4, 75, 23, false);
 	this->btnConvert->HandleButtonClick(OnConvertClicked, this);
 	NEW_CLASS(this->txtSource, UI::GUITextBox(ui, this->tpSource, CSTR(""), true));

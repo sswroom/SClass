@@ -63,15 +63,15 @@ namespace SSWR
 			UI::GUITextBox *txtDetPriority;
 			
 			NotNullPtr<UI::GUIPanel> pnlDetModule;
-			UI::GUIButton *btnDetModule;
+			NotNullPtr<UI::GUIButton> btnDetModule;
 			UI::GUIListView *lvDetModule;
 
 			NotNullPtr<UI::GUIPanel> pnlDetThread;
-			UI::GUIButton *btnDetThread;
+			NotNullPtr<UI::GUIButton> btnDetThread;
 			UI::GUIListView *lvDetThread;
 
 			NotNullPtr<UI::GUIPanel> pnlDetHeap;
-			UI::GUIButton *btnDetHeap;
+			NotNullPtr<UI::GUIButton> btnDetHeap;
 			UI::GUIListBox *lbDetHeap;
 			UI::GUIHSplitter *hspDetHeap;
 			UI::GUIListView *lvDetHeap;

@@ -151,18 +151,18 @@ SSWR::AVIRead::AVIRIBuddyForm::AVIRIBuddyForm(UI::GUIClientControl *parent, NotN
 	this->chkHeart->HandleCheckedChange(OnHeartChanged, this);
 	NEW_CLASS(this->lblTurn, UI::GUILabel(ui, this->pnlMain, CSTR("Body Turn")));
 	this->lblTurn->SetRect(4, 148, 100, 23, false);
-	NEW_CLASS(this->btnTurnLeft, UI::GUIButton(ui, this->pnlMain, CSTR("Left")));
+	this->btnTurnLeft = ui->NewButton(this->pnlMain, CSTR("Left"));
 	this->btnTurnLeft->SetRect(104, 148, 75, 23, false);
 	this->btnTurnLeft->HandleButtonUpDown(OnTurnLeftDown, this);
-	NEW_CLASS(this->btnTurnRight, UI::GUIButton(ui, this->pnlMain, CSTR("Right")));
+	this->btnTurnRight = ui->NewButton(this->pnlMain, CSTR("Right"));
 	this->btnTurnRight->SetRect(184, 148, 75, 23, false);
 	this->btnTurnRight->HandleButtonUpDown(OnTurnRightDown, this);
 	NEW_CLASS(this->lblWing, UI::GUILabel(ui, this->pnlMain, CSTR("Wing")));
 	this->lblWing->SetRect(4, 172, 100, 23, false);
-	NEW_CLASS(this->btnWingUp, UI::GUIButton(ui, this->pnlMain, CSTR("Up")));
+	this->btnWingUp = ui->NewButton(this->pnlMain, CSTR("Up"));
 	this->btnWingUp->SetRect(104, 172, 75, 23, false);
 	this->btnWingUp->HandleButtonUpDown(OnWingUpDown, this);
-	NEW_CLASS(this->btnWingDown, UI::GUIButton(ui, this->pnlMain, CSTR("Down")));
+	this->btnWingDown = ui->NewButton(this->pnlMain, CSTR("Down"));
 	this->btnWingDown->SetRect(184, 172, 75, 23, false);
 	this->btnWingDown->HandleButtonUpDown(OnWingDownDown, this);
 

@@ -136,7 +136,7 @@ SSWR::AVIRead::AVIRLogExtractForm::AVIRLogExtractForm(UI::GUIClientControl *pare
 	this->lblSFile->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtSFile, UI::GUITextBox(ui, *this, CSTR("")));
 	this->txtSFile->SetRect(104, 4, 560, 23, false);
-	NEW_CLASS(this->btnSFile, UI::GUIButton(ui, *this, CSTR("Browse")));
+	this->btnSFile = ui->NewButton(*this, CSTR("Browse"));
 	this->btnSFile->SetRect(660, 4, 75, 23, false);
 	this->btnSFile->HandleButtonClick(OnSFileClicked, this);
 	NEW_CLASS(this->lblPrefix, UI::GUILabel(ui, *this, CSTR("Prefix")));
@@ -147,7 +147,7 @@ SSWR::AVIRead::AVIRLogExtractForm::AVIRLogExtractForm(UI::GUIClientControl *pare
 	this->lblOFile->SetRect(4, 52, 100, 23, false);
 	NEW_CLASS(this->txtOFile, UI::GUITextBox(ui, *this, CSTR("")));
 	this->txtOFile->SetRect(104, 52, 560, 23, false);
-	NEW_CLASS(this->btnOFile, UI::GUIButton(ui, *this, CSTR("Browse")));
+	this->btnOFile = ui->NewButton(*this, CSTR("Browse"));
 	this->btnOFile->SetRect(660, 52, 75, 23, false);
 	this->btnOFile->HandleButtonClick(OnOFileClicked, this);
 	NEW_CLASS(this->lblType, UI::GUILabel(ui, *this, CSTR("Prefix")));
@@ -161,7 +161,7 @@ SSWR::AVIRead::AVIRLogExtractForm::AVIRLogExtractForm(UI::GUIClientControl *pare
 	this->lblSuffix->SetRect(4, 100, 100, 23, false);
 	NEW_CLASS(this->txtSuffix, UI::GUITextBox(ui, *this, CSTR("")));
 	this->txtSuffix->SetRect(104, 100, 560, 23, false);
-	NEW_CLASS(this->btnExtract, UI::GUIButton(ui, *this, CSTR("Extract")));
+	this->btnExtract = ui->NewButton(*this, CSTR("Extract"));
 	this->btnExtract->SetRect(200, 124, 75, 23, false);
 	this->btnExtract->HandleButtonClick(OnExtractClicked, this);
 }

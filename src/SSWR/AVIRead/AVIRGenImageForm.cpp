@@ -79,10 +79,10 @@ SSWR::AVIRead::AVIRGenImageForm::AVIRGenImageForm(UI::GUIClientControl *parent, 
 	NEW_CLASS(this->txtHeight, UI::GUITextBox(ui, *this, CSTR("480")));
 	this->txtHeight->SetRect(192, 200, 56, 23, false);
 
-	NEW_CLASS(btnGenerate, UI::GUIButton(ui, *this, CSTR("Generate")));
+	btnGenerate = ui->NewButton(*this, CSTR("Generate"));
 	btnGenerate->SetRect(88, 232, 75, 23, false);
 	btnGenerate->HandleButtonClick(GenerateClicked, this);
-	NEW_CLASS(btnCancel, UI::GUIButton(ui, *this, CSTR("Cancel")));
+	btnCancel = ui->NewButton(*this, CSTR("Cancel"));
 	btnCancel->SetRect(184, 232, 75, 23, false);
 	btnCancel->HandleButtonClick(CancelClicked, this);
 	this->SetDefaultButton(btnGenerate);

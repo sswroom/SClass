@@ -320,10 +320,10 @@ SSWR::AVIRead::AVIRGISLineEditForm::AVIRGISLineEditForm(UI::GUIClientControl *pa
 	NEW_CLASS(this->lbLayer, UI::GUIListBox(ui, this->pnlLayers, false));
 	this->lbLayer->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lbLayer->HandleSelectionChange(LayerSelChanged, this);
-	NEW_CLASS(this->btnNewLayer, UI::GUIButton(ui, this->pnlLayersButton, CSTR("&Add")));
+	this->btnNewLayer = ui->NewButton(this->pnlLayersButton, CSTR("&Add"));
 	this->btnNewLayer->SetRect(8, 8, 64, 23, false);
 	this->btnNewLayer->HandleButtonClick(NewLayerClicked, this);
-	NEW_CLASS(this->btnRemoveLayer, UI::GUIButton(ui, this->pnlLayersButton, CSTR("&Remove")));
+	this->btnRemoveLayer = ui->NewButton(this->pnlLayersButton, CSTR("&Remove"));
 	this->btnRemoveLayer->SetRect(80, 8, 64, 23, false);
 	this->btnRemoveLayer->HandleButtonClick(RemoveLayerClicked, this);
 
@@ -353,10 +353,10 @@ SSWR::AVIRead::AVIRGISLineEditForm::AVIRGISLineEditForm(UI::GUIClientControl *pa
 	this->txtPattern->SetRect(96, 80, 100, 23, false);
 	this->txtPattern->HandleTextChanged(PatternChanged, this);
 
-	NEW_CLASS(this->btnOK, UI::GUIButton(ui, this->pnlButtons, CSTR("OK")));
+	this->btnOK = ui->NewButton(this->pnlButtons, CSTR("OK"));
 	this->btnOK->SetRect(150, 8, 75, 23, false);
 	this->btnOK->HandleButtonClick(OKClicked, this);
-	NEW_CLASS(this->btnCancel, UI::GUIButton(ui, this->pnlButtons, CSTR("Cancel")));
+	this->btnCancel = ui->NewButton(this->pnlButtons, CSTR("Cancel"));
 	this->btnCancel->SetRect(231, 8, 75, 23, false);
 	this->btnCancel->HandleButtonClick(CancelClicked, this);
 	this->SetDefaultButton(this->btnOK);

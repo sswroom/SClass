@@ -63,7 +63,7 @@ SSWR::DiscDB::DiscDBSearchDiscForm::DiscDBSearchDiscForm(UI::GUIClientControl *p
 	this->lblDiscId->SetRect(8, 9, 56, 25, false);
 	NEW_CLASS(this->txtDiscId, UI::GUITextBox(ui, this->pnlDiscId, CSTR("")));
 	this->txtDiscId->SetRect(64, 9, 120, 20, false);
-	NEW_CLASS(this->btnSearch, UI::GUIButton(ui, this->pnlDiscId, CSTR("&Search")));
+	this->btnSearch = ui->NewButton(this->pnlDiscId, CSTR("&Search"));
 	this->btnSearch->SetRect(208, 9, 75, 25, false);
 	this->btnSearch->HandleButtonClick(OnSearchClicked, this);
 	NEW_CLASSNN(this->pnlOut, UI::GUIPanel(ui, *this));

@@ -392,23 +392,23 @@ void UI::GUIForm::UpdateMenu()
 	this->UpdateHAcc();
 }
 
-void UI::GUIForm::SetDefaultButton(UI::GUIButton *btn)
+void UI::GUIForm::SetDefaultButton(NotNullPtr<UI::GUIButton> btn)
 {
 	this->okBtn = btn;
 //	btn->SetDefaultBtnLook();
 }
 
-void UI::GUIForm::SetCancelButton(UI::GUIButton *btn)
+void UI::GUIForm::SetCancelButton(NotNullPtr<UI::GUIButton> btn)
 {
 	this->cancelBtn = btn;
 }
 
-UI::GUIButton *UI::GUIForm::GetDefaultButton()
+Optional<UI::GUIButton> UI::GUIForm::GetDefaultButton()
 {
 	return this->okBtn;
 }
 
-UI::GUIButton *UI::GUIForm::GetCancelButton()
+Optional<UI::GUIButton> UI::GUIForm::GetCancelButton()
 {
 	return this->cancelBtn;
 }

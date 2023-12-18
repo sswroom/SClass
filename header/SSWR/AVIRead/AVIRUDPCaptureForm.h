@@ -37,7 +37,7 @@ namespace SSWR
 			UI::GUILabel *lblPort;
 			UI::GUITextBox *txtPort;
 			UI::GUICheckBox *chkReuseAddr;
-			UI::GUIButton *btnStart;
+			NotNullPtr<UI::GUIButton> btnStart;
 			UI::GUITabControl *tcMain;
 
 			NotNullPtr<UI::GUITabPage> tpData;
@@ -61,7 +61,7 @@ namespace SSWR
 			NotNullPtr<UI::GUIPanel> pnlMulticastCtrl;
 			UI::GUILabel *lblMulticastCurr;
 			UI::GUITextBox *txtMulticastCurr;
-			UI::GUIButton *btnMulticastAdd;
+			NotNullPtr<UI::GUIButton> btnMulticastAdd;
 			UI::GUIListBox *lbMulticastCurr;
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;

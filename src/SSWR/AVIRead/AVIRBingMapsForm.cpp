@@ -53,7 +53,7 @@ SSWR::AVIRead::AVIRBingMapsForm::AVIRBingMapsForm(UI::GUIClientControl *parent, 
 		is = (Map::BingMapsTile::ImagerySet)((OSInt)is + 1);
 	}
 	this->cboImagerySet->SetSelectedIndex(0);
-	NEW_CLASS(this->btnOK, UI::GUIButton(ui, *this, CSTR("OK")));
+	this->btnOK = ui->NewButton(*this, CSTR("OK"));
 	this->btnOK->SetRect(104, 76, 75, 23, false);
 	this->btnOK->HandleButtonClick(OnOKClicked, this);
 }

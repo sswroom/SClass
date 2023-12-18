@@ -75,7 +75,7 @@ SSWR::AVIRead::AVIRMACGenForm::AVIRMACGenForm(UI::GUIClientControl *parent, NotN
 	this->lblVendor->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->cboVendor, UI::GUIComboBox(ui, *this, false));
 	this->cboVendor->SetRect(104, 4, 300, 23, false);
-	NEW_CLASS(this->btnGenerate, UI::GUIButton(ui, *this, CSTR("Generate")));
+	this->btnGenerate = ui->NewButton(*this, CSTR("Generate"));
 	this->btnGenerate->SetRect(104, 28, 75, 23, false);
 	this->btnGenerate->HandleButtonClick(OnGenerateClicked, this);
 	NEW_CLASS(this->lblColonFormat, UI::GUILabel(ui, *this, CSTR("Colon Format")));
@@ -92,7 +92,7 @@ SSWR::AVIRead::AVIRMACGenForm::AVIRMACGenForm(UI::GUIClientControl *parent, NotN
 	this->lblAdapter->SetRect(4, 100, 100, 23, false);
 	NEW_CLASS(this->cboAdapter, UI::GUIComboBox(ui, *this, false));
 	this->cboAdapter->SetRect(104, 100, 200, 23, false);
-	NEW_CLASS(this->btnAdapterSet, UI::GUIButton(ui, *this, CSTR("Set")));
+	this->btnAdapterSet = ui->NewButton(*this, CSTR("Set"));
 	this->btnAdapterSet->SetRect(304, 100, 75, 23, false);
 	this->btnAdapterSet->HandleButtonClick(OnAdapterSetClicked, this);
 

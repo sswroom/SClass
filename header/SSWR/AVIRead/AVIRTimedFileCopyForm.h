@@ -22,7 +22,7 @@ namespace SSWR
 			UI::GUIDateTimePicker *dtpStartTime;
 			UI::GUILabel *lblEndTime;
 			UI::GUIDateTimePicker *dtpEndTime;
-			UI::GUIButton *btnStart;
+			NotNullPtr<UI::GUIButton> btnStart;
 
 			static void __stdcall OnStartClicked(void *userObj);
 

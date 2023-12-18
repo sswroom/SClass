@@ -423,13 +423,13 @@ SSWR::AVIRead::AVIRGISTileDownloadForm::AVIRGISTileDownloadForm(UI::GUIClientCon
 	this->lblMaxLevel->SetRect(4, 28, 100, 23, false);
 	NEW_CLASSNN(this->txtMaxLevel, UI::GUITextBox(ui, *this, CSTR("")));
 	this->txtMaxLevel->SetRect(104, 28, 60, 23, false);
-	NEW_CLASSNN(this->btnArea, UI::GUIButton(ui, *this, CSTR("Select Area")));
+	this->btnArea = ui->NewButton(*this, CSTR("Select Area"));
 	this->btnArea->SetRect(4, 52, 100, 23, false);
 	this->btnArea->HandleButtonClick(OnAreaClicked, this);
-	NEW_CLASSNN(this->btnSave, UI::GUIButton(ui, *this, CSTR("Save As")));
+	this->btnSave = ui->NewButton(*this, CSTR("Save As"));
 	this->btnSave->SetRect(114, 52, 100, 23, false);
 	this->btnSave->HandleButtonClick(OnSaveFileClicked, this);
-	NEW_CLASSNN(this->btnStop, UI::GUIButton(ui, *this, CSTR("Stop Downloading")));
+	this->btnStop = ui->NewButton(*this, CSTR("Stop Downloading"));
 	this->btnStop->SetRect(224, 52, 100, 23, false);
 	this->btnStop->HandleButtonClick(OnStopClicked, this);
 

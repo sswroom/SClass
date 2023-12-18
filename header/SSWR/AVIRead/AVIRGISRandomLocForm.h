@@ -15,8 +15,8 @@ namespace SSWR
 		class AVIRGISRandomLocForm : public UI::GUIForm
 		{
 		private:
-			UI::GUIButton *btnArea;
-			UI::GUIButton *btnRandom;
+			NotNullPtr<UI::GUIButton> btnArea;
+			NotNullPtr<UI::GUIButton> btnRandom;
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			Math::Coord2DDbl selPt1;

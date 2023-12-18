@@ -36,9 +36,9 @@ namespace SSWR
 			UI::GUILabel *lblGamma;
 			UI::GUIHScrollBar *hsbGamma;
 			UI::GUILabel *lblGammaV;
-			UI::GUIButton *btnOK;
-			UI::GUIButton *btnCancel;
-			UI::GUIButton *btnLastValue;
+			NotNullPtr<UI::GUIButton> btnOK;
+			NotNullPtr<UI::GUIButton> btnCancel;
+			NotNullPtr<UI::GUIButton> btnLastValue;
 
 			static void __stdcall OnColorChg(void *userObj, UOSInt newPos);
 			static void __stdcall OnOKClick(void *userObj);

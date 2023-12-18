@@ -406,10 +406,10 @@ SSWR::AVIRead::AVIRChineseForm::AVIRChineseForm(UI::GUIClientControl *parent, No
 	NEW_CLASS(this->txtCharCode, UI::GUITextBox(ui, *this, CSTR("0")));
 	this->txtCharCode->SetRect(104, 4, 100, 23, false);
 	this->txtCharCode->SetReadOnly(true);
-	NEW_CLASS(this->btnCharPrev, UI::GUIButton(ui, *this, CSTR("Prev")));
+	this->btnCharPrev = ui->NewButton(*this, CSTR("Prev"));
 	this->btnCharPrev->SetRect(104, 28, 55, 23, false);
 	this->btnCharPrev->HandleButtonClick(OnCharPrevClicked, this);
-	NEW_CLASS(this->btnCharNext, UI::GUIButton(ui, *this, CSTR("Next")));
+	this->btnCharNext = ui->NewButton(*this, CSTR("Next"));
 	this->btnCharNext->SetRect(164, 28, 55, 23, false);
 	this->btnCharNext->HandleButtonClick(OnCharNextClicked, this);
 	NEW_CLASS(this->lblChar, UI::GUILabel(ui, *this, CSTR("Character")));
@@ -428,7 +428,7 @@ SSWR::AVIRead::AVIRChineseForm::AVIRChineseForm(UI::GUIClientControl *parent, No
 	NEW_CLASS(this->txtRelatedAdd, UI::GUITextBox(ui, *this, CSTR("")));
 	this->txtRelatedAdd->SetRect(104, 124, 23, 23, false);
 	this->txtRelatedAdd->HandleTextChanged(OnRelatedAddChg, this);
-	NEW_CLASS(this->btnRelatedGo, UI::GUIButton(ui, *this, CSTR("Show Related")));
+	this->btnRelatedGo = ui->NewButton(*this, CSTR("Show Related"));
 	this->btnRelatedGo->SetRect(128, 124, 95, 23, false);
 	this->btnRelatedGo->HandleButtonClick(OnRelatedGoClicked, this);
 	NEW_CLASS(this->pbChar, UI::GUIPictureBoxSimple(ui, *this, this->deng, true));

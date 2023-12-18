@@ -91,7 +91,7 @@ SSWR::AVIRead::AVIRHashTestForm::AVIRHashTestForm(UI::GUIClientControl *parent, 
 	this->lblAlgorithm->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->cboAlgorithm, UI::GUIComboBox(ui, this->tpAlgorithm, false));
 	this->cboAlgorithm->SetRect(104, 4, 200, 23, false);
-	NEW_CLASS(this->btnSpeed, UI::GUIButton(ui, this->tpAlgorithm, CSTR("Test Speed")));
+	this->btnSpeed = ui->NewButton(this->tpAlgorithm, CSTR("Test Speed"));
 	this->btnSpeed->SetRect(304, 4, 75, 23, false);
 	this->btnSpeed->HandleButtonClick(OnSpeedClicked, this);
 	NEW_CLASS(this->lblSpeed, UI::GUILabel(ui, this->tpAlgorithm, CSTR("Speed")));
@@ -104,7 +104,7 @@ SSWR::AVIRead::AVIRHashTestForm::AVIRHashTestForm(UI::GUIClientControl *parent, 
 	NEW_CLASSNN(this->pnlCompare, UI::GUIPanel(ui, this->tpCompare));
 	this->pnlCompare->SetRect(0, 0, 100, 31, false);
 	this->pnlCompare->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->btnCompare, UI::GUIButton(ui, this->pnlCompare, CSTR("Compare")));
+	this->btnCompare = ui->NewButton(this->pnlCompare, CSTR("Compare"));
 	this->btnCompare->SetRect(4, 4, 75, 23, false);
 	this->btnCompare->HandleButtonClick(OnCompareClicked, this);
 	NEW_CLASS(this->lvCompare, UI::GUIListView(ui, this->tpCompare, UI::GUIListView::LVSTYLE_TABLE, 2));

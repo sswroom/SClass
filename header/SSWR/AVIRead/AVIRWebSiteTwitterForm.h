@@ -19,7 +19,7 @@ namespace SSWR
 			NotNullPtr<UI::GUIPanel> pnlRequest;
 			UI::GUILabel *lblChannelId;
 			UI::GUITextBox *txtChannelId;
-			UI::GUIButton *btnRequestPage;
+			NotNullPtr<UI::GUIButton> btnRequestPage;
 			UI::GUIListView *lvItems;
 
 			Net::WebSite::WebSiteTwitterControl *ctrl;

@@ -181,19 +181,19 @@ SSWR::AVIRead::AVIRHQMPPlaylistForm::AVIRHQMPPlaylistForm(UI::GUIClientControl *
 	NEW_CLASS(this->lbPlaylist, UI::GUIListBox(ui, *this, false));
 	this->lbPlaylist->SetRect(0, 0, 160, 100, false);
 	this->lbPlaylist->SetDockType(UI::GUIControl::DOCK_FILL);
-	NEW_CLASS(this->btnAdd, UI::GUIButton(ui, this->pnlCtrl, CSTR("&Add")));
+	this->btnAdd = ui->NewButton(this->pnlCtrl, CSTR("&Add"));
 	this->btnAdd->SetRect(16, 16, 75, 23, false);
 	this->btnAdd->HandleButtonClick(OnAddClicked, this);
-	NEW_CLASS(this->btnAddDir, UI::GUIButton(ui, this->pnlCtrl, CSTR("&Add Folder")));
+	this->btnAddDir = ui->NewButton(this->pnlCtrl, CSTR("&Add Folder"));
 	this->btnAddDir->SetRect(96, 16, 75, 23, false);
 	this->btnAddDir->HandleButtonClick(OnAddDirClicked, this);
-	NEW_CLASS(this->btnClear, UI::GUIButton(ui, this->pnlCtrl, CSTR("Clea&r")));
+	this->btnClear = ui->NewButton(this->pnlCtrl, CSTR("Clea&r"));
 	this->btnClear->SetRect(176, 16, 75, 23, false);
 	this->btnClear->HandleButtonClick(OnClearClicked, this);
-	NEW_CLASS(this->btnOK, UI::GUIButton(ui, this->pnlCtrl, CSTR("&OK")));
+	this->btnOK = ui->NewButton(this->pnlCtrl, CSTR("&OK"));
 	this->btnOK->SetRect(256, 16, 75, 23, false);
 	this->btnOK->HandleButtonClick(OnOKClicked, this);
-	NEW_CLASS(this->btnCancel, UI::GUIButton(ui, this->pnlCtrl, CSTR("&Cancel")));
+	this->btnCancel = ui->NewButton(this->pnlCtrl, CSTR("&Cancel"));
 	this->btnCancel->SetRect(336, 16, 75, 23, false);
 	this->btnCancel->HandleButtonClick(OnCancelClicked, this);
 

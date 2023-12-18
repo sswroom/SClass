@@ -31,7 +31,7 @@ namespace SSWR
 			UI::GUIComboBox *cboSelfIP;
 			UI::GUILabel *lblTargetIP;
 			UI::GUITextBox *txtTargetIP;
-			UI::GUIButton *btnStart;
+			NotNullPtr<UI::GUIButton> btnStart;
 
 			UI::GUIListBox *lbIP;
 			UI::GUIHSplitter *hspIP;

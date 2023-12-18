@@ -22,12 +22,12 @@ namespace SSWR
 			UI::GUITextBox *txtMaxScale;
 			UI::GUICheckBox *chkHide;
 			UI::GUIPictureBox *pbFontStyle;
-			UI::GUIButton *btnFontModify;
-			UI::GUIButton *btnFontStyle;
+			NotNullPtr<UI::GUIButton> btnFontModify;
+			NotNullPtr<UI::GUIButton> btnFontStyle;
 			UI::GUILabel *lblLineStyle;
 			UI::GUIPictureBox *pbLineStyle;
-			UI::GUIButton *btnLineModify;
-			UI::GUIButton *btnLineStyle;
+			NotNullPtr<UI::GUIButton> btnLineModify;
+			NotNullPtr<UI::GUIButton> btnLineStyle;
 			UI::GUILabel *lblFillStyle;
 			UI::GUIPictureBox *pbFillStyle;
 			UI::GUIComboBox *cboColName;
@@ -42,8 +42,8 @@ namespace SSWR
 			UI::GUICheckBox *chkAlign;
 			UI::GUICheckBox *chkTrim;
 			UI::GUICheckBox *chkCapital;
-			UI::GUIButton *btnOK;
-			UI::GUIButton *btnCancel;
+			NotNullPtr<UI::GUIButton> btnOK;
+			NotNullPtr<UI::GUIButton> btnCancel;
 
 			NotNullPtr<Media::DrawEngine> eng;
 			Media::StaticImage *imgLine;

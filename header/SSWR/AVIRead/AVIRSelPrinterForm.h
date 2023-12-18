@@ -20,10 +20,10 @@ namespace SSWR
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			UI::GUILabel *lblPrinter;
 			UI::GUIComboBox *cboPrinter;
-			UI::GUIButton *btnSetting;
+			NotNullPtr<UI::GUIButton> btnSetting;
 
-			UI::GUIButton *btnOK;
-			UI::GUIButton *btnCancel;
+			NotNullPtr<UI::GUIButton> btnOK;
+			NotNullPtr<UI::GUIButton> btnCancel;
 
 			static void __stdcall OnSettingClick(void *userObj);
 			static void __stdcall OnPrinterChg(void *userObj);

@@ -194,7 +194,7 @@ SSWR::AVIRead::AVIRFileAnalyseForm::AVIRFileAnalyseForm(UI::GUIClientControl *pa
 	NEW_CLASS(this->txtFile, UI::GUITextBox(ui, this->pnlCtrl, CSTR("")));
 	this->txtFile->SetRect(108, 8, 500, 23, false);
 	this->txtFile->SetReadOnly(true);
-	NEW_CLASS(this->btnFile, UI::GUIButton(ui, this->pnlCtrl, CSTR("B&rowse")));
+	this->btnFile = ui->NewButton(this->pnlCtrl, CSTR("B&rowse"));
 	this->btnFile->SetRect(608, 8, 75, 23, false);
 	this->btnFile->HandleButtonClick(OnFileClicked, this);
 	this->tpContent = this->tcMain->AddTabPage(CSTR("Content"));
@@ -215,7 +215,7 @@ SSWR::AVIRead::AVIRFileAnalyseForm::AVIRFileAnalyseForm(UI::GUIClientControl *pa
 	this->txtPack->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->txtPack->SetReadOnly(true);
 
-	NEW_CLASS(this->btnTrimPadding, UI::GUIButton(ui, this->tpTool, CSTR("Trim Padding")));
+	this->btnTrimPadding = ui->NewButton(this->tpTool, CSTR("Trim Padding"));
 	this->btnTrimPadding->SetRect(8, 8, 75, 23, false);
 	this->btnTrimPadding->HandleButtonClick(OnTrimPaddingClicked, this);
 

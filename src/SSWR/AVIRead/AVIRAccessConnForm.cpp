@@ -65,13 +65,13 @@ SSWR::AVIRead::AVIRAccessConnForm::AVIRAccessConnForm(UI::GUIClientControl *pare
 	this->lblFileName->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtFileName, UI::GUITextBox(ui, *this, CSTR("")));
 	this->txtFileName->SetRect(104, 4, 500, 23, false);
-	NEW_CLASS(this->btnBrowse, UI::GUIButton(ui, *this, CSTR("B&rowse")));
+	this->btnBrowse = ui->NewButton(*this, CSTR("B&rowse"));
 	this->btnBrowse->SetRect(604, 4, 75, 23, false);
 	this->btnBrowse->HandleButtonClick(OnBrowseClicked, this);
-	NEW_CLASS(this->btnOK, UI::GUIButton(ui, *this, CSTR("OK")));
+	this->btnOK = ui->NewButton(*this, CSTR("OK"));
 	this->btnOK->SetRect(104, 28, 75, 23, false);
 	this->btnOK->HandleButtonClick(OnOKClicked, this);
-	NEW_CLASS(this->btnCancel, UI::GUIButton(ui, *this, CSTR("Cancel")));
+	this->btnCancel = ui->NewButton(*this, CSTR("Cancel"));
 	this->btnCancel->SetRect(184, 28, 75, 23, false);
 	this->btnCancel->HandleButtonClick(OnCancelClicked, this);
 

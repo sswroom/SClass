@@ -192,10 +192,10 @@ SSWR::AVIRead::AVIRConsoleMediaPlayerForm::AVIRConsoleMediaPlayerForm(UI::GUICli
 	NEW_CLASS(this->txtPort, UI::GUITextBox(ui, *this, CSTR("")));
 	this->txtPort->SetRect(104, 4, 60, 23, false);
 	this->txtPort->SetReadOnly(true);
-	NEW_CLASS(this->btnStop, UI::GUIButton(ui, *this, CSTR("Stop")));
+	this->btnStop = ui->NewButton(*this, CSTR("Stop"));
 	this->btnStop->SetRect(4, 28, 75, 23, false);
 	this->btnStop->HandleButtonClick(OnStopClicked, this);
-	NEW_CLASS(this->btnCaptureDev, UI::GUIButton(ui, *this, CSTR("Capture Device")));
+	this->btnCaptureDev = ui->NewButton(*this, CSTR("Capture Device"));
 	this->btnCaptureDev->SetRect(4, 52, 150, 23, false);
 	this->btnCaptureDev->HandleButtonClick(OnCaptureDevClicked, this);
 	NEW_CLASS(this->lblRotate, UI::GUILabel(ui, *this, CSTR("Rotate")));

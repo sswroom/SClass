@@ -39,15 +39,15 @@ namespace SSWR
 			UI::GUITextBox *txtStyleName;
 			UI::GUILabel *lblFontName;
 			UI::GUITextBox *txtFontName;
-			UI::GUIButton *btnFontName;
+			NotNullPtr<UI::GUIButton> btnFontName;
 			UI::GUILabel *lblFontColor;
 			UI::GUIPictureBox *pbFontColor;
 			UI::GUILabel *lblBufferSize;
 			UI::GUIHScrollBar *hsbBufferSize;
 			UI::GUILabel *lblBufferColor;
 			UI::GUIPictureBox *pbBufferColor;
-			UI::GUIButton *btnOK;
-			UI::GUIButton *btnCancel;
+			NotNullPtr<UI::GUIButton> btnOK;
+			NotNullPtr<UI::GUIButton> btnCancel;
 
 			static void __stdcall FontNameClicked(void *userObj);
 			static Bool __stdcall FontColorClicked(void *userObj, Math::Coord2D<OSInt> scnPos, MouseButton mouseBtn);

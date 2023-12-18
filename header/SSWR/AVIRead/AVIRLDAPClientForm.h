@@ -33,7 +33,7 @@ namespace SSWR
 			UI::GUITextBox *txtUserDN;
 			UI::GUILabel *lblPassword;
 			UI::GUITextBox *txtPassword;
-			UI::GUIButton *btnConnect;
+			NotNullPtr<UI::GUIButton> btnConnect;
 			NotNullPtr<UI::GUIGroupBox> grpSearch;
 			NotNullPtr<UI::GUIPanel> pnlSearchRequest;
 			UI::GUILabel *lblSearchBase;
@@ -44,7 +44,7 @@ namespace SSWR
 			UI::GUIComboBox *cboSearchDerefAliases;
 			UI::GUILabel *lblSearchFilter;
 			UI::GUITextBox *txtSearchFilter;
-			UI::GUIButton *btnSearch;
+			NotNullPtr<UI::GUIButton> btnSearch;
 			UI::GUIComboBox *cboSearchResult;
 			UI::GUIListView *lvSearch;
 		

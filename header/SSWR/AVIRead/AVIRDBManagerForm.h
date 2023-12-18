@@ -35,9 +35,9 @@ namespace SSWR
 
 			NotNullPtr<UI::GUITabPage> tpDatabase;
 			UI::GUIListBox *lbDatabase;
-			UI::GUIButton *btnDatabaseChange;
-			UI::GUIButton *btnDatabaseDelete;
-			UI::GUIButton *btnDatabaseNew;
+			NotNullPtr<UI::GUIButton> btnDatabaseChange;
+			NotNullPtr<UI::GUIButton> btnDatabaseDelete;
+			NotNullPtr<UI::GUIButton> btnDatabaseNew;
 
 			NotNullPtr<UI::GUITabPage> tpTable;
 			NotNullPtr<UI::GUIPanel> pnlTable;
@@ -52,8 +52,8 @@ namespace SSWR
 			NotNullPtr<UI::GUITabPage> tpSQL;
 			NotNullPtr<UI::GUIPanel> pnlSQL;
 			NotNullPtr<UI::GUIPanel> pnlSQLCtrl;
-			UI::GUIButton *btnSQLExec;
-			UI::GUIButton *btnSQLFile;
+			NotNullPtr<UI::GUIButton> btnSQLExec;
+			NotNullPtr<UI::GUIButton> btnSQLFile;
 			UI::GUITextBox *txtSQL;
 			UI::GUIVSplitter *vspSQL;
 			UI::GUIListView *lvSQLResult;
@@ -71,13 +71,13 @@ namespace SSWR
 
 			NotNullPtr<UI::GUITabPage> tpVariable;
 			NotNullPtr<UI::GUIPanel> pnlVariable;
-			UI::GUIButton *btnVariable;
+			NotNullPtr<UI::GUIButton> btnVariable;
 			UI::GUIListView *lvVariable;
 
 			NotNullPtr<UI::GUITabPage> tpSvrConn;
 			NotNullPtr<UI::GUIPanel> pnlSvrConn;
-			UI::GUIButton *btnSvrConn;
-			UI::GUIButton *btnSvrConnKill;
+			NotNullPtr<UI::GUIButton> btnSvrConn;
+			NotNullPtr<UI::GUIButton> btnSvrConnKill;
 			UI::GUIListView *lvSvrConn;
 
 			NotNullPtr<UI::GUITabPage> tpLog;

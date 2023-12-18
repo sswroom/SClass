@@ -25,7 +25,7 @@ namespace SSWR
 			NotNullPtr<UI::GUIPanel> pnlControl;
 			UI::GUILabel *lblIP;
 			UI::GUIComboBox *cboIP;
-			UI::GUIButton *btnStart;
+			NotNullPtr<UI::GUIButton> btnStart;
 			UI::GUIListView *lvIP;
 
 			static void __stdcall OnStartClicked(void *userObj);

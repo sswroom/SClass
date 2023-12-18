@@ -18,7 +18,7 @@ namespace SSWR
 
 			UI::GUILabel *lblUserAgent;
 			UI::GUITextBox *txtUserAgent;
-			UI::GUIButton *btnParse;
+			NotNullPtr<UI::GUIButton> btnParse;
 			UI::GUILabel *lblBrowser;
 			UI::GUITextBox *txtBrowser;
 			UI::GUILabel *lblBrowserVer;

@@ -16,9 +16,9 @@ namespace SSWR
 		{
 		private:
 			UI::GUIListBox *lbFilters;
-			UI::GUIButton *btnOK;
-			UI::GUIButton *btnAdd;
-			UI::GUIButton *btnDelete;
+			NotNullPtr<UI::GUIButton> btnOK;
+			NotNullPtr<UI::GUIButton> btnAdd;
+			NotNullPtr<UI::GUIButton> btnDelete;
 			DB::DBFFile *dbf;
 			NotNullPtr<Media::DrawEngine> deng;
 			Media::MonitorMgr *monMgr;

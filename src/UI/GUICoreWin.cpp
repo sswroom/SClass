@@ -4,6 +4,7 @@
 #include "IO/Library.h"
 #include "Media/GDIEngine.h"
 #include "UI/GUICoreWin.h"
+#include "UI/Win/WinButton.h"
 #include "UI/Win/WinGroupBox.h"
 #include "UI/Win/WinMessageDialog.h"
 #ifdef _WIN32_WCE
@@ -239,6 +240,13 @@ void UI::GUICoreWin::ShowMsgOK(Text::CStringNN message, Text::CStringNN title, O
 Bool UI::GUICoreWin::ShowMsgYesNo(Text::CStringNN message, Text::CStringNN title, Optional<UI::GUIControl> ctrl)
 {
 	return UI::Win::WinMessageDialog::ShowYesNo(message, title, ctrl);
+}
+
+NotNullPtr<UI::GUIButton> UI::GUICoreWin::NewButton(NotNullPtr<GUIClientControl> parent, Text::CStringNN text)
+{
+	NotNullPtr<UI::Win::WinButton> ctrl;
+	NEW_CLASSNN(ctrl, UI::Win::WinButton(*this, parent, text));
+	return ctrl;
 }
 
 NotNullPtr<UI::GUIGroupBox> UI::GUICoreWin::NewGroupBox(NotNullPtr<GUIClientControl> parent, Text::CStringNN text)

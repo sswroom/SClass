@@ -29,7 +29,7 @@ namespace SSWR
 			UI::GUIHSplitter *hspJWT;
 			NotNullPtr<UI::GUIPanel> pnlMain;
 			NotNullPtr<UI::GUIPanel> pnlResult;
-			UI::GUIButton *btnParse;
+			NotNullPtr<UI::GUIButton> btnParse;
 			UI::GUILabel *lblParseStatus;
 			UI::GUITextBox *txtParseStatus;
 			UI::GUILabel *lblVerifyType;

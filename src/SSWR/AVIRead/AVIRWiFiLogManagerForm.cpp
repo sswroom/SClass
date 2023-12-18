@@ -327,7 +327,7 @@ SSWR::AVIRead::AVIRWiFiLogManagerForm::AVIRWiFiLogManagerForm(UI::GUIClientContr
 	NEW_CLASSNN(this->pnlControl, UI::GUIPanel(ui, *this));
 	this->pnlControl->SetRect(0, 0, 100, 31, false);
 	this->pnlControl->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->btnFile, UI::GUIButton(ui, this->pnlControl, CSTR("Open Log")));
+	this->btnFile = ui->NewButton(this->pnlControl, CSTR("Open Log"));
 	this->btnFile->SetRect(4, 4, 75, 23, false);
 	this->btnFile->HandleButtonClick(OnFileClicked, this);
 	NEW_CLASS(this->chkUnkOnly, UI::GUICheckBox(ui, this->pnlControl, CSTR("Unknown Only"), true));
@@ -335,10 +335,10 @@ SSWR::AVIRead::AVIRWiFiLogManagerForm::AVIRWiFiLogManagerForm(UI::GUIClientContr
 	this->chkUnkOnly->HandleCheckedChange(OnUnkOnlyChkChg, this);
 	NEW_CLASS(this->txtFilter, UI::GUITextBox(ui, this->pnlControl, CSTR("")));
 	this->txtFilter->SetRect(184, 4, 150, 23, false);
-	NEW_CLASS(this->btnFilter, UI::GUIButton(ui, this->pnlControl, CSTR("Filter")));
+	this->btnFilter = ui->NewButton(this->pnlControl, CSTR("Filter"));
 	this->btnFilter->SetRect(334, 4, 75, 23, false);
 	this->btnFilter->HandleButtonClick(OnFilterClicked, this);
-	NEW_CLASS(this->btnStore, UI::GUIButton(ui, this->pnlControl, CSTR("Store MACList")));
+	this->btnStore = ui->NewButton(this->pnlControl, CSTR("Store MACList"));
 	this->btnStore->SetRect(414, 4, 75, 23, false);
 	this->btnStore->HandleButtonClick(OnStoreClicked, this);
 	NEW_CLASS(this->lblInfo, UI::GUILabel(ui, this->pnlControl, CSTR("")));

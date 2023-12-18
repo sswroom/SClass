@@ -429,15 +429,15 @@ SSWR::AVIRead::AVIRHexViewerForm::AVIRHexViewerForm(UI::GUIClientControl *parent
 	NEW_CLASS(this->txtUTF8CharCode, UI::GUITextBox(ui, this->tpValues, CSTR("")));
 	this->txtUTF8CharCode->SetRect(604, 76, 150, 23, false);
 	this->txtUTF8CharCode->SetReadOnly(true);
-	NEW_CLASS(this->btnFont, UI::GUIButton(ui, this->tpValues, CSTR("Sel Font")));
+	this->btnFont = ui->NewButton(this->tpValues, CSTR("Sel Font"));
 	this->btnFont->SetRect(4, 124, 75, 23, false);
 	this->btnFont->HandleButtonClick(OnFontClicked, this);
-	NEW_CLASS(this->btnNextUnk, UI::GUIButton(ui, this->tpValues, CSTR("Next Unknown")));
+	this->btnNextUnk = ui->NewButton(this->tpValues, CSTR("Next Unknown"));
 	this->btnNextUnk->SetRect(84, 124, 75, 23, false);
 	this->btnNextUnk->HandleButtonClick(OnNextUnkClicked, this);
 	NEW_CLASS(this->chkDynamicSize, UI::GUICheckBox(ui, this->tpValues, CSTR("Dynamic Size"), false));
 	this->chkDynamicSize->SetRect(164, 124, 100, 23, false);
-	NEW_CLASS(this->btnOpenFile, UI::GUIButton(ui, this->tpValues, CSTR("Open")));
+	this->btnOpenFile = ui->NewButton(this->tpValues, CSTR("Open"));
 	this->btnOpenFile->SetRect(604, 124, 75, 23, false);
 	this->btnOpenFile->HandleButtonClick(OnOpenFileClicked, this);
 
@@ -465,7 +465,7 @@ SSWR::AVIRead::AVIRHexViewerForm::AVIRHexViewerForm(UI::GUIClientControl *parent
 	NEW_CLASS(this->txtExtractBegin, UI::GUITextBox(ui, this->tpExtract, CSTR("0")));
 	this->txtExtractBegin->SetRect(104, 4, 200, 23, false);
 	this->txtExtractBegin->SetReadOnly(true);
-	NEW_CLASS(this->btnExtractBegin, UI::GUIButton(ui, this->tpExtract, CSTR("Set")));
+	this->btnExtractBegin = ui->NewButton(this->tpExtract, CSTR("Set"));
 	this->btnExtractBegin->SetRect(304, 4, 75, 23, false);
 	this->btnExtractBegin->HandleButtonClick(OnExtractBeginClicked, this);
 	NEW_CLASS(this->lblExtractEnd, UI::GUILabel(ui, this->tpExtract, CSTR("End")));
@@ -473,10 +473,10 @@ SSWR::AVIRead::AVIRHexViewerForm::AVIRHexViewerForm(UI::GUIClientControl *parent
 	NEW_CLASS(this->txtExtractEnd, UI::GUITextBox(ui, this->tpExtract, CSTR("0")));
 	this->txtExtractEnd->SetRect(104, 28, 200, 23, false);
 	this->txtExtractEnd->SetReadOnly(true);
-	NEW_CLASS(this->btnExtractEnd, UI::GUIButton(ui, this->tpExtract, CSTR("Set")));
+	this->btnExtractEnd = ui->NewButton(this->tpExtract, CSTR("Set"));
 	this->btnExtractEnd->SetRect(304, 28, 75, 23, false);
 	this->btnExtractEnd->HandleButtonClick(OnExtractEndClicked, this);
-	NEW_CLASS(this->btnExtract, UI::GUIButton(ui, this->tpExtract, CSTR("Extract")));
+	this->btnExtract = ui->NewButton(this->tpExtract, CSTR("Extract"));
 	this->btnExtract->SetRect(104, 52, 75, 23, false);
 	this->btnExtract->HandleButtonClick(OnExtractClicked, this);
 	

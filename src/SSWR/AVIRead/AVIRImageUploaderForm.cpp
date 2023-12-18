@@ -76,10 +76,10 @@ SSWR::AVIRead::AVIRImageUploaderForm::AVIRImageUploaderForm(UI::GUIClientControl
 	this->txtPassword->SetRect(104, 28, 100, 23, false);
 	NEW_CLASS(this->chkErrorCont, UI::GUICheckBox(ui, this->pnlCtrl, CSTR("Continue on error"), false));
 	this->chkErrorCont->SetRect(204, 4, 100, 23, false);
-	NEW_CLASS(this->btnUpload, UI::GUIButton(ui, this->pnlCtrl, CSTR("Upload")));
+	this->btnUpload = ui->NewButton(this->pnlCtrl, CSTR("Upload"));
 	this->btnUpload->SetRect(204, 28, 75, 23, false);
 	this->btnUpload->HandleButtonClick(OnUploadClicked, this);
-	NEW_CLASS(this->lvStatus, UI::GUIListView(ui, this, UI::GUIListView::LVSTYLE_TABLE, 3));
+	NEW_CLASS(this->lvStatus, UI::GUIListView(ui, *this, UI::GUIListView::LVSTYLE_TABLE, 3));
 	this->lvStatus->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvStatus->AddColumn(CSTR("File Name"), 300);
 	this->lvStatus->AddColumn(CSTR("File Size"), 100);

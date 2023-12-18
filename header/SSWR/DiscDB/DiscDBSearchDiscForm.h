@@ -20,7 +20,7 @@ namespace SSWR
 			NotNullPtr<UI::GUIPanel> pnlDiscId;
 			UI::GUILabel *lblDiscId;
 			UI::GUITextBox *txtDiscId;
-			UI::GUIButton *btnSearch;
+			NotNullPtr<UI::GUIButton> btnSearch;
 			NotNullPtr<UI::GUIPanel> pnlOut;
 			UI::GUILabel *lblDiscIdOut;
 			UI::GUITextBox *txtDiscIdOut;

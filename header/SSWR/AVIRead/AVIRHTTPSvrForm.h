@@ -82,7 +82,7 @@ namespace SSWR
 			UI::GUITextBox *txtLogDir;
 			UI::GUILabel *lblSSL;
 			UI::GUICheckBox *chkSSL;
-			UI::GUIButton *btnSSLCert;
+			NotNullPtr<UI::GUIButton> btnSSLCert;
 			UI::GUILabel *lblSSLCert;
 			UI::GUILabel *lblWorkerCnt;
 			UI::GUITextBox *txtWorkerCnt;
@@ -104,8 +104,8 @@ namespace SSWR
 			UI::GUICheckBox *chkCrossOrigin;
 			UI::GUILabel *lblDownloadCnt;
 			UI::GUICheckBox *chkDownloadCnt;
-			UI::GUIButton *btnStart;
-			UI::GUIButton *btnStop;
+			NotNullPtr<UI::GUIButton> btnStart;
+			NotNullPtr<UI::GUIButton> btnStop;
 
 			UI::GUILabel *lblConnCurr;
 			UI::GUITextBox *txtConnCurr;

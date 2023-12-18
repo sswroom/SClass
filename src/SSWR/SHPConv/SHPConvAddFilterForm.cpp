@@ -62,10 +62,10 @@ SSWR::SHPConv::SHPConvAddFilterForm::SHPConvAddFilterForm(UI::GUIClientControl *
 	this->cboFilter->AddItem(CSTR("Range Filter"), 0);
 	this->cboFilter->AddItem(CSTR("Elevation Filter"), 0);
 	this->cboFilter->SetSelectedIndex(0);
-	NEW_CLASS(this->btnOK, UI::GUIButton(ui, *this, CSTR("OK")));
+	this->btnOK = ui->NewButton(*this, CSTR("OK"));
 	this->btnOK->SetRect(8, 56, 75, 23, false);
 	this->btnOK->HandleButtonClick(OnOKClicked, this);
-	NEW_CLASS(this->btnCancel, UI::GUIButton(ui, *this, CSTR("Cancel")));
+	this->btnCancel = ui->NewButton(*this, CSTR("Cancel"));
 	this->btnCancel->SetRect(120, 56, 75, 23, false);
 	this->btnCancel->HandleButtonClick(OnCancelClicked, this);
 }

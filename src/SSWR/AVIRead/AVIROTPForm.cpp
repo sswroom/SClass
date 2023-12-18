@@ -134,10 +134,10 @@ SSWR::AVIRead::AVIROTPForm::AVIROTPForm(UI::GUIClientControl *parent, NotNullPtr
 	this->lblKey->SetRect(4, 28, 100, 23, false);
 	NEW_CLASS(this->txtKey, UI::GUITextBox(ui, this->grpNew, CSTR("")));
 	this->txtKey->SetRect(104, 28, 300, 23, false);
-	NEW_CLASS(this->btnKeyRand80, UI::GUIButton(ui, this->grpNew, CSTR("Random 80-bit")));
+	this->btnKeyRand80 = ui->NewButton(this->grpNew, CSTR("Random 80-bit"));
 	this->btnKeyRand80->SetRect(404, 28, 75, 23, false);
 	this->btnKeyRand80->HandleButtonClick(OnKeyRand80Clicked, this);
-	NEW_CLASS(this->btnKeyRand160, UI::GUIButton(ui, this->grpNew, CSTR("Random 160-bit")));
+	this->btnKeyRand160 = ui->NewButton(this->grpNew, CSTR("Random 160-bit"));
 	this->btnKeyRand160->SetRect(484, 28, 75, 23, false);
 	this->btnKeyRand160->HandleButtonClick(OnKeyRand160Clicked, this);
 	NEW_CLASS(this->lblType, UI::GUILabel(ui, this->grpNew, CSTR("Type")));
@@ -147,7 +147,7 @@ SSWR::AVIRead::AVIROTPForm::AVIROTPForm(UI::GUIClientControl *parent, NotNullPtr
 	this->cboType->AddItem(CSTR("Counter-Based (HOTP)"), 0);
 	this->cboType->AddItem(CSTR("Time-Based (TOTP)"), 0);
 	this->cboType->SetSelectedIndex(0);
-	NEW_CLASS(this->btnNew, UI::GUIButton(ui, this->grpNew, CSTR("New")));
+	this->btnNew = ui->NewButton(this->grpNew, CSTR("New"));
 	this->btnNew->SetRect(104, 76, 75, 23, false);
 	this->btnNew->HandleButtonClick(OnNewClicked, this);
 	NEW_CLASS(this->lvEntry, UI::GUIListView(ui, *this, UI::GUIListView::LVSTYLE_TABLE, 2));

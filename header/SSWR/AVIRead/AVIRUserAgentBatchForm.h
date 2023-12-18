@@ -20,9 +20,9 @@ namespace SSWR
 			NotNullPtr<UI::GUIPanel> pnlSource;
 			NotNullPtr<UI::GUIPanel> pnlControl;
 			UI::GUITextBox *txtSource;
-			UI::GUIButton *btnParse;
-			UI::GUIButton *btnUpdate;
-			UI::GUIButton *btnUpdateCB;
+			NotNullPtr<UI::GUIButton> btnParse;
+			NotNullPtr<UI::GUIButton> btnUpdate;
+			NotNullPtr<UI::GUIButton> btnUpdateCB;
 			UI::GUIVSplitter *vspControl;
 			UI::GUITextBox *txtOutput;
 

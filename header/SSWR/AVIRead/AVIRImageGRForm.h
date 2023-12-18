@@ -48,10 +48,10 @@ namespace SSWR
 			UI::GUILabel *lblType;
 			UI::GUIComboBox *cboType;
 			UI::GUICheckBox *chkEnable;
-			UI::GUIButton *btnAddLayer;
-			UI::GUIButton *btnRemoveLayer;
-			UI::GUIButton *btnOK;
-			UI::GUIButton *btnCancel;
+			NotNullPtr<UI::GUIButton> btnAddLayer;
+			NotNullPtr<UI::GUIButton> btnRemoveLayer;
+			NotNullPtr<UI::GUIButton> btnOK;
+			NotNullPtr<UI::GUIButton> btnCancel;
 
 			static void __stdcall OnHOfstChanged(void *userObj, UOSInt newPos);
 			static void __stdcall OnVOfstChanged(void *userObj, UOSInt newPos);

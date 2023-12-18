@@ -305,10 +305,10 @@ SSWR::AVIRead::AVIRLineChartForm::AVIRLineChartForm(UI::GUIClientControl *parent
 	this->lblStrCols->SetRect(0, 4, 100, 23, false);
 	NEW_CLASS(this->lbStrCols, UI::GUIListBox(ui, this->pnlStrCols, false));
 	this->lbStrCols->SetRect(100, 0, 200, 128, false);
-	NEW_CLASS(this->btnStrColsDbl, UI::GUIButton(ui, this->pnlStrCols, CSTR("Force as Double")));
+	this->btnStrColsDbl = ui->NewButton(this->pnlStrCols, CSTR("Force as Double"));
 	this->btnStrColsDbl->SetRect(304, 4, 120, 23, false);
 	this->btnStrColsDbl->HandleButtonClick(OnStrColsDblClicked, this);
-	NEW_CLASS(this->btnStrColsInt32, UI::GUIButton(ui, this->pnlStrCols, CSTR("Force as Int32")));
+	this->btnStrColsInt32 = ui->NewButton(this->pnlStrCols, CSTR("Force as Int32"));
 	this->btnStrColsInt32->SetRect(304, 32, 120, 23, false);
 	this->btnStrColsInt32->HandleButtonClick(OnStrColsInt32Clicked, this);
 	NEW_CLASSNN(this->pnlXAxis, UI::GUIPanel(ui, *this));
@@ -321,10 +321,10 @@ SSWR::AVIRead::AVIRLineChartForm::AVIRLineChartForm(UI::GUIClientControl *parent
 	NEW_CLASSNN(this->pnlControl, UI::GUIPanel(ui, *this));
 	this->pnlControl->SetRect(0, 0, 100, 32, false);
 	this->pnlControl->SetDockType(UI::GUIControl::DOCK_BOTTOM);
-	NEW_CLASS(this->btnPlot, UI::GUIButton(ui, this->pnlControl, CSTR("Plot")));
+	this->btnPlot = ui->NewButton(this->pnlControl, CSTR("Plot"));
 	this->btnPlot->SetRect(4, 4, 75, 23, false);
 	this->btnPlot->HandleButtonClick(OnPlotClicked, this);
-	NEW_CLASS(this->btnCancel, UI::GUIButton(ui, this->pnlControl, CSTR("Cancel")));
+	this->btnCancel = ui->NewButton(this->pnlControl, CSTR("Cancel"));
 	this->btnCancel->SetRect(84, 4, 75, 23, false);
 	this->btnCancel->HandleButtonClick(OnCancelClicked, this);
 	this->grpYAxis = ui->NewGroupBox(*this, CSTR("Y-Axis"));
@@ -336,7 +336,7 @@ SSWR::AVIRead::AVIRLineChartForm::AVIRLineChartForm(UI::GUIClientControl *parent
 	this->lblYAxis->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->cboYAxis, UI::GUIComboBox(ui, this->pnlYAxis, false));
 	this->cboYAxis->SetRect(104, 4, 200, 23, false);
-	NEW_CLASS(this->btnYAxis, UI::GUIButton(ui, this->pnlYAxis, CSTR("Add")));
+	this->btnYAxis = ui->NewButton(this->pnlYAxis, CSTR("Add"));
 	this->btnYAxis->SetRect(304, 4, 75, 23, false);
 	this->btnYAxis->HandleButtonClick(OnYAxisClicked, this);
 	NEW_CLASS(this->lbYAxis, UI::GUIListBox(ui, this->grpYAxis, false));

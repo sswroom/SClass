@@ -199,7 +199,7 @@ SSWR::AVIRead::AVIREWDTU01Form::AVIREWDTU01Form(UI::GUIClientControl *parent, No
 	this->lblPort->SetRect(254, 4, 100, 23, false);
 	NEW_CLASS(this->txtPort, UI::GUITextBox(ui, this->pnlMQTT, CSTR("1883")));
 	this->txtPort->SetRect(354, 4, 50, 23, false);
-	NEW_CLASS(this->btnConnect, UI::GUIButton(ui, this->pnlMQTT, CSTR("Connect")));
+	this->btnConnect = ui->NewButton(this->pnlMQTT, CSTR("Connect"));
 	this->btnConnect->SetRect(404, 4, 75, 23, false);
 	this->btnConnect->HandleButtonClick(OnConnectClicked, this);
 

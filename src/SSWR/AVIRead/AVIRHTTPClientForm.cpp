@@ -1261,12 +1261,12 @@ SSWR::AVIRead::AVIRHTTPClientForm::AVIRHTTPClientForm(UI::GUIClientControl *pare
 	this->chkOSClient->SetRect(204, 28, 100, 23, false);
 	NEW_CLASS(this->chkAllowComp, UI::GUICheckBox(ui, this->pnlRequest, CSTR("Allow ZIP"), true));
 	this->chkAllowComp->SetRect(304, 28, 100, 23, false);
-	NEW_CLASS(this->btnUserAgent, UI::GUIButton(ui, this->pnlRequest, CSTR("User Agent")));
+	this->btnUserAgent = ui->NewButton(this->pnlRequest, CSTR("User Agent"));
 	this->btnUserAgent->SetRect(4, 52, 75, 23, false);
 	this->btnUserAgent->HandleButtonClick(OnUserAgentClicked, this);
 	NEW_CLASS(this->lblUserAgent, UI::GUILabel(ui, this->pnlRequest, this->userAgent->ToCString()));
 	this->lblUserAgent->SetRect(104, 52, 400, 23, false);
-	NEW_CLASS(this->btnClientCert, UI::GUIButton(ui, this->pnlRequest, CSTR("Client Cert")));
+	this->btnClientCert = ui->NewButton(this->pnlRequest, CSTR("Client Cert"));
 	this->btnClientCert->SetRect(4, 76, 75, 23, false);
 	this->btnClientCert->HandleButtonClick(OnClientCertClicked, this);
 	NEW_CLASS(this->lblClientCert, UI::GUILabel(ui, this->pnlRequest, CSTR("")));
@@ -1284,10 +1284,10 @@ SSWR::AVIRead::AVIRHTTPClientForm::AVIRHTTPClientForm(UI::GUIClientControl *pare
 	this->lblFileUpload->SetRect(4, 148, 100, 23, false);
 	NEW_CLASS(this->txtFileFormName, UI::GUITextBox(ui, this->pnlRequest, CSTR("")));
 	this->txtFileFormName->SetRect(104, 148, 150, 23, false);
-	NEW_CLASS(this->btnFileSelect, UI::GUIButton(ui, this->pnlRequest, CSTR("Select")));
+	this->btnFileSelect = ui->NewButton(this->pnlRequest, CSTR("Select"));
 	this->btnFileSelect->SetRect(254, 148, 75, 23, false);
 	this->btnFileSelect->HandleButtonClick(OnFileSelectClicked, this);
-	NEW_CLASS(this->btnFileClear, UI::GUIButton(ui, this->pnlRequest, CSTR("Clear")));
+	this->btnFileClear = ui->NewButton(this->pnlRequest, CSTR("Clear"));
 	this->btnFileClear->SetRect(334, 148, 75, 23, false);
 	this->btnFileClear->HandleButtonClick(OnFileClearClicked, this);
 	NEW_CLASS(this->lblFileStatus, UI::GUILabel(ui, this->pnlRequest, CSTR("No files selected")));
@@ -1296,7 +1296,7 @@ SSWR::AVIRead::AVIRHTTPClientForm::AVIRHTTPClientForm(UI::GUIClientControl *pare
 	this->lblDataStr->SetRect(4, 172, 100, 23, false);
 	NEW_CLASS(this->txtDataStr, UI::GUITextBox(ui, this->pnlRequest, CSTR("")));
 	this->txtDataStr->SetRect(104, 172, 400, 23, false);
-	NEW_CLASS(this->btnDataStr, UI::GUIButton(ui, this->pnlRequest, CSTR("Parse")));
+	this->btnDataStr = ui->NewButton(this->pnlRequest, CSTR("Parse"));
 	this->btnDataStr->SetRect(504, 172, 75, 23, false);
 	this->btnDataStr->HandleButtonClick(OnDataStrClicked, this);
 	NEW_CLASS(this->lblPostFormat, UI::GUILabel(ui, this->pnlRequest, CSTR("Post Format")));
@@ -1311,7 +1311,7 @@ SSWR::AVIRead::AVIRHTTPClientForm::AVIRHTTPClientForm(UI::GUIClientControl *pare
 	this->lblHeaders->SetRect(4, 220, 100, 23, false);
 	NEW_CLASS(this->txtHeaders, UI::GUITextBox(ui, this->pnlRequest, CSTR(""), true));
 	this->txtHeaders->SetRect(104, 220, 300, 71, false);
-	NEW_CLASS(this->btnRequest, UI::GUIButton(ui, this->pnlRequest, CSTR("Request")));
+	this->btnRequest = ui->NewButton(this->pnlRequest, CSTR("Request"));
 	this->btnRequest->SetRect(104, 292, 75, 23, false);
 	this->btnRequest->HandleButtonClick(OnRequestClicked, this);
 	NEW_CLASS(this->lvReqData, UI::GUIListView(ui, this->tpRequest, UI::GUIListView::LVSTYLE_TABLE, 2));
@@ -1391,10 +1391,10 @@ SSWR::AVIRead::AVIRHTTPClientForm::AVIRHTTPClientForm(UI::GUIClientControl *pare
 	NEW_CLASSNN(this->pnlControl, UI::GUIPanel(ui, this->tpResponse));
 	this->pnlControl->SetRect(0, 0, 100, 31, false);
 	this->pnlControl->SetDockType(UI::GUIControl::DOCK_BOTTOM);
-	NEW_CLASS(this->btnSave, UI::GUIButton(ui, this->pnlControl, CSTR("Save")));
+	this->btnSave = ui->NewButton(this->pnlControl, CSTR("Save"));
 	this->btnSave->SetRect(4, 4, 75, 23, false);
 	this->btnSave->HandleButtonClick(OnSaveClicked, this);
-	NEW_CLASS(this->btnView, UI::GUIButton(ui, this->pnlControl, CSTR("View")));
+	this->btnView = ui->NewButton(this->pnlControl, CSTR("View"));
 	this->btnView->SetRect(84, 4, 75, 23, false);
 	this->btnView->HandleButtonClick(OnViewClicked, this);
 	NEW_CLASS(this->lvHeaders, UI::GUIListView(ui, this->tpResponse, UI::GUIListView::LVSTYLE_TABLE, 1));
@@ -1407,7 +1407,7 @@ SSWR::AVIRead::AVIRHTTPClientForm::AVIRHTTPClientForm(UI::GUIClientControl *pare
 	NEW_CLASSNN(this->pnlCert, UI::GUIPanel(ui, this->tpCert));
 	this->pnlCert->SetRect(0, 0, 100, 31, false);
 	this->pnlCert->SetDockType(UI::GUIControl::DOCK_BOTTOM);
-	NEW_CLASS(this->btnCert, UI::GUIButton(ui, this->pnlCert, CSTR("Open")));
+	this->btnCert = ui->NewButton(this->pnlCert, CSTR("Open"));
 	this->btnCert->SetRect(4, 4, 75, 23, false);
 	this->btnCert->HandleButtonClick(OnCertClicked, this);
 	this->btnCert->SetEnabled(false);

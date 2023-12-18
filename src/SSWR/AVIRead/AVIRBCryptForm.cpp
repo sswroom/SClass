@@ -65,7 +65,7 @@ SSWR::AVIRead::AVIRBCryptForm::AVIRBCryptForm(UI::GUIClientControl *parent, NotN
 	this->lblGenPassword->SetRect(4, 28, 100, 23, false);
 	NEW_CLASS(this->txtGenPassword, UI::GUITextBox(ui, this->grpGenerate, CSTR("")));
 	this->txtGenPassword->SetRect(104, 28, 200, 23, false);
-	NEW_CLASS(this->btnGenerate, UI::GUIButton(ui, this->grpGenerate, CSTR("Generate")));
+	this->btnGenerate = ui->NewButton(this->grpGenerate, CSTR("Generate"));
 	this->btnGenerate->SetRect(104, 52, 75, 23, false);
 	this->btnGenerate->HandleButtonClick(OnGenHashClicked, this);
 	NEW_CLASS(this->lblGenHash, UI::GUILabel(ui, this->grpGenerate, CSTR("Hash")));
@@ -84,7 +84,7 @@ SSWR::AVIRead::AVIRBCryptForm::AVIRBCryptForm(UI::GUIClientControl *parent, NotN
 	this->lblCheckPassword->SetRect(4, 28, 100, 23, false);
 	NEW_CLASS(this->txtCheckPassword, UI::GUITextBox(ui, this->grpCheck, CSTR("")));
 	this->txtCheckPassword->SetRect(104, 28, 200, 23, false);
-	NEW_CLASS(this->btnCheck, UI::GUIButton(ui, this->grpCheck, CSTR("Check")));
+	this->btnCheck = ui->NewButton(this->grpCheck, CSTR("Check"));
 	this->btnCheck->SetRect(104, 52, 75, 23, false);
 	this->btnCheck->HandleButtonClick(OnCheckClicked, this);
 	NEW_CLASS(this->lblCheckResult, UI::GUILabel(ui, this->grpCheck, CSTR("Result")));

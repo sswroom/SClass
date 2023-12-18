@@ -318,14 +318,14 @@ SSWR::ProcMonForm::ProcMonForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUIC
 	this->lblProgAddId->SetRect(0, 24, 100, 23, false);
 	NEW_CLASS(this->txtProgAddId, UI::GUITextBox(ui, this->grpProgAdd, CSTR("")));
 	this->txtProgAddId->SetRect(100, 24, 100, 23, false);
-	NEW_CLASS(this->btnProgAdd, UI::GUIButton(ui, this->grpProgAdd, CSTR("&Add")));
+	this->btnProgAdd = ui->NewButton(this->grpProgAdd, CSTR("&Add"));
 	this->btnProgAdd->SetRect(200, 24, 75, 23, false);
 	this->btnProgAdd->HandleButtonClick(OnProgAddClicked, this);
 	NEW_CLASS(this->lblProcId, UI::GUILabel(ui, this->pnlProg, CSTR("Process Id")));
 	this->lblProcId->SetRect(4, 68, 100, 23, false);
 	NEW_CLASS(this->txtProcId, UI::GUITextBox(ui, this->pnlProg, CSTR("")));
 	this->txtProcId->SetRect(104, 68, 100, 23, false);
-	NEW_CLASS(this->btnProcId, UI::GUIButton(ui, this->pnlProg, CSTR("Set")));
+	this->btnProcId = ui->NewButton(this->pnlProg, CSTR("Set"));
 	this->btnProcId->SetRect(204, 68, 75, 23, false);
 	this->btnProcId->HandleButtonClick(OnProcIdClicked, this);
 	NEW_CLASS(this->lblProgPath, UI::GUILabel(ui, this->pnlProg, CSTR("Path")));

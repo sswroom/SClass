@@ -175,7 +175,7 @@ SSWR::AVIRead::AVIRBruteForceForm::AVIRBruteForceForm(UI::GUIClientControl *pare
 		currLimit = (Crypto::Hash::BruteForceAttack::CharLimit)((OSInt)currLimit + 1);
 	}
 	this->cboCharType->SetSelectedIndex(0);
-	NEW_CLASS(this->btnStart, UI::GUIButton(ui, *this, CSTR("Start")));
+	this->btnStart = ui->NewButton(*this, CSTR("Start"));
 	this->btnStart->SetRect(104, 148, 75, 23, false);
 	this->btnStart->HandleButtonClick(OnStartClicked, this);
 	NEW_CLASS(this->lblStatus, UI::GUILabel(ui, *this, CSTR("Status")));

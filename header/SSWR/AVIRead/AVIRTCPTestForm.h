@@ -42,7 +42,7 @@ namespace SSWR
 			UI::GUITextBox *txtConcurrCnt;
 			UI::GUILabel *lblTotalConnCnt;
 			UI::GUITextBox *txtTotalConnCnt;
-			UI::GUIButton *btnStart;
+			NotNullPtr<UI::GUIButton> btnStart;
 			NotNullPtr<UI::GUIGroupBox> grpStatus;
 			UI::GUILabel *lblConnLeftCnt;
 			UI::GUITextBox *txtConnLeftCnt;

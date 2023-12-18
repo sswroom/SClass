@@ -15,8 +15,8 @@ namespace SSWR
 		private:
 			UI::GUILabel *lblGroup;
 			UI::GUIListBox *lbGroup;
-			UI::GUIButton *btnOk;
-			UI::GUIButton *btnCancel;
+			NotNullPtr<UI::GUIButton> btnOk;
+			NotNullPtr<UI::GUIButton> btnCancel;
 			Media::MonitorMgr *monMgr;
 
 			static void __stdcall OnOkClicked(void *userObj);

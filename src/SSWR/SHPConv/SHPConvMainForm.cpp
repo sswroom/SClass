@@ -1383,7 +1383,7 @@ SSWR::SHPConv::SHPConvMainForm::SHPConvMainForm(UI::GUIClientControl *parent, No
 	this->lblDirectory->SetRect(8, 8, 100, 23, false);
 	NEW_CLASS(this->txtDirectory, UI::GUITextBox(ui, *this, CSTR("")));
 	this->txtDirectory->SetRect(120, 8, 232, 20, false);
-	NEW_CLASS(this->btnDirectory, UI::GUIButton(ui, *this, CSTR("&Search")));
+	this->btnDirectory = ui->NewButton(*this, CSTR("&Search"));
 	this->btnDirectory->SetRect(360, 8, 75, 23, false);
 	this->btnDirectory->HandleButtonClick(OnDirectoryClicked, this);
 	NEW_CLASS(this->lblSource, UI::GUILabel(ui, *this, CSTR("Shape File")));
@@ -1391,7 +1391,7 @@ SSWR::SHPConv::SHPConvMainForm::SHPConvMainForm(UI::GUIClientControl *parent, No
 	NEW_CLASS(this->txtSource, UI::GUITextBox(ui, *this, CSTR("")));
 	this->txtSource->SetReadOnly(true);
 	this->txtSource->SetRect(120, 40, 232, 20, false);
-	NEW_CLASS(this->btnSBrowse, UI::GUIButton(ui, *this, CSTR("B&rowse")));
+	this->btnSBrowse = ui->NewButton(*this, CSTR("B&rowse"));
 	this->btnSBrowse->SetRect(360, 40, 75, 23, false);
 	this->btnSBrowse->HandleButtonClick(OnSBrowseClicked, this);
 
@@ -1479,16 +1479,16 @@ SSWR::SHPConv::SHPConvMainForm::SHPConvMainForm(UI::GUIClientControl *parent, No
 	this->cboSeperator->AddItem(CSTR(""), 0);
 	this->cboSeperator->AddItem(CSTR("-"), 0);
 	this->cboSeperator->SetRect(104, 344, 96, 21, false);
-	NEW_CLASS(this->btnGroup, UI::GUIButton(ui, *this, CSTR("Group")));
+	this->btnGroup = ui->NewButton(*this, CSTR("Group"));
 	this->btnGroup->SetRect(240, 344, 104, 23, false);
 	this->btnGroup->HandleButtonClick(OnGroupClicked, this);
-	NEW_CLASS(this->btnFilter, UI::GUIButton(ui, *this, CSTR("Filter")));
+	this->btnFilter = ui->NewButton(*this, CSTR("Filter"));
 	this->btnFilter->SetRect(352, 344, 104, 23, false);
 	this->btnFilter->HandleButtonClick(OnFilterClicked, this);
-	NEW_CLASS(this->btnPreview, UI::GUIButton(ui, *this, CSTR("Preview")));
+	this->btnPreview = ui->NewButton(*this, CSTR("Preview"));
 	this->btnPreview->SetRect(240, 368, 104, 23, false);
 	this->btnPreview->HandleButtonClick(OnPreviewClicked, this);
-	NEW_CLASS(this->btnConvert, UI::GUIButton(ui, *this, CSTR("Convert")));
+	this->btnConvert = ui->NewButton(*this, CSTR("Convert"));
 	this->btnConvert->SetRect(352, 368, 104, 23, false);
 	this->btnConvert->HandleButtonClick(OnConvertClicked, this);
 	NEW_CLASS(this->txtLabel, UI::GUITextBox(ui, *this, CSTR("")));

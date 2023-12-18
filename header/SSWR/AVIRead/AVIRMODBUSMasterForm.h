@@ -74,12 +74,12 @@ namespace SSWR
 			NotNullPtr<UI::GUIGroupBox> grpStream;
 			UI::GUILabel *lblStream;
 			UI::GUITextBox *txtStream;
-			UI::GUIButton *btnStream;
+			NotNullPtr<UI::GUIButton> btnStream;
 			UI::GUIRadioButton *radMODBUSRTU;
 			UI::GUIRadioButton *radMODBUSTCP;
 			UI::GUILabel *lblTimeout;
 			UI::GUITextBox *txtTimeout;
-			UI::GUIButton *btnTimeout;
+			NotNullPtr<UI::GUIButton> btnTimeout;
 			UI::GUITabControl *tcMain;
 
 			NotNullPtr<UI::GUITabPage> tpGetValue;
@@ -89,22 +89,22 @@ namespace SSWR
 			UI::GUILabel *lblU8Name;
 			UI::GUITextBox *txtU8DevAddr;
 			UI::GUITextBox *txtU8RegAddr;
-			UI::GUIButton *btnU8Get;
+			NotNullPtr<UI::GUIButton> btnU8Get;
 			UI::GUITextBox *txtU8Value;
 			UI::GUILabel *lblU16Name;
 			UI::GUITextBox *txtU16DevAddr;
 			UI::GUITextBox *txtU16RegAddr;
-			UI::GUIButton *btnU16Get;
+			NotNullPtr<UI::GUIButton> btnU16Get;
 			UI::GUITextBox *txtU16Value;
 			UI::GUILabel *lblI32Name;
 			UI::GUITextBox *txtI32DevAddr;
 			UI::GUITextBox *txtI32RegAddr;
-			UI::GUIButton *btnI32Get;
+			NotNullPtr<UI::GUIButton> btnI32Get;
 			UI::GUITextBox *txtI32Value;
 			UI::GUILabel *lblF32Name;
 			UI::GUITextBox *txtF32DevAddr;
 			UI::GUITextBox *txtF32RegAddr;
-			UI::GUIButton *btnF32Get;
+			NotNullPtr<UI::GUIButton> btnF32Get;
 			UI::GUITextBox *txtF32Value;
 
 			NotNullPtr<UI::GUITabPage> tpSetValue;
@@ -114,8 +114,8 @@ namespace SSWR
 			UI::GUILabel *lblSetU8Name;
 			UI::GUITextBox *txtSetU8DevAddr;
 			UI::GUITextBox *txtSetU8RegAddr;
-			UI::GUIButton *btnSetU8Low;
-			UI::GUIButton *btnSetU8High;
+			NotNullPtr<UI::GUIButton> btnSetU8Low;
+			NotNullPtr<UI::GUIButton> btnSetU8High;
 			UI::GUITextBox *txtSetU8Value;
 
 			NotNullPtr<UI::GUITabPage> tpDevice;
@@ -124,7 +124,7 @@ namespace SSWR
 			UI::GUITextBox *txtDeviceAddr;
 			UI::GUILabel *lblDevice;
 			UI::GUIComboBox *cboDevice;
-			UI::GUIButton *btnDeviceAdd;
+			NotNullPtr<UI::GUIButton> btnDeviceAdd;
 			UI::GUIListView *lvDevice;
 
 			NotNullPtr<UI::GUITabPage> tpRAWSend;

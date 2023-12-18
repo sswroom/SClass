@@ -40,15 +40,15 @@ namespace SSWR
 			UI::GUITextBox *txtPassword;
 			UI::GUICheckBox *chkSSL;
 			UI::GUICheckBox *chkWebSocket;
-			UI::GUIButton *btnCliCert;
+			NotNullPtr<UI::GUIButton> btnCliCert;
 			UI::GUILabel *lblCliCert;
-			UI::GUIButton *btnCliKey;
+			NotNullPtr<UI::GUIButton> btnCliKey;
 			UI::GUILabel *lblCliKey;
 			UI::GUILabel *lblTopic;
 			UI::GUITextBox *txtTopic;
 			UI::GUILabel *lblContent;
 			UI::GUITextBox *txtContent;
-			UI::GUIButton *btnStart;
+			NotNullPtr<UI::GUIButton> btnStart;
 			UI::GUILabel *lblTotalCount;
 			UI::GUITextBox *txtTotalCount;
 			UI::GUILabel *lblRecvRate;

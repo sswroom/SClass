@@ -80,8 +80,8 @@ namespace UtilUI
 		UI::GUILabel *lblAlpha;
 		UI::GUITextBox *txtAlpha;
 
-		UI::GUIButton *btnOk;
-		UI::GUIButton *btnCancel;
+		NotNullPtr<UI::GUIButton> btnOk;
+		NotNullPtr<UI::GUIButton> btnCancel;
 
 		ColorType colorType;
 		Double rVal;

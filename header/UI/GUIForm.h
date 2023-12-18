@@ -58,8 +58,8 @@ namespace UI
 		Bool exitOnClose;
 		UInt32 nextTmrId;
 		UI::GUIMainMenu *menu;
-		UI::GUIButton *okBtn;
-		UI::GUIButton *cancelBtn;
+		Optional<UI::GUIButton> okBtn;
+		Optional<UI::GUIButton> cancelBtn;
 
 		Bool fs;
 		UInt32 fsStyle;
@@ -107,10 +107,10 @@ namespace UI
 		virtual void SetMenu(UI::GUIMainMenu *menu);
 		virtual UI::GUIMainMenu *GetMenu();
 		virtual void UpdateMenu();
-		virtual void SetDefaultButton(UI::GUIButton *btn);
-		virtual void SetCancelButton(UI::GUIButton *btn);
-		UI::GUIButton *GetDefaultButton();
-		UI::GUIButton *GetCancelButton();
+		virtual void SetDefaultButton(NotNullPtr<UI::GUIButton> btn);
+		virtual void SetCancelButton(NotNullPtr<UI::GUIButton> btn);
+		Optional<UI::GUIButton> GetDefaultButton();
+		Optional<UI::GUIButton> GetCancelButton();
 
 		virtual Math::Size2DDbl GetClientSize();
 		virtual Bool IsChildVisible();

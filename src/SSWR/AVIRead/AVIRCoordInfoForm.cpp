@@ -171,13 +171,13 @@ SSWR::AVIRead::AVIRCoordInfoForm::AVIRCoordInfoForm(UI::GUIClientControl *parent
 	this->lblSRID->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtSRID, UI::GUITextBox(ui, this->pnlCoord, CSTR("4326")));
 	this->txtSRID->SetRect(104, 4, 100, 23, false);
-	NEW_CLASS(this->btnSRID, UI::GUIButton(ui, this->pnlCoord, CSTR("View")));
+	this->btnSRID = ui->NewButton(this->pnlCoord, CSTR("View"));
 	this->btnSRID->SetRect(204, 4, 75, 23, false);
 	this->btnSRID->HandleButtonClick(OnSRIDClicked, this);
-	NEW_CLASS(this->btnSRIDPrev, UI::GUIButton(ui, this->pnlCoord, CSTR("Prev")));
+	this->btnSRIDPrev = ui->NewButton(this->pnlCoord, CSTR("Prev"));
 	this->btnSRIDPrev->SetRect(284, 4, 75, 23, false);
 	this->btnSRIDPrev->HandleButtonClick(OnSRIDPrevClicked, this);
-	NEW_CLASS(this->btnSRIDNext, UI::GUIButton(ui, this->pnlCoord, CSTR("Next")));
+	this->btnSRIDNext = ui->NewButton(this->pnlCoord, CSTR("Next"));
 	this->btnSRIDNext->SetRect(364, 4, 75, 23, false);
 	this->btnSRIDNext->HandleButtonClick(OnSRIDNextClicked, this);
 	NEW_CLASS(this->txtWKT, UI::GUITextBox(ui, *this, CSTR(""), true));

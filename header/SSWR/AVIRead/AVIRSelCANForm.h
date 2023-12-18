@@ -26,8 +26,8 @@ namespace SSWR
 			NotNullPtr<UI::GUITabPage> tpAXCAN;
 			UI::GUILabel *lblAXCANBitRate;
 			UI::GUIComboBox *cboAXCANBitRate;
-			UI::GUIButton *btnAXCANSerial;
-			UI::GUIButton *btnAXCANFile;
+			NotNullPtr<UI::GUIButton> btnAXCANSerial;
+			NotNullPtr<UI::GUIButton> btnAXCANFile;
 
 			static void __stdcall OnAXCANSerialClicked(void *userObj);
 			static void __stdcall OnAXCANFileClicked(void *userObj);

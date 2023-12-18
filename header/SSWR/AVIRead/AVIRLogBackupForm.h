@@ -26,7 +26,7 @@ namespace SSWR
 			UI::GUITextBox *txtLogDir;
 			UI::GUILabel *lblLogName;
 			UI::GUITextBox *txtLogName;
-			UI::GUIButton *btnStart;
+			NotNullPtr<UI::GUIButton> btnStart;
 
 			static void __stdcall OnStartClicked(void *userObj);
 		public:

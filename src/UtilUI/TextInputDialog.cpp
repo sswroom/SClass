@@ -31,10 +31,10 @@ UtilUI::TextInputDialog::TextInputDialog(UI::GUIClientControl *parent, NotNullPt
 	this->lblMessage->SetRect(4, 4, 300, 23, false);
 	NEW_CLASS(this->txtInput, UI::GUITextBox(ui, *this, CSTR("")));
 	this->txtInput->SetRect(4, 28, 300, 23, false);
-	NEW_CLASS(this->btnOk, UI::GUIButton(ui, *this, CSTR("&Ok")));
+	this->btnOk = ui->NewButton(*this, CSTR("&Ok"));
 	this->btnOk->SetRect(8, 56, 100, 23, false);
 	this->btnOk->HandleButtonClick(OnOKClicked, this);
-	NEW_CLASS(this->btnCancel, UI::GUIButton(ui, *this, CSTR("&Cancel")));
+	this->btnCancel = ui->NewButton(*this, CSTR("&Cancel"));
 	this->btnCancel->SetRect(128, 56, 100, 23, false);
 	this->btnCancel->HandleButtonClick(OnCancelClicked, this);
 	this->SetDefaultButton(this->btnOk);

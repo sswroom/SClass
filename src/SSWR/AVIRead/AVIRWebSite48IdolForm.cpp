@@ -106,7 +106,7 @@ SSWR::AVIRead::AVIRWebSite48IdolForm::AVIRWebSite48IdolForm(UI::GUIClientControl
 	this->lblPageNo->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtPageNo, UI::GUITextBox(ui, this->pnlRequest, CSTR("")));
 	this->txtPageNo->SetRect(104, 4, 60, 23, false);
-	NEW_CLASS(this->btnRequestPage, UI::GUIButton(ui, this->pnlRequest, CSTR("Request")));
+	this->btnRequestPage = ui->NewButton(this->pnlRequest, CSTR("Request"));
 	this->btnRequestPage->SetRect(164, 4, 75, 23, false);
 	this->btnRequestPage->HandleButtonClick(OnRequestPageClicked, this);
 	NEW_CLASS(this->lvItems, UI::GUIListView(ui, this->tpItems, UI::GUIListView::LVSTYLE_TABLE, 3));
@@ -122,7 +122,7 @@ SSWR::AVIRead::AVIRWebSite48IdolForm::AVIRWebSite48IdolForm(UI::GUIClientControl
 	this->lblVideoId->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtVideoId, UI::GUITextBox(ui, this->tpDownloadLink, CSTR("")));
 	this->txtVideoId->SetRect(104, 4, 100, 23, false);
-	NEW_CLASS(this->btnDownloadLink, UI::GUIButton(ui, this->tpDownloadLink, CSTR("Get Link")));
+	this->btnDownloadLink = ui->NewButton(this->tpDownloadLink, CSTR("Get Link"));
 	this->btnDownloadLink->SetRect(204, 4, 75, 23, false);
 	this->btnDownloadLink->HandleButtonClick(OnDownloadLinkClicked, this);
 	NEW_CLASS(this->lblDownloadLink, UI::GUILabel(ui, this->tpDownloadLink, CSTR("Link")));
@@ -136,7 +136,7 @@ SSWR::AVIRead::AVIRWebSite48IdolForm::AVIRWebSite48IdolForm(UI::GUIClientControl
 	this->lblNameVideoId->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtNameVideoId, UI::GUITextBox(ui, this->tpVideoName, CSTR("")));
 	this->txtNameVideoId->SetRect(104, 4, 100, 23, false);
-	NEW_CLASS(this->btnVideoName, UI::GUIButton(ui, this->tpVideoName, CSTR("Get Name")));
+	this->btnVideoName = ui->NewButton(this->tpVideoName, CSTR("Get Name"));
 	this->btnVideoName->SetRect(204, 4, 75, 23, false);
 	this->btnVideoName->HandleButtonClick(OnVideoNameClicked, this);
 	NEW_CLASS(this->lblVideoName, UI::GUILabel(ui, this->tpVideoName, CSTR("Video Name")));

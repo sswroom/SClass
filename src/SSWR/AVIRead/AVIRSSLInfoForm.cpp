@@ -296,7 +296,7 @@ SSWR::AVIRead::AVIRSSLInfoForm::AVIRSSLInfoForm(UI::GUIClientControl *parent, No
 	this->cboVersion->AddItem(CSTR("TLS 1.2"), (void*)Net::SSLVer::TLS1_2);
 	this->cboVersion->AddItem(CSTR("TLS 1.3"), (void*)Net::SSLVer::TLS1_3);
 	this->cboVersion->SetSelectedIndex(3);
-	NEW_CLASS(this->btnCheck, UI::GUIButton(ui, *this, CSTR("Check")));
+	this->btnCheck = ui->NewButton(*this, CSTR("Check"));
 	this->btnCheck->SetRect(204, 76, 75, 23, false);
 	this->btnCheck->HandleButtonClick(OnCheckClicked, this);
 	NEW_CLASS(this->lblStatus, UI::GUILabel(ui, *this, CSTR("Status")));
@@ -309,10 +309,10 @@ SSWR::AVIRead::AVIRSSLInfoForm::AVIRSSLInfoForm(UI::GUIClientControl *parent, No
 	NEW_CLASS(this->txtCert, UI::GUITextBox(ui, *this, CSTR(""), true));
 	this->txtCert->SetRect(104, 148, 150, 144, false);
 	this->txtCert->SetReadOnly(true);
-	NEW_CLASS(this->btnCert, UI::GUIButton(ui, *this, CSTR("View Cert")));
+	this->btnCert = ui->NewButton(*this, CSTR("View Cert"));
 	this->btnCert->SetRect(254, 148, 75, 23, false);
 	this->btnCert->HandleButtonClick(OnCertClicked, this);
-	NEW_CLASS(this->btnRAW, UI::GUIButton(ui, *this, CSTR("View RAW")));
+	this->btnRAW = ui->NewButton(*this, CSTR("View RAW"));
 	this->btnRAW->SetRect(334, 148, 75, 23, false);
 	this->btnRAW->HandleButtonClick(OnRAWClicked, this);
 }

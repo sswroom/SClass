@@ -32,9 +32,9 @@ namespace SSWR
 			UI::GUITextBox *txtID;
 			UI::GUITextBox *txtEName;
 			UI::GUITextBox *txtCName;
-			UI::GUIButton *btnAdd;
-			UI::GUIButton *btnOk;
-			UI::GUIButton *btnCancel;
+			NotNullPtr<UI::GUIButton> btnAdd;
+			NotNullPtr<UI::GUIButton> btnOk;
+			NotNullPtr<UI::GUIButton> btnCancel;
 
 			OrganEnv *env;
 			SelectMode selMode;

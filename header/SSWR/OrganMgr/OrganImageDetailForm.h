@@ -31,8 +31,8 @@ namespace SSWR
 			UI::GUITextBox *txtLat;
 			UI::GUILabel *lblLon;
 			UI::GUITextBox *txtLon;
-			UI::GUIButton *btnOK;
-			UI::GUIButton *btnCancel;
+			NotNullPtr<UI::GUIButton> btnOK;
+			NotNullPtr<UI::GUIButton> btnCancel;
 
 			static void __stdcall OnOKClicked(void *userObj);
 			static void __stdcall OnCancelClicked(void *userObj);

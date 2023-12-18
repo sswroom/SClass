@@ -130,7 +130,7 @@ SSWR::AVIRead::AVIRASN1MIBForm::AVIRASN1MIBForm(UI::GUIClientControl *parent, No
 	NEW_CLASS(this->txtFile, UI::GUITextBox(ui, this->pnlRequest, CSTR("")));
 	this->txtFile->SetRect(104, 4, 500, 23, false);
 	this->txtFile->SetReadOnly(true);
-	NEW_CLASS(this->btnBrowse, UI::GUIButton(ui, this->pnlRequest, CSTR("B&rowse")));
+	this->btnBrowse = ui->NewButton(this->pnlRequest, CSTR("B&rowse"));
 	this->btnBrowse->SetRect(604, 4, 75, 23, false);
 	this->btnBrowse->HandleButtonClick(OnBrowseClicked, this);
 	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, *this));

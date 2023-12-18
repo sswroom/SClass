@@ -25,13 +25,13 @@ namespace SSWR
 
 			UI::GUILabel *lblKey;
 			UI::GUITextBox *txtKey;
-			UI::GUIButton *btnKeyView;
+			NotNullPtr<UI::GUIButton> btnKeyView;
 			UI::GUILabel *lblCACert;
 			UI::GUITextBox *txtCACert;
-			UI::GUIButton *btnCACertView;
+			NotNullPtr<UI::GUIButton> btnCACertView;
 			UI::GUILabel *lblCSR;
 			UI::GUITextBox *txtCSR;
-			UI::GUIButton *btnCSRView;
+			NotNullPtr<UI::GUIButton> btnCSRView;
 			UI::GUILabel *lblCountryName;
 			UI::GUITextBox *txtCountryName;
 			UI::GUILabel *lblStateOrProvinceName;
@@ -50,7 +50,7 @@ namespace SSWR
 			UI::GUIListBox *lbSAN;
 			UI::GUILabel *lblValidDays;
 			UI::GUITextBox *txtValidDays;
-			UI::GUIButton *btnIssue;
+			NotNullPtr<UI::GUIButton> btnIssue;
 
 			static void __stdcall OnFileDrop(void *userObj, NotNullPtr<Text::String> *files, UOSInt nFiles);
 			static void __stdcall OnKeyViewClicked(void *userObj);

@@ -29,7 +29,7 @@ namespace SSWR
 			UI::GUITextBox *txtThreadCnt;
 			UI::GUILabel *lblMaxPort;
 			UI::GUITextBox *txtMaxPort;
-			UI::GUIButton *btnStart;
+			NotNullPtr<UI::GUIButton> btnStart;
 			UI::GUIListView *lvPort;
 
 			static void __stdcall OnStartClicked(void *userObj);

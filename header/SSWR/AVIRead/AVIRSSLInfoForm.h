@@ -31,14 +31,14 @@ namespace SSWR
 			UI::GUIComboBox *cboMode;
 			UI::GUILabel *lblVersion;
 			UI::GUIComboBox *cboVersion;
-			UI::GUIButton *btnCheck;
+			NotNullPtr<UI::GUIButton> btnCheck;
 
 			UI::GUILabel *lblStatus;
 			UI::GUITextBox *txtStatus;
 			UI::GUILabel *lblCert;
 			UI::GUITextBox *txtCert;
-			UI::GUIButton *btnCert;
-			UI::GUIButton *btnRAW;
+			NotNullPtr<UI::GUIButton> btnCert;
+			NotNullPtr<UI::GUIButton> btnRAW;
 
 			Crypto::Cert::X509File *currCerts;
 			UInt8 *packetBuff;

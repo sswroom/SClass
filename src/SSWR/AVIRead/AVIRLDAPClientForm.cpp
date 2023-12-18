@@ -170,7 +170,7 @@ SSWR::AVIRead::AVIRLDAPClientForm::AVIRLDAPClientForm(UI::GUIClientControl *pare
 	NEW_CLASS(this->txtPassword, UI::GUITextBox(ui, this->pnlRequest, CSTR("")));
 	this->txtPassword->SetRect(104, 100, 200, 23, false);
 	this->txtPassword->SetPasswordChar('*');
-	NEW_CLASS(this->btnConnect, UI::GUIButton(ui, this->pnlRequest, CSTR("Connect")));
+	this->btnConnect = ui->NewButton(this->pnlRequest, CSTR("Connect"));
 	this->btnConnect->SetRect(104, 124, 75, 23, false);
 	this->btnConnect->HandleButtonClick(OnConnectClicked, this);
 
@@ -204,7 +204,7 @@ SSWR::AVIRead::AVIRLDAPClientForm::AVIRLDAPClientForm(UI::GUIClientControl *pare
 	this->lblSearchFilter->SetRect(4, 76, 100, 23, false);
 	NEW_CLASS(this->txtSearchFilter, UI::GUITextBox(ui, this->pnlSearchRequest, CSTR("(&(objectClass=user)(userPrincipalName=admin@simon.local))")));
 	this->txtSearchFilter->SetRect(104, 76, 400, 23, false);
-	NEW_CLASS(this->btnSearch, UI::GUIButton(ui, this->pnlSearchRequest, CSTR("Search")));
+	this->btnSearch = ui->NewButton(this->pnlSearchRequest, CSTR("Search"));
 	this->btnSearch->SetRect(104, 100, 75, 23, false);
 	this->btnSearch->HandleButtonClick(OnSearchClicked, this);
 	NEW_CLASS(this->cboSearchResult, UI::GUIComboBox(ui, this->grpSearch, false));

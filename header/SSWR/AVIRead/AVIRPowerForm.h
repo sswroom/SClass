@@ -22,8 +22,8 @@ namespace SSWR
 			UI::GUITextBox *txtTimeLeft;
 			UI::GUICheckBox *chkNoSleep;
 			UI::GUICheckBox *chkNoDispOff;
-			UI::GUIButton *btnSleep;
-			UI::GUIButton *btnDisplayOff;
+			NotNullPtr<UI::GUIButton> btnSleep;
+			NotNullPtr<UI::GUIButton> btnDisplayOff;
 
 			static void __stdcall OnTimerTick(void *userObj);
 			static void __stdcall OnSleepClicked(void *userObj);

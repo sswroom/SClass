@@ -29,8 +29,8 @@ namespace SSWR
 			UI::GUITextBox *txtX2;
 			UI::GUILabel *lblY2;
 			UI::GUITextBox *txtY2;
-			UI::GUIButton *btnOK;
-			UI::GUIButton *btnCancel;
+			NotNullPtr<UI::GUIButton> btnOK;
+			NotNullPtr<UI::GUIButton> btnCancel;
 			NotNullPtr<Media::DrawEngine> deng;
 			Media::MonitorMgr *monMgr;
 			MapFilter *filter;

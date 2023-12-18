@@ -24,7 +24,7 @@ namespace SSWR
 			UI::GUITextBox *txtKey;
 			UI::GUILabel *lblRAWResponse;
 			UI::GUITextBox *txtRAWResponse;
-			UI::GUIButton *btnDecrypt;
+			NotNullPtr<UI::GUIButton> btnDecrypt;
 			UI::GUILabel *lblResult;
 			UI::GUITextBox *txtResult;
 

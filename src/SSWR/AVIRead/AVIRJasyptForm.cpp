@@ -87,10 +87,10 @@ SSWR::AVIRead::AVIRJasyptForm::AVIRJasyptForm(UI::GUIClientControl *parent, NotN
 	this->lblMessage->SetRect(4, 76, 100, 23, false);
 	NEW_CLASS(this->txtMessage, UI::GUITextBox(ui, *this, CSTR("")));
 	this->txtMessage->SetRect(104, 76, 400, 23, false);
-	NEW_CLASS(this->btnDecrypt, UI::GUIButton(ui, *this, CSTR("Decrypt")));
+	this->btnDecrypt = ui->NewButton(*this, CSTR("Decrypt"));
 	this->btnDecrypt->SetRect(104, 100, 75, 23, false);
 	this->btnDecrypt->HandleButtonClick(OnDecryptClicked, this);
-	NEW_CLASS(this->btnEncrypt, UI::GUIButton(ui, *this, CSTR("Encrypt")));
+	this->btnEncrypt = ui->NewButton(*this, CSTR("Encrypt"));
 	this->btnEncrypt->SetRect(184, 100, 75, 23, false);
 	this->btnEncrypt->HandleButtonClick(OnEncryptClicked, this);
 	NEW_CLASS(this->lblResult, UI::GUILabel(ui, *this, CSTR("Result")));

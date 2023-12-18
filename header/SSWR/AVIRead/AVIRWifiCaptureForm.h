@@ -76,7 +76,7 @@ namespace SSWR
 			UI::GUITextBox *txtMotion;
 			UI::GUILabel *lblGPS;
 			UI::GUITextBox *txtGPS;
-			UI::GUIButton *btnGPS;
+			NotNullPtr<UI::GUIButton> btnGPS;
 			UI::GUILabel *lblGPSTime;
 			UI::GUITextBox *txtGPSTime;
 			UI::GUILabel *lblGPSLat;
@@ -93,7 +93,7 @@ namespace SSWR
 			UI::GUITextBox *txtCurrWifiCnt;
 			UI::GUILabel *lblBSSCount;
 			UI::GUITextBox *txtBSSCount;
-			UI::GUIButton *btnCapture;
+			NotNullPtr<UI::GUIButton> btnCapture;
 
 			NotNullPtr<UI::GUITabPage> tpCurr;
 			UI::GUIListView *lvCurrWifi;
@@ -101,8 +101,8 @@ namespace SSWR
 			NotNullPtr<UI::GUITabPage> tpLogWifi;
 			UI::GUIListView *lvLogWifi;
 			NotNullPtr<UI::GUIPanel> pnlLogWifi;
-			UI::GUIButton *btnLogWifiSave;
-			UI::GUIButton *btnLogWifiSaveF;
+			NotNullPtr<UI::GUIButton> btnLogWifiSave;
+			NotNullPtr<UI::GUIButton> btnLogWifiSaveF;
 
 			static void __stdcall OnTimerTick(void *userObj);
 			static void __stdcall OnGPSClicked(void *userObj);

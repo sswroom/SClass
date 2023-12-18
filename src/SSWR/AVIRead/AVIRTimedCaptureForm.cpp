@@ -324,7 +324,7 @@ SSWR::AVIRead::AVIRTimedCaptureForm::AVIRTimedCaptureForm(UI::GUIClientControl *
 	this->lblFileName->SetRect(4, 76, 100, 23, false);
 	NEW_CLASS(this->txtFileName, UI::GUITextBox(ui, this->tpControl, CSTR("TimedCapture.til")));
 	this->txtFileName->SetRect(104, 76, 260, 23, false);
-	NEW_CLASS(this->btnStart, UI::GUIButton(ui, this->tpControl, CSTR("Start")));
+	this->btnStart = ui->NewButton(this->tpControl, CSTR("Start"));
 	this->btnStart->SetRect(104, 100, 75, 23, false);
 	this->btnStart->HandleButtonClick(OnStartClicked, this);
 	NEW_CLASS(this->txtDeviceInfo, UI::GUITextBox(ui, this->tpControl, CSTR(""), true));

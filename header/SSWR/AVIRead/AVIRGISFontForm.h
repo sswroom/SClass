@@ -33,11 +33,11 @@ namespace SSWR
 			NotNullPtr<UI::GUIPanel> pnlMain;
 			UI::GUILabel *lblFont;
 			UI::GUITextBox *txtFont;
-			UI::GUIButton *btnFont;
+			NotNullPtr<UI::GUIButton> btnFont;
 			UI::GUILabel *lblColor;
 			UI::GUIPictureBox *pbColor;
-			UI::GUIButton *btnOK;
-			UI::GUIButton *btnCancel;
+			NotNullPtr<UI::GUIButton> btnOK;
+			NotNullPtr<UI::GUIButton> btnCancel;
 
 			static void __stdcall OnFontClicked(void *userObj);
 			static Bool __stdcall OnColorClicked(void *userObj, Math::Coord2D<OSInt> scnPos, MouseButton btn);

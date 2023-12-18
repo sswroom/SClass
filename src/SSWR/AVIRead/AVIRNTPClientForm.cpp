@@ -119,10 +119,10 @@ SSWR::AVIRead::AVIRNTPClientForm::AVIRNTPClientForm(UI::GUIClientControl *parent
 	NEW_CLASS(this->txtStatus, UI::GUITextBox(ui, *this, CSTR(""), false));
 	this->txtStatus->SetRect(104, 52, 200, 23, false);
 	this->txtStatus->SetReadOnly(true);
-	NEW_CLASS(this->btnGetTime, UI::GUIButton(ui, *this, CSTR("&Get Time")));
+	this->btnGetTime = ui->NewButton(*this, CSTR("&Get Time"));
 	this->btnGetTime->SetRect(104, 76, 100, 23, false);
 	this->btnGetTime->HandleButtonClick(OnGetTimeClicked, this);
-	NEW_CLASS(this->btnSyncTime, UI::GUIButton(ui, *this, CSTR("&Sync Time")));
+	this->btnSyncTime = ui->NewButton(*this, CSTR("&Sync Time"));
 	this->btnSyncTime->SetRect(214, 76, 100, 23, false);
 	this->btnSyncTime->HandleButtonClick(OnSyncTimeClicked, this);
 	this->cboServer->SetSelectedIndex(0);

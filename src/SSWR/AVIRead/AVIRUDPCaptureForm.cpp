@@ -215,7 +215,7 @@ SSWR::AVIRead::AVIRUDPCaptureForm::AVIRUDPCaptureForm(UI::GUIClientControl *pare
 	this->txtPort->SetRect(104, 4, 60, 23, false);
 	NEW_CLASS(this->chkReuseAddr, UI::GUICheckBox(ui, this->pnlControl, CSTR("Reuse Addr"), true));
 	this->chkReuseAddr->SetRect(164, 4, 80, 23, false);
-	NEW_CLASS(this->btnStart, UI::GUIButton(ui, this->pnlControl, CSTR("Start")));
+	this->btnStart = ui->NewButton(this->pnlControl, CSTR("Start"));
 	this->btnStart->SetRect(244, 4, 75, 23, false);
 	this->btnStart->HandleButtonClick(OnStartClicked, this);
 	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, *this));
@@ -293,7 +293,7 @@ SSWR::AVIRead::AVIRUDPCaptureForm::AVIRUDPCaptureForm(UI::GUIClientControl *pare
 	this->lblMulticastCurr->SetRect(0, 0, 100, 23, false);
 	NEW_CLASS(this->txtMulticastCurr, UI::GUITextBox(ui, this->pnlMulticastCtrl, CSTR("")));
 	this->txtMulticastCurr->SetRect(100, 0, 100, 23, false);
-	NEW_CLASS(this->btnMulticastAdd, UI::GUIButton(ui, this->pnlMulticastCtrl, CSTR("&Add")));
+	this->btnMulticastAdd = ui->NewButton(this->pnlMulticastCtrl, CSTR("&Add"));
 	this->btnMulticastAdd->SetRect(200, 0, 75, 23, false);
 	this->btnMulticastAdd->HandleButtonClick(OnMulticastClicked, this);
 	NEW_CLASS(this->lbMulticastCurr, UI::GUIListBox(ui, this->pnlMulticast, false));

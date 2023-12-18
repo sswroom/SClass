@@ -22,7 +22,7 @@ namespace SSWR
 			NotNullPtr<UI::GUIPanel> pnlCtrl;
 			UI::GUILabel *lblFile;
 			UI::GUITextBox *txtFile;
-			UI::GUIButton *btnFile;
+			NotNullPtr<UI::GUIButton> btnFile;
 			UI::GUITabControl *tcMain;
 			NotNullPtr<UI::GUITabPage> tpContent;
 			NotNullPtr<UI::GUITabPage> tpStream;
@@ -34,7 +34,7 @@ namespace SSWR
 			UI::GUIHSplitter *hspPack2;
 			UI::GUITextBox *txtPack;
 
-			UI::GUIButton *btnTrimPadding;
+			NotNullPtr<UI::GUIButton> btnTrimPadding;
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			IO::FileAnalyse::IFileAnalyse *file;

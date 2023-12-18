@@ -27,15 +27,15 @@ namespace SSWR
 			UI::GUITextBox *txtPath;
 			UI::GUILabel *lblExtensions;
 			UI::GUITextBox *txtExtensions;
-			UI::GUIButton *btnExtensionsAdd;
+			NotNullPtr<UI::GUIButton> btnExtensionsAdd;
 			UI::GUIListBox *lbExtensions;
-			UI::GUIButton *btnExtensionsRemove;
-			UI::GUIButton *btnExtensionsClear;
-			UI::GUIButton *btnCalc;
+			NotNullPtr<UI::GUIButton> btnExtensionsRemove;
+			NotNullPtr<UI::GUIButton> btnExtensionsClear;
+			NotNullPtr<UI::GUIButton> btnCalc;
 			UI::GUILabel *lblResult;
 			UI::GUILabel *lblTotalLine;
 			UI::GUITextBox *txtTotalLine;
-			UI::GUIButton *btnResultSave;
+			NotNullPtr<UI::GUIButton> btnResultSave;
 
 			UI::GUIListView *lvResult;
 

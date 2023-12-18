@@ -1979,7 +1979,7 @@ SSWR::AVIRead::AVIRDBCheckChgForm::AVIRDBCheckChgForm(UI::GUIClientControl *pare
 	NEW_CLASSNN(this->txtDataFile, UI::GUITextBox(ui, this->grpData, CSTR("")));
 	this->txtDataFile->SetRect(100, 24, 600, 23, false);
 	this->txtDataFile->SetReadOnly(true);
-	NEW_CLASSNN(this->btnDataFile, UI::GUIButton(ui, this->grpData, CSTR("Browse")));
+	this->btnDataFile = ui->NewButton(this->grpData, CSTR("Browse"));
 	this->btnDataFile->SetRect(700, 24, 75, 23, false);
 	this->btnDataFile->HandleButtonClick(OnDataFileClk, this);
 	NEW_CLASSNN(this->lblDataTable, UI::GUILabel(ui, this->grpData, CSTR("Table")));
@@ -2006,7 +2006,7 @@ SSWR::AVIRead::AVIRDBCheckChgForm::AVIRDBCheckChgForm(UI::GUIClientControl *pare
 	this->lblDataFilter->SetRect(0, 144, 100, 23, false);
 	NEW_CLASSNN(this->txtDataFilter, UI::GUITextBox(ui, this->grpData, CSTR("")));
 	this->txtDataFilter->SetRect(100, 144, 200, 23, false);
-	NEW_CLASSNN(this->btnDataCheck, UI::GUIButton(ui, this->grpData, CSTR("Check")));
+	this->btnDataCheck = ui->NewButton(this->grpData, CSTR("Check"));
 	this->btnDataCheck->SetRect(100, 168, 75, 23, false);
 	this->btnDataCheck->HandleButtonClick(OnDataCheckClk, this);
 	NEW_CLASSNN(this->lblDataFileRow, UI::GUILabel(ui, *this, CSTR("Data Rows")));
@@ -2053,10 +2053,10 @@ SSWR::AVIRead::AVIRDBCheckChgForm::AVIRDBCheckChgForm(UI::GUIClientControl *pare
 	this->chkAxisAware->SetRect(300, 432, 150, 23, false);
 	NEW_CLASSNN(this->chkMultiRow, UI::GUICheckBox(ui, *this, CSTR("Multi-Row Insert"), true));
 	this->chkMultiRow->SetRect(100, 456, 150, 23, false);
-	NEW_CLASSNN(this->btnSQL, UI::GUIButton(ui, *this, CSTR("Generate SQL")));
+	this->btnSQL = ui->NewButton(*this, CSTR("Generate SQL"));
 	this->btnSQL->SetRect(100, 480, 75, 23, false);
 	this->btnSQL->HandleButtonClick(OnSQLClicked, this);
-	NEW_CLASSNN(this->btnExecute, UI::GUIButton(ui, *this, CSTR("Execute SQL")));
+	this->btnExecute = ui->NewButton(*this, CSTR("Execute SQL"));
 	this->btnExecute->SetRect(180, 480, 75, 23, false);
 	this->btnExecute->HandleButtonClick(OnExecuteClicked, this);
 	NEW_CLASSNN(this->lblStatTime, UI::GUILabel(ui, *this, CSTR("Time Used")));

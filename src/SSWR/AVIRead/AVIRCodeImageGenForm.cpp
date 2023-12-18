@@ -83,7 +83,7 @@ SSWR::AVIRead::AVIRCodeImageGenForm::AVIRCodeImageGenForm(UI::GUIClientControl *
 	this->lblCode->SetRect(4, 52, 100, 23, false);
 	NEW_CLASS(this->txtCode, UI::GUITextBox(ui, this->pnlMain, CSTR("")));
 	this->txtCode->SetRect(104, 52, 400, 23, false);
-	NEW_CLASS(this->btnCodeGen, UI::GUIButton(ui, this->pnlMain, CSTR("Generate")));
+	this->btnCodeGen = ui->NewButton(this->pnlMain, CSTR("Generate"));
 	this->btnCodeGen->SetRect(504, 52, 75, 23, false);
 	this->btnCodeGen->HandleButtonClick(OnCodeGenClicked, this);
 	NEW_CLASS(this->lblCodeInfo, UI::GUILabel(ui, this->pnlMain, CSTR("")));

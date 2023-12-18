@@ -23,7 +23,7 @@ namespace SSWR
 			UI::GUILabel *lblData;
 			UI::GUITextBox *txtData;
 			NotNullPtr<UI::GUIPanel> pnlControl;
-			UI::GUIButton *btnParse;
+			NotNullPtr<UI::GUIButton> btnParse;
 
 			static void __stdcall OnParseClicked(void *userObj);
 		public:

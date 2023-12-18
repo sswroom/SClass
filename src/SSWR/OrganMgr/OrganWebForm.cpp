@@ -61,7 +61,7 @@ SSWR::OrganMgr::OrganWebForm::OrganWebForm(UI::GUIClientControl *parent, NotNull
 	NEW_CLASS(this->env, OrganWebEnv(this->sockf, 0, this->log, db, cfg->GetValue(CSTR("ImageDir")), port, 0, cfg->GetValue(CSTR("CacheDir")), cfg->GetValue(CSTR("DataDir")), scnSize, cfg->GetValue(CSTR("ReloadPwd")), 0, eng, cfg->GetValue(CSTR("OSMCacheOath"))->ToCString()));
 	DEL_CLASS(cfg);
 
-	NEW_CLASS(this->btnReload, UI::GUIButton(ui, this, CSTR("&Reload")));
+	this->btnReload = ui->NewButton(this, CSTR("&Reload"));
 	this->btnReload->SetRect(40, 16, 75, 23, false);
 	this->btnReload->HandleButtonClick(OnReloadClicked, this);
 	if (this->env->IsError())

@@ -2,7 +2,6 @@
 #define _SM_SSWR_AVIREAD_AVIRMYDBMSFORM
 #include "Net/MySQLServer.h"
 #include "SSWR/AVIRead/AVIRCore.h"
-#include "UI/ListBoxLogger.h"
 #include "UI/GUIButton.h"
 #include "UI/GUICheckBox.h"
 #include "UI/GUIForm.h"
@@ -12,6 +11,7 @@
 #include "UI/GUITabControl.h"
 #include "UI/GUITabPage.h"
 #include "UI/GUITextBox.h"
+#include "UI/ListBoxLogger.h"
 
 namespace SSWR
 {
@@ -23,12 +23,12 @@ namespace SSWR
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			Net::MySQLServer *svr;
 			IO::LogTool *log;
-			UI::ListBoxLogger *logger;
+			NotNullPtr<UI::ListBoxLogger> logger;
 
 			NotNullPtr<UI::GUIPanel> pnlCtrl;
 			UI::GUILabel *lblPort;
 			UI::GUITextBox *txtPort;
-			UI::GUIButton *btnStart;
+			NotNullPtr<UI::GUIButton> btnStart;
 			UI::GUITabControl *tcMain;
 
 			NotNullPtr<UI::GUITabPage> tpUser;
@@ -39,10 +39,10 @@ namespace SSWR
 			UI::GUITextBox *txtUserName;
 			UI::GUILabel *lblPassword;
 			UI::GUITextBox *txtPassword;
-			UI::GUIButton *btnUserAdd;
+			NotNullPtr<UI::GUIButton> btnUserAdd;
 
 			NotNullPtr<UI::GUITabPage> tpLog;
-			UI::GUIListBox *lbLog;
+			NotNullPtr<UI::GUIListBox> lbLog;
 			UI::GUITextBox *txtLog;
 
 		private:

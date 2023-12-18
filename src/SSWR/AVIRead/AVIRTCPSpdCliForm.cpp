@@ -211,7 +211,7 @@ SSWR::AVIRead::AVIRTCPSpdCliForm::AVIRTCPSpdCliForm(UI::GUIClientControl *parent
 	this->lblPort->SetRect(4, 28, 100, 23, false);
 	NEW_CLASS(this->txtPort, UI::GUITextBox(ui, *this, CSTR("1234")));
 	this->txtPort->SetRect(104, 28, 100, 23, false);
-	NEW_CLASS(this->btnConn, UI::GUIButton(ui, *this, CSTR("Start")));
+	this->btnConn = ui->NewButton(*this, CSTR("Start"));
 	this->btnConn->SetRect(104, 52, 75, 23, false);
 	this->btnConn->HandleButtonClick(OnConnClick, this);
 

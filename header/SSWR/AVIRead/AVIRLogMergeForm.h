@@ -16,14 +16,14 @@ namespace SSWR
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			UI::GUILabel *lblFile1;
 			UI::GUITextBox *txtFile1;
-			UI::GUIButton *btnFile1;
+			NotNullPtr<UI::GUIButton> btnFile1;
 			UI::GUILabel *lblFile2;
 			UI::GUITextBox *txtFile2;
-			UI::GUIButton *btnFile2;
+			NotNullPtr<UI::GUIButton> btnFile2;
 			UI::GUILabel *lblOFile;
 			UI::GUITextBox *txtOFile;
-			UI::GUIButton *btnOFile;
-			UI::GUIButton *btnConvert;
+			NotNullPtr<UI::GUIButton> btnOFile;
+			NotNullPtr<UI::GUIButton> btnConvert;
 
 			static void __stdcall OnFile1Clicked(void *userObj);
 			static void __stdcall OnFile2Clicked(void *userObj);

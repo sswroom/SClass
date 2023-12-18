@@ -37,7 +37,7 @@ namespace SSWR
 			UI::GUITextBox *txtHost;
 			UI::GUILabel *lblPort;
 			UI::GUITextBox *txtPort;
-			UI::GUIButton *btnConn;
+			NotNullPtr<UI::GUIButton> btnConn;
 
 			UI::GUILabel *lblSendSpeed;
 			UI::GUITextBox *txtSendSpeed;

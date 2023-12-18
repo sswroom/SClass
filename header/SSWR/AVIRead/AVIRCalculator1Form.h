@@ -16,34 +16,34 @@ namespace SSWR
 
 			UI::GUITextBox *txtResult;
 
-			UI::GUIButton *btnKeyMC;
-			UI::GUIButton *btnKeyMR;
-			UI::GUIButton *btnKeyMMinus;
-			UI::GUIButton *btnKeyMPlus;
-			UI::GUIButton *btnKeyDiv;
+			NotNullPtr<UI::GUIButton> btnKeyMC;
+			NotNullPtr<UI::GUIButton> btnKeyMR;
+			NotNullPtr<UI::GUIButton> btnKeyMMinus;
+			NotNullPtr<UI::GUIButton> btnKeyMPlus;
+			NotNullPtr<UI::GUIButton> btnKeyDiv;
 
-			UI::GUIButton *btnKeySqrt;
-			UI::GUIButton *btnKey7;
-			UI::GUIButton *btnKey8;
-			UI::GUIButton *btnKey9;
-			UI::GUIButton *btnKeyMul;
+			NotNullPtr<UI::GUIButton> btnKeySqrt;
+			NotNullPtr<UI::GUIButton> btnKey7;
+			NotNullPtr<UI::GUIButton> btnKey8;
+			NotNullPtr<UI::GUIButton> btnKey9;
+			NotNullPtr<UI::GUIButton> btnKeyMul;
 
-			UI::GUIButton *btnKeyPercent;
-			UI::GUIButton *btnKey4;
-			UI::GUIButton *btnKey5;
-			UI::GUIButton *btnKey6;
-			UI::GUIButton *btnKeyMinus;
+			NotNullPtr<UI::GUIButton> btnKeyPercent;
+			NotNullPtr<UI::GUIButton> btnKey4;
+			NotNullPtr<UI::GUIButton> btnKey5;
+			NotNullPtr<UI::GUIButton> btnKey6;
+			NotNullPtr<UI::GUIButton> btnKeyMinus;
 
-			UI::GUIButton *btnKeyNeg;
-			UI::GUIButton *btnKey1;
-			UI::GUIButton *btnKey2;
-			UI::GUIButton *btnKey3;
-			UI::GUIButton *btnKeyPlus;
+			NotNullPtr<UI::GUIButton> btnKeyNeg;
+			NotNullPtr<UI::GUIButton> btnKey1;
+			NotNullPtr<UI::GUIButton> btnKey2;
+			NotNullPtr<UI::GUIButton> btnKey3;
+			NotNullPtr<UI::GUIButton> btnKeyPlus;
 
-			UI::GUIButton *btnKeyCancel;
-			UI::GUIButton *btnKey0;
-			UI::GUIButton *btnKeyDot;
-			UI::GUIButton *btnKeyEqual;
+			NotNullPtr<UI::GUIButton> btnKeyCancel;
+			NotNullPtr<UI::GUIButton> btnKey0;
+			NotNullPtr<UI::GUIButton> btnKeyDot;
+			NotNullPtr<UI::GUIButton> btnKeyEqual;
 
 			static void __stdcall OnKeyMC(void *userObj);
 			static void __stdcall OnKeyMR(void *userObj);

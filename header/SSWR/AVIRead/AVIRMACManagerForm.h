@@ -39,7 +39,7 @@ namespace SSWR
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 
 			NotNullPtr<UI::GUIPanel> pnlControl;
-			UI::GUIButton *btnStore;
+			NotNullPtr<UI::GUIButton> btnStore;
 			UI::GUILabel *lblInfo;
 			UI::GUITabControl *tcMain;
 
@@ -47,7 +47,7 @@ namespace SSWR
 			NotNullPtr<UI::GUIPanel> pnlFile;
 			UI::GUILabel *lblFile;
 			UI::GUITextBox *txtFile;
-			UI::GUIButton *btnFile;
+			NotNullPtr<UI::GUIButton> btnFile;
 			UI::GUITextBox *txtFileIE;
 			UI::GUIVSplitter *vspFile;
 			UI::GUIListView *lvContent;
@@ -55,10 +55,10 @@ namespace SSWR
 			NotNullPtr<UI::GUITabPage> tpInput;
 			UI::GUILabel *lblInput;
 			UI::GUITextBox *txtInput;
-			UI::GUIButton *btnInput;
+			NotNullPtr<UI::GUIButton> btnInput;
 
 			NotNullPtr<UI::GUITabPage> tpWireshark;
-			UI::GUIButton *btnWireshark;
+			NotNullPtr<UI::GUIButton> btnWireshark;
 
 			Data::ArrayList<LogFileEntry*> logList;
 			Net::MACInfoList macList;

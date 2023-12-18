@@ -23,7 +23,7 @@ namespace SSWR
 			UI::GUIComboBox *cboEncType;
 			UI::GUILabel *lblText;
 			UI::GUITextBox *txtText;
-			UI::GUIButton *btnLoad;
+			NotNullPtr<UI::GUIButton> btnLoad;
 
 			static void __stdcall OnLoadClicked(void *userObj);
 		public:

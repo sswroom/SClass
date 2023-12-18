@@ -147,7 +147,7 @@ SSWR::AVIRead::AVIRLogBackupForm::AVIRLogBackupForm(UI::GUIClientControl *parent
 	this->lblLogName->SetRect(4, 28, 100, 23, false);
 	NEW_CLASS(this->txtLogName, UI::GUITextBox(ui, *this, CSTR(""), false));
 	this->txtLogName->SetRect(104, 28, 600, 23, false);
-	NEW_CLASS(this->btnStart, UI::GUIButton(ui, *this, CSTR("&Start")));
+	this->btnStart = ui->NewButton(*this, CSTR("&Start"));
 	this->btnStart->SetRect(104, 52, 75, 23, false);
 	this->btnStart->HandleButtonClick(OnStartClicked, this);
 }

@@ -18,7 +18,7 @@ void __stdcall SSWR::AVIRead::AVIRMyDBMSForm::OnStartClicked(void *userObj)
 	UInt16 port = 0;
 	Text::StringBuilderUTF8 sb;
 	me->txtPort->GetText(sb);
-	if (!Text::StrToUInt16(sb.ToString(), &port))
+	if (!Text::StrToUInt16(sb.ToString(), port))
 	{
 		return;
 	}
@@ -46,9 +46,9 @@ void __stdcall SSWR::AVIRead::AVIRMyDBMSForm::OnUserAddClicked(void *userObj)
 
 void __stdcall SSWR::AVIRead::AVIRMyDBMSForm::OnLogSel(void *userObj)
 {
-	Text::String *t;
+	NotNullPtr<Text::String> t;
 	SSWR::AVIRead::AVIRMyDBMSForm *me = (SSWR::AVIRead::AVIRMyDBMSForm*)userObj;
-	t = me->lbLog->GetSelectedItemTextNew();
+	t = Text::String::OrEmpty(me->lbLog->GetSelectedItemTextNew());
 	me->txtLog->SetText(t->ToCString());
 	t->Release();
 }
@@ -65,7 +65,6 @@ SSWR::AVIRead::AVIRMyDBMSForm::AVIRMyDBMSForm(UI::GUIClientControl *parent, NotN
 	this->SetFont(0, 0, 8.25, false);
 	this->svr = 0;
 	this->log = 0;
-	this->logger = 0;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 	NEW_CLASSNN(this->pnlCtrl, UI::GUIPanel(ui, *this));
@@ -75,7 +74,7 @@ SSWR::AVIRead::AVIRMyDBMSForm::AVIRMyDBMSForm(UI::GUIClientControl *parent, NotN
 	this->lblPort->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtPort, UI::GUITextBox(ui, this->pnlCtrl, CSTR("3306")));
 	this->txtPort->SetRect(104, 4, 80, 23, false);
-	NEW_CLASS(this->btnStart, UI::GUIButton(ui, this->pnlCtrl, CSTR("Start")));
+	this->btnStart = ui->NewButton(this->pnlCtrl, CSTR("Start"));
 	this->btnStart->SetRect(184, 4, 75, 23, false);
 	this->btnStart->HandleButtonClick(OnStartClicked, this);
 	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, *this));
@@ -97,7 +96,7 @@ SSWR::AVIRead::AVIRMyDBMSForm::AVIRMyDBMSForm(UI::GUIClientControl *parent, NotN
 	NEW_CLASS(this->txtPassword, UI::GUITextBox(ui, this->pnlUser, CSTR("")));
 	this->txtPassword->SetRect(108, 32, 200, 23, false);
 	this->txtPassword->SetPasswordChar('*');
-	NEW_CLASS(this->btnUserAdd, UI::GUIButton(ui, this->pnlUser, CSTR("Add")));
+	this->btnUserAdd = ui->NewButton(this->pnlUser, CSTR("Add"));
 	this->btnUserAdd->SetRect(100, 56, 75, 23, false);
 	this->btnUserAdd->HandleButtonClick(OnUserAddClicked, this);
 
@@ -106,13 +105,13 @@ SSWR::AVIRead::AVIRMyDBMSForm::AVIRMyDBMSForm(UI::GUIClientControl *parent, NotN
 	this->txtLog->SetRect(0, 0, 100, 23, false);
 	this->txtLog->SetReadOnly(true);
 	this->txtLog->SetDockType(UI::GUIControl::DOCK_BOTTOM);
-	NEW_CLASS(this->lbLog, UI::GUIListBox(ui, this->tpLog, false));
+	NEW_CLASSNN(this->lbLog, UI::GUIListBox(ui, this->tpLog, false));
 	this->lbLog->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lbLog->HandleSelectionChange(OnLogSel, this);
 
 	this->AddTimer(1000, OnTimerTick, this);
 	NEW_CLASS(this->log, IO::LogTool());
-	NEW_CLASS(this->logger, UI::ListBoxLogger(this, this->lbLog, 300, true));
+	NEW_CLASSNN(this->logger, UI::ListBoxLogger(*this, this->lbLog, 300, true));
 	this->logger->SetTimeFormat("yyyy-MM-dd HH:mm:ss.fff");
 	this->log->AddLogHandler(this->logger, IO::LogHandler::LogLevel::Command);
 }
@@ -121,7 +120,7 @@ SSWR::AVIRead::AVIRMyDBMSForm::~AVIRMyDBMSForm()
 {
 	SDEL_CLASS(this->svr);
 	SDEL_CLASS(this->log);
-	SDEL_CLASS(this->logger);
+	this->logger.Delete();
 }
 
 void SSWR::AVIRead::AVIRMyDBMSForm::OnMonitorChanged()

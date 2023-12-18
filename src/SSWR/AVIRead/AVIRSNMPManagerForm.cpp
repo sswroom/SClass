@@ -298,7 +298,7 @@ SSWR::AVIRead::AVIRSNMPManagerForm::AVIRSNMPManagerForm(UI::GUIClientControl *pa
 	this->lblCommunity->SetRect(4, 28, 100, 23, false);
 	NEW_CLASS(this->txtCommunity, UI::GUITextBox(ui, this->pnlControl, CSTR("public")));
 	this->txtCommunity->SetRect(104, 28, 200, 23, false);
-	NEW_CLASS(this->btnAgentAdd, UI::GUIButton(ui, this->pnlControl, CSTR("Add")));
+	this->btnAgentAdd = ui->NewButton(this->pnlControl, CSTR("Add"));
 	this->btnAgentAdd->SetRect(104, 52, 75, 23, false);
 	this->btnAgentAdd->HandleButtonClick(OnAgentAddClicked, this);
 	NEW_CLASS(this->chkSendToSvr, UI::GUICheckBox(ui, this->pnlControl, CSTR("Send to Server"), false));
@@ -316,7 +316,7 @@ SSWR::AVIRead::AVIRSNMPManagerForm::AVIRSNMPManagerForm(UI::GUIClientControl *pa
 	NEW_CLASS(this->txtAgentDAddr, UI::GUITextBox(ui, this->pnlAgent, CSTR("")));
 	this->txtAgentDAddr->SetRect(104, 4, 150, 23, false);
 	this->txtAgentDAddr->SetReadOnly(true);
-	NEW_CLASS(this->btnAgentWalk, UI::GUIButton(ui, this->pnlAgent, CSTR("Walk")));
+	this->btnAgentWalk = ui->NewButton(this->pnlAgent, CSTR("Walk"));
 	this->btnAgentWalk->SetRect(254, 4, 75, 23, false);
 	this->btnAgentWalk->HandleButtonClick(OnAgentWalkClicked, this);
 	NEW_CLASS(this->lblAgentDescr, UI::GUILabel(ui, this->pnlAgent, CSTR("Description")));

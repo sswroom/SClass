@@ -24,13 +24,13 @@ namespace SSWR
 			NotNullPtr<UI::GUITabPage> tpAlgorithm;
 			UI::GUILabel *lblAlgorithm;
 			UI::GUIComboBox *cboAlgorithm;
-			UI::GUIButton *btnSpeed;
+			NotNullPtr<UI::GUIButton> btnSpeed;
 			UI::GUILabel *lblSpeed;
 			UI::GUITextBox *txtSpeed;
 
 			NotNullPtr<UI::GUITabPage> tpCompare;
 			NotNullPtr<UI::GUIPanel> pnlCompare;
-			UI::GUIButton *btnCompare;
+			NotNullPtr<UI::GUIButton> btnCompare;
 			UI::GUIListView *lvCompare;
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;

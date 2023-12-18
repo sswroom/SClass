@@ -17,12 +17,12 @@ namespace SSWR
 
 			UI::GUILabel *lblRoadRoute;
 			UI::GUITextBox *txtRoadRoute;
-			UI::GUIButton *btnRoadRoute;
+			NotNullPtr<UI::GUIButton> btnRoadRoute;
 			UI::GUILabel *lblVehicleRes;
 			UI::GUITextBox *txtVehicleRes;
-			UI::GUIButton *btnVehicleRes;
-			UI::GUIButton *btnOK;
-			UI::GUIButton *btnCancel;
+			NotNullPtr<UI::GUIButton> btnVehicleRes;
+			NotNullPtr<UI::GUIButton> btnOK;
+			NotNullPtr<UI::GUIButton> btnCancel;
 
 			Map::MapDrawLayer *lyr;
 

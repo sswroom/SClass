@@ -77,10 +77,10 @@ SSWR::AVIRead::AVIRProgramLinksCreateForm::AVIRProgramLinksCreateForm(UI::GUICli
 	this->lblCmdLine->SetRect(4, 124, 100, 23, false);
 	NEW_CLASS(this->txtCmdLine, UI::GUITextBox(ui, *this, CSTR("")));
 	this->txtCmdLine->SetRect(104, 124, 500, 23, false);
-	NEW_CLASS(this->btnCreate, UI::GUIButton(ui, *this, CSTR("Create")));
+	this->btnCreate = ui->NewButton(*this, CSTR("Create"));
 	this->btnCreate->SetRect(104, 148, 75, 23, false);
 	this->btnCreate->HandleButtonClick(OnCreateClicked, this);
-	NEW_CLASS(this->btnCancel, UI::GUIButton(ui, *this, CSTR("Cancel")));
+	this->btnCancel = ui->NewButton(*this, CSTR("Cancel"));
 	this->btnCancel->SetRect(184, 148, 75, 23, false);
 	this->btnCancel->HandleButtonClick(OnCancelClicked, this);
 	this->SetDefaultButton(this->btnCreate);

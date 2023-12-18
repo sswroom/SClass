@@ -74,20 +74,20 @@ SSWR::AVIRead::AVIRGISCombineForm::AVIRGISCombineForm(UI::GUIClientControl *pare
 	pnl->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(lbl, UI::GUILabel(ui, pnl, CSTR("Select layers to combine")));
 	lbl->SetRect(0, 0, 280, 23, false);
-	NEW_CLASS(this->btnCheckAll, UI::GUIButton(ui, pnl, CSTR("Check All")));
+	this->btnCheckAll = ui->NewButton(pnl, CSTR("Check All"));
 	this->btnCheckAll->SetRect(0, 24, 80, 23, false);
 	this->btnCheckAll->HandleButtonClick(OnCheckAllClick, this);
-	NEW_CLASS(this->btnUncheckAll, UI::GUIButton(ui, pnl, CSTR("Uncheck All")));
+	this->btnUncheckAll = ui->NewButton(pnl, CSTR("Uncheck All"));
 	this->btnUncheckAll->SetRect(88, 24, 80, 23, false);
 	this->btnUncheckAll->HandleButtonClick(OnUncheckAllClick, this);
 
 	NEW_CLASSNN(pnl, UI::GUIPanel(ui, *this));
 	pnl->SetRect(0, 0, 448, 40, false);
 	pnl->SetDockType(UI::GUIControl::DOCK_BOTTOM);
-	NEW_CLASS(this->btnCombine, UI::GUIButton(ui, pnl, CSTR("Combine")));
+	this->btnCombine = ui->NewButton(pnl, CSTR("Combine"));
 	this->btnCombine->SetRect(64, 8, 75, 23, false);
 	this->btnCombine->HandleButtonClick(OnCombineClick, this);
-	NEW_CLASS(this->btnCancel, UI::GUIButton(ui, pnl, CSTR("Cancel")));
+	this->btnCancel = ui->NewButton(pnl, CSTR("Cancel"));
 	this->btnCancel->SetRect(160, 8, 75, 23, false);
 	this->btnCancel->HandleButtonClick(OnCancelClick, this);
 	

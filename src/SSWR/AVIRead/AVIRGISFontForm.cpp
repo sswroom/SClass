@@ -111,7 +111,7 @@ SSWR::AVIRead::AVIRGISFontForm::AVIRGISFontForm(UI::GUIClientControl *parent, No
 	NEW_CLASS(this->txtFont, UI::GUITextBox(ui, this->pnlMain, CSTR("")));
 	this->txtFont->SetRect(104, 4, 200, 23, false);
 	this->txtFont->SetReadOnly(true);
-	NEW_CLASS(this->btnFont, UI::GUIButton(ui, this->pnlMain, CSTR("Change")));
+	this->btnFont = ui->NewButton(this->pnlMain, CSTR("Change"));
 	this->btnFont->SetRect(304, 4, 75, 23, false);
 	this->btnFont->HandleButtonClick(OnFontClicked, this);
 	NEW_CLASS(this->lblColor, UI::GUILabel(ui, this->pnlMain, CSTR("Color")));
@@ -119,10 +119,10 @@ SSWR::AVIRead::AVIRGISFontForm::AVIRGISFontForm(UI::GUIClientControl *parent, No
 	NEW_CLASS(this->pbColor, UI::GUIPictureBox(ui, this->pnlMain, eng, true, false));
 	this->pbColor->SetRect(104, 28, 200, 23, false);
 	this->pbColor->HandleMouseDown(OnColorClicked, this);
-	NEW_CLASS(this->btnOK, UI::GUIButton(ui, this->pnlMain, CSTR("OK")));
+	this->btnOK = ui->NewButton(this->pnlMain, CSTR("OK"));
 	this->btnOK->SetRect(104, 80, 75, 23, false);
 	this->btnOK->HandleButtonClick(OnOKClicked, this);
-	NEW_CLASS(this->btnCancel, UI::GUIButton(ui, this->pnlMain, CSTR("Cancel")));
+	this->btnCancel = ui->NewButton(this->pnlMain, CSTR("Cancel"));
 	this->btnCancel->SetRect(184, 80, 75, 23, false);
 	this->btnCancel->HandleButtonClick(OnCancelClicked, this);
 

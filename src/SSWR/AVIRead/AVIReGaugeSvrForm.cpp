@@ -119,7 +119,7 @@ SSWR::AVIRead::AVIReGaugeSvrForm::AVIReGaugeSvrForm(UI::GUIClientControl *parent
 	this->lblPort->SetRect(8, 8, 100, 23, false);
 	NEW_CLASS(this->txtPort, UI::GUITextBox(ui, this->tpControl, CSTR("12345")));
 	this->txtPort->SetRect(108, 8, 50, 23, false);
-	NEW_CLASS(this->btnStart, UI::GUIButton(ui, this->tpControl, CSTR("Start")));
+	this->btnStart = ui->NewButton(this->tpControl, CSTR("Start"));
 	this->btnStart->SetRect(158, 8, 75, 23, false);
 	this->btnStart->HandleButtonClick(OnStartClick, this);
 

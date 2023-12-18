@@ -173,7 +173,7 @@ SSWR::AVIRead::AVIRWifiScanForm::AVIRWifiScanForm(UI::GUIClientControl *parent, 
 	NEW_CLASSNN(this->pnlControl, UI::GUIPanel(ui, *this));
 	this->pnlControl->SetRect(0, 0, 100, 31, false);
 	this->pnlControl->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->btnScan, UI::GUIButton(ui, this->pnlControl, CSTR("Scan")));
+	this->btnScan = ui->NewButton(this->pnlControl, CSTR("Scan"));
 	this->btnScan->SetRect(4, 4, 75, 23, false);
 	this->btnScan->HandleButtonClick(OnScanClicked, this);
 	NEW_CLASS(this->lblScanTime, UI::GUILabel(ui, this->pnlControl, CSTR("Scan Time")));

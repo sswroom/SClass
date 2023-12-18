@@ -21,7 +21,7 @@ namespace SSWR
 			UI::GUITextBox *txtCost;
 			UI::GUILabel *lblGenPassword;
 			UI::GUITextBox *txtGenPassword;
-			UI::GUIButton *btnGenerate;
+			NotNullPtr<UI::GUIButton> btnGenerate;
 			UI::GUILabel *lblGenHash;
 			UI::GUITextBox *txtGenHash;
 
@@ -30,7 +30,7 @@ namespace SSWR
 			UI::GUITextBox *txtCheckHash;
 			UI::GUILabel *lblCheckPassword;
 			UI::GUITextBox *txtCheckPassword;
-			UI::GUIButton *btnCheck;
+			NotNullPtr<UI::GUIButton> btnCheck;
 			UI::GUILabel *lblCheckResult;
 			UI::GUITextBox *txtCheckResult;
 

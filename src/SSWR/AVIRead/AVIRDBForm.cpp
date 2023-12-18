@@ -599,7 +599,7 @@ SSWR::AVIRead::AVIRDBForm::AVIRDBForm(UI::GUIClientControl *parent, NotNullPtr<U
 		NEW_CLASSNN(this->pnlSQLCtrl, UI::GUIPanel(ui, this->tpSQL));
 		this->pnlSQLCtrl->SetRect(0, 0, 100, 31, false);
 		this->pnlSQLCtrl->SetDockType(UI::GUIControl::DOCK_BOTTOM);
-		NEW_CLASS(this->btnSQL, UI::GUIButton(ui, this->pnlSQLCtrl, CSTR("Execute")));
+		this->btnSQL = ui->NewButton(this->pnlSQLCtrl, CSTR("Execute"));
 		this->btnSQL->SetRect(4, 4, 75, 23, false);
 		this->btnSQL->HandleButtonClick(OnSQLClicked, this);
 		NEW_CLASS(this->txtSQL, UI::GUITextBox(ui, this->tpSQL, CSTR(""), true));

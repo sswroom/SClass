@@ -141,10 +141,10 @@ SSWR::AVIRead::AVIRGISRandomLocForm::AVIRGISRandomLocForm(UI::GUIClientControl *
 	this->selPt1 = Math::Coord2DDbl(0, 0);
 	this->selPt2 = this->selPt1;
 
-	NEW_CLASS(this->btnArea, UI::GUIButton(ui, *this, CSTR("Select Area")));
+	this->btnArea = ui->NewButton(*this, CSTR("Select Area"));
 	this->btnArea->SetRect(4, 4, 100, 23, false);
 	this->btnArea->HandleButtonClick(OnAreaClicked, this);
-	NEW_CLASS(this->btnRandom, UI::GUIButton(ui, *this, CSTR("Random")));
+	this->btnRandom = ui->NewButton(*this, CSTR("Random"));
 	this->btnRandom->SetRect(114, 4, 100, 23, false);
 	this->btnRandom->HandleButtonClick(OnRandomClicked, this);
 

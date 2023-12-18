@@ -27,8 +27,8 @@ namespace SSWR
 			NotNullPtr<UI::GUIPanel> pnlStrCols;
 			UI::GUILabel *lblStrCols;
 			UI::GUIListBox *lbStrCols;
-			UI::GUIButton *btnStrColsDbl;
-			UI::GUIButton *btnStrColsInt32;
+			NotNullPtr<UI::GUIButton> btnStrColsDbl;
+			NotNullPtr<UI::GUIButton> btnStrColsInt32;
 			NotNullPtr<UI::GUIPanel> pnlXAxis;
 			UI::GUILabel *lblXAxis;
 			UI::GUIComboBox *cboXAxis;
@@ -36,11 +36,11 @@ namespace SSWR
 			NotNullPtr<UI::GUIPanel> pnlYAxis;
 			UI::GUILabel *lblYAxis;
 			UI::GUIComboBox *cboYAxis;
-			UI::GUIButton *btnYAxis;
+			NotNullPtr<UI::GUIButton> btnYAxis;
 			UI::GUIListBox *lbYAxis;
 			NotNullPtr<UI::GUIPanel> pnlControl;
-			UI::GUIButton *btnPlot;
-			UI::GUIButton *btnCancel;
+			NotNullPtr<UI::GUIButton> btnPlot;
+			NotNullPtr<UI::GUIButton> btnCancel;
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			DB::ReadingDB *db;

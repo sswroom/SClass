@@ -112,14 +112,14 @@ SSWR::AVIRead::AVIRExportParamForm::AVIRExportParamForm(UI::GUIClientControl *pa
 	}
 
 	NotNullPtr<UI::GUIPanel> pnl;
-	UI::GUIButton *btn;
+	NotNullPtr<UI::GUIButton> btn;
 	NEW_CLASSNN(pnl, UI::GUIPanel(ui, *this));
 	pnl->SetRect(0, 0, 292, 48, false);
 	pnl->SetDockType(UI::GUIControl::DOCK_BOTTOM);
-	NEW_CLASS(btn, UI::GUIButton(ui, pnl, CSTR("OK")));
+	btn = ui->NewButton(pnl, CSTR("OK"));
 	btn->SetRect(48, 8, 75, 23, false);
 	btn->HandleButtonClick(OnOKClicked, this);
-	NEW_CLASS(btn, UI::GUIButton(ui, pnl, CSTR("Cancel")));
+	btn = ui->NewButton(pnl, CSTR("Cancel"));
 	btn->SetRect(168, 8, 75, 23, false);
 	btn->HandleButtonClick(OnCancelClicked, this);
 }

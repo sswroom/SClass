@@ -42,7 +42,7 @@ namespace SSWR
 			UI::GUITextBox *txtSubject;
 			UI::GUILabel *lblContent;
 			UI::GUITextBox *txtContent;
-			UI::GUIButton *btnSend;
+			NotNullPtr<UI::GUIButton> btnSend;
 			UI::GUITextBox *txtLog;
 
 			static void __stdcall OnSendClicked(void *userObj);

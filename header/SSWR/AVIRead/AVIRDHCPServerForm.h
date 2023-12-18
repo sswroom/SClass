@@ -36,7 +36,7 @@ namespace SSWR
 			UI::GUITextBox *txtDNS1;
 			UI::GUILabel *lblDNS2;
 			UI::GUITextBox *txtDNS2;
-			UI::GUIButton *btnStart;
+			NotNullPtr<UI::GUIButton> btnStart;
 			UI::GUIListView *lvDevices;
 
 			static void __stdcall OnStartClicked(void *userObj);

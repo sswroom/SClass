@@ -34,7 +34,7 @@ namespace SSWR
 			UI::GUITextBox *txtTopic;
 			UI::GUILabel *lblMessage;
 			UI::GUITextBox *txtMessage;
-			UI::GUIButton *btnPublish;
+			NotNullPtr<UI::GUIButton> btnPublish;
 			UI::GUILabel *lblStatus;
 			UI::GUITextBox *txtStatus;
 

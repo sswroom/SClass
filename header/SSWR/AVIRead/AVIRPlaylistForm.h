@@ -24,9 +24,9 @@ namespace SSWR
 			UI::GUIHSplitter *hsplit;
 			UI::GUIVideoBoxDD *vbdMain;
 			UI::GUIMainMenu *mnu;
-			UI::GUIButton *btnStart;
-			UI::GUIButton *btnEnd;
-			UI::GUIButton *btnFS;
+			NotNullPtr<UI::GUIButton> btnStart;
+			NotNullPtr<UI::GUIButton> btnEnd;
+			NotNullPtr<UI::GUIButton> btnFS;
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			NotNullPtr<Media::ColorManagerSess> colorSess;

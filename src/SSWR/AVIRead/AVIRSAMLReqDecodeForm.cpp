@@ -40,7 +40,7 @@ SSWR::AVIRead::AVIRSAMLReqDecodeForm::AVIRSAMLReqDecodeForm(UI::GUIClientControl
 	this->lblRAWRequest->SetRect(0, 0, 100, 23, false);
 	NEW_CLASS(this->txtRAWRequest, UI::GUITextBox(ui, *this, CSTR(""), true));
 	this->txtRAWRequest->SetRect(100, 0, 500, 119, false);
-	NEW_CLASS(this->btnDecode, UI::GUIButton(ui, *this, CSTR("Decode")));
+	this->btnDecode = ui->NewButton(*this, CSTR("Decode"));
 	this->btnDecode->SetRect(100, 120, 75, 23, false);
 	this->btnDecode->HandleButtonClick(OnDecodeClicked, this);
 	NEW_CLASS(this->lblResult, UI::GUILabel(ui, *this, CSTR("Result")));

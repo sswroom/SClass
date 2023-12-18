@@ -34,7 +34,7 @@ namespace SSWR
 			UI::GUITextBox *txtServer;
 			UI::GUILabel *lblPort;
 			UI::GUITextBox *txtPort;
-			UI::GUIButton *btnConnect;
+			NotNullPtr<UI::GUIButton> btnConnect;
 			UI::GUIListView *lvDevices;
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;

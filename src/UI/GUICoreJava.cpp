@@ -5,6 +5,7 @@
 #include "Media/DrawEngineFactory.h"
 #include "UI/GUICore.h"
 #include "UI/GUICoreJava.h"
+#include "UI/Java/JavaButton.h"
 #include "UI/Java/JavaGroupBox.h"
 #include "UI/Java/JavaMessageDialog.h"
 #include <jni.h>
@@ -196,6 +197,13 @@ void UI::GUICoreJava::ShowMsgOK(Text::CStringNN message, Text::CStringNN title, 
 Bool UI::GUICoreJava::ShowMsgYesNo(Text::CStringNN message, Text::CStringNN title, Optional<UI::GUIControl> ctrl)
 {
 	return UI::Java::JavaMessageDialog::ShowYesNo((JNIEnv*)jniEnv, message, title, ctrl);
+}
+
+NotNullPtr<UI::GUIButton> UI::GUICoreJava::NewButton(NotNullPtr<GUIClientControl> parent, Text::CStringNN text)
+{
+	NotNullPtr<UI::Java::JavaButton> ctrl;
+	NEW_CLASSNN(ctrl, UI::Java::JavaButton(*this, parent, text));
+	return ctrl;
 }
 
 NotNullPtr<UI::GUIGroupBox> UI::GUICoreJava::NewGroupBox(NotNullPtr<GUIClientControl> parent, Text::CStringNN text)

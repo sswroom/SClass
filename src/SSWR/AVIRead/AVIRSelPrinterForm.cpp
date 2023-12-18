@@ -65,7 +65,7 @@ SSWR::AVIRead::AVIRSelPrinterForm::AVIRSelPrinterForm(UI::GUIClientControl *pare
 	NEW_CLASS(this->cboPrinter, UI::GUIComboBox(ui, *this, false));
 	this->cboPrinter->SetRect(108, 8, 300, 23, false);
 	this->cboPrinter->HandleSelectionChange(OnPrinterChg, this);
-	NEW_CLASS(this->btnSetting, UI::GUIButton(ui, *this, CSTR("&Setting")));
+	this->btnSetting = ui->NewButton(*this, CSTR("&Setting"));
 	this->btnSetting->SetRect(408, 8, 75, 23, false);
 	this->btnSetting->HandleButtonClick(OnSettingClick, this);
 	
@@ -88,10 +88,10 @@ SSWR::AVIRead::AVIRSelPrinterForm::AVIRSelPrinterForm(UI::GUIClientControl *pare
 		}
 	}
 
-	NEW_CLASS(this->btnOK, UI::GUIButton(ui, *this, CSTR("&OK")));
+	this->btnOK = ui->NewButton(*this, CSTR("&OK"));
 	this->btnOK->SetRect(176, 40, 75, 23, false);
 	this->btnOK->HandleButtonClick(OnOKClick, this);
-	NEW_CLASS(this->btnCancel, UI::GUIButton(ui, *this, CSTR("&Cancel")));
+	this->btnCancel = ui->NewButton(*this, CSTR("&Cancel"));
 	this->btnCancel->SetRect(260, 40, 75, 23, false);
 	this->btnCancel->HandleButtonClick(OnCancelClick, this);
 	this->SetDefaultButton(this->btnOK);

@@ -240,16 +240,16 @@ SSWR::AVIRead::AVIRRESTfulForm::AVIRRESTfulForm(UI::GUIClientControl *parent, No
 	NEW_CLASS(this->txtDatabase, UI::GUITextBox(ui, this->grpParam, CSTR("")));
 	this->txtDatabase->SetRect(108, 128, 150, 23, false);
 	this->txtDatabase->SetReadOnly(true);
-	NEW_CLASS(this->btnDatabaseMySQL, UI::GUIButton(ui, this->grpParam, CSTR("MySQL")));
+	this->btnDatabaseMySQL = ui->NewButton(this->grpParam, CSTR("MySQL"));
 	this->btnDatabaseMySQL->SetRect(258, 128, 75, 23, false);
 	this->btnDatabaseMySQL->HandleButtonClick(OnDatabaseMySQLClicked, this);
-	NEW_CLASS(this->btnDatabaseODBCDSN, UI::GUIButton(ui, this->grpParam, CSTR("ODBC")));
+	this->btnDatabaseODBCDSN = ui->NewButton(this->grpParam, CSTR("ODBC"));
 	this->btnDatabaseODBCDSN->SetRect(338, 128, 75, 23, false);
 	this->btnDatabaseODBCDSN->HandleButtonClick(OnDatabaseODBCDSNClicked, this);
-	NEW_CLASS(this->btnStart, UI::GUIButton(ui, this->tpControl, CSTR("Start")));
+	this->btnStart = ui->NewButton(this->tpControl, CSTR("Start"));
 	this->btnStart->SetRect(200, 188, 75, 23, false);
 	this->btnStart->HandleButtonClick(OnStartClick, this);
-	NEW_CLASS(this->btnStop, UI::GUIButton(ui, this->tpControl, CSTR("Stop")));
+	this->btnStop = ui->NewButton(this->tpControl, CSTR("Stop"));
 	this->btnStop->SetRect(300, 188, 75, 23, false);
 	this->btnStop->HandleButtonClick(OnStopClick, this);
 

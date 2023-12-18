@@ -838,7 +838,7 @@ SSWR::AVIRead::AVIRWifiCaptureForm::AVIRWifiCaptureForm(UI::GUIClientControl *pa
 	NEW_CLASS(this->txtGPS, UI::GUITextBox(ui, this->tpStatus, CSTR("Not opened")));
 	this->txtGPS->SetReadOnly(true);
 	this->txtGPS->SetRect(104, 28, 200, 23, false);
-	NEW_CLASS(this->btnGPS, UI::GUIButton(ui, this->tpStatus, CSTR("Open")));
+	this->btnGPS = ui->NewButton(this->tpStatus, CSTR("Open"));
 	this->btnGPS->SetRect(304, 28, 75, 23, false);
 	this->btnGPS->HandleButtonClick(OnGPSClicked, this);
 	NEW_CLASS(this->lblGPSTime, UI::GUILabel(ui, this->tpStatus, CSTR("GPS Time")));
@@ -881,7 +881,7 @@ SSWR::AVIRead::AVIRWifiCaptureForm::AVIRWifiCaptureForm(UI::GUIClientControl *pa
 	NEW_CLASS(this->txtBSSCount, UI::GUITextBox(ui, this->tpStatus, CSTR("")));
 	this->txtBSSCount->SetReadOnly(true);
 	this->txtBSSCount->SetRect(104, 220, 200, 23, false);
-	NEW_CLASS(this->btnCapture, UI::GUIButton(ui, this->tpStatus, CSTR("Start Capture")));
+	this->btnCapture = ui->NewButton(this->tpStatus, CSTR("Start Capture"));
 	this->btnCapture->SetRect(104, 244, 120, 23, false);
 	this->btnCapture->HandleButtonClick(OnCaptureClicked, this);
 
@@ -907,10 +907,10 @@ SSWR::AVIRead::AVIRWifiCaptureForm::AVIRWifiCaptureForm(UI::GUIClientControl *pa
 	NEW_CLASSNN(this->pnlLogWifi, UI::GUIPanel(ui, this->tpLogWifi));
 	this->pnlLogWifi->SetRect(0, 0, 100, 31, false);
 	this->pnlLogWifi->SetDockType(UI::GUIControl::DOCK_BOTTOM);
-	NEW_CLASS(this->btnLogWifiSave, UI::GUIButton(ui, this->pnlLogWifi, CSTR("Save")));
+	this->btnLogWifiSave = ui->NewButton(this->pnlLogWifi, CSTR("Save"));
 	this->btnLogWifiSave->SetRect(4, 4, 75, 23, false);
 	this->btnLogWifiSave->HandleButtonClick(OnLogWifiSaveClicked, this);
-	NEW_CLASS(this->btnLogWifiSaveF, UI::GUIButton(ui, this->pnlLogWifi, CSTR("Save Unk only")));
+	this->btnLogWifiSaveF = ui->NewButton(this->pnlLogWifi, CSTR("Save Unk only"));
 	this->btnLogWifiSaveF->SetRect(84, 4, 75, 23, false);
 	this->btnLogWifiSaveF->HandleButtonClick(OnLogWifiSaveFClicked, this);
 	NEW_CLASS(this->lvLogWifi, UI::GUIListView(ui, this->tpLogWifi, UI::GUIListView::LVSTYLE_TABLE, 12));

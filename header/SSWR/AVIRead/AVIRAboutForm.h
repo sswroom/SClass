@@ -10,7 +10,7 @@ namespace SSWR
 		class AVIRAboutForm : public UI::GUIForm
 		{
 		private:
-			UI::GUIButton *btn;
+			NotNullPtr<UI::GUIButton> btn;
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 

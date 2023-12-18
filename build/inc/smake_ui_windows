@@ -32,8 +32,6 @@ UI/FolderDialog.h:
 @FolderDialogWin.o
 UI/FontDialog.h:
 @FontDialogWin.o
-UI/GUIButton.h:
-@GUIButtonWin.o
 UI/GUICheckBox.h:
 @GUICheckBoxWin.o
 UI/GUICheckedListBox.h:

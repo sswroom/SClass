@@ -21,8 +21,8 @@ namespace SSWR
 			UI::GUITextBox *txtPort;
 			UI::GUILabel *lblFileName;
 			UI::GUITextBox *txtFileName;
-			UI::GUIButton *btnRecv;
-			UI::GUIButton *btnSend;
+			NotNullPtr<UI::GUIButton> btnRecv;
+			NotNullPtr<UI::GUIButton> btnSend;
 
 		private:
 			static void __stdcall OnRecvClick(void *userObj);

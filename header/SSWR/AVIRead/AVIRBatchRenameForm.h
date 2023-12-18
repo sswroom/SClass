@@ -17,8 +17,8 @@ namespace SSWR
 
 			UI::GUILabel *lblDirectory;
 			UI::GUITextBox *txtDirectory;
-			UI::GUIButton *btnRenameExtUpper;
-			UI::GUIButton *btnRenameExtLower;
+			NotNullPtr<UI::GUIButton> btnRenameExtUpper;
+			NotNullPtr<UI::GUIButton> btnRenameExtLower;
 
 			static void __stdcall OnRenameExtUpperClicked(void *userObj);
 			static void __stdcall OnRenameExtLowerClicked(void *userObj);

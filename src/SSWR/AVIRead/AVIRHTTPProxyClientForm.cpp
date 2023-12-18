@@ -209,7 +209,7 @@ SSWR::AVIRead::AVIRHTTPProxyClientForm::AVIRHTTPProxyClientForm(UI::GUIClientCon
 	this->lblProxyPort->SetRect(304, 28, 50, 23, false);
 	NEW_CLASS(this->txtProxyPort, UI::GUITextBox(ui, this->pnlRequest, CSTR("80")));
 	this->txtProxyPort->SetRect(354, 28, 60, 23, false);
-	NEW_CLASS(this->btnRequest, UI::GUIButton(ui, this->pnlRequest, CSTR("Request")));
+	this->btnRequest = ui->NewButton(this->pnlRequest, CSTR("Request"));
 	this->btnRequest->SetRect(104, 56, 75, 23, false);
 	this->btnRequest->HandleButtonClick(OnRequestClicked, this);
 	this->grpResponse = ui->NewGroupBox(*this, CSTR("Response"));

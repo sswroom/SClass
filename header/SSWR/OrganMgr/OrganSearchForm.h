@@ -16,8 +16,8 @@ namespace SSWR
 		private:
 			UI::GUILabel *lbl;
 			UI::GUITextBox *txt;
-			UI::GUIButton *btnOK;
-			UI::GUIButton *btnCancel;
+			NotNullPtr<UI::GUIButton> btnOK;
+			NotNullPtr<UI::GUIButton> btnCancel;
 			OrganEnv *env;
 			Text::String *foundStr;
 			OrganGroup *foundGroup;

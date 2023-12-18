@@ -294,10 +294,10 @@ SSWR::AVIRead::AVIREncryptMsgForm::AVIREncryptMsgForm(UI::GUIClientControl *pare
 	NEW_CLASS(this->cboOutputType, UI::GUIComboBox(ui, *this, false));
 	this->cboOutputType->SetRect(104, 220, 100, 23, false);
 	AddTextEncType(this->cboOutputType);
-	NEW_CLASS(this->btnEncrypt, UI::GUIButton(ui, *this, CSTR("Encrypt")));
+	this->btnEncrypt = ui->NewButton(*this, CSTR("Encrypt"));
 	this->btnEncrypt->SetRect(104, 244, 75, 23, false);
 	this->btnEncrypt->HandleButtonClick(OnEncryptClicked, this);
-	NEW_CLASS(this->btnDecrypt, UI::GUIButton(ui, *this, CSTR("Decrypt")));
+	this->btnDecrypt = ui->NewButton(*this, CSTR("Decrypt"));
 	this->btnDecrypt->SetRect(184, 244, 75, 23, false);
 	this->btnDecrypt->HandleButtonClick(OnDecryptClicked, this);
 	NEW_CLASS(this->lblOutputMsg, UI::GUILabel(ui, *this, CSTR("Output Msg")));

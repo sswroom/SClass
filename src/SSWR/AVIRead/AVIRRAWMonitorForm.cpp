@@ -1184,7 +1184,7 @@ SSWR::AVIRead::AVIRRAWMonitorForm::AVIRRAWMonitorForm(UI::GUIClientControl *pare
 	this->lblInfo->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtInfo, UI::GUITextBox(ui, this->pnlControl, CSTR("8089")));
 	this->txtInfo->SetRect(104, 4, 80, 23, false);
-	NEW_CLASS(this->btnInfo, UI::GUIButton(ui, this->pnlControl, CSTR("Start")));
+	this->btnInfo = ui->NewButton(this->pnlControl, CSTR("Start"));
 	this->btnInfo->SetRect(184, 4, 75, 23, false);
 	this->btnInfo->HandleButtonClick(OnInfoClicked, this);
 	NEW_CLASS(this->lblIP, UI::GUILabel(ui, this->pnlControl, CSTR("IP")));
@@ -1192,7 +1192,7 @@ SSWR::AVIRead::AVIRRAWMonitorForm::AVIRRAWMonitorForm(UI::GUIClientControl *pare
 	NEW_CLASS(this->cboIP, UI::GUIComboBox(ui, this->pnlControl, false));
 	this->cboIP->SetRect(104, 28, 150, 23, false);
 	this->cboIP->HandleSelectionChange(OnIPSelChg, this);
-	NEW_CLASS(this->btnStart, UI::GUIButton(ui, this->pnlControl, CSTR("Start")));
+	this->btnStart = ui->NewButton(this->pnlControl, CSTR("Start"));
 	this->btnStart->SetRect(254, 28, 75, 23, false);
 	this->btnStart->HandleButtonClick(OnStartClicked, this);
 	NEW_CLASS(this->lblPLog, UI::GUILabel(ui, this->pnlControl, CSTR("Packet Log")));
@@ -1202,7 +1202,7 @@ SSWR::AVIRead::AVIRRAWMonitorForm::AVIRRAWMonitorForm(UI::GUIClientControl *pare
 	this->cboPLog->AddItem(CSTR("Pcap"), 0);	
 	this->cboPLog->AddItem(CSTR("Pcapng"), 0);	
 	this->cboPLog->SetSelectedIndex(1);
-	NEW_CLASS(this->btnPLog, UI::GUIButton(ui, this->pnlControl, CSTR("Begin Log")));
+	this->btnPLog = ui->NewButton(this->pnlControl, CSTR("Begin Log"));
 	this->btnPLog->SetRect(254, 52, 75, 23, false);
 	this->btnPLog->HandleButtonClick(OnPLogClicked, this);
 	NEW_CLASS(this->txtPLog, UI::GUITextBox(ui, this->pnlControl, CSTR("")));

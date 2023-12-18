@@ -27,8 +27,8 @@ namespace SSWR
 			UI::GUIComboBox *cboGeo;
 			UI::GUIRadioButton *radProj;
 			UI::GUIComboBox *cboProj;
-			UI::GUIButton *btnOK;
-			UI::GUIButton *btnCancel;
+			NotNullPtr<UI::GUIButton> btnOK;
+			NotNullPtr<UI::GUIButton> btnCancel;
 			NotNullPtr<UI::GUIPanel> pnlInfo;
 
 			static void __stdcall OnOKClicked(void *userObj);

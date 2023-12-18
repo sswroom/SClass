@@ -17,9 +17,9 @@ namespace SSWR
 			NotNullPtr<UI::GUIPanel> pnlFile;
 			UI::GUILabel *lblFile;
 			UI::GUITextBox *txtFile;
-			UI::GUIButton *btnBrowse;
-			UI::GUIButton *btnParseToText;
-			UI::GUIButton *btnParseToFile;
+			NotNullPtr<UI::GUIButton> btnBrowse;
+			NotNullPtr<UI::GUIButton> btnParseToText;
+			NotNullPtr<UI::GUIButton> btnParseToFile;
 			UI::GUITextBox *txtOutput;
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;

@@ -49,7 +49,7 @@ namespace SSWR
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			UI::GUILabel *lblDir;
 			UI::GUITextBox *txtDir;
-			UI::GUIButton *btnBrowse;
+			NotNullPtr<UI::GUIButton> btnBrowse;
 			UI::GUILabel *lblOutFormat;
 			UI::GUIRadioButton *radFormatJPG;
 			UI::GUIRadioButton *radFormatWebP;
@@ -57,7 +57,7 @@ namespace SSWR
 			UI::GUITextBox *txtQuality;
 			UI::GUICheckBox *chkSubdir;
 			UI::GUITextBox *txtSubdir;
-			UI::GUIButton *btnConvert;
+			NotNullPtr<UI::GUIButton> btnConvert;
 			UOSInt nThreads;
 			ThreadState *threadStates;
 			Bool threadToStop;

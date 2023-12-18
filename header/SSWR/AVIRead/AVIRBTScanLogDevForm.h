@@ -23,7 +23,7 @@ namespace SSWR
 			UI::GUITextBox *txtMAC;
 			UI::GUILabel *lblName;
 			UI::GUITextBox *txtName;
-			UI::GUIButton *btnCSV;
+			NotNullPtr<UI::GUIButton> btnCSV;
 			UI::GUIListView *lvContent;
 
 			const IO::BTScanLog::DevEntry *entry;

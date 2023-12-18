@@ -259,7 +259,7 @@ SSWR::AVIRead::AVIRMQTTBrokerForm::AVIRMQTTBrokerForm(UI::GUIClientControl *pare
 	this->lblSSL->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->chkSSL, UI::GUICheckBox(ui, this->tpStatus, CSTR("Enable"), false));
 	this->chkSSL->SetRect(104, 4, 100, 23, false);
-	NEW_CLASS(this->btnSSLCert, UI::GUIButton(ui, this->tpStatus, CSTR("Cert/Key")));
+	this->btnSSLCert = ui->NewButton(this->tpStatus, CSTR("Cert/Key"));
 	this->btnSSLCert->SetRect(204, 4, 75, 23, false);
 	this->btnSSLCert->HandleButtonClick(OnSSLCertClicked, this);
 	NEW_CLASS(this->lblSSLCert, UI::GUILabel(ui, this->tpStatus, CSTR("")));
@@ -268,7 +268,7 @@ SSWR::AVIRead::AVIRMQTTBrokerForm::AVIRMQTTBrokerForm(UI::GUIClientControl *pare
 	this->lblPort->SetRect(4, 28, 100, 23, false);
 	NEW_CLASS(this->txtPort, UI::GUITextBox(ui, this->tpStatus, CSTR("1883")));
 	this->txtPort->SetRect(104, 28, 100, 23, false);
-	NEW_CLASS(this->btnStart, UI::GUIButton(ui, this->tpStatus, CSTR("Start")));
+	this->btnStart = ui->NewButton(this->tpStatus, CSTR("Start"));
 	this->btnStart->SetRect(204, 28, 75, 23, false);
 	this->btnStart->HandleButtonClick(OnStartClicked, this);
 	NEW_CLASS(this->lblTotalCount, UI::GUILabel(ui, this->tpStatus, CSTR("Total Count")));

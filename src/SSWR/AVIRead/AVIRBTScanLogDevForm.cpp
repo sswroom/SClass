@@ -87,7 +87,7 @@ SSWR::AVIRead::AVIRBTScanLogDevForm::AVIRBTScanLogDevForm(UI::GUIClientControl *
 	}
 	this->txtName->SetRect(104, 28, 200, 23, false);
 	this->txtName->SetReadOnly(true);
-	NEW_CLASS(this->btnCSV, UI::GUIButton(ui, this->pnlDevInfo, CSTR("Save CSV")));
+	this->btnCSV = ui->NewButton(this->pnlDevInfo, CSTR("Save CSV"));
 	this->btnCSV->SetRect(304, 28, 75, 23, false);
 	this->btnCSV->HandleButtonClick(OnCSVClicked, this);
 	NEW_CLASS(this->lvContent, UI::GUIListView(ui, *this, UI::GUIListView::LVSTYLE_TABLE, 5));

@@ -141,7 +141,7 @@ SSWR::AVIRead::AVIRGCISClientForm::AVIRGCISClientForm(UI::GUIClientControl *pare
 	this->txtURL->SetRect(104, 4, 400, 23, false);
 	NEW_CLASSNN(this->lblClientCert, UI::GUILabel(ui, *this, CSTR("Client Cert")));
 	this->lblClientCert->SetRect(4, 28, 100, 23, false);
-	NEW_CLASSNN(this->btnClientCert, UI::GUIButton(ui, *this, CSTR("Select")));
+	this->btnClientCert = ui->NewButton(*this, CSTR("Select"));
 	this->btnClientCert->SetRect(104, 28, 75, 23, false);
 	this->btnClientCert->HandleButtonClick(OnClientCertClicked, this);
 	NEW_CLASSNN(this->lblClientCertDisp, UI::GUILabel(ui, *this, CSTR("-")));
@@ -170,7 +170,7 @@ SSWR::AVIRead::AVIRGCISClientForm::AVIRGCISClientForm(UI::GUIClientControl *pare
 	this->lblContentType->SetRect(4, 268, 100, 23, false);
 	NEW_CLASSNN(this->txtContentType, UI::GUITextBox(ui, *this, CSTR("text/html")));
 	this->txtContentType->SetRect(104, 268, 400, 23, false);
-	NEW_CLASSNN(this->btnSend, UI::GUIButton(ui, *this, CSTR("Send")));
+	this->btnSend = ui->NewButton(*this, CSTR("Send"));
 	this->btnSend->SetRect(104, 292, 75, 23, false);
 	this->btnSend->HandleButtonClick(OnSendClicked, this);
 	NEW_CLASSNN(this->lblResponseStatus, UI::GUILabel(ui, *this, CSTR("Response")));
@@ -183,7 +183,7 @@ SSWR::AVIRead::AVIRGCISClientForm::AVIRGCISClientForm(UI::GUIClientControl *pare
 	NEW_CLASSNN(this->txtServerCert, UI::GUITextBox(ui, *this, CSTR("-")));
 	this->txtServerCert->SetRect(104, 436, 200, 23, false);
 	this->txtServerCert->SetReadOnly(true);
-	NEW_CLASSNN(this->btnServerCert, UI::GUIButton(ui, *this, CSTR("View")));
+	this->btnServerCert = ui->NewButton(*this, CSTR("View"));
 	this->btnServerCert->SetRect(304, 436, 75, 23, false);
 	this->btnServerCert->HandleButtonClick(OnServerCertClicked, this);
 }

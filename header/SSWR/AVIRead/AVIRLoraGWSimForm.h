@@ -49,7 +49,7 @@ namespace SSWR
 			UI::GUITextBox *txtServerPort;
 			UI::GUILabel *lblGatewayEUI;
 			UI::GUITextBox *txtGatewayEUI;
-			UI::GUIButton *btnStart;
+			NotNullPtr<UI::GUIButton> btnStart;
 			NotNullPtr<UI::GUIPanel> pnlDevice;
 			UI::GUILabel *lblDevAddr;
 			UI::GUITextBox *txtDevAddr;
@@ -65,12 +65,12 @@ namespace SSWR
 			UI::GUITextBox *txtLSNR;
 			UI::GUILabel *lblPredef;
 			UI::GUIComboBox *cboPredef;
-			UI::GUIButton *btnPredef;
+			NotNullPtr<UI::GUIButton> btnPredef;
 			UI::GUILabel *lblFPort;
 			UI::GUITextBox *txtFPort;
 			UI::GUILabel *lblData;
 			UI::GUITextBox *txtData;
-			UI::GUIButton *btnSendULData;
+			NotNullPtr<UI::GUIButton> btnSendULData;
 
 			NotNullPtr<UI::GUITabPage> tpLog;
 			UI::GUITextBox *txtLog;

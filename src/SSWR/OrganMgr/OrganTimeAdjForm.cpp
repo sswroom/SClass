@@ -314,16 +314,16 @@ SSWR::OrganMgr::OrganTimeAdjForm::OrganTimeAdjForm(UI::GUIClientControl *parent,
 	NEW_CLASS(this->txtTimeAdj, UI::GUITextBox(ui, this->pnlControl, CSTR("0"), false));
 	this->txtTimeAdj->SetRect(154, 4, 50, 23, false);
 	this->txtTimeAdj->SetReadOnly(true);
-	NEW_CLASS(this->btnPaste, UI::GUIButton(ui, this->pnlControl, this->env->GetLang(CSTR("TimeAdjPaste"))));
+	this->btnPaste = ui->NewButton(this->pnlControl, this->env->GetLang(CSTR("TimeAdjPaste")));
 	this->btnPaste->SetRect(204, 4, 50, 23, false);
 	this->btnPaste->HandleButtonClick(OnPasteClicked, this);
-	NEW_CLASS(this->btnTimeSub, UI::GUIButton(ui, this->pnlControl, CSTR("-")));
+	this->btnTimeSub = ui->NewButton(this->pnlControl, CSTR("-"));
 	this->btnTimeSub->SetRect(254, 4, 25, 23, false);
 	this->btnTimeSub->HandleButtonClick(OnTimeSubClicked, this);
-	NEW_CLASS(this->btnTimeAdd, UI::GUIButton(ui, this->pnlControl, CSTR("+")));
+	this->btnTimeAdd = ui->NewButton(this->pnlControl, CSTR("+"));
 	this->btnTimeAdd->SetRect(279, 4, 25, 23, false);
 	this->btnTimeAdd->HandleButtonClick(OnTimeAddClicked, this);
-	NEW_CLASS(this->btnTimeApply, UI::GUIButton(ui, this->pnlControl, this->env->GetLang(CSTR("TimeAdjApply"))));
+	this->btnTimeApply = ui->NewButton(this->pnlControl, this->env->GetLang(CSTR("TimeAdjApply")));
 	this->btnTimeApply->SetRect(329, 4, 50, 23, false);
 	this->btnTimeApply->HandleButtonClick(OnTimeApplyClicked, this);
 

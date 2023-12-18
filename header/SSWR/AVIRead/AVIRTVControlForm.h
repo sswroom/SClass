@@ -40,7 +40,7 @@ namespace SSWR
 			UI::GUILabel *lblPort;
 			UI::GUIComboBox *cboPort;
 			UI::GUICheckBox *chkLogFile;
-			UI::GUIButton *btnStart;
+			NotNullPtr<UI::GUIButton> btnStart;
 			UI::GUITabControl *tcMain;
 			NotNullPtr<UI::GUITabPage> tpControl;
 			NotNullPtr<UI::GUITabPage> tpLog;
@@ -50,7 +50,7 @@ namespace SSWR
 
 			UI::GUILabel *lblCommand;
 			UI::GUIComboBox *cboCommand;
-			UI::GUIButton *btnCommand;
+			NotNullPtr<UI::GUIButton> btnCommand;
 			UI::GUITextBox *txtCommand;
 
 			static void __stdcall OnStartClick(void *userObj);

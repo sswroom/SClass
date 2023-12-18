@@ -50,10 +50,10 @@ namespace SSWR
 			UI::GUICheckBox *chkAllowKA;
 			UI::GUILabel *lblDatabase;
 			UI::GUITextBox *txtDatabase;
-			UI::GUIButton *btnDatabaseMySQL;
-			UI::GUIButton *btnDatabaseODBCDSN;
-			UI::GUIButton *btnStart;
-			UI::GUIButton *btnStop;
+			NotNullPtr<UI::GUIButton> btnDatabaseMySQL;
+			NotNullPtr<UI::GUIButton> btnDatabaseODBCDSN;
+			NotNullPtr<UI::GUIButton> btnStart;
+			NotNullPtr<UI::GUIButton> btnStop;
 
 			NotNullPtr<UI::GUITabPage> tpTable;
 			UI::GUIListView *lvTable;

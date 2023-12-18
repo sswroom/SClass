@@ -242,7 +242,7 @@ SSWR::AVIRead::AVIRTimedFileCopyForm::AVIRTimedFileCopyForm(UI::GUIClientControl
 	NEW_CLASS(this->dtpEndTime, UI::GUIDateTimePicker(ui, *this, UI::GUIDateTimePicker::ST_UPDOWN));
 	this->dtpEndTime->SetFormat("yyyy-MM-dd");
 	this->dtpEndTime->SetRect(104, 52, 100, 23, false);
-	NEW_CLASS(this->btnStart, UI::GUIButton(ui, *this, CSTR("Start")));
+	this->btnStart = ui->NewButton(*this, CSTR("Start"));
 	this->btnStart->SetRect(104, 76, 75, 23, false);
 	this->btnStart->HandleButtonClick(OnStartClicked, this);
 }

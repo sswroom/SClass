@@ -25,15 +25,15 @@ namespace SSWR
 			UI::GUIComboBox *cboDevType;
 			UI::GUILabel *lblPort;
 			UI::GUITextBox *txtPort;
-			UI::GUIButton *btnPort;
+			NotNullPtr<UI::GUIButton> btnPort;
 			NotNullPtr<UI::GUIGroupBox> grpCtrl;
 			UI::GUILabel *lblMode;
 			UI::GUITextBox *txtMode;
-			UI::GUIButton *btnModeScan;
-			UI::GUIButton *btnModeSetting;
-			UI::GUIButton *btnModeIdle;
-			UI::GUIButton *btnReset;
-			UI::GUIButton *btnDefault;
+			NotNullPtr<UI::GUIButton> btnModeScan;
+			NotNullPtr<UI::GUIButton> btnModeSetting;
+			NotNullPtr<UI::GUIButton> btnModeIdle;
+			NotNullPtr<UI::GUIButton> btnReset;
+			NotNullPtr<UI::GUIButton> btnDefault;
 			UI::GUITabControl *tcMain;
 
 			NotNullPtr<UI::GUITabPage> tpScan;
@@ -46,7 +46,7 @@ namespace SSWR
 			UI::GUILabel *lblSetCmd;
 			UI::GUIComboBox *cboSetCmd;
 			UI::GUIComboBox *cboSetParam;
-			UI::GUIButton *btnSetCmd;
+			NotNullPtr<UI::GUIButton> btnSetCmd;
 			UI::GUITextBox *txtSetCmd;
 			
 			IO::CodeScanner::DeviceCommand cmdCurr;

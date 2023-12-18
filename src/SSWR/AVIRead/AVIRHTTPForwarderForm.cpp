@@ -175,7 +175,7 @@ SSWR::AVIRead::AVIRHTTPForwarderForm::AVIRHTTPForwarderForm(UI::GUIClientControl
 	this->lblSSL->SetRect(4, 76, 100, 23, false);
 	NEW_CLASS(this->chkSSL, UI::GUICheckBox(ui, *this, CSTR("Enable"), false));
 	this->chkSSL->SetRect(104, 76, 100, 23, false);
-	NEW_CLASS(this->btnSSLCert, UI::GUIButton(ui, *this, CSTR("Cert/Key")));
+	this->btnSSLCert = ui->NewButton(*this, CSTR("Cert/Key"));
 	this->btnSSLCert->SetRect(204, 76, 75,23, false);
 	this->btnSSLCert->HandleButtonClick(OnSSLCertClicked, this);
 	NEW_CLASS(this->lblSSLCert, UI::GUILabel(ui, *this, CSTR("")));
@@ -184,10 +184,10 @@ SSWR::AVIRead::AVIRHTTPForwarderForm::AVIRHTTPForwarderForm(UI::GUIClientControl
 	this->lblAllowKA->SetRect(4, 100, 100, 23, false);
 	NEW_CLASS(this->chkAllowKA, UI::GUICheckBox(ui, *this, CSTR("Enable"), false));
 	this->chkAllowKA->SetRect(104, 100, 100, 23, false);
-	NEW_CLASS(this->btnStart, UI::GUIButton(ui, *this, CSTR("Start")));
+	this->btnStart = ui->NewButton(*this, CSTR("Start"));
 	this->btnStart->SetRect(104, 124, 75, 23, false);
 	this->btnStart->HandleButtonClick(OnStartClick, this);
-	NEW_CLASS(this->btnStop, UI::GUIButton(ui, *this, CSTR("Stop")));
+	this->btnStop = ui->NewButton(*this, CSTR("Stop"));
 	this->btnStop->SetRect(184, 124, 75, 23, false);
 	this->btnStop->HandleButtonClick(OnStopClick, this);
 }

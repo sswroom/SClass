@@ -18,7 +18,7 @@ namespace SSWR
 			IO::SMBIOS *smbios;
 
 			NotNullPtr<UI::GUIPanel> pnlControl;
-			UI::GUIButton *btnHex;
+			NotNullPtr<UI::GUIButton> btnHex;
 			UI::GUITextBox *txtSMBIOS;
 
 			static void __stdcall OnHexClicked(void *userObj);

@@ -226,24 +226,24 @@ SSWR::AVIRead::AVIRLogMergeForm::AVIRLogMergeForm(UI::GUIClientControl *parent, 
 	this->lblFile1->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtFile1, UI::GUITextBox(ui, *this, CSTR("")));
 	this->txtFile1->SetRect(104, 4, 560, 23, false);
-	NEW_CLASS(this->btnFile1, UI::GUIButton(ui, *this, CSTR("Browse")));
+	this->btnFile1 = ui->NewButton(*this, CSTR("Browse"));
 	this->btnFile1->SetRect(660, 4, 75, 23, false);
 	this->btnFile1->HandleButtonClick(OnFile1Clicked, this);
 	NEW_CLASS(this->lblFile2, UI::GUILabel(ui, *this, CSTR("File2")));
 	this->lblFile2->SetRect(4, 28, 100, 23, false);
 	NEW_CLASS(this->txtFile2, UI::GUITextBox(ui, *this, CSTR("")));
 	this->txtFile2->SetRect(104, 28, 560, 23, false);
-	NEW_CLASS(this->btnFile2, UI::GUIButton(ui, *this, CSTR("Browse")));
+	this->btnFile2 = ui->NewButton(*this, CSTR("Browse"));
 	this->btnFile2->SetRect(660, 28, 75, 23, false);
 	this->btnFile2->HandleButtonClick(OnFile2Clicked, this);
 	NEW_CLASS(this->lblOFile, UI::GUILabel(ui, *this, CSTR("Output")));
 	this->lblOFile->SetRect(4, 52, 100, 23, false);
 	NEW_CLASS(this->txtOFile, UI::GUITextBox(ui, *this, CSTR("")));
 	this->txtOFile->SetRect(104, 52, 560, 23, false);
-	NEW_CLASS(this->btnOFile, UI::GUIButton(ui, *this, CSTR("Browse")));
+	this->btnOFile = ui->NewButton(*this, CSTR("Browse"));
 	this->btnOFile->SetRect(660, 52, 75, 23, false);
 	this->btnOFile->HandleButtonClick(OnOFileClicked, this);
-	NEW_CLASS(this->btnConvert, UI::GUIButton(ui, *this, CSTR("Convert")));
+	this->btnConvert = ui->NewButton(*this, CSTR("Convert"));
 	this->btnConvert->SetRect(200, 76, 75, 23, false);
 	this->btnConvert->HandleButtonClick(OnConvertClicked, this);
 }

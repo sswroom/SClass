@@ -60,10 +60,10 @@ SSWR::OrganMgr::OrganUserForm::OrganUserForm(UI::GUIClientControl *parent, NotNu
 	NEW_CLASSNN(this->pnlCtrl, UI::GUIPanel(ui, *this));
 	this->pnlCtrl->SetRect(0, 0, 100, 32, false);
 	this->pnlCtrl->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->btnAdd, UI::GUIButton(ui, this->pnlCtrl, this->env->GetLang(CSTR("UserFormAdd"))));
+	this->btnAdd = ui->NewButton(this->pnlCtrl, this->env->GetLang(CSTR("UserFormAdd")));
 	this->btnAdd->SetRect(4, 4, 75, 23, false);
 	this->btnAdd->HandleButtonClick(OnAddClicked, this);
-	NEW_CLASS(this->btnModify, UI::GUIButton(ui, this->pnlCtrl, this->env->GetLang(CSTR("UserFormModify"))));
+	this->btnModify = ui->NewButton(this->pnlCtrl, this->env->GetLang(CSTR("UserFormModify")));
 	this->btnModify->SetRect(84, 4, 75, 23, false);
 	this->btnModify->HandleButtonClick(OnModifyClicked, this);
 	NEW_CLASS(this->lvUser, UI::GUIListView(ui, *this, UI::GUIListView::LVSTYLE_TABLE, 3));

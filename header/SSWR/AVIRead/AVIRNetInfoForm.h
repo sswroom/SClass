@@ -49,8 +49,8 @@ namespace SSWR
 			UI::GUITextBox *txtAdaptorPhysicalAddr;
 			UI::GUILabel *lblAdaptorMediaState;
 			UI::GUITextBox *txtAdaptorMediaState;
-			UI::GUIButton *btnAdaptorEnable;
-			UI::GUIButton *btnAdaptorDisable;
+			NotNullPtr<UI::GUIButton> btnAdaptorEnable;
+			NotNullPtr<UI::GUIButton> btnAdaptorDisable;
 			UI::GUILabel *lblAdaptorIP;
 			UI::GUIListBox *lbAdaptorIP;
 			UI::GUILabel *lblAdaptorGW;
@@ -166,7 +166,7 @@ namespace SSWR
 			UI::GUIListView *lvWIFIBSS;
 
 			NotNullPtr<UI::GUIPanel> pnlPortInfo;
-			UI::GUIButton *btnPortRefresh;
+			NotNullPtr<UI::GUIButton> btnPortRefresh;
 			UI::GUICheckBox *chkPortAuto;
 			UI::GUIListView *lvPortInfo;
 

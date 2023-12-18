@@ -99,10 +99,10 @@ SSWR::OrganMgr::OrganUserEditForm::OrganUserEditForm(UI::GUIClientControl *paren
 	this->lblWatermark->SetRect(64, 76, 100, 23, false);
 	NEW_CLASS(this->txtWatermark, UI::GUITextBox(ui, *this, CSTR("")));
 	this->txtWatermark->SetRect(164, 76, 200, 23, false);
-	NEW_CLASS(this->btnOK, UI::GUIButton(ui, *this, this->env->GetLang(CSTR("UserEditOk"))));
+	this->btnOK = ui->NewButton(*this, this->env->GetLang(CSTR("UserEditOk")));
 	this->btnOK->SetRect(164, 108, 75, 23, false);
 	this->btnOK->HandleButtonClick(OnOKClicked, this);
-	NEW_CLASS(this->btnCancel, UI::GUIButton(ui, *this, this->env->GetLang(CSTR("UserEditCancel"))));
+	this->btnCancel = ui->NewButton(*this, this->env->GetLang(CSTR("UserEditCancel")));
 	this->btnCancel->SetRect(244, 108, 75, 23, false);
 	this->btnCancel->HandleButtonClick(OnCancelClicked, this);
 

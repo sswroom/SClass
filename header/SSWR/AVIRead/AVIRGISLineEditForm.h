@@ -51,8 +51,8 @@ namespace SSWR
 			UI::GUILabel *lblName;
 			UI::GUITextBox *txtName;
 			UI::GUIListBox *lbLayer;
-			UI::GUIButton *btnNewLayer;
-			UI::GUIButton *btnRemoveLayer;
+			NotNullPtr<UI::GUIButton> btnNewLayer;
+			NotNullPtr<UI::GUIButton> btnRemoveLayer;
 
 			UI::GUILabel *lblColor;
 			UI::GUILabel *lblAlpha;
@@ -64,8 +64,8 @@ namespace SSWR
 			UI::GUIHScrollBar *hsbThick;
 			UI::GUITextBox *txtPattern;
 
-			UI::GUIButton *btnOK;
-			UI::GUIButton *btnCancel;
+			NotNullPtr<UI::GUIButton> btnOK;
+			NotNullPtr<UI::GUIButton> btnCancel;
 
 			void LineStyleUpdated();
 			void UpdatePreview();

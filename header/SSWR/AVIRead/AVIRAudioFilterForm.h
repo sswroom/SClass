@@ -55,7 +55,7 @@ namespace SSWR
 			UI::GUITextBox *txtChannel;
 			UI::GUILabel *lblBitCount;
 			UI::GUITextBox *txtBitCount;
-			UI::GUIButton *btnStart;
+			NotNullPtr<UI::GUIButton> btnStart;
 
 			NotNullPtr<UI::GUITabPage> tpVolBoost;
 			UI::GUICheckBox *chkVolBoost;
@@ -70,25 +70,25 @@ namespace SSWR
 			UI::GUILabel *lblDTMFIntervalMS;
 			UI::GUILabel *lblDTMFDecode;
 			UI::GUITextBox *txtDTMFDecode;
-			UI::GUIButton *btnDTMFClear;
+			NotNullPtr<UI::GUIButton> btnDTMFClear;
 			UI::GUITabControl *tcDTMF;
 			NotNullPtr<UI::GUITabPage> tpDTMFGen;
-			UI::GUIButton *btnDTMF1;
-			UI::GUIButton *btnDTMF2;
-			UI::GUIButton *btnDTMF3;
-			UI::GUIButton *btnDTMF4;
-			UI::GUIButton *btnDTMF5;
-			UI::GUIButton *btnDTMF6;
-			UI::GUIButton *btnDTMF7;
-			UI::GUIButton *btnDTMF8;
-			UI::GUIButton *btnDTMF9;
-			UI::GUIButton *btnDTMFStar;
-			UI::GUIButton *btnDTMF0;
-			UI::GUIButton *btnDTMFSharp;
-			UI::GUIButton *btnDTMFA;
-			UI::GUIButton *btnDTMFB;
-			UI::GUIButton *btnDTMFC;
-			UI::GUIButton *btnDTMFD;
+			NotNullPtr<UI::GUIButton> btnDTMF1;
+			NotNullPtr<UI::GUIButton> btnDTMF2;
+			NotNullPtr<UI::GUIButton> btnDTMF3;
+			NotNullPtr<UI::GUIButton> btnDTMF4;
+			NotNullPtr<UI::GUIButton> btnDTMF5;
+			NotNullPtr<UI::GUIButton> btnDTMF6;
+			NotNullPtr<UI::GUIButton> btnDTMF7;
+			NotNullPtr<UI::GUIButton> btnDTMF8;
+			NotNullPtr<UI::GUIButton> btnDTMF9;
+			NotNullPtr<UI::GUIButton> btnDTMFStar;
+			NotNullPtr<UI::GUIButton> btnDTMF0;
+			NotNullPtr<UI::GUIButton> btnDTMFSharp;
+			NotNullPtr<UI::GUIButton> btnDTMFA;
+			NotNullPtr<UI::GUIButton> btnDTMFB;
+			NotNullPtr<UI::GUIButton> btnDTMFC;
+			NotNullPtr<UI::GUIButton> btnDTMFD;
 			UI::GUILabel *lblDTMFVol;
 			UI::GUITrackBar *tbDTMFVol;
 			UI::GUILabel *lblDTMFVolV;
@@ -103,7 +103,7 @@ namespace SSWR
 			UI::GUITrackBar *tbDTMFTonesVol;
 			UI::GUILabel *lblDTMFTones;
 			UI::GUITextBox *txtDTMFTones;
-			UI::GUIButton *btnDTMFTones;
+			NotNullPtr<UI::GUIButton> btnDTMFTones;
 
 			NotNullPtr<UI::GUITabPage> tpVolLevel;
 			UI::GUIRealtimeLineChart *rlcVolLevel;
@@ -115,16 +115,16 @@ namespace SSWR
 			NotNullPtr<UI::GUITabPage> tpFileMix;
 			UI::GUILabel *lblFileMix;
 			UI::GUITextBox *txtFileMix;
-			UI::GUIButton *btnFileMix;
-			UI::GUIButton *btnFileMixStart;
-			UI::GUIButton *btnFileMixStop;
+			NotNullPtr<UI::GUIButton> btnFileMix;
+			NotNullPtr<UI::GUIButton> btnFileMixStart;
+			NotNullPtr<UI::GUIButton> btnFileMixStop;
 
 			NotNullPtr<UI::GUITabPage> tpCapture;
-			UI::GUIButton *btnCaptureStart;
-			UI::GUIButton *btnCaptureStop;
+			NotNullPtr<UI::GUIButton> btnCaptureStart;
+			NotNullPtr<UI::GUIButton> btnCaptureStop;
 
 			NotNullPtr<UI::GUITabPage> tpSoundGen;
-			UI::GUIButton *btnSoundGenBell;
+			NotNullPtr<UI::GUIButton> btnSoundGenBell;
 
 			NotNullPtr<UI::GUITabPage> tpSweep;
 			UI::GUILabel *lblSweepVol;
@@ -136,7 +136,7 @@ namespace SSWR
 			UI::GUITextBox *txtSweepEndFreq;
 			UI::GUILabel *lblSweepDur;
 			UI::GUITextBox *txtSweepDur;
-			UI::GUIButton *btnSweepStart;
+			NotNullPtr<UI::GUIButton> btnSweepStart;
 
 			NotNullPtr<UI::GUITabPage> tpAmplifier;
 			UI::GUILabel *lblAmplifierVol;

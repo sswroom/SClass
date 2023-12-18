@@ -150,14 +150,14 @@ SSWR::AVIRead::AVIRFileExForm::AVIRFileExForm(UI::GUIClientControl *parent, NotN
 	NEW_CLASS(this->txtSrc, UI::GUITextBox(ui, *this, CSTR("")));
 	this->txtSrc->SetRect(104, 4, 600, 23, false);
 	this->txtSrc->HandleTextChanged(OnSrcChanged, this);
-	NEW_CLASS(this->btnSrc, UI::GUIButton(ui, *this, CSTR("B&rowse")));
+	this->btnSrc = ui->NewButton(*this, CSTR("B&rowse"));
 	this->btnSrc->SetRect(704, 4, 75, 23, false);
 	this->btnSrc->HandleButtonClick(OnSrcClicked, this);
 	NEW_CLASS(this->lblDest, UI::GUILabel(ui, *this, CSTR("Dest File")));
 	this->lblDest->SetRect(4, 28, 100, 23, false);
 	NEW_CLASS(this->txtDest, UI::GUITextBox(ui, *this, CSTR("")));
 	this->txtDest->SetRect(104, 28, 600, 23, false);
-	NEW_CLASS(this->btnDest, UI::GUIButton(ui, *this, CSTR("&Browse")));
+	this->btnDest = ui->NewButton(*this, CSTR("&Browse"));
 	this->btnDest->SetRect(704, 28, 75, 23, false);
 	this->btnDest->HandleButtonClick(OnDestClicked, this);
 	NEW_CLASS(this->lblFileSize, UI::GUILabel(ui, *this, CSTR("File Size")));
@@ -173,7 +173,7 @@ SSWR::AVIRead::AVIRFileExForm::AVIRFileExForm(UI::GUIClientControl *parent, NotN
 	this->lblEndOfst->SetRect(4, 100, 100, 23, false);
 	NEW_CLASS(this->txtEndOfst, UI::GUITextBox(ui, *this, CSTR("")));
 	this->txtEndOfst->SetRect(104, 100, 160, 23, false);
-	NEW_CLASS(this->btnStart, UI::GUIButton(ui, *this, CSTR("&Start")));
+	this->btnStart = ui->NewButton(*this, CSTR("&Start"));
 	this->btnStart->SetRect(304, 76, 75, 23, false);
 	this->btnStart->HandleButtonClick(OnStartClicked, this);
 

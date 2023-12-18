@@ -17,17 +17,17 @@ namespace SSWR
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			UI::GUILabel *lblSFile;
 			UI::GUITextBox *txtSFile;
-			UI::GUIButton *btnSFile;
+			NotNullPtr<UI::GUIButton> btnSFile;
 			UI::GUILabel *lblPrefix;
 			UI::GUITextBox *txtPrefix;
 			UI::GUILabel *lblOFile;
 			UI::GUITextBox *txtOFile;
-			UI::GUIButton *btnOFile;
+			NotNullPtr<UI::GUIButton> btnOFile;
 			UI::GUILabel *lblType;
 			UI::GUIComboBox *cboType;
 			UI::GUILabel *lblSuffix;
 			UI::GUITextBox *txtSuffix;
-			UI::GUIButton *btnExtract;
+			NotNullPtr<UI::GUIButton> btnExtract;
 
 			static void __stdcall OnSFileClicked(void *userObj);
 			static void __stdcall OnOFileClicked(void *userObj);

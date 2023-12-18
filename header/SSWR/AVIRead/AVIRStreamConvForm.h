@@ -29,7 +29,7 @@ namespace SSWR
 			UI::GUILabel *lblStream1;
 			UI::GUITextBox *txtStream1;
 			UI::GUICheckBox *chkStreamLog1;
-			UI::GUIButton *btnStream1;
+			NotNullPtr<UI::GUIButton> btnStream1;
 			UI::GUIRealtimeLineChart *rlcStream1;
 			UI::GUIHSplitter *hspStream;
 
@@ -38,7 +38,7 @@ namespace SSWR
 			UI::GUILabel *lblStream2;
 			UI::GUITextBox *txtStream2;
 			UI::GUICheckBox *chkStreamLog2;
-			UI::GUIButton *btnStream2;
+			NotNullPtr<UI::GUIButton> btnStream2;
 			UI::GUIRealtimeLineChart *rlcStream2;
 
 			Sync::Mutex mut1;

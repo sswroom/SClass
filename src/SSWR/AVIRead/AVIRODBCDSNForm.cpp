@@ -57,10 +57,10 @@ SSWR::AVIRead::AVIRODBCDSNForm::AVIRODBCDSNForm(UI::GUIClientControl *parent, No
 	NEW_CLASS(this->txtPWD, UI::GUITextBox(ui, *this, CSTR("")));
 	this->txtPWD->SetRect(104, 52, 200, 23, false);
 	this->txtPWD->SetPasswordChar('*');
-	NEW_CLASS(this->btnOK, UI::GUIButton(ui, *this, CSTR("OK")));
+	this->btnOK = ui->NewButton(*this, CSTR("OK"));
 	this->btnOK->SetRect(104, 80, 75, 23, false);
 	this->btnOK->HandleButtonClick(OnOKClicked, this);
-	NEW_CLASS(this->btnCancel, UI::GUIButton(ui, *this, CSTR("Cancel")));
+	this->btnCancel = ui->NewButton(*this, CSTR("Cancel"));
 	this->btnCancel->SetRect(184, 80, 75, 23, false);
 	this->btnCancel->HandleButtonClick(OnCancelClicked, this);
 

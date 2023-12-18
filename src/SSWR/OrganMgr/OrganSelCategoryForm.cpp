@@ -35,10 +35,10 @@ SSWR::OrganMgr::OrganSelCategoryForm::OrganSelCategoryForm(UI::GUIClientControl 
 	NEW_CLASS(this->lbCategory, UI::GUIListBox(ui, *this, false));
 	this->lbCategory->SetRect(8, 32, 344, 136, false);
 	this->lbCategory->HandleDoubleClicked(OnOKClicked, this);
-	NEW_CLASS(this->btnOK, UI::GUIButton(ui, *this, this->env->GetLang(CSTR("SelCategoryOk"))));
+	this->btnOK = ui->NewButton(*this, this->env->GetLang(CSTR("SelCategoryOk")));
 	this->btnOK->SetRect(72, 192, 75, 23, false);
 	this->btnOK->HandleButtonClick(OnOKClicked, this);
-	NEW_CLASS(this->btnCancel, UI::GUIButton(ui, *this, this->env->GetLang(CSTR("SelCategoryCancel"))));
+	this->btnCancel = ui->NewButton(*this, this->env->GetLang(CSTR("SelCategoryCancel")));
 	this->btnCancel->SetRect(216, 192, 75, 23, false);
 	this->btnCancel->HandleButtonClick(OnCancelClicked, this);
 	this->SetDefaultButton(this->btnOK);

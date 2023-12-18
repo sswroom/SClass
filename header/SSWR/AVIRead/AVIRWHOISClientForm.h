@@ -24,7 +24,7 @@ namespace SSWR
 			UI::GUITextBox *txtIP;
 			UI::GUILabel *lblRespTime;
 			UI::GUITextBox *txtRespTime;
-			UI::GUIButton *btnRequest;
+			NotNullPtr<UI::GUIButton> btnRequest;
 			UI::GUIListBox *lbResponse;
 
 			NotNullPtr<Net::SocketFactory> sockf;

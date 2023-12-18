@@ -89,10 +89,10 @@ SSWR::AVIRead::AVIRImageResizeForm::AVIRImageResizeForm(UI::GUIClientControl *pa
 	NEW_CLASS(this->txtNTap, UI::GUITextBox(ui, *this, CSTR("16")));
 	this->txtNTap->SetRect(104, 112, 100, 23, false);
 
-	NEW_CLASS(this->btnCancel, UI::GUIButton(ui, *this, CSTR("Cancel")));
+	this->btnCancel = ui->NewButton(*this, CSTR("Cancel"));
 	this->btnCancel->SetRect(104, 144, 75, 23, false);
 	this->btnCancel->HandleButtonClick(OnCancelClicked, this);
-	NEW_CLASS(this->btnOK, UI::GUIButton(ui, *this, CSTR("OK")));
+	this->btnOK = ui->NewButton(*this, CSTR("OK"));
 	this->btnOK->SetRect(184, 144, 75, 23, false);
 	this->btnOK->HandleButtonClick(OnOKClicked, this);
 

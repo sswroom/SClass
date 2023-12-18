@@ -301,7 +301,7 @@ SSWR::OrganMgr::OrganBookForm::OrganBookForm(UI::GUIClientControl *parent, NotNu
 	this->lvBook->AddColumn(this->env->GetLang(CSTR("BookFormColAuthor")), 120);
 	this->lvBook->AddColumn(this->env->GetLang(CSTR("BookFormColName")), 400);
 	this->lvBook->AddColumn(this->env->GetLang(CSTR("BookFormColSource")), 60);
-	NEW_CLASS(this->btnBookPaste, UI::GUIButton(ui, this->pnlBookDet, this->env->GetLang(CSTR("BookFormBookPaste"))));
+	this->btnBookPaste = ui->NewButton(this->pnlBookDet, this->env->GetLang(CSTR("BookFormBookPaste")));
 	this->btnBookPaste->SetRect(88, 0, 75, 23, false);
 	this->btnBookPaste->HandleButtonClick(OnBookPasteClicked, this);
 	NEW_CLASS(this->lblBookPublish, UI::GUILabel(ui, this->pnlBookDet, this->env->GetLang(CSTR("BookFormBookPublish"))));
@@ -330,7 +330,7 @@ SSWR::OrganMgr::OrganBookForm::OrganBookForm(UI::GUIClientControl *parent, NotNu
 	this->lblBookGroup->SetRect(0, 240, 100, 23, false);
 	NEW_CLASS(this->txtBookGroup, UI::GUITextBox(ui, this->pnlBookDet, CSTR("")));
 	this->txtBookGroup->SetRect(0, 264, 168, 19, false);
-	NEW_CLASS(this->btnBookAdd, UI::GUIButton(ui, this->pnlBookDet, this->env->GetLang(CSTR("BookFormBookAdd"))));
+	this->btnBookAdd = ui->NewButton(this->pnlBookDet, this->env->GetLang(CSTR("BookFormBookAdd")));
 	this->btnBookAdd->SetRect(16, 288, 75, 23, false);
 	this->btnBookAdd->HandleButtonClick(OnBookAddClicked, this);
 	NEW_CLASS(this->tcBook, UI::GUITabControl(ui, this->pnlBook));

@@ -25,10 +25,10 @@ SSWR::SHPConv::SHPConvGroupForm::SHPConvGroupForm(UI::GUIClientControl *parent, 
 	this->lblGroup->SetRect(8, 0, 100, 23, false);
 	NEW_CLASS(this->lbGroup, UI::GUIListBox(ui, *this, false));
 	this->lbGroup->SetRect(8, 24, 264, 121, false);
-	NEW_CLASS(this->btnOk, UI::GUIButton(ui, *this, CSTR("&Ok")));
+	this->btnOk = ui->NewButton(*this, CSTR("&Ok"));
 	this->btnOk->SetRect(40, 152, 75, 23, false);
 	this->btnOk->HandleButtonClick(OnOkClicked, this);
-	NEW_CLASS(this->btnCancel, UI::GUIButton(ui, *this, CSTR("&Cancel")));
+	this->btnCancel = ui->NewButton(*this, CSTR("&Cancel"));
 	this->btnCancel->SetRect(40, 152, 75, 23, false);
 	this->btnCancel->HandleButtonClick(OnCancelClicked, this);
 

@@ -122,7 +122,7 @@ SSWR::AVIRead::AVIRUserAgentSelForm::AVIRUserAgentSelForm(UI::GUIClientControl *
 	NEW_CLASSNN(this->pnlControl, UI::GUIPanel(ui, *this));
 	this->pnlControl->SetRect(0, 0, 100, 31, false);
 	this->pnlControl->SetDockType(UI::GUIControl::DOCK_BOTTOM);
-	NEW_CLASS(this->btnOk, UI::GUIButton(ui, this->pnlControl, CSTR("Ok")));
+	this->btnOk = ui->NewButton(this->pnlControl, CSTR("Ok"));
 	this->btnOk->SetRect(4, 4, 75, 23, false);
 	this->btnOk->HandleButtonClick(OnOkClicked, this);
 	NEW_CLASS(this->lvUserAgent, UI::GUIListView(ui, *this, UI::GUIListView::LVSTYLE_TABLE, 7));

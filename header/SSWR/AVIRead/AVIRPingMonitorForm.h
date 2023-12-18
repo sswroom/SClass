@@ -54,10 +54,10 @@ namespace SSWR
 			NotNullPtr<UI::GUIPanel> pnlControl;
 			UI::GUILabel *lblInfo;
 			UI::GUITextBox *txtInfo;
-			UI::GUIButton *btnInfo;
+			NotNullPtr<UI::GUIButton> btnInfo;
 			UI::GUILabel *lblIP;
 			UI::GUIComboBox *cboIP;
-			UI::GUIButton *btnStart;
+			NotNullPtr<UI::GUIButton> btnStart;
 			UI::GUITabControl *tcMain;
 
 			NotNullPtr<UI::GUITabPage> tpIP;

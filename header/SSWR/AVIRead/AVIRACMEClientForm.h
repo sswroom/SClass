@@ -22,7 +22,7 @@ namespace SSWR
 			UI::GUITextBox *txtHost;
 			UI::GUILabel *lblKeyFile;
 			UI::GUITextBox *txtKeyFile;
-			UI::GUIButton *btnStart;
+			NotNullPtr<UI::GUIButton> btnStart;
 
 			UI::GUILabel *lblTermOfService;
 			UI::GUITextBox *txtTermOfService;

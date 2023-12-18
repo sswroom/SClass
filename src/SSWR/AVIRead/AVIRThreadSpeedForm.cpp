@@ -118,7 +118,7 @@ SSWR::AVIRead::AVIRThreadSpeedForm::AVIRThreadSpeedForm(UI::GUIClientControl *pa
 	NEW_CLASSNN(this->pnlCtrl, UI::GUIPanel(ui, *this));
 	this->pnlCtrl->SetRect(0, 0, 100, 31, false);
 	this->pnlCtrl->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->btnTest, UI::GUIButton(ui, this->pnlCtrl, CSTR("Test")));
+	this->btnTest = ui->NewButton(this->pnlCtrl, CSTR("Test"));
 	this->btnTest->SetRect(4, 4, 75, 23, false);
 	this->btnTest->HandleButtonClick(OnTestClicked, this);
 	NEW_CLASS(this->lvResult, UI::GUIListView(ui, *this, UI::GUIListView::LVSTYLE_TABLE, 2));

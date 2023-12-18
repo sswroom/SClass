@@ -15,15 +15,15 @@ namespace SSWR
 		{
 		private:
 			UI::GUILabel *lblPullType;
-			UI::GUIButton *btnPullUp;
-			UI::GUIButton *btnPullDown;
+			NotNullPtr<UI::GUIButton> btnPullUp;
+			NotNullPtr<UI::GUIButton> btnPullDown;
 			UI::GUILabel *lblPinMode;
-			UI::GUIButton *btnPinModeInput;
-			UI::GUIButton *btnPinModeOutput;
+			NotNullPtr<UI::GUIButton> btnPinModeInput;
+			NotNullPtr<UI::GUIButton> btnPinModeOutput;
 			UI::GUILabel *lblPinState;
 			UI::GUITextBox *txtPinState;
-			UI::GUIButton *btnPinHigh;
-			UI::GUIButton *btnPinLow;
+			NotNullPtr<UI::GUIButton> btnPinHigh;
+			NotNullPtr<UI::GUIButton> btnPinLow;
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			IO::IOPin *pin;

@@ -20,11 +20,11 @@ namespace SSWR
 		class AVIRGISCombineForm : public UI::GUIForm
 		{
 		private:
-			UI::GUIButton *btnCheckAll;
-			UI::GUIButton *btnUncheckAll;
+			NotNullPtr<UI::GUIButton> btnCheckAll;
+			NotNullPtr<UI::GUIButton> btnUncheckAll;
 			UI::GUICheckedListBox *lbLayers;
-			UI::GUIButton *btnCombine;
-			UI::GUIButton *btnCancel;
+			NotNullPtr<UI::GUIButton> btnCombine;
+			NotNullPtr<UI::GUIButton> btnCancel;
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			NotNullPtr<Data::ArrayListNN<Map::MapDrawLayer>> layers;

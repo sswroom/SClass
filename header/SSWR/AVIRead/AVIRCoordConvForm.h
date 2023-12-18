@@ -29,7 +29,7 @@ namespace SSWR
 			UI::GUIRadioButton *radDestGeo;
 			UI::GUIRadioButton *radDestProj;
 			UI::GUIComboBox *cboDest;
-			UI::GUIButton *btnConvFile;
+			NotNullPtr<UI::GUIButton> btnConvFile;
 			NotNullPtr<UI::GUIPanel> pnlCoord;
 			UI::GUILabel *lblName;
 			UI::GUITextBox *txtName;
@@ -39,9 +39,9 @@ namespace SSWR
 			UI::GUITextBox *txtNorthing;
 			UI::GUILabel *lblHeight;
 			UI::GUITextBox *txtHeight;
-			UI::GUIButton *btnAdd;
-			UI::GUIButton *btnClear;
-			UI::GUIButton *btnCopyAll;
+			NotNullPtr<UI::GUIButton> btnAdd;
+			NotNullPtr<UI::GUIButton> btnClear;
+			NotNullPtr<UI::GUIButton> btnCopyAll;
 			UI::GUIListView *lvCoord;
 			UI::GUITextBox *txtStatus;
 

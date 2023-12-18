@@ -16,7 +16,7 @@ namespace SSWR
 		private:
 			UI::GUILabel *lblAddr;
 			UI::GUITextBox *txtAddr;
-			UI::GUIButton *btnValidate;
+			NotNullPtr<UI::GUIButton> btnValidate;
 			UI::GUILabel *lblStatus;
 			UI::GUITextBox *txtStatus;
 

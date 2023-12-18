@@ -62,10 +62,10 @@ SSWR::OrganMgr::OrganImageWebForm::OrganImageWebForm(UI::GUIClientControl *paren
 	{
 		this->txtLocation->SetReadOnly(true);
 	}
-	NEW_CLASS(this->btnOK, UI::GUIButton(ui, *this, this->env->GetLang(CSTR("ImageWebOk"))));
+	this->btnOK = ui->NewButton(*this, this->env->GetLang(CSTR("ImageWebOk")));
 	this->btnOK->SetRect(120, 120, 75, 23, false);
 	this->btnOK->HandleButtonClick(OnOKClicked, this);
-	NEW_CLASS(this->btnCancel, UI::GUIButton(ui, *this, this->env->GetLang(CSTR("ImageWebCancel"))));
+	this->btnCancel = ui->NewButton(*this, this->env->GetLang(CSTR("ImageWebCancel")));
 	this->btnCancel->SetRect(200, 120, 75, 23, false);
 	this->btnCancel->HandleButtonClick(OnCancelClicked, this);
 

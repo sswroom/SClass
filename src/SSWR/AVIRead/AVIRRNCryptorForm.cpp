@@ -97,7 +97,7 @@ SSWR::AVIRead::AVIRRNCryptorForm::AVIRRNCryptorForm(UI::GUIClientControl *parent
 	this->lblPassword->SetRect(4, 52, 100, 23, false);
 	NEW_CLASS(this->txtPassword, UI::GUITextBox(ui, *this, CSTR("")));
 	this->txtPassword->SetRect(104, 52, 200, 23, false);
-	NEW_CLASS(this->btnProcess, UI::GUIButton(ui, *this, CSTR("Process")));
+	this->btnProcess = ui->NewButton(*this, CSTR("Process"));
 	this->btnProcess->SetRect(104, 76, 75, 23, false);
 	this->btnProcess->HandleButtonClick(OnProcessClicked, this);
 

@@ -297,7 +297,7 @@ SSWR::AVIRead::AVIRCAUtilForm::AVIRCAUtilForm(UI::GUIClientControl *parent, NotN
 	NEW_CLASS(this->txtKey, UI::GUITextBox(ui, *this, CSTR("-")));
 	this->txtKey->SetRect(104, 4, 200, 23, false);
 	this->txtKey->SetReadOnly(true);
-	NEW_CLASS(this->btnKeyView, UI::GUIButton(ui, *this, CSTR("View")));
+	this->btnKeyView = ui->NewButton(*this, CSTR("View"));
 	this->btnKeyView->SetRect(304, 4, 75, 23, false);
 	this->btnKeyView->HandleButtonClick(OnKeyViewClicked, this);
 	NEW_CLASS(this->lblCACert, UI::GUILabel(ui, *this, CSTR("CA Cert")));
@@ -305,7 +305,7 @@ SSWR::AVIRead::AVIRCAUtilForm::AVIRCAUtilForm(UI::GUIClientControl *parent, NotN
 	NEW_CLASS(this->txtCACert, UI::GUITextBox(ui, *this, CSTR("-")));
 	this->txtCACert->SetRect(104, 28, 200, 23, false);
 	this->txtCACert->SetReadOnly(true);
-	NEW_CLASS(this->btnCACertView, UI::GUIButton(ui, *this, CSTR("View")));
+	this->btnCACertView = ui->NewButton(*this, CSTR("View"));
 	this->btnCACertView->SetRect(304, 28, 75, 23, false);
 	this->btnCACertView->HandleButtonClick(OnKeyViewClicked, this);
 	NEW_CLASS(this->lblCSR, UI::GUILabel(ui, *this, CSTR("CSR")));
@@ -313,7 +313,7 @@ SSWR::AVIRead::AVIRCAUtilForm::AVIRCAUtilForm(UI::GUIClientControl *parent, NotN
 	NEW_CLASS(this->txtCSR, UI::GUITextBox(ui, *this, CSTR("-")));
 	this->txtCSR->SetRect(104, 52, 200, 23, false);
 	this->txtCSR->SetReadOnly(true);
-	NEW_CLASS(this->btnCSRView, UI::GUIButton(ui, *this, CSTR("View")));
+	this->btnCSRView = ui->NewButton(*this, CSTR("View"));
 	this->btnCSRView->SetRect(304, 52, 75, 23, false);
 	this->btnCSRView->HandleButtonClick(OnKeyViewClicked, this);
 	NEW_CLASS(this->lblCountryName, UI::GUILabel(ui, *this, CSTR("C")));
@@ -359,7 +359,7 @@ SSWR::AVIRead::AVIRCAUtilForm::AVIRCAUtilForm(UI::GUIClientControl *parent, NotN
 	this->lblValidDays->SetRect(4, 340, 100, 23, false);
 	NEW_CLASS(this->txtValidDays, UI::GUITextBox(ui, *this, CSTR("365")));
 	this->txtValidDays->SetRect(104, 340, 200, 23, false);
-	NEW_CLASS(this->btnIssue, UI::GUIButton(ui, *this, CSTR("Issue")));
+	this->btnIssue = ui->NewButton(*this, CSTR("Issue"));
 	this->btnIssue->SetRect(104, 364, 150, 23, false);
 	this->btnIssue->HandleButtonClick(OnIssueClicked, this);
 

@@ -293,17 +293,17 @@ SSWR::AVIRead::AVIRGISPropForm::AVIRGISPropForm(UI::GUIClientControl *parent, No
 	lbl->SetRect(8, 48, 100, 23, false);
 	NEW_CLASS(this->pbFontStyle, UI::GUIPictureBox(ui, *this, this->core->GetDrawEngine(), true, false));
 	this->pbFontStyle->SetRect(112, 48, 160, 20, false);
-	NEW_CLASS(this->btnFontModify, UI::GUIButton(ui, *this, CSTR("Modify")));
+	this->btnFontModify = ui->NewButton(*this, CSTR("Modify"));
 	this->btnFontModify->SetRect(280, 48, 75, 20, false);
-	NEW_CLASS(this->btnFontStyle, UI::GUIButton(ui, *this, CSTR("Style")));
+	this->btnFontStyle = ui->NewButton(*this, CSTR("Style"));
 	this->btnFontStyle->SetRect(360, 48, 75, 20, false);
 	NEW_CLASS(this->lblLineStyle, UI::GUILabel(ui, *this, CSTR("Line Style")));
 	this->lblLineStyle->SetRect(8, 72, 100, 23, false);
 	NEW_CLASS(this->pbLineStyle, UI::GUIPictureBox(ui, *this, this->core->GetDrawEngine(), true, false));
 	this->pbLineStyle->SetRect(112, 72, 160, 20, false);
-	NEW_CLASS(this->btnLineModify, UI::GUIButton(ui, *this, CSTR("Modify")));
+	this->btnLineModify = ui->NewButton(*this, CSTR("Modify"));
 	this->btnLineModify->SetRect(280, 72, 75, 20, false);
-	NEW_CLASS(this->btnLineStyle, UI::GUIButton(ui, *this, CSTR("Style")));
+	this->btnLineStyle = ui->NewButton(*this, CSTR("Style"));
 	this->btnLineStyle->SetRect(360, 72, 75, 20, false);
 	NEW_CLASS(this->lblFillStyle, UI::GUILabel(ui, *this, CSTR("Fill Style")));
 	this->lblFillStyle->SetRect(8, 96, 100, 23, false);
@@ -336,10 +336,10 @@ SSWR::AVIRead::AVIRGISPropForm::AVIRGISPropForm(UI::GUIClientControl *parent, No
 	this->chkTrim->SetRect(4, 76, 104, 24, false);
 	NEW_CLASS(this->chkCapital, UI::GUICheckBox(ui, this->grpLabel, CSTR("Capital"), false));
 	this->chkCapital->SetRect(4, 100, 104, 24, false);
-	NEW_CLASS(this->btnOK, UI::GUIButton(ui, *this, CSTR("OK")));
+	this->btnOK = ui->NewButton(*this, CSTR("OK"));
 	this->btnOK->SetRect(336, 244, 75, 23, false);
 	this->btnOK->HandleButtonClick(OnOKClicked, this);
-	NEW_CLASS(this->btnCancel, UI::GUIButton(ui, *this, CSTR("Cancel")));
+	this->btnCancel = ui->NewButton(*this, CSTR("Cancel"));
 	this->btnCancel->SetRect(424, 244, 75, 23, false);
 	this->btnCancel->HandleButtonClick(OnCancelClicked, this);
 

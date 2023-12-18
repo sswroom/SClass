@@ -178,7 +178,7 @@ SSWR::AVIRead::AVIRADAMForm::AVIRADAMForm(UI::GUIClientControl *parent, NotNullP
 	NEW_CLASS(this->txtStream, UI::GUITextBox(ui, this->grpStream, CSTR("-")));
 	this->txtStream->SetRect(104, 28, 200, 23, false);
 	this->txtStream->SetReadOnly(true);
-	NEW_CLASS(this->btnStream, UI::GUIButton(ui, this->grpStream, CSTR("&Open")));
+	this->btnStream = ui->NewButton(this->grpStream, CSTR("&Open"));
 	this->btnStream->SetRect(304, 28, 75, 23, false);
 	this->btnStream->HandleButtonClick(OnStreamClicked, this);
 	NEW_CLASS(this->lblModuleName, UI::GUILabel(ui, this->pnlMain, CSTR("Module Name")));

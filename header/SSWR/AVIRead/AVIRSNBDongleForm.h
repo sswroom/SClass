@@ -55,26 +55,26 @@ namespace SSWR
 
 			NotNullPtr<UI::GUITabPage> tpDevice;
 			NotNullPtr<UI::GUIPanel> pnlDevice;
-			UI::GUIButton *btnDongleInfo;
+			NotNullPtr<UI::GUIButton> btnDongleInfo;
 			UI::GUILabel *lblDongleId;
 			UI::GUITextBox *txtDongleId;
-			UI::GUIButton *btnCheckDongle;
-			UI::GUIButton *btnCheckDevices;
-			UI::GUIButton *btnResetNetwork;
-			UI::GUIButton *btnAddDevice;
+			NotNullPtr<UI::GUIButton> btnCheckDongle;
+			NotNullPtr<UI::GUIButton> btnCheckDevices;
+			NotNullPtr<UI::GUIButton> btnResetNetwork;
+			NotNullPtr<UI::GUIButton> btnAddDevice;
 			UI::GUILabel *lblRemarks;
 			UI::GUITextBox *txtRemarks;
 			UI::GUILabel *lblURL;
 			UI::GUITextBox *txtURL;
-			UI::GUIButton *btnUpload;
+			NotNullPtr<UI::GUIButton> btnUpload;
 			NotNullPtr<UI::GUIGroupBox> grpDevice;
 			NotNullPtr<UI::GUIPanel> pnlDevCtrl;
-			UI::GUIButton *btnCopyDevId;
-			UI::GUIButton *btnDevReportTime;
-			UI::GUIButton *btnDevSetReportTime;
-			UI::GUIButton *btnDevOn;
-			UI::GUIButton *btnDevOff;
-			UI::GUIButton *btnDevStatus;
+			NotNullPtr<UI::GUIButton> btnCopyDevId;
+			NotNullPtr<UI::GUIButton> btnDevReportTime;
+			NotNullPtr<UI::GUIButton> btnDevSetReportTime;
+			NotNullPtr<UI::GUIButton> btnDevOn;
+			NotNullPtr<UI::GUIButton> btnDevOff;
+			NotNullPtr<UI::GUIButton> btnDevStatus;
 			UI::GUIListView *lvDevice;
 
 			NotNullPtr<UI::GUITabPage> tpLog;

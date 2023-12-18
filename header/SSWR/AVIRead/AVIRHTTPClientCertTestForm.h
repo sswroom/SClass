@@ -27,12 +27,12 @@ namespace SSWR
 			UI::GUILabel *lblPort;
 			UI::GUITextBox *txtPort;
 			UI::GUILabel *lblSSL;
-			UI::GUIButton *btnSSLCert;
+			NotNullPtr<UI::GUIButton> btnSSLCert;
 			UI::GUILabel *lblSSLCert;
 			UI::GUILabel *lblClientCA;
 			UI::GUITextBox *txtClientCA;
-			UI::GUIButton *btnStart;
-			UI::GUIButton *btnStop;
+			NotNullPtr<UI::GUIButton> btnStart;
+			NotNullPtr<UI::GUIButton> btnStop;
 
 		private:
 			static void __stdcall OnStartClick(void *userObj);

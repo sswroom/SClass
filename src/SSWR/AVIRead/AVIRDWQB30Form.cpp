@@ -308,7 +308,7 @@ SSWR::AVIRead::AVIRDWQB30Form::AVIRDWQB30Form(UI::GUIClientControl *parent, NotN
 	NEW_CLASS(this->txtPort, UI::GUITextBox(ui, this->grpConn, CSTR(""), false));
 	this->txtPort->SetRect(260, 24, 100, 23, false);
 	this->txtPort->SetReadOnly(true);
-	NEW_CLASS(this->btnPort, UI::GUIButton(ui, this->grpConn, CSTR("Open")));
+	this->btnPort = ui->NewButton(this->grpConn, CSTR("Open"));
 	this->btnPort->SetRect(360, 24, 75, 23, false);
 	this->btnPort->HandleButtonClick(OnPortClicked, this);
 	this->grpCtrl = ui->NewGroupBox(*this, CSTR("Control"));
@@ -319,19 +319,19 @@ SSWR::AVIRead::AVIRDWQB30Form::AVIRDWQB30Form(UI::GUIClientControl *parent, NotN
 	NEW_CLASS(this->txtMode, UI::GUITextBox(ui, this->grpCtrl, CSTR("")));
 	this->txtMode->SetRect(260, 0, 100, 23, false);
 	this->txtMode->SetReadOnly(true);
-	NEW_CLASS(this->btnModeScan, UI::GUIButton(ui, this->grpCtrl, CSTR("Scan Mode")));
+	this->btnModeScan = ui->NewButton(this->grpCtrl, CSTR("Scan Mode"));
 	this->btnModeScan->SetRect(360, 0, 75, 23, false);
 	this->btnModeScan->HandleButtonClick(OnModeScanClicked, this);
-	NEW_CLASS(this->btnModeSetting, UI::GUIButton(ui, this->grpCtrl, CSTR("Setting Mode")));
+	this->btnModeSetting = ui->NewButton(this->grpCtrl, CSTR("Setting Mode"));
 	this->btnModeSetting->SetRect(440, 0, 75, 23, false);
 	this->btnModeSetting->HandleButtonClick(OnModeSettingClicked, this);
-	NEW_CLASS(this->btnModeIdle, UI::GUIButton(ui, this->grpCtrl, CSTR("Idle Mode")));
+	this->btnModeIdle = ui->NewButton(this->grpCtrl, CSTR("Idle Mode"));
 	this->btnModeIdle->SetRect(520, 0, 75, 23, false);
 	this->btnModeIdle->HandleButtonClick(OnModeIdleClicked, this);
-	NEW_CLASS(this->btnReset, UI::GUIButton(ui, this->grpCtrl, CSTR("Reset")));
+	this->btnReset = ui->NewButton(this->grpCtrl, CSTR("Reset"));
 	this->btnReset->SetRect(360, 24, 75, 23, false);
 	this->btnReset->HandleButtonClick(OnResetClicked, this);
-	NEW_CLASS(this->btnDefault, UI::GUIButton(ui, this->grpCtrl, CSTR("Factory Default")));
+	this->btnDefault = ui->NewButton(this->grpCtrl, CSTR("Factory Default"));
 	this->btnDefault->SetRect(440, 24, 75, 23, false);
 	this->btnDefault->HandleButtonClick(OnDefaultClicked, this);	
 
@@ -358,7 +358,7 @@ SSWR::AVIRead::AVIRDWQB30Form::AVIRDWQB30Form(UI::GUIClientControl *parent, NotN
 	this->cboSetCmd->HandleSelectionChange(OnSetCmdSelChg, this);
 	NEW_CLASS(this->cboSetParam, UI::GUIComboBox(ui, this->tpSetting, true));
 	this->cboSetParam->SetRect(264, 4, 150, 23, false);
-	NEW_CLASS(this->btnSetCmd, UI::GUIButton(ui, this->tpSetting, CSTR("Send")));
+	this->btnSetCmd = ui->NewButton(this->tpSetting, CSTR("Send"));
 	this->btnSetCmd->SetRect(414, 4, 75, 23, false);
 	this->btnSetCmd->HandleButtonClick(OnSetCmdClicked, this);
 	NEW_CLASS(this->txtSetCmd, UI::GUITextBox(ui, this->tpSetting, CSTR(""), false));

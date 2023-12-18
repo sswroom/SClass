@@ -132,7 +132,7 @@ SSWR::AVIRead::AVIRWMTSForm::AVIRWMTSForm(UI::GUIClientControl *parent, NotNullP
 	this->lblWMTSURL->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtWMTSURL, UI::GUITextBox(ui, *this, CSTR("")));
 	this->txtWMTSURL->SetRect(104, 4, 500, 23, false);
-	NEW_CLASS(this->btnLoad, UI::GUIButton(ui, *this, CSTR("Load")));
+	this->btnLoad = ui->NewButton(*this, CSTR("Load"));
 	this->btnLoad->SetRect(104, 28, 75, 23, false);
 	this->btnLoad->HandleButtonClick(OnLoadClicked, this);
 	NEW_CLASS(this->lblStatus, UI::GUILabel(ui, *this, CSTR("Status")));
@@ -160,7 +160,7 @@ SSWR::AVIRead::AVIRWMTSForm::AVIRWMTSForm(UI::GUIClientControl *parent, NotNullP
 	NEW_CLASS(this->cboResourceInfoType, UI::GUIComboBox(ui, *this, false));
 	this->cboResourceInfoType->SetRect(104, 148, 200, 23, false);
 	this->cboResourceInfoType->HandleSelectionChange(OnResourceInfoTypeSelChg, this);
-	NEW_CLASS(this->btnOK, UI::GUIButton(ui, *this, CSTR("OK")));
+	this->btnOK = ui->NewButton(*this, CSTR("OK"));
 	this->btnOK->SetRect(104, 172, 75, 23, false);
 	this->btnOK->HandleButtonClick(OnOKClicked, this);
 }

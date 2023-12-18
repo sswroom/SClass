@@ -19,8 +19,8 @@ namespace SSWR
 			UI::GUILabel *lblNewName;
 			UI::GUITextBox *txtNewName;
 			UI::GUITextBox *txtNewExt;
-			UI::GUIButton *btnRename;
-			UI::GUIButton *btnCancel;
+			NotNullPtr<UI::GUIButton> btnRename;
+			NotNullPtr<UI::GUIButton> btnCancel;
 
 			static void __stdcall OnRenameClicked(void *userObj);
 			static void __stdcall OnCancelClicked(void *userObj);

@@ -32,7 +32,7 @@ namespace SSWR
 			UI::GUILabel *lblCode;
 			UI::GUITextBox *txtCode;
 			UI::GUILabel *lblCodeInfo;
-			UI::GUIButton *btnCodeGen;
+			NotNullPtr<UI::GUIButton> btnCodeGen;
 
 			static void __stdcall OnCodeTypeChanged(void *userObj);
 			static void __stdcall OnCodeGenClicked(void *userObj);

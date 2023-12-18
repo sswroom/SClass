@@ -159,7 +159,7 @@ SSWR::AVIRead::AVIRSMTPClientForm::AVIRSMTPClientForm(UI::GUIClientControl *pare
 	this->lblContent->SetRect(4, 268, 100, 23, false);
 	NEW_CLASS(this->txtContent, UI::GUITextBox(ui, this->pnlControl, CSTR(""), true));
 	this->txtContent->SetRect(4, 292, 300, 71, false);
-	NEW_CLASS(this->btnSend, UI::GUIButton(ui, this->pnlControl, CSTR("Send")));
+	this->btnSend = ui->NewButton(this->pnlControl, CSTR("Send"));
 	this->btnSend->SetRect(4, 364, 75, 23, false);
 	this->btnSend->HandleButtonClick(OnSendClicked, this);
 	NEW_CLASS(this->txtLog, UI::GUITextBox(ui, *this, CSTR(""), true));

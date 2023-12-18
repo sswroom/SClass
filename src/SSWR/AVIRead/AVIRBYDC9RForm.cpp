@@ -128,7 +128,7 @@ SSWR::AVIRead::AVIRBYDC9RForm::AVIRBYDC9RForm(UI::GUIClientControl *parent, NotN
 	NEW_CLASS(this->txtCANBus, UI::GUITextBox(ui, this->grpCANBus, CSTR("")));
 	this->txtCANBus->SetRect(100, 0, 100, 23, false);
 	this->txtCANBus->SetReadOnly(true);
-	NEW_CLASS(this->btnCANBus, UI::GUIButton(ui, this->grpCANBus, CSTR("Open")));
+	this->btnCANBus = ui->NewButton(this->grpCANBus, CSTR("Open"));
 	this->btnCANBus->SetRect(200, 0, 75, 23, false);
 	this->btnCANBus->HandleButtonClick(OnCANBusClicked, this);
 

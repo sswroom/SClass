@@ -180,19 +180,19 @@ SSWR::AVIRead::AVIRSetDPIForm::AVIRSetDPIForm(UI::GUIClientControl *parent, NotN
 	this->lblDesktopDPI->SetRect(304, 4, 100, 23, false);
 	NEW_CLASS(this->txtDesktopDPI, UI::GUITextBox(ui, this->pnlBtn, CSTR("")));
 	this->txtDesktopDPI->SetRect(404, 4, 100, 23, false);
-	NEW_CLASS(this->btnStandard, UI::GUIButton(ui, this->pnlBtn, CSTR("Standard Size")));
+	this->btnStandard = ui->NewButton(this->pnlBtn, CSTR("Standard Size"));
 	this->btnStandard->SetRect(504, 4, 75, 23, false);
 	this->btnStandard->HandleButtonClick(OnStandardClicked, this);
-	NEW_CLASS(this->btn1x, UI::GUIButton(ui, this->pnlBtn, CSTR("1x")));
+	this->btn1x = ui->NewButton(this->pnlBtn, CSTR("1x"));
 	this->btn1x->SetRect(584, 4, 75, 23, false);
 	this->btn1x->HandleButtonClick(On1xClicked, this);
-	NEW_CLASS(this->btnLaptop, UI::GUIButton(ui, this->pnlBtn, CSTR("Laptop/Tablet")));
+	this->btnLaptop = ui->NewButton(this->pnlBtn, CSTR("Laptop/Tablet"));
 	this->btnLaptop->SetRect(664, 4, 75, 23, false);
 	this->btnLaptop->HandleButtonClick(OnLaptopClicked, this);
-	NEW_CLASS(this->btnOK, UI::GUIButton(ui, this->pnlBtn, CSTR("OK")));
+	this->btnOK = ui->NewButton(this->pnlBtn, CSTR("OK"));
 	this->btnOK->SetRect(300, 28, 75, 23, false);
 	this->btnOK->HandleButtonClick(OnOKClicked, this);
-	NEW_CLASS(this->btnCancel, UI::GUIButton(ui, this->pnlBtn, CSTR("Cancel")));
+	this->btnCancel = ui->NewButton(this->pnlBtn, CSTR("Cancel"));
 	this->btnCancel->SetRect(400, 28, 75, 23, false);
 	this->btnCancel->HandleButtonClick(OnCancelClicked, this);
 

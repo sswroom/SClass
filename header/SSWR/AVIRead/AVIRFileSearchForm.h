@@ -29,7 +29,7 @@ namespace SSWR
 			UI::GUIComboBox *cboEncoding;
 			UI::GUILabel *lblText;
 			UI::GUITextBox *txtText;
-			UI::GUIButton *btnSearch;
+			NotNullPtr<UI::GUIButton> btnSearch;
 			UI::GUIListView *lvFiles;
 
 			static void __stdcall OnSearchClicked(void *userObj);

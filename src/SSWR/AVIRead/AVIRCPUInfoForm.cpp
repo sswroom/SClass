@@ -102,10 +102,10 @@ SSWR::AVIRead::AVIRCPUInfoForm::AVIRCPUInfoForm(UI::GUIClientControl *parent, No
 	NEW_CLASSNN(this->pnlMain, UI::GUIPanel(ui, this->tpCPU));
 	this->pnlMain->SetRect(0, 0, 100, 31, false);
 	this->pnlMain->SetDockType(UI::GUIControl::DOCK_BOTTOM);
-	NEW_CLASS(this->btnUpload, UI::GUIButton(ui, this->pnlMain, CSTR("Upload Info")));
+	this->btnUpload = ui->NewButton(this->pnlMain, CSTR("Upload Info"));
 	this->btnUpload->SetRect(4, 4, 100, 23, false);
 	this->btnUpload->HandleButtonClick(OnUploadClick, this);
-	NEW_CLASS(this->btnCopyInfo, UI::GUIButton(ui, this->pnlMain, CSTR("Copy Info")));
+	this->btnCopyInfo = ui->NewButton(this->pnlMain, CSTR("Copy Info"));
 	this->btnCopyInfo->SetRect(108, 4, 100, 23, false);
 	this->btnCopyInfo->HandleButtonClick(OnCopyInfoClick, this);
 	NEW_CLASS(this->lvMain, UI::GUIListView(ui, this->tpCPU, UI::GUIListView::LVSTYLE_TABLE, 2));

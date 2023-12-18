@@ -138,10 +138,10 @@ SSWR::AVIRead::AVIRProgramLinksForm::AVIRProgramLinksForm(UI::GUIClientControl *
 	NEW_CLASS(this->hspItems, UI::GUIHSplitter(ui, *this, 3, false));
 	NEW_CLASSNN(this->pnlItem, UI::GUIPanel(ui, *this));
 	this->pnlItem->SetDockType(UI::GUIControl::DOCK_FILL);
-	NEW_CLASS(this->btnDelete, UI::GUIButton(ui, this->pnlItem, CSTR("Delete")));
+	this->btnDelete = ui->NewButton(this->pnlItem, CSTR("Delete"));
 	this->btnDelete->SetRect(4, 4, 75, 23, false);
 	this->btnDelete->HandleButtonClick(OnDeleteClicked, this);
-	NEW_CLASS(this->btnCreate, UI::GUIButton(ui, this->pnlItem, CSTR("Create")));
+	this->btnCreate = ui->NewButton(this->pnlItem, CSTR("Create"));
 	this->btnCreate->SetRect(84, 4, 75, 23, false);
 	this->btnCreate->HandleButtonClick(OnCreateClicked, this);
 	NEW_CLASS(this->lblLinkName, UI::GUILabel(ui, this->pnlItem, CSTR("Link Name")));

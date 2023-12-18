@@ -18,9 +18,9 @@ namespace SSWR
 
 			UI::GUILabel *lblRoadCenterline;
 			UI::GUITextBox *txtRoadCenterline;
-			UI::GUIButton *btnRoadCenterline;
-			UI::GUIButton *btnOK;
-			UI::GUIButton *btnCancel;
+			NotNullPtr<UI::GUIButton> btnRoadCenterline;
+			NotNullPtr<UI::GUIButton> btnOK;
+			NotNullPtr<UI::GUIButton> btnCancel;
 
 			Map::MapDrawLayer *lyr;
 

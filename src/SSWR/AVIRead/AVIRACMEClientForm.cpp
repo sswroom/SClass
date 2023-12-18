@@ -100,7 +100,7 @@ SSWR::AVIRead::AVIRACMEClientForm::AVIRACMEClientForm(UI::GUIClientControl *pare
 	this->lblKeyFile->SetRect(4, 28, 100, 23, false);
 	NEW_CLASS(this->txtKeyFile, UI::GUITextBox(ui, *this, CSTRP(sbuff, sptr)));
 	this->txtKeyFile->SetRect(104, 28, 200, 23, false);
-	NEW_CLASS(this->btnStart, UI::GUIButton(ui, *this, CSTR("Start")));
+	this->btnStart = ui->NewButton(*this, CSTR("Start"));
 	this->btnStart->SetRect(104, 52, 75, 23, false);
 	this->btnStart->HandleButtonClick(OnStartClicked, this);
 

@@ -24,13 +24,13 @@ namespace SSWR
 			UI::GUITabControl *tcMain;
 
 			NotNullPtr<UI::GUITabPage> tpMain;
-			UI::GUIButton *btnChgProfile;
+			NotNullPtr<UI::GUIButton> btnChgProfile;
 			UI::GUILabel *lblProfile;
 			
 			NotNullPtr<UI::GUITabPage> tpProfile;
 			NotNullPtr<UI::GUIPanel> pnlProfile1;
 			UI::GUIListBox *lbProfile;
-			UI::GUIButton *btnProfileDel;
+			NotNullPtr<UI::GUIButton> btnProfileDel;
 		//	UI::GUIHSplitter *hspProfile;
 			NotNullPtr<UI::GUIPanel> pnlProfile2;
 			UI::GUITextBox *txtProfileName;
@@ -53,7 +53,7 @@ namespace SSWR
 			UI::GUITextBox *txtJPEGQuality;
 			UI::GUITextBox *txtJPEGSize;
 			UI::GUITextBox *txtWEBPQuality;
-			UI::GUIButton *btnProfileAdd;
+			NotNullPtr<UI::GUIButton> btnProfileAdd;
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			NotNullPtr<Media::ColorManagerSess> colorSess;

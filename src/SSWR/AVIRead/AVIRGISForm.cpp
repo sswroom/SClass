@@ -76,6 +76,7 @@ typedef enum
 	MNU_LAYER_ADD,
 	MNU_LAYER_REMOVE,
 	MNU_LAYER_CENTER,
+	MNU_LAYER_FIT,
 	MNU_LAYER_PROP,
 	MNU_LAYER_PATH,
 	MNU_LAYER_SEARCH,
@@ -760,6 +761,7 @@ SSWR::AVIRead::AVIRGISForm::AVIRGISForm(UI::GUIClientControl *parent, NotNullPtr
 	this->mnuLayer->AddItem(CSTR("&Add Group"), MNU_LAYER_ADD, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	this->mnuLayer->AddItem(CSTR("&Remove"), MNU_LAYER_REMOVE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	this->mnuLayer->AddItem(CSTR("Make Center"), MNU_LAYER_CENTER, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	this->mnuLayer->AddItem(CSTR("Fit to Bounds"), MNU_LAYER_FIT, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	this->mnuLayer->AddItem(CSTR("Properties"), MNU_LAYER_PROP, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	this->mnuLayer->AddItem(CSTR("Show Full Path"), MNU_LAYER_PATH, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	this->mnuLayer->AddItem(CSTR("Search"), MNU_LAYER_SEARCH, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
@@ -964,6 +966,26 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 					center = Math::CoordinateSystem::Convert(lyrCSys, envCSys, center);
 				}
 				this->mapCtrl->PanToMapXY(center);
+			}
+		}
+		break;
+	case MNU_LAYER_FIT:
+		{
+			Math::RectAreaDbl bounds;
+			NotNullPtr<Math::CoordinateSystem> envCSys;
+			NotNullPtr<Math::CoordinateSystem> lyrCSys;
+			UI::GUIMapTreeView::ItemIndex *ind = (UI::GUIMapTreeView::ItemIndex *)this->popNode->GetItemObj();
+			Map::MapEnv::LayerItem *lyr = (Map::MapEnv::LayerItem*)this->env->GetItem(ind->group, ind->index);
+			if (lyr->layer->GetBounds(bounds))
+			{
+				envCSys = this->env->GetCoordinateSystem();
+				lyrCSys = lyr->layer->GetCoordinateSystem();
+				if (!envCSys->Equals(lyrCSys))
+				{
+					bounds.tl = Math::CoordinateSystem::Convert(lyrCSys, envCSys, bounds.tl);
+					bounds.br = Math::CoordinateSystem::Convert(lyrCSys, envCSys, bounds.br);
+				}
+				this->mapCtrl->ZoomToRect(bounds);
 			}
 		}
 		break;

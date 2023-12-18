@@ -81,7 +81,7 @@ SSWR::AVIRead::AVIRXMLWalkForm::AVIRXMLWalkForm(UI::GUIClientControl *parent, No
 	NEW_CLASS(this->txtFile, UI::GUITextBox(ui, this->pnlFile, CSTR("")));
 	this->txtFile->SetRect(104, 4, 500, 23, false);
 	this->txtFile->SetReadOnly(true);
-	NEW_CLASS(this->btnBrowse, UI::GUIButton(ui, this->pnlFile, CSTR("Browse")));
+	this->btnBrowse = ui->NewButton(this->pnlFile, CSTR("Browse"));
 	this->btnBrowse->SetRect(604, 4, 75, 23, false);
 	this->btnBrowse->HandleButtonClick(OnBrowseClick, this);
 	NEW_CLASS(this->lvXML, UI::GUIListView(ui, *this, UI::GUIListView::LVSTYLE_TABLE, 3));

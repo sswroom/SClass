@@ -21,8 +21,8 @@ namespace SSWR
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 
 			NotNullPtr<UI::GUIPanel> pnlControl;
-			UI::GUIButton *btnFile;
-			UI::GUIButton *btnStore;
+			NotNullPtr<UI::GUIButton> btnFile;
+			NotNullPtr<UI::GUIButton> btnStore;
 			UI::GUILabel *lblInfo;
 			UI::GUIListView *lvContent;
 

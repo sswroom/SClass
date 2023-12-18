@@ -71,7 +71,7 @@ SSWR::AVIRead::AVIRDHT22Form::AVIRDHT22Form(UI::GUIClientControl *parent, NotNul
 	NEW_CLASS(this->txtHumidity, UI::GUITextBox(ui, *this, CSTR("")));
 	this->txtHumidity->SetRect(104, 52, 100, 23, false);
 	this->txtHumidity->SetReadOnly(true);
-	NEW_CLASS(this->btnRead, UI::GUIButton(ui, *this, CSTR("Read")));
+	this->btnRead = ui->NewButton(*this, CSTR("Read"));
 	this->btnRead->SetRect(104, 76, 75, 23, false);
 	this->btnRead->HandleButtonClick(OnReadClicked, this);
 	NEW_CLASS(this->chkAutoRead, UI::GUICheckBox(ui, *this, CSTR("Auto Read"), false));

@@ -566,7 +566,7 @@ SSWR::AVIRead::AVIRCoordConvForm::AVIRCoordConvForm(UI::GUIClientControl *parent
 	NEW_CLASS(this->cboDest, UI::GUIComboBox(ui, this->pnlDest, false));
 	this->cboDest->SetRect(300, 0, 200, 23, false);
 	this->cboDest->HandleSelectionChange(OnDestCboChanged, this);
-	NEW_CLASS(this->btnConvFile, UI::GUIButton(ui, this->pnlDest, CSTR("Conv File")));
+	this->btnConvFile = ui->NewButton(this->pnlDest, CSTR("Conv File"));
 	this->btnConvFile->SetRect(500, 0, 75, 23, false);
 	this->btnConvFile->HandleButtonClick(OnConvFileClicked, this);
 	NEW_CLASSNN(this->pnlCoord, UI::GUIPanel(ui, *this));
@@ -588,13 +588,13 @@ SSWR::AVIRead::AVIRCoordConvForm::AVIRCoordConvForm(UI::GUIClientControl *parent
 	this->lblHeight->SetRect(550, 0, 75, 23, false);
 	NEW_CLASS(this->txtHeight, UI::GUITextBox(ui, this->pnlCoord, CSTR("")));
 	this->txtHeight->SetRect(625, 0, 75, 23, false);
-	NEW_CLASS(this->btnAdd, UI::GUIButton(ui, this->pnlCoord, CSTR("Add")));
+	this->btnAdd = ui->NewButton(this->pnlCoord, CSTR("Add"));
 	this->btnAdd->SetRect(700, 0, 75, 23, false);
 	this->btnAdd->HandleButtonClick(OnAddClicked, this);
-	NEW_CLASS(this->btnClear, UI::GUIButton(ui, this->pnlCoord, CSTR("Clear")));
+	this->btnClear = ui->NewButton(this->pnlCoord, CSTR("Clear"));
 	this->btnClear->SetRect(780, 0, 75, 23, false);
 	this->btnClear->HandleButtonClick(OnClearClicked, this);
-	NEW_CLASS(this->btnCopyAll, UI::GUIButton(ui, this->pnlCoord, CSTR("Copy All")));
+	this->btnCopyAll = ui->NewButton(this->pnlCoord, CSTR("Copy All"));
 	this->btnCopyAll->SetRect(860, 0, 75, 23, false);
 	this->btnCopyAll->HandleButtonClick(OnCopyAllClicked, this);
 	NEW_CLASS(this->txtStatus, UI::GUITextBox(ui, *this, CSTR("")));

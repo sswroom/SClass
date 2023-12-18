@@ -24,8 +24,8 @@ namespace SSWR
 			NotNullPtr<UI::GUIPanel> pnlControl;
 			UI::GUILabel *lblType;
 			UI::GUIComboBox *cboType;
-			UI::GUIButton *btnOk;
-			UI::GUIButton *btnCancel;
+			NotNullPtr<UI::GUIButton> btnOk;
+			NotNullPtr<UI::GUIButton> btnCancel;
 			UI::GUIPictureBox *pbImage;
 
 			static void __stdcall OnOkClicked(void *userObj);

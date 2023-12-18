@@ -20,8 +20,8 @@ namespace SSWR
 			UI::GUITextBox *txtMAC;
 			UI::GUILabel *lblName;
 			UI::GUIComboBox *cboName;
-			UI::GUIButton *btnCancel;
-			UI::GUIButton *btnOK;
+			NotNullPtr<UI::GUIButton> btnCancel;
+			NotNullPtr<UI::GUIButton> btnOK;
 			NotNullPtr<Text::String> name;
 
 			static void __stdcall OnOKClicked(void *userObj);

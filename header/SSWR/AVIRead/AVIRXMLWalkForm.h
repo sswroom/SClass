@@ -20,7 +20,7 @@ namespace SSWR
 			NotNullPtr<UI::GUIPanel> pnlFile;
 			UI::GUILabel *lblFile;
 			UI::GUITextBox *txtFile;
-			UI::GUIButton *btnBrowse;
+			NotNullPtr<UI::GUIButton> btnBrowse;
 			UI::GUIListView *lvXML;
 
 			static void __stdcall OnBrowseClick(void *userObj);

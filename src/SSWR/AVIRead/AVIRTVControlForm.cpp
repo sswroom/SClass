@@ -248,7 +248,7 @@ SSWR::AVIRead::AVIRTVControlForm::AVIRTVControlForm(UI::GUIClientControl *parent
 		}
 	}
 
-	NEW_CLASS(this->btnStart, UI::GUIButton(ui, this->pnlPort, CSTR("&Start")));
+	this->btnStart = ui->NewButton(this->pnlPort, CSTR("&Start"));
 	this->btnStart->SetRect(308, 32, 75, 23, false);
 	this->btnStart->HandleButtonClick(OnStartClick, this);
 
@@ -269,7 +269,7 @@ SSWR::AVIRead::AVIRTVControlForm::AVIRTVControlForm(UI::GUIClientControl *parent
 	NEW_CLASS(this->cboCommand, UI::GUIComboBox(ui, this->tpControl, false));
 	this->cboCommand->SetRect(108, 8, 150, 23, false);
 	this->cboCommand->HandleSelectionChange(OnCmdChanged, this);
-	NEW_CLASS(this->btnCommand, UI::GUIButton(ui, this->tpControl, CSTR("Send")));
+	this->btnCommand = ui->NewButton(this->tpControl, CSTR("Send"));
 	this->btnCommand->SetRect(258, 8, 75, 23, false);
 	this->btnCommand->HandleButtonClick(OnSendCommandClicked, this);
 	NEW_CLASS(this->txtCommand, UI::GUITextBox(ui, this->tpControl, CSTR("")));

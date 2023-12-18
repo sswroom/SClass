@@ -629,7 +629,7 @@ SSWR::AVIRead::AVIRImageForm::AVIRImageForm(UI::GUIClientControl *parent, NotNul
 	NEW_CLASSNN(this->pnlInfo, UI::GUIPanel(ui, this->tpInfo));
 	this->pnlInfo->SetRect(0, 0, 100, 31, false);
 	this->pnlInfo->SetDockType(UI::GUIControl::DOCK_BOTTOM);
-	NEW_CLASS(this->btnInfoICC, UI::GUIButton(ui, this->pnlInfo, CSTR("ICC Profile")));
+	this->btnInfoICC = ui->NewButton(this->pnlInfo, CSTR("ICC Profile"));
 	this->btnInfoICC->SetRect(4, 4, 100, 23, false);
 	this->btnInfoICC->SetEnabled(false);
 	this->btnInfoICC->HandleButtonClick(OnInfoICCClicked, this);

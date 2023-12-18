@@ -22,9 +22,9 @@ namespace SSWR
 
 			UI::GUILabel *lblKey;
 			UI::GUITextBox *txtKeyDetail;
-			UI::GUIButton *btnKeyGenerate;
-			UI::GUIButton *btnKeyView;
-			UI::GUIButton *btnKeySave;
+			NotNullPtr<UI::GUIButton> btnKeyGenerate;
+			NotNullPtr<UI::GUIButton> btnKeyView;
+			NotNullPtr<UI::GUIButton> btnKeySave;
 			UI::GUILabel *lblCountryName;
 			UI::GUITextBox *txtCountryName;
 			UI::GUILabel *lblCountryName2;
@@ -51,11 +51,11 @@ namespace SSWR
 			UI::GUICheckBox *chkDigitalSign;
 			UI::GUILabel *lblSAN;
 			UI::GUITextBox *txtSAN;
-			UI::GUIButton *btnSANAdd;
+			NotNullPtr<UI::GUIButton> btnSANAdd;
 			UI::GUIListBox *lbSAN;
-			UI::GUIButton *btnSANClear;
-			UI::GUIButton *btnCSRGenerate;
-			UI::GUIButton *btnSelfSignedCert;
+			NotNullPtr<UI::GUIButton> btnSANClear;
+			NotNullPtr<UI::GUIButton> btnCSRGenerate;
+			NotNullPtr<UI::GUIButton> btnSelfSignedCert;
 
 			static void __stdcall OnFileDrop(void *userObj, NotNullPtr<Text::String> *files, UOSInt nFiles);
 			static void __stdcall OnKeyGenerateClicked(void *userObj);

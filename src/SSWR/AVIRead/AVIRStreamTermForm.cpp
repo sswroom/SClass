@@ -277,7 +277,7 @@ SSWR::AVIRead::AVIRStreamTermForm::AVIRStreamTermForm(UI::GUIClientControl *pare
 	NEW_CLASS(this->txtStream, UI::GUITextBox(ui, this->grpStream, CSTR("-")));
 	this->txtStream->SetRect(104, 4, 200, 23, false);
 	this->txtStream->SetReadOnly(true);
-	NEW_CLASS(this->btnStream, UI::GUIButton(ui, this->grpStream, CSTR("&Open")));
+	this->btnStream = ui->NewButton(this->grpStream, CSTR("&Open"));
 	this->btnStream->SetRect(304, 4, 75, 23, false);
 	this->btnStream->HandleButtonClick(OnStreamClicked, this);
 	
@@ -303,7 +303,7 @@ SSWR::AVIRead::AVIRStreamTermForm::AVIRStreamTermForm(UI::GUIClientControl *pare
 	NEW_CLASSNN(this->pnlSend, UI::GUIPanel(ui, this->pnlSendOption));
 	this->pnlSend->SetRect(0, 0, 100, 24, false);
 	this->pnlSend->SetDockType(UI::GUIControl::DOCK_BOTTOM);
-	NEW_CLASS(this->btnSend, UI::GUIButton(ui, this->pnlSend, CSTR("&Send")));
+	this->btnSend = ui->NewButton(this->pnlSend, CSTR("&Send"));
 	this->btnSend->SetRect(0, 0, 75, 23, false);
 	this->btnSend->SetDockType(UI::GUIControl::DOCK_RIGHT);
 	this->btnSend->HandleButtonClick(OnSendClicked, this);

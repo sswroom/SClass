@@ -142,7 +142,7 @@ SSWR::AVIRead::AVIRWMSForm::AVIRWMSForm(UI::GUIClientControl *parent, NotNullPtr
 	this->cboWMSVersion->AddItem(CSTR("1.1.1"), (void*)Map::WebMapService::Version::V1_1_1);
 	this->cboWMSVersion->AddItem(CSTR("1.1.1 Tiled"), (void*)Map::WebMapService::Version::V1_1_1_TILED);
 	this->cboWMSVersion->SetSelectedIndex(0);
-	NEW_CLASS(this->btnLoad, UI::GUIButton(ui, *this, CSTR("Load")));
+	this->btnLoad = ui->NewButton(*this, CSTR("Load"));
 	this->btnLoad->SetRect(104, 52, 75, 23, false);
 	this->btnLoad->HandleButtonClick(OnLoadClicked, this);
 	NEW_CLASS(this->lblStatus, UI::GUILabel(ui, *this, CSTR("Status")));
@@ -170,7 +170,7 @@ SSWR::AVIRead::AVIRWMSForm::AVIRWMSForm(UI::GUIClientControl *parent, NotNullPtr
 	NEW_CLASS(this->cboInfoType, UI::GUIComboBox(ui, *this, false));
 	this->cboInfoType->SetRect(104, 172, 200, 23, false);
 	this->cboInfoType->HandleSelectionChange(OnInfoTypeSelChg, this);
-	NEW_CLASS(this->btnOK, UI::GUIButton(ui, *this, CSTR("OK")));
+	this->btnOK = ui->NewButton(*this, CSTR("OK"));
 	this->btnOK->SetRect(104, 196, 75, 23, false);
 	this->btnOK->HandleButtonClick(OnOKClicked, this);
 }

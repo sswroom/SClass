@@ -44,10 +44,10 @@ SSWR::AVIRead::AVIRSetAudioForm::AVIRSetAudioForm(UI::GUIClientControl *parent, 
 	this->lbDevice->SetRect(112, 8, 256, 112, false);
 
 
-	NEW_CLASS(this->btnOK, UI::GUIButton(ui, *this, CSTR("&OK")));
+	this->btnOK = ui->NewButton(*this, CSTR("&OK"));
 	this->btnOK->SetRect(112, 208, 75, 23, false);
 	this->btnOK->HandleButtonClick(OnOKClick, this);
-	NEW_CLASS(this->btnCancel, UI::GUIButton(ui, *this, CSTR("&Cancel")));
+	this->btnCancel = ui->NewButton(*this, CSTR("&Cancel"));
 	this->btnCancel->SetRect(192, 208, 75, 23, false);
 	this->btnCancel->HandleButtonClick(OnCancelClick, this);
 	this->SetDefaultButton(this->btnOK);

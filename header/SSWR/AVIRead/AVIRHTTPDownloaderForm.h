@@ -29,7 +29,7 @@ namespace SSWR
 			UI::GUITextBox *txtDownloadDir;
 			UI::GUILabel *lblHeaders;
 			UI::GUITextBox *txtHeaders;
-			UI::GUIButton *btnRequest;
+			NotNullPtr<UI::GUIButton> btnRequest;
 			NotNullPtr<UI::GUIGroupBox> grpStatus;
 			UI::GUILabel *lblCurrSpeed;
 			UI::GUITextBox *txtCurrSpeed;

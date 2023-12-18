@@ -73,10 +73,10 @@ SSWR::AVIRead::AVIRSelCANForm::AVIRSelCANForm(UI::GUIClientControl *parent, NotN
 	this->cboAXCANBitRate->AddItem(CSTR("800K"), (void*)IO::Device::AXCAN::CANBitRate::BR_800K);
 	this->cboAXCANBitRate->AddItem(CSTR("1000K"), (void*)IO::Device::AXCAN::CANBitRate::BR_1000K);
 	this->cboAXCANBitRate->SetSelectedIndex(9);
-	NEW_CLASS(this->btnAXCANSerial, UI::GUIButton(ui, this->tpAXCAN, CSTR("Open Serial")));
+	this->btnAXCANSerial = ui->NewButton(this->tpAXCAN, CSTR("Open Serial"));
 	this->btnAXCANSerial->SetRect(204, 4, 75, 23, false);
 	this->btnAXCANSerial->HandleButtonClick(OnAXCANSerialClicked, this);
-	NEW_CLASS(this->btnAXCANFile, UI::GUIButton(ui, this->tpAXCAN, CSTR("Open File")));
+	this->btnAXCANFile = ui->NewButton(this->tpAXCAN, CSTR("Open File"));
 	this->btnAXCANFile->SetRect(4, 28, 75, 23, false);
 	this->btnAXCANFile->HandleButtonClick(OnAXCANFileClicked, this);
 }

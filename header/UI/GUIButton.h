@@ -13,28 +13,25 @@ namespace UI
 		Data::ArrayList<void *> btnClkHandlersObjs;
 		Data::ArrayList<UpDownEvent> btnUpDownHandlers;
 		Data::ArrayList<void *> btnUpDownHandlersObjs;
-		OSInt btnId;
-		void *oriWndProc;
-		static OSInt nextId;
-
-		static OSInt __stdcall BTNWndProc(void *hWnd, UInt32 msg, UInt32 wParam, OSInt lParam);
+		Data::ArrayList<UIEvent> btnFocusLostHandlers;
+		Data::ArrayList<void *> btnFocusLostHandlersObjs;
 	public:
-		GUIButton(NotNullPtr<GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, Text::CStringNN txt);
+		GUIButton(NotNullPtr<GUICore> ui, NotNullPtr<UI::GUIClientControl> parent);
 		virtual ~GUIButton();
 
-		virtual void SetText(Text::CStringNN text);
-		virtual void SetFont(const UTF8Char *name, UOSInt nameLen, Double fontHeightPt, Bool isBold);
+		virtual void SetText(Text::CStringNN text) = 0;
+		virtual void SetFont(const UTF8Char *name, UOSInt nameLen, Double fontHeightPt, Bool isBold) = 0;
+		virtual OSInt OnNotify(UInt32 code, void *lParam) = 0;
 
 		virtual Text::CStringNN GetObjectClass() const;
-		virtual OSInt OnNotify(UInt32 code, void *lParam);
-		virtual void OnFocus();
-		virtual void OnFocusLost();
+
+		void EventFocus();
+		void EventFocusLost();
 		void EventButtonClick();
 		void EventButtonDown();
 		void EventButtonUp();
-		OSInt GetBtnId();
-		void SetDefaultBtnLook();
 
+		void HandleFocusLost(UIEvent handler, void *userObj);
 		void HandleButtonClick(UIEvent handler, void *userObj);
 		void HandleButtonUpDown(UpDownEvent handler, void *userObj);
 	};

@@ -19,9 +19,9 @@ namespace SSWR
 			NotNullPtr<UI::GUIPanel> pnlCoord;
 			UI::GUILabel *lblSRID;
 			UI::GUITextBox *txtSRID;
-			UI::GUIButton *btnSRID;
-			UI::GUIButton *btnSRIDPrev;
-			UI::GUIButton *btnSRIDNext;
+			NotNullPtr<UI::GUIButton> btnSRID;
+			NotNullPtr<UI::GUIButton> btnSRIDPrev;
+			NotNullPtr<UI::GUIButton> btnSRIDNext;
 			UI::GUITextBox *txtWKT;
 			UI::GUIHSplitter *hspWKT;
 			UI::GUITextBox *txtDisp;

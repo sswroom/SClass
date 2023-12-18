@@ -233,7 +233,7 @@ SSWR::AVIRead::AVIRStreamConvForm::AVIRStreamConvForm(UI::GUIClientControl *pare
 	this->txtStream1->SetReadOnly(true);
 	NEW_CLASS(this->chkStreamLog1, UI::GUICheckBox(ui, this->pnlStream1, CSTR("Log to file"), false));
 	this->chkStreamLog1->SetRect(4, 52, 200, 23, false);
-	NEW_CLASS(this->btnStream1, UI::GUIButton(ui, this->pnlStream1, CSTR("&Open")));
+	this->btnStream1 = ui->NewButton(this->pnlStream1, CSTR("&Open"));
 	this->btnStream1->SetRect(4, 76, 75, 23, false);
 	this->btnStream1->HandleButtonClick(OnStream1Clicked, this);
 	NEW_CLASS(this->rlcStream1, UI::GUIRealtimeLineChart(ui, this->grpStream1, this->core->GetDrawEngine(), 1, 120, 1000));
@@ -252,7 +252,7 @@ SSWR::AVIRead::AVIRStreamConvForm::AVIRStreamConvForm(UI::GUIClientControl *pare
 	this->txtStream2->SetReadOnly(true);
 	NEW_CLASS(this->chkStreamLog2, UI::GUICheckBox(ui, this->pnlStream2, CSTR("Log to file"), false));
 	this->chkStreamLog2->SetRect(4, 52, 200, 23, false);
-	NEW_CLASS(this->btnStream2, UI::GUIButton(ui, this->pnlStream2, CSTR("&Open")));
+	this->btnStream2 = ui->NewButton(this->pnlStream2, CSTR("&Open"));
 	this->btnStream2->SetRect(4, 76, 75, 23, false);
 	this->btnStream2->HandleButtonClick(OnStream2Clicked, this);
 	NEW_CLASS(this->rlcStream2, UI::GUIRealtimeLineChart(ui, this->grpStream2, this->core->GetDrawEngine(), 1, 120, 1000));

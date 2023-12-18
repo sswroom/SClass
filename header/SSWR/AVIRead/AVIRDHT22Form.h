@@ -22,7 +22,7 @@ namespace SSWR
 			UI::GUITextBox *txtRH;
 			UI::GUILabel *lblHumidity;
 			UI::GUITextBox *txtHumidity;
-			UI::GUIButton *btnRead;
+			NotNullPtr<UI::GUIButton> btnRead;
 			UI::GUICheckBox *chkAutoRead;
 			UI::GUILabel *lblStatus;
 			UI::GUITextBox *txtStatus;

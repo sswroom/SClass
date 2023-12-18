@@ -169,13 +169,13 @@ SSWR::AVIRead::AVIRWellFormatForm::AVIRWellFormatForm(UI::GUIClientControl *pare
 	this->lblFile->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtFile, UI::GUITextBox(ui, this->pnlFile, CSTR("")));
 	this->txtFile->SetRect(104, 4, 600, 23, false);
-	NEW_CLASS(this->btnBrowse, UI::GUIButton(ui, this->pnlFile, CSTR("Browse")));
+	this->btnBrowse = ui->NewButton(this->pnlFile, CSTR("Browse"));
 	this->btnBrowse->SetRect(704, 4, 75, 23, false);
 	this->btnBrowse->HandleButtonClick(OnBrowseClicked, this);
-	NEW_CLASS(this->btnParseToText, UI::GUIButton(ui, this->pnlFile, CSTR("To Text")));
+	this->btnParseToText = ui->NewButton(this->pnlFile, CSTR("To Text"));
 	this->btnParseToText->SetRect(104, 28, 75, 23, false);
 	this->btnParseToText->HandleButtonClick(OnParseToTextClicked, this);
-	NEW_CLASS(this->btnParseToFile, UI::GUIButton(ui, this->pnlFile, CSTR("To File")));
+	this->btnParseToFile = ui->NewButton(this->pnlFile, CSTR("To File"));
 	this->btnParseToFile->SetRect(184, 28, 75, 23, false);
 	this->btnParseToFile->HandleButtonClick(OnParseToFileClicked, this);
 	NEW_CLASS(this->txtOutput, UI::GUITextBox(ui, *this, CSTR(""), true));

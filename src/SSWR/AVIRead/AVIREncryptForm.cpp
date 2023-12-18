@@ -92,7 +92,7 @@ SSWR::AVIRead::AVIREncryptForm::AVIREncryptForm(UI::GUIClientControl *parent, No
 	NEW_CLASS(this->lblDest, UI::GUILabel(ui, this->pnlDestCtrl, CSTR("Dest Encryption")));
 	this->lblDest->SetRect(0, 0, 100, 23, false);
 	this->lblDest->SetDockType(UI::GUIControl::DOCK_LEFT);
-	NEW_CLASS(this->btnConvert, UI::GUIButton(ui, this->pnlDestCtrl, CSTR("&Convert")));
+	this->btnConvert = ui->NewButton(this->pnlDestCtrl, CSTR("&Convert"));
 	this->btnConvert->SetRect(0, 0, 75, 23, false);
 	this->btnConvert->SetDockType(UI::GUIControl::DOCK_RIGHT);
 	this->btnConvert->HandleButtonClick(OnConvertClicked, this);

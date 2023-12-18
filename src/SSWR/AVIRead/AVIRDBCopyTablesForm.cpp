@@ -397,7 +397,7 @@ SSWR::AVIRead::AVIRDBCopyTablesForm::AVIRDBCopyTablesForm(UI::GUIClientControl *
 	this->lblSourceSchema->SetRect(4, 76, 100, 23, false);
 	NEW_CLASS(this->cboSourceSchema, UI::GUIComboBox(ui, this->tpSource, false));
 	this->cboSourceSchema->SetRect(104, 76, 200, 23, false);
-	NEW_CLASS(this->btnSourceSelect, UI::GUIButton(ui, this->tpSource, CSTR("Select")));
+	this->btnSourceSelect = ui->NewButton(this->tpSource, CSTR("Select"));
 	this->btnSourceSelect->SetRect(104, 100, 75, 23, false);
 	this->btnSourceSelect->HandleButtonClick(OnSourceSelectClicked, this);	
 	this->cboSourceConn->HandleSelectionChange(OnSourceDBChg, this);
@@ -433,7 +433,7 @@ SSWR::AVIRead::AVIRDBCopyTablesForm::AVIRDBCopyTablesForm(UI::GUIClientControl *
 	this->chkDestCopyData->SetRect(204, 52, 100, 23, false);
 	NEW_CLASS(this->chkDestCreateDDB, UI::GUICheckBox(ui, this->grpDest, CSTR("Create DB"), false));
 	this->chkDestCreateDDB->SetRect(304, 52, 100, 23, false);
-	NEW_CLASS(this->btnCopy, UI::GUIButton(ui, this->grpDest, CSTR("Copy")));
+	this->btnCopy = ui->NewButton(this->grpDest, CSTR("Copy"));
 	this->btnCopy->SetRect(104, 76, 75, 23, false);
 	this->btnCopy->HandleButtonClick(OnCopyClicked, this);
 

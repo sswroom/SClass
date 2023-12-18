@@ -15,7 +15,7 @@ namespace SSWR
 		private:
 			UI::GUILabel *lblJSText;
 			UI::GUITextBox *txtJSText;
-			UI::GUIButton *btnExtract;
+			NotNullPtr<UI::GUIButton> btnExtract;
 			UI::GUILabel *lblOriText;
 			UI::GUITextBox *txtOriText;
 

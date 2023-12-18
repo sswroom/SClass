@@ -145,10 +145,10 @@ SSWR::AVIRead::AVIRCppEnumForm::AVIRCppEnumForm(UI::GUIClientControl *parent, No
 	this->cboType->AddItem(CSTR("ComboBox Add Enum"), 0);
 	this->cboType->AddItem(CSTR("GetName Function"), 0);
 	this->cboType->SetSelectedIndex(0);
-	NEW_CLASS(this->btnConv, UI::GUIButton(ui, this->pnlCtrl, CSTR("Convert")));
+	this->btnConv = ui->NewButton(this->pnlCtrl, CSTR("Convert"));
 	this->btnConv->SetRect(4, 28, 75, 23, false);
 	this->btnConv->HandleButtonClick(OnConvClicked, this);
-	NEW_CLASS(this->btnConv2, UI::GUIButton(ui, this->pnlCtrl, CSTR("Paste-Conv-Copy")));
+	this->btnConv2 = ui->NewButton(this->pnlCtrl, CSTR("Paste-Conv-Copy"));
 	this->btnConv2->SetRect(84, 28, 150, 23, false);
 	this->btnConv2->HandleButtonClick(OnConv2Clicked, this);
 	NEW_CLASS(this->lblPrefix, UI::GUILabel(ui, this->pnlCtrl, CSTR("Prefix")));

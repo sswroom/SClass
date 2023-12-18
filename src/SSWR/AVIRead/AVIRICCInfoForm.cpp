@@ -94,13 +94,13 @@ SSWR::AVIRead::AVIRICCInfoForm::AVIRICCInfoForm(UI::GUIClientControl *parent, No
 	NEW_CLASS(this->txtInfo, UI::GUITextBox(ui, *this, CSTR(""), true));
 	this->txtInfo->SetRect(104, 28, 800, 676, false);
 	this->txtInfo->SetReadOnly(true);
-	NEW_CLASS(this->btnRLUT, UI::GUIButton(ui, *this, CSTR("View R LUT")));
+	this->btnRLUT = ui->NewButton(*this, CSTR("View R LUT"));
 	this->btnRLUT->SetRect(104, 708, 75, 23, false);
 	this->btnRLUT->HandleButtonClick(OnRLUTClicked, this);
-	NEW_CLASS(this->btnGLUT, UI::GUIButton(ui, *this, CSTR("View G LUT")));
+	this->btnGLUT = ui->NewButton(*this, CSTR("View G LUT"));
 	this->btnGLUT->SetRect(184, 708, 75, 23, false);
 	this->btnGLUT->HandleButtonClick(OnGLUTClicked, this);
-	NEW_CLASS(this->btnBLUT, UI::GUIButton(ui, *this, CSTR("View B LUT")));
+	this->btnBLUT = ui->NewButton(*this, CSTR("View B LUT"));
 	this->btnBLUT->SetRect(264, 708, 75, 23, false);
 	this->btnBLUT->HandleButtonClick(OnBLUTClicked, this);
 

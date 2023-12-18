@@ -22,16 +22,6 @@ namespace SSWR
 	{
 		class AVIRGPSTrackerForm : public UI::GUIForm
 		{
-			class DisplayOffButton : public UI::GUIButton
-			{
-			private:
-				AVIRGPSTrackerForm *frm;
-			public:
-				DisplayOffButton(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, Text::CStringNN txt, AVIRGPSTrackerForm *frm);
-				virtual ~DisplayOffButton();
-
-				virtual void OnFocusLost();
-			};
 		private:
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			Map::ILocationService *locSvc;
@@ -98,7 +88,7 @@ namespace SSWR
 			UI::GUICheckBox *chkAutoPan;
 			UI::GUICheckBox *chkNoSleep;
 			UI::GUICheckBox *chkTopMost;
-			UI::GUIButton *btnDispOff;
+			NotNullPtr<UI::GUIButton> btnDispOff;
 			UI::GUILabel *lblDistance;
 			UI::GUITextBox *txtDistance;
 
@@ -122,11 +112,11 @@ namespace SSWR
 			UI::GUITextBox *txtMTKProdMode;
 			UI::GUILabel *lblMTKSDKVer;
 			UI::GUITextBox *txtMTKSDKVer;
-			UI::GUIButton *btnMTKFirmware;
-			UI::GUIButton *btnMTKLogDownload;
-			UI::GUIButton *btnMTKLogDelete;
-			UI::GUIButton *btnMTKFactoryReset;
-			UI::GUIButton *btnMTKTest;
+			NotNullPtr<UI::GUIButton> btnMTKFirmware;
+			NotNullPtr<UI::GUIButton> btnMTKLogDownload;
+			NotNullPtr<UI::GUIButton> btnMTKLogDelete;
+			NotNullPtr<UI::GUIButton> btnMTKFactoryReset;
+			NotNullPtr<UI::GUIButton> btnMTKTest;
 
 			NotNullPtr<UI::GUITabPage> tpSate;
 			UI::GUIListView *lvSate;
@@ -144,6 +134,8 @@ namespace SSWR
 			static void __stdcall OnDispOffClicked(void *userObj);
 			static void __stdcall OnTopMostChg(void *userObj, Bool newState);
 			static void __stdcall OnNMEALine(void *userObj, const UTF8Char *line, UOSInt lineLen);
+			static void __stdcall SignalFocusLost(void *userObj);
+			NotNullPtr<UI::GUIButton> NewDisplayOffButton(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, Text::CStringNN txt);
 		public:
 #if defined(_MSC_VER)
 			void* operator new(size_t i)

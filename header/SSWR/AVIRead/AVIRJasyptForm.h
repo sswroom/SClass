@@ -22,8 +22,8 @@ namespace SSWR
 			UI::GUITextBox *txtPassword;
 			UI::GUILabel *lblMessage;
 			UI::GUITextBox *txtMessage;
-			UI::GUIButton *btnDecrypt;
-			UI::GUIButton *btnEncrypt;
+			NotNullPtr<UI::GUIButton> btnDecrypt;
+			NotNullPtr<UI::GUIButton> btnEncrypt;
 			UI::GUILabel *lblResult;
 			UI::GUITextBox *txtResult;
 

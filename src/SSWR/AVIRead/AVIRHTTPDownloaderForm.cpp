@@ -295,7 +295,7 @@ SSWR::AVIRead::AVIRHTTPDownloaderForm::AVIRHTTPDownloaderForm(UI::GUIClientContr
 	this->lblHeaders->SetRect(4, 52, 100, 47, false);
 	NEW_CLASS(this->txtHeaders, UI::GUITextBox(ui, this->pnlRequest, CSTR(""), true));
 	this->txtHeaders->SetRect(104, 52, 400, 71, false);
-	NEW_CLASS(this->btnRequest, UI::GUIButton(ui, this->pnlRequest, CSTR("Request")));
+	this->btnRequest = ui->NewButton(this->pnlRequest, CSTR("Request"));
 	this->btnRequest->SetRect(104, 128, 75, 23, false);
 	this->btnRequest->HandleButtonClick(OnRequestClicked, this);
 	this->grpStatus = ui->NewGroupBox(*this, CSTR("Status"));

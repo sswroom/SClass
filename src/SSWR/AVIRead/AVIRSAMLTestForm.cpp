@@ -410,7 +410,7 @@ SSWR::AVIRead::AVIRSAMLTestForm::AVIRSAMLTestForm(UI::GUIClientControl *parent, 
 	this->txtPort->SetRect(104, 4, 50, 23, false);
 	NEW_CLASS(this->lblSSL, UI::GUILabel(ui, this->tpControl, CSTR("SSL")));
 	this->lblSSL->SetRect(4, 28, 100, 23, false);
-	NEW_CLASS(this->btnSSLCert, UI::GUIButton(ui, this->tpControl, CSTR("Cert/Key")));
+	this->btnSSLCert = ui->NewButton(this->tpControl, CSTR("Cert/Key"));
 	this->btnSSLCert->SetRect(104, 28, 75,23, false);
 	this->btnSSLCert->HandleButtonClick(OnSSLCertClicked, this);
 	NEW_CLASS(this->lblSSLCert, UI::GUILabel(ui, this->tpControl, CSTR("")));
@@ -439,7 +439,7 @@ SSWR::AVIRead::AVIRSAMLTestForm::AVIRSAMLTestForm(UI::GUIClientControl *parent, 
 	this->lblLogoutPath->SetRect(4, 172, 100, 23, false);
 	NEW_CLASS(this->txtLogoutPath, UI::GUITextBox(ui, this->tpControl, CSTR("/logout")));
 	this->txtLogoutPath->SetRect(104, 172, 500, 23, false);
-	NEW_CLASS(this->btnStart, UI::GUIButton(ui, this->tpControl, CSTR("Start")));
+	this->btnStart = ui->NewButton(this->tpControl, CSTR("Start"));
 	this->btnStart->SetRect(104, 196, 75, 23, false);
 	this->btnStart->HandleButtonClick(OnStartClicked, this);
 	NEW_CLASS(this->lblSSOURL, UI::GUILabel(ui, this->tpControl, CSTR("SSO URL")));

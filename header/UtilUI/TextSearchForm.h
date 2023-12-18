@@ -14,8 +14,8 @@ namespace UtilUI
 	private:
 		UI::GUILabel *lblSearch;
 		UI::GUITextBox *txtSearch;
-		UI::GUIButton *btnSearch;
-		UI::GUIButton *btnClose;
+		NotNullPtr<UI::GUIButton> btnSearch;
+		NotNullPtr<UI::GUIButton> btnClose;
 		Media::MonitorMgr *monMgr;
 		UtilUI::TextViewerForm *mainFrm;
 

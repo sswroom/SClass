@@ -387,7 +387,7 @@ SSWR::AVIRead::AVIRHTTPTestForm::AVIRHTTPTestForm(UI::GUIClientControl *parent, 
 	this->chkKAConn->SetRect(104, 76, 100, 23, false);
 	NEW_CLASS(this->chkGZip, UI::GUICheckBox(ui, this->pnlRequest, CSTR("GZip"), true));
 	this->chkGZip->SetRect(204, 76, 100, 23, false);
-	NEW_CLASS(this->btnStart, UI::GUIButton(ui, this->pnlRequest, CSTR("Start")));
+	this->btnStart = ui->NewButton(this->pnlRequest, CSTR("Start"));
 	this->btnStart->SetRect(104, 100, 75, 23, false);
 	this->btnStart->HandleButtonClick(OnStartClicked, this);
 	
@@ -399,13 +399,13 @@ SSWR::AVIRead::AVIRHTTPTestForm::AVIRHTTPTestForm(UI::GUIClientControl *parent, 
 	NEW_CLASSNN(this->pnlURLCtrl, UI::GUIPanel(ui, this->grpURL));
 	this->pnlURLCtrl->SetRect(0, 0, 100, 31, false);
 	this->pnlURLCtrl->SetDockType(UI::GUIControl::DOCK_BOTTOM);
-	NEW_CLASS(this->btnURLAdd, UI::GUIButton(ui, this->pnlURL, CSTR("&Add")));
+	this->btnURLAdd = ui->NewButton(this->pnlURL, CSTR("&Add"));
 	this->btnURLAdd->SetRect(0, 0, 75, 23, false);
 	this->btnURLAdd->SetDockType(UI::GUIControl::DOCK_RIGHT);
 	this->btnURLAdd->HandleButtonClick(OnURLAddClicked, this);
 	NEW_CLASS(this->txtURL, UI::GUITextBox(ui, this->pnlURL, CSTR("")));
 	this->txtURL->SetDockType(UI::GUIControl::DOCK_FILL);
-	NEW_CLASS(this->btnURLClear, UI::GUIButton(ui, this->pnlURLCtrl, CSTR("&Clear")));
+	this->btnURLClear = ui->NewButton(this->pnlURLCtrl, CSTR("&Clear"));
 	this->btnURLClear->SetRect(4, 4, 75, 23, false);
 	this->btnURLClear->HandleButtonClick(OnURLClearClicked, this);
 	NEW_CLASS(this->lbURL, UI::GUIListBox(ui, this->grpURL, false));

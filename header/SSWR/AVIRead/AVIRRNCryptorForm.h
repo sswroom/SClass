@@ -24,7 +24,7 @@ namespace SSWR
 			UI::GUITextBox *txtDestFile;
 			UI::GUILabel *lblPassword;
 			UI::GUITextBox *txtPassword;
-			UI::GUIButton *btnProcess;
+			NotNullPtr<UI::GUIButton> btnProcess;
 
 			static void __stdcall OnProcessClicked(void *userObj);
 			static void __stdcall OnFiles(void *userObj, NotNullPtr<Text::String> *files, UOSInt nFiles);

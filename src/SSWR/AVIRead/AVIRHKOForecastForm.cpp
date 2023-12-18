@@ -89,7 +89,7 @@ SSWR::AVIRead::AVIRHKOForecastForm::AVIRHKOForecastForm(UI::GUIClientControl *pa
 	this->cboLang->AddItem(CSTR("Chinese (Traditional)"), (void*)Net::HKOWeather::Language::TC);
 	this->cboLang->AddItem(CSTR("Chinese (Simplified)"), (void*)Net::HKOWeather::Language::SC);
 	this->cboLang->SetSelectedIndex(0);
-	NEW_CLASS(this->btnReload, UI::GUIButton(ui, this->pnlMain, CSTR("Reload")));
+	this->btnReload = ui->NewButton(this->pnlMain, CSTR("Reload"));
 	this->btnReload->SetRect(254, 4, 75, 23, false);
 	this->btnReload->HandleButtonClick(OnReloadClicked, this);
 

@@ -17,8 +17,8 @@ namespace SSWR
 			OrganEnv *env;
 			UI::GUIListView *lvFiles;
 			NotNullPtr<UI::GUIPanel> pnlCtrl;
-			UI::GUIButton *btnDelete;
-			UI::GUIButton *btnStartTime;
+			NotNullPtr<UI::GUIButton> btnDelete;
+			NotNullPtr<UI::GUIButton> btnStartTime;
 
 			static void __stdcall OnFileDrop(void *userObj, NotNullPtr<Text::String> *files, UOSInt nFiles);
 			static void __stdcall OnFilesDblClk(void *userObj, UOSInt itemIndex);

@@ -40,7 +40,7 @@ namespace SSWR
 			UI::GUILabel *lblPassword;
 			UI::GUITextBox *txtPassword;
 			UI::GUICheckBox *chkErrorCont;
-			UI::GUIButton *btnUpload;
+			NotNullPtr<UI::GUIButton> btnUpload;
 			UI::GUIListView *lvStatus;
 
 			static void __stdcall OnFileDrop(void *userObj, const UTF8Char **files, UOSInt fileCnt);

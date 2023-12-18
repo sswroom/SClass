@@ -24,7 +24,7 @@ namespace SSWR
 			UI::GUITextBox *txtMinLevel;
 			UI::GUILabel *lblMaxLevel;
 			UI::GUITextBox *txtMaxLevel;
-			UI::GUIButton *btnOK;
+			NotNullPtr<UI::GUIButton> btnOK;
 			Map::TileMap *tileMap;
 
 			static void __stdcall OnOKClicked(void *userObj);

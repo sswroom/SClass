@@ -30,7 +30,7 @@ SSWR::AVIRead::AVIRSMBIOSForm::AVIRSMBIOSForm(UI::GUIClientControl *parent, NotN
 	NEW_CLASSNN(this->pnlControl, UI::GUIPanel(ui, *this));
 	this->pnlControl->SetRect(0, 0, 100, 31, false);
 	this->pnlControl->SetDockType(UI::GUIControl::DOCK_BOTTOM);
-	NEW_CLASS(this->btnHex, UI::GUIButton(ui, this->pnlControl, CSTR("Hex")));
+	this->btnHex = ui->NewButton(this->pnlControl, CSTR("Hex"));
 	this->btnHex->SetRect(4, 4, 75, 23, false);
 	this->btnHex->SetEnabled(this->smbios != 0);
 	this->btnHex->HandleButtonClick(OnHexClicked, this);

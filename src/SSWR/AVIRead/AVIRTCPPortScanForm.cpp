@@ -118,7 +118,7 @@ SSWR::AVIRead::AVIRTCPPortScanForm::AVIRTCPPortScanForm(UI::GUIClientControl *pa
 	this->lblMaxPort->SetRect(4, 52, 100, 23, false);
 	NEW_CLASS(this->txtMaxPort, UI::GUITextBox(ui, this->pnlControl, CSTR("65535")));
 	this->txtMaxPort->SetRect(104, 52, 100, 23, false);
-	NEW_CLASS(this->btnStart, UI::GUIButton(ui, this->pnlControl, CSTR("Start")));
+	this->btnStart = ui->NewButton(this->pnlControl, CSTR("Start"));
 	this->btnStart->SetRect(204, 52, 75, 23, false);
 	this->btnStart->HandleButtonClick(OnStartClicked, this);
 	NEW_CLASS(this->lvPort, UI::GUIListView(ui, *this, UI::GUIListView::LVSTYLE_TABLE, 2));

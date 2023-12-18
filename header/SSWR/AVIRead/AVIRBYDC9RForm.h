@@ -25,7 +25,7 @@ namespace SSWR
 			NotNullPtr<UI::GUIGroupBox> grpCANBus;
 			UI::GUILabel *lblCANBus;
 			UI::GUITextBox *txtCANBus;
-			UI::GUIButton *btnCANBus;
+			NotNullPtr<UI::GUIButton> btnCANBus;
 
 			UI::GUILabel *lblSpeedKmHr;
 			UI::GUITextBox *txtSpeedKmHr;

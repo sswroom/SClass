@@ -285,7 +285,7 @@ SSWR::AVIRead::AVIRGPSSimulatorForm::AVIRGPSSimulatorForm(UI::GUIClientControl *
 	NEW_CLASS(this->txtStreamType, UI::GUITextBox(ui, *this, CSTR("-")));
 	this->txtStreamType->SetRect(104, 4, 200, 23, false);
 	this->txtStreamType->SetReadOnly(true);
-	NEW_CLASS(this->btnStream, UI::GUIButton(ui, *this, CSTR("Open")));
+	this->btnStream = ui->NewButton(*this, CSTR("Open"));
 	this->btnStream->SetRect(304, 4, 75, 23, false);
 	this->btnStream->HandleButtonClick(OnStreamClicked, this);
 	NEW_CLASS(this->chkAddPoints, UI::GUICheckBox(ui, *this, CSTR("Add Points"), false));
@@ -297,7 +297,7 @@ SSWR::AVIRead::AVIRGPSSimulatorForm::AVIRGPSSimulatorForm(UI::GUIClientControl *
 	this->txtSpeed->SetReadOnly(true);
 	NEW_CLASS(this->txtSpeedInput, UI::GUITextBox(ui, *this, CSTR("50")));
 	this->txtSpeedInput->SetRect(204, 52, 100, 23, false);
-	NEW_CLASS(this->btnSpeed, UI::GUIButton(ui, *this, CSTR("Set")));
+	this->btnSpeed = ui->NewButton(*this, CSTR("Set"));
 	this->btnSpeed->SetRect(304, 52, 75, 23, false);
 	this->btnSpeed->HandleButtonClick(OnSpeedClicked, this);
 	NEW_CLASS(this->lblCurrLat, UI::GUILabel(ui, *this, CSTR("Current Lat")));

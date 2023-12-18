@@ -60,7 +60,7 @@ SSWR::AVIRead::AVIRAboutForm::AVIRAboutForm(UI::GUIClientControl *parent, NotNul
 	NEW_CLASS(lbl, UI::GUILabel(ui, *this, CSTRP(sbuff, sptr)));
 	lbl->SetRect(8, 56, 400, 23, false);
 
-	NEW_CLASS(btn, UI::GUIButton(ui, *this, CSTR("OK")));
+	btn = ui->NewButton(*this, CSTR("OK"));
 	btn->SetRect(385, 74, 75, 23, false);
 	btn->HandleButtonClick(OKClicked, this);
 }

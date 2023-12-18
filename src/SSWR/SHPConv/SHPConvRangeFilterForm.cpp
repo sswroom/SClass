@@ -103,10 +103,10 @@ SSWR::SHPConv::SHPConvRangeFilterForm::SHPConvRangeFilterForm(UI::GUIClientContr
 	this->lblY2->SetRect(248, 176, 16, 23, false);
 	NEW_CLASS(this->txtY2, UI::GUITextBox(ui, *this, CSTR("0")));
 	this->txtY2->SetRect(264, 176, 80, 20, false);
-	NEW_CLASS(this->btnOK, UI::GUIButton(ui, *this, CSTR("OK")));
+	this->btnOK = ui->NewButton(*this, CSTR("OK"));
 	this->btnOK->SetRect(264, 8, 75, 23, false);
 	this->btnOK->HandleButtonClick(OnOKClicked, this);
-	NEW_CLASS(this->btnCancel, UI::GUIButton(ui, *this, CSTR("Cancel")));
+	this->btnCancel = ui->NewButton(*this, CSTR("Cancel"));
 	this->btnCancel->SetRect(264, 32, 75, 23, false);
 	this->btnCancel->HandleButtonClick(OnCancelClicked, this);
 	this->SetDefaultButton(this->btnOK);

@@ -17,11 +17,11 @@ namespace SSWR
 		private:
 			UI::GUILabel *lblName;
 			UI::GUITextBox *txtName;
-			UI::GUIButton *btnBrowse;
+			NotNullPtr<UI::GUIButton> btnBrowse;
 			UI::GUILabel *lblType;
 			UI::GUIComboBox *cboType;
-			UI::GUIButton *btnOK;
-			UI::GUIButton *btnCancel;
+			NotNullPtr<UI::GUIButton> btnOK;
+			NotNullPtr<UI::GUIButton> btnCancel;
 			Text::String *fileName;
 			IO::ParserType parserType;
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;

@@ -55,10 +55,10 @@ SSWR::AVIRead::AVIRMACManagerEntryForm::AVIRMACManagerEntryForm(UI::GUIClientCon
 	NEW_CLASS(this->cboName, UI::GUIComboBox(ui, *this, true));
 	this->cboName->SetRect(104, 28, 400, 23, false);
 	this->cboName->SetAutoComplete(true);
-	NEW_CLASS(this->btnCancel, UI::GUIButton(ui, *this, CSTR("Cancel")));
+	this->btnCancel = ui->NewButton(*this, CSTR("Cancel"));
 	this->btnCancel->SetRect(104, 52, 75, 23, false);
 	this->btnCancel->HandleButtonClick(OnCancelClicked, this);
-	NEW_CLASS(this->btnOK, UI::GUIButton(ui, *this, CSTR("Ok")));
+	this->btnOK = ui->NewButton(*this, CSTR("Ok"));
 	this->btnOK->SetRect(204, 52, 75, 23, false);
 	this->btnOK->HandleButtonClick(OnOKClicked, this);
 	this->SetDefaultButton(this->btnOK);

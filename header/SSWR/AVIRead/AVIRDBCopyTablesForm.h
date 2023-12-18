@@ -31,7 +31,7 @@ namespace SSWR
 			UI::GUITextBox *txtSourceCollation;
 			UI::GUILabel *lblSourceSchema;
 			UI::GUIComboBox *cboSourceSchema;
-			UI::GUIButton *btnSourceSelect;
+			NotNullPtr<UI::GUIButton> btnSourceSelect;
 
 			NotNullPtr<UI::GUITabPage> tpData;
 			NotNullPtr<UI::GUIGroupBox> grpDest;
@@ -44,7 +44,7 @@ namespace SSWR
 			UI::GUIComboBox *cboDestTableType;
 			UI::GUICheckBox *chkDestCopyData;
 			UI::GUICheckBox *chkDestCreateDDB;
-			UI::GUIButton *btnCopy;
+			NotNullPtr<UI::GUIButton> btnCopy;
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			Data::ArrayList<DB::DBManagerCtrl*> *dbList;

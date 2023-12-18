@@ -107,10 +107,10 @@ SSWR::AVIRead::AVIRGISLineForm::AVIRGISLineForm(UI::GUIClientControl *parent, No
 	this->pbColor->HandleMouseDown(OnColorDown, this);
 	this->pbColor->SetBGColor(this->colorConv->ConvRGB8(this->lineColor));
 
-	NEW_CLASS(this->btnOK, UI::GUIButton(ui, this->pnlMain, CSTR("OK")));
+	this->btnOK = ui->NewButton(this->pnlMain, CSTR("OK"));
 	this->btnOK->SetRect(104, 64, 75, 23, false);
 	this->btnOK->HandleButtonClick(OnOKClicked, this);
-	NEW_CLASS(this->btnCancel, UI::GUIButton(ui, this->pnlMain, CSTR("Cancel")));
+	this->btnCancel = ui->NewButton(this->pnlMain, CSTR("Cancel"));
 	this->btnCancel->SetRect(184, 64, 75, 23, false);
 	this->btnCancel->HandleButtonClick(OnCancelClicked, this);
 	this->SetDefaultButton(this->btnOK);

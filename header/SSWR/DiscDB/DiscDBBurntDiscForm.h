@@ -51,9 +51,9 @@ namespace SSWR
 
 			NotNullPtr<UI::GUIPanel> pnlTop;
 			NotNullPtr<UI::GUIPanel> pnlBurntDisc;
-			UI::GUIButton *btnBrowse;
-			UI::GUIButton *btnFinish;
-			UI::GUIButton *btnNewDisc;
+			NotNullPtr<UI::GUIButton> btnBrowse;
+			NotNullPtr<UI::GUIButton> btnFinish;
+			NotNullPtr<UI::GUIButton> btnNewDisc;
 			UI::GUILabel *lblDiscId;
 			UI::GUITextBox *txtDiscId;
 			UI::GUILabel *lblDiscType;
@@ -75,12 +75,12 @@ namespace SSWR
 			UI::GUIComboBox *cboVolume;
 			UI::GUILabel *lblDVDType;
 			UI::GUIComboBox *cboDVDType;
-			UI::GUIButton *btnAllFile;
-			UI::GUIButton *btnRemoveFile;
-			UI::GUIButton *btnBuildMovie;
+			NotNullPtr<UI::GUIButton> btnAllFile;
+			NotNullPtr<UI::GUIButton> btnRemoveFile;
+			NotNullPtr<UI::GUIButton> btnBuildMovie;
 			UI::GUILabel *lblSectorSize;
 			UI::GUITextBox *txtSectorSize;
-			UI::GUIButton *btnSectorSize;
+			NotNullPtr<UI::GUIButton> btnSectorSize;
 			UI::GUIListBox *lbFileName;
 
 			void UpdateDiscId();

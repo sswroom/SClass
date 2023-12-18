@@ -37,8 +37,8 @@ namespace SSWR
 			UI::GUICheckBox *chkNoResource;
 			UI::GUILabel *lblSRID;
 			UI::GUITextBox *txtSRID;
-			UI::GUIButton *btnOK;
-			UI::GUIButton *btnCancel;
+			NotNullPtr<UI::GUIButton> btnOK;
+			NotNullPtr<UI::GUIButton> btnCancel;
 			Map::ESRI::ESRIMapServer *esriMap;
 
 			static void __stdcall OKClicked(void *userObj);

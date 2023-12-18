@@ -35,7 +35,7 @@ namespace SSWR
 			UI::GUITextBox *txtPassword;
 			UI::GUILabel *lblDatabase;
 			UI::GUITextBox *txtDatabase;
-			UI::GUIButton *btnStart;
+			NotNullPtr<UI::GUIButton> btnStart;
 			UI::GUILabel *lblStatus;
 			UI::GUITextBox *txtStatus;
 
@@ -53,7 +53,7 @@ namespace SSWR
 
 			NotNullPtr<UI::GUITabPage> tpQuery;
 			NotNullPtr<UI::GUIPanel> pnlQuery;
-			UI::GUIButton *btnQuery;
+			NotNullPtr<UI::GUIButton> btnQuery;
 			UI::GUITextBox *txtQuery;
 			UI::GUITextBox *txtQueryStatus;
 			UI::GUIVSplitter *vspQuery;

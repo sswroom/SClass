@@ -62,7 +62,7 @@ namespace SSWR
 			UI::GUITextBox *txtJPGQuality;
 			UI::GUILabel *lblFileName;
 			UI::GUITextBox *txtFileName;
-			UI::GUIButton *btnStart;
+			NotNullPtr<UI::GUIButton> btnStart;
 			UI::GUITextBox *txtDeviceInfo;
 
 			NotNullPtr<UI::GUITabPage> tpStatus;

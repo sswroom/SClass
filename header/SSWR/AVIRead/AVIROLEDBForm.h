@@ -15,8 +15,8 @@ namespace SSWR
 		private:
 			UI::GUILabel *lblConnStr;
 			UI::GUITextBox *txtConnStr;
-			UI::GUIButton *btnOK;
-			UI::GUIButton *btnCancel;
+			NotNullPtr<UI::GUIButton> btnOK;
+			NotNullPtr<UI::GUIButton> btnCancel;
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			DB::DBConn *conn;

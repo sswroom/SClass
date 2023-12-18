@@ -38,12 +38,12 @@ namespace SSWR
 			UI::GUICheckBox *chkLogContent;
 			UI::GUILabel *lblSSL;
 			UI::GUICheckBox *chkSSL;
-			UI::GUIButton *btnSSLCert;
+			NotNullPtr<UI::GUIButton> btnSSLCert;
 			UI::GUILabel *lblSSLCert;
 			UI::GUILabel *lblAllowKA;
 			UI::GUICheckBox *chkAllowKA;
-			UI::GUIButton *btnStart;
-			UI::GUIButton *btnStop;
+			NotNullPtr<UI::GUIButton> btnStart;
+			NotNullPtr<UI::GUIButton> btnStop;
 
 		private:
 			static void __stdcall OnStartClick(void *userObj);

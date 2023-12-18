@@ -36,7 +36,7 @@ namespace SSWR
 			UI::GUITextBox *txtUserDN;
 			UI::GUILabel *lblPassword;
 			UI::GUITextBox *txtPassword;
-			UI::GUIButton *btnConnect;
+			NotNullPtr<UI::GUIButton> btnConnect;
 			UI::GUIListBox *lbPath;
 			UI::GUIHSplitter *hspPath;
 			UI::GUIListBox *lbObjects;

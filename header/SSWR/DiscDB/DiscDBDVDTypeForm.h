@@ -20,16 +20,16 @@ namespace SSWR
 
 			UI::GUILabel *lblID;
 			UI::GUITextBox *txtID;
-			UI::GUIButton *btnNew;
-			UI::GUIButton *btnCancel;
+			NotNullPtr<UI::GUIButton> btnNew;
+			NotNullPtr<UI::GUIButton> btnCancel;
 			UI::GUILabel *lblName;
 			UI::GUITextBox *txtName;
 			UI::GUILabel *lblDescription;
 			UI::GUITextBox *txtDescription;
 			UI::GUILabel *lblDisplay;
-			UI::GUIButton *btnPrev;
-			UI::GUIButton *btnSave;
-			UI::GUIButton *btnNext;
+			NotNullPtr<UI::GUIButton> btnPrev;
+			NotNullPtr<UI::GUIButton> btnSave;
+			NotNullPtr<UI::GUIButton> btnNext;
 
 			void ShowStatus();
 			void UpdateDisplay();

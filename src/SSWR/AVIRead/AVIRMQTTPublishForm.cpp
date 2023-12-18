@@ -107,7 +107,7 @@ SSWR::AVIRead::AVIRMQTTPublishForm::AVIRMQTTPublishForm(UI::GUIClientControl *pa
 	this->lblMessage->SetRect(4, 124, 100, 23, false);
 	NEW_CLASS(this->txtMessage, UI::GUITextBox(ui, *this, CSTR("")));
 	this->txtMessage->SetRect(104, 124, 100, 23, false);
-	NEW_CLASS(this->btnPublish, UI::GUIButton(ui, *this, CSTR("Publish")));
+	this->btnPublish = ui->NewButton(*this, CSTR("Publish"));
 	this->btnPublish->SetRect(104, 148, 75, 23, false);
 	this->btnPublish->HandleButtonClick(OnPublishClicked, this);
 	NEW_CLASS(this->lblStatus, UI::GUILabel(ui, *this, CSTR("Status")));

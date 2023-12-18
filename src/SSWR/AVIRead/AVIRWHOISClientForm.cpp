@@ -59,7 +59,7 @@ SSWR::AVIRead::AVIRWHOISClientForm::AVIRWHOISClientForm(UI::GUIClientControl *pa
 	this->lblIP->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtIP, UI::GUITextBox(ui, this->pnlRequest, CSTR("")));
 	this->txtIP->SetRect(104, 4, 400, 23, false);
-	NEW_CLASS(this->btnRequest, UI::GUIButton(ui, this->pnlRequest, CSTR("Request")));
+	this->btnRequest = ui->NewButton(this->pnlRequest, CSTR("Request"));
 	this->btnRequest->SetRect(504, 4, 75, 23, false);
 	this->btnRequest->HandleButtonClick(OnRequestClicked, this);
 	NEW_CLASS(this->lblRespTime, UI::GUILabel(ui, this->pnlRequest, CSTR("Response Time")));

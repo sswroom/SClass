@@ -18,9 +18,9 @@ namespace SSWR
 			UI::GUITextBox *txtFileName;
 			UI::GUILabel *lblInfo;
 			UI::GUITextBox *txtInfo;
-			UI::GUIButton *btnRLUT;
-			UI::GUIButton *btnGLUT;
-			UI::GUIButton *btnBLUT;
+			NotNullPtr<UI::GUIButton> btnRLUT;
+			NotNullPtr<UI::GUIButton> btnGLUT;
+			NotNullPtr<UI::GUIButton> btnBLUT;
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			Media::ICCProfile *icc;

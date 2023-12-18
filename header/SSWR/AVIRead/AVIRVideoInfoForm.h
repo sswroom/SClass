@@ -37,7 +37,7 @@ namespace SSWR
 			NotNullPtr<UI::GUIPanel> pnlFile;
 			UI::GUILabel *lblFile;
 			UI::GUITextBox *txtFile;
-			UI::GUIButton *btnDecode;
+			NotNullPtr<UI::GUIButton> btnDecode;
 			UI::GUILabel *lblDecode;
 			UI::GUIListBox *lbStream;
 			UI::GUIHSplitter *hspStream;

@@ -257,7 +257,7 @@ SSWR::AVIRead::AVIRImageBatchForm::AVIRImageBatchForm(UI::GUIClientControl *pare
 	NEW_CLASSNN(this->pnlCtrl, UI::GUIPanel(ui, *this));
 	this->pnlCtrl->SetRect(0, 0, 100, 24, false);
 	this->pnlCtrl->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->btnFolder, UI::GUIButton(ui, this->pnlCtrl, CSTR("Folder...")));
+	this->btnFolder = ui->NewButton(this->pnlCtrl, CSTR("Folder..."));
 	this->btnFolder->SetRect(0, 0, 75, 23, false);
 	this->btnFolder->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->btnFolder->HandleButtonClick(OnFolderClicked, this);
@@ -289,7 +289,7 @@ SSWR::AVIRead::AVIRImageBatchForm::AVIRImageBatchForm(UI::GUIClientControl *pare
 	this->hsbBright->HandlePosChanged(OnColorChg, this);
 	NEW_CLASS(this->lblBrightV, UI::GUILabel(ui, this->pnlImage, CSTR("")));
 	this->lblBrightV->SetRect(500, 0,100, 23, false);
-	NEW_CLASS(this->btnBrightReset, UI::GUIButton(ui, this->pnlImage, CSTR("Reset")));
+	this->btnBrightReset = ui->NewButton(this->pnlImage, CSTR("Reset"));
 	this->btnBrightReset->SetRect(600, 0, 75, 23, false);
 	this->btnBrightReset->HandleButtonClick(OnBrightResetClicked, this);
 	NEW_CLASS(this->lblContr, UI::GUILabel(ui, this->pnlImage, CSTR("Contrast")));
@@ -310,7 +310,7 @@ SSWR::AVIRead::AVIRImageBatchForm::AVIRImageBatchForm(UI::GUIClientControl *pare
 	this->hsbGamma->HandlePosChanged(OnColorChg, this);
 	NEW_CLASS(this->lblGammaV, UI::GUILabel(ui, this->pnlImage, CSTR("")));
 	this->lblGammaV->SetRect(500, 48, 100, 23, false);
-	NEW_CLASS(this->btnGammaReset, UI::GUIButton(ui, this->pnlImage, CSTR("Reset")));
+	this->btnGammaReset = ui->NewButton(this->pnlImage, CSTR("Reset"));
 	this->btnGammaReset->SetRect(600, 48, 75, 23, false);
 	this->btnGammaReset->HandleButtonClick(OnGammaResetClicked, this);
 	NEW_CLASS(this->lblHDRLev, UI::GUILabel(ui, this->pnlImage, CSTR("HDR Lev")));
@@ -322,7 +322,7 @@ SSWR::AVIRead::AVIRImageBatchForm::AVIRImageBatchForm(UI::GUIClientControl *pare
 	this->hsbHDRLev->HandlePosChanged(OnColorChg, this);
 	NEW_CLASS(this->lblHDRLevV, UI::GUILabel(ui, this->pnlImage, CSTR("")));
 	this->lblHDRLevV->SetRect(500, 72, 100, 23, false);
-/*	NEW_CLASS(this->btnCrop, UI::GUIButton(ui, this->pnlImage, L"Crop"));
+/*	this->btnCrop = ui->NewButton(this->pnlImage, L"Crop");
 	this->btnCrop->SetRect(632, 72, 75, 23, false);*/
 
 	UI::GUIMainMenu *mmnu;

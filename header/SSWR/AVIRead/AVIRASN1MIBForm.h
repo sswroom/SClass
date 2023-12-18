@@ -25,7 +25,7 @@ namespace SSWR
 			NotNullPtr<UI::GUIPanel> pnlRequest;
 			UI::GUILabel *lblFile;
 			UI::GUITextBox *txtFile;
-			UI::GUIButton *btnBrowse;
+			NotNullPtr<UI::GUIButton> btnBrowse;
 			UI::GUITabControl *tcMain;
 
 			NotNullPtr<UI::GUITabPage> tpObjects;

@@ -34,13 +34,13 @@ namespace SSWR
 			UI::GUITextBox *txtMonitor;
 			NotNullPtr<UI::GUIPanel> pnlButtons;
 			UI::GUITabControl *tcMain;
-			UI::GUIButton *btnOK;
-			UI::GUIButton *btnCancel;
+			NotNullPtr<UI::GUIButton> btnOK;
+			NotNullPtr<UI::GUIButton> btnCancel;
 
 			NotNullPtr<UI::GUITabPage> tpSetting;
 			UI::GUILabel *lblMonProfile;
 			UI::GUIComboBox *cboMonProfile;
-			UI::GUIButton *btnMonProfile;
+			NotNullPtr<UI::GUIButton> btnMonProfile;
 			NotNullPtr<UI::GUIGroupBox> grpMonProfile;
 			UI::GUILabel *lblMonTran;
 			UI::GUITextBox *txtMonTran;
@@ -48,7 +48,7 @@ namespace SSWR
 			UI::GUITextBox *txtMonRGBGamma;
 			UI::GUILabel *lblMonPrimaries;
 			UI::GUITextBox *txtMonPrimaries;
-			UI::GUIButton *btnMonCustom;
+			NotNullPtr<UI::GUIButton> btnMonCustom;
 			UI::GUILabel *lblDefVProfile;
 			UI::GUIComboBox *cboDefVProfile;
 			UI::GUILabel *lblDefPProfile;

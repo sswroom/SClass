@@ -31,12 +31,12 @@ namespace SSWR
 			NotNullPtr<UI::GUIPanel> pnlStyle;
 			NotNullPtr<UI::GUIPanel> pnlButtons;
 
-			UI::GUIButton *btnAddStyle;
-			UI::GUIButton *btnRemoveStyle;
-			UI::GUIButton *btnEditStyle;
+			NotNullPtr<UI::GUIButton> btnAddStyle;
+			NotNullPtr<UI::GUIButton> btnRemoveStyle;
+			NotNullPtr<UI::GUIButton> btnEditStyle;
             
-			UI::GUIButton *btnOK;
-			UI::GUIButton *btnCancel;
+			NotNullPtr<UI::GUIButton> btnOK;
+			NotNullPtr<UI::GUIButton> btnCancel;
 
 			UI::GUIPopupMenu *mnuLayer;
 

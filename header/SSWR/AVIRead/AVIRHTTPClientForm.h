@@ -55,9 +55,9 @@ namespace SSWR
 			UI::GUIComboBox *cboMethod;
 			UI::GUICheckBox *chkOSClient;
 			UI::GUICheckBox *chkAllowComp;
-			UI::GUIButton *btnUserAgent;
+			NotNullPtr<UI::GUIButton> btnUserAgent;
 			UI::GUILabel *lblUserAgent;
-			UI::GUIButton *btnClientCert;
+			NotNullPtr<UI::GUIButton> btnClientCert;
 			UI::GUILabel *lblClientCert;
 			UI::GUILabel *lblUserName;
 			UI::GUITextBox *txtUserName;
@@ -65,17 +65,17 @@ namespace SSWR
 			UI::GUITextBox *txtPassword;
 			UI::GUILabel *lblFileUpload;
 			UI::GUITextBox *txtFileFormName;
-			UI::GUIButton *btnFileSelect;
-			UI::GUIButton *btnFileClear;
+			NotNullPtr<UI::GUIButton> btnFileSelect;
+			NotNullPtr<UI::GUIButton> btnFileClear;
 			UI::GUILabel *lblFileStatus;
 			UI::GUILabel *lblDataStr;
 			UI::GUITextBox *txtDataStr;
-			UI::GUIButton *btnDataStr;
+			NotNullPtr<UI::GUIButton> btnDataStr;
 			UI::GUILabel *lblPostFormat;
 			UI::GUIComboBox *cboPostFormat;
 			UI::GUILabel *lblHeaders;
 			UI::GUITextBox *txtHeaders;
-			UI::GUIButton *btnRequest;
+			NotNullPtr<UI::GUIButton> btnRequest;
 			UI::GUIListView *lvReqData;
 
 			NotNullPtr<UI::GUITabPage> tpResponse;
@@ -108,12 +108,12 @@ namespace SSWR
 			UI::GUITextBox *txtRespContSize;
 			UI::GUIListView *lvHeaders;
 			NotNullPtr<UI::GUIPanel> pnlControl;
-			UI::GUIButton *btnSave;
-			UI::GUIButton *btnView;
+			NotNullPtr<UI::GUIButton> btnSave;
+			NotNullPtr<UI::GUIButton> btnView;
 
 			NotNullPtr<UI::GUITabPage> tpCert;
 			NotNullPtr<UI::GUIPanel> pnlCert;
-			UI::GUIButton *btnCert;
+			NotNullPtr<UI::GUIButton> btnCert;
 			UI::GUITextBox *txtCert;
 
 			NotNullPtr<UI::GUITabPage> tpCookie;

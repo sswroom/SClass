@@ -220,7 +220,7 @@ SSWR::AVIRead::AVIRImageGRForm::AVIRImageGRForm(UI::GUIClientControl *parent, No
 	NEW_CLASSNN(this->pnlLayers, UI::GUIPanel(ui, *this));
 	this->pnlLayers->SetRect(0, 0, 200, 23, false);
 	this->pnlLayers->SetDockType(UI::GUIControl::DOCK_LEFT);
-	NEW_CLASS(this->btnAddLayer, UI::GUIButton(ui, this->pnlLayers, CSTR("New Layer")));
+	this->btnAddLayer = ui->NewButton(this->pnlLayers, CSTR("New Layer"));
 	this->btnAddLayer->SetRect(0, 0, 100, 23, false);
 	this->btnAddLayer->SetDockType(UI::GUIControl::DOCK_BOTTOM);
 	this->btnAddLayer->HandleButtonClick(OnAddLayerClicked, this);
@@ -230,7 +230,7 @@ SSWR::AVIRead::AVIRImageGRForm::AVIRImageGRForm(UI::GUIClientControl *parent, No
 	NEW_CLASS(this->hspLayers, UI::GUIHSplitter(ui, *this, 3, false));
 	NEW_CLASSNN(this->pnlSetting, UI::GUIPanel(ui, *this));
 	this->pnlSetting->SetDockType(UI::GUIControl::DOCK_FILL);
-	NEW_CLASS(this->btnRemoveLayer, UI::GUIButton(ui, this->pnlSetting, CSTR("Remove Layer")));
+	this->btnRemoveLayer = ui->NewButton(this->pnlSetting, CSTR("Remove Layer"));
 	this->btnRemoveLayer->SetRect(4, 4, 75, 23, false);
 	this->btnRemoveLayer->HandleButtonClick(OnRemoveLayerClicked, this);
 	NEW_CLASS(this->lblHOfst, UI::GUILabel(ui, this->pnlSetting, CSTR("H Offset")));
@@ -272,10 +272,10 @@ SSWR::AVIRead::AVIRImageGRForm::AVIRImageGRForm(UI::GUIClientControl *parent, No
 	this->chkEnable->SetRect(104, 124, 200, 23, false);
 	this->chkEnable->HandleCheckedChange(OnEnableChanged, this);
 
-	NEW_CLASS(this->btnCancel, UI::GUIButton(ui, this->pnlSetting, CSTR("Cancel")));
+	this->btnCancel = ui->NewButton(this->pnlSetting, CSTR("Cancel"));
 	this->btnCancel->SetRect(104, 156, 75, 23, false);
 	this->btnCancel->HandleButtonClick(OnCancelClicked, this);
-	NEW_CLASS(this->btnOK, UI::GUIButton(ui, this->pnlSetting, CSTR("OK")));
+	this->btnOK = ui->NewButton(this->pnlSetting, CSTR("OK"));
 	this->btnOK->SetRect(184, 156, 75, 23, false);
 	this->btnOK->HandleButtonClick(OnOKClicked, this);
 	this->SetDefaultButton(this->btnOK);

@@ -235,7 +235,7 @@ SSWR::AVIRead::AVIRUDPTestForm::AVIRUDPTestForm(UI::GUIClientControl *parent, No
 	this->lblServerPort->SetRect(4, 4, 50, 23, false);
 	NEW_CLASS(this->txtServerPort, UI::GUITextBox(ui, this->grpServer, CSTR("")));
 	this->txtServerPort->SetRect(54, 4, 75, 23, false);
-	NEW_CLASS(this->btnStart, UI::GUIButton(ui, this->grpServer, CSTR("Start")));
+	this->btnStart = ui->NewButton(this->grpServer, CSTR("Start"));
 	this->btnStart->SetRect(54, 28, 75, 23, false);
 	this->btnStart->HandleButtonClick(OnStartClicked, this);
 	NEW_CLASS(this->chkAutoReply, UI::GUICheckBox(ui, this->grpServer, CSTR("Auto Reply"), false));
@@ -256,7 +256,7 @@ SSWR::AVIRead::AVIRUDPTestForm::AVIRUDPTestForm(UI::GUIClientControl *parent, No
 	this->lblDestCount->SetRect(4, 52, 50, 23, false);
 	NEW_CLASS(this->txtDestCount, UI::GUITextBox(ui, this->grpDest, CSTR("10000")));
 	this->txtDestCount->SetRect(54, 52, 75, 23, false);
-	NEW_CLASS(this->btnSend, UI::GUIButton(ui, this->grpDest, CSTR("Send")));
+	this->btnSend = ui->NewButton(this->grpDest, CSTR("Send"));
 	this->btnSend->SetRect(54, 76, 75, 23, false);
 	this->btnSend->HandleButtonClick(OnSendClicked, this);
 	this->grpStatus = ui->NewGroupBox(*this, CSTR("Status"));

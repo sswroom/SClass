@@ -33,14 +33,14 @@ namespace SSWR
 			UI::GUITextBox *txtCharCode;
 			UI::GUILabel *lblChar;
 			UI::GUITextBox *txtChar;
-			UI::GUIButton *btnCharPrev;
-			UI::GUIButton *btnCharNext;
+			NotNullPtr<UI::GUIButton> btnCharPrev;
+			NotNullPtr<UI::GUIButton> btnCharNext;
 			UI::GUIPictureBoxSimple *pbChar;
 			UI::GUILabel *lblRelatedCurr;
 			UI::GUITextBox *txtRelatedCurr;
 			UI::GUILabel *lblRelatedAdd;
 			UI::GUITextBox *txtRelatedAdd;
-			UI::GUIButton *btnRelatedGo;
+			NotNullPtr<UI::GUIButton> btnRelatedGo;
 
 			NotNullPtr<UI::GUIGroupBox> grpCharInfo;
 			UI::GUILabel *lblRadical;

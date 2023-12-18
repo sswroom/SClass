@@ -22,7 +22,7 @@ namespace SSWR
 			UI::GUITextBox *txtKey;
 			UI::GUILabel *lblImagerySet;
 			UI::GUIComboBox *cboImagerySet;
-			UI::GUIButton *btnOK;
+			NotNullPtr<UI::GUIButton> btnOK;
 			Map::TileMap *tileMap;
 
 			static void __stdcall OnOKClicked(void *userObj);

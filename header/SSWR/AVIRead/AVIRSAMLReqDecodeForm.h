@@ -22,7 +22,7 @@ namespace SSWR
 
 			UI::GUILabel *lblRAWRequest;
 			UI::GUITextBox *txtRAWRequest;
-			UI::GUIButton *btnDecode;
+			NotNullPtr<UI::GUIButton> btnDecode;
 			UI::GUILabel *lblResult;
 			UI::GUITextBox *txtResult;
 			UI::GUILabel *lblWellFormat;

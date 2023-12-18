@@ -35,8 +35,8 @@ namespace SSWR
 			UI::GUITextBox *txtInputMsg;
 			UI::GUILabel *lblOutputType;
 			UI::GUIComboBox *cboOutputType;
-			UI::GUIButton *btnEncrypt;
-			UI::GUIButton *btnDecrypt;
+			NotNullPtr<UI::GUIButton> btnEncrypt;
+			NotNullPtr<UI::GUIButton> btnDecrypt;
 			UI::GUILabel *lblOutputMsg;
 			UI::GUITextBox *txtOutputMsg;
 

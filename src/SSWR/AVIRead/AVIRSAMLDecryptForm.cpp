@@ -158,7 +158,7 @@ SSWR::AVIRead::AVIRSAMLDecryptForm::AVIRSAMLDecryptForm(UI::GUIClientControl *pa
 	this->lblRAWResponse->SetRect(0, 24, 100, 23, false);
 	NEW_CLASS(this->txtRAWResponse, UI::GUITextBox(ui, *this, CSTR(""), true));
 	this->txtRAWResponse->SetRect(100, 24, 500, 119, false);
-	NEW_CLASS(this->btnDecrypt, UI::GUIButton(ui, *this, CSTR("Decrypt")));
+	this->btnDecrypt = ui->NewButton(*this, CSTR("Decrypt"));
 	this->btnDecrypt->SetRect(100, 144, 75, 23, false);
 	this->btnDecrypt->HandleButtonClick(OnDecryptClicked, this);
 	NEW_CLASS(this->lblResult, UI::GUILabel(ui, *this, CSTR("Result")));

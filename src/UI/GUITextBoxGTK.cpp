@@ -121,8 +121,8 @@ Bool UI::GUITextBox::EventKeyDown(UInt32 osKey)
 		UI::GUIControl::GUIKey key = UI::GUIControl::OSKey2GUIKey(osKey);
 		if (key == UI::GUIControl::GK_ESCAPE)
 		{
-			UI::GUIButton *btn = this->GetRootForm()->GetCancelButton();
-			if (btn)
+			NotNullPtr<UI::GUIButton> btn;
+			if (this->GetRootForm()->GetCancelButton().SetTo(btn))
 			{
 				btn->EventButtonClick();
 				ret = true;
@@ -132,8 +132,8 @@ Bool UI::GUITextBox::EventKeyDown(UInt32 osKey)
 		{
 			if (!this->clsData->multiLine)
 			{
-				UI::GUIButton *btn = this->GetRootForm()->GetDefaultButton();
-				if (btn)
+				NotNullPtr<UI::GUIButton> btn;
+				if (this->GetRootForm()->GetDefaultButton().SetTo(btn))
 				{
 					btn->EventButtonClick();
 					ret = true;

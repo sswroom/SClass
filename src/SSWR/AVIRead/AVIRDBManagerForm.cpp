@@ -1234,13 +1234,13 @@ SSWR::AVIRead::AVIRDBManagerForm::AVIRDBManagerForm(UI::GUIClientControl *parent
 	NEW_CLASS(this->lbDatabase, UI::GUIListBox(ui, this->tpDatabase, false));
 	this->lbDatabase->SetRect(0, 0, 150, 23, false);
 	this->lbDatabase->SetDockType(UI::GUIControl::DOCK_LEFT);
-	NEW_CLASS(this->btnDatabaseChange, UI::GUIButton(ui, this->tpDatabase, CSTR("Change")));
+	this->btnDatabaseChange = ui->NewButton(this->tpDatabase, CSTR("Change"));
 	this->btnDatabaseChange->SetRect(154, 4, 75, 23, false);
 	this->btnDatabaseChange->HandleButtonClick(OnDatabaseChangeClicked, this);
-	NEW_CLASS(this->btnDatabaseDelete, UI::GUIButton(ui, this->tpDatabase, CSTR("Delete")));
+	this->btnDatabaseDelete = ui->NewButton(this->tpDatabase, CSTR("Delete"));
 	this->btnDatabaseDelete->SetRect(154, 28, 75, 23, false);
 	this->btnDatabaseDelete->HandleButtonClick(OnDatabaseDeleteClicked, this);
-	NEW_CLASS(this->btnDatabaseNew, UI::GUIButton(ui, this->tpDatabase, CSTR("New")));
+	this->btnDatabaseNew = ui->NewButton(this->tpDatabase, CSTR("New"));
 	this->btnDatabaseNew->SetRect(154, 52, 75, 23, false);
 	this->btnDatabaseNew->HandleButtonClick(OnDatabaseNewClicked, this);
 
@@ -1285,10 +1285,10 @@ SSWR::AVIRead::AVIRDBManagerForm::AVIRDBManagerForm(UI::GUIClientControl *parent
 	NEW_CLASSNN(this->pnlSQLCtrl, UI::GUIPanel(ui, this->pnlSQL));
 	this->pnlSQLCtrl->SetRect(0, 0, 100, 31, false);
 	this->pnlSQLCtrl->SetDockType(UI::GUIControl::DOCK_BOTTOM);
-	NEW_CLASS(this->btnSQLExec, UI::GUIButton(ui, this->pnlSQLCtrl, CSTR("Execute")));
+	this->btnSQLExec = ui->NewButton(this->pnlSQLCtrl, CSTR("Execute"));
 	this->btnSQLExec->SetRect(4, 4, 75, 23, false);
 	this->btnSQLExec->HandleButtonClick(OnSQLExecClicked, this);
-	NEW_CLASS(this->btnSQLFile, UI::GUIButton(ui, this->pnlSQLCtrl, CSTR("SQL File")));
+	this->btnSQLFile = ui->NewButton(this->pnlSQLCtrl, CSTR("SQL File"));
 	this->btnSQLFile->SetRect(84, 4, 75, 23, false);
 	this->btnSQLFile->HandleButtonClick(OnSQLFileClicked, this);
 	NEW_CLASS(this->txtSQL, UI::GUITextBox(ui, this->pnlSQL, CSTR(""), true));
@@ -1331,7 +1331,7 @@ SSWR::AVIRead::AVIRDBManagerForm::AVIRDBManagerForm(UI::GUIClientControl *parent
 	NEW_CLASSNN(this->pnlVariable, UI::GUIPanel(ui, this->tpVariable));
 	this->pnlVariable->SetRect(0, 0, 100, 31, false);
 	this->pnlVariable->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->btnVariable, UI::GUIButton(ui, this->pnlVariable, CSTR("Show")));
+	this->btnVariable = ui->NewButton(this->pnlVariable, CSTR("Show"));
 	this->btnVariable->SetRect(4, 4, 75, 23, false);
 	this->btnVariable->HandleButtonClick(OnVariableClicked, this);
 	NEW_CLASS(this->lvVariable, UI::GUIListView(ui, this->tpVariable, UI::GUIListView::LVSTYLE_TABLE, 2));
@@ -1345,10 +1345,10 @@ SSWR::AVIRead::AVIRDBManagerForm::AVIRDBManagerForm(UI::GUIClientControl *parent
 	NEW_CLASSNN(this->pnlSvrConn, UI::GUIPanel(ui, this->tpSvrConn));
 	this->pnlSvrConn->SetRect(0, 0, 100, 31, false);
 	this->pnlSvrConn->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->btnSvrConn, UI::GUIButton(ui, this->pnlSvrConn, CSTR("Show")));
+	this->btnSvrConn = ui->NewButton(this->pnlSvrConn, CSTR("Show"));
 	this->btnSvrConn->SetRect(4, 4, 75, 23, false);
 	this->btnSvrConn->HandleButtonClick(OnSvrConnClicked, this);
-	NEW_CLASS(this->btnSvrConnKill, UI::GUIButton(ui, this->pnlSvrConn, CSTR("Kill")));
+	this->btnSvrConnKill = ui->NewButton(this->pnlSvrConn, CSTR("Kill"));
 	this->btnSvrConnKill->SetRect(84, 4, 75, 23, false);
 	this->btnSvrConnKill->HandleButtonClick(OnSvrConnKillClicked, this);
 	NEW_CLASS(this->lvSvrConn, UI::GUIListView(ui, this->tpSvrConn, UI::GUIListView::LVSTYLE_TABLE, 8));

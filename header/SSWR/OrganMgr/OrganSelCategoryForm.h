@@ -16,8 +16,8 @@ namespace SSWR
 		private:
 			UI::GUILabel *lbl;
 			UI::GUIListBox *lbCategory;
-			UI::GUIButton *btnOK;
-			UI::GUIButton *btnCancel;
+			NotNullPtr<UI::GUIButton> btnOK;
+			NotNullPtr<UI::GUIButton> btnCancel;
 			SSWR::OrganMgr::OrganEnv *env;
 			
 			static void __stdcall OnOKClicked(void *userObj);

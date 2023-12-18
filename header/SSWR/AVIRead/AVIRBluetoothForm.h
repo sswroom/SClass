@@ -45,13 +45,13 @@ namespace SSWR
 
 			NotNullPtr<UI::GUITabPage> tpDevice;
 			NotNullPtr<UI::GUIPanel> pnlDevice;
-			UI::GUIButton *btnDeviceSrch;
-			UI::GUIButton *btnDeviceUpdate;
+			NotNullPtr<UI::GUIButton> btnDeviceSrch;
+			NotNullPtr<UI::GUIButton> btnDeviceUpdate;
 			NotNullPtr<UI::GUIPanel> pnlDevDetail;
 			UI::GUIVSplitter *vspDevice;
 			NotNullPtr<UI::GUIPanel> pnlDevCtrl;
-			UI::GUIButton *btnDevAuthen;
-			UI::GUIButton *btnDevUnauthen;
+			NotNullPtr<UI::GUIButton> btnDevAuthen;
+			NotNullPtr<UI::GUIButton> btnDevUnauthen;
 			UI::GUIListBox *lbDevServices;
 			UI::GUIListView *lvDevice;
 

@@ -21,8 +21,8 @@ namespace SSWR
 			NotNullPtr<UI::GUITabPage> tpCPU;
 			UI::GUIListView *lvMain;
 			NotNullPtr<UI::GUIPanel> pnlMain;
-			UI::GUIButton *btnUpload;
-			UI::GUIButton *btnCopyInfo;
+			NotNullPtr<UI::GUIButton> btnUpload;
+			NotNullPtr<UI::GUIButton> btnCopyInfo;
 
 			NotNullPtr<UI::GUITabPage> tpCache;
 			UI::GUIListBox *lbCache;

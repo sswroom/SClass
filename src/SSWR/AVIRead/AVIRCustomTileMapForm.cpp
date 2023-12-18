@@ -83,7 +83,7 @@ SSWR::AVIRead::AVIRCustomTileMapForm::AVIRCustomTileMapForm(UI::GUIClientControl
 	this->lblMaxLevel->SetRect(4, 52, 100, 23, false);
 	NEW_CLASS(this->txtMaxLevel, UI::GUITextBox(ui, *this, CSTR("18")));
 	this->txtMaxLevel->SetRect(104, 52, 100, 23, false);
-	NEW_CLASS(this->btnOK, UI::GUIButton(ui, *this, CSTR("OK")));
+	this->btnOK = ui->NewButton(*this, CSTR("OK"));
 	this->btnOK->SetRect(104, 76, 75, 23, false);
 	this->btnOK->HandleButtonClick(OnOKClicked, this);
 }

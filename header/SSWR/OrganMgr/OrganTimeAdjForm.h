@@ -51,10 +51,10 @@ namespace SSWR
 			UI::GUIMapControl *mapMain;
 			UI::GUIComboBox *cboCamera;
 			UI::GUITextBox *txtTimeAdj;
-			UI::GUIButton *btnPaste;
-			UI::GUIButton *btnTimeSub;
-			UI::GUIButton *btnTimeAdd;
-			UI::GUIButton *btnTimeApply;
+			NotNullPtr<UI::GUIButton> btnPaste;
+			NotNullPtr<UI::GUIButton> btnTimeSub;
+			NotNullPtr<UI::GUIButton> btnTimeAdd;
+			NotNullPtr<UI::GUIButton> btnTimeApply;
 
 			static void __stdcall OnSpeciesChg(void *userObj);
 			static void __stdcall OnTileUpdated(void *userObj);

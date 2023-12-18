@@ -405,7 +405,7 @@ SSWR::AVIRead::AVIRSolarEdgeForm::AVIRSolarEdgeForm(UI::GUIClientControl *parent
 	this->lblAPIKey->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtAPIKey, UI::GUITextBox(ui, this->pnlAPIKey, CSTR("")));
 	this->txtAPIKey->SetRect(104, 4, 300, 23, false);
-	NEW_CLASS(this->btnAPIKey, UI::GUIButton(ui, this->pnlAPIKey, CSTR("Start")));
+	this->btnAPIKey = ui->NewButton(this->pnlAPIKey, CSTR("Start"));
 	this->btnAPIKey->SetRect(404, 4, 75, 23, false);
 	this->btnAPIKey->HandleButtonClick(OnAPIKeyClicked, this);
 	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, *this));
@@ -546,7 +546,7 @@ SSWR::AVIRead::AVIRSolarEdgeForm::AVIRSolarEdgeForm(UI::GUIClientControl *parent
 	NEW_CLASSNN(this->cboSiteEnergyDay, UI::GUIComboBox(ui, this->pnlSiteEnergy, false));
 	this->cboSiteEnergyDay->SetRect(264, 52, 60, 23, false);
 	UI::GUIComboBoxUtil::AddDayItems(this->cboSiteEnergyDay);
-	NEW_CLASS(this->btnSiteEnergy, UI::GUIButton(ui, this->pnlSiteEnergy, CSTR("Query")));
+	this->btnSiteEnergy = ui->NewButton(this->pnlSiteEnergy, CSTR("Query"));
 	this->btnSiteEnergy->SetRect(104, 76, 75, 23, false);
 	this->btnSiteEnergy->HandleButtonClick(OnSiteEnergyClicked, this);
 	NEW_CLASS(this->pbSiteEnergy, UI::GUIPictureBox(ui, this->tpSiteEnergy, this->core->GetDrawEngine(), true, false));
@@ -572,7 +572,7 @@ SSWR::AVIRead::AVIRSolarEdgeForm::AVIRSolarEdgeForm(UI::GUIClientControl *parent
 	NEW_CLASSNN(this->cboSitePowerDay, UI::GUIComboBox(ui, this->pnlSitePower, false));
 	this->cboSitePowerDay->SetRect(264, 28, 60, 23, false);
 	UI::GUIComboBoxUtil::AddDayItems(this->cboSitePowerDay);
-	NEW_CLASS(this->btnSitePower, UI::GUIButton(ui, this->pnlSitePower, CSTR("Query")));
+	this->btnSitePower = ui->NewButton(this->pnlSitePower, CSTR("Query"));
 	this->btnSitePower->SetRect(104, 52, 75, 23, false);
 	this->btnSitePower->HandleButtonClick(OnSitePowerClicked, this);
 	NEW_CLASS(this->pbSitePower, UI::GUIPictureBox(ui, this->tpSitePower, this->core->GetDrawEngine(), true, false));

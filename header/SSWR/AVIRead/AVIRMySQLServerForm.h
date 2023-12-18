@@ -29,7 +29,7 @@ namespace SSWR
 			NotNullPtr<UI::GUIPanel> pnlCtrl;
 			UI::GUILabel *lblPort;
 			UI::GUITextBox *txtPort;
-			UI::GUIButton *btnStart;
+			NotNullPtr<UI::GUIButton> btnStart;
 			UI::GUITabControl *tcMain;
 
 			NotNullPtr<UI::GUITabPage> tpUser;
@@ -40,7 +40,7 @@ namespace SSWR
 			UI::GUITextBox *txtUserName;
 			UI::GUILabel *lblPassword;
 			UI::GUITextBox *txtPassword;
-			UI::GUIButton *btnUserAdd;
+			NotNullPtr<UI::GUIButton> btnUserAdd;
 
 			NotNullPtr<UI::GUITabPage> tpLog;
 			NotNullPtr<UI::GUIListBox> lbLog;

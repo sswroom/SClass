@@ -470,7 +470,7 @@ SSWR::AVIRead::AVIRGPSDevForm::AVIRGPSDevForm(UI::GUIClientControl *parent, NotN
 	this->lblPort->SetRect(4, 28, 100, 23, false);
 	NEW_CLASS(this->txtPort, UI::GUITextBox(ui, this->pnlConn, CSTR("7500")));
 	this->txtPort->SetRect(104, 28, 100, 23, false);
-	NEW_CLASS(this->btnConn, UI::GUIButton(ui, this->pnlConn, CSTR("Start")));
+	this->btnConn = ui->NewButton(this->pnlConn, CSTR("Start"));
 	this->btnConn->SetRect(204, 28, 75, 23, false);
 	this->btnConn->HandleButtonClick(OnConnClicked, this);
 	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, *this));
@@ -487,7 +487,7 @@ SSWR::AVIRead::AVIRGPSDevForm::AVIRGPSDevForm(UI::GUIClientControl *parent, NotN
 	NEW_CLASSNN(this->pnlDeviceC, UI::GUIPanel(ui, this->tpDevice));
 	this->pnlDeviceC->SetRect(0, 0, 200, 23, false);
 	this->pnlDeviceC->SetDockType(UI::GUIControl::DOCK_LEFT);
-	NEW_CLASS(this->btnDeviceR, UI::GUIButton(ui, this->pnlDeviceC, CSTR("Refresh")));
+	this->btnDeviceR = ui->NewButton(this->pnlDeviceC, CSTR("Refresh"));
 	this->btnDeviceR->SetRect(0, 0, 100, 23, false);
 	this->btnDeviceR->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->btnDeviceR->HandleButtonClick(OnDeviceRClicked, this);
@@ -536,7 +536,7 @@ SSWR::AVIRead::AVIRGPSDevForm::AVIRGPSDevForm(UI::GUIClientControl *parent, NotN
 	NEW_CLASSNN(this->pnlUserC, UI::GUIPanel(ui, this->tpUser));
 	this->pnlUserC->SetRect(0, 0, 200, 23, false);
 	this->pnlUserC->SetDockType(UI::GUIControl::DOCK_LEFT);
-	NEW_CLASS(this->btnUserR, UI::GUIButton(ui, this->pnlUserC, CSTR("Refresh")));
+	this->btnUserR = ui->NewButton(this->pnlUserC, CSTR("Refresh"));
 	this->btnUserR->SetRect(0, 0, 100, 23, false);
 	this->btnUserR->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->btnUserR->HandleButtonClick(OnUserRClicked, this);
@@ -560,7 +560,7 @@ SSWR::AVIRead::AVIRGPSDevForm::AVIRGPSDevForm(UI::GUIClientControl *parent, NotN
 	NEW_CLASSNN(this->pnlAlertC, UI::GUIPanel(ui, this->tpAlert));
 	this->pnlAlertC->SetRect(0, 0, 200, 23, false);
 	this->pnlAlertC->SetDockType(UI::GUIControl::DOCK_LEFT);
-	NEW_CLASS(this->btnAlertR, UI::GUIButton(ui, this->pnlAlertC, CSTR("Refresh")));
+	this->btnAlertR = ui->NewButton(this->pnlAlertC, CSTR("Refresh"));
 	this->btnAlertR->SetRect(0, 0, 100, 23, false);
 	this->btnAlertR->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->btnAlertR->HandleButtonClick(OnAlertRClicked, this);

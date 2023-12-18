@@ -47,8 +47,8 @@ namespace SSWR
 			NotNullPtr<UI::GUIPanel> pnlURLCtrl;
 			UI::GUIListBox *lbURL;
 			UI::GUITextBox *txtURL;
-			UI::GUIButton *btnURLAdd;
-			UI::GUIButton *btnURLClear;
+			NotNullPtr<UI::GUIButton> btnURLAdd;
+			NotNullPtr<UI::GUIButton> btnURLClear;
 			NotNullPtr<UI::GUIPanel> pnlRequest;
 			UI::GUILabel *lblConcurrCnt;
 			UI::GUITextBox *txtConcurrCnt;
@@ -60,7 +60,7 @@ namespace SSWR
 			UI::GUITextBox *txtPostSize;
 			UI::GUICheckBox *chkKAConn;
 			UI::GUICheckBox *chkGZip;
-			UI::GUIButton *btnStart;
+			NotNullPtr<UI::GUIButton> btnStart;
 			NotNullPtr<UI::GUIGroupBox> grpStatus;
 			UI::GUILabel *lblConnLeftCnt;
 			UI::GUITextBox *txtConnLeftCnt;

@@ -21,7 +21,7 @@ namespace SSWR
 			UI::GUITextBox *txtDestFile;
 			UI::GUILabel *lblEncrypt;
 			UI::GUIComboBox *cboEncrypt;
-			UI::GUIButton *btnConvert;
+			NotNullPtr<UI::GUIButton> btnConvert;
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			Text::TextBinEnc::TextBinEncList encList;

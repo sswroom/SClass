@@ -20,12 +20,12 @@ namespace SSWR
 			UI::GUIListView *lvService;
 			UI::GUIHSplitter *hspService;
 			NotNullPtr<UI::GUIPanel> pnlCtrl;
-			UI::GUIButton *btnStart;
-			UI::GUIButton *btnStop;
-			UI::GUIButton *btnEnable;
-			UI::GUIButton *btnDisable;
-			UI::GUIButton *btnDelete;
-			UI::GUIButton *btnCreate;
+			NotNullPtr<UI::GUIButton> btnStart;
+			NotNullPtr<UI::GUIButton> btnStop;
+			NotNullPtr<UI::GUIButton> btnEnable;
+			NotNullPtr<UI::GUIButton> btnDisable;
+			NotNullPtr<UI::GUIButton> btnDelete;
+			NotNullPtr<UI::GUIButton> btnCreate;
 			NotNullPtr<UI::GUIPanel> pnlDetail;
 			UI::GUILabel *lblName;
 			UI::GUITextBox *txtName;

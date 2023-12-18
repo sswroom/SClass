@@ -31,7 +31,7 @@ namespace SSWR
 			UI::GUITextBox *txtAddress;
 			UI::GUILabel *lblStream;
 			UI::GUITextBox *txtStream;
-			UI::GUIButton *btnStream;
+			NotNullPtr<UI::GUIButton> btnStream;
 			UI::GUILabel *lblModuleName;
 			UI::GUITextBox *txtModuleName;
 			UI::GUILabel *lblFirmware;

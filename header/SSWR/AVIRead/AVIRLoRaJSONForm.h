@@ -26,7 +26,7 @@ namespace SSWR
 			UI::GUILabel *lblJSON;
 			UI::GUITextBox *txtJSON;
 			NotNullPtr<UI::GUIPanel> pnlJSONCtrl;
-			UI::GUIButton *btnJSONParse;
+			NotNullPtr<UI::GUIButton> btnJSONParse;
 			UI::GUILabel *lblInfo;
 			UI::GUITextBox *txtInfo;
 

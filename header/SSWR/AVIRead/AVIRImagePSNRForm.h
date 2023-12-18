@@ -17,14 +17,14 @@ namespace SSWR
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			UI::GUILabel *lblOriFile;
 			UI::GUITextBox *txtOriFile;
-			UI::GUIButton *btnOriFile;
+			NotNullPtr<UI::GUIButton> btnOriFile;
 			UI::GUILabel *lblLossyFile;
 			UI::GUITextBox *txtLossyFile;
-			UI::GUIButton *btnLossyFile;
+			NotNullPtr<UI::GUIButton> btnLossyFile;
 			UI::GUILabel *lblMode;
 			UI::GUIRadioButton *radMode16Bit;
 			UI::GUIRadioButton *radMode8Bit;
-			UI::GUIButton *btnCompare;
+			NotNullPtr<UI::GUIButton> btnCompare;
 			UI::GUILabel *lblPSNR;
 			UI::GUITextBox *txtPSNR;
 			UI::GUILabel *lblPSNRDB;

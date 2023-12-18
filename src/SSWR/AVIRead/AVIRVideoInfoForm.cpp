@@ -339,7 +339,7 @@ SSWR::AVIRead::AVIRVideoInfoForm::AVIRVideoInfoForm(UI::GUIClientControl *parent
 	NEW_CLASS(this->txtFile, UI::GUITextBox(ui, this->pnlFile, CSTR("")));
 	this->txtFile->SetRect(104, 4, 800, 23, false);
 	this->txtFile->SetReadOnly(true);
-	NEW_CLASS(this->btnDecode, UI::GUIButton(ui, this->pnlFile, CSTR("Test Decode")));
+	this->btnDecode = ui->NewButton(this->pnlFile, CSTR("Test Decode"));
 	this->btnDecode->SetRect(104, 28, 150, 23, false);
 	this->btnDecode->HandleButtonClick(OnDecodeClicked, this);
 	NEW_CLASS(this->lblDecode, UI::GUILabel(ui, this->pnlFile, CSTR("")));

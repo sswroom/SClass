@@ -757,10 +757,10 @@ SSWR::AVIRead::AVIRNetInfoForm::AVIRNetInfoForm(UI::GUIClientControl *parent, No
 	NEW_CLASS(this->txtAdaptorMediaState, UI::GUITextBox(ui, this->pnlAdaptor, CSTR("")));
 	this->txtAdaptorMediaState->SetRect(104, 148, 150, 23, false);
 	this->txtAdaptorMediaState->SetReadOnly(true);
-	NEW_CLASS(this->btnAdaptorEnable, UI::GUIButton(ui, this->pnlAdaptor, CSTR("Enable")));
+	this->btnAdaptorEnable = ui->NewButton(this->pnlAdaptor, CSTR("Enable"));
 	this->btnAdaptorEnable->SetRect(254, 148, 75, 23, false);
 	this->btnAdaptorEnable->HandleButtonClick(OnAdaptorEnableClicked, this);
-	NEW_CLASS(this->btnAdaptorDisable, UI::GUIButton(ui, this->pnlAdaptor, CSTR("Disable")));
+	this->btnAdaptorDisable = ui->NewButton(this->pnlAdaptor, CSTR("Disable"));
 	this->btnAdaptorDisable->SetRect(334, 148, 75, 23, false);
 	this->btnAdaptorDisable->HandleButtonClick(OnAdaptorDisableClicked, this);
 	NEW_CLASS(this->lblAdaptorIP, UI::GUILabel(ui, this->pnlAdaptor, CSTR("IP Addresses")));
@@ -1030,7 +1030,7 @@ SSWR::AVIRead::AVIRNetInfoForm::AVIRNetInfoForm(UI::GUIClientControl *parent, No
 	NEW_CLASSNN(this->pnlPortInfo, UI::GUIPanel(ui, this->tpPortInfo));
 	this->pnlPortInfo->SetRect(0, 0, 100, 40, false);
 	this->pnlPortInfo->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->btnPortRefresh, UI::GUIButton(ui, this->pnlPortInfo, CSTR("&Refresh")));
+	this->btnPortRefresh = ui->NewButton(this->pnlPortInfo, CSTR("&Refresh"));
 	this->btnPortRefresh->SetRect(8, 8, 75, 23, false);
 	this->btnPortRefresh->HandleButtonClick(OnPortClicked, this);
 	NEW_CLASS(this->chkPortAuto, UI::GUICheckBox(ui, this->pnlPortInfo, CSTR("Auto Refresh"), false));

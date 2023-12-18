@@ -20,8 +20,8 @@ namespace SSWR
 			UI::GUITextBox *txtServerTime;
 			UI::GUILabel *lblStatus;
 			UI::GUITextBox *txtStatus;
-			UI::GUIButton *btnGetTime;
-			UI::GUIButton *btnSyncTime;
+			NotNullPtr<UI::GUIButton> btnGetTime;
+			NotNullPtr<UI::GUIButton> btnSyncTime;
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 

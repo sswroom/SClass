@@ -32,7 +32,7 @@ namespace SSWR
 		private:
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			NotNullPtr<UI::GUIPanel> pnlCtrl;
-			UI::GUIButton *btnCancel;
+			NotNullPtr<UI::GUIButton> btnCancel;
 			UI::GUICheckBox *chkAllowTimeSkip;
 			UI::GUIListView *lvFiles;
 

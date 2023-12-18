@@ -439,10 +439,10 @@ SSWR::AVIRead::AVIRAsmConvForm::AVIRAsmConvForm(UI::GUIClientControl *parent, No
 	NEW_CLASSNN(this->pnlCtrl, UI::GUIPanel(ui, *this));
 	this->pnlCtrl->SetRect(0, 0, 100, 31, false);
 	this->pnlCtrl->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->btnConv, UI::GUIButton(ui, this->pnlCtrl, CSTR("Convert")));
+	this->btnConv = ui->NewButton(this->pnlCtrl, CSTR("Convert"));
 	this->btnConv->SetRect(4, 4, 75, 23, false);
 	this->btnConv->HandleButtonClick(OnConvClicked, this);
-	NEW_CLASS(this->btnConv2, UI::GUIButton(ui, this->pnlCtrl, CSTR("Paste-Conv-Copy")));
+	this->btnConv2 = ui->NewButton(this->pnlCtrl, CSTR("Paste-Conv-Copy"));
 	this->btnConv2->SetRect(84, 4, 150, 23, false);
 	this->btnConv2->HandleButtonClick(OnConv2Clicked, this);
 	NEW_CLASS(this->txtIntelAsm, UI::GUITextBox(ui, *this, CSTR(""), true));

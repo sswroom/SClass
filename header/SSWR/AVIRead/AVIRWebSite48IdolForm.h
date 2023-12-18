@@ -24,20 +24,20 @@ namespace SSWR
 			NotNullPtr<UI::GUIPanel> pnlRequest;
 			UI::GUILabel *lblPageNo;
 			UI::GUITextBox *txtPageNo;
-			UI::GUIButton *btnRequestPage;
+			NotNullPtr<UI::GUIButton> btnRequestPage;
 			UI::GUIListView *lvItems;
 
 			NotNullPtr<UI::GUITabPage> tpDownloadLink;
 			UI::GUILabel *lblVideoId;
 			UI::GUITextBox *txtVideoId;
-			UI::GUIButton *btnDownloadLink;
+			NotNullPtr<UI::GUIButton> btnDownloadLink;
 			UI::GUILabel *lblDownloadLink;
 			UI::GUITextBox *txtDownloadLink;
 
 			NotNullPtr<UI::GUITabPage> tpVideoName;
 			UI::GUILabel *lblNameVideoId;
 			UI::GUITextBox *txtNameVideoId;
-			UI::GUIButton *btnVideoName;
+			NotNullPtr<UI::GUIButton> btnVideoName;
 			UI::GUILabel *lblVideoName;
 			UI::GUITextBox *txtVideoName;
 

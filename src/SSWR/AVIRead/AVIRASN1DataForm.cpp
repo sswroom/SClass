@@ -702,10 +702,10 @@ SSWR::AVIRead::AVIRASN1DataForm::AVIRASN1DataForm(UI::GUIClientControl *parent, 
 			this->lblVerifySignature->SetRect(4, 52, 100, 23, false);
 			NEW_CLASS(this->txtVerifySignature, UI::GUITextBox(ui, this->tpVerify, CSTR("")));
 			this->txtVerifySignature->SetRect(104, 52, 300, 23, false);
-			NEW_CLASS(this->btnVerify, UI::GUIButton(ui, this->tpVerify, CSTR("Verify")));
+			this->btnVerify = ui->NewButton(this->tpVerify, CSTR("Verify"));
 			this->btnVerify->SetRect(104, 76, 75, 23, false);
 			this->btnVerify->HandleButtonClick(OnVerifyClicked, this);
-			NEW_CLASS(this->btnVerifySignInfo, UI::GUIButton(ui, this->tpVerify, CSTR("Sign Info")));
+			this->btnVerifySignInfo = ui->NewButton(this->tpVerify, CSTR("Sign Info"));
 			this->btnVerifySignInfo->SetRect(184, 76, 75, 23, false);
 			this->btnVerifySignInfo->HandleButtonClick(OnVerifySignInfoClicked, this);
 			NEW_CLASS(this->lblVerifyStatus, UI::GUILabel(ui, this->tpVerify, CSTR("Status")));
@@ -759,12 +759,12 @@ SSWR::AVIRead::AVIRASN1DataForm::AVIRASN1DataForm(UI::GUIClientControl *parent, 
 			this->lblEncryptInput->SetRect(4, 76, 100, 23, false);
 			NEW_CLASS(this->txtEncryptInput, UI::GUITextBox(ui, this->tpEncrypt, CSTR(""), true));
 			this->txtEncryptInput->SetRect(104, 76, 500, 95, false);
-			NEW_CLASS(this->btnEncryptEncrypt, UI::GUIButton(ui, this->tpEncrypt, CSTR("Encrypt")));
+			this->btnEncryptEncrypt = ui->NewButton(this->tpEncrypt, CSTR("Encrypt"));
 			this->btnEncryptEncrypt->SetRect(104, 172, 75, 23, false);
 			this->btnEncryptEncrypt->HandleButtonClick(OnEncryptEncryptClicked, this);
 			if (hasPrivKey)
 			{
-				NEW_CLASS(this->btnEncryptDecrypt, UI::GUIButton(ui, this->tpEncrypt, CSTR("Decrypt")));
+				this->btnEncryptDecrypt = ui->NewButton(this->tpEncrypt, CSTR("Decrypt"));
 				this->btnEncryptDecrypt->SetRect(184, 172, 75, 23, false);
 				this->btnEncryptDecrypt->HandleButtonClick(OnEncryptDecryptClicked, this);
 			}

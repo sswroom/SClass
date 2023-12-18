@@ -38,7 +38,7 @@ namespace SSWR
 			NotNullPtr<UI::GUIPanel> pnlBookDet;
 			UI::GUIListView *lvBook;
 			UI::GUIHSplitter *hspBook;
-			UI::GUIButton *btnBookPaste;
+			NotNullPtr<UI::GUIButton> btnBookPaste;
 			UI::GUILabel *lblBookPublish;
 			UI::GUIDateTimePicker *dtpBookPublish;
 			UI::GUILabel *lblBookAuthor;
@@ -51,7 +51,7 @@ namespace SSWR
 			UI::GUITextBox *txtBookURL;
 			UI::GUILabel *lblBookGroup;
 			UI::GUITextBox *txtBookGroup;
-			UI::GUIButton *btnBookAdd;
+			NotNullPtr<UI::GUIButton> btnBookAdd;
 			UI::GUITabControl *tcBook;
 			NotNullPtr<UI::GUITabPage> tpBookRef;
 			NotNullPtr<UI::GUITabPage> tpBookAuthor;

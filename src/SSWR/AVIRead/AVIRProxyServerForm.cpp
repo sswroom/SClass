@@ -64,7 +64,7 @@ SSWR::AVIRead::AVIRProxyServerForm::AVIRProxyServerForm(UI::GUIClientControl *pa
 	this->lblPort->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtPort, UI::GUITextBox(ui, this->pnlRequest, CSTR("8080")));
 	this->txtPort->SetRect(104, 4, 100, 23, false);
-	NEW_CLASS(this->btnStart, UI::GUIButton(ui, this->pnlRequest, CSTR("&Start")));
+	this->btnStart = ui->NewButton(this->pnlRequest, CSTR("&Start"));
 	this->btnStart->SetRect(204, 4, 75, 23, false);
 	this->btnStart->HandleButtonClick(OnStartClicked, this);
 	NEW_CLASS(this->txtLog, UI::GUITextBox(ui, *this, CSTR("")));

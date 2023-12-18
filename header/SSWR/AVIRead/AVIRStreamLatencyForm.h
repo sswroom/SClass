@@ -28,7 +28,7 @@ namespace SSWR
 			NotNullPtr<UI::GUIGroupBox> grpStream;
 			UI::GUILabel *lblStream;
 			UI::GUITextBox *txtStream;
-			UI::GUIButton *btnStream;
+			NotNullPtr<UI::GUIButton> btnStream;
 
 			NotNullPtr<UI::GUIGroupBox> grpControl;
 			UI::GUILabel *lblReqInterval;

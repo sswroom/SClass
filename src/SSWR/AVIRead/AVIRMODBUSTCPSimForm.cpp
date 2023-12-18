@@ -201,7 +201,7 @@ SSWR::AVIRead::AVIRMODBUSTCPSimForm::AVIRMODBUSTCPSimForm(UI::GUIClientControl *
 	this->lblPort->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtPort, UI::GUITextBox(ui, this->pnlCtrl, CSTR("502")));
 	this->txtPort->SetRect(104, 4, 100, 23, false);
-	NEW_CLASS(this->btnListen, UI::GUIButton(ui, this->pnlCtrl, CSTR("Listen")));
+	this->btnListen = ui->NewButton(this->pnlCtrl, CSTR("Listen"));
 	this->btnListen->SetRect(204, 4, 75, 23, false);
 	this->btnListen->HandleButtonClick(OnListenClicked, this);
 	this->grpDev = ui->NewGroupBox(this->pnlCtrl, CSTR("Device"));
@@ -212,14 +212,14 @@ SSWR::AVIRead::AVIRMODBUSTCPSimForm::AVIRMODBUSTCPSimForm(UI::GUIClientControl *
 	this->txtAddr->SetRect(104, 4, 100, 23, false);
 	NEW_CLASS(this->cboDevType, UI::GUIComboBox(ui, this->grpDev, false));
 	this->cboDevType->SetRect(204, 4, 100, 23, false);
-	NEW_CLASS(this->btnDev, UI::GUIButton(ui, this->grpDev, CSTR("Add")));
+	this->btnDev = ui->NewButton(this->grpDev, CSTR("Add"));
 	this->btnDev->SetRect(304, 4, 75, 23, false);
 	this->btnDev->HandleButtonClick(OnDevAddClicked, this);
 	NEW_CLASS(this->lblDelay, UI::GUILabel(ui, this->pnlCtrl, CSTR("Delay")));
 	this->lblDelay->SetRect(4, 96, 100, 23, false);
 	NEW_CLASS(this->txtDelay, UI::GUITextBox(ui, this->pnlCtrl, CSTR("0")));
 	this->txtDelay->SetRect(104, 96, 100, 23, false);
-	NEW_CLASS(this->btnDelay, UI::GUIButton(ui, this->pnlCtrl, CSTR("Set")));
+	this->btnDelay = ui->NewButton(this->pnlCtrl, CSTR("Set"));
 	this->btnDelay->SetRect(204, 96, 75, 23, false);
 	this->btnDelay->HandleButtonClick(OnDelayClicked, this);
 	NEW_CLASS(this->lbDevice, UI::GUIListBox(ui, *this, false));

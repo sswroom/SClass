@@ -69,10 +69,10 @@ SSWR::AVIRead::AVIRGISImageForm::AVIRGISImageForm(UI::GUIClientControl *parent, 
 	NEW_CLASSNN(this->pnlButtons, UI::GUIPanel(ui, *this));
 	this->pnlButtons->SetRect(0, 0, 456, 48, false);
 	this->pnlButtons->SetDockType(UI::GUIControl::DOCK_BOTTOM);
-	NEW_CLASS(this->btnOK, UI::GUIButton(ui, this->pnlButtons, CSTR("&OK")));
+	this->btnOK = ui->NewButton(this->pnlButtons, CSTR("&OK"));
 	this->btnOK->SetRect(96, 8, 100, 23, false);
 	this->btnOK->HandleButtonClick(OnOKClick, this);
-	NEW_CLASS(this->btnCancel, UI::GUIButton(ui, this->pnlButtons, CSTR("&Cancel")));
+	this->btnCancel = ui->NewButton(this->pnlButtons, CSTR("&Cancel"));
 	this->btnCancel->SetRect(264, 8, 100, 23, false);
 	this->btnCancel->HandleButtonClick(OnCancelClick, this);
 	NEW_CLASS(this->plIcons, UI::GUIPictureList(ui, *this, core->GetDrawEngine(), true, Math::Size2D<UOSInt>(48, 48)));

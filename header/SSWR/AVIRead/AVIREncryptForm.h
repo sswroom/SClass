@@ -28,7 +28,7 @@ namespace SSWR
 			UI::GUILabel *lblDest;
 			UI::GUIComboBox *cboDest;
 			UI::GUITextBox *txtDest;
-			UI::GUIButton *btnConvert;
+			NotNullPtr<UI::GUIButton> btnConvert;
 			UOSInt fileIndex;
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;

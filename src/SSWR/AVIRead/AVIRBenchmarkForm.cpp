@@ -360,13 +360,13 @@ SSWR::AVIRead::AVIRBenchmarkForm::AVIRBenchmarkForm(UI::GUIClientControl *parent
 	NEW_CLASSNN(this->pnlCtrl, UI::GUIPanel(ui, *this));
 	this->pnlCtrl->SetRect(0, 0, 100, 32, false);
 	this->pnlCtrl->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->btnStart, UI::GUIButton(ui, this->pnlCtrl, CSTR("Start")));
+	this->btnStart = ui->NewButton(this->pnlCtrl, CSTR("Start"));
 	this->btnStart->SetRect(4, 4, 75, 23, false);
 	this->btnStart->HandleButtonClick(OnStartClicked, this);
-	NEW_CLASS(this->btnQuick, UI::GUIButton(ui, this->pnlCtrl, CSTR("Quick")));
+	this->btnQuick = ui->NewButton(this->pnlCtrl, CSTR("Quick"));
 	this->btnQuick->SetRect(84, 4, 75, 23, false);
 	this->btnQuick->HandleButtonClick(OnQuickClicked, this);
-	NEW_CLASS(this->btnSave, UI::GUIButton(ui, this->pnlCtrl, CSTR("Save")));
+	this->btnSave = ui->NewButton(this->pnlCtrl, CSTR("Save"));
 	this->btnSave->SetRect(164, 4, 75, 23, false);
 	this->btnSave->HandleButtonClick(OnSaveClicked, this);
 	NEW_CLASS(this->pbMain, UI::GUIProgressBar(ui, *this, 100));

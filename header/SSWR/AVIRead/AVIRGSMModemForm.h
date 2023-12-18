@@ -35,10 +35,10 @@ namespace SSWR
 			NotNullPtr<UI::GUIPanel> pnlDevice;
 			UI::GUILabel *lblDeviceSerial;
 			UI::GUIComboBox *cboDeviceSerial;
-			UI::GUIButton *btnDeviceSerial;
+			NotNullPtr<UI::GUIButton> btnDeviceSerial;
 			UI::GUILabel *lblDeviceStatus;
 			UI::GUITextBox *txtDeviceStatus;
-			UI::GUIButton *btnDeviceOther;
+			NotNullPtr<UI::GUIButton> btnDeviceOther;
 			UI::GUITabControl *tcMain;
 
 			NotNullPtr<UI::GUITabPage> tpInfo;
@@ -72,46 +72,46 @@ namespace SSWR
 			NotNullPtr<UI::GUITabPage> tpPhoneBook;
 			NotNullPtr<UI::GUIPanel> pnlPhone;
 			UI::GUIComboBox *cboPhoneStorage;
-			UI::GUIButton *btnPhoneRead;
+			NotNullPtr<UI::GUIButton> btnPhoneRead;
 			UI::GUILabel *lblPhoneStatus;
 			UI::GUIListView *lvPhone;
 
 			NotNullPtr<UI::GUITabPage> tpSMS;
 			NotNullPtr<UI::GUIPanel> pnlSMS;
 			UI::GUIComboBox *cboSMSStorage;
-			UI::GUIButton *btnSMSRead;
+			NotNullPtr<UI::GUIButton> btnSMSRead;
 			UI::GUILabel *lblSMSC;
 			UI::GUITextBox *txtSMSC;
-			UI::GUIButton *btnSMSSave;
-			UI::GUIButton *btnSMSDelete;
-			UI::GUIButton *btnSMSSaveAll;
+			NotNullPtr<UI::GUIButton> btnSMSSave;
+			NotNullPtr<UI::GUIButton> btnSMSDelete;
+			NotNullPtr<UI::GUIButton> btnSMSSaveAll;
 			UI::GUIListView *lvSMS;
 
 			NotNullPtr<UI::GUITabPage> tpPDPContext;
 			NotNullPtr<UI::GUIPanel> pnlPDPContext;
-			UI::GUIButton *btnPDPContextLoad;
+			NotNullPtr<UI::GUIButton> btnPDPContextLoad;
 			UI::GUILabel *lblPDPContextStatus;
 			UI::GUITextBox *txtPDPContextStatus;
-			UI::GUIButton *btnPDPAttach;
-			UI::GUIButton *btnPDPDetach;
+			NotNullPtr<UI::GUIButton> btnPDPAttach;
+			NotNullPtr<UI::GUIButton> btnPDPDetach;
 			UI::GUILabel *lblPDPCID;
 			UI::GUITextBox *txtPDPCID;
 			UI::GUILabel *lblPDPType;
 			UI::GUITextBox *txtPDPType;
 			UI::GUILabel *lblPDPAPN;
 			UI::GUITextBox *txtPDPAPN;
-			UI::GUIButton *btnPDPContextSet;
-			UI::GUIButton *btnPDPContextActiveAll;
-			UI::GUIButton *btnPDPContextActiveSelected;
-			UI::GUIButton *btnPDPContextDeactiveAll;
-			UI::GUIButton *btnPDPContextDeactiveSelected;
+			NotNullPtr<UI::GUIButton> btnPDPContextSet;
+			NotNullPtr<UI::GUIButton> btnPDPContextActiveAll;
+			NotNullPtr<UI::GUIButton> btnPDPContextActiveSelected;
+			NotNullPtr<UI::GUIButton> btnPDPContextDeactiveAll;
+			NotNullPtr<UI::GUIButton> btnPDPContextDeactiveSelected;
 			UI::GUIListView *lvPDPContext;
 
 			NotNullPtr<UI::GUITabPage> tpATCommand;
 			NotNullPtr<UI::GUIPanel> pnlATCommand;
 			UI::GUILabel *lblATCommand;
 			UI::GUITextBox *txtATCommand;
-			UI::GUIButton *btnATCommand;
+			NotNullPtr<UI::GUIButton> btnATCommand;
 			UI::GUITextBox *txtATCommandRep;
 
 			NotNullPtr<UI::GUITabPage> tpLog;
@@ -146,7 +146,7 @@ namespace SSWR
 			UI::GUILabel *lblHuaweiCSQ4;
 			UI::GUITextBox *txtHuaweiCSQ4;
 			NotNullPtr<UI::GUIGroupBox> grpHuaweiDHCP;
-			UI::GUIButton *btnHuaweiDHCP;
+			NotNullPtr<UI::GUIButton> btnHuaweiDHCP;
 			UI::GUILabel *lblHuaweiDHCPClientIP;
 			UI::GUITextBox *txtHuaweiDHCPClientIP;
 			UI::GUILabel *lblHuaweiDHCPNetmask;

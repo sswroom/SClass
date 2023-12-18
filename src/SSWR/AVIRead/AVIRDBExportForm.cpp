@@ -119,7 +119,7 @@ SSWR::AVIRead::AVIRDBExportForm::AVIRDBExportForm(UI::GUIClientControl *parent, 
 	this->lblTable->SetRect(0, 48, 100, 23, false);
 	NEW_CLASS(this->txtTable, UI::GUITextBox(ui, this->pnlMain, table.OrEmpty()));
 	this->txtTable->SetRect(100, 48, 200, 23, false);
-	NEW_CLASS(this->btnExport, UI::GUIButton(ui, this->pnlMain, CSTR("Export")));
+	this->btnExport = ui->NewButton(this->pnlMain, CSTR("Export"));
 	this->btnExport->SetRect(100, 72, 75, 23, false);
 	this->btnExport->HandleButtonClick(OnExportClicked, this);
 

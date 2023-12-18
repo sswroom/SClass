@@ -23,7 +23,7 @@ namespace SSWR
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 
 			NotNullPtr<UI::GUIPanel> pnlCtrl;
-			UI::GUIButton *btnFolder;
+			NotNullPtr<UI::GUIButton> btnFolder;
 			UI::GUILabel *lblFolder;
 			UI::GUIProgressBar *prgMain;
 			SSWR::AVIRead::AVIRImageControl *icMain;
@@ -34,14 +34,14 @@ namespace SSWR
 			UI::GUILabel *lblBright;
 			UI::GUIHScrollBar *hsbBright;
 			UI::GUILabel *lblBrightV;
-			UI::GUIButton *btnBrightReset;
+			NotNullPtr<UI::GUIButton> btnBrightReset;
 			UI::GUILabel *lblContr;
 			UI::GUIHScrollBar *hsbContr;
 			UI::GUILabel *lblContrV;
 			UI::GUILabel *lblGamma;
 			UI::GUIHScrollBar *hsbGamma;
 			UI::GUILabel *lblGammaV;
-			UI::GUIButton *btnGammaReset;
+			NotNullPtr<UI::GUIButton> btnGammaReset;
 			UI::GUILabel *lblHDRLev;
 			UI::GUIHScrollBar *hsbHDRLev;
 			UI::GUILabel *lblHDRLevV;

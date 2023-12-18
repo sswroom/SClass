@@ -77,7 +77,7 @@ SSWR::AVIRead::AVIRTextHashForm::AVIRTextHashForm(UI::GUIClientControl *parent, 
 	this->lblHashType->SetRect(4, 28, 100, 23, false);
 	NEW_CLASS(this->cboHashType, UI::GUIComboBox(ui, this->pnlControl, false));
 	this->cboHashType->SetRect(104, 28, 300, 23, false);
-	NEW_CLASS(this->btnGenerate, UI::GUIButton(ui, this->pnlControl, CSTR("Generate")));
+	this->btnGenerate = ui->NewButton(this->pnlControl, CSTR("Generate"));
 	this->btnGenerate->SetRect(104, 52, 75, 23, false);
 	this->btnGenerate->HandleButtonClick(OnGenerateClicked, this);
 	NEW_CLASS(this->lblHashValue, UI::GUILabel(ui, this->pnlControl, CSTR("Hash Value")));

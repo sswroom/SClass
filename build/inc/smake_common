@@ -4638,6 +4638,8 @@ miniz_tinfl.h:
 miniz_zip.h:
 @miniz_zip.o
 
+UI/GUIButton.h:
+@GUIButton.o
 UI/GUIComboBoxUtil.h:
 @GUIComboBoxUtil.o
 UI/GUIDObjArea.h:
@@ -4696,6 +4698,8 @@ UI/DObj/TextDObj.h:
 @TextDObj.o
 UI/DObj/VideoDObjHandler.h:
 @VideoDObjHandler.o
+UI/GTK/GTKButton.h:
+@GTKButton.o
 UI/GTK/GTKDragDrop.h:
 @GTKDragDrop.o
 UI/GTK/GTKGroupBox.h:
@@ -4704,12 +4708,16 @@ UI/GTK/GTKMessageDialog.h:
 @GTKMessageDialog.o
 UI/GTK/GTKTimer.h:
 @GTKTimer.o
+UI/Java/JavaButton.h:
+JavaButton.o
 UI/Java/JavaGroupBox.h:
 JavaGroupBox.o
 UI/Java/JavaMessageDialog.h:
 @JavaMessageDialog.o
 UI/Java/JavaTimer.h:
 @JavaTimer.o
+UI/Win/WinButton.h:
+@WinButton.o
 UI/Win/WinDragDrop.h:
 @WinDragDrop.o
 UI/Win/WinGroupBox.h:

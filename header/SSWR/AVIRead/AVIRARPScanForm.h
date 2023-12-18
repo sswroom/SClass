@@ -34,7 +34,7 @@ namespace SSWR
 			NotNullPtr<UI::GUIPanel> pnlCtrl;
 			UI::GUILabel *lblAdapter;
 			UI::GUIComboBox *cboAdapter;
-			UI::GUIButton *btnScan;
+			NotNullPtr<UI::GUIButton> btnScan;
 			UI::GUIListView *lvARP;
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;

@@ -50,9 +50,9 @@ namespace SSWR
 			UI::GUIListBox *lbObj;
 			NotNullPtr<UI::GUIPanel> pnlMidBottom;
 			UI::GUILabel *lblPickMsg;
-			UI::GUIButton *btnObjPick;
-			UI::GUIButton *btnObjPlace;
-			UI::GUIButton *btnObjCombine;
+			NotNullPtr<UI::GUIButton> btnObjPick;
+			NotNullPtr<UI::GUIButton> btnObjPlace;
+			NotNullPtr<UI::GUIButton> btnObjCombine;
 			UI::GUIHSplitter *hsbMid;
 
 			UI::GUITabControl *tcMain;
@@ -65,9 +65,9 @@ namespace SSWR
 			UI::GUICheckBox *chkGroupAdmin;
 			UI::GUITextBox *txtGroupDesc;
 			UI::GUITextBox *txtGroupKey;
-			UI::GUIButton *btnGroupRemove;
-			UI::GUIButton *btnGroupAdd;
-			UI::GUIButton *btnGroupEnter;
+			NotNullPtr<UI::GUIButton> btnGroupRemove;
+			NotNullPtr<UI::GUIButton> btnGroupAdd;
+			NotNullPtr<UI::GUIButton> btnGroupEnter;
 
 			NotNullPtr<UI::GUITabPage> tpSpecies;
 			NotNullPtr<UI::GUIPanel> pnlSpecies;
@@ -78,18 +78,18 @@ namespace SSWR
 			UI::GUITextBox *txtSpeciesDName;
 			UI::GUITextBox *txtSpeciesDesc;
 			UI::GUITextBox *txtSpeciesKey;
-			UI::GUIButton *btnSpeciesRemove;
-			UI::GUIButton *btnSpeciesAdd;
-			UI::GUIButton *btnSpeciesPasteSName;
-			UI::GUIButton *btnSpeciesColor;
+			NotNullPtr<UI::GUIButton> btnSpeciesRemove;
+			NotNullPtr<UI::GUIButton> btnSpeciesAdd;
+			NotNullPtr<UI::GUIButton> btnSpeciesPasteSName;
+			NotNullPtr<UI::GUIButton> btnSpeciesColor;
 			NotNullPtr<UI::GUIGroupBox> grpSpBook;
 			NotNullPtr<UI::GUIPanel> pnlSpBook;
 			UI::GUITextBox *txtSpBook;
 			UI::GUITextBox *txtSpBookYear;
 			UI::GUIComboBox *cboSpBook;
-			UI::GUIButton *btnSpBookAdd;
+			NotNullPtr<UI::GUIButton> btnSpBookAdd;
 			NotNullPtr<UI::GUIPanel> pnlSpBookCtrl;
-			UI::GUIButton *btnSpBookDel;
+			NotNullPtr<UI::GUIButton> btnSpBookDel;
 			UI::GUIListView *lvSpBook;
 
 			NotNullPtr<UI::GUITabPage> tpImage;
@@ -97,15 +97,15 @@ namespace SSWR
 			UI::GUIVSplitter *vsbImg;
 			UI::GUIListBox *lbImage;
 			NotNullPtr<UI::GUIPanel> pnlImage;
-			UI::GUIButton *btnImageSaveAll;
-			UI::GUIButton *btnImageSave;
-			UI::GUIButton *btnImagePick;
-			UI::GUIButton *btnImagePickAdd;
-			UI::GUIButton *btnImagePickAll;
-			UI::GUIButton *btnImageDir;
-			UI::GUIButton *btnImageRotate;
-			UI::GUIButton *btnImageCrop;
-			UI::GUIButton *btnImageClipboard;
+			NotNullPtr<UI::GUIButton> btnImageSaveAll;
+			NotNullPtr<UI::GUIButton> btnImageSave;
+			NotNullPtr<UI::GUIButton> btnImagePick;
+			NotNullPtr<UI::GUIButton> btnImagePickAdd;
+			NotNullPtr<UI::GUIButton> btnImagePickAll;
+			NotNullPtr<UI::GUIButton> btnImageDir;
+			NotNullPtr<UI::GUIButton> btnImageRotate;
+			NotNullPtr<UI::GUIButton> btnImageCrop;
+			NotNullPtr<UI::GUIButton> btnImageClipboard;
 
 			NotNullPtr<UI::GUITabPage> tpMap;
 			NotNullPtr<UI::GUIPanel> pnlMapCtrl;

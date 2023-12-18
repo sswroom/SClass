@@ -49,7 +49,7 @@ namespace SSWR
 			UI::GUIRealtimeLineChart *rlcSpeed;
 
 			NotNullPtr<UI::GUIPanel> pnlTasks;
-			UI::GUIButton *btnTasksClear;
+			NotNullPtr<UI::GUIButton> btnTasksClear;
 			UI::GUIListView *lvTasks;
 
 			UI::GUIListView *lvFiles;

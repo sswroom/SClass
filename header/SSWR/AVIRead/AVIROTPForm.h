@@ -34,11 +34,11 @@ namespace SSWR
 			UI::GUITextBox *txtName;
 			UI::GUILabel *lblKey;
 			UI::GUITextBox *txtKey;
-			UI::GUIButton *btnKeyRand80;
-			UI::GUIButton *btnKeyRand160;
+			NotNullPtr<UI::GUIButton> btnKeyRand80;
+			NotNullPtr<UI::GUIButton> btnKeyRand160;
 			UI::GUILabel *lblType;
 			UI::GUIComboBox *cboType;
-			UI::GUIButton *btnNew;
+			NotNullPtr<UI::GUIButton> btnNew;
 			UI::GUIListView *lvEntry;
 
 			void RandBytes(UOSInt len);

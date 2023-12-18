@@ -22,7 +22,7 @@ namespace SSWR
 			Net::WirelessLAN::Interface *wlanInterf;
 
 			NotNullPtr<UI::GUIPanel> pnlControl;
-			UI::GUIButton *btnScan;
+			NotNullPtr<UI::GUIButton> btnScan;
 			UI::GUILabel *lblScanTime;
 			UI::GUITextBox *txtScanTime;
 			UI::GUILabel *lblResultTime;

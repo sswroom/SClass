@@ -72,10 +72,10 @@ SSWR::AVIRead::AVIRPostgreSQLForm::AVIRPostgreSQLForm(UI::GUIClientControl *pare
 	this->lblDatabase->SetRect(4, 100, 100, 23, false);
 	NEW_CLASS(this->txtDatabase, UI::GUITextBox(ui, *this, CSTR("")));
 	this->txtDatabase->SetRect(104, 100, 200, 23, false);
-	NEW_CLASS(this->btnOK, UI::GUIButton(ui, *this, CSTR("OK")));
+	this->btnOK = ui->NewButton(*this, CSTR("OK"));
 	this->btnOK->SetRect(104, 128, 75, 23, false);
 	this->btnOK->HandleButtonClick(OnOKClicked, this);
-	NEW_CLASS(this->btnCancel, UI::GUIButton(ui, *this, CSTR("Cancel")));
+	this->btnCancel = ui->NewButton(*this, CSTR("Cancel"));
 	this->btnCancel->SetRect(184, 128, 75, 23, false);
 	this->btnCancel->HandleButtonClick(OnCancelClicked, this);
 

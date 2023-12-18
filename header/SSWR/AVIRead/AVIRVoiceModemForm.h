@@ -37,8 +37,8 @@ namespace SSWR
 			NotNullPtr<UI::GUITabPage> tpDial;
 			UI::GUILabel *lblDialNum;
 			UI::GUITextBox *txtDialNum;
-			UI::GUIButton *btnDial;
-			UI::GUIButton *btnHangUp;
+			NotNullPtr<UI::GUIButton> btnDial;
+			NotNullPtr<UI::GUIButton> btnHangUp;
 			UI::GUILabel *lblDialStatus;
 			UI::GUITextBox *txtDialStatus;
 			UI::GUILabel *lblDialTones;

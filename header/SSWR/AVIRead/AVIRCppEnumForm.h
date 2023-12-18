@@ -21,8 +21,8 @@ namespace SSWR
 			NotNullPtr<UI::GUIPanel> pnlCtrl;
 			UI::GUILabel *lblType;
 			UI::GUIComboBox *cboType;
-			UI::GUIButton *btnConv;
-			UI::GUIButton *btnConv2;
+			NotNullPtr<UI::GUIButton> btnConv;
+			NotNullPtr<UI::GUIButton> btnConv2;
 			UI::GUILabel *lblPrefix;
 			UI::GUITextBox *txtPrefix;
 			UI::GUITextBox *txtSource;

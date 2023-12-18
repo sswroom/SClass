@@ -18,7 +18,7 @@ namespace SSWR
 			UI::GUITextBox *txtPort;
 			UI::GUILabel *lblAPIKey;
 			UI::GUITextBox *txtAPIKey;
-			UI::GUIButton *btnStart;
+			NotNullPtr<UI::GUIButton> btnStart;
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			Optional<Net::SSLEngine> ssl;

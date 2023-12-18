@@ -100,20 +100,20 @@ SSWR::AVIRead::AVIRGISLineStyleForm::AVIRGISLineStyleForm(UI::GUIClientControl *
 	this->lineSelector->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lineSelector->HandleSelChg(LineSelChanged, this);
 	this->lineSelector->HandleDblClk(LineDblClicked, this);
-	NEW_CLASS(this->btnAddStyle, UI::GUIButton(ui, this->pnlStyle, CSTR("New Style")));
+	this->btnAddStyle = ui->NewButton(this->pnlStyle, CSTR("New Style"));
 	this->btnAddStyle->SetRect(8, 8, 75, 23, false);
 	this->btnAddStyle->HandleButtonClick(AddStyleClicked, this);
-	NEW_CLASS(this->btnRemoveStyle, UI::GUIButton(ui, this->pnlStyle, CSTR("Remove Style")));
+	this->btnRemoveStyle = ui->NewButton(this->pnlStyle, CSTR("Remove Style"));
 	this->btnRemoveStyle->SetRect(88, 8, 88, 23, false);
 	this->btnRemoveStyle->HandleButtonClick(RemoveStyleClicked, this);
-	NEW_CLASS(this->btnEditStyle, UI::GUIButton(ui, this->pnlStyle, CSTR("Edit Style")));
+	this->btnEditStyle = ui->NewButton(this->pnlStyle, CSTR("Edit Style"));
 	this->btnEditStyle->SetRect(181, 8, 88, 23, false);
 	this->btnEditStyle->HandleButtonClick(EditStyleClicked, this);
 
-	NEW_CLASS(this->btnOK, UI::GUIButton(ui, this->pnlButtons, CSTR("OK")));
+	this->btnOK = ui->NewButton(this->pnlButtons, CSTR("OK"));
 	this->btnOK->SetRect(150, 8, 75, 23, false);
 	this->btnOK->HandleButtonClick(OKClicked, this);
-	NEW_CLASS(this->btnCancel, UI::GUIButton(ui, this->pnlButtons, CSTR("Cancel")));
+	this->btnCancel = ui->NewButton(this->pnlButtons, CSTR("Cancel"));
 	this->btnCancel->SetRect(231, 8, 75, 23, false);
 	this->btnCancel->HandleButtonClick(CancelClicked, this);
 	this->SetDefaultButton(this->btnOK);

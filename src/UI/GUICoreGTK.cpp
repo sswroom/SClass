@@ -3,6 +3,7 @@
 #include "Media/GTKDrawEngine.h"
 #include "UI/GUICore.h"
 #include "UI/GUICoreGTK.h"
+#include "UI/GTK/GTKButton.h"
 #include "UI/GTK/GTKGroupBox.h"
 #include "UI/GTK/GTKMessageDialog.h"
 #include <gtk/gtk.h>
@@ -189,6 +190,13 @@ void UI::GUICoreGTK::ShowMsgOK(Text::CStringNN message, Text::CStringNN title, O
 Bool UI::GUICoreGTK::ShowMsgYesNo(Text::CStringNN message, Text::CStringNN title, Optional<UI::GUIControl> ctrl)
 {
 	return UI::GTK::GTKMessageDialog::ShowYesNo(message, title, ctrl);
+}
+
+NotNullPtr<UI::GUIButton> UI::GUICoreGTK::NewButton(NotNullPtr<GUIClientControl> parent, Text::CStringNN text)
+{
+	NotNullPtr<UI::GTK::GTKButton> ctrl;
+	NEW_CLASSNN(ctrl, UI::GTK::GTKButton(*this, parent, text));
+	return ctrl;
 }
 
 NotNullPtr<UI::GUIGroupBox> UI::GUICoreGTK::NewGroupBox(NotNullPtr<GUIClientControl> parent, Text::CStringNN text)

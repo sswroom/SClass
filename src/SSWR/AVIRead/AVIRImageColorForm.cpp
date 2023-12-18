@@ -132,13 +132,13 @@ SSWR::AVIRead::AVIRImageColorForm::AVIRImageColorForm(UI::GUIClientControl *pare
 	this->hsbGamma->HandlePosChanged(OnColorChg, this);
 	NEW_CLASS(this->lblGammaV, UI::GUILabel(ui, *this, CSTR("")));
 	this->lblGammaV->SetRect(550, 48, 50, 24, false);
-	NEW_CLASS(this->btnOK, UI::GUIButton(ui, *this, CSTR("&OK")));
+	this->btnOK = ui->NewButton(*this, CSTR("&OK"));
 	this->btnOK->SetRect(240, 72, 75, 24, false);
 	this->btnOK->HandleButtonClick(OnOKClick, this);
-	NEW_CLASS(this->btnCancel, UI::GUIButton(ui, *this, CSTR("&Cancel")));
+	this->btnCancel = ui->NewButton(*this, CSTR("&Cancel"));
 	this->btnCancel->SetRect(325, 72, 75, 24, false);
 	this->btnCancel->HandleButtonClick(OnCancelClick, this);
-	NEW_CLASS(this->btnLastValue, UI::GUIButton(ui, *this, CSTR("&Last Value")));
+	this->btnLastValue = ui->NewButton(*this, CSTR("&Last Value"));
 	this->btnLastValue->SetRect(410, 72, 75, 24, false);
 	this->btnLastValue->HandleButtonClick(OnLastValueClick, this);
 	this->SetDefaultButton(this->btnOK);

@@ -335,7 +335,7 @@ SSWR::AVIRead::AVIRFileHashForm::AVIRFileHashForm(UI::GUIClientControl *parent, 
 	NEW_CLASSNN(this->pnlTasks, UI::GUIPanel(ui, this->tpTasks));
 	this->pnlTasks->SetRect(0, 0, 100, 32, false);
 	this->pnlTasks->SetDockType(UI::GUIControl::DOCK_BOTTOM);
-	NEW_CLASS(this->btnTasksClear, UI::GUIButton(ui, this->pnlTasks, CSTR("Clear Completed")));
+	this->btnTasksClear = ui->NewButton(this->pnlTasks, CSTR("Clear Completed"));
 	this->btnTasksClear->SetRect(4, 4, 120, 23, false);
 	NEW_CLASS(this->lvTasks, UI::GUIListView(ui, this->tpTasks, UI::GUIListView::LVSTYLE_TABLE, 2));
 	this->lvTasks->AddColumn(CSTR("File Name"), 500);

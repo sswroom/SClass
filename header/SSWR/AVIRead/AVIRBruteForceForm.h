@@ -33,7 +33,7 @@ namespace SSWR
 			UI::GUITextBox *txtMaxLen;
 			UI::GUILabel *lblCharType;
 			UI::GUIComboBox *cboCharType;
-			UI::GUIButton *btnStart;
+			NotNullPtr<UI::GUIButton> btnStart;
 			UI::GUILabel *lblStatus;
 			UI::GUITextBox *txtStatus;
 

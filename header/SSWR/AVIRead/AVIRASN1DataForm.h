@@ -41,8 +41,8 @@ namespace SSWR
 			UI::GUITextBox *txtVerifyPayloadFile;
 			UI::GUILabel *lblVerifySignature;
 			UI::GUITextBox *txtVerifySignature;
-			UI::GUIButton *btnVerify;
-			UI::GUIButton *btnVerifySignInfo;
+			NotNullPtr<UI::GUIButton> btnVerify;
+			NotNullPtr<UI::GUIButton> btnVerifySignInfo;
 			UI::GUILabel *lblVerifyStatus;
 			UI::GUITextBox *txtVerifyStatus;
 
@@ -51,7 +51,7 @@ namespace SSWR
 			UI::GUIComboBox *cboSignatureHash;
 			UI::GUILabel *lblSignaturePayloadFile;
 			UI::GUITextBox *txtSignaturePayloadFile;
-			UI::GUIButton *btnSignature;
+			NotNullPtr<UI::GUIButton> btnSignature;
 			UI::GUILabel *lblSiguatureValue;
 			UI::GUITextBox *txtSignatureValue;*/
 
@@ -64,8 +64,8 @@ namespace SSWR
 			UI::GUIComboBox *cboEncryptRSAPadding;
 			UI::GUILabel *lblEncryptInput;
 			UI::GUITextBox *txtEncryptInput;
-			UI::GUIButton *btnEncryptEncrypt;
-			UI::GUIButton *btnEncryptDecrypt;
+			NotNullPtr<UI::GUIButton> btnEncryptEncrypt;
+			NotNullPtr<UI::GUIButton> btnEncryptDecrypt;
 			UI::GUILabel *lblEncryptOutput;
 			UI::GUITextBox *txtEncryptOutput;
 

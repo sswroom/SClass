@@ -20,7 +20,7 @@ namespace SSWR
 			UI::GUITextBox *txtDriver;
 			UI::GUILabel *lblServer;
 			UI::GUITextBox *txtServer;
-			UI::GUIButton *btnPasteJDBC;
+			NotNullPtr<UI::GUIButton> btnPasteJDBC;
 			UI::GUILabel *lblPort;
 			UI::GUITextBox *txtPort;
 			UI::GUICheckBox *chkEncrypt;
@@ -30,8 +30,8 @@ namespace SSWR
 			UI::GUITextBox *txtUser;
 			UI::GUILabel *lblPassword;
 			UI::GUITextBox *txtPassword;
-			UI::GUIButton *btnOK;
-			UI::GUIButton *btnCancel;
+			NotNullPtr<UI::GUIButton> btnOK;
+			NotNullPtr<UI::GUIButton> btnCancel;
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			Optional<DB::DBConn> conn;

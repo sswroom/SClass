@@ -41,14 +41,14 @@ namespace SSWR
 			NotNullPtr<UI::GUIPanel> pnlFile;
 			UI::GUILabel *lblDir;
 			UI::GUITextBox *txtDir;
-			UI::GUIButton *btnStart;
+			NotNullPtr<UI::GUIButton> btnStart;
 			UI::GUILabel *lblMaxSize;
 			UI::GUIComboBox *cboMaxSize;
 			UI::GUILabel *lblTotalSize;
 			UI::GUITextBox *txtTotalSize;
 			UI::GUILabel *lblDirName;
 			UI::GUITextBox *txtDirName;
-			UI::GUIButton *btnMove;
+			NotNullPtr<UI::GUIButton> btnMove;
 			UI::GUIListBox *lbFilePack;
 			UI::GUIHSplitter *hspFile;
 			UI::GUIListBox *lbFileDir;

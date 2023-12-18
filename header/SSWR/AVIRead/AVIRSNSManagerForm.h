@@ -24,7 +24,7 @@ namespace SSWR
 			NotNullPtr<UI::GUIPanel> pnlChannel;
 			UI::GUIComboBox *cboChannel;
 			UI::GUITextBox *txtChannelId;
-			UI::GUIButton *btnChannelAdd;
+			NotNullPtr<UI::GUIButton> btnChannelAdd;
 			UI::GUIListBox *lbChannels;
 			UI::GUIHSplitter *hspChannels;
 			UI::GUITabControl *tcChannels;

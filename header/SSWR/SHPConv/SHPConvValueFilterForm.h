@@ -24,8 +24,8 @@ namespace SSWR
 			UI::GUIRadioButton *radNotEq;
 			UI::GUILabel *lblValue;
 			UI::GUITextBox *txtValue;
-			UI::GUIButton *btnOK;
-			UI::GUIButton *btnCancel;
+			NotNullPtr<UI::GUIButton> btnOK;
+			NotNullPtr<UI::GUIButton> btnCancel;
 			DB::DBFFile *dbf;
 			Media::MonitorMgr *monMgr;
 			MapFilter *filter;

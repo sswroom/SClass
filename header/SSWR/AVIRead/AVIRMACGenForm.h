@@ -20,14 +20,14 @@ namespace SSWR
 
 			UI::GUILabel *lblVendor;
 			UI::GUIComboBox *cboVendor;
-			UI::GUIButton *btnGenerate;
+			NotNullPtr<UI::GUIButton> btnGenerate;
 			UI::GUILabel *lblColonFormat;
 			UI::GUITextBox *txtColonFormat;
 			UI::GUILabel *lblPlainFormat;
 			UI::GUITextBox *txtPlainFormat;
 			UI::GUILabel *lblAdapter;
 			UI::GUIComboBox *cboAdapter;
-			UI::GUIButton *btnAdapterSet;
+			NotNullPtr<UI::GUIButton> btnAdapterSet;
 
 			Data::BTreeUTF8Map<Data::ArrayList<Net::MACInfo::MACEntry*>*> *macMap;
 

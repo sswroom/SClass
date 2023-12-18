@@ -17,7 +17,7 @@ namespace SSWR
 		{
 		private:
 			NotNullPtr<UI::GUIPanel> pnlMain;
-			UI::GUIButton *btnDisplayOff;
+			NotNullPtr<UI::GUIButton> btnDisplayOff;
 			NotNullPtr<UI::GUIListBox> lbLog;
 			UI::GUITextBox *txtLog;
 

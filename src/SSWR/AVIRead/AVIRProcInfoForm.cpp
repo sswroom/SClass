@@ -569,7 +569,7 @@ SSWR::AVIRead::AVIRProcInfoForm::AVIRProcInfoForm(UI::GUIClientControl *parent, 
 	NEW_CLASSNN(this->pnlDetail, UI::GUIPanel(ui, this->tpDetail));
 	this->pnlDetail->SetRect(0, 0, 200, 100, false);
 	this->pnlDetail->SetDockType(UI::GUIControl::DOCK_LEFT);
-	NEW_CLASS(this->btnDetailCurr, UI::GUIButton(ui, this->pnlDetail, CSTR("Current Process")));
+	this->btnDetailCurr = ui->NewButton(this->pnlDetail, CSTR("Current Process"));
 	this->btnDetailCurr->SetRect(0, 0, 100, 23, false);
 	this->btnDetailCurr->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->btnDetailCurr->HandleButtonClick(OnDetailCurrClicked, this);
@@ -631,7 +631,7 @@ SSWR::AVIRead::AVIRProcInfoForm::AVIRProcInfoForm(UI::GUIClientControl *parent, 
 	NEW_CLASSNN(this->pnlDetModule, UI::GUIPanel(ui, this->tpDetModule));
 	this->pnlDetModule->SetRect(0, 0, 100, 31, false);
 	this->pnlDetModule->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->btnDetModule, UI::GUIButton(ui, this->pnlDetModule, CSTR("Refresh")));
+	this->btnDetModule = ui->NewButton(this->pnlDetModule, CSTR("Refresh"));
 	this->btnDetModule->SetRect(4, 4, 75, 23, false);
 	this->btnDetModule->HandleButtonClick(OnDetModuleRefClicked, this);
 	NEW_CLASS(this->lvDetModule, UI::GUIListView(ui, this->tpDetModule, UI::GUIListView::LVSTYLE_TABLE, 3));
@@ -646,7 +646,7 @@ SSWR::AVIRead::AVIRProcInfoForm::AVIRProcInfoForm(UI::GUIClientControl *parent, 
 	NEW_CLASSNN(this->pnlDetThread, UI::GUIPanel(ui, this->tpDetThread));
 	this->pnlDetThread->SetRect(0, 0, 100, 31, false);
 	this->pnlDetThread->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->btnDetThread, UI::GUIButton(ui, this->pnlDetThread, CSTR("Refresh")));
+	this->btnDetThread = ui->NewButton(this->pnlDetThread, CSTR("Refresh"));
 	this->btnDetThread->SetRect(4, 4, 75, 23, false);
 	this->btnDetThread->HandleButtonClick(OnDetThreadRefClicked, this);
 	NEW_CLASS(this->lvDetThread, UI::GUIListView(ui, this->tpDetThread, UI::GUIListView::LVSTYLE_TABLE, 4));
@@ -663,7 +663,7 @@ SSWR::AVIRead::AVIRProcInfoForm::AVIRProcInfoForm(UI::GUIClientControl *parent, 
 	NEW_CLASSNN(this->pnlDetHeap, UI::GUIPanel(ui, this->tpDetHeap));
 	this->pnlDetHeap->SetRect(0, 0, 100, 31, false);
 	this->pnlDetHeap->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->btnDetHeap, UI::GUIButton(ui, this->pnlDetHeap, CSTR("Refresh")));
+	this->btnDetHeap = ui->NewButton(this->pnlDetHeap, CSTR("Refresh"));
 	this->btnDetHeap->SetRect(4, 4, 75, 23, false);
 	this->btnDetHeap->HandleButtonClick(OnDetHeapRefClicked, this);
 	NEW_CLASS(this->lbDetHeap, UI::GUIListBox(ui, this->tpDetHeap, false));
@@ -688,7 +688,7 @@ SSWR::AVIRead::AVIRProcInfoForm::AVIRProcInfoForm(UI::GUIClientControl *parent, 
 	NEW_CLASSNN(this->pnlDetHandle, UI::GUIPanel(ui, this->tpDetHandle));
 	this->pnlDetHandle->SetRect(0, 0, 100, 31, false);
 	this->pnlDetHandle->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->btnDetHandle, UI::GUIButton(ui, this->pnlDetHandle, CSTR("Refresh")));
+	this->btnDetHandle = ui->NewButton(this->pnlDetHandle, CSTR("Refresh"));
 	this->btnDetHandle->SetRect(4, 4, 75, 23, false);
 	this->btnDetHandle->HandleButtonClick(OnDetHandleClicked, this);
 	NEW_CLASS(this->lvDetHandle, UI::GUIListView(ui, this->tpDetHandle, UI::GUIListView::LVSTYLE_TABLE, 4));

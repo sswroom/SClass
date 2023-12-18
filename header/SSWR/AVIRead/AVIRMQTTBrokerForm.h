@@ -53,11 +53,11 @@ namespace SSWR
 			NotNullPtr<UI::GUITabPage> tpStatus;
 			UI::GUILabel *lblSSL;
 			UI::GUICheckBox *chkSSL;
-			UI::GUIButton *btnSSLCert;
+			NotNullPtr<UI::GUIButton> btnSSLCert;
 			UI::GUILabel *lblSSLCert;
 			UI::GUILabel *lblPort;
 			UI::GUITextBox *txtPort;
-			UI::GUIButton *btnStart;
+			NotNullPtr<UI::GUIButton> btnStart;
 			UI::GUILabel *lblTotalCount;
 			UI::GUITextBox *txtTotalCount;
 			UI::GUILabel *lblDataRate;

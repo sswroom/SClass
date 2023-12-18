@@ -49,7 +49,7 @@ SSWR::AVIRead::AVIRGoogleTileMapForm::AVIRGoogleTileMapForm(UI::GUIClientControl
 	NEW_CLASS(this->txtDeclare, UI::GUITextBox(ui, *this, CSTR("Declaimer: There may be Legal issue in using Google Tile Map. Please use for Research purpose only."), true));
 	this->txtDeclare->SetRect(4, 28, 350, 47, false);
 	this->txtDeclare->SetReadOnly(true);
-	NEW_CLASS(this->btnOK, UI::GUIButton(ui, *this, CSTR("OK")));
+	this->btnOK = ui->NewButton(*this, CSTR("OK"));
 	this->btnOK->SetRect(104, 76, 75, 23, false);
 	this->btnOK->HandleButtonClick(OnOKClicked, this);
 }

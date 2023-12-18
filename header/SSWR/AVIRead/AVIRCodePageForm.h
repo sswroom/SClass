@@ -12,8 +12,8 @@ namespace SSWR
 		{
 		private:
 			UI::GUIListBox *lbCodePages;
-			UI::GUIButton *btnOK;
-			UI::GUIButton *btnCancel;
+			NotNullPtr<UI::GUIButton> btnOK;
+			NotNullPtr<UI::GUIButton> btnCancel;
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 
 			static void __stdcall OKClicked(void *userObj);

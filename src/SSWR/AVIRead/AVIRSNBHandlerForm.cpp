@@ -64,10 +64,10 @@ SSWR::AVIRead::AVIRSNBHandlerForm::AVIRSNBHandlerForm(UI::GUIClientControl *pare
 	NEW_CLASS(this->cboType, UI::GUIComboBox(ui, this->pnlControl, false));
 	this->cboType->SetRect(0, 24, 180, 23, false);
 	this->cboType->HandleSelectionChange(OnTypeSelChg, this);
-	NEW_CLASS(this->btnCancel, UI::GUIButton(ui, this->pnlControl, CSTR("Cancel")));
+	this->btnCancel = ui->NewButton(this->pnlControl, CSTR("Cancel"));
 	this->btnCancel->SetRect(20, 64, 75, 23, false);
 	this->btnCancel->HandleButtonClick(OnCancelClicked, this);
-	NEW_CLASS(this->btnOk, UI::GUIButton(ui, this->pnlControl, CSTR("Ok")));
+	this->btnOk = ui->NewButton(this->pnlControl, CSTR("Ok"));
 	this->btnOk->SetRect(100, 64, 75, 23, false);
 	this->btnOk->HandleButtonClick(OnOkClicked, this);
 	NEW_CLASS(this->pbImage, UI::GUIPictureBox(ui, *this, this->core->GetDrawEngine(), false, true));

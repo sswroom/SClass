@@ -493,7 +493,7 @@ SSWR::AVIRead::AVIRMACManagerForm::AVIRMACManagerForm(UI::GUIClientControl *pare
 	NEW_CLASSNN(this->pnlControl, UI::GUIPanel(ui, *this));
 	this->pnlControl->SetRect(0, 0, 100, 31, false);
 	this->pnlControl->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->btnStore, UI::GUIButton(ui, this->pnlControl, CSTR("Store")));
+	this->btnStore = ui->NewButton(this->pnlControl, CSTR("Store"));
 	this->btnStore->SetRect(4, 4, 75, 23, false);
 	this->btnStore->HandleButtonClick(OnStoreClicked, this);
 	NEW_CLASS(this->lblInfo, UI::GUILabel(ui, this->pnlControl, CSTR("")));
@@ -510,7 +510,7 @@ SSWR::AVIRead::AVIRMACManagerForm::AVIRMACManagerForm(UI::GUIClientControl *pare
 	NEW_CLASS(this->txtFile, UI::GUITextBox(ui, this->pnlFile, CSTR("")));
 	this->txtFile->SetRect(104, 4, 400, 23, false);
 	this->txtFile->SetReadOnly(true);
-	NEW_CLASS(this->btnFile, UI::GUIButton(ui, this->pnlFile, CSTR("Open")));
+	this->btnFile = ui->NewButton(this->pnlFile, CSTR("Open"));
 	this->btnFile->SetRect(504, 4, 75, 23, false);
 	this->btnFile->HandleButtonClick(OnFileClicked, this);
 	NEW_CLASS(this->txtFileIE, UI::GUITextBox(ui, this->tpFile, CSTR(""), true));
@@ -542,12 +542,12 @@ SSWR::AVIRead::AVIRMACManagerForm::AVIRMACManagerForm(UI::GUIClientControl *pare
 	this->lblInput->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtInput, UI::GUITextBox(ui, this->tpInput, CSTR("")));
 	this->txtInput->SetRect(104, 4, 150, 23, false);
-	NEW_CLASS(this->btnInput, UI::GUIButton(ui, this->tpInput, CSTR("&Edit")));
+	this->btnInput = ui->NewButton(this->tpInput, CSTR("&Edit"));
 	this->btnInput->SetRect(104, 28, 75, 23, false);
 	this->btnInput->HandleButtonClick(OnInputClicked, this);
 
 	this->tpWireshark = this->tcMain->AddTabPage(CSTR("Wireshark"));
-	NEW_CLASS(this->btnWireshark, UI::GUIButton(ui, this->tpWireshark, CSTR("Load manuf")));
+	this->btnWireshark = ui->NewButton(this->tpWireshark, CSTR("Load manuf"));
 	this->btnWireshark->SetRect(4, 4, 75, 23, false);
 	this->btnWireshark->HandleButtonClick(OnWiresharkClicked, this);
 

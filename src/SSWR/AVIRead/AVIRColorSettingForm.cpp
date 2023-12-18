@@ -504,10 +504,10 @@ SSWR::AVIRead::AVIRColorSettingForm::AVIRColorSettingForm(UI::GUIClientControl *
 	NEW_CLASSNN(this->pnlButtons, UI::GUIPanel(ui, *this));
 	this->pnlButtons->SetRect(0, 0, 100, 40, false);
 	this->pnlButtons->SetDockType(UI::GUIControl::DOCK_BOTTOM);
-	NEW_CLASS(this->btnOK, UI::GUIButton(ui, this->pnlButtons, CSTR("OK")));
+	this->btnOK = ui->NewButton(this->pnlButtons, CSTR("OK"));
 	this->btnOK->SetRect(216, 8, 75, 23, false);
 	this->btnOK->HandleButtonClick(OnOKClicked, this);
-	NEW_CLASS(this->btnCancel, UI::GUIButton(ui, this->pnlButtons, CSTR("&Cancel")));
+	this->btnCancel = ui->NewButton(this->pnlButtons, CSTR("&Cancel"));
 	this->btnCancel->SetRect(304, 8, 75, 23, false);
 	this->btnCancel->HandleButtonClick(OnCancelClicked, this);
 	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, *this));
@@ -550,7 +550,7 @@ SSWR::AVIRead::AVIRColorSettingForm::AVIRColorSettingForm(UI::GUIClientControl *
 	{
 		this->cboMonProfile->SetSelectedIndex(k);
 	}
-	NEW_CLASS(this->btnMonProfile, UI::GUIButton(ui, this->tpSetting, CSTR("B&rowse")));
+	this->btnMonProfile = ui->NewButton(this->tpSetting, CSTR("B&rowse"));
 	this->btnMonProfile->SetRect(300, 0, 75, 23, false);
 	this->btnMonProfile->HandleButtonClick(OnMonProfileClicked, this);
 	this->grpMonProfile = ui->NewGroupBox(this->tpSetting, CSTR("Monitor Profile"));
@@ -570,7 +570,7 @@ SSWR::AVIRead::AVIRColorSettingForm::AVIRColorSettingForm(UI::GUIClientControl *
 	NEW_CLASS(this->txtMonPrimaries, UI::GUITextBox(ui, this->grpMonProfile, CSTR("")));
 	this->txtMonPrimaries->SetRect(150, 24, 150, 23, false);
 	this->txtMonPrimaries->SetReadOnly(true);
-	NEW_CLASS(this->btnMonCustom, UI::GUIButton(ui, this->grpMonProfile, CSTR("Custom")));
+	this->btnMonCustom = ui->NewButton(this->grpMonProfile, CSTR("Custom"));
 	this->btnMonCustom->SetRect(300, 24, 75, 23, false);
 	this->btnMonCustom->HandleButtonClick(OnMonCustomClicked, this);
 	NEW_CLASS(this->lblDefVProfile, UI::GUILabel(ui, this->tpSetting, CSTR("Def Video Profile")));

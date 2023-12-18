@@ -39,8 +39,8 @@ namespace SSWR
 			Data::StringMap<CountryInfo*> countries;
 
 			NotNullPtr<UI::GUIPanel> pnlRequest;
-			UI::GUIButton *btnFile;
-			UI::GUIButton *btnDownload;
+			NotNullPtr<UI::GUIButton> btnFile;
+			NotNullPtr<UI::GUIButton> btnDownload;
 			UI::GUIPictureBoxSimple *pbNewCases;
 			UI::GUIVSplitter *vspNewCases;
 			UI::GUIListView *lvCountry;

@@ -21,8 +21,8 @@ namespace SSWR
 			UI::GUILabel *lblDevice;
 			UI::GUIListBox *lbDevice;
 
-			UI::GUIButton *btnOK;
-			UI::GUIButton *btnCancel;
+			NotNullPtr<UI::GUIButton> btnOK;
+			NotNullPtr<UI::GUIButton> btnCancel;
 
 			static void __stdcall OnOKClick(void *userObj);
 			static void __stdcall OnCancelClick(void *userObj);
