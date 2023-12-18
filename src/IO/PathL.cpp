@@ -1007,9 +1007,9 @@ Data::Timestamp IO::Path::GetModifyTime(const UTF8Char *path)
 	if (status != 0)
 		return Data::Timestamp(0);
 #if defined(__APPLE__)
-	return Data::Timestamp::FromSecNS(s.st_mtimespec.tv_sec, (UInt32)s.st_mtimespec.tv_nsec, 0);
+	return Data::Timestamp::FromSecNS(s.st_mtimespec.tv_sec, (UInt32)s.st_mtimespec.tv_nsec, Data::DateTimeUtil::GetLocalTzQhr());
 #else
-	return Data::Timestamp::FromSecNS(s.st_mtim.tv_sec, (UInt32)s.st_mtim.tv_nsec, 0);
+	return Data::Timestamp::FromSecNS(s.st_mtim.tv_sec, (UInt32)s.st_mtim.tv_nsec, Data::DateTimeUtil::GetLocalTzQhr());
 #endif
 }
 

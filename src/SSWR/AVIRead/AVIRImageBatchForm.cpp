@@ -273,7 +273,7 @@ SSWR::AVIRead::AVIRImageBatchForm::AVIRImageBatchForm(UI::GUIClientControl *pare
 	this->icMain->SetDispImageHandler(OnImageChanged, this);
 	this->icMain->SetProgressHandler(OnProgressUpdated, this);
 	this->icMain->HandleKeyDown(OnKeyDown, this);
-//	NEW_CLASS(this->hspLeft, UI::GUIHSplitter(ui, *this, 3, false));
+//	NEW_CLASS(this->hspLeft = ui->NewHSplitter(*this, 3, false));
 	NEW_CLASSNN(this->pnlImage, UI::GUIPanel(ui, *this));
 	this->pnlImage->SetRect(0, 0, 200, 100, false);
 	this->pnlImage->SetDockType(UI::GUIControl::DOCK_BOTTOM);

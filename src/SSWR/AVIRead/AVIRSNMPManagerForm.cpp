@@ -307,7 +307,7 @@ SSWR::AVIRead::AVIRSNMPManagerForm::AVIRSNMPManagerForm(UI::GUIClientControl *pa
 	this->lbAgent->SetRect(0, 0, 150, 23, false);
 	this->lbAgent->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbAgent->HandleSelectionChange(OnAgentSelChg, this);
-	NEW_CLASS(this->hspAgent, UI::GUIHSplitter(ui, *this, 3, false));
+	this->hspAgent = ui->NewHSplitter(*this, 3, false);
 	NEW_CLASSNN(this->pnlAgent, UI::GUIPanel(ui, *this));
 	this->pnlAgent->SetRect(0, 0, 100, 248, false);
 	this->pnlAgent->SetDockType(UI::GUIControl::DOCK_TOP);

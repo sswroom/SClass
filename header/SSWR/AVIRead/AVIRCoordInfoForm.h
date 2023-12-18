@@ -23,7 +23,7 @@ namespace SSWR
 			NotNullPtr<UI::GUIButton> btnSRIDPrev;
 			NotNullPtr<UI::GUIButton> btnSRIDNext;
 			UI::GUITextBox *txtWKT;
-			UI::GUIHSplitter *hspWKT;
+			NotNullPtr<UI::GUIHSplitter> hspWKT;
 			UI::GUITextBox *txtDisp;
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;

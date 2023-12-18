@@ -184,7 +184,7 @@ SSWR::AVIRead::AVIRCoordInfoForm::AVIRCoordInfoForm(UI::GUIClientControl *parent
 	this->txtWKT->SetRect(0, 0, 300, 23, false);
 	this->txtWKT->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->txtWKT->SetReadOnly(true);
-	NEW_CLASS(this->hspWKT, UI::GUIHSplitter(ui, *this, 3, false));
+	this->hspWKT = ui->NewHSplitter(*this, 3, false);
 	NEW_CLASS(this->txtDisp, UI::GUITextBox(ui, *this, CSTR(""), true));
 	this->txtDisp->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->txtDisp->SetReadOnly(true);

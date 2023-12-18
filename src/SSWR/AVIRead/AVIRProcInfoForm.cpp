@@ -576,7 +576,7 @@ SSWR::AVIRead::AVIRProcInfoForm::AVIRProcInfoForm(UI::GUIClientControl *parent, 
 	NEW_CLASS(this->lbDetail, UI::GUIListBox(ui, this->pnlDetail, false));
 	this->lbDetail->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lbDetail->HandleSelectionChange(OnProcSelChg, this);
-	NEW_CLASS(this->hspDetail, UI::GUIHSplitter(ui, this->tpDetail, 3, false));
+	this->hspDetail = ui->NewHSplitter(this->tpDetail, 3, false);
 	NEW_CLASS(this->tcDetail, UI::GUITabControl(ui, this->tpDetail));
 	this->tcDetail->SetDockType(UI::GUIControl::DOCK_FILL);
 
@@ -670,7 +670,7 @@ SSWR::AVIRead::AVIRProcInfoForm::AVIRProcInfoForm(UI::GUIClientControl *parent, 
 	this->lbDetHeap->SetRect(0, 0, 100, 23, false);
 	this->lbDetHeap->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbDetHeap->HandleSelectionChange(OnDetHeapSelChg, this);
-	NEW_CLASS(this->hspDetHeap, UI::GUIHSplitter(ui, this->tpDetHeap, 3, false));
+	this->hspDetHeap = ui->NewHSplitter(this->tpDetHeap, 3, false);
 	NEW_CLASS(this->txtDetHeap, UI::GUITextBox(ui, this->tpDetHeap, CSTR(""), true));
 	this->txtDetHeap->SetReadOnly(true);
 	this->txtDetHeap->SetRect(0, 0, 100, 128, false);
@@ -707,19 +707,19 @@ SSWR::AVIRead::AVIRProcInfoForm::AVIRProcInfoForm(UI::GUIClientControl *parent, 
 	NEW_CLASS(this->rlcDetChartCPU, UI::GUIRealtimeLineChart(ui, this->grpDetChartCPU, this->core->GetDrawEngine(), 1, 600, 300));
 	this->rlcDetChartCPU->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->rlcDetChartCPU->SetUnit(CSTR("%"));
-	NEW_CLASS(this->vspDetChartCPU, UI::GUIVSplitter(ui, this->tpDetChart, 3, false));
+	this->vspDetChartCPU = ui->NewVSplitter(this->tpDetChart, 3, false);
 	this->grpDetChartPage = ui->NewGroupBox(this->tpDetChart, CSTR("Paged(R)/Non-Paged(B) Pool"));
 	this->grpDetChartPage->SetRect(0, 0, 100, 200, false);
 	this->grpDetChartPage->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->rlcDetChartPage, UI::GUIRealtimeLineChart(ui, this->grpDetChartPage, this->core->GetDrawEngine(), 2, 600, 300));
 	this->rlcDetChartPage->SetDockType(UI::GUIControl::DOCK_FILL);
-	NEW_CLASS(this->vspDetChartPage, UI::GUIVSplitter(ui, this->tpDetChart, 3, false));
+	this->vspDetChartPage = ui->NewVSplitter(this->tpDetChart, 3, false);
 	this->grpDetChartCount = ui->NewGroupBox(this->tpDetChart, CSTR("GDI(R)/User(B)/Handle(G) Count"));
 	this->grpDetChartCount->SetRect(0, 0, 100, 200, false);
 	this->grpDetChartCount->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->rlcDetChartCount, UI::GUIRealtimeLineChart(ui, this->grpDetChartCount, this->core->GetDrawEngine(), 3, 600, 300));
 	this->rlcDetChartCount->SetDockType(UI::GUIControl::DOCK_FILL);
-	NEW_CLASS(this->vspDetChartCount, UI::GUIVSplitter(ui, this->tpDetChart, 3, false));
+	this->vspDetChartCount = ui->NewVSplitter(this->tpDetChart, 3, false);
 	this->grpDetChartWS = ui->NewGroupBox(this->tpDetChart, CSTR("WS(R)/Page File(B)"));
 	this->grpDetChartWS->SetRect(0, 0, 100, 200, false);
 	this->grpDetChartWS->SetDockType(UI::GUIControl::DOCK_FILL);

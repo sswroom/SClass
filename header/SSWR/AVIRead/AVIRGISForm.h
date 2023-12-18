@@ -32,7 +32,7 @@ namespace SSWR
 			Data::ArrayList<UI::GUIForm *> subForms;
 			UI::GUIMapControl *mapCtrl;
 			UI::GUIMapTreeView *mapTree;
-			UI::GUIHSplitter *splitter;
+			NotNullPtr<UI::GUIHSplitter> splitter;
 
 			NotNullPtr<UI::GUIPanel> pnlControl;
 			NotNullPtr<UI::GUIPanel> pnlStatus;

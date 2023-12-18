@@ -34,7 +34,7 @@ namespace SSWR
 			NotNullPtr<UI::GUIButton> btnStart;
 
 			UI::GUIListBox *lbIP;
-			UI::GUIHSplitter *hspIP;
+			NotNullPtr<UI::GUIHSplitter> hspIP;
 			UI::GUITextBox *txtIPWhois;
 
 			static void __stdcall OnStartClicked(void *userObj);

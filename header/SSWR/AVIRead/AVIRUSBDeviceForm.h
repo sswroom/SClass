@@ -19,7 +19,7 @@ namespace SSWR
 			Data::ArrayList<IO::USBInfo*> usbList;
 
 			UI::GUIListBox *lbDevices;
-			UI::GUIHSplitter *hspDevices;
+			NotNullPtr<UI::GUIHSplitter> hspDevices;
 			NotNullPtr<UI::GUIPanel> pnlDevices;
 			UI::GUILabel *lblVendorId;
 			UI::GUITextBox *txtVendorId;

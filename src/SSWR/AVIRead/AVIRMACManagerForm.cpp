@@ -517,7 +517,7 @@ SSWR::AVIRead::AVIRMACManagerForm::AVIRMACManagerForm(UI::GUIClientControl *pare
 	this->txtFileIE->SetRect(0, 0, 100, 256, false);
 	this->txtFileIE->SetDockType(UI::GUIControl::DOCK_BOTTOM);
 	this->txtFileIE->SetReadOnly(true);
-	NEW_CLASS(this->vspFile, UI::GUIVSplitter(ui, this->tpFile, 3, true));
+	this->vspFile = ui->NewVSplitter(this->tpFile, 3, true);
 	NEW_CLASS(this->lvContent, UI::GUIListView(ui, this->tpFile, UI::GUIListView::LVSTYLE_TABLE, 12));
 	this->lvContent->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvContent->SetShowGrid(true);

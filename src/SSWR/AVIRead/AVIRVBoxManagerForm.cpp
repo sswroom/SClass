@@ -62,7 +62,7 @@ SSWR::AVIRead::AVIRVBoxManagerForm::AVIRVBoxManagerForm(UI::GUIClientControl *pa
 	this->lbVMS->SetRect(0, 0, 150, 23, false);
 	this->lbVMS->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbVMS->HandleSelectionChange(OnVMSSelChg, this);
-	NEW_CLASS(this->hspVM, UI::GUIHSplitter(ui, *this, 3, false));
+	this->hspVM = ui->NewHSplitter(*this, 3, false);
 	NEW_CLASS(this->tcVM, UI::GUITabControl(ui, *this));
 	this->tcVM->SetDockType(UI::GUIControl::DOCK_FILL);
 	

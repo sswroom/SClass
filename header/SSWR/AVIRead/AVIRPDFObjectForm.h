@@ -20,7 +20,7 @@ namespace SSWR
 			Media::PDFDocument *doc;
 
 			UI::GUIListBox *lbObject;
-			UI::GUIHSplitter *hspMain;
+			NotNullPtr<UI::GUIHSplitter> hspMain;
 			UI::GUITabControl *tcMain;
 			
 			NotNullPtr<UI::GUITabPage> tpParameter;

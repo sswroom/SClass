@@ -448,7 +448,7 @@ SSWR::AVIRead::AVIRAsmConvForm::AVIRAsmConvForm(UI::GUIClientControl *parent, No
 	NEW_CLASS(this->txtIntelAsm, UI::GUITextBox(ui, *this, CSTR(""), true));
 	this->txtIntelAsm->SetRect(0, 0, 512, 100, false);
 	this->txtIntelAsm->SetDockType(UI::GUIControl::DOCK_LEFT);
-	NEW_CLASS(this->hspAsm, UI::GUIHSplitter(ui, *this, 3, false));
+	this->hspAsm = ui->NewHSplitter(*this, 3, false);
 	NEW_CLASS(this->txtGNUAsm, UI::GUITextBox(ui, *this, CSTR(""), true));
 	this->txtGNUAsm->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->txtGNUAsm->SetReadOnly(true);

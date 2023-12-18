@@ -787,7 +787,7 @@ SSWR::AVIRead::AVIRGISEditImageForm::AVIRGISEditImageForm(UI::GUIClientControl *
 	this->lbImages->SetRect(0, 0, 200, 10, false);
 	this->lbImages->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbImages->HandleSelectionChange(OnImageChg, this);
-	NEW_CLASS(this->hspMain, UI::GUIHSplitter(ui, *this, 3, false));
+	this->hspMain = ui->NewHSplitter(*this, 3, false);
 	NEW_CLASSNN(this->pnlMain, UI::GUIPanel(ui, *this));
 	this->pnlMain->SetDockType(UI::GUIControl::DOCK_FILL);
 	NEW_CLASS(this->lblLeft, UI::GUILabel(ui, this->pnlMain, CSTR("Left")));

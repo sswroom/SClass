@@ -114,7 +114,7 @@ SSWR::AVIRead::AVIRSMakeForm::AVIRSMakeForm(UI::GUIClientControl *parent, NotNul
 	this->lbProgGroup->SetRect(0, 0, 150, 23, false);
 	this->lbProgGroup->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbProgGroup->HandleSelectionChange(OnProgGroupSelChg, this);
-	NEW_CLASS(this->hspProgGroup, UI::GUIHSplitter(ui, this->tpProgGroup, 3, false));
+	this->hspProgGroup = ui->NewHSplitter(this->tpProgGroup, 3, false);
 	NEW_CLASS(this->lbProgGroupItems, UI::GUIListBox(ui, this->tpProgGroup, false));
 	this->lbProgGroupItems->SetDockType(UI::GUIControl::DOCK_FILL);
 
@@ -123,7 +123,7 @@ SSWR::AVIRead::AVIRSMakeForm::AVIRSMakeForm(UI::GUIClientControl *parent, NotNul
 	this->lbProg->SetRect(0, 0, 150, 23, false);
 	this->lbProg->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbProg->HandleSelectionChange(OnProgSelChg, this);
-	NEW_CLASS(this->hspProg, UI::GUIHSplitter(ui, this->tpProg, 3, false));
+	this->hspProg = ui->NewHSplitter(this->tpProg, 3, false);
 	NEW_CLASSNN(this->pnlProg, UI::GUIPanel(ui, this->tpProg));
 	this->pnlProg->SetRect(0, 0, 100, 31, false);
 	this->pnlProg->SetDockType(UI::GUIControl::DOCK_TOP);

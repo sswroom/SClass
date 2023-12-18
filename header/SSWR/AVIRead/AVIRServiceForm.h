@@ -18,7 +18,7 @@ namespace SSWR
 		{
 		private:
 			UI::GUIListView *lvService;
-			UI::GUIHSplitter *hspService;
+			NotNullPtr<UI::GUIHSplitter> hspService;
 			NotNullPtr<UI::GUIPanel> pnlCtrl;
 			NotNullPtr<UI::GUIButton> btnStart;
 			NotNullPtr<UI::GUIButton> btnStop;

@@ -132,7 +132,7 @@ SSWR::AVIRead::AVIRSNMPTrapMonitorForm::AVIRSNMPTrapMonitorForm(UI::GUIClientCon
 	this->lbResults->SetRect(0, 0, 140, 23, false);
 	this->lbResults->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbResults->HandleSelectionChange(OnResultSelChg, this);
-	NEW_CLASS(this->hspResults, UI::GUIHSplitter(ui, *this, 3, false));
+	this->hspResults = ui->NewHSplitter(*this, 3, false);
 	NEW_CLASSNN(this->pnlResults, UI::GUIPanel(ui, *this));
 	this->pnlResults->SetDockType(UI::GUIControl::DOCK_FILL);
 	NEW_CLASSNN(this->pnlTrap, UI::GUIPanel(ui, this->pnlResults));

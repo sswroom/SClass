@@ -179,7 +179,7 @@ SSWR::AVIRead::AVIRANPRForm::AVIRANPRForm(UI::GUIClientControl *parent, NotNullP
 	this->lvPlate->AddColumn(CSTR("Area"), 50);
 	this->lvPlate->AddColumn(CSTR("Confidence"), 50);
 	this->lvPlate->HandleSelChg(OnPlateSelChg, this);
-	NEW_CLASS(this->hspPlate, UI::GUIHSplitter(ui, *this, 3, true));
+	this->hspPlate = ui->NewHSplitter(*this, 3, true);
 	NEW_CLASS(this->pbImg, UI::GUIPictureBoxDD(ui, *this, this->colorSess, true, false));
 	this->pbImg->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->pbImg->HandleMouseDown(OnImgDown, this);

@@ -32,7 +32,7 @@ namespace SSWR
 			Data::ArrayList<SNMPPacket*> packetList;
 
 			UI::GUIListBox *lbResults;
-			UI::GUIHSplitter *hspResults;
+			NotNullPtr<UI::GUIHSplitter> hspResults;
 			NotNullPtr<UI::GUIPanel> pnlResults;
 			NotNullPtr<UI::GUIPanel> pnlTrap;
 			UI::GUILabel *lblCommunity;

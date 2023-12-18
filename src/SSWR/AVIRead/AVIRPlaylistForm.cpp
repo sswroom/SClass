@@ -116,7 +116,7 @@ SSWR::AVIRead::AVIRPlaylistForm::AVIRPlaylistForm(UI::GUIClientControl *parent, 
 	this->lvPlaylist->AddColumn(CSTR("Title"), 100);
 	this->lvPlaylist->AddColumn(CSTR("Artist"), 60);
 	this->lvPlaylist->HandleDblClk(OnPlaylistDblClk, this);
-	NEW_CLASS(this->hsplit, UI::GUIHSplitter(ui, *this, 3, false));
+	this->hsplit = ui->NewHSplitter(*this, 3, false);
 	NEW_CLASSNN(this->pnlCtrl, UI::GUIPanel(ui, *this));
 	this->pnlCtrl->SetRect(0, 0, 100, 56, false);
 	this->pnlCtrl->SetDockType(UI::GUIControl::DOCK_BOTTOM);

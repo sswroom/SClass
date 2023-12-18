@@ -1226,7 +1226,7 @@ SSWR::AVIRead::AVIRDBManagerForm::AVIRDBManagerForm(UI::GUIClientControl *parent
 	this->lbConn->HandleSelectionChange(OnConnSelChg, this);
 	this->lbConn->HandleRightClicked(OnConnRClicked, this);
 	this->lbConn->HandleDoubleClicked(OnConnDblClicked, this);
-	NEW_CLASS(this->hspConn, UI::GUIHSplitter(ui, *this, 3, false));
+	this->hspConn = ui->NewHSplitter(*this, 3, false);
 	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, *this));
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
 
@@ -1253,13 +1253,13 @@ SSWR::AVIRead::AVIRDBManagerForm::AVIRDBManagerForm(UI::GUIClientControl *parent
 	this->lbSchema->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbSchema->HandleSelectionChange(OnSchemaSelChg, this);
 	this->lbSchema->HandleRightClicked(OnSchemaRClicked, this);
-	NEW_CLASS(this->hspSchema, UI::GUIHSplitter(ui, this->pnlTable, 3, false));
+	this->hspSchema = ui->NewHSplitter(this->pnlTable, 3, false);
 	NEW_CLASS(this->lbTable, UI::GUIListBox(ui, this->pnlTable, false));
 	this->lbTable->SetRect(0, 0, 150, 23, false);
 	this->lbTable->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbTable->HandleSelectionChange(OnTableSelChg, this);
 	this->lbTable->HandleRightClicked(OnTableRClicked, this);
-	NEW_CLASS(this->hspTable, UI::GUIHSplitter(ui, this->pnlTable, 3, false));
+	this->hspTable = ui->NewHSplitter(this->pnlTable, 3, false);
 	NEW_CLASS(this->lvTable, UI::GUIListView(ui, this->pnlTable, UI::GUIListView::LVSTYLE_TABLE, 8));
 	this->lvTable->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvTable->SetFullRowSelect(true);
@@ -1272,7 +1272,7 @@ SSWR::AVIRead::AVIRDBManagerForm::AVIRDBManagerForm(UI::GUIClientControl *parent
 	this->lvTable->AddColumn(CSTR("Auto_Inc"), 100);
 	this->lvTable->AddColumn(CSTR("Default Val"), 100);
 	this->lvTable->AddColumn(CSTR("Attribute"), 100);
-	NEW_CLASS(this->vspTable, UI::GUIVSplitter(ui, this->tpTable, 3, false));
+	this->vspTable = ui->NewVSplitter(this->tpTable, 3, false);
 	NEW_CLASS(this->lvTableResult, UI::GUIListView(ui, this->tpTable, UI::GUIListView::LVSTYLE_TABLE, 1));
 	this->lvTableResult->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvTableResult->SetFullRowSelect(true);
@@ -1293,7 +1293,7 @@ SSWR::AVIRead::AVIRDBManagerForm::AVIRDBManagerForm(UI::GUIClientControl *parent
 	this->btnSQLFile->HandleButtonClick(OnSQLFileClicked, this);
 	NEW_CLASS(this->txtSQL, UI::GUITextBox(ui, this->pnlSQL, CSTR(""), true));
 	this->txtSQL->SetDockType(UI::GUIControl::DOCK_FILL);
-	NEW_CLASS(this->vspSQL, UI::GUIVSplitter(ui, this->tpSQL, 3, false));
+	this->vspSQL = ui->NewVSplitter(this->tpSQL, 3, false);
 	NEW_CLASS(this->lvSQLResult, UI::GUIListView(ui, this->tpSQL, UI::GUIListView::LVSTYLE_TABLE, 1));
 	this->lvSQLResult->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvSQLResult->SetFullRowSelect(true);
@@ -1303,7 +1303,7 @@ SSWR::AVIRead::AVIRDBManagerForm::AVIRDBManagerForm(UI::GUIClientControl *parent
 	NEW_CLASSNN(this->pnlMap, UI::GUIPanel(ui, this->tpMap));
 	this->pnlMap->SetRect(0, 0, 250, 23, false);
 	this->pnlMap->SetDockType(UI::GUIControl::DOCK_LEFT);
-	NEW_CLASS(this->hspMap, UI::GUIHSplitter(ui, this->tpMap, 3, false));
+	this->hspMap = ui->NewHSplitter(this->tpMap, 3, false);
 	NEW_CLASS(this->mapMain, UI::GUIMapControl(ui, this->tpMap, this->core->GetDrawEngine(), this->mapEnv, this->colorSess));
 	this->mapMain->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->mapMain->HandleMouseDown(OnMapMouseDown, this);
@@ -1311,7 +1311,7 @@ SSWR::AVIRead::AVIRDBManagerForm::AVIRDBManagerForm(UI::GUIClientControl *parent
 	NEW_CLASSNN(this->pnlMapTable, UI::GUIPanel(ui, this->pnlMap));
 	this->pnlMapTable->SetRect(0, 0, 100, 100, false);
 	this->pnlMapTable->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->vspMapRecord, UI::GUIVSplitter(ui, this->pnlMap, 3, false));
+	this->vspMapRecord = ui->NewVSplitter(this->pnlMap, 3, false);
 	NEW_CLASS(this->lvMapRecord, UI::GUIListView(ui, this->pnlMap, UI::GUIListView::LVSTYLE_TABLE, 2));
 	this->lvMapRecord->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvMapRecord->SetFullRowSelect(true);
@@ -1322,7 +1322,7 @@ SSWR::AVIRead::AVIRDBManagerForm::AVIRDBManagerForm(UI::GUIClientControl *parent
 	this->lbMapSchema->SetRect(0, 0, 100, 23, false);
 	this->lbMapSchema->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbMapSchema->HandleSelectionChange(OnMapSchemaSelChg, this);
-	NEW_CLASS(this->hspMapTable, UI::GUIHSplitter(ui, this->pnlMapTable, 3, false));
+	this->hspMapTable = ui->NewHSplitter(this->pnlMapTable, 3, false);
 	NEW_CLASS(this->lbMapTable, UI::GUIListBox(ui, this->pnlMapTable, false));
 	this->lbMapTable->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lbMapTable->HandleSelectionChange(OnMapTableSelChg, this);

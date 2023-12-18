@@ -64,7 +64,7 @@ SSWR::AVIRead::AVIRHIDDeviceForm::AVIRHIDDeviceForm(UI::GUIClientControl *parent
 	this->lbDevices->SetRect(0, 0, 100, 23, false);
 	this->lbDevices->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbDevices->HandleSelectionChange(OnDevicesSelChg, this);
-	NEW_CLASS(this->hspDevices, UI::GUIHSplitter(ui, *this, 3, false));
+	this->hspDevices = ui->NewHSplitter(*this, 3, false);
 	NEW_CLASSNN(this->pnlDevices, UI::GUIPanel(ui, *this));
 	this->pnlDevices->SetDockType(UI::GUIControl::DOCK_FILL);
 	NEW_CLASS(this->lblVendorId, UI::GUILabel(ui, this->pnlDevices, CSTR("VendorId")));

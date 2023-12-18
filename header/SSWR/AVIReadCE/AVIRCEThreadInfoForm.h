@@ -41,10 +41,10 @@ namespace SSWR
 			UI::GUIListView *lvStack;
 
 			UI::GUIListBox *lbMyStack;
-			UI::GUIHSplitter *hspMyStack;
+			NotNullPtr<UI::GUIHSplitter> hspMyStack;
 			NotNullPtr<UI::GUIPanel> pnlMyStack;
 			UI::GUITextBox *txtMyStackMem;
-			UI::GUIVSplitter *vspMyStack;
+			NotNullPtr<UI::GUIVSplitter> vspMyStack;
 			UI::GUIListView *lvMyStack;
 
 			Data::ArrayList<Text::String *> *stacks;

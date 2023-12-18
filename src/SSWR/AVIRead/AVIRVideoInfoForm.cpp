@@ -348,7 +348,7 @@ SSWR::AVIRead::AVIRVideoInfoForm::AVIRVideoInfoForm(UI::GUIClientControl *parent
 	this->lbStream->SetRect(0, 0, 150, 23, false);
 	this->lbStream->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbStream->HandleSelectionChange(OnStreamChg, this);
-	NEW_CLASS(this->hspStream, UI::GUIHSplitter(ui, *this, 3, false));
+	this->hspStream = ui->NewHSplitter(*this, 3, false);
 	NEW_CLASS(this->txtStream, UI::GUITextBox(ui, *this, CSTR(""), true));
 	this->txtStream->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->txtStream->SetReadOnly(true);

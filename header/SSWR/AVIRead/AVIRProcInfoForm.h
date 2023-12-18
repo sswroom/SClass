@@ -44,7 +44,7 @@ namespace SSWR
 			NotNullPtr<UI::GUIPanel> pnlDetail;
 			NotNullPtr<UI::GUIButton> btnDetailCurr;
 			UI::GUIListBox *lbDetail;
-			UI::GUIHSplitter *hspDetail;
+			NotNullPtr<UI::GUIHSplitter> hspDetail;
 			UI::GUITabControl *tcDetail;
 
 			NotNullPtr<UI::GUITabPage> tpDetInfo;
@@ -81,7 +81,7 @@ namespace SSWR
 			NotNullPtr<UI::GUIPanel> pnlDetHeap;
 			NotNullPtr<UI::GUIButton> btnDetHeap;
 			UI::GUIListBox *lbDetHeap;
-			UI::GUIHSplitter *hspDetHeap;
+			NotNullPtr<UI::GUIHSplitter> hspDetHeap;
 			UI::GUITextBox *txtDetHeap;
 			UI::GUIListView *lvDetHeap;
 
@@ -93,13 +93,13 @@ namespace SSWR
 			NotNullPtr<UI::GUITabPage> tpDetChart;
 			NotNullPtr<UI::GUIGroupBox> grpDetChartCPU;
 			UI::GUIRealtimeLineChart *rlcDetChartCPU;
-			UI::GUIVSplitter *vspDetChartCPU;
+			NotNullPtr<UI::GUIVSplitter> vspDetChartCPU;
 			NotNullPtr<UI::GUIGroupBox> grpDetChartPage;
 			UI::GUIRealtimeLineChart *rlcDetChartPage;
-			UI::GUIVSplitter *vspDetChartPage;
+			NotNullPtr<UI::GUIVSplitter> vspDetChartPage;
 			NotNullPtr<UI::GUIGroupBox> grpDetChartCount;
 			UI::GUIRealtimeLineChart *rlcDetChartCount;
-			UI::GUIVSplitter *vspDetChartCount;
+			NotNullPtr<UI::GUIVSplitter> vspDetChartCount;
 			NotNullPtr<UI::GUIGroupBox> grpDetChartWS;
 			UI::GUIRealtimeLineChart *rlcDetChartWS;
 

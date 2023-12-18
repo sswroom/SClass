@@ -26,7 +26,7 @@ namespace SSWR
 			UI::GUILabel *lblPrefix;
 			UI::GUITextBox *txtPrefix;
 			UI::GUITextBox *txtSource;
-			UI::GUIHSplitter *hspMain;
+			NotNullPtr<UI::GUIHSplitter> hspMain;
 			UI::GUITextBox *txtDest;
 
 			static void __stdcall OnConvClicked(void *userObj);

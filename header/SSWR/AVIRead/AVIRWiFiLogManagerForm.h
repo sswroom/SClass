@@ -31,7 +31,7 @@ namespace SSWR
 			UI::GUILabel *lblDblClk;
 			UI::GUIComboBox *cboDblClk;
 			UI::GUITextBox *txtFileIE;
-			UI::GUIVSplitter *vspFile;
+			NotNullPtr<UI::GUIVSplitter> vspFile;
 			UI::GUIListView *lvContent;
 
 			Net::WiFiLogFile *wifiLogFile;

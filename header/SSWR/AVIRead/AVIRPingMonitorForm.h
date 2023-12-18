@@ -62,7 +62,7 @@ namespace SSWR
 
 			NotNullPtr<UI::GUITabPage> tpIP;
 			UI::GUIListBox *lbIP;
-			UI::GUIHSplitter *hspIP;
+			NotNullPtr<UI::GUIHSplitter> hspIP;
 			UI::GUITabControl *tcIP;
 			NotNullPtr<UI::GUITabPage> tpIPInfo;
 			UI::GUILabel *lblIPCount;

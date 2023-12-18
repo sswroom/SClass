@@ -144,7 +144,7 @@ SSWR::AVIRead::AVIRASN1MIBForm::AVIRASN1MIBForm(UI::GUIClientControl *parent, No
 	this->lvObjectsVal->SetFullRowSelect(true);
 	this->lvObjectsVal->AddColumn(CSTR("Name"), 200);
 	this->lvObjectsVal->AddColumn(CSTR("Value"), 600);
-	NEW_CLASS(this->vspObjects, UI::GUIVSplitter(ui, this->tpObjects, 3, true));
+	this->vspObjects = ui->NewVSplitter(this->tpObjects, 3, true);
 	NEW_CLASS(this->lvObjects, UI::GUIListView(ui, this->tpObjects, UI::GUIListView::LVSTYLE_TABLE, 4));
 	this->lvObjects->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvObjects->SetShowGrid(true);

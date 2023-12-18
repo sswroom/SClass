@@ -165,12 +165,12 @@ SSWR::AVIRead::AVIRSSDPClientForm::AVIRSSDPClientForm(UI::GUIClientControl *pare
 	this->lbDevice->SetRect(0, 0, 120, 23, false);
 	this->lbDevice->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbDevice->HandleSelectionChange(OnDeviceSelChg, this);
-	NEW_CLASS(this->hspDevice, UI::GUIHSplitter(ui, *this, 3, false));
+	this->hspDevice = ui->NewHSplitter(*this, 3, false);
 	NEW_CLASS(this->lbService, UI::GUIListBox(ui, *this, false));
 	this->lbService->SetRect(0, 0, 200, 23, false);
 	this->lbService->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbService->HandleSelectionChange(OnServiceSelChg, this);
-	NEW_CLASS(this->hspService, UI::GUIHSplitter(ui, *this, 3, false));
+	this->hspService = ui->NewHSplitter(*this, 3, false);
 	NEW_CLASSNN(this->pnlService, UI::GUIPanel(ui, *this));
 	this->pnlService->SetDockType(UI::GUIControl::DOCK_FILL);
 	NEW_CLASS(this->lblLocation, UI::GUILabel(ui, this->pnlService, CSTR("Location")));

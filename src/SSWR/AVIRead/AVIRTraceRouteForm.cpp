@@ -103,7 +103,7 @@ SSWR::AVIRead::AVIRTraceRouteForm::AVIRTraceRouteForm(UI::GUIClientControl *pare
 	this->lbIP->SetRect(0, 0, 150, 23, false);
 	this->lbIP->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbIP->HandleSelectionChange(OnIPSelChg, this);
-	NEW_CLASS(this->hspIP, UI::GUIHSplitter(ui, *this, 3, false));
+	this->hspIP = ui->NewHSplitter(*this, 3, false);
 	NEW_CLASS(this->txtIPWhois, UI::GUITextBox(ui, *this, CSTR(""), true));
 	this->txtIPWhois->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->txtIPWhois->SetReadOnly(true);

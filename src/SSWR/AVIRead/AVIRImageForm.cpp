@@ -612,7 +612,7 @@ SSWR::AVIRead::AVIRImageForm::AVIRImageForm(UI::GUIClientControl *parent, NotNul
 	this->lbImages->SetRect(0, 0, 160, 10, false);
 	this->lbImages->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbImages->HandleSelectionChange(ImagesSelChg, this);
-	NEW_CLASS(this->hSplitter, UI::GUIHSplitter(ui, *this, 3, false));
+	this->hSplitter = ui->NewHSplitter(*this, 3, false);
 	NEW_CLASS(this->tcImage, UI::GUITabControl(ui, *this));
 	this->tcImage->SetDockType(UI::GUIControl::DOCK_FILL);
 	

@@ -84,7 +84,7 @@ SSWR::AVIRead::AVIRMyDBMSForm::AVIRMyDBMSForm(UI::GUIClientControl *parent, NotN
 	NEW_CLASS(this->lbUser, UI::GUIListBox(ui, this->tpUser, false));
 	this->lbUser->SetRect(0, 0, 100, 23, false);
 	this->lbUser->SetDockType(UI::GUIControl::DOCK_LEFT);
-	NEW_CLASS(this->hspUser, UI::GUIHSplitter(ui, this->tpUser, 3, false));
+	NEW_CLASS(this->hspUser = ui->NewHSplitter(this->tpUser, 3, false));
 	NEW_CLASSNN(this->pnlUser, UI::GUIPanel(ui, this->tpUser));
 	this->pnlUser->SetDockType(UI::GUIControl::DOCK_FILL);
 	NEW_CLASS(this->lblUserName, UI::GUILabel(ui, this->pnlUser, CSTR("User Name")));

@@ -346,7 +346,7 @@ SSWR::AVIRead::AVIRExeForm::AVIRExeForm(UI::GUIClientControl *parent, NotNullPtr
 	this->lbImport->SetRect(0, 0, 150, 23, false);
 	this->lbImport->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbImport->HandleSelectionChange(OnImportSelChg, this);
-	NEW_CLASS(this->hspImport, UI::GUIHSplitter(ui, this->tpImport, 3, false));
+	this->hspImport = ui->NewHSplitter(this->tpImport, 3, false);
 	NEW_CLASS(this->lvImport, UI::GUIListView(ui, this->tpImport, UI::GUIListView::LVSTYLE_TABLE, 1));
 	this->lvImport->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvImport->SetShowGrid(true);
@@ -378,7 +378,7 @@ SSWR::AVIRead::AVIRExeForm::AVIRExeForm(UI::GUIClientControl *parent, NotNullPtr
 	this->lbResource->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbResource->HandleSelectionChange(OnResourceSelChg, this);
 	this->lbResource->HandleDoubleClicked(OnResourceDblClk, this);
-	NEW_CLASS(this->hspResource, UI::GUIHSplitter(ui, this->tpResource, 3, false));
+	this->hspResource = ui->NewHSplitter(this->tpResource, 3, false);
 	NEW_CLASS(this->txtResource, UI::GUITextBox(ui, this->tpResource, CSTR(""), true));
 	this->txtResource->SetReadOnly(true);
 	this->txtResource->SetDockType(UI::GUIControl::DOCK_FILL);
@@ -402,7 +402,7 @@ SSWR::AVIRead::AVIRExeForm::AVIRExeForm(UI::GUIClientControl *parent, NotNullPtr
 		this->lb16BitFuncs->SetRect(0, 0, 120, 208, false);
 		this->lb16BitFuncs->SetDockType(UI::GUIControl::DOCK_LEFT);
 		this->lb16BitFuncs->HandleSelectionChange(On16BitFuncsChg, this);
-		NEW_CLASS(this->hsp16Bit, UI::GUIHSplitter(ui, this->tp16Bit, 3, false));
+		this->hsp16Bit = ui->NewHSplitter(this->tp16Bit, 3, false);
 		NEW_CLASS(this->lb16BitCont, UI::GUIListBox(ui, this->tp16Bit, false));
 		this->lb16BitCont->SetDockType(UI::GUIControl::DOCK_FILL);
 

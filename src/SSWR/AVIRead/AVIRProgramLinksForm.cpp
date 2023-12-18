@@ -135,7 +135,7 @@ SSWR::AVIRead::AVIRProgramLinksForm::AVIRProgramLinksForm(UI::GUIClientControl *
 	this->lbItems->SetRect(0, 0, 200, 23, false);
 	this->lbItems->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbItems->HandleSelectionChange(OnItemsSelChg, this);
-	NEW_CLASS(this->hspItems, UI::GUIHSplitter(ui, *this, 3, false));
+	this->hspItems = ui->NewHSplitter(*this, 3, false);
 	NEW_CLASSNN(this->pnlItem, UI::GUIPanel(ui, *this));
 	this->pnlItem->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->btnDelete = ui->NewButton(this->pnlItem, CSTR("Delete"));

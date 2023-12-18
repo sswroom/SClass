@@ -34,7 +34,7 @@ namespace SSWR
 			UI::GUIComboBox *cboDecoder;
 			NotNullPtr<UI::GUIButton> btnLoad;
 			UI::GUIListView *lvLogs;
-			UI::GUIVSplitter *vspLogs;
+			NotNullPtr<UI::GUIVSplitter> vspLogs;
 			UI::GUITextBox *txtLogs;
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;

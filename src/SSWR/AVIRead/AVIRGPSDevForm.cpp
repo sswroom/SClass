@@ -494,7 +494,7 @@ SSWR::AVIRead::AVIRGPSDevForm::AVIRGPSDevForm(UI::GUIClientControl *parent, NotN
 	NEW_CLASS(this->lbDevice, UI::GUIListBox(ui, this->pnlDeviceC, false));
 	this->lbDevice->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lbDevice->HandleSelectionChange(OnDeviceSelChg, this);
-	NEW_CLASS(this->hspDevice, UI::GUIHSplitter(ui, this->tpDevice, 3, false));
+	this->hspDevice = ui->NewHSplitter(this->tpDevice, 3, false);
 	NEW_CLASS(this->tcDevice, UI::GUITabControl(ui, this->tpDevice));
 	this->tcDevice->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->tpDevInfo = this->tcDevice->AddTabPage(CSTR("Info"));
@@ -543,7 +543,7 @@ SSWR::AVIRead::AVIRGPSDevForm::AVIRGPSDevForm(UI::GUIClientControl *parent, NotN
 	NEW_CLASS(this->lbUser, UI::GUIListBox(ui, this->pnlUserC, false));
 	this->lbUser->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lbUser->HandleSelectionChange(OnUserSelChg, this);
-	NEW_CLASS(this->hspUser, UI::GUIHSplitter(ui, this->tpUser, 3, false));
+	this->hspUser = ui->NewHSplitter(this->tpUser, 3, false);
 	NEW_CLASSNN(this->pnlUser, UI::GUIPanel(ui, this->tpUser));
 	this->pnlUser->SetDockType(UI::GUIControl::DOCK_FILL);
 	NEW_CLASS(this->lbUserDev, UI::GUIListBox(ui, this->pnlUser, false));
@@ -567,7 +567,7 @@ SSWR::AVIRead::AVIRGPSDevForm::AVIRGPSDevForm(UI::GUIClientControl *parent, NotN
 	NEW_CLASS(this->lbAlert, UI::GUIListBox(ui, this->pnlAlertC, false));
 	this->lbAlert->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lbAlert->HandleSelectionChange(OnAlertSelChg, this);
-	NEW_CLASS(this->hspAlert, UI::GUIHSplitter(ui, this->tpAlert, 3, false));
+	this->hspAlert = ui->NewHSplitter(this->tpAlert, 3, false);
 	NEW_CLASSNN(this->pnlAlert, UI::GUIPanel(ui, this->tpAlert));
 	this->pnlAlert->SetDockType(UI::GUIControl::DOCK_FILL);
 	NEW_CLASS(this->lbAlertDev, UI::GUIListBox(ui, this->pnlAlert, false));

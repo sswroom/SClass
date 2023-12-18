@@ -26,7 +26,7 @@ namespace SSWR
 
 			NotNullPtr<UI::GUITabPage> tpMethods;
 			UI::GUIListBox *lbMethods;
-			UI::GUIVSplitter *vspMethods;
+			NotNullPtr<UI::GUIVSplitter> vspMethods;
 			UI::GUITextBox *txtMethods;
 
 			NotNullPtr<UI::GUITabPage> tpDecompile;

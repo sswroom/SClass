@@ -205,12 +205,12 @@ SSWR::AVIRead::AVIRFileAnalyseForm::AVIRFileAnalyseForm(UI::GUIClientControl *pa
 	this->lbPackList->SetRect(0, 0, 200, 100, false);
 	this->lbPackList->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbPackList->HandleSelectionChange(OnPackListChanged, this);
-	NEW_CLASS(this->hspPack, UI::GUIHSplitter(ui, this->tpContent, 3, false));
+	this->hspPack = ui->NewHSplitter(this->tpContent, 3, false);
 	NEW_CLASS(this->lbPackItems, UI::GUIListBox(ui, this->tpContent, false));
 	this->lbPackItems->SetRect(0, 0, 250, 100, false);
 	this->lbPackItems->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbPackItems->HandleSelectionChange(OnPackItemChanged, this);
-	NEW_CLASS(this->hspPack2, UI::GUIHSplitter(ui, this->tpContent, 3, false));
+	this->hspPack2 = ui->NewHSplitter(this->tpContent, 3, false);
 	NEW_CLASS(this->txtPack, UI::GUITextBox(ui, this->tpContent, CSTR(""), true));
 	this->txtPack->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->txtPack->SetReadOnly(true);

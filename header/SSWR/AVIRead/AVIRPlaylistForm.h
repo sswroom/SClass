@@ -21,7 +21,7 @@ namespace SSWR
 		private:
 			UI::GUIListView *lvPlaylist;
 			NotNullPtr<UI::GUIPanel> pnlCtrl;
-			UI::GUIHSplitter *hsplit;
+			NotNullPtr<UI::GUIHSplitter> hsplit;
 			UI::GUIVideoBoxDD *vbdMain;
 			UI::GUIMainMenu *mnu;
 			NotNullPtr<UI::GUIButton> btnStart;

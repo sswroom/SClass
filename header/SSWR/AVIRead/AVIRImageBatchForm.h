@@ -27,7 +27,7 @@ namespace SSWR
 			UI::GUILabel *lblFolder;
 			UI::GUIProgressBar *prgMain;
 			SSWR::AVIRead::AVIRImageControl *icMain;
-			UI::GUIHSplitter *hspLeft;
+			NotNullPtr<UI::GUIHSplitter> hspLeft;
 			NotNullPtr<UI::GUIPanel> pnlImage;
 			UI::GUIPictureBoxDD *pbMain;
 

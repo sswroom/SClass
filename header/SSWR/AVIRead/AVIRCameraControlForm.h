@@ -20,7 +20,7 @@ namespace SSWR
 		{
 		private:
 			UI::GUIListView *lvInfo;
-			UI::GUIVSplitter *vspInfo;
+			NotNullPtr<UI::GUIVSplitter> vspInfo;
 			UI::GUIListView *lvFiles;
 			NotNullPtr<UI::GUIPanel> pnlControl;
 			UI::GUIPictureBoxSimple *pbPreview;

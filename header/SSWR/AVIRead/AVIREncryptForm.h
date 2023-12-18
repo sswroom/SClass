@@ -21,7 +21,7 @@ namespace SSWR
 			NotNullPtr<UI::GUIPanel> pnlSrcCtrl;
 			NotNullPtr<UI::GUIPanel> pnlDest;
 			NotNullPtr<UI::GUIPanel> pnlDestCtrl;
-			UI::GUIHSplitter *hspMain;
+			NotNullPtr<UI::GUIHSplitter> hspMain;
 			UI::GUILabel *lblSrc;
 			UI::GUIComboBox *cboSrc;
 			UI::GUITextBox *txtSrc;

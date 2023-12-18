@@ -43,10 +43,10 @@ namespace SSWR
 
 			NotNullPtr<UI::GUITabPage> tpMyStack;
 			UI::GUIListBox *lbMyStack;
-			UI::GUIHSplitter *hspMyStack;
+			NotNullPtr<UI::GUIHSplitter> hspMyStack;
 			NotNullPtr<UI::GUIPanel> pnlMyStack;
 			UI::GUITextBox *txtMyStackMem;
-			UI::GUIVSplitter *vspMyStack;
+			NotNullPtr<UI::GUIVSplitter> vspMyStack;
 			UI::GUIListView *lvMyStack;
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;

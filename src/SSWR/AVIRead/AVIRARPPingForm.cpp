@@ -137,7 +137,7 @@ SSWR::AVIRead::AVIRARPPingForm::AVIRARPPingForm(UI::GUIClientControl *parent, No
 	NEW_CLASSNN(this->pnlRequest, UI::GUIPanel(ui, *this));
 	this->pnlRequest->SetRect(0, 0, 100, 104, false);
 	this->pnlRequest->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->vspRequest, UI::GUIVSplitter(ui, *this, 3, false));
+	this->vspRequest = ui->NewVSplitter(*this, 3, false);
 	NEW_CLASS(this->lblAdapter, UI::GUILabel(ui, this->pnlRequest, CSTR("Adapter")));
 	this->lblAdapter->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->cboAdapter, UI::GUIComboBox(ui, this->pnlRequest, false));
@@ -157,7 +157,7 @@ SSWR::AVIRead::AVIRARPPingForm::AVIRARPPingForm(UI::GUIClientControl *parent, No
 	this->rlcPing->SetRect(0, 0, 100, 100, false);
 	this->rlcPing->SetDockType(UI::GUIControl::DOCK_BOTTOM);
 	this->rlcPing->SetUnit(CSTR("ms"));
-	NEW_CLASS(this->vspPing, UI::GUIVSplitter(ui, *this, 3, true));
+	this->vspPing = ui->NewVSplitter(*this, 3, true);
 	NEW_CLASSNN(this->lbLog, UI::GUIListBox(ui, *this, false));
 	this->lbLog->SetDockType(UI::GUIControl::DOCK_FILL);
 

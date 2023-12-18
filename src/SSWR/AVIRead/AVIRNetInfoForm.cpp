@@ -718,7 +718,7 @@ SSWR::AVIRead::AVIRNetInfoForm::AVIRNetInfoForm(UI::GUIClientControl *parent, No
 	this->lbAdaptors->SetRect(0, 0, 200, 100, false);
 	this->lbAdaptors->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbAdaptors->HandleSelectionChange(OnAdaptorSelChg, this);
-	NEW_CLASS(this->hSplitter, UI::GUIHSplitter(ui, this->tpAdaptor, 3, false));
+	this->hSplitter = ui->NewHSplitter(this->tpAdaptor, 3, false);
 	NEW_CLASSNN(this->pnlAdaptor, UI::GUIPanel(ui, this->tpAdaptor));
 	this->pnlAdaptor->SetDockType(UI::GUIControl::DOCK_FILL);
 
@@ -1051,7 +1051,7 @@ SSWR::AVIRead::AVIRNetInfoForm::AVIRNetInfoForm(UI::GUIClientControl *parent, No
 		NEW_CLASS(this->lbWIFIIFs, UI::GUIListBox(ui, this->tpWIFIInfo, false));
 		this->lbWIFIIFs->SetRect(0, 0, 200, 100, false);
 		this->lbWIFIIFs->SetDockType(UI::GUIControl::DOCK_LEFT);
-		NEW_CLASS(this->hspWIFI, UI::GUIHSplitter(ui, this->tpWIFIInfo, 3, false));
+		this->hspWIFI = ui->NewHSplitter(this->tpWIFIInfo, 3, false);
 		NEW_CLASS(this->tcWIFI, UI::GUITabControl(ui, this->tpWIFIInfo));
 		this->tcWIFI->SetDockType(UI::GUIControl::DOCK_FILL);
 		this->tpWIFIAP = this->tcWIFI->AddTabPage(CSTR("AP"));

@@ -43,7 +43,7 @@ namespace SSWR
 			NotNullPtr<UI::GUIPanel> pnlLeft;
 			UI::GUILabel *lblLeft;
 			UI::GUIListBox *lbDir;
-			UI::GUIHSplitter *hsbLeft;
+			NotNullPtr<UI::GUIHSplitter> hsbLeft;
 
 			NotNullPtr<UI::GUIPanel> pnlMid;
 			UI::GUILabel *lblMid;
@@ -53,7 +53,7 @@ namespace SSWR
 			NotNullPtr<UI::GUIButton> btnObjPick;
 			NotNullPtr<UI::GUIButton> btnObjPlace;
 			NotNullPtr<UI::GUIButton> btnObjCombine;
-			UI::GUIHSplitter *hsbMid;
+			NotNullPtr<UI::GUIHSplitter> hsbMid;
 
 			UI::GUITabControl *tcMain;
 
@@ -94,7 +94,7 @@ namespace SSWR
 
 			NotNullPtr<UI::GUITabPage> tpImage;
 			UI::GUIPictureBoxDD *pbImg;
-			UI::GUIVSplitter *vsbImg;
+			NotNullPtr<UI::GUIVSplitter> vsbImg;
 			UI::GUIListBox *lbImage;
 			NotNullPtr<UI::GUIPanel> pnlImage;
 			NotNullPtr<UI::GUIButton> btnImageSaveAll;

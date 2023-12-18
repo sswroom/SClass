@@ -695,7 +695,7 @@ SSWR::AVIRead::AVIRGISForm::AVIRGISForm(UI::GUIClientControl *parent, NotNullPtr
 	this->mapTree->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->mapTree->HandleRightClick(OnTreeRightClick, this);
 	this->mapTree->SetDragHandler(OnTreeDrag, this);
-	NEW_CLASS(this->splitter, UI::GUIHSplitter(ui, *this, 3, false));
+	this->splitter = ui->NewHSplitter(*this, 3, false);
 	Media::ColorProfile color(Media::ColorProfile::CPT_PDISPLAY);
 	NEW_CLASS(this->envRenderer, Map::DrawMapRenderer(core->GetDrawEngine(), env, color, this->colorSess.Ptr(), Map::DrawMapRenderer::DT_PIXELDRAW));
 	NEW_CLASS(this->mapCtrl, UI::GUIMapControl(ui, *this, this->core->GetDrawEngine(), env->GetBGColor(), this->envRenderer, view, this->colorSess));

@@ -30,7 +30,7 @@ namespace SSWR
 
 			NotNullPtr<UI::GUITabPage> tpObjects;
 			UI::GUIListView *lvObjects;
-			UI::GUIVSplitter *vspObjects;
+			NotNullPtr<UI::GUIVSplitter> vspObjects;
 			UI::GUIListView *lvObjectsVal;
 
 			NotNullPtr<UI::GUITabPage> tpOID;

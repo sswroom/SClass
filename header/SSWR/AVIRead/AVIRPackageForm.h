@@ -76,7 +76,7 @@ namespace SSWR
 			UI::GUILabel *lblStatusTimeLeft;
 			UI::GUITextBox *txtStatusTimeLeft;
 			UI::GUIListView *lvStatus;
-			UI::GUIVSplitter *vspStatus;
+			NotNullPtr<UI::GUIVSplitter> vspStatus;
 			UI::GUIRealtimeLineChart *rlcStatus;
 
 			NotNullPtr<UI::GUITabPage> tpInfo;

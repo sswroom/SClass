@@ -179,7 +179,7 @@ SSWR::AVIRead::AVIRBluetoothForm::AVIRBluetoothForm(UI::GUIClientControl *parent
 	this->lbCtrl->SetRect(0, 0, 200, 23, false);
 	this->lbCtrl->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbCtrl->HandleSelectionChange(OnCtrlChanged, this);
-	NEW_CLASS(this->hspMain, UI::GUIHSplitter(ui, *this, 3, false));
+	this->hspMain = ui->NewHSplitter(*this, 3, false);
 	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, *this));
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
 
@@ -223,7 +223,7 @@ SSWR::AVIRead::AVIRBluetoothForm::AVIRBluetoothForm(UI::GUIClientControl *parent
 	NEW_CLASSNN(this->pnlDevDetail, UI::GUIPanel(ui, this->tpDevice));
 	this->pnlDevDetail->SetRect(0, 0, 100, 360, false);
 	this->pnlDevDetail->SetDockType(UI::GUIControl::DOCK_BOTTOM);
-	NEW_CLASS(this->vspDevice, UI::GUIVSplitter(ui, this->tpDevice, 3, true));
+	this->vspDevice = ui->NewVSplitter(this->tpDevice, 3, true);
 	NEW_CLASSNN(this->pnlDevCtrl, UI::GUIPanel(ui, this->pnlDevDetail));
 	this->pnlDevCtrl->SetRect(0, 0, 100, 31, false);
 	this->pnlDevCtrl->SetDockType(UI::GUIControl::DOCK_TOP);

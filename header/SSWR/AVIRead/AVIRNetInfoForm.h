@@ -32,7 +32,7 @@ namespace SSWR
 			NotNullPtr<UI::GUITabPage> tpPortInfo;
 
 			UI::GUIListBox *lbAdaptors;
-			UI::GUIHSplitter *hSplitter;
+			NotNullPtr<UI::GUIHSplitter> hSplitter;
 			NotNullPtr<UI::GUIPanel> pnlAdaptor;
 
 			UI::GUILabel *lblAdaptorName;
@@ -158,7 +158,7 @@ namespace SSWR
 			UI::GUIListView *lvARPInfo;
 
 			UI::GUIListBox *lbWIFIIFs;
-			UI::GUIHSplitter *hspWIFI;
+			NotNullPtr<UI::GUIHSplitter> hspWIFI;
 			UI::GUITabControl *tcWIFI;
 			NotNullPtr<UI::GUITabPage> tpWIFIAP;
 			UI::GUIListView *lvWIFINetwork;

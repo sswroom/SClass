@@ -145,7 +145,7 @@ SSWR::AVIRead::AVIRNetBIOSScannerForm::AVIRNetBIOSScannerForm(UI::GUIClientContr
 	this->lvAnswers->AddColumn(CSTR("Name"), 140);
 	this->lvAnswers->AddColumn(CSTR("TTL"), 80);
 	this->lvAnswers->HandleSelChg(OnAnswerSelChg, this);
-	NEW_CLASS(this->vspAnswers, UI::GUIVSplitter(ui, *this, 3, false));
+	this->vspAnswers = ui->NewVSplitter(*this, 3, false);
 	NEW_CLASS(this->lvEntries, UI::GUIListView(ui, *this, UI::GUIListView::LVSTYLE_TABLE, 4));
 	this->lvEntries->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvEntries->SetShowGrid(true);

@@ -406,7 +406,7 @@ SSWR::AVIRead::AVIRGPSTrackerForm::AVIRGPSTrackerForm(UI::GUIClientControl *pare
 	NEW_CLASS(this->lbAlertLyr, UI::GUIListBox(ui, this->tpAlertAdd, false));
 	this->lbAlertLyr->SetRect(0, 0, 100, 23, false);
 	this->lbAlertLyr->SetDockType(UI::GUIControl::DOCK_LEFT);
-	NEW_CLASS(this->hspAlertAdd, UI::GUIHSplitter(ui, this->tpAlertAdd, 3, false));
+	this->hspAlertAdd = ui->NewHSplitter(this->tpAlertAdd, 3, false);
 	NEW_CLASS(this->lbAlertAdd, UI::GUIListBox(ui, this->tpAlertAdd, false));
 	this->lbAlertAdd->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->tpAlertView = this->tcAlert->AddTabPage(CSTR("View"));

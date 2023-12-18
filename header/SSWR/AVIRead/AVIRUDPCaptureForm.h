@@ -42,7 +42,7 @@ namespace SSWR
 
 			NotNullPtr<UI::GUITabPage> tpData;
 			UI::GUIListBox *lbData;
-			UI::GUIHSplitter *hspData;
+			NotNullPtr<UI::GUIHSplitter> hspData;
 			UI::GUITextBox *txtData;
 
 			NotNullPtr<UI::GUITabPage> tpLog;
@@ -56,7 +56,7 @@ namespace SSWR
 			NotNullPtr<UI::GUIPanel> pnlMulticastCommon;
 			UI::GUILabel *lblMulticastCommon;
 			UI::GUIListBox *lbMulticastCommon;
-			UI::GUIHSplitter *hspMulticast;
+			NotNullPtr<UI::GUIHSplitter> hspMulticast;
 			NotNullPtr<UI::GUIPanel> pnlMulticast;
 			NotNullPtr<UI::GUIPanel> pnlMulticastCtrl;
 			UI::GUILabel *lblMulticastCurr;

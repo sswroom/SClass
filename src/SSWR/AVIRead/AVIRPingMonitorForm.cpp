@@ -249,7 +249,7 @@ SSWR::AVIRead::AVIRPingMonitorForm::AVIRPingMonitorForm(UI::GUIClientControl *pa
 	this->lbIP->SetRect(0, 0, 150, 23, false);
 	this->lbIP->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbIP->HandleSelectionChange(OnIPSelChg, this);
-	NEW_CLASS(this->hspIP, UI::GUIHSplitter(ui, this->tpIP, 3, false));
+	this->hspIP = ui->NewHSplitter(this->tpIP, 3, false);
 	NEW_CLASS(this->tcIP, UI::GUITabControl(ui, this->tpIP));
 	this->tcIP->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->tpIPInfo = this->tcIP->AddTabPage(CSTR("Info"));

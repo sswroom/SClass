@@ -172,7 +172,7 @@ SSWR::AVIRead::AVIRServiceForm::AVIRServiceForm(UI::GUIClientControl *parent, No
 	this->lvService->SetFullRowSelect(true);
 	this->lvService->SetShowGrid(true);
 	this->lvService->HandleSelChg(OnServiceSelChg, this);
-	NEW_CLASS(this->hspService, UI::GUIHSplitter(ui, *this, 3, false));
+	this->hspService = ui->NewHSplitter(*this, 3, false);
 	NEW_CLASSNN(this->pnlCtrl, UI::GUIPanel(ui, *this));
 	this->pnlCtrl->SetRect(0, 0, 100, 55, false);
 	this->pnlCtrl->SetDockType(UI::GUIControl::DOCK_TOP);

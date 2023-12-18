@@ -34,7 +34,7 @@ namespace SSWR
 
 			NotNullPtr<UI::GUIPanel> pnlLayers;
 			UI::GUIListBox *lbLayers;
-			UI::GUIHSplitter *hspLayers;
+			NotNullPtr<UI::GUIHSplitter> hspLayers;
 			NotNullPtr<UI::GUIPanel> pnlSetting;
 			UI::GUILabel *lblHOfst;
 			UI::GUIHScrollBar *hsbHOfst;

@@ -189,7 +189,7 @@ SSWR::AVIRead::AVIRCameraControlForm::AVIRCameraControlForm(UI::GUIClientControl
 	this->lvInfo->SetShowGrid(true);
 	this->lvInfo->AddColumn(CSTR("Name"), 200);
 	this->lvInfo->AddColumn(CSTR("Value"), 400);
-	NEW_CLASS(this->vspInfo, UI::GUIVSplitter(ui, *this, 3, false));
+	this->vspInfo = ui->NewVSplitter(*this, 3, false);
 	NEW_CLASSNN(this->pnlControl, UI::GUIPanel(ui, *this));
 	this->pnlControl->SetRect(0, 0, 100, 160, false);
 	this->pnlControl->SetDockType(UI::GUIControl::DOCK_BOTTOM);

@@ -411,7 +411,7 @@ SSWR::AVIRead::AVIRHTTPLoadBalanceForm::AVIRHTTPLoadBalanceForm(UI::GUIClientCon
 	this->lbAccess->SetRect(0, 0, 200, 100, false);
 	this->lbAccess->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbAccess->HandleSelectionChange(OnAccessSelChg, this);
-	NEW_CLASS(this->hspAccess, UI::GUIHSplitter(ui, this->tpAccess, 3, false));
+	this->hspAccess = ui->NewHSplitter(this->tpAccess, 3, false);
 	NEW_CLASS(this->txtAccess, UI::GUITextBox(ui, this->tpAccess, CSTR(""), true));
 	this->txtAccess->SetReadOnly(true);
 	this->txtAccess->SetDockType(UI::GUIControl::DOCK_FILL);

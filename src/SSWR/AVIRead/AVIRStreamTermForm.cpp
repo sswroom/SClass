@@ -284,7 +284,7 @@ SSWR::AVIRead::AVIRStreamTermForm::AVIRStreamTermForm(UI::GUIClientControl *pare
 	this->grpRecv = ui->NewGroupBox(*this, CSTR("Receive"));
 	this->grpRecv->SetRect(0, 0, 256, 100, false);
 	this->grpRecv->SetDockType(UI::GUIControl::DOCK_LEFT);
-	NEW_CLASS(this->hspMain, UI::GUIHSplitter(ui, *this, 3, false));
+	this->hspMain = ui->NewHSplitter(*this, 3, false);
 	this->grpSend = ui->NewGroupBox(*this, CSTR("Send"));
 	this->grpSend->SetDockType(UI::GUIControl::DOCK_FILL);
 	NEW_CLASS(this->cboRecvType, UI::GUIComboBox(ui, this->grpRecv, false));

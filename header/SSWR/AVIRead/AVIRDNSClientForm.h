@@ -34,7 +34,7 @@ namespace SSWR
 			UI::GUILabel *lblRequestTime;
 			UI::GUITextBox *txtRequestTime;
 			UI::GUIListBox *lbAnswer;
-			UI::GUIHSplitter *hspAnswer;
+			NotNullPtr<UI::GUIHSplitter> hspAnswer;
 			NotNullPtr<UI::GUIPanel> pnlAnswer;
 			UI::GUILabel *lblAnsName;
 			UI::GUITextBox *txtAnsName;

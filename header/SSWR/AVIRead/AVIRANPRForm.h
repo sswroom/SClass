@@ -52,7 +52,7 @@ namespace SSWR
 			NotNullPtr<UI::GUIPanel> pnlPlate;
 			UI::GUIPictureBoxSimple *pbPlate;
 			UI::GUIListView *lvPlate;
-			UI::GUIHSplitter *hspPlate;
+			NotNullPtr<UI::GUIHSplitter> hspPlate;
 			UI::GUIPictureBoxDD *pbImg;
 
 			static void __stdcall OnFileHandler(void *userObj, NotNullPtr<Text::String> *files, UOSInt nFiles);

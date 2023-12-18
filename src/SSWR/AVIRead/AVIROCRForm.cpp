@@ -103,7 +103,7 @@ SSWR::AVIRead::AVIROCRForm::AVIROCRForm(UI::GUIClientControl *parent, NotNullPtr
 	this->lvText->AddColumn(CSTR("Color Rate"), 50);
 	this->lvText->AddColumn(CSTR("Confidence"), 50);
 	this->lvText->HandleSelChg(OnTextSelChg, this);
-	NEW_CLASS(this->hspText, UI::GUIHSplitter(ui, *this, 3, true));
+	this->hspText = ui->NewHSplitter(*this, 3, true);
 	NEW_CLASS(this->pbImg, UI::GUIPictureBoxDD(ui, *this, this->colorSess, true, false));
 	this->pbImg->SetDockType(UI::GUIControl::DOCK_FILL);
 

@@ -23,7 +23,7 @@ namespace SSWR
 			NotNullPtr<UI::GUIButton> btnParse;
 			NotNullPtr<UI::GUIButton> btnUpdate;
 			NotNullPtr<UI::GUIButton> btnUpdateCB;
-			UI::GUIVSplitter *vspControl;
+			NotNullPtr<UI::GUIVSplitter> vspControl;
 			UI::GUITextBox *txtOutput;
 
 			static void UserAgent2Output(Text::CString userAgent, NotNullPtr<Text::StringBuilderUTF8> outSb);

@@ -227,7 +227,7 @@ SSWR::AVIRead::AVIRImageGRForm::AVIRImageGRForm(UI::GUIClientControl *parent, No
 	NEW_CLASS(this->lbLayers, UI::GUIListBox(ui, this->pnlLayers, false));
 	this->lbLayers->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lbLayers->HandleSelectionChange(OnLayersChanged, this);
-	NEW_CLASS(this->hspLayers, UI::GUIHSplitter(ui, *this, 3, false));
+	this->hspLayers = ui->NewHSplitter(*this, 3, false);
 	NEW_CLASSNN(this->pnlSetting, UI::GUIPanel(ui, *this));
 	this->pnlSetting->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->btnRemoveLayer = ui->NewButton(this->pnlSetting, CSTR("Remove Layer"));

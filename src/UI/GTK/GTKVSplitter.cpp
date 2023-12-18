@@ -3,12 +3,11 @@
 #include "Math/Math.h"
 #include "Sync/Interlocked.h"
 #include "UI/GUIClientControl.h"
-#include "UI/GUIHSplitter.h"
-#include <gtk/gtk.h>
+#include "UI/GTK/GTKVSplitter.h"
 
-gboolean GUIHSplitter_OnMouseDown(GtkWidget *widget, GdkEvent *event, gpointer data)
+gboolean UI::GTK::GTKVSplitter::SignalMouseDown(GtkWidget *widget, GdkEvent *event, gpointer data)
 {
-	UI::GUIHSplitter *me = (UI::GUIHSplitter*)data;
+	UI::GTK::GTKVSplitter *me = (UI::GTK::GTKVSplitter*)data;
 	GdkEventButton *evt = (GdkEventButton*)event;
 	if (evt->type == GDK_BUTTON_PRESS)
 	{
@@ -40,9 +39,9 @@ gboolean GUIHSplitter_OnMouseDown(GtkWidget *widget, GdkEvent *event, gpointer d
 	return false;
 }
 
-gboolean GUIHSplitter_OnMouseUp(GtkWidget *widget, GdkEvent *event, gpointer data)
+gboolean UI::GTK::GTKVSplitter::SignalMouseUp(GtkWidget *widget, GdkEvent *event, gpointer data)
 {
-	UI::GUIHSplitter *me = (UI::GUIHSplitter*)data;
+	UI::GTK::GTKVSplitter *me = (UI::GTK::GTKVSplitter*)data;
 	GdkEventButton *evt = (GdkEventButton*)event;
 	if (evt->type == GDK_BUTTON_RELEASE)
 	{
@@ -74,58 +73,53 @@ gboolean GUIHSplitter_OnMouseUp(GtkWidget *widget, GdkEvent *event, gpointer dat
 	return false;
 }
 
-UI::GUIHSplitter::GUIHSplitter(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, Int32 width, Bool isRight) : UI::GUIControl(ui, parent)
+UI::GTK::GTKVSplitter::GTKVSplitter(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, Int32 height, Bool isBottom) : UI::GUIVSplitter(ui, parent)
 {
 	this->dragMode = false;
-	this->isRight = isRight;
+	this->isBottom = isBottom;
 	this->hwnd = (ControlHandle*)gtk_drawing_area_new();
-	g_signal_connect(G_OBJECT(this->hwnd), "button-press-event", G_CALLBACK(GUIHSplitter_OnMouseDown), this);
-	g_signal_connect(G_OBJECT(this->hwnd), "button-release-event", G_CALLBACK(GUIHSplitter_OnMouseUp), this);
+	g_signal_connect(G_OBJECT(this->hwnd), "button-press-event", G_CALLBACK(SignalMouseDown), this);
+	g_signal_connect(G_OBJECT(this->hwnd), "button-release-event", G_CALLBACK(SignalMouseUp), this);
 	gtk_widget_set_events((GtkWidget*)this->hwnd, GDK_ALL_EVENTS_MASK);
 	parent->AddChild(this);
 	this->Show();
 
-	this->SetRect(0, 0, width, 100, false);
-	this->SetDockType(isRight?DOCK_RIGHT:DOCK_LEFT);
+	this->SetRect(0, 0, 100, height, false);
+	this->SetDockType(isBottom?DOCK_BOTTOM:DOCK_TOP);
 }
 
-UI::GUIHSplitter::~GUIHSplitter()
+UI::GTK::GTKVSplitter::~GTKVSplitter()
 {
 }
 
-Text::CStringNN UI::GUIHSplitter::GetObjectClass() const
-{
-	return CSTR("HSplitter");
-}
-
-OSInt UI::GUIHSplitter::OnNotify(UInt32 code, void *lParam)
+OSInt UI::GTK::GTKVSplitter::OnNotify(UInt32 code, void *lParam)
 {
 	return 0;
 }
 
-void UI::GUIHSplitter::EventMouseDown(UI::GUIControl::MouseButton btn, Math::Coord2D<OSInt> pos)
+void UI::GTK::GTKVSplitter::EventMouseDown(UI::GUIControl::MouseButton btn, Math::Coord2D<OSInt> pos)
 {
 	if (btn == UI::GUIControl::MBTN_LEFT)
 	{
 		this->dragMode = true;
-		this->dragX = (Int32)pos.x;
-		this->dragY = (Int32)pos.y;
+		this->dragX = pos.x;
+		this->dragY = pos.y;
 		this->SetCapture();
 	}
 }
 
-void UI::GUIHSplitter::EventMouseUp(UI::GUIControl::MouseButton btn, Math::Coord2D<OSInt> pos)
+void UI::GTK::GTKVSplitter::EventMouseUp(UI::GUIControl::MouseButton btn, Math::Coord2D<OSInt> pos)
 {
 	if (btn == UI::GUIControl::MBTN_LEFT)
 	{
-		NotNullPtr<GUIClientControl> nnparent;
+		NotNullPtr<UI::GUIClientControl> nnparent;
 		if (this->dragMode && this->parent.SetTo(nnparent))
 		{
 			UI::GUIControl *ctrl;
 			Bool foundThis = false;
-			OSInt drawX = pos.x - this->dragX;
+			OSInt drawY = pos.y - this->dragY;
 			pos = this->GetPositionP();
-			drawX += pos.x;
+			drawY += pos.y;
 			Math::Size2D<UOSInt> sz;
 			UOSInt i = nnparent->GetChildCount();
 			while (i-- > 0)
@@ -138,19 +132,19 @@ void UI::GUIHSplitter::EventMouseUp(UI::GUIControl::MouseButton btn, Math::Coord
 				else if (foundThis)
 				{
 					dockType = ctrl->GetDockType();
-					if (dockType == UI::GUIControl::DOCK_RIGHT && this->isRight)
+					if (dockType == UI::GUIControl::DOCK_BOTTOM && this->isBottom)
 					{
 						pos = ctrl->GetPositionP();
 						sz = ctrl->GetSizeP();
-						ctrl->SetAreaP(drawX, pos.y, pos.x + (OSInt)sz.x, pos.y + (OSInt)sz.y, false);
+						ctrl->SetAreaP(pos.x, drawY, pos.x + (OSInt)sz.x, pos.y + (OSInt)sz.y, false);
 						nnparent->UpdateChildrenSize(true);
 						break;
 					}
-					else if (dockType == UI::GUIControl::DOCK_LEFT && !this->isRight)
+					else if (dockType == UI::GUIControl::DOCK_TOP && !this->isBottom)
 					{
 						pos = ctrl->GetPositionP();
 						sz = ctrl->GetSizeP();
-						ctrl->SetAreaP(pos.x, pos.y, drawX, pos.y + (OSInt)sz.y, false);
+						ctrl->SetAreaP(pos.x, pos.y, pos.x + (OSInt)sz.x, drawY, false);
 						nnparent->UpdateChildrenSize(true);
 						break;
 					}

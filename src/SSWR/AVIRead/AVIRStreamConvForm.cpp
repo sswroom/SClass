@@ -238,7 +238,7 @@ SSWR::AVIRead::AVIRStreamConvForm::AVIRStreamConvForm(UI::GUIClientControl *pare
 	this->btnStream1->HandleButtonClick(OnStream1Clicked, this);
 	NEW_CLASS(this->rlcStream1, UI::GUIRealtimeLineChart(ui, this->grpStream1, this->core->GetDrawEngine(), 1, 120, 1000));
 	this->rlcStream1->SetDockType(UI::GUIControl::DOCK_FILL);
-	NEW_CLASS(this->hspStream, UI::GUIHSplitter(ui, *this, 3, false));
+	this->hspStream = ui->NewHSplitter(*this, 3, false);
 
 	this->grpStream2 = ui->NewGroupBox(*this, CSTR("Stream 2"));
 	this->grpStream2->SetDockType(UI::GUIControl::DOCK_FILL);

@@ -17,7 +17,7 @@ namespace SSWR
 		{
 		private:
 			UI::GUIListBox *lbImages;
-			UI::GUIHSplitter *hSplitter;
+			NotNullPtr<UI::GUIHSplitter> hSplitter;
 			UI::GUIMainMenu *mnuMain;
 			UI::GUITabControl *tcImage;
 

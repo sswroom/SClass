@@ -85,7 +85,7 @@ namespace SSWR
 			UI::GUITextBox *txtReqTotal;
 
 			UI::GUIListBox *lbAccess;
-			UI::GUIHSplitter *hspAccess;
+			NotNullPtr<UI::GUIHSplitter> hspAccess;
 			UI::GUITextBox *txtAccess;
 
 			NotNullPtr<UI::GUIListBox> lbLog;

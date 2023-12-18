@@ -20,7 +20,7 @@ namespace SSWR
 			NotNullPtr<UI::GUIButton> btnConv;
 			NotNullPtr<UI::GUIButton> btnConv2;
 			UI::GUITextBox *txtIntelAsm;
-			UI::GUIHSplitter *hspAsm;
+			NotNullPtr<UI::GUIHSplitter> hspAsm;
 			UI::GUITextBox *txtGNUAsm;
 
 			static void __stdcall OnConvClicked(void *userObj);

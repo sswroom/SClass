@@ -26,12 +26,12 @@ namespace SSWR
 
 			NotNullPtr<UI::GUITabPage> tpProgGroup;
 			UI::GUIListBox *lbProgGroup;
-			UI::GUIHSplitter *hspProgGroup;
+			NotNullPtr<UI::GUIHSplitter> hspProgGroup;
 			UI::GUIListBox *lbProgGroupItems;
 
 			NotNullPtr<UI::GUITabPage> tpProg;
 			UI::GUIListBox *lbProg;
-			UI::GUIHSplitter *hspProg;
+			NotNullPtr<UI::GUIHSplitter> hspProg;
 			NotNullPtr<UI::GUIPanel> pnlProg;
 			UI::GUITabControl *tcProg;
 

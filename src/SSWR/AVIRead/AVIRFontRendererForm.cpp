@@ -32,7 +32,7 @@ SSWR::AVIRead::AVIRFontRendererForm::AVIRFontRendererForm(UI::GUIClientControl *
 	this->lbChar->SetRect(0, 0, 150, 23, false);
 	this->lbChar->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbChar->HandleSelectionChange(OnCharSelChg, this);
-	NEW_CLASS(this->hspChar, UI::GUIHSplitter(ui, this->tpChar, 3, false));
+	this->hspChar = ui->NewHSplitter(this->tpChar, 3, false);
 	NEW_CLASS(this->pbChar, UI::GUIPictureBoxDD(ui, this->tpChar, this->colorSess, true, false));
 	this->pbChar->SetDockType(UI::GUIControl::DOCK_FILL);
 

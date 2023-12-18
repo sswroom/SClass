@@ -2213,9 +2213,7 @@ GUIHexFileView.o: ../../src/UI/GUIHexFileView.cpp
 GUIHScrollBarGTK.o: ../../src/UI/GUIHScrollBarGTK.cpp
 $`$(PKG-CONFIG) --cflags gtk+-3.0`
 GUIHScrollBarWin.o: ../../src/UI/GUIHScrollBarWin.cpp
-GUIHSplitterGTK.o: ../../src/UI/GUIHSplitterGTK.cpp
-$`$(PKG-CONFIG) --cflags gtk+-3.0`
-GUIHSplitterWin.o: ../../src/UI/GUIHSplitterWin.cpp
+GUIHSplitter.o: ../../src/UI/GUIHSplitter.cpp
 GUIIconWin.o: ../../src/UI/GUIIconWin.cpp
 GUILabelGTK.o: ../../src/UI/GUILabelGTK.cpp
 $`$(PKG-CONFIG) --cflags gtk+-3.0`
@@ -2283,9 +2281,7 @@ $`$(PKG-CONFIG) --cflags gtk+-3.0`
 GUITreeViewWin.o: ../../src/UI/GUITreeViewWin.cpp
 GUIVideoBoxDD.o: ../../src/UI/GUIVideoBoxDD.cpp
 GUIVideoBoxDDLQ.o: ../../src/UI/GUIVideoBoxDDLQ.cpp
-GUIVSplitterGTK.o: ../../src/UI/GUIVSplitterGTK.cpp
-$`$(PKG-CONFIG) --cflags gtk+-3.0`
-GUIVSplitterWin.o: ../../src/UI/GUIVSplitterWin.cpp
+GUIVSplitter.o: ../../src/UI/GUIVSplitter.cpp
 ButtonDObj.o: ../../src/UI/DObj/ButtonDObj.cpp
 ClickAreaDObj.o: ../../src/UI/DObj/ClickAreaDObj.cpp
 DirectObject.o: ../../src/UI/DObj/DirectObject.cpp
@@ -2307,9 +2303,13 @@ GTKDragDrop.o: ../../src/UI/GTK/GTKDragDrop.cpp
 $`$(PKG-CONFIG) --cflags gtk+-3.0`
 GTKGroupBox.o: ../../src/UI/GTK/GTKGroupBox.cpp
 $`$(PKG-CONFIG) --cflags gtk+-3.0`
+GTKHSplitter.o: ../../src/UI/GTK/GTKHSplitter.cpp
+$`$(PKG-CONFIG) --cflags gtk+-3.0`
 GTKMessageDialog.o: ../../src/UI/GTK/GTKMessageDialog.cpp
 $`$(PKG-CONFIG) --cflags gtk+-3.0`
 GTKTimer.o: ../../src/UI/GTK/GTKTimer.cpp
+$`$(PKG-CONFIG) --cflags gtk+-3.0`
+GTKVSplitter.o: ../../src/UI/GTK/GTKVSplitter.cpp
 $`$(PKG-CONFIG) --cflags gtk+-3.0`
 JavaMessageDialog.o: ../../src/UI/Java/JavaMessageDialog.cpp
 $-I$(JAVA_HOME)/include
@@ -2320,8 +2320,10 @@ $-I$(JAVA_HOME)/include/linux
 WinButton.o: ../../src/UI/Win/WinButton.cpp
 WinDragDrop.o: ../../src/UI/Win/WinDragDrop.cpp
 WinGroupBox.o: ../../src/UI/Win/WinGroupBox.cpp
+WinHSplitter.o: ../../src/UI/Win/WinHSplitter.cpp
 WinMessageDialog.o: ../../src/UI/Win/WinMessageDialog.cpp
 WinTimer.o: ../../src/UI/Win/WinTimer.cpp
+WinVSplitter.o: ../../src/UI/Win/WinVSplitter.cpp
 
 ColorDialog.o: ../../src/UtilUI/ColorDialog.cpp
 TextGotoDialog.o: ../../src/UtilUI/TextGotoDialog.cpp

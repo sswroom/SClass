@@ -28,14 +28,14 @@ namespace SSWR
 			NotNullPtr<UI::ListBoxLogger> logger;
 
 			NotNullPtr<UI::GUIPanel> pnlRequest;
-			UI::GUIVSplitter *vspRequest;
+			NotNullPtr<UI::GUIVSplitter> vspRequest;
 			UI::GUILabel *lblTarget;
 			UI::GUITextBox *txtTarget;
 			UI::GUILabel *lblRepeat;
 			UI::GUICheckBox *chkRepeat;
 			NotNullPtr<UI::GUIButton> btnPing;
 			UI::GUIRealtimeLineChart *rlcPing;
-			UI::GUIVSplitter *vspPing;
+			NotNullPtr<UI::GUIVSplitter> vspPing;
 			NotNullPtr<UI::GUIListBox> lbLog;
 
 			static void __stdcall OnPingClicked(void *userObj);

@@ -13,13 +13,13 @@
 #include "Sync/Interlocked.h"
 #include "Text/MyString.h"
 #include "Text/MyStringW.h"
-#include "UI/GUIButton.h"
 #include "UI/GUICoreWin.h"
 #include "UI/GUIForm.h"
 #include "UI/GUIIcon.h"
 #include "UI/GUILabel.h"
 #include "UI/GUIMenu.h"
-#include "UI/GUITimer.h"
+#include "UI/Win/WinButton.h"
+#include "UI/Win/WinTimer.h"
 
 #include <windows.h>
 #undef GetMonitorInfo
@@ -44,6 +44,7 @@ OSInt __stdcall UI::GUIForm::FormWndProc(void *hWnd, UInt32 msg, UOSInt wParam, 
 {
 	UI::GUIForm *me = (UI::GUIForm*)(OSInt)GetWindowLongPtr((HWND)hWnd, GWL_USERDATA);
 	UI::GUIControl *ctrl;
+	NotNullPtr<UI::GUIButton> btn;
 	RECT rc;
 	NMHDR *nmhdr;
 	UOSInt i;
@@ -54,17 +55,17 @@ OSInt __stdcall UI::GUIForm::FormWndProc(void *hWnd, UInt32 msg, UOSInt wParam, 
 		{
 			if (wParam == 1)
 			{
-				if (me->okBtn)
+				if (me->okBtn.SetTo(btn))
 				{
-					me->okBtn->EventButtonClick();
+					btn->EventButtonClick();
 					return 0;
 				}
 			}
 			else if (wParam == 2)
 			{
-				if (me->cancelBtn)
+				if (me->cancelBtn.SetTo(btn))
 				{
-					me->cancelBtn->EventButtonClick();
+					btn->EventButtonClick();
 					return 0;
 				}
 			}
@@ -691,8 +692,8 @@ void UI::GUIForm::SetNoResize(Bool noResize)
 
 NotNullPtr<UI::GUITimer> UI::GUIForm::AddTimer(UInt32 interval, UI::UIEvent handler, void *userObj)
 {
-	NotNullPtr<UI::GUITimer> tmr;
-	NEW_CLASSNN(tmr, UI::GUITimer(ui, *this, this->nextTmrId++, interval, handler, userObj));
+	NotNullPtr<UI::Win::WinTimer> tmr;
+	NEW_CLASSNN(tmr, UI::Win::WinTimer(*this, this->nextTmrId++, interval, handler, userObj));
 	this->timers.Add(tmr);
 	return tmr;
 }
@@ -735,23 +736,23 @@ void UI::GUIForm::UpdateMenu()
 	this->UpdateHAcc();
 }
 
-void UI::GUIForm::SetDefaultButton(UI::GUIButton *btn)
+void UI::GUIForm::SetDefaultButton(NotNullPtr<UI::GUIButton> btn)
 {
 	this->okBtn = btn;
-	btn->SetDefaultBtnLook();
+	NotNullPtr<UI::Win::WinButton>::ConvertFrom(btn)->SetDefaultBtnLook();
 }
 
-void UI::GUIForm::SetCancelButton(UI::GUIButton *btn)
+void UI::GUIForm::SetCancelButton(NotNullPtr<UI::GUIButton> btn)
 {
 	this->cancelBtn = btn;
 }
 
-UI::GUIButton *UI::GUIForm::GetDefaultButton()
+Optional<UI::GUIButton> UI::GUIForm::GetDefaultButton()
 {
 	return this->okBtn;
 }
 
-UI::GUIButton *UI::GUIForm::GetCancelButton()
+Optional<UI::GUIButton> UI::GUIForm::GetCancelButton()
 {
 	return this->cancelBtn;
 }
@@ -948,9 +949,9 @@ void UI::GUIForm::EventTimer(UOSInt tmrId)
 	while (it.HasNext())
 	{
 		tmr = it.Next();
-		if (tmr->GetId() == tmrId)
+		if (NotNullPtr<UI::Win::WinTimer>::ConvertFrom(tmr)->GetId() == tmrId)
 		{
-			tmr->OnTick();
+			tmr->EventTick();
 			break;
 		}
 	}

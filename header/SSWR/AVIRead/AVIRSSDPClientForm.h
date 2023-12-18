@@ -22,9 +22,9 @@ namespace SSWR
 			Data::FastStringMap<Net::SSDPClient::SSDPRoot*> *rootMap;
 
 			UI::GUIListBox *lbDevice;
-			UI::GUIHSplitter *hspDevice;
+			NotNullPtr<UI::GUIHSplitter> hspDevice;
 			UI::GUIListBox *lbService;
-			UI::GUIHSplitter *hspService;
+			NotNullPtr<UI::GUIHSplitter> hspService;
 			NotNullPtr<UI::GUIPanel> pnlService;
 			UI::GUILabel *lblLocation;
 			UI::GUITextBox *txtLocation;

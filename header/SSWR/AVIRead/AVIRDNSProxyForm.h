@@ -46,14 +46,14 @@ namespace SSWR
 
 			NotNullPtr<UI::GUITabPage> tpV4Main;
 			UI::GUIListBox *lbV4Request;
-			UI::GUIHSplitter *hspV4Request;
+			NotNullPtr<UI::GUIHSplitter> hspV4Request;
 			NotNullPtr<UI::GUIPanel> pnlV4Request;
 			UI::GUILabel *lblV4RequestTime;
 			UI::GUITextBox *txtV4RequestTime;
 			UI::GUILabel *lblV4RequestTTL;
 			UI::GUITextBox *txtV4RequestTTL;
 			UI::GUIListBox *lbV4Answer;
-			UI::GUIHSplitter *hspV4Answer;
+			NotNullPtr<UI::GUIHSplitter> hspV4Answer;
 			NotNullPtr<UI::GUIPanel> pnlV4Detail;
 			UI::GUILabel *lblV4AnsName;
 			UI::GUITextBox *txtV4AnsName;
@@ -68,14 +68,14 @@ namespace SSWR
 
 			NotNullPtr<UI::GUITabPage> tpV6Main;
 			UI::GUIListBox *lbV6Request;
-			UI::GUIHSplitter *hspV6Request;
+			NotNullPtr<UI::GUIHSplitter> hspV6Request;
 			NotNullPtr<UI::GUIPanel> pnlV6Request;
 			UI::GUILabel *lblV6RequestTime;
 			UI::GUITextBox *txtV6RequestTime;
 			UI::GUILabel *lblV6RequestTTL;
 			UI::GUITextBox *txtV6RequestTTL;
 			UI::GUIListBox *lbV6Answer;
-			UI::GUIHSplitter *hspV6Answer;
+			NotNullPtr<UI::GUIHSplitter> hspV6Answer;
 			NotNullPtr<UI::GUIPanel> pnlV6Detail;
 			UI::GUILabel *lblV6AnsName;
 			UI::GUITextBox *txtV6AnsName;
@@ -90,14 +90,14 @@ namespace SSWR
 
 			NotNullPtr<UI::GUITabPage> tpOthMain;
 			UI::GUIListBox *lbOthRequest;
-			UI::GUIHSplitter *hspOthRequest;
+			NotNullPtr<UI::GUIHSplitter> hspOthRequest;
 			NotNullPtr<UI::GUIPanel> pnlOthRequest;
 			UI::GUILabel *lblOthRequestTime;
 			UI::GUITextBox *txtOthRequestTime;
 			UI::GUILabel *lblOthRequestTTL;
 			UI::GUITextBox *txtOthRequestTTL;
 			UI::GUIListBox *lbOthAnswer;
-			UI::GUIHSplitter *hspOthAnswer;
+			NotNullPtr<UI::GUIHSplitter> hspOthAnswer;
 			NotNullPtr<UI::GUIPanel> pnlOthDetail;
 			UI::GUILabel *lblOthAnsName;
 			UI::GUITextBox *txtOthAnsName;
@@ -112,7 +112,7 @@ namespace SSWR
 
 			NotNullPtr<UI::GUITabPage> tpTarget;
 			UI::GUIListBox *lbTarget;
-			UI::GUIHSplitter *hspTarget;
+			NotNullPtr<UI::GUIHSplitter> hspTarget;
 			UI::GUITabControl *tcTarget;
 			NotNullPtr<UI::GUITabPage> tpTargetInfo;
 			UI::GUILabel *lblTargetName;
@@ -149,14 +149,14 @@ namespace SSWR
 			UI::GUITextBox *txtSearchMask;
 			NotNullPtr<UI::GUIButton> btnSearch;
 			UI::GUIListBox *lbSearch;
-			UI::GUIHSplitter *hspSearch;
+			NotNullPtr<UI::GUIHSplitter> hspSearch;
 			NotNullPtr<UI::GUIPanel> pnlSRequest;
 			UI::GUILabel *lblSRequestTime;
 			UI::GUITextBox *txtSRequestTime;
 			UI::GUILabel *lblSRequestTTL;
 			UI::GUITextBox *txtSRequestTTL;
 			UI::GUIListBox *lbSAnswer;
-			UI::GUIHSplitter *hspSAnswer;
+			NotNullPtr<UI::GUIHSplitter> hspSAnswer;
 			NotNullPtr<UI::GUIPanel> pnlSDetail;
 			UI::GUILabel *lblSAnsName;
 			UI::GUITextBox *txtSAnsName;
@@ -177,7 +177,7 @@ namespace SSWR
 
 			NotNullPtr<UI::GUITabPage> tpClient;
 			UI::GUIListBox *lbClientIP;
-			UI::GUIHSplitter *hspClient;
+			NotNullPtr<UI::GUIHSplitter> hspClient;
 			UI::GUIListView *lvClient;
 
 			NotNullPtr<UI::GUITabPage> tpLog;

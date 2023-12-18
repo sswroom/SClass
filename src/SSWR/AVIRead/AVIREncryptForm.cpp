@@ -76,7 +76,7 @@ SSWR::AVIRead::AVIREncryptForm::AVIREncryptForm(UI::GUIClientControl *parent, No
 	NEW_CLASSNN(this->pnlSrcCtrl, UI::GUIPanel(ui, this->pnlSrc));
 	this->pnlSrcCtrl->SetRect(0, 0, 100, 23, false);
 	this->pnlSrcCtrl->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->hspMain, UI::GUIHSplitter(ui, *this, 3, false));
+	this->hspMain = ui->NewHSplitter(*this, 3, false);
 	NEW_CLASSNN(this->pnlDest, UI::GUIPanel(ui, *this));
 	this->pnlDest->SetDockType(UI::GUIControl::DOCK_FILL);
 	NEW_CLASSNN(this->pnlDestCtrl, UI::GUIPanel(ui, this->pnlDest));

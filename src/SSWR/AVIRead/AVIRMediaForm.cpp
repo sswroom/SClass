@@ -330,7 +330,7 @@ SSWR::AVIRead::AVIRMediaForm::AVIRMediaForm(UI::GUIClientControl *parent, NotNul
 	this->lbFiles->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbFiles->HandleRightClicked(OnFileRClicked, this);
 	this->lbFiles->HandleDoubleClicked(OnFileDblClicked, this);
-	NEW_CLASS(this->hsplit, UI::GUIHSplitter(ui, *this, 3, false));
+	this->hsplit = ui->NewHSplitter(*this, 3, false);
 	NEW_CLASSNN(this->pnlCtrl, UI::GUIPanel(ui, *this));
 	this->pnlCtrl->SetRect(0, 0, 100, 56, false);
 	this->pnlCtrl->SetDockType(UI::GUIControl::DOCK_BOTTOM);

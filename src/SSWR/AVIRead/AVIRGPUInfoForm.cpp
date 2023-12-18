@@ -58,7 +58,7 @@ SSWR::AVIRead::AVIRGPUInfoForm::AVIRGPUInfoForm(UI::GUIClientControl *parent, No
 	this->lbGPU->SetRect(0, 0, 250, 23, false);
 	this->lbGPU->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbGPU->HandleSelectionChange(OnGPUSelChange, this);
-	NEW_CLASS(this->hspGPU, UI::GUIHSplitter(ui, *this, 3, false));
+	this->hspGPU = ui->NewHSplitter(*this, 3, false);
 	NEW_CLASS(this->lvMain, UI::GUIListView(ui, *this, UI::GUIListView::LVSTYLE_TABLE, 2));
 	this->lvMain->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvMain->SetShowGrid(true);

@@ -195,7 +195,7 @@ SSWR::AVIRead::AVIRCodeProjectForm::AVIRCodeProjectForm(UI::GUIClientControl *pa
 	this->tvMain->SetHasLines(true);
 	this->tvMain->SetHasButtons(true);
 	this->tvMain->HandleSelectionChange(OnItemSelected, this);
-	NEW_CLASS(this->hspMain, UI::GUIHSplitter(ui, *this, 3, false));
+	this->hspMain = ui->NewHSplitter(*this, 3, false);
 	NEW_CLASS(this->txtMessage, UI::GUITextBox(ui, *this, CSTR(""), true));
 	this->txtMessage->SetReadOnly(true);
 	this->txtMessage->SetDockType(UI::GUIControl::DOCK_FILL);

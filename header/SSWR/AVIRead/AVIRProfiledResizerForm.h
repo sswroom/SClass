@@ -31,7 +31,7 @@ namespace SSWR
 			NotNullPtr<UI::GUIPanel> pnlProfile1;
 			UI::GUIListBox *lbProfile;
 			NotNullPtr<UI::GUIButton> btnProfileDel;
-		//	UI::GUIHSplitter *hspProfile;
+		//	NotNullPtr<UI::GUIHSplitter> hspProfile;
 			NotNullPtr<UI::GUIPanel> pnlProfile2;
 			UI::GUITextBox *txtProfileName;
 			UI::GUITextBox *txtSuffix;

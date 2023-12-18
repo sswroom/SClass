@@ -25,7 +25,7 @@ namespace SSWR
 			UI::GUILabel *lblConfig;
 			UI::GUIComboBox *cboConfig;
 			UI::GUITreeView *tvMain;
-			UI::GUIHSplitter *hspMain;
+			NotNullPtr<UI::GUIHSplitter> hspMain;
 			UI::GUITextBox *txtMessage;
 
 			static void __stdcall OnItemSelected(void *userObj);

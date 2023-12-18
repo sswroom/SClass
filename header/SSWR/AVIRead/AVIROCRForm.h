@@ -34,7 +34,7 @@ namespace SSWR
 			NotNullPtr<UI::GUIPanel> pnlResult;
 			UI::GUIPictureBoxSimple *pbResult;
 			UI::GUIListView *lvText;
-			UI::GUIHSplitter *hspText;
+			NotNullPtr<UI::GUIHSplitter> hspText;
 			UI::GUIPictureBoxDD *pbImg;
 
 			static void __stdcall OnFileHandler(void *userObj, NotNullPtr<Text::String> *files, UOSInt nFiles);

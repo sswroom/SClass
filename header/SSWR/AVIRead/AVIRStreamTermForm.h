@@ -29,7 +29,7 @@ namespace SSWR
 			UI::GUITextBox *txtStream;
 			NotNullPtr<UI::GUIButton> btnStream;
 
-			UI::GUIHSplitter *hspMain;
+			NotNullPtr<UI::GUIHSplitter> hspMain;
 			NotNullPtr<UI::GUIGroupBox> grpSend;
 			UI::GUIComboBox *cboSendType;
 			UI::GUITextBox *txtSendDisp;

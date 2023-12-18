@@ -59,8 +59,6 @@ UI/GUIForm.h:
 @GUIFormWin.o
 UI/GUIHScrollBar.h:
 @GUIHScrollBarWin.o
-UI/GUIHSplitter.h:
-@GUIHSplitterWin.o
 UI/GUIIcon.h:
 @GUIIconWin.o
 UI/GUILabel.h:
@@ -99,9 +97,6 @@ UI/GUITrackBar.h:
 @GUITrackBarWin.o
 UI/GUITreeView.h:
 @GUITreeViewWin.o
-UI/GUIVSplitter.h:
-@GUIVSplitterWin.o
-UI/IWindowSystem.h:
 
 GUIStartup.o: ../../startup/WinStartup.cpp
 !-Wl,--subsystem,windows

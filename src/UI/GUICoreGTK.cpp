@@ -5,7 +5,9 @@
 #include "UI/GUICoreGTK.h"
 #include "UI/GTK/GTKButton.h"
 #include "UI/GTK/GTKGroupBox.h"
+#include "UI/GTK/GTKHSplitter.h"
 #include "UI/GTK/GTKMessageDialog.h"
+#include "UI/GTK/GTKVSplitter.h"
 #include <gtk/gtk.h>
 #include <X11/Xlib.h>
 #undef Bool
@@ -203,5 +205,19 @@ NotNullPtr<UI::GUIGroupBox> UI::GUICoreGTK::NewGroupBox(NotNullPtr<GUIClientCont
 {
 	NotNullPtr<UI::GTK::GTKGroupBox> ctrl;
 	NEW_CLASSNN(ctrl, UI::GTK::GTKGroupBox(*this, parent, text));
+	return ctrl;
+}
+
+NotNullPtr<UI::GUIHSplitter> UI::GUICoreGTK::NewHSplitter(NotNullPtr<GUIClientControl> parent, Int32 width, Bool isRight)
+{
+	NotNullPtr<UI::GTK::GTKHSplitter> ctrl;
+	NEW_CLASSNN(ctrl, UI::GTK::GTKHSplitter(*this, parent, width, isRight));
+	return ctrl;
+}
+
+NotNullPtr<UI::GUIVSplitter> UI::GUICoreGTK::NewVSplitter(NotNullPtr<GUIClientControl> parent, Int32 height, Bool isBottom)
+{
+	NotNullPtr<UI::GTK::GTKVSplitter> ctrl;
+	NEW_CLASSNN(ctrl, UI::GTK::GTKVSplitter(*this, parent, height, isBottom));
 	return ctrl;
 }

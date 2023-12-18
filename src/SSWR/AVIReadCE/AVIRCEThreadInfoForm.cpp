@@ -134,14 +134,14 @@ SSWR::AVIReadCE::AVIRCEThreadInfoForm::AVIRCEThreadInfoForm(UI::GUIClientControl
 	this->lbMyStack->SetRect(0, 0, 300, 23, false);
 	this->lbMyStack->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbMyStack->HandleSelectionChange(OnMyStackChg, this);
-	NEW_CLASS(this->hspMyStack, UI::GUIHSplitter(ui, this->tpMyStack, 3, false));
+	NEW_CLASS(this->hspMyStack = ui->NewHSplitter(this->tpMyStack, 3, false));
 	NEW_CLASSNN(this->pnlMyStack, UI::GUIPanel(ui, this->tpMyStack));
 	this->pnlMyStack->SetDockType(UI::GUIControl::DOCK_FILL);
 	NEW_CLASS(this->txtMyStackMem, UI::GUITextBox(ui, this->pnlMyStack, CSTR(""), true));
 	this->txtMyStackMem->SetRect(0, 0, 100, 200, false);
 	this->txtMyStackMem->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->txtMyStackMem->SetReadOnly(true);
-	NEW_CLASS(this->vspMyStack, UI::GUIVSplitter(ui, this->pnlMyStack, 3, false));
+	NEW_CLASS(this->vspMyStack = ui->NewVSplitter(this->pnlMyStack, 3, false));
 	NEW_CLASS(this->lvMyStack, UI::GUIListView(ui, this->pnlMyStack, UI::GUIListView::LVSTYLE_TABLE, 10));
 	this->lvMyStack->SetShowGrid(true);
 	this->lvMyStack->SetFullRowSelect(true);

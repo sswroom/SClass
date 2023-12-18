@@ -35,7 +35,7 @@ namespace SSWR
 
 			NotNullPtr<UI::GUITabPage> tpImport;
 			UI::GUIListBox *lbImport;
-			UI::GUIHSplitter *hspImport;
+			NotNullPtr<UI::GUIHSplitter> hspImport;
 			UI::GUIListView *lvImport;
 
 			NotNullPtr<UI::GUITabPage> tpExport;
@@ -43,13 +43,13 @@ namespace SSWR
 
 			NotNullPtr<UI::GUITabPage> tpResource;
 			UI::GUIListBox *lbResource;
-			UI::GUIHSplitter *hspResource;
+			NotNullPtr<UI::GUIHSplitter> hspResource;
 			UI::GUITextBox *txtResource;
 
 			NotNullPtr<UI::GUITabPage> tp16Bit;
 			NotNullPtr<UI::GUIPanel> pnl16BitInfo;
 			UI::GUIListBox *lb16BitFuncs;
-			UI::GUIHSplitter *hsp16Bit;
+			NotNullPtr<UI::GUIHSplitter> hsp16Bit;
 			UI::GUIListBox *lb16BitCont;
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;

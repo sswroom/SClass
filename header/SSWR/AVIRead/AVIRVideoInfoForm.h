@@ -40,7 +40,7 @@ namespace SSWR
 			NotNullPtr<UI::GUIButton> btnDecode;
 			UI::GUILabel *lblDecode;
 			UI::GUIListBox *lbStream;
-			UI::GUIHSplitter *hspStream;
+			NotNullPtr<UI::GUIHSplitter> hspStream;
 			UI::GUITextBox *txtStream;
 
 			static void __stdcall OnVideoFrame(Data::Duration frameTime, UInt32 frameNum, UInt8 **imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, void *userData, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst);

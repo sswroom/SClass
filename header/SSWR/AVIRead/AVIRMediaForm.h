@@ -23,7 +23,7 @@ namespace SSWR
 		private:
 			UI::GUIListBox *lbFiles;
 			NotNullPtr<UI::GUIPanel> pnlCtrl;
-			UI::GUIHSplitter *hsplit;
+			NotNullPtr<UI::GUIHSplitter> hsplit;
 			UI::GUIVideoBoxDD *vbdMain;
 			UI::GUIMainMenu *mnu;
 			UI::GUIMenu *mnuChapters;

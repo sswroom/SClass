@@ -49,7 +49,7 @@ SSWR::AVIRead::AVIRDragDropViewerForm::AVIRDragDropViewerForm(UI::GUIClientContr
 	this->lbType->SetRect(0, 0, 200, 23, false);
 	this->lbType->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbType->HandleSelectionChange(OnTypeSelChg, this);
-	NEW_CLASS(this->hspMain, UI::GUIHSplitter(ui, *this, 3, false));
+	this->hspMain = ui->NewHSplitter(*this, 3, false);
 	NEW_CLASS(this->txtMain, UI::GUITextBox(ui, *this, CSTR(""), true));
 	this->txtMain->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->txtMain->SetReadOnly(true);

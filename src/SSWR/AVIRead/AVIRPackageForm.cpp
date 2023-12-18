@@ -959,7 +959,7 @@ SSWR::AVIRead::AVIRPackageForm::AVIRPackageForm(UI::GUIClientControl *parent, No
 	NEW_CLASS(this->rlcStatus, UI::GUIRealtimeLineChart(ui, this->tpStatus, this->core->GetDrawEngine(), 1, 720, 1000));
 	this->rlcStatus->SetRect(0, 0, 100, 360, false);
 	this->rlcStatus->SetDockType(UI::GUIControl::DOCK_BOTTOM);
-	NEW_CLASS(this->vspStatus, UI::GUIVSplitter(ui, this->tpStatus, 3, true));
+	this->vspStatus = ui->NewVSplitter(this->tpStatus, 3, true);
 	NEW_CLASS(this->lvStatus, UI::GUIListView(ui, this->tpStatus, UI::GUIListView::LVSTYLE_TABLE, 2));
 	this->lvStatus->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvStatus->SetFullRowSelect(true);

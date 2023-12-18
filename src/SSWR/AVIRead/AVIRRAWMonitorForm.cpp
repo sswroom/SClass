@@ -1216,7 +1216,7 @@ SSWR::AVIRead::AVIRRAWMonitorForm::AVIRRAWMonitorForm(UI::GUIClientControl *pare
 	this->txtDevice->SetReadOnly(true);
 	this->txtDevice->SetRect(0, 0, 100, 300, false);
 	this->txtDevice->SetDockType(UI::GUIControl::DOCK_BOTTOM);
-	NEW_CLASS(this->vspDevice, UI::GUIVSplitter(ui, this->tpDevice, 3, true));
+	this->vspDevice = ui->NewVSplitter(this->tpDevice, 3, true);
 	NEW_CLASS(this->lvDevice, UI::GUIListView(ui, this->tpDevice, UI::GUIListView::LVSTYLE_TABLE, 10));
 	this->lvDevice->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvDevice->SetFullRowSelect(true);
@@ -1238,7 +1238,7 @@ SSWR::AVIRead::AVIRRAWMonitorForm::AVIRRAWMonitorForm(UI::GUIClientControl *pare
 	this->lbIPTran->SetRect(0, 0, 150, 23, false);
 	this->lbIPTran->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbIPTran->HandleSelectionChange(OnIPTranSelChg, this);
-	NEW_CLASS(this->hspIPTran, UI::GUIHSplitter(ui, this->tpIPTran, 3, false));
+	this->hspIPTran = ui->NewHSplitter(this->tpIPTran, 3, false);
 	NEW_CLASS(this->tcIPTran, UI::GUITabControl(ui, this->tpIPTran));
 	this->tcIPTran->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->tpIPTranInfo = this->tcIPTran->AddTabPage(CSTR("Info"));
@@ -1274,7 +1274,7 @@ SSWR::AVIRead::AVIRRAWMonitorForm::AVIRRAWMonitorForm(UI::GUIClientControl *pare
 	this->lbDNSReqv4->SetRect(0, 0, 250, 23, false);
 	this->lbDNSReqv4->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbDNSReqv4->HandleSelectionChange(OnDNSReqv4SelChg, this);
-	NEW_CLASS(this->hspDNSReqv4, UI::GUIHSplitter(ui, this->tpDNSReqv4, 3, false));
+	this->hspDNSReqv4 = ui->NewHSplitter(this->tpDNSReqv4, 3, false);
 	NEW_CLASSNN(this->pnlDNSReqv4, UI::GUIPanel(ui, this->tpDNSReqv4));
 	this->pnlDNSReqv4->SetRect(0, 0, 100, 79, false);
 	this->pnlDNSReqv4->SetDockType(UI::GUIControl::DOCK_TOP);
@@ -1308,7 +1308,7 @@ SSWR::AVIRead::AVIRRAWMonitorForm::AVIRRAWMonitorForm(UI::GUIClientControl *pare
 	this->lbDNSReqv6->SetRect(0, 0, 250, 23, false);
 	this->lbDNSReqv6->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbDNSReqv6->HandleSelectionChange(OnDNSReqv6SelChg, this);
-	NEW_CLASS(this->hspDNSReqv6, UI::GUIHSplitter(ui, this->tpDNSReqv6, 3, false));
+	this->hspDNSReqv6 = ui->NewHSplitter(this->tpDNSReqv6, 3, false);
 	NEW_CLASSNN(this->pnlDNSReqv6, UI::GUIPanel(ui, this->tpDNSReqv6));
 	this->pnlDNSReqv6->SetRect(0, 0, 100, 79, false);
 	this->pnlDNSReqv6->SetDockType(UI::GUIControl::DOCK_TOP);
@@ -1342,7 +1342,7 @@ SSWR::AVIRead::AVIRRAWMonitorForm::AVIRRAWMonitorForm(UI::GUIClientControl *pare
 	this->lbDNSReqOth->SetRect(0, 0, 250, 23, false);
 	this->lbDNSReqOth->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbDNSReqOth->HandleSelectionChange(OnDNSReqOthSelChg, this);
-	NEW_CLASS(this->hspDNSReqOth, UI::GUIHSplitter(ui, this->tpDNSReqOth, 3, false));
+	this->hspDNSReqOth = ui->NewHSplitter(this->tpDNSReqOth, 3, false);
 	NEW_CLASSNN(this->pnlDNSReqOth, UI::GUIPanel(ui, this->tpDNSReqOth));
 	this->pnlDNSReqOth->SetRect(0, 0, 100, 79, false);
 	this->pnlDNSReqOth->SetDockType(UI::GUIControl::DOCK_TOP);
@@ -1376,7 +1376,7 @@ SSWR::AVIRead::AVIRRAWMonitorForm::AVIRRAWMonitorForm(UI::GUIClientControl *pare
 	this->lbDNSTarget->SetRect(0, 0, 150, 23, false);
 	this->lbDNSTarget->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbDNSTarget->HandleSelectionChange(OnDNSTargetSelChg, this);
-	NEW_CLASS(this->hspDNSTarget, UI::GUIHSplitter(ui, this->tpDNSTarget, 3, false));
+	this->hspDNSTarget = ui->NewHSplitter(this->tpDNSTarget, 3, false);
 	NEW_CLASS(this->tcDNSTarget, UI::GUITabControl(ui, this->tpDNSTarget));
 	this->tcDNSTarget->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->tpDNSTargetDomain = this->tcDNSTarget->AddTabPage(CSTR("Domains"));
@@ -1392,7 +1392,7 @@ SSWR::AVIRead::AVIRRAWMonitorForm::AVIRRAWMonitorForm(UI::GUIClientControl *pare
 	this->lbMDNS->SetRect(0, 0, 200, 23, false);
 	this->lbMDNS->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbMDNS->HandleSelectionChange(OnMDNSSelChg, this);
-	NEW_CLASS(this->hspMDNS, UI::GUIHSplitter(ui, this->tpMDNS, 3, false));
+	this->hspMDNS = ui->NewHSplitter(this->tpMDNS, 3, false);
 	NEW_CLASSNN(this->pnlMDNS, UI::GUIPanel(ui, this->tpMDNS));
 	this->pnlMDNS->SetDockType(UI::GUIControl::DOCK_FILL);
 	NEW_CLASS(this->lblMDNSName, UI::GUILabel(ui, this->pnlMDNS, CSTR("Name")));
@@ -1426,7 +1426,7 @@ SSWR::AVIRead::AVIRRAWMonitorForm::AVIRRAWMonitorForm(UI::GUIClientControl *pare
 	this->lbDNSClient->SetRect(0, 0, 150, 23, false);
 	this->lbDNSClient->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbDNSClient->HandleSelectionChange(OnDNSClientSelChg, this);
-	NEW_CLASS(this->hspDNSClient, UI::GUIHSplitter(ui, this->tpDNSClient, 3, false));
+	this->hspDNSClient = ui->NewHSplitter(this->tpDNSClient, 3, false);
 	NEW_CLASS(this->lvDNSClient, UI::GUIListView(ui, this->tpDNSClient, UI::GUIListView::LVSTYLE_TABLE, 2));
 	this->lvDNSClient->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvDNSClient->SetFullRowSelect(true);
@@ -1459,7 +1459,7 @@ SSWR::AVIRead::AVIRRAWMonitorForm::AVIRRAWMonitorForm(UI::GUIClientControl *pare
 	this->lbIPLog->SetRect(0, 0, 150, 23, false);
 	this->lbIPLog->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbIPLog->HandleSelectionChange(OnIPLogSelChg, this);
-	NEW_CLASS(this->hspIPLog, UI::GUIHSplitter(ui, this->tpIPLog, 3, false));
+	this->hspIPLog = ui->NewHSplitter(this->tpIPLog, 3, false);
 	NEW_CLASS(this->lbIPLogVal, UI::GUIListBox(ui, this->tpIPLog, false));
 	this->lbIPLogVal->SetDockType(UI::GUIControl::DOCK_FILL);
 
@@ -1468,7 +1468,7 @@ SSWR::AVIRead::AVIRRAWMonitorForm::AVIRRAWMonitorForm(UI::GUIClientControl *pare
 	this->lbPingIP->SetRect(0, 0, 150, 23, false);
 	this->lbPingIP->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbPingIP->HandleSelectionChange(OnPingIPSelChg, this);
-	NEW_CLASS(this->hspPingIP, UI::GUIHSplitter(ui, this->tpPingIP, 3, false));
+	this->hspPingIP = ui->NewHSplitter(this->tpPingIP, 3, false);
 	NEW_CLASS(this->tcPingIP, UI::GUITabControl(ui, this->tpPingIP));
 	this->tcPingIP->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->tpPingIPInfo = this->tcPingIP->AddTabPage(CSTR("Info"));

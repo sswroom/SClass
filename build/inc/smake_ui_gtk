@@ -60,8 +60,6 @@ UI/GUIForm.h:
 @GUIFormGTK.o
 UI/GUIHScrollBar.h:
 @GUIHScrollBarGTK.o
-UI/GUIHSplitter.h:
-@GUIHSplitterGTK.o
 UI/GUILabel.h:
 @GUILabelGTK.o
 UI/GUIListBox.h:
@@ -98,8 +96,6 @@ UI/GUITrackBar.h:
 @GUITrackBarGTK.o
 UI/GUITreeView.h:
 @GUITreeViewGTK.o
-UI/GUIVSplitter.h:
-@GUIVSplitterGTK.o
 
 GUIStartup.o: ../../startup/GtkStartup.cpp
 $`pkg-config --cflags gtk+-3.0`

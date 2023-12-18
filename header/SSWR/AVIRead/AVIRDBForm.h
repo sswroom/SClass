@@ -24,14 +24,14 @@ namespace SSWR
 		{
 		private:
 			UI::GUITabControl *tcDB;
-			UI::GUIVSplitter *vspDB;
+			NotNullPtr<UI::GUIVSplitter> vspDB;
 			UI::GUIListView *lvResult;
 
 			NotNullPtr<UI::GUITabPage> tpTable;
 			UI::GUIListBox *lbSchema;
-			UI::GUIHSplitter *hspSchema;
+			NotNullPtr<UI::GUIHSplitter> hspSchema;
 			UI::GUIListBox *lbTable;
-			UI::GUIHSplitter *hspTable;
+			NotNullPtr<UI::GUIHSplitter> hspTable;
 			UI::GUIListView *lvTable;
 
 			NotNullPtr<UI::GUITabPage> tpSQL;

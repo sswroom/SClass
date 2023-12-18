@@ -50,7 +50,7 @@ namespace SSWR
 			UI::GUITextBox *txtDirName;
 			NotNullPtr<UI::GUIButton> btnMove;
 			UI::GUIListBox *lbFilePack;
-			UI::GUIHSplitter *hspFile;
+			NotNullPtr<UI::GUIHSplitter> hspFile;
 			UI::GUIListBox *lbFileDir;
 
 			static void __stdcall OnStartClicked(void *userObj);

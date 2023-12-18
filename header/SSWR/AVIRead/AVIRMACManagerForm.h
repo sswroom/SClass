@@ -49,7 +49,7 @@ namespace SSWR
 			UI::GUITextBox *txtFile;
 			NotNullPtr<UI::GUIButton> btnFile;
 			UI::GUITextBox *txtFileIE;
-			UI::GUIVSplitter *vspFile;
+			NotNullPtr<UI::GUIVSplitter> vspFile;
 			UI::GUIListView *lvContent;
 
 			NotNullPtr<UI::GUITabPage> tpInput;

@@ -6,7 +6,9 @@
 #include "UI/GUICoreWin.h"
 #include "UI/Win/WinButton.h"
 #include "UI/Win/WinGroupBox.h"
+#include "UI/Win/WinHSplitter.h"
 #include "UI/Win/WinMessageDialog.h"
+#include "UI/Win/WinVSplitter.h"
 #ifdef _WIN32_WCE
 #include "Sync/ThreadUtil.h"
 #endif
@@ -253,6 +255,20 @@ NotNullPtr<UI::GUIGroupBox> UI::GUICoreWin::NewGroupBox(NotNullPtr<GUIClientCont
 {
 	NotNullPtr<UI::Win::WinGroupBox> ctrl;
 	NEW_CLASSNN(ctrl, UI::Win::WinGroupBox(*this, parent, text));
+	return ctrl;
+}
+
+NotNullPtr<UI::GUIHSplitter> UI::GUICoreWin::NewHSplitter(NotNullPtr<GUIClientControl> parent, Int32 width, Bool isRight)
+{
+	NotNullPtr<UI::Win::WinHSplitter> ctrl;
+	NEW_CLASSNN(ctrl, UI::Win::WinHSplitter(*this, parent, width, isRight));
+	return ctrl;
+}
+
+NotNullPtr<UI::GUIVSplitter> UI::GUICoreWin::NewVSplitter(NotNullPtr<GUIClientControl> parent, Int32 height, Bool isBottom)
+{
+	NotNullPtr<UI::Win::WinVSplitter> ctrl;
+	NEW_CLASSNN(ctrl, UI::Win::WinVSplitter(*this, parent, height, isBottom));
 	return ctrl;
 }
 

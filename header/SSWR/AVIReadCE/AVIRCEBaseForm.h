@@ -21,7 +21,7 @@ namespace SSWR
 		private:
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			UI::GUIListBox *lbCategory;
-			UI::GUIHSplitter *hspMain;
+			NotNullPtr<UI::GUIHSplitter> hspMain;
 			UI::GUIListBox *lbContent;
 			Data::Int32FastMap<Data::ArrayList<MenuInfo*>*> *menuItems;
 

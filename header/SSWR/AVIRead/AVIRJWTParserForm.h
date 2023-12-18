@@ -26,7 +26,7 @@ namespace SSWR
 			Crypto::Token::JWToken::VerifyType verifyType;
 
 			UI::GUITextBox *txtJWT;
-			UI::GUIHSplitter *hspJWT;
+			NotNullPtr<UI::GUIHSplitter> hspJWT;
 			NotNullPtr<UI::GUIPanel> pnlMain;
 			NotNullPtr<UI::GUIPanel> pnlResult;
 			NotNullPtr<UI::GUIButton> btnParse;

@@ -4,11 +4,10 @@
 #include "Sync/Interlocked.h"
 #include "UI/GUIClientControl.h"
 #include "UI/GUICoreWin.h"
-#include "UI/GUIVSplitter.h"
-#include <windows.h>
+#include "UI/Win/WinVSplitter.h"
 
 #define CLASSNAME L"VSplitter"
-Int32 UI::GUIVSplitter::useCnt = 0;
+Int32 UI::Win::WinVSplitter::useCnt = 0;
 
 #ifndef GWL_USERDATA
 #define GWL_USERDATA GWLP_USERDATA
@@ -18,9 +17,9 @@ Int32 UI::GUIVSplitter::useCnt = 0;
 #define GetWindowLongPtr(a, b) GetWindowLongW(a, b)
 #endif
 
-OSInt __stdcall UI::GUIVSplitter::FormWndProc(void *hWnd, UInt32 msg, UOSInt wParam, OSInt lParam)
+OSInt __stdcall UI::Win::WinVSplitter::FormWndProc(void *hWnd, UInt32 msg, UOSInt wParam, OSInt lParam)
 {
-	UI::GUIVSplitter *me = (UI::GUIVSplitter*)(OSInt)GetWindowLongPtr((HWND)hWnd, GWL_USERDATA);
+	UI::Win::WinVSplitter *me = (UI::Win::WinVSplitter*)(OSInt)GetWindowLongPtr((HWND)hWnd, GWL_USERDATA);
 	POINT pt;
 	HDC hdc;
 	UOSInt i;
@@ -36,24 +35,7 @@ OSInt __stdcall UI::GUIVSplitter::FormWndProc(void *hWnd, UInt32 msg, UOSInt wPa
 		break;
 	case WM_LBUTTONDOWN:
 		GetCursorPos(&pt);
-		me->dragMode = true;
-		me->dragX = pt.x;
-		me->dragY = pt.y;
-		me->lastX = pt.x;
-		me->lastY = pt.y;
-		me->CalDragRange();
-		me->SetCapture();
-		
-		{
-			NotNullPtr<UI::GUIClientControl> nnparent;
-			if (me->parent.SetTo(nnparent))
-			{
-				hdc = GetDC((HWND)nnparent->GetHandle());
-				me->DrawXorBar(hdc, pt.x, pt.y);
-				ReleaseDC((HWND)nnparent->GetHandle(), hdc);
-			}
-		}
-
+		me->EventMouseDown(GUIControl::MouseButton::MBTN_LEFT, Math::Coord2D<OSInt>(pt.x, pt.y));
 		return 0;
 	case WM_LBUTTONUP:
 		if (me->dragMode)
@@ -144,11 +126,11 @@ OSInt __stdcall UI::GUIVSplitter::FormWndProc(void *hWnd, UInt32 msg, UOSInt wPa
 	return DefWindowProc((HWND)hWnd, msg, wParam, lParam);
 }
 
-void UI::GUIVSplitter::Init(void *hInst)
+void UI::Win::WinVSplitter::Init(void *hInst)
 {
 	WNDCLASSW wc;
     wc.style = 0; 
-	wc.lpfnWndProc = (WNDPROC)UI::GUIVSplitter::FormWndProc; 
+	wc.lpfnWndProc = (WNDPROC)UI::Win::WinVSplitter::FormWndProc; 
     wc.cbClsExtra = 0; 
     wc.cbWndExtra = 0; 
     wc.hInstance = (HINSTANCE)hInst; 
@@ -162,12 +144,12 @@ void UI::GUIVSplitter::Init(void *hInst)
         return; 
 }
 
-void UI::GUIVSplitter::Deinit(void *hInst)
+void UI::Win::WinVSplitter::Deinit(void *hInst)
 {
 	UnregisterClassW(CLASSNAME, (HINSTANCE)hInst);
 }
 
-void UI::GUIVSplitter::DrawXorBar(void *hdc, Int32 x, Int32 y)
+void UI::Win::WinVSplitter::DrawXorBar(HDC hdc, OSInt x, OSInt y)
 {
 	static UInt16 _dotPatternBmp[8] = {0xaa, 0x55, 0xaa, 0x55, 0xaa, 0x55, 0xaa, 0x55};
 
@@ -206,17 +188,17 @@ void UI::GUIVSplitter::DrawXorBar(void *hdc, Int32 x, Int32 y)
 	hbm = CreateBitmap(8, 8, 1, 1, _dotPatternBmp);
 	hbr = CreatePatternBrush(hbm);
 
-	SetBrushOrgEx((HDC)hdc, (int)(pos.x + cliOfstX), (int)(drawY + cliOfstY), 0);
-	hbrushOld = (HBRUSH)SelectObject((HDC)hdc, hbr);
+	SetBrushOrgEx(hdc, (int)(pos.x + cliOfstX), (int)(drawY + cliOfstY), 0);
+	hbrushOld = (HBRUSH)SelectObject(hdc, hbr);
 
-	PatBlt((HDC)hdc, (int)(pos.x + cliOfstX), (int)(drawY + cliOfstY), (int)sz.x, (int)sz.y, PATINVERT);
+	PatBlt(hdc, (int)(pos.x + cliOfstX), (int)(drawY + cliOfstY), (int)sz.x, (int)sz.y, PATINVERT);
 	
-	SelectObject((HDC)hdc, hbrushOld);
+	SelectObject(hdc, hbrushOld);
 	DeleteObject(hbr);
 	DeleteObject(hbm);
 }
 
-void UI::GUIVSplitter::CalDragRange()
+void UI::Win::WinVSplitter::CalDragRange()
 {
 	UOSInt i;
 	OSInt max;
@@ -303,7 +285,7 @@ void UI::GUIVSplitter::CalDragRange()
 	}
 }
 
-UI::GUIVSplitter::GUIVSplitter(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, Int32 height, Bool isBottom) : UI::GUIControl(ui, parent)
+UI::Win::WinVSplitter::WinVSplitter(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, Int32 height, Bool isBottom) : UI::GUIVSplitter(ui, parent)
 {
 	this->dragMode = false;
 	this->isBottom = isBottom;
@@ -322,7 +304,7 @@ UI::GUIVSplitter::GUIVSplitter(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUICli
 	this->SetDockType(isBottom?DOCK_BOTTOM:DOCK_TOP);
 }
 
-UI::GUIVSplitter::~GUIVSplitter()
+UI::Win::WinVSplitter::~WinVSplitter()
 {
 	if (Sync::Interlocked::DecrementI32(useCnt) == 0)
 	{
@@ -330,12 +312,36 @@ UI::GUIVSplitter::~GUIVSplitter()
 	}
 }
 
-Text::CStringNN UI::GUIVSplitter::GetObjectClass() const
-{
-	return CSTR("VSplitter");
-}
-
-OSInt UI::GUIVSplitter::OnNotify(UInt32 code, void *lParam)
+OSInt UI::Win::WinVSplitter::OnNotify(UInt32 code, void *lParam)
 {
 	return 0;
+}
+
+void UI::Win::WinVSplitter::EventMouseDown(UI::GUIControl::MouseButton btn, Math::Coord2D<OSInt> pos)
+{
+	if (btn == GUIControl::MouseButton::MBTN_LEFT)
+	{
+		this->dragMode = true;
+		this->dragX = pos.x;
+		this->dragY = pos.y;
+		this->lastX = pos.x;
+		this->lastY = pos.y;
+		this->CalDragRange();
+		this->SetCapture();
+		
+		{
+			NotNullPtr<UI::GUIClientControl> nnparent;
+			if (this->parent.SetTo(nnparent))
+			{
+				HDC hdc = GetDC((HWND)nnparent->GetHandle());
+				this->DrawXorBar(hdc, pos.x, pos.y);
+				ReleaseDC((HWND)nnparent->GetHandle(), hdc);
+			}
+		}
+	}
+}
+
+void UI::Win::WinVSplitter::EventMouseUp(UI::GUIControl::MouseButton btn, Math::Coord2D<OSInt> pos)
+{
+
 }

@@ -56,7 +56,7 @@ namespace SSWR
 			NotNullPtr<UI::GUIButton> btnQuery;
 			UI::GUITextBox *txtQuery;
 			UI::GUITextBox *txtQueryStatus;
-			UI::GUIVSplitter *vspQuery;
+			NotNullPtr<UI::GUIVSplitter> vspQuery;
 			UI::GUIListView *lvQueryResult;
 
 		private:

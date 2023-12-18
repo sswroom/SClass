@@ -2537,7 +2537,7 @@ SSWR::OrganMgr::OrganMainForm::OrganMainForm(NotNullPtr<UI::GUICore> ui, UI::GUI
 	NEW_CLASS(this->lbDir, UI::GUIListBox(ui, this->pnlLeft, false));
 	this->lbDir->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lbDir->HandleSelectionChange(OnDirChanged, this);
-	NEW_CLASS(this->hsbLeft, UI::GUIHSplitter(ui, *this, 3, false));
+	this->hsbLeft = ui->NewHSplitter(*this, 3, false);
 
 	NEW_CLASSNN(this->pnlMid, UI::GUIPanel(ui, *this));
 	this->pnlMid->SetArea(0, 0, 238, 50, false);
@@ -2564,7 +2564,7 @@ SSWR::OrganMgr::OrganMainForm::OrganMainForm(NotNullPtr<UI::GUICore> ui, UI::GUI
 	this->lbObj->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lbObj->HandleDoubleClicked(OnObjDblClicked, this);
 	this->lbObj->HandleSelectionChange(OnObjSelChg, this);
-	NEW_CLASS(this->hsbMid, UI::GUIHSplitter(ui, *this, 3, false));
+	this->hsbMid = ui->NewHSplitter(*this, 3, false);
 
 	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, *this));
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
@@ -2727,7 +2727,7 @@ SSWR::OrganMgr::OrganMainForm::OrganMainForm(NotNullPtr<UI::GUICore> ui, UI::GUI
 	this->lbImage->HandleSelectionChange(OnImgSelChg, this);
 	this->lbImage->HandleRightClicked(OnImgRClicked, this);
 	this->lbImage->HandleDoubleClicked(OnImgDblClicked, this);
-	NEW_CLASS(this->vsbImg, UI::GUIVSplitter(ui, this->tpImage, 2, true));
+	this->vsbImg = ui->NewVSplitter(this->tpImage, 2, true);
 	NEW_CLASS(this->pbImg, UI::GUIPictureBoxDD(ui, this->tpImage, this->colorSess, true, false));
 	this->pbImg->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->pbImg->HandleMouseDown(OnImgMouseDown, this);

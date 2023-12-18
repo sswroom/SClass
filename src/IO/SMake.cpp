@@ -1115,9 +1115,9 @@ Bool IO::SMake::CompileProgInternal(NotNullPtr<const ProgramItem> prog, Bool asm
 						sb.ClearStr();
 						sb.AppendC(UTF8STRC("Obj "));
 						sb.Append(subProg->name);
-						sb.AppendC(UTF8STRC(" Src time: "));
+						sb.AppendC(UTF8STRC(" Obj time: "));
 						sb.AppendTSNoZone(dt2);
-						sb.AppendC(UTF8STRC(", Obj time: "));
+						sb.AppendC(UTF8STRC(", Src time: "));
 						sb.AppendTSNoZone(dt1);
 						sb.AppendC(UTF8STRC(", Last time: "));
 						dt1 = Data::Timestamp(lastTime, Data::DateTimeUtil::GetLocalTzQhr());

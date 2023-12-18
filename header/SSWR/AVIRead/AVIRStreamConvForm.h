@@ -31,7 +31,7 @@ namespace SSWR
 			UI::GUICheckBox *chkStreamLog1;
 			NotNullPtr<UI::GUIButton> btnStream1;
 			UI::GUIRealtimeLineChart *rlcStream1;
-			UI::GUIHSplitter *hspStream;
+			NotNullPtr<UI::GUIHSplitter> hspStream;
 
 			NotNullPtr<UI::GUIGroupBox> grpStream2;
 			NotNullPtr<UI::GUIPanel> pnlStream2;

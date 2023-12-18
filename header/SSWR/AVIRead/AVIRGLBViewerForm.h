@@ -20,7 +20,7 @@ namespace SSWR
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 
 			NotNullPtr<UI::GUIPanel> pnlBinBuff;
-			UI::GUIVSplitter *vspMain;
+			NotNullPtr<UI::GUIVSplitter> vspMain;
 			NotNullPtr<UI::GUIPanel> pnlJSON;
 			UI::GUILabel *lblJSON;
 			UI::GUITextBox *txtJSON;

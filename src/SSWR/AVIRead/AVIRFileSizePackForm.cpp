@@ -383,7 +383,7 @@ SSWR::AVIRead::AVIRFileSizePackForm::AVIRFileSizePackForm(UI::GUIClientControl *
 	NEW_CLASS(this->lbFilePack, UI::GUIListBox(ui, *this, false));
 	this->lbFilePack->SetRect(0, 0, 120, 212, false);
 	this->lbFilePack->SetDockType(UI::GUIControl::DOCK_LEFT);
-	NEW_CLASS(this->hspFile, UI::GUIHSplitter(ui, *this, 3, false));
+	this->hspFile = ui->NewHSplitter(*this, 3, false);
 	NEW_CLASS(this->lbFileDir, UI::GUIListBox(ui, *this, false));
 	this->lbFileDir->SetDockType(UI::GUIControl::DOCK_FILL);
 }

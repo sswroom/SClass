@@ -40,7 +40,7 @@ SSWR::AVIRead::AVIRJavaClassForm::AVIRJavaClassForm(UI::GUIClientControl *parent
 	this->lbMethods->SetRect(0, 0, 100, 300, false);
 	this->lbMethods->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->lbMethods->HandleSelectionChange(OnMethodsSelChg, this);
-	NEW_CLASS(this->vspMethods, UI::GUIVSplitter(ui, this->tpMethods, 3, false));
+	this->vspMethods = ui->NewVSplitter(this->tpMethods, 3, false);
 	NEW_CLASS(this->txtMethods, UI::GUITextBox(ui, this->tpMethods, CSTR(""), true));
 	this->txtMethods->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->txtMethods->SetReadOnly(true);

@@ -84,12 +84,12 @@ namespace SSWR
 
 			NotNullPtr<UI::GUITabPage> tpDevice;
 			UI::GUIListView *lvDevice;
-			UI::GUIVSplitter *vspDevice;
+			NotNullPtr<UI::GUIVSplitter> vspDevice;
 			UI::GUITextBox *txtDevice;
 
 			NotNullPtr<UI::GUITabPage> tpIPTran;
 			UI::GUIListBox *lbIPTran;
-			UI::GUIHSplitter *hspIPTran;
+			NotNullPtr<UI::GUIHSplitter> hspIPTran;
 			UI::GUITabControl *tcIPTran;
 			NotNullPtr<UI::GUITabPage> tpIPTranInfo;
 			UI::GUIListView *lvIPTranInfo;
@@ -98,7 +98,7 @@ namespace SSWR
 
 			NotNullPtr<UI::GUITabPage> tpDNSReqv4;
 			UI::GUIListBox *lbDNSReqv4;
-			UI::GUIHSplitter *hspDNSReqv4;
+			NotNullPtr<UI::GUIHSplitter> hspDNSReqv4;
 			NotNullPtr<UI::GUIPanel> pnlDNSReqv4;
 			UI::GUILabel *lblDNSReqv4Name;
 			UI::GUITextBox *txtDNSReqv4Name;
@@ -110,7 +110,7 @@ namespace SSWR
 
 			NotNullPtr<UI::GUITabPage> tpDNSReqv6;
 			UI::GUIListBox *lbDNSReqv6;
-			UI::GUIHSplitter *hspDNSReqv6;
+			NotNullPtr<UI::GUIHSplitter> hspDNSReqv6;
 			NotNullPtr<UI::GUIPanel> pnlDNSReqv6;
 			UI::GUILabel *lblDNSReqv6Name;
 			UI::GUITextBox *txtDNSReqv6Name;
@@ -122,7 +122,7 @@ namespace SSWR
 
 			NotNullPtr<UI::GUITabPage> tpDNSReqOth;
 			UI::GUIListBox *lbDNSReqOth;
-			UI::GUIHSplitter *hspDNSReqOth;
+			NotNullPtr<UI::GUIHSplitter> hspDNSReqOth;
 			NotNullPtr<UI::GUIPanel> pnlDNSReqOth;
 			UI::GUILabel *lblDNSReqOthName;
 			UI::GUITextBox *txtDNSReqOthName;
@@ -134,7 +134,7 @@ namespace SSWR
 
 			NotNullPtr<UI::GUITabPage> tpDNSTarget;
 			UI::GUIListBox *lbDNSTarget;
-			UI::GUIHSplitter *hspDNSTarget;
+			NotNullPtr<UI::GUIHSplitter> hspDNSTarget;
 			UI::GUITabControl *tcDNSTarget;
 			NotNullPtr<UI::GUITabPage> tpDNSTargetDomain;
 			UI::GUIListBox *lbDNSTargetDomain;
@@ -143,7 +143,7 @@ namespace SSWR
 
 			NotNullPtr<UI::GUITabPage> tpMDNS;
 			UI::GUIListBox *lbMDNS;
-			UI::GUIHSplitter *hspMDNS;
+			NotNullPtr<UI::GUIHSplitter> hspMDNS;
 			NotNullPtr<UI::GUIPanel> pnlMDNS;
 			UI::GUILabel *lblMDNSName;
 			UI::GUITextBox *txtMDNSName;
@@ -158,7 +158,7 @@ namespace SSWR
 
 			NotNullPtr<UI::GUITabPage> tpDNSClient;
 			UI::GUIListBox *lbDNSClient;
-			UI::GUIHSplitter *hspDNSClient;
+			NotNullPtr<UI::GUIHSplitter> hspDNSClient;
 			UI::GUIListView *lvDNSClient;
 
 			NotNullPtr<UI::GUITabPage> tpDHCP;
@@ -166,12 +166,12 @@ namespace SSWR
 			
 			NotNullPtr<UI::GUITabPage> tpIPLog;
 			UI::GUIListBox *lbIPLog;
-			UI::GUIHSplitter *hspIPLog;
+			NotNullPtr<UI::GUIHSplitter> hspIPLog;
 			UI::GUIListBox *lbIPLogVal;
 
 			NotNullPtr<UI::GUITabPage> tpPingIP;
 			UI::GUIListBox *lbPingIP;
-			UI::GUIHSplitter *hspPingIP;
+			NotNullPtr<UI::GUIHSplitter> hspPingIP;
 			UI::GUITabControl *tcPingIP;
 			NotNullPtr<UI::GUITabPage> tpPingIPInfo;
 			UI::GUILabel *lblPingIPCount;

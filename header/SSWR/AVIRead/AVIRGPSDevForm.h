@@ -62,7 +62,7 @@ namespace SSWR
 			NotNullPtr<UI::GUIPanel> pnlDeviceC;
 			NotNullPtr<UI::GUIButton> btnDeviceR;
 			UI::GUIListBox *lbDevice;
-			UI::GUIHSplitter *hspDevice;
+			NotNullPtr<UI::GUIHSplitter> hspDevice;
 			UI::GUITabControl *tcDevice;
 			NotNullPtr<UI::GUITabPage> tpDevInfo;
 			UI::GUIListView *lvDevInfo;
@@ -75,7 +75,7 @@ namespace SSWR
 			NotNullPtr<UI::GUIPanel> pnlUserC;
 			NotNullPtr<UI::GUIButton> btnUserR;
 			UI::GUIListBox *lbUser;
-			UI::GUIHSplitter *hspUser;
+			NotNullPtr<UI::GUIHSplitter> hspUser;
 			NotNullPtr<UI::GUIPanel> pnlUser;
 			UI::GUIListBox *lbUserDev;
 			UI::GUIListView *lvUser;
@@ -84,7 +84,7 @@ namespace SSWR
 			NotNullPtr<UI::GUIPanel> pnlAlertC;
 			NotNullPtr<UI::GUIButton> btnAlertR;
 			UI::GUIListBox *lbAlert;
-			UI::GUIHSplitter *hspAlert;
+			NotNullPtr<UI::GUIHSplitter> hspAlert;
 			NotNullPtr<UI::GUIPanel> pnlAlert;
 			UI::GUIListBox *lbAlertDev;
 			UI::GUIListView *lvAlert;

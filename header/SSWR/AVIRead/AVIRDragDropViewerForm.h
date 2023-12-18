@@ -17,7 +17,7 @@ namespace SSWR
 			Data::StringUTF8Map<const UTF8Char *> *dropMap;
 
 			UI::GUIListBox *lbType;
-			UI::GUIHSplitter *hspMain;
+			NotNullPtr<UI::GUIHSplitter> hspMain;
 			UI::GUITextBox *txtMain;
 
 			static void __stdcall OnTypeSelChg(void *userObj);

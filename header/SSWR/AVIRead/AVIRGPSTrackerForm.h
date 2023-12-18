@@ -96,7 +96,7 @@ namespace SSWR
 			UI::GUITabControl *tcAlert;
 			NotNullPtr<UI::GUITabPage> tpAlertAdd;
 			UI::GUIListBox *lbAlertLyr;
-			UI::GUIHSplitter *hspAlertAdd;
+			NotNullPtr<UI::GUIHSplitter> hspAlertAdd;
 			UI::GUIListBox *lbAlertAdd;
 			NotNullPtr<UI::GUITabPage> tpAlertView;
 			NotNullPtr<UI::GUIPanel> pnlAlertView;

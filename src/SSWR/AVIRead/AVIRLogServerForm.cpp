@@ -162,7 +162,7 @@ SSWR::AVIRead::AVIRLogServerForm::AVIRLogServerForm(UI::GUIClientControl *parent
 	this->lbClient->SetRect(0, 0, 150, 23, false);
 	this->lbClient->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbClient->HandleSelectionChange(OnClientSelChg, this);
-	NEW_CLASS(this->hspClient, UI::GUIHSplitter(ui, *this, 3, false));
+	this->hspClient = ui->NewHSplitter(*this, 3, false);
 	NEW_CLASS(this->txtLog, UI::GUITextBox(ui, *this, CSTR("")));
 	this->txtLog->SetRect(0, 0, 100, 23, false);
 	this->txtLog->SetReadOnly(true);

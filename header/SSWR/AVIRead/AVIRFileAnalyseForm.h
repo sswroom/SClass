@@ -29,9 +29,9 @@ namespace SSWR
 			NotNullPtr<UI::GUITabPage> tpTool;
 
 			UI::GUIListBox *lbPackList;
-			UI::GUIHSplitter *hspPack;
+			NotNullPtr<UI::GUIHSplitter> hspPack;
 			UI::GUIListBox *lbPackItems;
-			UI::GUIHSplitter *hspPack2;
+			NotNullPtr<UI::GUIHSplitter> hspPack2;
 			UI::GUITextBox *txtPack;
 
 			NotNullPtr<UI::GUIButton> btnTrimPadding;

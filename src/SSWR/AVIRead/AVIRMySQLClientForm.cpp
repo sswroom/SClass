@@ -343,7 +343,7 @@ SSWR::AVIRead::AVIRMySQLClientForm::AVIRMySQLClientForm(UI::GUIClientControl *pa
 	this->txtQueryStatus->SetRect(0, 0, 100, 23, false);
 	this->txtQueryStatus->SetDockType(UI::GUIControl::DOCK_BOTTOM);
 	this->txtQueryStatus->SetReadOnly(true);
-	NEW_CLASS(this->vspQuery, UI::GUIVSplitter(ui, this->tpQuery, 3, false));
+	this->vspQuery = ui->NewVSplitter(this->tpQuery, 3, false);
 	NEW_CLASS(this->lvQueryResult, UI::GUIListView(ui, this->tpQuery, UI::GUIListView::LVSTYLE_TABLE, 2));
 	this->lvQueryResult->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvQueryResult->SetFullRowSelect(true);

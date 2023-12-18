@@ -112,7 +112,7 @@ SSWR::AVIRead::AVIRGLBViewerForm::AVIRGLBViewerForm(UI::GUIClientControl *parent
 	NEW_CLASSNN(this->pnlBinBuff, UI::GUIPanel(ui, *this));
 	this->pnlBinBuff->SetRect(0, 0, 100, 200, false);
 	this->pnlBinBuff->SetDockType(UI::GUIControl::DOCK_BOTTOM);
-	NEW_CLASS(this->vspMain, UI::GUIVSplitter(ui, *this, 3, true));
+	this->vspMain = ui->NewVSplitter(*this, 3, true);
 	NEW_CLASSNN(this->pnlJSON, UI::GUIPanel(ui, *this));
 	this->pnlJSON->SetDockType(UI::GUIControl::DOCK_FILL);
 	NEW_CLASS(this->lblJSON, UI::GUILabel(ui, this->pnlJSON, CSTR("JSON")));

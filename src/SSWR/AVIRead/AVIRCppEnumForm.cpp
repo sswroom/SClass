@@ -158,7 +158,7 @@ SSWR::AVIRead::AVIRCppEnumForm::AVIRCppEnumForm(UI::GUIClientControl *parent, No
 	NEW_CLASS(this->txtSource, UI::GUITextBox(ui, *this, CSTR(""), true));
 	this->txtSource->SetRect(0, 0, 512, 100, false);
 	this->txtSource->SetDockType(UI::GUIControl::DOCK_LEFT);
-	NEW_CLASS(this->hspMain, UI::GUIHSplitter(ui, *this, 3, false));
+	this->hspMain = ui->NewHSplitter(*this, 3, false);
 	NEW_CLASS(this->txtDest, UI::GUITextBox(ui, *this, CSTR(""), true));
 	this->txtDest->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->txtDest->SetReadOnly(true);

@@ -28,7 +28,7 @@ namespace SSWR
 			} BTStatus;
 		private:
 			UI::GUIListBox *lbCtrl;
-			UI::GUIHSplitter *hspMain;
+			NotNullPtr<UI::GUIHSplitter> hspMain;
 			UI::GUITabControl *tcMain;
 
 			NotNullPtr<UI::GUITabPage> tpInfo;
@@ -48,7 +48,7 @@ namespace SSWR
 			NotNullPtr<UI::GUIButton> btnDeviceSrch;
 			NotNullPtr<UI::GUIButton> btnDeviceUpdate;
 			NotNullPtr<UI::GUIPanel> pnlDevDetail;
-			UI::GUIVSplitter *vspDevice;
+			NotNullPtr<UI::GUIVSplitter> vspDevice;
 			NotNullPtr<UI::GUIPanel> pnlDevCtrl;
 			NotNullPtr<UI::GUIButton> btnDevAuthen;
 			NotNullPtr<UI::GUIButton> btnDevUnauthen;

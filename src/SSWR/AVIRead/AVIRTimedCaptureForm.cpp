@@ -303,7 +303,7 @@ SSWR::AVIRead::AVIRTimedCaptureForm::AVIRTimedCaptureForm(UI::GUIClientControl *
 	this->lbDevice->SetRect(0, 8, 256, 88, false);
 	this->lbDevice->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbDevice->HandleSelectionChange(OnDevChg, this);
-	NEW_CLASS(this->hspMain, UI::GUIHSplitter(ui, *this, 3, false));
+	this->hspMain = ui->NewHSplitter(*this, 3, false);
 	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, *this));
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
 

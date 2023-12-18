@@ -14,6 +14,8 @@ namespace UI
 	class GUIClientControl;
 	class GUIControl;
 	class GUIGroupBox;
+	class GUIHSplitter;
+	class GUIVSplitter;
 	class GUICore
 	{
 	public:
@@ -49,6 +51,8 @@ namespace UI
 		virtual Bool ShowMsgYesNo(Text::CStringNN message, Text::CStringNN title, Optional<UI::GUIControl> ctrl) = 0;
 		virtual NotNullPtr<GUIButton> NewButton(NotNullPtr<GUIClientControl> parent, Text::CStringNN text) = 0;
 		virtual NotNullPtr<GUIGroupBox> NewGroupBox(NotNullPtr<GUIClientControl> parent, Text::CStringNN text) = 0;
+		virtual NotNullPtr<GUIHSplitter> NewHSplitter(NotNullPtr<UI::GUIClientControl> parent, Int32 width, Bool isRight) = 0;
+		virtual NotNullPtr<GUIVSplitter> NewVSplitter(NotNullPtr<UI::GUIClientControl> parent, Int32 height, Bool isBottom) = 0;
 	};
 }
 #endif

@@ -24,7 +24,7 @@ namespace SSWR
 			UI::GUILabel *lblVersion;
 			UI::GUITextBox *txtVersion;
 			UI::GUIListBox *lbVMS;
-			UI::GUIHSplitter *hspVM;
+			NotNullPtr<UI::GUIHSplitter> hspVM;
 			UI::GUITabControl *tcVM;
 			NotNullPtr<UI::GUITabPage> tpControl;
 			UI::GUILabel *lblState;

@@ -171,7 +171,7 @@ SSWR::AVIRead::AVIRDNSClientForm::AVIRDNSClientForm(UI::GUIClientControl *parent
 	this->lbAnswer->SetRect(0, 0, 200, 23, false);
 	this->lbAnswer->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbAnswer->HandleSelectionChange(OnAnswerSelChg, this);
-	NEW_CLASS(this->hspAnswer, UI::GUIHSplitter(ui, *this, 3, false));
+	this->hspAnswer = ui->NewHSplitter(*this, 3, false);
 	NEW_CLASSNN(this->pnlAnswer, UI::GUIPanel(ui, *this));
 	this->pnlAnswer->SetDockType(UI::GUIControl::DOCK_FILL);
 	NEW_CLASS(this->lblAnsName, UI::GUILabel(ui, this->pnlAnswer, CSTR("Name")));

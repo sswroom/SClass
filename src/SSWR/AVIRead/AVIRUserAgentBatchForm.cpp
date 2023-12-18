@@ -218,7 +218,7 @@ SSWR::AVIRead::AVIRUserAgentBatchForm::AVIRUserAgentBatchForm(UI::GUIClientContr
 	this->btnUpdateCB = ui->NewButton(this->pnlControl, CSTR("Update from Clipboard"));
 	this->btnUpdateCB->SetRect(164, 4, 150, 23, false);
 	this->btnUpdateCB->HandleButtonClick(OnUpdateCBClicked, this);
-	NEW_CLASS(this->vspControl, UI::GUIVSplitter(ui, *this, 3, false));
+	this->vspControl = ui->NewVSplitter(*this, 3, false);
 	NEW_CLASS(this->txtOutput, UI::GUITextBox(ui, *this, CSTR(""), true));
 	this->txtOutput->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->txtOutput->SetReadOnly(true);

@@ -7,7 +7,9 @@
 #include "UI/GUICoreJava.h"
 #include "UI/Java/JavaButton.h"
 #include "UI/Java/JavaGroupBox.h"
+#include "UI/Java/JavaHSplitter.h"
 #include "UI/Java/JavaMessageDialog.h"
+#include "UI/Java/JavaVSplitter.h"
 #include <jni.h>
 #include <stdio.h>
 
@@ -210,5 +212,19 @@ NotNullPtr<UI::GUIGroupBox> UI::GUICoreJava::NewGroupBox(NotNullPtr<GUIClientCon
 {
 	NotNullPtr<UI::Java::JavaGroupBox> ctrl;
 	NEW_CLASSNN(ctrl, UI::Java::JavaGroupBox(*this, parent, text));
+	return ctrl;
+}
+
+NotNullPtr<UI::GUIHSplitter> UI::GUICoreJava::NewHSplitter(NotNullPtr<GUIClientControl> parent, Int32 width, Bool isRight)
+{
+	NotNullPtr<UI::Java::JavaHSplitter> ctrl;
+	NEW_CLASSNN(ctrl, UI::Java::JavaHSplitter(*this, parent, width, isRight));
+	return ctrl;
+}
+
+NotNullPtr<UI::GUIVSplitter> UI::GUICoreJava::NewVSplitter(NotNullPtr<GUIClientControl> parent, Int32 height, Bool isBottom)
+{
+	NotNullPtr<UI::Java::JavaVSplitter> ctrl;
+	NEW_CLASSNN(ctrl, UI::Java::JavaVSplitter(*this, parent, height, isBottom));
 	return ctrl;
 }

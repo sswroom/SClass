@@ -564,7 +564,7 @@ SSWR::AVIRead::AVIRDBForm::AVIRDBForm(UI::GUIClientControl *parent, NotNullPtr<U
 	NEW_CLASS(this->tcDB, UI::GUITabControl(ui, *this));
 	this->tcDB->SetRect(0, 0, 100, 400, false);
 	this->tcDB->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->vspDB, UI::GUIVSplitter(ui, *this, 3, false));
+	this->vspDB = ui->NewVSplitter(*this, 3, false);
 	NEW_CLASS(this->lvResult, UI::GUIListView(ui, *this, UI::GUIListView::LVSTYLE_TABLE, 1));
 	this->lvResult->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvResult->SetFullRowSelect(true);
@@ -575,12 +575,12 @@ SSWR::AVIRead::AVIRDBForm::AVIRDBForm(UI::GUIClientControl *parent, NotNullPtr<U
 	this->lbSchema->SetRect(0, 0, 150, 100, false);
 	this->lbSchema->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbSchema->HandleSelectionChange(OnSchemaSelChg, this);
-	NEW_CLASS(this->hspSchema, UI::GUIHSplitter(ui, this->tpTable, 3, false));
+	this->hspSchema = ui->NewHSplitter(this->tpTable, 3, false);
 	NEW_CLASS(this->lbTable, UI::GUIListBox(ui, this->tpTable, false));
 	this->lbTable->SetRect(0, 0, 150, 100, false);
 	this->lbTable->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbTable->HandleSelectionChange(OnTableSelChg, this);
-	NEW_CLASS(this->hspTable, UI::GUIHSplitter(ui, this->tpTable, 3, false));
+	this->hspTable = ui->NewHSplitter(this->tpTable, 3, false);
 	NEW_CLASS(this->lvTable, UI::GUIListView(ui, this->tpTable, UI::GUIListView::LVSTYLE_TABLE, 8));
 	this->lvTable->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvTable->SetFullRowSelect(true);

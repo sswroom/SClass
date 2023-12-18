@@ -30,7 +30,7 @@ namespace SSWR
 			UI::GUIMainMenu *mnuMain;
 
 			UI::GUIListBox *lbConn;
-			UI::GUIHSplitter *hspConn;
+			NotNullPtr<UI::GUIHSplitter> hspConn;
 			UI::GUITabControl *tcMain;
 
 			NotNullPtr<UI::GUITabPage> tpDatabase;
@@ -42,11 +42,11 @@ namespace SSWR
 			NotNullPtr<UI::GUITabPage> tpTable;
 			NotNullPtr<UI::GUIPanel> pnlTable;
 			UI::GUIListBox *lbSchema;
-			UI::GUIHSplitter *hspSchema;
+			NotNullPtr<UI::GUIHSplitter> hspSchema;
 			UI::GUIListBox *lbTable;
-			UI::GUIHSplitter *hspTable;
+			NotNullPtr<UI::GUIHSplitter> hspTable;
 			UI::GUIListView *lvTable;
-			UI::GUIVSplitter *vspTable;
+			NotNullPtr<UI::GUIVSplitter> vspTable;
 			UI::GUIListView *lvTableResult;
 
 			NotNullPtr<UI::GUITabPage> tpSQL;
@@ -55,18 +55,18 @@ namespace SSWR
 			NotNullPtr<UI::GUIButton> btnSQLExec;
 			NotNullPtr<UI::GUIButton> btnSQLFile;
 			UI::GUITextBox *txtSQL;
-			UI::GUIVSplitter *vspSQL;
+			NotNullPtr<UI::GUIVSplitter> vspSQL;
 			UI::GUIListView *lvSQLResult;
 
 			NotNullPtr<UI::GUITabPage> tpMap;
 			NotNullPtr<UI::GUIPanel> pnlMap;
-			UI::GUIHSplitter *hspMap;
+			NotNullPtr<UI::GUIHSplitter> hspMap;
 			UI::GUIMapControl *mapMain;
 			NotNullPtr<UI::GUIPanel> pnlMapTable;
-			UI::GUIVSplitter *vspMapRecord;
+			NotNullPtr<UI::GUIVSplitter> vspMapRecord;
 			UI::GUIListView *lvMapRecord;
 			UI::GUIListBox *lbMapSchema;
-			UI::GUIHSplitter *hspMapTable;
+			NotNullPtr<UI::GUIHSplitter> hspMapTable;
 			UI::GUIListBox *lbMapTable;
 
 			NotNullPtr<UI::GUITabPage> tpVariable;

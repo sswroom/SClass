@@ -62,7 +62,7 @@ SSWR::AVIRead::AVIRPDFObjectForm::AVIRPDFObjectForm(UI::GUIClientControl *parent
 	this->lbObject->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbObject->HandleSelectionChange(OnObjectSelChg, this);
 	this->lbObject->HandleDoubleClicked(OnObjectDblClk, this);
-	NEW_CLASS(this->hspMain, UI::GUIHSplitter(ui, *this, 3, false));
+	this->hspMain = ui->NewHSplitter(*this, 3, false);
 	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, *this));
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
 

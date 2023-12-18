@@ -27,7 +27,7 @@ namespace SSWR
 			UI::GUICheckBox *chkTargetScan;
 			NotNullPtr<UI::GUIButton> btnRequest;
 			UI::GUIListView *lvAnswers;
-			UI::GUIVSplitter *vspAnswers;
+			NotNullPtr<UI::GUIVSplitter> vspAnswers;
 			UI::GUIListView *lvEntries;
 
 			static void __stdcall OnRequestClicked(void *userObj);

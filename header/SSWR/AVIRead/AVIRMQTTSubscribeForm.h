@@ -75,7 +75,7 @@ namespace SSWR
 
 			NotNullPtr<UI::GUITabPage> tpTopic;
 			UI::GUIListView *lvTopic;
-			UI::GUIVSplitter *vspTopic;
+			NotNullPtr<UI::GUIVSplitter> vspTopic;
 			UI::GUIPictureBoxSimple *pbTopic;
 
 			NotNullPtr<UI::GUITabPage> tpLog;

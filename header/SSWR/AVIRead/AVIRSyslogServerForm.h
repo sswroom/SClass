@@ -34,7 +34,7 @@ namespace SSWR
 			UI::GUITextBox *txtPort;
 			NotNullPtr<UI::GUIButton> btnStart;
 			UI::GUIListBox *lbClient;
-			UI::GUIHSplitter *hspClient;
+			NotNullPtr<UI::GUIHSplitter> hspClient;
 			UI::GUITextBox *txtLog;
 			UI::GUIListBox *lbLog;
 

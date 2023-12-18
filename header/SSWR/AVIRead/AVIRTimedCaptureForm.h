@@ -50,7 +50,7 @@ namespace SSWR
 			Media::TimedImageList *timedImageList;
 
 			UI::GUIListBox *lbDevice;
-			UI::GUIHSplitter *hspMain;
+			NotNullPtr<UI::GUIHSplitter> hspMain;
 			UI::GUITabControl *tcMain;
 
 			NotNullPtr<UI::GUITabPage> tpControl;

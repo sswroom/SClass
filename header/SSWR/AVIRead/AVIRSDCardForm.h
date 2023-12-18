@@ -19,7 +19,7 @@ namespace SSWR
 			Data::ArrayList<IO::SDCardInfo*> sdCardList;
 
 			UI::GUIListBox *lbDevices;
-			UI::GUIHSplitter *hspDevices;
+			NotNullPtr<UI::GUIHSplitter> hspDevices;
 			NotNullPtr<UI::GUIPanel> pnlDevices;
 			UI::GUILabel *lblName;
 			UI::GUITextBox *txtName;

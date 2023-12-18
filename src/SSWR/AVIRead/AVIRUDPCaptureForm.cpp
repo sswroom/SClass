@@ -226,7 +226,7 @@ SSWR::AVIRead::AVIRUDPCaptureForm::AVIRUDPCaptureForm(UI::GUIClientControl *pare
 	this->lbData->SetRect(0, 0, 200, 100, false);
 	this->lbData->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbData->HandleSelectionChange(OnDataSelChg, this);
-	NEW_CLASS(this->hspData, UI::GUIHSplitter(ui, this->tpData, 3, false));
+	this->hspData = ui->NewHSplitter(this->tpData, 3, false);
 	NEW_CLASS(this->txtData, UI::GUITextBox(ui, this->tpData, CSTR(""), true));
 	this->txtData->SetReadOnly(true);
 	this->txtData->SetDockType(UI::GUIControl::DOCK_FILL);
@@ -283,7 +283,7 @@ SSWR::AVIRead::AVIRUDPCaptureForm::AVIRUDPCaptureForm(UI::GUIClientControl *pare
 	NEW_CLASS(this->lbMulticastCommon, UI::GUIListBox(ui, this->pnlMulticastCommon, false));
 	this->lbMulticastCommon->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lbMulticastCommon->HandleDoubleClicked(OnMulticastDoubleClk, this);
-	NEW_CLASS(this->hspMulticast, UI::GUIHSplitter(ui, this->tpMulticast, 3, false));
+	this->hspMulticast = ui->NewHSplitter(this->tpMulticast, 3, false);
 	NEW_CLASSNN(this->pnlMulticast, UI::GUIPanel(ui, this->tpMulticast));
 	this->pnlMulticast->SetDockType(UI::GUIControl::DOCK_FILL);
 	NEW_CLASSNN(this->pnlMulticastCtrl, UI::GUIPanel(ui, this->pnlMulticast));

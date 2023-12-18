@@ -37,7 +37,7 @@ namespace SSWR
 			NotNullPtr<UI::GUIPanel> pnlBook;
 			NotNullPtr<UI::GUIPanel> pnlBookDet;
 			UI::GUIListView *lvBook;
-			UI::GUIHSplitter *hspBook;
+			NotNullPtr<UI::GUIHSplitter> hspBook;
 			NotNullPtr<UI::GUIButton> btnBookPaste;
 			UI::GUILabel *lblBookPublish;
 			UI::GUIDateTimePicker *dtpBookPublish;

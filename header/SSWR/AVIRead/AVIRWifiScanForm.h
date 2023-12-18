@@ -28,7 +28,7 @@ namespace SSWR
 			UI::GUILabel *lblResultTime;
 			UI::GUITextBox *txtResultTime;
 			UI::GUIListView *lvWifi;
-			UI::GUIVSplitter *vspWifi;
+			NotNullPtr<UI::GUIVSplitter> vspWifi;
 			UI::GUITextBox *txtWifi;
 
 			static void __stdcall OnScanClicked(void *userObj);

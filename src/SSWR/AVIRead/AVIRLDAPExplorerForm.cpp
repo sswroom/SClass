@@ -325,13 +325,13 @@ SSWR::AVIRead::AVIRLDAPExplorerForm::AVIRLDAPExplorerForm(UI::GUIClientControl *
 	this->lbPath->SetRect(0, 0, 150, 23, false);
 	this->lbPath->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbPath->HandleSelectionChange(OnPathSelChg, this);
-	NEW_CLASS(this->hspPath, UI::GUIHSplitter(ui, *this, 3, false));
+	this->hspPath = ui->NewHSplitter(*this, 3, false);
 	NEW_CLASS(this->lbObjects, UI::GUIListBox(ui, *this, false));
 	this->lbObjects->SetRect(0, 0, 150, 23, false);
 	this->lbObjects->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbObjects->HandleSelectionChange(OnObjectsSelChg, this);
 	this->lbObjects->HandleDoubleClicked(OnObjectsDblClk, this);
-	NEW_CLASS(this->hspObjects, UI::GUIHSplitter(ui, *this, 3, false));
+	this->hspObjects = ui->NewHSplitter(*this, 3, false);
 	NEW_CLASS(this->lvValues, UI::GUIListView(ui, *this, UI::GUIListView::LVSTYLE_TABLE, 2));
 	this->lvValues->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvValues->SetFullRowSelect(true);
