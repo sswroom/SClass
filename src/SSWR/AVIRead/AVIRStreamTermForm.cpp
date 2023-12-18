@@ -287,7 +287,7 @@ SSWR::AVIRead::AVIRStreamTermForm::AVIRStreamTermForm(UI::GUIClientControl *pare
 	this->hspMain = ui->NewHSplitter(*this, 3, false);
 	this->grpSend = ui->NewGroupBox(*this, CSTR("Send"));
 	this->grpSend->SetDockType(UI::GUIControl::DOCK_FILL);
-	NEW_CLASS(this->cboRecvType, UI::GUIComboBox(ui, this->grpRecv, false));
+	this->cboRecvType = ui->NewComboBox(this->grpRecv, false);
 	this->cboRecvType->SetRect(0, 0, 100, 23, false);
 	this->cboRecvType->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->cboRecvType->AddItem(CSTR("Display as Hex"), 0);
@@ -309,7 +309,7 @@ SSWR::AVIRead::AVIRStreamTermForm::AVIRStreamTermForm(UI::GUIClientControl *pare
 	this->btnSend->HandleButtonClick(OnSendClicked, this);
 	NEW_CLASS(this->lblSendLBreak, UI::GUILabel(ui, this->pnlSendOption, CSTR("Line Break")));
 	this->lblSendLBreak->SetRect(0, 24, 100, 23, false);
-	NEW_CLASS(this->cboSendLBreak, UI::GUIComboBox(ui, this->pnlSendOption, false));
+	this->cboSendLBreak = ui->NewComboBox(this->pnlSendOption, false);
 	this->cboSendLBreak->SetRect(100, 24, 100, 23, false);
 	this->cboSendLBreak->AddItem(CSTR("CR+LF"), 0);
 	this->cboSendLBreak->AddItem(CSTR("CR"), 0);
@@ -322,7 +322,7 @@ SSWR::AVIRead::AVIRStreamTermForm::AVIRStreamTermForm(UI::GUIClientControl *pare
 	this->radSendHex->SetRect(100, 0, 100, 23, false);
 	NEW_CLASS(this->txtSendValue, UI::GUITextBox(ui, this->pnlSend, CSTR("")));
 	this->txtSendValue->SetDockType(UI::GUIControl::DOCK_FILL);
-	NEW_CLASS(this->cboSendType, UI::GUIComboBox(ui, this->grpSend, false));
+	this->cboSendType = ui->NewComboBox(this->grpSend, false);
 	this->cboSendType->SetRect(0, 0, 100, 23, false);
 	this->cboSendType->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->cboSendType->AddItem(CSTR("Display as Hex"), 0);

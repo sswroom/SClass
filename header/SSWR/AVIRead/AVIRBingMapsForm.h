@@ -21,7 +21,7 @@ namespace SSWR
 			UI::GUILabel *lblKey;
 			UI::GUITextBox *txtKey;
 			UI::GUILabel *lblImagerySet;
-			UI::GUIComboBox *cboImagerySet;
+			NotNullPtr<UI::GUIComboBox> cboImagerySet;
 			NotNullPtr<UI::GUIButton> btnOK;
 			Map::TileMap *tileMap;
 

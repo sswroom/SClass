@@ -22,7 +22,7 @@ namespace SSWR
 		{
 		private:
 			NotNullPtr<UI::GUIPanel> pnlChannel;
-			UI::GUIComboBox *cboChannel;
+			NotNullPtr<UI::GUIComboBox> cboChannel;
 			UI::GUITextBox *txtChannelId;
 			NotNullPtr<UI::GUIButton> btnChannelAdd;
 			UI::GUIListBox *lbChannels;

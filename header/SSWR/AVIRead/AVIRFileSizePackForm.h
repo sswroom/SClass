@@ -43,7 +43,7 @@ namespace SSWR
 			UI::GUITextBox *txtDir;
 			NotNullPtr<UI::GUIButton> btnStart;
 			UI::GUILabel *lblMaxSize;
-			UI::GUIComboBox *cboMaxSize;
+			NotNullPtr<UI::GUIComboBox> cboMaxSize;
 			UI::GUILabel *lblTotalSize;
 			UI::GUITextBox *txtTotalSize;
 			UI::GUILabel *lblDirName;

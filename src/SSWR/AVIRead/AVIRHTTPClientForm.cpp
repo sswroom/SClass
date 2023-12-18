@@ -1249,7 +1249,7 @@ SSWR::AVIRead::AVIRHTTPClientForm::AVIRHTTPClientForm(UI::GUIClientControl *pare
 	this->chkNoShutdown->SetRect(504, 4, 100, 23, false);
 	NEW_CLASS(this->lblMethod, UI::GUILabel(ui, this->pnlRequest, CSTR("Method")));
 	this->lblMethod->SetRect(4, 28, 100, 23, false);
-	NEW_CLASS(cboMethod, UI::GUIComboBox(ui, this->pnlRequest, false));
+	this->cboMethod = ui->NewComboBox(this->pnlRequest, false);
 	this->cboMethod->SetRect(104, 28, 100, 23, false);
 	this->cboMethod->AddItem(CSTR("GET"), (void*)Net::WebUtil::RequestMethod::HTTP_GET);
 	this->cboMethod->AddItem(CSTR("POST"), (void*)Net::WebUtil::RequestMethod::HTTP_POST);
@@ -1301,7 +1301,7 @@ SSWR::AVIRead::AVIRHTTPClientForm::AVIRHTTPClientForm(UI::GUIClientControl *pare
 	this->btnDataStr->HandleButtonClick(OnDataStrClicked, this);
 	NEW_CLASS(this->lblPostFormat, UI::GUILabel(ui, this->pnlRequest, CSTR("Post Format")));
 	this->lblPostFormat->SetRect(4, 196, 100, 23, false);
-	NEW_CLASS(this->cboPostFormat, UI::GUIComboBox(ui, this->pnlRequest, false));
+	this->cboPostFormat = ui->NewComboBox(this->pnlRequest, false);
 	this->cboPostFormat->SetRect(104, 196, 150, 23, false);
 	this->cboPostFormat->AddItem(CSTR("application/x-www-form-urlencoded"), 0);
 	this->cboPostFormat->AddItem(CSTR("application/json"), 0);

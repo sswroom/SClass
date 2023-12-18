@@ -22,11 +22,11 @@ namespace SSWR
 			UInt64 currDataSize;
 
 			UI::GUILabel *lblIP;
-			UI::GUIComboBox *cboIP;
+			NotNullPtr<UI::GUIComboBox> cboIP;
 			UI::GUILabel *lblType;
-			UI::GUIComboBox *cboType;
+			NotNullPtr<UI::GUIComboBox> cboType;
 			UI::GUILabel *lblFormat;
-			UI::GUIComboBox *cboFormat;
+			NotNullPtr<UI::GUIComboBox> cboFormat;
 			UI::GUILabel *lblFileName;
 			UI::GUITextBox *txtFileName;
 			NotNullPtr<UI::GUIButton> btnAutoGen;

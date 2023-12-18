@@ -138,7 +138,7 @@ SSWR::AVIRead::AVIRCppEnumForm::AVIRCppEnumForm(UI::GUIClientControl *parent, No
 	this->pnlCtrl->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->lblType, UI::GUILabel(ui, this->pnlCtrl, CSTR("Type")));
 	this->lblType->SetRect(4, 4, 100, 23, false);
-	NEW_CLASS(this->cboType, UI::GUIComboBox(ui, this->pnlCtrl, false));
+	this->cboType = ui->NewComboBox(this->pnlCtrl, false);
 	this->cboType->SetRect(104, 4, 150, 23, false);
 	this->cboType->AddItem(CSTR("Switch Cases"), 0);
 	this->cboType->AddItem(CSTR("Switch Cases with return"), 0);

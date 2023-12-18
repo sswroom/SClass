@@ -26,7 +26,7 @@ enum MenuItem
 	MNU_CERT_EXT_KEY = 601
 };
 
-UOSInt SSWR::AVIRead::AVIRASN1DataForm::AddHash(UI::GUIComboBox *cbo, Crypto::Hash::HashType hashType, Crypto::Hash::HashType targetType)
+UOSInt SSWR::AVIRead::AVIRASN1DataForm::AddHash(NotNullPtr<UI::GUIComboBox> cbo, Crypto::Hash::HashType hashType, Crypto::Hash::HashType targetType)
 {
 	UOSInt i = cbo->AddItem(Crypto::Hash::HashTypeGetName(hashType), (void*)(OSInt)hashType);
 	if (hashType == targetType)
@@ -34,7 +34,7 @@ UOSInt SSWR::AVIRead::AVIRASN1DataForm::AddHash(UI::GUIComboBox *cbo, Crypto::Ha
 	return i;
 }
 
-void SSWR::AVIRead::AVIRASN1DataForm::AddHashTypes(UI::GUIComboBox *cbo, Crypto::Hash::HashType hashType)
+void SSWR::AVIRead::AVIRASN1DataForm::AddHashTypes(NotNullPtr<UI::GUIComboBox> cbo, Crypto::Hash::HashType hashType)
 {
 	AddHash(cbo, Crypto::Hash::HashType::MD5, hashType);
 	AddHash(cbo, Crypto::Hash::HashType::SHA1, hashType);
@@ -691,7 +691,7 @@ SSWR::AVIRead::AVIRASN1DataForm::AVIRASN1DataForm(UI::GUIClientControl *parent, 
 			this->tpVerify = this->tcMain->AddTabPage(CSTR("Verify"));
 			NEW_CLASS(this->lblVerifyHash, UI::GUILabel(ui, this->tpVerify, CSTR("Hash Type")));
 			this->lblVerifyHash->SetRect(4, 4, 100, 23, false);
-			NEW_CLASS(this->cboVerifyHash, UI::GUIComboBox(ui, this->tpVerify, false));
+			this->cboVerifyHash = ui->NewComboBox(this->tpVerify, false);
 			this->cboVerifyHash->SetRect(104, 4, 200, 23, false);
 			AddHashTypes(this->cboVerifyHash, hashType);
 			NEW_CLASS(this->lblVerifyPayloadFile, UI::GUILabel(ui, this->tpVerify, CSTR("Payload File")));
@@ -732,21 +732,21 @@ SSWR::AVIRead::AVIRASN1DataForm::AVIRASN1DataForm(UI::GUIClientControl *parent, 
 			this->tpEncrypt = this->tcMain->AddTabPage(CSTR("Encrypt"));
 			NEW_CLASS(this->lblEncryptInputType, UI::GUILabel(ui, this->tpEncrypt, CSTR("Input Type")));
 			this->lblEncryptInputType->SetRect(4, 4, 100, 23, false);
-			NEW_CLASS(this->cboEncryptInputType, UI::GUIComboBox(ui, this->tpEncrypt, false));
+			this->cboEncryptInputType = ui->NewComboBox(this->tpEncrypt, false);
 			this->cboEncryptInputType->SetRect(104, 4, 100, 23, false);
 			this->cboEncryptInputType->AddItem(CSTR("Base64"), 0);
 			this->cboEncryptInputType->AddItem(CSTR("Hex"), 0);
 			this->cboEncryptInputType->SetSelectedIndex(0);
 			NEW_CLASS(this->lblEncryptOutputType, UI::GUILabel(ui, this->tpEncrypt, CSTR("Output Type")));
 			this->lblEncryptOutputType->SetRect(4, 28, 100, 23, false);
-			NEW_CLASS(this->cboEncryptOutputType, UI::GUIComboBox(ui, this->tpEncrypt, false));
+			this->cboEncryptOutputType = ui->NewComboBox(this->tpEncrypt, false);
 			this->cboEncryptOutputType->SetRect(104, 28, 100, 23, false);
 			this->cboEncryptOutputType->AddItem(CSTR("Base64"), 0);
 			this->cboEncryptOutputType->AddItem(CSTR("Hex"), 0);
 			this->cboEncryptOutputType->SetSelectedIndex(0);
 			NEW_CLASS(this->lblEncryptRSAPadding, UI::GUILabel(ui, this->tpEncrypt, CSTR("RSA Padding")));
 			this->lblEncryptRSAPadding->SetRect(4, 52, 100, 23, false);
-			NEW_CLASS(this->cboEncryptRSAPadding, UI::GUIComboBox(ui, this->tpEncrypt, false));
+			this->cboEncryptRSAPadding = ui->NewComboBox(this->tpEncrypt, false);
 			this->cboEncryptRSAPadding->SetRect(104, 52, 150, 23, false);
 			CBOADDENUM(this->cboEncryptRSAPadding, Crypto::Encrypt::RSACipher::Padding, PKCS1);
 			CBOADDENUM(this->cboEncryptRSAPadding, Crypto::Encrypt::RSACipher::Padding, NoPadding);

@@ -27,7 +27,7 @@ namespace SSWR
 			UI::GUITextBox *txtServer;
 			UI::GUILabel *lblRequest;
 			UI::GUITextBox *txtRequest;
-			UI::GUIComboBox *cboRequest;
+			NotNullPtr<UI::GUIComboBox> cboRequest;
 //			UI::GUIRadioButton *radRequestNormal;
 //			UI::GUIRadioButton *radRequestMX;
 			NotNullPtr<UI::GUIButton> btnRequest;

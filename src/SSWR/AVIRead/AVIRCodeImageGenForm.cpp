@@ -72,7 +72,7 @@ SSWR::AVIRead::AVIRCodeImageGenForm::AVIRCodeImageGenForm(UI::GUIClientControl *
 	this->pbMain->SetDockType(UI::GUIControl::DOCK_FILL);
 	NEW_CLASS(this->lblCodeType, UI::GUILabel(ui, this->pnlMain, CSTR("Code Type")));
 	this->lblCodeType->SetRect(4, 4, 100, 23, false);
-	NEW_CLASS(this->cboCodeType, UI::GUIComboBox(ui, this->pnlMain, false));
+	this->cboCodeType = ui->NewComboBox(this->pnlMain, false);
 	this->cboCodeType->SetRect(104, 4, 100, 23, false);
 	this->cboCodeType->HandleSelectionChange(OnCodeTypeChanged, this);
 	NEW_CLASS(this->lblCodeSize, UI::GUILabel(ui, this->pnlMain, CSTR("Code Width")));

@@ -15,9 +15,9 @@ namespace SSWR
 		{
 		private:
 			UI::GUILabel *lblKeyAlg;
-			UI::GUIComboBox *cboKeyAlg;
+			NotNullPtr<UI::GUIComboBox> cboKeyAlg;
 			UI::GUILabel *lblEncAlg;
-			UI::GUIComboBox *cboEncAlg;
+			NotNullPtr<UI::GUIComboBox> cboEncAlg;
 			UI::GUILabel *lblPassword;
 			UI::GUITextBox *txtPassword;
 			UI::GUILabel *lblMessage;

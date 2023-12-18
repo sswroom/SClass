@@ -34,7 +34,7 @@ namespace SSWR
 
 			NotNullPtr<UI::GUIPanel> pnlDevice;
 			UI::GUILabel *lblDeviceSerial;
-			UI::GUIComboBox *cboDeviceSerial;
+			NotNullPtr<UI::GUIComboBox> cboDeviceSerial;
 			NotNullPtr<UI::GUIButton> btnDeviceSerial;
 			UI::GUILabel *lblDeviceStatus;
 			UI::GUITextBox *txtDeviceStatus;
@@ -71,14 +71,14 @@ namespace SSWR
 
 			NotNullPtr<UI::GUITabPage> tpPhoneBook;
 			NotNullPtr<UI::GUIPanel> pnlPhone;
-			UI::GUIComboBox *cboPhoneStorage;
+			NotNullPtr<UI::GUIComboBox> cboPhoneStorage;
 			NotNullPtr<UI::GUIButton> btnPhoneRead;
 			UI::GUILabel *lblPhoneStatus;
 			UI::GUIListView *lvPhone;
 
 			NotNullPtr<UI::GUITabPage> tpSMS;
 			NotNullPtr<UI::GUIPanel> pnlSMS;
-			UI::GUIComboBox *cboSMSStorage;
+			NotNullPtr<UI::GUIComboBox> cboSMSStorage;
 			NotNullPtr<UI::GUIButton> btnSMSRead;
 			UI::GUILabel *lblSMSC;
 			UI::GUITextBox *txtSMSC;

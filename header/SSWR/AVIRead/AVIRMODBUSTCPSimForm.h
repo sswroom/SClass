@@ -43,7 +43,7 @@ namespace SSWR
 			NotNullPtr<UI::GUIGroupBox> grpDev;
 			UI::GUILabel *lblAddr;
 			UI::GUITextBox *txtAddr;
-			UI::GUIComboBox *cboDevType;
+			NotNullPtr<UI::GUIComboBox> cboDevType;
 			NotNullPtr<UI::GUIButton> btnDev;
 			UI::GUILabel *lblDelay;
 			UI::GUITextBox *txtDelay;

@@ -55,7 +55,7 @@ SSWR::AVIRead::AVIRSelCANForm::AVIRSelCANForm(UI::GUIClientControl *parent, NotN
 	this->tpAXCAN = this->tcMain->AddTabPage(CSTR("AXCAN"));
 	NEW_CLASS(this->lblAXCANBitRate, UI::GUILabel(ui, this->tpAXCAN, CSTR("BitRate")));
 	this->lblAXCANBitRate->SetRect(4, 4, 100, 23, false);
-	NEW_CLASS(this->cboAXCANBitRate, UI::GUIComboBox(ui, this->tpAXCAN, false));
+	this->cboAXCANBitRate = ui->NewComboBox(this->tpAXCAN, false);
 	this->cboAXCANBitRate->SetRect(104, 4, 100, 23, false);
 	this->cboAXCANBitRate->AddItem(CSTR("5K"), (void*)IO::Device::AXCAN::CANBitRate::BR_5K);
 	this->cboAXCANBitRate->AddItem(CSTR("10K"), (void*)IO::Device::AXCAN::CANBitRate::BR_10K);

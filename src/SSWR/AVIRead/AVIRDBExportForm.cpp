@@ -99,7 +99,7 @@ SSWR::AVIRead::AVIRDBExportForm::AVIRDBExportForm(UI::GUIClientControl *parent, 
 	this->lvTables->HandleDblClk(OnTablesDblClk, this);
 	NEW_CLASS(this->lblDBType, UI::GUILabel(ui, this->pnlMain, CSTR("DB Type")));
 	this->lblDBType->SetRect(0, 0, 100, 23, false);
-	NEW_CLASS(this->cboDBType, UI::GUIComboBox(ui, this->pnlMain, false));
+	this->cboDBType = ui->NewComboBox(this->pnlMain, false);
 	this->cboDBType->SetRect(100, 0, 100, 23, false);
 	this->cboDBType->AddItem(CSTR("MySQL"), (void*)DB::SQLType::MySQL);
 	this->cboDBType->AddItem(CSTR("SQL Server"), (void*)DB::SQLType::MSSQL);

@@ -29,7 +29,7 @@ namespace SSWR
 			NotNullPtr<UI::GUIButton> btnStore;
 			UI::GUILabel *lblInfo;
 			UI::GUILabel *lblDblClk;
-			UI::GUIComboBox *cboDblClk;
+			NotNullPtr<UI::GUIComboBox> cboDblClk;
 			UI::GUITextBox *txtFileIE;
 			NotNullPtr<UI::GUIVSplitter> vspFile;
 			UI::GUIListView *lvContent;

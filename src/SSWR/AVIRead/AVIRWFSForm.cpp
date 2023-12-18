@@ -64,7 +64,7 @@ SSWR::AVIRead::AVIRWFSForm::AVIRWFSForm(UI::GUIClientControl *parent, NotNullPtr
 	this->txtWFSURL->SetRect(104, 4, 500, 23, false);
 	NEW_CLASS(this->lblWFSVersion, UI::GUILabel(ui, *this, CSTR("Version")));
 	this->lblWFSVersion->SetRect(4, 28, 100, 23, false);
-	NEW_CLASS(this->cboWFSVersion, UI::GUIComboBox(ui, *this, false));
+	this->cboWFSVersion = ui->NewComboBox(*this, false);
 	this->cboWFSVersion->SetRect(104, 28, 100, 23, false);
 	this->cboWFSVersion->AddItem(CSTR("Any"), (void*)Map::WebFeatureService::Version::ANY);
 	this->cboWFSVersion->AddItem(CSTR("2.0.0"), (void*)Map::WebFeatureService::Version::V2_0_0);
@@ -81,7 +81,7 @@ SSWR::AVIRead::AVIRWFSForm::AVIRWFSForm(UI::GUIClientControl *parent, NotNullPtr
 	this->txtStatus->SetReadOnly(true);
 	NEW_CLASS(this->lblFeature, UI::GUILabel(ui, *this, CSTR("Feature")));
 	this->lblFeature->SetRect(4, 100, 100, 23, false);
-	NEW_CLASS(this->cboFeature, UI::GUIComboBox(ui, *this, false));
+	this->cboFeature = ui->NewComboBox(*this, false);
 	this->cboFeature->SetRect(104, 100, 200, 23, false);
 	this->cboFeature->HandleSelectionChange(OnFeatureSelChg, this);
 	this->btnOK = ui->NewButton(*this, CSTR("OK"));

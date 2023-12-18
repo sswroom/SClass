@@ -24,7 +24,7 @@ namespace SSWR
 			UI::GUITextBox *txtOFile;
 			NotNullPtr<UI::GUIButton> btnOFile;
 			UI::GUILabel *lblType;
-			UI::GUIComboBox *cboType;
+			NotNullPtr<UI::GUIComboBox> cboType;
 			UI::GUILabel *lblSuffix;
 			UI::GUITextBox *txtSuffix;
 			NotNullPtr<UI::GUIButton> btnExtract;

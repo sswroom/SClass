@@ -303,7 +303,7 @@ SSWR::AVIRead::AVIRLDAPExplorerForm::AVIRLDAPExplorerForm(UI::GUIClientControl *
 	this->txtPort->SetRect(104, 28, 120, 23, false);
 	NEW_CLASS(this->lblAuthType, UI::GUILabel(ui, this->pnlRequest, CSTR("Auth Type")));
 	this->lblAuthType->SetRect(4, 52, 100, 23, false);
-	NEW_CLASS(this->cboAuthType, UI::GUIComboBox(ui, this->pnlRequest, false));
+	this->cboAuthType = ui->NewComboBox(this->pnlRequest, false);
 	this->cboAuthType->SetRect(104, 52, 120, 23, false);
 	this->cboAuthType->AddItem(CSTR("Anonymous"), (void*)1);
 	this->cboAuthType->AddItem(CSTR("Simple Password"), (void*)2);

@@ -206,11 +206,11 @@ SSWR::AVIRead::AVIRTVControlForm::AVIRTVControlForm(UI::GUIClientControl *parent
 	this->pnlPort->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->lblTVType, UI::GUILabel(ui, this->pnlPort, CSTR("TV Type")));
 	this->lblTVType->SetRect(8, 8, 100, 23, false);
-	NEW_CLASS(this->cboTVType, UI::GUIComboBox(ui, this->pnlPort, false));
+	this->cboTVType = ui->NewComboBox(this->pnlPort, false);
 	this->cboTVType->SetRect(108, 8,  300, 23, false);
 	NEW_CLASS(this->lblPort, UI::GUILabel(ui, this->pnlPort, CSTR("Port")));
 	this->lblPort->SetRect(8, 32, 100, 23, false);
-	NEW_CLASS(this->cboPort, UI::GUIComboBox(ui, this->pnlPort, false));
+	this->cboPort = ui->NewComboBox(this->pnlPort, false);
 	this->cboPort->SetRect(108, 32, 100, 23, false);
 	NEW_CLASS(this->chkLogFile, UI::GUICheckBox(ui, this->pnlPort, CSTR("Log To File"), false));
 	this->chkLogFile->SetRect(208, 32, 100, 23, false);
@@ -266,7 +266,7 @@ SSWR::AVIRead::AVIRTVControlForm::AVIRTVControlForm(UI::GUIClientControl *parent
 
 	NEW_CLASS(this->lblCommand, UI::GUILabel(ui, this->tpControl, CSTR("Command")));
 	this->lblCommand->SetRect(8, 8, 100, 23, false);
-	NEW_CLASS(this->cboCommand, UI::GUIComboBox(ui, this->tpControl, false));
+	this->cboCommand = ui->NewComboBox(this->tpControl, false);
 	this->cboCommand->SetRect(108, 8, 150, 23, false);
 	this->cboCommand->HandleSelectionChange(OnCmdChanged, this);
 	this->btnCommand = ui->NewButton(this->tpControl, CSTR("Send"));

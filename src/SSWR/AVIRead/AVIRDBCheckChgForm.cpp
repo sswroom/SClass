@@ -1984,15 +1984,15 @@ SSWR::AVIRead::AVIRDBCheckChgForm::AVIRDBCheckChgForm(UI::GUIClientControl *pare
 	this->btnDataFile->HandleButtonClick(OnDataFileClk, this);
 	NEW_CLASSNN(this->lblDataTable, UI::GUILabel(ui, this->grpData, CSTR("Table")));
 	this->lblDataTable->SetRect(0, 48, 100, 23, false);
-	NEW_CLASSNN(this->cboDataTable, UI::GUIComboBox(ui, this->grpData, false));
+	this->cboDataTable = ui->NewComboBox(this->grpData, false);
 	this->cboDataTable->SetRect(100, 48, 200, 23, false);
 	NEW_CLASSNN(this->lblKeyCol, UI::GUILabel(ui, this->grpData, CSTR("Key Column")));
 	this->lblKeyCol->SetRect(0, 72, 100, 23, false);
-	NEW_CLASSNN(this->cboKeyCol, UI::GUIComboBox(ui, this->grpData, false));
+	this->cboKeyCol = ui->NewComboBox(this->grpData, false);
 	this->cboKeyCol->SetRect(100, 72, 200, 23, false);
 	NEW_CLASSNN(this->lblNullCol, UI::GUILabel(ui, this->grpData, CSTR("Null Column")));
 	this->lblNullCol->SetRect(0, 96, 100, 23, false);
-	NEW_CLASSNN(this->cboNullCol, UI::GUIComboBox(ui, this->grpData, false));
+	this->cboNullCol = ui->NewComboBox(this->grpData, false);
 	this->cboNullCol->SetRect(100, 96, 200, 23, false);
 	this->cboNullCol->AddItem(CSTR("Empty"), 0);
 	this->cboNullCol->AddItem(CSTR("\"NULL\""), 0);
@@ -2037,7 +2037,7 @@ SSWR::AVIRead::AVIRDBCheckChgForm::AVIRDBCheckChgForm(UI::GUIClientControl *pare
 
 	NEW_CLASSNN(this->lblDBType, UI::GUILabel(ui, *this, CSTR("SQL Type")));
 	this->lblDBType->SetRect(0, 432, 100, 23, false);
-	NEW_CLASSNN(this->cboDBType, UI::GUIComboBox(ui, *this, false));
+	this->cboDBType = ui->NewComboBox(*this, false);
 	this->cboDBType->SetRect(100, 432, 200, 23, false);
 	this->cboDBType->AddItem(CSTR("MySQL"), (void*)DB::SQLType::MySQL);
 	this->cboDBType->AddItem(CSTR("SQL Server"), (void*)DB::SQLType::MSSQL);

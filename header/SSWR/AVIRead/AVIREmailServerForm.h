@@ -39,7 +39,7 @@ namespace SSWR
 			UI::GUILabel *lblSMTPPort;
 			UI::GUITextBox *txtSMTPPort;
 			UI::GUILabel *lblSMTPType;
-			UI::GUIComboBox *cboSMTPType;
+			NotNullPtr<UI::GUIComboBox> cboSMTPType;
 			NotNullPtr<UI::GUIButton> btnSMTPStart;
 			NotNullPtr<UI::GUIButton> btnLogFile;
 

@@ -8,64 +8,51 @@ namespace UI
 {
 	class GUIComboBox : public GUIControl
 	{
-	private:
-		struct ClassData;
-		ClassData *clsData;
-		
+	protected:
 		Data::ArrayList<UI::UIEvent> selChgHdlrs;
 		Data::ArrayList<void *> selChgObjs;
-		UOSInt minVisible;
-		Data::ArrayList<void *> items;
 		Data::ArrayListStringNN itemTexts;
-		Bool allowEdit;
 		Bool autoComplete;
 		UOSInt lastTextLeng;
 		Bool nonUIEvent;
 
 	public:
-		GUIComboBox(NotNullPtr<GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, Bool allowEditing);
+		GUIComboBox(NotNullPtr<GUICore> ui, NotNullPtr<UI::GUIClientControl> parent);
 		virtual ~GUIComboBox();
 
 		void EventSelectionChange();
 		void EventTextChanged();
 
-		virtual void SetText(Text::CStringNN text);
-		virtual UTF8Char *GetText(UTF8Char *buff);
-		virtual Bool GetText(NotNullPtr<Text::StringBuilderUTF8> sb);
+		virtual void SetText(Text::CStringNN text) = 0;
+		virtual UTF8Char *GetText(UTF8Char *buff) = 0;
+		virtual Bool GetText(NotNullPtr<Text::StringBuilderUTF8> sb) = 0;
 
-		void BeginUpdate();
-		void EndUpdate();
-		UOSInt AddItem(NotNullPtr<Text::String> itemText, void *itemObj);
-		UOSInt AddItem(Text::CStringNN itemText, void *itemObj);
-		UOSInt InsertItem(UOSInt index, NotNullPtr<Text::String> itemText, void *itemObj);
-		UOSInt InsertItem(UOSInt index, Text::CStringNN itemText, void *itemObj);
-		void *RemoveItem(UOSInt index);
-		void ClearItems();
-		UOSInt GetCount();
-		void SetSelectedIndex(UOSInt index);
-		UOSInt GetSelectedIndex();
+		virtual void BeginUpdate() = 0;
+		virtual void EndUpdate() = 0;
+		virtual UOSInt AddItem(NotNullPtr<Text::String> itemText, void *itemObj) = 0;
+		virtual UOSInt AddItem(Text::CStringNN itemText, void *itemObj) = 0;
+		virtual UOSInt InsertItem(UOSInt index, NotNullPtr<Text::String> itemText, void *itemObj) = 0;
+		virtual UOSInt InsertItem(UOSInt index, Text::CStringNN itemText, void *itemObj) = 0;
+		virtual void *RemoveItem(UOSInt index) = 0;
+		virtual void ClearItems() = 0;
+		virtual UOSInt GetCount() = 0;
+		virtual void SetSelectedIndex(UOSInt index) = 0;
+		virtual UOSInt GetSelectedIndex() = 0;
+		virtual void *GetSelectedItem() = 0;
+		virtual void *GetItem(UOSInt index) = 0;
+
 		UTF8Char *GetSelectedItemText(UTF8Char *buff);
-		void *GetSelectedItem();
 		UTF8Char *GetItemText(UTF8Char *buff, UOSInt index);
-		void *GetItem(UOSInt index);
-
-		virtual Math::Size2DDbl GetSize();
-		virtual void SetArea(Double left, Double top, Double right, Double bottom, Bool updateScn);
-
 		virtual Text::CStringNN GetObjectClass() const;
-		virtual OSInt OnNotify(UInt32 code, void *lParam);
+
+		virtual Math::Size2DDbl GetSize() = 0;
+		virtual void SetArea(Double left, Double top, Double right, Double bottom, Bool updateScn) = 0;
+		virtual OSInt OnNotify(UInt32 code, void *lParam) = 0;
+		virtual void UpdatePos(Bool redraw) = 0;
+		virtual void SetTextSelection(UOSInt startPos, UOSInt endPos) = 0;
 
 		virtual void HandleSelectionChange(UI::UIEvent hdlr, void *userObj);
-
-		virtual void UpdatePos(Bool redraw);
-
 		void SetAutoComplete(Bool autoComplete);
-		void SetTextSelection(UOSInt startPos, UOSInt endPos);
-		UOSInt GetListMinVisible();
-		Bool SetListMinVisible(UOSInt itemCount);
-	private:
-		UOSInt GetSelectionHeight();
-		Bool SetListItemHeight(UOSInt itemHeight);
 	};
 }
 #endif

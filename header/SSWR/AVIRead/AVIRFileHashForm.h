@@ -31,7 +31,7 @@ namespace SSWR
 		private:
 			NotNullPtr<UI::GUIPanel> pnlCheckType;
 			UI::GUILabel *lblCheckType;
-			UI::GUIComboBox *cboCheckType;
+			NotNullPtr<UI::GUIComboBox> cboCheckType;
 			UI::GUITabControl *tcMain;
 			NotNullPtr<UI::GUITabPage> tpStatus;
 			NotNullPtr<UI::GUITabPage> tpTasks;

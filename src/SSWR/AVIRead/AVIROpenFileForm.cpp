@@ -66,7 +66,7 @@ SSWR::AVIRead::AVIROpenFileForm::AVIROpenFileForm(UI::GUIClientControl *parent, 
 	this->btnBrowse->HandleButtonClick(OnBrowseClicked, this);
 	NEW_CLASS(this->lblType, UI::GUILabel(ui, *this, CSTR("Type")));
 	this->lblType->SetRect(8, 40, 100, 23, false);
-	NEW_CLASS(this->cboType, UI::GUIComboBox(ui, *this, false));
+	this->cboType = ui->NewComboBox(*this, false);
 	this->cboType->SetRect(108, 40, 200, 23, false);
 	this->btnOK = ui->NewButton(*this, CSTR("&Ok"));
 	this->btnOK->SetRect(240, 76, 75, 23, false);

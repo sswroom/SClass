@@ -26,16 +26,16 @@ namespace SSWR
 
 			NotNullPtr<UI::GUIPanel> pnlPinType;
 			UI::GUILabel *lblPinType;
-			UI::GUIComboBox *cboPinType;
+			NotNullPtr<UI::GUIComboBox> cboPinType;
 			UI::GUITabControl *tcConfig;
 
 			NotNullPtr<UI::GUITabPage> tpGPIO;
 			UI::GUILabel *lblGPIO;
-			UI::GUIComboBox *cboGPIO;
+			NotNullPtr<UI::GUIComboBox> cboGPIO;
 
 			NotNullPtr<UI::GUITabPage> tpVirtualPin;
 			UI::GUILabel *lblVirtualPin;
-			UI::GUIComboBox *cboVirtualPin;
+			NotNullPtr<UI::GUIComboBox> cboVirtualPin;
 
 			NotNullPtr<UI::GUIPanel> pnlButtons;
 			NotNullPtr<UI::GUIButton> btnOK;

@@ -210,7 +210,7 @@ SSWR::AVIRead::AVIRMODBUSTCPSimForm::AVIRMODBUSTCPSimForm(UI::GUIClientControl *
 	this->lblAddr->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtAddr, UI::GUITextBox(ui, this->grpDev, CSTR("1")));
 	this->txtAddr->SetRect(104, 4, 100, 23, false);
-	NEW_CLASS(this->cboDevType, UI::GUIComboBox(ui, this->grpDev, false));
+	this->cboDevType = ui->NewComboBox(this->grpDev, false);
 	this->cboDevType->SetRect(204, 4, 100, 23, false);
 	this->btnDev = ui->NewButton(this->grpDev, CSTR("Add"));
 	this->btnDev->SetRect(304, 4, 75, 23, false);

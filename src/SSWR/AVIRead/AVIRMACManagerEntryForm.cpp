@@ -52,7 +52,7 @@ SSWR::AVIRead::AVIRMACManagerEntryForm::AVIRMACManagerEntryForm(UI::GUIClientCon
 	this->txtMAC->SetReadOnly(true);
 	NEW_CLASS(this->lblName, UI::GUILabel(ui, *this, CSTR("Name")));
 	this->lblName->SetRect(4, 28, 100, 23, false);
-	NEW_CLASS(this->cboName, UI::GUIComboBox(ui, *this, true));
+	this->cboName = ui->NewComboBox(*this, true);
 	this->cboName->SetRect(104, 28, 400, 23, false);
 	this->cboName->SetAutoComplete(true);
 	this->btnCancel = ui->NewButton(*this, CSTR("Cancel"));

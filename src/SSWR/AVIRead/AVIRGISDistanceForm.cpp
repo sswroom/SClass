@@ -158,7 +158,7 @@ SSWR::AVIRead::AVIRGISDistanceForm::AVIRGISDistanceForm(UI::GUIClientControl *pa
 	NEW_CLASS(this->txtDistance, UI::GUITextBox(ui, *this, CSTR("")));
 	this->txtDistance->SetRect(104, 52, 140, 23, false);
 	this->txtDistance->SetReadOnly(true);
-	NEW_CLASS(this->cboDistanceUnit, UI::GUIComboBox(ui, *this, false));
+	this->cboDistanceUnit = ui->NewComboBox(*this, false);
 	this->cboDistanceUnit->SetRect(244, 52, 60, 23, false);
 	this->cboDistanceUnit->HandleSelectionChange(OnDistanceUnitChg, this);
 	

@@ -94,8 +94,8 @@ SSWR::AVIRead::AVIRExportParamForm::AVIRExportParamForm(UI::GUIClientControl *pa
 		}
 		else if (pi.paramType == ::IO::FileExporter::ParamType::SELECTION)
 		{
-			UI::GUIComboBox *cbo;
-			NEW_CLASS(cbo, UI::GUIComboBox(ui, *this, false));
+			NotNullPtr<UI::GUIComboBox> cbo;
+			cbo = ui->NewComboBox(*this, false);
 
 			UOSInt j;
 			j = 0;
@@ -106,7 +106,7 @@ SSWR::AVIRead::AVIRExportParamForm::AVIRExportParamForm(UI::GUIClientControl *pa
 			}
 			cbo->SetRect(140, (Int32)(i * 24), 120, 23, false);
 			cbo->SetSelectedIndex((UOSInt)this->exporter->GetParamSel(this->param, i));
-			this->ctrls[i] = cbo;
+			this->ctrls[i] = cbo.Ptr();
 		}
 		i++;
 	}

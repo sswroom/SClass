@@ -23,7 +23,7 @@ namespace SSWR
 
 			NotNullPtr<UI::GUIPanel> pnlControl;
 			UI::GUILabel *lblType;
-			UI::GUIComboBox *cboType;
+			NotNullPtr<UI::GUIComboBox> cboType;
 			NotNullPtr<UI::GUIButton> btnOk;
 			NotNullPtr<UI::GUIButton> btnCancel;
 			UI::GUIPictureBox *pbImage;

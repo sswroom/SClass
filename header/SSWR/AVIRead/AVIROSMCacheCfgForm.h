@@ -17,7 +17,7 @@ namespace SSWR
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			Optional<Net::SSLEngine> ssl;
 			UI::GUILabel *lblMapType;
-			UI::GUIComboBox *cboMapType;
+			NotNullPtr<UI::GUIComboBox> cboMapType;
 			UI::GUILabel *lblHTTPPort;
 			UI::GUITextBox *txtHTTPPort;
 

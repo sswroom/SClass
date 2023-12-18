@@ -38,8 +38,6 @@ UI/GUICheckedListBox.h:
 @GUICheckedListBoxWin.o
 UI/GUIClientControl.h:
 @GUIClientControlWin.o
-UI/GUIComboBox.h:
-@GUIComboBoxWin.o
 UI/GUIControl.h:
 @GUIControlWin.o
 UI/GUICore.h:

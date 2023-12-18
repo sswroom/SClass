@@ -33,7 +33,7 @@ namespace SSWR
 		private:
 			NotNullPtr<UI::GUIPanel> pnlCtrl;
 			UI::GUILabel *lblAdapter;
-			UI::GUIComboBox *cboAdapter;
+			NotNullPtr<UI::GUIComboBox> cboAdapter;
 			NotNullPtr<UI::GUIButton> btnScan;
 			UI::GUIListView *lvARP;
 

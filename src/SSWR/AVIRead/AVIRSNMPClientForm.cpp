@@ -118,7 +118,7 @@ SSWR::AVIRead::AVIRSNMPClientForm::AVIRSNMPClientForm(UI::GUIClientControl *pare
 	this->txtOID->SetRect(104, 52, 200, 23, false);
 	NEW_CLASS(this->lblCommandType, UI::GUILabel(ui, this->pnlRequest, CSTR("Command Type")));
 	this->lblCommandType->SetRect(4, 76, 100, 23, false);
-	NEW_CLASS(this->cboCommandType, UI::GUIComboBox(ui, this->pnlRequest, false));
+	this->cboCommandType = ui->NewComboBox(this->pnlRequest, false);
 	this->cboCommandType->SetRect(104, 76, 120, 23, false);
 	this->cboCommandType->AddItem(CSTR("GetRequest"), (void*)1);
 	this->cboCommandType->AddItem(CSTR("GetNextRequest"), (void*)2);

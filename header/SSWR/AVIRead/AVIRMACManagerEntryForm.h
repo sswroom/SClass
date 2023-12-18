@@ -19,7 +19,7 @@ namespace SSWR
 			UI::GUILabel *lblMAC;
 			UI::GUITextBox *txtMAC;
 			UI::GUILabel *lblName;
-			UI::GUIComboBox *cboName;
+			NotNullPtr<UI::GUIComboBox> cboName;
 			NotNullPtr<UI::GUIButton> btnCancel;
 			NotNullPtr<UI::GUIButton> btnOK;
 			NotNullPtr<Text::String> name;

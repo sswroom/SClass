@@ -195,7 +195,7 @@ SSWR::AVIRead::AVIRLUTForm::AVIRLUTForm(UI::GUIClientControl *parent, NotNullPtr
 	NEW_CLASSNN(this->pnlValues, UI::GUIPanel(ui, this->tpValues));
 	this->pnlValues->SetRect(0, 0, 100, 32, false);
 	this->pnlValues->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->cboChannels, UI::GUIComboBox(ui, this->pnlValues, false));
+	this->cboChannels = ui->NewComboBox(this->pnlValues, false);
 	this->cboChannels->SetRect(4, 4, 100, 23, false);
 	this->cboChannels->HandleSelectionChange(OnChannelChg, this);
 	NEW_CLASS(this->lvValues, UI::GUIListView(ui, this->tpValues, UI::GUIListView::LVSTYLE_TABLE, 2 + this->lut->GetInputCh()));

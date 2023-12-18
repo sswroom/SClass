@@ -516,8 +516,8 @@ SSWR::AVIRead::AVIRColorSettingForm::AVIRColorSettingForm(UI::GUIClientControl *
 	this->tpSetting = this->tcMain->AddTabPage(CSTR("Setting"));
 	NEW_CLASS(this->lblMonProfile, UI::GUILabel(ui, this->tpSetting, CSTR("Monitor Profile")));
 	this->lblMonProfile->SetRect(0, 0, 150, 23, false);
-	NEW_CLASS(this->cboMonProfile, UI::GUIComboBox(ui, this->tpSetting, false);
-	this->cboMonProfile->SetRect(150, 0, 150, 23, false));
+	this->cboMonProfile = ui->NewComboBox(this->tpSetting, false);
+	this->cboMonProfile->SetRect(150, 0, 150, 23, false);
 	this->cboMonProfile->HandleSelectionChange(OnMonProfileChg, this);
 	i = 0;
 	j = Media::ColorProfile::CPT_LAST;
@@ -575,12 +575,12 @@ SSWR::AVIRead::AVIRColorSettingForm::AVIRColorSettingForm(UI::GUIClientControl *
 	this->btnMonCustom->HandleButtonClick(OnMonCustomClicked, this);
 	NEW_CLASS(this->lblDefVProfile, UI::GUILabel(ui, this->tpSetting, CSTR("Def Video Profile")));
 	this->lblDefVProfile->SetRect(0, 104, 150, 23, false);
-	NEW_CLASS(this->cboDefVProfile, UI::GUIComboBox(ui, this->tpSetting, false));
+	this->cboDefVProfile = ui->NewComboBox(this->tpSetting, false);
 	this->cboDefVProfile->SetRect(150, 104, 150, 23, false);
 	this->cboDefVProfile->HandleSelectionChange(OnDefVProfileChg, this);
 	NEW_CLASS(this->lblDefPProfile, UI::GUILabel(ui, this->tpSetting, CSTR("Def Photo Profile")));
 	this->lblDefPProfile->SetRect(0, 128, 150, 23, false);
-	NEW_CLASS(this->cboDefPProfile, UI::GUIComboBox(ui, this->tpSetting, false));
+	this->cboDefPProfile = ui->NewComboBox(this->tpSetting, false);
 	this->cboDefPProfile->SetRect(150, 128, 150, 23, false);
 	this->cboDefPProfile->HandleSelectionChange(OnDefPProfileChg, this);
 	i = 0;

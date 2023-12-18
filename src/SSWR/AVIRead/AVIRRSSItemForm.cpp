@@ -52,19 +52,13 @@ SSWR::AVIRead::AVIRRSSItemForm::AVIRRSSItemForm(UI::GUIClientControl *parent, No
 	this->lvInfo->AddColumn(CSTR("Name"), 150);
 	this->lvInfo->AddColumn(CSTR("Value"), 400);
 
-#if defined(_WIN32) || defined(WIN64)
 	this->tpImage = this->tcMain->AddTabPage(CSTR("Image"));
-	NEW_CLASS(this->cboImage, UI::GUIComboBox(ui, this->tpImage, false));
+	this->cboImage = ui->NewComboBox(this->tpImage, false);
 	this->cboImage->SetRect(0, 0, 100, 23, false);
 	this->cboImage->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->cboImage->HandleSelectionChange(OnImageSelChg, this);
 	NEW_CLASS(this->pbImage, UI::GUIPictureBoxSimple(ui, this->tpImage, this->core->GetDrawEngine(), false));
 	this->pbImage->SetDockType(UI::GUIControl::DOCK_FILL);
-#else
-	//this->tpImage = 0;
-	this->cboImage = 0;
-	this->pbImage = 0;
-#endif
 
 	this->tpText = this->tcMain->AddTabPage(CSTR("Items"));
 	NEW_CLASS(this->txtText, UI::GUITextBox(ui, this->tpText, CSTR(""), true));
@@ -147,13 +141,10 @@ SSWR::AVIRead::AVIRRSSItemForm::AVIRRSSItemForm(UI::GUIClientControl *parent, No
 		while (it.HasNext())
 		{
 			url = it.Next();
-			if (this->cboImage)
-			{
-				this->cboImage->AddItem(url, 0);
-			}
+			this->cboImage->AddItem(url, 0);
 			url->Release();
 		}
-		if (imgList.GetCount() > 0 && this->cboImage)
+		if (imgList.GetCount() > 0)
 		{
 			this->cboImage->SetSelectedIndex(0);
 		}

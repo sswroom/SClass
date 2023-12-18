@@ -451,7 +451,7 @@ SSWR::AVIRead::AVIRChineseForm::AVIRChineseForm(UI::GUIClientControl *parent, No
 	this->txtStrokeCount->SetRect(100, 24, 50, 23, false);
 	NEW_CLASS(this->lblCharType, UI::GUILabel(ui, this->grpCharInfo, CSTR("Char Type")));
 	this->lblCharType->SetRect(0, 48, 100, 23, false);
-	NEW_CLASS(this->cboCharType, UI::GUIComboBox(ui, this->grpCharInfo, false));
+	this->cboCharType = ui->NewComboBox(this->grpCharInfo, false);
 	this->cboCharType->SetRect(100, 48, 150, 23, false);
 	this->cboCharType->AddItem(CSTR("Unknown"), (void*)Text::ChineseInfo::CT_UNKNOWN);
 	this->cboCharType->AddItem(CSTR("Chinese (Trad.)"), (void*)Text::ChineseInfo::CT_CHINESET);

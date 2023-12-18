@@ -177,7 +177,7 @@ SSWR::AVIRead::AVIRBluetoothLEForm::AVIRBluetoothLEForm(UI::GUIClientControl *pa
 	this->pnlControl->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->lblInterface, UI::GUILabel(ui, this->pnlControl, CSTR("Interface")));
 	this->lblInterface->SetRect(4, 4, 100, 23, false);
-	NEW_CLASS(this->cboInterface, UI::GUIComboBox(ui, this->pnlControl, false));
+	this->cboInterface = ui->NewComboBox(this->pnlControl, false);
 	this->cboInterface->SetRect(104, 4, 150, 23, false);
 	this->btnStart = ui->NewButton(this->pnlControl, CSTR("Scan/Stop"));
 	this->btnStart->SetRect(254, 4, 75, 23, false);

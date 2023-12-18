@@ -205,7 +205,7 @@ SSWR::AVIRead::AVIRRSSReaderForm::AVIRRSSReaderForm(UI::GUIClientControl *parent
 	this->pnlURL->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->lblRecent, UI::GUILabel(ui, this->pnlURL, CSTR("Recent")));
 	this->lblRecent->SetRect(4, 4, 100, 23, false);
-	NEW_CLASS(this->cboRecent, UI::GUIComboBox(ui, this->pnlURL, false));
+	this->cboRecent = ui->NewComboBox(this->pnlURL, false);
 	this->cboRecent->SetRect(104, 4, 600, 23, false);
 	this->cboRecent->HandleSelectionChange(OnRecentSelChg, this);
 	NEW_CLASS(this->lblURL, UI::GUILabel(ui, this->pnlURL, CSTR("URL")));

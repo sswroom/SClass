@@ -21,13 +21,13 @@ namespace SSWR
 			UI::GUILabel *lblStatus;
 			UI::GUITextBox *txtStatus;
 			UI::GUILabel *lblLayer;
-			UI::GUIComboBox *cboLayer;
+			NotNullPtr<UI::GUIComboBox> cboLayer;
 			UI::GUILabel *lblMatrixSet;
-			UI::GUIComboBox *cboMatrixSet;
+			NotNullPtr<UI::GUIComboBox> cboMatrixSet;
 			UI::GUILabel *lblResourceTileType;
-			UI::GUIComboBox *cboResourceTileType;
+			NotNullPtr<UI::GUIComboBox> cboResourceTileType;
 			UI::GUILabel *lblResourceInfoType;
-			UI::GUIComboBox *cboResourceInfoType;
+			NotNullPtr<UI::GUIComboBox> cboResourceInfoType;
 			NotNullPtr<UI::GUIButton> btnOK;
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;

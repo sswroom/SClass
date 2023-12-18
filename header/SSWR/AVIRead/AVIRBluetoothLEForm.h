@@ -38,7 +38,7 @@ namespace SSWR
 
 			NotNullPtr<UI::GUIPanel> pnlControl;
 			UI::GUILabel *lblInterface;
-			UI::GUIComboBox *cboInterface;
+			NotNullPtr<UI::GUIComboBox> cboInterface;
 			NotNullPtr<UI::GUIButton> btnStart;
 			NotNullPtr<UI::GUIButton> btnStoreList;
 			UI::GUIListView *lvDevices;

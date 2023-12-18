@@ -28,7 +28,7 @@ namespace SSWR
 
 			NotNullPtr<UI::GUITabPage> tpValues;
 			NotNullPtr<UI::GUIPanel> pnlValues;
-			UI::GUIComboBox *cboChannels;
+			NotNullPtr<UI::GUIComboBox> cboChannels;
 			UI::GUIListView *lvValues;
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;

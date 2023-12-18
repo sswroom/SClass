@@ -24,7 +24,7 @@ namespace SSWR
 
 			NotNullPtr<UI::GUIPanel> pnlControl;
 			UI::GUILabel *lblIP;
-			UI::GUIComboBox *cboIP;
+			NotNullPtr<UI::GUIComboBox> cboIP;
 			NotNullPtr<UI::GUIButton> btnStart;
 			UI::GUIListView *lvIP;
 

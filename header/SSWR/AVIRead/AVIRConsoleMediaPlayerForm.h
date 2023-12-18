@@ -23,14 +23,14 @@ namespace SSWR
 			NotNullPtr<UI::GUIButton> btnStop;
 			NotNullPtr<UI::GUIButton> btnCaptureDev;
 			UI::GUILabel *lblRotate;
-			UI::GUIComboBox *cboRotate;
+			NotNullPtr<UI::GUIComboBox> cboRotate;
 			UI::GUICheckBox *chkSurfaceBug;
 			UI::GUILabel *lblYUVType;
-			UI::GUIComboBox *cboYUVType;
+			NotNullPtr<UI::GUIComboBox> cboYUVType;
 			UI::GUILabel *lblRGBTrans;
-			UI::GUIComboBox *cboRGBTrans;
+			NotNullPtr<UI::GUIComboBox> cboRGBTrans;
 			UI::GUILabel *lblColorPrimaries;
-			UI::GUIComboBox *cboColorPrimaries;
+			NotNullPtr<UI::GUIComboBox> cboColorPrimaries;
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			Media::ConsoleMediaPlayer *player;

@@ -677,7 +677,7 @@ SSWR::AVIRead::AVIRMODBUSMasterForm::AVIRMODBUSMasterForm(UI::GUIClientControl *
 	this->txtDeviceAddr->SetRect(104, 4, 100, 23, false);
 	NEW_CLASS(this->lblDevice, UI::GUILabel(ui, this->pnlDevice, CSTR("Device")));
 	this->lblDevice->SetRect(204, 4, 100, 23, false);
-	NEW_CLASS(this->cboDevice, UI::GUIComboBox(ui, this->pnlDevice, false));
+	this->cboDevice = ui->NewComboBox(this->pnlDevice, false);
 	this->cboDevice->SetRect(304, 4, 100, 23, false);
 	DeviceType dt = DT_FIRST;
 	while (dt <= DT_LAST)

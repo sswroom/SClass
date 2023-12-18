@@ -193,7 +193,7 @@ SSWR::AVIRead::AVIRGISReplayForm::AVIRGISReplayForm(UI::GUIClientControl *parent
 	pnl->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(lbl, UI::GUILabel(ui, pnl, CSTR("Name")));
 	lbl->SetRect(0, 0, 100, 23, false);
-	NEW_CLASS(this->cboName, UI::GUIComboBox(ui, pnl, false));
+	this->cboName = ui->NewComboBox(pnl, false);
 	this->cboName->SetRect(104, 0, 121, 20, false);
 	this->cboName->HandleSelectionChange(OnCboNameChg, this);
 	NEW_CLASS(this->lblDist, UI::GUILabel(ui, pnl, CSTR("")));

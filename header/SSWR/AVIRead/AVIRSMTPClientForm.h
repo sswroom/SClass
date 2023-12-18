@@ -25,7 +25,7 @@ namespace SSWR
 			UI::GUILabel *lblPort;
 			UI::GUITextBox *txtPort;
 			UI::GUILabel *lblSSLType;
-			UI::GUIComboBox *cboSSLType;
+			NotNullPtr<UI::GUIComboBox> cboSSLType;
 			UI::GUILabel *lblUsername;
 			UI::GUITextBox *txtUsername;
 			UI::GUILabel *lblPassword;

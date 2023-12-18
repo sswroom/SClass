@@ -37,7 +37,7 @@ SSWR::SHPConv::SHPConvElevationFilterForm::SHPConvElevationFilterForm(UI::GUICli
 	
 	NEW_CLASS(this->lblCol, UI::GUILabel(ui, *this, CSTR("Column")));
 	this->lblCol->SetRect(8, 8, 56, 23, false);
-	NEW_CLASS(this->cboCol, UI::GUIComboBox(ui, *this, false));
+	this->cboCol = ui->NewComboBox(*this, false);
 	this->cboCol->SetRect(72, 8, 176, 21, false);
 	NEW_CLASS(this->lblHeight, UI::GUILabel(ui, *this, CSTR("Height")));
 	this->lblHeight->SetRect(8, 32, 56, 23, false);

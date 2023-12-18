@@ -66,7 +66,7 @@ SSWR::AVIRead::AVIRSNSManagerForm::AVIRSNSManagerForm(UI::GUIClientControl *pare
 	NEW_CLASSNN(this->pnlChannel, UI::GUIPanel(ui, *this));
 	this->pnlChannel->SetRect(0, 0, 100, 31, false);
 	this->pnlChannel->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->cboChannel, UI::GUIComboBox(ui, this->pnlChannel, false));
+	this->cboChannel = ui->NewComboBox(this->pnlChannel, false);
 	this->cboChannel->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtChannelId, UI::GUITextBox(ui, this->pnlChannel, CSTR("")));
 	this->txtChannelId->SetRect(104, 4, 300, 23, false);

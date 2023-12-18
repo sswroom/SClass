@@ -28,7 +28,7 @@ namespace SSWR
 			UI::GUILabel *lblPort;
 			UI::GUITextBox *txtPort;
 			UI::GUILabel *lblAuthType;
-			UI::GUIComboBox *cboAuthType;
+			NotNullPtr<UI::GUIComboBox> cboAuthType;
 			UI::GUILabel *lblUserDN;
 			UI::GUITextBox *txtUserDN;
 			UI::GUILabel *lblPassword;
@@ -39,13 +39,13 @@ namespace SSWR
 			UI::GUILabel *lblSearchBase;
 			UI::GUITextBox *txtSearchBase;
 			UI::GUILabel *lblSearchScope;
-			UI::GUIComboBox *cboSearchScope;
+			NotNullPtr<UI::GUIComboBox> cboSearchScope;
 			UI::GUILabel *lblSearchDerefAliases;
-			UI::GUIComboBox *cboSearchDerefAliases;
+			NotNullPtr<UI::GUIComboBox> cboSearchDerefAliases;
 			UI::GUILabel *lblSearchFilter;
 			UI::GUITextBox *txtSearchFilter;
 			NotNullPtr<UI::GUIButton> btnSearch;
-			UI::GUIComboBox *cboSearchResult;
+			NotNullPtr<UI::GUIComboBox> cboSearchResult;
 			UI::GUIListView *lvSearch;
 		
 			static void __stdcall OnConnectClicked(void *userObj);

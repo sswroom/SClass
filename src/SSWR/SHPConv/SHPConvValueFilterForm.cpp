@@ -39,7 +39,7 @@ SSWR::SHPConv::SHPConvValueFilterForm::SHPConvValueFilterForm(UI::GUIClientContr
 	
 	NEW_CLASS(this->lblCol, UI::GUILabel(ui, *this, CSTR("Column")));
 	this->lblCol->SetRect(8, 8, 56, 23, false);
-	NEW_CLASS(this->cboCol, UI::GUIComboBox(ui, *this, false));
+	this->cboCol = ui->NewComboBox(*this, false);
 	this->cboCol->SetRect(72, 8, 121, 21, false);
 	NEW_CLASS(this->lblType, UI::GUILabel(ui, *this, CSTR("Type")));
 	this->lblType->SetRect(8, 32, 56, 23, false);

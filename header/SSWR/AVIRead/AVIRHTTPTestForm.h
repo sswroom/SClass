@@ -55,7 +55,7 @@ namespace SSWR
 			UI::GUILabel *lblTotalConnCnt;
 			UI::GUITextBox *txtTotalConnCnt;
 			UI::GUILabel *lblMethod;
-			UI::GUIComboBox *cboMethod;
+			NotNullPtr<UI::GUIComboBox> cboMethod;
 			UI::GUILabel *lblPostSize;
 			UI::GUITextBox *txtPostSize;
 			UI::GUICheckBox *chkKAConn;

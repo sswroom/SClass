@@ -56,7 +56,7 @@ SSWR::SHPConv::SHPConvAddFilterForm::SHPConvAddFilterForm(UI::GUIClientControl *
 	
 	NEW_CLASS(this->lblFilter, UI::GUILabel(ui, *this, CSTR("Filter Type")));
 	this->lblFilter->SetRect(8, 16, 64, 23, false);
-	NEW_CLASS(this->cboFilter, UI::GUIComboBox(ui, *this, false));
+	this->cboFilter = ui->NewComboBox(*this, false);
 	this->cboFilter->SetRect(80, 16, 121, 21, false);
 	this->cboFilter->AddItem(CSTR("Value Filter"), 0);
 	this->cboFilter->AddItem(CSTR("Range Filter"), 0);

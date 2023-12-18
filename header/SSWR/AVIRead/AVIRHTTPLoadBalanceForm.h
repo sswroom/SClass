@@ -63,7 +63,7 @@ namespace SSWR
 			UI::GUILabel *lblFwdURL;
 			UI::GUITextBox *txtFwdURL;
 			UI::GUILabel *lblFwdType;
-			UI::GUIComboBox *cboFwdType;
+			NotNullPtr<UI::GUIComboBox> cboFwdType;
 			NotNullPtr<UI::GUIButton> btnStart;
 			NotNullPtr<UI::GUIButton> btnStop;
 

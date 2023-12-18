@@ -39,8 +39,6 @@ UI/GUICheckedListBox.h:
 @GUICheckedListBoxGTK.o
 UI/GUIClientControl.h:
 @GUIClientControlGTK.o
-UI/GUIComboBox.h:
-@GUIComboBoxGTK.o
 UI/GUIControl.h:
 @GUIControlGTK.o
 UI/GUICore.h:

@@ -20,7 +20,7 @@ namespace SSWR
 			UI::GUILabel *lblDesc;
 			UI::GUITextBox *txtDesc;
 			UI::GUILabel *lblState;
-			UI::GUIComboBox *cboState;
+			NotNullPtr<UI::GUIComboBox> cboState;
 			UI::GUILabel *lblCmdLine;
 			UI::GUITextBox *txtCmdLine;
 			NotNullPtr<UI::GUIButton> btnCreate;

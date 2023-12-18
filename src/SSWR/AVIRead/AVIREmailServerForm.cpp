@@ -540,7 +540,7 @@ SSWR::AVIRead::AVIREmailServerForm::AVIREmailServerForm(UI::GUIClientControl *pa
 	this->txtSMTPPort->SetRect(100, 24, 100, 23, false);
 	NEW_CLASS(this->lblSMTPType, UI::GUILabel(ui, this->tpSMTP, CSTR("Type")));
 	this->lblSMTPType->SetRect(0, 48, 100, 23, false);
-	NEW_CLASS(this->cboSMTPType, UI::GUIComboBox(ui, this->tpSMTP, false));
+	this->cboSMTPType = ui->NewComboBox(this->tpSMTP, false);
 	this->cboSMTPType->SetRect(100, 48, 100, 23, false);
 	this->cboSMTPType->AddItem(CSTR("Plain"), (void*)(OSInt)Net::Email::SMTPConn::ConnType::Plain);
 	this->cboSMTPType->AddItem(CSTR("STARTTLS"), (void*)(OSInt)Net::Email::SMTPConn::ConnType::STARTTLS);

@@ -16,7 +16,7 @@ namespace SSWR
 		{
 		private:
 			UI::GUILabel *lblFilter;
-			UI::GUIComboBox *cboFilter;
+			NotNullPtr<UI::GUIComboBox> cboFilter;
 			NotNullPtr<UI::GUIButton> btnOK;
 			NotNullPtr<UI::GUIButton> btnCancel;
 			DB::DBFFile *dbf;

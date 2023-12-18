@@ -156,7 +156,7 @@ SSWR::AVIRead::AVIRLDAPClientForm::AVIRLDAPClientForm(UI::GUIClientControl *pare
 	this->txtPort->SetRect(104, 28, 120, 23, false);
 	NEW_CLASS(this->lblAuthType, UI::GUILabel(ui, this->pnlRequest, CSTR("Auth Type")));
 	this->lblAuthType->SetRect(4, 52, 100, 23, false);
-	NEW_CLASS(this->cboAuthType, UI::GUIComboBox(ui, this->pnlRequest, false));
+	this->cboAuthType = ui->NewComboBox(this->pnlRequest, false);
 	this->cboAuthType->SetRect(104, 52, 120, 23, false);
 	this->cboAuthType->AddItem(CSTR("Anonymous"), (void*)1);
 	this->cboAuthType->AddItem(CSTR("Simple Password"), (void*)2);
@@ -185,7 +185,7 @@ SSWR::AVIRead::AVIRLDAPClientForm::AVIRLDAPClientForm(UI::GUIClientControl *pare
 	this->txtSearchBase->SetRect(104, 4, 400, 23, false);
 	NEW_CLASS(this->lblSearchScope, UI::GUILabel(ui, this->pnlSearchRequest, CSTR("Scope")));
 	this->lblSearchScope->SetRect(4, 28, 100, 23, false);
-	NEW_CLASS(this->cboSearchScope, UI::GUIComboBox(ui, this->pnlSearchRequest, false));
+	this->cboSearchScope = ui->NewComboBox(this->pnlSearchRequest, false);
 	this->cboSearchScope->SetRect(104, 28, 150, 23, false);
 	this->cboSearchScope->AddItem(CSTR("Base Object"), (void *)0);
 	this->cboSearchScope->AddItem(CSTR("Single Level"), (void *)1);
@@ -193,7 +193,7 @@ SSWR::AVIRead::AVIRLDAPClientForm::AVIRLDAPClientForm(UI::GUIClientControl *pare
 	this->cboSearchScope->SetSelectedIndex(0);
 	NEW_CLASS(this->lblSearchDerefAliases, UI::GUILabel(ui, this->pnlSearchRequest, CSTR("Deref Aliases")));
 	this->lblSearchDerefAliases->SetRect(4, 52, 100, 23, false);
-	NEW_CLASS(this->cboSearchDerefAliases, UI::GUIComboBox(ui, this->pnlSearchRequest, false));
+	this->cboSearchDerefAliases = ui->NewComboBox(this->pnlSearchRequest, false);
 	this->cboSearchDerefAliases->SetRect(104, 52, 150, 23, false);
 	this->cboSearchDerefAliases->AddItem(CSTR("Never Deref Aliases"), (void *)0);
 	this->cboSearchDerefAliases->AddItem(CSTR("Deref In Searching"), (void *)1);
@@ -207,7 +207,7 @@ SSWR::AVIRead::AVIRLDAPClientForm::AVIRLDAPClientForm(UI::GUIClientControl *pare
 	this->btnSearch = ui->NewButton(this->pnlSearchRequest, CSTR("Search"));
 	this->btnSearch->SetRect(104, 100, 75, 23, false);
 	this->btnSearch->HandleButtonClick(OnSearchClicked, this);
-	NEW_CLASS(this->cboSearchResult, UI::GUIComboBox(ui, this->grpSearch, false));
+	this->cboSearchResult = ui->NewComboBox(this->grpSearch, false);
 	this->cboSearchResult->SetRect(0, 0, 100, 23, false);
 	this->cboSearchResult->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->cboSearchResult->HandleSelectionChange(OnSearchResultSelChg, this);

@@ -33,7 +33,7 @@ namespace SSWR
 			UI::GUILabel *lblOID;
 			UI::GUITextBox *txtOID;
 			UI::GUILabel *lblCommandType;
-			UI::GUIComboBox *cboCommandType;
+			NotNullPtr<UI::GUIComboBox> cboCommandType;
 			NotNullPtr<UI::GUIButton> btnRequest;
 			UI::GUIListView *lvResults;
 

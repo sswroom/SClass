@@ -49,7 +49,7 @@ namespace SSWR
 			UI::GUILabel *lblStrokeCount;
 			UI::GUITextBox *txtStrokeCount;
 			UI::GUILabel *lblCharType;
-			UI::GUIComboBox *cboCharType;
+			NotNullPtr<UI::GUIComboBox> cboCharType;
 			UI::GUILabel *lblFlags;
 			UI::GUICheckBox *chkMainChar;
 			UI::GUILabel *lblPronun1;

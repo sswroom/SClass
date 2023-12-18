@@ -236,7 +236,7 @@ SSWR::AVIRead::AVIRPingMonitorForm::AVIRPingMonitorForm(UI::GUIClientControl *pa
 	this->btnInfo->HandleButtonClick(OnInfoClicked, this);
 	NEW_CLASS(this->lblIP, UI::GUILabel(ui, this->pnlControl, CSTR("IP")));
 	this->lblIP->SetRect(4, 28, 100, 23, false);
-	NEW_CLASS(this->cboIP, UI::GUIComboBox(ui, this->pnlControl, false));
+	this->cboIP = ui->NewComboBox(this->pnlControl, false);
 	this->cboIP->SetRect(104, 28, 150, 23, false);
 	this->btnStart = ui->NewButton(this->pnlControl, CSTR("Start"));
 	this->btnStart->SetRect(254, 28, 75, 23, false);

@@ -28,9 +28,9 @@ namespace SSWR
 			UI::GUILabel *lblPort;
 			UI::GUITextBox *txtPort;
 			UI::GUILabel *lblMode;
-			UI::GUIComboBox *cboMode;
+			NotNullPtr<UI::GUIComboBox> cboMode;
 			UI::GUILabel *lblVersion;
-			UI::GUIComboBox *cboVersion;
+			NotNullPtr<UI::GUIComboBox> cboVersion;
 			NotNullPtr<UI::GUIButton> btnCheck;
 
 			UI::GUILabel *lblStatus;

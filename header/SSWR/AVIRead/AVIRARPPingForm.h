@@ -47,7 +47,7 @@ namespace SSWR
 			NotNullPtr<UI::GUIPanel> pnlRequest;
 			NotNullPtr<UI::GUIVSplitter> vspRequest;
 			UI::GUILabel *lblAdapter;
-			UI::GUIComboBox *cboAdapter;
+			NotNullPtr<UI::GUIComboBox> cboAdapter;
 			UI::GUILabel *lblTarget;
 			UI::GUITextBox *txtTarget;
 			UI::GUILabel *lblRepeat;

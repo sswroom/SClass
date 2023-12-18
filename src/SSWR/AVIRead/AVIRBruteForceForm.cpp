@@ -129,7 +129,7 @@ SSWR::AVIRead::AVIRBruteForceForm::AVIRBruteForceForm(UI::GUIClientControl *pare
 	UTF8Char *sptr;
 	NEW_CLASS(this->lblHashType, UI::GUILabel(ui, *this, CSTR("Hash Type")));
 	this->lblHashType->SetRect(4, 4, 100, 23, false);
-	NEW_CLASS(this->cboHashType, UI::GUIComboBox(ui, *this, false));
+	this->cboHashType = ui->NewComboBox(*this, false);
 	this->cboHashType->SetRect(104, 4, 150, 23, false);
 
 	Crypto::Hash::IHash *hash;
@@ -150,7 +150,7 @@ SSWR::AVIRead::AVIRBruteForceForm::AVIRBruteForceForm(UI::GUIClientControl *pare
 	this->txtHashValue->SetRect(104, 28, 200, 23, false);
 	NEW_CLASS(this->lblEncoding, UI::GUILabel(ui, *this, CSTR("Encoding")));
 	this->lblEncoding->SetRect(4, 52, 100, 23, false);
-	NEW_CLASS(this->cboEncoding, UI::GUIComboBox(ui, *this, false));
+	this->cboEncoding = ui->NewComboBox(*this, false);
 	this->cboEncoding->SetRect(104, 52, 150, 23, false);
 	this->cboEncoding->AddItem(CSTR("UTF-8"), (void*)Crypto::Hash::BruteForceAttack::CharEncoding::UTF8);
 	this->cboEncoding->AddItem(CSTR("UTF-16LE"), (void*)Crypto::Hash::BruteForceAttack::CharEncoding::UTF16LE);
@@ -166,7 +166,7 @@ SSWR::AVIRead::AVIRBruteForceForm::AVIRBruteForceForm(UI::GUIClientControl *pare
 	this->txtMaxLen->SetRect(104, 100, 100, 23, false);
 	NEW_CLASS(this->lblCharType, UI::GUILabel(ui, *this, CSTR("Char Type")));
 	this->lblCharType->SetRect(4, 124, 100, 23, false);
-	NEW_CLASS(this->cboCharType, UI::GUIComboBox(ui, *this, false));
+	this->cboCharType = ui->NewComboBox(*this, false);
 	this->cboCharType->SetRect(104, 124, 200, 23, false);
 	Crypto::Hash::BruteForceAttack::CharLimit currLimit = Crypto::Hash::BruteForceAttack::CharLimit::First;
 	while (currLimit <= Crypto::Hash::BruteForceAttack::CharLimit::Last)

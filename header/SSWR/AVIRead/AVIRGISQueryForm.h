@@ -22,7 +22,7 @@ namespace SSWR
 		{
 		private:
 			NotNullPtr<UI::GUIPanel> pnlObj;
-			UI::GUIComboBox *cboObj;
+			NotNullPtr<UI::GUIComboBox> cboObj;
 			UI::GUITabControl *tcMain;
 
 			NotNullPtr<UI::GUITabPage> tpInfo;
@@ -31,7 +31,7 @@ namespace SSWR
 			NotNullPtr<UI::GUITabPage> tpShape;
 			NotNullPtr<UI::GUIPanel> pnlShape;
 			UI::GUILabel *lblShapeFmt;
-			UI::GUIComboBox *cboShapeFmt;
+			NotNullPtr<UI::GUIComboBox> cboShapeFmt;
 			UI::GUITextBox *txtShape;
 
 			NotNullPtr<UI::GUITabPage> tpBounds;

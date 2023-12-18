@@ -26,7 +26,7 @@ namespace SSWR
 			UI::GUILabel *lblDir;
 			UI::GUITextBox *txtDir;
 			UI::GUILabel *lblEncoding;
-			UI::GUIComboBox *cboEncoding;
+			NotNullPtr<UI::GUIComboBox> cboEncoding;
 			UI::GUILabel *lblText;
 			UI::GUITextBox *txtText;
 			NotNullPtr<UI::GUIButton> btnSearch;

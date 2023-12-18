@@ -289,7 +289,7 @@ SSWR::OrganMgr::OrganTimeAdjForm::OrganTimeAdjForm(UI::GUIClientControl *parent,
 	this->lbTrack->SetRect(0, 0, 130, 23, false);
 	this->lbTrack->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbTrack->HandleSelectionChange(OnTrackChg, this);
-	NEW_CLASS(this->cboSpecies, UI::GUIComboBox(ui, this->pnlLeft, false));
+	this->cboSpecies = ui->NewComboBox(this->pnlLeft, false);
 	this->cboSpecies->SetRect(0, 0, 100, 23, false);
 	this->cboSpecies->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->cboSpecies->HandleSelectionChange(OnSpeciesChg, this);
@@ -308,7 +308,7 @@ SSWR::OrganMgr::OrganTimeAdjForm::OrganTimeAdjForm(UI::GUIClientControl *parent,
 	this->pnlControl->SetDockType(UI::GUIControl::DOCK_BOTTOM);
 	NEW_CLASS(this->mapMain, UI::GUIMapControl(ui, *this, this->env->GetDrawEngine(), 0xff000000, this->mapRenderer, this->mapView, this->colorSess));
 	this->mapMain->SetDockType(UI::GUIControl::DOCK_FILL);
-	NEW_CLASS(this->cboCamera, UI::GUIComboBox(ui, this->pnlControl, false));
+	this->cboCamera = ui->NewComboBox(this->pnlControl, false);
 	this->cboCamera->SetRect(4, 4, 150, 23, false);
 	this->cboCamera->HandleSelectionChange(OnCameraChg, this);
 	NEW_CLASS(this->txtTimeAdj, UI::GUITextBox(ui, this->pnlControl, CSTR("0"), false));

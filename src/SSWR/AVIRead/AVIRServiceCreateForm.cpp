@@ -68,7 +68,7 @@ SSWR::AVIRead::AVIRServiceCreateForm::AVIRServiceCreateForm(UI::GUIClientControl
 	this->txtDesc->SetRect(104, 28, 500, 23, false);
 	NEW_CLASS(this->lblState, UI::GUILabel(ui, *this, CSTR("State")));
 	this->lblState->SetRect(4, 52, 100, 23, false);
-	NEW_CLASS(this->cboState, UI::GUIComboBox(ui, *this, false));
+	this->cboState = ui->NewComboBox(*this, false);
 	this->cboState->SetRect(104, 52, 100, 23, false);
 	this->cboState->AddItem(CSTR("Active"), (void*)IO::ServiceInfo::ServiceState::Active);
 	this->cboState->AddItem(CSTR("Inactive"), (void*)IO::ServiceInfo::ServiceState::Inactive);

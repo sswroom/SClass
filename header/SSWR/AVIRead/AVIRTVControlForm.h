@@ -36,9 +36,9 @@ namespace SSWR
 
 			NotNullPtr<UI::GUIPanel> pnlPort;
 			UI::GUILabel *lblTVType;
-			UI::GUIComboBox *cboTVType;
+			NotNullPtr<UI::GUIComboBox> cboTVType;
 			UI::GUILabel *lblPort;
-			UI::GUIComboBox *cboPort;
+			NotNullPtr<UI::GUIComboBox> cboPort;
 			UI::GUICheckBox *chkLogFile;
 			NotNullPtr<UI::GUIButton> btnStart;
 			UI::GUITabControl *tcMain;
@@ -49,7 +49,7 @@ namespace SSWR
 			UI::GUITextBox *txtLog;
 
 			UI::GUILabel *lblCommand;
-			UI::GUIComboBox *cboCommand;
+			NotNullPtr<UI::GUIComboBox> cboCommand;
 			NotNullPtr<UI::GUIButton> btnCommand;
 			UI::GUITextBox *txtCommand;
 

@@ -187,7 +187,7 @@ SSWR::AVIRead::AVIRFileSearchForm::AVIRFileSearchForm(UI::GUIClientControl *pare
 	this->txtDir->SetRect(104, 4, 600, 23, false);
 	NEW_CLASS(this->lblEncoding, UI::GUILabel(ui, this->pnlControl, CSTR("Encoding")));
 	this->lblEncoding->SetRect(4, 28, 100, 23, false);
-	NEW_CLASS(this->cboEncoding, UI::GUIComboBox(ui, this->pnlControl, false));
+	this->cboEncoding = ui->NewComboBox(this->pnlControl, false);
 	this->cboEncoding->SetRect(104, 28, 200, 23, false);
 	Data::ArrayList<Text::TextBinEnc::ITextBinEnc*> *encs = this->encList.GetEncList();
 	Text::TextBinEnc::ITextBinEnc *enc;

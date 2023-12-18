@@ -18,12 +18,12 @@ namespace SSWR
 			UI::GUILabel *lblWFSURL;
 			UI::GUITextBox *txtWFSURL;
 			UI::GUILabel *lblWFSVersion;
-			UI::GUIComboBox *cboWFSVersion;
+			NotNullPtr<UI::GUIComboBox> cboWFSVersion;
 			NotNullPtr<UI::GUIButton> btnLoad;
 			UI::GUILabel *lblStatus;
 			UI::GUITextBox *txtStatus;
 			UI::GUILabel *lblFeature;
-			UI::GUIComboBox *cboFeature;
+			NotNullPtr<UI::GUIComboBox> cboFeature;
 			NotNullPtr<UI::GUIButton> btnOK;
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;

@@ -123,7 +123,7 @@ SSWR::AVIRead::AVIRESRIMapForm::AVIRESRIMapForm(UI::GUIClientControl *parent, No
 	
 	NEW_CLASS(this->radPredefine, UI::GUIRadioButton(ui, *this, CSTR("Predefine"), true));
 	this->radPredefine->SetRect(8, 8, 100, 23, false);
-	NEW_CLASS(this->cboPredefine, UI::GUIComboBox(ui, *this, false));
+	this->cboPredefine = ui->NewComboBox(*this, false);
 	this->cboPredefine->SetRect(108, 8, 150, 23, false);
 	NEW_CLASS(this->radOther, UI::GUIRadioButton(ui, *this, CSTR("Other"), false));
 	this->radOther->SetRect(8, 32, 100, 23, false);

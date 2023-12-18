@@ -19,7 +19,7 @@ namespace SSWR
 			Media::Printer *currPrinter;
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			UI::GUILabel *lblPrinter;
-			UI::GUIComboBox *cboPrinter;
+			NotNullPtr<UI::GUIComboBox> cboPrinter;
 			NotNullPtr<UI::GUIButton> btnSetting;
 
 			NotNullPtr<UI::GUIButton> btnOK;

@@ -39,7 +39,7 @@ SSWR::AVIRead::AVIRGoogleTileMapForm::AVIRGoogleTileMapForm(UI::GUIClientControl
 
 	NEW_CLASS(this->lblMapType, UI::GUILabel(ui, *this, CSTR("Map Type")));
 	this->lblMapType->SetRect(4, 4, 100, 23, false);
-	NEW_CLASS(this->cboMapType, UI::GUIComboBox(ui, *this, false));
+	this->cboMapType = ui->NewComboBox(*this, false);
 	this->cboMapType->SetRect(104, 4, 200, 23, false);
 	this->cboMapType->AddItem(CSTR("Map"), 0);
 	this->cboMapType->AddItem(CSTR("Terrain"), 0);

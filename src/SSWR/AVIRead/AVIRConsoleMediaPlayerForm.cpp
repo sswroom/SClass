@@ -200,7 +200,7 @@ SSWR::AVIRead::AVIRConsoleMediaPlayerForm::AVIRConsoleMediaPlayerForm(UI::GUICli
 	this->btnCaptureDev->HandleButtonClick(OnCaptureDevClicked, this);
 	NEW_CLASS(this->lblRotate, UI::GUILabel(ui, *this, CSTR("Rotate")));
 	this->lblRotate->SetRect(4, 76, 100, 23, false);
-	NEW_CLASS(this->cboRotate, UI::GUIComboBox(ui, *this, false));
+	this->cboRotate = ui->NewComboBox(*this, false);
 	this->cboRotate->SetRect(104, 76, 100, 23, false);
 	this->cboRotate->AddItem(CSTR("No Rotate"), (void*)Media::RotateType::None);
 	this->cboRotate->AddItem(CSTR("CW 90"), (void*)Media::RotateType::CW_90);
@@ -217,7 +217,7 @@ SSWR::AVIRead::AVIRConsoleMediaPlayerForm::AVIRConsoleMediaPlayerForm(UI::GUICli
 	this->chkSurfaceBug->HandleCheckedChange(OnSurfaceBugChg, this);
 	NEW_CLASS(this->lblYUVType, UI::GUILabel(ui, *this, CSTR("YUV Type")));
 	this->lblYUVType->SetRect(4, 124, 100, 23, false);
-	NEW_CLASS(this->cboYUVType, UI::GUIComboBox(ui, *this, false));
+	this->cboYUVType = ui->NewComboBox(*this, false);
 	this->cboYUVType->SetRect(104, 124, 150, 23, false);
 	this->AddYUVType(Media::ColorProfile::YUVT_BT601);
 	this->AddYUVType(Media::ColorProfile::YUVT_BT709);
@@ -237,7 +237,7 @@ SSWR::AVIRead::AVIRConsoleMediaPlayerForm::AVIRConsoleMediaPlayerForm(UI::GUICli
 	this->cboYUVType->HandleSelectionChange(OnYUVTypeChg, this);
 	NEW_CLASS(this->lblRGBTrans, UI::GUILabel(ui, *this, CSTR("RGB Transfer")));
 	this->lblRGBTrans->SetRect(4, 148, 100, 23, false);
-	NEW_CLASS(this->cboRGBTrans, UI::GUIComboBox(ui, *this, false));
+	this->cboRGBTrans = ui->NewComboBox(*this, false);
 	this->cboRGBTrans->SetRect(104, 148, 150, 23, false);
 	this->AddRGBTrans(Media::CS::TRANT_sRGB);
 	this->AddRGBTrans(Media::CS::TRANT_BT709);
@@ -261,7 +261,7 @@ SSWR::AVIRead::AVIRConsoleMediaPlayerForm::AVIRConsoleMediaPlayerForm(UI::GUICli
 	this->cboRGBTrans->HandleSelectionChange(OnRGBTransChg, this);
 	NEW_CLASS(this->lblColorPrimaries, UI::GUILabel(ui, *this, CSTR("Color Primaries")));
 	this->lblColorPrimaries->SetRect(4, 172, 100, 23, false);
-	NEW_CLASS(this->cboColorPrimaries, UI::GUIComboBox(ui, *this, false));
+	this->cboColorPrimaries = ui->NewComboBox(*this, false);
 	this->cboColorPrimaries->SetRect(104, 172, 150, 23, false);
 	this->AddColorPrimaries(Media::ColorProfile::CT_VUNKNOWN);
 	this->AddColorPrimaries(Media::ColorProfile::CT_SRGB);

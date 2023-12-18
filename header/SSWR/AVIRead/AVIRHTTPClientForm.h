@@ -52,7 +52,7 @@ namespace SSWR
 			UI::GUITextBox *txtURL;
 			UI::GUICheckBox *chkNoShutdown;
 			UI::GUILabel *lblMethod;
-			UI::GUIComboBox *cboMethod;
+			NotNullPtr<UI::GUIComboBox> cboMethod;
 			UI::GUICheckBox *chkOSClient;
 			UI::GUICheckBox *chkAllowComp;
 			NotNullPtr<UI::GUIButton> btnUserAgent;
@@ -72,7 +72,7 @@ namespace SSWR
 			UI::GUITextBox *txtDataStr;
 			NotNullPtr<UI::GUIButton> btnDataStr;
 			UI::GUILabel *lblPostFormat;
-			UI::GUIComboBox *cboPostFormat;
+			NotNullPtr<UI::GUIComboBox> cboPostFormat;
 			UI::GUILabel *lblHeaders;
 			UI::GUITextBox *txtHeaders;
 			NotNullPtr<UI::GUIButton> btnRequest;

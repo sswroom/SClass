@@ -15,7 +15,7 @@ namespace SSWR
 		{
 		private:
 			UI::GUILabel *lblServer;
-			UI::GUIComboBox *cboServer;
+			NotNullPtr<UI::GUIComboBox> cboServer;
 			UI::GUILabel *lblServerTime;
 			UI::GUITextBox *txtServerTime;
 			UI::GUILabel *lblStatus;

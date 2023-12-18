@@ -19,7 +19,7 @@ namespace SSWR
 			Optional<Net::SSLEngine> ssl;
 
 			UI::GUILabel *lblMapType;
-			UI::GUIComboBox *cboMapType;
+			NotNullPtr<UI::GUIComboBox> cboMapType;
 			UI::GUITextBox *txtDeclare;
 			NotNullPtr<UI::GUIButton> btnOK;
 			Map::MapDrawLayer *layer;

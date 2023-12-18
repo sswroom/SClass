@@ -19,7 +19,7 @@ namespace SSWR
 			UI::GUITextBox *txtName;
 			NotNullPtr<UI::GUIButton> btnBrowse;
 			UI::GUILabel *lblType;
-			UI::GUIComboBox *cboType;
+			NotNullPtr<UI::GUIComboBox> cboType;
 			NotNullPtr<UI::GUIButton> btnOK;
 			NotNullPtr<UI::GUIButton> btnCancel;
 			Text::String *fileName;

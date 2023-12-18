@@ -116,7 +116,7 @@ SSWR::AVIRead::AVIROSMCacheCfgForm::AVIROSMCacheCfgForm(UI::GUIClientControl *pa
 	this->ssl = Net::SSLEngineFactory::Create(this->core->GetSocketFactory(), true);
 	NEW_CLASS(this->lblMapType, UI::GUILabel(ui, *this, CSTR("Map Type")));
 	this->lblMapType->SetRect(8, 8, 100, 23, false);
-	NEW_CLASS(this->cboMapType, UI::GUIComboBox(ui, *this, false));
+	this->cboMapType = ui->NewComboBox(*this, false);
 	this->cboMapType->SetRect(108, 8, 100, 23, false);
 	this->cboMapType->AddItem(CSTR("OSM Tile"), (void*)0);
 	this->cboMapType->AddItem(CSTR("Open Cycle Map"), (void*)1);

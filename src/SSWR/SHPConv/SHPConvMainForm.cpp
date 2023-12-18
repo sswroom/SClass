@@ -1473,7 +1473,7 @@ SSWR::SHPConv::SHPConvMainForm::SHPConvMainForm(UI::GUIClientControl *parent, No
 
 	NEW_CLASS(this->lblSeperator, UI::GUILabel(ui, *this, CSTR("Seperator")));
 	this->lblSeperator->SetRect(16, 344, 75, 25, false);
-	NEW_CLASS(this->cboSeperator, UI::GUIComboBox(ui, *this, true));
+	this->cboSeperator = ui->NewComboBox(*this, true);
 	this->cboSeperator->SetText(CSTR(", "));
 	this->cboSeperator->AddItem(CSTR(", "), 0);
 	this->cboSeperator->AddItem(CSTR(""), 0);

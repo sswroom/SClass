@@ -23,7 +23,7 @@ namespace SSWR
 
 			NotNullPtr<UI::GUIPanel> pnlCtrl;
 			UI::GUILabel *lblConfig;
-			UI::GUIComboBox *cboConfig;
+			NotNullPtr<UI::GUIComboBox> cboConfig;
 			UI::GUITreeView *tvMain;
 			NotNullPtr<UI::GUIHSplitter> hspMain;
 			UI::GUITextBox *txtMessage;

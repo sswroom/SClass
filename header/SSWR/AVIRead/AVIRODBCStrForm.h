@@ -15,7 +15,7 @@ namespace SSWR
 		{
 		private:
 			UI::GUILabel *lblDriver;
-			UI::GUIComboBox *cboDriver;
+			NotNullPtr<UI::GUIComboBox> cboDriver;
 			NotNullPtr<UI::GUIButton> btnDriverInfo;
 			UI::GUILabel *lblConnStr;
 			UI::GUITextBox *txtConnStr;

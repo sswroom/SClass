@@ -5,6 +5,7 @@
 #include "Media/GDIEngine.h"
 #include "UI/GUICoreWin.h"
 #include "UI/Win/WinButton.h"
+#include "UI/Win/WinComboBox.h"
 #include "UI/Win/WinGroupBox.h"
 #include "UI/Win/WinHSplitter.h"
 #include "UI/Win/WinMessageDialog.h"
@@ -248,6 +249,13 @@ NotNullPtr<UI::GUIButton> UI::GUICoreWin::NewButton(NotNullPtr<GUIClientControl>
 {
 	NotNullPtr<UI::Win::WinButton> ctrl;
 	NEW_CLASSNN(ctrl, UI::Win::WinButton(*this, parent, text));
+	return ctrl;
+}
+
+NotNullPtr<UI::GUIComboBox> UI::GUICoreWin::NewComboBox(NotNullPtr<GUIClientControl> parent, Bool allowEdit)
+{
+	NotNullPtr<UI::Win::WinComboBox> ctrl;
+	NEW_CLASSNN(ctrl, UI::Win::WinComboBox(*this, parent, allowEdit));
 	return ctrl;
 }
 

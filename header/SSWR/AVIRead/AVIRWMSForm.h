@@ -18,18 +18,18 @@ namespace SSWR
 			UI::GUILabel *lblWMSURL;
 			UI::GUITextBox *txtWMSURL;
 			UI::GUILabel *lblWMSVersion;
-			UI::GUIComboBox *cboWMSVersion;
+			NotNullPtr<UI::GUIComboBox> cboWMSVersion;
 			NotNullPtr<UI::GUIButton> btnLoad;
 			UI::GUILabel *lblStatus;
 			UI::GUITextBox *txtStatus;
 			UI::GUILabel *lblLayer;
-			UI::GUIComboBox *cboLayer;
+			NotNullPtr<UI::GUIComboBox> cboLayer;
 			UI::GUILabel *lblLayerCRS;
-			UI::GUIComboBox *cboLayerCRS;
+			NotNullPtr<UI::GUIComboBox> cboLayerCRS;
 			UI::GUILabel *lblMapImageType;
-			UI::GUIComboBox *cboMapImageType;
+			NotNullPtr<UI::GUIComboBox> cboMapImageType;
 			UI::GUILabel *lblInfoType;
-			UI::GUIComboBox *cboInfoType;
+			NotNullPtr<UI::GUIComboBox> cboInfoType;
 			NotNullPtr<UI::GUIButton> btnOK;
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;

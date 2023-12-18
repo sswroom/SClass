@@ -36,7 +36,7 @@ namespace SSWR
 
 			NotNullPtr<UI::GUITabPage> tpVerify;
 			UI::GUILabel *lblVerifyHash;
-			UI::GUIComboBox *cboVerifyHash;
+			NotNullPtr<UI::GUIComboBox> cboVerifyHash;
 			UI::GUILabel *lblVerifyPayloadFile;
 			UI::GUITextBox *txtVerifyPayloadFile;
 			UI::GUILabel *lblVerifySignature;
@@ -48,7 +48,7 @@ namespace SSWR
 
 //			NotNullPtr<UI::GUITabPage> tpSignature;
 /*			UI::GUILabel *lblSignatureHash;
-			UI::GUIComboBox *cboSignatureHash;
+			NotNullPtr<UI::GUIComboBox> cboSignatureHash;
 			UI::GUILabel *lblSignaturePayloadFile;
 			UI::GUITextBox *txtSignaturePayloadFile;
 			NotNullPtr<UI::GUIButton> btnSignature;
@@ -57,11 +57,11 @@ namespace SSWR
 
 			NotNullPtr<UI::GUITabPage> tpEncrypt;
 			UI::GUILabel *lblEncryptInputType;
-			UI::GUIComboBox *cboEncryptInputType;
+			NotNullPtr<UI::GUIComboBox> cboEncryptInputType;
 			UI::GUILabel *lblEncryptOutputType;
-			UI::GUIComboBox *cboEncryptOutputType;
+			NotNullPtr<UI::GUIComboBox> cboEncryptOutputType;
 			UI::GUILabel *lblEncryptRSAPadding;
-			UI::GUIComboBox *cboEncryptRSAPadding;
+			NotNullPtr<UI::GUIComboBox> cboEncryptRSAPadding;
 			UI::GUILabel *lblEncryptInput;
 			UI::GUITextBox *txtEncryptInput;
 			NotNullPtr<UI::GUIButton> btnEncryptEncrypt;
@@ -69,8 +69,8 @@ namespace SSWR
 			UI::GUILabel *lblEncryptOutput;
 			UI::GUITextBox *txtEncryptOutput;
 
-			static UOSInt AddHash(UI::GUIComboBox *cbo, Crypto::Hash::HashType hashType, Crypto::Hash::HashType targetType);
-			static void AddHashTypes(UI::GUIComboBox *cbo, Crypto::Hash::HashType hashType);
+			static UOSInt AddHash(NotNullPtr<UI::GUIComboBox> cbo, Crypto::Hash::HashType hashType, Crypto::Hash::HashType targetType);
+			static void AddHashTypes(NotNullPtr<UI::GUIComboBox> cbo, Crypto::Hash::HashType hashType);
 			static Bool FileIsSign(NotNullPtr<Text::String> fileName);
 			static void __stdcall OnVerifyClicked(void *userObj);
 			static void __stdcall OnVerifySignInfoClicked(void *userObj);

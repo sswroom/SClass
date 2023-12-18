@@ -123,7 +123,7 @@ namespace SSWR
 			UI::GUILabel *lblDeviceAddr;
 			UI::GUITextBox *txtDeviceAddr;
 			UI::GUILabel *lblDevice;
-			UI::GUIComboBox *cboDevice;
+			NotNullPtr<UI::GUIComboBox> cboDevice;
 			NotNullPtr<UI::GUIButton> btnDeviceAdd;
 			UI::GUIListView *lvDevice;
 

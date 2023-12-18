@@ -26,7 +26,7 @@ namespace SSWR
 			UI::GUIRadioButton *radActionMeasure;
 			UI::GUILabel *lblDistance;
 			UI::GUITextBox *txtDistance;
-			UI::GUIComboBox *cboDistanceUnit;
+			NotNullPtr<UI::GUIComboBox> cboDistanceUnit;
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			IMapNavigator *navi;

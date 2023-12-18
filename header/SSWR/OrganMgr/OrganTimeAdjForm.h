@@ -43,13 +43,13 @@ namespace SSWR
 			NotNullPtr<UI::GUIPanel> pnlLeft;
 			UI::GUIPictureBoxDD *pbPreview;
 			UI::GUIListBox *lbTrack;
-			UI::GUIComboBox *cboSpecies;
+			NotNullPtr<UI::GUIComboBox> cboSpecies;
 			UI::GUIListBox *lbPictures;
 			NotNullPtr<UI::GUIPanel> pnlMapCtrl;
 			NotNullPtr<UI::GUIPanel> pnlControl;
 			UI::GUITrackBar *tbMapScale;
 			UI::GUIMapControl *mapMain;
-			UI::GUIComboBox *cboCamera;
+			NotNullPtr<UI::GUIComboBox> cboCamera;
 			UI::GUITextBox *txtTimeAdj;
 			NotNullPtr<UI::GUIButton> btnPaste;
 			NotNullPtr<UI::GUIButton> btnTimeSub;

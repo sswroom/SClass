@@ -22,7 +22,7 @@ namespace SSWR
 
 			NotNullPtr<UI::GUIPanel> pnlMain;
 			UI::GUILabel *lblLang;
-			UI::GUIComboBox *cboLang;
+			NotNullPtr<UI::GUIComboBox> cboLang;
 			NotNullPtr<UI::GUIButton> btnReload;
 			UI::GUILabel *lblReqTime;
 			UI::GUITextBox *txtReqTime;

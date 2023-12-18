@@ -284,7 +284,7 @@ SSWR::AVIRead::AVIRFileHashForm::AVIRFileHashForm(UI::GUIClientControl *parent, 
 	this->pnlCheckType->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->lblCheckType, UI::GUILabel(ui, this->pnlCheckType, CSTR("Hash Type")));
 	this->lblCheckType->SetRect(4, 4, 100, 23, false);
-	NEW_CLASS(this->cboCheckType, UI::GUIComboBox(ui, this->pnlCheckType, false));
+	this->cboCheckType = ui->NewComboBox(this->pnlCheckType, false);
 	this->cboCheckType->SetRect(104, 4, 100, 23, false);
 	Crypto::Hash::HashType currType = Crypto::Hash::HashType::First;
 	Crypto::Hash::HashType lastType = Crypto::Hash::HashType::Last;

@@ -76,7 +76,7 @@ SSWR::AVIRead::AVIRCertTextForm::AVIRCertTextForm(UI::GUIClientControl *parent, 
 	this->pnlLabel->SetDockType(UI::GUIControl::DOCK_LEFT);
 	NEW_CLASS(this->lblEncType, UI::GUILabel(ui, this->pnlLabel, CSTR("Enc Type")));
 	this->lblEncType->SetRect(0, 0, 100, 23, false);
-	NEW_CLASS(this->cboEncType, UI::GUIComboBox(ui, *this, false));
+	this->cboEncType = ui->NewComboBox(*this, false);
 	this->cboEncType->SetRect(0, 0, 100, 23, false);
 	this->cboEncType->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->cboEncType->AddItem(CSTR("Base64"), 0);

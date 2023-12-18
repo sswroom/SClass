@@ -31,11 +31,11 @@ namespace SSWR
 			NotNullPtr<UI::GUIButton> btnStrColsInt32;
 			NotNullPtr<UI::GUIPanel> pnlXAxis;
 			UI::GUILabel *lblXAxis;
-			UI::GUIComboBox *cboXAxis;
+			NotNullPtr<UI::GUIComboBox> cboXAxis;
 			NotNullPtr<UI::GUIGroupBox> grpYAxis;
 			NotNullPtr<UI::GUIPanel> pnlYAxis;
 			UI::GUILabel *lblYAxis;
-			UI::GUIComboBox *cboYAxis;
+			NotNullPtr<UI::GUIComboBox> cboYAxis;
 			NotNullPtr<UI::GUIButton> btnYAxis;
 			UI::GUIListBox *lbYAxis;
 			NotNullPtr<UI::GUIPanel> pnlControl;

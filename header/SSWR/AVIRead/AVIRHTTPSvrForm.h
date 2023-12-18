@@ -99,7 +99,7 @@ namespace SSWR
 			UI::GUILabel *lblSkipLog;
 			UI::GUICheckBox *chkSkipLog;
 			UI::GUILabel *lblKeepAlive;
-			UI::GUIComboBox *cboKeepAlive;
+			NotNullPtr<UI::GUIComboBox> cboKeepAlive;
 			UI::GUILabel *lblCrossOrigin;
 			UI::GUICheckBox *chkCrossOrigin;
 			UI::GUILabel *lblDownloadCnt;

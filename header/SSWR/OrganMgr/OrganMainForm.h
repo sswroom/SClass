@@ -59,7 +59,7 @@ namespace SSWR
 
 			NotNullPtr<UI::GUITabPage> tpGroup;
 			UI::GUITextBox *txtGroupId;
-			UI::GUIComboBox *cboGroupType;
+			NotNullPtr<UI::GUIComboBox> cboGroupType;
 			UI::GUITextBox *txtGroupEName;
 			UI::GUITextBox *txtGroupCName;
 			UI::GUICheckBox *chkGroupAdmin;
@@ -86,7 +86,7 @@ namespace SSWR
 			NotNullPtr<UI::GUIPanel> pnlSpBook;
 			UI::GUITextBox *txtSpBook;
 			UI::GUITextBox *txtSpBookYear;
-			UI::GUIComboBox *cboSpBook;
+			NotNullPtr<UI::GUIComboBox> cboSpBook;
 			NotNullPtr<UI::GUIButton> btnSpBookAdd;
 			NotNullPtr<UI::GUIPanel> pnlSpBookCtrl;
 			NotNullPtr<UI::GUIButton> btnSpBookDel;
@@ -224,7 +224,7 @@ namespace SSWR
 			void ClearGroupForm();
 			void FillGroupCboBox();
 			void InitCategory();
-			void SelectGroup(UI::GUIComboBox *cbo, Int32 groupType);
+			void SelectGroup(NotNullPtr<UI::GUIComboBox> cbo, Int32 groupType);
 			void GoToDir(OrganGroup *grp, Int32 parentId);
 
 			void ClearImgLayers();

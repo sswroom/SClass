@@ -26,7 +26,7 @@ namespace SSWR
 			UI::GUIPictureBoxDD *pbMain;
 			NotNullPtr<UI::GUIPanel> pnlMain;
 			UI::GUILabel *lblCodeType;
-			UI::GUIComboBox *cboCodeType;
+			NotNullPtr<UI::GUIComboBox> cboCodeType;
 			UI::GUILabel *lblCodeSize;
 			UI::GUITextBox *txtCodeSize;
 			UI::GUILabel *lblCode;

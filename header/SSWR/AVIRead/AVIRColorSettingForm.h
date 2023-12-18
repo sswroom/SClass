@@ -39,7 +39,7 @@ namespace SSWR
 
 			NotNullPtr<UI::GUITabPage> tpSetting;
 			UI::GUILabel *lblMonProfile;
-			UI::GUIComboBox *cboMonProfile;
+			NotNullPtr<UI::GUIComboBox> cboMonProfile;
 			NotNullPtr<UI::GUIButton> btnMonProfile;
 			NotNullPtr<UI::GUIGroupBox> grpMonProfile;
 			UI::GUILabel *lblMonTran;
@@ -50,9 +50,9 @@ namespace SSWR
 			UI::GUITextBox *txtMonPrimaries;
 			NotNullPtr<UI::GUIButton> btnMonCustom;
 			UI::GUILabel *lblDefVProfile;
-			UI::GUIComboBox *cboDefVProfile;
+			NotNullPtr<UI::GUIComboBox> cboDefVProfile;
 			UI::GUILabel *lblDefPProfile;
-			UI::GUIComboBox *cboDefPProfile;
+			NotNullPtr<UI::GUIComboBox> cboDefPProfile;
 			UI::GUICheckBox *chk10Bit;
 			UI::GUILabel *lblLuminance;
 			UI::GUITextBox *txtLuminance;

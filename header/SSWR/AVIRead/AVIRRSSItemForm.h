@@ -27,7 +27,7 @@ namespace SSWR
 			UI::GUIListView *lvInfo;
 
 			NotNullPtr<UI::GUITabPage> tpImage;
-			UI::GUIComboBox *cboImage;
+			NotNullPtr<UI::GUIComboBox> cboImage;
 			UI::GUIPictureBoxSimple *pbImage;
 
 			NotNullPtr<UI::GUITabPage> tpText;

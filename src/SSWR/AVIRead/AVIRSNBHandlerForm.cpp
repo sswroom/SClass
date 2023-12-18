@@ -61,7 +61,7 @@ SSWR::AVIRead::AVIRSNBHandlerForm::AVIRSNBHandlerForm(UI::GUIClientControl *pare
 	this->pnlControl->SetDockType(UI::GUIControl::DOCK_LEFT);
 	NEW_CLASS(this->lblType, UI::GUILabel(ui, this->pnlControl, CSTR("Type")));
 	this->lblType->SetRect(0, 0, 100, 23, false);
-	NEW_CLASS(this->cboType, UI::GUIComboBox(ui, this->pnlControl, false));
+	this->cboType = ui->NewComboBox(this->pnlControl, false);
 	this->cboType->SetRect(0, 24, 180, 23, false);
 	this->cboType->HandleSelectionChange(OnTypeSelChg, this);
 	this->btnCancel = ui->NewButton(this->pnlControl, CSTR("Cancel"));

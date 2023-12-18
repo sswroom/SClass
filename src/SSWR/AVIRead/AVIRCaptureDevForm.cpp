@@ -185,7 +185,7 @@ SSWR::AVIRead::AVIRCaptureDevForm::AVIRCaptureDevForm(UI::GUIClientControl *pare
 	this->lbDevice->HandleSelectionChange(OnDevChg, this);
 	NEW_CLASS(this->lblFormat, UI::GUILabel(ui, *this, CSTR("Capture Format")));
 	this->lblFormat->SetRect(8, 96, 100, 23, false);
-	NEW_CLASS(this->cboFormat, UI::GUIComboBox(ui, *this, false));
+	this->cboFormat = ui->NewComboBox(*this, false);
 	this->cboFormat->SetRect(112, 96, 264, 23, false);
 	NEW_CLASS(this->txtDeviceInfo, UI::GUITextBox(ui, *this, CSTR(""), true));
 	this->txtDeviceInfo->SetReadOnly(true);

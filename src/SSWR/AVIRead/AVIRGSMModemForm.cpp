@@ -1032,7 +1032,7 @@ SSWR::AVIRead::AVIRGSMModemForm::AVIRGSMModemForm(UI::GUIClientControl *parent, 
 	this->pnlDevice->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->lblDeviceSerial, UI::GUILabel(ui, this->pnlDevice, CSTR("Serial Port")));
 	this->lblDeviceSerial->SetRect(0, 0, 100, 23, false);
-	NEW_CLASS(this->cboDeviceSerial, UI::GUIComboBox(ui, this->pnlDevice, false));
+	this->cboDeviceSerial = ui->NewComboBox(this->pnlDevice, false);
 	this->cboDeviceSerial->SetRect(100, 0, 150, 23, false);
 	this->btnDeviceSerial = ui->NewButton(this->pnlDevice, CSTR("Open"));
 	this->btnDeviceSerial->SetRect(250, 0, 75, 23, false);
@@ -1119,7 +1119,7 @@ SSWR::AVIRead::AVIRGSMModemForm::AVIRGSMModemForm(UI::GUIClientControl *parent, 
 	NEW_CLASSNN(this->pnlPhone, UI::GUIPanel(ui, this->tpPhoneBook));
 	this->pnlPhone->SetRect(0, 0, 100, 32, false);
 	this->pnlPhone->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->cboPhoneStorage, UI::GUIComboBox(ui, this->pnlPhone, false));
+	this->cboPhoneStorage = ui->NewComboBox(this->pnlPhone, false);
 	this->cboPhoneStorage->SetRect(0, 4, 100, 23, false);
 	this->cboPhoneStorage->AddItem(CSTR("SIM"), (void*)(OSInt)IO::GSMModemController::PBSTORE_SIM);
 	this->cboPhoneStorage->AddItem(CSTR("Restricted Phones"), (void*)(OSInt)IO::GSMModemController::PBSTORE_SIM_RESTRICTED);
@@ -1148,7 +1148,7 @@ SSWR::AVIRead::AVIRGSMModemForm::AVIRGSMModemForm(UI::GUIClientControl *parent, 
 	NEW_CLASSNN(this->pnlSMS, UI::GUIPanel(ui, this->tpSMS));
 	this->pnlSMS->SetRect(0, 0, 100, 32, false);
 	this->pnlSMS->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->cboSMSStorage, UI::GUIComboBox(ui, this->pnlSMS, false));
+	this->cboSMSStorage = ui->NewComboBox(this->pnlSMS, false);
 	this->cboSMSStorage->SetRect(0, 4, 100, 23, false);
 	this->cboSMSStorage->AddItem(CSTR("SIM"), (void*)(OSInt)IO::GSMModemController::SMSSTORE_SIM);
 	this->cboSMSStorage->AddItem(CSTR("Flash"), (void*)(OSInt)IO::GSMModemController::SMSSTORE_FLASH);

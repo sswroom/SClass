@@ -216,7 +216,7 @@ SSWR::AVIRead::AVIRDHCPServerForm::AVIRDHCPServerForm(UI::GUIClientControl *pare
 	this->pnlControl->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->lblIP, UI::GUILabel(ui, this->pnlControl, CSTR("Interface")));
 	this->lblIP->SetRect(4, 4, 100, 23, false);
-	NEW_CLASS(this->cboIP, UI::GUIComboBox(ui, this->pnlControl, false));
+	this->cboIP = ui->NewComboBox(this->pnlControl, false);
 	this->cboIP->SetRect(104, 4, 150, 23, false);
 	NEW_CLASS(this->lblSubnet, UI::GUILabel(ui, this->pnlControl, CSTR("Subnet Mask")));
 	this->lblSubnet->SetRect(4, 28, 100, 23, false);

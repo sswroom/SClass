@@ -142,7 +142,7 @@ SSWR::AVIRead::AVIROTPForm::AVIROTPForm(UI::GUIClientControl *parent, NotNullPtr
 	this->btnKeyRand160->HandleButtonClick(OnKeyRand160Clicked, this);
 	NEW_CLASS(this->lblType, UI::GUILabel(ui, this->grpNew, CSTR("Type")));
 	this->lblType->SetRect(4, 52, 100, 23, false);
-	NEW_CLASS(this->cboType, UI::GUIComboBox(ui, this->grpNew, false));
+	this->cboType = ui->NewComboBox(this->grpNew, false);
 	this->cboType->SetRect(104, 52, 150, 23, false);
 	this->cboType->AddItem(CSTR("Counter-Based (HOTP)"), 0);
 	this->cboType->AddItem(CSTR("Time-Based (TOTP)"), 0);

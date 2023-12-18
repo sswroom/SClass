@@ -120,7 +120,7 @@ SSWR::AVIRead::AVIRSMTPClientForm::AVIRSMTPClientForm(UI::GUIClientControl *pare
 	this->txtPort->SetRect(104, 28, 200, 23, false);
 	NEW_CLASS(this->lblSSLType, UI::GUILabel(ui, this->pnlControl, CSTR("SSL Type")));
 	this->lblSSLType->SetRect(4, 52, 100, 23, false);
-	NEW_CLASS(this->cboSSLType, UI::GUIComboBox(ui, this->pnlControl, false));
+	this->cboSSLType = ui->NewComboBox(this->pnlControl, false);
 	this->cboSSLType->SetRect(104, 52, 200, 23, false);
 	this->cboSSLType->AddItem(CSTR("Plain"), (void*)(OSInt)Net::Email::SMTPConn::ConnType::Plain);
 	this->cboSSLType->AddItem(CSTR("STARTTLS"), (void*)(OSInt)Net::Email::SMTPConn::ConnType::STARTTLS);

@@ -135,7 +135,7 @@ SSWR::AVIRead::AVIRARPScanForm::AVIRARPScanForm(UI::GUIClientControl *parent, No
 	this->pnlCtrl->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->lblAdapter, UI::GUILabel(ui, this->pnlCtrl, CSTR("Adapter")));
 	this->lblAdapter->SetRect(4, 4, 100, 23, false);
-	NEW_CLASS(this->cboAdapter, UI::GUIComboBox(ui, this->pnlCtrl, false));
+	this->cboAdapter = ui->NewComboBox(this->pnlCtrl, false);
 	this->cboAdapter->SetRect(104, 4, 150, 23, false);
 	this->btnScan = ui->NewButton(this->pnlCtrl, CSTR("Scan"));
 	this->btnScan->SetRect(254, 4, 75, 23, false);

@@ -32,7 +32,7 @@ namespace SSWR
 
 			UI::GUIRadioButton *radPredefine;
 			UI::GUIRadioButton *radOther;
-			UI::GUIComboBox *cboPredefine;
+			NotNullPtr<UI::GUIComboBox> cboPredefine;
 			UI::GUITextBox *txtOther;
 			UI::GUICheckBox *chkNoResource;
 			UI::GUILabel *lblSRID;

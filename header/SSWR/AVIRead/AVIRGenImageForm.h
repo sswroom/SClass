@@ -16,8 +16,8 @@ namespace SSWR
 		class AVIRGenImageForm : public UI::GUIForm
 		{
 		private:
-			UI::GUIComboBox *cboGenerator;
-			UI::GUIComboBox *cboColorProfile;
+			NotNullPtr<UI::GUIComboBox> cboGenerator;
+			NotNullPtr<UI::GUIComboBox> cboColorProfile;
 
 			UI::GUITextBox *txtWidth;
 			UI::GUITextBox *txtHeight;

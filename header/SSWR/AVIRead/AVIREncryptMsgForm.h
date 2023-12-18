@@ -19,22 +19,22 @@ namespace SSWR
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 
 			UI::GUILabel *lblAlgorithm;
-			UI::GUIComboBox *cboAlgorithm;
+			NotNullPtr<UI::GUIComboBox> cboAlgorithm;
 			UI::GUILabel *lblKeyType;
-			UI::GUIComboBox *cboKeyType;
+			NotNullPtr<UI::GUIComboBox> cboKeyType;
 			UI::GUILabel *lblKey;
 			UI::GUITextBox *txtKey;
 			UI::GUILabel *lblIV;
-			UI::GUIComboBox *cboIV;
+			NotNullPtr<UI::GUIComboBox> cboIV;
 			UI::GUITextBox *txtIV;
 			UI::GUILabel *lblChainMode;
-			UI::GUIComboBox *cboChainMode;
+			NotNullPtr<UI::GUIComboBox> cboChainMode;
 			UI::GUILabel *lblInputType;
-			UI::GUIComboBox *cboInputType;
+			NotNullPtr<UI::GUIComboBox> cboInputType;
 			UI::GUILabel *lblInputMsg;
 			UI::GUITextBox *txtInputMsg;
 			UI::GUILabel *lblOutputType;
-			UI::GUIComboBox *cboOutputType;
+			NotNullPtr<UI::GUIComboBox> cboOutputType;
 			NotNullPtr<UI::GUIButton> btnEncrypt;
 			NotNullPtr<UI::GUIButton> btnDecrypt;
 			UI::GUILabel *lblOutputMsg;
@@ -46,8 +46,8 @@ namespace SSWR
 			void ShowOutput(const UInt8 *buff, UOSInt buffSize);
 			static void __stdcall OnEncryptClicked(void *userObj);
 			static void __stdcall OnDecryptClicked(void *userObj);
-			static Text::TextBinEnc::ITextBinEnc *GetTextEncType(UI::GUIComboBox *cbo);
-			static void AddTextEncType(UI::GUIComboBox *cbo);
+			static Text::TextBinEnc::ITextBinEnc *GetTextEncType(NotNullPtr<UI::GUIComboBox> cbo);
+			static void AddTextEncType(NotNullPtr<UI::GUIComboBox> cbo);
 		public:
 			AVIREncryptMsgForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIREncryptMsgForm();

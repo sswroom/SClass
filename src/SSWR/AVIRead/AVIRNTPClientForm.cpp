@@ -94,7 +94,7 @@ SSWR::AVIRead::AVIRNTPClientForm::AVIRNTPClientForm(UI::GUIClientControl *parent
 
 	NEW_CLASS(this->lblServer, UI::GUILabel(ui, *this, CSTR("Server")));
 	this->lblServer->SetRect(4, 4, 100, 23, false);
-	NEW_CLASS(this->cboServer, UI::GUIComboBox(ui, *this, true));
+	this->cboServer = ui->NewComboBox(*this, true);
 	this->cboServer->SetRect(104, 4, 300, 23, false);
 	this->cboServer->AddItem(CSTR("stdtime.gov.hk"), 0);
 	this->cboServer->AddItem(CSTR("tock.stdtime.gov.tw"), 0);

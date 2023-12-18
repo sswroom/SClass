@@ -68,7 +68,7 @@ SSWR::AVIRead::AVIRASN1ParseForm::AVIRASN1ParseForm(UI::GUIClientControl *parent
 	this->pnlOptions->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->lblType, UI::GUILabel(ui, this->pnlOptions, CSTR("Type")));
 	this->lblType->SetRect(4, 4, 100, 23, false);
-	NEW_CLASS(this->cboType, UI::GUIComboBox(ui, this->pnlOptions, false));
+	this->cboType = ui->NewComboBox(this->pnlOptions, false);
 	this->cboType->SetRect(104, 4, 200, 23, false);
 	this->cboType->AddItem(CSTR("X.509 Certificate"), 0);
 	this->cboType->SetSelectedIndex(0);

@@ -32,7 +32,7 @@ namespace SSWR
 
 			NotNullPtr<UI::GUIGroupBox> grpControl;
 			UI::GUILabel *lblReqInterval;
-			UI::GUIComboBox *cboReqInterval;
+			NotNullPtr<UI::GUIComboBox> cboReqInterval;
 
 			UI::GUITabControl *tcMain;
 

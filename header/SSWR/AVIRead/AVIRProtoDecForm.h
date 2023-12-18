@@ -31,7 +31,7 @@ namespace SSWR
 			UI::GUITextBox *txtFile;
 			NotNullPtr<UI::GUIButton> btnFile;
 			UI::GUILabel *lblDecoder;
-			UI::GUIComboBox *cboDecoder;
+			NotNullPtr<UI::GUIComboBox> cboDecoder;
 			NotNullPtr<UI::GUIButton> btnLoad;
 			UI::GUIListView *lvLogs;
 			NotNullPtr<UI::GUIVSplitter> vspLogs;

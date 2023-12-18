@@ -262,7 +262,7 @@ SSWR::AVIRead::AVIRImageGRForm::AVIRImageGRForm(UI::GUIClientControl *parent, No
 	this->txtLevel->SetReadOnly(true);
 	NEW_CLASS(this->lblType, UI::GUILabel(ui, this->pnlSetting, CSTR("Type")));
 	this->lblType->SetRect(4, 100, 100, 23, false);
-	NEW_CLASS(this->cboType, UI::GUIComboBox(ui, this->pnlSetting, false));
+	this->cboType = ui->NewComboBox(this->pnlSetting, false);
 	this->cboType->SetRect(104, 100, 150, 23, false);
 	this->cboType->AddItem(CSTR("H GR"), 0);
 	this->cboType->AddItem(CSTR("V GR"), 0);

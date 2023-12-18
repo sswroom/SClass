@@ -30,7 +30,7 @@ namespace SSWR
 			NotNullPtr<UI::GUIButton> btnLineStyle;
 			UI::GUILabel *lblFillStyle;
 			UI::GUIPictureBox *pbFillStyle;
-			UI::GUIComboBox *cboColName;
+			NotNullPtr<UI::GUIComboBox> cboColName;
 			UI::GUICheckBox *chkShowLabel;
 			UI::GUITextBox *txtPriority;
 			UI::GUILabel *lblIcon;

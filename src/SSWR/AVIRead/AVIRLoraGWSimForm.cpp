@@ -239,7 +239,7 @@ SSWR::AVIRead::AVIRLoraGWSimForm::AVIRLoraGWSimForm(UI::GUIClientControl *parent
 	this->txtLSNR->SetRect(104, 124, 100, 23, false);
 	NEW_CLASS(this->lblPredef, UI::GUILabel(ui, this->pnlDevice, CSTR("Predef Data")));
 	this->lblPredef->SetRect(4, 148, 100, 23, false);
-	NEW_CLASS(this->cboPredef, UI::GUIComboBox(ui, this->pnlDevice, false));
+	this->cboPredef = ui->NewComboBox(this->pnlDevice, false);
 	this->cboPredef->SetRect(104, 148, 250, 23, false);
 	this->btnPredef = ui->NewButton(this->pnlDevice, CSTR("Set"));
 	this->btnPredef->SetRect(354, 148, 75, 23, false);

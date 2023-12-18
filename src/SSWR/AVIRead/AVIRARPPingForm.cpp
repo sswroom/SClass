@@ -140,7 +140,7 @@ SSWR::AVIRead::AVIRARPPingForm::AVIRARPPingForm(UI::GUIClientControl *parent, No
 	this->vspRequest = ui->NewVSplitter(*this, 3, false);
 	NEW_CLASS(this->lblAdapter, UI::GUILabel(ui, this->pnlRequest, CSTR("Adapter")));
 	this->lblAdapter->SetRect(4, 4, 100, 23, false);
-	NEW_CLASS(this->cboAdapter, UI::GUIComboBox(ui, this->pnlRequest, false));
+	this->cboAdapter = ui->NewComboBox(this->pnlRequest, false);
 	this->cboAdapter->SetRect(104, 4, 200, 23, false);
 	NEW_CLASS(this->lblTarget, UI::GUILabel(ui, this->pnlRequest, CSTR("Target")));
 	this->lblTarget->SetRect(4, 28, 100, 23, false);

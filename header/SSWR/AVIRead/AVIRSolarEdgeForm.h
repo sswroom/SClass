@@ -77,9 +77,9 @@ namespace SSWR
 			NotNullPtr<UI::GUITabPage> tpSiteEnergy;
 			NotNullPtr<UI::GUIPanel> pnlSiteEnergy;
 			UI::GUILabel *lblSiteEnergySite;
-			UI::GUIComboBox *cboSiteEnergySite;
+			NotNullPtr<UI::GUIComboBox> cboSiteEnergySite;
 			UI::GUILabel *lblSiteEnergyInterval;
-			UI::GUIComboBox *cboSiteEnergyInterval;
+			NotNullPtr<UI::GUIComboBox> cboSiteEnergyInterval;
 			UI::GUILabel *lblSiteEnergyRange;
 			NotNullPtr<UI::GUIComboBox> cboSiteEnergyYear;
 			NotNullPtr<UI::GUIComboBox> cboSiteEnergyMonth;
@@ -90,7 +90,7 @@ namespace SSWR
 			NotNullPtr<UI::GUITabPage> tpSitePower;
 			NotNullPtr<UI::GUIPanel> pnlSitePower;
 			UI::GUILabel *lblSitePowerSite;
-			UI::GUIComboBox *cboSitePowerSite;
+			NotNullPtr<UI::GUIComboBox> cboSitePowerSite;
 			UI::GUILabel *lblSitePowerRange;
 			NotNullPtr<UI::GUIComboBox> cboSitePowerYear;
 			NotNullPtr<UI::GUIComboBox> cboSitePowerMonth;

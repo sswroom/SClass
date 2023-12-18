@@ -21,7 +21,7 @@ namespace SSWR
 			NotNullPtr<UI::GUIPanel> pnlMain;
 			UI::GUIListView *lvTables;
 			UI::GUILabel *lblDBType;
-			UI::GUIComboBox *cboDBType;
+			NotNullPtr<UI::GUIComboBox> cboDBType;
 			UI::GUICheckBox *chkAxisAware;
 			UI::GUILabel *lblSchema;
 			UI::GUITextBox *txtSchema;

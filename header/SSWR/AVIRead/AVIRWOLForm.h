@@ -15,7 +15,7 @@ namespace SSWR
 		{
 		private:
 			UI::GUILabel *lblAdapter;
-			UI::GUIComboBox *cboAdapter;
+			NotNullPtr<UI::GUIComboBox> cboAdapter;
 			UI::GUILabel *lblDeviceMac;
 			UI::GUITextBox *txtDeviceMac;
 			NotNullPtr<UI::GUIButton> btnSend;

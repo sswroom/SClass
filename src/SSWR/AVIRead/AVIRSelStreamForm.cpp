@@ -423,7 +423,7 @@ SSWR::AVIRead::AVIRSelStreamForm::AVIRSelStreamForm(UI::GUIClientControl *parent
 	this->pnlStreamType->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->lblStreamType, UI::GUILabel(ui, this->pnlStreamType, CSTR("Stream Type")));
 	this->lblStreamType->SetRect(4, 4, 100, 23, false);
-	NEW_CLASS(this->cboStreamType, UI::GUIComboBox(ui, this->pnlStreamType, false));
+	this->cboStreamType = ui->NewComboBox(this->pnlStreamType, false);
 	this->cboStreamType->SetRect(104, 4, 200, 23, false);
 	this->cboStreamType->AddItem(IO::StreamTypeGetName(IO::StreamType::SerialPort), (void*)IO::StreamType::SerialPort);
 	if (this->siLabDriver)
@@ -461,7 +461,7 @@ SSWR::AVIRead::AVIRSelStreamForm::AVIRSelStreamForm(UI::GUIClientControl *parent
 	this->tpSerialPort = this->tcConfig->AddTabPage(CSTR("Serial Port"));
 	NEW_CLASS(this->lblSerialPort, UI::GUILabel(ui, this->tpSerialPort, CSTR("Port")));
 	this->lblSerialPort->SetRect(8, 8, 100, 23, false);
-	NEW_CLASS(this->cboSerialPort, UI::GUIComboBox(ui, this->tpSerialPort, false));
+	this->cboSerialPort = ui->NewComboBox(this->tpSerialPort, false);
 	this->cboSerialPort->SetRect(108, 8, 100, 23, false);
 
 	{
@@ -492,7 +492,7 @@ SSWR::AVIRead::AVIRSelStreamForm::AVIRSelStreamForm(UI::GUIClientControl *parent
 	this->txtBaudRate->SetRect(108, 32, 100, 23, false);
 	NEW_CLASS(this->lblParity, UI::GUILabel(ui, this->tpSerialPort, CSTR("Parity")));
 	this->lblParity->SetRect(8, 56, 100, 23, false);
-	NEW_CLASS(this->cboParity, UI::GUIComboBox(ui, this->tpSerialPort, false));
+	this->cboParity = ui->NewComboBox(this->tpSerialPort, false);
 	this->cboParity->SetRect(108, 56, 100, 23, false);
 	this->cboParity->AddItem(CSTR("None"), (void*)(OSInt)IO::SerialPort::PARITY_NONE);
 	this->cboParity->AddItem(CSTR("Odd"), (void*)(OSInt)IO::SerialPort::PARITY_ODD);

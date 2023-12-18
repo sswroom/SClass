@@ -62,7 +62,7 @@ SSWR::AVIRead::AVIRSelPrinterForm::AVIRSelPrinterForm(UI::GUIClientControl *pare
 
 	NEW_CLASS(this->lblPrinter, UI::GUILabel(ui, *this, CSTR("Printer")));
 	this->lblPrinter->SetRect(8, 8, 100, 23, false);
-	NEW_CLASS(this->cboPrinter, UI::GUIComboBox(ui, *this, false));
+	this->cboPrinter = ui->NewComboBox(*this, false);
 	this->cboPrinter->SetRect(108, 8, 300, 23, false);
 	this->cboPrinter->HandleSelectionChange(OnPrinterChg, this);
 	this->btnSetting = ui->NewButton(*this, CSTR("&Setting"));

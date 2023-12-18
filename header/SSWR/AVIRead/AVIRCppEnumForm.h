@@ -20,7 +20,7 @@ namespace SSWR
 
 			NotNullPtr<UI::GUIPanel> pnlCtrl;
 			UI::GUILabel *lblType;
-			UI::GUIComboBox *cboType;
+			NotNullPtr<UI::GUIComboBox> cboType;
 			NotNullPtr<UI::GUIButton> btnConv;
 			NotNullPtr<UI::GUIButton> btnConv2;
 			UI::GUILabel *lblPrefix;

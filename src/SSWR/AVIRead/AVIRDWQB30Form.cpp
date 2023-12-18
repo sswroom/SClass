@@ -298,7 +298,7 @@ SSWR::AVIRead::AVIRDWQB30Form::AVIRDWQB30Form(UI::GUIClientControl *parent, NotN
 	this->grpConn->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->lblDevType, UI::GUILabel(ui, this->grpConn, CSTR("Type")));
 	this->lblDevType->SetRect(160, 0, 100, 23, false);
-	NEW_CLASS(this->cboDevType, UI::GUIComboBox(ui, this->grpConn, false));
+	this->cboDevType = ui->NewComboBox(this->grpConn, false);
 	this->cboDevType->SetRect(260, 0, 150, 23, false);
 	this->cboDevType->AddItem(CSTR("Denso Wave QB30"), 0);
 	this->cboDevType->AddItem(CSTR("Denso Wave QK30-U"), 0);
@@ -353,10 +353,10 @@ SSWR::AVIRead::AVIRDWQB30Form::AVIRDWQB30Form(UI::GUIClientControl *parent, NotN
 	this->tpSetting = this->tcMain->AddTabPage(CSTR("Setting"));
 	NEW_CLASS(this->lblSetCmd, UI::GUILabel(ui, this->tpSetting, CSTR("Command")));
 	this->lblSetCmd->SetRect(4, 4, 100, 23, false);
-	NEW_CLASS(this->cboSetCmd, UI::GUIComboBox(ui, this->tpSetting, false));
+	this->cboSetCmd = ui->NewComboBox(this->tpSetting, false);
 	this->cboSetCmd->SetRect(104, 4, 150, 23, false);
 	this->cboSetCmd->HandleSelectionChange(OnSetCmdSelChg, this);
-	NEW_CLASS(this->cboSetParam, UI::GUIComboBox(ui, this->tpSetting, true));
+	this->cboSetParam = ui->NewComboBox(this->tpSetting, true);
 	this->cboSetParam->SetRect(264, 4, 150, 23, false);
 	this->btnSetCmd = ui->NewButton(this->tpSetting, CSTR("Send"));
 	this->btnSetCmd->SetRect(414, 4, 75, 23, false);

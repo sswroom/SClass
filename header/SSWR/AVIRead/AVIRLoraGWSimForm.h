@@ -64,7 +64,7 @@ namespace SSWR
 			UI::GUILabel *lblLSNR;
 			UI::GUITextBox *txtLSNR;
 			UI::GUILabel *lblPredef;
-			UI::GUIComboBox *cboPredef;
+			NotNullPtr<UI::GUIComboBox> cboPredef;
 			NotNullPtr<UI::GUIButton> btnPredef;
 			UI::GUILabel *lblFPort;
 			UI::GUITextBox *txtFPort;

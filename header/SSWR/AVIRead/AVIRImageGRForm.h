@@ -46,7 +46,7 @@ namespace SSWR
 			UI::GUIHScrollBar *hsbLevel;
 			UI::GUITextBox *txtLevel;
 			UI::GUILabel *lblType;
-			UI::GUIComboBox *cboType;
+			NotNullPtr<UI::GUIComboBox> cboType;
 			UI::GUICheckBox *chkEnable;
 			NotNullPtr<UI::GUIButton> btnAddLayer;
 			NotNullPtr<UI::GUIButton> btnRemoveLayer;

@@ -22,7 +22,7 @@ namespace SSWR
 		private:
 			NotNullPtr<UI::GUIGroupBox> grpConn;
 			UI::GUILabel *lblDevType;
-			UI::GUIComboBox *cboDevType;
+			NotNullPtr<UI::GUIComboBox> cboDevType;
 			UI::GUILabel *lblPort;
 			UI::GUITextBox *txtPort;
 			NotNullPtr<UI::GUIButton> btnPort;
@@ -44,8 +44,8 @@ namespace SSWR
 
 			NotNullPtr<UI::GUITabPage> tpSetting;
 			UI::GUILabel *lblSetCmd;
-			UI::GUIComboBox *cboSetCmd;
-			UI::GUIComboBox *cboSetParam;
+			NotNullPtr<UI::GUIComboBox> cboSetCmd;
+			NotNullPtr<UI::GUIComboBox> cboSetParam;
 			NotNullPtr<UI::GUIButton> btnSetCmd;
 			UI::GUITextBox *txtSetCmd;
 			

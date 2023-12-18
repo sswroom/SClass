@@ -6,6 +6,7 @@
 #include "UI/GUICore.h"
 #include "UI/GUICoreJava.h"
 #include "UI/Java/JavaButton.h"
+#include "UI/Java/JavaComboBox.h"
 #include "UI/Java/JavaGroupBox.h"
 #include "UI/Java/JavaHSplitter.h"
 #include "UI/Java/JavaMessageDialog.h"
@@ -205,6 +206,13 @@ NotNullPtr<UI::GUIButton> UI::GUICoreJava::NewButton(NotNullPtr<GUIClientControl
 {
 	NotNullPtr<UI::Java::JavaButton> ctrl;
 	NEW_CLASSNN(ctrl, UI::Java::JavaButton(*this, parent, text));
+	return ctrl;
+}
+
+NotNullPtr<UI::GUIComboBox> UI::GUICoreJava::NewComboBox(NotNullPtr<GUIClientControl> parent, Bool allowEdit)
+{
+	NotNullPtr<UI::Java::JavaComboBox> ctrl;
+	NEW_CLASSNN(ctrl, UI::Java::JavaComboBox(*this, parent, allowEdit));
 	return ctrl;
 }
 

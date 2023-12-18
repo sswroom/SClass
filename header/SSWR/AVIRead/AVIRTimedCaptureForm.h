@@ -55,7 +55,7 @@ namespace SSWR
 
 			NotNullPtr<UI::GUITabPage> tpControl;
 			UI::GUILabel *lblFormat;
-			UI::GUIComboBox *cboFormat;
+			NotNullPtr<UI::GUIComboBox> cboFormat;
 			UI::GUILabel *lblInterval;
 			UI::GUITextBox *txtInterval;
 			UI::GUILabel *lblJPGQuality;

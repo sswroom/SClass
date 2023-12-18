@@ -311,7 +311,7 @@ SSWR::AVIRead::AVIRGISPropForm::AVIRGISPropForm(UI::GUIClientControl *parent, No
 	this->pbFillStyle->SetRect(112, 96, 160, 20, false);
 	NEW_CLASS(lbl, UI::GUILabel(ui, *this, CSTR("Label Column")));
 	lbl->SetRect(8, 120, 100, 23, false);
-	NEW_CLASS(this->cboColName, UI::GUIComboBox(ui, *this, false));
+	this->cboColName = ui->NewComboBox(*this, false);
 	this->cboColName->SetRect(112, 120, 121, 20, false);
 	NEW_CLASS(this->chkShowLabel, UI::GUICheckBox(ui, *this, CSTR("Show Label"), false));
 	this->chkShowLabel->SetRect(240, 120, 104, 24, false);

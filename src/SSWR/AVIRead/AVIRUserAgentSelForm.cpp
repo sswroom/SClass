@@ -111,12 +111,12 @@ SSWR::AVIRead::AVIRUserAgentSelForm::AVIRUserAgentSelForm(UI::GUIClientControl *
 	this->pnlFilter->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->lblFilterOS, UI::GUILabel(ui, this->pnlFilter, CSTR("OS")));
 	this->lblFilterOS->SetRect(4, 4, 100, 23, false);
-	NEW_CLASS(this->cboFilterOS, UI::GUIComboBox(ui, this->pnlFilter, false));
+	this->cboFilterOS = ui->NewComboBox(this->pnlFilter, false);
 	this->cboFilterOS->SetRect(104, 4, 150, 23, false);
 	this->cboFilterOS->HandleSelectionChange(OnFilterChg, this);
 	NEW_CLASS(this->lblFilterBrowser, UI::GUILabel(ui, this->pnlFilter, CSTR("Browser")));
 	this->lblFilterBrowser->SetRect(304, 4, 100, 23, false);
-	NEW_CLASS(this->cboFilterBrowser, UI::GUIComboBox(ui, this->pnlFilter, false));
+	this->cboFilterBrowser = ui->NewComboBox(this->pnlFilter, false);
 	this->cboFilterBrowser->SetRect(404, 4, 150, 23, false);
 	this->cboFilterBrowser->HandleSelectionChange(OnFilterChg, this);
 	NEW_CLASSNN(this->pnlControl, UI::GUIPanel(ui, *this));

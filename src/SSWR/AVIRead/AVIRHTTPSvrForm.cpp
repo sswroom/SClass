@@ -530,7 +530,7 @@ SSWR::AVIRead::AVIRHTTPSvrForm::AVIRHTTPSvrForm(UI::GUIClientControl *parent, No
 	this->chkSkipLog->SetRect(108, 248, 100, 23, false);
 	NEW_CLASS(this->lblKeepAlive, UI::GUILabel(ui, this->grpParam, CSTR("Keep Alive")));
 	this->lblKeepAlive->SetRect(8, 272, 100, 23, false);
-	NEW_CLASS(this->cboKeepAlive, UI::GUIComboBox(ui, this->grpParam, false));
+	this->cboKeepAlive = ui->NewComboBox(this->grpParam, false);
 	this->cboKeepAlive->SetRect(108, 272, 100, 23, false);
 	this->cboKeepAlive->AddItem(CSTR("Always"), (void*)(OSInt)Net::WebServer::KeepAlive::Always);
 	this->cboKeepAlive->AddItem(CSTR("Default"), (void*)(OSInt)Net::WebServer::KeepAlive::Default);

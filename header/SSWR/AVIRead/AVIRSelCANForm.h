@@ -25,7 +25,7 @@ namespace SSWR
 
 			NotNullPtr<UI::GUITabPage> tpAXCAN;
 			UI::GUILabel *lblAXCANBitRate;
-			UI::GUIComboBox *cboAXCANBitRate;
+			NotNullPtr<UI::GUIComboBox> cboAXCANBitRate;
 			NotNullPtr<UI::GUIButton> btnAXCANSerial;
 			NotNullPtr<UI::GUIButton> btnAXCANFile;
 

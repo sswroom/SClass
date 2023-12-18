@@ -52,7 +52,7 @@ SSWR::AVIRead::AVIRHKOLocalForecastForm::AVIRHKOLocalForecastForm(UI::GUIClientC
 
 	NEW_CLASS(this->lblLang, UI::GUILabel(ui, *this, CSTR("Language")));
 	this->lblLang->SetRect(4, 4, 100, 23, false);
-	NEW_CLASS(this->cboLang, UI::GUIComboBox(ui, *this, false));
+	this->cboLang = ui->NewComboBox(*this, false);
 	this->cboLang->SetRect(104, 4, 150, 23, false);
 	this->cboLang->AddItem(CSTR("English"), (void*)Net::HKOWeather::Language::En);
 	this->cboLang->AddItem(CSTR("Chinese (Traditional)"), (void*)Net::HKOWeather::Language::TC);

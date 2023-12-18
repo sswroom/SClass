@@ -152,7 +152,7 @@ SSWR::AVIRead::AVIRLogExtractForm::AVIRLogExtractForm(UI::GUIClientControl *pare
 	this->btnOFile->HandleButtonClick(OnOFileClicked, this);
 	NEW_CLASS(this->lblType, UI::GUILabel(ui, *this, CSTR("Prefix")));
 	this->lblType->SetRect(4, 76, 100, 23, false);
-	NEW_CLASS(this->cboType, UI::GUIComboBox(ui, *this, false));
+	this->cboType = ui->NewComboBox(*this, false);
 	this->cboType->SetRect(104, 76, 200, 23, false);
 	this->cboType->AddItem(CSTR("Preserve line"), 0);
 	this->cboType->AddItem(CSTR("No Date and prefix"), 0);

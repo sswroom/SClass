@@ -74,10 +74,10 @@ namespace SSWR
 			UI::GUITextBox *txtInfo;
 			NotNullPtr<UI::GUIButton> btnInfo;
 			UI::GUILabel *lblIP;
-			UI::GUIComboBox *cboIP;
+			NotNullPtr<UI::GUIComboBox> cboIP;
 			NotNullPtr<UI::GUIButton> btnStart;
 			UI::GUILabel *lblPLog;
-			UI::GUIComboBox *cboPLog;
+			NotNullPtr<UI::GUIComboBox> cboPLog;
 			NotNullPtr<UI::GUIButton> btnPLog;
 			UI::GUITextBox *txtPLog;
 			UI::GUITabControl *tcMain;

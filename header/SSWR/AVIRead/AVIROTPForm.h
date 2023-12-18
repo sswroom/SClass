@@ -37,7 +37,7 @@ namespace SSWR
 			NotNullPtr<UI::GUIButton> btnKeyRand80;
 			NotNullPtr<UI::GUIButton> btnKeyRand160;
 			UI::GUILabel *lblType;
-			UI::GUIComboBox *cboType;
+			NotNullPtr<UI::GUIComboBox> cboType;
 			NotNullPtr<UI::GUIButton> btnNew;
 			UI::GUIListView *lvEntry;
 

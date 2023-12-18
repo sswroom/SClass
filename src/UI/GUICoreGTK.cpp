@@ -4,6 +4,7 @@
 #include "UI/GUICore.h"
 #include "UI/GUICoreGTK.h"
 #include "UI/GTK/GTKButton.h"
+#include "UI/GTK/GTKComboBox.h"
 #include "UI/GTK/GTKGroupBox.h"
 #include "UI/GTK/GTKHSplitter.h"
 #include "UI/GTK/GTKMessageDialog.h"
@@ -198,6 +199,13 @@ NotNullPtr<UI::GUIButton> UI::GUICoreGTK::NewButton(NotNullPtr<GUIClientControl>
 {
 	NotNullPtr<UI::GTK::GTKButton> ctrl;
 	NEW_CLASSNN(ctrl, UI::GTK::GTKButton(*this, parent, text));
+	return ctrl;
+}
+
+NotNullPtr<UI::GUIComboBox> UI::GUICoreGTK::NewComboBox(NotNullPtr<GUIClientControl> parent, Bool allowEdit)
+{
+	NotNullPtr<UI::GTK::GTKComboBox> ctrl;
+	NEW_CLASSNN(ctrl, UI::GTK::GTKComboBox(*this, parent, allowEdit));
 	return ctrl;
 }
 

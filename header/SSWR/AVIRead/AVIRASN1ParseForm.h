@@ -19,7 +19,7 @@ namespace SSWR
 
 			NotNullPtr<UI::GUIPanel> pnlOptions;
 			UI::GUILabel *lblType;
-			UI::GUIComboBox *cboType;
+			NotNullPtr<UI::GUIComboBox> cboType;
 			UI::GUILabel *lblData;
 			UI::GUITextBox *txtData;
 			NotNullPtr<UI::GUIPanel> pnlControl;

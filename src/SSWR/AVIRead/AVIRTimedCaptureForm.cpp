@@ -310,7 +310,7 @@ SSWR::AVIRead::AVIRTimedCaptureForm::AVIRTimedCaptureForm(UI::GUIClientControl *
 	this->tpControl = this->tcMain->AddTabPage(CSTR("Control"));
 	NEW_CLASS(this->lblFormat, UI::GUILabel(ui, this->tpControl, CSTR("Capture Format")));
 	this->lblFormat->SetRect(4, 4, 100, 23, false);
-	NEW_CLASS(this->cboFormat, UI::GUIComboBox(ui, this->tpControl, false));
+	this->cboFormat = ui->NewComboBox(this->tpControl, false);
 	this->cboFormat->SetRect(104, 4, 264, 23, false);
 	NEW_CLASS(this->lblInterval, UI::GUILabel(ui, this->tpControl, CSTR("Capture Interval(ms)")));
 	this->lblInterval->SetRect(4, 28, 100, 23, false);

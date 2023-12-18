@@ -147,7 +147,7 @@ SSWR::AVIRead::AVIRDNSClientForm::AVIRDNSClientForm(UI::GUIClientControl *parent
 	NEW_CLASS(this->txtRequest, UI::GUITextBox(ui, this->pnlRequest, CSTR("")));
 	this->txtRequest->SetRect(124, 28, 160, 23, false);
 	this->txtRequest->Focus();
-	NEW_CLASS(this->cboRequest, UI::GUIComboBox(ui, this->pnlRequest, false));
+	this->cboRequest = ui->NewComboBox(this->pnlRequest, false);
 	this->cboRequest->SetRect(124, 52, 200, 23, false);
 	this->cboRequest->AddItem(CSTR("1 - A (IPv4)"), (void*)1);
 	this->cboRequest->AddItem(CSTR("2 - NS (Name Server)"), (void*)2);

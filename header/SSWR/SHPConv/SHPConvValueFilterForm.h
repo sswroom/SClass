@@ -18,7 +18,7 @@ namespace SSWR
 		{
 		private:
 			UI::GUILabel *lblCol;
-			UI::GUIComboBox *cboCol;
+			NotNullPtr<UI::GUIComboBox> cboCol;
 			UI::GUILabel *lblType;
 			UI::GUIRadioButton *radEqual;
 			UI::GUIRadioButton *radNotEq;

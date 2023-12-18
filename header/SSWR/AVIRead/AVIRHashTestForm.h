@@ -23,7 +23,7 @@ namespace SSWR
 
 			NotNullPtr<UI::GUITabPage> tpAlgorithm;
 			UI::GUILabel *lblAlgorithm;
-			UI::GUIComboBox *cboAlgorithm;
+			NotNullPtr<UI::GUIComboBox> cboAlgorithm;
 			NotNullPtr<UI::GUIButton> btnSpeed;
 			UI::GUILabel *lblSpeed;
 			UI::GUITextBox *txtSpeed;

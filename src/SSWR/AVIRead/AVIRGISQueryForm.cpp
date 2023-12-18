@@ -315,7 +315,7 @@ SSWR::AVIRead::AVIRGISQueryForm::AVIRGISQueryForm(UI::GUIClientControl *parent, 
 	NEW_CLASSNN(this->pnlObj, UI::GUIPanel(ui, *this));
 	this->pnlObj->SetRect(0, 0, 100, 31, false);
 	this->pnlObj->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->cboObj, UI::GUIComboBox(ui, this->pnlObj, false));
+	this->cboObj = ui->NewComboBox(this->pnlObj, false);
 	this->cboObj->SetRect(4, 4, 200, 23, false);
 	this->cboObj->HandleSelectionChange(OnObjSelChg, this);
 	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, *this));
@@ -335,7 +335,7 @@ SSWR::AVIRead::AVIRGISQueryForm::AVIRGISQueryForm(UI::GUIClientControl *parent, 
 	this->pnlShape->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->lblShapeFmt, UI::GUILabel(ui, this->pnlShape, CSTR("Format")));
 	this->lblShapeFmt->SetRect(4, 4, 100, 23, false);
-	NEW_CLASS(this->cboShapeFmt, UI::GUIComboBox(ui, this->pnlShape, false));
+	this->cboShapeFmt = ui->NewComboBox(this->pnlShape, false);
 	this->cboShapeFmt->SetRect(104, 4, 200, 23, false);
 	this->cboShapeFmt->HandleSelectionChange(OnShapeFmtChanged, this);
 	NEW_CLASS(this->txtShape, UI::GUITextBox(ui, this->tpShape, CSTR(""), true));

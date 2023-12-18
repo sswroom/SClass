@@ -102,7 +102,7 @@ SSWR::AVIRead::AVIRSelIOPinForm::AVIRSelIOPinForm(UI::GUIClientControl *parent, 
 	this->pnlPinType->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->lblPinType, UI::GUILabel(ui, this->pnlPinType, CSTR("Pin Type")));
 	this->lblPinType->SetRect(4, 4, 100, 23, false);
-	NEW_CLASS(this->cboPinType, UI::GUIComboBox(ui, this->pnlPinType, false));
+	this->cboPinType = ui->NewComboBox(this->pnlPinType, false);
 	this->cboPinType->SetRect(104, 4, 200, 23, false);
 	this->cboPinType->AddItem(SSWR::AVIRead::AVIRCore::IOPinTypeGetName(SSWR::AVIRead::AVIRCore::IOPT_GPIO), (void*)SSWR::AVIRead::AVIRCore::IOPT_GPIO);
 	this->cboPinType->AddItem(SSWR::AVIRead::AVIRCore::IOPinTypeGetName(SSWR::AVIRead::AVIRCore::IOPT_VIOPIN), (void*)SSWR::AVIRead::AVIRCore::IOPT_VIOPIN);
@@ -124,13 +124,13 @@ SSWR::AVIRead::AVIRSelIOPinForm::AVIRSelIOPinForm(UI::GUIClientControl *parent, 
 	this->tpGPIO = this->tcConfig->AddTabPage(CSTR("GPIO"));
 	NEW_CLASS(this->lblGPIO, UI::GUILabel(ui, this->tpGPIO, CSTR("GPIO Pin")));
 	this->lblGPIO->SetRect(8, 8, 100, 23, false);
-	NEW_CLASS(this->cboGPIO, UI::GUIComboBox(ui, this->tpGPIO, false));
+	this->cboGPIO = ui->NewComboBox(this->tpGPIO, false);
 	this->cboGPIO->SetRect(108, 8, 100, 23, false);
 
 	this->tpVirtualPin = this->tcConfig->AddTabPage(CSTR("VirtualPin"));
 	NEW_CLASS(this->lblVirtualPin, UI::GUILabel(ui, this->tpVirtualPin, CSTR("VirtualPin")));
 	this->lblVirtualPin->SetRect(8, 8, 100, 23, false);
-	NEW_CLASS(this->cboVirtualPin, UI::GUIComboBox(ui, this->tpVirtualPin, false));
+	this->cboVirtualPin = ui->NewComboBox(this->tpVirtualPin, false);
 	this->cboVirtualPin->SetRect(108, 8, 100, 23, false);
 
 	Int32 currPort;

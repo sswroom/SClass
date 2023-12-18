@@ -34,16 +34,16 @@ namespace SSWR
 
 			NotNullPtr<UI::GUIPanel> pnlStreamType;
 			UI::GUILabel *lblStreamType;
-			UI::GUIComboBox *cboStreamType;
+			NotNullPtr<UI::GUIComboBox> cboStreamType;
 			UI::GUITabControl *tcConfig;
 
 			NotNullPtr<UI::GUITabPage> tpSerialPort;
 			UI::GUILabel *lblSerialPort;
-			UI::GUIComboBox *cboSerialPort;
+			NotNullPtr<UI::GUIComboBox> cboSerialPort;
 			UI::GUILabel *lblBaudRate;
 			UI::GUITextBox *txtBaudRate;
 			UI::GUILabel *lblParity;
-			UI::GUIComboBox *cboParity;
+			NotNullPtr<UI::GUIComboBox> cboParity;
 
 			NotNullPtr<UI::GUITabPage> tpSiLabPort;
 			NotNullPtr<UI::GUIPanel> pnlSLInfo;

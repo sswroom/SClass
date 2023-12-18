@@ -281,14 +281,14 @@ SSWR::AVIRead::AVIRSSLInfoForm::AVIRSSLInfoForm(UI::GUIClientControl *parent, No
 	this->txtPort->SetRect(104, 28, 100, 23, false);
 	NEW_CLASS(this->lblMode, UI::GUILabel(ui, *this, CSTR("Mode")));
 	this->lblMode->SetRect(4, 52, 100, 23, false);
-	NEW_CLASS(this->cboMode, UI::GUIComboBox(ui, *this, false));
+	this->cboMode = ui->NewComboBox(*this, false);
 	this->cboMode->SetRect(104, 52, 100, 23, false);
 	this->cboMode->AddItem(CSTR("Standard"), 0);
 	this->cboMode->AddItem(CSTR("MSSQL Server"), 0);
 	this->cboMode->SetSelectedIndex(0);
 	NEW_CLASS(this->lblVersion, UI::GUILabel(ui, *this, CSTR("Version")));
 	this->lblVersion->SetRect(4, 76, 100, 23, false);
-	NEW_CLASS(this->cboVersion, UI::GUIComboBox(ui, *this, false));
+	this->cboVersion = ui->NewComboBox(*this, false);
 	this->cboVersion->SetRect(104, 76, 100, 23, false);
 	this->cboVersion->AddItem(CSTR("SSL 3.0"), (void*)Net::SSLVer::SSL3_0);
 	this->cboVersion->AddItem(CSTR("TLS 1.0"), (void*)Net::SSLVer::TLS1_0);

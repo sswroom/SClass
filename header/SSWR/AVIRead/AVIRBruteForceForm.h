@@ -22,17 +22,17 @@ namespace SSWR
 			Int64 lastTime;
 
 			UI::GUILabel *lblHashType;
-			UI::GUIComboBox *cboHashType;
+			NotNullPtr<UI::GUIComboBox> cboHashType;
 			UI::GUILabel *lblHashValue;
 			UI::GUITextBox *txtHashValue;
 			UI::GUILabel *lblEncoding;
-			UI::GUIComboBox *cboEncoding;
+			NotNullPtr<UI::GUIComboBox> cboEncoding;
 			UI::GUILabel *lblMinLen;
 			UI::GUITextBox *txtMinLen;
 			UI::GUILabel *lblMaxLen;
 			UI::GUITextBox *txtMaxLen;
 			UI::GUILabel *lblCharType;
-			UI::GUIComboBox *cboCharType;
+			NotNullPtr<UI::GUIComboBox> cboCharType;
 			NotNullPtr<UI::GUIButton> btnStart;
 			UI::GUILabel *lblStatus;
 			UI::GUITextBox *txtStatus;

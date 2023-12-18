@@ -509,7 +509,7 @@ void SSWR::AVIRead::AVIRCoordConvForm::UpdateList()
 	SDEL_CLASS(destCoord);
 }
 
-void SSWR::AVIRead::AVIRCoordConvForm::FillCoordGeo(UI::GUIComboBox *cbo)
+void SSWR::AVIRead::AVIRCoordConvForm::FillCoordGeo(NotNullPtr<UI::GUIComboBox> cbo)
 {
 	cbo->ClearItems();
 	Math::CoordinateSystemManager::GeoCoordSysType gcst = Math::CoordinateSystemManager::GCST_FIRST;
@@ -520,7 +520,7 @@ void SSWR::AVIRead::AVIRCoordConvForm::FillCoordGeo(UI::GUIComboBox *cbo)
 	}
 }
 
-void SSWR::AVIRead::AVIRCoordConvForm::FillCoordProj(UI::GUIComboBox *cbo)
+void SSWR::AVIRead::AVIRCoordConvForm::FillCoordProj(NotNullPtr<UI::GUIComboBox> cbo)
 {
 	cbo->ClearItems();
 	Math::CoordinateSystemManager::ProjCoordSysType pcst = Math::CoordinateSystemManager::PCST_FIRST;
@@ -550,7 +550,7 @@ SSWR::AVIRead::AVIRCoordConvForm::AVIRCoordConvForm(UI::GUIClientControl *parent
 	this->radSrcGeo->HandleSelectedChange(OnSrcRadChanged, this);
 	NEW_CLASS(this->radSrcProj, UI::GUIRadioButton(ui, this->pnlSrc, CSTR("Projected"), true));
 	this->radSrcProj->SetRect(200, 0, 100, 23, false);
-	NEW_CLASS(this->cboSrc, UI::GUIComboBox(ui, this->pnlSrc, false));
+	this->cboSrc = ui->NewComboBox(this->pnlSrc, false);
 	this->cboSrc->SetRect(300, 0, 200, 23, false);
 	this->cboSrc->HandleSelectionChange(OnSrcCboChanged, this);
 	NEW_CLASSNN(this->pnlDest, UI::GUIPanel(ui, *this));
@@ -563,7 +563,7 @@ SSWR::AVIRead::AVIRCoordConvForm::AVIRCoordConvForm(UI::GUIClientControl *parent
 	this->radDestGeo->HandleSelectedChange(OnDestRadChanged, this);
 	NEW_CLASS(this->radDestProj, UI::GUIRadioButton(ui, this->pnlDest, CSTR("Projected"), false));
 	this->radDestProj->SetRect(200, 0, 100, 23, false);
-	NEW_CLASS(this->cboDest, UI::GUIComboBox(ui, this->pnlDest, false));
+	this->cboDest = ui->NewComboBox(this->pnlDest, false);
 	this->cboDest->SetRect(300, 0, 200, 23, false);
 	this->cboDest->HandleSelectionChange(OnDestCboChanged, this);
 	this->btnConvFile = ui->NewButton(this->pnlDest, CSTR("Conv File"));

@@ -31,17 +31,17 @@ namespace SSWR
 
 			NotNullPtr<UI::GUIHSplitter> hspMain;
 			NotNullPtr<UI::GUIGroupBox> grpSend;
-			UI::GUIComboBox *cboSendType;
+			NotNullPtr<UI::GUIComboBox> cboSendType;
 			UI::GUITextBox *txtSendDisp;
 			NotNullPtr<UI::GUIPanel> pnlSend;
 			UI::GUITextBox *txtSendValue;
 			NotNullPtr<UI::GUIButton> btnSend;
 			NotNullPtr<UI::GUIGroupBox> grpRecv;
-			UI::GUIComboBox *cboRecvType;
+			NotNullPtr<UI::GUIComboBox> cboRecvType;
 			UI::GUITextBox *txtRecvDisp;
 			NotNullPtr<UI::GUIPanel> pnlSendOption;
 			UI::GUILabel *lblSendLBreak;
-			UI::GUIComboBox *cboSendLBreak;
+			NotNullPtr<UI::GUIComboBox> cboSendLBreak;
 			UI::GUIRadioButton *radSendText;
 			UI::GUIRadioButton *radSendHex;
 

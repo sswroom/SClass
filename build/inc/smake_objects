@@ -2170,10 +2170,8 @@ GUIClientControlJava.o: ../../src/UI/GUIClientControlJava.cpp
 $-I$(JAVA_HOME)/include
 $-I$(JAVA_HOME)/include/linux
 GUIClientControlWin.o: ../../src/UI/GUIClientControlWin.cpp
-GUIComboBoxGTK.o: ../../src/UI/GUIComboBoxGTK.cpp
-$`$(PKG-CONFIG) --cflags gtk+-3.0`
+GUIComboBox.o: ../../src/UI/GUIComboBox.cpp
 GUIComboBoxUtil.o: ../../src/UI/GUIComboBoxUtil.cpp
-GUIComboBoxWin.o: ../../src/UI/GUIComboBoxWin.cpp
 GUIControlGTK.o: ../../src/UI/GUIControlGTK.cpp
 $`$(PKG-CONFIG) --cflags gtk+-3.0`
 GUIControlJava.o: ../../src/UI/GUIControlJava.cpp
@@ -2299,6 +2297,8 @@ TextDObj.o: ../../src/UI/DObj/TextDObj.cpp
 VideoDObjHandler.o: ../../src/UI/DObj/VideoDObjHandler.cpp
 GTKButton.o: ../../src/UI/GTK/GTKButton.cpp
 $`$(PKG-CONFIG) --cflags gtk+-3.0`
+GTKComboBox.o: ../../src/UI/GTK/GTKComboBox.cpp
+$`$(PKG-CONFIG) --cflags gtk+-3.0`
 GTKDragDrop.o: ../../src/UI/GTK/GTKDragDrop.cpp
 $`$(PKG-CONFIG) --cflags gtk+-3.0`
 GTKGroupBox.o: ../../src/UI/GTK/GTKGroupBox.cpp
@@ -2318,6 +2318,7 @@ JavaTimer.o: ../../src/UI/Java/JavaTimer.cpp
 $-I$(JAVA_HOME)/include
 $-I$(JAVA_HOME)/include/linux
 WinButton.o: ../../src/UI/Win/WinButton.cpp
+WinComboBox.o: ../../src/UI/Win/WinComboBox.cpp
 WinDragDrop.o: ../../src/UI/Win/WinDragDrop.cpp
 WinGroupBox.o: ../../src/UI/Win/WinGroupBox.cpp
 WinHSplitter.o: ../../src/UI/Win/WinHSplitter.cpp

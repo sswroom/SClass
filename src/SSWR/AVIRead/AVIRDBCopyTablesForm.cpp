@@ -381,7 +381,7 @@ SSWR::AVIRead::AVIRDBCopyTablesForm::AVIRDBCopyTablesForm(UI::GUIClientControl *
 	this->tpSource = this->tcMain->AddTabPage(CSTR("Source"));
 	NEW_CLASS(this->lblSourceConn, UI::GUILabel(ui, this->tpSource, CSTR("Connection")));
 	this->lblSourceConn->SetRect(4, 4, 100, 23, false);
-	NEW_CLASS(this->cboSourceConn, UI::GUIComboBox(ui, this->tpSource, false));
+	this->cboSourceConn = ui->NewComboBox(this->tpSource, false);
 	this->cboSourceConn->SetRect(104, 4, 400, 23, false);
 	NEW_CLASS(this->lblSourceDB, UI::GUILabel(ui, this->tpSource, CSTR("Database")));
 	this->lblSourceDB->SetRect(4, 28, 100, 23, false);
@@ -395,7 +395,7 @@ SSWR::AVIRead::AVIRDBCopyTablesForm::AVIRDBCopyTablesForm(UI::GUIClientControl *
 	this->txtSourceCollation->SetReadOnly(true);
 	NEW_CLASS(this->lblSourceSchema, UI::GUILabel(ui, this->tpSource, CSTR("Schema")));
 	this->lblSourceSchema->SetRect(4, 76, 100, 23, false);
-	NEW_CLASS(this->cboSourceSchema, UI::GUIComboBox(ui, this->tpSource, false));
+	this->cboSourceSchema = ui->NewComboBox(this->tpSource, false);
 	this->cboSourceSchema->SetRect(104, 76, 200, 23, false);
 	this->btnSourceSelect = ui->NewButton(this->tpSource, CSTR("Select"));
 	this->btnSourceSelect->SetRect(104, 100, 75, 23, false);
@@ -414,16 +414,16 @@ SSWR::AVIRead::AVIRDBCopyTablesForm::AVIRDBCopyTablesForm(UI::GUIClientControl *
 	this->lvData->AddColumn(CSTR("Status"), 400);
 	NEW_CLASS(this->lblDestDB, UI::GUILabel(ui, this->grpDest, CSTR("Connection")));
 	this->lblDestDB->SetRect(4, 4, 100, 23, false);
-	NEW_CLASS(this->cboDestDB, UI::GUIComboBox(ui, this->grpDest, false));
+	this->cboDestDB = ui->NewComboBox(this->grpDest, false);
 	this->cboDestDB->SetRect(104, 4, 400, 23, false);
 	this->cboDestDB->HandleSelectionChange(OnDestDBChg, this);
 	NEW_CLASS(this->lblDestSchema, UI::GUILabel(ui, this->grpDest, CSTR("Schema")));
 	this->lblDestSchema->SetRect(4, 28, 100, 23, false);
-	NEW_CLASS(this->cboDestSchema, UI::GUIComboBox(ui, this->grpDest, false));
+	this->cboDestSchema = ui->NewComboBox(this->grpDest, false);
 	this->cboDestSchema->SetRect(104, 28, 200, 23, false);
 	NEW_CLASS(this->lblDestOptions, UI::GUILabel(ui, this->grpDest, CSTR("Options")));
 	this->lblDestOptions->SetRect(4, 52, 100, 23, false);
-	NEW_CLASS(this->cboDestTableType, UI::GUIComboBox(ui, this->grpDest, false));
+	this->cboDestTableType = ui->NewComboBox(this->grpDest, false);
 	this->cboDestTableType->SetRect(104, 52, 100, 23, false);
 	this->cboDestTableType->AddItem(CSTR("Create Table"), 0);
 	this->cboDestTableType->AddItem(CSTR("Remove existing"), 0);

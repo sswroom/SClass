@@ -33,9 +33,9 @@ namespace SSWR
 
 			NotNullPtr<UI::GUIPanel> pnlFilter;
 			UI::GUILabel *lblFilterOS;
-			UI::GUIComboBox *cboFilterOS;
+			NotNullPtr<UI::GUIComboBox> cboFilterOS;
 			UI::GUILabel *lblFilterBrowser;
-			UI::GUIComboBox *cboFilterBrowser;
+			NotNullPtr<UI::GUIComboBox> cboFilterBrowser;
 			NotNullPtr<UI::GUIPanel> pnlControl;
 			NotNullPtr<UI::GUIButton> btnOk;
 			UI::GUIListView *lvUserAgent;

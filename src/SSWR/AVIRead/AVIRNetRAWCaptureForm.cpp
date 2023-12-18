@@ -115,15 +115,15 @@ SSWR::AVIRead::AVIRNetRAWCaptureForm::AVIRNetRAWCaptureForm(UI::GUIClientControl
 
 	NEW_CLASS(this->lblIP, UI::GUILabel(ui, *this, CSTR("IP")));
 	this->lblIP->SetRect(4, 4, 100, 23, false);
-	NEW_CLASS(this->cboIP, UI::GUIComboBox(ui, *this, false));
+	this->cboIP = ui->NewComboBox(*this, false);
 	this->cboIP->SetRect(104, 4, 150, 23, false);
 	NEW_CLASS(this->lblType, UI::GUILabel(ui, *this, CSTR("Type")));
 	this->lblType->SetRect(4, 28, 100, 23, false);
-	NEW_CLASS(this->cboType, UI::GUIComboBox(ui, *this, false));
+	this->cboType = ui->NewComboBox(*this, false);
 	this->cboType->SetRect(104, 28, 150, 23, false);
 	NEW_CLASS(this->lblFormat, UI::GUILabel(ui, *this, CSTR("Format")));
 	this->lblFormat->SetRect(4, 52, 100, 23, false);
-	NEW_CLASS(this->cboFormat, UI::GUIComboBox(ui, *this, false));
+	this->cboFormat = ui->NewComboBox(*this, false);
 	this->cboFormat->SetRect(104, 52, 150, 23, false);
 	NEW_CLASS(this->lblFileName, UI::GUILabel(ui, *this, CSTR("File Name")));
 	this->lblFileName->SetRect(4, 76, 100, 23, false);

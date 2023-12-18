@@ -345,7 +345,7 @@ SSWR::AVIRead::AVIRWiFiLogManagerForm::AVIRWiFiLogManagerForm(UI::GUIClientContr
 	this->lblInfo->SetRect(494, 4, 200, 23, false);
 	NEW_CLASS(this->lblDblClk, UI::GUILabel(ui, this->pnlControl, CSTR("Dbl-Clk Action")));
 	this->lblDblClk->SetRect(694, 4, 100, 23, false);
-	NEW_CLASS(this->cboDblClk, UI::GUIComboBox(ui, this->pnlControl, false));
+	this->cboDblClk = ui->NewComboBox(this->pnlControl, false);
 	this->cboDblClk->SetRect(794, 4, 100, 23, false);
 	this->cboDblClk->AddItem(CSTR("Edit"), 0);
 	this->cboDblClk->AddItem(CSTR("Paste"), 0);

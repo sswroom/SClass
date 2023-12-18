@@ -88,7 +88,7 @@ SSWR::AVIRead::AVIRODBCStrForm::AVIRODBCStrForm(UI::GUIClientControl *parent, No
 
 	NEW_CLASS(this->lblDriver, UI::GUILabel(ui, *this, CSTR("Driver")));
 	this->lblDriver->SetRect(4, 4, 100, 23, false);
-	NEW_CLASS(this->cboDriver, UI::GUIComboBox(ui, *this, false));
+	this->cboDriver = ui->NewComboBox(*this, false);
 	this->cboDriver->SetRect(104, 4, 200, 23, false);
 	this->cboDriver->HandleSelectionChange(OnDriverSelChg, this);
 	this->btnDriverInfo = ui->NewButton(*this, CSTR("Info"));

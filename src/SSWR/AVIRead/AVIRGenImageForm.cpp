@@ -63,11 +63,11 @@ SSWR::AVIRead::AVIRGenImageForm::AVIRGenImageForm(UI::GUIClientControl *parent, 
 	
 	NEW_CLASS(lbl, UI::GUILabel(ui, *this, CSTR("Generator")));
 	lbl->SetRect(8, 8, 100, 23, false);
-	NEW_CLASS(this->cboGenerator, UI::GUIComboBox(ui, *this, false));
+	this->cboGenerator = ui->NewComboBox(*this, false);
 	this->cboGenerator->SetRect(112, 8, 224, 23, false);
 	NEW_CLASS(lbl, UI::GUILabel(ui, *this, CSTR("Color Profile")));
 	lbl->SetRect(8, 32, 100, 23, false);
-	NEW_CLASS(this->cboColorProfile, UI::GUIComboBox(ui, *this, false));
+	this->cboColorProfile = ui->NewComboBox(*this, false);
 	this->cboColorProfile->SetRect(112, 32, 224, 23, false);
 
 	NEW_CLASS(lbl, UI::GUILabel(ui, *this, CSTR("Output Size")));

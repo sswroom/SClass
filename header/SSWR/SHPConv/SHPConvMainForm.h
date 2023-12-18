@@ -76,7 +76,7 @@ namespace SSWR
 			UI::GUITextBox *txtCodePage;
 
 			UI::GUILabel *lblSeperator;
-			UI::GUIComboBox *cboSeperator;
+			NotNullPtr<UI::GUIComboBox> cboSeperator;
 			NotNullPtr<UI::GUIButton> btnGroup;
 			NotNullPtr<UI::GUIButton> btnFilter;
 			NotNullPtr<UI::GUIButton> btnPreview;

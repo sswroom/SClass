@@ -55,7 +55,7 @@ SSWR::AVIRead::AVIRJasyptForm::AVIRJasyptForm(UI::GUIClientControl *parent, NotN
 
 	NEW_CLASS(this->lblKeyAlg, UI::GUILabel(ui, *this, CSTR("Key Algorithm")));
 	this->lblKeyAlg->SetRect(4, 4, 100, 23, false);
-	NEW_CLASS(this->cboKeyAlg, UI::GUIComboBox(ui, *this, false));
+	this->cboKeyAlg = ui->NewComboBox(*this, false);
 	this->cboKeyAlg->SetRect(104, 4, 150, 23, false);
 	i = Crypto::Encrypt::JasyptEncryptor::KA_FIRST;
 	j = Crypto::Encrypt::JasyptEncryptor::KA_LAST;
@@ -68,7 +68,7 @@ SSWR::AVIRead::AVIRJasyptForm::AVIRJasyptForm(UI::GUIClientControl *parent, NotN
 
 	NEW_CLASS(this->lblEncAlg, UI::GUILabel(ui, *this, CSTR("Encrypt Algorithm")));
 	this->lblEncAlg->SetRect(4, 28, 100, 23, false);
-	NEW_CLASS(this->cboEncAlg, UI::GUIComboBox(ui, *this, false));
+	this->cboEncAlg = ui->NewComboBox(*this, false);
 	this->cboEncAlg->SetRect(104, 28, 150, 23, false);
 	i = Crypto::Encrypt::JasyptEncryptor::CA_FIRST;
 	j = Crypto::Encrypt::JasyptEncryptor::CA_LAST;

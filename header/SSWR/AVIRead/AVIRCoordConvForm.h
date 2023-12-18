@@ -23,12 +23,12 @@ namespace SSWR
 			UI::GUILabel *lblSrc;
 			UI::GUIRadioButton *radSrcGeo;
 			UI::GUIRadioButton *radSrcProj;
-			UI::GUIComboBox *cboSrc;
+			NotNullPtr<UI::GUIComboBox> cboSrc;
 			NotNullPtr<UI::GUIPanel> pnlDest;
 			UI::GUILabel *lblDest;
 			UI::GUIRadioButton *radDestGeo;
 			UI::GUIRadioButton *radDestProj;
-			UI::GUIComboBox *cboDest;
+			NotNullPtr<UI::GUIComboBox> cboDest;
 			NotNullPtr<UI::GUIButton> btnConvFile;
 			NotNullPtr<UI::GUIPanel> pnlCoord;
 			UI::GUILabel *lblName;
@@ -65,8 +65,8 @@ namespace SSWR
 
 			void ClearItems(Bool updateList);
 			void UpdateList();
-			void FillCoordGeo(UI::GUIComboBox *cbo);
-			void FillCoordProj(UI::GUIComboBox *cbo);
+			void FillCoordGeo(NotNullPtr<UI::GUIComboBox> cbo);
+			void FillCoordProj(NotNullPtr<UI::GUIComboBox> cbo);
 		public:
 			AVIRCoordConvForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRCoordConvForm();

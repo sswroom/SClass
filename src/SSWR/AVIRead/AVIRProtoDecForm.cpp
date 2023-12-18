@@ -147,7 +147,7 @@ SSWR::AVIRead::AVIRProtoDecForm::AVIRProtoDecForm(UI::GUIClientControl *parent, 
 	this->btnFile->HandleButtonClick(OnFileClicked, this);
 	NEW_CLASS(this->lblDecoder, UI::GUILabel(ui, this->pnlCtrl, CSTR("Decoder")));
 	this->lblDecoder->SetRect(4, 28, 100, 23, false);
-	NEW_CLASS(this->cboDecoder, UI::GUIComboBox(ui, this->pnlCtrl, false));
+	this->cboDecoder = ui->NewComboBox(this->pnlCtrl, false);
 	this->cboDecoder->SetRect(104, 28, 200, 23, false);
 	this->btnLoad = ui->NewButton(this->pnlCtrl, CSTR("&Load"));
 	this->btnLoad->SetRect(104, 52, 75, 23, false);

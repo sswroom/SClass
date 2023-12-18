@@ -71,11 +71,11 @@ SSWR::AVIRead::AVIRTextHashForm::AVIRTextHashForm(UI::GUIClientControl *parent, 
 	this->txtText->SetDockType(UI::GUIControl::DOCK_FILL);
 	NEW_CLASS(this->lblEncrypt, UI::GUILabel(ui, this->pnlControl, CSTR("Text Encrypt")));
 	this->lblEncrypt->SetRect(4, 4, 100, 23, false);
-	NEW_CLASS(this->cboEncrypt, UI::GUIComboBox(ui, this->pnlControl, false));
+	this->cboEncrypt = ui->NewComboBox(this->pnlControl, false);
 	this->cboEncrypt->SetRect(104, 4, 300, 23, false);
 	NEW_CLASS(this->lblHashType, UI::GUILabel(ui, this->pnlControl, CSTR("Hash Type")));
 	this->lblHashType->SetRect(4, 28, 100, 23, false);
-	NEW_CLASS(this->cboHashType, UI::GUIComboBox(ui, this->pnlControl, false));
+	this->cboHashType = ui->NewComboBox(this->pnlControl, false);
 	this->cboHashType->SetRect(104, 28, 300, 23, false);
 	this->btnGenerate = ui->NewButton(this->pnlControl, CSTR("Generate"));
 	this->btnGenerate->SetRect(104, 52, 75, 23, false);

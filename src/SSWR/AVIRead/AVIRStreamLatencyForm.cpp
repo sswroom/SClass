@@ -204,7 +204,7 @@ SSWR::AVIRead::AVIRStreamLatencyForm::AVIRStreamLatencyForm(UI::GUIClientControl
 	this->grpControl->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->lblReqInterval, UI::GUILabel(ui, this->grpControl, CSTR("Req Interval")));
 	this->lblReqInterval->SetRect(4, 4, 100, 23, false);
-	NEW_CLASS(this->cboReqInterval, UI::GUIComboBox(ui, this->grpControl, false));
+	this->cboReqInterval = ui->NewComboBox(this->grpControl, false);
 	this->cboReqInterval->SetRect(104, 4, 100, 23, false);
 	this->cboReqInterval->AddItem(CSTR("1s"), (void *)1000);
 	this->cboReqInterval->AddItem(CSTR("2s"), (void *)2000);

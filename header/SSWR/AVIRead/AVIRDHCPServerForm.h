@@ -23,7 +23,7 @@ namespace SSWR
 
 			NotNullPtr<UI::GUIPanel> pnlControl;
 			UI::GUILabel *lblIP;
-			UI::GUIComboBox *cboIP;
+			NotNullPtr<UI::GUIComboBox> cboIP;
 			UI::GUILabel *lblSubnet;
 			UI::GUITextBox *txtSubnet;
 			UI::GUILabel *lblFirstIP;

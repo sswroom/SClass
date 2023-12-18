@@ -4,7 +4,7 @@
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
 #include "UI/GUIClientControl.h"
-#include "UI/GUIComboBox.h"
+#include "UI/GTK/GTKComboBox.h"
 #include <gtk/gtk.h>
 
 void GUIComboBox_EventChanged(void *window, void *userObj)
@@ -24,15 +24,9 @@ void GUIComboBox_OnChild(GtkWidget *widget, gpointer data)
 	printf("Child name = %s\r\n", gtk_widget_get_name(widget));
 }
 
-struct UI::GUIComboBox::ClassData
+UI::GTK::GTKComboBox::GTKComboBox(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, Bool allowEdit) : UI::GUIComboBox(ui, parent)
 {
-	GtkTreeModel *model;
-};
-
-UI::GUIComboBox::GUIComboBox(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, Bool allowEdit) : UI::GUIControl(ui, parent)
-{
-	this->clsData = MemAlloc(ClassData, 1);
-	this->clsData->model = 0;
+	this->model = 0;
 	if (allowEdit)
 	{
 		this->hwnd = (ControlHandle*)gtk_combo_box_text_new_with_entry();
@@ -42,9 +36,6 @@ UI::GUIComboBox::GUIComboBox(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIClien
 		this->hwnd = (ControlHandle*)gtk_combo_box_text_new();
 	}
 	this->allowEdit = allowEdit;
-	this->autoComplete = false;
-	this->nonUIEvent = false;
-	this->lastTextLeng = 0;
 	parent->AddChild(this);
 	this->Show();
 	g_signal_connect(this->hwnd, "changed", G_CALLBACK(GUIComboBox_EventChanged), this);
@@ -55,54 +46,11 @@ UI::GUIComboBox::GUIComboBox(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIClien
 	}
 }
 
-UI::GUIComboBox::~GUIComboBox()
+UI::GTK::GTKComboBox::~GTKComboBox()
 {
-	UOSInt i = this->itemTexts.GetCount();
-	while (i-- > 0)
-	{
-		OPTSTR_DEL(this->itemTexts.GetItem(i));
-	}
-	MemFree(this->clsData);
 }
 
-void UI::GUIComboBox::EventSelectionChange()
-{
-	UOSInt i = this->selChgHdlrs.GetCount();
-	while (i-- > 0)
-	{
-		this->selChgHdlrs.GetItem(i)(this->selChgObjs.GetItem(i));
-	}
-}
-
-void UI::GUIComboBox::EventTextChanged()
-{
-	if (this->autoComplete || !this->nonUIEvent)
-	{
-		Text::StringBuilderUTF8 sb;
-		this->GetText(sb);
-		if (sb.GetLength() > this->lastTextLeng)
-		{
-			this->nonUIEvent = true;
-			Data::ArrayIterator<NotNullPtr<Text::String>> it = this->itemTexts.Iterator();
-			NotNullPtr<Text::String> s;
-			while (it.HasNext())
-			{
-				s = it.Next();
-				if (s->StartsWith(sb.ToString(), sb.GetLength()))
-				{
-					this->SetText(s->ToCString());
-					//this->SetSelectedIndex(i);
-					this->SetTextSelection(sb.GetLength(), s->leng);
-					break;
-				}
-			}
-			this->nonUIEvent = false;
-		}
-		this->lastTextLeng = sb.GetLength();
-	}
-}
-
-void UI::GUIComboBox::SetText(Text::CStringNN text)
+void UI::GTK::GTKComboBox::SetText(Text::CStringNN text)
 {
 	if (this->allowEdit)
 	{
@@ -124,20 +72,20 @@ void UI::GUIComboBox::SetText(Text::CStringNN text)
 	}
 }
 
-UTF8Char *UI::GUIComboBox::GetText(UTF8Char *buff)
+UTF8Char *UI::GTK::GTKComboBox::GetText(UTF8Char *buff)
 {
 	gchar *lbl = gtk_combo_box_text_get_active_text(GTK_COMBO_BOX_TEXT((GtkWidget*)this->hwnd));
 	return Text::StrConcat(buff, (const UTF8Char*)lbl);
 }
 
-Bool UI::GUIComboBox::GetText(NotNullPtr<Text::StringBuilderUTF8> sb)
+Bool UI::GTK::GTKComboBox::GetText(NotNullPtr<Text::StringBuilderUTF8> sb)
 {
 	gchar *lbl = gtk_combo_box_text_get_active_text(GTK_COMBO_BOX_TEXT((GtkWidget*)this->hwnd));
 	sb->AppendSlow((const UTF8Char*)lbl);
 	return true;
 }
 
-void UI::GUIComboBox::BeginUpdate()
+void UI::GTK::GTKComboBox::BeginUpdate()
 {
 /*	printf("wrap width = %d\r\n", gtk_combo_box_get_wrap_width(GTK_COMBO_BOX((GtkWidget*)this->hwnd)));
 	gtk_combo_box_set_wrap_width(GTK_COMBO_BOX((GtkWidget*)this->hwnd), 0);
@@ -148,7 +96,7 @@ void UI::GUIComboBox::BeginUpdate()
 //	gtk_container_foreach(GTK_CONTAINER((GtkWidget*)this->hwnd), GUIComboBox_OnChild, this);
 }
 
-void UI::GUIComboBox::EndUpdate()
+void UI::GTK::GTKComboBox::EndUpdate()
 {
 /*	gtk_combo_box_set_model(GTK_COMBO_BOX((GtkWidget*)this->hwnd), this->clsData->model);
 	g_object_unref(this->clsData->model);
@@ -156,7 +104,7 @@ void UI::GUIComboBox::EndUpdate()
 	this->clsData->model = 0;*/
 }
 
-UOSInt UI::GUIComboBox::AddItem(NotNullPtr<Text::String> itemText, void *itemObj)
+UOSInt UI::GTK::GTKComboBox::AddItem(NotNullPtr<Text::String> itemText, void *itemObj)
 {
 	UOSInt cnt = this->itemTexts.GetCount();
 	this->itemTexts.Add(itemText->Clone());
@@ -168,16 +116,16 @@ UOSInt UI::GUIComboBox::AddItem(NotNullPtr<Text::String> itemText, void *itemObj
 	return cnt;
 }
 
-UOSInt UI::GUIComboBox::AddItem(Text::CStringNN itemText, void *itemObj)
+UOSInt UI::GTK::GTKComboBox::AddItem(Text::CStringNN itemText, void *itemObj)
 {
 	UOSInt cnt = this->itemTexts.GetCount();
 	this->itemTexts.Add(Text::String::New(itemText));
 	this->items.Add(itemObj);
-	if (this->clsData->model)
+	if (this->model)
 	{
 		GtkTreeIter iter;
-		gtk_list_store_append (GTK_LIST_STORE(this->clsData->model), &iter);
-		gtk_list_store_set (GTK_LIST_STORE(this->clsData->model), &iter, 0, itemText.v, -1);
+		gtk_list_store_append (GTK_LIST_STORE(this->model), &iter);
+		gtk_list_store_set (GTK_LIST_STORE(this->model), &iter, 0, itemText.v, -1);
 	}
 	else
 	{
@@ -190,7 +138,7 @@ UOSInt UI::GUIComboBox::AddItem(Text::CStringNN itemText, void *itemObj)
 	return cnt;
 }
 
-UOSInt UI::GUIComboBox::InsertItem(UOSInt index, NotNullPtr<Text::String> itemText, void *itemObj)
+UOSInt UI::GTK::GTKComboBox::InsertItem(UOSInt index, NotNullPtr<Text::String> itemText, void *itemObj)
 {
 	UOSInt cnt = this->itemTexts.GetCount();
 	if (index >= cnt)
@@ -201,7 +149,7 @@ UOSInt UI::GUIComboBox::InsertItem(UOSInt index, NotNullPtr<Text::String> itemTe
 	return index;
 }
 
-UOSInt UI::GUIComboBox::InsertItem(UOSInt index, Text::CStringNN itemText, void *itemObj)
+UOSInt UI::GTK::GTKComboBox::InsertItem(UOSInt index, Text::CStringNN itemText, void *itemObj)
 {
 	UOSInt cnt = this->itemTexts.GetCount();
 	if (index >= cnt)
@@ -212,7 +160,7 @@ UOSInt UI::GUIComboBox::InsertItem(UOSInt index, Text::CStringNN itemText, void 
 	return index;
 }
 
-void *UI::GUIComboBox::RemoveItem(UOSInt index)
+void *UI::GTK::GTKComboBox::RemoveItem(UOSInt index)
 {
 	UOSInt cnt = this->itemTexts.GetCount();
 	if (index >= cnt)
@@ -223,7 +171,7 @@ void *UI::GUIComboBox::RemoveItem(UOSInt index)
 	return item;
 }
 
-void UI::GUIComboBox::ClearItems()
+void UI::GTK::GTKComboBox::ClearItems()
 {
 	UOSInt i = this->itemTexts.GetCount();
 	while (i-- > 0)
@@ -235,49 +183,32 @@ void UI::GUIComboBox::ClearItems()
 	gtk_combo_box_text_remove_all((GtkComboBoxText*)this->hwnd);
 }
 
-UOSInt UI::GUIComboBox::GetCount()
+UOSInt UI::GTK::GTKComboBox::GetCount()
 {
 	return this->itemTexts.GetCount();
 }
 
-void UI::GUIComboBox::SetSelectedIndex(UOSInt index)
+void UI::GTK::GTKComboBox::SetSelectedIndex(UOSInt index)
 {
 	gtk_combo_box_set_active((::GtkComboBox*)this->hwnd, (gint)index);
 }
 
-UOSInt UI::GUIComboBox::GetSelectedIndex()
+UOSInt UI::GTK::GTKComboBox::GetSelectedIndex()
 {
 	return (UOSInt)(OSInt)gtk_combo_box_get_active((::GtkComboBox*)this->hwnd);
 }
 
-UTF8Char *UI::GUIComboBox::GetSelectedItemText(UTF8Char *sbuff)
-{
-	UOSInt i = this->GetSelectedIndex();
-	NotNullPtr<Text::String> s;
-	if (i == INVALID_INDEX || !this->itemTexts.GetItem(i).SetTo(s))
-		return 0;
-	return Text::StrConcatC(sbuff, s->v, s->leng);
-}
-
-void *UI::GUIComboBox::GetSelectedItem()
+void *UI::GTK::GTKComboBox::GetSelectedItem()
 {
 	return this->items.GetItem(this->GetSelectedIndex());
 }
 
-UTF8Char *UI::GUIComboBox::GetItemText(UTF8Char *buff, UOSInt index)
-{
-	NotNullPtr<Text::String> txt;
-	if (!this->itemTexts.GetItem(index).SetTo(txt))
-		return 0;
-	return Text::StrConcatC(buff, txt->v, txt->leng);
-}
-
-void *UI::GUIComboBox::GetItem(UOSInt index)
+void *UI::GTK::GTKComboBox::GetItem(UOSInt index)
 {
 	return this->items.GetItem(index);
 }
 
-Math::Size2DDbl UI::GUIComboBox::GetSize()
+Math::Size2DDbl UI::GTK::GTKComboBox::GetSize()
 {
 	gint w;
 	gint h;
@@ -286,7 +217,7 @@ Math::Size2DDbl UI::GUIComboBox::GetSize()
 	///////////////////////////////
 }
 
-void UI::GUIComboBox::SetArea(Double left, Double top, Double right, Double bottom, Bool updateScn)
+void UI::GTK::GTKComboBox::SetArea(Double left, Double top, Double right, Double bottom, Bool updateScn)
 {
 	this->SetAreaP(Double2Int32(left * this->hdpi / this->ddpi),
 		Double2Int32(top * this->hdpi / this->ddpi),
@@ -294,39 +225,17 @@ void UI::GUIComboBox::SetArea(Double left, Double top, Double right, Double bott
 		Double2Int32(bottom * this->hdpi / this->ddpi), updateScn);
 }
 
-Text::CStringNN UI::GUIComboBox::GetObjectClass() const
-{
-	return CSTR("ComboBox");
-}
-
-OSInt UI::GUIComboBox::OnNotify(UInt32 code, void *lParam)
+OSInt UI::GTK::GTKComboBox::OnNotify(UInt32 code, void *lParam)
 {
 	return 0;
 }
 
-void UI::GUIComboBox::HandleSelectionChange(UI::UIEvent hdlr, void *userObj)
-{
-	this->selChgHdlrs.Add(hdlr);
-	this->selChgObjs.Add(userObj);
-}
-
-void UI::GUIComboBox::UpdatePos(Bool redraw)
+void UI::GTK::GTKComboBox::UpdatePos(Bool redraw)
 {
 	/////////////////////////	
 }
 
-void UI::GUIComboBox::SetAutoComplete(Bool autoComplete)
-{
-	if (!this->autoComplete && autoComplete)
-	{
-		Text::StringBuilderUTF8 sb;
-		this->GetText(sb);
-		this->lastTextLeng = sb.GetLength();
-	}
-	this->autoComplete = autoComplete;
-}
-
-void UI::GUIComboBox::SetTextSelection(UOSInt startPos, UOSInt endPos)
+void UI::GTK::GTKComboBox::SetTextSelection(UOSInt startPos, UOSInt endPos)
 {
 	if (this->allowEdit)
 	{

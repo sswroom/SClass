@@ -19,7 +19,7 @@ namespace SSWR
 			Optional<Net::SSLEngine> ssl;
 
 			UI::GUILabel *lblLang;
-			UI::GUIComboBox *cboLang;
+			NotNullPtr<UI::GUIComboBox> cboLang;
 			NotNullPtr<UI::GUIButton> btnReload;
 			UI::GUILabel *lblReqTime;
 			UI::GUITextBox *txtReqTime;

@@ -19,14 +19,14 @@ namespace SSWR
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 
 			UI::GUILabel *lblVendor;
-			UI::GUIComboBox *cboVendor;
+			NotNullPtr<UI::GUIComboBox> cboVendor;
 			NotNullPtr<UI::GUIButton> btnGenerate;
 			UI::GUILabel *lblColonFormat;
 			UI::GUITextBox *txtColonFormat;
 			UI::GUILabel *lblPlainFormat;
 			UI::GUITextBox *txtPlainFormat;
 			UI::GUILabel *lblAdapter;
-			UI::GUIComboBox *cboAdapter;
+			NotNullPtr<UI::GUIComboBox> cboAdapter;
 			NotNullPtr<UI::GUIButton> btnAdapterSet;
 
 			Data::BTreeUTF8Map<Data::ArrayList<Net::MACInfo::MACEntry*>*> *macMap;

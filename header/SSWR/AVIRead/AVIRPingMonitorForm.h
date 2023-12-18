@@ -56,7 +56,7 @@ namespace SSWR
 			UI::GUITextBox *txtInfo;
 			NotNullPtr<UI::GUIButton> btnInfo;
 			UI::GUILabel *lblIP;
-			UI::GUIComboBox *cboIP;
+			NotNullPtr<UI::GUIComboBox> cboIP;
 			NotNullPtr<UI::GUIButton> btnStart;
 			UI::GUITabControl *tcMain;
 

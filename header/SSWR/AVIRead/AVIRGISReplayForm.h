@@ -36,7 +36,7 @@ namespace SSWR
 			UI::GUIPopupMenu *mnuRecord;
 			UI::GUITextBox *txtAddress;
 			UI::GUILabel *lblAddress;
-			UI::GUIComboBox *cboName;
+			NotNullPtr<UI::GUIComboBox> cboName;
 			UI::GUILabel *lblDist;
 			UI::GUIListView *lvExtra;
 

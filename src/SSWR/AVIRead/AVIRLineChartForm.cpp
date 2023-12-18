@@ -316,7 +316,7 @@ SSWR::AVIRead::AVIRLineChartForm::AVIRLineChartForm(UI::GUIClientControl *parent
 	this->pnlXAxis->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->lblXAxis, UI::GUILabel(ui, this->pnlXAxis, CSTR("X-Axis")));
 	this->lblXAxis->SetRect(4, 4, 100, 23, false);
-	NEW_CLASS(this->cboXAxis, UI::GUIComboBox(ui, this->pnlXAxis, false));
+	this->cboXAxis = ui->NewComboBox(this->pnlXAxis, false);
 	this->cboXAxis->SetRect(104, 4, 200, 23, false);
 	NEW_CLASSNN(this->pnlControl, UI::GUIPanel(ui, *this));
 	this->pnlControl->SetRect(0, 0, 100, 32, false);
@@ -334,7 +334,7 @@ SSWR::AVIRead::AVIRLineChartForm::AVIRLineChartForm(UI::GUIClientControl *parent
 	this->pnlYAxis->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->lblYAxis, UI::GUILabel(ui, this->pnlYAxis, CSTR("Column")));
 	this->lblYAxis->SetRect(4, 4, 100, 23, false);
-	NEW_CLASS(this->cboYAxis, UI::GUIComboBox(ui, this->pnlYAxis, false));
+	this->cboYAxis = ui->NewComboBox(this->pnlYAxis, false);
 	this->cboYAxis->SetRect(104, 4, 200, 23, false);
 	this->btnYAxis = ui->NewButton(this->pnlYAxis, CSTR("Add"));
 	this->btnYAxis->SetRect(304, 4, 75, 23, false);

@@ -354,7 +354,7 @@ SSWR::AVIRead::AVIRHTTPLoadBalanceForm::AVIRHTTPLoadBalanceForm(UI::GUIClientCon
 	this->txtFwdURL->SetRect(108, 152, 500, 23, false);
 	NEW_CLASS(this->lblFwdType, UI::GUILabel(ui, this->grpParam, CSTR("Forward Type")));
 	this->lblFwdType->SetRect(8, 176, 100, 23, false);
-	NEW_CLASS(this->cboFwdType, UI::GUIComboBox(ui, this->grpParam,false));
+	this->cboFwdType = ui->NewComboBox(this->grpParam,false);
 	this->cboFwdType->SetRect(108, 176, 100, 23, false);
 	this->cboFwdType->AddItem(CSTR("Normal"), (void*)(OSInt)Net::WebServer::HTTPForwardHandler::ForwardType::Normal);
 	this->cboFwdType->AddItem(CSTR("Transparent"), (void*)(OSInt)Net::WebServer::HTTPForwardHandler::ForwardType::Transparent);

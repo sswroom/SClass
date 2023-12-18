@@ -2400,7 +2400,7 @@ void SSWR::OrganMgr::OrganMainForm::InitCategory()
 	this->UpdateDir();
 }
 
-void SSWR::OrganMgr::OrganMainForm::SelectGroup(UI::GUIComboBox *cbo, Int32 groupType)
+void SSWR::OrganMgr::OrganMainForm::SelectGroup(NotNullPtr<UI::GUIComboBox> cbo, Int32 groupType)
 {
 	Data::ArrayList<OrganGroupType*> *grpTypes = this->env->GetGroupTypes();
 	UOSInt i = grpTypes->GetCount();
@@ -2579,7 +2579,7 @@ SSWR::OrganMgr::OrganMainForm::OrganMainForm(NotNullPtr<UI::GUICore> ui, UI::GUI
 	this->txtGroupId->SetReadOnly(true);
 	NEW_CLASS(lbl, UI::GUILabel(ui, this->tpGroup, this->env->GetLang(CSTR("MainFormTabGroupType"))));
 	lbl->SetRect(8, 28, 56, 23, false);
-	NEW_CLASS(this->cboGroupType, UI::GUIComboBox(ui, this->tpGroup, false));
+	this->cboGroupType = ui->NewComboBox(this->tpGroup, false);
 	this->cboGroupType->SetRect(64, 28, 144, 23, false);
 	NEW_CLASS(lbl, UI::GUILabel(ui, this->tpGroup, this->env->GetLang(CSTR("MainFormTabGroupEName"))));
 	lbl->SetRect(8, 52, 56, 23, false);
@@ -2676,7 +2676,7 @@ SSWR::OrganMgr::OrganMainForm::OrganMainForm(NotNullPtr<UI::GUICore> ui, UI::GUI
 	NEW_CLASS(this->txtSpBookYear, UI::GUITextBox(ui, this->pnlSpBook, CSTR("")));
 	this->txtSpBookYear->SetRect(184, 24, 64, 23, false);
 	this->txtSpBookYear->HandleTextChanged(OnSpBookYearChg, this);
-	NEW_CLASS(this->cboSpBook, UI::GUIComboBox(ui, this->pnlSpBook, false));
+	this->cboSpBook = ui->NewComboBox(this->pnlSpBook, false);
 	this->cboSpBook->SetRect(248, 24, 700, 23, false);
 	NEW_CLASSNN(this->pnlSpBookCtrl, UI::GUIPanel(ui, this->grpSpBook));
 	this->pnlSpBookCtrl->SetRect(0, 0, 474, 24, false);
