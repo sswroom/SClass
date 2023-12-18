@@ -83,6 +83,7 @@ namespace Text
 		Double MatchRating(NotNullPtr<StringBase<UTF8Char>> s) const;
 		Double MatchRating(const UTF8Char *targetStr, UOSInt strLen) const;
 		UOSInt BranketSearch(UOSInt startIndex, UTF8Char c) const;
+		Bool HasAlphaNumeric() const;
 
 		Bool operator==(StringBase<T> s) const;
 	};
@@ -615,6 +616,24 @@ template <typename T> UOSInt Text::StringBase<T>::BranketSearch(UOSInt startInde
 		}
 	}
 	return INVALID_INDEX;
+}
+
+template <typename T> Bool Text::StringBase<T>::HasAlphaNumeric() const
+{
+	UOSInt i = this->leng;
+	UTF8Char *ptr = this->v;
+	UTF8Char c;
+	while (i-- > 0)
+	{
+		c = *ptr++;
+		if (c >= '0' && c <= '9')
+			return true;
+		if (c >= 'A' && c <= 'Z')
+			return true;
+		if (c >= 'a' && c <= 'z')
+			return true;
+	}
+	return false;
 }
 
 template <typename T> Bool Text::StringBase<T>::operator==(StringBase<T> s) const

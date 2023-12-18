@@ -71,20 +71,32 @@ void __stdcall SSWR::AVIRead::AVIRLineCounterForm::OnCalcClicked(void *userObj)
 	UOSInt j;
 	UOSInt k;
 	UOSInt totalLine = 0;
+	UOSInt nonEmpty = 0;
+	UOSInt codeCnt = 0;
 	FileInfo *fi;
 	i = 0;
 	j = me->resList.GetCount();
 	while (i < j)
 	{
 		fi = me->resList.GetItem(i);
-		sptr = Text::StrUOSInt(sbuff, fi->lineCnt);
+		sptr = Text::StrUOSInt(sbuff, fi->totalLineCnt);
 		k = me->lvResult->AddItem(CSTRP(sbuff, sptr), fi);
-		me->lvResult->SetSubItem(k, 1, fi->fileName);
-		totalLine += fi->lineCnt;
+		sptr = Text::StrUOSInt(sbuff, fi->nonEmpyCnt);
+		me->lvResult->SetSubItem(k, 1, CSTRP(sbuff, sptr));
+		sptr = Text::StrUOSInt(sbuff, fi->codeCnt);
+		me->lvResult->SetSubItem(k, 2, CSTRP(sbuff, sptr));
+		me->lvResult->SetSubItem(k, 3, fi->fileName);
+		totalLine += fi->totalLineCnt;
+		nonEmpty += fi->nonEmpyCnt;
+		codeCnt += fi->codeCnt;
 		i++;
 	}
 	sptr = Text::StrUOSInt(sbuff, totalLine);
 	me->txtTotalLine->SetText(CSTRP(sbuff, sptr));
+	sptr = Text::StrUOSInt(sbuff, nonEmpty);
+	me->txtNonEmpty->SetText(CSTRP(sbuff, sptr));
+	sptr = Text::StrUOSInt(sbuff, codeCnt);
+	me->txtCode->SetText(CSTRP(sbuff, sptr));
 }
 
 void __stdcall SSWR::AVIRead::AVIRLineCounterForm::OnResultSaveClicked(void *userObj)
@@ -109,8 +121,12 @@ void __stdcall SSWR::AVIRead::AVIRLineCounterForm::OnResultSaveClicked(void *use
 		{
 			fi = me->resList.GetItem(i);
 			sb.ClearStr();
-			sb.AppendUOSInt(fi->lineCnt);
-			sb.AppendC(UTF8STRC("\t"));
+			sb.AppendUOSInt(fi->totalLineCnt);
+			sb.AppendUTF8Char('\t');
+			sb.AppendUOSInt(fi->nonEmpyCnt);
+			sb.AppendUTF8Char('\t');
+			sb.AppendUOSInt(fi->codeCnt);
+			sb.AppendUTF8Char('\t');
 			sb.Append(fi->fileName);
 			writer.WriteLineC(sb.ToString(), sb.GetLength());
 			i++;
@@ -125,6 +141,8 @@ void SSWR::AVIRead::AVIRLineCounterForm::CalcDir(UTF8Char *pathBuff, UTF8Char *p
 	IO::Path::FindFileSession *sess;
 	Text::StringBuilderUTF8 sb;
 	UOSInt lineCnt;
+	UOSInt nonEmptyCnt;
+	UOSInt codeCnt;
 	UOSInt i;
 	Bool found;
 	FileInfo *fi;
@@ -158,6 +176,8 @@ void SSWR::AVIRead::AVIRLineCounterForm::CalcDir(UTF8Char *pathBuff, UTF8Char *p
 				}
 				if (found)
 				{
+					nonEmptyCnt = 0;
+					codeCnt = 0;
 					lineCnt = 0;
 					{
 						IO::FileStream fs({pathBuff, (UOSInt)(sptr - pathBuff)}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
@@ -168,6 +188,15 @@ void SSWR::AVIRead::AVIRLineCounterForm::CalcDir(UTF8Char *pathBuff, UTF8Char *p
 							if (reader.ReadLine(sb, 4096))
 							{
 								lineCnt++;
+								sb.Trim();
+								if (sb.leng > 0)
+								{
+									nonEmptyCnt++;
+									if (sb.HasAlphaNumeric())
+									{
+										codeCnt++;
+									}
+								}
 							}
 							else
 							{
@@ -177,7 +206,9 @@ void SSWR::AVIRead::AVIRLineCounterForm::CalcDir(UTF8Char *pathBuff, UTF8Char *p
 					}
 
 					fi = MemAlloc(FileInfo, 1);
-					fi->lineCnt = lineCnt;
+					fi->totalLineCnt = lineCnt;
+					fi->nonEmpyCnt = nonEmptyCnt;
+					fi->codeCnt = codeCnt;
 					fi->fileName = Text::String::New(pathBuff, (UOSInt)(sptr - pathBuff));
 					this->resList.Add(fi);
 				}
@@ -216,7 +247,7 @@ SSWR::AVIRead::AVIRLineCounterForm::AVIRLineCounterForm(UI::GUIClientControl *pa
 	this->SetFont(0, 0, 8.25, false);
 
 	NEW_CLASSNN(this->pnlConfig, UI::GUIPanel(ui, *this));
-	this->pnlConfig->SetRect(0, 0, 100, 220, false);
+	this->pnlConfig->SetRect(0, 0, 100, 268, false);
 	this->pnlConfig->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->lblPath = ui->NewLabel(this->pnlConfig, CSTR("Path"));
 	this->lblPath->SetRect(4, 4, 100, 23, false);
@@ -247,16 +278,28 @@ SSWR::AVIRead::AVIRLineCounterForm::AVIRLineCounterForm(UI::GUIClientControl *pa
 	NEW_CLASS(this->txtTotalLine, UI::GUITextBox(ui, this->pnlConfig, CSTR("")));
 	this->txtTotalLine->SetReadOnly(true);
 	this->txtTotalLine->SetRect(204, 196, 100, 23, false);
+	this->lblNonEmpty = ui->NewLabel(this->pnlConfig, CSTR("Non-empty"));
+	this->lblNonEmpty->SetRect(104, 220, 100, 23, false);
+	NEW_CLASS(this->txtNonEmpty, UI::GUITextBox(ui, this->pnlConfig, CSTR("")));
+	this->txtNonEmpty->SetReadOnly(true);
+	this->txtNonEmpty->SetRect(204, 220, 100, 23, false);
+	this->lblCode = ui->NewLabel(this->pnlConfig, CSTR("Code"));
+	this->lblCode->SetRect(104, 244, 100, 23, false);
+	NEW_CLASS(this->txtCode, UI::GUITextBox(ui, this->pnlConfig, CSTR("")));
+	this->txtCode->SetReadOnly(true);
+	this->txtCode->SetRect(204, 244, 100, 23, false);
 	this->btnResultSave = ui->NewButton(this->pnlConfig, CSTR("Save Result"));
-	this->btnResultSave->SetRect(304, 196, 100, 23, false);
+	this->btnResultSave->SetRect(304, 244, 100, 23, false);
 	this->btnResultSave->HandleButtonClick(OnResultSaveClicked, this);
 
-	NEW_CLASS(this->lvResult, UI::GUIListView(ui, *this, UI::GUIListView::LVSTYLE_TABLE, 2));
+	NEW_CLASS(this->lvResult, UI::GUIListView(ui, *this, UI::GUIListView::LVSTYLE_TABLE, 4));
 	this->lvResult->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvResult->SetShowGrid(true);
 	this->lvResult->SetFullRowSelect(true);
-	this->lvResult->AddColumn(CSTR("Count"), 60);
-	this->lvResult->AddColumn(CSTR("File Path"), 812);
+	this->lvResult->AddColumn(CSTR("Total"), 60);
+	this->lvResult->AddColumn(CSTR("NonEmpty"), 60);
+	this->lvResult->AddColumn(CSTR("Code"), 60);
+	this->lvResult->AddColumn(CSTR("File Path"), 692);
 }
 
 SSWR::AVIRead::AVIRLineCounterForm::~AVIRLineCounterForm()

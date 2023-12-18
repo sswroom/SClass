@@ -19,7 +19,9 @@ namespace SSWR
 			typedef struct
 			{
 				NotNullPtr<Text::String> fileName;
-				UOSInt lineCnt;
+				UOSInt codeCnt;
+				UOSInt nonEmpyCnt;
+				UOSInt totalLineCnt;
 			} FileInfo;
 		private:
 			NotNullPtr<UI::GUIPanel> pnlConfig;
@@ -35,6 +37,10 @@ namespace SSWR
 			NotNullPtr<UI::GUILabel> lblResult;
 			NotNullPtr<UI::GUILabel> lblTotalLine;
 			UI::GUITextBox *txtTotalLine;
+			NotNullPtr<UI::GUILabel> lblNonEmpty;
+			UI::GUITextBox *txtNonEmpty;
+			NotNullPtr<UI::GUILabel> lblCode;
+			UI::GUITextBox *txtCode;
 			NotNullPtr<UI::GUIButton> btnResultSave;
 
 			UI::GUIListView *lvResult;
