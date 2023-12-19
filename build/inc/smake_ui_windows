@@ -34,8 +34,6 @@ UI/FontDialog.h:
 @FontDialogWin.o
 UI/GUICheckBox.h:
 @GUICheckBoxWin.o
-UI/GUICheckedListBox.h:
-@GUICheckedListBoxWin.o
 UI/GUIClientControl.h:
 @GUIClientControlWin.o
 UI/GUIControl.h:

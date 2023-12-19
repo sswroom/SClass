@@ -56,8 +56,8 @@ namespace SSWR
 			static void __stdcall OnResultSaveClicked(void *userObj);
 
 			void CalcDir(UTF8Char *pathBuff, UTF8Char *pathBuffEnd);
-			void ClearExts();
-			void ClearResult();
+			void ClearExts(Bool inclDisp);
+			void ClearResult(Bool inclDisp);
 		public:
 			AVIRLineCounterForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRLineCounterForm();

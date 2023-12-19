@@ -35,8 +35,6 @@ UI/FontDialog.h:
 @FontDialogGTK.o
 UI/GUICheckBox.h:
 @GUICheckBoxGTK.o
-UI/GUICheckedListBox.h:
-@GUICheckedListBoxGTK.o
 UI/GUIClientControl.h:
 @GUIClientControlJava.o
 UI/GUIControl.h:

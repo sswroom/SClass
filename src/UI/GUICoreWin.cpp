@@ -5,6 +5,7 @@
 #include "Media/GDIEngine.h"
 #include "UI/GUICoreWin.h"
 #include "UI/Win/WinButton.h"
+#include "UI/Win/WinCheckedListBox.h"
 #include "UI/Win/WinComboBox.h"
 #include "UI/Win/WinGroupBox.h"
 #include "UI/Win/WinHSplitter.h"
@@ -250,6 +251,13 @@ NotNullPtr<UI::GUIButton> UI::GUICoreWin::NewButton(NotNullPtr<GUIClientControl>
 {
 	NotNullPtr<UI::Win::WinButton> ctrl;
 	NEW_CLASSNN(ctrl, UI::Win::WinButton(*this, parent, text));
+	return ctrl;
+}
+
+NotNullPtr<UI::GUICheckedListBox> UI::GUICoreWin::NewCheckedListBox(NotNullPtr<GUIClientControl> parent)
+{
+	NotNullPtr<UI::Win::WinCheckedListBox> ctrl;
+	NEW_CLASSNN(ctrl, UI::Win::WinCheckedListBox(*this, parent));
 	return ctrl;
 }
 

@@ -6,6 +6,7 @@
 #include "UI/GUICore.h"
 #include "UI/GUICoreJava.h"
 #include "UI/Java/JavaButton.h"
+#include "UI/Java/JavaCheckedListBox.h"
 #include "UI/Java/JavaComboBox.h"
 #include "UI/Java/JavaGroupBox.h"
 #include "UI/Java/JavaHSplitter.h"
@@ -207,6 +208,13 @@ NotNullPtr<UI::GUIButton> UI::GUICoreJava::NewButton(NotNullPtr<GUIClientControl
 {
 	NotNullPtr<UI::Java::JavaButton> ctrl;
 	NEW_CLASSNN(ctrl, UI::Java::JavaButton(*this, parent, text));
+	return ctrl;
+}
+
+NotNullPtr<UI::GUICheckedListBox> UI::GUICoreJava::NewCheckedListBox(NotNullPtr<GUIClientControl> parent)
+{
+	NotNullPtr<UI::Java::JavaCheckedListBox> ctrl;
+	NEW_CLASSNN(ctrl, UI::Java::JavaCheckedListBox(*this, parent));
 	return ctrl;
 }
 

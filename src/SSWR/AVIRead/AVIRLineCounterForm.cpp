@@ -41,7 +41,7 @@ void __stdcall SSWR::AVIRead::AVIRLineCounterForm::OnExtensionsRemoveClicked(voi
 void __stdcall SSWR::AVIRead::AVIRLineCounterForm::OnExtensionsClearClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRLineCounterForm *me = (SSWR::AVIRead::AVIRLineCounterForm*)userObj;
-	me->ClearExts();
+	me->ClearExts(true);
 }
 
 void __stdcall SSWR::AVIRead::AVIRLineCounterForm::OnCalcClicked(void *userObj)
@@ -64,7 +64,7 @@ void __stdcall SSWR::AVIRead::AVIRLineCounterForm::OnCalcClicked(void *userObj)
 	{
 		return;
 	}
-	me->ClearResult();
+	me->ClearResult(true);
 	UTF8Char *sptr = Text::StrConcatC(sbuff, sb.ToString(), sb.GetLength());
 	me->CalcDir(sbuff, sptr);
 	UOSInt i;
@@ -218,17 +218,17 @@ void SSWR::AVIRead::AVIRLineCounterForm::CalcDir(UTF8Char *pathBuff, UTF8Char *p
 	}
 }
 
-void SSWR::AVIRead::AVIRLineCounterForm::ClearExts()
+void SSWR::AVIRead::AVIRLineCounterForm::ClearExts(Bool inclDisp)
 {
-	if (this->lbExtensions) this->lbExtensions->ClearItems();
+	if (inclDisp) this->lbExtensions->ClearItems();
 	this->extList.FreeAll();
 }
 
-void SSWR::AVIRead::AVIRLineCounterForm::ClearResult()
+void SSWR::AVIRead::AVIRLineCounterForm::ClearResult(Bool inclDisp)
 {
 	UOSInt i;
 	FileInfo *fi;
-	if (this->lvResult) this->lvResult->ClearItems();
+	if (inclDisp) this->lvResult->ClearItems();
 	i = this->resList.GetCount();
 	while (i-- > 0)
 	{
@@ -304,10 +304,8 @@ SSWR::AVIRead::AVIRLineCounterForm::AVIRLineCounterForm(UI::GUIClientControl *pa
 
 SSWR::AVIRead::AVIRLineCounterForm::~AVIRLineCounterForm()
 {
-	this->lvResult = 0;
-	this->lbExtensions = 0;
-	this->ClearExts();
-	this->ClearResult();
+	this->ClearExts(false);
+	this->ClearResult(false);
 }
 
 void SSWR::AVIRead::AVIRLineCounterForm::OnMonitorChanged()

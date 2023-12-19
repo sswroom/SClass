@@ -22,7 +22,7 @@ namespace SSWR
 		private:
 			NotNullPtr<UI::GUIButton> btnCheckAll;
 			NotNullPtr<UI::GUIButton> btnUncheckAll;
-			UI::GUICheckedListBox *lbLayers;
+			NotNullPtr<UI::GUICheckedListBox> lbLayers;
 			NotNullPtr<UI::GUIButton> btnCombine;
 			NotNullPtr<UI::GUIButton> btnCancel;
 

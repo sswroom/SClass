@@ -91,7 +91,7 @@ SSWR::AVIRead::AVIRGISCombineForm::AVIRGISCombineForm(UI::GUIClientControl *pare
 	this->btnCancel->SetRect(160, 8, 75, 23, false);
 	this->btnCancel->HandleButtonClick(OnCancelClick, this);
 	
-	NEW_CLASS(this->lbLayers, UI::GUICheckedListBox(ui, *this));
+	this->lbLayers = ui->NewCheckedListBox(*this);
 	this->lbLayers->SetDockType(UI::GUIControl::DOCK_FILL);
 
 

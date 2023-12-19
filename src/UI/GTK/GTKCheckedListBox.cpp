@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "UI/GUICheckedListBox.h"
+#include "UI/GTK/GTKCheckedListBox.h"
 #include <gtk/gtk.h>
 
 typedef struct
@@ -21,15 +21,15 @@ typedef struct
 	Bool noChgEvt;
 } GUIListViewData;
 
-UI::GUICheckedListBox::GUICheckedListBox(NotNullPtr<GUICore> ui, NotNullPtr<UI::GUIClientControl> parent) : UI::GUIListView(ui, parent, UI::GUIListView::LVSTYLE_SMALLICON, 1)
+UI::GTK::GTKCheckedListBox::GTKCheckedListBox(NotNullPtr<GUICore> ui, NotNullPtr<UI::GUIClientControl> parent) : UI::GUICheckedListBox(ui, parent)
 {
 }
 
-UI::GUICheckedListBox::~GUICheckedListBox()
+UI::GTK::GTKCheckedListBox::~GTKCheckedListBox()
 {
 }
 
-Bool UI::GUICheckedListBox::GetItemChecked(UOSInt index)
+Bool UI::GTK::GTKCheckedListBox::GetItemChecked(UOSInt index)
 {
 	GUIListViewData *data = (GUIListViewData*)this->clsData;
 	MyRow *r = data->rows->GetItem(index);
@@ -40,7 +40,7 @@ Bool UI::GUICheckedListBox::GetItemChecked(UOSInt index)
 	return ret;
 }
 
-void UI::GUICheckedListBox::SetItemChecked(UOSInt index, Bool isChecked)
+void UI::GTK::GTKCheckedListBox::SetItemChecked(UOSInt index, Bool isChecked)
 {
 	GUIListViewData *data = (GUIListViewData*)this->clsData;
 	MyRow *r = data->rows->GetItem(index);
@@ -49,12 +49,7 @@ void UI::GUICheckedListBox::SetItemChecked(UOSInt index, Bool isChecked)
 	gtk_list_store_set(data->listStore, &r->iter, 1, isChecked, -1);
 }
 
-Text::CStringNN UI::GUICheckedListBox::GetObjectClass() const
-{
-	return CSTR("CheckedListBox");
-}
-
-OSInt UI::GUICheckedListBox::OnNotify(UInt32 code, void *lParam)
+OSInt UI::GTK::GTKCheckedListBox::OnNotify(UInt32 code, void *lParam)
 {
 	if (code == 0x1234)
 	{

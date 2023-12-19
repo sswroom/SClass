@@ -4640,6 +4640,8 @@ miniz_zip.h:
 
 UI/GUIButton.h:
 @GUIButton.o
+UI/GUICheckedListBox.h:
+@GUICheckedListBox.o
 UI/GUIComboBox.h:
 @GUIComboBox.o
 UI/GUIComboBoxUtil.h:
@@ -4708,6 +4710,8 @@ UI/DObj/VideoDObjHandler.h:
 @VideoDObjHandler.o
 UI/GTK/GTKButton.h:
 @GTKButton.o
+UI/GTK/GTKCheckedListBox.h:
+@GTKCheckedListBox.o
 UI/GTK/GTKComboBox.h:
 @GTKComboBox.o
 UI/GTK/GTKDragDrop.h:
@@ -4726,6 +4730,8 @@ UI/GTK/GTKVSplitter.h:
 @GTKVSplitter.o
 UI/Java/JavaButton.h:
 JavaButton.o
+UI/Java/JavaCheckedListBox.h:
+@JavaCheckedListBox.o
 UI/Java/JavaComboBox.h:
 JavaComboBox.o
 UI/Java/JavaGroupBox.h:
@@ -4742,6 +4748,8 @@ UI/Java/JavaVSplitter.h:
 @JavaVSplitter.o
 UI/Win/WinButton.h:
 @WinButton.o
+UI/Win/WinCheckedListBox.h:
+@WinCheckedListBox.o
 UI/Win/WinComboBox.h:
 @WinComboBox.o
 UI/Win/WinDragDrop.h:
