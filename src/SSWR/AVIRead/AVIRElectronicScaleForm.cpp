@@ -238,7 +238,7 @@ SSWR::AVIRead::AVIRElectronicScaleForm::AVIRElectronicScaleForm(UI::GUIClientCon
 	this->txtWeight = ui->NewTextBox(this->pnlCtrl, CSTR(""));
 	this->txtWeight->SetRect(104, 52, 150, 23, false);
 	this->txtWeight->SetReadOnly(true);
-	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, *this));
+	this->tcMain = ui->NewTabControl(*this);
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	this->tpDisplay = this->tcMain->AddTabPage(CSTR("Display"));

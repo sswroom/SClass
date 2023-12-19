@@ -372,7 +372,7 @@ SSWR::AVIRead::AVIRBenchmarkForm::AVIRBenchmarkForm(UI::GUIClientControl *parent
 	NEW_CLASS(this->pbMain, UI::GUIProgressBar(ui, *this, 100));
 	this->pbMain->SetRect(0, 0, 100, 24, false);
 	this->pbMain->SetDockType(UI::GUIControl::DOCK_BOTTOM);
-	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, *this));
+	this->tcMain = ui->NewTabControl(*this);
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	this->tpCopy = this->tcMain->AddTabPage(CSTR("Copy"));

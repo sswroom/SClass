@@ -220,7 +220,7 @@ SSWR::AVIRead::AVIRStreamLatencyForm::AVIRStreamLatencyForm(UI::GUIClientControl
 	this->cboReqInterval->AddItem(CSTR("2min"), (void *)120000);
 	this->cboReqInterval->SetSelectedIndex(8);
 
-	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, *this));
+	this->tcMain = ui->NewTabControl(*this);
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	this->tpLatency = this->tcMain->AddTabPage(CSTR("Latency (ms)"));

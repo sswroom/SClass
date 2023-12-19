@@ -177,7 +177,7 @@ SSWR::AVIRead::MIMEViewer::AVIRMultipartViewer::AVIRMultipartViewer(NotNullPtr<S
 	}
 	NotNullPtr<UI::GUITabPage> tp;
 	SSWR::AVIRead::MIMEViewer::AVIRMIMEViewer *viewer;
-	NEW_CLASS(this->tcParts, UI::GUITabControl(ui, ctrl));
+	this->tcParts = ui->NewTabControl(ctrl);
 	this->tcParts->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	Text::String *defMsg = obj->GetDefMsg();

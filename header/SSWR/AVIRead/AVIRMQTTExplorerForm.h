@@ -68,7 +68,7 @@ namespace SSWR
 			NotNullPtr<UI::GUILabel> lblCliKey;
 			NotNullPtr<UI::GUILabel> lblStatus;
 			NotNullPtr<UI::GUIButton> btnStart;
-			UI::GUITabControl *tcDetail;
+			NotNullPtr<UI::GUITabControl> tcDetail;
 
 			NotNullPtr<UI::GUITabPage> tpRecv;
 			UI::GUIListView *lvRecvTopic;

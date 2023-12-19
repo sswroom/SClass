@@ -34,7 +34,7 @@ namespace SSWR
 			NotNullPtr<UI::GUILabel> lblReqInterval;
 			NotNullPtr<UI::GUIComboBox> cboReqInterval;
 
-			UI::GUITabControl *tcMain;
+			NotNullPtr<UI::GUITabControl> tcMain;
 
 			NotNullPtr<UI::GUITabPage> tpLatency;
 			UI::GUIRealtimeLineChart *rlcLatency;

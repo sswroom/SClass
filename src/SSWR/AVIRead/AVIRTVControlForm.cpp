@@ -252,7 +252,7 @@ SSWR::AVIRead::AVIRTVControlForm::AVIRTVControlForm(UI::GUIClientControl *parent
 	this->btnStart->SetRect(308, 32, 75, 23, false);
 	this->btnStart->HandleButtonClick(OnStartClick, this);
 
-	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, *this));
+	this->tcMain = ui->NewTabControl(*this);
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->tpControl = this->tcMain->AddTabPage(CSTR("Control"));
 	this->tpLog = this->tcMain->AddTabPage(CSTR("Log"));

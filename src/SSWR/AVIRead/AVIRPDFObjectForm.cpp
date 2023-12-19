@@ -63,7 +63,7 @@ SSWR::AVIRead::AVIRPDFObjectForm::AVIRPDFObjectForm(UI::GUIClientControl *parent
 	this->lbObject->HandleSelectionChange(OnObjectSelChg, this);
 	this->lbObject->HandleDoubleClicked(OnObjectDblClk, this);
 	this->hspMain = ui->NewHSplitter(*this, 3, false);
-	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, *this));
+	this->tcMain = ui->NewTabControl(*this);
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	this->tpParameter = this->tcMain->AddTabPage(CSTR("Parameter"));

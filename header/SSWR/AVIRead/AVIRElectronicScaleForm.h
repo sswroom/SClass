@@ -31,7 +31,7 @@ namespace SSWR
 			NotNullPtr<UI::GUIButton> btnStream;
 			NotNullPtr<UI::GUILabel> lblWeight;
 			NotNullPtr<UI::GUITextBox> txtWeight;
-			UI::GUITabControl *tcMain;
+			NotNullPtr<UI::GUITabControl> tcMain;
 
 			NotNullPtr<UI::GUITabPage> tpHistory;
 			UI::GUIRealtimeLineChart *rlcHistory;

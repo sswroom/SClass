@@ -29,7 +29,7 @@ namespace SSWR
 		private:
 			UI::GUIListBox *lbCtrl;
 			NotNullPtr<UI::GUIHSplitter> hspMain;
-			UI::GUITabControl *tcMain;
+			NotNullPtr<UI::GUITabControl> tcMain;
 
 			NotNullPtr<UI::GUITabPage> tpInfo;
 			NotNullPtr<UI::GUILabel> lblRadioName;

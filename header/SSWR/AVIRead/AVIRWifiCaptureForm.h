@@ -69,7 +69,7 @@ namespace SSWR
 			Sync::Mutex captureMut;
 			Int64 lastTimeTick;
 
-			UI::GUITabControl *tcMain;
+			NotNullPtr<UI::GUITabControl> tcMain;
 
 			NotNullPtr<UI::GUITabPage> tpStatus;
 			NotNullPtr<UI::GUILabel> lblMotion;

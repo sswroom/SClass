@@ -19,7 +19,7 @@ namespace SSWR
 		class AVIRWebSiteInstagramForm : public UI::GUIForm
 		{
 		private:
-			UI::GUITabControl *tcMain;
+			NotNullPtr<UI::GUITabControl> tcMain;
 
 			NotNullPtr<UI::GUITabPage> tpUser;
 			NotNullPtr<UI::GUIPanel> pnlRequest;

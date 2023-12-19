@@ -23,7 +23,7 @@ namespace SSWR
 		class AVIRDBForm : public UI::GUIForm
 		{
 		private:
-			UI::GUITabControl *tcDB;
+			NotNullPtr<UI::GUITabControl> tcDB;
 			NotNullPtr<UI::GUIVSplitter> vspDB;
 			UI::GUIListView *lvResult;
 

@@ -25,7 +25,7 @@ namespace SSWR
 			IO::LogTool log;
 			NotNullPtr<UI::ListBoxLogger> logger;
 
-			UI::GUITabControl *tcMain;
+			NotNullPtr<UI::GUITabControl> tcMain;
 
 			NotNullPtr<UI::GUITabPage> tpControl;
 			NotNullPtr<UI::GUILabel> lblPort;

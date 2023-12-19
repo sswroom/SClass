@@ -598,7 +598,7 @@ SSWR::AVIRead::AVIRMQTTExplorerForm::AVIRMQTTExplorerForm(UI::GUIClientControl *
 	this->btnStart->HandleButtonClick(OnStartClicked, this);
 	this->lblStatus = ui->NewLabel(this->pnlConnect, CSTR("Not Connected"));
 	this->lblStatus->SetRect(4, 80, 150, 23, false);
-	NEW_CLASS(this->tcDetail, UI::GUITabControl(ui, *this));
+	this->tcDetail = ui->NewTabControl(*this);
 	this->tcDetail->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	this->tpRecv = this->tcDetail->AddTabPage(CSTR("Recv"));

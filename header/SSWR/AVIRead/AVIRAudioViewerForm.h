@@ -23,7 +23,7 @@ namespace SSWR
 		{
 		private:
 			UI::GUIMainMenu *mnu;
-			UI::GUITabControl *tcMain;
+			NotNullPtr<UI::GUITabControl> tcMain;
 			NotNullPtr<UI::GUITabPage> tpSample;
 			UI::GUIPictureBoxSimple *pbsSample;
 			NotNullPtr<UI::GUITabPage> tpFreq;

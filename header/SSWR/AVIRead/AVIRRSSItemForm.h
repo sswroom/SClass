@@ -21,7 +21,7 @@ namespace SSWR
 		class AVIRRSSItemForm : public UI::GUIForm
 		{
 		private:
-			UI::GUITabControl *tcMain;
+			NotNullPtr<UI::GUITabControl> tcMain;
 
 			NotNullPtr<UI::GUITabPage> tpInfo;
 			UI::GUIListView *lvInfo;

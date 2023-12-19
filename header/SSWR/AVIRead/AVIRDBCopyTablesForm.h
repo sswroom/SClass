@@ -20,7 +20,7 @@ namespace SSWR
 		class AVIRDBCopyTablesForm : public UI::GUIForm
 		{
 		private:
-			UI::GUITabControl *tcMain;
+			NotNullPtr<UI::GUITabControl> tcMain;
 
 			NotNullPtr<UI::GUITabPage> tpSource;
 			NotNullPtr<UI::GUILabel> lblSourceConn;

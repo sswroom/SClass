@@ -54,7 +54,7 @@ namespace SSWR
 			Data::FastMap<UInt64, WifiLog*> wifiLogMap;
 			Int64 lastTimeTick;
 
-			UI::GUITabControl *tcMain;
+			NotNullPtr<UI::GUITabControl> tcMain;
 
 			NotNullPtr<UI::GUITabPage> tpCurr;
 			UI::GUIListView *lvCurrWifi;

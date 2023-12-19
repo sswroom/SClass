@@ -16,7 +16,7 @@ namespace SSWR
 		class AVIRJavaClassForm : public UI::GUIForm
 		{
 		private:
-			UI::GUITabControl *tcMain;
+			NotNullPtr<UI::GUITabControl> tcMain;
 
 			NotNullPtr<UI::GUITabPage> tpFileStruct;
 			NotNullPtr<UI::GUITextBox> txtFileStruct;

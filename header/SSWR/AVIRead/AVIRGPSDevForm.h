@@ -52,7 +52,7 @@ namespace SSWR
 			NotNullPtr<UI::GUILabel> lblPort;
 			NotNullPtr<UI::GUITextBox> txtPort;
 			NotNullPtr<UI::GUIButton> btnConn;
-			UI::GUITabControl *tcMain;
+			NotNullPtr<UI::GUITabControl> tcMain;
 
 			NotNullPtr<UI::GUITabPage> tpStatus;
 			NotNullPtr<UI::GUILabel> lblStatusConn;
@@ -63,7 +63,7 @@ namespace SSWR
 			NotNullPtr<UI::GUIButton> btnDeviceR;
 			UI::GUIListBox *lbDevice;
 			NotNullPtr<UI::GUIHSplitter> hspDevice;
-			UI::GUITabControl *tcDevice;
+			NotNullPtr<UI::GUITabControl> tcDevice;
 			NotNullPtr<UI::GUITabPage> tpDevInfo;
 			UI::GUIListView *lvDevInfo;
 			NotNullPtr<UI::GUITabPage> tpDevAlert;

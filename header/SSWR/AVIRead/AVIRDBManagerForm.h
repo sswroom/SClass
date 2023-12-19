@@ -31,7 +31,7 @@ namespace SSWR
 
 			UI::GUIListBox *lbConn;
 			NotNullPtr<UI::GUIHSplitter> hspConn;
-			UI::GUITabControl *tcMain;
+			NotNullPtr<UI::GUITabControl> tcMain;
 
 			NotNullPtr<UI::GUITabPage> tpDatabase;
 			UI::GUIListBox *lbDatabase;

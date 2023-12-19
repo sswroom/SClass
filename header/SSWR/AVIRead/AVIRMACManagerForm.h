@@ -41,7 +41,7 @@ namespace SSWR
 			NotNullPtr<UI::GUIPanel> pnlControl;
 			NotNullPtr<UI::GUIButton> btnStore;
 			NotNullPtr<UI::GUILabel> lblInfo;
-			UI::GUITabControl *tcMain;
+			NotNullPtr<UI::GUITabControl> tcMain;
 
 			NotNullPtr<UI::GUITabPage> tpFile;
 			NotNullPtr<UI::GUIPanel> pnlFile;

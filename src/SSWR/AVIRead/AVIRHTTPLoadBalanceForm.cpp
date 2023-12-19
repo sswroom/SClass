@@ -306,7 +306,7 @@ SSWR::AVIRead::AVIRHTTPLoadBalanceForm::AVIRHTTPLoadBalanceForm(UI::GUIClientCon
 	NEW_CLASS(this->reqLog, SSWR::AVIRead::AVIRHTTPLog(100));
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, *this));
+	this->tcMain = ui->NewTabControl(*this);
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->tpControl = this->tcMain->AddTabPage(CSTR("Control"));
 	this->tpStatus = this->tcMain->AddTabPage(CSTR("Status"));

@@ -95,7 +95,7 @@ SSWR::AVIRead::AVIRSMakeForm::AVIRSMakeForm(UI::GUIClientControl *parent, NotNul
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 	this->SetText(CSTR("SMake Form"));
 
-	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, *this));
+	this->tcMain = ui->NewTabControl(*this);
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	NEW_CLASSNN(this->pnlFile, UI::GUIPanel(ui, *this));
@@ -106,7 +106,7 @@ SSWR::AVIRead::AVIRSMakeForm::AVIRSMakeForm(UI::GUIClientControl *parent, NotNul
 	this->txtFile = ui->NewTextBox(this->pnlFile, this->smake->GetSourceNameObj()->ToCString());
 	this->txtFile->SetReadOnly(true);
 	this->txtFile->SetRect(104, 4, 600, 23, false);
-	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, *this));
+	this->tcMain = ui->NewTabControl(*this);
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	this->tpProgGroup = this->tcMain->AddTabPage(CSTR("Program Group"));
@@ -127,7 +127,7 @@ SSWR::AVIRead::AVIRSMakeForm::AVIRSMakeForm(UI::GUIClientControl *parent, NotNul
 	NEW_CLASSNN(this->pnlProg, UI::GUIPanel(ui, this->tpProg));
 	this->pnlProg->SetRect(0, 0, 100, 31, false);
 	this->pnlProg->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->tcProg, UI::GUITabControl(ui, this->tpProg));
+	this->tcProg = ui->NewTabControl(this->tpProg);
 	this->tcProg->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	this->tpProgObject = this->tcProg->AddTabPage(CSTR("Object"));

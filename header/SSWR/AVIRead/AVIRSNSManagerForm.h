@@ -27,7 +27,7 @@ namespace SSWR
 			NotNullPtr<UI::GUIButton> btnChannelAdd;
 			UI::GUIListBox *lbChannels;
 			NotNullPtr<UI::GUIHSplitter> hspChannels;
-			UI::GUITabControl *tcChannels;
+			NotNullPtr<UI::GUITabControl> tcChannels;
 
 			NotNullPtr<UI::GUITabPage> tpCurrItems;
 			UI::GUIListView *lvCurrItems;

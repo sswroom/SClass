@@ -16,7 +16,7 @@ namespace SSWR
 			class AVIRMIMEX509Viewer : public AVIRMIMEViewer
 			{
 			private:
-				UI::GUITabControl *tcMain;
+				NotNullPtr<UI::GUITabControl> tcMain;
 
 				NotNullPtr<UI::GUITabPage> tpDesc;
 				NotNullPtr<UI::GUITextBox> txtDesc;

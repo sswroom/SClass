@@ -26,7 +26,7 @@ namespace SSWR
 			NotNullPtr<UI::GUIPanel> pnlStatus;
 			NotNullPtr<UI::GUILabel> lblStatus;
 			NotNullPtr<UI::GUITextBox> txtStatus;
-			UI::GUITabControl *tcMain;
+			NotNullPtr<UI::GUITabControl> tcMain;
 
 			NotNullPtr<UI::GUITabPage> tpDesc;
 			NotNullPtr<UI::GUITextBox> txtDesc;

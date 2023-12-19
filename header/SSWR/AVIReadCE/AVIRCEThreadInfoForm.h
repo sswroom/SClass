@@ -23,7 +23,7 @@ namespace SSWR
 		class AVIRCEThreadInfoForm : public UI::GUIForm
 		{
 		private:
-			UI::GUITabControl *tcMain;
+			NotNullPtr<UI::GUITabControl> tcMain;
 			NotNullPtr<UI::GUITabPage> tpInfo;
 			NotNullPtr<UI::GUITabPage> tpContext;
 			NotNullPtr<UI::GUITabPage> tpStack;

@@ -710,7 +710,7 @@ SSWR::AVIRead::AVIRNetInfoForm::AVIRNetInfoForm(UI::GUIClientControl *parent, No
 	this->wlanScanCnt = 0;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, *this));
+	this->tcMain = ui->NewTabControl(*this);
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	this->tpAdaptor = this->tcMain->AddTabPage(CSTR("Adaptor"));
@@ -1052,7 +1052,7 @@ SSWR::AVIRead::AVIRNetInfoForm::AVIRNetInfoForm(UI::GUIClientControl *parent, No
 		this->lbWIFIIFs->SetRect(0, 0, 200, 100, false);
 		this->lbWIFIIFs->SetDockType(UI::GUIControl::DOCK_LEFT);
 		this->hspWIFI = ui->NewHSplitter(this->tpWIFIInfo, 3, false);
-		NEW_CLASS(this->tcWIFI, UI::GUITabControl(ui, this->tpWIFIInfo));
+		this->tcWIFI = ui->NewTabControl(this->tpWIFIInfo);
 		this->tcWIFI->SetDockType(UI::GUIControl::DOCK_FILL);
 		this->tpWIFIAP = this->tcWIFI->AddTabPage(CSTR("AP"));
 		NEW_CLASS(this->lvWIFINetwork, UI::GUIListView(ui, this->tpWIFIAP, UI::GUIListView::LVSTYLE_TABLE, 2));

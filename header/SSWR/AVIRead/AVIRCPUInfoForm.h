@@ -16,7 +16,7 @@ namespace SSWR
 		class AVIRCPUInfoForm : public UI::GUIForm
 		{
 		private:
-			UI::GUITabControl *tcMain;
+			NotNullPtr<UI::GUITabControl> tcMain;
 
 			NotNullPtr<UI::GUITabPage> tpCPU;
 			UI::GUIListView *lvMain;

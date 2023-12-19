@@ -5,7 +5,7 @@ SSWR::AVIRead::MIMEViewer::AVIRMailViewer::AVIRMailViewer(NotNullPtr<SSWR::AVIRe
 {
 	this->mail = mail;
 
-	NEW_CLASS(this->tcHeader, UI::GUITabControl(ui, ctrl));
+	this->tcHeader = ui->NewTabControl(ctrl);
 	this->tcHeader->SetRect(0,0, 100, 96, false);
 	this->tcHeader->SetDockType(UI::GUIControl::DOCK_TOP);
 

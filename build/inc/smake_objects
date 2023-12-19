@@ -2244,10 +2244,7 @@ GUIRealtimeLineChartGTK.o: ../../src/UI/GUIRealtimeLineChartGTK.cpp
 $`$(PKG-CONFIG) --cflags gtk+-3.0`
 GUIRealtimeLineChartWin.o: ../../src/UI/GUIRealtimeLineChartWin.cpp
 GUISudokuViewer.o: ../../src/UI/GUISudokuViewer.cpp
-GUITabControlGTK.o: ../../src/UI/GUITabControlGTK.cpp
-$`$(PKG-CONFIG) --cflags gtk+-3.0`
-GUITabControlWin.o: ../../src/UI/GUITabControlWin.cpp
-!-lcomctl32
+GUITabControl.o: ../../src/UI/GUITabControl.cpp
 GUITabPage.o: ../../src/UI/GUITabPage.cpp
 GUITextBox.o: ../../src/UI/GUITextBox.cpp
 GUITextFileView.o: ../../src/UI/GUITextFileView.cpp
@@ -2301,6 +2298,8 @@ GTKLabel.o: ../../src/UI/GTK/GTKLabel.cpp
 $`$(PKG-CONFIG) --cflags gtk+-3.0`
 GTKMessageDialog.o: ../../src/UI/GTK/GTKMessageDialog.cpp
 $`$(PKG-CONFIG) --cflags gtk+-3.0`
+GTKTabControl.o: ../../src/UI/GTK/GTKTabControl.cpp
+$`$(PKG-CONFIG) --cflags gtk+-3.0`
 GTKTextBox.o: ../../src/UI/GTK/GTKTextBox.cpp
 $`$(PKG-CONFIG) --cflags gtk+-3.0`
 GTKTimer.o: ../../src/UI/GTK/GTKTimer.cpp
@@ -2331,6 +2330,9 @@ $-I$(JAVA_HOME)/include/linux
 JavaMessageDialog.o: ../../src/UI/Java/JavaMessageDialog.cpp
 $-I$(JAVA_HOME)/include
 $-I$(JAVA_HOME)/include/linux
+JavaTabControl.o: ../../src/UI/Java/JavaTabControl.cpp
+$-I$(JAVA_HOME)/include
+$-I$(JAVA_HOME)/include/linux
 JavaTextBox.o: ../../src/UI/Java/JavaTextBox.cpp
 $-I$(JAVA_HOME)/include
 $-I$(JAVA_HOME)/include/linux
@@ -2350,6 +2352,8 @@ WinGroupBox.o: ../../src/UI/Win/WinGroupBox.cpp
 WinHSplitter.o: ../../src/UI/Win/WinHSplitter.cpp
 WinLabel.o: ../../src/UI/Win/WinLabel.cpp
 WinMessageDialog.o: ../../src/UI/Win/WinMessageDialog.cpp
+WinTabControl.o: ../../src/UI/Win/WinTabControl.cpp
+!-lcomctl32
 WinTextBox.o: ../../src/UI/Win/WinTextBox.cpp
 WinTimer.o: ../../src/UI/Win/WinTimer.cpp
 WinVSplitter.o: ../../src/UI/Win/WinVSplitter.cpp

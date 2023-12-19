@@ -56,7 +56,7 @@ namespace SSWR
 				Text::StringBuilderUTF8 *sbError;
 			};
 		private:
-			UI::GUITabControl *tcMain;
+			NotNullPtr<UI::GUITabControl> tcMain;
 			UI::GUIProgressBar *prgStatus;
 
 			NotNullPtr<UI::GUITabPage> tpFiles;

@@ -42,7 +42,7 @@ namespace SSWR
 			};
 		private:
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
-			UI::GUITabControl *tcMain;
+			NotNullPtr<UI::GUITabControl> tcMain;
 
 			NotNullPtr<UI::GUITabPage> tpV4Main;
 			UI::GUIListBox *lbV4Request;
@@ -113,7 +113,7 @@ namespace SSWR
 			NotNullPtr<UI::GUITabPage> tpTarget;
 			UI::GUIListBox *lbTarget;
 			NotNullPtr<UI::GUIHSplitter> hspTarget;
-			UI::GUITabControl *tcTarget;
+			NotNullPtr<UI::GUITabControl> tcTarget;
 			NotNullPtr<UI::GUITabPage> tpTargetInfo;
 			NotNullPtr<UI::GUILabel> lblTargetName;
 			NotNullPtr<UI::GUITextBox> txtTargetName;

@@ -13,6 +13,7 @@
 #include "UI/Java/JavaHSplitter.h"
 #include "UI/Java/JavaLabel.h"
 #include "UI/Java/JavaMessageDialog.h"
+#include "UI/Java/JavaTabControl.h"
 #include "UI/Java/JavaTextBox.h"
 #include "UI/Java/JavaVSplitter.h"
 #include <jni.h>
@@ -243,6 +244,13 @@ NotNullPtr<UI::GUILabel> UI::Java::JavaCore::NewLabel(NotNullPtr<GUIClientContro
 {
 	NotNullPtr<UI::Java::JavaLabel> ctrl;
 	NEW_CLASSNN(ctrl, UI::Java::JavaLabel(*this, parent, text));
+	return ctrl;
+}
+
+NotNullPtr<UI::GUITabControl> UI::Java::JavaCore::NewTabControl(NotNullPtr<GUIClientControl> parent)
+{
+	NotNullPtr<UI::Java::JavaTabControl> ctrl;
+	NEW_CLASSNN(ctrl, UI::Java::JavaTabControl(*this, parent));
 	return ctrl;
 }
 

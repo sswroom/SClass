@@ -22,7 +22,7 @@ namespace SSWR
 			Net::MySQLTCPClient *cli;
 			Bool cliConnected;
 
-			UI::GUITabControl *tcMain;
+			NotNullPtr<UI::GUITabControl> tcMain;
 
 			NotNullPtr<UI::GUITabPage> tpControl;
 			NotNullPtr<UI::GUILabel> lblHost;

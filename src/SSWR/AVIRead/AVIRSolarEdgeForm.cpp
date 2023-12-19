@@ -408,7 +408,7 @@ SSWR::AVIRead::AVIRSolarEdgeForm::AVIRSolarEdgeForm(UI::GUIClientControl *parent
 	this->btnAPIKey = ui->NewButton(this->pnlAPIKey, CSTR("Start"));
 	this->btnAPIKey->SetRect(404, 4, 75, 23, false);
 	this->btnAPIKey->HandleButtonClick(OnAPIKeyClicked, this);
-	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, *this));
+	this->tcMain = ui->NewTabControl(*this);
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	this->tpVersion = this->tcMain->AddTabPage(CSTR("Version"));

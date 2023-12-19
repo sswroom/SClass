@@ -2566,7 +2566,7 @@ SSWR::OrganMgr::OrganMainForm::OrganMainForm(NotNullPtr<UI::GUICore> ui, UI::GUI
 	this->lbObj->HandleSelectionChange(OnObjSelChg, this);
 	this->hsbMid = ui->NewHSplitter(*this, 3, false);
 
-	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, *this));
+	this->tcMain = ui->NewTabControl(*this);
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->tcMain->HandleSelChanged(OnTabSelChg, this);
 

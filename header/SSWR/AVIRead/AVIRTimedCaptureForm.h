@@ -51,7 +51,7 @@ namespace SSWR
 
 			UI::GUIListBox *lbDevice;
 			NotNullPtr<UI::GUIHSplitter> hspMain;
-			UI::GUITabControl *tcMain;
+			NotNullPtr<UI::GUITabControl> tcMain;
 
 			NotNullPtr<UI::GUITabPage> tpControl;
 			NotNullPtr<UI::GUILabel> lblFormat;

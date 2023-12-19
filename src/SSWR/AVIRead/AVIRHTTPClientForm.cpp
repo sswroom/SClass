@@ -1234,7 +1234,7 @@ SSWR::AVIRead::AVIRHTTPClientForm::AVIRHTTPClientForm(UI::GUIClientControl *pare
 	this->userAgent = Text::String::New(UTF8STRC("SSWR/1.0"));
 	this->respSvrAddr.addrType = Net::AddrType::Unknown;
 	
-	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, *this));
+	this->tcMain = ui->NewTabControl(*this);
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	this->tpRequest = this->tcMain->AddTabPage(CSTR("Request"));

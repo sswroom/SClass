@@ -335,7 +335,7 @@ SSWR::AVIRead::AVIRDWQB30Form::AVIRDWQB30Form(UI::GUIClientControl *parent, NotN
 	this->btnDefault->SetRect(440, 24, 75, 23, false);
 	this->btnDefault->HandleButtonClick(OnDefaultClicked, this);	
 
-	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, *this));
+	this->tcMain = ui->NewTabControl(*this);
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	this->tpScan = this->tcMain->AddTabPage(CSTR("Scan"));

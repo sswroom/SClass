@@ -241,7 +241,7 @@ SSWR::AVIRead::AVIRPingMonitorForm::AVIRPingMonitorForm(UI::GUIClientControl *pa
 	this->btnStart = ui->NewButton(this->pnlControl, CSTR("Start"));
 	this->btnStart->SetRect(254, 28, 75, 23, false);
 	this->btnStart->HandleButtonClick(OnStartClicked, this);
-	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, *this));
+	this->tcMain = ui->NewTabControl(*this);
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
 	
 	this->tpIP = this->tcMain->AddTabPage(CSTR("IP"));
@@ -250,7 +250,7 @@ SSWR::AVIRead::AVIRPingMonitorForm::AVIRPingMonitorForm(UI::GUIClientControl *pa
 	this->lbIP->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbIP->HandleSelectionChange(OnIPSelChg, this);
 	this->hspIP = ui->NewHSplitter(this->tpIP, 3, false);
-	NEW_CLASS(this->tcIP, UI::GUITabControl(ui, this->tpIP));
+	this->tcIP = ui->NewTabControl(this->tpIP);
 	this->tcIP->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->tpIPInfo = this->tcIP->AddTabPage(CSTR("Info"));
 	this->lblIPCount = ui->NewLabel(this->tpIPInfo, CSTR("Count"));

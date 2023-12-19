@@ -12,6 +12,7 @@
 #include "UI/Win/WinHSplitter.h"
 #include "UI/Win/WinLabel.h"
 #include "UI/Win/WinMessageDialog.h"
+#include "UI/Win/WinTabControl.h"
 #include "UI/Win/WinTextBox.h"
 #include "UI/Win/WinVSplitter.h"
 #ifdef _WIN32_WCE
@@ -288,6 +289,13 @@ NotNullPtr<UI::GUILabel> UI::Win::WinCore::NewLabel(NotNullPtr<GUIClientControl>
 {
 	NotNullPtr<UI::Win::WinLabel> ctrl;
 	NEW_CLASSNN(ctrl, UI::Win::WinLabel(*this, parent, text));
+	return ctrl;
+}
+
+NotNullPtr<UI::GUITabControl> UI::Win::WinCore::NewTabControl(NotNullPtr<GUIClientControl> parent)
+{
+	NotNullPtr<UI::Win::WinTabControl> ctrl;
+	NEW_CLASSNN(ctrl, UI::Win::WinTabControl(*this, parent));
 	return ctrl;
 }
 

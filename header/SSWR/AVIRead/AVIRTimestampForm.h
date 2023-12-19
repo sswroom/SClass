@@ -16,7 +16,7 @@ namespace SSWR
 		class AVIRTimestampForm : public UI::GUIForm
 		{
 		private:
-			UI::GUITabControl *tcMain;
+			NotNullPtr<UI::GUITabControl> tcMain;
 
 			NotNullPtr<UI::GUITabPage> tpValue;
 			NotNullPtr<UI::GUILabel> lblValue;

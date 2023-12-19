@@ -473,7 +473,7 @@ SSWR::AVIRead::AVIRGPSDevForm::AVIRGPSDevForm(UI::GUIClientControl *parent, NotN
 	this->btnConn = ui->NewButton(this->pnlConn, CSTR("Start"));
 	this->btnConn->SetRect(204, 28, 75, 23, false);
 	this->btnConn->HandleButtonClick(OnConnClicked, this);
-	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, *this));
+	this->tcMain = ui->NewTabControl(*this);
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
 	
 	this->tpStatus = this->tcMain->AddTabPage(CSTR("Status"));
@@ -495,7 +495,7 @@ SSWR::AVIRead::AVIRGPSDevForm::AVIRGPSDevForm(UI::GUIClientControl *parent, NotN
 	this->lbDevice->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lbDevice->HandleSelectionChange(OnDeviceSelChg, this);
 	this->hspDevice = ui->NewHSplitter(this->tpDevice, 3, false);
-	NEW_CLASS(this->tcDevice, UI::GUITabControl(ui, this->tpDevice));
+	this->tcDevice = ui->NewTabControl(this->tpDevice);
 	this->tcDevice->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->tpDevInfo = this->tcDevice->AddTabPage(CSTR("Info"));
 	NEW_CLASS(this->lvDevInfo, UI::GUIListView(ui, this->tpDevInfo, UI::GUIListView::LVSTYLE_TABLE, 2));

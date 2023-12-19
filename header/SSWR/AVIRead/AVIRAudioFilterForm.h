@@ -38,7 +38,7 @@ namespace SSWR
 		{
 		private:
 			NotNullPtr<UI::GUIPanel> pnlInput;
-			UI::GUITabControl *tcFilter;
+			NotNullPtr<UI::GUITabControl> tcFilter;
 			NotNullPtr<UI::GUIPanel> pnlAudioSource;
 			NotNullPtr<UI::GUILabel> lblAudioSource;
 			UI::GUIRadioButton *radInputWaveIn;
@@ -71,7 +71,7 @@ namespace SSWR
 			NotNullPtr<UI::GUILabel> lblDTMFDecode;
 			NotNullPtr<UI::GUITextBox> txtDTMFDecode;
 			NotNullPtr<UI::GUIButton> btnDTMFClear;
-			UI::GUITabControl *tcDTMF;
+			NotNullPtr<UI::GUITabControl> tcDTMF;
 			NotNullPtr<UI::GUITabPage> tpDTMFGen;
 			NotNullPtr<UI::GUIButton> btnDTMF1;
 			NotNullPtr<UI::GUIButton> btnDTMF2;

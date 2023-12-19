@@ -48,7 +48,7 @@ namespace SSWR
 			UOSInt nmeaIndex;
 			Bool nmeaUpdated;
 
-			UI::GUITabControl *tcMain;
+			NotNullPtr<UI::GUITabControl> tcMain;
 
 			NotNullPtr<UI::GUITabPage> tpLocation;
 			NotNullPtr<UI::GUILabel> lblStreamStatus;
@@ -93,7 +93,7 @@ namespace SSWR
 			NotNullPtr<UI::GUITextBox> txtDistance;
 
 			NotNullPtr<UI::GUITabPage> tpAlert;
-			UI::GUITabControl *tcAlert;
+			NotNullPtr<UI::GUITabControl> tcAlert;
 			NotNullPtr<UI::GUITabPage> tpAlertAdd;
 			UI::GUIListBox *lbAlertLyr;
 			NotNullPtr<UI::GUIHSplitter> hspAlertAdd;

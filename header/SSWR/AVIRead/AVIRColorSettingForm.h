@@ -33,7 +33,7 @@ namespace SSWR
 			NotNullPtr<UI::GUILabel> lblMonitor;
 			NotNullPtr<UI::GUITextBox> txtMonitor;
 			NotNullPtr<UI::GUIPanel> pnlButtons;
-			UI::GUITabControl *tcMain;
+			NotNullPtr<UI::GUITabControl> tcMain;
 			NotNullPtr<UI::GUIButton> btnOK;
 			NotNullPtr<UI::GUIButton> btnCancel;
 

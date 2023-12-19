@@ -58,12 +58,12 @@ namespace SSWR
 			NotNullPtr<UI::GUILabel> lblIP;
 			NotNullPtr<UI::GUIComboBox> cboIP;
 			NotNullPtr<UI::GUIButton> btnStart;
-			UI::GUITabControl *tcMain;
+			NotNullPtr<UI::GUITabControl> tcMain;
 
 			NotNullPtr<UI::GUITabPage> tpIP;
 			UI::GUIListBox *lbIP;
 			NotNullPtr<UI::GUIHSplitter> hspIP;
-			UI::GUITabControl *tcIP;
+			NotNullPtr<UI::GUITabControl> tcIP;
 			NotNullPtr<UI::GUITabPage> tpIPInfo;
 			NotNullPtr<UI::GUILabel> lblIPCount;
 			NotNullPtr<UI::GUITextBox> txtIPCount;

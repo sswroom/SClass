@@ -63,7 +63,7 @@ SSWR::AVIRead::AVIRVBoxManagerForm::AVIRVBoxManagerForm(UI::GUIClientControl *pa
 	this->lbVMS->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbVMS->HandleSelectionChange(OnVMSSelChg, this);
 	this->hspVM = ui->NewHSplitter(*this, 3, false);
-	NEW_CLASS(this->tcVM, UI::GUITabControl(ui, *this));
+	this->tcVM = ui->NewTabControl(*this);
 	this->tcVM->SetDockType(UI::GUIControl::DOCK_FILL);
 	
 	this->tpControl = this->tcVM->AddTabPage(CSTR("Control"));

@@ -39,7 +39,7 @@ namespace SSWR
 			NotNullPtr<UI::GUILabel> lblDeviceStatus;
 			NotNullPtr<UI::GUITextBox> txtDeviceStatus;
 			NotNullPtr<UI::GUIButton> btnDeviceOther;
-			UI::GUITabControl *tcMain;
+			NotNullPtr<UI::GUITabControl> tcMain;
 
 			NotNullPtr<UI::GUITabPage> tpInfo;
 			NotNullPtr<UI::GUIPanel> pnlInfo;

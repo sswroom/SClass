@@ -455,7 +455,7 @@ SSWR::AVIRead::AVIRSelStreamForm::AVIRSelStreamForm(UI::GUIClientControl *parent
 	this->btnCancel->SetRect(132, 4, 75, 23, false);
 	this->btnCancel->HandleButtonClick(OnCancelClick, this);
 
-	NEW_CLASS(this->tcConfig, UI::GUITabControl(ui, *this));
+	this->tcConfig = ui->NewTabControl(*this);
 	this->tcConfig->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	this->tpSerialPort = this->tcConfig->AddTabPage(CSTR("Serial Port"));

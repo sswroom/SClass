@@ -48,7 +48,7 @@ namespace SSWR
 			UInt64 dispCount;
 			Data::Timestamp dispTime;
 
-			UI::GUITabControl *tcMain;
+			NotNullPtr<UI::GUITabControl> tcMain;
 
 			NotNullPtr<UI::GUITabPage> tpStatus;
 			NotNullPtr<UI::GUILabel> lblSSL;

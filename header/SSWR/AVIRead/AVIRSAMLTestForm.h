@@ -34,7 +34,7 @@ namespace SSWR
 			Sync::Mutex respMut;
 			Text::String *respNew;
 
-			UI::GUITabControl *tcMain;
+			NotNullPtr<UI::GUITabControl> tcMain;
 
 			NotNullPtr<UI::GUITabPage> tpControl;
 			NotNullPtr<UI::GUILabel> lblPort;

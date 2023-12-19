@@ -19,7 +19,7 @@ namespace SSWR
 		class AVIRHashTestForm : public UI::GUIForm
 		{
 		private:
-			UI::GUITabControl *tcMain;
+			NotNullPtr<UI::GUITabControl> tcMain;
 
 			NotNullPtr<UI::GUITabPage> tpAlgorithm;
 			NotNullPtr<UI::GUILabel> lblAlgorithm;

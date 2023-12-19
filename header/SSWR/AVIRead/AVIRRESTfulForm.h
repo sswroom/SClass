@@ -34,7 +34,7 @@ namespace SSWR
 			DB::DBCache *dbCache;
 			DB::DBModel *dbModel;
 
-			UI::GUITabControl *tcMain;
+			NotNullPtr<UI::GUITabControl> tcMain;
 
 			NotNullPtr<UI::GUITabPage> tpControl;
 			NotNullPtr<UI::GUIGroupBox> grpParam;

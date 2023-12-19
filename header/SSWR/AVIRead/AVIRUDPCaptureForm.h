@@ -38,7 +38,7 @@ namespace SSWR
 			NotNullPtr<UI::GUITextBox> txtPort;
 			NotNullPtr<UI::GUICheckBox> chkReuseAddr;
 			NotNullPtr<UI::GUIButton> btnStart;
-			UI::GUITabControl *tcMain;
+			NotNullPtr<UI::GUITabControl> tcMain;
 
 			NotNullPtr<UI::GUITabPage> tpData;
 			UI::GUIListBox *lbData;

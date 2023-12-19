@@ -22,7 +22,7 @@ namespace SSWR
 		class AVIRNetInfoForm : public UI::GUIForm
 		{
 		private:
-			UI::GUITabControl *tcMain;
+			NotNullPtr<UI::GUITabControl> tcMain;
 			NotNullPtr<UI::GUITabPage> tpAdaptor;
 			NotNullPtr<UI::GUITabPage> tpIPInfo;
 			NotNullPtr<UI::GUITabPage> tpTCPInfo;
@@ -159,7 +159,7 @@ namespace SSWR
 
 			UI::GUIListBox *lbWIFIIFs;
 			NotNullPtr<UI::GUIHSplitter> hspWIFI;
-			UI::GUITabControl *tcWIFI;
+			NotNullPtr<UI::GUITabControl> tcWIFI;
 			NotNullPtr<UI::GUITabPage> tpWIFIAP;
 			UI::GUIListView *lvWIFINetwork;
 			NotNullPtr<UI::GUITabPage> tpWIFIBSS;

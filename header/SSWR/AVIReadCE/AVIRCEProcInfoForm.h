@@ -35,7 +35,7 @@ namespace SSWR
 				Bool found;
 			} ProcessInfo;
 		private:
-			UI::GUITabControl *tcMain;
+			NotNullPtr<UI::GUITabControl> tcMain;
 			NotNullPtr<UI::GUITabPage> tpSummary;
 			NotNullPtr<UI::GUITabPage> tpDetail;
 
@@ -44,7 +44,7 @@ namespace SSWR
 
 			UI::GUIListBox *lbDetail;
 			NotNullPtr<UI::GUIHSplitter> hspDetail;
-			UI::GUITabControl *tcDetail;
+			NotNullPtr<UI::GUITabControl> tcDetail;
 			NotNullPtr<UI::GUITabPage> tpDetInfo;
 			NotNullPtr<UI::GUITabPage> tpDetModule;
 			NotNullPtr<UI::GUITabPage> tpDetThread;

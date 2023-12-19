@@ -17,7 +17,7 @@ namespace SSWR
 			class AVIRMultipartViewer : public AVIRMIMEViewer
 			{
 			private:
-				UI::GUITabControl *tcParts;
+				NotNullPtr<UI::GUITabControl> tcParts;
 				NotNullPtr<UI::GUIPanel> pnlSMIME;
 				NotNullPtr<UI::GUILabel> lblSignState;
 				NotNullPtr<UI::GUITextBox> txtSignState;

@@ -55,7 +55,7 @@ namespace SSWR
 			NotNullPtr<UI::GUIButton> btnObjCombine;
 			NotNullPtr<UI::GUIHSplitter> hsbMid;
 
-			UI::GUITabControl *tcMain;
+			NotNullPtr<UI::GUITabControl> tcMain;
 
 			NotNullPtr<UI::GUITabPage> tpGroup;
 			NotNullPtr<UI::GUITextBox> txtGroupId;

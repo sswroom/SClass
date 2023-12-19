@@ -180,7 +180,7 @@ SSWR::AVIRead::AVIRBluetoothForm::AVIRBluetoothForm(UI::GUIClientControl *parent
 	this->lbCtrl->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbCtrl->HandleSelectionChange(OnCtrlChanged, this);
 	this->hspMain = ui->NewHSplitter(*this, 3, false);
-	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, *this));
+	this->tcMain = ui->NewTabControl(*this);
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	this->tpInfo = this->tcMain->AddTabPage(CSTR("Info"));

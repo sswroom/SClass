@@ -24,7 +24,7 @@ namespace SSWR
 			UI::GUIMainMenu *mnuMain;
 
 			UI::GUIHexFileView *hexView;
-			UI::GUITabControl *tcMain;
+			NotNullPtr<UI::GUITabControl> tcMain;
 			
 			NotNullPtr<UI::GUITabPage> tpValues;
 			NotNullPtr<UI::GUILabel> lblEndian;

@@ -80,7 +80,7 @@ namespace SSWR
 			NotNullPtr<UI::GUILabel> lblTimeout;
 			NotNullPtr<UI::GUITextBox> txtTimeout;
 			NotNullPtr<UI::GUIButton> btnTimeout;
-			UI::GUITabControl *tcMain;
+			NotNullPtr<UI::GUITabControl> tcMain;
 
 			NotNullPtr<UI::GUITabPage> tpGetValue;
 			NotNullPtr<UI::GUILabel> lblDevAddr;

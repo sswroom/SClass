@@ -1208,7 +1208,7 @@ SSWR::AVIRead::AVIRRAWMonitorForm::AVIRRAWMonitorForm(UI::GUIClientControl *pare
 	this->txtPLog = ui->NewTextBox(this->pnlControl, CSTR(""));
 	this->txtPLog->SetRect(334, 52, 200, 23, false);
 	this->txtPLog->SetReadOnly(true);
-	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, *this));
+	this->tcMain = ui->NewTabControl(*this);
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	this->tpDevice = this->tcMain->AddTabPage(CSTR("Device"));
@@ -1239,7 +1239,7 @@ SSWR::AVIRead::AVIRRAWMonitorForm::AVIRRAWMonitorForm(UI::GUIClientControl *pare
 	this->lbIPTran->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbIPTran->HandleSelectionChange(OnIPTranSelChg, this);
 	this->hspIPTran = ui->NewHSplitter(this->tpIPTran, 3, false);
-	NEW_CLASS(this->tcIPTran, UI::GUITabControl(ui, this->tpIPTran));
+	this->tcIPTran = ui->NewTabControl(this->tpIPTran);
 	this->tcIPTran->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->tpIPTranInfo = this->tcIPTran->AddTabPage(CSTR("Info"));
 	NEW_CLASS(this->lvIPTranInfo, UI::GUIListView(ui, this->tpIPTranInfo, UI::GUIListView::LVSTYLE_TABLE, 2));
@@ -1377,7 +1377,7 @@ SSWR::AVIRead::AVIRRAWMonitorForm::AVIRRAWMonitorForm(UI::GUIClientControl *pare
 	this->lbDNSTarget->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbDNSTarget->HandleSelectionChange(OnDNSTargetSelChg, this);
 	this->hspDNSTarget = ui->NewHSplitter(this->tpDNSTarget, 3, false);
-	NEW_CLASS(this->tcDNSTarget, UI::GUITabControl(ui, this->tpDNSTarget));
+	this->tcDNSTarget = ui->NewTabControl(this->tpDNSTarget);
 	this->tcDNSTarget->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->tpDNSTargetDomain = this->tcDNSTarget->AddTabPage(CSTR("Domains"));
 	NEW_CLASS(this->lbDNSTargetDomain, UI::GUIListBox(ui, this->tpDNSTargetDomain, false));
@@ -1469,7 +1469,7 @@ SSWR::AVIRead::AVIRRAWMonitorForm::AVIRRAWMonitorForm(UI::GUIClientControl *pare
 	this->lbPingIP->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbPingIP->HandleSelectionChange(OnPingIPSelChg, this);
 	this->hspPingIP = ui->NewHSplitter(this->tpPingIP, 3, false);
-	NEW_CLASS(this->tcPingIP, UI::GUITabControl(ui, this->tpPingIP));
+	this->tcPingIP = ui->NewTabControl(this->tpPingIP);
 	this->tcPingIP->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->tpPingIPInfo = this->tcPingIP->AddTabPage(CSTR("Info"));
 	this->lblPingIPCount = ui->NewLabel(this->tpPingIPInfo, CSTR("Count"));

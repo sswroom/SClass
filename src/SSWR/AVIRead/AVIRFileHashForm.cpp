@@ -298,7 +298,7 @@ SSWR::AVIRead::AVIRFileHashForm::AVIRFileHashForm(UI::GUIClientControl *parent, 
 		currType = (Crypto::Hash::HashType)((OSInt)currType + 1);
 	}
 	this->cboCheckType->HandleSelectionChange(OnCheckTypeChg, this);
-	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, *this));
+	this->tcMain = ui->NewTabControl(*this);
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->tpStatus = this->tcMain->AddTabPage(CSTR("Status"));
 	this->tpTasks = this->tcMain->AddTabPage(CSTR("Tasks"));

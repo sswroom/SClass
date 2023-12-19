@@ -31,7 +31,7 @@ namespace SSWR
 			NotNullPtr<UI::GUITextBox> txtCurrCert;
 			NotNullPtr<UI::GUILabel> lblCurrKey;
 			NotNullPtr<UI::GUITextBox> txtCurrKey;
-			UI::GUITabControl *tcMain;
+			NotNullPtr<UI::GUITabControl> tcMain;
 
 			NotNullPtr<UI::GUITabPage> tpFile;
 			NotNullPtr<UI::GUIButton> btnFileCert;

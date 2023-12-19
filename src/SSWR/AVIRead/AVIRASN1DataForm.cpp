@@ -571,7 +571,7 @@ SSWR::AVIRead::AVIRASN1DataForm::AVIRASN1DataForm(UI::GUIClientControl *parent, 
 	this->txtStatus = ui->NewTextBox(this->pnlStatus, CSTR(""));
 	this->txtStatus->SetRect(104, 4, 200, 23, false);
 	this->txtStatus->SetReadOnly(true);
-	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, *this));
+	this->tcMain = ui->NewTabControl(*this);
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
 	
 	this->tpDesc = this->tcMain->AddTabPage(CSTR("Desc"));

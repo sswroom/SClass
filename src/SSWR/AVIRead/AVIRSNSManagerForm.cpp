@@ -77,7 +77,7 @@ SSWR::AVIRead::AVIRSNSManagerForm::AVIRSNSManagerForm(UI::GUIClientControl *pare
 	this->lbChannels->SetRect(0, 0, 150, 23, false);
 	this->lbChannels->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbChannels->HandleSelectionChange(OnChannelsSelChg, this);
-	NEW_CLASS(this->tcChannels, UI::GUITabControl(ui, *this));
+	this->tcChannels = ui->NewTabControl(*this);
 	this->tcChannels->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	this->tpCurrItems = this->tcChannels->AddTabPage(CSTR("Curr Items"));

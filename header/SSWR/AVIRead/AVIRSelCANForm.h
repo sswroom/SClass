@@ -21,7 +21,7 @@ namespace SSWR
 			IO::CANListener *listener;
 			Optional<Net::SSLEngine> ssl;
 
-			UI::GUITabControl *tcMain;
+			NotNullPtr<UI::GUITabControl> tcMain;
 
 			NotNullPtr<UI::GUITabPage> tpAXCAN;
 			NotNullPtr<UI::GUILabel> lblAXCANBitRate;

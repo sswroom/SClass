@@ -47,7 +47,7 @@ namespace SSWR
 			TopicStatus *currTopic;
 			Media::DrawImage *dispImg;
 
-			UI::GUITabControl *tcMain;
+			NotNullPtr<UI::GUITabControl> tcMain;
 
 			NotNullPtr<UI::GUITabPage> tpStatus;
 			NotNullPtr<UI::GUILabel> lblHost;

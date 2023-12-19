@@ -294,7 +294,7 @@ SSWR::AVIRead::AVIRGPSTrackerForm::AVIRGPSTrackerForm(UI::GUIClientControl *pare
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 	this->lastUpdateTime.SetCurrTimeUTC();
 
-	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, *this));
+	this->tcMain = ui->NewTabControl(*this);
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->tpLocation = this->tcMain->AddTabPage(CSTR("Location"));
 
@@ -400,7 +400,7 @@ SSWR::AVIRead::AVIRGPSTrackerForm::AVIRGPSTrackerForm(UI::GUIClientControl *pare
 	this->txtDistance->SetReadOnly(true);
 
 	this->tpAlert = this->tcMain->AddTabPage(CSTR("Alert"));
-	NEW_CLASS(this->tcAlert, UI::GUITabControl(ui, this->tpAlert));
+	this->tcAlert = ui->NewTabControl(this->tpAlert);
 	this->tcAlert->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->tpAlertAdd = this->tcAlert->AddTabPage(CSTR("Add"));
 	NEW_CLASS(this->lbAlertLyr, UI::GUIListBox(ui, this->tpAlertAdd, false));

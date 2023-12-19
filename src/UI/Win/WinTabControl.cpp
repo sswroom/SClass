@@ -2,10 +2,9 @@
 #include "MyMemory.h"
 #include "Text/MyString.h"
 #include "Text/MyStringW.h"
-#include "UI/GUITabControl.h"
 #include "UI/GUITabPage.h"
 #include "UI/Win/WinCore.h"
-#include <windows.h>
+#include "UI/Win/WinTabControl.h"
 #include <commctrl.h>
 
 #ifdef _WIN32_WCE
@@ -17,9 +16,9 @@
 #define GWL_USERDATA GWLP_USERDATA
 #endif
 
-OSInt __stdcall UI::GUITabControl::TCWndProc(void *hWnd, UInt32 msg, UOSInt wParam, OSInt lParam)
+OSInt __stdcall UI::Win::WinTabControl::TCWndProc(void *hWnd, UInt32 msg, UOSInt wParam, OSInt lParam)
 {
-	UI::GUITabControl *me = (UI::GUITabControl*)UI::Win::WinCore::MSGetWindowObj((ControlHandle*)hWnd, GWL_USERDATA);
+	UI::Win::WinTabControl *me = (UI::Win::WinTabControl*)UI::Win::WinCore::MSGetWindowObj((ControlHandle*)hWnd, GWL_USERDATA);
 	UI::GUIControl*ctrl;
 	NMHDR *nmhdr;
 	switch (msg)
@@ -42,42 +41,38 @@ OSInt __stdcall UI::GUITabControl::TCWndProc(void *hWnd, UInt32 msg, UOSInt wPar
 	case WM_ERASEBKGND:
 		{
 			RECT rc;
-			OSInt tcLeft;
-			OSInt tcTop;
-			UOSInt tcWidth;
-			UOSInt tcHeight;
 			Math::Size2D<UOSInt> sz;
-			me->GetTabPageRect(&tcLeft, &tcTop, &tcWidth, &tcHeight);
+			Math::RectArea<OSInt> tpRect = me->GetTabPageRect();
 			sz = me->GetSizeP();
 			rc.left = 0;
 			rc.top = 0;
 			rc.right = (LONG)sz.x;
-			rc.bottom = (LONG)tcTop;
-			FillRect((HDC)wParam, &rc, (HBRUSH)me->hbrBackground);
+			rc.bottom = (LONG)tpRect.tl.y;
+			FillRect((HDC)wParam, &rc, me->hbrBackground);
 			rc.left = 0;
-			rc.top = (LONG)tcTop;
-			rc.right = (LONG)tcLeft;
-			rc.bottom = (LONG)(tcTop + (OSInt)tcHeight);
-			FillRect((HDC)wParam, &rc, (HBRUSH)me->hbrBackground);
-			rc.left = (LONG)(tcLeft + (OSInt)tcWidth);
-			rc.top = (LONG)tcTop;
+			rc.top = (LONG)tpRect.tl.y;
+			rc.right = (LONG)tpRect.tl.x;
+			rc.bottom = (LONG)tpRect.br.y;
+			FillRect((HDC)wParam, &rc, me->hbrBackground);
+			rc.left = (LONG)tpRect.br.x;
+			rc.top = (LONG)tpRect.tl.y;
 			rc.right = (LONG)sz.x;
-			rc.bottom = (LONG)(tcTop + (OSInt)tcHeight);
-			FillRect((HDC)wParam, &rc, (HBRUSH)me->hbrBackground);
+			rc.bottom = (LONG)tpRect.br.y;
+			FillRect((HDC)wParam, &rc, me->hbrBackground);
 			rc.left = 0;
-			rc.top = (LONG)(tcTop + (OSInt)tcHeight);
+			rc.top = (LONG)tpRect.br.y;
 			rc.right = (LONG)sz.x;
 			rc.bottom = (LONG)sz.y;
-			FillRect((HDC)wParam, &rc, (HBRUSH)me->hbrBackground);
+			FillRect((HDC)wParam, &rc, me->hbrBackground);
 		}
 		return 0;
 	default:
-		return CallWindowProc((WNDPROC)me->oriWndProc, (HWND)hWnd, msg, wParam, lParam);
+		return CallWindowProc(me->oriWndProc, (HWND)hWnd, msg, wParam, lParam);
 	}
 	return 0;
 }
 
-UI::GUITabControl::GUITabControl(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIClientControl> parent) : UI::GUIControl(ui, parent)
+UI::Win::WinTabControl::WinTabControl(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIClientControl> parent) : UI::GUITabControl(ui, parent)
 {
     INITCOMMONCONTROLSEX icex;
 
@@ -92,7 +87,7 @@ UI::GUITabControl::GUITabControl(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIC
 	}
 	Math::Size2DDbl sz = parent->GetClientSize();
 	this->InitControl(((UI::Win::WinCore*)ui.Ptr())->GetHInst(), parent, WC_TABCONTROLW, (const UTF8Char*)"", style, WS_EX_CONTROLPARENT, 0, 0, sz.x, sz.y);
-	this->oriWndProc = (void*)UI::Win::WinCore::MSSetWindowObj(this->hwnd, GWLP_WNDPROC, (OSInt)TCWndProc);
+	this->oriWndProc = (WNDPROC)UI::Win::WinCore::MSSetWindowObj(this->hwnd, GWLP_WNDPROC, (OSInt)TCWndProc);
 	this->selIndex = 0;
 
 	WNDCLASSW wc;
@@ -100,13 +95,13 @@ UI::GUITabControl::GUITabControl(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIC
 	this->hbrBackground = wc.hbrBackground;
 }
 
-UI::GUITabControl::~GUITabControl()
+UI::Win::WinTabControl::~WinTabControl()
 {
 	UI::Win::WinCore::MSSetWindowObj(this->hwnd, GWLP_WNDPROC, (OSInt)this->oriWndProc);
 	this->tabPages.DeleteAll();
 }
 
-NotNullPtr<UI::GUITabPage> UI::GUITabControl::AddTabPage(NotNullPtr<Text::String> tabName)
+NotNullPtr<UI::GUITabPage> UI::Win::WinTabControl::AddTabPage(NotNullPtr<Text::String> tabName)
 {
 	UOSInt index;
 	TCITEMW item;
@@ -120,12 +115,8 @@ NotNullPtr<UI::GUITabPage> UI::GUITabControl::AddTabPage(NotNullPtr<Text::String
 	NEW_CLASSNN(page, UI::GUITabPage(this->ui, 0, *this, index));
 	page->SetDPI(this->hdpi, this->ddpi);
 	this->tabPages.Add(page);
-	OSInt x;
-	OSInt y;
-	UOSInt w;
-	UOSInt h;
-	GetTabPageRect(&x, &y, &w, &h);
-	page->SetAreaP(x, y, x + (OSInt)w, y + (OSInt)h, false);
+	Math::RectArea<OSInt> rect = GetTabPageRect();
+	page->SetAreaP(rect.tl.x, rect.tl.y, rect.br.x, rect.br.y, false);
 	if (this->tabPages.GetCount() > 1)
 	{
 		page->SetVisible(false);
@@ -133,7 +124,7 @@ NotNullPtr<UI::GUITabPage> UI::GUITabControl::AddTabPage(NotNullPtr<Text::String
 	return page;
 }
 
-NotNullPtr<UI::GUITabPage> UI::GUITabControl::AddTabPage(Text::CStringNN tabName)
+NotNullPtr<UI::GUITabPage> UI::Win::WinTabControl::AddTabPage(Text::CStringNN tabName)
 {
 	UOSInt index;
 	TCITEMW item;
@@ -147,12 +138,8 @@ NotNullPtr<UI::GUITabPage> UI::GUITabControl::AddTabPage(Text::CStringNN tabName
 	NEW_CLASSNN(page, UI::GUITabPage(this->ui, 0, *this, index));
 	page->SetDPI(this->hdpi, this->ddpi);
 	this->tabPages.Add(page);
-	OSInt x;
-	OSInt y;
-	UOSInt w;
-	UOSInt h;
-	GetTabPageRect(&x, &y, &w, &h);
-	page->SetAreaP(x, y, x + (OSInt)w, y + (OSInt)h, false);
+	Math::RectArea<OSInt> rect = GetTabPageRect();
+	page->SetAreaP(rect.tl.x, rect.tl.y, rect.br.x, rect.br.y, false);
 	if (this->tabPages.GetCount() > 1)
 	{
 		page->SetVisible(false);
@@ -160,7 +147,7 @@ NotNullPtr<UI::GUITabPage> UI::GUITabControl::AddTabPage(Text::CStringNN tabName
 	return page;
 }
 
-void UI::GUITabControl::SetSelectedIndex(UOSInt index)
+void UI::Win::WinTabControl::SetSelectedIndex(UOSInt index)
 {
 	if (this->selIndex != index)
 	{
@@ -170,12 +157,7 @@ void UI::GUITabControl::SetSelectedIndex(UOSInt index)
 		this->selIndex = index;
 		SendMessage((HWND)this->hwnd, TCM_SETCURSEL, index, 0);
 
-		UOSInt i;
-		i = this->selChgHdlrs.GetCount();
-		while (i-- > 0)
-		{
-			this->selChgHdlrs.GetItem(i)(this->selChgObjs.GetItem(i));
-		}
+		this->EventSelChange();
 		if (this->tabPages.GetItem(this->selIndex).SetTo(page))
 		{
 			page->SetVisible(true);
@@ -184,7 +166,7 @@ void UI::GUITabControl::SetSelectedIndex(UOSInt index)
 	}
 }
 
-void UI::GUITabControl::SetSelectedPage(NotNullPtr<UI::GUITabPage> page)
+void UI::Win::WinTabControl::SetSelectedPage(NotNullPtr<UI::GUITabPage> page)
 {
 	UOSInt i = this->tabPages.GetCount();
 	while (i-- > 0)
@@ -196,17 +178,17 @@ void UI::GUITabControl::SetSelectedPage(NotNullPtr<UI::GUITabPage> page)
 	}
 }
 
-UOSInt UI::GUITabControl::GetSelectedIndex()
+UOSInt UI::Win::WinTabControl::GetSelectedIndex()
 {
 	return this->selIndex;
 }
 
-Optional<UI::GUITabPage> UI::GUITabControl::GetSelectedPage()
+Optional<UI::GUITabPage> UI::Win::WinTabControl::GetSelectedPage()
 {
 	return this->tabPages.GetItem(this->selIndex);
 }
 
-void UI::GUITabControl::SetTabPageName(UOSInt index, Text::CStringNN name)
+void UI::Win::WinTabControl::SetTabPageName(UOSInt index, Text::CStringNN name)
 {
 	TCITEMW item;
 	item.mask = TCIF_TEXT;
@@ -216,7 +198,7 @@ void UI::GUITabControl::SetTabPageName(UOSInt index, Text::CStringNN name)
 	Text::StrDelNew((const WChar*)item.pszText);
 }
 
-UTF8Char *UI::GUITabControl::GetTabPageName(UOSInt index, UTF8Char *buff)
+UTF8Char *UI::Win::WinTabControl::GetTabPageName(UOSInt index, UTF8Char *buff)
 {
 	WChar wbuff[512];
 	TCITEMW item;
@@ -228,7 +210,7 @@ UTF8Char *UI::GUITabControl::GetTabPageName(UOSInt index, UTF8Char *buff)
 	return Text::StrWChar_UTF8(buff, wbuff);
 }
 
-void UI::GUITabControl::GetTabPageRect(OSInt *x, OSInt *y, UOSInt *w, UOSInt *h)
+Math::RectArea<OSInt> UI::Win::WinTabControl::GetTabPageRect()
 {
 	RECT rc;
 	RECT rcTc;
@@ -238,27 +220,10 @@ void UI::GUITabControl::GetTabPageRect(OSInt *x, OSInt *y, UOSInt *w, UOSInt *h)
 	rc.bottom = 0;
 	SendMessageW((HWND)this->hwnd, TCM_ADJUSTRECT, FALSE, (LPARAM)&rc);
 	GetClientRect((HWND)this->hwnd, &rcTc);
-	if (x)
-		*x = rc.left;
-	if (y)
-		*y = rc.top;
-	if (w)
-		*w = (UOSInt)(rcTc.right + rc.right - rc.left);
-	if (h)
-		*h = (UOSInt)(rcTc.bottom + rc.bottom - rc.top);
+	return Math::RectArea<OSInt>(rc.left, rc.top, rcTc.right + rc.right - rc.left, rcTc.bottom + rc.bottom - rc.top);
 }
 
-void *UI::GUITabControl::GetTabPageFont()
-{
-	return this->GetFont();
-}
-
-Text::CStringNN UI::GUITabControl::GetObjectClass() const
-{
-	return CSTR("TabControl");
-}
-
-OSInt UI::GUITabControl::OnNotify(UInt32 code, void *lParam)
+OSInt UI::Win::WinTabControl::OnNotify(UInt32 code, void *lParam)
 {
 	UOSInt newIndex;
 	UOSInt i;
@@ -275,46 +240,31 @@ OSInt UI::GUITabControl::OnNotify(UInt32 code, void *lParam)
 			if (this->tabPages.GetItem(this->selIndex).SetTo(tp))
 				tp->SetVisible(true);
 			InvalidateRect((HWND)this->hwnd, 0, false);
-			
-			i = this->selChgHdlrs.GetCount();
-			while (i-- > 0)
-			{
-				this->selChgHdlrs.GetItem(i)(this->selChgObjs.GetItem(i));
-			}
+			this->EventSelChange();
 		}
 		return 0;
 	}
 	return 0;
 }
 
-void UI::GUITabControl::OnSizeChanged(Bool updateScn)
+void UI::Win::WinTabControl::OnSizeChanged(Bool updateScn)
 {
 	UOSInt i = this->resizeHandlers.GetCount();
 	while (i-- > 0)
 	{
 		this->resizeHandlers.GetItem(i)(this->resizeHandlersObjs.GetItem(i));
 	}
-	OSInt x;
-	OSInt y;
-	UOSInt w;
-	UOSInt h;
-	GetTabPageRect(&x, &y, &w, &h);
+	Math::RectArea<OSInt> rect = GetTabPageRect();
 
 	Data::ArrayIterator<NotNullPtr<GUITabPage>> it = this->tabPages.Iterator();
 	while (it.HasNext())
 	{
-		it.Next()->SetAreaP(x, y, x + (OSInt)w, y + (OSInt)h, false);
+		it.Next()->SetAreaP(rect.tl.x, rect.tl.y, rect.br.x, rect.br.y, false);
 //		this->tabPages->GetItem(i)->UpdateChildrenSize(false);
 	}
 }
 
-void UI::GUITabControl::HandleSelChanged(UIEvent hdlr, void *userObj)
-{
-	this->selChgHdlrs.Add(hdlr);
-	this->selChgObjs.Add(userObj);
-}
-
-void UI::GUITabControl::SetDPI(Double hdpi, Double ddpi)
+void UI::Win::WinTabControl::SetDPI(Double hdpi, Double ddpi)
 {
 	this->hdpi = hdpi;
 	this->ddpi = ddpi;
@@ -334,15 +284,10 @@ void UI::GUITabControl::SetDPI(Double hdpi, Double ddpi)
 		it.Next()->SetDPI(hdpi, ddpi);
 	}
 
-	OSInt x;
-	OSInt y;
-	UOSInt w;
-	UOSInt h;
-	GetTabPageRect(&x, &y, &w, &h);
-
+	Math::RectArea<OSInt> rect = GetTabPageRect();
 	it = this->tabPages.Iterator();
 	while (it.HasNext())
 	{
-		it.Next()->SetAreaP(x, y, x + (OSInt)w, y + (OSInt)h, false);
+		it.Next()->SetAreaP(rect.tl.x, rect.tl.y, rect.br.x, rect.br.y, false);
 	}
 }

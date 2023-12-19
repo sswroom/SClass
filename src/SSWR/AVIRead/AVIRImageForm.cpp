@@ -613,7 +613,7 @@ SSWR::AVIRead::AVIRImageForm::AVIRImageForm(UI::GUIClientControl *parent, NotNul
 	this->lbImages->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbImages->HandleSelectionChange(ImagesSelChg, this);
 	this->hSplitter = ui->NewHSplitter(*this, 3, false);
-	NEW_CLASS(this->tcImage, UI::GUITabControl(ui, *this));
+	this->tcImage = ui->NewTabControl(*this);
 	this->tcImage->SetDockType(UI::GUIControl::DOCK_FILL);
 	
 	this->tpImage = this->tcImage->AddTabPage(CSTR("Image"));

@@ -26,7 +26,7 @@ namespace SSWR
 			UOSInt procId;
 		} ProgInfo;
 	private:
-		UI::GUITabControl *tcMain;
+		NotNullPtr<UI::GUITabControl> tcMain;
 		NotNullPtr<UI::GUITabPage> tpLog;
 		NotNullPtr<UI::GUIListBox> lbLog;
 		NotNullPtr<UI::GUITextBox> txtLog;

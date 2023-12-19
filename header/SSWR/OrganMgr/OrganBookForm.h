@@ -52,7 +52,7 @@ namespace SSWR
 			NotNullPtr<UI::GUILabel> lblBookGroup;
 			NotNullPtr<UI::GUITextBox> txtBookGroup;
 			NotNullPtr<UI::GUIButton> btnBookAdd;
-			UI::GUITabControl *tcBook;
+			NotNullPtr<UI::GUITabControl> tcBook;
 			NotNullPtr<UI::GUITabPage> tpBookRef;
 			NotNullPtr<UI::GUITabPage> tpBookAuthor;
 

@@ -1227,7 +1227,7 @@ SSWR::AVIRead::AVIRDBManagerForm::AVIRDBManagerForm(UI::GUIClientControl *parent
 	this->lbConn->HandleRightClicked(OnConnRClicked, this);
 	this->lbConn->HandleDoubleClicked(OnConnDblClicked, this);
 	this->hspConn = ui->NewHSplitter(*this, 3, false);
-	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, *this));
+	this->tcMain = ui->NewTabControl(*this);
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	this->tpDatabase = this->tcMain->AddTabPage(CSTR("Database"));

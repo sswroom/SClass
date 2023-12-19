@@ -18,7 +18,7 @@ namespace SSWR
 		class AVIRFontRendererForm : public UI::GUIForm
 		{
 		private:
-			UI::GUITabControl *tcMain;
+			NotNullPtr<UI::GUITabControl> tcMain;
 
 			NotNullPtr<UI::GUITabPage> tpChar;
 			UI::GUIListBox *lbChar;

@@ -429,7 +429,7 @@ SSWR::AVIReadCE::AVIRCEProcInfoForm::AVIRCEProcInfoForm(UI::GUIClientControl *pa
 	this->currProcRes = 0;
 	this->threadCnt = Sync::ThreadUtil::GetThreadCnt();
 
-	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, *this));
+	NEW_CLASS(this->tcMain = ui->NewTabControl(*this));
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->tpSummary = this->tcMain->AddTabPage(CSTR("Summary"));
 	this->tpDetail = this->tcMain->AddTabPage(CSTR("Detail"));
@@ -458,7 +458,7 @@ SSWR::AVIReadCE::AVIRCEProcInfoForm::AVIRCEProcInfoForm(UI::GUIClientControl *pa
 	this->lbDetail->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbDetail->HandleSelectionChange(OnProcSelChg, this);
 	this->hspDetail = ui->NewHSplitter(this->tpDetail, 3, false);
-	NEW_CLASS(this->tcDetail, UI::GUITabControl(ui, this->tpDetail));
+	NEW_CLASS(this->tcDetail = ui->NewTabControl(this->tpDetail));
 	this->tcDetail->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->tpDetInfo = this->tcDetail->AddTabPage(CSTR("Info"));
 	this->tpDetModule = this->tcDetail->AddTabPage(CSTR("Module"));

@@ -22,7 +22,7 @@ namespace SSWR
 			NotNullPtr<UI::GUIPanel> pnlFile;
 			NotNullPtr<UI::GUILabel> lblFile;
 			NotNullPtr<UI::GUITextBox> txtFile;
-			UI::GUITabControl *tcMain;
+			NotNullPtr<UI::GUITabControl> tcMain;
 
 			NotNullPtr<UI::GUITabPage> tpProgGroup;
 			UI::GUIListBox *lbProgGroup;
@@ -33,7 +33,7 @@ namespace SSWR
 			UI::GUIListBox *lbProg;
 			NotNullPtr<UI::GUIHSplitter> hspProg;
 			NotNullPtr<UI::GUIPanel> pnlProg;
-			UI::GUITabControl *tcProg;
+			NotNullPtr<UI::GUITabControl> tcProg;
 
 			NotNullPtr<UI::GUITabPage> tpProgObject;
 			UI::GUIListBox *lbProgObject;

@@ -67,7 +67,7 @@ namespace SSWR
 			Crypto::Cert::X509File *sslKey;
 			Data::ArrayListNN<Crypto::Cert::X509Cert> caCerts;
 
-			UI::GUITabControl *tcMain;
+			NotNullPtr<UI::GUITabControl> tcMain;
 			NotNullPtr<UI::GUITabPage> tpControl;
 			NotNullPtr<UI::GUITabPage> tpStatus;
 			NotNullPtr<UI::GUITabPage> tpAccess;

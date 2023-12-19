@@ -215,7 +215,7 @@ SSWR::AVIRead::AVIRRSSReaderForm::AVIRRSSReaderForm(UI::GUIClientControl *parent
 	this->btnRequest = ui->NewButton(this->pnlURL, CSTR("Request"));
 	this->btnRequest->SetRect(704, 28, 75, 23, false);
 	this->btnRequest->HandleButtonClick(OnRequestClicked, this);
-	NEW_CLASS(this->tcRSS, UI::GUITabControl(ui, *this));
+	this->tcRSS = ui->NewTabControl(*this);
 	this->tcRSS->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	this->tpInfo = this->tcRSS->AddTabPage(CSTR("Info"));

@@ -4669,6 +4669,10 @@ UI/GUIPictureList.h:
 @GUIPictureList.o
 UI/GUISudokuViewer.h:
 @GUISudokuViewer.o
+UI/GUITabControl.h:
+@GUITabControl.o
+UI/GUITabPage.h:
+@GUITabPage.o
 UI/GUITextBox.h:
 @GUITextBox.o
 UI/GUITextFileView.h:
@@ -4733,6 +4737,8 @@ UI/GTK/GTKLabel.h:
 @GTKLabel.o
 UI/GTK/GTKMessageDialog.h:
 @GTKMessageDialog.o
+UI/GTK/GTKTabControl.h:
+@GTKTabControl.o
 UI/GTK/GTKTextBox.h:
 @GTKTextBox.o
 UI/GTK/GTKTimer.h:
@@ -4757,6 +4763,8 @@ UI/Java/JavaLabel.h:
 @JavaLabel.o
 UI/Java/JavaMessageDialog.h:
 @JavaMessageDialog.o
+UI/Java/JavaTabControl.h:
+@JavaTabControl.o
 UI/Java/JavaTextBox.h:
 @JavaTextBox.o
 UI/Java/JavaTimer.h:
@@ -4783,6 +4791,8 @@ UI/Win/WinLabel.h:
 @WinLabel.o
 UI/Win/WinMessageDialog.h:
 @WinMessageDialog.o
+UI/Win/WinTabControl.h:
+@WinTabControl.o
 UI/Win/WinTextBox.h:
 @WinTextBox.o
 UI/Win/WinTimer.h:

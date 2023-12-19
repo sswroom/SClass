@@ -32,7 +32,7 @@ namespace SSWR
 			NotNullPtr<UI::GUILabel> lblAPIKey;
 			NotNullPtr<UI::GUITextBox> txtAPIKey;
 			NotNullPtr<UI::GUIButton> btnAPIKey;
-			UI::GUITabControl *tcMain;
+			NotNullPtr<UI::GUITabControl> tcMain;
 			
 			NotNullPtr<UI::GUITabPage> tpVersion;
 			NotNullPtr<UI::GUILabel> lblCurrVer;

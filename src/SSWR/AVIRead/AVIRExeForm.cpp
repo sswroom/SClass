@@ -319,7 +319,7 @@ SSWR::AVIRead::AVIRExeForm::AVIRExeForm(UI::GUIClientControl *parent, NotNullPtr
 
 	UOSInt i;
 	UOSInt j;
-	NEW_CLASSNN(this->tcEXE, UI::GUITabControl(ui, *this));
+	this->tcEXE = ui->NewTabControl(*this);
 	this->tcEXE->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	this->tpProp = this->tcEXE->AddTabPage(CSTR("Properties"));

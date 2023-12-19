@@ -21,7 +21,7 @@ namespace SSWR
 
 			UI::GUIListBox *lbObject;
 			NotNullPtr<UI::GUIHSplitter> hspMain;
-			UI::GUITabControl *tcMain;
+			NotNullPtr<UI::GUITabControl> tcMain;
 			
 			NotNullPtr<UI::GUITabPage> tpParameter;
 			UI::GUIListView *lvParameter;

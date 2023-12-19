@@ -32,7 +32,7 @@ namespace SSWR
 			NotNullPtr<UI::GUIPanel> pnlCheckType;
 			NotNullPtr<UI::GUILabel> lblCheckType;
 			NotNullPtr<UI::GUIComboBox> cboCheckType;
-			UI::GUITabControl *tcMain;
+			NotNullPtr<UI::GUITabControl> tcMain;
 			NotNullPtr<UI::GUITabPage> tpStatus;
 			NotNullPtr<UI::GUITabPage> tpTasks;
 			NotNullPtr<UI::GUITabPage> tpFiles;

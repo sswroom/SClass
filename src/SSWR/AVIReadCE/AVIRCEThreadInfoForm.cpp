@@ -92,7 +92,7 @@ SSWR::AVIReadCE::AVIRCEThreadInfoForm::AVIRCEThreadInfoForm(UI::GUIClientControl
 	this->proc = proc;
 	this->symbol = symbol;
 
-	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, *this));
+	NEW_CLASS(this->tcMain = ui->NewTabControl(*this));
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->tpInfo = this->tcMain->AddTabPage(CSTR("Info"));
 	this->tpContext = this->tcMain->AddTabPage(CSTR("Context"));

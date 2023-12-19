@@ -1012,7 +1012,7 @@ SSWR::AVIRead::AVIRAudioFilterForm::AVIRAudioFilterForm(UI::GUIClientControl *pa
 	this->pbsFFT->SetDockType(UI::GUIControl::DOCK_BOTTOM);
 	this->pbsFFT->SetNoBGColor(true);
 	this->vspSample = ui->NewVSplitter(*this, 3, true);
-	NEW_CLASS(this->tcFilter, UI::GUITabControl(ui, *this));
+	this->tcFilter = ui->NewTabControl(*this);
 	this->tcFilter->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	NEW_CLASSNN(this->pnlAudioSource, UI::GUIPanel(ui, this->pnlInput));
@@ -1084,7 +1084,7 @@ SSWR::AVIRead::AVIRAudioFilterForm::AVIRAudioFilterForm(UI::GUIClientControl *pa
 	this->btnDTMFClear = ui->NewButton(this->pnlDTMF, CSTR("&Clear"));
 	this->btnDTMFClear->SetRect(604, 28, 75, 23, false);
 	this->btnDTMFClear->HandleButtonClick(OnDTMFClearClicked, this);
-	NEW_CLASS(this->tcDTMF, UI::GUITabControl(ui, this->tpDTMF));
+	this->tcDTMF = ui->NewTabControl(this->tpDTMF);
 	this->tcDTMF->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->tpDTMFGen = this->tcDTMF->AddTabPage(CSTR("Generate"));
 	this->btnDTMF1 = ui->NewButton(this->tpDTMFGen, CSTR("1"));

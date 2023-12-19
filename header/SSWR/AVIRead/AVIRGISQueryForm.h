@@ -23,7 +23,7 @@ namespace SSWR
 		private:
 			NotNullPtr<UI::GUIPanel> pnlObj;
 			NotNullPtr<UI::GUIComboBox> cboObj;
-			UI::GUITabControl *tcMain;
+			NotNullPtr<UI::GUITabControl> tcMain;
 
 			NotNullPtr<UI::GUITabPage> tpInfo;
 			UI::GUIListView *lvInfo;

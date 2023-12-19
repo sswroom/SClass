@@ -11,6 +11,7 @@
 #include "UI/GTK/GTKHSplitter.h"
 #include "UI/GTK/GTKLabel.h"
 #include "UI/GTK/GTKMessageDialog.h"
+#include "UI/GTK/GTKTabControl.h"
 #include "UI/GTK/GTKTextBox.h"
 #include "UI/GTK/GTKVSplitter.h"
 #include <gtk/gtk.h>
@@ -238,6 +239,13 @@ NotNullPtr<UI::GUILabel> UI::GTK::GTKCore::NewLabel(NotNullPtr<GUIClientControl>
 {
 	NotNullPtr<UI::GTK::GTKLabel> ctrl;
 	NEW_CLASSNN(ctrl, UI::GTK::GTKLabel(*this, parent, text));
+	return ctrl;
+}
+
+NotNullPtr<UI::GUITabControl> UI::GTK::GTKCore::NewTabControl(NotNullPtr<GUIClientControl> parent)
+{
+	NotNullPtr<UI::GTK::GTKTabControl> ctrl;
+	NEW_CLASSNN(ctrl, UI::GTK::GTKTabControl(*this, parent));
 	return ctrl;
 }
 

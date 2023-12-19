@@ -31,7 +31,7 @@ namespace SSWR
 			Text::String *reqLast;
 			Bool reqUpdated;
 
-			UI::GUITabControl *tcMain;
+			NotNullPtr<UI::GUITabControl> tcMain;
 
 			NotNullPtr<UI::GUITabPage> tpControl;
 			NotNullPtr<UI::GUILabel> lblPort;

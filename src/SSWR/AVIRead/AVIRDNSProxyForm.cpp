@@ -787,7 +787,7 @@ SSWR::AVIRead::AVIRDNSProxyForm::AVIRDNSProxyForm(UI::GUIClientControl *parent, 
 	this->currServer = 0;
 	this->currTarget = 0;
 
-	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, *this));
+	this->tcMain = ui->NewTabControl(*this);
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	this->tpStatus = this->tcMain->AddTabPage(CSTR("Status"));
@@ -991,7 +991,7 @@ SSWR::AVIRead::AVIRDNSProxyForm::AVIRDNSProxyForm(UI::GUIClientControl *parent, 
 	this->lbTarget->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbTarget->HandleSelectionChange(OnTargetSelChg, this);
 	this->hspTarget = ui->NewHSplitter(this->tpTarget, 3, false);
-	NEW_CLASS(this->tcTarget, UI::GUITabControl(ui, this->tpTarget));
+	this->tcTarget = ui->NewTabControl(this->tpTarget);
 	this->tcTarget->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->tpTargetInfo = this->tcTarget->AddTabPage(CSTR("Info"));
 	this->lblTargetName = ui->NewLabel(this->tpTargetInfo, CSTR("Name"));

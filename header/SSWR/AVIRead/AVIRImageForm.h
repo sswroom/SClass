@@ -19,7 +19,7 @@ namespace SSWR
 			UI::GUIListBox *lbImages;
 			NotNullPtr<UI::GUIHSplitter> hSplitter;
 			UI::GUIMainMenu *mnuMain;
-			UI::GUITabControl *tcImage;
+			NotNullPtr<UI::GUITabControl> tcImage;
 
 			NotNullPtr<UI::GUITabPage> tpImage;
 			UI::GUIPictureBoxDD *pbImage;

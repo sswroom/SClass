@@ -561,7 +561,7 @@ SSWR::AVIRead::AVIRDBForm::AVIRDBForm(UI::GUIClientControl *parent, NotNullPtr<U
 		NEW_CLASS(this->dbt, DB::ReadingDBTool(NotNullPtr<DB::DBConn>::ConvertFrom(this->db), needRelease, this->log, CSTR("DB: ")));
 	}
 
-	NEW_CLASS(this->tcDB, UI::GUITabControl(ui, *this));
+	this->tcDB = ui->NewTabControl(*this);
 	this->tcDB->SetRect(0, 0, 100, 400, false);
 	this->tcDB->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->vspDB = ui->NewVSplitter(*this, 3, false);

@@ -584,7 +584,7 @@ SSWR::AVIRead::AVIRMODBUSMasterForm::AVIRMODBUSMasterForm(UI::GUIClientControl *
 	this->btnTimeout = ui->NewButton(this->grpStream, CSTR("Set"));
 	this->btnTimeout->SetRect(204, 52, 75, 23, false);
 	this->btnTimeout->HandleButtonClick(OnTimeoutClicked, this);
-	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, *this));
+	this->tcMain = ui->NewTabControl(*this);
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
 	
 	this->tpGetValue = this->tcMain->AddTabPage(CSTR("GetValue"));

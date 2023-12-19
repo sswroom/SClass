@@ -25,7 +25,7 @@ namespace SSWR
 			NotNullPtr<UI::GUITextBox> txtVersion;
 			UI::GUIListBox *lbVMS;
 			NotNullPtr<UI::GUIHSplitter> hspVM;
-			UI::GUITabControl *tcVM;
+			NotNullPtr<UI::GUITabControl> tcVM;
 			NotNullPtr<UI::GUITabPage> tpControl;
 			NotNullPtr<UI::GUILabel> lblState;
 			NotNullPtr<UI::GUITextBox> txtState;

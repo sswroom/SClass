@@ -1045,7 +1045,7 @@ SSWR::AVIRead::AVIRGSMModemForm::AVIRGSMModemForm(UI::GUIClientControl *parent, 
 	this->btnDeviceOther = ui->NewButton(this->pnlDevice, CSTR("Open Stream"));
 	this->btnDeviceOther->SetRect(250, 24, 75, 23, false);
 	this->btnDeviceOther->HandleButtonClick(OnDeviceOtherClk, this);
-	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, *this));
+	this->tcMain = ui->NewTabControl(*this);
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	this->tpInfo = this->tcMain->AddTabPage(CSTR("Info"));

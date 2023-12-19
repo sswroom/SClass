@@ -30,7 +30,7 @@ namespace SSWR
 			IO::ProtoHdlr::ProtoJTT808Handler *protoHdlr;
 			NotNullPtr<UI::ListBoxLogger> logger;
 
-			UI::GUITabControl *tcMain;
+			NotNullPtr<UI::GUITabControl> tcMain;
 
 			NotNullPtr<UI::GUITabPage> tpStatus;
 			NotNullPtr<UI::GUILabel> lblPort;

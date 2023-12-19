@@ -51,7 +51,7 @@ namespace SSWR
 			Bool devChg;
 			Data::FastMap<UInt64, Int32> devHandlerMap;
 
-			UI::GUITabControl *tcMain;
+			NotNullPtr<UI::GUITabControl> tcMain;
 
 			NotNullPtr<UI::GUITabPage> tpDevice;
 			NotNullPtr<UI::GUIPanel> pnlDevice;

@@ -18,7 +18,7 @@ namespace SSWR
 		class AVIRWebSite48IdolForm : public UI::GUIForm
 		{
 		private:
-			UI::GUITabControl *tcMain;
+			NotNullPtr<UI::GUITabControl> tcMain;
 			
 			NotNullPtr<UI::GUITabPage> tpItems;
 			NotNullPtr<UI::GUIPanel> pnlRequest;

@@ -35,7 +35,7 @@ namespace SSWR
 			NotNullPtr<UI::GUIPanel> pnlStreamType;
 			NotNullPtr<UI::GUILabel> lblStreamType;
 			NotNullPtr<UI::GUIComboBox> cboStreamType;
-			UI::GUITabControl *tcConfig;
+			NotNullPtr<UI::GUITabControl> tcConfig;
 
 			NotNullPtr<UI::GUITabPage> tpSerialPort;
 			NotNullPtr<UI::GUILabel> lblSerialPort;

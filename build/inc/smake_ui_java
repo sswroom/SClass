@@ -71,10 +71,6 @@ UI/GUIRadioButton.h:
 @GUIRadioButtonGTK.o
 UI/GUIRealtimeLineChart.h:
 @GUIRealtimeLineChartGTK.o
-UI/GUITabControl.h:
-@GUITabControlGTK.o
-UI/GUITabPage.h:
-@GUITabPage.o
 UI/GUITextView.h:
 @GUITextViewGTK.o
 UI/GUITrackBar.h:

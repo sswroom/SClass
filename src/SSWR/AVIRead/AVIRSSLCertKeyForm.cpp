@@ -224,7 +224,7 @@ SSWR::AVIRead::AVIRSSLCertKeyForm::AVIRSSLCertKeyForm(UI::GUIClientControl *pare
 	this->txtCurrKey = ui->NewTextBox(this->pnlCurr, CSTR(""));
 	this->txtCurrKey->SetRect(104, 28, 200, 23, false);
 	this->txtCurrKey->SetReadOnly(true);
-	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, *this));
+	this->tcMain = ui->NewTabControl(*this);
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	this->tpFile = this->tcMain->AddTabPage(CSTR("File"));

@@ -19,7 +19,7 @@ namespace SSWR
 			class AVIRMailViewer : public AVIRMIMEViewer
 			{
 			private:
-				UI::GUITabControl *tcHeader;
+				NotNullPtr<UI::GUITabControl> tcHeader;
 				NotNullPtr<UI::GUITabPage> tpHeading;
 				UI::GUIListView *lvRecp;
 				NotNullPtr<UI::GUIPanel> pnlFrom;

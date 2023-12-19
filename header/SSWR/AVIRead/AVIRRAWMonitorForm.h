@@ -80,7 +80,7 @@ namespace SSWR
 			NotNullPtr<UI::GUIComboBox> cboPLog;
 			NotNullPtr<UI::GUIButton> btnPLog;
 			NotNullPtr<UI::GUITextBox> txtPLog;
-			UI::GUITabControl *tcMain;
+			NotNullPtr<UI::GUITabControl> tcMain;
 
 			NotNullPtr<UI::GUITabPage> tpDevice;
 			UI::GUIListView *lvDevice;
@@ -90,7 +90,7 @@ namespace SSWR
 			NotNullPtr<UI::GUITabPage> tpIPTran;
 			UI::GUIListBox *lbIPTran;
 			NotNullPtr<UI::GUIHSplitter> hspIPTran;
-			UI::GUITabControl *tcIPTran;
+			NotNullPtr<UI::GUITabControl> tcIPTran;
 			NotNullPtr<UI::GUITabPage> tpIPTranInfo;
 			UI::GUIListView *lvIPTranInfo;
 			NotNullPtr<UI::GUITabPage> tpIPTranWhois;
@@ -135,7 +135,7 @@ namespace SSWR
 			NotNullPtr<UI::GUITabPage> tpDNSTarget;
 			UI::GUIListBox *lbDNSTarget;
 			NotNullPtr<UI::GUIHSplitter> hspDNSTarget;
-			UI::GUITabControl *tcDNSTarget;
+			NotNullPtr<UI::GUITabControl> tcDNSTarget;
 			NotNullPtr<UI::GUITabPage> tpDNSTargetDomain;
 			UI::GUIListBox *lbDNSTargetDomain;
 			NotNullPtr<UI::GUITabPage> tpDNSTargetWhois;
@@ -172,7 +172,7 @@ namespace SSWR
 			NotNullPtr<UI::GUITabPage> tpPingIP;
 			UI::GUIListBox *lbPingIP;
 			NotNullPtr<UI::GUIHSplitter> hspPingIP;
-			UI::GUITabControl *tcPingIP;
+			NotNullPtr<UI::GUITabControl> tcPingIP;
 			NotNullPtr<UI::GUITabPage> tpPingIPInfo;
 			NotNullPtr<UI::GUILabel> lblPingIPCount;
 			NotNullPtr<UI::GUITextBox> txtPingIPCount;

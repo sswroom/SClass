@@ -23,7 +23,7 @@ namespace SSWR
 			IO::ATCommandChannel *channel;
 			NotNullPtr<IO::Stream> port;
 
-			UI::GUITabControl *tcMain;
+			NotNullPtr<UI::GUITabControl> tcMain;
 			NotNullPtr<UI::GUITabPage> tpInfo;
 			NotNullPtr<UI::GUILabel> lblModemManu;
 			NotNullPtr<UI::GUITextBox> txtModemManu;

@@ -34,7 +34,7 @@ namespace SSWR
 			NotNullPtr<UI::GUIButton> btnModeIdle;
 			NotNullPtr<UI::GUIButton> btnReset;
 			NotNullPtr<UI::GUIButton> btnDefault;
-			UI::GUITabControl *tcMain;
+			NotNullPtr<UI::GUITabControl> tcMain;
 
 			NotNullPtr<UI::GUITabPage> tpScan;
 			NotNullPtr<UI::GUIPanel> pnlScan;

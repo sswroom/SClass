@@ -21,7 +21,7 @@ namespace SSWR
 		class AVIRProfiledResizerForm : public UI::GUIForm
 		{
 		private:
-			UI::GUITabControl *tcMain;
+			NotNullPtr<UI::GUITabControl> tcMain;
 
 			NotNullPtr<UI::GUITabPage> tpMain;
 			NotNullPtr<UI::GUIButton> btnChgProfile;

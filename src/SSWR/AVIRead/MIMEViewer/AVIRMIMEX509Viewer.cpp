@@ -7,7 +7,7 @@ SSWR::AVIRead::MIMEViewer::AVIRMIMEX509Viewer::AVIRMIMEX509Viewer(NotNullPtr<SSW
 {
 	this->obj = obj;
 
-	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, ctrl));
+	this->tcMain = ui->NewTabControl(ctrl);
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
 	
 	this->tpDesc = this->tcMain->AddTabPage(CSTR("Desc"));
