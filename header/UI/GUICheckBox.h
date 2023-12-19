@@ -9,24 +9,21 @@ namespace UI
 	{
 	public:
 		typedef void (__stdcall *CheckedChangeHandler)(void *userObj, Bool newState);
-	private:
+	protected:
 		Bool checked;
 		Data::ArrayList<CheckedChangeHandler> checkedChangeHdlrs;
 		Data::ArrayList<void*> checkedChangeObjs;
 	public:
-		GUICheckBox(NotNullPtr<GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, Text::CStringNN initText, Bool checked);
+		GUICheckBox(NotNullPtr<GUICore> ui, NotNullPtr<UI::GUIClientControl> parent);
 		virtual ~GUICheckBox();
 
-		virtual void SetText(Text::CStringNN text);
 		virtual Text::CStringNN GetObjectClass() const;
-		virtual OSInt OnNotify(UInt32 code, void *lParam);
-
 		void EventCheckedChange(Bool newState);
-
-		Bool IsChecked();
-		void SetChecked(Bool checked);
-
 		void HandleCheckedChange(CheckedChangeHandler hdlr, void *obj);
+
+		virtual OSInt OnNotify(UInt32 code, void *lParam) = 0;
+		virtual Bool IsChecked() = 0;
+		virtual void SetChecked(Bool checked) = 0;
 	};
 }
 #endif

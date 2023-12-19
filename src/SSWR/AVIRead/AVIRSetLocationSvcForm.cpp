@@ -30,7 +30,7 @@ SSWR::AVIRead::AVIRSetLocationSvcForm::AVIRSetLocationSvcForm(UI::GUIClientContr
 
 	this->lblGPS = ui->NewLabel(*this, CSTR("GPS Device"));
 	this->lblGPS->SetRect(4, 4, 100, 23, false);
-	NEW_CLASS(this->chkGPS, UI::GUICheckBox(ui, *this, CSTR("Enable"), false));
+	this->chkGPS = ui->NewCheckBox(*this, CSTR("Enable"), false);
 	this->chkGPS->SetRect(104, 4, 100, 23, false);
 	this->btnGPS = ui->NewButton(*this, CSTR("Select"));
 	this->btnGPS->SetRect(204, 4, 75, 23, false);
@@ -41,7 +41,7 @@ SSWR::AVIRead::AVIRSetLocationSvcForm::AVIRSetLocationSvcForm(UI::GUIClientContr
 
 	this->lblWifi = ui->NewLabel(*this, CSTR("WIFI"));
 	this->lblWifi->SetRect(4, 28, 100, 23, false);
-	NEW_CLASS(this->chkWifi, UI::GUICheckBox(ui, *this, CSTR("Enable"), false));
+	this->chkWifi = ui->NewCheckBox(*this, CSTR("Enable"), false);
 	this->chkWifi->SetRect(104, 28, 100, 23, false);
 
 

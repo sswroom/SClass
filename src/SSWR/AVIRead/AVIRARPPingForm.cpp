@@ -148,7 +148,7 @@ SSWR::AVIRead::AVIRARPPingForm::AVIRARPPingForm(UI::GUIClientControl *parent, No
 	this->txtTarget->SetRect(104, 28, 150, 23, false);
 	this->lblRepeat = ui->NewLabel(this->pnlRequest, CSTR("Repeat"));
 	this->lblRepeat->SetRect(4, 52, 100, 23, false);
-	NEW_CLASS(this->chkRepeat, UI::GUICheckBox(ui, this->pnlRequest, CSTR(""), false));
+	this->chkRepeat = ui->NewCheckBox(this->pnlRequest, CSTR(""), false);
 	this->chkRepeat->SetRect(104, 52, 100, 23, false);
 	this->btnPing = ui->NewButton(this->pnlRequest, CSTR("&Ping"));
 	this->btnPing->SetRect(104, 76, 75, 23, false);

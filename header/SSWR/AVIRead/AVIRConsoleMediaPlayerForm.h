@@ -24,7 +24,7 @@ namespace SSWR
 			NotNullPtr<UI::GUIButton> btnCaptureDev;
 			NotNullPtr<UI::GUILabel> lblRotate;
 			NotNullPtr<UI::GUIComboBox> cboRotate;
-			UI::GUICheckBox *chkSurfaceBug;
+			NotNullPtr<UI::GUICheckBox> chkSurfaceBug;
 			NotNullPtr<UI::GUILabel> lblYUVType;
 			NotNullPtr<UI::GUIComboBox> cboYUVType;
 			NotNullPtr<UI::GUILabel> lblRGBTrans;

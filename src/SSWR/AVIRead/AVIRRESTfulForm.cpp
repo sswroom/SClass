@@ -225,15 +225,15 @@ SSWR::AVIRead::AVIRRESTfulForm::AVIRRESTfulForm(UI::GUIClientControl *parent, No
 	this->txtLogDir->SetRect(108, 32, 500, 23, false);
 	this->lblAllowProxy = ui->NewLabel(this->grpParam, CSTR("Proxy Connection"));
 	this->lblAllowProxy->SetRect(8, 56, 100, 23, false);
-	NEW_CLASS(this->chkAllowProxy, UI::GUICheckBox(ui, this->grpParam, CSTR("Allow"), true));
+	this->chkAllowProxy = ui->NewCheckBox(this->grpParam, CSTR("Allow"), true);
 	this->chkAllowProxy->SetRect(108, 56, 100, 23, false);
 	this->lblSkipLog = ui->NewLabel(this->grpParam, CSTR("Skip Logging"));
 	this->lblSkipLog->SetRect(8, 80, 100, 23, false);
-	NEW_CLASS(this->chkSkipLog, UI::GUICheckBox(ui, this->grpParam, CSTR("Enable"), false));
+	this->chkSkipLog = ui->NewCheckBox(this->grpParam, CSTR("Enable"), false);
 	this->chkSkipLog->SetRect(108, 80, 100, 23, false);
 	this->lblAllowKA = ui->NewLabel(this->grpParam, CSTR("Allow KA"));
 	this->lblAllowKA->SetRect(8, 104, 100, 23, false);
-	NEW_CLASS(this->chkAllowKA, UI::GUICheckBox(ui, this->grpParam, CSTR("Enable"), true));
+	this->chkAllowKA = ui->NewCheckBox(this->grpParam, CSTR("Enable"), true);
 	this->chkAllowKA->SetRect(108, 104, 100, 23, false);
 	this->lblDatabase = ui->NewLabel(this->grpParam, CSTR("Database"));
 	this->lblDatabase->SetRect(8, 128, 100, 23, false);

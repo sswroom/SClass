@@ -604,7 +604,7 @@ SSWR::AVIRead::AVIRSelStreamForm::AVIRSelStreamForm(UI::GUIClientControl *parent
 	this->lblTCPSvrPort->SetRect(4, 4, 100, 23, false);
 	this->txtTCPSvrPort = ui->NewTextBox(this->tpTCPSvr, CSTR(""));
 	this->txtTCPSvrPort->SetRect(104, 4, 100, 23, false);
-	NEW_CLASS(this->chkBoardcast, UI::GUICheckBox(ui, this->tpTCPSvr, CSTR("Boardcast"), true));
+	this->chkBoardcast = ui->NewCheckBox(this->tpTCPSvr, CSTR("Boardcast"), true);
 	this->chkBoardcast->SetRect(104, 28, 100, 23, false);
 
 	this->tpTCPCli = this->tcConfig->AddTabPage(CSTR("TCP Client"));

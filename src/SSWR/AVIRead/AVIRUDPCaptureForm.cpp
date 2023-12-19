@@ -213,7 +213,7 @@ SSWR::AVIRead::AVIRUDPCaptureForm::AVIRUDPCaptureForm(UI::GUIClientControl *pare
 	this->lblPort->SetRect(4, 4, 100, 23, false);
 	this->txtPort = ui->NewTextBox(this->pnlControl, CSTR(""));
 	this->txtPort->SetRect(104, 4, 60, 23, false);
-	NEW_CLASS(this->chkReuseAddr, UI::GUICheckBox(ui, this->pnlControl, CSTR("Reuse Addr"), true));
+	this->chkReuseAddr = ui->NewCheckBox(this->pnlControl, CSTR("Reuse Addr"), true);
 	this->chkReuseAddr->SetRect(164, 4, 80, 23, false);
 	this->btnStart = ui->NewButton(this->pnlControl, CSTR("Start"));
 	this->btnStart->SetRect(244, 4, 75, 23, false);

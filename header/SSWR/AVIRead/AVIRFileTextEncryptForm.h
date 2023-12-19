@@ -21,7 +21,7 @@ namespace SSWR
 			NotNullPtr<UI::GUILabel> lblDestFile;
 			NotNullPtr<UI::GUITextBox> txtDestFile;
 			NotNullPtr<UI::GUILabel> lblDecrypt;
-			UI::GUICheckBox *chkDecrypt;
+			NotNullPtr<UI::GUICheckBox> chkDecrypt;
 			NotNullPtr<UI::GUILabel> lblEncrypt;
 			NotNullPtr<UI::GUIComboBox> cboEncrypt;
 			NotNullPtr<UI::GUIButton> btnConvert;

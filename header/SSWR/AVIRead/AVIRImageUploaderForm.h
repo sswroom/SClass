@@ -39,7 +39,7 @@ namespace SSWR
 			NotNullPtr<UI::GUITextBox> txtUsername;
 			NotNullPtr<UI::GUILabel> lblPassword;
 			NotNullPtr<UI::GUITextBox> txtPassword;
-			UI::GUICheckBox *chkErrorCont;
+			NotNullPtr<UI::GUICheckBox> chkErrorCont;
 			NotNullPtr<UI::GUIButton> btnUpload;
 			UI::GUIListView *lvStatus;
 

@@ -54,7 +54,7 @@ namespace SSWR
 			NotNullPtr<UI::GUITextBox> txtUTF8CharCode;
 			NotNullPtr<UI::GUIButton> btnFont;
 			NotNullPtr<UI::GUIButton> btnNextUnk;
-			UI::GUICheckBox *chkDynamicSize;
+			NotNullPtr<UI::GUICheckBox> chkDynamicSize;
 			NotNullPtr<UI::GUIButton> btnOpenFile;
 
 			NotNullPtr<UI::GUITabPage> tpAnalyse;

@@ -126,7 +126,7 @@ SSWR::AVIRead::AVIRMSSQLConnForm::AVIRMSSQLConnForm(UI::GUIClientControl *parent
 	this->lblPort->SetRect(4, 52, 100, 23, false);
 	this->txtPort = ui->NewTextBox(*this, CSTR("1433"));
 	this->txtPort->SetRect(104, 52, 100, 23, false);
-	NEW_CLASS(this->chkEncrypt, UI::GUICheckBox(ui, *this, CSTR("Encrypt"), false));
+	this->chkEncrypt = ui->NewCheckBox(*this, CSTR("Encrypt"), false);
 	this->chkEncrypt->SetRect(204, 52, 100, 23, false);
 	this->lblDatabase = ui->NewLabel(*this, CSTR("Database"));
 	this->lblDatabase->SetRect(4, 76, 100, 23, false);

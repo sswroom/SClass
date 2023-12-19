@@ -20,8 +20,8 @@ namespace SSWR
 		{
 		private:
 			NotNullPtr<UI::GUIPanel> pnlCtrl;
-			UI::GUICheckBox *chkAutoPan;
-			UI::GUICheckBox *chkEdit;
+			NotNullPtr<UI::GUICheckBox> chkAutoPan;
+			NotNullPtr<UI::GUICheckBox> chkEdit;
 			UI::GUIListBox *lbImages;
 			NotNullPtr<UI::GUIHSplitter> hspMain;
 			NotNullPtr<UI::GUIPanel> pnlMain;

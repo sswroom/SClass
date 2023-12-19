@@ -212,7 +212,7 @@ SSWR::AVIRead::AVIRTVControlForm::AVIRTVControlForm(UI::GUIClientControl *parent
 	this->lblPort->SetRect(8, 32, 100, 23, false);
 	this->cboPort = ui->NewComboBox(this->pnlPort, false);
 	this->cboPort->SetRect(108, 32, 100, 23, false);
-	NEW_CLASS(this->chkLogFile, UI::GUICheckBox(ui, this->pnlPort, CSTR("Log To File"), false));
+	this->chkLogFile = ui->NewCheckBox(this->pnlPort, CSTR("Log To File"), false);
 	this->chkLogFile->SetRect(208, 32, 100, 23, false);
 
 	IO::TVControl::GetTVList(&tvTypes);

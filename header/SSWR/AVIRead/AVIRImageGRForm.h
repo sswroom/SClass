@@ -47,7 +47,7 @@ namespace SSWR
 			NotNullPtr<UI::GUITextBox> txtLevel;
 			NotNullPtr<UI::GUILabel> lblType;
 			NotNullPtr<UI::GUIComboBox> cboType;
-			UI::GUICheckBox *chkEnable;
+			NotNullPtr<UI::GUICheckBox> chkEnable;
 			NotNullPtr<UI::GUIButton> btnAddLayer;
 			NotNullPtr<UI::GUIButton> btnRemoveLayer;
 			NotNullPtr<UI::GUIButton> btnOK;

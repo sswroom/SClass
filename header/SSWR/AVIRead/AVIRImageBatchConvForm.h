@@ -55,7 +55,7 @@ namespace SSWR
 			UI::GUIRadioButton *radFormatWebP;
 			NotNullPtr<UI::GUILabel> lblQuality;
 			NotNullPtr<UI::GUITextBox> txtQuality;
-			UI::GUICheckBox *chkSubdir;
+			NotNullPtr<UI::GUICheckBox> chkSubdir;
 			NotNullPtr<UI::GUITextBox> txtSubdir;
 			NotNullPtr<UI::GUIButton> btnConvert;
 			UOSInt nThreads;

@@ -51,7 +51,7 @@ namespace SSWR
 			NotNullPtr<UI::GUILabel> lblCharType;
 			NotNullPtr<UI::GUIComboBox> cboCharType;
 			NotNullPtr<UI::GUILabel> lblFlags;
-			UI::GUICheckBox *chkMainChar;
+			NotNullPtr<UI::GUICheckBox> chkMainChar;
 			NotNullPtr<UI::GUILabel> lblPronun1;
 			NotNullPtr<UI::GUITextBox> txtPronun1;
 			NotNullPtr<UI::GUILabel> lblPronun2;

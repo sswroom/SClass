@@ -130,7 +130,7 @@ SSWR::AVIRead::AVIRESRIMapForm::AVIRESRIMapForm(UI::GUIClientControl *parent, No
 	this->txtOther = ui->NewTextBox(*this, CSTR(""));
 	this->txtOther->SetRect(108, 32, 500, 23, false);
 	this->txtOther->HandleTextChanged(OnOtherChanged, this);
-	NEW_CLASS(this->chkNoResource, UI::GUICheckBox(ui, *this, CSTR("No Resource"), false));
+	this->chkNoResource = ui->NewCheckBox(*this, CSTR("No Resource"), false);
 	this->chkNoResource->SetRect(108, 56, 120, 23, false);
 	this->chkNoResource->HandleCheckedChange(OnNoResourceChg, this);
 	this->lblSRID = ui->NewLabel(*this, CSTR("SRID"));

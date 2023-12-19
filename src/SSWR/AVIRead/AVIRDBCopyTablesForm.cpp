@@ -429,9 +429,9 @@ SSWR::AVIRead::AVIRDBCopyTablesForm::AVIRDBCopyTablesForm(UI::GUIClientControl *
 	this->cboDestTableType->AddItem(CSTR("Remove existing"), 0);
 	this->cboDestTableType->AddItem(CSTR("Append Data"), 0);
 	this->cboDestTableType->SetSelectedIndex(0);
-	NEW_CLASS(this->chkDestCopyData, UI::GUICheckBox(ui, this->grpDest, CSTR("Copy Data"), true));
+	this->chkDestCopyData = ui->NewCheckBox(this->grpDest, CSTR("Copy Data"), true);
 	this->chkDestCopyData->SetRect(204, 52, 100, 23, false);
-	NEW_CLASS(this->chkDestCreateDDB, UI::GUICheckBox(ui, this->grpDest, CSTR("Create DB"), false));
+	this->chkDestCreateDDB = ui->NewCheckBox(this->grpDest, CSTR("Create DB"), false);
 	this->chkDestCreateDDB->SetRect(304, 52, 100, 23, false);
 	this->btnCopy = ui->NewButton(this->grpDest, CSTR("Copy"));
 	this->btnCopy->SetRect(104, 76, 75, 23, false);

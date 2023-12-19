@@ -27,11 +27,11 @@ namespace SSWR
 			NotNullPtr<UI::GUIPanel> pnlControl;
 			NotNullPtr<UI::GUILabel> lblAgentAddr;
 			NotNullPtr<UI::GUITextBox> txtAgentAddr;
-			UI::GUICheckBox *chkAgentScan;
+			NotNullPtr<UI::GUICheckBox> chkAgentScan;
 			NotNullPtr<UI::GUILabel> lblCommunity;
 			NotNullPtr<UI::GUITextBox> txtCommunity;
 			NotNullPtr<UI::GUIButton> btnAgentAdd;
-			UI::GUICheckBox *chkSendToSvr;
+			NotNullPtr<UI::GUICheckBox> chkSendToSvr;
 			UI::GUIListBox *lbAgent;
 			NotNullPtr<UI::GUIHSplitter> hspAgent;
 			NotNullPtr<UI::GUIPanel> pnlAgent;

@@ -609,7 +609,7 @@ SSWR::DownloadMonitor::DownMonMainForm::DownMonMainForm(UI::GUIClientControl *pa
 	this->txtStatus = ui->NewTextBox(this->pnlButtons, CSTR("Idle"));
 	this->txtStatus->SetRect(104, 4, 100, 23, false);
 	this->txtStatus->SetReadOnly(true);
-	NEW_CLASS(this->chkAutoStart, UI::GUICheckBox(ui, this->pnlButtons, CSTR("AutoStart"), false));
+	this->chkAutoStart = ui->NewCheckBox(this->pnlButtons, CSTR("AutoStart"), false);
 	this->chkAutoStart->SetRect(204, 4, 100, 23, false);
 	this->btnPasteTable = ui->NewButton(this->pnlButtons, CSTR("Paste Table"));
 	this->btnPasteTable->SetRect(304, 4, 75, 23, false);

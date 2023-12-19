@@ -33,7 +33,7 @@ namespace SSWR
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			NotNullPtr<UI::GUIPanel> pnlCtrl;
 			NotNullPtr<UI::GUIButton> btnCancel;
-			UI::GUICheckBox *chkAllowTimeSkip;
+			NotNullPtr<UI::GUICheckBox> chkAllowTimeSkip;
 			UI::GUIListView *lvFiles;
 
 			Data::ArrayList<FileQueue*> fileList;

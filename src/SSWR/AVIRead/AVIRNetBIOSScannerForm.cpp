@@ -128,7 +128,7 @@ SSWR::AVIRead::AVIRNetBIOSScannerForm::AVIRNetBIOSScannerForm(UI::GUIClientContr
 	this->lblTargetAddr->SetRect(4, 4, 100, 23, false);
 	this->txtTargetAddr = ui->NewTextBox(this->pnlControl, CSTR(""));
 	this->txtTargetAddr->SetRect(104, 4, 200, 23, false);
-	NEW_CLASS(this->chkTargetScan, UI::GUICheckBox(ui, this->pnlControl, CSTR("Scan IP"), false));
+	this->chkTargetScan = ui->NewCheckBox(this->pnlControl, CSTR("Scan IP"), false);
 	this->chkTargetScan->SetRect(304, 4, 100, 23, false);
 	this->btnRequest = ui->NewButton(this->pnlControl, CSTR("Request"));
 	this->btnRequest->SetRect(104, 28, 75, 23, false);

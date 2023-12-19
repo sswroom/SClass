@@ -79,7 +79,7 @@ SSWR::AVIRead::AVIRDS18B20Form::AVIRDS18B20Form(UI::GUIClientControl *parent, No
 	this->btnRead = ui->NewButton(*this, CSTR("Read"));
 	this->btnRead->SetRect(104, 52, 75, 23, false);
 	this->btnRead->HandleButtonClick(OnReadClicked, this);
-	NEW_CLASS(this->chkAutoRead, UI::GUICheckBox(ui, *this, CSTR("Auto Read"), false));
+	this->chkAutoRead = ui->NewCheckBox(*this, CSTR("Auto Read"), false);
 	this->chkAutoRead->SetRect(184, 52, 100, 23, false);
 	this->lblStatus = ui->NewLabel(*this, CSTR("Status"));
 	this->lblStatus->SetRect(4, 76, 100, 23, false);

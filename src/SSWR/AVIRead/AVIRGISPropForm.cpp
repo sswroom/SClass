@@ -287,7 +287,7 @@ SSWR::AVIRead::AVIRGISPropForm::AVIRGISPropForm(UI::GUIClientControl *parent, No
 	lbl->SetRect(8, 24, 100, 23, false);
 	this->txtMaxScale = ui->NewTextBox(*this, CSTR(""));
 	this->txtMaxScale->SetRect(112, 24, 100, 21, false);
-	NEW_CLASS(this->chkHide, UI::GUICheckBox(ui, *this, CSTR("Hide"), false));
+	this->chkHide = ui->NewCheckBox(*this, CSTR("Hide"), false);
 	this->chkHide->SetRect(240, 8, 104, 24, false);
 	lbl = ui->NewLabel(*this, CSTR("Font Style"));
 	lbl->SetRect(8, 48, 100, 23, false);
@@ -313,7 +313,7 @@ SSWR::AVIRead::AVIRGISPropForm::AVIRGISPropForm(UI::GUIClientControl *parent, No
 	lbl->SetRect(8, 120, 100, 23, false);
 	this->cboColName = ui->NewComboBox(*this, false);
 	this->cboColName->SetRect(112, 120, 121, 20, false);
-	NEW_CLASS(this->chkShowLabel, UI::GUICheckBox(ui, *this, CSTR("Show Label"), false));
+	this->chkShowLabel = ui->NewCheckBox(*this, CSTR("Show Label"), false);
 	this->chkShowLabel->SetRect(240, 120, 104, 24, false);
 	lbl = ui->NewLabel(*this, CSTR("Label Priority"));
 	lbl->SetRect(8, 144, 100, 23, false);
@@ -326,15 +326,15 @@ SSWR::AVIRead::AVIRGISPropForm::AVIRGISPropForm(UI::GUIClientControl *parent, No
 
 	this->grpLabel = ui->NewGroupBox(*this, CSTR("Label"));
 	this->grpLabel->SetRect(352, 92, 120, 144, false);
-	NEW_CLASS(this->chkSmart, UI::GUICheckBox(ui, this->grpLabel, CSTR("Smart"), false));
+	this->chkSmart = ui->NewCheckBox(this->grpLabel, CSTR("Smart"), false);
 	this->chkSmart->SetRect(4, 4, 104, 24, false);
-	NEW_CLASS(this->chkRotate, UI::GUICheckBox(ui, this->grpLabel, CSTR("Rotate"), false));
+	this->chkRotate = ui->NewCheckBox(this->grpLabel, CSTR("Rotate"), false);
 	this->chkRotate->SetRect(4, 28, 104, 24, false);
-	NEW_CLASS(this->chkAlign, UI::GUICheckBox(ui, this->grpLabel, CSTR("Align"), false));
+	this->chkAlign = ui->NewCheckBox(this->grpLabel, CSTR("Align"), false);
 	this->chkAlign->SetRect(4, 52, 104, 24, false);
-	NEW_CLASS(this->chkTrim, UI::GUICheckBox(ui, this->grpLabel, CSTR("Trim"), false));
+	this->chkTrim = ui->NewCheckBox(this->grpLabel, CSTR("Trim"), false);
 	this->chkTrim->SetRect(4, 76, 104, 24, false);
-	NEW_CLASS(this->chkCapital, UI::GUICheckBox(ui, this->grpLabel, CSTR("Capital"), false));
+	this->chkCapital = ui->NewCheckBox(this->grpLabel, CSTR("Capital"), false);
 	this->chkCapital->SetRect(4, 100, 104, 24, false);
 	this->btnOK = ui->NewButton(*this, CSTR("OK"));
 	this->btnOK->SetRect(336, 244, 75, 23, false);

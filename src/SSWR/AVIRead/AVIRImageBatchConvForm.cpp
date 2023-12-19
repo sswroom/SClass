@@ -308,7 +308,7 @@ SSWR::AVIRead::AVIRImageBatchConvForm::AVIRImageBatchConvForm(UI::GUIClientContr
 	this->lblQuality->SetRect(0, 72, 100, 23, false);
 	this->txtQuality = ui->NewTextBox(*this, CSTR("100"));
 	this->txtQuality->SetRect(100, 72, 100, 23, false);
-	NEW_CLASS(this->chkSubdir, UI::GUICheckBox(ui, *this, CSTR("OutSubdir"), true));
+	this->chkSubdir = ui->NewCheckBox(*this, CSTR("OutSubdir"), true);
 	this->chkSubdir->SetRect(0, 96, 100, 23, false);
 	this->txtSubdir = ui->NewTextBox(*this, CSTR("JPEG"));
 	this->txtSubdir->SetRect(100, 96, 100, 23, false);

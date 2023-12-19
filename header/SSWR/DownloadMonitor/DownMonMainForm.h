@@ -27,7 +27,7 @@ namespace SSWR
 			NotNullPtr<UI::GUIPanel> pnlButtons;
 			NotNullPtr<UI::GUILabel> lblStatus;
 			NotNullPtr<UI::GUITextBox> txtStatus;
-			UI::GUICheckBox *chkAutoStart;
+			NotNullPtr<UI::GUICheckBox> chkAutoStart;
 			NotNullPtr<UI::GUIButton> btnPasteTable;
 			NotNullPtr<UI::GUIButton> btnPasteHTML;
 			NotNullPtr<UI::GUIButton> btnCopyTable;

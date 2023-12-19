@@ -33,8 +33,6 @@ UI/FolderDialog.h:
 @FolderDialogGTK.o
 UI/FontDialog.h:
 @FontDialogGTK.o
-UI/GUICheckBox.h:
-@GUICheckBoxGTK.o
 UI/GUIClientControl.h:
 @GUIClientControlGTK.o
 UI/GUIControl.h:

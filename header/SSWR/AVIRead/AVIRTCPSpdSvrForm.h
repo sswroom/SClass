@@ -24,8 +24,8 @@ namespace SSWR
 
 			NotNullPtr<UI::GUILabel> lblPort;
 			NotNullPtr<UI::GUITextBox> txtPort;
-			UI::GUICheckBox *chkMultiThread;
-			UI::GUICheckBox *chkEcho;
+			NotNullPtr<UI::GUICheckBox> chkMultiThread;
+			NotNullPtr<UI::GUICheckBox> chkEcho;
 			NotNullPtr<UI::GUIButton> btnStart;
 
 			static void __stdcall OnStartClick(void *userObj);

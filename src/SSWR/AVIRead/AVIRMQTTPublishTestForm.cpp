@@ -394,9 +394,9 @@ SSWR::AVIRead::AVIRMQTTPublishTestForm::AVIRMQTTPublishTestForm(UI::GUIClientCon
 	this->lblPassword->SetRect(254, 28, 100, 23, false);
 	this->txtPassword = ui->NewTextBox(*this, CSTR(""));
 	this->txtPassword->SetRect(354, 28, 100, 23, false);
-	NEW_CLASS(this->chkSSL, UI::GUICheckBox(ui, *this, CSTR("Use SSL"), false));
+	this->chkSSL = ui->NewCheckBox(*this, CSTR("Use SSL"), false);
 	this->chkSSL->SetRect(504, 4, 100, 23, false);
-	NEW_CLASS(this->chkWebSocket, UI::GUICheckBox(ui, *this, CSTR("WebSocket"), false));
+	this->chkWebSocket = ui->NewCheckBox(*this, CSTR("WebSocket"), false);
 	this->chkWebSocket->SetRect(504, 28, 100, 23, false);
 	this->btnCliCert = ui->NewButton(*this, CSTR("Client Cert"));
 	this->btnCliCert->SetRect(604, 4, 75, 23, false);

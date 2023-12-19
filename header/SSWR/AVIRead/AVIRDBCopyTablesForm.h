@@ -42,8 +42,8 @@ namespace SSWR
 			NotNullPtr<UI::GUIComboBox> cboDestSchema;
 			NotNullPtr<UI::GUILabel> lblDestOptions;
 			NotNullPtr<UI::GUIComboBox> cboDestTableType;
-			UI::GUICheckBox *chkDestCopyData;
-			UI::GUICheckBox *chkDestCreateDDB;
+			NotNullPtr<UI::GUICheckBox> chkDestCopyData;
+			NotNullPtr<UI::GUICheckBox> chkDestCreateDDB;
 			NotNullPtr<UI::GUIButton> btnCopy;
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;

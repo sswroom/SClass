@@ -238,7 +238,7 @@ SSWR::AVIRead::AVIRUDPTestForm::AVIRUDPTestForm(UI::GUIClientControl *parent, No
 	this->btnStart = ui->NewButton(this->grpServer, CSTR("Start"));
 	this->btnStart->SetRect(54, 28, 75, 23, false);
 	this->btnStart->HandleButtonClick(OnStartClicked, this);
-	NEW_CLASS(this->chkAutoReply, UI::GUICheckBox(ui, this->grpServer, CSTR("Auto Reply"), false));
+	this->chkAutoReply = ui->NewCheckBox(this->grpServer, CSTR("Auto Reply"), false);
 	this->chkAutoReply->SetRect(54, 52, 100, 23, false);
 	this->chkAutoReply->HandleCheckedChange(OnAutoReplyChanged, this);
 	this->grpDest = ui->NewGroupBox(*this, CSTR("Dest"));

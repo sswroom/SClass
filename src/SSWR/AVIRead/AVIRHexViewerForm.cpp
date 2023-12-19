@@ -435,7 +435,7 @@ SSWR::AVIRead::AVIRHexViewerForm::AVIRHexViewerForm(UI::GUIClientControl *parent
 	this->btnNextUnk = ui->NewButton(this->tpValues, CSTR("Next Unknown"));
 	this->btnNextUnk->SetRect(84, 124, 75, 23, false);
 	this->btnNextUnk->HandleButtonClick(OnNextUnkClicked, this);
-	NEW_CLASS(this->chkDynamicSize, UI::GUICheckBox(ui, this->tpValues, CSTR("Dynamic Size"), false));
+	this->chkDynamicSize = ui->NewCheckBox(this->tpValues, CSTR("Dynamic Size"), false);
 	this->chkDynamicSize->SetRect(164, 124, 100, 23, false);
 	this->btnOpenFile = ui->NewButton(this->tpValues, CSTR("Open"));
 	this->btnOpenFile->SetRect(604, 124, 75, 23, false);

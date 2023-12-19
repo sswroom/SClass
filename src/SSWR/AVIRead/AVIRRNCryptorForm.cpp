@@ -144,7 +144,7 @@ SSWR::AVIRead::AVIRRNCryptorForm::AVIRRNCryptorForm(UI::GUIClientControl *parent
 	this->txtPassword->SetRect(104, 52, 200, 23, false);
 	this->lblOptions = ui->NewLabel(*this, CSTR("Options"));
 	this->lblOptions->SetRect(4, 76, 100, 23, false);
-	NEW_CLASS(this->chkBase64, UI::GUICheckBox(ui, *this, CSTR("With Base64"), false));
+	this->chkBase64 = ui->NewCheckBox(*this, CSTR("With Base64"), false);
 	this->chkBase64->SetRect(104, 76, 200, 23, false);
 	this->btnProcess = ui->NewButton(*this, CSTR("Process"));
 	this->btnProcess->SetRect(104, 100, 75, 23, false);

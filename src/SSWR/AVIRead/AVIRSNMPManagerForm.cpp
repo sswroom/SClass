@@ -292,7 +292,7 @@ SSWR::AVIRead::AVIRSNMPManagerForm::AVIRSNMPManagerForm(UI::GUIClientControl *pa
 	this->lblAgentAddr->SetRect(4, 4, 100, 23, false);
 	this->txtAgentAddr = ui->NewTextBox(this->pnlControl, CSTR(""));
 	this->txtAgentAddr->SetRect(104, 4, 200, 23, false);
-	NEW_CLASS(this->chkAgentScan, UI::GUICheckBox(ui, this->pnlControl, CSTR("Scan IP"), false));
+	this->chkAgentScan = ui->NewCheckBox(this->pnlControl, CSTR("Scan IP"), false);
 	this->chkAgentScan->SetRect(304, 4, 100, 23, false);
 	this->lblCommunity = ui->NewLabel(this->pnlControl, CSTR("Community"));
 	this->lblCommunity->SetRect(4, 28, 100, 23, false);
@@ -301,7 +301,7 @@ SSWR::AVIRead::AVIRSNMPManagerForm::AVIRSNMPManagerForm(UI::GUIClientControl *pa
 	this->btnAgentAdd = ui->NewButton(this->pnlControl, CSTR("Add"));
 	this->btnAgentAdd->SetRect(104, 52, 75, 23, false);
 	this->btnAgentAdd->HandleButtonClick(OnAgentAddClicked, this);
-	NEW_CLASS(this->chkSendToSvr, UI::GUICheckBox(ui, this->pnlControl, CSTR("Send to Server"), false));
+	this->chkSendToSvr = ui->NewCheckBox(this->pnlControl, CSTR("Send to Server"), false);
 	this->chkSendToSvr->SetRect(104, 76, 150, 23, false);
 	NEW_CLASS(this->lbAgent, UI::GUIListBox(ui, *this, false));
 	this->lbAgent->SetRect(0, 0, 150, 23, false);

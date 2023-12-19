@@ -19,7 +19,7 @@ namespace SSWR
 		{
 		private:
 			IO::ProgramLinkManager *progMgr;
-			UI::GUICheckBox *chkThisUser;
+			NotNullPtr<UI::GUICheckBox> chkThisUser;
 			NotNullPtr<UI::GUILabel> lblShortName;
 			NotNullPtr<UI::GUITextBox> txtShortName;
 			NotNullPtr<UI::GUILabel> lblName;

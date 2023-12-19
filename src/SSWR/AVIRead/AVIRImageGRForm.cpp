@@ -268,7 +268,7 @@ SSWR::AVIRead::AVIRImageGRForm::AVIRImageGRForm(UI::GUIClientControl *parent, No
 	this->cboType->AddItem(CSTR("V GR"), 0);
 	this->cboType->AddItem(CSTR("HV GR"), 0);
 	this->cboType->HandleSelectionChange(OnTypeChanged, this);
-	NEW_CLASS(this->chkEnable, UI::GUICheckBox(ui, this->pnlSetting, CSTR("Enabled"), true));
+	this->chkEnable = ui->NewCheckBox(this->pnlSetting, CSTR("Enabled"), true);
 	this->chkEnable->SetRect(104, 124, 200, 23, false);
 	this->chkEnable->HandleCheckedChange(OnEnableChanged, this);
 

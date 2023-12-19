@@ -105,7 +105,7 @@ SSWR::AVIRead::AVIRDBExportForm::AVIRDBExportForm(UI::GUIClientControl *parent, 
 	this->cboDBType->AddItem(CSTR("SQL Server"), (void*)DB::SQLType::MSSQL);
 	this->cboDBType->AddItem(CSTR("PostgreSQL"), (void*)DB::SQLType::PostgreSQL);
 	this->cboDBType->SetSelectedIndex(0);
-	NEW_CLASS(this->chkAxisAware, UI::GUICheckBox(ui, this->pnlMain, CSTR("Axis-Aware (MySQL >=8)"), false));
+	this->chkAxisAware = ui->NewCheckBox(this->pnlMain, CSTR("Axis-Aware (MySQL >=8)"), false);
 	this->chkAxisAware->SetRect(200, 0, 150, 23, false);
 	this->lblSchema = ui->NewLabel(this->pnlMain, CSTR("Schema"));
 	this->lblSchema->SetRect(0, 24, 100, 23, false);

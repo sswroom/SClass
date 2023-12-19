@@ -22,7 +22,7 @@ namespace SSWR
 			UI::GUIListView *lvTables;
 			NotNullPtr<UI::GUILabel> lblDBType;
 			NotNullPtr<UI::GUIComboBox> cboDBType;
-			UI::GUICheckBox *chkAxisAware;
+			NotNullPtr<UI::GUICheckBox> chkAxisAware;
 			NotNullPtr<UI::GUILabel> lblSchema;
 			NotNullPtr<UI::GUITextBox> txtSchema;
 			NotNullPtr<UI::GUILabel> lblTable;

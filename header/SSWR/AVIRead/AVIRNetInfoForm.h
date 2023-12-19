@@ -167,7 +167,7 @@ namespace SSWR
 
 			NotNullPtr<UI::GUIPanel> pnlPortInfo;
 			NotNullPtr<UI::GUIButton> btnPortRefresh;
-			UI::GUICheckBox *chkPortAuto;
+			NotNullPtr<UI::GUICheckBox> chkPortAuto;
 			UI::GUIListView *lvPortInfo;
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;

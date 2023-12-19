@@ -74,7 +74,7 @@ SSWR::AVIRead::AVIRDHT22Form::AVIRDHT22Form(UI::GUIClientControl *parent, NotNul
 	this->btnRead = ui->NewButton(*this, CSTR("Read"));
 	this->btnRead->SetRect(104, 76, 75, 23, false);
 	this->btnRead->HandleButtonClick(OnReadClicked, this);
-	NEW_CLASS(this->chkAutoRead, UI::GUICheckBox(ui, *this, CSTR("Auto Read"), false));
+	this->chkAutoRead = ui->NewCheckBox(*this, CSTR("Auto Read"), false);
 	this->chkAutoRead->SetRect(184, 76, 100, 23, false);
 	this->lblStatus = ui->NewLabel(*this, CSTR("Abs Humidity"));
 	this->lblStatus->SetRect(4, 100, 100, 23, false);

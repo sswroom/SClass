@@ -3,6 +3,7 @@
 #include "Media/GTKDrawEngine.h"
 #include "UI/GUICore.h"
 #include "UI/GTK/GTKButton.h"
+#include "UI/GTK/GTKCheckBox.h"
 #include "UI/GTK/GTKCheckedListBox.h"
 #include "UI/GTK/GTKComboBox.h"
 #include "UI/GTK/GTKCore.h"
@@ -202,6 +203,13 @@ NotNullPtr<UI::GUIButton> UI::GTK::GTKCore::NewButton(NotNullPtr<GUIClientContro
 {
 	NotNullPtr<UI::GTK::GTKButton> ctrl;
 	NEW_CLASSNN(ctrl, UI::GTK::GTKButton(*this, parent, text));
+	return ctrl;
+}
+
+NotNullPtr<UI::GUICheckBox> UI::GTK::GTKCore::NewCheckBox(NotNullPtr<GUIClientControl> parent, Text::CStringNN text, Bool checked)
+{
+	NotNullPtr<UI::GTK::GTKCheckBox> ctrl;
+	NEW_CLASSNN(ctrl, UI::GTK::GTKCheckBox(*this, parent, text, checked));
 	return ctrl;
 }
 

@@ -1972,7 +1972,7 @@ SSWR::AVIRead::AVIRDBCheckChgForm::AVIRDBCheckChgForm(UI::GUIClientControl *pare
 	this->txtSrcFilter->SetRect(100, 48, 200, 23, false);
 	this->grpData = ui->NewGroupBox(*this, CSTR("Data Source"));
 	this->grpData->SetRect(0, 72, 800, 216, false);
-	NEW_CLASSNN(this->chkNoHeader, UI::GUICheckBox(ui, this->grpData, CSTR("CSV No Header"), false));
+	this->chkNoHeader = ui->NewCheckBox(this->grpData, CSTR("CSV No Header"), false);
 	this->chkNoHeader->SetRect(100, 0, 200, 23, false);
 	this->lblDataFile = ui->NewLabel(this->grpData, CSTR("Data File"));
 	this->lblDataFile->SetRect(0, 24, 100, 23, false);
@@ -2049,9 +2049,9 @@ SSWR::AVIRead::AVIRDBCheckChgForm::AVIRDBCheckChgForm(UI::GUIClientControl *pare
 		this->cboDBType->SetSelectedIndex(2);
 	else
 		this->cboDBType->SetSelectedIndex(0);
-	NEW_CLASSNN(this->chkAxisAware, UI::GUICheckBox(ui, *this, CSTR("Axis-Aware (MySQL >=8)"), false));
+	this->chkAxisAware = ui->NewCheckBox(*this, CSTR("Axis-Aware (MySQL >=8)"), false);
 	this->chkAxisAware->SetRect(300, 432, 150, 23, false);
-	NEW_CLASSNN(this->chkMultiRow, UI::GUICheckBox(ui, *this, CSTR("Multi-Row Insert"), true));
+	this->chkMultiRow = ui->NewCheckBox(*this, CSTR("Multi-Row Insert"), true);
 	this->chkMultiRow->SetRect(100, 456, 150, 23, false);
 	this->btnSQL = ui->NewButton(*this, CSTR("Generate SQL"));
 	this->btnSQL->SetRect(100, 480, 75, 23, false);

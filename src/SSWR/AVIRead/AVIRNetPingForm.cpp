@@ -114,7 +114,7 @@ SSWR::AVIRead::AVIRNetPingForm::AVIRNetPingForm(UI::GUIClientControl *parent, No
 	this->txtTarget->SetRect(104, 4, 150, 23, false);
 	this->lblRepeat = ui->NewLabel(this->pnlRequest, CSTR("Repeat"));
 	this->lblRepeat->SetRect(4, 28, 100, 23, false);
-	NEW_CLASS(this->chkRepeat, UI::GUICheckBox(ui, this->pnlRequest, CSTR(""), false));
+	this->chkRepeat = ui->NewCheckBox(this->pnlRequest, CSTR(""), false);
 	this->chkRepeat->SetRect(104, 28, 100, 23, false);
 	this->btnPing = ui->NewButton(this->pnlRequest, CSTR("&Ping"));
 	this->btnPing->SetRect(104, 52, 75, 23, false);

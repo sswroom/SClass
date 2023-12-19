@@ -329,7 +329,7 @@ SSWR::AVIRead::AVIRHTTPLoadBalanceForm::AVIRHTTPLoadBalanceForm(UI::GUIClientCon
 	this->txtLogDir->SetRect(108, 32, 500, 23, false);
 	this->lblSSL = ui->NewLabel(this->grpParam, CSTR("SSL"));
 	this->lblSSL->SetRect(8, 56, 100, 23, false);
-	NEW_CLASS(this->chkSSL, UI::GUICheckBox(ui, this->grpParam, CSTR("Enable"), false));
+	this->chkSSL = ui->NewCheckBox(this->grpParam, CSTR("Enable"), false);
 	this->chkSSL->SetRect(108, 56, 100, 23, false);
 	this->btnSSLCert = ui->NewButton(this->grpParam, CSTR("Cert/Key"));
 	this->btnSSLCert->SetRect(208, 56, 75,23, false);
@@ -338,15 +338,15 @@ SSWR::AVIRead::AVIRHTTPLoadBalanceForm::AVIRHTTPLoadBalanceForm(UI::GUIClientCon
 	this->lblSSLCert->SetRect(288, 56, 200, 23, false);
 	this->lblAllowProxy = ui->NewLabel(this->grpParam, CSTR("Proxy Connection"));
 	this->lblAllowProxy->SetRect(8, 80, 100, 23, false);
-	NEW_CLASS(this->chkAllowProxy, UI::GUICheckBox(ui, this->grpParam, CSTR("Allow"), false));
+	this->chkAllowProxy = ui->NewCheckBox(this->grpParam, CSTR("Allow"), false);
 	this->chkAllowProxy->SetRect(108, 80, 100, 23, false);
 	this->lblSkipLog = ui->NewLabel(this->grpParam, CSTR("Skip Logging"));
 	this->lblSkipLog->SetRect(8, 104, 100, 23, false);
-	NEW_CLASS(this->chkSkipLog, UI::GUICheckBox(ui, this->grpParam, CSTR("Enable"), true));
+	this->chkSkipLog = ui->NewCheckBox(this->grpParam, CSTR("Enable"), true);
 	this->chkSkipLog->SetRect(108, 104, 100, 23, false);
 	this->lblAllowKA = ui->NewLabel(this->grpParam, CSTR("Allow KA"));
 	this->lblAllowKA->SetRect(8, 128, 100, 23, false);
-	NEW_CLASS(this->chkAllowKA, UI::GUICheckBox(ui, this->grpParam, CSTR("Enable"), false));
+	this->chkAllowKA = ui->NewCheckBox(this->grpParam, CSTR("Enable"), false);
 	this->chkAllowKA->SetRect(108, 128, 100, 23, false);
 	this->lblFwdURL = ui->NewLabel(this->grpParam, CSTR("Forward URL"));
 	this->lblFwdURL->SetRect(8, 152, 100, 23, false);

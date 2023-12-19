@@ -5,6 +5,7 @@
 #include "Media/DrawEngineFactory.h"
 #include "UI/GUICore.h"
 #include "UI/Java/JavaButton.h"
+#include "UI/Java/JavaCheckBox.h"
 #include "UI/Java/JavaCheckedListBox.h"
 #include "UI/Java/JavaComboBox.h"
 #include "UI/Java/JavaCore.h"
@@ -207,6 +208,13 @@ NotNullPtr<UI::GUIButton> UI::Java::JavaCore::NewButton(NotNullPtr<GUIClientCont
 {
 	NotNullPtr<UI::Java::JavaButton> ctrl;
 	NEW_CLASSNN(ctrl, UI::Java::JavaButton(*this, parent, text));
+	return ctrl;
+}
+
+NotNullPtr<UI::GUICheckBox> UI::Java::JavaCore::NewCheckBox(NotNullPtr<GUIClientControl> parent, Text::CStringNN text, Bool checked)
+{
+	NotNullPtr<UI::Java::JavaCheckBox> ctrl;
+	NEW_CLASSNN(ctrl, UI::Java::JavaCheckBox(*this, parent, text, checked));
 	return ctrl;
 }
 

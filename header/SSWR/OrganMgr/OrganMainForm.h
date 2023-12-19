@@ -62,7 +62,7 @@ namespace SSWR
 			NotNullPtr<UI::GUIComboBox> cboGroupType;
 			NotNullPtr<UI::GUITextBox> txtGroupEName;
 			NotNullPtr<UI::GUITextBox> txtGroupCName;
-			UI::GUICheckBox *chkGroupAdmin;
+			NotNullPtr<UI::GUICheckBox> chkGroupAdmin;
 			NotNullPtr<UI::GUITextBox> txtGroupDesc;
 			NotNullPtr<UI::GUITextBox> txtGroupKey;
 			NotNullPtr<UI::GUIButton> btnGroupRemove;

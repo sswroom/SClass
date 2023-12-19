@@ -257,7 +257,7 @@ SSWR::AVIRead::AVIRMQTTBrokerForm::AVIRMQTTBrokerForm(UI::GUIClientControl *pare
 	this->tpStatus = this->tcMain->AddTabPage(CSTR("Status"));
 	this->lblSSL = ui->NewLabel(this->tpStatus, CSTR("SSL"));
 	this->lblSSL->SetRect(4, 4, 100, 23, false);
-	NEW_CLASS(this->chkSSL, UI::GUICheckBox(ui, this->tpStatus, CSTR("Enable"), false));
+	this->chkSSL = ui->NewCheckBox(this->tpStatus, CSTR("Enable"), false);
 	this->chkSSL->SetRect(104, 4, 100, 23, false);
 	this->btnSSLCert = ui->NewButton(this->tpStatus, CSTR("Cert/Key"));
 	this->btnSSLCert->SetRect(204, 4, 75, 23, false);

@@ -1033,7 +1033,7 @@ SSWR::AVIRead::AVIRNetInfoForm::AVIRNetInfoForm(UI::GUIClientControl *parent, No
 	this->btnPortRefresh = ui->NewButton(this->pnlPortInfo, CSTR("&Refresh"));
 	this->btnPortRefresh->SetRect(8, 8, 75, 23, false);
 	this->btnPortRefresh->HandleButtonClick(OnPortClicked, this);
-	NEW_CLASS(this->chkPortAuto, UI::GUICheckBox(ui, this->pnlPortInfo, CSTR("Auto Refresh"), false));
+	this->chkPortAuto = ui->NewCheckBox(this->pnlPortInfo, CSTR("Auto Refresh"), false);
 	this->chkPortAuto->SetRect(100, 8, 100, 23, false);
 	NEW_CLASS(this->lvPortInfo, UI::GUIListView(ui, this->tpPortInfo, UI::GUIListView::LVSTYLE_TABLE, 6));
 	this->lvPortInfo->SetDockType(UI::GUIControl::DOCK_FILL);

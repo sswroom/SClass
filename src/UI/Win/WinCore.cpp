@@ -4,6 +4,7 @@
 #include "IO/Library.h"
 #include "Media/GDIEngine.h"
 #include "UI/Win/WinButton.h"
+#include "UI/Win/WinCheckBox.h"
 #include "UI/Win/WinCheckedListBox.h"
 #include "UI/Win/WinComboBox.h"
 #include "UI/Win/WinCore.h"
@@ -252,6 +253,13 @@ NotNullPtr<UI::GUIButton> UI::Win::WinCore::NewButton(NotNullPtr<GUIClientContro
 {
 	NotNullPtr<UI::Win::WinButton> ctrl;
 	NEW_CLASSNN(ctrl, UI::Win::WinButton(*this, parent, text));
+	return ctrl;
+}
+
+NotNullPtr<UI::GUICheckBox> UI::Win::WinCore::NewCheckBox(NotNullPtr<GUIClientControl> parent, Text::CStringNN text, Bool checked)
+{
+	NotNullPtr<UI::Win::WinCheckBox> ctrl;
+	NEW_CLASSNN(ctrl, UI::Win::WinCheckBox(*this, parent, text, checked));
 	return ctrl;
 }
 

@@ -36,7 +36,7 @@ namespace SSWR
 			NotNullPtr<UI::GUIPanel> pnlControl;
 			NotNullPtr<UI::GUILabel> lblPort;
 			NotNullPtr<UI::GUITextBox> txtPort;
-			UI::GUICheckBox *chkReuseAddr;
+			NotNullPtr<UI::GUICheckBox> chkReuseAddr;
 			NotNullPtr<UI::GUIButton> btnStart;
 			UI::GUITabControl *tcMain;
 

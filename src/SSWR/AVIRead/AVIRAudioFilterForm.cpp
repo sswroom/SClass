@@ -1168,7 +1168,7 @@ SSWR::AVIRead::AVIRAudioFilterForm::AVIRAudioFilterForm(UI::GUIClientControl *pa
 	this->btnDTMFTones->HandleButtonClick(OnDTMFTonesClicked, this);
 
 	this->tpVolBoost = this->tcFilter->AddTabPage(CSTR("VolBoost"));
-	NEW_CLASS(this->chkVolBoost, UI::GUICheckBox(ui, this->tpVolBoost, CSTR("Enabled"), false));
+	this->chkVolBoost = ui->NewCheckBox(this->tpVolBoost, CSTR("Enabled"), false);
 	this->chkVolBoost->SetRect(4, 4, 100, 23, false);
 	this->chkVolBoost->HandleCheckedChange(OnVolBoostChg, this);
 	this->lblVolBoostBG = ui->NewLabel(this->tpVolBoost, CSTR("BG Volume"));

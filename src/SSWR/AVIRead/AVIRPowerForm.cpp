@@ -66,9 +66,9 @@ SSWR::AVIRead::AVIRPowerForm::AVIRPowerForm(UI::GUIClientControl *parent, NotNul
 	this->txtTimeLeft = ui->NewTextBox(*this, CSTR(""));
 	this->txtTimeLeft->SetRect(104, 28, 200, 23, false);
 	this->txtTimeLeft->SetReadOnly(true);
-	NEW_CLASS(this->chkNoSleep, UI::GUICheckBox(ui, *this, CSTR("No Sleep"), false));
+	this->chkNoSleep = ui->NewCheckBox(*this, CSTR("No Sleep"), false);
 	this->chkNoSleep->SetRect(104, 52, 200, 23, false);
-	NEW_CLASS(this->chkNoDispOff, UI::GUICheckBox(ui, *this, CSTR("No Disp Off"), false));
+	this->chkNoDispOff = ui->NewCheckBox(*this, CSTR("No Disp Off"), false);
 	this->chkNoDispOff->SetRect(104, 76, 200, 23, false);
 	this->btnSleep = ui->NewButton(*this, CSTR("Sleep"));
 	this->btnSleep->SetRect(104, 100, 75, 23, false);

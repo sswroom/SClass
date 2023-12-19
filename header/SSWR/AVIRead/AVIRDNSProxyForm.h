@@ -128,7 +128,7 @@ namespace SSWR
 			NotNullPtr<UI::GUILabel> lblDNSPort;
 			NotNullPtr<UI::GUITextBox> txtDNSPort;
 			NotNullPtr<UI::GUILabel> lblDisableV6;
-			UI::GUICheckBox *chkDisableV6;
+			NotNullPtr<UI::GUICheckBox> chkDisableV6;
 			NotNullPtr<UI::GUILabel> lblDNSServer;
 			NotNullPtr<UI::GUITextBox> txtDNSServer;
 			NotNullPtr<UI::GUIButton> btnDNSSwitch;

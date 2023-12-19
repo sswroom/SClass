@@ -38,8 +38,8 @@ namespace SSWR
 			NotNullPtr<UI::GUITextBox> txtUsername;
 			NotNullPtr<UI::GUILabel> lblPassword;
 			NotNullPtr<UI::GUITextBox> txtPassword;
-			UI::GUICheckBox *chkSSL;
-			UI::GUICheckBox *chkWebSocket;
+			NotNullPtr<UI::GUICheckBox> chkSSL;
+			NotNullPtr<UI::GUICheckBox> chkWebSocket;
 			NotNullPtr<UI::GUIButton> btnCliCert;
 			NotNullPtr<UI::GUILabel> lblCliCert;
 			NotNullPtr<UI::GUIButton> btnCliKey;

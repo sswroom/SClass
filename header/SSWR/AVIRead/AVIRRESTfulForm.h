@@ -43,11 +43,11 @@ namespace SSWR
 			NotNullPtr<UI::GUILabel> lblLogDir;
 			NotNullPtr<UI::GUITextBox> txtLogDir;
 			NotNullPtr<UI::GUILabel> lblAllowProxy;
-			UI::GUICheckBox *chkAllowProxy;
+			NotNullPtr<UI::GUICheckBox> chkAllowProxy;
 			NotNullPtr<UI::GUILabel> lblSkipLog;
-			UI::GUICheckBox *chkSkipLog;
+			NotNullPtr<UI::GUICheckBox> chkSkipLog;
 			NotNullPtr<UI::GUILabel> lblAllowKA;
-			UI::GUICheckBox *chkAllowKA;
+			NotNullPtr<UI::GUICheckBox> chkAllowKA;
 			NotNullPtr<UI::GUILabel> lblDatabase;
 			NotNullPtr<UI::GUITextBox> txtDatabase;
 			NotNullPtr<UI::GUIButton> btnDatabaseMySQL;

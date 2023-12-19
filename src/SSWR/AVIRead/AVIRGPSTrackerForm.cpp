@@ -383,12 +383,12 @@ SSWR::AVIRead::AVIRGPSTrackerForm::AVIRGPSTrackerForm(UI::GUIClientControl *pare
 	this->txtNSateViewBD = ui->NewTextBox(this->tpLocation, CSTR(""));
 	this->txtNSateViewBD->SetRect(108, 392, 100, 23, false);
 	this->txtNSateViewBD->SetReadOnly(true);
-	NEW_CLASS(this->chkAutoPan, UI::GUICheckBox(ui, this->tpLocation, CSTR("Auto Pan"), true));
+	this->chkAutoPan = ui->NewCheckBox(this->tpLocation, CSTR("Auto Pan"), true);
 	this->chkAutoPan->SetRect(108, 416, 100, 23, false);
-	NEW_CLASS(this->chkTopMost, UI::GUICheckBox(ui, this->tpLocation, CSTR("Top Most"), false));
+	this->chkTopMost = ui->NewCheckBox(this->tpLocation, CSTR("Top Most"), false);
 	this->chkTopMost->SetRect(208, 416, 100, 23, false);
 	this->chkTopMost->HandleCheckedChange(OnTopMostChg, this);
-	NEW_CLASS(this->chkNoSleep, UI::GUICheckBox(ui, this->tpLocation, CSTR("Prevent Sleep"), true));
+	this->chkNoSleep = ui->NewCheckBox(this->tpLocation, CSTR("Prevent Sleep"), true);
 	this->chkNoSleep->SetRect(108, 440, 100, 23, false);
 	this->btnDispOff = NewDisplayOffButton(ui, this->tpLocation, CSTR("Display Off"));
 	this->btnDispOff->SetRect(208, 440, 100, 23, false);

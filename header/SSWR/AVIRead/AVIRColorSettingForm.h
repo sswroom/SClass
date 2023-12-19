@@ -53,7 +53,7 @@ namespace SSWR
 			NotNullPtr<UI::GUIComboBox> cboDefVProfile;
 			NotNullPtr<UI::GUILabel> lblDefPProfile;
 			NotNullPtr<UI::GUIComboBox> cboDefPProfile;
-			UI::GUICheckBox *chk10Bit;
+			NotNullPtr<UI::GUICheckBox> chk10Bit;
 			NotNullPtr<UI::GUILabel> lblLuminance;
 			NotNullPtr<UI::GUITextBox> txtLuminance;
 			NotNullPtr<UI::GUILabel> lblLuminanceUnit;

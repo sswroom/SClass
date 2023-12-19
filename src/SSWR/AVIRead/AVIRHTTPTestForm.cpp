@@ -383,9 +383,9 @@ SSWR::AVIRead::AVIRHTTPTestForm::AVIRHTTPTestForm(UI::GUIClientControl *parent, 
 	this->lblPostSize->SetRect(204, 52, 100, 23, false);
 	this->txtPostSize = ui->NewTextBox(this->pnlRequest, CSTR("1048576"));
 	this->txtPostSize->SetRect(304, 52, 100, 23, false);
-	NEW_CLASS(this->chkKAConn, UI::GUICheckBox(ui, this->pnlRequest, CSTR("KA Conn"), false));
+	this->chkKAConn = ui->NewCheckBox(this->pnlRequest, CSTR("KA Conn"), false);
 	this->chkKAConn->SetRect(104, 76, 100, 23, false);
-	NEW_CLASS(this->chkGZip, UI::GUICheckBox(ui, this->pnlRequest, CSTR("GZip"), true));
+	this->chkGZip = ui->NewCheckBox(this->pnlRequest, CSTR("GZip"), true);
 	this->chkGZip->SetRect(204, 76, 100, 23, false);
 	this->btnStart = ui->NewButton(this->pnlRequest, CSTR("Start"));
 	this->btnStart->SetRect(104, 100, 75, 23, false);

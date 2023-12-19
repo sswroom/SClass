@@ -58,7 +58,7 @@ namespace SSWR
 			NotNullPtr<UI::GUIButton> btnStart;
 
 			NotNullPtr<UI::GUITabPage> tpVolBoost;
-			UI::GUICheckBox *chkVolBoost;
+			NotNullPtr<UI::GUICheckBox> chkVolBoost;
 			NotNullPtr<UI::GUILabel> lblVolBoostBG;
 			UI::GUITrackBar *tbVolBoostBG;
 			NotNullPtr<UI::GUILabel> lblVolBoostBGVol;

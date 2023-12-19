@@ -39,7 +39,7 @@ namespace SSWR
 			NotNullPtr<UI::GUIComboBox> cboTVType;
 			NotNullPtr<UI::GUILabel> lblPort;
 			NotNullPtr<UI::GUIComboBox> cboPort;
-			UI::GUICheckBox *chkLogFile;
+			NotNullPtr<UI::GUICheckBox> chkLogFile;
 			NotNullPtr<UI::GUIButton> btnStart;
 			UI::GUITabControl *tcMain;
 			NotNullPtr<UI::GUITabPage> tpControl;

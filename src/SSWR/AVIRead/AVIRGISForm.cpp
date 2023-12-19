@@ -680,7 +680,7 @@ SSWR::AVIRead::AVIRGISForm::AVIRGISForm(UI::GUIClientControl *parent, NotNullPtr
 	NEW_CLASS(this->tbTimeRange, UI::GUITrackBar(ui, this->pnlControl, 0, 0, 0));
 	this->tbTimeRange->SetRect(150, 0, 100, 24, false);
 	this->tbTimeRange->HandleScrolled(OnTimeScrolled, this);
-	NEW_CLASS(this->chkTime, UI::GUICheckBox(ui, this->pnlControl, CSTR("Unavailable"), false));
+	this->chkTime = ui->NewCheckBox(this->pnlControl, CSTR("Unavailable"), false);
 	this->chkTime->SetEnabled(false);
 	this->chkTime->SetRect(0, 0, 150, 24, false);
 	this->chkTime->HandleCheckedChange(OnTimeChecked, this);

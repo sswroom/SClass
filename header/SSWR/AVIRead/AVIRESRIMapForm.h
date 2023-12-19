@@ -34,7 +34,7 @@ namespace SSWR
 			UI::GUIRadioButton *radOther;
 			NotNullPtr<UI::GUIComboBox> cboPredefine;
 			NotNullPtr<UI::GUITextBox> txtOther;
-			UI::GUICheckBox *chkNoResource;
+			NotNullPtr<UI::GUICheckBox> chkNoResource;
 			NotNullPtr<UI::GUILabel> lblSRID;
 			NotNullPtr<UI::GUITextBox> txtSRID;
 			NotNullPtr<UI::GUIButton> btnOK;

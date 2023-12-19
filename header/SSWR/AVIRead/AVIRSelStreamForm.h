@@ -59,7 +59,7 @@ namespace SSWR
 			NotNullPtr<UI::GUITabPage> tpTCPSvr;
 			NotNullPtr<UI::GUILabel> lblTCPSvrPort;
 			NotNullPtr<UI::GUITextBox> txtTCPSvrPort;
-			UI::GUICheckBox *chkBoardcast;
+			NotNullPtr<UI::GUICheckBox> chkBoardcast;
 
 			NotNullPtr<UI::GUITabPage> tpTCPCli;
 			NotNullPtr<UI::GUILabel> lblTCPCliHost;

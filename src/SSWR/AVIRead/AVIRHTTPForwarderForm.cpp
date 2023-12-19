@@ -167,13 +167,13 @@ SSWR::AVIRead::AVIRHTTPForwarderForm::AVIRHTTPForwarderForm(UI::GUIClientControl
 	this->txtFwdURL->SetRect(104, 28, 500, 23, false);
 	this->lblLog = ui->NewLabel(*this, CSTR("Log"));
 	this->lblLog->SetRect(4, 52, 100, 23, false);
-	NEW_CLASS(this->chkLog, UI::GUICheckBox(ui, *this, CSTR("Enable"), false));
+	this->chkLog = ui->NewCheckBox(*this, CSTR("Enable"), false);
 	this->chkLog->SetRect(104, 52, 100, 23, false);
-	NEW_CLASS(this->chkLogContent, UI::GUICheckBox(ui, *this, CSTR("Log Content"), false));
+	this->chkLogContent = ui->NewCheckBox(*this, CSTR("Log Content"), false);
 	this->chkLogContent->SetRect(204, 52, 100, 23, false);
 	this->lblSSL = ui->NewLabel(*this, CSTR("SSL"));
 	this->lblSSL->SetRect(4, 76, 100, 23, false);
-	NEW_CLASS(this->chkSSL, UI::GUICheckBox(ui, *this, CSTR("Enable"), false));
+	this->chkSSL = ui->NewCheckBox(*this, CSTR("Enable"), false);
 	this->chkSSL->SetRect(104, 76, 100, 23, false);
 	this->btnSSLCert = ui->NewButton(*this, CSTR("Cert/Key"));
 	this->btnSSLCert->SetRect(204, 76, 75,23, false);
@@ -182,7 +182,7 @@ SSWR::AVIRead::AVIRHTTPForwarderForm::AVIRHTTPForwarderForm(UI::GUIClientControl
 	this->lblSSLCert->SetRect(284, 76, 200, 23, false);
 	this->lblAllowKA = ui->NewLabel(*this, CSTR("Allow KA"));
 	this->lblAllowKA->SetRect(4, 100, 100, 23, false);
-	NEW_CLASS(this->chkAllowKA, UI::GUICheckBox(ui, *this, CSTR("Enable"), false));
+	this->chkAllowKA = ui->NewCheckBox(*this, CSTR("Enable"), false);
 	this->chkAllowKA->SetRect(104, 100, 100, 23, false);
 	this->btnStart = ui->NewButton(*this, CSTR("Start"));
 	this->btnStart->SetRect(104, 124, 75, 23, false);

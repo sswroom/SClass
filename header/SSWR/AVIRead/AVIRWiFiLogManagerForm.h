@@ -23,7 +23,7 @@ namespace SSWR
 
 			NotNullPtr<UI::GUIPanel> pnlControl;
 			NotNullPtr<UI::GUIButton> btnFile;
-			UI::GUICheckBox *chkUnkOnly;
+			NotNullPtr<UI::GUICheckBox> chkUnkOnly;
 			NotNullPtr<UI::GUITextBox> txtFilter;
 			NotNullPtr<UI::GUIButton> btnFilter;
 			NotNullPtr<UI::GUIButton> btnStore;

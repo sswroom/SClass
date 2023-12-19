@@ -51,7 +51,7 @@ namespace SSWR
 			NotNullPtr<UI::GUILabel> lblTarget;
 			NotNullPtr<UI::GUITextBox> txtTarget;
 			NotNullPtr<UI::GUILabel> lblRepeat;
-			UI::GUICheckBox *chkRepeat;
+			NotNullPtr<UI::GUICheckBox> chkRepeat;
 			NotNullPtr<UI::GUIButton> btnPing;
 			UI::GUIRealtimeLineChart *rlcPing;
 			NotNullPtr<UI::GUIVSplitter> vspPing;

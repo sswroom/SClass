@@ -23,7 +23,7 @@ namespace SSWR
 			NotNullPtr<UI::GUIButton> btnPasteJDBC;
 			NotNullPtr<UI::GUILabel> lblPort;
 			NotNullPtr<UI::GUITextBox> txtPort;
-			UI::GUICheckBox *chkEncrypt;
+			NotNullPtr<UI::GUICheckBox> chkEncrypt;
 			NotNullPtr<UI::GUILabel> lblDatabase;
 			NotNullPtr<UI::GUITextBox> txtDatabase;
 			NotNullPtr<UI::GUILabel> lblUser;

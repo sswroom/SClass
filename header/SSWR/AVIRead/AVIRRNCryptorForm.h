@@ -26,7 +26,7 @@ namespace SSWR
 			NotNullPtr<UI::GUILabel> lblPassword;
 			NotNullPtr<UI::GUITextBox> txtPassword;
 			NotNullPtr<UI::GUILabel> lblOptions;
-			UI::GUICheckBox *chkBase64;
+			NotNullPtr<UI::GUICheckBox> chkBase64;
 			NotNullPtr<UI::GUIButton> btnProcess;
 
 			static void __stdcall OnProcessClicked(void *userObj);

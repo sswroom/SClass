@@ -50,11 +50,11 @@ namespace SSWR
 			NotNullPtr<UI::GUIPanel> pnlRequest;
 			NotNullPtr<UI::GUILabel> lblURL;
 			NotNullPtr<UI::GUITextBox> txtURL;
-			UI::GUICheckBox *chkNoShutdown;
+			NotNullPtr<UI::GUICheckBox> chkNoShutdown;
 			NotNullPtr<UI::GUILabel> lblMethod;
 			NotNullPtr<UI::GUIComboBox> cboMethod;
-			UI::GUICheckBox *chkOSClient;
-			UI::GUICheckBox *chkAllowComp;
+			NotNullPtr<UI::GUICheckBox> chkOSClient;
+			NotNullPtr<UI::GUICheckBox> chkAllowComp;
 			NotNullPtr<UI::GUIButton> btnUserAgent;
 			NotNullPtr<UI::GUILabel> lblUserAgent;
 			NotNullPtr<UI::GUIButton> btnClientCert;

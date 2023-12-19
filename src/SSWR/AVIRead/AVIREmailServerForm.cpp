@@ -564,7 +564,7 @@ SSWR::AVIRead::AVIREmailServerForm::AVIREmailServerForm(UI::GUIClientControl *pa
 	this->lblPOP3Port->SetRect(0, 24, 100, 23, false);
 	this->txtPOP3Port = ui->NewTextBox(this->tpPOP3, CSTR("110"));
 	this->txtPOP3Port->SetRect(100, 24, 100, 23, false);
-	NEW_CLASS(this->chkPOP3SSL, UI::GUICheckBox(ui, this->tpPOP3, CSTR("Enable SSL"), false));
+	this->chkPOP3SSL = ui->NewCheckBox(this->tpPOP3, CSTR("Enable SSL"), false);
 	this->chkPOP3SSL->SetRect(100, 48, 100, 23, false);
 	this->chkPOP3SSL->HandleCheckedChange(OnPOP3SSLChanged, this);
 	this->btnPOP3Start = ui->NewButton(this->tpPOP3, CSTR("Start"));

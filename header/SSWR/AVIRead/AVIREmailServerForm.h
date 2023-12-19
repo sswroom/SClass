@@ -48,7 +48,7 @@ namespace SSWR
 			NotNullPtr<UI::GUILabel> lblPOP3CertKey;
 			NotNullPtr<UI::GUILabel> lblPOP3Port;
 			NotNullPtr<UI::GUITextBox> txtPOP3Port;
-			UI::GUICheckBox *chkPOP3SSL;
+			NotNullPtr<UI::GUICheckBox> chkPOP3SSL;
 			NotNullPtr<UI::GUIButton> btnPOP3Start;
 
 			NotNullPtr<UI::GUITabPage> tpGCIS;

@@ -24,7 +24,7 @@ namespace SSWR
 			NotNullPtr<UI::GUIPanel> pnlControl;
 			NotNullPtr<UI::GUILabel> lblTargetAddr;
 			NotNullPtr<UI::GUITextBox> txtTargetAddr;
-			UI::GUICheckBox *chkTargetScan;
+			NotNullPtr<UI::GUICheckBox> chkTargetScan;
 			NotNullPtr<UI::GUIButton> btnRequest;
 			UI::GUIListView *lvAnswers;
 			NotNullPtr<UI::GUIVSplitter> vspAnswers;

@@ -798,7 +798,7 @@ SSWR::AVIRead::AVIRDNSProxyForm::AVIRDNSProxyForm(UI::GUIClientControl *parent, 
 	this->txtDNSPort->SetReadOnly(true);
 	this->lblDisableV6 = ui->NewLabel(this->tpStatus, CSTR("Disable IPv6"));
 	this->lblDisableV6->SetRect(4, 28, 100, 23, false);
-	NEW_CLASS(this->chkDisableV6, UI::GUICheckBox(ui, this->tpStatus, CSTR(""), false));
+	this->chkDisableV6 = ui->NewCheckBox(this->tpStatus, CSTR(""), false);
 	this->chkDisableV6->SetRect(104, 28, 100, 23, false);
 	this->chkDisableV6->HandleCheckedChange(OnDisableV6Chg, this);
 	this->lblDNSServer = ui->NewLabel(this->tpStatus, CSTR("DNS Server"));

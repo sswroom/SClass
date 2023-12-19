@@ -23,7 +23,7 @@ namespace SSWR
 			NotNullPtr<UI::GUILabel> lblStreamType;
 			NotNullPtr<UI::GUITextBox> txtStreamType;
 			NotNullPtr<UI::GUIButton> btnStream;
-			UI::GUICheckBox *chkAddPoints;
+			NotNullPtr<UI::GUICheckBox> chkAddPoints;
 			NotNullPtr<UI::GUILabel> lblSpeed;
 			NotNullPtr<UI::GUITextBox> txtSpeed;
 			NotNullPtr<UI::GUITextBox> txtSpeedInput;

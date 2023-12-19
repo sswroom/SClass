@@ -20,7 +20,7 @@ namespace SSWR
 		private:
 			NotNullPtr<UI::GUITextBox> txtMinScale;
 			NotNullPtr<UI::GUITextBox> txtMaxScale;
-			UI::GUICheckBox *chkHide;
+			NotNullPtr<UI::GUICheckBox> chkHide;
 			UI::GUIPictureBox *pbFontStyle;
 			NotNullPtr<UI::GUIButton> btnFontModify;
 			NotNullPtr<UI::GUIButton> btnFontStyle;
@@ -31,17 +31,17 @@ namespace SSWR
 			NotNullPtr<UI::GUILabel> lblFillStyle;
 			UI::GUIPictureBox *pbFillStyle;
 			NotNullPtr<UI::GUIComboBox> cboColName;
-			UI::GUICheckBox *chkShowLabel;
+			NotNullPtr<UI::GUICheckBox> chkShowLabel;
 			NotNullPtr<UI::GUITextBox> txtPriority;
 			NotNullPtr<UI::GUILabel> lblIcon;
 			UI::GUIPictureBox *pbIcon;
 
 			NotNullPtr<UI::GUIGroupBox> grpLabel;
-			UI::GUICheckBox *chkSmart;
-			UI::GUICheckBox *chkRotate;
-			UI::GUICheckBox *chkAlign;
-			UI::GUICheckBox *chkTrim;
-			UI::GUICheckBox *chkCapital;
+			NotNullPtr<UI::GUICheckBox> chkSmart;
+			NotNullPtr<UI::GUICheckBox> chkRotate;
+			NotNullPtr<UI::GUICheckBox> chkAlign;
+			NotNullPtr<UI::GUICheckBox> chkTrim;
+			NotNullPtr<UI::GUICheckBox> chkCapital;
 			NotNullPtr<UI::GUIButton> btnOK;
 			NotNullPtr<UI::GUIButton> btnCancel;
 

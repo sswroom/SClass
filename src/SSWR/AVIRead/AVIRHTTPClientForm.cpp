@@ -1245,7 +1245,7 @@ SSWR::AVIRead::AVIRHTTPClientForm::AVIRHTTPClientForm(UI::GUIClientControl *pare
 	this->lblURL->SetRect(4, 4, 100, 23, false);
 	this->txtURL = ui->NewTextBox(this->pnlRequest, CSTR("http://"));
 	this->txtURL->SetRect(104, 4, 400, 23, false);
-	NEW_CLASS(this->chkNoShutdown, UI::GUICheckBox(ui, this->pnlRequest, CSTR("No Shutdown"), true));
+	this->chkNoShutdown = ui->NewCheckBox(this->pnlRequest, CSTR("No Shutdown"), true);
 	this->chkNoShutdown->SetRect(504, 4, 100, 23, false);
 	this->lblMethod = ui->NewLabel(this->pnlRequest, CSTR("Method"));
 	this->lblMethod->SetRect(4, 28, 100, 23, false);
@@ -1257,9 +1257,9 @@ SSWR::AVIRead::AVIRHTTPClientForm::AVIRHTTPClientForm(UI::GUIClientControl *pare
 	this->cboMethod->AddItem(CSTR("PATCH"), (void*)Net::WebUtil::RequestMethod::HTTP_PATCH);
 	this->cboMethod->AddItem(CSTR("DELETE"), (void*)Net::WebUtil::RequestMethod::HTTP_DELETE);
 	this->cboMethod->SetSelectedIndex(0);
-	NEW_CLASS(this->chkOSClient, UI::GUICheckBox(ui, this->pnlRequest, CSTR("OS Client"), false));
+	this->chkOSClient = ui->NewCheckBox(this->pnlRequest, CSTR("OS Client"), false);
 	this->chkOSClient->SetRect(204, 28, 100, 23, false);
-	NEW_CLASS(this->chkAllowComp, UI::GUICheckBox(ui, this->pnlRequest, CSTR("Allow ZIP"), true));
+	this->chkAllowComp = ui->NewCheckBox(this->pnlRequest, CSTR("Allow ZIP"), true);
 	this->chkAllowComp->SetRect(304, 28, 100, 23, false);
 	this->btnUserAgent = ui->NewButton(this->pnlRequest, CSTR("User Agent"));
 	this->btnUserAgent->SetRect(4, 52, 75, 23, false);

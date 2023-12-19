@@ -20,8 +20,8 @@ namespace SSWR
 			NotNullPtr<UI::GUITextBox> txtBattery;
 			NotNullPtr<UI::GUILabel> lblTimeLeft;
 			NotNullPtr<UI::GUITextBox> txtTimeLeft;
-			UI::GUICheckBox *chkNoSleep;
-			UI::GUICheckBox *chkNoDispOff;
+			NotNullPtr<UI::GUICheckBox> chkNoSleep;
+			NotNullPtr<UI::GUICheckBox> chkNoDispOff;
 			NotNullPtr<UI::GUIButton> btnSleep;
 			NotNullPtr<UI::GUIButton> btnDisplayOff;
 

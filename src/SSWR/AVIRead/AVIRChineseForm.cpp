@@ -462,7 +462,7 @@ SSWR::AVIRead::AVIRChineseForm::AVIRChineseForm(UI::GUIClientControl *parent, No
 	this->cboCharType->AddItem(CSTR("Japanese (Kanji)"), (void*)Text::ChineseInfo::CT_JAPANESE_KANJI);
 	this->lblFlags = ui->NewLabel(this->grpCharInfo, CSTR("Flags"));
 	this->lblFlags->SetRect(0, 72, 100, 23, false);
-	NEW_CLASS(this->chkMainChar, UI::GUICheckBox(ui, this->grpCharInfo, CSTR("Main Char"), false));
+	this->chkMainChar = ui->NewCheckBox(this->grpCharInfo, CSTR("Main Char"), false);
 	this->chkMainChar->SetRect(100, 72, 120, 23, false);
 	this->lblPronun1 = ui->NewLabel(this->grpCharInfo, CSTR("Pronun 1"));
 	this->lblPronun1->SetRect(0, 96, 100, 23, false);

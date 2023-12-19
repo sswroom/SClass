@@ -231,7 +231,7 @@ SSWR::AVIRead::AVIRStreamConvForm::AVIRStreamConvForm(UI::GUIClientControl *pare
 	this->txtStream1 = ui->NewTextBox(this->pnlStream1, CSTR("-"));
 	this->txtStream1->SetRect(4, 28, 200, 23, false);
 	this->txtStream1->SetReadOnly(true);
-	NEW_CLASS(this->chkStreamLog1, UI::GUICheckBox(ui, this->pnlStream1, CSTR("Log to file"), false));
+	this->chkStreamLog1 = ui->NewCheckBox(this->pnlStream1, CSTR("Log to file"), false);
 	this->chkStreamLog1->SetRect(4, 52, 200, 23, false);
 	this->btnStream1 = ui->NewButton(this->pnlStream1, CSTR("&Open"));
 	this->btnStream1->SetRect(4, 76, 75, 23, false);
@@ -250,7 +250,7 @@ SSWR::AVIRead::AVIRStreamConvForm::AVIRStreamConvForm(UI::GUIClientControl *pare
 	this->txtStream2 = ui->NewTextBox(this->pnlStream2, CSTR("-"));
 	this->txtStream2->SetRect(4, 28, 200, 23, false);
 	this->txtStream2->SetReadOnly(true);
-	NEW_CLASS(this->chkStreamLog2, UI::GUICheckBox(ui, this->pnlStream2, CSTR("Log to file"), false));
+	this->chkStreamLog2 = ui->NewCheckBox(this->pnlStream2, CSTR("Log to file"), false);
 	this->chkStreamLog2->SetRect(4, 52, 200, 23, false);
 	this->btnStream2 = ui->NewButton(this->pnlStream2, CSTR("&Open"));
 	this->btnStream2->SetRect(4, 76, 75, 23, false);

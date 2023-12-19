@@ -58,8 +58,8 @@ namespace SSWR
 			NotNullPtr<UI::GUIComboBox> cboMethod;
 			NotNullPtr<UI::GUILabel> lblPostSize;
 			NotNullPtr<UI::GUITextBox> txtPostSize;
-			UI::GUICheckBox *chkKAConn;
-			UI::GUICheckBox *chkGZip;
+			NotNullPtr<UI::GUICheckBox> chkKAConn;
+			NotNullPtr<UI::GUICheckBox> chkGZip;
 			NotNullPtr<UI::GUIButton> btnStart;
 			NotNullPtr<UI::GUIGroupBox> grpStatus;
 			NotNullPtr<UI::GUILabel> lblConnLeftCnt;

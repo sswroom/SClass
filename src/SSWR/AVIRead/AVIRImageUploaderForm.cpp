@@ -74,7 +74,7 @@ SSWR::AVIRead::AVIRImageUploaderForm::AVIRImageUploaderForm(UI::GUIClientControl
 	this->txtPassword = ui->NewTextBox(this->pnlCtrl, CSTR(""));
 	this->txtPassword->SetPasswordChar('*');
 	this->txtPassword->SetRect(104, 28, 100, 23, false);
-	NEW_CLASS(this->chkErrorCont, UI::GUICheckBox(ui, this->pnlCtrl, CSTR("Continue on error"), false));
+	NEW_CLASS(this->chkErrorCont = ui->NewCheckBox(this->pnlCtrl, CSTR("Continue on error"), false));
 	this->chkErrorCont->SetRect(204, 4, 100, 23, false);
 	this->btnUpload = ui->NewButton(this->pnlCtrl, CSTR("Upload"));
 	this->btnUpload->SetRect(204, 28, 75, 23, false);

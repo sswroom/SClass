@@ -29,7 +29,7 @@ namespace SSWR
 			NotNullPtr<UI::GUILabel> lblHead;
 			UI::GUIListBox *lbHead;
 			NotNullPtr<UI::GUILabel> lblHeart;
-			UI::GUICheckBox *chkHeart;
+			NotNullPtr<UI::GUICheckBox> chkHeart;
 			NotNullPtr<UI::GUILabel> lblTurn;
 			NotNullPtr<UI::GUIButton> btnTurnLeft;
 			NotNullPtr<UI::GUIButton> btnTurnRight;

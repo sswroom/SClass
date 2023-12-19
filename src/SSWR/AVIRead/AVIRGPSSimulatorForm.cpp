@@ -288,7 +288,7 @@ SSWR::AVIRead::AVIRGPSSimulatorForm::AVIRGPSSimulatorForm(UI::GUIClientControl *
 	this->btnStream = ui->NewButton(*this, CSTR("Open"));
 	this->btnStream->SetRect(304, 4, 75, 23, false);
 	this->btnStream->HandleButtonClick(OnStreamClicked, this);
-	NEW_CLASS(this->chkAddPoints, UI::GUICheckBox(ui, *this, CSTR("Add Points"), false));
+	this->chkAddPoints = ui->NewCheckBox(*this, CSTR("Add Points"), false);
 	this->chkAddPoints->SetRect(104, 28, 200, 23, false);
 	this->lblSpeed = ui->NewLabel(*this, CSTR("Speed (km/s)"));
 	this->lblSpeed->SetRect(4, 52, 100, 23, false);

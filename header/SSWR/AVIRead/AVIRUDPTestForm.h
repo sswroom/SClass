@@ -52,7 +52,7 @@ namespace SSWR
 			NotNullPtr<UI::GUILabel> lblServerPort;
 			NotNullPtr<UI::GUITextBox> txtServerPort;
 			NotNullPtr<UI::GUIButton> btnStart;
-			UI::GUICheckBox *chkAutoReply;
+			NotNullPtr<UI::GUICheckBox> chkAutoReply;
 			NotNullPtr<UI::GUIGroupBox> grpDest;
 			NotNullPtr<UI::GUILabel> lblDestHost;
 			NotNullPtr<UI::GUITextBox> txtDestHost;

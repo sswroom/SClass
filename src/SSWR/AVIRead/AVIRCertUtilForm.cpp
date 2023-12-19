@@ -492,9 +492,9 @@ SSWR::AVIRead::AVIRCertUtilForm::AVIRCertUtilForm(UI::GUIClientControl *parent, 
 	this->lblValidDays->SetRect(4, 196, 100, 23, false);
 	this->txtValidDays = ui->NewTextBox(*this, CSTR("365"));
 	this->txtValidDays->SetRect(104, 196, 200, 23, false);
-	NEW_CLASS(this->chkCACert, UI::GUICheckBox(ui, *this, CSTR("CA Cert"), false));
+	this->chkCACert = ui->NewCheckBox(*this, CSTR("CA Cert"), false);
 	this->chkCACert->SetRect(104, 220, 200, 23, false);
-	NEW_CLASS(this->chkDigitalSign, UI::GUICheckBox(ui, *this, CSTR("Digital Sign"), false));
+	this->chkDigitalSign = ui->NewCheckBox(*this, CSTR("Digital Sign"), false);
 	this->chkDigitalSign->SetRect(104, 244, 200, 23, false);
 	this->lblSAN = ui->NewLabel(*this, CSTR("SubjAltName"));
 	this->lblSAN->SetRect(4, 268, 100, 23, false);

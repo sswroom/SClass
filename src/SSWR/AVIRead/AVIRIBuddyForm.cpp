@@ -146,7 +146,7 @@ SSWR::AVIRead::AVIRIBuddyForm::AVIRIBuddyForm(UI::GUIClientControl *parent, NotN
 	this->lbHead->AddItem(CSTR("White"), (void*)IO::Device::IBuddy::IBHDE_LIGHT_WHITE);
 	this->lblHeart = ui->NewLabel(this->pnlMain, CSTR("Heart"));
 	this->lblHeart->SetRect(4, 124, 100, 23, false);
-	NEW_CLASS(this->chkHeart, UI::GUICheckBox(ui, this->pnlMain, CSTR("Turn On"), false));
+	this->chkHeart = ui->NewCheckBox(this->pnlMain, CSTR("Turn On"), false);
 	this->chkHeart->SetRect(104, 124, 200, 23, false);
 	this->chkHeart->HandleCheckedChange(OnHeartChanged, this);
 	this->lblTurn = ui->NewLabel(this->pnlMain, CSTR("Body Turn"));

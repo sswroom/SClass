@@ -170,7 +170,7 @@ SSWR::AVIRead::AVIRVideoCheckerForm::AVIRVideoCheckerForm(UI::GUIClientControl *
 	this->btnCancel = ui->NewButton(this->pnlCtrl, CSTR("Cancel"));
 	this->btnCancel->SetRect(4, 4, 75, 23, false);
 	this->btnCancel->HandleButtonClick(OnCancelClicked, this);
-	NEW_CLASS(this->chkAllowTimeSkip, UI::GUICheckBox(ui, this->pnlCtrl, CSTR("Allow Time Skip"), false));
+	this->chkAllowTimeSkip = ui->NewCheckBox(this->pnlCtrl, CSTR("Allow Time Skip"), false);
 	this->chkAllowTimeSkip->SetRect(84, 4, 120, 23, false);
 	this->chkAllowTimeSkip->HandleCheckedChange(OnAllowTimeSkipChange, this);
 	NEW_CLASS(this->lvFiles, UI::GUIListView(ui, *this, UI::GUIListView::LVSTYLE_TABLE, 2));

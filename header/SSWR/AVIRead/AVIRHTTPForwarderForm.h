@@ -34,14 +34,14 @@ namespace SSWR
 			NotNullPtr<UI::GUILabel> lblFwdURL;
 			NotNullPtr<UI::GUITextBox> txtFwdURL;
 			NotNullPtr<UI::GUILabel> lblLog;
-			UI::GUICheckBox *chkLog;
-			UI::GUICheckBox *chkLogContent;
+			NotNullPtr<UI::GUICheckBox> chkLog;
+			NotNullPtr<UI::GUICheckBox> chkLogContent;
 			NotNullPtr<UI::GUILabel> lblSSL;
-			UI::GUICheckBox *chkSSL;
+			NotNullPtr<UI::GUICheckBox> chkSSL;
 			NotNullPtr<UI::GUIButton> btnSSLCert;
 			NotNullPtr<UI::GUILabel> lblSSLCert;
 			NotNullPtr<UI::GUILabel> lblAllowKA;
-			UI::GUICheckBox *chkAllowKA;
+			NotNullPtr<UI::GUICheckBox> chkAllowKA;
 			NotNullPtr<UI::GUIButton> btnStart;
 			NotNullPtr<UI::GUIButton> btnStop;
 

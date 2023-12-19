@@ -330,7 +330,7 @@ SSWR::AVIRead::AVIRWiFiLogManagerForm::AVIRWiFiLogManagerForm(UI::GUIClientContr
 	this->btnFile = ui->NewButton(this->pnlControl, CSTR("Open Log"));
 	this->btnFile->SetRect(4, 4, 75, 23, false);
 	this->btnFile->HandleButtonClick(OnFileClicked, this);
-	NEW_CLASS(this->chkUnkOnly, UI::GUICheckBox(ui, this->pnlControl, CSTR("Unknown Only"), true));
+	this->chkUnkOnly = ui->NewCheckBox(this->pnlControl, CSTR("Unknown Only"), true);
 	this->chkUnkOnly->SetRect(84, 4, 100, 23, false);
 	this->chkUnkOnly->HandleCheckedChange(OnUnkOnlyChkChg, this);
 	this->txtFilter = ui->NewTextBox(this->pnlControl, CSTR(""));

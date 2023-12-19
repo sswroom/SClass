@@ -2589,7 +2589,7 @@ SSWR::OrganMgr::OrganMainForm::OrganMainForm(NotNullPtr<UI::GUICore> ui, UI::GUI
 	lbl->SetRect(8, 76, 56, 23, false);
 	this->txtGroupCName = ui->NewTextBox(this->tpGroup, CSTR(""));
 	this->txtGroupCName->SetRect(64, 76, 144, 23, false);
-	NEW_CLASS(this->chkGroupAdmin, UI::GUICheckBox(ui, this->tpGroup, this->env->GetLang(CSTR("MainFormTabGroupAdmin")), false));
+	this->chkGroupAdmin = ui->NewCheckBox(this->tpGroup, this->env->GetLang(CSTR("MainFormTabGroupAdmin")), false);
 	this->chkGroupAdmin->SetRect(64, 100, 144, 23, false);
 	lbl = ui->NewLabel(this->tpGroup, this->env->GetLang(CSTR("MainFormTabGroupDesc")));
 	lbl->SetRect(8, 124, 56, 23, false);

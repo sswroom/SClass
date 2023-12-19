@@ -55,7 +55,7 @@ SSWR::AVIRead::AVIRProgramLinksCreateForm::AVIRProgramLinksCreateForm(UI::GUICli
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASS(this->chkThisUser, UI::GUICheckBox(ui, *this, CSTR("This User"), true));
+	this->chkThisUser = ui->NewCheckBox(*this, CSTR("This User"), true);
 	this->chkThisUser->SetRect(104, 4, 100, 23, false);
 	this->lblShortName = ui->NewLabel(*this, CSTR("Short Name"));
 	this->lblShortName->SetRect(4, 28, 100, 23, false);

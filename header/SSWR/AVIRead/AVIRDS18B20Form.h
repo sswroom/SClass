@@ -22,7 +22,7 @@ namespace SSWR
 			NotNullPtr<UI::GUILabel> lblTemp;
 			NotNullPtr<UI::GUITextBox> txtTemp;
 			NotNullPtr<UI::GUIButton> btnRead;
-			UI::GUICheckBox *chkAutoRead;
+			NotNullPtr<UI::GUICheckBox> chkAutoRead;
 			NotNullPtr<UI::GUILabel> lblStatus;
 			NotNullPtr<UI::GUITextBox> txtStatus;
 

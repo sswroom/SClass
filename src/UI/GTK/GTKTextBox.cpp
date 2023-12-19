@@ -129,7 +129,7 @@ void UI::GTK::GTKTextBox::SetReadOnly(Bool isReadOnly)
 	}
 }
 
-void UI::GTK::GTKTextBox::SetPasswordChar(WChar c)
+void UI::GTK::GTKTextBox::SetPasswordChar(UTF32Char c)
 {
 	if (this->multiLine)
 	{

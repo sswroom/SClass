@@ -130,7 +130,7 @@ SSWR::AVIRead::AVIRFileTextEncryptForm::AVIRFileTextEncryptForm(UI::GUIClientCon
 	this->txtDestFile->SetRect(104, 28, 600, 23, false);
 	this->lblDecrypt = ui->NewLabel(*this, CSTR("Mode"));
 	this->lblDecrypt->SetRect(4, 52, 100, 23, false);
-	NEW_CLASS(this->chkDecrypt, UI::GUICheckBox(ui, *this, CSTR("Decrypt"), false));
+	this->chkDecrypt = ui->NewCheckBox(*this, CSTR("Decrypt"), false);
 	this->chkDecrypt->SetRect(104, 52, 150, 23, false);
 	this->chkDecrypt->HandleCheckedChange(OnDecryptChange, this);
 	this->lblEncrypt = ui->NewLabel(*this, CSTR("Encryption"));

@@ -85,9 +85,9 @@ namespace SSWR
 			NotNullPtr<UI::GUITextBox> txtNSateViewQZSS;
 			NotNullPtr<UI::GUILabel> lblNSateViewBD;
 			NotNullPtr<UI::GUITextBox> txtNSateViewBD;
-			UI::GUICheckBox *chkAutoPan;
-			UI::GUICheckBox *chkNoSleep;
-			UI::GUICheckBox *chkTopMost;
+			NotNullPtr<UI::GUICheckBox> chkAutoPan;
+			NotNullPtr<UI::GUICheckBox> chkNoSleep;
+			NotNullPtr<UI::GUICheckBox> chkTopMost;
 			NotNullPtr<UI::GUIButton> btnDispOff;
 			NotNullPtr<UI::GUILabel> lblDistance;
 			NotNullPtr<UI::GUITextBox> txtDistance;

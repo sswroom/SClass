@@ -52,7 +52,7 @@ namespace SSWR
 
 			NotNullPtr<UI::GUITabPage> tpStatus;
 			NotNullPtr<UI::GUILabel> lblSSL;
-			UI::GUICheckBox *chkSSL;
+			NotNullPtr<UI::GUICheckBox> chkSSL;
 			NotNullPtr<UI::GUIButton> btnSSLCert;
 			NotNullPtr<UI::GUILabel> lblSSLCert;
 			NotNullPtr<UI::GUILabel> lblPort;

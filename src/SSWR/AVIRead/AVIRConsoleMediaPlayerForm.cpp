@@ -212,7 +212,7 @@ SSWR::AVIRead::AVIRConsoleMediaPlayerForm::AVIRConsoleMediaPlayerForm(UI::GUICli
 	this->cboRotate->AddItem(CSTR("HF CW 270"), (void*)Media::RotateType::HFLIP_CW_270);
 	this->cboRotate->SetSelectedIndex(0);
 	this->cboRotate->HandleSelectionChange(OnRotateChg, this);
-	NEW_CLASS(this->chkSurfaceBug, UI::GUICheckBox(ui, *this, CSTR("Surface Bug"), true));
+	this->chkSurfaceBug = ui->NewCheckBox(*this, CSTR("Surface Bug"), true);
 	this->chkSurfaceBug->SetRect(4, 100, 200, 23, false);
 	this->chkSurfaceBug->HandleCheckedChange(OnSurfaceBugChg, this);
 	this->lblYUVType = ui->NewLabel(*this, CSTR("YUV Type"));

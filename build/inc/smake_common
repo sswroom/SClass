@@ -237,8 +237,8 @@ all:
 @GUITest3
 @GUITest4
 @GUITest5
-#@GUITest6
-#@GUITest7
+@GUITest6
+@GUITest7
 #@GUITest8
 #@GUITest9
 
@@ -4640,6 +4640,8 @@ miniz_zip.h:
 
 UI/GUIButton.h:
 @GUIButton.o
+UI/GUICheckBox.h:
+@GUICheckBox.o
 UI/GUICheckedListBox.h:
 @GUICheckedListBox.o
 UI/GUIComboBox.h:
@@ -4713,6 +4715,8 @@ UI/DObj/VideoDObjHandler.h:
 @VideoDObjHandler.o
 UI/GTK/GTKButton.h:
 @GTKButton.o
+UI/GTK/GTKCheckBox.h:
+@GTKCheckBox.o
 UI/GTK/GTKCheckedListBox.h:
 @GTKCheckedListBox.o
 UI/GTK/GTKComboBox.h:
@@ -4737,6 +4741,8 @@ UI/GTK/GTKVSplitter.h:
 @GTKVSplitter.o
 UI/Java/JavaButton.h:
 JavaButton.o
+UI/Java/JavaCheckBox.h:
+@JavaCheckBox.o
 UI/Java/JavaCheckedListBox.h:
 @JavaCheckedListBox.o
 UI/Java/JavaComboBox.h:
@@ -4759,6 +4765,8 @@ UI/Java/JavaVSplitter.h:
 @JavaVSplitter.o
 UI/Win/WinButton.h:
 @WinButton.o
+UI/Win/WinCheckBox.h:
+@WinCheckBox.o
 UI/Win/WinCheckedListBox.h:
 @WinCheckedListBox.o
 UI/Win/WinComboBox.h:

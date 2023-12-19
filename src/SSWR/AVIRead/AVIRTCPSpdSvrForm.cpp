@@ -127,9 +127,9 @@ SSWR::AVIRead::AVIRTCPSpdSvrForm::AVIRTCPSpdSvrForm(UI::GUIClientControl *parent
 	this->lblPort->SetRect(4, 4, 100, 23, false);
 	this->txtPort = ui->NewTextBox(*this, CSTR("1234"));
 	this->txtPort->SetRect(104, 4, 100, 23, false);
-	NEW_CLASS(this->chkMultiThread, UI::GUICheckBox(ui, *this, CSTR("Multi-Thread"), false));
+	this->chkMultiThread = ui->NewCheckBox(*this, CSTR("Multi-Thread"), false);
 	this->chkMultiThread->SetRect(104, 28, 100, 23, false);
-	NEW_CLASS(this->chkEcho, UI::GUICheckBox(ui, *this, CSTR("Echo"), true));
+	this->chkEcho = ui->NewCheckBox(*this, CSTR("Echo"), true);
 	this->chkEcho->SetRect(104, 52, 100, 23, false);
 	this->btnStart = ui->NewButton(*this, CSTR("Start"));
 	this->btnStart->SetRect(104, 76, 75, 23, false);

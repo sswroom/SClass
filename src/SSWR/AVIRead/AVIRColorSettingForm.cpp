@@ -599,7 +599,7 @@ SSWR::AVIRead::AVIRColorSettingForm::AVIRColorSettingForm(UI::GUIClientControl *
 		}
 		i++;
 	}
-	NEW_CLASS(this->chk10Bit, UI::GUICheckBox(ui, this->tpSetting, CSTR("10-Bit Color"), false));
+	this->chk10Bit = ui->NewCheckBox(this->tpSetting, CSTR("10-Bit Color"), false);
 	this->chk10Bit->SetRect(0, 152, 150, 23, false);
 	if (this->monColor->Get10BitColor())
 	{

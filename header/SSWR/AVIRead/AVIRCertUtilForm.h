@@ -47,8 +47,8 @@ namespace SSWR
 			NotNullPtr<UI::GUITextBox> txtEmailAddress;
 			NotNullPtr<UI::GUILabel> lblValidDays;
 			NotNullPtr<UI::GUITextBox> txtValidDays;
-			UI::GUICheckBox *chkCACert;
-			UI::GUICheckBox *chkDigitalSign;
+			NotNullPtr<UI::GUICheckBox> chkCACert;
+			NotNullPtr<UI::GUICheckBox> chkDigitalSign;
 			NotNullPtr<UI::GUILabel> lblSAN;
 			NotNullPtr<UI::GUITextBox> txtSAN;
 			NotNullPtr<UI::GUIButton> btnSANAdd;
