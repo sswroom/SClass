@@ -3,8 +3,8 @@
 #include "Sync/Interlocked.h"
 #include "Text/MyString.h"
 #include "Text/MyStringW.h"
-#include "UI/GUICoreWin.h"
 #include "UI/GUIDateTimePicker.h"
+#include "UI/Win/WinCore.h"
 #include <windows.h>
 #include <commctrl.h>
 
@@ -30,7 +30,7 @@ UI::GUIDateTimePicker::GUIDateTimePicker(NotNullPtr<GUICore> ui, NotNullPtr<UI::
 	{
 		style = style | WS_VISIBLE;
 	}
-	this->InitControl(((GUICoreWin*)ui.Ptr())->GetHInst(), parent, DATETIMEPICK_CLASS, (const UTF8Char*)"", style, WS_EX_CLIENTEDGE, 0, 0, 200, 200);
+	this->InitControl(((Win::WinCore*)ui.Ptr())->GetHInst(), parent, DATETIMEPICK_CLASS, (const UTF8Char*)"", style, WS_EX_CLIENTEDGE, 0, 0, 200, 200);
 	this->SetFormat("yyyy-MM-dd HH:mm:ss");
 }
 

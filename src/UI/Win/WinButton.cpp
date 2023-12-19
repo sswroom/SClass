@@ -3,8 +3,8 @@
 #include "Data/ArrayList.h"
 #include "Text/MyString.h"
 #include "Text/MyStringW.h"
-#include "UI/GUICoreWin.h"
 #include "UI/Win/WinButton.h"
+#include "UI/Win/WinCore.h"
 
 #include <windows.h>
 
@@ -16,7 +16,7 @@ OSInt UI::Win::WinButton::nextId = 100;
 
 OSInt __stdcall UI::Win::WinButton::BTNWndProc(void *hWnd, UInt32 msg, UInt32 wParam, OSInt lParam)
 {
-	UI::Win::WinButton *me = (UI::Win::WinButton*)UI::GUICoreWin::MSGetWindowObj((ControlHandle*)hWnd, GWL_USERDATA);
+	UI::Win::WinButton *me = (UI::Win::WinButton*)UI::Win::WinCore::MSGetWindowObj((ControlHandle*)hWnd, GWL_USERDATA);
 	switch (msg)
 	{
 	case WM_LBUTTONDOWN:
@@ -44,7 +44,7 @@ UI::Win::WinButton::WinButton(NotNullPtr<GUICore> ui, NotNullPtr<UI::GUIClientCo
 	{
 		style |= WS_VISIBLE;
 	}
-	this->InitControl(((UI::GUICoreWin*)ui.Ptr())->GetHInst(), parent, L"BUTTON", txt.v, style, 0, 0, 0, 200, 24);
+	this->InitControl(((UI::Win::WinCore*)ui.Ptr())->GetHInst(), parent, L"BUTTON", txt.v, style, 0, 0, 0, 200, 24);
 #ifndef _WIN32_WCE
 	SetWindowLongPtr((HWND)this->hwnd, GWLP_ID, (Int32)(this->btnId = nextId++));
 #else
@@ -52,18 +52,18 @@ UI::Win::WinButton::WinButton(NotNullPtr<GUICore> ui, NotNullPtr<UI::GUIClientCo
 #endif
 
 #ifdef _WIN32_WCE
-	this->oriWndProc = (void*)UI::GUICoreWin::MSSetWindowObj(this->hwnd, GWL_WNDPROC, (OSInt)BTNWndProc);
+	this->oriWndProc = (void*)UI::Win::WinCore::MSSetWindowObj(this->hwnd, GWL_WNDPROC, (OSInt)BTNWndProc);
 #else
-	this->oriWndProc = (void*)UI::GUICoreWin::MSSetWindowObj(this->hwnd, GWLP_WNDPROC, (OSInt)BTNWndProc);
+	this->oriWndProc = (void*)UI::Win::WinCore::MSSetWindowObj(this->hwnd, GWLP_WNDPROC, (OSInt)BTNWndProc);
 #endif
 }
 
 UI::Win::WinButton::~WinButton()
 {
 #ifdef _WIN32_WCE
-	UI::GUICoreWin::MSSetWindowObj(this->hwnd, GWL_WNDPROC, (OSInt)this->oriWndProc);
+	UI::Win::WinCore::MSSetWindowObj(this->hwnd, GWL_WNDPROC, (OSInt)this->oriWndProc);
 #else
-	UI::GUICoreWin::MSSetWindowObj(this->hwnd, GWLP_WNDPROC, (OSInt)this->oriWndProc);
+	UI::Win::WinCore::MSSetWindowObj(this->hwnd, GWLP_WNDPROC, (OSInt)this->oriWndProc);
 #endif
 }
 

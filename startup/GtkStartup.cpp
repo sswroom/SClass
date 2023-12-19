@@ -3,7 +3,7 @@
 #include "Core/Core.h"
 #include "Media/GTKDrawEngine.h"
 #include "Text/MyString.h"
-#include "UI/GUICoreGTK.h"
+#include "UI/GTK/GTKCore.h"
 #include <gtk/gtk.h>
 
 Int32 MyMain(NotNullPtr<Core::IProgControl> ctrl);
@@ -41,8 +41,8 @@ void GtkProgControl_Destroy(NotNullPtr<GtkProgControl> ctrl)
 
 UI::GUICore *Core::IProgControl::CreateGUICore(NotNullPtr<Core::IProgControl> progCtrl)
 {
-	UI::GUICoreGTK *ui;
-	NEW_CLASS(ui, UI::GUICoreGTK());
+	UI::GTK::GTKCore *ui;
+	NEW_CLASS(ui, UI::GTK::GTKCore());
 	return ui;
 }
 

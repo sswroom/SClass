@@ -2,7 +2,7 @@
 #include "MyMemory.h"
 #include "Data/ArrayList.h"
 #include "UI/GUICheckBox.h"
-#include "UI/GUICoreWin.h"
+#include "UI/Win/WinCore.h"
 
 #include <windows.h>
 
@@ -15,7 +15,7 @@ UI::GUICheckBox::GUICheckBox(NotNullPtr<GUICore> ui, NotNullPtr<UI::GUIClientCon
 	{
 		style = style | WS_VISIBLE;
 	}
-	this->InitControl(((UI::GUICoreWin*)ui.Ptr())->GetHInst(), parent, L"BUTTON", initText.v, style, 0, 0, 0, 200, 28);
+	this->InitControl(((UI::Win::WinCore*)ui.Ptr())->GetHInst(), parent, L"BUTTON", initText.v, style, 0, 0, 0, 200, 28);
 	SetChecked(checked);
 }
 

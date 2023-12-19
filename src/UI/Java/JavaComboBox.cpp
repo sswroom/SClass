@@ -100,7 +100,6 @@ void *UI::Java::JavaComboBox::GetSelectedItem()
 
 void *UI::Java::JavaComboBox::GetItem(UOSInt index)
 {
-	return this->items.GetItem(index);
 }
 
 Math::Size2DDbl UI::Java::JavaComboBox::GetSize()

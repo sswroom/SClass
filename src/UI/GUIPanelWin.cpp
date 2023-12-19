@@ -2,9 +2,9 @@
 #include "MyMemory.h"
 #include "Sync/Interlocked.h"
 #include "Text/MyString.h"
-#include "UI/GUICoreWin.h"
 #include "UI/GUILabel.h"
 #include "UI/GUIPanel.h"
+#include "UI/Win/WinCore.h"
 #include <windows.h>
 
 #define CLASSNAME L"Panel"
@@ -21,7 +21,7 @@ Int32 UI::GUIPanel::useCnt = 0;
 
 OSInt __stdcall UI::GUIPanel::PnlWndProc(void *hWnd, UInt32 msg, UOSInt wParam, OSInt lParam)
 {
-	UI::GUIPanel *me = (UI::GUIPanel*)UI::GUICoreWin::MSGetWindowObj((ControlHandle*)hWnd, GWL_USERDATA);
+	UI::GUIPanel *me = (UI::GUIPanel*)UI::Win::WinCore::MSGetWindowObj((ControlHandle*)hWnd, GWL_USERDATA);
 	UI::GUIControl*ctrl;
 	SCROLLINFO si;
 	Bool upd;
@@ -145,7 +145,7 @@ OSInt __stdcall UI::GUIPanel::PnlWndProc(void *hWnd, UInt32 msg, UOSInt wParam, 
 		{
 			HDC hdcStatic = (HDC) wParam;
 			HWND hwndStatic = (HWND)lParam;
-			UI::GUIControl *ctrl = (UI::GUIControl*)UI::GUICoreWin::MSGetWindowObj((ControlHandle*)hwndStatic, GWL_USERDATA);
+			UI::GUIControl *ctrl = (UI::GUIControl*)UI::Win::WinCore::MSGetWindowObj((ControlHandle*)hwndStatic, GWL_USERDATA);
 			if (ctrl == 0)
 			{
 			}
@@ -325,14 +325,14 @@ UI::GUIPanel::GUIPanel(NotNullPtr<UI::GUICore> ui, ControlHandle *parentHWnd) : 
 	this->currScrY = 0;
 	if (Sync::Interlocked::IncrementI32(useCnt) == 1)
 	{
-		Init(((UI::GUICoreWin*)this->ui.Ptr())->GetHInst());
+		Init(((UI::Win::WinCore*)this->ui.Ptr())->GetHInst());
 	}
 
 	UInt32 style = WS_CLIPSIBLINGS | WS_CHILD | WS_VISIBLE;
 #ifdef _WIN32_WCE
-	this->InitControl(((UI::GUICoreWin*)this->ui)->GetHInst(), parentHWnd, CLASSNAME, (const UTF8Char*)"", style, 0, 0, 0, 200, 200);
+	this->InitControl(((UI::Win::WinCore*)this->ui)->GetHInst(), parentHWnd, CLASSNAME, (const UTF8Char*)"", style, 0, 0, 0, 200, 200);
 #else
-	this->InitControl(((UI::GUICoreWin*)this->ui.Ptr())->GetHInst(), parentHWnd, CLASSNAME, (const UTF8Char*)"", style, WS_EX_CONTROLPARENT, 0, 0, 200, 200);
+	this->InitControl(((UI::Win::WinCore*)this->ui.Ptr())->GetHInst(), parentHWnd, CLASSNAME, (const UTF8Char*)"", style, WS_EX_CONTROLPARENT, 0, 0, 200, 200);
 #endif
 }
 
@@ -346,7 +346,7 @@ UI::GUIPanel::GUIPanel(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIClientContr
 	this->currScrY = 0;
 	if (Sync::Interlocked::IncrementI32(useCnt) == 1)
 	{
-		Init(((UI::GUICoreWin*)this->ui.Ptr())->GetHInst());
+		Init(((UI::Win::WinCore*)this->ui.Ptr())->GetHInst());
 	}
 
 	UInt32 style = WS_CLIPSIBLINGS | WS_CHILD;
@@ -355,9 +355,9 @@ UI::GUIPanel::GUIPanel(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIClientContr
 		style = style | WS_VISIBLE;
 	}
 #ifdef _WIN32_WCE
-	this->InitControl(((UI::GUICoreWin*)this->ui.Ptr())->GetHInst(), parent, CLASSNAME, (const UTF8Char*)"", style, 0, 0, 0, 200, 200);
+	this->InitControl(((UI::Win::WinCore*)this->ui.Ptr())->GetHInst(), parent, CLASSNAME, (const UTF8Char*)"", style, 0, 0, 0, 200, 200);
 #else
-	this->InitControl(((UI::GUICoreWin*)this->ui.Ptr())->GetHInst(), parent, CLASSNAME, (const UTF8Char*)"", style, WS_EX_CONTROLPARENT, 0, 0, 200, 200);
+	this->InitControl(((UI::Win::WinCore*)this->ui.Ptr())->GetHInst(), parent, CLASSNAME, (const UTF8Char*)"", style, WS_EX_CONTROLPARENT, 0, 0, 200, 200);
 #endif
 }
 
@@ -365,7 +365,7 @@ UI::GUIPanel::~GUIPanel()
 {
 	if (Sync::Interlocked::DecrementI32(useCnt) == 0)
 	{
-		Deinit(((UI::GUICoreWin*)this->ui.Ptr())->GetHInst());
+		Deinit(((UI::Win::WinCore*)this->ui.Ptr())->GetHInst());
 	}
 }
 

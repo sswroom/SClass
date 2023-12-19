@@ -17,9 +17,9 @@
 #include "Text/StringBuilderUTF8.h"
 #include "Text/UTF8Writer.h"
 #include "UI/GUIClientControl.h"
-#include "UI/GUICoreWin.h"
 #include "UI/GUIDDrawControl.h"
 #include "UI/GUIForm.h"
+#include "UI/Win/WinCore.h"
 
 #include <windows.h>
 #include <ddraw.h>
@@ -484,7 +484,7 @@ UI::GUIDDrawControl::GUIDDrawControl(NotNullPtr<GUICore> ui, NotNullPtr<UI::GUIC
 
 	if (Sync::Interlocked::IncrementI32(useCnt) == 1)
 	{
-		Init(((GUICoreWin*)ui.Ptr())->GetHInst());
+		Init(((Win::WinCore*)ui.Ptr())->GetHInst());
 	}
 	this->HandleSizeChanged(OnResized, this);
 
@@ -493,7 +493,7 @@ UI::GUIDDrawControl::GUIDDrawControl(NotNullPtr<GUICore> ui, NotNullPtr<UI::GUIC
 	{
 		style = style | WS_VISIBLE;
 	}
-	this->InitControl(((GUICoreWin*)ui.Ptr())->GetHInst(), parent, CLASSNAME, (const UTF8Char*)"DDrawControl", style, 0, 0, 0, 640, 480);
+	this->InitControl(((Win::WinCore*)ui.Ptr())->GetHInst(), parent, CLASSNAME, (const UTF8Char*)"DDrawControl", style, 0, 0, 0, 640, 480);
 
 	this->currScnMode = SM_VFS;
 	this->surfaceMon = 0;
@@ -542,7 +542,7 @@ UI::GUIDDrawControl::~GUIDDrawControl()
 {
 	if (Sync::Interlocked::DecrementI32(useCnt) == 0)
 	{
-		Deinit(((GUICoreWin*)ui.Ptr())->GetHInst());
+		Deinit(((Win::WinCore*)ui.Ptr())->GetHInst());
 	}
 	if (this->joystickId > 0)
 	{

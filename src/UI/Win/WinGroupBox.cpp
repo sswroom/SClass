@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Text/MyString.h"
-#include "UI/GUICoreWin.h"
+#include "UI/Win/WinCore.h"
 #include "UI/Win/WinGroupBox.h"
 #include <windows.h>
 #define BGBRUSH ((HBRUSH)COLOR_BTNSHADOW)
@@ -18,13 +18,13 @@
 
 OSInt __stdcall UI::Win::WinGroupBox::GBWndProc(void *hWnd, UInt32 msg, UOSInt wParam, OSInt lParam)
 {
-	UI::Win::WinGroupBox *me = (UI::Win::WinGroupBox*)UI::GUICoreWin::MSGetWindowObj((ControlHandle*)hWnd, GWL_USERDATA);
+	UI::Win::WinGroupBox *me = (UI::Win::WinGroupBox*)UI::Win::WinCore::MSGetWindowObj((ControlHandle*)hWnd, GWL_USERDATA);
 	UI::GUIControl*ctrl;
 	NMHDR *nmhdr;
 	switch (msg)
 	{
 	case WM_COMMAND:
-		ctrl = (UI::GUIControl*)UI::GUICoreWin::MSGetWindowObj((ControlHandle*)lParam, GWL_USERDATA);
+		ctrl = (UI::GUIControl*)UI::Win::WinCore::MSGetWindowObj((ControlHandle*)lParam, GWL_USERDATA);
 		if (ctrl)
 		{
 			return ctrl->OnNotify(HIWORD(wParam), 0);
@@ -32,7 +32,7 @@ OSInt __stdcall UI::Win::WinGroupBox::GBWndProc(void *hWnd, UInt32 msg, UOSInt w
 		break;
 	case WM_NOTIFY:
 		nmhdr = (NMHDR*)lParam;
-		ctrl = (UI::GUIControl*)UI::GUICoreWin::MSGetWindowObj((ControlHandle*)nmhdr->hwndFrom, GWL_USERDATA);
+		ctrl = (UI::GUIControl*)UI::Win::WinCore::MSGetWindowObj((ControlHandle*)nmhdr->hwndFrom, GWL_USERDATA);
 		if (ctrl)
 		{
 			return ctrl->OnNotify(nmhdr->code, (void*)lParam);
@@ -58,8 +58,8 @@ UI::Win::WinGroupBox::WinGroupBox(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUI
 	{
 		style = style | WS_VISIBLE;
 	}
-	this->InitControl(((UI::GUICoreWin*)ui.Ptr())->GetHInst(), parent, L"BUTTON", text.v, style, WS_EX_CONTROLPARENT, 0, 0, 200, 200);
-	this->oriWndProc = (void*)UI::GUICoreWin::MSSetWindowObj(this->hwnd, GWLP_WNDPROC, (OSInt)GBWndProc);
+	this->InitControl(((UI::Win::WinCore*)ui.Ptr())->GetHInst(), parent, L"BUTTON", text.v, style, WS_EX_CONTROLPARENT, 0, 0, 200, 200);
+	this->oriWndProc = (void*)UI::Win::WinCore::MSSetWindowObj(this->hwnd, GWLP_WNDPROC, (OSInt)GBWndProc);
 }
 
 Math::Coord2DDbl UI::Win::WinGroupBox::GetClientOfst()
@@ -74,5 +74,5 @@ Math::Size2DDbl UI::Win::WinGroupBox::GetClientSize()
 
 UI::Win::WinGroupBox::~WinGroupBox()
 {
-	UI::GUICoreWin::MSSetWindowObj(this->hwnd, GWLP_WNDPROC, (OSInt)this->oriWndProc);
+	UI::Win::WinCore::MSSetWindowObj(this->hwnd, GWLP_WNDPROC, (OSInt)this->oriWndProc);
 }

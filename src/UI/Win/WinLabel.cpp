@@ -3,7 +3,7 @@
 #include "Data/ArrayList.h"
 #include "Text/MyString.h"
 #include "Text/MyStringW.h"
-#include "UI/GUICoreWin.h"
+#include "UI/Win/WinCore.h"
 #include "UI/Win/WinLabel.h"
 
 #include <windows.h>
@@ -17,7 +17,7 @@ UI::Win::WinLabel::WinLabel(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIClient
 	{
 		style = style | WS_VISIBLE;
 	}
-	this->InitControl(((UI::GUICoreWin*)ui.Ptr())->GetHInst(), parent, L"STATIC", initText.v, style, 0, 0, 0, 200, 24);
+	this->InitControl(((UI::Win::WinCore*)ui.Ptr())->GetHInst(), parent, L"STATIC", initText.v, style, 0, 0, 0, 200, 24);
 }
 
 UI::Win::WinLabel::~WinLabel()

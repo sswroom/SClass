@@ -7,7 +7,7 @@
 #include "Text/MyStringW.h"
 #include "UI/GUIClientControl.h"
 #include "UI/GUIControl.h"
-#include "UI/GUICoreWin.h"
+#include "UI/Win/WinCore.h"
 #include "UI/Win/WinDragDrop.h"
 #include <windows.h>
 #undef GetForm
@@ -42,7 +42,7 @@ void UI::GUIControl::InitControl(void *hInst, void *parentHWnd, const WChar *cla
 	this->lxPos2 = x + w;
 	this->lyPos2 = y + h;
 	this->currHMon = this->GetHMonitor();
-	UI::GUICoreWin::MSSetWindowObj(hwnd, GWL_USERDATA, (OSInt)this);
+	UI::Win::WinCore::MSSetWindowObj(hwnd, GWL_USERDATA, (OSInt)this);
 	UpdateFont();
 }
 
@@ -89,7 +89,7 @@ void UI::GUIControl::InitControl(void *hInst, Optional<UI::GUIClientControl> par
 		this->lxPos2 = (x + w) * this->ddpi / this->hdpi;
 		this->lyPos2 = (y + h) * this->ddpi / this->hdpi;
 	}
-	UI::GUICoreWin::MSSetWindowObj(hwnd, GWL_USERDATA, (OSInt)this);
+	UI::Win::WinCore::MSSetWindowObj(hwnd, GWL_USERDATA, (OSInt)this);
 	this->inited = true;
 	UpdateFont();
 //	UpdateBGColor();
@@ -152,7 +152,7 @@ UI::GUIControl::~GUIControl()
 
 void *UI::GUIControl::GetHInst()
 {
-	return ((GUICoreWin*)ui.Ptr())->GetHInst();
+	return ((Win::WinCore*)ui.Ptr())->GetHInst();
 }
 
 void *UI::GUIControl::GetFont()
@@ -605,12 +605,12 @@ void UI::GUIControl::UpdateBGColor()
 #if defined(GCL_HBRBACKGROUND)
 	if (hbr)
 	{
-		UI::GUICoreWin::MSSetClassObj(this->hwnd, GCL_HBRBACKGROUND, (OSInt)hbr);
+		UI::Win::WinCore::MSSetClassObj(this->hwnd, GCL_HBRBACKGROUND, (OSInt)hbr);
 	}
 #elif defined(GCLP_HBRBACKGROUND)
 	if (hbr)
 	{
-		UI::GUICoreWin::MSSetClassObj(this->hwnd, GCLP_HBRBACKGROUND, (OSInt)hbr);
+		UI::Win::WinCore::MSSetClassObj(this->hwnd, GCLP_HBRBACKGROUND, (OSInt)hbr);
 	}
 #endif
 }
@@ -656,7 +656,7 @@ void UI::GUIControl::SetCursor(CursorType curType)
 	default:
 		return;
 	}
-	UI::GUICoreWin::MSSetClassObj(this->hwnd, GCL_HCURSOR, (OSInt)cur);
+	UI::Win::WinCore::MSSetClassObj(this->hwnd, GCL_HCURSOR, (OSInt)cur);
 }
 
 

@@ -3,8 +3,8 @@
 #include "Math/Math.h"
 #include "Media/GDIEngine.h"
 #include "Sync/Interlocked.h"
-#include "UI/GUICoreWin.h"
 #include "UI/GUITextView.h"
+#include "UI/Win/WinCore.h"
 #include <windows.h>
 
 #define READBUFFSIZE 1048576
@@ -555,7 +555,7 @@ UI::GUITextView::GUITextView(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIClien
 
 	if (Sync::Interlocked::IncrementOS(useCnt) == 1)
 	{
-		Init(((UI::GUICoreWin*)this->ui.Ptr())->GetHInst());
+		Init(((UI::Win::WinCore*)this->ui.Ptr())->GetHInst());
 	}
 
 	UInt32 style = WS_CHILD | WS_HSCROLL | WS_VSCROLL | WS_TABSTOP;
@@ -563,7 +563,7 @@ UI::GUITextView::GUITextView(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIClien
 	{
 		style = style | WS_VISIBLE;
 	}
-	this->InitControl(((UI::GUICoreWin*)this->ui.Ptr())->GetHInst(), parent, CLASSNAME, (const UTF8Char*)"", style, WS_EX_CONTROLPARENT, 0, 0, 200, 200);
+	this->InitControl(((UI::Win::WinCore*)this->ui.Ptr())->GetHInst(), parent, CLASSNAME, (const UTF8Char*)"", style, WS_EX_CONTROLPARENT, 0, 0, 200, 200);
 	SetTimer((HWND)this->hwnd, 1, 1000, 0);
 
 	this->bgColor = this->GetColorBg();
@@ -585,7 +585,7 @@ UI::GUITextView::~GUITextView()
 	}
 	if (Sync::Interlocked::DecrementOS(useCnt) == 0)
 	{
-		Deinit(((UI::GUICoreWin*)this->ui.Ptr())->GetHInst());
+		Deinit(((UI::Win::WinCore*)this->ui.Ptr())->GetHInst());
 	}
 }
 

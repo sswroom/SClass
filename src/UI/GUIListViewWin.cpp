@@ -4,8 +4,8 @@
 #include "Media/GDIEngine.h"
 #include "Sync/Interlocked.h"
 #include "Text/MyStringW.h"
-#include "UI/GUICoreWin.h"
 #include "UI/GUIListView.h"
+#include "UI/Win/WinCore.h"
 #include <windows.h>
 #include <commctrl.h>
 
@@ -51,7 +51,7 @@ UI::GUIListView::GUIListView(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIClien
 	{
 		style = style | WS_VISIBLE;
 	}
-	this->InitControl(((UI::GUICoreWin*)ui.Ptr())->GetHInst(), parent, WC_LISTVIEWW, (const UTF8Char*)"ListView", style, WS_EX_CLIENTEDGE, 0, 0, sz.x, sz.y);
+	this->InitControl(((UI::Win::WinCore*)ui.Ptr())->GetHInst(), parent, WC_LISTVIEWW, (const UTF8Char*)"ListView", style, WS_EX_CLIENTEDGE, 0, 0, sz.x, sz.y);
 }
 
 UI::GUIListView::~GUIListView()

@@ -2176,13 +2176,6 @@ GUIControlJava.o: ../../src/UI/GUIControlJava.cpp
 $-I$(JAVA_HOME)/include
 $-I$(JAVA_HOME)/include/linux
 GUIControlWin.o: ../../src/UI/GUIControlWin.cpp
-GUICoreGTK.o: ../../src/UI/GUICoreGTK.cpp
-$`$(PKG-CONFIG) --cflags gtk+-3.0`
-!-lX11
-GUICoreJava.o: ../../src/UI/GUICoreJava.cpp
-$-I$(JAVA_HOME)/include
-$-I$(JAVA_HOME)/include/linux
-GUICoreWin.o: ../../src/UI/GUICoreWin.cpp
 GUICustomDrawGTK.o: ../../src/UI/GUICustomDrawGTK.cpp
 $`$(PKG-CONFIG) --cflags gtk+-3.0`
 GUICustomDrawVScrollGTK.o: ../../src/UI/GUICustomDrawVScrollGTK.cpp
@@ -2297,6 +2290,9 @@ GTKCheckedListBox.o: ../../src/UI/GTK/GTKCheckedListBox.cpp
 $`$(PKG-CONFIG) --cflags gtk+-3.0`
 GTKComboBox.o: ../../src/UI/GTK/GTKComboBox.cpp
 $`$(PKG-CONFIG) --cflags gtk+-3.0`
+GTKCore.o: ../../src/UI/GTK/GTKCore.cpp
+$`$(PKG-CONFIG) --cflags gtk+-3.0`
+!-lX11
 GTKDragDrop.o: ../../src/UI/GTK/GTKDragDrop.cpp
 $`$(PKG-CONFIG) --cflags gtk+-3.0`
 GTKGroupBox.o: ../../src/UI/GTK/GTKGroupBox.cpp
@@ -2320,6 +2316,9 @@ $-I$(JAVA_HOME)/include/linux
 JavaComboBox.o: ../../src/UI/Java/JavaComboBox.cpp
 $-I$(JAVA_HOME)/include
 $-I$(JAVA_HOME)/include/linux
+JavaCore.o: ../../src/UI/Java/JavaCore.cpp
+$-I$(JAVA_HOME)/include
+$-I$(JAVA_HOME)/include/linux
 JavaHSplitter.o: ../../src/UI/Java/JavaHSplitter.cpp
 $-I$(JAVA_HOME)/include
 $-I$(JAVA_HOME)/include/linux
@@ -2338,6 +2337,7 @@ $-I$(JAVA_HOME)/include/linux
 WinButton.o: ../../src/UI/Win/WinButton.cpp
 WinCheckedListBox.o: ../../src/UI/Win/WinCheckedListBox.cpp
 WinComboBox.o: ../../src/UI/Win/WinComboBox.cpp
+WinCore.o: ../../src/UI/Win/WinCore.cpp
 WinDragDrop.o: ../../src/UI/Win/WinDragDrop.cpp
 WinGroupBox.o: ../../src/UI/Win/WinGroupBox.cpp
 WinHSplitter.o: ../../src/UI/Win/WinHSplitter.cpp

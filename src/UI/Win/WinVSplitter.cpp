@@ -3,7 +3,7 @@
 #include "Math/Math.h"
 #include "Sync/Interlocked.h"
 #include "UI/GUIClientControl.h"
-#include "UI/GUICoreWin.h"
+#include "UI/Win/WinCore.h"
 #include "UI/Win/WinVSplitter.h"
 
 #define CLASSNAME L"VSplitter"
@@ -292,7 +292,7 @@ UI::Win::WinVSplitter::WinVSplitter(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::G
 
 	if (Sync::Interlocked::IncrementI32(useCnt) == 1)
 	{
-		Init(((UI::GUICoreWin*)this->ui.Ptr())->GetHInst());
+		Init(((UI::Win::WinCore*)this->ui.Ptr())->GetHInst());
 	}
 
 	UInt32 style = WS_CHILD;
@@ -300,7 +300,7 @@ UI::Win::WinVSplitter::WinVSplitter(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::G
 	{
 		style = style | WS_VISIBLE;
 	}
-	this->InitControl(((UI::GUICoreWin*)this->ui.Ptr())->GetHInst(), parent, CLASSNAME, 0, style, 0, 0, 0, 10, height);
+	this->InitControl(((UI::Win::WinCore*)this->ui.Ptr())->GetHInst(), parent, CLASSNAME, 0, style, 0, 0, 0, 10, height);
 	this->SetDockType(isBottom?DOCK_BOTTOM:DOCK_TOP);
 }
 
@@ -308,7 +308,7 @@ UI::Win::WinVSplitter::~WinVSplitter()
 {
 	if (Sync::Interlocked::DecrementI32(useCnt) == 0)
 	{
-		Deinit(((UI::GUICoreWin*)this->ui.Ptr())->GetHInst());
+		Deinit(((UI::Win::WinCore*)this->ui.Ptr())->GetHInst());
 	}
 }
 

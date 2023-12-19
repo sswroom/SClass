@@ -8,8 +8,8 @@
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
 #include "UI/GUIClientControl.h"
-#include "UI/GUICoreWin.h"
 #include "UI/GUIRealtimeLineChart.h"
+#include "UI/Win/WinCore.h"
 #include <windows.h>
 
 #define CLASSNAME L"RealtimeLineChart"
@@ -21,7 +21,7 @@ Int32 UI::GUIRealtimeLineChart::useCnt = 0;
 
 OSInt __stdcall UI::GUIRealtimeLineChart::RLCWndProc(void *hWnd, UInt32 msg, UInt32 wParam, OSInt lParam)
 {
-	UI::GUIRealtimeLineChart *me = (UI::GUIRealtimeLineChart*)UI::GUICoreWin::MSGetWindowObj((ControlHandle*)hWnd, GWL_USERDATA);
+	UI::GUIRealtimeLineChart *me = (UI::GUIRealtimeLineChart*)UI::Win::WinCore::MSGetWindowObj((ControlHandle*)hWnd, GWL_USERDATA);
 	switch (msg)
 	{
 	case WM_SIZE:
@@ -219,7 +219,7 @@ UI::GUIRealtimeLineChart::GUIRealtimeLineChart(NotNullPtr<UI::GUICore> ui, NotNu
 
 	if (Sync::Interlocked::IncrementI32(useCnt) == 1)
 	{
-		Init(((UI::GUICoreWin*)this->ui.Ptr())->GetHInst());
+		Init(((UI::Win::WinCore*)this->ui.Ptr())->GetHInst());
 	}
 
 	UInt32 style = WS_CHILD;
@@ -227,7 +227,7 @@ UI::GUIRealtimeLineChart::GUIRealtimeLineChart(NotNullPtr<UI::GUICore> ui, NotNu
 	{
 		style = style | WS_VISIBLE;
 	}
-	this->InitControl(((UI::GUICoreWin*)this->ui.Ptr())->GetHInst(), parent, CLASSNAME, (const UTF8Char*)"", style, 0, 0, 0, 200, 200);
+	this->InitControl(((UI::Win::WinCore*)this->ui.Ptr())->GetHInst(), parent, CLASSNAME, (const UTF8Char*)"", style, 0, 0, 0, 200, 200);
 
 	SetTimer((HWND)this->hwnd, 1, updateInterval, 0);
 }
@@ -237,7 +237,7 @@ UI::GUIRealtimeLineChart::~GUIRealtimeLineChart()
 	KillTimer((HWND)this->hwnd, 1);
 	if (Sync::Interlocked::DecrementI32(useCnt) == 0)
 	{
-		Deinit(((UI::GUICoreWin*)this->ui.Ptr())->GetHInst());
+		Deinit(((UI::Win::WinCore*)this->ui.Ptr())->GetHInst());
 	}
 	MemFree(this->chartVal);
 	SDEL_TEXT(this->unit);

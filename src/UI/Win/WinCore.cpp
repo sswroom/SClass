@@ -3,10 +3,10 @@
 #include "Data/ArrayList.h"
 #include "IO/Library.h"
 #include "Media/GDIEngine.h"
-#include "UI/GUICoreWin.h"
 #include "UI/Win/WinButton.h"
 #include "UI/Win/WinCheckedListBox.h"
 #include "UI/Win/WinComboBox.h"
+#include "UI/Win/WinCore.h"
 #include "UI/Win/WinGroupBox.h"
 #include "UI/Win/WinHSplitter.h"
 #include "UI/Win/WinLabel.h"
@@ -20,7 +20,7 @@
 /////////////////////////////// EnumDisplayMonitors
 /////////////////////////////// GetMonitorInfoW
 
-UI::GUICoreWin::GUICoreWin(void *hInst)
+UI::Win::WinCore::WinCore(void *hInst)
 {
 	this->hInst = hInst;
 	this->focusWnd = 0;
@@ -32,11 +32,11 @@ UI::GUICoreWin::GUICoreWin(void *hInst)
 	// InitCommonControls();
 }
 
-UI::GUICoreWin::~GUICoreWin()
+UI::Win::WinCore::~WinCore()
 {
 }
 
-void UI::GUICoreWin::Run()
+void UI::Win::WinCore::Run()
 {
     MSG msg;
     BOOL bRet; 
@@ -58,7 +58,7 @@ void UI::GUICoreWin::Run()
     } 
 }
 
-void UI::GUICoreWin::ProcessMessages()
+void UI::Win::WinCore::ProcessMessages()
 {
     MSG msg;
 	while (PeekMessage(&msg, 0, 0, 0, PM_REMOVE))
@@ -74,7 +74,7 @@ void UI::GUICoreWin::ProcessMessages()
     }
 }
 
-void UI::GUICoreWin::WaitForMessages()
+void UI::Win::WinCore::WaitForMessages()
 {
 #ifndef _WIN32_WCE
 	WaitMessage();
@@ -87,12 +87,12 @@ void UI::GUICoreWin::WaitForMessages()
 #endif
 }
 
-void UI::GUICoreWin::Exit()
+void UI::Win::WinCore::Exit()
 {
 	PostQuitMessage(0);
 }
 
-NotNullPtr<Media::DrawEngine> UI::GUICoreWin::CreateDrawEngine()
+NotNullPtr<Media::DrawEngine> UI::Win::WinCore::CreateDrawEngine()
 {
 	NotNullPtr<Media::DrawEngine> deng;
 	NEW_CLASSNN(deng, Media::GDIEngine());
@@ -101,7 +101,7 @@ NotNullPtr<Media::DrawEngine> UI::GUICoreWin::CreateDrawEngine()
 
 typedef HRESULT (WINAPI *GetDpiForMonitorFunc)(HMONITOR hmonitor, OSInt dpiType, UINT *dpiX, UINT *dpiY);
 
-Double UI::GUICoreWin::GetMagnifyRatio(MonitorHandle *hMonitor)
+Double UI::Win::WinCore::GetMagnifyRatio(MonitorHandle *hMonitor)
 {
 	Double osdpi = 0;
 	IO::Library lib((const UTF8Char*)"Shcore.dll");
@@ -131,7 +131,7 @@ Double UI::GUICoreWin::GetMagnifyRatio(MonitorHandle *hMonitor)
 		return osdpi / 96.0;
 }
 
-void UI::GUICoreWin::UseDevice(Bool useSystem, Bool useDisplay)
+void UI::Win::WinCore::UseDevice(Bool useSystem, Bool useDisplay)
 {
 #if !defined(_WIN32_WCE)
 	if (useSystem)
@@ -149,23 +149,23 @@ void UI::GUICoreWin::UseDevice(Bool useSystem, Bool useDisplay)
 #endif
 }
 
-void UI::GUICoreWin::SetFocusWnd(void *hWnd, void *hAcc)
+void UI::Win::WinCore::SetFocusWnd(void *hWnd, void *hAcc)
 {
 	this->focusWnd = hWnd;
 	this->focusHAcc = hAcc;
 }
 
-void *UI::GUICoreWin::GetHInst()
+void *UI::Win::WinCore::GetHInst()
 {
 	return this->hInst;
 }
 
-void UI::GUICoreWin::SetNoDisplayOff(Bool noDispOff)
+void UI::Win::WinCore::SetNoDisplayOff(Bool noDispOff)
 {
 	this->noDispOff = noDispOff;
 }
 
-void UI::GUICoreWin::DisplayOff()
+void UI::Win::WinCore::DisplayOff()
 {
 	if (!this->noDispOff)
 	{
@@ -175,20 +175,20 @@ void UI::GUICoreWin::DisplayOff()
 	}
 }
 
-void UI::GUICoreWin::Suspend()
+void UI::Win::WinCore::Suspend()
 {
 #if !defined(_WIN32_WCE)
 	SetSystemPowerState(TRUE, FALSE);
 #endif
 }
 
-Math::Size2D<UOSInt> UI::GUICoreWin::GetDesktopSize()
+Math::Size2D<UOSInt> UI::Win::WinCore::GetDesktopSize()
 {
 	return Math::Size2D<UOSInt>((UOSInt)(OSInt)GetSystemMetrics(SM_CXFULLSCREEN),
 		(UOSInt)(OSInt)GetSystemMetrics(SM_CYFULLSCREEN));
 }
 
-Math::Coord2D<OSInt> UI::GUICoreWin::GetCursorPos()
+Math::Coord2D<OSInt> UI::Win::WinCore::GetCursorPos()
 {
 	POINT pt;
 	pt.x = 0;
@@ -199,7 +199,7 @@ Math::Coord2D<OSInt> UI::GUICoreWin::GetCursorPos()
 
 typedef BOOL (WINAPI* SETAUTOROTATION)(BOOL bEnable);
 
-void UI::GUICoreWin::SetDisplayRotate(MonitorHandle *hMonitor, DisplayRotation rot)
+void UI::Win::WinCore::SetDisplayRotate(MonitorHandle *hMonitor, DisplayRotation rot)
 {
 	IO::Library lib((const UTF8Char*)"user32.dll");
 	SETAUTOROTATION SetAutoRotation = (SETAUTOROTATION)lib.GetFuncNum(2507);
@@ -209,7 +209,7 @@ void UI::GUICoreWin::SetDisplayRotate(MonitorHandle *hMonitor, DisplayRotation r
 	}
 }
 
-void UI::GUICoreWin::GetMonitorDPIs(MonitorHandle *hMonitor, Double *hdpi, Double *ddpi)
+void UI::Win::WinCore::GetMonitorDPIs(MonitorHandle *hMonitor, Double *hdpi, Double *ddpi)
 {
 	if (this->monMgr)
 	{
@@ -227,81 +227,81 @@ void UI::GUICoreWin::GetMonitorDPIs(MonitorHandle *hMonitor, Double *hdpi, Doubl
 	}
 }
 
-void UI::GUICoreWin::SetMonitorMgr(Media::MonitorMgr *monMgr)
+void UI::Win::WinCore::SetMonitorMgr(Media::MonitorMgr *monMgr)
 {
 	this->monMgr = monMgr;
 }
 
-Media::MonitorMgr *UI::GUICoreWin::GetMonitorMgr()
+Media::MonitorMgr *UI::Win::WinCore::GetMonitorMgr()
 {
 	return this->monMgr;
 }
 
-void UI::GUICoreWin::ShowMsgOK(Text::CStringNN message, Text::CStringNN title, Optional<UI::GUIControl> ctrl)
+void UI::Win::WinCore::ShowMsgOK(Text::CStringNN message, Text::CStringNN title, Optional<UI::GUIControl> ctrl)
 {
 	UI::Win::WinMessageDialog::ShowOK(message, title, ctrl);
 }
 
-Bool UI::GUICoreWin::ShowMsgYesNo(Text::CStringNN message, Text::CStringNN title, Optional<UI::GUIControl> ctrl)
+Bool UI::Win::WinCore::ShowMsgYesNo(Text::CStringNN message, Text::CStringNN title, Optional<UI::GUIControl> ctrl)
 {
 	return UI::Win::WinMessageDialog::ShowYesNo(message, title, ctrl);
 }
 
-NotNullPtr<UI::GUIButton> UI::GUICoreWin::NewButton(NotNullPtr<GUIClientControl> parent, Text::CStringNN text)
+NotNullPtr<UI::GUIButton> UI::Win::WinCore::NewButton(NotNullPtr<GUIClientControl> parent, Text::CStringNN text)
 {
 	NotNullPtr<UI::Win::WinButton> ctrl;
 	NEW_CLASSNN(ctrl, UI::Win::WinButton(*this, parent, text));
 	return ctrl;
 }
 
-NotNullPtr<UI::GUICheckedListBox> UI::GUICoreWin::NewCheckedListBox(NotNullPtr<GUIClientControl> parent)
+NotNullPtr<UI::GUICheckedListBox> UI::Win::WinCore::NewCheckedListBox(NotNullPtr<GUIClientControl> parent)
 {
 	NotNullPtr<UI::Win::WinCheckedListBox> ctrl;
 	NEW_CLASSNN(ctrl, UI::Win::WinCheckedListBox(*this, parent));
 	return ctrl;
 }
 
-NotNullPtr<UI::GUIComboBox> UI::GUICoreWin::NewComboBox(NotNullPtr<GUIClientControl> parent, Bool allowEdit)
+NotNullPtr<UI::GUIComboBox> UI::Win::WinCore::NewComboBox(NotNullPtr<GUIClientControl> parent, Bool allowEdit)
 {
 	NotNullPtr<UI::Win::WinComboBox> ctrl;
 	NEW_CLASSNN(ctrl, UI::Win::WinComboBox(*this, parent, allowEdit));
 	return ctrl;
 }
 
-NotNullPtr<UI::GUIGroupBox> UI::GUICoreWin::NewGroupBox(NotNullPtr<GUIClientControl> parent, Text::CStringNN text)
+NotNullPtr<UI::GUIGroupBox> UI::Win::WinCore::NewGroupBox(NotNullPtr<GUIClientControl> parent, Text::CStringNN text)
 {
 	NotNullPtr<UI::Win::WinGroupBox> ctrl;
 	NEW_CLASSNN(ctrl, UI::Win::WinGroupBox(*this, parent, text));
 	return ctrl;
 }
 
-NotNullPtr<UI::GUILabel> UI::GUICoreWin::NewLabel(NotNullPtr<GUIClientControl> parent, Text::CStringNN text)
+NotNullPtr<UI::GUILabel> UI::Win::WinCore::NewLabel(NotNullPtr<GUIClientControl> parent, Text::CStringNN text)
 {
 	NotNullPtr<UI::Win::WinLabel> ctrl;
 	NEW_CLASSNN(ctrl, UI::Win::WinLabel(*this, parent, text));
 	return ctrl;
 }
 
-NotNullPtr<UI::GUIHSplitter> UI::GUICoreWin::NewHSplitter(NotNullPtr<GUIClientControl> parent, Int32 width, Bool isRight)
+NotNullPtr<UI::GUIHSplitter> UI::Win::WinCore::NewHSplitter(NotNullPtr<GUIClientControl> parent, Int32 width, Bool isRight)
 {
 	NotNullPtr<UI::Win::WinHSplitter> ctrl;
 	NEW_CLASSNN(ctrl, UI::Win::WinHSplitter(*this, parent, width, isRight));
 	return ctrl;
 }
 
-NotNullPtr<UI::GUIVSplitter> UI::GUICoreWin::NewVSplitter(NotNullPtr<GUIClientControl> parent, Int32 height, Bool isBottom)
+NotNullPtr<UI::GUIVSplitter> UI::Win::WinCore::NewVSplitter(NotNullPtr<GUIClientControl> parent, Int32 height, Bool isBottom)
 {
 	NotNullPtr<UI::Win::WinVSplitter> ctrl;
 	NEW_CLASSNN(ctrl, UI::Win::WinVSplitter(*this, parent, height, isBottom));
 	return ctrl;
 }
 
-Bool UI::GUICoreWin::IsForwarded()
+Bool UI::Win::WinCore::IsForwarded()
 {
 	return false;
 }
 
-OSInt UI::GUICoreWin::MSGetWindowObj(ControlHandle *hWnd, OSInt index)
+OSInt UI::Win::WinCore::MSGetWindowObj(ControlHandle *hWnd, OSInt index)
 {
 #ifdef _WIN32_WCE
 	return (OSInt)GetWindowLong((HWND)hWnd, (int)index);
@@ -310,7 +310,7 @@ OSInt UI::GUICoreWin::MSGetWindowObj(ControlHandle *hWnd, OSInt index)
 #endif
 }
 
-OSInt UI::GUICoreWin::MSSetWindowObj(ControlHandle *hWnd, OSInt index, OSInt value)
+OSInt UI::Win::WinCore::MSSetWindowObj(ControlHandle *hWnd, OSInt index, OSInt value)
 {
 #ifdef _WIN32_WCE
 	return (OSInt)SetWindowLong((HWND)hWnd, (int)index, value);
@@ -321,7 +321,7 @@ OSInt UI::GUICoreWin::MSSetWindowObj(ControlHandle *hWnd, OSInt index, OSInt val
 #endif
 }
 
-OSInt UI::GUICoreWin::MSSetClassObj(ControlHandle *hWnd, OSInt index, OSInt value)
+OSInt UI::Win::WinCore::MSSetClassObj(ControlHandle *hWnd, OSInt index, OSInt value)
 {
 #ifdef _WIN32_WCE
 	return (OSInt)SetClassLong((HWND)hWnd, (int)index, value);

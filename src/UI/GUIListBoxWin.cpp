@@ -2,8 +2,8 @@
 #include "MyMemory.h"
 #include "Text/MyString.h"
 #include "Text/MyStringW.h"
-#include "UI/GUICoreWin.h"
 #include "UI/GUIListBox.h"
+#include "UI/Win/WinCore.h"
 #include <windows.h>
 
 #ifdef _WIN32_WCE
@@ -16,7 +16,7 @@
 
 OSInt __stdcall UI::GUIListBox::LBWndProc(void *hWnd, UInt32 msg, UOSInt wParam, OSInt lParam)
 {
-	UI::GUIListBox *me = (UI::GUIListBox*)UI::GUICoreWin::MSGetWindowObj((ControlHandle*)hWnd, GWL_USERDATA);
+	UI::GUIListBox *me = (UI::GUIListBox*)UI::Win::WinCore::MSGetWindowObj((ControlHandle*)hWnd, GWL_USERDATA);
 	OSInt index;
 	switch (msg)
 	{
@@ -47,13 +47,13 @@ UI::GUIListBox::GUIListBox(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIClientC
 	{
 		style = style | LBS_EXTENDEDSEL;
 	}
-	this->InitControl(((UI::GUICoreWin*)ui.Ptr())->GetHInst(), parent, L"LISTBOX", (const UTF8Char*)"ListBox", style, WS_EX_CLIENTEDGE, 0, 0, sz.x, sz.y);
-	this->clsData = (ClassData*)UI::GUICoreWin::MSSetWindowObj(this->hwnd, GWLP_WNDPROC, (OSInt)LBWndProc);
+	this->InitControl(((UI::Win::WinCore*)ui.Ptr())->GetHInst(), parent, L"LISTBOX", (const UTF8Char*)"ListBox", style, WS_EX_CLIENTEDGE, 0, 0, sz.x, sz.y);
+	this->clsData = (ClassData*)UI::Win::WinCore::MSSetWindowObj(this->hwnd, GWLP_WNDPROC, (OSInt)LBWndProc);
 }
 
 UI::GUIListBox::~GUIListBox()
 {
-	UI::GUICoreWin::MSSetWindowObj(this->hwnd, GWLP_WNDPROC, (OSInt)this->clsData);
+	UI::Win::WinCore::MSSetWindowObj(this->hwnd, GWLP_WNDPROC, (OSInt)this->clsData);
 }
 
 void UI::GUIListBox::EventSelectionChange()

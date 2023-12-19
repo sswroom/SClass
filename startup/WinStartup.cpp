@@ -4,7 +4,7 @@
 #include "IO/Library.h"
 #include "Text/MyString.h"
 #include "Text/MyStringW.h"
-#include "UI/GUICoreWin.h"
+#include "UI/Win/WinCore.h"
 #include <windows.h>
 #ifndef __CYGWIN__
 #include <crtdbg.h>
@@ -168,8 +168,8 @@ void WinProgControl_Destroy(NotNullPtr<WinProgControl> ctrl)
 UI::GUICore *Core::IProgControl::CreateGUICore(NotNullPtr<Core::IProgControl> progCtrl)
 {
 	WinProgControl *ctrl = (WinProgControl*)progCtrl.Ptr();
-	UI::GUICoreWin *ui;
-	NEW_CLASS(ui, UI::GUICoreWin(ctrl->hInst));
+	UI::Win::WinCore *ui;
+	NEW_CLASS(ui, UI::Win::WinCore(ctrl->hInst));
 	return ui;
 }
 

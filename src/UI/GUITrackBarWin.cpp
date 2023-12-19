@@ -1,8 +1,8 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Data/ArrayList.h"
-#include "UI/GUICoreWin.h"
 #include "UI/GUITrackBar.h"
+#include "UI/Win/WinCore.h"
 
 #include <windows.h>
 #include <commctrl.h>
@@ -32,7 +32,7 @@ UI::GUITrackBar::GUITrackBar(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIClien
 	{
 		style = style | WS_VISIBLE;
 	}
-	this->InitControl(((UI::GUICoreWin*)ui.Ptr())->GetHInst(), parent, TRACKBAR_CLASSW, (const UTF8Char*)"", style, 0, 0, 0, 200, 24);
+	this->InitControl(((UI::Win::WinCore*)ui.Ptr())->GetHInst(), parent, TRACKBAR_CLASSW, (const UTF8Char*)"", style, 0, 0, 0, 200, 24);
 	SendMessage((HWND)this->hwnd, TBM_SETRANGEMIN, 0, (LPARAM)minVal);
 	SendMessage((HWND)this->hwnd, TBM_SETRANGEMAX, 0, (LPARAM)maxVal);
 	SendMessage((HWND)this->hwnd, TBM_SETPOS, 0, (LPARAM)currVal);

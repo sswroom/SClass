@@ -39,10 +39,6 @@ UI/GUIClientControl.h:
 @GUIClientControlJava.o
 UI/GUIControl.h:
 @GUIControlJava.o
-UI/GUICore.h:
-@GUICoreJava.o
-UI/GUICoreJava.h:
-@GUICoreJava.o
 UI/GUICustomDraw.h:
 @GUICustomDrawGTK.o
 UI/GUICustomDrawVScroll.h:

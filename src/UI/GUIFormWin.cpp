@@ -13,12 +13,12 @@
 #include "Sync/Interlocked.h"
 #include "Text/MyString.h"
 #include "Text/MyStringW.h"
-#include "UI/GUICoreWin.h"
 #include "UI/GUIForm.h"
 #include "UI/GUIIcon.h"
 #include "UI/GUILabel.h"
 #include "UI/GUIMenu.h"
 #include "UI/Win/WinButton.h"
+#include "UI/Win/WinCore.h"
 #include "UI/Win/WinTimer.h"
 
 #include <windows.h>
@@ -246,7 +246,7 @@ OSInt __stdcall UI::GUIForm::FormWndProc(void *hWnd, UInt32 msg, UOSInt wParam, 
 		me->OnFocusLost();
 		break;
 	case WM_SETFOCUS:
-		((UI::GUICoreWin*)me->ui.Ptr())->SetFocusWnd(hWnd, me->hAcc);
+		((UI::Win::WinCore*)me->ui.Ptr())->SetFocusWnd(hWnd, me->hAcc);
 		me->OnFocus();
 		break;
 	case WM_HOTKEY:
@@ -393,7 +393,7 @@ void UI::GUIForm::UpdateHAcc()
 	}
 	if (this->IsFormFocused())
 	{
-		((UI::GUICoreWin*)this->ui.Ptr())->SetFocusWnd(this->hwnd, this->hAcc);
+		((UI::Win::WinCore*)this->ui.Ptr())->SetFocusWnd(this->hwnd, this->hAcc);
 	}
 }
 UI::GUIForm::GUIForm(NotNullPtr<UI::GUICore> ui, ControlHandle *hWnd) : UI::GUIClientControl(ui, 0)
@@ -425,7 +425,7 @@ UI::GUIForm::GUIForm(Optional<UI::GUIClientControl> parent, Double initW, Double
 	this->currDialog = 0;
 	if (Sync::Interlocked::IncrementI32(useCnt) == 1)
 	{
-		Init(((UI::GUICoreWin*)ui.Ptr())->GetHInst());
+		Init(((UI::Win::WinCore*)ui.Ptr())->GetHInst());
 	}
 	this->closingHdlr = 0;
 	this->closingHdlrObj = 0;
@@ -527,7 +527,7 @@ UI::GUIForm::GUIForm(Optional<UI::GUIClientControl> parent, Double initW, Double
 	this->undockTop = 0;
 	this->undockRight = sz.x;
 	this->undockBottom = sz.y;
-	this->InitControl(((UI::GUICoreWin*)this->ui.Ptr())->GetHInst(), parent, L"WinForm", (const UTF8Char*)"Form", WS_OVERLAPPED | WS_SYSMENU | WS_MINIMIZEBOX, 0, initX, initY, initW, initH);// | WS_THICKFRAME | WS_MAXIMIZEBOX
+	this->InitControl(((UI::Win::WinCore*)this->ui.Ptr())->GetHInst(), parent, L"WinForm", (const UTF8Char*)"Form", WS_OVERLAPPED | WS_SYSMENU | WS_MINIMIZEBOX, 0, initX, initY, initW, initH);// | WS_THICKFRAME | WS_MAXIMIZEBOX
 	this->SetFont(0, 0, 0, false);
 	SetNoResize(false);
 }
@@ -551,7 +551,7 @@ UI::GUIForm::~GUIForm()
 		}
 		if (Sync::Interlocked::DecrementI32(useCnt) == 0)
 		{
-			Deinit(((UI::GUICoreWin*)this->ui.Ptr())->GetHInst());
+			Deinit(((UI::Win::WinCore*)this->ui.Ptr())->GetHInst());
 		}
 		if (this->hAcc)
 		{
@@ -877,7 +877,7 @@ void UI::GUIForm::HandleDropFiles(FileEvent handler, void *userObj)
 	if (this->dropFileHandlers.GetCount() == 0)
 	{
 		OSInt style = GetWindowLongPtr((HWND)this->hwnd, GWL_EXSTYLE);
-		UI::GUICoreWin::MSSetWindowObj(this->hwnd, GWL_EXSTYLE, style | WS_EX_ACCEPTFILES);
+		UI::Win::WinCore::MSSetWindowObj(this->hwnd, GWL_EXSTYLE, style | WS_EX_ACCEPTFILES);
 	}
 #endif
 	this->dropFileHandlers.Add(handler);

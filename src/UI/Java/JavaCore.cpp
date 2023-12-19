@@ -4,10 +4,10 @@
 //#include "Media/JavaDrawEngine.h"
 #include "Media/DrawEngineFactory.h"
 #include "UI/GUICore.h"
-#include "UI/GUICoreJava.h"
 #include "UI/Java/JavaButton.h"
 #include "UI/Java/JavaCheckedListBox.h"
 #include "UI/Java/JavaComboBox.h"
+#include "UI/Java/JavaCore.h"
 #include "UI/Java/JavaGroupBox.h"
 #include "UI/Java/JavaHSplitter.h"
 #include "UI/Java/JavaLabel.h"
@@ -21,19 +21,17 @@ extern "C"
 	extern void *jniEnv;
 }
 
-UI::GUICoreJava::GUICoreJava()
+UI::Java::JavaCore::JavaCore()
 {
 	this->monMgr = 0;
 	this->toExit = false;
-	NEW_CLASS(this->waitEvt, Sync::Event(true));
 }
 
-UI::GUICoreJava::~GUICoreJava()
+UI::Java::JavaCore::~JavaCore()
 {
-	DEL_CLASS(this->waitEvt);
 }
 
-void UI::GUICoreJava::Run()
+void UI::Java::JavaCore::Run()
 {
 	JNIEnv *env = (JNIEnv*)jniEnv;
 	jclass eqCls = env->FindClass("java/awt/EventQueue");
@@ -53,7 +51,7 @@ void UI::GUICoreJava::Run()
 		printf("Run Dispatch Thread\r\n");
 		while (!this->toExit)
 		{
-			this->waitEvt->Wait(1000);
+			this->waitEvt.Wait(1000);
 		}
 		printf("Run Dispatch Thread End\r\n");
 		mid = env->GetMethodID(eqCls, "pop", "()V");
@@ -64,34 +62,34 @@ void UI::GUICoreJava::Run()
 		printf("Run\r\n");
 		while (!this->toExit)
 		{
-			this->waitEvt->Wait(1000);
+			this->waitEvt.Wait(1000);
 		}
 		printf("Run End\r\n");
 	}
 }
 
-void UI::GUICoreJava::ProcessMessages()
+void UI::Java::JavaCore::ProcessMessages()
 {
 }
 
-void UI::GUICoreJava::WaitForMessages()
+void UI::Java::JavaCore::WaitForMessages()
 {
 }
 
-void UI::GUICoreJava::Exit()
+void UI::Java::JavaCore::Exit()
 {
 	this->toExit = true;
-	this->waitEvt->Set();
+	this->waitEvt.Set();
 }
 
-NotNullPtr<Media::DrawEngine> UI::GUICoreJava::CreateDrawEngine()
+NotNullPtr<Media::DrawEngine> UI::Java::JavaCore::CreateDrawEngine()
 {
 //	NotNullPtr<Media::DrawEngine> deng = 0;
 //	NEW_CLASS(deng, Media::GTKDrawEngine());
 	return Media::DrawEngineFactory::CreateDrawEngine();
 }
 
-Double UI::GUICoreJava::GetMagnifyRatio(MonitorHandle *hMonitor)
+Double UI::Java::JavaCore::GetMagnifyRatio(MonitorHandle *hMonitor)
 {
 /*	Double v = gdk_screen_get_resolution(gdk_screen_get_default());
 	if (v <= 0)
@@ -100,23 +98,23 @@ Double UI::GUICoreJava::GetMagnifyRatio(MonitorHandle *hMonitor)
 	return 1.0;
 }
 
-void UI::GUICoreJava::UseDevice(Bool useSystem, Bool useDisplay)
+void UI::Java::JavaCore::UseDevice(Bool useSystem, Bool useDisplay)
 {
 }
 
-void UI::GUICoreJava::SetNoDisplayOff(Bool noDispOff)
+void UI::Java::JavaCore::SetNoDisplayOff(Bool noDispOff)
 {
 }
 
-void UI::GUICoreJava::DisplayOff()
+void UI::Java::JavaCore::DisplayOff()
 {
 }
 
-void UI::GUICoreJava::Suspend()
+void UI::Java::JavaCore::Suspend()
 {
 }
 
-Math::Size2D<UOSInt> UI::GUICoreJava::GetDesktopSize()
+Math::Size2D<UOSInt> UI::Java::JavaCore::GetDesktopSize()
 {
 	JNIEnv *env = (JNIEnv*)jniEnv;
 	jclass cls;
@@ -136,7 +134,7 @@ Math::Size2D<UOSInt> UI::GUICoreJava::GetDesktopSize()
 	return Math::Size2D<UOSInt>(w, h);
 }
 
-Math::Coord2D<OSInt> UI::GUICoreJava::GetCursorPos()
+Math::Coord2D<OSInt> UI::Java::JavaCore::GetCursorPos()
 {
 	JNIEnv *env = (JNIEnv*)jniEnv;
 	jclass cls;
@@ -157,11 +155,11 @@ Math::Coord2D<OSInt> UI::GUICoreJava::GetCursorPos()
 	return Math::Coord2D<OSInt>(x, y);
 }
 
-void UI::GUICoreJava::SetDisplayRotate(MonitorHandle *hMonitor, DisplayRotation rot)
+void UI::Java::JavaCore::SetDisplayRotate(MonitorHandle *hMonitor, DisplayRotation rot)
 {
 }
 
-void UI::GUICoreJava::GetMonitorDPIs(MonitorHandle *hMonitor, Double *hdpi, Double *ddpi)
+void UI::Java::JavaCore::GetMonitorDPIs(MonitorHandle *hMonitor, Double *hdpi, Double *ddpi)
 {
 	if (this->monMgr)
 	{
@@ -179,74 +177,74 @@ void UI::GUICoreJava::GetMonitorDPIs(MonitorHandle *hMonitor, Double *hdpi, Doub
 	}
 }
 
-void UI::GUICoreJava::SetMonitorMgr(Media::MonitorMgr *monMgr)
+void UI::Java::JavaCore::SetMonitorMgr(Media::MonitorMgr *monMgr)
 {
 	this->monMgr = monMgr;
 }
 
-Media::MonitorMgr *UI::GUICoreJava::GetMonitorMgr()
+Media::MonitorMgr *UI::Java::JavaCore::GetMonitorMgr()
 {
 	return this->monMgr;
 }
 
-Bool UI::GUICoreJava::IsForwarded()
+Bool UI::Java::JavaCore::IsForwarded()
 {
 	return getenv("SSH_CLIENT") != 0;
 }
 
-void UI::GUICoreJava::ShowMsgOK(Text::CStringNN message, Text::CStringNN title, Optional<UI::GUIControl> ctrl)
+void UI::Java::JavaCore::ShowMsgOK(Text::CStringNN message, Text::CStringNN title, Optional<UI::GUIControl> ctrl)
 {
 	UI::Java::JavaMessageDialog::ShowOK((JNIEnv*)jniEnv, message, title, ctrl);
 }
 
-Bool UI::GUICoreJava::ShowMsgYesNo(Text::CStringNN message, Text::CStringNN title, Optional<UI::GUIControl> ctrl)
+Bool UI::Java::JavaCore::ShowMsgYesNo(Text::CStringNN message, Text::CStringNN title, Optional<UI::GUIControl> ctrl)
 {
 	return UI::Java::JavaMessageDialog::ShowYesNo((JNIEnv*)jniEnv, message, title, ctrl);
 }
 
-NotNullPtr<UI::GUIButton> UI::GUICoreJava::NewButton(NotNullPtr<GUIClientControl> parent, Text::CStringNN text)
+NotNullPtr<UI::GUIButton> UI::Java::JavaCore::NewButton(NotNullPtr<GUIClientControl> parent, Text::CStringNN text)
 {
 	NotNullPtr<UI::Java::JavaButton> ctrl;
 	NEW_CLASSNN(ctrl, UI::Java::JavaButton(*this, parent, text));
 	return ctrl;
 }
 
-NotNullPtr<UI::GUICheckedListBox> UI::GUICoreJava::NewCheckedListBox(NotNullPtr<GUIClientControl> parent)
+NotNullPtr<UI::GUICheckedListBox> UI::Java::JavaCore::NewCheckedListBox(NotNullPtr<GUIClientControl> parent)
 {
 	NotNullPtr<UI::Java::JavaCheckedListBox> ctrl;
 	NEW_CLASSNN(ctrl, UI::Java::JavaCheckedListBox(*this, parent));
 	return ctrl;
 }
 
-NotNullPtr<UI::GUIComboBox> UI::GUICoreJava::NewComboBox(NotNullPtr<GUIClientControl> parent, Bool allowEdit)
+NotNullPtr<UI::GUIComboBox> UI::Java::JavaCore::NewComboBox(NotNullPtr<GUIClientControl> parent, Bool allowEdit)
 {
 	NotNullPtr<UI::Java::JavaComboBox> ctrl;
 	NEW_CLASSNN(ctrl, UI::Java::JavaComboBox(*this, parent, allowEdit));
 	return ctrl;
 }
 
-NotNullPtr<UI::GUIGroupBox> UI::GUICoreJava::NewGroupBox(NotNullPtr<GUIClientControl> parent, Text::CStringNN text)
+NotNullPtr<UI::GUIGroupBox> UI::Java::JavaCore::NewGroupBox(NotNullPtr<GUIClientControl> parent, Text::CStringNN text)
 {
 	NotNullPtr<UI::Java::JavaGroupBox> ctrl;
 	NEW_CLASSNN(ctrl, UI::Java::JavaGroupBox(*this, parent, text));
 	return ctrl;
 }
 
-NotNullPtr<UI::GUILabel> UI::GUICoreJava::NewLabel(NotNullPtr<GUIClientControl> parent, Text::CStringNN text)
+NotNullPtr<UI::GUILabel> UI::Java::JavaCore::NewLabel(NotNullPtr<GUIClientControl> parent, Text::CStringNN text)
 {
 	NotNullPtr<UI::Java::JavaLabel> ctrl;
 	NEW_CLASSNN(ctrl, UI::Java::JavaLabel(*this, parent, text));
 	return ctrl;
 }
 
-NotNullPtr<UI::GUIHSplitter> UI::GUICoreJava::NewHSplitter(NotNullPtr<GUIClientControl> parent, Int32 width, Bool isRight)
+NotNullPtr<UI::GUIHSplitter> UI::Java::JavaCore::NewHSplitter(NotNullPtr<GUIClientControl> parent, Int32 width, Bool isRight)
 {
 	NotNullPtr<UI::Java::JavaHSplitter> ctrl;
 	NEW_CLASSNN(ctrl, UI::Java::JavaHSplitter(*this, parent, width, isRight));
 	return ctrl;
 }
 
-NotNullPtr<UI::GUIVSplitter> UI::GUICoreJava::NewVSplitter(NotNullPtr<GUIClientControl> parent, Int32 height, Bool isBottom)
+NotNullPtr<UI::GUIVSplitter> UI::Java::JavaCore::NewVSplitter(NotNullPtr<GUIClientControl> parent, Int32 height, Bool isBottom)
 {
 	NotNullPtr<UI::Java::JavaVSplitter> ctrl;
 	NEW_CLASSNN(ctrl, UI::Java::JavaVSplitter(*this, parent, height, isBottom));

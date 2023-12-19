@@ -19,8 +19,8 @@
 #include "Media/Resizer/LanczosResizerH8_8.h"
 #include "Sync/Interlocked.h"
 #include "UI/GUIClientControl.h"
-#include "UI/GUICoreWin.h"
 #include "UI/GUICustomDraw.h"
+#include "UI/Win/WinCore.h"
 #include <windows.h>
 
 #define CLASSNAME L"CustomDraw"
@@ -234,7 +234,7 @@ UI::GUICustomDraw::GUICustomDraw(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIC
 
 	if (Sync::Interlocked::IncrementI32(useCnt) == 1)
 	{
-		Init(((UI::GUICoreWin*)this->ui.Ptr())->GetHInst());
+		Init(((UI::Win::WinCore*)this->ui.Ptr())->GetHInst());
 	}
 
 	UInt32 style = WS_CHILD;
@@ -242,7 +242,7 @@ UI::GUICustomDraw::GUICustomDraw(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIC
 	{
 		style = style | WS_VISIBLE;
 	}
-	this->InitControl(((UI::GUICoreWin*)this->ui.Ptr())->GetHInst(), parent, CLASSNAME, (const UTF8Char*)"MapControl", style, 0, 0, 0, 640, 480);
+	this->InitControl(((UI::Win::WinCore*)this->ui.Ptr())->GetHInst(), parent, CLASSNAME, (const UTF8Char*)"MapControl", style, 0, 0, 0, 640, 480);
 	this->InitJS();
 	SetTimer((HWND)this->hwnd, 1000, 18, 0);
 }
@@ -252,7 +252,7 @@ UI::GUICustomDraw::~GUICustomDraw()
 	DEL_CLASS(this->lib);
 	if (Sync::Interlocked::DecrementI32(useCnt) == 0)
 	{
-		Deinit(((UI::GUICoreWin*)this->ui.Ptr())->GetHInst());
+		Deinit(((UI::Win::WinCore*)this->ui.Ptr())->GetHInst());
 	}
 }
 

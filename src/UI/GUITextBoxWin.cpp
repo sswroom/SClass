@@ -3,8 +3,8 @@
 #include "Data/ArrayList.h"
 #include "Text/MyString.h"
 #include "Text/MyStringW.h"
-#include "UI/GUICoreWin.h"
 #include "UI/GUITextBox.h"
+#include "UI/Win/WinCore.h"
 
 #include <windows.h>
 #ifndef _WIN32_WCE
@@ -18,7 +18,7 @@ UI::GUITextBox::GUITextBox(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIClientC
 	{
 		style = style | WS_VISIBLE;
 	}
-	this->InitControl(((UI::GUICoreWin*)ui.Ptr())->GetHInst(), parent, L"EDIT", initText.v, style, WS_EX_CLIENTEDGE, 0, 0, 200, 28);
+	this->InitControl(((UI::Win::WinCore*)ui.Ptr())->GetHInst(), parent, L"EDIT", initText.v, style, WS_EX_CLIENTEDGE, 0, 0, 200, 28);
 }
 
 UI::GUITextBox::GUITextBox(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, Text::CStringNN initText, Bool isMultiline) : UI::GUIControl(ui, parent)
@@ -32,7 +32,7 @@ UI::GUITextBox::GUITextBox(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIClientC
 	{
 		style |= ES_WANTRETURN | ES_MULTILINE | ES_AUTOVSCROLL | WS_VSCROLL;
 	}
-	this->InitControl(((UI::GUICoreWin*)ui.Ptr())->GetHInst(), parent, L"EDIT", initText.v, style, WS_EX_CLIENTEDGE, 0, 0, 200, 28);
+	this->InitControl(((UI::Win::WinCore*)ui.Ptr())->GetHInst(), parent, L"EDIT", initText.v, style, WS_EX_CLIENTEDGE, 0, 0, 200, 28);
 }
 
 UI::GUITextBox::~GUITextBox()

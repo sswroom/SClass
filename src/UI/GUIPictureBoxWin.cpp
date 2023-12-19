@@ -4,8 +4,8 @@
 #include "Media/GDIEngine.h"
 #include "Media/Resizer/LanczosResizer8_C8.h"
 #include "UI/GUIClientControl.h"
-#include "UI/GUICoreWin.h"
 #include "UI/GUIPictureBox.h"
+#include "UI/Win/WinCore.h"
 #include <windows.h>
 
 #define CLASSNAME L"PictureBox"
@@ -180,7 +180,7 @@ UI::GUIPictureBox::GUIPictureBox(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIC
 
 	if (Sync::Interlocked::IncrementI32(useCnt) == 1)
 	{
-		Init(((UI::GUICoreWin*)this->ui.Ptr())->GetHInst());
+		Init(((UI::Win::WinCore*)this->ui.Ptr())->GetHInst());
 	}
 
 	UInt32 style = WS_CLIPSIBLINGS | WS_CHILD;
@@ -188,7 +188,7 @@ UI::GUIPictureBox::GUIPictureBox(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIC
 	{
 		style = style | WS_VISIBLE;
 	}
-	this->InitControl(((UI::GUICoreWin*)this->ui.Ptr())->GetHInst(), parent, CLASSNAME, (const UTF8Char*)"", style, 0, 0, 0, 200, 200);
+	this->InitControl(((UI::Win::WinCore*)this->ui.Ptr())->GetHInst(), parent, CLASSNAME, (const UTF8Char*)"", style, 0, 0, 0, 200, 200);
 	Media::ColorProfile color(Media::ColorProfile::CPT_SRGB);
 	NEW_CLASS(this->resizer, Media::Resizer::LanczosResizer8_C8(4, 3, color, color, 0, Media::AT_NO_ALPHA));
 	this->resizer->SetResizeAspectRatio(Media::IImgResizer::RAR_SQUAREPIXEL);
@@ -206,7 +206,7 @@ UI::GUIPictureBox::~GUIPictureBox()
 	}
 	if (Sync::Interlocked::DecrementI32(useCnt) == 0)
 	{
-		Deinit(((UI::GUICoreWin*)this->ui.Ptr())->GetHInst());
+		Deinit(((UI::Win::WinCore*)this->ui.Ptr())->GetHInst());
 	}
 }
 

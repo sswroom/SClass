@@ -5,8 +5,8 @@
 #include "Text/MyString.h"
 #include "Text/MyStringW.h"
 #include "Text/StringBuilderUTF8.h"
-#include "UI/GUICoreWin.h"
 #include "UI/Win/WinComboBox.h"
+#include "UI/Win/WinCore.h"
 
 #include <windows.h>
 #include <commctrl.h>
@@ -28,7 +28,7 @@ UI::Win::WinComboBox::WinComboBox(NotNullPtr<GUICore> ui, NotNullPtr<UI::GUIClie
 	{
 		style = style | CBS_DROPDOWNLIST;
 	}
-	this->InitControl(((GUICoreWin*)ui.Ptr())->GetHInst(), parent, L"COMBOBOX", (const UTF8Char*)"", style, 0, 0, 0, 200, 28);
+	this->InitControl(((UI::Win::WinCore*)ui.Ptr())->GetHInst(), parent, L"COMBOBOX", (const UTF8Char*)"", style, 0, 0, 0, 200, 28);
 	if (allowTyping)
 	{
 		SendMessage((HWND)this->hwnd, CB_LIMITTEXT, 0, 0);

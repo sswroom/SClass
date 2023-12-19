@@ -39,9 +39,6 @@ UI/GUIClientControl.h:
 @GUIClientControlGTK.o
 UI/GUIControl.h:
 @GUIControlGTK.o
-UI/GUICore.h:
-UI/GUICoreGTK.h:
-@GUICoreGTK.o
 UI/GUICustomDraw.h:
 @GUICustomDrawGTK.o
 UI/GUICustomDrawVScroll.h:

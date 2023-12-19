@@ -4646,6 +4646,7 @@ UI/GUIComboBox.h:
 @GUIComboBox.o
 UI/GUIComboBoxUtil.h:
 @GUIComboBoxUtil.o
+UI/GUICore.h:
 UI/GUIDObjArea.h:
 @GUIDObjArea.o
 UI/GUIGroupBox.h:
@@ -4714,6 +4715,8 @@ UI/GTK/GTKCheckedListBox.h:
 @GTKCheckedListBox.o
 UI/GTK/GTKComboBox.h:
 @GTKComboBox.o
+UI/GTK/GTKCore.h:
+@GTKCore.o
 UI/GTK/GTKDragDrop.h:
 @GTKDragDrop.o
 UI/GTK/GTKGroupBox.h:
@@ -4734,6 +4737,8 @@ UI/Java/JavaCheckedListBox.h:
 @JavaCheckedListBox.o
 UI/Java/JavaComboBox.h:
 JavaComboBox.o
+UI/Java/JavaCore.h:
+@JavaCore.o
 UI/Java/JavaGroupBox.h:
 JavaGroupBox.o
 UI/Java/JavaHSplitter.h:
@@ -4752,6 +4757,8 @@ UI/Win/WinCheckedListBox.h:
 @WinCheckedListBox.o
 UI/Win/WinComboBox.h:
 @WinComboBox.o
+UI/Win/WinCore.h:
+@WinCore.o
 UI/Win/WinDragDrop.h:
 @WinDragDrop.o
 UI/Win/WinGroupBox.h:

@@ -3,8 +3,8 @@
 #include "Media/GDIEngine.h"
 #include "Sync/Interlocked.h"
 #include "UI/GUIClientControl.h"
-#include "UI/GUICoreWin.h"
 #include "UI/GUIPictureBoxSimple.h"
+#include "UI/Win/WinCore.h"
 #include <windows.h>
 
 #define CLASSNAME L"PictureBoxSimle"
@@ -16,7 +16,7 @@ Int32 UI::GUIPictureBoxSimple::useCnt = 0;
 
 OSInt __stdcall UI::GUIPictureBoxSimple::PBWndProc(void *hWnd, UInt32 msg, UOSInt wParam, OSInt lParam)
 {
-	UI::GUIPictureBoxSimple *me = (UI::GUIPictureBoxSimple*)UI::GUICoreWin::MSGetWindowObj((ControlHandle*)hWnd, GWL_USERDATA);
+	UI::GUIPictureBoxSimple *me = (UI::GUIPictureBoxSimple*)UI::Win::WinCore::MSGetWindowObj((ControlHandle*)hWnd, GWL_USERDATA);
 	UOSInt i;
 	switch (msg)
 	{
@@ -195,7 +195,7 @@ UI::GUIPictureBoxSimple::GUIPictureBoxSimple(NotNullPtr<UI::GUICore> ui, NotNull
 
 	if (Sync::Interlocked::IncrementI32(useCnt) == 1)
 	{
-		Init(((UI::GUICoreWin*)this->ui.Ptr())->GetHInst());
+		Init(((UI::Win::WinCore*)this->ui.Ptr())->GetHInst());
 	}
 
 	UInt32 style = WS_CLIPSIBLINGS | WS_CHILD;
@@ -203,7 +203,7 @@ UI::GUIPictureBoxSimple::GUIPictureBoxSimple(NotNullPtr<UI::GUICore> ui, NotNull
 	{
 		style = style | WS_VISIBLE;
 	}
-	this->InitControl(((UI::GUICoreWin*)this->ui.Ptr())->GetHInst(), parent, CLASSNAME, (const UTF8Char*)"", style, 0, 0, 0, 200, 200);
+	this->InitControl(((UI::Win::WinCore*)this->ui.Ptr())->GetHInst(), parent, CLASSNAME, (const UTF8Char*)"", style, 0, 0, 0, 200, 200);
 }
 
 UI::GUIPictureBoxSimple::~GUIPictureBoxSimple()
@@ -216,7 +216,7 @@ UI::GUIPictureBoxSimple::~GUIPictureBoxSimple()
 	}
 	if (Sync::Interlocked::DecrementI32(useCnt) == 0)
 	{
-		Deinit(((UI::GUICoreWin*)this->ui.Ptr())->GetHInst());
+		Deinit(((UI::Win::WinCore*)this->ui.Ptr())->GetHInst());
 	}
 }
 

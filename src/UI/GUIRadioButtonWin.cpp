@@ -2,8 +2,8 @@
 #include "MyMemory.h"
 #include "Text/MyString.h"
 #include "Data/ArrayList.h"
-#include "UI/GUICoreWin.h"
 #include "UI/GUIRadioButton.h"
+#include "UI/Win/WinCore.h"
 
 #include <windows.h>
 
@@ -35,7 +35,7 @@ UI::GUIRadioButton::GUIRadioButton(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GU
 	{
 		style = style | WS_VISIBLE;
 	}
-	this->InitControl(((UI::GUICoreWin*)ui.Ptr())->GetHInst(), parent, L"BUTTON", initText.v, style, 0, 0, 0, 200, 28);
+	this->InitControl(((UI::Win::WinCore*)ui.Ptr())->GetHInst(), parent, L"BUTTON", initText.v, style, 0, 0, 0, 200, 28);
 	if (selected)
 		Select();
 }

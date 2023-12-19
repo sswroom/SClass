@@ -38,9 +38,6 @@ UI/GUIClientControl.h:
 @GUIClientControlWin.o
 UI/GUIControl.h:
 @GUIControlWin.o
-UI/GUICore.h:
-UI/GUICoreWin.h:
-@GUICoreWin.o
 UI/GUICustomDraw.h:
 @GUICustomDrawWin.o
 UI/GUICustomDrawVScroll.h:

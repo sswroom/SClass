@@ -2,8 +2,8 @@
 #include "MyMemory.h"
 #include "Text/MyString.h"
 #include "Text/MyStringW.h"
-#include "UI/GUICoreWin.h"
 #include "UI/GUITreeView.h"
+#include "UI/Win/WinCore.h"
 #include <windows.h>
 #include <commctrl.h>
 
@@ -173,8 +173,8 @@ UI::GUITreeView::GUITreeView(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIClien
 	{
 		style = style | WS_VISIBLE;
 	}
-	this->InitControl(((UI::GUICoreWin*)ui.Ptr())->GetHInst(), parent, WC_TREEVIEWW, (const UTF8Char*)"TreeView", style, WS_EX_CLIENTEDGE, 0, 0, sz.x, sz.y);
-	this->oriWndProc = (void*)UI::GUICoreWin::MSSetWindowObj(this->hwnd, GWLP_WNDPROC, (OSInt)TVWndProc);
+	this->InitControl(((UI::Win::WinCore*)ui.Ptr())->GetHInst(), parent, WC_TREEVIEWW, (const UTF8Char*)"TreeView", style, WS_EX_CLIENTEDGE, 0, 0, sz.x, sz.y);
+	this->oriWndProc = (void*)UI::Win::WinCore::MSSetWindowObj(this->hwnd, GWLP_WNDPROC, (OSInt)TVWndProc);
 	this->autoFocus = false;
 	this->editing = false;
 	this->draging = false;
@@ -182,7 +182,7 @@ UI::GUITreeView::GUITreeView(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIClien
 
 UI::GUITreeView::~GUITreeView()
 {
-	UI::GUICoreWin::MSSetWindowObj(this->hwnd, GWLP_WNDPROC, (OSInt)this->oriWndProc);
+	UI::Win::WinCore::MSSetWindowObj(this->hwnd, GWLP_WNDPROC, (OSInt)this->oriWndProc);
 	FreeItems();
 }
 

@@ -2,9 +2,9 @@
 #include "MyMemory.h"
 #include "Text/MyString.h"
 #include "Text/MyStringW.h"
-#include "UI/GUICoreWin.h"
 #include "UI/GUITabControl.h"
 #include "UI/GUITabPage.h"
+#include "UI/Win/WinCore.h"
 #include <windows.h>
 #include <commctrl.h>
 
@@ -19,13 +19,13 @@
 
 OSInt __stdcall UI::GUITabControl::TCWndProc(void *hWnd, UInt32 msg, UOSInt wParam, OSInt lParam)
 {
-	UI::GUITabControl *me = (UI::GUITabControl*)UI::GUICoreWin::MSGetWindowObj((ControlHandle*)hWnd, GWL_USERDATA);
+	UI::GUITabControl *me = (UI::GUITabControl*)UI::Win::WinCore::MSGetWindowObj((ControlHandle*)hWnd, GWL_USERDATA);
 	UI::GUIControl*ctrl;
 	NMHDR *nmhdr;
 	switch (msg)
 	{
 	case WM_COMMAND:
-		ctrl = (UI::GUIControl*)UI::GUICoreWin::MSGetWindowObj((ControlHandle*)lParam, GWL_USERDATA);
+		ctrl = (UI::GUIControl*)UI::Win::WinCore::MSGetWindowObj((ControlHandle*)lParam, GWL_USERDATA);
 		if (ctrl)
 		{
 			ctrl->OnNotify(HIWORD(wParam), 0);
@@ -33,7 +33,7 @@ OSInt __stdcall UI::GUITabControl::TCWndProc(void *hWnd, UInt32 msg, UOSInt wPar
 		break;
 	case WM_NOTIFY:
 		nmhdr = (NMHDR*)lParam;
-		ctrl = (UI::GUIControl*)UI::GUICoreWin::MSGetWindowObj((ControlHandle*)nmhdr->hwndFrom, GWL_USERDATA);
+		ctrl = (UI::GUIControl*)UI::Win::WinCore::MSGetWindowObj((ControlHandle*)nmhdr->hwndFrom, GWL_USERDATA);
 		if (ctrl)
 		{
 			ctrl->OnNotify(nmhdr->code, (void*)lParam);
@@ -91,18 +91,18 @@ UI::GUITabControl::GUITabControl(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIC
 		style = style | WS_VISIBLE;
 	}
 	Math::Size2DDbl sz = parent->GetClientSize();
-	this->InitControl(((UI::GUICoreWin*)ui.Ptr())->GetHInst(), parent, WC_TABCONTROLW, (const UTF8Char*)"", style, WS_EX_CONTROLPARENT, 0, 0, sz.x, sz.y);
-	this->oriWndProc = (void*)UI::GUICoreWin::MSSetWindowObj(this->hwnd, GWLP_WNDPROC, (OSInt)TCWndProc);
+	this->InitControl(((UI::Win::WinCore*)ui.Ptr())->GetHInst(), parent, WC_TABCONTROLW, (const UTF8Char*)"", style, WS_EX_CONTROLPARENT, 0, 0, sz.x, sz.y);
+	this->oriWndProc = (void*)UI::Win::WinCore::MSSetWindowObj(this->hwnd, GWLP_WNDPROC, (OSInt)TCWndProc);
 	this->selIndex = 0;
 
 	WNDCLASSW wc;
-	GetClassInfoW((HINSTANCE)((UI::GUICoreWin*)ui.Ptr())->GetHInst(), WC_TABCONTROLW, &wc);
+	GetClassInfoW((HINSTANCE)((UI::Win::WinCore*)ui.Ptr())->GetHInst(), WC_TABCONTROLW, &wc);
 	this->hbrBackground = wc.hbrBackground;
 }
 
 UI::GUITabControl::~GUITabControl()
 {
-	UI::GUICoreWin::MSSetWindowObj(this->hwnd, GWLP_WNDPROC, (OSInt)this->oriWndProc);
+	UI::Win::WinCore::MSSetWindowObj(this->hwnd, GWLP_WNDPROC, (OSInt)this->oriWndProc);
 	this->tabPages.DeleteAll();
 }
 

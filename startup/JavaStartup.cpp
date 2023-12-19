@@ -3,7 +3,7 @@
 #include "Core/Core.h"
 #include "Text/MyString.h"
 #include "Text/MyStringW.h"
-#include "UI/GUICoreJava.h"
+#include "UI/Java/JavaCore.h"
 #include <jni.h>
 #include <stdio.h>
 
@@ -35,8 +35,8 @@ void __stdcall LinuxProgControl_WaitForExit(NotNullPtr<Core::IProgControl> progC
 
 UI::GUICore *__stdcall Core::IProgControl::CreateGUICore(NotNullPtr<Core::IProgControl> progCtrl)
 {
-	UI::GUICore *ui;
-	NEW_CLASS(ui, UI::GUICoreJava());
+	UI::Java::JavaCore *ui;
+	NEW_CLASS(ui, UI::Java::JavaCore());
 	return ui;
 }
 

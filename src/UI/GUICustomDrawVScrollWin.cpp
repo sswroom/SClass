@@ -3,8 +3,8 @@
 #include "Media/GDIEngine.h"
 #include "Sync/Interlocked.h"
 #include "Text/MyString.h"
-#include "UI/GUICoreWin.h"
 #include "UI/GUICustomDrawVScroll.h"
+#include "UI/Win/WinCore.h"
 
 #include <windows.h>
 
@@ -176,7 +176,7 @@ UI::GUICustomDrawVScroll::GUICustomDrawVScroll(NotNullPtr<UI::GUICore> ui, NotNu
 {
 	if (Sync::Interlocked::IncrementI32(useCnt) == 1)
 	{
-		Init(((UI::GUICoreWin*)this->ui.Ptr())->GetHInst());
+		Init(((UI::Win::WinCore*)this->ui.Ptr())->GetHInst());
 	}
 	this->deng = deng;
 
@@ -185,14 +185,14 @@ UI::GUICustomDrawVScroll::GUICustomDrawVScroll(NotNullPtr<UI::GUICore> ui, NotNu
 	{
 		style = style | WS_VISIBLE;
 	}
-	this->InitControl(((UI::GUICoreWin*)ui.Ptr())->GetHInst(), parent, CLASSNAME, (const UTF8Char*)"", style, 0, 0, 0, 200, 200);
+	this->InitControl(((UI::Win::WinCore*)ui.Ptr())->GetHInst(), parent, CLASSNAME, (const UTF8Char*)"", style, 0, 0, 0, 200, 200);
 }
 
 UI::GUICustomDrawVScroll::~GUICustomDrawVScroll()
 {
 	if (Sync::Interlocked::DecrementI32(useCnt) == 0)
 	{
-		Deinit(((UI::GUICoreWin*)this->ui.Ptr())->GetHInst());
+		Deinit(((UI::Win::WinCore*)this->ui.Ptr())->GetHInst());
 	}
 }
 

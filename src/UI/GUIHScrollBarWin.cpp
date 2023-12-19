@@ -3,8 +3,8 @@
 #include "Math/Math.h"
 #include "Sync/Interlocked.h"
 #include "UI/GUIClientControl.h"
-#include "UI/GUICoreWin.h"
 #include "UI/GUIHScrollBar.h"
+#include "UI/Win/WinCore.h"
 #include <windows.h>
 
 #define CLASSNAME L"SSWRSBAR"
@@ -90,7 +90,7 @@ UI::GUIHScrollBar::GUIHScrollBar(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIC
 {
 	if (Sync::Interlocked::IncrementI32(useCnt) == 1)
 	{
-		Init(((UI::GUICoreWin*)this->ui.Ptr())->GetHInst());
+		Init(((UI::Win::WinCore*)this->ui.Ptr())->GetHInst());
 	}
 
 	UInt32 style = WS_CHILD| WS_HSCROLL | WS_TABSTOP;
@@ -98,14 +98,14 @@ UI::GUIHScrollBar::GUIHScrollBar(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIC
 	{
 		style = style | WS_VISIBLE;
 	}
-	this->InitControl(((UI::GUICoreWin*)ui.Ptr())->GetHInst(), parent, CLASSNAME, 0, style, 0, 0, 0, width, GetSystemMetrics(SM_CYHSCROLL) + 1);
+	this->InitControl(((UI::Win::WinCore*)ui.Ptr())->GetHInst(), parent, CLASSNAME, 0, style, 0, 0, 0, width, GetSystemMetrics(SM_CYHSCROLL) + 1);
 }
 
 UI::GUIHScrollBar::~GUIHScrollBar()
 {
 	if (Sync::Interlocked::DecrementI32(useCnt) == 0)
 	{
-		Deinit(((UI::GUICoreWin*)this->ui.Ptr())->GetHInst());
+		Deinit(((UI::Win::WinCore*)this->ui.Ptr())->GetHInst());
 	}
 }
 
