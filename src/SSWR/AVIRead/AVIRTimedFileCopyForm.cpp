@@ -230,7 +230,7 @@ SSWR::AVIRead::AVIRTimedFileCopyForm::AVIRTimedFileCopyForm(UI::GUIClientControl
 
 	this->lblFileDir = ui->NewLabel(*this, CSTR("File Dir"));
 	this->lblFileDir->SetRect(4, 4, 100, 23, false);
-	NEW_CLASS(this->txtFileDir, UI::GUITextBox(ui, *this, CSTR("")));
+	this->txtFileDir = ui->NewTextBox(*this, CSTR(""));
 	this->txtFileDir->SetRect(104, 4, 400, 23, false);
 	this->lblStartTime = ui->NewLabel(*this, CSTR("Start Time"));
 	this->lblStartTime->SetRect(4, 28, 100, 23, false);

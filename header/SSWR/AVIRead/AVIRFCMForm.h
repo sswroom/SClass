@@ -14,14 +14,14 @@ namespace SSWR
 		{
 		private:
 			NotNullPtr<UI::GUILabel> lblAPIKey;
-			UI::GUITextBox *txtAPIKey;
+			NotNullPtr<UI::GUITextBox> txtAPIKey;
 			NotNullPtr<UI::GUILabel> lblDeviceToken;
-			UI::GUITextBox *txtDeviceToken;
+			NotNullPtr<UI::GUITextBox> txtDeviceToken;
 			NotNullPtr<UI::GUILabel> lblMessage;
-			UI::GUITextBox *txtMessage;
+			NotNullPtr<UI::GUITextBox> txtMessage;
 			NotNullPtr<UI::GUIButton> btnSend;
 			NotNullPtr<UI::GUILabel> lblStatus;
-			UI::GUITextBox *txtStatus;
+			NotNullPtr<UI::GUITextBox> txtStatus;
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			Optional<Net::SSLEngine> ssl;

@@ -24,12 +24,12 @@ namespace SSWR
 			NotNullPtr<UI::GUIPanel> pnlControl;
 			NotNullPtr<UI::GUIButton> btnScan;
 			NotNullPtr<UI::GUILabel> lblScanTime;
-			UI::GUITextBox *txtScanTime;
+			NotNullPtr<UI::GUITextBox> txtScanTime;
 			NotNullPtr<UI::GUILabel> lblResultTime;
-			UI::GUITextBox *txtResultTime;
+			NotNullPtr<UI::GUITextBox> txtResultTime;
 			UI::GUIListView *lvWifi;
 			NotNullPtr<UI::GUIVSplitter> vspWifi;
-			UI::GUITextBox *txtWifi;
+			NotNullPtr<UI::GUITextBox> txtWifi;
 
 			static void __stdcall OnScanClicked(void *userObj);
 			static void __stdcall OnWifiSelChg(void *userObj);

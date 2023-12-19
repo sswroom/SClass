@@ -19,15 +19,15 @@ namespace SSWR
 
 			NotNullPtr<UI::GUIPanel> pnlDiscId;
 			NotNullPtr<UI::GUILabel> lblDiscId;
-			UI::GUITextBox *txtDiscId;
+			NotNullPtr<UI::GUITextBox> txtDiscId;
 			NotNullPtr<UI::GUIButton> btnSearch;
 			NotNullPtr<UI::GUIPanel> pnlOut;
 			NotNullPtr<UI::GUILabel> lblDiscIdOut;
-			UI::GUITextBox *txtDiscIdOut;
+			NotNullPtr<UI::GUITextBox> txtDiscIdOut;
 			NotNullPtr<UI::GUILabel> lblDiscType;
-			UI::GUITextBox *txtDiscType;
+			NotNullPtr<UI::GUITextBox> txtDiscType;
 			NotNullPtr<UI::GUILabel> lblBurntDate;
-			UI::GUITextBox *txtBurntDate;
+			NotNullPtr<UI::GUITextBox> txtBurntDate;
 			UI::GUIListView *lvFiles;
 
 			static void __stdcall OnSearchClicked(void *userObj);

@@ -19,13 +19,13 @@ namespace SSWR
 			const SSWR::DiscDB::DiscDBEnv::DVDTypeInfo *currRec;
 
 			NotNullPtr<UI::GUILabel> lblID;
-			UI::GUITextBox *txtID;
+			NotNullPtr<UI::GUITextBox> txtID;
 			NotNullPtr<UI::GUIButton> btnNew;
 			NotNullPtr<UI::GUIButton> btnCancel;
 			NotNullPtr<UI::GUILabel> lblName;
-			UI::GUITextBox *txtName;
+			NotNullPtr<UI::GUITextBox> txtName;
 			NotNullPtr<UI::GUILabel> lblDescription;
-			UI::GUITextBox *txtDescription;
+			NotNullPtr<UI::GUITextBox> txtDescription;
 			NotNullPtr<UI::GUILabel> lblDisplay;
 			NotNullPtr<UI::GUIButton> btnPrev;
 			NotNullPtr<UI::GUIButton> btnSave;

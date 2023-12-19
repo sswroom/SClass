@@ -25,31 +25,31 @@ namespace SSWR
 			Crypto::Token::JWToken *token;
 			Crypto::Token::JWToken::VerifyType verifyType;
 
-			UI::GUITextBox *txtJWT;
+			NotNullPtr<UI::GUITextBox> txtJWT;
 			NotNullPtr<UI::GUIHSplitter> hspJWT;
 			NotNullPtr<UI::GUIPanel> pnlMain;
 			NotNullPtr<UI::GUIPanel> pnlResult;
 			NotNullPtr<UI::GUIButton> btnParse;
 			NotNullPtr<UI::GUILabel> lblParseStatus;
-			UI::GUITextBox *txtParseStatus;
+			NotNullPtr<UI::GUITextBox> txtParseStatus;
 			NotNullPtr<UI::GUILabel> lblVerifyType;
-			UI::GUITextBox *txtVerifyType;
+			NotNullPtr<UI::GUITextBox> txtVerifyType;
 			NotNullPtr<UI::GUILabel> lblVerifyStatus;
-			UI::GUITextBox *txtVerifyStatus;
+			NotNullPtr<UI::GUITextBox> txtVerifyStatus;
 			NotNullPtr<UI::GUILabel> lblIssuer;
-			UI::GUITextBox *txtIssuer;
+			NotNullPtr<UI::GUITextBox> txtIssuer;
 			NotNullPtr<UI::GUILabel> lblSubject;
-			UI::GUITextBox *txtSubject;
+			NotNullPtr<UI::GUITextBox> txtSubject;
 			NotNullPtr<UI::GUILabel> lblAudience;
-			UI::GUITextBox *txtAudience;
+			NotNullPtr<UI::GUITextBox> txtAudience;
 			NotNullPtr<UI::GUILabel> lblExpTime;
-			UI::GUITextBox *txtExpTime;
+			NotNullPtr<UI::GUITextBox> txtExpTime;
 			NotNullPtr<UI::GUILabel> lblNotBefore;
-			UI::GUITextBox *txtNotBefore;
+			NotNullPtr<UI::GUITextBox> txtNotBefore;
 			NotNullPtr<UI::GUILabel> lblIssueAt;
-			UI::GUITextBox *txtIssueAt;
+			NotNullPtr<UI::GUITextBox> txtIssueAt;
 			NotNullPtr<UI::GUILabel> lblJWTId;
-			UI::GUITextBox *txtJWTId;
+			NotNullPtr<UI::GUITextBox> txtJWTId;
 
 			UI::GUIListView *lvPayload;
 		

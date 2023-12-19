@@ -106,15 +106,15 @@ SSWR::AVIRead::AVIRSNMPClientForm::AVIRSNMPClientForm(UI::GUIClientControl *pare
 	this->pnlRequest->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->lblAgent = ui->NewLabel(this->pnlRequest, CSTR("Agent"));
 	this->lblAgent->SetRect(4, 4, 100, 23, false);
-	NEW_CLASS(this->txtAgent, UI::GUITextBox(ui, this->pnlRequest, CSTR("127.0.0.1")));
+	this->txtAgent = ui->NewTextBox(this->pnlRequest, CSTR("127.0.0.1"));
 	this->txtAgent->SetRect(104, 4, 150, 23, false);
 	this->lblCommunity = ui->NewLabel(this->pnlRequest, CSTR("Community"));
 	this->lblCommunity->SetRect(4, 28, 100, 23, false);
-	NEW_CLASS(this->txtCommunity, UI::GUITextBox(ui, this->pnlRequest, CSTR("public")));
+	this->txtCommunity = ui->NewTextBox(this->pnlRequest, CSTR("public"));
 	this->txtCommunity->SetRect(104, 28, 120, 23, false);
 	this->lblOID = ui->NewLabel(this->pnlRequest, CSTR("OID"));
 	this->lblOID->SetRect(4, 52, 100, 23, false);
-	NEW_CLASS(this->txtOID, UI::GUITextBox(ui, this->pnlRequest, CSTR("1.3.6.1.2.1")));
+	this->txtOID = ui->NewTextBox(this->pnlRequest, CSTR("1.3.6.1.2.1"));
 	this->txtOID->SetRect(104, 52, 200, 23, false);
 	this->lblCommandType = ui->NewLabel(this->pnlRequest, CSTR("Command Type"));
 	this->lblCommandType->SetRect(4, 76, 100, 23, false);

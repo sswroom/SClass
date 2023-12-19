@@ -21,17 +21,17 @@ namespace SSWR
 		{
 		private:
 			NotNullPtr<UI::GUILabel> lblStreamType;
-			UI::GUITextBox *txtStreamType;
+			NotNullPtr<UI::GUITextBox> txtStreamType;
 			NotNullPtr<UI::GUIButton> btnStream;
 			UI::GUICheckBox *chkAddPoints;
 			NotNullPtr<UI::GUILabel> lblSpeed;
-			UI::GUITextBox *txtSpeed;
-			UI::GUITextBox *txtSpeedInput;
+			NotNullPtr<UI::GUITextBox> txtSpeed;
+			NotNullPtr<UI::GUITextBox> txtSpeedInput;
 			NotNullPtr<UI::GUIButton> btnSpeed;
 			NotNullPtr<UI::GUILabel> lblCurrLat;
-			UI::GUITextBox *txtCurrLat;
+			NotNullPtr<UI::GUITextBox> txtCurrLat;
 			NotNullPtr<UI::GUILabel> lblCurrLon;
-			UI::GUITextBox *txtCurrLon;
+			NotNullPtr<UI::GUITextBox> txtCurrLon;
 			NotNullPtr<UI::GUILabel> lblPoints;
 			UI::GUIListBox *lbPoints;
 

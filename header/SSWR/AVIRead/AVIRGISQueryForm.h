@@ -32,23 +32,23 @@ namespace SSWR
 			NotNullPtr<UI::GUIPanel> pnlShape;
 			NotNullPtr<UI::GUILabel> lblShapeFmt;
 			NotNullPtr<UI::GUIComboBox> cboShapeFmt;
-			UI::GUITextBox *txtShape;
+			NotNullPtr<UI::GUITextBox> txtShape;
 
 			NotNullPtr<UI::GUITabPage> tpBounds;
 			NotNullPtr<UI::GUILabel> lblMinX;
-			UI::GUITextBox *txtMinX;
+			NotNullPtr<UI::GUITextBox> txtMinX;
 			NotNullPtr<UI::GUILabel> lblMinY;
-			UI::GUITextBox *txtMinY;
+			NotNullPtr<UI::GUITextBox> txtMinY;
 			NotNullPtr<UI::GUILabel> lblMaxX;
-			UI::GUITextBox *txtMaxX;
+			NotNullPtr<UI::GUITextBox> txtMaxX;
 			NotNullPtr<UI::GUILabel> lblMaxY;
-			UI::GUITextBox *txtMaxY;
+			NotNullPtr<UI::GUITextBox> txtMaxY;
 
 			NotNullPtr<UI::GUITabPage> tpDist;
 			NotNullPtr<UI::GUILabel> lblDist;
-			UI::GUITextBox *txtDist;
+			NotNullPtr<UI::GUITextBox> txtDist;
 			NotNullPtr<UI::GUILabel> lblInside;
-			UI::GUITextBox *txtInside;
+			NotNullPtr<UI::GUITextBox> txtInside;
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			IMapNavigator *navi;

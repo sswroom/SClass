@@ -55,7 +55,7 @@ SSWR::AVIRead::AVIRWOLForm::AVIRWOLForm(UI::GUIClientControl *parent, NotNullPtr
 	this->cboAdapter->SetRect(104, 4, 300, 23, false);
 	this->lblDeviceMac = ui->NewLabel(*this, CSTR("MAC Address"));
 	this->lblDeviceMac->SetRect(4, 28, 100, 23, false);
-	NEW_CLASS(this->txtDeviceMac, UI::GUITextBox(ui, *this, CSTR(""), false));
+	this->txtDeviceMac = ui->NewTextBox(*this, CSTR(""), false);
 	this->txtDeviceMac->SetRect(104, 28, 200, 23, false);
 	this->btnSend = ui->NewButton(*this, CSTR("&Send"));
 	this->btnSend->SetRect(104, 52, 100, 23, false);

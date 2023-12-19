@@ -96,7 +96,7 @@ SSWR::AVIRead::AVIRHashTestForm::AVIRHashTestForm(UI::GUIClientControl *parent, 
 	this->btnSpeed->HandleButtonClick(OnSpeedClicked, this);
 	this->lblSpeed = ui->NewLabel(this->tpAlgorithm, CSTR("Speed"));
 	this->lblSpeed->SetRect(4, 28, 100, 23, false);
-	NEW_CLASS(this->txtSpeed, UI::GUITextBox(ui, this->tpAlgorithm, CSTR("")));
+	this->txtSpeed = ui->NewTextBox(this->tpAlgorithm, CSTR(""));
 	this->txtSpeed->SetRect(104, 28, 200, 23, false);
 	this->txtSpeed->SetReadOnly(true);
 

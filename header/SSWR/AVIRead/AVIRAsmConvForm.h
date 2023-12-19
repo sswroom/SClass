@@ -19,9 +19,9 @@ namespace SSWR
 			NotNullPtr<UI::GUIPanel> pnlCtrl;
 			NotNullPtr<UI::GUIButton> btnConv;
 			NotNullPtr<UI::GUIButton> btnConv2;
-			UI::GUITextBox *txtIntelAsm;
+			NotNullPtr<UI::GUITextBox> txtIntelAsm;
 			NotNullPtr<UI::GUIHSplitter> hspAsm;
-			UI::GUITextBox *txtGNUAsm;
+			NotNullPtr<UI::GUITextBox> txtGNUAsm;
 
 			static void __stdcall OnConvClicked(void *userObj);
 			static void __stdcall OnConv2Clicked(void *userObj);

@@ -77,11 +77,11 @@ SSWR::AVIRead::AVIRCodeImageGenForm::AVIRCodeImageGenForm(UI::GUIClientControl *
 	this->cboCodeType->HandleSelectionChange(OnCodeTypeChanged, this);
 	this->lblCodeSize = ui->NewLabel(this->pnlMain, CSTR("Code Width"));
 	this->lblCodeSize->SetRect(4, 28, 100, 23, false);
-	NEW_CLASS(this->txtCodeSize, UI::GUITextBox(ui, this->pnlMain, CSTR("1")));
+	this->txtCodeSize = ui->NewTextBox(this->pnlMain, CSTR("1"));
 	this->txtCodeSize->SetRect(104, 28, 100, 23, false);
 	this->lblCode = ui->NewLabel(this->pnlMain, CSTR("Code"));
 	this->lblCode->SetRect(4, 52, 100, 23, false);
-	NEW_CLASS(this->txtCode, UI::GUITextBox(ui, this->pnlMain, CSTR("")));
+	this->txtCode = ui->NewTextBox(this->pnlMain, CSTR(""));
 	this->txtCode->SetRect(104, 52, 400, 23, false);
 	this->btnCodeGen = ui->NewButton(this->pnlMain, CSTR("Generate"));
 	this->btnCodeGen->SetRect(504, 52, 75, 23, false);

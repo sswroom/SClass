@@ -26,23 +26,23 @@ namespace SSWR
 			UI::GUITabControl *tcMain;
 			NotNullPtr<UI::GUITabPage> tpInfo;
 			NotNullPtr<UI::GUILabel> lblModemManu;
-			UI::GUITextBox *txtModemManu;
+			NotNullPtr<UI::GUITextBox> txtModemManu;
 			NotNullPtr<UI::GUILabel> lblModemModel;
-			UI::GUITextBox *txtModemModel;
+			NotNullPtr<UI::GUITextBox> txtModemModel;
 			NotNullPtr<UI::GUILabel> lblModemRev;
-			UI::GUITextBox *txtModemRev;
+			NotNullPtr<UI::GUITextBox> txtModemRev;
 			NotNullPtr<UI::GUILabel> lblModemIMEI;
-			UI::GUITextBox *txtModemIMEI;
+			NotNullPtr<UI::GUITextBox> txtModemIMEI;
 
 			NotNullPtr<UI::GUITabPage> tpDial;
 			NotNullPtr<UI::GUILabel> lblDialNum;
-			UI::GUITextBox *txtDialNum;
+			NotNullPtr<UI::GUITextBox> txtDialNum;
 			NotNullPtr<UI::GUIButton> btnDial;
 			NotNullPtr<UI::GUIButton> btnHangUp;
 			NotNullPtr<UI::GUILabel> lblDialStatus;
-			UI::GUITextBox *txtDialStatus;
+			NotNullPtr<UI::GUITextBox> txtDialStatus;
 			NotNullPtr<UI::GUILabel> lblDialTones;
-			UI::GUITextBox *txtDialTones;
+			NotNullPtr<UI::GUITextBox> txtDialTones;
 
 			Sync::Mutex toneMut;
 			Text::StringBuilderUTF8 toneSb;

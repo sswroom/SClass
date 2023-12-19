@@ -36,12 +36,12 @@ namespace SSWR
 
 			NotNullPtr<UI::GUIPanel> pnlFile;
 			NotNullPtr<UI::GUILabel> lblFile;
-			UI::GUITextBox *txtFile;
+			NotNullPtr<UI::GUITextBox> txtFile;
 			NotNullPtr<UI::GUIButton> btnDecode;
 			NotNullPtr<UI::GUILabel> lblDecode;
 			UI::GUIListBox *lbStream;
 			NotNullPtr<UI::GUIHSplitter> hspStream;
-			UI::GUITextBox *txtStream;
+			NotNullPtr<UI::GUITextBox> txtStream;
 
 			static void __stdcall OnVideoFrame(Data::Duration frameTime, UInt32 frameNum, UInt8 **imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, void *userData, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst);
 			static void __stdcall OnVideoChange(Media::IVideoSource::FrameChange frChg, void *userData);

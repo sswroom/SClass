@@ -131,7 +131,7 @@ SSWR::AVIRead::AVIRWMSForm::AVIRWMSForm(UI::GUIClientControl *parent, NotNullPtr
 
 	this->lblWMSURL = ui->NewLabel(*this, CSTR("WMS URL"));
 	this->lblWMSURL->SetRect(4, 4, 100, 23, false);
-	NEW_CLASS(this->txtWMSURL, UI::GUITextBox(ui, *this, CSTR("")));
+	this->txtWMSURL = ui->NewTextBox(*this, CSTR(""));
 	this->txtWMSURL->SetRect(104, 4, 500, 23, false);
 	this->lblWMSVersion = ui->NewLabel(*this, CSTR("Version"));
 	this->lblWMSVersion->SetRect(4, 28, 100, 23, false);
@@ -147,7 +147,7 @@ SSWR::AVIRead::AVIRWMSForm::AVIRWMSForm(UI::GUIClientControl *parent, NotNullPtr
 	this->btnLoad->HandleButtonClick(OnLoadClicked, this);
 	this->lblStatus = ui->NewLabel(*this, CSTR("Status"));
 	this->lblStatus->SetRect(4, 76, 100, 23, false);
-	NEW_CLASS(this->txtStatus, UI::GUITextBox(ui, *this, CSTR("")));
+	this->txtStatus = ui->NewTextBox(*this, CSTR(""));
 	this->txtStatus->SetRect(104, 76, 100, 23, false);
 	this->txtStatus->SetReadOnly(true);
 	this->lblLayer = ui->NewLabel(*this, CSTR("Layer"));

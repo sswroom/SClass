@@ -14,7 +14,7 @@ namespace SSWR
 		class AVIRGISGroupQueryForm : public UI::GUIForm
 		{
 		private:
-			UI::GUITextBox *txtLayer;
+			NotNullPtr<UI::GUITextBox> txtLayer;
 			UI::GUIListView *lvInfo;
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;

@@ -28,14 +28,14 @@ namespace SSWR
 			NotNullPtr<UI::GUILabel> lblFormat;
 			NotNullPtr<UI::GUIComboBox> cboFormat;
 			NotNullPtr<UI::GUILabel> lblFileName;
-			UI::GUITextBox *txtFileName;
+			NotNullPtr<UI::GUITextBox> txtFileName;
 			NotNullPtr<UI::GUIButton> btnAutoGen;
 			NotNullPtr<UI::GUIButton> btnBrowse;
 			NotNullPtr<UI::GUIButton> btnStart;
 			NotNullPtr<UI::GUILabel> lblPacketCnt;
-			UI::GUITextBox *txtPacketCnt;
+			NotNullPtr<UI::GUITextBox> txtPacketCnt;
 			NotNullPtr<UI::GUILabel> lblDataSize;
-			UI::GUITextBox *txtDataSize;
+			NotNullPtr<UI::GUITextBox> txtDataSize;
 
 			static void __stdcall OnAutoGenClicked(void *userObj);
 			static void __stdcall OnBrowseClicked(void *userObj);

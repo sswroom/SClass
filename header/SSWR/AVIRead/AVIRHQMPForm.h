@@ -50,7 +50,7 @@ namespace SSWR
 			UI::GUIMenu *mnuChapters;
 
 			UI::GUIForm *dbgFrm;
-			UI::GUITextBox *txtDebug;
+			NotNullPtr<UI::GUITextBox> txtDebug;
 
 			static void __stdcall OnFileDrop(void *userObj, NotNullPtr<Text::String> *files, UOSInt nFiles);
 			static void __stdcall OnTimerTick(void *userObj);

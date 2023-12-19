@@ -295,11 +295,11 @@ SSWR::AVIRead::AVIRLDAPExplorerForm::AVIRLDAPExplorerForm(UI::GUIClientControl *
 	this->pnlRequest->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->lblHost = ui->NewLabel(this->pnlRequest, CSTR("Host"));
 	this->lblHost->SetRect(4, 4, 100, 23, false);
-	NEW_CLASS(this->txtHost, UI::GUITextBox(ui, this->pnlRequest, CSTR("")));
+	this->txtHost = ui->NewTextBox(this->pnlRequest, CSTR(""));
 	this->txtHost->SetRect(104, 4, 150, 23, false);
 	this->lblPort = ui->NewLabel(this->pnlRequest, CSTR("Port"));
 	this->lblPort->SetRect(4, 28, 100, 23, false);
-	NEW_CLASS(this->txtPort, UI::GUITextBox(ui, this->pnlRequest, CSTR("389")));
+	this->txtPort = ui->NewTextBox(this->pnlRequest, CSTR("389"));
 	this->txtPort->SetRect(104, 28, 120, 23, false);
 	this->lblAuthType = ui->NewLabel(this->pnlRequest, CSTR("Auth Type"));
 	this->lblAuthType->SetRect(4, 52, 100, 23, false);
@@ -310,11 +310,11 @@ SSWR::AVIRead::AVIRLDAPExplorerForm::AVIRLDAPExplorerForm(UI::GUIClientControl *
 	this->cboAuthType->SetSelectedIndex(0);
 	this->lblUserDN = ui->NewLabel(this->pnlRequest, CSTR("User DN"));
 	this->lblUserDN->SetRect(4, 76, 100, 23, false);
-	NEW_CLASS(this->txtUserDN, UI::GUITextBox(ui, this->pnlRequest, CSTR("")));
+	this->txtUserDN = ui->NewTextBox(this->pnlRequest, CSTR(""));
 	this->txtUserDN->SetRect(104, 76, 200, 23, false);
 	this->lblPassword = ui->NewLabel(this->pnlRequest, CSTR("Password"));
 	this->lblPassword->SetRect(4, 100, 100, 23, false);
-	NEW_CLASS(this->txtPassword, UI::GUITextBox(ui, this->pnlRequest, CSTR("")));
+	this->txtPassword = ui->NewTextBox(this->pnlRequest, CSTR(""));
 	this->txtPassword->SetRect(104, 100, 200, 23, false);
 	this->txtPassword->SetPasswordChar('*');
 	this->btnConnect = ui->NewButton(this->pnlRequest, CSTR("Connect"));

@@ -19,7 +19,7 @@ namespace SSWR
 			Optional<Net::SSLEngine> ssl;
 
 			NotNullPtr<UI::GUILabel> lblKey;
-			UI::GUITextBox *txtKey;
+			NotNullPtr<UI::GUITextBox> txtKey;
 			NotNullPtr<UI::GUILabel> lblImagerySet;
 			NotNullPtr<UI::GUIComboBox> cboImagerySet;
 			NotNullPtr<UI::GUIButton> btnOK;

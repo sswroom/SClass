@@ -56,9 +56,9 @@ namespace SSWR
 			NotNullPtr<UI::GUITabPage> tpInfo;
 			NotNullPtr<UI::GUIPanel> pnlInfo;
 			NotNullPtr<UI::GUILabel> lblPlatform;
-			UI::GUITextBox *txtPlatform;
+			NotNullPtr<UI::GUITextBox> txtPlatform;
 			NotNullPtr<UI::GUILabel> lblCPU;
-			UI::GUITextBox *txtCPU;
+			NotNullPtr<UI::GUITextBox> txtCPU;
 			UI::GUIListView *lvRAM;
 
 			static UTF8Char *ByteDisp(UTF8Char *sbuff, UOSInt byteSize);

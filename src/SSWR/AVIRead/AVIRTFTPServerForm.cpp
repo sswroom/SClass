@@ -74,7 +74,7 @@ SSWR::AVIRead::AVIRTFTPServerForm::AVIRTFTPServerForm(UI::GUIClientControl *pare
 	this->tpControl = this->tcMain->AddTabPage(CSTR("Control"));
 	this->lblPort = ui->NewLabel(this->tpControl, CSTR("Port"));
 	this->lblPort->SetRect(8, 8, 100, 23, false);
-	NEW_CLASS(this->txtPort, UI::GUITextBox(ui, this->tpControl, CSTR("69")));
+	this->txtPort = ui->NewTextBox(this->tpControl, CSTR("69"));
 	this->txtPort->SetRect(108, 8, 50, 23, false);
 	this->lblFilePath = ui->NewLabel(this->tpControl, CSTR("File Path"));
 	this->lblFilePath->SetRect(8, 32, 100, 23, false);
@@ -85,14 +85,14 @@ SSWR::AVIRead::AVIRTFTPServerForm::AVIRTFTPServerForm(UI::GUIClientControl *pare
 		sbuff[i] = 0;
 		sptr = &sbuff[i];
 	}
-	NEW_CLASS(this->txtFilePath, UI::GUITextBox(ui, this->tpControl, CSTRP(sbuff, sptr)));
+	this->txtFilePath = ui->NewTextBox(this->tpControl, CSTRP(sbuff, sptr));
 	this->txtFilePath->SetRect(108, 32, 500, 23, false);
 	this->btnStart = ui->NewButton(this->tpControl, CSTR("Start"));
 	this->btnStart->SetRect(100, 56, 75, 23, false);
 	this->btnStart->HandleButtonClick(OnStartClick, this);
 
 	this->tpLog = this->tcMain->AddTabPage(CSTR("Log"));
-	NEW_CLASS(this->txtLog, UI::GUITextBox(ui, this->tpLog, CSTR("")));
+	this->txtLog = ui->NewTextBox(this->tpLog, CSTR(""));
 	this->txtLog->SetRect(0, 0, 100, 23, false);
 	this->txtLog->SetReadOnly(true);
 	this->txtLog->SetDockType(UI::GUIControl::DOCK_BOTTOM);

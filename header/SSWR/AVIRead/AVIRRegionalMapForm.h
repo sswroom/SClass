@@ -15,7 +15,7 @@ namespace SSWR
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			Optional<Net::SSLEngine> ssl;
 
-			UI::GUITextBox *txtDesc;
+			NotNullPtr<UI::GUITextBox> txtDesc;
 			UI::GUIListView *lvMaps;
 			Map::MapDrawLayer *layer;
 

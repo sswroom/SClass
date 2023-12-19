@@ -192,7 +192,7 @@ SSWR::AVIRead::AVIRHTTPClientCertTestForm::AVIRHTTPClientCertTestForm(UI::GUICli
 	this->grpParam->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->lblPort = ui->NewLabel(this->grpParam, CSTR("Port"));
 	this->lblPort->SetRect(8, 8, 100, 23, false);
-	NEW_CLASS(this->txtPort, UI::GUITextBox(ui, this->grpParam, CSTR("12345")));
+	this->txtPort = ui->NewTextBox(this->grpParam, CSTR("12345"));
 	this->txtPort->SetRect(108, 8, 50, 23, false);
 	this->lblSSL = ui->NewLabel(this->grpParam, CSTR("SSL"));
 	this->lblSSL->SetRect(8, 32, 100, 23, false);
@@ -203,7 +203,7 @@ SSWR::AVIRead::AVIRHTTPClientCertTestForm::AVIRHTTPClientCertTestForm(UI::GUICli
 	this->lblSSLCert->SetRect(188, 32, 200, 23, false);
 	this->lblClientCA = ui->NewLabel(this->grpParam, CSTR("Client CA"));
 	this->lblClientCA->SetRect(8, 56, 100, 23, false);
-	NEW_CLASS(this->txtClientCA, UI::GUITextBox(ui, this->grpParam, CSTR("")));
+	this->txtClientCA = ui->NewTextBox(this->grpParam, CSTR(""));
 	this->txtClientCA->SetRect(108, 56, 50, 23, false);
 	this->btnStart = ui->NewButton(*this, CSTR("Start"));
 	this->btnStart->SetRect(108, 100, 75, 23, false);

@@ -37,26 +37,26 @@ SSWR::OrganMgr::OrganImageWebForm::OrganImageWebForm(UI::GUIClientControl *paren
 
 	this->lblId = ui->NewLabel(*this, this->env->GetLang(CSTR("ImageWebId")));
 	this->lblId->SetRect(0, 0, 100, 23, false);
-	NEW_CLASS(this->txtId, UI::GUITextBox(ui, *this, imgItem->GetDispName()->ToCString()));
+	this->txtId = ui->NewTextBox(*this, imgItem->GetDispName()->ToCString());
 	this->txtId->SetRect(100, 0, 200, 23, false);
 	this->txtId->SetReadOnly(true);
 	this->lblFileName = ui->NewLabel(*this, this->env->GetLang(CSTR("ImageWebFileName")));
 	this->lblFileName->SetRect(0, 24, 100, 23, false);
-	NEW_CLASS(this->txtFileName, UI::GUITextBox(ui, *this, imgItem->GetFullName()->ToCString()));
+	this->txtFileName = ui->NewTextBox(*this, imgItem->GetFullName()->ToCString());
 	this->txtFileName->SetRect(100, 24, 680, 23, false);
 	this->txtFileName->SetReadOnly(true);
 	this->lblImageURL = ui->NewLabel(*this, this->env->GetLang(CSTR("ImageWebImageURL")));
 	this->lblImageURL->SetRect(0, 48, 100, 23, false);
-	NEW_CLASS(this->txtImageURL, UI::GUITextBox(ui, *this, Text::String::OrEmpty(imgItem->GetImgURL())->ToCString()));
+	this->txtImageURL = ui->NewTextBox(*this, Text::String::OrEmpty(imgItem->GetImgURL())->ToCString());
 	this->txtImageURL->SetRect(100, 48, 680, 23, false);
 	this->txtImageURL->SetReadOnly(true);
 	this->lblSourceURL = ui->NewLabel(*this, this->env->GetLang(CSTR("ImageWebSourceURL")));
 	this->lblSourceURL->SetRect(0, 72, 100, 23, false);
-	NEW_CLASS(this->txtSourceURL, UI::GUITextBox(ui, *this, Text::String::OrEmpty(imgItem->GetSrcURL())->ToCString()));
+	this->txtSourceURL = ui->NewTextBox(*this, Text::String::OrEmpty(imgItem->GetSrcURL())->ToCString());
 	this->txtSourceURL->SetRect(100, 72, 680, 23, false);
 	this->lblLocation = ui->NewLabel(*this, this->env->GetLang(CSTR("ImageWebLocation")));
 	this->lblLocation->SetRect(0, 96, 100, 23, false);
-	NEW_CLASS(this->txtLocation, UI::GUITextBox(ui, *this, wfile->location->ToCString()));
+	this->txtLocation = ui->NewTextBox(*this, wfile->location->ToCString());
 	this->txtLocation->SetRect(100, 96, 680, 23, false);
 	if (wfile == 0)
 	{

@@ -80,7 +80,7 @@ SSWR::AVIRead::AVIRASN1ParseForm::AVIRASN1ParseForm(UI::GUIClientControl *parent
 	this->btnParse = ui->NewButton(this->pnlControl, CSTR("Parse"));
 	this->btnParse->SetRect(4, 4, 75, 23, false);
 	this->btnParse->HandleButtonClick(OnParseClicked, this);
-	NEW_CLASS(this->txtData, UI::GUITextBox(ui, *this, CSTR(""), true));
+	this->txtData = ui->NewTextBox(*this, CSTR(""), true);
 	this->txtData->SetDockType(UI::GUIControl::DOCK_FILL);
 }
 

@@ -38,42 +38,42 @@ namespace SSWR
 
 			NotNullPtr<UI::GUITabPage> tpControl;
 			NotNullPtr<UI::GUILabel> lblPort;
-			UI::GUITextBox *txtPort;
+			NotNullPtr<UI::GUITextBox> txtPort;
 			NotNullPtr<UI::GUILabel> lblSSL;
 			NotNullPtr<UI::GUIButton> btnSSLCert;
 			NotNullPtr<UI::GUILabel> lblSSLCert;
 			NotNullPtr<UI::GUILabel> lblHost;
-			UI::GUITextBox *txtHost;
+			NotNullPtr<UI::GUITextBox> txtHost;
 			NotNullPtr<UI::GUILabel> lblSignCert;
-			UI::GUITextBox *txtSignCert;
+			NotNullPtr<UI::GUITextBox> txtSignCert;
 			NotNullPtr<UI::GUILabel> lblSignKey;
-			UI::GUITextBox *txtSignKey;
+			NotNullPtr<UI::GUITextBox> txtSignKey;
 			NotNullPtr<UI::GUILabel> lblSSOPath;
-			UI::GUITextBox *txtSSOPath;
+			NotNullPtr<UI::GUITextBox> txtSSOPath;
 			NotNullPtr<UI::GUILabel> lblMetadataPath;
-			UI::GUITextBox *txtMetadataPath;
+			NotNullPtr<UI::GUITextBox> txtMetadataPath;
 			NotNullPtr<UI::GUILabel> lblLogoutPath;
-			UI::GUITextBox *txtLogoutPath;
+			NotNullPtr<UI::GUITextBox> txtLogoutPath;
 			NotNullPtr<UI::GUIButton> btnStart;
 			NotNullPtr<UI::GUILabel> lblSSOURL;
-			UI::GUITextBox *txtSSOURL;
+			NotNullPtr<UI::GUITextBox> txtSSOURL;
 			NotNullPtr<UI::GUILabel> lblMetadataURL;
-			UI::GUITextBox *txtMetadataURL;
+			NotNullPtr<UI::GUITextBox> txtMetadataURL;
 			NotNullPtr<UI::GUILabel> lblLogoutURL;
-			UI::GUITextBox *txtLogoutURL;
+			NotNullPtr<UI::GUITextBox> txtLogoutURL;
 
 			NotNullPtr<UI::GUITabPage> tpSAMLResp;
-			UI::GUITextBox *txtSAMLResp;
+			NotNullPtr<UI::GUITextBox> txtSAMLResp;
 
 			NotNullPtr<UI::GUITabPage> tpSAMLRespWF;
-			UI::GUITextBox *txtSAMLRespWF;
+			NotNullPtr<UI::GUITextBox> txtSAMLRespWF;
 
 			NotNullPtr<UI::GUITabPage> tpSAMLDecrypt;
-			UI::GUITextBox *txtSAMLDecrypt;
+			NotNullPtr<UI::GUITextBox> txtSAMLDecrypt;
 
 			NotNullPtr<UI::GUITabPage> tpLog;
 			NotNullPtr<UI::GUIListBox> lbLog;
-			UI::GUITextBox *txtLog;
+			NotNullPtr<UI::GUITextBox> txtLog;
 
 		private:
 			static void __stdcall OnFormFiles(void *userObj, NotNullPtr<Text::String> *files, UOSInt nFiles);

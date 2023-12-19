@@ -19,12 +19,12 @@ namespace SSWR
 
 			NotNullPtr<UI::GUIPanel> pnlSource;
 			NotNullPtr<UI::GUIPanel> pnlControl;
-			UI::GUITextBox *txtSource;
+			NotNullPtr<UI::GUITextBox> txtSource;
 			NotNullPtr<UI::GUIButton> btnParse;
 			NotNullPtr<UI::GUIButton> btnUpdate;
 			NotNullPtr<UI::GUIButton> btnUpdateCB;
 			NotNullPtr<UI::GUIVSplitter> vspControl;
-			UI::GUITextBox *txtOutput;
+			NotNullPtr<UI::GUITextBox> txtOutput;
 
 			static void UserAgent2Output(Text::CString userAgent, NotNullPtr<Text::StringBuilderUTF8> outSb);
 			static void __stdcall OnParseClicked(void *userObj);

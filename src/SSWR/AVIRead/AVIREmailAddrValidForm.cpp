@@ -22,14 +22,14 @@ SSWR::AVIRead::AVIREmailAddrValidForm::AVIREmailAddrValidForm(UI::GUIClientContr
 
 	this->lblAddr = ui->NewLabel(*this, CSTR("Email Address"));
 	this->lblAddr->SetRect(4, 4, 100, 23, false);
-	NEW_CLASS(this->txtAddr, UI::GUITextBox(ui, *this, CSTR("")));
+	this->txtAddr = ui->NewTextBox(*this, CSTR(""));
 	this->txtAddr->SetRect(104, 4, 200, 23, false);
 	this->btnValidate = ui->NewButton(*this, CSTR("&Validate"));
 	this->btnValidate->SetRect(104, 28, 75, 23, false);
 	this->btnValidate->HandleButtonClick(OnValidateClicked, this);
 	this->lblStatus = ui->NewLabel(*this, CSTR("Status"));
 	this->lblStatus->SetRect(4, 52, 100, 23, false);
-	NEW_CLASS(this->txtStatus, UI::GUITextBox(ui, *this, CSTR("")));
+	this->txtStatus = ui->NewTextBox(*this, CSTR(""));
 	this->txtStatus->SetReadOnly(true);
 	this->txtStatus->SetRect(104, 52, 100, 23, false);
 }

@@ -148,14 +148,14 @@ SSWR::AVIRead::AVIRJTT808ServerForm::AVIRJTT808ServerForm(UI::GUIClientControl *
 	this->tpStatus = this->tcMain->AddTabPage(CSTR("Status"));
 	this->lblPort = ui->NewLabel(this->tpStatus, CSTR("Port"));
 	this->lblPort->SetRect(4, 4, 100, 23, false);
-	NEW_CLASS(this->txtPort, UI::GUITextBox(ui, this->tpStatus, CSTR("42463")));
+	this->txtPort = ui->NewTextBox(this->tpStatus, CSTR("42463"));
 	this->txtPort->SetRect(104, 4, 100, 23, false);
 	this->btnStart = ui->NewButton(this->tpStatus, CSTR("Start"));
 	this->btnStart->SetRect(204, 4, 75, 23, false);
 	this->btnStart->HandleButtonClick(OnStartClicked, this);
 
 	this->tpLog = this->tcMain->AddTabPage(CSTR("Log"));
-	NEW_CLASS(this->txtLog, UI::GUITextBox(ui, this->tpLog, CSTR("")));
+	this->txtLog = ui->NewTextBox(this->tpLog, CSTR(""));
 	this->txtLog->SetRect(0, 0, 100, 23, false);
 	this->txtLog->SetDockType(UI::GUIControl::DOCK_BOTTOM);
 	this->txtLog->SetReadOnly(true);

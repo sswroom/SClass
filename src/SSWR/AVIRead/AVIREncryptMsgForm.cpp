@@ -257,7 +257,7 @@ SSWR::AVIRead::AVIREncryptMsgForm::AVIREncryptMsgForm(UI::GUIClientControl *pare
 	AddTextEncType(this->cboKeyType);
 	this->lblKey = ui->NewLabel(*this, CSTR("Key"));
 	this->lblKey->SetRect(4, 52, 100, 23, false);
-	NEW_CLASS(this->txtKey, UI::GUITextBox(ui, *this, CSTR("")));
+	this->txtKey = ui->NewTextBox(*this, CSTR(""));
 	this->txtKey->SetRect(104, 52, 300, 23, false);
 	this->lblIV = ui->NewLabel(*this, CSTR("IV"));
 	this->lblIV->SetRect(4, 76, 100, 23, false);
@@ -268,7 +268,7 @@ SSWR::AVIRead::AVIREncryptMsgForm::AVIREncryptMsgForm(UI::GUIClientControl *pare
 	this->cboIV->AddItem(CSTR("Base64 Input"), 0);
 	this->cboIV->AddItem(CSTR("Data beginning"), 0);
 	this->cboIV->SetSelectedIndex(0);
-	NEW_CLASS(this->txtIV, UI::GUITextBox(ui, *this, CSTR("")));
+	this->txtIV = ui->NewTextBox(*this, CSTR(""));
 	this->txtIV->SetRect(204, 76, 300, 23, false);
 	this->lblChainMode = ui->NewLabel(*this, CSTR("Chain Mode"));
 	this->lblChainMode->SetRect(4, 100, 100, 23, false);
@@ -287,7 +287,7 @@ SSWR::AVIRead::AVIREncryptMsgForm::AVIREncryptMsgForm(UI::GUIClientControl *pare
 	AddTextEncType(this->cboInputType);
 	this->lblInputMsg = ui->NewLabel(*this, CSTR("Input Msg"));
 	this->lblInputMsg->SetRect(4, 148, 100, 23, false);
-	NEW_CLASS(this->txtInputMsg, UI::GUITextBox(ui, *this, CSTR(""), true));
+	this->txtInputMsg = ui->NewTextBox(*this, CSTR(""), true);
 	this->txtInputMsg->SetRect(104, 148, 400, 71, false);
 	this->lblOutputType = ui->NewLabel(*this, CSTR("Output Type"));
 	this->lblOutputType->SetRect(4, 220, 100, 23, false);
@@ -302,7 +302,7 @@ SSWR::AVIRead::AVIREncryptMsgForm::AVIREncryptMsgForm(UI::GUIClientControl *pare
 	this->btnDecrypt->HandleButtonClick(OnDecryptClicked, this);
 	this->lblOutputMsg = ui->NewLabel(*this, CSTR("Output Msg"));
 	this->lblOutputMsg->SetRect(4, 268, 100, 23, false);
-	NEW_CLASS(this->txtOutputMsg, UI::GUITextBox(ui, *this, CSTR(""), true));
+	this->txtOutputMsg = ui->NewTextBox(*this, CSTR(""), true);
 	this->txtOutputMsg->SetRect(104, 268, 400, 71, false);
 	this->txtOutputMsg->SetReadOnly(true);
 }

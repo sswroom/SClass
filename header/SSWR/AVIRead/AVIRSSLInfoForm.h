@@ -24,9 +24,9 @@ namespace SSWR
 			NotNullPtr<Net::SocketFactory> sockf;
 			Optional<Net::SSLEngine> ssl;
 			NotNullPtr<UI::GUILabel> lblHost;
-			UI::GUITextBox *txtHost;
+			NotNullPtr<UI::GUITextBox> txtHost;
 			NotNullPtr<UI::GUILabel> lblPort;
-			UI::GUITextBox *txtPort;
+			NotNullPtr<UI::GUITextBox> txtPort;
 			NotNullPtr<UI::GUILabel> lblMode;
 			NotNullPtr<UI::GUIComboBox> cboMode;
 			NotNullPtr<UI::GUILabel> lblVersion;
@@ -34,9 +34,9 @@ namespace SSWR
 			NotNullPtr<UI::GUIButton> btnCheck;
 
 			NotNullPtr<UI::GUILabel> lblStatus;
-			UI::GUITextBox *txtStatus;
+			NotNullPtr<UI::GUITextBox> txtStatus;
 			NotNullPtr<UI::GUILabel> lblCert;
-			UI::GUITextBox *txtCert;
+			NotNullPtr<UI::GUITextBox> txtCert;
 			NotNullPtr<UI::GUIButton> btnCert;
 			NotNullPtr<UI::GUIButton> btnRAW;
 

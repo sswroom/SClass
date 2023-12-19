@@ -19,7 +19,7 @@ namespace SSWR
 
 			NotNullPtr<UI::GUIPanel> pnlControl;
 			NotNullPtr<UI::GUIButton> btnHex;
-			UI::GUITextBox *txtSMBIOS;
+			NotNullPtr<UI::GUITextBox> txtSMBIOS;
 
 			static void __stdcall OnHexClicked(void *userObj);
 		public:

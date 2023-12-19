@@ -292,7 +292,7 @@ SSWR::ProcMonForm::ProcMonForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUIC
 	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, *this));
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->tpLog = this->tcMain->AddTabPage(CSTR("Log"));
-	NEW_CLASS(this->txtLog, UI::GUITextBox(ui, this->tpLog, CSTR("")));
+	this->txtLog = ui->NewTextBox(this->tpLog, CSTR(""));
 	this->txtLog->SetRect(0, 0, 100, 23, false);
 	this->txtLog->SetDockType(UI::GUIControl::DOCK_BOTTOM);
 	this->txtLog->SetReadOnly(true);
@@ -312,25 +312,25 @@ SSWR::ProcMonForm::ProcMonForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUIC
 	this->grpProgAdd->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->lblProgAddName = ui->NewLabel(this->grpProgAdd, CSTR("Prog Name"));
 	this->lblProgAddName->SetRect(0, 0, 100, 23, false);
-	NEW_CLASS(this->txtProgAddName, UI::GUITextBox(ui, this->grpProgAdd, CSTR("")));
+	this->txtProgAddName = ui->NewTextBox(this->grpProgAdd, CSTR(""));
 	this->txtProgAddName->SetRect(100, 0, 200, 23, false);
 	this->lblProgAddId = ui->NewLabel(this->grpProgAdd, CSTR("Process Id"));
 	this->lblProgAddId->SetRect(0, 24, 100, 23, false);
-	NEW_CLASS(this->txtProgAddId, UI::GUITextBox(ui, this->grpProgAdd, CSTR("")));
+	this->txtProgAddId = ui->NewTextBox(this->grpProgAdd, CSTR(""));
 	this->txtProgAddId->SetRect(100, 24, 100, 23, false);
 	this->btnProgAdd = ui->NewButton(this->grpProgAdd, CSTR("&Add"));
 	this->btnProgAdd->SetRect(200, 24, 75, 23, false);
 	this->btnProgAdd->HandleButtonClick(OnProgAddClicked, this);
 	this->lblProcId = ui->NewLabel(this->pnlProg, CSTR("Process Id"));
 	this->lblProcId->SetRect(4, 68, 100, 23, false);
-	NEW_CLASS(this->txtProcId, UI::GUITextBox(ui, this->pnlProg, CSTR("")));
+	this->txtProcId = ui->NewTextBox(this->pnlProg, CSTR(""));
 	this->txtProcId->SetRect(104, 68, 100, 23, false);
 	this->btnProcId = ui->NewButton(this->pnlProg, CSTR("Set"));
 	this->btnProcId->SetRect(204, 68, 75, 23, false);
 	this->btnProcId->HandleButtonClick(OnProcIdClicked, this);
 	this->lblProgPath = ui->NewLabel(this->pnlProg, CSTR("Path"));
 	this->lblProgPath->SetRect(4, 92, 100, 23, false);
-	NEW_CLASS(this->txtProgPath, UI::GUITextBox(ui, this->pnlProg, CSTR("")));
+	this->txtProgPath = ui->NewTextBox(this->pnlProg, CSTR(""));
 	this->txtProgPath->SetRect(104, 92, 600, 23, false);
 	this->txtProgPath->SetReadOnly(true);
 

@@ -17,14 +17,14 @@ namespace SSWR
 		{
 		private:
 			NotNullPtr<UI::GUILabel> lblSN;
-			UI::GUITextBox *txtSN;
+			NotNullPtr<UI::GUITextBox> txtSN;
 			NotNullPtr<UI::GUIButton> btnSN;
 			NotNullPtr<UI::GUILabel> lblTemp;
-			UI::GUITextBox *txtTemp;
+			NotNullPtr<UI::GUITextBox> txtTemp;
 			NotNullPtr<UI::GUIButton> btnRead;
 			UI::GUICheckBox *chkAutoRead;
 			NotNullPtr<UI::GUILabel> lblStatus;
-			UI::GUITextBox *txtStatus;
+			NotNullPtr<UI::GUITextBox> txtStatus;
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			NotNullPtr<IO::IOPin> pin;

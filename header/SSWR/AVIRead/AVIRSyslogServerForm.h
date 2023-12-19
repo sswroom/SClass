@@ -31,11 +31,11 @@ namespace SSWR
 
 			NotNullPtr<UI::GUIPanel> pnlControl;
 			NotNullPtr<UI::GUILabel> lblPort;
-			UI::GUITextBox *txtPort;
+			NotNullPtr<UI::GUITextBox> txtPort;
 			NotNullPtr<UI::GUIButton> btnStart;
 			UI::GUIListBox *lbClient;
 			NotNullPtr<UI::GUIHSplitter> hspClient;
-			UI::GUITextBox *txtLog;
+			NotNullPtr<UI::GUITextBox> txtLog;
 			UI::GUIListBox *lbLog;
 
 			UInt32 currIP;

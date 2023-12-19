@@ -53,13 +53,13 @@ namespace SSWR
 
 			NotNullPtr<UI::GUIPanel> pnlConnect;
 			NotNullPtr<UI::GUILabel> lblHost;
-			UI::GUITextBox *txtHost;
+			NotNullPtr<UI::GUITextBox> txtHost;
 			NotNullPtr<UI::GUILabel> lblPort;
-			UI::GUITextBox *txtPort;
+			NotNullPtr<UI::GUITextBox> txtPort;
 			NotNullPtr<UI::GUILabel> lblUsername;
-			UI::GUITextBox *txtUsername;
+			NotNullPtr<UI::GUITextBox> txtUsername;
 			NotNullPtr<UI::GUILabel> lblPassword;
-			UI::GUITextBox *txtPassword;
+			NotNullPtr<UI::GUITextBox> txtPassword;
 			UI::GUICheckBox *chkSSL;
 			UI::GUICheckBox *chkWebSocket;
 			NotNullPtr<UI::GUIButton> btnCliCert;
@@ -78,10 +78,10 @@ namespace SSWR
 			NotNullPtr<UI::GUITabPage> tpPublish;
 			NotNullPtr<UI::GUIPanel> pnlPubTopic;
 			NotNullPtr<UI::GUILabel> lblPubTopic;
-			UI::GUITextBox *txtPubTopic;
+			NotNullPtr<UI::GUITextBox> txtPubTopic;
 			NotNullPtr<UI::GUIPanel> pnlPubCtrl;
 			NotNullPtr<UI::GUIButton> btnPublish;
-			UI::GUITextBox *txtPubContent;
+			NotNullPtr<UI::GUITextBox> txtPubContent;
 
 			NotNullPtr<UI::GUITabPage> tpLog;
 

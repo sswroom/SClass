@@ -103,7 +103,7 @@ SSWR::AVIRead::AVIRSMakeForm::AVIRSMakeForm(UI::GUIClientControl *parent, NotNul
 	this->pnlFile->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->lblFile = ui->NewLabel(this->pnlFile, CSTR("File"));
 	this->lblFile->SetRect(4, 4, 100, 23, false);
-	NEW_CLASS(this->txtFile, UI::GUITextBox(ui, this->pnlFile, this->smake->GetSourceNameObj()->ToCString()));
+	this->txtFile = ui->NewTextBox(this->pnlFile, this->smake->GetSourceNameObj()->ToCString());
 	this->txtFile->SetReadOnly(true);
 	this->txtFile->SetRect(104, 4, 600, 23, false);
 	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, *this));

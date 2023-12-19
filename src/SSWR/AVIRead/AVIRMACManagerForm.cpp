@@ -507,13 +507,13 @@ SSWR::AVIRead::AVIRMACManagerForm::AVIRMACManagerForm(UI::GUIClientControl *pare
 	this->pnlFile->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->lblFile = ui->NewLabel(this->pnlFile, CSTR("Log File"));
 	this->lblFile->SetRect(4, 4, 100, 23, false);
-	NEW_CLASS(this->txtFile, UI::GUITextBox(ui, this->pnlFile, CSTR("")));
+	this->txtFile = ui->NewTextBox(this->pnlFile, CSTR(""));
 	this->txtFile->SetRect(104, 4, 400, 23, false);
 	this->txtFile->SetReadOnly(true);
 	this->btnFile = ui->NewButton(this->pnlFile, CSTR("Open"));
 	this->btnFile->SetRect(504, 4, 75, 23, false);
 	this->btnFile->HandleButtonClick(OnFileClicked, this);
-	NEW_CLASS(this->txtFileIE, UI::GUITextBox(ui, this->tpFile, CSTR(""), true));
+	this->txtFileIE = ui->NewTextBox(this->tpFile, CSTR(""), true);
 	this->txtFileIE->SetRect(0, 0, 100, 256, false);
 	this->txtFileIE->SetDockType(UI::GUIControl::DOCK_BOTTOM);
 	this->txtFileIE->SetReadOnly(true);
@@ -540,7 +540,7 @@ SSWR::AVIRead::AVIRMACManagerForm::AVIRMACManagerForm(UI::GUIClientControl *pare
 	this->tpInput = this->tcMain->AddTabPage(CSTR("Input"));
 	this->lblInput = ui->NewLabel(this->tpInput, CSTR("MAC Input"));
 	this->lblInput->SetRect(4, 4, 100, 23, false);
-	NEW_CLASS(this->txtInput, UI::GUITextBox(ui, this->tpInput, CSTR("")));
+	this->txtInput = ui->NewTextBox(this->tpInput, CSTR(""));
 	this->txtInput->SetRect(104, 4, 150, 23, false);
 	this->btnInput = ui->NewButton(this->tpInput, CSTR("&Edit"));
 	this->btnInput->SetRect(104, 28, 75, 23, false);

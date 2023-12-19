@@ -22,26 +22,26 @@ namespace SSWR
 
 			NotNullPtr<UI::GUIPanel> pnlRequest;
 			NotNullPtr<UI::GUILabel> lblURL;
-			UI::GUITextBox *txtURL;
+			NotNullPtr<UI::GUITextBox> txtURL;
 			NotNullPtr<UI::GUILabel> lblProxySvr;
-			UI::GUITextBox *txtProxySvr;
+			NotNullPtr<UI::GUITextBox> txtProxySvr;
 			NotNullPtr<UI::GUILabel> lblProxyPort;
-			UI::GUITextBox *txtProxyPort;
+			NotNullPtr<UI::GUITextBox> txtProxyPort;
 			NotNullPtr<UI::GUIButton> btnRequest;
 			NotNullPtr<UI::GUIGroupBox> grpResponse;
 			NotNullPtr<UI::GUIPanel> pnlResponse;
 			NotNullPtr<UI::GUILabel> lblSvrIP;
-			UI::GUITextBox *txtSvrIP;
+			NotNullPtr<UI::GUITextBox> txtSvrIP;
 			NotNullPtr<UI::GUILabel> lblTimeDNS;
-			UI::GUITextBox *txtTimeDNS;
+			NotNullPtr<UI::GUITextBox> txtTimeDNS;
 			NotNullPtr<UI::GUILabel> lblTimeConn;
-			UI::GUITextBox *txtTimeConn;
+			NotNullPtr<UI::GUITextBox> txtTimeConn;
 			NotNullPtr<UI::GUILabel> lblTimeSendHdr;
-			UI::GUITextBox *txtTimeSendHdr;
+			NotNullPtr<UI::GUITextBox> txtTimeSendHdr;
 			NotNullPtr<UI::GUILabel> lblTimeResp;
-			UI::GUITextBox *txtTimeResp;
+			NotNullPtr<UI::GUITextBox> txtTimeResp;
 			NotNullPtr<UI::GUILabel> lblTimeTotal;
-			UI::GUITextBox *txtTimeTotal;
+			NotNullPtr<UI::GUITextBox> txtTimeTotal;
 			UI::GUIListView *lvHeaders;
 
 			NotNullPtr<Net::SocketFactory> sockf;

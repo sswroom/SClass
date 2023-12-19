@@ -57,15 +57,15 @@ namespace SSWR
 			NotNullPtr<UI::GUIPanel> pnlDevice;
 			NotNullPtr<UI::GUIButton> btnDongleInfo;
 			NotNullPtr<UI::GUILabel> lblDongleId;
-			UI::GUITextBox *txtDongleId;
+			NotNullPtr<UI::GUITextBox> txtDongleId;
 			NotNullPtr<UI::GUIButton> btnCheckDongle;
 			NotNullPtr<UI::GUIButton> btnCheckDevices;
 			NotNullPtr<UI::GUIButton> btnResetNetwork;
 			NotNullPtr<UI::GUIButton> btnAddDevice;
 			NotNullPtr<UI::GUILabel> lblRemarks;
-			UI::GUITextBox *txtRemarks;
+			NotNullPtr<UI::GUITextBox> txtRemarks;
 			NotNullPtr<UI::GUILabel> lblURL;
-			UI::GUITextBox *txtURL;
+			NotNullPtr<UI::GUITextBox> txtURL;
 			NotNullPtr<UI::GUIButton> btnUpload;
 			NotNullPtr<UI::GUIGroupBox> grpDevice;
 			NotNullPtr<UI::GUIPanel> pnlDevCtrl;
@@ -79,7 +79,7 @@ namespace SSWR
 
 			NotNullPtr<UI::GUITabPage> tpLog;
 			NotNullPtr<UI::GUIListBox> lbLog;
-			UI::GUITextBox *txtLog;
+			NotNullPtr<UI::GUITextBox> txtLog;
 			NotNullPtr<UI::ListBoxLogger> logger;
 
 			static void __stdcall OnProtocolReceived(void *userObj, UInt8 cmdType, UOSInt cmdSize, UInt8 *cmd);

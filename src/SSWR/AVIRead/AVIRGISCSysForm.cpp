@@ -59,7 +59,7 @@ SSWR::AVIRead::AVIRGISCSysForm::AVIRGISCSysForm(UI::GUIClientControl *parent, No
 	this->oriCSys = csys;
 	this->outCSys = 0;
 
-	NEW_CLASS(this->txtCurrCSys, UI::GUITextBox(ui, *this, CSTR(""), true));
+	this->txtCurrCSys = ui->NewTextBox(*this, CSTR(""), true);
 	this->txtCurrCSys->SetRect(0, 0, 100, 240, false);
 	this->txtCurrCSys->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->txtCurrCSys->SetReadOnly(true);

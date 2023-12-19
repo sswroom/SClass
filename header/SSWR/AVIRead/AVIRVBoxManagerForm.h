@@ -22,15 +22,15 @@ namespace SSWR
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			NotNullPtr<UI::GUIPanel> pnlVersion;
 			NotNullPtr<UI::GUILabel> lblVersion;
-			UI::GUITextBox *txtVersion;
+			NotNullPtr<UI::GUITextBox> txtVersion;
 			UI::GUIListBox *lbVMS;
 			NotNullPtr<UI::GUIHSplitter> hspVM;
 			UI::GUITabControl *tcVM;
 			NotNullPtr<UI::GUITabPage> tpControl;
 			NotNullPtr<UI::GUILabel> lblState;
-			UI::GUITextBox *txtState;
+			NotNullPtr<UI::GUITextBox> txtState;
 			NotNullPtr<UI::GUILabel> lblStateSince;
-			UI::GUITextBox *txtStateSince;
+			NotNullPtr<UI::GUITextBox> txtStateSince;
 
 			static void __stdcall OnVMSSelChg(void *userObj);
 			void UpdateVMInfo();

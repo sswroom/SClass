@@ -127,7 +127,7 @@ SSWR::AVIRead::AVIRNetRAWCaptureForm::AVIRNetRAWCaptureForm(UI::GUIClientControl
 	this->cboFormat->SetRect(104, 52, 150, 23, false);
 	this->lblFileName = ui->NewLabel(*this, CSTR("File Name"));
 	this->lblFileName->SetRect(4, 76, 100, 23, false);
-	NEW_CLASS(this->txtFileName, UI::GUITextBox(ui, *this, CSTR("")));
+	this->txtFileName = ui->NewTextBox(*this, CSTR(""));
 	this->txtFileName->SetRect(104, 76, 500, 23, false);
 	this->btnAutoGen = ui->NewButton(*this, CSTR("Auto Gen"));
 	this->btnAutoGen->SetRect(604, 76, 75, 23, false);
@@ -140,12 +140,12 @@ SSWR::AVIRead::AVIRNetRAWCaptureForm::AVIRNetRAWCaptureForm(UI::GUIClientControl
 	this->btnStart->HandleButtonClick(OnStartClicked, this);
 	this->lblPacketCnt = ui->NewLabel(*this, CSTR("Packet Count"));
 	this->lblPacketCnt->SetRect(4, 124, 100, 23, false);
-	NEW_CLASS(this->txtPacketCnt, UI::GUITextBox(ui, *this, CSTR("")));
+	this->txtPacketCnt = ui->NewTextBox(*this, CSTR(""));
 	this->txtPacketCnt->SetReadOnly(true);
 	this->txtPacketCnt->SetRect(104, 124, 150, 23, false);
 	this->lblDataSize = ui->NewLabel(*this, CSTR("Data Size"));
 	this->lblDataSize->SetRect(4, 148, 100, 23, false);
-	NEW_CLASS(this->txtDataSize, UI::GUITextBox(ui, *this, CSTR("")));
+	this->txtDataSize = ui->NewTextBox(*this, CSTR(""));
 	this->txtDataSize->SetReadOnly(true);
 	this->txtDataSize->SetRect(104, 148, 150, 23, false);
 

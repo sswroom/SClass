@@ -24,11 +24,11 @@ namespace SSWR
 
 			NotNullPtr<UI::GUIPanel> pnlControl;
 			NotNullPtr<UI::GUILabel> lblIP;
-			UI::GUITextBox *txtIP;
+			NotNullPtr<UI::GUITextBox> txtIP;
 			NotNullPtr<UI::GUILabel> lblThreadCnt;
-			UI::GUITextBox *txtThreadCnt;
+			NotNullPtr<UI::GUITextBox> txtThreadCnt;
 			NotNullPtr<UI::GUILabel> lblMaxPort;
-			UI::GUITextBox *txtMaxPort;
+			NotNullPtr<UI::GUITextBox> txtMaxPort;
 			NotNullPtr<UI::GUIButton> btnStart;
 			UI::GUIListView *lvPort;
 

@@ -130,17 +130,17 @@ SSWR::AVIRead::AVIRRNCryptorForm::AVIRRNCryptorForm(UI::GUIClientControl *parent
 
 	this->lblSourceFile = ui->NewLabel(*this, CSTR("Source File"));
 	this->lblSourceFile->SetRect(4, 4, 100, 23, false);
-	NEW_CLASS(this->txtSourceFile, UI::GUITextBox(ui, *this, CSTR("")));
+	this->txtSourceFile = ui->NewTextBox(*this, CSTR(""));
 	this->txtSourceFile->SetRect(104, 4, 400, 23, false);
 	this->txtSourceFile->SetReadOnly(true);
 	this->lblDestFile = ui->NewLabel(*this, CSTR("Dest File"));
 	this->lblDestFile->SetRect(4, 28, 100, 23, false);
-	NEW_CLASS(this->txtDestFile, UI::GUITextBox(ui, *this, CSTR("")));
+	this->txtDestFile = ui->NewTextBox(*this, CSTR(""));
 	this->txtDestFile->SetRect(104, 28, 400, 23, false);
 	this->txtDestFile->SetReadOnly(true);
 	this->lblPassword = ui->NewLabel(*this, CSTR("Password"));
 	this->lblPassword->SetRect(4, 52, 100, 23, false);
-	NEW_CLASS(this->txtPassword, UI::GUITextBox(ui, *this, CSTR("")));
+	this->txtPassword = ui->NewTextBox(*this, CSTR(""));
 	this->txtPassword->SetRect(104, 52, 200, 23, false);
 	this->lblOptions = ui->NewLabel(*this, CSTR("Options"));
 	this->lblOptions->SetRect(4, 76, 100, 23, false);

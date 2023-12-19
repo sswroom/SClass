@@ -19,7 +19,7 @@ namespace SSWR
 			NotNullPtr<UI::GUILabel> lblMapType;
 			NotNullPtr<UI::GUIComboBox> cboMapType;
 			NotNullPtr<UI::GUILabel> lblHTTPPort;
-			UI::GUITextBox *txtHTTPPort;
+			NotNullPtr<UI::GUITextBox> txtHTTPPort;
 
 			NotNullPtr<UI::GUIButton> btnOK;
 			NotNullPtr<UI::GUIButton> btnCancel;

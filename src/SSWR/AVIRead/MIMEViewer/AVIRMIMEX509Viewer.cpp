@@ -11,11 +11,11 @@ SSWR::AVIRead::MIMEViewer::AVIRMIMEX509Viewer::AVIRMIMEX509Viewer(NotNullPtr<SSW
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
 	
 	this->tpDesc = this->tcMain->AddTabPage(CSTR("Desc"));
-	NEW_CLASS(this->txtDesc, UI::GUITextBox(ui, this->tpDesc, CSTR(""), true));
+	this->txtDesc = ui->NewTextBox(this->tpDesc, CSTR(""), true);
 	this->txtDesc->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	this->tpASN1 = this->tcMain->AddTabPage(CSTR("ASN1"));
-	NEW_CLASS(this->txtASN1, UI::GUITextBox(ui, this->tpASN1, CSTR(""), true));
+	this->txtASN1 = ui->NewTextBox(this->tpASN1, CSTR(""), true);
 	this->txtASN1->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	UOSInt dataSize;

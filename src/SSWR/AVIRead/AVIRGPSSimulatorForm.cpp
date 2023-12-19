@@ -282,7 +282,7 @@ SSWR::AVIRead::AVIRGPSSimulatorForm::AVIRGPSSimulatorForm(UI::GUIClientControl *
 
 	this->lblStreamType = ui->NewLabel(*this, CSTR("Stream Type"));
 	this->lblStreamType->SetRect(4, 4, 100, 23, false);
-	NEW_CLASS(this->txtStreamType, UI::GUITextBox(ui, *this, CSTR("-")));
+	this->txtStreamType = ui->NewTextBox(*this, CSTR("-"));
 	this->txtStreamType->SetRect(104, 4, 200, 23, false);
 	this->txtStreamType->SetReadOnly(true);
 	this->btnStream = ui->NewButton(*this, CSTR("Open"));
@@ -292,22 +292,22 @@ SSWR::AVIRead::AVIRGPSSimulatorForm::AVIRGPSSimulatorForm(UI::GUIClientControl *
 	this->chkAddPoints->SetRect(104, 28, 200, 23, false);
 	this->lblSpeed = ui->NewLabel(*this, CSTR("Speed (km/s)"));
 	this->lblSpeed->SetRect(4, 52, 100, 23, false);
-	NEW_CLASS(this->txtSpeed, UI::GUITextBox(ui, *this, CSTR("50")));
+	this->txtSpeed = ui->NewTextBox(*this, CSTR("50"));
 	this->txtSpeed->SetRect(104, 52, 100, 23, false);
 	this->txtSpeed->SetReadOnly(true);
-	NEW_CLASS(this->txtSpeedInput, UI::GUITextBox(ui, *this, CSTR("50")));
+	this->txtSpeedInput = ui->NewTextBox(*this, CSTR("50"));
 	this->txtSpeedInput->SetRect(204, 52, 100, 23, false);
 	this->btnSpeed = ui->NewButton(*this, CSTR("Set"));
 	this->btnSpeed->SetRect(304, 52, 75, 23, false);
 	this->btnSpeed->HandleButtonClick(OnSpeedClicked, this);
 	this->lblCurrLat = ui->NewLabel(*this, CSTR("Current Lat"));
 	this->lblCurrLat->SetRect(4, 76, 100, 23, false);
-	NEW_CLASS(this->txtCurrLat, UI::GUITextBox(ui, *this, CSTR("0")));
+	this->txtCurrLat = ui->NewTextBox(*this, CSTR("0"));
 	this->txtCurrLat->SetRect(104, 76, 150, 23, false);
 	this->txtCurrLat->SetReadOnly(true);
 	this->lblCurrLon = ui->NewLabel(*this, CSTR("Current Lon"));
 	this->lblCurrLon->SetRect(4, 100, 100, 23, false);
-	NEW_CLASS(this->txtCurrLon, UI::GUITextBox(ui, *this, CSTR("0")));
+	this->txtCurrLon = ui->NewTextBox(*this, CSTR("0"));
 	this->txtCurrLon->SetRect(104, 100, 150, 23, false);
 	this->txtCurrLon->SetReadOnly(true);
 	this->lblPoints = ui->NewLabel(*this, CSTR("Points"));

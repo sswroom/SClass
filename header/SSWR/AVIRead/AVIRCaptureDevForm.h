@@ -37,7 +37,7 @@ namespace SSWR
 			UI::GUIListBox *lbDevice;
 			NotNullPtr<UI::GUILabel> lblFormat;
 			NotNullPtr<UI::GUIComboBox> cboFormat;
-			UI::GUITextBox *txtDeviceInfo;
+			NotNullPtr<UI::GUITextBox> txtDeviceInfo;
 
 			NotNullPtr<UI::GUIButton> btnOK;
 			NotNullPtr<UI::GUIButton> btnCancel;

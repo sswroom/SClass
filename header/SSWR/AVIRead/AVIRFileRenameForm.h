@@ -17,8 +17,8 @@ namespace SSWR
 			NotNullPtr<Text::String> fileName;
 
 			NotNullPtr<UI::GUILabel> lblNewName;
-			UI::GUITextBox *txtNewName;
-			UI::GUITextBox *txtNewExt;
+			NotNullPtr<UI::GUITextBox> txtNewName;
+			NotNullPtr<UI::GUITextBox> txtNewExt;
 			NotNullPtr<UI::GUIButton> btnRename;
 			NotNullPtr<UI::GUIButton> btnCancel;
 

@@ -14,7 +14,7 @@ namespace SSWR
 		private:
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 
-			UI::GUITextBox *txtResult;
+			NotNullPtr<UI::GUITextBox> txtResult;
 
 			NotNullPtr<UI::GUIButton> btnKeyMC;
 			NotNullPtr<UI::GUIButton> btnKeyMR;

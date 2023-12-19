@@ -125,14 +125,14 @@ SSWR::AVIRead::AVIRGISHKTDTonnesForm::AVIRGISHKTDTonnesForm(UI::GUIClientControl
 
 	this->lblRoadRoute = ui->NewLabel(*this, CSTR("Road Route"));
 	this->lblRoadRoute->SetRect(4, 4, 150, 23, false);
-	NEW_CLASS(this->txtRoadRoute, UI::GUITextBox(ui, *this, CSTR("20180628 Road Traffic\\ROADROUTE.mdb")));
+	this->txtRoadRoute = ui->NewTextBox(*this, CSTR("20180628 Road Traffic\\ROADROUTE.mdb"));
 	this->txtRoadRoute->SetRect(154, 4, 750, 23, false);
 	this->btnRoadRoute = ui->NewButton(*this, CSTR("Browse"));
 	this->btnRoadRoute->SetRect(904, 4, 75, 23, false);
 	this->btnRoadRoute->HandleButtonClick(OnRoadRouteClicked, this);
 	this->lblVehicleRes = ui->NewLabel(*this, CSTR("Vehicle Restriction"));
 	this->lblVehicleRes->SetRect(4, 28, 150, 23, false);
-	NEW_CLASS(this->txtVehicleRes, UI::GUITextBox(ui, *this, CSTR("20180628 Road Traffic\\VEHICLE_RESTRICTION.mdb")));
+	this->txtVehicleRes = ui->NewTextBox(*this, CSTR("20180628 Road Traffic\\VEHICLE_RESTRICTION.mdb"));
 	this->txtVehicleRes->SetRect(154, 28, 750, 23, false);
 	this->btnVehicleRes = ui->NewButton(*this, CSTR("Browse"));
 	this->btnVehicleRes->SetRect(904, 28, 75, 23, false);

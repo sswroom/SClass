@@ -30,7 +30,7 @@ namespace SSWR
 			NotNullPtr<UI::GUIPanel> pnlRequest;
 			NotNullPtr<UI::GUIVSplitter> vspRequest;
 			NotNullPtr<UI::GUILabel> lblTarget;
-			UI::GUITextBox *txtTarget;
+			NotNullPtr<UI::GUITextBox> txtTarget;
 			NotNullPtr<UI::GUILabel> lblRepeat;
 			UI::GUICheckBox *chkRepeat;
 			NotNullPtr<UI::GUIButton> btnPing;

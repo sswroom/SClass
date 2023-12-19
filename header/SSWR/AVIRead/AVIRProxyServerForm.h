@@ -26,9 +26,9 @@ namespace SSWR
 
 			NotNullPtr<UI::GUIPanel> pnlRequest;
 			NotNullPtr<UI::GUILabel> lblPort;
-			UI::GUITextBox *txtPort;
+			NotNullPtr<UI::GUITextBox> txtPort;
 			NotNullPtr<UI::GUIButton> btnStart;
-			UI::GUITextBox *txtLog;
+			NotNullPtr<UI::GUITextBox> txtLog;
 			NotNullPtr<UI::GUIListBox> lbLog;
 
 			static void __stdcall OnStartClicked(void *userObj);

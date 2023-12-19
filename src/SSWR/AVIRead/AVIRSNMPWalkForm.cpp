@@ -22,7 +22,7 @@ SSWR::AVIRead::AVIRSNMPWalkForm::AVIRSNMPWalkForm(UI::GUIClientControl *parent, 
 	this->lblAgent = ui->NewLabel(this->pnlRequest, CSTR("Agent"));
 	this->lblAgent->SetRect(4, 4, 100, 23, false);
 	sptr=  Net::SocketUtil::GetAddrName(sbuff, addr);
-	NEW_CLASS(this->txtAgent, UI::GUITextBox(ui, this->pnlRequest, CSTRP(sbuff, sptr)));
+	this->txtAgent = ui->NewTextBox(this->pnlRequest, CSTRP(sbuff, sptr));
 	this->txtAgent->SetRect(104, 4, 150, 23, false);
 	this->txtAgent->SetReadOnly(true);
 	NEW_CLASS(this->lvResults, UI::GUIListView(ui, *this, UI::GUIListView::LVSTYLE_TABLE, 4));

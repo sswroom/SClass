@@ -191,7 +191,7 @@ SSWR::AVIRead::AVIRFileAnalyseForm::AVIRFileAnalyseForm(UI::GUIClientControl *pa
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lblFile = ui->NewLabel(this->pnlCtrl, CSTR("MPEG File"));
 	this->lblFile->SetRect(8, 8, 100, 23, false);
-	NEW_CLASS(this->txtFile, UI::GUITextBox(ui, this->pnlCtrl, CSTR("")));
+	this->txtFile = ui->NewTextBox(this->pnlCtrl, CSTR(""));
 	this->txtFile->SetRect(108, 8, 500, 23, false);
 	this->txtFile->SetReadOnly(true);
 	this->btnFile = ui->NewButton(this->pnlCtrl, CSTR("B&rowse"));
@@ -211,7 +211,7 @@ SSWR::AVIRead::AVIRFileAnalyseForm::AVIRFileAnalyseForm(UI::GUIClientControl *pa
 	this->lbPackItems->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbPackItems->HandleSelectionChange(OnPackItemChanged, this);
 	this->hspPack2 = ui->NewHSplitter(this->tpContent, 3, false);
-	NEW_CLASS(this->txtPack, UI::GUITextBox(ui, this->tpContent, CSTR(""), true));
+	this->txtPack = ui->NewTextBox(this->tpContent, CSTR(""), true);
 	this->txtPack->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->txtPack->SetReadOnly(true);
 

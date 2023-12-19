@@ -49,7 +49,7 @@ namespace SSWR
 
 			UI::GUIPictureBox *pbPreview;
 			NotNullPtr<UI::GUILabel> lblName;
-			UI::GUITextBox *txtName;
+			NotNullPtr<UI::GUITextBox> txtName;
 			UI::GUIListBox *lbLayer;
 			NotNullPtr<UI::GUIButton> btnNewLayer;
 			NotNullPtr<UI::GUIButton> btnRemoveLayer;
@@ -60,9 +60,9 @@ namespace SSWR
 			NotNullPtr<UI::GUILabel> lblPattern;
 			UI::GUIPictureBox *pbColor;
 			UI::GUIHScrollBar *hsbAlpha;
-			UI::GUITextBox *txtThick;
+			NotNullPtr<UI::GUITextBox> txtThick;
 			UI::GUIHScrollBar *hsbThick;
-			UI::GUITextBox *txtPattern;
+			NotNullPtr<UI::GUITextBox> txtPattern;
 
 			NotNullPtr<UI::GUIButton> btnOK;
 			NotNullPtr<UI::GUIButton> btnCancel;

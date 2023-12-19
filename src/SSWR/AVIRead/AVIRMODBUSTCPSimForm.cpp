@@ -199,7 +199,7 @@ SSWR::AVIRead::AVIRMODBUSTCPSimForm::AVIRMODBUSTCPSimForm(UI::GUIClientControl *
 	this->pnlCtrl->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->lblPort = ui->NewLabel(this->pnlCtrl, CSTR("Port"));
 	this->lblPort->SetRect(4, 4, 100, 23, false);
-	NEW_CLASS(this->txtPort, UI::GUITextBox(ui, this->pnlCtrl, CSTR("502")));
+	this->txtPort = ui->NewTextBox(this->pnlCtrl, CSTR("502"));
 	this->txtPort->SetRect(104, 4, 100, 23, false);
 	this->btnListen = ui->NewButton(this->pnlCtrl, CSTR("Listen"));
 	this->btnListen->SetRect(204, 4, 75, 23, false);
@@ -208,7 +208,7 @@ SSWR::AVIRead::AVIRMODBUSTCPSimForm::AVIRMODBUSTCPSimForm(UI::GUIClientControl *
 	this->grpDev->SetRect(0, 28, 400, 64, false);
 	this->lblAddr = ui->NewLabel(this->grpDev, CSTR("Address"));
 	this->lblAddr->SetRect(4, 4, 100, 23, false);
-	NEW_CLASS(this->txtAddr, UI::GUITextBox(ui, this->grpDev, CSTR("1")));
+	this->txtAddr = ui->NewTextBox(this->grpDev, CSTR("1"));
 	this->txtAddr->SetRect(104, 4, 100, 23, false);
 	this->cboDevType = ui->NewComboBox(this->grpDev, false);
 	this->cboDevType->SetRect(204, 4, 100, 23, false);
@@ -217,7 +217,7 @@ SSWR::AVIRead::AVIRMODBUSTCPSimForm::AVIRMODBUSTCPSimForm(UI::GUIClientControl *
 	this->btnDev->HandleButtonClick(OnDevAddClicked, this);
 	this->lblDelay = ui->NewLabel(this->pnlCtrl, CSTR("Delay"));
 	this->lblDelay->SetRect(4, 96, 100, 23, false);
-	NEW_CLASS(this->txtDelay, UI::GUITextBox(ui, this->pnlCtrl, CSTR("0")));
+	this->txtDelay = ui->NewTextBox(this->pnlCtrl, CSTR("0"));
 	this->txtDelay->SetRect(104, 96, 100, 23, false);
 	this->btnDelay = ui->NewButton(this->pnlCtrl, CSTR("Set"));
 	this->btnDelay->SetRect(204, 96, 75, 23, false);

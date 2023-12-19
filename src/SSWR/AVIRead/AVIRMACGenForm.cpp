@@ -80,12 +80,12 @@ SSWR::AVIRead::AVIRMACGenForm::AVIRMACGenForm(UI::GUIClientControl *parent, NotN
 	this->btnGenerate->HandleButtonClick(OnGenerateClicked, this);
 	this->lblColonFormat = ui->NewLabel(*this, CSTR("Colon Format"));
 	this->lblColonFormat->SetRect(4, 52, 100, 23, false);
-	NEW_CLASS(this->txtColonFormat, UI::GUITextBox(ui, *this, CSTR("")));
+	this->txtColonFormat = ui->NewTextBox(*this, CSTR(""));
 	this->txtColonFormat->SetRect(104, 52, 150, 23, false);
 	this->txtColonFormat->SetReadOnly(true);
 	this->lblPlainFormat = ui->NewLabel(*this, CSTR("Plain Format"));
 	this->lblPlainFormat->SetRect(4, 76, 100, 23, false);
-	NEW_CLASS(this->txtPlainFormat, UI::GUITextBox(ui, *this, CSTR("")));
+	this->txtPlainFormat = ui->NewTextBox(*this, CSTR(""));
 	this->txtPlainFormat->SetRect(104, 76, 150, 23, false);
 	this->txtPlainFormat->SetReadOnly(true);
 	this->lblAdapter = ui->NewLabel(*this, CSTR("Adapter"));

@@ -568,19 +568,19 @@ SSWR::AVIRead::AVIRASN1DataForm::AVIRASN1DataForm(UI::GUIClientControl *parent, 
 	this->pnlStatus->SetDockType(UI::GUIControl::DOCK_BOTTOM);
 	this->lblStatus = ui->NewLabel(this->pnlStatus, CSTR("Valid Status"));
 	this->lblStatus->SetRect(4, 4, 100, 23, false);
-	NEW_CLASS(this->txtStatus, UI::GUITextBox(ui, this->pnlStatus, CSTR("")));
+	this->txtStatus = ui->NewTextBox(this->pnlStatus, CSTR(""));
 	this->txtStatus->SetRect(104, 4, 200, 23, false);
 	this->txtStatus->SetReadOnly(true);
 	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, *this));
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
 	
 	this->tpDesc = this->tcMain->AddTabPage(CSTR("Desc"));
-	NEW_CLASS(this->txtDesc, UI::GUITextBox(ui, this->tpDesc, CSTR(""), true));
+	this->txtDesc = ui->NewTextBox(this->tpDesc, CSTR(""), true);
 	this->txtDesc->SetReadOnly(true);
 	this->txtDesc->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	this->tpASN1 = this->tcMain->AddTabPage(CSTR("ASN1"));
-	NEW_CLASS(this->txtASN1, UI::GUITextBox(ui, this->tpASN1, CSTR(""), true));
+	this->txtASN1 = ui->NewTextBox(this->tpASN1, CSTR(""), true);
 	this->txtASN1->SetReadOnly(true);
 	this->txtASN1->SetDockType(UI::GUIControl::DOCK_FILL);
 
@@ -629,7 +629,7 @@ SSWR::AVIRead::AVIRASN1DataForm::AVIRASN1DataForm(UI::GUIClientControl *parent, 
 				hashType = Crypto::Cert::X509File::GetAlgHash(signedInfo.algType);
 			}
 			NotNullPtr<UI::GUITabPage> tp;
-			UI::GUITextBox *txt;
+			NotNullPtr<UI::GUITextBox> txt;
 			NotNullPtr<Crypto::Cert::X509File> file;
 			UOSInt i = 1;
 			UOSInt j = fileList->GetFileCount();
@@ -642,7 +642,7 @@ SSWR::AVIRead::AVIRASN1DataForm::AVIRASN1DataForm(UI::GUIClientControl *parent, 
 					tp = this->tcMain->AddTabPage(sb.ToCString());
 					sb.ClearStr();
 					file->ToASN1String(sb);
-					NEW_CLASS(txt, UI::GUITextBox(ui, tp, sb.ToCString(), true));
+					txt = ui->NewTextBox(tp, sb.ToCString(), true);
 					txt->SetDockType(UI::GUIControl::DOCK_FILL);
 				}
 				i++;
@@ -696,11 +696,11 @@ SSWR::AVIRead::AVIRASN1DataForm::AVIRASN1DataForm(UI::GUIClientControl *parent, 
 			AddHashTypes(this->cboVerifyHash, hashType);
 			this->lblVerifyPayloadFile = ui->NewLabel(this->tpVerify, CSTR("Payload File"));
 			this->lblVerifyPayloadFile->SetRect(4, 28, 100, 23, false);
-			NEW_CLASS(this->txtVerifyPayloadFile, UI::GUITextBox(ui, this->tpVerify, CSTR("")));
+			this->txtVerifyPayloadFile = ui->NewTextBox(this->tpVerify, CSTR(""));
 			this->txtVerifyPayloadFile->SetRect(104, 28, 300, 23, false);
 			this->lblVerifySignature = ui->NewLabel(this->tpVerify, CSTR("Signature"));
 			this->lblVerifySignature->SetRect(4, 52, 100, 23, false);
-			NEW_CLASS(this->txtVerifySignature, UI::GUITextBox(ui, this->tpVerify, CSTR("")));
+			this->txtVerifySignature = ui->NewTextBox(this->tpVerify, CSTR(""));
 			this->txtVerifySignature->SetRect(104, 52, 300, 23, false);
 			this->btnVerify = ui->NewButton(this->tpVerify, CSTR("Verify"));
 			this->btnVerify->SetRect(104, 76, 75, 23, false);
@@ -710,7 +710,7 @@ SSWR::AVIRead::AVIRASN1DataForm::AVIRASN1DataForm(UI::GUIClientControl *parent, 
 			this->btnVerifySignInfo->HandleButtonClick(OnVerifySignInfoClicked, this);
 			this->lblVerifyStatus = ui->NewLabel(this->tpVerify, CSTR("Status"));
 			this->lblVerifyStatus->SetRect(4, 100, 100, 23, false);
-			NEW_CLASS(this->txtVerifyStatus, UI::GUITextBox(ui, this->tpVerify, CSTR(""), true));
+			this->txtVerifyStatus = ui->NewTextBox(this->tpVerify, CSTR(""), true);
 			this->txtVerifyStatus->SetRect(104, 100, 600, 47, false);
 			this->txtVerifyStatus->SetReadOnly(true);
 		}
@@ -757,7 +757,7 @@ SSWR::AVIRead::AVIRASN1DataForm::AVIRASN1DataForm(UI::GUIClientControl *parent, 
 			this->cboEncryptRSAPadding->SetSelectedIndex(0);
 			this->lblEncryptInput = ui->NewLabel(this->tpEncrypt, CSTR("Input"));
 			this->lblEncryptInput->SetRect(4, 76, 100, 23, false);
-			NEW_CLASS(this->txtEncryptInput, UI::GUITextBox(ui, this->tpEncrypt, CSTR(""), true));
+			this->txtEncryptInput = ui->NewTextBox(this->tpEncrypt, CSTR(""), true);
 			this->txtEncryptInput->SetRect(104, 76, 500, 95, false);
 			this->btnEncryptEncrypt = ui->NewButton(this->tpEncrypt, CSTR("Encrypt"));
 			this->btnEncryptEncrypt->SetRect(104, 172, 75, 23, false);
@@ -770,7 +770,7 @@ SSWR::AVIRead::AVIRASN1DataForm::AVIRASN1DataForm(UI::GUIClientControl *parent, 
 			}
 			this->lblEncryptOutput = ui->NewLabel(this->tpEncrypt, CSTR("Output"));
 			this->lblEncryptOutput->SetRect(4, 196, 100, 23, false);
-			NEW_CLASS(this->txtEncryptOutput, UI::GUITextBox(ui, this->tpEncrypt, CSTR(""), true));
+			this->txtEncryptOutput = ui->NewTextBox(this->tpEncrypt, CSTR(""), true);
 			this->txtEncryptOutput->SetRect(104, 196, 500, 95, false);
 			this->txtEncryptOutput->SetReadOnly(true);
 		}

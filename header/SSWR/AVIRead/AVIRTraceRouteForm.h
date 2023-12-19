@@ -30,12 +30,12 @@ namespace SSWR
 			NotNullPtr<UI::GUILabel> lblSelfIP;
 			NotNullPtr<UI::GUIComboBox> cboSelfIP;
 			NotNullPtr<UI::GUILabel> lblTargetIP;
-			UI::GUITextBox *txtTargetIP;
+			NotNullPtr<UI::GUITextBox> txtTargetIP;
 			NotNullPtr<UI::GUIButton> btnStart;
 
 			UI::GUIListBox *lbIP;
 			NotNullPtr<UI::GUIHSplitter> hspIP;
-			UI::GUITextBox *txtIPWhois;
+			NotNullPtr<UI::GUITextBox> txtIPWhois;
 
 			static void __stdcall OnStartClicked(void *userObj);
 			static void __stdcall OnIPSelChg(void *userObj);

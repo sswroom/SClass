@@ -18,21 +18,21 @@ namespace SSWR
 
 			NotNullPtr<UI::GUIGroupBox> grpGenerate;
 			NotNullPtr<UI::GUILabel> lblCost;
-			UI::GUITextBox *txtCost;
+			NotNullPtr<UI::GUITextBox> txtCost;
 			NotNullPtr<UI::GUILabel> lblGenPassword;
-			UI::GUITextBox *txtGenPassword;
+			NotNullPtr<UI::GUITextBox> txtGenPassword;
 			NotNullPtr<UI::GUIButton> btnGenerate;
 			NotNullPtr<UI::GUILabel> lblGenHash;
-			UI::GUITextBox *txtGenHash;
+			NotNullPtr<UI::GUITextBox> txtGenHash;
 
 			NotNullPtr<UI::GUIGroupBox> grpCheck;
 			NotNullPtr<UI::GUILabel> lblCheckHash;
-			UI::GUITextBox *txtCheckHash;
+			NotNullPtr<UI::GUITextBox> txtCheckHash;
 			NotNullPtr<UI::GUILabel> lblCheckPassword;
-			UI::GUITextBox *txtCheckPassword;
+			NotNullPtr<UI::GUITextBox> txtCheckPassword;
 			NotNullPtr<UI::GUIButton> btnCheck;
 			NotNullPtr<UI::GUILabel> lblCheckResult;
-			UI::GUITextBox *txtCheckResult;
+			NotNullPtr<UI::GUITextBox> txtCheckResult;
 
 			static void __stdcall OnGenHashClicked(void *userObj);
 			static void __stdcall OnCheckClicked(void *userObj);

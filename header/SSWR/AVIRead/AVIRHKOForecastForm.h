@@ -25,17 +25,17 @@ namespace SSWR
 			NotNullPtr<UI::GUIComboBox> cboLang;
 			NotNullPtr<UI::GUIButton> btnReload;
 			NotNullPtr<UI::GUILabel> lblReqTime;
-			UI::GUITextBox *txtReqTime;
+			NotNullPtr<UI::GUITextBox> txtReqTime;
 			NotNullPtr<UI::GUILabel> lblUpdateTime;
-			UI::GUITextBox *txtUpdateTime;
+			NotNullPtr<UI::GUITextBox> txtUpdateTime;
 			NotNullPtr<UI::GUILabel> lblSeaTemp;
-			UI::GUITextBox *txtSeaTemp;
+			NotNullPtr<UI::GUITextBox> txtSeaTemp;
 			NotNullPtr<UI::GUILabel> lblSeaTempPlace;
-			UI::GUITextBox *txtSeaTempPlace;
+			NotNullPtr<UI::GUITextBox> txtSeaTempPlace;
 			NotNullPtr<UI::GUILabel> lblSeaTempTime;
-			UI::GUITextBox *txtSeaTempTime;
+			NotNullPtr<UI::GUITextBox> txtSeaTempTime;
 			NotNullPtr<UI::GUILabel> lblGeneralSituation;
-			UI::GUITextBox *txtGeneralSituation;
+			NotNullPtr<UI::GUITextBox> txtGeneralSituation;
 			UI::GUIListView *lvForecast;
 
 			static void __stdcall OnReloadClicked(void *userObj);

@@ -25,12 +25,12 @@ namespace SSWR
 
 			NotNullPtr<UI::GUIGroupBox> grpParam;
 			NotNullPtr<UI::GUILabel> lblPort;
-			UI::GUITextBox *txtPort;
+			NotNullPtr<UI::GUITextBox> txtPort;
 			NotNullPtr<UI::GUILabel> lblSSL;
 			NotNullPtr<UI::GUIButton> btnSSLCert;
 			NotNullPtr<UI::GUILabel> lblSSLCert;
 			NotNullPtr<UI::GUILabel> lblClientCA;
-			UI::GUITextBox *txtClientCA;
+			NotNullPtr<UI::GUITextBox> txtClientCA;
 			NotNullPtr<UI::GUIButton> btnStart;
 			NotNullPtr<UI::GUIButton> btnStop;
 

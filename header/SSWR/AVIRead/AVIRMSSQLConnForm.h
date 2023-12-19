@@ -17,19 +17,19 @@ namespace SSWR
 		{
 		private:
 			NotNullPtr<UI::GUILabel> lblDriver;
-			UI::GUITextBox *txtDriver;
+			NotNullPtr<UI::GUITextBox> txtDriver;
 			NotNullPtr<UI::GUILabel> lblServer;
-			UI::GUITextBox *txtServer;
+			NotNullPtr<UI::GUITextBox> txtServer;
 			NotNullPtr<UI::GUIButton> btnPasteJDBC;
 			NotNullPtr<UI::GUILabel> lblPort;
-			UI::GUITextBox *txtPort;
+			NotNullPtr<UI::GUITextBox> txtPort;
 			UI::GUICheckBox *chkEncrypt;
 			NotNullPtr<UI::GUILabel> lblDatabase;
-			UI::GUITextBox *txtDatabase;
+			NotNullPtr<UI::GUITextBox> txtDatabase;
 			NotNullPtr<UI::GUILabel> lblUser;
-			UI::GUITextBox *txtUser;
+			NotNullPtr<UI::GUITextBox> txtUser;
 			NotNullPtr<UI::GUILabel> lblPassword;
-			UI::GUITextBox *txtPassword;
+			NotNullPtr<UI::GUITextBox> txtPassword;
 			NotNullPtr<UI::GUIButton> btnOK;
 			NotNullPtr<UI::GUIButton> btnCancel;
 

@@ -205,11 +205,11 @@ SSWR::AVIRead::AVIRTCPSpdCliForm::AVIRTCPSpdCliForm(UI::GUIClientControl *parent
 
 	this->lblHost = ui->NewLabel(*this, CSTR("Host"));
 	this->lblHost->SetRect(4, 4, 100, 23, false);
-	NEW_CLASS(this->txtHost, UI::GUITextBox(ui, *this, CSTR("127.0.0.1")));
+	this->txtHost = ui->NewTextBox(*this, CSTR("127.0.0.1"));
 	this->txtHost->SetRect(104, 4, 100, 23, false);
 	this->lblPort = ui->NewLabel(*this, CSTR("Port"));
 	this->lblPort->SetRect(4, 28, 100, 23, false);
-	NEW_CLASS(this->txtPort, UI::GUITextBox(ui, *this, CSTR("1234")));
+	this->txtPort = ui->NewTextBox(*this, CSTR("1234"));
 	this->txtPort->SetRect(104, 28, 100, 23, false);
 	this->btnConn = ui->NewButton(*this, CSTR("Start"));
 	this->btnConn->SetRect(104, 52, 75, 23, false);
@@ -217,12 +217,12 @@ SSWR::AVIRead::AVIRTCPSpdCliForm::AVIRTCPSpdCliForm(UI::GUIClientControl *parent
 
 	this->lblSendSpeed = ui->NewLabel(*this, CSTR("Send Speed"));
 	this->lblSendSpeed->SetRect(4, 100, 100, 23, false);
-	NEW_CLASS(this->txtSendSpeed, UI::GUITextBox(ui, *this, CSTR("")));
+	this->txtSendSpeed = ui->NewTextBox(*this, CSTR(""));
 	this->txtSendSpeed->SetRect(104, 100, 150, 23, false);
 	this->txtSendSpeed->SetReadOnly(true);
 	this->lblRecvSpeed = ui->NewLabel(*this, CSTR("Recv Speed"));
 	this->lblRecvSpeed->SetRect(4, 124, 100, 23, false);
-	NEW_CLASS(this->txtRecvSpeed, UI::GUITextBox(ui, *this, CSTR("")));
+	this->txtRecvSpeed = ui->NewTextBox(*this, CSTR(""));
 	this->txtRecvSpeed->SetRect(104, 124, 150, 23, false);
 	this->txtRecvSpeed->SetReadOnly(true);
 

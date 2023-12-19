@@ -62,12 +62,12 @@ SSWR::AVIRead::AVIRProxyServerForm::AVIRProxyServerForm(UI::GUIClientControl *pa
 	this->pnlRequest->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->lblPort = ui->NewLabel(this->pnlRequest, CSTR("Port"));
 	this->lblPort->SetRect(4, 4, 100, 23, false);
-	NEW_CLASS(this->txtPort, UI::GUITextBox(ui, this->pnlRequest, CSTR("8080")));
+	this->txtPort = ui->NewTextBox(this->pnlRequest, CSTR("8080"));
 	this->txtPort->SetRect(104, 4, 100, 23, false);
 	this->btnStart = ui->NewButton(this->pnlRequest, CSTR("&Start"));
 	this->btnStart->SetRect(204, 4, 75, 23, false);
 	this->btnStart->HandleButtonClick(OnStartClicked, this);
-	NEW_CLASS(this->txtLog, UI::GUITextBox(ui, *this, CSTR("")));
+	this->txtLog = ui->NewTextBox(*this, CSTR(""));
 	this->txtLog->SetRect(0, 0, 100, 23, false);
 	this->txtLog->SetReadOnly(true);
 	this->txtLog->SetDockType(UI::GUIControl::DOCK_BOTTOM);

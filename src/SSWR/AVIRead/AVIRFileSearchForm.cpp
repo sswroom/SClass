@@ -183,7 +183,7 @@ SSWR::AVIRead::AVIRFileSearchForm::AVIRFileSearchForm(UI::GUIClientControl *pare
 	this->pnlControl->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->lblDir = ui->NewLabel(this->pnlControl, CSTR("Directory"));
 	this->lblDir->SetRect(4, 4, 100, 23, false);
-	NEW_CLASS(this->txtDir, UI::GUITextBox(ui, this->pnlControl, CSTR("")));
+	this->txtDir = ui->NewTextBox(this->pnlControl, CSTR(""));
 	this->txtDir->SetRect(104, 4, 600, 23, false);
 	this->lblEncoding = ui->NewLabel(this->pnlControl, CSTR("Encoding"));
 	this->lblEncoding->SetRect(4, 28, 100, 23, false);
@@ -211,7 +211,7 @@ SSWR::AVIRead::AVIRFileSearchForm::AVIRFileSearchForm(UI::GUIClientControl *pare
 	}
 	this->lblText = ui->NewLabel(this->pnlControl, CSTR("Text"));
 	this->lblText->SetRect(4, 52, 100, 23, false);
-	NEW_CLASS(this->txtText, UI::GUITextBox(ui, this->pnlControl, CSTR("")));
+	this->txtText = ui->NewTextBox(this->pnlControl, CSTR(""));
 	this->txtText->SetRect(104, 52, 600, 23, false);
 	this->btnSearch = ui->NewButton(this->pnlControl, CSTR("Search"));
 	this->btnSearch->SetRect(104, 76, 75, 23, false);

@@ -28,14 +28,14 @@ SSWR::AVIRead::AVIRJSTextForm::AVIRJSTextForm(UI::GUIClientControl *parent, NotN
 
 	this->lblJSText = ui->NewLabel(*this, CSTR("JS Text"));
 	this->lblJSText->SetRect(4, 4, 100, 23, false);
-	NEW_CLASS(this->txtJSText, UI::GUITextBox(ui, *this, CSTR("")));
+	this->txtJSText = ui->NewTextBox(*this, CSTR(""));
 	this->txtJSText->SetRect(104, 4, 800, 23, false);
 	this->btnExtract = ui->NewButton(*this, CSTR("Extract"));
 	this->btnExtract->SetRect(104, 28, 75, 23, false);
 	this->btnExtract->HandleButtonClick(OnExtractClicked, this);
 	this->lblOriText = ui->NewLabel(*this, CSTR("Original Text"));
 	this->lblOriText->SetRect(4, 56, 100, 23, false);
-	NEW_CLASS(this->txtOriText, UI::GUITextBox(ui, *this, CSTR("")));
+	this->txtOriText = ui->NewTextBox(*this, CSTR(""));
 	this->txtOriText->SetRect(104, 56, 800, 23, false);
 	this->txtOriText->SetReadOnly(true);
 }

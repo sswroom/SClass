@@ -234,7 +234,7 @@ SSWR::AVIRead::AVIRColorCustomForm::AVIRColorCustomForm(UI::GUIClientControl *pa
 
 	this->lblRX = ui->NewLabel(*this, CSTR("Red x"));
 	this->lblRX->SetRect(4, 4, 100, 23, false);
-	NEW_CLASS(this->txtRX, UI::GUITextBox(ui, *this, CSTR("")));
+	this->txtRX = ui->NewTextBox(*this, CSTR(""));
 	this->txtRX->SetRect(104, 4, 150, 23, false);
 	this->txtRX->SetReadOnly(true);
 	this->btnRXDown = ui->NewButton(*this, CSTR("-"));
@@ -245,7 +245,7 @@ SSWR::AVIRead::AVIRColorCustomForm::AVIRColorCustomForm(UI::GUIClientControl *pa
 	this->btnRXUp->HandleButtonClick(OnRXUpClicked, this);
 	this->lblRY = ui->NewLabel(*this, CSTR("Red y"));
 	this->lblRY->SetRect(4, 28, 100, 23, false);
-	NEW_CLASS(this->txtRY, UI::GUITextBox(ui, *this, CSTR("")));
+	this->txtRY = ui->NewTextBox(*this, CSTR(""));
 	this->txtRY->SetRect(104, 28, 150, 23, false);
 	this->txtRY->SetReadOnly(true);
 	this->btnRYDown = ui->NewButton(*this, CSTR("-"));
@@ -256,7 +256,7 @@ SSWR::AVIRead::AVIRColorCustomForm::AVIRColorCustomForm(UI::GUIClientControl *pa
 	this->btnRYUp->HandleButtonClick(OnRYUpClicked, this);
 	this->lblGX = ui->NewLabel(*this, CSTR("Green x"));
 	this->lblGX->SetRect(4, 52, 100, 23, false);
-	NEW_CLASS(this->txtGX, UI::GUITextBox(ui, *this, CSTR("")));
+	this->txtGX = ui->NewTextBox(*this, CSTR(""));
 	this->txtGX->SetRect(104, 52, 150, 23, false);
 	this->txtGX->SetReadOnly(true);
 	this->btnGXDown = ui->NewButton(*this, CSTR("-"));
@@ -267,7 +267,7 @@ SSWR::AVIRead::AVIRColorCustomForm::AVIRColorCustomForm(UI::GUIClientControl *pa
 	this->btnGXUp->HandleButtonClick(OnGXUpClicked, this);
 	this->lblGY = ui->NewLabel(*this, CSTR("Green y"));
 	this->lblGY->SetRect(4, 76, 100, 23, false);
-	NEW_CLASS(this->txtGY, UI::GUITextBox(ui, *this, CSTR("")));
+	this->txtGY = ui->NewTextBox(*this, CSTR(""));
 	this->txtGY->SetRect(104, 76, 150, 23, false);
 	this->txtGY->SetReadOnly(true);
 	this->btnGYDown = ui->NewButton(*this, CSTR("-"));
@@ -278,7 +278,7 @@ SSWR::AVIRead::AVIRColorCustomForm::AVIRColorCustomForm(UI::GUIClientControl *pa
 	this->btnGYUp->HandleButtonClick(OnGYUpClicked, this);
 	this->lblBX = ui->NewLabel(*this, CSTR("Blue x"));
 	this->lblBX->SetRect(4, 100, 100, 23, false);
-	NEW_CLASS(this->txtBX, UI::GUITextBox(ui, *this, CSTR("")));
+	this->txtBX = ui->NewTextBox(*this, CSTR(""));
 	this->txtBX->SetRect(104, 100, 150, 23, false);
 	this->txtBX->SetReadOnly(true);
 	this->btnBXDown = ui->NewButton(*this, CSTR("-"));
@@ -289,7 +289,7 @@ SSWR::AVIRead::AVIRColorCustomForm::AVIRColorCustomForm(UI::GUIClientControl *pa
 	this->btnBXUp->HandleButtonClick(OnBXUpClicked, this);
 	this->lblBY = ui->NewLabel(*this, CSTR("Blue y"));
 	this->lblBY->SetRect(4, 124, 100, 23, false);
-	NEW_CLASS(this->txtBY, UI::GUITextBox(ui, *this, CSTR("")));
+	this->txtBY = ui->NewTextBox(*this, CSTR(""));
 	this->txtBY->SetRect(104, 124, 150, 23, false);
 	this->txtBY->SetReadOnly(true);
 	this->btnBYDown = ui->NewButton(*this, CSTR("-"));
@@ -300,7 +300,7 @@ SSWR::AVIRead::AVIRColorCustomForm::AVIRColorCustomForm(UI::GUIClientControl *pa
 	this->btnBYUp->HandleButtonClick(OnBYUpClicked, this);
 	this->lblWX = ui->NewLabel(*this, CSTR("White x"));
 	this->lblWX->SetRect(4, 148, 100, 23, false);
-	NEW_CLASS(this->txtWX, UI::GUITextBox(ui, *this, CSTR("")));
+	this->txtWX = ui->NewTextBox(*this, CSTR(""));
 	this->txtWX->SetRect(104, 148, 150, 23, false);
 	this->txtWX->SetReadOnly(true);
 	this->btnWXDown = ui->NewButton(*this, CSTR("-"));
@@ -311,7 +311,7 @@ SSWR::AVIRead::AVIRColorCustomForm::AVIRColorCustomForm(UI::GUIClientControl *pa
 	this->btnWXUp->HandleButtonClick(OnWXUpClicked, this);
 	this->lblWY = ui->NewLabel(*this, CSTR("White y"));
 	this->lblWY->SetRect(4, 172, 100, 23, false);
-	NEW_CLASS(this->txtWY, UI::GUITextBox(ui, *this, CSTR("")));
+	this->txtWY = ui->NewTextBox(*this, CSTR(""));
 	this->txtWY->SetRect(104, 172, 150, 23, false);
 	this->txtWY->SetReadOnly(true);
 	this->btnWYDown = ui->NewButton(*this, CSTR("-"));

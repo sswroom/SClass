@@ -30,11 +30,11 @@ namespace SSWR
 			NotNullPtr<UI::GUITabPage> tpMyStack;
 
 			NotNullPtr<UI::GUILabel> lblThreadId;
-			UI::GUITextBox *txtThreadId;
+			NotNullPtr<UI::GUITextBox> txtThreadId;
 			NotNullPtr<UI::GUILabel> lblStartAddr;
-			UI::GUITextBox *txtStartAddr;
+			NotNullPtr<UI::GUITextBox> txtStartAddr;
 			NotNullPtr<UI::GUILabel> lblStartName;
-			UI::GUITextBox *txtStartName;
+			NotNullPtr<UI::GUITextBox> txtStartName;
 
 			UI::GUIListView *lvContext;
 
@@ -43,7 +43,7 @@ namespace SSWR
 			UI::GUIListBox *lbMyStack;
 			NotNullPtr<UI::GUIHSplitter> hspMyStack;
 			NotNullPtr<UI::GUIPanel> pnlMyStack;
-			UI::GUITextBox *txtMyStackMem;
+			NotNullPtr<UI::GUITextBox> txtMyStackMem;
 			NotNullPtr<UI::GUIVSplitter> vspMyStack;
 			UI::GUIListView *lvMyStack;
 

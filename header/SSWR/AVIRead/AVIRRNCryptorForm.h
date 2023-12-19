@@ -20,11 +20,11 @@ namespace SSWR
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 
 			NotNullPtr<UI::GUILabel> lblSourceFile;
-			UI::GUITextBox *txtSourceFile;
+			NotNullPtr<UI::GUITextBox> txtSourceFile;
 			NotNullPtr<UI::GUILabel> lblDestFile;
-			UI::GUITextBox *txtDestFile;
+			NotNullPtr<UI::GUITextBox> txtDestFile;
 			NotNullPtr<UI::GUILabel> lblPassword;
-			UI::GUITextBox *txtPassword;
+			NotNullPtr<UI::GUITextBox> txtPassword;
 			NotNullPtr<UI::GUILabel> lblOptions;
 			UI::GUICheckBox *chkBase64;
 			NotNullPtr<UI::GUIButton> btnProcess;

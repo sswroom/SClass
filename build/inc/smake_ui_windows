@@ -80,8 +80,6 @@ UI/GUITabControl.h:
 @GUITabControlWin.o
 UI/GUITabPage.h:
 @GUITabPage.o
-UI/GUITextBox.h:
-@GUITextBoxWin.o
 UI/GUITextView.h:
 @GUITextViewWin.o
 UI/GUITrackBar.h:

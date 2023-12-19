@@ -23,20 +23,20 @@ namespace SSWR
 		private:
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			NotNullPtr<UI::GUILabel> lblHost;
-			UI::GUITextBox *txtHost;
+			NotNullPtr<UI::GUITextBox> txtHost;
 			NotNullPtr<UI::GUILabel> lblPort;
-			UI::GUITextBox *txtPort;
+			NotNullPtr<UI::GUITextBox> txtPort;
 			NotNullPtr<UI::GUILabel> lblUsername;
-			UI::GUITextBox *txtUsername;
+			NotNullPtr<UI::GUITextBox> txtUsername;
 			NotNullPtr<UI::GUILabel> lblPassword;
-			UI::GUITextBox *txtPassword;
+			NotNullPtr<UI::GUITextBox> txtPassword;
 			NotNullPtr<UI::GUILabel> lblTopic;
-			UI::GUITextBox *txtTopic;
+			NotNullPtr<UI::GUITextBox> txtTopic;
 			NotNullPtr<UI::GUILabel> lblMessage;
-			UI::GUITextBox *txtMessage;
+			NotNullPtr<UI::GUITextBox> txtMessage;
 			NotNullPtr<UI::GUIButton> btnPublish;
 			NotNullPtr<UI::GUILabel> lblStatus;
-			UI::GUITextBox *txtStatus;
+			NotNullPtr<UI::GUITextBox> txtStatus;
 
 			static void __stdcall OnPublishClicked(void *userObj);
 

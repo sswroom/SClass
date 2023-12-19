@@ -192,7 +192,7 @@ SSWR::AVIRead::AVIRStreamLatencyForm::AVIRStreamLatencyForm(UI::GUIClientControl
 	this->grpStream->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->lblStream = ui->NewLabel(this->grpStream, CSTR("Stream Type"));
 	this->lblStream->SetRect(4, 4, 100, 23, false);
-	NEW_CLASS(this->txtStream, UI::GUITextBox(ui, this->grpStream, CSTR("-")));
+	this->txtStream = ui->NewTextBox(this->grpStream, CSTR("-"));
 	this->txtStream->SetRect(104, 4, 200, 23, false);
 	this->txtStream->SetReadOnly(true);
 	this->btnStream = ui->NewButton(this->grpStream, CSTR("&Open"));
@@ -228,7 +228,7 @@ SSWR::AVIRead::AVIRStreamLatencyForm::AVIRStreamLatencyForm(UI::GUIClientControl
 	this->rlcLatency->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	this->tpLog = this->tcMain->AddTabPage(CSTR("Log"));
-	NEW_CLASS(this->txtLog, UI::GUITextBox(ui, this->tpLog, CSTR("")));
+	this->txtLog = ui->NewTextBox(this->tpLog, CSTR(""));
 	this->txtLog->SetReadOnly(true);
 	this->txtLog->SetRect(0, 0, 100, 23, false);
 	this->txtLog->SetDockType(UI::GUIControl::DOCK_BOTTOM);
@@ -238,12 +238,12 @@ SSWR::AVIRead::AVIRStreamLatencyForm::AVIRStreamLatencyForm(UI::GUIClientControl
 	this->tpStatus = this->tcMain->AddTabPage(CSTR("Status"));
 	this->lblSentCnt = ui->NewLabel(this->tpStatus, CSTR("Sent Cnt"));
 	this->lblSentCnt->SetRect(0, 0, 100, 23, false);
-	NEW_CLASS(this->txtSentCnt, UI::GUITextBox(ui, this->tpStatus, CSTR("0")));
+	this->txtSentCnt = ui->NewTextBox(this->tpStatus, CSTR("0"));
 	this->txtSentCnt->SetRect(100, 0, 150, 23, false);
 	this->txtSentCnt->SetReadOnly(true);
 	this->lblRecvCnt = ui->NewLabel(this->tpStatus, CSTR("Recv Cnt"));
 	this->lblRecvCnt->SetRect(0, 24, 100, 23, false);
-	NEW_CLASS(this->txtRecvCnt, UI::GUITextBox(ui, this->tpStatus, CSTR("0")));
+	this->txtRecvCnt = ui->NewTextBox(this->tpStatus, CSTR("0"));
 	this->txtRecvCnt->SetRect(100, 24, 150, 23, false);
 	this->txtRecvCnt->SetReadOnly(true);
 

@@ -130,14 +130,14 @@ SSWR::AVIRead::AVIRWMTSForm::AVIRWMTSForm(UI::GUIClientControl *parent, NotNullP
 
 	this->lblWMTSURL = ui->NewLabel(*this, CSTR("WMTS URL"));
 	this->lblWMTSURL->SetRect(4, 4, 100, 23, false);
-	NEW_CLASS(this->txtWMTSURL, UI::GUITextBox(ui, *this, CSTR("")));
+	this->txtWMTSURL = ui->NewTextBox(*this, CSTR(""));
 	this->txtWMTSURL->SetRect(104, 4, 500, 23, false);
 	this->btnLoad = ui->NewButton(*this, CSTR("Load"));
 	this->btnLoad->SetRect(104, 28, 75, 23, false);
 	this->btnLoad->HandleButtonClick(OnLoadClicked, this);
 	this->lblStatus = ui->NewLabel(*this, CSTR("Status"));
 	this->lblStatus->SetRect(4, 52, 100, 23, false);
-	NEW_CLASS(this->txtStatus, UI::GUITextBox(ui, *this, CSTR("")));
+	this->txtStatus = ui->NewTextBox(*this, CSTR(""));
 	this->txtStatus->SetRect(104, 52, 100, 23, false);
 	this->txtStatus->SetReadOnly(true);
 	this->lblLayer = ui->NewLabel(*this, CSTR("Layer"));

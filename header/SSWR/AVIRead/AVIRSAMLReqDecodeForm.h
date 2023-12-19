@@ -21,12 +21,12 @@ namespace SSWR
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 
 			NotNullPtr<UI::GUILabel> lblRAWRequest;
-			UI::GUITextBox *txtRAWRequest;
+			NotNullPtr<UI::GUITextBox> txtRAWRequest;
 			NotNullPtr<UI::GUIButton> btnDecode;
 			NotNullPtr<UI::GUILabel> lblResult;
-			UI::GUITextBox *txtResult;
+			NotNullPtr<UI::GUITextBox> txtResult;
 			NotNullPtr<UI::GUILabel> lblWellFormat;
-			UI::GUITextBox *txtWellFormat;
+			NotNullPtr<UI::GUITextBox> txtWellFormat;
 
 		private:
 			static void __stdcall OnDecodeClicked(void *userObj);

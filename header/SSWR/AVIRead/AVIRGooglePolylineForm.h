@@ -17,7 +17,7 @@ namespace SSWR
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 
 			NotNullPtr<UI::GUILabel> lblPolylineText;
-			UI::GUITextBox *txtPolylineText;
+			NotNullPtr<UI::GUITextBox> txtPolylineText;
 			NotNullPtr<UI::GUIButton> btnOK;
 			NotNullPtr<UI::GUIButton> btnCancel;
 			Math::Geometry::LineString *polyline;

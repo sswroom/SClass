@@ -48,13 +48,13 @@ namespace SSWR
 			UI::GUIRadioButton *radOutputDevice;
 			UI::GUIRadioButton *radOutputSilent;
 			NotNullPtr<UI::GUILabel> lblBuffSize;
-			UI::GUITextBox *txtBuffSize;
+			NotNullPtr<UI::GUITextBox> txtBuffSize;
 			NotNullPtr<UI::GUILabel> lblFrequency;
-			UI::GUITextBox *txtFrequency;
+			NotNullPtr<UI::GUITextBox> txtFrequency;
 			NotNullPtr<UI::GUILabel> lblChannel;
-			UI::GUITextBox *txtChannel;
+			NotNullPtr<UI::GUITextBox> txtChannel;
 			NotNullPtr<UI::GUILabel> lblBitCount;
-			UI::GUITextBox *txtBitCount;
+			NotNullPtr<UI::GUITextBox> txtBitCount;
 			NotNullPtr<UI::GUIButton> btnStart;
 
 			NotNullPtr<UI::GUITabPage> tpVolBoost;
@@ -66,10 +66,10 @@ namespace SSWR
 			NotNullPtr<UI::GUITabPage> tpDTMF;
 			NotNullPtr<UI::GUIPanel> pnlDTMF;
 			NotNullPtr<UI::GUILabel> lblDTMFInterval;
-			UI::GUITextBox *txtDTMFInterval;
+			NotNullPtr<UI::GUITextBox> txtDTMFInterval;
 			NotNullPtr<UI::GUILabel> lblDTMFIntervalMS;
 			NotNullPtr<UI::GUILabel> lblDTMFDecode;
-			UI::GUITextBox *txtDTMFDecode;
+			NotNullPtr<UI::GUITextBox> txtDTMFDecode;
 			NotNullPtr<UI::GUIButton> btnDTMFClear;
 			UI::GUITabControl *tcDTMF;
 			NotNullPtr<UI::GUITabPage> tpDTMFGen;
@@ -94,15 +94,15 @@ namespace SSWR
 			NotNullPtr<UI::GUILabel> lblDTMFVolV;
 			NotNullPtr<UI::GUITabPage> tpDTMFGen2;
 			NotNullPtr<UI::GUILabel> lblDTMFSignalTime;
-			UI::GUITextBox *txtDTMFSignalTime;
+			NotNullPtr<UI::GUITextBox> txtDTMFSignalTime;
 			NotNullPtr<UI::GUILabel> lblDTMFSignalTimeMS;
 			NotNullPtr<UI::GUILabel> lblDTMFBreakTime;
-			UI::GUITextBox *txtDTMFBreakTime;
+			NotNullPtr<UI::GUITextBox> txtDTMFBreakTime;
 			NotNullPtr<UI::GUILabel> lblDTMFBreakTimeMS;
 			NotNullPtr<UI::GUILabel> lblDTMFTonesVol;
 			UI::GUITrackBar *tbDTMFTonesVol;
 			NotNullPtr<UI::GUILabel> lblDTMFTones;
-			UI::GUITextBox *txtDTMFTones;
+			NotNullPtr<UI::GUITextBox> txtDTMFTones;
 			NotNullPtr<UI::GUIButton> btnDTMFTones;
 
 			NotNullPtr<UI::GUITabPage> tpVolLevel;
@@ -114,7 +114,7 @@ namespace SSWR
 
 			NotNullPtr<UI::GUITabPage> tpFileMix;
 			NotNullPtr<UI::GUILabel> lblFileMix;
-			UI::GUITextBox *txtFileMix;
+			NotNullPtr<UI::GUITextBox> txtFileMix;
 			NotNullPtr<UI::GUIButton> btnFileMix;
 			NotNullPtr<UI::GUIButton> btnFileMixStart;
 			NotNullPtr<UI::GUIButton> btnFileMixStop;
@@ -131,11 +131,11 @@ namespace SSWR
 			UI::GUITrackBar *tbSweepVol;
 			NotNullPtr<UI::GUILabel> lblSweepVolV;
 			NotNullPtr<UI::GUILabel> lblSweepStartFreq;
-			UI::GUITextBox *txtSweepStartFreq;
+			NotNullPtr<UI::GUITextBox> txtSweepStartFreq;
 			NotNullPtr<UI::GUILabel> lblSweepEndFreq;
-			UI::GUITextBox *txtSweepEndFreq;
+			NotNullPtr<UI::GUITextBox> txtSweepEndFreq;
 			NotNullPtr<UI::GUILabel> lblSweepDur;
-			UI::GUITextBox *txtSweepDur;
+			NotNullPtr<UI::GUITextBox> txtSweepDur;
 			NotNullPtr<UI::GUIButton> btnSweepStart;
 
 			NotNullPtr<UI::GUITabPage> tpAmplifier;

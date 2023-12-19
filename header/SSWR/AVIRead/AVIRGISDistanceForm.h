@@ -25,7 +25,7 @@ namespace SSWR
 			UI::GUIRadioButton *radActionPause;
 			UI::GUIRadioButton *radActionMeasure;
 			NotNullPtr<UI::GUILabel> lblDistance;
-			UI::GUITextBox *txtDistance;
+			NotNullPtr<UI::GUITextBox> txtDistance;
 			NotNullPtr<UI::GUIComboBox> cboDistanceUnit;
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;

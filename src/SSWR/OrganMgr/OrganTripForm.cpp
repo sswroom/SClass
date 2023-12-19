@@ -214,7 +214,7 @@ SSWR::OrganMgr::OrganTripForm::OrganTripForm(UI::GUIClientControl *parent, NotNu
 	this->btnDate1Hr->HandleButtonClick(OnDate1HrClicked, this);
 	this->lblLocation = ui->NewLabel(this->pnlDetail, this->env->GetLang(CSTR("TripFormLocation")));
 	this->lblLocation->SetRect(0, 88, 72, 23, false);
-	NEW_CLASS(this->txtLocation, UI::GUITextBox(ui, this->pnlDetail, CSTR("")));
+	this->txtLocation = ui->NewTextBox(this->pnlDetail, CSTR(""));
 	this->txtLocation->SetRect(72, 88, 88, 23, false);
 	this->txtLocation->SetReadOnly(true);
 	this->btnLocation = ui->NewButton(this->pnlDetail, this->env->GetLang(CSTR("TripFormSelect")));

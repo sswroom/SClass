@@ -17,9 +17,9 @@ namespace SSWR
 		{
 		private:
 			NotNullPtr<UI::GUILabel> lblSrcFile;
-			UI::GUITextBox *txtSrcFile;
+			NotNullPtr<UI::GUITextBox> txtSrcFile;
 			NotNullPtr<UI::GUILabel> lblDestFile;
-			UI::GUITextBox *txtDestFile;
+			NotNullPtr<UI::GUITextBox> txtDestFile;
 			NotNullPtr<UI::GUILabel> lblDecrypt;
 			UI::GUICheckBox *chkDecrypt;
 			NotNullPtr<UI::GUILabel> lblEncrypt;

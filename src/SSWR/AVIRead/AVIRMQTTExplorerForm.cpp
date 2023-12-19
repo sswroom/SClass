@@ -565,19 +565,19 @@ SSWR::AVIRead::AVIRMQTTExplorerForm::AVIRMQTTExplorerForm(UI::GUIClientControl *
 	this->pnlConnect->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->lblHost = ui->NewLabel(this->pnlConnect, CSTR("Host"));
 	this->lblHost->SetRect(4, 4, 100, 23, false);
-	NEW_CLASS(this->txtHost, UI::GUITextBox(ui, this->pnlConnect, CSTR("127.0.0.1")));
+	this->txtHost = ui->NewTextBox(this->pnlConnect, CSTR("127.0.0.1"));
 	this->txtHost->SetRect(104, 4, 100, 23, false);
 	this->lblPort = ui->NewLabel(this->pnlConnect, CSTR("Port"));
 	this->lblPort->SetRect(4, 28, 100, 23, false);
-	NEW_CLASS(this->txtPort, UI::GUITextBox(ui, this->pnlConnect, CSTR("1883")));
+	this->txtPort = ui->NewTextBox(this->pnlConnect, CSTR("1883"));
 	this->txtPort->SetRect(104, 28, 100, 23, false);
 	this->lblUsername = ui->NewLabel(this->pnlConnect, CSTR("User Name"));
 	this->lblUsername->SetRect(254, 4, 100, 23, false);
-	NEW_CLASS(this->txtUsername, UI::GUITextBox(ui, this->pnlConnect, CSTR("")));
+	this->txtUsername = ui->NewTextBox(this->pnlConnect, CSTR(""));
 	this->txtUsername->SetRect(354, 4, 100, 23, false);
 	this->lblPassword = ui->NewLabel(this->pnlConnect, CSTR("Password"));
 	this->lblPassword->SetRect(254, 28, 100, 23, false);
-	NEW_CLASS(this->txtPassword, UI::GUITextBox(ui, this->pnlConnect, CSTR("")));
+	this->txtPassword = ui->NewTextBox(this->pnlConnect, CSTR(""));
 	this->txtPassword->SetRect(354, 28, 100, 23, false);
 	NEW_CLASS(this->chkSSL, UI::GUICheckBox(ui, this->pnlConnect, CSTR("Use SSL"), false));
 	this->chkSSL->SetRect(504, 4, 100, 23, false);
@@ -622,7 +622,7 @@ SSWR::AVIRead::AVIRMQTTExplorerForm::AVIRMQTTExplorerForm(UI::GUIClientControl *
 	this->pnlPubTopic->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->lblPubTopic = ui->NewLabel(this->pnlPubTopic, CSTR("Topic"));
 	this->lblPubTopic->SetRect(4, 4, 100, 23, false);
-	NEW_CLASS(this->txtPubTopic, UI::GUITextBox(ui, this->pnlPubTopic, CSTR("")));
+	this->txtPubTopic = ui->NewTextBox(this->pnlPubTopic, CSTR(""));
 	this->txtPubTopic->SetRect(104, 4, 300, 23, false);
 	NEW_CLASSNN(this->pnlPubCtrl, UI::GUIPanel(ui, this->tpPublish));
 	this->pnlPubCtrl->SetRect(0, 0, 100, 31, false);
@@ -630,7 +630,7 @@ SSWR::AVIRead::AVIRMQTTExplorerForm::AVIRMQTTExplorerForm(UI::GUIClientControl *
 	this->btnPublish = ui->NewButton(this->pnlPubCtrl, CSTR("Publish"));
 	this->btnPublish->SetRect(4, 4, 75, 23, false);
 	this->btnPublish->HandleButtonClick(OnPublishClicked, this);
-	NEW_CLASS(this->txtPubContent, UI::GUITextBox(ui, this->tpPublish, CSTR(""), true));
+	this->txtPubContent = ui->NewTextBox(this->tpPublish, CSTR(""), true);
 	this->txtPubContent->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	this->tpLog = this->tcDetail->AddTabPage(CSTR("Log"));

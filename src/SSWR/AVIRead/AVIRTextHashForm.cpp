@@ -67,7 +67,7 @@ SSWR::AVIRead::AVIRTextHashForm::AVIRTextHashForm(UI::GUIClientControl *parent, 
 	NEW_CLASSNN(this->pnlControl, UI::GUIPanel(ui, *this));
 	this->pnlControl->SetRect(0, 0, 100, 104, false);
 	this->pnlControl->SetDockType(UI::GUIControl::DOCK_BOTTOM);
-	NEW_CLASS(this->txtText, UI::GUITextBox(ui, *this, CSTR(""), true));
+	this->txtText = ui->NewTextBox(*this, CSTR(""), true);
 	this->txtText->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lblEncrypt = ui->NewLabel(this->pnlControl, CSTR("Text Encrypt"));
 	this->lblEncrypt->SetRect(4, 4, 100, 23, false);
@@ -82,7 +82,7 @@ SSWR::AVIRead::AVIRTextHashForm::AVIRTextHashForm(UI::GUIClientControl *parent, 
 	this->btnGenerate->HandleButtonClick(OnGenerateClicked, this);
 	this->lblHashValue = ui->NewLabel(this->pnlControl, CSTR("Hash Value"));
 	this->lblHashValue->SetRect(4, 76, 100, 23, false);
-	NEW_CLASS(this->txtHashValue, UI::GUITextBox(ui, this->pnlControl, CSTR("")));
+	this->txtHashValue = ui->NewTextBox(this->pnlControl, CSTR(""));
 	this->txtHashValue->SetRect(104, 76, 400, 23, false);
 	this->txtHashValue->SetReadOnly(true);
 

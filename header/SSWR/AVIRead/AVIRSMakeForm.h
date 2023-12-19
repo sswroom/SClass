@@ -21,7 +21,7 @@ namespace SSWR
 		private:
 			NotNullPtr<UI::GUIPanel> pnlFile;
 			NotNullPtr<UI::GUILabel> lblFile;
-			UI::GUITextBox *txtFile;
+			NotNullPtr<UI::GUITextBox> txtFile;
 			UI::GUITabControl *tcMain;
 
 			NotNullPtr<UI::GUITabPage> tpProgGroup;

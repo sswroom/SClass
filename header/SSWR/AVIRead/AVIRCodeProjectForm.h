@@ -26,7 +26,7 @@ namespace SSWR
 			NotNullPtr<UI::GUIComboBox> cboConfig;
 			UI::GUITreeView *tvMain;
 			NotNullPtr<UI::GUIHSplitter> hspMain;
-			UI::GUITextBox *txtMessage;
+			NotNullPtr<UI::GUITextBox> txtMessage;
 
 			static void __stdcall OnItemSelected(void *userObj);
 			void DisplayStatus(NotNullPtr<Text::StringBuilderUTF8> sb, Text::Cpp::CppParseStatus *status);

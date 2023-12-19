@@ -34,12 +34,12 @@ namespace SSWR
 
 			NotNullPtr<UI::GUITabPage> tpStatus;
 			NotNullPtr<UI::GUILabel> lblPort;
-			UI::GUITextBox *txtPort;
+			NotNullPtr<UI::GUITextBox> txtPort;
 			NotNullPtr<UI::GUIButton> btnStart;
 
 			NotNullPtr<UI::GUITabPage> tpLog;
 			NotNullPtr<UI::GUIListBox> lbLog;
-			UI::GUITextBox *txtLog;
+			NotNullPtr<UI::GUITextBox> txtLog;
 
 			static void __stdcall OnStartClicked(void *userObj);
 			static void __stdcall OnLogSelChg(void *userObj);

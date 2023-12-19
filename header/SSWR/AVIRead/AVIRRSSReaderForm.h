@@ -24,7 +24,7 @@ namespace SSWR
 			NotNullPtr<UI::GUILabel> lblRecent;
 			NotNullPtr<UI::GUIComboBox> cboRecent;
 			NotNullPtr<UI::GUILabel> lblURL;
-			UI::GUITextBox *txtURL;
+			NotNullPtr<UI::GUITextBox> txtURL;
 			NotNullPtr<UI::GUIButton> btnRequest;
 			UI::GUITabControl *tcRSS;
 

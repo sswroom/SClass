@@ -27,7 +27,7 @@ namespace SSWR
 
 			NotNullPtr<UI::GUIGroupBox> grpStream;
 			NotNullPtr<UI::GUILabel> lblStream;
-			UI::GUITextBox *txtStream;
+			NotNullPtr<UI::GUITextBox> txtStream;
 			NotNullPtr<UI::GUIButton> btnStream;
 
 			NotNullPtr<UI::GUIGroupBox> grpControl;
@@ -40,14 +40,14 @@ namespace SSWR
 			UI::GUIRealtimeLineChart *rlcLatency;
 
 			NotNullPtr<UI::GUITabPage> tpLog;
-			UI::GUITextBox *txtLog;
+			NotNullPtr<UI::GUITextBox> txtLog;
 			NotNullPtr<UI::GUIListBox> lbLog;
 
 			NotNullPtr<UI::GUITabPage> tpStatus;
 			NotNullPtr<UI::GUILabel> lblSentCnt;
-			UI::GUITextBox *txtSentCnt;
+			NotNullPtr<UI::GUITextBox> txtSentCnt;
 			NotNullPtr<UI::GUILabel> lblRecvCnt;
-			UI::GUITextBox *txtRecvCnt;
+			NotNullPtr<UI::GUITextBox> txtRecvCnt;
 
 			IO::Stream *stm;
 			IO::LogTool *log;

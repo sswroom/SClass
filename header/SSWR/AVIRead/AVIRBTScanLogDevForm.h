@@ -20,9 +20,9 @@ namespace SSWR
 
 			NotNullPtr<UI::GUIPanel> pnlDevInfo;
 			NotNullPtr<UI::GUILabel> lblMAC;
-			UI::GUITextBox *txtMAC;
+			NotNullPtr<UI::GUITextBox> txtMAC;
 			NotNullPtr<UI::GUILabel> lblName;
-			UI::GUITextBox *txtName;
+			NotNullPtr<UI::GUITextBox> txtName;
 			NotNullPtr<UI::GUIButton> btnCSV;
 			UI::GUIListView *lvContent;
 

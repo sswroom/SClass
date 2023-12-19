@@ -58,17 +58,17 @@ SSWR::AVIRead::AVIRDHT22Form::AVIRDHT22Form(UI::GUIClientControl *parent, NotNul
 
 	this->lblTemp = ui->NewLabel(*this, CSTR("Temperature"));
 	this->lblTemp->SetRect(4, 4, 100, 23, false);
-	NEW_CLASS(this->txtTemp, UI::GUITextBox(ui, *this, CSTR("")));
+	this->txtTemp = ui->NewTextBox(*this, CSTR(""));
 	this->txtTemp->SetRect(104, 4, 100, 23, false);
 	this->txtTemp->SetReadOnly(true);
 	this->lblRH = ui->NewLabel(*this, CSTR("RH"));
 	this->lblRH->SetRect(4, 28, 100, 23, false);
-	NEW_CLASS(this->txtRH, UI::GUITextBox(ui, *this, CSTR("")));
+	this->txtRH = ui->NewTextBox(*this, CSTR(""));
 	this->txtRH->SetRect(104, 28, 100, 23, false);
 	this->txtRH->SetReadOnly(true);
 	this->lblHumidity = ui->NewLabel(*this, CSTR("Absolute Humidity"));
 	this->lblHumidity->SetRect(4, 52, 100, 23, false);
-	NEW_CLASS(this->txtHumidity, UI::GUITextBox(ui, *this, CSTR("")));
+	this->txtHumidity = ui->NewTextBox(*this, CSTR(""));
 	this->txtHumidity->SetRect(104, 52, 100, 23, false);
 	this->txtHumidity->SetReadOnly(true);
 	this->btnRead = ui->NewButton(*this, CSTR("Read"));
@@ -78,7 +78,7 @@ SSWR::AVIRead::AVIRDHT22Form::AVIRDHT22Form(UI::GUIClientControl *parent, NotNul
 	this->chkAutoRead->SetRect(184, 76, 100, 23, false);
 	this->lblStatus = ui->NewLabel(*this, CSTR("Abs Humidity"));
 	this->lblStatus->SetRect(4, 100, 100, 23, false);
-	NEW_CLASS(this->txtStatus, UI::GUITextBox(ui, *this, CSTR("")));
+	this->txtStatus = ui->NewTextBox(*this, CSTR(""));
 	this->txtStatus->SetRect(104, 100, 100, 23, false);
 	this->txtStatus->SetReadOnly(true);
 

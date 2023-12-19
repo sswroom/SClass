@@ -74,18 +74,18 @@ SSWR::AVIRead::AVIRNTPServerForm::AVIRNTPServerForm(UI::GUIClientControl *parent
 	this->tpControl = this->tcMain->AddTabPage(CSTR("Control"));
 	this->lblPort = ui->NewLabel(this->tpControl, CSTR("Port"));
 	this->lblPort->SetRect(8, 8, 100, 23, false);
-	NEW_CLASS(this->txtPort, UI::GUITextBox(ui, this->tpControl, CSTR("123")));
+	this->txtPort = ui->NewTextBox(this->tpControl, CSTR("123"));
 	this->txtPort->SetRect(108, 8, 50, 23, false);
 	this->lblTimeServer = ui->NewLabel(this->tpControl, CSTR("Time Server"));
 	this->lblTimeServer->SetRect(8, 32, 100, 23, false);
-	NEW_CLASS(this->txtTimeServer, UI::GUITextBox(ui, this->tpControl, CSTR("stdtime.gov.hk")));
+	this->txtTimeServer = ui->NewTextBox(this->tpControl, CSTR("stdtime.gov.hk"));
 	this->txtTimeServer->SetRect(108, 32, 500, 23, false);
 	this->btnStart = ui->NewButton(this->tpControl, CSTR("Start"));
 	this->btnStart->SetRect(100, 56, 75, 23, false);
 	this->btnStart->HandleButtonClick(OnStartClick, this);
 
 	this->tpLog = this->tcMain->AddTabPage(CSTR("Log"));
-	NEW_CLASS(this->txtLog, UI::GUITextBox(ui, this->tpLog, CSTR("")));
+	this->txtLog = ui->NewTextBox(this->tpLog, CSTR(""));
 	this->txtLog->SetRect(0, 0, 100, 23, false);
 	this->txtLog->SetReadOnly(true);
 	this->txtLog->SetDockType(UI::GUIControl::DOCK_BOTTOM);

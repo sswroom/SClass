@@ -35,7 +35,7 @@ SSWR::AVIRead::AVIRSetLocationSvcForm::AVIRSetLocationSvcForm(UI::GUIClientContr
 	this->btnGPS = ui->NewButton(*this, CSTR("Select"));
 	this->btnGPS->SetRect(204, 4, 75, 23, false);
 	this->btnGPS->HandleButtonClick(OnGPSClick, this);
-	NEW_CLASS(this->txtGPS, UI::GUITextBox(ui, *this, CSTR("")));
+	this->txtGPS = ui->NewTextBox(*this, CSTR(""));
 	this->txtGPS->SetReadOnly(true);
 	this->txtGPS->SetRect(284, 4, 120, 23, false);
 

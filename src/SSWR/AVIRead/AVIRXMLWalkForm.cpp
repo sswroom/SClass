@@ -78,7 +78,7 @@ SSWR::AVIRead::AVIRXMLWalkForm::AVIRXMLWalkForm(UI::GUIClientControl *parent, No
 	this->pnlFile->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->lblFile = ui->NewLabel(this->pnlFile, CSTR("XML File"));
 	this->lblFile->SetRect(4, 4, 100, 23, false);
-	NEW_CLASS(this->txtFile, UI::GUITextBox(ui, this->pnlFile, CSTR("")));
+	this->txtFile = ui->NewTextBox(this->pnlFile, CSTR(""));
 	this->txtFile->SetRect(104, 4, 500, 23, false);
 	this->txtFile->SetReadOnly(true);
 	this->btnBrowse = ui->NewButton(this->pnlFile, CSTR("Browse"));

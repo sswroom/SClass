@@ -16,11 +16,11 @@ namespace SSWR
 		private:
 			NotNullPtr<UI::GUIPanel> pnlFile;
 			NotNullPtr<UI::GUILabel> lblFile;
-			UI::GUITextBox *txtFile;
+			NotNullPtr<UI::GUITextBox> txtFile;
 			NotNullPtr<UI::GUIButton> btnBrowse;
 			NotNullPtr<UI::GUIButton> btnParseToText;
 			NotNullPtr<UI::GUIButton> btnParseToFile;
-			UI::GUITextBox *txtOutput;
+			NotNullPtr<UI::GUITextBox> txtOutput;
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 

@@ -118,7 +118,7 @@ SSWR::AVIRead::AVIRGLBViewerForm::AVIRGLBViewerForm(UI::GUIClientControl *parent
 	this->lblJSON = ui->NewLabel(this->pnlJSON, CSTR("JSON"));
 	this->lblJSON->SetRect(0, 0, 100, 23, false);
 	this->lblJSON->SetDockType(UI::GUIControl::DOCK_LEFT);
-	NEW_CLASS(this->txtJSON, UI::GUITextBox(ui, this->pnlJSON, CSTR(""), true));
+	this->txtJSON = ui->NewTextBox(this->pnlJSON, CSTR(""), true);
 	this->txtJSON->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->txtJSON->SetReadOnly(true);
 	this->lblBinBuff = ui->NewLabel(this->pnlBinBuff, CSTR("Binary Buffer"));

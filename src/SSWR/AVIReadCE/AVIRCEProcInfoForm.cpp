@@ -468,27 +468,27 @@ SSWR::AVIReadCE::AVIRCEProcInfoForm::AVIRCEProcInfoForm(UI::GUIClientControl *pa
 
 	this->lblDetProcId = ui->NewLabel(this->tpDetInfo, CSTR("Process Id"));
 	this->lblDetProcId->SetRect(0, 0, 55, 23, false);
-	NEW_CLASS(this->txtDetProcId, UI::GUITextBox(ui, this->tpDetInfo, CSTR(""), false));
+	this->txtDetProcId = ui->NewTextBox(this->tpDetInfo, CSTR(""), false);
 	this->txtDetProcId->SetRect(55, 0, 80, 23, false);
 	this->txtDetProcId->SetReadOnly(true);
 	this->lblDetParentId = ui->NewLabel(this->tpDetInfo, CSTR("Parent Id"));
 	this->lblDetParentId->SetRect(0, 24, 55, 23, false);
-	NEW_CLASS(this->txtDetParentId, UI::GUITextBox(ui, this->tpDetInfo, CSTR(""), false));
+	this->txtDetParentId = ui->NewTextBox(this->tpDetInfo, CSTR(""), false);
 	this->txtDetParentId->SetRect(55, 24, 50, 23, false);
 	this->txtDetParentId->SetReadOnly(true);
 	this->lblDetName = ui->NewLabel(this->tpDetInfo, CSTR("Name"));
 	this->lblDetName->SetRect(0, 48, 55, 23, false);
-	NEW_CLASS(this->txtDetName, UI::GUITextBox(ui, this->tpDetInfo, CSTR(""), false));
+	this->txtDetName = ui->NewTextBox(this->tpDetInfo, CSTR(""), false);
 	this->txtDetName->SetRect(55, 48, 200, 23, false);
 	this->txtDetName->SetReadOnly(true);
 	this->lblDetPath = ui->NewLabel(this->tpDetInfo, CSTR("Path"));
 	this->lblDetPath->SetRect(0, 72, 55, 23, false);
-	NEW_CLASS(this->txtDetPath, UI::GUITextBox(ui, this->tpDetInfo, CSTR(""), false));
+	this->txtDetPath = ui->NewTextBox(this->tpDetInfo, CSTR(""), false);
 	this->txtDetPath->SetRect(55, 72, 700, 23, false);
 	this->txtDetPath->SetReadOnly(true);
 	this->lblDetPriority = ui->NewLabel(this->tpDetInfo, CSTR("Priority"));
 	this->lblDetPriority->SetRect(0, 96, 55, 23, false);
-	NEW_CLASS(this->txtDetPriority, UI::GUITextBox(ui, this->tpDetInfo, CSTR(""), false));
+	this->txtDetPriority = ui->NewTextBox(this->tpDetInfo, CSTR(""), false);
 	this->txtDetPriority->SetRect(55, 96, 100, 23, false);
 	this->txtDetPriority->SetReadOnly(true);
 

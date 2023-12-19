@@ -26,9 +26,9 @@ namespace SSWR
 		private:
 			NotNullPtr<UI::GUIPanel> pnlConfig;
 			NotNullPtr<UI::GUILabel> lblPath;
-			UI::GUITextBox *txtPath;
+			NotNullPtr<UI::GUITextBox> txtPath;
 			NotNullPtr<UI::GUILabel> lblExtensions;
-			UI::GUITextBox *txtExtensions;
+			NotNullPtr<UI::GUITextBox> txtExtensions;
 			NotNullPtr<UI::GUIButton> btnExtensionsAdd;
 			UI::GUIListBox *lbExtensions;
 			NotNullPtr<UI::GUIButton> btnExtensionsRemove;
@@ -36,11 +36,11 @@ namespace SSWR
 			NotNullPtr<UI::GUIButton> btnCalc;
 			NotNullPtr<UI::GUILabel> lblResult;
 			NotNullPtr<UI::GUILabel> lblTotalLine;
-			UI::GUITextBox *txtTotalLine;
+			NotNullPtr<UI::GUITextBox> txtTotalLine;
 			NotNullPtr<UI::GUILabel> lblNonEmpty;
-			UI::GUITextBox *txtNonEmpty;
+			NotNullPtr<UI::GUITextBox> txtNonEmpty;
 			NotNullPtr<UI::GUILabel> lblCode;
-			UI::GUITextBox *txtCode;
+			NotNullPtr<UI::GUITextBox> txtCode;
 			NotNullPtr<UI::GUIButton> btnResultSave;
 
 			UI::GUIListView *lvResult;

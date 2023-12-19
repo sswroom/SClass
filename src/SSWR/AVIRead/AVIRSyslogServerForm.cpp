@@ -144,7 +144,7 @@ SSWR::AVIRead::AVIRSyslogServerForm::AVIRSyslogServerForm(UI::GUIClientControl *
 	this->pnlControl->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->lblPort = ui->NewLabel(this->pnlControl, CSTR("Port"));
 	this->lblPort->SetRect(4, 4, 100, 23, false);
-	NEW_CLASS(this->txtPort, UI::GUITextBox(ui, this->pnlControl, CSTR("514")));
+	this->txtPort = ui->NewTextBox(this->pnlControl, CSTR("514"));
 	this->txtPort->SetRect(104, 4, 100, 23, false);
 	this->btnStart = ui->NewButton(this->pnlControl, CSTR("Start"));
 	this->btnStart->SetRect(204, 4, 75, 23, false);
@@ -154,7 +154,7 @@ SSWR::AVIRead::AVIRSyslogServerForm::AVIRSyslogServerForm(UI::GUIClientControl *
 	this->lbClient->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbClient->HandleSelectionChange(OnClientSelChg, this);
 	this->hspClient = ui->NewHSplitter(*this, 3, false);
-	NEW_CLASS(this->txtLog, UI::GUITextBox(ui, *this, CSTR("")));
+	this->txtLog = ui->NewTextBox(*this, CSTR(""));
 	this->txtLog->SetRect(0, 0, 100, 23, false);
 	this->txtLog->SetReadOnly(true);
 	this->txtLog->SetDockType(UI::GUIControl::DOCK_BOTTOM);

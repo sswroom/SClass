@@ -29,14 +29,14 @@ namespace SSWR
 
 			NotNullPtr<UI::GUITabPage> tpControl;
 			NotNullPtr<UI::GUILabel> lblPort;
-			UI::GUITextBox *txtPort;
+			NotNullPtr<UI::GUITextBox> txtPort;
 			NotNullPtr<UI::GUILabel> lblTimeServer;
-			UI::GUITextBox *txtTimeServer;
+			NotNullPtr<UI::GUITextBox> txtTimeServer;
 			NotNullPtr<UI::GUIButton> btnStart;
 
 			NotNullPtr<UI::GUITabPage> tpLog;
 			NotNullPtr<UI::GUIListBox> lbLog;
-			UI::GUITextBox *txtLog;
+			NotNullPtr<UI::GUITextBox> txtLog;
 
 		private:
 			static void __stdcall OnStartClick(void *userObj);

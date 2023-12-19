@@ -44,7 +44,7 @@ SSWR::OrganMgr::OrganSearchForm::OrganSearchForm(UI::GUIClientControl *parent, N
 
 	this->lbl = ui->NewLabel(*this, this->env->GetLang(CSTR("SearchName")));
 	this->lbl->SetRect(4, 6, 100, 21, false);
-	NEW_CLASS(this->txt, UI::GUITextBox(ui, *this, CSTR("")));
+	this->txt = ui->NewTextBox(*this, CSTR(""));
 	this->txt->SetRect(108, 6, 218, 23, false);
 	this->btnOK = ui->NewButton(*this, this->env->GetLang(CSTR("SearchButton")));
 	this->btnOK->SetRect(76, 36, 75, 23, false);

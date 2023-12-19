@@ -18,8 +18,8 @@ namespace SSWR
 		class AVIRGISPropForm : public UI::GUIForm, public Media::IColorHandler
 		{
 		private:
-			UI::GUITextBox *txtMinScale;
-			UI::GUITextBox *txtMaxScale;
+			NotNullPtr<UI::GUITextBox> txtMinScale;
+			NotNullPtr<UI::GUITextBox> txtMaxScale;
 			UI::GUICheckBox *chkHide;
 			UI::GUIPictureBox *pbFontStyle;
 			NotNullPtr<UI::GUIButton> btnFontModify;
@@ -32,7 +32,7 @@ namespace SSWR
 			UI::GUIPictureBox *pbFillStyle;
 			NotNullPtr<UI::GUIComboBox> cboColName;
 			UI::GUICheckBox *chkShowLabel;
-			UI::GUITextBox *txtPriority;
+			NotNullPtr<UI::GUITextBox> txtPriority;
 			NotNullPtr<UI::GUILabel> lblIcon;
 			UI::GUIPictureBox *pbIcon;
 

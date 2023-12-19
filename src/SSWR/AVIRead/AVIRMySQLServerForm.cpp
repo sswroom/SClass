@@ -72,7 +72,7 @@ SSWR::AVIRead::AVIRMySQLServerForm::AVIRMySQLServerForm(UI::GUIClientControl *pa
 	this->pnlCtrl->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->lblPort = ui->NewLabel(this->pnlCtrl, CSTR("Port"));
 	this->lblPort->SetRect(4, 4, 100, 23, false);
-	NEW_CLASS(this->txtPort, UI::GUITextBox(ui, this->pnlCtrl, CSTR("3306")));
+	this->txtPort = ui->NewTextBox(this->pnlCtrl, CSTR("3306"));
 	this->txtPort->SetRect(104, 4, 80, 23, false);
 	this->btnStart = ui->NewButton(this->pnlCtrl, CSTR("Start"));
 	this->btnStart->SetRect(184, 4, 75, 23, false);
@@ -89,11 +89,11 @@ SSWR::AVIRead::AVIRMySQLServerForm::AVIRMySQLServerForm(UI::GUIClientControl *pa
 	this->pnlUser->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lblUserName = ui->NewLabel(this->pnlUser, CSTR("User Name"));
 	this->lblUserName->SetRect(8, 8, 100, 23, false);
-	NEW_CLASS(this->txtUserName, UI::GUITextBox(ui, this->pnlUser, CSTR("root")));
+	this->txtUserName = ui->NewTextBox(this->pnlUser, CSTR("root"));
 	this->txtUserName->SetRect(108, 8, 200, 23, false);
 	this->lblPassword = ui->NewLabel(this->pnlUser, CSTR("Password"));
 	this->lblPassword->SetRect(8, 32, 100, 23, false);
-	NEW_CLASS(this->txtPassword, UI::GUITextBox(ui, this->pnlUser, CSTR("")));
+	this->txtPassword = ui->NewTextBox(this->pnlUser, CSTR(""));
 	this->txtPassword->SetRect(108, 32, 200, 23, false);
 	this->txtPassword->SetPasswordChar('*');
 	this->btnUserAdd = ui->NewButton(this->pnlUser, CSTR("Add"));
@@ -101,7 +101,7 @@ SSWR::AVIRead::AVIRMySQLServerForm::AVIRMySQLServerForm(UI::GUIClientControl *pa
 	this->btnUserAdd->HandleButtonClick(OnUserAddClicked, this);
 
 	this->tpLog = this->tcMain->AddTabPage(CSTR("Log"));
-	NEW_CLASS(this->txtLog, UI::GUITextBox(ui, this->tpLog, CSTR("")));
+	this->txtLog = ui->NewTextBox(this->tpLog, CSTR(""));
 	this->txtLog->SetRect(0, 0, 100, 23, false);
 	this->txtLog->SetReadOnly(true);
 	this->txtLog->SetDockType(UI::GUIControl::DOCK_BOTTOM);

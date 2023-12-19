@@ -15,9 +15,9 @@ namespace SSWR
 		{
 		private:
 			NotNullPtr<UI::GUILabel> lblFileName;
-			UI::GUITextBox *txtFileName;
+			NotNullPtr<UI::GUITextBox> txtFileName;
 			NotNullPtr<UI::GUILabel> lblInfo;
-			UI::GUITextBox *txtInfo;
+			NotNullPtr<UI::GUITextBox> txtInfo;
 			NotNullPtr<UI::GUIButton> btnRLUT;
 			NotNullPtr<UI::GUIButton> btnGLUT;
 			NotNullPtr<UI::GUIButton> btnBLUT;

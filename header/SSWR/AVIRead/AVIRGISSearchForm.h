@@ -17,7 +17,7 @@ namespace SSWR
 		class AVIRGISSearchForm : public UI::GUIForm
 		{
 		private:
-			UI::GUITextBox *txtSearchStr;
+			NotNullPtr<UI::GUITextBox> txtSearchStr;
 			UI::GUIListBox *lbResults;
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;

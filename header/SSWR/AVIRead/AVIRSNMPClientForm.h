@@ -27,11 +27,11 @@ namespace SSWR
 
 			NotNullPtr<UI::GUIPanel> pnlRequest;
 			NotNullPtr<UI::GUILabel> lblAgent;
-			UI::GUITextBox *txtAgent;
+			NotNullPtr<UI::GUITextBox> txtAgent;
 			NotNullPtr<UI::GUILabel> lblCommunity;
-			UI::GUITextBox *txtCommunity;
+			NotNullPtr<UI::GUITextBox> txtCommunity;
 			NotNullPtr<UI::GUILabel> lblOID;
-			UI::GUITextBox *txtOID;
+			NotNullPtr<UI::GUITextBox> txtOID;
 			NotNullPtr<UI::GUILabel> lblCommandType;
 			NotNullPtr<UI::GUIComboBox> cboCommandType;
 			NotNullPtr<UI::GUIButton> btnRequest;

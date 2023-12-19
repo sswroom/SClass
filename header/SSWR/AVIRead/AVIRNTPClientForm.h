@@ -17,9 +17,9 @@ namespace SSWR
 			NotNullPtr<UI::GUILabel> lblServer;
 			NotNullPtr<UI::GUIComboBox> cboServer;
 			NotNullPtr<UI::GUILabel> lblServerTime;
-			UI::GUITextBox *txtServerTime;
+			NotNullPtr<UI::GUITextBox> txtServerTime;
 			NotNullPtr<UI::GUILabel> lblStatus;
-			UI::GUITextBox *txtStatus;
+			NotNullPtr<UI::GUITextBox> txtStatus;
 			NotNullPtr<UI::GUIButton> btnGetTime;
 			NotNullPtr<UI::GUIButton> btnSyncTime;
 

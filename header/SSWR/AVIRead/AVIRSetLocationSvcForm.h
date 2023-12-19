@@ -19,7 +19,7 @@ namespace SSWR
 			NotNullPtr<UI::GUILabel> lblGPS;
 			UI::GUICheckBox *chkGPS;
 			NotNullPtr<UI::GUIButton> btnGPS;
-			UI::GUITextBox *txtGPS;
+			NotNullPtr<UI::GUITextBox> txtGPS;
 
 			NotNullPtr<UI::GUILabel> lblWifi;
 			UI::GUICheckBox *chkWifi;

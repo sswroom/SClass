@@ -38,13 +38,13 @@ namespace SSWR
 			NotNullPtr<UI::GUIPanel> pnlSetting;
 			NotNullPtr<UI::GUILabel> lblHOfst;
 			UI::GUIHScrollBar *hsbHOfst;
-			UI::GUITextBox *txtHOfst;
+			NotNullPtr<UI::GUITextBox> txtHOfst;
 			NotNullPtr<UI::GUILabel> lblVOfst;
 			UI::GUIHScrollBar *hsbVOfst;
-			UI::GUITextBox *txtVOfst;
+			NotNullPtr<UI::GUITextBox> txtVOfst;
 			NotNullPtr<UI::GUILabel> lblLevel;
 			UI::GUIHScrollBar *hsbLevel;
-			UI::GUITextBox *txtLevel;
+			NotNullPtr<UI::GUITextBox> txtLevel;
 			NotNullPtr<UI::GUILabel> lblType;
 			NotNullPtr<UI::GUIComboBox> cboType;
 			UI::GUICheckBox *chkEnable;

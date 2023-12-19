@@ -48,15 +48,15 @@ namespace SSWR
 		private:
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			NotNullPtr<UI::GUILabel> lblDir;
-			UI::GUITextBox *txtDir;
+			NotNullPtr<UI::GUITextBox> txtDir;
 			NotNullPtr<UI::GUIButton> btnBrowse;
 			NotNullPtr<UI::GUILabel> lblOutFormat;
 			UI::GUIRadioButton *radFormatJPG;
 			UI::GUIRadioButton *radFormatWebP;
 			NotNullPtr<UI::GUILabel> lblQuality;
-			UI::GUITextBox *txtQuality;
+			NotNullPtr<UI::GUITextBox> txtQuality;
 			UI::GUICheckBox *chkSubdir;
-			UI::GUITextBox *txtSubdir;
+			NotNullPtr<UI::GUITextBox> txtSubdir;
 			NotNullPtr<UI::GUIButton> btnConvert;
 			UOSInt nThreads;
 			ThreadState *threadStates;

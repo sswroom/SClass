@@ -281,11 +281,11 @@ SSWR::AVIRead::AVIRGISPropForm::AVIRGISPropForm(UI::GUIClientControl *parent, No
 
 	lbl = ui->NewLabel(*this, CSTR("Min Visible Scale"));
 	lbl->SetRect(8, 0, 100, 23, false);
-	NEW_CLASS(this->txtMinScale, UI::GUITextBox(ui, *this, CSTR("")));
+	this->txtMinScale = ui->NewTextBox(*this, CSTR(""));
 	this->txtMinScale->SetRect(112, 0, 100, 21, false);
 	lbl = ui->NewLabel(*this, CSTR("Max Visible Scale"));
 	lbl->SetRect(8, 24, 100, 23, false);
-	NEW_CLASS(this->txtMaxScale, UI::GUITextBox(ui, *this, CSTR("")));
+	this->txtMaxScale = ui->NewTextBox(*this, CSTR(""));
 	this->txtMaxScale->SetRect(112, 24, 100, 21, false);
 	NEW_CLASS(this->chkHide, UI::GUICheckBox(ui, *this, CSTR("Hide"), false));
 	this->chkHide->SetRect(240, 8, 104, 24, false);
@@ -317,7 +317,7 @@ SSWR::AVIRead::AVIRGISPropForm::AVIRGISPropForm(UI::GUIClientControl *parent, No
 	this->chkShowLabel->SetRect(240, 120, 104, 24, false);
 	lbl = ui->NewLabel(*this, CSTR("Label Priority"));
 	lbl->SetRect(8, 144, 100, 23, false);
-	NEW_CLASS(this->txtPriority, UI::GUITextBox(ui, *this, CSTR("")));
+	this->txtPriority = ui->NewTextBox(*this, CSTR(""));
 	this->txtPriority->SetRect(112, 144, 100, 21, false);
 	this->lblIcon = ui->NewLabel(*this, CSTR("Point Icon"));
 	this->lblIcon->SetRect(8, 168, 72, 23, false);

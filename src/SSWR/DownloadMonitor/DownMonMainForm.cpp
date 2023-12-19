@@ -606,7 +606,7 @@ SSWR::DownloadMonitor::DownMonMainForm::DownMonMainForm(UI::GUIClientControl *pa
 	this->pnlButtons->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->lblStatus = ui->NewLabel(this->pnlButtons, CSTR("Status"));
 	this->lblStatus->SetRect(4, 4, 100, 23, false);
-	NEW_CLASS(this->txtStatus, UI::GUITextBox(ui, this->pnlButtons, CSTR("Idle")));
+	this->txtStatus = ui->NewTextBox(this->pnlButtons, CSTR("Idle"));
 	this->txtStatus->SetRect(104, 4, 100, 23, false);
 	this->txtStatus->SetReadOnly(true);
 	NEW_CLASS(this->chkAutoStart, UI::GUICheckBox(ui, this->pnlButtons, CSTR("AutoStart"), false));

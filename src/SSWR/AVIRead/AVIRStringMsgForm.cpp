@@ -26,7 +26,7 @@ SSWR::AVIRead::AVIRStringMsgForm::AVIRStringMsgForm(UI::GUIClientControl *parent
 	this->btnOK = ui->NewButton(this->pnlButton, CSTR("OK"));
 	this->btnOK->SetRect(24, 4, 75, 23, false);
 	this->btnOK->HandleButtonClick(OnOKClicked, this);
-	NEW_CLASS(this->txtMessage, UI::GUITextBox(ui, *this, msg, true));
+	this->txtMessage = ui->NewTextBox(*this, msg, true);
 	this->txtMessage->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->txtMessage->SetReadOnly(true);
 	this->txtMessage->Focus();

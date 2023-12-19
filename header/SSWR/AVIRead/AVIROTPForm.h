@@ -31,9 +31,9 @@ namespace SSWR
 
 			NotNullPtr<UI::GUIGroupBox> grpNew;
 			NotNullPtr<UI::GUILabel> lblName;
-			UI::GUITextBox *txtName;
+			NotNullPtr<UI::GUITextBox> txtName;
 			NotNullPtr<UI::GUILabel> lblKey;
-			UI::GUITextBox *txtKey;
+			NotNullPtr<UI::GUITextBox> txtKey;
 			NotNullPtr<UI::GUIButton> btnKeyRand80;
 			NotNullPtr<UI::GUIButton> btnKeyRand160;
 			NotNullPtr<UI::GUILabel> lblType;

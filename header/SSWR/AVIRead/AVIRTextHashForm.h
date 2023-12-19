@@ -20,7 +20,7 @@ namespace SSWR
 			Text::TextBinEnc::TextBinEncList encList;
 
 			NotNullPtr<UI::GUILabel> lblText;
-			UI::GUITextBox *txtText;
+			NotNullPtr<UI::GUITextBox> txtText;
 			NotNullPtr<UI::GUIPanel> pnlControl;
 			NotNullPtr<UI::GUILabel> lblEncrypt;
 			NotNullPtr<UI::GUIComboBox> cboEncrypt;
@@ -28,7 +28,7 @@ namespace SSWR
 			NotNullPtr<UI::GUIComboBox> cboHashType;
 			NotNullPtr<UI::GUIButton> btnGenerate;
 			NotNullPtr<UI::GUILabel> lblHashValue;
-			UI::GUITextBox *txtHashValue;
+			NotNullPtr<UI::GUITextBox> txtHashValue;
 
 			static void __stdcall OnGenerateClicked(void *userObj);
 		public:

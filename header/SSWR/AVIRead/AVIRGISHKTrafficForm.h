@@ -17,7 +17,7 @@ namespace SSWR
 			Optional<Net::SSLEngine> ssl;
 
 			NotNullPtr<UI::GUILabel> lblRoadCenterline;
-			UI::GUITextBox *txtRoadCenterline;
+			NotNullPtr<UI::GUITextBox> txtRoadCenterline;
 			NotNullPtr<UI::GUIButton> btnRoadCenterline;
 			NotNullPtr<UI::GUIButton> btnOK;
 			NotNullPtr<UI::GUIButton> btnCancel;

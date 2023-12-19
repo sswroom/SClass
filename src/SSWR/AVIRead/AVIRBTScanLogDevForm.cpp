@@ -72,18 +72,18 @@ SSWR::AVIRead::AVIRBTScanLogDevForm::AVIRBTScanLogDevForm(UI::GUIClientControl *
 	this->lblMAC->SetRect(4, 4, 100, 23, false);
 	WriteMUInt64(mac, entry->macInt);
 	sptr = Text::StrHexBytes(sbuff, &mac[2], 6, ':');
-	NEW_CLASS(this->txtMAC, UI::GUITextBox(ui, this->pnlDevInfo, CSTRP(sbuff, sptr)));
+	this->txtMAC = ui->NewTextBox(this->pnlDevInfo, CSTRP(sbuff, sptr));
 	this->txtMAC->SetRect(104, 4, 200, 23, false);
 	this->txtMAC->SetReadOnly(true);
 	this->lblName = ui->NewLabel(this->pnlDevInfo, CSTR("Name"));
 	this->lblName->SetRect(4, 28, 100, 23, false);
 	if (entry->name)
 	{
-		NEW_CLASS(this->txtName, UI::GUITextBox(ui, this->pnlDevInfo, entry->name->ToCString()));
+		this->txtName = ui->NewTextBox(this->pnlDevInfo, entry->name->ToCString());
 	}
 	else
 	{
-		NEW_CLASS(this->txtName, UI::GUITextBox(ui, this->pnlDevInfo, CSTR("")));
+		this->txtName = ui->NewTextBox(this->pnlDevInfo, CSTR(""));
 	}
 	this->txtName->SetRect(104, 28, 200, 23, false);
 	this->txtName->SetReadOnly(true);

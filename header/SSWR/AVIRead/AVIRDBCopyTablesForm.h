@@ -26,9 +26,9 @@ namespace SSWR
 			NotNullPtr<UI::GUILabel> lblSourceConn;
 			NotNullPtr<UI::GUIComboBox> cboSourceConn;
 			NotNullPtr<UI::GUILabel> lblSourceDB;
-			UI::GUITextBox *txtSourceDB;
+			NotNullPtr<UI::GUITextBox> txtSourceDB;
 			NotNullPtr<UI::GUILabel> lblSourceCollation;
-			UI::GUITextBox *txtSourceCollation;
+			NotNullPtr<UI::GUITextBox> txtSourceCollation;
 			NotNullPtr<UI::GUILabel> lblSourceSchema;
 			NotNullPtr<UI::GUIComboBox> cboSourceSchema;
 			NotNullPtr<UI::GUIButton> btnSourceSelect;

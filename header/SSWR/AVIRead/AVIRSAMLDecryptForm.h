@@ -21,12 +21,12 @@ namespace SSWR
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 
 			NotNullPtr<UI::GUILabel> lblKey;
-			UI::GUITextBox *txtKey;
+			NotNullPtr<UI::GUITextBox> txtKey;
 			NotNullPtr<UI::GUILabel> lblRAWResponse;
-			UI::GUITextBox *txtRAWResponse;
+			NotNullPtr<UI::GUITextBox> txtRAWResponse;
 			NotNullPtr<UI::GUIButton> btnDecrypt;
 			NotNullPtr<UI::GUILabel> lblResult;
-			UI::GUITextBox *txtResult;
+			NotNullPtr<UI::GUITextBox> txtResult;
 
 		private:
 			static void __stdcall OnFormFiles(void *userObj, NotNullPtr<Text::String> *files, UOSInt nFiles);

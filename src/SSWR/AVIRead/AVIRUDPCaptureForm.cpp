@@ -211,7 +211,7 @@ SSWR::AVIRead::AVIRUDPCaptureForm::AVIRUDPCaptureForm(UI::GUIClientControl *pare
 	this->pnlControl->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->lblPort = ui->NewLabel(this->pnlControl, CSTR("UDP Port"));
 	this->lblPort->SetRect(4, 4, 100, 23, false);
-	NEW_CLASS(this->txtPort, UI::GUITextBox(ui, this->pnlControl, CSTR("")));
+	this->txtPort = ui->NewTextBox(this->pnlControl, CSTR(""));
 	this->txtPort->SetRect(104, 4, 60, 23, false);
 	NEW_CLASS(this->chkReuseAddr, UI::GUICheckBox(ui, this->pnlControl, CSTR("Reuse Addr"), true));
 	this->chkReuseAddr->SetRect(164, 4, 80, 23, false);
@@ -227,12 +227,12 @@ SSWR::AVIRead::AVIRUDPCaptureForm::AVIRUDPCaptureForm(UI::GUIClientControl *pare
 	this->lbData->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbData->HandleSelectionChange(OnDataSelChg, this);
 	this->hspData = ui->NewHSplitter(this->tpData, 3, false);
-	NEW_CLASS(this->txtData, UI::GUITextBox(ui, this->tpData, CSTR(""), true));
+	this->txtData = ui->NewTextBox(this->tpData, CSTR(""), true);
 	this->txtData->SetReadOnly(true);
 	this->txtData->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	this->tpLog = this->tcMain->AddTabPage(CSTR("Log"));
-	NEW_CLASS(this->txtLog, UI::GUITextBox(ui, this->tpLog, CSTR("")));
+	this->txtLog = ui->NewTextBox(this->tpLog, CSTR(""));
 	this->txtLog->SetRect(0, 0, 100, 23, false);
 	this->txtLog->SetReadOnly(true);
 	this->txtLog->SetDockType(UI::GUIControl::DOCK_BOTTOM);
@@ -291,7 +291,7 @@ SSWR::AVIRead::AVIRUDPCaptureForm::AVIRUDPCaptureForm(UI::GUIClientControl *pare
 	this->pnlMulticastCtrl->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->lblMulticastCurr = ui->NewLabel(this->pnlMulticastCtrl, CSTR("Multicast IP"));
 	this->lblMulticastCurr->SetRect(0, 0, 100, 23, false);
-	NEW_CLASS(this->txtMulticastCurr, UI::GUITextBox(ui, this->pnlMulticastCtrl, CSTR("")));
+	this->txtMulticastCurr = ui->NewTextBox(this->pnlMulticastCtrl, CSTR(""));
 	this->txtMulticastCurr->SetRect(100, 0, 100, 23, false);
 	this->btnMulticastAdd = ui->NewButton(this->pnlMulticastCtrl, CSTR("&Add"));
 	this->btnMulticastAdd->SetRect(200, 0, 75, 23, false);

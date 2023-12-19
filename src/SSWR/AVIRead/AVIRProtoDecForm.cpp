@@ -139,7 +139,7 @@ SSWR::AVIRead::AVIRProtoDecForm::AVIRProtoDecForm(UI::GUIClientControl *parent, 
 	this->pnlCtrl->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->lblFile = ui->NewLabel(this->pnlCtrl, CSTR("File"));
 	this->lblFile->SetRect(4, 4, 100, 23, false);
-	NEW_CLASS(this->txtFile, UI::GUITextBox(ui, this->pnlCtrl, CSTR("")));
+	this->txtFile = ui->NewTextBox(this->pnlCtrl, CSTR(""));
 	this->txtFile->SetRect(104, 4, 400, 23, false);
 	this->txtFile->SetReadOnly(true);
 	this->btnFile = ui->NewButton(this->pnlCtrl, CSTR("B&rowse"));
@@ -152,7 +152,7 @@ SSWR::AVIRead::AVIRProtoDecForm::AVIRProtoDecForm(UI::GUIClientControl *parent, 
 	this->btnLoad = ui->NewButton(this->pnlCtrl, CSTR("&Load"));
 	this->btnLoad->SetRect(104, 52, 75, 23, false);
 	this->btnLoad->HandleButtonClick(OnLoadClicked, this);
-	NEW_CLASS(this->txtLogs, UI::GUITextBox(ui, *this, CSTR(""), true));
+	this->txtLogs = ui->NewTextBox(*this, CSTR(""), true);
 	this->txtLogs->SetReadOnly(true);
 	this->txtLogs->SetRect(0, 0, 100, 144, false);
 	this->txtLogs->SetDockType(UI::GUIControl::DOCK_BOTTOM);

@@ -196,22 +196,22 @@ SSWR::AVIRead::AVIRThreadInfoForm::AVIRThreadInfoForm(UI::GUIClientControl *pare
 	this->tpInfo = this->tcMain->AddTabPage(CSTR("Info"));
 	this->lblThreadId = ui->NewLabel(this->tpInfo, CSTR("Thread Id"));
 	this->lblThreadId->SetRect(0, 0, 100, 23, false);
-	NEW_CLASS(this->txtThreadId, UI::GUITextBox(ui, this->tpInfo, CSTR(""), false));
+	this->txtThreadId = ui->NewTextBox(this->tpInfo, CSTR(""), false);
 	this->txtThreadId->SetRect(100, 0, 100, 23, false);
 	this->txtThreadId->SetReadOnly(true);
 	this->lblStartAddr = ui->NewLabel(this->tpInfo, CSTR("Start Address"));
 	this->lblStartAddr->SetRect(0, 24, 100, 23, false);
-	NEW_CLASS(this->txtStartAddr, UI::GUITextBox(ui, this->tpInfo, CSTR(""), false));
+	this->txtStartAddr = ui->NewTextBox(this->tpInfo, CSTR(""), false);
 	this->txtStartAddr->SetRect(100, 24, 120, 23, false);
 	this->txtStartAddr->SetReadOnly(true);
 	this->lblStartName = ui->NewLabel(this->tpInfo, CSTR("Start Name"));
 	this->lblStartName->SetRect(0, 48, 100, 23, false);
-	NEW_CLASS(this->txtStartName, UI::GUITextBox(ui, this->tpInfo, CSTR(""), false));
+	this->txtStartName = ui->NewTextBox(this->tpInfo, CSTR(""), false);
 	this->txtStartName->SetRect(100, 48, 500, 23, false);
 	this->txtStartName->SetReadOnly(true);
 	this->lblThreadName = ui->NewLabel(this->tpInfo, CSTR("Thread Name"));
 	this->lblThreadName->SetRect(0, 72, 100, 23, false);
-	NEW_CLASS(this->txtThreadName, UI::GUITextBox(ui, this->tpInfo, CSTR(""), false));
+	this->txtThreadName = ui->NewTextBox(this->tpInfo, CSTR(""), false);
 	this->txtThreadName->SetRect(100, 72, 500, 23, false);
 	this->txtThreadName->SetReadOnly(true);
 
@@ -256,7 +256,7 @@ SSWR::AVIRead::AVIRThreadInfoForm::AVIRThreadInfoForm(UI::GUIClientControl *pare
 	this->hspMyStack = ui->NewHSplitter(this->tpMyStack, 3, false);
 	NEW_CLASSNN(this->pnlMyStack, UI::GUIPanel(ui, this->tpMyStack));
 	this->pnlMyStack->SetDockType(UI::GUIControl::DOCK_FILL);
-	NEW_CLASS(this->txtMyStackMem, UI::GUITextBox(ui, this->pnlMyStack, CSTR(""), true));
+	this->txtMyStackMem = ui->NewTextBox(this->pnlMyStack, CSTR(""), true);
 	this->txtMyStackMem->SetRect(0, 0, 100, 200, false);
 	this->txtMyStackMem->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->txtMyStackMem->SetReadOnly(true);

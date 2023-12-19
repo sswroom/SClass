@@ -30,9 +30,9 @@ namespace SSWR
 			Data::ArrayListNN<Crypto::Cert::X509Cert> caCerts;
 
 			NotNullPtr<UI::GUILabel> lblPort;
-			UI::GUITextBox *txtPort;
+			NotNullPtr<UI::GUITextBox> txtPort;
 			NotNullPtr<UI::GUILabel> lblFwdURL;
-			UI::GUITextBox *txtFwdURL;
+			NotNullPtr<UI::GUITextBox> txtFwdURL;
 			NotNullPtr<UI::GUILabel> lblLog;
 			UI::GUICheckBox *chkLog;
 			UI::GUICheckBox *chkLogContent;

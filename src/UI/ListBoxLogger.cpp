@@ -89,12 +89,13 @@ void __stdcall UI::ListBoxLogger::TimerTick(void *userObj)
 void __stdcall UI::ListBoxLogger::OnListBoxSelChg(void *userObj)
 {
 	UI::ListBoxLogger *me = (UI::ListBoxLogger*)userObj;
-	if (me->txt)
+	NotNullPtr<UI::GUITextBox> txt;
+	if (me->txt.SetTo(txt))
 	{
 		NotNullPtr<Text::String> s;
 		if (me->lb->GetSelectedItemTextNew().SetTo(s))
 		{
-			me->txt->SetText(s->ToCString());
+			txt->SetText(s->ToCString());
 			s->Release();
 		}
 	}
@@ -185,14 +186,14 @@ NotNullPtr<UI::ListBoxLogger> UI::ListBoxLogger::CreateUI(NotNullPtr<UI::GUIForm
 	NotNullPtr<UI::GUITextBox> txt;
 	NotNullPtr<UI::GUIListBox> lb;
 	NotNullPtr<UI::ListBoxLogger> logger;
-	NEW_CLASSNN(txt, UI::GUITextBox(ui, ctrl, CSTR("")));
+	txt = ui->NewTextBox(ctrl, CSTR(""));
 	txt->SetReadOnly(true);
 	txt->SetRect(0, 0, 100, 23, false);
 	txt->SetDockType(UI::GUIControl::DOCK_BOTTOM);
 	NEW_CLASSNN(lb, UI::GUIListBox(ui, ctrl, false));
 	lb->SetDockType(UI::GUIControl::DOCK_FILL);
 	NEW_CLASSNN(logger, UI::ListBoxLogger(frm, lb, maxLog, reverse));
-	logger->txt = txt.Ptr();
+	logger->txt = txt;
 	lb->HandleSelectionChange(OnListBoxSelChg, logger.Ptr());
 	return logger;
 }

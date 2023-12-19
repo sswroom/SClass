@@ -1291,7 +1291,7 @@ SSWR::AVIRead::AVIRDBManagerForm::AVIRDBManagerForm(UI::GUIClientControl *parent
 	this->btnSQLFile = ui->NewButton(this->pnlSQLCtrl, CSTR("SQL File"));
 	this->btnSQLFile->SetRect(84, 4, 75, 23, false);
 	this->btnSQLFile->HandleButtonClick(OnSQLFileClicked, this);
-	NEW_CLASS(this->txtSQL, UI::GUITextBox(ui, this->pnlSQL, CSTR(""), true));
+	this->txtSQL = ui->NewTextBox(this->pnlSQL, CSTR(""), true);
 	this->txtSQL->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->vspSQL = ui->NewVSplitter(this->tpSQL, 3, false);
 	NEW_CLASS(this->lvSQLResult, UI::GUIListView(ui, this->tpSQL, UI::GUIListView::LVSTYLE_TABLE, 1));
@@ -1365,7 +1365,7 @@ SSWR::AVIRead::AVIRDBManagerForm::AVIRDBManagerForm(UI::GUIClientControl *parent
 	this->lvSvrConn->AddColumn(CSTR("SQL"), 300);
 
 	this->tpLog = this->tcMain->AddTabPage(CSTR("Log"));
-	NEW_CLASS(this->txtLog, UI::GUITextBox(ui, this->tpLog, CSTR("")));
+	this->txtLog = ui->NewTextBox(this->tpLog, CSTR(""));
 	this->txtLog->SetRect(0, 0, 100, 23, false);
 	this->txtLog->SetDockType(UI::GUIControl::DOCK_BOTTOM);
 	NEW_CLASSNN(this->lbLog, UI::GUIListBox(ui, this->tpLog, false));

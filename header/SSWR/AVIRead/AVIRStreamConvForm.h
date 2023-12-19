@@ -27,7 +27,7 @@ namespace SSWR
 			NotNullPtr<UI::GUIGroupBox> grpStream1;
 			NotNullPtr<UI::GUIPanel> pnlStream1;
 			NotNullPtr<UI::GUILabel> lblStream1;
-			UI::GUITextBox *txtStream1;
+			NotNullPtr<UI::GUITextBox> txtStream1;
 			UI::GUICheckBox *chkStreamLog1;
 			NotNullPtr<UI::GUIButton> btnStream1;
 			UI::GUIRealtimeLineChart *rlcStream1;
@@ -36,7 +36,7 @@ namespace SSWR
 			NotNullPtr<UI::GUIGroupBox> grpStream2;
 			NotNullPtr<UI::GUIPanel> pnlStream2;
 			NotNullPtr<UI::GUILabel> lblStream2;
-			UI::GUITextBox *txtStream2;
+			NotNullPtr<UI::GUITextBox> txtStream2;
 			UI::GUICheckBox *chkStreamLog2;
 			NotNullPtr<UI::GUIButton> btnStream2;
 			UI::GUIRealtimeLineChart *rlcStream2;

@@ -15,7 +15,7 @@ namespace SSWR
 		private:
 			NotNullPtr<UI::GUIPanel> pnlButton;
 			NotNullPtr<UI::GUIButton> btnOK;
-			UI::GUITextBox *txtMessage;
+			NotNullPtr<UI::GUITextBox> txtMessage;
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 

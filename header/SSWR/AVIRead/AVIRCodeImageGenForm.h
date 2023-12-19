@@ -28,9 +28,9 @@ namespace SSWR
 			NotNullPtr<UI::GUILabel> lblCodeType;
 			NotNullPtr<UI::GUIComboBox> cboCodeType;
 			NotNullPtr<UI::GUILabel> lblCodeSize;
-			UI::GUITextBox *txtCodeSize;
+			NotNullPtr<UI::GUITextBox> txtCodeSize;
 			NotNullPtr<UI::GUILabel> lblCode;
-			UI::GUITextBox *txtCode;
+			NotNullPtr<UI::GUITextBox> txtCode;
 			NotNullPtr<UI::GUILabel> lblCodeInfo;
 			NotNullPtr<UI::GUIButton> btnCodeGen;
 

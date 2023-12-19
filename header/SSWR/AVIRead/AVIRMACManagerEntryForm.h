@@ -17,7 +17,7 @@ namespace SSWR
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 
 			NotNullPtr<UI::GUILabel> lblMAC;
-			UI::GUITextBox *txtMAC;
+			NotNullPtr<UI::GUITextBox> txtMAC;
 			NotNullPtr<UI::GUILabel> lblName;
 			NotNullPtr<UI::GUIComboBox> cboName;
 			NotNullPtr<UI::GUIButton> btnCancel;

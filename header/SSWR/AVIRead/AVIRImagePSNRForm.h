@@ -16,17 +16,17 @@ namespace SSWR
 		private:
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			NotNullPtr<UI::GUILabel> lblOriFile;
-			UI::GUITextBox *txtOriFile;
+			NotNullPtr<UI::GUITextBox> txtOriFile;
 			NotNullPtr<UI::GUIButton> btnOriFile;
 			NotNullPtr<UI::GUILabel> lblLossyFile;
-			UI::GUITextBox *txtLossyFile;
+			NotNullPtr<UI::GUITextBox> txtLossyFile;
 			NotNullPtr<UI::GUIButton> btnLossyFile;
 			NotNullPtr<UI::GUILabel> lblMode;
 			UI::GUIRadioButton *radMode16Bit;
 			UI::GUIRadioButton *radMode8Bit;
 			NotNullPtr<UI::GUIButton> btnCompare;
 			NotNullPtr<UI::GUILabel> lblPSNR;
-			UI::GUITextBox *txtPSNR;
+			NotNullPtr<UI::GUITextBox> txtPSNR;
 			NotNullPtr<UI::GUILabel> lblPSNRDB;
 
 			static void __stdcall OnOriFileClicked(void *userObj);

@@ -228,7 +228,7 @@ SSWR::AVIRead::AVIRStreamConvForm::AVIRStreamConvForm(UI::GUIClientControl *pare
 	this->pnlStream1->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->lblStream1 = ui->NewLabel(this->pnlStream1, CSTR("Stream Type"));
 	this->lblStream1->SetRect(4, 4, 100, 23, false);
-	NEW_CLASS(this->txtStream1, UI::GUITextBox(ui, this->pnlStream1, CSTR("-")));
+	this->txtStream1 = ui->NewTextBox(this->pnlStream1, CSTR("-"));
 	this->txtStream1->SetRect(4, 28, 200, 23, false);
 	this->txtStream1->SetReadOnly(true);
 	NEW_CLASS(this->chkStreamLog1, UI::GUICheckBox(ui, this->pnlStream1, CSTR("Log to file"), false));
@@ -247,7 +247,7 @@ SSWR::AVIRead::AVIRStreamConvForm::AVIRStreamConvForm(UI::GUIClientControl *pare
 	this->pnlStream2->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->lblStream2 = ui->NewLabel(this->pnlStream2, CSTR("Stream Type"));
 	this->lblStream2->SetRect(4, 4, 100, 23, false);
-	NEW_CLASS(this->txtStream2, UI::GUITextBox(ui, this->pnlStream2, CSTR("-")));
+	this->txtStream2 = ui->NewTextBox(this->pnlStream2, CSTR("-"));
 	this->txtStream2->SetRect(4, 28, 200, 23, false);
 	this->txtStream2->SetReadOnly(true);
 	NEW_CLASS(this->chkStreamLog2, UI::GUICheckBox(ui, this->pnlStream2, CSTR("Log to file"), false));

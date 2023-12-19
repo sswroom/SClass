@@ -33,27 +33,27 @@ SSWR::AVIRead::AVIROSMCacheForm::AVIROSMCacheForm(UI::GUIClientControl *parent, 
 
 	this->lblReqCnt = ui->NewLabel(*this, CSTR("Request Cnt"));
 	this->lblReqCnt->SetRect(4, 4, 100, 23, false);
-	NEW_CLASS(this->txtReqCnt, UI::GUITextBox(ui, *this, CSTR("")));
+	this->txtReqCnt = ui->NewTextBox(*this, CSTR(""));
 	this->txtReqCnt->SetRect(104, 4, 150, 23, false);
 	this->txtReqCnt->SetReadOnly(true);
 	this->lblRemoteSuccCnt = ui->NewLabel(*this, CSTR("Remote Succ"));
 	this->lblRemoteSuccCnt->SetRect(4, 28, 100, 23, false);
-	NEW_CLASS(this->txtRemoteSuccCnt, UI::GUITextBox(ui, *this, CSTR("")));
+	this->txtRemoteSuccCnt = ui->NewTextBox(*this, CSTR(""));
 	this->txtRemoteSuccCnt->SetRect(104, 28, 150, 23, false);
 	this->txtRemoteSuccCnt->SetReadOnly(true);
 	this->lblRemoteErrCnt = ui->NewLabel(*this, CSTR("Remote Err"));
 	this->lblRemoteErrCnt->SetRect(4, 52, 100, 23, false);
-	NEW_CLASS(this->txtRemoteErrCnt, UI::GUITextBox(ui, *this, CSTR("")));
+	this->txtRemoteErrCnt = ui->NewTextBox(*this, CSTR(""));
 	this->txtRemoteErrCnt->SetRect(104, 52, 150, 23, false);
 	this->txtRemoteErrCnt->SetReadOnly(true);
 	this->lblLocalCnt = ui->NewLabel(*this, CSTR("Local Cnt"));
 	this->lblLocalCnt->SetRect(4, 76, 100, 23, false);
-	NEW_CLASS(this->txtLocalCnt, UI::GUITextBox(ui, *this, CSTR("")));
+	this->txtLocalCnt = ui->NewTextBox(*this, CSTR(""));
 	this->txtLocalCnt->SetRect(104, 76, 150, 23, false);
 	this->txtLocalCnt->SetReadOnly(true);
 	this->lblCacheCnt = ui->NewLabel(*this, CSTR("Cache Cnt"));
 	this->lblCacheCnt->SetRect(4, 100, 100, 23, false);
-	NEW_CLASS(this->txtCacheCnt, UI::GUITextBox(ui, *this, CSTR("")));
+	this->txtCacheCnt = ui->NewTextBox(*this, CSTR(""));
 	this->txtCacheCnt->SetRect(104, 100, 150, 23, false);
 	this->txtCacheCnt->SetReadOnly(true);
 

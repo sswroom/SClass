@@ -28,14 +28,14 @@ namespace SSWR
 		private:
 			NotNullPtr<UI::GUIPanel> pnlCtrl;
 			NotNullPtr<UI::GUILabel> lblFile;
-			UI::GUITextBox *txtFile;
+			NotNullPtr<UI::GUITextBox> txtFile;
 			NotNullPtr<UI::GUIButton> btnFile;
 			NotNullPtr<UI::GUILabel> lblDecoder;
 			NotNullPtr<UI::GUIComboBox> cboDecoder;
 			NotNullPtr<UI::GUIButton> btnLoad;
 			UI::GUIListView *lvLogs;
 			NotNullPtr<UI::GUIVSplitter> vspLogs;
-			UI::GUITextBox *txtLogs;
+			NotNullPtr<UI::GUITextBox> txtLogs;
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			IO::FileStream *currFile;

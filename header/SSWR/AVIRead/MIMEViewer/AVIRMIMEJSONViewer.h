@@ -14,7 +14,7 @@ namespace SSWR
 			class AVIRMIMEJSONViewer : public AVIRMIMEViewer
 			{
 			private:
-				UI::GUITextBox *txtJSON;
+				NotNullPtr<UI::GUITextBox> txtJSON;
 
 				Text::MIMEObj::UnknownMIMEObj *obj;
 

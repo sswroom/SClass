@@ -72,11 +72,11 @@ SSWR::AVIRead::AVIRGenImageForm::AVIRGenImageForm(UI::GUIClientControl *parent, 
 
 	lbl = ui->NewLabel(*this, CSTR("Output Size"));
 	lbl->SetRect(8, 200, 100, 23, false);
-	NEW_CLASS(this->txtWidth, UI::GUITextBox(ui, *this, CSTR("640")));
+	this->txtWidth = ui->NewTextBox(*this, CSTR("640"));
 	this->txtWidth->SetRect(112, 200, 56, 23, false);
 	lbl = ui->NewLabel(*this, CSTR("x"));
 	lbl->SetRect(168, 200, 24, 23, false);
-	NEW_CLASS(this->txtHeight, UI::GUITextBox(ui, *this, CSTR("480")));
+	this->txtHeight = ui->NewTextBox(*this, CSTR("480"));
 	this->txtHeight->SetRect(192, 200, 56, 23, false);
 
 	btnGenerate = ui->NewButton(*this, CSTR("Generate"));

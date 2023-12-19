@@ -46,15 +46,15 @@ SSWR::AVIRead::AVIRODBCDSNForm::AVIRODBCDSNForm(UI::GUIClientControl *parent, No
 
 	this->lblDSN = ui->NewLabel(*this, CSTR("DSN"));
 	this->lblDSN->SetRect(4, 4, 100, 23, false);
-	NEW_CLASS(this->txtDSN, UI::GUITextBox(ui, *this, CSTR("")));
+	this->txtDSN = ui->NewTextBox(*this, CSTR(""));
 	this->txtDSN->SetRect(104, 4, 200, 23, false);
 	this->lblUID = ui->NewLabel(*this, CSTR("User Name"));
 	this->lblUID->SetRect(4, 28, 100, 23, false);
-	NEW_CLASS(this->txtUID, UI::GUITextBox(ui, *this, CSTR("")));
+	this->txtUID = ui->NewTextBox(*this, CSTR(""));
 	this->txtUID->SetRect(104, 28, 200, 23, false);
 	this->lblPWD = ui->NewLabel(*this, CSTR("Password"));
 	this->lblPWD->SetRect(4, 52, 100, 23, false);
-	NEW_CLASS(this->txtPWD, UI::GUITextBox(ui, *this, CSTR("")));
+	this->txtPWD = ui->NewTextBox(*this, CSTR(""));
 	this->txtPWD->SetRect(104, 52, 200, 23, false);
 	this->txtPWD->SetPasswordChar('*');
 	this->btnOK = ui->NewButton(*this, CSTR("OK"));

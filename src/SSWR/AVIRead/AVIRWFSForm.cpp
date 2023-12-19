@@ -60,7 +60,7 @@ SSWR::AVIRead::AVIRWFSForm::AVIRWFSForm(UI::GUIClientControl *parent, NotNullPtr
 
 	this->lblWFSURL = ui->NewLabel(*this, CSTR("WFS URL"));
 	this->lblWFSURL->SetRect(4, 4, 100, 23, false);
-	NEW_CLASS(this->txtWFSURL, UI::GUITextBox(ui, *this, CSTR("")));
+	this->txtWFSURL = ui->NewTextBox(*this, CSTR(""));
 	this->txtWFSURL->SetRect(104, 4, 500, 23, false);
 	this->lblWFSVersion = ui->NewLabel(*this, CSTR("Version"));
 	this->lblWFSVersion->SetRect(4, 28, 100, 23, false);
@@ -76,7 +76,7 @@ SSWR::AVIRead::AVIRWFSForm::AVIRWFSForm(UI::GUIClientControl *parent, NotNullPtr
 	this->btnLoad->HandleButtonClick(OnLoadClicked, this);
 	this->lblStatus = ui->NewLabel(*this, CSTR("Status"));
 	this->lblStatus->SetRect(4, 76, 100, 23, false);
-	NEW_CLASS(this->txtStatus, UI::GUITextBox(ui, *this, CSTR("")));
+	this->txtStatus = ui->NewTextBox(*this, CSTR(""));
 	this->txtStatus->SetRect(104, 76, 100, 23, false);
 	this->txtStatus->SetReadOnly(true);
 	this->lblFeature = ui->NewLabel(*this, CSTR("Feature"));

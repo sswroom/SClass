@@ -265,11 +265,11 @@ SSWR::AVIRead::AVIRProfiledResizerForm::AVIRProfiledResizerForm(UI::GUIClientCon
 	this->pnlProfile2->SetDockType(UI::GUIControl::DOCK_FILL);
 	lbl = ui->NewLabel(this->pnlProfile2, CSTR("Name"));
 	lbl->SetRect(0, 0, 60, 19, false);
-	NEW_CLASS(this->txtProfileName, UI::GUITextBox(ui, this->pnlProfile2, CSTR("")));
+	this->txtProfileName = ui->NewTextBox(this->pnlProfile2, CSTR(""));
 	this->txtProfileName->SetRect(60, 0, 140, 19, false);
 	lbl = ui->NewLabel(this->pnlProfile2, CSTR("Suffix"));
 	lbl->SetRect(0, 19, 60, 19, false);
-	NEW_CLASS(this->txtSuffix, UI::GUITextBox(ui, this->pnlProfile2, CSTR("")));
+	this->txtSuffix = ui->NewTextBox(this->pnlProfile2, CSTR(""));
 	this->txtSuffix->SetRect(60, 19, 50, 19, false);
 	this->grpSize = ui->NewGroupBox(this->pnlProfile2, CSTR("Size"));
 	this->grpSize->SetRect(0, 38, 200, 83, false);
@@ -277,42 +277,42 @@ SSWR::AVIRead::AVIRProfiledResizerForm::AVIRProfiledResizerForm(UI::GUIClientCon
 	this->radSize->SetRect(0, 0, 60, 19, false);
 	lbl = ui->NewLabel(this->grpSize, CSTR("Max W"));
 	lbl->SetRect(0, 19, 40, 19, false);
-	NEW_CLASS(this->txtWidth, UI::GUITextBox(ui, this->grpSize, CSTR("800")));
+	this->txtWidth = ui->NewTextBox(this->grpSize, CSTR("800"));
 	this->txtWidth->SetRect(40, 19, 50, 19, false);
 	lbl = ui->NewLabel(this->grpSize, CSTR("Max H"));
 	lbl->SetRect(0, 38, 40, 19, false);
-	NEW_CLASS(this->txtHeight, UI::GUITextBox(ui, this->grpSize, CSTR("800")));
+	this->txtHeight = ui->NewTextBox(this->grpSize, CSTR("800"));
 	this->txtHeight->SetRect(40, 38, 50, 19, false);
 	NEW_CLASS(this->radDPI, UI::GUIRadioButton(ui, this->grpSize, CSTR("DPI"), false));
 	this->radDPI->SetRect(100, 0, 60, 19, false);
 	lbl = ui->NewLabel(this->grpSize, CSTR("H-DPI"));
 	lbl->SetRect(100, 19, 40, 19, false);
-	NEW_CLASS(this->txtHDPI, UI::GUITextBox(ui, this->grpSize, CSTR("300")));
+	this->txtHDPI = ui->NewTextBox(this->grpSize, CSTR("300"));
 	this->txtHDPI->SetRect(140, 19, 50, 19, false);
 	lbl = ui->NewLabel(this->grpSize, CSTR("V-DPI"));
 	lbl->SetRect(100, 38, 40, 19, false);
-	NEW_CLASS(this->txtVDPI, UI::GUITextBox(ui, this->grpSize, CSTR("300")));
+	this->txtVDPI = ui->NewTextBox(this->grpSize, CSTR("300"));
 	this->txtVDPI->SetRect(140, 38, 50, 19, false);
 	lbl = ui->NewLabel(this->pnlProfile2, CSTR("Watermark"));
 	lbl->SetRect(0, 121, 60, 19, false);
-	NEW_CLASS(this->txtWatermark, UI::GUITextBox(ui, this->pnlProfile2, CSTR("")));
+	this->txtWatermark = ui->NewTextBox(this->pnlProfile2, CSTR(""));
 	this->txtWatermark->SetRect(60, 121, 140, 19, false);
 	NEW_CLASS(this->radTIFF, UI::GUIRadioButton(ui, this->pnlProfile2, CSTR("TIFF"), false));
 	this->radTIFF->SetRect(0, 140, 120, 19, false);
 	NEW_CLASS(this->radJPEGQ, UI::GUIRadioButton(ui, this->pnlProfile2, CSTR("JPEG (% Quality)"), false))
 	this->radJPEGQ->SetRect(0, 159, 120, 19, false);
-	NEW_CLASS(this->txtJPEGQuality, UI::GUITextBox(ui, this->pnlProfile2, CSTR("100")));
+	this->txtJPEGQuality = ui->NewTextBox(this->pnlProfile2, CSTR("100"));
 	this->txtJPEGQuality->SetRect(120, 159, 60, 19, false);
 	NEW_CLASS(this->radJPEGSize, UI::GUIRadioButton(ui, this->pnlProfile2, CSTR("JPEG (1 / Size)"), false))
 	this->radJPEGSize->SetRect(0, 178, 120, 19, false);
-	NEW_CLASS(this->txtJPEGSize, UI::GUITextBox(ui, this->pnlProfile2, CSTR("20")));
+	this->txtJPEGSize = ui->NewTextBox(this->pnlProfile2, CSTR("20"));
 	this->txtJPEGSize->SetRect(120, 178, 60, 19, false);
 	this->radJPEGSize->Select();
 	NEW_CLASS(this->radPNG, UI::GUIRadioButton(ui, this->pnlProfile2, CSTR("PNG"), false));
 	this->radPNG->SetRect(0, 197, 120, 19, false);
 	NEW_CLASS(this->radWEBPQ, UI::GUIRadioButton(ui, this->pnlProfile2, CSTR("WEBP (% Quality)"), false))
 	this->radWEBPQ->SetRect(0, 216, 120, 19, false);
-	NEW_CLASS(this->txtWEBPQuality, UI::GUITextBox(ui, this->pnlProfile2, CSTR("100")));
+	this->txtWEBPQuality = ui->NewTextBox(this->pnlProfile2, CSTR("100"));
 	this->txtWEBPQuality->SetRect(120, 216, 60, 19, false);
 
 	this->btnProfileAdd = ui->NewButton(this->pnlProfile2, CSTR("&Add"));

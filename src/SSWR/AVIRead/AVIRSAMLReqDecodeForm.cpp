@@ -38,18 +38,18 @@ SSWR::AVIRead::AVIRSAMLReqDecodeForm::AVIRSAMLReqDecodeForm(UI::GUIClientControl
 
 	this->lblRAWRequest = ui->NewLabel(*this, CSTR("RAW Request"));
 	this->lblRAWRequest->SetRect(0, 0, 100, 23, false);
-	NEW_CLASS(this->txtRAWRequest, UI::GUITextBox(ui, *this, CSTR(""), true));
+	this->txtRAWRequest = ui->NewTextBox(*this, CSTR(""), true);
 	this->txtRAWRequest->SetRect(100, 0, 500, 119, false);
 	this->btnDecode = ui->NewButton(*this, CSTR("Decode"));
 	this->btnDecode->SetRect(100, 120, 75, 23, false);
 	this->btnDecode->HandleButtonClick(OnDecodeClicked, this);
 	this->lblResult = ui->NewLabel(*this, CSTR("Result"));
 	this->lblResult->SetRect(0, 144, 100, 23, false);
-	NEW_CLASS(this->txtResult, UI::GUITextBox(ui, *this, CSTR(""), true));
+	this->txtResult = ui->NewTextBox(*this, CSTR(""), true);
 	this->txtResult->SetRect(100, 144, 500, 119, false);
 	this->lblWellFormat = ui->NewLabel(*this, CSTR("Well Format"));
 	this->lblWellFormat->SetRect(0, 264, 100, 23, false);
-	NEW_CLASS(this->txtWellFormat, UI::GUITextBox(ui, *this, CSTR(""), true));
+	this->txtWellFormat = ui->NewTextBox(*this, CSTR(""), true);
 	this->txtWellFormat->SetRect(100, 264, 500, 119, false);
 }
 

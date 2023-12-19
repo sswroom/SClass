@@ -26,36 +26,36 @@ namespace SSWR
 
 			NotNullPtr<UI::GUITabPage> tpControl;
 			NotNullPtr<UI::GUILabel> lblHost;
-			UI::GUITextBox *txtHost;
+			NotNullPtr<UI::GUITextBox> txtHost;
 			NotNullPtr<UI::GUILabel> lblPort;
-			UI::GUITextBox *txtPort;
+			NotNullPtr<UI::GUITextBox> txtPort;
 			NotNullPtr<UI::GUILabel> lblUserName;
-			UI::GUITextBox *txtUserName;
+			NotNullPtr<UI::GUITextBox> txtUserName;
 			NotNullPtr<UI::GUILabel> lblPassword;
-			UI::GUITextBox *txtPassword;
+			NotNullPtr<UI::GUITextBox> txtPassword;
 			NotNullPtr<UI::GUILabel> lblDatabase;
-			UI::GUITextBox *txtDatabase;
+			NotNullPtr<UI::GUITextBox> txtDatabase;
 			NotNullPtr<UI::GUIButton> btnStart;
 			NotNullPtr<UI::GUILabel> lblStatus;
-			UI::GUITextBox *txtStatus;
+			NotNullPtr<UI::GUITextBox> txtStatus;
 
 			NotNullPtr<UI::GUITabPage> tpInfo;
 			NotNullPtr<UI::GUILabel> lblServerVer;
-			UI::GUITextBox *txtServerVer;
+			NotNullPtr<UI::GUITextBox> txtServerVer;
 			NotNullPtr<UI::GUILabel> lblConnId;
-			UI::GUITextBox *txtConnId;
+			NotNullPtr<UI::GUITextBox> txtConnId;
 			NotNullPtr<UI::GUILabel> lblAuthPluginData;
-			UI::GUITextBox *txtAuthPluginData;
+			NotNullPtr<UI::GUITextBox> txtAuthPluginData;
 			NotNullPtr<UI::GUILabel> lblServerCap;
-			UI::GUITextBox *txtServerCap;
+			NotNullPtr<UI::GUITextBox> txtServerCap;
 			NotNullPtr<UI::GUILabel> lblServerCS;
-			UI::GUITextBox *txtServerCS;
+			NotNullPtr<UI::GUITextBox> txtServerCS;
 
 			NotNullPtr<UI::GUITabPage> tpQuery;
 			NotNullPtr<UI::GUIPanel> pnlQuery;
 			NotNullPtr<UI::GUIButton> btnQuery;
-			UI::GUITextBox *txtQuery;
-			UI::GUITextBox *txtQueryStatus;
+			NotNullPtr<UI::GUITextBox> txtQuery;
+			NotNullPtr<UI::GUITextBox> txtQueryStatus;
 			NotNullPtr<UI::GUIVSplitter> vspQuery;
 			UI::GUIListView *lvQueryResult;
 

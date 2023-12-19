@@ -19,7 +19,7 @@ namespace SSWR
 
 			UI::GUIListBox *lbType;
 			NotNullPtr<UI::GUIHSplitter> hspMain;
-			UI::GUITextBox *txtMain;
+			NotNullPtr<UI::GUITextBox> txtMain;
 
 			static void __stdcall OnTypeSelChg(void *userObj);
 		public:

@@ -60,21 +60,21 @@ SSWR::AVIRead::AVIRTimeTestForm::AVIRTimeTestForm(UI::GUIClientControl *parent, 
 
 	this->lblSleepMS = ui->NewLabel(*this, CSTR("Sleep Time (ms)"));
 	this->lblSleepMS->SetRect(4, 4, 100, 23, false);
-	NEW_CLASS(this->txtSleepMS, UI::GUITextBox(ui, *this, CSTR("100")));
+	this->txtSleepMS = ui->NewTextBox(*this, CSTR("100"));
 	this->txtSleepMS->SetRect(104, 4, 100, 23, false);
 	this->btnSleepMS = ui->NewButton(*this, CSTR("Test"));
 	this->btnSleepMS->SetRect(204, 4, 75, 23, false);
 	this->btnSleepMS->HandleButtonClick(OnSleepMSClicked, this);
 	this->lblSleepUS = ui->NewLabel(*this, CSTR("Sleep Time (us)"));
 	this->lblSleepUS->SetRect(4, 28, 100, 23, false);
-	NEW_CLASS(this->txtSleepUS, UI::GUITextBox(ui, *this, CSTR("100")));
+	this->txtSleepUS = ui->NewTextBox(*this, CSTR("100"));
 	this->txtSleepUS->SetRect(104, 28, 100, 23, false);
 	this->btnSleepUS = ui->NewButton(*this, CSTR("Test"));
 	this->btnSleepUS->SetRect(204, 28, 75, 23, false);
 	this->btnSleepUS->HandleButtonClick(OnSleepUSClicked, this);
 	this->lblActualTime = ui->NewLabel(*this, CSTR("Actual Time (s)"));
 	this->lblActualTime->SetRect(4, 52, 100, 23, false);
-	NEW_CLASS(this->txtActualTime, UI::GUITextBox(ui, *this, CSTR("")));
+	this->txtActualTime = ui->NewTextBox(*this, CSTR(""));
 	this->txtActualTime->SetRect(104, 52, 150, 23, false);
 	this->txtActualTime->SetReadOnly(true);
 }

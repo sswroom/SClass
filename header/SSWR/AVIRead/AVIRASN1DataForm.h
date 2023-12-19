@@ -25,35 +25,35 @@ namespace SSWR
 
 			NotNullPtr<UI::GUIPanel> pnlStatus;
 			NotNullPtr<UI::GUILabel> lblStatus;
-			UI::GUITextBox *txtStatus;
+			NotNullPtr<UI::GUITextBox> txtStatus;
 			UI::GUITabControl *tcMain;
 
 			NotNullPtr<UI::GUITabPage> tpDesc;
-			UI::GUITextBox *txtDesc;
+			NotNullPtr<UI::GUITextBox> txtDesc;
 			
 			NotNullPtr<UI::GUITabPage> tpASN1;
-			UI::GUITextBox *txtASN1;
+			NotNullPtr<UI::GUITextBox> txtASN1;
 
 			NotNullPtr<UI::GUITabPage> tpVerify;
 			NotNullPtr<UI::GUILabel> lblVerifyHash;
 			NotNullPtr<UI::GUIComboBox> cboVerifyHash;
 			NotNullPtr<UI::GUILabel> lblVerifyPayloadFile;
-			UI::GUITextBox *txtVerifyPayloadFile;
+			NotNullPtr<UI::GUITextBox> txtVerifyPayloadFile;
 			NotNullPtr<UI::GUILabel> lblVerifySignature;
-			UI::GUITextBox *txtVerifySignature;
+			NotNullPtr<UI::GUITextBox> txtVerifySignature;
 			NotNullPtr<UI::GUIButton> btnVerify;
 			NotNullPtr<UI::GUIButton> btnVerifySignInfo;
 			NotNullPtr<UI::GUILabel> lblVerifyStatus;
-			UI::GUITextBox *txtVerifyStatus;
+			NotNullPtr<UI::GUITextBox> txtVerifyStatus;
 
 //			NotNullPtr<UI::GUITabPage> tpSignature;
 /*			NotNullPtr<UI::GUILabel> lblSignatureHash;
 			NotNullPtr<UI::GUIComboBox> cboSignatureHash;
 			NotNullPtr<UI::GUILabel> lblSignaturePayloadFile;
-			UI::GUITextBox *txtSignaturePayloadFile;
+			NotNullPtr<UI::GUITextBox> txtSignaturePayloadFile;
 			NotNullPtr<UI::GUIButton> btnSignature;
 			NotNullPtr<UI::GUILabel> lblSiguatureValue;
-			UI::GUITextBox *txtSignatureValue;*/
+			NotNullPtr<UI::GUITextBox> txtSignatureValue;*/
 
 			NotNullPtr<UI::GUITabPage> tpEncrypt;
 			NotNullPtr<UI::GUILabel> lblEncryptInputType;
@@ -63,11 +63,11 @@ namespace SSWR
 			NotNullPtr<UI::GUILabel> lblEncryptRSAPadding;
 			NotNullPtr<UI::GUIComboBox> cboEncryptRSAPadding;
 			NotNullPtr<UI::GUILabel> lblEncryptInput;
-			UI::GUITextBox *txtEncryptInput;
+			NotNullPtr<UI::GUITextBox> txtEncryptInput;
 			NotNullPtr<UI::GUIButton> btnEncryptEncrypt;
 			NotNullPtr<UI::GUIButton> btnEncryptDecrypt;
 			NotNullPtr<UI::GUILabel> lblEncryptOutput;
-			UI::GUITextBox *txtEncryptOutput;
+			NotNullPtr<UI::GUITextBox> txtEncryptOutput;
 
 			static UOSInt AddHash(NotNullPtr<UI::GUIComboBox> cbo, Crypto::Hash::HashType hashType, Crypto::Hash::HashType targetType);
 			static void AddHashTypes(NotNullPtr<UI::GUIComboBox> cbo, Crypto::Hash::HashType hashType);

@@ -792,22 +792,22 @@ SSWR::AVIRead::AVIRGISEditImageForm::AVIRGISEditImageForm(UI::GUIClientControl *
 	this->pnlMain->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lblLeft = ui->NewLabel(this->pnlMain, CSTR("Left"));
 	this->lblLeft->SetRect(0, 0, 100, 23, false);
-	NEW_CLASS(this->txtLeft, UI::GUITextBox(ui, this->pnlMain, CSTR("")));
+	this->txtLeft = ui->NewTextBox(this->pnlMain, CSTR(""));
 	this->txtLeft->SetRect(100, 0, 100, 23, false);
 	this->txtLeft->SetReadOnly(true);
 	this->lblTop = ui->NewLabel(this->pnlMain, CSTR("Top"));
 	this->lblTop->SetRect(0, 24, 100, 23, false);
-	NEW_CLASS(this->txtTop, UI::GUITextBox(ui, this->pnlMain, CSTR("")));
+	this->txtTop = ui->NewTextBox(this->pnlMain, CSTR(""));
 	this->txtTop->SetRect(100, 24, 100, 23, false);
 	this->txtTop->SetReadOnly(true);
 	this->lblRight = ui->NewLabel(this->pnlMain, CSTR("Right"));
 	this->lblRight->SetRect(0, 48, 100, 23, false);
-	NEW_CLASS(this->txtRight, UI::GUITextBox(ui, this->pnlMain, CSTR("")));
+	this->txtRight = ui->NewTextBox(this->pnlMain, CSTR(""));
 	this->txtRight->SetRect(100, 48, 100, 23, false);
 	this->txtRight->SetReadOnly(true);
 	this->lblBottom = ui->NewLabel(this->pnlMain, CSTR("Bottom"));
 	this->lblBottom->SetRect(0, 72, 100, 23, false);
-	NEW_CLASS(this->txtBottom, UI::GUITextBox(ui, this->pnlMain, CSTR("")));
+	this->txtBottom = ui->NewTextBox(this->pnlMain, CSTR(""));
 	this->txtBottom->SetRect(100, 72, 100, 23, false);
 	this->txtBottom->SetReadOnly(true);
 

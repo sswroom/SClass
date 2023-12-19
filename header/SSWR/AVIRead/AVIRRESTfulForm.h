@@ -39,9 +39,9 @@ namespace SSWR
 			NotNullPtr<UI::GUITabPage> tpControl;
 			NotNullPtr<UI::GUIGroupBox> grpParam;
 			NotNullPtr<UI::GUILabel> lblPort;
-			UI::GUITextBox *txtPort;
+			NotNullPtr<UI::GUITextBox> txtPort;
 			NotNullPtr<UI::GUILabel> lblLogDir;
-			UI::GUITextBox *txtLogDir;
+			NotNullPtr<UI::GUITextBox> txtLogDir;
 			NotNullPtr<UI::GUILabel> lblAllowProxy;
 			UI::GUICheckBox *chkAllowProxy;
 			NotNullPtr<UI::GUILabel> lblSkipLog;
@@ -49,7 +49,7 @@ namespace SSWR
 			NotNullPtr<UI::GUILabel> lblAllowKA;
 			UI::GUICheckBox *chkAllowKA;
 			NotNullPtr<UI::GUILabel> lblDatabase;
-			UI::GUITextBox *txtDatabase;
+			NotNullPtr<UI::GUITextBox> txtDatabase;
 			NotNullPtr<UI::GUIButton> btnDatabaseMySQL;
 			NotNullPtr<UI::GUIButton> btnDatabaseODBCDSN;
 			NotNullPtr<UI::GUIButton> btnStart;
@@ -60,7 +60,7 @@ namespace SSWR
 
 			NotNullPtr<UI::GUITabPage> tpLog;
 			NotNullPtr<UI::GUIListBox> lbLog;
-			UI::GUITextBox *txtLog;
+			NotNullPtr<UI::GUITextBox> txtLog;
 
 		private:
 			static void __stdcall OnDatabaseMySQLClicked(void *userObj);

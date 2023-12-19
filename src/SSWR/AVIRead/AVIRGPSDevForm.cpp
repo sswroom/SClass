@@ -464,11 +464,11 @@ SSWR::AVIRead::AVIRGPSDevForm::AVIRGPSDevForm(UI::GUIClientControl *parent, NotN
 	this->pnlConn->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->lblHost = ui->NewLabel(this->pnlConn, CSTR("Host"));
 	this->lblHost->SetRect(4, 4, 100, 23, false);
-	NEW_CLASS(this->txtHost, UI::GUITextBox(ui, this->pnlConn, CSTR("127.0.0.1")));
+	this->txtHost = ui->NewTextBox(this->pnlConn, CSTR("127.0.0.1"));
 	this->txtHost->SetRect(104, 4, 150, 23, false);
 	this->lblPort = ui->NewLabel(this->pnlConn, CSTR("Port"));
 	this->lblPort->SetRect(4, 28, 100, 23, false);
-	NEW_CLASS(this->txtPort, UI::GUITextBox(ui, this->pnlConn, CSTR("7500")));
+	this->txtPort = ui->NewTextBox(this->pnlConn, CSTR("7500"));
 	this->txtPort->SetRect(104, 28, 100, 23, false);
 	this->btnConn = ui->NewButton(this->pnlConn, CSTR("Start"));
 	this->btnConn->SetRect(204, 28, 75, 23, false);
@@ -479,7 +479,7 @@ SSWR::AVIRead::AVIRGPSDevForm::AVIRGPSDevForm(UI::GUIClientControl *parent, NotN
 	this->tpStatus = this->tcMain->AddTabPage(CSTR("Status"));
 	this->lblStatusConn = ui->NewLabel(this->tpStatus, CSTR("Conn Status"));
 	this->lblStatusConn->SetRect(4, 4, 100, 23, false);
-	NEW_CLASS(this->txtStatusConn, UI::GUITextBox(ui, this->tpStatus, CSTR("Not Connected")));
+	this->txtStatusConn = ui->NewTextBox(this->tpStatus, CSTR("Not Connected"));
 	this->txtStatusConn->SetRect(104, 4, 100, 23, false);
 	this->txtStatusConn->SetReadOnly(true);
 

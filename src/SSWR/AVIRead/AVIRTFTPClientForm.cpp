@@ -149,15 +149,15 @@ SSWR::AVIRead::AVIRTFTPClientForm::AVIRTFTPClientForm(UI::GUIClientControl *pare
 
 	this->lblHost = ui->NewLabel(*this, CSTR("Host"));
 	this->lblHost->SetRect(4, 4, 100, 23, false);
-	NEW_CLASS(this->txtHost, UI::GUITextBox(ui, *this, CSTR("127.0.0.1")));
+	this->txtHost = ui->NewTextBox(*this, CSTR("127.0.0.1"));
 	this->txtHost->SetRect(104, 4, 150, 23, false);
 	this->lblPort = ui->NewLabel(*this, CSTR("Port"));
 	this->lblPort->SetRect(4, 28, 100, 23, false);
-	NEW_CLASS(this->txtPort, UI::GUITextBox(ui, *this, CSTR("69")));
+	this->txtPort = ui->NewTextBox(*this, CSTR("69"));
 	this->txtPort->SetRect(104, 28, 50, 23, false);
 	this->lblFileName = ui->NewLabel(*this, CSTR("FileName"));
 	this->lblFileName->SetRect(4, 52, 100, 23, false);
-	NEW_CLASS(this->txtFileName, UI::GUITextBox(ui, *this, CSTR("File.dat")));
+	this->txtFileName = ui->NewTextBox(*this, CSTR("File.dat"));
 	this->txtFileName->SetRect(104, 52, 200, 23, false);
 	this->btnRecv = ui->NewButton(*this, CSTR("Receive"));
 	this->btnRecv->SetRect(104, 76, 75, 23, false);

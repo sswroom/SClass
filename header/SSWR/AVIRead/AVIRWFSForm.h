@@ -16,12 +16,12 @@ namespace SSWR
 		{
 		private:
 			NotNullPtr<UI::GUILabel> lblWFSURL;
-			UI::GUITextBox *txtWFSURL;
+			NotNullPtr<UI::GUITextBox> txtWFSURL;
 			NotNullPtr<UI::GUILabel> lblWFSVersion;
 			NotNullPtr<UI::GUIComboBox> cboWFSVersion;
 			NotNullPtr<UI::GUIButton> btnLoad;
 			NotNullPtr<UI::GUILabel> lblStatus;
-			UI::GUITextBox *txtStatus;
+			NotNullPtr<UI::GUITextBox> txtStatus;
 			NotNullPtr<UI::GUILabel> lblFeature;
 			NotNullPtr<UI::GUIComboBox> cboFeature;
 			NotNullPtr<UI::GUIButton> btnOK;

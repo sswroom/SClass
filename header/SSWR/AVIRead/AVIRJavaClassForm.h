@@ -19,7 +19,7 @@ namespace SSWR
 			UI::GUITabControl *tcMain;
 
 			NotNullPtr<UI::GUITabPage> tpFileStruct;
-			UI::GUITextBox *txtFileStruct;
+			NotNullPtr<UI::GUITextBox> txtFileStruct;
 
 			NotNullPtr<UI::GUITabPage> tpFields;
 			UI::GUIListBox *lbFields;
@@ -27,10 +27,10 @@ namespace SSWR
 			NotNullPtr<UI::GUITabPage> tpMethods;
 			UI::GUIListBox *lbMethods;
 			NotNullPtr<UI::GUIVSplitter> vspMethods;
-			UI::GUITextBox *txtMethods;
+			NotNullPtr<UI::GUITextBox> txtMethods;
 
 			NotNullPtr<UI::GUITabPage> tpDecompile;
-			UI::GUITextBox *txtDecompile;
+			NotNullPtr<UI::GUITextBox> txtDecompile;
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			IO::JavaClass *clsFile;

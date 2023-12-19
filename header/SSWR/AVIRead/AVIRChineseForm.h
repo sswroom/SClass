@@ -30,36 +30,36 @@ namespace SSWR
 			UI::GUIMainMenu *mnuMain;
 
 			NotNullPtr<UI::GUILabel> lblCharCode;
-			UI::GUITextBox *txtCharCode;
+			NotNullPtr<UI::GUITextBox> txtCharCode;
 			NotNullPtr<UI::GUILabel> lblChar;
-			UI::GUITextBox *txtChar;
+			NotNullPtr<UI::GUITextBox> txtChar;
 			NotNullPtr<UI::GUIButton> btnCharPrev;
 			NotNullPtr<UI::GUIButton> btnCharNext;
 			UI::GUIPictureBoxSimple *pbChar;
 			NotNullPtr<UI::GUILabel> lblRelatedCurr;
-			UI::GUITextBox *txtRelatedCurr;
+			NotNullPtr<UI::GUITextBox> txtRelatedCurr;
 			NotNullPtr<UI::GUILabel> lblRelatedAdd;
-			UI::GUITextBox *txtRelatedAdd;
+			NotNullPtr<UI::GUITextBox> txtRelatedAdd;
 			NotNullPtr<UI::GUIButton> btnRelatedGo;
 
 			NotNullPtr<UI::GUIGroupBox> grpCharInfo;
 			NotNullPtr<UI::GUILabel> lblRadical;
-			UI::GUITextBox *txtRadical;
+			NotNullPtr<UI::GUITextBox> txtRadical;
 			NotNullPtr<UI::GUILabel> lblRadicalV;
 			NotNullPtr<UI::GUILabel> lblStrokeCount;
-			UI::GUITextBox *txtStrokeCount;
+			NotNullPtr<UI::GUITextBox> txtStrokeCount;
 			NotNullPtr<UI::GUILabel> lblCharType;
 			NotNullPtr<UI::GUIComboBox> cboCharType;
 			NotNullPtr<UI::GUILabel> lblFlags;
 			UI::GUICheckBox *chkMainChar;
 			NotNullPtr<UI::GUILabel> lblPronun1;
-			UI::GUITextBox *txtPronun1;
+			NotNullPtr<UI::GUITextBox> txtPronun1;
 			NotNullPtr<UI::GUILabel> lblPronun2;
-			UI::GUITextBox *txtPronun2;
+			NotNullPtr<UI::GUITextBox> txtPronun2;
 			NotNullPtr<UI::GUILabel> lblPronun3;
-			UI::GUITextBox *txtPronun3;
+			NotNullPtr<UI::GUITextBox> txtPronun3;
 			NotNullPtr<UI::GUILabel> lblPronun4;
-			UI::GUITextBox *txtPronun4;
+			NotNullPtr<UI::GUITextBox> txtPronun4;
 			
 			static void __stdcall OnCharChg(void *userObj);
 			static Bool __stdcall OnCharMouseDown(void *userObj, Math::Coord2D<OSInt> scnPos, UI::GUIControl::MouseButton btn);

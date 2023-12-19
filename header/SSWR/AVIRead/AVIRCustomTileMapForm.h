@@ -19,11 +19,11 @@ namespace SSWR
 			Optional<Net::SSLEngine> ssl;
 
 			NotNullPtr<UI::GUILabel> lblURL;
-			UI::GUITextBox *txtURL;
+			NotNullPtr<UI::GUITextBox> txtURL;
 			NotNullPtr<UI::GUILabel> lblMinLevel;
-			UI::GUITextBox *txtMinLevel;
+			NotNullPtr<UI::GUITextBox> txtMinLevel;
 			NotNullPtr<UI::GUILabel> lblMaxLevel;
-			UI::GUITextBox *txtMaxLevel;
+			NotNullPtr<UI::GUITextBox> txtMaxLevel;
 			NotNullPtr<UI::GUIButton> btnOK;
 			Map::TileMap *tileMap;
 

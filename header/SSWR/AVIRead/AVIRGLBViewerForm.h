@@ -23,7 +23,7 @@ namespace SSWR
 			NotNullPtr<UI::GUIVSplitter> vspMain;
 			NotNullPtr<UI::GUIPanel> pnlJSON;
 			NotNullPtr<UI::GUILabel> lblJSON;
-			UI::GUITextBox *txtJSON;
+			NotNullPtr<UI::GUITextBox> txtJSON;
 			NotNullPtr<UI::GUILabel> lblBinBuff;
 			UI::GUIHexFileView *hfvBinBuff;
 

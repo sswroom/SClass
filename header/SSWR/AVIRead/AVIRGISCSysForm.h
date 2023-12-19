@@ -21,7 +21,7 @@ namespace SSWR
 			Math::CoordinateSystem *oriCSys;
 			Math::CoordinateSystem *outCSys;
 
-			UI::GUITextBox *txtCurrCSys;
+			NotNullPtr<UI::GUITextBox> txtCurrCSys;
 			NotNullPtr<UI::GUIPanel> pnlSel;
 			UI::GUIRadioButton *radGeo;
 			NotNullPtr<UI::GUIComboBox> cboGeo;

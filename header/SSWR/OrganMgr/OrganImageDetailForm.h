@@ -18,19 +18,19 @@ namespace SSWR
 			const UTF8Char *descript;
 
 			NotNullPtr<UI::GUILabel> lblId;
-			UI::GUITextBox *txtId;
+			NotNullPtr<UI::GUITextBox> txtId;
 			NotNullPtr<UI::GUILabel> lblFileName;
-			UI::GUITextBox *txtFileName;
+			NotNullPtr<UI::GUITextBox> txtFileName;
 			NotNullPtr<UI::GUILabel> lblDescript;
-			UI::GUITextBox *txtDescript;
+			NotNullPtr<UI::GUITextBox> txtDescript;
 			NotNullPtr<UI::GUILabel> lblCamera;
-			UI::GUITextBox *txtCamera;
+			NotNullPtr<UI::GUITextBox> txtCamera;
 			NotNullPtr<UI::GUILabel> lblFileTime;
-			UI::GUITextBox *txtFileTime;
+			NotNullPtr<UI::GUITextBox> txtFileTime;
 			NotNullPtr<UI::GUILabel> lblLat;
-			UI::GUITextBox *txtLat;
+			NotNullPtr<UI::GUITextBox> txtLat;
 			NotNullPtr<UI::GUILabel> lblLon;
-			UI::GUITextBox *txtLon;
+			NotNullPtr<UI::GUITextBox> txtLon;
 			NotNullPtr<UI::GUIButton> btnOK;
 			NotNullPtr<UI::GUIButton> btnCancel;
 

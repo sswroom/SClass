@@ -32,18 +32,18 @@ namespace SSWR
 			NotNullPtr<UI::GUIButton> btnConvFile;
 			NotNullPtr<UI::GUIPanel> pnlCoord;
 			NotNullPtr<UI::GUILabel> lblName;
-			UI::GUITextBox *txtName;
+			NotNullPtr<UI::GUITextBox> txtName;
 			NotNullPtr<UI::GUILabel> lblEasting;
-			UI::GUITextBox *txtEasting;
+			NotNullPtr<UI::GUITextBox> txtEasting;
 			NotNullPtr<UI::GUILabel> lblNorthing;
-			UI::GUITextBox *txtNorthing;
+			NotNullPtr<UI::GUITextBox> txtNorthing;
 			NotNullPtr<UI::GUILabel> lblHeight;
-			UI::GUITextBox *txtHeight;
+			NotNullPtr<UI::GUITextBox> txtHeight;
 			NotNullPtr<UI::GUIButton> btnAdd;
 			NotNullPtr<UI::GUIButton> btnClear;
 			NotNullPtr<UI::GUIButton> btnCopyAll;
 			UI::GUIListView *lvCoord;
-			UI::GUITextBox *txtStatus;
+			NotNullPtr<UI::GUITextBox> txtStatus;
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			Data::ArrayListStringNN nameList;

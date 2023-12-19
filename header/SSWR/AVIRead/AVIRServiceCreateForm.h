@@ -16,13 +16,13 @@ namespace SSWR
 		{
 		private:
 			NotNullPtr<UI::GUILabel> lblName;
-			UI::GUITextBox *txtName;
+			NotNullPtr<UI::GUITextBox> txtName;
 			NotNullPtr<UI::GUILabel> lblDesc;
-			UI::GUITextBox *txtDesc;
+			NotNullPtr<UI::GUITextBox> txtDesc;
 			NotNullPtr<UI::GUILabel> lblState;
 			NotNullPtr<UI::GUIComboBox> cboState;
 			NotNullPtr<UI::GUILabel> lblCmdLine;
-			UI::GUITextBox *txtCmdLine;
+			NotNullPtr<UI::GUITextBox> txtCmdLine;
 			NotNullPtr<UI::GUIButton> btnCreate;
 			NotNullPtr<UI::GUIButton> btnCancel;
 

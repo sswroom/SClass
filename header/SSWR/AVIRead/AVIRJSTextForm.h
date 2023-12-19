@@ -14,10 +14,10 @@ namespace SSWR
 		{
 		private:
 			NotNullPtr<UI::GUILabel> lblJSText;
-			UI::GUITextBox *txtJSText;
+			NotNullPtr<UI::GUITextBox> txtJSText;
 			NotNullPtr<UI::GUIButton> btnExtract;
 			NotNullPtr<UI::GUILabel> lblOriText;
-			UI::GUITextBox *txtOriText;
+			NotNullPtr<UI::GUITextBox> txtOriText;
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 

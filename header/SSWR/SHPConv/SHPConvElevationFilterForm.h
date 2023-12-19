@@ -19,7 +19,7 @@ namespace SSWR
 			NotNullPtr<UI::GUILabel> lblCol;
 			NotNullPtr<UI::GUIComboBox> cboCol;
 			NotNullPtr<UI::GUILabel> lblHeight;
-			UI::GUITextBox *txtHeight;
+			NotNullPtr<UI::GUITextBox> txtHeight;
 			NotNullPtr<UI::GUIButton> btnOK;
 			NotNullPtr<UI::GUIButton> btnCancel;
 			DB::DBFFile *dbf;

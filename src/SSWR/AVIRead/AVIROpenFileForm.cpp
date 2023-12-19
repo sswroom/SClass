@@ -59,7 +59,7 @@ SSWR::AVIRead::AVIROpenFileForm::AVIROpenFileForm(UI::GUIClientControl *parent, 
 	
 	this->lblName = ui->NewLabel(*this, CSTR("File Name"));
 	this->lblName->SetRect(8, 16, 100, 23, false);
-	NEW_CLASS(this->txtName, UI::GUITextBox(ui, *this, CSTR("")));
+	this->txtName = ui->NewTextBox(*this, CSTR(""));
 	this->txtName->SetRect(108, 16, 450, 23, false);
 	this->btnBrowse = ui->NewButton(*this, CSTR("B&rowse"));
 	this->btnBrowse->SetRect(550, 16, 75, 23, false);

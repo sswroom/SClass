@@ -41,7 +41,7 @@ SSWR::AVIRead::AVIRGUIEventForm::AVIRGUIEventForm(UI::GUIClientControl *parent, 
 	this->btnDisplayOff = ui->NewButton(this->pnlMain, CSTR("Display Off"));
 	this->btnDisplayOff->SetRect(4, 4, 75, 23, false);
 	this->btnDisplayOff->HandleButtonClick(OnDisplayOffClicked, this);
-	NEW_CLASS(this->txtLog, UI::GUITextBox(ui, *this, CSTR("")));
+	this->txtLog = ui->NewTextBox(*this, CSTR(""));
 	this->txtLog->SetRect(0, 0, 100, 23, false);
 	this->txtLog->SetReadOnly(true);
 	this->txtLog->SetDockType(UI::GUIControl::DOCK_BOTTOM);

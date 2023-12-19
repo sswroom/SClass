@@ -20,7 +20,7 @@ namespace SSWR
 
 			NotNullPtr<UI::GUILabel> lblMapType;
 			NotNullPtr<UI::GUIComboBox> cboMapType;
-			UI::GUITextBox *txtDeclare;
+			NotNullPtr<UI::GUITextBox> txtDeclare;
 			NotNullPtr<UI::GUIButton> btnOK;
 			Map::MapDrawLayer *layer;
 

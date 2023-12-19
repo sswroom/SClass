@@ -24,10 +24,10 @@ namespace SSWR
 			NotNullPtr<UI::GUIButton> btnConv;
 			NotNullPtr<UI::GUIButton> btnConv2;
 			NotNullPtr<UI::GUILabel> lblPrefix;
-			UI::GUITextBox *txtPrefix;
-			UI::GUITextBox *txtSource;
+			NotNullPtr<UI::GUITextBox> txtPrefix;
+			NotNullPtr<UI::GUITextBox> txtSource;
 			NotNullPtr<UI::GUIHSplitter> hspMain;
-			UI::GUITextBox *txtDest;
+			NotNullPtr<UI::GUITextBox> txtDest;
 
 			static void __stdcall OnConvClicked(void *userObj);
 			static void __stdcall OnConv2Clicked(void *userObj);

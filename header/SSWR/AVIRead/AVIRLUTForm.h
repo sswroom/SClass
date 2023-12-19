@@ -23,8 +23,8 @@ namespace SSWR
 			NotNullPtr<UI::GUITabPage> tpInfo;
 			NotNullPtr<UI::GUIPanel> pnlInfo;
 			NotNullPtr<UI::GUILabel> lblFileName;
-			UI::GUITextBox *txtFileName;
-			UI::GUITextBox *txtRemark;
+			NotNullPtr<UI::GUITextBox> txtFileName;
+			NotNullPtr<UI::GUITextBox> txtRemark;
 
 			NotNullPtr<UI::GUITabPage> tpValues;
 			NotNullPtr<UI::GUIPanel> pnlValues;

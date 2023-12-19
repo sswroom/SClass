@@ -24,11 +24,11 @@ namespace SSWR
 
 			NotNullPtr<UI::GUIPanel> pnlControl;
 			NotNullPtr<UI::GUILabel> lblDir;
-			UI::GUITextBox *txtDir;
+			NotNullPtr<UI::GUITextBox> txtDir;
 			NotNullPtr<UI::GUILabel> lblEncoding;
 			NotNullPtr<UI::GUIComboBox> cboEncoding;
 			NotNullPtr<UI::GUILabel> lblText;
-			UI::GUITextBox *txtText;
+			NotNullPtr<UI::GUITextBox> txtText;
 			NotNullPtr<UI::GUIButton> btnSearch;
 			UI::GUIListView *lvFiles;
 

@@ -14,7 +14,7 @@ namespace SSWR
 			class AVIRMIMEHTMLViewer : public AVIRMIMEViewer
 			{
 			private:
-				UI::GUITextBox *txtHTML;
+				NotNullPtr<UI::GUITextBox> txtHTML;
 
 				Text::MIMEObj::UnknownMIMEObj *obj;
 

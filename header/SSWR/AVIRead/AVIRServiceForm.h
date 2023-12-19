@@ -28,17 +28,17 @@ namespace SSWR
 			NotNullPtr<UI::GUIButton> btnCreate;
 			NotNullPtr<UI::GUIPanel> pnlDetail;
 			NotNullPtr<UI::GUILabel> lblName;
-			UI::GUITextBox *txtName;
+			NotNullPtr<UI::GUITextBox> txtName;
 			NotNullPtr<UI::GUILabel> lblStatus;
-			UI::GUITextBox *txtStatus;
+			NotNullPtr<UI::GUITextBox> txtStatus;
 			NotNullPtr<UI::GUILabel> lblEnabled;
-			UI::GUITextBox *txtEnabled;
+			NotNullPtr<UI::GUITextBox> txtEnabled;
 			NotNullPtr<UI::GUILabel> lblProcId;
-			UI::GUITextBox *txtProcId;
+			NotNullPtr<UI::GUITextBox> txtProcId;
 			NotNullPtr<UI::GUILabel> lblStartTime;
-			UI::GUITextBox *txtStartTime;
+			NotNullPtr<UI::GUITextBox> txtStartTime;
 			NotNullPtr<UI::GUILabel> lblMemory;
-			UI::GUITextBox *txtMemory;
+			NotNullPtr<UI::GUITextBox> txtMemory;
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			IO::ServiceManager svcMgr;

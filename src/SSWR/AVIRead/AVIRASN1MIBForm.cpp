@@ -127,7 +127,7 @@ SSWR::AVIRead::AVIRASN1MIBForm::AVIRASN1MIBForm(UI::GUIClientControl *parent, No
 	this->pnlRequest->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->lblFile = ui->NewLabel(this->pnlRequest, CSTR("MIB File"));
 	this->lblFile->SetRect(4, 4, 100, 23, false);
-	NEW_CLASS(this->txtFile, UI::GUITextBox(ui, this->pnlRequest, CSTR("")));
+	this->txtFile = ui->NewTextBox(this->pnlRequest, CSTR(""));
 	this->txtFile->SetRect(104, 4, 500, 23, false);
 	this->txtFile->SetReadOnly(true);
 	this->btnBrowse = ui->NewButton(this->pnlRequest, CSTR("B&rowse"));
@@ -165,7 +165,7 @@ SSWR::AVIRead::AVIRASN1MIBForm::AVIRASN1MIBForm(UI::GUIClientControl *parent, No
 	this->lvOID->AddColumn(CSTR("Name"), 200);
 
 	this->tpOIDText = this->tcMain->AddTabPage(CSTR("OIDText"));
-	NEW_CLASS(this->txtOIDText, UI::GUITextBox(ui, this->tpOIDText, CSTR(""), true));
+	this->txtOIDText = ui->NewTextBox(this->tpOIDText, CSTR(""), true);
 	this->txtOIDText->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->txtOIDText->SetReadOnly(true);
 

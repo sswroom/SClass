@@ -24,13 +24,13 @@ namespace SSWR
 			NotNullPtr<UI::GUIPanel> pnlControl;
 			NotNullPtr<UI::GUIButton> btnFile;
 			UI::GUICheckBox *chkUnkOnly;
-			UI::GUITextBox *txtFilter;
+			NotNullPtr<UI::GUITextBox> txtFilter;
 			NotNullPtr<UI::GUIButton> btnFilter;
 			NotNullPtr<UI::GUIButton> btnStore;
 			NotNullPtr<UI::GUILabel> lblInfo;
 			NotNullPtr<UI::GUILabel> lblDblClk;
 			NotNullPtr<UI::GUIComboBox> cboDblClk;
-			UI::GUITextBox *txtFileIE;
+			NotNullPtr<UI::GUITextBox> txtFileIE;
 			NotNullPtr<UI::GUIVSplitter> vspFile;
 			UI::GUIListView *lvContent;
 

@@ -117,19 +117,19 @@ SSWR::AVIRead::AVIReGaugeSvrForm::AVIReGaugeSvrForm(UI::GUIClientControl *parent
 	this->tpControl = this->tcMain->AddTabPage(CSTR("Control"));
 	this->lblPort = ui->NewLabel(this->tpControl, CSTR("Port"));
 	this->lblPort->SetRect(8, 8, 100, 23, false);
-	NEW_CLASS(this->txtPort, UI::GUITextBox(ui, this->tpControl, CSTR("12345")));
+	this->txtPort = ui->NewTextBox(this->tpControl, CSTR("12345"));
 	this->txtPort->SetRect(108, 8, 50, 23, false);
 	this->btnStart = ui->NewButton(this->tpControl, CSTR("Start"));
 	this->btnStart->SetRect(158, 8, 75, 23, false);
 	this->btnStart->HandleButtonClick(OnStartClick, this);
 
 	this->tpReqText = this->tcMain->AddTabPage(CSTR("ReqText"));
-	NEW_CLASS(this->txtReqText, UI::GUITextBox(ui, this->tpReqText, CSTR(""), true));
+	this->txtReqText = ui->NewTextBox(this->tpReqText, CSTR(""), true);
 	this->txtReqText->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->txtReqText->SetReadOnly(true);
 
 	this->tpLog = this->tcMain->AddTabPage(CSTR("Log"));
-	NEW_CLASS(this->txtLog, UI::GUITextBox(ui, this->tpLog, CSTR("")));
+	this->txtLog = ui->NewTextBox(this->tpLog, CSTR(""));
 	this->txtLog->SetRect(0, 0, 100, 23, false);
 	this->txtLog->SetReadOnly(true);
 	this->txtLog->SetDockType(UI::GUIControl::DOCK_BOTTOM);

@@ -117,7 +117,7 @@ SSWR::AVIRead::AVIRPerformanceLogForm::AVIRPerformanceLogForm(UI::GUIClientContr
 	this->btnStart->HandleButtonClick(OnStartClicked, this);
 	this->lblCurrWRate = ui->NewLabel(this->pnlCtrl, CSTR("W Rate"));
 	this->lblCurrWRate->SetRect(4, 28, 100, 23, false);
-	NEW_CLASS(this->txtCurrWRate, UI::GUITextBox(ui, this->pnlCtrl, CSTR("")));
+	this->txtCurrWRate = ui->NewTextBox(this->pnlCtrl, CSTR(""));
 	this->txtCurrWRate->SetRect(104, 28, 150, 23, false);
 	this->txtCurrWRate->SetReadOnly(true);
 	NEW_CLASS(this->rlcWRate, UI::GUIRealtimeLineChart(ui, *this, this->core->GetDrawEngine(), 1, 144, 1000));

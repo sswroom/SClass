@@ -86,7 +86,7 @@ SSWR::DiscDB::DiscDBDVDTypeForm::DiscDBDVDTypeForm(UI::GUIClientControl *parent,
 
 	this->lblID = ui->NewLabel(*this, CSTR("ID"));
 	this->lblID->SetRect(8, 9, 80, 25, false);
-	NEW_CLASS(this->txtID, UI::GUITextBox(ui, *this, CSTR("")));
+	this->txtID = ui->NewTextBox(*this, CSTR(""));
 	this->txtID->SetRect(96, 9, 100, 20, false);
 	this->txtID->SetReadOnly(true);
 	this->btnNew = ui->NewButton(*this, CSTR("N&ew"));
@@ -96,11 +96,11 @@ SSWR::DiscDB::DiscDBDVDTypeForm::DiscDBDVDTypeForm(UI::GUIClientControl *parent,
 	this->btnCancel->SetVisible(false);
 	this->lblName = ui->NewLabel(*this, CSTR("Name"));
 	this->lblName->SetRect(8, 43, 80, 25, false);
-	NEW_CLASS(this->txtName, UI::GUITextBox(ui, *this, CSTR("")));
+	this->txtName = ui->NewTextBox(*this, CSTR(""));
 	this->txtName->SetRect(96, 43, 100, 20, false);
 	this->lblDescription = ui->NewLabel(*this, CSTR("Description"));
 	this->lblDescription->SetRect(8, 78, 80, 25, false);
-	NEW_CLASS(this->txtDescription, UI::GUITextBox(ui, *this, CSTR("")));
+	this->txtDescription = ui->NewTextBox(*this, CSTR(""));
 	this->txtDescription->SetRect(96, 78, 216, 20, false);
 	this->lblDisplay = ui->NewLabel(*this, CSTR(""));
 	this->lblDisplay->SetRect(8, 113, 304, 26, false);

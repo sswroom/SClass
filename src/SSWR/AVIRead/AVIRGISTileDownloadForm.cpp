@@ -417,11 +417,11 @@ SSWR::AVIRead::AVIRGISTileDownloadForm::AVIRGISTileDownloadForm(UI::GUIClientCon
 
 	this->lblMinLevel = ui->NewLabel(*this, CSTR("Min. Level"));
 	this->lblMinLevel->SetRect(4, 4, 100, 23, false);
-	NEW_CLASSNN(this->txtMinLevel, UI::GUITextBox(ui, *this, CSTR("")));
+	this->txtMinLevel = ui->NewTextBox(*this, CSTR(""));
 	this->txtMinLevel->SetRect(104, 4, 60, 23, false);
 	this->lblMaxLevel = ui->NewLabel(*this, CSTR("Min. Level"));
 	this->lblMaxLevel->SetRect(4, 28, 100, 23, false);
-	NEW_CLASSNN(this->txtMaxLevel, UI::GUITextBox(ui, *this, CSTR("")));
+	this->txtMaxLevel = ui->NewTextBox(*this, CSTR(""));
 	this->txtMaxLevel->SetRect(104, 28, 60, 23, false);
 	this->btnArea = ui->NewButton(*this, CSTR("Select Area"));
 	this->btnArea->SetRect(4, 52, 100, 23, false);
@@ -435,22 +435,22 @@ SSWR::AVIRead::AVIRGISTileDownloadForm::AVIRGISTileDownloadForm(UI::GUIClientCon
 
 	this->lblTotalImages = ui->NewLabel(*this, CSTR("Total Images"));
 	this->lblTotalImages->SetRect(4, 84, 100, 23, false);
-	NEW_CLASSNN(this->txtTotalImages, UI::GUITextBox(ui, *this, CSTR("")));
+	this->txtTotalImages = ui->NewTextBox(*this, CSTR(""));
 	this->txtTotalImages->SetReadOnly(true);
 	this->txtTotalImages->SetRect(104, 84, 60, 23, false);
 	this->lblLayer = ui->NewLabel(*this, CSTR("Curr Layer"));
 	this->lblLayer->SetRect(4, 108, 100, 23, false);
-	NEW_CLASSNN(this->txtLayer, UI::GUITextBox(ui, *this, CSTR("")));
+	this->txtLayer = ui->NewTextBox(*this, CSTR(""));
 	this->txtLayer->SetReadOnly(true);
 	this->txtLayer->SetRect(104, 108, 60, 23, false);
 	this->lblImages = ui->NewLabel(*this, CSTR("Images"));
 	this->lblImages->SetRect(4, 132, 100, 23, false);
-	NEW_CLASSNN(this->txtImages, UI::GUITextBox(ui, *this, CSTR("")));
+	this->txtImages = ui->NewTextBox(*this, CSTR(""));
 	this->txtImages->SetReadOnly(true);
 	this->txtImages->SetRect(104, 132, 100, 23, false);
 	this->lblError = ui->NewLabel(*this, CSTR("Error"));
 	this->lblError->SetRect(4, 156, 100, 23, false);
-	NEW_CLASSNN(this->txtError, UI::GUITextBox(ui, *this, CSTR("")));
+	this->txtError = ui->NewTextBox(*this, CSTR(""));
 	this->txtError->SetReadOnly(true);
 	this->txtError->SetRect(104, 156, 100, 23, false);
 

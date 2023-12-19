@@ -24,11 +24,11 @@ namespace SSWR
 			NotNullPtr<UI::GUILabel> lblDevType;
 			NotNullPtr<UI::GUIComboBox> cboDevType;
 			NotNullPtr<UI::GUILabel> lblPort;
-			UI::GUITextBox *txtPort;
+			NotNullPtr<UI::GUITextBox> txtPort;
 			NotNullPtr<UI::GUIButton> btnPort;
 			NotNullPtr<UI::GUIGroupBox> grpCtrl;
 			NotNullPtr<UI::GUILabel> lblMode;
-			UI::GUITextBox *txtMode;
+			NotNullPtr<UI::GUITextBox> txtMode;
 			NotNullPtr<UI::GUIButton> btnModeScan;
 			NotNullPtr<UI::GUIButton> btnModeSetting;
 			NotNullPtr<UI::GUIButton> btnModeIdle;
@@ -39,7 +39,7 @@ namespace SSWR
 			NotNullPtr<UI::GUITabPage> tpScan;
 			NotNullPtr<UI::GUIPanel> pnlScan;
 			NotNullPtr<UI::GUILabel> lblScan;
-			UI::GUITextBox *txtScan;
+			NotNullPtr<UI::GUITextBox> txtScan;
 			UI::GUIListBox *lbScan;
 
 			NotNullPtr<UI::GUITabPage> tpSetting;
@@ -47,7 +47,7 @@ namespace SSWR
 			NotNullPtr<UI::GUIComboBox> cboSetCmd;
 			NotNullPtr<UI::GUIComboBox> cboSetParam;
 			NotNullPtr<UI::GUIButton> btnSetCmd;
-			UI::GUITextBox *txtSetCmd;
+			NotNullPtr<UI::GUITextBox> txtSetCmd;
 			
 			IO::CodeScanner::DeviceCommand cmdCurr;
 			IO::CodeScanner::CommandType cmdType;

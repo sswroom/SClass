@@ -6,37 +6,32 @@ namespace UI
 {
 	class GUITextBox : public GUIControl
 	{
-	public:
-		struct ClassData;
 	private:
-		ClassData *clsData;
 		Data::ArrayList<UI::UIEvent> txtChgHdlrs;
 		Data::ArrayList<void *> txtChgObjs;
 		Data::ArrayList<UI::KeyEvent> keyDownHdlrs;
 		Data::ArrayList<void *> keyDownObjs;
 
 	public:
-		GUITextBox(NotNullPtr<GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, Text::CStringNN initText);
-		GUITextBox(NotNullPtr<GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, Text::CStringNN initText, Bool isMultiline);
+		GUITextBox(NotNullPtr<GUICore> ui, NotNullPtr<UI::GUIClientControl> parent);
 		virtual ~GUITextBox();
 
-		void EventTextChange();
-		Bool EventKeyDown(UInt32 osKey);
-
-		virtual void SetReadOnly(Bool isReadOnly);
-		virtual void SetPasswordChar(UTF32Char c);
-
-		virtual void SetText(Text::CStringNN text);
-		virtual UTF8Char *GetText(UTF8Char *buff);
-		virtual Bool GetText(NotNullPtr<Text::StringBuilderUTF8> sb);
 		virtual Text::CStringNN GetObjectClass() const;
-		virtual OSInt OnNotify(UInt32 code, void *lParam);
-
+		virtual void EventTextChange();
+		virtual Bool EventKeyDown(UInt32 osKey);
 		virtual void HandleTextChanged(UI::UIEvent hdlr, void *userObj);
 		virtual void HandleKeyDown(UI::KeyEvent hdlr, void *userObj);
-		void SetWordWrap(Bool wordWrap);
-		void SelectAll();
-	};
-};
 
+		virtual void SetReadOnly(Bool isReadOnly) = 0;
+		virtual void SetPasswordChar(UTF32Char c) = 0;
+
+		virtual void SetText(Text::CStringNN text) = 0;
+		virtual UTF8Char *GetText(UTF8Char *buff) = 0;
+		virtual Bool GetText(NotNullPtr<Text::StringBuilderUTF8> sb) = 0;
+		virtual OSInt OnNotify(UInt32 code, void *lParam) = 0;
+
+		virtual void SetWordWrap(Bool wordWrap) = 0;
+		virtual void SelectAll() = 0;
+	};
+}
 #endif

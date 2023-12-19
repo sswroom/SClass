@@ -23,7 +23,7 @@ namespace SSWR
 			UI::GUIRadioButton *radEqual;
 			UI::GUIRadioButton *radNotEq;
 			NotNullPtr<UI::GUILabel> lblValue;
-			UI::GUITextBox *txtValue;
+			NotNullPtr<UI::GUITextBox> txtValue;
 			NotNullPtr<UI::GUIButton> btnOK;
 			NotNullPtr<UI::GUIButton> btnCancel;
 			DB::DBFFile *dbf;

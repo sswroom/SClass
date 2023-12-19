@@ -15,10 +15,10 @@ namespace SSWR
 		{
 		private:
 			NotNullPtr<UI::GUILabel> lblAddr;
-			UI::GUITextBox *txtAddr;
+			NotNullPtr<UI::GUITextBox> txtAddr;
 			NotNullPtr<UI::GUIButton> btnValidate;
 			NotNullPtr<UI::GUILabel> lblStatus;
-			UI::GUITextBox *txtStatus;
+			NotNullPtr<UI::GUITextBox> txtStatus;
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			Net::Email::EmailValidator *validator;

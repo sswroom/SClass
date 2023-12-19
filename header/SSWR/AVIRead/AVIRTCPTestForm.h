@@ -35,23 +35,23 @@ namespace SSWR
 
 			NotNullPtr<UI::GUIPanel> pnlRequest;
 			NotNullPtr<UI::GUILabel> lblIP;
-			UI::GUITextBox *txtIP;
+			NotNullPtr<UI::GUITextBox> txtIP;
 			NotNullPtr<UI::GUILabel> lblPort;
-			UI::GUITextBox *txtPort;
+			NotNullPtr<UI::GUITextBox> txtPort;
 			NotNullPtr<UI::GUILabel> lblConcurrCnt;
-			UI::GUITextBox *txtConcurrCnt;
+			NotNullPtr<UI::GUITextBox> txtConcurrCnt;
 			NotNullPtr<UI::GUILabel> lblTotalConnCnt;
-			UI::GUITextBox *txtTotalConnCnt;
+			NotNullPtr<UI::GUITextBox> txtTotalConnCnt;
 			NotNullPtr<UI::GUIButton> btnStart;
 			NotNullPtr<UI::GUIGroupBox> grpStatus;
 			NotNullPtr<UI::GUILabel> lblConnLeftCnt;
-			UI::GUITextBox *txtConnLeftCnt;
+			NotNullPtr<UI::GUITextBox> txtConnLeftCnt;
 			NotNullPtr<UI::GUILabel> lblThreadCnt;
-			UI::GUITextBox *txtThreadCnt;
+			NotNullPtr<UI::GUITextBox> txtThreadCnt;
 			NotNullPtr<UI::GUILabel> lblSuccCnt;
-			UI::GUITextBox *txtSuccCnt;
+			NotNullPtr<UI::GUITextBox> txtSuccCnt;
 			NotNullPtr<UI::GUILabel> lblFailCnt;
-			UI::GUITextBox *txtFailCnt;
+			NotNullPtr<UI::GUITextBox> txtFailCnt;
 
 			static void __stdcall OnStartClicked(void *userObj);
 			static void __stdcall ProcessThread(NotNullPtr<Sync::Thread> thread);

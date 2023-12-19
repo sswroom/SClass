@@ -33,10 +33,10 @@ namespace SSWR
 			UI::GUIRadioButton *radPredefine;
 			UI::GUIRadioButton *radOther;
 			NotNullPtr<UI::GUIComboBox> cboPredefine;
-			UI::GUITextBox *txtOther;
+			NotNullPtr<UI::GUITextBox> txtOther;
 			UI::GUICheckBox *chkNoResource;
 			NotNullPtr<UI::GUILabel> lblSRID;
-			UI::GUITextBox *txtSRID;
+			NotNullPtr<UI::GUITextBox> txtSRID;
 			NotNullPtr<UI::GUIButton> btnOK;
 			NotNullPtr<UI::GUIButton> btnCancel;
 			Map::ESRI::ESRIMapServer *esriMap;

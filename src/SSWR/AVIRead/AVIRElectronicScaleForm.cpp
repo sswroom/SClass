@@ -227,7 +227,7 @@ SSWR::AVIRead::AVIRElectronicScaleForm::AVIRElectronicScaleForm(UI::GUIClientCon
 	this->grpStream->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->lblStream = ui->NewLabel(this->grpStream, CSTR("Stream Type"));
 	this->lblStream->SetRect(4, 4, 100, 23, false);
-	NEW_CLASS(this->txtStream, UI::GUITextBox(ui, this->grpStream, CSTR("-")));
+	this->txtStream = ui->NewTextBox(this->grpStream, CSTR("-"));
 	this->txtStream->SetRect(104, 4, 200, 23, false);
 	this->txtStream->SetReadOnly(true);
 	this->btnStream = ui->NewButton(this->grpStream, CSTR("&Open"));
@@ -235,7 +235,7 @@ SSWR::AVIRead::AVIRElectronicScaleForm::AVIRElectronicScaleForm(UI::GUIClientCon
 	this->btnStream->HandleButtonClick(OnStreamClicked, this);
 	this->lblWeight = ui->NewLabel(this->pnlCtrl, CSTR("Weight(g)"));
 	this->lblWeight->SetRect(4, 52, 100, 23, false);
-	NEW_CLASS(this->txtWeight, UI::GUITextBox(ui, this->pnlCtrl, CSTR("")));
+	this->txtWeight = ui->NewTextBox(this->pnlCtrl, CSTR(""));
 	this->txtWeight->SetRect(104, 52, 150, 23, false);
 	this->txtWeight->SetReadOnly(true);
 	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, *this));

@@ -68,25 +68,25 @@ SSWR::AVIRead::AVIRImageResizeForm::AVIRImageResizeForm(UI::GUIClientControl *pa
 	
 	this->lblOriW = ui->NewLabel(*this, CSTR("Ori Width"));
 	this->lblOriW->SetRect(4, 4, 100, 23, false);
-	NEW_CLASS(this->txtOriW, UI::GUITextBox(ui, *this, CSTR("")));
+	this->txtOriW = ui->NewTextBox(*this, CSTR(""));
 	this->txtOriW->SetRect(104, 4, 100, 23, false);
 	this->txtOriW->SetReadOnly(true);
 	this->lblOriH = ui->NewLabel(*this, CSTR("Ori Height"));
 	this->lblOriH->SetRect(4, 28, 100, 23, false);
-	NEW_CLASS(this->txtOriH, UI::GUITextBox(ui, *this, CSTR("")));
+	this->txtOriH = ui->NewTextBox(*this, CSTR(""));
 	this->txtOriH->SetRect(104, 28, 100, 23, false);
 	this->txtOriH->SetReadOnly(true);
 	this->lblOutW = ui->NewLabel(*this, CSTR("Out Width"));
 	this->lblOutW->SetRect(4, 64, 100, 23, false);
-	NEW_CLASS(this->txtOutW, UI::GUITextBox(ui, *this, CSTR("")));
+	this->txtOutW = ui->NewTextBox(*this, CSTR(""));
 	this->txtOutW->SetRect(104, 64, 100, 23, false);
 	this->lblOutH = ui->NewLabel(*this, CSTR("Out Height"));
 	this->lblOutH->SetRect(4, 88, 100, 23, false);
-	NEW_CLASS(this->txtOutH, UI::GUITextBox(ui, *this, CSTR("")));
+	this->txtOutH = ui->NewTextBox(*this, CSTR(""));
 	this->txtOutH->SetRect(104, 88, 100, 23, false);
 	this->lblNTap = ui->NewLabel(*this, CSTR("N-Tap"));
 	this->lblNTap->SetRect(4, 112, 100, 23, false);
-	NEW_CLASS(this->txtNTap, UI::GUITextBox(ui, *this, CSTR("16")));
+	this->txtNTap = ui->NewTextBox(*this, CSTR("16"));
 	this->txtNTap->SetRect(104, 112, 100, 23, false);
 
 	this->btnCancel = ui->NewButton(*this, CSTR("Cancel"));

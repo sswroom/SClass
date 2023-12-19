@@ -19,15 +19,15 @@ namespace SSWR
 			NotNullPtr<Map::OSM::OSMCacheHandler> hdlr;
 
 			NotNullPtr<UI::GUILabel> lblReqCnt;
-			UI::GUITextBox *txtReqCnt;
+			NotNullPtr<UI::GUITextBox> txtReqCnt;
 			NotNullPtr<UI::GUILabel> lblRemoteSuccCnt;
-			UI::GUITextBox *txtRemoteSuccCnt;
+			NotNullPtr<UI::GUITextBox> txtRemoteSuccCnt;
 			NotNullPtr<UI::GUILabel> lblRemoteErrCnt;
-			UI::GUITextBox *txtRemoteErrCnt;
+			NotNullPtr<UI::GUITextBox> txtRemoteErrCnt;
 			NotNullPtr<UI::GUILabel> lblLocalCnt;
-			UI::GUITextBox *txtLocalCnt;
+			NotNullPtr<UI::GUITextBox> txtLocalCnt;
 			NotNullPtr<UI::GUILabel> lblCacheCnt;
-			UI::GUITextBox *txtCacheCnt;
+			NotNullPtr<UI::GUITextBox> txtCacheCnt;
 
 			static void __stdcall OnTimerTick(void *userObj);
 		public:

@@ -77,8 +77,6 @@ UI/GUITabControl.h:
 @GUITabControlGTK.o
 UI/GUITabPage.h:
 @GUITabPage.o
-UI/GUITextBox.h:
-@GUITextBoxGTK.o
 UI/GUITextView.h:
 @GUITextViewGTK.o
 UI/GUITrackBar.h:

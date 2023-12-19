@@ -41,7 +41,7 @@ SSWR::SHPConv::SHPConvElevationFilterForm::SHPConvElevationFilterForm(UI::GUICli
 	this->cboCol->SetRect(72, 8, 176, 21, false);
 	this->lblHeight = ui->NewLabel(*this, CSTR("Height"));
 	this->lblHeight->SetRect(8, 32, 56, 23, false);
-	NEW_CLASS(this->txtHeight, UI::GUITextBox(ui, *this, CSTR("20")));
+	this->txtHeight = ui->NewTextBox(*this, CSTR("20"));
 	this->txtHeight->SetRect(72, 32, 80, 20, false);
 	this->btnOK = ui->NewButton(*this, CSTR("OK"));
 	this->btnOK->SetRect(72, 56, 75, 23, false);

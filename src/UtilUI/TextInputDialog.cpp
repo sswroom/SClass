@@ -29,7 +29,7 @@ UtilUI::TextInputDialog::TextInputDialog(UI::GUIClientControl *parent, NotNullPt
 
 	this->lblMessage = ui->NewLabel(*this, message);
 	this->lblMessage->SetRect(4, 4, 300, 23, false);
-	NEW_CLASS(this->txtInput, UI::GUITextBox(ui, *this, CSTR("")));
+	this->txtInput = ui->NewTextBox(*this, CSTR(""));
 	this->txtInput->SetRect(4, 28, 300, 23, false);
 	this->btnOk = ui->NewButton(*this, CSTR("&Ok"));
 	this->btnOk->SetRect(8, 56, 100, 23, false);

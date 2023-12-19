@@ -379,7 +379,7 @@ SSWR::AVIRead::AVIRExeForm::AVIRExeForm(UI::GUIClientControl *parent, NotNullPtr
 	this->lbResource->HandleSelectionChange(OnResourceSelChg, this);
 	this->lbResource->HandleDoubleClicked(OnResourceDblClk, this);
 	this->hspResource = ui->NewHSplitter(this->tpResource, 3, false);
-	NEW_CLASS(this->txtResource, UI::GUITextBox(ui, this->tpResource, CSTR(""), true));
+	this->txtResource = ui->NewTextBox(this->tpResource, CSTR(""), true);
 	this->txtResource->SetReadOnly(true);
 	this->txtResource->SetDockType(UI::GUIControl::DOCK_FILL);
 	i = 0;

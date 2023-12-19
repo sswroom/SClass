@@ -33,15 +33,15 @@ namespace SSWR
 
 			NotNullPtr<UI::GUITabPage> tpInfo;
 			NotNullPtr<UI::GUILabel> lblRadioName;
-			UI::GUITextBox *txtRadioName;
+			NotNullPtr<UI::GUITextBox> txtRadioName;
 			NotNullPtr<UI::GUILabel> lblAddr;
-			UI::GUITextBox *txtAddr;
+			NotNullPtr<UI::GUITextBox> txtAddr;
 			NotNullPtr<UI::GUILabel> lblManu;
-			UI::GUITextBox *txtManu;
+			NotNullPtr<UI::GUITextBox> txtManu;
 			NotNullPtr<UI::GUILabel> lblSubver;
-			UI::GUITextBox *txtSubver;
+			NotNullPtr<UI::GUITextBox> txtSubver;
 			NotNullPtr<UI::GUILabel> lblClass;
-			UI::GUITextBox *txtClass;
+			NotNullPtr<UI::GUITextBox> txtClass;
 
 			NotNullPtr<UI::GUITabPage> tpDevice;
 			NotNullPtr<UI::GUIPanel> pnlDevice;

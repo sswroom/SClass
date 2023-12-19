@@ -26,13 +26,13 @@ namespace SSWR
 			NotNullPtr<UI::GUIHSplitter> hspMain;
 			NotNullPtr<UI::GUIPanel> pnlMain;
 			NotNullPtr<UI::GUILabel> lblLeft;
-			UI::GUITextBox *txtLeft;
+			NotNullPtr<UI::GUITextBox> txtLeft;
 			NotNullPtr<UI::GUILabel> lblTop;
-			UI::GUITextBox *txtTop;
+			NotNullPtr<UI::GUITextBox> txtTop;
 			NotNullPtr<UI::GUILabel> lblRight;
-			UI::GUITextBox *txtRight;
+			NotNullPtr<UI::GUITextBox> txtRight;
 			NotNullPtr<UI::GUILabel> lblBottom;
-			UI::GUITextBox *txtBottom;
+			NotNullPtr<UI::GUITextBox> txtBottom;
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			Int64 currImage;

@@ -40,7 +40,7 @@ SSWR::AVIRead::AVIRBingMapsForm::AVIRBingMapsForm(UI::GUIClientControl *parent, 
 
 	this->lblKey = ui->NewLabel(*this, CSTR("Key"));
 	this->lblKey->SetRect(4, 4, 100, 23, false);
-	NEW_CLASS(this->txtKey, UI::GUITextBox(ui, *this, CSTR("")));
+	this->txtKey = ui->NewTextBox(*this, CSTR(""));
 	this->txtKey->SetRect(104, 4, 800, 23, false);
 	this->lblImagerySet = ui->NewLabel(*this, CSTR("Min Level"));
 	this->lblImagerySet->SetRect(4, 28, 100, 23, false);

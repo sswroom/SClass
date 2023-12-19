@@ -24,10 +24,10 @@ namespace SSWR
 			NotNullPtr<UI::GUIHSplitter> hspMain;
 			NotNullPtr<UI::GUILabel> lblSrc;
 			NotNullPtr<UI::GUIComboBox> cboSrc;
-			UI::GUITextBox *txtSrc;
+			NotNullPtr<UI::GUITextBox> txtSrc;
 			NotNullPtr<UI::GUILabel> lblDest;
 			NotNullPtr<UI::GUIComboBox> cboDest;
-			UI::GUITextBox *txtDest;
+			NotNullPtr<UI::GUITextBox> txtDest;
 			NotNullPtr<UI::GUIButton> btnConvert;
 			UOSInt fileIndex;
 

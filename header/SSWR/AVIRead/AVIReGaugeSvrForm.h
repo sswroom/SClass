@@ -35,14 +35,14 @@ namespace SSWR
 
 			NotNullPtr<UI::GUITabPage> tpControl;
 			NotNullPtr<UI::GUILabel> lblPort;
-			UI::GUITextBox *txtPort;
+			NotNullPtr<UI::GUITextBox> txtPort;
 			NotNullPtr<UI::GUIButton> btnStart;
 
 			NotNullPtr<UI::GUITabPage> tpReqText;
-			UI::GUITextBox *txtReqText;
+			NotNullPtr<UI::GUITextBox> txtReqText;
 
 			NotNullPtr<UI::GUIListBox> lbLog;
-			UI::GUITextBox *txtLog;
+			NotNullPtr<UI::GUITextBox> txtLog;
 			NotNullPtr<UI::GUITabPage> tpLog;
 
 		private:

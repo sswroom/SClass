@@ -19,17 +19,17 @@ namespace SSWR
 			Net::ACMEClient *client;
 
 			NotNullPtr<UI::GUILabel> lblHost;
-			UI::GUITextBox *txtHost;
+			NotNullPtr<UI::GUITextBox> txtHost;
 			NotNullPtr<UI::GUILabel> lblKeyFile;
-			UI::GUITextBox *txtKeyFile;
+			NotNullPtr<UI::GUITextBox> txtKeyFile;
 			NotNullPtr<UI::GUIButton> btnStart;
 
 			NotNullPtr<UI::GUILabel> lblTermOfService;
-			UI::GUITextBox *txtTermOfService;
+			NotNullPtr<UI::GUITextBox> txtTermOfService;
 			NotNullPtr<UI::GUILabel> lblWebsite;
-			UI::GUITextBox *txtWebsite;
+			NotNullPtr<UI::GUITextBox> txtWebsite;
 			NotNullPtr<UI::GUILabel> lblAccount;
-			UI::GUITextBox *txtAccount;
+			NotNullPtr<UI::GUITextBox> txtAccount;
 
 			static void __stdcall OnStartClicked(void *userObj);
 		public:

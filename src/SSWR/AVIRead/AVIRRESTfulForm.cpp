@@ -213,7 +213,7 @@ SSWR::AVIRead::AVIRRESTfulForm::AVIRRESTfulForm(UI::GUIClientControl *parent, No
 	this->grpParam->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->lblPort = ui->NewLabel(this->grpParam, CSTR("Port"));
 	this->lblPort->SetRect(8, 8, 100, 23, false);
-	NEW_CLASS(this->txtPort, UI::GUITextBox(ui, this->grpParam, CSTR("12345")));
+	this->txtPort = ui->NewTextBox(this->grpParam, CSTR("12345"));
 	this->txtPort->SetRect(108, 8, 50, 23, false);
 	this->lblLogDir = ui->NewLabel(this->grpParam, CSTR("Log Path"));
 	this->lblLogDir->SetRect(8, 32, 100, 23, false);
@@ -221,7 +221,7 @@ SSWR::AVIRead::AVIRRESTfulForm::AVIRRESTfulForm(UI::GUIClientControl *parent, No
 	i = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), IO::Path::PATH_SEPERATOR);
 	sbuff[i] = IO::Path::PATH_SEPERATOR;
 	sptr = Text::StrConcatC(&sbuff[i+1], UTF8STRC("log"));
-	NEW_CLASS(this->txtLogDir, UI::GUITextBox(ui, this->grpParam, CSTRP(sbuff, sptr)));
+	this->txtLogDir = ui->NewTextBox(this->grpParam, CSTRP(sbuff, sptr));
 	this->txtLogDir->SetRect(108, 32, 500, 23, false);
 	this->lblAllowProxy = ui->NewLabel(this->grpParam, CSTR("Proxy Connection"));
 	this->lblAllowProxy->SetRect(8, 56, 100, 23, false);
@@ -237,7 +237,7 @@ SSWR::AVIRead::AVIRRESTfulForm::AVIRRESTfulForm(UI::GUIClientControl *parent, No
 	this->chkAllowKA->SetRect(108, 104, 100, 23, false);
 	this->lblDatabase = ui->NewLabel(this->grpParam, CSTR("Database"));
 	this->lblDatabase->SetRect(8, 128, 100, 23, false);
-	NEW_CLASS(this->txtDatabase, UI::GUITextBox(ui, this->grpParam, CSTR("")));
+	this->txtDatabase = ui->NewTextBox(this->grpParam, CSTR(""));
 	this->txtDatabase->SetRect(108, 128, 150, 23, false);
 	this->txtDatabase->SetReadOnly(true);
 	this->btnDatabaseMySQL = ui->NewButton(this->grpParam, CSTR("MySQL"));
@@ -262,7 +262,7 @@ SSWR::AVIRead::AVIRRESTfulForm::AVIRRESTfulForm(UI::GUIClientControl *parent, No
 	this->lvTable->AddColumn(CSTR("Row Count"), 100);
 
 	this->tpLog = this->tcMain->AddTabPage(CSTR("Log"));
-	NEW_CLASS(this->txtLog, UI::GUITextBox(ui, this->tpLog, CSTR("")));
+	this->txtLog = ui->NewTextBox(this->tpLog, CSTR(""));
 	this->txtLog->SetRect(0, 0, 100, 23, false);
 	this->txtLog->SetReadOnly(true);
 	this->txtLog->SetDockType(UI::GUIControl::DOCK_BOTTOM);

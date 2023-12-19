@@ -19,7 +19,7 @@ namespace SSWR
 			NotNullPtr<UI::GUIPanel> pnlMain;
 			NotNullPtr<UI::GUIButton> btnDisplayOff;
 			NotNullPtr<UI::GUIListBox> lbLog;
-			UI::GUITextBox *txtLog;
+			NotNullPtr<UI::GUITextBox> txtLog;
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			IO::LogTool *log;

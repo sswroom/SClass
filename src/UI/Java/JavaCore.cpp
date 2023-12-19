@@ -12,6 +12,7 @@
 #include "UI/Java/JavaHSplitter.h"
 #include "UI/Java/JavaLabel.h"
 #include "UI/Java/JavaMessageDialog.h"
+#include "UI/Java/JavaTextBox.h"
 #include "UI/Java/JavaVSplitter.h"
 #include <jni.h>
 #include <stdio.h>
@@ -234,6 +235,20 @@ NotNullPtr<UI::GUILabel> UI::Java::JavaCore::NewLabel(NotNullPtr<GUIClientContro
 {
 	NotNullPtr<UI::Java::JavaLabel> ctrl;
 	NEW_CLASSNN(ctrl, UI::Java::JavaLabel(*this, parent, text));
+	return ctrl;
+}
+
+NotNullPtr<UI::GUITextBox> UI::Java::JavaCore::NewTextBox(NotNullPtr<GUIClientControl> parent, Text::CStringNN initText)
+{
+	NotNullPtr<UI::Java::JavaTextBox> ctrl;
+	NEW_CLASSNN(ctrl, UI::Java::JavaTextBox(*this, parent, initText, false));
+	return ctrl;
+}
+
+NotNullPtr<UI::GUITextBox> UI::Java::JavaCore::NewTextBox(NotNullPtr<GUIClientControl> parent, Text::CStringNN initText, Bool multiLine)
+{
+	NotNullPtr<UI::Java::JavaTextBox> ctrl;
+	NEW_CLASSNN(ctrl, UI::Java::JavaTextBox(*this, parent, initText, multiLine));
 	return ctrl;
 }
 

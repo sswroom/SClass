@@ -27,13 +27,13 @@ namespace SSWR
 			Data::Timestamp lastDispTime;
 
 			NotNullPtr<UI::GUILabel> lblHost;
-			UI::GUITextBox *txtHost;
+			NotNullPtr<UI::GUITextBox> txtHost;
 			NotNullPtr<UI::GUILabel> lblPort;
-			UI::GUITextBox *txtPort;
+			NotNullPtr<UI::GUITextBox> txtPort;
 			NotNullPtr<UI::GUILabel> lblUsername;
-			UI::GUITextBox *txtUsername;
+			NotNullPtr<UI::GUITextBox> txtUsername;
 			NotNullPtr<UI::GUILabel> lblPassword;
-			UI::GUITextBox *txtPassword;
+			NotNullPtr<UI::GUITextBox> txtPassword;
 			UI::GUICheckBox *chkSSL;
 			UI::GUICheckBox *chkWebSocket;
 			NotNullPtr<UI::GUIButton> btnCliCert;
@@ -41,12 +41,12 @@ namespace SSWR
 			NotNullPtr<UI::GUIButton> btnCliKey;
 			NotNullPtr<UI::GUILabel> lblCliKey;
 			NotNullPtr<UI::GUILabel> lblTopic;
-			UI::GUITextBox *txtTopic;
+			NotNullPtr<UI::GUITextBox> txtTopic;
 			NotNullPtr<UI::GUIButton> btnStart;
 			NotNullPtr<UI::GUILabel> lblTotalCount;
-			UI::GUITextBox *txtTotalCount;
+			NotNullPtr<UI::GUITextBox> txtTotalCount;
 			NotNullPtr<UI::GUILabel> lblRecvRate;
-			UI::GUITextBox *txtRecvRate;
+			NotNullPtr<UI::GUITextBox> txtRecvRate;
 			NotNullPtr<UI::GUILabel> lblStatus;
 
 			static void __stdcall OnStartClicked(void *userObj);

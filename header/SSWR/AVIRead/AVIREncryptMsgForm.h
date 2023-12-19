@@ -23,22 +23,22 @@ namespace SSWR
 			NotNullPtr<UI::GUILabel> lblKeyType;
 			NotNullPtr<UI::GUIComboBox> cboKeyType;
 			NotNullPtr<UI::GUILabel> lblKey;
-			UI::GUITextBox *txtKey;
+			NotNullPtr<UI::GUITextBox> txtKey;
 			NotNullPtr<UI::GUILabel> lblIV;
 			NotNullPtr<UI::GUIComboBox> cboIV;
-			UI::GUITextBox *txtIV;
+			NotNullPtr<UI::GUITextBox> txtIV;
 			NotNullPtr<UI::GUILabel> lblChainMode;
 			NotNullPtr<UI::GUIComboBox> cboChainMode;
 			NotNullPtr<UI::GUILabel> lblInputType;
 			NotNullPtr<UI::GUIComboBox> cboInputType;
 			NotNullPtr<UI::GUILabel> lblInputMsg;
-			UI::GUITextBox *txtInputMsg;
+			NotNullPtr<UI::GUITextBox> txtInputMsg;
 			NotNullPtr<UI::GUILabel> lblOutputType;
 			NotNullPtr<UI::GUIComboBox> cboOutputType;
 			NotNullPtr<UI::GUIButton> btnEncrypt;
 			NotNullPtr<UI::GUIButton> btnDecrypt;
 			NotNullPtr<UI::GUILabel> lblOutputMsg;
-			UI::GUITextBox *txtOutputMsg;
+			NotNullPtr<UI::GUITextBox> txtOutputMsg;
 
 			Crypto::Encrypt::ICrypto *InitCrypto();
 			UInt8 *InitInput(UOSInt blockSize, UOSInt *dataSize);

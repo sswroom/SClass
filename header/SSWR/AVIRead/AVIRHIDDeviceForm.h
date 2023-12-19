@@ -22,11 +22,11 @@ namespace SSWR
 			NotNullPtr<UI::GUIHSplitter> hspDevices;
 			NotNullPtr<UI::GUIPanel> pnlDevices;
 			NotNullPtr<UI::GUILabel> lblVendorId;
-			UI::GUITextBox *txtVendorId;
+			NotNullPtr<UI::GUITextBox> txtVendorId;
 			NotNullPtr<UI::GUILabel> lblProductId;
-			UI::GUITextBox *txtProductId;
+			NotNullPtr<UI::GUITextBox> txtProductId;
 			NotNullPtr<UI::GUILabel> lblDevPath;
-			UI::GUITextBox *txtDevPath;
+			NotNullPtr<UI::GUITextBox> txtDevPath;
 			
 			static void __stdcall OnDevicesSelChg(void *userObj);
 			static OSInt __stdcall ItemCompare(IO::HIDInfo *item1, IO::HIDInfo *item2);

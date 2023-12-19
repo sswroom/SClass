@@ -73,26 +73,26 @@ namespace SSWR
 
 			NotNullPtr<UI::GUITabPage> tpStatus;
 			NotNullPtr<UI::GUILabel> lblMotion;
-			UI::GUITextBox *txtMotion;
+			NotNullPtr<UI::GUITextBox> txtMotion;
 			NotNullPtr<UI::GUILabel> lblGPS;
-			UI::GUITextBox *txtGPS;
+			NotNullPtr<UI::GUITextBox> txtGPS;
 			NotNullPtr<UI::GUIButton> btnGPS;
 			NotNullPtr<UI::GUILabel> lblGPSTime;
-			UI::GUITextBox *txtGPSTime;
+			NotNullPtr<UI::GUITextBox> txtGPSTime;
 			NotNullPtr<UI::GUILabel> lblGPSLat;
-			UI::GUITextBox *txtGPSLat;
+			NotNullPtr<UI::GUITextBox> txtGPSLat;
 			NotNullPtr<UI::GUILabel> lblGPSLon;
-			UI::GUITextBox *txtGPSLon;
+			NotNullPtr<UI::GUITextBox> txtGPSLon;
 			NotNullPtr<UI::GUILabel> lblGPSAlt;
-			UI::GUITextBox *txtGPSAlt;
+			NotNullPtr<UI::GUITextBox> txtGPSAlt;
 			NotNullPtr<UI::GUILabel> lblGPSActive;
-			UI::GUITextBox *txtGPSActive;
+			NotNullPtr<UI::GUITextBox> txtGPSActive;
 			NotNullPtr<UI::GUILabel> lblBattery;
-			UI::GUITextBox *txtBattery;
+			NotNullPtr<UI::GUITextBox> txtBattery;
 			NotNullPtr<UI::GUILabel> lblCurrWifiCnt;
-			UI::GUITextBox *txtCurrWifiCnt;
+			NotNullPtr<UI::GUITextBox> txtCurrWifiCnt;
 			NotNullPtr<UI::GUILabel> lblBSSCount;
-			UI::GUITextBox *txtBSSCount;
+			NotNullPtr<UI::GUITextBox> txtBSSCount;
 			NotNullPtr<UI::GUIButton> btnCapture;
 
 			NotNullPtr<UI::GUITabPage> tpCurr;

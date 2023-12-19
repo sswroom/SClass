@@ -46,12 +46,12 @@ namespace SSWR
 			NotNullPtr<UI::GUITabPage> tpLog;
 
 			NotNullPtr<UI::GUIListBox> lbLog;
-			UI::GUITextBox *txtLog;
+			NotNullPtr<UI::GUITextBox> txtLog;
 
 			NotNullPtr<UI::GUILabel> lblCommand;
 			NotNullPtr<UI::GUIComboBox> cboCommand;
 			NotNullPtr<UI::GUIButton> btnCommand;
-			UI::GUITextBox *txtCommand;
+			NotNullPtr<UI::GUITextBox> txtCommand;
 
 			static void __stdcall OnStartClick(void *userObj);
 			static void __stdcall OnSendCommandClicked(void *userObj);

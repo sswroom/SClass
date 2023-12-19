@@ -17,18 +17,18 @@ namespace SSWR
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 
 			NotNullPtr<UI::GUILabel> lblUserAgent;
-			UI::GUITextBox *txtUserAgent;
+			NotNullPtr<UI::GUITextBox> txtUserAgent;
 			NotNullPtr<UI::GUIButton> btnParse;
 			NotNullPtr<UI::GUILabel> lblBrowser;
-			UI::GUITextBox *txtBrowser;
+			NotNullPtr<UI::GUITextBox> txtBrowser;
 			NotNullPtr<UI::GUILabel> lblBrowserVer;
-			UI::GUITextBox *txtBrowserVer;
+			NotNullPtr<UI::GUITextBox> txtBrowserVer;
 			NotNullPtr<UI::GUILabel> lblOS;
-			UI::GUITextBox *txtOS;
+			NotNullPtr<UI::GUITextBox> txtOS;
 			NotNullPtr<UI::GUILabel> lblOSVer;
-			UI::GUITextBox *txtOSVer;
+			NotNullPtr<UI::GUITextBox> txtOSVer;
 			NotNullPtr<UI::GUILabel> lblDeviceName;
-			UI::GUITextBox *txtDeviceName;
+			NotNullPtr<UI::GUITextBox> txtDeviceName;
 
 			static void __stdcall OnParseClicked(void *userObj);
 		public:

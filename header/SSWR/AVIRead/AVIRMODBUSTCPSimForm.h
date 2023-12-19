@@ -38,15 +38,15 @@ namespace SSWR
 
 			NotNullPtr<UI::GUIPanel> pnlCtrl;
 			NotNullPtr<UI::GUILabel> lblPort;
-			UI::GUITextBox *txtPort;
+			NotNullPtr<UI::GUITextBox> txtPort;
 			NotNullPtr<UI::GUIButton> btnListen;
 			NotNullPtr<UI::GUIGroupBox> grpDev;
 			NotNullPtr<UI::GUILabel> lblAddr;
-			UI::GUITextBox *txtAddr;
+			NotNullPtr<UI::GUITextBox> txtAddr;
 			NotNullPtr<UI::GUIComboBox> cboDevType;
 			NotNullPtr<UI::GUIButton> btnDev;
 			NotNullPtr<UI::GUILabel> lblDelay;
-			UI::GUITextBox *txtDelay;
+			NotNullPtr<UI::GUITextBox> txtDelay;
 			NotNullPtr<UI::GUIButton> btnDelay;
 			UI::GUIListBox *lbDevice;
 			UI::GUIListView *lvDeviceValues;

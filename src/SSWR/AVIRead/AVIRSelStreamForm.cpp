@@ -488,7 +488,7 @@ SSWR::AVIRead::AVIRSelStreamForm::AVIRSelStreamForm(UI::GUIClientControl *parent
 	}
 	this->lblBaudRate = ui->NewLabel(this->tpSerialPort, CSTR("Baud Rate"));
 	this->lblBaudRate->SetRect(8, 32, 100, 23, false);
-	NEW_CLASS(this->txtBaudRate, UI::GUITextBox(ui, this->tpSerialPort, CSTR("115200")));
+	this->txtBaudRate = ui->NewTextBox(this->tpSerialPort, CSTR("115200"));
 	this->txtBaudRate->SetRect(108, 32, 100, 23, false);
 	this->lblParity = ui->NewLabel(this->tpSerialPort, CSTR("Parity"));
 	this->lblParity->SetRect(8, 56, 100, 23, false);
@@ -507,12 +507,12 @@ SSWR::AVIRead::AVIRSelStreamForm::AVIRSelStreamForm(UI::GUIClientControl *parent
 		this->pnlSLInfo->SetDockType(UI::GUIControl::DOCK_TOP);
 		this->lblDLLVer = ui->NewLabel(this->pnlSLInfo, CSTR("DLL Version"));
 		this->lblDLLVer->SetRect(4, 4, 100, 23, false);
-		NEW_CLASS(this->txtDLLVer, UI::GUITextBox(ui, this->pnlSLInfo, CSTR("")));
+		this->txtDLLVer = ui->NewTextBox(this->pnlSLInfo, CSTR(""));
 		this->txtDLLVer->SetRect(104, 4, 100, 23, false);
 		this->txtDLLVer->SetReadOnly(true);
 		this->lblDriverVer = ui->NewLabel(this->pnlSLInfo, CSTR("Driver Version"));
 		this->lblDriverVer->SetRect(4, 28, 100, 23, false);
-		NEW_CLASS(this->txtDriverVer, UI::GUITextBox(ui, this->pnlSLInfo, CSTR("")));
+		this->txtDriverVer = ui->NewTextBox(this->pnlSLInfo, CSTR(""));
 		this->txtDriverVer->SetRect(104, 28, 100, 23, false);
 		this->txtDriverVer->SetReadOnly(true);
 
@@ -521,7 +521,7 @@ SSWR::AVIRead::AVIRSelStreamForm::AVIRSelStreamForm(UI::GUIClientControl *parent
 		this->pnlSLControl->SetDockType(UI::GUIControl::DOCK_BOTTOM);
 		this->lblSLBaudRate = ui->NewLabel(this->pnlSLControl, CSTR("Baud Rate"));
 		this->lblSLBaudRate->SetRect(4, 4, 100, 23, false);
-		NEW_CLASS(this->txtSLBaudRate, UI::GUITextBox(ui, this->pnlSLControl, CSTR("115200")));
+		this->txtSLBaudRate = ui->NewTextBox(this->pnlSLControl, CSTR("115200"));
 		this->txtSLBaudRate->SetRect(104, 4, 100, 23, false);
 
 		NEW_CLASS(this->lvSLPort, UI::GUIListView(ui, this->tpSiLabPort, UI::GUIListView::LVSTYLE_TABLE, 5));
@@ -602,7 +602,7 @@ SSWR::AVIRead::AVIRSelStreamForm::AVIRSelStreamForm(UI::GUIClientControl *parent
 	this->tpTCPSvr = this->tcConfig->AddTabPage(CSTR("TCP Server"));
 	this->lblTCPSvrPort = ui->NewLabel(this->tpTCPSvr, CSTR("Port"));
 	this->lblTCPSvrPort->SetRect(4, 4, 100, 23, false);
-	NEW_CLASS(this->txtTCPSvrPort, UI::GUITextBox(ui, this->tpTCPSvr, CSTR("")));
+	this->txtTCPSvrPort = ui->NewTextBox(this->tpTCPSvr, CSTR(""));
 	this->txtTCPSvrPort->SetRect(104, 4, 100, 23, false);
 	NEW_CLASS(this->chkBoardcast, UI::GUICheckBox(ui, this->tpTCPSvr, CSTR("Boardcast"), true));
 	this->chkBoardcast->SetRect(104, 28, 100, 23, false);
@@ -610,11 +610,11 @@ SSWR::AVIRead::AVIRSelStreamForm::AVIRSelStreamForm(UI::GUIClientControl *parent
 	this->tpTCPCli = this->tcConfig->AddTabPage(CSTR("TCP Client"));
 	this->lblTCPCliHost = ui->NewLabel(this->tpTCPCli, CSTR("Host"));
 	this->lblTCPCliHost->SetRect(4, 4, 100, 23, false);
-	NEW_CLASS(this->txtTCPCliHost, UI::GUITextBox(ui, this->tpTCPCli, CSTR("")));
+	this->txtTCPCliHost = ui->NewTextBox(this->tpTCPCli, CSTR(""));
 	this->txtTCPCliHost->SetRect(104, 4, 100, 23, false);
 	this->lblTCPCliPort = ui->NewLabel(this->tpTCPCli, CSTR("Port"));
 	this->lblTCPCliPort->SetRect(4, 28, 100, 23, false);
-	NEW_CLASS(this->txtTCPCliPort, UI::GUITextBox(ui, this->tpTCPCli, CSTR("")));
+	this->txtTCPCliPort = ui->NewTextBox(this->tpTCPCli, CSTR(""));
 	this->txtTCPCliPort->SetRect(104, 28, 100, 23, false);
 
 	if (!this->ssl.IsNull())
@@ -622,28 +622,28 @@ SSWR::AVIRead::AVIRSelStreamForm::AVIRSelStreamForm(UI::GUIClientControl *parent
 		this->tpSSLCli = this->tcConfig->AddTabPage(CSTR("SSL Client"));
 		this->lblSSLCliHost = ui->NewLabel(this->tpSSLCli, CSTR("Host"));
 		this->lblSSLCliHost->SetRect(4, 4, 100, 23, false);
-		NEW_CLASS(this->txtSSLCliHost, UI::GUITextBox(ui, this->tpSSLCli, CSTR("")));
+		this->txtSSLCliHost = ui->NewTextBox(this->tpSSLCli, CSTR(""));
 		this->txtSSLCliHost->SetRect(104, 4, 100, 23, false);
 		this->lblSSLCliPort = ui->NewLabel(this->tpSSLCli, CSTR("Port"));
 		this->lblSSLCliPort->SetRect(4, 28, 100, 23, false);
-		NEW_CLASS(this->txtSSLCliPort, UI::GUITextBox(ui, this->tpSSLCli, CSTR("")));
+		this->txtSSLCliPort = ui->NewTextBox(this->tpSSLCli, CSTR(""));
 		this->txtSSLCliPort->SetRect(104, 28, 100, 23, false);
 	}
 
 	this->tpUDPSvr = this->tcConfig->AddTabPage(CSTR("UDP Server"));
 	this->lblUDPSvrPort = ui->NewLabel(this->tpUDPSvr, CSTR("Port"));
 	this->lblUDPSvrPort->SetRect(4, 4, 100, 23, false);
-	NEW_CLASS(this->txtUDPSvrPort, UI::GUITextBox(ui, this->tpUDPSvr, CSTR("")));
+	this->txtUDPSvrPort = ui->NewTextBox(this->tpUDPSvr, CSTR(""));
 	this->txtUDPSvrPort->SetRect(104, 4, 100, 23, false);
 
 	this->tpUDPCli = this->tcConfig->AddTabPage(CSTR("UDP Client"));
 	this->lblUDPCliHost = ui->NewLabel(this->tpUDPCli, CSTR("Host"));
 	this->lblUDPCliHost->SetRect(4, 4, 100, 23, false);
-	NEW_CLASS(this->txtUDPCliHost, UI::GUITextBox(ui, this->tpUDPCli, CSTR("")));
+	this->txtUDPCliHost = ui->NewTextBox(this->tpUDPCli, CSTR(""));
 	this->txtUDPCliHost->SetRect(104, 4, 100, 23, false);
 	this->lblUDPCliPort = ui->NewLabel(this->tpUDPCli, CSTR("Port"));
 	this->lblUDPCliPort->SetRect(4, 28, 100, 23, false);
-	NEW_CLASS(this->txtUDPCliPort, UI::GUITextBox(ui, this->tpUDPCli, CSTR("")));
+	this->txtUDPCliPort = ui->NewTextBox(this->tpUDPCli, CSTR(""));
 	this->txtUDPCliPort->SetRect(104, 28, 100, 23, false);
 
 	if (allowReadOnly)
@@ -651,7 +651,7 @@ SSWR::AVIRead::AVIRSelStreamForm::AVIRSelStreamForm(UI::GUIClientControl *parent
 		this->tpFile = this->tcConfig->AddTabPage(CSTR("File"));
 		this->lblFileName = ui->NewLabel(this->tpFile, CSTR("File Name"));
 		this->lblFileName->SetRect(4, 4, 100, 23, false);
-		NEW_CLASS(this->txtFileName, UI::GUITextBox(ui, this->tpFile, CSTR("")));
+		this->txtFileName = ui->NewTextBox(this->tpFile, CSTR(""));
 		this->txtFileName->SetRect(104, 4, 400, 23, false);
 		this->txtFileName->SetReadOnly(true);
 		this->btnFileBrowse = ui->NewButton(this->tpFile, CSTR("Browse"));

@@ -24,7 +24,7 @@ SSWR::AVIRead::AVIRJavaClassForm::AVIRJavaClassForm(UI::GUIClientControl *parent
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	this->tpFileStruct = this->tcMain->AddTabPage(CSTR("File Structure"));
-	NEW_CLASS(this->txtFileStruct, UI::GUITextBox(ui, this->tpFileStruct, CSTR(""), true));
+	this->txtFileStruct = ui->NewTextBox(this->tpFileStruct, CSTR(""), true);
 	this->txtFileStruct->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->txtFileStruct->SetReadOnly(true);
 	sb.ClearStr();
@@ -41,12 +41,12 @@ SSWR::AVIRead::AVIRJavaClassForm::AVIRJavaClassForm(UI::GUIClientControl *parent
 	this->lbMethods->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->lbMethods->HandleSelectionChange(OnMethodsSelChg, this);
 	this->vspMethods = ui->NewVSplitter(this->tpMethods, 3, false);
-	NEW_CLASS(this->txtMethods, UI::GUITextBox(ui, this->tpMethods, CSTR(""), true));
+	this->txtMethods = ui->NewTextBox(this->tpMethods, CSTR(""), true);
 	this->txtMethods->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->txtMethods->SetReadOnly(true);
 
 	this->tpDecompile = this->tcMain->AddTabPage(CSTR("Decompile"));
-	NEW_CLASS(this->txtDecompile, UI::GUITextBox(ui, this->tpDecompile, CSTR(""), true));
+	this->txtDecompile = ui->NewTextBox(this->tpDecompile, CSTR(""), true);
 	this->txtDecompile->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->txtDecompile->SetReadOnly(true);
 

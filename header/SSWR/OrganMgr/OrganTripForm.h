@@ -24,7 +24,7 @@ namespace SSWR
 			UI::GUIDateTimePicker *dtpFrom;
 			UI::GUIDateTimePicker *dtpTo;
 			NotNullPtr<UI::GUIButton> btnDate1Hr;
-			UI::GUITextBox *txtLocation;
+			NotNullPtr<UI::GUITextBox> txtLocation;
 			NotNullPtr<UI::GUIButton> btnLocation;
 			NotNullPtr<UI::GUIButton> btnLocationLast;
 			NotNullPtr<UI::GUIButton> btnAdd;

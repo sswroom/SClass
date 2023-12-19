@@ -28,7 +28,7 @@ SSWR::AVIRead::MIMEViewer::AVIRMultipartViewer::AVIRMultipartViewer(NotNullPtr<S
 		this->pnlSMIME->SetDockType(UI::GUIControl::DOCK_BOTTOM);
 		this->lblSignState = ui->NewLabel(this->pnlSMIME, CSTR("Signature"));
 		this->lblSignState->SetRect(4, 4, 100, 23, false);
-		NEW_CLASS(this->txtSignState, UI::GUITextBox(ui, this->pnlSMIME, CSTR("")));
+		this->txtSignState = ui->NewTextBox(this->pnlSMIME, CSTR(""));
 		this->txtSignState->SetRect(104, 4, 200, 23, false);
 		this->txtSignState->SetReadOnly(true);
 
@@ -183,9 +183,9 @@ SSWR::AVIRead::MIMEViewer::AVIRMultipartViewer::AVIRMultipartViewer(NotNullPtr<S
 	Text::String *defMsg = obj->GetDefMsg();
 	if (defMsg && defMsg->v[0])
 	{
-		UI::GUITextBox *txt;
+		NotNullPtr<UI::GUITextBox> txt;
 		tp = this->tcParts->AddTabPage(CSTR("Default"));
-		NEW_CLASS(txt, UI::GUITextBox(ui, tp, obj->GetDefMsg()->ToCString(), true));
+		txt = ui->NewTextBox(tp, obj->GetDefMsg()->ToCString(), true);
 		txt->SetDockType(UI::GUIControl::DOCK_FILL);
 		txt->SetReadOnly(true);
 	}

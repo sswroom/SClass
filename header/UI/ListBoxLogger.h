@@ -22,7 +22,7 @@ namespace UI
 		const Char *timeFormat;
 		UOSInt logIndex;
 		UInt32 logCnt;
-		UI::GUITextBox *txt;
+		Optional<UI::GUITextBox> txt;
 
 		static void __stdcall TimerTick(void *userObj);
 		static void __stdcall OnListBoxSelChg(void *userObj);

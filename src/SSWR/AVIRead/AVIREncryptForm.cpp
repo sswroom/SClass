@@ -87,7 +87,7 @@ SSWR::AVIRead::AVIREncryptForm::AVIREncryptForm(UI::GUIClientControl *parent, No
 	this->lblSrc->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->cboSrc = ui->NewComboBox(this->pnlSrcCtrl, false);
 	this->cboSrc->SetDockType(UI::GUIControl::DOCK_FILL);
-	NEW_CLASS(this->txtSrc, UI::GUITextBox(ui, this->pnlSrc, CSTR(""), true));
+	this->txtSrc = ui->NewTextBox(this->pnlSrc, CSTR(""), true);
 	this->txtSrc->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lblDest = ui->NewLabel(this->pnlDestCtrl, CSTR("Dest Encryption"));
 	this->lblDest->SetRect(0, 0, 100, 23, false);
@@ -98,7 +98,7 @@ SSWR::AVIRead::AVIREncryptForm::AVIREncryptForm(UI::GUIClientControl *parent, No
 	this->btnConvert->HandleButtonClick(OnConvertClicked, this);
 	this->cboDest = ui->NewComboBox(this->pnlDestCtrl, false);
 	this->cboDest->SetDockType(UI::GUIControl::DOCK_FILL);
-	NEW_CLASS(this->txtDest, UI::GUITextBox(ui, this->pnlDest, CSTR(""), true));
+	this->txtDest = ui->NewTextBox(this->pnlDest, CSTR(""), true);
 	this->txtDest->SetReadOnly(true);
 	this->txtDest->SetDockType(UI::GUIControl::DOCK_FILL);
 

@@ -878,7 +878,7 @@ void SSWR::AVIRead::AVIRHQMPForm::EventMenuClicked(UInt16 cmdId)
 			NotNullPtr<UI::GUIForm> frm;
 			NEW_CLASSNN(frm, UI::GUIForm(0, 320, 444, ui));
 			this->dbgFrm = frm.Ptr();
-			NEW_CLASS(this->txtDebug, UI::GUITextBox(ui, frm, CSTR(""), true));
+			this->txtDebug = ui->NewTextBox(frm, CSTR(""), true);
 			this->txtDebug->SetReadOnly(true);
 			this->txtDebug->SetDockType(UI::GUIControl::DOCK_FILL);
 			this->dbgFrm->SetFont(0, 0, 8.25, false);

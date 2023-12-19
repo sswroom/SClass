@@ -17,7 +17,7 @@ namespace SSWR
 		private:
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			NotNullPtr<UI::GUILabel> lblFileDir;
-			UI::GUITextBox *txtFileDir;
+			NotNullPtr<UI::GUITextBox> txtFileDir;
 			NotNullPtr<UI::GUILabel> lblStartTime;
 			UI::GUIDateTimePicker *dtpStartTime;
 			NotNullPtr<UI::GUILabel> lblEndTime;

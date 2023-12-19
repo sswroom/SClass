@@ -16,7 +16,7 @@ namespace SSWR
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 
 			NotNullPtr<UI::GUILabel> lblDirectory;
-			UI::GUITextBox *txtDirectory;
+			NotNullPtr<UI::GUITextBox> txtDirectory;
 			NotNullPtr<UI::GUIButton> btnRenameExtUpper;
 			NotNullPtr<UI::GUIButton> btnRenameExtLower;
 

@@ -21,7 +21,7 @@ namespace SSWR
 			NotNullPtr<UI::GUIButton> btnPinModeInput;
 			NotNullPtr<UI::GUIButton> btnPinModeOutput;
 			NotNullPtr<UI::GUILabel> lblPinState;
-			UI::GUITextBox *txtPinState;
+			NotNullPtr<UI::GUITextBox> txtPinState;
 			NotNullPtr<UI::GUIButton> btnPinHigh;
 			NotNullPtr<UI::GUIButton> btnPinLow;
 

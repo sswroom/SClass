@@ -167,7 +167,7 @@ SSWR::AVIRead::AVIRWellFormatForm::AVIRWellFormatForm(UI::GUIClientControl *pare
 	this->pnlFile->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->lblFile = ui->NewLabel(this->pnlFile, CSTR("JS Text"));
 	this->lblFile->SetRect(4, 4, 100, 23, false);
-	NEW_CLASS(this->txtFile, UI::GUITextBox(ui, this->pnlFile, CSTR("")));
+	this->txtFile = ui->NewTextBox(this->pnlFile, CSTR(""));
 	this->txtFile->SetRect(104, 4, 600, 23, false);
 	this->btnBrowse = ui->NewButton(this->pnlFile, CSTR("Browse"));
 	this->btnBrowse->SetRect(704, 4, 75, 23, false);
@@ -178,7 +178,7 @@ SSWR::AVIRead::AVIRWellFormatForm::AVIRWellFormatForm(UI::GUIClientControl *pare
 	this->btnParseToFile = ui->NewButton(this->pnlFile, CSTR("To File"));
 	this->btnParseToFile->SetRect(184, 28, 75, 23, false);
 	this->btnParseToFile->HandleButtonClick(OnParseToFileClicked, this);
-	NEW_CLASS(this->txtOutput, UI::GUITextBox(ui, *this, CSTR(""), true));
+	this->txtOutput = ui->NewTextBox(*this, CSTR(""), true);
 	this->txtOutput->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->txtOutput->SetReadOnly(true);
 

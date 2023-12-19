@@ -49,7 +49,7 @@ SSWR::AVIRead::AVIRHKOWarningSummaryForm::AVIRHKOWarningSummaryForm(UI::GUIClien
 	this->pnlReqTime->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->lblReqTime = ui->NewLabel(this->pnlReqTime, CSTR("Request Time"));
 	this->lblReqTime->SetRect(4, 4, 100, 23, false);
-	NEW_CLASS(this->txtReqTime, UI::GUITextBox(ui, *this, CSTR("")));
+	this->txtReqTime = ui->NewTextBox(*this, CSTR(""));
 	this->txtReqTime->SetRect(104, 4, 160, 23, false);
 	this->txtReqTime->SetReadOnly(true);
 	NEW_CLASS(this->lvWarning, UI::GUIListView(ui, *this, UI::GUIListView::LVSTYLE_TABLE, 6));

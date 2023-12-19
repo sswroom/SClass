@@ -19,7 +19,7 @@ namespace SSWR
 
 			NotNullPtr<UI::GUIPanel> pnlRequest;
 			NotNullPtr<UI::GUILabel> lblAgent;
-			UI::GUITextBox *txtAgent;
+			NotNullPtr<UI::GUITextBox> txtAgent;
 			UI::GUIListView *lvResults;
 
 		public:

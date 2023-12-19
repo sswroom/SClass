@@ -26,19 +26,19 @@ namespace SSWR
 
 			NotNullPtr<UI::GUIGroupBox> grpStream;
 			NotNullPtr<UI::GUILabel> lblStream;
-			UI::GUITextBox *txtStream;
+			NotNullPtr<UI::GUITextBox> txtStream;
 			NotNullPtr<UI::GUIButton> btnStream;
 
 			NotNullPtr<UI::GUIHSplitter> hspMain;
 			NotNullPtr<UI::GUIGroupBox> grpSend;
 			NotNullPtr<UI::GUIComboBox> cboSendType;
-			UI::GUITextBox *txtSendDisp;
+			NotNullPtr<UI::GUITextBox> txtSendDisp;
 			NotNullPtr<UI::GUIPanel> pnlSend;
-			UI::GUITextBox *txtSendValue;
+			NotNullPtr<UI::GUITextBox> txtSendValue;
 			NotNullPtr<UI::GUIButton> btnSend;
 			NotNullPtr<UI::GUIGroupBox> grpRecv;
 			NotNullPtr<UI::GUIComboBox> cboRecvType;
-			UI::GUITextBox *txtRecvDisp;
+			NotNullPtr<UI::GUITextBox> txtRecvDisp;
 			NotNullPtr<UI::GUIPanel> pnlSendOption;
 			NotNullPtr<UI::GUILabel> lblSendLBreak;
 			NotNullPtr<UI::GUIComboBox> cboSendLBreak;

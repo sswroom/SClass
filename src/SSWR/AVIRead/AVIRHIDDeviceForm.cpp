@@ -69,17 +69,17 @@ SSWR::AVIRead::AVIRHIDDeviceForm::AVIRHIDDeviceForm(UI::GUIClientControl *parent
 	this->pnlDevices->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lblVendorId = ui->NewLabel(this->pnlDevices, CSTR("VendorId"));
 	this->lblVendorId->SetRect(4, 4, 100, 23, false);
-	NEW_CLASS(this->txtVendorId, UI::GUITextBox(ui, this->pnlDevices, CSTR("")));
+	this->txtVendorId = ui->NewTextBox(this->pnlDevices, CSTR(""));
 	this->txtVendorId->SetRect(104, 4, 100, 23, false);
 	this->txtVendorId->SetReadOnly(true);
 	this->lblProductId = ui->NewLabel(this->pnlDevices, CSTR("ProductId"));
 	this->lblProductId->SetRect(4, 28, 100, 23, false);
-	NEW_CLASS(this->txtProductId, UI::GUITextBox(ui, this->pnlDevices, CSTR("")));
+	this->txtProductId = ui->NewTextBox(this->pnlDevices, CSTR(""));
 	this->txtProductId->SetRect(104, 28, 100, 23, false);
 	this->txtProductId->SetReadOnly(true);
 	this->lblDevPath = ui->NewLabel(this->pnlDevices, CSTR("Dev Path"));
 	this->lblDevPath->SetRect(4, 52, 100, 23, false);
-	NEW_CLASS(this->txtDevPath, UI::GUITextBox(ui, this->pnlDevices, CSTR("")));
+	this->txtDevPath = ui->NewTextBox(this->pnlDevices, CSTR(""));
 	this->txtDevPath->SetRect(104, 52, 600, 23, false);
 	this->txtDevPath->SetReadOnly(true);
 

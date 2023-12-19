@@ -34,7 +34,7 @@ SSWR::AVIRead::AVIRSMBIOSForm::AVIRSMBIOSForm(UI::GUIClientControl *parent, NotN
 	this->btnHex->SetRect(4, 4, 75, 23, false);
 	this->btnHex->SetEnabled(this->smbios != 0);
 	this->btnHex->HandleButtonClick(OnHexClicked, this);
-	NEW_CLASS(this->txtSMBIOS, UI::GUITextBox(ui, *this, sb.ToCString(), true));
+	this->txtSMBIOS = ui->NewTextBox(*this, sb.ToCString(), true);
 	this->txtSMBIOS->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->txtSMBIOS->SetReadOnly(true);
 }

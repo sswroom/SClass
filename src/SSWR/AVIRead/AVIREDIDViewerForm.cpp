@@ -196,7 +196,7 @@ SSWR::AVIRead::AVIREDIDViewerForm::AVIREDIDViewerForm(UI::GUIClientControl *pare
 	this->btnHex = ui->NewButton(this->pnlCtrl, CSTR("Hex"));
 	this->btnHex->SetRect(84, 4, 75, 23, false);
 	this->btnHex->HandleButtonClick(OnHexClicked, this);
-	NEW_CLASS(this->txtEDID, UI::GUITextBox(ui, *this, CSTR(""), true));
+	this->txtEDID = ui->NewTextBox(*this, CSTR(""), true);
 	this->txtEDID->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->txtEDID->SetReadOnly(true);
 

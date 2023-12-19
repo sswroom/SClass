@@ -44,7 +44,7 @@ namespace SSWR
 			NotNullPtr<UI::GUITabPage> tpResource;
 			UI::GUIListBox *lbResource;
 			NotNullPtr<UI::GUIHSplitter> hspResource;
-			UI::GUITextBox *txtResource;
+			NotNullPtr<UI::GUITextBox> txtResource;
 
 			NotNullPtr<UI::GUITabPage> tp16Bit;
 			NotNullPtr<UI::GUIPanel> pnl16BitInfo;

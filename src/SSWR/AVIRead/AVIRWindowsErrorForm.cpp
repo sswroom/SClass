@@ -29,13 +29,13 @@ SSWR::AVIRead::AVIRWindowsErrorForm::AVIRWindowsErrorForm(UI::GUIClientControl *
 
 	this->lblErrorCode = ui->NewLabel(*this, CSTR("Error Code"));
 	this->lblErrorCode->SetRect(4, 4, 100, 23, false);
-	NEW_CLASS(this->txtErrorCode, UI::GUITextBox(ui, *this, CSTR("0")));
+	this->txtErrorCode = ui->NewTextBox(*this, CSTR("0"));
 	this->txtErrorCode->SetRect(104, 4, 150, 23, false);
 	this->txtErrorCode->HandleTextChanged(OnErrorCodeChanged, this);
 
 	this->lblErrorName = ui->NewLabel(*this, CSTR("Name"));
 	this->lblErrorName->SetRect(4, 28, 100, 23, false);
-	NEW_CLASS(this->txtErrorName, UI::GUITextBox(ui, *this, IO::WindowsError::GetString(0)));
+	this->txtErrorName = ui->NewTextBox(*this, IO::WindowsError::GetString(0));
 	this->txtErrorName->SetRect(104, 28, 200, 23, false);
 	this->txtErrorName->SetReadOnly(true);
 }

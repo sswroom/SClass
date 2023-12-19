@@ -24,18 +24,18 @@ namespace SSWR
 			NotNullPtr<UI::GUILabel> lblHashType;
 			NotNullPtr<UI::GUIComboBox> cboHashType;
 			NotNullPtr<UI::GUILabel> lblHashValue;
-			UI::GUITextBox *txtHashValue;
+			NotNullPtr<UI::GUITextBox> txtHashValue;
 			NotNullPtr<UI::GUILabel> lblEncoding;
 			NotNullPtr<UI::GUIComboBox> cboEncoding;
 			NotNullPtr<UI::GUILabel> lblMinLen;
-			UI::GUITextBox *txtMinLen;
+			NotNullPtr<UI::GUITextBox> txtMinLen;
 			NotNullPtr<UI::GUILabel> lblMaxLen;
-			UI::GUITextBox *txtMaxLen;
+			NotNullPtr<UI::GUITextBox> txtMaxLen;
 			NotNullPtr<UI::GUILabel> lblCharType;
 			NotNullPtr<UI::GUIComboBox> cboCharType;
 			NotNullPtr<UI::GUIButton> btnStart;
 			NotNullPtr<UI::GUILabel> lblStatus;
-			UI::GUITextBox *txtStatus;
+			NotNullPtr<UI::GUITextBox> txtStatus;
 
 			static void __stdcall OnStartClicked(void *userObj);
 			static void __stdcall OnTimerTick(void *userObj);

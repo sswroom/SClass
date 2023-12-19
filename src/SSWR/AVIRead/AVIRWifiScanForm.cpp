@@ -178,15 +178,15 @@ SSWR::AVIRead::AVIRWifiScanForm::AVIRWifiScanForm(UI::GUIClientControl *parent, 
 	this->btnScan->HandleButtonClick(OnScanClicked, this);
 	this->lblScanTime = ui->NewLabel(this->pnlControl, CSTR("Scan Time"));
 	this->lblScanTime->SetRect(104, 4, 100, 23, false);
-	NEW_CLASS(this->txtScanTime, UI::GUITextBox(ui, this->pnlControl, CSTR("")));
+	this->txtScanTime = ui->NewTextBox(this->pnlControl, CSTR(""));
 	this->txtScanTime->SetReadOnly(true);
 	this->txtScanTime->SetRect(204, 4, 100, 23, false);
 	this->lblResultTime = ui->NewLabel(this->pnlControl, CSTR("Result Time"));
 	this->lblResultTime->SetRect(304, 4, 100, 23, false);
-	NEW_CLASS(this->txtResultTime, UI::GUITextBox(ui, this->pnlControl, CSTR("")));
+	this->txtResultTime = ui->NewTextBox(this->pnlControl, CSTR(""));
 	this->txtResultTime->SetReadOnly(true);
 	this->txtResultTime->SetRect(404, 4, 100, 23, false);
-	NEW_CLASS(this->txtWifi, UI::GUITextBox(ui, *this, CSTR(""), true));
+	this->txtWifi = ui->NewTextBox(*this, CSTR(""), true);
 	this->txtWifi->SetRect(0, 0, 100, 128, false);
 	this->txtWifi->SetReadOnly(true);
 	this->txtWifi->SetDockType(UI::GUIControl::DOCK_BOTTOM);

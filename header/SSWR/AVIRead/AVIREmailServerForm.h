@@ -37,7 +37,7 @@ namespace SSWR
 			NotNullPtr<UI::GUIButton> btnSMTPCertKey;
 			NotNullPtr<UI::GUILabel> lblSMTPCertKey;
 			NotNullPtr<UI::GUILabel> lblSMTPPort;
-			UI::GUITextBox *txtSMTPPort;
+			NotNullPtr<UI::GUITextBox> txtSMTPPort;
 			NotNullPtr<UI::GUILabel> lblSMTPType;
 			NotNullPtr<UI::GUIComboBox> cboSMTPType;
 			NotNullPtr<UI::GUIButton> btnSMTPStart;
@@ -47,7 +47,7 @@ namespace SSWR
 			NotNullPtr<UI::GUIButton> btnPOP3CertKey;
 			NotNullPtr<UI::GUILabel> lblPOP3CertKey;
 			NotNullPtr<UI::GUILabel> lblPOP3Port;
-			UI::GUITextBox *txtPOP3Port;
+			NotNullPtr<UI::GUITextBox> txtPOP3Port;
 			UI::GUICheckBox *chkPOP3SSL;
 			NotNullPtr<UI::GUIButton> btnPOP3Start;
 
@@ -55,18 +55,18 @@ namespace SSWR
 			NotNullPtr<UI::GUIButton> btnGCISCertKey;
 			NotNullPtr<UI::GUILabel> lblGCISCertKey;
 			NotNullPtr<UI::GUILabel> lblGCISPort;
-			UI::GUITextBox *txtGCISPort;
+			NotNullPtr<UI::GUITextBox> txtGCISPort;
 			NotNullPtr<UI::GUILabel> lblGCISNotifPath;
-			UI::GUITextBox *txtGCISNotifPath;
+			NotNullPtr<UI::GUITextBox> txtGCISNotifPath;
 			NotNullPtr<UI::GUILabel> lblGCISBatchUplPath;
-			UI::GUITextBox *txtGCISBatchUplPath;
+			NotNullPtr<UI::GUITextBox> txtGCISBatchUplPath;
 			NotNullPtr<UI::GUIButton> btnGCISStart;
 
 			NotNullPtr<UI::GUITabPage> tpEmail;
 			UI::GUIListView *lvEmail;
 
 			NotNullPtr<UI::GUITabPage> tpLog;
-			UI::GUITextBox *txtLog;
+			NotNullPtr<UI::GUITextBox> txtLog;
 			NotNullPtr<UI::GUIListBox> lbLog;
 
 			Net::Email::SMTPServer *smtpSvr;

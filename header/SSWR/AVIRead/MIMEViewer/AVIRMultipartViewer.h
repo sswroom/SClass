@@ -20,7 +20,7 @@ namespace SSWR
 				UI::GUITabControl *tcParts;
 				NotNullPtr<UI::GUIPanel> pnlSMIME;
 				NotNullPtr<UI::GUILabel> lblSignState;
-				UI::GUITextBox *txtSignState;
+				NotNullPtr<UI::GUITextBox> txtSignState;
 
 				Data::ArrayList<SSWR::AVIRead::MIMEViewer::AVIRMIMEViewer*> subViewers;
 				Text::MIMEObj::MultipartMIMEObj *obj;

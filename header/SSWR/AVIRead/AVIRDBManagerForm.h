@@ -54,7 +54,7 @@ namespace SSWR
 			NotNullPtr<UI::GUIPanel> pnlSQLCtrl;
 			NotNullPtr<UI::GUIButton> btnSQLExec;
 			NotNullPtr<UI::GUIButton> btnSQLFile;
-			UI::GUITextBox *txtSQL;
+			NotNullPtr<UI::GUITextBox> txtSQL;
 			NotNullPtr<UI::GUIVSplitter> vspSQL;
 			UI::GUIListView *lvSQLResult;
 
@@ -82,7 +82,7 @@ namespace SSWR
 
 			NotNullPtr<UI::GUITabPage> tpLog;
 			NotNullPtr<UI::GUIListBox> lbLog;
-			UI::GUITextBox *txtLog;
+			NotNullPtr<UI::GUITextBox> txtLog;
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			NotNullPtr<UI::ListBoxLogger> logger;

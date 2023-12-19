@@ -15,13 +15,13 @@ namespace SSWR
 		private:
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			NotNullPtr<UI::GUILabel> lblFile1;
-			UI::GUITextBox *txtFile1;
+			NotNullPtr<UI::GUITextBox> txtFile1;
 			NotNullPtr<UI::GUIButton> btnFile1;
 			NotNullPtr<UI::GUILabel> lblFile2;
-			UI::GUITextBox *txtFile2;
+			NotNullPtr<UI::GUITextBox> txtFile2;
 			NotNullPtr<UI::GUIButton> btnFile2;
 			NotNullPtr<UI::GUILabel> lblOFile;
-			UI::GUITextBox *txtOFile;
+			NotNullPtr<UI::GUITextBox> txtOFile;
 			NotNullPtr<UI::GUIButton> btnOFile;
 			NotNullPtr<UI::GUIButton> btnConvert;
 

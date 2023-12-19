@@ -37,43 +37,43 @@ namespace SSWR
 			static Text::CStringNN typeName[];
 		private:
 			NotNullPtr<UI::GUILabel> lblDirectory;
-			UI::GUITextBox *txtDirectory;
+			NotNullPtr<UI::GUITextBox> txtDirectory;
 			NotNullPtr<UI::GUIButton> btnDirectory;
 			NotNullPtr<UI::GUILabel> lblSource;
-			UI::GUITextBox *txtSource;
+			NotNullPtr<UI::GUITextBox> txtSource;
 			NotNullPtr<UI::GUIButton> btnSBrowse;
 
 			NotNullPtr<UI::GUILabel> lblFileLength;
-			UI::GUITextBox *txtFileLength;
+			NotNullPtr<UI::GUITextBox> txtFileLength;
 			NotNullPtr<UI::GUILabel> lblVersion;
-			UI::GUITextBox *txtVersion;
+			NotNullPtr<UI::GUITextBox> txtVersion;
 			NotNullPtr<UI::GUILabel> lblShpType;
-			UI::GUITextBox *txtShpType;
+			NotNullPtr<UI::GUITextBox> txtShpType;
 			NotNullPtr<UI::GUILabel> lblMMin;
-			UI::GUITextBox *txtMMin;
+			NotNullPtr<UI::GUITextBox> txtMMin;
 			NotNullPtr<UI::GUILabel> lblMMax;
-			UI::GUITextBox *txtMMax;
+			NotNullPtr<UI::GUITextBox> txtMMax;
 			UI::GUIListBox *lstRecords;
 
 			NotNullPtr<UI::GUILabel> lblXMin;
-			UI::GUITextBox *txtXMin;
+			NotNullPtr<UI::GUITextBox> txtXMin;
 			NotNullPtr<UI::GUILabel> lblXMax;
-			UI::GUITextBox *txtXMax;
+			NotNullPtr<UI::GUITextBox> txtXMax;
 			NotNullPtr<UI::GUILabel> lblYMin;
-			UI::GUITextBox *txtYMin;
+			NotNullPtr<UI::GUITextBox> txtYMin;
 			NotNullPtr<UI::GUILabel> lblYMax;
-			UI::GUITextBox *txtYMax;
+			NotNullPtr<UI::GUITextBox> txtYMax;
 			NotNullPtr<UI::GUILabel> lblZMin;
-			UI::GUITextBox *txtZMin;
+			NotNullPtr<UI::GUITextBox> txtZMin;
 			NotNullPtr<UI::GUILabel> lblZMax;
-			UI::GUITextBox *txtZMax;
+			NotNullPtr<UI::GUITextBox> txtZMax;
 			NotNullPtr<UI::GUILabel> lblRecCnt;
-			UI::GUITextBox *txtRecCnt;
+			NotNullPtr<UI::GUITextBox> txtRecCnt;
 			NotNullPtr<UI::GUILabel> lblBlkScale;
-			UI::GUITextBox *txtBlkScale;
+			NotNullPtr<UI::GUITextBox> txtBlkScale;
 
 			UI::GUIListBox *lstLang;
-			UI::GUITextBox *txtCodePage;
+			NotNullPtr<UI::GUITextBox> txtCodePage;
 
 			NotNullPtr<UI::GUILabel> lblSeperator;
 			NotNullPtr<UI::GUIComboBox> cboSeperator;
@@ -81,7 +81,7 @@ namespace SSWR
 			NotNullPtr<UI::GUIButton> btnFilter;
 			NotNullPtr<UI::GUIButton> btnPreview;
 			NotNullPtr<UI::GUIButton> btnConvert;
-			UI::GUITextBox *txtLabel;
+			NotNullPtr<UI::GUITextBox> txtLabel;
 			NotNullPtr<UI::GUILabel> lblLabelLegend;
 			NotNullPtr<UI::GUILabel> lblProgress;
 

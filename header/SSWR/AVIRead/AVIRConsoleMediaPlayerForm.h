@@ -19,7 +19,7 @@ namespace SSWR
 		{
 		private:
 			NotNullPtr<UI::GUILabel> lblPort;
-			UI::GUITextBox *txtPort;
+			NotNullPtr<UI::GUITextBox> txtPort;
 			NotNullPtr<UI::GUIButton> btnStop;
 			NotNullPtr<UI::GUIButton> btnCaptureDev;
 			NotNullPtr<UI::GUILabel> lblRotate;

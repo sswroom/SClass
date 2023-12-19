@@ -23,7 +23,7 @@ namespace SSWR
 			IO::LogTool log;
 
 			NotNullPtr<UI::GUILabel> lblPort;
-			UI::GUITextBox *txtPort;
+			NotNullPtr<UI::GUITextBox> txtPort;
 			UI::GUICheckBox *chkMultiThread;
 			UI::GUICheckBox *chkEcho;
 			NotNullPtr<UI::GUIButton> btnStart;

@@ -24,11 +24,11 @@ namespace SSWR
 
 			NotNullPtr<UI::GUIPanel> pnlJSON;
 			NotNullPtr<UI::GUILabel> lblJSON;
-			UI::GUITextBox *txtJSON;
+			NotNullPtr<UI::GUITextBox> txtJSON;
 			NotNullPtr<UI::GUIPanel> pnlJSONCtrl;
 			NotNullPtr<UI::GUIButton> btnJSONParse;
 			NotNullPtr<UI::GUILabel> lblInfo;
-			UI::GUITextBox *txtInfo;
+			NotNullPtr<UI::GUITextBox> txtInfo;
 
 		private:
 			static void __stdcall OnJSONParseClick(void *userObj);

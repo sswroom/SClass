@@ -46,15 +46,15 @@ namespace SSWR
 			NotNullPtr<UI::GUITabPage> tpFile;
 			NotNullPtr<UI::GUIPanel> pnlFile;
 			NotNullPtr<UI::GUILabel> lblFile;
-			UI::GUITextBox *txtFile;
+			NotNullPtr<UI::GUITextBox> txtFile;
 			NotNullPtr<UI::GUIButton> btnFile;
-			UI::GUITextBox *txtFileIE;
+			NotNullPtr<UI::GUITextBox> txtFileIE;
 			NotNullPtr<UI::GUIVSplitter> vspFile;
 			UI::GUIListView *lvContent;
 
 			NotNullPtr<UI::GUITabPage> tpInput;
 			NotNullPtr<UI::GUILabel> lblInput;
-			UI::GUITextBox *txtInput;
+			NotNullPtr<UI::GUITextBox> txtInput;
 			NotNullPtr<UI::GUIButton> btnInput;
 
 			NotNullPtr<UI::GUITabPage> tpWireshark;

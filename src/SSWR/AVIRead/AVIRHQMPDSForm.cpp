@@ -655,7 +655,7 @@ void SSWR::AVIRead::AVIRHQMPDSForm::EventMenuClicked(UInt16 cmdId)
 		if (this->dbgFrm == 0)
 		{
 			NEW_CLASS(this->dbgFrm, UI::GUIForm(0, 320, 360, ui));
-			NEW_CLASS(this->txtDebug, UI::GUITextBox(ui, this->dbgFrm, CSTR(""), true));
+			this->txtDebug = ui->NewTextBox(this->dbgFrm, CSTR(""), true);
 			this->txtDebug->SetReadOnly(true);
 			this->txtDebug->SetDockType(UI::GUIControl::DOCK_FILL);
 			this->dbgFrm->SetFont(0, 0, 8.25, false);

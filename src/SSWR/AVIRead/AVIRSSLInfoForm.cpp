@@ -273,11 +273,11 @@ SSWR::AVIRead::AVIRSSLInfoForm::AVIRSSLInfoForm(UI::GUIClientControl *parent, No
 
 	this->lblHost = ui->NewLabel(*this, CSTR("Host"));
 	this->lblHost->SetRect(4, 4, 100, 23, false);
-	NEW_CLASS(this->txtHost, UI::GUITextBox(ui, *this, CSTR("127.0.0.1")));
+	this->txtHost = ui->NewTextBox(*this, CSTR("127.0.0.1"));
 	this->txtHost->SetRect(104, 4, 200, 23, false);
 	this->lblPort = ui->NewLabel(*this, CSTR("Port"));
 	this->lblPort->SetRect(4, 28, 100, 23, false);
-	NEW_CLASS(this->txtPort, UI::GUITextBox(ui, *this, CSTR("443")));
+	this->txtPort = ui->NewTextBox(*this, CSTR("443"));
 	this->txtPort->SetRect(104, 28, 100, 23, false);
 	this->lblMode = ui->NewLabel(*this, CSTR("Mode"));
 	this->lblMode->SetRect(4, 52, 100, 23, false);
@@ -301,12 +301,12 @@ SSWR::AVIRead::AVIRSSLInfoForm::AVIRSSLInfoForm(UI::GUIClientControl *parent, No
 	this->btnCheck->HandleButtonClick(OnCheckClicked, this);
 	this->lblStatus = ui->NewLabel(*this, CSTR("Status"));
 	this->lblStatus->SetRect(4, 124, 100, 23, false);
-	NEW_CLASS(this->txtStatus, UI::GUITextBox(ui, *this, CSTR("")));
+	this->txtStatus = ui->NewTextBox(*this, CSTR(""));
 	this->txtStatus->SetRect(104, 124, 400, 23, false);
 	this->txtStatus->SetReadOnly(true);
 	this->lblCert = ui->NewLabel(*this, CSTR("Cert"));
 	this->lblCert->SetRect(4, 148, 100, 23, false);
-	NEW_CLASS(this->txtCert, UI::GUITextBox(ui, *this, CSTR(""), true));
+	this->txtCert = ui->NewTextBox(*this, CSTR(""), true);
 	this->txtCert->SetRect(104, 148, 150, 144, false);
 	this->txtCert->SetReadOnly(true);
 	this->btnCert = ui->NewButton(*this, CSTR("View Cert"));

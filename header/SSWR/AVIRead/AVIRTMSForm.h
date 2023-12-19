@@ -15,10 +15,10 @@ namespace SSWR
 		{
 		private:
 			NotNullPtr<UI::GUILabel> lblTMSURL;
-			UI::GUITextBox *txtTMSURL;
+			NotNullPtr<UI::GUITextBox> txtTMSURL;
 			NotNullPtr<UI::GUIButton> btnLoad;
 			NotNullPtr<UI::GUILabel> lblStatus;
-			UI::GUITextBox *txtStatus;
+			NotNullPtr<UI::GUITextBox> txtStatus;
 			NotNullPtr<UI::GUIButton> btnOK;
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;

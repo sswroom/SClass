@@ -44,36 +44,36 @@ namespace SSWR
 			NotNullPtr<UI::GUITabPage> tpControl;
 			NotNullPtr<UI::GUIPanel> pnlControl;
 			NotNullPtr<UI::GUILabel> lblServerIP;
-			UI::GUITextBox *txtServerIP;
+			NotNullPtr<UI::GUITextBox> txtServerIP;
 			NotNullPtr<UI::GUILabel> lblServerPort;
-			UI::GUITextBox *txtServerPort;
+			NotNullPtr<UI::GUITextBox> txtServerPort;
 			NotNullPtr<UI::GUILabel> lblGatewayEUI;
-			UI::GUITextBox *txtGatewayEUI;
+			NotNullPtr<UI::GUITextBox> txtGatewayEUI;
 			NotNullPtr<UI::GUIButton> btnStart;
 			NotNullPtr<UI::GUIPanel> pnlDevice;
 			NotNullPtr<UI::GUILabel> lblDevAddr;
-			UI::GUITextBox *txtDevAddr;
+			NotNullPtr<UI::GUITextBox> txtDevAddr;
 			NotNullPtr<UI::GUILabel> lblNwkSKey;
-			UI::GUITextBox *txtNwkSKey;
+			NotNullPtr<UI::GUITextBox> txtNwkSKey;
 			NotNullPtr<UI::GUILabel> lblAppSKey;
-			UI::GUITextBox *txtAppSKey;
+			NotNullPtr<UI::GUITextBox> txtAppSKey;
 			NotNullPtr<UI::GUILabel> lblFCnt;
-			UI::GUITextBox *txtFCnt;
+			NotNullPtr<UI::GUITextBox> txtFCnt;
 			NotNullPtr<UI::GUILabel> lblRSSI;
-			UI::GUITextBox *txtRSSI;
+			NotNullPtr<UI::GUITextBox> txtRSSI;
 			NotNullPtr<UI::GUILabel> lblLSNR;
-			UI::GUITextBox *txtLSNR;
+			NotNullPtr<UI::GUITextBox> txtLSNR;
 			NotNullPtr<UI::GUILabel> lblPredef;
 			NotNullPtr<UI::GUIComboBox> cboPredef;
 			NotNullPtr<UI::GUIButton> btnPredef;
 			NotNullPtr<UI::GUILabel> lblFPort;
-			UI::GUITextBox *txtFPort;
+			NotNullPtr<UI::GUITextBox> txtFPort;
 			NotNullPtr<UI::GUILabel> lblData;
-			UI::GUITextBox *txtData;
+			NotNullPtr<UI::GUITextBox> txtData;
 			NotNullPtr<UI::GUIButton> btnSendULData;
 
 			NotNullPtr<UI::GUITabPage> tpLog;
-			UI::GUITextBox *txtLog;
+			NotNullPtr<UI::GUITextBox> txtLog;
 			NotNullPtr<UI::GUIListBox> lbLog;
 
 		private:

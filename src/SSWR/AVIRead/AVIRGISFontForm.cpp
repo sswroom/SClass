@@ -108,7 +108,7 @@ SSWR::AVIRead::AVIRGISFontForm::AVIRGISFontForm(UI::GUIClientControl *parent, No
 	this->pnlMain->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lblFont = ui->NewLabel(this->pnlMain, CSTR("Font"));
 	this->lblFont->SetRect(4, 4, 100, 23, false);
-	NEW_CLASS(this->txtFont, UI::GUITextBox(ui, this->pnlMain, CSTR("")));
+	this->txtFont = ui->NewTextBox(this->pnlMain, CSTR(""));
 	this->txtFont->SetRect(104, 4, 200, 23, false);
 	this->txtFont->SetReadOnly(true);
 	this->btnFont = ui->NewButton(this->pnlMain, CSTR("Change"));

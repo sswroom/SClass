@@ -31,7 +31,7 @@ namespace SSWR
 			UI::GUIPictureBoxSimple *pbImage;
 
 			NotNullPtr<UI::GUITabPage> tpText;
-			UI::GUITextBox *txtText;
+			NotNullPtr<UI::GUITextBox> txtText;
 
 			Media::ImageList *currImg;
 			Net::RSSItem *rssItem;

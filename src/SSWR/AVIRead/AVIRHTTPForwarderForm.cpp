@@ -159,11 +159,11 @@ SSWR::AVIRead::AVIRHTTPForwarderForm::AVIRHTTPForwarderForm(UI::GUIClientControl
 
 	this->lblPort = ui->NewLabel(*this, CSTR("Port"));
 	this->lblPort->SetRect(4, 4, 100, 23, false);
-	NEW_CLASS(this->txtPort, UI::GUITextBox(ui, *this, CSTR("12345")));
+	this->txtPort = ui->NewTextBox(*this, CSTR("12345"));
 	this->txtPort->SetRect(104, 4, 50, 23, false);
 	this->lblFwdURL = ui->NewLabel(*this, CSTR("Forward URL"));
 	this->lblFwdURL->SetRect(4, 28, 100, 23, false);
-	NEW_CLASS(this->txtFwdURL, UI::GUITextBox(ui, *this, CSTR("")));
+	this->txtFwdURL = ui->NewTextBox(*this, CSTR(""));
 	this->txtFwdURL->SetRect(104, 28, 500, 23, false);
 	this->lblLog = ui->NewLabel(*this, CSTR("Log"));
 	this->lblLog->SetRect(4, 52, 100, 23, false);

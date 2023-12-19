@@ -40,11 +40,11 @@ namespace SSWR
 			NotNullPtr<UI::GUIPanel> pnlStatus;
 			NotNullPtr<UI::GUIPanel> pnlStatusFile;
 			NotNullPtr<UI::GUILabel> lblFile;
-			UI::GUITextBox *txtFileName;
+			NotNullPtr<UI::GUITextBox> txtFileName;
 			NotNullPtr<UI::GUILabel> lblSpeed;
-			UI::GUITextBox *txtSpeed;
+			NotNullPtr<UI::GUITextBox> txtSpeed;
 			NotNullPtr<UI::GUILabel> lblTotalSize;
-			UI::GUITextBox *txtTotalSize;
+			NotNullPtr<UI::GUITextBox> txtTotalSize;
 			UI::GUIProgressBar *prgFile;
 			UI::GUIRealtimeLineChart *rlcSpeed;
 

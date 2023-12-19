@@ -46,7 +46,7 @@ SSWR::AVIRead::AVIRGoogleTileMapForm::AVIRGoogleTileMapForm(UI::GUIClientControl
 	this->cboMapType->AddItem(CSTR("Satelite"), 0);
 	this->cboMapType->AddItem(CSTR("Hybrid"), 0);
 	this->cboMapType->SetSelectedIndex(0);
-	NEW_CLASS(this->txtDeclare, UI::GUITextBox(ui, *this, CSTR("Declaimer: There may be Legal issue in using Google Tile Map. Please use for Research purpose only."), true));
+	this->txtDeclare = ui->NewTextBox(*this, CSTR("Declaimer: There may be Legal issue in using Google Tile Map. Please use for Research purpose only."), true);
 	this->txtDeclare->SetRect(4, 28, 350, 47, false);
 	this->txtDeclare->SetReadOnly(true);
 	this->btnOK = ui->NewButton(*this, CSTR("OK"));

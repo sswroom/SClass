@@ -10,6 +10,7 @@
 #include "UI/GTK/GTKHSplitter.h"
 #include "UI/GTK/GTKLabel.h"
 #include "UI/GTK/GTKMessageDialog.h"
+#include "UI/GTK/GTKTextBox.h"
 #include "UI/GTK/GTKVSplitter.h"
 #include <gtk/gtk.h>
 #include <X11/Xlib.h>
@@ -229,6 +230,20 @@ NotNullPtr<UI::GUILabel> UI::GTK::GTKCore::NewLabel(NotNullPtr<GUIClientControl>
 {
 	NotNullPtr<UI::GTK::GTKLabel> ctrl;
 	NEW_CLASSNN(ctrl, UI::GTK::GTKLabel(*this, parent, text));
+	return ctrl;
+}
+
+NotNullPtr<UI::GUITextBox> UI::GTK::GTKCore::NewTextBox(NotNullPtr<GUIClientControl> parent, Text::CStringNN initText)
+{
+	NotNullPtr<UI::GTK::GTKTextBox> ctrl;
+	NEW_CLASSNN(ctrl, UI::GTK::GTKTextBox(*this, parent, initText, false));
+	return ctrl;
+}
+
+NotNullPtr<UI::GUITextBox> UI::GTK::GTKCore::NewTextBox(NotNullPtr<GUIClientControl> parent, Text::CStringNN initText, Bool multiLine)
+{
+	NotNullPtr<UI::GTK::GTKTextBox> ctrl;
+	NEW_CLASSNN(ctrl, UI::GTK::GTKTextBox(*this, parent, initText, multiLine));
 	return ctrl;
 }
 

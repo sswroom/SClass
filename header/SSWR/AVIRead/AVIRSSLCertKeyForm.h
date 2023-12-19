@@ -28,9 +28,9 @@ namespace SSWR
 
 			NotNullPtr<UI::GUIPanel> pnlCurr;
 			NotNullPtr<UI::GUILabel> lblCurrCert;
-			UI::GUITextBox *txtCurrCert;
+			NotNullPtr<UI::GUITextBox> txtCurrCert;
 			NotNullPtr<UI::GUILabel> lblCurrKey;
-			UI::GUITextBox *txtCurrKey;
+			NotNullPtr<UI::GUITextBox> txtCurrKey;
 			UI::GUITabControl *tcMain;
 
 			NotNullPtr<UI::GUITabPage> tpFile;
@@ -42,11 +42,11 @@ namespace SSWR
 
 			NotNullPtr<UI::GUITabPage> tpGenerate;
 			NotNullPtr<UI::GUILabel> lblGenCountry;
-			UI::GUITextBox *txtGenCountry;
+			NotNullPtr<UI::GUITextBox> txtGenCountry;
 			NotNullPtr<UI::GUILabel> lblGenCompany;
-			UI::GUITextBox *txtGenCompany;
+			NotNullPtr<UI::GUITextBox> txtGenCompany;
 			NotNullPtr<UI::GUILabel> lblGenCommonName;
-			UI::GUITextBox *txtGenCommonName;
+			NotNullPtr<UI::GUITextBox> txtGenCommonName;
 			NotNullPtr<UI::GUIButton> btnGenerate;
 
 			static void __stdcall OnFormClosed(void *userObj, UI::GUIForm *frm);

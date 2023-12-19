@@ -107,7 +107,7 @@ SSWR::AVIRead::AVIRWebSiteInstagramForm::AVIRWebSiteInstagramForm(UI::GUIClientC
 	this->pnlRequest->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->lblChannelId = ui->NewLabel(this->pnlRequest, CSTR("ChannelId"));
 	this->lblChannelId->SetRect(4, 4, 100, 23, false);
-	NEW_CLASS(this->txtChannelId, UI::GUITextBox(ui, this->pnlRequest, CSTR("")));
+	this->txtChannelId = ui->NewTextBox(this->pnlRequest, CSTR(""));
 	this->txtChannelId->SetRect(104, 4, 150, 23, false);
 	this->btnRequestUser = ui->NewButton(this->pnlRequest, CSTR("Request"));
 	this->btnRequestUser->SetRect(254, 4, 75, 23, false);
@@ -128,7 +128,7 @@ SSWR::AVIRead::AVIRWebSiteInstagramForm::AVIRWebSiteInstagramForm(UI::GUIClientC
 	this->pnlPage->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->lblShortCode = ui->NewLabel(this->pnlPage, CSTR("ShortCode"));
 	this->lblShortCode->SetRect(4, 4, 100, 23, false);
-	NEW_CLASS(this->txtShortCode, UI::GUITextBox(ui, this->pnlPage, CSTR("")));
+	this->txtShortCode = ui->NewTextBox(this->pnlPage, CSTR(""));
 	this->txtShortCode->SetRect(104, 4, 150, 23, false);
 	this->btnPage = ui->NewButton(this->pnlPage, CSTR("Request"));
 	this->btnPage->SetRect(254, 4, 75, 23, false);

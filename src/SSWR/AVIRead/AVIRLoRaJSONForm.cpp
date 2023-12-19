@@ -174,7 +174,7 @@ SSWR::AVIRead::AVIRLoRaJSONForm::AVIRLoRaJSONForm(UI::GUIClientControl *parent, 
 	this->lblJSON = ui->NewLabel(this->pnlJSON, CSTR("JSON"));
 	this->lblJSON->SetRect(0, 0, 100, 23, false);
 	this->lblJSON->SetDockType(UI::GUIControl::DOCK_LEFT);
-	NEW_CLASS(this->txtJSON, UI::GUITextBox(ui, this->pnlJSON, CSTR(""), true));
+	this->txtJSON = ui->NewTextBox(this->pnlJSON, CSTR(""), true);
 	this->txtJSON->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->btnJSONParse = ui->NewButton(this->pnlJSONCtrl, CSTR("Parse"));
 	this->btnJSONParse->SetRect(104, 4, 75, 23, false);
@@ -182,7 +182,7 @@ SSWR::AVIRead::AVIRLoRaJSONForm::AVIRLoRaJSONForm(UI::GUIClientControl *parent, 
 	this->lblInfo = ui->NewLabel(*this, CSTR("Info"));
 	this->lblInfo->SetRect(0, 0, 100, 23, false);
 	this->lblInfo->SetDockType(UI::GUIControl::DOCK_LEFT);
-	NEW_CLASS(this->txtInfo, UI::GUITextBox(ui, *this, CSTR(""), true));
+	this->txtInfo = ui->NewTextBox(*this, CSTR(""), true);
 	this->txtInfo->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->txtInfo->SetReadOnly(true);
 }

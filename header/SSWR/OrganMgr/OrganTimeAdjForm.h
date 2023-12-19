@@ -50,7 +50,7 @@ namespace SSWR
 			UI::GUITrackBar *tbMapScale;
 			UI::GUIMapControl *mapMain;
 			NotNullPtr<UI::GUIComboBox> cboCamera;
-			UI::GUITextBox *txtTimeAdj;
+			NotNullPtr<UI::GUITextBox> txtTimeAdj;
 			NotNullPtr<UI::GUIButton> btnPaste;
 			NotNullPtr<UI::GUIButton> btnTimeSub;
 			NotNullPtr<UI::GUIButton> btnTimeAdd;

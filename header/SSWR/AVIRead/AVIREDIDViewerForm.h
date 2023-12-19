@@ -16,7 +16,7 @@ namespace SSWR
 			NotNullPtr<UI::GUIPanel> pnlCtrl;
 			NotNullPtr<UI::GUIButton> btnSave;
 			NotNullPtr<UI::GUIButton> btnHex;
-			UI::GUITextBox *txtEDID;
+			NotNullPtr<UI::GUITextBox> txtEDID;
 			UInt8 *edid;
 			UOSInt edidSize;
 			

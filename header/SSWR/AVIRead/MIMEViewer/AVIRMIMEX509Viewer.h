@@ -19,9 +19,9 @@ namespace SSWR
 				UI::GUITabControl *tcMain;
 
 				NotNullPtr<UI::GUITabPage> tpDesc;
-				UI::GUITextBox *txtDesc;
+				NotNullPtr<UI::GUITextBox> txtDesc;
 				NotNullPtr<UI::GUITabPage> tpASN1;
-				UI::GUITextBox *txtASN1;
+				NotNullPtr<UI::GUITextBox> txtASN1;
 
 				Text::MIMEObj::UnknownMIMEObj *obj;
 

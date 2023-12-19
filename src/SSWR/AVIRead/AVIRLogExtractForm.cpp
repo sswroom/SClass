@@ -134,18 +134,18 @@ SSWR::AVIRead::AVIRLogExtractForm::AVIRLogExtractForm(UI::GUIClientControl *pare
 
 	this->lblSFile = ui->NewLabel(*this, CSTR("Source File"));
 	this->lblSFile->SetRect(4, 4, 100, 23, false);
-	NEW_CLASS(this->txtSFile, UI::GUITextBox(ui, *this, CSTR("")));
+	this->txtSFile = ui->NewTextBox(*this, CSTR(""));
 	this->txtSFile->SetRect(104, 4, 560, 23, false);
 	this->btnSFile = ui->NewButton(*this, CSTR("Browse"));
 	this->btnSFile->SetRect(660, 4, 75, 23, false);
 	this->btnSFile->HandleButtonClick(OnSFileClicked, this);
 	this->lblPrefix = ui->NewLabel(*this, CSTR("Prefix"));
 	this->lblPrefix->SetRect(4, 28, 100, 23, false);
-	NEW_CLASS(this->txtPrefix, UI::GUITextBox(ui, *this, CSTR("")));
+	this->txtPrefix = ui->NewTextBox(*this, CSTR(""));
 	this->txtPrefix->SetRect(104, 28, 560, 23, false);
 	this->lblOFile = ui->NewLabel(*this, CSTR("Output"));
 	this->lblOFile->SetRect(4, 52, 100, 23, false);
-	NEW_CLASS(this->txtOFile, UI::GUITextBox(ui, *this, CSTR("")));
+	this->txtOFile = ui->NewTextBox(*this, CSTR(""));
 	this->txtOFile->SetRect(104, 52, 560, 23, false);
 	this->btnOFile = ui->NewButton(*this, CSTR("Browse"));
 	this->btnOFile->SetRect(660, 52, 75, 23, false);
@@ -159,7 +159,7 @@ SSWR::AVIRead::AVIRLogExtractForm::AVIRLogExtractForm(UI::GUIClientControl *pare
 	this->cboType->SetSelectedIndex(0);
 	this->lblSuffix = ui->NewLabel(*this, CSTR("Suffix to add"));
 	this->lblSuffix->SetRect(4, 100, 100, 23, false);
-	NEW_CLASS(this->txtSuffix, UI::GUITextBox(ui, *this, CSTR("")));
+	this->txtSuffix = ui->NewTextBox(*this, CSTR(""));
 	this->txtSuffix->SetRect(104, 100, 560, 23, false);
 	this->btnExtract = ui->NewButton(*this, CSTR("Extract"));
 	this->btnExtract->SetRect(200, 124, 75, 23, false);

@@ -23,10 +23,10 @@ namespace SSWR
 			NotNullPtr<UI::GUITabPage> tpSource;
 			NotNullPtr<UI::GUIPanel> pnlSource;
 			NotNullPtr<UI::GUIButton> btnConvert;
-			UI::GUITextBox *txtSource;
+			NotNullPtr<UI::GUITextBox> txtSource;
 
 			NotNullPtr<UI::GUITabPage> tpCPP;
-			UI::GUITextBox *txtCPP;
+			NotNullPtr<UI::GUITextBox> txtCPP;
 
 			static void __stdcall OnConvertClicked(void *userObj);
 		public:

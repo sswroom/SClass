@@ -62,11 +62,11 @@ SSWR::AVIRead::AVIRPushServerForm::AVIRPushServerForm(UI::GUIClientControl *pare
 
 	this->lblPort = ui->NewLabel(*this, CSTR("Port"));
 	this->lblPort->SetRect(4, 4, 100, 23, false);
-	NEW_CLASS(this->txtPort, UI::GUITextBox(ui, *this, CSTR("8000")));
+	this->txtPort = ui->NewTextBox(*this, CSTR("8000"));
 	this->txtPort->SetRect(104, 4, 600, 23, false);
 	this->lblAPIKey = ui->NewLabel(*this, CSTR("API Key"));
 	this->lblAPIKey->SetRect(4, 28, 100, 23, false);
-	NEW_CLASS(this->txtAPIKey, UI::GUITextBox(ui, *this, CSTR("")));
+	this->txtAPIKey = ui->NewTextBox(*this, CSTR(""));
 	this->txtAPIKey->SetRect(104, 28, 300, 23, false);
 	this->btnStart = ui->NewButton(*this, CSTR("Start"));
 	this->btnStart->SetRect(104, 52, 75, 23, false);

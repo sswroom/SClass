@@ -60,11 +60,11 @@ SSWR::AVIRead::AVIRServiceCreateForm::AVIRServiceCreateForm(UI::GUIClientControl
 
 	this->lblName = ui->NewLabel(*this, CSTR("Name"));
 	this->lblName->SetRect(4, 4, 100, 23, false);
-	NEW_CLASS(this->txtName, UI::GUITextBox(ui, *this, CSTR("AVIRead")));
+	this->txtName = ui->NewTextBox(*this, CSTR("AVIRead"));
 	this->txtName->SetRect(104, 4, 200, 23, false);
 	this->lblDesc = ui->NewLabel(*this, CSTR("Description"));
 	this->lblDesc->SetRect(4, 28, 100, 23, false);
-	NEW_CLASS(this->txtDesc, UI::GUITextBox(ui, *this, CSTR("")));
+	this->txtDesc = ui->NewTextBox(*this, CSTR(""));
 	this->txtDesc->SetRect(104, 28, 500, 23, false);
 	this->lblState = ui->NewLabel(*this, CSTR("State"));
 	this->lblState->SetRect(4, 52, 100, 23, false);
@@ -76,7 +76,7 @@ SSWR::AVIRead::AVIRServiceCreateForm::AVIRServiceCreateForm(UI::GUIClientControl
 	this->lblCmdLine = ui->NewLabel(*this, CSTR("Command Line"));
 	this->lblCmdLine->SetRect(4, 76, 100, 23, false);
 	sptr = IO::Path::GetProcessFileName(sbuff);
-	NEW_CLASS(this->txtCmdLine, UI::GUITextBox(ui, *this, CSTRP(sbuff, sptr)));
+	this->txtCmdLine = ui->NewTextBox(*this, CSTRP(sbuff, sptr));
 	this->txtCmdLine->SetRect(104, 76, 500, 23, false);
 	this->btnCreate = ui->NewButton(*this, CSTR("Create"));
 	this->btnCreate->SetRect(104, 100, 75, 23, false);

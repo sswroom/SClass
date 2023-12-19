@@ -56,19 +56,19 @@ namespace SSWR
 			NotNullPtr<UI::GUIButton> btnSSLCert;
 			NotNullPtr<UI::GUILabel> lblSSLCert;
 			NotNullPtr<UI::GUILabel> lblPort;
-			UI::GUITextBox *txtPort;
+			NotNullPtr<UI::GUITextBox> txtPort;
 			NotNullPtr<UI::GUIButton> btnStart;
 			NotNullPtr<UI::GUILabel> lblTotalCount;
-			UI::GUITextBox *txtTotalCount;
+			NotNullPtr<UI::GUITextBox> txtTotalCount;
 			NotNullPtr<UI::GUILabel> lblDataRate;
-			UI::GUITextBox *txtDataRate;
+			NotNullPtr<UI::GUITextBox> txtDataRate;
 
 			NotNullPtr<UI::GUITabPage> tpTopic;
 			UI::GUIListView *lvTopic;
 
 			NotNullPtr<UI::GUITabPage> tpLog;
 			NotNullPtr<UI::GUIListBox> lbLog;
-			UI::GUITextBox *txtLog;
+			NotNullPtr<UI::GUITextBox> txtLog;
 
 			static void __stdcall OnStartClicked(void *userObj);
 			static void __stdcall OnSSLCertClicked(void *userObj);

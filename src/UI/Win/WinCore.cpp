@@ -11,6 +11,7 @@
 #include "UI/Win/WinHSplitter.h"
 #include "UI/Win/WinLabel.h"
 #include "UI/Win/WinMessageDialog.h"
+#include "UI/Win/WinTextBox.h"
 #include "UI/Win/WinVSplitter.h"
 #ifdef _WIN32_WCE
 #include "Sync/ThreadUtil.h"
@@ -279,6 +280,20 @@ NotNullPtr<UI::GUILabel> UI::Win::WinCore::NewLabel(NotNullPtr<GUIClientControl>
 {
 	NotNullPtr<UI::Win::WinLabel> ctrl;
 	NEW_CLASSNN(ctrl, UI::Win::WinLabel(*this, parent, text));
+	return ctrl;
+}
+
+NotNullPtr<UI::GUITextBox> UI::Win::WinCore::NewTextBox(NotNullPtr<GUIClientControl> parent, Text::CStringNN initText)
+{
+	NotNullPtr<UI::Win::WinTextBox> ctrl;
+	NEW_CLASSNN(ctrl, UI::Win::WinTextBox(*this, parent, initText, false));
+	return ctrl;
+}
+
+NotNullPtr<UI::GUITextBox> UI::Win::WinCore::NewTextBox(NotNullPtr<GUIClientControl> parent, Text::CStringNN initText, Bool multiLine)
+{
+	NotNullPtr<UI::Win::WinTextBox> ctrl;
+	NEW_CLASSNN(ctrl, UI::Win::WinTextBox(*this, parent, initText, multiLine));
 	return ctrl;
 }
 

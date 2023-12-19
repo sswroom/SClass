@@ -103,7 +103,7 @@ SSWR::AVIRead::AVIRBatchRenameForm::AVIRBatchRenameForm(UI::GUIClientControl *pa
 
 	this->lblDirectory = ui->NewLabel(*this, CSTR("Directory"));
 	this->lblDirectory->SetRect(4, 4, 100, 23, false);
-	NEW_CLASS(this->txtDirectory, UI::GUITextBox(ui, *this, CSTR("")));
+	this->txtDirectory = ui->NewTextBox(*this, CSTR(""));
 	this->txtDirectory->SetRect(104, 4, 600, 23, false);
 	this->btnRenameExtUpper = ui->NewButton(*this, CSTR("Rename Ext Upper"));
 	this->btnRenameExtUpper->SetRect(104, 28, 150, 23, false);

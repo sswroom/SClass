@@ -93,7 +93,7 @@ SSWR::AVIRead::AVIRTraceRouteForm::AVIRTraceRouteForm(UI::GUIClientControl *pare
 	this->cboSelfIP->SetRect(104, 4, 150, 23, false);
 	this->lblTargetIP = ui->NewLabel(this->pnlControl, CSTR("Target IP"));
 	this->lblTargetIP->SetRect(4, 28, 100, 23, false);
-	NEW_CLASS(this->txtTargetIP, UI::GUITextBox(ui, this->pnlControl, CSTR("")));
+	this->txtTargetIP = ui->NewTextBox(this->pnlControl, CSTR(""));
 	this->txtTargetIP->SetRect(104, 28, 150, 23, false);
 	this->btnStart = ui->NewButton(this->pnlControl, CSTR("Start"));
 	this->btnStart->SetRect(254, 28, 75, 23, false);
@@ -104,7 +104,7 @@ SSWR::AVIRead::AVIRTraceRouteForm::AVIRTraceRouteForm(UI::GUIClientControl *pare
 	this->lbIP->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbIP->HandleSelectionChange(OnIPSelChg, this);
 	this->hspIP = ui->NewHSplitter(*this, 3, false);
-	NEW_CLASS(this->txtIPWhois, UI::GUITextBox(ui, *this, CSTR(""), true));
+	this->txtIPWhois = ui->NewTextBox(*this, CSTR(""), true);
 	this->txtIPWhois->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->txtIPWhois->SetReadOnly(true);
 

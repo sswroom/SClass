@@ -25,17 +25,17 @@ namespace SSWR
 			NotNullPtr<UI::GUILabel> lblIP;
 			NotNullPtr<UI::GUIComboBox> cboIP;
 			NotNullPtr<UI::GUILabel> lblSubnet;
-			UI::GUITextBox *txtSubnet;
+			NotNullPtr<UI::GUITextBox> txtSubnet;
 			NotNullPtr<UI::GUILabel> lblFirstIP;
-			UI::GUITextBox *txtFirstIP;
+			NotNullPtr<UI::GUITextBox> txtFirstIP;
 			NotNullPtr<UI::GUILabel> lblDevCount;
-			UI::GUITextBox *txtDevCount;
+			NotNullPtr<UI::GUITextBox> txtDevCount;
 			NotNullPtr<UI::GUILabel> lblGateway;
-			UI::GUITextBox *txtGateway;
+			NotNullPtr<UI::GUITextBox> txtGateway;
 			NotNullPtr<UI::GUILabel> lblDNS1;
-			UI::GUITextBox *txtDNS1;
+			NotNullPtr<UI::GUITextBox> txtDNS1;
 			NotNullPtr<UI::GUILabel> lblDNS2;
-			UI::GUITextBox *txtDNS2;
+			NotNullPtr<UI::GUITextBox> txtDNS2;
 			NotNullPtr<UI::GUIButton> btnStart;
 			UI::GUIListView *lvDevices;
 

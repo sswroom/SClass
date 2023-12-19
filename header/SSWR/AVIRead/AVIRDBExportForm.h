@@ -24,9 +24,9 @@ namespace SSWR
 			NotNullPtr<UI::GUIComboBox> cboDBType;
 			UI::GUICheckBox *chkAxisAware;
 			NotNullPtr<UI::GUILabel> lblSchema;
-			UI::GUITextBox *txtSchema;
+			NotNullPtr<UI::GUITextBox> txtSchema;
 			NotNullPtr<UI::GUILabel> lblTable;
-			UI::GUITextBox *txtTable;
+			NotNullPtr<UI::GUITextBox> txtTable;
 			NotNullPtr<UI::GUIButton> btnExport;
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;

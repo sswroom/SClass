@@ -83,21 +83,21 @@ SSWR::OrganMgr::OrganUserEditForm::OrganUserEditForm(UI::GUIClientControl *paren
 
 	this->lblUserName = ui->NewLabel(*this, this->env->GetLang(CSTR("UserEditUserName")));
 	this->lblUserName->SetRect(64, 4, 100, 23, false);
-	NEW_CLASS(this->txtUserName, UI::GUITextBox(ui, *this, CSTR("")));
+	this->txtUserName = ui->NewTextBox(*this, CSTR(""));
 	this->txtUserName->SetRect(164, 4, 200, 23, false);
 	this->lblPassword = ui->NewLabel(*this, this->env->GetLang(CSTR("UserEditPassword")));
 	this->lblPassword->SetRect(64, 28, 100, 23, false);
-	NEW_CLASS(this->txtPassword, UI::GUITextBox(ui, *this, CSTR("")));
+	this->txtPassword = ui->NewTextBox(*this, CSTR(""));
 	this->txtPassword->SetRect(164, 28, 200, 23, false);
 	this->txtPassword->SetPasswordChar('*');
 	this->lblRetype = ui->NewLabel(*this, this->env->GetLang(CSTR("UserEditRetype")));
 	this->lblRetype->SetRect(64, 52, 100, 23, false);
-	NEW_CLASS(this->txtRetype, UI::GUITextBox(ui, *this, CSTR("")));
+	this->txtRetype = ui->NewTextBox(*this, CSTR(""));
 	this->txtRetype->SetRect(164, 52, 200, 23, false);
 	this->txtRetype->SetPasswordChar('*');
 	this->lblWatermark = ui->NewLabel(*this, this->env->GetLang(CSTR("UserEditWatermark")));
 	this->lblWatermark->SetRect(64, 76, 100, 23, false);
-	NEW_CLASS(this->txtWatermark, UI::GUITextBox(ui, *this, CSTR("")));
+	this->txtWatermark = ui->NewTextBox(*this, CSTR(""));
 	this->txtWatermark->SetRect(164, 76, 200, 23, false);
 	this->btnOK = ui->NewButton(*this, this->env->GetLang(CSTR("UserEditOk")));
 	this->btnOK->SetRect(164, 108, 75, 23, false);

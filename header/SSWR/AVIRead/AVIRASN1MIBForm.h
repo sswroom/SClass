@@ -24,7 +24,7 @@ namespace SSWR
 
 			NotNullPtr<UI::GUIPanel> pnlRequest;
 			NotNullPtr<UI::GUILabel> lblFile;
-			UI::GUITextBox *txtFile;
+			NotNullPtr<UI::GUITextBox> txtFile;
 			NotNullPtr<UI::GUIButton> btnBrowse;
 			UI::GUITabControl *tcMain;
 
@@ -37,7 +37,7 @@ namespace SSWR
 			UI::GUIListView *lvOID;
 
 			NotNullPtr<UI::GUITabPage> tpOIDText;
-			UI::GUITextBox *txtOIDText;
+			NotNullPtr<UI::GUITextBox> txtOIDText;
 
 			static void __stdcall OnFileDroped(void *userObj, NotNullPtr<Text::String> *files, UOSInt nFiles);
 			static void __stdcall OnBrowseClicked(void *userObj);

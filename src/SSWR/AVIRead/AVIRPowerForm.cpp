@@ -58,12 +58,12 @@ SSWR::AVIRead::AVIRPowerForm::AVIRPowerForm(UI::GUIClientControl *parent, NotNul
 
 	this->lblBattery = ui->NewLabel(*this, CSTR("Battery"));
 	this->lblBattery->SetRect(4, 4, 100, 23, false);
-	NEW_CLASS(this->txtBattery, UI::GUITextBox(ui, *this, CSTR("")));
+	this->txtBattery = ui->NewTextBox(*this, CSTR(""));
 	this->txtBattery->SetRect(104, 4, 200, 23, false);
 	this->txtBattery->SetReadOnly(true);
 	this->lblTimeLeft = ui->NewLabel(*this, CSTR("Time Left"));
 	this->lblTimeLeft->SetRect(4, 28, 100, 23, false);
-	NEW_CLASS(this->txtTimeLeft, UI::GUITextBox(ui, *this, CSTR("")));
+	this->txtTimeLeft = ui->NewTextBox(*this, CSTR(""));
 	this->txtTimeLeft->SetRect(104, 28, 200, 23, false);
 	this->txtTimeLeft->SetReadOnly(true);
 	NEW_CLASS(this->chkNoSleep, UI::GUICheckBox(ui, *this, CSTR("No Sleep"), false));

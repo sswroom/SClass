@@ -15,11 +15,11 @@ namespace SSWR
 		{
 		private:
 			NotNullPtr<UI::GUILabel> lblX;
-			UI::GUITextBox *txtX;
+			NotNullPtr<UI::GUITextBox> txtX;
 			NotNullPtr<UI::GUILabel> lblY;
-			UI::GUITextBox *txtY;
+			NotNullPtr<UI::GUITextBox> txtY;
 			NotNullPtr<UI::GUILabel> lblZ;
-			UI::GUITextBox *txtZ;
+			NotNullPtr<UI::GUITextBox> txtZ;
 			NotNullPtr<UI::GUIPanel> pnlMoving;
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;

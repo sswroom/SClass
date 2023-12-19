@@ -445,11 +445,11 @@ SSWR::AVIRead::AVIRAsmConvForm::AVIRAsmConvForm(UI::GUIClientControl *parent, No
 	this->btnConv2 = ui->NewButton(this->pnlCtrl, CSTR("Paste-Conv-Copy"));
 	this->btnConv2->SetRect(84, 4, 150, 23, false);
 	this->btnConv2->HandleButtonClick(OnConv2Clicked, this);
-	NEW_CLASS(this->txtIntelAsm, UI::GUITextBox(ui, *this, CSTR(""), true));
+	this->txtIntelAsm = ui->NewTextBox(*this, CSTR(""), true);
 	this->txtIntelAsm->SetRect(0, 0, 512, 100, false);
 	this->txtIntelAsm->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->hspAsm = ui->NewHSplitter(*this, 3, false);
-	NEW_CLASS(this->txtGNUAsm, UI::GUITextBox(ui, *this, CSTR(""), true));
+	this->txtGNUAsm = ui->NewTextBox(*this, CSTR(""), true);
 	this->txtGNUAsm->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->txtGNUAsm->SetReadOnly(true);
 }

@@ -49,23 +49,23 @@ namespace SSWR
 
 			NotNullPtr<UI::GUITabPage> tpDetInfo;
 			NotNullPtr<UI::GUILabel> lblDetProcId;
-			UI::GUITextBox *txtDetProcId;
+			NotNullPtr<UI::GUITextBox> txtDetProcId;
 			NotNullPtr<UI::GUILabel> lblDetParentId;
-			UI::GUITextBox *txtDetParentId;
+			NotNullPtr<UI::GUITextBox> txtDetParentId;
 			NotNullPtr<UI::GUILabel> lblDetName;
-			UI::GUITextBox *txtDetName;
+			NotNullPtr<UI::GUITextBox> txtDetName;
 			NotNullPtr<UI::GUILabel> lblDetPath;
-			UI::GUITextBox *txtDetPath;
+			NotNullPtr<UI::GUITextBox> txtDetPath;
 			NotNullPtr<UI::GUILabel> lblDetCmdLine;
-			UI::GUITextBox *txtDetCmdLine;
+			NotNullPtr<UI::GUITextBox> txtDetCmdLine;
 			NotNullPtr<UI::GUILabel> lblDetWorkingDir;
-			UI::GUITextBox *txtDetWorkingDir;
+			NotNullPtr<UI::GUITextBox> txtDetWorkingDir;
 			NotNullPtr<UI::GUILabel> lblDetTrueProgPath;
-			UI::GUITextBox *txtDetTrueProgPath;
+			NotNullPtr<UI::GUITextBox> txtDetTrueProgPath;
 			NotNullPtr<UI::GUILabel> lblDetPriority;
-			UI::GUITextBox *txtDetPriority;
+			NotNullPtr<UI::GUITextBox> txtDetPriority;
 			NotNullPtr<UI::GUILabel> lblDetArchitecture;
-			UI::GUITextBox* txtDetArchitecture;
+			NotNullPtr<UI::GUITextBox> txtDetArchitecture;
 
 			NotNullPtr<UI::GUITabPage> tpDetModule;
 			NotNullPtr<UI::GUIPanel> pnlDetModule;
@@ -82,7 +82,7 @@ namespace SSWR
 			NotNullPtr<UI::GUIButton> btnDetHeap;
 			UI::GUIListBox *lbDetHeap;
 			NotNullPtr<UI::GUIHSplitter> hspDetHeap;
-			UI::GUITextBox *txtDetHeap;
+			NotNullPtr<UI::GUITextBox> txtDetHeap;
 			UI::GUIListView *lvDetHeap;
 
 			NotNullPtr<UI::GUITabPage> tpDetHandle;

@@ -64,9 +64,9 @@ SSWR::AVIRead::AVIRFileRenameForm::AVIRFileRenameForm(UI::GUIClientControl *pare
 
 	this->lblNewName = ui->NewLabel(*this, CSTR("New Name"));
 	this->lblNewName->SetRect(4, 4, 100, 23, false);
-	NEW_CLASS(this->txtNewName, UI::GUITextBox(ui, *this, CSTR("")));
+	this->txtNewName = ui->NewTextBox(*this, CSTR(""));
 	this->txtNewName->SetRect(104, 4, 300, 23, false);
-	NEW_CLASS(this->txtNewExt, UI::GUITextBox(ui, *this, CSTR("")));
+	this->txtNewExt = ui->NewTextBox(*this, CSTR(""));
 	this->txtNewExt->SetRect(404, 4, 100, 23, false);
 	this->btnRename = ui->NewButton(*this, CSTR("Rename"));
 	this->btnRename->SetRect(104, 28, 75, 23, false);

@@ -47,9 +47,9 @@ namespace SSWR
 
 			NotNullPtr<UI::GUIGroupBox> grpParam;
 			NotNullPtr<UI::GUILabel> lblPort;
-			UI::GUITextBox *txtPort;
+			NotNullPtr<UI::GUITextBox> txtPort;
 			NotNullPtr<UI::GUILabel> lblLogDir;
-			UI::GUITextBox *txtLogDir;
+			NotNullPtr<UI::GUITextBox> txtLogDir;
 			NotNullPtr<UI::GUILabel> lblSSL;
 			UI::GUICheckBox *chkSSL;
 			NotNullPtr<UI::GUIButton> btnSSLCert;
@@ -61,35 +61,35 @@ namespace SSWR
 			NotNullPtr<UI::GUILabel> lblAllowKA;
 			UI::GUICheckBox *chkAllowKA;
 			NotNullPtr<UI::GUILabel> lblFwdURL;
-			UI::GUITextBox *txtFwdURL;
+			NotNullPtr<UI::GUITextBox> txtFwdURL;
 			NotNullPtr<UI::GUILabel> lblFwdType;
 			NotNullPtr<UI::GUIComboBox> cboFwdType;
 			NotNullPtr<UI::GUIButton> btnStart;
 			NotNullPtr<UI::GUIButton> btnStop;
 
 			NotNullPtr<UI::GUILabel> lblConnCurr;
-			UI::GUITextBox *txtConnCurr;
+			NotNullPtr<UI::GUITextBox> txtConnCurr;
 			NotNullPtr<UI::GUILabel> lblConnTotal;
-			UI::GUITextBox *txtConnTotal;
+			NotNullPtr<UI::GUITextBox> txtConnTotal;
 			NotNullPtr<UI::GUILabel> lblDataRateR;
-			UI::GUITextBox *txtDataRateR;
+			NotNullPtr<UI::GUITextBox> txtDataRateR;
 			NotNullPtr<UI::GUILabel> lblDataRateW;
-			UI::GUITextBox *txtDataRateW;
+			NotNullPtr<UI::GUITextBox> txtDataRateW;
 			NotNullPtr<UI::GUILabel> lblDataTotalR;
-			UI::GUITextBox *txtDataTotalR;
+			NotNullPtr<UI::GUITextBox> txtDataTotalR;
 			NotNullPtr<UI::GUILabel> lblDataTotalW;
-			UI::GUITextBox *txtDataTotalW;
+			NotNullPtr<UI::GUITextBox> txtDataTotalW;
 			NotNullPtr<UI::GUILabel> lblReqRate;
-			UI::GUITextBox *txtReqRate;
+			NotNullPtr<UI::GUITextBox> txtReqRate;
 			NotNullPtr<UI::GUILabel> lblReqTotal;
-			UI::GUITextBox *txtReqTotal;
+			NotNullPtr<UI::GUITextBox> txtReqTotal;
 
 			UI::GUIListBox *lbAccess;
 			NotNullPtr<UI::GUIHSplitter> hspAccess;
-			UI::GUITextBox *txtAccess;
+			NotNullPtr<UI::GUITextBox> txtAccess;
 
 			NotNullPtr<UI::GUIListBox> lbLog;
-			UI::GUITextBox *txtLog;
+			NotNullPtr<UI::GUITextBox> txtLog;
 
 		private:
 			static void __stdcall OnStartClick(void *userObj);

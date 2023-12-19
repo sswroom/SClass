@@ -12,7 +12,7 @@ namespace UtilUI
 	{
 	private:
 		NotNullPtr<UI::GUILabel> lblLine;
-		UI::GUITextBox *txtLine;
+		NotNullPtr<UI::GUITextBox> txtLine;
 		NotNullPtr<UI::GUIButton> btnOk;
 		NotNullPtr<UI::GUIButton> btnCancel;
 		Media::MonitorMgr *monMgr;

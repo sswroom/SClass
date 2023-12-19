@@ -14,7 +14,7 @@ namespace SSWR
 		{
 		private:
 			NotNullPtr<UI::GUILabel> lblConnStr;
-			UI::GUITextBox *txtConnStr;
+			NotNullPtr<UI::GUITextBox> txtConnStr;
 			NotNullPtr<UI::GUIButton> btnOK;
 			NotNullPtr<UI::GUIButton> btnCancel;
 

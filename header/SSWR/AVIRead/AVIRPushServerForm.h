@@ -15,9 +15,9 @@ namespace SSWR
 		{
 		private:
 			NotNullPtr<UI::GUILabel> lblPort;
-			UI::GUITextBox *txtPort;
+			NotNullPtr<UI::GUITextBox> txtPort;
 			NotNullPtr<UI::GUILabel> lblAPIKey;
-			UI::GUITextBox *txtAPIKey;
+			NotNullPtr<UI::GUITextBox> txtAPIKey;
 			NotNullPtr<UI::GUIButton> btnStart;
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;

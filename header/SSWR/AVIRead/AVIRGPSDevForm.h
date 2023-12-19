@@ -48,15 +48,15 @@ namespace SSWR
 		private:
 			NotNullPtr<UI::GUIPanel> pnlConn;
 			NotNullPtr<UI::GUILabel> lblHost;
-			UI::GUITextBox *txtHost;
+			NotNullPtr<UI::GUITextBox> txtHost;
 			NotNullPtr<UI::GUILabel> lblPort;
-			UI::GUITextBox *txtPort;
+			NotNullPtr<UI::GUITextBox> txtPort;
 			NotNullPtr<UI::GUIButton> btnConn;
 			UI::GUITabControl *tcMain;
 
 			NotNullPtr<UI::GUITabPage> tpStatus;
 			NotNullPtr<UI::GUILabel> lblStatusConn;
-			UI::GUITextBox *txtStatusConn;
+			NotNullPtr<UI::GUITextBox> txtStatusConn;
 
 			NotNullPtr<UI::GUITabPage> tpDevice;
 			NotNullPtr<UI::GUIPanel> pnlDeviceC;

@@ -12,7 +12,7 @@ namespace SSWR
 		class AVIRCoordSysForm : public UI::GUIForm
 		{
 		private:
-			UI::GUITextBox *txtDesc;
+			NotNullPtr<UI::GUITextBox> txtDesc;
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			Math::CoordinateSystem *csys;

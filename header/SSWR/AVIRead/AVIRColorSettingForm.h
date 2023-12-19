@@ -31,7 +31,7 @@ namespace SSWR
 
 			NotNullPtr<UI::GUIPanel> pnlMonitor;
 			NotNullPtr<UI::GUILabel> lblMonitor;
-			UI::GUITextBox *txtMonitor;
+			NotNullPtr<UI::GUITextBox> txtMonitor;
 			NotNullPtr<UI::GUIPanel> pnlButtons;
 			UI::GUITabControl *tcMain;
 			NotNullPtr<UI::GUIButton> btnOK;
@@ -43,11 +43,11 @@ namespace SSWR
 			NotNullPtr<UI::GUIButton> btnMonProfile;
 			NotNullPtr<UI::GUIGroupBox> grpMonProfile;
 			NotNullPtr<UI::GUILabel> lblMonTran;
-			UI::GUITextBox *txtMonTran;
+			NotNullPtr<UI::GUITextBox> txtMonTran;
 			NotNullPtr<UI::GUILabel> lblMonRGBGamma;
-			UI::GUITextBox *txtMonRGBGamma;
+			NotNullPtr<UI::GUITextBox> txtMonRGBGamma;
 			NotNullPtr<UI::GUILabel> lblMonPrimaries;
-			UI::GUITextBox *txtMonPrimaries;
+			NotNullPtr<UI::GUITextBox> txtMonPrimaries;
 			NotNullPtr<UI::GUIButton> btnMonCustom;
 			NotNullPtr<UI::GUILabel> lblDefVProfile;
 			NotNullPtr<UI::GUIComboBox> cboDefVProfile;
@@ -55,7 +55,7 @@ namespace SSWR
 			NotNullPtr<UI::GUIComboBox> cboDefPProfile;
 			UI::GUICheckBox *chk10Bit;
 			NotNullPtr<UI::GUILabel> lblLuminance;
-			UI::GUITextBox *txtLuminance;
+			NotNullPtr<UI::GUITextBox> txtLuminance;
 			NotNullPtr<UI::GUILabel> lblLuminanceUnit;
 			NotNullPtr<UI::GUIGroupBox> grpYUVDef;
 			UI::GUIRadioButton *radYUVDefBT601;

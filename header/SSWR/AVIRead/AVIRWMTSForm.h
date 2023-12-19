@@ -16,10 +16,10 @@ namespace SSWR
 		{
 		private:
 			NotNullPtr<UI::GUILabel> lblWMTSURL;
-			UI::GUITextBox *txtWMTSURL;
+			NotNullPtr<UI::GUITextBox> txtWMTSURL;
 			NotNullPtr<UI::GUIButton> btnLoad;
 			NotNullPtr<UI::GUILabel> lblStatus;
-			UI::GUITextBox *txtStatus;
+			NotNullPtr<UI::GUITextBox> txtStatus;
 			NotNullPtr<UI::GUILabel> lblLayer;
 			NotNullPtr<UI::GUIComboBox> cboLayer;
 			NotNullPtr<UI::GUILabel> lblMatrixSet;

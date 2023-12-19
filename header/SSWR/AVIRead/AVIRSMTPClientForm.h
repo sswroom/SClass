@@ -21,29 +21,29 @@ namespace SSWR
 
 			NotNullPtr<UI::GUIPanel> pnlControl;
 			NotNullPtr<UI::GUILabel> lblHost;
-			UI::GUITextBox *txtHost;
+			NotNullPtr<UI::GUITextBox> txtHost;
 			NotNullPtr<UI::GUILabel> lblPort;
-			UI::GUITextBox *txtPort;
+			NotNullPtr<UI::GUITextBox> txtPort;
 			NotNullPtr<UI::GUILabel> lblSSLType;
 			NotNullPtr<UI::GUIComboBox> cboSSLType;
 			NotNullPtr<UI::GUILabel> lblUsername;
-			UI::GUITextBox *txtUsername;
+			NotNullPtr<UI::GUITextBox> txtUsername;
 			NotNullPtr<UI::GUILabel> lblPassword;
-			UI::GUITextBox *txtPassword;
+			NotNullPtr<UI::GUITextBox> txtPassword;
 			NotNullPtr<UI::GUILabel> lblFromAddr;
-			UI::GUITextBox *txtFromAddr;
+			NotNullPtr<UI::GUITextBox> txtFromAddr;
 			NotNullPtr<UI::GUILabel> lblToAddr;
-			UI::GUITextBox *txtToAddr;
+			NotNullPtr<UI::GUITextBox> txtToAddr;
 			NotNullPtr<UI::GUILabel> lblCcAddr;
-			UI::GUITextBox *txtCcAddr;
+			NotNullPtr<UI::GUITextBox> txtCcAddr;
 			NotNullPtr<UI::GUILabel> lblBccAddr;
-			UI::GUITextBox *txtBccAddr;
+			NotNullPtr<UI::GUITextBox> txtBccAddr;
 			NotNullPtr<UI::GUILabel> lblSubject;
-			UI::GUITextBox *txtSubject;
+			NotNullPtr<UI::GUITextBox> txtSubject;
 			NotNullPtr<UI::GUILabel> lblContent;
-			UI::GUITextBox *txtContent;
+			NotNullPtr<UI::GUITextBox> txtContent;
 			NotNullPtr<UI::GUIButton> btnSend;
-			UI::GUITextBox *txtLog;
+			NotNullPtr<UI::GUITextBox> txtLog;
 
 			static void __stdcall OnSendClicked(void *userObj);
 		public:

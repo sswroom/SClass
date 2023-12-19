@@ -122,11 +122,11 @@ SSWR::AVIRead::AVIRFileTextEncryptForm::AVIRFileTextEncryptForm(UI::GUIClientCon
 
 	this->lblSrcFile = ui->NewLabel(*this, CSTR("Source File"));
 	this->lblSrcFile->SetRect(4, 4, 100, 23, false);
-	NEW_CLASS(this->txtSrcFile, UI::GUITextBox(ui, *this, CSTR("")));
+	this->txtSrcFile = ui->NewTextBox(*this, CSTR(""));
 	this->txtSrcFile->SetRect(104, 4, 600, 23, false);
 	this->lblDestFile = ui->NewLabel(*this, CSTR("Dest File"));
 	this->lblDestFile->SetRect(4, 28, 100, 23, false);
-	NEW_CLASS(this->txtDestFile, UI::GUITextBox(ui, *this, CSTR(""), true));
+	this->txtDestFile = ui->NewTextBox(*this, CSTR(""), true);
 	this->txtDestFile->SetRect(104, 28, 600, 23, false);
 	this->lblDecrypt = ui->NewLabel(*this, CSTR("Mode"));
 	this->lblDecrypt->SetRect(4, 52, 100, 23, false);

@@ -266,19 +266,19 @@ SSWR::AVIRead::AVIRMQTTBrokerForm::AVIRMQTTBrokerForm(UI::GUIClientControl *pare
 	this->lblSSLCert->SetRect(284, 4, 200, 23, false);
 	this->lblPort = ui->NewLabel(this->tpStatus, CSTR("Port"));
 	this->lblPort->SetRect(4, 28, 100, 23, false);
-	NEW_CLASS(this->txtPort, UI::GUITextBox(ui, this->tpStatus, CSTR("1883")));
+	this->txtPort = ui->NewTextBox(this->tpStatus, CSTR("1883"));
 	this->txtPort->SetRect(104, 28, 100, 23, false);
 	this->btnStart = ui->NewButton(this->tpStatus, CSTR("Start"));
 	this->btnStart->SetRect(204, 28, 75, 23, false);
 	this->btnStart->HandleButtonClick(OnStartClicked, this);
 	this->lblTotalCount = ui->NewLabel(this->tpStatus, CSTR("Total Count"));
 	this->lblTotalCount->SetRect(4, 52, 100, 23, false);
-	NEW_CLASS(this->txtTotalCount, UI::GUITextBox(ui, this->tpStatus, CSTR("0")));
+	this->txtTotalCount = ui->NewTextBox(this->tpStatus, CSTR("0"));
 	this->txtTotalCount->SetReadOnly(true);
 	this->txtTotalCount->SetRect(104, 52, 200, 23, false);
 	this->lblDataRate = ui->NewLabel(this->tpStatus, CSTR("Data Rate"));
 	this->lblDataRate->SetRect(4, 76, 100, 23, false);
-	NEW_CLASS(this->txtDataRate, UI::GUITextBox(ui, this->tpStatus, CSTR("0.0")));
+	this->txtDataRate = ui->NewTextBox(this->tpStatus, CSTR("0.0"));
 	this->txtDataRate->SetReadOnly(true);
 	this->txtDataRate->SetRect(104, 76, 200, 23, false);
 
@@ -292,7 +292,7 @@ SSWR::AVIRead::AVIRMQTTBrokerForm::AVIRMQTTBrokerForm(UI::GUIClientControl *pare
 	this->lvTopic->AddColumn(CSTR("Update Time"), 150);
 
 	this->tpLog = this->tcMain->AddTabPage(CSTR("Log"));
-	NEW_CLASS(this->txtLog, UI::GUITextBox(ui, this->tpLog, CSTR("")));
+	this->txtLog = ui->NewTextBox(this->tpLog, CSTR(""));
 	this->txtLog->SetRect(0, 0, 100, 23, false);
 	this->txtLog->SetDockType(UI::GUIControl::DOCK_BOTTOM);
 	this->txtLog->SetReadOnly(true);

@@ -305,7 +305,7 @@ SSWR::AVIRead::AVIRDWQB30Form::AVIRDWQB30Form(UI::GUIClientControl *parent, NotN
 	this->cboDevType->SetSelectedIndex(0);
 	this->lblPort = ui->NewLabel(this->grpConn, CSTR("Port"));
 	this->lblPort->SetRect(160, 24, 100, 23, false);
-	NEW_CLASS(this->txtPort, UI::GUITextBox(ui, this->grpConn, CSTR(""), false));
+	this->txtPort = ui->NewTextBox(this->grpConn, CSTR(""), false);
 	this->txtPort->SetRect(260, 24, 100, 23, false);
 	this->txtPort->SetReadOnly(true);
 	this->btnPort = ui->NewButton(this->grpConn, CSTR("Open"));
@@ -316,7 +316,7 @@ SSWR::AVIRead::AVIRDWQB30Form::AVIRDWQB30Form(UI::GUIClientControl *parent, NotN
 	this->grpCtrl->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->lblMode = ui->NewLabel(this->grpCtrl, CSTR("Mode"));
 	this->lblMode->SetRect(160, 0, 100, 23, false);
-	NEW_CLASS(this->txtMode, UI::GUITextBox(ui, this->grpCtrl, CSTR("")));
+	this->txtMode = ui->NewTextBox(this->grpCtrl, CSTR(""));
 	this->txtMode->SetRect(260, 0, 100, 23, false);
 	this->txtMode->SetReadOnly(true);
 	this->btnModeScan = ui->NewButton(this->grpCtrl, CSTR("Scan Mode"));
@@ -344,7 +344,7 @@ SSWR::AVIRead::AVIRDWQB30Form::AVIRDWQB30Form(UI::GUIClientControl *parent, NotN
 	this->pnlScan->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->lblScan = ui->NewLabel(this->pnlScan, CSTR("Last Result"));
 	this->lblScan->SetRect(4, 4, 100, 23, false);
-	NEW_CLASS(this->txtScan, UI::GUITextBox(ui, this->pnlScan, CSTR(""), false));
+	this->txtScan = ui->NewTextBox(this->pnlScan, CSTR(""), false);
 	this->txtScan->SetReadOnly(true);
 	this->txtScan->SetRect(104, 4, 400, 23, false);
 	NEW_CLASS(this->lbScan, UI::GUIListBox(ui, this->tpScan, false));
@@ -361,7 +361,7 @@ SSWR::AVIRead::AVIRDWQB30Form::AVIRDWQB30Form(UI::GUIClientControl *parent, NotN
 	this->btnSetCmd = ui->NewButton(this->tpSetting, CSTR("Send"));
 	this->btnSetCmd->SetRect(414, 4, 75, 23, false);
 	this->btnSetCmd->HandleButtonClick(OnSetCmdClicked, this);
-	NEW_CLASS(this->txtSetCmd, UI::GUITextBox(ui, this->tpSetting, CSTR(""), false));
+	this->txtSetCmd = ui->NewTextBox(this->tpSetting, CSTR(""), false);
 	this->txtSetCmd->SetRect(494, 4, 100, 23, false);
 	this->txtSetCmd->SetReadOnly(true);
 

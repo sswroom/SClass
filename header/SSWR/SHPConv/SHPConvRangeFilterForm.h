@@ -21,14 +21,14 @@ namespace SSWR
 			UI::GUIRadioButton *radInRange;
 			UI::GUIRadioButton *radOutRange;
 			NotNullPtr<UI::GUILabel> lblX1;
-			UI::GUITextBox *txtX1;
+			NotNullPtr<UI::GUITextBox> txtX1;
 			NotNullPtr<UI::GUILabel> lblY1;
-			UI::GUITextBox *txtY1;
+			NotNullPtr<UI::GUITextBox> txtY1;
 			UI::GUIPictureBoxSimple *pbBox;
 			NotNullPtr<UI::GUILabel> lblX2;
-			UI::GUITextBox *txtX2;
+			NotNullPtr<UI::GUITextBox> txtX2;
 			NotNullPtr<UI::GUILabel> lblY2;
-			UI::GUITextBox *txtY2;
+			NotNullPtr<UI::GUITextBox> txtY2;
 			NotNullPtr<UI::GUIButton> btnOK;
 			NotNullPtr<UI::GUIButton> btnCancel;
 			NotNullPtr<Media::DrawEngine> deng;

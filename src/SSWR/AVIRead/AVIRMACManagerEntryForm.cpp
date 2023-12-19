@@ -47,7 +47,7 @@ SSWR::AVIRead::AVIRMACManagerEntryForm::AVIRMACManagerEntryForm(UI::GUIClientCon
 
 	this->lblMAC = ui->NewLabel(*this, CSTR("MAC"));
 	this->lblMAC->SetRect(4, 4, 100, 23, false);
-	NEW_CLASS(this->txtMAC, UI::GUITextBox(ui, *this, CSTR("")));
+	this->txtMAC = ui->NewTextBox(*this, CSTR(""));
 	this->txtMAC->SetRect(104, 4, 200, 23, false);
 	this->txtMAC->SetReadOnly(true);
 	this->lblName = ui->NewLabel(*this, CSTR("Name"));

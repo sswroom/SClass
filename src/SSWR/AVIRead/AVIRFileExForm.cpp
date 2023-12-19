@@ -147,7 +147,7 @@ SSWR::AVIRead::AVIRFileExForm::AVIRFileExForm(UI::GUIClientControl *parent, NotN
 
 	this->lblSrc = ui->NewLabel(*this, CSTR("Source File"));
 	this->lblSrc->SetRect(4, 4, 100, 23, false);
-	NEW_CLASS(this->txtSrc, UI::GUITextBox(ui, *this, CSTR("")));
+	this->txtSrc = ui->NewTextBox(*this, CSTR(""));
 	this->txtSrc->SetRect(104, 4, 600, 23, false);
 	this->txtSrc->HandleTextChanged(OnSrcChanged, this);
 	this->btnSrc = ui->NewButton(*this, CSTR("B&rowse"));
@@ -155,23 +155,23 @@ SSWR::AVIRead::AVIRFileExForm::AVIRFileExForm(UI::GUIClientControl *parent, NotN
 	this->btnSrc->HandleButtonClick(OnSrcClicked, this);
 	this->lblDest = ui->NewLabel(*this, CSTR("Dest File"));
 	this->lblDest->SetRect(4, 28, 100, 23, false);
-	NEW_CLASS(this->txtDest, UI::GUITextBox(ui, *this, CSTR("")));
+	this->txtDest = ui->NewTextBox(*this, CSTR(""));
 	this->txtDest->SetRect(104, 28, 600, 23, false);
 	this->btnDest = ui->NewButton(*this, CSTR("&Browse"));
 	this->btnDest->SetRect(704, 28, 75, 23, false);
 	this->btnDest->HandleButtonClick(OnDestClicked, this);
 	this->lblFileSize = ui->NewLabel(*this, CSTR("File Size"));
 	this->lblFileSize->SetRect(4, 52, 100, 23, false);
-	NEW_CLASS(this->txtFileSize, UI::GUITextBox(ui, *this, CSTR("Unknown")));
+	this->txtFileSize = ui->NewTextBox(*this, CSTR("Unknown"));
 	this->txtFileSize->SetRect(104, 52, 160, 23, false);
 	this->txtFileSize->SetReadOnly(true);
 	this->lblStartOfst = ui->NewLabel(*this, CSTR("Start Offset"));
 	this->lblStartOfst->SetRect(4, 76, 100, 23, false);
-	NEW_CLASS(this->txtStartOfst, UI::GUITextBox(ui, *this, CSTR("0")));
+	this->txtStartOfst = ui->NewTextBox(*this, CSTR("0"));
 	this->txtStartOfst->SetRect(104, 76, 160, 23, false);
 	this->lblEndOfst = ui->NewLabel(*this, CSTR("End Offset"));
 	this->lblEndOfst->SetRect(4, 100, 100, 23, false);
-	NEW_CLASS(this->txtEndOfst, UI::GUITextBox(ui, *this, CSTR("")));
+	this->txtEndOfst = ui->NewTextBox(*this, CSTR(""));
 	this->txtEndOfst->SetRect(104, 100, 160, 23, false);
 	this->btnStart = ui->NewButton(*this, CSTR("&Start"));
 	this->btnStart->SetRect(304, 76, 75, 23, false);

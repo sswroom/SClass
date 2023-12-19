@@ -21,12 +21,12 @@ namespace SSWR
 
 			NotNullPtr<UI::GUIGroupBox> grpStream;
 			NotNullPtr<UI::GUILabel> lblStream;
-			UI::GUITextBox *txtStream;
+			NotNullPtr<UI::GUITextBox> txtStream;
 			NotNullPtr<UI::GUIButton> btnStream;
 
 			NotNullPtr<UI::GUIGroupBox> grpStatus;
 			NotNullPtr<UI::GUILabel> lblDataSize;
-			UI::GUITextBox *txtDataSize;
+			NotNullPtr<UI::GUITextBox> txtDataSize;
 
 			IO::Stream *stm;
 			Bool threadRunning;

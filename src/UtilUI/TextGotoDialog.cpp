@@ -35,7 +35,7 @@ UtilUI::TextGotoDialog::TextGotoDialog(UI::GUIClientControl *parent, NotNullPtr<
 
 	this->lblLine = ui->NewLabel(*this, CSTR("Line Number:"));
 	this->lblLine->SetRect(8, 16, 80, 21, false);
-	NEW_CLASS(this->txtLine, UI::GUITextBox(ui, *this, CSTR("0")));
+	this->txtLine = ui->NewTextBox(*this, CSTR("0"));
 	this->txtLine->SetRect(88, 14, 100, 23, false);
 	this->btnOk = ui->NewButton(*this, CSTR("&Ok"));
 	this->btnOk->SetRect(8, 56, 100, 23, false);

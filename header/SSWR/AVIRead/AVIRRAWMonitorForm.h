@@ -71,7 +71,7 @@ namespace SSWR
 
 			NotNullPtr<UI::GUIPanel> pnlControl;
 			NotNullPtr<UI::GUILabel> lblInfo;
-			UI::GUITextBox *txtInfo;
+			NotNullPtr<UI::GUITextBox> txtInfo;
 			NotNullPtr<UI::GUIButton> btnInfo;
 			NotNullPtr<UI::GUILabel> lblIP;
 			NotNullPtr<UI::GUIComboBox> cboIP;
@@ -79,13 +79,13 @@ namespace SSWR
 			NotNullPtr<UI::GUILabel> lblPLog;
 			NotNullPtr<UI::GUIComboBox> cboPLog;
 			NotNullPtr<UI::GUIButton> btnPLog;
-			UI::GUITextBox *txtPLog;
+			NotNullPtr<UI::GUITextBox> txtPLog;
 			UI::GUITabControl *tcMain;
 
 			NotNullPtr<UI::GUITabPage> tpDevice;
 			UI::GUIListView *lvDevice;
 			NotNullPtr<UI::GUIVSplitter> vspDevice;
-			UI::GUITextBox *txtDevice;
+			NotNullPtr<UI::GUITextBox> txtDevice;
 
 			NotNullPtr<UI::GUITabPage> tpIPTran;
 			UI::GUIListBox *lbIPTran;
@@ -94,18 +94,18 @@ namespace SSWR
 			NotNullPtr<UI::GUITabPage> tpIPTranInfo;
 			UI::GUIListView *lvIPTranInfo;
 			NotNullPtr<UI::GUITabPage> tpIPTranWhois;
-			UI::GUITextBox *txtIPTranWhois;
+			NotNullPtr<UI::GUITextBox> txtIPTranWhois;
 
 			NotNullPtr<UI::GUITabPage> tpDNSReqv4;
 			UI::GUIListBox *lbDNSReqv4;
 			NotNullPtr<UI::GUIHSplitter> hspDNSReqv4;
 			NotNullPtr<UI::GUIPanel> pnlDNSReqv4;
 			NotNullPtr<UI::GUILabel> lblDNSReqv4Name;
-			UI::GUITextBox *txtDNSReqv4Name;
+			NotNullPtr<UI::GUITextBox> txtDNSReqv4Name;
 			NotNullPtr<UI::GUILabel> lblDNSReqv4ReqTime;
-			UI::GUITextBox *txtDNSReqv4ReqTime;
+			NotNullPtr<UI::GUITextBox> txtDNSReqv4ReqTime;
 			NotNullPtr<UI::GUILabel> lblDNSReqv4TTL;
-			UI::GUITextBox *txtDNSReqv4TTL;
+			NotNullPtr<UI::GUITextBox> txtDNSReqv4TTL;
 			UI::GUIListView *lvDNSReqv4;
 
 			NotNullPtr<UI::GUITabPage> tpDNSReqv6;
@@ -113,11 +113,11 @@ namespace SSWR
 			NotNullPtr<UI::GUIHSplitter> hspDNSReqv6;
 			NotNullPtr<UI::GUIPanel> pnlDNSReqv6;
 			NotNullPtr<UI::GUILabel> lblDNSReqv6Name;
-			UI::GUITextBox *txtDNSReqv6Name;
+			NotNullPtr<UI::GUITextBox> txtDNSReqv6Name;
 			NotNullPtr<UI::GUILabel> lblDNSReqv6ReqTime;
-			UI::GUITextBox *txtDNSReqv6ReqTime;
+			NotNullPtr<UI::GUITextBox> txtDNSReqv6ReqTime;
 			NotNullPtr<UI::GUILabel> lblDNSReqv6TTL;
-			UI::GUITextBox *txtDNSReqv6TTL;
+			NotNullPtr<UI::GUITextBox> txtDNSReqv6TTL;
 			UI::GUIListView *lvDNSReqv6;
 
 			NotNullPtr<UI::GUITabPage> tpDNSReqOth;
@@ -125,11 +125,11 @@ namespace SSWR
 			NotNullPtr<UI::GUIHSplitter> hspDNSReqOth;
 			NotNullPtr<UI::GUIPanel> pnlDNSReqOth;
 			NotNullPtr<UI::GUILabel> lblDNSReqOthName;
-			UI::GUITextBox *txtDNSReqOthName;
+			NotNullPtr<UI::GUITextBox> txtDNSReqOthName;
 			NotNullPtr<UI::GUILabel> lblDNSReqOthReqTime;
-			UI::GUITextBox *txtDNSReqOthReqTime;
+			NotNullPtr<UI::GUITextBox> txtDNSReqOthReqTime;
 			NotNullPtr<UI::GUILabel> lblDNSReqOthTTL;
-			UI::GUITextBox *txtDNSReqOthTTL;
+			NotNullPtr<UI::GUITextBox> txtDNSReqOthTTL;
 			UI::GUIListView *lvDNSReqOth;
 
 			NotNullPtr<UI::GUITabPage> tpDNSTarget;
@@ -139,22 +139,22 @@ namespace SSWR
 			NotNullPtr<UI::GUITabPage> tpDNSTargetDomain;
 			UI::GUIListBox *lbDNSTargetDomain;
 			NotNullPtr<UI::GUITabPage> tpDNSTargetWhois;
-			UI::GUITextBox *txtDNSTargetWhois;
+			NotNullPtr<UI::GUITextBox> txtDNSTargetWhois;
 
 			NotNullPtr<UI::GUITabPage> tpMDNS;
 			UI::GUIListBox *lbMDNS;
 			NotNullPtr<UI::GUIHSplitter> hspMDNS;
 			NotNullPtr<UI::GUIPanel> pnlMDNS;
 			NotNullPtr<UI::GUILabel> lblMDNSName;
-			UI::GUITextBox *txtMDNSName;
+			NotNullPtr<UI::GUITextBox> txtMDNSName;
 			NotNullPtr<UI::GUILabel> lblMDNSType;
-			UI::GUITextBox *txtMDNSType;
+			NotNullPtr<UI::GUITextBox> txtMDNSType;
 			NotNullPtr<UI::GUILabel> lblMDNSClass;
-			UI::GUITextBox *txtMDNSClass;
+			NotNullPtr<UI::GUITextBox> txtMDNSClass;
 			NotNullPtr<UI::GUILabel> lblMDNSTTL;
-			UI::GUITextBox *txtMDNSTTL;
+			NotNullPtr<UI::GUITextBox> txtMDNSTTL;
 			NotNullPtr<UI::GUILabel> lblMDNSResult;
-			UI::GUITextBox *txtMDNSResult;
+			NotNullPtr<UI::GUITextBox> txtMDNSResult;
 
 			NotNullPtr<UI::GUITabPage> tpDNSClient;
 			UI::GUIListBox *lbDNSClient;
@@ -175,19 +175,19 @@ namespace SSWR
 			UI::GUITabControl *tcPingIP;
 			NotNullPtr<UI::GUITabPage> tpPingIPInfo;
 			NotNullPtr<UI::GUILabel> lblPingIPCount;
-			UI::GUITextBox *txtPingIPCount;
+			NotNullPtr<UI::GUITextBox> txtPingIPCount;
 			NotNullPtr<UI::GUILabel> lblPingIPName;
-			UI::GUITextBox *txtPingIPName;
+			NotNullPtr<UI::GUITextBox> txtPingIPName;
 			NotNullPtr<UI::GUILabel> lblPingIPCountry;
-			UI::GUITextBox *txtPingIPCountry;
+			NotNullPtr<UI::GUITextBox> txtPingIPCountry;
 			NotNullPtr<UI::GUITabPage> tpPingIPWhois;
-			UI::GUITextBox *txtPingIPWhois;
+			NotNullPtr<UI::GUITextBox> txtPingIPWhois;
 
 			NotNullPtr<UI::GUITabPage> tpTCP4SYN;
 			UI::GUIListView *lvTCP4SYN;
 			
 			NotNullPtr<UI::GUITabPage> tpLog;
-			UI::GUITextBox *txtLog;
+			NotNullPtr<UI::GUITextBox> txtLog;
 			NotNullPtr<UI::GUIListBox> lbLog;
 
 			static void __stdcall OnPingPacket(void *userData, UInt32 srcIP, UInt32 destIP, UInt8 ttl, UOSInt packetSize);

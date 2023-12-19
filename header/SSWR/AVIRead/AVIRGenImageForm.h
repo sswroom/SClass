@@ -19,8 +19,8 @@ namespace SSWR
 			NotNullPtr<UI::GUIComboBox> cboGenerator;
 			NotNullPtr<UI::GUIComboBox> cboColorProfile;
 
-			UI::GUITextBox *txtWidth;
-			UI::GUITextBox *txtHeight;
+			NotNullPtr<UI::GUITextBox> txtWidth;
+			NotNullPtr<UI::GUITextBox> txtHeight;
 
 			NotNullPtr<UI::GUIButton> btnGenerate;
 			NotNullPtr<UI::GUIButton> btnCancel;

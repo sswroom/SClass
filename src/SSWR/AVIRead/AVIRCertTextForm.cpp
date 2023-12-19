@@ -84,7 +84,7 @@ SSWR::AVIRead::AVIRCertTextForm::AVIRCertTextForm(UI::GUIClientControl *parent, 
 	this->cboEncType->SetSelectedIndex(0);
 	this->lblText = ui->NewLabel(this->pnlLabel, CSTR("Text"));
 	this->lblText->SetRect(0, 24, 100, 23, false);
-	NEW_CLASS(this->txtText, UI::GUITextBox(ui, *this, CSTR(""), true));
+	this->txtText = ui->NewTextBox(*this, CSTR(""), true);
 	this->txtText->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->btnLoad = ui->NewButton(this->pnlButton, CSTR("Load"));
 	this->btnLoad->SetRect(104, 4, 75, 23, false);

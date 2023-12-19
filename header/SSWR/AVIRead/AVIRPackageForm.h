@@ -65,25 +65,25 @@ namespace SSWR
 			NotNullPtr<UI::GUITabPage> tpStatus;
 			NotNullPtr<UI::GUIPanel> pnlStatus;
 			NotNullPtr<UI::GUILabel> lblStatusFile;
-			UI::GUITextBox *txtStatusFile;
+			NotNullPtr<UI::GUITextBox> txtStatusFile;
 			NotNullPtr<UI::GUIPanel> pnlStatusBNT;
 			NotNullPtr<UI::GUILabel> lblStatusFileSize;
-			UI::GUITextBox *txtStatusFileSize;
+			NotNullPtr<UI::GUITextBox> txtStatusFileSize;
 			NotNullPtr<UI::GUILabel> lblStatusCurrSize;
-			UI::GUITextBox *txtStatusCurrSize;
+			NotNullPtr<UI::GUITextBox> txtStatusCurrSize;
 			NotNullPtr<UI::GUILabel> lblStatusCurrSpeed;
-			UI::GUITextBox *txtStatusCurrSpeed;
+			NotNullPtr<UI::GUITextBox> txtStatusCurrSpeed;
 			NotNullPtr<UI::GUILabel> lblStatusTimeLeft;
-			UI::GUITextBox *txtStatusTimeLeft;
+			NotNullPtr<UI::GUITextBox> txtStatusTimeLeft;
 			UI::GUIListView *lvStatus;
 			NotNullPtr<UI::GUIVSplitter> vspStatus;
 			UI::GUIRealtimeLineChart *rlcStatus;
 
 			NotNullPtr<UI::GUITabPage> tpInfo;
-			UI::GUITextBox *txtInfo;
+			NotNullPtr<UI::GUITextBox> txtInfo;
 
 			NotNullPtr<UI::GUITabPage> tpTest;
-			UI::GUITextBox *txtTest;
+			NotNullPtr<UI::GUITextBox> txtTest;
 
 			UI::GUIPopupMenu *mnuPopup;
 

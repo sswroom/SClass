@@ -128,11 +128,11 @@ SSWR::AVIRead::AVIROTPForm::AVIROTPForm(UI::GUIClientControl *parent, NotNullPtr
 	this->grpNew->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->lblName = ui->NewLabel(this->grpNew, CSTR("Name"));
 	this->lblName->SetRect(4, 4, 100, 23, false);
-	NEW_CLASS(this->txtName, UI::GUITextBox(ui, this->grpNew, CSTR("")));
+	this->txtName = ui->NewTextBox(this->grpNew, CSTR(""));
 	this->txtName->SetRect(104, 4, 150, 23, false);
 	this->lblKey = ui->NewLabel(this->grpNew, CSTR("Key"));
 	this->lblKey->SetRect(4, 28, 100, 23, false);
-	NEW_CLASS(this->txtKey, UI::GUITextBox(ui, this->grpNew, CSTR("")));
+	this->txtKey = ui->NewTextBox(this->grpNew, CSTR(""));
 	this->txtKey->SetRect(104, 28, 300, 23, false);
 	this->btnKeyRand80 = ui->NewButton(this->grpNew, CSTR("Random 80-bit"));
 	this->btnKeyRand80->SetRect(404, 28, 75, 23, false);

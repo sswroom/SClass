@@ -14,7 +14,7 @@ namespace SSWR
 		class AVIRIPScanDetectorForm : public UI::GUIForm
 		{
 		private:
-			UI::GUITextBox *txtLog;
+			NotNullPtr<UI::GUITextBox> txtLog;
 			NotNullPtr<UI::GUIListBox> lbLog;
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;

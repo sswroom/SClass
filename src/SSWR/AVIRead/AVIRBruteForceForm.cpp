@@ -146,7 +146,7 @@ SSWR::AVIRead::AVIRBruteForceForm::AVIRBruteForceForm(UI::GUIClientControl *pare
 	this->cboHashType->SetSelectedIndex(0);
 	this->lblHashValue = ui->NewLabel(*this, CSTR("Hash Value"));
 	this->lblHashValue->SetRect(4, 28, 100, 23, false);
-	NEW_CLASS(this->txtHashValue, UI::GUITextBox(ui, *this, CSTR("")));
+	this->txtHashValue = ui->NewTextBox(*this, CSTR(""));
 	this->txtHashValue->SetRect(104, 28, 200, 23, false);
 	this->lblEncoding = ui->NewLabel(*this, CSTR("Encoding"));
 	this->lblEncoding->SetRect(4, 52, 100, 23, false);
@@ -158,11 +158,11 @@ SSWR::AVIRead::AVIRBruteForceForm::AVIRBruteForceForm(UI::GUIClientControl *pare
 	this->cboEncoding->SetSelectedIndex(0);
 	this->lblMinLen = ui->NewLabel(*this, CSTR("Min Length"));
 	this->lblMinLen->SetRect(4, 76, 100, 23, false);
-	NEW_CLASS(this->txtMinLen, UI::GUITextBox(ui, *this, CSTR("4")));
+	this->txtMinLen = ui->NewTextBox(*this, CSTR("4"));
 	this->txtMinLen->SetRect(104, 76, 100, 23, false);
 	this->lblMaxLen = ui->NewLabel(*this, CSTR("Max Length"));
 	this->lblMaxLen->SetRect(4, 100, 100, 23, false);
-	NEW_CLASS(this->txtMaxLen, UI::GUITextBox(ui, *this, CSTR("16")));
+	this->txtMaxLen = ui->NewTextBox(*this, CSTR("16"));
 	this->txtMaxLen->SetRect(104, 100, 100, 23, false);
 	this->lblCharType = ui->NewLabel(*this, CSTR("Char Type"));
 	this->lblCharType->SetRect(4, 124, 100, 23, false);
@@ -180,7 +180,7 @@ SSWR::AVIRead::AVIRBruteForceForm::AVIRBruteForceForm(UI::GUIClientControl *pare
 	this->btnStart->HandleButtonClick(OnStartClicked, this);
 	this->lblStatus = ui->NewLabel(*this, CSTR("Status"));
 	this->lblStatus->SetRect(4, 172, 100, 23, false);
-	NEW_CLASS(this->txtStatus, UI::GUITextBox(ui, *this, CSTR("")));
+	this->txtStatus = ui->NewTextBox(*this, CSTR(""));
 	this->txtStatus->SetRect(104, 172, 250, 23, false);
 	this->txtStatus->SetReadOnly(true);
 

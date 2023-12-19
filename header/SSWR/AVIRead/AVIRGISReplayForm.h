@@ -21,20 +21,20 @@ namespace SSWR
 		{
 		private:
 			UI::GUIListBox *lbRecord;
-			UI::GUITextBox *txtGPSTime;
-			UI::GUITextBox *txtLatitude;
-			UI::GUITextBox *txtLongitude;
-			UI::GUITextBox *txtAltitude;
-			UI::GUITextBox *txtSpeedKnot;
-			UI::GUITextBox *txtSpeedKM;
-			UI::GUITextBox *txtHeading;
-			UI::GUITextBox *txtValid;
-			UI::GUITextBox *txtNSateView;
-			UI::GUITextBox *txtNSateUsed;
-			UI::GUITextBox *txtEndMark;
-			UI::GUITextBox *txtStartMark;
+			NotNullPtr<UI::GUITextBox> txtGPSTime;
+			NotNullPtr<UI::GUITextBox> txtLatitude;
+			NotNullPtr<UI::GUITextBox> txtLongitude;
+			NotNullPtr<UI::GUITextBox> txtAltitude;
+			NotNullPtr<UI::GUITextBox> txtSpeedKnot;
+			NotNullPtr<UI::GUITextBox> txtSpeedKM;
+			NotNullPtr<UI::GUITextBox> txtHeading;
+			NotNullPtr<UI::GUITextBox> txtValid;
+			NotNullPtr<UI::GUITextBox> txtNSateView;
+			NotNullPtr<UI::GUITextBox> txtNSateUsed;
+			NotNullPtr<UI::GUITextBox> txtEndMark;
+			NotNullPtr<UI::GUITextBox> txtStartMark;
 			UI::GUIPopupMenu *mnuRecord;
-			UI::GUITextBox *txtAddress;
+			NotNullPtr<UI::GUITextBox> txtAddress;
 			NotNullPtr<UI::GUILabel> lblAddress;
 			NotNullPtr<UI::GUIComboBox> cboName;
 			NotNullPtr<UI::GUILabel> lblDist;

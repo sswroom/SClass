@@ -15,7 +15,7 @@ namespace SSWR
 		{
 		private:
 			NotNullPtr<UI::GUILabel> lbl;
-			UI::GUITextBox *txt;
+			NotNullPtr<UI::GUITextBox> txt;
 			NotNullPtr<UI::GUIButton> btnOK;
 			NotNullPtr<UI::GUIButton> btnCancel;
 			OrganEnv *env;

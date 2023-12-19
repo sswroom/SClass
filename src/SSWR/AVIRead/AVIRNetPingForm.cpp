@@ -110,7 +110,7 @@ SSWR::AVIRead::AVIRNetPingForm::AVIRNetPingForm(UI::GUIClientControl *parent, No
 	this->vspRequest = ui->NewVSplitter(*this, 3, false);
 	this->lblTarget = ui->NewLabel(this->pnlRequest, CSTR("Target"));
 	this->lblTarget->SetRect(4, 4, 100, 23, false);
-	NEW_CLASS(this->txtTarget, UI::GUITextBox(ui, this->pnlRequest, CSTR("")));
+	this->txtTarget = ui->NewTextBox(this->pnlRequest, CSTR(""));
 	this->txtTarget->SetRect(104, 4, 150, 23, false);
 	this->lblRepeat = ui->NewLabel(this->pnlRequest, CSTR("Repeat"));
 	this->lblRepeat->SetRect(4, 28, 100, 23, false);

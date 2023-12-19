@@ -108,15 +108,15 @@ SSWR::AVIRead::AVIRTCPPortScanForm::AVIRTCPPortScanForm(UI::GUIClientControl *pa
 	this->pnlControl->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->lblIP = ui->NewLabel(this->pnlControl, CSTR("IP"));
 	this->lblIP->SetRect(4, 4, 100, 23, false);
-	NEW_CLASS(this->txtIP, UI::GUITextBox(ui, this->pnlControl, CSTR("127.0.0.1")));
+	this->txtIP = ui->NewTextBox(this->pnlControl, CSTR("127.0.0.1"));
 	this->txtIP->SetRect(104, 4, 150, 23, false);
 	this->lblThreadCnt = ui->NewLabel(this->pnlControl, CSTR("Thread Cnt"));
 	this->lblThreadCnt->SetRect(4, 28, 100, 23, false);
-	NEW_CLASS(this->txtThreadCnt, UI::GUITextBox(ui, this->pnlControl, CSTR("20")));
+	this->txtThreadCnt = ui->NewTextBox(this->pnlControl, CSTR("20"));
 	this->txtThreadCnt->SetRect(104, 28, 100, 23, false);
 	this->lblMaxPort = ui->NewLabel(this->pnlControl, CSTR("Max Port"));
 	this->lblMaxPort->SetRect(4, 52, 100, 23, false);
-	NEW_CLASS(this->txtMaxPort, UI::GUITextBox(ui, this->pnlControl, CSTR("65535")));
+	this->txtMaxPort = ui->NewTextBox(this->pnlControl, CSTR("65535"));
 	this->txtMaxPort->SetRect(104, 52, 100, 23, false);
 	this->btnStart = ui->NewButton(this->pnlControl, CSTR("Start"));
 	this->btnStart->SetRect(204, 52, 75, 23, false);

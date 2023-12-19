@@ -29,9 +29,9 @@ namespace SSWR
 			NotNullPtr<UI::GUILabel> lblID;
 			NotNullPtr<UI::GUILabel> lblEName;
 			NotNullPtr<UI::GUILabel> lblCName;
-			UI::GUITextBox *txtID;
-			UI::GUITextBox *txtEName;
-			UI::GUITextBox *txtCName;
+			NotNullPtr<UI::GUITextBox> txtID;
+			NotNullPtr<UI::GUITextBox> txtEName;
+			NotNullPtr<UI::GUITextBox> txtCName;
 			NotNullPtr<UI::GUIButton> btnAdd;
 			NotNullPtr<UI::GUIButton> btnOk;
 			NotNullPtr<UI::GUIButton> btnCancel;

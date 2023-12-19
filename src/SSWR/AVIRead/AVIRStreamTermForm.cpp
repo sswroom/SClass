@@ -274,7 +274,7 @@ SSWR::AVIRead::AVIRStreamTermForm::AVIRStreamTermForm(UI::GUIClientControl *pare
 	this->grpStream->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->lblStream = ui->NewLabel(this->grpStream, CSTR("Stream Type"));
 	this->lblStream->SetRect(4, 4, 100, 23, false);
-	NEW_CLASS(this->txtStream, UI::GUITextBox(ui, this->grpStream, CSTR("-")));
+	this->txtStream = ui->NewTextBox(this->grpStream, CSTR("-"));
 	this->txtStream->SetRect(104, 4, 200, 23, false);
 	this->txtStream->SetReadOnly(true);
 	this->btnStream = ui->NewButton(this->grpStream, CSTR("&Open"));
@@ -294,7 +294,7 @@ SSWR::AVIRead::AVIRStreamTermForm::AVIRStreamTermForm(UI::GUIClientControl *pare
 	this->cboRecvType->AddItem(CSTR("Display as Text"), 0);
 	this->cboRecvType->SetSelectedIndex(0);
 	this->cboRecvType->HandleSelectionChange(OnRecvTypeChg, this);
-	NEW_CLASS(this->txtRecvDisp, UI::GUITextBox(ui, this->grpRecv, CSTR(""), true));
+	this->txtRecvDisp = ui->NewTextBox(this->grpRecv, CSTR(""), true);
 	this->txtRecvDisp->SetReadOnly(true);
 	this->txtRecvDisp->SetDockType(UI::GUIControl::DOCK_FILL);
 	NEW_CLASSNN(this->pnlSendOption, UI::GUIPanel(ui, this->grpSend));
@@ -320,7 +320,7 @@ SSWR::AVIRead::AVIRStreamTermForm::AVIRStreamTermForm(UI::GUIClientControl *pare
 	this->radSendText->SetRect(0, 0, 100, 23, false);
 	NEW_CLASS(this->radSendHex, UI::GUIRadioButton(ui, this->pnlSendOption, CSTR("Hex"), false));
 	this->radSendHex->SetRect(100, 0, 100, 23, false);
-	NEW_CLASS(this->txtSendValue, UI::GUITextBox(ui, this->pnlSend, CSTR("")));
+	this->txtSendValue = ui->NewTextBox(this->pnlSend, CSTR(""));
 	this->txtSendValue->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->cboSendType = ui->NewComboBox(this->grpSend, false);
 	this->cboSendType->SetRect(0, 0, 100, 23, false);
@@ -329,7 +329,7 @@ SSWR::AVIRead::AVIRStreamTermForm::AVIRStreamTermForm(UI::GUIClientControl *pare
 	this->cboSendType->AddItem(CSTR("Display as Text"), 0);
 	this->cboSendType->SetSelectedIndex(0);
 	this->cboSendType->HandleSelectionChange(OnSendTypeChg, this);
-	NEW_CLASS(this->txtSendDisp, UI::GUITextBox(ui, this->grpSend, CSTR(""), true));
+	this->txtSendDisp = ui->NewTextBox(this->grpSend, CSTR(""), true);
 	this->txtSendDisp->SetReadOnly(true);
 	this->txtSendDisp->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->AddTimer(1000, OnTimerTick, this);

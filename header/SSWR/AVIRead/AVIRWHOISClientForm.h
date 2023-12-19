@@ -21,9 +21,9 @@ namespace SSWR
 
 			NotNullPtr<UI::GUIPanel> pnlRequest;
 			NotNullPtr<UI::GUILabel> lblIP;
-			UI::GUITextBox *txtIP;
+			NotNullPtr<UI::GUITextBox> txtIP;
 			NotNullPtr<UI::GUILabel> lblRespTime;
-			UI::GUITextBox *txtRespTime;
+			NotNullPtr<UI::GUITextBox> txtRespTime;
 			NotNullPtr<UI::GUIButton> btnRequest;
 			UI::GUIListBox *lbResponse;
 

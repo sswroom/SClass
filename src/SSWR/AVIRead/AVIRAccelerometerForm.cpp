@@ -55,17 +55,17 @@ SSWR::AVIRead::AVIRAccelerometerForm::AVIRAccelerometerForm(UI::GUIClientControl
 
 	this->lblX = ui->NewLabel(*this, CSTR("X"));
 	this->lblX->SetRect(4, 4, 50, 23, false);
-	NEW_CLASS(this->txtX, UI::GUITextBox(ui, *this, CSTR("")));
+	this->txtX = ui->NewTextBox(*this, CSTR(""));
 	this->txtX->SetRect(54, 4, 100, 23, false);
 	this->txtX->SetReadOnly(true);
 	this->lblY = ui->NewLabel(*this, CSTR("Y"));
 	this->lblY->SetRect(4, 28, 50, 23, false);
-	NEW_CLASS(this->txtY, UI::GUITextBox(ui, *this, CSTR("")));
+	this->txtY = ui->NewTextBox(*this, CSTR(""));
 	this->txtY->SetRect(54, 28, 100, 23, false);
 	this->txtY->SetReadOnly(true);
 	this->lblZ = ui->NewLabel(*this, CSTR("Z"));
 	this->lblZ->SetRect(4, 52, 50, 23, false);
-	NEW_CLASS(this->txtZ, UI::GUITextBox(ui, *this, CSTR("")));
+	this->txtZ = ui->NewTextBox(*this, CSTR(""));
 	this->txtZ->SetRect(54, 52, 100, 23, false);
 	this->txtZ->SetReadOnly(true);
 	NEW_CLASSNN(this->pnlMoving, UI::GUIPanel(ui, *this));

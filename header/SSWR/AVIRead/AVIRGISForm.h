@@ -36,10 +36,10 @@ namespace SSWR
 
 			NotNullPtr<UI::GUIPanel> pnlControl;
 			NotNullPtr<UI::GUIPanel> pnlStatus;
-			UI::GUITextBox *txtScale;
-			UI::GUITextBox *txtLatLon;
-			UI::GUITextBox *txtUTMGrid;
-			UI::GUITextBox *txtTimeUsed;
+			NotNullPtr<UI::GUITextBox> txtScale;
+			NotNullPtr<UI::GUITextBox> txtLatLon;
+			NotNullPtr<UI::GUITextBox> txtUTMGrid;
+			NotNullPtr<UI::GUITextBox> txtTimeUsed;
 			UI::GUITrackBar *tbScale;
 			UI::GUIMainMenu *mnuMain;
 			UI::GUIPopupMenu *mnuLayer;

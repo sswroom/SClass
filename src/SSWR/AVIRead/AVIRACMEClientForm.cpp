@@ -94,11 +94,11 @@ SSWR::AVIRead::AVIRACMEClientForm::AVIRACMEClientForm(UI::GUIClientControl *pare
 	sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("ACMEKey.pem"));
 	this->lblHost = ui->NewLabel(*this, CSTR("Host"));
 	this->lblHost->SetRect(4, 4, 100, 23, false);
-	NEW_CLASS(this->txtHost, UI::GUITextBox(ui, *this, CSTR("acme-staging-v02.api.letsencrypt.org")));
+	this->txtHost = ui->NewTextBox(*this, CSTR("acme-staging-v02.api.letsencrypt.org"));
 	this->txtHost->SetRect(104, 4, 200, 23, false);
 	this->lblKeyFile = ui->NewLabel(*this, CSTR("KeyFile"));
 	this->lblKeyFile->SetRect(4, 28, 100, 23, false);
-	NEW_CLASS(this->txtKeyFile, UI::GUITextBox(ui, *this, CSTRP(sbuff, sptr)));
+	this->txtKeyFile = ui->NewTextBox(*this, CSTRP(sbuff, sptr));
 	this->txtKeyFile->SetRect(104, 28, 200, 23, false);
 	this->btnStart = ui->NewButton(*this, CSTR("Start"));
 	this->btnStart->SetRect(104, 52, 75, 23, false);
@@ -106,17 +106,17 @@ SSWR::AVIRead::AVIRACMEClientForm::AVIRACMEClientForm(UI::GUIClientControl *pare
 
 	this->lblTermOfService = ui->NewLabel(*this, CSTR("TermOfService"));
 	this->lblTermOfService->SetRect(4, 76, 100, 23, false);
-	NEW_CLASS(this->txtTermOfService, UI::GUITextBox(ui, *this, CSTR("")));
+	this->txtTermOfService = ui->NewTextBox(*this, CSTR(""));
 	this->txtTermOfService->SetRect(104, 76, 300, 23, false);
 	this->txtTermOfService->SetReadOnly(true);
 	this->lblWebsite = ui->NewLabel(*this, CSTR("Website"));
 	this->lblWebsite->SetRect(4, 100, 100, 23, false);
-	NEW_CLASS(this->txtWebsite, UI::GUITextBox(ui, *this, CSTR("")));
+	this->txtWebsite = ui->NewTextBox(*this, CSTR(""));
 	this->txtWebsite->SetRect(104, 100, 300, 23, false);
 	this->txtWebsite->SetReadOnly(true);
 	this->lblAccount = ui->NewLabel(*this, CSTR("Account"));
 	this->lblAccount->SetRect(4, 124, 100, 23, false);
-	NEW_CLASS(this->txtAccount, UI::GUITextBox(ui, *this, CSTR("")));
+	this->txtAccount = ui->NewTextBox(*this, CSTR(""));
 	this->txtAccount->SetRect(104, 124, 300, 23, false);
 	this->txtAccount->SetReadOnly(true);
 }

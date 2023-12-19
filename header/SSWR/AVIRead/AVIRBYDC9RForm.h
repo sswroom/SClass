@@ -24,37 +24,37 @@ namespace SSWR
 
 			NotNullPtr<UI::GUIGroupBox> grpCANBus;
 			NotNullPtr<UI::GUILabel> lblCANBus;
-			UI::GUITextBox *txtCANBus;
+			NotNullPtr<UI::GUITextBox> txtCANBus;
 			NotNullPtr<UI::GUIButton> btnCANBus;
 
 			NotNullPtr<UI::GUILabel> lblSpeedKmHr;
-			UI::GUITextBox *txtSpeedKmHr;
+			NotNullPtr<UI::GUITextBox> txtSpeedKmHr;
 			NotNullPtr<UI::GUILabel> lblDoor1;
-			UI::GUITextBox *txtDoor1;
+			NotNullPtr<UI::GUITextBox> txtDoor1;
 			NotNullPtr<UI::GUILabel> lblDoor2;
-			UI::GUITextBox *txtDoor2;
+			NotNullPtr<UI::GUITextBox> txtDoor2;
 			NotNullPtr<UI::GUILabel> lblBatteryLevel;
-			UI::GUITextBox *txtBatteryLevel;
+			NotNullPtr<UI::GUITextBox> txtBatteryLevel;
 			NotNullPtr<UI::GUILabel> lblMotorRPM;
-			UI::GUITextBox *txtMotorRPM;
+			NotNullPtr<UI::GUITextBox> txtMotorRPM;
 			NotNullPtr<UI::GUILabel> lblBatteryStartCharging;
-			UI::GUITextBox *txtBatteryStartCharging;
+			NotNullPtr<UI::GUITextBox> txtBatteryStartCharging;
 			NotNullPtr<UI::GUILabel> lblLeftMotorMode;
-			UI::GUITextBox *txtLeftMotorMode;
+			NotNullPtr<UI::GUITextBox> txtLeftMotorMode;
 			NotNullPtr<UI::GUILabel> lblRightotorMode;
-			UI::GUITextBox *txtRightMotorMode;
+			NotNullPtr<UI::GUITextBox> txtRightMotorMode;
 			NotNullPtr<UI::GUILabel> lblCarbinDoorBack;
-			UI::GUITextBox *txtCarbinDoorBack;
+			NotNullPtr<UI::GUITextBox> txtCarbinDoorBack;
 			NotNullPtr<UI::GUILabel> lblCarbinDoorLeft;
-			UI::GUITextBox *txtCarbinDoorLeft;
+			NotNullPtr<UI::GUITextBox> txtCarbinDoorLeft;
 			NotNullPtr<UI::GUILabel> lblCarbinDoorRight;
-			UI::GUITextBox *txtCarbinDoorRight;
+			NotNullPtr<UI::GUITextBox> txtCarbinDoorRight;
 			NotNullPtr<UI::GUILabel> lblPowerMode;
-			UI::GUITextBox *txtPowerMode;
+			NotNullPtr<UI::GUITextBox> txtPowerMode;
 			NotNullPtr<UI::GUILabel> lblBatteryCharging;
-			UI::GUITextBox *txtBatteryCharging;
+			NotNullPtr<UI::GUITextBox> txtBatteryCharging;
 			NotNullPtr<UI::GUILabel> lblOkLED;
-			UI::GUITextBox *txtOkLED;
+			NotNullPtr<UI::GUITextBox> txtOkLED;
 
 			IO::Device::BYDC9R::DeviceStatus dispStatus;
 

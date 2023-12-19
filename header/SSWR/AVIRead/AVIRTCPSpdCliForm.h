@@ -34,15 +34,15 @@ namespace SSWR
 			Sync::Event procEvt;
 
 			NotNullPtr<UI::GUILabel> lblHost;
-			UI::GUITextBox *txtHost;
+			NotNullPtr<UI::GUITextBox> txtHost;
 			NotNullPtr<UI::GUILabel> lblPort;
-			UI::GUITextBox *txtPort;
+			NotNullPtr<UI::GUITextBox> txtPort;
 			NotNullPtr<UI::GUIButton> btnConn;
 
 			NotNullPtr<UI::GUILabel> lblSendSpeed;
-			UI::GUITextBox *txtSendSpeed;
+			NotNullPtr<UI::GUITextBox> txtSendSpeed;
 			NotNullPtr<UI::GUILabel> lblRecvSpeed;
-			UI::GUITextBox *txtRecvSpeed;
+			NotNullPtr<UI::GUITextBox> txtRecvSpeed;
 
 			static void __stdcall OnConnClick(void *userObj);
 			static void __stdcall OnTimerTick(void *userObj);

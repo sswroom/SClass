@@ -73,12 +73,12 @@ namespace SSWR
 
 			NotNullPtr<UI::GUIGroupBox> grpStream;
 			NotNullPtr<UI::GUILabel> lblStream;
-			UI::GUITextBox *txtStream;
+			NotNullPtr<UI::GUITextBox> txtStream;
 			NotNullPtr<UI::GUIButton> btnStream;
 			UI::GUIRadioButton *radMODBUSRTU;
 			UI::GUIRadioButton *radMODBUSTCP;
 			NotNullPtr<UI::GUILabel> lblTimeout;
-			UI::GUITextBox *txtTimeout;
+			NotNullPtr<UI::GUITextBox> txtTimeout;
 			NotNullPtr<UI::GUIButton> btnTimeout;
 			UI::GUITabControl *tcMain;
 
@@ -87,54 +87,54 @@ namespace SSWR
 			NotNullPtr<UI::GUILabel> lblRegAddr;
 			NotNullPtr<UI::GUILabel> lblValue;
 			NotNullPtr<UI::GUILabel> lblU8Name;
-			UI::GUITextBox *txtU8DevAddr;
-			UI::GUITextBox *txtU8RegAddr;
+			NotNullPtr<UI::GUITextBox> txtU8DevAddr;
+			NotNullPtr<UI::GUITextBox> txtU8RegAddr;
 			NotNullPtr<UI::GUIButton> btnU8Get;
-			UI::GUITextBox *txtU8Value;
+			NotNullPtr<UI::GUITextBox> txtU8Value;
 			NotNullPtr<UI::GUILabel> lblU16Name;
-			UI::GUITextBox *txtU16DevAddr;
-			UI::GUITextBox *txtU16RegAddr;
+			NotNullPtr<UI::GUITextBox> txtU16DevAddr;
+			NotNullPtr<UI::GUITextBox> txtU16RegAddr;
 			NotNullPtr<UI::GUIButton> btnU16Get;
-			UI::GUITextBox *txtU16Value;
+			NotNullPtr<UI::GUITextBox> txtU16Value;
 			NotNullPtr<UI::GUILabel> lblI32Name;
-			UI::GUITextBox *txtI32DevAddr;
-			UI::GUITextBox *txtI32RegAddr;
+			NotNullPtr<UI::GUITextBox> txtI32DevAddr;
+			NotNullPtr<UI::GUITextBox> txtI32RegAddr;
 			NotNullPtr<UI::GUIButton> btnI32Get;
-			UI::GUITextBox *txtI32Value;
+			NotNullPtr<UI::GUITextBox> txtI32Value;
 			NotNullPtr<UI::GUILabel> lblF32Name;
-			UI::GUITextBox *txtF32DevAddr;
-			UI::GUITextBox *txtF32RegAddr;
+			NotNullPtr<UI::GUITextBox> txtF32DevAddr;
+			NotNullPtr<UI::GUITextBox> txtF32RegAddr;
 			NotNullPtr<UI::GUIButton> btnF32Get;
-			UI::GUITextBox *txtF32Value;
+			NotNullPtr<UI::GUITextBox> txtF32Value;
 
 			NotNullPtr<UI::GUITabPage> tpSetValue;
 			NotNullPtr<UI::GUILabel> lblSetDevAddr;
 			NotNullPtr<UI::GUILabel> lblSetRegAddr;
 			NotNullPtr<UI::GUILabel> lblSetValue;
 			NotNullPtr<UI::GUILabel> lblSetU8Name;
-			UI::GUITextBox *txtSetU8DevAddr;
-			UI::GUITextBox *txtSetU8RegAddr;
+			NotNullPtr<UI::GUITextBox> txtSetU8DevAddr;
+			NotNullPtr<UI::GUITextBox> txtSetU8RegAddr;
 			NotNullPtr<UI::GUIButton> btnSetU8Low;
 			NotNullPtr<UI::GUIButton> btnSetU8High;
-			UI::GUITextBox *txtSetU8Value;
+			NotNullPtr<UI::GUITextBox> txtSetU8Value;
 
 			NotNullPtr<UI::GUITabPage> tpDevice;
 			NotNullPtr<UI::GUIPanel> pnlDevice;
 			NotNullPtr<UI::GUILabel> lblDeviceAddr;
-			UI::GUITextBox *txtDeviceAddr;
+			NotNullPtr<UI::GUITextBox> txtDeviceAddr;
 			NotNullPtr<UI::GUILabel> lblDevice;
 			NotNullPtr<UI::GUIComboBox> cboDevice;
 			NotNullPtr<UI::GUIButton> btnDeviceAdd;
 			UI::GUIListView *lvDevice;
 
 			NotNullPtr<UI::GUITabPage> tpRAWSend;
-			UI::GUITextBox *txtRAWSend;
+			NotNullPtr<UI::GUITextBox> txtRAWSend;
 
 			NotNullPtr<UI::GUITabPage> tpRAWRecv;
-			UI::GUITextBox *txtRAWRecv;
+			NotNullPtr<UI::GUITextBox> txtRAWRecv;
 
 			NotNullPtr<UI::GUITabPage> tpLog;
-			UI::GUITextBox *txtLog;
+			NotNullPtr<UI::GUITextBox> txtLog;
 			NotNullPtr<UI::GUIListBox> lbLog;
 		private:
 			static void __stdcall OnStreamClicked(void *userObj);

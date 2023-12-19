@@ -18,13 +18,13 @@ namespace SSWR
 		private:
 			NotNullPtr<UI::GUIPanel> pnlCoord;
 			NotNullPtr<UI::GUILabel> lblSRID;
-			UI::GUITextBox *txtSRID;
+			NotNullPtr<UI::GUITextBox> txtSRID;
 			NotNullPtr<UI::GUIButton> btnSRID;
 			NotNullPtr<UI::GUIButton> btnSRIDPrev;
 			NotNullPtr<UI::GUIButton> btnSRIDNext;
-			UI::GUITextBox *txtWKT;
+			NotNullPtr<UI::GUITextBox> txtWKT;
 			NotNullPtr<UI::GUIHSplitter> hspWKT;
-			UI::GUITextBox *txtDisp;
+			NotNullPtr<UI::GUITextBox> txtDisp;
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 

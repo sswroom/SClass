@@ -23,12 +23,12 @@ namespace SSWR
 
 			NotNullPtr<UI::GUITabPage> tpImage;
 			UI::GUIPictureBoxDD *pbImage;
-			UI::GUITextBox *txtImageStatus;
+			NotNullPtr<UI::GUITextBox> txtImageStatus;
 
 			NotNullPtr<UI::GUITabPage> tpInfo;
 			NotNullPtr<UI::GUIPanel> pnlInfo;
 			NotNullPtr<UI::GUIButton> btnInfoICC;
-			UI::GUITextBox *txtInfo;
+			NotNullPtr<UI::GUITextBox> txtInfo;
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 			NotNullPtr<Media::ColorManagerSess> colorSess;

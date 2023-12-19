@@ -7,7 +7,7 @@ SSWR::AVIRead::MIMEViewer::AVIRMIMEHTMLViewer::AVIRMIMEHTMLViewer(NotNullPtr<SSW
 {
 	this->obj = obj;
 
-	NEW_CLASS(this->txtHTML, UI::GUITextBox(ui, ctrl, CSTR(""), true));
+	this->txtHTML = ui->NewTextBox(ctrl, CSTR(""), true);
 	this->txtHTML->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->txtHTML->SetReadOnly(true);
 

@@ -55,11 +55,11 @@ namespace SSWR
 			NotNullPtr<UI::GUIButton> btnFinish;
 			NotNullPtr<UI::GUIButton> btnNewDisc;
 			NotNullPtr<UI::GUILabel> lblDiscId;
-			UI::GUITextBox *txtDiscId;
+			NotNullPtr<UI::GUITextBox> txtDiscId;
 			NotNullPtr<UI::GUILabel> lblDiscType;
-			UI::GUITextBox *txtDiscType;
+			NotNullPtr<UI::GUITextBox> txtDiscType;
 			NotNullPtr<UI::GUILabel> lblDate;
-			UI::GUITextBox *txtDate;
+			NotNullPtr<UI::GUITextBox> txtDate;
 			UI::GUIListBox *lbDiscId;
 			UI::GUIListBox *lbBrand;
 			UI::GUIListBox *lbDVDName;
@@ -79,7 +79,7 @@ namespace SSWR
 			NotNullPtr<UI::GUIButton> btnRemoveFile;
 			NotNullPtr<UI::GUIButton> btnBuildMovie;
 			NotNullPtr<UI::GUILabel> lblSectorSize;
-			UI::GUITextBox *txtSectorSize;
+			NotNullPtr<UI::GUITextBox> txtSectorSize;
 			NotNullPtr<UI::GUIButton> btnSectorSize;
 			UI::GUIListBox *lbFileName;
 

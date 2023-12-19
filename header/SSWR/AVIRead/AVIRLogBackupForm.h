@@ -23,9 +23,9 @@ namespace SSWR
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 
 			NotNullPtr<UI::GUILabel> lblLogDir;
-			UI::GUITextBox *txtLogDir;
+			NotNullPtr<UI::GUITextBox> txtLogDir;
 			NotNullPtr<UI::GUILabel> lblLogName;
-			UI::GUITextBox *txtLogName;
+			NotNullPtr<UI::GUITextBox> txtLogName;
 			NotNullPtr<UI::GUIButton> btnStart;
 
 			static void __stdcall OnStartClicked(void *userObj);

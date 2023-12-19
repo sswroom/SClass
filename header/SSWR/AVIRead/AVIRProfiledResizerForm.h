@@ -33,26 +33,26 @@ namespace SSWR
 			NotNullPtr<UI::GUIButton> btnProfileDel;
 		//	NotNullPtr<UI::GUIHSplitter> hspProfile;
 			NotNullPtr<UI::GUIPanel> pnlProfile2;
-			UI::GUITextBox *txtProfileName;
-			UI::GUITextBox *txtSuffix;
+			NotNullPtr<UI::GUITextBox> txtProfileName;
+			NotNullPtr<UI::GUITextBox> txtSuffix;
 
 			NotNullPtr<UI::GUIGroupBox> grpSize;
 			UI::GUIRadioButton *radSize;
-			UI::GUITextBox *txtWidth;
-			UI::GUITextBox *txtHeight;
+			NotNullPtr<UI::GUITextBox> txtWidth;
+			NotNullPtr<UI::GUITextBox> txtHeight;
 			UI::GUIRadioButton *radDPI;
-			UI::GUITextBox *txtHDPI;
-			UI::GUITextBox *txtVDPI;
+			NotNullPtr<UI::GUITextBox> txtHDPI;
+			NotNullPtr<UI::GUITextBox> txtVDPI;
 
-			UI::GUITextBox *txtWatermark;
+			NotNullPtr<UI::GUITextBox> txtWatermark;
 			UI::GUIRadioButton *radTIFF;
 			UI::GUIRadioButton *radJPEGQ;
 			UI::GUIRadioButton *radJPEGSize;
 			UI::GUIRadioButton *radPNG;
 			UI::GUIRadioButton *radWEBPQ;
-			UI::GUITextBox *txtJPEGQuality;
-			UI::GUITextBox *txtJPEGSize;
-			UI::GUITextBox *txtWEBPQuality;
+			NotNullPtr<UI::GUITextBox> txtJPEGQuality;
+			NotNullPtr<UI::GUITextBox> txtJPEGSize;
+			NotNullPtr<UI::GUITextBox> txtWEBPQuality;
 			NotNullPtr<UI::GUIButton> btnProfileAdd;
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;

@@ -130,7 +130,7 @@ SSWR::AVIRead::AVIROSMCacheCfgForm::AVIROSMCacheCfgForm(UI::GUIClientControl *pa
 
 	this->lblHTTPPort = ui->NewLabel(*this, CSTR("HTTP Port"));
 	this->lblHTTPPort->SetRect(8, 32, 100, 23, false);
-	NEW_CLASS(this->txtHTTPPort, UI::GUITextBox(ui, *this, CSTR("80")));
+	this->txtHTTPPort = ui->NewTextBox(*this, CSTR("80"));
 	this->txtHTTPPort->SetRect(108, 32, 100, 23, false);
 
 	this->btnOK = ui->NewButton(*this, CSTR("&OK"));

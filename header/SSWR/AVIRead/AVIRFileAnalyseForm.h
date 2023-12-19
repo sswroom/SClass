@@ -21,7 +21,7 @@ namespace SSWR
 		private:
 			NotNullPtr<UI::GUIPanel> pnlCtrl;
 			NotNullPtr<UI::GUILabel> lblFile;
-			UI::GUITextBox *txtFile;
+			NotNullPtr<UI::GUITextBox> txtFile;
 			NotNullPtr<UI::GUIButton> btnFile;
 			UI::GUITabControl *tcMain;
 			NotNullPtr<UI::GUITabPage> tpContent;
@@ -32,7 +32,7 @@ namespace SSWR
 			NotNullPtr<UI::GUIHSplitter> hspPack;
 			UI::GUIListBox *lbPackItems;
 			NotNullPtr<UI::GUIHSplitter> hspPack2;
-			UI::GUITextBox *txtPack;
+			NotNullPtr<UI::GUITextBox> txtPack;
 
 			NotNullPtr<UI::GUIButton> btnTrimPadding;
 

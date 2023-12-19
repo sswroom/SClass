@@ -37,7 +37,7 @@ SSWR::AVIRead::AVIRRegionalMapForm::AVIRRegionalMapForm(UI::GUIClientControl *pa
 	this->layer = 0;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASS(this->txtDesc, UI::GUITextBox(ui, *this, CSTR(""), true));
+	this->txtDesc = ui->NewTextBox(*this, CSTR(""), true);
 	this->txtDesc->SetRect(0, 0, 100, 71, false);
 	this->txtDesc->SetReadOnly(true);
 	this->txtDesc->SetDockType(UI::GUIControl::DOCK_BOTTOM);

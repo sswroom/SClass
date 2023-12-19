@@ -111,14 +111,14 @@ SSWR::AVIRead::AVIRImagePSNRForm::AVIRImagePSNRForm(UI::GUIClientControl *parent
 
 	this->lblOriFile = ui->NewLabel(*this, CSTR("Ori File"));
 	this->lblOriFile->SetRect(0, 0, 100, 23, false);
-	NEW_CLASS(this->txtOriFile, UI::GUITextBox(ui, *this, CSTR("")));
+	this->txtOriFile = ui->NewTextBox(*this, CSTR(""));
 	this->txtOriFile->SetRect(100, 0, 450, 23, false);
 	this->btnOriFile = ui->NewButton(*this, CSTR("&Browse"));
 	this->btnOriFile->SetRect(550, 0, 75, 23, false);
 	this->btnOriFile->HandleButtonClick(OnOriFileClicked, this);
 	this->lblLossyFile = ui->NewLabel(*this, CSTR("Lossy File"));
 	this->lblLossyFile->SetRect(0, 24, 100, 23, false);
-	NEW_CLASS(this->txtLossyFile, UI::GUITextBox(ui, *this, CSTR("")));
+	this->txtLossyFile = ui->NewTextBox(*this, CSTR(""));
 	this->txtLossyFile->SetRect(100, 24, 450, 23, false);
 	this->btnLossyFile = ui->NewButton(*this, CSTR("B&rowse"));
 	this->btnLossyFile->SetRect(550, 24, 75, 23, false);
@@ -134,7 +134,7 @@ SSWR::AVIRead::AVIRImagePSNRForm::AVIRImagePSNRForm(UI::GUIClientControl *parent
 	this->btnCompare->HandleButtonClick(OnCompareClicked, this);
 	this->lblPSNR = ui->NewLabel(*this, CSTR("PSNR"));
 	this->lblPSNR->SetRect(0, 96, 100, 23, false);
-	NEW_CLASS(this->txtPSNR, UI::GUITextBox(ui, *this, CSTR("")));
+	this->txtPSNR = ui->NewTextBox(*this, CSTR(""));
 	this->txtPSNR->SetRect(100, 96, 100, 23, false);
 	this->txtPSNR->SetReadOnly(true);
 	this->lblPSNRDB = ui->NewLabel(*this, CSTR("dB"));

@@ -293,7 +293,7 @@ SSWR::AVIRead::AVIRImageBatchConvForm::AVIRImageBatchConvForm(UI::GUIClientContr
 
 	this->lblDir = ui->NewLabel(*this, CSTR("Folder"));
 	this->lblDir->SetRect(0, 0, 100, 23, false);
-	NEW_CLASS(this->txtDir, UI::GUITextBox(ui, *this, CSTR("")));
+	this->txtDir = ui->NewTextBox(*this, CSTR(""));
 	this->txtDir->SetRect(100, 0, 450, 23, false);
 	this->btnBrowse = ui->NewButton(*this, CSTR("&Browse"));
 	this->btnBrowse->SetRect(550, 0, 75, 23, false);
@@ -306,11 +306,11 @@ SSWR::AVIRead::AVIRImageBatchConvForm::AVIRImageBatchConvForm(UI::GUIClientContr
 	this->radFormatWebP->SetRect(100, 48, 100, 23, false);
 	this->lblQuality = ui->NewLabel(*this, CSTR("Quality"));
 	this->lblQuality->SetRect(0, 72, 100, 23, false);
-	NEW_CLASS(this->txtQuality, UI::GUITextBox(ui, *this, CSTR("100")));
+	this->txtQuality = ui->NewTextBox(*this, CSTR("100"));
 	this->txtQuality->SetRect(100, 72, 100, 23, false);
 	NEW_CLASS(this->chkSubdir, UI::GUICheckBox(ui, *this, CSTR("OutSubdir"), true));
 	this->chkSubdir->SetRect(0, 96, 100, 23, false);
-	NEW_CLASS(this->txtSubdir, UI::GUITextBox(ui, *this, CSTR("JPEG")));
+	this->txtSubdir = ui->NewTextBox(*this, CSTR("JPEG"));
 	this->txtSubdir->SetRect(100, 96, 100, 23, false);
 	this->btnConvert = ui->NewButton(*this, CSTR("&Convert"));
 	this->btnConvert->SetRect(100, 120, 75, 23, false);

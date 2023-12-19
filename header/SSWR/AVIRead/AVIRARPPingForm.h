@@ -49,7 +49,7 @@ namespace SSWR
 			NotNullPtr<UI::GUILabel> lblAdapter;
 			NotNullPtr<UI::GUIComboBox> cboAdapter;
 			NotNullPtr<UI::GUILabel> lblTarget;
-			UI::GUITextBox *txtTarget;
+			NotNullPtr<UI::GUITextBox> txtTarget;
 			NotNullPtr<UI::GUILabel> lblRepeat;
 			UI::GUICheckBox *chkRepeat;
 			NotNullPtr<UI::GUIButton> btnPing;

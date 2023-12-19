@@ -385,12 +385,12 @@ SSWR::AVIRead::AVIRDBCopyTablesForm::AVIRDBCopyTablesForm(UI::GUIClientControl *
 	this->cboSourceConn->SetRect(104, 4, 400, 23, false);
 	this->lblSourceDB = ui->NewLabel(this->tpSource, CSTR("Database"));
 	this->lblSourceDB->SetRect(4, 28, 100, 23, false);
-	NEW_CLASS(this->txtSourceDB, UI::GUITextBox(ui, this->tpSource, CSTR("")));
+	this->txtSourceDB = ui->NewTextBox(this->tpSource, CSTR(""));
 	this->txtSourceDB->SetRect(104, 28, 200, 23, false);
 	this->txtSourceDB->SetReadOnly(true);
 	this->lblSourceCollation = ui->NewLabel(this->tpSource, CSTR("Collation"));
 	this->lblSourceCollation->SetRect(4, 52, 100, 23, false);
-	NEW_CLASS(this->txtSourceCollation, UI::GUITextBox(ui, this->tpSource, CSTR("")));
+	this->txtSourceCollation = ui->NewTextBox(this->tpSource, CSTR(""));
 	this->txtSourceCollation->SetRect(104, 52, 200, 23, false);
 	this->txtSourceCollation->SetReadOnly(true);
 	this->lblSourceSchema = ui->NewLabel(this->tpSource, CSTR("Schema"));

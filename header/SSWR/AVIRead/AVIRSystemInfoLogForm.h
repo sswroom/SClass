@@ -20,15 +20,15 @@ namespace SSWR
 
 			NotNullPtr<UI::GUITabPage> tpSystem;
 			NotNullPtr<UI::GUILabel> lblOSName;
-			UI::GUITextBox *txtOSName;
+			NotNullPtr<UI::GUITextBox> txtOSName;
 			NotNullPtr<UI::GUILabel> lblOSVer;
-			UI::GUITextBox *txtOSVer;
+			NotNullPtr<UI::GUITextBox> txtOSVer;
 			NotNullPtr<UI::GUILabel> lblOSLocale;
-			UI::GUITextBox *txtOSLocale;
+			NotNullPtr<UI::GUITextBox> txtOSLocale;
 			NotNullPtr<UI::GUILabel> lblArchitecture;
-			UI::GUITextBox *txtArchitecture;
+			NotNullPtr<UI::GUITextBox> txtArchitecture;
 			NotNullPtr<UI::GUILabel> lblProductType;
-			UI::GUITextBox *txtProductType;
+			NotNullPtr<UI::GUITextBox> txtProductType;
 
 			NotNullPtr<UI::GUITabPage> tpDevices;
 			UI::GUIListView *lvDevices;

@@ -21,15 +21,15 @@ namespace SSWR
 			IO::ProgramLinkManager *progMgr;
 			UI::GUICheckBox *chkThisUser;
 			NotNullPtr<UI::GUILabel> lblShortName;
-			UI::GUITextBox *txtShortName;
+			NotNullPtr<UI::GUITextBox> txtShortName;
 			NotNullPtr<UI::GUILabel> lblName;
-			UI::GUITextBox *txtName;
+			NotNullPtr<UI::GUITextBox> txtName;
 			NotNullPtr<UI::GUILabel> lblComment;
-			UI::GUITextBox *txtComment;
+			NotNullPtr<UI::GUITextBox> txtComment;
 			NotNullPtr<UI::GUILabel> lblCategories;
-			UI::GUITextBox *txtCategories;
+			NotNullPtr<UI::GUITextBox> txtCategories;
 			NotNullPtr<UI::GUILabel> lblCmdLine;
-			UI::GUITextBox *txtCmdLine;
+			NotNullPtr<UI::GUITextBox> txtCmdLine;
 			NotNullPtr<UI::GUIButton> btnCreate;
 			NotNullPtr<UI::GUIButton> btnCancel;
 

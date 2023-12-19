@@ -14,15 +14,15 @@ namespace SSWR
 		{
 		private:
 			NotNullPtr<UI::GUILabel> lblServer;
-			UI::GUITextBox *txtServer;
+			NotNullPtr<UI::GUITextBox> txtServer;
 			NotNullPtr<UI::GUILabel> lblPort;
-			UI::GUITextBox *txtPort;
+			NotNullPtr<UI::GUITextBox> txtPort;
 			NotNullPtr<UI::GUILabel> lblUID;
-			UI::GUITextBox *txtUID;
+			NotNullPtr<UI::GUITextBox> txtUID;
 			NotNullPtr<UI::GUILabel> lblPWD;
-			UI::GUITextBox *txtPWD;
+			NotNullPtr<UI::GUITextBox> txtPWD;
 			NotNullPtr<UI::GUILabel> lblDatabase;
-			UI::GUITextBox *txtDatabase;
+			NotNullPtr<UI::GUITextBox> txtDatabase;
 			NotNullPtr<UI::GUIButton> btnOK;
 			NotNullPtr<UI::GUIButton> btnCancel;
 

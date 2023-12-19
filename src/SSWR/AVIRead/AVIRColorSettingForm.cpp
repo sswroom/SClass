@@ -494,7 +494,7 @@ SSWR::AVIRead::AVIRColorSettingForm::AVIRColorSettingForm(UI::GUIClientControl *
 	this->pnlMonitor->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->lblMonitor = ui->NewLabel(this->pnlMonitor, CSTR("Monitor"));
 	this->lblMonitor->SetRect(0, 0, 100, 23, false);
-	NEW_CLASS(this->txtMonitor, UI::GUITextBox(ui, this->pnlMonitor, CSTR(""), false));
+	this->txtMonitor = ui->NewTextBox(this->pnlMonitor, CSTR(""), false);
 	this->txtMonitor->SetRect(100, 0, 300, 23, false);
 	this->txtMonitor->SetReadOnly(true);
 	if (monName)
@@ -557,17 +557,17 @@ SSWR::AVIRead::AVIRColorSettingForm::AVIRColorSettingForm(UI::GUIClientControl *
 	this->grpMonProfile->SetRect(0, 24, 500, 72, false);
 	this->lblMonTran = ui->NewLabel(this->grpMonProfile, CSTR("Transfer Characteristics"));
 	this->lblMonTran->SetRect(0, 0, 150, 23, false);
-	NEW_CLASS(this->txtMonTran, UI::GUITextBox(ui, this->grpMonProfile, CSTR("")));
+	this->txtMonTran = ui->NewTextBox(this->grpMonProfile, CSTR(""));
 	this->txtMonTran->SetRect(150, 0, 150, 23, false);
 	this->txtMonTran->SetReadOnly(true);
 	this->lblMonRGBGamma = ui->NewLabel(this->grpMonProfile, CSTR("Gamma"));
 	this->lblMonRGBGamma->SetRect(300, 0, 80, 23, false);
-	NEW_CLASS(this->txtMonRGBGamma, UI::GUITextBox(ui, this->grpMonProfile, CSTR("")));
+	this->txtMonRGBGamma = ui->NewTextBox(this->grpMonProfile, CSTR(""));
 	this->txtMonRGBGamma->SetRect(380, 0, 100, 23, false);
 	this->txtMonRGBGamma->SetReadOnly(true);
 	this->lblMonPrimaries = ui->NewLabel(this->grpMonProfile, CSTR("Color Primaries"));
 	this->lblMonPrimaries->SetRect(0, 24, 150, 23, false);
-	NEW_CLASS(this->txtMonPrimaries, UI::GUITextBox(ui, this->grpMonProfile, CSTR("")));
+	this->txtMonPrimaries = ui->NewTextBox(this->grpMonProfile, CSTR(""));
 	this->txtMonPrimaries->SetRect(150, 24, 150, 23, false);
 	this->txtMonPrimaries->SetReadOnly(true);
 	this->btnMonCustom = ui->NewButton(this->grpMonProfile, CSTR("Custom"));
@@ -608,7 +608,7 @@ SSWR::AVIRead::AVIRColorSettingForm::AVIRColorSettingForm(UI::GUIClientControl *
 	this->chk10Bit->HandleCheckedChange(On10BitChanged, this);
 	this->lblLuminance = ui->NewLabel(this->tpSetting, CSTR("Luminance"));
 	this->lblLuminance->SetRect(0, 176, 100, 23, false);
-	NEW_CLASS(this->txtLuminance, UI::GUITextBox(ui, this->tpSetting, CSTR("250")));
+	this->txtLuminance = ui->NewTextBox(this->tpSetting, CSTR("250"));
 	this->txtLuminance->SetRect(100, 176, 50, 23, false);
 	this->lblLuminanceUnit = ui->NewLabel(this->tpSetting, CSTR("cd/m2"));
 	this->lblLuminanceUnit->SetRect(150, 176, 100, 23, false);

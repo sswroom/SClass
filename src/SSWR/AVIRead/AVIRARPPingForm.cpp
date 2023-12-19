@@ -144,7 +144,7 @@ SSWR::AVIRead::AVIRARPPingForm::AVIRARPPingForm(UI::GUIClientControl *parent, No
 	this->cboAdapter->SetRect(104, 4, 200, 23, false);
 	this->lblTarget = ui->NewLabel(this->pnlRequest, CSTR("Target"));
 	this->lblTarget->SetRect(4, 28, 100, 23, false);
-	NEW_CLASS(this->txtTarget, UI::GUITextBox(ui, this->pnlRequest, CSTR("")));
+	this->txtTarget = ui->NewTextBox(this->pnlRequest, CSTR(""));
 	this->txtTarget->SetRect(104, 28, 150, 23, false);
 	this->lblRepeat = ui->NewLabel(this->pnlRequest, CSTR("Repeat"));
 	this->lblRepeat->SetRect(4, 52, 100, 23, false);

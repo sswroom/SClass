@@ -153,13 +153,13 @@ SSWR::AVIRead::AVIRCppEnumForm::AVIRCppEnumForm(UI::GUIClientControl *parent, No
 	this->btnConv2->HandleButtonClick(OnConv2Clicked, this);
 	this->lblPrefix = ui->NewLabel(this->pnlCtrl, CSTR("Prefix"));
 	this->lblPrefix->SetRect(234, 28, 100, 23, false);
-	NEW_CLASS(this->txtPrefix, UI::GUITextBox(ui, this->pnlCtrl, CSTR("")));
+	this->txtPrefix = ui->NewTextBox(this->pnlCtrl, CSTR(""));
 	this->txtPrefix->SetRect(334, 28, 100, 23, false);
-	NEW_CLASS(this->txtSource, UI::GUITextBox(ui, *this, CSTR(""), true));
+	this->txtSource = ui->NewTextBox(*this, CSTR(""), true);
 	this->txtSource->SetRect(0, 0, 512, 100, false);
 	this->txtSource->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->hspMain = ui->NewHSplitter(*this, 3, false);
-	NEW_CLASS(this->txtDest, UI::GUITextBox(ui, *this, CSTR(""), true));
+	this->txtDest = ui->NewTextBox(*this, CSTR(""), true);
 	this->txtDest->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->txtDest->SetReadOnly(true);
 }

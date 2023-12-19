@@ -53,7 +53,7 @@ namespace SSWR
 
 			NotNullPtr<UI::GUIPanel> pnlControl;
 			NotNullPtr<UI::GUILabel> lblInfo;
-			UI::GUITextBox *txtInfo;
+			NotNullPtr<UI::GUITextBox> txtInfo;
 			NotNullPtr<UI::GUIButton> btnInfo;
 			NotNullPtr<UI::GUILabel> lblIP;
 			NotNullPtr<UI::GUIComboBox> cboIP;
@@ -66,16 +66,16 @@ namespace SSWR
 			UI::GUITabControl *tcIP;
 			NotNullPtr<UI::GUITabPage> tpIPInfo;
 			NotNullPtr<UI::GUILabel> lblIPCount;
-			UI::GUITextBox *txtIPCount;
+			NotNullPtr<UI::GUITextBox> txtIPCount;
 			NotNullPtr<UI::GUILabel> lblIPName;
-			UI::GUITextBox *txtIPName;
+			NotNullPtr<UI::GUITextBox> txtIPName;
 			NotNullPtr<UI::GUILabel> lblIPCountry;
-			UI::GUITextBox *txtIPCountry;
+			NotNullPtr<UI::GUITextBox> txtIPCountry;
 			NotNullPtr<UI::GUITabPage> tpIPWhois;
-			UI::GUITextBox *txtIPWhois;
+			NotNullPtr<UI::GUITextBox> txtIPWhois;
 
 			NotNullPtr<UI::GUITabPage> tpLog;
-			UI::GUITextBox *txtLog;
+			NotNullPtr<UI::GUITextBox> txtLog;
 			NotNullPtr<UI::GUIListBox> lbLog;
 
 			static void __stdcall OnPingPacket(void *userData, UInt32 srcIP, UInt32 destIP, UInt8 ttl, UOSInt packetSize);

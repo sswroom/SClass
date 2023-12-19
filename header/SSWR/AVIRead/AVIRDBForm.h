@@ -37,7 +37,7 @@ namespace SSWR
 			NotNullPtr<UI::GUITabPage> tpSQL;
 			NotNullPtr<UI::GUIPanel> pnlSQLCtrl;
 			NotNullPtr<UI::GUIButton> btnSQL;
-			UI::GUITextBox *txtSQL;
+			NotNullPtr<UI::GUITextBox> txtSQL;
 
 			UI::GUIMainMenu *mnuMain;
 

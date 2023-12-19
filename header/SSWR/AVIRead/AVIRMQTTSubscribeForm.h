@@ -51,26 +51,26 @@ namespace SSWR
 
 			NotNullPtr<UI::GUITabPage> tpStatus;
 			NotNullPtr<UI::GUILabel> lblHost;
-			UI::GUITextBox *txtHost;
+			NotNullPtr<UI::GUITextBox> txtHost;
 			NotNullPtr<UI::GUILabel> lblPort;
-			UI::GUITextBox *txtPort;
+			NotNullPtr<UI::GUITextBox> txtPort;
 			NotNullPtr<UI::GUILabel> lblUsername;
-			UI::GUITextBox *txtUsername;
+			NotNullPtr<UI::GUITextBox> txtUsername;
 			NotNullPtr<UI::GUILabel> lblPassword;
-			UI::GUITextBox *txtPassword;
+			NotNullPtr<UI::GUITextBox> txtPassword;
 			NotNullPtr<UI::GUIButton> btnStart;
 
 			NotNullPtr<UI::GUITabPage> tpSTopic;
 			NotNullPtr<UI::GUILabel> lblSTopic;
-			UI::GUITextBox *txtSTopic;
+			NotNullPtr<UI::GUITextBox> txtSTopic;
 			NotNullPtr<UI::GUIButton> btnSTopic;
 			UI::GUIListBox *lbSTopic;
 
 			NotNullPtr<UI::GUITabPage> tpPublish;
 			NotNullPtr<UI::GUILabel> lblPublishTopic;
-			UI::GUITextBox *txtPublishTopic;
+			NotNullPtr<UI::GUITextBox> txtPublishTopic;
 			NotNullPtr<UI::GUILabel> lblPublishMessage;
-			UI::GUITextBox *txtPublishMessage;
+			NotNullPtr<UI::GUITextBox> txtPublishMessage;
 			NotNullPtr<UI::GUIButton> btnPublish;
 
 			NotNullPtr<UI::GUITabPage> tpTopic;
@@ -80,7 +80,7 @@ namespace SSWR
 
 			NotNullPtr<UI::GUITabPage> tpLog;
 			NotNullPtr<UI::GUIListBox> lbLog;
-			UI::GUITextBox *txtLog;
+			NotNullPtr<UI::GUITextBox> txtLog;
 
 			static void __stdcall OnStartClicked(void *userObj);
 			static void __stdcall OnSTopicClicked(void *userObj);

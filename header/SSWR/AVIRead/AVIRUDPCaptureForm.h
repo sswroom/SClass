@@ -35,7 +35,7 @@ namespace SSWR
 		private:
 			NotNullPtr<UI::GUIPanel> pnlControl;
 			NotNullPtr<UI::GUILabel> lblPort;
-			UI::GUITextBox *txtPort;
+			NotNullPtr<UI::GUITextBox> txtPort;
 			UI::GUICheckBox *chkReuseAddr;
 			NotNullPtr<UI::GUIButton> btnStart;
 			UI::GUITabControl *tcMain;
@@ -43,10 +43,10 @@ namespace SSWR
 			NotNullPtr<UI::GUITabPage> tpData;
 			UI::GUIListBox *lbData;
 			NotNullPtr<UI::GUIHSplitter> hspData;
-			UI::GUITextBox *txtData;
+			NotNullPtr<UI::GUITextBox> txtData;
 
 			NotNullPtr<UI::GUITabPage> tpLog;
-			UI::GUITextBox *txtLog;
+			NotNullPtr<UI::GUITextBox> txtLog;
 			NotNullPtr<UI::GUIListBox> lbLog;
 
 			NotNullPtr<UI::GUITabPage> tpPorts;
@@ -60,7 +60,7 @@ namespace SSWR
 			NotNullPtr<UI::GUIPanel> pnlMulticast;
 			NotNullPtr<UI::GUIPanel> pnlMulticastCtrl;
 			NotNullPtr<UI::GUILabel> lblMulticastCurr;
-			UI::GUITextBox *txtMulticastCurr;
+			NotNullPtr<UI::GUITextBox> txtMulticastCurr;
 			NotNullPtr<UI::GUIButton> btnMulticastAdd;
 			UI::GUIListBox *lbMulticastCurr;
 

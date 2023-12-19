@@ -22,9 +22,9 @@ namespace SSWR
 			NotNullPtr<UI::GUIComboBox> cboVendor;
 			NotNullPtr<UI::GUIButton> btnGenerate;
 			NotNullPtr<UI::GUILabel> lblColonFormat;
-			UI::GUITextBox *txtColonFormat;
+			NotNullPtr<UI::GUITextBox> txtColonFormat;
 			NotNullPtr<UI::GUILabel> lblPlainFormat;
-			UI::GUITextBox *txtPlainFormat;
+			NotNullPtr<UI::GUITextBox> txtPlainFormat;
 			NotNullPtr<UI::GUILabel> lblAdapter;
 			NotNullPtr<UI::GUIComboBox> cboAdapter;
 			NotNullPtr<UI::GUIButton> btnAdapterSet;

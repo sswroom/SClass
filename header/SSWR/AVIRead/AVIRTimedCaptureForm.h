@@ -57,19 +57,19 @@ namespace SSWR
 			NotNullPtr<UI::GUILabel> lblFormat;
 			NotNullPtr<UI::GUIComboBox> cboFormat;
 			NotNullPtr<UI::GUILabel> lblInterval;
-			UI::GUITextBox *txtInterval;
+			NotNullPtr<UI::GUITextBox> txtInterval;
 			NotNullPtr<UI::GUILabel> lblJPGQuality;
-			UI::GUITextBox *txtJPGQuality;
+			NotNullPtr<UI::GUITextBox> txtJPGQuality;
 			NotNullPtr<UI::GUILabel> lblFileName;
-			UI::GUITextBox *txtFileName;
+			NotNullPtr<UI::GUITextBox> txtFileName;
 			NotNullPtr<UI::GUIButton> btnStart;
-			UI::GUITextBox *txtDeviceInfo;
+			NotNullPtr<UI::GUITextBox> txtDeviceInfo;
 
 			NotNullPtr<UI::GUITabPage> tpStatus;
 			NotNullPtr<UI::GUILabel> lblFrameCnt;
-			UI::GUITextBox *txtFrameCnt;
+			NotNullPtr<UI::GUITextBox> txtFrameCnt;
 			NotNullPtr<UI::GUILabel> lblSaveCnt;
-			UI::GUITextBox *txtSaveCnt;
+			NotNullPtr<UI::GUITextBox> txtSaveCnt;
 
 			static void __stdcall OnDevChg(void *userObj);
 			static void __stdcall OnStartClicked(void *userObj);

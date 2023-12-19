@@ -24,9 +24,9 @@ namespace SSWR
 			UI::GUIHScrollBar *hsbDPI;
 			NotNullPtr<UI::GUILabel> lblDPIV;
 			NotNullPtr<UI::GUILabel> lblMagnifyRatio;
-			UI::GUITextBox *txtMagnifyRatio;
+			NotNullPtr<UI::GUITextBox> txtMagnifyRatio;
 			NotNullPtr<UI::GUILabel> lblDesktopDPI;
-			UI::GUITextBox *txtDesktopDPI;
+			NotNullPtr<UI::GUITextBox> txtDesktopDPI;
 			NotNullPtr<UI::GUIButton> btnStandard;
 			NotNullPtr<UI::GUIButton> btn1x;
 			NotNullPtr<UI::GUIButton> btnLaptop;

@@ -59,18 +59,18 @@ SSWR::AVIRead::AVIRBCryptForm::AVIRBCryptForm(UI::GUIClientControl *parent, NotN
 	this->grpGenerate->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->lblCost = ui->NewLabel(this->grpGenerate, CSTR("Cost"));
 	this->lblCost->SetRect(4, 4, 100, 23, false);
-	NEW_CLASS(this->txtCost, UI::GUITextBox(ui, this->grpGenerate, CSTR("10")));
+	this->txtCost = ui->NewTextBox(this->grpGenerate, CSTR("10"));
 	this->txtCost->SetRect(104, 4, 100, 23, false);
 	this->lblGenPassword = ui->NewLabel(this->grpGenerate, CSTR("Password"));
 	this->lblGenPassword->SetRect(4, 28, 100, 23, false);
-	NEW_CLASS(this->txtGenPassword, UI::GUITextBox(ui, this->grpGenerate, CSTR("")));
+	this->txtGenPassword = ui->NewTextBox(this->grpGenerate, CSTR(""));
 	this->txtGenPassword->SetRect(104, 28, 200, 23, false);
 	this->btnGenerate = ui->NewButton(this->grpGenerate, CSTR("Generate"));
 	this->btnGenerate->SetRect(104, 52, 75, 23, false);
 	this->btnGenerate->HandleButtonClick(OnGenHashClicked, this);
 	this->lblGenHash = ui->NewLabel(this->grpGenerate, CSTR("Hash"));
 	this->lblGenHash->SetRect(4, 76, 100, 23, false);
-	NEW_CLASS(this->txtGenHash, UI::GUITextBox(ui, this->grpGenerate, CSTR("")));
+	this->txtGenHash = ui->NewTextBox(this->grpGenerate, CSTR(""));
 	this->txtGenHash->SetRect(104, 76, 500, 23, false);
 	this->txtGenHash->SetReadOnly(true);
 
@@ -78,18 +78,18 @@ SSWR::AVIRead::AVIRBCryptForm::AVIRBCryptForm(UI::GUIClientControl *parent, NotN
 	this->grpCheck->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lblCheckHash = ui->NewLabel(this->grpCheck, CSTR("Hash"));
 	this->lblCheckHash->SetRect(4, 4, 100, 23, false);
-	NEW_CLASS(this->txtCheckHash, UI::GUITextBox(ui, this->grpCheck, CSTR("")));
+	this->txtCheckHash = ui->NewTextBox(this->grpCheck, CSTR(""));
 	this->txtCheckHash->SetRect(104, 4, 500, 23, false);
 	this->lblCheckPassword = ui->NewLabel(this->grpCheck, CSTR("Password"));
 	this->lblCheckPassword->SetRect(4, 28, 100, 23, false);
-	NEW_CLASS(this->txtCheckPassword, UI::GUITextBox(ui, this->grpCheck, CSTR("")));
+	this->txtCheckPassword = ui->NewTextBox(this->grpCheck, CSTR(""));
 	this->txtCheckPassword->SetRect(104, 28, 200, 23, false);
 	this->btnCheck = ui->NewButton(this->grpCheck, CSTR("Check"));
 	this->btnCheck->SetRect(104, 52, 75, 23, false);
 	this->btnCheck->HandleButtonClick(OnCheckClicked, this);
 	this->lblCheckResult = ui->NewLabel(this->grpCheck, CSTR("Result"));
 	this->lblCheckResult->SetRect(4, 76, 100, 23, false);
-	NEW_CLASS(this->txtCheckResult, UI::GUITextBox(ui, this->grpCheck, CSTR("")));
+	this->txtCheckResult = ui->NewTextBox(this->grpCheck, CSTR(""));
 	this->txtCheckResult->SetRect(104, 76, 200, 23, false);
 	this->txtCheckResult->SetReadOnly(true);
 }

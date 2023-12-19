@@ -152,18 +152,18 @@ SSWR::AVIRead::AVIRSAMLDecryptForm::AVIRSAMLDecryptForm(UI::GUIClientControl *pa
 
 	this->lblKey = ui->NewLabel(*this, CSTR("Key File"));
 	this->lblKey->SetRect(0, 0, 100, 23, false);
-	NEW_CLASS(this->txtKey, UI::GUITextBox(ui, *this, CSTR("")));
+	this->txtKey = ui->NewTextBox(*this, CSTR(""));
 	this->txtKey->SetRect(100, 0, 600, 23, false);
 	this->lblRAWResponse = ui->NewLabel(*this, CSTR("RAW Response"));
 	this->lblRAWResponse->SetRect(0, 24, 100, 23, false);
-	NEW_CLASS(this->txtRAWResponse, UI::GUITextBox(ui, *this, CSTR(""), true));
+	this->txtRAWResponse = ui->NewTextBox(*this, CSTR(""), true);
 	this->txtRAWResponse->SetRect(100, 24, 500, 119, false);
 	this->btnDecrypt = ui->NewButton(*this, CSTR("Decrypt"));
 	this->btnDecrypt->SetRect(100, 144, 75, 23, false);
 	this->btnDecrypt->HandleButtonClick(OnDecryptClicked, this);
 	this->lblResult = ui->NewLabel(*this, CSTR("Result"));
 	this->lblResult->SetRect(0, 168, 100, 23, false);
-	NEW_CLASS(this->txtResult, UI::GUITextBox(ui, *this, CSTR(""), true));
+	this->txtResult = ui->NewTextBox(*this, CSTR(""), true);
 	this->txtResult->SetRect(100, 168, 500, 119, false);
 
 	this->HandleDropFiles(OnFormFiles, this);

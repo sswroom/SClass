@@ -3,15 +3,15 @@
 #include "Data/ArrayList.h"
 #include "Text/MyString.h"
 #include "Text/MyStringW.h"
-#include "UI/GUITextBox.h"
 #include "UI/Win/WinCore.h"
+#include "UI/Win/WinTextBox.h"
 
 #include <windows.h>
 #ifndef _WIN32_WCE
 #include <richedit.h>
 #endif
 
-UI::GUITextBox::GUITextBox(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, Text::CStringNN initText) : UI::GUIControl(ui, parent)
+UI::Win::WinTextBox::WinTextBox(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, Text::CStringNN initText) : UI::GUITextBox(ui, parent)
 {
 	UInt32 style = WS_BORDER | WS_TABSTOP | WS_CHILD | ES_AUTOHSCROLL;
 	if (parent->IsChildVisible())
@@ -21,7 +21,7 @@ UI::GUITextBox::GUITextBox(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIClientC
 	this->InitControl(((UI::Win::WinCore*)ui.Ptr())->GetHInst(), parent, L"EDIT", initText.v, style, WS_EX_CLIENTEDGE, 0, 0, 200, 28);
 }
 
-UI::GUITextBox::GUITextBox(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, Text::CStringNN initText, Bool isMultiline) : UI::GUIControl(ui, parent)
+UI::Win::WinTextBox::WinTextBox(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, Text::CStringNN initText, Bool isMultiline) : UI::GUITextBox(ui, parent)
 {
 	UInt32 style = WS_BORDER | WS_TABSTOP | WS_CHILD | ES_AUTOHSCROLL;
 	if (parent->IsChildVisible())
@@ -35,37 +35,28 @@ UI::GUITextBox::GUITextBox(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIClientC
 	this->InitControl(((UI::Win::WinCore*)ui.Ptr())->GetHInst(), parent, L"EDIT", initText.v, style, WS_EX_CLIENTEDGE, 0, 0, 200, 28);
 }
 
-UI::GUITextBox::~GUITextBox()
+UI::Win::WinTextBox::~WinTextBox()
 {
 }
 
-void UI::GUITextBox::EventTextChange()
-{
-	UOSInt i = this->txtChgHdlrs.GetCount();
-	while (i-- > 0)
-	{
-		this->txtChgHdlrs.GetItem(i)(this->txtChgObjs.GetItem(i));
-	}
-}
-
-void UI::GUITextBox::SetReadOnly(Bool isReadOnly)
+void UI::Win::WinTextBox::SetReadOnly(Bool isReadOnly)
 {
 	SendMessage((HWND)this->hwnd, EM_SETREADONLY, isReadOnly?TRUE:FALSE, 0);
 }
 
-void UI::GUITextBox::SetPasswordChar(UTF32Char c)
+void UI::Win::WinTextBox::SetPasswordChar(UTF32Char c)
 {
 	SendMessage((HWND)this->hwnd, EM_SETPASSWORDCHAR, c, 0);
 }
 
-void UI::GUITextBox::SetText(Text::CStringNN txt)
+void UI::Win::WinTextBox::SetText(Text::CStringNN txt)
 {
 	const WChar *wptr = Text::StrToWCharNew(txt.v);
 	SetWindowTextW((HWND)hwnd, wptr);
 	Text::StrDelNew(wptr);
 }
 
-UTF8Char *UI::GUITextBox::GetText(UTF8Char *buff)
+UTF8Char *UI::Win::WinTextBox::GetText(UTF8Char *buff)
 {
 	UOSInt leng = (UOSInt)GetWindowTextLengthW((HWND)hwnd);
 	WChar *wptr = MemAlloc(WChar, leng + 1);
@@ -75,7 +66,7 @@ UTF8Char *UI::GUITextBox::GetText(UTF8Char *buff)
 	return buff;
 }
 
-Bool UI::GUITextBox::GetText(NotNullPtr<Text::StringBuilderUTF8> sb)
+Bool UI::Win::WinTextBox::GetText(NotNullPtr<Text::StringBuilderUTF8> sb)
 {
 	UOSInt leng = (UOSInt)GetWindowTextLengthW((HWND)hwnd);
 	WChar *wptr = MemAlloc(WChar, leng + 1);
@@ -85,12 +76,7 @@ Bool UI::GUITextBox::GetText(NotNullPtr<Text::StringBuilderUTF8> sb)
 	return true;
 }
 
-Text::CStringNN UI::GUITextBox::GetObjectClass() const
-{
-	return CSTR("TextBox");
-}
-
-OSInt UI::GUITextBox::OnNotify(UInt32 code, void *lParam)
+OSInt UI::Win::WinTextBox::OnNotify(UInt32 code, void *lParam)
 {
 	switch (code)
 	{
@@ -101,19 +87,7 @@ OSInt UI::GUITextBox::OnNotify(UInt32 code, void *lParam)
 	return 0;
 }
 
-void UI::GUITextBox::HandleTextChanged(UI::UIEvent hdlr, void *userObj)
-{
-	this->txtChgHdlrs.Add(hdlr);
-	this->txtChgObjs.Add(userObj);
-}
-
-void UI::GUITextBox::HandleKeyDown(UI::KeyEvent hdlr, void *userObj)
-{
-	this->keyDownHdlrs.Add(hdlr);
-	this->keyDownObjs.Add(userObj);
-}
-
-void UI::GUITextBox::SetWordWrap(Bool wordWrap)
+void UI::Win::WinTextBox::SetWordWrap(Bool wordWrap)
 {
 /*	if (wordWrap)
 	{
@@ -121,7 +95,7 @@ void UI::GUITextBox::SetWordWrap(Bool wordWrap)
 	}*/
 }
 
-void UI::GUITextBox::SelectAll()
+void UI::Win::WinTextBox::SelectAll()
 {
 	SendMessage((HWND)this->hwnd, EM_SETSEL, 0, -1);
 }

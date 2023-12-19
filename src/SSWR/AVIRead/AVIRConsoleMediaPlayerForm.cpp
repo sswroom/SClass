@@ -189,7 +189,7 @@ SSWR::AVIRead::AVIRConsoleMediaPlayerForm::AVIRConsoleMediaPlayerForm(UI::GUICli
 
 	this->lblPort = ui->NewLabel(*this, CSTR("Control Port"));
 	this->lblPort->SetRect(4, 4, 100, 23, false);
-	NEW_CLASS(this->txtPort, UI::GUITextBox(ui, *this, CSTR("")));
+	this->txtPort = ui->NewTextBox(*this, CSTR(""));
 	this->txtPort->SetRect(104, 4, 60, 23, false);
 	this->txtPort->SetReadOnly(true);
 	this->btnStop = ui->NewButton(*this, CSTR("Stop"));

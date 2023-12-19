@@ -15,10 +15,10 @@ namespace SSWR
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 
 			NotNullPtr<UI::GUILabel> lblErrorCode;
-			UI::GUITextBox *txtErrorCode;
+			NotNullPtr<UI::GUITextBox> txtErrorCode;
 
 			NotNullPtr<UI::GUILabel> lblErrorName;
-			UI::GUITextBox *txtErrorName;
+			NotNullPtr<UI::GUITextBox> txtErrorName;
 
 			static void __stdcall OnErrorCodeChanged(void *userObj);
 

@@ -536,7 +536,7 @@ SSWR::AVIRead::AVIREmailServerForm::AVIREmailServerForm(UI::GUIClientControl *pa
 	this->lblSMTPCertKey->SetRect(80, 0, 200, 23, false);
 	this->lblSMTPPort = ui->NewLabel(this->tpSMTP, CSTR("Port"));
 	this->lblSMTPPort->SetRect(0, 24, 100, 23, false);
-	NEW_CLASS(this->txtSMTPPort, UI::GUITextBox(ui, this->tpSMTP, CSTR("25")));
+	this->txtSMTPPort = ui->NewTextBox(this->tpSMTP, CSTR("25"));
 	this->txtSMTPPort->SetRect(100, 24, 100, 23, false);
 	this->lblSMTPType = ui->NewLabel(this->tpSMTP, CSTR("Type"));
 	this->lblSMTPType->SetRect(0, 48, 100, 23, false);
@@ -562,7 +562,7 @@ SSWR::AVIRead::AVIREmailServerForm::AVIREmailServerForm(UI::GUIClientControl *pa
 	this->lblPOP3CertKey->SetRect(80, 0, 200, 23, false);
 	this->lblPOP3Port = ui->NewLabel(this->tpPOP3, CSTR("Port"));
 	this->lblPOP3Port->SetRect(0, 24, 100, 23, false);
-	NEW_CLASS(this->txtPOP3Port, UI::GUITextBox(ui, this->tpPOP3, CSTR("110")));
+	this->txtPOP3Port = ui->NewTextBox(this->tpPOP3, CSTR("110"));
 	this->txtPOP3Port->SetRect(100, 24, 100, 23, false);
 	NEW_CLASS(this->chkPOP3SSL, UI::GUICheckBox(ui, this->tpPOP3, CSTR("Enable SSL"), false));
 	this->chkPOP3SSL->SetRect(100, 48, 100, 23, false);
@@ -579,15 +579,15 @@ SSWR::AVIRead::AVIREmailServerForm::AVIREmailServerForm(UI::GUIClientControl *pa
 	this->lblGCISCertKey->SetRect(80, 0, 200, 23, false);
 	this->lblGCISPort = ui->NewLabel(this->tpGCIS, CSTR("Port"));
 	this->lblGCISPort->SetRect(0, 24, 100, 23, false);
-	NEW_CLASS(this->txtGCISPort, UI::GUITextBox(ui, this->tpGCIS, CSTR("9444")));
+	this->txtGCISPort = ui->NewTextBox(this->tpGCIS, CSTR("9444"));
 	this->txtGCISPort->SetRect(100, 24, 100, 23, false);
 	this->lblGCISNotifPath = ui->NewLabel(this->tpGCIS, CSTR("Notif Path"));
 	this->lblGCISNotifPath->SetRect(0, 48, 100, 23, false);
-	NEW_CLASS(this->txtGCISNotifPath, UI::GUITextBox(ui, this->tpGCIS, CSTR("/messaging/ssl/RESTful/NotiSenderRest")));
+	this->txtGCISNotifPath = ui->NewTextBox(this->tpGCIS, CSTR("/messaging/ssl/RESTful/NotiSenderRest"));
 	this->txtGCISNotifPath->SetRect(100, 48, 400, 23, false);
 	this->lblGCISBatchUplPath = ui->NewLabel(this->tpGCIS, CSTR("Batch Upload"));
 	this->lblGCISBatchUplPath->SetRect(0, 72, 100, 23, false);
-	NEW_CLASS(this->txtGCISBatchUplPath, UI::GUITextBox(ui, this->tpGCIS, CSTR("/messaging/ssl/RESTful/BatchUploadRest")));
+	this->txtGCISBatchUplPath = ui->NewTextBox(this->tpGCIS, CSTR("/messaging/ssl/RESTful/BatchUploadRest"));
 	this->txtGCISBatchUplPath->SetRect(100, 72, 400, 23, false);
 	this->btnGCISStart = ui->NewButton(this->tpGCIS, CSTR("Start"));
 	this->btnGCISStart->SetRect(100, 96, 75, 23, false);
@@ -606,7 +606,7 @@ SSWR::AVIRead::AVIREmailServerForm::AVIREmailServerForm(UI::GUIClientControl *pa
 	this->lvEmail->HandleDblClk(OnEmailDblClicked, this);
 
 	this->tpLog = this->tcMain->AddTabPage(CSTR("Log"));
-	NEW_CLASS(this->txtLog, UI::GUITextBox(ui, this->tpLog, CSTR("")));
+	this->txtLog = ui->NewTextBox(this->tpLog, CSTR(""));
 	this->txtLog->SetRect(0, 0, 100, 23, false);
 	this->txtLog->SetReadOnly(true);
 	this->txtLog->SetDockType(UI::GUIControl::DOCK_BOTTOM);

@@ -19,13 +19,13 @@ namespace SSWR
 			NotNullPtr<UI::GUILabel> lblEncAlg;
 			NotNullPtr<UI::GUIComboBox> cboEncAlg;
 			NotNullPtr<UI::GUILabel> lblPassword;
-			UI::GUITextBox *txtPassword;
+			NotNullPtr<UI::GUITextBox> txtPassword;
 			NotNullPtr<UI::GUILabel> lblMessage;
-			UI::GUITextBox *txtMessage;
+			NotNullPtr<UI::GUITextBox> txtMessage;
 			NotNullPtr<UI::GUIButton> btnDecrypt;
 			NotNullPtr<UI::GUIButton> btnEncrypt;
 			NotNullPtr<UI::GUILabel> lblResult;
-			UI::GUITextBox *txtResult;
+			NotNullPtr<UI::GUITextBox> txtResult;
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 

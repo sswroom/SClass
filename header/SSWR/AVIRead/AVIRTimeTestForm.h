@@ -14,13 +14,13 @@ namespace SSWR
 		{
 		private:
 			NotNullPtr<UI::GUILabel> lblSleepMS;
-			UI::GUITextBox *txtSleepMS;
+			NotNullPtr<UI::GUITextBox> txtSleepMS;
 			NotNullPtr<UI::GUIButton> btnSleepMS;
 			NotNullPtr<UI::GUILabel> lblSleepUS;
-			UI::GUITextBox *txtSleepUS;
+			NotNullPtr<UI::GUITextBox> txtSleepUS;
 			NotNullPtr<UI::GUIButton> btnSleepUS;
 			NotNullPtr<UI::GUILabel> lblActualTime;
-			UI::GUITextBox *txtActualTime;
+			NotNullPtr<UI::GUITextBox> txtActualTime;
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 

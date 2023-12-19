@@ -13,7 +13,7 @@ namespace UtilUI
 	{
 	private:
 		NotNullPtr<UI::GUILabel> lblSearch;
-		UI::GUITextBox *txtSearch;
+		NotNullPtr<UI::GUITextBox> txtSearch;
 		NotNullPtr<UI::GUIButton> btnSearch;
 		NotNullPtr<UI::GUIButton> btnClose;
 		Media::MonitorMgr *monMgr;

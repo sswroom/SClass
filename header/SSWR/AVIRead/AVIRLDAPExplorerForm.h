@@ -27,15 +27,15 @@ namespace SSWR
 
 			NotNullPtr<UI::GUIPanel> pnlRequest;
 			NotNullPtr<UI::GUILabel> lblHost;
-			UI::GUITextBox *txtHost;
+			NotNullPtr<UI::GUITextBox> txtHost;
 			NotNullPtr<UI::GUILabel> lblPort;
-			UI::GUITextBox *txtPort;
+			NotNullPtr<UI::GUITextBox> txtPort;
 			NotNullPtr<UI::GUILabel> lblAuthType;
 			NotNullPtr<UI::GUIComboBox> cboAuthType;
 			NotNullPtr<UI::GUILabel> lblUserDN;
-			UI::GUITextBox *txtUserDN;
+			NotNullPtr<UI::GUITextBox> txtUserDN;
 			NotNullPtr<UI::GUILabel> lblPassword;
-			UI::GUITextBox *txtPassword;
+			NotNullPtr<UI::GUITextBox> txtPassword;
 			NotNullPtr<UI::GUIButton> btnConnect;
 			UI::GUIListBox *lbPath;
 			NotNullPtr<UI::GUIHSplitter> hspPath;

@@ -24,28 +24,28 @@ namespace SSWR
 
 			NotNullPtr<UI::GUIPanel> pnlRequest;
 			NotNullPtr<UI::GUILabel> lblServer;
-			UI::GUITextBox *txtServer;
+			NotNullPtr<UI::GUITextBox> txtServer;
 			NotNullPtr<UI::GUILabel> lblRequest;
-			UI::GUITextBox *txtRequest;
+			NotNullPtr<UI::GUITextBox> txtRequest;
 			NotNullPtr<UI::GUIComboBox> cboRequest;
 //			UI::GUIRadioButton *radRequestNormal;
 //			UI::GUIRadioButton *radRequestMX;
 			NotNullPtr<UI::GUIButton> btnRequest;
 			NotNullPtr<UI::GUILabel> lblRequestTime;
-			UI::GUITextBox *txtRequestTime;
+			NotNullPtr<UI::GUITextBox> txtRequestTime;
 			UI::GUIListBox *lbAnswer;
 			NotNullPtr<UI::GUIHSplitter> hspAnswer;
 			NotNullPtr<UI::GUIPanel> pnlAnswer;
 			NotNullPtr<UI::GUILabel> lblAnsName;
-			UI::GUITextBox *txtAnsName;
+			NotNullPtr<UI::GUITextBox> txtAnsName;
 			NotNullPtr<UI::GUILabel> lblAnsType;
-			UI::GUITextBox *txtAnsType;
+			NotNullPtr<UI::GUITextBox> txtAnsType;
 			NotNullPtr<UI::GUILabel> lblAnsClass;
-			UI::GUITextBox *txtAnsClass;
+			NotNullPtr<UI::GUITextBox> txtAnsClass;
 			NotNullPtr<UI::GUILabel> lblAnsTTL;
-			UI::GUITextBox *txtAnsTTL;
+			NotNullPtr<UI::GUITextBox> txtAnsTTL;
 			NotNullPtr<UI::GUILabel> lblAnsRD;
-			UI::GUITextBox *txtAnsRD;
+			NotNullPtr<UI::GUITextBox> txtAnsRD;
 
 			Data::ArrayList<Net::DNSClient::RequestAnswer*> ansList;
 			NotNullPtr<Net::SocketFactory> sockf;

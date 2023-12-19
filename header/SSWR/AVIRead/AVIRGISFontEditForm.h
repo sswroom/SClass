@@ -36,9 +36,9 @@ namespace SSWR
 
 			UI::GUIPictureBox *pbFontPreview;
 			NotNullPtr<UI::GUILabel> lblStyleName;
-			UI::GUITextBox *txtStyleName;
+			NotNullPtr<UI::GUITextBox> txtStyleName;
 			NotNullPtr<UI::GUILabel> lblFontName;
-			UI::GUITextBox *txtFontName;
+			NotNullPtr<UI::GUITextBox> txtFontName;
 			NotNullPtr<UI::GUIButton> btnFontName;
 			NotNullPtr<UI::GUILabel> lblFontColor;
 			UI::GUIPictureBox *pbFontColor;

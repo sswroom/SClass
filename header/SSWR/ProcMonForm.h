@@ -29,22 +29,22 @@ namespace SSWR
 		UI::GUITabControl *tcMain;
 		NotNullPtr<UI::GUITabPage> tpLog;
 		NotNullPtr<UI::GUIListBox> lbLog;
-		UI::GUITextBox *txtLog;
+		NotNullPtr<UI::GUITextBox> txtLog;
 
 		NotNullPtr<UI::GUITabPage> tpProg;
 		UI::GUIListBox *lbProg;
 		NotNullPtr<UI::GUIPanel> pnlProg;
 		NotNullPtr<UI::GUIGroupBox> grpProgAdd;
 		NotNullPtr<UI::GUILabel> lblProgAddName;
-		UI::GUITextBox *txtProgAddName;
+		NotNullPtr<UI::GUITextBox> txtProgAddName;
 		NotNullPtr<UI::GUILabel> lblProgAddId;
-		UI::GUITextBox *txtProgAddId;
+		NotNullPtr<UI::GUITextBox> txtProgAddId;
 		NotNullPtr<UI::GUIButton> btnProgAdd;
 		NotNullPtr<UI::GUILabel> lblProcId;
-		UI::GUITextBox *txtProcId;
+		NotNullPtr<UI::GUITextBox> txtProcId;
 		NotNullPtr<UI::GUIButton> btnProcId;
 		NotNullPtr<UI::GUILabel> lblProgPath;
-		UI::GUITextBox *txtProgPath;
+		NotNullPtr<UI::GUITextBox> txtProgPath;
 
 		Data::ArrayList<ProgInfo*> *progList;
 		IO::LogTool *log;

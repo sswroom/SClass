@@ -55,9 +55,9 @@ namespace UtilUI
 		UI::GUIPictureBox *pbSub;
 		UI::GUIPictureBox *pbColor;
 		NotNullPtr<UI::GUILabel> lblTrans;
-		UI::GUITextBox *txtTrans;
+		NotNullPtr<UI::GUITextBox> txtTrans;
 		NotNullPtr<UI::GUILabel> lblPrimaries;
-		UI::GUITextBox *txtPrimaries;
+		NotNullPtr<UI::GUITextBox> txtPrimaries;
 		UI::GUIRadioButton *radR;
 		UI::GUIRadioButton *radG;
 		UI::GUIRadioButton *radB;
@@ -68,17 +68,17 @@ namespace UtilUI
 		UI::GUIRadioButton *radHSVS;
 		UI::GUIRadioButton *radHSVV;
 
-		UI::GUITextBox *txtR;
-		UI::GUITextBox *txtG;
-		UI::GUITextBox *txtB;
-		UI::GUITextBox *txtYIQY;
-		UI::GUITextBox *txtYIQI;
-		UI::GUITextBox *txtYIQQ;
-		UI::GUITextBox *txtHSVH;
-		UI::GUITextBox *txtHSVS;
-		UI::GUITextBox *txtHSVV;
+		NotNullPtr<UI::GUITextBox> txtR;
+		NotNullPtr<UI::GUITextBox> txtG;
+		NotNullPtr<UI::GUITextBox> txtB;
+		NotNullPtr<UI::GUITextBox> txtYIQY;
+		NotNullPtr<UI::GUITextBox> txtYIQI;
+		NotNullPtr<UI::GUITextBox> txtYIQQ;
+		NotNullPtr<UI::GUITextBox> txtHSVH;
+		NotNullPtr<UI::GUITextBox> txtHSVS;
+		NotNullPtr<UI::GUITextBox> txtHSVV;
 		NotNullPtr<UI::GUILabel> lblAlpha;
-		UI::GUITextBox *txtAlpha;
+		NotNullPtr<UI::GUITextBox> txtAlpha;
 
 		NotNullPtr<UI::GUIButton> btnOk;
 		NotNullPtr<UI::GUIButton> btnCancel;
