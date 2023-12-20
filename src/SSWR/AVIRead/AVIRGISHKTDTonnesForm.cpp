@@ -5,24 +5,25 @@
 #include "Map/HKTDVehRestrict.h"
 #include "SSWR/AVIRead/AVIRGISHKTDTonnesForm.h"
 #include "Text/StringBuilderUTF8.h"
-#include "UI/FileDialog.h"
+#include "UI/GUIFileDialog.h"
 
 void __stdcall SSWR::AVIRead::AVIRGISHKTDTonnesForm::OnRoadRouteClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRGISHKTDTonnesForm *me = (SSWR::AVIRead::AVIRGISHKTDTonnesForm*)userObj;
 	Text::StringBuilderUTF8 sb;
 	me->txtRoadRoute->GetText(sb);
-	UI::FileDialog dlg(L"SSWR", L"AVIRead", L"HKTDTonnesRoadRoute", false);
+	NotNullPtr<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"HKTDTonnesRoadRoute", false);
 	if (sb.GetLength() > 0)
 	{
-		dlg.SetFileName(sb.ToCString());
+		dlg->SetFileName(sb.ToCString());
 	}
-	dlg.SetAllowMultiSel(false);
+	dlg->SetAllowMultiSel(false);
 	me->core->GetParserList()->PrepareSelector(dlg, IO::ParserType::MapLayer);
-	if (dlg.ShowDialog(me->GetHandle()))
+	if (dlg->ShowDialog(me->GetHandle()))
 	{
-		me->txtRoadRoute->SetText(dlg.GetFileName()->ToCString());
+		me->txtRoadRoute->SetText(dlg->GetFileName()->ToCString());
 	}
+	dlg.Delete();
 }
 
 void __stdcall SSWR::AVIRead::AVIRGISHKTDTonnesForm::OnVehicleResClicked(void *userObj)
@@ -30,17 +31,18 @@ void __stdcall SSWR::AVIRead::AVIRGISHKTDTonnesForm::OnVehicleResClicked(void *u
 	SSWR::AVIRead::AVIRGISHKTDTonnesForm *me = (SSWR::AVIRead::AVIRGISHKTDTonnesForm*)userObj;
 	Text::StringBuilderUTF8 sb;
 	me->txtVehicleRes->GetText(sb);
-	UI::FileDialog dlg(L"SSWR", L"AVIRead", L"HKTDTonnesVehicleRes", false);
+	NotNullPtr<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"HKTDTonnesVehicleRes", false);
 	if (sb.GetLength() > 0)
 	{
-		dlg.SetFileName(sb.ToCString());
+		dlg->SetFileName(sb.ToCString());
 	}
-	dlg.SetAllowMultiSel(false);
+	dlg->SetAllowMultiSel(false);
 	me->core->GetParserList()->PrepareSelector(dlg, IO::ParserType::MapLayer);
-	if (dlg.ShowDialog(me->GetHandle()))
+	if (dlg->ShowDialog(me->GetHandle()))
 	{
-		me->txtVehicleRes->SetText(dlg.GetFileName()->ToCString());
+		me->txtVehicleRes->SetText(dlg->GetFileName()->ToCString());
 	}
+	dlg.Delete();
 }
 
 void __stdcall SSWR::AVIRead::AVIRGISHKTDTonnesForm::OnOKClicked(void *userObj)

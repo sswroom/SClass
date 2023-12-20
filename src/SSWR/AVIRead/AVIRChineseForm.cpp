@@ -5,7 +5,7 @@
 #include "Text/MyString.h"
 #include "Text/MyStringW.h"
 #include "Text/StringBuilderUTF8.h"
-#include "UI/FontDialog.h"
+#include "UI/GUIFontDialog.h"
 #include <wchar.h>
 
 typedef enum
@@ -33,13 +33,15 @@ void __stdcall SSWR::AVIRead::AVIRChineseForm::OnCharChg(void *userObj)
 Bool __stdcall SSWR::AVIRead::AVIRChineseForm::OnCharMouseDown(void *userObj, Math::Coord2D<OSInt> scnPos, UI::GUIControl::MouseButton btn)
 {
 	SSWR::AVIRead::AVIRChineseForm *me = (SSWR::AVIRead::AVIRChineseForm *)userObj;
-	UI::FontDialog dlg(me->currFont.Ptr(), 12, false, false);
-	if (dlg.ShowDialog(me->GetHandle()) == UI::GUIForm::DR_OK)
+	NotNullPtr<UI::GUIFontDialog> dlg = me->ui->NewFontDialog(me->currFont, 12, false, false);
+	NotNullPtr<Text::String> s;
+	if (dlg->ShowDialog(me->GetHandle()) == UI::GUIForm::DR_OK && dlg->GetFontName().SetTo(s))
 	{
 		me->currFont->Release();
-		me->currFont = dlg.GetFontName()->Clone();
+		me->currFont = s->Clone();
 		me->UpdateImg();
 	}
+	dlg.Delete();
 	return false;
 }
 

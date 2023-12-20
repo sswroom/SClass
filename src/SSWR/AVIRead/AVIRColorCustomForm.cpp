@@ -5,7 +5,6 @@
 #include "SSWR/AVIRead/AVIRColorCustomForm.h"
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
-#include "UI/FileDialog.h"
 
 void __stdcall SSWR::AVIRead::AVIRColorCustomForm::OnRXDownClicked(void *userObj)
 {

@@ -3,40 +3,24 @@
 #include "Math/Math.h"
 #include "Text/MyString.h"
 #include "Text/MyStringW.h"
-#include "UI/FontDialog.h"
+#include "UI/Win/WinFontDialog.h"
 #include <windows.h>
 #include <commdlg.h>
 
-UI::FontDialog::FontDialog()
+UI::Win::WinFontDialog::WinFontDialog(Optional<Text::String> fontName, Double fontSizePt, Bool isBold, Bool isItalic) : GUIFontDialog(fontName, fontSizePt, isBold, isItalic)
 {
-	this->fontName = 0;
-	this->fontSizePt = 0;
-	this->isBold = false;
-	this->isItalic = false;
 }
 
-UI::FontDialog::FontDialog(const UTF8Char *fontName, UOSInt nameLen, Double fontSizePt, Bool isBold, Bool isItalic)
+UI::Win::WinFontDialog::WinFontDialog(Text::CString fontName, Double fontSizePt, Bool isBold, Bool isItalic) : GUIFontDialog(fontName, fontSizePt, isBold, isItalic)
 {
-	this->fontName = Text::String::New(fontName, nameLen).Ptr();
-	this->fontSizePt = fontSizePt;
-	this->isBold = isBold;
-	this->isItalic = isItalic;
 }
 
-UI::FontDialog::FontDialog(Text::String *fontName, Double fontSizePt, Bool isBold, Bool isItalic)
+
+UI::Win::WinFontDialog::~WinFontDialog()
 {
-	this->fontName = SCOPY_STRING(fontName);
-	this->fontSizePt = fontSizePt;
-	this->isBold = isBold;
-	this->isItalic = isItalic;
 }
 
-UI::FontDialog::~FontDialog()
-{
-	SDEL_STRING(this->fontName);
-}
-
-Bool UI::FontDialog::ShowDialog(ControlHandle *ownerHandle)
+Bool UI::Win::WinFontDialog::ShowDialog(ControlHandle *ownerHandle)
 {
 	LOGFONTW lf;
 	CHOOSEFONTW cfont;
@@ -88,24 +72,4 @@ Bool UI::FontDialog::ShowDialog(ControlHandle *ownerHandle)
 	{
 		return false;
 	}
-}
-
-Text::String *UI::FontDialog::GetFontName()
-{
-	return this->fontName;
-}
-
-Double UI::FontDialog::GetFontSizePt()
-{
-	return this->fontSizePt;
-}
-
-Bool UI::FontDialog::IsBold()
-{
-	return this->isBold;
-}
-
-Bool UI::FontDialog::IsItalic()
-{
-	return this->isItalic;
 }

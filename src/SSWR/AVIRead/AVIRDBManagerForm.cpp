@@ -29,7 +29,7 @@
 #include "Text/CharUtil.h"
 #include "Text/MyString.h"
 #include "UI/Clipboard.h"
-#include "UI/FileDialog.h"
+#include "UI/GUIFileDialog.h"
 #include "UtilUI/TextInputDialog.h"
 
 #define MAX_ROW_CNT 1000
@@ -400,17 +400,14 @@ void __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnSQLFileClicked(void *userObj)
 	{
 		DB::ReadingDBTool *db = (DB::ReadingDBTool*)me->currDB;
 		{
-			UI::FileDialog dlg(L"SSWR", L"AVIRead", L"DBManagerSQLFile", false);
-			dlg.SetAllowMultiSel(false);
-			dlg.AddFilter(CSTR("*.sql"), CSTR("SQL file"));
-			if (dlg.ShowDialog(me->GetHandle()))
+			NotNullPtr<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"DBManagerSQLFile", false);
+			dlg->SetAllowMultiSel(false);
+			dlg->AddFilter(CSTR("*.sql"), CSTR("SQL file"));
+			if (dlg->ShowDialog(me->GetHandle()))
 			{
-				me->RunSQLFile(db, dlg.GetFileName());
+				me->RunSQLFile(db, dlg->GetFileName());
 			}
-			else
-			{
-				return;
-			}
+			dlg.Delete();
 		}
 	}
 }
@@ -625,14 +622,14 @@ void SSWR::AVIRead::AVIRDBManagerForm::UpdateTableData(Text::CString schemaName,
 				k = this->lvTable->AddItem(col->GetColName(), 0);
 				sptr = col->ToColTypeStr(sbuff);
 				this->lvTable->SetSubItem(k, 1, CSTRP(sbuff, sptr));
-				if (s.Set(col->GetNativeType()))
+				if (col->GetNativeType().SetTo(s))
 					this->lvTable->SetSubItem(k, 2, s);
 				this->lvTable->SetSubItem(k, 3, col->IsNotNull()?CSTR("NOT NULL"):CSTR("NULL"));
 				this->lvTable->SetSubItem(k, 4, col->IsPK()?CSTR("PK"):CSTR(""));
 				this->lvTable->SetSubItem(k, 5, col->IsAutoInc()?CSTR("AUTO_INCREMENT"):CSTR(""));
-				if (s.Set(col->GetDefVal()))
+				if (col->GetDefVal().SetTo(s))
 					this->lvTable->SetSubItem(k, 6, s);
-				if (s.Set(col->GetAttr()))
+				if (col->GetAttr().SetTo(s))
 					this->lvTable->SetSubItem(k, 7, s);
 			}
 			
@@ -649,14 +646,14 @@ void SSWR::AVIRead::AVIRDBManagerForm::UpdateTableData(Text::CString schemaName,
 				k = this->lvTable->AddItem(col.GetColName(), 0);
 				sptr = col.ToColTypeStr(sbuff);
 				this->lvTable->SetSubItem(k, 1, CSTRP(sbuff, sptr));
-				if (s.Set(col.GetNativeType()))
+				if (col.GetNativeType().SetTo(s))
 					this->lvTable->SetSubItem(k, 2, s);
 				this->lvTable->SetSubItem(k, 3, col.IsNotNull()?CSTR("NOT NULL"):CSTR("NULL"));
 				this->lvTable->SetSubItem(k, 4, col.IsPK()?CSTR("PK"):CSTR(""));
 				this->lvTable->SetSubItem(k, 5, col.IsAutoInc()?CSTR("AUTO_INCREMENT"):CSTR(""));
-				if (s.Set(col.GetDefVal()))
+				if (col.GetDefVal().SetTo(s))
 					this->lvTable->SetSubItem(k, 6, s);
-				if (s.Set(col.GetAttr()))
+				if (col.GetAttr().SetTo(s))
 					this->lvTable->SetSubItem(k, 7, s);
 
 				i++;
@@ -753,8 +750,8 @@ void SSWR::AVIRead::AVIRDBManagerForm::UpdateResult(NotNullPtr<DB::DBReader> r, 
 
 void SSWR::AVIRead::AVIRDBManagerForm::UpdateVariableList()
 {
-	Data::ArrayList<Data::TwinItem<Text::String*, Text::String*>> vars;
-	Data::TwinItem<Text::String*, Text::String*> item(0);
+	Data::ArrayList<Data::TwinItem<Optional<Text::String>, Optional<Text::String>>> vars;
+	Data::TwinItem<Optional<Text::String>, Optional<Text::String>> item(0);
 	this->lvVariable->ClearItems();
 	if (this->currDB->IsDBTool())
 	{
@@ -765,7 +762,7 @@ void SSWR::AVIRead::AVIRDBManagerForm::UpdateVariableList()
 		{
 			item = vars.GetItem(i);
 			this->lvVariable->AddItem(Text::String::OrEmpty(item.key), 0);
-			if (s.Set(item.value)) this->lvVariable->SetSubItem(i, 1, s);
+			if (item.value.SetTo(s)) this->lvVariable->SetSubItem(i, 1, s);
 			i++;
 		}
 		((DB::ReadingDBTool*)this->currDB)->FreeVariables(&vars);
@@ -789,14 +786,14 @@ void SSWR::AVIRead::AVIRDBManagerForm::UpdateSvrConnList()
 			conn = conns.GetItem(i);
 			sptr = Text::StrInt32(sbuff, conn->id);
 			this->lvSvrConn->AddItem(CSTRP(sbuff, sptr), (void*)(OSInt)conn->id);
-			if (s.Set(conn->status)) this->lvSvrConn->SetSubItem(i, 1, s);
-			if (s.Set(conn->user)) this->lvSvrConn->SetSubItem(i, 2, s);
-			if (s.Set(conn->clientHostName)) this->lvSvrConn->SetSubItem(i, 3, s);
-			if (s.Set(conn->dbName)) this->lvSvrConn->SetSubItem(i, 4, s);
-			if (s.Set(conn->cmd)) this->lvSvrConn->SetSubItem(i, 5, s);
+			if (conn->status.SetTo(s)) this->lvSvrConn->SetSubItem(i, 1, s);
+			if (conn->user.SetTo(s)) this->lvSvrConn->SetSubItem(i, 2, s);
+			if (conn->clientHostName.SetTo(s)) this->lvSvrConn->SetSubItem(i, 3, s);
+			if (conn->dbName.SetTo(s)) this->lvSvrConn->SetSubItem(i, 4, s);
+			if (conn->cmd.SetTo(s)) this->lvSvrConn->SetSubItem(i, 5, s);
 			sptr = Text::StrInt32(sbuff, conn->timeUsed);
 			this->lvSvrConn->SetSubItem(i, 6, CSTRP(sbuff, sptr));
-			if (s.Set(conn->sql)) this->lvSvrConn->SetSubItem(i, 7, s);
+			if (conn->sql.SetTo(s)) this->lvSvrConn->SetSubItem(i, 7, s);
 			i++;
 		}
 		((DB::ReadingDBTool*)this->currDB)->FreeConnectionInfo(&conns);
@@ -931,17 +928,18 @@ void SSWR::AVIRead::AVIRDBManagerForm::ExportTableData(DB::SQLType sqlType, Bool
 	*sptr++ = '_';
 	sptr = Data::Timestamp::Now().ToString(sptr, "yyyyMMdd_HHmmss");
 	sptr = Text::StrConcatC(sptr, UTF8STRC(".sql"));
-	UI::FileDialog dlg(L"SSWR", L"AVIRead", L"DBManagerExportTable", true);
-	dlg.AddFilter(CSTR("*.sql"), CSTR("SQL File"));
-	dlg.SetFileName(CSTRP(sbuff, sptr));
-	if (dlg.ShowDialog(this->GetHandle()))
+	NotNullPtr<UI::GUIFileDialog> dlg = this->ui->NewFileDialog(L"SSWR", L"AVIRead", L"DBManagerExportTable", true);
+	dlg->AddFilter(CSTR("*.sql"), CSTR("SQL File"));
+	dlg->SetFileName(CSTRP(sbuff, sptr));
+	if (dlg->ShowDialog(this->GetHandle()))
 	{
-		IO::FileStream fs(dlg.GetFileName(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+		IO::FileStream fs(dlg->GetFileName(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 		if (!DB::DBExporter::GenerateInsertSQLs(db, sqlType, axisAware, OPTSTR_CSTR(schemaName), s->ToCString(), this->currCond, fs))
 		{
 			this->ui->ShowMsgOK(CSTR("Error in reading table data"), CSTR("DB Manager"), this);
 		}
 	}
+	dlg.Delete();
 	OPTSTR_DEL(tableName);
 	OPTSTR_CSTR(schemaName);
 }
@@ -971,17 +969,18 @@ void SSWR::AVIRead::AVIRDBManagerForm::ExportTableCSV()
 		*sptr++ = '_';
 		sptr = Data::Timestamp::Now().ToString(sptr, "yyyyMMdd_HHmmss");
 		sptr = Text::StrConcatC(sptr, UTF8STRC(".csv"));
-		UI::FileDialog dlg(L"SSWR", L"AVIRead", L"DBManagerExportCSV", true);
-		dlg.AddFilter(CSTR("*.csv"), CSTR("Comma-Seperated-Value File"));
-		dlg.SetFileName(CSTRP(sbuff, sptr));
-		if (dlg.ShowDialog(this->GetHandle()))
+		NotNullPtr<UI::GUIFileDialog> dlg = this->ui->NewFileDialog(L"SSWR", L"AVIRead", L"DBManagerExportCSV", true);
+		dlg->AddFilter(CSTR("*.csv"), CSTR("Comma-Seperated-Value File"));
+		dlg->SetFileName(CSTRP(sbuff, sptr));
+		if (dlg->ShowDialog(this->GetHandle()))
 		{
-			IO::FileStream fs(dlg.GetFileName(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+			IO::FileStream fs(dlg->GetFileName(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 			if (!DB::DBExporter::GenerateCSV(db, OPTSTR_CSTR(schemaName), tableName->ToCString(), this->currCond, CSTR("\"null\""), fs, 65001))
 			{
 				this->ui->ShowMsgOK(CSTR("Error in reading table data"), CSTR("DB Manager"), this);
 			}
 		}
+		dlg.Delete();
 		tableName->Release();
 	}
 	OPTSTR_DEL(schemaName);
@@ -1012,18 +1011,19 @@ void SSWR::AVIRead::AVIRDBManagerForm::ExportTableSQLite()
 		*sptr++ = '_';
 		sptr = Data::Timestamp::Now().ToString(sptr, "yyyyMMdd_HHmmss");
 		sptr = Text::StrConcatC(sptr, UTF8STRC(".sqlite"));
-		UI::FileDialog dlg(L"SSWR", L"AVIRead", L"DBManagerExportSQLite", true);
-		dlg.AddFilter(CSTR("*.sqlite"), CSTR("SQLite File"));
-		dlg.SetFileName(CSTRP(sbuff, sptr));
-		if (dlg.ShowDialog(this->GetHandle()))
+		NotNullPtr<UI::GUIFileDialog> dlg = this->ui->NewFileDialog(L"SSWR", L"AVIRead", L"DBManagerExportSQLite", true);
+		dlg->AddFilter(CSTR("*.sqlite"), CSTR("SQLite File"));
+		dlg->SetFileName(CSTRP(sbuff, sptr));
+		if (dlg->ShowDialog(this->GetHandle()))
 		{
 			Text::StringBuilderUTF8 sb;
-			DB::SQLiteFile sqlite(dlg.GetFileName());
+			DB::SQLiteFile sqlite(dlg->GetFileName());
 			if (!DB::DBExporter::GenerateSQLite(db, OPTSTR_CSTR(schemaName), tableName->ToCString(), this->currCond, sqlite, &sb))
 			{
 				this->ui->ShowMsgOK(sb.ToCString(), CSTR("DB Manager"), this);
 			}
 		}
+		dlg.Delete();
 		tableName->Release();
 	}
 	OPTSTR_DEL(schemaName);
@@ -1054,17 +1054,18 @@ void SSWR::AVIRead::AVIRDBManagerForm::ExportTableHTML()
 		*sptr++ = '_';
 		sptr = Data::Timestamp::Now().ToString(sptr, "yyyyMMdd_HHmmss");
 		sptr = Text::StrConcatC(sptr, UTF8STRC(".html"));
-		UI::FileDialog dlg(L"SSWR", L"AVIRead", L"DBManagerExportHTML", true);
-		dlg.AddFilter(CSTR("*.html"), CSTR("HTML File"));
-		dlg.SetFileName(CSTRP(sbuff, sptr));
-		if (dlg.ShowDialog(this->GetHandle()))
+		NotNullPtr<UI::GUIFileDialog> dlg = this->ui->NewFileDialog(L"SSWR", L"AVIRead", L"DBManagerExportHTML", true);
+		dlg->AddFilter(CSTR("*.html"), CSTR("HTML File"));
+		dlg->SetFileName(CSTRP(sbuff, sptr));
+		if (dlg->ShowDialog(this->GetHandle()))
 		{
-			IO::FileStream fs(dlg.GetFileName(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+			IO::FileStream fs(dlg->GetFileName(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 			if (!DB::DBExporter::GenerateHTML(db, OPTSTR_CSTR(schemaName), tableName->ToCString(), this->currCond, fs, 65001))
 			{
 				this->ui->ShowMsgOK(CSTR("Error in exporting as PList"), CSTR("DB Manager"), this);
 			}
 		}
+		dlg.Delete();
 		tableName->Release();
 	}
 	OPTSTR_CSTR(schemaName);
@@ -1095,17 +1096,18 @@ void SSWR::AVIRead::AVIRDBManagerForm::ExportTablePList()
 		*sptr++ = '_';
 		sptr = Data::Timestamp::Now().ToString(sptr, "yyyyMMdd_HHmmss");
 		sptr = Text::StrConcatC(sptr, UTF8STRC(".plist"));
-		UI::FileDialog dlg(L"SSWR", L"AVIRead", L"DBManagerExportPList", true);
-		dlg.AddFilter(CSTR("*.plist"), CSTR("PList File"));
-		dlg.SetFileName(CSTRP(sbuff, sptr));
-		if (dlg.ShowDialog(this->GetHandle()))
+		NotNullPtr<UI::GUIFileDialog> dlg = this->ui->NewFileDialog(L"SSWR", L"AVIRead", L"DBManagerExportPList", true);
+		dlg->AddFilter(CSTR("*.plist"), CSTR("PList File"));
+		dlg->SetFileName(CSTRP(sbuff, sptr));
+		if (dlg->ShowDialog(this->GetHandle()))
 		{
-			IO::FileStream fs(dlg.GetFileName(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+			IO::FileStream fs(dlg->GetFileName(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 			if (!DB::DBExporter::GeneratePList(db, OPTSTR_CSTR(schemaName), tableName->ToCString(), this->currCond, fs, 65001))
 			{
 				this->ui->ShowMsgOK(CSTR("Error in exporting as PList"), CSTR("DB Manager"), this);
 			}
 		}
+		dlg.Delete();
 		tableName->Release();
 	}
 	OPTSTR_DEL(schemaName);
@@ -1136,18 +1138,19 @@ void SSWR::AVIRead::AVIRDBManagerForm::ExportTableXLSX()
 		*sptr++ = '_';
 		sptr = Data::Timestamp::Now().ToString(sptr, "yyyyMMdd_HHmmss");
 		sptr = Text::StrConcatC(sptr, UTF8STRC(".xlsx"));
-		UI::FileDialog dlg(L"SSWR", L"AVIRead", L"DBManagerExportXLSX", true);
-		dlg.AddFilter(CSTR("*.xlsx"), CSTR("Excel 2007 File"));
-		dlg.SetFileName(CSTRP(sbuff, sptr));
-		if (dlg.ShowDialog(this->GetHandle()))
+		NotNullPtr<UI::GUIFileDialog> dlg = this->ui->NewFileDialog(L"SSWR", L"AVIRead", L"DBManagerExportXLSX", true);
+		dlg->AddFilter(CSTR("*.xlsx"), CSTR("Excel 2007 File"));
+		dlg->SetFileName(CSTRP(sbuff, sptr));
+		if (dlg->ShowDialog(this->GetHandle()))
 		{
 			Text::StringBuilderUTF8 sb;
-			IO::FileStream fs(dlg.GetFileName(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+			IO::FileStream fs(dlg->GetFileName(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 			if (!DB::DBExporter::GenerateXLSX(db, OPTSTR_CSTR(schemaName), tableName->ToCString(), this->currCond, fs, &sb))
 			{
 				this->ui->ShowMsgOK(sb.ToCString(), CSTR("DB Manager"), this);
 			}
 		}
+		dlg.Delete();
 		tableName->Release();
 	}
 	OPTSTR_DEL(schemaName);
@@ -1178,18 +1181,19 @@ void SSWR::AVIRead::AVIRDBManagerForm::ExportTableExcelXML()
 		*sptr++ = '_';
 		sptr = Data::Timestamp::Now().ToString(sptr, "yyyyMMdd_HHmmss");
 		sptr = Text::StrConcatC(sptr, UTF8STRC(".xml"));
-		UI::FileDialog dlg(L"SSWR", L"AVIRead", L"DBManagerExportXML", true);
-		dlg.AddFilter(CSTR("*.xml"), CSTR("Excel XML File"));
-		dlg.SetFileName(CSTRP(sbuff, sptr));
-		if (dlg.ShowDialog(this->GetHandle()))
+		NotNullPtr<UI::GUIFileDialog> dlg = this->ui->NewFileDialog(L"SSWR", L"AVIRead", L"DBManagerExportXML", true);
+		dlg->AddFilter(CSTR("*.xml"), CSTR("Excel XML File"));
+		dlg->SetFileName(CSTRP(sbuff, sptr));
+		if (dlg->ShowDialog(this->GetHandle()))
 		{
 			Text::StringBuilderUTF8 sb;
-			IO::FileStream fs(dlg.GetFileName(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+			IO::FileStream fs(dlg->GetFileName(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 			if (!DB::DBExporter::GenerateExcelXML(db, OPTSTR_CSTR(schemaName), tableName->ToCString(), this->currCond, fs, &sb))
 			{
 				this->ui->ShowMsgOK(sb.ToCString(), CSTR("DB Manager"), this);
 			}
 		}
+		dlg.Delete();
 		tableName->Release();
 	}
 	OPTSTR_DEL(schemaName);

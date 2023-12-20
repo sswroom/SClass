@@ -170,7 +170,7 @@ Net::ACMEConn::Order *Net::ACMEConn::OrderParse(const UInt8 *buff, UOSInt buffSi
 	Text::JSONBase *json = Text::JSONBase::ParseJSONBytes(buff, buffSize);
 	if (json)
 	{
-		Text::String *s;
+		NotNullPtr<Text::String> s;
 		Order *order = 0;
 		if (json->GetType() == Text::JSONType::Object)
 		{
@@ -178,8 +178,7 @@ Net::ACMEConn::Order *Net::ACMEConn::OrderParse(const UInt8 *buff, UOSInt buffSi
 			order = MemAlloc(Order, 1);
 			MemClear(order, sizeof(Order));
 			order->status = ACMEStatusFromString(o->GetObjectString(CSTR("status")));
-			s = o->GetObjectString(CSTR("expires"));
-			if (s)
+			if (o->GetObjectString(CSTR("expires")).SetTo(s))
 			{
 				Data::DateTime dt;
 				dt.SetValue(s->ToCString());
@@ -212,12 +211,15 @@ Net::ACMEConn::Order *Net::ACMEConn::OrderParse(const UInt8 *buff, UOSInt buffSi
 
 Net::ACMEConn::Challenge *Net::ACMEConn::ChallengeJSON(Text::JSONBase *json)
 {
-	Text::String *type = json->GetValueString(CSTR("type"));
-	Text::String *status = json->GetValueString(CSTR("status"));
-	Text::String *url = json->GetValueString(CSTR("url"));
-	Text::String *token = json->GetValueString(CSTR("token"));
+	NotNullPtr<Text::String> type;
+	NotNullPtr<Text::String> status;
+	NotNullPtr<Text::String> url;
+	NotNullPtr<Text::String> token;
 
-	if (type && status && url && token)
+	if (json->GetValueString(CSTR("type")).SetTo(type) &&
+		json->GetValueString(CSTR("status")).SetTo(status) &&
+		json->GetValueString(CSTR("url")).SetTo(url) &&
+		json->GetValueString(CSTR("token")).SetTo(token))
 	{
 		Challenge *chall = MemAlloc(Challenge, 1);
 		chall->status = ACMEStatusFromString(status);
@@ -285,34 +287,34 @@ Net::ACMEConn::ACMEConn(NotNullPtr<Net::SocketFactory> sockf, Text::CStringNN se
 		if (mstm.GetLength() > 32)
 		{
 			UInt8 *jsonBuff = mstm.GetBuff(recvSize);
-			Text::String *s;
+			NotNullPtr<Text::String> s;
 			Text::JSONBase *json = Text::JSONBase::ParseJSONBytes(jsonBuff, recvSize);
 			if (json)
 			{
 				if (json->GetType() == Text::JSONType::Object)
 				{
 					Text::JSONObject *o = (Text::JSONObject*)json;
-					if ((s = o->GetObjectString(CSTR("newNonce"))) != 0)
+					if (o->GetObjectString(CSTR("newNonce")).SetTo(s))
 					{
 						this->urlNewNonce = s->Clone().Ptr();
 					}
-					if ((s = o->GetObjectString(CSTR("newAccount"))) != 0)
+					if (o->GetObjectString(CSTR("newAccount")).SetTo(s))
 					{
 						this->urlNewAccount = s->Clone().Ptr();
 					}
-					if ((s = o->GetObjectString(CSTR("newOrder"))) != 0)
+					if (o->GetObjectString(CSTR("newOrder")).SetTo(s))
 					{
 						this->urlNewOrder = s->Clone().Ptr();
 					}
-					if ((s = o->GetObjectString(CSTR("newAuthz"))) != 0)
+					if (o->GetObjectString(CSTR("newAuthz")).SetTo(s))
 					{
 						this->urlNewAuthz = s->Clone().Ptr();
 					}
-					if ((s = o->GetObjectString(CSTR("revokeCert"))) != 0)
+					if (o->GetObjectString(CSTR("revokeCert")).SetTo(s))
 					{
 						this->urlRevokeCert = s->Clone().Ptr();
 					}
-					if ((s = o->GetObjectString(CSTR("keyChange"))) != 0)
+					if (o->GetObjectString(CSTR("keyChange")).SetTo(s))
 					{
 						this->urlKeyChange = s->Clone().Ptr();
 					}
@@ -320,11 +322,11 @@ Net::ACMEConn::ACMEConn(NotNullPtr<Net::SocketFactory> sockf, Text::CStringNN se
 					if (metaBase && metaBase->GetType() == Text::JSONType::Object)
 					{
 						Text::JSONObject *metaObj = (Text::JSONObject*)metaBase;
-						if ((s = metaObj->GetObjectString(CSTR("termsOfService"))) != 0)
+						if (metaObj->GetObjectString(CSTR("termsOfService")).SetTo(s))
 						{
 							this->urlTermOfService = s->Clone().Ptr();
 						}
-						if ((s = metaObj->GetObjectString(CSTR("website"))) != 0)
+						if (metaObj->GetObjectString(CSTR("website")).SetTo(s))
 						{
 							this->urlWebsite = s->Clone().Ptr();
 						}
@@ -435,8 +437,8 @@ Bool Net::ACMEConn::AccountNew()
 			if (base->GetType() == Text::JSONType::Object)
 			{
 				Text::JSONObject *o = (Text::JSONObject*)base;
-				Text::String *s = o->GetObjectString(CSTR("type"));
-				if (s && s->Equals(UTF8STRC("urn:ietf:params:acme:error:accountDoesNotExist")))
+				NotNullPtr<Text::String> s;
+				if (o->GetObjectString(CSTR("type")).SetTo(s) && s->Equals(UTF8STRC("urn:ietf:params:acme:error:accountDoesNotExist")))
 				{
 					Text::StringBuilderUTF8 sb;
 					sb.AppendC(UTF8STRC("{\"termsOfServiceAgreed\":true"));
@@ -579,7 +581,7 @@ Net::ACMEConn::Challenge *Net::ACMEConn::OrderAuthorize(NotNullPtr<Text::String>
 		}
 		UOSInt i;
 		UOSInt j;
-		Text::String *s;
+		NotNullPtr<Text::String> s;
 		const UInt8 *authBuff = mstm.GetBuff(i);
 		Text::JSONBase *json = Text::JSONBase::ParseJSONBytes(authBuff, i);
 		if (json == 0)
@@ -604,8 +606,7 @@ Net::ACMEConn::Challenge *Net::ACMEConn::OrderAuthorize(NotNullPtr<Text::String>
 				json = challArr->GetArrayValue(i);
 				if (json)
 				{
-					s = json->GetValueString(CSTR("type"));
-					if (s && s->EqualsICase(sAuthType.v, sAuthType.leng))
+					if (json->GetValueString(CSTR("type")).SetTo(s) && s->EqualsICase(sAuthType.v, sAuthType.leng))
 					{
 						ret = ChallengeJSON(json);
 						break;
@@ -638,7 +639,7 @@ void Net::ACMEConn::OrderFree(Order *order)
 		order->authURLs->FreeAll();
 		DEL_CLASS(order->authURLs);
 	}
-	SDEL_STRING(order->finalizeURL);
+	OPTSTR_DEL(order->finalizeURL);
 	SDEL_STRING(order->certificateURL);
 	MemFree(order);
 }
@@ -758,29 +759,30 @@ Bool Net::ACMEConn::SaveKey(Text::CStringNN fileName)
 	return Exporter::PEMExporter::ExportFile(fileName, key);
 }
 
-Net::ACMEConn::ACMEStatus Net::ACMEConn::ACMEStatusFromString(Text::String* status)
+Net::ACMEConn::ACMEStatus Net::ACMEConn::ACMEStatusFromString(Optional<Text::String> status)
 {
-	if (status == 0)
+	NotNullPtr<Text::String> s;
+	if (!status.SetTo(s))
 	{
 		return ACMEStatus::Unknown;
 	}
-	if (status->EqualsICase(UTF8STRC("pending")))
+	if (s->EqualsICase(UTF8STRC("pending")))
 	{
 		return ACMEStatus::Pending;
 	}
-	else if (status->EqualsICase(UTF8STRC("ready")))
+	else if (s->EqualsICase(UTF8STRC("ready")))
 	{
 		return ACMEStatus::Ready;
 	}
-	else if (status->EqualsICase(UTF8STRC("processing")))
+	else if (s->EqualsICase(UTF8STRC("processing")))
 	{
 		return ACMEStatus::Processing;
 	}
-	else if (status->EqualsICase(UTF8STRC("valid")))
+	else if (s->EqualsICase(UTF8STRC("valid")))
 	{
 		return ACMEStatus::Processing;
 	}
-	else if (status->EqualsICase(UTF8STRC("invalid")))
+	else if (s->EqualsICase(UTF8STRC("invalid")))
 	{
 		return ACMEStatus::Processing;
 	}
@@ -803,12 +805,8 @@ Text::CString Net::ACMEConn::AuthorizeTypeGetName(AuthorizeType authType)
 	}
 }
 
-Net::ACMEConn::AuthorizeType Net::ACMEConn::AuthorizeTypeFromString(Text::String *s)
+Net::ACMEConn::AuthorizeType Net::ACMEConn::AuthorizeTypeFromString(NotNullPtr<Text::String> s)
 {
-	if (s == 0)
-	{
-		return AuthorizeType::Unknown;
-	}
 	if (s->EqualsICase(UTF8STRC("http-01")))
 	{
 		return AuthorizeType::HTTP_01;

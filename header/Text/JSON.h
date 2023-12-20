@@ -44,8 +44,8 @@ namespace Text
 		Bool IsString();
 
 		JSONBase *GetValue(Text::CStringNN path);
-		Text::String *GetValueString(Text::CStringNN path);
-		Text::String *GetValueNewString(Text::CStringNN path);
+		Optional<Text::String> GetValueString(Text::CStringNN path);
+		Optional<Text::String> GetValueNewString(Text::CStringNN path);
 		Int32 GetValueAsInt32(Text::CStringNN path);
 		Bool GetValueAsInt32(Text::CStringNN path, OutParam<Int32> val);
 		Int64 GetValueAsInt64(Text::CStringNN path);
@@ -70,6 +70,7 @@ namespace Text
 		static const UTF8Char *ParseJSString(const UTF8Char *jsonStr, NotNullPtr<Text::StringBuilderUTF8> sb);
 		static const UTF8Char *ParseJSNumber(const UTF8Char *jsonStr, OutParam<Double> val);
 		static JSONBase *ParseJSONStr2(const UTF8Char *jsonStr, const UTF8Char *jsonStrEnd, OutParam<const UTF8Char *> jsonStrEndOut, NotNullPtr<Text::StringBuilderUTF8> sbEnv);
+		static Bool Str2Bool(NotNullPtr<Text::String> s);
 	};
 
 	class JSONNumber : public JSONBase
@@ -132,12 +133,11 @@ namespace Text
 	class JSONString : public JSONBase
 	{
 	private:
-		Text::String *val;
+		NotNullPtr<Text::String> val;
 
 	public:
-		JSONString(Text::String *val);
 		JSONString(NotNullPtr<Text::String> val);
-		JSONString(Text::CString val);
+		JSONString(Text::CStringNN val);
 	private:
 		virtual ~JSONString();
 
@@ -147,7 +147,7 @@ namespace Text
 		virtual Bool Equals(Text::CString s);
 		virtual Bool Identical(NotNullPtr<JSONBase> obj);
 		virtual void ToString(NotNullPtr<Text::StringBuilderUTF8> sb);
-		Text::String *GetValue();
+		NotNullPtr<Text::String> GetValue();
 	};
 
 	class JSONStringW : public JSONBase
@@ -207,16 +207,16 @@ namespace Text
 		void SetObjectInt32(Text::CStringNN name, Int32 val);
 		void SetObjectInt64(Text::CStringNN name, Int64 val);
 		void SetObjectDouble(Text::CStringNN name, Double val);
-		void SetObjectString(Text::CStringNN name, Text::CString val);
-		void SetObjectString(Text::CStringNN name, Text::String *val);
+		void SetObjectString(Text::CStringNN name, Text::CStringNN val);
+		void SetObjectString(Text::CStringNN name, Optional<Text::String> val);
 		void SetObjectString(Text::CStringNN name, NotNullPtr<Text::String> val);
 		void SetObjectBool(Text::CStringNN name, Bool val);
 		JSONBase *GetObjectValue(Text::CStringNN name);
 		JSONArray *GetObjectArray(Text::CStringNN name);
 		JSONObject *GetObjectObject(Text::CStringNN name);
 		void GetObjectNames(NotNullPtr<Data::ArrayList<Text::String *>> names);
-		Text::String *GetObjectString(Text::CStringNN name);
-		Text::String *GetObjectNewString(Text::CStringNN name);
+		Optional<Text::String> GetObjectString(Text::CStringNN name);
+		Optional<Text::String> GetObjectNewString(Text::CStringNN name);
 		Double GetObjectDouble(Text::CStringNN name);
 		Int32 GetObjectInt32(Text::CStringNN name);
 		Int64 GetObjectInt64(Text::CStringNN name);
@@ -244,7 +244,7 @@ namespace Text
 		JSONBase *GetArrayValue(UOSInt index);
 		JSONObject *GetArrayObject(UOSInt index);
 		Double GetArrayDouble(UOSInt index);
-		Text::String *GetArrayString(UOSInt index);
+		Optional<Text::String> GetArrayString(UOSInt index);
 		UOSInt GetArrayLength();
 		void RemoveArrayItem(UOSInt index);
 	};

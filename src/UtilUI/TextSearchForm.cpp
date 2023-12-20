@@ -1,7 +1,6 @@
 #include "Stdafx.h"
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
-#include "UI/FileDialog.h"
 #include "UtilUI/TextSearchForm.h"
 
 void __stdcall UtilUI::TextSearchForm::OnSearchClicked(void *userObj)

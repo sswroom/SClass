@@ -7,8 +7,8 @@
 #include "Sync/ThreadUtil.h"
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
-#include "UI/FileDialog.h"
-#include "UI/FolderDialog.h"
+#include "UI/GUIFileDialog.h"
+#include "UI/GUIFolderDialog.h"
 
 void __stdcall SSWR::AVIRead::AVIRHQMPPlaylistForm::OnFileDrop(void *userObj, NotNullPtr<Text::String> *files, UOSInt nFiles)
 {
@@ -37,17 +37,17 @@ void __stdcall SSWR::AVIRead::AVIRHQMPPlaylistForm::OnAddClicked(void *userObj)
 	Bool changed = false;
 	UOSInt i;
 	UOSInt j;
-	UI::FileDialog dlg(L"SSWR", L"AVIRead", L"HQMPPlaylist", false);
-	dlg.SetAllowMultiSel(true);
+	NotNullPtr<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"HQMPPlaylist", false);
+	dlg->SetAllowMultiSel(true);
 	me->core->GetParserList()->PrepareSelector(dlg, IO::ParserType::MediaFile);
-	if (dlg.ShowDialog(me->GetHandle()) == UI::GUIForm::DR_OK)
+	if (dlg->ShowDialog(me->GetHandle()) == UI::GUIForm::DR_OK)
 	{
 		i = 0;
-		j = dlg.GetFileNameCount();
+		j = dlg->GetFileNameCount();
 		while (i < j)
 		{
-			const UTF8Char *fileName = dlg.GetFileNames(i);
-			if (me->playlist->AddFile({fileName, Text::StrCharCnt(fileName)}))
+			NotNullPtr<Text::String> fileName;
+			if (dlg->GetFileNames(i).SetTo(fileName) && me->playlist->AddFile(fileName->ToCString()))
 			{
 				changed = true;
 			}
@@ -59,21 +59,23 @@ void __stdcall SSWR::AVIRead::AVIRHQMPPlaylistForm::OnAddClicked(void *userObj)
 			me->UpdatePlaylist();
 		}
 	}
+	dlg.Delete();
 }
 
 void __stdcall SSWR::AVIRead::AVIRHQMPPlaylistForm::OnAddDirClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRHQMPPlaylistForm *me = (SSWR::AVIRead::AVIRHQMPPlaylistForm*)userObj;
 	UTF8Char sbuff[512];
-	UI::FolderDialog dlg(L"SSWR", L"AVIRead", L"HQMPPlaylistDir");
-	if (dlg.ShowDialog(me->GetHandle()) == UI::GUIForm::DR_OK)
+	NotNullPtr<UI::GUIFolderDialog> dlg = me->ui->NewFolderDialog();
+	if (dlg->ShowDialog(me->GetHandle()) == UI::GUIForm::DR_OK)
 	{
-		NotNullPtr<Text::String> folder = dlg.GetFolder();
+		NotNullPtr<Text::String> folder = dlg->GetFolder();
 		if (me->AddFolder(sbuff, folder->ConcatTo(sbuff)))
 		{
 			me->UpdatePlaylist();
 		}
 	}
+	dlg.Delete();
 }
 
 void __stdcall SSWR::AVIRead::AVIRHQMPPlaylistForm::OnClearClicked(void *userObj)

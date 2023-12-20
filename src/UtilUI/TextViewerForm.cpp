@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "Text/MyString.h"
-#include "UI/FileDialog.h"
+#include "UI/GUIFileDialog.h"
 #include "UtilUI/TextGotoDialog.h"
 #include "UtilUI/TextSearchForm.h"
 #include "UtilUI/TextViewerForm.h"
@@ -77,24 +77,25 @@ void UtilUI::TextViewerForm::EventMenuClicked(UInt16 cmdId)
 	{
 	case MNU_FILE_OPEN:
 		{
-			UI::FileDialog dlg(L"SSWR", L"TextViewer", L"Open", false);
-			dlg.AddFilter(CSTR("*.txt"), CSTR("Text File"));
-			dlg.AddFilter(CSTR("*.log"), CSTR("Log File"));
-			dlg.AddFilter(CSTR("*.cfg"), CSTR("Config File"));
-			dlg.AddFilter(CSTR("*.ini"), CSTR("Ini File"));
+			NotNullPtr<UI::GUIFileDialog> dlg = this->ui->NewFileDialog(L"SSWR", L"TextViewer", L"Open", false);
+			dlg->AddFilter(CSTR("*.txt"), CSTR("Text File"));
+			dlg->AddFilter(CSTR("*.log"), CSTR("Log File"));
+			dlg->AddFilter(CSTR("*.cfg"), CSTR("Config File"));
+			dlg->AddFilter(CSTR("*.ini"), CSTR("Ini File"));
 			fileName = this->txtView->GetFileName();
 			if (fileName->leng > 0)
 			{
-				dlg.SetFileName(fileName->ToCString());
+				dlg->SetFileName(fileName->ToCString());
 			}
-			if (dlg.ShowDialog(this->GetHandle()))
+			if (dlg->ShowDialog(this->GetHandle()))
 			{
-				if (this->txtView->LoadFile(dlg.GetFileName()))
+				if (this->txtView->LoadFile(dlg->GetFileName()))
 				{
-					sptr = dlg.GetFileName()->ConcatTo(Text::StrConcatC(sbuff, UTF8STRC("Text Viewer - ")));
+					sptr = dlg->GetFileName()->ConcatTo(Text::StrConcatC(sbuff, UTF8STRC("Text Viewer - ")));
 					this->SetText(CSTRP(sbuff, sptr));
 				}
 			}
+			dlg.Delete();
 		}
 		break;
 	case MNU_EDIT_GOTO:

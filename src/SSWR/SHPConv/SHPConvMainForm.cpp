@@ -17,7 +17,7 @@
 #include "Text/MyStringFloat.h"
 #include "Text/StringBuilderUTF8.h"
 #include "Text/StringBuilderUTF16.h"
-#include "UI/FileDialog.h"
+#include "UI/GUIFileDialog.h"
 #define LATSCALE 200000
 
 Text::CStringNN SSWR::SHPConv::SHPConvMainForm::typeName[] = {
@@ -67,15 +67,16 @@ void __stdcall SSWR::SHPConv::SHPConvMainForm::OnDirectoryClicked(void *userObj)
 void __stdcall SSWR::SHPConv::SHPConvMainForm::OnSBrowseClicked(void *userObj)
 {
 	SSWR::SHPConv::SHPConvMainForm *me = (SSWR::SHPConv::SHPConvMainForm*)userObj;
-	UI::FileDialog ofd(L"SSWR", L"SHPConv", L"Source", false);
-	ofd.AddFilter(CSTR("*.shp"), CSTR("Shape File"));
-	if (ofd.ShowDialog(me->GetHandle()))
+	NotNullPtr<UI::GUIFileDialog> ofd = me->ui->NewFileDialog(L"SSWR", L"SHPConv", L"Source", false);
+	ofd->AddFilter(CSTR("*.shp"), CSTR("Shape File"));
+	if (ofd->ShowDialog(me->GetHandle()))
 	{
 		UTF8Char sbuff[16];
 		UTF8Char *sptr;
-		sptr = Text::StrInt32(sbuff, me->LoadShape(ofd.GetFileName()->ToCString(), true));
+		sptr = Text::StrInt32(sbuff, me->LoadShape(ofd->GetFileName()->ToCString(), true));
 		me->txtBlkScale->SetText(CSTRP(sbuff, sptr));
 	}
+	ofd.Delete();
 }
 
 void __stdcall SSWR::SHPConv::SHPConvMainForm::OnLangSelChg(void *userObj)

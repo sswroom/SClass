@@ -5,42 +5,44 @@
 #include "Text/MyString.h"
 #include "Text/UTF8Reader.h"
 #include "Text/UTF8Writer.h"
-#include "UI/FileDialog.h"
+#include "UI/GUIFileDialog.h"
 
 void __stdcall SSWR::AVIRead::AVIRLogExtractForm::OnSFileClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRLogExtractForm *me = (SSWR::AVIRead::AVIRLogExtractForm *)userObj;
 	Text::StringBuilderUTF8 sb;
-	UI::FileDialog dlg(L"SSWR", L"AVIRead", L"LogExtractSFile", false);
-	dlg.AddFilter(CSTR("*.log"), CSTR("Log File"));
-	dlg.SetAllowMultiSel(false);
+	NotNullPtr<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"LogExtractSFile", false);
+	dlg->AddFilter(CSTR("*.log"), CSTR("Log File"));
+	dlg->SetAllowMultiSel(false);
 	me->txtSFile->GetText(sb);
 	if (sb.GetLength() > 0)
 	{
-		dlg.SetFileName(sb.ToCString());
+		dlg->SetFileName(sb.ToCString());
 	}
-	if (dlg.ShowDialog(me->GetHandle()))
+	if (dlg->ShowDialog(me->GetHandle()))
 	{
-		me->txtSFile->SetText(dlg.GetFileName()->ToCString());
+		me->txtSFile->SetText(dlg->GetFileName()->ToCString());
 	}
+	dlg.Delete();
 }
 
 void __stdcall SSWR::AVIRead::AVIRLogExtractForm::OnOFileClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRLogExtractForm *me = (SSWR::AVIRead::AVIRLogExtractForm *)userObj;
 	Text::StringBuilderUTF8 sb;
-	UI::FileDialog dlg(L"SSWR", L"AVIRead", L"LogExtractOFile", true);
-	dlg.AddFilter(CSTR("*.log"), CSTR("Log File"));
-	dlg.AddFilter(CSTR("*.txt"), CSTR("Text File"));
+	NotNullPtr<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"LogExtractOFile", true);
+	dlg->AddFilter(CSTR("*.log"), CSTR("Log File"));
+	dlg->AddFilter(CSTR("*.txt"), CSTR("Text File"));
 	me->txtOFile->GetText(sb);
 	if (sb.GetLength() > 0)
 	{
-		dlg.SetFileName(sb.ToCString());
+		dlg->SetFileName(sb.ToCString());
 	}
-	if (dlg.ShowDialog(me->GetHandle()))
+	if (dlg->ShowDialog(me->GetHandle()))
 	{
-		me->txtOFile->SetText(dlg.GetFileName()->ToCString());
+		me->txtOFile->SetText(dlg->GetFileName()->ToCString());
 	}
+	dlg.Delete();
 }
 
 void __stdcall SSWR::AVIRead::AVIRLogExtractForm::OnExtractClicked(void *userObj)

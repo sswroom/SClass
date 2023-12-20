@@ -14,9 +14,9 @@ namespace Text
 		UOSInt useCnt;
 		UTF8Char vbuff[1];
 
-		static String *NewOrNullSlow(const UTF8Char *str);
+		static Optional<String> NewOrNullSlow(const UTF8Char *str);
 		static NotNullPtr<String> NewNotNullSlow(const UTF8Char *str);
-		static String *NewOrNull(Text::CString str);
+		static Optional<String> NewOrNull(Text::CString str);
 		static NotNullPtr<String> New(const Text::CString &str)
 		{
 			if (str.leng == 0) return NewEmpty();
@@ -53,16 +53,16 @@ namespace Text
 			return s;
 		}
 
-		static String *NewOrNull(const UTF16Char *str);
+		static Optional<String> NewOrNull(const UTF16Char *str);
 		static NotNullPtr<String> NewNotNull(const UTF16Char *str);
 		static NotNullPtr<String> New(const UTF16Char *str, UOSInt len);
-		static String *NewOrNull(const UTF32Char *str);
+		static Optional<String> NewOrNull(const UTF32Char *str);
 		static NotNullPtr<String> NewNotNull(const UTF32Char *str);
 		static NotNullPtr<String> New(const UTF32Char *str, UOSInt len);
 		static NotNullPtr<String> NewCSVRec(const UTF8Char *str);
 		static NotNullPtr<String> NewEmpty();
 		static NotNullPtr<String> OrEmpty(Optional<Text::String> s);
-		static String *CopyOrNull(Optional<Text::String> s);
+		static Optional<String> CopyOrNull(Optional<Text::String> s);
 		void Release();
 		NotNullPtr<String> Clone() const;
 

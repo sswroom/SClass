@@ -2,7 +2,6 @@
 #include "Math/Math.h"
 #include "SSWR/AVIRead/AVIRGISFontEditForm.h"
 #include "SSWR/AVIRead/AVIRGISFontStyleForm.h"
-#include "UI/FontDialog.h"
 #include "UtilUI/ColorDialog.h"
 
 void __stdcall SSWR::AVIRead::AVIRGISFontStyleForm::AddStyleClicked(void *userObj)

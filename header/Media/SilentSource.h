@@ -11,7 +11,7 @@ namespace Media
 		AudioFormat format;
 		UInt64 sampleCnt;
 
-		Text::String *name;
+		Optional<Text::String> name;
 		UInt64 readOfst;
 		UInt64 currSample;
 		Sync::Event *readEvt;

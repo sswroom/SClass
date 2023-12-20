@@ -5,19 +5,19 @@
 #include "SSWR/AVIRead/AVIRBTScanLogDevForm.h"
 #include "Text/MyStringFloat.h"
 #include "Text/StringBuilderUTF8.h"
-#include "UI/FileDialog.h"
+#include "UI/GUIFileDialog.h"
 
 void __stdcall SSWR::AVIRead::AVIRBTScanLogDevForm::OnCSVClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRBTScanLogDevForm *me = (SSWR::AVIRead::AVIRBTScanLogDevForm*)userObj;
-	UI::FileDialog dlg(L"SSWR", L"AVIRead", L"BTScanLogDev", true);
-	dlg.AddFilter(CSTR("*.csv"), CSTR("CSV File"));
-	if (dlg.ShowDialog(me->GetHandle()))
+	NotNullPtr<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"BTScanLogDev", true);
+	dlg->AddFilter(CSTR("*.csv"), CSTR("CSV File"));
+	if (dlg->ShowDialog(me->GetHandle()))
 	{
 		Text::StringBuilderUTF8 sb;
 		UTF8Char sbuff[256];
 		UTF8Char *sptr;
-		IO::FileStream fs(dlg.GetFileName(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+		IO::FileStream fs(dlg->GetFileName(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 		{
 			IO::BufferedOutputStream stm(fs, 8192);
 			Data::DateTime dt;
@@ -52,6 +52,7 @@ void __stdcall SSWR::AVIRead::AVIRBTScanLogDevForm::OnCSVClicked(void *userObj)
 			}
 		}
 	}
+	dlg.Delete();
 }
 
 SSWR::AVIRead::AVIRBTScanLogDevForm::AVIRBTScanLogDevForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, const IO::BTScanLog::DevEntry *entry) : UI::GUIForm(parent, 1024, 768, ui)

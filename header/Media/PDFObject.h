@@ -23,10 +23,10 @@ namespace Media
 		PDFParameter *GetParameter() const;
 		UInt32 GetId() const;
 		Bool IsImage() const;
-		Text::String *GetType() const;
-		Text::String *GetSubtype() const;
-		Text::String *GetFilter() const;
-		Text::String *GetColorSpace() const;
+		Optional<Text::String> GetType() const;
+		Optional<Text::String> GetSubtype() const;
+		Optional<Text::String> GetFilter() const;
+		Optional<Text::String> GetColorSpace() const;
 		UOSInt GetBitPerComponent() const;
 		UOSInt GetWidth() const;
 		UOSInt GetHeight() const;

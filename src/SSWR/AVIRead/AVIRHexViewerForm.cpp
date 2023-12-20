@@ -7,8 +7,8 @@
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
 #include "Text/MyStringW.h"
-#include "UI/FileDialog.h"
-#include "UI/FontDialog.h"
+#include "UI/GUIFileDialog.h"
+#include "UI/GUIFontDialog.h"
 
 typedef enum
 {
@@ -207,13 +207,14 @@ void __stdcall SSWR::AVIRead::AVIRHexViewerForm::OnOffsetChg(void *userObj, UInt
 void __stdcall SSWR::AVIRead::AVIRHexViewerForm::OnFontClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRHexViewerForm *me = (SSWR::AVIRead::AVIRHexViewerForm*)userObj;
-	UI::FontDialog dlg(me->fontName, me->fontHeightPt, me->fontIsBold, false);
-	if (dlg.ShowDialog(me->GetHandle()))
+	NotNullPtr<UI::GUIFontDialog> dlg = me->ui->NewFontDialog(me->fontName, me->fontHeightPt, me->fontIsBold, false);
+	NotNullPtr<Text::String> fontName;
+	if (dlg->ShowDialog(me->GetHandle()) && dlg->GetFontName().SetTo(fontName))
 	{
-		Text::String *fontName = dlg.GetFontName();
-		me->SetFont(fontName->v, fontName->leng, dlg.GetFontSizePt(), dlg.IsBold());
+		me->SetFont(fontName->v, fontName->leng, dlg->GetFontSizePt(), dlg->IsBold());
 		me->hexView->UpdateFont();
 	}
+	dlg.Delete();
 }
 
 void __stdcall SSWR::AVIRead::AVIRHexViewerForm::OnNextUnkClicked(void *userObj)
@@ -228,12 +229,13 @@ void __stdcall SSWR::AVIRead::AVIRHexViewerForm::OnNextUnkClicked(void *userObj)
 void __stdcall SSWR::AVIRead::AVIRHexViewerForm::OnOpenFileClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRHexViewerForm *me = (SSWR::AVIRead::AVIRHexViewerForm*)userObj;
-	UI::FileDialog dlg(L"SSWR", L"AVIRead", L"HexViewerOpen", false);
-	dlg.SetAllowMultiSel(false);
-	if (dlg.ShowDialog(me->GetHandle()))
+	NotNullPtr<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"HexViewerOpen", false);
+	dlg->SetAllowMultiSel(false);
+	if (dlg->ShowDialog(me->GetHandle()))
 	{
-		me->LoadFile(dlg.GetFileName()->ToCString(), me->chkDynamicSize->IsChecked());
+		me->LoadFile(dlg->GetFileName()->ToCString(), me->chkDynamicSize->IsChecked());
 	}
+	dlg.Delete();
 }
 
 void __stdcall SSWR::AVIRead::AVIRHexViewerForm::OnExtractBeginClicked(void *userObj)
@@ -279,11 +281,11 @@ void __stdcall SSWR::AVIRead::AVIRHexViewerForm::OnExtractClicked(void *userObj)
 	}
 	endOfst -= beginOfst;
 	UOSInt buffSize;
-	UI::FileDialog dlg(L"SSWR", L"AVIRead", L"HexViewerExtract", true);
-	dlg.AddFilter(CSTR("*.dat"), CSTR("Data File"));
-	if (dlg.ShowDialog(me->GetHandle()))
+	NotNullPtr<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"HexViewerExtract", true);
+	dlg->AddFilter(CSTR("*.dat"), CSTR("Data File"));
+	if (dlg->ShowDialog(me->GetHandle()))
 	{
-		IO::FileStream fs(dlg.GetFileName(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+		IO::FileStream fs(dlg->GetFileName(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 		if (endOfst < 1048576)
 		{
 			Data::ByteBuffer buff((UOSInt)endOfst);
@@ -322,6 +324,7 @@ void __stdcall SSWR::AVIRead::AVIRHexViewerForm::OnExtractClicked(void *userObj)
 			}
 		}
 	}
+	dlg.Delete();
 }
 
 Bool SSWR::AVIRead::AVIRHexViewerForm::LoadFile(Text::CStringNN fileName, Bool dynamicSize)

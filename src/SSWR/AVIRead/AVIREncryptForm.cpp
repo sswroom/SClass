@@ -3,7 +3,7 @@
 #include "SSWR/AVIRead/AVIREncryptForm.h"
 #include "Sync/ThreadUtil.h"
 #include "Text/MyString.h"
-#include "UI/FileDialog.h"
+#include "UI/GUIFileDialog.h"
 
 void __stdcall SSWR::AVIRead::AVIREncryptForm::OnConvertClicked(void *userObj)
 {
@@ -38,15 +38,16 @@ void __stdcall SSWR::AVIRead::AVIREncryptForm::OnConvertClicked(void *userObj)
 			}
 			else if (destEnc == 0)
 			{
-				UI::FileDialog dlg(L"SSWR", L"AVIRead", L"TextEncFile", true);
-				if (dlg.ShowDialog(me->GetHandle()))
+				NotNullPtr<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"TextEncFile", true);
+				if (dlg->ShowDialog(me->GetHandle()))
 				{
-					IO::FileStream fs(dlg.GetFileName(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+					IO::FileStream fs(dlg->GetFileName(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 					if (fs.Write(decBuff, buffSize) != buffSize)
 					{
 						me->ui->ShowMsgOK(CSTR("Error in writing to file"), CSTR("Encrypt"), me);
 					}
 				}
+				dlg.Delete();
 			}
 			else
 			{

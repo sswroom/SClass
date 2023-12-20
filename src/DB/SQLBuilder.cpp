@@ -133,8 +133,8 @@ void DB::SQLBuilder::AppendBinary(const UInt8 *buff, UOSInt buffSize)
 
 void DB::SQLBuilder::AppendTableName(DB::TableDef *table)
 {
-	Text::String *name;
-	if ((name = table->GetDatabaseName()) != 0)
+	NotNullPtr<Text::String> name;
+	if (table->GetDatabaseName().SetTo(name))
 	{
 		this->AppendCol(name->v);
 		this->sb.AppendUTF8Char('.');

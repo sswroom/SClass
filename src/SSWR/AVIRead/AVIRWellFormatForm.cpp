@@ -8,13 +8,13 @@
 #include "Text/JSText.h"
 #include "Text/StringBuilderUTF8.h"
 #include "Text/XMLReader.h"
-#include "UI/FileDialog.h"
+#include "UI/GUIFileDialog.h"
 
 #define VERBOSE
 #if defined(VERBOSE)
 #include <stdio.h>
 #endif
-void SSWR::AVIRead::AVIRWellFormatForm::AddFilters(IO::FileSelector *selector)
+void SSWR::AVIRead::AVIRWellFormatForm::AddFilters(NotNullPtr<IO::FileSelector> selector)
 {
 	selector->AddFilter(CSTR("*.json"), CSTR("JSON File"));
 	selector->AddFilter(CSTR("*.geojson"), CSTR("GeoJSON File"));
@@ -100,12 +100,13 @@ Bool SSWR::AVIRead::AVIRWellFormatForm::ParseFile(Text::CStringNN fileName, NotN
 void __stdcall SSWR::AVIRead::AVIRWellFormatForm::OnBrowseClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRWellFormatForm *me = (SSWR::AVIRead::AVIRWellFormatForm*)userObj;
-	UI::FileDialog dlg(L"SSWR", L"AVIRead", L"WellFormat", false);
-	AddFilters(&dlg);
-	if (dlg.ShowDialog(me->GetHandle()))
+	NotNullPtr<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"WellFormat", false);
+	AddFilters(dlg);
+	if (dlg->ShowDialog(me->GetHandle()))
 	{
-		me->txtFile->SetText(dlg.GetFileName()->ToCString());
+		me->txtFile->SetText(dlg->GetFileName()->ToCString());
 	}
+	dlg.Delete();
 }
 
 void __stdcall SSWR::AVIRead::AVIRWellFormatForm::OnFileDrop(void *userObj, NotNullPtr<Text::String> *files, UOSInt nFile)
@@ -142,14 +143,15 @@ void __stdcall SSWR::AVIRead::AVIRWellFormatForm::OnParseToFileClicked(void *use
 	}
 	if (me->ParseFile(sbFile.ToCString(), sbOutput))
 	{
-		UI::FileDialog dlg(L"SSWR", L"AVIRead", L"WellFormatParse", true);
-		AddFilters(&dlg);
-		dlg.SetFileName(sbFile.ToCString());
-		if (dlg.ShowDialog(me->GetHandle()))
+		NotNullPtr<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"WellFormatParse", true);
+		AddFilters(dlg);
+		dlg->SetFileName(sbFile.ToCString());
+		if (dlg->ShowDialog(me->GetHandle()))
 		{
-			IO::FileStream fs(dlg.GetFileName(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+			IO::FileStream fs(dlg->GetFileName(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 			fs.Write(sbOutput.ToString(), sbOutput.GetLength());
 		}
+		dlg.Delete();
 	}
 }
 

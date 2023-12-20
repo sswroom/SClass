@@ -15,7 +15,7 @@ namespace Media
 			DF_SINGLE
 		} DataFormat;
 	private:
-		Text::String *remark;
+		Optional<Text::String> remark;
 		UOSInt inputCh;
 		UOSInt inputLev;
 		UOSInt outputCh;
@@ -30,9 +30,9 @@ namespace Media
 
 		virtual IO::ParserType GetParserType() const;
 
-		void SetRemark(Text::String *remark);
+		void SetRemark(Optional<Text::String> remark);
 		void SetRemark(Text::CString remark);
-		Text::String *GetRemark() const;
+		Optional<Text::String> GetRemark() const;
 		UOSInt GetInputCh() const;
 		DataFormat GetFormat() const;
 		UOSInt GetInputLevel() const;

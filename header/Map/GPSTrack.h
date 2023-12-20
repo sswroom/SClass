@@ -38,7 +38,7 @@ namespace Map
 			Double maxLon;
 			Double minLat;
 			Double minLon;
-			Text::String *name;
+			Optional<Text::String> name;
 			UOSInt nRecords;
 			GPSRecord3 *records;
 			const UInt8 **extraData;
@@ -65,7 +65,7 @@ namespace Map
 		Double maxLon;
 		Double minLat;
 		Double minLon;
-		Text::String *currTrackName;
+		Optional<Text::String> currTrackName;
 		Sync::Mutex recMut;
 		Data::ArrayListInt64 currTimes;
 		Data::ArrayList<GPSRecord3*> currRecs;
@@ -115,7 +115,7 @@ namespace Map
 		Bool GetHasAltitude();
 		void SetTrackName(Text::CString name);
 		void GetTrackNames(Data::ArrayListString *nameArr);
-		Text::String *GetTrackName(UOSInt index);
+		Optional<Text::String> GetTrackName(UOSInt index);
 		Bool GetTrackStartTime(UOSInt index, Data::DateTime *dt);
 		Data::Timestamp GetTrackStartTime(UOSInt index);
 		Bool GetTrackEndTime(UOSInt index, Data::DateTime *dt);
@@ -162,7 +162,7 @@ namespace Map
 		virtual Int64 GetInt64(UOSInt colIndex);
 		virtual WChar *GetStr(UOSInt colIndex, WChar *buff);
 		virtual Bool GetStr(UOSInt colIndex, NotNullPtr<Text::StringBuilderUTF8> sb);
-		virtual Text::String *GetNewStr(UOSInt colIndex);
+		virtual Optional<Text::String> GetNewStr(UOSInt colIndex);
 		virtual UTF8Char *GetStr(UOSInt colIndex, UTF8Char *buff, UOSInt buffSize);
 		virtual Data::Timestamp GetTimestamp(UOSInt colIndex);
 		virtual Double GetDbl(UOSInt colIndex);

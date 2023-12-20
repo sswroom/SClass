@@ -11,7 +11,7 @@
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
 #include "Text/StringBuilderUTF8.h"
-#include "UI/FileDialog.h"
+#include "UI/GUIFileDialog.h"
 
 #define FFTSAMPLE 1024
 #define FFTAVG 1
@@ -822,15 +822,16 @@ void __stdcall SSWR::AVIRead::AVIRAudioFilterForm::OnFileMixClicked(void *userOb
 	SSWR::AVIRead::AVIRAudioFilterForm *me = (SSWR::AVIRead::AVIRAudioFilterForm*)userObj;
 	if (me->fileMix)
 	{
-		UI::FileDialog dlg(L"SSWR", L"AVIRead", L"AudioFilterFileMix", false);
-		dlg.AddFilter(CSTR("*.wav"), CSTR("Wave file"));
-		if (dlg.ShowDialog(me->GetHandle()))
+		NotNullPtr<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"AudioFilterFileMix", false);
+		dlg->AddFilter(CSTR("*.wav"), CSTR("Wave file"));
+		if (dlg->ShowDialog(me->GetHandle()))
 		{
-			if (me->fileMix->LoadFile(dlg.GetFileName()))
+			if (me->fileMix->LoadFile(dlg->GetFileName()))
 			{
-				me->txtFileMix->SetText(dlg.GetFileName()->ToCString());
+				me->txtFileMix->SetText(dlg->GetFileName()->ToCString());
 			}
 		}
+		dlg.Delete();
 	}
 }
 

@@ -69,14 +69,13 @@ IO::ParsedObject *Parser::ObjParser::FileGDB2Parser::ParseObject(NotNullPtr<IO::
 		NotNullPtr<DB::DBReader> r;
 		if (r.Set(fgdb->QueryTableData(CSTR_NULL, CSTR("GDB_Items"), 0, 0, 0, CSTR_NULL, 0)))
 		{
-			Data::ArrayList<Text::String*> layers;
-			Text::String *layerName;
+			Data::ArrayListStringNN layers;
+			NotNullPtr<Text::String> layerName;
 			while (r->ReadNext())
 			{
 				if (!r->IsNull(6) && !r->IsNull(7))
 				{
-					layerName = r->GetNewStr(3); //or 4?
-					if (layerName)
+					if (r->GetNewStr(3).SetTo(layerName)) //or 4?
 					{
 						layers.Add(layerName);
 					}
@@ -100,10 +99,12 @@ IO::ParsedObject *Parser::ObjParser::FileGDB2Parser::ParseObject(NotNullPtr<IO::
 				j = layers.GetCount();
 				while (i < j)
 				{
-					layerName = layers.GetItem(i);
-					NEW_CLASSNN(layer, Map::FileGDBLayer(db, layerName->ToCString(), layerName->ToCString(), this->prjParser));
-					layerColl->Add(layer);
-					layerName->Release();
+					if (layers.GetItem(i).SetTo(layerName))
+					{
+						NEW_CLASSNN(layer, Map::FileGDBLayer(db, layerName->ToCString(), layerName->ToCString(), this->prjParser));
+						layerColl->Add(layer);
+						layerName->Release();
+					}
 					i++;
 				}
 				db->UnuseObject();

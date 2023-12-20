@@ -9,8 +9,8 @@
 #include "Text/MyString.h"
 #include "Text/MyStringW.h"
 #include "Text/UTF8Writer.h"
-#include "UI/FileDialog.h"
-#include "UI/FolderDialog.h"
+#include "UI/GUIFileDialog.h"
+#include "UI/GUIFolderDialog.h"
 
 UInt32 __stdcall SSWR::AVIRead::AVIRGSMModemForm::ModemThread(void *userObj)
 {
@@ -338,8 +338,8 @@ void __stdcall SSWR::AVIRead::AVIRGSMModemForm::OnSMSSaveClick(void *userObj)
 		smsMsg = Text::SMSMessage::CreateFromPDU(sms->pduMessage);
 		smsMsg->GetMessageTime(dt);
 
-		UI::FileDialog dlg(L"SSWR", L"AVIRead", L"SMSSave", true);
-		dlg.AddFilter(CSTR("*.sms"), CSTR("SMS File"));
+		NotNullPtr<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"SMSSave", true);
+		dlg->AddFilter(CSTR("*.sms"), CSTR("SMS File"));
 		
 		sptr = Text::StrConcatC(sbuff, UTF8STRC("SMS"));
 		sptr = Text::StrInt64(sptr, dt.ToDotNetTicks());
@@ -348,11 +348,11 @@ void __stdcall SSWR::AVIRead::AVIRGSMModemForm::OnSMSSaveClick(void *userObj)
 		sptr = Text::StrConcatC(sptr, UTF8STRC("_"));
 		sptr = Text::StrUTF16_UTF8(sptr, smsMsg->GetAddress());
 		sptr = Text::StrConcatC(sptr, UTF8STRC(".sms"));
-		dlg.SetFileName(CSTRP(sbuff, sptr));
+		dlg->SetFileName(CSTRP(sbuff, sptr));
 
-		if (dlg.ShowDialog(me->GetHandle()))
+		if (dlg->ShowDialog(me->GetHandle()))
 		{
-			IO::FileStream fs(dlg.GetFileName(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+			IO::FileStream fs(dlg->GetFileName(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 			Text::UTF8Writer writer(fs);
 			writer.WriteSignature();
 			writer.WriteStrC(UTF8STRC("From: "));
@@ -368,6 +368,7 @@ void __stdcall SSWR::AVIRead::AVIRGSMModemForm::OnSMSSaveClick(void *userObj)
 			writer.WriteLineC(UTF8STRC("Content: "));
 			writer.WriteLineW(smsMsg->GetContent());
 		}
+		dlg.Delete();
 		DEL_CLASS(smsMsg);
 	}
 }
@@ -402,8 +403,8 @@ void __stdcall SSWR::AVIRead::AVIRGSMModemForm::OnSMSSaveAllClick(void *userObj)
 	Text::SMSMessage *smsMsg;
 	if (me->lvSMS->GetCount() > 0)
 	{
-		UI::FolderDialog dlg(L"SSWR", L"AVIRead", L"SMSSaveAll");
-		if (dlg.ShowDialog(me->GetHandle()))
+		NotNullPtr<UI::GUIFolderDialog> dlg = me->ui->NewFolderDialog();
+		if (dlg->ShowDialog(me->GetHandle()))
 		{
 			UOSInt i = 0;
 			UOSInt j = me->lvSMS->GetCount();
@@ -415,7 +416,7 @@ void __stdcall SSWR::AVIRead::AVIRGSMModemForm::OnSMSSaveAllClick(void *userObj)
 				smsMsg = Text::SMSMessage::CreateFromPDU(sms->pduMessage);
 				smsMsg->GetMessageTime(dt);
 				sb.ClearStr();
-				sb.Append(dlg.GetFolder());
+				sb.Append(dlg->GetFolder());
 				sb.AppendChar(IO::Path::PATH_SEPERATOR, 1);
 				sb.AppendC(UTF8STRC("SMS"));
 				sb.AppendI64(dt.ToDotNetTicks());
@@ -445,6 +446,7 @@ void __stdcall SSWR::AVIRead::AVIRGSMModemForm::OnSMSSaveAllClick(void *userObj)
 				i++;
 			}
 		}
+		dlg.Delete();
 	}
 }
 

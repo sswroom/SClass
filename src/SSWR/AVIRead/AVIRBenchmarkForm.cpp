@@ -9,7 +9,7 @@
 #include "Text/MyStringFloat.h"
 #include "Text/StringBuilderUTF8.h"
 #include "Text/UTF8Writer.h"
-#include "UI/FileDialog.h"
+#include "UI/GUIFileDialog.h"
 
 UTF8Char *SSWR::AVIRead::AVIRBenchmarkForm::ByteDisp(UTF8Char *sbuff, UOSInt byteSize)
 {
@@ -231,20 +231,20 @@ void __stdcall SSWR::AVIRead::AVIRBenchmarkForm::OnSaveClicked(void *userObj)
 		me->ui->ShowMsgOK(CSTR("No result"), CSTR("Error"), me);
 		return;
 	}
-	UI::FileDialog dlg(L"SSWR", L"AVIRead", L"BenchmarkSave", true);
-	dlg.AddFilter(CSTR("*.txt"), CSTR("Result File"));
+	NotNullPtr<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"BenchmarkSave", true);
+	dlg->AddFilter(CSTR("*.txt"), CSTR("Result File"));
 	{
 		Text::StringBuilderUTF8 sb;
 		sb.AppendC(UTF8STRC("Benchmark_"));
 		me->txtPlatform->GetText(sb);
 		sb.AppendC(UTF8STRC(".txt"));
-		dlg.SetFileName(sb.ToCString());
+		dlg->SetFileName(sb.ToCString());
 	}
-	if (dlg.ShowDialog(me->GetHandle()))
+	if (dlg->ShowDialog(me->GetHandle()))
 	{
 		Text::StringBuilderUTF8 sb;
 		IO::SystemInfo sysInfo;
-		IO::FileStream fs(dlg.GetFileName(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+		IO::FileStream fs(dlg->GetFileName(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 		Text::UTF8Writer writer(fs);
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("Platform: "));
@@ -345,6 +345,7 @@ void __stdcall SSWR::AVIRead::AVIRBenchmarkForm::OnSaveClicked(void *userObj)
 			i++;
 		}
 	}
+	dlg.Delete();
 }
 
 SSWR::AVIRead::AVIRBenchmarkForm::AVIRBenchmarkForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 640, 480, ui)

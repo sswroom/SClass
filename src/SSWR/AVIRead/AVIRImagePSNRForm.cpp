@@ -7,23 +7,24 @@
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
 #include "Text/StringBuilderUTF8.h"
-#include "UI/FileDialog.h"
+#include "UI/GUIFileDialog.h"
 
 void __stdcall SSWR::AVIRead::AVIRImagePSNRForm::OnOriFileClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRImagePSNRForm *me = (SSWR::AVIRead::AVIRImagePSNRForm*)userObj;
 	Text::StringBuilderUTF8 sb;
 	me->txtOriFile->GetText(sb);
-	UI::FileDialog dlg(L"SSWR", L"AVIRead", L"ImagePSNRO", false);
+	NotNullPtr<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"ImagePSNRO", false);
 	me->core->GetParserList()->PrepareSelector(dlg, IO::ParserType::ImageList);
 	if (sb.GetLength() > 0)
 	{
-		dlg.SetFileName(sb.ToCString());
+		dlg->SetFileName(sb.ToCString());
 	}
-	if (dlg.ShowDialog(me->GetHandle()))
+	if (dlg->ShowDialog(me->GetHandle()))
 	{
-		me->txtOriFile->SetText(dlg.GetFileName()->ToCString());
+		me->txtOriFile->SetText(dlg->GetFileName()->ToCString());
 	}
+	dlg.Delete();
 }
 
 void __stdcall SSWR::AVIRead::AVIRImagePSNRForm::OnLossyFileClicked(void *userObj)
@@ -31,16 +32,17 @@ void __stdcall SSWR::AVIRead::AVIRImagePSNRForm::OnLossyFileClicked(void *userOb
 	SSWR::AVIRead::AVIRImagePSNRForm *me = (SSWR::AVIRead::AVIRImagePSNRForm*)userObj;
 	Text::StringBuilderUTF8 sb;
 	me->txtLossyFile->GetText(sb);
-	UI::FileDialog dlg(L"SSWR", L"AVIRead", L"ImagePSNRL", false);
+	NotNullPtr<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"ImagePSNRL", false);
 	me->core->GetParserList()->PrepareSelector(dlg, IO::ParserType::ImageList);
 	if (sb.GetLength() > 0)
 	{
-		dlg.SetFileName(sb.ToCString());
+		dlg->SetFileName(sb.ToCString());
 	}
-	if (dlg.ShowDialog(me->GetHandle()))
+	if (dlg->ShowDialog(me->GetHandle()))
 	{
-		me->txtLossyFile->SetText(dlg.GetFileName()->ToCString());
+		me->txtLossyFile->SetText(dlg->GetFileName()->ToCString());
 	}
+	dlg.Delete();
 }
 
 void __stdcall SSWR::AVIRead::AVIRImagePSNRForm::OnCompareClicked(void *userObj)

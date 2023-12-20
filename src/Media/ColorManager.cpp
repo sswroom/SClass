@@ -61,9 +61,9 @@ void Media::MonitorColorManager::SetDefaultRGB(NotNullPtr<Media::IColorHandler::
 	rgb->monLuminance = 250.0;
 }
 
-Media::MonitorColorManager::MonitorColorManager(Text::String *profileName)
+Media::MonitorColorManager::MonitorColorManager(Optional<Text::String> profileName)
 {
-	this->profileName = SCOPY_STRING(profileName);
+	this->profileName = Text::String::CopyOrNull(profileName);
 	this->monProfileFile = 0;
 	this->SetDefault();
 	this->Load();
@@ -86,10 +86,10 @@ Media::MonitorColorManager::~MonitorColorManager()
 		this->sessList.GetItem(i).Delete();
 	}
 	SDEL_STRING(this->monProfileFile);
-	SDEL_STRING(this->profileName);
+	OPTSTR_DEL(this->profileName);
 }
 
-Text::String *Media::MonitorColorManager::GetProfileName()
+Optional<Text::String> Media::MonitorColorManager::GetProfileName()
 {
 	return this->profileName;
 }
@@ -99,6 +99,7 @@ Bool Media::MonitorColorManager::Load()
 	IO::Registry *regBase;
 	IO::Registry *reg2;
 	IO::Registry *reg;
+	NotNullPtr<Text::String> s;
 	WChar wbuff[512];
 
 	regBase = IO::Registry::OpenSoftware(IO::Registry::REG_USER_THIS, L"SSWR", L"Color");
@@ -106,9 +107,9 @@ Bool Media::MonitorColorManager::Load()
 	{
 		reg2 = 0;
 		reg = regBase;
-		if (this->profileName)
+		if (this->profileName.SetTo(s))
 		{
-			const WChar *wptr = Text::StrToWCharNew(this->profileName->v);
+			const WChar *wptr = Text::StrToWCharNew(s->v);
 			reg2 = reg->OpenSubReg(wptr);
 			Text::StrDelNew(wptr);
 			if (reg2 == 0)
@@ -242,15 +243,16 @@ Bool Media::MonitorColorManager::Save()
 	IO::Registry *regBase;
 	IO::Registry *reg2;
 	IO::Registry *reg;
+	NotNullPtr<Text::String> s;
 
 	regBase = IO::Registry::OpenSoftware(IO::Registry::REG_USER_THIS, L"SSWR", L"Color");
 	if (regBase)
 	{
 		reg2 = 0;
 		reg = regBase;
-		if (this->profileName)
+		if (this->profileName.SetTo(s))
 		{
-			const WChar *wptr = Text::StrToWCharNew(this->profileName->v);
+			const WChar *wptr = Text::StrToWCharNew(s->v);
 			reg2 = reg->OpenSubReg(wptr);
 			Text::StrDelNew(wptr);
 			if (reg2 == 0)
@@ -692,9 +694,10 @@ void Media::MonitorColorManager::SetOSProfile()
 void Media::MonitorColorManager::SetEDIDProfile()
 {
 	Bool succ = false;
-	if (this->profileName)
+	NotNullPtr<Text::String> s;
+	if (this->profileName.SetTo(s))
 	{
-		Media::DDCReader ddc(this->profileName);
+		Media::DDCReader ddc(s->v);
 		UOSInt edidSize;
 		UInt8 *edid = ddc.GetEDID(&edidSize);
 		if (edid)

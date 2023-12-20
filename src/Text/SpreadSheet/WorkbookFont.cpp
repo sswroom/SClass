@@ -17,12 +17,12 @@ Text::SpreadSheet::WorkbookFont::WorkbookFont()
 
 Text::SpreadSheet::WorkbookFont::~WorkbookFont()
 {
-	SDEL_STRING(this->name);
+	OPTSTR_DEL(this->name);
 }
 
 Text::SpreadSheet::WorkbookFont *Text::SpreadSheet::WorkbookFont::SetName(Text::CString name)
 {
-	SDEL_STRING(this->name);
+	OPTSTR_DEL(this->name);
 	this->name = Text::String::NewOrNull(name);
 	return this;
 }
@@ -63,7 +63,7 @@ Text::SpreadSheet::WorkbookFont *Text::SpreadSheet::WorkbookFont::SetFamily(Font
 	return this;
 }
 
-Text::String *Text::SpreadSheet::WorkbookFont::GetName() const
+Optional<Text::String> Text::SpreadSheet::WorkbookFont::GetName() const
 {
 	return this->name;
 }
@@ -102,7 +102,7 @@ Text::SpreadSheet::WorkbookFont *Text::SpreadSheet::WorkbookFont::Clone() const
 {
 	Text::SpreadSheet::WorkbookFont *font;
 	NEW_CLASS(font, Text::SpreadSheet::WorkbookFont());
-	font->name = SCOPY_STRING(this->name);
+	font->name = Text::String::CopyOrNull(this->name);
 	font->size = this->size;
 	font->bold = this->bold;
 	font->italic = this->italic;

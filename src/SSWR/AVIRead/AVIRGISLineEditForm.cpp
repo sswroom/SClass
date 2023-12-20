@@ -4,7 +4,6 @@
 #include "SSWR/AVIRead/AVIRGISLineEditForm.h"
 #include "Text/MyString.h"
 #include "UtilUI/ColorDialog.h"
-#include "UI/FontDialog.h"
 
 void SSWR::AVIRead::AVIRGISLineEditForm::LineStyleUpdated()
 {

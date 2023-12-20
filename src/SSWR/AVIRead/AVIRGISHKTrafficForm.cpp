@@ -4,24 +4,25 @@
 #include "Net/SSLEngineFactory.h"
 #include "SSWR/AVIRead/AVIRGISHKTrafficForm.h"
 #include "Text/StringBuilderUTF8.h"
-#include "UI/FileDialog.h"
+#include "UI/GUIFileDialog.h"
 
 void __stdcall SSWR::AVIRead::AVIRGISHKTrafficForm::OnRoadCenterlineClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRGISHKTrafficForm *me = (SSWR::AVIRead::AVIRGISHKTrafficForm*)userObj;
 	Text::StringBuilderUTF8 sb;
 	me->txtRoadCenterline->GetText(sb);
-	UI::FileDialog dlg(L"SSWR", L"AVIRead", L"HKTraffic", false);
+	NotNullPtr<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"HKTraffic", false);
 	if (sb.GetLength() > 0)
 	{
-		dlg.SetFileName(sb.ToCString());
+		dlg->SetFileName(sb.ToCString());
 	}
-	dlg.SetAllowMultiSel(false);
+	dlg->SetAllowMultiSel(false);
 	me->core->GetParserList()->PrepareSelector(dlg, IO::ParserType::MapLayer);
-	if (dlg.ShowDialog(me->GetHandle()))
+	if (dlg->ShowDialog(me->GetHandle()))
 	{
-		me->txtRoadCenterline->SetText(dlg.GetFileName()->ToCString());
+		me->txtRoadCenterline->SetText(dlg->GetFileName()->ToCString());
 	}
+	dlg.Delete();
 }
 
 void __stdcall SSWR::AVIRead::AVIRGISHKTrafficForm::OnOKClicked(void *userObj)

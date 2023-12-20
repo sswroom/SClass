@@ -5,7 +5,7 @@
 #include "SSWR/AVIRead/AVIRTFTPClientForm.h"
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
-#include "UI/FileDialog.h"
+#include "UI/GUIFileDialog.h"
 
 void __stdcall SSWR::AVIRead::AVIRTFTPClientForm::OnRecvClick(void *userObj)
 {
@@ -109,11 +109,11 @@ void __stdcall SSWR::AVIRead::AVIRTFTPClientForm::OnSendClick(void *userObj)
 		me->txtPort->Focus();
 		return;
 	}
-	UI::FileDialog dlg(L"SSWR", L"AVIRead", L"TFTPClient", false);
-	dlg.SetAllowMultiSel(false);
-	if (dlg.ShowDialog(me->GetHandle()))
+	NotNullPtr<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"TFTPClient", false);
+	dlg->SetAllowMultiSel(false);
+	if (dlg->ShowDialog(me->GetHandle()))
 	{
-		NotNullPtr<Text::String> fileName = dlg.GetFileName();
+		NotNullPtr<Text::String> fileName = dlg->GetFileName();
 		UOSInt i = fileName->LastIndexOf(IO::Path::PATH_SEPERATOR);
 		Net::TFTPClient cli(me->core->GetSocketFactory(), addr, port, me->core->GetLog());
 		if (cli.IsError())
@@ -137,6 +137,7 @@ void __stdcall SSWR::AVIRead::AVIRTFTPClientForm::OnSendClick(void *userObj)
 			}
 		}
 	}
+	dlg.Delete();
 }
 
 SSWR::AVIRead::AVIRTFTPClientForm::AVIRTFTPClientForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 240, ui)

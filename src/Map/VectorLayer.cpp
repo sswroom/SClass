@@ -232,7 +232,7 @@ Map::VectorLayer::VectorLayer(Map::DrawLayerType layerType, NotNullPtr<Text::Str
 	while (i-- > 0)
 	{
 		maxStrLen[i] = 0;
-		this->colNames[i] = Text::String::NewOrNullSlow(colNames[i]);
+		this->colNames[i] = Text::String::NewOrNullSlow(colNames[i]).OrNull();
 	}
 }
 
@@ -254,7 +254,7 @@ Map::VectorLayer::VectorLayer(Map::DrawLayerType layerType, Text::CStringNN sour
 	while (i-- > 0)
 	{
 		maxStrLen[i] = 0;
-		this->colNames[i] = Text::String::NewOrNullSlow(colNames[i]);
+		this->colNames[i] = Text::String::NewOrNullSlow(colNames[i]).OrNull();
 	}
 }
 
@@ -276,7 +276,7 @@ Map::VectorLayer::VectorLayer(Map::DrawLayerType layerType, NotNullPtr<Text::Str
 	while (i-- > 0)
 	{
 		maxStrLen[i] = 0;
-		this->colNames[i] = Text::String::NewOrNullSlow(colNames[i]);
+		this->colNames[i] = Text::String::NewOrNullSlow(colNames[i]).OrNull();
 		cols[i].colType = colTypes[i];
 		cols[i].colSize = colSize[i];
 		cols[i].colDP = colDP[i];
@@ -301,7 +301,7 @@ Map::VectorLayer::VectorLayer(Map::DrawLayerType layerType, Text::CStringNN sour
 	while (i-- > 0)
 	{
 		maxStrLen[i] = 0;
-		this->colNames[i] = Text::String::NewOrNullSlow(colNames[i]);
+		this->colNames[i] = Text::String::NewOrNullSlow(colNames[i]).OrNull();
 		cols[i].colType = colTypes[i];
 		cols[i].colSize = colSize[i];
 		cols[i].colDP = colDP[i];

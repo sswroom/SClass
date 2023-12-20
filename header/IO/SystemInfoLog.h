@@ -18,24 +18,24 @@ namespace IO
 		{
 			NotNullPtr<Text::String> desc;
 			NotNullPtr<Text::String> hwId;
-			Text::String *service;
-			Text::String *driver;
+			Optional<Text::String> service;
+			Optional<Text::String> driver;
 		};
 
 		struct DriverInfo
 		{
 			NotNullPtr<Text::String> fileName;
 			UInt64 fileSize;
-			Text::String *creationDate;
-			Text::String *version;
-			Text::String *manufacturer;
-			Text::String *productName;
-			Text::String *group;
+			Optional<Text::String> creationDate;
+			Optional<Text::String> version;
+			Optional<Text::String> manufacturer;
+			Optional<Text::String> productName;
+			Optional<Text::String> group;
 			UInt32 altitude;
 		};
 	private:
-		Text::String *osName;
-		Text::String *osVer;
+		Optional<Text::String> osName;
+		Optional<Text::String> osVer;
 		UInt32 osLocale;
 		UInt32 architecture;
 		UInt32 productType;
@@ -53,9 +53,9 @@ namespace IO
 		virtual IO::ParserType GetParserType() const;
 
 		void SetOSName(Text::CString osName);
-		Text::String *GetOSName() const;
+		Optional<Text::String> GetOSName() const;
 		void SetOSVer(Text::CString osVer);
-		Text::String *GetOSVer() const;
+		Optional<Text::String> GetOSVer() const;
 		void SetOSLocale(UInt32 osLocale);
 		UInt32 GetOSLocale() const;
 		void SetArchitecture(UInt32 architecture);

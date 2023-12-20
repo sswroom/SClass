@@ -92,7 +92,7 @@ public:
 		return true;
 	}
 
-	virtual Text::String *GetNewStr(UOSInt colIndex)
+	virtual Optional<Text::String> GetNewStr(UOSInt colIndex)
 	{
 		if (this->row == 0)
 			return 0;
@@ -100,7 +100,7 @@ public:
 			return 0;
 		if (this->row[colIndex] == 0)
 			return 0;
-		return this->row[colIndex]->Clone().Ptr();
+		return this->row[colIndex]->Clone();
 	}
 
 	virtual UTF8Char *GetStr(UOSInt colIndex, UTF8Char *buff, UOSInt buffSize)
@@ -416,7 +416,7 @@ Bool DB::TextDB::AddTableData(Data::ArrayList<const UTF8Char*> *valList)
 	while (i < j)
 	{
 		csptr = valList->GetItem(i);
-		vals[i] = Text::String::NewOrNullSlow(csptr);
+		vals[i] = Text::String::NewOrNullSlow(csptr).OrNull();
 		i++;
 	}
 	this->currDB->valList.Add(vals);

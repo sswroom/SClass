@@ -18,7 +18,7 @@ Text::SpreadSheet::OfficeChartSeries::~OfficeChartSeries()
 {
 	SDEL_CLASS(this->categoryData);
 	SDEL_CLASS(this->valueData);
-	SDEL_STRING(this->title);
+	OPTSTR_DEL(this->title);
 	SDEL_CLASS(this->shapeProp);
 }
 
@@ -32,20 +32,20 @@ Text::SpreadSheet::WorkbookDataSource *Text::SpreadSheet::OfficeChartSeries::Get
 	return this->valueData;
 }
 
-Text::String *Text::SpreadSheet::OfficeChartSeries::GetTitle()
+Optional<Text::String> Text::SpreadSheet::OfficeChartSeries::GetTitle()
 {
 	return this->title;
 }
 
-void Text::SpreadSheet::OfficeChartSeries::SetTitle(Text::String *title, Text::String *dataSource)
+void Text::SpreadSheet::OfficeChartSeries::SetTitle(Optional<Text::String> title, Text::String *dataSource)
 {
-	SDEL_STRING(this->title);
-	this->title = SCOPY_STRING(title);
+	OPTSTR_DEL(this->title);
+	this->title = Text::String::CopyOrNull(title);
 }
 
 void Text::SpreadSheet::OfficeChartSeries::SetTitle(Text::CString title, const UTF8Char *dataSource)
 {
-	SDEL_STRING(this->title);
+	OPTSTR_DEL(this->title);
 	this->title = Text::String::NewOrNull(title);
 }
 

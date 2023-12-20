@@ -6,7 +6,7 @@
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
 #include "Text/UTF8Reader.h"
-#include "UI/FileDialog.h"
+#include "UI/GUIFileDialog.h"
 
 void __stdcall SSWR::AVIRead::AVIRLineCounterForm::OnExtensionsAddClicked(void *userObj)
 {
@@ -105,15 +105,15 @@ void __stdcall SSWR::AVIRead::AVIRLineCounterForm::OnResultSaveClicked(void *use
 	if (me->resList.GetCount() == 0)
 		return;
 
-	UI::FileDialog dlg(L"SSWR", L"AVIRead", L"LineCounterSave", true);
-	dlg.AddFilter(CSTR("*.txt"), CSTR("Result file"));
-	if (dlg.ShowDialog(me->GetHandle()))
+	NotNullPtr<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"LineCounterSave", true);
+	dlg->AddFilter(CSTR("*.txt"), CSTR("Result file"));
+	if (dlg->ShowDialog(me->GetHandle()))
 	{
 		Text::StringBuilderUTF8 sb;
 		FileInfo *fi;
 		UOSInt i;
 		UOSInt j;
-		IO::FileStream fs(dlg.GetFileName(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+		IO::FileStream fs(dlg->GetFileName(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 		IO::StreamWriter writer(fs, (UInt32)0);
 		i = 0;
 		j = me->resList.GetCount();
@@ -132,6 +132,7 @@ void __stdcall SSWR::AVIRead::AVIRLineCounterForm::OnResultSaveClicked(void *use
 			i++;
 		}
 	}
+	dlg.Delete();
 }
 
 void SSWR::AVIRead::AVIRLineCounterForm::CalcDir(UTF8Char *pathBuff, UTF8Char *pathBuffEnd)

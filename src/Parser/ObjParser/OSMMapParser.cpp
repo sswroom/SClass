@@ -66,12 +66,15 @@ IO::ParsedObject *Parser::ObjParser::OSMMapParser::ParseObject(NotNullPtr<IO::Pa
 		{
 			NotNullPtr<Text::String> name;
 			NotNullPtr<Text::String> format;
-			Text::String *sMinZoom = jobj->GetObjectString(CSTR("minzoom"));
-			Text::String *sMaxZoom = jobj->GetObjectString(CSTR("maxzoom"));
+			NotNullPtr<Text::String> sMinZoom;
+			NotNullPtr<Text::String> sMaxZoom;
 			UInt32 minZoom;
 			UInt32 maxZoom;
 			Text::JSONArray *bounds = jobj->GetObjectArray(CSTR("bounds"));
-			if (name.Set(jobj->GetObjectString(CSTR("name"))) && format.Set(jobj->GetObjectString(CSTR("format"))) && sMinZoom && sMaxZoom && bounds && sMinZoom->ToUInt32(minZoom) && sMaxZoom->ToUInt32(maxZoom) && bounds->GetArrayLength() == 4)
+			if (jobj->GetObjectString(CSTR("name")).SetTo(name) &&
+				jobj->GetObjectString(CSTR("format")).SetTo(format) &&
+				jobj->GetObjectString(CSTR("minzoom")).SetTo(sMinZoom) &&
+				jobj->GetObjectString(CSTR("maxzoom")).SetTo(sMaxZoom) && bounds && sMinZoom->ToUInt32(minZoom) && sMaxZoom->ToUInt32(maxZoom) && bounds->GetArrayLength() == 4)
 			{
 				Math::Coord2DDbl maxCoord;
 				Math::Coord2DDbl minCoord;

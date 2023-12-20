@@ -135,10 +135,10 @@ DB::TableDef *DB::DBConn::GetTableDef(Text::CString schemaName, Text::CString ta
 					{
 						col->SetNotNull(false);
 					}
-					Text::String *defVal = col->GetDefVal();
-					if (defVal && defVal->StartsWith(UTF8STRC("0000-00-00 00:00:00")))
+					NotNullPtr<Text::String> defVal;
+					if (col->GetDefVal().SetTo(defVal) && defVal->StartsWith(UTF8STRC("0000-00-00 00:00:00")))
 					{
-						col->SetDefVal(0);
+						col->SetDefVal(CSTR_NULL);
 					}
 				}
 				tab->AddCol(col);
@@ -307,32 +307,33 @@ DB::TableDef *DB::DBConn::GetTableDef(Text::CString schemaName, Text::CString ta
 		DB::TableDef *tab;
 		NotNullPtr<DB::ColDef> col;
 		Bool hasGeometry = false;
-		Text::String *geometrySchema = 0;
-		Text::String *s;
+		Optional<Text::String> geometrySchema = 0;
+		Optional<Text::String> ops;
+		NotNullPtr<Text::String> s;
 		UOSInt sizeCol;
 		NEW_CLASS(tab, DB::TableDef(schemaName, tableName));
 		while (r->ReadNext())
 		{
-			s = r->GetNewStr(0);
-			NEW_CLASSNN(col, DB::ColDef(Text::String::OrEmpty(s)));
-			SDEL_STRING(s);
-			s = r->GetNewStr(1);
-			col->SetDefVal(s);
-			SDEL_STRING(s);
-			s = r->GetNewStr(2);
-			col->SetNotNull((s != 0) && s->Equals(UTF8STRC("NO")));
-			SDEL_STRING(s);
-			s = r->GetNewStr(6);
-			if (s == 0 || !s->Equals(UTF8STRC("YES")))
+			ops = r->GetNewStr(0);
+			NEW_CLASSNN(col, DB::ColDef(Text::String::OrEmpty(ops)));
+			OPTSTR_DEL(ops);
+			ops = r->GetNewStr(1);
+			col->SetDefVal(ops);
+			OPTSTR_DEL(ops);
+			ops = r->GetNewStr(2);
+			col->SetNotNull(ops.SetTo(s) && s->Equals(UTF8STRC("NO")));
+			OPTSTR_DEL(ops);
+			ops = r->GetNewStr(6);
+			if (!ops.SetTo(s) || !s->Equals(UTF8STRC("YES")))
 			{
-				SDEL_STRING(s);
+				OPTSTR_DEL(ops);
 				col->SetAutoIncNone();
 			}
 			else
 			{
-				SDEL_STRING(s);
-				s = r->GetNewStr(7);
-				if (s && s->Equals(UTF8STRC("ALWAYS")))
+				OPTSTR_DEL(ops);
+				ops = r->GetNewStr(7);
+				if (ops.SetTo(s) && s->Equals(UTF8STRC("ALWAYS")))
 				{
 					col->SetAutoInc(DB::ColDef::AutoIncType::Always, r->GetInt64(8), r->GetInt64(9));
 				}
@@ -340,11 +341,10 @@ DB::TableDef *DB::DBConn::GetTableDef(Text::CString schemaName, Text::CString ta
 				{
 					col->SetAutoInc(DB::ColDef::AutoIncType::Default, r->GetInt64(8), r->GetInt64(9));
 				}
-				SDEL_STRING(s);
+				OPTSTR_DEL(ops);
 			}
-			s = r->GetNewStr(3);
 			sizeCol = 4;
-			if (s)
+			if (r->GetNewStr(3).SetTo(s))
 			{
 				col->SetNativeType(s);
 				//////////////////////////
@@ -481,7 +481,7 @@ DB::TableDef *DB::DBConn::GetTableDef(Text::CString schemaName, Text::CString ta
 					col->SetColDP(0);
 					col->SetColSize(0);
 					hasGeometry = true;
-					if (geometrySchema == 0)
+					if (geometrySchema.IsNull())
 					{
 						geometrySchema = r->GetNewStr(10);
 					}
@@ -601,11 +601,11 @@ DB::TableDef *DB::DBConn::GetTableDef(Text::CString schemaName, Text::CString ta
 			}
 			this->CloseReader(r);
 		}
-		if (hasGeometry)
+		if (hasGeometry && geometrySchema.SetTo(s))
 		{
 			sql.Clear();
 			sql.AppendCmdC(CSTR("SELECT f_geometry_column, coord_dimension, srid, type FROM "));
-			sql.AppendCol(geometrySchema->v);
+			sql.AppendCol(s->v);
 			sql.AppendCmdC(CSTR(".geometry_columns where f_table_name = "));
 			sql.AppendStrC(tableName);
 			sql.AppendCmdC(CSTR(" and f_table_schema = "));
@@ -621,15 +621,18 @@ DB::TableDef *DB::DBConn::GetTableDef(Text::CString schemaName, Text::CString ta
 			{
 				while (r->ReadNext())
 				{
-					Text::String *colName = r->GetNewStr(0);
+					Optional<Text::String> colName = r->GetNewStr(0);
 					Int32 dimension = r->GetInt32(1);
 					Int32 srid = r->GetInt32(2);
-					Text::String *t = r->GetNewStr(3);
-					DB::ColDef *col = colMap.Get(colName);
+					Optional<Text::String> t = r->GetNewStr(3);
+					DB::ColDef *col = 0;
+					NotNullPtr<Text::String> s;
+					if (colName.SetTo(s))
+						col = colMap.GetNN(s);
 					if (col)
 					{
 						col->SetColDP((UInt32)srid);
-						if (t == 0 || t->Equals(UTF8STRC("GEOMETRY")))
+						if (!t.SetTo(s) || s->Equals(UTF8STRC("GEOMETRY")))
 						{
 							if (dimension == 3)
 								col->SetColSize((UOSInt)DB::ColDef::GeometryType::AnyZ);
@@ -638,7 +641,7 @@ DB::TableDef *DB::DBConn::GetTableDef(Text::CString schemaName, Text::CString ta
 							else
 								col->SetColSize((UOSInt)DB::ColDef::GeometryType::Any);
 						}
-						else if (t->Equals(UTF8STRC("POINT")))
+						else if (s->Equals(UTF8STRC("POINT")))
 						{
 							if (dimension == 3)
 								col->SetColSize((UOSInt)DB::ColDef::GeometryType::PointZ);
@@ -647,7 +650,7 @@ DB::TableDef *DB::DBConn::GetTableDef(Text::CString schemaName, Text::CString ta
 							else
 								col->SetColSize((UOSInt)DB::ColDef::GeometryType::Point);
 						}
-						else if (t->Equals(UTF8STRC("PATH")))
+						else if (s->Equals(UTF8STRC("PATH")))
 						{
 							if (dimension == 3)
 								col->SetColSize((UOSInt)DB::ColDef::GeometryType::PathZ);
@@ -656,7 +659,7 @@ DB::TableDef *DB::DBConn::GetTableDef(Text::CString schemaName, Text::CString ta
 							else
 								col->SetColSize((UOSInt)DB::ColDef::GeometryType::Path);
 						}
-						else if (t->Equals(UTF8STRC("POLYGON")))
+						else if (s->Equals(UTF8STRC("POLYGON")))
 						{
 							if (dimension == 3)
 								col->SetColSize((UOSInt)DB::ColDef::GeometryType::PolygonZ);
@@ -665,7 +668,7 @@ DB::TableDef *DB::DBConn::GetTableDef(Text::CString schemaName, Text::CString ta
 							else
 								col->SetColSize((UOSInt)DB::ColDef::GeometryType::Polygon);
 						}
-						else if (t->Equals(UTF8STRC("MULTIPOLYGON")))
+						else if (s->Equals(UTF8STRC("MULTIPOLYGON")))
 						{
 							if (dimension == 3)
 								col->SetColSize((UOSInt)DB::ColDef::GeometryType::MultiPolygonZ);
@@ -676,7 +679,7 @@ DB::TableDef *DB::DBConn::GetTableDef(Text::CString schemaName, Text::CString ta
 						}
 						else
 						{
-							printf("DBConn Postgresql: Unsupported type %s\r\n", t->v);
+							printf("DBConn Postgresql: Unsupported type %s\r\n", s->v);
 							if (dimension == 3)
 								col->SetColSize((UOSInt)DB::ColDef::GeometryType::AnyZ);
 							else if (dimension == 4)
@@ -685,8 +688,8 @@ DB::TableDef *DB::DBConn::GetTableDef(Text::CString schemaName, Text::CString ta
 								col->SetColSize((UOSInt)DB::ColDef::GeometryType::Any);
 						}
 					}
-					SDEL_STRING(colName);
-					SDEL_STRING(t);
+					OPTSTR_DEL(colName);
+					OPTSTR_DEL(t);
 				}
 				this->CloseReader(r);
 			}
@@ -697,7 +700,7 @@ DB::TableDef *DB::DBConn::GetTableDef(Text::CString schemaName, Text::CString ta
 				printf("DBConn Postgresql: %s\r\n", sb.ToString());
 			}
 		}
-		SDEL_STRING(geometrySchema);
+		OPTSTR_DEL(geometrySchema);
 		return tab;
 	}
 	case DB::SQLType::WBEM:

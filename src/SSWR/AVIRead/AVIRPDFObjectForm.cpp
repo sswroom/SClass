@@ -1,8 +1,8 @@
 #include "Stdafx.h"
 #include "IO/Path.h"
 #include "SSWR/AVIRead/AVIRPDFObjectForm.h"
-#include "UI/FileDialog.h"
-#include "UI/FolderDialog.h"
+#include "UI/GUIFileDialog.h"
+#include "UI/GUIFolderDialog.h"
 
 typedef enum
 {
@@ -28,7 +28,7 @@ void __stdcall SSWR::AVIRead::AVIRPDFObjectForm::OnObjectSelChg(void *userObj)
 			{
 				entry = param->GetItem(i);
 				me->lvParameter->AddItem(entry->type, 0);
-				if (s.Set(entry->value))
+				if (entry->value.SetTo(s))
 					me->lvParameter->SetSubItem(i, 1, s);
 				i++;
 			}
@@ -81,7 +81,8 @@ SSWR::AVIRead::AVIRPDFObjectForm::AVIRPDFObjectForm(UI::GUIClientControl *parent
 	this->SetMenu(this->mnuMain);
 	
 	Media::PDFObject *obj;
-	Text::String *type;
+	Optional<Text::String> type;
+	NotNullPtr<Text::String> s;
 	UTF8Char sbuff[128];
 	UTF8Char *sptr;
 	UOSInt i = 0;
@@ -91,14 +92,14 @@ SSWR::AVIRead::AVIRPDFObjectForm::AVIRPDFObjectForm(UI::GUIClientControl *parent
 		obj = this->doc->GetItem(i);
 		sptr = Text::StrUInt32(sbuff, obj->GetId());
 		type = obj->GetType();
-		if (type && type->Equals(UTF8STRC("XObject")))
+		if (type.SetTo(s) && s->Equals(UTF8STRC("XObject")))
 		{
 			type = obj->GetSubtype();
 		}
-		if (type != 0)
+		if (type.SetTo(s))
 		{
 			*sptr++ = ' ';
-			sptr = type->ConcatTo(sptr);
+			sptr = s->ConcatTo(sptr);
 		}
 		this->lbObject->AddItem(CSTRP(sbuff, sptr), obj);
 		i++;
@@ -116,10 +117,10 @@ void SSWR::AVIRead::AVIRPDFObjectForm::EventMenuClicked(UInt16 cmdId)
 	{
 	case MNU_SAVE_ALL_IMAGE:
 	{
-		UI::FolderDialog dlg(L"SSWR", L"AVIRead", L"PDFObjectAllImage");
-		if (dlg.ShowDialog(this->GetHandle()))
+		NotNullPtr<UI::GUIFolderDialog> dlg = this->ui->NewFolderDialog();
+		if (dlg->ShowDialog(this->GetHandle()))
 		{
-			NotNullPtr<Text::String> folder = dlg.GetFolder();
+			NotNullPtr<Text::String> folder = dlg->GetFolder();
 			Text::CString fileName = this->doc->GetSourceNameObj()->ToCString();
 			UOSInt i = fileName.LastIndexOf(IO::Path::PATH_SEPERATOR);
 			if (i != INVALID_INDEX)
@@ -133,8 +134,8 @@ void SSWR::AVIRead::AVIRPDFObjectForm::EventMenuClicked(UInt16 cmdId)
 				obj = this->doc->GetItem(i);
 				if (obj->IsImage())
 				{
-					Text::String *filter = obj->GetFilter();
-					if (filter)
+					NotNullPtr<Text::String> filter;
+					if (obj->GetFilter().SetTo(filter))
 					{
 						if (filter->Equals(UTF8STRC("DCTDecode")))
 						{
@@ -152,6 +153,7 @@ void SSWR::AVIRead::AVIRPDFObjectForm::EventMenuClicked(UInt16 cmdId)
 				i++;
 			}
 		}
+		dlg.Delete();
 		break;	
 	}
 	case MNU_SAVE_SELECTED:
@@ -159,18 +161,19 @@ void SSWR::AVIRead::AVIRPDFObjectForm::EventMenuClicked(UInt16 cmdId)
 		Media::PDFObject *obj = (Media::PDFObject*)this->lbObject->GetSelectedItem();
 		if (obj == 0)
 			break;
-		UI::FileDialog dlg(L"SSWR", L"AVIRead", L"PDFObjectSelected", true);
-		dlg.AddFilter(CSTR("*.dat"), CSTR("Data File"));
+		NotNullPtr<UI::GUIFileDialog> dlg = this->ui->NewFileDialog(L"SSWR", L"AVIRead", L"PDFObjectSelected", true);
+		dlg->AddFilter(CSTR("*.dat"), CSTR("Data File"));
 		Text::StringBuilderUTF8 sb;
 		sb.Append(doc->GetSourceNameObj());
 		sb.AppendUTF8Char('.');
 		sb.AppendU32(obj->GetId());
 		sb.AppendC(UTF8STRC(".dat"));
-		dlg.SetFileName(sb.ToCString());
-		if (dlg.ShowDialog(this->GetHandle()))
+		dlg->SetFileName(sb.ToCString());
+		if (dlg->ShowDialog(this->GetHandle()))
 		{
-			obj->SaveFile(dlg.GetFileName()->ToCString());
+			obj->SaveFile(dlg->GetFileName()->ToCString());
 		}
+		dlg.Delete();
 		break;	
 	}
 	}

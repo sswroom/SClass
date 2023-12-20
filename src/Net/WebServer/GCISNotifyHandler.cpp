@@ -47,7 +47,7 @@ Bool __stdcall Net::WebServer::GCISNotifyHandler::NotifyFunc(NotNullPtr<Net::Web
 			mail.SetFrom(0, sb2.ToCString());
 			Text::JSONObject *msgObj = (Text::JSONObject*)json;
 			NotNullPtr<Text::String> s;
-			if (s.Set(msgObj->GetObjectString(CSTR("ChanType"))) && !s->Equals(UTF8STRC("EM")) && !s->Equals(UTF8STRC("BD")))
+			if (msgObj->GetObjectString(CSTR("ChanType")).SetTo(s) && !s->Equals(UTF8STRC("EM")) && !s->Equals(UTF8STRC("BD")))
 			{
 				failed = true;
 				resultCd = CSTR("0074");
@@ -80,15 +80,15 @@ Bool __stdcall Net::WebServer::GCISNotifyHandler::NotifyFunc(NotNullPtr<Net::Web
 							me->log->LogMessage(CSTR("No recipient found 2"), IO::LogHandler::LogLevel::Error);
 							break;
 						}
-						else if (s.Set(recipient->GetObjectString(CSTR("ChanAddr"))))
+						else if (recipient->GetObjectString(CSTR("ChanAddr")).SetTo(s))
 						{
 							mail.ToAdd(0, s);
 						}
-						else if (s.Set(recipient->GetObjectString(CSTR("CcAddr"))))
+						else if (recipient->GetObjectString(CSTR("CcAddr")).SetTo(s))
 						{
 							mail.CCAdd(0, s);
 						}
-						else if (s.Set(recipient->GetObjectString(CSTR("BccAddr"))))
+						else if (recipient->GetObjectString(CSTR("BccAddr")).SetTo(s))
 						{
 //								mail.BccAdd(0, s);
 						}
@@ -108,7 +108,7 @@ Bool __stdcall Net::WebServer::GCISNotifyHandler::NotifyFunc(NotNullPtr<Net::Web
 			if (!failed)
 			{
 				Text::JSONObject *contentDetail = msgObj->GetObjectObject(CSTR("ContentDetail"));
-				Text::String *content;
+				NotNullPtr<Text::String> content;
 				if (contentDetail == 0)
 				{
 					failed = true;
@@ -116,10 +116,9 @@ Bool __stdcall Net::WebServer::GCISNotifyHandler::NotifyFunc(NotNullPtr<Net::Web
 					resultMsg = CSTR("Content field is empty.");
 					me->log->LogMessage(CSTR("Content field is empty"), IO::LogHandler::LogLevel::Error);
 				}
-				else if (s.Set(contentDetail->GetObjectString(CSTR("ContentType"))))
+				else if (contentDetail->GetObjectString(CSTR("ContentType")).SetTo(s))
 				{
-					content = contentDetail->GetObjectString(CSTR("Content"));
-					if (content == 0)
+					if (!contentDetail->GetObjectString(CSTR("Content")).SetTo(content))
 					{
 						failed = true;
 						resultCd = CSTR("0024");
@@ -151,7 +150,7 @@ Bool __stdcall Net::WebServer::GCISNotifyHandler::NotifyFunc(NotNullPtr<Net::Web
 				}
 				if (!failed)
 				{
-					if (s.Set(contentDetail->GetObjectString(CSTR("Subject"))))
+					if (contentDetail->GetObjectString(CSTR("Subject")).SetTo(s))
 					{
 						mail.SetSubject(s);
 					}

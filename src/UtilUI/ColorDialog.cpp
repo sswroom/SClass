@@ -5,7 +5,6 @@
 #include "Sync/ThreadUtil.h"
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
-#include "UI/FileDialog.h"
 #include "UtilUI/ColorDialog.h"
 
 void __stdcall UtilUI::ColorDialog::OnOKClicked(void *userObj)

@@ -6,7 +6,6 @@
 #include "Sync/ThreadUtil.h"
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
-#include "UI/FileDialog.h"
 
 typedef enum
 {

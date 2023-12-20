@@ -47,7 +47,7 @@ namespace SSWR
 			Data::Chart *chart;
 			Data::ArrayList<UInt32> *yCols;
 			NotNullPtr<Text::String> tableName;
-			Text::String *schemaName;
+			Optional<Text::String> schemaName;
 			DB::DBUtil::ColType *strTypes;
 
 			static void __stdcall OnPlotClicked(void *userObj);

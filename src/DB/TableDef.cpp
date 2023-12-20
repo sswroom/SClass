@@ -20,11 +20,11 @@ DB::TableDef::TableDef(Text::CString schemaName, Text::CString tableName)
 DB::TableDef::~TableDef()
 {
 	UOSInt i;
-	SDEL_STRING(this->databaseName);
-	SDEL_STRING(this->schemaName);
+	OPTSTR_DEL(this->databaseName);
+	OPTSTR_DEL(this->schemaName);
 	this->tableName->Release();
-	SDEL_STRING(this->engine);
-	SDEL_STRING(this->charset);
+	OPTSTR_DEL(this->engine);
+	OPTSTR_DEL(this->charset);
 	SDEL_TEXT(this->attr);
 	SDEL_TEXT(this->comments);
 	i = this->cols.GetCount();
@@ -34,27 +34,27 @@ DB::TableDef::~TableDef()
 	}
 }
 
-Text::String *DB::TableDef::GetDatabaseName() const
+Optional<Text::String> DB::TableDef::GetDatabaseName() const
 {
 	return this->databaseName;
 }
 
-Text::String *DB::TableDef::GetSchemaName() const
+Optional<Text::String> DB::TableDef::GetSchemaName() const
 {
 	return this->schemaName;
 }
 
-Text::String *DB::TableDef::GetTableName() const
+NotNullPtr<Text::String> DB::TableDef::GetTableName() const
 {
-	return this->tableName.Ptr();
+	return this->tableName;
 }
 
-Text::String *DB::TableDef::GetEngine() const
+Optional<Text::String> DB::TableDef::GetEngine() const
 {
 	return this->engine;
 }
 
-Text::String *DB::TableDef::GetCharset() const
+Optional<Text::String> DB::TableDef::GetCharset() const
 {
 	return this->charset;
 }
@@ -129,14 +129,14 @@ DB::TableDef *DB::TableDef::AddCol(NotNullPtr<DB::ColDef> col)
 
 DB::TableDef *DB::TableDef::SetDatabaseName(Text::CString databaseName)
 {
-	SDEL_STRING(this->databaseName);
+	OPTSTR_DEL(this->databaseName);
 	this->databaseName = Text::String::NewOrNull(databaseName);
 	return this;
 }
 
 DB::TableDef *DB::TableDef::SetSchemaName(Text::CString schemaName)
 {
-	SDEL_STRING(this->schemaName);
+	OPTSTR_DEL(this->schemaName);
 	this->schemaName = Text::String::NewOrNull(schemaName);
 	return this;
 }
@@ -150,14 +150,14 @@ DB::TableDef *DB::TableDef::SetTableName(Text::CString tableName)
 
 DB::TableDef *DB::TableDef::SetEngine(Text::CString engine)
 {
-	SDEL_STRING(this->engine);
+	OPTSTR_DEL(this->engine);
 	this->engine = Text::String::NewOrNull(engine);
 	return this;
 }
 
 DB::TableDef *DB::TableDef::SetCharset(Text::CString charset)
 {
-	SDEL_STRING(this->charset);
+	OPTSTR_DEL(this->charset);
 	this->charset = Text::String::NewOrNull(charset);
 	return this;
 }
@@ -199,10 +199,10 @@ void DB::TableDef::ColFromReader(NotNullPtr<DB::DBReader> r)
 NotNullPtr<DB::TableDef> DB::TableDef::Clone() const
 {
 	NotNullPtr<DB::TableDef> newObj;
-	NEW_CLASSNN(newObj, DB::TableDef(STR_CSTR(this->schemaName), this->tableName->ToCString()));
-	newObj->SetDatabaseName(STR_CSTR(this->databaseName));
-	newObj->SetEngine(STR_CSTR(this->engine));
-	newObj->SetCharset(STR_CSTR(this->charset));
+	NEW_CLASSNN(newObj, DB::TableDef(OPTSTR_CSTR(this->schemaName), this->tableName->ToCString()));
+	newObj->SetDatabaseName(OPTSTR_CSTR(this->databaseName));
+	newObj->SetEngine(OPTSTR_CSTR(this->engine));
+	newObj->SetCharset(OPTSTR_CSTR(this->charset));
 	newObj->SetAttr(this->attr);
 	newObj->SetComments(this->comments);
 	newObj->SetSQLType(this->sqlType);

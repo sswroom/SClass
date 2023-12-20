@@ -69,6 +69,13 @@ public:
 		}
 	}
 
+	Bool operator==(Optional<T> v) const
+	{
+		return this->p == v.p;
+	}
+
+	Bool operator==(std::nullptr_t) const = delete;
+
 	template <typename V> static Optional<T> ConvertFrom(Optional<V> ptr)
 	{
 		NotNullPtr<V> p;

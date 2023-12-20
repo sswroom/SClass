@@ -58,7 +58,7 @@ namespace Data
 		Text::String *titleBuff;
 		Text::PString titleLine[3];
 		UOSInt titleLineCnt;
-		Text::String *yUnit;
+		Optional<Text::String> yUnit;
 		Int8 timeZoneQHR;
 
 		Double refDbl;

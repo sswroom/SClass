@@ -2,23 +2,24 @@
 #include "SSWR/AVIRead/AVIROpenFileForm.h"
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
-#include "UI/FileDialog.h"
+#include "UI/GUIFileDialog.h"
 
 void __stdcall SSWR::AVIRead::AVIROpenFileForm::OnBrowseClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIROpenFileForm *me = (SSWR::AVIRead::AVIROpenFileForm*)userObj;
 	Text::StringBuilderUTF8 sb;
-	UI::FileDialog dlg(L"SSWR", L"AVIRead", L"OpenFile", false);
+	NotNullPtr<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"OpenFile", false);
 	me->txtName->GetText(sb);
 	if (sb.GetLength() > 0)
 	{
-		dlg.SetFileName(sb.ToCString());
+		dlg->SetFileName(sb.ToCString());
 	}
 	me->core->GetParserList()->PrepareSelector(dlg, me->t);
-	if (dlg.ShowDialog(me->GetHandle()))
+	if (dlg->ShowDialog(me->GetHandle()))
 	{
-		me->txtName->SetText(dlg.GetFileName()->ToCString());
+		me->txtName->SetText(dlg->GetFileName()->ToCString());
 	}
+	dlg.Delete();
 }
 
 void __stdcall SSWR::AVIRead::AVIROpenFileForm::OnOKClicked(void *userObj)

@@ -21,7 +21,7 @@
 #include "Text/URLString.h"
 #include "Text/TextBinEnc/Base64Enc.h"
 #include "Text/TextBinEnc/FormEncoding.h"
-#include "UI/FileDialog.h"
+#include "UI/GUIFileDialog.h"
 
 void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnUserAgentClicked(void *userObj)
 {
@@ -313,7 +313,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnSaveClicked(void *userObj)
 	{
 		return;
 	}
-	UI::FileDialog dlg(L"SSWR", L"AVIRead", L"HTTPClientSave", true);
+	NotNullPtr<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"HTTPClientSave", true);
 	Data::ArrayIterator<NotNullPtr<Text::String>> it = me->respHeaders.Iterator();
 	while (it.HasNext())
 	{
@@ -338,11 +338,11 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnSaveClicked(void *userObj)
 							sarr[0].v[10 + j] = 0;
 							sarr[0].leng = j + 10;
 						}
-						dlg.SetFileName(sarr[0].ToCString().Substring(10));
+						dlg->SetFileName(sarr[0].ToCString().Substring(10));
 					}
 					else
 					{
-						dlg.SetFileName(sarr[0].ToCString().Substring(9));
+						dlg->SetFileName(sarr[0].ToCString().Substring(9));
 					}
 					break;
 				}
@@ -353,11 +353,11 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnSaveClicked(void *userObj)
 			}
 		}
 	}
-	if (dlg.ShowDialog(me->GetHandle()))
+	if (dlg->ShowDialog(me->GetHandle()))
 	{
 		Bool succ = false;
 		{
-			IO::FileStream fs(dlg.GetFileName(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+			IO::FileStream fs(dlg->GetFileName(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 			Sync::MutexUsage mutUsage(me->respMut);
 			if (me->respData)
 			{
@@ -374,6 +374,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnSaveClicked(void *userObj)
 			me->ui->ShowMsgOK(CSTR("Error in storing to file"), CSTR("HTTP Client"), me);
 		}
 	}
+	dlg.Delete();
 }
 
 void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnViewClicked(void *userObj)
@@ -472,19 +473,19 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnDataStrClicked(void *userObj
 void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnFileSelectClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRHTTPClientForm *me = (SSWR::AVIRead::AVIRHTTPClientForm*)userObj;
-	UI::FileDialog dlg(L"SSWR", L"AVIRead", L"HTTPClientSelect", false);
-	dlg.SetAllowMultiSel(true);
-	if (dlg.ShowDialog(me->GetHandle()))
+	NotNullPtr<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"HTTPClientSelect", false);
+	dlg->SetAllowMultiSel(true);
+	if (dlg->ShowDialog(me->GetHandle()))
 	{
 		me->ClearFiles();
 
 		UOSInt i = 0;
-		UOSInt j = dlg.GetFileNameCount();
-		const UTF8Char *fileName;
+		UOSInt j = dlg->GetFileNameCount();
+		Optional<Text::String> fileName;
 		while (i < j)
 		{
-			fileName = dlg.GetFileNames(i);
-			me->fileList.Add(Text::String::NewNotNullSlow(fileName));
+			fileName = dlg->GetFileNames(i);
+			me->fileList.Add(Text::String::OrEmpty(fileName)->Clone());
 			i++;
 		}
 		Text::StringBuilderUTF8 sb;
@@ -499,6 +500,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnFileSelectClicked(void *user
 		}
 		me->lblFileStatus->SetText(sb.ToCString());
 	}
+	dlg.Delete();
 }
 
 void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnFileClearClicked(void *userObj)

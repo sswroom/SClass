@@ -479,14 +479,14 @@ WChar *DB::SQLiteReader::GetStr(UOSInt colIndex, WChar *buff)
 #endif
 }
 
-Text::String *DB::SQLiteReader::GetNewStr(UOSInt colIndex)
+Optional<Text::String> DB::SQLiteReader::GetNewStr(UOSInt colIndex)
 {
 	if (colIndex >= this->colCnt)
 		return 0;
 	Text::StringBuilderUTF8 sb;
 	if (!this->GetStr(colIndex, sb))
 		return 0;
-	return Text::String::New(sb.ToCString()).Ptr();
+	return Text::String::New(sb.ToCString());
 }
 
 Bool DB::SQLiteReader::GetStr(UOSInt colIndex, NotNullPtr<Text::StringBuilderUTF8> sb)

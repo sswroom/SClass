@@ -125,7 +125,7 @@ public:
 		}
 	}
 
-	virtual Text::String *GetNewStr(UOSInt colIndex)
+	virtual Optional<Text::String> GetNewStr(UOSInt colIndex)
 	{
 		Data::VariItem item;
 		this->GetVariItem(colIndex, item);
@@ -639,6 +639,7 @@ Bool DB::PostgreSQLConn::Connect()
 {
 	if (this->clsData->conn == 0)
 	{
+		NotNullPtr<Text::String> s;
 		Text::StringBuilderUTF8 sb;
 		sb.AppendC(UTF8STRC("host="));
 		sb.Append(this->server);
@@ -646,15 +647,15 @@ Bool DB::PostgreSQLConn::Connect()
 		sb.AppendU16(this->port);
 		sb.AppendC(UTF8STRC(" dbname="));
 		sb.Append(this->database);
-		if (this->uid)
+		if (this->uid.SetTo(s))
 		{
 			sb.AppendC(UTF8STRC(" user="));
-			sb.Append(this->uid);
+			sb.Append(s);
 		}
-		if (this->pwd)
+		if (this->pwd.SetTo(s))
 		{
 			sb.AppendC(UTF8STRC(" password="));
-			sb.Append(this->pwd);
+			sb.Append(s);
 		}
 		this->clsData->conn = PQconnectdb((const char*)sb.ToString());
 		this->isTran = false;
@@ -761,8 +762,8 @@ DB::PostgreSQLConn::~PostgreSQLConn()
 	this->Close();
 	this->server->Release();
 	this->database->Release();
-	SDEL_STRING(this->uid);
-	SDEL_STRING(this->pwd);
+	OPTSTR_DEL(this->uid);
+	OPTSTR_DEL(this->pwd);
 	MemFree(this->clsData);
 }
 
@@ -950,7 +951,7 @@ UOSInt DB::PostgreSQLConn::QueryTableNames(Text::CString schemaName, NotNullPtr<
 		while (r->ReadNext())
 		{
 			NotNullPtr<Text::String> tabName;
-			if (tabName.Set(r->GetNewStr(0)))
+			if (r->GetNewStr(0).SetTo(tabName))
 				names->Add(tabName);
 		}
 		this->CloseReader(r);
@@ -1036,12 +1037,12 @@ NotNullPtr<Text::String> DB::PostgreSQLConn::GetConnDB() const
 	return this->database;
 }
 
-Text::String *DB::PostgreSQLConn::GetConnUID() const
+Optional<Text::String> DB::PostgreSQLConn::GetConnUID() const
 {
 	return this->uid;
 }
 
-Text::String *DB::PostgreSQLConn::GetConnPWD() const
+Optional<Text::String> DB::PostgreSQLConn::GetConnPWD() const
 {
 	return this->pwd;
 }

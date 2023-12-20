@@ -7,6 +7,7 @@
 #include "IO/MemoryStream.h"
 #include "IO/ModemController.h"
 #include "IO/Path.h"
+#include "IO/Registry.h"
 #include "Math/Math.h"
 #include "Net/OSSocketFactory.h"
 #include "Net/SSLEngineFactory.h"
@@ -18,7 +19,6 @@
 #include "SSWR/AVIRead/AVIRHexViewerForm.h"
 #include "SSWR/AVIRead/AVIRSelStreamForm.h"
 #include "Text/MyStringW.h"
-#include "UI/FileDialog.h"
 #include "UI/GUIForm.h"
 
 void __stdcall SSWR::AVIRead::AVIRCore::FormClosed(void *userObj, UI::GUIForm *frm)

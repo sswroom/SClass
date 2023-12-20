@@ -3,7 +3,7 @@
 #include "Net/ASN1OIDDB.h"
 #include "Net/ASN1Util.h"
 #include "SSWR/AVIRead/AVIRASN1MIBForm.h"
-#include "UI/FileDialog.h"
+#include "UI/GUIFileDialog.h"
 
 void __stdcall SSWR::AVIRead::AVIRASN1MIBForm::OnFileDroped(void *userObj, NotNullPtr<Text::String> *files, UOSInt nFiles)
 {
@@ -16,13 +16,14 @@ void __stdcall SSWR::AVIRead::AVIRASN1MIBForm::OnBrowseClicked(void *userObj)
 	SSWR::AVIRead::AVIRASN1MIBForm *me = (SSWR::AVIRead::AVIRASN1MIBForm*)userObj;
 	Text::StringBuilderUTF8 sb;
 	me->txtFile->GetText(sb);
-	UI::FileDialog dlg(L"SSWR", L"AVIRead", L"ASN1MIB", false);
-	dlg.AddFilter(CSTR("*.asn"), CSTR("ASN.1 MIB File"));
-	dlg.AddFilter(CSTR("*.mib"), CSTR("MIB file"));
-	if (dlg.ShowDialog(me->GetHandle()))
+	NotNullPtr<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"ASN1MIB", false);
+	dlg->AddFilter(CSTR("*.asn"), CSTR("ASN.1 MIB File"));
+	dlg->AddFilter(CSTR("*.mib"), CSTR("MIB file"));
+	if (dlg->ShowDialog(me->GetHandle()))
 	{
-		me->LoadFile(dlg.GetFileName()->ToCString());
+		me->LoadFile(dlg->GetFileName()->ToCString());
 	}
+	dlg.Delete();
 }
 
 void __stdcall SSWR::AVIRead::AVIRASN1MIBForm::OnObjectsSelChg(void *userObj)

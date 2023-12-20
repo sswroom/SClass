@@ -4,7 +4,7 @@
 #include "SSWR/AVIRead/AVIRSelCANForm.h"
 #include "SSWR/AVIRead/AVIRSelStreamForm.h"
 #include "Text/UTF8Reader.h"
-#include "UI/FileDialog.h"
+#include "UI/GUIFileDialog.h"
 
 void __stdcall SSWR::AVIRead::AVIRSelCANForm::OnAXCANSerialClicked(void *userObj)
 {
@@ -23,11 +23,11 @@ void __stdcall SSWR::AVIRead::AVIRSelCANForm::OnAXCANSerialClicked(void *userObj
 void __stdcall SSWR::AVIRead::AVIRSelCANForm::OnAXCANFileClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRSelCANForm *me = (SSWR::AVIRead::AVIRSelCANForm*)userObj;
-	UI::FileDialog dlg(L"SSWR", L"AVIRead", L"AXCANFile", false);
-	dlg.AddFilter(CSTR("*.txt"), CSTR("Text File"));
-	if (dlg.ShowDialog(me->GetHandle()))
+	NotNullPtr<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"AXCANFile", false);
+	dlg->AddFilter(CSTR("*.txt"), CSTR("Text File"));
+	if (dlg->ShowDialog(me->GetHandle()))
 	{
-		IO::FileStream fs(dlg.GetFileName(), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+		IO::FileStream fs(dlg->GetFileName(), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 		Text::UTF8Reader reader(fs);
 		IO::Device::AXCAN *can;
 		NEW_CLASS(can, IO::Device::AXCAN(me->hdlr));
@@ -35,6 +35,7 @@ void __stdcall SSWR::AVIRead::AVIRSelCANForm::OnAXCANFileClicked(void *userObj)
 		me->listener = can;
 		me->SetDialogResult(DialogResult::DR_OK);
 	}
+	dlg.Delete();
 }
 
 SSWR::AVIRead::AVIRSelCANForm::AVIRSelCANForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Optional<Net::SSLEngine> ssl, IO::CANHandler *hdlr) : UI::GUIForm(parent, 640, 480, ui)

@@ -9,6 +9,9 @@
 #include "UI/Java/JavaCheckedListBox.h"
 #include "UI/Java/JavaComboBox.h"
 #include "UI/Java/JavaCore.h"
+#include "UI/Java/JavaFileDialog.h"
+#include "UI/Java/JavaFolderDialog.h"
+#include "UI/Java/JavaFontDialog.h"
 #include "UI/Java/JavaGroupBox.h"
 #include "UI/Java/JavaHSplitter.h"
 #include "UI/Java/JavaLabel.h"
@@ -279,5 +282,33 @@ NotNullPtr<UI::GUIVSplitter> UI::Java::JavaCore::NewVSplitter(NotNullPtr<GUIClie
 {
 	NotNullPtr<UI::Java::JavaVSplitter> ctrl;
 	NEW_CLASSNN(ctrl, UI::Java::JavaVSplitter(*this, parent, height, isBottom));
+	return ctrl;
+}
+
+NotNullPtr<UI::GUIFileDialog> UI::Java::JavaCore::NewFileDialog(const WChar *compName, const WChar *appName, const WChar *dialogName, Bool isSave)
+{
+	NotNullPtr<UI::Java::JavaFileDialog> ctrl;
+	NEW_CLASSNN(ctrl, UI::Java::JavaFileDialog(compName, appName, dialogName, isSave));
+	return ctrl;
+}
+
+NotNullPtr<UI::GUIFolderDialog> UI::Java::JavaCore::NewFolderDialog()
+{
+	NotNullPtr<UI::Java::JavaFolderDialog> ctrl;
+	NEW_CLASSNN(ctrl, UI::Java::JavaFolderDialog());
+	return ctrl;
+}
+
+NotNullPtr<UI::GUIFontDialog> UI::Java::JavaCore::NewFontDialog(Optional<Text::String> fontName, Double fontSizePt, Bool isBold, Bool isItalic)
+{
+	NotNullPtr<UI::Java::JavaFontDialog> ctrl;
+	NEW_CLASSNN(ctrl, UI::Java::JavaFontDialog(fontName, fontSizePt, isBold, isItalic));
+	return ctrl;
+}
+
+NotNullPtr<UI::GUIFontDialog> UI::Java::JavaCore::NewFontDialog(Text::CString fontName, Double fontSizePt, Bool isBold, Bool isItalic)
+{
+	NotNullPtr<UI::Java::JavaFontDialog> ctrl;
+	NEW_CLASSNN(ctrl, UI::Java::JavaFontDialog(fontName, fontSizePt, isBold, isItalic));
 	return ctrl;
 }

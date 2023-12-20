@@ -15,7 +15,7 @@ namespace Media
 	class MonitorColorManager
 	{
 	private:
-		Text::String *profileName;
+		Optional<Text::String> profileName;
 
 		Media::IColorHandler::YUVPARAM yuv;
 		Media::IColorHandler::RGBPARAM2 rgb;
@@ -29,11 +29,11 @@ namespace Media
 		static void SetDefaultRGB(NotNullPtr<Media::IColorHandler::RGBPARAM2> rgb);
 
 	public:
-		MonitorColorManager(Text::String *profileName);
+		MonitorColorManager(Optional<Text::String> profileName);
 		MonitorColorManager(Text::CString profileName);
 		~MonitorColorManager();
 
-		Text::String *GetProfileName();
+		Optional<Text::String> GetProfileName();
 		Bool Load();
 		Bool Save();
 		void SetDefault();

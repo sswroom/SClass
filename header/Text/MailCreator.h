@@ -38,9 +38,9 @@ namespace Text
 		void SetSubject(NotNullPtr<Text::String> subj);
 
 		void SetContentHTML(const WChar *content, Text::CString htmlPath);
-		void SetContentHTML(Text::String *content, Text::CString htmlPath);
+		void SetContentHTML(NotNullPtr<Text::String> content, Text::CString htmlPath);
 		void SetContentText(const WChar *content, UInt32 codePage);
-		void SetContentText(Text::String *content);
+		void SetContentText(NotNullPtr<Text::String> content);
 		Bool SetContentFile(Text::CStringNN filePath);
 		void AddAttachment(Text::CStringNN fileName);
 

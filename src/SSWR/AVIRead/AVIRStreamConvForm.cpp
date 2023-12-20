@@ -4,7 +4,6 @@
 #include "Sync/MutexUsage.h"
 #include "Sync/SimpleThread.h"
 #include "Sync/ThreadUtil.h"
-#include "UI/FileDialog.h"
 
 void __stdcall SSWR::AVIRead::AVIRStreamConvForm::OnStream1Clicked(void *userObj)
 {

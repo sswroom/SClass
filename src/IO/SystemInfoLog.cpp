@@ -13,19 +13,19 @@ void IO::SystemInfoLog::FreeDeviceInfo(DeviceInfo *deviceInfo)
 {
 	deviceInfo->desc->Release();
 	deviceInfo->hwId->Release();
-	SDEL_STRING(deviceInfo->service);
-	SDEL_STRING(deviceInfo->driver);
+	OPTSTR_DEL(deviceInfo->service);
+	OPTSTR_DEL(deviceInfo->driver);
 	MemFree(deviceInfo);
 }
 
 void IO::SystemInfoLog::FreeDriverInfo(DriverInfo *driverInfo)
 {
 	driverInfo->fileName->Release();
-	SDEL_STRING(driverInfo->creationDate);
-	SDEL_STRING(driverInfo->version);
-	SDEL_STRING(driverInfo->manufacturer);
-	SDEL_STRING(driverInfo->productName);
-	SDEL_STRING(driverInfo->group);
+	OPTSTR_DEL(driverInfo->creationDate);
+	OPTSTR_DEL(driverInfo->version);
+	OPTSTR_DEL(driverInfo->manufacturer);
+	OPTSTR_DEL(driverInfo->productName);
+	OPTSTR_DEL(driverInfo->group);
 	MemFree(driverInfo);
 }
 
@@ -43,8 +43,8 @@ IO::SystemInfoLog::~SystemInfoLog()
 	LIST_FREE_FUNC(&this->serverRoles, FreeServerRole);
 	LIST_FREE_FUNC(&this->deviceInfos, FreeDeviceInfo);
 	LIST_FREE_FUNC(&this->driverInfos, FreeDriverInfo);
-	SDEL_STRING(this->osName);
-	SDEL_STRING(this->osVer);
+	OPTSTR_DEL(this->osName);
+	OPTSTR_DEL(this->osVer);
 }
 
 IO::ParserType IO::SystemInfoLog::GetParserType() const
@@ -54,22 +54,22 @@ IO::ParserType IO::SystemInfoLog::GetParserType() const
 
 void IO::SystemInfoLog::SetOSName(Text::CString osName)
 {
-	SDEL_STRING(this->osName);
+	OPTSTR_DEL(this->osName);
 	this->osName = Text::String::NewOrNull(osName);
 }
 
-Text::String *IO::SystemInfoLog::GetOSName() const
+Optional<Text::String> IO::SystemInfoLog::GetOSName() const
 {
 	return this->osName;
 }
 
 void IO::SystemInfoLog::SetOSVer(Text::CString osVer)
 {
-	SDEL_STRING(this->osVer);
+	OPTSTR_DEL(this->osVer);
 	this->osVer = Text::String::NewOrNull(osVer);
 }
 
-Text::String *IO::SystemInfoLog::GetOSVer() const
+Optional<Text::String> IO::SystemInfoLog::GetOSVer() const
 {
 	return this->osVer;
 }

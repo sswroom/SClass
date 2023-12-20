@@ -4,7 +4,7 @@
 #include "IO/Path.h"
 #include "SSWR/AVIRead/AVIRFileExForm.h"
 #include "Text/StringBuilderUTF8.h"
-#include "UI/FileDialog.h"
+#include "UI/GUIFileDialog.h"
 
 void __stdcall SSWR::AVIRead::AVIRFileExForm::OnSrcChanged(void *userObj)
 {
@@ -32,26 +32,28 @@ void __stdcall SSWR::AVIRead::AVIRFileExForm::OnSrcClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRFileExForm *me = (SSWR::AVIRead::AVIRFileExForm*)userObj;
 	Text::StringBuilderUTF8 sb;
-	UI::FileDialog ofd(L"SSWR", L"AVIRead", L"FileExSrc", false);
+	NotNullPtr<UI::GUIFileDialog> ofd = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"FileExSrc", false);
 	me->txtSrc->GetText(sb);
-	ofd.SetFileName(sb.ToCString());
-	if (ofd.ShowDialog(me->GetHandle()))
+	ofd->SetFileName(sb.ToCString());
+	if (ofd->ShowDialog(me->GetHandle()))
 	{
-		me->txtSrc->SetText(ofd.GetFileName()->ToCString());
+		me->txtSrc->SetText(ofd->GetFileName()->ToCString());
 	}
+	ofd.Delete();
 }
 
 void __stdcall SSWR::AVIRead::AVIRFileExForm::OnDestClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRFileExForm *me = (SSWR::AVIRead::AVIRFileExForm*)userObj;
 	Text::StringBuilderUTF8 sb;
-	UI::FileDialog ofd(L"SSWR", L"AVIRead", L"FileExDest", true);
+	NotNullPtr<UI::GUIFileDialog> ofd = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"FileExDest", true);
 	me->txtDest->GetText(sb);
-	ofd.SetFileName(sb.ToCString());
-	if (ofd.ShowDialog(me->GetHandle()))
+	ofd->SetFileName(sb.ToCString());
+	if (ofd->ShowDialog(me->GetHandle()))
 	{
-		me->txtDest->SetText(ofd.GetFileName()->ToCString());
+		me->txtDest->SetText(ofd->GetFileName()->ToCString());
 	}
+	ofd.Delete();
 }
 
 void __stdcall SSWR::AVIRead::AVIRFileExForm::OnStartClicked(void *userObj)

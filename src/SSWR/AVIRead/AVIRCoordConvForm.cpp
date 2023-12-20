@@ -12,7 +12,7 @@
 #include "Text/StringBuilderUTF8.h"
 #include "Text/UTF8Writer.h"
 #include "UI/Clipboard.h"
-#include "UI/FileDialog.h"
+#include "UI/GUIFileDialog.h"
 
 void __stdcall SSWR::AVIRead::AVIRCoordConvForm::OnSrcRadChanged(void *userObj, Bool newValue)
 {
@@ -168,25 +168,26 @@ void __stdcall SSWR::AVIRead::AVIRCoordConvForm::OnConvFileClicked(void *userObj
 	UOSInt colCnt;
 	DB::ReadingDB *db = 0;
 	{
-		UI::FileDialog dlg(L"SSWR", L"AVIRead", L"CoordConvFile", false);
+		NotNullPtr<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"CoordConvFile", false);
 		parsers->PrepareSelector(dlg, IO::ParserType::ReadingDB);
-		if (!dlg.ShowDialog(me->GetHandle()))
+		if (!dlg->ShowDialog(me->GetHandle()))
 		{
 			return;
 		}
-		if (dlg.GetFileName()->EndsWithICase(UTF8STRC(".CSV")))
+		if (dlg->GetFileName()->EndsWithICase(UTF8STRC(".CSV")))
 		{
 			DB::CSVFile *csv;
-			NEW_CLASS(csv, DB::CSVFile(dlg.GetFileName(), 0));
+			NEW_CLASS(csv, DB::CSVFile(dlg->GetFileName(), 0));
 			db = csv;
 		}
 		if (db == 0)
 		{
-			IO::StmData::FileData fd(dlg.GetFileName(), false);
+			IO::StmData::FileData fd(dlg->GetFileName(), false);
 			db = (DB::ReadingDB*)parsers->ParseFileType(fd, IO::ParserType::ReadingDB);
 			if (db == 0)
 			{
 				me->ui->ShowMsgOK(CSTR("File is not a database file"), CSTR("Error"), me);
+				dlg.Delete();
 				return;
 			}
 		}
@@ -195,6 +196,7 @@ void __stdcall SSWR::AVIRead::AVIRCoordConvForm::OnConvFileClicked(void *userObj
 		{
 			me->ui->ShowMsgOK(CSTR("Unsupported database format"), CSTR("Error"), me);
 			DEL_CLASS(db);
+			dlg.Delete();
 			return;
 		}
 		i = reader->ColCount();
@@ -218,24 +220,29 @@ void __stdcall SSWR::AVIRead::AVIRCoordConvForm::OnConvFileClicked(void *userObj
 		{
 			DEL_CLASS(db);
 			me->ui->ShowMsgOK(CSTR("XY Database column not found"), CSTR("Error"), me);
+			dlg.Delete();
 			return;
 		}
+		dlg.Delete();
 	}
 
-	UI::FileDialog dlg(L"SSWR", L"AVIRead", L"CoordConvSave", true);
-	dlg.AddFilter(CSTR("*.csv"), CSTR("CSV File"));
-	if (!dlg.ShowDialog(me->GetHandle()))
+	NotNullPtr<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"CoordConvSave", true);
+	dlg->AddFilter(CSTR("*.csv"), CSTR("CSV File"));
+	if (!dlg->ShowDialog(me->GetHandle()))
 	{
 		DEL_CLASS(db);
+		dlg.Delete();
 		return;
 	}
-	IO::FileStream fs(dlg.GetFileName(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+	IO::FileStream fs(dlg->GetFileName(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 	if (fs.IsError())
 	{
 		DEL_CLASS(db);
 		me->ui->ShowMsgOK(CSTR("Error in creating output file"), CSTR("Error"), me);
+		dlg.Delete();
 		return;
 	}
+	dlg.Delete();
 	Text::StringBuilderUTF8 sb;
 	const UTF8Char **sarr;
 	sarr = MemAlloc(const UTF8Char *, colCnt + 2);

@@ -32,10 +32,10 @@ namespace DB
 		Text::String *lastErrorMsg;
 		ConnError connErr;
 		Bool isTran;
-		Text::String *dsn;
-		Text::String *uid;
-		Text::String *pwd;
-		Text::String *schema;
+		Optional<Text::String> dsn;
+		Optional<Text::String> uid;
+		Optional<Text::String> pwd;
+		Optional<Text::String> schema;
 		Text::String *connStr;
 		NotNullPtr<IO::LogTool> log;
 		Bool enableDebug;
@@ -46,7 +46,7 @@ namespace DB
 	private:
 		void PrintError();
 		void UpdateConnInfo();
-		Bool Connect(Text::String *dsn, Text::String *uid, Text::String *pwd, Text::String *schema);
+		Bool Connect(Optional<Text::String> dsn, Optional<Text::String> uid, Optional<Text::String> pwd, Optional<Text::String> schema);
 
 	protected:		
 		Bool Connect(NotNullPtr<Text::String> connStr);
@@ -91,10 +91,10 @@ namespace DB
 		void LogSQLError(void *hStmt);
 
 		Text::String *GetConnStr();
-		Text::String *GetConnDSN();
-		Text::String *GetConnUID();
-		Text::String *GetConnPWD();
-		Text::String *GetConnSchema();
+		Optional<Text::String> GetConnDSN();
+		Optional<Text::String> GetConnUID();
+		Optional<Text::String> GetConnPWD();
+		Optional<Text::String> GetConnSchema();
 
 		static UOSInt GetDriverList(NotNullPtr<Data::ArrayListStringNN> driverList);
 		static IO::ConfigFile *GetDriverInfo(Text::CString driverName);
@@ -135,7 +135,7 @@ namespace DB
 		virtual Int64 GetInt64(UOSInt colIndex);
 		virtual WChar *GetStr(UOSInt colIndex, WChar *buff);
 		virtual Bool GetStr(UOSInt colIndex, NotNullPtr<Text::StringBuilderUTF8> sb);
-		virtual Text::String *GetNewStr(UOSInt colIndex);
+		virtual Optional<Text::String> GetNewStr(UOSInt colIndex);
 		virtual UTF8Char *GetStr(UOSInt colIndex, UTF8Char *buff, UOSInt buffSize);
 		virtual Data::Timestamp GetTimestamp(UOSInt colIndex);
 		virtual Double GetDbl(UOSInt colIndex);

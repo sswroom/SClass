@@ -42,15 +42,14 @@ Map::BingMapsTile::BingMapsTile(ImagerySet is, Text::CString key, Text::CString 
 		return;
 	}
 	Text::JSONBase *json = Text::JSONBase::ParseJSONStr(sb2.ToCString());
+	NotNullPtr<Text::String> s;
 	if (json)
 	{
-		Text::String *s = json->GetValueString(CSTR("brandLogoUri"));
-		this->brandLogoUri = SCOPY_STRING(s);
+		this->brandLogoUri = Text::String::CopyOrNull(json->GetValueString(CSTR("brandLogoUri")));
 		Text::JSONBase *resourceBase = json->GetValue(CSTR("resourceSets[0].resources[0]"));
 		if (resourceBase && resourceBase->GetType() == Text::JSONType::Object)
 		{
-			s = resourceBase->GetValueString(CSTR("imageUrl"));
-			this->url = SCOPY_STRING(s);
+			this->url = Text::String::CopyOrNull(resourceBase->GetValueString(CSTR("imageUrl")));
 			Text::JSONBase *subdObj = resourceBase->GetValue(CSTR("imageUrlSubdomains"));
 			if (subdObj && subdObj->GetType() == Text::JSONType::Array)
 			{
@@ -59,8 +58,7 @@ Map::BingMapsTile::BingMapsTile(ImagerySet is, Text::CString key, Text::CString 
 				UOSInt j = subd->GetArrayLength();
 				while (i < j)
 				{
-					s = subd->GetArrayString(i);
-					if (s)
+					if (subd->GetArrayString(i).SetTo(s))
 					{
 						this->subdomains.Add(s->Clone());
 					}
@@ -71,10 +69,10 @@ Map::BingMapsTile::BingMapsTile(ImagerySet is, Text::CString key, Text::CString 
 		json->EndUse();
 	}
 
-	if (this->brandLogoUri)
+	if (this->brandLogoUri.SetTo(s))
 	{
 		IO::MemoryStream mstm;
-		if (Net::HTTPClient::LoadContent(sockf, ssl, this->brandLogoUri->ToCString(), mstm, 1048576))
+		if (Net::HTTPClient::LoadContent(sockf, ssl, s->ToCString(), mstm, 1048576))
 		{
 			Parser::FileParser::PNGParser parser;
 			IO::StmData::MemoryDataRef fd(mstm.GetBuff(), (UOSInt)mstm.GetLength());
@@ -89,16 +87,16 @@ Map::BingMapsTile::BingMapsTile(ImagerySet is, Text::CString key, Text::CString 
 
 Map::BingMapsTile::~BingMapsTile()
 {
-	SDEL_STRING(this->url);
-	SDEL_STRING(this->key);
-	SDEL_STRING(this->brandLogoUri);
+	OPTSTR_DEL(this->url);
+	OPTSTR_DEL(this->key);
+	OPTSTR_DEL(this->brandLogoUri);
 	SDEL_CLASS(this->brandLogoImg);
 	this->subdomains.FreeAll();
 }
 
 Bool Map::BingMapsTile::IsError() const
 {
-	return this->url == 0 || this->key == 0 || this->subdomains.GetCount() == 0;
+	return this->url.IsNull() || this->key.IsNull() || this->subdomains.GetCount() == 0;
 }
 
 Text::CStringNN Map::BingMapsTile::GetName() const
@@ -130,7 +128,7 @@ void Map::BingMapsTile::SetDispSize(Math::Size2DDbl size, Double dpi)
 UTF8Char *Map::BingMapsTile::GetTileImageURL(UTF8Char *sbuff, UOSInt level, Math::Coord2D<Int32> tileId)
 {
 	NotNullPtr<Text::String> subdomain;
-	UTF8Char *sptr = this->url->ConcatTo(sbuff);
+	UTF8Char *sptr = Text::String::OrEmpty(this->url)->ConcatTo(sbuff);
 	UTF8Char sbuff2[32];
 	UTF8Char *sptr2;
 	if (this->GetNextSubdomain().SetTo(subdomain))
@@ -145,7 +143,7 @@ UTF8Char *Map::BingMapsTile::GetTileImageURL(UTF8Char *sbuff, UOSInt level, Math
 Bool Map::BingMapsTile::GetTileImageURL(NotNullPtr<Text::StringBuilderUTF8> sb, UOSInt level, Math::Coord2D<Int32> imgId)
 {
 	NotNullPtr<Text::String> subdomain;
-	sb->Append(this->url);
+	sb->AppendOpt(this->url);
 	UTF8Char sbuff2[32];
 	UTF8Char *sptr2;
 	if (this->GetNextSubdomain().SetTo(subdomain))
@@ -170,7 +168,7 @@ Math::Geometry::Vector2D *Map::BingMapsTile::CreateScreenObjVector(UOSInt index)
 		Media::StaticImage *img = this->brandLogoImg->GetImage(0);
 		Math::Coord2DDbl imgSize = img->info.dispSize.ToDouble();
 		Math::Coord2DDbl pos = size96 - 16 - imgSize;
-		return Math::Geometry::VectorImage::CreateScreenImage(0, this->brandLogoImg, pos / size96, imgSize / size96, this->brandLogoUri->ToCString());
+		return Math::Geometry::VectorImage::CreateScreenImage(0, this->brandLogoImg, pos / size96, imgSize / size96, OPTSTR_CSTR(this->brandLogoUri));
 	}
 	return 0;
 }
@@ -179,7 +177,7 @@ UTF8Char *Map::BingMapsTile::GetScreenObjURL(UTF8Char *sbuff, UOSInt index)
 {
 	if (index == 0 && this->brandLogoImg && !this->hideLogo)
 	{
-		return this->brandLogoUri->ConcatTo(sbuff);
+		return Text::String::OrEmpty(this->brandLogoUri)->ConcatTo(sbuff);
 	}
 	return 0;
 }
@@ -188,7 +186,7 @@ Bool Map::BingMapsTile::GetScreenObjURL(NotNullPtr<Text::StringBuilderUTF8> sb, 
 {
 	if (index == 0 && this->brandLogoImg && !this->hideLogo)
 	{
-		sb->Append(this->brandLogoUri);
+		sb->AppendOpt(this->brandLogoUri);
 		return true;
 	}
 	return false;

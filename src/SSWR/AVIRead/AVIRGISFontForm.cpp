@@ -2,20 +2,25 @@
 #include "SSWR/AVIRead/AVIRGISFontForm.h"
 #include "Text/MyStringFloat.h"
 #include "UtilUI/ColorDialog.h"
-#include "UI/FontDialog.h"
+#include "UI/GUIFontDialog.h"
 
 void __stdcall SSWR::AVIRead::AVIRGISFontForm::OnFontClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRGISFontForm *me = (SSWR::AVIRead::AVIRGISFontForm *)userObj;
-	UI::FontDialog dlg(me->fontName.Ptr(), me->fontSizePt, false, false);
-	if (dlg.ShowDialog(me->hwnd))
+	NotNullPtr<UI::GUIFontDialog> dlg = me->ui->NewFontDialog(me->fontName, me->fontSizePt, false, false);
+	if (dlg->ShowDialog(me->hwnd))
 	{
-		me->fontName->Release();
-		me->fontName = dlg.GetFontName()->Clone();
-		me->fontSizePt = dlg.GetFontSizePt();
-		me->UpdateFontText();
-		me->UpdateFontPreview();
+		NotNullPtr<Text::String> s;
+		if (dlg->GetFontName().SetTo(s))
+		{
+			me->fontName->Release();
+			me->fontName = s->Clone();
+			me->fontSizePt = dlg->GetFontSizePt();
+			me->UpdateFontText();
+			me->UpdateFontPreview();
+		}
 	}
+	dlg.Delete();
 }
 
 Bool __stdcall SSWR::AVIRead::AVIRGISFontForm::OnColorClicked(void *userObj, Math::Coord2D<OSInt> scnPos, MouseButton btn)

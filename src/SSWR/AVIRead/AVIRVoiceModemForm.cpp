@@ -7,7 +7,6 @@
 #include "SSWR/AVIRead/AVIRVoiceModemForm.h"
 #include "Sync/MutexUsage.h"
 #include "Sync/ThreadUtil.h"
-#include "UI/FileDialog.h"
 #include "UI/GUITabPage.h"
 
 void __stdcall SSWR::AVIRead::AVIRVoiceModemForm::OnTimerTick(void *userObj)

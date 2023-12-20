@@ -153,7 +153,7 @@ Text::JSONBase *Text::JSONBase::GetValue(Text::CStringNN path)
 	return 0;
 }
 
-Text::String *Text::JSONBase::GetValueString(Text::CStringNN path)
+Optional<Text::String> Text::JSONBase::GetValueString(Text::CStringNN path)
 {
 	Text::JSONBase *json = this->GetValue(path);
 	if (json && json->IsString())
@@ -163,12 +163,12 @@ Text::String *Text::JSONBase::GetValueString(Text::CStringNN path)
 	return 0;
 }
 
-Text::String *Text::JSONBase::GetValueNewString(Text::CStringNN path)
+Optional<Text::String> Text::JSONBase::GetValueNewString(Text::CStringNN path)
 {
 	Text::JSONBase *json = this->GetValue(path);
 	if (json && json->IsString())
 	{
-		return ((Text::JSONString*)json)->GetValue()->Clone().Ptr();
+		return ((Text::JSONString*)json)->GetValue()->Clone();
 	}
 	return 0;
 }
@@ -395,7 +395,7 @@ Bool Text::JSONBase::GetAsBool()
 	case Text::JSONType::Number:
 		return ((Text::JSONNumber*)this)->GetValue() != 0;
 	case Text::JSONType::String:
-		return ((Text::JSONString*)this)->GetValue() != 0;
+		return Str2Bool(((Text::JSONString*)this)->GetValue());
 	case Text::JSONType::StringWO:
 	case Text::JSONType::Array:
 	case Text::JSONType::Object:
@@ -964,6 +964,18 @@ Text::JSONBase *Text::JSONBase::ParseJSONStr2(const UTF8Char *jsonStr, const UTF
 	}
 }
 
+Bool Text::JSONBase::Str2Bool(NotNullPtr<Text::String> s)
+{
+	Double d;
+	if (s->leng == 0)
+		return false;
+	if (s->ToDouble(d))
+		return d != 0;
+	if (s->Equals(CSTR("false")))
+		return false;
+	return true;
+}
+
 Text::JSONNumber::JSONNumber(Double val)
 {
 	this->val = val;
@@ -1087,24 +1099,19 @@ Int64 Text::JSONInt64::GetValue()
 	return this->val;
 }
 
-Text::JSONString::JSONString(Text::String *val)
-{
-	this->val = SCOPY_STRING(val);
-}
-
 Text::JSONString::JSONString(NotNullPtr<Text::String> val)
 {
-	this->val = val->Clone().Ptr();
+	this->val = val->Clone();
 }
 
-Text::JSONString::JSONString(Text::CString val)
+Text::JSONString::JSONString(Text::CStringNN val)
 {
-	this->val = Text::String::NewOrNull(val);
+	this->val = Text::String::New(val);
 }
 
 Text::JSONString::~JSONString()
 {
-	SDEL_STRING(this->val);
+	this->val->Release();
 }
 
 Text::JSONType Text::JSONString::GetType()
@@ -1118,60 +1125,46 @@ void Text::JSONString::ToJSONString(NotNullPtr<Text::StringBuilderUTF8> sb)
 	const UTF8Char *sptr;
 	UTF8Char *dptr;
 	UTF8Char c;
-	if (this->val)
+	sb->AppendUTF8Char('\"');
+	sptr = this->val->v;
+	dptr = sbuff;
+	while ((c = *sptr++) != 0)
 	{
-		sb->AppendUTF8Char('\"');
-		sptr = this->val->v;
-		dptr = sbuff;
-		while ((c = *sptr++) != 0)
+		if (c == '\"')
 		{
-			if (c == '\"')
-			{
-				*dptr++ = '\\';
-				*dptr++ = '\"';
-			}
-			else if (c == '\r')
-			{
-				*dptr++ = '\\';
-				*dptr++ = 'r';
-			}
-			else if (c == '\n')
-			{
-				*dptr++ = '\\';
-				*dptr++ = 'n';
-			}
-			else
-			{
-				*dptr++ = c;
-			}
-			if (dptr - sbuff >= 126)
-			{
-				sb->AppendC(sbuff,(UOSInt)(dptr - sbuff));
-				dptr = sbuff;
-			}
+			*dptr++ = '\\';
+			*dptr++ = '\"';
 		}
-		if (dptr - sbuff > 0)
+		else if (c == '\r')
 		{
-			sb->AppendC(sbuff, (UOSInt)(dptr - sbuff));
+			*dptr++ = '\\';
+			*dptr++ = 'r';
 		}
-		sb->AppendUTF8Char('\"');
+		else if (c == '\n')
+		{
+			*dptr++ = '\\';
+			*dptr++ = 'n';
+		}
+		else
+		{
+			*dptr++ = c;
+		}
+		if (dptr - sbuff >= 126)
+		{
+			sb->AppendC(sbuff,(UOSInt)(dptr - sbuff));
+			dptr = sbuff;
+		}
 	}
-	else
+	if (dptr - sbuff > 0)
 	{
-		sb->AppendC(UTF8STRC("null"));
+		sb->AppendC(sbuff, (UOSInt)(dptr - sbuff));
 	}
+	sb->AppendUTF8Char('\"');
 }
 
 Bool Text::JSONString::Equals(Text::CString s)
 {
-	if (this->val == 0)
-	{
-		return s.v == 0;
-	}
-	else
-	{
-		return this->val->Equals(s.v, s.leng);
-	}
+	return this->val->Equals(s.v, s.leng);
 }
 
 Bool Text::JSONString::Identical(NotNullPtr<Text::JSONBase> obj)
@@ -1183,17 +1176,10 @@ Bool Text::JSONString::Identical(NotNullPtr<Text::JSONBase> obj)
 
 void Text::JSONString::ToString(NotNullPtr<Text::StringBuilderUTF8> sb)
 {
-	if (this->val)
-	{
-		sb->Append(this->val);
-	}
-	else
-	{
-		sb->AppendC(UTF8STRC("null"));
-	}
+	sb->Append(this->val);
 }
 
-Text::String *Text::JSONString::GetValue()
+NotNullPtr<Text::String> Text::JSONString::GetValue()
 {
 	return this->val;
 }
@@ -1365,7 +1351,7 @@ void Text::JSONObject::SetObjectDouble(Text::CStringNN name, Double val)
 	this->objVals.PutC(name, ival);
 }
 
-void Text::JSONObject::SetObjectString(Text::CStringNN name, Text::CString val)
+void Text::JSONObject::SetObjectString(Text::CStringNN name, Text::CStringNN val)
 {
 	Text::JSONBase *obj = this->objVals.GetC(name);
 	if (obj)
@@ -1377,16 +1363,26 @@ void Text::JSONObject::SetObjectString(Text::CStringNN name, Text::CString val)
 	this->objVals.PutC(name, ival);
 }
 
-void Text::JSONObject::SetObjectString(Text::CStringNN name, Text::String *val)
+void Text::JSONObject::SetObjectString(Text::CStringNN name, Optional<Text::String> val)
 {
 	Text::JSONBase *obj = this->objVals.GetC(name);
 	if (obj)
 	{
 		obj->EndUse();
 	}
-	Text::JSONString *ival;
-	NEW_CLASS(ival, Text::JSONString(val));
-	this->objVals.PutC(name, ival);
+	NotNullPtr<Text::String> s;
+	if (val.SetTo(s))
+	{
+		Text::JSONString *ival;
+		NEW_CLASS(ival, Text::JSONString(s));
+		this->objVals.PutC(name, ival);
+	}
+	else
+	{
+		Text::JSONNull *ival;
+		NEW_CLASS(ival, Text::JSONNull());
+		this->objVals.PutC(name, ival);
+	}
 }
 
 void Text::JSONObject::SetObjectString(Text::CStringNN name, NotNullPtr<Text::String> val)
@@ -1445,7 +1441,7 @@ void Text::JSONObject::GetObjectNames(NotNullPtr<Data::ArrayList<Text::String *>
 	}
 }
 
-Text::String *Text::JSONObject::GetObjectString(Text::CStringNN name)
+Optional<Text::String> Text::JSONObject::GetObjectString(Text::CStringNN name)
 {
 	Text::JSONBase *baseObj = this->objVals.GetC(name);
 	if (baseObj == 0 || baseObj->GetType() != Text::JSONType::String)
@@ -1455,14 +1451,14 @@ Text::String *Text::JSONObject::GetObjectString(Text::CStringNN name)
 	return ((Text::JSONString*)baseObj)->GetValue();
 }
 
-Text::String *Text::JSONObject::GetObjectNewString(Text::CStringNN name)
+Optional<Text::String> Text::JSONObject::GetObjectNewString(Text::CStringNN name)
 {
 	Text::JSONBase *baseObj = this->objVals.GetC(name);
 	if (baseObj == 0 || baseObj->GetType() != Text::JSONType::String)
 	{
 		return 0;
 	}
-	return ((Text::JSONString*)baseObj)->GetValue()->Clone().Ptr();
+	return ((Text::JSONString*)baseObj)->GetValue()->Clone();
 }
 
 Double Text::JSONObject::GetObjectDouble(Text::CStringNN name)
@@ -1622,7 +1618,7 @@ Double Text::JSONArray::GetArrayDouble(UOSInt index)
 	return baseObj->GetAsDouble();
 }
 
-Text::String *Text::JSONArray::GetArrayString(UOSInt index)
+Optional<Text::String> Text::JSONArray::GetArrayString(UOSInt index)
 {
 	Text::JSONBase *baseObj = this->arrVals.GetItem(index);
 	if (baseObj == 0 || baseObj->GetType() != Text::JSONType::String)

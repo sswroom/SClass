@@ -2181,7 +2181,7 @@ void Net::PacketAnalyzerEthernet::PacketUDPGetDetail(UInt16 srcPort, UInt16 dest
 											Text::JSONString *jstr = (Text::JSONString*)jbase;
 											UOSInt dataLen;
 											UInt8 *dataBuff;
-											Text::String *dataStr = jstr->GetValue();
+											NotNullPtr<Text::String> dataStr = jstr->GetValue();
 											sb.ClearStr();
 											sb.AppendC(UTF8STRC("\r\n"));
 											sb.Append(dataStr);

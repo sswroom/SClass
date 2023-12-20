@@ -26,12 +26,6 @@ Parser/FileParser/GUIImgParser.h:
 
 UI/Clipboard.h:
 @ClipboardW.o
-UI/FileDialog.h:
-@FileDialogWin.o
-UI/FolderDialog.h:
-@FolderDialogWin.o
-UI/FontDialog.h:
-@FontDialogWin.o
 UI/GUIClientControl.h:
 @GUIClientControlWin.o
 UI/GUIControl.h:

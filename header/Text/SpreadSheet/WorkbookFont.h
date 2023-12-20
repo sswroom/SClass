@@ -18,7 +18,7 @@ namespace Text
 		class WorkbookFont
 		{
 		private:
-			Text::String *name;
+			Optional<Text::String> name;
 			Double size; //point
 			Bool bold;
 			Bool italic;
@@ -37,7 +37,7 @@ namespace Text
 			WorkbookFont *SetColor(UInt32 color);
 			WorkbookFont *SetFamily(FontFamily family);
 
-			Text::String *GetName() const;
+			Optional<Text::String> GetName() const;
 			Double GetSize() const;
 			Bool IsBold() const;
 			Bool IsItalic() const;

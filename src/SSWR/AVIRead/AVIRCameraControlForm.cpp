@@ -7,8 +7,8 @@
 #include "SSWR/AVIRead/AVIRGISForm.h"
 #include "SSWR/AVIRead/AVIRCameraControlForm.h"
 #include "Text/MyString.h"
-#include "UI/FileDialog.h"
-#include "UI/FolderDialog.h"
+#include "UI/GUIFileDialog.h"
+#include "UI/GUIFolderDialog.h"
 
 void __stdcall SSWR::AVIRead::AVIRCameraControlForm::OnDownloadClicked(void *userObj)
 {
@@ -22,14 +22,14 @@ void __stdcall SSWR::AVIRead::AVIRCameraControlForm::OnDownloadClicked(void *use
 	else if (selIndices.GetCount() == 1)
 	{
 		IO::CameraControl::FileInfo *file = (IO::CameraControl::FileInfo*)me->lvFiles->GetItem(selIndices.GetItem(0));
-		UI::FileDialog dlg(L"SSWR", L"AVIRead", L"CameraControlFile", true);
-		dlg.SetFileName(Text::CString::FromPtr(file->fileName));
-		if (dlg.ShowDialog(me->GetHandle()))
+		NotNullPtr<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"CameraControlFile", true);
+		dlg->SetFileName(Text::CString::FromPtr(file->fileName));
+		if (dlg->ShowDialog(me->GetHandle()))
 		{
 			Data::DateTime dt;
 			Bool succ;
 			{
-				IO::FileStream fs(dlg.GetFileName(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+				IO::FileStream fs(dlg->GetFileName(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 				succ = me->camera->GetFile(file, &fs);
 				if (file->fileTimeTicks)
 				{
@@ -39,17 +39,18 @@ void __stdcall SSWR::AVIRead::AVIRCameraControlForm::OnDownloadClicked(void *use
 			}
 			if (!succ)
 			{
-				IO::Path::DeleteFile(dlg.GetFileName()->v);
+				IO::Path::DeleteFile(dlg->GetFileName()->v);
 				me->ui->ShowMsgOK(CSTR("Error in downloading the file"), CSTR("Camera Control"), me);
 			}
 		}
+		dlg.Delete();
 	}
 	else
 	{
 		Data::DateTime dt;
 		Text::StringBuilderUTF8 sb;
-		UI::FolderDialog dlg(L"SSWR", L"AVIRead", L"CameraControlFolder");
-		if (dlg.ShowDialog(me->GetHandle()))
+		NotNullPtr<UI::GUIFolderDialog> dlg = me->ui->NewFolderDialog();
+		if (dlg->ShowDialog(me->GetHandle()))
 		{
 			Bool succ = true;
 			UOSInt i = 0;
@@ -58,7 +59,7 @@ void __stdcall SSWR::AVIRead::AVIRCameraControlForm::OnDownloadClicked(void *use
 			{
 				IO::CameraControl::FileInfo *file = (IO::CameraControl::FileInfo*)me->lvFiles->GetItem(selIndices.GetItem(i));
 				sb.ClearStr();
-				sb.Append(dlg.GetFolder());
+				sb.Append(dlg->GetFolder());
 				if (!sb.EndsWith(IO::Path::PATH_SEPERATOR))
 				{
 					sb.AppendChar(IO::Path::PATH_SEPERATOR, 1);
@@ -93,6 +94,7 @@ void __stdcall SSWR::AVIRead::AVIRCameraControlForm::OnDownloadClicked(void *use
 				me->ui->ShowMsgOK(CSTR("Finish downloading selected files"), CSTR("Camera Control"), me);
 			}
 		}
+		dlg.Delete();
 	}
 }
 

@@ -10,8 +10,8 @@ namespace IO
 		struct LogItem
 		{
 			Data::Timestamp ts;
-			Text::String *message;
-			Text::String *desc;
+			Optional<Text::String> message;
+			Optional<Text::String> desc;
 		};
 
 		Data::ArrayList<LogItem*> items;

@@ -28,7 +28,7 @@ namespace Net
 		Socket *socV4;
 		Socket *socV6;
 		UDPPacketHdlr hdlr;
-		Text::String *logPrefix;
+		Optional<Text::String> logPrefix;
 		void *userData;
 		Int32 recvCnt;
 
@@ -39,7 +39,7 @@ namespace Net
 		Sync::Event ctrlEvt;
 
 		NotNullPtr<IO::LogTool> msgLog;
-		Text::String *msgPrefix;
+		Optional<Text::String> msgPrefix;
 
 		Sync::Mutex logFileMut;
 		IO::FileStream *logFileR;

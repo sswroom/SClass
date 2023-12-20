@@ -330,12 +330,12 @@ Bool DB::SortableDBReader::GetStr(UOSInt colIndex, NotNullPtr<Text::StringBuilde
 	return true;
 }
 
-Text::String *DB::SortableDBReader::GetNewStr(UOSInt colIndex)
+Optional<Text::String> DB::SortableDBReader::GetNewStr(UOSInt colIndex)
 {
 	Text::StringBuilderUTF8 sb;
 	if (this->GetStr(colIndex, sb))
 	{
-		return Text::String::New(sb.ToCString()).Ptr();
+		return Text::String::New(sb.ToCString());
 	}
 	return 0;
 }

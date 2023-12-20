@@ -29,7 +29,7 @@ namespace Data
 		Data::VariItem *GetItem(const UTF8Char *name) const;
 		void SetItemNull(const UTF8Char *name);
 		void SetItemStr(const UTF8Char *name, const UTF8Char *str);
-		void SetItemStr(const UTF8Char *name, Text::String *str);
+		void SetItemStr(const UTF8Char *name, Optional<Text::String> str);
 		void SetItemDateTime(const UTF8Char *name, Data::DateTime *dt);
 		void SetItemTS(const UTF8Char *name, const Data::Timestamp &ts);
 		void SetItemF32(const UTF8Char *name, Single val);

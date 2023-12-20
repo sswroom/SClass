@@ -21,7 +21,7 @@ Bool DB::DBModel::LoadDatabase(DB::DBTool *db, Text::CString dbName, Text::CStri
 	Text::StringBuilderUTF8 sb;
 	Data::ArrayListStringNN tableNames;
 	DB::TableDef *table;
-	Text::String *tableName;
+	NotNullPtr<Text::String> tableName;
 	UOSInt j;
 	db->QueryTableNames(schemaName, tableNames);
 	Data::ArrayIterator<NotNullPtr<Text::String>> it = tableNames.Iterator();

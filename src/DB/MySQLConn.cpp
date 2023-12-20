@@ -23,7 +23,7 @@ void DB::MySQLConn::Connect()
 	MYSQL *mysql = mysql_init(0);
 	this->mysql = mysql;
 
-	if (mysql_real_connect((MYSQL*)this->mysql, (const Char*)this->server->v, (const Char*)STR_PTR(this->uid), (const Char*)STR_PTR(this->pwd), (const Char*)STR_PTR(this->database), 0, 0, 0) == 0)
+	if (mysql_real_connect((MYSQL*)this->mysql, (const Char*)this->server->v, (const Char*)OPTSTR_CSTR(this->uid).v, (const Char*)OPTSTR_CSTR(this->pwd).v, (const Char*)OPTSTR_CSTR(this->database).v, 0, 0, 0) == 0)
 	{
 		Text::StringBuilderUTF8 sb;
 		sb.AppendC(UTF8STRC("Error in connecting to database: "));
@@ -41,13 +41,13 @@ void DB::MySQLConn::Connect()
 		if (r.Set(this->ExecuteReader(CSTR("SELECT VERSION()"))))
 		{
 			r->ReadNext();
-			Text::String *s = r->GetNewStr(0);
-			this->CloseReader(r);
-			if (s)
+			NotNullPtr<Text::String> s;
+			if (r->GetNewStr(0).SetTo(s))
 			{
 				this->axisAware = Net::MySQLUtil::IsAxisAware(s->ToCString());
 				s->Release();
 			}
+			this->CloseReader(r);
 		}
 	}
 }
@@ -104,9 +104,9 @@ DB::MySQLConn::~MySQLConn()
 {
 	Close();
 	this->server->Release();
-	SDEL_STRING(this->database);
-	SDEL_STRING(this->uid);
-	SDEL_STRING(this->pwd);
+	OPTSTR_DEL(this->database);
+	OPTSTR_DEL(this->uid);
+	OPTSTR_DEL(this->pwd);
 	if (Sync::Interlocked::DecrementI32(useCnt) == 0)
 	{
 		mysql_library_end();
@@ -141,10 +141,11 @@ void DB::MySQLConn::GetConnName(NotNullPtr<Text::StringBuilderUTF8> sb)
 {
 	sb->AppendC(UTF8STRC("MySQL:"));
 	sb->Append(this->server);
-	if (this->database)
+	NotNullPtr<Text::String> s;
+	if (this->database.SetTo(s))
 	{
 		sb->AppendUTF8Char('/');
-		sb->Append(this->database);
+		sb->Append(s);
 	}
 }
 
@@ -373,17 +374,17 @@ NotNullPtr<Text::String> DB::MySQLConn::GetConnServer()
 	return this->server;
 }
 
-Text::String *DB::MySQLConn::GetConnDB()
+Optional<Text::String> DB::MySQLConn::GetConnDB()
 {
 	return this->database;
 }
 
-Text::String *DB::MySQLConn::GetConnUID()
+Optional<Text::String> DB::MySQLConn::GetConnUID()
 {
 	return this->uid;
 }
 
-Text::String *DB::MySQLConn::GetConnPWD()
+Optional<Text::String> DB::MySQLConn::GetConnPWD()
 {
 	return this->pwd;
 }
@@ -570,7 +571,7 @@ Bool DB::MySQLReader::GetStr(UOSInt colIndex, NotNullPtr<Text::StringBuilderUTF8
 	}
 }
 
-Text::String *DB::MySQLReader::GetNewStr(UOSInt colIndex)
+Optional<Text::String> DB::MySQLReader::GetNewStr(UOSInt colIndex)
 {
 	if (this->row == 0)
 		return 0;

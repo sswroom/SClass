@@ -429,7 +429,7 @@ void Text::MailCreator::SetContentHTML(const WChar *content, Text::CString htmlP
 	}
 }
 
-void Text::MailCreator::SetContentHTML(Text::String *content, Text::CString htmlPath)
+void Text::MailCreator::SetContentHTML(NotNullPtr<Text::String> content, Text::CString htmlPath)
 {
 	Text::IMIMEObj *obj = ParseContentHTML(content->v, content->leng, 65001, htmlPath);
 	if (obj)
@@ -447,7 +447,7 @@ void Text::MailCreator::SetContentText(const WChar *content, UInt32 codePage)
 	this->content = obj;
 }
 
-void Text::MailCreator::SetContentText(Text::String *content)
+void Text::MailCreator::SetContentText(NotNullPtr<Text::String> content)
 {
 	Text::MIMEObj::TextMIMEObj *obj;
 	NEW_CLASS(obj, Text::MIMEObj::TextMIMEObj(content->v, content->leng, 65001));

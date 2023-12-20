@@ -4,125 +4,21 @@
 #include "Text/MyStringW.h"
 #include "IO/Path.h"
 #include "Text/StringBuilderUTF16.h"
-#include "UI/FileDialog.h"
+#include "UI/Win/WinFileDialog.h"
 #include <windows.h>
 #include <commdlg.h>
 
 #define MAXFILENAMESIZE 512
 
-/*		IO::Registry *reg;
-		WChar *dialogName;
-		WChar *lastName;
-		WChar *fileName;
-		Data::ArrayList *patterns;
-		Data::ArrayList *names;*/
-
-void UI::FileDialog::ClearFileNames()
+UI::Win::WinFileDialog::WinFileDialog(const WChar *compName, const WChar *appName, const WChar *dialogName, Bool isSave) : UI::GUIFileDialog(compName, appName, dialogName, isSave)
 {
-	UOSInt i;
-	i = this->fileNames.GetCount();
-	while (i-- > 0)
-	{
-		Text::StrDelNew(this->fileNames.RemoveAt(i));
-	}
 }
 
-UI::FileDialog::FileDialog(const WChar *compName, const WChar *appName, const WChar *dialogName, Bool isSave)
+UI::Win::WinFileDialog::~WinFileDialog()
 {
-	UOSInt i;
-	WChar buff[256];
-	WChar *wptr;
-	this->reg = IO::Registry::OpenSoftware(IO::Registry::REG_USER_THIS, compName, appName);
-	this->isSave = isSave;
-	this->filterIndex = (UOSInt)-1;
-	this->allowMulti = false;
-	i = Text::StrCharCnt(dialogName);
-	this->dialogName = MemAlloc(WChar, i + 7);
-	wptr = Text::StrConcat(this->dialogName, dialogName);
-	wptr = Text::StrConcat(wptr, L"Dialog");
-
-	this->fileName = 0;
-	this->lastName = 0;
-	wptr = this->reg->GetValueStr(this->dialogName, buff);
-	if (wptr)
-	{
-		this->lastName = Text::StrCopyNew(buff);
-	}
 }
 
-UI::FileDialog::~FileDialog()
-{
-	UOSInt i;
-	IO::Registry::CloseRegistry(this->reg);
-	MemFree(this->dialogName);
-	if (this->lastName)
-	{
-		Text::StrDelNew(this->lastName);
-		this->lastName = 0;
-	}
-	if (this->fileName)
-	{
-		this->fileName->Release();
-		this->fileName = 0;
-	}
-	i = this->patterns.GetCount();
-	while (i-- > 0)
-	{
-		OPTSTR_DEL(this->patterns.RemoveAt(i));
-		OPTSTR_DEL(this->names.RemoveAt(i));
-	}
-	this->ClearFileNames();
-}
-
-void UI::FileDialog::AddFilter(Text::CString pattern, Text::CString name)
-{
-	this->patterns.Add(Text::String::New(pattern));
-	this->names.Add(Text::String::New(name));
-}
-
-UOSInt UI::FileDialog::GetFilterIndex()
-{
-	return this->filterIndex;
-}
-
-void UI::FileDialog::SetFileName(Text::CString fileName)
-{
-	if (this->fileName)
-	{
-		this->fileName->Release();
-		this->fileName = 0;
-	}
-	this->fileName = Text::String::New(fileName).Ptr();
-}
-
-NotNullPtr<Text::String> UI::FileDialog::GetFileName() const
-{
-	return Text::String::OrEmpty(this->fileName);
-}
-
-UOSInt UI::FileDialog::GetFileNameCount()
-{
-	UOSInt cnt = this->fileNames.GetCount();
-	if (cnt)
-		return cnt;
-	if (this->fileName)
-		return 1;
-	return 0;
-}
-
-const UTF8Char *UI::FileDialog::GetFileNames(UOSInt index)
-{
-	if (index == 0 && this->fileNames.GetCount() == 0)
-		return STR_PTR(this->fileName);
-	return this->fileNames.GetItem(index);
-}
-
-void UI::FileDialog::SetAllowMultiSel(Bool allowMulti)
-{
-	this->allowMulti = allowMulti;
-}
-
-Bool UI::FileDialog::ShowDialog(ControlHandle *ownerHandle)
+Bool UI::Win::WinFileDialog::ShowDialog(ControlHandle *ownerHandle)
 {
 	WChar fname1[512];
 	WChar fname2[512];
@@ -137,6 +33,7 @@ Bool UI::FileDialog::ShowDialog(ControlHandle *ownerHandle)
 	Text::StringBuilderUTF16 sb;
 	UOSInt i = 0;
 	UOSInt filterCnt = this->names.GetCount();
+	NotNullPtr<Text::String> s;
 
 	OPENFILENAMEW ofn;
 	ZeroMemory(&ofn, sizeof(ofn));
@@ -186,9 +83,9 @@ Bool UI::FileDialog::ShowDialog(ControlHandle *ownerHandle)
 		fnameBuff = fname;
 		fnameBuffSize = MAXFILENAMESIZE;
 	}
-	if (this->fileName)
+	if (this->fileName.SetTo(s))
 	{
-		Text::StrUTF8_WChar(fname2, this->fileName->v, 0);
+		Text::StrUTF8_WChar(fname2, s->v, 0);
 		Text::StrReplace(fname2, '/', '_');
 		Text::StrReplace(&fname2[2], ':', '_');
 		Text::StrConcat(fnameBuff, fname2);
@@ -336,11 +233,8 @@ Bool UI::FileDialog::ShowDialog(ControlHandle *ownerHandle)
 	{
 		Bool toSave = true;
 		this->ClearFileNames();
-		if (this->fileName)
-		{
-			this->fileName->Release();
-			this->fileName = 0;
-		}
+		OPTSTR_DEL(this->fileName);
+		this->fileName = 0;
 		this->filterIndex = ofn.nFilterIndex - 1;
 		if (isSave && ofn.nFileExtension == 0)
 		{
@@ -366,28 +260,28 @@ Bool UI::FileDialog::ShowDialog(ControlHandle *ownerHandle)
 				while (*wptr)
 				{
 					Text::StrConcat(dptr, wptr);
-					this->fileNames.Add(Text::StrToUTF8New(fname));
+					this->fileNames.Add(Text::String::NewNotNull(fname));
 					wptr = &wptr[Text::StrCharCnt(wptr) + 1];
 					i++;
 				}
 				if (i == 1)
 				{
-					this->fileName = Text::String::NewNotNullSlow(this->fileNames.GetItem(0)).Ptr();
+					this->fileName = Text::String::OrEmpty(this->fileNames.GetItem(0))->Clone();
 				}
 				else
 				{
-					this->fileName = Text::String::NewNotNull(fnameBuff).Ptr();
+					this->fileName = Text::String::NewNotNull(fnameBuff);
 					toSave = false;
 				}
 			}
 			else
 			{
-				this->fileName = Text::String::NewNotNull(fnameBuff).Ptr();
+				this->fileName = Text::String::NewNotNull(fnameBuff);
 			}
 		}
 		else
 		{
-			this->fileName = Text::String::NewNotNull(fnameBuff).Ptr();
+			this->fileName = Text::String::NewNotNull(fnameBuff);
 		}
 
 		if (toSave)

@@ -161,7 +161,7 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureLiteForm::OnTimerTick(void *userObj
 							me->lvLogWifi->SetSubItem(k, 6, s);
 						if (s.Set(wifiLog->serialNum))
 							me->lvLogWifi->SetSubItem(k, 7, s);
-						if (s.Set(wifiLog->country))
+						if (wifiLog->country.SetTo(s))
 							me->lvLogWifi->SetSubItem(k, 8, s);
 						if (wifiLog->ouis[0][0] != 0 || wifiLog->ouis[0][1] != 0 || wifiLog->ouis[0][2] != 0)
 						{
@@ -199,9 +199,9 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureLiteForm::OnTimerTick(void *userObj
 								wifiLog->serialNum = s->Clone().Ptr();
 								me->lvLogWifi->SetSubItem((UOSInt)sk, 7, s);
 							}
-							if (wifiLog->country == 0 && bss->GetCountry())
+							if (wifiLog->country.IsNull() && bss->GetCountry())
 							{
-								s =Text::String::NewNotNullSlow(bss->GetCountry());
+								s = Text::String::NewNotNullSlow(bss->GetCountry());
 								wifiLog->country = s.Ptr();
 								me->lvLogWifi->SetSubItem((UOSInt)sk, 8, s);
 							}
@@ -406,6 +406,7 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureLiteForm::OnLogWifiSaveClicked(void
 	UOSInt i;
 	UOSInt j;
 	UOSInt k;
+	NotNullPtr<Text::String> s;
 	Data::DateTime dt;
 	sptr = IO::Path::GetProcessFileName(sbuff);
 	i = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), IO::Path::PATH_SEPERATOR);
@@ -457,9 +458,9 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureLiteForm::OnLogWifiSaveClicked(void
 				sb.AppendUTF8Char(',');
 				sb.AppendHexBuff(wifiLog->ouis[2], 3, 0, Text::LineBreakType::None);
 				sb.AppendC(UTF8STRC("\t"));
-				if (wifiLog->country)
+				if (wifiLog->country.SetTo(s))
 				{
-					sb.Append(wifiLog->country);
+					sb.Append(s);
 				}
 				sb.AppendC(UTF8STRC("\t"));
 				k = 0;
@@ -685,7 +686,7 @@ SSWR::AVIRead::AVIRWifiCaptureLiteForm::~AVIRWifiCaptureLiteForm()
 		SDEL_STRING(wifiLog->manuf);
 		SDEL_STRING(wifiLog->model);
 		SDEL_STRING(wifiLog->serialNum);
-		SDEL_STRING(wifiLog->country);
+		OPTSTR_DEL(wifiLog->country);
 		if (wifiLog->ieBuff)
 		{
 			MemFree(wifiLog->ieBuff);

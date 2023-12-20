@@ -43,7 +43,7 @@ namespace Text
 		private:
 			AxisType axisType;
 			AxisPosition axisPos;
-			Text::String *title;
+			Optional<Text::String> title;
 			OfficeShapeProp *shapeProp;
 			OfficeShapeProp *majorGridProp;
 			TickLabelPosition tickLblPos;
@@ -55,7 +55,7 @@ namespace Text
 
 			AxisType GetAxisType();
 			AxisPosition GetAxisPos();
-			Text::String *GetTitle();
+			Optional<Text::String> GetTitle();
 			void SetTitle(Text::CString title);
 			OfficeShapeProp *GetShapeProp();
 			void SetShapeProp(OfficeShapeProp *shapeProp);

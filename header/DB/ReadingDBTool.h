@@ -23,13 +23,13 @@ namespace DB
 		struct ConnectionInfo
 		{
 			Int32 id;
-			Text::String *status;
-			Text::String *user;
-			Text::String *clientHostName;
-			Text::String *dbName;
-			Text::String *cmd;
+			Optional<Text::String> status;
+			Optional<Text::String> user;
+			Optional<Text::String> clientHostName;
+			Optional<Text::String> dbName;
+			Optional<Text::String> cmd;
 			Int32 timeUsed;
-			Text::String *sql;
+			Optional<Text::String> sql;
 		};
 
 		typedef Int32 (__stdcall * SQLFailedFunc)(Text::CString sqlCmd, TriggerType trigType);
@@ -45,7 +45,7 @@ namespace DB
 		Bool needRelease;
 		Text::String *currDBName;
 
-		Text::String *logPrefix;
+		Optional<Text::String> logPrefix;
 
 		Bool isWorking;
 		Int32 workId;
@@ -109,8 +109,8 @@ namespace DB
 		virtual Text::String *GetCurrDBName();
 		Bool GetDBCollation(Text::CString databaseName, Collation *collation);
 
-		UOSInt GetVariables(Data::ArrayList<Data::TwinItem<Text::String*, Text::String*>> *vars);
-		void FreeVariables(Data::ArrayList<Data::TwinItem<Text::String*, Text::String*>> *vars);
+		UOSInt GetVariables(Data::ArrayList<Data::TwinItem<Optional<Text::String>, Optional<Text::String>>> *vars);
+		void FreeVariables(Data::ArrayList<Data::TwinItem<Optional<Text::String>, Optional<Text::String>>> *vars);
 
 		UOSInt GetConnectionInfo(Data::ArrayList<ConnectionInfo *> *conns);
 		void FreeConnectionInfo(Data::ArrayList<ConnectionInfo *> *conns);

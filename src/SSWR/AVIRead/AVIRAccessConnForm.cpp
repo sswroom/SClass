@@ -2,22 +2,23 @@
 #include "DB/MDBFileConn.h"
 #include "SSWR/AVIRead/AVIRAccessConnForm.h"
 #include "Text/MyString.h"
-#include "UI/FileDialog.h"
+#include "UI/GUIFileDialog.h"
 
 void __stdcall SSWR::AVIRead::AVIRAccessConnForm::OnBrowseClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRAccessConnForm *me = (SSWR::AVIRead::AVIRAccessConnForm*)userObj;
 	Text::StringBuilderUTF8 sb;
 	me->txtFileName->GetText(sb);
-	UI::FileDialog dlg(L"SSWR", L"AVIRead", L"AccessConn", false);
-	dlg.AddFilter(CSTR("*.mdb"), CSTR("MDB File"));
-	dlg.AddFilter(CSTR("*.accdb"), CSTR("Access DB File"));
-	dlg.SetFileName(sb.ToCString());
-	dlg.SetAllowMultiSel(false);
-	if (dlg.ShowDialog(me->GetHandle()))
+	NotNullPtr<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"AccessConn", false);
+	dlg->AddFilter(CSTR("*.mdb"), CSTR("MDB File"));
+	dlg->AddFilter(CSTR("*.accdb"), CSTR("Access DB File"));
+	dlg->SetFileName(sb.ToCString());
+	dlg->SetAllowMultiSel(false);
+	if (dlg->ShowDialog(me->GetHandle()))
 	{
-		me->txtFileName->SetText(dlg.GetFileName()->ToCString());
+		me->txtFileName->SetText(dlg->GetFileName()->ToCString());
 	}
+	dlg.Delete();
 }
 
 void __stdcall SSWR::AVIRead::AVIRAccessConnForm::OnOKClicked(void *userObj)

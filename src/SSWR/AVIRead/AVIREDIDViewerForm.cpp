@@ -9,7 +9,7 @@
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
 #include "Text/StringBuilderUTF8.h"
-#include "UI/FileDialog.h"
+#include "UI/GUIFileDialog.h"
 
 void SSWR::AVIRead::AVIREDIDViewerForm::UpdateEDIDDisp()
 {
@@ -117,13 +117,14 @@ void __stdcall SSWR::AVIRead::AVIREDIDViewerForm::OnSaveClicked(void *userObj)
 		}
 		sptr = Text::StrConcatC(sptr, UTF8STRC(".dat"));
 
-		UI::FileDialog dlg(L"SSWR", L"AVIRead", L"EDIDSave", true);
-		dlg.SetFileName(CSTRP(sbuff, sptr));
-		if (dlg.ShowDialog(me->GetHandle()))
+		NotNullPtr<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"EDIDSave", true);
+		dlg->SetFileName(CSTRP(sbuff, sptr));
+		if (dlg->ShowDialog(me->GetHandle()))
 		{
-			IO::FileStream fs(dlg.GetFileName(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer);
+			IO::FileStream fs(dlg->GetFileName(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer);
 			fs.Write(me->edid, me->edidSize);
 		}
+		dlg.Delete();
 	}
 }
 

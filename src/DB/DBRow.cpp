@@ -388,7 +388,7 @@ Bool DB::DBRow::SetByReader(NotNullPtr<DB::DBReader> r, Bool commit)
 				break;
 			case DT_STRING:
 				{
-					Text::String *s = r->GetNewStr(i);
+					NotNullPtr<Text::String> s = r->GetNewStrNN(i);
 					this->SetFieldStr(field, s->v);
 					s->Release();
 				}

@@ -24,7 +24,7 @@ Map::MercatorTileMap::MercatorTileMap(Text::CString cacheDir, UOSInt minLevel, U
 
 Map::MercatorTileMap::~MercatorTileMap()
 {
-	SDEL_STRING(this->cacheDir);
+	OPTSTR_DEL(this->cacheDir);
 	SDEL_CLASS(this->spkg);
 	this->csys.Delete();
 }
@@ -201,9 +201,10 @@ Media::ImageList *Map::MercatorTileMap::LoadTileImage(UOSInt level, Math::Coord2
 	if (x1 > 180 || y1 < -90)
 		return 0;
 
-	if (this->cacheDir)
+	NotNullPtr<Text::String> s;
+	if (this->cacheDir.SetTo(s))
 	{
-		sptru = this->cacheDir->ConcatTo(filePathU);
+		sptru = s->ConcatTo(filePathU);
 		if (sptru[-1] != IO::Path::PATH_SEPERATOR)
 			*sptru++ = IO::Path::PATH_SEPERATOR;
 		sptru = Text::StrUOSInt(sptru, level);
@@ -298,7 +299,7 @@ Media::ImageList *Map::MercatorTileMap::LoadTileImage(UOSInt level, Math::Coord2
 		IO::MemoryStream mstm;
 		if (cli->ReadAllContent(mstm, 16384, 10485760))
 		{
-			if (this->cacheDir)
+			if (!this->cacheDir.IsNull())
 			{
 				IO::FileStream fs({filePathU, (UOSInt)(sptru - filePathU)}, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer);
 				fs.Write(mstm.GetBuff(), (UOSInt)mstm.GetLength());
@@ -324,7 +325,7 @@ Media::ImageList *Map::MercatorTileMap::LoadTileImage(UOSInt level, Math::Coord2
 	cli.Delete();
 
 	IO::StreamData *fd = 0;
-	if (this->cacheDir)
+	if (!this->cacheDir.IsNull())
 	{
 		NEW_CLASS(fd, IO::StmData::FileData({filePathU, (UOSInt)(sptru - filePathU)}, false));
 	}
@@ -369,6 +370,7 @@ Optional<IO::StreamData> Map::MercatorTileMap::LoadTileImageData(UOSInt level, M
 	Data::DateTime dt;
 	Data::DateTime currTime;
 	NotNullPtr<Net::HTTPClient> cli;
+	NotNullPtr<Text::String> s;
 	IO::StreamData *fd;
 	if (level > this->maxLevel)
 		return 0;
@@ -381,9 +383,9 @@ Optional<IO::StreamData> Map::MercatorTileMap::LoadTileImageData(UOSInt level, M
 	if (x1 > 180 || y1 < -90)
 		return 0;
 
-	if (this->cacheDir)
+	if (this->cacheDir.SetTo(s))
 	{
-		sptru = this->cacheDir->ConcatTo(filePathU);
+		sptru = s->ConcatTo(filePathU);
 		if (sptru[-1] != IO::Path::PATH_SEPERATOR)
 			*sptru++ = IO::Path::PATH_SEPERATOR;
 		sptru = Text::StrUOSInt(sptru, level);
@@ -491,7 +493,7 @@ Optional<IO::StreamData> Map::MercatorTileMap::LoadTileImageData(UOSInt level, M
 			}
 			if (currPos >= contLeng)
 			{
-				if (this->cacheDir)
+				if (!this->cacheDir.IsNull())
 				{
 					IO::FileStream fs({filePathU, (UOSInt)(sptru - filePathU)}, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer);
 					fs.Write(imgBuff, (UOSInt)contLeng);
@@ -518,7 +520,7 @@ Optional<IO::StreamData> Map::MercatorTileMap::LoadTileImageData(UOSInt level, M
 	cli.Delete();
 
 	fd = 0;
-	if (this->cacheDir)
+	if (!this->cacheDir.IsNull())
 	{
 		NEW_CLASS(fd, IO::StmData::FileData({filePathU, (UOSInt)(sptru - filePathU)}, false));
 	}

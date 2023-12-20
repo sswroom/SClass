@@ -10,7 +10,7 @@
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
 #include "Text/UTF8Writer.h"
-#include "UI/FileDialog.h"
+#include "UI/GUIFileDialog.h"
 
 extern "C"
 {
@@ -581,16 +581,16 @@ void SSWR::AVIRead::AVIRMediaForm::EventMenuClicked(UInt16 cmdId)
 		break;
 	case MNU_POPV_SAVE_TIMECODE:
 		{
-			UI::FileDialog dlg(L"SSWR", L"AVIRead", L"SaveTimecode", true);
-			dlg.AddFilter(CSTR("*.tc2"), CSTR("Timecode V2"));
-			if (dlg.ShowDialog(this->hwnd))
+			NotNullPtr<UI::GUIFileDialog> dlg = this->ui->NewFileDialog(L"SSWR", L"AVIRead", L"SaveTimecode", true);
+			dlg->AddFilter(CSTR("*.tc2"), CSTR("Timecode V2"));
+			if (dlg->ShowDialog(this->hwnd))
 			{
 				Media::IVideoSource *video;
 				UTF8Char sbuff[40];
 				UTF8Char *sptr;
 				UOSInt j;
 				video = (Media::IVideoSource*)this->popMedia;
-				IO::FileStream fs(dlg.GetFileName(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+				IO::FileStream fs(dlg->GetFileName(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 				Text::UTF8Writer writer(fs);
 				writer.WriteLineC(UTF8STRC("# timecode format v2"));
 				j = video->GetFrameCount();
@@ -609,6 +609,7 @@ void SSWR::AVIRead::AVIRMediaForm::EventMenuClicked(UInt16 cmdId)
 					video->EnumFrameInfos(OnFrameTime, &writer);
 				}
 			}
+			dlg.Delete();
 		}
 		break;
 	case MNU_POPA_REMOVE:

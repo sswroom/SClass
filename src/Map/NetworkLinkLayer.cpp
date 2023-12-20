@@ -87,7 +87,7 @@ void Map::NetworkLinkLayer::CheckLinks(Bool manualRequest)
 void Map::NetworkLinkLayer::LoadLink(LinkInfo *link)
 {
 	IO::StreamData *data = 0;
-	if (link->viewFormat == 0)
+	if (link->viewFormat.IsNull())
 	{
 #if defined(VERBOSE)
 		printf("NetworkLnkLayer: Loading URL: %s\r\n", link->url->v);
@@ -108,7 +108,7 @@ void Map::NetworkLinkLayer::LoadLink(LinkInfo *link)
 		}
 		sb.Append(link->url);
 		sb.AppendUTF8Char('?');
-		sb.Append(link->viewFormat);
+		sb.AppendOpt(link->viewFormat);
 		Sync::MutexUsage dispMutUsage(this->dispMut);
 		sptr = Text::StrDouble(sbuff, this->dispRect.tl.x);
 		sb.ReplaceStr(UTF8STRC("[bboxWest]"), sbuff, (UOSInt)(sptr - sbuff));
@@ -222,8 +222,8 @@ Map::NetworkLinkLayer::~NetworkLinkLayer()
 		link = this->links.GetItem(i);
 		SDEL_CLASS(link->innerLayer);
 		link->url->Release();
-		SDEL_STRING(link->viewFormat);
-		SDEL_STRING(link->layerName);
+		OPTSTR_DEL(link->viewFormat);
+		OPTSTR_DEL(link->layerName);
 		DEL_CLASS(link);
 	}
 }

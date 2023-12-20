@@ -53,10 +53,7 @@ Map::GPSTrack::~GPSTrack()
 	{
 		Map::GPSTrack::TrackRecord *rec;
 		rec = this->currTracks.GetItem(i);
-		if (rec->name)
-		{
-			rec->name->Release();
-		}
+		OPTSTR_DEL(rec->name);
 		MemFree(rec->extraData);
 		MemFree(rec->extraDataSize);
 		MemFreeA(rec->records);
@@ -67,11 +64,7 @@ Map::GPSTrack::~GPSTrack()
 		MemFreeA(tmpRecord);
 		tmpRecord = 0;
 	}
-	if (this->currTrackName)
-	{
-		this->currTrackName->Release();
-		this->currTrackName = 0;
-	}
+	OPTSTR_DEL(this->currTrackName);
 }
 
 Map::DrawLayerType Map::GPSTrack::GetLayerType() const
@@ -161,6 +154,7 @@ void Map::GPSTrack::ReleaseNameArr(NameArray *nameArr)
 
 Bool Map::GPSTrack::GetString(NotNullPtr<Text::StringBuilderUTF8> sb, NameArray *nameArr, Int64 id, UOSInt strIndex)
 {
+	NotNullPtr<Text::String> s;
 	if (strIndex >= 3)
 		return false;
 
@@ -172,9 +166,9 @@ Bool Map::GPSTrack::GetString(NotNullPtr<Text::StringBuilderUTF8> sb, NameArray 
 	{
 		if (strIndex == 0)
 		{
-			if (this->currTrackName)
+			if (this->currTrackName.SetTo(s))
 			{
-				sb->Append(this->currTrackName);
+				sb->Append(s);
 				return true;
 			}
 			sb->AppendTS(Data::Timestamp(this->currTimes.GetItem(0), Data::DateTimeUtil::GetLocalTzQhr()), "yyyy-MM-dd HH:mm:ss.fff");
@@ -202,9 +196,9 @@ Bool Map::GPSTrack::GetString(NotNullPtr<Text::StringBuilderUTF8> sb, NameArray 
 		Map::GPSTrack::TrackRecord *track = this->currTracks.GetItem((UOSInt)id);
 		if (strIndex == 0)
 		{
-			if (track->name)
+			if (track->name.SetTo(s))
 			{
-				sb->Append(track->name);
+				sb->Append(s);
 				return true;
 			}
 			sb->AppendTSNoZone(Data::Timestamp(track->records[0].recTime, Data::DateTimeUtil::GetLocalTzQhr()));
@@ -752,7 +746,7 @@ Bool Map::GPSTrack::GetHasAltitude()
 
 void Map::GPSTrack::SetTrackName(Text::CString name)
 {
-	SDEL_STRING(this->currTrackName);
+	OPTSTR_DEL(this->currTrackName);
 	this->currTrackName = Text::String::NewOrNull(name);
 }
 
@@ -762,16 +756,16 @@ void Map::GPSTrack::GetTrackNames(Data::ArrayListString *nameArr)
 	UOSInt j = this->currTracks.GetCount();
 	while (i < j)
 	{
-		nameArr->Add(this->currTracks.GetItem(i)->name);
+		nameArr->Add(this->currTracks.GetItem(i)->name.OrNull());
 		i++;
 	}
 	if (this->currRecs.GetCount() > 0)
 	{
-		nameArr->Add(this->currTrackName);
+		nameArr->Add(this->currTrackName.OrNull());
 	}
 }
 
-Text::String *Map::GPSTrack::GetTrackName(UOSInt index)
+Optional<Text::String> Map::GPSTrack::GetTrackName(UOSInt index)
 {
 	if (index < this->currTracks.GetCount())
 	{
@@ -1216,13 +1210,13 @@ Bool Map::GPSDataReader::GetStr(UOSInt colIndex, NotNullPtr<Text::StringBuilderU
 	return false;
 }
 
-Text::String *Map::GPSDataReader::GetNewStr(UOSInt colIndex)
+Optional<Text::String> Map::GPSDataReader::GetNewStr(UOSInt colIndex)
 {
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
 	if ((sptr = this->GetStr(colIndex, sbuff, sizeof(sbuff))) != 0)
 	{
-		return Text::String::New(sbuff, (UOSInt)(sptr - sbuff)).Ptr();
+		return Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
 	}
 	return 0;
 }

@@ -43,7 +43,7 @@ namespace Net
 		Bool recvStarted;
 		NotNullPtr<Text::String> userName;
 		NotNullPtr<Text::String> password;
-		Text::String *database;
+		Optional<Text::String> database;
 		ClientMode mode;
 		Text::String *svrVer;
 		Bool axisAware;
@@ -109,7 +109,7 @@ namespace Net
 
 		NotNullPtr<const Net::SocketUtil::AddressInfo> GetConnAddr() const;
 		UInt16 GetConnPort() const;
-		Text::String *GetConnDB() const;
+		Optional<Text::String> GetConnDB() const;
 		NotNullPtr<Text::String> GetConnUID() const;
 		NotNullPtr<Text::String> GetConnPWD() const;
 

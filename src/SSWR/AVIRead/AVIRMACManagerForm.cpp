@@ -10,19 +10,20 @@
 #include "Text/StringBuilderUTF8.h"
 #include "Text/UTF8Reader.h"
 #include "Text/UTF8Writer.h"
-#include "UI/FileDialog.h"
+#include "UI/GUIFileDialog.h"
 
 #include <stdio.h>
 void __stdcall SSWR::AVIRead::AVIRMACManagerForm::OnFileClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRMACManagerForm *me = (SSWR::AVIRead::AVIRMACManagerForm*)userObj;
-	UI::FileDialog dlg(L"SSWR", L"AVIRead", L"MACManagerFile", false);
-	dlg.SetAllowMultiSel(false);
-	dlg.AddFilter(CSTR("*.txt"), CSTR("Log File"));
-	if (dlg.ShowDialog(me->GetHandle()))
+	NotNullPtr<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"MACManagerFile", false);
+	dlg->SetAllowMultiSel(false);
+	dlg->AddFilter(CSTR("*.txt"), CSTR("Log File"));
+	if (dlg->ShowDialog(me->GetHandle()))
 	{
-		me->LogFileLoad(dlg.GetFileName()->ToCString());
+		me->LogFileLoad(dlg->GetFileName()->ToCString());
 	}
+	dlg.Delete();
 }
 
 void __stdcall SSWR::AVIRead::AVIRMACManagerForm::OnStoreClicked(void *userObj)
@@ -181,17 +182,17 @@ void __stdcall SSWR::AVIRead::AVIRMACManagerForm::OnInputClicked(void *userObj)
 void __stdcall SSWR::AVIRead::AVIRMACManagerForm::OnWiresharkClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRMACManagerForm *me = (SSWR::AVIRead::AVIRMACManagerForm*)userObj;
-	UI::FileDialog dlg(L"SSWR", L"AVIRead", L"MACManagerWiresharkFile", false);
-	dlg.SetAllowMultiSel(false);
-	dlg.AddFilter(CSTR("manuf"), CSTR("Wireshark manuf File"));
-	if (dlg.ShowDialog(me->GetHandle()))
+	NotNullPtr<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"MACManagerWiresharkFile", false);
+	dlg->SetAllowMultiSel(false);
+	dlg->AddFilter(CSTR("manuf"), CSTR("Wireshark manuf File"));
+	if (dlg->ShowDialog(me->GetHandle()))
 	{
 		Text::StringBuilderUTF8 sb;
 		Text::PString sarr[3];
 		UOSInt i;
 		UOSInt j;
 		{
-			IO::FileStream fs(dlg.GetFileName(), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+			IO::FileStream fs(dlg->GetFileName(), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 			Text::UTF8Reader reader(fs);
 			while (true)
 			{
@@ -275,6 +276,7 @@ void __stdcall SSWR::AVIRead::AVIRMACManagerForm::OnWiresharkClicked(void *userO
 		}
 		me->UpdateStatus();
 	}
+	dlg.Delete();
 }
 
 void SSWR::AVIRead::AVIRMACManagerForm::LogFileLoad(Text::CStringNN fileName)

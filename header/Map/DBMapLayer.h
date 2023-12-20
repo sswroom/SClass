@@ -11,8 +11,8 @@ namespace Map
 	private:
 		Bool releaseDB;
 		DB::ReadingDB *db;
-		Text::String *schema;
-		Text::String *table;
+		Optional<Text::String> schema;
+		Optional<Text::String> table;
 		Math::Coord2DDbl min;
 		Math::Coord2DDbl max;
 		UOSInt idCol;

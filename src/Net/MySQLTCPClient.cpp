@@ -195,7 +195,7 @@ namespace Net
 			return true;
 		}
 
-		virtual Text::String *GetNewStr(UOSInt colIndex)
+		virtual Optional<Text::String> GetNewStr(UOSInt colIndex)
 		{
 			if (this->currRow == 0)
 			{
@@ -209,7 +209,7 @@ namespace Net
 			{
 				return 0;
 			}
-			return this->currRow[colIndex]->Clone().Ptr();
+			return this->currRow[colIndex]->Clone();
 		}
 
 		virtual UTF8Char *GetStr(UOSInt colIndex, UTF8Char *buff, UOSInt buffSize)
@@ -672,7 +672,7 @@ namespace Net
 			return true;
 		}
 
-		virtual Text::String *GetNewStr(UOSInt colIndex)
+		virtual Optional<Text::String> GetNewStr(UOSInt colIndex)
 		{
 			Data::VariItem item;
 			if (!this->GetVariItem(colIndex, item))
@@ -682,7 +682,7 @@ namespace Net
 			Data::VariItem::ItemType itemType = item.GetItemType();
 			if (itemType == Data::VariItem::ItemType::Str)
 			{
-				return item.GetItemValue().str->Clone().Ptr();
+				return item.GetItemValue().str->Clone();
 			}
 			else if (itemType == Data::VariItem::ItemType::Null)
 			{
@@ -692,7 +692,7 @@ namespace Net
 			{
 				Text::StringBuilderUTF8 sb;
 				item.GetAsString(sb);
-				return Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
+				return Text::String::New(sb.ToString(), sb.GetLength());
 			}
 		}
 
@@ -1548,7 +1548,7 @@ UInt32 __stdcall Net::MySQLTCPClient::RecvThread(void *userObj)
 											Net::MySQLUtil::CLIENT_PLUGIN_AUTH |
 											Net::MySQLUtil::CLIENT_CONNECT_ATTRS |
 											Net::MySQLUtil::CLIENT_PLUGIN_AUTH_LENENC_CLIENT_DATA;
-										if (me->database)
+										if (!me->database.IsNull())
 										{
 											cliCap |= Net::MySQLUtil::CLIENT_CONNECT_WITH_DB;
 										}
@@ -1559,9 +1559,10 @@ UInt32 __stdcall Net::MySQLTCPClient::RecvThread(void *userObj)
 										ptrCurr = me->userName->ConcatTo(&buff[36]) + 1;
 										ptrCurr[0] = (UInt8)Net::MySQLUtil::BuildAuthen(ptrCurr + 1, me->authenType, me->authPluginData, 20, me->password->ToCString());
 										ptrCurr += ptrCurr[0] + 1;
-										if (me->database)
+										NotNullPtr<Text::String> s;
+										if (me->database.SetTo(s))
 										{
-											ptrCurr = me->database->ConcatTo(ptrCurr) + 1;
+											ptrCurr = s->ConcatTo(ptrCurr) + 1;
 										}
 										if (cliCap & Net::MySQLUtil::CLIENT_PLUGIN_AUTH)
 										{
@@ -2110,7 +2111,7 @@ Net::MySQLTCPClient::~MySQLTCPClient()
 	}
 	this->userName->Release();
 	this->password->Release();
-	SDEL_STRING(this->database);
+	OPTSTR_DEL(this->database);
 	SDEL_STRING(this->svrVer);
 	SDEL_STRING(this->lastError);
 }
@@ -2147,10 +2148,11 @@ void Net::MySQLTCPClient::GetConnName(NotNullPtr<Text::StringBuilderUTF8> sb)
 	sb->AppendC(UTF8STRC("MySQLTCP:"));
 	sptr = Net::SocketUtil::GetAddrName(sbuff, this->addr, this->port);
 	sb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
-	if (this->database)
+	NotNullPtr<Text::String> s;
+	if (this->database.SetTo(s))
 	{
 		sb->AppendUTF8Char('/');
-		sb->Append(this->database);
+		sb->Append(s);
 	}
 }
 
@@ -2553,7 +2555,7 @@ UInt16 Net::MySQLTCPClient::GetConnPort() const
 	return this->port;
 }
 
-Text::String *Net::MySQLTCPClient::GetConnDB() const
+Optional<Text::String> Net::MySQLTCPClient::GetConnDB() const
 {
 	return this->database;
 }

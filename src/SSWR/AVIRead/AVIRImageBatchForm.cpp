@@ -4,7 +4,7 @@
 #include "SSWR/AVIRead/AVIRImageBatchForm.h"
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
-#include "UI/FolderDialog.h"
+#include "UI/GUIFolderDialog.h"
 
 typedef enum
 {
@@ -20,15 +20,16 @@ void __stdcall SSWR::AVIRead::AVIRImageBatchForm::OnFolderClicked(void *userObj)
 	SSWR::AVIRead::AVIRImageBatchForm *me = (SSWR::AVIRead::AVIRImageBatchForm*)userObj;
 	Text::String *path;
 	path = me->icMain->GetFolder();
-	UI::FolderDialog dlg(L"SSWR", L"AVIRead", L"ImageBatch");
+	NotNullPtr<UI::GUIFolderDialog> dlg = me->ui->NewFolderDialog();
 	if (path)
 	{
-		dlg.SetFolder(path->ToCString());
+		dlg->SetFolder(path->ToCString());
 	}
-	if (dlg.ShowDialog(me->GetHandle()))
+	if (dlg->ShowDialog(me->GetHandle()))
 	{
-		me->OpenFolder(dlg.GetFolder());
+		me->OpenFolder(dlg->GetFolder());
 	}
+	dlg.Delete();
 }
 
 void __stdcall SSWR::AVIRead::AVIRImageBatchForm::OnImageChanged(void *userObj, Text::CString fileName, const SSWR::AVIRead::AVIRImageControl::ImageSetting *setting)

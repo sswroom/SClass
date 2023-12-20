@@ -7,6 +7,9 @@
 #include "UI/GTK/GTKCheckedListBox.h"
 #include "UI/GTK/GTKComboBox.h"
 #include "UI/GTK/GTKCore.h"
+#include "UI/GTK/GTKFileDialog.h"
+#include "UI/GTK/GTKFolderDialog.h"
+#include "UI/GTK/GTKFontDialog.h"
 #include "UI/GTK/GTKGroupBox.h"
 #include "UI/GTK/GTKHSplitter.h"
 #include "UI/GTK/GTKLabel.h"
@@ -274,5 +277,33 @@ NotNullPtr<UI::GUIVSplitter> UI::GTK::GTKCore::NewVSplitter(NotNullPtr<GUIClient
 {
 	NotNullPtr<UI::GTK::GTKVSplitter> ctrl;
 	NEW_CLASSNN(ctrl, UI::GTK::GTKVSplitter(*this, parent, height, isBottom));
+	return ctrl;
+}
+
+NotNullPtr<UI::GUIFileDialog> UI::GTK::GTKCore::NewFileDialog(const WChar *compName, const WChar *appName, const WChar *dialogName, Bool isSave)
+{
+	NotNullPtr<UI::GTK::GTKFileDialog> ctrl;
+	NEW_CLASSNN(ctrl, UI::GTK::GTKFileDialog(compName, appName, dialogName, isSave));
+	return ctrl;
+}
+
+NotNullPtr<UI::GUIFolderDialog> UI::GTK::GTKCore::NewFolderDialog()
+{
+	NotNullPtr<UI::GTK::GTKFolderDialog> ctrl;
+	NEW_CLASSNN(ctrl, UI::GTK::GTKFolderDialog());
+	return ctrl;
+}
+
+NotNullPtr<UI::GUIFontDialog> UI::GTK::GTKCore::NewFontDialog(Optional<Text::String> fontName, Double fontSizePt, Bool isBold, Bool isItalic)
+{
+	NotNullPtr<UI::GTK::GTKFontDialog> ctrl;
+	NEW_CLASSNN(ctrl, UI::GTK::GTKFontDialog(fontName, fontSizePt, isBold, isItalic));
+	return ctrl;
+}
+
+NotNullPtr<UI::GUIFontDialog> UI::GTK::GTKCore::NewFontDialog(Text::CString fontName, Double fontSizePt, Bool isBold, Bool isItalic)
+{
+	NotNullPtr<UI::GTK::GTKFontDialog> ctrl;
+	NEW_CLASSNN(ctrl, UI::GTK::GTKFontDialog(fontName, fontSizePt, isBold, isItalic));
 	return ctrl;
 }

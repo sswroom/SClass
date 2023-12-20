@@ -71,8 +71,8 @@ void SSWR::DiscDB::DiscDBEnv::LoadDB()
 		while (r->ReadNext())
 		{
 			discType = MemAlloc(DiscTypeInfo, 1);
-			discType->discTypeId = r->GetNewStr(0);
-			discType->brand = r->GetNewStr(1);
+			discType->discTypeId = r->GetNewStrNN(0);
+			discType->brand = r->GetNewStrNN(1);
 			sb.ClearStr();
 			r->GetStr(2, sb);
 			discType->name = Text::StrCopyNew(sb.ToString()).Ptr();
@@ -96,7 +96,7 @@ void SSWR::DiscDB::DiscDBEnv::LoadDB()
 			sb.ClearStr();
 			r->GetStr(10, sb);
 			discType->remark = Text::StrCopyNew(sb.ToString()).Ptr();
-			this->discTypeMap->Put(discType->discTypeId, discType);
+			this->discTypeMap->PutNN(discType->discTypeId, discType);
 		}
 		this->db->CloseReader(r);
 	}
@@ -237,8 +237,8 @@ SSWR::DiscDB::DiscDBEnv::~DiscDBEnv()
 	{
 		dvdVideo = this->dvdVideoMap->GetItem(i);
 		dvdVideo->anime->Release();
-		SDEL_STRING(dvdVideo->series);
-		SDEL_STRING(dvdVideo->volume);
+		OPTSTR_DEL(dvdVideo->series);
+		OPTSTR_DEL(dvdVideo->volume);
 		dvdVideo->dvdType->Release();
 		MemFree(dvdVideo);
 	}

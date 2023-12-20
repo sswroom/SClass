@@ -1,5 +1,6 @@
 #ifndef _SM_MAP_GEOPACKAGE
 #define _SM_MAP_GEOPACKAGE
+#include "Data/ArrayListStringNN.h"
 #include "Data/FastStringMap.h"
 #include "DB/DBConn.h"
 #include "Map/MapLayerCollection.h"
@@ -21,7 +22,7 @@ namespace Map
 	private:
 		DB::DBConn *conn;
 		Data::FastStringMap<ContentInfo*> tableList;
-		Data::ArrayList<Text::String*> allTables;
+		Data::ArrayListStringNN allTables;
 		UInt32 useCnt;
 	private:
 		~GeoPackage();

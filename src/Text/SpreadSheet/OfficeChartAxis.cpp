@@ -16,7 +16,7 @@ Text::SpreadSheet::OfficeChartAxis::OfficeChartAxis(AxisType axisType, AxisPosit
 
 Text::SpreadSheet::OfficeChartAxis::~OfficeChartAxis()
 {
-	SDEL_STRING(this->title);
+	OPTSTR_DEL(this->title);
 	SDEL_CLASS(this->shapeProp);
 	SDEL_CLASS(this->majorGridProp);
 }
@@ -31,14 +31,14 @@ Text::SpreadSheet::AxisPosition Text::SpreadSheet::OfficeChartAxis::GetAxisPos()
 	return this->axisPos;
 }
 
-Text::String *Text::SpreadSheet::OfficeChartAxis::GetTitle()
+Optional<Text::String> Text::SpreadSheet::OfficeChartAxis::GetTitle()
 {
 	return this->title;
 }
 
 void Text::SpreadSheet::OfficeChartAxis::SetTitle(Text::CString title)
 {
-	SDEL_STRING(this->title);
+	OPTSTR_DEL(this->title);
 	this->title = Text::String::NewOrNull(title);
 }
 

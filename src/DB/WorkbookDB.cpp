@@ -85,7 +85,7 @@ public:
 		return this->sheet->GetCellString(cell, sb);
 	}
 
-	virtual Text::String *GetNewStr(UOSInt colIndex)
+	virtual Optional<Text::String> GetNewStr(UOSInt colIndex)
 	{
 		const Text::SpreadSheet::Worksheet::CellData *cell = this->sheet->GetCellDataRead(this->currIndex, colIndex);
 		if (cell == 0 || cell->cellValue == 0)
@@ -169,11 +169,12 @@ public:
 	virtual Bool GetVariItem(UOSInt colIndex, NotNullPtr<Data::VariItem> item)
 	{
 		const Text::SpreadSheet::Worksheet::CellData *cell = this->sheet->GetCellDataRead(this->currIndex, colIndex);
-		if (cell == 0 || cell->cellValue == 0)
+		NotNullPtr<Text::String> s;
+		if (cell == 0 || !s.Set(cell->cellValue))
 		{
 			return false;
 		}
-		item->SetStr(cell->cellValue);
+		item->SetStr(s);
 		return true;
 	}
 

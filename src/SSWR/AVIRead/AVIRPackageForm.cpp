@@ -12,8 +12,8 @@
 #include "Text/StringTool.h"
 #include "Text/URLString.h"
 #include "UI/Clipboard.h"
-#include "UI/FileDialog.h"
-#include "UI/FolderDialog.h"
+#include "UI/GUIFileDialog.h"
+#include "UI/GUIFolderDialog.h"
 #include "UtilUI/TextViewerForm.h"
 
 #include <stdio.h>
@@ -1031,14 +1031,14 @@ void SSWR::AVIRead::AVIRPackageForm::EventMenuClicked(UInt16 cmdId)
 			UOSInt i = selIndices.GetCount();
 			if (i > 0)
 			{
-				UI::FolderDialog dlg(L"SSWR", L"AVIRead", L"PackageCopyTo");
-				if (dlg.ShowDialog(this->GetHandle()) == UI::GUIForm::DR_OK)
+				NotNullPtr<UI::GUIFolderDialog> dlg = this->ui->NewFolderDialog();
+				if (dlg->ShowDialog(this->GetHandle()) == UI::GUIForm::DR_OK)
 				{
 					UOSInt j;
 					j = 0;
 					while (j < i)
 					{
-						if (!packFile->CopyTo(PackFileIndex(selIndices.GetItem(j)), dlg.GetFolder()->ToCString(), false))
+						if (!packFile->CopyTo(PackFileIndex(selIndices.GetItem(j)), dlg->GetFolder()->ToCString(), false))
 						{
 							this->ui->ShowMsgOK(CSTR("Error in copying"), CSTR("Copy To"), this);
 							break;
@@ -1046,20 +1046,21 @@ void SSWR::AVIRead::AVIRPackageForm::EventMenuClicked(UInt16 cmdId)
 						j++;
 					}
 				}
+				dlg.Delete();
 			}
 		}
 		break;
 	case MNU_COPYALLTO:
 		if (packFile->GetCount() > 0)
 		{
-			UI::FolderDialog dlg(L"SSWR", L"AVIRead", L"PackageCopyAllTo");
-			if (dlg.ShowDialog(this->GetHandle()) == UI::GUIForm::DR_OK)
+			NotNullPtr<UI::GUIFolderDialog> dlg = this->ui->NewFolderDialog();
+			if (dlg->ShowDialog(this->GetHandle()) == UI::GUIForm::DR_OK)
 			{
 				UOSInt i = 0;
 				UOSInt j = packFile->GetCount();
 				while (i < j)
 				{
-					if (!packFile->CopyTo(i, dlg.GetFolder()->ToCString(), false))
+					if (!packFile->CopyTo(i, dlg->GetFolder()->ToCString(), false))
 					{
 						this->ui->ShowMsgOK(CSTR("Error in copying"), CSTR("Copy To"), this);
 						break;
@@ -1067,6 +1068,7 @@ void SSWR::AVIRead::AVIRPackageForm::EventMenuClicked(UInt16 cmdId)
 					i++;
 				}
 			}
+			dlg.Delete();
 		}
 		break;
 	case MNU_SAVEAS:
@@ -1191,12 +1193,12 @@ void SSWR::AVIRead::AVIRPackageForm::EventMenuClicked(UInt16 cmdId)
 		{
 			NotNullPtr<IO::VirtualPackageFile> vpkg = NotNullPtr<IO::VirtualPackageFile>::ConvertFrom(this->packFile);
 			NotNullPtr<Parser::ParserList> parsers = this->core->GetParserList();
-			UI::FileDialog dlg(L"SSWR", L"AVIRead", L"PackageFileZip", false);
-			dlg.SetAllowMultiSel(false);
+			NotNullPtr<UI::GUIFileDialog> dlg = this->ui->NewFileDialog(L"SSWR", L"AVIRead", L"PackageFileZip", false);
+			dlg->SetAllowMultiSel(false);
 			parsers->PrepareSelector(dlg, IO::ParserType::PackageFile);
-			if (dlg.ShowDialog(this->GetHandle()))
+			if (dlg->ShowDialog(this->GetHandle()))
 			{
-				IO::StmData::FileData fd(dlg.GetFileName(), false);
+				IO::StmData::FileData fd(dlg->GetFileName(), false);
 				NotNullPtr<IO::PackageFile> zipPkg;
 				if (zipPkg.Set((IO::PackageFile*)parsers->ParseFileType(fd, IO::ParserType::PackageFile)))
 				{
@@ -1212,6 +1214,7 @@ void SSWR::AVIRead::AVIRPackageForm::EventMenuClicked(UInt16 cmdId)
 					this->ui->ShowMsgOK(CSTR("Cannot parse file as Zip"), CSTR("Package"), this);
 				}
 			}
+			dlg.Delete();
 		}
 		else
 		{

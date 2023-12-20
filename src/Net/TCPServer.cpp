@@ -21,10 +21,11 @@ void Net::TCPServer::AddLogMsgC(const UTF8Char *msg, UOSInt msgLen, IO::LogHandl
 {
 	if (this->log->HasHandler())
 	{
-		if (logPrefix)
+		NotNullPtr<Text::String> s;
+		if (logPrefix.SetTo(s))
 		{
 			UTF8Char buff[1024];
-			UTF8Char *str = this->logPrefix->ConcatTo(buff);
+			UTF8Char *str = s->ConcatTo(buff);
 			str = Text::StrConcatC(str, msg, msgLen);
 			log->LogMessage(CSTRP(buff, str), logLev);
 		}
@@ -381,7 +382,7 @@ Net::TCPServer::~TCPServer()
 	{
 		Sync::SimpleThread::Sleep(10);
 	}
-	SDEL_STRING(this->logPrefix);
+	OPTSTR_DEL(this->logPrefix);
 }
 
 Bool Net::TCPServer::Start()

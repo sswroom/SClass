@@ -34,17 +34,17 @@ namespace DB
 		virtual WChar *GetStr(UOSInt colIndex, WChar *buff) = 0;
 		virtual Bool GetStr(UOSInt colIndex, NotNullPtr<Text::StringBuilderUTF8> sb) = 0;
 		Bool GetStrN(UOSInt colIndex, NotNullPtr<Text::StringBuilderUTF8> sb) { sb->ClearStr(); return GetStr(colIndex, sb); }
-		virtual Text::String *GetNewStr(UOSInt colIndex) = 0;
+		virtual Optional<Text::String> GetNewStr(UOSInt colIndex) = 0;
 		NotNullPtr<Text::String> GetNewStrNN(UOSInt colIndex)
 		{
 			return Text::String::OrEmpty(GetNewStr(colIndex));
 		}
 		
-		Text::String *GetNewStrB(UOSInt colIndex, NotNullPtr<Text::StringBuilderUTF8> tmpBuff)
+		Optional<Text::String> GetNewStrB(UOSInt colIndex, NotNullPtr<Text::StringBuilderUTF8> tmpBuff)
 		{
 			tmpBuff->ClearStr();
 			if (GetStr(colIndex, tmpBuff))
-				return Text::String::New(tmpBuff->ToCString()).Ptr();
+				return Text::String::New(tmpBuff->ToCString());
 			else
 				return 0;
 		}

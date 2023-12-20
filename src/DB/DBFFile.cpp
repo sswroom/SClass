@@ -634,7 +634,7 @@ Bool DB::DBFReader::GetStr(UOSInt colIndex, NotNullPtr<Text::StringBuilderUTF8> 
 	return true;
 }
 
-Text::String *DB::DBFReader::GetNewStr(UOSInt colIndex)
+Optional<Text::String> DB::DBFReader::GetNewStr(UOSInt colIndex)
 {
 	if (!this->recordExist)
 		return 0;
@@ -643,7 +643,7 @@ Text::String *DB::DBFReader::GetNewStr(UOSInt colIndex)
 	UOSInt strLen = this->enc->CountUTF8Chars(&this->recordData[this->cols[colIndex].colOfst], this->cols[colIndex].colSize);
 	NotNullPtr<Text::String> s = Text::String::New(strLen);
 	this->enc->UTF8FromBytes(s->v, &this->recordData[this->cols[colIndex].colOfst], this->cols[colIndex].colSize, 0);
-	return s.Ptr();
+	return s;
 }
 
 UTF8Char *DB::DBFReader::GetStr(UOSInt colIndex, UTF8Char *buff, UOSInt buffSize)

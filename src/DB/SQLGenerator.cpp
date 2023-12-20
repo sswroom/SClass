@@ -53,10 +53,10 @@ void DB::SQLGenerator::AppendColDef(DB::SQLType sqlType, NotNullPtr<DB::SQLBuild
 	}
 	else if (sqlType == DB::SQLType::PostgreSQL)
 	{
-		Text::String *nativeType = col->GetNativeType();
+		NotNullPtr<Text::String> nativeType;
 		if (col->IsAutoInc())
 		{
-			if (nativeType != 0 && (nativeType->Equals(UTF8STRC("serial"))))
+			if (col->GetNativeType().SetTo(nativeType) && (nativeType->Equals(UTF8STRC("serial"))))
 			{
 
 			}
@@ -82,7 +82,7 @@ void DB::SQLGenerator::AppendColDef(DB::SQLType sqlType, NotNullPtr<DB::SQLBuild
 		}
 	}
 
-	if (col->GetDefVal())
+	if (!col->GetDefVal().IsNull())
 	{
 		if (sql->GetSQLType() == SQLType::MySQL && col->GetColType() == DB::DBUtil::CT_VarUTF32Char && col->GetColSize() >= 16384)
 		{
@@ -96,8 +96,9 @@ void DB::SQLGenerator::AppendColDef(DB::SQLType sqlType, NotNullPtr<DB::SQLBuild
 	}
 }
 
-void DB::SQLGenerator::AppendColType(DB::SQLType sqlType, NotNullPtr<DB::SQLBuilder> sql, DB::DBUtil::ColType colType, UOSInt colSize, UOSInt colDP, Bool autoInc, Text::String *nativeType)
+void DB::SQLGenerator::AppendColType(DB::SQLType sqlType, NotNullPtr<DB::SQLBuilder> sql, DB::DBUtil::ColType colType, UOSInt colSize, UOSInt colDP, Bool autoInc, Optional<Text::String> nativeType)
 {
+	NotNullPtr<Text::String> s;
 	switch (sqlType)
 	{
 	case DB::SQLType::MySQL:
@@ -695,9 +696,9 @@ void DB::SQLGenerator::AppendColType(DB::SQLType sqlType, NotNullPtr<DB::SQLBuil
 			sql->AppendCmdC(CSTR(")"));
 			break;
 		case DB::DBUtil::CT_UTF32Char:
-			if (nativeType == 0)
+			if (!nativeType.SetTo(s))
 				sql->AppendCmdC(CSTR("char("));
-			else if (nativeType->Equals(UTF8STRC("bpchar")))
+			else if (s->Equals(UTF8STRC("bpchar")))
 				sql->AppendCmdC(CSTR("bpchar("));
 			else
 				sql->AppendCmdC(CSTR("char("));
@@ -729,9 +730,9 @@ void DB::SQLGenerator::AppendColType(DB::SQLType sqlType, NotNullPtr<DB::SQLBuil
 			}
 			break;
 		case DB::DBUtil::CT_VarUTF32Char:
-			if (nativeType != 0 && colSize == 268435456 && nativeType->Equals(UTF8STRC("varchar")))
+			if (nativeType.SetTo(s) && colSize == 268435456 && s->Equals(UTF8STRC("varchar")))
 				sql->AppendCmdC(CSTR("varchar"));
-			else if (nativeType != 0 && colSize == 268435456 && nativeType->Equals(UTF8STRC("citext")))
+			else if (nativeType.SetTo(s) && colSize == 268435456 && s->Equals(UTF8STRC("citext")))
 				sql->AppendCmdC(CSTR("citext"));
 			else if (colSize > 10485760)
 				sql->AppendCmdC(CSTR("text"));
@@ -789,9 +790,9 @@ void DB::SQLGenerator::AppendColType(DB::SQLType sqlType, NotNullPtr<DB::SQLBuil
 			sql->AppendCmdC(CSTR("smallint"));
 			break;
 		case DB::DBUtil::CT_Int16:
-			if (nativeType == 0)
+			if (!nativeType.SetTo(s))
 				sql->AppendCmdC(CSTR("smallint"));
-			else if (nativeType->Equals(UTF8STRC("int2")))
+			else if (s->Equals(UTF8STRC("int2")))
 				sql->AppendCmdC(CSTR("int2"));
 			else if (autoInc)
 				sql->AppendCmdC(CSTR("smallserial"));
@@ -799,9 +800,9 @@ void DB::SQLGenerator::AppendColType(DB::SQLType sqlType, NotNullPtr<DB::SQLBuil
 				sql->AppendCmdC(CSTR("smallint"));
 			break;
 		case DB::DBUtil::CT_Int32:
-			if (nativeType == 0)
+			if (!nativeType.SetTo(s))
 				sql->AppendCmdC(CSTR("integer"));
-			else if (nativeType->Equals(UTF8STRC("int4")))
+			else if (s->Equals(UTF8STRC("int4")))
 				sql->AppendCmdC(CSTR("int4"));
 			else if (autoInc)
 				sql->AppendCmdC(CSTR("serial"));
@@ -809,9 +810,9 @@ void DB::SQLGenerator::AppendColType(DB::SQLType sqlType, NotNullPtr<DB::SQLBuil
 				sql->AppendCmdC(CSTR("integer"));
 			break;
 		case DB::DBUtil::CT_Int64:
-			if (nativeType == 0)
+			if (!nativeType.SetTo(s))
 				sql->AppendCmdC(CSTR("bigint"));
-			else if (nativeType->Equals(UTF8STRC("int8")))
+			else if (s->Equals(UTF8STRC("int8")))
 				sql->AppendCmdC(CSTR("int8"));
 			else if (autoInc)
 				sql->AppendCmdC(CSTR("bigserial"));
@@ -987,17 +988,18 @@ Bool DB::SQLGenerator::GenCreateTableCmd(NotNullPtr<DB::SQLBuilder> sql, Text::C
 	}
 	if (multiline) sql->AppendCmdC(CSTR("\r\n"));
 	sql->AppendCmdC(CSTR(")"));
+	NotNullPtr<Text::String> s;
 	if (sqlType == DB::SQLType::MySQL)
 	{
-		if (tabDef->GetEngine())
+		if (tabDef->GetEngine().SetTo(s))
 		{
 			sql->AppendCmdC(CSTR(" ENGINE="));
-			sql->AppendCmdC(tabDef->GetEngine()->ToCString());
+			sql->AppendCmdC(s->ToCString());
 		}
-		if (tabDef->GetCharset())
+		if (tabDef->GetCharset().SetTo(s))
 		{
 			sql->AppendCmdC(CSTR(" DEFAULT CHARSET="));
-			sql->AppendCmdC(tabDef->GetCharset()->ToCString());
+			sql->AppendCmdC(s->ToCString());
 		}
 	}
 	return true;
@@ -1010,7 +1012,7 @@ Bool DB::SQLGenerator::GenInsertCmd(NotNullPtr<DB::SQLBuilder> sql, Text::CStrin
 
 Bool DB::SQLGenerator::GenInsertCmd(NotNullPtr<DB::SQLBuilder> sql, DB::TableDef *tabDef, NotNullPtr<DB::DBReader> r)
 {
-	return GenInsertCmd(sql, STR_CSTR(tabDef->GetSchemaName()), tabDef->GetTableName()->ToCString(), tabDef, r);
+	return GenInsertCmd(sql, OPTSTR_CSTR(tabDef->GetSchemaName()), tabDef->GetTableName()->ToCString(), tabDef, r);
 }
 
 Bool DB::SQLGenerator::GenInsertCmd(NotNullPtr<DB::SQLBuilder> sql, Text::CString schemaName, Text::CString tableName, DB::TableDef *tabDef, NotNullPtr<DB::DBReader> r)

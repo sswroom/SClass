@@ -28,7 +28,7 @@ namespace Text
 		private:
 			WorkbookDataSource *categoryData;
 			WorkbookDataSource *valueData;
-			Text::String *title;
+			Optional<Text::String> title;
 			Bool smooth;
 			OfficeShapeProp *shapeProp;
 			UInt32 markerSize;
@@ -40,8 +40,8 @@ namespace Text
 
 			WorkbookDataSource *GetCategoryData();
 			WorkbookDataSource *GetValueData();
-			Text::String *GetTitle();
-			void SetTitle(Text::String *title, Text::String *dataSource);
+			Optional<Text::String> GetTitle();
+			void SetTitle(Optional<Text::String> title, Text::String *dataSource);
 			void SetTitle(Text::CString title, const UTF8Char *dataSource);
 			Bool IsSmooth();
 			void SetSmooth(Bool smooth);

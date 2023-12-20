@@ -5,7 +5,7 @@
 #include "Net/TCPServerStream.h"
 #include "Net/UDPServerStream.h"
 #include "SSWR/AVIRead/AVIRSelStreamForm.h"
-#include "UI/FileDialog.h"
+#include "UI/GUIFileDialog.h"
 
 #define NETTIMEOUT 30000
 
@@ -355,16 +355,17 @@ void __stdcall SSWR::AVIRead::AVIRSelStreamForm::OnFileBrowseClick(void *userObj
 	SSWR::AVIRead::AVIRSelStreamForm *me = (SSWR::AVIRead::AVIRSelStreamForm*)userObj;
 	Text::StringBuilderUTF8 sb;
 	me->txtFileName->GetText(sb);
-	UI::FileDialog ofd(L"SSWR", L"AVIRead", L"OpenStreamFile", false);
-	ofd.SetAllowMultiSel(false);
+	NotNullPtr<UI::GUIFileDialog> ofd = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"OpenStreamFile", false);
+	ofd->SetAllowMultiSel(false);
 	if (sb.GetLength() > 0)
 	{
-		ofd.SetFileName(sb.ToCString());
+		ofd->SetFileName(sb.ToCString());
 	}
-	if (ofd.ShowDialog(me->GetHandle()) == UI::GUIForm::DR_OK)
+	if (ofd->ShowDialog(me->GetHandle()) == UI::GUIForm::DR_OK)
 	{
-		me->txtFileName->SetText(ofd.GetFileName()->ToCString());
+		me->txtFileName->SetText(ofd->GetFileName()->ToCString());
 	}
+	ofd.Delete();
 }
 
 void __stdcall SSWR::AVIRead::AVIRSelStreamForm::OnStmTypeChg(void *userObj)

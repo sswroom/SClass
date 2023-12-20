@@ -7,7 +7,7 @@ namespace IO
 	class FileSelector
 	{
 	public:
-		virtual void AddFilter(Text::CString pattern, Text::CString name) = 0;
+		virtual void AddFilter(Text::CStringNN pattern, Text::CStringNN name) = 0;
 	};
 }
 #endif

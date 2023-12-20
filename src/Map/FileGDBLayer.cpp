@@ -86,8 +86,8 @@ Map::FileGDBLayer::FileGDBLayer(DB::SharedReadingDB *conn, Text::CStringNN sourc
 			if (colDef.GetColType() == DB::DBUtil::CT_Vector)
 			{
 				this->shapeCol = i;
-				Text::String *prj = colDef.GetAttr();
-				if (prj && prj->v[0])
+				NotNullPtr<Text::String> prj;
+				if (colDef.GetAttr().SetTo(prj) && prj->v[0])
 				{
 					Math::CoordinateSystem *csys2 = 0;
 					NotNullPtr<Math::CoordinateSystem> nncsys2;
@@ -447,7 +447,7 @@ Bool Map::FileGDBLReader::GetStr(UOSInt colIndex, NotNullPtr<Text::StringBuilder
 	return this->r->GetStr((colIndex > 0)?(colIndex + 1):colIndex, sb);
 }
 
-Text::String *Map::FileGDBLReader::GetNewStr(UOSInt colIndex)
+Optional<Text::String> Map::FileGDBLReader::GetNewStr(UOSInt colIndex)
 {
 	return this->r->GetNewStr((colIndex > 0)?(colIndex + 1):colIndex);
 }

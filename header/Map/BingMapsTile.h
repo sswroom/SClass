@@ -28,12 +28,12 @@ namespace Map
 			Last = Streetside
 		};
 	private:
-		Text::String *url;
-		Text::String *key;
+		Optional<Text::String> url;
+		Optional<Text::String> key;
 		Data::ArrayListStringNN subdomains;
 		UOSInt urlNext;
 		Sync::Mutex urlMut;
-		Text::String *brandLogoUri;
+		Optional<Text::String> brandLogoUri;
 		Media::SharedImage *brandLogoImg;
 		Math::Size2DDbl dispSize;
 		Double dispDPI;

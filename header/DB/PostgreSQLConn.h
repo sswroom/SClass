@@ -19,8 +19,8 @@ namespace DB
 		NotNullPtr<Text::String> server;
 		UInt16 port;
 		NotNullPtr<Text::String> database;
-		Text::String *uid;
-		Text::String *pwd;
+		Optional<Text::String> uid;
+		Optional<Text::String> pwd;
 		NotNullPtr<IO::LogTool> log;
 		Int8 tzQhr;
 		UInt32 geometryOid;
@@ -59,8 +59,8 @@ namespace DB
 		NotNullPtr<Text::String> GetConnServer() const;
 		UInt16 GetConnPort() const;
 		NotNullPtr<Text::String> GetConnDB() const;
-		Text::String *GetConnUID() const;
-		Text::String *GetConnPWD() const;
+		Optional<Text::String> GetConnUID() const;
+		Optional<Text::String> GetConnPWD() const;
 		Bool ChangeDatabase(Text::CString databaseName);
 
 		UInt32 GetGeometryOid();

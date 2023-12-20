@@ -20,9 +20,9 @@ namespace Map
 	private:
 		struct LinkInfo
 		{
-			Text::String *layerName;
+			Optional<Text::String> layerName;
 			NotNullPtr<Text::String> url;
-			Text::String *viewFormat;
+			Optional<Text::String> viewFormat;
 			RefreshMode mode;
 			Int32 reloadInterval;
 			Map::MapDrawLayer *innerLayer;

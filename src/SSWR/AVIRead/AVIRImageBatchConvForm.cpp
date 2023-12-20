@@ -10,22 +10,23 @@
 #include "Sync/ThreadUtil.h"
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
-#include "UI/FolderDialog.h"
+#include "UI/GUIFolderDialog.h"
 
 void __stdcall SSWR::AVIRead::AVIRImageBatchConvForm::OnBrowseClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRImageBatchConvForm *me = (SSWR::AVIRead::AVIRImageBatchConvForm*)userObj;
 	Text::StringBuilderUTF8 sb;
 	me->txtDir->GetText(sb);
-	UI::FolderDialog dlg(L"SSWR", L"AVIRead", L"ImageBatchConv");
+	NotNullPtr<UI::GUIFolderDialog> dlg = me->ui->NewFolderDialog();
 	if (sb.GetLength() > 0)
 	{
-		dlg.SetFolder(sb.ToCString());
+		dlg->SetFolder(sb.ToCString());
 	}
-	if (dlg.ShowDialog(me->GetHandle()))
+	if (dlg->ShowDialog(me->GetHandle()))
 	{
-		me->txtDir->SetText(dlg.GetFolder()->ToCString());
+		me->txtDir->SetText(dlg->GetFolder()->ToCString());
 	}
+	dlg.Delete();
 }
 
 void __stdcall SSWR::AVIRead::AVIRImageBatchConvForm::OnConvertClicked(void *userObj)

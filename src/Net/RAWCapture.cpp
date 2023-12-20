@@ -150,7 +150,7 @@ Text::CStringNN Net::RAWCapture::FileFormatGetExt(FileFormat format)
 	return CSTR("");
 }
 
-void Net::RAWCapture::AddFilters(IO::FileSelector *selector)
+void Net::RAWCapture::AddFilters(NotNullPtr<IO::FileSelector> selector)
 {
 	selector->AddFilter(CSTR("*.pcap"), CSTR("pcap"));
 	selector->AddFilter(CSTR("*.pcapng"), CSTR("pcapng"));

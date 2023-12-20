@@ -128,27 +128,34 @@ void DB::ODBCConn::UpdateConnInfo()
 		if (r.Set(this->ExecuteReader(CSTR("SELECT VERSION()"))))
 		{
 			r->ReadNext();
-			Text::String *s = r->GetNewStr(0);
-			this->CloseReader(r);
-			if (s)
+			NotNullPtr<Text::String> s;
+			if (r->GetNewStr(0).SetTo(s))
 			{
 				this->axisAware = Net::MySQLUtil::IsAxisAware(s->ToCString());
 				s->Release();
 			}
+			this->CloseReader(r);
 		}
 	}
 }
 
-Bool DB::ODBCConn::Connect(Text::String *dsn, Text::String *uid, Text::String *pwd, Text::String *schema)
+Bool DB::ODBCConn::Connect(Optional<Text::String> dsn, Optional<Text::String> uid, Optional<Text::String> pwd, Optional<Text::String> schema)
 {
 	SQLHANDLE hand;
 	SQLHANDLE hConn;
 	SQLRETURN ret;
+	NotNullPtr<Text::String> nndsn;
+	NotNullPtr<Text::String> s;
 	int timeOut = 5;
 	this->connErr = CE_NONE;
 	this->envHand = 0;
 	this->connHand = 0;
 	SDEL_STRING(this->lastErrorMsg);
+	if (!dsn.SetTo(nndsn))
+	{
+		this->connErr = CE_CONNECT_ERR;
+		return false;
+	}
 	ret = SQLAllocHandle(SQL_HANDLE_ENV, SQL_NULL_HANDLE, &hand);
 	if (ret != SQL_SUCCESS && ret != SQL_SUCCESS_WITH_INFO)
 	{
@@ -179,15 +186,15 @@ Bool DB::ODBCConn::Connect(Text::String *dsn, Text::String *uid, Text::String *p
 		return false;
 	}
 
-	SQLCHAR *uidPtr = (uid != 0 && uid->leng > 0)?uid->v:0;
-	SQLCHAR *pwdPtr = (pwd != 0 && pwd->leng > 0)?pwd->v:0;
+	SQLCHAR *uidPtr = (uid.SetTo(s) && s->leng > 0)?s->v:0;
+	SQLCHAR *pwdPtr = (pwd.SetTo(s) && s->leng > 0)?s->v:0;
 	if (uidPtr || pwdPtr)
 	{
-		ret = SQLConnectA(hConn, (SQLCHAR*)dsn->v, SQL_NTS, (SQLCHAR*)uidPtr, SQL_NTS, (SQLCHAR*)pwdPtr, SQL_NTS);
+		ret = SQLConnectA(hConn, (SQLCHAR*)nndsn->v, SQL_NTS, (SQLCHAR*)uidPtr, SQL_NTS, (SQLCHAR*)pwdPtr, SQL_NTS);
 	}
 	else
 	{
-		ret = SQLConnectA(hConn, (SQLCHAR*)dsn->v, SQL_NTS, NULL, 0, NULL, 0);
+		ret = SQLConnectA(hConn, (SQLCHAR*)nndsn->v, SQL_NTS, NULL, 0, NULL, 0);
 	}
 	if (ret != SQL_SUCCESS && ret != SQL_SUCCESS_WITH_INFO)
 	{
@@ -235,11 +242,11 @@ Bool DB::ODBCConn::Connect(Text::String *dsn, Text::String *uid, Text::String *p
 
 	UpdateConnInfo();
 
-	if (schema && schema->leng > 0)
+	if (schema.SetTo(s) && s->leng > 0)
 	{
 		Text::StringBuilderUTF8 sb;
 		sb.AppendC(UTF8STRC("use "));
-		sb.Append(schema);
+		sb.Append(s);
 		this->ExecuteNonQuery(sb.ToCString());
 	}
 	return true;
@@ -427,7 +434,7 @@ DB::ODBCConn::ODBCConn(Text::CStringNN dsn, Text::CString uid, Text::CString pwd
 	this->lastErrorMsg = 0;
 	this->envHand = 0;
 	this->enableDebug = false;
-	this->dsn = Text::String::NewOrNull(dsn);
+	this->dsn = Text::String::New(dsn);
 	this->uid = Text::String::NewOrNull(uid);
 	this->pwd = Text::String::NewOrNull(pwd);
 	this->schema = Text::String::NewOrNull(schema);
@@ -441,10 +448,10 @@ DB::ODBCConn::ODBCConn(Text::CStringNN dsn, Text::CString uid, Text::CString pwd
 DB::ODBCConn::~ODBCConn()
 {
 	Close();
-	SDEL_STRING(this->dsn);
-	SDEL_STRING(this->uid);
-	SDEL_STRING(this->pwd);
-	SDEL_STRING(this->schema);
+	OPTSTR_DEL(this->dsn);
+	OPTSTR_DEL(this->uid);
+	OPTSTR_DEL(this->pwd);
+	OPTSTR_DEL(this->schema);
 	SDEL_STRING(this->lastErrorMsg);
 	SDEL_STRING(this->connStr);
 }
@@ -471,18 +478,19 @@ Int8 DB::ODBCConn::GetTzQhr() const
 
 void DB::ODBCConn::GetConnName(NotNullPtr<Text::StringBuilderUTF8> sb)
 {
+	NotNullPtr<Text::String> s;
 	sb->AppendC(UTF8STRC("ODBC:"));
 	if (this->connStr)
 	{
 		sb->Append(this->connStr);
 	}
-	else if (this->dsn)
+	else if (this->dsn.SetTo(s))
 	{
-		sb->Append(this->dsn);
-		if (this->schema)
+		sb->Append(s);
+		if (this->schema.SetTo(s))
 		{
 			sb->AppendUTF8Char('/');
-			sb->Append(this->schema);
+			sb->Append(s);
 		}
 	}
 }
@@ -1091,22 +1099,22 @@ Text::String *DB::ODBCConn::GetConnStr()
 	return this->connStr;
 }
 
-Text::String *DB::ODBCConn::GetConnDSN()
+Optional<Text::String> DB::ODBCConn::GetConnDSN()
 {
 	return this->dsn;
 }
 
-Text::String *DB::ODBCConn::GetConnUID()
+Optional<Text::String> DB::ODBCConn::GetConnUID()
 {
 	return this->uid;
 }
 
-Text::String *DB::ODBCConn::GetConnPWD()
+Optional<Text::String> DB::ODBCConn::GetConnPWD()
 {
 	return this->pwd;
 }
 
-Text::String *DB::ODBCConn::GetConnSchema()
+Optional<Text::String> DB::ODBCConn::GetConnSchema()
 {
 	return this->schema;
 }
@@ -1934,7 +1942,7 @@ Bool DB::ODBCReader::GetStr(UOSInt colIndex, NotNullPtr<Text::StringBuilderUTF8>
 	return 0;
 }
 
-Text::String *DB::ODBCReader::GetNewStr(UOSInt colIndex)
+Optional<Text::String> DB::ODBCReader::GetNewStr(UOSInt colIndex)
 {
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
@@ -1953,34 +1961,34 @@ Text::String *DB::ODBCReader::GetNewStr(UOSInt colIndex)
 	case DB::DBUtil::CT_UUID:
 		{
 			Text::StringBuilderUTF8 *sb = (Text::StringBuilderUTF8*)this->colDatas[colIndex].colData;
-			return Text::String::New(sb->ToString(), sb->GetLength()).Ptr();
+			return Text::String::New(sb->ToString(), sb->GetLength());
 		}
 	case DB::DBUtil::CT_Double:
 	case DB::DBUtil::CT_Float:
 	case DB::DBUtil::CT_Decimal:
 		sptr = Text::StrDouble(sbuff, *(Double*)&this->colDatas[colIndex].dataVal);
-		return Text::String::New(sbuff, (UOSInt)(sptr - sbuff)).Ptr();
+		return Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
 	case DB::DBUtil::CT_Int16:
 	case DB::DBUtil::CT_Int32:
 	case DB::DBUtil::CT_Byte:
 	case DB::DBUtil::CT_Int64:
 	case DB::DBUtil::CT_Bool:
 		sptr = Text::StrInt64(sbuff, this->colDatas[colIndex].dataVal);
-		return Text::String::New(sbuff, (UOSInt)(sptr - sbuff)).Ptr();
+		return Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
 	case DB::DBUtil::CT_UInt64:
 		sptr = Text::StrUInt64(sbuff, (UInt64)this->colDatas[colIndex].dataVal);
-		return Text::String::New(sbuff, (UOSInt)(sptr - sbuff)).Ptr();
+		return Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
 	case DB::DBUtil::CT_UInt32:
 		sptr = Text::StrUInt32(sbuff, (UInt32)this->colDatas[colIndex].dataVal);
-		return Text::String::New(sbuff, (UOSInt)(sptr - sbuff)).Ptr();
+		return Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
 	case DB::DBUtil::CT_UInt16:
 		sptr = Text::StrUInt16(sbuff, (UInt16)this->colDatas[colIndex].dataVal);
-		return Text::String::New(sbuff, (UOSInt)(sptr - sbuff)).Ptr();
+		return Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
 	case DB::DBUtil::CT_DateTimeTZ:
 	case DB::DBUtil::CT_DateTime:
 	case DB::DBUtil::CT_Date:
 		sptr = ((Data::Timestamp*)this->colDatas[colIndex].colData)->ToString(sbuff);
-		return Text::String::New(sbuff, (UOSInt)(sptr - sbuff)).Ptr();
+		return Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
 	case DB::DBUtil::CT_Binary:
 		return 0;
 	case DB::DBUtil::CT_Vector:
@@ -1992,7 +2000,7 @@ Text::String *DB::ODBCReader::GetNewStr(UOSInt colIndex)
 				Math::WKTWriter wkt;
 				wkt.ToText(sb, vec);
 				vec.Delete();
-				return Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
+				return Text::String::New(sb.ToString(), sb.GetLength());
 			}
 		}
 		return 0;

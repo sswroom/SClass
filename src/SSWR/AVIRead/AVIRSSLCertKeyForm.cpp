@@ -3,7 +3,7 @@
 #include "Crypto/Cert/X509FileList.h"
 #include "IO/StmData/FileData.h"
 #include "SSWR/AVIRead/AVIRSSLCertKeyForm.h"
-#include "UI/FileDialog.h"
+#include "UI/GUIFileDialog.h"
 
 void __stdcall SSWR::AVIRead::AVIRSSLCertKeyForm::OnFormClosed(void *userObj, UI::GUIForm *frm)
 {
@@ -18,25 +18,27 @@ void __stdcall SSWR::AVIRead::AVIRSSLCertKeyForm::OnFormClosed(void *userObj, UI
 void __stdcall SSWR::AVIRead::AVIRSSLCertKeyForm::OnFileCertClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRSSLCertKeyForm *me = (SSWR::AVIRead::AVIRSSLCertKeyForm*)userObj;
-	UI::FileDialog dlg(L"SSWR", L"AVIRead", L"AVIRSSLCert", false);
-	dlg.AddFilter(CSTR("*.crt"), CSTR("Cert file"));
-	dlg.SetAllowMultiSel(false);
-	if (dlg.ShowDialog(me->GetHandle()))
+	NotNullPtr<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"AVIRSSLCert", false);
+	dlg->AddFilter(CSTR("*.crt"), CSTR("Cert file"));
+	dlg->SetAllowMultiSel(false);
+	if (dlg->ShowDialog(me->GetHandle()))
 	{
-		me->LoadFile(dlg.GetFileName()->ToCString());
+		me->LoadFile(dlg->GetFileName()->ToCString());
 	}
+	dlg.Delete();
 }
 
 void __stdcall SSWR::AVIRead::AVIRSSLCertKeyForm::OnFileKeyClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRSSLCertKeyForm *me = (SSWR::AVIRead::AVIRSSLCertKeyForm*)userObj;
-	UI::FileDialog dlg(L"SSWR", L"AVIRead", L"AVIRSSLKey", false);
-	dlg.AddFilter(CSTR("*.kye"), CSTR("Key file"));
-	dlg.SetAllowMultiSel(false);
-	if (dlg.ShowDialog(me->GetHandle()))
+	NotNullPtr<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"AVIRSSLKey", false);
+	dlg->AddFilter(CSTR("*.kye"), CSTR("Key file"));
+	dlg->SetAllowMultiSel(false);
+	if (dlg->ShowDialog(me->GetHandle()))
 	{
-		me->LoadFile(dlg.GetFileName()->ToCString());
+		me->LoadFile(dlg->GetFileName()->ToCString());
 	}
+	dlg.Delete();
 }
 
 void __stdcall SSWR::AVIRead::AVIRSSLCertKeyForm::OnFileConfirmClicked(void *userObj)

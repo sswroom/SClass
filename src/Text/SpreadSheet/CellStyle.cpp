@@ -48,7 +48,7 @@ Text::SpreadSheet::CellStyle::CellStyle(UOSInt index)
 Text::SpreadSheet::CellStyle::~CellStyle()
 {
 	SDEL_TEXT(this->id);
-	SDEL_STRING(this->dataFormat);
+	OPTSTR_DEL(this->dataFormat);
 }
 
 NotNullPtr<Text::SpreadSheet::CellStyle> Text::SpreadSheet::CellStyle::Clone() const
@@ -66,7 +66,7 @@ NotNullPtr<Text::SpreadSheet::CellStyle> Text::SpreadSheet::CellStyle::Clone() c
 	style->font = this->font;
 	style->fillColor = this->fillColor;
 	style->fillPattern = this->fillPattern;
-	style->dataFormat = SCOPY_STRING(this->dataFormat);
+	style->dataFormat = Text::String::CopyOrNull(this->dataFormat);
 	style->protection = this->protection;
 	return style;
 }
@@ -86,8 +86,8 @@ void Text::SpreadSheet::CellStyle::CopyFrom(CellStyle *style)
 	this->font = style->font;
 	this->fillColor = style->fillColor;
 	this->fillPattern = style->fillPattern;
-	SDEL_STRING(this->dataFormat);
-	this->dataFormat = SCOPY_STRING(style->dataFormat);
+	OPTSTR_DEL(this->dataFormat);
+	this->dataFormat = Text::String::CopyOrNull(style->dataFormat);
 	this->protection = style->protection;
 }
 
@@ -206,14 +206,14 @@ Text::SpreadSheet::CellStyle *Text::SpreadSheet::CellStyle::SetBorderBottom(cons
 
 Text::SpreadSheet::CellStyle *Text::SpreadSheet::CellStyle::SetDataFormat(Text::String *dataFormat)
 {
-	SDEL_STRING(this->dataFormat);
+	OPTSTR_DEL(this->dataFormat);
 	this->dataFormat = SCOPY_STRING(dataFormat);
 	return this;
 }
 
 Text::SpreadSheet::CellStyle *Text::SpreadSheet::CellStyle::SetDataFormat(Text::CString dataFormat)
 {
-	SDEL_STRING(this->dataFormat);
+	OPTSTR_DEL(this->dataFormat);
 	this->dataFormat = Text::String::NewOrNull(dataFormat);
 	return this;
 }
@@ -278,7 +278,7 @@ Text::SpreadSheet::CellStyle::BorderStyle Text::SpreadSheet::CellStyle::GetBorde
 	return this->borderBottom;
 }
 
-Text::String *Text::SpreadSheet::CellStyle::GetDataFormat() const
+Optional<Text::String> Text::SpreadSheet::CellStyle::GetDataFormat() const
 {
 	return this->dataFormat;
 }

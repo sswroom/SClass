@@ -5,7 +5,6 @@
 #include "Math/Math.h"
 #include "SSWR/AVIRead/AVIRUSBDeviceForm.h"
 #include "Text/MyString.h"
-#include "UI/FileDialog.h"
 
 void __stdcall SSWR::AVIRead::AVIRUSBDeviceForm::OnDevicesSelChg(void *userObj)
 {

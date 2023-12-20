@@ -387,8 +387,8 @@ Bool Parser::FileParser::PDFParser::ParseObjectStream(PDFParseEnv *env, NotNullP
 		env->normalEnd = true;
 		return false;
 	}
-	Text::String *leng = param->GetEntryValue(CSTR("Length"));
-	if (leng == 0)
+	NotNullPtr<Text::String> leng;
+	if (!param->GetEntryValue(CSTR("Length")).SetTo(leng))
 	{
 #if defined(VERBOSE)
 		printf("PDFParser: Length not found in stream filters: %s\r\n", sb->ToString());
@@ -704,8 +704,8 @@ Parser::FileParser::PDFParser::PDFXRef *Parser::FileParser::PDFParser::ParseXRef
 #if defined(VERBOSE)
 			printf("PDFParser: EOF found, ofst = %lld\r\n", env->lineBegin);
 #endif
-			Text::String *prevOfst = thisRef->trailer->GetEntryValue(CSTR("Prev"));
-			if (prevOfst == 0)
+			NotNullPtr<Text::String> prevOfst;
+			if (!thisRef->trailer->GetEntryValue(CSTR("Prev")).SetTo(prevOfst))
 			{
 				return firstRef;
 			}

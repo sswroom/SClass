@@ -19,9 +19,9 @@ namespace DB
 		Bool axisAware;
 		Bool isTran;
 		NotNullPtr<Text::String> server;
-		Text::String *database;
-		Text::String *uid;
-		Text::String *pwd;
+		Optional<Text::String> database;
+		Optional<Text::String> uid;
+		Optional<Text::String> pwd;
 		NotNullPtr<IO::LogTool> log;
 
 		void Connect();
@@ -57,9 +57,9 @@ namespace DB
 
 		Bool IsConnError();
 		NotNullPtr<Text::String> GetConnServer();
-		Text::String *GetConnDB();
-		Text::String *GetConnUID();
-		Text::String *GetConnPWD();
+		Optional<Text::String> GetConnDB();
+		Optional<Text::String> GetConnUID();
+		Optional<Text::String> GetConnPWD();
 
 //		static DBTool *CreateDBTool(const WChar *serverName, const WChar *dbName, const WChar *uid, const WChar *pwd, NotNullPtr<IO::LogTool> log);
 		static DBTool *CreateDBTool(NotNullPtr<Net::SocketFactory> sockf, NotNullPtr<Text::String> serverName, Text::String *dbName, Text::String *uid, Text::String *pwd, NotNullPtr<IO::LogTool> log, Text::CString logPrefix);
@@ -89,7 +89,7 @@ namespace DB
 		virtual Int64 GetInt64(UOSInt colIndex);
 		virtual WChar *GetStr(UOSInt colIndex, WChar *buff);
 		virtual Bool GetStr(UOSInt colIndex, NotNullPtr<Text::StringBuilderUTF8> sb);
-		virtual Text::String *GetNewStr(UOSInt colIndex);
+		virtual Optional<Text::String> GetNewStr(UOSInt colIndex);
 		virtual UTF8Char *GetStr(UOSInt colIndex, UTF8Char *buff, UOSInt buffSize);
 		virtual Data::Timestamp GetTimestamp(UOSInt colIndex);
 		virtual Double GetDbl(UOSInt colIndex);

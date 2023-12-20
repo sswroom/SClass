@@ -152,7 +152,7 @@ namespace Data
 		void SetStrSlow(const UTF8Char *str);
 		void SetStr(const UTF8Char *str, UOSInt strLen);
 		void SetStrCopy(const UTF8Char *str, UOSInt strLen);
-		void SetStr(Text::String *str);
+		void SetStr(Optional<Text::String> str);
 		void SetStr(NotNullPtr<Text::String> str);
 		void SetDate(Data::DateTime *dt);
 		void SetDate(const Data::Timestamp &ts);
@@ -182,7 +182,7 @@ namespace Data
 		static NotNullPtr<VariItem> NewNull();
 		static NotNullPtr<VariItem> NewStrSlow(const UTF8Char *str);
 		static NotNullPtr<VariItem> NewStr(Text::CString str);
-		static NotNullPtr<VariItem> NewStr(Text::String *str);
+		static NotNullPtr<VariItem> NewStr(Optional<Text::String> str);
 		static NotNullPtr<VariItem> NewDateTime(Data::DateTime *dt);
 		static NotNullPtr<VariItem> NewTS(const Data::Timestamp &ts);
 		static NotNullPtr<VariItem> NewDate(const Data::Date &date);

@@ -14,7 +14,7 @@
 #include "Sync/ThreadUtil.h"
 #include "Text/MyStringFloat.h"
 #include "Text/StringBuilderUTF8.h"
-#include "UI/FileDialog.h"
+#include "UI/GUIFileDialog.h"
 
 void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeTestForm::OnStartClicked(void *userObj)
 {
@@ -167,25 +167,27 @@ void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeTestForm::OnStartClicked(void *us
 void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeTestForm::OnCliCertClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRMQTTSubscribeTestForm *me = (SSWR::AVIRead::AVIRMQTTSubscribeTestForm*)userObj;
-	UI::FileDialog dlg(L"SSWR", L"AVIRead", L"AVIRMQTTExplorerCliCert", false);
-	dlg.AddFilter(CSTR("*.crt"), CSTR("Cert file"));
-	dlg.SetAllowMultiSel(false);
-	if (dlg.ShowDialog(me->GetHandle()))
+	NotNullPtr<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"AVIRMQTTExplorerCliCert", false);
+	dlg->AddFilter(CSTR("*.crt"), CSTR("Cert file"));
+	dlg->SetAllowMultiSel(false);
+	if (dlg->ShowDialog(me->GetHandle()))
 	{
 		Net::ASN1Data *asn1;
 		{
-			IO::StmData::FileData fd(dlg.GetFileName(), false);
+			IO::StmData::FileData fd(dlg->GetFileName(), false);
 			asn1 = (Net::ASN1Data*)me->core->GetParserList()->ParseFileType(fd, IO::ParserType::ASN1Data);
 		}
 		if (asn1 == 0)
 		{
 			me->ui->ShowMsgOK(CSTR("Error in parsing file"), CSTR("MQTT Subscribe Test"), me);
+			dlg.Delete();
 			return;
 		}
 		if (asn1->GetASN1Type() != Net::ASN1Data::ASN1Type::X509)
 		{
 			DEL_CLASS(asn1);
 			me->ui->ShowMsgOK(CSTR("Error in parsing file"), CSTR("MQTT Subscribe Test"), me);
+			dlg.Delete();
 			return;
 		}
 		Crypto::Cert::X509File *x509 = (Crypto::Cert::X509File*)asn1;
@@ -193,46 +195,51 @@ void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeTestForm::OnCliCertClicked(void *
 		{
 			DEL_CLASS(asn1);
 			me->ui->ShowMsgOK(CSTR("It is not a cert file"), CSTR("MQTT Subscribe Test"), me);
+			dlg.Delete();
 			return;
 		}
 		SDEL_CLASS(me->cliCert);
 		me->cliCert = (Crypto::Cert::X509Cert*)x509;
-		NotNullPtr<Text::String> s = dlg.GetFileName();
+		NotNullPtr<Text::String> s = dlg->GetFileName();
 		UOSInt i = s->LastIndexOf(IO::Path::PATH_SEPERATOR);
 		me->lblCliCert->SetText(s->ToCString().Substring(i + 1));
 	}
+	dlg.Delete();
 }
 
 void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeTestForm::OnCliKeyClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRMQTTSubscribeTestForm *me = (SSWR::AVIRead::AVIRMQTTSubscribeTestForm*)userObj;
-	UI::FileDialog dlg(L"SSWR", L"AVIRead", L"AVIRMQTTExplorerCliKey", false);
-	dlg.AddFilter(CSTR("*.key"), CSTR("Key file"));
-	dlg.SetAllowMultiSel(false);
-	if (dlg.ShowDialog(me->GetHandle()))
+	NotNullPtr<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"AVIRMQTTExplorerCliKey", false);
+	dlg->AddFilter(CSTR("*.key"), CSTR("Key file"));
+	dlg->SetAllowMultiSel(false);
+	if (dlg->ShowDialog(me->GetHandle()))
 	{
 		Net::ASN1Data *asn1;
 		{
-			IO::StmData::FileData fd(dlg.GetFileName(), false);
+			IO::StmData::FileData fd(dlg->GetFileName(), false);
 			asn1 = (Net::ASN1Data*)me->core->GetParserList()->ParseFileType(fd, IO::ParserType::ASN1Data);
 		}
 		if (asn1 == 0)
 		{
 			me->ui->ShowMsgOK(CSTR("Error in parsing file"), CSTR("MQTT Subscribe Test"), me);
+			dlg.Delete();
 			return;
 		}
 		if (asn1->GetASN1Type() != Net::ASN1Data::ASN1Type::X509)
 		{
 			DEL_CLASS(asn1);
 			me->ui->ShowMsgOK(CSTR("Error in parsing file"), CSTR("MQTT Subscribe Test"), me);
+			dlg.Delete();
 			return;
 		}
 		SDEL_CLASS(me->cliKey);
 		me->cliKey = (Crypto::Cert::X509File*)asn1;
-		NotNullPtr<Text::String> s = dlg.GetFileName();
+		NotNullPtr<Text::String> s = dlg->GetFileName();
 		UOSInt i = s->LastIndexOf(IO::Path::PATH_SEPERATOR);
 		me->lblCliKey->SetText(s->ToCString().Substring(i + 1));
 	}
+	dlg.Delete();
 }
 
 void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeTestForm::OnPingTimerTick(void *userObj)

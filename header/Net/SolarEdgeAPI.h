@@ -22,25 +22,25 @@ namespace Net
 		struct Site
 		{
 			Int32 id;
-			Text::String *name;
+			Optional<Text::String> name;
 			Int32 accountId;
-			Text::String *status;
+			Optional<Text::String> status;
 			Double peakPower_kWp;
 			Data::Timestamp lastUpdateTime;
-			Text::String *currency;
+			Optional<Text::String> currency;
 			Data::Timestamp installationDate;
 			Data::Timestamp ptoDate;
-			Text::String *notes;
-			Text::String *type;
-			Text::String *country;
-			Text::String *city;
-			Text::String *address;
-			Text::String *address2;
-			Text::String *zip;
-			Text::String *timeZone;
-			Text::String *countryCode;
+			Optional<Text::String> notes;
+			Optional<Text::String> type;
+			Optional<Text::String> country;
+			Optional<Text::String> city;
+			Optional<Text::String> address;
+			Optional<Text::String> address2;
+			Optional<Text::String> zip;
+			Optional<Text::String> timeZone;
+			Optional<Text::String> countryCode;
 			Bool isPublic;
-			Text::String *publicName;
+			Optional<Text::String> publicName;
 		};
 
 		struct SiteOverview
@@ -88,7 +88,7 @@ namespace Net
 		SolarEdgeAPI(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CString apikey);
 		~SolarEdgeAPI();
 
-		Text::String *GetCurrentVersion();
+		Optional<Text::String> GetCurrentVersion();
 		Bool GetSupportedVersions(Data::ArrayListStringNN *versions);
 		Bool GetSiteList(Data::ArrayList<Site*> *versions, UOSInt maxCount, UOSInt startOfst, UOSInt *totalCount);
 		void FreeSiteList(Data::ArrayList<Site*> *versions);

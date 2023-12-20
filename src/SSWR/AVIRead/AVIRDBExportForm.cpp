@@ -2,7 +2,7 @@
 #include "DB/SQLGenerator.h"
 #include "IO/FileStream.h"
 #include "SSWR/AVIRead/AVIRDBExportForm.h"
-#include "UI/FileDialog.h"
+#include "UI/GUIFileDialog.h"
 
 void __stdcall SSWR::AVIRead::AVIRDBExportForm::OnTablesDblClk(void *userObj, UOSInt itemIndex)
 {
@@ -39,10 +39,10 @@ void __stdcall SSWR::AVIRead::AVIRDBExportForm::OnExportClicked(void *userObj)
 	*sptr++ = '_';
 	sptr = Data::Timestamp::Now().ToString(sptr, "yyyyMMdd_HHmmss");
 	sptr = Text::StrConcatC(sptr, UTF8STRC(".sql"));
-	UI::FileDialog dlg(L"SSWR", L"AVIRead", L"DBExport", true);
-	dlg.AddFilter(CSTR("*.sql"), CSTR("SQL File"));
-	dlg.SetFileName(CSTRP(sbuff, sptr));
-	if (dlg.ShowDialog(me->GetHandle()))
+	NotNullPtr<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"DBExport", true);
+	dlg->AddFilter(CSTR("*.sql"), CSTR("SQL File"));
+	dlg->SetFileName(CSTRP(sbuff, sptr));
+	if (dlg->ShowDialog(me->GetHandle()))
 	{
 		DB::SQLBuilder sql((DB::SQLType)(OSInt)me->cboDBType->GetSelectedItem(), me->chkAxisAware->IsChecked(), 0);
 		Data::ArrayListStringNN cols;
@@ -60,9 +60,10 @@ void __stdcall SSWR::AVIRead::AVIRDBExportForm::OnExportClicked(void *userObj)
 		if (!r.Set(me->db->QueryTableData(me->schema, me->table, &cols, 0, 0, CSTR_NULL, 0)))
 		{
 			me->ui->ShowMsgOK(CSTR("Error in reading table data"), CSTR("Export Table Data"), me);
+			dlg.Delete();
 			return;
 		}
-		IO::FileStream fs(dlg.GetFileName(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+		IO::FileStream fs(dlg->GetFileName(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 		while (r->ReadNext())
 		{
 			sql.Clear();			
@@ -74,6 +75,7 @@ void __stdcall SSWR::AVIRead::AVIRDBExportForm::OnExportClicked(void *userObj)
 		cols.FreeAll();
 		me->SetDialogResult(UI::GUIForm::DR_OK);
 	}
+	dlg.Delete();
 }
 
 SSWR::AVIRead::AVIRDBExportForm::AVIRDBExportForm(UI::GUIClientControl *parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, DB::ReadingDB *db, Text::CString schema, Text::CString table) : UI::GUIForm(parent, 1024, 768, ui)

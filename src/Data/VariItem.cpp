@@ -915,12 +915,13 @@ void Data::VariItem::SetStrCopy(const UTF8Char *str, UOSInt strLen)
 	}
 }
 
-void Data::VariItem::SetStr(Text::String *str)
+void Data::VariItem::SetStr(Optional<Text::String> str)
 {
 	this->FreeItem();
-	if (str)
+	NotNullPtr<Text::String> s;
+	if (str.SetTo(s))
 	{
-		this->val.str = str->Clone().Ptr();
+		this->val.str = s->Clone().Ptr();
 		this->itemType = ItemType::Str;
 	}
 	else
@@ -1360,11 +1361,12 @@ NotNullPtr<Data::VariItem> Data::VariItem::NewStr(Text::CString str)
 	return item;
 }
 
-NotNullPtr<Data::VariItem> Data::VariItem::NewStr(Text::String *str)
+NotNullPtr<Data::VariItem> Data::VariItem::NewStr(Optional<Text::String> str)
 {
-	if (str == 0) return NewNull();
+	NotNullPtr<Text::String> s;
+	if (!str.SetTo(s)) return NewNull();
 	ItemValue ival;
-	ival.str = str->Clone().Ptr();
+	ival.str = s->Clone().Ptr();
 	NotNullPtr<Data::VariItem> item;
 	NEW_CLASSNN(item, Data::VariItem(ItemType::Str, ival));
 	return item;
@@ -1588,7 +1590,7 @@ NotNullPtr<Data::VariItem> Data::VariItem::NewFromPtr(void *ptr, ItemType itemTy
 	case ItemType::Null:
 		return NewNull();
 	case ItemType::Str:
-		return NewStr(*(Text::String**)ptr);
+		return NewStr(*(Optional<Text::String>*)ptr);
 	case ItemType::CStr:
 		return NewStr(*(Text::CString*)ptr);
 	case ItemType::Timestamp:
@@ -1653,7 +1655,7 @@ void Data::VariItem::SetFromPtr(NotNullPtr<Data::VariItem> item, void *ptr, Item
 		item->SetNull();
 		return;
 	case ItemType::Str:
-		item->SetStr(*(Text::String**)ptr);
+		item->SetStr(*(Optional<Text::String>*)ptr);
 		return;
 	case ItemType::CStr:
 		{
@@ -1726,22 +1728,22 @@ void Data::VariItem::SetPtr(void *ptr, ItemType itemType, NotNullPtr<VariItem> i
 			ItemType itemType = item->GetItemType();
 			if (itemType == ItemType::Null)
 			{
-				*(Text::String**)ptr = 0;
+				*(Optional<Text::String>*)ptr = 0;
 			}
 			else if (itemType == ItemType::Str)
 			{
-				*(Text::String**)ptr = item->GetItemValue().str->Clone().Ptr();
+				*(Optional<Text::String>*)ptr = item->GetItemValue().str->Clone();
 			}
 			else if (itemType == ItemType::CStr)
 			{
 				const ItemValue ival = item->GetItemValue();
-				*(Text::String**)ptr = Text::String::New(ival.cstr.v, ival.cstr.leng).Ptr();
+				*(Optional<Text::String>*)ptr = Text::String::New(ival.cstr.v, ival.cstr.leng);
 			}
 			else
 			{
 				Text::StringBuilderUTF8 sb;
 				item->GetAsString(sb);
-				*(Text::String**)ptr = Text::String::New(sb.ToCString()).Ptr();
+				*(Optional<Text::String>*)ptr = Text::String::New(sb.ToCString());
 			}
 		}
 		break;

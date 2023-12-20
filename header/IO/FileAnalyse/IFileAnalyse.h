@@ -29,7 +29,7 @@ namespace IO
 			virtual Bool TrimPadding(Text::CStringNN outputFile) = 0;
 
 			static IFileAnalyse *AnalyseFile(NotNullPtr<IO::StreamData> fd);
-			static void AddFilters(IO::FileSelector *selector);
+			static void AddFilters(NotNullPtr<IO::FileSelector> selector);
 		};
 	}
 }

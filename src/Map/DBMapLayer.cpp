@@ -20,8 +20,8 @@ void Map::DBMapLayer::ClearDB()
 	{
 		this->db = 0;
 	}
-	SDEL_STRING(this->schema);
-	SDEL_STRING(this->table);
+	OPTSTR_DEL(this->schema);
+	OPTSTR_DEL(this->table);
 	this->idCol = INVALID_INDEX;
 	this->vecCol = INVALID_INDEX;
 	this->xCol = INVALID_INDEX;
@@ -237,7 +237,7 @@ Bool Map::DBMapLayer::GetString(NotNullPtr<Text::StringBuilderUTF8> sb, NameArra
 				if (this->tabDef->GetCol(this->idCol).SetTo(idCol))
 				{
 					cond.Int64Equals(idCol->GetColName()->ToCString(), id);
-					r = this->db->QueryTableData(STR_CSTR(this->schema), this->table->ToCString(), 0, 0, 0, 0, &cond);
+					r = this->db->QueryTableData(OPTSTR_CSTR(this->schema), OPTSTR_CSTR(this->table), 0, 0, 0, 0, &cond);
 				}
 				else
 				{
@@ -246,7 +246,7 @@ Bool Map::DBMapLayer::GetString(NotNullPtr<Text::StringBuilderUTF8> sb, NameArra
 			}
 			else
 			{
-				r = this->db->QueryTableData(STR_CSTR(this->schema), this->table->ToCString(), 0, (UOSInt)(id - 1), 1, 0, 0);
+				r = this->db->QueryTableData(OPTSTR_CSTR(this->schema), OPTSTR_CSTR(this->table), 0, (UOSInt)(id - 1), 1, 0, 0);
 			}
 			if (nnr.Set(r))
 			{
@@ -415,7 +415,7 @@ Bool Map::DBMapLayer::SetDatabase(DB::ReadingDB *db, Text::CString schemaName, T
 	this->releaseDB = false;
 	this->db = db;
 	this->schema = Text::String::NewOrNull(schemaName);
-	this->table = Text::String::New(tableName).Ptr();
+	this->table = Text::String::New(tableName);
 
 	this->tabDef = this->db->GetTableDef(schemaName, tableName);
 	UOSInt xCol = INVALID_INDEX;

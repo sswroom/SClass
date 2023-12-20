@@ -111,8 +111,8 @@ IO::ParsedObject *Parser::FileParser::JSONParser::ParseJSON(Text::JSONBase *file
 				Text::JSONBase *crsProp = ((Text::JSONObject*)crs)->GetObjectValue(CSTR("properties"));
 				if (crsProp && crsProp->GetType() == Text::JSONType::Object)
 				{
-					Text::String *crsName = ((Text::JSONObject*)crsProp)->GetObjectString(CSTR("name"));
-					if (crsName)
+					NotNullPtr<Text::String> crsName;
+					if (((Text::JSONObject*)crsProp)->GetObjectString(CSTR("name")).SetTo(crsName))
 					{
 						csys = Math::CoordinateSystemManager::CreateFromName(crsName->ToCString());
 						if (csys)
@@ -190,7 +190,7 @@ IO::ParsedObject *Parser::FileParser::JSONParser::ParseJSON(Text::JSONBase *file
 									jbase = ((Text::JSONObject*)featProp)->GetObjectValue(tabCols[k]->ToCString());
 									if (jbase && jbase->GetType() == Text::JSONType::String)
 									{
-										tabVals[k] = ((Text::JSONString*)jbase)->GetValue();
+										tabVals[k] = ((Text::JSONString*)jbase)->GetValue().Ptr();
 									}
 									else
 									{
@@ -224,12 +224,15 @@ IO::ParsedObject *Parser::FileParser::JSONParser::ParseJSON(Text::JSONBase *file
 		{
 			NotNullPtr<Text::String> name;
 			NotNullPtr<Text::String> format;
-			Text::String *sMinZoom = jobj->GetObjectString(CSTR("minzoom"));
-			Text::String *sMaxZoom = jobj->GetObjectString(CSTR("maxzoom"));
+			NotNullPtr<Text::String> sMinZoom;
+			NotNullPtr<Text::String> sMaxZoom;
 			UInt32 minZoom;
 			UInt32 maxZoom;
 			Text::JSONArray *bounds = jobj->GetObjectArray(CSTR("bounds"));
-			if (name.Set(jobj->GetObjectString(CSTR("name"))) && format.Set(jobj->GetObjectString(CSTR("format"))) && sMinZoom && sMaxZoom && bounds && sMinZoom->ToUInt32(minZoom) && sMaxZoom->ToUInt32(maxZoom) && bounds->GetArrayLength() == 4)
+			if (jobj->GetObjectString(CSTR("name")).SetTo(name) &&
+				jobj->GetObjectString(CSTR("format")).SetTo(format) &&
+				jobj->GetObjectString(CSTR("minzoom")).SetTo(sMinZoom) &&
+				jobj->GetObjectString(CSTR("maxzoom")).SetTo(sMaxZoom) && bounds && sMinZoom->ToUInt32(minZoom) && sMaxZoom->ToUInt32(maxZoom) && bounds->GetArrayLength() == 4)
 			{
 				Math::Coord2DDbl maxCoord;
 				Math::Coord2DDbl minCoord;
@@ -268,8 +271,8 @@ IO::ParsedObject *Parser::FileParser::JSONParser::ParseJSON(Text::JSONBase *file
 
 Math::Geometry::Vector2D *Parser::FileParser::JSONParser::ParseGeomJSON(Text::JSONObject *obj, UInt32 srid)
 {
-	Text::String *sType = obj->GetObjectString(CSTR("type"));
-	if (sType)
+	NotNullPtr<Text::String> sType;
+	if (obj->GetObjectString(CSTR("type")).SetTo(sType))
 	{
 		Text::JSONBase *jbase;
 		if (sType->Equals(UTF8STRC("LineString")))

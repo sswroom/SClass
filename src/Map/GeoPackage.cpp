@@ -24,7 +24,7 @@ Map::GeoPackage::GeoPackage(DB::DBConn *conn)
 {
 	this->conn = conn;
 	this->useCnt = 1;
-	Text::String *tableName;
+	NotNullPtr<Text::String> tableName;
 	Data::ArrayListStringNN colList;
 	NotNullPtr<DB::DBReader> r;
 	Text::StringTool::SplitAsNewString(CSTR("table_name,data_type,min_x,min_y,max_x,max_y,srs_id"), ',', colList);
@@ -40,21 +40,23 @@ Map::GeoPackage::GeoPackage(DB::DBConn *conn)
 	{
 		sb.ClearStr();
 		r->GetStr(1, sb);
-		tableName = r->GetNewStr(0);
-		this->allTables.Add(tableName);
-		if (sb.Equals(UTF8STRC("features")))
+		if (r->GetNewStr(0).SetTo(tableName))
 		{
-			cont = MemAlloc(ContentInfo, 1);
-			cont->tableName = tableName->Clone();
-			cont->bounds.tl.x = r->GetDbl(2);
-			cont->bounds.tl.y = r->GetDbl(3);
-			cont->bounds.br.x = r->GetDbl(4);
-			cont->bounds.br.y = r->GetDbl(5);
-			cont->srsId = r->GetInt32(6);
-			cont->hasZ = false;
-			cont->hasM = false;
-			cont = this->tableList.PutNN(cont->tableName, cont);
-			if (cont) FreeContent(cont);
+			this->allTables.Add(tableName);
+			if (sb.Equals(UTF8STRC("features")))
+			{
+				cont = MemAlloc(ContentInfo, 1);
+				cont->tableName = tableName->Clone();
+				cont->bounds.tl.x = r->GetDbl(2);
+				cont->bounds.tl.y = r->GetDbl(3);
+				cont->bounds.br.x = r->GetDbl(4);
+				cont->bounds.br.y = r->GetDbl(5);
+				cont->srsId = r->GetInt32(6);
+				cont->hasZ = false;
+				cont->hasM = false;
+				cont = this->tableList.PutNN(cont->tableName, cont);
+				if (cont) FreeContent(cont);
+			}
 		}
 	}
 	this->conn->CloseReader(r);
@@ -97,14 +99,12 @@ NotNullPtr<Text::String> Map::GeoPackage::GetSourceNameObj()
 
 UOSInt Map::GeoPackage::QueryTableNames(Text::CString schemaName, NotNullPtr<Data::ArrayListNN<Text::String>> names)
 {
-	UOSInt i = 0;
-	UOSInt j = this->allTables.GetCount();
-	while (i < j)
+	Data::ArrayIterator<NotNullPtr<Text::String>> it = this->allTables.Iterator();
+	while (it.HasNext())
 	{
-		names->Add(this->allTables.GetItem(i)->Clone());
-		i++;
+		names->Add(it.Next()->Clone());
 	}
-	return j;
+	return this->allTables.GetCount();
 }
 
 DB::DBReader *Map::GeoPackage::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListStringNN *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)

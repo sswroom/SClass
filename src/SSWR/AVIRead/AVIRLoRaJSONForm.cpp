@@ -13,10 +13,10 @@ void __stdcall SSWR::AVIRead::AVIRLoRaJSONForm::OnJSONParseClick(void *userObj)
 	Text::JSONBase *json = Text::JSONBase::ParseJSONStr(sb.ToCString());
 	if (json)
 	{
-		Text::String *rxdata = json->GetValueString(CSTR("rxpk[0].data"));
+		NotNullPtr<Text::String> rxdata;
 		Text::JSONBase *rxstat = json->GetValue(CSTR("rxpk[0].stat"));
-		Text::String *txdata = json->GetValueString(CSTR("txpk.data"));
-		if (rxdata)
+		NotNullPtr<Text::String> txdata;
+		if (json->GetValueString(CSTR("rxpk[0].data")).SetTo(rxdata))
 		{
 			Text::TextBinEnc::Base64Enc b64;
 			buffSize = b64.DecodeBin(rxdata->v, rxdata->leng, buff);
@@ -39,7 +39,7 @@ void __stdcall SSWR::AVIRead::AVIRLoRaJSONForm::OnJSONParseClick(void *userObj)
 			}
 			me->txtInfo->SetText(sb.ToCString());
 		}
-		else if (txdata)
+		else if (json->GetValueString(CSTR("txpk.data")).SetTo(txdata))
 		{
 			Text::TextBinEnc::Base64Enc b64;
 			buffSize = b64.DecodeBin(txdata->v, txdata->leng, buff);

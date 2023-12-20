@@ -10,10 +10,10 @@
 
 Text::String Text::String::emptyStr(1048576);
 
-Text::String *Text::String::NewOrNullSlow(const UTF8Char *str)
+Optional<Text::String> Text::String::NewOrNullSlow(const UTF8Char *str)
 {
 	if (str == 0) return 0;
-	if (str[0] == 0) return NewEmpty().Ptr();
+	if (str[0] == 0) return NewEmpty();
 	UOSInt len = Text::StrCharCnt(str);
 	Text::String *s = (Text::String*)MAlloc(len + sizeof(String));
 	s->v = s->vbuff;
@@ -35,10 +35,10 @@ NotNullPtr<Text::String> Text::String::NewNotNullSlow(const UTF8Char *str)
 	return s;
 }
 
-Text::String *Text::String::NewOrNull(Text::CString str)
+Optional<Text::String> Text::String::NewOrNull(Text::CString str)
 {
 	if (str.v == 0) return 0;
-	if (str.leng == 0) return NewEmpty().Ptr();
+	if (str.leng == 0) return NewEmpty();
 	Text::String *s = (Text::String*)MAlloc(str.leng + sizeof(String));
 	s->v = s->vbuff;
 	s->leng = str.leng;
@@ -61,7 +61,7 @@ NotNullPtr<Text::String> Text::String::NewP(const UTF8Char *str, const UTF8Char 
 	return s;
 }
 
-Text::String *Text::String::NewOrNull(const UTF16Char *str)
+Optional<Text::String> Text::String::NewOrNull(const UTF16Char *str)
 {
 	if (str == 0) return 0;
 	UOSInt charCnt = Text::StrUTF16_UTF8Cnt(str);
@@ -88,7 +88,7 @@ NotNullPtr<Text::String> Text::String::New(const UTF16Char *str, UOSInt len)
 	return s;
 }
 
-Text::String *Text::String::NewOrNull(const UTF32Char *str)
+Optional<Text::String> Text::String::NewOrNull(const UTF32Char *str)
 {
 	if (str == 0) return 0;
 	UOSInt charCnt = Text::StrUTF32_UTF8Cnt(str);
@@ -164,10 +164,10 @@ NotNullPtr<Text::String> Text::String::OrEmpty(Optional<Text::String> s)
 	return emptyStr.Clone();
 }
 
-Text::String *Text::String::CopyOrNull(Optional<Text::String> s)
+Optional<Text::String> Text::String::CopyOrNull(Optional<Text::String> s)
 {
 	NotNullPtr<Text::String> ret;
-	if (s.SetTo(ret)) return ret->Clone().Ptr();
+	if (s.SetTo(ret)) return ret->Clone();
 	return 0;
 }
 

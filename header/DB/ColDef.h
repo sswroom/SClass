@@ -56,7 +56,7 @@ namespace DB
 	private:
 		NotNullPtr<Text::String> colName;
 		DB::DBUtil::ColType colType;
-		Text::String *nativeType;
+		Optional<Text::String> nativeType;
 		UOSInt colSize;
 		UOSInt colDP;
 		Bool notNull;
@@ -64,8 +64,8 @@ namespace DB
 		AutoIncType autoInc;
 		Int64 autoIncStartIndex;
 		Int64 autoIncStep;
-		Text::String *defVal;
-		Text::String *attr;
+		Optional<Text::String> defVal;
+		Optional<Text::String> attr;
 
 		static void AppendDefVal(NotNullPtr<DB::SQLBuilder> sql, Text::CStringNN defVal, UOSInt colSize);
 	public:
@@ -75,7 +75,7 @@ namespace DB
 
 		NotNullPtr<Text::String> GetColName() const;
 		DB::DBUtil::ColType GetColType() const;
-		Text::String *GetNativeType() const;
+		Optional<Text::String> GetNativeType() const;
 		UOSInt GetColSize() const;
 		UOSInt GetColDP() const;
 		Bool IsNotNull() const;
@@ -84,8 +84,8 @@ namespace DB
 		AutoIncType GetAutoIncType() const;
 		Int64 GetAutoIncStartIndex() const;
 		Int64 GetAutoIncStep() const;
-		Text::String *GetDefVal() const;
-		Text::String *GetAttr() const;
+		Optional<Text::String> GetDefVal() const;
+		Optional<Text::String> GetAttr() const;
 		Bool GetDefVal(NotNullPtr<DB::SQLBuilder> sql) const;
 		DB::ColDef::GeometryType GetGeometryType() const;
 		UInt32 GetGeometrySRID() const;
@@ -94,7 +94,7 @@ namespace DB
 		void SetColName(Text::CString colName);
 		void SetColName(NotNullPtr<Text::String> colName);
 		void SetColType(DB::DBUtil::ColType colType);
-		void SetNativeType(Text::String *nativeType);
+		void SetNativeType(Optional<Text::String> nativeType);
 		void SetNativeType(Text::CString nativeType);
 		void SetColSize(UOSInt colSize);
 		void SetColDP(UOSInt colDP);
@@ -103,9 +103,9 @@ namespace DB
 		void SetAutoIncNone();
 		void SetAutoInc(AutoIncType autoInc, Int64 startIndex, Int64 incStep);
 		void SetDefVal(Text::CString defVal);
-		void SetDefVal(Text::String *defVal);
+		void SetDefVal(Optional<Text::String> defVal);
 		void SetAttr(Text::CString attr);
-		void SetAttr(Text::String *attr);
+		void SetAttr(Optional<Text::String> attr);
 
 		void Set(NotNullPtr<const ColDef> colDef);
 

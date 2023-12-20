@@ -175,7 +175,7 @@ IO::FileAnalyse::IFileAnalyse *IO::FileAnalyse::IFileAnalyse::AnalyseFile(NotNul
 	return analyse;
 }
 
-void IO::FileAnalyse::IFileAnalyse::AddFilters(IO::FileSelector *selector)
+void IO::FileAnalyse::IFileAnalyse::AddFilters(NotNullPtr<IO::FileSelector> selector)
 {
 	selector->AddFilter(CSTR("*.mpg"), CSTR("MPEG System Stream"));
 	selector->AddFilter(CSTR("*.avi"), CSTR("RIFF AVI"));

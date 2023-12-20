@@ -21,9 +21,9 @@ namespace Data
 		};
 
 	protected:
-		Text::String *title;
-		Text::String *xAxisName;
-		Text::String *yAxisName;
+		Optional<Text::String> title;
+		Optional<Text::String> xAxisName;
+		Optional<Text::String> yAxisName;
 
 		NotNullPtr<Text::String> dateFormat;
 		NotNullPtr<Text::String> timeFormat;
@@ -35,7 +35,7 @@ namespace Data
 		virtual ~Chart();
 
 		virtual void SetTitle(Text::CString title);
-		Text::String *GetTitle() const;
+		Optional<Text::String> GetTitle() const;
 		void SetDateFormat(Text::CString format);
 		NotNullPtr<Text::String> GetDateFormat() const;
 		void SetTimeFormat(Text::CString format);
@@ -44,9 +44,9 @@ namespace Data
 		NotNullPtr<Text::String> GetDblFormat() const;
 
 		void SetXAxisName(Text::CString xAxisName);
-		Text::String *GetXAxisName() const;
+		Optional<Text::String> GetXAxisName() const;
 		void SetYAxisName(Text::CString yAxisName);
-		Text::String *GetYAxisName() const;
+		Optional<Text::String> GetYAxisName() const;
 
 		virtual DataType GetXAxisType() const = 0;
 		virtual UOSInt GetXDataCount() const = 0;
@@ -64,8 +64,8 @@ namespace Data
 		virtual UOSInt GetLegendCount() const = 0;
 		virtual UTF8Char *GetLegend(UTF8Char *sbuff, UInt32 *color, UOSInt index) const = 0;
 
-		static UOSInt CalScaleMarkDbl(Data::ArrayListDbl *locations, Data::ArrayListStringNN *labels, Double min, Double max, Double leng, Double minLeng, const Char *dblFormat, Double minDblVal, const UTF8Char *unit);
-		static UOSInt CalScaleMarkInt(Data::ArrayListDbl *locations, Data::ArrayListStringNN *labels, Int32 min, Int32 max, Double leng, Double minLeng, const UTF8Char *unit);
+		static UOSInt CalScaleMarkDbl(Data::ArrayListDbl *locations, Data::ArrayListStringNN *labels, Double min, Double max, Double leng, Double minLeng, const Char *dblFormat, Double minDblVal, Optional<Text::String> unit);
+		static UOSInt CalScaleMarkInt(Data::ArrayListDbl *locations, Data::ArrayListStringNN *labels, Int32 min, Int32 max, Double leng, Double minLeng, Optional<Text::String> unit);
 		static UOSInt CalScaleMarkDate(Data::ArrayListDbl *locations, Data::ArrayListStringNN *labels, NotNullPtr<Data::DateTime> min, NotNullPtr<Data::DateTime> max, Double leng, Double minLeng, const Char *dateFormat, const Char *timeFormat);
 	};
 }

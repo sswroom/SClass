@@ -100,14 +100,14 @@ namespace Map
 		{
 		public:
 			Data::ArrayList<LineStyleLayer*> layers;
-			Text::String *name;
+			Optional<Text::String> name;
 
 			LineStyle() : layers(4) { this->name = 0; }
 		};
 
 		typedef struct
 		{
-			Text::String *styleName;
+			Optional<Text::String> styleName;
 			NotNullPtr<Text::String> fontName;
 			Double fontSizePt;
 			Bool bold;

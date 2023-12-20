@@ -101,7 +101,7 @@ Bool IO::ConfigFile::SetValue(Text::CStringNN category, Text::CStringNN name, Te
 		NEW_CLASS(cate, Data::FastStringMap<Text::String *>());
 		this->cfgVals.PutC(category, cate);
 	}
-	s = cate->PutC(name, Text::String::NewOrNull(value));
+	s = cate->PutC(name, Text::String::NewOrNull(value).OrNull());
 	SDEL_STRING(s);
 	return true;
 }

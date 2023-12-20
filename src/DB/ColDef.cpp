@@ -98,9 +98,9 @@ DB::ColDef::ColDef(NotNullPtr<Text::String> colName)
 DB::ColDef::~ColDef()
 {
 	this->colName->Release();
-	SDEL_STRING(this->nativeType);
-	SDEL_STRING(this->defVal);
-	SDEL_STRING(this->attr);
+	OPTSTR_DEL(this->nativeType);
+	OPTSTR_DEL(this->defVal);
+	OPTSTR_DEL(this->attr);
 }
 
 NotNullPtr<Text::String> DB::ColDef::GetColName() const
@@ -113,7 +113,7 @@ DB::DBUtil::ColType DB::ColDef::GetColType() const
 	return this->colType;
 }
 
-Text::String *DB::ColDef::GetNativeType() const
+Optional<Text::String> DB::ColDef::GetNativeType() const
 {
 	return this->nativeType;
 }
@@ -158,24 +158,25 @@ Int64 DB::ColDef::GetAutoIncStep() const
 	return this->autoIncStep;
 }
 
-Text::String *DB::ColDef::GetDefVal() const
+Optional<Text::String> DB::ColDef::GetDefVal() const
 {
 	return this->defVal;
 }
 
-Text::String *DB::ColDef::GetAttr() const
+Optional<Text::String> DB::ColDef::GetAttr() const
 {
 	return this->attr;
 }
 
 Bool DB::ColDef::GetDefVal(NotNullPtr<DB::SQLBuilder> sql) const
 {
-	if (this->defVal == 0)
+	NotNullPtr<Text::String> s;
+	if (!this->defVal.SetTo(s))
 		return false;
-	if (this->defVal->v[0] == '(' && this->defVal->EndsWith(')'))
+	if (s->v[0] == '(' && s->EndsWith(')'))
 	{
 		Text::StringBuilderUTF8 sb;
-		sb.Append(this->defVal);
+		sb.Append(s);
 		while (sb.v[0] == '(' && sb.EndsWith(')'))
 		{
 			sb.SetSubstr(1);
@@ -185,7 +186,7 @@ Bool DB::ColDef::GetDefVal(NotNullPtr<DB::SQLBuilder> sql) const
 	}
 	else
 	{
-		AppendDefVal(sql, this->defVal->ToCString(), this->colSize);
+		AppendDefVal(sql, s->ToCString(), this->colSize);
 	}
 	return true;
 }
@@ -222,15 +223,15 @@ void DB::ColDef::SetColType(DB::DBUtil::ColType colType)
 	this->colType = colType;
 }
 
-void DB::ColDef::SetNativeType(Text::String *nativeType)
+void DB::ColDef::SetNativeType(Optional<Text::String> nativeType)
 {
-	SDEL_STRING(this->nativeType);
-	this->nativeType = SCOPY_STRING(nativeType);
+	OPTSTR_DEL(this->nativeType);
+	this->nativeType = Text::String::CopyOrNull(nativeType);
 }
 
 void DB::ColDef::SetNativeType(Text::CString nativeType)
 {
-	SDEL_STRING(this->nativeType);
+	OPTSTR_DEL(this->nativeType);
 	this->nativeType = Text::String::NewOrNull(nativeType);
 }
 
@@ -270,26 +271,26 @@ void DB::ColDef::SetAutoInc(AutoIncType autoInc, Int64 startIndex, Int64 incStep
 
 void DB::ColDef::SetDefVal(Text::CString defVal)
 {
-	SDEL_STRING(this->defVal);
+	OPTSTR_DEL(this->defVal);
 	this->defVal = Text::String::NewOrNull(defVal);
 }
 
-void DB::ColDef::SetDefVal(Text::String *defVal)
+void DB::ColDef::SetDefVal(Optional<Text::String> defVal)
 {
-	SDEL_STRING(this->defVal);
-	if (defVal) this->defVal = defVal->Clone().Ptr();
+	OPTSTR_DEL(this->defVal);
+	this->defVal = Text::String::CopyOrNull(defVal);
 }
 
 void DB::ColDef::SetAttr(Text::CString attr)
 {
-	SDEL_STRING(this->attr);
+	OPTSTR_DEL(this->attr);
 	this->attr = Text::String::NewOrNull(attr);
 }
 
-void DB::ColDef::SetAttr(Text::String *attr)
+void DB::ColDef::SetAttr(Optional<Text::String> attr)
 {
-	SDEL_STRING(this->attr);
-	if (attr) this->attr = attr->Clone().Ptr();
+	OPTSTR_DEL(this->attr);
+	this->attr = Text::String::CopyOrNull(attr);
 }
 
 void DB::ColDef::Set(NotNullPtr<const ColDef> colDef)

@@ -2,7 +2,7 @@
 #include "IO/Path.h"
 #include "Net/ConnectionInfo.h"
 #include "SSWR/AVIRead/AVIRNetRAWCaptureForm.h"
-#include "UI/FileDialog.h"
+#include "UI/GUIFileDialog.h"
 
 void __stdcall SSWR::AVIRead::AVIRNetRAWCaptureForm::OnAutoGenClicked(void *userObj)
 {
@@ -27,16 +27,17 @@ void __stdcall SSWR::AVIRead::AVIRNetRAWCaptureForm::OnBrowseClicked(void *userO
 	SSWR::AVIRead::AVIRNetRAWCaptureForm *me = (SSWR::AVIRead::AVIRNetRAWCaptureForm*)userObj;
 	Text::StringBuilderUTF8 sb;
 	me->txtFileName->GetText(sb);
-	UI::FileDialog dlg(L"SSWR", L"AVIRead", L"NetRAWCapture", true);
-	Net::RAWCapture::AddFilters(&dlg);
+	NotNullPtr<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"NetRAWCapture", true);
+	Net::RAWCapture::AddFilters(dlg);
 	if (sb.GetLength() > 0)
 	{
-		dlg.SetFileName(sb.ToCString());
+		dlg->SetFileName(sb.ToCString());
 	}
-	if (dlg.ShowDialog(me->GetHandle()))
+	if (dlg->ShowDialog(me->GetHandle()))
 	{
-		me->txtFileName->SetText(dlg.GetFileName()->ToCString());
+		me->txtFileName->SetText(dlg->GetFileName()->ToCString());
 	}
+	dlg.Delete();
 }
 
 void __stdcall SSWR::AVIRead::AVIRNetRAWCaptureForm::OnStartClicked(void *userObj)

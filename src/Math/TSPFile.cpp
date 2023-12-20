@@ -311,13 +311,13 @@ Bool Math::TSPReader::GetStr(UOSInt colIndex, NotNullPtr<Text::StringBuilderUTF8
 	return false;
 }
 
-Text::String *Math::TSPReader::GetNewStr(UOSInt colIndex)
+Optional<Text::String> Math::TSPReader::GetNewStr(UOSInt colIndex)
 {
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
 	if ((sptr = GetStr(colIndex, sbuff, sizeof(sbuff))) != 0)
 	{
-		return Text::String::NewP(sbuff, sptr).Ptr();
+		return Text::String::NewP(sbuff, sptr);
 	}
 	return 0;
 }
@@ -669,13 +669,13 @@ Bool Math::TSPHReader::GetStr(UOSInt colIndex, NotNullPtr<Text::StringBuilderUTF
 	return true;
 }
 
-Text::String *Math::TSPHReader::GetNewStr(UOSInt colIndex)
+Optional<Text::String> Math::TSPHReader::GetNewStr(UOSInt colIndex)
 {
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
 	if ((sptr = GetStr(colIndex, sbuff, sizeof(sbuff))) != 0)
 	{
-		return Text::String::NewP(sbuff, sptr).Ptr();
+		return Text::String::NewP(sbuff, sptr);
 	}
 	return 0;
 }

@@ -11,8 +11,8 @@
 #include "Sync/ThreadUtil.h"
 #include "Text/JSONBuilder.h"
 #include "Text/StringBuilderUTF8.h"
-#include "UI/FileDialog.h"
-#include "UI/FolderDialog.h"
+#include "UI/GUIFileDialog.h"
+#include "UI/GUIFolderDialog.h"
 
 Bool __stdcall SSWR::AVIRead::AVIRGISTileDownloadForm::OnMouseDown(void *userObj, Math::Coord2D<OSInt> scnPos)
 {
@@ -143,11 +143,12 @@ void __stdcall SSWR::AVIRead::AVIRGISTileDownloadForm::OnSaveDirClicked(void *us
 		return;
 	if (me->sel1.x != 0 || me->sel1.y != 0 || me->sel2.x != 0 || me->sel2.y != 0)
 	{
-		UI::FolderDialog dlg(L"SSWR", L"AVIRead", L"GISTileDown");
-		if (dlg.ShowDialog(me->GetHandle()))
+		NotNullPtr<UI::GUIFolderDialog> dlg = me->ui->NewFolderDialog();
+		if (dlg->ShowDialog(me->GetHandle()))
 		{
-			me->SaveTilesDir(dlg.GetFolder()->ToCString(), minLevel, maxLevel);
+			me->SaveTilesDir(dlg->GetFolder()->ToCString(), minLevel, maxLevel);
 		}
+		dlg.Delete();
 	}
 }
 
@@ -160,14 +161,15 @@ void __stdcall SSWR::AVIRead::AVIRGISTileDownloadForm::OnSaveFileClicked(void *u
 		return;
 	if (me->sel1.x != 0 || me->sel1.y != 0 || me->sel2.x != 0 || me->sel2.y != 0)
 	{
-		UI::FileDialog dlg(L"SSWR", L"AVIRead", L"GISTileDownFile", true);
-		dlg.AddFilter(CSTR("*.spk"), CSTR("SPackage File"));
-		dlg.AddFilter(CSTR("*.zip"), CSTR("ZIP File"));
-		dlg.AddFilter(CSTR("*.otrk2.xml"), CSTR("Orux Map Tile"));
-		if (dlg.ShowDialog(me->GetHandle()))
+		NotNullPtr<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"GISTileDownFile", true);
+		dlg->AddFilter(CSTR("*.spk"), CSTR("SPackage File"));
+		dlg->AddFilter(CSTR("*.zip"), CSTR("ZIP File"));
+		dlg->AddFilter(CSTR("*.otrk2.xml"), CSTR("Orux Map Tile"));
+		if (dlg->ShowDialog(me->GetHandle()))
 		{
-			me->SaveTilesFile(dlg.GetFileName()->ToCString(), dlg.GetFilterIndex(), minLevel, maxLevel);
+			me->SaveTilesFile(dlg->GetFileName()->ToCString(), dlg->GetFilterIndex(), minLevel, maxLevel);
 		}
+		dlg.Delete();
 	}
 }
 

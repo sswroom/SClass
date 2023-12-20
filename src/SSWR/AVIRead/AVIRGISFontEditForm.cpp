@@ -1,31 +1,32 @@
 #include "Stdafx.h"
 #include "Math/Math.h"
 #include "SSWR/AVIRead/AVIRGISFontEditForm.h"
-#include "UI/FontDialog.h"
+#include "UI/GUIFontDialog.h"
 #include "UtilUI/ColorDialog.h"
 
 void __stdcall SSWR::AVIRead::AVIRGISFontEditForm::FontNameClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRGISFontEditForm *me = (SSWR::AVIRead::AVIRGISFontEditForm *)userObj;
-	UI::FontDialog *dlg;
+	NotNullPtr<UI::GUIFontDialog> dlg;
 	if (me->currFontName == 0)
 	{
-		NEW_CLASS(dlg, UI::FontDialog());
+		dlg = me->ui->NewFontDialog(CSTR_NULL, 0, me->isBold, false);
 	}
 	else
 	{
-		NEW_CLASS(dlg, UI::FontDialog(me->currFontName, me->currFontSizePt, me->isBold, false));
+		dlg = me->ui->NewFontDialog(me->currFontName, me->currFontSizePt, me->isBold, false);
 	}
-	if (dlg->ShowDialog(me->hwnd))
+	NotNullPtr<Text::String> s;
+	if (dlg->ShowDialog(me->hwnd) && dlg->GetFontName().SetTo(s))
 	{
 		SDEL_STRING(me->currFontName);
-		me->currFontName = dlg->GetFontName()->Clone().Ptr();
+		me->currFontName = s->Clone().Ptr();
 		me->currFontSizePt = dlg->GetFontSizePt();
 		me->isBold = dlg->IsBold();
 		me->txtFontName->SetText(me->currFontName->ToCString());
 		me->UpdateFontPreview();
 	}
-	DEL_CLASS(dlg);
+	dlg.Delete();
 }
 
 Bool __stdcall SSWR::AVIRead::AVIRGISFontEditForm::FontColorClicked(void *userObj, Math::Coord2D<OSInt> scnPos, MouseButton mouseBtn)

@@ -159,13 +159,13 @@ Bool Media::HTRecFile::HTRecReader::GetStr(UOSInt colIndex, NotNullPtr<Text::Str
 	return true;
 }
 
-Text::String *Media::HTRecFile::HTRecReader::GetNewStr(UOSInt colIndex)
+Optional<Text::String> Media::HTRecFile::HTRecReader::GetNewStr(UOSInt colIndex)
 {
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
 	if ((sptr = GetStr(colIndex, sbuff, sizeof(sbuff))) == 0)
 		return 0;
-	return Text::String::New(sbuff, (UOSInt)(sptr - sbuff)).Ptr();
+	return Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
 }
 
 UTF8Char *Media::HTRecFile::HTRecReader::GetStr(UOSInt colIndex, UTF8Char *buff, UOSInt buffSize)

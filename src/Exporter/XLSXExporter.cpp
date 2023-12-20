@@ -798,8 +798,8 @@ Bool Exporter::XLSXExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text
 		while (itStyle.HasNext())
 		{
 			NotNullPtr<Text::SpreadSheet::CellStyle> style = itStyle.Next();
-			Text::String *optS = style->GetDataFormat();
-			if (optS == 0)
+			NotNullPtr<Text::String> optS;
+			if (!style->GetDataFormat().SetTo(optS))
 			{
 				csptr = (const UTF8Char*)"general";
 			}
@@ -874,10 +874,10 @@ Bool Exporter::XLSXExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text
 					sb.AppendDouble(font->GetSize());
 					sb.AppendC(UTF8STRC("\"/>"));
 				}
-				if (font->GetName())
+				if (font->GetName().SetTo(s))
 				{
 					sb.AppendC(UTF8STRC("<name val="));
-					s = Text::XML::ToNewAttrText(font->GetName()->v);
+					s = Text::XML::ToNewAttrText(s->v);
 					sb.Append(s);
 					s->Release();
 					sb.AppendC(UTF8STRC("/>"));
@@ -1267,7 +1267,7 @@ void Exporter::XLSXExporter::AppendAxis(NotNullPtr<Text::StringBuilderUTF8> sb, 
 {
 	if (axis == 0)
 		return;
-	
+	NotNullPtr<Text::String> s;	
 	switch (axis->GetAxisType())
 	{
 	case AxisType::Category:
@@ -1311,9 +1311,9 @@ void Exporter::XLSXExporter::AppendAxis(NotNullPtr<Text::StringBuilderUTF8> sb, 
 		AppendShapeProp(sb, axis->GetMajorGridProp());
 		sb->AppendC(UTF8STRC("</c:majorGridlines>"));
 	}
-	if (axis->GetTitle())
+	if (axis->GetTitle().SetTo(s))
 	{
-		AppendTitle(sb, axis->GetTitle()->v);
+		AppendTitle(sb, s->v);
 	}
 	sb->AppendC(UTF8STRC("<c:majorTickMark val=\"cross\"/>"));
 	sb->AppendC(UTF8STRC("<c:minorTickMark val=\"none\"/>"));
@@ -1363,11 +1363,11 @@ void Exporter::XLSXExporter::AppendSeries(NotNullPtr<Text::StringBuilderUTF8> sb
 	sb->AppendC(UTF8STRC("<c:order val=\""));
 	sb->AppendUOSInt(index);
 	sb->AppendC(UTF8STRC("\"/>"));
-	if (series->GetTitle())
+	if (series->GetTitle().SetTo(s))
 	{
 		sb->AppendC(UTF8STRC("<c:tx>"));
 		sb->AppendC(UTF8STRC("<c:v>"));
-		s = Text::XML::ToNewXMLText(series->GetTitle()->v);
+		s = Text::XML::ToNewXMLText(s->v);
 		sb->Append(s);
 		s->Release();
 		sb->AppendC(UTF8STRC("</c:v>"));
@@ -1591,8 +1591,8 @@ void Exporter::XLSXExporter::AppendXF(NotNullPtr<Text::StringBuilderUTF8> sb, No
 	const UTF8Char *csptr;
 	BorderInfo *border;
 	Text::SpreadSheet::WorkbookFont *font = style->GetFont();
-	Text::String *optS = style->GetDataFormat();
-	if (optS == 0)
+	NotNullPtr<Text::String> optS;
+	if (!style->GetDataFormat().SetTo(optS))
 	{
 		csptr = (const UTF8Char*)"general";
 	}

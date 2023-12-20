@@ -4,7 +4,7 @@
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
 #include "Text/UTF8Writer.h"
-#include "UI/FileDialog.h"
+#include "UI/GUIFileDialog.h"
 
 typedef enum
 {
@@ -87,15 +87,15 @@ void SSWR::AVIRead::AVIRLogFileForm::EventMenuClicked(UInt16 cmdId)
 	{
 	case MNU_LOG_SAVE:
 		{
-			UI::FileDialog dlg(L"SSWR", L"AVIRead", L"LogFileSave", true);
-			dlg.AddFilter(CSTR("*.txt"), CSTR("Log Text file"));
-			if (dlg.ShowDialog(this->hwnd))
+			NotNullPtr<UI::GUIFileDialog> dlg = this->ui->NewFileDialog(L"SSWR", L"AVIRead", L"LogFileSave", true);
+			dlg->AddFilter(CSTR("*.txt"), CSTR("Log Text file"));
+			if (dlg->ShowDialog(this->hwnd))
 			{
 				Data::Timestamp ts = 0;
 				Text::StringBuilderUTF8 sb;
 				UOSInt i;
 				UOSInt j;
-				IO::FileStream fs(dlg.GetFileName(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+				IO::FileStream fs(dlg->GetFileName(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 				Text::UTF8Writer writer(fs);
 				i = 0;
 				j = this->logFile->GetCount(this->logLevel);
@@ -110,6 +110,7 @@ void SSWR::AVIRead::AVIRLogFileForm::EventMenuClicked(UInt16 cmdId)
 					i++;
 				}
 			}
+			dlg.Delete();
 		}
 		break;
 	}

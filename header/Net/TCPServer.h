@@ -29,7 +29,7 @@ namespace Net
 		Bool toStop;
 		Bool errorv4;
 		Bool errorv6;
-		Text::String *logPrefix;
+		Optional<Text::String> logPrefix;
 		Socket *svrSocv4;
 		Socket *svrSocv6;
 		void *userObj;

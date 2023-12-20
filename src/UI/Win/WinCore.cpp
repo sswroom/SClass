@@ -8,6 +8,9 @@
 #include "UI/Win/WinCheckedListBox.h"
 #include "UI/Win/WinComboBox.h"
 #include "UI/Win/WinCore.h"
+#include "UI/Win/WinFileDialog.h"
+#include "UI/Win/WinFolderDialog.h"
+#include "UI/Win/WinFontDialog.h"
 #include "UI/Win/WinGroupBox.h"
 #include "UI/Win/WinHSplitter.h"
 #include "UI/Win/WinLabel.h"
@@ -324,6 +327,34 @@ NotNullPtr<UI::GUIVSplitter> UI::Win::WinCore::NewVSplitter(NotNullPtr<GUIClient
 {
 	NotNullPtr<UI::Win::WinVSplitter> ctrl;
 	NEW_CLASSNN(ctrl, UI::Win::WinVSplitter(*this, parent, height, isBottom));
+	return ctrl;
+}
+
+NotNullPtr<UI::GUIFileDialog> UI::Win::WinCore::NewFileDialog(const WChar *compName, const WChar *appName, const WChar *dialogName, Bool isSave)
+{
+	NotNullPtr<UI::Win::WinFileDialog> ctrl;
+	NEW_CLASSNN(ctrl, UI::Win::WinFileDialog(compName, appName, dialogName, isSave));
+	return ctrl;
+}
+
+NotNullPtr<UI::GUIFolderDialog> UI::Win::WinCore::NewFolderDialog()
+{
+	NotNullPtr<UI::Win::WinFolderDialog> ctrl;
+	NEW_CLASSNN(ctrl, UI::Win::WinFolderDialog());
+	return ctrl;
+}
+
+NotNullPtr<UI::GUIFontDialog> UI::Win::WinCore::NewFontDialog(Optional<Text::String> fontName, Double fontSizePt, Bool isBold, Bool isItalic)
+{
+	NotNullPtr<UI::Win::WinFontDialog> ctrl;
+	NEW_CLASSNN(ctrl, UI::Win::WinFontDialog(fontName, fontSizePt, isBold, isItalic));
+	return ctrl;
+}
+
+NotNullPtr<UI::GUIFontDialog> UI::Win::WinCore::NewFontDialog(Text::CString fontName, Double fontSizePt, Bool isBold, Bool isItalic)
+{
+	NotNullPtr<UI::Win::WinFontDialog> ctrl;
+	NEW_CLASSNN(ctrl, UI::Win::WinFontDialog(fontName, fontSizePt, isBold, isItalic));
 	return ctrl;
 }
 

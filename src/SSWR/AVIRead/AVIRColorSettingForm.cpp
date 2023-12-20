@@ -6,7 +6,7 @@
 #include "SSWR/AVIRead/AVIRColorSettingForm.h"
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
-#include "UI/FileDialog.h"
+#include "UI/GUIFileDialog.h"
 
 void __stdcall SSWR::AVIRead::AVIRColorSettingForm::OnMonProfileChg(void *userObj)
 {
@@ -43,17 +43,17 @@ void __stdcall SSWR::AVIRead::AVIRColorSettingForm::OnMonProfileClicked(void *us
 	{
 		UTF8Char sbuff[512];
 		UTF8Char *sptr;
-		UI::FileDialog dlg(L"SSWR", L"AVIRead", L"ColorMonProfile", false);
-		dlg.AddFilter(CSTR("*.icc"), CSTR("ICC File"));
-		dlg.AddFilter(CSTR("*.icm"), CSTR("ICM File"));
-		dlg.SetAllowMultiSel(false);
+		NotNullPtr<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"ColorMonProfile", false);
+		dlg->AddFilter(CSTR("*.icc"), CSTR("ICC File"));
+		dlg->AddFilter(CSTR("*.icm"), CSTR("ICM File"));
+		dlg->SetAllowMultiSel(false);
 		sptr = Media::ICCProfile::GetProfilePath(sbuff);
 		*sptr++ = IO::Path::PATH_SEPERATOR;
 		*sptr = 0;
-		dlg.SetFileName(CSTRP(sbuff, sptr));
-		if (dlg.ShowDialog(me->GetHandle()))
+		dlg->SetFileName(CSTRP(sbuff, sptr));
+		if (dlg->ShowDialog(me->GetHandle()))
 		{
-			NotNullPtr<Text::String> s = dlg.GetFileName();
+			NotNullPtr<Text::String> s = dlg->GetFileName();
 			if (me->monColor->SetMonProfileFile(s))
 			{
 				SDEL_STRING(me->monFileName);
@@ -67,6 +67,7 @@ void __stdcall SSWR::AVIRead::AVIRColorSettingForm::OnMonProfileClicked(void *us
 				me->cboMonProfile->SetSelectedIndex(me->cboMonProfile->GetCount() - 1);
 			}
 		}
+		dlg.Delete();
 	}
 }
 

@@ -4,7 +4,7 @@
 #include "SSWR/AVIRead/AVIRFileAnalyseForm.h"
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
-#include "UI/FileDialog.h"
+#include "UI/GUIFileDialog.h"
 
 #define PER_PAGE 10000
 
@@ -24,25 +24,26 @@ void __stdcall SSWR::AVIRead::AVIRFileAnalyseForm::OnFileDrop(void *userObj, Not
 void __stdcall SSWR::AVIRead::AVIRFileAnalyseForm::OnFileClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRFileAnalyseForm *me = (SSWR::AVIRead::AVIRFileAnalyseForm *)userObj;
-	UI::FileDialog dlg(L"SSWR", L"AVIRead", L"MPEGTool", false);
-	IO::FileAnalyse::IFileAnalyse::AddFilters(&dlg);
-	if (dlg.ShowDialog(me->GetHandle()))
+	NotNullPtr<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"MPEGTool", false);
+	IO::FileAnalyse::IFileAnalyse::AddFilters(dlg);
+	if (dlg->ShowDialog(me->GetHandle()))
 	{
-		me->OpenFile(dlg.GetFileName()->ToCString());
+		me->OpenFile(dlg->GetFileName()->ToCString());
 	}
+	dlg.Delete();
 }
 
 void __stdcall SSWR::AVIRead::AVIRFileAnalyseForm::OnTrimPaddingClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRFileAnalyseForm *me = (SSWR::AVIRead::AVIRFileAnalyseForm *)userObj;
 	Text::StringBuilderUTF8 sb;
-	UI::FileDialog dlg(L"SSWR", L"AVIRead", L"MPEGTrimPadding", true);
-	dlg.AddFilter(CSTR("*.mpg"), CSTR("MPEG System Stream"));
+	NotNullPtr<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"MPEGTrimPadding", true);
+	dlg->AddFilter(CSTR("*.mpg"), CSTR("MPEG System Stream"));
 	me->txtFile->GetText(sb);
-	dlg.SetFileName(sb.ToCString());
-	if (dlg.ShowDialog(me->GetHandle()))
+	dlg->SetFileName(sb.ToCString());
+	if (dlg->ShowDialog(me->GetHandle()))
 	{
-		if (me->file->TrimPadding(dlg.GetFileName()->ToCString()))
+		if (me->file->TrimPadding(dlg->GetFileName()->ToCString()))
 		{
 		}
 		else
@@ -50,6 +51,7 @@ void __stdcall SSWR::AVIRead::AVIRFileAnalyseForm::OnTrimPaddingClicked(void *us
 			me->ui->ShowMsgOK(CSTR("Error in saving the file"), CSTR("Error"), me);
 		}
 	}
+	dlg.Delete();
 }
 
 void __stdcall SSWR::AVIRead::AVIRFileAnalyseForm::OnTimerTick(void *userObj)

@@ -8,7 +8,6 @@
 #include "Text/MyStringFloat.h"
 #include "Text/StringBuilderUTF8.h"
 #include "Text/UTF8Writer.h"
-#include "UI/FileDialog.h"
 
 #define TEST_SIZE (32768*1024)
 #define LOOP_CNT 128

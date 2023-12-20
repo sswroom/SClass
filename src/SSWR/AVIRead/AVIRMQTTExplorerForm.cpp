@@ -13,7 +13,7 @@
 #include "Sync/ThreadUtil.h"
 #include "Text/MyStringFloat.h"
 #include "Text/StringBuilderUTF8.h"
-#include "UI/FileDialog.h"
+#include "UI/GUIFileDialog.h"
 
 void __stdcall SSWR::AVIRead::AVIRMQTTExplorerForm::OnStartClicked(void *userObj)
 {
@@ -172,14 +172,14 @@ void __stdcall SSWR::AVIRead::AVIRMQTTExplorerForm::OnStartClicked(void *userObj
 void __stdcall SSWR::AVIRead::AVIRMQTTExplorerForm::OnCliCertClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRMQTTExplorerForm *me = (SSWR::AVIRead::AVIRMQTTExplorerForm*)userObj;
-	UI::FileDialog dlg(L"SSWR", L"AVIRead", L"AVIRMQTTExplorerCliCert", false);
-	dlg.AddFilter(CSTR("*.crt"), CSTR("Cert file"));
-	dlg.SetAllowMultiSel(false);
-	if (dlg.ShowDialog(me->GetHandle()))
+	NotNullPtr<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"AVIRMQTTExplorerCliCert", false);
+	dlg->AddFilter(CSTR("*.crt"), CSTR("Cert file"));
+	dlg->SetAllowMultiSel(false);
+	if (dlg->ShowDialog(me->GetHandle()))
 	{
 		Net::ASN1Data *asn1;
 		{
-			IO::StmData::FileData fd(dlg.GetFileName(), false);
+			IO::StmData::FileData fd(dlg->GetFileName(), false);
 			asn1 = (Net::ASN1Data*)me->core->GetParserList()->ParseFileType(fd, IO::ParserType::ASN1Data);
 		}
 		if (asn1 == 0)
@@ -202,23 +202,24 @@ void __stdcall SSWR::AVIRead::AVIRMQTTExplorerForm::OnCliCertClicked(void *userO
 		}
 		SDEL_CLASS(me->cliCert);
 		me->cliCert = (Crypto::Cert::X509Cert*)x509;
-		NotNullPtr<Text::String> s = dlg.GetFileName();
+		NotNullPtr<Text::String> s = dlg->GetFileName();
 		UOSInt i = s->LastIndexOf(IO::Path::PATH_SEPERATOR);
 		me->lblCliCert->SetText(s->ToCString().Substring(i + 1));
 	}
+	dlg.Delete();
 }
 
 void __stdcall SSWR::AVIRead::AVIRMQTTExplorerForm::OnCliKeyClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRMQTTExplorerForm *me = (SSWR::AVIRead::AVIRMQTTExplorerForm*)userObj;
-	UI::FileDialog dlg(L"SSWR", L"AVIRead", L"AVIRMQTTExplorerCliKey", false);
-	dlg.AddFilter(CSTR("*.key"), CSTR("Key file"));
-	dlg.SetAllowMultiSel(false);
-	if (dlg.ShowDialog(me->GetHandle()))
+	NotNullPtr<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"AVIRMQTTExplorerCliKey", false);
+	dlg->AddFilter(CSTR("*.key"), CSTR("Key file"));
+	dlg->SetAllowMultiSel(false);
+	if (dlg->ShowDialog(me->GetHandle()))
 	{
 		Net::ASN1Data *asn1;
 		{
-			IO::StmData::FileData fd(dlg.GetFileName(), false);
+			IO::StmData::FileData fd(dlg->GetFileName(), false);
 			asn1 = (Net::ASN1Data*)me->core->GetParserList()->ParseFileType(fd, IO::ParserType::ASN1Data);
 		}
 		if (asn1 == 0)
@@ -234,10 +235,11 @@ void __stdcall SSWR::AVIRead::AVIRMQTTExplorerForm::OnCliKeyClicked(void *userOb
 		}
 		SDEL_CLASS(me->cliKey);
 		me->cliKey = (Crypto::Cert::X509File*)asn1;
-		NotNullPtr<Text::String> s = dlg.GetFileName();
+		NotNullPtr<Text::String> s = dlg->GetFileName();
 		UOSInt i = s->LastIndexOf(IO::Path::PATH_SEPERATOR);
 		me->lblCliKey->SetText(s->ToCString().Substring(i + 1));
 	}
+	dlg.Delete();
 }
 
 void __stdcall SSWR::AVIRead::AVIRMQTTExplorerForm::OnPublishClicked(void *userObj)

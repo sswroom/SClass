@@ -26,9 +26,9 @@ Bool DB::DBReader::GetVariItem(UOSInt colIndex, NotNullPtr<Data::VariItem> item)
 	case DB::DBUtil::CT_VarUTF16Char:
 	case DB::DBUtil::CT_VarUTF32Char:
 		{
-			Text::String *s;
+			Optional<Text::String> s;
 			item->SetStr(s = this->GetNewStr(colIndex));
-			s->Release();
+			OPTSTR_DEL(s);
 		}
 		return true;
 	case DB::DBUtil::CT_DateTimeTZ:
@@ -131,7 +131,7 @@ Data::VariObject *DB::DBReader::CreateVariObject()
 	UOSInt i;
 	UOSInt j;
 	UOSInt size;
-	Text::String *s;
+	Optional<Text::String> ops;
 	DB::DBUtil::ColType ctype;
 	Data::VariObject *obj;
 	Data::DateTime dt;
@@ -157,8 +157,8 @@ Data::VariObject *DB::DBReader::CreateVariObject()
 			case DB::DBUtil::CT_VarUTF8Char:
 			case DB::DBUtil::CT_VarUTF16Char:
 			case DB::DBUtil::CT_VarUTF32Char:
-				obj->SetItemStr(sbuff, s = this->GetNewStr(i));
-				s->Release();
+				obj->SetItemStr(sbuff, ops = this->GetNewStr(i));
+				OPTSTR_DEL(ops);
 				break;
 			case DB::DBUtil::CT_DateTimeTZ:
 			case DB::DBUtil::CT_DateTime:

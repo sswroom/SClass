@@ -78,13 +78,12 @@ public:
 		NotNullPtr<DB::ColDef> col;
 		if (!this->tab->GetCol(colIndex).SetTo(col))
 			return 0;
-		Text::String *s = this->obj->GetValueString(col->GetColName()->ToCString());
-		if (s)
+		NotNullPtr<Text::String> s;
+		if (this->obj->GetValueString(col->GetColName()->ToCString()).SetTo(s))
 		{
 			return Text::StrUTF8_WChar(buff, s->v, 0);
 		}
-		s = this->obj->GetValueNewString(col->GetColName()->ToCString());
-		if (s)
+		if (this->obj->GetValueNewString(col->GetColName()->ToCString()).SetTo(s))
 		{
 			buff = Text::StrUTF8_WChar(buff, s->v, 0);
 			s->Release();
@@ -100,14 +99,13 @@ public:
 		NotNullPtr<DB::ColDef> col;
 		if (!this->tab->GetCol(colIndex).SetTo(col))
 			return false;
-		Text::String *s = this->obj->GetValueString(col->GetColName()->ToCString());
-		if (s)
+		NotNullPtr<Text::String> s;
+		if (this->obj->GetValueString(col->GetColName()->ToCString()).SetTo(s))
 		{
 			sb->Append(s);
 			return true;
 		}
-		s = this->obj->GetValueNewString(col->GetColName()->ToCString());
-		if (s)
+		if (this->obj->GetValueNewString(col->GetColName()->ToCString()).SetTo(s))
 		{
 			sb->Append(s);
 			s->Release();
@@ -116,7 +114,7 @@ public:
 		return false;
 	}
 
-	virtual Text::String *GetNewStr(UOSInt colIndex)
+	virtual Optional<Text::String> GetNewStr(UOSInt colIndex)
 	{
 		if (this->obj == 0)
 			return 0;
@@ -133,13 +131,12 @@ public:
 		NotNullPtr<DB::ColDef> col;
 		if (!this->tab->GetCol(colIndex).SetTo(col))
 			return 0;
-		Text::String *s = this->obj->GetValueString(col->GetColName()->ToCString());
-		if (s)
+		NotNullPtr<Text::String> s;
+		if (this->obj->GetValueString(col->GetColName()->ToCString()).SetTo(s))
 		{
 			return s->ConcatToS(buff, buffSize);
 		}
-		s = this->obj->GetValueNewString(col->GetColName()->ToCString());
-		if (s)
+		if (this->obj->GetValueNewString(col->GetColName()->ToCString()).SetTo(s))
 		{
 			buff = s->ConcatToS(buff, buffSize);
 			s->Release();
@@ -155,8 +152,8 @@ public:
 		NotNullPtr<DB::ColDef> col;
 		if (!this->tab->GetCol(colIndex).SetTo(col))
 			return 0;
-		Text::String *s = this->obj->GetValueString(col->GetColName()->ToCString());
-		if (s)
+		NotNullPtr<Text::String> s;
+		if (this->obj->GetValueString(col->GetColName()->ToCString()).SetTo(s))
 		{
 			return Data::Timestamp::FromStr(s->ToCString(), Data::DateTimeUtil::GetLocalTzQhr());
 		}

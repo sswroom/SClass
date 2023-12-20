@@ -556,7 +556,7 @@ Bool DB::CSVReader::GetStr(UOSInt colIndex, NotNullPtr<Text::StringBuilderUTF8> 
 	}
 }
 
-Text::String *DB::CSVReader::GetNewStr(UOSInt colIndex)
+Optional<Text::String> DB::CSVReader::GetNewStr(UOSInt colIndex)
 {
 	if (colIndex >= nCol)
 		return 0;
@@ -648,7 +648,7 @@ Text::String *DB::CSVReader::GetNewStr(UOSInt colIndex)
 		}
 
 		*buff = 0;
-		return s.Ptr();
+		return s;
 	}
 	else
 	{
@@ -671,7 +671,7 @@ Text::String *DB::CSVReader::GetNewStr(UOSInt colIndex)
 		}
 
 		*buff = 0;
-		return s.Ptr();
+		return s;
 	}
 }
 

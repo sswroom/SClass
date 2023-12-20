@@ -34,10 +34,6 @@ void IO::Device::GoProCameraControl::GetMediaList()
 		Text::JSONObject *jsObjDir;
 		Text::JSONArray *jsArrFS;
 		Text::JSONObject *jsObjFS;
-		Text::String *dirName;
-		Text::String *fileName;
-		Text::String *modTime;
-		Text::String *fileSize;
 		Int64 timeDiff;
 		Data::DateTime dt;
 		dt.SetCurrTime();
@@ -62,11 +58,11 @@ void IO::Device::GoProCameraControl::GetMediaList()
 						jsBase2 = jsArrDir->GetArrayValue(i);
 						if (jsBase2 && jsBase->GetType() == Text::JSONType::Object)
 						{
+							NotNullPtr<Text::String> dirName;
 							jsObjDir = (Text::JSONObject *)jsBase2;
-							dirName = jsObjDir->GetObjectString(CSTR("d"));
 
 							jsBase2 = jsObjDir->GetObjectValue(CSTR("fs"));
-							if (dirName && jsBase2 && jsBase2->GetType() == Text::JSONType::Array)
+							if (jsObjDir->GetObjectString(CSTR("d")).SetTo(dirName) && jsBase2 && jsBase2->GetType() == Text::JSONType::Array)
 							{
 								jsArrFS = (Text::JSONArray*)jsBase2;
 								k = 0;
@@ -76,12 +72,14 @@ void IO::Device::GoProCameraControl::GetMediaList()
 									jsBase2 = jsArrFS->GetArrayValue(k);
 									if (jsBase2 && jsBase2->GetType() == Text::JSONType::Object)
 									{
+										NotNullPtr<Text::String> fileName;
+										Optional<Text::String> modTime;
+										NotNullPtr<Text::String> fileSize;
+										NotNullPtr<Text::String> s;
 										jsObjFS = (Text::JSONObject*)jsBase2;
-										fileName = jsObjFS->GetObjectString(CSTR("n"));
 										modTime = jsObjFS->GetObjectString(CSTR("mod"));
-										fileSize = jsObjFS->GetObjectString(CSTR("s"));
 										
-										if (fileName && fileSize)
+										if (jsObjFS->GetObjectString(CSTR("n")).SetTo(fileName) && jsObjFS->GetObjectString(CSTR("s")).SetTo(fileSize))
 										{
 											file = MemAlloc(IO::CameraControl::FileInfo, 1);
 											fileName->ConcatTo(file->fileName);
@@ -95,13 +93,13 @@ void IO::Device::GoProCameraControl::GetMediaList()
 												file->fileType = IO::CameraControl::FT_IMAGE;
 											}
 											file->fileSize = fileSize->ToUInt64();
-											if (modTime == 0)
+											if (!modTime.SetTo(s))
 											{
 												file->fileTimeTicks = 0;
 											}
 											else
 											{
-												file->fileTimeTicks = modTime->ToInt64() * 1000 + timeDiff;
+												file->fileTimeTicks = s->ToInt64() * 1000 + timeDiff;
 											}
 											this->fileList->Add(file);
 										}

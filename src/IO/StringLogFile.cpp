@@ -12,8 +12,8 @@ IO::StringLogFile::~StringLogFile()
 	while (i-- > 0)
 	{
 		item = this->items.GetItem(i);
-		SDEL_STRING(item->message);
-		SDEL_STRING(item->desc);
+		OPTSTR_DEL(item->message);
+		OPTSTR_DEL(item->desc);
 		MemFree(item);
 	}
 }
@@ -31,9 +31,10 @@ Bool IO::StringLogFile::GetLogMessage(IO::LogHandler::LogLevel logLevel, UOSInt 
 		return false;
 	}
 	*ts = item->ts;
-	if (item->message)
+	NotNullPtr<Text::String> s;
+	if (item->message.SetTo(s))
 	{
-		sb->Append(item->message);
+		sb->Append(s);
 	}
 	return true;
 }
@@ -45,9 +46,10 @@ Bool IO::StringLogFile::GetLogDescription(IO::LogHandler::LogLevel logLevel, UOS
 	{
 		return false;
 	}
-	if (item->desc)
+	NotNullPtr<Text::String> s;
+	if (item->desc.SetTo(s))
 	{
-		sb->Append(item->desc);
+		sb->Append(s);
 	}
 	return true;
 }

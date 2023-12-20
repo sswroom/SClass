@@ -1,9 +1,8 @@
 #include "Stdafx.h"
-#include "Text/MyString.h"
-#include "UtilUI/ColorDialog.h"
-#include "UI/FontDialog.h"
 #include "SSWR/AVIRead/AVIRGISLineStyleForm.h"
 #include "SSWR/AVIRead/AVIRGISLineEditForm.h"
+#include "Text/MyString.h"
+#include "UtilUI/ColorDialog.h"
 
 #define MNU_SET_DEFAULT 101
 

@@ -2,19 +2,20 @@
 #include "IO/FileStream.h"
 #include "SSWR/AVIRead/AVIRXMLWalkForm.h"
 #include "Text/XMLReader.h"
-#include "UI/FileDialog.h"
+#include "UI/GUIFileDialog.h"
 
 void __stdcall SSWR::AVIRead::AVIRXMLWalkForm::OnBrowseClick(void *userObj)
 {
 	SSWR::AVIRead::AVIRXMLWalkForm *me = (SSWR::AVIRead::AVIRXMLWalkForm*)userObj;
-	UI::FileDialog dlg(L"SSWR", L"AVIRead", L"XMLWalk", false);
-	dlg.SetAllowMultiSel(false);
-	dlg.AddFilter(CSTR("*.xml"), CSTR("XML File"));
-	dlg.AddFilter(CSTR("*.html"), CSTR("HTML File"));
-	if (dlg.ShowDialog(me->GetHandle()))
+	NotNullPtr<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"XMLWalk", false);
+	dlg->SetAllowMultiSel(false);
+	dlg->AddFilter(CSTR("*.xml"), CSTR("XML File"));
+	dlg->AddFilter(CSTR("*.html"), CSTR("HTML File"));
+	if (dlg->ShowDialog(me->GetHandle()))
 	{
-		me->LoadFile(dlg.GetFileName()->ToCString());
+		me->LoadFile(dlg->GetFileName()->ToCString());
 	}
+	dlg.Delete();
 }
 
 void __stdcall SSWR::AVIRead::AVIRXMLWalkForm::OnFileDrop(void *userObj, NotNullPtr<Text::String> *fileNames, UOSInt nFiles)

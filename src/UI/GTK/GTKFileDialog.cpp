@@ -4,122 +4,36 @@
 #include "Text/Encoding.h"
 #include "Text/MyString.h"
 #include "Text/MyStringW.h"
-#include "UI/FileDialog.h"
+#include "UI/GTK/GTKFileDialog.h"
 #include <gtk/gtk.h>
 
 #define MAXFILENAMESIZE 512
 
-void UI::FileDialog::ClearFileNames()
+UI::GTK::GTKFileDialog::GTKFileDialog(const WChar *compName, const WChar *appName, const WChar *dialogName, Bool isSave) : UI::GUIFileDialog(compName, appName, dialogName, isSave)
 {
-	UOSInt i;
-	i = this->fileNames.GetCount();
-	while (i-- > 0)
-	{
-		Text::StrDelNew(this->fileNames.RemoveAt(i));
-	}
 }
 
-UI::FileDialog::FileDialog(const WChar *compName, const WChar *appName, const WChar *dialogName, Bool isSave)
+UI::GTK::GTKFileDialog::~GTKFileDialog()
 {
-	UOSInt i;
-	WChar buff[256];
-	WChar *wptr;
-	this->reg = IO::Registry::OpenSoftware(IO::Registry::REG_USER_THIS, compName, appName);
-	this->isSave = isSave;
-	this->filterIndex = (UOSInt)-1;
-	this->allowMulti = false;
-	i = Text::StrCharCnt(dialogName);
-	this->dialogName = MemAlloc(WChar, i + 7);
-	wptr = Text::StrConcat(this->dialogName, dialogName);
-	wptr = Text::StrConcat(wptr, L"Dialog");
-
-	this->fileName = 0;
-	this->lastName = 0;
-	wptr = this->reg->GetValueStr(this->dialogName, buff);
-	if (wptr)
-	{
-		this->lastName = Text::StrCopyNew(buff);
-	}
 }
 
-UI::FileDialog::~FileDialog()
-{
-	UOSInt i;
-	IO::Registry::CloseRegistry(this->reg);
-	MemFree(this->dialogName);
-	SDEL_TEXT(this->lastName);
-	SDEL_STRING(this->fileName);
-	i = this->patterns.GetCount();
-	while (i-- > 0)
-	{
-		OPTSTR_DEL(this->patterns.RemoveAt(i));
-		OPTSTR_DEL(this->names.RemoveAt(i));
-	}
-	this->ClearFileNames();
-}
-
-void UI::FileDialog::AddFilter(Text::CString pattern, Text::CString name)
-{
-	this->patterns.Add(Text::String::New(pattern));
-	this->names.Add(Text::String::New(name));
-}
-
-UOSInt UI::FileDialog::GetFilterIndex()
-{
-	return this->filterIndex;
-}
-
-void UI::FileDialog::SetFileName(Text::CString fileName)
-{
-	SDEL_STRING(this->fileName);
-	this->fileName = Text::String::New(fileName).Ptr();
-}
-
-NotNullPtr<Text::String> UI::FileDialog::GetFileName() const
-{
-	return Text::String::OrEmpty(this->fileName);
-}
-
-UOSInt UI::FileDialog::GetFileNameCount()
-{
-	UOSInt cnt = this->fileNames.GetCount();
-	if (cnt)
-		return cnt;
-	if (this->fileName)
-		return 1;
-	return 0;
-}
-
-const UTF8Char *UI::FileDialog::GetFileNames(UOSInt index)
-{
-	if (index == 0 && this->fileNames.GetCount() == 0)
-		return this->fileName->v;
-	return this->fileNames.GetItem(index);
-}
-
-void UI::FileDialog::SetAllowMultiSel(Bool allowMulti)
-{
-	this->allowMulti = allowMulti;
-}
-
-Bool UI::FileDialog::ShowDialog(ControlHandle *ownerHandle)
+Bool UI::GTK::GTKFileDialog::ShowDialog(ControlHandle *ownerHandle)
 {
 	WChar fname1[512];
 	WChar fname2[512];
 	WChar fname3[512];
 	WChar fname[MAXFILENAMESIZE];
 	WChar *wptr;
-//	WChar *dptr;
 	const WChar *initDir;
 	const WChar *initFileName;
 	WChar *multiBuff = 0;
 	WChar *fnameBuff;
-//	OSInt fnameBuffSize;
 	Text::StringBuilderUTF8 sb;
 	UOSInt i = 0;
 	UOSInt filterCnt = this->names.GetCount();
 	NotNullPtr<Text::String> name;
 	NotNullPtr<Text::String> pattern;
+	NotNullPtr<Text::String> s;
 
 	GtkWidget *dialog;
 	GtkFileChooser *chooser;
@@ -182,10 +96,9 @@ Bool UI::FileDialog::ShowDialog(ControlHandle *ownerHandle)
 	}
 
 	fnameBuff = fname;
-//	fnameBuffSize = MAXFILENAMESIZE;
-	if (this->fileName)
+	if (this->fileName.SetTo(s))
 	{
-		Text::StrUTF8_WChar(fname2, this->fileName->v, 0);
+		Text::StrUTF8_WChar(fname2, s->v, 0);
 		if (IO::Path::PATH_SEPERATOR == '\\')
 		{
 			Text::StrReplace(fname2, '/', '_');
@@ -412,7 +325,8 @@ Bool UI::FileDialog::ShowDialog(ControlHandle *ownerHandle)
 		ret = true;
 		Bool toSave = true;
 		this->ClearFileNames();
-		SDEL_STRING(this->fileName);
+		OPTSTR_DEL(this->fileName);
+		this->fileName = 0;
 		this->filterIndex = (UOSInt)-1;
 		GtkFileFilter *filter = gtk_file_chooser_get_filter(chooser);
 		if (filter)
@@ -446,7 +360,7 @@ Bool UI::FileDialog::ShowDialog(ControlHandle *ownerHandle)
 			}
 			while (it)
 			{
-				this->fileNames.Add(Text::StrCopyNew((const UTF8Char*)it->data).Ptr());
+				this->fileNames.Add(Text::String::NewNotNullSlow((const UTF8Char*)it->data));
 				g_free(it->data);
 				it = g_slist_next(it);
 			}

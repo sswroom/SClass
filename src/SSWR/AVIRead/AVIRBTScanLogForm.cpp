@@ -11,7 +11,6 @@
 #include "Text/StringBuilderUTF8.h"
 #include "Text/UTF8Reader.h"
 #include "Text/UTF8Writer.h"
-#include "UI/FileDialog.h"
 
 void __stdcall SSWR::AVIRead::AVIRBTScanLogForm::OnFileClicked(void *userObj)
 {

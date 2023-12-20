@@ -3,7 +3,7 @@
 #include "IO/Path.h"
 #include "IO/ZIPBuilder.h"
 #include "SSWR/AVIRead/AVIRTimedFileCopyForm.h"
-#include "UI/FileDialog.h"
+#include "UI/GUIFileDialog.h"
 
 void __stdcall SSWR::AVIRead::AVIRTimedFileCopyForm::OnStartClicked(void *userObj)
 {
@@ -35,8 +35,8 @@ void __stdcall SSWR::AVIRead::AVIRTimedFileCopyForm::OnStartClicked(void *userOb
 		return;
 	}
 
-	UI::FileDialog dlg(L"SSWR", L"AVIRead", L"TimedFileCopy", true);
-	dlg.AddFilter(CSTR("*.zip"), CSTR("Zip file"));
+	NotNullPtr<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"TimedFileCopy", true);
+	dlg->AddFilter(CSTR("*.zip"), CSTR("Zip file"));
 	if (dt1.GetYear() == dt2.GetYear() && dt1.GetMonth() == dt2.GetMonth() && dt1.GetDay() == dt2.GetDay())
 	{
 		sptr = dt1.ToString(sbuff, "yyyyMMdd");
@@ -63,10 +63,10 @@ void __stdcall SSWR::AVIRead::AVIRTimedFileCopyForm::OnStartClicked(void *userOb
 		sptr = dt2.ToString(sptr, "yyyyMMdd");
 		sptr = Text::StrConcatC(sptr, UTF8STRC(".zip"));
 	}
-	dlg.SetFileName(CSTRP(sbuff, sptr));
-	if (dlg.ShowDialog(me->GetHandle()))
+	dlg->SetFileName(CSTRP(sbuff, sptr));
+	if (dlg->ShowDialog(me->GetHandle()))
 	{
-		IO::FileStream fs(dlg.GetFileName(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+		IO::FileStream fs(dlg->GetFileName(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 		if (fs.IsError())
 		{
 			me->ui->ShowMsgOK(CSTR("Error in creating zip file"), me->GetFormName(), me);
@@ -82,6 +82,7 @@ void __stdcall SSWR::AVIRead::AVIRTimedFileCopyForm::OnStartClicked(void *userOb
 			me->CopyToZip(&zip, sbuff, sptr, sptr, dt1, dt2, true);
 		}
 	}
+	dlg.Delete();
 }
 
 Bool SSWR::AVIRead::AVIRTimedFileCopyForm::CopyToZip(IO::ZIPMTBuilder *zip, const UTF8Char *buffStart, const UTF8Char *pathBase, UTF8Char *pathEnd, NotNullPtr<Data::DateTime> startTime, NotNullPtr<Data::DateTime> endTime, Bool monthDir)

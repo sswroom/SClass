@@ -53,8 +53,8 @@ namespace SSWR
 
 			typedef struct
 			{
-				Text::String *discTypeId;
-				Text::String *brand;
+				NotNullPtr<Text::String> discTypeId;
+				NotNullPtr<Text::String> brand;
 				const UTF8Char *name;
 				Double speed;
 				const UTF8Char *dvdType;
@@ -70,8 +70,8 @@ namespace SSWR
 			{
 				Int32 videoId;
 				NotNullPtr<Text::String> anime;
-				Text::String *series;
-				Text::String *volume;
+				Optional<Text::String> series;
+				Optional<Text::String> volume;
 				NotNullPtr<Text::String> dvdType;
 			} DVDVideoInfo;
 		private:

@@ -11,28 +11,31 @@
 #include "Text/StringBuilderUTF8.h"
 #include "Text/UTF8Reader.h"
 #include "Text/UTF8Writer.h"
-#include "UI/FileDialog.h"
+#include "UI/GUIFileDialog.h"
 
 void __stdcall SSWR::AVIRead::AVIRBluetoothLogForm::OnFileClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRBluetoothLogForm *me = (SSWR::AVIRead::AVIRBluetoothLogForm*)userObj;
-	UI::FileDialog dlg(L"SSWR", L"AVIRead", L"BluetoothLogFile", false);
-	dlg.SetAllowMultiSel(true);
-	dlg.AddFilter(CSTR("*.txt"), CSTR("Log File"));
-	if (dlg.ShowDialog(me->GetHandle()))
+	NotNullPtr<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"BluetoothLogFile", false);
+	dlg->SetAllowMultiSel(true);
+	dlg->AddFilter(CSTR("*.txt"), CSTR("Log File"));
+	if (dlg->ShowDialog(me->GetHandle()))
 	{
 		UOSInt i = 0;
-		UOSInt j = dlg.GetFileNameCount();
+		UOSInt j = dlg->GetFileNameCount();
 		while (i < j)
 		{
-			const UTF8Char *name = dlg.GetFileNames(i);
-			UOSInt nameLen = Text::StrCharCnt(name);
-			me->btLog.LoadFile({name, nameLen});
+			NotNullPtr<Text::String> name;
+			if (dlg->GetFileNames(i).SetTo(name))
+			{
+				me->btLog.LoadFile(name->ToCString());
+			}
 			i++;
 		}
 		me->LogFileStore();
 		me->LogUIUpdate();
 	}
+	dlg.Delete();
 }
 
 void __stdcall SSWR::AVIRead::AVIRBluetoothLogForm::OnStoreClicked(void *userObj)

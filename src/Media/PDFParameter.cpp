@@ -14,7 +14,7 @@ Media::PDFParameter::~PDFParameter()
 	{
 		entry = this->entries.GetItem(i);
 		entry->type->Release();
-		SDEL_STRING(entry->value);
+		OPTSTR_DEL(entry->value);
 		MemFree(entry);
 	}
 }
@@ -27,7 +27,7 @@ void Media::PDFParameter::AddEntry(Text::CString type, Text::CString value)
 	this->entries.Add(entry);
 }
 
-Text::String *Media::PDFParameter::GetEntryValue(Text::CString type) const
+Optional<Text::String> Media::PDFParameter::GetEntryValue(Text::CString type) const
 {
 	ParamEntry *entry = this->GetEntry(type);
 	if (entry)
@@ -35,15 +35,15 @@ Text::String *Media::PDFParameter::GetEntryValue(Text::CString type) const
 	return 0;
 }
 
-Text::String *Media::PDFParameter::GetEntryType(UOSInt index) const
+Optional<Text::String> Media::PDFParameter::GetEntryType(UOSInt index) const
 {
 	ParamEntry *entry = this->GetItem(index);
 	if (entry)
-		return entry->type.Ptr();
+		return entry->type;
 	return 0;
 }
 
-Text::String *Media::PDFParameter::GetEntryValue(UOSInt index) const
+Optional<Text::String> Media::PDFParameter::GetEntryValue(UOSInt index) const
 {
 	ParamEntry *entry = this->GetItem(index);
 	if (entry)

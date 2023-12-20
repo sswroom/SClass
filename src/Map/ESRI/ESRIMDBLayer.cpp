@@ -477,7 +477,7 @@ Bool Map::ESRI::ESRIMDBReader::GetStr(UOSInt colIndex, NotNullPtr<Text::StringBu
 	return this->r->GetStr((colIndex > 0)?(colIndex + 1):colIndex, sb);
 }
 
-Text::String *Map::ESRI::ESRIMDBReader::GetNewStr(UOSInt colIndex)
+Optional<Text::String> Map::ESRI::ESRIMDBReader::GetNewStr(UOSInt colIndex)
 {
 	return this->r->GetNewStr((colIndex > 0)?(colIndex + 1):colIndex);
 }

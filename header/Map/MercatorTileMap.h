@@ -12,7 +12,7 @@ namespace Map
 	class MercatorTileMap : public Map::TileMap
 	{
 	protected:
-		Text::String *cacheDir;
+		Optional<Text::String> cacheDir;
 		IO::SPackageFile *spkg;
 		NotNullPtr<Net::SocketFactory> sockf;
 		Optional<Net::SSLEngine> ssl;

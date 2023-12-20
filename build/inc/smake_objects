@@ -2147,15 +2147,6 @@ ClipboardJava.o: ../../src/UI/ClipboardJava.cpp
 $-I$(JAVA_HOME)/include
 $-I$(JAVA_HOME)/include/linux
 ClipboardW.o: ../../src/UI/ClipboardW.cpp
-FileDialogGTK.o: ../../src/UI/FileDialogGTK.cpp
-$`$(PKG-CONFIG) --cflags gtk+-3.0`
-FileDialogWin.o: ../../src/UI/FileDialogWin.cpp
-FolderDialogGTK.o: ../../src/UI/FolderDialogGTK.cpp
-$`$(PKG-CONFIG) --cflags gtk+-3.0`
-FolderDialogWin.o: ../../src/UI/FolderDialogWin.cpp
-FontDialogGTK.o: ../../src/UI/FontDialogGTK.cpp
-$`$(PKG-CONFIG) --cflags gtk+-3.0`
-FontDialogWin.o: ../../src/UI/FontDialogWin.cpp
 ListBoxLogger.o: ../../src/UI/ListBoxLogger.cpp
 GUIButton.o: ../../src/UI/GUIButton.cpp
 GUICheckBox.o: ../../src/UI/GUICheckBox.cpp
@@ -2189,6 +2180,9 @@ $`$(PKG-CONFIG) --cflags gtk+-3.0`
 GUIDDrawControlWin.o: ../../src/UI/GUIDDrawControlWin.cpp
 !-lwinmm
 GUIDObjArea.o: ../../src/UI/GUIDObjArea.cpp
+GUIFileDialog.o: ../../src/UI/GUIFileDialog.cpp
+GUIFolderDialog.o: ../../src/UI/GUIFolderDialog.cpp
+GUIFontDialog.o: ../../src/UI/GUIFontDialog.cpp
 GUIFormGTK.o: ../../src/UI/GUIFormGTK.cpp
 $`$(PKG-CONFIG) --cflags gtk+-3.0`
 GUIFormJava.o: ../../src/UI/GUIFormJava.cpp
@@ -2290,6 +2284,12 @@ $`$(PKG-CONFIG) --cflags gtk+-3.0`
 !-lX11
 GTKDragDrop.o: ../../src/UI/GTK/GTKDragDrop.cpp
 $`$(PKG-CONFIG) --cflags gtk+-3.0`
+GTKFileDialog.o: ../../src/UI/GTK/GTKFileDialog.cpp
+$`$(PKG-CONFIG) --cflags gtk+-3.0`
+GTKFolderDialog.o: ../../src/UI/GTK/GTKFolderDialog.cpp
+$`$(PKG-CONFIG) --cflags gtk+-3.0`
+GTKFontDialog.o: ../../src/UI/GTK/GTKFontDialog.cpp
+$`$(PKG-CONFIG) --cflags gtk+-3.0`
 GTKGroupBox.o: ../../src/UI/GTK/GTKGroupBox.cpp
 $`$(PKG-CONFIG) --cflags gtk+-3.0`
 GTKHSplitter.o: ../../src/UI/GTK/GTKHSplitter.cpp
@@ -2321,6 +2321,15 @@ $-I$(JAVA_HOME)/include/linux
 JavaCore.o: ../../src/UI/Java/JavaCore.cpp
 $-I$(JAVA_HOME)/include
 $-I$(JAVA_HOME)/include/linux
+JavaFileDialog.o: ../../src/UI/Java/JavaFileDialog.cpp
+$-I$(JAVA_HOME)/include
+$-I$(JAVA_HOME)/include/linux
+JavaFolderDialog.o: ../../src/UI/Java/JavaFolderDialog.cpp
+$-I$(JAVA_HOME)/include
+$-I$(JAVA_HOME)/include/linux
+JavaFontDialog.o: ../../src/UI/Java/JavaFontDialog.cpp
+$-I$(JAVA_HOME)/include
+$-I$(JAVA_HOME)/include/linux
 JavaHSplitter.o: ../../src/UI/Java/JavaHSplitter.cpp
 $-I$(JAVA_HOME)/include
 $-I$(JAVA_HOME)/include/linux
@@ -2348,6 +2357,9 @@ WinCheckedListBox.o: ../../src/UI/Win/WinCheckedListBox.cpp
 WinComboBox.o: ../../src/UI/Win/WinComboBox.cpp
 WinCore.o: ../../src/UI/Win/WinCore.cpp
 WinDragDrop.o: ../../src/UI/Win/WinDragDrop.cpp
+WinFileDialog.o: ../../src/UI/Win/WinFileDialog.cpp
+WinFolderDialog.o: ../../src/UI/Win/WinFolderDialog.cpp
+WinFontDialog.o: ../../src/UI/Win/WinFontDialog.cpp
 WinGroupBox.o: ../../src/UI/Win/WinGroupBox.cpp
 WinHSplitter.o: ../../src/UI/Win/WinHSplitter.cpp
 WinLabel.o: ../../src/UI/Win/WinLabel.cpp

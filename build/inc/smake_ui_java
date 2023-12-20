@@ -27,12 +27,6 @@ Parser/FileParser/GUIImgParser.h:
 
 UI/Clipboard.h:
 @ClipboardJava.o
-UI/FileDialog.h:
-@FileDialogGTK.o
-UI/FolderDialog.h:
-@FolderDialogGTK.o
-UI/FontDialog.h:
-@FontDialogGTK.o
 UI/GUIClientControl.h:
 @GUIClientControlJava.o
 UI/GUIControl.h:

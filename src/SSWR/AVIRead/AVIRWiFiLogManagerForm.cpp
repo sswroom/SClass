@@ -11,29 +11,33 @@
 #include "Text/UTF8Reader.h"
 #include "Text/UTF8Writer.h"
 #include "UI/Clipboard.h"
-#include "UI/FileDialog.h"
+#include "UI/GUIFileDialog.h"
 
 #define MAX_ROW 5000
 
 void __stdcall SSWR::AVIRead::AVIRWiFiLogManagerForm::OnFileClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRWiFiLogManagerForm *me = (SSWR::AVIRead::AVIRWiFiLogManagerForm*)userObj;
-	UI::FileDialog dlg(L"SSWR", L"AVIRead", L"WiFiLoganagerFile", false);
-	dlg.SetAllowMultiSel(true);
-	dlg.AddFilter(CSTR("*.txt"), CSTR("Log File"));
-	if (dlg.ShowDialog(me->GetHandle()))
+	NotNullPtr<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"WiFiLoganagerFile", false);
+	dlg->SetAllowMultiSel(true);
+	dlg->AddFilter(CSTR("*.txt"), CSTR("Log File"));
+	if (dlg->ShowDialog(me->GetHandle()))
 	{
 		UOSInt i = 0;
-		UOSInt j = dlg.GetFileNameCount();
+		UOSInt j = dlg->GetFileNameCount();
 		while (i < j)
 		{
-			const UTF8Char *fileName = dlg.GetFileNames(i);
-			me->wifiLogFile->LoadFile({fileName, Text::StrCharCnt(fileName)});
+			NotNullPtr<Text::String> fileName;
+			if (dlg->GetFileNames(i).SetTo(fileName))
+			{
+				me->wifiLogFile->LoadFile(fileName->ToCString());
+			}
 			i++;
 		}
 		me->LogFileStore();
 		me->LogUIUpdate();
 	}
+	dlg.Delete();
 }
 
 void __stdcall SSWR::AVIRead::AVIRWiFiLogManagerForm::OnStoreClicked(void *userObj)

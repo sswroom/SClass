@@ -295,16 +295,17 @@ UOSInt Text::StringTool::SplitAsNewString(Text::CStringNN str, UTF8Char splitCha
 	}
 }
 
-Bool Text::StringTool::Equals(Text::String *s1, Text::String *s2)
+Bool Text::StringTool::Equals(Optional<Text::String> s1, Optional<Text::String> s2)
 {
 	if (s1 == s2)
 		return true;
 	NotNullPtr<Text::String> str2;
-	if (s1 == 0)
+	NotNullPtr<Text::String> str1;
+	if (!s1.SetTo(str1))
 		return false;
-	if (!str2.Set(s2))
+	if (!s2.SetTo(str2))
 		return false;
-	return s1->Equals(str2);
+	return str1->Equals(str2);
 }
 
 OSInt Text::StringTool::Compare(Text::String *s1, Text::String *s2)

@@ -254,8 +254,8 @@
 #include "SSWR/AVIRead/AVIRXMLWalkForm.h"
 #include "SSWR/SHPConv/SHPConvMainForm.h"
 #include "Text/MyStringW.h"
-#include "UI/FileDialog.h"
-#include "UI/FolderDialog.h"
+#include "UI/GUIFileDialog.h"
+#include "UI/GUIFolderDialog.h"
 #include "UI/GUITextBox.h"
 #include "UtilUI/TextViewerForm.h"
 
@@ -1614,28 +1614,29 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 		break;
 	case MNU_OSM_LOCAL_DIR:
 		{
-			UI::FolderDialog dlg(L"SSWR", L"AVIRead", L"OSMLocal");
-			if (dlg.ShowDialog(this->GetHandle()))
+			NotNullPtr<UI::GUIFolderDialog> dlg = this->ui->NewFolderDialog();
+			if (dlg->ShowDialog(this->GetHandle()))
 			{
 				NotNullPtr<IO::DirectoryPackage> pkg;
-				NEW_CLASSNN(pkg, IO::DirectoryPackage(dlg.GetFolder()));
+				NEW_CLASSNN(pkg, IO::DirectoryPackage(dlg->GetFolder()));
 				NEW_CLASSNN(tileMap, Map::OSM::OSMLocalTileMap(pkg));
 				NEW_CLASSNN(mapLyr, Map::TileMapLayer(tileMap, this->core->GetParserList()));
 				this->core->OpenObject(mapLyr);
 			}
+			dlg.Delete();
 		}
 		break;
 	case MNU_OSM_LOCAL_FILE:
 		{
 			NotNullPtr<Parser::ParserList> parsers = this->core->GetParserList();
-			UI::FileDialog dlg(L"SSWR", L"AVIRead", L"OSMLocalFile", false);
+			NotNullPtr<UI::GUIFileDialog> dlg = this->ui->NewFileDialog(L"SSWR", L"AVIRead", L"OSMLocalFile", false);
 			parsers->PrepareSelector(dlg, IO::ParserType::PackageFile);
-			if (dlg.ShowDialog(this->GetHandle()))
+			if (dlg->ShowDialog(this->GetHandle()))
 			{
 				NotNullPtr<IO::PackageFile> pkgFile;
 				IO::PackageFile *pkg;
 				{
-					IO::StmData::FileData fd(dlg.GetFileName(), false);
+					IO::StmData::FileData fd(dlg->GetFileName(), false);
 					pkg = (IO::PackageFile*)parsers->ParseFileType(fd, IO::ParserType::PackageFile);
 				}
 				if (pkgFile.Set(pkg))
@@ -1645,6 +1646,7 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 					this->core->OpenObject(mapLyr);
 				}
 			}
+			dlg.Delete();
 		}
 		break;
 	case MNU_TCPSPDCLI:

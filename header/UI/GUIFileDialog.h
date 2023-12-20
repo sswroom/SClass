@@ -2,43 +2,40 @@
 #define _SM_UI_FILEDIALOG
 #include "Handles.h"
 #include "Data/ArrayListStringNN.h"
-#include "Data/ArrayListStrUTF8.h"
 #include "IO/FileSelector.h"
 #include "IO/Registry.h"
+#include "Text/String.h"
 
 namespace UI
 {
-	class FileDialog : public IO::FileSelector
+	class GUIFileDialog : public IO::FileSelector
 	{
-	private:
+	protected:
 		IO::Registry *reg;
 		WChar *dialogName;
 		const WChar *lastName;
-		Text::String *fileName;
+		Optional<Text::String> fileName;
 		Bool isSave;
 		Bool allowMulti;
 		Data::ArrayListStringNN patterns;
 		Data::ArrayListStringNN names;
-		Data::ArrayListStrUTF8 fileNames;
+		Data::ArrayListStringNN fileNames;
 		UOSInt filterIndex;
 
 		void ClearFileNames();
 	public:
-		FileDialog(const WChar *compName, const WChar *appName, const WChar *dialogName, Bool isSave);
-		virtual ~FileDialog();
+		GUIFileDialog(const WChar *compName, const WChar *appName, const WChar *dialogName, Bool isSave);
+		virtual ~GUIFileDialog();
 
-		virtual void AddFilter(Text::CString pattern, Text::CString name);
+		void AddFilter(Text::CStringNN pattern, Text::CStringNN name);
 		UOSInt GetFilterIndex();
-
 		void SetFileName(Text::CString fileName);
 		NotNullPtr<Text::String> GetFileName() const;
-
 		UOSInt GetFileNameCount();
-		const UTF8Char *GetFileNames(UOSInt index);
-
+		Optional<Text::String> GetFileNames(UOSInt index);
 		void SetAllowMultiSel(Bool allowMulti);
 
-		Bool ShowDialog(ControlHandle *ownerHandle);
+		virtual Bool ShowDialog(ControlHandle *ownerHandle) = 0;
 	};
 }
 #endif

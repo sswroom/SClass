@@ -12,11 +12,11 @@ namespace DB
 	class TableDef
 	{
 	private:
-		Text::String *databaseName;
-		Text::String *schemaName;
+		Optional<Text::String> databaseName;
+		Optional<Text::String> schemaName;
 		NotNullPtr<Text::String> tableName;
-		Text::String *engine;
-		Text::String *charset;
+		Optional<Text::String> engine;
+		Optional<Text::String> charset;
 		const UTF8Char *attr;
 		const UTF8Char *comments;
 		SQLType sqlType;
@@ -27,11 +27,11 @@ namespace DB
 		TableDef(Text::CString schemaName, Text::CString tableName);
 		~TableDef();
 
-		Text::String *GetDatabaseName() const;
-		Text::String *GetSchemaName() const;
-		Text::String *GetTableName() const;
-		Text::String *GetEngine() const;
-		Text::String *GetCharset() const;
+		Optional<Text::String> GetDatabaseName() const;
+		Optional<Text::String> GetSchemaName() const;
+		NotNullPtr<Text::String> GetTableName() const;
+		Optional<Text::String> GetEngine() const;
+		Optional<Text::String> GetCharset() const;
 		const UTF8Char *GetAttr() const;
 		const UTF8Char *GetComments() const;
 		DB::SQLType GetSQLType() const;

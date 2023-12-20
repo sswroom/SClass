@@ -48,8 +48,8 @@ Bool Map::OWSFeatureParser::ParseJSON(Text::CStringNN txt, UInt32 srid, Data::Ar
 	{
 		if (json->GetType() == Text::JSONType::Object)
 		{
-			Text::String *crsName = json->GetValueString(CSTR("crs.properties.name"));
-			if (crsName)
+			NotNullPtr<Text::String> crsName;
+			if (json->GetValueString(CSTR("crs.properties.name")).SetTo(crsName))
 			{
 				Math::CoordinateSystem *csys = Math::CoordinateSystemManager::CreateFromName(crsName->ToCString());
 				if (csys)

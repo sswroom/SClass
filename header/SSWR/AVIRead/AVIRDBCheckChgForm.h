@@ -98,7 +98,7 @@ namespace SSWR
 			Bool GenerateSQL(DB::SQLType sqlType, Bool axisAware, SQLSession *sess);
 			Bool NextSQL(Text::CStringNN sql, SQLSession *sess);
 			void UpdateStatus(SQLSession *sess);
-			static void __stdcall AppendCol(DB::SQLBuilder *sql, DB::DBUtil::ColType colType, Text::String *s, Int8 tzQhr);
+			static void __stdcall AppendCol(DB::SQLBuilder *sql, DB::DBUtil::ColType colType, Optional<Text::String> s, Int8 tzQhr);
 			Text::CString GetNullText();
 			DB::SQLType GetDBSQLType();
 		public:

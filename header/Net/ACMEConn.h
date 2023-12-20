@@ -40,7 +40,7 @@ namespace Net
 			Int64 expires;
 			Text::String *orderURL;
 			Data::ArrayListStringNN *authURLs;
-			Text::String *finalizeURL;
+			Optional<Text::String> finalizeURL;
 			Text::String *certificateURL;
 		};
 
@@ -104,9 +104,9 @@ namespace Net
 		Bool LoadKey(Text::CStringNN fileName);
 		Bool SaveKey(Text::CStringNN fileName);
 
-		static ACMEStatus ACMEStatusFromString(Text::String* status);
+		static ACMEStatus ACMEStatusFromString(Optional<Text::String> status);
 		static Text::CString AuthorizeTypeGetName(AuthorizeType authType);
-		static AuthorizeType AuthorizeTypeFromString(Text::String *s);
+		static AuthorizeType AuthorizeTypeFromString(NotNullPtr<Text::String> s);
 	};
 }
 #endif

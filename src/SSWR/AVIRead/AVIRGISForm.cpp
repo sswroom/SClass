@@ -55,7 +55,7 @@
 #include "Text/StringBuilderUTF8.h"
 #include "Text/UTF8Reader.h"
 #include "UI/Clipboard.h"
-#include "UI/FileDialog.h"
+#include "UI/GUIFileDialog.h"
 #include "UtilUI/TextInputDialog.h"
 
 #include <stdio.h>
@@ -1189,11 +1189,11 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 					NotNullPtr<Map::OSM::OSMTileMap> osm = NotNullPtr<Map::OSM::OSMTileMap>::ConvertFrom(tileMap);
 					if (osm->HasSPackageFile())
 					{
-						UI::FileDialog dlg(L"SSWR", L"AVIRead", L"GISImportTiles", false);
+						NotNullPtr<UI::GUIFileDialog> dlg = this->ui->NewFileDialog(L"SSWR", L"AVIRead", L"GISImportTiles", false);
 						this->core->GetParserList()->PrepareSelector(dlg, IO::ParserType::PackageFile);
-						if (dlg.ShowDialog(this->GetHandle()))
+						if (dlg->ShowDialog(this->GetHandle()))
 						{
-							IO::StmData::FileData fd(dlg.GetFileName(), false);
+							IO::StmData::FileData fd(dlg->GetFileName(), false);
 							NotNullPtr<IO::PackageFile> pkg;
 							if (pkg.Set((IO::PackageFile*)this->core->GetParserList()->ParseFileType(fd, IO::ParserType::PackageFile)))
 							{
@@ -1201,6 +1201,7 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 								pkg.Delete();
 							}
 						}
+						dlg.Delete();
 					}
 				}
 			}
@@ -1218,12 +1219,13 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 					NotNullPtr<Map::OSM::OSMTileMap> osm = NotNullPtr<Map::OSM::OSMTileMap>::ConvertFrom(tileMap);
 					if (osm->HasSPackageFile())
 					{
-						UI::FileDialog dlg(L"SSWR", L"AVIRead", L"GISOptimizeFile", true);
-						dlg.AddFilter(CSTR("*.spk"), CSTR("SPackage File"));
-						if (dlg.ShowDialog(this->GetHandle()))
+						NotNullPtr<UI::GUIFileDialog> dlg = this->ui->NewFileDialog(L"SSWR", L"AVIRead", L"GISOptimizeFile", true);
+						dlg->AddFilter(CSTR("*.spk"), CSTR("SPackage File"));
+						if (dlg->ShowDialog(this->GetHandle()))
 						{
-							osm->OptimizeToFile(dlg.GetFileName()->ToCString());
+							osm->OptimizeToFile(dlg->GetFileName()->ToCString());
 						}
+						dlg.Delete();
 					}
 				}
 			}
@@ -1290,12 +1292,12 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 		break;
 	case MNU_MTK_FILE:
 		{
-			UI::FileDialog dlg(L"SSWR", L"AVIRead", L"GISMTKFile", false);
-			dlg.AddFilter(CSTR("*.bin"), CSTR("MTK Binary File"));
-			if (dlg.ShowDialog(this->GetHandle()))
+			NotNullPtr<UI::GUIFileDialog> dlg = this->ui->NewFileDialog(L"SSWR", L"AVIRead", L"GISMTKFile", false);
+			dlg->AddFilter(CSTR("*.bin"), CSTR("MTK Binary File"));
+			if (dlg->ShowDialog(this->GetHandle()))
 			{
 				UInt64 fileSize;
-				IO::FileStream fs(dlg.GetFileName(), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+				IO::FileStream fs(dlg->GetFileName(), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 				fileSize = fs.GetLength();
 				if (fileSize > 0 && fileSize <= 8388608 && (fileSize & 0xffff) == 0)
 				{
@@ -1303,7 +1305,7 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 					NotNullPtr<Map::GPSTrack> trk;
 					Data::ByteBuffer fileBuff((UOSInt)fileSize);
 					fs.Read(fileBuff);
-					NEW_CLASSNN(trk, Map::GPSTrack(dlg.GetFileName(), true, 0, 0));
+					NEW_CLASSNN(trk, Map::GPSTrack(dlg->GetFileName(), true, 0, 0));
 					i = 0;
 					while (i < fileSize)
 					{
@@ -1316,6 +1318,7 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 					this->AddLayer(trk);
 				}
 			}
+			dlg.Delete();
 		}
 		break;
 	case MNU_GPS_TRACKER:

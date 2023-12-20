@@ -243,7 +243,7 @@ Bool Map::MapEnv::SetLineStyleName(UOSInt index, Text::CString name)
 	}
 	LineStyle *style;
 	style = (LineStyle*)this->lineStyles.GetItem(index);
-	SDEL_STRING(style->name);
+	OPTSTR_DEL(style->name);
 	style->name = Text::String::NewOrNull(name);
 	return true;
 }
@@ -257,9 +257,10 @@ UTF8Char *Map::MapEnv::GetLineStyleName(UOSInt index, UTF8Char *buff) const
 	}
 	LineStyle *style;
 	style = (LineStyle*)this->lineStyles.GetItem(index);
-	if (style->name)
+	NotNullPtr<Text::String> s;
+	if (style->name.SetTo(s))
 	{
-		return style->name->ConcatTo(buff);
+		return s->ConcatTo(buff);
 	}
 	else
 	{
@@ -377,7 +378,7 @@ Bool Map::MapEnv::RemoveLineStyle(UOSInt index)
 		}
 		MemFree(layer);
 	}
-	SDEL_STRING(style->name);
+	OPTSTR_DEL(style->name);
 	DEL_CLASS(style);
 	return true;
 }
@@ -444,7 +445,7 @@ Bool Map::MapEnv::SetFontStyleName(UOSInt index, Text::CString name)
 	Map::MapEnv::FontStyle *style = this->fontStyles.GetItem(index);
 	if (style == 0)
 		return false;
-	SDEL_STRING(style->styleName);
+	OPTSTR_DEL(style->styleName);
 	style->styleName = Text::String::NewOrNull(name);
 	return true;
 }
@@ -454,8 +455,9 @@ UTF8Char *Map::MapEnv::GetFontStyleName(UOSInt index, UTF8Char *buff) const
 	Map::MapEnv::FontStyle *style = this->fontStyles.GetItem(index);
 	if (style == 0)
 		return 0;
-	if (style->styleName)
-		return style->styleName->ConcatTo(buff);
+	NotNullPtr<Text::String> s;
+	if (style->styleName.SetTo(s))
+		return s->ConcatTo(buff);
 	return 0;
 }
 
@@ -465,7 +467,7 @@ Bool Map::MapEnv::RemoveFontStyle(UOSInt index)
 	Map::MapEnv::FontStyle *style = this->fontStyles.RemoveAt(index);
 	if (style == 0)
 		return false;
-	SDEL_STRING(style->styleName);
+	OPTSTR_DEL(style->styleName);
 	style->fontName->Release();
 	MemFree(style);
 	return true;

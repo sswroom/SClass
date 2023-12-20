@@ -3,7 +3,7 @@
 #include "IO/FileStream.h"
 #include "SSWR/AVIRead/AVIRProtoDecForm.h"
 #include "Text/MyString.h"
-#include "UI/FileDialog.h"
+#include "UI/GUIFileDialog.h"
 
 void __stdcall SSWR::AVIRead::AVIRProtoDecForm::OnLogSelChg(void *userObj)
 {
@@ -31,16 +31,17 @@ void __stdcall SSWR::AVIRead::AVIRProtoDecForm::OnFileClicked(void *userObj)
 	SSWR::AVIRead::AVIRProtoDecForm *me = (SSWR::AVIRead::AVIRProtoDecForm *)userObj;
 	Text::StringBuilderUTF8 sb;
 	me->txtFile->GetText(sb);
-	UI::FileDialog dlg(L"SSWR", L"AVIRead", L"ProtoDec", false);
-	dlg.AddFilter(CSTR("*.dat"), CSTR("RAW data file"));
+	NotNullPtr<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"ProtoDec", false);
+	dlg->AddFilter(CSTR("*.dat"), CSTR("RAW data file"));
 	if (sb.GetLength() > 0)
 	{
-		dlg.SetFileName(sb.ToCString());
+		dlg->SetFileName(sb.ToCString());
 	}
-	if (dlg.ShowDialog(me->GetHandle()))
+	if (dlg->ShowDialog(me->GetHandle()))
 	{
-		me->txtFile->SetText(dlg.GetFileName()->ToCString());
+		me->txtFile->SetText(dlg->GetFileName()->ToCString());
 	}
+	dlg.Delete();
 }
 
 void __stdcall SSWR::AVIRead::AVIRProtoDecForm::OnLoadClicked(void *userObj)

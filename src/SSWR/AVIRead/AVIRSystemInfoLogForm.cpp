@@ -66,13 +66,14 @@ SSWR::AVIRead::AVIRSystemInfoLogForm::AVIRSystemInfoLogForm(UI::GUIClientControl
 
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
-	if (this->sysInfo->GetOSName())
+	NotNullPtr<Text::String> s;
+	if (this->sysInfo->GetOSName().SetTo(s))
 	{
-		this->txtOSName->SetText(this->sysInfo->GetOSName()->ToCString());
+		this->txtOSName->SetText(s->ToCString());
 	}
-	if (this->sysInfo->GetOSVer())
+	if (this->sysInfo->GetOSVer().SetTo(s))
 	{
-		this->txtOSVer->SetText(this->sysInfo->GetOSVer()->ToCString());
+		this->txtOSVer->SetText(s->ToCString());
 	}
 	if (this->sysInfo->GetOSLocale())
 	{
@@ -92,7 +93,6 @@ SSWR::AVIRead::AVIRSystemInfoLogForm::AVIRSystemInfoLogForm(UI::GUIClientControl
 
 	NotNullPtr<const Data::ArrayList<IO::SystemInfoLog::DeviceInfo*>> devList = this->sysInfo->GetDeviceInfos();
 	IO::SystemInfoLog::DeviceInfo *dev;
-	NotNullPtr<Text::String> s;
 	UOSInt i = 0;
 	UOSInt j = devList->GetCount();
 	while (i < j)
@@ -100,11 +100,11 @@ SSWR::AVIRead::AVIRSystemInfoLogForm::AVIRSystemInfoLogForm(UI::GUIClientControl
 		dev = devList->GetItem(i);
 		this->lvDevices->AddItem(dev->desc, dev);
 		this->lvDevices->SetSubItem(i, 1, dev->hwId);
-		if (s.Set(dev->service))
+		if (dev->service.SetTo(s))
 		{
 			this->lvDevices->SetSubItem(i, 2, s);
 		}
-		if (s.Set(dev->driver))
+		if (dev->driver.SetTo(s))
 		{
 			this->lvDevices->SetSubItem(i, 3, s);
 		}
@@ -122,23 +122,23 @@ SSWR::AVIRead::AVIRSystemInfoLogForm::AVIRSystemInfoLogForm(UI::GUIClientControl
 		sptr = Text::StrUInt64(sbuff, driver->fileSize);
 		this->lvDrivers->SetSubItem(i, 1, CSTRP(sbuff, sptr));
 
-		if (s.Set(driver->creationDate))
+		if (driver->creationDate.SetTo(s))
 		{
 			this->lvDrivers->SetSubItem(i, 2, s);
 		}
-		if (s.Set(driver->version))
+		if (driver->version.SetTo(s))
 		{
 			this->lvDrivers->SetSubItem(i, 3, s);
 		}
-		if (s.Set(driver->manufacturer))
+		if (driver->manufacturer.SetTo(s))
 		{
 			this->lvDrivers->SetSubItem(i, 4, s);
 		}
-		if (s.Set(driver->productName))
+		if (driver->productName.SetTo(s))
 		{
 			this->lvDrivers->SetSubItem(i, 5, s);
 		}
-		if (s.Set(driver->group))
+		if (driver->group.SetTo(s))
 		{
 			this->lvDrivers->SetSubItem(i, 6, s);
 		}

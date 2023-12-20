@@ -49,22 +49,19 @@ Net::SolarEdgeAPI::~SolarEdgeAPI()
 	this->apikey->Release();
 }
 
-Text::String *Net::SolarEdgeAPI::GetCurrentVersion()
+Optional<Text::String> Net::SolarEdgeAPI::GetCurrentVersion()
 {
 	Text::StringBuilderUTF8 sbURL;
 	this->BuildURL(sbURL, CSTR("/version/current"));
 	Text::JSONBase *json = this->GetJSON(sbURL.ToCString());
 	if (json == 0)
 		return 0;
-	Text::String *s = json->GetValueString(CSTR("version.release"));
-	if (s == 0)
+	Optional<Text::String> s = json->GetValueString(CSTR("version.release"));
+	if (s.IsNull())
 	{
 		s = json->GetValueString(CSTR("version"));
 	}
-	if (s)
-	{
-		s = s->Clone().Ptr();
-	}
+	s = Text::String::CopyOrNull(s);
 	json->EndUse();
 	return s;
 }
@@ -85,16 +82,12 @@ Bool Net::SolarEdgeAPI::GetSupportedVersions(Data::ArrayListStringNN *versions)
 		while (i < j)
 		{
 			Text::JSONBase *obj = arr->GetArrayValue(i);
-			Text::String *s;
+			NotNullPtr<Text::String> s;
 			if (obj->GetType() == Text::JSONType::String)
 			{
-				s = ((Text::JSONString*)obj)->GetValue();
+				versions->Add(((Text::JSONString*)obj)->GetValue()->Clone());
 			}
-			else
-			{
-				s = obj->GetValueString(CSTR("release"));
-			}
-			if (s)
+			else if (obj->GetValueString(CSTR("release")).SetTo(s))
 			{
 				versions->Add(s->Clone());
 			}
@@ -137,7 +130,7 @@ Bool Net::SolarEdgeAPI::GetSiteList(Data::ArrayList<Site*> *siteList, UOSInt max
 		{
 			Text::JSONObject *siteObj = (Text::JSONObject*)siteArr->GetArrayValue(i);
 			Site *site;
-			Text::String *s;
+			NotNullPtr<Text::String> s;
 			if (siteObj->GetType() == Text::JSONType::Object)
 			{
 				site = MemAlloc(Site, 1);
@@ -146,19 +139,16 @@ Bool Net::SolarEdgeAPI::GetSiteList(Data::ArrayList<Site*> *siteList, UOSInt max
 				site->accountId = siteObj->GetObjectInt32(CSTR("accountId"));
 				site->status = siteObj->GetObjectNewString(CSTR("status"));
 				site->peakPower_kWp = siteObj->GetObjectDouble(CSTR("peakPower"));
-				s = siteObj->GetObjectString(CSTR("lastUpdateTime"));
-				if (s == 0)
+				if (!siteObj->GetObjectString(CSTR("lastUpdateTime")).SetTo(s))
 					site->lastUpdateTime = 0;
 				else
 					site->lastUpdateTime = Data::Timestamp::FromStr(s->ToCString(), Data::DateTimeUtil::GetLocalTzQhr());
 				site->currency = siteObj->GetObjectNewString(CSTR("currency"));
-				s = siteObj->GetObjectString(CSTR("installationDate"));
-				if (s == 0)
+				if (!siteObj->GetObjectString(CSTR("installationDate")).SetTo(s))
 					site->installationDate = 0;
 				else
 					site->installationDate = Data::Timestamp::FromStr(s->ToCString(), Data::DateTimeUtil::GetLocalTzQhr());
-				s = siteObj->GetObjectString(CSTR("ptoDate"));
-				if (s == 0)
+				if (!siteObj->GetObjectString(CSTR("ptoDate")).SetTo(s))
 					site->ptoDate = 0;
 				else
 					site->ptoDate = Data::Timestamp::FromStr(s->ToCString(), Data::DateTimeUtil::GetLocalTzQhr());
@@ -194,19 +184,19 @@ void Net::SolarEdgeAPI::FreeSiteList(Data::ArrayList<Site*> *siteList)
 	while (i-- > 0)
 	{
 		site = siteList->GetItem(i);
-		SDEL_STRING(site->name);
-		SDEL_STRING(site->status);
-		SDEL_STRING(site->currency);
-		SDEL_STRING(site->notes);
-		SDEL_STRING(site->type);
-		SDEL_STRING(site->country);
-		SDEL_STRING(site->city);
-		SDEL_STRING(site->address);
-		SDEL_STRING(site->address2);
-		SDEL_STRING(site->zip);
-		SDEL_STRING(site->timeZone);
-		SDEL_STRING(site->countryCode);
-		SDEL_STRING(site->publicName);
+		OPTSTR_DEL(site->name);
+		OPTSTR_DEL(site->status);
+		OPTSTR_DEL(site->currency);
+		OPTSTR_DEL(site->notes);
+		OPTSTR_DEL(site->type);
+		OPTSTR_DEL(site->country);
+		OPTSTR_DEL(site->city);
+		OPTSTR_DEL(site->address);
+		OPTSTR_DEL(site->address2);
+		OPTSTR_DEL(site->zip);
+		OPTSTR_DEL(site->timeZone);
+		OPTSTR_DEL(site->countryCode);
+		OPTSTR_DEL(site->publicName);
 		MemFree(site);
 	}
 	siteList->Clear();
@@ -224,8 +214,8 @@ Bool Net::SolarEdgeAPI::GetSiteOverview(Int32 siteId, SiteOverview *overview)
 	Text::JSONBase *json = this->GetJSON(sbURL.ToCString());
 	if (json == 0)
 		return false;
-	Text::String *s = json->GetValueString(CSTR("overview.lastUpdateTime"));
-	if (s)
+	NotNullPtr<Text::String> s;
+	if (json->GetValueString(CSTR("overview.lastUpdateTime")).SetTo(s))
 		overview->lastUpdateTime = Data::Timestamp::FromStr(s->ToCString(), Data::DateTimeUtil::GetLocalTzQhr());
 	else
 		overview->lastUpdateTime = 0;

@@ -19,9 +19,9 @@ Data::Chart::Chart()
 
 Data::Chart::~Chart()
 {
-	SDEL_STRING(this->title);
-	SDEL_STRING(this->xAxisName);
-	SDEL_STRING(this->yAxisName);
+	OPTSTR_DEL(this->title);
+	OPTSTR_DEL(this->xAxisName);
+	OPTSTR_DEL(this->yAxisName);
 
 	this->dateFormat->Release();
 	this->timeFormat->Release();
@@ -30,11 +30,11 @@ Data::Chart::~Chart()
 
 void Data::Chart::SetTitle(Text::CString title)
 {
-	SDEL_STRING(this->title);
+	OPTSTR_DEL(this->title);
 	this->title = Text::String::NewOrNull(title);
 }
 
-Text::String *Data::Chart::GetTitle() const
+Optional<Text::String> Data::Chart::GetTitle() const
 {
 	return this->title;
 }
@@ -88,27 +88,27 @@ NotNullPtr<Text::String> Data::Chart::GetDblFormat() const
 
 void Data::Chart::SetXAxisName(Text::CString xAxisName)
 {
-	SDEL_STRING(this->xAxisName);
+	OPTSTR_DEL(this->xAxisName);
 	this->xAxisName = Text::String::NewOrNull(xAxisName);
 }
 
-Text::String *Data::Chart::GetXAxisName() const
+Optional<Text::String> Data::Chart::GetXAxisName() const
 {
 	return this->xAxisName;
 }
 
 void Data::Chart::SetYAxisName(Text::CString yAxisName)
 {
-	SDEL_STRING(this->yAxisName);
+	OPTSTR_DEL(this->yAxisName);
 	this->yAxisName = Text::String::NewOrNull(yAxisName);
 }
 
-Text::String *Data::Chart::GetYAxisName() const
+Optional<Text::String> Data::Chart::GetYAxisName() const
 {
 	return this->yAxisName;
 }
 
-UOSInt Data::Chart::CalScaleMarkDbl(Data::ArrayListDbl *locations, Data::ArrayListStringNN *labels, Double min, Double max, Double leng, Double minLeng, const Char *dblFormat, Double minDblVal, const UTF8Char *unit)
+UOSInt Data::Chart::CalScaleMarkDbl(Data::ArrayListDbl *locations, Data::ArrayListStringNN *labels, Double min, Double max, Double leng, Double minLeng, const Char *dblFormat, Double minDblVal, Optional<Text::String> unit)
 {
 	UOSInt retCnt = 2;
 	UTF8Char sbuff[128];
@@ -117,11 +117,12 @@ UOSInt Data::Chart::CalScaleMarkDbl(Data::ArrayListDbl *locations, Data::ArrayLi
 	Double lScale;
 	Double dScale;
 	Double pos;
+	NotNullPtr<Text::String> s;
 
 	sptr = Text::StrDoubleFmt(sbuff, min, dblFormat);
 	locations->Add(0);
-	if (unit)
-		sptr = Text::StrConcat(sptr, unit);
+	if (unit.SetTo(s))
+		sptr = s->ConcatTo(sptr);
 	labels->Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
 
 	scale = minLeng * (max - min) / leng;
@@ -147,8 +148,8 @@ UOSInt Data::Chart::CalScaleMarkDbl(Data::ArrayListDbl *locations, Data::ArrayLi
 			{
 				sptr = Text::StrDoubleFmt(sbuff, scale, dblFormat);
 				locations->Add(pos);
-				if (unit)
-					sptr = Text::StrConcat(sptr, unit);
+				if (unit.SetTo(s))
+					sptr = s->ConcatTo(sptr);
 				labels->Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
 				retCnt++;
 			}
@@ -158,13 +159,13 @@ UOSInt Data::Chart::CalScaleMarkDbl(Data::ArrayListDbl *locations, Data::ArrayLi
 
 	sptr = Text::StrDoubleFmt(sbuff, max, dblFormat);
 	locations->Add(leng);
-	if (unit)
-		sptr = Text::StrConcat(sptr, unit);
+	if (unit.SetTo(s))
+		sptr = s->ConcatTo(sptr);
 	labels->Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
 	return retCnt;
 }
 
-UOSInt Data::Chart::CalScaleMarkInt(Data::ArrayListDbl *locations, Data::ArrayListStringNN *labels, Int32 min, Int32 max, Double leng, Double minLeng, const UTF8Char *unit)
+UOSInt Data::Chart::CalScaleMarkInt(Data::ArrayListDbl *locations, Data::ArrayListStringNN *labels, Int32 min, Int32 max, Double leng, Double minLeng, Optional<Text::String> unit)
 {
 	UOSInt retCnt = 2;
 	UTF8Char sbuff[64];
@@ -173,11 +174,12 @@ UOSInt Data::Chart::CalScaleMarkInt(Data::ArrayListDbl *locations, Data::ArrayLi
 	Double lScale;
 	Double dScale;
 	Single pos;
+	NotNullPtr<Text::String> s;
 
 	sptr = Text::StrInt32(sbuff, min);
 	locations->Add(0);
-	if (unit)
-		sptr = Text::StrConcat(sptr, unit);
+	if (unit.SetTo(s))
+		sptr = s->ConcatTo(sptr);
 	labels->Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
 
 	scale = minLeng * (Double)(max - min) / leng;
@@ -203,8 +205,8 @@ UOSInt Data::Chart::CalScaleMarkInt(Data::ArrayListDbl *locations, Data::ArrayLi
 		{
 			sptr = Text::StrInt32(sbuff, Double2Int32(scale));
 			locations->Add(pos);
-			if (unit)
-				sptr = Text::StrConcat(sptr, unit);
+			if (unit.SetTo(s))
+				sptr = s->ConcatTo(sptr);
 			labels->Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
 			retCnt++;
 		}
@@ -213,8 +215,8 @@ UOSInt Data::Chart::CalScaleMarkInt(Data::ArrayListDbl *locations, Data::ArrayLi
 
 	sptr = Text::StrInt32(sbuff, max);
 	locations->Add(leng);
-	if (unit)
-		sptr = Text::StrConcat(sptr, unit);
+	if (unit.SetTo(s))
+		sptr = s->ConcatTo(sptr);
 	labels->Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
 	return retCnt;
 }

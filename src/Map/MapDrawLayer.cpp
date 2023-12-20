@@ -914,7 +914,7 @@ Bool Map::MapLayerReader::GetStr(UOSInt colIndex, NotNullPtr<Text::StringBuilder
 	return this->layer->GetString(sb, this->nameArr, this->GetCurrObjId(), colIndex - 1);
 }
 
-Text::String *Map::MapLayerReader::GetNewStr(UOSInt colIndex)
+Optional<Text::String> Map::MapLayerReader::GetNewStr(UOSInt colIndex)
 {
 	if (colIndex <= 0)
 	{
@@ -929,11 +929,11 @@ Text::String *Map::MapLayerReader::GetNewStr(UOSInt colIndex)
 		{
 			return 0;
 		}
-		return Text::String::New(sb.ToCString()).Ptr();
+		return Text::String::New(sb.ToCString());
 	}
 	Text::StringBuilderUTF8 sb;
 	if (this->layer->GetString(sb, this->nameArr, this->GetCurrObjId(), colIndex - 1))
-		return Text::String::New(sb.ToCString()).Ptr();
+		return Text::String::New(sb.ToCString());
 	return 0;
 }
 

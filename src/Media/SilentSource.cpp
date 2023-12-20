@@ -26,14 +26,15 @@ Media::SilentSource::SilentSource(UInt32 sampleRate, UInt16 nChannels, UInt16 bi
 
 Media::SilentSource::~SilentSource()
 {
-	SDEL_STRING(this->name);
+	OPTSTR_DEL(this->name);
 }
 
 UTF8Char *Media::SilentSource::GetSourceName(UTF8Char *buff)
 {
-	if (this->name == 0)
+	NotNullPtr<Text::String> s;
+	if (!this->name.SetTo(s))
 		return 0;
-	return this->name->ConcatTo(buff);
+	return s->ConcatTo(buff);
 }
 
 Bool Media::SilentSource::CanSeek()

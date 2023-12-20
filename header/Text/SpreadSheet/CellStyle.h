@@ -78,7 +78,7 @@ namespace Text
 			WorkbookFont *font;
 			UInt32 fillColor;
 			FillPattern fillPattern;
-			Text::String *dataFormat;
+			Optional<Text::String> dataFormat;
 			Bool protection;
 
 		public:
@@ -115,7 +115,7 @@ namespace Text
 			BorderStyle GetBorderRight() const;
 			BorderStyle GetBorderTop() const;
 			BorderStyle GetBorderBottom() const;
-			Text::String *GetDataFormat() const;
+			Optional<Text::String> GetDataFormat() const;
 		};
 	}
 }

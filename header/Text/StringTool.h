@@ -31,7 +31,7 @@ namespace Text
 		static const UTF8Char *Null2Empty(const UTF8Char *s);
 		static Bool SplitAsDouble(Text::CStringNN str, UTF8Char splitChar, NotNullPtr<Data::ArrayList<Double>> outArr);
 		static UOSInt SplitAsNewString(Text::CStringNN str, UTF8Char splitChar, NotNullPtr<Data::ArrayListStringNN> outArr);
-		static Bool Equals(Text::String *s1, Text::String *s2);
+		static Bool Equals(Optional<Text::String> s1, Optional<Text::String> s2);
 		static OSInt Compare(Text::String *s1, Text::String *s2);
 		static OSInt CompareICase(Text::String *s1, Text::String *s2);
 	};

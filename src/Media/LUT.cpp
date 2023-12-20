@@ -51,7 +51,7 @@ Media::LUT::LUT(UOSInt inputCh, UOSInt inputLev, UOSInt outputCh, DataFormat fmt
 
 Media::LUT::~LUT()
 {
-	SDEL_STRING(this->remark);
+	OPTSTR_DEL(this->remark);
 }
 
 IO::ParserType Media::LUT::GetParserType() const
@@ -59,19 +59,19 @@ IO::ParserType Media::LUT::GetParserType() const
 	return IO::ParserType::LUT;
 }
 
-void Media::LUT::SetRemark(Text::String *remark)
+void Media::LUT::SetRemark(Optional<Text::String> remark)
 {
-	SDEL_STRING(this->remark);
-	this->remark = SCOPY_STRING(remark);
+	OPTSTR_DEL(this->remark);
+	this->remark = Text::String::CopyOrNull(remark);
 }
 
 void Media::LUT::SetRemark(Text::CString remark)
 {
-	SDEL_STRING(this->remark);
+	OPTSTR_DEL(this->remark);
 	this->remark = Text::String::NewOrNull(remark);
 }
 
-Text::String *Media::LUT::GetRemark() const
+Optional<Text::String> Media::LUT::GetRemark() const
 {
 	return this->remark;
 }
@@ -282,7 +282,7 @@ Media::LUT *Media::LUT::Clone() const
 {
 	Media::LUT *newLut;
 	NEW_CLASS(newLut, Media::LUT(this->inputCh, this->inputLev, this->outputCh, this->fmt, this->sourceName));
-	if (this->remark)
+	if (!this->remark.IsNull())
 	{
 		newLut->SetRemark(this->remark);
 	}

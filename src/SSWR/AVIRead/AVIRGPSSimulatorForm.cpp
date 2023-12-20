@@ -7,7 +7,6 @@
 #include "SSWR/AVIRead/AVIRGPSSimulatorForm.h"
 #include "Text/MyStringFloat.h"
 #include "Text/StringBuilderUTF8.h"
-#include "UI/FolderDialog.h"
 
 Bool __stdcall SSWR::AVIRead::AVIRGPSSimulatorForm::OnMouseDown(void *userObj, Math::Coord2D<OSInt> scnPos)
 {
