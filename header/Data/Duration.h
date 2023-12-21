@@ -255,13 +255,13 @@ namespace Data
 			return ((UInt64)this->seconds * multiplier) + (this->ns * multiplier / 1000000000);
 		}
 
-		UInt64 MulDivU32(UInt32 multiplier, UInt32 divider) const
+		UInt64 SecsMulDivU32(UInt32 multiplier, UInt32 divider) const
 		{
 			if (this->seconds < 0)
 				return 0;
 			UInt64 secs = (UInt64)this->seconds;
 			UInt64 ns = this->ns;
-			secs = secs * multiplier + (ns * multiplier) % 1000000000;
+			secs = secs * multiplier + (ns * multiplier) / 1000000000;
 			return secs / divider;
 		}
 

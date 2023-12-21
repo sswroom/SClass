@@ -387,7 +387,7 @@ Data::Duration Media::FileVideoSource::SeekToTime(Data::Duration time)
 	}
 	else
 	{
-		UInt32 newNum = (UInt32)time.MulDivU32(this->frameRateNorm, this->frameRateDenorm);
+		UInt32 newNum = (UInt32)time.SecsMulDivU32(this->frameRateNorm, this->frameRateDenorm);
 		if (newNum > this->frameParts.GetCount())
 		{
 			newNum = (UInt32)this->frameParts.GetCount();

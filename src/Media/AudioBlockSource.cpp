@@ -67,7 +67,7 @@ Data::Duration Media::AudioBlockSource::SeekToTime(Data::Duration time)
 	}
 	else
 	{
-		this->readBlock = (UInt32)time.MulDivU32(this->format.frequency, this->samplePerBlock);
+		this->readBlock = (UInt32)time.SecsMulDivU32(this->format.frequency, this->samplePerBlock);
 		return Data::Duration::FromRatioU64(this->readBlock * (UInt64)this->samplePerBlock, this->format.frequency);
 	}
 }
