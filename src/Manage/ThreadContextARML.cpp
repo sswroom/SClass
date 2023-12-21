@@ -174,10 +174,10 @@ void Manage::ThreadContextARM::SetFrameAddr(UOSInt frameAddr)
 	((ucontext_t*)this->context)->uc_mcontext.arm_lr = frameAddr;
 }
 
-Manage::ThreadContext *Manage::ThreadContextARM::Clone() const
+NotNullPtr<Manage::ThreadContext> Manage::ThreadContextARM::Clone() const
 {
-	Manage::ThreadContextARM *cont;
-	NEW_CLASS(cont, Manage::ThreadContextARM(this->procId, this->threadId, this->context));
+	NotNullPtr<Manage::ThreadContextARM> cont;
+	NEW_CLASSNN(cont, Manage::ThreadContextARM(this->procId, this->threadId, this->context));
 	return cont;
 }
 
