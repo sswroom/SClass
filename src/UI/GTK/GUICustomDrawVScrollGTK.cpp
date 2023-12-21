@@ -269,7 +269,7 @@ UI::GUICustomDrawVScroll::GUICustomDrawVScroll(NotNullPtr<UI::GUICore> ui, NotNu
 	g_signal_connect(G_OBJECT(this->hwnd), "key-press-event", G_CALLBACK(GUICustomDrawVScroll_OnKeyDown), this);
 	gtk_widget_set_events((GtkWidget*)this->hwnd, GDK_ALL_EVENTS_MASK);
 	gtk_widget_set_can_focus((GtkWidget*)this->hwnd, true);
-	parent->AddChild(this);
+	parent->AddChild(*this);
 	this->Show();
 }
 

@@ -63,7 +63,7 @@ UI::GUIListBox::GUIListBox(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIClientC
 	}
 	this->hwnd = (ControlHandle*)gtk_scrolled_window_new(0, 0);
 	gtk_container_add(GTK_CONTAINER(this->hwnd), data->listbox);
-	parent->AddChild(this);
+	parent->AddChild(*this);
 	g_signal_connect(data->listbox, "row-selected", G_CALLBACK(GUIListBox_SelChange), this);
 	g_signal_connect(data->listbox, "button-press-event", G_CALLBACK(GUIListBox_ButtonPress), this);
 	g_signal_connect(data->listbox, "show", G_CALLBACK(GUIListBox_Show), data);

@@ -114,7 +114,7 @@ UI::GUIControl::GUIControl(NotNullPtr<GUICore> ui, Optional<UI::GUIClientControl
 	{
 		this->hdpi = nnparent->GetHDPI();
 		this->ddpi = nnparent->GetDDPI();
-		nnparent->AddChild(this);
+		nnparent->AddChild(*this);
 	}
 	else
 	{

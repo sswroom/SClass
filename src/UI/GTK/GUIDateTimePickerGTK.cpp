@@ -19,7 +19,7 @@ UI::GUIDateTimePicker::GUIDateTimePicker(NotNullPtr<UI::GUICore> ui, NotNullPtr<
 	gtk_widget_set_hexpand(data->widget, false);
 	this->clsData = data;
 	this->hwnd = (ControlHandle*)data->widget;
-	parent->AddChild(this);
+	parent->AddChild(*this);
 	this->Show();
 	this->SetFormat("yyyy-MM-dd HH:mm:ss");
 }

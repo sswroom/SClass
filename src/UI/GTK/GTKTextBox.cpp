@@ -59,7 +59,7 @@ UI::GTK::GTKTextBox::GTKTextBox(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUICl
 {
 	this->InitTextBox(initText, false);
 	this->hwnd = (ControlHandle*)this->widget;
-	parent->AddChild(this);
+	parent->AddChild(*this);
 	this->Show();
 }
 
@@ -70,13 +70,13 @@ UI::GTK::GTKTextBox::GTKTextBox(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUICl
 	{
 		this->hwnd = (ControlHandle*)gtk_scrolled_window_new(0, 0);
 		gtk_container_add(GTK_CONTAINER(this->hwnd), this->widget);
-		parent->AddChild(this);
+		parent->AddChild(*this);
 		gtk_widget_show(this->widget);
 	}
 	else
 	{
 		this->hwnd = (ControlHandle*)this->widget;
-		parent->AddChild(this);
+		parent->AddChild(*this);
 	}
 	this->Show();
 }

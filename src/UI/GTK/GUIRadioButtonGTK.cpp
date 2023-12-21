@@ -40,12 +40,12 @@ UI::GUIRadioButton::GUIRadioButton(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GU
 	UOSInt j = parent->GetChildCount();
 	while (i < j)
 	{
-		UI::GUIControl *ctrl = parent->GetChild(i);
-		if (ctrl != this)
+		NotNullPtr<UI::GUIControl> ctrl;
+		if (parent->GetChild(i).SetTo(ctrl) && ctrl.Ptr() != this)
 		{
 			if (ctrl->GetObjectClass().Equals(UTF8STRC("RadioButton")))
 			{
-				radioBtn = (GUIRadioButton*)ctrl;
+				radioBtn = (GUIRadioButton*)ctrl.Ptr();
 			}
 		}
 		i++;
@@ -59,7 +59,7 @@ UI::GUIRadioButton::GUIRadioButton(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GU
 	{
 		this->hwnd = (ControlHandle*)gtk_radio_button_new_with_label(0, (const Char*)initText.v);
 	}
-	parent->AddChild(this);
+	parent->AddChild(*this);
 	this->Show();
 
 	g_signal_connect(this->hwnd, "toggled", G_CALLBACK(GUIRadioButton_SelChange), this);

@@ -54,7 +54,7 @@ UI::GTK::GTKButton::GTKButton(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIClie
 	g_signal_connect((GtkButton*)this->hwnd, "grab-broken-event", G_CALLBACK(SignalFocusLost), this);
 	g_signal_connect((GtkButton*)this->hwnd, "pressed", G_CALLBACK(SignalPress), this);
 	g_signal_connect((GtkButton*)this->hwnd, "released", G_CALLBACK(SignalRelease), this);
-	parent->AddChild(this);
+	parent->AddChild(*this);
 	this->Show();
 }
 

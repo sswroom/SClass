@@ -51,7 +51,7 @@ UI::GUIProgressBar::GUIProgressBar(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GU
 	gtk_style_context_add_provider(style, (GtkStyleProvider*)styleProvider, GTK_STYLE_PROVIDER_PRIORITY_USER);
 	gtk_widget_reset_style(widget);
 #endif
-	parent->AddChild(this);
+	parent->AddChild(*this);
 	this->Show();
 	this->totalCnt = totalCnt;
 	ClassData *data = MemAlloc(ClassData, 1);

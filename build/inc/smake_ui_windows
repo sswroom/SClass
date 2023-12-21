@@ -50,8 +50,6 @@ UI/GUIListBox.h:
 @GUIListBoxWin.o
 UI/GUIListView.h:
 @GUIListViewWin.o
-UI/GUIPanel.h:
-@GUIPanelWin.o
 UI/GUIMainMenu.h:
 @GUIMainMenu.o
 UI/GUIMenu.h:

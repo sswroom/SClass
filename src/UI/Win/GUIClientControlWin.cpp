@@ -21,31 +21,28 @@ UI::GUIClientControl::~GUIClientControl()
 
 void UI::GUIClientControl::UpdateFont()
 {
-	UOSInt i;
-	UOSInt j;
 	void *font = GetFont();
 	if (font)
 	{
 		SendMessage((HWND)this->hwnd, WM_SETFONT, (WPARAM)font, TRUE);
 	}
-	i = 0;
-	j = this->children.GetCount();
-	while (i < j)
+	Data::ArrayIterator<NotNullPtr<UI::GUIControl>> it = this->children.Iterator();
+	while (it.HasNext())
 	{
-		this->children.GetItem(i)->UpdateFont();
-		i++;
+		it.Next()->UpdateFont();
 	}
 }
 
 void UI::GUIClientControl::ClearChildren()
 {
-	UOSInt i = this->children.GetCount();
-	while (i-- > 0)
+	Data::ArrayIterator<NotNullPtr<GUIControl>> it = this->children.Iterator();
+	while (it.HasNext())
 	{
-		GUIControl *ctrl = this->children.RemoveAt(i);
+		NotNullPtr<GUIControl> ctrl = it.Next();
 		ctrl->DestroyObject();
-		DEL_CLASS(ctrl);
+		ctrl.Delete();
 	}
+	this->children.Clear();
 }
 
 Bool UI::GUIClientControl::MyEraseBkg(void *hdc)
@@ -80,39 +77,41 @@ Math::Size2DDbl UI::GUIClientControl::GetClientSize()
 	return Math::Size2DDbl(rc.right - rc.left, rc.bottom - rc.top) * this->ddpi / this->hdpi;
 }
 
-void UI::GUIClientControl::AddChild(GUIControl *child)
+void UI::GUIClientControl::AddChild(NotNullPtr<GUIControl> child)
 {
 	this->children.Add(child);
 }
 
-UOSInt UI::GUIClientControl::GetChildCount()
+UOSInt UI::GUIClientControl::GetChildCount() const
 {
 	return this->children.GetCount();
 }
 
-UI::GUIControl *UI::GUIClientControl::GetChild(UOSInt index)
+Optional<UI::GUIControl> UI::GUIClientControl::GetChild(UOSInt index) const
 {
 	return this->children.GetItem(index);
 }
 
+Data::ArrayIterator<NotNullPtr<UI::GUIControl>> UI::GUIClientControl::ChildIterator() const
+{
+	return this->children.Iterator();
+}
+
 void UI::GUIClientControl::UpdateChildrenSize(Bool redraw)
 {
-	UOSInt i;
-	UOSInt j;
 	Double left = 0;
 	Double top = 0;
 	Math::Size2DDbl br;
 	Math::Size2DDbl ctrlSz;
 	Bool hasFill = false;
-	GUIControl *ctrl;
+	NotNullPtr<GUIControl> ctrl;
 	DockType dt;
 
 	br = GetClientSize();
-	i = 0;
-	j = this->children.GetCount();
-	while (i < j)
+	Data::ArrayIterator<NotNullPtr<GUIControl>> it = this->children.Iterator();
+	while (it.HasNext())
 	{
-		ctrl = this->children.GetItem(i);
+		ctrl = it.Next();
 		dt = ctrl->GetDockType();
 		if (dt == UI::GUIControl::DOCK_NONE)
 		{
@@ -153,15 +152,13 @@ void UI::GUIClientControl::UpdateChildrenSize(Bool redraw)
 				br.y -= ctrlSz.y;
 			}
 		}
-
-		i++;
 	}
 	this->undockLeft = left;
 	this->undockTop = top;
 	this->undockRight = br.x;
 	this->undockBottom = br.y;
 	this->hasFillCtrl = hasFill;
-	if (redraw && j > 0 && this->hwnd)
+	if (redraw && this->children.GetCount() > 0 && this->hwnd)
 	{
 		InvalidateRect((HWND)this->hwnd, 0, TRUE);
 	}
@@ -199,11 +196,10 @@ void UI::GUIClientControl::SetDPI(Double hdpi, Double ddpi)
 	{
 		this->UpdateFont();
 	}
-
-	UOSInt i = this->children.GetCount();
-	while (i-- > 0)
+	Data::ArrayIterator<NotNullPtr<GUIControl>> it = this->children.Iterator();
+	while (it.HasNext())
 	{
-		this->children.GetItem(i)->SetDPI(hdpi, ddpi);
+		it.Next()->SetDPI(hdpi, ddpi);
 	}
 	this->UpdateChildrenSize(true);
 }

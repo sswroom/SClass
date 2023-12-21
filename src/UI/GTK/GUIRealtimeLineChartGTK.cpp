@@ -193,7 +193,7 @@ UI::GUIRealtimeLineChart::GUIRealtimeLineChart(NotNullPtr<UI::GUICore> ui, NotNu
 	ClearChart();
 
 	this->hwnd = (ControlHandle*)gtk_drawing_area_new();
-	parent->AddChild(this);
+	parent->AddChild(*this);
 	this->Show();
 	g_signal_connect(G_OBJECT(this->hwnd), "draw", G_CALLBACK(GUIRealtimeLineChart_Draw), this);
 

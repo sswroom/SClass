@@ -5,11 +5,12 @@
 #include "UI/GUILabel.h"
 #include "UI/GUIPanel.h"
 #include "UI/Win/WinCore.h"
+#include "UI/Win/WinPanelBase.h"
 #include <windows.h>
 
 #define CLASSNAME L"Panel"
 #define BGBRUSH ((HBRUSH)COLOR_BTNSHADOW)
-Int32 UI::GUIPanel::useCnt = 0;
+Int32 UI::Win::WinPanelBase::useCnt = 0;
 
 #ifndef GWL_USERDATA
 #define GWL_USERDATA GWLP_USERDATA
@@ -19,9 +20,9 @@ Int32 UI::GUIPanel::useCnt = 0;
 #define GetWindowLongPtr(a, b) GetWindowLongW(a, b)
 #endif
 
-OSInt __stdcall UI::GUIPanel::PnlWndProc(void *hWnd, UInt32 msg, UOSInt wParam, OSInt lParam)
+OSInt __stdcall UI::Win::WinPanelBase::PnlWndProc(void *hWnd, UInt32 msg, UOSInt wParam, OSInt lParam)
 {
-	UI::GUIPanel *me = (UI::GUIPanel*)UI::Win::WinCore::MSGetWindowObj((ControlHandle*)hWnd, GWL_USERDATA);
+	UI::Win::WinPanelBase *me = (UI::Win::WinPanelBase*)UI::Win::WinCore::MSGetWindowObj((ControlHandle*)hWnd, GWL_USERDATA);
 	UI::GUIControl*ctrl;
 	SCROLLINFO si;
 	Bool upd;
@@ -66,7 +67,7 @@ OSInt __stdcall UI::GUIPanel::PnlWndProc(void *hWnd, UInt32 msg, UOSInt wParam, 
 			GetScrollInfo ((HWND)hWnd, SB_HORZ, &si);
 			if (upd)
 			{
-				me->UpdateChildrenSize(true);
+				me->master->UpdateChildrenSize(true);
 			}
 		}
 		return 0;
@@ -108,7 +109,7 @@ OSInt __stdcall UI::GUIPanel::PnlWndProc(void *hWnd, UInt32 msg, UOSInt wParam, 
 			GetScrollInfo ((HWND)hWnd, SB_VERT, &si);
 			if (upd)
 			{
-				me->UpdateChildrenSize(true);
+				me->master->UpdateChildrenSize(true);
 			}
 		}
 		return 0;
@@ -130,9 +131,9 @@ OSInt __stdcall UI::GUIPanel::PnlWndProc(void *hWnd, UInt32 msg, UOSInt wParam, 
 	case WM_SIZE:
 		if (me)
 		{
-			me->OnSizeChanged(false);
+			me->master->OnSizeChanged(false);
 			me->UpdateScrollBars();
-			me->UpdateChildrenSize(false);
+			me->master->UpdateChildrenSize(false);
 /*			if (me->visible)
 			{
 				InvalidateRect((HWND)hWnd, 0, false);
@@ -140,7 +141,7 @@ OSInt __stdcall UI::GUIPanel::PnlWndProc(void *hWnd, UInt32 msg, UOSInt wParam, 
 		}
 		return 0;//DefWindowProc((HWND)hWnd, msg, wParam, lParam);
 	case WM_ERASEBKGND:
-		return me->MyEraseBkg((void*)wParam);
+		return me->master->MyEraseBkg((void*)wParam);
 	case WM_CTLCOLORSTATIC:
 		{
 			HDC hdcStatic = (HDC) wParam;
@@ -177,11 +178,11 @@ OSInt __stdcall UI::GUIPanel::PnlWndProc(void *hWnd, UInt32 msg, UOSInt wParam, 
 	return DefWindowProc((HWND)hWnd, msg, wParam, lParam);
 }
 
-void UI::GUIPanel::Init(void *hInst)
+void UI::Win::WinPanelBase::Init(void *hInst)
 {
 	WNDCLASSW wc;
     wc.style = 0; 
-	wc.lpfnWndProc = (WNDPROC)UI::GUIPanel::PnlWndProc; 
+	wc.lpfnWndProc = (WNDPROC)UI::Win::WinPanelBase::PnlWndProc; 
     wc.cbClsExtra = 0; 
     wc.cbWndExtra = 0; 
     wc.hInstance = (HINSTANCE)hInst; 
@@ -195,12 +196,12 @@ void UI::GUIPanel::Init(void *hInst)
         return; 
 }
 
-void UI::GUIPanel::Deinit(void *hInst)
+void UI::Win::WinPanelBase::Deinit(void *hInst)
 {
 	UnregisterClassW(CLASSNAME, (HINSTANCE)hInst);
 }
 
-void UI::GUIPanel::UpdateScrollBars()
+void UI::Win::WinPanelBase::UpdateScrollBars()
 {
 	RECT rc;
 	Int32 w;
@@ -208,7 +209,7 @@ void UI::GUIPanel::UpdateScrollBars()
 	Int32 vsSize = GetSystemMetrics(SM_CXVSCROLL);
 	Int32 hsSize = GetSystemMetrics(SM_CYHSCROLL);
 	SCROLLINFO info;
-	GetClientRect((HWND)this->hwnd, &rc);
+	GetClientRect((HWND)this->master->GetHandle(), &rc);
 	w = rc.right - rc.left;
 	h = rc.bottom - rc.top;
 	if (w >= this->minW && h >= this->minH)
@@ -224,7 +225,7 @@ void UI::GUIPanel::UpdateScrollBars()
 			this->scrollV = false;
 		}
 #ifndef _WIN32_WCE
-		ShowScrollBar((HWND)this->hwnd, SB_BOTH, FALSE);
+		ShowScrollBar((HWND)this->master->GetHandle(), SB_BOTH, FALSE);
 #endif
 	}
 	else if (w < this->minW)
@@ -232,7 +233,7 @@ void UI::GUIPanel::UpdateScrollBars()
 		if (!this->scrollH)
 		{
 #ifndef _WIN32_WCE
-			ShowScrollBar((HWND)this->hwnd, SB_HORZ, TRUE);
+			ShowScrollBar((HWND)this->master->GetHandle(), SB_HORZ, TRUE);
 #endif
 			this->scrollH = true;
 		}
@@ -241,7 +242,7 @@ void UI::GUIPanel::UpdateScrollBars()
 			if (!this->scrollV)
 			{
 #ifndef _WIN32_WCE
-				ShowScrollBar((HWND)this->hwnd, SB_VERT, TRUE);
+				ShowScrollBar((HWND)this->master->GetHandle(), SB_VERT, TRUE);
 #endif
 				this->scrollV = true;
 			}
@@ -251,13 +252,13 @@ void UI::GUIPanel::UpdateScrollBars()
 			info.nMin = 0;
 			info.nPage = (UInt32)(h - hsSize);
 //			info.nPos = this->currScrY;
-			SetScrollInfo((HWND)this->hwnd, SB_VERT, &info, TRUE);
+			SetScrollInfo((HWND)this->master->GetHandle(), SB_VERT, &info, TRUE);
 			w -= vsSize;
 		}
 		else if (this->scrollV)
 		{
 #ifndef _WIN32_WCE
-			ShowScrollBar((HWND)this->hwnd, SB_VERT, FALSE);
+			ShowScrollBar((HWND)this->master->GetHandle(), SB_VERT, FALSE);
 #endif
 			this->scrollV = false;
 			this->currScrY = 0;
@@ -268,14 +269,14 @@ void UI::GUIPanel::UpdateScrollBars()
 		info.nMin = 0;
 		info.nPage = (UInt32)w;
 //		info.nPos = this->currScrX;
-		SetScrollInfo((HWND)this->hwnd, SB_HORZ, &info, TRUE);
+		SetScrollInfo((HWND)this->master->GetHandle(), SB_HORZ, &info, TRUE);
 	}
 	else if (h < this->minH)
 	{
 		if (!this->scrollV)
 		{
 #ifndef _WIN32_WCE
-			ShowScrollBar((HWND)this->hwnd, SB_VERT, TRUE);
+			ShowScrollBar((HWND)this->master->GetHandle(), SB_VERT, TRUE);
 #endif
 			this->scrollV = true;
 		}
@@ -284,7 +285,7 @@ void UI::GUIPanel::UpdateScrollBars()
 			if (!this->scrollH)
 			{
 #ifndef _WIN32_WCE
-				ShowScrollBar((HWND)this->hwnd, SB_HORZ, TRUE);
+				ShowScrollBar((HWND)this->master->GetHandle(), SB_HORZ, TRUE);
 #endif
 				this->scrollH = true;
 			}
@@ -294,13 +295,13 @@ void UI::GUIPanel::UpdateScrollBars()
 			info.nMin = 0;
 			info.nPage = (UInt32)(w - vsSize);
 //			info.nPos = this->currScrX;
-			SetScrollInfo((HWND)this->hwnd, SB_HORZ, &info, TRUE);
+			SetScrollInfo((HWND)this->master->GetHandle(), SB_HORZ, &info, TRUE);
 			h -= hsSize;
 		}
 		else if (this->scrollH)
 		{
 #ifndef _WIN32_WCE
-			ShowScrollBar((HWND)this->hwnd, SB_HORZ, FALSE);
+			ShowScrollBar((HWND)this->master->GetHandle(), SB_HORZ, FALSE);
 #endif
 			this->scrollH = false;
 			this->currScrX = 0;
@@ -311,12 +312,14 @@ void UI::GUIPanel::UpdateScrollBars()
 		info.nMin = 0;
 		info.nPage = (UInt32)h;
 //		info.nPos = this->currScrY;
-		SetScrollInfo((HWND)this->hwnd, SB_VERT, &info, TRUE);
+		SetScrollInfo((HWND)this->master->GetHandle(), SB_VERT, &info, TRUE);
 	}
 }
 
-UI::GUIPanel::GUIPanel(NotNullPtr<UI::GUICore> ui, ControlHandle *parentHWnd) : UI::GUIClientControl(ui, 0)
+UI::Win::WinPanelBase::WinPanelBase(NotNullPtr<GUIPanel> master, NotNullPtr<UI::GUICore> ui, ControlHandle *parentHWnd)
 {
+	this->master = master;
+	this->ui = NotNullPtr<WinCore>::ConvertFrom(ui);
 	this->minW = 0;
 	this->minH = 0;
 	this->scrollH = false;
@@ -325,19 +328,21 @@ UI::GUIPanel::GUIPanel(NotNullPtr<UI::GUICore> ui, ControlHandle *parentHWnd) : 
 	this->currScrY = 0;
 	if (Sync::Interlocked::IncrementI32(useCnt) == 1)
 	{
-		Init(((UI::Win::WinCore*)this->ui.Ptr())->GetHInst());
+		Init(this->ui->GetHInst());
 	}
 
 	UInt32 style = WS_CLIPSIBLINGS | WS_CHILD | WS_VISIBLE;
 #ifdef _WIN32_WCE
-	this->InitControl(((UI::Win::WinCore*)this->ui)->GetHInst(), parentHWnd, CLASSNAME, (const UTF8Char*)"", style, 0, 0, 0, 200, 200);
+	this->master->InitControl(this->ui->GetHInst(), parentHWnd, CLASSNAME, (const UTF8Char*)"", style, 0, 0, 0, 200, 200);
 #else
-	this->InitControl(((UI::Win::WinCore*)this->ui.Ptr())->GetHInst(), parentHWnd, CLASSNAME, (const UTF8Char*)"", style, WS_EX_CONTROLPARENT, 0, 0, 200, 200);
+	this->master->InitControl(this->ui->GetHInst(), parentHWnd, CLASSNAME, (const UTF8Char*)"", style, WS_EX_CONTROLPARENT, 0, 0, 200, 200);
 #endif
 }
 
-UI::GUIPanel::GUIPanel(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIClientControl> parent) : UI::GUIClientControl(ui, parent)
+UI::Win::WinPanelBase::WinPanelBase(NotNullPtr<GUIPanel> master, NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIClientControl> parent)
 {
+	this->master = master;
+	this->ui = NotNullPtr<WinCore>::ConvertFrom(ui);
 	this->minW = 0;
 	this->minH = 0;
 	this->scrollH = false;
@@ -346,7 +351,7 @@ UI::GUIPanel::GUIPanel(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIClientContr
 	this->currScrY = 0;
 	if (Sync::Interlocked::IncrementI32(useCnt) == 1)
 	{
-		Init(((UI::Win::WinCore*)this->ui.Ptr())->GetHInst());
+		Init(this->ui->GetHInst());
 	}
 
 	UInt32 style = WS_CLIPSIBLINGS | WS_CHILD;
@@ -355,56 +360,41 @@ UI::GUIPanel::GUIPanel(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIClientContr
 		style = style | WS_VISIBLE;
 	}
 #ifdef _WIN32_WCE
-	this->InitControl(((UI::Win::WinCore*)this->ui.Ptr())->GetHInst(), parent, CLASSNAME, (const UTF8Char*)"", style, 0, 0, 0, 200, 200);
+	this->master->InitControl(this->ui->GetHInst(), parent, CLASSNAME, (const UTF8Char*)"", style, 0, 0, 0, 200, 200);
 #else
-	this->InitControl(((UI::Win::WinCore*)this->ui.Ptr())->GetHInst(), parent, CLASSNAME, (const UTF8Char*)"", style, WS_EX_CONTROLPARENT, 0, 0, 200, 200);
+	this->master->InitControl(this->ui->GetHInst(), parent, CLASSNAME, (const UTF8Char*)"", style, WS_EX_CONTROLPARENT, 0, 0, 200, 200);
 #endif
 }
 
-UI::GUIPanel::~GUIPanel()
+UI::Win::WinPanelBase::~WinPanelBase()
 {
 	if (Sync::Interlocked::DecrementI32(useCnt) == 0)
 	{
-		Deinit(((UI::Win::WinCore*)this->ui.Ptr())->GetHInst());
+		Deinit(this->ui->GetHInst());
 	}
 }
 
-Bool UI::GUIPanel::IsChildVisible()
-{
-	return true;
-}
-
-Math::Coord2DDbl UI::GUIPanel::GetClientOfst()
+Math::Coord2DDbl UI::Win::WinPanelBase::GetClientOfst()
 {
 	return Math::Coord2DDbl(-this->currScrX, -this->currScrY);
 }
 
-Math::Size2DDbl UI::GUIPanel::GetClientSize()
+Math::Size2DDbl UI::Win::WinPanelBase::GetClientSize()
 {
 	Int32 cliW;
 	Int32 cliH;
 	RECT rc;
-	GetClientRect((HWND)this->hwnd, &rc);
+	GetClientRect((HWND)this->master->GetHandle(), &rc);
 	cliW = rc.right - rc.left;
 	cliH = rc.bottom - rc.top;
 	if (cliW < this->minW)
 		cliW = this->minW;
 	if (cliH < this->minH)
 		cliH = this->minH;
-	return Math::Size2DDbl(cliW, cliH) * this->ddpi / this->hdpi;
+	return Math::Size2DDbl(cliW, cliH) * this->master->GetDDPI() / this->master->GetHDPI();
 }
 
-Text::CStringNN UI::GUIPanel::GetObjectClass() const
-{
-	return CSTR("Panel");
-}
-
-OSInt UI::GUIPanel::OnNotify(UInt32 code, void *lParam)
-{
-	return 0;
-}
-
-void UI::GUIPanel::SetMinSize(Int32 minW, Int32 minH)
+void UI::Win::WinPanelBase::SetMinSize(Int32 minW, Int32 minH)
 {
 	this->minW = minW;
 	this->minH = minH;

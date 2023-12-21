@@ -1,5 +1,6 @@
 #ifndef _SM_UI_GUICLIENTCONTROL
 #define _SM_UI_GUICLIENTCONTROL
+#include "Data/ArrayListNN.h"
 #include "UI/GUIControl.h"
 
 namespace UI
@@ -7,7 +8,7 @@ namespace UI
 	class GUIClientControl : public UI::GUIControl
 	{
 	protected:
-		Data::ArrayList<UI::GUIControl*> children;
+		Data::ArrayListNN<UI::GUIControl> children;
 		Double undockLeft;
 		Double undockTop;
 		Double undockRight;
@@ -20,17 +21,19 @@ namespace UI
 		GUIClientControl(NotNullPtr<GUICore> ui, Optional<UI::GUIClientControl> parent);
 		virtual void UpdateFont();
 		void ClearChildren();
+	public:
 		Bool MyEraseBkg(void *hdc);
 	public:
 		virtual ~GUIClientControl();
 
 		virtual Math::Coord2DDbl GetClientOfst();
 		virtual Math::Size2DDbl GetClientSize();
-		virtual void AddChild(GUIControl *child);
+		virtual void AddChild(NotNullPtr<GUIControl> child);
 		virtual Bool IsChildVisible() = 0;
 		
-		UOSInt GetChildCount();
-		UI::GUIControl *GetChild(UOSInt index);
+		UOSInt GetChildCount() const;
+		Optional<UI::GUIControl> GetChild(UOSInt index) const;
+		Data::ArrayIterator<NotNullPtr<UI::GUIControl>> ChildIterator() const;
 		void FocusChild(GUIControl *child);
 
 		void UpdateChildrenSize(Bool redraw);

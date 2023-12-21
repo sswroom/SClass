@@ -16,6 +16,7 @@
 #include "UI/Java/JavaHSplitter.h"
 #include "UI/Java/JavaLabel.h"
 #include "UI/Java/JavaMessageDialog.h"
+#include "UI/Java/JavaPanelBase.h"
 #include "UI/Java/JavaTabControl.h"
 #include "UI/Java/JavaTextBox.h"
 #include "UI/Java/JavaVSplitter.h"
@@ -310,5 +311,19 @@ NotNullPtr<UI::GUIFontDialog> UI::Java::JavaCore::NewFontDialog(Text::CString fo
 {
 	NotNullPtr<UI::Java::JavaFontDialog> ctrl;
 	NEW_CLASSNN(ctrl, UI::Java::JavaFontDialog(fontName, fontSizePt, isBold, isItalic));
+	return ctrl;
+}
+
+NotNullPtr<UI::GUIPanelBase> UI::Java::JavaCore::NewPanelBase(NotNullPtr<UI::GUIPanel> master, ControlHandle *parentHWnd)
+{
+	NotNullPtr<UI::Java::JavaPanelBase> ctrl;
+	NEW_CLASSNN(ctrl, UI::Java::JavaPanelBase(master, *this, parentHWnd));
+	return ctrl;
+}
+
+NotNullPtr<UI::GUIPanelBase> UI::Java::JavaCore::NewPanelBase(NotNullPtr<UI::GUIPanel> master, NotNullPtr<UI::GUIClientControl> parent)
+{
+	NotNullPtr<UI::Java::JavaPanelBase> ctrl;
+	NEW_CLASSNN(ctrl, UI::Java::JavaPanelBase(master, *this, parent));
 	return ctrl;
 }

@@ -35,7 +35,7 @@ UI::GUITrackBar::GUITrackBar(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIClien
 	gtk_scale_set_draw_value((GtkScale*)this->hwnd, false);
 	gtk_range_set_value((GtkRange*)this->hwnd, UOSInt2Double(currVal));
 	g_signal_connect((GtkRange*)this->hwnd, "value-changed", G_CALLBACK(GUITrackBar_ValueChanged), this);
-	parent->AddChild(this);
+	parent->AddChild(*this);
 	this->Show();
 }
 

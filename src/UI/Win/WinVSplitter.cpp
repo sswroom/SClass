@@ -23,7 +23,7 @@ OSInt __stdcall UI::Win::WinVSplitter::FormWndProc(void *hWnd, UInt32 msg, UOSIn
 	POINT pt;
 	HDC hdc;
 	UOSInt i;
-	UI::GUIControl *ctrl;
+	NotNullPtr<UI::GUIControl> ctrl;
 
 	if (me == 0)
 	{
@@ -72,29 +72,31 @@ OSInt __stdcall UI::Win::WinVSplitter::FormWndProc(void *hWnd, UInt32 msg, UOSIn
 				i = nnparent->GetChildCount();
 				while (i-- > 0)
 				{
-					ctrl = nnparent->GetChild(i);
-					if (ctrl == me)
+					if (nnparent->GetChild(i).SetTo(ctrl))
 					{
-						foundThis = true;
-					}
-					else if (foundThis)
-					{
-						dockType = ctrl->GetDockType();
-						if (dockType == UI::GUIControl::DOCK_BOTTOM && me->isBottom)
+						if (ctrl.Ptr() == me)
 						{
-							pos = ctrl->GetPositionP();
-							sz = ctrl->GetSizeP();
-							ctrl->SetAreaP(pos.x, drawY, pos.x + (OSInt)sz.x, pos.y + (OSInt)sz.y, false);
-							nnparent->UpdateChildrenSize(true);
-							break;
+							foundThis = true;
 						}
-						else if (dockType == UI::GUIControl::DOCK_TOP && !me->isBottom)
+						else if (foundThis)
 						{
-							pos = ctrl->GetPositionP();
-							sz = ctrl->GetSizeP();
-							ctrl->SetAreaP(pos.x, pos.y, pos.x + (OSInt)sz.x, drawY, false);
-							nnparent->UpdateChildrenSize(true);
-							break;
+							dockType = ctrl->GetDockType();
+							if (dockType == UI::GUIControl::DOCK_BOTTOM && me->isBottom)
+							{
+								pos = ctrl->GetPositionP();
+								sz = ctrl->GetSizeP();
+								ctrl->SetAreaP(pos.x, drawY, pos.x + (OSInt)sz.x, pos.y + (OSInt)sz.y, false);
+								nnparent->UpdateChildrenSize(true);
+								break;
+							}
+							else if (dockType == UI::GUIControl::DOCK_TOP && !me->isBottom)
+							{
+								pos = ctrl->GetPositionP();
+								sz = ctrl->GetSizeP();
+								ctrl->SetAreaP(pos.x, pos.y, pos.x + (OSInt)sz.x, drawY, false);
+								nnparent->UpdateChildrenSize(true);
+								break;
+							}
 						}
 					}
 				}
@@ -206,7 +208,7 @@ void UI::Win::WinVSplitter::CalDragRange()
 	Bool foundTop = false;
 	Bool foundBottom = false;
 	Bool foundThis = false;
-	UI::GUIControl *ctrl;
+	NotNullPtr<UI::GUIControl> ctrl;
 	UI::GUIControl::DockType dockType;
 	min = 0;
 	NotNullPtr<UI::GUIClientControl> nnparent;
@@ -220,30 +222,32 @@ void UI::Win::WinVSplitter::CalDragRange()
 		{
 			while (i-- > 0)
 			{
-				ctrl = nnparent->GetChild(i);
-				if (ctrl == this)
+				if (nnparent->GetChild(i).SetTo(ctrl))
 				{
-					foundThis = true;
-				}
-				else
-				{
-					dockType = ctrl->GetDockType();
-					if (dockType == UI::GUIControl::DOCK_BOTTOM)
+					if (ctrl.Ptr() == this)
 					{
-						if (foundThis && !foundBottom)
-						{
-							foundBottom = true;
-							max = ctrl->GetPositionP().y;
-							max += (OSInt)ctrl->GetSizeP().y;
-						}
+						foundThis = true;
 					}
-					else if (dockType == UI::GUIControl::DOCK_TOP)
+					else
 					{
-						if (!foundTop)
+						dockType = ctrl->GetDockType();
+						if (dockType == UI::GUIControl::DOCK_BOTTOM)
 						{
-							foundTop = true;
-							min = ctrl->GetPositionP().y;
-							min += (OSInt)ctrl->GetSizeP().y;
+							if (foundThis && !foundBottom)
+							{
+								foundBottom = true;
+								max = ctrl->GetPositionP().y;
+								max += (OSInt)ctrl->GetSizeP().y;
+							}
+						}
+						else if (dockType == UI::GUIControl::DOCK_TOP)
+						{
+							if (!foundTop)
+							{
+								foundTop = true;
+								min = ctrl->GetPositionP().y;
+								min += (OSInt)ctrl->GetSizeP().y;
+							}
 						}
 					}
 				}
@@ -253,28 +257,30 @@ void UI::Win::WinVSplitter::CalDragRange()
 		{
 			while (i-- > 0)
 			{
-				ctrl = nnparent->GetChild(i);
-				if (ctrl == this)
+				if (nnparent->GetChild(i).SetTo(ctrl))
 				{
-					foundThis = true;
-				}
-				else
-				{
-					dockType = ctrl->GetDockType();
-					if (dockType == UI::GUIControl::DOCK_BOTTOM)
+					if (ctrl.Ptr() == this)
 					{
-						if (!foundBottom)
-						{
-							foundBottom = true;
-							max = ctrl->GetPositionP().y;
-						}
+						foundThis = true;
 					}
-					else if (dockType == UI::GUIControl::DOCK_TOP)
+					else
 					{
-						if (foundThis && !foundTop)
+						dockType = ctrl->GetDockType();
+						if (dockType == UI::GUIControl::DOCK_BOTTOM)
 						{
-							foundTop = true;
-							min = ctrl->GetPositionP().y;
+							if (!foundBottom)
+							{
+								foundBottom = true;
+								max = ctrl->GetPositionP().y;
+							}
+						}
+						else if (dockType == UI::GUIControl::DOCK_TOP)
+						{
+							if (foundThis && !foundTop)
+							{
+								foundTop = true;
+								min = ctrl->GetPositionP().y;
+							}
 						}
 					}
 				}

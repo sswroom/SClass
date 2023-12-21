@@ -73,19 +73,17 @@ void UI::GUIRadioButton::Select()
 	NotNullPtr<UI::GUIClientControl> nnparent;
 	if (this->parent.SetTo(nnparent))
 	{
-		UOSInt i = 0;
-		UOSInt j = nnparent->GetChildCount();
-		while (i < j)
+		Data::ArrayIterator<NotNullPtr<GUIControl>> it = nnparent->ChildIterator();
+		while (it.HasNext())
 		{
-			UI::GUIControl *ctrl = nnparent->GetChild(i);
-			if (ctrl != this)
+			NotNullPtr<UI::GUIControl> ctrl = it.Next();
+			if (ctrl.Ptr() != this)
 			{
 				if (ctrl->GetObjectClass().Equals(UTF8STRC("RadioButton")))
 				{
-					((UI::GUIRadioButton*)ctrl)->ChangeSelected(false);
+					NotNullPtr<UI::GUIRadioButton>::ConvertFrom(ctrl)->ChangeSelected(false);
 				}
 			}
-			i++;
 		}
 	}
 	this->ChangeSelected(true);

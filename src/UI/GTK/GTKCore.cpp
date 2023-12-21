@@ -14,6 +14,7 @@
 #include "UI/GTK/GTKHSplitter.h"
 #include "UI/GTK/GTKLabel.h"
 #include "UI/GTK/GTKMessageDialog.h"
+#include "UI/GTK/GTKPanelBase.h"
 #include "UI/GTK/GTKTabControl.h"
 #include "UI/GTK/GTKTextBox.h"
 #include "UI/GTK/GTKVSplitter.h"
@@ -305,5 +306,19 @@ NotNullPtr<UI::GUIFontDialog> UI::GTK::GTKCore::NewFontDialog(Text::CString font
 {
 	NotNullPtr<UI::GTK::GTKFontDialog> ctrl;
 	NEW_CLASSNN(ctrl, UI::GTK::GTKFontDialog(fontName, fontSizePt, isBold, isItalic));
+	return ctrl;
+}
+
+NotNullPtr<UI::GUIPanelBase> UI::GTK::GTKCore::NewPanelBase(NotNullPtr<UI::GUIPanel> master, ControlHandle *parentHWnd)
+{
+	NotNullPtr<UI::GTK::GTKPanelBase> ctrl;
+	NEW_CLASSNN(ctrl, UI::GTK::GTKPanelBase(master, *this, parentHWnd));
+	return ctrl;
+}
+
+NotNullPtr<UI::GUIPanelBase> UI::GTK::GTKCore::NewPanelBase(NotNullPtr<UI::GUIPanel> master, NotNullPtr<UI::GUIClientControl> parent)
+{
+	NotNullPtr<UI::GTK::GTKPanelBase> ctrl;
+	NEW_CLASSNN(ctrl, UI::GTK::GTKPanelBase(master, *this, parent));
 	return ctrl;
 }

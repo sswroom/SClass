@@ -47,8 +47,6 @@ UI/GUIListBox.h:
 @GUIListBoxGTK.o
 UI/GUIListView.h:
 @GUIListViewGTK.o
-UI/GUIPanel.h:
-@GUIPanelGTK.o
 UI/GUIMainMenu.h:
 @GUIMainMenu.o
 UI/GUIMenu.h:

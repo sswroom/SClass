@@ -155,7 +155,7 @@ UI::GUITreeView::GUITreeView(NotNullPtr<GUICore> ui, NotNullPtr<UI::GUIClientCon
 	this->clsData = data;
 	this->hwnd = (ControlHandle*)gtk_scrolled_window_new(0, 0);
 	gtk_container_add(GTK_CONTAINER(this->hwnd), data->treeView);
-	parent->AddChild(this);
+	parent->AddChild(*this);
 	g_signal_connect(data->treeView, "cursor-changed", G_CALLBACK(GUITreeView_SelChange), this);
     g_signal_connect(data->treeView, "button-press-event", G_CALLBACK(GUITreeView_ButtonClick), this);
 	gtk_widget_show(data->treeView);

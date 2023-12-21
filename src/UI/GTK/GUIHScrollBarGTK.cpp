@@ -32,7 +32,7 @@ UI::GUIHScrollBar::GUIHScrollBar(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIC
 {
 	this->hwnd = (ControlHandle*)gtk_scrollbar_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	g_signal_connect((GtkButton*)this->hwnd, "value-changed", G_CALLBACK(GUIHScrollBar_ValueChanged), this);
-	parent->AddChild(this);
+	parent->AddChild(*this);
 	this->Show();
 }
 

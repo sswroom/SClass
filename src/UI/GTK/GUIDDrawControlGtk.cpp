@@ -473,7 +473,7 @@ UI::GUIDDrawControl::GUIDDrawControl(NotNullPtr<GUICore> ui, NotNullPtr<UI::GUIC
 //	this->HandleSizeChanged(OnResized, this);
 	gtk_widget_set_events((GtkWidget*)this->hwnd, GDK_ALL_EVENTS_MASK);
 	gtk_widget_set_can_focus((GtkWidget*)this->hwnd, true);
-	parent->AddChild(this);
+	parent->AddChild(*this);
 	g_signal_connect(G_OBJECT(this->clsData->imgCtrl), "draw", G_CALLBACK(GUIDDrawControl_OnDDDraw), this);
 	gtk_widget_show(this->clsData->imgCtrl);
 	this->Show();

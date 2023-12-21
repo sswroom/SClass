@@ -36,7 +36,7 @@ UI::GTK::GTKComboBox::GTKComboBox(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUI
 		this->hwnd = (ControlHandle*)gtk_combo_box_text_new();
 	}
 	this->allowEdit = allowEdit;
-	parent->AddChild(this);
+	parent->AddChild(*this);
 	this->Show();
 	g_signal_connect(this->hwnd, "changed", G_CALLBACK(GUIComboBox_EventChanged), this);
 	if (allowEdit)

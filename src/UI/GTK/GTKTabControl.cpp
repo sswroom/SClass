@@ -33,7 +33,7 @@ UI::GTK::GTKTabControl::GTKTabControl(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI:
 	this->selIndex = 0;
 	this->hwnd = (ControlHandle*)gtk_notebook_new();
 	g_signal_connect((GtkWidget*)this->hwnd, "switch-page", G_CALLBACK(SignalSwitchPage), this);
-	parent->AddChild(this);
+	parent->AddChild(*this);
 	this->Show();
 	g_idle_add(SignalShown, this);
 }

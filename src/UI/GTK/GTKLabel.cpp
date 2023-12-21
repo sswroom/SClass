@@ -11,7 +11,7 @@
 UI::GTK::GTKLabel::GTKLabel(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, Text::CStringNN label) : UI::GUILabel(ui, parent)
 {
 	this->hwnd = (ControlHandle*)gtk_label_new((const Char*)label.v);
-	parent->AddChild(this);
+	parent->AddChild(*this);
 #if GDK_VERSION_AFTER(3, 16)
 	gtk_label_set_xalign(GTK_LABEL((GtkWidget*)this->hwnd), 0.0);
 #elif GDK_VERSION_AFTER(3, 14)

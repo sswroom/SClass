@@ -81,7 +81,7 @@ UI::GTK::GTKHSplitter::GTKHSplitter(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::G
 	g_signal_connect(G_OBJECT(this->hwnd), "button-press-event", G_CALLBACK(SignalMouseDown), this);
 	g_signal_connect(G_OBJECT(this->hwnd), "button-release-event", G_CALLBACK(SignalMouseUp), this);
 	gtk_widget_set_events((GtkWidget*)this->hwnd, GDK_ALL_EVENTS_MASK);
-	parent->AddChild(this);
+	parent->AddChild(*this);
 	this->Show();
 
 	this->SetRect(0, 0, width, 100, false);
@@ -115,7 +115,7 @@ void UI::GTK::GTKHSplitter::EventMouseUp(UI::GUIControl::MouseButton btn, Math::
 		NotNullPtr<GUIClientControl> nnparent;
 		if (this->dragMode && this->parent.SetTo(nnparent))
 		{
-			UI::GUIControl *ctrl;
+			NotNullPtr<UI::GUIControl> ctrl;
 			Bool foundThis = false;
 			OSInt drawX = pos.x - this->dragX;
 			pos = this->GetPositionP();
@@ -124,29 +124,31 @@ void UI::GTK::GTKHSplitter::EventMouseUp(UI::GUIControl::MouseButton btn, Math::
 			UOSInt i = nnparent->GetChildCount();
 			while (i-- > 0)
 			{
-				ctrl = nnparent->GetChild(i);
-				if (ctrl == this)
+				if (nnparent->GetChild(i).SetTo(ctrl))
 				{
-					foundThis = true;
-				}
-				else if (foundThis)
-				{
-					dockType = ctrl->GetDockType();
-					if (dockType == UI::GUIControl::DOCK_RIGHT && this->isRight)
+					if (ctrl.Ptr() == this)
 					{
-						pos = ctrl->GetPositionP();
-						sz = ctrl->GetSizeP();
-						ctrl->SetAreaP(drawX, pos.y, pos.x + (OSInt)sz.x, pos.y + (OSInt)sz.y, false);
-						nnparent->UpdateChildrenSize(true);
-						break;
+						foundThis = true;
 					}
-					else if (dockType == UI::GUIControl::DOCK_LEFT && !this->isRight)
+					else if (foundThis)
 					{
-						pos = ctrl->GetPositionP();
-						sz = ctrl->GetSizeP();
-						ctrl->SetAreaP(pos.x, pos.y, drawX, pos.y + (OSInt)sz.y, false);
-						nnparent->UpdateChildrenSize(true);
-						break;
+						dockType = ctrl->GetDockType();
+						if (dockType == UI::GUIControl::DOCK_RIGHT && this->isRight)
+						{
+							pos = ctrl->GetPositionP();
+							sz = ctrl->GetSizeP();
+							ctrl->SetAreaP(drawX, pos.y, pos.x + (OSInt)sz.x, pos.y + (OSInt)sz.y, false);
+							nnparent->UpdateChildrenSize(true);
+							break;
+						}
+						else if (dockType == UI::GUIControl::DOCK_LEFT && !this->isRight)
+						{
+							pos = ctrl->GetPositionP();
+							sz = ctrl->GetSizeP();
+							ctrl->SetAreaP(pos.x, pos.y, drawX, pos.y + (OSInt)sz.y, false);
+							nnparent->UpdateChildrenSize(true);
+							break;
+						}
 					}
 				}
 			}

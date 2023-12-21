@@ -194,7 +194,7 @@ UI::GUIPictureBoxSimple::GUIPictureBoxSimple(NotNullPtr<UI::GUICore> ui, NotNull
 	this->clsData->tmpImage = 0;
 
 	this->hwnd = (ControlHandle*)gtk_image_new();
-	parent->AddChild(this);
+	parent->AddChild(*this);
 	this->Show();
 }
 

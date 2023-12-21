@@ -926,10 +926,10 @@ void UI::GUIForm::SetDPI(Double hdpi, Double ddpi)
 	{
 		this->menu->SetDPI(hdpi, ddpi);
 	}
-	UOSInt i = this->children.GetCount();
-	while (i-- > 0)
+	Data::ArrayIterator<NotNullPtr<GUIControl>> it = this->children.Iterator();
+	while (it.HasNext())
 	{
-		this->children.GetItem(i)->SetDPI(hdpi, ddpi);
+		it.Next()->SetDPI(hdpi, ddpi);
 	}
 	this->UpdateChildrenSize(true);
 }

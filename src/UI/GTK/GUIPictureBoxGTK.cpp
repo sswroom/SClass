@@ -289,7 +289,7 @@ UI::GUIPictureBox::GUIPictureBox(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIC
 	g_signal_connect(G_OBJECT(data->eventBox), "motion-notify-event", G_CALLBACK(GUIPictureBox_OnMouseMove), this);
 
 	this->hwnd = (ControlHandle*)data->eventBox;
-	parent->AddChild(this);
+	parent->AddChild(*this);
 	gtk_widget_show((GtkWidget*)data->gtkImage);
 	this->Show();
 }

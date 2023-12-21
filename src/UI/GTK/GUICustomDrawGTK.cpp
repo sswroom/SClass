@@ -325,7 +325,7 @@ UI::GUICustomDraw::GUICustomDraw(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIC
 	g_signal_connect(G_OBJECT(this->hwnd), "key-press-event", G_CALLBACK(GUICustomDraw_OnKeyDown), this);
 	gtk_widget_set_events((GtkWidget*)this->hwnd, GDK_ALL_EVENTS_MASK);
 	gtk_widget_set_can_focus((GtkWidget*)this->hwnd, true);
-	parent->AddChild(this);
+	parent->AddChild(*this);
 	this->Show();
 	data->timerId = g_timeout_add(1000, GUICustomDraw_OnTick, this);
 }

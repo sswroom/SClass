@@ -22,6 +22,8 @@ namespace UI
 	class GUIGroupBox;
 	class GUIHSplitter;
 	class GUILabel;
+	class GUIPanel;
+	class GUIPanelBase;
 	class GUITabControl;
 	class GUITextBox;
 	class GUIVSplitter;
@@ -73,6 +75,9 @@ namespace UI
 		virtual NotNullPtr<GUIFolderDialog> NewFolderDialog() = 0;
 		virtual NotNullPtr<GUIFontDialog> NewFontDialog(Optional<Text::String> fontName, Double fontSizePt, Bool isBold, Bool isItalic) = 0;
 		virtual NotNullPtr<GUIFontDialog> NewFontDialog(Text::CString fontName, Double fontSizePt, Bool isBold, Bool isItalic) = 0;
+
+		virtual NotNullPtr<GUIPanelBase> NewPanelBase(NotNullPtr<UI::GUIPanel> master, ControlHandle *parentHWnd) = 0;
+		virtual NotNullPtr<GUIPanelBase> NewPanelBase(NotNullPtr<UI::GUIPanel> master, NotNullPtr<UI::GUIClientControl> parent) = 0;
 	};
 }
 #endif

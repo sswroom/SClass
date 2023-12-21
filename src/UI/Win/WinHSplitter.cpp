@@ -145,7 +145,7 @@ void UI::Win::WinHSplitter::CalDragRange()
 	Bool foundLeft = false;
 	Bool foundRight = false;
 	Bool foundThis = false;
-	UI::GUIControl *ctrl;
+	NotNullPtr<UI::GUIControl> ctrl;
 	UI::GUIControl::DockType dockType;
 	min = 0;
 	NotNullPtr<GUIClientControl> nnparent;
@@ -159,30 +159,32 @@ void UI::Win::WinHSplitter::CalDragRange()
 		{
 			while (i-- > 0)
 			{
-				ctrl = nnparent->GetChild(i);
-				if (ctrl == this)
+				if (nnparent->GetChild(i).SetTo(ctrl))
 				{
-					foundThis = true;
-				}
-				else
-				{
-					dockType = ctrl->GetDockType();
-					if (dockType == UI::GUIControl::DOCK_RIGHT)
+					if (ctrl.Ptr() == this)
 					{
-						if (foundThis && !foundRight)
-						{
-							foundRight = true;
-							max = ctrl->GetPositionP().x;
-							max += (OSInt)ctrl->GetSizeP().x;
-						}
+						foundThis = true;
 					}
-					else if (dockType == UI::GUIControl::DOCK_LEFT)
+					else
 					{
-						if (!foundLeft)
+						dockType = ctrl->GetDockType();
+						if (dockType == UI::GUIControl::DOCK_RIGHT)
 						{
-							foundLeft = true;
-							min = ctrl->GetPositionP().x;
-							min += (OSInt)ctrl->GetSizeP().x;
+							if (foundThis && !foundRight)
+							{
+								foundRight = true;
+								max = ctrl->GetPositionP().x;
+								max += (OSInt)ctrl->GetSizeP().x;
+							}
+						}
+						else if (dockType == UI::GUIControl::DOCK_LEFT)
+						{
+							if (!foundLeft)
+							{
+								foundLeft = true;
+								min = ctrl->GetPositionP().x;
+								min += (OSInt)ctrl->GetSizeP().x;
+							}
 						}
 					}
 				}
@@ -192,28 +194,30 @@ void UI::Win::WinHSplitter::CalDragRange()
 		{
 			while (i-- > 0)
 			{
-				ctrl = nnparent->GetChild(i);
-				if (ctrl == this)
+				if (nnparent->GetChild(i).SetTo(ctrl))
 				{
-					foundThis = true;
-				}
-				else
-				{
-					dockType = ctrl->GetDockType();
-					if (dockType == UI::GUIControl::DOCK_RIGHT)
+					if (ctrl.Ptr() == this)
 					{
-						if (!foundRight)
-						{
-							foundRight = true;
-							max = ctrl->GetPositionP().x;
-						}
+						foundThis = true;
 					}
-					else if (dockType == UI::GUIControl::DOCK_LEFT)
+					else
 					{
-						if (foundThis && !foundLeft)
+						dockType = ctrl->GetDockType();
+						if (dockType == UI::GUIControl::DOCK_RIGHT)
 						{
-							foundLeft = true;
-							min = ctrl->GetPositionP().x;
+							if (!foundRight)
+							{
+								foundRight = true;
+								max = ctrl->GetPositionP().x;
+							}
+						}
+						else if (dockType == UI::GUIControl::DOCK_LEFT)
+						{
+							if (foundThis && !foundLeft)
+							{
+								foundLeft = true;
+								min = ctrl->GetPositionP().x;
+							}
 						}
 					}
 				}
@@ -315,29 +319,32 @@ void UI::Win::WinHSplitter::EventMouseUp(UI::GUIControl::MouseButton btn, Math::
 			UOSInt i = nnparent->GetChildCount();
 			while (i-- > 0)
 			{
-				UI::GUIControl *ctrl = nnparent->GetChild(i);
-				if (ctrl == this)
+				NotNullPtr<UI::GUIControl> ctrl;
+				if (nnparent->GetChild(i).SetTo(ctrl))
 				{
-					foundThis = true;
-				}
-				else if (foundThis)
-				{
-					dockType = ctrl->GetDockType();
-					if (dockType == UI::GUIControl::DOCK_RIGHT && this->isRight)
+					if (ctrl.Ptr() == this)
 					{
-						pos = ctrl->GetPositionP();
-						sz = ctrl->GetSizeP();
-						ctrl->SetAreaP(drawX, pos.y, pos.x + (OSInt)sz.x, pos.y + (OSInt)sz.y, false);
-						nnparent->UpdateChildrenSize(true);
-						break;
+						foundThis = true;
 					}
-					else if (dockType == UI::GUIControl::DOCK_LEFT && !this->isRight)
+					else if (foundThis)
 					{
-						pos = ctrl->GetPositionP();
-						sz = ctrl->GetSizeP();
-						ctrl->SetAreaP(pos.x, pos.y, drawX, pos.y + (OSInt)sz.y, false);
-						nnparent->UpdateChildrenSize(true);
-						break;
+						dockType = ctrl->GetDockType();
+						if (dockType == UI::GUIControl::DOCK_RIGHT && this->isRight)
+						{
+							pos = ctrl->GetPositionP();
+							sz = ctrl->GetSizeP();
+							ctrl->SetAreaP(drawX, pos.y, pos.x + (OSInt)sz.x, pos.y + (OSInt)sz.y, false);
+							nnparent->UpdateChildrenSize(true);
+							break;
+						}
+						else if (dockType == UI::GUIControl::DOCK_LEFT && !this->isRight)
+						{
+							pos = ctrl->GetPositionP();
+							sz = ctrl->GetSizeP();
+							ctrl->SetAreaP(pos.x, pos.y, drawX, pos.y + (OSInt)sz.y, false);
+							nnparent->UpdateChildrenSize(true);
+							break;
+						}
 					}
 				}
 			}

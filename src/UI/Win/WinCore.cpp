@@ -15,6 +15,7 @@
 #include "UI/Win/WinHSplitter.h"
 #include "UI/Win/WinLabel.h"
 #include "UI/Win/WinMessageDialog.h"
+#include "UI/Win/WinPanelBase.h"
 #include "UI/Win/WinTabControl.h"
 #include "UI/Win/WinTextBox.h"
 #include "UI/Win/WinVSplitter.h"
@@ -355,6 +356,20 @@ NotNullPtr<UI::GUIFontDialog> UI::Win::WinCore::NewFontDialog(Text::CString font
 {
 	NotNullPtr<UI::Win::WinFontDialog> ctrl;
 	NEW_CLASSNN(ctrl, UI::Win::WinFontDialog(fontName, fontSizePt, isBold, isItalic));
+	return ctrl;
+}
+
+NotNullPtr<UI::GUIPanelBase> UI::Win::WinCore::NewPanelBase(NotNullPtr<UI::GUIPanel> master, ControlHandle *parentHWnd)
+{
+	NotNullPtr<UI::Win::WinPanelBase> ctrl;
+	NEW_CLASSNN(ctrl, UI::Win::WinPanelBase(master, *this, parentHWnd));
+	return ctrl;
+}
+
+NotNullPtr<UI::GUIPanelBase> UI::Win::WinCore::NewPanelBase(NotNullPtr<UI::GUIPanel> master, NotNullPtr<UI::GUIClientControl> parent)
+{
+	NotNullPtr<UI::Win::WinPanelBase> ctrl;
+	NEW_CLASSNN(ctrl, UI::Win::WinPanelBase(master, *this, parent));
 	return ctrl;
 }
 

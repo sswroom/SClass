@@ -520,7 +520,7 @@ UI::GUITextView::GUITextView(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIClien
 	gtk_widget_set_events((GtkWidget*)this->hwnd, GDK_ALL_EVENTS_MASK);
 	gtk_widget_set_can_focus((GtkWidget*)this->hwnd, true);
 //	gtk_grab_add((GtkWidget*)this->hwnd);
-	parent->AddChild(this);
+	parent->AddChild(*this);
 	this->HandleSizeChanged(OnResize, this);
 	this->Show();
 	this->clsData->timerId = g_timeout_add(1000, GUITextView_OnTick, this);
