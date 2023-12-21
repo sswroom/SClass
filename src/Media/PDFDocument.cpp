@@ -68,8 +68,8 @@ Media::ImageList *Media::PDFDocument::CreateImage(UInt32 id, NotNullPtr<Parser::
 	if (!obj->IsImage())
 		return 0;
 	NotNullPtr<IO::StreamData> fd;
-	Text::String *filter = obj->GetFilter();
-	if (fd.Set(obj->GetData()) && filter)
+	NotNullPtr<Text::String> filter;
+	if (fd.Set(obj->GetData()) && obj->GetFilter().SetTo(filter))
 	{
 		if (filter->Equals(UTF8STRC("DCTDecode")))
 		{
@@ -84,12 +84,12 @@ Media::ImageList *Media::PDFDocument::CreateImage(UInt32 id, NotNullPtr<Parser::
 			UOSInt bpc = obj->GetBitPerComponent();
 			UOSInt width = obj->GetWidth();
 			UOSInt height = obj->GetHeight();
-			Text::String *colorSpace = obj->GetColorSpace();
+			NotNullPtr<Text::String> colorSpace;
 			if (bpc == 0 || width == 0 || height == 0)
 				return 0;
 			if (bpc == 8)
 			{
-				if (colorSpace == 0 || colorSpace->Equals(UTF8STRC("DeviceGray")))
+				if (!obj->GetColorSpace().SetTo(colorSpace) || colorSpace->Equals(UTF8STRC("DeviceGray")))
 				{
 
 				}

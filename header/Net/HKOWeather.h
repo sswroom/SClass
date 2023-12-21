@@ -141,22 +141,22 @@ namespace Net
 
 		struct WeatherForecast
 		{
-			Text::String *generalSituation;
+			Optional<Text::String> generalSituation;
 			Data::Timestamp updateTime;
 			Int32 seaTemp;
-			Text::String *seaTempPlace;
+			Optional<Text::String> seaTempPlace;
 			Data::Timestamp seaTempTime;
 			Data::ArrayList<DayForecast*> forecast;
 		};
 
 		struct LocalForecast
 		{
-			Text::String *generalSituation;
-			Text::String *tcInfo;
-			Text::String *fireDangerWarning;
-			Text::String *forecastPeriod;
-			Text::String *forecastDesc;
-			Text::String *outlook;
+			Optional<Text::String> generalSituation;
+			Optional<Text::String> tcInfo;
+			Optional<Text::String> fireDangerWarning;
+			Optional<Text::String> forecastPeriod;
+			Optional<Text::String> forecastDesc;
+			Optional<Text::String> outlook;
 			Data::Timestamp updateTime;
 		};
 

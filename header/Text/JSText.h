@@ -14,6 +14,7 @@ namespace Text
 		static WChar *ToJSText(WChar *buff, const WChar *s);
 		static WChar *ToJSTextDQuote(WChar *buff, const WChar *s);
 		static NotNullPtr<Text::String> ToNewJSText(Text::String *s);
+		static NotNullPtr<Text::String> ToNewJSText(Optional<Text::String> s);
 		static NotNullPtr<Text::String> ToNewJSText(NotNullPtr<Text::String> s);
 		static NotNullPtr<Text::String> ToNewJSText(const UTF8Char *s);
 		static NotNullPtr<Text::String> ToNewJSTextDQuote(const UTF8Char *s);

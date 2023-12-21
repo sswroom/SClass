@@ -10,10 +10,10 @@ namespace IO
 	public:
 		typedef struct
 		{
-			Text::String *deviceLocator;
-			Text::String *manufacturer;
-			Text::String *partNo;
-			Text::String *sn;
+			Optional<Text::String> deviceLocator;
+			Optional<Text::String> manufacturer;
+			Optional<Text::String> partNo;
+			Optional<Text::String> sn;
 			UOSInt defSpdMHz;
 			UOSInt confSpdMHz;
 			UInt32 dataWidth;

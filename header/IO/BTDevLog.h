@@ -13,7 +13,7 @@ namespace IO
 		{
 			UInt8 mac[6];
 			UInt64 macInt;
-			Text::String *name;
+			Optional<Text::String> name;
 			IO::BTScanLog::RadioType radioType;
 			IO::BTScanLog::AddressType addrType;
 			Int8 txPower;
@@ -31,7 +31,7 @@ namespace IO
 		BTDevLog();
 		~BTDevLog();
 
-		DevEntry *AddEntry(UInt64 macInt, Text::String *name, Int8 txPower, Int8 measurePower, IO::BTScanLog::RadioType radioType, IO::BTScanLog::AddressType addrType, UInt16 company, IO::BTScanLog::AdvType advType);
+		DevEntry *AddEntry(UInt64 macInt, Optional<Text::String> name, Int8 txPower, Int8 measurePower, IO::BTScanLog::RadioType radioType, IO::BTScanLog::AddressType addrType, UInt16 company, IO::BTScanLog::AdvType advType);
 		void AppendList(NotNullPtr<Data::FastMap<UInt64, IO::BTScanLog::ScanRecord3*>> devMap);
 		void ClearList();
 		Bool LoadFile(Text::CStringNN fileName);

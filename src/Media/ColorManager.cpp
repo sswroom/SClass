@@ -647,12 +647,13 @@ void Media::MonitorColorManager::SetOSProfile()
 	WChar wbuff2[512];
 	Bool succ = false;
 	DISPLAY_DEVICEW dev;
+	NotNullPtr<Text::String> s;
 	UInt32 i = 0;
 	UOSInt j;
 	dev.cb = sizeof(DISPLAY_DEVICEW);
-	if (this->profileName != 0)
+	if (this->profileName.SetTo(s))
 	{
-		const WChar *wprofileName = Text::StrToWCharNew(this->profileName->v);
+		const WChar *wprofileName = Text::StrToWCharNew(s->v);
 		while (EnumDisplayDevicesW(0, i, &dev, 0) != 0)
 		{
 			Text::StrConcat(wbuff2, dev.DeviceName);

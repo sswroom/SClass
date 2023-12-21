@@ -236,7 +236,7 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnTimerTick(void *userObj)
 							me->lvLogWifi->SetSubItem(k, 6, s);
 						if (s.Set(wifiLog->serialNum))
 							me->lvLogWifi->SetSubItem(k, 7, s);
-						if (s.Set(wifiLog->country))
+						if (wifiLog->country.SetTo(s))
 							me->lvLogWifi->SetSubItem(k, 8, s);
 						if (wifiLog->ouis[0][0] != 0 || wifiLog->ouis[0][1] != 0 || wifiLog->ouis[0][2] != 0)
 						{
@@ -275,10 +275,10 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnTimerTick(void *userObj)
 							wifiLog->serialNum = s.Ptr();
 							me->lvLogWifi->SetSubItem(k, 7, s);
 						}
-						if (wifiLog->country == 0 && bss->GetCountry())
+						if (wifiLog->country.IsNull() && bss->GetCountry())
 						{
 							s = Text::String::NewNotNullSlow(bss->GetCountry());
-							wifiLog->country = s.Ptr();
+							wifiLog->country = s;
 							me->lvLogWifi->SetSubItem(k, 8, s);
 						}
 						OSInt l;
@@ -617,10 +617,7 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnLogWifiSaveClicked(void *us
 				sb.AppendUTF8Char(',');
 				sb.AppendHexBuff(wifiLog->ouis[2], 3, 0, Text::LineBreakType::None);
 				sb.AppendC(UTF8STRC("\t"));
-				if (wifiLog->country)
-				{
-					sb.Append(wifiLog->country);
-				}
+				sb.AppendOpt(wifiLog->country);
 				sb.AppendC(UTF8STRC("\t"));
 				k = 0;
 				while (k < 20)
@@ -975,7 +972,7 @@ SSWR::AVIRead::AVIRWifiCaptureForm::~AVIRWifiCaptureForm()
 		SDEL_STRING(wifiLog->manuf);
 		SDEL_STRING(wifiLog->model);
 		SDEL_STRING(wifiLog->serialNum);
-		SDEL_STRING(wifiLog->country);
+		OPTSTR_DEL(wifiLog->country);
 		MemFree(wifiLog);
 	}
 }

@@ -34,25 +34,25 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 		{
 			while (r->ReadNext())
 			{
-				Text::String *s;
+				Optional<Text::String> s;
 				r->GetInt32(0);
 				s = r->GetNewStr(1);
-				SDEL_STRING(s);
+				OPTSTR_DEL(s);
 				s = r->GetNewStr(2);
-				SDEL_STRING(s);
+				OPTSTR_DEL(s);
 				s = r->GetNewStr(3);
-				SDEL_STRING(s);
+				OPTSTR_DEL(s);
 				s = r->GetNewStr(4);
-				SDEL_STRING(s);
+				OPTSTR_DEL(s);
 				s = r->GetNewStr(5);
-				SDEL_STRING(s);
+				OPTSTR_DEL(s);
 				s = r->GetNewStr(6);
-				SDEL_STRING(s);
+				OPTSTR_DEL(s);
 				s = r->GetNewStr(7);
-				SDEL_STRING(s);
+				OPTSTR_DEL(s);
 				r->GetInt32(8);
 				s = r->GetNewStr(9);
-				SDEL_STRING(s);
+				OPTSTR_DEL(s);
 				r->GetTimestamp(10);
 				r->GetTimestamp(11);
 				r->GetInt32(12);

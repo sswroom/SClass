@@ -13,7 +13,7 @@ namespace Net
 		protected:
 			Data::FastStringMap<Net::WebServer::WebStandardHandler *> hdlrs;
 			Data::ArrayListNN<Net::WebServer::WebStandardHandler> relHdlrs;
-			Text::String *allowOrigin;
+			Optional<Text::String> allowOrigin;
 
 		protected:
 			Bool DoRequest(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq);

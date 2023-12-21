@@ -24,7 +24,7 @@ namespace SSWR
 				UInt8 mac[6];
 				UInt64 macInt;
 				Int32 rssi;
-				Text::String *name;
+				Optional<Text::String> name;
 				Text::String *remark;
 			} DeviceEntry;
 

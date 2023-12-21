@@ -92,7 +92,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcLogin(NotNullPtr<Net::W
 			Sync::RWMutexUsage mutUsage;
 			sptr = me->env->PasswordEnc(sbuff, pwd->ToCString());
 			env.user = me->env->UserGetByName(mutUsage, userName).OrNull();
-			if (env.user && env.user->pwd->Equals(sbuff, (UOSInt)(sptr - sbuff)))
+			if (env.user && env.user->pwd.SetTo(pwd) && pwd->Equals(sbuff, (UOSInt)(sptr - sbuff)))
 			{
 				mutUsage.EndUse();
 				NotNullPtr<Net::WebServer::IWebSession> sess = me->sessMgr->CreateSession(req, resp);
@@ -343,7 +343,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcDayList(NotNullPtr<Net:
 
 			NotNullPtr<Text::String> locName = unkLoc;
 			userFile = env.user->userFileObj.GetItem((UOSInt)startIndex);
-			locName.Set(userFile->location);
+			userFile->location.SetTo(locName);
 			si = locList.SortedIndexOf(locName);
 			if (si < 0)
 			{
@@ -463,9 +463,9 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcDayDetail(NotNullPtr<Ne
 				json.ObjectAddFloat64(CSTR("cropTop"), userFile->cropTop);
 				json.ObjectAddFloat64(CSTR("cropRight"), userFile->cropRight);
 				json.ObjectAddFloat64(CSTR("cropBottom"), userFile->cropBottom);
-				json.ObjectAddStr(CSTR("descript"), userFile->descript);
-				json.ObjectAddStr(CSTR("location"), userFile->location);
-				json.ObjectAddStr(CSTR("camera"), userFile->camera);
+				json.ObjectAddStrOpt(CSTR("descript"), userFile->descript);
+				json.ObjectAddStrOpt(CSTR("location"), userFile->location);
+				json.ObjectAddStrOpt(CSTR("camera"), userFile->camera);
 				json.ObjectAddInt32(CSTR("locType"), (Int32)userFile->locType);
 				json.ObjectAddInt32(CSTR("cateId"), sp->cateId);
 				json.ObjectEnd();
@@ -527,7 +527,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcBookList(NotNullPtr<Net
 		json.ObjectAddStr(CSTR("author"), book->author);
 		json.ObjectAddStr(CSTR("title"), book->title);
 		json.ObjectAddStr(CSTR("press"), book->press);
-		json.ObjectAddStr(CSTR("url"), book->url);
+		json.ObjectAddStrOpt(CSTR("url"), book->url);
 		json.ObjectEnd();
 
 		i++;
@@ -658,7 +658,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcBookDetail(NotNullPtr<N
 		json.ObjectAddStr(CSTR("author"), book->author);
 		json.ObjectAddStr(CSTR("title"), book->title);
 		json.ObjectAddStr(CSTR("press"), book->press);
-		json.ObjectAddStr(CSTR("url"), book->url);
+		json.ObjectAddStrOpt(CSTR("url"), book->url);
 		if (book->userfileId != 0)
 		{
 			UserFileInfo *userFile = me->env->UserfileGet(mutUsage, book->userfileId);
@@ -1032,8 +1032,8 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcUnfinPeak(NotNullPtr<Ne
 				json.ObjectAddFloat64(CSTR("lat"), pt.GetLat());
 				json.ObjectAddFloat64(CSTR("height"), pt.GetZ());
 				json.ObjectAddInt32(CSTR("status"), peak->status);
-				json.ObjectAddStr(CSTR("name"), peak->name);
-				json.ObjectAddStr(CSTR("type"), peak->type);
+				json.ObjectAddStrOpt(CSTR("name"), peak->name);
+				json.ObjectAddStrOpt(CSTR("type"), peak->type);
 				json.ObjectEnd();
 			}
 			SDEL_CLASS(csysHK);
@@ -1372,7 +1372,7 @@ void SSWR::OrganWeb::OrganWebPOIController::AddUserfilePOI(NotNullPtr<Text::JSON
 {
 	json->ArrayBeginObject();
 	json->ObjectAddInt32(CSTR("id"), file->id);
-	json->ObjectAddStr(CSTR("descript"), file->descript);
+	json->ObjectAddStrOpt(CSTR("descript"), file->descript);
 	json->ObjectAddTSStr(CSTR("captureTime"), Data::Timestamp(file->captureTimeTicks, 32));
 	json->ObjectAddTSStr(CSTR("fileTime"), Data::Timestamp(file->fileTimeTicks, 32));
 	json->ObjectAddFloat64(CSTR("lat"), file->lat);
@@ -1383,8 +1383,8 @@ void SSWR::OrganWeb::OrganWebPOIController::AddUserfilePOI(NotNullPtr<Text::JSON
 	json->ObjectAddInt32(CSTR("speciesId"), species->speciesId);
 	json->ObjectAddInt32(CSTR("groupId"), species->groupId);
 	json->ObjectAddInt32(CSTR("cateId"), species->cateId);
-	json->ObjectAddStr(CSTR("poiImg"), species->poiImg);
-	json->ObjectAddStr(CSTR("camera"), file->camera);
+	json->ObjectAddStrOpt(CSTR("poiImg"), species->poiImg);
+	json->ObjectAddStrOpt(CSTR("camera"), file->camera);
 	json->ObjectAddInt32(CSTR("locType"), (Int32)file->locType);
 	json->ObjectEnd();
 }
@@ -1404,6 +1404,7 @@ void SSWR::OrganWeb::OrganWebPOIController::AddGroups(NotNullPtr<Text::JSONBuild
 
 void SSWR::OrganWeb::OrganWebPOIController::AddGroup(NotNullPtr<Text::JSONBuilder> json, NotNullPtr<GroupInfo> group)
 {
+	NotNullPtr<Text::String> s;
 	json->ObjectAddInt32(CSTR("id"), group->id);
 	json->ObjectAddInt32(CSTR("parentId"), group->parentId);
 	json->ObjectAddStr(CSTR("engName"), group->engName);
@@ -1426,9 +1427,9 @@ void SSWR::OrganWeb::OrganWebPOIController::AddGroup(NotNullPtr<Text::JSONBuilde
 		{
 			json->ObjectAddInt32(CSTR("photoWId"), group->photoSpObj->photoWId);
 		}
-		else if (group->photoSpObj->photo && group->photoSpObj->photo->leng > 0)
+		else if (group->photoSpObj->photo.SetTo(s) && s->leng > 0)
 		{
-			json->ObjectAddStr(CSTR("photo"), group->photoSpObj->photo);
+			json->ObjectAddStr(CSTR("photo"), s);
 		}
 	}
 }
@@ -1456,13 +1457,14 @@ void SSWR::OrganWeb::OrganWebPOIController::AppendUser(NotNullPtr<Text::JSONBuil
 
 void SSWR::OrganWeb::OrganWebPOIController::AppendSpecies(NotNullPtr<Text::JSONBuilder> json, NotNullPtr<SpeciesInfo> species, NotNullPtr<Sync::RWMutexUsage> mutUsage)
 {
+	NotNullPtr<Text::String> s;
 	json->ObjectAddInt32(CSTR("id"), species->speciesId);
 	json->ObjectAddInt32(CSTR("groupId"), species->groupId);
 	json->ObjectAddStr(CSTR("sciName"), species->sciName);
 	json->ObjectAddStr(CSTR("chiName"), species->chiName);
 	json->ObjectAddStr(CSTR("engName"), species->engName);
 	json->ObjectAddStr(CSTR("descript"), species->descript);
-	json->ObjectAddStr(CSTR("poiImg"), species->poiImg);
+	json->ObjectAddStrOpt(CSTR("poiImg"), species->poiImg);
 	json->ObjectAddInt32(CSTR("flags"), species->flags);
 	json->ObjectAddStr(CSTR("idKey"), species->idKey);
 	json->ObjectAddInt32(CSTR("cateId"), species->cateId);
@@ -1490,9 +1492,9 @@ void SSWR::OrganWeb::OrganWebPOIController::AppendSpecies(NotNullPtr<Text::JSONB
 	{
 		json->ObjectAddInt32(CSTR("photoWId"), species->photoWId);
 	}
-	else if (species->photo && species->photo->leng > 0)
+	else if (species->photo.SetTo(s) && s->leng > 0)
 	{
-		json->ObjectAddStr(CSTR("photo"), species->photo);
+		json->ObjectAddStr(CSTR("photo"), s);
 	}
 	json->ObjectBeginArray(CSTR("books"));
 	UOSInt i = 0;

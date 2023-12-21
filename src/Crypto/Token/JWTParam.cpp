@@ -16,57 +16,62 @@ Crypto::Token::JWTParam::JWTParam()
 
 Crypto::Token::JWTParam::~JWTParam()
 {
-	SDEL_STRING(this->iss);
-	SDEL_STRING(this->sub);
-	SDEL_STRING(this->aud);
-	SDEL_STRING(this->jti);
+	OPTSTR_DEL(this->iss);
+	OPTSTR_DEL(this->sub);
+	OPTSTR_DEL(this->aud);
+	OPTSTR_DEL(this->jti);
 }
 
 void Crypto::Token::JWTParam::Clear()
 {
-	SDEL_STRING(this->iss);
-	SDEL_STRING(this->sub);
-	SDEL_STRING(this->aud);
+	OPTSTR_DEL(this->iss);
+	OPTSTR_DEL(this->sub);
+	OPTSTR_DEL(this->aud);
 	this->exp = 0;
 	this->nbf = 0;
 	this->iat = 0;
-	SDEL_STRING(this->jti);
+	OPTSTR_DEL(this->jti);
+	this->iss = 0;
+	this->sub = 0;
+	this->aud = 0;
+	this->jti = 0;
 }
 
-void Crypto::Token::JWTParam::SetIssuer(Text::String *issuer)
+void Crypto::Token::JWTParam::SetIssuer(Optional<Text::String> issuer)
 {
-	SDEL_STRING(this->iss);
-	this->iss = SCOPY_STRING(issuer);
+	OPTSTR_DEL(this->iss);
+	this->iss = Text::String::CopyOrNull(issuer);
 }
 
-Text::String *Crypto::Token::JWTParam::GetIssuer() const
+Optional<Text::String> Crypto::Token::JWTParam::GetIssuer() const
 {
 	return this->iss;
 }
 
 Bool Crypto::Token::JWTParam::IsIssuerValid(const UTF8Char *issuer, UOSInt issuerLen) const
 {
-	return this->iss == 0 || this->iss->Equals(issuer, issuerLen);
+	NotNullPtr<Text::String> s;
+	return !this->iss.SetTo(s) || s->Equals(issuer, issuerLen);
 }
 
-void Crypto::Token::JWTParam::SetSubject(Text::String *subject)
+void Crypto::Token::JWTParam::SetSubject(Optional<Text::String> subject)
 {
-	SDEL_STRING(this->sub);
-	this->sub = SCOPY_STRING(subject);
+	OPTSTR_DEL(this->sub);
+	this->sub = Text::String::CopyOrNull(subject);
 }
 
-Text::String *Crypto::Token::JWTParam::GetSubject() const
+Optional<Text::String> Crypto::Token::JWTParam::GetSubject() const
 {
 	return this->sub;
 }
 
-void Crypto::Token::JWTParam::SetAudience(Text::String *audience)
+void Crypto::Token::JWTParam::SetAudience(Optional<Text::String> audience)
 {
-	SDEL_STRING(this->aud);
-	this->aud = SCOPY_STRING(audience);
+	OPTSTR_DEL(this->aud);
+	this->aud = Text::String::CopyOrNull(audience);
 }
 
-Text::String *Crypto::Token::JWTParam::GetAudience() const
+Optional<Text::String> Crypto::Token::JWTParam::GetAudience() const
 {
 	return this->aud;
 }
@@ -101,13 +106,13 @@ Int64 Crypto::Token::JWTParam::GetIssuedAt() const
 	return this->iat;
 }
 
-void Crypto::Token::JWTParam::SetJWTId(Text::String *id)
+void Crypto::Token::JWTParam::SetJWTId(Optional<Text::String> id)
 {
-	SDEL_STRING(this->jti);
-	this->jti = SCOPY_STRING(id);
+	OPTSTR_DEL(this->jti);
+	this->jti = Text::String::CopyOrNull(id);
 }
 
-Text::String *Crypto::Token::JWTParam::GetJWTId() const
+Optional<Text::String> Crypto::Token::JWTParam::GetJWTId() const
 {
 	return this->jti;
 }
@@ -120,27 +125,28 @@ Bool Crypto::Token::JWTParam::IsExpired(Data::Timestamp ts) const
 
 void Crypto::Token::JWTParam::ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const
 {
+	NotNullPtr<Text::String> s;
 	Bool found = false;
 	sb->AppendC(UTF8STRC("Params ["));
-	if (this->iss != 0)
+	if (this->iss.SetTo(s))
 	{
 		if (found) sb->AppendC(UTF8STRC(", "));
 		sb->AppendC(UTF8STRC("iss="));
-		sb->Append(this->iss);
+		sb->Append(s);
 		found = true;
 	}
-	if (this->sub != 0)
+	if (this->sub.SetTo(s))
 	{
 		if (found) sb->AppendC(UTF8STRC(", "));
 		sb->AppendC(UTF8STRC("sub="));
-		sb->Append(this->sub);
+		sb->Append(s);
 		found = true;
 	}
-	if (this->aud != 0)
+	if (this->aud.SetTo(s))
 	{
 		if (found) sb->AppendC(UTF8STRC(", "));
 		sb->AppendC(UTF8STRC("aud="));
-		sb->Append(this->aud);
+		sb->Append(s);
 		found = true;
 	}
 	if (this->exp != 0)
@@ -164,11 +170,11 @@ void Crypto::Token::JWTParam::ToString(NotNullPtr<Text::StringBuilderUTF8> sb) c
 		sb->AppendI64(this->iat);
 		found = true;
 	}
-	if (this->jti != 0)
+	if (this->jti.SetTo(s))
 	{
 		if (found) sb->AppendC(UTF8STRC(", "));
 		sb->AppendC(UTF8STRC("jti="));
-		sb->Append(this->jti);
+		sb->Append(s);
 		found = true;
 	}
 	sb->AppendC(UTF8STRC("]"));

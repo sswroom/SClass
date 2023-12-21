@@ -1430,7 +1430,7 @@ SSWR::SMonitor::SMonitorSvrCore::~SMonitorSvrCore()
 	while (i-- > 0)
 	{
 		dev = this->devMap.GetItem(i);
-		SDEL_STRING(dev->devName);
+		OPTSTR_DEL(dev->devName);
 		dev->cpuName->Release();
 		dev->platformName->Release();
 		j = SMONITORCORE_DEVREADINGCNT;
@@ -1734,7 +1734,8 @@ Bool SSWR::SMonitor::SMonitorSvrCore::DeviceSetName(Int64 cliId, NotNullPtr<Text
 	if (devName->leng == 0)
 		return false;
 	Sync::RWMutexUsage devMutUsage(dev->mut, false);
-	if (dev->devName && dev->devName->Equals(devName))
+	NotNullPtr<Text::String> s;
+	if (dev->devName.SetTo(s) && s->Equals(devName))
 	{
 		return true;
 	}
@@ -1753,7 +1754,7 @@ Bool SSWR::SMonitor::SMonitorSvrCore::DeviceSetName(Int64 cliId, NotNullPtr<Text
 		if (db->ExecuteNonQuery(sql.ToCString()) >= 0)
 		{
 			Sync::RWMutexUsage mutUsage(dev->mut, true);
-			SDEL_STRING(dev->devName);
+			OPTSTR_DEL(dev->devName);
 			dev->devName = devName->Clone().Ptr();
 			succ = true;
 		}
@@ -1959,7 +1960,7 @@ Bool SSWR::SMonitor::SMonitorSvrCore::DeviceModify(Int64 cliId, Text::CString de
 		if (db->ExecuteNonQuery(sql.ToCString()) >= 0)
 		{
 			Sync::RWMutexUsage mutUsage(dev->mut, true);
-			SDEL_STRING(dev->devName);
+			OPTSTR_DEL(dev->devName);
 			if (devName.v)
 			{
 				dev->devName = Text::String::New(devName).Ptr();

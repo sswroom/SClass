@@ -15,9 +15,9 @@ void __stdcall SSWR::AVIRead::AVIREWDTU01Form::OnMQTTMessage(void *userObj, Text
 	Text::JSONObject *obj;
 	Text::JSONBase *baseObj;
 	Text::JSONArray *arr;
-	Text::String *name;
-	Text::String *mac;
-	Text::String *rssi;
+	Optional<Text::String> name;
+	NotNullPtr<Text::String> mac;
+	NotNullPtr<Text::String> rssi;
 	DeviceEntry *entry;
 	UInt8 macBuff[8];
 	Int32 irssi;
@@ -43,9 +43,7 @@ void __stdcall SSWR::AVIRead::AVIREWDTU01Form::OnMQTTMessage(void *userObj, Text
 			{
 				obj = (Text::JSONObject*)baseObj;
 				name = obj->GetObjectString(CSTR("name"));
-				mac = obj->GetObjectString(CSTR("mac"));
-				rssi = obj->GetObjectString(CSTR("rssi"));
-				if (mac != 0 && rssi != 0 && mac->leng == 12)
+				if (obj->GetObjectString(CSTR("mac")).SetTo(mac) && obj->GetObjectString(CSTR("rssi")).SetTo(rssi) && mac->leng == 12)
 				{
 					Text::StrHex2Bytes(mac->v, &macBuff[2]);
 					macBuff[0] = 0;
@@ -55,9 +53,9 @@ void __stdcall SSWR::AVIRead::AVIREWDTU01Form::OnMQTTMessage(void *userObj, Text
 					entry = me->dataMap.Get(macInt);
 					if (entry)
 					{
-						if (entry->name == 0)
+						if (entry->name.IsNull())
 						{
-							entry->name = SCOPY_STRING(name);
+							entry->name = Text::String::CopyOrNull(name);
 						}
 						if (entry->rssi == 127 || irssi > entry->rssi)
 						{
@@ -75,7 +73,7 @@ void __stdcall SSWR::AVIRead::AVIREWDTU01Form::OnMQTTMessage(void *userObj, Text
 						entry->mac[5] = macBuff[7];
 						entry->macInt = macInt;
 						entry->rssi = irssi;
-						entry->name = SCOPY_STRING(name);
+						entry->name = Text::String::CopyOrNull(name);
 						entry->remark = 0;
 						me->dataMap.Put(macInt, entry);
 					}
@@ -140,7 +138,7 @@ void __stdcall SSWR::AVIRead::AVIREWDTU01Form::OnTimerTick(void *userObj)
 			entry = me->dataMap.GetItem(i);
 			sptr = Text::StrHexBytes(sbuff, entry->mac, 6, ':');
 			me->lvDevices->AddItem(CSTRP(sbuff, sptr), entry);
-			if (s.Set(entry->name))
+			if (entry->name.SetTo(s))
 			{
 				me->lvDevices->SetSubItem(i, 1, s);
 			}
@@ -171,7 +169,7 @@ void SSWR::AVIRead::AVIREWDTU01Form::DataClear()
 	while (i-- > 0)
 	{
 		entry = this->dataMap.GetItem(i);
-		SDEL_STRING(entry->name);
+		OPTSTR_DEL(entry->name);
 		SDEL_STRING(entry->remark);
 		MemFree(entry);
 	}

@@ -162,7 +162,7 @@ void SSWR::AVIRead::AVIRBluetoothLogForm::LogUIUpdate()
 					this->lvContent->SetSubItem(l, 3, CSTR("?"));
 				}
 			}
-			if (s.Set(log->name))
+			if (log->name.SetTo(s))
 				this->lvContent->SetSubItem(l, 4, s);
 			sptr = Text::StrInt32(sbuff, log->txPower);
 			this->lvContent->SetSubItem(l, 5, CSTRP(sbuff, sptr));

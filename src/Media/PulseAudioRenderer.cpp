@@ -452,7 +452,7 @@ Media::PulseAudioRenderer::~PulseAudioRenderer()
 	{
 		BindAudio(0);
 	}
-	SDEL_STRING(this->devName);
+	OPTSTR_DEL(this->devName);
 }
 
 Bool Media::PulseAudioRenderer::IsError()

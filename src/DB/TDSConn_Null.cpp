@@ -21,7 +21,7 @@ NotNullPtr<Text::String> DB::TDSConn::GetConnHost() const
 	return Text::String::NewEmpty();
 }
 
-Text::String *DB::TDSConn::GetConnDB() const
+Optional<Text::String> DB::TDSConn::GetConnDB() const
 {
 	return 0;
 }

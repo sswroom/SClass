@@ -26,7 +26,7 @@ namespace Map
 			Text::String *gooCliId;
 			UInt8 *gooPrivKey;
 			UOSInt gooPrivKeyLeng;
-			Text::String *gooAPIKey;
+			Optional<Text::String> gooAPIKey;
 
 		public:
 			GoogleWSSearcherJSON(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, IO::Writer *errWriter, Text::EncodingFactory *encFact);
@@ -34,7 +34,7 @@ namespace Map
 
 			void SetGoogleClientId(Text::String *gooCliId, Text::String *gooPrivKey);
 			void SetGoogleClientId(Text::CString gooCliId, Text::CString gooPrivKey);
-			void SetGoogleAPIKey(Text::String *gooAPIKey);
+			void SetGoogleAPIKey(Optional<Text::String> gooAPIKey);
 			void SetGoogleAPIKey(Text::CString gooAPIKey);
 
 			UTF8Char *SearchName(UTF8Char *buff, UOSInt buffSize, Math::Coord2DDbl pos, const UTF8Char *lang); //lang = en-us, zh-cn, zh-tw

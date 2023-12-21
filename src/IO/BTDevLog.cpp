@@ -24,7 +24,7 @@ Bool IO::BTDevLog::IsDefaultName(NotNullPtr<Text::String> name)
 
 void IO::BTDevLog::FreeDev(DevEntry *dev)
 {
-	SDEL_STRING(dev->name);
+	OPTSTR_DEL(dev->name);
 	MemFree(dev);
 }
 
@@ -37,7 +37,7 @@ IO::BTDevLog::~BTDevLog()
 	this->ClearList();
 }
 
-IO::BTDevLog::DevEntry *IO::BTDevLog::AddEntry(UInt64 macInt, Text::String *name, Int8 txPower, Int8 measurePower, IO::BTScanLog::RadioType radioType, IO::BTScanLog::AddressType addrType, UInt16 company, IO::BTScanLog::AdvType advType)
+IO::BTDevLog::DevEntry *IO::BTDevLog::AddEntry(UInt64 macInt, Optional<Text::String> name, Int8 txPower, Int8 measurePower, IO::BTScanLog::RadioType radioType, IO::BTScanLog::AddressType addrType, UInt16 company, IO::BTScanLog::AdvType advType)
 {
 	UInt8 mac[8];
 	DevEntry *log;
@@ -69,14 +69,14 @@ IO::BTDevLog::DevEntry *IO::BTDevLog::AddEntry(UInt64 macInt, Text::String *name
 		}
 		NotNullPtr<Text::String> name1;
 		NotNullPtr<Text::String> name2;
-		if (log->name == 0 && name != 0)
+		if (log->name.IsNull() && name.SetTo(name2))
 		{
-			log->name = name->Clone().Ptr();
+			log->name = name2->Clone();
 		}
-		else if (name1.Set(log->name) && name2.Set(name) && IsDefaultName(name1) && !IsDefaultName(name2))
+		else if (log->name.SetTo(name1) && name.SetTo(name2) && IsDefaultName(name1) && !IsDefaultName(name2))
 		{
-			log->name->Release();
-			log->name = name->Clone().Ptr();
+			OPTSTR_DEL(log->name);
+			log->name = name2->Clone();
 		}
 		return log;
 	}
@@ -89,7 +89,7 @@ IO::BTDevLog::DevEntry *IO::BTDevLog::AddEntry(UInt64 macInt, Text::String *name
 	log->mac[4] = mac[6];
 	log->mac[5] = mac[7];
 	log->macInt = macInt;
-	log->name = SCOPY_STRING(name);
+	log->name = Text::String::CopyOrNull(name);
 	log->radioType = radioType;
 	log->addrType = addrType;
 	log->txPower = txPower;
@@ -202,9 +202,9 @@ Bool IO::BTDevLog::LoadFile(Text::CStringNN fileName)
 					company = Text::StrHex2UInt16C(sarr[0].v);
 				}
 			}
-			Text::String *nameStr = Text::String::NewOrNull(name);
+			Optional<Text::String> nameStr = Text::String::NewOrNull(name);
 			this->AddEntry(macInt, nameStr, (Int8)Text::StrToInt32(sarr[2].v), measurePower, radioType, addrType, company, (IO::BTScanLog::AdvType)advType);
-			SDEL_STRING(nameStr);
+			OPTSTR_DEL(nameStr);
 		}
 		sb.ClearStr();
 	}
@@ -232,10 +232,7 @@ Bool IO::BTDevLog::StoreFile(Text::CStringNN fileName)
 		sb.ClearStr();
 		sb.AppendHexBuff(log->mac, 6, ':', Text::LineBreakType::None);
 		sb.AppendUTF8Char('\t');
-		if (log->name)
-		{
-			sb.Append(log->name);
-		}
+		sb.AppendOpt(log->name);
 		sb.AppendUTF8Char('\t');
 		sb.AppendI32(log->txPower);
 		sb.AppendUTF8Char('\t');

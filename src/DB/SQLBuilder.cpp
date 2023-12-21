@@ -63,6 +63,12 @@ void DB::SQLBuilder::AppendStr(Text::String *val)
 	this->sb.SetEndPtr(DB::DBUtil::SDBStrUTF8(this->sb.GetEndPtr(), STR_PTR(val), this->sqlType));
 }
 
+void DB::SQLBuilder::AppendStr(Optional<Text::String> val)
+{
+	this->sb.AllocLeng(DB::DBUtil::SDBStrUTF8Leng(OPTSTR_CSTR(val).v, this->sqlType));
+	this->sb.SetEndPtr(DB::DBUtil::SDBStrUTF8(this->sb.GetEndPtr(), OPTSTR_CSTR(val).v, this->sqlType));
+}
+
 void DB::SQLBuilder::AppendStr(NotNullPtr<Text::String> val)
 {
 	this->sb.AllocLeng(DB::DBUtil::SDBStrUTF8Leng(val->v, this->sqlType));

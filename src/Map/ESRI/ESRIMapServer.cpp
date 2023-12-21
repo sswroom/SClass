@@ -445,8 +445,8 @@ Bool Map::ESRI::ESRIMapServer::QueryInfos(Math::Coord2DDbl coord, Math::RectArea
 					if (o && o->GetType() == Text::JSONType::Object)
 					{
 						Text::JSONObject *result = (Text::JSONObject*)o;
-						Text::String *geometryType = result->GetValueString(CSTR("geometryType"));
-						if (geometryType)
+						NotNullPtr<Text::String> geometryType;
+						if (result->GetValueString(CSTR("geometryType")).SetTo(geometryType))
 						{
 							vec = ParseGeometry(this->csys->GetSRID(), geometryType, result->GetObjectValue(CSTR("geometry")));
 							if (vec)
@@ -544,11 +544,9 @@ Media::ImageList *Map::ESRI::ESRIMapServer::DrawMap(Math::RectAreaDbl bounds, UI
 	return ret;
 }
 
-Math::Geometry::Vector2D *Map::ESRI::ESRIMapServer::ParseGeometry(UInt32 srid, Text::String *geometryType, Text::JSONBase *geometry)
+Math::Geometry::Vector2D *Map::ESRI::ESRIMapServer::ParseGeometry(UInt32 srid, NotNullPtr<Text::String> geometryType, Text::JSONBase *geometry)
 {
 	if (geometry == 0)
-		return 0;
-	if (geometryType == 0)
 		return 0;
 	Text::JSONBase *o;
 	o = geometry->GetValue(CSTR("spatialReference.wkid"));

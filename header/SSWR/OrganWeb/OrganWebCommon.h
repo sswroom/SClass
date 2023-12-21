@@ -76,7 +76,7 @@ namespace SSWR
 			NotNullPtr<Text::String> author;
 			NotNullPtr<Text::String> press;
 			Int64 publishDate;
-			Text::String *url;
+			Optional<Text::String> url;
 			Int32 userfileId;
 
 			Data::ArrayList<BookSpInfo*> species;
@@ -86,8 +86,8 @@ namespace SSWR
 		{
 			Int32 id;
 			Int32 parentId;
-			Text::String *cname;
-			Text::String *ename;
+			Optional<Text::String> cname;
+			Optional<Text::String> ename;
 			Double lat;
 			Double lon;
 			Int32 cateId;
@@ -121,9 +121,9 @@ namespace SSWR
 			Double cropTop;
 			Double cropRight;
 			Double cropBottom;
-			Text::String *descript;
-			Text::String *location;
-			Text::String *camera;
+			Optional<Text::String> descript;
+			Optional<Text::String> location;
+			Optional<Text::String> camera;
 			LocType locType;
 		} UserFileInfo;
 
@@ -156,7 +156,7 @@ namespace SSWR
 		{
 			Int32 id;
 			NotNullPtr<Text::String> userName;
-			Text::String *pwd;
+			Optional<Text::String> pwd;
 			NotNullPtr<Text::String> watermark;
 			UserType userType;
 			Data::ArrayListInt64 userFileIndex;
@@ -178,13 +178,13 @@ namespace SSWR
 			Int32 groupId;
 			NotNullPtr<Text::String> descript;
 			NotNullPtr<Text::String> dirName;
-			Text::String *photo;
+			Optional<Text::String> photo;
 			NotNullPtr<Text::String> idKey;
 			Int32 cateId;
 			SpeciesFlags flags;
 			Int32 photoId;
 			Int32 photoWId;
-			Text::String *poiImg;
+			Optional<Text::String> poiImg;
 
 			Data::ArrayList<BookSpInfo*> books;
 			Data::ArrayList<UserFileInfo*> files;
@@ -202,7 +202,7 @@ namespace SSWR
 			Int32 parentId;
 			Int32 photoGroup;
 			Int32 photoSpecies;
-			Text::String *idKey;
+			Optional<Text::String> idKey;
 			Int32 cateId;
 			GroupFlags flags;
 
@@ -217,15 +217,15 @@ namespace SSWR
 		typedef struct
 		{
 			Int32 id;
-			Text::String *chiName;
-			Text::String *engName;
+			NotNullPtr<Text::String> chiName;
+			NotNullPtr<Text::String> engName;
 		} GroupTypeInfo;
 
 		struct CategoryInfo
 		{
 			Int32 cateId;
-			Text::String *chiName;
-			Text::String *dirName;
+			NotNullPtr<Text::String> chiName;
+			NotNullPtr<Text::String> dirName;
 			NotNullPtr<Text::String> srcDir;
 			Int32 flags;
 			Data::FastMap<Int32, GroupTypeInfo *> groupTypes;
@@ -251,8 +251,8 @@ namespace SSWR
 			Double markedHeight;
 			Int32 csys;
 			Int32 status;
-			Text::String *name;
-			Text::String *type;
+			Optional<Text::String> name;
+			Optional<Text::String> type;
 		};
 
 		class SpeciesSciNameComparator : public Data::Comparator<SpeciesInfo*>
@@ -320,17 +320,18 @@ namespace SSWR
 			{
 				Bool aDesc = false;
 				Bool bDesc = false;
+				NotNullPtr<Text::String> aStr;
 				NotNullPtr<Text::String> bStr;
 				if (env->user != 0)
 				{
-					if (a->descript != 0 && a->descript->leng > 0 && (env->user->userType == UserType::Admin || a->webuserId == env->user->id))
+					if (a->descript.SetTo(aStr) && aStr->leng > 0 && (env->user->userType == UserType::Admin || a->webuserId == env->user->id))
 						aDesc = true;
-					if (b->descript != 0 && b->descript->leng > 0 && (env->user->userType == UserType::Admin || b->webuserId == env->user->id))
+					if (b->descript.SetTo(bStr) && bStr->leng > 0 && (env->user->userType == UserType::Admin || b->webuserId == env->user->id))
 						bDesc = true;
 				}
-				if (aDesc && bDesc && bStr.Set(b->descript))
+				if (aDesc && bDesc && a->descript.SetTo(aStr) && b->descript.SetTo(bStr))
 				{
-					OSInt ret = a->descript->CompareTo(bStr);
+					OSInt ret = aStr->CompareTo(bStr);
 					if (ret != 0)
 						return ret;
 				}

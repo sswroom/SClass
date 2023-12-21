@@ -2358,8 +2358,11 @@ WinComboBox.o: ../../src/UI/Win/WinComboBox.cpp
 WinCore.o: ../../src/UI/Win/WinCore.cpp
 WinDragDrop.o: ../../src/UI/Win/WinDragDrop.cpp
 WinFileDialog.o: ../../src/UI/Win/WinFileDialog.cpp
+!-lcomdlg32
 WinFolderDialog.o: ../../src/UI/Win/WinFolderDialog.cpp
+!-lcomdlg32
 WinFontDialog.o: ../../src/UI/Win/WinFontDialog.cpp
+!-lcomdlg32
 WinGroupBox.o: ../../src/UI/Win/WinGroupBox.cpp
 WinHSplitter.o: ../../src/UI/Win/WinHSplitter.cpp
 WinLabel.o: ../../src/UI/Win/WinLabel.cpp

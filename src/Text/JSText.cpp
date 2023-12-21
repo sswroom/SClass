@@ -221,6 +221,11 @@ NotNullPtr<Text::String> Text::JSText::ToNewJSText(Text::String *s)
 	return ToNewJSText(STR_PTR(s));
 }
 
+NotNullPtr<Text::String> Text::JSText::ToNewJSText(Optional<Text::String> s)
+{
+	return ToNewJSText(OPTSTR_CSTR(s).v);
+}
+
 NotNullPtr<Text::String> Text::JSText::ToNewJSText(NotNullPtr<Text::String> s)
 {
 	return ToNewJSText(s->v);

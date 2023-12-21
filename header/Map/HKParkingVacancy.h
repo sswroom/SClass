@@ -13,19 +13,19 @@ namespace Map
 	private:
 		struct ParkingInfo
 		{
-			Text::String *parkId;
-			Text::String *parkingNameEn;
-			Text::String *parkingAddressEn;
-			Text::String *parkingDistictEn;
-			Text::String *parkingNameSc;
-			Text::String *parkingAddressSc;
-			Text::String *parkingDistictSc;
-			Text::String *parkingNameTc;
-			Text::String *parkingAddressTc;
-			Text::String *parkingDistictTc;
-			Text::String *parkingStarttime;
-			Text::String *parkingEndtime;
-			Text::String *parkingContactNo;
+			NotNullPtr<Text::String> parkId;
+			Optional<Text::String> parkingNameEn;
+			Optional<Text::String> parkingAddressEn;
+			Optional<Text::String> parkingDistictEn;
+			Optional<Text::String> parkingNameSc;
+			Optional<Text::String> parkingAddressSc;
+			Optional<Text::String> parkingDistictSc;
+			Optional<Text::String> parkingNameTc;
+			Optional<Text::String> parkingAddressTc;
+			Optional<Text::String> parkingDistictTc;
+			Optional<Text::String> parkingStarttime;
+			Optional<Text::String> parkingEndtime;
+			Optional<Text::String> parkingContactNo;
 			Double parkingLatitude;
 			Double parkingLongitude;
 			OSInt vacancy;

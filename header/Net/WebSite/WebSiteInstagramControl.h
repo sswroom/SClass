@@ -36,18 +36,18 @@ namespace Net
 			NotNullPtr<Net::SocketFactory> sockf;
 			Optional<Net::SSLEngine> ssl;
 			Text::EncodingFactory *encFact;
-			Text::String *userAgent;
+			Optional<Text::String> userAgent;
 
 			Text::JSONBase *ParsePageJSON(Text::CStringNN url);
 		public:
-			WebSiteInstagramControl(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::EncodingFactory *encFact, Text::String *userAgent);
+			WebSiteInstagramControl(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::EncodingFactory *encFact, Optional<Text::String> userAgent);
 			~WebSiteInstagramControl();
 
 			OSInt GetChannelItems(NotNullPtr<Text::String> channelId, OSInt pageNo, Data::ArrayList<ItemData*> *itemList, ChannelInfo *chInfo);
 			void FreeItems(Data::ArrayList<ItemData*> *itemList);
 			void FreeChannelInfo(ChannelInfo *chInfo);
 			OSInt GetPageImages(NotNullPtr<Text::String> shortCode, Data::ArrayListStringNN *imageList, Data::ArrayListStringNN *videoList);
-			Text::String *GetUserAgent();
+			Optional<Text::String> GetUserAgent();
 		};
 	}
 }

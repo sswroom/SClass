@@ -301,10 +301,7 @@ Bool __stdcall Net::WebServer::CapturerWebHandler::WiFiDownloadFunc(NotNullPtr<N
 		sb.AppendUTF8Char(',');
 		sb.AppendHexBuff(entry->ouis[2], 3, 0, Text::LineBreakType::None);
 		sb.AppendUTF8Char('\t');
-		if (entry->country)
-		{
-			sb.Append(entry->country);
-		}
+		sb.AppendOpt(entry->country);
 		sb.AppendUTF8Char('\t');
 		k = 0;
 		while (k < 20)

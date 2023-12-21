@@ -20,7 +20,7 @@ namespace Media
 		Media::IAudioSource *audsrc;
 		Media::IAudioSource *resampler;
 		UInt32 resampleFreq;
-		Text::String *devName;
+		Optional<Text::String> devName;
 		void *hand;
 		Media::RefClock *clk;
 		EndNotifier endHdlr;

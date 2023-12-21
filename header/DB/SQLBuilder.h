@@ -31,6 +31,7 @@ namespace DB
 		void AppendUInt32(UInt32 val);
 		void AppendUInt64(UInt64 val);
 		void AppendStr(Text::String *val);
+		void AppendStr(Optional<Text::String> val);
 		void AppendStr(NotNullPtr<Text::String> val);
 		void AppendStrC(Text::CString val);
 		void AppendStrUTF8(const UTF8Char *val);

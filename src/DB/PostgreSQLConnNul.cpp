@@ -43,8 +43,8 @@ DB::PostgreSQLConn::~PostgreSQLConn()
 	this->Close();
 	this->server->Release();
 	this->database->Release();
-	SDEL_STRING(this->uid);
-	SDEL_STRING(this->pwd);
+	OPTSTR_DEL(this->uid);
+	OPTSTR_DEL(this->pwd);
 }
 
 DB::SQLType DB::PostgreSQLConn::GetSQLType() const
@@ -169,7 +169,7 @@ UOSInt DB::PostgreSQLConn::QueryTableNames(Text::CString schemaName, NotNullPtr<
 		while (r->ReadNext())
 		{
 			NotNullPtr<Text::String> tabName;
-			if (tabName.Set(r->GetNewStr(0)))
+			if (r->GetNewStr(0).SetTo(tabName))
 				names->Add(tabName);
 		}
 		this->CloseReader(r);
@@ -264,12 +264,12 @@ NotNullPtr<Text::String> DB::PostgreSQLConn::GetConnDB() const
 	return this->database;
 }
 
-Text::String *DB::PostgreSQLConn::GetConnUID() const
+Optional<Text::String> DB::PostgreSQLConn::GetConnUID() const
 {
 	return this->uid;
 }
 
-Text::String *DB::PostgreSQLConn::GetConnPWD() const
+Optional<Text::String> DB::PostgreSQLConn::GetConnPWD() const
 {
 	return this->pwd;
 }

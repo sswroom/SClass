@@ -14,12 +14,12 @@ void Net::SNS::SNSRSS::CalcCRC(const UInt8 *buff, UOSInt size, UInt8 *hashVal)
 	this->crc.GetValue(hashVal);
 }
 
-Net::SNS::SNSRSS::SNSRSS(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::EncodingFactory *encFact, Text::String *userAgent, Text::CString channelId, NotNullPtr<IO::LogTool> log)
+Net::SNS::SNSRSS::SNSRSS(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::EncodingFactory *encFact, Optional<Text::String> userAgent, Text::CString channelId, NotNullPtr<IO::LogTool> log)
 {
 	this->sockf = sockf;
 	this->ssl = ssl;
 	this->encFact = encFact;
-	this->userAgent = SCOPY_STRING(userAgent);
+	this->userAgent = Text::String::CopyOrNull(userAgent);
 	this->channelId = Text::String::New(channelId);
 	this->log = log;
 	this->chDesc = 0;
@@ -89,7 +89,7 @@ Net::SNS::SNSRSS::SNSRSS(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSL
 Net::SNS::SNSRSS::~SNSRSS()
 {
 	UOSInt i;
-	SDEL_STRING(this->userAgent);
+	OPTSTR_DEL(this->userAgent);
 	this->chName->Release();
 	SDEL_STRING(this->chDesc);
 	i = this->itemMap.GetCount();

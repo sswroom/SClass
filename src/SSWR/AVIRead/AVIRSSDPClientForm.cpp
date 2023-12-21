@@ -55,6 +55,7 @@ void __stdcall SSWR::AVIRead::AVIRSSDPClientForm::OnServiceSelChg(void *userObj)
 	Sync::MutexUsage mutUsage;
 	me->ssdp->GetDevices(mutUsage);
 	Net::SSDPClient::SSDPService *svc = (Net::SSDPClient::SSDPService*)me->lbService->GetSelectedItem();
+	NotNullPtr<Text::String> s;
 	if (svc)
 	{
 		UTF8Char sbuff[128];
@@ -73,17 +74,17 @@ void __stdcall SSWR::AVIRead::AVIRSSDPClientForm::OnServiceSelChg(void *userObj)
 			me->txtDate->SetText(CSTR("-"));
 		}
 		me->txtUSN->SetText(svc->usn->ToCString());
-		me->txtST->SetText(svc->st->ToCString());
+		me->txtST->SetText(Text::String::OrEmpty(svc->st)->ToCString());
 		me->txtServer->SetText(Text::String::OrEmpty(svc->server)->ToCString());
 		me->txtOpt->SetText(Text::String::OrEmpty(svc->opt)->ToCString());
 		me->txtUserAgent->SetText(Text::String::OrEmpty(svc->userAgent)->ToCString());
 
-		if (svc->location)
+		if (svc->location.SetTo(s))
 		{
-			Net::SSDPClient::SSDPRoot *root = me->rootMap->Get(svc->location);
+			Net::SSDPClient::SSDPRoot *root = me->rootMap->GetNN(s);
 			if (root == 0)
 			{
-				NotNullPtr<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(me->sockf, me->ssl, svc->location->ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, true);
+				NotNullPtr<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(me->sockf, me->ssl, s->ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, true);
 				if (cli->IsError())
 				{
 					root = MemAlloc(Net::SSDPClient::SSDPRoot, 1);
@@ -95,7 +96,7 @@ void __stdcall SSWR::AVIRead::AVIRSSDPClientForm::OnServiceSelChg(void *userObj)
 					root = Net::SSDPClient::SSDPRootParse(me->core->GetEncFactory(), cli);
 					cli.Delete();
 				}
-				me->rootMap->Put(svc->location, root);
+				me->rootMap->PutNN(s, root);
 			}
 
 			me->txtUDN->SetText(Text::String::OrEmpty(root->udn)->ToCString());

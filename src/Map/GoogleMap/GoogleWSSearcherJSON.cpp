@@ -36,7 +36,7 @@ Map::GoogleMap::GoogleWSSearcherJSON::~GoogleWSSearcherJSON()
 		MemFree(this->gooPrivKey);
 		this->gooPrivKey = 0;
 	}
-	SDEL_STRING(this->gooAPIKey);
+	OPTSTR_DEL(this->gooAPIKey);
 }
 
 void Map::GoogleMap::GoogleWSSearcherJSON::SetGoogleClientId(Text::String *gooCliId, Text::String *gooPrivKey)
@@ -75,15 +75,15 @@ void Map::GoogleMap::GoogleWSSearcherJSON::SetGoogleClientId(Text::CString gooCl
 	}
 }
 
-void Map::GoogleMap::GoogleWSSearcherJSON::SetGoogleAPIKey(Text::String *gooAPIKey)
+void Map::GoogleMap::GoogleWSSearcherJSON::SetGoogleAPIKey(Optional<Text::String> gooAPIKey)
 {
-	SDEL_STRING(this->gooAPIKey);
-	this->gooAPIKey = SCOPY_STRING(gooAPIKey);
+	OPTSTR_DEL(this->gooAPIKey);
+	this->gooAPIKey = Text::String::CopyOrNull(gooAPIKey);
 }
 
 void Map::GoogleMap::GoogleWSSearcherJSON::SetGoogleAPIKey(Text::CString gooAPIKey)
 {
-	SDEL_STRING(this->gooAPIKey);
+	OPTSTR_DEL(this->gooAPIKey);
 	this->gooAPIKey = Text::String::NewOrNull(gooAPIKey);
 }
 
@@ -109,6 +109,7 @@ UTF8Char *Map::GoogleMap::GoogleWSSearcherJSON::SearchName(UTF8Char *buff, UOSIn
 		}
 	}
 
+	NotNullPtr<Text::String> s;
 	NotNullPtr<Net::HTTPClient> cli;
 	urlStart = sptr = Text::StrConcatC(url, UTF8STRC("https://maps.googleapis.com"));
 	sptr = Text::StrConcatC(sptr, UTF8STRC("/maps/api/geocode/json?latlng="));
@@ -135,10 +136,10 @@ UTF8Char *Map::GoogleMap::GoogleWSSearcherJSON::SearchName(UTF8Char *buff, UOSIn
 		sptr = Text::StrConcatC(sptr, UTF8STRC("&signature="));
 		sptr = b64.EncodeBin(sptr, result, 20);
 	}
-	else if (this->gooAPIKey)
+	else if (this->gooAPIKey.SetTo(s))
 	{
 		sptr = Text::StrConcatC(sptr, UTF8STRC("&key="));
-		sptr = this->gooAPIKey->ConcatTo(sptr);
+		sptr = s->ConcatTo(sptr);
 	}
 
 	cli = Net::HTTPClient::CreateConnect(this->sockf, this->ssl, CSTRP(url, sptr), Net::WebUtil::RequestMethod::HTTP_GET, true);

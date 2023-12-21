@@ -276,14 +276,14 @@ Bool DB::MongoDBReader::GetStr(UOSInt colIndex, NotNullPtr<Text::StringBuilderUT
 	}
 }
 
-Text::String *DB::MongoDBReader::GetNewStr(UOSInt colIndex)
+Optional<Text::String> DB::MongoDBReader::GetNewStr(UOSInt colIndex)
 {
 	if (colIndex != 0)
 		return 0;
 	if (this->doc)
 	{
 		char *str = bson_as_canonical_extended_json((const bson_t*)this->doc, 0);
-		Text::String *ret = Text::String::NewNotNullSlow((const UTF8Char*)str).Ptr();
+		NotNullPtr<Text::String> ret = Text::String::NewNotNullSlow((const UTF8Char*)str);
 		bson_free(str);
 		return ret;
 	}

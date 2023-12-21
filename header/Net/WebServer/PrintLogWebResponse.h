@@ -12,7 +12,7 @@ namespace Net
 		private:
 			NotNullPtr<Net::WebServer::IWebResponse> resp;
 			NotNullPtr<IO::Writer> writer;
-			Text::String *prefix;
+			Optional<Text::String> prefix;
 
 		public:
 			PrintLogWebResponse(NotNullPtr<Net::WebServer::IWebResponse> resp, NotNullPtr<IO::Writer> writer, Text::CString prefix);

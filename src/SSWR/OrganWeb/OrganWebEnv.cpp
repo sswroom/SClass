@@ -82,8 +82,8 @@ void SSWR::OrganWeb::OrganWebEnv::LoadCategory()
 			{
 				NEW_CLASS(cate, CategoryInfo());
 				cate->cateId = cateId;
-				cate->chiName = r->GetNewStrB(1, sb);
-				cate->dirName = r->GetNewStrB(2, sb);
+				cate->chiName = r->GetNewStrBNN(1, sb);
+				cate->dirName = r->GetNewStrBNN(2, sb);
 				sb.ClearStr();
 				r->GetStr(3, sb);
 				sptr = this->imageDir->ConcatTo(sbuff);
@@ -96,7 +96,7 @@ void SSWR::OrganWeb::OrganWebEnv::LoadCategory()
 				cate->srcDir = Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
 				cate->flags = r->GetInt32(4);
 				this->cateMap.Put(cate->cateId, cate);
-				this->cateSMap.Put(cate->dirName, cate);
+				this->cateSMap.PutNN(cate->dirName, cate);
 			}
 			else
 			{
@@ -126,8 +126,8 @@ void SSWR::OrganWeb::OrganWebEnv::LoadCategory()
 			{
 				grpType = MemAlloc(GroupTypeInfo, 1);
 				grpType->id = r->GetInt32(0);
-				grpType->engName = r->GetNewStrB(1, sb);
-				grpType->chiName = r->GetNewStrB(2, sb);
+				grpType->engName = r->GetNewStrBNN(1, sb);
+				grpType->chiName = r->GetNewStrBNN(2, sb);
 				cate->groupTypes.Put(grpType->id, grpType);
 			}
 		}
@@ -354,7 +354,7 @@ void SSWR::OrganWeb::OrganWebEnv::LoadUsers(NotNullPtr<Sync::RWMutexUsage> mutUs
 				this->userNameMap.RemoveNN(user->userName);
 				user->userName->Release();
 				user->userName = r->GetNewStrBNN(1, sb);
-				SDEL_STRING(user->pwd);
+				OPTSTR_DEL(user->pwd);
 				user->pwd = r->GetNewStrB(2, sb);
 				user->watermark->Release();
 				user->watermark = r->GetNewStrBNN(3, sb);
@@ -610,9 +610,9 @@ void SSWR::OrganWeb::OrganWebEnv::FreeSpecies()
 		sp->sciName->Release();
 		sp->descript->Release();
 		sp->dirName->Release();
-		SDEL_STRING(sp->photo);
+		OPTSTR_DEL(sp->photo);
 		sp->idKey->Release();
-		SDEL_STRING(sp->poiImg);
+		OPTSTR_DEL(sp->poiImg);
 
 		j = sp->wfiles.GetCount();
 		while (j-- > 0)
@@ -655,7 +655,7 @@ void SSWR::OrganWeb::OrganWebEnv::FreeGroup(GroupInfo *group)
 	group->engName->Release();
 	group->chiName->Release();
 	group->descript->Release();
-	SDEL_STRING(group->idKey);
+	OPTSTR_DEL(group->idKey);
 	DEL_CLASS(group);
 }
 
@@ -673,7 +673,7 @@ void SSWR::OrganWeb::OrganWebEnv::FreeBooks()
 		book->title->Release();
 		book->author->Release();
 		book->press->Release();
-		SDEL_STRING(book->url);
+		OPTSTR_DEL(book->url);
 		j = book->species.GetCount();
 		while (j-- > 0)
 		{
@@ -702,7 +702,7 @@ void SSWR::OrganWeb::OrganWebEnv::FreeUsers()
 		user = this->userMap.GetItem(i);
 		user->userName->Release();
 		user->watermark->Release();
-		SDEL_STRING(user->pwd);
+		OPTSTR_DEL(user->pwd);
 
 		j = user->userFileObj.GetCount();
 		while (j-- > 0)
@@ -710,9 +710,9 @@ void SSWR::OrganWeb::OrganWebEnv::FreeUsers()
 			userFile = user->userFileObj.GetItem(j);
 			userFile->oriFileName->Release();
 			userFile->dataFileName->Release();
-			SDEL_STRING(userFile->descript);
-			SDEL_STRING(userFile->location);
-			SDEL_STRING(userFile->camera);
+			OPTSTR_DEL(userFile->descript);
+			OPTSTR_DEL(userFile->location);
+			OPTSTR_DEL(userFile->camera);
 			MemFree(userFile);
 		}
 
@@ -763,9 +763,9 @@ void SSWR::OrganWeb::OrganWebEnv::ClearUsers()
 			userFile = user->userFileObj.GetItem(j);
 			userFile->oriFileName->Release();
 			userFile->dataFileName->Release();
-			SDEL_STRING(userFile->descript);
-			SDEL_STRING(userFile->location);
-			SDEL_STRING(userFile->camera);
+			OPTSTR_DEL(userFile->descript);
+			OPTSTR_DEL(userFile->location);
+			OPTSTR_DEL(userFile->camera);
 			MemFree(userFile);
 		}
 		user->userFileIndex.Clear();
@@ -786,14 +786,14 @@ void SSWR::OrganWeb::OrganWebEnv::ClearUsers()
 	this->dataFileMap.Clear();
 }
 
-SSWR::OrganWeb::OrganWebEnv::OrganWebEnv(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, NotNullPtr<IO::LogTool> log, DB::DBTool *db, Optional<Text::String> imageDir, UInt16 port, UInt16 sslPort, Optional<Text::String> cacheDir, Optional<Text::String> dataDir, UInt32 scnSize, Optional<Text::String> reloadPwd, Int32 unorganizedGroupId, NotNullPtr<Media::DrawEngine> eng, Text::CString osmCachePath)
+SSWR::OrganWeb::OrganWebEnv::OrganWebEnv(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, NotNullPtr<IO::LogTool> log, DB::DBTool *db, NotNullPtr<Text::String> imageDir, UInt16 port, UInt16 sslPort, Optional<Text::String> cacheDir, NotNullPtr<Text::String> dataDir, UInt32 scnSize, Optional<Text::String> reloadPwd, Int32 unorganizedGroupId, NotNullPtr<Media::DrawEngine> eng, Text::CString osmCachePath)
 {
-	this->imageDir = Text::String::CopyOrNull(imageDir);
+	this->imageDir = imageDir->Clone();
 	this->sockf = sockf;
 	this->ssl = ssl;
 	this->log = log;
 	this->scnSize = scnSize;
-	this->dataDir = Text::String::CopyOrNull(dataDir);
+	this->dataDir = dataDir->Clone();
 	this->unorganizedGroupId = unorganizedGroupId;
 	this->cacheDir = Text::String::CopyOrNull(cacheDir);
 	this->reloadPwd = Text::String::CopyOrNull(reloadPwd);
@@ -901,8 +901,8 @@ SSWR::OrganWeb::OrganWebEnv::~OrganWebEnv()
 	while (i-- > 0)
 	{
 		loc = this->locMap.GetItem(i);
-		SDEL_STRING(loc->cname);
-		SDEL_STRING(loc->ename);
+		OPTSTR_DEL(loc->cname);
+		OPTSTR_DEL(loc->ename);
 		MemFree(loc);
 	}
 	this->colorMgr.DeleteSess(this->colorSess);
@@ -910,8 +910,8 @@ SSWR::OrganWeb::OrganWebEnv::~OrganWebEnv()
 
 	this->imageDir->Release();
 	this->dataDir->Release();
-	SDEL_STRING(this->cacheDir);
-	SDEL_STRING(this->reloadPwd);
+	OPTSTR_DEL(this->cacheDir);
+	OPTSTR_DEL(this->reloadPwd);
 }
 
 Bool SSWR::OrganWeb::OrganWebEnv::IsError()
@@ -949,20 +949,21 @@ IO::ParsedObject *SSWR::OrganWeb::OrganWebEnv::ParseFileType(NotNullPtr<IO::Stre
 
 Bool SSWR::OrganWeb::OrganWebEnv::HasReloadPwd() const
 {
-	return this->reloadPwd != 0;
+	return !this->reloadPwd.IsNull();
 }
 
 Bool SSWR::OrganWeb::OrganWebEnv::ReloadPwdMatches(NotNullPtr<Text::String> pwd) const
 {
-	return this->reloadPwd != 0 && this->reloadPwd->Equals(pwd);
+	NotNullPtr<Text::String> s;
+	return this->reloadPwd.SetTo(s) && s->Equals(pwd);
 }
 
-Text::String *SSWR::OrganWeb::OrganWebEnv::GetCacheDir() const
+Optional<Text::String> SSWR::OrganWeb::OrganWebEnv::GetCacheDir() const
 {
 	return this->cacheDir;
 }
 
-Text::String *SSWR::OrganWeb::OrganWebEnv::GetDataDir() const
+NotNullPtr<Text::String> SSWR::OrganWeb::OrganWebEnv::GetDataDir() const
 {
 	return this->dataDir;
 }
@@ -998,7 +999,7 @@ void SSWR::OrganWeb::OrganWebEnv::CalcGroupCount(NotNullPtr<Sync::RWMutexUsage> 
 		if (sp->flags & 9)
 		{
 			group->photoCount++;
-			if (sp->photoId != 0 || sp->photoWId != 0 || sp->photo != 0)
+			if (sp->photoId != 0 || sp->photoWId != 0 || !sp->photo.IsNull())
 			{
 				if (group->photoSpObj == 0 || group->photoSpecies == sp->speciesId)
 				{
@@ -1730,7 +1731,7 @@ Bool SSWR::OrganWeb::OrganWebEnv::SpeciesMove(NotNullPtr<Sync::RWMutexUsage> mut
 		if (group)
 		{
 			group->species.Add(species);
-			if (group->photoSpObj == 0 && (species->photoId != 0 || species->photo != 0 || species->photoWId != 0))
+			if (group->photoSpObj == 0 && (species->photoId != 0 || !species->photo.IsNull() || species->photoWId != 0))
 			{
 				group->photoSpObj = species;
 			}
@@ -1811,9 +1812,9 @@ Bool SSWR::OrganWeb::OrganWebEnv::SpeciesDelete(NotNullPtr<Sync::RWMutexUsage> m
 		species->sciName->Release();
 		species->descript->Release();
 		species->dirName->Release();
-		SDEL_STRING(species->photo);
+		OPTSTR_DEL(species->photo);
 		species->idKey->Release();
-		SDEL_STRING(species->poiImg);
+		OPTSTR_DEL(species->poiImg);
 		Int32 groupId = species->groupId;
 		this->spMap.Remove(speciesId);
 		GroupInfo *group = this->groupMap.Get(groupId);
@@ -1924,7 +1925,7 @@ Bool SSWR::OrganWeb::OrganWebEnv::SpeciesMerge(NotNullPtr<Sync::RWMutexUsage> mu
 	{
 		this->SpeciesSetFlags(mutUsage, destSpecies->speciesId, newFlags);
 	}
-	if (destSpecies->photoId == 0 && destSpecies->photo == 0 && destSpecies->photoWId == 0)
+	if (destSpecies->photoId == 0 && destSpecies->photo.IsNull() && destSpecies->photoWId == 0)
 	{
 		this->SpeciesUpdateDefPhoto(mutUsage, destSpecies->speciesId);
 	}
@@ -2803,7 +2804,7 @@ Bool SSWR::OrganWeb::OrganWebEnv::UserfileUpdateDesc(NotNullPtr<Sync::RWMutexUsa
 	{
 		descr.v = 0;
 	}
-	if (userFile->descript == 0 && descr.v == 0)
+	if (userFile->descript.IsNull() && descr.v == 0)
 	{
 		return true;
 	}
@@ -2814,7 +2815,7 @@ Bool SSWR::OrganWeb::OrganWebEnv::UserfileUpdateDesc(NotNullPtr<Sync::RWMutexUsa
 	sql.AppendInt32(userfileId);
 	if (db->ExecuteNonQuery(sql.ToCString()) > 0)
 	{
-		SDEL_STRING(userFile->descript);
+		OPTSTR_DEL(userFile->descript);
 		userFile->descript = Text::String::NewOrNull(descr);
 		return true;
 	}
@@ -3550,8 +3551,8 @@ void SSWR::OrganWeb::OrganWebEnv::PeakFreeAll(NotNullPtr<Data::ArrayListNN<PeakI
 		peak = it.Next();
 		peak->refId->Release();
 		peak->district->Release();
-		SDEL_STRING(peak->name);
-		SDEL_STRING(peak->type);
+		OPTSTR_DEL(peak->name);
+		OPTSTR_DEL(peak->type);
 		MemFreeNN(peak);
 	}
 	peaks->Clear();

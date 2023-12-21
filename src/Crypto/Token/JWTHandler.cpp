@@ -34,6 +34,7 @@ Bool Crypto::Token::JWTHandler::Generate(NotNullPtr<Text::StringBuilderUTF8> sb,
 	Text::String *key;
 	UOSInt i;
 	UOSInt j;
+	NotNullPtr<Text::String> s;
 	Text::JSONBuilder json(Text::JSONBuilder::OT_OBJECT);
 	i = 0;
 	j = keys->GetCount();
@@ -45,17 +46,17 @@ Bool Crypto::Token::JWTHandler::Generate(NotNullPtr<Text::StringBuilderUTF8> sb,
 	}
 	if (param != 0)
 	{
-		if (param->GetIssuer() != 0)
+		if (param->GetIssuer().SetTo(s))
 		{
-			json.ObjectAddStr(CSTR("iss"), param->GetIssuer());
+			json.ObjectAddStr(CSTR("iss"), s);
 		}
-		if (param->GetSubject() != 0)
+		if (param->GetSubject().SetTo(s))
 		{
-			json.ObjectAddStr(CSTR("sub"), param->GetSubject());
+			json.ObjectAddStr(CSTR("sub"), s);
 		}
-		if (param->GetAudience() != 0)
+		if (param->GetAudience().SetTo(s))
 		{
-			json.ObjectAddStr(CSTR("aud"), param->GetAudience());
+			json.ObjectAddStr(CSTR("aud"), s);
 		}
 		if (param->GetExpirationTime() != 0)
 		{
@@ -69,9 +70,9 @@ Bool Crypto::Token::JWTHandler::Generate(NotNullPtr<Text::StringBuilderUTF8> sb,
 		{
 			json.ObjectAddInt64(CSTR("iat"), param->GetIssuedAt());
 		}
-		if (param->GetJWTId() != 0)
+		if (param->GetJWTId().SetTo(s))
 		{
-			json.ObjectAddStr(CSTR("jti"), param->GetJWTId());
+			json.ObjectAddStr(CSTR("jti"), s);
 		}
 	}
 	Crypto::Token::JWToken *token = Crypto::Token::JWToken::Generate(alg, json.Build(), this->ssl, this->key, this->keyLeng, this->keyType);

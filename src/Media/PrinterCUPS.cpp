@@ -26,7 +26,7 @@ namespace Media
 	private:
 		IPrintHandler *hdlr;
 		Media::GTKDrawEngine *eng;
-		Text::String *docName;
+		Optional<Text::String> docName;
 		Bool started;
 		Bool running;
 		PageOrientation po;
@@ -40,7 +40,7 @@ namespace Media
 
 		Bool IsError();
 
-		virtual void SetDocName(Text::String* docName);
+		virtual void SetDocName(Optional<Text::String> docName);
 		virtual void SetDocName(Text::CString docName);
 		virtual void SetNextPagePaperSizeMM(Double width, Double height);
 		virtual void SetNextPageOrientation(PageOrientation po);
@@ -62,6 +62,7 @@ UInt32 __stdcall Media::CUPSPrintDocument::PrintThread(void *userObj)
 	Double paperWidth;
 	Double paperHeight;
 	Data::DateTime dt;
+	NotNullPtr<Text::String> s;
 	dt.SetCurrTimeUTC();
 	t = dt.ToTicks();
 	sptr = IO::Path::GetProcessFileName(fileName);
@@ -117,9 +118,9 @@ UInt32 __stdcall Media::CUPSPrintDocument::PrintThread(void *userObj)
 	Text::StringBuilderUTF8 sb1;
 	Text::StringBuilderUTF8 sb2;
 	sb1.Append(me->printerName);
-	if (me->docName)
+	if (me->docName.SetTo(s))
 	{
-		sb2.Append(me->docName);
+		sb2.Append(s);
 	}
 	else
 	{
@@ -150,7 +151,7 @@ Media::CUPSPrintDocument::CUPSPrintDocument(NotNullPtr<Text::String> printerName
 Media::CUPSPrintDocument::~CUPSPrintDocument()
 {
 	WaitForEnd();
-	SDEL_STRING(this->docName);
+	OPTSTR_DEL(this->docName);
 }
 
 Bool Media::CUPSPrintDocument::IsError()
@@ -158,15 +159,15 @@ Bool Media::CUPSPrintDocument::IsError()
 	return false;
 }
 
-void Media::CUPSPrintDocument::SetDocName(Text::String *docName)
+void Media::CUPSPrintDocument::SetDocName(Optional<Text::String> docName)
 {
-	SDEL_STRING(this->docName);
-	this->docName = SCOPY_STRING(docName);
+	OPTSTR_DEL(this->docName);
+	this->docName = Text::String::CopyOrNull(docName);
 }
 
 void Media::CUPSPrintDocument::SetDocName(Text::CString docName)
 {
-	SDEL_STRING(this->docName);
+	OPTSTR_DEL(this->docName);
 	this->docName = Text::String::NewOrNull(docName);
 }
 

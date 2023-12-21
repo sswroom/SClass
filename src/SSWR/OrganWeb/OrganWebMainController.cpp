@@ -1287,18 +1287,18 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSpecies(NotNullPtr<Net
 					writer.WriteStrC(sbuff2, (UOSInt)(sptr2 - sbuff2));
 					if (userFile->webuserId == env.user->id)
 					{
-						if (userFile->location)
+						if (userFile->location.SetTo(s))
 						{
 							writer.WriteStrC(UTF8STRC(" "));
-							s = Text::XML::ToNewHTMLBodyText(userFile->location->v);
+							s = Text::XML::ToNewHTMLBodyText(s->v);
 							writer.WriteStrC(s->v, s->leng);
 							s->Release();
 						}
 					}
-					if (userFile->descript && userFile->descript->leng > 0)
+					if (userFile->descript.SetTo(s) && s->leng > 0)
 					{
 						writer.WriteStrC(UTF8STRC("<br/>"));
-						s = Text::XML::ToNewHTMLBodyText(userFile->descript->v);
+						s = Text::XML::ToNewHTMLBodyText(s->v);
 						writer.WriteStrC(s->v, s->leng);
 						s->Release();
 					}
@@ -2451,10 +2451,10 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoDetail(NotNullPtr
 					writer.WriteLineC(sb.ToString(), sb.GetLength());
 					sb.ClearStr();
 					sb.AppendC(UTF8STRC("Description<input type=\"text\" name=\"descr\""));
-					if (userFile->descript)
+					if (userFile->descript.SetTo(s))
 					{
 						sb.AppendC(UTF8STRC(" value="));
-						s = Text::XML::ToNewAttrText(userFile->descript->v);
+						s = Text::XML::ToNewAttrText(s->v);
 						sb.Append(s);
 						s->Release();
 					}

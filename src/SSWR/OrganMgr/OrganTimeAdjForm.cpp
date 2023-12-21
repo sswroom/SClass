@@ -72,9 +72,10 @@ void __stdcall SSWR::OrganMgr::OrganTimeAdjForm::OnPictureChg(void *userObj)
 {
 	OrganTimeAdjForm *me = (OrganTimeAdjForm*)userObj;
 	UserFileInfo *userFile = (UserFileInfo*)me->lbPictures->GetSelectedItem();
-	if (userFile)
+	NotNullPtr<Text::String> s;
+	if (userFile && userFile->camera.SetTo(s))
 	{
-		me->selImgCamera = userFile->camera;
+		me->selImgCamera = s.Ptr();
 		me->selImgTime = userFile->fileTime;
 		me->pbPreview->SetImage(0, false);
 		SDEL_CLASS(me->dispImg);
@@ -85,8 +86,8 @@ void __stdcall SSWR::OrganMgr::OrganTimeAdjForm::OnPictureChg(void *userObj)
 		}
 
 		Int32 timeAdj;
-		timeAdj = me->cameraMap->Get(userFile->camera);
-		me->UpdateSelTime(userFile->camera->v, userFile->camera->leng, timeAdj);
+		timeAdj = me->cameraMap->GetNN(s);
+		me->UpdateSelTime(s->v, s->leng, timeAdj);
 	}
 }
 
@@ -179,6 +180,7 @@ void __stdcall SSWR::OrganMgr::OrganTimeAdjForm::OnTimeApplyClicked(void *userOb
 	Int32 failCnt = 0;
 	Math::Coord2DDbl pos;
 	Data::Timestamp ts;
+	NotNullPtr<Text::String> s;
 
 	me->cboCamera->GetText(sb);
 	timeAdj = me->cameraMap->Get(sb.ToCString());
@@ -187,7 +189,7 @@ void __stdcall SSWR::OrganMgr::OrganTimeAdjForm::OnTimeApplyClicked(void *userOb
 	while (i < j)
 	{
 		userFile = me->userFileList->GetItem(i);
-		if (userFile->camera && userFile->camera->Equals(sb.ToString(), sb.GetLength()))
+		if (userFile->camera.SetTo(s) && s->Equals(sb.ToString(), sb.GetLength()))
 		{
 			ts = userFile->fileTime.AddSecond(timeAdj);
 			pos = me->gpsTrk->GetPosByTime(ts);
@@ -252,6 +254,7 @@ SSWR::OrganMgr::OrganTimeAdjForm::OrganTimeAdjForm(UI::GUIClientControl *parent,
 	UOSInt i;
 	UOSInt j;
 	OSInt k;
+	NotNullPtr<Text::String> s;
 
 	this->mapUpdated = false;
 	NEW_CLASSNN(tileMap, Map::OSM::OSMTileMap(CSTR("http://a.tile.opencyclemap.org/cycle/"), this->env->GetCacheDir()->ToCString(), 0, 18, this->env->GetSocketFactory(), this->env->GetSSLEngine()));
@@ -356,9 +359,9 @@ SSWR::OrganMgr::OrganTimeAdjForm::OrganTimeAdjForm(UI::GUIClientControl *parent,
 		{
 			spList.SortedInsert(userFile->speciesId);
 		}
-		if (userFile->camera)
+		if (userFile->camera.SetTo(s))
 		{
-			this->cameraMap->Put(userFile->camera, (Int32)(userFile->captureTime.inst.sec - userFile->fileTime.inst.sec));
+			this->cameraMap->PutNN(s, (Int32)(userFile->captureTime.inst.sec - userFile->fileTime.inst.sec));
 		}
 		i++;
 	}
@@ -389,9 +392,9 @@ SSWR::OrganMgr::OrganTimeAdjForm::OrganTimeAdjForm(UI::GUIClientControl *parent,
 	{
 		sp = (OrganSpecies*)spItems.GetItem(i);
 		sbu8.ClearStr();
-		sbu8.Append(sp->GetCName());
+		sbu8.AppendOpt(sp->GetCName());
 		sbu8.AppendC(UTF8STRC(" "));
-		sbu8.Append(sp->GetSName());
+		sbu8.AppendOpt(sp->GetSName());
 
 		this->cboSpecies->AddItem(sbu8.ToCString(), (void*)(OSInt)sp->GetSpeciesId());
 		DEL_CLASS(sp);

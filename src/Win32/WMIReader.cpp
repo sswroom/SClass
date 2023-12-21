@@ -452,7 +452,7 @@ Bool Win32::WMIReader::GetStr(UOSInt colIndex, NotNullPtr<Text::StringBuilderUTF
 	return ret;
 }
 
-Text::String *Win32::WMIReader::GetNewStr(UOSInt colIndex)
+Optional<Text::String> Win32::WMIReader::GetNewStr(UOSInt colIndex)
 {
 	WMIColumn *col = this->columns->GetItem(colIndex);
 	if (col == 0 || this->pObject == 0)
@@ -460,7 +460,7 @@ Text::String *Win32::WMIReader::GetNewStr(UOSInt colIndex)
 
 	UTF8Char sbuff[64];
 	UTF8Char* sptr;
-	Text::String *ret = 0;
+	Optional<Text::String> ret = 0;
 	HRESULT hr;
 	VARIANT v;
 	CIMTYPE t;
@@ -477,58 +477,59 @@ Text::String *Win32::WMIReader::GetNewStr(UOSInt colIndex)
 			{
 			case CIM_SINT8:
 				sptr = Text::StrInt32(sbuff, V_I1(&v));
-				ret = Text::String::New(sbuff, (UOSInt)(sptr - sbuff)).Ptr();
+				ret = Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
 				break;
 			case CIM_UINT8:
 				sptr = Text::StrInt32(sbuff, V_UI1(&v));
-				ret = Text::String::New(sbuff, (UOSInt)(sptr - sbuff)).Ptr();
+				ret = Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
 				break;
 			case CIM_UINT8 | CIM_FLAG_ARRAY:
 				{
 					SAFEARRAY * arr = V_ARRAY(&v);
-					ret = Text::String::New(2 + (arr->cbElements << 1)).Ptr();
-					Text::StrHexBytes(Text::StrConcatC(ret->v, UTF8STRC("0x")), (UInt8*)arr->pvData, arr->rgsabound[0].cElements, 0);
+					NotNullPtr<Text::String> tmpV = Text::String::New(2 + (arr->cbElements << 1));
+					ret = tmpV;
+					Text::StrHexBytes(Text::StrConcatC(tmpV->v, UTF8STRC("0x")), (UInt8*)arr->pvData, arr->rgsabound[0].cElements, 0);
 				}
 				break;
 			case CIM_SINT16:
 				sptr = Text::StrInt32(sbuff, V_I2(&v));
-				ret = Text::String::New(sbuff, (UOSInt)(sptr - sbuff)).Ptr();
+				ret = Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
 				break;
 			case CIM_UINT16:
 				sptr = Text::StrInt32(sbuff, V_UI2(&v));
-				ret = Text::String::New(sbuff, (UOSInt)(sptr - sbuff)).Ptr();
+				ret = Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
 				break;
 			case CIM_SINT32:
 				sptr = Text::StrInt32(sbuff, V_I4(&v));
-				ret = Text::String::New(sbuff, (UOSInt)(sptr - sbuff)).Ptr();
+				ret = Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
 				break;
 			case CIM_UINT32:
 				sptr = Text::StrUInt32(sbuff, V_UI4(&v));
-				ret = Text::String::New(sbuff, (UOSInt)(sptr - sbuff)).Ptr();
+				ret = Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
 				break;
 			case CIM_SINT64:
 				sptr = Text::StrInt64(sbuff, V_I8(&v));
-				ret = Text::String::New(sbuff, (UOSInt)(sptr - sbuff)).Ptr();
+				ret = Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
 				break;
 			case CIM_UINT64:
 				sptr = Text::StrUInt64(sbuff, V_UI8(&v));
-				ret = Text::String::New(sbuff, (UOSInt)(sptr - sbuff)).Ptr();
+				ret = Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
 				break;
 			case CIM_REAL32:
 				sptr = Text::StrDouble(sbuff, V_R4(&v));
-				ret = Text::String::New(sbuff, (UOSInt)(sptr - sbuff)).Ptr();
+				ret = Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
 				break;
 			case CIM_REAL64:
 				sptr = Text::StrDouble(sbuff, V_R8(&v));
-				ret = Text::String::New(sbuff, (UOSInt)(sptr - sbuff)).Ptr();
+				ret = Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
 				break;
 			case CIM_BOOLEAN:
-				ret = Text::String::New((V_BOOL(&v))?CSTR("True"):CSTR("False")).Ptr();
+				ret = Text::String::New((V_BOOL(&v))?CSTR("True"):CSTR("False"));
 				break;
 			case CIM_STRING:
 				{
 					BSTR bs = V_BSTR(&v);
-					ret = Text::String::NewNotNull(bs).Ptr();
+					ret = Text::String::NewNotNull(bs);
 				}
 				break;
 			case CIM_DATETIME:
@@ -536,7 +537,7 @@ Text::String *Win32::WMIReader::GetNewStr(UOSInt colIndex)
 					Data::DateTime dt;
 					dt.SetValueVariTime(V_DATE(&v));
 					sptr = dt.ToString(sbuff);
-					ret = Text::String::New(sbuff, (UOSInt)(sptr - sbuff)).Ptr();
+					ret = Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
 				}
 				break;
 			}

@@ -48,7 +48,7 @@ namespace SSWR
 			Int32 cateId;
 			NotNullPtr<Text::String> chiName;
 			NotNullPtr<Text::String> dirName;
-			Text::String *srcDir;
+			Optional<Text::String> srcDir;
 		} Category;
 
 		typedef struct
@@ -91,13 +91,13 @@ namespace SSWR
 			NotNullPtr<Text::String> dataFileName;
 			UInt32 crcVal;
 			Int32 rotType;
-			Text::String *camera;
-			Text::String *descript;
+			Optional<Text::String> camera;
+			Optional<Text::String> descript;
 			Double cropLeft;
 			Double cropTop;
 			Double cropRight;
 			Double cropBottom;
-			Text::String *location;
+			Optional<Text::String> location;
 			LocType locType;
 		};
 

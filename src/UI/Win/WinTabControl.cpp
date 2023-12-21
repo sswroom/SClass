@@ -226,7 +226,6 @@ Math::RectArea<OSInt> UI::Win::WinTabControl::GetTabPageRect()
 OSInt UI::Win::WinTabControl::OnNotify(UInt32 code, void *lParam)
 {
 	UOSInt newIndex;
-	UOSInt i;
 	NotNullPtr<UI::GUITabPage> tp;
 	switch (code)
 	{

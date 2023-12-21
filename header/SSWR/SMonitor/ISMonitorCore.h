@@ -56,7 +56,7 @@ namespace SSWR
 				Int32 flags; //0: allow anonymous
 				Int64 lastKATime;
 				Sync::RWMutex mut;
-				Text::String *devName;
+				Optional<Text::String> devName;
 				IO::Stream *stm;
 				Net::SocketUtil::AddressInfo udpAddr;
 				UInt16 udpPort;

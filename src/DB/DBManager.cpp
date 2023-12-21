@@ -26,41 +26,41 @@
 Bool DB::DBManager::GetConnStr(NotNullPtr<DB::DBTool> db, NotNullPtr<Text::StringBuilderUTF8> connStr)
 {
 	NotNullPtr<DB::DBConn> conn = db->GetDBConn();
-	Text::String *s;
+	NotNullPtr<Text::String> s;
 	NotNullPtr<Text::String> nns;
 	switch (conn->GetConnType())
 	{
 	case DB::DBConn::CT_ODBC:
 		{
 			NotNullPtr<DB::ODBCConn> odbc = NotNullPtr<DB::ODBCConn>::ConvertFrom(conn);
-			if ((s = odbc->GetConnStr()) != 0)
+			if (s.Set(odbc->GetConnStr()))
 			{
 				connStr->AppendC(UTF8STRC("odbc:"));
 				connStr->Append(s);
 				return true;
 			}
-			else
+			else if (odbc->GetConnDSN().SetTo(s))
 			{
-				s = odbc->GetConnDSN();
 				connStr->AppendC(UTF8STRC("odbc:DSN="));
 				connStr->Append(s);
-				if ((s = odbc->GetConnUID()) != 0)
+				if (odbc->GetConnUID().SetTo(s))
 				{
 					connStr->AppendC(UTF8STRC(";UID="));
 					connStr->Append(s);
 				}
-				if ((s = odbc->GetConnPWD()) != 0)
+				if (odbc->GetConnPWD().SetTo(s))
 				{
 					connStr->AppendC(UTF8STRC(";PWD="));
 					connStr->Append(s);
 				}
-				if ((s = odbc->GetConnSchema()) != 0)
+				if (odbc->GetConnSchema().SetTo(s))
 				{
 					connStr->AppendC(UTF8STRC(";Schema="));
 					connStr->Append(s);
 				}
 				return true;
 			}
+			return false;
 		}
 		break;
 	case DB::DBConn::CT_MYSQL:
@@ -68,17 +68,17 @@ Bool DB::DBManager::GetConnStr(NotNullPtr<DB::DBTool> db, NotNullPtr<Text::Strin
 			NotNullPtr<DB::MySQLConn> mysql = NotNullPtr<DB::MySQLConn>::ConvertFrom(conn);
 			connStr->AppendC(UTF8STRC("mysql:Server="));
 			connStr->Append(mysql->GetConnServer());
-			if ((s = mysql->GetConnDB()) != 0)
+			if (mysql->GetConnDB().SetTo(s))
 			{
 				connStr->AppendC(UTF8STRC(";Database="));
 				connStr->Append(s);
 			}
-			if ((s = mysql->GetConnUID()) != 0)
+			if (mysql->GetConnUID().SetTo(s))
 			{
 				connStr->AppendC(UTF8STRC(";UID="));
 				connStr->Append(s);
 			}
-			if ((s = mysql->GetConnPWD()) != 0)
+			if (mysql->GetConnPWD().SetTo(s))
 			{
 				connStr->AppendC(UTF8STRC(";PWD="));
 				connStr->Append(s);
@@ -126,7 +126,7 @@ Bool DB::DBManager::GetConnStr(NotNullPtr<DB::DBTool> db, NotNullPtr<Text::Strin
 			connStr->AppendP(sbuff, sptr);
 			connStr->AppendC(UTF8STRC(";Port="));
 			connStr->AppendU16(mysql->GetConnPort());
-			if ((s = mysql->GetConnDB()) != 0)
+			if (mysql->GetConnDB().SetTo(s))
 			{
 				connStr->AppendC(UTF8STRC(";Database="));
 				connStr->Append(s);
@@ -154,10 +154,10 @@ Bool DB::DBManager::GetConnStr(NotNullPtr<DB::DBTool> db, NotNullPtr<Text::Strin
 			connStr->Append(psql->GetConnDB());
 
 			connStr->AppendC(UTF8STRC(";UID="));
-			connStr->Append(psql->GetConnUID());
+			connStr->AppendOpt(psql->GetConnUID());
 
 			connStr->AppendC(UTF8STRC(";PWD="));
-			connStr->Append(psql->GetConnPWD());
+			connStr->AppendOpt(psql->GetConnPWD());
 			return true;
 		}
 		break;
@@ -169,7 +169,7 @@ Bool DB::DBManager::GetConnStr(NotNullPtr<DB::DBTool> db, NotNullPtr<Text::Strin
 			connStr->AppendC(UTF8STRC("tds:Host="));
 			sptr = tds->GetConnHost()->ConcatTo(sbuff);
 			connStr->AppendP(sbuff, sptr);
-			if ((s = tds->GetConnDB()) != 0)
+			if (tds->GetConnDB().SetTo(s))
 			{
 				connStr->AppendC(UTF8STRC(";Database="));
 				connStr->Append(s);

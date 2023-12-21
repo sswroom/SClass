@@ -211,7 +211,6 @@ UOSInt IO::SystemInfo::GetRAMInfo(Data::ArrayList<RAMInfo*> *ramList)
 	{
 		Data::ArrayList<IO::SMBIOS::MemoryDeviceInfo *> memList;
 		IO::SMBIOS::MemoryDeviceInfo *mem;
-		Text::StringBuilderUTF8 sb;
 		smbios->GetMemoryInfo(&memList);
 		if (memList.GetCount() > 0)
 		{
@@ -221,46 +220,10 @@ UOSInt IO::SystemInfo::GetRAMInfo(Data::ArrayList<RAMInfo*> *ramList)
 			{
 				mem = memList.GetItem(i);
 				ram = MemAlloc(RAMInfo, 1);
-				if (mem->deviceLocator)
-				{
-					sb.ClearStr();
-					sb.AppendSlow((const UTF8Char*)mem->deviceLocator);
-					ram->deviceLocator = Text::String::New(sb.ToCString()).Ptr();
-				}
-				else
-				{
-					ram->deviceLocator = 0;
-				}
-				if (mem->manufacturer)
-				{
-					sb.ClearStr();
-					sb.AppendSlow((const UTF8Char*)mem->manufacturer);
-					ram->manufacturer = Text::String::New(sb.ToCString()).Ptr();
-				}
-				else
-				{
-					ram->manufacturer = 0;
-				}
-				if (mem->partNo)
-				{
-					sb.ClearStr();
-					sb.AppendSlow((const UTF8Char*)mem->partNo);
-					ram->partNo = Text::String::New(sb.ToCString()).Ptr();
-				}
-				else
-				{
-					ram->partNo = 0;
-				}
-				if (mem->sn)
-				{
-					sb.ClearStr();
-					sb.AppendSlow((const UTF8Char*)mem->sn);
-					ram->sn = Text::String::New(sb.ToCString()).Ptr();
-				}
-				else
-				{
-					ram->sn = 0;
-				}
+				ram->deviceLocator = Text::String::NewOrNullSlow((const UTF8Char*)mem->deviceLocator);
+				ram->manufacturer = Text::String::NewOrNullSlow((const UTF8Char*)mem->manufacturer);
+				ram->partNo = Text::String::NewOrNullSlow((const UTF8Char*)mem->partNo);
+				ram->sn = Text::String::NewOrNullSlow((const UTF8Char*)mem->sn);
 				ram->defSpdMHz = mem->maxSpeedMTs;
 				ram->confSpdMHz = mem->confSpeedMTs;
 				ram->dataWidth = mem->dataWidthBits;
@@ -289,10 +252,10 @@ void IO::SystemInfo::FreeRAMInfo(Data::ArrayList<RAMInfo*> *ramList)
 	while (i-- > 0)
 	{
 		ram = ramList->GetItem(i);
-		SDEL_STRING(ram->deviceLocator);
-		SDEL_STRING(ram->manufacturer);
-		SDEL_STRING(ram->partNo);
-		SDEL_STRING(ram->sn);
+		OPTSTR_DEL(ram->deviceLocator);
+		OPTSTR_DEL(ram->manufacturer);
+		OPTSTR_DEL(ram->partNo);
+		OPTSTR_DEL(ram->sn);
 		MemFree(ram);
 	}
 }

@@ -19,14 +19,14 @@ Net::Email::SMTPClient::SMTPClient(NotNullPtr<Net::SocketFactory> sockf, Optiona
 Net::Email::SMTPClient::~SMTPClient()
 {
 	this->host->Release();
-	SDEL_STRING(this->authUser);
-	SDEL_STRING(this->authPassword);
+	OPTSTR_DEL(this->authUser);
+	OPTSTR_DEL(this->authPassword);
 }
 
 void Net::Email::SMTPClient::SetPlainAuth(Text::CString userName, Text::CString password)
 {
-	SDEL_STRING(this->authUser);
-	SDEL_STRING(this->authPassword);
+	OPTSTR_DEL(this->authUser);
+	OPTSTR_DEL(this->authPassword);
 	this->authUser = Text::String::NewOrNull(userName);
 	this->authPassword = Text::String::NewOrNull(password);
 }
@@ -55,9 +55,11 @@ Bool Net::Email::SMTPClient::Send(NotNullPtr<Net::Email::EmailMessage> message)
 		}
 	}
 	Sync::SimpleThread::Sleep(10);
-	if (this->authUser && this->authPassword)
+	NotNullPtr<Text::String> user;
+	NotNullPtr<Text::String> password;
+	if (this->authUser.SetTo(user) && this->authPassword.SetTo(password))
 	{
-		if (!conn.SendAuth(this->authUser->ToCString(), this->authPassword->ToCString()))
+		if (!conn.SendAuth(user->ToCString(), password->ToCString()))
 		{
 			return false;
 		}

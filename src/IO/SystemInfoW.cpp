@@ -349,10 +349,10 @@ void IO::SystemInfo::FreeRAMInfo(Data::ArrayList<RAMInfo*> *ramList)
 	while (i-- > 0)
 	{
 		ram = ramList->GetItem(i);
-		SDEL_STRING(ram->deviceLocator);
-		SDEL_STRING(ram->manufacturer);
-		SDEL_STRING(ram->partNo);
-		SDEL_STRING(ram->sn);
+		OPTSTR_DEL(ram->deviceLocator);
+		OPTSTR_DEL(ram->manufacturer);
+		OPTSTR_DEL(ram->partNo);
+		OPTSTR_DEL(ram->sn);
 		MemFree(ram);
 	}
 }

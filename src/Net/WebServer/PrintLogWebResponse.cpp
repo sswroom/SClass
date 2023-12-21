@@ -11,7 +11,7 @@ Net::WebServer::PrintLogWebResponse::PrintLogWebResponse(NotNullPtr<Net::WebServ
 
 Net::WebServer::PrintLogWebResponse::~PrintLogWebResponse()
 {
-	SDEL_STRING(this->prefix);
+	OPTSTR_DEL(this->prefix);
 }
 
 void Net::WebServer::PrintLogWebResponse::EnableWriteBuffer()
@@ -24,10 +24,7 @@ Bool Net::WebServer::PrintLogWebResponse::SetStatusCode(Net::WebStatus::StatusCo
 	if (this->resp->SetStatusCode(code))
 	{
 		Text::StringBuilderUTF8 sb;
-		if (this->prefix)
-		{
-			sb.Append(this->prefix);
-		}
+		sb.AppendOpt(this->prefix);
 		sb.AppendC(UTF8STRC("Status Code = "));
 		sb.AppendI32(code);
 		this->writer->WriteLineC(sb.ToString(), sb.GetLength());
@@ -46,10 +43,7 @@ Bool Net::WebServer::PrintLogWebResponse::AddHeader(Text::CStringNN name, Text::
 	if (this->resp->AddHeader(name, value))
 	{
 		Text::StringBuilderUTF8 sb;
-		if (this->prefix)
-		{
-			sb.Append(this->prefix);
-		}
+		sb.AppendOpt(this->prefix);
 		sb.Append(name);
 		sb.AppendC(UTF8STRC(": "));
 		sb.Append(value);

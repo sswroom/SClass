@@ -21,7 +21,7 @@ namespace DB
 
 		Bool IsConnected() const;
 		NotNullPtr<Text::String> GetConnHost() const;
-		Text::String *GetConnDB() const;
+		Optional<Text::String> GetConnDB() const;
 		NotNullPtr<Text::String> GetConnUID() const;
 		NotNullPtr<Text::String> GetConnPWD() const;
 

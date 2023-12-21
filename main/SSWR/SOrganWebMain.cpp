@@ -113,18 +113,31 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 				sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("OSMTile"));
 				osmCacheDir = CSTRP(sbuff, sptr);
 			}
-			SSWR::OrganWeb::OrganWebEnv env(sockf, ssl, log, db, cfg->GetValue(CSTR("ImageDir")), port, sslPort, cfg->GetValue(CSTR("CacheDir")), cfg->GetValue(CSTR("DataDir")), scnSize, cfg->GetValue(CSTR("ReloadPwd")), unorganizedGroupId, Media::DrawEngineFactory::CreateDrawEngine(), osmCacheDir);
-			DEL_CLASS(cfg);
-
-			if (env.IsError())
+			NotNullPtr<Text::String> imageDir;
+			NotNullPtr<Text::String> dataDir;
+			if (!cfg->GetValue(CSTR("ImageDir")).SetTo(imageDir))
 			{
-				console.WriteLineC(UTF8STRC("Error in starting server"));
+				console.WriteLineC(UTF8STRC("Config ImageDir not found"));
+			}
+			else if (!cfg->GetValue(CSTR("DataDir")).SetTo(dataDir))
+			{
+				console.WriteLineC(UTF8STRC("Config DataDir not found"));
 			}
 			else
 			{
-				console.WriteLineC(UTF8STRC("SOrganWeb started"));
-				progCtrl->WaitForExit(progCtrl);
+				SSWR::OrganWeb::OrganWebEnv env(sockf, ssl, log, db, imageDir, port, sslPort, cfg->GetValue(CSTR("CacheDir")), dataDir, scnSize, cfg->GetValue(CSTR("ReloadPwd")), unorganizedGroupId, Media::DrawEngineFactory::CreateDrawEngine(), osmCacheDir);
+
+				if (env.IsError())
+				{
+					console.WriteLineC(UTF8STRC("Error in starting server"));
+				}
+				else
+				{
+					console.WriteLineC(UTF8STRC("SOrganWeb started"));
+					progCtrl->WaitForExit(progCtrl);
+				}
 			}
+			DEL_CLASS(cfg);
 		}
 
 		ssl.Delete();

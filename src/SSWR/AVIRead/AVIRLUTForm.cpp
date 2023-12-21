@@ -216,11 +216,7 @@ SSWR::AVIRead::AVIRLUTForm::AVIRLUTForm(UI::GUIClientControl *parent, NotNullPtr
 	this->cboChannels->SetSelectedIndex(0);
 	
 	this->txtFileName->SetText(this->lut->GetSourceNameObj()->ToCString());
-	Text::String *s = this->lut->GetRemark();
-	if (s)
-	{
-		this->txtRemark->SetText(s->ToCString());
-	}
+	this->txtRemark->SetText(Text::String::OrEmpty(this->lut->GetRemark())->ToCString());
 	this->UpdateValues();
 }
 

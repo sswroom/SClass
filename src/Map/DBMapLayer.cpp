@@ -256,7 +256,7 @@ Bool Map::DBMapLayer::GetString(NotNullPtr<Text::StringBuilderUTF8> sb, NameArra
 					while (i < colCnt)
 					{
 						SDEL_STRING(narr->names[i]);
-						narr->names[i] = nnr->GetNewStr(i);
+						narr->names[i] = nnr->GetNewStr(i).OrNull();
 						i++;
 					}
 					narr->currId = id;

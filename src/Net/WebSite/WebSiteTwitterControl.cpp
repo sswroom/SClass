@@ -9,7 +9,7 @@
 #include <stdio.h>
 #endif
 
-Net::WebSite::WebSiteTwitterControl::WebSiteTwitterControl(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::EncodingFactory *encFact, Text::String *userAgent)
+Net::WebSite::WebSiteTwitterControl::WebSiteTwitterControl(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::EncodingFactory *encFact, Optional<Text::String> userAgent)
 {
 	this->sockf = sockf;
 	this->ssl = ssl;
@@ -19,7 +19,7 @@ Net::WebSite::WebSiteTwitterControl::WebSiteTwitterControl(NotNullPtr<Net::Socke
 
 Net::WebSite::WebSiteTwitterControl::~WebSiteTwitterControl()
 {
-	SDEL_STRING(this->userAgent);
+	OPTSTR_DEL(this->userAgent);
 }
 
 UOSInt Net::WebSite::WebSiteTwitterControl::GetChannelItems(NotNullPtr<Text::String> channelId, UOSInt pageNo, Data::ArrayList<Net::WebSite::WebSiteTwitterControl::ItemData*> *itemList, Net::WebSite::WebSiteTwitterControl::ChannelInfo *chInfo)
@@ -43,7 +43,7 @@ UOSInt Net::WebSite::WebSiteTwitterControl::GetChannelItems(NotNullPtr<Text::Str
 #if defined(VERBOSE)
 	printf("Requesting to URL %s\r\n", sb.ToString());
 #endif
-	NotNullPtr<Net::HTTPClient> cli = Net::HTTPClient::CreateClient(this->sockf, this->ssl, {STR_PTRC(this->userAgent)}, true, true);
+	NotNullPtr<Net::HTTPClient> cli = Net::HTTPClient::CreateClient(this->sockf, this->ssl, OPTSTR_CSTR(this->userAgent), true, true);
 	cli->Connect(sb.ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, 0, 0, false);
 	cli->AddHeaderC(CSTR("Accept"), CSTR("*/*"));
 	cli->AddHeaderC(CSTR("Accept-Charset"), CSTR("*"));
@@ -301,7 +301,7 @@ void Net::WebSite::WebSiteTwitterControl::FreeItems(Data::ArrayList<Net::WebSite
 	itemList->Clear();
 }
 
-Text::String *Net::WebSite::WebSiteTwitterControl::GetUserAgent()
+Optional<Text::String> Net::WebSite::WebSiteTwitterControl::GetUserAgent()
 {
 	return this->userAgent;
 }

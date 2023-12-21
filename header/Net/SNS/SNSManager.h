@@ -28,7 +28,7 @@ namespace Net
 			NotNullPtr<Net::SocketFactory> sockf;
 			Optional<Net::SSLEngine> ssl;
 			Text::EncodingFactory *encFact;
-			Text::String *userAgent;
+			Optional<Text::String> userAgent;
 			NotNullPtr<Text::String> dataPath;
 			Sync::Mutex mut;
 			Data::ArrayList<ChannelData*> channelList;

@@ -21,8 +21,8 @@ namespace Net
 			UInt16 port;
 			Data::Duration timeout;
 			IO::Writer *logWriter;
-			Text::String *authUser;
-			Text::String *authPassword;
+			Optional<Text::String> authUser;
+			Optional<Text::String> authPassword;
 
 		public:
 			SMTPClient(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CStringNN host, UInt16 port, Net::Email::SMTPConn::ConnType connType, IO::Writer *logWriter, Data::Duration timeout);

@@ -107,12 +107,12 @@ void __stdcall Net::SSDPClient::OnPacketRecv(NotNullPtr<const Net::SocketUtil::A
 
 void Net::SSDPClient::SSDPServiceFree(SSDPService *svc)
 {
-	SDEL_STRING(svc->location);
-	SDEL_STRING(svc->opt);
-	SDEL_STRING(svc->server);
-	SDEL_STRING(svc->st);
+	OPTSTR_DEL(svc->location);
+	OPTSTR_DEL(svc->opt);
+	OPTSTR_DEL(svc->server);
+	OPTSTR_DEL(svc->st);
 	svc->usn->Release();
-	SDEL_STRING(svc->userAgent);
+	OPTSTR_DEL(svc->userAgent);
 	MemFree(svc);
 }
 
@@ -132,7 +132,7 @@ Net::SSDPClient::SSDPClient(NotNullPtr<Net::SocketFactory> sockf, Text::CString 
 Net::SSDPClient::~SSDPClient()
 {
 	DEL_CLASS(this->udp);
-	SDEL_STRING(this->userAgent);
+	OPTSTR_DEL(this->userAgent);
 	LIST_CALL_FUNC(&this->devMap, SSDPDeviceFree);
 }
 
@@ -149,10 +149,11 @@ Bool Net::SSDPClient::Scan()
 	sb.AppendC(UTF8STRC("Man: \"ssdp:discover\"\r\n"));
 	sb.AppendC(UTF8STRC("ST: ssdp:all\r\n"));
 	sb.AppendC(UTF8STRC("MX: 3\r\n"));
-	if (this->userAgent)
+	NotNullPtr<Text::String> s;
+	if (this->userAgent.SetTo(s))
 	{
 		sb.AppendC(UTF8STRC("User-Agent: "));
-		sb.Append(this->userAgent);
+		sb.Append(s);
 		sb.AppendC(UTF8STRC("\r\n"));
 	}
 	sb.AppendC(UTF8STRC("\r\n\r\n"));

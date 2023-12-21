@@ -302,25 +302,13 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 				ram = ramList.GetItem(i);
 				sb.ClearStr();
 				sb.AppendC(UTF8STRC("RAM: "));
-				if (ram->deviceLocator)
-				{
-					sb.Append(ram->deviceLocator);
-				}
+				sb.AppendOpt(ram->deviceLocator);
 				sb.AppendC(UTF8STRC("\t"));
-				if (ram->manufacturer)
-				{
-					sb.Append(ram->manufacturer);
-				}
+				sb.AppendOpt(ram->manufacturer);
 				sb.AppendC(UTF8STRC("\t"));
-				if (ram->partNo)
-				{
-					sb.Append(ram->partNo);
-				}
+				sb.AppendOpt(ram->partNo);
 				sb.AppendC(UTF8STRC("\t"));
-				if (ram->sn)
-				{
-					sb.Append(ram->sn);
-				}
+				sb.AppendOpt(ram->sn);
 				sb.AppendC(UTF8STRC("\t"));
 				sb.AppendU64(ram->defSpdMHz);
 				sb.AppendC(UTF8STRC("\t"));

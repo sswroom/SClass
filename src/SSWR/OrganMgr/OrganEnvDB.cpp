@@ -533,7 +533,7 @@ UOSInt SSWR::OrganMgr::OrganEnvDB::GetGroupImages(Data::ArrayList<OrganImageItem
 					sb.Append(this->cfgImgDirBase);
 					sb.AppendChar(IO::Path::PATH_SEPERATOR, 1);
 				}
-				sb.Append(this->currCate->srcDir);
+				sb.AppendOpt(this->currCate->srcDir);
 				sb.AppendChar(IO::Path::PATH_SEPERATOR, 1);
 				r->GetStr(5, sb);
 				sb.AppendChar(IO::Path::PATH_SEPERATOR, 1);
@@ -618,7 +618,7 @@ UOSInt SSWR::OrganMgr::OrganEnvDB::GetSpeciesImages(Data::ArrayList<OrganImageIt
 	UTF8Char *sptr2;
 	Text::PString cols[4];
 	Int32 newFlags = 0;
-	const UTF8Char *coverName = STR_PTR(sp->GetPhoto());
+	Text::CString coverName = OPTSTR_CSTR(sp->GetPhoto());
 	Int32 coverId = sp->GetPhotoId();
 	Int32 coverWId = sp->GetPhotoWId();
 	IO::Path::FindFileSession *sess;
@@ -630,17 +630,17 @@ UOSInt SSWR::OrganMgr::OrganEnvDB::GetSpeciesImages(Data::ArrayList<OrganImageIt
 	OrganImageItem *imgItem;
 	if (coverId != 0)
 	{
-		coverName = 0;
+		coverName = CSTR_NULL;
 	}
 	else
 	{
-		if (coverName && coverName[0] == '*')
+		if (coverName.v && coverName.v[0] == '*')
 		{
-			coverName = &coverName[1];
+			coverName = coverName.Substring(1);
 		}
-		if (coverName && coverName[0] == 0)
+		if (coverName.v && coverName.leng == 0)
 		{
-			coverName = 0;
+			coverName = CSTR_NULL;
 		}
 	}
 
@@ -723,9 +723,9 @@ UOSInt SSWR::OrganMgr::OrganEnvDB::GetSpeciesImages(Data::ArrayList<OrganImageIt
 		sptr = this->cfgImgDirBase->ConcatTo(sptr);
 		*sptr++ = IO::Path::PATH_SEPERATOR;
 	}
-	sptr = Text::StrConcatC(sptr, this->currCate->srcDir->v, this->currCate->srcDir->leng);
+	sptr = Text::String::OrEmpty(this->currCate->srcDir)->ConcatTo(sptr);
 	*sptr++ = IO::Path::PATH_SEPERATOR;
-	sptr = sp->GetDirName()->ConcatTo(sptr);
+	sptr = Text::String::OrEmpty(sp->GetDirName())->ConcatTo(sptr);
 	*sptr++ = IO::Path::PATH_SEPERATOR;
 	sptr2 = Text::StrConcatC(sptr, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
 	sess = IO::Path::FindFile(CSTRP(sbuff, sptr2));
@@ -748,7 +748,7 @@ UOSInt SSWR::OrganMgr::OrganEnvDB::GetSpeciesImages(Data::ArrayList<OrganImageIt
 		{
 			if (pt == IO::Path::PathType::File)
 			{
-				if (coverName && Text::StrStartsWithICase(sptr, coverName))
+				if (coverName.v && Text::StrStartsWithICase(sptr, coverName.v))
 				{
 					isCoverPhoto = true;
 				}
@@ -875,9 +875,9 @@ UOSInt SSWR::OrganMgr::OrganEnvDB::GetSpeciesImages(Data::ArrayList<OrganImageIt
 					sptr2 = cols[0].ConcatTo(Text::StrConcatC(sptr, UTF8STRC("web\\")));
 					imgItem->SetDispName(CSTRP(sptr, sptr2));
 					imgItem->SetIsCoverPhoto(false);
-					if (coverName)
+					if (coverName.v)
 					{
-						if (Text::StrStartsWith(sptr, coverName))
+						if (Text::StrStartsWith(sptr, coverName.v))
 						{
 							imgItem->SetIsCoverPhoto(true);
 						}
@@ -1294,19 +1294,19 @@ SSWR::OrganMgr::OrganSpecies *SSWR::OrganMgr::OrganEnvDB::GetSpecies(Int32 speci
 UTF8Char *SSWR::OrganMgr::OrganEnvDB::GetSpeciesDir(OrganSpecies *sp, UTF8Char *sbuff)
 {
 	UTF8Char *sptr;
-	if (this->currCate->srcDir->IndexOf(UTF8STRC(":\\")) != INVALID_INDEX)
+	if (Text::String::OrEmpty(this->currCate->srcDir)->IndexOf(UTF8STRC(":\\")) != INVALID_INDEX)
 	{
-		sptr = Text::StrConcatC(sbuff, this->currCate->srcDir->v, this->currCate->srcDir->leng);
+		sptr = Text::String::OrEmpty(this->currCate->srcDir)->ConcatTo(sbuff);
 		*sptr++ = IO::Path::PATH_SEPERATOR;
-		return sp->GetDirName()->ConcatTo(sptr);
+		return Text::String::OrEmpty(sp->GetDirName())->ConcatTo(sptr);
 	}
 	else
 	{
 		sptr = this->cfgImgDirBase->ConcatTo(sbuff);
 		*sptr++ = IO::Path::PATH_SEPERATOR;
-		sptr = Text::StrConcatC(sptr, this->currCate->srcDir->v, this->currCate->srcDir->leng);
+		sptr = Text::String::OrEmpty(this->currCate->srcDir)->ConcatTo(sptr);
 		*sptr++ = IO::Path::PATH_SEPERATOR;
-		sptr = sp->GetDirName()->ConcatTo(sptr);
+		sptr = Text::String::OrEmpty(sp->GetDirName())->ConcatTo(sptr);
 		return sptr;
 	}
 }
@@ -3646,11 +3646,8 @@ Bool SSWR::OrganMgr::OrganEnvDB::UpdateUserFileDesc(UserFileInfo *userFile, cons
 	if (db->ExecuteNonQuery(sql.ToCString()) >= 0)
 	{
 		succ = true;
-		SDEL_STRING(userFile->descript);
-		if (descript)
-		{
-			userFile->descript = Text::String::NewNotNullSlow(descript).Ptr();
-		}
+		OPTSTR_DEL(userFile->descript);
+		userFile->descript = Text::String::NewOrNullSlow(descript);
 	}
 	return succ;
 }
@@ -3669,11 +3666,8 @@ Bool SSWR::OrganMgr::OrganEnvDB::UpdateUserFileLoc(UserFileInfo *userFile, const
 	if (db->ExecuteNonQuery(sql.ToCString()) >= 0)
 	{
 		succ = true;
-		SDEL_STRING(userFile->location);
-		if (location)
-		{
-			userFile->location = Text::String::NewNotNullSlow(location).Ptr();
-		}
+		OPTSTR_DEL(userFile->location);
+		userFile->location = Text::String::NewOrNullSlow(location);
 	}
 	return succ;
 }
@@ -4142,7 +4136,7 @@ Media::ImageList *SSWR::OrganMgr::OrganEnvDB::ParseSpImage(OrganSpecies *sp)
 	UTF8Char *sptr;
 	UTF8Char *sptr2;
 	UTF8Char *cols[4];
-	const UTF8Char *coverName = STR_PTR(sp->GetPhoto());
+	Text::CString coverName = OPTSTR_CSTR(sp->GetPhoto());
 	IO::Path::FindFileSession *sess;
 	IO::Path::PathType pt;
 	UOSInt i;
@@ -4173,9 +4167,9 @@ Media::ImageList *SSWR::OrganMgr::OrganEnvDB::ParseSpImage(OrganSpecies *sp)
 		return 0;
 	}
 
-	if (coverName && coverName[0] == '*')
+	if (coverName.v && coverName.v[0] == '*')
 	{
-		coverName = &coverName[1];
+		coverName = coverName.Substring(1);
 	}
 
 	sptr = sbuff;
@@ -4184,11 +4178,11 @@ Media::ImageList *SSWR::OrganMgr::OrganEnvDB::ParseSpImage(OrganSpecies *sp)
 		sptr = this->cfgImgDirBase->ConcatTo(sptr);
 		*sptr++ = IO::Path::PATH_SEPERATOR;
 	}
-	sptr = Text::StrConcatC(sptr, this->currCate->srcDir->v, this->currCate->srcDir->leng);
+	sptr = Text::String::OrEmpty(this->currCate->srcDir)->ConcatTo(sptr);
 	*sptr++ = IO::Path::PATH_SEPERATOR;
-	sptr = sp->GetDirName()->ConcatTo(sptr);
+	sptr = Text::String::OrEmpty(sp->GetDirName())->ConcatTo(sptr);
 	*sptr++ = IO::Path::PATH_SEPERATOR;
-	sptr2 = Text::StrConcatC(Text::StrConcat(sptr, coverName), UTF8STRC(".*"));
+	sptr2 = Text::StrConcatC(coverName.ConcatTo(sptr), UTF8STRC(".*"));
 	sess = IO::Path::FindFile(CSTRP(sbuff, sptr2));
 	if (sess)
 	{
@@ -4236,7 +4230,7 @@ Media::ImageList *SSWR::OrganMgr::OrganEnvDB::ParseSpImage(OrganSpecies *sp)
 						sptr2 = Text::StrConcatC(sptr, UTF8STRC("web"));
 						*sptr2++ = IO::Path::PATH_SEPERATOR;
 						sptr2 = Text::StrConcat(sptr2, cols[0]);
-						if (Text::StrStartsWith(sptr, coverName))
+						if (Text::StrStartsWith(sptr, coverName.v))
 						{
 							IO::StmData::FileData fd(CSTRP(sbuff, sptr2), false);
 							pobj = this->parsers.ParseFile(fd);
@@ -4714,7 +4708,7 @@ void SSWR::OrganMgr::OrganEnvDB::Test()
 	while (i < j)
 	{
 		userFile = this->userFileMap.GetItem(i);
-		if (userFile->location == 0)
+		if (userFile->location.IsNull())
 		{
 			species = speciesMap->Get(userFile->speciesId);
 			if (species == 0 && speciesList.SortedIndexOf(userFile->speciesId) < 0)
@@ -4842,8 +4836,8 @@ typedef struct
 	Int32 id;
 	Int32 photoId;
 	Int32 photoWId;
-	Text::String *dirName;
-	Text::String *photoName;
+	NotNullPtr<Text::String> dirName;
+	Optional<Text::String> photoName;
 } UpgradeDBSpInfo;
 
 void SSWR::OrganMgr::OrganEnvDB::UpgradeDB2()
@@ -4869,6 +4863,7 @@ void SSWR::OrganMgr::OrganEnvDB::UpgradeDB2()
 	WebFileInfo *wfile;
 	SpeciesInfo *spInfo;
 	Bool isCover;
+	NotNullPtr<Text::String> s;
 
 	NotNullPtr<DB::DBTool> db;
 	if (!db.Set(this->db))
@@ -4880,7 +4875,7 @@ void SSWR::OrganMgr::OrganEnvDB::UpgradeDB2()
 		{
 			sp = MemAlloc(UpgradeDBSpInfo, 1);
 			sp->id = r->GetInt32(0);
-			sp->dirName = r->GetNewStr(1);
+			sp->dirName = r->GetNewStrNN(1);
 			sp->photoName = r->GetNewStr(2);
 			sp->photoId = r->GetInt32(3);
 			sp->photoWId = r->GetInt32(4);
@@ -4902,7 +4897,7 @@ void SSWR::OrganMgr::OrganEnvDB::UpgradeDB2()
 			sptr = this->cfgImgDirBase->ConcatTo(sptr);
 			*sptr++ = IO::Path::PATH_SEPERATOR;
 		}
-		sptr = Text::StrConcatC(sptr, this->currCate->srcDir->v, this->currCate->srcDir->leng);
+		sptr = Text::String::OrEmpty(this->currCate->srcDir)->ConcatTo(sptr);
 		*sptr++ = IO::Path::PATH_SEPERATOR;
 		sptr = sp->dirName->ConcatTo(sptr);
 		*sptr++ = IO::Path::PATH_SEPERATOR;
@@ -4955,7 +4950,7 @@ void SSWR::OrganMgr::OrganEnvDB::UpgradeDB2()
 							{
 								id = db->GetLastIdentity32();
 								
-								if (sp->photoId == 0 && sp->photoWId == 0 && sp->photoName && sp->photoName->StartsWith(UTF8STRC("web\\")) && cols[0].StartsWith(&sp->photoName->v[4], sp->photoName->leng - 4))
+								if (sp->photoId == 0 && sp->photoWId == 0 && sp->photoName.SetTo(s) && s->StartsWith(UTF8STRC("web\\")) && cols[0].StartsWith(&s->v[4], s->leng - 4))
 								{
 									isCover = true;
 								}
@@ -5034,7 +5029,7 @@ void SSWR::OrganMgr::OrganEnvDB::UpgradeDB2()
 					}
 				}
 			}
-			if (sp->photoId == 0 && sp->photoWId == 0 && sp->photoName && sp->photoName->StartsWith(UTF8STRC("web\\")))
+			if (sp->photoId == 0 && sp->photoWId == 0 && sp->photoName.SetTo(s) && s->StartsWith(UTF8STRC("web\\")))
 			{
 				if (coverFound != 1)
 				{
@@ -5054,7 +5049,7 @@ void SSWR::OrganMgr::OrganEnvDB::UpgradeDB2()
 		}
 
 		sp->dirName->Release();
-		sp->photoName->Release();
+		OPTSTR_DEL(sp->photoName);
 		MemFree(sp);
 		i++;
 	}
@@ -5065,7 +5060,7 @@ void SSWR::OrganMgr::OrganEnvDB::UpgradeFileStruct(OrganSpecies *sp)
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 	UTF8Char *sptr2;
-	const UTF8Char *coverName = STR_PTR(sp->GetPhoto());
+	const UTF8Char *coverName = OPTSTR_CSTR(sp->GetPhoto()).v;
 	IO::Path::FindFileSession *sess;
 	Bool isCoverPhoto;
 	IO::Path::PathType pt;
@@ -5085,9 +5080,9 @@ void SSWR::OrganMgr::OrganEnvDB::UpgradeFileStruct(OrganSpecies *sp)
 		sptr = this->cfgImgDirBase->ConcatTo(sptr);
 		*sptr++ = IO::Path::PATH_SEPERATOR;
 	}
-	sptr = Text::StrConcatC(sptr, this->currCate->srcDir->v, this->currCate->srcDir->leng);
+	sptr = Text::String::OrEmpty(this->currCate->srcDir)->ConcatTo(sptr);
 	*sptr++ = IO::Path::PATH_SEPERATOR;
-	sptr = sp->GetDirName()->ConcatTo(sptr);
+	sptr = Text::String::OrEmpty(sp->GetDirName())->ConcatTo(sptr);
 	*sptr++ = IO::Path::PATH_SEPERATOR;
 	sptr2 = Text::StrConcatC(sptr, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
 	sess = IO::Path::FindFile(CSTRP(sbuff, sptr2));

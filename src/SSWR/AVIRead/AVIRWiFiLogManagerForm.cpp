@@ -160,6 +160,7 @@ void SSWR::AVIRead::AVIRWiFiLogManagerForm::LogUIUpdate()
 	UOSInt cnt;
 	UOSInt recCnt = 0;
 	Bool valid;
+	NotNullPtr<Text::String> s;
 	NotNullPtr<Text::String> filterText;
 	this->lvContent->ClearItems();
 	i = 0;
@@ -268,8 +269,8 @@ void SSWR::AVIRead::AVIRWiFiLogManagerForm::LogUIUpdate()
 				const Net::MACInfo::MACEntry *entry = Net::MACInfo::GetMACInfoOUI(log->ouis[2]);
 				this->lvContent->SetSubItem(l, 10, {entry->name, entry->nameLen});
 			}
-			if (log->country)
-				this->lvContent->SetSubItem(l, 11, log->country->ToCString());
+			if (log->country.SetTo(s))
+				this->lvContent->SetSubItem(l, 11, s->ToCString());
 			cnt = 0;
 			k = 0;
 			while (k < 20)

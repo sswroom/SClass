@@ -14,12 +14,12 @@ namespace Net
 		struct SSDPService
 		{
 			Int64 time;
-			Text::String *location;
-			Text::String *opt;
-			Text::String *server;
-			Text::String *st;
+			Optional<Text::String> location;
+			Optional<Text::String> opt;
+			Optional<Text::String> server;
+			Optional<Text::String> st;
 			NotNullPtr<Text::String> usn;
-			Text::String *userAgent;
+			Optional<Text::String> userAgent;
 		};
 
 		struct SSDPDevice
@@ -44,7 +44,7 @@ namespace Net
 		};
 	private:
 		Net::UDPServer *udp;
-		Text::String *userAgent;
+		Optional<Text::String> userAgent;
 		Sync::Mutex mut;
 		Data::FastMap<UInt32, SSDPDevice *> devMap;
 

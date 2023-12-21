@@ -102,6 +102,7 @@ void SSWR::DiscDB::DiscDBBurntDiscForm::UpdateSeries()
 	UOSInt j;
 	OSInt k;
 	Data::ArrayListString seriesList;
+	NotNullPtr<Text::String> s;
 
 	this->cboDVDName->GetText(sb);
 	this->cboSeries->ClearItems();
@@ -114,15 +115,15 @@ void SSWR::DiscDB::DiscDBBurntDiscForm::UpdateSeries()
 
 		if (sb.Equals(dvdVideo->anime))
 		{
-			if (dvdVideo->series == 0 || dvdVideo->series->v[0] == 0)
+			if (!dvdVideo->series.SetTo(s) || s->v[0] == 0)
 			{
 			}
 			else
 			{
-				k = seriesList.SortedIndexOf(dvdVideo->series);
+				k = seriesList.SortedIndexOf(s.Ptr());
 				if (k < 0)
 				{
-					seriesList.Insert((UOSInt)~k, dvdVideo->series);
+					seriesList.Insert((UOSInt)~k, s.Ptr());
 				}
 			}
 		}
@@ -147,6 +148,7 @@ void SSWR::DiscDB::DiscDBBurntDiscForm::UpdateVolume()
 	SSWR::DiscDB::DiscDBEnv::DVDVideoInfo *dvdVideo;
 	UOSInt i;
 	UOSInt j;
+	NotNullPtr<Text::String> s;
 
 	this->cboDVDName->GetText(sbName);
 	this->cboSeries->GetText(sbSeries);
@@ -159,9 +161,9 @@ void SSWR::DiscDB::DiscDBBurntDiscForm::UpdateVolume()
 		dvdVideo = dvdVideoList.GetItem(i);
 		if (sbName.Equals(dvdVideo->anime))
 		{
-			if (dvdVideo->series && dvdVideo->series->v[0] != 0)
+			if (dvdVideo->series.SetTo(s) && s->v[0] != 0)
 			{
-				if (dvdVideo->series->Equals(sbSeries))
+				if (s->Equals(sbSeries))
 				{
 					this->cboVolume->AddItem(Text::String::OrEmpty(dvdVideo->volume), dvdVideo);
 				}
@@ -203,6 +205,7 @@ Bool SSWR::DiscDB::DiscDBBurntDiscForm::UpdateFileInfo()
 	Data::ArrayList<SSWR::DiscDB::DiscDBEnv::DVDVideoInfo *> dvdVideoList;
 	SSWR::DiscDB::DiscDBEnv::DVDVideoInfo *dvdVideo;
 	NotNullPtr<Text::String> s;
+	NotNullPtr<Text::String> vol;
 	this->env->GetDVDVideos(&dvdVideoList);
 	i = 0;
 	j = dvdVideoList.GetCount();
@@ -218,7 +221,7 @@ Bool SSWR::DiscDB::DiscDBBurntDiscForm::UpdateFileInfo()
 			s = Text::String::OrEmpty(dvdVideo->series);
 			if (sbSeries.Equals(s))
 			{
-				if (dvdVideo->volume == 0 || dvdVideo->volume->v[0] == 0)
+				if (!dvdVideo->volume.SetTo(vol) || vol->v[0] == 0)
 				{
 					if (volume == 0)
 					{
@@ -228,7 +231,7 @@ Bool SSWR::DiscDB::DiscDBBurntDiscForm::UpdateFileInfo()
 				}
 				else
 				{
-					if (dvdVideo->volume->ToInt32() == volume)
+					if (vol->ToInt32() == volume)
 					{
 						this->selectedFile->videoId = dvdVideo->videoId;
 						return true;
@@ -305,23 +308,8 @@ void SSWR::DiscDB::DiscDBBurntDiscForm::SetVideoField(Int32 videoId)
 	if (dvdVideo)
 	{
 		this->cboDVDName->SetText(dvdVideo->anime->ToCString());
-		if (dvdVideo->series)
-		{
-			this->cboSeries->SetText(dvdVideo->series->ToCString());
-		}
-		else
-		{
-			this->cboSeries->SetText(CSTR(""));
-		}
-
-		if (dvdVideo->volume)
-		{
-			this->cboVolume->SetText(dvdVideo->volume->ToCString());
-		}
-		else
-		{
-			this->cboVolume->SetText(CSTR(""));
-		}
+		this->cboSeries->SetText(Text::String::OrEmpty(dvdVideo->series)->ToCString());
+		this->cboVolume->SetText(Text::String::OrEmpty(dvdVideo->volume)->ToCString());
 		this->cboDVDType->SetText(dvdVideo->dvdType->ToCString());
 	}
 	else
@@ -932,6 +920,7 @@ void __stdcall SSWR::DiscDB::DiscDBBurntDiscForm::OnFileNameSelChg(void *userObj
 		{
 			Data::ArrayList<SSWR::DiscDB::DiscDBEnv::DVDVideoInfo *> dvdVideoList;
 			SSWR::DiscDB::DiscDBEnv::DVDVideoInfo *dvdVideo;
+			NotNullPtr<Text::String> s;
 			me->env->GetDVDVideos(&dvdVideoList);
 			i = 0;
 			j = dvdVideoList.GetCount();
@@ -954,14 +943,14 @@ void __stdcall SSWR::DiscDB::DiscDBBurntDiscForm::OnFileNameSelChg(void *userObj
 				{
 					if (dvdVideo->anime->Equals(anime))
 					{
-						if (dvdVideo->series)
+						if (dvdVideo->series.SetTo(s))
 						{
-							len = dvdVideo->series->leng;
+							len = s->leng;
 							if (seriesLen < len)
 							{
-								if (me->selectedFile->fname->IndexOf(dvdVideo->series->ToCString()) != INVALID_INDEX)
+								if (me->selectedFile->fname->IndexOf(s->ToCString()) != INVALID_INDEX)
 								{
-									series = NotNullPtr<Text::String>::FromPtr(dvdVideo->series);
+									series = s;
 									seriesLen = len;
 								}
 							}
@@ -1044,24 +1033,10 @@ void __stdcall SSWR::DiscDB::DiscDBBurntDiscForm::OnFileNameSelChg(void *userObj
 		const SSWR::DiscDB::DiscDBEnv::DVDVideoInfo *dvdVideo = me->env->GetDVDVideo(me->selectedFile->videoId);
 		me->cboDVDName->SetText(dvdVideo->anime->ToCString());
 		OnCboDVDNameTextChg(me);
-		if (dvdVideo->series == 0)
-		{
-			me->cboSeries->SetText(CSTR(""));
-		}
-		else
-		{
-			me->cboSeries->SetText(dvdVideo->series->ToCString());
-		}
+		me->cboSeries->SetText(Text::String::OrEmpty(dvdVideo->series)->ToCString());
 		me->OnSeriesSelChg(me);
 
-		if (dvdVideo->volume == 0)
-		{
-			me->cboVolume->SetText(CSTR(""));
-		}
-		else
-		{
-			me->cboVolume->SetText(dvdVideo->volume->ToCString());
-		}
+		me->cboVolume->SetText(Text::String::OrEmpty(dvdVideo->volume)->ToCString());
 		me->cboDVDType->SetText(dvdVideo->dvdType->ToCString());
 	}
 }

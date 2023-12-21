@@ -803,8 +803,8 @@ Text::SpreadSheet::Workbook *Text::ReportBuilder::CreateWorkbook()
 			i++;
 		}
 
-		Text::SpreadSheet::OfficeChart *shChart = ws->CreateChart(Math::Unit::Distance::DU_INCH, 0.64, 1.61, 13.10, 5.53, STR_CSTR(chart->GetTitle()));
-		shChart->InitLineChart(chart->GetYAxisName()->ToCString(), chart->GetXAxisName()->ToCString(), FromChartDataType(chart->GetXAxisType()));
+		Text::SpreadSheet::OfficeChart *shChart = ws->CreateChart(Math::Unit::Distance::DU_INCH, 0.64, 1.61, 13.10, 5.53, OPTSTR_CSTR(chart->GetTitle()));
+		shChart->InitLineChart(Text::String::OrEmpty(chart->GetYAxisName())->ToCString(), Text::String::OrEmpty(chart->GetXAxisName())->ToCString(), FromChartDataType(chart->GetXAxisType()));
 		shChart->SetDisplayBlankAs(Text::SpreadSheet::BlankAs::Gap);
 		shChart->AddLegend(Text::SpreadSheet::LegendPos::Bottom);
 

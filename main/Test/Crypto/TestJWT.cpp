@@ -64,7 +64,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 		ssl.Delete();
 		return 5;
 	}
-	if (!s.Set(param.GetSubject()) || !s->Equals(UTF8STRC("1234567890")))
+	if (!param.GetSubject().SetTo(s) || !s->Equals(UTF8STRC("1234567890")))
 	{
 		token->FreeResult(result);
 		DEL_CLASS(token);

@@ -213,14 +213,14 @@ namespace DB
 			return true;
 		}
 
-		virtual Text::String *GetNewStr(UOSInt colIndex)
+		virtual Optional<Text::String> GetNewStr(UOSInt colIndex)
 		{
 			if (this->rows == 0 || colIndex >= this->colCount)
 				return 0;
 			Text::String **row = this->rows->GetItem((UOSInt)this->rowIndex);
 			if (row == 0 || row[colIndex] == 0)
 				return 0;
-			return row[colIndex]->Clone().Ptr();
+			return row[colIndex]->Clone();
 		}
 
 		virtual UTF8Char *GetStr(UOSInt colIndex, UTF8Char *buff, UOSInt buffSize)

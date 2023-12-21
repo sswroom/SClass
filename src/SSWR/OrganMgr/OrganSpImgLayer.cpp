@@ -68,14 +68,15 @@ void SSWR::OrganMgr::OrganSpImgLayer::ReleaseNameArr(Map::NameArray *nameArr)
 Bool SSWR::OrganMgr::OrganSpImgLayer::GetString(NotNullPtr<Text::StringBuilderUTF8> sb, Map::NameArray *nameArr, Int64 id, UOSInt strIndex)
 {
 	UserFileInfo *ufile;
+	NotNullPtr<Text::String> s;
 	ufile = this->objList.GetItem((UOSInt)id);
 	if (ufile == 0)
 		return false;
 	if (strIndex == 0)
 	{
-		if (ufile->descript)
+		if (ufile->descript.SetTo(s))
 		{
-			sb->Append(ufile->descript);
+			sb->Append(s);
 			return true;
 		}
 		else

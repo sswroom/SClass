@@ -21,12 +21,12 @@ void SSWR::AVIRead::AVIRHKOLocalForecastForm::Reload(Net::HKOWeather::Language l
 	{
 		sptr = forecast.updateTime.ToStringNoZone(sbuff);
 		this->txtUpdateTime->SetText(CSTRP(sbuff, sptr));
-		this->txtGeneralSituation->SetText(forecast.generalSituation->ToCString());
-		this->txtTCInfo->SetText(forecast.tcInfo->ToCString());
-		this->txtFireDangerWarning->SetText(forecast.fireDangerWarning->ToCString());
-		this->txtForecastPeriod->SetText(forecast.forecastPeriod->ToCString());
-		this->txtForecastDesc->SetText(forecast.forecastDesc->ToCString());
-		this->txtOutlook->SetText(forecast.outlook->ToCString());
+		this->txtGeneralSituation->SetText(Text::String::OrEmpty(forecast.generalSituation)->ToCString());
+		this->txtTCInfo->SetText(Text::String::OrEmpty(forecast.tcInfo)->ToCString());
+		this->txtFireDangerWarning->SetText(Text::String::OrEmpty(forecast.fireDangerWarning)->ToCString());
+		this->txtForecastPeriod->SetText(Text::String::OrEmpty(forecast.forecastPeriod)->ToCString());
+		this->txtForecastDesc->SetText(Text::String::OrEmpty(forecast.forecastDesc)->ToCString());
+		this->txtOutlook->SetText(Text::String::OrEmpty(forecast.outlook)->ToCString());
 		Net::HKOWeather::FreeLocalForecast(&forecast);
 	}
 	else

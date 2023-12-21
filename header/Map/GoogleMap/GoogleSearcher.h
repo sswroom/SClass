@@ -14,7 +14,7 @@ namespace Map
 		class GoogleSearcher : public Map::IReverseGeocoder
 		{
 		private:
-			Text::String *gooKey;
+			Optional<Text::String> gooKey;
 			Text::String *gooCliId;
 			UInt8 *gooPrivKey;
 			UOSInt gooPrivKeyLeng;

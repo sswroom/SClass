@@ -7,49 +7,49 @@ namespace IO
 	class ProgramLink
 	{
 	private:
-		Text::String *type;
-		Text::String *name;
-		Text::String *genericName;
-		Text::String *version;
-		Text::String *comment;
-		Text::String *mimeTypes;
-		Text::String *categories;
-		Text::String *keywords;
-		Text::String *cmdLine;
+		Optional<Text::String> type;
+		Optional<Text::String> name;
+		Optional<Text::String> genericName;
+		Optional<Text::String> version;
+		Optional<Text::String> comment;
+		Optional<Text::String> mimeTypes;
+		Optional<Text::String> categories;
+		Optional<Text::String> keywords;
+		Optional<Text::String> cmdLine;
 		Bool noDisplay;
 		Bool startupNotify;
 		Bool terminal;
-		Text::String *icon;
+		Optional<Text::String> icon;
 	public:
 		ProgramLink();
 		~ProgramLink();
 
-		Text::String *GetType() const;
-		void SetType(Text::String *type);
+		Optional<Text::String> GetType() const;
+		void SetType(Optional<Text::String> type);
 		void SetType(Text::CString type);
-		Text::String *GetName() const;
-		void SetName(Text::String *name);
+		Optional<Text::String> GetName() const;
+		void SetName(Optional<Text::String> name);
 		void SetName(Text::CString name);
-		Text::String *GetGenericName() const;
-		void SetGenericName(Text::String *genericName);
+		Optional<Text::String> GetGenericName() const;
+		void SetGenericName(Optional<Text::String> genericName);
 		void SetGenericName(Text::CString genericName);
-		Text::String *GetVersion() const;
-		void SetVersion(Text::String *version);
+		Optional<Text::String> GetVersion() const;
+		void SetVersion(Optional<Text::String> version);
 		void SetVersion(Text::CString version);
-		Text::String *GetComment() const;
-		void SetComment(Text::String *comment);
+		Optional<Text::String> GetComment() const;
+		void SetComment(Optional<Text::String> comment);
 		void SetComment(Text::CString comment);
-		Text::String *GetMimeTypes() const;
-		void SetMimeTypes(Text::String *mimeTypes);
+		Optional<Text::String> GetMimeTypes() const;
+		void SetMimeTypes(Optional<Text::String> mimeTypes);
 		void SetMimeTypes(Text::CString mimeTypes);
-		Text::String *GetCategories() const;
-		void SetCategories(Text::String *categories);
+		Optional<Text::String> GetCategories() const;
+		void SetCategories(Optional<Text::String> categories);
 		void SetCategories(Text::CString categories);
-		Text::String *GetKeywords() const;
-		void SetKeywords(Text::String *keywords);
+		Optional<Text::String> GetKeywords() const;
+		void SetKeywords(Optional<Text::String> keywords);
 		void SetKeywords(Text::CString keywords);
-		Text::String *GetCmdLine() const;
-		void SetCmdLine(Text::String *cmdLine);
+		Optional<Text::String> GetCmdLine() const;
+		void SetCmdLine(Optional<Text::String> cmdLine);
 		void SetCmdLine(Text::CString cmdLine);
 		Bool IsNoDisplay() const;
 		void SetNoDisplay(Bool noDisplay);
@@ -57,8 +57,8 @@ namespace IO
 		void SetStartupNotify(Bool startupNotify);
 		Bool HasTerminal() const;
 		void SetTerminal(Bool terminal);
-		Text::String *GetIcon() const;
-		void SetIcon(Text::String *icon);
+		Optional<Text::String> GetIcon() const;
+		void SetIcon(Optional<Text::String> icon);
 		void SetIcon(Text::CString icon);
 	};
 }

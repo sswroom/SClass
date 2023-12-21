@@ -1300,7 +1300,7 @@ Bool DB::OLEDBReader::GetStr(UOSInt colIndex, NotNullPtr<Text::StringBuilderUTF8
 	}
 }
 
-Text::String *DB::OLEDBReader::GetNewStr(UOSInt colIndex)
+Optional<Text::String> DB::OLEDBReader::GetNewStr(UOSInt colIndex)
 {
 	ClassData *data = this->clsData;
 	if (!data->rowValid || colIndex >= data->nCols)
@@ -1322,12 +1322,12 @@ Text::String *DB::OLEDBReader::GetNewStr(UOSInt colIndex)
 			tmpBuff[*valLen / sizeof(WChar*)] = 0;
 			NotNullPtr<Text::String> ret = Text::String::New(tmpBuff, *valLen / sizeof(WChar*));
 			MemFree(tmpBuff);
-			return ret.Ptr();
+			return ret;
 		}
 	default:
 		if (GetStr(colIndex, wbuff))
 		{
-			return Text::String::NewNotNull(wbuff).Ptr();
+			return Text::String::NewNotNull(wbuff);
 		}
 		return 0;
 	}

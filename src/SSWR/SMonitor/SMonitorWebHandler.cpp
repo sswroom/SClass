@@ -47,6 +47,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::IndexReq(SSWR::SMonitor::SMon
 	UOSInt buffSize;
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
+	NotNullPtr<Text::String> s;
 	IO::MemoryStream mstm;
 
 	if (!me->core->UserExist())
@@ -139,9 +140,9 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::IndexReq(SSWR::SMonitor::SMon
 			dev = devList.GetItem(i);
 			Sync::RWMutexUsage mutUsage(dev->mut, false);
 			writer->WriteStrC(UTF8STRC("<tr><td>"));
-			if (dev->devName)
+			if (dev->devName.SetTo(s))
 			{
-				WriteHTMLText(writer, Text::String::OrEmpty(dev->devName));
+				WriteHTMLText(writer, s);
 			}
 			else
 			{
@@ -373,6 +374,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReq(SSWR::SMonitor::SMo
 	UOSInt buffSize;
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
+	NotNullPtr<Text::String> s;
 	Int64 devId;
 	NotNullPtr<Net::WebServer::IWebSession> sess;
 	if (!me->sessMgr->GetSession(req, resp).SetTo(sess))
@@ -413,9 +415,9 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReq(SSWR::SMonitor::SMo
 		dev = devList.GetItem(i);
 		writer->WriteStrC(UTF8STRC("<tr><td>"));
 		Sync::RWMutexUsage mutUsage(dev->mut, false);
-		if (dev->devName)
+		if (dev->devName.SetTo(s))
 		{
-			WriteHTMLText(writer, Text::String::OrEmpty(dev->devName));
+			WriteHTMLText(writer, s);
 		}
 		else
 		{
@@ -540,6 +542,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceEditReq(SSWR::SMonitor:
 	UOSInt buffSize;
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
+	NotNullPtr<Text::String> s;
 	NotNullPtr<Net::WebServer::IWebSession> sess;
 	if (!me->sessMgr->GetSession(req, resp).SetTo(sess))
 	{
@@ -616,10 +619,10 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceEditReq(SSWR::SMonitor:
 	writer->WriteLineC(UTF8STRC("</td></tr>"));
 
 	writer->WriteStrC(UTF8STRC("<tr><td>Device Name</td><td><input type=\"text\" name=\"devName\" "));
-	if (dev->devName)
+	if (dev->devName.SetTo(s))
 	{
 		writer->WriteStrC(UTF8STRC(" value="));
-		WriteAttrText(writer, dev->devName);
+		WriteAttrText(writer, s);
 	}
 	writer->WriteLineC(UTF8STRC("/></td></tr>"));
 	writer->WriteStrC(UTF8STRC("<tr><td>Flags</td><td><input type=\"checkbox\" name=\"anonymous\" id=\"anonymous\" value=\"1\""));
@@ -1462,6 +1465,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DevicePastDataReq(SSWR::SMoni
 	UOSInt buffSize;
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
+	NotNullPtr<Text::String> s;
 	Net::WebServer::IWebSession *sess = me->sessMgr->GetSession(req, resp).OrNull();
 	if (sess)
 	{
@@ -1495,9 +1499,9 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DevicePastDataReq(SSWR::SMoni
 		writer->WriteLineC(UTF8STRC(";"));
 		Sync::RWMutexUsage mutUsage(dev->mut, false);
 		writer->WriteStrC(UTF8STRC("cli.name = "));
-		if (dev->devName)
+		if (dev->devName.SetTo(s))
 		{
-			WriteJSText(writer, dev->devName);
+			WriteJSText(writer, s);
 		}
 		else
 		{
@@ -2020,6 +2024,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::UserAssignReq(SSWR::SMonitor:
 	Int32 userId;
 	UOSInt i;
 	UOSInt j;
+	NotNullPtr<Text::String> s;
 
 	if (!req->GetQueryValueI32(CSTR("id"), userId))
 	{
@@ -2117,9 +2122,9 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::UserAssignReq(SSWR::SMonitor:
 		writer->WriteStrC(UTF8STRC("/><label for=\"device"));
 		writer->WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
 		writer->WriteStrC(UTF8STRC("\">"));
-		if (dev->devName)
+		if (dev->devName.SetTo(s))
 		{
-			WriteHTMLText(writer, Text::String::OrEmpty(dev->devName));
+			WriteHTMLText(writer, s);
 		}
 		else
 		{

@@ -385,9 +385,9 @@ void SSWR::OrganMgr::OrganEnv::ReleaseUserFile(UserFileInfo *userFile)
 {
 	userFile->oriFileName->Release();
 	userFile->dataFileName->Release();
-	SDEL_STRING(userFile->camera);
-	SDEL_STRING(userFile->descript);
-	SDEL_STRING(userFile->location);
+	OPTSTR_DEL(userFile->camera);
+	OPTSTR_DEL(userFile->descript);
+	OPTSTR_DEL(userFile->location);
 	MemFree(userFile);
 }
 
@@ -628,7 +628,7 @@ void SSWR::OrganMgr::OrganEnv::SetCurrCategory(Category *currCate)
 	if (currCate)
 	{
 		this->currCate = currCate;
-		this->cateIsFullDir = this->currCate->srcDir->IndexOf(UTF8STRC(":\\")) != INVALID_INDEX;
+		this->cateIsFullDir = Text::String::OrEmpty(this->currCate->srcDir)->IndexOf(UTF8STRC(":\\")) != INVALID_INDEX;
 		this->TripReload(this->currCate->cateId);
 		this->LoadGroupTypes();
 	}
@@ -639,7 +639,7 @@ void SSWR::OrganMgr::OrganEnv::FreeCategory(Category *cate)
 {
 	cate->chiName->Release();
 	cate->dirName->Release();
-	SDEL_STRING(cate->srcDir);
+	OPTSTR_DEL(cate->srcDir);
 	MemFree(cate);
 }
 
@@ -719,9 +719,9 @@ void SSWR::OrganMgr::OrganEnv::ExportWeb(const UTF8Char *exportDir, Bool include
 					writer.WriteStrC(UTF8STRC(">"));
 
 					sb.ClearStr();
-					sb.Append(grp->GetCName());
+					sb.AppendOpt(grp->GetCName());
 					sb.AppendC(UTF8STRC(" "));
-					sb.Append(grp->GetEName());
+					sb.AppendOpt(grp->GetEName());
 					sb.AppendC(UTF8STRC(" ("));
 					sb.AppendUOSInt(thisPhSpeciesCnt);
 					sb.AppendC(UTF8STRC("/"));
@@ -866,9 +866,9 @@ void SSWR::OrganMgr::OrganEnv::ExportGroup(OrganGroup *grp, Data::FastMap<Int32,
 					sb.ClearStr();
 					sb.AppendC(this->currCate->chiName->v, this->currCate->chiName->leng);
 					sb.AppendC(UTF8STRC(" - "));
-					sb.Append(grp->GetCName());
+					sb.AppendOpt(grp->GetCName());
 					sb.AppendC(UTF8STRC(" "));
-					sb.Append(grp->GetEName());
+					sb.AppendOpt(grp->GetEName());
 					ExportBeginPage(writer, sb.ToString());
 				}
 
@@ -883,9 +883,9 @@ void SSWR::OrganMgr::OrganEnv::ExportGroup(OrganGroup *grp, Data::FastMap<Int32,
 				writer->WriteStrC(UTF8STRC(">"));
 
 				sb.ClearStr();
-				sb.Append(myGrp->GetCName());
+				sb.AppendOpt(myGrp->GetCName());
 				sb.AppendC(UTF8STRC(" "));
-				sb.Append(myGrp->GetEName());
+				sb.AppendOpt(myGrp->GetEName());
 				sb.AppendC(UTF8STRC(" ("));
 				sb.AppendUOSInt(thisPhSpecies);
 				sb.AppendC(UTF8STRC("/"));
@@ -923,13 +923,13 @@ void SSWR::OrganMgr::OrganEnv::ExportGroup(OrganGroup *grp, Data::FastMap<Int32,
 					sb.ClearStr();
 					sb.AppendC(this->currCate->chiName->v, this->currCate->chiName->leng);
 					sb.AppendC(UTF8STRC(" - "));
-					sb.Append(grp->GetCName());
+					sb.AppendOpt(grp->GetCName());
 					sb.AppendC(UTF8STRC(" "));
-					sb.Append(grp->GetEName());
+					sb.AppendOpt(grp->GetEName());
 					ExportBeginPage(writer, sb.ToString());
 				}
 				
-				Text::String *str = sp->GetDirName();
+				NotNullPtr<Text::String> str = Text::String::OrEmpty(sp->GetDirName());
 				sptr = pathAppend;
 				*sptr++ = str->v[0];
 				*sptr++ = str->v[1];
@@ -946,13 +946,13 @@ void SSWR::OrganMgr::OrganEnv::ExportGroup(OrganGroup *grp, Data::FastMap<Int32,
 				writer->WriteStrC(UTF8STRC(">"));
 				s->Release();
 				sb.ClearStr();
-				sb.Append(sp->GetSName());
+				sb.AppendOpt(sp->GetSName());
 				sb.AppendC(UTF8STRC(" "));
-				sb.Append(sp->GetCName());
-				if (sp->GetEName())
+				sb.AppendOpt(sp->GetCName());
+				if (sp->GetEName().SetTo(s))
 				{
 					sb.AppendC(UTF8STRC(" "));
-					sb.Append(sp->GetEName());
+					sb.Append(s);
 				}
 				s = Text::XML::ToNewXMLText(sb.ToString());
 				writer->WriteStrC(s->v, s->leng);
@@ -1030,7 +1030,7 @@ Bool SSWR::OrganMgr::OrganEnv::ExportSpecies(OrganSpecies *sp, const UTF8Char *b
 		return false;
 	}
 
-	Text::String *str = sp->GetDirName();
+	NotNullPtr<Text::String> str = Text::String::OrEmpty(sp->GetDirName());
 	sptr = pathAppend;
 	*sptr++ = str->v[0];
 	*sptr++ = str->v[1];
@@ -1046,13 +1046,13 @@ Bool SSWR::OrganMgr::OrganEnv::ExportSpecies(OrganSpecies *sp, const UTF8Char *b
 	Text::UTF8Writer writer(fs);
 	sb.AppendC(this->currCate->chiName->v, this->currCate->chiName->leng);
 	sb.AppendC(UTF8STRC(" - "));
-	sb.Append(sp->GetSName());
+	sb.AppendOpt(sp->GetSName());
 	sb.AppendC(UTF8STRC(" "));
-	sb.Append(sp->GetCName());
-	if (sp->GetEName())
+	sb.AppendOpt(sp->GetCName());
+	if (sp->GetEName().SetTo(s))
 	{
 		sb.AppendC(UTF8STRC(" "));
-		sb.Append(sp->GetEName());
+		sb.Append(s);
 	}
 	ExportBeginPage(&writer, sb.ToString());
 

@@ -135,8 +135,8 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhoto(NotNullPtr<Net::WebS
 		if (cate && ((cate->flags & 1) == 0 || !notAdmin))
 		{
 			Text::StringBuilderUTF8 sb;
-			Text::String *cacheDir = this->env->GetCacheDir();
-			if (cacheDir && imgWidth == GetPreviewSize() && imgHeight == GetPreviewSize())
+			NotNullPtr<Text::String> cacheDir = Text::String::OrEmpty(this->env->GetCacheDir());
+			if (cacheDir->leng > 0 && imgWidth == GetPreviewSize() && imgHeight == GetPreviewSize())
 			{
 				sptr = cacheDir->ConcatTo(sbuff);
 				sptr2 = Text::StrInt32(sbuff2, cate->cateId);
@@ -388,7 +388,7 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhoto(NotNullPtr<Net::WebS
 						exporter.DeleteParam(param);
 						ResponseMstm(req, resp, mstm, CSTR("image/jpeg"));
 
-						if (cacheDir && imgWidth == GetPreviewSize() && imgHeight == GetPreviewSize() && mstm.GetLength() > 0)
+						if (cacheDir->leng > 0 && imgWidth == GetPreviewSize() && imgHeight == GetPreviewSize() && mstm.GetLength() > 0)
 						{
 							IO::FileStream fs({sbuff, (UOSInt)(sptrEnd - sbuff)}, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 							buff = mstm.GetBuff(buffSize);
@@ -442,7 +442,7 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhotoId(NotNullPtr<Net::We
 			this->env->SpeciesUpdateDefPhoto(mutUsage, sp->speciesId);
 		}
 
-		Text::String *cacheDir = this->env->GetCacheDir();
+		NotNullPtr<Text::String> cacheDir = Text::String::OrEmpty(this->env->GetCacheDir());
 		Data::DateTime dt;
 		WebUserInfo *user;
 		user = this->env->UserGet(mutUsage, userFile->webuserId);
@@ -613,7 +613,7 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhotoId(NotNullPtr<Net::We
 					NotNullPtr<Media::DrawImage> gimg;
 					if (gimg.Set(this->env->GetDrawEngine()->ConvImage(nndimg)))
 					{
-						if ((cacheDir && imgWidth == GetPreviewSize() && imgHeight == GetPreviewSize()) || user != reqUser)
+						if ((cacheDir->v && imgWidth == GetPreviewSize() && imgHeight == GetPreviewSize()) || user != reqUser)
 						{
 							Int32 xRand;
 							Int32 yRand;
@@ -672,7 +672,7 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhotoId(NotNullPtr<Net::We
 						gimg->SaveJPG(mstm);
 						ResponseMstm(req, resp, mstm, CSTR("image/jpeg"));
 
-						if (cacheDir && imgWidth == GetPreviewSize() && imgHeight == GetPreviewSize())
+						if (cacheDir->leng > 0 && imgWidth == GetPreviewSize() && imgHeight == GetPreviewSize())
 						{
 							IO::FileStream fs({sbuff2, (UOSInt)(sptr2 - sbuff2)}, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 							buff = mstm.GetBuff(buffSize);
@@ -704,7 +704,7 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhotoId(NotNullPtr<Net::We
 					exporter.DeleteParam(param);
 					ResponseMstm(req, resp, mstm, CSTR("image/jpeg"));
 
-					if (cacheDir && imgWidth == GetPreviewSize() && imgHeight == GetPreviewSize())
+					if (cacheDir->leng > 0 && imgWidth == GetPreviewSize() && imgHeight == GetPreviewSize())
 					{
 						IO::FileStream fs({sbuff2, (UOSInt)(sptr2 - sbuff2)}, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 						buff = mstm.GetBuff(buffSize);
@@ -753,7 +753,7 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhotoWId(NotNullPtr<Net::W
 		if (wfile)
 		{
 			Data::DateTime dt;
-			Text::String *cacheDir = this->env->GetCacheDir();
+			NotNullPtr<Text::String> cacheDir = Text::String::OrEmpty(this->env->GetCacheDir());
 			sptr = cacheDir->ConcatTo(sbuff2);
 			sptr = IO::Path::AppendPath(sbuff2, sptr, CSTR("WebFile"));
 			*sptr++ = IO::Path::PATH_SEPERATOR;
@@ -912,7 +912,7 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhotoWId(NotNullPtr<Net::W
 					exporter.DeleteParam(param);
 					ResponseMstm(req, resp, mstm, CSTR("image/jpeg"));
 
-					if (cacheDir && imgWidth == GetPreviewSize() && imgHeight == GetPreviewSize())
+					if (cacheDir->leng > 0 && imgWidth == GetPreviewSize() && imgHeight == GetPreviewSize())
 					{
 						IO::FileStream fs({sbuff2, (UOSInt)(sptr2 - sbuff2)}, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 						buff = mstm.GetBuff(buffSize);

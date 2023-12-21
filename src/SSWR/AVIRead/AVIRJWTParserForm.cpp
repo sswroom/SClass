@@ -83,8 +83,8 @@ void __stdcall SSWR::AVIRead::AVIRJWTParserForm::OnParseClicked(void *userObj)
 				}
 				else
 				{
-					Text::String *kid = json->GetValueString(CSTR("kid"));
-					if (kid == 0)
+					NotNullPtr<Text::String> kid;
+					if (!json->GetValueString(CSTR("kid")).SetTo(kid))
 					{
 						me->txtVerifyStatus->SetText(CSTR("kid not found"));
 					}

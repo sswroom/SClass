@@ -115,7 +115,7 @@ void Map::HKParkingVacancy::LoadParkingInfo()
 			while (r->ReadNext())
 			{
 				parking = MemAlloc(ParkingInfo, 1);
-				parking->parkId = r->GetNewStr(colInd[0]);
+				parking->parkId = r->GetNewStrNN(colInd[0]);
 				parking->parkingNameEn = r->GetNewStr(colInd[1]);
 				parking->parkingAddressEn = r->GetNewStr(colInd[2]);
 				parking->parkingDistictEn = r->GetNewStr(colInd[3]);
@@ -141,7 +141,7 @@ void Map::HKParkingVacancy::LoadParkingInfo()
 				{
 					bounds = bounds.MergePoint(coord);
 				}
-				parking = this->parkingMap.Put(parking->parkId, parking);
+				parking = this->parkingMap.PutNN(parking->parkId, parking);
 				if (parking)
 				{
 					ParkingInfoFree(parking);
@@ -227,19 +227,19 @@ void Map::HKParkingVacancy::LoadVacancy()
 
 void Map::HKParkingVacancy::ParkingInfoFree(ParkingInfo *parking)
 {
-	SDEL_STRING(parking->parkId);
-	SDEL_STRING(parking->parkingNameEn);
-	SDEL_STRING(parking->parkingAddressEn);
-	SDEL_STRING(parking->parkingDistictEn);
-	SDEL_STRING(parking->parkingNameSc);
-	SDEL_STRING(parking->parkingAddressSc);
-	SDEL_STRING(parking->parkingDistictSc);
-	SDEL_STRING(parking->parkingNameTc);
-	SDEL_STRING(parking->parkingAddressTc);
-	SDEL_STRING(parking->parkingDistictTc);
-	SDEL_STRING(parking->parkingStarttime);
-	SDEL_STRING(parking->parkingEndtime);
-	SDEL_STRING(parking->parkingContactNo);
+	parking->parkId->Release();
+	OPTSTR_DEL(parking->parkingNameEn);
+	OPTSTR_DEL(parking->parkingAddressEn);
+	OPTSTR_DEL(parking->parkingDistictEn);
+	OPTSTR_DEL(parking->parkingNameSc);
+	OPTSTR_DEL(parking->parkingAddressSc);
+	OPTSTR_DEL(parking->parkingDistictSc);
+	OPTSTR_DEL(parking->parkingNameTc);
+	OPTSTR_DEL(parking->parkingAddressTc);
+	OPTSTR_DEL(parking->parkingDistictTc);
+	OPTSTR_DEL(parking->parkingStarttime);
+	OPTSTR_DEL(parking->parkingEndtime);
+	OPTSTR_DEL(parking->parkingContactNo);
 	MemFree(parking);
 }
 
@@ -325,72 +325,71 @@ Bool Map::HKParkingVacancy::GetString(NotNullPtr<Text::StringBuilderUTF8> sb, Na
 	{
 		return false;
 	}
+	NotNullPtr<Text::String> s;
 	switch (strIndex)
 	{
 	case 0:
-		if (parking->parkId == 0)
-			return false;
 		sb->Append(parking->parkId);
 		return true;
 	case 1:
-		if (parking->parkingNameEn == 0)
+		if (!parking->parkingNameEn.SetTo(s))
 			return false;
-		sb->Append(parking->parkingNameEn);
+		sb->Append(s);
 		return true;
 	case 2:
-		if (parking->parkingAddressEn == 0)
+		if (!parking->parkingAddressEn.SetTo(s))
 			return false;
-		sb->Append(parking->parkingAddressEn);
+		sb->Append(s);
 		return true;
 	case 3:
-		if (parking->parkingDistictEn == 0)
+		if (!parking->parkingDistictEn.SetTo(s))
 			return false;
-		sb->Append(parking->parkingDistictEn);
+		sb->Append(s);
 		return true;
 	case 4:
-		if (parking->parkingNameSc == 0)
+		if (!parking->parkingNameSc.SetTo(s))
 			return false;
-		sb->Append(parking->parkingNameSc);
+		sb->Append(s);
 		return true;
 	case 5:
-		if (parking->parkingAddressSc == 0)
+		if (!parking->parkingAddressSc.SetTo(s))
 			return false;
-		sb->Append(parking->parkingAddressSc);
+		sb->Append(s);
 		return true;
 	case 6:
-		if (parking->parkingDistictSc == 0)
+		if (!parking->parkingDistictSc.SetTo(s))
 			return false;
-		sb->Append(parking->parkingDistictSc);
+		sb->Append(s);
 		return true;
 	case 7:
-		if (parking->parkingNameTc == 0)
+		if (!parking->parkingNameTc.SetTo(s))
 			return false;
-		sb->Append(parking->parkingNameTc);
+		sb->Append(s);
 		return true;
 	case 8:
-		if (parking->parkingAddressTc == 0)
+		if (!parking->parkingAddressTc.SetTo(s))
 			return false;
-		sb->Append(parking->parkingAddressTc);
+		sb->Append(s);
 		return true;
 	case 9:
-		if (parking->parkingDistictTc == 0)
+		if (!parking->parkingDistictTc.SetTo(s))
 			return false;
-		sb->Append(parking->parkingDistictTc);
+		sb->Append(s);
 		return true;
 	case 10:
-		if (parking->parkingStarttime == 0)
+		if (!parking->parkingStarttime.SetTo(s))
 			return false;
-		sb->Append(parking->parkingStarttime);
+		sb->Append(s);
 		return true;
 	case 11:
-		if (parking->parkingEndtime == 0)
+		if (!parking->parkingEndtime.SetTo(s))
 			return false;
-		sb->Append(parking->parkingEndtime);
+		sb->Append(s);
 		return true;
 	case 12:
-		if (parking->parkingContactNo == 0)
+		if (!parking->parkingContactNo.SetTo(s))
 			return false;
-		sb->Append(parking->parkingContactNo);
+		sb->Append(s);
 		return true;
 	case 13:
 		sb->AppendDouble(parking->parkingLatitude);

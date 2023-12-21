@@ -11,17 +11,17 @@ NotNullPtr<Text::String> DB::MySQLConn::GetConnServer()
 	return this->server;
 }
 
-Text::String *DB::MySQLConn::GetConnDB()
+Optional<Text::String> DB::MySQLConn::GetConnDB()
 {
 	return this->database;
 }
 
-Text::String *DB::MySQLConn::GetConnUID()
+Optional<Text::String> DB::MySQLConn::GetConnUID()
 {
 	return this->uid;
 }
 
-Text::String *DB::MySQLConn::GetConnPWD()
+Optional<Text::String> DB::MySQLConn::GetConnPWD()
 {
 	return this->pwd;
 }

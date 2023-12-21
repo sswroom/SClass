@@ -114,6 +114,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebBookController::SvcBookPhoto(NotNullPtr<N
 		IO::MemoryStream mstm;
 		Text::UTF8Writer writer(mstm);
 		NotNullPtr<Text::String> s;
+		NotNullPtr<Text::String> s2;
 
 		sb.ClearStr();
 		sb.Append(cate->chiName);
@@ -181,14 +182,14 @@ Bool __stdcall SSWR::OrganWeb::OrganWebBookController::SvcBookPhoto(NotNullPtr<N
 		writer.WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
 		writer.WriteLineC(UTF8STRC("<br/>"));
 
-		if (book->url)
+		if (book->url.SetTo(s2))
 		{
 			writer.WriteStrC(UTF8STRC("<b>URL:</b> <a href="));
-			s = Text::XML::ToNewAttrText(book->url->v);
+			s = Text::XML::ToNewAttrText(s2->v);
 			writer.WriteStrC(s->v, s->leng);
 			s->Release();
 			writer.WriteStrC(UTF8STRC(">"));
-			s = Text::XML::ToNewHTMLBodyText(book->url->v);
+			s = Text::XML::ToNewHTMLBodyText(s2->v);
 			writer.WriteStrC(s->v, s->leng);
 			s->Release();
 			writer.WriteLineC(UTF8STRC("</a><br/>"));

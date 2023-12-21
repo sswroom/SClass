@@ -58,10 +58,22 @@ Bool __stdcall Net::PushServerHandler::SubscribeHandler(NotNullPtr<Net::WebServe
 	Text::JSONBase *json = Text::JSONBase::ParseJSONBytes(data, dataLen);
 	if (json)
 	{
-		Text::String *sToken = json->GetValueString(CSTR("token"));
-		Text::String *sType = json->GetValueString(CSTR("type"));
-		Text::String *sUser = json->GetValueString(CSTR("user"));
-		if (sToken && sType && sUser)
+		NotNullPtr<Text::String> sToken;
+		NotNullPtr<Text::String> sType;
+		NotNullPtr<Text::String> sUser;
+		if (!json->GetValueString(CSTR("token")).SetTo(sToken))
+		{
+			me->mgr->LogMessage(CSTR("Token Missing"), IO::LogHandler::LogLevel::Error);
+		}
+		else if (!json->GetValueString(CSTR("type")).SetTo(sType))
+		{
+			me->mgr->LogMessage(CSTR("Type Missing"), IO::LogHandler::LogLevel::Error);
+		}
+		else if (!json->GetValueString(CSTR("user")).SetTo(sUser))
+		{
+			me->mgr->LogMessage(CSTR("User Missing"), IO::LogHandler::LogLevel::Error);
+		}
+		else
 		{
 			sUser->Trim();
 			Bool succ = true;
@@ -87,18 +99,6 @@ Bool __stdcall Net::PushServerHandler::SubscribeHandler(NotNullPtr<Net::WebServe
 				me->mgr->Subscribe(sToken->ToCString(), sUser->ToCString(), devType, req->GetClientAddr(), req->GetDevModel());
 			}
 		}
-		else if (sToken == 0)
-		{
-			me->mgr->LogMessage(CSTR("Token Missing"), IO::LogHandler::LogLevel::Error);
-		}
-		else if (sType == 0)
-		{
-			me->mgr->LogMessage(CSTR("Type Missing"), IO::LogHandler::LogLevel::Error);
-		}
-		else if (sUser == 0)
-		{
-			me->mgr->LogMessage(CSTR("User Missing"), IO::LogHandler::LogLevel::Error);
-		}
 		json->EndUse();
 	}
 	else
@@ -120,9 +120,9 @@ Bool __stdcall Net::PushServerHandler::UnsubscribeHandler(NotNullPtr<Net::WebSer
 	Text::JSONBase *json = Text::JSONBase::ParseJSONBytes(data, dataLen);
 	if (json)
 	{
-		Text::String *token = json->GetValueString(CSTR("token"));
+		NotNullPtr<Text::String> token;
 	//	Bool succ = false;
-		if (token && me->mgr->Unsubscribe(token->ToCString()))
+		if (json->GetValueString(CSTR("token")).SetTo(token) && me->mgr->Unsubscribe(token->ToCString()))
 		{
 	//		succ = true;
 		}
@@ -210,7 +210,7 @@ void Net::PushServerHandler::ParseJSONSend(Text::JSONBase *sendJson)
 	Bool succ = false;
 	if (usersBase && androidBase && usersBase->GetType() == Text::JSONType::Array)
 	{
-		Text::String *message = androidBase->GetValueString(CSTR("data.message"));
+		Optional<Text::String> message = androidBase->GetValueString(CSTR("data.message"));
 		Data::ArrayListStringNN userList;
 		Text::JSONArray *usersArr = (Text::JSONArray*)usersBase;
 		succ = true;
@@ -219,7 +219,7 @@ void Net::PushServerHandler::ParseJSONSend(Text::JSONBase *sendJson)
 		NotNullPtr<Text::String> s;
 		while (i < j)
 		{
-			if (s.Set(usersArr->GetArrayString(i)))
+			if (usersArr->GetArrayString(i).SetTo(s))
 			{
 				userList.Add(s);
 			}
@@ -229,7 +229,7 @@ void Net::PushServerHandler::ParseJSONSend(Text::JSONBase *sendJson)
 			}
 			i++;
 		}
-		if (succ && s.Set(message) && userList.GetCount() > 0)
+		if (succ && message.SetTo(s) && userList.GetCount() > 0)
 		{
 			this->mgr->Send(&userList, s);
 		}

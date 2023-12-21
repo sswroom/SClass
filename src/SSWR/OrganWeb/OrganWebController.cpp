@@ -283,7 +283,7 @@ void SSWR::OrganWeb::OrganWebController::WriteGroupTable(NotNullPtr<Sync::RWMute
 					sb.AppendC(UTF8STRC("\">"));
 					writer->WriteLineC(sb.ToString(), sb.GetCharCnt());
 
-					if (group->photoSpObj && (group->photoSpObj->photo != 0 || group->photoSpObj->photoId != 0 || group->photoSpObj->photoWId != 0))
+					if (group->photoSpObj && (!group->photoSpObj->photo.IsNull() || group->photoSpObj->photoId != 0 || group->photoSpObj->photoWId != 0))
 					{
 						if (group->photoSpObj->photoId != 0)
 						{
@@ -344,7 +344,7 @@ void SSWR::OrganWeb::OrganWebController::WriteGroupTable(NotNullPtr<Sync::RWMute
 							sb.AppendC(UTF8STRC("&height="));
 							sb.AppendI32(PREVIEW_SIZE);
 							sb.AppendC(UTF8STRC("&file="));
-							sptr = Text::TextBinEnc::URIEncoding::URIEncode(sbuff, group->photoSpObj->photo->v);
+							sptr = Text::TextBinEnc::URIEncoding::URIEncode(sbuff, Text::String::OrEmpty(group->photoSpObj->photo)->v);
 							sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
 							s = Text::XML::ToNewAttrText(sb.ToString());
 							writer->WriteStrC(s->v, s->leng);
@@ -544,7 +544,7 @@ void SSWR::OrganWeb::OrganWebController::WriteSpeciesTable(NotNullPtr<Sync::RWMu
 				s->Release();
 				writer->WriteLineC(UTF8STRC("><br/>"));
 			}
-			else if (sp->photo && sp->photo->leng > 0)
+			else if (sp->photo.SetTo(s) && s->leng > 0)
 			{
 				writer->WriteStrC(UTF8STRC("<img src="));
 				sb.ClearStr();
@@ -557,7 +557,7 @@ void SSWR::OrganWeb::OrganWebController::WriteSpeciesTable(NotNullPtr<Sync::RWMu
 				sb.AppendC(UTF8STRC("&height="));
 				sb.AppendI32(PREVIEW_SIZE);
 				sb.AppendC(UTF8STRC("&file="));
-				sptr = Text::TextBinEnc::URIEncoding::URIEncode(sbuff, sp->photo->v);
+				sptr = Text::TextBinEnc::URIEncoding::URIEncode(sbuff, s->v);
 				sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
 				s = Text::XML::ToNewAttrText(sb.ToString());
 				writer->WriteStrC(s->v, s->leng);
@@ -760,18 +760,18 @@ void SSWR::OrganWeb::OrganWebController::WritePickObjs(NotNullPtr<Sync::RWMutexU
 				writer->WriteStrC(sbuff2, (UOSInt)(sptr2 - sbuff2));
 				if (userFile->webuserId == env->user->id)
 				{
-					if (userFile->location)
+					if (userFile->location.SetTo(s))
 					{
 						writer->WriteStrC(UTF8STRC(" "));
-						s = Text::XML::ToNewHTMLBodyText(userFile->location->v);
+						s = Text::XML::ToNewHTMLBodyText(s->v);
 						writer->WriteStrC(s->v, s->leng);
 						s->Release();
 					}
 				}
-				if (userFile->descript && userFile->descript->leng > 0)
+				if (userFile->descript.SetTo(s) && s->leng > 0)
 				{
 					writer->WriteStrC(UTF8STRC("<br/>"));
-					s = Text::XML::ToNewHTMLBodyText(userFile->descript->v);
+					s = Text::XML::ToNewHTMLBodyText(s->v);
 					writer->WriteStrC(s->v, s->leng);
 					s->Release();
 				}

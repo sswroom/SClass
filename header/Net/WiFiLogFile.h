@@ -18,7 +18,7 @@ namespace Net
 			Text::String *manuf;
 			Text::String *model;
 			Text::String *serialNum;
-			Text::String *country;
+			Optional<Text::String> country;
 			UInt8 ouis[3][3];
 			UInt64 neighbour[20];
 			UInt32 ieLen;

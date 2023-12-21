@@ -195,15 +195,15 @@ Bool Net::HKOWeather::GetWeatherForecast(NotNullPtr<Net::SocketFactory> sockf, O
 	if (json)
 	{
 		weatherForecast->seaTemp = json->GetValueAsInt32(CSTR("seaTemp.value"));
-		Text::String *sUpdateTime = json->GetValueString(CSTR("updateTime"));
-		Text::String *sSeaTempTime = json->GetValueString(CSTR("seaTemp.recordTime"));
+		NotNullPtr<Text::String> sUpdateTime;
+		NotNullPtr<Text::String> sSeaTempTime;
 		weatherForecast->generalSituation = json->GetValueNewString(CSTR("generalSituation"));
 		weatherForecast->seaTempPlace = json->GetValueNewString(CSTR("seaTemp.place"));
 		Text::JSONBase *weatherForecastBase = json->GetValue(CSTR("weatherForecast"));
-		if (sUpdateTime == 0 || sSeaTempTime == 0 || weatherForecast->generalSituation == 0 || weatherForecast->seaTempPlace == 0 || weatherForecastBase == 0)
+		if (!json->GetValueString(CSTR("updateTime")).SetTo(sUpdateTime) || !json->GetValueString(CSTR("seaTemp.recordTime")).SetTo(sSeaTempTime) || weatherForecast->generalSituation.IsNull() || weatherForecast->seaTempPlace.IsNull() || weatherForecastBase == 0)
 		{
-			SDEL_STRING(weatherForecast->generalSituation);
-			SDEL_STRING(weatherForecast->seaTempPlace);
+			OPTSTR_DEL(weatherForecast->generalSituation);
+			OPTSTR_DEL(weatherForecast->seaTempPlace);
 			json->EndUse();
 #if defined(VERBOSE)
 			printf("Missing data from JSON\r\n");
@@ -218,12 +218,16 @@ Bool Net::HKOWeather::GetWeatherForecast(NotNullPtr<Net::SocketFactory> sockf, O
 		while (i < j)
 		{
 			Text::JSONBase *weatherForecastItem = weatherForecastArr->GetArrayValue(i);
-			Text::String *sDate = weatherForecastItem->GetValueString(CSTR("forecastDate"));
-			Text::String *sWeekday = weatherForecastItem->GetValueString(CSTR("week"));
-			Text::String *sWind = weatherForecastItem->GetValueString(CSTR("forecastWind"));
-			Text::String *sWeather = weatherForecastItem->GetValueString(CSTR("forecastWeather"));
-			Text::String *sPSR = weatherForecastItem->GetValueString(CSTR("PSR"));
-			if (sDate != 0 && sWeekday != 0 && sWind != 0 && sWeather != 0 && sPSR != 0 && sDate->leng == 8)
+			NotNullPtr<Text::String> sDate;
+			NotNullPtr<Text::String> sWeekday;
+			NotNullPtr<Text::String> sWind;
+			NotNullPtr<Text::String> sWeather;
+			NotNullPtr<Text::String> sPSR;
+			if (weatherForecastItem->GetValueString(CSTR("forecastDate")).SetTo(sDate) &&
+				weatherForecastItem->GetValueString(CSTR("week")).SetTo(sWeekday) &&
+				weatherForecastItem->GetValueString(CSTR("forecastWind")).SetTo(sWind) &&
+				weatherForecastItem->GetValueString(CSTR("forecastWeather")).SetTo(sWeather) &&
+				weatherForecastItem->GetValueString(CSTR("PSR")).SetTo(sPSR) && sDate->leng == 8)
 			{
 				DayForecast *forecast = MemAlloc(DayForecast, 1);
 				UInt32 dateVal = sDate->ToUInt32();
@@ -257,8 +261,8 @@ Bool Net::HKOWeather::GetWeatherForecast(NotNullPtr<Net::SocketFactory> sockf, O
 
 void Net::HKOWeather::FreeWeatherForecast(WeatherForecast *weatherForecast)
 {
-	SDEL_STRING(weatherForecast->generalSituation);
-	SDEL_STRING(weatherForecast->seaTempPlace);
+	OPTSTR_DEL(weatherForecast->generalSituation);
+	OPTSTR_DEL(weatherForecast->seaTempPlace);
 	DayForecast *forecast;
 	UOSInt i = weatherForecast->forecast.GetCount();
 	while (i-- > 0)
@@ -295,24 +299,24 @@ Bool Net::HKOWeather::GetLocalForecast(NotNullPtr<Net::SocketFactory> sockf, Opt
 		localForecast->forecastPeriod = json->GetValueString(CSTR("forecastPeriod"));
 		localForecast->forecastDesc = json->GetValueString(CSTR("forecastDesc"));
 		localForecast->outlook = json->GetValueString(CSTR("outlook"));
-		Text::String *sUpdateTime = json->GetValueString(CSTR("updateTime"));
-		if (localForecast->generalSituation == 0 ||
-			localForecast->tcInfo == 0 ||
-			localForecast->fireDangerWarning == 0 ||
-			localForecast->forecastPeriod == 0 ||
-			localForecast->forecastDesc == 0 ||
-			localForecast->outlook == 0 ||
-			sUpdateTime == 0)
+		NotNullPtr<Text::String> sUpdateTime;
+		if (localForecast->generalSituation.IsNull() ||
+			localForecast->tcInfo.IsNull() ||
+			localForecast->fireDangerWarning.IsNull() ||
+			localForecast->forecastPeriod.IsNull() ||
+			localForecast->forecastDesc.IsNull() ||
+			localForecast->outlook.IsNull() ||
+			!json->GetValueString(CSTR("updateTime")).SetTo(sUpdateTime))
 		{
 			json->EndUse();
 			return false;
 		}
-		localForecast->generalSituation = localForecast->generalSituation->Clone().Ptr();
-		localForecast->tcInfo = localForecast->tcInfo->Clone().Ptr();
-		localForecast->fireDangerWarning = localForecast->fireDangerWarning->Clone().Ptr();
-		localForecast->forecastPeriod = localForecast->forecastPeriod->Clone().Ptr();
-		localForecast->forecastDesc = localForecast->forecastDesc->Clone().Ptr();
-		localForecast->outlook = localForecast->outlook->Clone().Ptr();
+		localForecast->generalSituation = Text::String::CopyOrNull(localForecast->generalSituation);
+		localForecast->tcInfo = Text::String::CopyOrNull(localForecast->tcInfo);
+		localForecast->fireDangerWarning = Text::String::CopyOrNull(localForecast->fireDangerWarning);
+		localForecast->forecastPeriod = Text::String::CopyOrNull(localForecast->forecastPeriod);
+		localForecast->forecastDesc = Text::String::CopyOrNull(localForecast->forecastDesc);
+		localForecast->outlook = Text::String::CopyOrNull(localForecast->outlook);
 		localForecast->updateTime = Data::Timestamp::FromStr(sUpdateTime->ToCString(), Data::DateTimeUtil::GetLocalTzQhr());
 		json->EndUse();
 		return true;
@@ -322,12 +326,12 @@ Bool Net::HKOWeather::GetLocalForecast(NotNullPtr<Net::SocketFactory> sockf, Opt
 
 void Net::HKOWeather::FreeLocalForecast(LocalForecast *localForecast)
 {
-	SDEL_STRING(localForecast->generalSituation);
-	SDEL_STRING(localForecast->tcInfo);
-	SDEL_STRING(localForecast->fireDangerWarning);
-	SDEL_STRING(localForecast->forecastPeriod);
-	SDEL_STRING(localForecast->forecastDesc);
-	SDEL_STRING(localForecast->outlook);
+	OPTSTR_DEL(localForecast->generalSituation);
+	OPTSTR_DEL(localForecast->tcInfo);
+	OPTSTR_DEL(localForecast->fireDangerWarning);
+	OPTSTR_DEL(localForecast->forecastPeriod);
+	OPTSTR_DEL(localForecast->forecastDesc);
+	OPTSTR_DEL(localForecast->outlook);
 }
 
 Bool Net::HKOWeather::GetWarningSummary(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Data::ArrayList<WarningSummary*> *warnings)
@@ -348,21 +352,25 @@ Bool Net::HKOWeather::GetWarningSummary(NotNullPtr<Net::SocketFactory> sockf, Op
 				warnObj = obj->GetValueObject(objNames.GetItem(i)->ToCString());
 				if (warnObj)
 				{
-					Text::String *sCode = warnObj->GetValueString(CSTR("code"));
-					Text::String *sActionCode = warnObj->GetValueString(CSTR("actionCode"));
-					Text::String *sIssueTime = warnObj->GetValueString(CSTR("issueTime"));
-					Text::String *sUpdateTime = warnObj->GetValueString(CSTR("updateTime"));
-					Text::String *sExpireTime = warnObj->GetValueString(CSTR("expireTime"));
-					if (sCode != 0 && sActionCode != 0 && sIssueTime != 0 && sUpdateTime != 0)
+					NotNullPtr<Text::String> sCode;
+					NotNullPtr<Text::String> sActionCode;
+					NotNullPtr<Text::String> sIssueTime;
+					NotNullPtr<Text::String> sUpdateTime;
+					Optional<Text::String> sExpireTime = warnObj->GetValueString(CSTR("expireTime"));
+					if (warnObj->GetValueString(CSTR("code")).SetTo(sCode) &&
+						warnObj->GetValueString(CSTR("actionCode")).SetTo(sActionCode) &&
+						warnObj->GetValueString(CSTR("issueTime")).SetTo(sIssueTime) &&
+						warnObj->GetValueString(CSTR("updateTime")).SetTo(sUpdateTime))
 					{
 						WarningSummary *summary = MemAlloc(WarningSummary, 1);
 						summary->code = WeatherWarningParse(sCode->ToCString());
 						summary->actionCode = SignalActionParse(sActionCode->ToCString());
 						summary->issueTime = Data::Timestamp::FromStr(sIssueTime->ToCString(), Data::DateTimeUtil::GetLocalTzQhr());
 						summary->updateTime = Data::Timestamp::FromStr(sUpdateTime->ToCString(), Data::DateTimeUtil::GetLocalTzQhr());
-						if (sExpireTime)
+						NotNullPtr<Text::String> s;
+						if (sExpireTime.SetTo(s))
 						{
-							summary->expireTime = Data::Timestamp::FromStr(sExpireTime->ToCString(), Data::DateTimeUtil::GetLocalTzQhr());
+							summary->expireTime = Data::Timestamp::FromStr(s->ToCString(), Data::DateTimeUtil::GetLocalTzQhr());
 						}
 						else
 						{

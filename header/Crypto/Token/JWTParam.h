@@ -10,34 +10,34 @@ namespace Crypto
 		class JWTParam
 		{
 		private:
-			Text::String *iss;
-			Text::String *sub;
-			Text::String *aud;
+			Optional<Text::String> iss;
+			Optional<Text::String> sub;
+			Optional<Text::String> aud;
 			Int64 exp;
 			Int64 nbf;
 			Int64 iat;
-			Text::String *jti;
+			Optional<Text::String> jti;
 
 		public:
 			JWTParam();
 			~JWTParam();
 
 			void Clear();
-			void SetIssuer(Text::String *issuer);
-			Text::String *GetIssuer() const;
+			void SetIssuer(Optional<Text::String> issuer);
+			Optional<Text::String> GetIssuer() const;
 			Bool IsIssuerValid(const UTF8Char *issuer, UOSInt issuerLen) const;
-			void SetSubject(Text::String *subject);
-			Text::String *GetSubject() const;
-			void SetAudience(Text::String *audience);
-			Text::String *GetAudience() const;
+			void SetSubject(Optional<Text::String> subject);
+			Optional<Text::String> GetSubject() const;
+			void SetAudience(Optional<Text::String> audience);
+			Optional<Text::String> GetAudience() const;
 			void SetExpirationTime(Int64 t);
 			Int64 GetExpirationTime() const;
 			void SetNotBefore(Int64 t);
 			Int64 GetNotBefore() const;
 			void SetIssuedAt(Int64 t);
 			Int64 GetIssuedAt() const;
-			void SetJWTId(Text::String *id);
-			Text::String *GetJWTId() const;
+			void SetJWTId(Optional<Text::String> id);
+			Optional<Text::String> GetJWTId() const;
 			Bool IsExpired(Data::Timestamp ts) const;
 			void ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const;
 		};

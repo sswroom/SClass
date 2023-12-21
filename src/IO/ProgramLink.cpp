@@ -20,168 +20,168 @@ IO::ProgramLink::ProgramLink()
 
 IO::ProgramLink::~ProgramLink()
 {
-	SDEL_STRING(this->type);
-	SDEL_STRING(this->name);
-	SDEL_STRING(this->genericName);
-	SDEL_STRING(this->version);
-	SDEL_STRING(this->comment);
-	SDEL_STRING(this->categories);
-	SDEL_STRING(this->keywords);
-	SDEL_STRING(this->mimeTypes);
-	SDEL_STRING(this->cmdLine);
-	SDEL_STRING(this->icon);
+	OPTSTR_DEL(this->type);
+	OPTSTR_DEL(this->name);
+	OPTSTR_DEL(this->genericName);
+	OPTSTR_DEL(this->version);
+	OPTSTR_DEL(this->comment);
+	OPTSTR_DEL(this->categories);
+	OPTSTR_DEL(this->keywords);
+	OPTSTR_DEL(this->mimeTypes);
+	OPTSTR_DEL(this->cmdLine);
+	OPTSTR_DEL(this->icon);
 }
 
-Text::String *IO::ProgramLink::GetType() const
+Optional<Text::String> IO::ProgramLink::GetType() const
 {
 	return this->type;
 }
 
-void IO::ProgramLink::SetType(Text::String *type)
+void IO::ProgramLink::SetType(Optional<Text::String> type)
 {
-	SDEL_STRING(this->type);
-	this->type = SCOPY_STRING(type);
+	OPTSTR_DEL(this->type);
+	this->type = Text::String::CopyOrNull(type);
 }
 
 void IO::ProgramLink::SetType(Text::CString type)
 {
-	SDEL_STRING(this->type);
+	OPTSTR_DEL(this->type);
 	this->type = Text::String::NewOrNull(type);
 }
 
-Text::String *IO::ProgramLink::GetName() const
+Optional<Text::String> IO::ProgramLink::GetName() const
 {
 	return this->name;
 }
 
-void IO::ProgramLink::SetName(Text::String *name)
+void IO::ProgramLink::SetName(Optional<Text::String> name)
 {
-	SDEL_STRING(this->name);
-	this->name = SCOPY_STRING(name);
+	OPTSTR_DEL(this->name);
+	this->name = Text::String::CopyOrNull(name);
 }
 
 void IO::ProgramLink::SetName(Text::CString name)
 {
-	SDEL_STRING(this->name);
+	OPTSTR_DEL(this->name);
 	this->name = Text::String::NewOrNull(name);
 }
 
-Text::String *IO::ProgramLink::GetGenericName() const
+Optional<Text::String> IO::ProgramLink::GetGenericName() const
 {
 	return this->genericName;
 }
 
-void IO::ProgramLink::SetGenericName(Text::String *genericName)
+void IO::ProgramLink::SetGenericName(Optional<Text::String> genericName)
 {
-	SDEL_STRING(this->genericName);
-	this->genericName = SCOPY_STRING(genericName);
+	OPTSTR_DEL(this->genericName);
+	this->genericName = Text::String::CopyOrNull(genericName);
 }
 
 void IO::ProgramLink::SetGenericName(Text::CString genericName)
 {
-	SDEL_STRING(this->genericName);
+	OPTSTR_DEL(this->genericName);
 	this->genericName = Text::String::NewOrNull(genericName);
 }
 
-Text::String *IO::ProgramLink::GetVersion() const
+Optional<Text::String> IO::ProgramLink::GetVersion() const
 {
 	return this->version;
 }
 
-void IO::ProgramLink::SetVersion(Text::String *version)
+void IO::ProgramLink::SetVersion(Optional<Text::String> version)
 {
-	SDEL_STRING(this->version);
-	this->version = SCOPY_STRING(version);
+	OPTSTR_DEL(this->version);
+	this->version = Text::String::CopyOrNull(version);
 }
 
 void IO::ProgramLink::SetVersion(Text::CString version)
 {
-	SDEL_STRING(this->version);
+	OPTSTR_DEL(this->version);
 	this->version = Text::String::NewOrNull(version);
 }
 
-Text::String *IO::ProgramLink::GetComment() const
+Optional<Text::String> IO::ProgramLink::GetComment() const
 {
 	return this->comment;
 }
 
-void IO::ProgramLink::SetComment(Text::String *comment)
+void IO::ProgramLink::SetComment(Optional<Text::String> comment)
 {
-	SDEL_STRING(this->comment);
-	this->comment = SCOPY_STRING(comment);
+	OPTSTR_DEL(this->comment);
+	this->comment = Text::String::CopyOrNull(comment);
 }
 
 void IO::ProgramLink::SetComment(Text::CString comment)
 {
-	SDEL_STRING(this->comment);
+	OPTSTR_DEL(this->comment);
 	this->comment = Text::String::NewOrNull(comment);
 }
 
-Text::String *IO::ProgramLink::GetMimeTypes() const
+Optional<Text::String> IO::ProgramLink::GetMimeTypes() const
 {
 	return this->mimeTypes;
 }
 
-void IO::ProgramLink::SetMimeTypes(Text::String *mimeTypes)
+void IO::ProgramLink::SetMimeTypes(Optional<Text::String> mimeTypes)
 {
-	SDEL_STRING(this->mimeTypes);
-	this->mimeTypes = SCOPY_STRING(mimeTypes);
+	OPTSTR_DEL(this->mimeTypes);
+	this->mimeTypes = Text::String::CopyOrNull(mimeTypes);
 }
 
 void IO::ProgramLink::SetMimeTypes(Text::CString mimeTypes)
 {
-	SDEL_STRING(this->mimeTypes);
+	OPTSTR_DEL(this->mimeTypes);
 	this->mimeTypes = Text::String::NewOrNull(mimeTypes);
 }
 
-Text::String *IO::ProgramLink::GetCategories() const
+Optional<Text::String> IO::ProgramLink::GetCategories() const
 {
 	return this->categories;
 }
 
-void IO::ProgramLink::SetCategories(Text::String *categories)
+void IO::ProgramLink::SetCategories(Optional<Text::String> categories)
 {
-	SDEL_STRING(this->categories);
-	this->categories = SCOPY_STRING(categories);
+	OPTSTR_DEL(this->categories);
+	this->categories = Text::String::CopyOrNull(categories);
 }
 
 void IO::ProgramLink::SetCategories(Text::CString categories)
 {
-	SDEL_STRING(this->categories);
+	OPTSTR_DEL(this->categories);
 	this->categories = Text::String::NewOrNull(categories);
 }
 
-Text::String *IO::ProgramLink::GetKeywords() const
+Optional<Text::String> IO::ProgramLink::GetKeywords() const
 {
 	return this->keywords;
 }
 
-void IO::ProgramLink::SetKeywords(Text::String *keywords)
+void IO::ProgramLink::SetKeywords(Optional<Text::String> keywords)
 {
-	SDEL_STRING(this->keywords);
-	this->keywords = SCOPY_STRING(keywords);
+	OPTSTR_DEL(this->keywords);
+	this->keywords = Text::String::CopyOrNull(keywords);
 }
 
 void IO::ProgramLink::SetKeywords(Text::CString keywords)
 {
-	SDEL_STRING(this->keywords);
+	OPTSTR_DEL(this->keywords);
 	this->keywords = Text::String::NewOrNull(keywords);
 }
 
-Text::String *IO::ProgramLink::GetCmdLine() const
+Optional<Text::String> IO::ProgramLink::GetCmdLine() const
 {
 	return this->cmdLine;
 }
 
-void IO::ProgramLink::SetCmdLine(Text::String *cmdLine)
+void IO::ProgramLink::SetCmdLine(Optional<Text::String> cmdLine)
 {
-	SDEL_STRING(this->cmdLine);
-	this->cmdLine = SCOPY_STRING(cmdLine);
+	OPTSTR_DEL(this->cmdLine);
+	this->cmdLine = Text::String::CopyOrNull(cmdLine);
 }
 
 void IO::ProgramLink::SetCmdLine(Text::CString cmdLine)
 {
-	SDEL_STRING(this->cmdLine);
+	OPTSTR_DEL(this->cmdLine);
 	this->cmdLine = Text::String::NewOrNull(cmdLine);
 }
 
@@ -215,19 +215,19 @@ void IO::ProgramLink::SetTerminal(Bool terminal)
 	this->terminal = terminal;
 }
 
-Text::String *IO::ProgramLink::GetIcon() const
+Optional<Text::String> IO::ProgramLink::GetIcon() const
 {
 	return this->icon;
 }
 
-void IO::ProgramLink::SetIcon(Text::String *icon)
+void IO::ProgramLink::SetIcon(Optional<Text::String> icon)
 {
-	SDEL_STRING(this->icon);
-	this->icon = SCOPY_STRING(icon);
+	OPTSTR_DEL(this->icon);
+	this->icon = Text::String::CopyOrNull(icon);
 }
 
 void IO::ProgramLink::SetIcon(Text::CString icon)
 {
-	SDEL_STRING(this->icon);
+	OPTSTR_DEL(this->icon);
 	this->icon = Text::String::NewOrNull(icon);
 }

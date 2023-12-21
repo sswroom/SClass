@@ -45,8 +45,8 @@ Crypto::Cert::X509Key *Net::AzureManager::CreateKey(Text::CStringNN kid)
 					{
 						Text::JSONBase *key = keys->GetArrayValue(i);
 						NotNullPtr<Text::String> kid;
-						Text::String *cert = key->GetValueString(CSTR("x5c[0]"));
-						if (kid.Set(key->GetValueString(CSTR("kid"))) && cert != 0)
+						NotNullPtr<Text::String> cert;
+						if (key->GetValueString(CSTR("kid")).SetTo(kid) && key->GetValueString(CSTR("x5c[0]")).SetTo(cert))
 						{
 							this->keyMap->PutNN(kid, cert->Clone().Ptr());
 						}

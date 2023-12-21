@@ -29,12 +29,12 @@ namespace SSWR
 		{
 		private:
 			DB::DBTool *db;
-			Text::String *imageDir;
-			Text::String *cacheDir;
-			Text::String *dataDir;
+			NotNullPtr<Text::String> imageDir;
+			Optional<Text::String> cacheDir;
+			NotNullPtr<Text::String> dataDir;
 			Int32 unorganizedGroupId;
 			UInt32 scnSize;
-			Text::String *reloadPwd;
+			Optional<Text::String> reloadPwd;
 			NotNullPtr<Net::SocketFactory> sockf;
 			Optional<Net::SSLEngine> ssl;
 			NotNullPtr<IO::LogTool> log;
@@ -81,7 +81,7 @@ namespace SSWR
 			void FreeUsers();
 			void ClearUsers();
 		public:
-			OrganWebEnv(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, NotNullPtr<IO::LogTool> log, DB::DBTool *db, Optional<Text::String> imageDir, UInt16 port, UInt16 sslPort, Optional<Text::String> cacheDir, Optional<Text::String> dataDir, UInt32 scnSize, Optional<Text::String> reloadPwd, Int32 unorganizedGroupId, NotNullPtr<Media::DrawEngine> eng, Text::CString osmCachePath);
+			OrganWebEnv(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, NotNullPtr<IO::LogTool> log, DB::DBTool *db, NotNullPtr<Text::String> imageDir, UInt16 port, UInt16 sslPort, Optional<Text::String> cacheDir, NotNullPtr<Text::String> dataDir, UInt32 scnSize, Optional<Text::String> reloadPwd, Int32 unorganizedGroupId, NotNullPtr<Media::DrawEngine> eng, Text::CString osmCachePath);
 			~OrganWebEnv();
 
 			Bool IsError();
@@ -92,8 +92,8 @@ namespace SSWR
 			IO::ParsedObject *ParseFileType(NotNullPtr<IO::StreamData> fd, IO::ParserType targetType);
 			Bool HasReloadPwd() const;
 			Bool ReloadPwdMatches(NotNullPtr<Text::String> pwd) const;
-			Text::String *GetCacheDir() const;
-			Text::String *GetDataDir() const;
+			Optional<Text::String> GetCacheDir() const;
+			NotNullPtr<Text::String> GetDataDir() const;
 			NotNullPtr<Media::ColorManagerSess> GetColorSess() const;
 			NotNullPtr<Media::DrawEngine> GetDrawEngine() const;
 

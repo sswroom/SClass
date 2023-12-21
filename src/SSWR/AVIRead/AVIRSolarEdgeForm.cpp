@@ -29,8 +29,8 @@ void __stdcall SSWR::AVIRead::AVIRSolarEdgeForm::OnAPIKeyClicked(void *userObj)
 			return;
 		}
 		NEW_CLASS(me->seAPI, Net::SolarEdgeAPI(me->core->GetSocketFactory(), me->ssl, sb.ToCString()));
-		Text::String *s = me->seAPI->GetCurrentVersion();
-		if (s)
+		NotNullPtr<Text::String> s;
+		if (me->seAPI->GetCurrentVersion().SetTo(s))
 		{
 			me->txtCurrVer->SetText(s->ToCString());
 			s->Release();
@@ -56,7 +56,6 @@ void __stdcall SSWR::AVIRead::AVIRSolarEdgeForm::OnAPIKeyClicked(void *userObj)
 				me->txtSuppVer->SetText(CSTR(""));
 			}
 			UOSInt totalCount;
-			NotNullPtr<Text::String> s;
 			Net::SolarEdgeAPI::Site *site;
 			me->lvSiteList->ClearItems();
 			me->cboSiteEnergySite->ClearItems();
@@ -70,31 +69,31 @@ void __stdcall SSWR::AVIRead::AVIRSolarEdgeForm::OnAPIKeyClicked(void *userObj)
 					site = me->siteList.GetItem(i);
 					sptr = Text::StrInt32(sbuff, site->id);
 					me->lvSiteList->AddItem(CSTRP(sbuff, sptr), (void*)site);
-					if (s.Set(site->name))
+					if (site->name.SetTo(s))
 					{
 						me->lvSiteList->SetSubItem(i, 1, s);
 						*sptr++ = ' ';
-						sptr = site->name->ConcatTo(sptr);
+						sptr = s->ConcatTo(sptr);
 						me->cboSiteEnergySite->AddItem(CSTRP(sbuff, sptr), (void*)site);
 						me->cboSitePowerSite->AddItem(CSTRP(sbuff, sptr), (void*)site);
 					}
 					sptr = Text::StrInt32(sbuff, site->accountId);
 					me->lvSiteList->SetSubItem(i, 2, CSTRP(sbuff, sptr));
-					if (s.Set(site->status))
+					if (site->status.SetTo(s))
 						me->lvSiteList->SetSubItem(i, 3, s);
 					sptr = Text::StrConcatC(Text::StrDouble(sbuff, site->peakPower_kWp), UTF8STRC(" kWp"));
 					me->lvSiteList->SetSubItem(i, 4, CSTRP(sbuff, sptr));
 					sptr = site->lastUpdateTime.ToStringNoZone(sbuff);
 					me->lvSiteList->SetSubItem(i, 5, CSTRP(sbuff, sptr));
-					if (s.Set(site->currency))
+					if (site->currency.SetTo(s))
 						me->lvSiteList->SetSubItem(i, 6, s);
 					sptr = site->installationDate.ToStringNoZone(sbuff);
 					me->lvSiteList->SetSubItem(i, 7, CSTRP(sbuff, sptr));
 					sptr = site->ptoDate.ToStringNoZone(sbuff);
 					me->lvSiteList->SetSubItem(i, 8, CSTRP(sbuff, sptr));
-					if (s.Set(site->notes))
+					if (site->notes.SetTo(s))
 						me->lvSiteList->SetSubItem(i, 9, s);
-					if (s.Set(site->type))
+					if (site->type.SetTo(s))
 						me->lvSiteList->SetSubItem(i, 10, s);
 					i++;
 				}
@@ -125,39 +124,15 @@ void __stdcall SSWR::AVIRead::AVIRSolarEdgeForm::OnSiteListSelChg(void *userObj)
 	UTF8Char *sptr;
 	if (site)
 	{
-		if (site->country)
-			me->txtSiteCountry->SetText(site->country->ToCString());
-		else
-			me->txtSiteCountry->SetText(CSTR(""));
-		if (site->city)
-			me->txtSiteCity->SetText(site->city->ToCString());
-		else
-			me->txtSiteCity->SetText(CSTR(""));
-		if (site->address)
-			me->txtSiteAddress->SetText(site->address->ToCString());
-		else
-			me->txtSiteAddress->SetText(CSTR(""));
-		if (site->address2)
-			me->txtSiteAddress2->SetText(site->address2->ToCString());
-		else
-			me->txtSiteAddress2->SetText(CSTR(""));
-		if (site->zip)
-			me->txtSiteZIP->SetText(site->zip->ToCString());
-		else
-			me->txtSiteZIP->SetText(CSTR(""));
-		if (site->timeZone)
-			me->txtSiteTimeZone->SetText(site->timeZone->ToCString());
-		else
-			me->txtSiteTimeZone->SetText(CSTR(""));
-		if (site->countryCode)
-			me->txtSiteCountryCode->SetText(site->countryCode->ToCString());
-		else
-			me->txtSiteCountryCode->SetText(CSTR(""));
+		me->txtSiteCountry->SetText(Text::String::OrEmpty(site->country)->ToCString());
+		me->txtSiteCity->SetText(Text::String::OrEmpty(site->city)->ToCString());
+		me->txtSiteAddress->SetText(Text::String::OrEmpty(site->address)->ToCString());
+		me->txtSiteAddress2->SetText(Text::String::OrEmpty(site->address2)->ToCString());
+		me->txtSiteZIP->SetText(Text::String::OrEmpty(site->zip)->ToCString());
+		me->txtSiteTimeZone->SetText(Text::String::OrEmpty(site->timeZone)->ToCString());
+		me->txtSiteCountryCode->SetText(Text::String::OrEmpty(site->countryCode)->ToCString());
 		me->txtSiteIsPublic->SetText(site->isPublic?CSTR("true"):CSTR("false"));
-		if (site->publicName)
-			me->txtSitePublicName->SetText(site->publicName->ToCString());
-		else
-			me->txtSitePublicName->SetText(CSTR(""));
+		me->txtSitePublicName->SetText(Text::String::OrEmpty(site->publicName)->ToCString());
 
 		Net::SolarEdgeAPI::SiteOverview overview;
 		if (me->seAPI && me->seAPI->GetSiteOverview(site->id, &overview))

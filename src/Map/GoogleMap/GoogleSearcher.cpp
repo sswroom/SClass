@@ -76,7 +76,7 @@ Map::GoogleMap::GoogleSearcher::~GoogleSearcher()
 		MemFree(this->gooPrivKey);
 		this->gooPrivKey = 0;
 	}
-	SDEL_STRING(this->gooKey);
+	OPTSTR_DEL(this->gooKey);
 }
 
 UTF8Char *Map::GoogleMap::GoogleSearcher::SearchName(UTF8Char *buff, UOSInt buffSize, Math::Coord2DDbl pos, Text::CString lang)
@@ -103,6 +103,7 @@ UTF8Char *Map::GoogleMap::GoogleSearcher::SearchName(UTF8Char *buff, UOSInt buff
 		}
 	}
 
+	NotNullPtr<Text::String> s;
 	NotNullPtr<Net::HTTPClient> cli;
 	urlStart = sptr = Text::StrConcatC(url, UTF8STRC("http://maps.google.com"));
 	sptr = Text::StrConcatC(sptr, UTF8STRC("/maps/geo?q="));
@@ -124,10 +125,10 @@ UTF8Char *Map::GoogleMap::GoogleSearcher::SearchName(UTF8Char *buff, UOSInt buff
 		sptr = Text::StrConcatC(sptr, UTF8STRC("&signature="));
 		sptr = b64.EncodeBin(sptr, result, 20);
 	}
-	else if (this->gooKey)
+	else if (this->gooKey.SetTo(s))
 	{
 		sptr = Text::StrConcatC(sptr, UTF8STRC("&key="));
-		sptr = this->gooKey->ConcatTo(sptr);
+		sptr = s->ConcatTo(sptr);
 	}
 	else
 	{

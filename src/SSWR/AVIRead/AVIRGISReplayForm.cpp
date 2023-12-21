@@ -356,8 +356,8 @@ void SSWR::AVIRead::AVIRGISReplayForm::EventMenuClicked(UInt16 cmdId)
 			UOSInt i;
 			NotNullPtr<Map::GPSTrack> newTrack;
 			NEW_CLASSNN(newTrack, Map::GPSTrack(this->track->GetSourceNameObj(), this->track->GetHasAltitude(), this->track->GetCodePage(), this->track->GetName().Ptr()));
-			Text::String *trackName = track->GetTrackName(this->currTrackId);
-			if (trackName)
+			NotNullPtr<Text::String> trackName;
+			if (track->GetTrackName(this->currTrackId).SetTo(trackName))
 				newTrack->SetTrackName(trackName->ToCString());
 			Map::GPSTrack::GPSRecord3 *recs = track->GetTrack(this->currTrackId, recCnt);
 			i = this->startMark;

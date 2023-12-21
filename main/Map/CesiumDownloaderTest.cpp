@@ -65,9 +65,9 @@ private:
 			return;
 		}
 		Text::JSONObject *jobj = (Text::JSONObject*)obj;
-		Text::String *contURL = jobj->GetValueString(CSTR("content.url"));
 		UOSInt i;
-		if (contURL)
+		NotNullPtr<Text::String> contURL;
+		if (jobj->GetValueString(CSTR("content.url")).SetTo(contURL))
 		{
 			tmpSb->ClearStr();
 			tmpSb->Append(url);

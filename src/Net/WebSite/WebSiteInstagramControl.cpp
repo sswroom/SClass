@@ -13,7 +13,7 @@ Text::JSONBase *Net::WebSite::WebSiteInstagramControl::ParsePageJSON(Text::CStri
 	Text::StringBuilderUTF8 sb;
 	Text::JSONBase *baseData = 0;
 	NotNullPtr<Text::XMLReader> reader;
-	NotNullPtr<Net::HTTPClient> cli = Net::HTTPClient::CreateClient(this->sockf, this->ssl, {STR_PTRC(this->userAgent)}, true, true);
+	NotNullPtr<Net::HTTPClient> cli = Net::HTTPClient::CreateClient(this->sockf, this->ssl, OPTSTR_CSTR(this->userAgent), true, true);
 	cli->Connect(url, Net::WebUtil::RequestMethod::HTTP_GET, 0, 0, true);
 	NEW_CLASSNN(reader, Text::XMLReader(this->encFact, cli, Text::XMLReader::PM_HTML));
 	while (reader->ReadNext())
@@ -37,17 +37,17 @@ Text::JSONBase *Net::WebSite::WebSiteInstagramControl::ParsePageJSON(Text::CStri
 	return baseData;
 }
 
-Net::WebSite::WebSiteInstagramControl::WebSiteInstagramControl(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::EncodingFactory *encFact, Text::String *userAgent)
+Net::WebSite::WebSiteInstagramControl::WebSiteInstagramControl(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::EncodingFactory *encFact, Optional<Text::String> userAgent)
 {
 	this->sockf = sockf;
 	this->ssl = ssl;
 	this->encFact = encFact;
-	this->userAgent = SCOPY_STRING(userAgent);
+	this->userAgent = Text::String::CopyOrNull(userAgent);
 }
 
 Net::WebSite::WebSiteInstagramControl::~WebSiteInstagramControl()
 {
-	SDEL_STRING(this->userAgent);
+	OPTSTR_DEL(this->userAgent);
 }
 
 OSInt Net::WebSite::WebSiteInstagramControl::GetChannelItems(NotNullPtr<Text::String> channelId, OSInt pageNo, Data::ArrayList<Net::WebSite::WebSiteInstagramControl::ItemData*> *itemList, Net::WebSite::WebSiteInstagramControl::ChannelInfo *chInfo)
@@ -321,7 +321,7 @@ OSInt Net::WebSite::WebSiteInstagramControl::GetPageImages(NotNullPtr<Text::Stri
 	return retCnt;
 }
 
-Text::String *Net::WebSite::WebSiteInstagramControl::GetUserAgent()
+Optional<Text::String> Net::WebSite::WebSiteInstagramControl::GetUserAgent()
 {
 	return this->userAgent;
 }

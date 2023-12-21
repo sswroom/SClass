@@ -18,7 +18,7 @@ namespace Media
 		UInt8 *devMode;
 		IPrintHandler *hdlr;
 		Media::GDIEngine *eng;
-		Text::String *docName;
+		Optional<Text::String> docName;
 		Bool started;
 		Bool running;
 		PageOrientation po;
@@ -32,7 +32,7 @@ namespace Media
 
 		Bool IsError();
 
-		virtual void SetDocName(Text::String *docName);
+		virtual void SetDocName(Optional<Text::String> docName);
 		virtual void SetDocName(Text::CString docName);
 		virtual void SetNextPagePaperSizeMM(Double width, Double height);
 		virtual void SetNextPageOrientation(PageOrientation po);
@@ -118,7 +118,7 @@ Media::GDIPrintDocument::~GDIPrintDocument()
 		DeleteDC((HDC)this->hdcPrinter);
 		this->hdcPrinter = 0;
 	}
-	SDEL_STRING(this->docName);
+	OPTSTR_DEL(this->docName);
 }
 
 Bool Media::GDIPrintDocument::IsError()
@@ -126,15 +126,15 @@ Bool Media::GDIPrintDocument::IsError()
 	return this->hdcPrinter == 0;
 }
 
-void Media::GDIPrintDocument::SetDocName(Text::String *docName)
+void Media::GDIPrintDocument::SetDocName(Optional<Text::String> docName)
 {
-	SDEL_STRING(this->docName);
-	this->docName = SCOPY_STRING(docName);
+	OPTSTR_DEL(this->docName);
+	this->docName = Text::String::CopyOrNull(docName);
 }
 
 void Media::GDIPrintDocument::SetDocName(Text::CString docName)
 {
-	SDEL_STRING(this->docName);
+	OPTSTR_DEL(this->docName);
 	this->docName = Text::String::NewOrNull(docName);
 }
 
@@ -160,11 +160,12 @@ void Media::GDIPrintDocument::Start()
 	{
 		const WChar *wptr = 0;
 		DOCINFOW docInfo;
+		NotNullPtr<Text::String> s;
 
 		docInfo.cbSize = sizeof(DOCINFOW);
-		if (this->docName)
+		if (this->docName.SetTo(s))
 		{
-			wptr = Text::StrToWCharNew(this->docName->v);
+			wptr = Text::StrToWCharNew(s->v);
 			docInfo.lpszDocName = wptr;
 		}
 		else

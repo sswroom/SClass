@@ -23,10 +23,10 @@ void SSWR::AVIRead::AVIRHKOForecastForm::Reload(Net::HKOWeather::Language lang)
 	{
 		sptr = weather.updateTime.ToStringNoZone(sbuff);
 		this->txtUpdateTime->SetText(CSTRP(sbuff, sptr));
-		this->txtGeneralSituation->SetText(weather.generalSituation->ToCString());
+		this->txtGeneralSituation->SetText(Text::String::OrEmpty(weather.generalSituation)->ToCString());
 		sptr = Text::StrInt32(sbuff, weather.seaTemp);
 		this->txtSeaTemp->SetText(CSTRP(sbuff, sptr));
-		this->txtSeaTempPlace->SetText(weather.seaTempPlace->ToCString());
+		this->txtSeaTempPlace->SetText(Text::String::OrEmpty(weather.seaTempPlace)->ToCString());
 		sptr = weather.seaTempTime.ToStringNoZone(sbuff);
 		this->txtSeaTempTime->SetText(CSTRP(sbuff, sptr));
 

@@ -137,8 +137,8 @@ Text::String *Crypto::Token::JWToken::GetPayload() const
 
 Crypto::Token::JWToken::VerifyType Crypto::Token::JWToken::GetVerifyType(NotNullPtr<JWTParam> param) const
 {
-	Text::String *s = param->GetIssuer();
-	if (s && s->StartsWith(UTF8STRC("https://login.microsoftonline.com/")))
+	NotNullPtr<Text::String> s;
+	if (param->GetIssuer().SetTo(s) && s->StartsWith(UTF8STRC("https://login.microsoftonline.com/")))
 	{
 		return VerifyType::Azure;
 	}
@@ -274,7 +274,7 @@ Data::StringMap<Text::String*> *Crypto::Token::JWToken::ParsePayload(NotNullPtr<
 			}
 			else if (json->GetType() == Text::JSONType::String)
 			{
-				retMap->Put(name, SCOPY_STRING(((Text::JSONString*)json)->GetValue()));
+				retMap->Put(name, ((Text::JSONString*)json)->GetValue()->Clone().Ptr());
 			}
 			else
 			{
@@ -385,8 +385,8 @@ Crypto::Token::JWToken *Crypto::Token::JWToken::Parse(Text::CStringNN token, Tex
 		MemFree(signBuff);
 		return 0;
 	}
-	Text::String *sAlg = json->GetValueString(CSTR("alg"));
-	if (sAlg == 0)
+	NotNullPtr<Text::String> sAlg;
+	if (!json->GetValueString(CSTR("alg")).SetTo(sAlg))
 	{
 		if (sbErr) sbErr->AppendC(UTF8STRC("Token format error: alg is not found"));
 		json->EndUse();

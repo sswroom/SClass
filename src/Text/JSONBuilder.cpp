@@ -578,6 +578,30 @@ Bool Text::JSONBuilder::ObjectAddStr(Text::CStringNN name, Text::CString val)
 	return true;
 }
 
+Bool Text::JSONBuilder::ObjectAddStrOpt(Text::CStringNN name, Optional<Text::String> val)
+{
+	if (this->currType != OT_OBJECT)
+		return false;
+	if (this->isFirst)
+		this->isFirst = false;
+	else
+	{
+		this->sb.AppendC(UTF8STRC(","));
+	}
+	this->AppendStr(name);
+	this->sb.AppendC(UTF8STRC(":"));
+	NotNullPtr<Text::String> s;
+	if (!val.SetTo(s))
+	{
+		this->sb.AppendC(UTF8STRC("null"));
+	}
+	else
+	{
+		this->AppendStr(s->ToCString());
+	}
+	return true;
+}
+
 Bool Text::JSONBuilder::ObjectAddStrUTF8(Text::CStringNN name, const UTF8Char *val)
 {
 	if (this->currType != OT_OBJECT)

@@ -117,13 +117,14 @@ Math::Geometry::Vector2D *SSWR::OrganMgr::OrganTimeAdjLayer::GetNewVectorById(Ma
 	if (ufile == 0)
 		return 0;
 	Math::Geometry::Point *pt;
+	NotNullPtr<Text::String> s;
 	if (ufile->locType != LocType::PhotoExif && ufile->locType != LocType::UserInput)
 	{
 		Math::Coord2DDbl pos;
 		Data::Timestamp ts = ufile->fileTime;
-		if (ufile->camera)
+		if (ufile->camera.SetTo(s))
 		{
-			ts = ts.AddSecond(this->cameraMap.Get(ufile->camera));
+			ts = ts.AddSecond(this->cameraMap.GetNN(s));
 		}
 		UInt32 srid = this->csys->GetSRID();
 		pos = this->gpsTrk->GetPosByTime(ts);

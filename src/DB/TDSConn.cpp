@@ -346,7 +346,7 @@ public:
 		}
 	}
 
-	virtual Text::String *GetNewStr(UOSInt colIndex)
+	virtual Optional<Text::String> GetNewStr(UOSInt colIndex)
 	{
 		UTF8Char sbuff[64];
 		UTF8Char *sptr;
@@ -361,36 +361,36 @@ public:
 		{
 			UOSInt len = (UInt32)dbdatlen(this->dbproc, (int)colIndex + 1);
 			UInt8 *data = dbdata(this->dbproc, (int)colIndex + 1);
-			return Text::String::New(data, len).Ptr();
+			return Text::String::New(data, len);
 		}
 		case SYBBIT:
-			return Text::String::New((this->cols[colIndex].buff[0] != 0)?CSTR("1"):CSTR("0")).Ptr();
+			return Text::String::New((this->cols[colIndex].buff[0] != 0)?CSTR("1"):CSTR("0"));
 		case SYBINT1:
 			sptr = Text::StrInt16(sbuff, (Int8)this->cols[colIndex].buff[0]);
-			return Text::String::NewP(sbuff, sptr).Ptr();
+			return Text::String::NewP(sbuff, sptr);
 		case SYBINT2:
 			sptr = Text::StrInt16(sbuff, ReadNInt16(&this->cols[colIndex].buff[0]));
-			return Text::String::NewP(sbuff, sptr).Ptr();
+			return Text::String::NewP(sbuff, sptr);
 		case SYBINT4:
 			sptr = Text::StrInt32(sbuff, ReadNInt32(&this->cols[colIndex].buff[0]));
-			return Text::String::NewP(sbuff, sptr).Ptr();
+			return Text::String::NewP(sbuff, sptr);
 		case SYBINT8:
 			sptr = Text::StrInt64(sbuff, ReadNInt64(&this->cols[colIndex].buff[0]));
-			return Text::String::NewP(sbuff, sptr).Ptr();
+			return Text::String::NewP(sbuff, sptr);
 		case SYBREAL:
 			sptr = Text::StrDouble(sbuff, ReadFloat(&this->cols[colIndex].buff[0]));
-			return Text::String::NewP(sbuff, sptr).Ptr();
+			return Text::String::NewP(sbuff, sptr);
 		case SYBDECIMAL:
 		case SYBNUMERIC:
 		case SYBFLT8:
 			sptr = Text::StrDouble(sbuff, ReadDouble(&this->cols[colIndex].buff[0]));
-			return Text::String::NewP(sbuff, sptr).Ptr();
+			return Text::String::NewP(sbuff, sptr);
 		case SYBDATETIME:
 		case SYBMSDATE:
 		case SYBMSTIME:
 		case SYBMSDATETIME2:
 			sptr = this->GetTimestamp(colIndex).ToString(sbuff);
-			return Text::String::NewP(sbuff, sptr).Ptr();
+			return Text::String::NewP(sbuff, sptr);
 		case SYBGEOMETRY:
 			{
 				NotNullPtr<Math::Geometry::Vector2D> vec;
@@ -400,7 +400,7 @@ public:
 					Math::WKTWriter wkt;
 					wkt.ToText(sb, vec);
 					vec.Delete();
-					return Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
+					return Text::String::New(sb.ToString(), sb.GetLength());
 				}
 			}
 			return 0;
@@ -409,7 +409,7 @@ public:
 			Data::UUID uuid;
 			this->GetUUID(colIndex, uuid);
 			sptr = uuid.ToString(sbuff);
-			return Text::String::NewP(sbuff, sptr).Ptr();
+			return Text::String::NewP(sbuff, sptr);
 		}
 		case SYBBINARY:
 			return 0;
@@ -759,7 +759,7 @@ struct DB::TDSConn::ClassData
 	NotNullPtr<Text::String> host;
 	NotNullPtr<Text::String> username;
 	NotNullPtr<Text::String> password;
-	Text::String *database;
+	Optional<Text::String> database;
 };
 
 int TDSConnErrHdlr(DBPROCESS * dbproc, int severity, int dberr, int oserr, char *dberrstr, char *oserrstr)
@@ -824,7 +824,7 @@ DB::TDSConn::~TDSConn()
 	this->clsData->host->Release();
 	this->clsData->username->Release();
 	this->clsData->password->Release();
-	SDEL_STRING(this->clsData->database);
+	OPTSTR_DEL(this->clsData->database);
 	MemFree(this->clsData);
 }
 
@@ -838,7 +838,7 @@ NotNullPtr<Text::String> DB::TDSConn::GetConnHost() const
 	return this->clsData->host;
 }
 
-Text::String *DB::TDSConn::GetConnDB() const
+Optional<Text::String> DB::TDSConn::GetConnDB() const
 {
 	return this->clsData->database;
 }
@@ -879,10 +879,11 @@ void DB::TDSConn::GetConnName(NotNullPtr<Text::StringBuilderUTF8> sb)
 	sb->Append(this->clsData->host);
 	sb->AppendUTF8Char(',');
 	sb->Append(this->clsData->username);
-	if (this->clsData->database)
+	NotNullPtr<Text::String> s;
+	if (this->clsData->database.SetTo(s))
 	{
 		sb->AppendUTF8Char(',');
-		sb->Append(this->clsData->database);
+		sb->Append(s);
 	}
 }
 
@@ -961,8 +962,9 @@ void DB::TDSConn::Reconnect()
 	DBSETLPWD(login, (const Char*)this->clsData->password->v);
 	DBSETLAPP(login, "SSWRTDS");
 	DBSETLCHARSET(login, "utf8");
-	if (this->clsData->database)
-		DBSETLDBNAME(login, (const Char*)this->clsData->database->v);
+	NotNullPtr<Text::String> s;
+	if (this->clsData->database.SetTo(s))
+		DBSETLDBNAME(login, (const Char*)s->v);
 
 	this->clsData->dbproc = dbopen(login, (const Char*)this->clsData->host->v);
 	dbloginfree(login);

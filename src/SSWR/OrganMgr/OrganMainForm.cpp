@@ -30,9 +30,9 @@
 #include "Text/StringTool.h"
 #include "Text/UTF8Reader.h"
 #include "UI/Clipboard.h"
-#include "UI/FileDialog.h"
-#include "UI/FolderDialog.h"
 #include "UI/GUICore.h"
+#include "UI/GUIFileDialog.h"
+#include "UI/GUIFolderDialog.h"
 #include "UtilUI/ColorDialog.h"
 
 #include <stdio.h>
@@ -227,7 +227,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnObjDblClicked(void *userObj)
 		{
 			OrganGroup *groupO = (OrganGroup*)me->lbDir->GetItem(me->lbDir->GetSelectedIndex());
 			SDEL_STRING(me->initSelObj);
-			me->initSelObj = groupO->GetEName()->Clone().Ptr();
+			me->initSelObj = Text::String::OrEmpty(groupO->GetEName())->Clone().Ptr();
             me->lbDir->SetSelectedIndex(me->lbDir->GetSelectedIndex() - 1);
 		}
 	}
@@ -238,6 +238,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnObjSelChg(void *userObj)
 	OrganMainForm *me = (OrganMainForm*)userObj;
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
+	NotNullPtr<Text::String> s;
 	if (me->restoreObj)
 		return;
 	if (me->lbObj->GetSelectedIndex() == INVALID_INDEX)
@@ -276,29 +277,30 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnObjSelChg(void *userObj)
 		spe = (OrganSpecies*)gi;
 		sptr = Text::StrInt32(sbuff, spe->GetSpeciesId());
 		me->txtSpeciesId->SetText(CSTRP(sbuff, sptr));
-		me->txtSpeciesEName->SetText(spe->GetEName()->ToCString());
-		me->txtSpeciesCName->SetText(spe->GetCName()->ToCString());
-		me->txtSpeciesSName->SetText(spe->GetSName()->ToCString());
-		me->txtSpeciesDName->SetText(spe->GetDirName()->ToCString());
-		me->txtSpeciesDesc->SetText(spe->GetDesc()->ToCString());
-		me->txtSpeciesKey->SetText(spe->GetIDKey()->ToCString());
-		if (spe->GetSName()->EndsWith(UTF8STRC(" female")))
+		me->txtSpeciesEName->SetText(Text::String::OrEmpty(spe->GetEName())->ToCString());
+		me->txtSpeciesCName->SetText(Text::String::OrEmpty(spe->GetCName())->ToCString());
+		me->txtSpeciesSName->SetText(Text::String::OrEmpty(spe->GetSName())->ToCString());
+		me->txtSpeciesDName->SetText(Text::String::OrEmpty(spe->GetDirName())->ToCString());
+		me->txtSpeciesDesc->SetText(Text::String::OrEmpty(spe->GetDesc())->ToCString());
+		me->txtSpeciesKey->SetText(Text::String::OrEmpty(spe->GetIDKey())->ToCString());
+		s = Text::String::OrEmpty(spe->GetSName());
+		if (s->EndsWith(UTF8STRC(" female")))
 		{
 			sb.ClearStr();
-			sb.Append(spe->GetSName());
+			sb.Append(s);
 			sb.RemoveChars(7);
 			me->txtSpBook->SetText(sb.ToCString());
 		}
-		else if (spe->GetSName()->EndsWith(UTF8STRC(" male")))
+		else if (s->EndsWith(UTF8STRC(" male")))
 		{
 			sb.ClearStr();
-			sb.Append(spe->GetSName());
+			sb.Append(s);
 			sb.RemoveChars(5);
 			me->txtSpBook->SetText(sb.ToCString());
 		}
 		else
 		{
-			me->txtSpBook->SetText(spe->GetSName()->ToCString());
+			me->txtSpBook->SetText(s->ToCString());
 		}
 		me->lastSpeciesObj = spe;
 		me->UpdateSpBook();
@@ -315,8 +317,8 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnObjSelChg(void *userObj)
 		sptr = Text::StrInt32(sbuff, grp->GetGroupId());
 		me->txtGroupId->SetText(CSTRP(sbuff, sptr));
 		me->SelectGroup(me->cboGroupType, grp->GetGroupType());
-		me->txtGroupEName->SetText(grp->GetEName()->ToCString());
-		me->txtGroupCName->SetText(grp->GetCName()->ToCString());
+		me->txtGroupEName->SetText(Text::String::OrEmpty(grp->GetEName())->ToCString());
+		me->txtGroupCName->SetText(Text::String::OrEmpty(grp->GetCName())->ToCString());
 		me->txtGroupDesc->SetText(Text::String::OrEmpty(grp->GetDesc())->ToCString());
 		me->txtGroupKey->SetText(Text::String::OrEmpty(grp->GetIDKey())->ToCString());
 		me->chkGroupAdmin->SetChecked(grp->GetAdminOnly());
@@ -739,13 +741,14 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnImageSaveClicked(void *userObj)
 			UserFileInfo *userFile = imgItem->GetUserFile();
 			if (me->env->GetUserFilePath(userFile, sb))
 			{
-				UI::FileDialog dlg(L"SSWR", L"AVIRead", L"OrganMgrSave", true);
-				dlg.AddFilter(CSTR("*.jpg"), CSTR("JPEG File"));
-				dlg.SetFileName(userFile->oriFileName->ToCString());
-				if (dlg.ShowDialog(me->GetHandle()))
+				NotNullPtr<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"OrganMgrSave", true);
+				dlg->AddFilter(CSTR("*.jpg"), CSTR("JPEG File"));
+				dlg->SetFileName(userFile->oriFileName->ToCString());
+				if (dlg->ShowDialog(me->GetHandle()))
 				{
-					IO::FileUtil::CopyFile(sb.ToCString(), dlg.GetFileName()->ToCString(), IO::FileUtil::FileExistAction::Fail, 0, 0);
+					IO::FileUtil::CopyFile(sb.ToCString(), dlg->GetFileName()->ToCString(), IO::FileUtil::FileExistAction::Fail, 0, 0);
 				}
+				dlg.Delete();
 			}
 		}
 	}
@@ -756,8 +759,8 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnImageSaveAllClicked(void *userOb
 	OrganMainForm *me = (OrganMainForm*)userObj;
 	if (me->inputMode == IM_SPECIES)
 	{
-		UI::FolderDialog dlg(L"SSWR", L"AVIRead", L"OrganMgrSaveAll");
-		if (dlg.ShowDialog(me->GetHandle()))
+		NotNullPtr<UI::GUIFolderDialog> dlg = me->ui->NewFolderDialog();
+		if (dlg->ShowDialog(me->GetHandle()))
 		{
 			Text::StringBuilderUTF8 sb;
 			Text::StringBuilderUTF8 sb2;
@@ -776,7 +779,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnImageSaveAllClicked(void *userOb
 					if (me->env->GetUserFilePath(userFile, sb))
 					{
 						sb2.ClearStr();
-						sb2.Append(dlg.GetFolder());
+						sb2.Append(dlg->GetFolder());
 						if (!sb2.EndsWith(IO::Path::PATH_SEPERATOR))
 						{
 							sb2.AppendChar(IO::Path::PATH_SEPERATOR, 1);
@@ -788,6 +791,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnImageSaveAllClicked(void *userOb
 				i++;
 			}
 		}
+		dlg.Delete();
 	}
 }
 
@@ -1792,7 +1796,7 @@ void SSWR::OrganMgr::OrganMainForm::UpdateDir()
             this->lbDir->RemoveItem(j);
 			grp = this->groupList.RemoveAt(j);
 			SDEL_STRING(this->initSelObj);
-			this->initSelObj = grp->GetEName()->Clone().Ptr();
+			this->initSelObj = Text::String::OrEmpty(grp->GetEName())->Clone().Ptr();
 			DEL_CLASS(grp);
 		}
         this->lastSpeciesObj = 0;
@@ -1879,6 +1883,7 @@ void SSWR::OrganMgr::OrganMainForm::UpdateImgDir()
 	UTF8Char *sptr;
 	const UTF8Char *csptr;
 	Data::Timestamp ts;
+	NotNullPtr<Text::String> s;
 	this->pbImg->SetImage(0, false);
 	if (this->lastBmp)
 	{
@@ -2011,7 +2016,7 @@ void SSWR::OrganMgr::OrganMainForm::UpdateImgDir()
 					csptr = 0;
 					if (userFile)
 					{
-						csptr = STR_PTR(userFile->location);
+						csptr = OPTSTR_CSTR(userFile->location).v;
 					}
 					if (csptr)
 					{
@@ -2049,10 +2054,10 @@ void SSWR::OrganMgr::OrganMainForm::UpdateImgDir()
 				UserFileInfo *userFile = imgItem->GetUserFile();
 				if (userFile)
 				{
-					if (userFile->descript)
+					if (userFile->descript.SetTo(s))
 					{
 						sptr = Text::StrConcatC(sptr, UTF8STRC(" "));
-						sptr = userFile->descript->ConcatTo(sptr);
+						sptr = s->ConcatTo(sptr);
 					}
 				}
 				WebFileInfo *wfile = imgItem->GetWebFile();
@@ -2242,7 +2247,7 @@ Bool SSWR::OrganMgr::OrganMainForm::ToSaveSpecies()
 //			Int32 id = this->lastSpeciesObj->GetSpeciesId();
 			
 			sptr = this->txtSpeciesDName->GetText(sbuff);
-			if (!this->lastSpeciesObj->GetDirName()->Equals(sbuff, (UOSInt)(sptr - sbuff)))
+			if (!Text::String::OrEmpty(this->lastSpeciesObj->GetDirName())->Equals(sbuff, (UOSInt)(sptr - sbuff)))
 			{
 				sptr2 = this->env->GetSpeciesDir(this->lastSpeciesObj, sbuff2);
 				sptr = Text::StrConcatC(sbuff, sbuff2, (UOSInt)(sptr2 - sbuff2));
@@ -3118,7 +3123,7 @@ void SSWR::OrganMgr::OrganMainForm::EventMenuClicked(UInt16 cmdId)
 			{
 				OrganGroup *groupO = (OrganGroup*)this->lbDir->GetItem(i);
 				SDEL_STRING(this->initSelObj);
-				this->initSelObj = groupO->GetEName()->Clone().Ptr();
+				this->initSelObj = Text::String::OrEmpty(groupO->GetEName())->Clone().Ptr();
 				this->lbDir->SetSelectedIndex(i - 1);
 			}
 		}
@@ -3201,11 +3206,12 @@ void SSWR::OrganMgr::OrganMainForm::EventMenuClicked(UInt16 cmdId)
 		break;
 	case MNU_EXPORT_LITE:
 		{
-			UI::FolderDialog dlg(L"SSWR", L"OrganMgr", L"ExportList");
-			if (dlg.ShowDialog(this->GetHandle()))
+			NotNullPtr<UI::GUIFolderDialog> dlg = this->ui->NewFolderDialog();
+			if (dlg->ShowDialog(this->GetHandle()))
 			{
-				this->env->ExportLite(dlg.GetFolder()->v);
+				this->env->ExportLite(dlg->GetFolder()->v);
 			}
+			dlg.Delete();
 		}
 		break;
 	}

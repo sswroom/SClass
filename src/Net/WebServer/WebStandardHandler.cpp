@@ -66,9 +66,10 @@ Bool Net::WebServer::WebStandardHandler::DoRequest(NotNullPtr<Net::WebServer::IW
 void Net::WebServer::WebStandardHandler::AddResponseHeaders(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp)
 {
 	resp->AddDefHeaders(req);
-	if (this->allowOrigin)
+	NotNullPtr<Text::String> s;
+	if (this->allowOrigin.SetTo(s))
 	{
-		resp->AddHeader(CSTR("Access-Control-Allow-Origin"), this->allowOrigin->ToCString());
+		resp->AddHeader(CSTR("Access-Control-Allow-Origin"), s->ToCString());
 	}
 }
 
@@ -82,7 +83,7 @@ Bool Net::WebServer::WebStandardHandler::ResponseJSONStr(NotNullPtr<Net::WebServ
 Bool Net::WebServer::WebStandardHandler::ResponseAllowOptions(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, UOSInt maxAge, Text::CStringNN options)
 {
 	Text::StringBuilderUTF8 sb;
-	if (req->GetHeaderC(sb, CSTR("Access-Control-Request-Method")) && this->allowOrigin)
+	if (req->GetHeaderC(sb, CSTR("Access-Control-Request-Method")) && !this->allowOrigin.IsNull())
 	{
 		resp->SetStatusCode(Net::WebStatus::SC_NO_CONTENT);
 		resp->AddDefHeaders(req);
@@ -126,7 +127,7 @@ Net::WebServer::WebStandardHandler::~WebStandardHandler()
 	{
 		this->relHdlrs.GetItem(i).Delete();
 	}
-	SDEL_STRING(this->allowOrigin);
+	OPTSTR_DEL(this->allowOrigin);
 }
 
 void Net::WebServer::WebStandardHandler::WebRequest(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp)
@@ -205,6 +206,6 @@ void Net::WebServer::WebStandardHandler::HandlePath(Text::CStringNN relativePath
 
 void Net::WebServer::WebStandardHandler::SetAllowOrigin(Text::CString origin)
 {
-	SDEL_STRING(this->allowOrigin);
+	OPTSTR_DEL(this->allowOrigin);
 	this->allowOrigin = Text::String::NewOrNull(origin);
 }

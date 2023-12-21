@@ -63,6 +63,7 @@ void Net::WiFiLogFile::LoadFile(Text::CStringNN fileName)
 		Text::StringBuilderUTF8 sb;
 		UInt64 iMAC;
 		Text::UTF8Reader reader(fs);
+		NotNullPtr<Text::String> s;
 		sb.ClearStr();
 		buff[0] = 0;
 		buff[1] = 0;
@@ -103,10 +104,9 @@ void Net::WiFiLogFile::LoadFile(Text::CStringNN fileName)
 						}
 						if (i >= 9)
 						{
-							if ((log->country == 0 || log->country->v[0] == 0) && sarr[8].v[0] != 0)
+							if (!log->country.SetTo(s) && sarr[8].v[0] != 0)
 							{
-								SDEL_STRING(log->country);
-								log->country = Text::String::New(sarr[8].v, sarr[8].leng).Ptr();
+								log->country = Text::String::New(sarr[8].v, sarr[8].leng);
 							}
 							j = Text::StrSplitP(sarr2, 3, sarr[7], ',');
 							while (j-- > 0)
@@ -324,10 +324,7 @@ Bool Net::WiFiLogFile::StoreFile(Text::CStringNN fileName)
 			sb.AppendUTF8Char(',');
 			sb.AppendHexBuff(log->ouis[2], 3, 0, Text::LineBreakType::None);
 			sb.AppendC(UTF8STRC("\t"));
-			if (log->country)
-			{
-				sb.Append(log->country);
-			}
+			sb.AppendOpt(log->country);
 			sb.AppendUTF8Char('\t');
 			k = 0;
 			while (k < 20)
@@ -369,7 +366,7 @@ void Net::WiFiLogFile::Clear()
 		SDEL_STRING(log->manuf);
 		SDEL_STRING(log->model);
 		SDEL_STRING(log->serialNum);
-		SDEL_STRING(log->country);
+		OPTSTR_DEL(log->country);
 		if (log->ieBuff)
 		{
 			MemFree(log->ieBuff);
@@ -535,9 +532,9 @@ Net::WiFiLogFile::LogFileEntry *Net::WiFiLogFile::AddBSSInfo(Net::WirelessLAN::B
 			{
 				log->serialNum = bss->GetSN()->Clone().Ptr();
 			}
-			if (log->country == 0 && bss->GetCountry())
+			if (log->country.IsNull() && bss->GetCountry())
 			{
-				log->country = Text::String::NewNotNullSlow(bss->GetCountry()).Ptr();
+				log->country = Text::String::NewNotNullSlow(bss->GetCountry());
 			}
 		}
 		UOSInt l;
