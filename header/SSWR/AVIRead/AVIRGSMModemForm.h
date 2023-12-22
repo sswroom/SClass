@@ -67,7 +67,7 @@ namespace SSWR
 			NotNullPtr<UI::GUITextBox> txtACT;
 			NotNullPtr<UI::GUILabel> lblSignalQuality;
 			NotNullPtr<UI::GUITextBox> txtSignalQuality;
-			UI::GUIRealtimeLineChart *rlcRSSI;
+			NotNullPtr<UI::GUIRealtimeLineChart> rlcRSSI;
 
 			NotNullPtr<UI::GUITabPage> tpPhoneBook;
 			NotNullPtr<UI::GUIPanel> pnlPhone;

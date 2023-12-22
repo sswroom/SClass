@@ -1051,7 +1051,7 @@ SSWR::AVIRead::AVIRGSMModemForm::AVIRGSMModemForm(UI::GUIClientControl *parent, 
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	this->tpInfo = this->tcMain->AddTabPage(CSTR("Info"));
-	NEW_CLASS(this->rlcRSSI, UI::GUIRealtimeLineChart(ui, this->tpInfo, this->core->GetDrawEngine(), 5, 360, 10000));
+	this->rlcRSSI = ui->NewRealtimeLineChart(this->tpInfo, this->core->GetDrawEngine(), 5, 360, 10000);
 	this->rlcRSSI->SetRect(0, 0, 100, 100, false);
 	this->rlcRSSI->SetDockType(UI::GUIControl::DOCK_BOTTOM);
 	this->pnlInfo = ui->NewPanel(this->tpInfo);

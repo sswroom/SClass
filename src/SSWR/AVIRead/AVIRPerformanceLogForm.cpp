@@ -119,7 +119,7 @@ SSWR::AVIRead::AVIRPerformanceLogForm::AVIRPerformanceLogForm(UI::GUIClientContr
 	this->txtCurrWRate = ui->NewTextBox(this->pnlCtrl, CSTR(""));
 	this->txtCurrWRate->SetRect(104, 28, 150, 23, false);
 	this->txtCurrWRate->SetReadOnly(true);
-	NEW_CLASS(this->rlcWRate, UI::GUIRealtimeLineChart(ui, *this, this->core->GetDrawEngine(), 1, 144, 1000));
+	this->rlcWRate = ui->NewRealtimeLineChart(*this, this->core->GetDrawEngine(), 1, 144, 1000);
 	this->rlcWRate->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	this->AddTimer(1000, OnTimerTick, this);

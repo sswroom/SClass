@@ -30,7 +30,7 @@ namespace SSWR
 			NotNullPtr<UI::GUITextBox> txtStream1;
 			NotNullPtr<UI::GUICheckBox> chkStreamLog1;
 			NotNullPtr<UI::GUIButton> btnStream1;
-			UI::GUIRealtimeLineChart *rlcStream1;
+			NotNullPtr<UI::GUIRealtimeLineChart> rlcStream1;
 			NotNullPtr<UI::GUIHSplitter> hspStream;
 
 			NotNullPtr<UI::GUIGroupBox> grpStream2;
@@ -39,7 +39,7 @@ namespace SSWR
 			NotNullPtr<UI::GUITextBox> txtStream2;
 			NotNullPtr<UI::GUICheckBox> chkStreamLog2;
 			NotNullPtr<UI::GUIButton> btnStream2;
-			UI::GUIRealtimeLineChart *rlcStream2;
+			NotNullPtr<UI::GUIRealtimeLineChart> rlcStream2;
 
 			Sync::Mutex mut1;
 			IO::Stream *stm1;

@@ -16,6 +16,7 @@
 #include "UI/GTK/GTKListBox.h"
 #include "UI/GTK/GTKMessageDialog.h"
 #include "UI/GTK/GTKPanelBase.h"
+#include "UI/GTK/GTKRealtimeLineChart.h"
 #include "UI/GTK/GTKTabControl.h"
 #include "UI/GTK/GTKTextBox.h"
 #include "UI/GTK/GTKVSplitter.h"
@@ -251,6 +252,13 @@ NotNullPtr<UI::GUIListBox> UI::GTK::GTKCore::NewListBox(NotNullPtr<GUIClientCont
 {
 	NotNullPtr<UI::GTK::GTKListBox> ctrl;
 	NEW_CLASSNN(ctrl, UI::GTK::GTKListBox(*this, parent, multiSelect));
+	return ctrl;
+}
+
+NotNullPtr<UI::GUIRealtimeLineChart> UI::GTK::GTKCore::NewRealtimeLineChart(NotNullPtr<GUIClientControl> parent, NotNullPtr<Media::DrawEngine> eng, UOSInt lineCnt, UOSInt sampleCnt, UInt32 updateIntervalMS)
+{
+	NotNullPtr<UI::GTK::GTKRealtimeLineChart> ctrl;
+	NEW_CLASSNN(ctrl, UI::GTK::GTKRealtimeLineChart(*this, parent, eng, lineCnt, sampleCnt, updateIntervalMS));
 	return ctrl;
 }
 

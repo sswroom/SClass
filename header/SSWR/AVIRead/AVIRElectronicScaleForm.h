@@ -34,7 +34,7 @@ namespace SSWR
 			NotNullPtr<UI::GUITabControl> tcMain;
 
 			NotNullPtr<UI::GUITabPage> tpHistory;
-			UI::GUIRealtimeLineChart *rlcHistory;
+			NotNullPtr<UI::GUIRealtimeLineChart> rlcHistory;
 
 			NotNullPtr<UI::GUITabPage> tpDisplay;
 			UI::GUIPictureBoxSimple *pbsDisplay;

@@ -77,7 +77,7 @@ namespace SSWR
 			NotNullPtr<UI::GUITextBox> txtStatusTimeLeft;
 			NotNullPtr<UI::GUIListView> lvStatus;
 			NotNullPtr<UI::GUIVSplitter> vspStatus;
-			UI::GUIRealtimeLineChart *rlcStatus;
+			NotNullPtr<UI::GUIRealtimeLineChart> rlcStatus;
 
 			NotNullPtr<UI::GUITabPage> tpInfo;
 			NotNullPtr<UI::GUITextBox> txtInfo;

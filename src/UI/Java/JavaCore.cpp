@@ -18,6 +18,7 @@
 #include "UI/Java/JavaListBox.h"
 #include "UI/Java/JavaMessageDialog.h"
 #include "UI/Java/JavaPanelBase.h"
+#include "UI/Java/JavaRealtimeLineChart.h"
 #include "UI/Java/JavaTabControl.h"
 #include "UI/Java/JavaTextBox.h"
 #include "UI/Java/JavaVSplitter.h"
@@ -256,6 +257,13 @@ NotNullPtr<UI::GUIListBox> UI::Java::JavaCore::NewListBox(NotNullPtr<GUIClientCo
 {
 	NotNullPtr<UI::Java::JavaListBox> ctrl;
 	NEW_CLASSNN(ctrl, UI::Java::JavaListBox(*this, parent, multiSelect));
+	return ctrl;
+}
+
+NotNullPtr<UI::GUIRealtimeLineChart> UI::Java::JavaCore::NewRealtimeLineChart(NotNullPtr<GUIClientControl> parent, NotNullPtr<Media::DrawEngine> eng, UOSInt lineCnt, UOSInt sampleCnt, UInt32 updateIntervalMS)
+{
+	NotNullPtr<UI::Java::JavaRealtimeLineChart> ctrl;
+	NEW_CLASSNN(ctrl, UI::Java::JavaRealtimeLineChart(*this, parent, eng, lineCnt, sampleCnt, updateIntervalMS));
 	return ctrl;
 }
 

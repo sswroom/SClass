@@ -59,8 +59,6 @@ UI/GUIProgressBar.h:
 @GUIProgressBarGTK.o
 UI/GUIRadioButton.h:
 @GUIRadioButtonGTK.o
-UI/GUIRealtimeLineChart.h:
-@GUIRealtimeLineChartGTK.o
 UI/GUITextView.h:
 @GUITextViewGTK.o
 UI/GUITrackBar.h:

@@ -37,7 +37,7 @@ namespace SSWR
 			NotNullPtr<UI::GUITabControl> tcMain;
 
 			NotNullPtr<UI::GUITabPage> tpLatency;
-			UI::GUIRealtimeLineChart *rlcLatency;
+			NotNullPtr<UI::GUIRealtimeLineChart> rlcLatency;
 
 			NotNullPtr<UI::GUITabPage> tpLog;
 			NotNullPtr<UI::GUITextBox> txtLog;

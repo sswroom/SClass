@@ -8,9 +8,7 @@ namespace UI
 {
 	class GUIRealtimeLineChart : public GUIControl
 	{
-	private:
-		static Int32 useCnt;
-
+	protected:
 		NotNullPtr<Media::DrawEngine> eng;
 		const UTF8Char *unit;
 		UOSInt lineCnt;
@@ -28,14 +26,9 @@ namespace UI
 		Sync::Mutex chartMut;
 		void *clsData;
 
-	public:
-		static OSInt __stdcall RLCWndProc(void *hWnd, UInt32 msg, UInt32 wParam, OSInt lParam);
-	private:
 		void OnPaint(NotNullPtr<Media::DrawImage> dimg);
-		void Init(void *hInst);
-		void Deinit(void *hInst);
 	public:
-		GUIRealtimeLineChart(NotNullPtr<GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, NotNullPtr<Media::DrawEngine> eng, UOSInt lineCnt, UOSInt sampleCnt, UInt32 updateIntervalMS);
+		GUIRealtimeLineChart(NotNullPtr<GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, NotNullPtr<Media::DrawEngine> eng, UOSInt lineCnt, UOSInt sampleCnt);
 		virtual ~GUIRealtimeLineChart();
 
 		virtual Text::CStringNN GetObjectClass() const;
@@ -47,7 +40,6 @@ namespace UI
 		void SetBGColor(UInt32 lineColor);
 		void SetFontColor(UInt32 fontColor);
 		void ClearChart();
-
 	};
 }
 #endif

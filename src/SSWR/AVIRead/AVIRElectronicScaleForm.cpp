@@ -246,7 +246,7 @@ SSWR::AVIRead::AVIRElectronicScaleForm::AVIRElectronicScaleForm(UI::GUIClientCon
 	this->pbsDisplay->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	this->tpHistory = this->tcMain->AddTabPage(CSTR("History"));
-	NEW_CLASS(this->rlcHistory, UI::GUIRealtimeLineChart(ui, this->tpHistory, this->core->GetDrawEngine(), 1, 500, 100));
+	this->rlcHistory = ui->NewRealtimeLineChart(this->tpHistory, this->core->GetDrawEngine(), 1, 500, 100);
 	this->rlcHistory->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	this->AddTimer(100, OnTimerTick, this);

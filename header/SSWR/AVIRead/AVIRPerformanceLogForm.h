@@ -32,7 +32,7 @@ namespace SSWR
 			NotNullPtr<UI::GUIButton> btnStart;
 			NotNullPtr<UI::GUILabel> lblCurrWRate;
 			NotNullPtr<UI::GUITextBox> txtCurrWRate;
-			UI::GUIRealtimeLineChart *rlcWRate;
+			NotNullPtr<UI::GUIRealtimeLineChart> rlcWRate;
 
 			static void __stdcall OnStartClicked(void *userObj);
 			static void __stdcall OnTimerTick(void *userObj);

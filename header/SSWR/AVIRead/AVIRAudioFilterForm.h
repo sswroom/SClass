@@ -106,7 +106,7 @@ namespace SSWR
 			NotNullPtr<UI::GUIButton> btnDTMFTones;
 
 			NotNullPtr<UI::GUITabPage> tpVolLevel;
-			UI::GUIRealtimeLineChart *rlcVolLevel;
+			NotNullPtr<UI::GUIRealtimeLineChart> rlcVolLevel;
 			NotNullPtr<UI::GUIVSplitter> vspVolLevel;
 			UI::GUIPictureBoxSimple *pbsSample;
 			NotNullPtr<UI::GUIVSplitter> vspSample;

@@ -4681,6 +4681,8 @@ UI/GUIPictureBoxDD.h:
 @GUIPictureBoxDD.o
 UI/GUIPictureList.h:
 @GUIPictureList.o
+UI/GUIRealtimeLineChart.h:
+@GUIRealtimeLineChart.o
 UI/GUISudokuViewer.h:
 @GUISudokuViewer.o
 UI/GUITabControl.h:
@@ -4761,6 +4763,8 @@ UI/GTK/GTKMessageDialog.h:
 @GTKMessageDialog.o
 UI/GTK/GTKPanelBase.h:
 @GTKPanelBase.o
+UI/GTK/GTKRealtimeLineChart.h:
+@GTKRealtimeLineChart.o
 UI/GTK/GTKTabControl.h:
 @GTKTabControl.o
 UI/GTK/GTKTextBox.h:
@@ -4797,6 +4801,8 @@ UI/Java/JavaMessageDialog.h:
 @JavaMessageDialog.o
 UI/Java/JavaPanelBase.h:
 @JavaPanelBase.o
+UI/Java/JavaRealtimeLineChart.h:
+@JavaRealtimeLineChart.o
 UI/Java/JavaTabControl.h:
 @JavaTabControl.o
 UI/Java/JavaTextBox.h:
@@ -4835,6 +4841,8 @@ UI/Win/WinMessageDialog.h:
 @WinMessageDialog.o
 UI/Win/WinPanelBase.h:
 @WinPanelBase.o
+UI/Win/WinRealtimeLineChart.h:
+@WinRealtimeLineChart.o
 UI/Win/WinTabControl.h:
 @WinTabControl.o
 UI/Win/WinTextBox.h:

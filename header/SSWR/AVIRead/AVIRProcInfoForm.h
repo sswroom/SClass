@@ -92,16 +92,16 @@ namespace SSWR
 
 			NotNullPtr<UI::GUITabPage> tpDetChart;
 			NotNullPtr<UI::GUIGroupBox> grpDetChartCPU;
-			UI::GUIRealtimeLineChart *rlcDetChartCPU;
+			NotNullPtr<UI::GUIRealtimeLineChart> rlcDetChartCPU;
 			NotNullPtr<UI::GUIVSplitter> vspDetChartCPU;
 			NotNullPtr<UI::GUIGroupBox> grpDetChartPage;
-			UI::GUIRealtimeLineChart *rlcDetChartPage;
+			NotNullPtr<UI::GUIRealtimeLineChart> rlcDetChartPage;
 			NotNullPtr<UI::GUIVSplitter> vspDetChartPage;
 			NotNullPtr<UI::GUIGroupBox> grpDetChartCount;
-			UI::GUIRealtimeLineChart *rlcDetChartCount;
+			NotNullPtr<UI::GUIRealtimeLineChart> rlcDetChartCount;
 			NotNullPtr<UI::GUIVSplitter> vspDetChartCount;
 			NotNullPtr<UI::GUIGroupBox> grpDetChartWS;
-			UI::GUIRealtimeLineChart *rlcDetChartWS;
+			NotNullPtr<UI::GUIRealtimeLineChart> rlcDetChartWS;
 
 			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
 
